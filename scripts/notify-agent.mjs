@@ -21,6 +21,12 @@ const STATE_FILE = '.syndicated.json';
 const TO = process.env.NOTIFY_TO || 'goobie.orelup@gmail.com';
 const DRY_RUN = process.argv.includes('--dry-run');
 
+// --verify logs in to SMTP and reports, without sending anything or touching state.
+// The credential is the one thing this script cannot check for itself at rest: a Google
+// App Password is silently revoked whenever the account password changes, which is
+// exactly how three weeks of hand-offs were lost.
+const VERIFY = process.argv.includes('--verify');
+
 // A manual `workflow_dispatch` run is a deliberate catch-up: send anything the state file
 // says has never gone out. That is the recovery path when a push-triggered run failed —
 // re-running the old job instead would check out an old commit and push from a detached
@@ -122,6 +128,28 @@ function buildEmail(post) {
 }
 
 async function main() {
+  if (VERIFY) {
+    const { SMTP_HOST, SMTP_USER, SMTP_PASS } = process.env;
+    if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
+      console.error('Set SMTP_HOST, SMTP_USER and SMTP_PASS to verify.');
+      process.exit(1);
+    }
+    const t = nodemailer.createTransport({
+      host: SMTP_HOST,
+      port: Number(process.env.SMTP_PORT || 465),
+      secure: process.env.SMTP_SECURE !== 'false',
+      auth: { user: SMTP_USER, pass: SMTP_PASS },
+    });
+    try {
+      await t.verify();
+      console.log(`SMTP OK - ${SMTP_USER} can send via ${SMTP_HOST}. Nothing was emailed.`);
+      process.exit(0);
+    } catch (e) {
+      console.error(`SMTP FAILED - ${e.message}`);
+      process.exit(1);
+    }
+  }
+
   const files = getChangedPostFiles();
   const state = loadState();
   const alreadySent = new Set(state.synced);
