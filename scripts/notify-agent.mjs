@@ -27,6 +27,14 @@ const DRY_RUN = process.argv.includes('--dry-run');
 // HEAD. `--only <slug>` narrows it to one post, so seven backed-up posts don't all land
 // on the agent at once.
 const MANUAL = process.env.GITHUB_EVENT_NAME === 'workflow_dispatch';
+
+// Set when the push diff could not run and we fell back to "everything unsynced". That
+// path is a catch-up rather than a reaction to one post, so an automatic run caps how
+// many it will mail: a stale state file must never dump the whole back catalogue on the
+// agent in one burst. Anything held back is listed and goes out on the next run, or
+// immediately via a manual dispatch.
+let usedFallback = false;
+const MAX_AUTO_FALLBACK = 2;
 const onlyArg = process.argv.indexOf('--only');
 const ONLY = onlyArg !== -1 ? (process.argv[onlyArg + 1] || '').replace(/\.md$/, '') : null;
 
@@ -68,6 +76,7 @@ function getChangedPostFiles() {
       `Could not diff for added posts (${String(e.message).split('\n')[0]}).\n` +
         'Falling back to everything not yet recorded in ' + STATE_FILE + '.',
     );
+    usedFallback = true;
     return allPostFiles();
   }
 }
@@ -119,6 +128,18 @@ async function main() {
 
   let newFiles = files.filter((f) => !alreadySent.has(f));
   if (ONLY) newFiles = newFiles.filter((f) => path.basename(f, '.md') === ONLY);
+
+  // Cap an automatic catch-up (see usedFallback). A deliberate manual run is exempt:
+  // that is Aaron asking for the backlog on purpose.
+  if (usedFallback && !MANUAL && !ONLY && newFiles.length > MAX_AUTO_FALLBACK) {
+    const held = newFiles.slice(MAX_AUTO_FALLBACK);
+    newFiles = newFiles.slice(0, MAX_AUTO_FALLBACK);
+    console.warn(
+      `Fallback run: sending only ${MAX_AUTO_FALLBACK} of ${newFiles.length + held.length} ` +
+        'outstanding post(s) so the agent is not flooded. Held back:',
+    );
+    held.forEach((f) => console.warn(`  ${f}`));
+  }
   if (newFiles.length === 0) {
     console.log(ONLY ? `Nothing outstanding matching "${ONLY}".` : 'No new posts to hand off.');
     return;
@@ -146,6 +167,7 @@ async function main() {
     });
   }
 
+  let failures = 0;
   for (const file of newFiles) {
     if (!fs.existsSync(file)) continue; // e.g. deleted before this ran
     const parsed = matter(fs.readFileSync(file, 'utf8'));
@@ -179,10 +201,23 @@ async function main() {
     } catch (e) {
       // Leave it out of the state file so the next run tries again.
       console.error('  [email] FAILED:', e.message);
+      failures += 1;
     }
   }
 
   if (!DRY_RUN) saveState(state);
+
+  // A send that failed must not leave a green check. The whole hand-off went unnoticed
+  // for three weeks because a rejected SMTP login was logged and then exited 0, so the
+  // workflow reported success while the agent got nothing. Fail loudly instead; the
+  // posts stay out of the state file, so the next run retries them.
+  if (failures > 0) {
+    console.error(
+      `\n${failures} post(s) could NOT be emailed to ${TO}. They are not recorded as ` +
+        'sent, so the next push or a manual "Run workflow" will retry them.',
+    );
+    process.exit(1);
+  }
 }
 
 main().catch((e) => {

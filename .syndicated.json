@@ -1,9 +1,20 @@
 {
   "synced": [
-    "src/content/posts/why-im-starting-this.md",
+    "src/content/posts/armies-of-gielinor-gauntlet.md",
     "src/content/posts/blackwater-weekend.md",
+    "src/content/posts/blood-helix-and-the-lost-skin.md",
+    "src/content/posts/everything-sonnet-got-wrong.md",
     "src/content/posts/grind-and-grimoire.md",
+    "src/content/posts/i-dont-learn-programming-anymore.md",
     "src/content/posts/keeper-and-the-beacon.md",
-    "src/content/posts/armies-of-gielinor-gauntlet.md"
+    "src/content/posts/monster-hunter-was-my-degree.md",
+    "src/content/posts/mvp-before-i-knew.md",
+    "src/content/posts/no-vs-code-no-terminal.md",
+    "src/content/posts/prompting-is-solved.md",
+    "src/content/posts/reading-my-own-agents.md",
+    "src/content/posts/second-brain-v2.md",
+    "src/content/posts/stopped-keeping-agents-fed.md",
+    "src/content/posts/the-wall-that-stopped-me.md",
+    "src/content/posts/why-im-starting-this.md"
   ]
 }
