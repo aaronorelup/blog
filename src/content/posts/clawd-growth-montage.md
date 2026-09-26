@@ -47,7 +47,7 @@ What it measured, not what it guessed:
 - **1,558 lines** in one HTML file, 92 KB. The render script is 80 lines.
 - **5.2 MB** MP4 at CRF 20, H.264 and AAC, well under the 20 MB limit.
 - **155 seconds** for the final render: 4.5 for the audio, the rest for 900 frames.
-- **About 45 minutes** from cloning the repo to pushing the branch.
+- **About 40 minutes** from cloning the repo to pushing the branch.
 - **8 fix passes**, each one decided by looking at rendered frames: 36 stills across three
   passes, then 180 frames in contact sheets to check the motion.
 
