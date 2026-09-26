@@ -4,7 +4,7 @@ title: "A 30-second film with no assets, and a score nobody listened to"
 summary: "One prompt got me a 30-second training montage starring Clawd, the Claude Code mascot, with every frame and note written as code. It came out good. The first version of the music also took 81 seconds to render 30 seconds of sound, and no one heard it before it shipped."
 date: 2026-09-26
 status: "shipped"
-tags: ["claude-code", "animation", "web-audio", "canvas", "cloud-agents"]
+tags: ["claude-code", "animation", "web-audio", "canvas"]
 ---
 
 This is a 30-second animated short about Clawd, the little terracotta Claude Code mascot,
