@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Clawd, one skill at a time</title>
+<meta name="description" content="A 30-second animated growth montage. Every frame and every note is code: canvas pixel blocks and a Web Audio score." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;600;700&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --page: #101220; --tile: #201F2C; --heading: #F0C06A; --strong: #F2E7D5;
+    --body: #C9BCA9; --soft: #9C917F; --hair: #302E3E; --accent: #E2795C; --gold: #C9A227;
+    --cream: #FBF3E8; --pink: #F7C9D4;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--page); color: var(--body); }
+  body { font-family: Karla, system-ui, sans-serif; min-height: 100vh; }
+  a { color: var(--heading); }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 22px 16px 56px; }
+  .back { display: inline-block; font-size: 15px; color: var(--soft); text-decoration: none; padding: 6px 0; }
+  .back:hover { color: var(--heading); }
+  h1 { font-family: "Zen Maru Gothic", Georgia, serif; font-weight: 700; color: var(--heading);
+       font-size: clamp(26px, 4.4vw, 44px); margin: 14px 0 6px; letter-spacing: .01em; }
+  .dek { font-family: Georgia, serif; color: var(--body); font-size: clamp(15px, 2vw, 18px); margin: 0 0 22px; line-height: 1.5; }
+  .stage { position: relative; width: 100%; aspect-ratio: 16 / 9; background: var(--tile);
+           border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair);
+           box-shadow: 0 40px 120px rgba(0,0,0,.35); overflow: hidden; }
+  canvas#film { display: block; width: 100%; height: 100%; }
+  .overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+             gap: 14px; background: rgba(16,18,32,.46); transition: opacity .5s ease; padding: 16px; text-align: center; }
+  .overlay.gone { opacity: 0; pointer-events: none; }
+  .pill { font-family: Karla, sans-serif; font-weight: 700; font-size: clamp(15px, 2.2vw, 19px); letter-spacing: .02em;
+          border-radius: 999px; border: 1px solid rgba(240,192,106,.55); background: rgba(32,31,44,.82); color: var(--strong);
+          padding: 14px 28px; cursor: pointer; display: inline-flex; align-items: center; gap: 12px;
+          box-shadow: 0 30px 90px rgba(226,121,92,.18); transition: transform .15s ease, border-color .15s ease, background .15s ease; }
+  .pill:hover { transform: translateY(-1px); border-color: var(--heading); background: rgba(48,46,62,.9); }
+  .pill:focus-visible { outline: 2px solid var(--heading); outline-offset: 3px; }
+  .pill .tri { width: 0; height: 0; border-left: 12px solid var(--accent); border-top: 8px solid transparent; border-bottom: 8px solid transparent; }
+  .pill.small { font-size: 15px; padding: 9px 20px; }
+  .note { font-size: 14px; color: var(--body); line-height: 1.5; margin: 14px 0 0; padding-left: 12px; border-left: 2px solid var(--accent); }
+  .note[hidden] { display: none; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: center; margin-top: 16px; font-size: 15px; color: var(--soft); }
+  .row a { color: var(--soft); text-decoration: none; border-bottom: 1px solid var(--hair); }
+  .row a:hover { color: var(--heading); border-color: var(--heading); }
+  #replay[hidden] { display: none; }
+  .fine { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--hair); font-size: 13px; color: var(--soft); }
+  /* render mode: bare 1920x1080 canvas for the headless capture */
+  body.render { overflow: hidden; background: #101220; }
+  body.render .wrap > :not(.stage) { display: none; }
+  body.render .wrap { padding: 0; max-width: none; }
+  body.render .stage { position: fixed; left: 0; top: 0; width: 1920px; height: 1080px; border: 0; box-shadow: none; }
+  body.render .overlay { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="/ledger/clawd-growth-montage/">&larr; back to the post</a>
+  <h1>Clawd, one skill at a time</h1>
+  <p class="dek">Thirty seconds, one small terracotta creature, and a mountain. Every frame and every note here is code: no images, no samples, no recordings.</p>
+  <div class="stage" id="stage">
+    <canvas id="film" aria-label="Animated short: Clawd trains, fumbles, gets better, and reaches a summit at sunrise"></canvas>
+    <div class="overlay" id="overlay">
+      <button class="pill" id="play" type="button"><span class="tri" aria-hidden="true"></span>Play (with sound)</button>
+    </div>
+  </div>
+  <p class="note" id="rmnote" hidden>Your device asks for reduced motion. This short has quick movement and a few soft flashes, so it will only start when you press play. Camera shake and flashes are turned down.</p>
+  <div class="row">
+    <button class="pill small" id="replay" type="button" hidden>Replay</button>
+    <span>30 s &middot; sound on</span>
+    <a href="clawd-growth-montage.mp4">MP4 version</a>
+  </div>
+  <p class="fine">Fan-made. Not affiliated with Anthropic. Clawd is the Claude Code mascot; this homage borrows the shape of a training montage, not any footage, characters or music.</p>
+</div>
+
+<script>
+(() => {
+"use strict";
+// ============================================================================
+//  Shared timeline (seconds). Visuals and score both read from here.
+// ============================================================================
+const DUR = 30, W = 1920, H = 1080;
+const CUTS = [4, 9, 15, 20, 26];
+const S2_CATCH = [3.0, 3.25, 3.5, 3.75, 4.0];                       // scene 2 local
+const S3_CATCH = [1.5, 2.0, 2.5, 3.0, 3.5, 3.75, 4.0, 4.25, 4.5, 4.75, 5.0, 5.25]; // scene 3 local
+const S5_STRIKE = [0, 1.5, 3.0, 4.5];                              // scene 5 local
+
+const P = {
+  page: '#101220', tile: '#201F2C', gold: '#F0C06A', strong: '#F2E7D5', body: '#C9BCA9', soft: '#9C917F',
+  hair: '#302E3E', accent: '#E2795C', gold2: '#C9A227', cream: '#FBF3E8', pink: '#F7C9D4', pink2: '#F0A6B8',
+  clawd: '#D97757', clawdHi: '#E8997B', clawdLo: '#B55C41', clawdLeg: '#C4684B', eye: '#271B1E', jade: '#8CC9A0'
+};
+
+// ---------------------------------------------------------------------------
+//  math helpers
+// ---------------------------------------------------------------------------
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const inv = (a, b, x) => clamp((x - a) / (b - a));
+const TAU = Math.PI * 2;
+const E = {
+  lin: k => k,
+  in: k => k * k * k,
+  in2: k => k * k,
+  out: k => 1 - Math.pow(1 - k, 3),
+  out2: k => 1 - (1 - k) * (1 - k),
+  inOut: k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2,
+  sine: k => .5 - .5 * Math.cos(Math.PI * k),
+  back: k => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); },
+  hold: k => k < 1 ? 0 : 1
+};
+function track(keys, u) {
+  if (u <= keys[0][0]) return keys[0][1];
+  for (let i = 1; i < keys.length; i++) {
+    if (u <= keys[i][0]) {
+      const [t0, v0] = keys[i - 1], [t1, v1, e] = keys[i];
+      return v0 + (v1 - v0) * (E[e || 'inOut'])((u - t0) / (t1 - t0));
+    }
+  }
+  return keys[keys.length - 1][1];
+}
+// decaying oscillation after an impact: squash/stretch follow-through
+function ring(u, t0, amp, freq = 22, decay = 8) {
+  if (u < t0) return 0;
+  const d = u - t0;
+  return amp * Math.exp(-decay * d) * Math.cos(freq * d);
+}
+function hash(n) { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+function hexA(hex, a) {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`;
+}
+function mix(h1, h2, k) {
+  const a = parseInt(h1.slice(1), 16), b = parseInt(h2.slice(1), 16);
+  const r = Math.round(lerp(a >> 16 & 255, b >> 16 & 255, k)), g = Math.round(lerp(a >> 8 & 255, b >> 8 & 255, k)), bl = Math.round(lerp(a & 255, b & 255, k));
+  return `rgb(${r},${g},${bl})`;
+}
+
+// ---------------------------------------------------------------------------
+//  canvas + drawing primitives
+// ---------------------------------------------------------------------------
+const canvas = document.getElementById('film');
+const ctx = canvas.getContext('2d');
+const RENDER = /[?&]render\b/.test(location.search);
+let REDUCED = false;
+
+function rr(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+function ell(x, y, rx, ry, fill) { ctx.beginPath(); ctx.ellipse(x, y, Math.max(0.1, rx), Math.max(0.1, ry), 0, 0, TAU); ctx.fillStyle = fill; ctx.fill(); }
+function vgrad(y0, y1, stops) {
+  const g = ctx.createLinearGradient(0, y0, 0, y1);
+  stops.forEach(([k, c]) => g.addColorStop(k, c));
+  return g;
+}
+function glow(x, y, r, color, a) {
+  const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, hexA(color, a)); g.addColorStop(1, hexA(color, 0));
+  ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2);
+}
+function ridge(baseY, amp, seed, color, xoff = 0, detail = 1) {
+  ctx.beginPath(); ctx.moveTo(-20, H + 20);
+  for (let x = -20; x <= W + 20; x += 16) {
+    const X = x + xoff;
+    const y = baseY - amp * (0.55 * Math.sin(X * 0.0021 + seed) + 0.3 * Math.sin(X * 0.0053 + seed * 2.1) * detail + 0.15 * Math.sin(X * 0.013 + seed * 3.7) * detail);
+    ctx.lineTo(x, y);
+  }
+  ctx.lineTo(W + 20, H + 20); ctx.closePath(); ctx.fillStyle = color; ctx.fill();
+}
+function text(str, x, y, font, color, align = 'left', base = 'alphabetic') {
+  ctx.font = font; ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = base; ctx.fillText(str, x, y);
+}
+function petal(x, y, r, rot, color) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
+  ctx.beginPath(); ctx.ellipse(0, 0, r, r * 0.55, 0, 0, TAU); ctx.fillStyle = color; ctx.fill(); ctx.restore();
+}
+function petals(t, n, seed, alpha = 1, area = [0, 0, W, H]) {
+  for (let i = 0; i < n; i++) {
+    const s = seed + i * 13.1;
+    const speed = 40 + hash(s) * 50, sway = 30 + hash(s + 1) * 50;
+    const span = area[3] + 120;
+    const y = area[1] - 60 + ((hash(s + 2) * span + t * speed) % span);
+    const x = area[0] + hash(s + 3) * area[2] + Math.sin(t * (0.8 + hash(s + 4)) + s) * sway - t * 18;
+    const xx = ((x % W) + W) % W;
+    petal(xx, y, 5 + hash(s + 5) * 4, t * (1 + hash(s + 6) * 2) + s, hexA(i % 3 ? P.pink : P.pink2, 0.75 * alpha));
+  }
+}
+
+// ---------------------------------------------------------------------------
+//  Clawd: pixel-block mascot, drawn in cell units around its feet
+// ---------------------------------------------------------------------------
+function clawd(o) {
+  const s = o.s, lift = o.lift || 0, a = o.alpha == null ? 1 : o.alpha;
+  if (o.shadow !== false) {
+    const k = 1 / (1 + lift / 140);
+    ell(o.x, o.y + s * 0.2, s * 6.6 * k * (1 + (o.sq || 0)), s * 1.0 * k, `rgba(12,10,22,${0.32 * k * a})`);
+  }
+  ctx.save();
+  ctx.globalAlpha = a;
+  ctx.translate(o.x, o.y - lift);
+  if (o.rot) { const px = (o.pivot || 0) * s; ctx.translate(px, 0); ctx.rotate(o.rot); ctx.translate(-px, 0); }
+  const sq = o.sq || 0;
+  ctx.scale((1 + sq) * (o.flip ? -1 : 1), 1 - sq);
+  if (o.glowColor) { ctx.shadowColor = o.glowColor; ctx.shadowBlur = o.glowBlur || 30; }
+  const R = (x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x * s, y * s, w * s, h * s); };
+  // legs (four stubby blocks); legLift raises individual legs
+  const legX = [-4.5, -2.5, 1.5, 3.5];
+  const tuck = o.tuck || 0;
+  for (let i = 0; i < 4; i++) {
+    const l = (o.legs ? o.legs[i] : 0) + tuck;
+    const h = Math.max(0.6, 2 - l);
+    R(legX[i], -2, 1, h, P.clawdLeg);
+  }
+  // arms: columns on the sides, raise >0 stretches them upward, out >0 reaches sideways
+  const arm = (side, raise, out) => {
+    const x0 = side < 0 ? -5.5 - 1.5 - out : 5.5;
+    const w = 1.5 + out;
+    if (raise >= 0) R(x0, -6 - raise, w, 1.6 + raise, P.clawd);
+    else R(x0, -6 - raise, w, 1.6, P.clawd);
+  };
+  arm(-1, o.armL || 0, o.outL || 0);
+  arm(1, o.armR || 0, o.outR || 0);
+  // body
+  R(-5.5, -8, 11, 6, P.clawd);
+  ctx.shadowBlur = 0;
+  R(-5.5, -8, 11, 0.6, P.clawdHi);
+  R(-5.5, -2.6, 11, 0.6, P.clawdLo);
+  // eyes
+  const lx = o.lookX || 0, ly = o.lookY || 0, mode = o.eyes || 'open';
+  const open = o.blink == null ? 1 : o.blink;
+  for (const ex of [-2.5, 2.5]) {
+    const cx = ex + lx, cy = -6 + ly;
+    if (mode === 'happy') {
+      R(cx - 0.8, cy - 0.4, 1.6, 0.5, P.eye); R(cx - 0.8, cy - 0.4, 0.5, 1.1, P.eye); R(cx + 0.3, cy - 0.4, 0.5, 1.1, P.eye);
+    } else if (mode === 'dizzy') {
+      R(cx - 0.75, cy - 0.75, 0.5, 0.5, P.eye); R(cx + 0.25, cy - 0.75, 0.5, 0.5, P.eye);
+      R(cx - 0.25, cy - 0.25, 0.5, 0.5, P.eye);
+      R(cx - 0.75, cy + 0.25, 0.5, 0.5, P.eye); R(cx + 0.25, cy + 0.25, 0.5, 0.5, P.eye);
+    } else if (mode === 'focus') {
+      R(cx - 0.6, cy - 0.3, 1.2, 0.6, P.eye);
+    } else if (mode === 'wide') {
+      R(cx - 0.6, cy - 1.2, 1.2, 2.4, P.eye);
+    } else {
+      const h = 2 * Math.max(0.12, open);
+      R(cx - 0.5, cy - h / 2, 1, h, P.eye);
+    }
+  }
+  ctx.restore();
+  // return a few useful anchor points in screen space (ignores rotation)
+  return {
+    head: { x: o.x, y: o.y - lift - 8 * s * (1 - sq) },
+    handR: { x: o.x + 6.25 * s * (1 + sq), y: o.y - lift - (6 + (o.armR || 0)) * s * (1 - sq) },
+    handL: { x: o.x - 6.25 * s * (1 + sq), y: o.y - lift - (6 + (o.armL || 0)) * s * (1 - sq) }
+  };
+}
+function blinkAt(u, times) { let b = 1; for (const t of times) { const d = Math.abs(u - t); if (d < 0.09) b = Math.min(b, d / 0.09); } return b; }
+
+// ---------------------------------------------------------------------------
+//  set pieces
+// ---------------------------------------------------------------------------
+function teaHouse(x, y, s, lit) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  ctx.fillStyle = '#2A2433'; ctx.fillRect(-200, -26, 400, 26);
+  ctx.fillStyle = '#231F2C'; ctx.fillRect(-200, -30, 400, 6);
+  ctx.fillStyle = '#3A2F3B'; ctx.fillRect(-165, -196, 330, 170);
+  for (let i = 0; i < 3; i++) {
+    const wx = -148 + i * 100, wy = -178;
+    const g = ctx.createLinearGradient(0, wy, 0, wy + 128);
+    g.addColorStop(0, hexA('#F6CF8E', 0.55 + 0.4 * lit)); g.addColorStop(1, hexA('#E9A56C', 0.45 + 0.4 * lit));
+    ctx.fillStyle = g; ctx.fillRect(wx, wy, 88, 128);
+    ctx.fillStyle = '#3A2F3B';
+    for (let k = 1; k < 3; k++) ctx.fillRect(wx + k * 29 - 1.5, wy, 3, 128);
+    for (let k = 1; k < 4; k++) ctx.fillRect(wx, wy + k * 32 - 1.5, 88, 3);
+  }
+  ctx.fillStyle = '#2C2530';
+  for (const px of [-165, -60, 55, 158]) ctx.fillRect(px, -196, 9, 170);
+  // roof with upturned eaves
+  ctx.beginPath();
+  ctx.moveTo(-262, -214); ctx.quadraticCurveTo(-205, -200, -176, -226); ctx.lineTo(-112, -306); ctx.lineTo(112, -306);
+  ctx.lineTo(176, -226); ctx.quadraticCurveTo(205, -200, 262, -214); ctx.lineTo(246, -198);
+  ctx.quadraticCurveTo(0, -182, -246, -198); ctx.closePath();
+  ctx.fillStyle = '#231E2B'; ctx.fill();
+  ctx.fillStyle = '#1B1722'; ctx.fillRect(-128, -318, 256, 14);
+  ctx.fillStyle = hexA('#F0C06A', 0.18); ctx.fillRect(-112, -306, 224, 3);
+  ctx.restore();
+}
+function lantern(x, y, s, lit) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  ctx.fillStyle = '#3B3542';
+  ctx.fillRect(-34, -14, 68, 14); ctx.fillRect(-12, -92, 24, 80); ctx.fillRect(-30, -104, 60, 12);
+  ctx.fillStyle = hexA('#F6C27C', 0.5 + 0.5 * lit); ctx.fillRect(-20, -150, 40, 44);
+  ctx.fillStyle = '#3B3542'; ctx.fillRect(-4, -150, 8, 44);
+  ctx.beginPath(); ctx.moveTo(-48, -150); ctx.lineTo(48, -150); ctx.lineTo(18, -182); ctx.lineTo(-18, -182); ctx.closePath(); ctx.fill();
+  ctx.fillRect(-7, -196, 14, 16);
+  ctx.restore();
+  if (lit > 0) glow(x, y - 128 * s, 120 * s, '#F6C27C', 0.22 * lit);
+}
+function branch(x, y, s, t, flip) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(flip ? -s : s, s);
+  ctx.strokeStyle = '#2A2130'; ctx.lineCap = 'round';
+  const sway = Math.sin(t * 0.9) * 0.012;
+  ctx.rotate(sway);
+  ctx.lineWidth = 16; ctx.beginPath(); ctx.moveTo(-40, -30); ctx.quadraticCurveTo(140, 10, 330, 60); ctx.stroke();
+  ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(150, 22); ctx.quadraticCurveTo(210, 80, 250, 130); ctx.stroke();
+  ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(260, 48); ctx.quadraticCurveTo(320, 20, 380, 30); ctx.stroke();
+  const bl = [[120, 12], [180, 30], [250, 132], [238, 108], [330, 58], [372, 30], [300, 40], [205, 72], [90, 0]];
+  bl.forEach(([bx, by], i) => {
+    ctx.fillStyle = i % 2 ? P.pink : P.pink2;
+    for (let k = 0; k < 5; k++) { const a = k / 5 * TAU + i; ctx.beginPath(); ctx.arc(bx + Math.cos(a) * 7, by + Math.sin(a) * 7, 6, 0, TAU); ctx.fill(); }
+    ctx.fillStyle = '#E2795C'; ctx.beginPath(); ctx.arc(bx, by, 3, 0, TAU); ctx.fill();
+  });
+  ctx.restore();
+}
+function label(str, u, dur) {
+  const a = inv(0.25, 0.6, u) * (1 - inv(dur - 0.45, dur - 0.1, u));
+  if (a <= 0) return;
+  ctx.save(); ctx.globalAlpha = a;
+  ctx.font = '600 28px Karla'; const w = ctx.measureText(str).width;
+  const x = 64, y = 962, h = 54;
+  rr(x, y, w + 76, h, 27); ctx.fillStyle = 'rgba(16,18,32,0.62)'; ctx.fill();
+  ctx.strokeStyle = 'rgba(242,231,213,0.16)'; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.beginPath(); ctx.arc(x + 30, y + h / 2, 6, 0, TAU); ctx.fillStyle = P.accent; ctx.fill();
+  text(str, x + 50, y + h / 2 + 1, '600 28px Karla', P.strong, 'left', 'middle');
+  ctx.restore();
+}
+
+// ===========================================================================
+//  SCENE 1  (0-4 s)  humble start: tea-house garden at dawn, one chat bubble
+// ===========================================================================
+const S1_TEXT = 'Hello! How can I hlep';
+const S1_CHARS = (() => { const a = []; let t = 0.55; for (let i = 0; i < S1_TEXT.length; i++) { a.push(t); t += 0.07 + hash(i * 3.3) * 0.075 + (S1_TEXT[i] === ' ' ? 0.08 : 0); } return a; })();
+function scene1(u) {
+  const zoom = lerp(1, 1.07, E.sine(u / 4));
+  ctx.save(); ctx.translate(W / 2, H * 0.7); ctx.scale(zoom, zoom); ctx.translate(-W / 2, -H * 0.7);
+  ctx.fillStyle = vgrad(0, 860, [[0, '#2B2742'], [0.45, '#6F5170'], [0.75, '#D0958A'], [1, '#F4D2B0']]);
+  ctx.fillRect(-100, -100, W + 200, H + 200);
+  glow(1180, 800, 520, '#FBE3B8', 0.55);
+  glow(1180, 800, 160, '#FFF1D6', 0.5);
+  ridge(700, 90, 1.3, 'rgba(111,84,118,0.55)', u * 4);
+  ridge(760, 60, 4.1, 'rgba(84,66,98,0.8)', u * 8);
+  ctx.fillStyle = vgrad(780, 830, [[0, 'rgba(244,210,176,0)'], [1, 'rgba(244,210,176,0.35)']]); ctx.fillRect(-100, 760, W + 200, 80);
+  ctx.fillStyle = vgrad(830, H, [[0, '#2E2838'], [1, '#17151F']]); ctx.fillRect(-100, 830, W + 200, H);
+  // stepping stones
+  [[560, 900, 70], [720, 960, 60], [1010, 1010, 80], [300, 1000, 90]].forEach(([x, y, r]) => ell(x, y, r, r * 0.28, '#3A3445'));
+  teaHouse(1660, 842, 1.1, 1);
+  lantern(380, 842, 1.1, 1);
+  branch(-30, 40, 1.2, u, false);
+  petals(u + 3, 7, 5, 0.9, [0, 0, W, 900]);
+
+  // --- Clawd types, gets confused, falls over ---
+  const s = 10, cx = 800, gy = 842;
+  const typing = u > 0.5 && u < 2.35;
+  let idx = 0; for (let i = 0; i < S1_CHARS.length; i++) if (u >= S1_CHARS[i]) idx = i + 1;
+  let tapL = 0, tapR = 0;
+  if (typing) {
+    const last = S1_CHARS[Math.max(0, idx - 1)], d = u - last;
+    const tap = Math.max(0, 1 - d / 0.08) * (u >= S1_CHARS[0] ? 1 : 0);
+    if (idx % 2) tapR = tap; else tapL = tap;
+  }
+  const fallK = inv(2.95, 3.32, u);
+  const rot = -1.52 * E.in2(fallK) + ring(u, 3.32, 0.12, 26, 9) * (fallK >= 1 ? 1 : 0);
+  const lean = track([[2.55, 0], [2.8, -0.12, 'out'], [2.95, -0.05, 'inOut']], u);
+  const sq = ring(u, 0.3, 0.04, 9, 3) + (u > 3.32 ? ring(u, 3.32, 0.22, 30, 10) : 0) + (u < 2.95 ? -Math.max(tapL, tapR) * 0.03 : 0)
+           + track([[2.55, 0], [2.75, 0.08, 'out'], [2.95, -0.06]], u) * (u < 3.32 ? 1 : 0);
+  const kick = u > 3.35 ? [0, 1, 2, 3].map(i => Math.max(0, Math.sin(u * 26 + i * 1.7)) * 0.9 * Math.exp(-(u - 3.35) * 1.5)) : null;
+  const confused = u > 2.45;
+  clawd({
+    x: cx, y: gy, s, sq, rot: u < 2.95 ? lean : rot + lean * (1 - fallK), pivot: -5.6,
+    armL: 0.4 + tapL * 1.4 + (confused ? 0.6 : 0), armR: 0.4 + tapR * 1.4 + (confused ? 1.8 * E.out(inv(2.45, 2.7, u)) : 0),
+    lookX: confused ? (u > 3.32 ? 0 : 0.25) : 0.35, lookY: confused ? -0.35 : -0.3,
+    eyes: u > 3.32 ? 'dizzy' : (u > 2.9 ? 'wide' : 'open'), blink: blinkAt(u, [1.5, 2.6]),
+    legs: kick
+  });
+  // dust puffs on impact
+  if (u > 3.3) {
+    const d = u - 3.3;
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI + Math.PI;
+      const r = 20 + d * 160;
+      ell(cx - 70 + Math.cos(a) * r * 1.3, gy - 10 + Math.sin(a) * r * 0.25, 12 + d * 20, 8 + d * 12, `rgba(244,210,176,${0.45 * Math.max(0, 1 - d / 0.6)})`);
+    }
+  }
+  // question mark
+  if (u > 2.45) {
+    const k = E.back(inv(2.45, 2.7, u)), fall = inv(3.1, 3.7, u);
+    ctx.save(); ctx.translate(cx + 20 - fall * 60, gy - 140 - 36 * k + fall * fall * 120); ctx.rotate(0.15 * Math.sin(u * 9) - fall * 2);
+    ctx.globalAlpha = 1 - fall;
+    text('?', 0, 0, `700 ${Math.round(64 * Math.max(0.01, k))}px "Zen Maru Gothic"`, P.gold, 'center', 'middle');
+    ctx.restore();
+  }
+  // chat bubble
+  const pop = E.back(inv(0.15, 0.5, u));
+  const droop = u > 3.32 ? ring(u, 3.32, 0.05, 14, 4) + 0.05 * inv(3.32, 3.6, u) : 0;
+  const bx = 850, by = 548, bw = 520, bh = 132;
+  ctx.save(); ctx.translate(bx + 40, by + bh); ctx.rotate(droop); ctx.scale(pop, pop); ctx.translate(-(bx + 40), -(by + bh));
+  ctx.shadowColor = 'rgba(40,20,30,0.25)'; ctx.shadowBlur = 40; ctx.shadowOffsetY = 12;
+  rr(bx, by, bw, bh, 30); ctx.fillStyle = hexA(P.cream, 0.96); ctx.fill();
+  ctx.shadowColor = 'transparent';
+  ctx.beginPath(); ctx.moveTo(bx + 40, by + bh - 2); ctx.lineTo(bx + 8, by + bh + 38); ctx.lineTo(bx + 86, by + bh - 2); ctx.closePath(); ctx.fill();
+  text('Claude', bx + 32, by + 40, '700 22px Karla', P.accent);
+  const shown = S1_TEXT.slice(0, idx);
+  ctx.font = '600 38px Karla';
+  const good = shown.slice(0, Math.min(shown.length, 17)), bad = shown.slice(17);
+  text(good, bx + 32, by + 94, '600 38px Karla', '#2B2230');
+  const gw = ctx.measureText(good).width;
+  if (bad) {
+    const glitch = u > 2.4 ? Math.sin(u * 40) * 2 : 0;
+    text(bad, bx + 32 + gw, by + 94 + glitch, '600 38px Karla', P.accent);
+    if (u > 2.35) { // squiggle
+      const bw2 = ctx.measureText(bad).width; ctx.strokeStyle = P.accent; ctx.lineWidth = 2.5; ctx.beginPath();
+      for (let x = 0; x <= bw2; x += 4) ctx.lineTo(bx + 32 + gw + x, by + 106 + Math.sin(x * 0.6) * 3); ctx.stroke();
+    }
+  }
+  const cw = ctx.measureText(shown).width;
+  if (Math.floor(u * 2.6) % 2 === 0 || typing) { ctx.fillStyle = '#2B2230'; ctx.fillRect(bx + 36 + cw, by + 62, 4, 40); }
+  ctx.restore();
+  ctx.restore();
+  label('2023 · a chat window', u, 4);
+}
+
+// ===========================================================================
+//  SCENE 2  (4-9 s)  searching the web: pages flutter down like leaves
+// ===========================================================================
+const S2 = (() => {
+  const s = 10, gy = 880;
+  const catchX = [860, 1045, 905, 1070, 975];
+  // chopstick tip relative to Clawd feet when right arm raised 4 cells
+  const tipOff = { x: 6.25 * s + 34, y: -(10) * s - 58 };
+  const pages = [];
+  // three misses
+  pages.push({ kind: 'miss', t0: -0.1, dur: 1.35, x: 690, amp: 50, f: 0.6, ph: 0.4, y0: -140, y1: gy - 30, hue: 0 });
+  pages.push({ kind: 'miss', t0: 0.55, dur: 1.4, x: 1270, amp: 40, f: 0.7, ph: 2.0, y0: -140, y1: gy - 30, hue: 1 });
+  pages.push({ kind: 'head', t0: 0.95, dur: 1.25, x: 1175, amp: 36, f: 0.5, ph: 1.0, y0: -140, y1: gy - 8 * s - 52, hue: 2 });
+  // five catches
+  S2_CATCH.forEach((c, k) => {
+    const dur = 1.3 - k * 0.08, f = 0.55 + k * 0.05, amp = 34;
+    const ph = Math.PI / 2 - TAU * f * dur;
+    pages.push({ kind: 'catch', k, tc: c, t0: c - dur, dur, x: catchX[k] + tipOff.x - amp, amp, f, ph, y0: -140, y1: gy + tipOff.y - 50, hue: k + 3 });
+  });
+  return { s, gy, catchX, tipOff, pages };
+})();
+const HUES = [P.accent, P.gold2, '#8E7BB0', P.pink2, P.jade, P.accent, P.gold2, '#8E7BB0'];
+function flutter(p, u) {
+  const k = (u - p.t0) / p.dur;
+  const tt = u - p.t0;
+  return { x: p.x + p.amp * Math.sin(TAU * p.f * tt + p.ph), y: lerp(p.y0, p.y1, k), rot: 0.38 * Math.cos(TAU * p.f * tt + p.ph), k };
+}
+function webPage(x, y, rot, sc, hue, i, alpha = 1) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(sc, sc); ctx.globalAlpha = alpha;
+  ctx.shadowColor = 'rgba(30,15,30,0.28)'; ctx.shadowBlur = 18; ctx.shadowOffsetY = 8;
+  rr(-46, -60, 92, 120, 8); ctx.fillStyle = P.cream; ctx.fill();
+  ctx.shadowColor = 'transparent';
+  ctx.fillStyle = hue; rr(-46, -60, 92, 20, 8); ctx.fill(); ctx.fillRect(-46, -48, 92, 8);
+  ctx.fillStyle = hexA(P.cream, 0.9); ctx.beginPath(); ctx.arc(-34, -50, 3.5, 0, TAU); ctx.fill();
+  ctx.fillStyle = '#CFC2B0';
+  for (let l = 0; l < 6; l++) { const w = 60 + hash(i * 7 + l) * 16 - (l === 5 ? 30 : 0); ctx.fillRect(-36, -28 + l * 13, w, 5); }
+  ctx.fillStyle = hexA(hue, 0.7); ctx.fillRect(-36, -28, 34, 5);
+  ctx.restore();
+}
+function chopsticks(x, y, open, alpha) {
+  ctx.save(); ctx.globalAlpha = alpha; ctx.translate(x, y); ctx.lineCap = 'round';
+  const base = -1.05;
+  [[base - open, '#C8925A'], [base + open * 0.4, '#B07C4A']].forEach(([a, c]) => {
+    ctx.strokeStyle = c; ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.moveTo(-8, 10); ctx.lineTo(-8 + Math.cos(a) * 118, 10 + Math.sin(a) * 118); ctx.stroke();
+  });
+  ctx.restore();
+}
+function scene2(u) {
+  const { s, gy, catchX, tipOff, pages } = S2;
+  ctx.fillStyle = vgrad(0, gy, [[0, '#3E3858'], [0.55, '#9E6F80'], [0.85, '#E0A88F'], [1, '#F2CFAE']]);
+  ctx.fillRect(0, 0, W, H);
+  glow(1450, 820, 600, '#FBE3B8', 0.45);
+  ridge(760, 80, 2.2, 'rgba(110,82,112,0.5)', 300 + u * 6);
+  ridge(820, 50, 5.4, 'rgba(80,62,92,0.75)', 100 + u * 10);
+  ctx.fillStyle = vgrad(gy - 20, H, [[0, '#2F2839'], [1, '#18161F']]); ctx.fillRect(0, gy - 20, W, H);
+  ctx.fillStyle = 'rgba(242,231,213,0.05)';
+  for (let i = 0; i < 40; i++) ctx.fillRect(hash(i) * W, gy + 10 + hash(i + 9) * 170, 26 + hash(i + 3) * 40, 3);
+  // the old tree: trunk + canopy along the top
+  ctx.fillStyle = '#231E2B';
+  ctx.beginPath(); ctx.moveTo(60, gy); ctx.bezierCurveTo(150, 700, 60, 400, 180, 150); ctx.lineTo(260, 170); ctx.bezierCurveTo(170, 420, 250, 700, 200, gy); ctx.closePath(); ctx.fill();
+  for (let i = 0; i < 26; i++) {
+    const x = hash(i * 2.1) * 1500 - 60 + Math.sin(u * 1.1 + i) * 4, y = -40 + hash(i * 5.7) * 150, r = 70 + hash(i * 1.3) * 80;
+    ell(x, y, r, r * 0.7, i % 4 === 0 ? '#2C2536' : '#241F2E');
+  }
+  for (let i = 0; i < 16; i++) {
+    const x = hash(i * 9.1) * 1400, y = 40 + hash(i * 4.4) * 120;
+    ell(x, y, 7, 7, hexA(i % 2 ? P.pink : P.pink2, 0.8));
+  }
+  // bench for sources
+  ctx.fillStyle = '#3A2F37'; ctx.fillRect(1330, 836, 440, 16); ctx.fillStyle = '#2A232B';
+  ctx.fillRect(1350, 852, 14, 30); ctx.fillRect(1736, 852, 14, 30);
+  // ambient far pages (small, faint)
+  for (let i = 0; i < 6; i++) {
+    const sp = 60 + hash(i + 50) * 40, x = 200 + hash(i + 40) * 1500 + Math.sin(u * 1.5 + i * 2) * 40, y = ((hash(i + 60) * 900 + (u + 4) * sp) % 900) - 60;
+    webPage(x, y, Math.sin(u * 2 + i), 0.38, HUES[i % 5], 100 + i, 0.35);
+  }
+
+  // ---- Clawd choreography ----
+  // x path: lunge left (early), dive right (trip), stand, page on head, shake, then catches
+  const xKeys = [[0, 960], [0.5, 960], [0.92, 745, 'out'], [1.2, 760], [1.35, 1060, 'inOut'], [1.62, 1160, 'out'], [2.62, 1160], [2.95, catchX[0], 'inOut']];
+  for (let k = 1; k < S2_CATCH.length; k++) xKeys.push([S2_CATCH[k - 1] + 0.06, catchX[k - 1]], [S2_CATCH[k] - 0.03, catchX[k], 'inOut']);
+  xKeys.push([4.3, catchX[4]], [4.8, 1020, 'inOut']);
+  const x = track(xKeys, u);
+  const jump1 = u > 0.5 && u < 0.92 ? Math.sin(Math.PI * (u - 0.5) / 0.42) * 90 : 0;
+  const dive = u > 1.35 && u < 1.62 ? Math.sin(Math.PI * (u - 1.35) / 0.27) * 40 : 0;
+  const hop = S2_CATCH.reduce((acc, c, k) => acc + (k > 0 && u > c - 0.2 && u < c - 0.03 ? Math.sin(Math.PI * (u - c + 0.2) / 0.17) * 24 : 0), 0);
+  const faceplant = track([[1.55, 0], [1.66, 1.35, 'in2'], [1.98, 1.35], [2.15, 0, 'out']], u);
+  let sq = 0;
+  sq += track([[0.38, 0], [0.5, 0.14, 'out'], [0.56, -0.12], [0.8, -0.02], [0.92, 0]], u);
+  sq += ring(u, 0.92, 0.2, 26, 9);
+  sq += track([[1.22, 0], [1.34, 0.12, 'out'], [1.4, -0.14], [1.6, 0]], u);
+  sq += ring(u, 1.66, 0.12, 30, 12);
+  sq += ring(u, 2.2, 0.16, 24, 9);
+  S2_CATCH.forEach((c, k) => { if (k > 0) sq += track([[c - 0.24, 0], [c - 0.2, 0.08, 'out'], [c - 0.16, -0.07], [c - 0.03, 0]], u) + ring(u, c - 0.03, 0.08, 30, 12); });
+  sq += ring(u, 2.95, 0.07, 20, 8) + ring(u, 4.8, 0.06, 20, 8) + track([[4.3, 0], [4.4, 0.1, 'out'], [4.5, -0.1], [4.7, 0]], u);
+  const shake = u > 2.3 && u < 2.62 ? Math.sin((u - 2.3) * 60) * 0.16 * (1 - (u - 2.3) / 0.32) : 0;
+  const chop = u > 2.62;
+  const chopA = E.out(inv(2.62, 2.85, u));
+  const armR = chop ? lerp(0.5, 4, E.out(inv(2.62, 2.9, u))) : (u < 1.6 ? track([[0.4, 0.3], [0.6, 3.5, 'out'], [1.0, 3], [1.2, 0.6], [1.4, 3.2, 'out'], [1.62, 3.5]], u) : 0.5);
+  const armL = chop ? 1.2 + 0.3 * Math.sin(u * 8) : (u < 1.6 ? track([[0.4, 0.3], [0.6, 3.5, 'out'], [1.0, 3], [1.2, 0.6], [1.4, 3.2, 'out'], [1.62, 3.5]], u) : (u < 2.3 ? 0.5 : 2.8 * Math.max(0, Math.sin((u - 2.3) * 22))));
+  let eyes = 'open', lookX = 0, lookY = -0.3;
+  if (u < 0.5) { lookY = -0.45; lookX = -0.2; }
+  else if (u < 1.25) { eyes = u > 0.95 ? 'wide' : 'open'; lookX = u > 0.95 ? -0.3 : -0.1; lookY = u > 0.95 ? 0.1 : -0.5; }
+  else if (u < 2.15) { eyes = u > 1.66 ? 'dizzy' : 'open'; lookX = 0.35; }
+  else if (u < 2.62) { eyes = 'wide'; }
+  else if (u < 4.35) { eyes = 'focus'; lookX = 0.3; lookY = -0.5; }
+  else { eyes = 'happy'; }
+  const pos = { x, y: gy, s, lift: jump1 + dive + hop, sq, rot: faceplant + shake, pivot: faceplant ? 5.6 : 0, armL, armR, eyes, lookX, lookY, blink: blinkAt(u, [0.3, 2.7]), tuck: jump1 > 20 || hop > 10 ? 0.5 : 0 };
+  const tip = { x: x + tipOff.x, y: gy - pos.lift + tipOff.y };
+
+  // cards on the bench (behind Clawd)
+  const slot = k => ({ x: 1390 + k * 82, y: 770 });
+  pages.forEach(p => {
+    if (p.kind !== 'catch') return;
+    const tFly = p.tc + 0.12, tLand = tFly + 0.34;
+    if (u < tLand) return;
+    const sl = slot(p.k), land = ring(u, tLand, 0.08, 30, 10);
+    webPage(sl.x, sl.y, -0.04 + hash(p.k) * 0.08 + land, 0.82, HUES[p.hue % 8], p.hue);
+    const bA = E.back(inv(tLand, tLand + 0.25, u));
+    if (bA > 0) {
+      ctx.save(); ctx.translate(sl.x + 24, sl.y - 56); ctx.scale(bA, bA);
+      ctx.beginPath(); ctx.arc(0, 0, 19, 0, TAU); ctx.fillStyle = P.page; ctx.fill(); ctx.strokeStyle = P.gold; ctx.lineWidth = 2; ctx.stroke();
+      text(`${p.k + 1}`, 0, 1, '700 20px Karla', P.gold, 'center', 'middle');
+      ctx.restore();
+    }
+  });
+  if (u > 4.45) {
+    const a = inv(4.45, 4.7, u);
+    ctx.save(); ctx.globalAlpha = a;
+    text('5 sources, cited', 1554, 890 + 36, '600 26px Karla', P.strong, 'center');
+    ctx.restore();
+  }
+
+  // falling pages
+  pages.forEach((p, i) => {
+    if (u < p.t0) return;
+    if (p.kind === 'miss') {
+      const f = flutter(p, Math.min(u, p.t0 + p.dur));
+      const a = 1 - inv(p.t0 + p.dur + 0.3, p.t0 + p.dur + 0.8, u);
+      if (a > 0) webPage(f.x, f.y, u >= p.t0 + p.dur ? 1.35 : f.rot, u >= p.t0 + p.dur ? lerp(1, 0.9, 1) : 1, HUES[p.hue], i, a);
+    }
+  });
+  const c = clawd(pos);
+  if (chopA > 0) {
+    let open = 0.22;
+    S2_CATCH.forEach(t => { const d = u - t; if (d > -0.12 && d < 0.14) open = Math.min(open, Math.abs(d) < 0.02 ? 0.02 : lerp(0.02, 0.22, Math.min(1, Math.abs(d) / 0.12))); });
+    chopsticks(c.handR.x, c.handR.y, open, chopA);
+  }
+  pages.forEach((p, i) => {
+    if (u < p.t0) return;
+    if (p.kind === 'head') {
+      const land = p.t0 + p.dur;
+      if (u < land) { const f = flutter(p, u); webPage(f.x, f.y, f.rot, 1, HUES[p.hue], i); }
+      else if (u < 2.45) { webPage(x + shake * 60, c.head.y - 30 + 38, (u < 2.3 ? 0.08 : shake * 1.2), 1, HUES[p.hue], i); }
+      else { const d = u - 2.45; webPage(x + d * 900, c.head.y + 8 - d * 700 + d * d * 1500, d * 9, 1, HUES[p.hue], i, 1 - inv(0.3, 0.5, d)); }
+    }
+    if (p.kind === 'catch') {
+      const tFly = p.tc + 0.12, tLand = tFly + 0.34;
+      if (u < p.tc) { const f = flutter(p, u); webPage(f.x, f.y, f.rot, 1, HUES[p.hue % 8], i); }
+      else if (u < tFly) { webPage(tip.x, tip.y - 50, 0, 1, HUES[p.hue % 8], i); }
+      else if (u < tLand) {
+        const k = E.inOut((u - tFly) / 0.34), sl = slot(p.k);
+        const fx = lerp(tip.x, sl.x, k), fy = lerp(tip.y - 50, sl.y, k) - Math.sin(Math.PI * k) * 160;
+        webPage(fx, fy, k * TAU * 0.5 * (p.k % 2 ? -1 : 1) + (hash(p.k) * 0.08 - 0.04) * k, lerp(1, 0.82, k), HUES[p.hue % 8], i);
+      }
+      // snap spark
+      const d = u - p.tc;
+      if (d >= 0 && d < 0.25) {
+        const r = 20 + d * 260; ctx.strokeStyle = hexA(P.gold, 0.8 * (1 - d / 0.25)); ctx.lineWidth = 3;
+        for (let q = 0; q < 8; q++) { const a = q / 8 * TAU; ctx.beginPath(); ctx.moveTo(tip.x + Math.cos(a) * r * 0.5, tip.y - 20 + Math.sin(a) * r * 0.5); ctx.lineTo(tip.x + Math.cos(a) * r, tip.y - 20 + Math.sin(a) * r); ctx.stroke(); }
+      }
+    }
+  });
+  // "whiff" lines on the misses
+  [[0.75, 745, -1], [1.5, 1120, 1]].forEach(([t, wx, dir]) => {
+    const d = u - t; if (d < 0 || d > 0.3) return;
+    ctx.strokeStyle = hexA(P.cream, 0.6 * (1 - d / 0.3)); ctx.lineWidth = 4; ctx.lineCap = 'round';
+    for (let q = 0; q < 3; q++) { ctx.beginPath(); ctx.moveTo(wx - dir * (60 + q * 20 + d * 200), gy - 60 - q * 30); ctx.lineTo(wx - dir * (120 + q * 20 + d * 200), gy - 60 - q * 30); ctx.stroke(); }
+  });
+  label('2025 · searching the web', u, 5);
+}
+
+// ===========================================================================
+//  SCENE 3  (9-15 s)  writing code: blocks rain, tests flip green
+// ===========================================================================
+const S3 = (() => {
+  const s = 10, gy = 900;
+  const xs = [905, 800, 1060, 850, 1110, 960, 820, 1080, 900, 1030, 840, 960];
+  const catchY = gy - 12 * s - 28;
+  const blocks = S3_CATCH.map((c, k) => {
+    const dur = lerp(1.25, 0.5, k / 11);
+    return { k, tc: c, t0: c - dur, dur, x: xs[k] };
+  });
+  return { s, gy, xs, catchY, blocks };
+})();
+const TERM = [
+  [0.25, '$ claude', P.strong],
+  [0.75, '> make the parser pass its tests', P.gold],
+  [1.7, '● Reading src/parser.ts', P.soft],
+  [2.6, '● Writing 12 functions', P.soft],
+  [3.9, '● Running the test suite', P.soft],
+  [5.45, '✓ 12 passed, 0 failed', P.jade]
+];
+function codeBlock(x, y, rot, k, sc = 1, alpha = 1) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(sc, sc); ctx.globalAlpha = alpha;
+  rr(-88, -23, 176, 46, 10); ctx.fillStyle = '#2B2939'; ctx.fill();
+  ctx.strokeStyle = hexA(P.gold, 0.35); ctx.lineWidth = 2; ctx.stroke();
+  const cols = [P.accent, P.gold, P.cream, P.pink2, P.jade];
+  let cx = -74;
+  for (let i = 0; i < 4; i++) {
+    const w = 14 + hash(k * 11 + i) * 34; ctx.fillStyle = hexA(cols[(k + i) % 5], 0.9);
+    ctx.fillRect(cx, -9 + (i > 1 ? 10 : 0) - (i > 1 ? 0 : 0), w, 7); cx += w + 8; if (i === 1) cx = -60;
+  }
+  ctx.restore();
+}
+function scene3(u) {
+  const { s, gy, xs, catchY, blocks } = S3;
+  // hall at dusk
+  ctx.fillStyle = vgrad(0, gy, [[0, '#1A1828'], [1, '#262334']]); ctx.fillRect(0, 0, W, H);
+  // moon-gate window
+  ctx.save(); ctx.beginPath(); ctx.arc(1010, 420, 280, 0, TAU); ctx.clip();
+  ctx.fillStyle = vgrad(140, 700, [[0, '#3D3355'], [0.5, '#A75F68'], [0.85, '#E2795C'], [1, '#F0C06A']]); ctx.fillRect(600, 100, 720, 640);
+  glow(1010, 610, 260, '#FBE3B8', 0.5);
+  ctx.beginPath(); ctx.arc(1010, 600, 70, 0, TAU); ctx.fillStyle = hexA('#FBE3B8', 0.9); ctx.fill();
+  ridge(640, 40, 3.3, 'rgba(60,44,72,0.9)', u * 10);
+  ctx.restore();
+  ctx.strokeStyle = '#3A3346'; ctx.lineWidth = 18; ctx.beginPath(); ctx.arc(1010, 420, 288, 0, TAU); ctx.stroke();
+  // posts & beams
+  ctx.fillStyle = '#211E2C';
+  [70, 560, 1360, 1850].forEach(px => ctx.fillRect(px - 22, 0, 44, gy));
+  ctx.fillRect(0, 60, W, 30);
+  // floor
+  ctx.fillStyle = vgrad(gy, H, [[0, '#2E2A38'], [1, '#1A1822']]); ctx.fillRect(0, gy, W, H - gy);
+  ctx.strokeStyle = 'rgba(242,231,213,0.06)'; ctx.lineWidth = 2;
+  for (let i = -8; i <= 8; i++) { ctx.beginPath(); ctx.moveTo(960 + i * 60, gy); ctx.lineTo(960 + i * 260, H); ctx.stroke(); }
+  ctx.fillStyle = 'rgba(242,231,213,0.08)'; ctx.fillRect(0, gy, W, 2);
+
+  // terminal
+  const tp = E.back(inv(0.05, 0.45, u));
+  if (tp > 0) {
+    ctx.save(); ctx.translate(420, 470); ctx.scale(tp, tp); ctx.translate(-420, -470);
+    ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 70; ctx.shadowOffsetY = 20;
+    rr(120, 250, 600, 420, 16); ctx.fillStyle = '#15141E'; ctx.fill(); ctx.shadowColor = 'transparent';
+    ctx.strokeStyle = P.hair; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = P.tile; rr(120, 250, 600, 46, 16); ctx.fill(); ctx.fillRect(120, 280, 600, 16);
+    [P.accent, P.gold2, P.soft].forEach((c, i) => ell(150 + i * 26, 273, 7, 7, c));
+    text('claude — ~/dojo', 420, 280, '600 20px Karla', P.soft, 'center');
+    let ly = 350;
+    TERM.forEach(([t0, str, col]) => {
+      if (u < t0) return;
+      const n = Math.min(str.length, Math.floor((u - t0) / 0.022) + 1);
+      const shownStr = str.startsWith('●') || str.startsWith('✓') ? str : str.slice(0, n);
+      text(shownStr, 148, ly, '24px Consolas, "Courier New", monospace', col);
+      ly += 50;
+    });
+    if (Math.floor(u * 2.4) % 2 === 0) { ctx.fillStyle = P.strong; ctx.fillRect(148, ly - 22, 13, 26); }
+    ctx.restore();
+  }
+
+  // program column (ghost slots) + tests
+  const slot = k => ({ x: 1520, y: 850 - k * 50 });
+  const lightsA = inv(0.4, 0.8, u);
+  ctx.save(); ctx.globalAlpha = lightsA;
+  for (let k = 0; k < 12; k++) { const sl = slot(k); ctx.setLineDash([6, 6]); ctx.strokeStyle = hexA(P.strong, 0.12); ctx.lineWidth = 2; rr(sl.x - 88, sl.y - 23, 176, 46, 10); ctx.stroke(); }
+  ctx.setLineDash([]);
+  text('tests', 1700, 262, '600 22px Karla', P.soft, 'center');
+  ctx.restore();
+  let passed = 0;
+  blocks.forEach(b => {
+    const tLand = b.tc + 0.06 + 0.28, sl = slot(b.k);
+    if (u >= tLand) { codeBlock(sl.x, sl.y + ring(u, tLand, 6, 30, 12), 0, b.k); }
+    const lit = u >= tLand + 0.04;
+    if (lit) passed++;
+    const pop = lit ? 1 + ring(u, tLand + 0.04, 0.5, 20, 9) : 1;
+    ctx.save(); ctx.globalAlpha = lightsA;
+    ell(1700, sl.y, 13 * pop, 13 * pop, lit ? P.jade : '#3A3848');
+    if (lit) glow(1700, sl.y, 44, P.jade, 0.35 * Math.max(0.3, 1 - (u - tLand) * 2));
+    ctx.restore();
+  });
+  if (u > 0.5) text(`${passed}/12`, 1700, 905, '700 26px Karla', passed === 12 ? P.jade : P.soft, 'center');
+
+  // Clawd path
+  const miss = 0.75, fumble = 1.25;
+  const xKeys = [[0, 960], [0.45, 960], [0.62, 945, 'out'], [0.95, 945], [1.2, xs[0], 'inOut']];
+  for (let k = 1; k < 12; k++) {
+    const prev = S3_CATCH[k - 1], cur = S3_CATCH[k], gap = cur - prev;
+    xKeys.push([prev + gap * 0.18, xs[k - 1]], [cur - gap * 0.12, xs[k], 'inOut']);
+  }
+  xKeys.push([5.6, xs[11]], [5.95, 960, 'inOut']);
+  const X = uu => track(xKeys, uu);
+  const x = X(u);
+  const speed = Math.abs(X(u) - X(u - 0.03)) / 0.03;
+  // arms: low until the fumble, then up and catching
+  const armsUp = E.out(inv(0.95, 1.2, u));
+  let armL = lerp(0.3, 3.8, armsUp), armR = armL;
+  S3_CATCH.forEach(c => { const d = u - c; if (d > -0.05 && d < 0.18) { const k = Math.sin(Math.PI * clamp((d + 0.05) / 0.23)); armL -= 0.8 * k; armR -= 0.8 * k; } });
+  if (u > 5.4) { const k = E.out(inv(5.4, 5.7, u)); armL = lerp(armL, 4.5, k); armR = lerp(armR, 4.5, k); }
+  let sq = ring(u, miss, 0.25, 28, 9) + ring(u, fumble, 0.1, 30, 10);
+  S3_CATCH.forEach(c => { sq += ring(u, c, 0.07, 32, 14); });
+  const lean = clamp((X(u + 0.02) - X(u - 0.02)) / 0.04 / 5000, -0.14, 0.14);
+  const eyes = u > miss && u < 1.05 ? 'dizzy' : (u > 5.45 ? 'happy' : (u > 1.6 ? 'focus' : 'open'));
+  const lookY = u < miss ? -0.5 + 0.2 * inv(0.4, 0.7, u) : -0.5;
+  const walk = speed > 150 ? [0, 1, 2, 3].map(i => Math.max(0, Math.sin(u * 40 + i * Math.PI / 2)) * 0.8) : null;
+  // after-images when fast
+  if (speed > 900) {
+    for (let g = 2; g >= 1; g--) clawd({ x: X(u - g * 0.03), y: gy, s, armL, armR, eyes: 'focus', alpha: 0.18 / g, shadow: false, rot: lean });
+  }
+  // speed lines
+  if (speed > 700) {
+    ctx.strokeStyle = hexA(P.cream, clamp((speed - 700) / 1500) * 0.35); ctx.lineWidth = 3;
+    const dir = Math.sign(X(u) - X(u - 0.03));
+    for (let q = 0; q < 4; q++) { const yy = gy - 30 - q * 22; ctx.beginPath(); ctx.moveTo(x - dir * (80 + q * 10), yy); ctx.lineTo(x - dir * (150 + q * 25), yy); ctx.stroke(); }
+  }
+  const c = clawd({ x, y: gy, s, sq, rot: lean, armL, armR, eyes, lookX: clamp((X(u + 0.1) - x) / 300, -0.4, 0.4), lookY, blink: blinkAt(u, [0.3]), legs: walk });
+
+  // the missed block: bonks off the head
+  {
+    const t0 = miss - 0.95, hy = gy - 8 * s - 23;
+    if (u > t0) {
+      if (u < miss) { const k = (u - t0) / 0.95; codeBlock(945, lerp(-80, hy, Math.pow(k, 1.6)), 0.1, 99); }
+      else { const d = u - miss; codeBlock(945 - d * 520, hy - d * 620 + d * d * 1900, -d * 10, 99, 1, 1 - inv(0.5, 0.7, d)); }
+      if (u > miss && u < miss + 0.45) { // stars
+        for (let q = 0; q < 3; q++) { const a = u * 9 + q * TAU / 3; text('✦', x + Math.cos(a) * 60, gy - 8 * s - 30 + Math.sin(a) * 14, '700 26px Karla', P.gold, 'center', 'middle'); }
+      }
+    }
+  }
+  // blocks
+  blocks.forEach(b => {
+    if (u < b.t0) return;
+    const hand = { x: b.x, y: catchY };
+    if (b.k === 0) {
+      // fumble: falls to hands at 1.25, pops up, caught at 1.5
+      if (u < fumble) { const k = (u - (fumble - 1.1)) / 1.1; if (k > 0) codeBlock(b.x, lerp(-80, catchY, Math.pow(k, 1.6)), 0.05, 0); return; }
+      if (u < b.tc) { const k = (u - fumble) / (b.tc - fumble); codeBlock(b.x + Math.sin(k * 9) * 14, catchY - Math.sin(Math.PI * k) * 110, Math.sin(k * 7) * 0.5, 0); return; }
+    } else if (u < b.tc) {
+      const k = (u - b.t0) / b.dur;
+      codeBlock(b.x, lerp(-80, catchY, Math.pow(k, 1.6)), (1 - k) * 0.3 * (b.k % 2 ? 1 : -1), b.k);
+      return;
+    }
+    const tFly = b.tc + 0.06, tLand = tFly + 0.28, sl = slot(b.k);
+    if (u < tFly) codeBlock(c.head.x, catchY, 0, b.k);
+    else if (u < tLand) {
+      const k = E.inOut((u - tFly) / 0.28);
+      codeBlock(lerp(c.head.x, sl.x, k), lerp(catchY, sl.y, k) - Math.sin(Math.PI * k) * 120, 0, b.k);
+    }
+    const d = u - b.tc;
+    if (d >= 0 && d < 0.18) glow(hand.x, catchY, 90, P.gold, 0.5 * (1 - d / 0.18));
+  });
+  label('2025 · Claude Code', u, 6);
+}
+
+// ===========================================================================
+//  SCENE 4  (15-20 s)  building 3D: verts -> edges -> shaded rotating model
+// ===========================================================================
+const MODEL = (() => {
+  const V = [], F = [];
+  const ringV = (hw, y) => { const i = V.length; V.push([-hw, y, -hw], [hw, y, -hw], [hw, y, hw], [-hw, y, hw]); return i; };
+  const sides = (a, b, mat) => { for (let i = 0; i < 4; i++) F.push({ v: [a + i, a + (i + 1) % 4, b + (i + 1) % 4, b + i], mat }); };
+  // plinth
+  const p0 = ringV(1.05, -0.16), p1 = ringV(1.05, 0);
+  sides(p0, p1, 'stone'); F.push({ v: [p1, p1 + 1, p1 + 2, p1 + 3], mat: 'stoneTop', n: [0, 1, 0] });
+  const tiers = [
+    { hw: 0.78, y0: 0, y1: 0.46, rb: 1.2, rt: 0.6, rh: 0.26 },
+    { hw: 0.6, y0: 0.72, y1: 1.1, rb: 0.95, rt: 0.44, rh: 0.24 },
+    { hw: 0.44, y0: 1.34, y1: 1.66, rb: 0.74, rt: 0, rh: 0.46 }
+  ];
+  let apex = -1;
+  tiers.forEach(T => {
+    const a = ringV(T.hw, T.y0), b = ringV(T.hw, T.y1);
+    sides(a, b, 'wall');
+    const c = ringV(T.rb, T.y1);
+    F.push({ v: [c, c + 1, c + 2, c + 3], mat: 'under', n: [0, -1, 0] });
+    if (T.rt > 0) { const d = ringV(T.rt, T.y1 + T.rh); sides(c, d, 'roof'); }
+    else { apex = V.length; V.push([0, T.y1 + T.rh, 0]); for (let i = 0; i < 4; i++) F.push({ v: [c + i, c + (i + 1) % 4, apex], mat: 'roof' }); }
+  });
+  const spire = V.length; V.push([0, 2.45, 0]);
+  const cy = 1.1;
+  V.forEach(v => { v[1] -= cy; });
+  // normals (outward from the vertical axis unless given)
+  F.forEach(f => {
+    if (f.n) return;
+    const [a, b, c] = f.v.map(i => V[i]);
+    const e1 = [b[0] - a[0], b[1] - a[1], b[2] - a[2]], e2 = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
+    let n = [e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2], e1[0] * e2[1] - e1[1] * e2[0]];
+    const L = Math.hypot(...n); n = n.map(q => q / L);
+    const m = f.v.reduce((acc, i) => [acc[0] + V[i][0], acc[1] + V[i][1], acc[2] + V[i][2]], [0, 0, 0]).map(q => q / f.v.length);
+    if (n[0] * m[0] + n[2] * m[2] < 0) n = n.map(q => -q);
+    f.n = n;
+  });
+  const key = (a, b) => a < b ? a + '_' + b : b + '_' + a;
+  const eSet = new Map();
+  F.forEach(f => f.v.forEach((a, i) => { const b = f.v[(i + 1) % f.v.length]; eSet.set(key(a, b), [a, b]); }));
+  eSet.set(key(apex, spire), [apex, spire]);
+  const edges = [...eSet.values()];
+  // build order: bottom to top
+  const vOrder = V.map((v, i) => i).sort((a, b) => V[a][1] - V[b][1] || a - b);
+  const vRank = []; vOrder.forEach((i, r) => vRank[i] = r / (V.length - 1));
+  const eRank = edges.map(([a, b]) => (V[a][1] + V[b][1]) / 2);
+  const eMin = Math.min(...eRank), eMax = Math.max(...eRank);
+  const fRank = F.map(f => f.v.reduce((s, i) => s + V[i][1], 0) / f.v.length);
+  const fMin = Math.min(...fRank), fMax = Math.max(...fRank);
+  return { V, F, edges, vRank, eRank: eRank.map(r => (r - eMin) / (eMax - eMin)), fRank: fRank.map(r => (r - fMin) / (fMax - fMin)) };
+})();
+const MAT = { wall: '#F2E7D5', roof: '#E2795C', stone: '#9C917F', stoneTop: '#B9AD98', under: '#6B4A45' };
+function scene4(u) {
+  ctx.fillStyle = vgrad(0, H, [[0, '#0E1020'], [0.6, '#1A1A2B'], [1, '#221F2E']]); ctx.fillRect(0, 0, W, H);
+  for (let i = 0; i < 90; i++) {
+    const x = hash(i * 3.1) * W, y = hash(i * 7.7) * 700, tw = 0.5 + 0.5 * Math.sin(u * 3 + i);
+    ctx.fillStyle = hexA(P.strong, 0.15 + 0.35 * tw * hash(i));
+    ctx.fillRect(x, y, 2 + (i % 3 === 0 ? 1 : 0), 2 + (i % 3 === 0 ? 1 : 0));
+  }
+  // perspective grid floor
+  const hz = 760;
+  ctx.strokeStyle = hexA(P.hair, 1); ctx.lineWidth = 1.5;
+  for (let i = -20; i <= 20; i++) { ctx.beginPath(); ctx.moveTo(960 + i * 20, hz); ctx.lineTo(960 + i * 170, H); ctx.stroke(); }
+  for (let j = 0; j < 12; j++) { const k = Math.pow(j / 11, 2.2); const y = lerp(hz, H, k) + ((u * 0.4) % 1) * 0; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+  ctx.fillStyle = vgrad(hz - 40, hz + 60, [[0, 'rgba(16,18,32,0)'], [0.5, 'rgba(16,18,32,0.9)'], [1, 'rgba(16,18,32,0)']]); ctx.fillRect(0, hz - 40, W, 100);
+
+  const s = 12, gy = 950, cx = 960;
+  const raise = E.out(inv(0.05, 0.4, u));
+  const float = u > 3.4 ? Math.sin((u - 3.4) * 3) * 8 - 24 * E.out(inv(3.4, 4.2, u)) : 0;
+  const mc = { x: 960, y: 440 + float };
+  const ang = 0.5 + u * 0.75 + 0.9 * E.inOut(inv(3.2, 5, u));
+  const tilt = 0.36, dist = 5.4, f = 880;
+  const ca = Math.cos(ang), sa = Math.sin(ang), ct = Math.cos(tilt), st = Math.sin(tilt);
+  const rot = v => { const x = v[0] * ca + v[2] * sa, z = -v[0] * sa + v[2] * ca; const y = v[1] * ct + z * st, z2 = -v[1] * st + z * ct; return [x, y, z2]; };
+  const proj = v => { const z = v[2] + dist; return [mc.x + v[0] * f / z, mc.y - v[1] * f / z, z]; };
+  const RV = MODEL.V.map(rot), SV = RV.map(proj);
+  // channel glow between hands and model
+  const channel = inv(0.2, 0.6, u) * (1 - 0.6 * inv(3.4, 4.2, u));
+  glow(mc.x, mc.y + 30, 420, P.gold, 0.18 * channel + 0.1);
+  // faces
+  const faceK = i => E.out(inv(2.55 + MODEL.fRank[i] * 0.7, 2.85 + MODEL.fRank[i] * 0.7, u));
+  const L = (() => { const l = [-0.45, 0.75, -0.5]; const n = Math.hypot(...l); return l.map(q => q / n); })();
+  const faces = MODEL.F.map((fc, i) => {
+    const n = rot(fc.n);
+    const z = fc.v.reduce((s2, vi) => s2 + RV[vi][2], 0) / fc.v.length;
+    return { fc, i, n, z };
+  }).filter(o => faceK(o.i) > 0);
+  faces.sort((a, b) => b.z - a.z);
+  faces.forEach(({ fc, i, n }) => {
+    // backface cull (view dir roughly +z)
+    const c3 = fc.v.reduce((acc, vi) => [acc[0] + RV[vi][0], acc[1] + RV[vi][1], acc[2] + RV[vi][2] + dist], [0, 0, 0]).map(q => q / fc.v.length);
+    if (n[0] * c3[0] + n[1] * c3[1] + n[2] * c3[2] > 0) return;
+    const lam = 0.38 + 0.62 * Math.max(0, n[0] * L[0] + n[1] * L[1] + n[2] * L[2]);
+    const base = MAT[fc.mat];
+    ctx.beginPath(); fc.v.forEach((vi, j) => j ? ctx.lineTo(SV[vi][0], SV[vi][1]) : ctx.moveTo(SV[vi][0], SV[vi][1])); ctx.closePath();
+    ctx.globalAlpha = faceK(i);
+    ctx.fillStyle = mix('#1A1826', base, lam); ctx.fill();
+    ctx.strokeStyle = mix('#1A1826', base, lam * 0.85); ctx.lineWidth = 1; ctx.stroke();
+    ctx.globalAlpha = 1;
+  });
+  // edges drawing in
+  const edgeFade = 1 - inv(2.7, 3.5, u);
+  ctx.lineCap = 'round';
+  MODEL.edges.forEach(([a, b], i) => {
+    const t0 = 1.15 + MODEL.eRank[i] * 1.2 + hash(i) * 0.15, k = E.out(inv(t0, t0 + 0.3, u));
+    if (k <= 0) return;
+    const A = SV[a], B = SV[b];
+    ctx.strokeStyle = hexA(P.gold, 0.9 * edgeFade); ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(lerp(A[0], B[0], k), lerp(A[1], B[1], k)); ctx.stroke();
+  });
+  // vertices popping in
+  MODEL.V.forEach((v, i) => {
+    const t0 = 0.3 + MODEL.vRank[i] * 0.95, k = inv(t0, t0 + 0.22, u);
+    if (k <= 0) return;
+    const pop = E.back(k), fade = 1 - inv(2.8, 3.5, u), sz = 7 * pop;
+    if (fade <= 0) return;
+    ctx.fillStyle = hexA(P.cream, fade); ctx.fillRect(SV[i][0] - sz / 2, SV[i][1] - sz / 2, sz, sz);
+    if (k < 1) glow(SV[i][0], SV[i][1], 30, P.gold, 0.6 * (1 - k));
+  });
+  // HUD counts
+  const nv = MODEL.V.filter((v, i) => u > 0.3 + MODEL.vRank[i] * 0.95).length;
+  const ne = MODEL.edges.filter((e, i) => u > 1.15 + MODEL.eRank[i] * 1.2 + hash(i) * 0.15).length;
+  const nf = MODEL.F.filter((fc, i) => faceK(i) > 0.5).length;
+  ctx.save(); ctx.globalAlpha = inv(0.3, 0.6, u);
+  text(`vertices ${nv}`, 1560, 380, '600 26px Karla', nv === MODEL.V.length ? P.gold : P.soft, 'left');
+  text(`edges ${ne}`, 1560, 420, '600 26px Karla', ne === MODEL.edges.length ? P.gold : P.soft, 'left');
+  text(`faces ${nf}`, 1560, 460, '600 26px Karla', nf === MODEL.F.length ? P.gold : P.soft, 'left');
+  ctx.fillStyle = P.hair; ctx.fillRect(1560, 486, 180, 2);
+  text('perspective, y-rotation', 1560, 520, '400 20px Karla', P.soft, 'left');
+  ctx.restore();
+
+  const arms = lerp(0.3, 4.6, raise) + Math.sin(u * 5) * 0.15;
+  clawd({
+    x: cx, y: gy, s, sq: ring(u, 0, 0.1, 20, 6) + ring(u, 2.55, 0.05, 22, 8) + ring(u, 3.5, -0.07, 14, 5),
+    armL: arms, armR: arms, eyes: u > 3.55 ? 'happy' : (u > 0.3 ? 'open' : 'open'), lookY: -0.7, lookX: 0,
+    blink: blinkAt(u, [2.2])
+  });
+  if (u > 3.5) petals(u, 5, 71, inv(3.5, 4, u));
+  label('building in three dimensions', u, 5);
+}
+
+// ===========================================================================
+//  SCENE 5  (20-26 s)  the climb: humanity's hardest problems, one strike each
+// ===========================================================================
+const L5 = [{ x: 470, y: 990 }, { x: 800, y: 730 }, { x: 1130, y: 470 }, { x: 1460, y: 210 }, { x: 1760, y: -50 }];
+const PANEL = [{ x: 250, y: 650 }, { x: 560, y: 380 }, { x: 890, y: 120 }];
+const RIDGE = [[-900, 1500], [100, 1110], [360, 1010], [390, 990], [560, 990], [610, 930], [690, 752], [720, 730], [880, 730], [930, 660], [1020, 492], [1050, 470], [1210, 470], [1262, 392], [1350, 232], [1380, 210], [1540, 210], [1600, 120], [1700, -30], [1730, -50], [1800, -50], [1880, 30], [2300, 400], [3200, 1200], [3200, 2200], [-900, 2200]];
+const PROT_N = 18;
+function scene5(u) {
+  // Clawd world position by time
+  const jump = (k0, k1, t0, t1, h) => u >= t0 && u < t1 ? (() => { const k = (u - t0) / (t1 - t0); return { x: lerp(L5[k0].x, L5[k1].x, E.sine(k)), y: lerp(L5[k0].y, L5[k1].y, k) - h * 4 * k * (1 - k), air: true }; })() : null;
+  const J = [[0, 1, 0.95, 1.5], [1, 2, 2.45, 3.0], [2, 3, 3.95, 4.5], [3, 4, 4.95, 5.5]];
+  let pos = null, ledge = 0;
+  for (const [a, b, t0, t1] of J) { if (u >= t1) ledge = b; const p = jump(a, b, t0, t1, 170); if (p) pos = p; }
+  if (!pos) pos = { x: L5[ledge].x, y: L5[ledge].y, air: false };
+  // camera follows, easing
+  const camT = uu => { let l = 0; for (const [a, b, t0, t1] of J) { if (uu >= t0) l = a + inv(t0, t1 + 0.2, uu); } return l; };
+  const cl = camT(u);
+  const li = Math.min(3, Math.floor(cl)), lk = E.sine(cl - li);
+  const cwx = lerp(L5[li].x, L5[li + 1].x, lk), cwy = lerp(L5[li].y, L5[li + 1].y, lk);
+  const camX = (cwx - 960) * 0.55, camY = cwy - 740;
+  const dawn = inv(0, 6, u);
+  // sky
+  ctx.fillStyle = vgrad(0, H, [[0, mix('#0E1020', '#2E2540', dawn)], [0.55, mix('#1E1B30', '#6E3F5C', dawn)], [1, mix('#2A2338', '#D07A62', dawn)]]);
+  ctx.fillRect(0, 0, W, H);
+  for (let i = 0; i < 70; i++) { const x = hash(i * 1.7) * W, y = hash(i * 2.9) * H * 0.8; ctx.fillStyle = hexA(P.strong, (0.5 * hash(i + 2)) * (1 - dawn)); ctx.fillRect(x, y, 2, 2); }
+  glow(1900 - camX * 0.1, 1000 - camY * 0.05, 900, '#F0C06A', 0.08 + 0.35 * dawn * dawn);
+  // parallax far range
+  ctx.save(); ctx.translate(-camX * 0.2, -camY * 0.2);
+  ridge(900, 160, 0.7, mix('#231F33', '#4A3450', dawn), 0);
+  ctx.restore();
+  ctx.save(); ctx.translate(-camX * 0.45, -camY * 0.45);
+  ridge(1050, 200, 3.9, mix('#1B1828', '#3A2A40', dawn), 500);
+  ctx.restore();
+
+  ctx.save(); ctx.translate(-camX, -camY);
+  // mountain
+  ctx.beginPath(); RIDGE.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath();
+  ctx.fillStyle = vgrad(-100, 1400, [[0, '#2A2536'], [1, '#14121C']]); ctx.fill();
+  ctx.strokeStyle = hexA(P.gold, 0.12 + 0.35 * dawn); ctx.lineWidth = 3;
+  ctx.beginPath(); RIDGE.slice(0, 22).forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.stroke();
+  // rock strata
+  ctx.strokeStyle = 'rgba(242,231,213,0.05)'; ctx.lineWidth = 2;
+  for (let i = 0; i < 26; i++) { const x = 300 + hash(i * 3) * 1600, y = 200 + hash(i * 5) * 1000; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 60 + hash(i) * 80, y + 30); ctx.stroke(); }
+  // ledge caps
+  L5.slice(0, 4).forEach(l => { ctx.fillStyle = '#3A3346'; ctx.fillRect(l.x - 90, l.y, 180, 10); });
+
+  // problem medallions
+  const strikeK = i => inv(S5_STRIKE[i], S5_STRIKE[i] + 1.0, u);
+  PANEL.forEach((pn, i) => {
+    const solved = strikeK(i), R = 170;
+    const hit = u - S5_STRIKE[i];
+    ctx.save(); ctx.translate(pn.x, pn.y);
+    ctx.beginPath(); ctx.arc(0, 0, R, 0, TAU); ctx.fillStyle = 'rgba(16,18,32,0.72)'; ctx.fill();
+    ctx.strokeStyle = solved > 0 ? mix('#302E3E', '#F0C06A', E.out(solved)) : P.hair; ctx.lineWidth = 3; ctx.stroke();
+    if (solved >= 1) glow(0, 0, R * 1.5, P.gold, 0.1);
+    ctx.beginPath(); ctx.arc(0, 0, R - 12, 0, TAU); ctx.strokeStyle = 'rgba(242,231,213,0.06)'; ctx.lineWidth = 1.5; ctx.stroke();
+    if (i === 0) drawProtein(u, solved);
+    if (i === 1) drawEquation(u, solved);
+    if (i === 2) drawStars(u, solved);
+    const cap = ['protein folding', 'an open integral', 'a map of the sky'][i];
+    text(cap, 0, R + 36, '600 22px Karla', solved >= 1 ? P.gold : P.soft, 'center');
+    ctx.restore();
+    // shock ring on the strike
+    if (hit >= 0 && hit < 0.6) {
+      ctx.strokeStyle = hexA(P.gold, 0.9 * (1 - hit / 0.6)); ctx.lineWidth = 6 * (1 - hit / 0.6) + 1;
+      ctx.beginPath(); ctx.arc(pn.x, pn.y, R + hit * 260, 0, TAU); ctx.stroke();
+    }
+  });
+  // strike beam from Clawd to medallion
+  S5_STRIKE.forEach((st, i) => {
+    const d = u - st; if (d < 0 || d > 0.22) return;
+    const target = PANEL[i] || { x: L5[4].x + 120, y: L5[4].y - 420 };
+    const l = L5[i];
+    ctx.strokeStyle = hexA(P.cream, 0.85 * (1 - d / 0.22)); ctx.lineWidth = 8 * (1 - d / 0.22) + 2; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(l.x - 30, l.y - 100); ctx.lineTo(lerp(l.x - 30, target.x, E.out(Math.min(1, d / 0.08))), lerp(l.y - 100, target.y, E.out(Math.min(1, d / 0.08)))); ctx.stroke();
+  });
+  // the 4th strike cracks the sky open: rays from behind the crest
+  const rays = inv(4.5, 5.6, u);
+  if (rays > 0) {
+    const cx = L5[4].x + 60, cy = L5[4].y - 60;
+    glow(cx, cy, 700 * rays, '#FBE3B8', 0.5 * rays);
+    ctx.save(); ctx.translate(cx, cy); ctx.globalCompositeOperation = 'lighter';
+    for (let q = 0; q < 12; q++) { const a = q / 12 * TAU + u * 0.2; ctx.fillStyle = hexA('#F0C06A', 0.07 * rays); ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, 1400 * rays, a, a + 0.1); ctx.closePath(); ctx.fill(); }
+    ctx.restore();
+  }
+  // Clawd
+  const s = 8;
+  let sq = 0;
+  J.forEach(([a, b, t0, t1]) => { sq += track([[t0 - 0.14, 0], [t0 - 0.02, 0.16, 'out'], [t0 + 0.06, -0.14], [t0 + 0.25, 0]], u) + ring(u, t1, 0.22, 26, 9); });
+  let armL = pos.air ? 3.5 : 1, armR = pos.air ? 3.5 : 1, outL = 0;
+  S5_STRIKE.forEach(st => { const d = u - st; if (d > -0.1 && d < 0.4) { const k = d < 0 ? (d + 0.1) / 0.1 : 1 - E.in2(d / 0.4); armL = Math.max(armL, 4.2 * k); outL = Math.max(outL, 1.2 * k); } });
+  const eyes = pos.air ? 'focus' : (u > 5.6 ? 'happy' : 'focus');
+  clawd({ x: pos.x, y: pos.y, s, sq, armL, armR, outL, eyes, lookX: -0.3, lookY: -0.5, tuck: pos.air ? 0.8 : 0, flip: false, glowColor: rays > 0 ? hexA(P.gold, 0.8 * rays) : null, glowBlur: 30 });
+  ctx.restore();
+  label('the hardest problems', u, 4.4);
+}
+function drawProtein(u, k) {
+  const pts = [];
+  for (let i = 0; i < PROT_N; i++) {
+    const a = [(-130 + i * 15.3), Math.sin(i * 1.3) * 34 + (hash(i) - 0.5) * 30];
+    const ang = i * 0.95, r = 22 + i * 3.4;
+    const b = [Math.cos(ang) * r * 0.9, Math.sin(ang) * r * 0.9 - 6];
+    const ki = E.back(clamp((k * 1.4 - i / PROT_N * 0.4)));
+    const wob = k === 0 ? Math.sin(u * 3 + i) * 6 : 0;
+    pts.push([lerp(a[0], b[0], ki), lerp(a[1], b[1], ki) + wob]);
+  }
+  ctx.strokeStyle = hexA(P.strong, 0.5); ctx.lineWidth = 4; ctx.lineJoin = 'round';
+  ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.stroke();
+  pts.forEach((p, i) => {
+    const c = i < 6 ? P.accent : i < 12 ? P.gold : P.pink2;
+    ell(p[0], p[1], 10, 10, c);
+    ell(p[0] - 3, p[1] - 3, 3, 3, hexA(P.cream, 0.6));
+  });
+}
+const EQ = [['∫', 66, 6], ['e', 56, 0], ['−', 32, -26], ['x', 34, -26], ['²', 22, -44], [' ', 56, 0], ['d', 56, 0], ['x', 56, 0], [' ', 30, 0], ['=', 52, 0], [' ', 30, 0], ['√', 54, 0], ['π', 56, 0]];
+function drawEquation(u, k) {
+  const widths = EQ.map(([ch, sz]) => { ctx.font = `italic ${sz}px Georgia, serif`; return ctx.measureText(ch).width + (ch === '√' ? -2 : 1); });
+  const total = widths.reduce((a, b) => a + b, 0);
+  let x = -total / 2;
+  EQ.forEach(([ch, sz, dy], i) => {
+    const w = widths[i];
+    const hx = x + w / 2, hy = dy;
+    const sx = (hash(i * 4.1) - 0.5) * 220, sy = (hash(i * 2.3) - 0.5) * 200, sr = (hash(i) - 0.5) * 3;
+    const ki = E.back(clamp(k * 1.5 - i * 0.04));
+    const wob = k === 0 ? Math.sin(u * 2 + i) * 8 : 0;
+    ctx.save(); ctx.translate(lerp(sx, hx, ki), lerp(sy, hy, ki) + wob); ctx.rotate(lerp(sr, 0, ki));
+    text(ch, 0, 18, `italic ${sz}px Georgia, serif`, ki > 0.95 ? P.gold : P.strong, 'center');
+    ctx.restore();
+    x += w;
+  });
+}
+const STARS = Array.from({ length: 11 }, (_, i) => [Math.cos(i * 2.4) * (40 + hash(i * 3.3) * 100), Math.sin(i * 2.4) * (40 + hash(i * 3.3) * 100)]);
+const CONST = [[0, 3], [3, 6], [6, 1], [1, 4], [4, 9], [9, 2], [2, 7], [7, 10], [10, 5], [5, 8]];
+function drawStars(u, k) {
+  for (let r = 40; r < 170; r += 45) { ctx.beginPath(); ctx.arc(0, 0, r, 0, TAU); ctx.strokeStyle = 'rgba(242,231,213,0.05)'; ctx.lineWidth = 1; ctx.stroke(); }
+  // telescope glint
+  CONST.forEach(([a, b], i) => {
+    const ki = inv(i / CONST.length * 0.7, i / CONST.length * 0.7 + 0.2, k);
+    if (ki <= 0) return;
+    const A = STARS[a], B = STARS[b];
+    ctx.strokeStyle = hexA(P.gold, 0.8); ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(lerp(A[0], B[0], ki), lerp(A[1], B[1], ki)); ctx.stroke();
+  });
+  STARS.forEach((p, i) => {
+    const tw = 0.6 + 0.4 * Math.sin(u * 4 + i * 1.7);
+    ell(p[0], p[1], 4 + (i === 9 ? 3 : 0), 4 + (i === 9 ? 3 : 0), hexA(P.cream, tw));
+  });
+  if (k > 0.8) { const q = inv(0.8, 1, k); glow(STARS[9][0], STARS[9][1], 60 * q, P.gold, 0.8 * q); }
+}
+
+// ===========================================================================
+//  SCENE 6  (26-30 s)  summit at sunrise, title card, fade
+// ===========================================================================
+function scene6(u) {
+  const sunY = lerp(760, 610, E.out(inv(0, 4, u)));
+  ctx.fillStyle = vgrad(0, H, [[0, '#2A2140'], [0.3, '#6A3A5C'], [0.55, '#C4606A'], [0.72, '#E2795C'], [0.84, '#F0C06A'], [1, '#FBE3B8']]);
+  ctx.fillRect(0, 0, W, H);
+  glow(960, sunY, 1300, '#FBE3B8', 0.55);
+  glow(960, sunY, 420, '#FFF4DE', 0.6);
+  // rays
+  ctx.save(); ctx.translate(960, sunY); ctx.globalCompositeOperation = 'lighter';
+  for (let q = 0; q < 16; q++) { const a = q / 16 * TAU + u * 0.05; ctx.fillStyle = 'rgba(251,227,184,0.05)'; ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, 1600, a, a + 0.09); ctx.closePath(); ctx.fill(); }
+  ctx.restore();
+  ctx.beginPath(); ctx.arc(960, sunY, 230, 0, TAU); ctx.fillStyle = '#FFF1D6'; ctx.fill();
+  // cloud sea
+  for (let layer = 0; layer < 3; layer++) {
+    const y0 = 760 + layer * 70, col = ['rgba(251,227,184,0.85)', 'rgba(240,166,184,0.55)', 'rgba(201,120,110,0.75)'][layer];
+    ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(0, H);
+    for (let x = 0; x <= W; x += 20) ctx.lineTo(x, y0 + Math.sin(x * 0.006 + layer * 2 + u * 0.3 * (layer + 1)) * 18 + Math.sin(x * 0.017 + layer) * 10);
+    ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+  }
+  // far peaks piercing the clouds
+  ctx.fillStyle = 'rgba(106,58,92,0.5)';
+  [[300, 780, 140], [1600, 790, 180], [1780, 800, 90]].forEach(([x, y, h]) => { ctx.beginPath(); ctx.moveTo(x - h * 1.4, y); ctx.lineTo(x, y - h); ctx.lineTo(x + h * 1.4, y); ctx.closePath(); ctx.fill(); });
+  // summit rock
+  ctx.fillStyle = '#231D2C';
+  ctx.beginPath(); ctx.moveTo(620, H); ctx.lineTo(790, 900); ctx.lineTo(860, 822); ctx.lineTo(900, 800); ctx.lineTo(1030, 800); ctx.lineTo(1080, 840); ctx.lineTo(1180, 930); ctx.lineTo(1320, H); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = hexA(P.gold, 0.7); ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(790, 900); ctx.lineTo(860, 822); ctx.lineTo(900, 800); ctx.lineTo(1030, 800); ctx.lineTo(1080, 840); ctx.stroke();
+  // Clawd
+  const s = 13, x = 962, gy = 800;
+  const armsUp = track([[0, 1.5], [0.15, 0.4, 'out'], [0.35, 5.2, 'back'], [1.5, 5.0], [1.9, 0.9, 'inOut']], u);
+  const sq = ring(u, 0, 0.18, 22, 7) + track([[0.15, 0], [0.3, 0.1, 'out'], [0.4, -0.08], [0.7, 0]], u) + ring(u, 1.9, 0.05, 16, 6);
+  clawd({ x, y: gy, s, sq, armL: armsUp, armR: armsUp, eyes: u < 1.8 ? 'happy' : 'open', lookY: -0.4, blink: blinkAt(u, [2.6, 3.3]), glowColor: 'rgba(255,241,214,0.9)', glowBlur: 40 });
+  petals(u + 10, 6, 91, 0.8, [0, 0, W, 800]);
+  // title card
+  const tA = inv(1.9, 2.5, u);
+  if (tA > 0) {
+    ctx.save(); ctx.globalAlpha = tA;
+    const yy = 200 + (1 - E.out(tA)) * 14;
+    text('One skill at a time.', 960, yy, '700 92px "Zen Maru Gothic"', P.strong, 'center');
+    ctx.fillStyle = hexA(P.gold, 0.8); ctx.fillRect(900, yy + 36, 120, 2);
+    text('Clawd · a growth montage', 960, yy + 88, '600 32px Karla', P.gold, 'center');
+    ctx.globalAlpha = inv(2.3, 2.8, u);
+    text('Fan-made. Not affiliated with Anthropic.', 960, yy + 140, '600 24px Karla', 'rgba(242,231,213,0.85)', 'center');
+    ctx.restore();
+  }
+}
+
+// ===========================================================================
+//  frame compositor: a pure function of t
+// ===========================================================================
+function renderFrame(t) {
+  t = clamp(+t || 0, 0, DUR - 1e-4);
+  const sc = canvas.width / W;
+  ctx.setTransform(sc, 0, 0, sc, 0, 0);
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.shadowColor = 'transparent'; ctx.lineCap = 'butt';
+  ctx.fillStyle = P.page; ctx.fillRect(0, 0, W, H);
+  // camera shake on the big hits
+  let sx = 0, sy = 0;
+  if (!REDUCED) {
+    const hits = CUTS.concat(S5_STRIKE.slice(1).map(v => v + 20));
+    hits.forEach((h, i) => { const d = t - h; if (d >= 0 && d < 0.35) { const a = 9 * Math.exp(-d * 12); sx += Math.sin(d * 90 + i) * a; sy += Math.cos(d * 77 + i * 2) * a; } });
+  }
+  ctx.save(); ctx.translate(sx, sy);
+  ctx.translate(-12, -8); ctx.scale((W + 24) / W, (H + 16) / H); // overscan so shake never shows an edge
+  if (t < 4) scene1(t);
+  else if (t < 9) scene2(t - 4);
+  else if (t < 15) scene3(t - 9);
+  else if (t < 20) scene4(t - 15);
+  else if (t < 26) scene5(t - 20);
+  else scene6(t - 26);
+  ctx.restore();
+  ctx.setTransform(sc, 0, 0, sc, 0, 0);
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.shadowColor = 'transparent';
+  // vignette
+  const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, H * 1.05);
+  vg.addColorStop(0, 'rgba(16,18,32,0)'); vg.addColorStop(1, 'rgba(16,18,32,0.5)');
+  ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+  // flash on cuts
+  const fmul = REDUCED ? 0.25 : 1;
+  CUTS.forEach(c => { const d = t - c; if (d >= 0 && d < 0.3) { ctx.fillStyle = `rgba(251,227,184,${0.42 * fmul * (1 - d / 0.3) * (1 - d / 0.3)})`; ctx.fillRect(0, 0, W, H); } });
+  // open from dark, close to dark
+  const fadeIn = 1 - inv(0, 0.6, t), fadeOut = inv(29.0, 29.95, t);
+  const f = Math.max(fadeIn, fadeOut);
+  if (f > 0) { ctx.fillStyle = `rgba(16,18,32,${f})`; ctx.fillRect(0, 0, W, H); }
+}
+
+// ===========================================================================
+//  SCORE: original, pentatonic, synthesized. Works on AudioContext and
+//  OfflineAudioContext alike. Returns the master gain so playback can stop it.
+// ===========================================================================
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+
+function buildScore(ac, t0) {
+  const sr = ac.sampleRate, T = t => t0 + t;
+  const master = ac.createGain(); master.gain.value = 0;
+  master.gain.setValueAtTime(0, T(0)); master.gain.linearRampToValueAtTime(0.85, T(0.05));
+  master.gain.setValueAtTime(0.85, T(28.6)); master.gain.linearRampToValueAtTime(0.0001, T(29.92));
+  const comp = ac.createDynamicsCompressor();
+  comp.threshold.value = -16; comp.knee.value = 10; comp.ratio.value = 3.5; comp.attack.value = 0.004; comp.release.value = 0.25;
+  master.connect(comp); comp.connect(ac.destination);
+  const bus = ac.createGain(); bus.gain.value = 1; bus.connect(master);
+  // reverb (generated impulse)
+  const rnd = mulberry32(20230314);
+  const irLen = Math.floor(sr * 2.2), ir = ac.createBuffer(2, irLen, sr);
+  for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < irLen; i++) { const k = i / irLen; d[i] = (rnd() * 2 - 1) * Math.pow(1 - k, 3.2) * (i < sr * 0.01 ? i / (sr * 0.01) : 1); } }
+  const verb = ac.createConvolver(); verb.normalize = true; verb.buffer = ir;
+  const verbOut = ac.createGain(); verbOut.gain.value = 0.42; verb.connect(verbOut); verbOut.connect(master);
+  // noise
+  const nb = ac.createBuffer(1, sr * 2, sr); { const d = nb.getChannelData(0); const r = mulberry32(7); for (let i = 0; i < d.length; i++) d[i] = r() * 2 - 1; }
+  // each note's output chain is disconnected by pump() once the note is over;
+  // chains left connected keep costing CPU for the rest of the piece
+  let END = 0, live = [];
+  const out = (node, gain, pan = 0, send = 0.25) => {
+    const g = ac.createGain(); g.gain.value = gain;
+    const p = ac.createStereoPanner(); p.pan.value = pan;
+    node.connect(g); g.connect(p); p.connect(bus);
+    const chain = [node, g, p];
+    if (send > 0) { const s = ac.createGain(); s.gain.value = send; p.connect(s); s.connect(verb); chain.push(s); }
+    live.push([END, chain]);
+  };
+  const env = (g, t, a, peak, d, sustain, r, end) => {
+    g.gain.setValueAtTime(0.0001, T(t)); g.gain.linearRampToValueAtTime(peak, T(t + a));
+    g.gain.setTargetAtTime(sustain, T(t + a), d);
+    g.gain.setValueAtTime(sustain, T(end)); g.gain.setTargetAtTime(0.0001, T(end), r);
+  };
+  const noiseSrc = (t, dur, off = 0) => { const n = ac.createBufferSource(); n.buffer = nb; n.loop = true; n.start(T(t), off % 1.9); n.stop(T(t + dur)); return n; };
+
+  // --- instruments -------------------------------------------------------
+  const ksCache = {};
+  function ks(midi) {
+    if (ksCache[midi]) return ksCache[midi];
+    const f = mtof(midi), len = Math.floor(sr * 3.0), b = ac.createBuffer(1, len, sr), d = b.getChannelData(0);
+    const N = Math.max(2, Math.round(sr / f)), line = new Float32Array(N), r = mulberry32(midi * 977);
+    let prev = 0; for (let i = 0; i < N; i++) { const w = r() * 2 - 1; prev = prev * 0.45 + w * 0.55; line[i] = prev; }
+    const decay = 0.9965 - (midi - 50) * 0.00004;
+    let idx = 0, last = 0;
+    for (let i = 0; i < len; i++) {
+      const a = line[idx], nx = line[(idx + 1) % N];
+      const v = (a * 0.5 + nx * 0.5) * decay;
+      line[idx] = v; d[i] = a * 0.8 + last * 0.2; last = a; idx = (idx + 1) % N;
+    }
+    return (ksCache[midi] = b);
+  }
+  function pluckNow(t, midi, vel = 0.5, pan = 0, bend = 0) {
+    END = t + 3.2;
+    const src = ac.createBufferSource(); src.buffer = ks(midi);
+    if (bend) { src.playbackRate.setValueAtTime(1, T(t + 0.12)); src.playbackRate.linearRampToValueAtTime(Math.pow(2, bend / 12), T(t + 0.45)); }
+    const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 5200; lp.Q.value = 0.4;
+    const g = ac.createGain(); g.gain.setValueAtTime(vel, T(t)); g.gain.setTargetAtTime(0.0001, T(t + 1.6), 0.4);
+    src.connect(lp); lp.connect(g); out(g, 1, pan, 0.3);
+    src.start(T(t)); src.stop(T(t + 3));
+  }
+  function fluteNow(t, midi, dur, vel = 0.22, grace = null, endBend = 0, pan = 0.1) {
+    END = t + dur + 1;
+    const f = mtof(midi);
+    const o1 = ac.createOscillator(); o1.type = 'sine';
+    const o2 = ac.createOscillator(); o2.type = 'triangle';
+    [o1, o2].forEach(o => {
+      if (grace != null) { o.frequency.setValueAtTime(mtof(grace), T(t)); o.frequency.exponentialRampToValueAtTime(f, T(t + 0.09)); }
+      else o.frequency.setValueAtTime(f, T(t));
+      if (endBend) { o.frequency.setValueAtTime(f, T(t + dur * 0.55)); o.frequency.exponentialRampToValueAtTime(mtof(midi + endBend), T(t + dur + 0.2)); }
+    });
+    const lfo = ac.createOscillator(); lfo.frequency.value = 5.1;
+    const vd = ac.createGain(); vd.gain.setValueAtTime(0, T(t)); vd.gain.linearRampToValueAtTime(0, T(t + 0.25)); vd.gain.linearRampToValueAtTime(f * 0.009, T(t + 0.7));
+    lfo.connect(vd); vd.connect(o1.frequency); vd.connect(o2.frequency);
+    const mixg = ac.createGain(); const g2 = ac.createGain(); g2.gain.value = 0.18; o1.connect(mixg); o2.connect(g2); g2.connect(mixg);
+    const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 3400;
+    const g = ac.createGain(); env(g, t, 0.07, vel, 0.3, vel * 0.82, 0.12, t + dur);
+    mixg.connect(lp); lp.connect(g); out(g, 1, pan, 0.55);
+    // breath
+    const n = noiseSrc(t, dur + 0.5, t * 0.37); const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = f * 2.2; bp.Q.value = 1.2;
+    const ng = ac.createGain(); env(ng, t, 0.03, vel * 0.25, 0.08, vel * 0.06, 0.1, t + dur);
+    n.connect(bp); bp.connect(ng); out(ng, 1, pan, 0.4);
+    [o1, o2, lfo].forEach(o => { o.start(T(t)); o.stop(T(t + dur + 0.9)); });
+  }
+  function taikoNow(t, vel = 0.8, big = 0, pan = 0) {
+    END = t + 2.7;
+    const o = ac.createOscillator(); o.type = 'sine';
+    const f0 = 125 - big * 15, f1 = 50 - big * 2;
+    o.frequency.setValueAtTime(f0, T(t)); o.frequency.exponentialRampToValueAtTime(f1, T(t + 0.22 + big * 0.25));
+    const g = ac.createGain(); g.gain.setValueAtTime(0.0001, T(t)); g.gain.linearRampToValueAtTime(vel, T(t + 0.004)); g.gain.setTargetAtTime(0.0001, T(t + 0.02), 0.16 + big * 0.35);
+    o.connect(g); out(g, 1, pan, 0.22 + big * 0.2);
+    const o2 = ac.createOscillator(); o2.type = 'triangle'; o2.frequency.setValueAtTime(f0 * 1.6, T(t)); o2.frequency.exponentialRampToValueAtTime(f1 * 1.5, T(t + 0.12));
+    const g2 = ac.createGain(); g2.gain.setValueAtTime(vel * 0.3, T(t)); g2.gain.setTargetAtTime(0.0001, T(t + 0.01), 0.05);
+    o2.connect(g2); out(g2, 1, pan, 0.1);
+    const n = noiseSrc(t, 0.4, t * 1.3); const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 900 + big * 500;
+    const ng = ac.createGain(); ng.gain.setValueAtTime(vel * 0.55, T(t)); ng.gain.setTargetAtTime(0.0001, T(t + 0.005), 0.035 + big * 0.05);
+    n.connect(lp); lp.connect(ng); out(ng, 1, pan, 0.2);
+    o.start(T(t)); o.stop(T(t + 2.6)); o2.start(T(t)); o2.stop(T(t + 0.5));
+  }
+  function kaNow(t, vel = 0.25, pan = 0.3) {
+    END = t + 0.3;
+    const o = ac.createOscillator(); o.type = 'triangle'; o.frequency.setValueAtTime(1500, T(t)); o.frequency.exponentialRampToValueAtTime(950, T(t + 0.04));
+    const g = ac.createGain(); g.gain.setValueAtTime(vel, T(t)); g.gain.setTargetAtTime(0.0001, T(t + 0.002), 0.018);
+    o.connect(g); out(g, 1, pan, 0.15);
+    const n = noiseSrc(t, 0.08, t * 2.1); const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 3200; bp.Q.value = 2.5;
+    const ng = ac.createGain(); ng.gain.setValueAtTime(vel * 0.6, T(t)); ng.gain.setTargetAtTime(0.0001, T(t + 0.002), 0.012);
+    n.connect(bp); bp.connect(ng); out(ng, 1, pan, 0.1);
+    o.start(T(t)); o.stop(T(t + 0.2));
+  }
+  function shakerNow(t, vel = 0.06, pan = -0.35) {
+    END = t + 0.2;
+    const n = noiseSrc(t, 0.1, t * 3.3); const hp = ac.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 6500;
+    const g = ac.createGain(); g.gain.setValueAtTime(0.0001, T(t)); g.gain.linearRampToValueAtTime(vel, T(t + 0.012)); g.gain.setTargetAtTime(0.0001, T(t + 0.015), 0.025);
+    n.connect(hp); hp.connect(g); out(g, 1, pan, 0.05);
+  }
+  function crashNow(t, vel = 0.2, dur = 2.2) {
+    END = t + dur + 0.6;
+    const n = noiseSrc(t, dur + 0.5, t * 0.7); const hp = ac.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 4200;
+    const pk = ac.createBiquadFilter(); pk.type = 'peaking'; pk.frequency.value = 7000; pk.gain.value = 5;
+    const g = ac.createGain(); g.gain.setValueAtTime(vel, T(t)); g.gain.setTargetAtTime(0.0001, T(t + 0.01), dur / 4);
+    n.connect(hp); hp.connect(pk); pk.connect(g); out(g, 1, 0, 0.5);
+  }
+  function riserNow(t0r, t1r, vel = 0.12) {
+    END = t1r + 0.1;
+    const n = noiseSrc(t0r, t1r - t0r + 0.02, t0r); const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 3;
+    bp.frequency.setValueAtTime(500, T(t0r)); bp.frequency.exponentialRampToValueAtTime(7000, T(t1r));
+    const g = ac.createGain(); g.gain.setValueAtTime(0.0001, T(t0r)); g.gain.exponentialRampToValueAtTime(vel, T(t1r - 0.02)); g.gain.linearRampToValueAtTime(0.0001, T(t1r));
+    n.connect(bp); bp.connect(g); out(g, 1, 0, 0.3);
+  }
+  function whooshNow(t, dur = 0.3, vel = 0.12, pan = 0) {
+    END = t + dur + 0.1;
+    const n = noiseSrc(t, dur + 0.05, t); const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 1.5;
+    bp.frequency.setValueAtTime(400, T(t)); bp.frequency.exponentialRampToValueAtTime(2500, T(t + dur * 0.6)); bp.frequency.exponentialRampToValueAtTime(900, T(t + dur));
+    const g = ac.createGain(); g.gain.setValueAtTime(0.0001, T(t)); g.gain.linearRampToValueAtTime(vel, T(t + dur * 0.5)); g.gain.linearRampToValueAtTime(0.0001, T(t + dur));
+    n.connect(bp); bp.connect(g); out(g, 1, pan, 0.1);
+  }
+  function bonkNow(t, vel = 0.3) {
+    END = t + 0.6;
+    const o = ac.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(420, T(t)); o.frequency.exponentialRampToValueAtTime(170, T(t + 0.14));
+    const g = ac.createGain(); g.gain.setValueAtTime(vel, T(t)); g.gain.setTargetAtTime(0.0001, T(t + 0.01), 0.06);
+    o.connect(g); out(g, 1, 0, 0.15); o.start(T(t)); o.stop(T(t + 0.5));
+  }
+  function bellNow(t, midi, vel = 0.08, pan = 0.4) {
+    END = t + 2.1;
+    const f = mtof(midi);
+    [[1, 1], [2.76, 0.35], [5.4, 0.12]].forEach(([m, a]) => {
+      const o = ac.createOscillator(); o.type = 'sine'; o.frequency.value = f * m;
+      const g = ac.createGain(); g.gain.setValueAtTime(0.0001, T(t)); g.gain.linearRampToValueAtTime(vel * a, T(t + 0.004)); g.gain.setTargetAtTime(0.0001, T(t + 0.01), 0.35 / m);
+      o.connect(g); out(g, 1, pan, 0.45); o.start(T(t)); o.stop(T(t + 2));
+    });
+  }
+  function padNow(t, dur, notes, vel = 0.05, att = 0.8, rel = 0.8, bright = 1400, pan = 0.5) {
+    END = t + dur + rel + 0.1;
+    notes.forEach((m, ni) => {
+      const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.6;
+      lp.frequency.setValueAtTime(bright * 0.35, T(t)); lp.frequency.linearRampToValueAtTime(bright, T(t + att)); lp.frequency.setValueAtTime(bright, T(t + dur)); lp.frequency.linearRampToValueAtTime(bright * 0.4, T(t + dur + rel));
+      const g = ac.createGain(); g.gain.setValueAtTime(0.0001, T(t)); g.gain.linearRampToValueAtTime(vel, T(t + att)); g.gain.setValueAtTime(vel, T(t + dur)); g.gain.linearRampToValueAtTime(0.0001, T(t + dur + rel));
+      [-7, 0, 7].forEach((det, di) => {
+        const o = ac.createOscillator(); o.type = 'sawtooth'; o.frequency.value = mtof(m); o.detune.value = det + (ni % 2 ? 3 : -3);
+        o.connect(lp); o.start(T(t)); o.stop(T(t + dur + rel + 0.05));
+      });
+      lp.connect(g); out(g, 1, ((ni % 2) * 2 - 1) * pan * (0.4 + 0.6 * ni / notes.length), 0.5);
+    });
+  }
+  function droneNow(t, dur, midis, vel = 0.06) {
+    END = t + dur + 1.4;
+    midis.forEach((m, i) => {
+      const o = ac.createOscillator(); o.type = 'sawtooth'; o.frequency.value = mtof(m); o.detune.value = i ? 4 : -4;
+      const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 260; lp.Q.value = 1;
+      const lfo = ac.createOscillator(); lfo.frequency.value = 0.18 + i * 0.07; const lg = ac.createGain(); lg.gain.value = 90; lfo.connect(lg); lg.connect(lp.frequency);
+      const g = ac.createGain(); g.gain.setValueAtTime(0.0001, T(t)); g.gain.linearRampToValueAtTime(vel, T(t + 1.4)); g.gain.setValueAtTime(vel, T(t + dur)); g.gain.linearRampToValueAtTime(0.0001, T(t + dur + 1.2));
+      o.connect(lp); lp.connect(g); out(g, 1, i ? 0.25 : -0.25, 0.3);
+      o.start(T(t)); lfo.start(T(t)); o.stop(T(t + dur + 1.3)); lfo.stop(T(t + dur + 1.3));
+    });
+    const sub = ac.createOscillator(); sub.frequency.value = mtof(midis[0]);
+    const sg = ac.createGain(); sg.gain.setValueAtTime(0.0001, T(t)); sg.gain.linearRampToValueAtTime(vel * 1.2, T(t + 1.4)); sg.gain.setValueAtTime(vel * 1.2, T(t + dur)); sg.gain.linearRampToValueAtTime(0.0001, T(t + dur + 1.2));
+    sub.connect(sg); out(sg, 1, 0, 0); sub.start(T(t)); sub.stop(T(t + dur + 1.3));
+  }
+  function gongNow(t, root, vel = 0.14) {
+    END = t + 5.6;
+    [[1, 1, 3.5], [1.52, 0.5, 2.5], [2.03, 0.35, 2], [2.71, 0.2, 1.4], [3.48, 0.12, 1]].forEach(([m, a, d]) => {
+      const o = ac.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(mtof(root) * m * 1.01, T(t)); o.frequency.exponentialRampToValueAtTime(mtof(root) * m, T(t + 1.5));
+      const g = ac.createGain(); g.gain.setValueAtTime(0.0001, T(t)); g.gain.linearRampToValueAtTime(vel * a, T(t + 0.02)); g.gain.setTargetAtTime(0.0001, T(t + 0.05), d / 2.5);
+      o.connect(g); out(g, 1, 0, 0.6); o.start(T(t)); o.stop(T(t + d + 2));
+    });
+  }
+
+  // Every note is queued, then created just ahead of time by pump(). Creating all
+  // ~5000 nodes up front was slower than real time; a small live graph is not.
+  const Q = [];
+  const lazy = f => (...a) => { Q.push([a[0], () => f(...a)]); };
+  const pluck = lazy(pluckNow), flute = lazy(fluteNow), taiko = lazy(taikoNow), ka = lazy(kaNow), shaker = lazy(shakerNow),
+    crash = lazy(crashNow), riser = lazy(riserNow), whoosh = lazy(whooshNow), bonk = lazy(bonkNow), bell = lazy(bellNow),
+    pad = lazy(padNow), drone = lazy(droneNow), gong = lazy(gongNow);
+
+  // --- the score ---------------------------------------------------------
+  // D minor pentatonic: D F G A C. Lift to Eb major pentatonic at the summit.
+  const Dm = [38, 50, 57, 62, 65], Bb = [34, 46, 53, 58, 62], Csus = [36, 48, 55, 60, 62], Gm = [43, 50, 55, 58, 62], F = [41, 48, 53, 57, 60];
+
+  // 0-4: lonely flute over a low drone
+  drone(0, 8.4, [38, 45], 0.038);
+  pad(0.2, 3.6, [50, 53, 57], 0.022, 1.6, 1.0, 700, 0.3);
+  flute(0.35, 69, 0.7, 0.2, 67);
+  flute(1.1, 72, 0.32, 0.18);
+  flute(1.45, 74, 0.95, 0.22, 72);
+  flute(2.5, 72, 0.22, 0.17);
+  flute(2.75, 69, 0.26, 0.17);
+  flute(3.02, 67, 0.4, 0.17, null, -4);
+  pluck(0.3, 50, 0.3, -0.2); pluck(1.35, 57, 0.25, 0.2); pluck(2.35, 53, 0.22, -0.1);
+  taiko(3.33, 0.35, 0, 0.1); pluck(3.34, 45, 0.28, 0, -1);
+  ka(3.62, 0.12); ka(3.75, 0.16); ka(3.87, 0.2);
+
+  // 4-9: searching. taiko enters, guzheng ostinato, catches play the melody
+  taiko(4.0, 1.0, 1); crash(4.0, 0.12, 1.6);
+  pad(4.0, 2.0, Dm.slice(1), 0.03, 0.4, 0.4, 1600);
+  pad(6.0, 2.0, Bb.slice(1), 0.03, 0.3, 0.5, 1500);
+  pad(8.0, 1.0, Csus.slice(1), 0.035, 0.2, 0.3, 1900);
+  const ostDm = [50, 57, 62, 57, 65, 57, 62, 57], ostBb = [46, 53, 58, 53, 62, 53, 58, 53], ostC = [48, 55, 60, 55, 62, 55, 60, 55];
+  for (let i = 0; i < 8; i++) pluck(4.0 + i * 0.25, ostDm[i], 0.22, i % 2 ? 0.3 : -0.3);
+  for (let i = 0; i < 2; i++) pluck(6.0 + i * 0.25, ostBb[i], 0.2, i % 2 ? 0.3 : -0.3);
+  [[4.0, 1], [5.0, 0.7], [5.75, 0.55], [6.0, 0.6]].forEach(([t, v]) => taiko(t, v * 0.8));
+  [4.5, 5.5].forEach(t => ka(t, 0.18));
+  whoosh(4.45, 0.35, 0.1, -0.4); whoosh(5.25, 0.35, 0.1, 0.4);
+  taiko(5.66, 0.3, 0, 0.3); bonk(6.2, 0.15);
+  flute(6.5, 74, 0.45, 0.16, 72);
+  // focus -> catches on the beat, each one a note
+  const catchNotes = [74, 77, 79, 81, 84];
+  S2_CATCH.forEach((c, i) => { pluck(4 + c, catchNotes[i], 0.42, 0.25); ka(4 + c, 0.3, -0.2); bell(4 + c + 0.35, catchNotes[i] + 12, 0.035); });
+  for (let i = 0; i < 8; i++) pluck(7.0 + i * 0.25, ostBb[i % 8], 0.18, i % 2 ? 0.3 : -0.3);
+  for (let i = 0; i < 4; i++) pluck(8.0 + i * 0.25, ostC[i], 0.2, i % 2 ? 0.3 : -0.3);
+  [[7.0, 0.8], [7.5, 0.6], [7.75, 0.5], [8.0, 0.8], [8.5, 0.6], [8.625, 0.5], [8.75, 0.65], [8.875, 0.75]].forEach(([t, v]) => taiko(t, v * 0.85));
+  riser(8.1, 9.0, 0.08);
+
+  // 9-15: writing code. drums double, catches accelerate into the melody
+  taiko(9.0, 1.0, 1); crash(9.0, 0.16, 2);
+  pad(9.0, 2.0, Dm, 0.032, 0.25, 0.4, 1800);
+  pad(11.0, 2.0, Bb, 0.034, 0.25, 0.4, 2000);
+  pad(13.0, 1.0, F, 0.036, 0.2, 0.3, 2200);
+  pad(14.0, 1.0, Csus, 0.04, 0.2, 0.3, 2600);
+  bonk(9.75, 0.3); ka(10.25, 0.18);
+  const s3Notes = [69, 74, 72, 69, 67, 69, 72, 74, 77, 79, 81, 86];
+  S3_CATCH.forEach((c, i) => { pluck(9 + c, s3Notes[i], 0.4, 0.2); ka(9 + c, 0.22, -0.25); bell(9 + c + 0.38, s3Notes[i] + 12, 0.025, 0.6); });
+  for (let b = 0; b < 12; b++) { const t = 9 + b * 0.5; if (b > 0) taiko(t, b % 2 ? 0.45 : 0.6); if (b % 2) ka(t + 0.25, 0.14); }
+  for (let i = 0; i < 16; i++) { const t = 11 + i * 0.25; if (i % 4 === 2) taiko(t, 0.4, 0, -0.2); ka(t + 0.125, 0.08, 0.35); }
+  for (let i = 0; i < 32; i++) shaker(11 + i * 0.125, i % 2 ? 0.04 : 0.065);
+  for (let i = 0; i < 16; i++) { const t = 13 + i * 0.125; if (i % 2 === 0) taiko(t, 0.35 + i * 0.02, 0, (i % 4) ? 0.25 : -0.25); ka(t, 0.07 + i * 0.006, 0.3); }
+  for (let i = 0; i < 8; i++) pluck(11 + i * 0.25, ostBb[i], 0.12, i % 2 ? 0.4 : -0.4);
+  for (let i = 0; i < 16; i++) pluck(13 + i * 0.125, (i < 8 ? [53, 60, 65, 60] : [48, 55, 62, 55])[i % 4], 0.12, i % 2 ? 0.4 : -0.4);
+  flute(13.0, 81, 0.45, 0.12); flute(13.5, 84, 0.45, 0.12); flute(14.0, 86, 0.8, 0.14, 84);
+  for (let i = 0; i < 8; i++) taiko(14.5 + i * 0.0625, 0.3 + i * 0.06, 0, (i % 2) * 0.4 - 0.2);
+  riser(14.2, 15.0, 0.1);
+
+  // 15-20: building 3D. awe, pads swell, bell arpeggio for the vertices
+  taiko(15.0, 0.9, 1); gong(15.0, 43, 0.08);
+  pad(15.0, 2.0, Gm, 0.04, 1.0, 0.6, 1500);
+  pad(17.0, 1.5, Bb, 0.045, 0.6, 0.5, 1900);
+  pad(18.5, 1.5, F, 0.05, 0.5, 0.4, 2300);
+  const arp = [67, 69, 72, 74, 77, 79, 81, 84];
+  for (let i = 0; i < 20; i++) bell(15.3 + i * 0.0625, arp[i % 8] + (i >= 8 ? 12 : 0) - (i >= 16 ? 12 : 0), 0.05, (i % 2) * 0.8 - 0.4);
+  for (let i = 0; i < 12; i++) pluck(16.5 + i * 0.125, [55, 62, 67, 62][i % 4], 0.14, i % 2 ? 0.35 : -0.35);
+  flute(17.6, 74, 0.45, 0.2, 72); flute(18.1, 77, 0.45, 0.2); flute(18.6, 79, 0.4, 0.2); flute(19.0, 81, 0.9, 0.24, 79);
+  [16, 17, 18, 19].forEach(t => taiko(t, 0.5)); [19.5, 19.625, 19.75, 19.875].forEach((t, i) => taiko(t, 0.4 + i * 0.12, 0, (i % 2) * 0.4 - 0.2));
+  riser(19.1, 20.0, 0.1);
+
+  // 20-26: the climb. every strike lands on a drum hit
+  pad(20.0, 1.5, Dm, 0.045, 0.1, 0.3, 2400);
+  pad(21.5, 1.5, Bb, 0.048, 0.1, 0.3, 2600);
+  pad(23.0, 1.5, Csus, 0.05, 0.1, 0.3, 2800);
+  pad(24.5, 0.75, Bb, 0.052, 0.1, 0.2, 3000);
+  pad(25.25, 0.75, [34, 46, 51, 53, 58, 63], 0.056, 0.1, 0.2, 3400); // Bb sus4: the Eb pulls toward the lift
+  S5_STRIKE.forEach((st, i) => { taiko(20 + st, 1.0, 1, 0); crash(20 + st, 0.12 + i * 0.02, 1.4); });
+  const climbMel = [[74, 77, 79], [77, 79, 81], [79, 81, 84], [81, 84, 86]];
+  S5_STRIKE.forEach((st, i) => { const t = 20 + st; flute(t + 0.02, climbMel[i][0], 0.45, 0.2); flute(t + 0.5, climbMel[i][1], 0.22, 0.19); flute(t + 0.75, climbMel[i][2], 0.7, 0.22, climbMel[i][2] - 2); });
+  for (let i = 0; i < 48; i++) {
+    const t = 20 + i * 0.125, strike = S5_STRIKE.some(s => Math.abs(20 + s - t) < 0.01);
+    if (!strike && i % 2 === 0) taiko(t, 0.3 + 0.2 * (i / 48), 0, (i % 4) ? 0.3 : -0.3);
+    ka(t, 0.05 + 0.1 * (i / 48), i % 2 ? 0.35 : -0.35);
+    if (i % 2 === 0) { const root = t < 21.5 ? 38 : t < 23 ? 34 : t < 24.5 ? 36 : 34; pluck(t, root + 12, 0.16, 0); pluck(t + 0.125, root + 24, 0.1, 0.2); }
+  }
+  for (let i = 0; i < 8; i++) taiko(25.0 + i * 0.125, 0.45 + i * 0.07, 0, (i % 2) * 0.5 - 0.25);
+  for (let i = 0; i < 8; i++) taiko(25.5 + i * 0.0625, 0.5 + i * 0.05, 0, (i % 2) * 0.5 - 0.25);
+  riser(24.6, 26.0, 0.14);
+
+  // 26-30: summit. key lift to Eb major, one held chord, fade
+  taiko(26.0, 1.0, 1); gong(26.0, 39, 0.16); crash(26.0, 0.2, 3);
+  pad(26.0, 2.6, [39, 46, 51, 55, 58, 63, 67, 70], 0.05, 0.25, 1.3, 2600, 0.8);
+  drone(26.0, 2.4, [27, 39], 0.05);
+  [63, 70, 75, 79, 82, 87].forEach((m, i) => pluck(26.05 + i * 0.09, m, 0.22, (i % 2) * 0.6 - 0.3));
+  flute(26.35, 70, 0.4, 0.22, 68);
+  flute(26.8, 72, 0.35, 0.2);
+  flute(27.2, 75, 0.85, 0.25, 72);
+  flute(28.1, 77, 0.3, 0.2);
+  flute(28.42, 79, 0.28, 0.2);
+  flute(28.72, 75, 1.0, 0.22, 77);
+  taiko(27.0, 0.35); taiko(28.0, 0.28);
+  [75, 79, 82, 87].forEach((m, i) => pluck(27.6 + i * 0.16, m, 0.14, (i % 2) * 0.6 - 0.3));
+  bell(28.7, 87, 0.04, 0); bell(28.72, 82, 0.03, 0.4);
+
+  Q.sort((a, b) => a[0] - b[0]);
+  let qi = 0;
+  // create every queued note that starts before `until` (seconds of score time)
+  const pump = until => {
+    while (qi < Q.length && Q[qi][0] < until) Q[qi++][1]();
+    const now = until - 1.5;
+    live = live.filter(([e, nodes]) => { if (e < now - 0.3) { nodes.forEach(n => { try { n.disconnect(); } catch (err) {} }); return false; } return true; });
+    return qi < Q.length || live.length > 0;
+  };
+  return { master, pump };
+}
+
+// WAV export of the offline render (16-bit PCM, stereo, 48 kHz)
+function encodeWav(buf) {
+  const nc = buf.numberOfChannels, len = buf.length, sr = buf.sampleRate;
+  const ab = new ArrayBuffer(44 + len * nc * 2), dv = new DataView(ab);
+  const ws = (o, s) => { for (let i = 0; i < s.length; i++) dv.setUint8(o + i, s.charCodeAt(i)); };
+  ws(0, 'RIFF'); dv.setUint32(4, 36 + len * nc * 2, true); ws(8, 'WAVE'); ws(12, 'fmt ');
+  dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, nc, true); dv.setUint32(24, sr, true);
+  dv.setUint32(28, sr * nc * 2, true); dv.setUint16(32, nc * 2, true); dv.setUint16(34, 16, true); ws(36, 'data'); dv.setUint32(40, len * nc * 2, true);
+  const ch = []; for (let c = 0; c < nc; c++) ch.push(buf.getChannelData(c));
+  let o = 44; for (let i = 0; i < len; i++) for (let c = 0; c < nc; c++) { const v = Math.max(-1, Math.min(1, ch[c][i])); dv.setInt16(o, v < 0 ? v * 0x8000 : v * 0x7FFF, true); o += 2; }
+  return new Uint8Array(ab);
+}
+async function renderAudioOffline() {
+  const oc = new OfflineAudioContext(2, 48000 * DUR, 48000);
+  const score = buildScore(oc, 0);
+  score.pump(1.5);
+  for (let k = 1; k < DUR; k++) oc.suspend(k).then(() => { score.pump(k + 1.5); oc.resume(); });
+  return oc.startRendering();
+}
+async function renderAudioWavBase64() {
+  const buf = await renderAudioOffline();
+  let peak = 0; for (let c = 0; c < 2; c++) { const d = buf.getChannelData(c); for (let i = 0; i < d.length; i++) peak = Math.max(peak, Math.abs(d[i])); }
+  const bytes = encodeWav(buf);
+  let s = ''; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return { b64: btoa(s), peak };
+}
+
+// ===========================================================================
+//  page wiring
+// ===========================================================================
+window.renderFrame = renderFrame;
+window.buildScore = buildScore;
+window.renderAudioOffline = renderAudioOffline;
+window.renderAudioWavBase64 = renderAudioWavBase64;
+window.encodeWav = encodeWav;
+window.DURATION = DUR;
+window.montageReady = Promise.all([
+  document.fonts.load('700 92px "Zen Maru Gothic"'), document.fonts.load('500 32px "Zen Maru Gothic"'),
+  document.fonts.load('600 28px Karla'), document.fonts.load('700 22px Karla'), document.fonts.load('400 22px Karla')
+]).catch(() => {}).then(() => document.fonts.ready);
+
+if (RENDER) { document.body.classList.add('render'); canvas.width = W; canvas.height = H; }
+const POSTER_T = 28.85;
+let playing = false, audio = null, master = null, startAt = 0, pumpTimer = 0;
+function fit() {
+  if (RENDER) return;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = Math.max(320, Math.round(canvas.clientWidth * dpr));
+  const h = Math.round(w * 9 / 16);
+  if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; if (!playing) renderFrame(POSTER_T); }
+}
+if (!RENDER) {
+  const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  REDUCED = mq.matches;
+  document.getElementById('rmnote').hidden = !REDUCED;
+  mq.addEventListener && mq.addEventListener('change', e => { REDUCED = e.matches; document.getElementById('rmnote').hidden = !REDUCED; });
+  window.addEventListener('resize', fit);
+  window.montageReady.then(() => { fit(); renderFrame(POSTER_T); });
+  fit(); renderFrame(POSTER_T);
+  const overlay = document.getElementById('overlay'), replay = document.getElementById('replay');
+  const loop = () => {
+    if (!playing) return;
+    const t = audio.currentTime - startAt;
+    renderFrame(Math.max(0, t));
+    if (t >= DUR) { playing = false; replay.hidden = false; renderFrame(DUR); return; }
+    requestAnimationFrame(loop);
+  };
+  const start = async () => {
+    if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
+    if (audio.state === 'suspended') await audio.resume();
+    if (master) { try { master.gain.cancelScheduledValues(audio.currentTime); master.gain.setTargetAtTime(0.0001, audio.currentTime, 0.03); const m = master; setTimeout(() => m.disconnect(), 400); } catch (e) {} }
+    startAt = audio.currentTime + 0.15;
+    const score = buildScore(audio, startAt);
+    master = score.master;
+    clearInterval(pumpTimer);
+    score.pump(audio.currentTime - startAt + 1.5);
+    pumpTimer = setInterval(() => { if (!score.pump(audio.currentTime - startAt + 1.5)) clearInterval(pumpTimer); }, 200);
+    overlay.classList.add('gone'); replay.hidden = false;
+    if (!playing) { playing = true; requestAnimationFrame(loop); }
+  };
+  document.getElementById('play').addEventListener('click', start);
+  replay.addEventListener('click', start);
+}
+})();
+</script>
+</body>
+</html>
