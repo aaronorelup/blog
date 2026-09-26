@@ -13,6 +13,11 @@ const WAYPOINTS = [
     portrait: { pos: [0.6, 1.8, -1.2], target: [0, 2.6, 22], fov: 62 } }
 ];
 
+// the lamp-side-up back door on the avatar coin (see bindAvatar)
+const HQ_URL = 'https://hq.soul-orelup.workers.dev';
+const LANTERN_FLIPS = 5;
+const LANTERN_GAP = 3000;
+
 const P = {
   cream: 0xFBF3E8, skyTop: 0x6FB4E8, skyLow: 0xCDE9F7, cloud: 0xFFFFFF, cloudLow: 0xE4EEF6,
   wall: 0xF0A6B8, wallDeep: 0xE8909F, shoji: 0xF6DFA8, shojiLit: 0xFCEFC4,
@@ -874,10 +879,21 @@ export class HomeScene {
     this.coinTurn = 0;
     show(0);
 
+    // After dark the coin's reverse is a lit andon, and the command centre's lamp is an
+    // andon too. Flip it LANTERN_FLIPS times running (each toss within LANTERN_GAP of the
+    // last one landing) and the last toss is rigged to land lamp-up, the lamp flares, and
+    // the door opens onto HQ. Not a lock — HQ has its own passphrase — just a back door
+    // only one person needs, so it stays out of the way of everyone else.
+    this.lanternRun = 0; this.lanternLanded = 0;
+
     btn.addEventListener('click', () => {
       if (btn.dataset.busy) return;
       btn.dataset.busy = '1';
-      const half = 3 + Math.floor(Math.random() * 5);   // odd counts land on the bonsai
+      const now0 = performance.now();
+      this.lanternRun = (this.night && now0 - this.lanternLanded < LANTERN_GAP) ? this.lanternRun + 1 : (this.night ? 1 : 0);
+      const lit = this.lanternRun >= LANTERN_FLIPS;
+      let half = 3 + Math.floor(Math.random() * 5);     // odd counts land on the bonsai
+      if (lit && Math.round((this.coinTurn + half * 180) / 180) % 2 === 0) half++;
       const dur = reduce ? 420 : 1150;
       const from = this.coinTurn, to = from + half * 180;
       toss.style.animation = '';
@@ -894,6 +910,16 @@ export class HomeScene {
         if (p < 1) { requestAnimationFrame(tick); return; }
         this.coinTurn = to % 360;
         toss.style.animation = '';
+        this.lanternLanded = performance.now();
+        if (lit) {
+          this.lanternRun = 0;
+          back.style.transition = 'box-shadow 700ms ease-out';
+          back.style.boxShadow = '0 0 0 3px #FFD892, 0 0 42px 16px rgba(255,216,146,0.8)';
+          // coming Back restores this page from bfcache mid-glow, so put the lamp out then
+          window.addEventListener('pageshow', () => { back.style.boxShadow = ''; delete btn.dataset.busy; }, { once: true });
+          setTimeout(() => { location.href = HQ_URL; }, 900);
+          return;                                       // stays busy: we're leaving
+        }
         delete btn.dataset.busy;
       };
       requestAnimationFrame(tick);
