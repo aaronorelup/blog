@@ -143,3 +143,155 @@ ao-model > canvas.ao-model-canvas:active { cursor: grabbing; }
   color: #9c917f;
   pointer-events: none;
 }
+
+/* <ao-timeline>: one rail per source down the left, events in time order to the right.
+   Rails are drawn per row with no gap between rows, so they read as continuous lines. */
+ao-timeline {
+  --ao-lanes: 3;
+  --ao-rail: 16px;
+  display: block;
+  margin: 8px 0 30px;
+}
+ao-timeline [data-lane-idx='0'] { --ao-c: var(--pc-accent); }
+ao-timeline [data-lane-idx='1'] { --ao-c: var(--pc-head); }
+ao-timeline [data-lane-idx='2'] { --ao-c: var(--pc-soft); }
+ao-timeline [data-lane-idx='3'] { --ao-c: var(--pc-line2); }
+ao-timeline [data-lane-idx='4'] { --ao-c: var(--pc-gold); }
+.ao-tl-head {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+  font-family: Karla, system-ui, sans-serif;
+}
+.pc-prose ul.ao-tl-legend,
+ul.ao-tl-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+.pc-prose ul.ao-tl-legend > li,
+ul.ao-tl-legend > li {
+  margin: 0;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--pc-soft);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+ul.ao-tl-legend > li::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--ao-c);
+  flex: none;
+}
+.ao-tl-views { display: flex; flex-wrap: wrap; gap: 8px; }
+.ao-tl-views button {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--pc-line2);
+  background: transparent;
+  color: var(--pc-body);
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 180ms cubic-bezier(.4, 0, .2, 1), border-color 180ms cubic-bezier(.4, 0, .2, 1);
+}
+.ao-tl-views button:hover { background: var(--pc-hover); }
+.ao-tl-views button[aria-pressed='true'] {
+  border-color: var(--pc-head);
+  color: var(--pc-head);
+}
+.ao-tl-views button:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+
+.pc-prose ao-timeline > ol,
+ao-timeline > ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pc-prose ao-timeline > ol > li,
+ao-timeline > ol > li {
+  margin: 0;
+  display: grid;
+  grid-template-columns: calc(var(--ao-lanes) * var(--ao-rail)) minmax(0, 1fr);
+  column-gap: 14px;
+  transition: opacity 220ms cubic-bezier(.4, 0, .2, 1);
+}
+ao-timeline > ol > li.ao-tl-out { opacity: 0.22; }
+.ao-tl-rail { display: flex; }
+.ao-tl-rail > i {
+  width: var(--ao-rail);
+  position: relative;
+  flex: none;
+}
+.ao-tl-rail > i::before {
+  content: '';
+  position: absolute;
+  left: calc(50% - 1px);
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--ao-c);
+  opacity: 0.28;
+}
+.ao-tl-rail > i.on::after {
+  content: '';
+  position: absolute;
+  left: calc(50% - 6px);
+  top: 16px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--ao-c);
+  box-shadow: 0 0 0 3px var(--pc-page);
+}
+.ao-tl-body {
+  padding: 10px 0 16px;
+  border-bottom: 1px solid var(--pc-line);
+  min-width: 0;
+}
+ao-timeline > ol > li:last-child .ao-tl-body { border-bottom: 0; }
+ao-timeline time {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  color: var(--pc-quiet);
+  margin-right: 10px;
+}
+.ao-tl-who {
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ao-c);
+}
+ao-timeline li[data-lane-idx='3'] .ao-tl-who { color: var(--pc-soft); }
+.pc-prose ao-timeline .ao-tl-body p,
+ao-timeline .ao-tl-body p {
+  margin: 6px 0 0;
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+ao-timeline .ao-tl-body q {
+  color: var(--pc-strong);
+  font-style: italic;
+}
+@media (max-width: 560px) {
+  ao-timeline { --ao-rail: 12px; }
+  .pc-prose ao-timeline > ol > li,
+  ao-timeline > ol > li { column-gap: 10px; }
+  .pc-prose ao-timeline .ao-tl-body p,
+  ao-timeline .ao-tl-body p { font-size: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  ao-timeline > ol > li, .ao-tl-views button { transition: none; }
+}

@@ -736,7 +736,7 @@ export class HomeScene {
       host.innerHTML = this.postCache[slug];
       host.dataset.slug = slug;
       // Scripts in the copied HTML never run, so the post's custom elements come from here.
-      if (host.querySelector('ao-compare, ao-model')) import('./post-components.js');
+      if (host.querySelector('ao-compare, ao-model, ao-timeline')) import('./post-components.js');
       this.scrollPanelTop();
     } catch (_) {
       location.href = '/ledger/' + slug + '/';       // the real page always works
