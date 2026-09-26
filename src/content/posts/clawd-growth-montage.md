@@ -73,6 +73,18 @@ The session can't hear. It checked the music with a loudness table per second an
 and that's how it found the big drum hits bottoming out at 38 Hz, below what a phone speaker can
 play. Those checks can tell you the music is shaped right. They can't tell you if it's any good.
 
+## Someone else did it better
+
+After this went up, I saw [this one on X](https://x.com/ishuagra02/status/2102788371114246177),
+and it is far better than mine. It's much more 3D, and it has a clear, high-quality painterly
+feel that mine doesn't come close to. My guess is they made a previs in Blender, animated it,
+and then handed that animation to a video generation model. I don't know that, it's what it
+looks like.
+
+The comment on it says it was a back and forth of two messages. Mine was one prompt, so maybe
+if I kept working on this one I could get it to that level. But I'd rather try the idea on a
+different video than polish this one, so that's what I'm doing next.
+
 ## What I take from it
 
 The picture got good because the session could see it. Every fix above came from rendering a
