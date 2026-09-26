@@ -1,7 +1,7 @@
 ---
 id: "AO-018"
 title: "Six days of trying to put my character in 3D, every attempt side by side"
-summary: "Between 19 and 25 September two agents built Jefrie, my original character, as a 3D model about twenty times, by two methods. Each approach failed somewhere different. Here are the real renders, walk cycles and two models you can turn around, in the order they were made."
+summary: "Claude hand-built her in Blender, GPT-6 Astra hand-built her on the same brief, and TRELLIS.2 generated her before an agent rebuilt the mesh. The real renders, walk cycles and two models you can turn around, in the order they were made, labelled with facts and no scores."
 date: 2026-09-25
 status: "in-progress"
 tags: ["claude-code", "blender", "3d", "agents", "comfyui"]
@@ -61,12 +61,12 @@ through the live Blender session. I kept asking for fixes, and every fix was a n
   </figure>
 </ao-compare>
 
-Version 3 is the interesting one to me. A subagent got a reference pack another session had
+Version 3 had the most measurement behind it. A subagent got a reference pack another session had
 made from the original image: 41 guidance maps, pose keypoints, and a camera it could solve. It
 placed everything by un-projecting measured pixels, so the horizon lands at 730.2 px against a
 measured 730, and all 14 pose joints reproject exactly. Its own notes list what was still
-wrong, starting with *"This is a stylised blockout, not a sculpt."* **Getting every number right
-didn't make it look like her.**
+wrong, starting with *"This is a stylised blockout, not a sculpt."* **Every measured number
+matched, and the result was still a blockout.**
 
 The same morning I asked for a walk. Each walk below came from one prompt, and each prompt was
 my correction of the one before: *"Her knees bend the wrong way,"* the tail should be *"as thick
@@ -103,7 +103,7 @@ eight camera angles. Both passes are in the orbit strip below: the top row is be
 bottom row after.
 
 <ao-compare cols="1">
-  <figure>
+  <figure class="wide">
     <img src="/media/jefrie-3d/07-astra.webp" alt="GPT-6 Astra's Jefrie from the matched camera" loading="lazy">
     <figcaption><b>7. Astra v1, from the matched camera</b><span class="ao-meta">21 Sep 17:50 · GPT-6 Astra (Codex, high reasoning) · about 15 min</span></figcaption>
   </figure>
