@@ -1,0 +1,145 @@
+/* Styles for the post custom elements in src/scripts/post-components.js. Imported by that
+   module, so they reach both the standalone post page and the homepage panel. Uses the
+   panel's --pc-* tokens, so day and night both work. */
+
+ao-compare {
+  --ao-cols: 2;
+  --ao-aspect: 4/3;
+  display: grid;
+  grid-template-columns: repeat(var(--ao-cols), minmax(0, 1fr));
+  gap: 14px;
+  margin: 8px 0 28px;
+}
+/* A wide figure spans the whole row: for sheets that are already side by side. */
+ao-compare > figure.wide { grid-column: 1 / -1; }
+ao-compare > figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+ao-compare > figure > img,
+ao-compare > figure > video {
+  width: 100%;
+  aspect-ratio: var(--ao-aspect);
+  object-fit: contain;
+  background: #15141f;
+  border: 1px solid var(--pc-line);
+  border-radius: 8px;
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+ao-compare > figure.wide > img,
+ao-compare > figure.wide > video { aspect-ratio: auto; }
+ao-compare > figure > img { cursor: zoom-in; }
+ao-compare figcaption {
+  margin-top: 8px;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pc-soft);
+}
+ao-compare figcaption b {
+  display: block;
+  font-weight: 600;
+  color: var(--pc-strong);
+}
+ao-compare figcaption .ao-meta {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: var(--pc-quiet);
+}
+@media (max-width: 900px) {
+  ao-compare { grid-template-columns: repeat(min(var(--ao-cols), 2), minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  ao-compare { grid-template-columns: minmax(0, 1fr); }
+}
+
+dialog.ao-lightbox {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  max-width: 96vw;
+  max-height: 94vh;
+}
+dialog.ao-lightbox::backdrop { background: rgba(8, 9, 18, 0.86); }
+dialog.ao-lightbox img {
+  display: block;
+  max-width: 96vw;
+  max-height: 94vh;
+  object-fit: contain;
+  border-radius: 6px;
+}
+dialog.ao-lightbox button {
+  position: fixed;
+  top: 14px;
+  right: 18px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid #4a445a;
+  background: #201f2c;
+  color: #f2e7d5;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+ao-model {
+  display: block;
+  position: relative;
+  margin: 8px 0 28px;
+  border: 1px solid var(--pc-line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 40%, #2a2838 0%, #15141f 75%);
+  min-height: 120px;
+}
+ao-model > img.ao-model-poster,
+ao-model > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+}
+ao-model > canvas.ao-model-canvas {
+  display: block;
+  width: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+ao-model > canvas.ao-model-canvas:active { cursor: grabbing; }
+.ao-model-load {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1px solid var(--pc-head);
+  background: rgba(16, 18, 32, 0.88);
+  color: #f0c06a;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 180ms cubic-bezier(.4, 0, .2, 1);
+}
+.ao-model-load:hover { background: rgba(32, 31, 44, 0.95); }
+.ao-model-load:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+.ao-model-load:disabled { cursor: progress; opacity: 0.8; }
+.ao-model-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  text-align: center;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 12px;
+  color: #9c917f;
+  pointer-events: none;
+}

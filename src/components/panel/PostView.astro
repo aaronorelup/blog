@@ -40,3 +40,9 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
     <Content />
   </div>
 </article>
+
+<script>
+  // Custom elements posts can use in their Markdown (<ao-compare>, <ao-model>). The homepage
+  // panel imports the same module in openPost(), since it only copies this article's HTML.
+  import '../../scripts/post-components.js';
+</script>
