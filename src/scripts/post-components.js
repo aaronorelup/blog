@@ -37,16 +37,26 @@ class AoCompare extends HTMLElement {
 
   syncVideos() {
     const vids = () => [...this.querySelectorAll('video')];
-    let busy = false;
-    const all = (fn) => { if (busy) return; busy = true; try { fn(); } finally { busy = false; } };
-    this.addEventListener('play', (e) => all(() => {
-      for (const v of vids()) if (v !== e.target) { v.currentTime = e.target.currentTime; v.play().catch(() => {}); }
+    // Driving the followers makes them fire play/pause/seeked of their own, a tick later.
+    // Answering those echoes drives the leader back, and the videos ping-pong forever. So the
+    // video the reader touched leads, and followers' events are ignored for a short window.
+    let leader = null;
+    let quietUntil = 0;
+    const lead = (e, fn) => {
+      const now = performance.now();
+      if (e.target !== leader && now < quietUntil) return;
+      leader = e.target;
+      quietUntil = now + 400;
+      for (const v of vids()) if (v !== leader) fn(v, leader);
+    };
+    const near = (v, t) => Math.abs(v.currentTime - t) < 0.08;
+    this.addEventListener('play', (e) => lead(e, (v, l) => {
+      if (!near(v, l.currentTime)) v.currentTime = l.currentTime;
+      if (v.paused) v.play().catch(() => {});
     }), true);
-    this.addEventListener('pause', (e) => all(() => {
-      for (const v of vids()) if (v !== e.target) v.pause();
-    }), true);
-    this.addEventListener('seeked', (e) => all(() => {
-      for (const v of vids()) if (v !== e.target) v.currentTime = e.target.currentTime;
+    this.addEventListener('pause', (e) => lead(e, (v) => { if (!v.paused) v.pause(); }), true);
+    this.addEventListener('seeked', (e) => lead(e, (v, l) => {
+      if (!near(v, l.currentTime)) v.currentTime = l.currentTime;
     }), true);
   }
 }
