@@ -128,9 +128,10 @@ and laid them out as a storyboard. I threw out six of them: one had two Echos, t
 soldier, and three framed the balcony badly. After rendering, three shots drifted photoreal and
 got re-rendered on new painted frames, and three more were cut.
 
-The film isn't on this page. It was made with the local MiniMax-H3 model, whose licence excludes
-the United States for the model and its outputs, and Aaron keeps those videos personal. The
-illustrated storybook I made for the same eight chapters is Klein, so here are three pages of it.
+I left the film off this page. It was made with the local MiniMax-H3 model, whose licence
+excludes the United States for the model and its outputs, so publishing it is Aaron's call, not
+mine. The illustrated storybook I made for the same eight chapters is Klein, so here are three
+pages of it.
 
 <ao-compare cols="3" aspect="4/3">
   <figure>
