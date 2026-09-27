@@ -2,7 +2,8 @@
 // One ledger entry. The standalone /ledger/<slug>/ page renders this; the homepage
 // overlay fetches that page and lifts [data-post-article] out of it, so the markdown
 // has exactly one renderer and the two never drift.
-import type { CollectionEntry } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { SERIES } from '../../data/series.js';
 
 interface Props {
   post: CollectionEntry<'posts'>;
@@ -18,6 +19,20 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
   // pinning the zone, a build west of UTC formats them a day early.
   timeZone: 'UTC',
 });
+
+// Every post, in ledger-number order. The threads below list their members in this order, and
+// the older/newer links step through it, so no post ends in a dead end.
+const byId = (await getCollection('posts', ({ data }) => !data.draft)).sort((a, b) =>
+  a.data.id.localeCompare(b.data.id, 'en', { numeric: true }),
+);
+const threads = post.data.series.map((key) => {
+  const s = SERIES[key];
+  if (!s) throw new Error(`${post.data.id} names series "${key}", which src/data/series.js doesn't define`);
+  return { key, ...s, posts: byId.filter((p) => p.data.series.includes(key)) };
+});
+const at = byId.findIndex((p) => p.slug === post.slug);
+const older = byId[at - 1];
+const newer = byId[at + 1];
 ---
 
 <article data-post-article style="width:100%;max-width:720px;padding-bottom:60px">
@@ -39,6 +54,47 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
   <div class="pc-prose">
     <Content />
   </div>
+
+  {threads.map((t) => {
+    const n = t.posts.findIndex((p) => p.slug === post.slug) + 1;
+    return (
+      <nav data-series={t.key} aria-label={`Series: ${t.title}`} style="margin:56px 0 0;padding:22px 0 0;border-top:1px solid var(--pc-line)">
+        <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;letter-spacing:0.08em;color:var(--pc-quiet);margin-bottom:6px">PART {n} OF {t.posts.length}</div>
+        <div style="font-family:'Zen Maru Gothic',sans-serif;font-size:19px;font-weight:700;color:var(--pc-strong);margin-bottom:4px">{t.title}</div>
+        <p style="margin:0 0 14px;font-size:13.5px;line-height:1.6;color:var(--pc-quiet);text-wrap:pretty">{t.blurb}</p>
+        <ol style="list-style:none;margin:0;padding:0">
+          {t.posts.map((p) => p.slug === post.slug ? (
+            <li aria-current="page" style="display:flex;gap:14px;padding:7px 10px;margin:0 -10px;border-left:2px solid var(--pc-accent);border-radius:0 8px 8px 0;background:var(--pc-hover)">
+              <span style="flex:none;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.6;color:var(--pc-accent)">{p.data.id}</span>
+              <span style="font-size:14.5px;line-height:1.5;color:var(--pc-strong)">{p.data.title}</span>
+            </li>
+          ) : (
+            <li>
+              <a href={`/ledger/${p.slug}/`} class="pc-row" style="display:flex;gap:14px;padding:7px 10px;margin:0 -10px;border-left:2px solid transparent;border-radius:0 8px 8px 0;text-decoration:none">
+                <span style="flex:none;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.6;color:var(--pc-quiet)">{p.data.id}</span>
+                <span style="font-size:14.5px;line-height:1.5;color:var(--pc-body)">{p.data.title}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    );
+  })}
+
+  <nav aria-label="Older and newer entries" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:48px 0 0;padding:22px 0 0;border-top:1px solid var(--pc-line)">
+    {older ? (
+      <a href={`/ledger/${older.slug}/`} class="pc-row" style="display:block;padding:12px 14px;border:1px solid var(--pc-line);border-radius:10px;text-decoration:none">
+        <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;letter-spacing:0.06em;color:var(--pc-accent);margin-bottom:4px">← {older.data.id}</div>
+        <div style="font-size:14px;line-height:1.45;color:var(--pc-body);text-wrap:pretty">{older.data.title}</div>
+      </a>
+    ) : <span />}
+    {newer && (
+      <a href={`/ledger/${newer.slug}/`} class="pc-row" style="display:block;padding:12px 14px;border:1px solid var(--pc-line);border-radius:10px;text-decoration:none;text-align:right">
+        <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;letter-spacing:0.06em;color:var(--pc-accent);margin-bottom:4px">{newer.data.id} →</div>
+        <div style="font-size:14px;line-height:1.45;color:var(--pc-body);text-wrap:pretty">{newer.data.title}</div>
+      </a>
+    )}
+  </nav>
 </article>
 
 <script>

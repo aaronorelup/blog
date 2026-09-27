@@ -11,6 +11,8 @@ const posts = defineCollection({
     date: z.coerce.date(),
     status: z.enum(['note', 'in-progress', 'shipped']).default('note'),
     tags: z.array(z.string()).default([]),
+    // Keys from src/data/series.js. A post can sit in more than one thread.
+    series: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
   }),
 });
