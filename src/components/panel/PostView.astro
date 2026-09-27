@@ -64,14 +64,14 @@ const newer = byId[at + 1];
         <p style="margin:0 0 14px;font-size:13.5px;line-height:1.6;color:var(--pc-quiet);text-wrap:pretty">{t.blurb}</p>
         <ol style="list-style:none;margin:0;padding:0">
           {t.posts.map((p) => p.slug === post.slug ? (
-            <li aria-current="page" style="display:flex;gap:14px;padding:7px 10px;margin:0 -10px;border-left:2px solid var(--pc-accent);border-radius:0 8px 8px 0;background:var(--pc-hover)">
-              <span style="flex:none;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.6;color:var(--pc-accent)">{p.data.id}</span>
+            <li aria-current="page" style="display:flex;padding:7px 10px;margin:0 -10px;border-left:2px solid var(--pc-accent);border-radius:0 8px 8px 0;background:var(--pc-hover)">
+              <span style="flex:none;width:58px;margin-right:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.6;color:var(--pc-accent)">{p.data.id}</span>
               <span style="font-size:14.5px;line-height:1.5;color:var(--pc-strong)">{p.data.title}</span>
             </li>
           ) : (
             <li>
-              <a href={`/ledger/${p.slug}/`} class="pc-row" style="display:flex;gap:14px;padding:7px 10px;margin:0 -10px;border-left:2px solid transparent;border-radius:0 8px 8px 0;text-decoration:none">
-                <span style="flex:none;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.6;color:var(--pc-quiet)">{p.data.id}</span>
+              <a href={`/ledger/${p.slug}/`} class="pc-row" style="display:flex;padding:7px 10px;margin:0 -10px;border-left:2px solid transparent;border-radius:0 8px 8px 0;text-decoration:none">
+                <span style="flex:none;width:58px;margin-right:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.6;color:var(--pc-quiet)">{p.data.id}</span>
                 <span style="font-size:14.5px;line-height:1.5;color:var(--pc-body)">{p.data.title}</span>
               </a>
             </li>
