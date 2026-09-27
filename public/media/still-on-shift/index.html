@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Still on Shift</title>
+<meta name="description" content="BLACKWATER — Still on Shift. A pre-rendered trailer made inside the game engine from the game's own models, caves and sounds.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root { --pc-page:#101220; --pc-body:#C9BCA9; --pc-soft:#9C917F; --pc-head:#F0C06A; --pc-accent:#E2795C; --pc-line:#302E3E; }
+  html, body { margin:0; height:100%; background:var(--pc-page); color:var(--pc-body); font-family:Karla, system-ui, sans-serif; }
+  body { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .well { width:min(100vw, calc(100vh * 16 / 9)); aspect-ratio:16/9; background:#07080f; border-radius:0; }
+  video { width:100%; height:100%; display:block; background:#07080f; }
+  .bar { width:min(100vw, calc(100vh * 16 / 9)); display:flex; justify-content:space-between; gap:16px;
+         padding:8px 16px; box-sizing:border-box; font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:var(--pc-soft); }
+  .bar a { color:var(--pc-accent); text-decoration:none; }
+  .bar a:hover { text-decoration:underline; }
+  .bar a:focus-visible, video:focus-visible { outline:3px solid var(--pc-head); outline-offset:3px; }
+  body.embed .bar { display:none; }
+  body.embed .well { width:100vw; height:100vh; aspect-ratio:auto; }
+</style>
+</head>
+<body>
+<div class="well"><video id="v" controls playsinline preload="metadata" poster="poster.jpg"></video></div>
+<div class="bar"><span id="label">BLACKWATER — Still on Shift</span><a href="/ledger/">← aaronorelup.com</a></div>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
+<script>
+  const q = new URLSearchParams(location.search);
+  if (q.has('embed')) document.body.classList.add('embed');
+  const v = document.getElementById('v');
+  if (q.get('v') === 'previs') {
+    document.getElementById('label').textContent = 'Previs animatic (clay pass)';
+    v.poster = 'previs-poster.jpg';
+    v.src = 'previs.mp4';
+  } else if (v.canPlayType('application/vnd.apple.mpegurl')) {
+    v.src = 'master.m3u8';
+  } else if (window.Hls && Hls.isSupported()) {
+    const hls = new Hls({ capLevelToPlayerSize: true });
+    hls.loadSource('master.m3u8');
+    hls.attachMedia(v);
+  } else {
+    v.outerHTML = '<p style="padding:24px">This browser cannot play the stream. Try the <a href="1080/index.m3u8">1080p playlist</a>.</p>';
+  }
+</script>
+</body>
+</html>
