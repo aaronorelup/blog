@@ -5,6 +5,7 @@ summary: "Agents built BLACKWATER 2 twice while I stayed out of the loop, 220 of
 date: 2026-09-22
 status: "note"
 tags: ["agents", "claude-code", "gamedev", "playtesting", "lessons"]
+series: ["blackwater", "agent-runs"]
 draft: false
 ---
 

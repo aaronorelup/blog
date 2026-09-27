@@ -5,6 +5,7 @@ summary: "Claude Code records everything its agents do and then gives you no way
 date: 2026-09-01
 status: "shipped"
 tags: ["claude-code", "agents", "tools", "mcp", "gauntlet-loop"]
+series: ["agent-runs"]
 draft: false
 ---
 

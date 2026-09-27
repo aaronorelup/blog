@@ -5,6 +5,7 @@ summary: "Claude played LLM Monster Hunter start to finish as a real player — 
 date: 2026-08-05
 status: "shipped"
 tags: ["claude-code", "llm-monster-hunter", "agents", "elevenlabs", "playtesting", "presentations"]
+series: ["llm-monster-hunter"]
 ---
 
 I've been building an AI-native monster-catching RPG for a while now — the code manages

@@ -5,6 +5,7 @@ summary: "366 commits between June and August 2025. I designed the queue, the wo
 date: 2026-08-08
 status: "note"
 tags: ["origin", "llm-monster-hunter", "python", "react", "architecture", "lessons"]
+series: ["origin", "llm-monster-hunter"]
 draft: false
 ---
 

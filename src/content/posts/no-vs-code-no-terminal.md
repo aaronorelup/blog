@@ -5,6 +5,7 @@ summary: "My first three AI projects, May 2025: a neural network built in Excel 
 date: 2026-08-08
 status: "note"
 tags: ["origin", "python", "local-llm", "git", "lessons"]
+series: ["origin"]
 draft: false
 ---
 

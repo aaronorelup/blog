@@ -5,6 +5,7 @@ summary: "Claude Code made a 2:45 music video for BLACKWATER's song \"Still on S
 date: 2026-09-26
 status: "shipped"
 tags: ["claude-code", "godot", "gamedev", "trailer", "ffmpeg"]
+series: ["blackwater"]
 ---
 
 This is a music video for [BLACKWATER](/ledger/blackwater-weekend/), the cave-diving zombies

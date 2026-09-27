@@ -5,6 +5,7 @@ summary: "React re-rendered the whole screen on every token, and the only real f
 date: 2026-08-08
 status: "note"
 tags: ["llm-monster-hunter", "react", "burnout", "fable-5", "claude-code", "documentation", "lessons"]
+series: ["origin", "llm-monster-hunter"]
 draft: false
 ---
 

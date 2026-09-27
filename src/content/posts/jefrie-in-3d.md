@@ -5,6 +5,7 @@ summary: "Claude hand-built her in Blender, GPT-6 Astra hand-built her on the sa
 date: 2026-09-25
 status: "in-progress"
 tags: ["claude-code", "blender", "3d", "agents", "comfyui"]
+series: ["characters"]
 draft: false
 ---
 

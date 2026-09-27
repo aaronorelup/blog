@@ -5,6 +5,7 @@ summary: "Twenty prompts over two days, checking in every hour, and I never once
 date: 2026-08-08
 status: "in-progress"
 tags: ["agents", "claude-code", "workflow", "prompting", "lessons"]
+series: ["origin"]
 ---
 
 At the end of [I don't learn programming anymore](/ledger/i-dont-learn-programming-anymore/)

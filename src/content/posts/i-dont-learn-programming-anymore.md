@@ -5,6 +5,7 @@ summary: "In 2025 every prompt taught me architecture. Now I don't know what's i
 date: 2026-08-08
 status: "note"
 tags: ["claude-code", "claude-cowork", "openclaw", "agents", "prompting", "lessons"]
+series: ["origin"]
 draft: false
 ---
 

@@ -5,6 +5,7 @@ summary: "Fable 5 wouldn't do the creative work and couldn't fix its own 3D mist
 date: 2026-08-02
 status: "shipped"
 tags: ["claude-code", "three-js", "gamedev", "elevenlabs", "lessons"]
+series: ["blackwater"]
 ---
 
 I had a pile of Claude Code credits about to reset and no plan for them. So I spent them

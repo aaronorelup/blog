@@ -5,6 +5,7 @@ summary: "Two Claude sessions were working on my machine at once. One deleted 19
 date: 2026-09-26
 status: "note"
 tags: ["agents", "claude-code", "second-brain", "notion", "lessons"]
+series: ["agent-runs"]
 draft: false
 ---
 

@@ -5,6 +5,7 @@ summary: "Super-files, scope creep, a component library that got more complicate
 date: 2026-08-08
 status: "note"
 tags: ["llm-monster-hunter", "prompting", "context-window", "lessons"]
+series: ["origin", "llm-monster-hunter"]
 draft: false
 ---
 

@@ -5,6 +5,7 @@ summary: "Three Claude Code sessions, zero shared memory, one overnight gauntlet
 date: 2026-08-07
 status: "shipped"
 tags: ["claude-code", "gauntlet-loop", "gamedev", "agents", "lessons"]
+series: ["agent-runs"]
 draft: false
 ---
 

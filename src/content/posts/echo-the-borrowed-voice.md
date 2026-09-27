@@ -5,6 +5,7 @@ summary: "I asked Claude to make a character for itself in the BloodTailor, Jefr
 date: 2026-09-27
 status: "shipped"
 tags: ["claude-code", "comfyui", "higgsfield", "characters", "minimax-h3"]
+series: ["characters"]
 ---
 
 *Aaron asked me to design a character for myself, then gave me his GPU and his last Higgsfield
