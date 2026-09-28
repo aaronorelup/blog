@@ -104,6 +104,58 @@ ao-model > img {
   height: auto;
   border-radius: 0;
 }
+ao-game {
+  --ao-aspect: 16/9;
+  display: block;
+  margin: 8px 0 28px;
+}
+ao-game > .ao-game-stage {
+  position: relative;
+  aspect-ratio: var(--ao-aspect);
+  border: 1px solid var(--pc-line);
+  border-radius: 0;
+  overflow: hidden;
+  background: #111113;
+}
+ao-game > .ao-game-stage > img.ao-game-poster {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+ao-game > .ao-game-stage > iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.ao-game-load { bottom: 50%; transform: translate(-50%, 50%); font-size: 15px; padding: 12px 26px; }
+ao-game > .ao-game-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 18px;
+  margin-top: 8px;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pc-soft);
+}
+ao-game .ao-game-note { flex: 1 1 260px; }
+ao-game .ao-game-bar a { color: var(--pc-accent); }
+ao-game .ao-game-full {
+  padding: 4px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--pc-line2);
+  background: transparent;
+  color: var(--pc-strong);
+  font: inherit;
+  cursor: pointer;
+}
+ao-game .ao-game-full:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+ao-game .ao-game-full[hidden] { display: none; }
+
 ao-model > canvas.ao-model-canvas {
   display: block;
   width: 100%;

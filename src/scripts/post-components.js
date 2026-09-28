@@ -8,6 +8,7 @@
 //   <ao-compare cols="3" aspect="4/3" sync> <figure>…</figure> … </ao-compare>
 //   <ao-model src="/media/x/model.glb" poster="/media/x/model.webp" size="2.1 MB" label="…">
 //   <ao-timeline lanes="a:Session A|b:Session B" views="b:What B saw"> <ol><li data-lane="a">…
+//   <ao-game src="/games/x/" poster="/media/x/poster.jpg" size="12 MB" label="…" note="…">
 //
 // Usage notes live in the blog's CLAUDE.md, "Post components".
 import '../styles/post-components.css';
@@ -290,6 +291,95 @@ class AoTimeline extends HTMLElement {
   }
 }
 
+// ---------------------------------------------------------------------------------------
+// <ao-game>: a game from public/games/ played inside the post. Like <ao-model>, nothing
+// downloads until the reader asks: a poster and a Play button first, then an iframe of the
+// game's own page. A fullscreen button and an "own tab" link sit under the frame.
+//   src     the game's page, e.g. /games/storm-bell/
+//   poster  still shown before loading
+//   size    shown on the button so the reader knows what the click costs
+//   label   what it is, for the button and for screen readers
+//   aspect  the frame, default 16/9
+//   note    one line under the frame (controls, what it needs)
+// The inner markup (a link to the game) is the no-JS fallback.
+class AoGame extends HTMLElement {
+  connectedCallback() {
+    if (this._ready) return;
+    this._ready = true;
+    const src = this.getAttribute('src');
+    const poster = this.getAttribute('poster');
+    const label = this.getAttribute('label') || 'Game';
+    const size = this.getAttribute('size');
+    const note = this.getAttribute('note');
+    const aspect = this.getAttribute('aspect');
+    if (aspect) this.style.setProperty('--ao-aspect', aspect);
+    this.setAttribute('role', 'group');
+    this.setAttribute('aria-label', label);
+    this.innerHTML = '';
+
+    const stage = document.createElement('div');
+    stage.className = 'ao-game-stage';
+    if (poster) {
+      const img = document.createElement('img');
+      img.src = poster; img.alt = label; img.loading = 'lazy'; img.className = 'ao-game-poster';
+      stage.appendChild(img);
+    }
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'ao-model-load ao-game-load';
+    btn.textContent = 'Play it here' + (size ? ' (' + size + ')' : '');
+    btn.addEventListener('click', () => this.load(src, label));
+    stage.appendChild(btn);
+    this.appendChild(stage);
+
+    const bar = document.createElement('div');
+    bar.className = 'ao-game-bar';
+    if (note) {
+      const n = document.createElement('span');
+      n.className = 'ao-game-note';
+      n.textContent = note;
+      bar.appendChild(n);
+    }
+    const full = document.createElement('button');
+    full.type = 'button';
+    full.className = 'ao-game-full';
+    full.textContent = 'Fullscreen';
+    full.hidden = true;
+    full.addEventListener('click', () => {
+      const f = this.querySelector('iframe');
+      (f?.requestFullscreen || f?.webkitRequestFullscreen)?.call(f);
+      f?.focus();
+    });
+    bar.appendChild(full);
+    const tab = document.createElement('a');
+    tab.href = src;
+    tab.target = '_blank';
+    tab.rel = 'noopener';
+    tab.textContent = 'Open in its own tab ↗';
+    bar.appendChild(tab);
+    this.appendChild(bar);
+  }
+
+  load(src, label) {
+    const stage = this.querySelector('.ao-game-stage');
+    const frame = document.createElement('iframe');
+    frame.src = src;
+    frame.title = label;
+    frame.allow = 'fullscreen; gamepad; autoplay';
+    frame.allowFullscreen = true;
+    stage.replaceChildren(frame);
+    frame.addEventListener('load', () => frame.focus());
+    const full = this.querySelector('.ao-game-full');
+    if (full) full.hidden = false;
+  }
+
+  disconnectedCallback() {
+    // The homepage swaps posts in and out of one host; stop the game when this one leaves.
+    this.querySelector('iframe')?.remove();
+  }
+}
+
 if (!customElements.get('ao-compare')) customElements.define('ao-compare', AoCompare);
+if (!customElements.get('ao-game')) customElements.define('ao-game', AoGame);
 if (!customElements.get('ao-model')) customElements.define('ao-model', AoModel);
 if (!customElements.get('ao-timeline')) customElements.define('ao-timeline', AoTimeline);
