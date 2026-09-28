@@ -35,8 +35,8 @@ on this site.
 
 The fight simulation is deterministic, so one command replays the same match: CPU Hard against CPU
 Hard, seed 7. The session ran it at each stage of the build to record gameplay. The first three
-clips below are those recordings. The fourth is the same command, which I re-rendered this morning
-from the finished build. The first 20 seconds of each, playing together:
+clips below are those recordings. The fourth is the same command, re-rendered this morning for this
+post from the finished build. The first 20 seconds of each, playing together:
 
 <ao-compare cols="2" aspect="16/9" sync>
   <figure>
