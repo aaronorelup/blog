@@ -1,0 +1,18 @@
+{
+  "files": {
+    "index.wasm": {
+      "encoding": "gzip",
+      "part_sizes": [
+        6362836
+      ],
+      "parts": 1,
+      "sha256": "391e37e149fc1ec748d98dc99ec063b9f837e5d15e4b57293333251427881737",
+      "size": 26283131,
+      "stored_size": 6362836,
+      "type": "application/wasm"
+    }
+  },
+  "generated_by": "tools/web/split_parts.py",
+  "part_max_bytes": 20971520,
+  "version": 1
+}
