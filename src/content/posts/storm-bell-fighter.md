@@ -18,7 +18,7 @@ It's called Storm Bell Fighter, after the place Jefrie lives. It's Godot 4.7, th
 at three difficulties, two-player on one keyboard, training mode and a move list. It's playable
 here:
 
-<ao-game src="/games/storm-bell/" poster="/media/storm-bell-fighter/poster.webp" size="about 22 MB" label="Storm Bell Fighter, playable in the browser" note="Keyboard: A / D move, W jump, S crouch, J light, K heavy, L special, K+L super. A gamepad works too. Needs a desktop browser with WebGL 2, and the first visit spends a while preparing graphics."><p><a href="/games/storm-bell/">Play Storm Bell Fighter</a></p></ao-game>
+<ao-game src="/games/storm-bell/" poster="/media/storm-bell-fighter/poster.webp" size="about 22 MB" label="Storm Bell Fighter, playable in the browser" note="Keyboard: A / D move, W jump, S crouch, J light, K heavy, L special, K+L super. A gamepad works too. Needs a desktop browser with WebGL 2, and the first visit spends a while preparing graphics."><a href="/games/storm-bell/">Play Storm Bell Fighter</a></ao-game>
 
 ## What I asked for
 
