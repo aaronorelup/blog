@@ -270,8 +270,17 @@ bought more pieces, not stranger ones.
 
 ### The studios
 
-Every studio works, and they don't look alike. **All five Sonnet studios chose a dark
-theme, and all five Opus studios kept a light workspace.** The higher-effort Opus runs
+Every studio works, and they don't look alike. **Four of the five Sonnet studios chose a
+dark theme, and all five Opus studios kept a light workspace.**
+
+The dark Sonnet studios look a lot like my own brand's night mode, warm near-black with
+cream text and gold accents, so I checked whether they'd loaded my brand skill. They hadn't.
+Every session could see that the skill exists, but none of them opened it, and the only one
+of my exact colors that shows up anywhere is one gold in one Sonnet page. The Opus studios
+landed near my *day* mode instead: cream paper, indigo, and a terracotta red within a shade
+of mine. Same prompt, no brand guide, and the two models split my palette between them.
+Apparently a loom makes both of them reach for the same handmade warmth I built the brand
+around. The higher-effort Opus runs
 drew real weaving-draft diagrams (threading across the top, lift plan down the side) that
 nobody asked for. Click any one to open it: each is the exact single HTML file its session
 wrote.
