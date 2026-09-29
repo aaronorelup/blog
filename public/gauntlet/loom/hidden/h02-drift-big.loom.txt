@@ -1,0 +1,10 @@
+loom 5 3
+palette a=#000000 b=#ffffff z=#888888
+warp a b b b b
+thread 1 2 2 2 2
+drift -7
+pick z 1
+drift 12
+pick z 1
+drift 0
+pick z 1

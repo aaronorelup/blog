@@ -1,0 +1,5 @@
+loom 4 4
+palette a=#000000 b=#ffffff
+warp a
+thread 1
+pick ab 1

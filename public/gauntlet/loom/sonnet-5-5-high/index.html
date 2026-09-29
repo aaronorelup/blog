@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LOOM Studio - a tiny language for woven cloth</title>
+<style>
+:root{
+  --bg:#efe9dc; --panel:#fbf8f1; --panel2:#f4efe3; --ink:#2b2621; --muted:#7a6f5f; --line:#ddd2bd;
+  --accent:#2f4a7a; --accent2:#b5443a; --gold:#d9982b; --ok:#2f7d4f; --bad:#b3362b;
+  --ed-bg:#1e2230; --ed-ink:#e9e4d6; --ed-dim:#7f8798; --ed-line:#2a3042;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","DejaVu Sans Mono",monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 var(--sans);display:flex;flex-direction:column;min-height:100vh}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- header ---------- */
+.top{display:flex;align-items:center;gap:14px;padding:6px 16px;background:#2a2622;color:#f3ecdc;flex:none}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand svg{flex:none}
+.brand h1{margin:0;font-size:19px;letter-spacing:.14em;font-weight:700}
+.brand h1 span{font-weight:400;letter-spacing:.06em;color:#e0c48a}
+.tag{margin:0;color:#b9ad96;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .spacer{flex:1}
+.top a,.top button.link{color:#e0c48a;background:none;border:0;padding:4px 8px;text-decoration:underline;cursor:pointer;font-size:13px}
+
+.intro{display:flex;align-items:stretch;gap:0;background:var(--panel);border-bottom:1px solid var(--line);flex:none;font-size:13px}
+.intro .lead{padding:6px 16px;flex:1.3;color:#4b4338;min-width:0;font-size:12.5px;line-height:1.35}
+.intro .lead b{color:var(--ink)}
+.intro ol{display:flex;flex:2.4;margin:0;padding:0;list-style:none;min-width:0}
+.intro li{flex:1;padding:6px 10px;border-left:1px solid var(--line);color:#4b4338;min-width:0;font-size:12.5px;line-height:1.35}
+.intro li i{font-style:normal;display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;margin-right:6px}
+.intro code{font-family:var(--mono);font-size:12px;background:var(--panel2);padding:0 4px;border-radius:3px}
+
+/* ---------- layout ---------- */
+.app{flex:1;min-height:0;display:grid;grid-template-columns:minmax(330px,4.2fr) 5.8fr;grid-template-rows:minmax(560px,1fr);gap:12px;padding:12px}
+.pane{background:var(--panel);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;box-shadow:0 1px 2px rgba(60,40,10,.08)}
+.pane-head{display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid var(--line);background:var(--panel2);flex:none}
+.pane-head .name{font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pane-head label{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px;white-space:nowrap}
+.btn{border:1px solid #c9bda4;background:#fff;border-radius:7px;padding:5px 10px;line-height:1.2}
+.btn:hover{background:#f6f0e2}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.btn.primary:hover{background:#26406b}
+.btn.small{padding:3px 8px;font-size:12px}
+
+/* ---------- editor ---------- */
+.editor{position:relative;flex:1;min-height:180px;display:flex;background:var(--ed-bg);color:var(--ed-ink)}
+.gutter{flex:none;width:44px;overflow:hidden;position:relative;background:#191d2a;border-right:1px solid var(--ed-line);color:var(--ed-dim);user-select:none}
+.gutter .in{position:absolute;left:0;right:0;top:0;padding:8px 0}
+.gutter .n{height:20px;line-height:20px;text-align:right;padding-right:8px;font:12px/20px var(--mono)}
+.gutter .n.cur{color:#ffd58a;background:rgba(255,200,110,.12)}
+.gutter .n.err{color:#fff;background:#b3362b}
+.ecode{position:relative;flex:1;min-width:0;overflow:hidden}
+.ecode .in{position:absolute;left:0;top:0;padding:8px 0;min-width:100%;pointer-events:none}
+.editor .l{display:block;height:20px;padding:0 10px;white-space:pre;font:13px/20px var(--mono);letter-spacing:0;font-variant-ligatures:none;tab-size:2;width:max-content;min-width:100%}
+.editor .l.cur{background:rgba(255,200,110,.14);box-shadow:inset 3px 0 0 #ffb84d}
+.editor .l.err{background:rgba(255,90,80,.22);box-shadow:inset 3px 0 0 #ff5a50}
+.editor .tk{color:#ffcf7a;font-weight:700}
+.editor .tc{color:#7f8aa3;font-style:italic}
+.editor .tn{color:#8fd3ff}
+.editor .tt{color:#c3a6ff}
+.editor .tp{color:#ff9db1}
+.editor .hex{border-radius:3px}
+.editor .ghost{color:#ff9a90;font-style:italic;font-weight:600}
+.ecode textarea{position:absolute;inset:0;width:100%;height:100%;margin:0;border:0;outline:0;resize:none;padding:8px 10px;white-space:pre;overflow:auto;background:transparent;color:transparent;caret-color:#fff;font:13px/20px var(--mono);letter-spacing:0;font-variant-ligatures:none;tab-size:2}
+.ecode textarea::selection{background:rgba(110,160,255,.4);color:transparent}
+.status{flex:none;padding:8px 12px;border-top:1px solid var(--line);font-size:13px;min-height:38px;display:flex;align-items:center;gap:8px}
+.status.ok{background:#eaf5ee;color:#1f5a38}
+.status.err{background:#fdeceb;color:#8c2118;cursor:pointer}
+.status.err:hover{background:#fbdedb}
+.status code{font-family:var(--mono);font-weight:600}
+.status .dot{width:9px;height:9px;border-radius:50%;background:currentColor;flex:none}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;gap:2px;padding:6px 8px 0;background:var(--panel2);border-bottom:1px solid var(--line);flex:none;overflow-x:auto}
+.tab{border:1px solid transparent;border-bottom:0;background:none;padding:6px 12px;border-radius:7px 7px 0 0;color:var(--muted);white-space:nowrap;font-weight:500}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected=true]{background:var(--panel);border-color:var(--line);color:var(--ink);font-weight:700;margin-bottom:-1px;padding-bottom:7px}
+.tab .badge{font-size:11px;padding:0 6px;border-radius:9px;margin-left:5px;background:#dcd3bf;color:#4b4338}
+.tab .badge.pass{background:#cfe9d8;color:#1f5a38}
+.tab .badge.fail{background:#f6cfcb;color:#8c2118}
+.panel{flex:1;min-height:0;display:none;flex-direction:column}
+.panel.on{display:flex;overflow:auto}
+.scroll{overflow:auto;padding:12px 14px}
+
+/* ---------- loom view ---------- */
+.transport{display:flex;align-items:center;gap:6px;padding:6px 10px;flex:none;flex-wrap:wrap}
+.transport input[type=range]{flex:1;min-width:110px;accent-color:var(--accent)}
+.lbl{font:12px var(--mono);color:var(--muted);white-space:nowrap;align-self:flex-start;padding-top:3px}
+.transport .sp{font-size:11px;color:var(--muted);margin-left:2px}
+.transport select{border:1px solid #c9bda4;border-radius:6px;background:#fff;padding:3px 4px;font-size:12px}
+.now{flex:none;margin:0 10px;padding:4px 10px;border-radius:7px;background:var(--panel2);border:1px solid var(--line);font-size:13px;min-height:32px;display:flex;align-items:center;gap:4px 8px;flex-wrap:wrap}
+.now code{font-family:var(--mono);background:#fff;border:1px solid var(--line);border-radius:4px;padding:0 5px}
+.now.err{background:#fdeceb;border-color:#eebdb8;color:#8c2118}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.35);vertical-align:-2px}
+.loomwrap{flex:1;min-height:200px;margin:6px 10px 0;border:1px solid #1f1b17;border-radius:8px;background:#34302a;overflow:auto;position:relative}
+.loomwrap canvas{display:block}
+.state{flex:none;display:grid;grid-template-columns:1.1fr 1fr 1.5fr;gap:8px;padding:6px 10px 8px;max-height:180px;overflow:auto}
+.state.hidden{display:none}
+.card{border:1px solid var(--line);border-radius:8px;background:#fff;padding:4px 8px 5px;min-width:0;font-size:12px}
+.card h4{margin:0 0 3px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.card.wide{grid-column:1/-1}
+.strip{display:flex;overflow-x:auto;padding-bottom:2px}
+.strip span{flex:none;text-align:center;font:9px/12px var(--mono);color:#555}
+.strip .cw{height:12px;border:1px solid rgba(0,0,0,.25);border-radius:2px;margin-right:1px}
+.chip{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:12px;padding:0 7px;margin:0 4px 3px 0;background:var(--panel2);font-family:var(--mono);font-size:11px}
+.chip.cur{background:#ffe7b0;border-color:#e6b850;font-weight:700}
+.muted{color:var(--muted)}
+canvas#floats{display:block;width:100%;height:34px}
+
+/* ---------- fabric ---------- */
+.fabricbox{flex:1;min-height:220px;margin:10px;border:1px solid var(--line);border-radius:8px;background:#f7f2e7;overflow:auto;display:flex;justify-content:center;align-items:flex-start;padding:10px}
+.fabricbox canvas{display:block;box-shadow:0 2px 10px rgba(50,30,0,.25)}
+.fabtools{display:flex;gap:12px;align-items:center;padding:8px 12px 0;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.fabtools label{display:flex;gap:4px;align-items:center}
+pre.grid{margin:0 10px 10px;padding:8px 10px;background:#1e2230;color:#dcd6c6;border-radius:8px;font:12px/1.15 var(--mono);max-height:150px;overflow:auto;flex:none}
+.fabmsg{padding:24px;text-align:center;color:var(--bad)}
+
+/* ---------- gallery / conformance / guide ---------- */
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.piece{border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden;text-align:left;padding:0;display:flex;flex-direction:column;transition:transform .12s,box-shadow .12s}
+.piece:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(60,40,10,.18)}
+.piece .thumb{background:#e9e1cf;display:flex;align-items:center;justify-content:center;height:186px;padding:8px}
+.piece canvas{display:block;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.piece .meta{padding:8px 10px 10px}
+.piece .meta b{display:block;font-size:14px}
+.piece .meta span{display:block;color:#5c5245;font-size:12px;line-height:1.35;margin-top:2px}
+.piece .meta em{display:block;color:var(--muted);font-size:11px;font-style:normal;margin-top:5px;font-family:var(--mono)}
+.confhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.total{font-size:20px;font-weight:800;padding:2px 12px;border-radius:8px}
+.total.pass{background:#cfe9d8;color:#1f5a38}
+.total.fail{background:#f6cfcb;color:#8c2118}
+.crow{border:1px solid var(--line);border-radius:8px;margin-bottom:6px;background:#fff}
+.crow summary{display:flex;align-items:center;gap:10px;padding:6px 10px;cursor:pointer;list-style:none}
+.crow summary::-webkit-details-marker{display:none}
+.pill{font:700 11px var(--mono);padding:2px 8px;border-radius:10px;letter-spacing:.06em;flex:none}
+.pill.pass{background:#cfe9d8;color:#1f5a38}
+.pill.fail{background:#f6cfcb;color:#8c2118}
+.crow .cname{flex:1;font-family:var(--mono);font-size:13px;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.crow .cbody{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:0 10px 10px}
+.crow .cbody h5{margin:0 0 3px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.crow pre{margin:0;background:#1e2230;color:#dcd6c6;border-radius:6px;padding:6px 8px;font:11px/1.25 var(--mono);overflow:auto;max-height:180px}
+.crow pre .diff{background:#7a2620;color:#fff}
+.guide h2{font-size:16px;margin:16px 0 6px}
+.guide h2:first-child{margin-top:0}
+.guide p{margin:6px 0}
+.guide table{border-collapse:collapse;width:100%;font-size:13px;margin:6px 0}
+.guide th,.guide td{border:1px solid var(--line);padding:4px 8px;text-align:left;vertical-align:top}
+.guide th{background:var(--panel2)}
+.guide code{font-family:var(--mono);font-size:12px;background:var(--panel2);padding:0 4px;border-radius:3px}
+.guide pre{background:#1e2230;color:#dcd6c6;padding:8px 10px;border-radius:8px;font:12px/1.4 var(--mono);overflow:auto}
+.guide .diagram{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.toast{position:fixed;right:12px;bottom:12px;max-width:420px;background:#b3362b;color:#fff;padding:8px 12px;border-radius:8px;font:12px var(--mono);z-index:9;display:none}
+
+/* ---------- narrow screens ---------- */
+@media (max-width:900px){
+  body{display:block;min-height:0}
+  .tag{display:none}
+  .intro{flex-direction:column}
+  .intro ol{flex-direction:column}
+  .intro li{border-left:0;border-top:1px solid var(--line)}
+  .app{display:flex;flex-direction:column;padding:8px}
+  .editor{height:300px;flex:none}
+  .viewPane{min-height:640px}
+  .loomwrap{height:400px;flex:none}
+  .state{max-height:none;grid-template-columns:1fr 1fr}
+  .state .card.wide{grid-column:1/-1}
+  .crow .cbody{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  .state{grid-template-columns:1fr}
+  .transport .lbl{display:none}
+  .pane-head label.anim{display:none}
+}
+@media (prefers-reduced-motion:reduce){.piece{transition:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+      <rect width="34" height="34" rx="7" fill="#3a342e"/>
+      <g id="logo"></g>
+    </svg>
+    <h1>LOOM <span>Studio</span></h1>
+    <p class="tag">a tiny language for woven cloth</p>
+  </div>
+  <div class="spacer"></div>
+  <button class="link" id="linkGuide" type="button">Language guide</button>
+</header>
+
+<section class="intro" aria-label="What is LOOM?">
+  <div class="lead"><b>New here?</b> LOOM describes woven cloth. <b>Warp</b> threads run up and down; <b>weft</b> is thrown across them.</div>
+  <ol>
+    <li><i>1</i><b>Set up</b> the loom: size, warp colours, and the shaft each thread hangs from.</li>
+    <li><i>2</i><b>Pick</b> row by row: each <code>pick</code> lifts some shafts. Lifted threads show their colour; the rest hide under the weft.</li>
+    <li><i>3</i><b>Watch</b> it in the Loom tab, step through the code, or open a <b>Gallery</b> piece.</li>
+  </ol>
+</section>
+
+<main class="app">
+  <section class="pane editorPane" aria-label="Program editor">
+    <div class="pane-head">
+      <span class="name" id="progName">Untitled</span>
+      <label class="anim"><input type="checkbox" id="chkAnim" checked> animate</label>
+      <button class="btn small" id="btnSave" type="button" title="Download this program as a .loom file">Save</button>
+      <button class="btn primary" id="btnRun" type="button" title="Run (Ctrl+Enter)">&#9654; Run</button>
+    </div>
+    <div class="editor" id="editor">
+      <div class="gutter" id="gutter"><div class="in" id="gutterIn"></div></div>
+      <div class="ecode">
+        <div class="in" id="hl" aria-hidden="true"></div>
+        <textarea id="src" spellcheck="false" wrap="off" autocomplete="off" autocapitalize="off" autocorrect="off" aria-label="LOOM program source"></textarea>
+      </div>
+    </div>
+    <div class="status ok" id="status" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="pane viewPane" aria-label="Results">
+    <div class="tabs" role="tablist" id="tabs">
+      <button class="tab" role="tab" data-tab="loom" aria-selected="true">Loom</button>
+      <button class="tab" role="tab" data-tab="fabric" aria-selected="false">Fabric</button>
+      <button class="tab" role="tab" data-tab="gallery" aria-selected="false">Gallery</button>
+      <button class="tab" role="tab" data-tab="conformance" aria-selected="false">Conformance <span class="badge" id="confBadge">...</span></button>
+      <button class="tab" role="tab" data-tab="guide" aria-selected="false">Guide</button>
+    </div>
+
+    <!-- LOOM -->
+    <div class="panel on" id="p-loom" role="tabpanel">
+      <div class="transport" role="group" aria-label="Weaving and debugger controls">
+        <button class="btn small" id="bFirst" type="button" title="Back to the start" aria-label="Back to the start">&laquo;</button>
+        <button class="btn small" id="bPrev" type="button" title="Step back one statement (Left arrow)">&lsaquo; Back</button>
+        <button class="btn small primary" id="bPlay" type="button" title="Play / pause the weaving">&#9654; Weave</button>
+        <button class="btn small" id="bNext" type="button" title="Step forward one statement (Right arrow)">Step &rsaquo;</button>
+        <button class="btn small" id="bLast" type="button" title="Jump to the end" aria-label="Jump to the end">&raquo;</button>
+        <input type="range" id="scrub" min="0" max="0" value="0" aria-label="Execution step">
+        <button class="btn small" id="bDetails" type="button" aria-pressed="true" title="Show or hide the live loom state panels">State</button>
+        <span class="sp">speed</span><select id="speed" aria-label="Playback speed">
+          <option value="auto">Auto</option>
+          <option value="900">Slow</option>
+          <option value="400">Medium</option>
+          <option value="150">Fast</option>
+          <option value="50">Very fast</option>
+        </select>
+      </div>
+      <div class="now" id="now"><div id="nowText" style="flex:1;min-width:0"></div><span class="lbl" id="stepLbl" title="current step / total statements executed">0 / 0</span></div>
+      <div class="loomwrap" id="loomwrap"><canvas id="loomcv" aria-label="Loom view: threading, shed, and cloth"></canvas></div>
+      <div class="state" id="state">
+        <div class="card wide"><h4>Warp threads &middot; colour and shaft</h4><div class="strip" id="stWarp"></div></div>
+        <div class="card"><h4>Treadles <span class="muted">(tie-up)</span></h4><canvas id="tieup" style="display:block;width:100%"></canvas><div class="muted" id="tieNone">none defined</div></div>
+        <div class="card"><h4>Shuttle</h4><div id="stShuttle"></div></div>
+        <div class="card"><h4>Float counters <span class="muted" id="stFloatNote"></span></h4><canvas id="floats"></canvas></div>
+      </div>
+    </div>
+
+    <!-- FABRIC -->
+    <div class="panel" id="p-fabric" role="tabpanel">
+      <div class="fabtools">
+        <label><input type="checkbox" id="chkTex" checked> thread texture</label>
+        <label><input type="checkbox" id="chkLetters"> colour keys</label>
+        <span id="fabInfo"></span>
+        <span style="flex:1"></span>
+        <button class="btn small" id="btnCopy" type="button">Copy grid text</button>
+      </div>
+      <div class="fabricbox" id="fabricbox"><canvas id="fabcv" aria-label="Woven fabric"></canvas></div>
+      <pre class="grid" id="gridtext" aria-label="Program output"></pre>
+    </div>
+
+    <!-- GALLERY -->
+    <div class="panel" id="p-gallery" role="tabpanel">
+      <div class="scroll">
+        <p class="muted" style="margin:0 0 10px">Original pieces written in LOOM. Click one to load it into the editor and watch it weave.</p>
+        <div class="gallery" id="gallery"></div>
+      </div>
+    </div>
+
+    <!-- CONFORMANCE -->
+    <div class="panel" id="p-conformance" role="tabpanel">
+      <div class="scroll">
+        <div class="confhead">
+          <span class="total" id="confTotal">...</span>
+          <span class="muted">The 15 conformance programs run live in this page by the same engine as <code>cli.js</code>, compared with their expected output character for character.</span>
+          <button class="btn small" id="btnConf" type="button">Run again</button>
+        </div>
+        <div id="conflist"></div>
+      </div>
+    </div>
+
+    <!-- GUIDE -->
+    <div class="panel" id="p-guide" role="tabpanel">
+      <div class="scroll guide" id="guide"></div>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast" role="alert"></div>
+<noscript><p style="padding:16px">LOOM Studio needs JavaScript. It runs entirely in this page, offline.</p></noscript>
+
+<script>
+// LOOM interpreter - the single engine used by cli.js, the tests and (inlined by build.js) index.html.
+// Implements LOOM_SPEC.md v1.0. No dependencies. Works in Node and in a browser <script>.
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.LOOM = factory();
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  var ALL_SHAFTS = 0xff; // bit (s-1) set = shaft s
+  var SEQ_LIMIT = 1024;  // only the first SEQ_LIMIT elements of a sequence can ever matter (W<=200, picks<=200)
+
+  function LoomError(message, line) {
+    this.message = message;
+    this.line = line == null ? null : line;
+  }
+
+  function fail(message) { throw new LoomError(message); }
+
+  function isNum(t) { return /^[0-9]+$/.test(t); }
+
+  // A spec "number": digits only. Range-checked with lo..hi, otherwise `bad number '<token>'`.
+  function num(t, lo, hi) {
+    if (!isNum(t)) fail("bad number '" + t + "'");
+    var n = Number(t);
+    if (n < lo || n > hi) fail("bad number '" + t + "'");
+    return n;
+  }
+
+  // ---------------------------------------------------------------- lexing / static checks
+
+  function splitStatements(src) {
+    var lines = String(src).split(/\r?\n/);
+    var out = [];
+    for (var i = 0; i < lines.length; i++) {
+      var s = lines[i];
+      var c = s.indexOf('//');
+      if (c >= 0) s = s.slice(0, c);
+      s = s.trim();
+      if (!s) continue;
+      var tokens = s.split(/[ \t]+/);
+      out.push({ line: i + 1, text: s, tokens: tokens, word: tokens[0], rest: s.slice(tokens[0].length) });
+    }
+    return out;
+  }
+
+  // Returns { program: [nodes] } or { error: {line, message} }.
+  // node = { stmt } for a simple statement, { stmt, body: [nodes] } for a repeat block.
+  function compile(src) {
+    var stmts = splitStatements(src);
+    if (!stmts.length) return { error: { line: 1, message: "expected 'loom' header" } };
+    if (stmts[0].word !== 'loom') return { error: { line: stmts[0].line, message: "expected 'loom' header" } };
+    var program = [];
+    var stack = []; // open repeat nodes
+    var cur = program;
+    for (var i = 0; i < stmts.length; i++) {
+      var s = stmts[i];
+      if (s.word === 'repeat') {
+        if (s.tokens.length !== 3 || s.tokens[2] !== '{') return { error: { line: s.line, message: 'bad repeat' } };
+        var node = { stmt: s, body: [] };
+        cur.push(node);
+        stack.push(node);
+        cur = node.body;
+      } else if (s.word === '}') {
+        if (s.tokens.length > 1) return { error: { line: s.line, message: 'bad repeat' } };
+        if (!stack.length) return { error: { line: s.line, message: "unexpected '}'" } };
+        stack.pop();
+        cur = stack.length ? stack[stack.length - 1].body : program;
+      } else {
+        cur.push({ stmt: s });
+      }
+    }
+    if (stack.length) return { error: { line: stack[stack.length - 1].stmt.line, message: 'unclosed block' } };
+    return { program: program };
+  }
+
+  // ---------------------------------------------------------------- sequences (spec section 4)
+
+  // kind: 'color' | 'shaft'. Returns a list of items:
+  //   { t:'atom', v, a, b, count }  (v = atom text; for shaft ranges a,b are the endpoint texts)
+  //   { t:'group', items, mirror, count }
+  function parseSequence(s, kind) {
+    var pos = 0;
+    var n = s.length;
+
+    function isWs(c) { return c === ' ' || c === '\t'; }
+    function isAtomChar(c) { return !(isWs(c) || c === '(' || c === ')' || c === '*'); }
+    function skipWs() { while (pos < n && isWs(s[pos])) pos++; }
+
+    function readCount(item) {
+      if (pos < n && s[pos] === '*') {
+        pos++;
+        var st = pos;
+        while (pos < n && !isWs(s[pos]) && s[pos] !== '(' && s[pos] !== ')') pos++;
+        var tok = s.slice(st, pos);
+        item.count = num(tok, 1, Infinity);
+      } else {
+        item.count = 1;
+      }
+    }
+
+    function atomItem(text) {
+      if (kind === 'color') {
+        if (!/^[a-z]$/.test(text)) fail('bad sequence');
+        return { t: 'atom', v: text };
+      }
+      if (isNum(text)) return { t: 'atom', v: text };
+      var m = /^([0-9]+)-([0-9]+)$/.exec(text);
+      if (!m) fail('bad sequence');
+      return { t: 'atom', v: text, a: m[1], b: m[2] };
+    }
+
+    function parseItems(depth) {
+      var items = [];
+      for (;;) {
+        skipWs();
+        if (pos >= n) {
+          if (depth > 0) fail('bad sequence');
+          break;
+        }
+        var c = s[pos];
+        if (c === ')') {
+          if (depth === 0) fail('bad sequence');
+          break;
+        }
+        if (c === '*') fail('bad sequence');
+        var item;
+        if (c === '(') {
+          pos++;
+          item = groupBody(depth, false);
+        } else {
+          var st = pos;
+          while (pos < n && isAtomChar(s[pos])) pos++;
+          var text = s.slice(st, pos);
+          if (pos < n && s[pos] === '(') {
+            if (text !== 'mirror') fail('bad sequence');
+            pos++;
+            item = groupBody(depth, true);
+          } else {
+            item = atomItem(text);
+          }
+        }
+        readCount(item);
+        items.push(item);
+      }
+      return items;
+    }
+
+    function groupBody(depth, mirror) {
+      var inner = parseItems(depth + 1);
+      // parseItems only returns inside a group when it stopped on ')'
+      pos++; // consume ')'
+      if (!inner.length) fail('bad sequence');
+      return { t: 'group', items: inner, mirror: mirror };
+    }
+
+    var items = parseItems(0);
+    if (!items.length) fail('bad sequence');
+    return items;
+  }
+
+  function normNum(t) { return typeof BigInt === 'function' ? BigInt(t).toString() : String(Number(t)); }
+
+  // Validates every element in expansion order (which equals left-to-right atom order).
+  function validateSequence(items, kind, palette) {
+    for (var i = 0; i < items.length; i++) {
+      var it = items[i];
+      if (it.t === 'group') { validateSequence(it.items, kind, palette); continue; }
+      if (kind === 'color') {
+        if (!Object.prototype.hasOwnProperty.call(palette, it.v)) fail("unknown color '" + it.v + "'");
+      } else if (it.a !== undefined) {
+        checkShaft(it.a);
+        checkShaft(it.b);
+      } else {
+        checkShaft(it.v);
+      }
+    }
+  }
+
+  function checkShaft(t) {
+    var v = Number(t);
+    if (!(v >= 1 && v <= 8)) fail("bad shaft '" + normNum(t) + "'");
+  }
+
+  function expandItems(items, kind, limit) {
+    var out = [];
+    for (var i = 0; i < items.length && out.length < limit; i++) {
+      var it = items[i];
+      var part;
+      if (it.t === 'group') {
+        part = expandItems(it.items, kind, limit);
+        if (it.mirror) part = part.concat(part.slice(0, -1).reverse());
+      } else if (kind === 'color') {
+        part = [it.v];
+      } else if (it.a !== undefined) {
+        var a = Number(it.a), b = Number(it.b);
+        part = [];
+        if (a <= b) for (var x = a; x <= b; x++) part.push(x);
+        else for (var y = a; y >= b; y--) part.push(y);
+      } else {
+        part = [Number(it.v)];
+      }
+      for (var r = 0; r < it.count && out.length < limit; r++) {
+        for (var k = 0; k < part.length && out.length < limit; k++) out.push(part[k]);
+      }
+    }
+    return out;
+  }
+
+  // Parse, validate and expand. Returns the (possibly truncated to SEQ_LIMIT) list of elements.
+  function sequenceValues(rest, kind, palette) {
+    var items = parseSequence(rest, kind);
+    validateSequence(items, kind, palette);
+    return expandItems(items, kind, SEQ_LIMIT);
+  }
+
+  function tile(values, w) {
+    var out = new Array(w);
+    for (var c = 0; c < w; c++) out[c] = values[c % values.length];
+    return out;
+  }
+
+  // ---------------------------------------------------------------- lifts (spec section 5)
+
+  // Returns a bitmask of raised shafts.
+  function parseLift(tok, treadles, allowTreadle) {
+    if (tok === '-') return 0;
+    if (tok === '*') return ALL_SHAFTS;
+    var digits = null, negate = false;
+    if (tok.charAt(0) === '!') {
+      if (!isNum(tok.slice(1))) fail("bad lift '" + tok + "'");
+      digits = tok.slice(1);
+      negate = true;
+    } else if (isNum(tok)) {
+      digits = tok;
+    } else if (allowTreadle && /^t[0-9]+$/.test(tok)) {
+      var n = Number(tok.slice(1));
+      if (!Object.prototype.hasOwnProperty.call(treadles, n)) fail("unknown treadle '" + tok + "'");
+      return treadles[n];
+    } else {
+      fail("bad lift '" + tok + "'");
+    }
+    var mask = 0;
+    for (var i = 0; i < digits.length; i++) {
+      var d = digits.charCodeAt(i) - 48;
+      if (d < 1 || d > 8) fail("bad shaft '" + digits.charAt(i) + "'");
+      mask |= 1 << (d - 1);
+    }
+    return negate ? (~mask & ALL_SHAFTS) : mask;
+  }
+
+  // ---------------------------------------------------------------- execution
+
+  function newState() {
+    return {
+      W: 0, H: 0,
+      palette: {},
+      warp: null, shaft: null,       // arrays of length W once set (replaced, never mutated)
+      treadles: {},
+      shuttle: null, shuttlePos: 0,  // shuttle = array of colors
+      maxfloat: null,
+      picks: [],                     // one record per woven row
+      runLen: null, lastState: null  // per-column float counters (column-owned history)
+    };
+  }
+
+  function popcountList(mask) {
+    var out = [];
+    for (var s = 1; s <= 8; s++) if (mask & (1 << (s - 1))) out.push(s);
+    return out;
+  }
+
+  // options: { onStep(step), maxSteps }
+  //   step = { line, kind, text, iter, snap }, snap = immutable-ish view of the loom state after the statement
+  // Returns { ok, error, W, H, rows, picks, output, limit }
+  function execute(program, options) {
+    options = options || {};
+    var onStep = options.onStep || null;
+    var maxSteps = options.maxSteps || Infinity;
+    var executed = 0;
+    var st = newState();
+    var loops = [];
+    var loomSeen = false;
+
+    function snapshot() {
+      return {
+        W: st.W, H: st.H,
+        palette: st.palette,
+        warp: st.warp, shaft: st.shaft,
+        treadles: Object.assign({}, st.treadles),
+        shuttle: st.shuttle, shuttlePos: st.shuttlePos,
+        maxfloat: st.maxfloat,
+        rowsWoven: st.picks.length,
+        runLen: st.runLen ? st.runLen.slice() : null,
+        lastState: st.lastState ? st.lastState.slice() : null,
+        loops: loops.map(function (l) { return { line: l.line, i: l.i, n: l.n }; })
+      };
+    }
+
+    function emit(stmt, err) {
+      if (!onStep) return;
+      onStep({
+        line: stmt.line, kind: stmt.word, text: stmt.text,
+        error: err ? err.message : null,
+        pick: st.justPicked ? st.picks[st.picks.length - 1] : null,
+        snap: snapshot()
+      });
+    }
+
+    function needThreads() {
+      if (!st.warp) fail('warp not set');
+      if (!st.shaft) fail('threading not set');
+    }
+
+    var handlers = {
+      loom: function (a) {
+        if (a.length !== 2) fail('bad arguments');
+        var w = num(a[0], 1, 200);
+        var h = num(a[1], 1, 200);
+        st.W = w; st.H = h;
+        st.runLen = new Uint8Array(w);
+        st.lastState = new Uint8Array(w).fill(255);
+      },
+      palette: function (a) {
+        if (!a.length) fail("bad palette entry ''");
+        for (var i = 0; i < a.length; i++) if (!/^[a-z]=#[0-9a-fA-F]{6}$/.test(a[i])) fail("bad palette entry '" + a[i] + "'");
+        var p = Object.assign({}, st.palette);
+        for (var j = 0; j < a.length; j++) p[a[j].charAt(0)] = a[j].slice(2);
+        st.palette = p;
+      },
+      warp: function (a, s) { st.warp = tile(sequenceValues(s.rest, 'color', st.palette), st.W); },
+      thread: function (a, s) { st.shaft = tile(sequenceValues(s.rest, 'shaft', st.palette), st.W); },
+      shuttle: function (a, s) {
+        st.shuttle = sequenceValues(s.rest, 'color', st.palette);
+        st.shuttlePos = 0;
+      },
+      treadle: function (a) {
+        if (a.length !== 2) fail('bad arguments');
+        var n = num(a[0], 1, 10);
+        var lift = parseLift(a[1], st.treadles, false);
+        var t = Object.assign({}, st.treadles);
+        t[n] = lift;
+        st.treadles = t;
+      },
+      pick: function (a, s) {
+        if (a.length < 1 || a.length > 2) fail('bad pick');
+        var color, liftTok, usedShuttle = false;
+        if (a.length === 2) {
+          if (!/^[a-z]$/.test(a[0])) fail('bad pick');
+          color = a[0];
+          liftTok = a[1];
+          if (!Object.prototype.hasOwnProperty.call(st.palette, color)) fail("unknown color '" + color + "'");
+        } else {
+          liftTok = a[0];
+          if (!st.shuttle) fail('no weft color');
+          color = st.shuttle[st.shuttlePos % st.shuttle.length];
+          st.shuttlePos++;
+          usedShuttle = true;
+        }
+        var mask = parseLift(liftTok, st.treadles, true);
+        needThreads();
+        if (st.picks.length >= st.H) fail('loom full');
+        var W = st.W, row = st.picks.length + 1;
+        var raised = new Uint8Array(W);
+        var cells = '';
+        for (var c = 0; c < W; c++) {
+          var up = (mask >> (st.shaft[c] - 1)) & 1;
+          raised[c] = up;
+          cells += up ? st.warp[c] : color;
+          if (st.lastState[c] === up) st.runLen[c]++;
+          else { st.lastState[c] = up; st.runLen[c] = 1; }
+        }
+        st.picks.push({
+          row: row, line: s.line, cells: cells, raised: raised, weft: color, lift: popcountList(mask),
+          liftText: liftTok, palette: st.palette, usedShuttle: usedShuttle, shuttleIndex: usedShuttle ? (st.shuttlePos - 1) % st.shuttle.length : -1
+        });
+        st.justPicked = true;
+        var N = st.maxfloat;
+        if (N !== null) {
+          var runStart = 0;
+          for (var x = 1; x <= W; x++) {
+            if (x === W || raised[x] !== raised[runStart]) {
+              if (x - runStart > N) fail('float too long at row ' + row + ' col ' + (runStart + 1));
+              runStart = x;
+            }
+          }
+          for (var y = 0; y < W; y++) {
+            if (st.runLen[y] > N) fail('float too long at row ' + row + ' col ' + (y + 1));
+          }
+        }
+      },
+      cross: function (a) {
+        if (a.length !== 2) fail('bad arguments');
+        if (!isNum(a[0])) fail("bad number '" + a[0] + "'");
+        if (!isNum(a[1])) fail("bad number '" + a[1] + "'");
+        needThreads();
+        var i = Number(a[0]), j = Number(a[1]);
+        if (i < 1 || i > st.W || j < 1 || j > st.W) fail('column out of range');
+        var w = st.warp.slice(), sh = st.shaft.slice(), t;
+        t = w[i - 1]; w[i - 1] = w[j - 1]; w[j - 1] = t;
+        t = sh[i - 1]; sh[i - 1] = sh[j - 1]; sh[j - 1] = t;
+        st.warp = w; st.shaft = sh;
+      },
+      drift: function (a) {
+        if (a.length !== 1) fail('bad arguments');
+        var m = /^(-?)([0-9]+)$/.exec(a[0]);
+        if (!m) fail("bad number '" + a[0] + "'");
+        needThreads();
+        var W = st.W;
+        var k = typeof BigInt === 'function' ? Number(BigInt(m[2]) % BigInt(W)) : Number(m[2]) % W;
+        if (m[1]) k = (W - k) % W;
+        var w = new Array(W), sh = new Array(W);
+        for (var c = 0; c < W; c++) {
+          w[(c + k) % W] = st.warp[c];
+          sh[(c + k) % W] = st.shaft[c];
+        }
+        st.warp = w; st.shaft = sh;
+      },
+      maxfloat: function (a) {
+        if (a.length !== 1) fail('bad arguments');
+        st.maxfloat = num(a[0], 1, Infinity);
+      }
+    };
+
+    function tick(stmt) {
+      if (++executed > maxSteps) {
+        var e = new LoomError('program too long to run here', stmt.line);
+        e.limit = true;
+        throw e;
+      }
+    }
+
+    function runSimple(stmt) {
+      tick(stmt);
+      st.justPicked = false;
+      try {
+        var known = Object.prototype.hasOwnProperty.call(handlers, stmt.word) && !(stmt.word === 'loom' && loomSeen);
+        if (!known) fail("unknown command '" + stmt.word + "'");
+        if (stmt.word === 'loom') loomSeen = true;
+        handlers[stmt.word](stmt.tokens.slice(1), stmt);
+      } catch (e) {
+        if (e instanceof LoomError) {
+          if (e.line == null) e.line = stmt.line;
+          if (!e.limit) emit(stmt, e);
+        }
+        throw e;
+      }
+      emit(stmt, null);
+    }
+
+    function runBlock(nodes) {
+      for (var i = 0; i < nodes.length; i++) {
+        var node = nodes[i];
+        if (node.body) {
+          var stmt = node.stmt;
+          tick(stmt);
+          st.justPicked = false;
+          var n;
+          try {
+            n = num(stmt.tokens[1], 1, 1000);
+          } catch (e) {
+            if (e instanceof LoomError) { e.line = stmt.line; emit(stmt, e); }
+            throw e;
+          }
+          var frame = { line: stmt.line, i: 1, n: n };
+          loops.push(frame);
+          emit(stmt, null);
+          for (var it = 1; it <= n; it++) {
+            frame.i = it;
+            runBlock(node.body);
+          }
+          loops.pop();
+        } else {
+          runSimple(node.stmt);
+        }
+      }
+    }
+
+    var error = null;
+    var limit = false;
+    try {
+      runBlock(program);
+    } catch (e) {
+      if (!(e instanceof LoomError)) throw e;
+      error = { line: e.line, message: e.message };
+      limit = !!e.limit;
+    }
+    return finish(st, error, limit);
+  }
+
+  function finish(st, error, limit) {
+    var res = { ok: !error, error: error, limit: !!limit, W: st.W, H: st.H, picks: st.picks, palette: st.palette };
+    if (error) {
+      res.rows = null;
+      res.output = 'error line ' + error.line + ': ' + error.message + '\n';
+    } else {
+      var rows = [];
+      var blank = new Array(st.W + 1).join('.');
+      for (var r = 0; r < st.H; r++) rows.push(r < st.picks.length ? st.picks[r].cells : blank);
+      res.rows = rows;
+      res.output = rows.join('\n') + '\n';
+    }
+    return res;
+  }
+
+  // run(source, { trace: true }) also returns res.steps (each with .snap) and res.initial (state before step 1).
+  // options.maxTrace caps the number of recorded steps (execution continues past it, res.traceTruncated = true).
+  function run(source, options) {
+    options = options || {};
+    var c = compile(source);
+    if (c.error) {
+      return { ok: false, error: c.error, limit: false, W: 0, H: 0, picks: [], palette: {}, rows: null, steps: [],
+        output: 'error line ' + c.error.line + ': ' + c.error.message + '\n', staticError: true };
+    }
+    var steps = null, truncated = false;
+    var opts = { maxSteps: options.maxSteps };
+    if (options.trace) {
+      steps = [];
+      var cap = options.maxTrace || 20000;
+      opts.onStep = function (s) {
+        if (steps.length < cap) steps.push(s); else truncated = true;
+      };
+    }
+    var res = execute(c.program, opts);
+    if (steps) { res.steps = steps; res.traceTruncated = truncated; }
+    return res;
+  }
+
+  return {
+    run: run,
+    compile: compile,
+    execute: execute,
+    parseSequence: parseSequence,
+    sequenceValues: sequenceValues,
+    parseLift: parseLift,
+    LoomError: LoomError
+  };
+});
+
+</script>
+<script>
+window.LOOM_DATA = {"conformance":[{"name":"01-plain-weave","src":"// The simplest cloth: plain weave. Odd columns on shaft 1, even on shaft 2.\nloom 8 4\npalette a=#1b3a5c b=#f2e8cf\nwarp a\nthread 1 2\npick b 1\npick b 2\npick b 1\npick b 2\n","expected":"abababab\nbabababa\nabababab\nbabababa\n"},{"name":"02-twill-treadles","src":"// A 2/2 twill: four treadles, walked in order.\nloom 12 8\npalette n=#22223b c=#c9ada7\nwarp n\nthread 1-4\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 41\nrepeat 2 {\n  pick c t1\n  pick c t2\n  pick c t3\n  pick c t4\n}\n","expected":"nnccnnccnncc\ncnnccnnccnnc\nccnnccnnccnn\nnccnnccnnccn\nnnccnnccnncc\ncnnccnnccnnc\nccnnccnnccnn\nnccnnccnnccn\n"},{"name":"03-sequences","src":"// Sequence items: repeats, groups, mirror.\nloom 16 3\npalette a=#e63946 b=#f1faee c=#457b9d d=#1d3557\nwarp (a b)*2 c*3 mirror(a b d)\nthread 1\npick d 1\npick d -\npick d *\n","expected":"ababcccabdbaabab\ndddddddddddddddd\nababcccabdbaabab\n"},{"name":"04-point-twill","src":"// Point (mirrored) threading makes a zigzag.\nloom 14 6\npalette g=#2a9d8f s=#e9c46a\nwarp g\nthread mirror(1-4)\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 14\npick s t1\npick s t2\npick s t3\npick s t4\npick s t3\npick s t2\n","expected":"ggsssggggsssgg\nsggsggssggsggs\nssgggssssgggss\ngssgssggssgssg\nssgggssssgggss\nsggsggssggsggs\n"},{"name":"05-shuttle","src":"// A shuttle cycles weft colors for picks that give none.\nloom 6 7\npalette w=#ffffff r=#d62828 o=#f77f00 y=#fcbf49\nwarp w\nthread 1 2\nshuttle r o y\nrepeat 3 {\n  pick 1\n  pick 2\n}\npick w 12\n","expected":"wrwrwr\nowowow\nwywywy\nrwrwrw\nwowowo\nywywyw\nwwwwww\n"},{"name":"06-unwoven","src":"// Rows never woven print as dots.\nloom 5 4\npalette a=#000000 b=#ffffff\nwarp a b\nthread 1 2\npick b 1\npick a 2\n","expected":"ababa\nababa\n.....\n.....\n"},{"name":"07-cross","src":"// cross swaps two warp threads (color and shaft) from now on.\nloom 6 4\npalette a=#003049 b=#fcbf49 x=#eae2b7\nwarp a*3 b*3\nthread 1 1 1 2 2 2\npick x 1\ncross 1 6\npick x 1\ncross 2 5\npick x 1\npick x 2\n","expected":"aaaxxx\nxaaxxa\nxxaxaa\nbbxbxx\n"},{"name":"08-drift","src":"// drift rotates every warp thread; negative drifts left.\nloom 6 5\npalette a=#264653 b=#e76f51 z=#ffffff\nwarp a b b b b b\nthread 1 2 2 2 2 2\npick z 1\ndrift 1\npick z 1\ndrift 2\npick z 1\ndrift -1\npick z 1\ndrift 7\npick z 1\n","expected":"azzzzz\nzazzzz\nzzzazz\nzzazzz\nzzzazz\n"},{"name":"09-maxfloat-ok","src":"// A twill stays within a float limit of 2.\nloom 8 6\npalette k=#111111 y=#ffd166\nwarp k\nthread 1-4\nmaxfloat 2\nrepeat 3 {\n  pick y 12\n  pick y 34\n}\n","expected":"kkyykkyy\nyykkyykk\nkkyykkyy\nyykkyykk\nkkyykkyy\nyykkyykk\n"},{"name":"10-float-too-long","src":"// Plain weave on shafts 1-2 then a long float: column states run too long.\nloom 6 6\npalette a=#000000 b=#ffffff\nwarp a\nthread 1 2\nmaxfloat 3\npick b 1\npick b 1\npick b 1\npick b 1\n","expected":"error line 10: float too long at row 4 col 1\n"},{"name":"11-unknown-color","src":"loom 4 2\npalette a=#101010\nwarp a\nthread 1\npick q 1\n","expected":"error line 5: unknown color 'q'\n"},{"name":"12-unclosed","src":"loom 4 4\npalette a=#101010 b=#fafafa\nwarp a\nthread 1 2\nrepeat 2 {\n  pick b 1\n  repeat 2 {\n    pick b 2\n}\n","expected":"error line 5: unclosed block\n"},{"name":"13-loom-full","src":"loom 4 5\npalette a=#101010 b=#fafafa\nwarp a\nthread 1 2\nrepeat 3 {\n  pick b 1\n  pick b 2\n}\n","expected":"error line 7: loom full\n"},{"name":"14-no-header","src":"\n// the header must come first\npalette a=#101010\nloom 4 4\n","expected":"error line 3: expected 'loom' header\n"},{"name":"15-lifts","src":"// Lift forms: digits, all, none, and \"all except\".\nloom 8 4\npalette a=#5f0f40 b=#fb8b24\nwarp a\nthread 1-8\npick b 1357\npick b *\npick b -\npick b !12\n","expected":"abababab\naaaaaaaa\nbbbbbbbb\nbbaaaaaa\n"}],"gallery":[{"id":"herringbone","title":"Indigo Herringbone","note":"An 8-shaft twill threaded as a point (mirror) and woven straight: the diagonal flips direction at every turning point.","src":"// title: Indigo Herringbone\n// note: An 8-shaft twill threaded as a point (mirror) and woven straight: the diagonal flips direction at every turning point.\nloom 56 64\npalette n=#1d2a4d i=#3d5f9c c=#efe6d2\nwarp (n n n i)\nthread mirror(1-8)\n\n// eight treadles, each lifting a block of four neighbouring shafts (a 4/4 twill)\ntreadle 1 1234\ntreadle 2 2345\ntreadle 3 3456\ntreadle 4 4567\ntreadle 5 5678\ntreadle 6 1678\ntreadle 7 1278\ntreadle 8 1238\n\nrepeat 8 {\n  pick c t1\n  pick c t2\n  pick c t3\n  pick c t4\n  pick c t5\n  pick c t6\n  pick c t7\n  pick c t8\n}\n"},{"id":"houndstooth","title":"Houndstooth","note":"Four dark, four light in the warp and in the weft, woven as a 2/2 twill: the classic broken check appears by itself.","src":"// title: Houndstooth\n// note: Four dark, four light in the warp and in the weft, woven as a 2/2 twill: the classic broken check appears by itself.\nloom 48 48\npalette k=#2b1633 w=#f3ead8\nwarp (k*4 w*4)\nthread 1-4\nshuttle (k*4 w*4)\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 41\nrepeat 12 {\n  pick t1\n  pick t2\n  pick t3\n  pick t4\n}\n"},{"id":"tartan","title":"Highland Tartan","note":"The same stripe sequence runs in warp and weft (a mirrored sett); a 2/2 twill blends the crossings into new tones.","src":"// title: Highland Tartan\n// note: The same stripe sequence runs in warp and weft (a mirrored sett); a 2/2 twill blends the crossings into new tones.\nloom 63 64\npalette g=#1f4d3a b=#1b2a5c k=#0d0d12 r=#a3252b y=#e3b93c\nwarp mirror(b*10 k*3 g*10 k*3 r*2 k*1 y*1)\nshuttle mirror(b*10 k*3 g*10 k*3 r*2 k*1 y*1)\nthread 1-4\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 41\nrepeat 16 {\n  pick t1\n  pick t2\n  pick t3\n  pick t4\n}\n"},{"id":"diamonds","title":"Rainbow Lozenge","note":"Point threading meets point treadling: diamonds bloom, and the warp colors follow the shafts so every ring is a new hue.","src":"// title: Rainbow Lozenge\n// note: Point threading meets point treadling: diamonds bloom, and the warp colors follow the shafts so every ring is a new hue.\nloom 56 56\npalette a=#e63946 b=#f4a261 c=#e9c46a d=#8ab17d e=#2a9d8f f=#3d5a80 g=#6d597a h=#b56576 x=#1a1423\nwarp mirror(a b c d e f g h)\nthread mirror(1-8)\ntreadle 1 !78\ntreadle 2 !18\ntreadle 3 !12\ntreadle 4 !23\ntreadle 5 !34\ntreadle 6 !45\ntreadle 7 !56\ntreadle 8 !67\nrepeat 4 {\n  pick x t1\n  pick x t2\n  pick x t3\n  pick x t4\n  pick x t5\n  pick x t6\n  pick x t7\n  pick x t8\n  pick x t7\n  pick x t6\n  pick x t5\n  pick x t4\n  pick x t3\n  pick x t2\n}\n"},{"id":"ember","title":"Ember Diamonds","note":"A weft-faced diamond twill on a dark warp; one shuttle holding a mirrored run of seven ember colours turns the diamonds from plum to white-hot and back.","src":"// title: Ember Diamonds\n// note: A weft-faced diamond twill on a dark warp; one shuttle holding a mirrored run of seven ember colours turns the diamonds from plum to white-hot and back.\nloom 60 66\npalette k=#12090f a=#3b0d2e b=#6b1e3a c=#a4303f d=#d9552b e=#f28c28 f=#f7c948 g=#fff1b8\nwarp k\nthread mirror(1-6)\nshuttle mirror(a*4 b*4 c*4 d*4 e*4 f*4 g*4)\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 45\ntreadle 5 56\ntreadle 6 16\nrepeat 6 {\n  pick t1\n  pick t2\n  pick t3\n  pick t4\n  pick t5\n  pick t6\n  pick t5\n  pick t4\n  pick t3\n  pick t2\n  pick t1\n}\n"},{"id":"ombre","title":"Sunset Ombre","note":"A shuttle loaded with sixteen colours, four picks of each, weaves a weft-faced gradient over a dark warp that only peeks through as dots.","src":"// title: Sunset Ombre\n// note: A shuttle loaded with sixteen colours, four picks of each, weaves a weft-faced gradient over a dark warp that only peeks through as dots.\nloom 40 64\npalette a=#1b1b3a b=#2d1e5a c=#48237a d=#6a2c8f e=#8e3a94 f=#b04a8f g=#cf5c84 h=#e8707a i=#f48a6d j=#fba460 l=#fdbd5b m=#fed46a n=#ffe58a o=#fff0ad p=#fff7cf q=#ffffe8 k=#141222\nwarp k\nthread 1 2 3 4\nshuttle a*4 b*4 c*4 d*4 e*4 f*4 g*4 h*4 i*4 j*4 l*4 m*4 n*4 o*4 p*4 q*4\nrepeat 16 {\n  pick 1\n  pick 3\n  pick 2\n  pick 4\n}\n"},{"id":"chevron","title":"Drift Chevrons","note":"One drift per pick slides every thread a step sideways; reverse the drift and the stripes fold back into chevrons.","src":"// title: Drift Chevrons\n// note: One drift per pick slides every thread a step sideways; reverse the drift and the stripes fold back into chevrons.\nloom 48 80\npalette a=#f94144 b=#f3722c c=#f9c74f d=#90be6d e=#43aa8b f=#577590 z=#fdf6e3\nwarp (a*4 b*4 c*4 d*4 e*4 f*4)\nthread 1 2\nrepeat 2 {\n  repeat 20 {\n    pick z 1\n    drift 1\n  }\n  repeat 20 {\n    pick z 1\n    drift -1\n  }\n}\n"},{"id":"logcabin","title":"Log Cabin Check","note":"Plain weave in two colours. Shifting the colour order of the weft against the warp turns stripes into squares. No float is ever longer than 1.","src":"// title: Log Cabin Check\n// note: Plain weave in two colours. Shifting the colour order of the weft against the warp turns stripes into squares. No float is ever longer than 1.\nloom 64 64\npalette a=#1f3a5f b=#f0e6d2\nwarp (a b)*4 (b a)*4\nthread 1 2\nshuttle (a b)*4 (b a)*4\nmaxfloat 1\nrepeat 32 {\n  pick 1\n  pick 2\n}\n"},{"id":"sateen","title":"Gilded Sateen Stripes","note":"A five-shaft warp-faced sateen: each pick lowers a single shaft, so bright warp stripes shine and the weft only glints in a scattered diagonal.","src":"// title: Gilded Sateen Stripes\n// note: A five-shaft warp-faced sateen: each pick lowers a single shaft, so bright warp stripes shine and the weft only glints in a scattered diagonal.\nloom 60 60\npalette g=#d4a72c t=#0d5c63 r=#a63d5a k=#14141c\nwarp (g*6 t*6 r*6 t*6)\nthread 1-5\nmaxfloat 4\ntreadle 1 !1\ntreadle 2 !3\ntreadle 3 !5\ntreadle 4 !2\ntreadle 5 !4\nrepeat 12 {\n  pick k t1\n  pick k t2\n  pick k t3\n  pick k t4\n  pick k t5\n}\n"},{"id":"ribbons","title":"Bouncing Ribbons","note":"Between picks, cross swaps neighbouring warp threads. Six bright strands zig-zag across a dark cloth and bounce off the edges.","src":"// title: Bouncing Ribbons\n// note: Between picks, cross swaps neighbouring warp threads. Six bright strands zig-zag across a dark cloth and bounce off the edges.\nloom 36 72\npalette k=#15131f a=#ff595e b=#ffca3a c=#8ac926 d=#1982c4 e=#6a4c93 f=#ff9f1c\nwarp k*3 a k*4 b k*2 c k*5 d k*3 e k*4 f k*6\nthread 1\n\nrepeat 36 {\n  cross 1 2\n  cross 3 4\n  cross 5 6\n  cross 7 8\n  cross 9 10\n  cross 11 12\n  cross 13 14\n  cross 15 16\n  cross 17 18\n  cross 19 20\n  cross 21 22\n  cross 23 24\n  cross 25 26\n  cross 27 28\n  cross 29 30\n  cross 31 32\n  cross 33 34\n  cross 35 36\n  pick k 1\n  cross 2 3\n  cross 4 5\n  cross 6 7\n  cross 8 9\n  cross 10 11\n  cross 12 13\n  cross 14 15\n  cross 16 17\n  cross 18 19\n  cross 20 21\n  cross 22 23\n  cross 24 25\n  cross 26 27\n  cross 28 29\n  cross 30 31\n  cross 32 33\n  cross 34 35\n  pick k 1\n}\n"}],"starter":"// Welcome to LOOM! Everything after // is a comment.\n// Press Run (or Ctrl+Enter), then use the Loom tab to watch the cloth being woven.\n\nloom 16 16                       // 16 warp threads (columns), room for 16 picks (rows)\npalette n=#1d2a4d c=#efe6d2 g=#c8963e   // name your colours with one letter each\n\nwarp n n n g                     // colour of each warp thread; the pattern repeats across the loom\nthread 1-4                       // which shaft each thread hangs from: 1 2 3 4 1 2 3 4 ...\n\n// A treadle is a saved \"which shafts to lift\" recipe.\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 41\n\n// Each pick throws one weft thread. Lifted warp threads show their own colour,\n// the others stay under the weft. Four picks make one twill repeat, so repeat it.\nrepeat 4 {\n  pick c t1\n  pick c t2\n  pick c t3\n  pick c t4\n}\n\n// Try: change 'thread 1-4' to 'thread mirror(1-4)', add 'maxfloat 2', or\n// insert 'drift 1' between picks and see what happens.\n"};
+</script>
+<script>
+(function () {
+'use strict';
+var LOOM = window.LOOM, DATA = window.LOOM_DATA;
+function $(id) { return document.getElementById(id); }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+window.addEventListener('error', function (e) {
+  var t = $('toast'); t.style.display = 'block'; t.id = 'toast'; t.textContent = 'Script error: ' + e.message;
+});
+
+/* ================================================================= state */
+var S = {
+  res: null, steps: [], total: 0, k: 0, prog: 1,
+  animating: false, mode: 'play', acc: 0, last: 0, raf: 0,
+  gapLen: [], nShafts: 4, name: 'Untitled', tab: 'loom', errLine: null, errMsg: '', errCell: null
+};
+var ta = $('src'), hlEl = $('hl'), gutIn = $('gutterIn');
+var loomCv = $('loomcv'), loomWrap = $('loomwrap');
+var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ================================================================= logo */
+(function () {
+  var g = $('logo'), cols = ['#e63946', '#f4a261', '#e9c46a', '#2a9d8f', '#3d5a80'], html = '';
+  for (var r = 0; r < 5; r++) for (var c = 0; c < 5; c++) {
+    var warp = (r + c) % 2 === 0;
+    html += '<rect x="' + (5 + c * 5) + '" y="' + (5 + r * 5) + '" width="4.4" height="4.4" rx="1" fill="' + (warp ? cols[c] : '#f3ecdc') + '"/>';
+  }
+  g.innerHTML = html;
+})();
+
+/* ================================================================= editor */
+var KEYWORDS = /^(\s*)(loom|palette|warp|thread|treadle|shuttle|pick|cross|drift|maxfloat|repeat)(?=\s|$)/;
+function lum(hex) {
+  var r = parseInt(hex.substr(1, 2), 16), g = parseInt(hex.substr(3, 2), 16), b = parseInt(hex.substr(5, 2), 16);
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+}
+function hlLine(line) {
+  var ci = line.indexOf('//'), code = ci >= 0 ? line.slice(0, ci) : line, cm = ci >= 0 ? line.slice(ci) : '';
+  var out = esc(code).replace(/(#[0-9a-fA-F]{6})|(\b\d+\b)|(\bt\d+\b)|(\bmirror\b)|([(){}*!])/g, function (m, hex, num, tr, mir, punct) {
+    if (hex) return '<span class="hex" style="background:' + hex + ';color:' + (lum(hex) > 0.55 ? '#111' : '#fff') + '">' + hex + '</span>';
+    if (num) return '<span class="tn">' + m + '</span>';
+    if (tr) return '<span class="tt">' + m + '</span>';
+    if (mir) return '<span class="tk">' + m + '</span>';
+    return '<span class="tp">' + m + '</span>';
+  });
+  out = out.replace(KEYWORDS, function (m, sp, kw) { return sp + '<span class="tk">' + kw + '</span>'; });
+  if (cm) out += '<span class="tc">' + esc(cm) + '</span>';
+  return out;
+}
+var edMemo = null;
+function renderEditor() {
+  var cur = S.k > 0 && S.steps[S.k - 1] ? S.steps[S.k - 1].line : null;
+  var key = cur + '|' + S.errLine + '|' + S.errMsg + '|' + ta.value;
+  if (key === edMemo) { syncScroll(); return; }   // nothing to repaint (this runs on every animation frame)
+  edMemo = key;
+  var lines = ta.value.split('\n'), h = '', g = '';
+  for (var i = 0; i < lines.length; i++) {
+    var no = i + 1, cls = 'l', gcls = 'n';
+    var ln = lines[i].replace(/\r$/, '');
+    var body = hlLine(ln);
+    if (no === cur) { cls += ' cur'; gcls += ' cur'; }
+    if (no === S.errLine) { cls += ' err'; gcls += ' err'; body += '<span class="ghost">   ← ' + esc(S.errMsg) + '</span>'; }
+    h += '<span class="' + cls + '">' + (body || ' ') + '</span>';
+    g += '<div class="' + gcls + '">' + no + '</div>';
+  }
+  hlEl.innerHTML = h;
+  gutIn.innerHTML = g;
+  syncScroll();
+}
+function syncScroll() {
+  var t = 'translate(' + (-ta.scrollLeft) + 'px,' + (-ta.scrollTop) + 'px)';
+  hlEl.style.transform = t;
+  gutIn.style.transform = 'translateY(' + (-ta.scrollTop) + 'px)';
+}
+function revealLine(line) {
+  if (!line) return;
+  var top = (line - 1) * 20, view = ta.clientHeight;
+  if (top < ta.scrollTop + 20) ta.scrollTop = Math.max(0, top - 40);
+  else if (top + 40 > ta.scrollTop + view) ta.scrollTop = top - view + 80;
+  syncScroll();
+}
+ta.addEventListener('scroll', syncScroll);
+ta.addEventListener('keydown', function (e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); runNow(true); return; }
+  if (e.key === 'Tab' && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
+    e.preventDefault();
+    if (!document.execCommand || !document.execCommand('insertText', false, '  ')) {
+      var s = ta.selectionStart; ta.value = ta.value.slice(0, s) + '  ' + ta.value.slice(ta.selectionEnd); ta.selectionStart = ta.selectionEnd = s + 2;
+      onEdit();
+    }
+  }
+});
+var liveTimer = 0;
+function onEdit() {
+  renderEditor();
+  clearTimeout(liveTimer);
+  liveTimer = setTimeout(function () { runNow(false); }, 350);
+}
+ta.addEventListener('input', onEdit);
+
+/* ================================================================= running */
+function computeShafts(res) {
+  var max = 4, prev = null, i, j, s;
+  for (i = 0; i < res.steps.length; i++) {
+    var sn = res.steps[i].snap;
+    if (sn.shaft && sn.shaft !== prev) { prev = sn.shaft; for (j = 0; j < sn.shaft.length; j++) if (sn.shaft[j] > max) max = sn.shaft[j]; }
+  }
+  return max;
+}
+function isPickStep(k) { return k > 0 && !!S.steps[k - 1] && !!S.steps[k - 1].pick; }
+
+function execute(animate) {
+  stopAnim();
+  var src = ta.value;
+  var res = LOOM.run(src, { trace: true, maxTrace: 20000, maxSteps: 4000000 });
+  S.res = res; S.steps = res.steps || []; S.total = S.steps.length;
+  S.nShafts = computeShafts({ steps: S.steps });
+  // block length of consecutive non-pick steps (so setup code between picks plays quickly)
+  S.gapLen = new Array(S.total + 1);
+  var i = 1;
+  while (i <= S.total) {
+    if (isPickStep(i)) { S.gapLen[i] = 1; i++; continue; }
+    var j = i; while (j <= S.total && !isPickStep(j)) j++;
+    for (var q = i; q < j; q++) S.gapLen[q] = j - i;
+    i = j;
+  }
+  S.errLine = res.ok ? null : res.error.line;
+  S.errMsg = res.ok ? '' : res.error.message;
+  S.errCell = null;
+  if (!res.ok) { var m = /row (\d+) col (\d+)/.exec(res.error.message); if (m) S.errCell = { row: +m[1], col: +m[2] }; }
+  var scrub = $('scrub'); scrub.max = S.total;
+  renderStatus();
+  if (animate && S.total > 0 && !reduceMotion && $('chkAnim').checked) {
+    S.k = 0; S.prog = 1; startAnim('play');
+  } else {
+    S.k = S.total; S.prog = 1;
+  }
+  renderAll();
+}
+function runNow(animate) {
+  clearTimeout(liveTimer);
+  execute(animate);
+  if (animate) { showTab('loom'); }
+}
+
+function renderStatus() {
+  var el = $('status'), r = S.res;
+  if (r.ok) {
+    var picks = r.picks.length;
+    el.className = 'status ok';
+    el.innerHTML = '<span class="dot"></span><span>Woven: <b>' + r.W + ' × ' + r.H + '</b> cloth' + (picks < r.H ? ' (' + picks + ' of ' + r.H + ' rows woven, the rest print as <code>.</code>)' : ', all ' + picks + ' rows woven') + '.</span>';
+    el.onclick = null; el.title = '';
+  } else if (r.limit) {
+    el.className = 'status err';
+    el.innerHTML = '<span class="dot"></span><span>This program runs too many statements to preview here.</span>';
+  } else {
+    el.className = 'status err';
+    el.innerHTML = '<span class="dot"></span><span><code>error line ' + r.error.line + ': ' + esc(r.error.message) + '</code> <span class="muted" style="color:inherit;opacity:.7">(click to jump to the line)</span></span>';
+    el.title = 'Jump to line ' + r.error.line;
+    el.onclick = function () { jumpToLine(r.error.line); };
+  }
+}
+function jumpToLine(line) {
+  var lines = ta.value.split('\n'), pos = 0;
+  for (var i = 0; i < line - 1 && i < lines.length; i++) pos += lines[i].length + 1;
+  ta.focus();
+  ta.setSelectionRange(pos, pos + (lines[line - 1] || '').length);
+  revealLine(line);
+}
+
+/* ================================================================= playback */
+var SPEEDS = { auto: 0 };
+function pickMs() {
+  var v = $('speed').value;
+  if (v !== 'auto') return +v;
+  var picks = S.res ? S.res.picks.length : 1;
+  return clamp(4500 / Math.max(1, picks), 14, 500);
+}
+function stepDur(k) {
+  if (k <= 0) return 0;
+  var pm = pickMs();
+  if (isPickStep(k)) return pm;
+  return Math.min(pm * 0.5, 1.4 * pm / Math.max(1, S.gapLen[k] || 1), 200);
+}
+function startAnim(mode) {
+  S.animating = true; S.mode = mode; S.acc = 0; S.last = performance.now();
+  if (mode === 'play') {
+    if (S.k >= S.total) S.k = 0;
+    S.k++;
+    S.prog = isPickStep(S.k) ? 0 : 1;
+  }
+  setPlayLabel();
+  cancelAnimationFrame(S.raf);
+  S.raf = requestAnimationFrame(frame);
+}
+function stopAnim() {
+  S.animating = false; cancelAnimationFrame(S.raf);
+  if (S.prog < 1) S.prog = 1;
+  setPlayLabel();
+}
+function setPlayLabel() {
+  var b = $('bPlay');
+  if (S.animating && S.mode === 'play') { b.innerHTML = '&#10074;&#10074; Pause'; }
+  else b.innerHTML = '&#9654; Weave';
+}
+function frame(t) {
+  if (!S.animating) return;
+  var dt = Math.min(50, t - S.last); S.last = t; S.acc += dt;
+  var guard = 0;
+  for (;;) {
+    var dur = stepDur(S.k);
+    if (S.acc < dur) { S.prog = isPickStep(S.k) ? S.acc / dur : 1; break; }
+    S.acc -= dur; S.prog = 1;
+    if (S.mode === 'once' || S.k >= S.total || ++guard > 500) { S.animating = false; break; }
+    S.k++;
+    S.prog = isPickStep(S.k) ? 0 : 1;
+  }
+  setPlayLabel();
+  renderAll();
+  if (S.animating) S.raf = requestAnimationFrame(frame);
+}
+function gotoStep(k, animate) {
+  k = clamp(k, 0, S.total);
+  var forward = k === S.k + 1;
+  stopAnim();
+  S.k = k; S.prog = 1;
+  if (animate && forward && isPickStep(k) && !reduceMotion) { S.prog = 0; startAnim('once'); }
+  renderAll();
+}
+$('bFirst').onclick = function () { gotoStep(0, false); };
+$('bPrev').onclick = function () { gotoStep(S.k - 1, false); };
+$('bNext').onclick = function () { gotoStep(S.k + 1, true); };
+$('bLast').onclick = function () { gotoStep(S.total, false); };
+$('bPlay').onclick = function () {
+  if (S.animating && S.mode === 'play') { stopAnim(); renderAll(); }
+  else { stopAnim(); startAnim('play'); renderAll(); }
+};
+$('scrub').addEventListener('input', function () { gotoStep(+this.value, false); });
+$('speed').addEventListener('change', function () { S.acc = 0; });
+$('bDetails').onclick = function () {
+  var st = $('state'), hide = !st.classList.contains('hidden');
+  st.classList.toggle('hidden', hide); this.setAttribute('aria-pressed', hide ? 'false' : 'true');
+  renderAll();
+};
+document.addEventListener('keydown', function (e) {
+  var tg = e.target && e.target.tagName;
+  if (tg === 'TEXTAREA' || tg === 'INPUT' || tg === 'SELECT' || S.tab !== 'loom') return;
+  if (e.key === 'ArrowLeft') { e.preventDefault(); gotoStep(S.k - 1, false); }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); gotoStep(S.k + 1, true); }
+});
+
+/* ================================================================= drawing helpers */
+function setupCanvas(cv, w, h) {
+  var dpr = window.devicePixelRatio || 1;
+  cv.style.width = w + 'px'; cv.style.height = h + 'px';
+  cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+  var ctx = cv.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return ctx;
+}
+function shade(ctx, x, y, w, h, isWarp) {
+  if (isWarp) {
+    ctx.fillStyle = 'rgba(255,255,255,.17)'; ctx.fillRect(x + w * .3, y, w * .4, h);
+    ctx.fillStyle = 'rgba(0,0,0,.16)'; ctx.fillRect(x, y, w * .13, h); ctx.fillRect(x + w * .87, y, w * .13, h);
+  } else {
+    ctx.fillStyle = 'rgba(255,255,255,.17)'; ctx.fillRect(x, y + h * .3, w, h * .4);
+    ctx.fillStyle = 'rgba(0,0,0,.16)'; ctx.fillRect(x, y, w, h * .13); ctx.fillRect(x, y + h * .87, w, h * .13);
+  }
+}
+// Paints woven rows [0, rows) of res.picks. lastCols: reveal only part of the last row (from the left or the right).
+function paintCloth(ctx, picks, rows, x0, y0, u, tex, lastCols, dirRight, letters) {
+  for (var r = 0; r < rows; r++) {
+    var p = picks[r], y = y0 + r * u, W = p.cells.length;
+    var from = 0, to = W;
+    if (r === rows - 1 && lastCols != null) { if (dirRight) to = lastCols; else from = W - lastCols; }
+    for (var c = from; c < to; c++) {
+      var x = x0 + c * u;
+      ctx.fillStyle = p.palette[p.cells[c]] || '#888';
+      ctx.fillRect(x, y, u + (u < 4 ? 0.6 : 0), u + (u < 4 ? 0.6 : 0));
+      if (tex) shade(ctx, x, y, u, u, p.raised[c] === 1);
+    }
+    if (letters && u >= 12) {
+      ctx.font = Math.floor(u * 0.5) + 'px ui-monospace,Consolas,monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for (var c2 = from; c2 < to; c2++) {
+        var hex = p.palette[p.cells[c2]] || '#888888';
+        ctx.fillStyle = lum(hex) > 0.55 ? 'rgba(0,0,0,.75)' : 'rgba(255,255,255,.85)';
+        ctx.fillText(p.cells[c2], x0 + c2 * u + u / 2, y + u / 2 + 1);
+      }
+    }
+  }
+}
+
+/* ================================================================= loom canvas */
+function snapAt(k) {
+  if (k > 0 && S.steps[k - 1]) return S.steps[k - 1].snap;
+  var r = S.res || { W: 0, H: 0 };
+  return { W: r.W, H: r.H, palette: {}, warp: null, shaft: null, treadles: {}, shuttle: null, shuttlePos: 0, maxfloat: null, rowsWoven: 0, runLen: null, lastState: null, loops: [] };
+}
+function drawLoom() {
+  var res = S.res, snap = snapAt(S.k);
+  var box = loomWrap.getBoundingClientRect();
+  var cw = Math.max(240, Math.floor(box.width) - 2), chAvail = Math.max(200, Math.floor(box.height) - 2);
+  var W = snap.W || (res && res.W) || 0, H = snap.H || (res && res.H) || 0;
+  if (!res || !W || !H) {
+    var c0 = setupCanvas(loomCv, cw, chAvail);
+    c0.fillStyle = '#34302a'; c0.fillRect(0, 0, cw, chAvail);
+    c0.fillStyle = '#c9bea8'; c0.font = '14px system-ui,sans-serif'; c0.textAlign = 'center';
+    c0.fillText(res && !res.ok ? 'The loom could not be set up - see the error on the left.' : 'Run a program to see the loom.', cw / 2, chAvail / 2);
+    return;
+  }
+  var nS = S.nShafts, padX = 10, labelW = 26;
+  var availW = cw - 2 * padX - labelW;
+  var uW = Math.min(34, availW / W);
+  var dh = clamp(uW, 5, 13);
+  var shedH = clamp(uW * 2.6, 40, 70);
+  var cap = 13;
+  var fixed = 8 + cap + nS * dh + 8 + cap + shedH + 8 + cap + 8;
+  var u = Math.min(uW, Math.max(Math.min(uW, 4), (chAvail - fixed) / H));
+  u = Math.max(1.5, u);
+  var totalH = Math.ceil(fixed + H * u);
+  var chH = Math.max(chAvail, totalH);
+  var ctx = setupCanvas(loomCv, cw, chH);
+  ctx.fillStyle = '#34302a'; ctx.fillRect(0, 0, cw, chH);
+
+  var x0 = padX + labelW + (availW - W * u) / 2, xEnd = x0 + W * u;
+  var step = S.k > 0 ? S.steps[S.k - 1] : null;
+  var curPick = step && step.pick ? step.pick : null;         // pick being woven at this step
+  var woven = snap.rowsWoven;
+  var shedPick = curPick || (woven > 0 ? res.picks[woven - 1] : null);
+  var active = !!curPick;                                        // shed is "live" only on the pick's own step
+  var lift = {}; if (shedPick) shedPick.lift.forEach(function (s) { lift[s] = 1; });
+  var pal = snap.palette;
+  ctx.textBaseline = 'middle';
+
+  function caption(y, t, tShort) {
+    ctx.fillStyle = '#b3a78f'; ctx.font = '600 10px system-ui,sans-serif'; ctx.textAlign = 'left';
+    var room = cw - x0 - 6;
+    ctx.fillText(ctx.measureText(t).width <= room ? t : tShort, Math.min(x0, 12), y + cap / 2);
+  }
+
+  // --- threading draft
+  var y = 8;
+  caption(y, 'THREADING  · each dot is a warp thread on a shaft; lifted shafts glow', 'THREADING');
+  var dTop = y + cap;
+  for (var s = 1; s <= nS; s++) {
+    var ry = dTop + (nS - s) * dh;
+    ctx.fillStyle = lift[s] && shedPick ? (active ? '#9a7422' : '#66501f') : (s % 2 ? '#3f382f' : '#463e34');
+    ctx.fillRect(x0 - 2, ry, W * u + 4, dh);
+    ctx.fillStyle = lift[s] && shedPick ? '#ffe9a8' : '#a99e88'; ctx.textAlign = 'right';
+    ctx.font = (lift[s] && shedPick ? '700 ' : '400 ') + Math.min(11, dh + 2) + 'px ui-monospace,Consolas,monospace';
+    ctx.fillText(String(s), x0 - 6, ry + dh / 2 + 0.5);
+  }
+  if (snap.shaft && snap.warp) {
+    for (var c = 0; c < W; c++) {
+      var sh = snap.shaft[c];
+      ctx.fillStyle = pal[snap.warp[c]] || '#888';
+      var dx = x0 + c * u, dy = dTop + (nS - sh) * dh;
+      ctx.fillRect(dx + u * .12, dy + dh * .12, Math.max(1, u * .76), dh * .76);
+    }
+  } else {
+    ctx.fillStyle = '#a89d88'; ctx.font = 'italic 11px system-ui,sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(snap.warp ? 'threading not set yet' : 'warp / threading not set yet', x0 + W * u / 2, dTop + nS * dh / 2);
+  }
+
+  // --- shed
+  y = dTop + nS * dh + 8;
+  caption(y, 'SHED  · raised threads pass over the weft, lowered ones stay under it', 'SHED');
+  var sTop = y + cap, mid = sTop + shedH / 2, gap = clamp(shedH * 0.17, 5, 11);
+  ctx.fillStyle = '#2a2622'; ctx.fillRect(x0 - 2, sTop, W * u + 4, shedH);
+  ctx.fillStyle = '#8b8170'; ctx.fillRect(x0 - 2, mid - gap / 2 - 2, W * u + 4, gap + 4);
+  var tw = Math.max(1, u * 0.62);
+  var dir = 1, prog = S.prog;
+  if (shedPick) dir = (shedPick.row - 1) % 2 === 0 ? 1 : -1;
+  var revealCols = active && prog < 1 ? Math.floor(prog * W) : W;
+  if (snap.warp) {
+    for (var c2 = 0; c2 < W; c2++) {
+      var col = pal[snap.warp[c2]] || '#888', cx = x0 + c2 * u + (u - tw) / 2;
+      var up = shedPick ? shedPick.raised[c2] === 1 : true;
+      // faint threads running to the shafts above and to the cloth below
+      ctx.globalAlpha = 0.28; ctx.fillStyle = col;
+      ctx.fillRect(cx, dTop + nS * dh, tw, shedH + 8 + cap);
+      ctx.globalAlpha = 1;
+      if (!shedPick) { ctx.fillRect(cx, sTop, tw, shedH); continue; }
+      ctx.globalAlpha = active ? 1 : 0.7;
+      ctx.fillStyle = col;
+      if (up) ctx.fillRect(cx, sTop, tw, shedH / 2 - gap / 2 - 1);
+      else { ctx.globalAlpha = (active ? 1 : 0.7) * 0.72; ctx.fillRect(cx, mid + gap / 2 + 1, tw, shedH / 2 - gap / 2 - 1); }
+      ctx.globalAlpha = 1;
+      if (tw >= 3) { ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.lineWidth = 1; ctx.strokeRect(cx + .5, (up ? sTop : mid + gap / 2 + 1) + .5, tw - 1, shedH / 2 - gap / 2 - 2); }
+      if (up && u >= 9 && active) { ctx.fillStyle = '#ffcf6b'; ctx.font = '10px system-ui'; ctx.textAlign = 'center'; ctx.fillText('▲', x0 + c2 * u + u / 2, sTop - 5); }
+    }
+  }
+  // weft + shuttle
+  var wx0, wx1, shuttleX, weftHex = null, atRight;
+  if (shedPick) {
+    weftHex = shedPick.palette[shedPick.weft] || '#888';
+    var done = active ? prog : 1;
+    if (dir === 1) { wx0 = x0; wx1 = x0 + W * u * done; shuttleX = wx1; atRight = true; }
+    else { wx1 = xEnd; wx0 = xEnd - W * u * done; shuttleX = wx0; atRight = false; }
+    if (!active || done >= 1) atRight = dir === 1;
+    ctx.fillStyle = weftHex;
+    ctx.fillRect(wx0, mid - gap / 2, Math.max(0, wx1 - wx0), gap);
+    ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 1; ctx.strokeRect(wx0 + .5, mid - gap / 2 + .5, Math.max(0, wx1 - wx0 - 1), gap - 1);
+    ctx.fillStyle = 'rgba(255,255,255,.22)'; ctx.fillRect(wx0, mid - gap / 2, Math.max(0, wx1 - wx0), gap / 3);
+  } else { shuttleX = x0; }
+  // shuttle glyph in the colour of the next weft (or the colour being thrown)
+  var shHex = weftHex;
+  if (!active && snap.shuttle) shHex = pal[snap.shuttle[snap.shuttlePos % snap.shuttle.length]] || shHex;
+  if (shHex) {
+    var sw = Math.max(16, Math.min(30, u * 2.4)), shh = Math.max(7, gap + 3);
+    var sx = active && prog < 1 ? shuttleX + dir * sw * 0.35 : (dir === 1 || !shedPick ? xEnd + sw * 0.15 : x0 - sw * 0.15);
+    if (!shedPick) sx = x0 - sw * 0.15;
+    ctx.save(); ctx.translate(sx, mid);
+    ctx.beginPath(); ctx.moveTo(-sw / 2, 0); ctx.quadraticCurveTo(0, -shh, sw / 2, 0); ctx.quadraticCurveTo(0, shh, -sw / 2, 0); ctx.closePath();
+    ctx.fillStyle = shHex; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = '#3b2f1f'; ctx.stroke(); ctx.restore();
+  }
+
+  // --- cloth
+  y = sTop + shedH + 8;
+  caption(y, 'CLOTH  · row 1 is woven first, at the top', 'CLOTH');
+  var cTop = y + cap;
+  var partial = active && prog < 1 ? revealCols : null;
+  ctx.fillStyle = '#2a2622'; ctx.fillRect(x0, cTop, W * u, H * u);
+  if (woven < H && snap.warp) {
+    for (var c3 = 0; c3 < W; c3++) {
+      ctx.globalAlpha = 0.33; ctx.fillStyle = pal[snap.warp[c3]] || '#888';
+      ctx.fillRect(x0 + c3 * u + u * 0.18, cTop + woven * u, Math.max(1, u * 0.64), (H - woven) * u);
+    }
+    ctx.globalAlpha = 1;
+  }
+  var tex = u >= 5 && W * H <= 12000;
+  paintCloth(ctx, res.picks, woven, x0, cTop, u, tex, partial, dir === 1, false);
+  ctx.strokeStyle = 'rgba(230,215,180,.35)'; ctx.lineWidth = 1; ctx.strokeRect(x0 - .5, cTop - .5, W * u + 1, H * u + 1);
+  // row numbers + fell marker
+  ctx.textAlign = 'right'; ctx.font = '10px ui-monospace,Consolas,monospace';
+  var every = u >= 9 ? 1 : (u >= 4 ? 5 : 10);
+  for (var r = 0; r < H; r++) {
+    if ((r + 1) % every === 0 || r === 0 || r === woven - 1) {
+      ctx.fillStyle = r === woven - 1 ? '#ffcf6b' : '#a99e88';
+      if (r === woven - 1) ctx.font = '700 10px ui-monospace,Consolas,monospace'; else ctx.font = '10px ui-monospace,Consolas,monospace';
+      ctx.fillText(String(r + 1), x0 - 5, cTop + r * u + Math.min(u, 12) / 2 + (u < 10 ? 0 : u / 2 - 6));
+    }
+  }
+  if (woven > 0) {
+    ctx.fillStyle = '#e9a92b'; ctx.fillRect(x0 - 3, cTop + (woven - 1) * u, 3, u);
+    ctx.fillRect(x0 + W * u, cTop + (woven - 1) * u, 3, u);
+  }
+  // float error marker
+  if (S.errCell && S.k === S.total && S.errCell.row <= woven) {
+    var ex = x0 + (S.errCell.col - 1) * u, ey = cTop + (S.errCell.row - 1) * u;
+    ctx.strokeStyle = '#d7263d'; ctx.lineWidth = 2; ctx.strokeRect(ex - 1, ey - 1, u + 2, u + 2);
+    ctx.fillStyle = '#d7263d'; ctx.font = '700 11px system-ui'; ctx.textAlign = 'left';
+    ctx.fillText('float too long', Math.min(ex + u + 6, cw - 90), ey + u / 2);
+  }
+}
+
+/* ================================================================= state panel + now line */
+function swatch(hex) { return '<span class="sw" style="background:' + esc(hex || '#888') + '"></span>'; }
+function describe(step) {
+  if (!step) return 'Ready. Press <b>Step</b> to run the first statement, or <b>Weave</b> to watch everything.';
+  var t = step.text.split(/\s+/), sn = step.snap, k = step.kind, res = S.res;
+  switch (k) {
+    case 'loom': return 'Loom set up: <b>' + sn.W + ' columns</b> (warp threads) × <b>' + sn.H + ' rows</b> (picks).';
+    case 'palette': return 'Palette now has ' + Object.keys(sn.palette).length + ' colour(s): ' + Object.keys(sn.palette).map(function (c) { return swatch(sn.palette[c]) + c; }).join(' ');
+    case 'warp': return 'Warp coloured: the sequence is tiled across all ' + sn.W + ' threads.';
+    case 'thread': return 'Threading set: each warp thread now hangs from a shaft (see the dots above).';
+    case 'treadle': return 'Treadle ' + t[1] + ' now lifts shaft' + (liftOf(sn.treadles[+t[1]]).length === 1 ? ' ' : 's ') + (liftOf(sn.treadles[+t[1]]).join(' ') || '(none)') + '.';
+    case 'shuttle': return 'Shuttle loaded with ' + (sn.shuttle ? sn.shuttle.length : 0) + ' colour(s); it starts at the first.';
+    case 'pick':
+      if (step.pick) {
+        var p = step.pick, n = 0; for (var i = 0; i < p.raised.length; i++) n += p.raised[i];
+        return '<b>Pick ' + p.row + '</b>: weft ' + swatch(p.palette[p.weft]) + '<code>' + p.weft + '</code>' + (p.usedShuttle ? ' (shuttle)' : '') +
+          ', lift <code>' + (p.lift.join(' ') || 'none') + '</code> → ' + n + ' raised, ' + (p.raised.length - n) + ' lowered.';
+      }
+      return 'Pick failed.';
+    case 'cross': return 'Swapped the warp threads (colour and shaft) in columns ' + t[1] + ' and ' + t[2] + '.';
+    case 'drift': return 'Rotated every warp thread ' + (/^-/.test(t[1]) ? 'left' : 'right') + ' by ' + t[1].replace('-', '') + ' column(s), wrapping around.';
+    case 'maxfloat': return 'Float check on: no run longer than <b>' + t[1] + '</b> allowed.';
+    case 'repeat': return 'Repeat block starts: ' + t[1] + ' passes.';
+  }
+  return esc(step.text);
+}
+function liftOf(mask) { var o = []; for (var s = 1; s <= 8; s++) if (mask & (1 << (s - 1))) o.push(s); return o; }
+
+function updateNow() {
+  var box = $('now'), el = $('nowText'), step = S.k > 0 ? S.steps[S.k - 1] : null;
+  var loops = step ? step.snap.loops : [];
+  var loopTxt = loops.length ? ' <span class="muted">· inside repeat ' + loops.map(function (l) { return l.i + '/' + l.n; }).join(' &rsaquo; ') + '</span>' : '';
+  if (step && step.error) {
+    box.className = 'now err';
+    el.innerHTML = '<b>Line ' + step.line + '</b> <code>' + esc(step.text) + '</code> → <b>error:</b> ' + esc(step.error);
+  } else if (!step) {
+    box.className = 'now';
+    el.innerHTML = S.res && S.res.staticError ? '<span>The program cannot start: <b>' + esc(S.res.error.message) + '</b> (line ' + S.res.error.line + ').</span>' : describe(null);
+  } else {
+    box.className = 'now';
+    el.innerHTML = '<b>Line ' + step.line + '</b> <code>' + esc(step.text) + '</code><span> — ' + describe(step) + loopTxt + '</span>';
+  }
+  $('stepLbl').textContent = S.k + ' / ' + S.total;
+  $('scrub').value = S.k;
+  $('scrub').max = S.total;
+  $('bFirst').disabled = $('bPrev').disabled = S.k === 0;
+  $('bNext').disabled = $('bLast').disabled = S.k >= S.total;
+  $('bPlay').disabled = S.total === 0;
+  $('scrub').disabled = S.total === 0;
+}
+var memo = {};
+function updateState() {
+  var snap = snapAt(S.k), W = snap.W, i;
+  // warp strip
+  var strip = $('stWarp');
+  if (memo.warp === snap.warp && memo.shaft === snap.shaft && memo.pal === snap.palette && memo.W === W) { /* unchanged */ }
+  else if (!snap.warp) { memo.warp = snap.warp; strip.innerHTML = '<span class="muted" style="font:12px var(--sans)">not set yet</span>'; }
+  else {
+    memo.warp = snap.warp; memo.shaft = snap.shaft; memo.pal = snap.palette; memo.W = W;
+    var cwid = W <= 40 ? 16 : (W <= 80 ? 10 : 5), h = '';
+    for (i = 0; i < W; i++) {
+      var hex = snap.palette[snap.warp[i]] || '#888';
+      h += '<div title="column ' + (i + 1) + ': colour ' + snap.warp[i] + ', shaft ' + (snap.shaft ? snap.shaft[i] : '?') + '" style="flex:none;width:' + cwid + 'px">' +
+        '<div class="cw" style="background:' + hex + ';margin-right:1px"></div>' +
+        (cwid >= 10 ? '<span style="display:block;width:' + cwid + 'px">' + (snap.shaft ? snap.shaft[i] : '·') + '</span>' : '') + '</div>';
+    }
+    strip.innerHTML = h;
+  }
+  // treadles
+  var tk = Object.keys(snap.treadles).map(Number).sort(function (a, b) { return a - b; });
+  var tc = $('tieup'), step0 = S.k > 0 ? S.steps[S.k - 1] : null;
+  $('tieNone').style.display = tk.length ? 'none' : 'block';
+  var used = step0 && step0.pick && /^t[0-9]+$/.test(step0.pick.liftText) ? +step0.pick.liftText.slice(1) : 0;
+  var tkey = tk.map(function (n) { return n + ':' + snap.treadles[n]; }).join(',') + '|' + used + '|' + S.nShafts + '|' + tc.parentNode.clientWidth;
+  if (!tk.length) { tc.style.display = 'none'; memo.tkey = null; }
+  else if (tkey !== memo.tkey) {
+    memo.tkey = tkey;
+    tc.style.display = 'block';
+    var nS = S.nShafts, cell = 9, tw2 = Math.max(60, tc.parentNode.clientWidth - 18), th2 = 12 + nS * cell + 2;
+    var tx = setupCanvas(tc, tw2, th2);
+    tx.font = '9px ui-monospace,Consolas,monospace'; tx.textAlign = 'center'; tx.textBaseline = 'middle';
+    var lab = 16;
+    for (var s2 = 1; s2 <= nS; s2++) {
+      tx.fillStyle = '#9a8f7c'; tx.textAlign = 'right'; tx.fillText(String(s2), lab - 4, 12 + (nS - s2) * cell + cell / 2);
+    }
+    for (var q = 0; q < tk.length; q++) {
+      var n = tk[q], cx2 = lab + q * (cell + 3);
+      if (cx2 + cell > tw2) break;
+      tx.fillStyle = n === used ? '#ffe7b0' : '#f4efe3'; tx.fillRect(cx2 - 1, 0, cell + 2, th2);
+      tx.fillStyle = n === used ? '#8a5a00' : '#7a6f5f'; tx.textAlign = 'center'; tx.fillText('t' + n, cx2 + cell / 2, 6);
+      for (var s3 = 1; s3 <= nS; s3++) {
+        var on = (snap.treadles[n] >> (s3 - 1)) & 1, yy = 12 + (nS - s3) * cell;
+        tx.fillStyle = on ? (n === used ? '#b57a10' : '#2f4a7a') : '#e2d9c6';
+        tx.fillRect(cx2 + 1, yy + 1, cell - 2, cell - 2);
+      }
+    }
+    tc.title = tk.map(function (n) { return 't' + n + ' lifts ' + (liftOf(snap.treadles[n]).join(' ') || 'nothing'); }).join(', ');
+  }
+  // shuttle
+  var sh = snap.shuttle;
+  var skey = sh ? sh.length + ':' + snap.shuttlePos + ':' + sh[0] + sh[sh.length - 1] : 'none';
+  if (skey === memo.skey && memo.spal === snap.palette && memo.sref === sh) { /* unchanged */ }
+  else if (!sh) { memo.skey = skey; memo.spal = snap.palette; memo.sref = sh; $('stShuttle').innerHTML = '<span class="muted">not loaded (picks need a colour)</span>'; }
+  else {
+    memo.skey = skey; memo.spal = snap.palette; memo.sref = sh;
+    var pos = snap.shuttlePos % sh.length, hh = '', lim = Math.min(sh.length, 6);
+    var startI = sh.length > lim ? Math.max(0, Math.min(pos - 3, sh.length - lim)) : 0;
+    if (startI > 0) hh += '<span class="muted">…</span> ';
+    for (i = startI; i < startI + lim; i++) hh += '<span class="chip' + (i === pos ? ' cur' : '') + '">' + swatch(snap.palette[sh[i]]) + sh[i] + '</span>';
+    if (startI + lim < sh.length) hh += '<span class="muted">… of ' + sh.length + '</span>';
+    $('stShuttle').innerHTML = hh + '<div class="muted">next throw: <b>' + sh[pos] + '</b> (#' + (pos + 1) + ' of ' + sh.length + ')</div>';
+  }
+  // floats
+  var cv = $('floats'), w = Math.max(60, cv.parentNode.clientWidth - 18), ch = 34;
+  var ctx = setupCanvas(cv, w, ch);
+  ctx.fillStyle = '#faf7f0'; ctx.fillRect(0, 0, w, ch);
+  var lim2 = snap.maxfloat;
+  $('stFloatNote').textContent = lim2 === null ? '(maxfloat off)' : '(limit ' + lim2 + ')';
+  if (snap.runLen && W) {
+    var max = 1, at = 0;
+    for (i = 0; i < W; i++) if (snap.runLen[i] > max) { max = snap.runLen[i]; at = i; }
+    var scale = Math.max(4, lim2 === null ? max : Math.max(max, lim2 + 1)), bw = w / W;
+    for (i = 0; i < W; i++) {
+      var v = snap.runLen[i], bh = (v / scale) * (ch - 4);
+      var over = lim2 !== null && v > lim2;
+      ctx.fillStyle = over ? '#d7263d' : (snap.lastState[i] === 1 ? '#d9982b' : '#4c7aa8');
+      ctx.fillRect(i * bw, ch - bh, Math.max(1, bw - (bw > 3 ? 1 : 0)), bh);
+    }
+    if (lim2 !== null) { var ly = ch - (lim2 / scale) * (ch - 4); ctx.strokeStyle = '#d7263d'; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(0, ly); ctx.lineTo(w, ly); ctx.stroke(); ctx.setLineDash([]); }
+    cv.title = 'Bars: rows each column has held the same state (gold = raised, blue = lowered). Longest now: ' + max + ' at column ' + (at + 1);
+  } else cv.title = 'No rows woven yet';
+}
+
+/* ================================================================= fabric tab */
+function drawFabric() {
+  var res = S.res, cv = $('fabcv'), box = $('fabricbox');
+  var tools = $('fabInfo'), txt = $('gridtext');
+  if (!res || !res.ok) {
+    cv.style.display = 'none';
+    var m = box.querySelector('.fabmsg'); if (!m) { m = document.createElement('div'); m.className = 'fabmsg'; box.appendChild(m); }
+    m.innerHTML = res ? '<b>No fabric.</b><br>A program that fails prints only its error line:<br><code>' + esc(res.output.trim()) + '</code>' : '';
+    txt.textContent = res ? res.output : '';
+    tools.textContent = '';
+    return;
+  }
+  var mm = box.querySelector('.fabmsg'); if (mm) mm.remove();
+  cv.style.display = 'block';
+  var bw = Math.max(200, box.clientWidth - 24), bh = Math.max(200, box.clientHeight - 24);
+  var u = Math.max(1, Math.min(40, Math.floor(Math.min(bw / res.W, bh / res.H) * 10) / 10));
+  if (u >= 3) u = Math.floor(u);
+  var ctx = setupCanvas(cv, Math.ceil(res.W * u), Math.ceil(res.H * u));
+  ctx.fillStyle = '#ddd'; ctx.fillRect(0, 0, res.W * u, res.H * u);
+  paintCloth(ctx, res.picks, res.picks.length, 0, 0, u, $('chkTex').checked && u >= 5, null, true, $('chkLetters').checked);
+  if (res.picks.length < res.H) {
+    ctx.fillStyle = 'rgba(0,0,0,.12)'; ctx.fillRect(0, res.picks.length * u, res.W * u, (res.H - res.picks.length) * u);
+  }
+  tools.textContent = res.W + ' × ' + res.H + ', ' + res.picks.length + ' rows woven';
+  txt.textContent = res.output;
+}
+$('chkTex').onchange = $('chkLetters').onchange = drawFabric;
+$('btnCopy').onclick = function () {
+  var t = S.res ? S.res.output : '', b = this;
+  function done() { var o = b.textContent; b.textContent = 'Copied'; setTimeout(function () { b.textContent = o; }, 1200); }
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, fallback); else fallback();
+  function fallback() { var r = document.createRange(); r.selectNodeContents($('gridtext')); var s = getSelection(); s.removeAllRanges(); s.addRange(r); try { document.execCommand('copy'); done(); } catch (e) {} }
+};
+
+/* ================================================================= gallery */
+function thumb(res, max) {
+  var u = Math.max(1, Math.floor(max / Math.max(res.W, res.H)));
+  var cv = document.createElement('canvas');
+  var ctx = setupCanvas(cv, res.W * u, res.H * u);
+  paintCloth(ctx, res.picks, res.picks.length, 0, 0, u, u >= 4, null, true, false);
+  return cv;
+}
+function buildGallery() {
+  var host = $('gallery'); host.innerHTML = '';
+  DATA.gallery.forEach(function (g) {
+    var res = LOOM.run(g.src);
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'piece'; b.title = 'Load "' + g.title + '" into the editor';
+    var th = document.createElement('div'); th.className = 'thumb';
+    if (res.ok) th.appendChild(thumb(res, 168)); else th.textContent = res.output;
+    var meta = document.createElement('div'); meta.className = 'meta';
+    meta.innerHTML = '<b>' + esc(g.title) + '</b><span>' + esc(g.note) + '</span><em>' + res.W + '×' + res.H + ' &middot; ' + (res.ok ? res.picks.length : 0) + ' picks &middot; gallery/' + g.id + '.loom</em>';
+    b.appendChild(th); b.appendChild(meta);
+    b.onclick = function () { loadProgram(g.src, g.title, true); };
+    host.appendChild(b);
+  });
+}
+
+/* ================================================================= conformance */
+function firstDiff(a, b) {
+  var al = a.split('\n'), bl = b.split('\n');
+  for (var i = 0; i < Math.max(al.length, bl.length); i++) if (al[i] !== bl[i]) return i;
+  return -1;
+}
+function runConformance() {
+  var host = $('conflist'), pass = 0, h = '';
+  DATA.conformance.forEach(function (c, idx) {
+    var got = LOOM.run(c.src).output, ok = got === c.expected;
+    if (ok) pass++;
+    var d = ok ? -1 : firstDiff(got, c.expected);
+    function lines(t, mark) { return t.split('\n').map(function (l, i) { return i === mark ? '<span class="diff">' + esc(l || ' ') + '</span>' : esc(l); }).join('\n'); }
+    h += '<details class="crow"' + (ok ? '' : ' open') + '><summary><span class="pill ' + (ok ? 'pass' : 'fail') + '">' + (ok ? 'PASS' : 'FAIL') + '</span><span class="cname">' + esc(c.name) + '</span>' +
+      '<button class="btn small" type="button" data-open="' + idx + '">Open in editor</button></summary>' +
+      '<div class="cbody"><div><h5>Program</h5><pre>' + esc(c.src) + '</pre></div><div><h5>Expected</h5><pre>' + lines(c.expected, d) + '</pre></div><div><h5>Actual</h5><pre>' + lines(got, d) + '</pre></div></div></details>';
+  });
+  host.innerHTML = h;
+  var tot = $('confTotal'), all = pass === DATA.conformance.length;
+  tot.textContent = pass + ' / ' + DATA.conformance.length + ' passed';
+  tot.className = 'total ' + (all ? 'pass' : 'fail');
+  var badge = $('confBadge'); badge.textContent = pass + '/' + DATA.conformance.length; badge.className = 'badge ' + (all ? 'pass' : 'fail');
+  document.body.setAttribute('data-conformance', pass + '/' + DATA.conformance.length);
+  Array.prototype.forEach.call(host.querySelectorAll('[data-open]'), function (b) {
+    b.onclick = function (e) { e.preventDefault(); e.stopPropagation(); var c = DATA.conformance[+b.getAttribute('data-open')]; loadProgram(c.src, 'conformance/' + c.name, false); };
+  });
+}
+$('btnConf').onclick = runConformance;
+
+/* ================================================================= guide */
+$('guide').innerHTML =
+'<h2>How a loom makes cloth</h2>' +
+'<p>A loom holds <b>W warp threads</b> side by side (columns, numbered from the left). Each thread has a <b>colour</b> and hangs from one of up to <b>8 shafts</b>. To weave one row (a <b>pick</b>) you <b>lift some shafts</b>: the threads on lifted shafts are <b>raised</b> and show their own colour; every other thread is <b>lowered</b>, so the <b>weft</b> thread laid across shows instead. Do that for H rows and you have cloth.</p>' +
+'<p>The output is a grid of colour letters, one per cell. Rows you never weave print as <code>.</code>.</p>' +
+'<h2>Statements</h2>' +
+'<table><tr><th>Statement</th><th>What it does</th></tr>' +
+'<tr><td><code>loom 16 12</code></td><td>Must come first. 16 columns, 12 rows (each 1&ndash;200).</td></tr>' +
+'<tr><td><code>palette a=#1b3a5c b=#f2e8cf</code></td><td>Name colours with one lowercase letter each. Redefine any time.</td></tr>' +
+'<tr><td><code>warp a a b</code></td><td>Colour of each warp thread; the list is <b>tiled</b> across the loom.</td></tr>' +
+'<tr><td><code>thread 1-4</code></td><td>Shaft (1&ndash;8) of each thread, tiled too. <code>1-4</code> means 1 2 3 4; <code>4-2</code> means 4 3 2.</td></tr>' +
+'<tr><td><code>treadle 1 12</code></td><td>Save a lift recipe as treadle 1&ndash;10.</td></tr>' +
+'<tr><td><code>shuttle r o y</code></td><td>A cyclic list of weft colours for picks that name none.</td></tr>' +
+'<tr><td><code>pick c 13</code> &nbsp; <code>pick t2</code></td><td>Weave a row. Optional weft colour first, then the lift. Without a colour the shuttle supplies the next one.</td></tr>' +
+'<tr><td><code>cross 1 6</code></td><td>Swap the warp threads (colour and shaft) in two columns.</td></tr>' +
+'<tr><td><code>drift 2</code> &nbsp; <code>drift -1</code></td><td>Slide every warp thread right (or left) with wrap-around.</td></tr>' +
+'<tr><td><code>maxfloat 3</code></td><td>Error if any run of same-state cells (across a row, or down a column) gets longer than 3.</td></tr>' +
+'<tr><td><code>repeat 4 {</code> &hellip; <code>}</code></td><td>Run the lines between 4 times. Blocks nest. <code>}</code> goes alone on its line.</td></tr>' +
+'</table>' +
+'<h2>Lifts</h2>' +
+'<table><tr><td><code>13</code></td><td>shafts 1 and 3</td><td><code>-</code></td><td>none</td><td><code>*</code></td><td>all</td><td><code>!12</code></td><td>all except 1 and 2</td><td><code>t3</code></td><td>treadle 3 (in <code>pick</code> only)</td></tr></table>' +
+'<h2>Sequences</h2>' +
+'<table><tr><td><code>a*3</code></td><td>a a a</td><td><code>(a b)*2</code></td><td>a b a b</td><td><code>mirror(a b c)</code></td><td>a b c b a</td><td><code>mirror(1-4)</code></td><td>1 2 3 4 3 2 1</td></tr></table>' +
+'<h2>A first cloth</h2>' +
+'<pre>loom 8 4\npalette a=#1b3a5c b=#f2e8cf\nwarp a\nthread 1 2\npick b 1\npick b 2\npick b 1\npick b 2</pre>' +
+'<p>Odd threads hang from shaft 1, even from shaft 2. Lifting shaft 1 shows navy on odd columns and cream weft on even ones; lifting shaft 2 does the opposite: plain weave, a checkerboard.</p>' +
+'<h2>Errors</h2>' +
+'<p>The first problem stops the run and prints one line, <code>error line L: message</code>. Studio also marks that line in the editor. Structural problems (missing <code>loom</code> header, <code>bad repeat</code>, <code>unexpected \'}\'</code>, <code>unclosed block</code>) are found before anything runs; everything else is found when its statement executes.</p>' +
+'<h2>Using Studio</h2>' +
+'<p><b>Run</b> (or Ctrl+Enter) weaves the program; the editor also re-runs as you type. In the <b>Loom</b> tab, <b>Weave</b> plays the cloth forming pick by pick; <b>Step</b> and <b>Back</b> move one statement at a time (arrow keys work too), and the slider scrubs. The highlighted editor line is the statement just executed, and the panels show the live loom state. The <b>Fabric</b> tab shows the finished cloth and the exact text output.</p>';
+$('linkGuide').onclick = function () { showTab('guide'); };
+
+/* ================================================================= tabs / render / load */
+function showTab(name) {
+  S.tab = name;
+  Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (t) { t.setAttribute('aria-selected', t.getAttribute('data-tab') === name ? 'true' : 'false'); });
+  Array.prototype.forEach.call(document.querySelectorAll('.panel'), function (p) { p.classList.toggle('on', p.id === 'p-' + name); });
+  renderAll();
+}
+Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (t) { t.onclick = function () { showTab(t.getAttribute('data-tab')); }; });
+
+function renderAll() {
+  renderEditor();
+  updateNow();
+  var step = S.k > 0 ? S.steps[S.k - 1] : null;
+  if (step && (S.animating || S.k === S.total)) revealLine(step.line);
+  if (S.tab === 'loom') { drawLoom(); updateState(); }
+  else if (S.tab === 'fabric') drawFabric();
+}
+function loadProgram(src, name, animate) {
+  ta.value = src; ta.scrollTop = 0; ta.scrollLeft = 0;
+  S.name = name; $('progName').textContent = name;
+  if (animate) showTab('loom'); else if (S.tab !== 'fabric') showTab('loom');
+  execute(animate);
+  ta.blur();
+}
+var rz = 0;
+window.addEventListener('resize', function () { cancelAnimationFrame(rz); rz = requestAnimationFrame(function () { if (!S.animating) renderAll(); }); });
+$('btnRun').onclick = function () { runNow(true); };
+$('btnSave').onclick = function () {
+  var a = document.createElement('a'), url = URL.createObjectURL(new Blob([ta.value], { type: 'text/plain' }));
+  a.href = url; a.download = (S.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'program') + '.loom';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(url); }, 500);
+};
+
+/* ================================================================= boot */
+buildGallery();
+runConformance();
+(function boot() {
+  var h = location.hash.replace(/^#/, ''), o = {};
+  h.split('&').forEach(function (p) { var kv = p.split('='); if (kv[0]) o[kv[0]] = decodeURIComponent(kv[1] || ''); });
+  var piece = null;
+  if (o.piece) DATA.gallery.forEach(function (g) { if (g.id === o.piece) piece = g; });
+  var src = piece ? piece.src : DATA.starter;
+  ta.value = src; S.name = piece ? piece.title : 'Welcome: a first twill'; $('progName').textContent = S.name;
+  var still = 'still' in o || reduceMotion;
+  S.tab = 'loom';
+  execute(!still);
+  if (o.step != null && o.step !== '') { stopAnim(); S.k = clamp(+o.step, 0, S.total); S.prog = o.prog ? +o.prog : 1; }
+  if (o.tab) showTab(o.tab); else renderAll();
+  if (o.err) { ta.value = decodeURIComponent(o.err); execute(false); }
+  if ('selftest' in o) {
+    // Developer hook (#selftest): drives the UI through every program and step, reports in <body data-selftest>.
+    try { selfTest(); document.body.setAttribute('data-selftest', 'ok'); }
+    catch (e) { document.body.setAttribute('data-selftest', 'FAIL ' + (e && e.stack || e)); }
+    var box = document.createElement('div');
+    box.style.cssText = 'position:fixed;left:0;right:0;top:0;z-index:99;padding:10px;font:700 20px monospace;color:#fff;background:' + (document.body.getAttribute('data-selftest') === 'ok' ? '#1f7a3f' : '#b3362b');
+    box.textContent = 'SELFTEST: ' + document.body.getAttribute('data-selftest').slice(0, 300) + ' | conformance ' + document.body.getAttribute('data-conformance');
+    document.body.appendChild(box);
+  }
+})();
+function selfTest() {
+  var all = DATA.gallery.map(function (g) { return { name: g.title, src: g.src, ok: true }; })
+    .concat(DATA.conformance.map(function (c) { return { name: c.name, src: c.src, expected: c.expected }; }));
+  all.forEach(function (p) {
+    loadProgram(p.src, p.name, false);
+    if (p.ok && !S.res.ok) throw new Error('gallery piece failed: ' + p.name + ' ' + S.res.output);
+    if (p.expected !== undefined && S.res.output !== p.expected) throw new Error('output mismatch: ' + p.name);
+    if (S.errLine && ta.value.split('\n').length < S.errLine) throw new Error('error line outside the source: ' + p.name);
+    showTab('loom');
+    var stride = Math.max(1, Math.ceil(S.total / 8));
+    for (var k = 0; k <= S.total; k += stride) gotoStep(k, false);
+    for (var j = S.total; j >= 0; j -= stride * 2) gotoStep(j, false);
+    gotoStep(S.total, false);
+    showTab('fabric');
+    if (S.total && S.steps[S.total - 1].line !== (S.res.ok ? S.steps[S.total - 1].line : S.errLine)) throw new Error('last step is not the error line: ' + p.name);
+    S.k = Math.min(S.total, 3); S.prog = 0.5; renderAll();
+  });
+  showTab('gallery'); showTab('conformance'); showTab('guide'); showTab('loom');
+  if (document.querySelectorAll('.piece').length < 8) throw new Error('gallery has fewer than 8 pieces');
+}
+})();
+</script>
+</body>
+</html>

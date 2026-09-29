@@ -1,0 +1,3 @@
+loom 4 4
+palette a=#000000
+pick q 9

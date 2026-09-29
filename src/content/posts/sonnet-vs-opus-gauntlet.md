@@ -199,6 +199,98 @@ results.
 
 ## Results
 
-Pending. The ten Loom sessions started tonight. Each one's studio will be embedded here,
-side by side, with its hidden-test score, turns, tokens, wall-clock time and API-equivalent
-cost.
+### Loom: ten perfect scores, and a 22× spread in cost
+
+**Every session passed all 15 public examples and all 10 hidden tests.** Every interpreter
+was correct, every studio worked, and every gallery piece ran. The hidden edge cases I was
+proud of didn't catch anyone. So Loom stopped being a correctness test and turned into
+exactly the measurement I wanted: the same finished result, bought at ten different prices.
+
+| Session | Hidden | Gallery | Wall time | Requests | Cache reads | Cost |
+|---|---|---|---|---|---|---|
+| Opus 5.5 Low | 10/10 | 9 | 8 min | 23 | 1.8M | **$2.00** |
+| Opus 5.5 Medium | 10/10 | 9 | 21 min | 63 | 8.7M | $5.68 |
+| Opus 5.5 High | 10/10 | 9 | 26 min | 50 | 7.7M | $6.52 |
+| Opus 5.5 XHigh | 10/10 | 10 | 51 min | 105 | 23.0M | $14.32 |
+| Opus 5.5 Max | 10/10 | 12 | 62 min | 155 | 41.3M | $32.40 |
+| Sonnet 5.5 Low | 10/10 | 10 | 10 min | 55 | 6.0M | $2.45 |
+| Sonnet 5.5 Medium | 10/10 | 10 | 22 min | 76 | 11.3M | $4.45 |
+| Sonnet 5.5 High | 10/10 | 10 | 40 min | 111 | 26.5M | $8.91 |
+| Sonnet 5.5 XHigh | 10/10 | 13 | 67 min | 213 | 57.0M | $20.30 |
+| Sonnet 5.5 Max | 10/10 | 14 | 110 min* | 244 | 102.6M | **$43.86** |
+
+Requests, tokens and dollars come straight out of the session transcripts through Playback
+Lens, including subagents (the XHigh and Max runs spawned one or two each). They're
+API-equivalent dollars. \*Sonnet Max hit my plan's usage limit 73 minutes in and was resumed
+in the same session after the limit reset, so its wall time includes the restart but its
+tokens are exact.
+
+**Sonnet was the more expensive model.** Summed over all five effort levels, the Opus runs
+cost $60.92 and the Sonnet runs cost $79.97, for identical scores. Sonnet came out cheaper at
+exactly one level, Medium, by 22%. At Low, High, XHigh and Max it cost more than Opus.
+
+**The reason is the thing this whole post is about.** At the same effort, Sonnet made 1.2–2.4×
+as many requests and re-read 1.3–3.4× as much cached conversation. Cache reads are the one
+line where Sonnet isn't cheaper. On the Opus runs, cache reads were 18–32% of the bill. On
+the Sonnet runs they were 47–60%. If Opus's own token counts had been billed at Sonnet's
+prices, its runs would have cost $38.72. Sonnet actually spent $79.97. **For this kind of
+work, Sonnet consumed roughly twice the tokens to finish the same job**, which is more than
+its price discount gives back.
+
+**Effort bought nothing measurable.** Low effort got the same 25/25 as Max on both models.
+What Max bought was more gallery pieces (12–14 against 9–10), longer notes and bigger test
+suites, at 16× the cost on Opus and 18× on Sonnet. Opus Low finished the whole task,
+including a 119-test suite and screenshot checks of its own page in headless Edge, in under
+eight minutes for two dollars.
+
+**Against what I predicted:**
+
+- **Everybody passes the 15 public examples.** Right.
+- **The hidden ten separate the field.** Wrong. Nobody dropped a single one.
+- **Sonnet uses more turns and the gap closes.** Worse than predicted: it didn't just close,
+  it flipped.
+- **Max isn't free.** Right, and more so than I expected: Max cost 16–18× Low for the same
+  score.
+- **The galleries say more than the scores.** Half right. See below.
+
+### The galleries
+
+Every piece of cloth from every session, woven by my reference interpreter using each
+session's own colors. One row per session, in the table's order:
+
+![Every gallery piece from all ten sessions, one row per session](/gauntlet/loom/gallery-wall.png)
+
+The surprise is how alike they are. **All ten galleries include a tartan, nine a herringbone,
+nine a sunset gradient, eight a houndstooth and seven a log cabin.** Ten independent sessions,
+in a language that didn't exist until that evening, mostly reached for the same five famous
+cloths. The differences are at the edges. Sonnet went further into color and whimsy:
+rainbow lozenges, tiny hearts, a kaleidoscope, a barber pole. Opus stayed closer to a
+weaving textbook: goose-eye, monk's belt, rosepath, an oat waffle. Higher effort mostly
+bought more pieces, not stranger ones.
+
+### The studios
+
+Every studio works, and they don't look alike. **All five Sonnet studios chose a dark
+theme, and all five Opus studios kept a light workspace.** The higher-effort Opus runs
+drew real weaving-draft diagrams (threading across the top, lift plan down the side) that
+nobody asked for. Click any one to open it: each is the exact single HTML file its session
+wrote.
+
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:1.2em 0">
+  <a href="/gauntlet/loom/opus-5-5-low/" style="display:block;text-decoration:none"><img src="/gauntlet/loom/opus-5-5-low/studio.jpg" alt="LOOM Studio built by Opus 5.5 at Low effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Opus 5.5 · Low</span></a>
+  <a href="/gauntlet/loom/opus-5-5-medium/" style="display:block;text-decoration:none"><img src="/gauntlet/loom/opus-5-5-medium/studio.jpg" alt="LOOM Studio built by Opus 5.5 at Medium effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Opus 5.5 · Medium</span></a>
+  <a href="/gauntlet/loom/opus-5-5-high/" style="display:block;text-decoration:none"><img src="/gauntlet/loom/opus-5-5-high/studio.jpg" alt="LOOM Studio built by Opus 5.5 at High effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Opus 5.5 · High</span></a>
+  <a href="/gauntlet/loom/opus-5-5-xhigh/" style="display:block;text-decoration:none"><img src="/gauntlet/loom/opus-5-5-xhigh/studio.jpg" alt="LOOM Studio built by Opus 5.5 at XHigh effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Opus 5.5 · XHigh</span></a>
+  <a href="/gauntlet/loom/opus-5-5-max/" style="display:block;text-decoration:none"><img src="/gauntlet/loom/opus-5-5-max/studio.jpg" alt="LOOM Studio built by Opus 5.5 at Max effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Opus 5.5 · Max</span></a>
+  <a href="/gauntlet/loom/sonnet-5-5-low/" style="display:block;text-decoration:none"><img src="/gauntlet/loom/sonnet-5-5-low/studio.jpg" alt="LOOM Studio built by Sonnet 5.5 at Low effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Sonnet 5.5 · Low</span></a>
+  <a href="/gauntlet/loom/sonnet-5-5-medium/" style="display:block;text-decoration:none"><img src="/gauntlet/loom/sonnet-5-5-medium/studio.jpg" alt="LOOM Studio built by Sonnet 5.5 at Medium effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Sonnet 5.5 · Medium</span></a>
+  <a href="/gauntlet/loom/sonnet-5-5-high/" style="display:block;text-decoration:none"><img src="/gauntlet/loom/sonnet-5-5-high/studio.jpg" alt="LOOM Studio built by Sonnet 5.5 at High effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Sonnet 5.5 · High</span></a>
+  <a href="/gauntlet/loom/sonnet-5-5-xhigh/" style="display:block;text-decoration:none"><img src="/gauntlet/loom/sonnet-5-5-xhigh/studio.jpg" alt="LOOM Studio built by Sonnet 5.5 at XHigh effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Sonnet 5.5 · XHigh</span></a>
+  <a href="/gauntlet/loom/sonnet-5-5-max/" style="display:block;text-decoration:none"><img src="/gauntlet/loom/sonnet-5-5-max/studio.jpg" alt="LOOM Studio built by Sonnet 5.5 at Max effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Sonnet 5.5 · Max</span></a>
+</div>
+
+The [hidden tests](/gauntlet/loom/hidden/) are public now too, with their expected outputs.
+
+### Lockkeeper
+
+Running now. Results go here when all ten finish.

@@ -1,0 +1,3064 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>LOOM Studio - write a program, weave a cloth</title>
+<style>
+:root {
+  --bg: #14110e;
+  --panel: #1c1814;
+  --panel2: #262019;
+  --panel3: #2f2820;
+  --line: #3b332b;
+  --text: #f0e7d8;
+  --muted: #a89c8b;
+  --dim: #9a8f7f;
+  --accent: #f2b134;
+  --accent-ink: #261a04;
+  --accent-soft: rgba(242, 177, 52, 0.16);
+  --teal: #49c6b0;
+  --danger: #ff6b6b;
+  --danger-soft: rgba(255, 107, 107, 0.16);
+  --ok: #67d69a;
+  --ok-soft: rgba(103, 214, 154, 0.14);
+  --code-bg: #171310;
+  --r: 10px;
+  --mono: ui-monospace, "Cascadia Code", "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; }
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: radial-gradient(1200px 500px at 10% -10%, #2a2016 0%, transparent 60%), var(--bg);
+  color: var(--text);
+  font: 14px/1.45 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+code, kbd, .mono { font-family: var(--mono); }
+code { background: var(--panel3); border-radius: 4px; padding: 0 4px; font-size: 0.92em; color: #ffe2a3; }
+kbd { background: var(--panel3); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; font-size: 0.85em; }
+a { color: var(--accent); }
+.muted { color: var(--muted); }
+.skip { position: absolute; left: -999px; top: 0; background: var(--accent); color: var(--accent-ink); padding: 6px 10px; z-index: 50; }
+.skip:focus { left: 8px; top: 8px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button, select, input { font: inherit; color: inherit; }
+
+/* ------------------------------------------------------------ header */
+.top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(#211b15, #1a1511);
+  flex-wrap: wrap;
+}
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.logo { display: inline-block; width: 34px; height: 34px; border-radius: 7px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 4px 12px rgba(0, 0, 0, 0.4); }
+.logo svg { display: block; width: 100%; height: 100%; }
+.brand-text h1 { margin: 0; font: 700 19px/1 var(--serif); letter-spacing: 0.14em; }
+.brand-text h1 em { font-style: normal; color: var(--accent); letter-spacing: 0.04em; font-weight: 600; }
+.brand-text p { margin: 3px 0 0; color: var(--muted); font-size: 11.5px; letter-spacing: 0.02em; }
+.tabs { display: flex; gap: 2px; margin-left: auto; flex-wrap: wrap; }
+.tabs button {
+  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  padding: 7px 12px;
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 600;
+}
+.tabs button:hover { color: var(--text); background: rgba(255, 255, 255, 0.05); }
+.tabs button[aria-selected="true"] { color: var(--accent-ink); background: var(--accent); }
+.pill {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0 6px;
+  margin-left: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  font: 600 11px/17px var(--mono);
+  text-align: center;
+  vertical-align: 1px;
+}
+.tabs button[aria-selected="true"] .pill { background: rgba(0, 0, 0, 0.18); }
+.pill.pass { background: var(--ok-soft); color: var(--ok); }
+.pill.fail { background: var(--danger-soft); color: var(--danger); }
+.tabs button[aria-selected="true"] .pill.pass { background: rgba(0, 60, 20, 0.3); color: #073b1c; }
+.tabs button[aria-selected="true"] .pill.fail { background: rgba(110, 0, 0, 0.45); color: #fff; }
+
+/* ------------------------------------------------------------ pages */
+main { flex: 1; min-height: 0; position: relative; }
+.page { display: none; height: 100%; overflow: auto; }
+.page.on { display: block; }
+#tab-studio.on { display: flex; flex-direction: column; overflow: hidden; }
+.page-inner { max-width: 1100px; margin: 0 auto; padding: 18px 18px 40px; }
+.page-head h2 { margin: 0 0 4px; font: 700 26px/1.2 var(--serif); }
+.page-head p { margin: 0 0 16px; color: var(--muted); max-width: 70ch; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  background: var(--panel3);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.btn:hover { border-color: #5a4d3f; background: #3a3128; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: #ffd27a; }
+.btn.primary:hover { background: #ffc24d; }
+.btn.small { padding: 3px 9px; font-size: 12.5px; }
+.btn.ghost { background: transparent; }
+
+/* ------------------------------------------------------------ studio */
+.tip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 12px 0;
+  padding: 5px 10px;
+  border: 1px solid #5b4a2a;
+  background: linear-gradient(90deg, rgba(242, 177, 52, 0.14), rgba(242, 177, 52, 0.04));
+  border-radius: var(--r);
+  color: #f5e6c8;
+  font-size: 13px;
+}
+.tip[hidden] { display: none; }
+.tip span:nth-child(2) { flex: 1; }
+.tip-icon { font-size: 18px; }
+.studio {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(360px, 1fr) minmax(0, 1.2fr);
+  gap: 12px;
+  padding: 10px 12px 12px;
+}
+.pane { display: flex; flex-direction: column; min-height: 0; min-width: 0; gap: 8px; }
+.toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sel { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12.5px; }
+.sel select {
+  background: var(--panel3);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 5px 8px;
+  max-width: 190px;
+  color: var(--text);
+}
+.status { margin-left: auto; flex: 1; min-width: 0; text-align: right; color: var(--dim); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.editor {
+  position: relative;
+  flex: 1;
+  min-height: 180px;
+  display: flex;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--code-bg);
+  overflow: hidden;
+  font: 13px/20px var(--mono);
+}
+.editor:focus-within { border-color: #7a6231; box-shadow: 0 0 0 2px rgba(242, 177, 52, 0.15); }
+.gutter {
+  flex: none;
+  width: 46px;
+  overflow: hidden;
+  background: #1b1612;
+  border-right: 1px solid var(--line);
+  color: var(--dim);
+  padding-top: 10px;
+  user-select: none;
+}
+#gutter-inner { will-change: transform; }
+.gl { height: 20px; padding-right: 8px; text-align: right; position: relative; }
+.gl.cur { color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+.gl.next::before { content: "\25B8"; position: absolute; left: 6px; color: var(--teal); }
+.gl.err { color: #fff; background: var(--danger); font-weight: 700; }
+.gl.err::before { content: "!"; position: absolute; left: 8px; }
+.code { position: relative; flex: 1; min-width: 0; }
+.code pre, .code textarea {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 10px 12px 10px 10px;
+  font: inherit;
+  letter-spacing: 0;
+  tab-size: 2;
+  white-space: pre;
+  word-wrap: normal;
+  overflow: auto;
+  border: 0;
+  border-radius: 0;
+}
+.code pre { overflow: hidden; pointer-events: none; color: #e9dfcf; background: transparent; }
+.code textarea {
+  background: transparent;
+  color: transparent;
+  caret-color: var(--accent);
+  resize: none;
+  outline: none;
+  -webkit-text-fill-color: transparent;
+}
+.code textarea::selection { background: rgba(242, 177, 52, 0.35); -webkit-text-fill-color: transparent; }
+.ln { height: 20px; min-width: 100%; width: max-content; }
+.ln.cur { background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); }
+.ln.err { background: var(--danger-soft); box-shadow: inset 3px 0 0 var(--danger); }
+.ln .c { color: #7f8f78; font-style: italic; }
+.ln .n { color: #86c8ff; }
+.ln .p { color: #9d8f7c; }
+.ln .t { color: #ff9f7a; }
+.ln .w { color: #d8cdbb; }
+.ln .k-loom { color: #ffd27a; font-weight: 700; }
+.ln .k-def { color: #f2b134; font-weight: 600; }
+.ln .k-act { color: #6fd6c0; font-weight: 600; }
+.ln .k-chk { color: #ff9ebd; font-weight: 600; }
+.ln .k-ctl { color: #c3a8ff; font-weight: 600; }
+.ln .k-bad { color: #ff8a8a; text-decoration: underline wavy #ff6b6b; text-underline-offset: 3px; }
+.ln .mir { color: #c3a8ff; }
+.ln .chip { border-radius: 3px; }
+.ln .hex { border-bottom: 2px solid var(--sw); }
+.ln .key { color: #f0e7d8; }
+
+.banner {
+  min-height: 40px;
+  padding: 8px 12px;
+  border-radius: var(--r);
+  border: 1px solid var(--line);
+  background: var(--panel);
+  font-size: 13px;
+}
+.banner.ok { border-color: #2c5a41; background: var(--ok-soft); color: #c9f2dc; }
+.banner.warn { border-color: #6a5a2a; background: var(--accent-soft); color: #f7e3b3; }
+.banner.err { border-color: #7b3232; background: var(--danger-soft); color: #ffd6d6; cursor: pointer; }
+.banner b.msg { font: 700 13px var(--mono); color: #fff; }
+.banner .help { display: block; margin-top: 2px; color: #ffc9c9; font-size: 12.5px; }
+.banner .help code { background: rgba(0, 0, 0, 0.25); }
+
+.viewbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.seg { display: inline-flex; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; padding: 2px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 4px 14px; border-radius: 7px; cursor: pointer; font-weight: 600; }
+.seg button[aria-selected="true"] { background: var(--panel3); color: var(--text); box-shadow: inset 0 0 0 1px #5b4d3d; }
+.chk { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); font-size: 12.5px; cursor: pointer; }
+.chk input { accent-color: var(--accent); }
+.dims { margin-left: auto; color: var(--dim); font: 12px var(--mono); }
+
+.vpwrap { position: relative; flex: 1 1 260px; min-height: 240px; }
+.viewport {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: #100d0b;
+  overflow: auto;
+}
+.cvwrap { display: flex; min-width: 100%; min-height: 100%; }
+#cv { display: block; margin: 0 auto; }
+#out {
+  margin: 0;
+  padding: 12px 14px;
+  font: 13px/1.25 var(--mono);
+  color: #dfe9d5;
+  white-space: pre;
+  min-height: 100%;
+}
+#out .e { color: #ff9a9a; }
+#out .dot { color: #6e655a; }
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 24px;
+  color: var(--muted);
+}
+.placeholder[hidden], #out[hidden], .cvwrap[hidden] { display: none; }
+.probe {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  max-width: calc(100% - 16px);
+  padding: 3px 9px;
+  border-radius: 7px;
+  background: rgba(20, 16, 12, 0.92);
+  border: 1px solid var(--line);
+  color: #d9ccb6;
+  font: 12px var(--mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+.probe:empty { display: none; }
+#spacerx { position: absolute; left: 0; top: 0; height: 1px; width: 0; pointer-events: none; }
+.legend-pop {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: min(360px, calc(100% - 20px));
+  max-height: calc(100% - 20px);
+  overflow: auto;
+  z-index: 5;
+  padding: 10px 14px 12px;
+  border-radius: 12px;
+  border: 1px solid #6b5830;
+  background: rgba(24, 19, 15, 0.97);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  font-size: 12.5px;
+}
+.legend-pop[hidden] { display: none; }
+.legend-pop h4 { margin: 0 0 6px; font: 700 15px var(--serif); }
+.legend-pop ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.legend-pop .close { position: absolute; right: 6px; top: 6px; padding: 0 8px; font-size: 16px; line-height: 22px; }
+
+.transport { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.tbtns { display: inline-flex; gap: 4px; }
+.tb {
+  width: 34px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  background: var(--panel3);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 0;
+}
+.tb:hover { background: #3a3128; border-color: #5a4d3f; }
+.tb.play { width: 44px; background: var(--accent); border-color: #ffd27a; color: var(--accent-ink); }
+.tb svg { width: 16px; height: 16px; fill: currentColor; display: block; }
+.tb:disabled { opacity: 0.4; cursor: default; }
+#t-scrub { flex: 1 1 160px; min-width: 120px; accent-color: var(--accent); }
+.tmeta { display: inline-flex; align-items: center; gap: 12px; color: var(--muted); font-size: 12px; }
+.speed { display: inline-flex; align-items: center; gap: 6px; }
+.speed input { width: 80px; accent-color: var(--accent); }
+.what { height: 20px; font-size: 13px; color: #e8dcc6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.what code { color: #ffe2a3; }
+.what .bad { color: var(--danger); }
+
+.inspector {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 14px;
+  padding: 6px 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  font-size: 12px;
+  overflow: hidden;
+}
+.inspector .row { display: flex; align-items: center; gap: 8px; min-width: 0; height: 22px; }
+.inspector .row.wide { grid-column: 1 / -1; }
+.inspector .lab { flex: none; width: 66px; color: var(--dim); text-transform: uppercase; font: 600 10px/1.2 var(--sans); letter-spacing: 0.06em; }
+.inspector .val { min-width: 0; flex: 1; font-family: var(--mono); color: #eadfcb; white-space: nowrap; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; }
+.chips { display: flex; gap: 2px; overflow-x: auto; padding: 1px 0 3px; }
+.chip-sw { flex: none; width: 13px; height: 13px; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22); }
+.chip-n { flex: none; min-width: 13px; height: 13px; text-align: center; font: 600 10px/13px var(--mono); color: #d4c8b4; background: var(--panel3); border-radius: 3px; }
+.tre { display: inline-block; margin-right: 8px; white-space: nowrap; }
+.tre.used, .sh.next { color: var(--accent); font-weight: 700; }
+.sh { display: inline-block; margin-right: 6px; padding: 0 4px; border-radius: 4px; }
+.sh.next { background: var(--accent-soft); box-shadow: inset 0 0 0 1px #8a6b25; }
+.sh.cur { outline: 1px dashed #77644a; }
+.limit-on { color: var(--teal); }
+.limit-off { color: var(--dim); }
+.hot { color: #ffb347; font-weight: 700; }
+.over { color: var(--danger); font-weight: 700; }
+
+/* ------------------------------------------------------------ gallery */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.card {
+  font: inherit;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+}
+.card:hover, .card:focus-visible { transform: translateY(-2px); border-color: #7b6431; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45); }
+.card .thumb { display: grid; place-items: center; height: 190px; background: #100d0b; border-bottom: 1px solid var(--line); padding: 10px; }
+.card canvas { display: block; max-width: 100%; max-height: 100%; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6); }
+.card .info { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.card h3 { margin: 0; font: 700 16px/1.2 var(--serif); }
+.card p { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.4; }
+.tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: auto; padding-top: 4px; }
+.tag { font: 600 10.5px/16px var(--mono); padding: 0 6px; border-radius: 999px; background: var(--panel3); color: #cbbfa9; }
+.card .meta { color: var(--dim); font: 11px var(--mono); }
+
+/* ------------------------------------------------------------ conformance */
+.scoreboard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.scoreboard .big { font: 800 40px/1 var(--serif); }
+.scoreboard.pass { border-color: #2c5a41; background: var(--ok-soft); }
+.scoreboard.pass .big { color: var(--ok); }
+.scoreboard.fail { border-color: #7b3232; background: var(--danger-soft); }
+.scoreboard.fail .big { color: var(--danger); }
+.scoreboard .txt { flex: 1; min-width: 200px; color: var(--muted); }
+.testlist { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.test { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.test summary { display: flex; align-items: center; gap: 10px; padding: 9px 12px; cursor: pointer; list-style: none; }
+.test summary::-webkit-details-marker { display: none; }
+.test .mark { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; }
+.test.pass .mark { background: var(--ok-soft); color: var(--ok); }
+.test.fail .mark { background: var(--danger); color: #fff; }
+.test .nm { font-family: var(--mono); font-weight: 600; }
+.test .kind { margin-left: auto; color: var(--dim); font: 12px var(--mono); }
+.test .body { padding: 4px 12px 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; border-top: 1px solid var(--line); }
+.test h4 { margin: 8px 0 4px; color: var(--muted); font: 600 11px var(--sans); text-transform: uppercase; letter-spacing: 0.07em; }
+.test pre { margin: 0; padding: 8px; max-height: 240px; overflow: auto; background: var(--code-bg); border-radius: 8px; font: 12px/1.3 var(--mono); color: #dfe9d5; }
+.test .actions { grid-column: 1 / -1; display: flex; gap: 8px; }
+
+/* ------------------------------------------------------------ guide */
+.guide { max-width: 980px; }
+.g-grid { display: grid; gap: 12px; margin: 12px 0; }
+.g-grid.two { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.legend-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.g-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.g-card h3 { margin: 0 0 6px; font: 700 17px var(--serif); }
+.g-card p { margin: 0 0 8px; }
+.g-card .num { display: inline-grid; place-items: center; width: 22px; height: 22px; margin-right: 8px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-weight: 800; font-size: 12px; }
+.g-h { margin: 26px 0 6px; font: 700 20px var(--serif); }
+.g-p { margin: 0 0 10px; color: var(--muted); max-width: 75ch; }
+.table-wrap { overflow-x: auto; }
+table.ref { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+table.ref th { text-align: left; padding: 7px 12px; background: var(--panel2); color: var(--muted); font: 600 11px var(--sans); text-transform: uppercase; letter-spacing: 0.07em; }
+table.ref td { padding: 7px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+table.ref td:first-child { white-space: nowrap; }
+table.ref.mini { background: transparent; border: 0; }
+table.ref.mini td { padding: 3px 8px 3px 0; border: 0; }
+.try { display: flex; flex-direction: column; gap: 6px; }
+.try pre { margin: 0; padding: 8px 10px; background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; font: 12.5px/1.4 var(--mono); overflow: auto; }
+.try .cap { color: var(--muted); font-size: 13px; }
+.try .btn { align-self: flex-start; }
+.keys p { margin: 0 0 6px; }
+
+/* ------------------------------------------------------------ narrow screens */
+@media (max-width: 900px) {
+  .studio { grid-template-columns: minmax(0, 1fr); }
+  #tab-studio.on { overflow: auto; display: block; }
+  .studio { min-height: 0; }
+  .pane-code .editor { flex: none; height: 300px; }
+  .vpwrap { flex: none; height: 440px; }
+  .inspector { grid-template-columns: minmax(0, 1fr); }
+  .transport { position: sticky; bottom: 0; z-index: 4; background: var(--bg); padding: 6px 0; border-top: 1px solid var(--line); }
+  .tabs { margin-left: 0; width: 100%; overflow-x: auto; flex-wrap: nowrap; }
+  .top { gap: 8px; }
+  .status { display: none; }
+}
+@media (max-width: 520px) {
+  .top { padding: 8px 10px; }
+  .brand-text p { display: none; }
+  .tabs button { padding: 7px 8px; }
+  #gal-pill { display: none; }
+  .tip { flex-wrap: wrap; }
+  .sel select { max-width: 140px; }
+  .speed input { width: 60px; }
+  .vpwrap { height: 360px; }
+  .page-inner { padding: 12px 12px 30px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card { transition: none; }
+}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#src">Skip to the editor</a>
+
+<header class="top">
+  <div class="brand">
+    <span class="logo" id="logo" aria-hidden="true"></span>
+    <div class="brand-text">
+      <h1>LOOM <em>Studio</em></h1>
+      <p>write a program, weave a cloth</p>
+    </div>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" id="tabbtn-studio" data-tab="studio" aria-selected="true" aria-controls="tab-studio">Studio</button>
+    <button role="tab" id="tabbtn-gallery" data-tab="gallery" aria-selected="false" aria-controls="tab-gallery">Gallery <span class="pill" id="gal-pill"></span></button>
+    <button role="tab" id="tabbtn-tests" data-tab="tests" aria-selected="false" aria-controls="tab-tests">Conformance <span class="pill" id="conf-pill">...</span></button>
+    <button role="tab" id="tabbtn-guide" data-tab="guide" aria-selected="false" aria-controls="tab-guide">Guide</button>
+  </nav>
+</header>
+
+<main>
+<!-- ======================================================= STUDIO -->
+<section class="page on" id="tab-studio" role="tabpanel" aria-labelledby="tabbtn-studio">
+  <div class="tip" id="tip">
+    <span class="tip-icon" aria-hidden="true">&#129525;</span>
+    <span><b>New here?</b> Press <b>&#9654; Run &amp; weave</b> to watch a cloth being made, then edit the code to change it.
+      <a href="#guide" data-goto="guide">What am I looking at?</a></span>
+    <button class="btn small ghost" id="tip-x" aria-label="Dismiss this tip">Got it</button>
+  </div>
+  <div class="studio">
+    <div class="pane pane-code">
+      <div class="toolbar">
+        <button class="btn primary" id="btn-weave" title="Run the program and watch it weave (Ctrl+Enter)">&#9654; Run &amp; weave</button>
+        <label class="sel"><span>Open</span>
+          <select id="sel-load" aria-label="Load a gallery piece or a conformance program"></select>
+        </label>
+        <button class="btn small ghost" id="btn-undo" hidden title="Put back the program that was in the editor before you loaded this one">Undo load</button>
+        <span class="status" id="status" aria-live="polite">ready</span>
+      </div>
+      <div class="editor" id="editor">
+        <div class="gutter" id="gutter" aria-hidden="true"><div id="gutter-inner"></div></div>
+        <div class="code">
+          <pre id="hl" aria-hidden="true"></pre>
+          <textarea id="src" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="LOOM program"></textarea>
+        </div>
+      </div>
+      <div class="banner ok" id="banner" role="status" aria-live="polite"></div>
+    </div>
+
+    <div class="pane pane-view">
+      <div class="viewbar">
+        <div class="seg" role="tablist" aria-label="View">
+          <button role="tab" data-view="loom" aria-selected="true" title="The loom: threading, shed, and the cloth forming pick by pick">Loom</button>
+          <button role="tab" data-view="cloth" aria-selected="false" title="Just the finished cloth, large">Cloth</button>
+          <button role="tab" data-view="text" aria-selected="false" title="The exact text output the command-line tool prints">Text</button>
+        </div>
+        <label class="sel" id="zoom-wrap"><span>Zoom</span>
+          <select id="sel-zoom" aria-label="Zoom (cell size)">
+            <option value="0">Fit</option><option value="6">6 px</option><option value="8">8 px</option><option value="12">12 px</option><option value="16">16 px</option><option value="24">24 px</option><option value="32">32 px</option>
+          </select>
+        </label>
+        <label class="chk" id="chk-wrap"><input type="checkbox" id="chk-texture" checked> texture</label>
+        <button class="btn small ghost" id="btn-legend" aria-expanded="false" aria-controls="legend-pop" title="How to read the loom view">? Legend</button>
+        <span class="dims" id="dims"></span>
+      </div>
+      <div class="vpwrap">
+        <div class="viewport" id="viewport">
+          <div class="cvwrap" id="cvwrap"><canvas id="cv" aria-label="The loom and the cloth being woven" role="img"></canvas></div>
+          <pre id="out" hidden></pre>
+          <div class="placeholder" id="placeholder" hidden></div>
+        </div>
+        <div class="probe" id="probe" aria-live="off"></div>
+        <div class="legend-pop" id="legend-pop" hidden role="dialog" aria-label="How to read the loom view">
+          <button class="btn small ghost close" id="legend-x" aria-label="Close">&times;</button>
+          <h4>Reading the loom</h4>
+          <ol>
+            <li><b>Top grid</b> - the <i>threading</i>: one row per shaft (1 at the bottom). Each dot is a warp thread tied to that shaft. Gold rows are the shafts lifted by the current pick.</li>
+            <li><b>warp</b> - the colour of every thread.</li>
+            <li><b>shed</b> - threads lifted for this pick sit <i>up</i>, the rest sink <i>down</i>; the shuttle pulls the weft through, over the sunk threads and under the raised ones.</li>
+            <li><b>float</b> - with <code>maxfloat</code>: how long each thread has stayed up or down.</li>
+            <li><b>Cloth</b> - woven rows so far, top to bottom. Click a row to jump to when it was woven.</li>
+            <li><b>lifts</b> - each row's lifted shafts (gold) beside its weft colour.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="transport" id="transport">
+        <div class="tbtns">
+          <button class="tb" id="t-first" title="Back to the start (Home)" aria-label="Go to the first step">&#9198;</button>
+          <button class="tb" id="t-prev" title="Step back one statement (Left arrow)" aria-label="Step back one statement">&#9664;</button>
+          <button class="tb play" id="t-play" title="Play / pause (Space)" aria-label="Play">&#9654;</button>
+          <button class="tb" id="t-next" title="Step forward one statement (Right arrow)" aria-label="Step forward one statement">&#9654;&#65038;|</button>
+          <button class="tb" id="t-last" title="Jump to the end (End)" aria-label="Go to the last step">&#9197;</button>
+        </div>
+        <input type="range" id="t-scrub" min="0" max="0" value="0" step="1" aria-label="Execution step (scrubber)">
+        <div class="tmeta">
+          <span id="t-step" class="mono">step 0 / 0</span>
+          <label class="speed" title="Weaving speed">speed <input type="range" id="t-speed" min="1" max="10" value="5" aria-label="Weaving speed"></label>
+        </div>
+      </div>
+      <div class="what" id="what" aria-live="polite"></div>
+      <div class="inspector" id="inspector" role="group" aria-label="Live loom state"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= GALLERY -->
+<section class="page" id="tab-gallery" role="tabpanel" aria-labelledby="tabbtn-gallery">
+  <div class="page-inner">
+    <div class="page-head">
+      <h2>Gallery</h2>
+      <p>Original cloths, each written in LOOM. Click one to open it in the Studio and watch it being woven. The files live in <code>gallery/</code>.</p>
+    </div>
+    <div class="cards" id="gallery-grid"></div>
+  </div>
+</section>
+
+<!-- ======================================================= CONFORMANCE -->
+<section class="page" id="tab-tests" role="tabpanel" aria-labelledby="tabbtn-tests">
+  <div class="page-inner">
+    <div class="page-head">
+      <h2>Conformance</h2>
+      <p>The 15 reference programs from <code>conformance/</code> are run right here, in this page, by the same engine as <code>cli.js</code>, and compared character for character with their expected output.</p>
+    </div>
+    <div class="scoreboard" id="score"></div>
+    <ul class="testlist" id="testlist"></ul>
+  </div>
+</section>
+
+<!-- ======================================================= GUIDE -->
+<section class="page" id="tab-guide" role="tabpanel" aria-labelledby="tabbtn-guide">
+  <div class="page-inner guide">
+    <div class="page-head">
+      <h2>How LOOM works</h2>
+      <p>You do not need to know anything about weaving. Here is the whole idea in a minute.</p>
+    </div>
+
+    <div class="g-grid two">
+      <div class="g-card">
+        <h3>1. A loom holds threads</h3>
+        <p>Long <b>warp</b> threads hang side by side, each with a colour. Every warp thread is also tied to one of up to eight <b>shafts</b> (numbered 1&ndash;8): frames that can lift many threads at once. Which thread goes to which shaft is called the <b>threading</b>.</p>
+        <p>The loom is <code>W</code> columns wide and will weave <code>H</code> rows.</p>
+      </div>
+      <div class="g-card">
+        <h3>2. A pick weaves one row</h3>
+        <p>To weave a row you lift some shafts, then send a <b>weft</b> thread across. Lifted warp threads stay on top and <em>show their own colour</em>; the rest sink below the weft, so the <em>weft colour</em> shows there.</p>
+        <p>Row by row, the pattern of lifts draws the cloth. The finished cloth is a grid of colours: that grid is what a program prints.</p>
+      </div>
+    </div>
+
+    <h3 class="g-h">Reading the Loom view</h3>
+    <div class="g-grid legend-grid">
+      <div class="g-card"><span class="num">1</span><b>Threading draft</b> (top, numbered by shaft): one row per shaft, shaft 1 at the bottom. A dot shows which shaft each warp thread is tied to. The shafts lifted by the current pick glow gold.</div>
+      <div class="g-card"><span class="num">2</span><b>Warp colours</b> (<code>warp</code>): the colour of each thread, left to right.</div>
+      <div class="g-card"><span class="num">3</span><b>The shed</b> (<code>shed</code>): threads lifted for this pick rise, the others sink, and the shuttle slides the weft through the gap &mdash; over the sunk threads, under the raised ones.</div>
+      <div class="g-card"><span class="num">4</span><b>Float counters</b> (<code>float</code>, only when <code>maxfloat</code> is on): how many picks in a row each thread has stayed up or down. Amber means at the limit, red means over it.</div>
+      <div class="g-card"><span class="num">5</span><b>The cloth</b> (numbered rows): woven rows so far, growing downwards; faint lines are threads not yet woven. Click a row to jump to the moment it was woven.</div>
+      <div class="g-card"><span class="num">6</span><b>Lift plan</b> (<code>lifts</code>, right): for every row, which shafts were lifted, next to a swatch of the weft colour.</div>
+    </div>
+
+    <h3 class="g-h">The language</h3>
+    <p class="g-p">One statement per line. <code>//</code> starts a comment. Colours are single lowercase letters. The first statement must be <code>loom</code>.</p>
+    <div class="table-wrap">
+    <table class="ref">
+      <thead><tr><th>Statement</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><code>loom 12 8</code></td><td>12 columns (warp threads), 8 rows (picks). Each 1&ndash;200. Must be first.</td></tr>
+        <tr><td><code>palette a=#1b3a5c b=#f2e8cf</code></td><td>Names colours. Only the letters appear in the output; the hex values are for looking at.</td></tr>
+        <tr><td><code>warp a b</code></td><td>Colours of the warp threads, repeated across the width.</td></tr>
+        <tr><td><code>thread 1-4</code></td><td>Shaft of each warp thread, repeated across the width. Ranges: <code>1-4</code> is 1 2 3 4, <code>4-2</code> is 4 3 2.</td></tr>
+        <tr><td><code>treadle 1 12</code></td><td>Saves a lift under a number (1&ndash;10) so picks can say <code>t1</code>.</td></tr>
+        <tr><td><code>shuttle r o y</code></td><td>Loads weft colours that picks use in turn when they name no colour.</td></tr>
+        <tr><td><code>pick b 13</code> &nbsp; <code>pick t2</code></td><td>Weave a row: weft colour (optional) and lift. With no colour the next shuttle colour is used.</td></tr>
+        <tr><td><code>cross 1 6</code></td><td>Swap two warp threads (colour and shaft) from now on.</td></tr>
+        <tr><td><code>drift 2</code> &nbsp; <code>drift -1</code></td><td>Slide every warp thread that many places right (or left), wrapping round.</td></tr>
+        <tr><td><code>maxfloat 3</code></td><td>From now on, a thread may not stay up or down for more than 3 rows in a row (nor more than 3 neighbours in one row).</td></tr>
+        <tr><td><code>repeat 4 {</code> &hellip; <code>}</code></td><td>Run the lines in between several times. May nest.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="g-grid two">
+      <div class="g-card">
+        <h3>Sequences</h3>
+        <p>Used by <code>warp</code>, <code>thread</code> and <code>shuttle</code>.</p>
+        <table class="ref mini"><tbody>
+          <tr><td><code>a b c</code></td><td>a b c</td></tr>
+          <tr><td><code>a*3</code></td><td>a a a</td></tr>
+          <tr><td><code>(a b)*2</code></td><td>a b a b</td></tr>
+          <tr><td><code>mirror(a b c)</code></td><td>a b c b a</td></tr>
+          <tr><td><code>1-4</code> &nbsp;(shafts)</td><td>1 2 3 4</td></tr>
+        </tbody></table>
+      </div>
+      <div class="g-card">
+        <h3>Lifts</h3>
+        <p>Used by <code>pick</code> and <code>treadle</code>.</p>
+        <table class="ref mini"><tbody>
+          <tr><td><code>13</code></td><td>shafts 1 and 3</td></tr>
+          <tr><td><code>-</code></td><td>none (all sunk)</td></tr>
+          <tr><td><code>*</code></td><td>all eight shafts</td></tr>
+          <tr><td><code>!12</code></td><td>everything except 1 and 2</td></tr>
+          <tr><td><code>t2</code></td><td>whatever treadle 2 holds (picks only)</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <h3 class="g-h">Try it</h3>
+    <div class="g-grid two" id="tryit"></div>
+
+    <h3 class="g-h">When something is wrong</h3>
+    <p class="g-p">A program either weaves a cloth or stops at its first mistake with one line, <code>error line 7: unknown color 'q'</code>. Studio shows that line, marks it in the editor, and says what usually causes it.</p>
+    <div class="table-wrap">
+    <table class="ref">
+      <thead><tr><th>Message</th><th>Usually means</th></tr></thead>
+      <tbody id="errtable"></tbody>
+    </table>
+    </div>
+
+    <h3 class="g-h">Keyboard</h3>
+    <div class="g-card keys">
+      <p><kbd>Ctrl</kbd>+<kbd>Enter</kbd> weave &nbsp;&middot;&nbsp; <kbd>Space</kbd> play / pause &nbsp;&middot;&nbsp; <kbd>&larr;</kbd> <kbd>&rarr;</kbd> step back / forward &nbsp;&middot;&nbsp; <kbd>Home</kbd> <kbd>End</kbd> first / last step &nbsp;&middot;&nbsp; <kbd>Tab</kbd> indent (in the editor; <kbd>Esc</kbd> then <kbd>Tab</kbd> leaves it)</p>
+      <p class="muted">The command line: <code>node cli.js cloth.loom</code> prints the same grid this page renders.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+/*
+ * LOOM engine: the one and only interpreter.
+ *
+ * cli.js requires this file; build.js inlines this exact file into index.html
+ * (tests/run-tests.js fails if the two ever differ). Plain ES2015, no dependencies,
+ * works in Node and in browsers.
+ *
+ *   LoomEngine.run(source, { trace, maxSteps, maxTrace })  ->  result
+ *
+ * result.output is exactly what the spec says the program prints (the fabric grid,
+ * or the single "error line L: message" line, each terminated by "\n").
+ * Everything else on the result (rows, steps, ...) exists for the Studio UI.
+ */
+(function (root, factory) {
+  var api = factory();
+  if (typeof module === 'object' && module && module.exports) module.exports = api;
+  else root.LoomEngine = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+
+  var MAX_DIM = 200;
+  var MAX_SHAFT = 8;
+  var MAX_TREADLE = 10;
+  var MAX_REPEAT = 1000;
+  var ALL_MASK = 0x1fe; // bits 1..8
+  var SHUTTLE_KEEP = 256; // more than any loom can ever consume (H <= 200)
+  var DEFAULT_MAX_TRACE = 20000;
+
+  function LoomError(line, message, detail) {
+    this.line = line;
+    this.message = message;
+    this.detail = detail || null;
+  }
+
+  function fail(line, message, detail) {
+    throw new LoomError(line, message, detail);
+  }
+
+  function nullMap(from) {
+    var m = Object.create(null);
+    if (from) for (var k in from) m[k] = from[k];
+    return m;
+  }
+
+  function stripZeros(t) {
+    return t.replace(/^0+(?=[0-9])/, '');
+  }
+
+  // ---------------------------------------------------------------- lexing
+
+  // Turns source text into a list of statements {line, cmd, args, rest}.
+  // `rest` is the raw text after the command word (comment removed): sequences
+  // need exact adjacency, so they are parsed from it and not from `args`.
+  function prepare(source) {
+    var text = String(source);
+    if (text.charCodeAt(0) === 0xfeff) text = text.slice(1);
+    var raw = text.split(/\r\n|\n/);
+    var stmts = [];
+    var lineRe = /^[ \t]*([^ \t]+)([\s\S]*)$/;
+    for (var i = 0; i < raw.length; i++) {
+      var line = raw[i];
+      var c = line.indexOf('//');
+      if (c >= 0) line = line.slice(0, c);
+      var m = lineRe.exec(line);
+      if (!m) continue;
+      var rest = m[2];
+      var args = rest.split(/[ \t]+/);
+      var clean = [];
+      for (var k = 0; k < args.length; k++) if (args[k] !== '') clean.push(args[k]);
+      stmts.push({ line: i + 1, cmd: m[1], args: clean, rest: rest });
+    }
+    return stmts;
+  }
+
+  // Static checks (spec section 7). Returns, for every repeat statement index, its
+  // closing '}' index, and whether the block does any real work.
+  function staticChecks(stmts) {
+    if (stmts.length === 0) fail(1, "expected 'loom' header");
+    if (stmts[0].cmd !== 'loom') fail(stmts[0].line, "expected 'loom' header");
+    var open = [];
+    var end = Object.create(null);
+    var work = Object.create(null);
+    for (var i = 1; i < stmts.length; i++) {
+      var s = stmts[i];
+      if (s.cmd === 'repeat') {
+        if (s.args.length !== 2 || s.args[1] !== '{') fail(s.line, 'bad repeat');
+        open.push(i);
+        work[i] = false;
+      } else if (s.cmd === '}') {
+        if (s.args.length > 0) fail(s.line, 'bad repeat');
+        if (open.length === 0) fail(s.line, "unexpected '}'");
+        var o = open.pop();
+        end[o] = i;
+        if (work[o] && open.length) work[open[open.length - 1]] = true;
+      } else if (open.length) {
+        work[open[open.length - 1]] = true;
+      }
+    }
+    if (open.length) fail(stmts[open[open.length - 1]].line, 'unclosed block');
+    return { end: end, work: work };
+  }
+
+  // ---------------------------------------------------------------- numbers
+
+  function isDigits(t) {
+    return /^[0-9]+$/.test(t);
+  }
+
+  // A "number" token: decimal digits only. Range-checked, else "bad number".
+  function num(line, tok, lo, hi) {
+    if (!isDigits(tok)) fail(line, "bad number '" + tok + "'");
+    var v = Number(tok);
+    if (v < lo || v > hi) fail(line, "bad number '" + tok + "'");
+    return v;
+  }
+
+  // ---------------------------------------------------------------- sequences
+
+  // Parses the text after `warp` / `thread` / `shuttle`. kind is 'color' or 'shaft'.
+  // Returns { items, atoms }: a tree of nodes plus every atom in source order.
+  function parseSequence(rest, kind, line) {
+    var s = rest;
+    var n = s.length;
+    var i = 0;
+    var root = [];
+    var atoms = [];
+    var stack = [];
+    var cur = root;
+
+    function isWs(c) {
+      return c === ' ' || c === '\t';
+    }
+    function bad() {
+      fail(line, 'bad sequence');
+    }
+    function readCount() {
+      var j = i;
+      while (j < n && !isWs(s.charAt(j)) && s.charAt(j) !== '(' && s.charAt(j) !== ')') j++;
+      var tok = s.slice(i, j);
+      i = j;
+      if (!isDigits(tok) || Number(tok) < 1) fail(line, "bad number '" + tok + "'");
+      return Number(tok);
+    }
+
+    while (true) {
+      while (i < n && isWs(s.charAt(i))) i++;
+      if (i >= n) break;
+      var c = s.charAt(i);
+      if (c === '(') {
+        var g = { t: 'group', items: [], mirror: false, n: 1 };
+        cur.push(g);
+        stack.push(g);
+        cur = g.items;
+        i++;
+        continue;
+      }
+      if (c === ')') {
+        if (stack.length === 0) bad();
+        var done = stack.pop();
+        if (done.items.length === 0) bad();
+        cur = stack.length ? stack[stack.length - 1].items : root;
+        i++;
+        if (i < n && s.charAt(i) === '*') {
+          i++;
+          done.n = readCount();
+        }
+        continue;
+      }
+      if (c === '*') bad();
+      var j = i;
+      while (j < n) {
+        var d = s.charAt(j);
+        if (isWs(d) || d === '(' || d === ')' || d === '*') break;
+        j++;
+      }
+      var atom = s.slice(i, j);
+      i = j;
+      if (i < n && s.charAt(i) === '(') {
+        if (atom !== 'mirror') bad();
+        var mg = { t: 'group', items: [], mirror: true, n: 1 };
+        cur.push(mg);
+        stack.push(mg);
+        cur = mg.items;
+        i++;
+        continue;
+      }
+      var node;
+      if (kind === 'color') {
+        if (!/^[a-z]$/.test(atom)) bad();
+        node = { t: 'atom', v: atom, n: 1, range: null };
+      } else {
+        if (!/^[0-9]+(-[0-9]+)?$/.test(atom)) bad();
+        var dash = atom.indexOf('-');
+        if (dash < 0) node = { t: 'atom', v: atom, n: 1, range: null };
+        else node = { t: 'atom', v: atom, n: 1, range: [atom.slice(0, dash), atom.slice(dash + 1)] };
+      }
+      cur.push(node);
+      atoms.push(node);
+      if (i < n && s.charAt(i) === '*') {
+        i++;
+        node.n = readCount();
+      }
+    }
+    if (stack.length) bad();
+    if (root.length === 0) bad();
+    return { items: root, atoms: atoms };
+  }
+
+  function checkShaft(line, tok) {
+    var t = stripZeros(tok);
+    var v = Number(tok);
+    if (!(v >= 1 && v <= MAX_SHAFT)) fail(line, "bad shaft '" + t + "'");
+    return v;
+  }
+
+  // Validates every element (in expansion order == source order, see NOTES.md).
+  function validateSequence(seq, kind, palette, line) {
+    for (var k = 0; k < seq.atoms.length; k++) {
+      var a = seq.atoms[k];
+      if (kind === 'color') {
+        if (!(a.v in palette)) fail(line, "unknown color '" + a.v + "'");
+      } else if (a.range) {
+        a.lo = checkShaft(line, a.range[0]);
+        a.hi = checkShaft(line, a.range[1]);
+      } else {
+        a.lo = a.hi = checkShaft(line, a.v);
+      }
+    }
+  }
+
+  // The first `limit` elements of the full expansion (never builds more than that).
+  function expandItems(items, limit) {
+    var out = [];
+    for (var k = 0; k < items.length && out.length < limit; k++) {
+      var part = expandNode(items[k], limit - out.length);
+      for (var q = 0; q < part.length; q++) out.push(part[q]);
+    }
+    return out;
+  }
+
+  function expandNode(node, limit) {
+    var base;
+    if (node.t === 'atom') {
+      if (node.range) {
+        base = [];
+        if (node.lo <= node.hi) for (var v = node.lo; v <= node.hi; v++) base.push(v);
+        else for (var w = node.lo; w >= node.hi; w--) base.push(w);
+      } else if (node.lo !== undefined) {
+        base = [node.lo];
+      } else {
+        base = [node.v];
+      }
+    } else {
+      base = expandItems(node.items, limit);
+      if (node.mirror && base.length < limit) {
+        for (var r = base.length - 2; r >= 0; r--) base.push(base[r]);
+      }
+    }
+    var total = Math.min(limit, base.length * node.n);
+    if (node.n === 1 && base.length <= limit) return base;
+    var out = [];
+    for (var m = 0; m < total; m++) out.push(base[m % base.length]);
+    return out;
+  }
+
+  function tile(prefix, W) {
+    var out = new Array(W);
+    for (var c = 0; c < W; c++) out[c] = prefix[c % prefix.length];
+    return out;
+  }
+
+  // ---------------------------------------------------------------- lifts
+
+  function digitsMask(line, digits) {
+    var mask = 0;
+    for (var k = 0; k < digits.length; k++) {
+      var ch = digits.charAt(k);
+      if (ch === '0' || ch === '9') fail(line, "bad shaft '" + ch + "'");
+      mask |= 1 << Number(ch);
+    }
+    return mask;
+  }
+
+  function parseLift(line, tok, allowTreadle, treadles) {
+    if (tok === '-') return 0;
+    if (tok === '*') return ALL_MASK;
+    if (tok.charAt(0) === '!') {
+      var ex = tok.slice(1);
+      if (!isDigits(ex)) fail(line, "bad lift '" + tok + "'");
+      return ALL_MASK & ~digitsMask(line, ex);
+    }
+    if (isDigits(tok)) return digitsMask(line, tok);
+    if (allowTreadle) {
+      var m = /^t([0-9]+)$/.exec(tok);
+      if (m) {
+        var key = stripZeros(m[1]);
+        if (treadles[key] === undefined) fail(line, "unknown treadle '" + tok + "'");
+        return treadles[key];
+      }
+    }
+    return fail(line, "bad lift '" + tok + "'");
+  }
+
+  function maskToShafts(mask) {
+    var out = [];
+    for (var s = 1; s <= MAX_SHAFT; s++) if ((mask >> s) & 1) out.push(s);
+    return out;
+  }
+
+  // ---------------------------------------------------------------- the machine
+
+  function run(source, opts) {
+    opts = opts || {};
+    var trace = !!opts.trace;
+    var maxSteps = opts.maxSteps > 0 ? opts.maxSteps : Infinity;
+    var maxTrace = opts.maxTrace > 0 ? opts.maxTrace : DEFAULT_MAX_TRACE;
+
+    var stmts = prepare(source);
+    var st = {
+      W: 0,
+      H: 0,
+      palette: nullMap(),
+      warp: null,
+      shafts: null,
+      treadles: nullMap(),
+      shuttle: null,
+      shutPos: 0,
+      maxfloat: 0,
+      rows: [],
+      runState: null,
+      runLen: null
+    };
+    var result = {
+      ok: false,
+      output: '',
+      error: null,
+      W: 0,
+      H: 0,
+      rows: st.rows,
+      palette: st.palette,
+      grid: null,
+      steps: [],
+      stmts: stmts,
+      truncated: false,
+      limited: false,
+      stepCount: 0
+    };
+    var cur = null;
+    var lastPickRow = -1;
+    var tailStep = null;
+    var spareW = null;
+    var spareS = null;
+
+    function snap(stmt, error) {
+      return {
+        line: stmt ? stmt.line : 0,
+        cmd: stmt ? stmt.cmd : '',
+        text: stmt ? (stmt.cmd + stmt.rest).replace(/\s+$/, '') : '',
+        W: st.W,
+        H: st.H,
+        warp: st.warp,
+        shafts: st.shafts,
+        palette: st.palette,
+        treadles: st.treadles,
+        shuttle: st.shuttle,
+        shutPos: st.shutPos,
+        maxfloat: st.maxfloat,
+        rowCount: st.rows.length,
+        runState: st.runState,
+        runLen: st.runLen,
+        picked: lastPickRow,
+        error: error || null
+      };
+    }
+
+    function record(stmt, error) {
+      if (!trace) return;
+      var sn = snap(stmt, error);
+      if (result.steps.length < maxTrace) {
+        result.steps.push(sn);
+        tailStep = null;
+      } else {
+        result.truncated = true;
+        tailStep = sn;
+      }
+    }
+
+    function needThreads(line) {
+      if (!st.warp) fail(line, 'warp not set');
+      if (!st.shafts) fail(line, 'threading not set');
+    }
+
+    function checkFloats(line) {
+      var N = st.maxfloat;
+      if (!N) return;
+      var row = st.rows[st.rows.length - 1];
+      var R = st.rows.length;
+      var W = st.W;
+      var i = 0;
+      while (i < W) {
+        var j = i;
+        while (j < W && row.raised[j] === row.raised[i]) j++;
+        if (j - i > N) {
+          fail(line, 'float too long at row ' + R + ' col ' + (i + 1), { kind: 'weft', row: R, col: i + 1, len: j - i });
+        }
+        i = j;
+      }
+      for (var c = 0; c < W; c++) {
+        if (st.runLen[c] > N) {
+          fail(line, 'float too long at row ' + R + ' col ' + (c + 1), { kind: 'warp', row: R, col: c + 1, len: st.runLen[c] });
+        }
+      }
+    }
+
+    function doPick(s) {
+      var a = s.args;
+      var line = s.line;
+      var color = null;
+      var liftTok;
+      if (a.length === 2) {
+        if (!/^[a-z]$/.test(a[0])) fail(line, 'bad pick');
+        color = a[0];
+        liftTok = a[1];
+      } else if (a.length === 1) {
+        liftTok = a[0];
+      } else {
+        fail(line, 'bad pick');
+      }
+      var weft;
+      if (color !== null) {
+        if (!(color in st.palette)) fail(line, "unknown color '" + color + "'");
+        weft = color;
+      } else {
+        if (!st.shuttle) fail(line, 'no weft color');
+        weft = st.shuttle[st.shutPos % st.shuttle.length];
+        st.shutPos++;
+      }
+      var mask = parseLift(line, liftTok, true, st.treadles);
+      needThreads(line);
+      if (st.rows.length >= st.H) fail(line, 'loom full');
+
+      var W = st.W;
+      var raised = new Array(W);
+      var chars = '';
+      var runState = new Array(W);
+      var runLen = new Array(W);
+      var first = st.rows.length === 0;
+      for (var c = 0; c < W; c++) {
+        var up = (mask >> st.shafts[c]) & 1;
+        raised[c] = up;
+        chars += up ? st.warp[c] : weft;
+        if (first || st.runState[c] !== up) {
+          runState[c] = up;
+          runLen[c] = 1;
+        } else {
+          runState[c] = up;
+          runLen[c] = st.runLen[c] + 1;
+        }
+      }
+      var via = 0;
+      var tm = /^t([0-9]+)$/.exec(liftTok);
+      if (tm) via = Number(tm[1]);
+      st.runState = runState;
+      st.runLen = runLen;
+      st.rows.push({ chars: chars, raised: raised, weft: weft, mask: mask, via: via, line: line });
+      lastPickRow = st.rows.length - 1;
+      checkFloats(line);
+    }
+
+    function exec(s, pc) {
+      var a = s.args;
+      var line = s.line;
+      switch (s.cmd) {
+        case 'loom': {
+          if (pc !== 0) fail(line, "unknown command 'loom'");
+          if (a.length !== 2) fail(line, 'bad arguments');
+          st.W = num(line, a[0], 1, MAX_DIM);
+          st.H = num(line, a[1], 1, MAX_DIM);
+          result.W = st.W;
+          result.H = st.H;
+          return;
+        }
+        case 'palette': {
+          if (a.length === 0) fail(line, "bad palette entry ''");
+          var pal = nullMap(st.palette);
+          for (var k = 0; k < a.length; k++) {
+            if (!/^[a-z]=#[0-9a-fA-F]{6}$/.test(a[k])) fail(line, "bad palette entry '" + a[k] + "'");
+            pal[a[k].charAt(0)] = a[k].slice(2);
+          }
+          st.palette = pal;
+          result.palette = pal;
+          return;
+        }
+        case 'warp': {
+          var wseq = parseSequence(s.rest, 'color', line);
+          validateSequence(wseq, 'color', st.palette, line);
+          st.warp = tile(expandItems(wseq.items, st.W), st.W);
+          return;
+        }
+        case 'thread': {
+          var tseq = parseSequence(s.rest, 'shaft', line);
+          validateSequence(tseq, 'shaft', st.palette, line);
+          st.shafts = tile(expandItems(tseq.items, st.W), st.W);
+          return;
+        }
+        case 'treadle': {
+          if (a.length !== 2) fail(line, 'bad arguments');
+          var tn = num(line, a[0], 1, MAX_TREADLE);
+          var lift = parseLift(line, a[1], false, st.treadles);
+          var tr = nullMap(st.treadles);
+          tr[String(tn)] = lift;
+          st.treadles = tr;
+          return;
+        }
+        case 'shuttle': {
+          var sseq = parseSequence(s.rest, 'color', line);
+          validateSequence(sseq, 'color', st.palette, line);
+          st.shuttle = expandItems(sseq.items, SHUTTLE_KEEP);
+          st.shutPos = 0;
+          return;
+        }
+        case 'pick':
+          doPick(s);
+          return;
+        case 'cross': {
+          if (a.length !== 2) fail(line, 'bad arguments');
+          if (!isDigits(a[0])) fail(line, "bad number '" + a[0] + "'");
+          if (!isDigits(a[1])) fail(line, "bad number '" + a[1] + "'");
+          needThreads(line);
+          var ci = Number(a[0]);
+          var cj = Number(a[1]);
+          if (ci < 1 || ci > st.W || cj < 1 || cj > st.W) fail(line, 'column out of range');
+          // trace snapshots share these arrays, so only a tracing run must copy before writing
+          var w2 = trace ? st.warp.slice() : st.warp;
+          var s2 = trace ? st.shafts.slice() : st.shafts;
+          var tw = w2[ci - 1];
+          w2[ci - 1] = w2[cj - 1];
+          w2[cj - 1] = tw;
+          var ts = s2[ci - 1];
+          s2[ci - 1] = s2[cj - 1];
+          s2[cj - 1] = ts;
+          st.warp = w2;
+          st.shafts = s2;
+          return;
+        }
+        case 'drift': {
+          if (a.length !== 1) fail(line, 'bad arguments');
+          var dm = /^(-?)([0-9]+)$/.exec(a[0]);
+          if (!dm) fail(line, "bad number '" + a[0] + "'");
+          needThreads(line);
+          var W = st.W;
+          var by = Number(BigInt(dm[2]) % BigInt(W));
+          if (dm[1] === '-') by = (W - by) % W;
+          if (by !== 0) {
+            var nw = !trace && spareW && spareW.length === W ? spareW : new Array(W);
+            var ns = !trace && spareS && spareS.length === W ? spareS : new Array(W);
+            for (var c = 0; c < W; c++) {
+              nw[(c + by) % W] = st.warp[c];
+              ns[(c + by) % W] = st.shafts[c];
+            }
+            if (!trace) {
+              spareW = st.warp; // double buffering: the old arrays become the next scratch space
+              spareS = st.shafts;
+            }
+            st.warp = nw;
+            st.shafts = ns;
+          }
+          return;
+        }
+        case 'maxfloat': {
+          if (a.length !== 1) fail(line, 'bad arguments');
+          st.maxfloat = num(line, a[0], 1, Infinity);
+          return;
+        }
+        default:
+          fail(line, "unknown command '" + s.cmd + "'");
+      }
+    }
+
+    try {
+      var info = staticChecks(stmts);
+      var loops = [];
+      var pc = 0;
+      var n = stmts.length;
+      var steps = 0;
+      while (pc < n) {
+        var s = stmts[pc];
+        if (s.cmd === '}') {
+          var L = loops[loops.length - 1];
+          L.left--;
+          if (L.left > 0) pc = L.start;
+          else {
+            loops.pop();
+            pc++;
+          }
+          continue;
+        }
+        cur = s;
+        if (++steps > maxSteps) {
+          result.limited = true;
+          break;
+        }
+        if (s.cmd === 'repeat') {
+          var count = num(s.line, s.args[0], 1, MAX_REPEAT);
+          loops.push({ start: pc + 1, left: info.work[pc] ? count : 1 });
+          pc++;
+        } else {
+          exec(s, pc);
+          pc++;
+        }
+        record(s, null);
+      }
+      result.stepCount = steps;
+      if (tailStep) {
+        result.steps.push(tailStep);
+        tailStep = null;
+      }
+      if (!result.limited) {
+        var lines = [];
+        var blank = new Array(st.W + 1).join('.');
+        for (var r = 0; r < st.H; r++) lines.push(r < st.rows.length ? st.rows[r].chars : blank);
+        result.grid = lines;
+        result.output = lines.join('\n') + '\n';
+        result.ok = true;
+      }
+    } catch (e) {
+      if (!(e instanceof LoomError)) throw e;
+      result.error = { line: e.line, message: e.message, detail: e.detail };
+      result.output = 'error line ' + e.line + ': ' + e.message + '\n';
+      result.stepCount = steps;
+      if (trace && cur) record(cur, result.error);
+      if (tailStep) {
+        result.steps.push(tailStep);
+        tailStep = null;
+      }
+    }
+    result.rows = st.rows;
+    result.palette = st.palette;
+    result.finalState = st;
+    return result;
+  }
+
+  return {
+    run: run,
+    maskToShafts: maskToShafts,
+    MAX_DIM: MAX_DIM,
+    MAX_SHAFT: MAX_SHAFT
+  };
+});
+
+</script>
+<script>
+window.LOOM_DATA = {"gallery":[{"id":"tartan","title":"Royal Tartan","note":"One mirrored colour sequence is both warp and weft (via the shuttle); on a 2/2 twill the checks appear by themselves.","source":"// title: Royal Tartan\n// note: One mirrored colour sequence is both warp and weft (via the shuttle); on a 2/2 twill the checks appear by themselves.\nloom 94 94\npalette r=#b1172b k=#101418 g=#1f6f43 b=#1c3f7a w=#f2efe6 y=#e8b923\n// half a sett: red ground, black hairlines, blue and green bars, a white and a yellow accent\nwarp mirror(r*10 k*2 b*6 k*2 r*3 w*1 r*3 k*2 g*6 k*2 r*2 y*1 r*2)\nthread 1-4\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 14\nshuttle mirror(r*10 k*2 b*6 k*2 r*3 w*1 r*3 k*2 g*6 k*2 r*2 y*1 r*2)\nrepeat 23 {\n  pick t1\n  pick t2\n  pick t3\n  pick t4\n}\npick t1\npick t2\n"},{"id":"flame","title":"Flame Stitch","note":"Every row is the same all-raised warp; drift slides it one thread per pick, and reversing the drift makes flames.","source":"// title: Flame Stitch\n// note: Every row is the same all-raised warp; drift slides it one thread per pick, and reversing the drift makes flames.\nloom 60 80\npalette a=#3b0a45 b=#7a1f5c c=#b8325f d=#e8574a e=#f68f3c f=#fcc85a g=#fff0a6 w=#1a0d1f\nwarp mirror(a*2 b*2 c*2 d*2 e*2 f*2 g*2)\nthread 1\nrepeat 5 {\n  repeat 8 {\n    pick w 1\n    drift 1\n  }\n  repeat 8 {\n    pick w 1\n    drift -1\n  }\n}\n"},{"id":"diamond-twill","title":"Diamond Twill","note":"Eight shafts threaded up and back down, treadled up and back down: twill diagonals bounce into nested diamonds.","source":"// title: Diamond Twill\n// note: Eight shafts threaded up and back down, treadled up and back down: twill diagonals bounce into nested diamonds.\nloom 56 56\npalette c=#0b3c5d m=#f6c85f g=#328cc1 s=#d9b310\nwarp (c*7 g*7)\nthread 1-8 7-2\ntreadle 1 1234\ntreadle 2 2345\ntreadle 3 3456\ntreadle 4 4567\ntreadle 5 5678\ntreadle 6 6781\ntreadle 7 7812\ntreadle 8 8123\nshuttle m\nrepeat 4 {\n  pick t1\n  pick t2\n  pick t3\n  pick t4\n  pick t5\n  pick t6\n  pick t7\n  pick t8\n  pick t7\n  pick t6\n  pick t5\n  pick t4\n  pick t3\n  pick t2\n}\n"},{"id":"kilim","title":"Kilim Diamonds","note":"Eight shafts threaded 1-8-1 act as a row of pixels: each pick's lift draws one line of a checkered diamond.","source":"// title: Kilim Diamonds\n// note: Eight shafts threaded 1-8-1 act as a row of pixels: each pick's lift draws one line of a checkered diamond.\nloom 45 49\npalette r=#a63d2f i=#24345a o=#d9a441 c=#efe3c8 k=#1c1a1a y=#f0c34e\nwarp mirror(y c y c y c y c)      // 15 threads, tiled three times across\nthread mirror(1-8)                // shaft 8 is the centre thread, shaft 1 the outer edges\npick o -                          // gold edge row\nrepeat 3 {\n  pick r -\n  pick r 8\n  pick r 7\n  pick i 68\n  pick i 57\n  pick i 468\n  pick k 357\n  pick k 2468\n  pick k 357\n  pick i 468\n  pick i 57\n  pick i 68\n  pick r 7\n  pick r 8\n  pick r -\n  pick o -\n}\n"},{"id":"dusk","title":"Dusk Gradient","note":"Plain weave with a colour ramp in the weft and a teal glow in the warp; every cell is a dither of the two.","source":"// title: Dusk Gradient\n// note: Plain weave with a colour ramp in the weft and a teal glow in the warp; every cell is a dither of the two.\nloom 60 72\npalette a=#0d1b3d b=#1d2a5c c=#33306e d=#54327a e=#7a3585 f=#a13d8a g=#c94b88 h=#e5607c i=#f57f6c j=#fda15d k=#ffc65a l=#ffe49b\npalette m=#0f2547 n=#183a63 o=#2a4d78 p=#3d7a9a q=#5fa8b0 r=#8fd0b8\n// weft (the sky, top to bottom): twelve colours, six picks each\nshuttle a*6 b*6 c*6 d*6 e*6 f*6 g*6 h*6 i*6 j*6 k*6 l*6\n// warp: a glow of teal rising out of deep blue\nwarp m*5 n*5 o*5 p*5 q*5 r*5 q*5 p*5 o*5 n*5 m*5 n*5\nthread 1 2\nrepeat 36 {\n  pick 1\n  pick 2\n}\n"},{"id":"houndstooth","title":"Houndstooth","note":"Four dark threads, four light, in warp and weft, on a 2/2 twill: the broken-check tooth appears by itself.","source":"// title: Houndstooth\n// note: Four dark threads, four light, in warp and weft, on a 2/2 twill: the broken-check tooth appears by itself.\nloom 48 48\npalette k=#1a1a1a w=#f4f1ea\nwarp (k*4 w*4)\nthread 1-4\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 14\nshuttle (k*4 w*4)\nrepeat 12 {\n  pick t1\n  pick t2\n  pick t3\n  pick t4\n}\n"},{"id":"swell","title":"Ocean Swell","note":"Stripes bent into rolling waves: a stepped sine curve of drift values slides the warp between picks.","source":"// title: Ocean Swell\n// note: Stripes bent into rolling waves: a stepped sine curve of drift values slides the warp between picks.\nloom 60 96\npalette a=#062a3f b=#0b4a68 c=#146e8e d=#1f97ad e=#4fbfc0 f=#9ee0d0 g=#e6f7e6 w=#00161f\nwarp mirror(a*2 b*2 c*2 d*2 e*2 f*2 g*2)\nthread 1\nrepeat 6 {\n  pick w 1\n  drift 3\n  pick w 1\n  drift 3\n  pick w 1\n  drift 2\n  pick w 1\n  drift 1\n  pick w 1\n  drift 0\n  pick w 1\n  drift -1\n  pick w 1\n  drift -2\n  pick w 1\n  drift -3\n  pick w 1\n  drift -3\n  pick w 1\n  drift -3\n  pick w 1\n  drift -2\n  pick w 1\n  drift -1\n  pick w 1\n  drift 0\n  pick w 1\n  drift 1\n  pick w 1\n  drift 2\n  pick w 1\n  drift 3\n}\n"},{"id":"lattice","title":"Crossing Paths","note":"No treadles: after every pick neighbouring threads swap with cross, and their bouncing paths weave a diamond plaid.","source":"// title: Crossing Paths\n// note: No treadles: after every pick neighbouring threads swap with cross, and their bouncing paths weave a diamond plaid.\nloom 32 64\npalette a=#e63946 b=#f4a261 e=#2a9d8f f=#264653 x=#111111\nwarp a*8 b*8 e*8 f*8        // four bands of eight threads\nthread 1                    // one shaft, and every pick lifts it: each row shows the warp colours as they now stand\nrepeat 32 {\n  pick x 1\n  // round A: swap the pairs (1,2) (3,4) (5,6) ...  odd threads step right, even ones step left\n  cross 1 2\n  cross 3 4\n  cross 5 6\n  cross 7 8\n  cross 9 10\n  cross 11 12\n  cross 13 14\n  cross 15 16\n  cross 17 18\n  cross 19 20\n  cross 21 22\n  cross 23 24\n  cross 25 26\n  cross 27 28\n  cross 29 30\n  cross 31 32\n  pick x 1\n  // round B: swap the pairs (2,3) (4,5) ...  threads keep going the same way and bounce off the edges\n  cross 2 3\n  cross 4 5\n  cross 6 7\n  cross 8 9\n  cross 10 11\n  cross 12 13\n  cross 14 15\n  cross 16 17\n  cross 18 19\n  cross 20 21\n  cross 22 23\n  cross 24 25\n  cross 26 27\n  cross 28 29\n  cross 30 31\n}\n"},{"id":"herringbone","title":"Herringbone Tweed","note":"Twill threaded 1-4 then 4-1 flips its diagonal at every turn and draws fishbones; a rust thread every 16 ends.","source":"// title: Herringbone Tweed\n// note: Twill threaded 1-4 then 4-1 flips its diagonal at every turn and draws fishbones; a rust thread every 16 ends.\nloom 64 72\npalette d=#2b2d42 l=#edf2f4 t=#c2703d\nwarp d*15 t\nthread (1-4)*4 (4-1)*4\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 14\nshuttle l\nrepeat 18 {\n  pick t1\n  pick t2\n  pick t3\n  pick t4\n}\n"},{"id":"overshot","title":"Overshot Coverlet","note":"Blocks of paired threads and pattern picks that float over one block at a time, with tabby picks between: a coverlet.","source":"// title: Overshot Coverlet\n// note: Blocks of paired threads and pattern picks that float over one block at a time, with tabby picks between: a coverlet.\nloom 72 72\npalette n=#14213d o=#e0a458 c=#f1e3c5 r=#b5533c\nwarp n\n// block A = shafts 1 2, B = 2 3, C = 3 4, D = 4 1, six threads each\nthread ((1 2)*3 (2 3)*3 (3 4)*3 (4 1)*3 (3 4)*3 (2 3)*3)*2\ntreadle 1 12                // pattern lifts: each one leaves a single block lying under the weft\ntreadle 2 23\ntreadle 3 34\ntreadle 4 14\ntreadle 5 13                // the two tabby (plain weave) lifts\ntreadle 6 24\nshuttle o*3 c*3 r*3 c*3 r*3 c*3     // pattern weft: one colour per step, three picks each\nmaxfloat 8\nrepeat 2 {\n  // block A\n  pick t3\n  pick n t5\n  pick t3\n  pick n t6\n  pick t3\n  pick n t5\n  // block B\n  pick t4\n  pick n t6\n  pick t4\n  pick n t5\n  pick t4\n  pick n t6\n  // block C\n  pick t1\n  pick n t5\n  pick t1\n  pick n t6\n  pick t1\n  pick n t5\n  // block D\n  pick t2\n  pick n t6\n  pick t2\n  pick n t5\n  pick t2\n  pick n t6\n  // block C\n  pick t1\n  pick n t5\n  pick t1\n  pick n t6\n  pick t1\n  pick n t5\n  // block B\n  pick t4\n  pick n t6\n  pick t4\n  pick n t5\n  pick t4\n  pick n t6\n}\n"},{"id":"denim","title":"Selvedge Denim","note":"A warp-faced 3/1 twill: cream weft peeks through as fine diagonal dashes between red selvedge lines.","source":"// title: Selvedge Denim\n// note: A warp-faced 3/1 twill: cream weft peeks through as fine diagonal dashes between red selvedge lines.\nloom 45 72\npalette i=#1f3a5f j=#2c4d78 k=#16294a w=#e9e2cf r=#b3202a\n\n// two selvedge threads at each edge, then slightly uneven indigo yarns\nwarp w r (i j i k i i j k)*5 i r w\nthread 1-4\n\n// 3/1 twill: each treadle lets exactly one shaft's threads go under the weft\ntreadle 1 123\ntreadle 2 234\ntreadle 3 134\ntreadle 4 124\n\nshuttle w\nmaxfloat 3          // no thread may float over more than 3 crossings\nrepeat 18 {\n  pick t1\n  pick t2\n  pick t3\n  pick t4\n}\n"},{"id":"gingham","title":"Picnic Gingham","note":"Plain weave, four red threads then four white in both directions; the crossings sparkle between red and white.","source":"// title: Picnic Gingham\n// note: Plain weave, four red threads then four white in both directions; the crossings sparkle between red and white.\nloom 48 48\npalette r=#c8352b w=#fbf4e6\nwarp (r*4 w*4)\nthread 1 2\nshuttle (r*4 w*4)\nmaxfloat 1          // proof that it really is plain weave: no float longer than one\nrepeat 24 {\n  pick 1\n  pick 2\n}\n"},{"id":"satin","title":"Satin Ribbon","note":"Warp-faced eight-shaft satin: seven shafts up, one down, stepping by three. maxfloat 7 certifies the long floats.","source":"// title: Satin Ribbon\n// note: Warp-faced eight-shaft satin: seven shafts up, one down, stepping by three. maxfloat 7 certifies the long floats.\nloom 64 64\npalette a=#0b132b b=#1c2541 c=#3a506b d=#5bc0be e=#9be0d6 f=#f0e6b8 g=#e8b04a w=#0a0a12\nwarp mirror(a*3 b*3 c*3 d*3 e*3 f*3 g*3)\nthread 1-8\ntreadle 1 !1\ntreadle 2 !4\ntreadle 3 !7\ntreadle 4 !2\ntreadle 5 !5\ntreadle 6 !8\ntreadle 7 !3\ntreadle 8 !6\nmaxfloat 7\nrepeat 8 {\n  pick w t1\n  pick w t2\n  pick w t3\n  pick w t4\n  pick w t5\n  pick w t6\n  pick w t7\n  pick w t8\n}\n"}],"conformance":[{"name":"01-plain-weave","source":"// The simplest cloth: plain weave. Odd columns on shaft 1, even on shaft 2.\nloom 8 4\npalette a=#1b3a5c b=#f2e8cf\nwarp a\nthread 1 2\npick b 1\npick b 2\npick b 1\npick b 2\n","expected":"abababab\nbabababa\nabababab\nbabababa\n"},{"name":"02-twill-treadles","source":"// A 2/2 twill: four treadles, walked in order.\nloom 12 8\npalette n=#22223b c=#c9ada7\nwarp n\nthread 1-4\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 41\nrepeat 2 {\n  pick c t1\n  pick c t2\n  pick c t3\n  pick c t4\n}\n","expected":"nnccnnccnncc\ncnnccnnccnnc\nccnnccnnccnn\nnccnnccnnccn\nnnccnnccnncc\ncnnccnnccnnc\nccnnccnnccnn\nnccnnccnnccn\n"},{"name":"03-sequences","source":"// Sequence items: repeats, groups, mirror.\nloom 16 3\npalette a=#e63946 b=#f1faee c=#457b9d d=#1d3557\nwarp (a b)*2 c*3 mirror(a b d)\nthread 1\npick d 1\npick d -\npick d *\n","expected":"ababcccabdbaabab\ndddddddddddddddd\nababcccabdbaabab\n"},{"name":"04-point-twill","source":"// Point (mirrored) threading makes a zigzag.\nloom 14 6\npalette g=#2a9d8f s=#e9c46a\nwarp g\nthread mirror(1-4)\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 14\npick s t1\npick s t2\npick s t3\npick s t4\npick s t3\npick s t2\n","expected":"ggsssggggsssgg\nsggsggssggsggs\nssgggssssgggss\ngssgssggssgssg\nssgggssssgggss\nsggsggssggsggs\n"},{"name":"05-shuttle","source":"// A shuttle cycles weft colors for picks that give none.\nloom 6 7\npalette w=#ffffff r=#d62828 o=#f77f00 y=#fcbf49\nwarp w\nthread 1 2\nshuttle r o y\nrepeat 3 {\n  pick 1\n  pick 2\n}\npick w 12\n","expected":"wrwrwr\nowowow\nwywywy\nrwrwrw\nwowowo\nywywyw\nwwwwww\n"},{"name":"06-unwoven","source":"// Rows never woven print as dots.\nloom 5 4\npalette a=#000000 b=#ffffff\nwarp a b\nthread 1 2\npick b 1\npick a 2\n","expected":"ababa\nababa\n.....\n.....\n"},{"name":"07-cross","source":"// cross swaps two warp threads (color and shaft) from now on.\nloom 6 4\npalette a=#003049 b=#fcbf49 x=#eae2b7\nwarp a*3 b*3\nthread 1 1 1 2 2 2\npick x 1\ncross 1 6\npick x 1\ncross 2 5\npick x 1\npick x 2\n","expected":"aaaxxx\nxaaxxa\nxxaxaa\nbbxbxx\n"},{"name":"08-drift","source":"// drift rotates every warp thread; negative drifts left.\nloom 6 5\npalette a=#264653 b=#e76f51 z=#ffffff\nwarp a b b b b b\nthread 1 2 2 2 2 2\npick z 1\ndrift 1\npick z 1\ndrift 2\npick z 1\ndrift -1\npick z 1\ndrift 7\npick z 1\n","expected":"azzzzz\nzazzzz\nzzzazz\nzzazzz\nzzzazz\n"},{"name":"09-maxfloat-ok","source":"// A twill stays within a float limit of 2.\nloom 8 6\npalette k=#111111 y=#ffd166\nwarp k\nthread 1-4\nmaxfloat 2\nrepeat 3 {\n  pick y 12\n  pick y 34\n}\n","expected":"kkyykkyy\nyykkyykk\nkkyykkyy\nyykkyykk\nkkyykkyy\nyykkyykk\n"},{"name":"10-float-too-long","source":"// Plain weave on shafts 1-2 then a long float: column states run too long.\nloom 6 6\npalette a=#000000 b=#ffffff\nwarp a\nthread 1 2\nmaxfloat 3\npick b 1\npick b 1\npick b 1\npick b 1\n","expected":"error line 10: float too long at row 4 col 1\n"},{"name":"11-unknown-color","source":"loom 4 2\npalette a=#101010\nwarp a\nthread 1\npick q 1\n","expected":"error line 5: unknown color 'q'\n"},{"name":"12-unclosed","source":"loom 4 4\npalette a=#101010 b=#fafafa\nwarp a\nthread 1 2\nrepeat 2 {\n  pick b 1\n  repeat 2 {\n    pick b 2\n}\n","expected":"error line 5: unclosed block\n"},{"name":"13-loom-full","source":"loom 4 5\npalette a=#101010 b=#fafafa\nwarp a\nthread 1 2\nrepeat 3 {\n  pick b 1\n  pick b 2\n}\n","expected":"error line 7: loom full\n"},{"name":"14-no-header","source":"\n// the header must come first\npalette a=#101010\nloom 4 4\n","expected":"error line 3: expected 'loom' header\n"},{"name":"15-lifts","source":"// Lift forms: digits, all, none, and \"all except\".\nloom 8 4\npalette a=#5f0f40 b=#fb8b24\nwarp a\nthread 1-8\npick b 1357\npick b *\npick b -\npick b !12\n","expected":"abababab\naaaaaaaa\nbbbbbbbb\nbbaaaaaa\n"}]};
+</script>
+<script>
+/*
+ * LOOM Studio UI. Everything runs on window.LoomEngine (src/engine.js, inlined above this
+ * script by build.js), so the page and cli.js share one interpreter.
+ *
+ * Sections: helpers - editor - compile/player - drawing - inspector - gallery/tests/guide - boot
+ */
+(function () {
+  'use strict';
+
+  const Engine = window.LoomEngine;
+  const DATA = window.LOOM_DATA;
+
+  // ================================================================= helpers
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const store = (k, v) => {
+    try {
+      if (v === undefined) return localStorage.getItem(k);
+      localStorage.setItem(k, v);
+    } catch (e) {
+      /* storage may be blocked (file:// in some browsers) */
+    }
+    return null;
+  };
+  function rgb(hex) {
+    const h = String(hex).replace('#', '');
+    return [parseInt(h.slice(0, 2), 16) || 0, parseInt(h.slice(2, 4), 16) || 0, parseInt(h.slice(4, 6), 16) || 0];
+  }
+  function inkFor(hex) {
+    const [r, g, b] = rgb(hex);
+    return 0.299 * r + 0.587 * g + 0.114 * b > 150 ? '#111' : '#fff';
+  }
+  const MONO = 'ui-monospace, "Cascadia Code", "SF Mono", Consolas, "Liberation Mono", Menlo, monospace';
+
+  const ICONS = {
+    first: '<svg viewBox="0 0 16 16"><path d="M1 2h2v12H1zM8 2v12L2.6 8zM14.6 2v12L9.2 8z"/></svg>',
+    prev: '<svg viewBox="0 0 16 16"><path d="M2 2h2v12H2zM14 2v12L5 8z"/></svg>',
+    play: '<svg viewBox="0 0 16 16"><path d="M3 1.5v13L14 8z"/></svg>',
+    pause: '<svg viewBox="0 0 16 16"><path d="M3 2h4v12H3zM9 2h4v12H9z"/></svg>',
+    next: '<svg viewBox="0 0 16 16"><path d="M2 2v12l9-6zM12 2h2v12h-2z"/></svg>',
+    last: '<svg viewBox="0 0 16 16"><path d="M1.4 2v12L7 8zM7.8 2v12L13.4 8zM13.6 2h2v12h-2z"/></svg>'
+  };
+
+  // friendly explanations shown under the exact error line
+  const HELP = [
+    [/^expected 'loom' header/, "expected 'loom' header", 'Every program starts with <code>loom W H</code>: how many columns and rows the cloth has.'],
+    [/^unknown command/, "unknown command '&hellip;'", 'Commands are lowercase words: <code>loom palette warp thread treadle shuttle pick cross drift maxfloat repeat</code>.'],
+    [/^bad number/, "bad number '&hellip;'", 'Numbers are digits only (no sign, no decimals) and must be in range: loom sizes 1&ndash;200, treadles 1&ndash;10, repeat 1&ndash;1000, counts and maxfloat at least 1.'],
+    [/^bad palette entry/, "bad palette entry '&hellip;'", 'Entries look like <code>a=#1b3a5c</code>: one lowercase letter, <code>=#</code>, six hex digits. A bare <code>palette</code> is not allowed.'],
+    [/^unknown color/, "unknown color 'x'", 'That letter has no colour yet. Add it with <code>palette x=#rrggbb</code> before using it.'],
+    [/^bad shaft/, "bad shaft 'n'", 'Shafts are numbered 1 to 8 (in threadings, ranges and lifts).'],
+    [/^bad sequence/, 'bad sequence', 'Sequences are items separated by spaces: <code>a*3</code> repeats, <code>(a b)*2</code> groups, <code>mirror(a b c)</code> reflects. Parentheses must balance and nothing may be empty.'],
+    [/^bad lift/, "bad lift '&hellip;'", 'A lift is shaft digits like <code>13</code>, <code>-</code> (none), <code>*</code> (all), <code>!12</code> (all but 1 and 2) or <code>t1</code> (a treadle, picks only).'],
+    [/^unknown treadle/, "unknown treadle 'tN'", 'Define the treadle first, for example <code>treadle 1 12</code>.'],
+    [/^no weft color/, 'no weft color', 'Name a colour in the pick (<code>pick b 1</code>) or load a shuttle (<code>shuttle a b</code>).'],
+    [/^bad pick/, 'bad pick', 'Use <code>pick lift</code> (colour comes from the shuttle) or <code>pick color lift</code>.'],
+    [/^warp not set/, 'warp not set', 'Give the threads colours with <code>warp</code> before weaving.'],
+    [/^threading not set/, 'threading not set', 'Tie the threads to shafts with <code>thread</code> before weaving.'],
+    [/^loom full/, 'loom full', 'Every row is already woven. Make the loom taller or weave fewer picks.'],
+    [/^column out of range/, 'column out of range', 'Columns are numbered 1 to the loom width.'],
+    [/^bad repeat/, 'bad repeat', 'Write <code>repeat N {</code> alone on its line and close the block with a lone <code>}</code>.'],
+    [/^unclosed block/, 'unclosed block', 'This <code>repeat</code> never gets its closing <code>}</code>.'],
+    [/^unexpected '\}'/, "unexpected '}'", 'This <code>}</code> does not close anything. Remove it or add a matching <code>repeat N {</code>.'],
+    [/^float too long/, 'float too long at row R col C', 'A thread stayed raised (or lowered) for more picks than <code>maxfloat</code> allows, or too many neighbours in one row did. Change the lifts or loosen maxfloat.'],
+    [/^bad arguments/, 'bad arguments', 'This command got the wrong number of arguments.']
+  ];
+  function helpFor(msg) {
+    for (const h of HELP) if (h[0].test(msg)) return h[2];
+    return '';
+  }
+
+  // ================================================================= state
+  const S = {
+    tab: 'studio',
+    view: 'loom',
+    texture: true,
+    source: '',
+    result: null,
+    resultId: 0,
+    steps: [],
+    pos: 0,
+    playing: false,
+    anim: null,
+    speed: 5,
+    maxShaft: 4,
+    rowStep: [],
+    layout: null,
+    layer: null,
+    layerKey: '',
+    layerRows: 0,
+    dirty: true,
+    raf: 0,
+    last: 0,
+    compileTimer: 0,
+    budget: 0,
+    scale: 1,
+    zoom: 0,
+    follow: false,
+    slowCompile: false,
+    prevSource: null,
+    markCur: -1,
+    markNext: -1,
+    markErr: -1,
+    conf: null
+  };
+
+  const DEFAULT_PROGRAM = [
+    '// Hello, cloth! A 2/2 twill in two colours.',
+    '',
+    '// 24 warp threads (columns), 20 rows',
+    'loom 24 20',
+    '// colours have one-letter names',
+    'palette n=#1b3a5c c=#f2e8cf',
+    '// every warp thread is navy',
+    'warp n',
+    '// thread k goes to shaft 1 2 3 4 1 2 3 4 ...',
+    'thread 1-4',
+    '',
+    '// a treadle remembers which shafts to lift',
+    'treadle 1 12',
+    'treadle 2 23',
+    'treadle 3 34',
+    'treadle 4 14',
+    '',
+    '// each pick lifts shafts, then sends a cream',
+    '// weft across; lowered threads show the weft',
+    'repeat 5 {',
+    '  pick c t1',
+    '  pick c t2',
+    '  pick c t3',
+    '  pick c t4',
+    '}',
+    ''
+  ].join('\n');
+
+  // ================================================================= editor
+  const ta = $('#src');
+  const hl = $('#hl');
+  const gutInner = $('#gutter-inner');
+  let lineEls = [];
+  let gutEls = [];
+  let spacer = null;
+  let spacerX = null;
+
+  function paletteOf(lines) {
+    const pal = Object.create(null);
+    for (const ln of lines) {
+      const code = ln.split('//')[0];
+      const m = /^\s*palette\b(.*)$/.exec(code);
+      if (!m) continue;
+      for (const e of m[1].split(/\s+/)) {
+        const q = /^([a-z])=(#[0-9a-fA-F]{6})$/.exec(e);
+        if (q) pal[q[1]] = q[2];
+      }
+    }
+    return pal;
+  }
+
+  const CMD_CLASS = {
+    loom: 'k-loom',
+    palette: 'k-def',
+    warp: 'k-def',
+    thread: 'k-def',
+    treadle: 'k-def',
+    shuttle: 'k-def',
+    pick: 'k-act',
+    cross: 'k-act',
+    drift: 'k-act',
+    maxfloat: 'k-chk',
+    repeat: 'k-ctl',
+    '}': 'k-ctl'
+  };
+  const TOKEN_RE = /([ \t]+)|([a-z]=#[0-9a-fA-F]{6})|(mirror(?=\())|(t[0-9]+(?![A-Za-z0-9_]))|([0-9]+)|([a-z](?![A-Za-z0-9_]))|([(){}*!\-])|([A-Za-z_][A-Za-z0-9_]*|[^ \t]+?)/g;
+
+  function hlLine(line, pal) {
+    const ci = line.indexOf('//');
+    const code = ci >= 0 ? line.slice(0, ci) : line;
+    const cmt = ci >= 0 ? line.slice(ci) : '';
+    let out = '';
+    const m = /^([ \t]*)([^ \t]+)([\s\S]*)$/.exec(code);
+    if (m) {
+      const cls = CMD_CLASS[m[2]] || 'k-bad';
+      out += esc(m[1]) + '<span class="' + cls + '">' + esc(m[2]) + '</span>';
+      const colorCmd = m[2] === 'warp' || m[2] === 'shuttle' || m[2] === 'pick';
+      TOKEN_RE.lastIndex = 0;
+      const rest = m[3];
+      let t;
+      while ((t = TOKEN_RE.exec(rest)) !== null) {
+        if (t[0] === '') {
+          TOKEN_RE.lastIndex++;
+          continue;
+        }
+        if (t[1]) out += t[1];
+        else if (t[2]) {
+          const hex = t[2].slice(2);
+          out += '<span class="key">' + t[2][0] + '</span><span class="p">=</span><span class="hex" style="--sw:' + hex + '">' + hex + '</span>';
+        } else if (t[3]) out += '<span class="mir">' + t[3] + '</span>';
+        else if (t[4]) out += '<span class="t">' + t[4] + '</span>';
+        else if (t[5]) out += '<span class="n">' + t[5] + '</span>';
+        else if (t[6]) {
+          if (colorCmd && pal[t[6]]) out += '<span class="chip" style="background:' + pal[t[6]] + ';color:' + inkFor(pal[t[6]]) + '">' + t[6] + '</span>';
+          else out += '<span class="w">' + esc(t[6]) + '</span>';
+        } else if (t[7]) out += '<span class="p">' + esc(t[7]) + '</span>';
+        else out += '<span class="w">' + esc(t[8]) + '</span>';
+      }
+    } else out += esc(code);
+    if (cmt) out += '<span class="c">' + esc(cmt) + '</span>';
+    return out;
+  }
+
+  function renderEditor() {
+    const lines = ta.value.split('\n');
+    const pal = paletteOf(lines);
+    let h = '';
+    let g = '';
+    for (let i = 0; i < lines.length; i++) {
+      h += '<div class="ln">' + hlLine(lines[i], pal) + '</div>';
+      g += '<div class="gl">' + (i + 1) + '</div>';
+    }
+    h += '<div id="spacer"></div><div id="spacerx"></div>';
+    hl.innerHTML = h;
+    gutInner.innerHTML = g;
+    lineEls = hl.children;
+    gutEls = gutInner.children;
+    spacer = $('#spacer');
+    spacerX = $('#spacerx');
+    S.markCur = S.markNext = S.markErr = -1;
+    equalizeScroll();
+    markLines();
+  }
+
+  // The highlight layer has no scrollbars of its own, so it must be able to scroll at least as far as the
+  // textarea does (which loses room to its scrollbars): pad it by the measured scrollbar thickness.
+  function equalizeScroll() {
+    if (!spacer) return;
+    const sbw = Math.max(0, ta.offsetWidth - ta.clientWidth);
+    const sbh = Math.max(0, ta.offsetHeight - ta.clientHeight);
+    spacer.style.height = '0px';
+    spacerX.style.width = '0px';
+    const diff = ta.scrollHeight - hl.scrollHeight;
+    spacer.style.height = Math.max(0, diff) + sbh + 'px';
+    spacerX.style.width = ta.scrollWidth + sbw + 'px';
+    syncScroll();
+  }
+  function syncScroll() {
+    hl.scrollTop = ta.scrollTop;
+    hl.scrollLeft = ta.scrollLeft;
+    gutInner.style.transform = 'translateY(' + -ta.scrollTop + 'px)';
+  }
+
+  function setMark(kind, idx, cls) {
+    const key = 'mark' + kind;
+    const old = S[key];
+    if (old === idx) return;
+    if (old >= 0) {
+      if (lineEls[old]) lineEls[old].classList.remove(cls);
+      if (gutEls[old]) {
+        gutEls[old].classList.remove(cls);
+        if (cls === 'err') gutEls[old].removeAttribute('title');
+      }
+    }
+    S[key] = idx;
+    if (idx >= 0) {
+      if (lineEls[idx]) lineEls[idx].classList.add(cls);
+      if (gutEls[idx]) gutEls[idx].classList.add(cls);
+    }
+  }
+  function markLines() {
+    const R = S.result;
+    const step = S.pos > 0 ? S.steps[S.pos - 1] : null;
+    const next = S.steps[S.pos] || null;
+    setMark('Cur', step ? step.line - 1 : -1, 'cur');
+    setMark('Next', next && !(step && step.error) ? next.line - 1 : -1, 'next');
+    const errLine = R && R.error ? R.error.line - 1 : -1;
+    setMark('Err', errLine, 'err');
+    if (errLine >= 0 && gutEls[errLine]) gutEls[errLine].title = R.output.trim();
+  }
+  function scrollToLine(line0) {
+    const lh = 20;
+    const top = line0 * lh;
+    if (top < ta.scrollTop + 20 || top > ta.scrollTop + ta.clientHeight - 60) {
+      ta.scrollTop = Math.max(0, top - ta.clientHeight / 3);
+      syncScroll();
+    }
+  }
+
+  function insertText(text) {
+    ta.focus();
+    if (!document.execCommand || !document.execCommand('insertText', false, text)) {
+      const a = ta.selectionStart;
+      ta.setRangeText(text, a, ta.selectionEnd, 'end');
+      ta.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  }
+  // indent (or dedent) every line touched by the selection
+  function shiftLines(dedent) {
+    const v = ta.value;
+    const a = ta.selectionStart;
+    const b = ta.selectionEnd;
+    const start = v.lastIndexOf('\n', a - 1) + 1;
+    let end = v.indexOf('\n', b);
+    if (end < 0) end = v.length;
+    if (b > a && v[b - 1] === '\n') end = b - 1;
+    const out = v
+      .slice(start, end)
+      .split('\n')
+      .map((l) => (dedent ? l.replace(/^( {1,2}|\t)/, '') : l.length ? '  ' + l : l))
+      .join('\n');
+    ta.setSelectionRange(start, end);
+    insertText(out);
+    ta.setSelectionRange(a === b && !dedent ? a + 2 : start, a === b && !dedent ? a + 2 : start + out.length);
+  }
+  ta.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      weave();
+      return;
+    }
+    if (e.key === 'Escape') {
+      ta.blur();
+      return;
+    }
+    if (e.key === 'Tab' && !e.altKey && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+      const sel = ta.value.slice(ta.selectionStart, ta.selectionEnd);
+      if (e.shiftKey || sel.indexOf('\n') >= 0) shiftLines(e.shiftKey);
+      else insertText('  ');
+      return;
+    }
+    if (e.key === 'Enter' && !e.shiftKey) {
+      const p = ta.selectionStart;
+      const before = ta.value.slice(0, p);
+      const cur = before.slice(before.lastIndexOf('\n') + 1);
+      let indent = /^[ \t]*/.exec(cur)[0];
+      if (/\{\s*(\/\/.*)?$/.test(cur)) indent += '  ';
+      e.preventDefault();
+      insertText('\n' + indent);
+      return;
+    }
+    if (e.key === '}' && !e.ctrlKey && !e.metaKey) {
+      const p = ta.selectionStart;
+      const before = ta.value.slice(0, p);
+      const cur = before.slice(before.lastIndexOf('\n') + 1);
+      if (/^ {2,}$/.test(cur) && ta.selectionEnd === p) {
+        e.preventDefault();
+        ta.setSelectionRange(p - 2, p);
+        insertText('}');
+      }
+    }
+  });
+  ta.addEventListener('input', () => {
+    renderEditor();
+    $('#btn-undo').hidden = true;
+    setStatus('typing...');
+    clearTimeout(S.compileTimer);
+    // programs that take a while to run are re-run after a longer pause in typing
+    S.compileTimer = setTimeout(() => {
+      compile(ta.value, { fromEdit: true });
+      store('loom-studio-source', ta.value);
+      setStatus('saved in this browser');
+    }, S.slowCompile ? 1200 : 320);
+  });
+  ta.addEventListener('scroll', syncScroll);
+  function setStatus(t) {
+    $('#status').textContent = t;
+  }
+
+  // ================================================================= compile + player
+  const STUDIO_MAX_STEPS = 500000;
+
+  // opts: atStart (rewind), fromEdit (keep the debugger position when it was mid-run), reveal (scroll to an error line)
+  function compile(src, opts) {
+    opts = opts || {};
+    const prevPos = S.pos;
+    const prevEnd = S.steps.length;
+    S.source = src;
+    const t0 = performance.now();
+    const R = Engine.run(src, { trace: true, maxSteps: STUDIO_MAX_STEPS, maxTrace: 20000 });
+    S.slowCompile = performance.now() - t0 > 250;
+    S.result = R;
+    S.resultId++;
+    S.steps = R.steps;
+    S.layerKey = '';
+    S.layerRows = 0;
+    // widest shaft actually used, so the draft keeps its size while stepping
+    let ms = 4;
+    let seen = null;
+    for (const st of S.steps) {
+      if (st.shafts && st.shafts !== seen) {
+        seen = st.shafts;
+        for (const v of seen) if (v > ms) ms = v;
+      }
+    }
+    S.maxShaft = ms;
+    S.rowStep = [];
+    for (let p = 1; p <= S.steps.length; p++) {
+      const rc = S.steps[p - 1].rowCount;
+      while (S.rowStep.length < rc) S.rowStep.push(p);
+    }
+    stopPlay(true);
+    S.anim = null;
+    if (opts.atStart) S.pos = 0;
+    else if (opts.fromEdit && prevPos < prevEnd) S.pos = Math.min(prevPos, S.steps.length);
+    else S.pos = S.steps.length;
+    renderBanner();
+    updateChrome(false);
+    if (opts.reveal && R.error) scrollToLine(R.error.line - 1);
+    kick();
+  }
+
+  function updateDims() {
+    const R = S.result;
+    $('#dims').textContent = S.view === 'text' ? 'exactly what node cli.js prints' : R && R.W ? R.W + ' × ' + R.H : '';
+  }
+  function renderBanner() {
+    const R = S.result;
+    const b = $('#banner');
+    if (R.error) {
+      b.className = 'banner err';
+      b.innerHTML =
+        '<b class="msg">' + esc(R.output.trim()) + '</b>' +
+        '<span class="help">' + (helpFor(R.error.message) || '') + ' <span style="opacity:.7">Click to jump to the line.</span></span>';
+    } else if (R.limited) {
+      b.className = 'banner warn';
+      b.innerHTML = '<b>Long-running program.</b> The Studio stops after ' + STUDIO_MAX_STEPS.toLocaleString() + ' statements to keep the page responsive; <code>node cli.js</code> has no such limit.';
+    } else {
+      const woven = R.rows.length;
+      const total = R.W * R.H;
+      if (woven < R.H) {
+        b.className = 'banner warn';
+        b.innerHTML = '<b>Woven ' + woven + ' of ' + R.H + ' rows.</b> ' + (R.H - woven === 1 ? 'The last row prints' : 'The other ' + (R.H - woven) + ' rows print') + ' as dots (<code>.</code>) in the text output.';
+      } else {
+        b.className = 'banner ok';
+        b.innerHTML = '<b>Woven ' + R.W + ' &times; ' + R.H + '</b> (' + total.toLocaleString() + (total === 1 ? ' cell' : ' cells') + ') in ' + S.steps.length.toLocaleString() + (S.steps.length === 1 ? ' statement.' : ' statements.') + (R.truncated ? ' <span style="opacity:.8">Stepping covers the first 20,000 statements and the end.</span>' : '');
+      }
+    }
+    updateDims();
+  }
+  $('#banner').addEventListener('click', () => {
+    const R = S.result;
+    if (R && R.error) {
+      ta.focus();
+      const lines = ta.value.split('\n');
+      let off = 0;
+      for (let i = 0; i < R.error.line - 1 && i < lines.length; i++) off += lines[i].length + 1;
+      ta.setSelectionRange(off, off + ((lines[R.error.line - 1] || '').length));
+      scrollToLine(R.error.line - 1);
+    }
+  });
+
+  function curSnap() {
+    return S.pos > 0 ? S.steps[S.pos - 1] : null;
+  }
+  function pickedRow(p) {
+    if (p < 1) return -1;
+    const s = S.steps[p - 1];
+    const prev = p > 1 ? S.steps[p - 2].rowCount : 0;
+    return s && s.cmd === 'pick' && s.rowCount > prev ? s.rowCount - 1 : -1;
+  }
+
+  // milliseconds a pick takes to weave at each speed setting; statements that weave nothing are much quicker
+  const PICK_MS = [1700, 1200, 850, 600, 440, 300, 200, 130, 80, 30];
+  const pickMs = () => PICK_MS[clamp(S.speed, 1, 10) - 1];
+  const otherMs = () => Math.max(6, pickMs() * 0.2);
+
+  // Long programs (hundreds of statements) are sped up so a whole piece plays in roughly 14 seconds at the
+  // default speed instead of minutes.
+  function planPlayback() {
+    let picks = 0;
+    let other = 0;
+    for (let p = S.pos + 1; p <= S.steps.length; p++) {
+      if (pickedRow(p) >= 0) picks++;
+      else other++;
+    }
+    const total = picks * pickMs() + other * otherMs();
+    const target = clamp(14000 * (pickMs() / PICK_MS[4]), 1500, 60000);
+    S.scale = total > target ? target / total : 1;
+  }
+
+  // manual stepping: jump to step p, letting a freshly woven row animate briefly
+  function gotoStep(p, animate) {
+    p = clamp(p, 0, S.steps.length);
+    S.pos = p;
+    S.anim = null;
+    if (animate && p > 0) {
+      const row = pickedRow(p);
+      if (row >= 0) S.anim = { row, t: 0, dur: clamp(pickMs(), 120, 500) };
+    }
+    updateChrome(true);
+    kick();
+  }
+  function startPlay() {
+    if (!S.steps.length) return;
+    if (S.pos >= S.steps.length) S.pos = 0;
+    planPlayback();
+    S.budget = 0;
+    S.playing = true;
+    setPlayIcon();
+    updateChrome(false);
+    kick();
+  }
+  function stopPlay(quiet) {
+    S.playing = false;
+    setPlayIcon();
+    if (!quiet) kick();
+  }
+  function setPlayIcon() {
+    const b = $('#t-play');
+    b.innerHTML = S.playing ? ICONS.pause : ICONS.play;
+    b.setAttribute('aria-label', S.playing ? 'Pause' : 'Play');
+  }
+  function narrowLayout() {
+    return window.matchMedia && window.matchMedia('(max-width: 900px)').matches;
+  }
+  function weave() {
+    clearTimeout(S.compileTimer);
+    compile(ta.value, { atStart: true, reveal: true });
+    store('loom-studio-source', ta.value);
+    setStatus('saved in this browser');
+    if (S.tab !== 'studio') showTab('studio');
+    if (S.steps.length) startPlay();
+    // on a phone the loom is below the editor: bring it into view so the weaving can be watched
+    if (narrowLayout()) $('.viewbar').scrollIntoView({ block: 'start' });
+  }
+
+  function kick() {
+    S.dirty = true;
+    if (!S.raf) S.raf = requestAnimationFrame(frame);
+  }
+  function frame(now) {
+    S.raf = 0;
+    const dt = S.last ? Math.min(120, now - S.last) : 16;
+    S.last = now;
+    if (S.anim) {
+      S.anim.t += dt / S.anim.dur;
+      if (S.anim.t >= 1) S.anim = null;
+      S.dirty = true;
+    } else if (S.playing) S.budget += dt;
+    if (S.playing && !S.anim) {
+      // a run of quick statements may pass in one frame; a pick starts its own animation
+      let moved = false;
+      for (let guard = 0; S.playing && !S.anim && guard < 5000; guard++) {
+        if (S.pos >= S.steps.length) {
+          stopPlay(true);
+          break;
+        }
+        const next = S.pos + 1;
+        const row = pickedRow(next);
+        if (row >= 0) {
+          S.pos = next;
+          S.anim = { row, t: 0, dur: Math.max(28, pickMs() * S.scale) };
+          S.budget = 0;
+          moved = true;
+          break;
+        }
+        const cost = otherMs() * S.scale;
+        if (S.budget < cost) break;
+        S.budget -= cost;
+        S.pos = next;
+        moved = true;
+      }
+      if (moved) updateChrome(true);
+    }
+    if (S.dirty) {
+      S.dirty = false;
+      draw();
+    }
+    if (S.playing || S.anim || S.dirty) S.raf = requestAnimationFrame(frame);
+    else S.last = 0;
+  }
+
+  // ================================================================= chrome (everything except the canvas)
+  // scroll: bring the current statement into view in the editor (stepping / playing, never while typing)
+  function updateChrome(scroll) {
+    const N = S.steps.length;
+    const scrub = $('#t-scrub');
+    scrub.max = String(N);
+    scrub.value = String(S.pos);
+    const st = curSnap();
+    scrub.setAttribute('aria-valuetext', 'step ' + S.pos + ' of ' + N + (st ? ', line ' + st.line : ''));
+    $('#t-step').textContent = 'step ' + S.pos + ' / ' + N;
+    $('#t-first').disabled = $('#t-prev').disabled = S.pos <= 0;
+    $('#t-next').disabled = $('#t-last').disabled = S.pos >= N;
+    $('#t-play').disabled = N === 0;
+    markLines();
+    if (scroll) {
+      S.follow = true;
+      if (st) scrollToLine(st.line - 1);
+    }
+    renderWhat();
+    renderInspector();
+    renderOut();
+  }
+
+  function liftText(mask) {
+    const l = Engine.maskToShafts(mask);
+    return l.length ? l.join(' ') : 'none';
+  }
+  function renderWhat() {
+    const w = $('#what');
+    const st = curSnap();
+    const R = S.result;
+    if (!st) {
+      w.innerHTML = R.steps.length ? '<span class="muted">Nothing has run yet. Press &#9654; or step forward.</span>' : '<span class="muted">No statements ran' + (R.error ? '.' : ' (the program is empty).') + '</span>';
+      return;
+    }
+    const a = st.text.split(/\s+/);
+    let t;
+    switch (st.cmd) {
+      case 'loom': t = 'Set up a loom with <b>' + esc(a[1]) + '</b> columns and <b>' + esc(a[2]) + '</b> rows.'; break;
+      case 'palette': t = 'Palette now knows: ' + Object.keys(st.palette).sort().map((k) => '<code>' + k + '</code>').join(' ') + '.'; break;
+      case 'warp': t = 'Warp colours set for all ' + st.W + ' threads: <code>' + esc(st.warp ? st.warp.slice(0, 24).join(' ') + (st.warp.length > 24 ? ' …' : '') : '') + '</code>'; break;
+      case 'thread': t = 'Threading set: <code>' + esc(st.shafts ? st.shafts.slice(0, 24).join(' ') + (st.shafts.length > 24 ? ' …' : '') : '') + '</code>'; break;
+      case 'treadle': t = 'Treadle <b>' + esc(a[1]) + '</b> now lifts shafts <code>' + esc(a[2]) + '</code>.'; break;
+      case 'shuttle': t = 'Shuttle loaded with ' + (st.shuttle ? st.shuttle.length : 0) + ' colour(s); next weft: <code>' + esc(st.shuttle ? st.shuttle[0] : '') + '</code>.'; break;
+      case 'pick': {
+        const r = pickedRow(S.pos);
+        if (r >= 0) {
+          const row = R.rows[r];
+          t = 'Row <b>' + (r + 1) + '</b>: lifted shafts <code>' + liftText(row.mask) + '</code>' + (row.via ? ' (treadle ' + row.via + ')' : '') + ', weft <code>' + esc(row.weft) + '</code> passes through.';
+        } else t = 'This pick could not weave a row.';
+        break;
+      }
+      case 'cross': t = 'Swapped the threads in columns <b>' + esc(a[1]) + '</b> and <b>' + esc(a[2]) + '</b> (colour and shaft).'; break;
+      case 'drift': {
+        const neg = String(a[1]).charAt(0) === '-';
+        const n = String(a[1]).replace('-', '');
+        t = 'Slid the whole warp <b>' + esc(n) + '</b> ' + (n === '1' ? 'place ' : 'places ') + (neg ? 'left' : 'right') + ', wrapping round.';
+        break;
+      }
+      case 'maxfloat': t = 'Float check on: no thread may stay up or down for more than <b>' + esc(a[1]) + '</b> rows or columns.'; break;
+      case 'repeat': t = 'Repeat the block <b>' + esc(a[1]) + '</b> times.'; break;
+      default: t = '<code>' + esc(st.text) + '</code>';
+    }
+    if (st.error) t += ' <span class="bad">&#9888; ' + esc('error line ' + st.error.line + ': ' + st.error.message) + '</span>';
+    w.innerHTML = '<span class="mono muted">line ' + st.line + '</span> &nbsp;' + t;
+  }
+
+  function chipsFor(list, colors, pal) {
+    if (!list) return '<span class="muted">not set</span>';
+    let h = '<div class="chips">';
+    for (let i = 0; i < list.length; i++) {
+      if (colors) {
+        const hex = pal[list[i]] || '#888';
+        h += '<span class="chip-sw" style="background:' + hex + '" title="column ' + (i + 1) + ': ' + esc(list[i]) + '"></span>';
+      } else h += '<span class="chip-n" title="column ' + (i + 1) + ': shaft ' + list[i] + '">' + list[i] + '</span>';
+    }
+    return h + '</div>';
+  }
+  function renderInspector() {
+    const R = S.result;
+    const el = $('#inspector');
+    const st = curSnap();
+    const pal = R.palette;
+    const rc = st ? st.rowCount : 0;
+    const last = rc > 0 ? R.rows[rc - 1] : null;
+    const cell = (label, html, wide) => '<div class="row' + (wide ? ' wide' : '') + '"><span class="lab">' + label + '</span><span class="val">' + html + '</span></div>';
+    const sw = (key) => '<span class="chip-sw" style="display:inline-block;vertical-align:-2px;background:' + (pal[key] || '#888') + '"></span>';
+    let h = '';
+    h += cell('Cloth', rc + ' of ' + (R.H || 0) + ' rows woven' + (last ? ' &middot; last lift <b>' + liftText(last.mask) + '</b>' + (last.via ? ' (t' + last.via + ')' : '') + ' &middot; weft ' + sw(last.weft) + ' ' + esc(last.weft) : ''), true);
+    let pl = '';
+    for (const k of Object.keys(pal).sort()) pl += '<span class="tre">' + sw(k) + ' ' + k + '</span>';
+    h += cell('Warp', chipsFor(st && st.warp, true, pal), true);
+    h += cell('Threading', chipsFor(st && st.shafts, false, pal), true);
+    // treadles
+    let tre = '';
+    if (st) {
+      const keys = Object.keys(st.treadles).map(Number).sort((a, b) => a - b);
+      for (const k of keys) tre += '<span class="tre' + (last && last.via === k ? ' used' : '') + '">t' + k + '&nbsp;' + Engine.maskToShafts(st.treadles[k]).join('') + '</span>';
+    }
+    h += cell('Treadles', tre || '<span class="muted">none defined</span>');
+    // shuttle
+    let sh = '<span class="muted">not loaded</span>';
+    if (st && st.shuttle) {
+      const n = st.shuttle.length;
+      const nextIdx = st.shutPos % n;
+      const curIdx = (st.shutPos - 1 + n * 4) % n;
+      sh = '';
+      const shown = Math.min(n, 12);
+      for (let i = 0; i < shown; i++) {
+        const cls = 'sh' + (i === nextIdx ? ' next' : '') + (st.shutPos > 0 && i === curIdx ? ' cur' : '');
+        sh += '<span class="' + cls + '" title="' + (i === nextIdx ? 'next weft colour' : i === curIdx ? 'last used' : '') + '">' + esc(st.shuttle[i]) + '</span>';
+      }
+      if (n > shown) sh += '&hellip;';
+      sh += ' <span class="muted">next #' + (nextIdx + 1) + '/' + n + '</span>';
+    }
+    h += cell('Shuttle', sh);
+    // floats
+    let fl;
+    if (!st || !st.maxfloat) fl = '<span class="limit-off">off (no <code>maxfloat</code> yet)</span>';
+    else {
+      let warpMax = 0;
+      let warpCol = 0;
+      if (st.runLen) for (let c = 0; c < st.runLen.length; c++) if (st.runLen[c] > warpMax) { warpMax = st.runLen[c]; warpCol = c + 1; }
+      let weftMax = 0;
+      if (last) {
+        let i = 0;
+        while (i < last.raised.length) {
+          let j = i;
+          while (j < last.raised.length && last.raised[j] === last.raised[i]) j++;
+          weftMax = Math.max(weftMax, j - i);
+          i = j;
+        }
+      }
+      const cls = (v) => (v > st.maxfloat ? 'over' : v === st.maxfloat ? 'hot' : '');
+      fl = '<span class="limit-on" title="no thread may stay up or down longer than this">limit ' + st.maxfloat + '</span> &middot; <span title="longest run of one column in the same position' + (warpMax ? ' (column ' + warpCol + ')' : '') + '">warp <span class="' + cls(warpMax) + '">' + warpMax + '</span></span> &middot; <span title="longest run of neighbouring columns in the same position, last pick">weft <span class="' + cls(weftMax) + '">' + weftMax + '</span></span>';
+    }
+    h += cell('Floats', fl);
+    h += cell('Palette', pl || '<span class="muted">empty</span>');
+    el.innerHTML = h;
+  }
+
+  function renderOut() {
+    const out = $('#out');
+    if (S.view !== 'text') return;
+    const R = S.result;
+    if (R.error) {
+      out.innerHTML = '<span class="e">' + esc(R.output) + '</span>';
+      return;
+    }
+    let h = '';
+    for (const line of R.grid || []) {
+      let i = 0;
+      while (i < line.length) {
+        let j = i;
+        while (j < line.length && line[j] === line[i]) j++;
+        const ch = line[i];
+        const seg = line.slice(i, j);
+        if (ch === '.') h += '<span class="dot">' + seg + '</span>';
+        else h += '<span style="color:' + lightenForText(R.palette[ch]) + '">' + seg + '</span>';
+        i = j;
+      }
+      h += '\n';
+    }
+    out.innerHTML = h;
+  }
+  function lightenForText(hex) {
+    if (!hex) return '#dfe9d5';
+    const [r, g, b] = rgb(hex);
+    const l = 0.299 * r + 0.587 * g + 0.114 * b;
+    if (l > 90) return hex;
+    const k = (90 - l) / 165;
+    const m = (v) => Math.round(v + (255 - v) * (0.35 + k * 0.5));
+    return 'rgb(' + m(r) + ',' + m(g) + ',' + m(b) + ')';
+  }
+
+  // ================================================================= drawing
+  const tileCache = new Map();
+  function tileFor(hex, cell, up, tex) {
+    const key = hex + '|' + cell + '|' + (up ? 1 : 0) + '|' + (tex ? 1 : 0);
+    let c = tileCache.get(key);
+    if (c) return c;
+    if (tileCache.size > 400) tileCache.clear();
+    c = document.createElement('canvas');
+    c.width = c.height = cell;
+    const g = c.getContext('2d');
+    g.fillStyle = hex;
+    g.fillRect(0, 0, cell, cell);
+    if (tex && cell >= 4) {
+      // a rounded thread: dark rim, bright ridge. Raised warp threads run vertically, weft picks horizontally.
+      const grad = up ? g.createLinearGradient(0, 0, cell, 0) : g.createLinearGradient(0, 0, 0, cell);
+      grad.addColorStop(0, 'rgba(0,0,0,0.36)');
+      grad.addColorStop(0.2, 'rgba(0,0,0,0.06)');
+      grad.addColorStop(0.5, 'rgba(255,255,255,0.22)');
+      grad.addColorStop(0.8, 'rgba(0,0,0,0.06)');
+      grad.addColorStop(1, 'rgba(0,0,0,0.36)');
+      g.fillStyle = grad;
+      g.fillRect(0, 0, cell, cell);
+      // the thread dips under its neighbours at both ends
+      const e = Math.max(1, Math.round(cell * 0.24));
+      const a = up ? g.createLinearGradient(0, 0, 0, e) : g.createLinearGradient(0, 0, e, 0);
+      a.addColorStop(0, 'rgba(0,0,0,0.42)');
+      a.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = a;
+      if (up) g.fillRect(0, 0, cell, e);
+      else g.fillRect(0, 0, e, cell);
+      const b = up ? g.createLinearGradient(0, cell, 0, cell - e) : g.createLinearGradient(cell, 0, cell - e, 0);
+      b.addColorStop(0, 'rgba(0,0,0,0.42)');
+      b.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = b;
+      if (up) g.fillRect(0, cell - e, cell, e);
+      else g.fillRect(cell - e, 0, e, cell);
+    }
+    tileCache.set(key, c);
+    return c;
+  }
+
+  function paintRows(ctx, R, x, y, cd, r0, r1, tex) {
+    const pal = R.palette;
+    for (let r = r0; r < r1; r++) {
+      const row = R.rows[r];
+      if (!row) break;
+      const yy = y + (r - r0) * cd;
+      for (let c = 0; c < R.W; c++) {
+        const hex = pal[row.chars[c]] || '#808080';
+        ctx.drawImage(tileFor(hex, cd, row.raised[c] === 1, tex), x + c * cd, yy);
+      }
+    }
+  }
+
+  // ---- layout of the loom view (all numbers are device pixels)
+  function geom(cd, dpr, W, H, rows, hasFloat) {
+    const d = (v) => Math.round(v * dpr);
+    const L = { cd, dpr, W, H, shaftRows: rows };
+    L.pad = d(10);
+    L.labelW = d(30);
+    L.midGap = d(8);
+    L.gapY = d(4);
+    L.ts = clamp(Math.round(cd * 0.62), d(8), d(15));
+    L.wh = clamp(Math.round(cd * 0.5), d(6), d(12));
+    L.sh = clamp(Math.round(cd * 1.5), d(18), d(34));
+    L.fh = hasFloat ? clamp(Math.round(cd * 0.7), d(9), d(17)) : 0;
+    L.trackW = Math.max(d(6), Math.round(cd * 0.6));
+    L.lsz = Math.max(d(5), Math.round(cd * 0.8));
+    L.liftW = rows * L.lsz;
+    L.topH = rows * L.ts + L.gapY + L.wh + L.gapY + L.sh + (L.fh ? L.gapY + L.fh : 0) + L.gapY + d(10);
+    L.totalW = L.pad + L.labelW + W * cd + L.midGap + L.trackW + d(4) + L.liftW + L.pad;
+    L.totalH = L.pad + L.topH + H * cd + L.pad;
+    return L;
+  }
+  function pickLayout(W, H, rows, hasFloat, availW, availH, dpr) {
+    if (S.zoom) return geom(Math.max(2, Math.round(S.zoom * dpr)), dpr, W, H, rows, hasFloat);
+    let L = null;
+    for (let cs = 32; cs >= 3; cs--) {
+      const cd = Math.max(2, Math.round(cs * dpr));
+      L = geom(cd, dpr, W, H, rows, hasFloat);
+      if (L.totalW <= availW && L.totalH <= availH) return L;
+    }
+    return L;
+  }
+
+  function fitCanvas(cv, cssW, cssH, dpr) {
+    const w = Math.max(1, Math.round(cssW * dpr));
+    const h = Math.max(1, Math.round(cssH * dpr));
+    if (cv.width !== w || cv.height !== h) {
+      cv.width = w;
+      cv.height = h;
+    }
+    cv.style.width = cssW + 'px';
+    cv.style.height = cssH + 'px';
+  }
+
+  function text(ctx, s, x, y, size, color, align, weight) {
+    ctx.font = (weight || 500) + ' ' + size + 'px ' + MONO;
+    ctx.fillStyle = color;
+    ctx.textAlign = align || 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(s, x, y);
+  }
+
+  function draw() {
+    if (S.tab !== 'studio') return;
+    const vp = $('#viewport');
+    const cvw = $('#cvwrap');
+    const ph = $('#placeholder');
+    const out = $('#out');
+    const R = S.result;
+    if (!R) return;
+    const view = S.view;
+    out.hidden = view !== 'text';
+    if (view === 'text') {
+      cvw.hidden = true;
+      ph.hidden = true;
+      vp.style.overflow = 'auto';
+      return;
+    }
+    if (!R.W) {
+      cvw.hidden = true;
+      ph.hidden = false;
+      const err = R.error;
+      ph.innerHTML = '<div><p style="font:700 18px var(--serif);margin:0 0 6px">' + (err ? 'The loom could not be set up' : 'Nothing to weave yet') + '</p><p style="margin:0;max-width:42ch">' +
+        (err ? 'The program stops at line ' + err.line + ' before the cloth exists.' : 'Write <code>loom 12 8</code> as the first statement to begin.') + '</p></div>';
+      return;
+    }
+    cvw.hidden = false;
+    ph.hidden = true;
+    const dpr = window.devicePixelRatio || 1;
+    const availCssW = vp.clientWidth;
+    const availCssH = vp.clientHeight;
+    if (availCssW < 20 || availCssH < 20) return;
+    if (view === 'cloth') drawCloth(availCssW, availCssH, dpr);
+    else drawLoom(availCssW, availCssH, dpr);
+  }
+
+  // when the cloth is bigger than the window, keep the row being woven in view (only after stepping/playing)
+  function followRow(vp, needScroll, rowY, cd, dpr) {
+    if (!S.follow) return;
+    S.follow = false;
+    if (!needScroll) return;
+    const y = rowY / dpr;
+    const h = vp.clientHeight;
+    if (y < vp.scrollTop + 30 || y + cd / dpr > vp.scrollTop + h - 50) vp.scrollTop = Math.max(0, y - h * 0.6);
+  }
+
+  function drawCloth(availCssW, availCssH, dpr) {
+    const R = S.result;
+    const vp = $('#viewport');
+    const cv = $('#cv');
+    const st = curSnap();
+    const rc = st ? st.rowCount : 0;
+    const pad = Math.round(16 * dpr);
+    const W = R.W;
+    const H = R.H;
+    const availW = availCssW * dpr - pad * 2;
+    const availH = availCssH * dpr - pad * 2;
+    let cd = Math.max(2, Math.floor(Math.min(availW / W, availH / H)));
+    cd = S.zoom ? Math.max(2, Math.round(S.zoom * dpr)) : Math.min(cd, Math.round(48 * dpr));
+    const needScroll = cd * W > availW + 1 || cd * H > availH + 1;
+    vp.style.overflow = needScroll ? 'auto' : 'hidden';
+    const totalW = W * cd + pad * 2;
+    const totalH = H * cd + pad * 2;
+    const cssW = Math.max(availCssW, totalW / dpr);
+    const cssH = Math.max(availCssH, totalH / dpr);
+    fitCanvas(cv, cssW, cssH, dpr);
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = '#100d0b';
+    ctx.fillRect(0, 0, cv.width, cv.height);
+    const x0 = Math.floor(Math.max(0, (cv.width - W * cd) / 2));
+    const y0 = Math.floor(Math.max(pad, (cv.height - H * cd) / 2));
+    followRow(vp, needScroll, y0 + Math.max(0, rc - 1) * cd, cd, dpr);
+    // unwoven area: hatched
+    ctx.fillStyle = '#1a1612';
+    ctx.fillRect(x0, y0, W * cd, H * cd);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x0, y0 + rc * cd, W * cd, (H - rc) * cd);
+    ctx.clip();
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = Math.max(1, dpr);
+    const step = Math.round(10 * dpr);
+    for (let i = -H * cd; i < W * cd + H * cd; i += step) {
+      ctx.beginPath();
+      ctx.moveTo(x0 + i, y0 + H * cd);
+      ctx.lineTo(x0 + i + H * cd, y0);
+      ctx.stroke();
+    }
+    ctx.restore();
+    paintRows(ctx, R, x0, y0, cd, 0, rc, S.texture);
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    ctx.lineWidth = Math.max(1, dpr);
+    ctx.strokeRect(x0 - 0.5, y0 - 0.5, W * cd + 1, H * cd + 1);
+    S.layout = { mode: 'cloth', cd, x0, y0, W, H, dpr };
+  }
+
+  function drawLoom(availCssW, availCssH, dpr) {
+    const R = S.result;
+    const vp = $('#viewport');
+    const cv = $('#cv');
+    const st = curSnap();
+    const W = R.W;
+    const H = R.H;
+    const rc = st ? st.rowCount : 0;
+    const rows = S.maxShaft;
+    const hasFloat = !!(st && st.maxfloat);
+    const L = pickLayout(W, H, rows, hasFloat, availCssW * dpr, availCssH * dpr, dpr);
+    const cd = L.cd;
+    const needScroll = L.totalW > availCssW * dpr + 1 || L.totalH > availCssH * dpr + 1;
+    vp.style.overflow = needScroll ? 'auto' : 'hidden';
+    const cssW = Math.max(availCssW, L.totalW / dpr);
+    const cssH = Math.max(availCssH, L.totalH / dpr);
+    fitCanvas(cv, cssW, cssH, dpr);
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = '#100d0b';
+    ctx.fillRect(0, 0, cv.width, cv.height);
+
+    const offX = Math.max(0, Math.floor((cv.width - L.totalW) / 2));
+    const x0 = offX + L.pad + L.labelW;
+    const yT = L.pad;
+    const yWarp = yT + rows * L.ts + L.gapY;
+    const yShed = yWarp + L.wh + L.gapY;
+    const yFloat = yShed + L.sh + L.gapY;
+    const yFab = yShed + L.sh + L.gapY + (L.fh ? L.fh + L.gapY : 0) + L.gapY + Math.round(10 * dpr);
+    followRow(vp, needScroll, yFab + Math.max(0, rc - 1) * cd, cd, dpr);
+    const trackX = x0 + W * cd + L.midGap;
+    const liftX = trackX + L.trackW + Math.round(4 * dpr);
+    const d = (v) => Math.round(v * dpr);
+    Object.assign(L, { x0, yT, yWarp, yShed, yFloat, yFab, trackX, liftX, offX, mode: 'loom' });
+    S.layout = L;
+
+    const pal = R.palette;
+    const anim = S.anim && S.anim.row >= 0 ? S.anim : null;
+    const curRow = rc - 1; // most recently woven row (index) or -1
+    const lastRow = curRow >= 0 ? R.rows[curRow] : null;
+    const t = anim ? anim.t : 1;
+    const dir = curRow % 2 === 0 ? 1 : -1; // the shuttle alternates direction pick by pick
+    const mask = lastRow ? lastRow.mask : 0;
+
+    // ---- threading draft
+    const fs = Math.max(d(9), Math.round(cd * 0.42));
+    for (let s = 1; s <= rows; s++) {
+      const y = yT + (rows - s) * L.ts;
+      const lifted = ((mask >> s) & 1) === 1 && lastRow;
+      ctx.fillStyle = s % 2 ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.015)';
+      ctx.fillRect(x0, y, W * cd, L.ts);
+      if (lifted) {
+        ctx.fillStyle = 'rgba(242,177,52,' + (0.10 + 0.14 * Math.min(1, t * 3)) + ')';
+        ctx.fillRect(x0, y, W * cd, L.ts);
+      }
+      text(ctx, String(s), x0 - d(8), y + L.ts / 2, Math.min(fs, d(12)), lifted ? '#f2b134' : '#7c7264', 'right', lifted ? 700 : 500);
+    }
+    if (st && st.shafts) {
+      for (let c = 0; c < W; c++) {
+        const s = st.shafts[c];
+        if (s < 1 || s > rows) continue;
+        const cx = x0 + c * cd + cd / 2;
+        const cy = yT + (rows - s) * L.ts + L.ts / 2;
+        const lifted = lastRow && (mask >> s) & 1;
+        ctx.fillStyle = lifted ? '#f2b134' : '#8b8071';
+        if (cd >= d(7)) {
+          ctx.beginPath();
+          ctx.arc(cx, cy, Math.min(cd, L.ts) * 0.3, 0, Math.PI * 2);
+          ctx.fill();
+        } else ctx.fillRect(Math.floor(cx - cd * 0.3), Math.floor(cy - L.ts * 0.25), Math.max(1, Math.round(cd * 0.6)), Math.max(1, Math.round(L.ts * 0.5)));
+      }
+    }
+
+    // ---- warp colour bar
+    text(ctx, 'warp', x0 - d(8), yWarp + L.wh / 2, d(10), '#7c7264', 'right');
+    for (let c = 0; c < W; c++) {
+      const key = st && st.warp ? st.warp[c] : null;
+      ctx.fillStyle = key ? pal[key] || '#888' : '#221d18';
+      const gap = cd > d(5) ? 1 : 0;
+      ctx.fillRect(x0 + c * cd + gap, yWarp, cd - gap, L.wh);
+    }
+
+    // ---- the shed: raised threads up, lowered down, weft threaded between
+    text(ctx, 'shed', x0 - d(8), yShed + L.sh / 2, d(10), '#7c7264', 'right');
+    ctx.fillStyle = 'rgba(255,255,255,0.025)';
+    ctx.fillRect(x0, yShed, W * cd, L.sh);
+    const open = lastRow ? (anim ? Math.min(1, t / 0.22) : 1) : 0;
+    const eo = open * open * (3 - 2 * open);
+    const bw = Math.max(1, Math.round(cd * 0.56));
+    const barH = L.sh * 0.62;
+    const upY = yShed + L.sh * 0.19 * (1 - eo);
+    const dnY = yShed + L.sh * (0.19 + 0.19 * eo);
+    const weftY = yShed + L.sh * 0.5;
+    const wt = Math.max(d(2), Math.round(L.sh * 0.15));
+    const drawBar = (c, y0, raised) => {
+      const key = st && st.warp ? st.warp[c] : null;
+      const hex = key ? pal[key] || '#888' : '#4a4238';
+      const bx = Math.round(x0 + c * cd + (cd - bw) / 2);
+      ctx.fillStyle = hex;
+      ctx.fillRect(bx, Math.round(y0), bw, Math.round(barH));
+      if (cd >= d(6)) {
+        ctx.strokeStyle = raised ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)';
+        ctx.lineWidth = Math.max(1, Math.round(dpr * 0.8));
+        ctx.strokeRect(bx + 0.5, Math.round(y0) + 0.5, bw - 1, Math.round(barH) - 1);
+      }
+    };
+    const flags = lastRow ? lastRow.raised : null;
+    for (let c = 0; c < W; c++) if (!flags || !flags[c]) drawBar(c, flags ? dnY : yShed + L.sh * 0.19 + L.sh * 0.0, false);
+    // weft passes over the lowered threads...
+    let shuttleX = null;
+    if (lastRow && st && st.warp) {
+      const full = W * cd;
+      const prog = anim ? clamp((t - 0.12) / 0.8, 0, 1) : 1;
+      const ep = prog * prog * (3 - 2 * prog);
+      const wcol = pal[lastRow.weft] || '#ccc';
+      ctx.fillStyle = wcol;
+      if (dir > 0) ctx.fillRect(x0, Math.round(weftY - wt / 2), Math.round(full * ep), wt);
+      else ctx.fillRect(x0 + full - Math.round(full * ep), Math.round(weftY - wt / 2), Math.round(full * ep), wt);
+      shuttleX = dir > 0 ? x0 + full * ep : x0 + full - full * ep;
+    }
+    // ...and under the raised ones
+    for (let c = 0; c < W; c++) if (flags && flags[c]) drawBar(c, upY, true);
+    if (lastRow && st && st.warp && shuttleX !== null) {
+      const sl = Math.max(d(22), Math.round(cd * 2.6));
+      const sh = L.sh * 0.34;
+      const span = W * cd;
+      const rest = span <= sl ? x0 + span / 2 : dir > 0 ? x0 + span - sl * 0.55 : x0 + sl * 0.55;
+      const sx = anim ? shuttleX : rest;
+      const wcol = pal[lastRow.weft] || '#ccc';
+      ctx.save();
+      ctx.translate(sx, weftY);
+      if (dir < 0) ctx.scale(-1, 1);
+      ctx.beginPath();
+      ctx.moveTo(-sl / 2, 0);
+      ctx.quadraticCurveTo(-sl * 0.12, -sh, sl / 2, 0);
+      ctx.quadraticCurveTo(-sl * 0.12, sh, -sl / 2, 0);
+      ctx.closePath();
+      ctx.fillStyle = wcol;
+      ctx.fill();
+      ctx.lineWidth = Math.max(1, Math.round(dpr * 1.4));
+      ctx.strokeStyle = '#0c0a08';
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+      ctx.lineWidth = Math.max(1, Math.round(dpr));
+      ctx.beginPath();
+      ctx.moveTo(-sl * 0.3, -sh * 0.35);
+      ctx.quadraticCurveTo(0, -sh * 0.65, sl * 0.28, -sh * 0.12);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // ---- float counters
+    if (L.fh && st && st.runLen) {
+      text(ctx, 'float', x0 - d(8), yFloat + L.fh / 2, d(10), '#7c7264', 'right');
+      ctx.fillStyle = 'rgba(255,255,255,0.03)';
+      ctx.fillRect(x0, yFloat, W * cd, L.fh);
+      const lim = st.maxfloat;
+      for (let c = 0; c < W; c++) {
+        const v = st.runLen[c];
+        const frac = Math.min(1, v / lim);
+        const bh = Math.max(1, Math.round(frac * L.fh));
+        ctx.fillStyle = v > lim ? '#ff5b5b' : v === lim ? '#ffb347' : 'rgba(73,198,176,0.75)';
+        const gap = cd > d(5) ? 1 : 0;
+        ctx.fillRect(x0 + c * cd + gap, yFloat + L.fh - bh, cd - gap, bh);
+        if (cd >= d(13)) text(ctx, String(v), x0 + c * cd + cd / 2, yFloat + L.fh / 2, Math.min(d(10), L.fh - 2), '#fff', 'center', 700);
+      }
+    }
+
+    // ---- cloth so far (+ the row being woven)
+    ctx.fillStyle = 'rgba(255,255,255,0.02)';
+    ctx.fillRect(x0, yFab, W * cd, H * cd);
+    const settled = anim ? rc - 1 : rc;
+    // waiting warp threads in the unwoven part
+    if (settled < H) {
+      const waitTop = yFab + settled * cd;
+      const ww = Math.max(1, Math.round(cd * 0.42));
+      for (let c = 0; c < W; c++) {
+        const key = st && st.warp ? st.warp[c] : null;
+        ctx.globalAlpha = key ? 0.22 : 0.12;
+        ctx.fillStyle = key ? pal[key] || '#888' : '#8b8071';
+        ctx.fillRect(Math.round(x0 + c * cd + (cd - ww) / 2), waitTop, ww, (H - settled) * cd);
+      }
+      ctx.globalAlpha = 1;
+    }
+    // cached layer with every settled row (cells, weft swatch, lift plan)
+    if (settled > 0) {
+      const lay = ensureLayer(R, L, rows);
+      fillLayer(lay, R, L, rows, settled);
+      const wpx = lay.canvas.width;
+      ctx.drawImage(lay.canvas, 0, 0, wpx, settled * cd, x0, yFab, wpx, settled * cd);
+    }
+    // the row currently being woven: revealed behind the shuttle
+    if (anim && curRow >= 0) {
+      const y = yFab + curRow * cd;
+      const full = W * cd;
+      const prog = clamp((t - 0.12) / 0.8, 0, 1);
+      const ep = prog * prog * (3 - 2 * prog);
+      const reveal = full * ep;
+      for (let c = 0; c < W; c++) {
+        const centre = c * cd + cd / 2;
+        const done = dir > 0 ? centre <= reveal : full - centre <= reveal;
+        if (done) {
+          const hex = pal[lastRow.chars[c]] || '#808080';
+          ctx.drawImage(tileFor(hex, cd, lastRow.raised[c] === 1, S.texture), x0 + c * cd, y);
+        }
+      }
+      // weft swatch + lift plan pop in once the shuttle is past the middle
+      if (prog > 0.5) paintPlan(ctx, L, lastRow, x0, y, rows, pal);
+    }
+    // the beat-up line and the current row marker
+    if (rc > 0) {
+      const yb = yFab + rc * cd;
+      ctx.fillStyle = 'rgba(242,177,52,0.85)';
+      ctx.fillRect(x0 - d(3), yb - Math.max(1, Math.round(dpr)), W * cd + d(6), Math.max(1, Math.round(dpr * 1.5)));
+      const y = yFab + curRow * cd;
+      ctx.strokeStyle = 'rgba(242,177,52,0.9)';
+      ctx.lineWidth = Math.max(1, Math.round(dpr * 1.5));
+      ctx.strokeRect(x0 - d(2) + 0.5, y + 0.5, W * cd + d(4) - 1, cd - 1);
+      ctx.strokeRect(liftX - d(2) + 0.5, y + 0.5, L.liftW + d(4) - 1, cd - 1);
+    }
+    // row numbers
+    for (let r = 0; r < H; r++) {
+      const isCur = r === curRow;
+      if (!(isCur || cd >= d(13) || (r + 1) % 5 === 0 || r === 0)) continue;
+      if (cd < d(9) && !isCur && (r + 1) % 10 !== 0 && r !== 0) continue;
+      text(ctx, (isCur ? '▸' : '') + (r + 1), x0 - d(8), yFab + r * cd + cd / 2, Math.min(d(11), Math.max(d(8), cd * 0.8)), isCur ? '#f2b134' : r < rc ? '#9a8f7e' : '#6a6154', 'right', isCur ? 700 : 500);
+    }
+    // lift plan header
+    if (L.lsz >= d(7)) {
+      for (let s = 1; s <= rows; s++) text(ctx, String(s), liftX + (s - 1) * L.lsz + L.lsz / 2, yFab - d(6), d(9), '#8f8474', 'center');
+    }
+    text(ctx, 'lifts', liftX + L.liftW / 2, yFab - d(15), d(9), '#6f665a', 'center');
+
+    // ---- error overlay (float too long): outline the run that broke the rule
+    if (st && st.error && st.error.detail) {
+      const det = st.error.detail;
+      ctx.strokeStyle = '#ff5b5b';
+      ctx.lineWidth = Math.max(2, Math.round(dpr * 2.5));
+      if (det.kind === 'weft') ctx.strokeRect(x0 + (det.col - 1) * cd - 1, yFab + (det.row - 1) * cd - 1, det.len * cd + 2, cd + 2);
+      else ctx.strokeRect(x0 + (det.col - 1) * cd - 1, yFab + (det.row - det.len) * cd - 1, cd + 2, det.len * cd + 2);
+    }
+    // ---- not yet set up? say so quietly
+    if (S.pos === 0) {
+      text(ctx, 'press ▶ to start weaving, or drag the scrubber', x0 + (W * cd) / 2, yFab + (H * cd) / 2, d(12), '#7c7264', 'center');
+    }
+  }
+
+  // weft-colour swatch and lift-plan squares of one woven row (positions relative to (ox, y))
+  function paintPlan(g, L, row, ox, y, rows, pal) {
+    g.fillStyle = pal[row.weft] || '#888';
+    g.fillRect(ox + L.W * L.cd + L.midGap, y + 1, L.trackW, L.cd - 2);
+    const liftRel = ox + L.W * L.cd + L.midGap + L.trackW + Math.round(4 * L.dpr);
+    const sz = Math.min(L.lsz, L.cd);
+    for (let s = 1; s <= rows; s++) {
+      g.fillStyle = (row.mask >> s) & 1 ? '#e3a52d' : 'rgba(255,255,255,0.07)';
+      g.fillRect(liftRel + (s - 1) * L.lsz + 1, y + Math.floor((L.cd - sz) / 2) + 1, L.lsz - 2, Math.max(1, sz - 2));
+    }
+  }
+
+  // cached picture of settled rows, redrawn only when layout/result/texture change
+  function ensureLayer(R, L, rows) {
+    const key = [S.resultId, L.cd, L.W, L.H, rows, S.texture ? 1 : 0].join('|');
+    const wpx = L.W * L.cd + L.midGap + L.trackW + Math.round(4 * L.dpr) + L.liftW;
+    if (!S.layer || S.layerKey !== key) {
+      const c = S.layer && S.layer.canvas ? S.layer.canvas : document.createElement('canvas');
+      c.width = wpx;
+      c.height = L.H * L.cd;
+      S.layer = { canvas: c };
+      S.layerKey = key;
+      S.layerRows = 0;
+    }
+    return S.layer;
+  }
+  function fillLayer(lay, R, L, rows, upto) {
+    if (S.layerRows >= upto) return;
+    const g = lay.canvas.getContext('2d');
+    const pal = R.palette;
+    for (let r = S.layerRows; r < upto; r++) {
+      const row = R.rows[r];
+      if (!row) break;
+      const y = r * L.cd;
+      for (let c = 0; c < L.W; c++) g.drawImage(tileFor(pal[row.chars[c]] || '#808080', L.cd, row.raised[c] === 1, S.texture), c * L.cd, y);
+      paintPlan(g, L, row, 0, y, rows, pal);
+    }
+    S.layerRows = upto;
+  }
+
+  // ---- pointer: hover probe and click-to-jump
+  function hit(ev) {
+    const L = S.layout;
+    if (!L || S.view === 'text') return null;
+    const cv = $('#cv');
+    const rect = cv.getBoundingClientRect();
+    const x = ((ev.clientX - rect.left) / rect.width) * cv.width;
+    const y = ((ev.clientY - rect.top) / rect.height) * cv.height;
+    const R = S.result;
+    const st = curSnap();
+    if (L.mode === 'cloth') {
+      const c = Math.floor((x - L.x0) / L.cd);
+      const r = Math.floor((y - L.y0) / L.cd);
+      if (c < 0 || r < 0 || c >= L.W || r >= L.H) return null;
+      return { kind: 'cell', r, c };
+    }
+    const c = Math.floor((x - L.x0) / L.cd);
+    if (c >= 0 && c < L.W) {
+      if (y >= L.yT && y < L.yT + L.shaftRows * L.ts) return { kind: 'thread', c, s: L.shaftRows - Math.floor((y - L.yT) / L.ts) };
+      if (y >= L.yWarp && y < L.yWarp + L.wh) return { kind: 'warp', c };
+      if (y >= L.yShed && y < L.yShed + L.sh) return { kind: 'shed', c };
+      if (L.fh && y >= L.yFloat && y < L.yFloat + L.fh) return { kind: 'float', c };
+      const r = Math.floor((y - L.yFab) / L.cd);
+      if (r >= 0 && r < L.H) return { kind: 'cell', r, c };
+    } else {
+      const r = Math.floor((y - L.yFab) / L.cd);
+      if (r >= 0 && r < L.H && x >= L.trackX && x < L.liftX + L.liftW) return { kind: 'plan', r };
+    }
+    void R;
+    void st;
+    return null;
+  }
+  function probeText(h) {
+    const R = S.result;
+    const st = curSnap();
+    if (!h) return '';
+    if (h.kind === 'cell') {
+      const row = R.rows[h.r];
+      if (!row || h.r >= (st ? st.rowCount : 0)) return 'row ' + (h.r + 1) + ' col ' + (h.c + 1) + ': not woven yet';
+      const up = row.raised[h.c] === 1;
+      return 'row ' + (h.r + 1) + ' col ' + (h.c + 1) + ': shows ' + row.chars[h.c] + ' - ' + (up ? 'warp thread was raised' : 'warp thread was lowered, the weft ' + row.weft + ' passes over it');
+    }
+    if (!st) return '';
+    if (h.kind === 'thread' || h.kind === 'warp' || h.kind === 'shed' || h.kind === 'float') {
+      const c = h.c;
+      const key = st.warp ? st.warp[c] : null;
+      const sh = st.shafts ? st.shafts[c] : null;
+      let s = 'column ' + (c + 1) + ': ' + (key ? 'warp ' + key : 'no colour yet') + ', ' + (sh ? 'shaft ' + sh : 'no shaft yet');
+      if (st.runLen) s += ', ' + st.runLen[c] + ' pick' + (st.runLen[c] === 1 ? '' : 's') + ' in the same position';
+      return s;
+    }
+    if (h.kind === 'plan') {
+      const row = R.rows[h.r];
+      if (!row || h.r >= st.rowCount) return 'row ' + (h.r + 1) + ': not woven yet';
+      return 'row ' + (h.r + 1) + ': lifted shafts ' + liftText(row.mask) + ', weft ' + row.weft;
+    }
+    return '';
+  }
+  const cvEl = $('#cv');
+  cvEl.addEventListener('mousemove', (ev) => {
+    const h = hit(ev);
+    $('#probe').textContent = probeText(h);
+    cvEl.style.cursor = h && (h.kind === 'cell' || h.kind === 'plan') && h.r < (curSnap() ? curSnap().rowCount : 0) ? 'pointer' : 'default';
+  });
+  cvEl.addEventListener('mouseleave', () => {
+    $('#probe').textContent = probeText(null);
+  });
+  cvEl.addEventListener('click', (ev) => {
+    const h = hit(ev);
+    if (!h || (h.kind !== 'cell' && h.kind !== 'plan')) return;
+    const p = S.rowStep[h.r];
+    if (p) {
+      stopPlay(true);
+      gotoStep(p, false);
+    }
+  });
+
+  // ================================================================= controls
+  function showView(v) {
+    S.view = v;
+    $$('.seg button').forEach((b) => {
+      b.setAttribute('aria-selected', String(b.dataset.view === v));
+      b.tabIndex = b.dataset.view === v ? 0 : -1;
+    });
+    $('#probe').textContent = '';
+    $('#btn-legend').hidden = v !== 'loom';
+    $('#zoom-wrap').hidden = v === 'text';
+    $('#chk-wrap').hidden = v === 'text';
+    if (v !== 'loom') toggleLegend(false);
+    updateDims();
+    renderOut();
+    kick();
+  }
+  $$('.seg button').forEach((b) => b.addEventListener('click', () => showView(b.dataset.view)));
+  $('#chk-texture').addEventListener('change', (e) => {
+    S.texture = e.target.checked;
+    S.layerKey = '';
+    kick();
+  });
+  $('#btn-weave').addEventListener('click', weave);
+  $('#sel-zoom').addEventListener('change', (e) => {
+    S.zoom = Number(e.target.value);
+    S.layerKey = '';
+    S.follow = true;
+    kick();
+  });
+  function toggleLegend(show) {
+    const pop = $('#legend-pop');
+    pop.hidden = show === undefined ? !pop.hidden : !show;
+    $('#btn-legend').setAttribute('aria-expanded', String(!pop.hidden));
+  }
+  $('#btn-legend').addEventListener('click', () => toggleLegend());
+  $('#legend-x').addEventListener('click', () => toggleLegend(false));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !$('#legend-pop').hidden) toggleLegend(false);
+  });
+  $('#t-first').addEventListener('click', () => { stopPlay(true); gotoStep(0, false); });
+  $('#t-prev').addEventListener('click', () => { stopPlay(true); gotoStep(S.pos - 1, false); });
+  $('#t-next').addEventListener('click', () => { stopPlay(true); gotoStep(S.pos + 1, true); });
+  $('#t-last').addEventListener('click', () => { stopPlay(true); gotoStep(S.steps.length, false); });
+  $('#t-play').addEventListener('click', () => (S.playing ? stopPlay() : startPlay()));
+  $('#t-scrub').addEventListener('input', (e) => {
+    stopPlay(true);
+    gotoStep(Number(e.target.value), false);
+  });
+  $('#t-speed').addEventListener('input', (e) => {
+    S.speed = Number(e.target.value);
+    if (S.playing) planPlayback();
+    store('loom-studio-speed', String(S.speed));
+  });
+  document.addEventListener('keydown', (e) => {
+    if (S.tab !== 'studio') return;
+    const tag = (e.target && e.target.tagName) || '';
+    if (tag === 'TEXTAREA' || tag === 'SELECT' || (tag === 'INPUT' && e.target.type !== 'range' && e.target.type !== 'checkbox')) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) {
+      return;
+    }
+    if (e.key === 'ArrowRight' && tag !== 'INPUT') { e.preventDefault(); stopPlay(true); gotoStep(S.pos + 1, true); }
+    else if (e.key === 'ArrowLeft' && tag !== 'INPUT') { e.preventDefault(); stopPlay(true); gotoStep(S.pos - 1, false); }
+    else if (e.key === 'Home' && tag !== 'INPUT') { e.preventDefault(); stopPlay(true); gotoStep(0, false); }
+    else if (e.key === 'End' && tag !== 'INPUT') { e.preventDefault(); stopPlay(true); gotoStep(S.steps.length, false); }
+    else if (e.key === ' ' && tag !== 'BUTTON' && tag !== 'INPUT') { e.preventDefault(); S.playing ? stopPlay() : startPlay(); }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.defaultPrevented) return; // the editor already handled its own Ctrl+Enter
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && S.tab === 'studio') {
+      e.preventDefault();
+      weave();
+    }
+  });
+  if (window.ResizeObserver) new ResizeObserver(() => kick()).observe($('#viewport'));
+  window.addEventListener('resize', kick);
+
+  // ================================================================= tabs
+  function showTab(name) {
+    S.tab = name;
+    $$('.tabs button').forEach((b) => {
+      b.setAttribute('aria-selected', String(b.dataset.tab === name));
+      b.tabIndex = b.dataset.tab === name ? 0 : -1;
+    });
+    $$('.page').forEach((p) => p.classList.toggle('on', p.id === 'tab-' + name));
+    try {
+      history.replaceState(null, '', '#' + name);
+    } catch (e) {
+      /* file:// pages may refuse */
+    }
+    if (name !== 'studio' && S.playing) stopPlay(true);
+    if (name === 'studio') kick();
+    if (name === 'tests') runConformance();
+    if (name === 'gallery') buildGallery();
+  }
+  $$('.tabs button').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest && e.target.closest('[data-goto]');
+    if (a) {
+      e.preventDefault();
+      showTab(a.dataset.goto);
+    }
+  });
+
+  // ================================================================= loading programs
+  function loadSource(src, opts) {
+    clearTimeout(S.compileTimer);
+    const next = src.replace(/\r\n/g, '\n');
+    const prev = ta.value;
+    if (prev.trim() && prev !== next) {
+      S.prevSource = prev;
+      $('#btn-undo').hidden = false;
+    }
+    ta.value = next;
+    ta.setSelectionRange(0, 0); // keyboard focus should land at the top, not scroll to the end
+    ta.scrollTop = 0;
+    ta.scrollLeft = 0;
+    renderEditor();
+    store('loom-studio-source', ta.value);
+    showTab('studio');
+    if (opts && opts.play) weave();
+    else compile(ta.value, { reveal: true });
+    ta.scrollTop = 0;
+    syncScroll();
+    setStatus('loaded');
+  }
+  $('#btn-undo').addEventListener('click', () => {
+    if (S.prevSource === null) return;
+    const back = S.prevSource;
+    clearTimeout(S.compileTimer);
+    stopPlay(true);
+    ta.value = back;
+    ta.setSelectionRange(0, 0);
+    ta.scrollTop = 0;
+    renderEditor();
+    store('loom-studio-source', ta.value);
+    compile(ta.value, {});
+    $('#btn-undo').hidden = true;
+    S.prevSource = null;
+    setStatus('restored your previous program');
+  });
+  function fillLoader() {
+    const sel = $('#sel-load');
+    let h = '<option value="">Load an example…</option><option value="starter">Starter: hello cloth</option><optgroup label="Gallery">';
+    for (const g of DATA.gallery) h += '<option value="g:' + esc(g.id) + '">' + esc(g.title) + '</option>';
+    h += '</optgroup><optgroup label="Conformance programs">';
+    for (const c of DATA.conformance) h += '<option value="c:' + esc(c.name) + '">' + esc(c.name) + '</option>';
+    h += '</optgroup>';
+    sel.innerHTML = h;
+    sel.addEventListener('change', () => {
+      const v = sel.value;
+      sel.value = '';
+      if (!v) return;
+      if (v === 'starter') loadSource(DEFAULT_PROGRAM, { play: true });
+      else if (v[0] === 'g') loadSource(DATA.gallery.find((g) => g.id === v.slice(2)).source, { play: true });
+      else loadSource(DATA.conformance.find((c) => c.name === v.slice(2)).source, { play: false });
+    });
+  }
+
+  // ================================================================= gallery
+  let galleryBuilt = false;
+  // draws a cloth into a card thumbnail: crisp cells when they fit, a smooth miniature when they do not
+  function paintThumb(cv, source, maxW, maxH) {
+    const R = Engine.run(source);
+    const dpr = window.devicePixelRatio || 1;
+    const fit = Math.min((maxW * dpr) / R.W, (maxH * dpr) / R.H); // device px per cell that fits the box
+    if (fit >= 3) {
+      const cd = Math.floor(fit);
+      cv.width = R.W * cd;
+      cv.height = R.H * cd;
+      paintRows(cv.getContext('2d'), R, 0, 0, cd, 0, R.rows.length, true);
+    } else {
+      const native = 4;
+      const off = document.createElement('canvas');
+      off.width = R.W * native;
+      off.height = R.H * native;
+      paintRows(off.getContext('2d'), R, 0, 0, native, 0, R.rows.length, true);
+      cv.width = Math.max(1, Math.round(R.W * fit));
+      cv.height = Math.max(1, Math.round(R.H * fit));
+      const g = cv.getContext('2d');
+      g.imageSmoothingEnabled = true;
+      g.imageSmoothingQuality = 'high';
+      g.drawImage(off, 0, 0, cv.width, cv.height);
+    }
+    cv.style.width = cv.width / dpr + 'px';
+    cv.style.height = cv.height / dpr + 'px';
+    return R;
+  }
+  function featuresOf(src) {
+    const f = [];
+    const has = (re) => re.test(src.replace(/\/\/.*$/gm, ''));
+    if (has(/^\s*treadle\b/m)) f.push('treadles');
+    if (has(/mirror\(/)) f.push('mirror');
+    if (has(/^\s*shuttle\b/m)) f.push('shuttle');
+    if (has(/^\s*cross\b/m)) f.push('cross');
+    if (has(/^\s*drift\b/m)) f.push('drift');
+    if (has(/^\s*maxfloat\b/m)) f.push('maxfloat');
+    if (has(/^\s*repeat\b/m)) f.push('repeat');
+    const code = src.replace(/\/\/.*$/gm, '');
+    const shafts = Math.max(0, ...(code.match(/^[ \t]*thread\b.*$/gm) || []).map((l) => Math.max(0, ...(l.replace(/^[ \t]*thread/, '').replace(/\*[0-9]+/g, '').match(/[0-9]+/g) || [0]).map(Number))));
+    if (shafts) f.unshift(shafts + (shafts === 1 ? ' shaft' : ' shafts'));
+    return f;
+  }
+  function buildGallery() {
+    if (galleryBuilt) return;
+    galleryBuilt = true;
+    const grid = $('#gallery-grid');
+    grid.innerHTML = '';
+    for (const g of DATA.gallery) {
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.tabIndex = 0;
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-label', 'Open ' + g.title + ' in the Studio and weave it');
+      card.dataset.id = g.id;
+      card.innerHTML = '<div class="thumb"><canvas></canvas></div><div class="info"><h3>' + esc(g.title) + '</h3><p>' + esc(g.note) + '</p><div class="tags"></div><div class="meta"></div></div>';
+      grid.appendChild(card);
+      const R = paintThumb($('canvas', card), g.source, 210, 170);
+      $('.meta', card).textContent = R.W + ' × ' + R.H + ' · gallery/' + g.id + '.loom';
+      $('.tags', card).innerHTML = featuresOf(g.source).map((t) => '<span class="tag">' + esc(t) + '</span>').join('');
+      card.addEventListener('click', () => loadSource(g.source, { play: true }));
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          loadSource(g.source, { play: true });
+        }
+      });
+    }
+  }
+
+  // ================================================================= conformance
+  function runConformanceData() {
+    const rows = DATA.conformance.map((c) => {
+      let actual;
+      try {
+        actual = Engine.run(c.source).output;
+      } catch (e) {
+        actual = 'CRASH: ' + e.message;
+      }
+      return { name: c.name, source: c.source, expected: c.expected, actual, pass: actual === c.expected };
+    });
+    return { rows, passed: rows.filter((r) => r.pass).length, total: rows.length };
+  }
+  function firstDiff(a, b) {
+    const al = a.split('\n');
+    const bl = b.split('\n');
+    for (let i = 0; i < Math.max(al.length, bl.length); i++) if (al[i] !== bl[i]) return i + 1;
+    return 0;
+  }
+  function pillUpdate() {
+    const pill = $('#conf-pill');
+    const c = S.conf;
+    pill.textContent = c.passed + '/' + c.total;
+    pill.className = 'pill ' + (c.passed === c.total ? 'pass' : 'fail');
+  }
+  function runConformance() {
+    S.conf = runConformanceData();
+    pillUpdate();
+    const c = S.conf;
+    const sb = $('#score');
+    const ok = c.passed === c.total;
+    sb.className = 'scoreboard ' + (ok ? 'pass' : 'fail');
+    sb.innerHTML = '<div class="big" id="score-num">' + c.passed + ' / ' + c.total + '</div><div class="txt"><b>' + (ok ? 'All conformance programs pass.' : 'Some programs differ from the expected output.') +
+      '</b><br>Each program is executed live in this page and its output compared, byte for byte, with the <code>.expected</code> file that ships with it.</div><button class="btn" id="btn-rerun">Run again</button>';
+    $('#btn-rerun').addEventListener('click', runConformance);
+    const list = $('#testlist');
+    list.innerHTML = '';
+    for (const r of c.rows) {
+      const li = document.createElement('li');
+      const kind = r.expected.startsWith('error') ? 'error case' : 'fabric';
+      li.innerHTML = '<details class="test ' + (r.pass ? 'pass' : 'fail') + '"' + (r.pass ? '' : ' open') + '><summary><span class="mark">' + (r.pass ? '✓' : '✗') + '</span><span class="nm">' + esc(r.name) +
+        '</span><span class="kind">' + (r.pass ? 'pass' : 'FAIL (first difference on output line ' + firstDiff(r.actual, r.expected) + ')') + ' · ' + kind + '</span></summary><div class="body"><div><h4>Program</h4><pre>' + esc(r.source) +
+        '</pre></div><div><h4>Expected</h4><pre>' + esc(r.expected) + '</pre></div><div><h4>Actual</h4><pre>' + esc(r.actual) + '</pre></div><div class="actions"><button class="btn small" data-open="' + esc(r.name) + '">Open in the Studio</button></div></div></details>';
+      list.appendChild(li);
+    }
+    $$('[data-open]', list).forEach((b) =>
+      b.addEventListener('click', () => loadSource(DATA.conformance.find((x) => x.name === b.dataset.open).source, { play: false }))
+    );
+  }
+  // ================================================================= guide
+  const TRY = [
+    { cap: 'Plain weave: odd threads on shaft 1, even threads on shaft 2, lifted alternately.', code: 'loom 16 12\npalette a=#1b3a5c b=#f2e8cf\nwarp a\nthread 1 2\nrepeat 6 {\n  pick b 1\n  pick b 2\n}\n' },
+    { cap: 'Point threading with mirror() turns a twill diagonal into a zigzag.', code: 'loom 28 16\npalette g=#2a9d8f s=#e9c46a\nwarp g\nthread mirror(1-4)\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 14\nrepeat 4 {\n  pick s t1\n  pick s t2\n  pick s t3\n  pick s t4\n}\n' },
+    { cap: 'A shuttle cycles weft colours for picks that name none: instant stripes.', code: 'loom 20 12\npalette w=#f7f0e0 r=#d62828 o=#f77f00 y=#fcbf49\nwarp w\nthread 1 2\nshuttle r o y\nrepeat 6 {\n  pick 1\n  pick 2\n}\n' },
+    { cap: 'drift slides the whole warp sideways after each pick; every row is all-raised, so the warp colours show.', code: 'loom 24 24\npalette a=#3b0a45 b=#b8325f c=#f68f3c d=#fff0a6 w=#111111\nwarp mirror(a*2 b*2 c*2 d*2)\nthread 1\nrepeat 12 {\n  pick w 1\n  drift 1\n}\nrepeat 12 {\n  pick w 1\n  drift -1\n}\n' },
+    { cap: 'maxfloat stops threads riding too long. This one fails on purpose - see the error and the outlined cells.', code: 'loom 6 6\npalette a=#000000 b=#ffffff\nwarp a\nthread 1 2\nmaxfloat 3\npick b 1\npick b 1\npick b 1\npick b 1\n' }
+  ];
+  function buildGuide() {
+    const host = $('#tryit');
+    host.innerHTML = '';
+    TRY.forEach((t, i) => {
+      const d = document.createElement('div');
+      d.className = 'g-card try';
+      d.innerHTML = '<div class="cap">' + esc(t.cap) + '</div><pre>' + esc(t.code) + '</pre><button class="btn small primary" data-try="' + i + '">Open &amp; weave</button>';
+      host.appendChild(d);
+    });
+    $$('[data-try]', host).forEach((b) => b.addEventListener('click', () => loadSource(TRY[Number(b.dataset.try)].code, { play: true })));
+    $('#errtable').innerHTML = HELP.map((h) => '<tr><td><code>' + h[1] + '</code></td><td>' + h[2] + '</td></tr>').join('');
+  }
+
+  // ================================================================= logo, tip, boot
+  function buildLogo() {
+    // a tiny 2/2 twill in the brand colours
+    const n = 8;
+    let rects = '';
+    const cols = ['#f2b134', '#1b3a5c'];
+    for (let y = 0; y < n; y++) {
+      for (let x = 0; x < n; x++) {
+        const up = (x + y) % 4 < 2;
+        rects += '<rect x="' + x * 4 + '" y="' + y * 4 + '" width="4" height="4" fill="' + (up ? cols[0] : cols[1]) + '"/>';
+      }
+    }
+    $('#logo').innerHTML = '<svg viewBox="0 0 32 32" shape-rendering="crispEdges">' + rects + '</svg>';
+  }
+
+  // roving tabindex + arrow keys for a row of tab buttons
+  function wireTablist(root, sel, activate) {
+    const btns = $$(sel, root);
+    btns.forEach((b) => b.addEventListener('keydown', (e) => {
+      const i = btns.indexOf(b);
+      let j = -1;
+      if (e.key === 'ArrowRight') j = (i + 1) % btns.length;
+      else if (e.key === 'ArrowLeft') j = (i + btns.length - 1) % btns.length;
+      else if (e.key === 'Home') j = 0;
+      else if (e.key === 'End') j = btns.length - 1;
+      if (j < 0) return;
+      e.preventDefault();
+      e.stopPropagation();
+      btns[j].focus();
+      activate(btns[j]);
+    }));
+  }
+
+  function boot() {
+    buildLogo();
+    $('#t-first').innerHTML = ICONS.first;
+    $('#t-prev').innerHTML = ICONS.prev;
+    $('#t-next').innerHTML = ICONS.next;
+    $('#t-last').innerHTML = ICONS.last;
+    setPlayIcon();
+    $('#gal-pill').textContent = String(DATA.gallery.length);
+    fillLoader();
+    buildGuide();
+    const sp = Number(store('loom-studio-speed'));
+    if (sp >= 1 && sp <= 10) {
+      S.speed = sp;
+      $('#t-speed').value = String(sp);
+    }
+    if (store('loom-studio-tip') === 'hidden') $('#tip').hidden = true;
+    $('#tip-x').addEventListener('click', () => {
+      $('#tip').hidden = true;
+      store('loom-studio-tip', 'hidden');
+      kick();
+    });
+    S.conf = runConformanceData();
+    pillUpdate();
+    const saved = store('loom-studio-source');
+    ta.value = saved && saved.trim() ? saved : DEFAULT_PROGRAM;
+    renderEditor();
+    compile(ta.value, {});
+    wireTablist($('.tabs'), '[data-tab]', (b) => showTab(b.dataset.tab));
+    wireTablist($('.seg'), '[data-view]', (b) => showView(b.dataset.view));
+    showView('loom');
+    if (window.ResizeObserver) new ResizeObserver(equalizeScroll).observe($('.code'));
+    const h = (location.hash || '').replace('#', '');
+    if (h && ['studio', 'gallery', 'tests', 'guide'].indexOf(h) >= 0) showTab(h);
+    else showTab('studio');
+    window.addEventListener('hashchange', () => {
+      const n = (location.hash || '').replace('#', '');
+      if (['studio', 'gallery', 'tests', 'guide'].indexOf(n) >= 0 && n !== S.tab) showTab(n);
+    });
+    setStatus(saved ? 'restored your last program' : 'ready');
+    // hooks for automated tests of the page
+    window.__loom = { S, compile, loadSource, weave, gotoStep, showTab, runConformanceData, draw };
+  }
+  boot();
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+loom 6 3
+palette a=#000000 b=#ffffff
+warp a
+thread 1-3
+treadle 1 1
+pick b t1
+treadle 1 !1
+pick b t1
+pick b t1

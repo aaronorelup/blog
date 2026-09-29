@@ -1,0 +1,10 @@
+loom 4 3
+palette a=#000000 b=#ffffff c=#ff0000
+warp a b
+thread 1 2
+pick c 1
+palette a=#123456
+warp mirror(c b a)*2
+pick c 12
+thread 2 1
+pick a 1

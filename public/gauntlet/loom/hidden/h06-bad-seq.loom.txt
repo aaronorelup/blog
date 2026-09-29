@@ -1,0 +1,4 @@
+loom 6 2
+palette a=#000000 b=#ffffff
+warp (a b) *2
+thread 1

@@ -1,0 +1,4 @@
+loom 4 4
+palette a=#000000
+pick a 1
+}

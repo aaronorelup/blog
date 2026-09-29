@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LOOM Studio</title>
+<style>
+:root{--bg:#1c1814;--panel:#2a241d;--panel2:#332b22;--ink:#f2e8d5;--dim:#b3a58d;--line:#4a3f31;--gold:#e8b04a;--red:#e5484d;--green:#5cc38a;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+button,select,input{font:inherit;color:inherit}
+button{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:5px 11px;cursor:pointer}
+select{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+button:hover{border-color:var(--gold)}
+button.primary{background:var(--gold);color:#241a08;border-color:var(--gold);font-weight:600}
+button:disabled{opacity:.45;cursor:default}
+header{padding:10px 16px 6px;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:20px;letter-spacing:.14em;color:var(--gold)}
+header p{margin:0;color:var(--dim);flex:1 1 420px;max-width:760px}
+nav{display:flex;gap:4px;padding:8px 16px 0}
+nav button{border-radius:6px 6px 0 0;border-bottom:none}
+nav button.on{background:var(--panel);border-color:var(--gold);color:var(--gold)}
+main{padding:0 16px 16px}
+.tab{display:none;background:var(--panel);border:1px solid var(--line);border-radius:0 8px 8px 8px;padding:10px}
+.tab.on{display:block}
+.studio>div{min-width:0}
+body{overflow-x:hidden}
+.studio{display:grid;grid-template-columns:minmax(300px,42%) 1fr;gap:12px}
+@media(max-width:820px){.studio{grid-template-columns:1fr}}
+.bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}
+.editorwrap{position:relative;height:clamp(240px,52vh,520px);border:1px solid var(--line);border-radius:6px;background:#191510;overflow:hidden}
+.gutter{position:absolute;left:0;top:0;bottom:0;width:38px;background:#211b15;color:#7d705b;text-align:right;padding:8px 6px 8px 0;font:12px/20px ui-monospace,Consolas,monospace;white-space:pre;overflow:hidden;user-select:none}
+.gutter .err{color:var(--red);font-weight:bold}
+.hl{position:absolute;left:38px;right:0;height:20px;pointer-events:none;display:none}
+#hlCur{background:rgba(232,176,74,.22);border-left:3px solid var(--gold)}
+#hlErr{background:rgba(229,72,77,.28);border-left:3px solid var(--red)}
+textarea#src{position:absolute;left:38px;top:0;right:0;bottom:0;width:calc(100% - 38px);height:100%;margin:0;padding:8px;border:0;outline:0;resize:none;background:transparent;color:var(--ink);font:13px/20px ui-monospace,Consolas,monospace;white-space:pre;overflow:auto;tab-size:2}
+#status{margin:6px 0;padding:6px 9px;border-radius:6px;background:var(--panel2);min-height:32px;font-size:13px}
+#status.err{background:rgba(229,72,77,.18);border:1px solid var(--red);cursor:pointer}
+#status.ok{border:1px solid #3d6b52}
+.ctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}
+.ctl input[type=range]{flex:1 1 140px;min-width:100px;accent-color:var(--gold)}
+.tabs2{display:flex;gap:4px;margin-bottom:6px}
+.tabs2 button.on{border-color:var(--gold);color:var(--gold)}
+.view{border:1px solid var(--line);border-radius:6px;background:#15110d;overflow:auto;max-height:clamp(260px,50vh,560px)}
+canvas{display:block;max-width:100%}
+pre#text{margin:0;padding:8px;font:11px/1.15 ui-monospace,Consolas,monospace;color:var(--ink)}
+.state{margin-top:8px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px 12px;font-size:12.5px}
+.state div{background:var(--panel2);border-radius:6px;padding:5px 8px;min-width:0}
+.state b{color:var(--gold);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:1px;margin-top:3px}
+.chip{width:9px;height:12px;border-radius:2px;border:1px solid rgba(255,255,255,.15)}
+.chip.big{width:auto;min-width:16px;height:16px;padding:0 3px;font-size:10px;line-height:14px;text-align:center;color:#000;mix-blend-mode:normal}
+.help{font-size:13px;color:var(--dim)}
+.help code,.help pre{background:#191510;border-radius:4px;padding:1px 4px;color:var(--ink)}
+.help pre{padding:6px 8px;overflow:auto;margin:4px 0}
+details{margin:0 16px 6px}
+summary{cursor:pointer;color:var(--gold);padding:4px 0}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.card{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px;cursor:pointer;display:flex;flex-direction:column;gap:5px}
+.card:hover{border-color:var(--gold)}
+.card canvas{margin:0 auto;border-radius:3px;image-rendering:pixelated}
+.card h3{margin:0;font-size:14px;color:var(--gold)}
+.card p{margin:0;font-size:12.5px;color:var(--dim)}
+.sum{font-size:16px;margin-bottom:8px}
+.crow{border:1px solid var(--line);border-radius:6px;margin-bottom:4px;background:var(--panel2)}
+.crow>div{display:flex;gap:10px;align-items:center;padding:5px 9px;cursor:pointer}
+.badge{font-weight:700;padding:1px 8px;border-radius:10px;font-size:12px}
+.pass{background:rgba(92,195,138,.2);color:var(--green)}
+.fail{background:rgba(229,72,77,.25);color:var(--red)}
+.crow pre{margin:0;padding:6px 9px;font:11px/1.2 ui-monospace,Consolas,monospace;display:none;overflow:auto;border-top:1px solid var(--line)}
+.crow.open pre{display:block}
+</style>
+</head>
+<body>
+<header>
+  <h1>LOOM STUDIO</h1>
+  <p>LOOM is a tiny language that describes woven cloth. A loom holds vertical <b>warp</b> threads, each tied to one of up to 8 <b>shafts</b>. On every <b>pick</b> some shafts lift: lifted threads show their own colour in that row, the others show the <b>weft</b> colour the shuttle is carrying. Write a program, press <b>Weave</b>, and watch the cloth appear row by row.</p>
+</header>
+<details>
+  <summary>Language cheat sheet</summary>
+  <div class="help">
+<pre>loom 24 24               // width (warp threads) and height (picks)
+palette a=#1d3557 b=#f1faee   // name colours with single letters
+warp a*2 b*2             // warp colours, tiled across; also (a b)*3 and mirror(a b c)
+thread 1-4               // shaft of each warp thread; ranges and mirror(1-4) work too
+treadle 1 12             // treadle 1 lifts shafts 1 and 2 (also - none, * all, !12 all but 1,2)
+shuttle a b              // cyclic weft colours for picks that give no colour
+pick t1                  // weave a row using treadle 1 (or a lift like 13, or: pick b 13)
+cross 1 2   drift 1      // swap two warp threads / rotate the whole warp sideways
+maxfloat 4               // error if any thread or weft skips more than 4 in a row
+repeat 6 { ... }         // repeat a block (put } alone on its own line)</pre>
+  </div>
+</details>
+<nav>
+  <button data-tab="studio" class="on">Studio</button>
+  <button data-tab="gallery">Gallery</button>
+  <button data-tab="conf">Conformance <span id="confTotal"></span></button>
+</nav>
+<main>
+<section id="studio" class="tab on">
+  <div class="studio">
+    <div>
+      <div class="bar">
+        <button class="primary" id="btnRun" title="Run and show the finished cloth">Run</button>
+        <button id="btnWeave" title="Weave from the beginning, pick by pick">▶ Weave</button>
+        <select id="examplePick" title="Load an example"></select>
+      </div>
+      <div class="editorwrap">
+        <div class="gutter" id="gutter"></div>
+        <div class="hl" id="hlCur"></div>
+        <div class="hl" id="hlErr"></div>
+        <textarea id="src" spellcheck="false" wrap="off"></textarea>
+      </div>
+      <div id="status"></div>
+    </div>
+    <div>
+      <div class="ctl">
+        <button id="bFirst" title="Start">⏮</button>
+        <button id="bBack" title="Step back one statement">◀</button>
+        <button id="bPlay" title="Play / pause">▶</button>
+        <button id="bFwd" title="Step forward one statement">▶|</button>
+        <button id="bLast" title="End">⏭</button>
+        <input type="range" id="scrub" min="0" max="0" value="0">
+        <span id="stepLbl" class="help"></span>
+      </div>
+      <div class="ctl help">Speed <input type="range" id="speed" min="1" max="10" value="6" style="flex:0 1 120px"> <span id="pickInfo"></span></div>
+      <div class="tabs2" id="viewTabs">
+        <button data-v="loom" class="on">Loom</button><button data-v="fabric">Fabric</button><button data-v="text">Text output</button>
+      </div>
+      <div class="view" id="viewLoom"><canvas id="cvLoom"></canvas></div>
+      <div class="view" id="viewFabric" style="display:none"><canvas id="cvFabric"></canvas></div>
+      <div class="view" id="viewText" style="display:none"><pre id="text"></pre></div>
+      <div class="state" id="state"></div>
+    </div>
+  </div>
+</section>
+<section id="gallery" class="tab">
+  <p class="help">Original cloth written in LOOM. Click a piece to load its program into the editor.</p>
+  <div class="cards" id="cards"></div>
+</section>
+<section id="conf" class="tab">
+  <div class="sum" id="confSum"></div>
+  <div id="confList"></div>
+</section>
+</main>
+<script>
+// LOOM engine: the single source of truth used by cli.js, the tests and index.html.
+(function (root) {
+  'use strict';
+
+  function fail(msg) { const e = new Error(msg); e.loom = true; throw e; }
+  const isNum = (t) => /^[0-9]+$/.test(t);
+  const stripZeros = (t) => t.replace(/^0+(?=\d)/, '');
+  function num(t) {
+    if (!isNum(t)) fail("bad number '" + t + "'");
+    return Number(t);
+  }
+  function numRange(t, lo, hi) {
+    const n = num(t);
+    if (n < lo || n > hi) fail("bad number '" + t + "'");
+    return n;
+  }
+
+  // ---------- sequences (section 4) ----------
+  // Parses `s` into a tree, then expands it. kind: 'color' | 'shaft'.
+  function parseSequence(s, kind) {
+    let i = 0;
+    const n = s.length;
+    const isWs = (c) => c === ' ' || c === '\t';
+    function skipWs() { while (i < n && isWs(s[i])) i++; }
+    function readCount() {
+      // s[i] === '*'
+      i++;
+      let j = i;
+      while (j < n && !isWs(s[j]) && s[j] !== '(' && s[j] !== ')') j++;
+      const tok = s.slice(i, j);
+      i = j;
+      if (!isNum(tok) || Number(tok) < 1) fail("bad number '" + tok + "'");
+      return Number(tok);
+    }
+    function atomNode(a) {
+      if (kind === 'color') {
+        if (!/^[a-z]$/.test(a)) fail('bad sequence');
+        return { t: 'a', v: a };
+      }
+      if (/^[0-9]+$/.test(a)) return { t: 'a', v: stripZeros(a) };
+      const m = /^([0-9]+)-([0-9]+)$/.exec(a);
+      if (m) return { t: 'r', a: stripZeros(m[1]), b: stripZeros(m[2]) };
+      fail('bad sequence');
+    }
+    function items(depth) {
+      const out = [];
+      for (;;) {
+        skipWs();
+        if (i >= n) {
+          if (depth > 0) fail('bad sequence');
+          break;
+        }
+        const c = s[i];
+        if (c === ')') {
+          if (depth === 0) fail('bad sequence');
+          break;
+        }
+        let node;
+        if (c === '*') fail('bad sequence');
+        if (c === '(') {
+          i++;
+          node = { t: 'g', items: group(depth + 1), mirror: false };
+        } else {
+          let j = i;
+          while (j < n && !isWs(s[j]) && s[j] !== '(' && s[j] !== ')' && s[j] !== '*') j++;
+          const atom = s.slice(i, j);
+          i = j;
+          if (i < n && s[i] === '(') {
+            if (atom !== 'mirror') fail('bad sequence');
+            i++;
+            node = { t: 'g', items: group(depth + 1), mirror: true };
+          } else {
+            node = atomNode(atom);
+          }
+        }
+        node.rep = 1;
+        if (i < n && s[i] === '*') node.rep = readCount();
+        out.push(node);
+      }
+      return out;
+    }
+    function group(depth) {
+      const it = items(depth);
+      // items() stopped at ')' (or threw)
+      i++; // consume ')'
+      if (it.length === 0) fail('bad sequence');
+      return it;
+    }
+    const tree = items(0);
+    if (tree.length === 0) fail('bad sequence');
+    return tree;
+  }
+
+  function shaftCheck(t) {
+    const v = Number(t);
+    if (v < 1 || v > 8 || t.length > 3) fail("bad shaft '" + t + "'");
+    return v;
+  }
+
+  // Expands the tree; returns array of values (strings for colors, numbers for shafts).
+  function expand(tree, kind) {
+    function ex(list) {
+      let out = [];
+      for (const nd of list) {
+        let part;
+        if (nd.t === 'a') part = [kind === 'shaft' ? shaftCheck(nd.v) : nd.v];
+        else if (nd.t === 'r') {
+          const a = shaftCheck(nd.a), b = shaftCheck(nd.b);
+          part = [];
+          if (a <= b) for (let x = a; x <= b; x++) part.push(x);
+          else for (let x = a; x >= b; x--) part.push(x);
+        } else {
+          part = ex(nd.items);
+          if (nd.mirror) part = part.concat(part.slice(0, -1).reverse());
+        }
+        if (nd.rep === 1) out = out.concat(part);
+        else for (let r = 0; r < nd.rep; r++) out = out.concat(part);
+      }
+      return out;
+    }
+    return ex(tree);
+  }
+
+  // ---------- lifts (section 5) ----------
+  // Returns sorted array of raised shafts.
+  function parseLift(tok, treadles, allowT) {
+    const all = [1, 2, 3, 4, 5, 6, 7, 8];
+    if (tok === '-') return [];
+    if (tok === '*') return all;
+    if (/^[0-9]+$/.test(tok)) return digitsToSet(tok);
+    if (tok[0] === '!' && /^[0-9]+$/.test(tok.slice(1))) {
+      const ex = digitsToSet(tok.slice(1));
+      return all.filter((x) => ex.indexOf(x) < 0);
+    }
+    if (allowT && /^t[0-9]+$/.test(tok)) {
+      const k = Number(tok.slice(1));
+      if (!Object.prototype.hasOwnProperty.call(treadles, k)) fail("unknown treadle '" + tok + "'");
+      return treadles[k];
+    }
+    fail("bad lift '" + tok + "'");
+  }
+  function digitsToSet(d) {
+    const set = [];
+    for (const ch of d) {
+      if (ch === '0' || ch === '9') fail("bad shaft '" + ch + "'");
+      const v = Number(ch);
+      if (set.indexOf(v) < 0) set.push(v);
+    }
+    return set.sort((a, b) => a - b);
+  }
+
+  // ---------- program structure ----------
+  function parseProgram(src) {
+    const raw = String(src).split('\n');
+    const stmts = [];
+    for (let k = 0; k < raw.length; k++) {
+      let t = raw[k];
+      const c = t.indexOf('//');
+      if (c >= 0) t = t.slice(0, c);
+      t = t.trim();
+      if (t === '') continue;
+      const m = /^[^ \t]+/.exec(t);
+      const word = m[0];
+      const rest = t.slice(word.length).replace(/^[ \t]+/, '');
+      stmts.push({ line: k + 1, text: t, word, rest, tokens: t.split(/[ \t]+/) });
+    }
+    if (stmts.length === 0 || stmts[0].word !== 'loom')
+      return { error: { line: stmts.length ? stmts[0].line : 1, message: "expected 'loom' header" } };
+    const root = [];
+    const stack = [];
+    let cur = root;
+    for (const st of stmts) {
+      if (st.word === 'repeat') {
+        const tk = st.tokens;
+        if (!(tk.length === 3 && tk[2] === '{'))
+          return { error: { line: st.line, message: 'bad repeat' } };
+        st.body = [];
+        cur.push(st);
+        stack.push({ st, parent: cur });
+        cur = st.body;
+      } else if (st.text[0] === '}') {
+        if (st.text !== '}') return { error: { line: st.line, message: 'bad repeat' } };
+        if (!stack.length) return { error: { line: st.line, message: "unexpected '}'" } };
+        cur = stack.pop().parent;
+      } else {
+        cur.push(st);
+      }
+    }
+    if (stack.length) return { error: { line: stack[stack.length - 1].st.line, message: 'unclosed block' } };
+    return { root };
+  }
+
+  // ---------- execution ----------
+  // opts: { trace: bool, maxSteps: number }
+  function run(src, opts) {
+    opts = opts || {};
+    const pr = parseProgram(src);
+    const result = { ok: false, output: '', error: null, grid: [], W: 0, H: 0, steps: [], truncated: false };
+    if (pr.error) {
+      result.error = pr.error;
+      result.output = 'error line ' + pr.error.line + ': ' + pr.error.message + '\n';
+      return result;
+    }
+    const maxSteps = opts.maxSteps || 20000;
+    const S = {
+      W: 0, H: 0, palette: {}, warp: null, shaft: null, treadles: {}, shuttle: [], spos: 0,
+      maxfloat: null, rows: 0, runLen: null, prev: null, grid: [], last: null,
+    };
+    result.steps = opts.trace ? [] : null;
+
+    function snap(line, error) {
+      if (!opts.trace) return;
+      if (result.steps.length >= maxSteps && !error) { result.truncated = true; return; }
+      result.steps.push({
+        line, error: error || null, W: S.W, H: S.H, palette: S.palette, warp: S.warp, shaft: S.shaft,
+        treadles: S.treadles, shuttle: S.shuttle, spos: S.spos, maxfloat: S.maxfloat, rows: S.rows,
+        runLen: S.runLen, last: S.last,
+      });
+    }
+
+    function colorSeq(rest) {
+      const seq = expand(parseSequence(rest, 'color'), 'color');
+      for (const k of seq) if (!Object.prototype.hasOwnProperty.call(S.palette, k)) fail("unknown color '" + k + "'");
+      return seq;
+    }
+    function needSet() {
+      if (!S.warp) fail('warp not set');
+      if (!S.shaft) fail('threading not set');
+    }
+
+    function execStmt(st) {
+      const tk = st.tokens;
+      const args = tk.slice(1);
+      switch (st.word) {
+        case 'loom': {
+          if (S.W) fail("unknown command 'loom'");
+          if (args.length !== 2) fail('bad arguments');
+          S.W = numRange(args[0], 1, 200);
+          S.H = numRange(args[1], 1, 200);
+          S.runLen = new Array(S.W).fill(0);
+          S.prev = new Array(S.W).fill(null);
+          return;
+        }
+        case 'palette': {
+          if (!args.length) fail("bad palette entry ''");
+          const p = Object.assign({}, S.palette);
+          for (const e of args) {
+            if (!/^[a-z]=#[0-9a-fA-F]{6}$/.test(e)) fail("bad palette entry '" + e + "'");
+            p[e[0]] = e.slice(2);
+          }
+          S.palette = p;
+          return;
+        }
+        case 'warp': {
+          const seq = colorSeq(st.rest);
+          S.warp = Array.from({ length: S.W }, (_, c) => seq[c % seq.length]);
+          return;
+        }
+        case 'thread': {
+          const seq = expand(parseSequence(st.rest, 'shaft'), 'shaft');
+          S.shaft = Array.from({ length: S.W }, (_, c) => seq[c % seq.length]);
+          return;
+        }
+        case 'treadle': {
+          if (args.length !== 2) fail('bad arguments');
+          const k = numRange(args[0], 1, 10);
+          const lift = parseLift(args[1], S.treadles, false);
+          S.treadles = Object.assign({}, S.treadles, { [k]: lift });
+          return;
+        }
+        case 'shuttle': {
+          const seq = colorSeq(st.rest);
+          S.shuttle = seq;
+          S.spos = 0;
+          return;
+        }
+        case 'pick': return doPick(args);
+        case 'cross': {
+          if (args.length !== 2) fail('bad arguments');
+          const a = num(args[0]);
+          const b = num(args[1]);
+          needSet();
+          if (a < 1 || a > S.W || b < 1 || b > S.W) fail('column out of range');
+          const w = S.warp.slice(), s = S.shaft.slice();
+          [w[a - 1], w[b - 1]] = [w[b - 1], w[a - 1]];
+          [s[a - 1], s[b - 1]] = [s[b - 1], s[a - 1]];
+          S.warp = w; S.shaft = s;
+          return;
+        }
+        case 'drift': {
+          if (args.length !== 1) fail('bad arguments');
+          let t = args[0];
+          let neg = false;
+          if (t[0] === '-') { neg = true; t = t.slice(1); }
+          if (!isNum(t)) fail("bad number '" + args[0] + "'");
+          needSet();
+          let d = Number(t) % S.W;
+          if (neg) d = (S.W - d) % S.W;
+          const w = new Array(S.W), s = new Array(S.W);
+          for (let c = 0; c < S.W; c++) {
+            w[(c + d) % S.W] = S.warp[c];
+            s[(c + d) % S.W] = S.shaft[c];
+          }
+          S.warp = w; S.shaft = s;
+          return;
+        }
+        case 'maxfloat': {
+          if (args.length !== 1) fail('bad arguments');
+          const v = num(args[0]);
+          if (v < 1) fail("bad number '" + args[0] + "'");
+          S.maxfloat = v;
+          return;
+        }
+        default:
+          fail("unknown command '" + st.word + "'");
+      }
+    }
+
+    function doPick(args) {
+      if (args.length < 1 || args.length > 2) fail('bad pick');
+      let color = null, liftTok;
+      if (args.length === 2) {
+        if (!/^[a-z]$/.test(args[0])) fail('bad pick');
+        color = args[0];
+        liftTok = args[1];
+        if (!Object.prototype.hasOwnProperty.call(S.palette, color)) fail("unknown color '" + color + "'");
+      } else {
+        liftTok = args[0];
+        if (!S.shuttle.length) fail('no weft color');
+      }
+      const lift = parseLift(liftTok, S.treadles, true);
+      needSet();
+      if (S.rows >= S.H) fail('loom full');
+      if (color === null) {
+        color = S.shuttle[S.spos];
+        S.spos = (S.spos + 1) % S.shuttle.length;
+      }
+      const raised = new Array(S.W);
+      let line = '';
+      for (let c = 0; c < S.W; c++) {
+        const up = lift.indexOf(S.shaft[c]) >= 0;
+        raised[c] = up;
+        line += up ? S.warp[c] : color;
+      }
+      const runLen = new Array(S.W);
+      for (let c = 0; c < S.W; c++) runLen[c] = S.prev[c] === raised[c] ? S.runLen[c] + 1 : 1;
+      S.prev = raised;
+      S.runLen = runLen;
+      S.grid.push(line);
+      S.rows++;
+      S.last = { row: S.rows, color, lift, raised };
+      if (S.maxfloat !== null) {
+        const N = S.maxfloat;
+        let c = 0;
+        while (c < S.W) {
+          let d = c;
+          while (d < S.W && raised[d] === raised[c]) d++;
+          if (d - c > N) fail('float too long at row ' + S.rows + ' col ' + (c + 1));
+          c = d;
+        }
+        for (let k = 0; k < S.W; k++)
+          if (runLen[k] > N) fail('float too long at row ' + S.rows + ' col ' + (k + 1));
+      }
+    }
+
+    function execList(list) {
+      for (const st of list) {
+        try {
+          if (st.word === 'repeat') {
+            const n = numRange(st.tokens[1], 1, 1000);
+            snap(st.line);
+            for (let r = 0; r < n; r++) execList(st.body);
+            continue;
+          }
+          execStmt(st);
+        } catch (e) {
+          if (e && e.loom) { e.line = e.line || st.line; throw e; }
+          throw e;
+        }
+        snap(st.line);
+      }
+    }
+
+    try {
+      execList(pr.root);
+    } catch (e) {
+      if (!e.loom) throw e;
+      result.error = { line: e.line, message: e.message };
+      result.output = 'error line ' + e.line + ': ' + e.message + '\n';
+      snap(e.line, result.error);
+      result.W = S.W; result.H = S.H; result.palette = S.palette; result.grid = S.grid;
+      return result;
+    }
+    const rows = S.grid.slice();
+    while (rows.length < S.H) rows.push('.'.repeat(S.W));
+    result.ok = true;
+    result.grid = rows;
+    result.W = S.W; result.H = S.H; result.palette = S.palette;
+    result.output = rows.join('\n') + '\n';
+    return result;
+  }
+
+  const api = { run, parseProgram };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  else root.LOOM = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<script>
+const CONFORMANCE = [
+ {
+  "name": "01-plain-weave",
+  "src": "// The simplest cloth: plain weave. Odd columns on shaft 1, even on shaft 2.\nloom 8 4\npalette a=#1b3a5c b=#f2e8cf\nwarp a\nthread 1 2\npick b 1\npick b 2\npick b 1\npick b 2\n",
+  "expected": "abababab\nbabababa\nabababab\nbabababa\n"
+ },
+ {
+  "name": "02-twill-treadles",
+  "src": "// A 2/2 twill: four treadles, walked in order.\nloom 12 8\npalette n=#22223b c=#c9ada7\nwarp n\nthread 1-4\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 41\nrepeat 2 {\n  pick c t1\n  pick c t2\n  pick c t3\n  pick c t4\n}\n",
+  "expected": "nnccnnccnncc\ncnnccnnccnnc\nccnnccnnccnn\nnccnnccnnccn\nnnccnnccnncc\ncnnccnnccnnc\nccnnccnnccnn\nnccnnccnnccn\n"
+ },
+ {
+  "name": "03-sequences",
+  "src": "// Sequence items: repeats, groups, mirror.\nloom 16 3\npalette a=#e63946 b=#f1faee c=#457b9d d=#1d3557\nwarp (a b)*2 c*3 mirror(a b d)\nthread 1\npick d 1\npick d -\npick d *\n",
+  "expected": "ababcccabdbaabab\ndddddddddddddddd\nababcccabdbaabab\n"
+ },
+ {
+  "name": "04-point-twill",
+  "src": "// Point (mirrored) threading makes a zigzag.\nloom 14 6\npalette g=#2a9d8f s=#e9c46a\nwarp g\nthread mirror(1-4)\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 14\npick s t1\npick s t2\npick s t3\npick s t4\npick s t3\npick s t2\n",
+  "expected": "ggsssggggsssgg\nsggsggssggsggs\nssgggssssgggss\ngssgssggssgssg\nssgggssssgggss\nsggsggssggsggs\n"
+ },
+ {
+  "name": "05-shuttle",
+  "src": "// A shuttle cycles weft colors for picks that give none.\nloom 6 7\npalette w=#ffffff r=#d62828 o=#f77f00 y=#fcbf49\nwarp w\nthread 1 2\nshuttle r o y\nrepeat 3 {\n  pick 1\n  pick 2\n}\npick w 12\n",
+  "expected": "wrwrwr\nowowow\nwywywy\nrwrwrw\nwowowo\nywywyw\nwwwwww\n"
+ },
+ {
+  "name": "06-unwoven",
+  "src": "// Rows never woven print as dots.\nloom 5 4\npalette a=#000000 b=#ffffff\nwarp a b\nthread 1 2\npick b 1\npick a 2\n",
+  "expected": "ababa\nababa\n.....\n.....\n"
+ },
+ {
+  "name": "07-cross",
+  "src": "// cross swaps two warp threads (color and shaft) from now on.\nloom 6 4\npalette a=#003049 b=#fcbf49 x=#eae2b7\nwarp a*3 b*3\nthread 1 1 1 2 2 2\npick x 1\ncross 1 6\npick x 1\ncross 2 5\npick x 1\npick x 2\n",
+  "expected": "aaaxxx\nxaaxxa\nxxaxaa\nbbxbxx\n"
+ },
+ {
+  "name": "08-drift",
+  "src": "// drift rotates every warp thread; negative drifts left.\nloom 6 5\npalette a=#264653 b=#e76f51 z=#ffffff\nwarp a b b b b b\nthread 1 2 2 2 2 2\npick z 1\ndrift 1\npick z 1\ndrift 2\npick z 1\ndrift -1\npick z 1\ndrift 7\npick z 1\n",
+  "expected": "azzzzz\nzazzzz\nzzzazz\nzzazzz\nzzzazz\n"
+ },
+ {
+  "name": "09-maxfloat-ok",
+  "src": "// A twill stays within a float limit of 2.\nloom 8 6\npalette k=#111111 y=#ffd166\nwarp k\nthread 1-4\nmaxfloat 2\nrepeat 3 {\n  pick y 12\n  pick y 34\n}\n",
+  "expected": "kkyykkyy\nyykkyykk\nkkyykkyy\nyykkyykk\nkkyykkyy\nyykkyykk\n"
+ },
+ {
+  "name": "10-float-too-long",
+  "src": "// Plain weave on shafts 1-2 then a long float: column states run too long.\nloom 6 6\npalette a=#000000 b=#ffffff\nwarp a\nthread 1 2\nmaxfloat 3\npick b 1\npick b 1\npick b 1\npick b 1\n",
+  "expected": "error line 10: float too long at row 4 col 1\n"
+ },
+ {
+  "name": "11-unknown-color",
+  "src": "loom 4 2\npalette a=#101010\nwarp a\nthread 1\npick q 1\n",
+  "expected": "error line 5: unknown color 'q'\n"
+ },
+ {
+  "name": "12-unclosed",
+  "src": "loom 4 4\npalette a=#101010 b=#fafafa\nwarp a\nthread 1 2\nrepeat 2 {\n  pick b 1\n  repeat 2 {\n    pick b 2\n}\n",
+  "expected": "error line 5: unclosed block\n"
+ },
+ {
+  "name": "13-loom-full",
+  "src": "loom 4 5\npalette a=#101010 b=#fafafa\nwarp a\nthread 1 2\nrepeat 3 {\n  pick b 1\n  pick b 2\n}\n",
+  "expected": "error line 7: loom full\n"
+ },
+ {
+  "name": "14-no-header",
+  "src": "\n// the header must come first\npalette a=#101010\nloom 4 4\n",
+  "expected": "error line 3: expected 'loom' header\n"
+ },
+ {
+  "name": "15-lifts",
+  "src": "// Lift forms: digits, all, none, and \"all except\".\nloom 8 4\npalette a=#5f0f40 b=#fb8b24\nwarp a\nthread 1-8\npick b 1357\npick b *\npick b -\npick b !12\n",
+  "expected": "abababab\naaaaaaaa\nbbbbbbbb\nbbaaaaaa\n"
+ }
+];
+const GALLERY = [
+ {
+  "name": "braid",
+  "title": "Crossing Braid",
+  "note": "cross swaps neighbouring threads between picks, weaving a braid of four colours down the cloth.",
+  "src": "// title: Crossing Braid\n// note: cross swaps neighbouring threads between picks, weaving a braid of four colours down the cloth.\nloom 24 48\npalette a=#0b132b b=#1c7293 c=#ffd166 d=#ef476f w=#f7f7f2\nwarp a b c d\nthread 1 2 3 4\nshuttle w\nrepeat 4 {\n  repeat 6 {\n    cross 1 2\n    cross 3 4\n    pick 13\n  }\n  repeat 6 {\n    cross 2 3\n    cross 4 1\n    pick 24\n  }\n}\n"
+ },
+ {
+  "name": "checkerboard",
+  "title": "Basket Checkerboard",
+  "note": "Threading in pairs and treadling in pairs weaves solid blocks; alternate the colours to get a chessboard.",
+  "src": "// title: Basket Checkerboard\n// note: Threading in pairs and treadling in pairs weaves solid blocks; alternate the colours to get a chessboard.\nloom 48 48\npalette k=#151515 w=#f6f1e7 g=#c9a227\nwarp (k*6 w*6)\nthread (1*6 2*6)\nshuttle k\nrepeat 4 {\n  repeat 6 {\n    pick 1\n  }\n  repeat 6 {\n    pick 2\n  }\n}\n"
+ },
+ {
+  "name": "diamonds",
+  "title": "Lantern Diamonds",
+  "note": "Eight-shaft point threading across and a mirrored treadling down; 4/4 lifts give big glowing diamonds.",
+  "src": "// title: Lantern Diamonds\n// note: Eight-shaft point threading across and a mirrored treadling down; 4/4 lifts give big glowing diamonds.\nloom 45 42\npalette p=#2b1b3d o=#f2a541 t=#2a9d8f w=#fdf0d5\nwarp p*3 o*3 t*3 w*3\nthread mirror(1-8)\ntreadle 1 1234\ntreadle 2 2345\ntreadle 3 3456\ntreadle 4 4567\ntreadle 5 5678\ntreadle 6 6781\ntreadle 7 7812\ntreadle 8 8123\nshuttle p\nrepeat 3 {\n  pick t1\n  pick t2\n  pick t3\n  pick t4\n  pick t5\n  pick t6\n  pick t7\n  pick t8\n  pick t7\n  pick t6\n  pick t5\n  pick t4\n  pick t3\n  pick t2\n}\n"
+ },
+ {
+  "name": "drifting-dunes",
+  "title": "Drifting Dunes",
+  "note": "One drift per pick slides the whole warp sideways, so plain weave turns into rolling diagonal dunes.",
+  "src": "// title: Drifting Dunes\n// note: One drift per pick slides the whole warp sideways, so plain weave turns into rolling diagonal dunes.\nloom 56 44\npalette s=#e9c46a d=#264653 r=#e76f51 c=#f4e8c1\nwarp mirror(s*3 c*2 r*2 d*3)\nthread 1 2\nshuttle d c\nrepeat 22 {\n  pick 1\n  drift 1\n  pick 2\n  drift 2\n}\n"
+ },
+ {
+  "name": "herringbone",
+  "title": "Herringbone Indigo",
+  "note": "Point threading (mirror) plus a treadling that reverses halfway makes the classic V-stripe.",
+  "src": "// title: Herringbone Indigo\n// note: Point threading (mirror) plus a treadling that reverses halfway makes the classic V-stripe.\nloom 48 48\npalette i=#1d2d50 c=#f3e9d2 r=#b5523b\nwarp i*2 c*2 r*2\nthread mirror(1-6)\ntreadle 1 123\ntreadle 2 234\ntreadle 3 345\ntreadle 4 456\ntreadle 5 561\ntreadle 6 612\nshuttle i c\nrepeat 4 {\n  pick t1\n  pick t2\n  pick t3\n  pick t4\n  pick t5\n  pick t6\n  pick t6\n  pick t5\n  pick t4\n  pick t3\n  pick t2\n  pick t1\n}\n"
+ },
+ {
+  "name": "rose-path",
+  "title": "Rose Path",
+  "note": "A twill whose warp drifts one column every four picks; the diagonal changes lean where the drift bites.",
+  "src": "// title: Rose Path\n// note: A twill whose warp drifts one column every four picks; the diagonal changes lean where the drift bites.\nloom 50 40\npalette b=#3a0ca3 p=#f72585 l=#f8d7e6 n=#4361ee\nwarp mirror(b*2 p*2 l*2 n*2)\nthread 1-4\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 14\nshuttle l\nrepeat 5 {\n  repeat 2 {\n    pick t1\n    pick t2\n    pick t3\n    pick t4\n  }\n  drift 1\n}\n"
+ },
+ {
+  "name": "safe-lattice",
+  "title": "Safe Lattice",
+  "note": "maxfloat 4 guarantees no thread skips more than four picks; a satin-like five-shaft lift passes the check.",
+  "src": "// title: Safe Lattice\n// note: maxfloat 4 guarantees no thread skips more than four picks; a satin-like five-shaft lift passes the check.\nloom 40 40\npalette n=#0d1b2a g=#e0b04b s=#778da9 w=#e0e1dd\nwarp n s\nthread 1-5\nmaxfloat 4\ntreadle 1 1\ntreadle 2 3\ntreadle 3 5\ntreadle 4 2\ntreadle 5 4\nshuttle w g\nrepeat 8 {\n  pick t1\n  pick t2\n  pick t3\n  pick t4\n  pick t5\n}\n"
+ },
+ {
+  "name": "sunset-stripes",
+  "title": "Sunset Stripes",
+  "note": "A shuttle cycling through a colour ramp lays gradient stripes over a fine plain-weave ground.",
+  "src": "// title: Sunset Stripes\n// note: A shuttle cycling through a colour ramp lays gradient stripes over a fine plain-weave ground.\nloom 40 48\npalette a=#ffe66d b=#ffc857 c=#ff9f1c d=#f77f00 e=#e5383b f=#a4133c g=#590d22 w=#fff8e7\nwarp w\nthread 1 2\nshuttle a*4 b*4 c*4 d*4 e*4 f*4 g*4 f*4 e*4 d*4 c*4 b*4\nrepeat 24 {\n  pick 1\n  pick 2\n}\n"
+ },
+ {
+  "name": "tartan",
+  "title": "Highland Sett",
+  "note": "A mirrored colour sett in warp and shuttle, woven as 2/2 twill, gives a proper tartan check.",
+  "src": "// title: Highland Sett\n// note: A mirrored colour sett in warp and shuttle, woven as 2/2 twill, gives a proper tartan check.\nloom 60 60\npalette g=#1f4d3a b=#16213e r=#a4161a y=#e5b83c k=#111111\nwarp mirror(g*8 b*2 g*2 r*4 k*1 y*1)\nthread 1 2 3 4\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 14\nshuttle mirror(g*8 b*2 g*2 r*4 k*1 y*1)\nrepeat 15 {\n  pick t1\n  pick t2\n  pick t3\n  pick t4\n}\n"
+ },
+ {
+  "name": "zigzag-ribbons",
+  "title": "Zigzag Ribbons",
+  "note": "Broken twill: the threading zigzags, the treadles follow, and mirrored stripes make ribbons of light.",
+  "src": "// title: Zigzag Ribbons\n// note: Broken twill: the threading zigzags, the treadles follow, and mirrored stripes make ribbons of light.\nloom 64 40\npalette a=#03045e b=#0077b6 c=#90e0ef d=#caf0f8 e=#ff8fab\nwarp mirror(a*3 b*3 c*2 d e)\nthread mirror(1-4)*3\ntreadle 1 12\ntreadle 2 23\ntreadle 3 34\ntreadle 4 14\nshuttle a\nrepeat 10 {\n  pick t1\n  pick t2\n  pick t3\n  pick t4\n}\n"
+ }
+];
+(function(){
+'use strict';
+const $ = (id) => document.getElementById(id);
+const src = $('src'), gutter = $('gutter'), hlCur = $('hlCur'), hlErr = $('hlErr');
+const LH = 20, PAD = 8;
+let res = null, steps = [], cur = 0, sweep = 1, playing = false, playToken = 0, view = 'loom';
+
+// ---------- tabs ----------
+function showTab(t){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on', b.dataset.tab===t));
+  document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on', s.id===t));
+  if(t==='studio') draw();
+}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+document.querySelectorAll('#viewTabs button').forEach(b=>b.onclick=()=>{
+  view=b.dataset.v;
+  document.querySelectorAll('#viewTabs button').forEach(x=>x.classList.toggle('on',x===b));
+  $('viewLoom').style.display=view==='loom'?'':'none';
+  $('viewFabric').style.display=view==='fabric'?'':'none';
+  $('viewText').style.display=view==='text'?'':'none';
+  draw();
+});
+
+// ---------- editor ----------
+function updateGutter(errLine){
+  const n = src.value.split('\n').length;
+  let h = '';
+  for(let i=1;i<=n;i++) h += (i===errLine?'<span class="err">'+i+'</span>':i) + '\n';
+  gutter.innerHTML = '<div style="white-space:pre">' + h + '</div>';
+  syncGutter();
+}
+function syncGutter(){ if(gutter.firstChild) gutter.firstChild.style.transform = 'translateY(' + (-src.scrollTop) + 'px)'; }
+function placeBar(el, line){
+  if(!line){ el.style.display='none'; return; }
+  el.style.display='block';
+  el.style.top = (PAD + (line-1)*LH - src.scrollTop) + 'px';
+}
+let curLine = 0, errLine = 0;
+function updateBars(){ placeBar(hlCur, curLine); placeBar(hlErr, errLine); syncGutter(); }
+src.addEventListener('scroll', updateBars);
+src.addEventListener('keydown', e=>{
+  if(e.key==='Tab'){ e.preventDefault(); const s=src.selectionStart; src.setRangeText('  ',s,src.selectionEnd,'end'); onEdit(); }
+});
+let editTimer = 0;
+function onEdit(){ updateGutter(0); clearTimeout(editTimer); editTimer = setTimeout(()=>runProgram(false), 350); }
+src.addEventListener('input', onEdit);
+function revealLine(l){
+  const top = PAD + (l-1)*LH;
+  if(top < src.scrollTop || top > src.scrollTop + src.clientHeight - 2*LH) src.scrollTop = Math.max(0, top - src.clientHeight/2);
+}
+
+// ---------- running ----------
+function runProgram(weave){
+  stopPlay();
+  res = LOOM.run(src.value, {trace:true, maxSteps:20000});
+  steps = res.steps;
+  $('text').textContent = res.output;
+  errLine = res.error ? res.error.line : 0;
+  updateGutter(errLine);
+  const st = $('status');
+  if(res.error){
+    st.className='err';
+    st.textContent = 'error line ' + res.error.line + ': ' + res.error.message + '  (click to jump to the line)';
+  } else {
+    st.className='ok';
+    st.textContent = 'Woven ' + res.W + ' × ' + res.H + ' cloth.' + (res.truncated ? ' (Debugger trace limited to the first ' + steps.length + ' statements.)' : '');
+  }
+  $('scrub').max = steps.length;
+  if(weave){ setCur(0, false); startPlay(); } else setCur(steps.length, false);
+}
+$('status').onclick = ()=>{ if(res && res.error){ revealLine(res.error.line); src.focus(); updateBars(); } };
+
+// ---------- stepping ----------
+function prevRows(i){ return i>1 ? steps[i-2].rows : 0; }
+function stateAt(i){
+  if(!steps.length) return null;
+  if(i>0) return steps[i-1];
+  const s = steps[0];
+  return {line:0, W:s.W, H:s.H, palette:{}, warp:null, shaft:null, treadles:{}, shuttle:[], spos:0, maxfloat:null, rows:0, runLen:null, last:null, error:null};
+}
+function isPickStep(i){ const s=stateAt(i); return !!(i>0 && s && s.rows>prevRows(i)); }
+function setCur(i, animate){
+  cur = Math.max(0, Math.min(steps.length, i));
+  $('scrub').value = cur;
+  const s = stateAt(cur);
+  curLine = cur>0 ? steps[cur-1].line : 0;
+  if(curLine) revealLine(curLine);
+  updateBars();
+  $('stepLbl').textContent = 'step ' + cur + ' / ' + steps.length;
+  animateSweep(animate && isPickStep(cur));
+  renderState(s);
+  draw();
+}
+let sweepRaf = 0, sweepEnd = 0, sweepStart = 0, sweepDur = 0;
+function speedMs(){ return Math.round(900 / Math.pow(1.6, Number($('speed').value)-1)) + 40; }
+function animateSweep(on){
+  cancelAnimationFrame(sweepRaf);
+  if(!on){ sweep = 1; return; }
+  sweep = 0; sweepStart = performance.now(); sweepDur = speedMs() * 0.8;
+  const tick = (t)=>{ sweep = Math.min(1, (t - sweepStart)/sweepDur); draw(); if(sweep<1) sweepRaf = requestAnimationFrame(tick); };
+  sweepRaf = requestAnimationFrame(tick);
+}
+function stopPlay(){ playing=false; playToken++; $('bPlay').textContent='▶'; }
+async function startPlay(){
+  if(!steps.length) return;
+  if(cur>=steps.length) setCur(0,false);
+  playing=true; const tok=++playToken; $('bPlay').textContent='❚❚';
+  while(playing && tok===playToken && cur<steps.length){
+    setCur(cur+1, true);
+    const wait = isPickStep(cur) ? speedMs() : Math.min(120, speedMs()/3);
+    await new Promise(r=>setTimeout(r, wait));
+  }
+  if(tok===playToken){ playing=false; $('bPlay').textContent='▶'; sweep=1; draw(); }
+}
+$('bPlay').onclick = ()=>{ playing ? stopPlay() : startPlay(); };
+$('bFirst').onclick = ()=>{ stopPlay(); setCur(0,false); };
+$('bLast').onclick = ()=>{ stopPlay(); setCur(steps.length,false); };
+$('bBack').onclick = ()=>{ stopPlay(); setCur(cur-1,false); };
+$('bFwd').onclick = ()=>{ stopPlay(); setCur(cur+1,true); };
+$('scrub').oninput = (e)=>{ stopPlay(); setCur(Number(e.target.value), false); };
+$('btnRun').onclick = ()=>runProgram(false);
+$('btnWeave').onclick = ()=>runProgram(true);
+
+// ---------- drawing ----------
+const cv = $('cvLoom'), cvF = $('cvFabric');
+function setup(canvas, w, h){
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.ceil(w*dpr); canvas.height = Math.ceil(h*dpr);
+  canvas.style.width = w+'px'; canvas.style.height = h+'px';
+  const g = canvas.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0); return g;
+}
+function col(pal,k){ return pal[k] || '#888'; }
+function draw(){
+  if(!$('studio').classList.contains('on')) return;
+  if(view==='loom') drawLoom(); else if(view==='fabric') drawFabric();
+}
+function msg(canvas, text){
+  const g = setup(canvas, 320, 80); g.fillStyle='#b3a58d'; g.font='13px system-ui'; g.fillText(text, 12, 44);
+}
+function drawLoom(){
+  const st = stateAt(cur);
+  if(!st || !st.W){ msg(cv, res && res.error ? 'No loom: fix the error to see it.' : 'Press Run.'); return; }
+  const W=st.W, H=st.H, M=14;
+  const avail = Math.max(240, $('viewLoom').clientWidth - 2);
+  const cs = Math.max(1.5, Math.min(13, (avail-2*M)/W));
+  const shedH = 118, stripY = shedH+2, fabTop = shedH+22;
+  const width = Math.max(avail, W*cs+2*M), height = fabTop + H*cs + M;
+  const g = setup(cv, width, height);
+  const ox = M + (width-2*M-W*cs)/2;
+  g.fillStyle='#15110d'; g.fillRect(0,0,width,height);
+  const pal = st.palette;
+  const pickNow = isPickStep(cur) && st.last;
+  const raised = pickNow ? st.last.raised : null;
+  const tw = Math.max(1, cs*0.62);
+  const sweepX = ox + sweep*W*cs;
+  const top = 10, bot = 84, lift = 22;
+  // lowered threads
+  for(let c=0;c<W;c++){
+    if(raised && raised[c]) continue;
+    const x = ox + c*cs + cs/2;
+    g.fillStyle = st.warp ? col(pal, st.warp[c]) : '#3c3328';
+    g.fillRect(x-tw/2, top+lift*0.5, tw, bot-top);
+  }
+  // weft pass (over lowered threads, under raised ones)
+  const wy = 72;
+  if(pickNow){
+    const wc = col(pal, st.last.color);
+    g.fillStyle = wc; g.fillRect(ox, wy-3, Math.max(0, sweepX-ox), 7);
+  }
+  // raised threads
+  for(let c=0;c<W;c++){
+    if(!(raised && raised[c])) continue;
+    const x = ox + c*cs + cs/2;
+    g.fillStyle = col(pal, st.warp[c]);
+    g.fillRect(x-tw/2, top-6, tw, bot-top);
+    g.fillStyle = 'rgba(255,255,255,.55)';
+    g.fillRect(x-tw/2, top-6, tw, 2);
+  }
+  if(pickNow){
+    g.fillStyle = col(pal, st.last.color); g.strokeStyle='#f2e8d5'; g.lineWidth=1.5;
+    g.beginPath(); g.roundRect ? g.roundRect(sweepX-9, wy-7, 18, 14, 5) : g.rect(sweepX-9, wy-7, 18, 14); g.fill(); g.stroke();
+  }
+  g.fillStyle='#7d705b'; g.font='10px system-ui';
+  g.fillText(pickNow ? 'shed open: raised threads sit higher, weft passes under them' : 'shed closed', ox, 100);
+  // threading strip
+  if(st.shaft){
+    for(let c=0;c<W;c++){
+      const x = ox + c*cs;
+      if(cs>=9){ g.fillStyle='#b3a58d'; g.font=Math.min(11,cs*0.8)+'px system-ui'; g.textAlign='center'; g.fillText(String(st.shaft[c]), x+cs/2, stripY+13); }
+      else { g.fillStyle='hsl('+(st.shaft[c]*45)+',55%,55%)'; g.fillRect(x, stripY+3, Math.max(1,cs-.5), 10); }
+    }
+    g.textAlign='left';
+  }
+  // fabric
+  g.fillStyle='#1d1812'; g.fillRect(ox, fabTop, W*cs, H*cs);
+  for(let r=0;r<st.rows;r++){
+    const line = res.grid[r];
+    const partial = pickNow && r===st.rows-1 && sweep<1;
+    for(let c=0;c<W;c++){
+      if(partial && c >= sweep*W) break;
+      g.fillStyle = col(pal, line[c]);
+      const gap = cs>=6 ? 1 : 0;
+      g.fillRect(ox+c*cs, fabTop+r*cs, cs-gap, cs-gap);
+    }
+  }
+  if(st.rows>0){
+    g.strokeStyle = '#e8b04a'; g.lineWidth=1.5; g.strokeRect(ox-1, fabTop+(st.rows-1)*cs-1, W*cs+2, cs+2);
+  }
+  g.strokeStyle='#4a3f31'; g.lineWidth=1; g.strokeRect(ox-.5, fabTop-.5, W*cs+1, H*cs+1);
+  const info = pickNow ? 'pick ' + st.last.row + ': weft ' + st.last.color + ', lift ' + (st.last.lift.length ? st.last.lift.join(' ') : 'none') : '';
+  $('pickInfo').textContent = info;
+}
+function drawFabric(){
+  if(!res || !res.W){ msg(cvF, res && res.error ? 'No cloth: ' + res.error.message : 'Press Run.'); return; }
+  const W=res.W, H=res.H;
+  const avail = Math.max(240, $('viewFabric').clientWidth - 2);
+  const cs = Math.max(2, Math.min(16, Math.floor(avail/W)));
+  const g = setup(cvF, W*cs, H*cs);
+  const partial = !!res.error;
+  for(let r=0;r<H;r++){
+    for(let c=0;c<W;c++){
+      const k = res.grid[r] ? res.grid[r][c] : '.';
+      if(k==='.' || !k){ g.fillStyle=((r+c)&1)?'#241e17':'#1a1611'; }
+      else g.fillStyle = col(res.palette, k);
+      g.fillRect(c*cs, r*cs, cs, cs);
+    }
+  }
+  if(partial){ g.fillStyle='rgba(21,17,13,.45)'; g.fillRect(0,0,W*cs,H*cs); }
+}
+function chips(list, pal, wrapTxt){
+  return '<div class="chips">' + list.map(k=>'<span class="chip" title="'+k+'" style="background:'+col(pal,k)+'"></span>').join('') + '</div>';
+}
+function renderState(st){
+  const el = $('state');
+  if(!st){ el.innerHTML=''; return; }
+  const pal = st.palette;
+  let h = '';
+  const stmt = st.line ? src.value.split('\n')[st.line-1].replace(/\/\/.*/,'').trim() : '(before the first statement)';
+  h += '<div><b>Line ' + (st.line||'–') + '</b><br><code>' + esc(stmt) + '</code></div>';
+  h += '<div><b>Rows woven</b> ' + st.rows + ' / ' + (st.H||0) + '</div>';
+  h += '<div><b>Warp colours</b>' + (st.warp ? chips(st.warp, pal) : '<br>not set') + '</div>';
+  h += '<div><b>Threading (shafts)</b><br>' + (st.shaft ? '<span style="word-break:break-all">' + st.shaft.join(' ') + '</span>' : 'not set') + '</div>';
+  const tr = Object.keys(st.treadles).sort((a,b)=>a-b).map(k=>'t'+k+': '+(st.treadles[k].join('')||'–')).join(' &nbsp; ');
+  h += '<div><b>Treadles</b><br>' + (tr || 'none') + '</div>';
+  if(st.shuttle.length){
+    h += '<div><b>Shuttle</b> (next ▸ highlighted)<div class="chips">' + st.shuttle.slice(0,60).map((k,i)=>'<span class="chip big" style="background:'+col(pal,k)+';outline:'+(i===st.spos?'2px solid #fff':'none')+'">'+k+'</span>').join('') + '</div></div>';
+  } else h += '<div><b>Shuttle</b><br>empty</div>';
+  let fl = 'maxfloat: ' + (st.maxfloat===null ? 'off' : st.maxfloat);
+  if(st.runLen && st.rows){
+    const mw = maxWeft(st), mr = Math.max.apply(null, st.runLen);
+    fl += '<br>longest weft float (last pick): ' + mw + '<br>longest warp float: ' + mr;
+  }
+  h += '<div><b>Float counters</b><br>' + fl + '</div>';
+  if(st.runLen && st.rows){
+    h += '<div style="grid-column:1/-1"><b>Warp run per column</b> (red = over limit)<div style="display:flex;align-items:flex-end;height:34px;gap:1px;margin-top:3px">'
+      + st.runLen.map(n=>'<span style="flex:1;min-width:1px;background:'+((st.maxfloat!==null && n>st.maxfloat)?'#e5484d':'#e8b04a')+';height:'+Math.min(100, 4+n*6)+'%"></span>').join('') + '</div></div>';
+  }
+  if(st.error) h += '<div style="grid-column:1/-1;background:rgba(229,72,77,.2)"><b>Error:</b> ' + esc(st.error.message) + '</div>';
+  el.innerHTML = h;
+}
+function maxWeft(st){
+  const r = st.last.raised; let best=1, run=1;
+  for(let i=1;i<r.length;i++){ run = r[i]===r[i-1] ? run+1 : 1; if(run>best) best=run; }
+  return best;
+}
+function esc(s){ return String(s).replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+// ---------- gallery ----------
+function thumb(canvas, r, cs){
+  const g = canvas.getContext('2d');
+  for(let y=0;y<r.H;y++) for(let x=0;x<r.W;x++){ g.fillStyle = r.palette[r.grid[y][x]] || '#222'; g.fillRect(x*cs,y*cs,cs,cs); }
+}
+const sel = $('examplePick');
+function loadProgram(text){ src.value = text; src.scrollTop = 0; showTab('studio'); runProgram(false); }
+GALLERY.forEach((p, i)=>{
+  const r = LOOM.run(p.src);
+  const card = document.createElement('div'); card.className='card';
+  const c = document.createElement('canvas');
+  const cs = Math.max(1, Math.floor(190/Math.max(r.W, r.H*0.9)));
+  c.width = r.W*cs; c.height = r.H*cs; c.style.maxWidth='100%';
+  if(r.ok) thumb(c, r, cs);
+  card.appendChild(c);
+  card.insertAdjacentHTML('beforeend', '<h3>'+esc(p.title)+'</h3><p>'+esc(p.note)+'</p>');
+  card.onclick = ()=>loadProgram(p.src);
+  $('cards').appendChild(card);
+  sel.add(new Option(p.title, String(i)));
+});
+sel.insertBefore(new Option('Load an example…', ''), sel.firstChild); sel.selectedIndex = 0;
+sel.onchange = ()=>{ if(sel.value!=='') loadProgram(GALLERY[Number(sel.value)].src); sel.selectedIndex=0; };
+
+// ---------- conformance ----------
+(function(){
+  let ok = 0; const list = $('confList');
+  CONFORMANCE.forEach(t=>{
+    const got = LOOM.run(t.src).output, pass = got === t.expected;
+    if(pass) ok++;
+    const row = document.createElement('div'); row.className='crow';
+    row.innerHTML = '<div><span class="badge '+(pass?'pass':'fail')+'">'+(pass?'PASS':'FAIL')+'</span><span>'+esc(t.name)+'</span></div><pre>'
+      + 'expected:\n' + esc(t.expected) + '\ngot:\n' + esc(got) + '</pre>';
+    row.firstChild.onclick = ()=>row.classList.toggle('open');
+    if(!pass) row.classList.add('open');
+    list.appendChild(row);
+  });
+  $('confSum').innerHTML = '<b style="color:'+(ok===CONFORMANCE.length?'var(--green)':'var(--red)')+'">'+ok+' / '+CONFORMANCE.length+' passed</b> — run live in this page by the same engine that powers cli.js. Click a row to compare output.';
+  $('confTotal').textContent = '(' + ok + '/' + CONFORMANCE.length + ')';
+})();
+
+window.addEventListener('resize', draw);
+new ResizeObserver(draw).observe($('viewLoom'));
+src.value = (GALLERY.find(p=>p.name==='tartan') || GALLERY[0] || {src:'loom 4 4'}).src;
+updateGutter(0);
+runProgram(false);
+})();
+</script>
+</body>
+</html>
