@@ -1,7 +1,7 @@
 ---
 id: "AO-026"
-title: "Sonnet 5.5 is half the price of Opus 5.5 on paper, and about 25% cheaper in my bill"
-summary: "Cache reads cost the same on both models, and cache reads are 97% of my tokens. So I'm running ten identical long-horizon sessions — both models, every reasoning level — to find out whether Sonnet's discount survives the extra tries it might need."
+title: "Sonnet 5.5 is half the price of Opus 5.5 on paper. Across three long tests it was 4% cheaper."
+summary: "Ten Claude Code sessions per test, both models at every effort level, run on an invented language, a canal-scheduling optimizer and a no-rules music video. Cache reads eat Sonnet's discount, Opus was at least as good, and effort turned out to be a dial for how much work gets done, not how hard the model thinks."
 date: 2026-09-28
 status: "in-progress"
 tags: ["claude-code", "gauntlet-loop", "agents", "cost", "lessons"]
@@ -413,7 +413,113 @@ kept notes in files, tested their own work, and only one of them ever filled its
 The part that actually felt insane is the part I had to do myself: noticing it was still
 going and deciding it was enough. Nothing in the session was going to decide that for it.
 
-### Music videos
+### Test 3: a music video, with no instructions
 
-Queued now, one session at a time so each gets my GPU to itself. They get a deliberately
-vague prompt: make a 30-second music video, however you like, with any local tool I have.
+For the last test I took the guardrails off. Each session got four sentences: make a
+30-second music video; what it's about, how it looks and sounds, and how you make it are
+up to you; use any local tool on this machine; leave the finished video in this folder.
+That's it. No spec, no grader, no hidden tests. The sessions ran one at a time so each had
+my laptop's GPU to itself, with everything I have installed available to them: ComfyUI and
+its image, video and song models, Blender, and my own notes on how to use them.
+
+The two Max runs are still to come. They'll run tomorrow, when my usage limit resets, and
+land here.
+
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin:1.2em 0">
+  <figure style="margin:0"><video controls preload="none" playsinline poster="/gauntlet/music-video/opus-5-5-low.jpg" src="/gauntlet/music-video/opus-5-5-low.mp4" style="width:100%;border-radius:8px;border:1px solid var(--pc-line,#ccc)"></video><figcaption style="font-size:14px">Opus 5.5 Low · <em>Lantern Tide</em></figcaption></figure>
+  <figure style="margin:0"><video controls preload="none" playsinline poster="/gauntlet/music-video/sonnet-5-5-low.jpg" src="/gauntlet/music-video/sonnet-5-5-low.mp4" style="width:100%;border-radius:8px;border:1px solid var(--pc-line,#ccc)"></video><figcaption style="font-size:14px">Sonnet 5.5 Low · <em>Night Drive</em></figcaption></figure>
+  <figure style="margin:0"><video controls preload="none" playsinline poster="/gauntlet/music-video/opus-5-5-medium.jpg" src="/gauntlet/music-video/opus-5-5-medium.mp4" style="width:100%;border-radius:8px;border:1px solid var(--pc-line,#ccc)"></video><figcaption style="font-size:14px">Opus 5.5 Medium · <em>Last Tram to the Moon</em></figcaption></figure>
+  <figure style="margin:0"><video controls preload="none" playsinline poster="/gauntlet/music-video/sonnet-5-5-medium.jpg" src="/gauntlet/music-video/sonnet-5-5-medium.mp4" style="width:100%;border-radius:8px;border:1px solid var(--pc-line,#ccc)"></video><figcaption style="font-size:14px">Sonnet 5.5 Medium · <em>Moth Song</em></figcaption></figure>
+  <figure style="margin:0"><video controls preload="none" playsinline poster="/gauntlet/music-video/opus-5-5-high.jpg" src="/gauntlet/music-video/opus-5-5-high.mp4" style="width:100%;border-radius:8px;border:1px solid var(--pc-line,#ccc)"></video><figcaption style="font-size:14px">Opus 5.5 High · <em>Paper Lantern</em></figcaption></figure>
+  <figure style="margin:0"><video controls preload="none" playsinline poster="/gauntlet/music-video/sonnet-5-5-high.jpg" src="/gauntlet/music-video/sonnet-5-5-high.mp4" style="width:100%;border-radius:8px;border:1px solid var(--pc-line,#ccc)"></video><figcaption style="font-size:14px">Sonnet 5.5 High · <em>Night Shift</em></figcaption></figure>
+  <figure style="margin:0"><video controls preload="none" playsinline poster="/gauntlet/music-video/opus-5-5-xhigh.jpg" src="/gauntlet/music-video/opus-5-5-xhigh.mp4" style="width:100%;border-radius:8px;border:1px solid var(--pc-line,#ccc)"></video><figcaption style="font-size:14px">Opus 5.5 XHigh · <em>Neon Koi</em></figcaption></figure>
+  <figure style="margin:0"><video controls preload="none" playsinline poster="/gauntlet/music-video/sonnet-5-5-xhigh.jpg" src="/gauntlet/music-video/sonnet-5-5-xhigh.mp4" style="width:100%;border-radius:8px;border:1px solid var(--pc-line,#ccc)"></video><figcaption style="font-size:14px">Sonnet 5.5 XHigh · <em>Light Load</em></figcaption></figure>
+</div>
+
+| Session | Video | How it was made | Wall time | Cost |
+|---|---|---|---|---|
+| Opus 5.5 Low | Lantern Tide | Synthwave drawn in code, music synthesized in code | 9 min | $0.50 |
+| Sonnet 5.5 Low | Night Drive | Synthwave drawn in code, music synthesized in code | 6 min | $0.27 |
+| Opus 5.5 Medium | Last Tram to the Moon | Sung song, 6 painted shots, all animated | 56 min | $3.33 |
+| Sonnet 5.5 Medium | Moth Song | Music in code, 10 painted stills with camera moves | 10 min | $0.60 |
+| Opus 5.5 High | Paper Lantern | Sung song, cut-paper diorama, all animated | 62 min | $3.59 |
+| Sonnet 5.5 High | Night Shift | Sung song, 7 painted shots, all animated | 58 min | $2.22 |
+| Opus 5.5 XHigh | Neon Koi | Sung city-pop, 11 animated shots, karaoke lyrics | 1 h 41 min | $14.72 |
+| Sonnet 5.5 XHigh | Light Load | Sung synth-pop, 9 animated Hopper-style shots, captions | 1 h 34 min | $9.73 |
+
+**Effort decided the ambition, and it wasn't subtle.** Both Low runs never touched the GPU.
+Each drew a synthwave sunset in Python and synthesized a tune: good-looking, done in under
+ten minutes, and the minimum anyone could call a music video. From High up, every session
+wrote its own lyrics, generated a sung song, painted keyframes, animated every shot and cut
+the edit on the beat. Opus Medium did the same. Sonnet Medium stopped halfway: real painted
+stills, but music written in code and camera moves instead of animation, explicitly
+because animating would take about five minutes a clip.
+
+**The craft at the top end surprised me.** Opus High picked a cut-paper diorama look *because*
+paper is supposed to move stiffly, so the AI video's jerkiness reads as stop-motion, and it
+only shows its character from behind to avoid face problems. Sonnet High's song model kept
+mangling "brass robot", so it rewrote the lyric to "tin robot." Opus XHigh has its girl
+press PLAY on her Walkman exactly as the word "play" is sung. When my ComfyUI server crashed
+mid-render, Opus XHigh read my own troubleshooting notes, restarted it under a GPU lease and
+re-rendered the clip that failed. Nobody asked it to.
+
+**And they converged again.** Four of the six character videos put their lead in a yellow
+raincoat or rain cape, and a fifth in a mustard-yellow hoodie. Nearly all are at night, in
+the rain, under a moon, and warm lamplight is everywhere. The two Low runs independently
+chose synthwave sunsets. With complete freedom, the models reached for the same few pictures,
+just like the ten tartans in Loom.
+
+**One honest caveat that nobody fixed:** every session that made a sung song said, in its own
+words, that it had never heard it. They judged their songs by transcripts and spectrograms.
+They can see their videos, but they can't listen to them.
+
+**A harness lesson.** A headless session ends when the model ends its turn. Two of the Opus
+runs started a render in the background and politely said "I'll pick things back up when it
+finishes," and in a headless run that's the end of the session. Nothing was going to wake
+them. My launcher now treats "no video in the folder" as not finished and resumes the same
+session with a note that its render is probably done. It's the same lesson as the nine-hour
+session in reverse: the sessions don't know how to stop, and they don't know how to wait.
+
+## What I learned
+
+**Sonnet 5.5 is half the price on paper and roughly the same price in practice.** Over all
+three tests, the Opus runs cost $235 and the Sonnet runs $225, about 4% cheaper. It was 31%
+*more* expensive on Loom, 13% cheaper on Lockkeeper, and cheaper on the music videos. Cache
+reads cost the same on both models, and they're the biggest line on any long agentic run,
+so the discount only shows up on the parts that aren't reading the conversation again. Test
+it on your own work before assuming it saves anything.
+
+**Opus was at least as good, and neither model was simply faster.** Opus won four of five
+head-to-heads on Lockkeeper and made both the best schedule and the best solver, and it
+finished Loom faster at every effort level. On the long tests it flipped: Sonnet usually
+finished sooner, and on the music videos sooner and cheaper. Sonnet made the most gallery
+pieces and the more playful art. The honest summary is that the two are closer than the
+price table suggests, in both directions.
+
+**Effort is a work dial, not a thinking dial.** This is the finding I'll use most. I assumed
+effort controlled how long the model thinks per step. It barely does. From Low to Max on
+Lockkeeper, Opus took 9× as many actions but thought only 1.7× as long per action. Sonnet at
+Low actually thought *more* per step than Sonnet at Medium; it just took a third as many
+steps and stopped. Anthropic's own docs say the same thing plainly: effort affects every
+token, including how many tool calls get made, and lower effort means fewer of them. Low
+effort isn't shallow thinking. It's doing less.
+
+That matters for creative work, where the search space is huge and nothing needs deep
+reasoning. The Low music videos weren't dumb; they were lazy. They could have tried three
+concepts or rendered on the GPU without thinking any harder at all, and they didn't. I'd
+like two separate dials: how hard to think, and how much to try. Until then, the ways to get
+high effort out of a light-thinking model are all outside the model: a prompt with an
+explicit checklist, a stop hook that won't let the session end until the list is done, or a
+high-effort director handing a low-effort worker the next thing to try. The one thing that
+holds for every setting is that a model won't stop while part of the task is visibly
+unfinished.
+
+**Max was rarely worth it.** On Loom it cost 16–18× Low for the same perfect score. On
+Lockkeeper it bought the best solver, but only just, for $54 and $62. On Lockkeeper's hidden
+canals, both XHigh runs scored worse than both Low runs. More effort bought more work every time; it only
+sometimes bought a better result.
+
+**Given freedom, they all reach for the same few things.** Ten tartans. Two synthwave
+sunsets. Four yellow raincoats. The differences between the models were real but small next
+to how much they agreed on what "good" looks like. If I want something nobody has seen, the
+prompt has to ask for it. Left alone, the models give me what everyone has seen.
