@@ -9,6 +9,7 @@
 //   <ao-model src="/media/x/model.glb" poster="/media/x/model.webp" size="2.1 MB" label="…">
 //   <ao-timeline lanes="a:Session A|b:Session B" views="b:What B saw"> <ol><li data-lane="a">…
 //   <ao-game src="/games/x/" poster="/media/x/poster.jpg" size="12 MB" label="…" note="…">
+//   <ao-slider aspect="16/9" labels="Before|After"> <img …> <img …> <figcaption>…</figcaption>
 //
 // Usage notes live in the blog's CLAUDE.md, "Post components".
 import '../styles/post-components.css';
@@ -379,7 +380,67 @@ class AoGame extends HTMLElement {
   }
 }
 
+// ---------------------------------------------------------------------------------------
+// <ao-slider>: two images of the same frame, one over the other, with a divider the reader
+// drags (or moves with the arrow keys) to wipe between them. For before/after pairs where the
+// difference is in the detail: a mask, a fill, a fix.
+//   aspect="w/h"      the frame both images are fitted into (default 16/9)
+//   labels="A|B"      tags for the left and right image (default: each image's alt)
+//   start="50"        where the divider starts, in percent
+// The first <img> is the left side, the second the right; an optional <figcaption> sits under
+// the frame. Without JS the two images and the caption just stack.
+class AoSlider extends HTMLElement {
+  connectedCallback() {
+    if (this._ready) return;
+    const imgs = [...this.querySelectorAll(':scope > img')];
+    if (imgs.length < 2) return;
+    this._ready = true;
+    const [a, b] = imgs;
+    const aspect = this.getAttribute('aspect');
+    if (aspect) this.style.setProperty('--ao-aspect', aspect);
+    const labels = (this.getAttribute('labels') || '').split('|');
+    const la = labels[0] || a.alt || 'Before';
+    const lb = labels[1] || b.alt || 'After';
+
+    const stage = document.createElement('div');
+    stage.className = 'ao-slider-stage';
+    a.classList.add('ao-slider-a');
+    b.classList.add('ao-slider-b');
+    // Both are in view the moment the frame is, so neither should wait on lazy loading.
+    a.loading = 'eager';
+    b.loading = 'eager';
+    stage.append(a, b);
+
+    const line = document.createElement('div');
+    line.className = 'ao-slider-line';
+    line.setAttribute('aria-hidden', 'true');
+    const tagA = document.createElement('span');
+    tagA.className = 'ao-slider-tag ao-slider-tag-a';
+    tagA.textContent = la;
+    const tagB = document.createElement('span');
+    tagB.className = 'ao-slider-tag ao-slider-tag-b';
+    tagB.textContent = lb;
+
+    const range = document.createElement('input');
+    range.type = 'range';
+    range.min = '0';
+    range.max = '100';
+    range.step = '0.5';
+    range.value = String(Math.min(100, Math.max(0, parseFloat(this.getAttribute('start') || '50'))));
+    range.className = 'ao-slider-range';
+    range.setAttribute('aria-label', 'Divider between ' + la + ' and ' + lb);
+    const set = () => this.style.setProperty('--ao-pos', range.value + '%');
+    range.addEventListener('input', set);
+    set();
+
+    stage.append(line, tagA, tagB, range);
+    this.prepend(stage);
+    this.classList.add('ao-slider-ready');
+  }
+}
+
 if (!customElements.get('ao-compare')) customElements.define('ao-compare', AoCompare);
 if (!customElements.get('ao-game')) customElements.define('ao-game', AoGame);
 if (!customElements.get('ao-model')) customElements.define('ao-model', AoModel);
 if (!customElements.get('ao-timeline')) customElements.define('ao-timeline', AoTimeline);
+if (!customElements.get('ao-slider')) customElements.define('ao-slider', AoSlider);

@@ -347,3 +347,112 @@ ao-timeline .ao-tl-body q {
 @media (prefers-reduced-motion: reduce) {
   ao-timeline > ol > li, .ao-tl-views button { transition: none; }
 }
+
+/* <ao-slider>: before/after wipe. Until the element upgrades (or without JS) the images and
+   caption simply stack, so nothing here applies before .ao-slider-ready. */
+ao-slider {
+  --ao-aspect: 16/9;
+  --ao-pos: 50%;
+  display: block;
+  margin: 8px 0 28px;
+}
+ao-slider:not(.ao-slider-ready) > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+.ao-slider-stage {
+  position: relative;
+  aspect-ratio: var(--ao-aspect);
+  background: #15141f;
+  border: 1px solid var(--pc-line);
+  border-radius: 8px;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+.ao-slider-stage > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  max-width: none;
+}
+.ao-slider-stage > img.ao-slider-b { clip-path: inset(0 0 0 var(--ao-pos)); }
+.ao-slider-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--ao-pos);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--pc-head);
+  box-shadow: 0 0 18px rgba(240, 192, 106, 0.45);
+  pointer-events: none;
+}
+.ao-slider-line::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 26px;
+  height: 26px;
+  margin: -13px 0 0 -13px;
+  border-radius: 999px;
+  border: 2px solid var(--pc-head);
+  background: rgba(16, 18, 32, 0.72);
+}
+.ao-slider-tag {
+  position: absolute;
+  top: 10px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(16, 18, 32, 0.74);
+  color: #F2E7D5;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  max-width: 44%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ao-slider-tag-a { left: 10px; }
+.ao-slider-tag-b { right: 10px; }
+/* The range input covers the whole frame: drag anywhere, or focus it and use the arrow keys. */
+.ao-slider-range {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.ao-slider-stage:has(.ao-slider-range:focus-visible) {
+  outline: 3px solid var(--pc-head);
+  outline-offset: 3px;
+}
+ao-slider figcaption {
+  margin-top: 8px;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pc-soft);
+}
+ao-slider figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
+ao-slider figcaption .ao-meta {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: var(--pc-quiet);
+}
