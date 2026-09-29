@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="night">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lockkeeper's Ledger</title>
+<style>
+:root {
+  --pc-page:#101220; --pc-tile:#201F2C; --pc-hover:#222130;
+  --pc-head:#F0C06A; --pc-strong:#F2E7D5; --pc-body:#C9BCA9; --pc-soft:#9C917F; --pc-quiet:#8E8375;
+  --pc-line:#302E3E; --pc-line2:#4A445A; --pc-accent:#E2795C; --pc-gold:#C9A227;
+  --pc-shadow:0 34px 100px rgba(0,0,0,.6);
+  --water:#3E6A85; --water2:#5C8FAE; --earth:#2B2A38; --stone:#6E6A78; --sky-day:#EBDCC0; --sky-night:#0B0D1A;
+  --up:#C9A227; --down:#E2795C; --glow:0 0 40px rgba(240,192,106,.12);
+}
+:root[data-mode='day'] {
+  --pc-page:#FBF3E8; --pc-tile:#F3E7D2; --pc-hover:#F4E9D8;
+  --pc-head:#BE7A10; --pc-strong:#3A3A42; --pc-body:#4A4A50; --pc-soft:#6B5E52; --pc-quiet:#7A6C5D;
+  --pc-line:#E2D5C0; --pc-line2:#D0BEA3; --pc-accent:#A85E2B; --pc-gold:#B08A2E;
+  --pc-shadow:0 30px 90px rgba(58,58,66,.22);
+  --water:#6E9DB8; --water2:#8DB7CC; --earth:#D9C7A6; --stone:#9A917F; --sky-day:#F6ECD8; --sky-night:#59607E;
+  --up:#B08A2E; --down:#A85E2B; --glow:none;
+}
+* { box-sizing: border-box; }
+html { background: var(--pc-page); }
+body { margin: 0; background: var(--pc-page); color: var(--pc-body); font: 14px/1.5 Karla, "Segoe UI", system-ui, -apple-system, sans-serif; }
+#app { max-width: 1120px; margin: 0 auto; padding: 14px 16px 40px; }
+h1, h2, h3 { font-family: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Trebuchet MS", system-ui, sans-serif; color: var(--pc-head); letter-spacing: -.015em; margin: 0; }
+h1 { font-size: 30px; line-height: 1.1; }
+h2 { font-size: 20px; margin: 4px 0 8px; } h3 { font-size: 16px; margin: 14px 0 6px; }
+b, strong { color: var(--pc-strong); font-weight: 600; }
+a { color: var(--pc-accent); }
+:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+.eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--pc-gold); }
+.lede { font-family: Georgia, serif; font-size: 15px; margin: 6px 0 0; max-width: 560px; color: var(--pc-body); }
+.top { display: grid; grid-template-columns: 1fr auto; gap: 10px 18px; align-items: start; position: relative; }
+.modebtn { position: absolute; right: 0; top: 0; }
+.scorebox { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px 22px; padding: 10px 0 8px; border-top: 1px solid var(--pc-line); border-bottom: 1px solid var(--pc-line); margin-top: 6px; }
+.score { display: flex; flex-direction: column; min-width: 78px; }
+.score .v { font: 600 22px/1.1 ui-monospace, Consolas, monospace; color: var(--pc-strong); }
+.score .k { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--pc-soft); }
+.score.main .v { color: var(--pc-head); font-size: 26px; }
+.badge { align-self: center; font-size: 12px; border: 1px solid var(--pc-line2); border-radius: 999px; padding: 2px 10px; color: var(--pc-body); }
+.badge.bad { border-color: var(--pc-accent); color: var(--pc-accent); }
+.pill { font: 600 13px Karla, "Segoe UI", system-ui, sans-serif; border-radius: 999px; border: 1px solid var(--pc-line2); background: var(--pc-tile); color: var(--pc-strong); padding: 7px 16px; cursor: pointer; transition: background .18s, border-color .18s; }
+.pill:hover { border-color: var(--pc-head); }
+.pill.primary { background: var(--pc-head); color: var(--pc-page); border-color: var(--pc-head); }
+.pill.ghost { background: transparent; }
+.pill:disabled { opacity: .5; cursor: default; }
+.intro { margin: 12px 0 6px; border: 1px solid var(--pc-line); border-radius: 24px; padding: 8px 18px; background: var(--pc-tile); }
+.intro summary { cursor: pointer; color: var(--pc-head); font-weight: 600; padding: 4px 0; }
+.introgrid { display: grid; grid-template-columns: 300px 1fr; gap: 18px; align-items: center; padding: 6px 0 8px; }
+.introsvg { width: 100%; height: auto; background: var(--pc-page); border-radius: 12px; }
+.prose p { font-family: Georgia, serif; font-size: 15.5px; line-height: 1.62; max-width: 640px; margin: 0 0 10px; }
+.stage { margin-top: 10px; border: 1px solid var(--pc-line); border-radius: 24px; overflow: hidden; background: var(--pc-tile); box-shadow: var(--glow); }
+.canalwrap { position: relative; }
+#canal { display: block; width: 100%; height: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; padding: 6px 14px; font-size: 12px; color: var(--pc-soft); border-top: 1px solid var(--pc-line); }
+.legend i { display: inline-block; width: 12px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: middle; }
+.nowbox { padding: 8px 16px 10px; font-size: 13px; min-height: 58px; border-top: 1px solid var(--pc-line); color: var(--pc-body); display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 2px 18px; }
+.nowbox .row b { font-weight: 600; }
+.transport { position: sticky; top: 0; z-index: 5; display: flex; gap: 12px; align-items: center; padding: 8px 4px; margin-top: 6px; background: var(--pc-page); border-bottom: 1px solid var(--pc-line); }
+.clock { font: 600 15px ui-monospace, Consolas, monospace; color: var(--pc-strong); min-width: 76px; }
+.scrubwrap { position: relative; flex: 1; height: 30px; }
+.strip { position: absolute; left: 0; right: 0; top: 9px; height: 12px; border-radius: 6px; overflow: hidden; border: 1px solid var(--pc-line2); }
+input[type=range] { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 30px; margin: 0; background: transparent; -webkit-appearance: none; appearance: none; cursor: pointer; }
+input[type=range]::-webkit-slider-runnable-track { background: transparent; height: 30px; }
+input[type=range]::-moz-range-track { background: transparent; height: 30px; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 8px; height: 28px; margin-top: 1px; border-radius: 4px; background: var(--pc-head); border: 1px solid var(--pc-page); }
+input[type=range]::-moz-range-thumb { width: 8px; height: 26px; border-radius: 4px; background: var(--pc-head); border: 1px solid var(--pc-page); }
+.speed { font-size: 12px; color: var(--pc-soft); display: flex; gap: 6px; align-items: center; }
+select, input[type=number], input[type=time], input[type=search] { font: 13px Karla, "Segoe UI", system-ui, sans-serif; background: var(--pc-tile); color: var(--pc-strong); border: 1px solid var(--pc-line2); border-radius: 10px; padding: 5px 8px; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0 0; }
+.tabs button { font: 600 13px Karla, "Segoe UI", system-ui, sans-serif; background: transparent; color: var(--pc-soft); border: 0; border-bottom: 2px solid transparent; padding: 8px 12px; cursor: pointer; }
+.tabs button.on { color: var(--pc-head); border-bottom-color: var(--pc-head); }
+.panel { border-top: 1px solid var(--pc-line); padding: 12px 0; }
+.hidden { display: none !important; }
+.panelhead { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+.seg { display: inline-flex; border: 1px solid var(--pc-line2); border-radius: 999px; overflow: hidden; }
+.seg button { font: 600 12px Karla, "Segoe UI", system-ui, sans-serif; background: transparent; color: var(--pc-soft); border: 0; padding: 5px 12px; cursor: pointer; }
+.seg button.on { background: var(--pc-head); color: var(--pc-page); }
+.focusnote { font-size: 12px; color: var(--pc-gold); }
+.ganttwrap { overflow-x: auto; border: 1px solid var(--pc-line); border-radius: 14px; background: var(--pc-tile); }
+#gantt { display: block; }
+#gantt text { font: 10px Karla, "Segoe UI", system-ui, sans-serif; fill: var(--pc-strong); pointer-events: none; }
+#gantt .lab { fill: var(--pc-body); font-size: 11px; }
+#gantt .tick { fill: var(--pc-soft); font-size: 10px; }
+#gantt rect.op { cursor: pointer; }
+.gantthelp { font-size: 12px; color: var(--pc-soft); margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.gantthelp i { display: inline-block; width: 14px; height: 9px; margin-right: 5px; border-radius: 2px; vertical-align: middle; }
+.opdetail { margin-top: 8px; padding: 8px 12px; border-left: 3px solid var(--pc-gold); font-size: 13px; background: var(--pc-tile); border-radius: 0 12px 12px 0; }
+#overview { margin-bottom: 10px; }
+.causebars { display: grid; gap: 5px; margin: 8px 0 4px; max-width: 720px; }
+.cb { display: grid; grid-template-columns: 210px 1fr 90px; gap: 8px; align-items: center; font-size: 12.5px; }
+.cb .bar { height: 10px; background: var(--pc-line); border-radius: 5px; overflow: hidden; } .cb .bar i { display: block; height: 100%; background: var(--pc-gold); }
+.cb .n { text-align: right; font-family: ui-monospace, Consolas, monospace; color: var(--pc-strong); }
+.boat { border: 1px solid var(--pc-line); border-radius: 18px; margin: 8px 0; background: var(--pc-tile); }
+.boat > summary { list-style: none; cursor: pointer; padding: 9px 14px; display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: baseline; }
+.boat > summary::-webkit-details-marker { display: none; }
+.boat .nm { color: var(--pc-strong); font-weight: 600; font-size: 15px; }
+.boat .meta { color: var(--pc-soft); font-size: 12px; }
+.boat .late { font: 600 13px ui-monospace, Consolas, monospace; color: var(--pc-accent); }
+.boat .ontime { font: 600 13px ui-monospace, Consolas, monospace; color: var(--pc-soft); }
+.boat .body { padding: 2px 16px 12px; border-top: 1px solid var(--pc-line); }
+.boat .body p { margin: 6px 0; font-size: 13.5px; }
+.boat .body .why { font-family: Georgia, serif; font-size: 14.5px; line-height: 1.55; }
+.chip { display: inline-block; font-size: 11px; border: 1px solid var(--pc-line2); border-radius: 999px; padding: 0 8px; margin-left: 6px; color: var(--pc-soft); }
+.whatif { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+fieldset { border: 1px solid var(--pc-line); border-radius: 18px; padding: 10px 14px 12px; margin: 0; display: grid; gap: 8px; align-content: start; }
+legend { padding: 0 8px; color: var(--pc-head); font-weight: 600; }
+fieldset label { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13px; }
+.btnrow { display: flex; gap: 8px; flex-wrap: wrap; }
+.dlist { margin: 0; padding-left: 18px; font-size: 13px; }
+.dlist li { margin: 2px 0; } .dlist button { margin-left: 8px; font-size: 11px; padding: 1px 8px; }
+.progress { height: 8px; border-radius: 4px; background: var(--pc-line); overflow: hidden; }
+.progress div { height: 100%; width: 0; background: var(--pc-head); }
+.small { font-size: 12px; color: var(--pc-soft); }
+.cmp { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+.cmp th, .cmp td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--pc-line); vertical-align: top; }
+.cmp th { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--pc-gold); font-weight: 600; }
+.cmp td.num { font-family: ui-monospace, Consolas, monospace; white-space: nowrap; }
+.worse { color: var(--pc-accent); } .better { color: var(--pc-head); }
+.bigcmp { display: flex; gap: 22px; flex-wrap: wrap; margin: 10px 0; }
+.foot { margin-top: 24px; font-size: 12px; color: var(--pc-quiet); border-top: 1px solid var(--pc-line); padding-top: 10px; }
+@media (max-width: 760px) {
+  h1 { font-size: 24px; } .introgrid { grid-template-columns: 1fr; }
+  .cb { grid-template-columns: 120px 1fr 70px; } .speed { display: none; }
+  .transport { flex-wrap: wrap; } .modebtn { position: static; grid-column: 1 / -1; justify-self: start; }
+  .top { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.introbox .introgrid { display: grid; grid-template-columns: 300px 1fr; gap: 18px; align-items: center; }
+@media (max-width: 760px) { .introbox .introgrid { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .canalwrap { overflow-x: auto; } #canal { min-width: 760px; } }
+
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="titlebox">
+      <div class="eyebrow">Wendle Navigation &middot; two-day schedule</div>
+      <h1>The Lockkeeper's Ledger</h1>
+      <p class="lede" id="lede"></p>
+    </div>
+    <div class="scorebox" id="scorebox" aria-live="polite"></div>
+    <button class="pill ghost modebtn" id="modebtn" title="Switch between night and day colours">Day colours</button>
+  </header>
+
+
+
+  <section class="stage" aria-label="Animated canal">
+    <div class="canalwrap">
+      <svg id="canal" viewBox="0 0 1100 350" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Side view of the canal, animated"></svg>
+      <div class="legend" id="canallegend"></div>
+    </div>
+    <div class="nowbox" id="nowbox" aria-live="off"></div>
+  </section>
+
+  <div class="transport" id="transport">
+    <button class="pill primary" id="playbtn" aria-label="Play or pause">Play</button>
+    <div class="clock" id="clock">D1 00:00</div>
+    <div class="scrubwrap">
+      <div class="strip" id="strip"></div>
+      <input type="range" id="scrub" min="0" max="2880" step="1" value="360" aria-label="Time scrubber, both days">
+    </div>
+    <label class="speed">Speed
+      <select id="speed">
+        <option value="10">10 min/s</option>
+        <option value="30" selected>30 min/s</option>
+        <option value="60">1 h/s</option>
+        <option value="150">2.5 h/s</option>
+        <option value="400">Fast</option>
+      </select>
+    </label>
+  </div>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="intro">New to canals?</button>
+    <button role="tab" data-tab="gantt" class="on">Gantt chart</button>
+    <button role="tab" data-tab="delays">Why boats waited</button>
+    <button role="tab" data-tab="whatif">Disruption &amp; re-plan</button>
+    <button role="tab" data-tab="notes">About the score</button>
+  </nav>
+
+  <section class="panel" id="p-gantt">
+    <div class="panelhead">
+      <div class="seg" id="ganttmode">
+        <button data-v="lock" class="on">By lock</button><button data-v="keeper">By keeper</button>
+      </div>
+      <div class="seg" id="ganttday">
+        <button data-v="both" class="on">Both days</button><button data-v="1">Day 1</button><button data-v="2">Day 2</button>
+      </div>
+      <span class="focusnote" id="focusnote"></span>
+    </div>
+    <div class="ganttwrap" id="ganttwrap"><svg id="gantt"></svg></div>
+    <div class="gantthelp" id="gantthelp"></div>
+    <div class="opdetail" id="opdetail">Click any bar to see who was aboard and which keeper worked it.</div>
+  </section>
+
+  <section class="panel hidden" id="p-delays">
+    <div id="overview"></div>
+    <div class="panelhead">
+      <input type="search" id="boatfilter" placeholder="Find a boat…" aria-label="Filter boats">
+      <div class="seg" id="delaymode"><button data-v="late" class="on">Late boats</button><button data-v="all">All boats</button></div>
+    </div>
+    <div id="boatlist"></div>
+  </section>
+
+  <section class="panel hidden" id="p-intro"><h2>How a canal lock works</h2><div class="introbox">
+        <div class="introgrid">
+      <div>
+        <svg viewBox="0 0 300 120" class="introsvg" role="img" aria-label="A boat waits in the low pool, enters the lock chamber, the chamber fills, and the boat leaves into the higher pool">
+          <g id="introart"></g>
+        </svg>
+      </div>
+      <div class="prose">
+        <p>A canal climbs a hill in <b>steps</b>. Each step is a <b>pool</b> of still water. Between two pools sits a <b>lock</b>: a watertight <b>chamber</b> with a gate at each end. To go uphill a boat drives into the chamber from the low pool, the gates close, water pours in from the pool above until the chamber is level with it, and the boat drives out into the higher pool. Going downhill is the same in reverse.</p>
+        <p>Every fill takes water out of the pool above, and every emptying puts it into the pool below, so water only ever runs downhill; a small stream at the top is the only new supply. A <b>keeper</b> has to be standing at the lock to work it, and the keepers can only walk. Nothing opens at night. Most waiting on this canal comes down to three things: <b>a keeper is elsewhere</b>, <b>the chamber is at the wrong level</b>, or <b>the pool above is too low to fill from</b>.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="panel hidden" id="p-whatif">
+    <div class="prose">
+      <p>Close a lock for a while or hold a boat back, then press <b>Re-plan</b>. The page runs the same solver that made this schedule, right here in the browser, and shows what moved.</p>
+    </div>
+    <div class="whatif">
+      <fieldset>
+        <legend>Close a lock</legend>
+        <label>Lock <select id="w-lock"></select></label>
+        <label>From <select id="w-fday"><option value="0">Day 1</option><option value="1">Day 2</option></select> <input type="time" id="w-from" value="09:00"></label>
+        <label>To <select id="w-tday"><option value="0">Day 1</option><option value="1">Day 2</option></select> <input type="time" id="w-to" value="12:00"></label>
+        <button class="pill" id="w-addclose">Add closure</button>
+      </fieldset>
+      <fieldset>
+        <legend>Delay a boat's release</legend>
+        <label>Boat <select id="w-boat"></select></label>
+        <label>Delay <input type="number" id="w-delay" value="90" min="1" max="1440" step="5"> min</label>
+        <button class="pill" id="w-adddelay">Add delay</button>
+      </fieldset>
+      <fieldset>
+        <legend>Planned disruptions</legend>
+        <ul id="w-list" class="dlist"></ul>
+        <label>Search effort <select id="w-effort"><option value="4000">quick (4 s)</option><option value="10000" selected>normal (10 s)</option><option value="25000">thorough (25 s)</option></select></label>
+        <div class="btnrow">
+          <button class="pill primary" id="w-run">Re-plan</button>
+          <button class="pill ghost" id="w-reset">Back to original plan</button>
+        </div>
+        <div class="progress hidden" id="w-prog"><div id="w-bar"></div></div>
+        <div class="small" id="w-status"></div>
+      </fieldset>
+    </div>
+    <div id="w-result"></div>
+  </section>
+
+  <section class="panel hidden" id="p-notes">
+    <div class="prose" id="notesbox"></div>
+  </section>
+
+  <footer class="foot">Everything on this page, including the score, the waiting reasons and the re-planner, is computed in your browser from the canal data embedded in this file. No network is used.</footer>
+</div>
+<script>
+/* The Lockkeeper's Ledger - engine: model, checker/simulator, decoder and search.
+ * Pure JavaScript, no Node built-ins, so the very same file runs in solve.js and inside index.html. */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.Engine = factory();
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  // ---------------------------------------------------------------- model
+  function prepare(canal) {
+    const pools = canal.pools.slice().sort((a, b) => a.id - b.id);
+    const locks = canal.locks.slice().sort((a, b) => a.id - b.id);
+    const N = locks.length;
+    const P = { canal, N };
+    P.poolLen = new Array(N + 1); P.poolMin = new Array(N + 1); P.poolMax = new Array(N + 1); P.level0 = new Float64Array(N + 1);
+    for (let i = 0; i <= N; i++) {
+      const p = pools[i];
+      P.poolLen[i] = p.length; P.poolMin[i] = p.min; P.poolMax[i] = p.max; P.level0[i] = p.level;
+    }
+    P.vol = [0]; P.fill = [0]; P.empty = [0]; P.state0 = new Int8Array(N + 1);
+    locks.forEach((l, k) => { P.vol[k + 1] = l.volume; P.fill[k + 1] = l.fill; P.empty[k + 1] = l.empty; P.state0[k + 1] = l.state === 'high' ? 1 : 0; });
+    P.feeder = canal.feeder_per_minute;
+    P.windows = canal.windows.map(w => [w[0], w[1]]).sort((a, b) => a[0] - b[0]);
+    P.enter = canal.enter_minutes; P.enterBarge = canal.enter_minutes_with_barge; P.exit = canal.exit_minutes;
+    P.slotsCap = canal.chamber_slots; P.speed = canal.keeper_speed;
+    P.closures = [];
+    for (let i = 0; i <= N; i++) P.closures.push([]);
+    (canal.closures || []).forEach(c => { if (c.lock >= 1 && c.lock <= N) P.closures[c.lock].push([c.from, c.to]); });
+    P.pos = new Array(N + 1).fill(0);
+    for (let i = 2; i <= N; i++) P.pos[i] = P.pos[i - 1] + P.poolLen[i - 1];
+    P.walk = [];
+    for (let a = 0; a <= N; a++) { P.walk.push([]); for (let b = 0; b <= N; b++) P.walk[a].push(a === 0 || b === 0 ? 0 : Math.ceil(Math.abs(P.pos[a] - P.pos[b]) / P.speed)); }
+    P.keepers = canal.keepers.map(k => ({ id: k.id, name: k.name, start: k.start_lock }));
+    P.K = P.keepers.length;
+    P.T = P.windows.reduce((m, w) => Math.max(m, w[1]), 0);
+    P.winEnd = new Int32Array(P.T + 2);
+    P.windows.forEach(w => { for (let t = w[0]; t < w[1]; t++) P.winEnd[t] = Math.max(P.winEnd[t], w[1]); });
+    P.boats = canal.boats.map((b, idx) => {
+      const up = b.to > b.from;
+      const stages = [];
+      if (up) for (let l = b.from + 1; l <= b.to; l++) stages.push({ lock: l, up: true });
+      else for (let l = b.from; l > b.to; l--) stages.push({ lock: l, up: false });
+      const barge = b.type === 'barge';
+      const cross = stages.map((s, k) => {
+        if (k === stages.length - 1) return 0;
+        const pool = s.up ? s.lock : s.lock - 1;
+        return Math.ceil(P.poolLen[pool] / b.speed);
+      });
+      const b2 = { idx, id: b.id, name: b.name, barge, slots: barge ? 2 : 1, speed: b.speed, from: b.from, to: b.to, release: b.release, deadline: b.deadline, priority: b.priority, up, stages, cross };
+      b2.solo = stages.map(s => opDuration(P, s.lock, s.up, true, barge));
+      b2.rem = new Array(stages.length + 1).fill(0);
+      for (let k = stages.length - 1; k >= 0; k--) b2.rem[k] = b2.rem[k + 1] + b2.solo[k] + cross[k];
+      b2.minFinish = stages.length ? b.release + b2.rem[0] : b.release;
+      return b2;
+    });
+    P.B = P.boats.length;
+    P.stageOff = []; P.nStages = 0;
+    P.boats.forEach(b => { P.stageOff.push(P.nStages); P.nStages += b.stages.length; });
+    P.boatById = new Map(P.boats.map(b => [b.id, b]));
+    P.keeperById = new Map(P.keepers.map((k, i) => [k.id, i]));
+    return P;
+  }
+
+  function opDuration(P, lock, up, hasBoats, hasBarge) {
+    return (up ? P.fill[lock] : P.empty[lock]) + (hasBoats ? (hasBarge ? P.enterBarge : P.enter) + P.exit : 0);
+  }
+
+  function cascade(P, level, from) {
+    for (let i = from; i >= 1; i--) {
+      const ex = level[i] - P.poolMax[i];
+      if (ex > 0) { level[i] = P.poolMax[i]; level[i - 1] += ex; }
+    }
+  }
+
+  function closedAt(P, lock, start, end) {
+    const cl = P.closures[lock];
+    for (let i = 0; i < cl.length; i++) if (start < cl[i][1] && cl[i][0] < end) return cl[i];
+    return null;
+  }
+
+  // ---------------------------------------------------------------- checker / simulator
+  function simulate(canal, schedule, opts) {
+    opts = opts || {};
+    const P = opts.P || prepare(canal);
+    const N = P.N;
+    const errors = [];
+    const err = m => { if (errors.length < 60) errors.push(m); };
+    const rawOps = (schedule && schedule.operations) || [];
+    const ops = [];
+    rawOps.forEach((o, i) => {
+      const ok = o && Number.isInteger(o.lock) && o.lock >= 1 && o.lock <= N && Number.isInteger(o.start) && (o.dir === 'up' || o.dir === 'down') && Array.isArray(o.boats) && Number.isInteger(o.keeper) && P.keeperById.has(o.keeper);
+      if (!ok) { err(`op #${i}: malformed (lock/start/dir/boats/keeper)`); return; }
+      const up = o.dir === 'up';
+      let barge = false, slots = 0, bad = false;
+      const seen = new Set();
+      o.boats.forEach(id => {
+        const b = P.boatById.get(id);
+        if (!b) { err(`op #${i}: unknown boat ${id}`); bad = true; return; }
+        if (seen.has(id)) { err(`op #${i}: boat ${id} listed twice`); bad = true; }
+        seen.add(id);
+        if (b.barge) barge = true;
+        slots += b.slots;
+      });
+      if (bad) return;
+      const dur = opDuration(P, o.lock, up, o.boats.length > 0, barge);
+      ops.push({ i, lock: o.lock, start: o.start, end: o.start + dur, dur, up, boats: o.boats.slice(), keeper: o.keeper, slots, empty: o.boats.length === 0, volume: P.vol[o.lock] });
+    });
+    ops.forEach(o => {
+      if (o.slots > P.slotsCap) err(`op #${o.i} (lock ${o.lock} @${o.start}): ${o.slots} slots exceed chamber capacity ${P.slotsCap}`);
+      if (!P.windows.some(w => w[0] <= o.start && o.end <= w[1])) err(`op #${o.i} (lock ${o.lock} @${o.start}-${o.end}): outside operating hours`);
+      const c = closedAt(P, o.lock, o.start, o.end);
+      if (c) err(`op #${o.i} (lock ${o.lock} @${o.start}-${o.end}): overlaps closure ${c[0]}-${c[1]}`);
+    });
+    // per-lock order & chamber state
+    for (let L = 1; L <= N; L++) {
+      const list = ops.filter(o => o.lock === L).sort((a, b) => a.start - b.start || a.i - b.i);
+      let st = P.state0[L], prevEnd = -Infinity;
+      list.forEach(o => {
+        if (o.start < prevEnd) err(`op #${o.i}: lock ${L} still busy (previous op ends ${prevEnd}, this starts ${o.start})`);
+        if (o.up && st !== 0) err(`op #${o.i}: lock ${L} 'up' at ${o.start} but chamber is high`);
+        if (!o.up && st !== 1) err(`op #${o.i}: lock ${L} 'down' at ${o.start} but chamber is low`);
+        st = o.up ? 1 : 0; prevEnd = o.end;
+      });
+    }
+    // keepers
+    P.keepers.forEach((k, ki) => {
+      const list = ops.filter(o => o.keeper === k.id).sort((a, b) => a.start - b.start || a.i - b.i);
+      let at = k.start, free = 0;
+      list.forEach(o => {
+        const need = free + P.walk[at][o.lock];
+        if (o.start < need) err(`op #${o.i}: keeper ${k.id} cannot be at lock ${o.lock} by ${o.start} (free at ${free} + walk ${P.walk[at][o.lock]} from lock ${at})`);
+        at = o.lock; free = o.end;
+      });
+    });
+    // boats
+    const boatOps = new Map(P.boats.map(b => [b.id, []]));
+    ops.forEach(o => o.boats.forEach(id => boatOps.get(id).push(o)));
+    const boatResults = [];
+    let wl = 0, late = 0;
+    P.boats.forEach(b => {
+      const list = boatOps.get(b.id).sort((a, c) => a.start - c.start);
+      const res = { id: b.id, name: b.name, complete: false, finish: null, lateness: 0, ops: list.map(o => o.i) };
+      boatResults.push(res);
+      if (list.length !== b.stages.length) { err(`boat ${b.id} (${b.name}): appears in ${list.length} ops, needs ${b.stages.length}`); return; }
+      let okb = true;
+      list.forEach((o, k) => {
+        const s = b.stages[k];
+        if (o.lock !== s.lock || o.up !== s.up) { err(`boat ${b.id} (${b.name}): op ${k + 1} is lock ${o.lock} ${o.up ? 'up' : 'down'}, expected lock ${s.lock} ${s.up ? 'up' : 'down'}`); okb = false; return; }
+        if (k === 0) { if (o.start < b.release) { err(`boat ${b.id} (${b.name}): first op at ${o.start} before release ${b.release}`); okb = false; } }
+        else {
+          const p = list[k - 1];
+          const arrive = p.end + b.cross[k - 1];
+          if (o.start < arrive) { err(`boat ${b.id} (${b.name}): joins lock ${o.lock} at ${o.start} but only arrives at ${arrive}`); okb = false; }
+        }
+      });
+      if (!okb) return;
+      if (list.length) {
+        res.finish = list[list.length - 1].end;
+        if (res.finish > 2 * 1440) err(`boat ${b.id} (${b.name}): finishes at ${res.finish}, after two days`);
+      } else res.finish = b.release;
+      res.complete = true;
+      res.lateness = Math.max(0, res.finish - b.deadline);
+      wl += res.lateness * b.priority;
+      if (res.lateness > 0) late++;
+    });
+    // water
+    const level = P.level0.slice();
+    const sorted = ops.slice().sort((a, b) => a.start - b.start || a.lock - b.lock);
+    let ptr = 0, water = 0;
+    const Tend = Math.max(P.T, sorted.length ? sorted[sorted.length - 1].start : 0);
+    const trace = opts.trace ? new Float32Array((Tend + 1) * (N + 1)) : null;
+    // ops before minute 0 would be invalid anyway (outside windows) but keep loop safe
+    while (ptr < sorted.length && sorted[ptr].start < 0) ptr++;
+    for (let t = 0; t <= Tend; t++) {
+      if (t >= 1) { level[N] += P.feeder; cascade(P, level, N); }
+      while (ptr < sorted.length && sorted[ptr].start === t) {
+        const o = sorted[ptr++];
+        if (o.up) {
+          level[o.lock] -= o.volume; water += o.volume;
+          if (level[o.lock] < P.poolMin[o.lock]) err(`op #${o.i}: 'up' at lock ${o.lock} @${t} drops pool ${o.lock} to ${level[o.lock]} below minimum ${P.poolMin[o.lock]}`);
+        } else { level[o.lock - 1] += o.volume; cascade(P, level, N); }
+      }
+      if (trace) for (let i = 0; i <= N; i++) trace[t * (N + 1) + i] = level[i];
+    }
+    const res = {
+      valid: errors.length === 0, errors, weighted_lateness: wl, water_drawn: water, late_boats: late,
+      operations: ops.length, empty_turns: ops.filter(o => o.empty).length, boatResults
+    };
+    if (opts.trace) { res.trace = trace; res.traceLen = Tend + 1; res.ops = ops; }
+    return res;
+  }
+
+  // ---------------------------------------------------------------- decoder
+  // Greedy, minute-stepped dispatcher steered by a parameter vector:
+  //   x[b]  boat urgency offset (minutes)        H[L]  hold for a partner boat arriving within H min
+  //   F[L]  wait for an aligned boat instead of turning the chamber empty
+  //   E     start a proactive empty turn this many minutes before a boat arrives
+  //   lam   priority weight in the urgency key   phi   penalty for empty turns in keeper competition
+  //   R[L]  hold the chamber for a much more urgent opposite-direction boat arriving within R min
+  // Initial convoy guess: pair narrowboats travelling the same way whose routes overlap and whose releases are close.
+  function initConvoys(P) {
+    const cv = new Float64Array(P.B).fill(-1);
+    const idx = P.boats.filter(b => !b.barge && b.stages.length).sort((a, b) => a.release - b.release);
+    for (const b of idx) {
+      if (cv[b.idx] >= 0) continue;
+      let best = null, bs = Infinity;
+      for (const c of idx) {
+        if (c.idx === b.idx || cv[c.idx] >= 0 || c.up !== b.up) continue;
+        const lo = Math.max(b.stages[0].lock, c.stages[0].lock), hi = Math.min(b.stages[b.stages.length - 1].lock, c.stages[c.stages.length - 1].lock);
+        const shared = b.up ? hi - lo + 1 : lo - hi + 1;
+        if (b.up ? hi < lo : lo < hi) continue;
+        if (shared < 3) continue;
+        const sc = Math.abs(c.release - b.release) - 8 * shared;
+        if (Math.abs(c.release - b.release) <= 150 && sc < bs) { bs = sc; best = c; }
+      }
+      if (best) { cv[b.idx] = best.idx; cv[best.idx] = b.idx; }
+    }
+    return cv;
+  }
+  function newParams(P) {
+    const fa = (n, v) => new Float64Array(n).fill(v);
+    const p = { x: fa(P.B, 0), dly: fa(P.nStages, 0), H: fa(P.N + 1, 4), F: fa(P.N + 1, 3), R: fa(P.N + 1, 0), G: fa(P.N + 1, 0), kb: fa((P.N + 1) * P.K, 0), cv: initConvoys(P), E: 2, lam: 60, phi: 20, beta: 0.5, W: 6, CW: 20, strict: 0 };
+    return p;
+  }
+  const ARR = ['x', 'dly', 'H', 'F', 'R', 'G', 'kb', 'cv'], SCAL = ['E', 'lam', 'phi', 'beta', 'W', 'CW', 'strict'];
+  function cloneParams(p) {
+    const q = {};
+    ARR.forEach(k => { q[k] = p[k].slice(); });
+    SCAL.forEach(k => { q[k] = p[k]; });
+    return q;
+  }
+  function paramsToJSON(p) {
+    const q = {};
+    ARR.forEach(k => { q[k] = Array.from(p[k]); });
+    SCAL.forEach(k => { q[k] = p[k]; });
+    return q;
+  }
+  function paramsFromJSON(P, j) {
+    const p = newParams(P);
+    if (!j) return p;
+    ARR.forEach(k => { if (j[k]) for (let i = 0; i < p[k].length && i < j[k].length; i++) p[k][i] = j[k][i]; });
+    SCAL.forEach(k => { if (j[k] !== undefined) p[k] = j[k]; });
+    return p;
+  }
+
+  const BIG = 100000;
+
+  // Cloneable minute-stepped dispatcher. Its behaviour is set by the parameter vector `prm` and by the
+  // decision list `D` (lock blackout intervals and keeper overrides) that the rollout search adds.
+  class Sim {
+    constructor(P, prm, D, wantOps) {
+      this.P = P; this.prm = prm; this.D = D || null;
+      const N = P.N, B = P.B, K = P.K;
+      this.level = P.level0.slice();
+      this.state = P.state0.slice();
+      this.lockFree = new Int32Array(N + 1);
+      this.kPos = new Int32Array(K); this.kFree = new Int32Array(K);
+      for (let k = 0; k < K; k++) this.kPos[k] = P.keepers[k].start;
+      this.stage = new Int32Array(B); this.avail = new Int32Array(B); this.finish = new Int32Array(B).fill(-1);
+      this.key = new Float64Array(B);
+      this.active = [];
+      for (let b = 0; b < B; b++) {
+        const bt = P.boats[b];
+        this.avail[b] = bt.release + prm.dly[P.stageOff[b]];
+        if (bt.stages.length === 0) this.finish[b] = bt.release; else this.active.push(b);
+        this.key[b] = bt.deadline - bt.rem[0] - prm.lam * bt.priority + prm.x[b];
+      }
+      this.remaining = this.active.length;
+      this.cv = Int32Array.from(prm.cv); this.cvw = new Float64Array(B).fill(prm.CW);
+      this.buildQueues();
+      this.ops = wantOps ? [] : null;
+      this.water = 0;
+      this.tmp = null;   // variant overlay: {blocks:[[L,from,until]], kov:[[L,k]]}
+      this.done = false;
+      this.scratchInit();
+    }
+    buildQueues() {
+      const P = this.P;
+      this.lq = [];
+      for (let i = 0; i < (P.N + 1) * 2; i++) this.lq.push([]);
+      for (let b = 0; b < P.B; b++) {
+        if (this.finish[b] >= 0) continue;
+        const s = P.boats[b].stages[this.stage[b]];
+        this.lq[s.lock * 2 + (s.up ? 1 : 0)].push(b);
+      }
+    }
+    scratchInit() {
+      const N = this.P.N, K = this.P.K;
+      this.tA = []; this.tO = []; this.tUA = []; this.tUO = [];
+      this.cands = []; this.chosen = [];
+      this.needKey = new Float64Array(N + 2); this.hasCand = new Int8Array(N + 2); this.kUsed = new Int32Array(K).fill(-1); this.pid = 0;
+    }
+    clone(wantOps) {
+      const c = Object.create(Sim.prototype);
+      c.P = this.P; c.prm = this.prm; c.D = this.D;
+      c.level = this.level.slice(); c.state = this.state.slice(); c.lockFree = this.lockFree.slice();
+      c.kPos = this.kPos.slice(); c.kFree = this.kFree.slice();
+      c.stage = this.stage.slice(); c.avail = this.avail.slice(); c.finish = this.finish.slice(); c.key = this.key.slice();
+      c.active = this.active.filter(b => this.finish[b] < 0);
+      c.remaining = this.remaining; c.water = this.water;
+      c.cv = this.cv.slice(); c.cvw = this.cvw.slice();
+      c.ops = wantOps ? this.ops.slice() : null;
+      c.tmp = null; c.done = false;
+      c.buildQueues();
+      c.scratchInit();
+      return c;
+    }
+    blocked(L, t) {
+      const D = this.D;
+      if (D && D.blocks[L].length) { const bl = D.blocks[L]; for (let i = 0; i < bl.length; i += 2) if (t >= bl[i] && t < bl[i + 1]) return true; }
+      const tm = this.tmp;
+      if (tm) for (let i = 0; i < tm.blocks.length; i++) { const b = tm.blocks[i]; if (b[0] === L && t >= b[1] && t < b[2]) return true; }
+      return false;
+    }
+    mateNeeds(m, L, up) {
+      const bt = this.P.boats[m], st = bt.stages, s0 = st[this.stage[m]].lock, last = st[st.length - 1].lock;
+      if (bt.up !== up) return false;
+      return up ? (L >= s0 && L <= last) : (L <= s0 && L >= last);
+    }
+    setPair(b, c) {
+      const o1 = this.cv[b], o2 = this.cv[c];
+      if (o1 >= 0 && o1 !== c) this.cv[o1] = -1;
+      if (o2 >= 0 && o2 !== b) this.cv[o2] = -1;
+      this.cv[b] = c; this.cv[c] = b; this.cvw[b] = 240; this.cvw[c] = 240;
+    }
+    forced(L, t) {
+      const tm = this.tmp;
+      if (tm) for (let i = 0; i < tm.force.length; i++) if (tm.force[i][0] === L && tm.force[i][1] === t) return true;
+      return !!(this.D && this.D.force.size && this.D.force.has(t * 64 + L));
+    }
+    keeperOverride(L, t) {
+      const tm = this.tmp;
+      if (tm) for (let i = 0; i < tm.kov.length; i++) if (tm.kov[i][0] === L && tm.kov[i][2] === t) return tm.kov[i][1];
+      const D = this.D;
+      if (D) { const v = D.kov.get(t * 64 + L); if (v !== undefined) return v; }
+      return -1;
+    }
+    feed(t) {
+      const P = this.P, N = P.N;
+      if (t >= 1) { this.level[N] += P.feeder; if (this.level[N] > P.poolMax[N]) cascade(P, this.level, N); }
+    }
+    // Next minute after t at which something could possibly start (a keeper and a lock must both be free).
+    // Feeder water for the skipped minutes is added in bulk (nothing else moves water in between).
+    skipAfter(t) {
+      const P = this.P, N = P.N;
+      let mk = Infinity; for (let k = 0; k < P.K; k++) if (this.kFree[k] < mk) mk = this.kFree[k];
+      let ml = Infinity; for (let L = 1; L <= N; L++) if (this.lockFree[L] < ml) ml = this.lockFree[L];
+      let nt = mk > ml ? mk : ml;
+      if (nt <= t + 1) return t;
+      if (nt > P.T + 1) nt = P.T + 1;
+      const cnt = nt - 1 - t;
+      if (cnt <= 0) return t;
+      this.level[N] += P.feeder * cnt; if (this.level[N] > P.poolMax[N]) cascade(P, this.level, N);
+      return nt - 1;
+    }
+    // Decide what starts at minute t (does not change simulation state except scratch arrays).
+    plan(t) {
+      const P = this.P, prm = this.prm, N = P.N, K = P.K;
+      const chosen = this.chosen; chosen.length = 0;
+      const pid = ++this.pid;
+      const we = P.winEnd[t];
+      if (we === 0) return chosen;
+      const lockFree = this.lockFree, state = this.state, level = this.level, key = this.key, avail = this.avail;
+      if (this.D && this.D.pairs.size) { const pr = this.D.pairs.get(t); if (pr) for (let i = 0; i < pr.length; i++) this.setPair(pr[i][0], pr[i][1]); }
+      if (this.D && this.D.bd.size) { const bd = this.D.bd.get(t); if (bd) for (let i = 0; i < bd.length; i++) if (avail[bd[i][0]] < bd[i][1]) avail[bd[i][0]] = bd[i][1]; }
+      let anyFree = false;
+      for (let L = 1; L <= N; L++) if (lockFree[L] <= t) { anyFree = true; break; }
+      if (!anyFree) return chosen;
+      const lq = this.lq, tA = this.tA, tO = this.tO, tUA = this.tUA, tUO = this.tUO, horizon = t + 40;
+      const cands = this.cands; cands.length = 0;
+      const needKey = this.needKey, hasCand = this.hasCand;
+      needKey.fill(Infinity); hasCand.fill(0);
+      for (let L = 1; L <= N; L++) {
+        if (lockFree[L] > t) continue;
+        const blockedNow = this.blocked(L, t);
+        const s = state[L];
+        const ai = L * 2 + (s === 0 ? 1 : 0), oi = L * 2 + (s === 0 ? 0 : 1);
+        const A = tA, O = tO, UA = tUA, UO = tUO;
+        A.length = 0; O.length = 0; UA.length = 0; UO.length = 0;
+        { const l1 = lq[ai]; for (let i = 0; i < l1.length; i++) { const b = l1[i]; if (avail[b] <= t) A.push(b); else if (avail[b] <= horizon) UA.push(b); }
+          const l2 = lq[oi]; for (let i = 0; i < l2.length; i++) { const b = l2[i]; if (avail[b] <= t) O.push(b); else if (avail[b] <= horizon) UO.push(b); } }
+        const up = s === 0;
+        if (A.length) {
+          A.sort((p, q) => key[p] - key[q] || p - q);
+          let cap = P.slotsCap; const sel = []; let barge = false;
+          if (prm.strict) {
+            for (let i = 0; i < A.length; i++) {
+              const b = A[i]; if (sel.indexOf(b) >= 0) continue;
+              const bt = P.boats[b], m = this.cv[b];
+              if (m >= 0 && this.finish[m] < 0 && this.mateNeeds(m, L, up)) {
+                // travelling as a pair: both must be here, or the boat waits
+                if (A.indexOf(m) < 0 || sel.indexOf(m) >= 0) continue;
+                const need = bt.slots + P.boats[m].slots;
+                if (need <= cap) { sel.push(b, m); cap -= need; }
+              } else if (bt.slots <= cap) { sel.push(b); cap -= bt.slots; if (bt.barge) barge = true; }
+            }
+          } else {
+            for (let i = 0; i < A.length; i++) { const bt = P.boats[A[i]]; if (bt.slots <= cap) { sel.push(A[i]); cap -= bt.slots; if (bt.barge) barge = true; } }
+          }
+          if (!sel.length) continue;
+          let hold = false;
+          if (cap > 0 && prm.H[L] > 0) {
+            for (let i = 0; i < UA.length; i++) if (avail[UA[i]] - t <= prm.H[L] && P.boats[UA[i]].slots <= cap) { hold = true; break; }
+          }
+          if (!hold && prm.R[L] > 0 && UO.length) {
+            const sk = key[sel[0]];
+            for (let i = 0; i < UO.length; i++) if (avail[UO[i]] - t <= prm.R[L] && key[UO[i]] < sk - 30) { hold = true; break; }
+          }
+          if (!hold) {
+            for (let i = 0; i < sel.length && !hold; i++) {
+              const m = this.cv[sel[i]];
+              if (m < 0 || this.finish[m] >= 0 || sel.indexOf(m) >= 0) continue;
+              if (avail[m] > t && avail[m] - t <= this.cvw[sel[i]] && P.boats[m].slots <= cap) {
+                const ms = P.boats[m].stages[this.stage[m]];
+                if (ms.lock === L && ms.up === up) hold = true;
+              }
+            }
+          }
+          if (hold || blockedNow) continue;
+          if (up && level[L] - P.vol[L] < P.poolMin[L]) { needKey[L] = Math.min(needKey[L], key[sel[0]]); continue; }
+          hasCand[L] = 1;
+          cands.push({ L, up, boats: sel, barge, kk: key[sel[0]], flip: false, dur: 0, k: -1, cap });
+        } else if (O.length) {
+          if (blockedNow) continue;
+          if (prm.F[L] > 0) {
+            let w = false;
+            for (let i = 0; i < UA.length; i++) if (avail[UA[i]] - t <= prm.F[L]) { w = true; break; }
+            if (w) continue;
+          }
+          let kk = Infinity; for (let i = 0; i < O.length; i++) if (key[O[i]] < kk) kk = key[O[i]];
+          if (up && level[L] - P.vol[L] < P.poolMin[L]) { needKey[L] = Math.min(needKey[L], kk); continue; }
+          hasCand[L] = 1;
+          cands.push({ L, up, boats: [], barge: false, kk: kk + prm.phi, flip: true, dur: 0, k: -1, cap: P.slotsCap });
+        } else if (UO.length) {
+          if (blockedNow) continue;
+          let aO = Infinity, kk = Infinity;
+          for (let i = 0; i < UO.length; i++) { if (avail[UO[i]] < aO) aO = avail[UO[i]]; if (key[UO[i]] < kk) kk = key[UO[i]]; }
+          let aA = Infinity; for (let i = 0; i < UA.length; i++) if (avail[UA[i]] < aA) aA = avail[UA[i]];
+          const fd = opDuration(P, L, up, false, false);
+          if (aO <= aA && aO - t <= fd + prm.E) {
+            if (up && level[L] - P.vol[L] < P.poolMin[L]) { needKey[L] = Math.min(needKey[L], kk); continue; }
+            hasCand[L] = 1;
+            cands.push({ L, up, boats: [], barge: false, kk: kk + prm.phi, flip: true, dur: 0, k: -1, cap: P.slotsCap });
+          }
+        } else if (s === 1 && prm.G[L] > 0) {
+          if (blockedNow) continue;
+          let soon = false;
+          for (let i = 0; i < UA.length; i++) if (avail[UA[i]] - t <= prm.G[L]) { soon = true; break; }
+          if (!soon) { hasCand[L] = 1; cands.push({ L, up: false, boats: [], barge: false, kk: 1e6, flip: true, dur: 0, k: -1, cap: P.slotsCap }); }
+        }
+      }
+      for (let L = 1; L < N; L++) {
+        if (needKey[L] === Infinity) continue;
+        const S = L + 1;
+        if (lockFree[S] > t || hasCand[S] || this.blocked(S, t)) continue;
+        if (state[S] === 1) { hasCand[S] = 1; cands.push({ L: S, up: false, boats: [], barge: false, kk: needKey[L] + prm.phi, flip: true, dur: 0, k: -1, cap: P.slotsCap }); }
+        else if (level[S] - P.vol[S] >= P.poolMin[S]) { hasCand[S] = 1; cands.push({ L: S, up: true, boats: [], barge: false, kk: needKey[L] + prm.phi, flip: true, dur: 0, k: -1, cap: P.slotsCap }); }
+        else needKey[S] = Math.min(needKey[S], needKey[L]);
+      }
+      for (let L = 1; L <= N; L++) {
+        if (lockFree[L] > t || hasCand[L] || !this.forced(L, t)) continue;
+        const up = state[L] === 0;
+        if (up && level[L] - P.vol[L] < P.poolMin[L]) continue;
+        hasCand[L] = 1; cands.push({ L, up, boats: [], barge: false, kk: -1e9, flip: true, dur: 0, k: -1, cap: P.slotsCap });
+      }
+      if (!cands.length) return chosen;
+      cands.sort((p, q) => p.kk - q.kk || p.L - q.L);
+      const kUsed = this.kUsed, kPos = this.kPos, kFree = this.kFree;
+      for (let c = 0; c < cands.length; c++) {
+        const cd = cands[c];
+        const L = cd.L;
+        const dur = opDuration(P, L, cd.up, cd.boats.length > 0, cd.barge);
+        if (t + dur > we) continue;
+        if (P.closures[L].length && closedAt(P, L, t, t + dur)) continue;
+        if (cd.up && level[L] - P.vol[L] < P.poolMin[L]) continue;
+        let bk = -1, bw = Infinity, ek = 0, ck = -1, cw = Infinity;
+        const ko = this.keeperOverride(L, t);
+        if (ko >= 0) {
+          if (kUsed[ko] !== pid && kFree[ko] + P.walk[kPos[ko]][L] <= t) { bk = ko; ek = 0; }
+          else continue;
+        } else {
+          for (let k = 0; k < K; k++) {
+            if (kUsed[k] === pid) continue;
+            const e = kFree[k] + P.walk[kPos[k]][L];
+            const sc = (e > t ? e : t) + prm.beta * P.walk[P.keepers[k].start][L] + prm.kb[L * K + k];
+            if (sc < bw) { bw = sc; bk = k; ek = e; }
+            if (e <= t && sc < cw) { cw = sc; ck = k; }
+          }
+          if (bk < 0) continue;
+          if (ek > t) {
+            if (ek - t <= prm.W || ck < 0) continue;
+            bk = ck;
+          }
+        }
+        kUsed[bk] = pid;
+        cd.dur = dur; cd.k = bk;
+        chosen.push(cd);
+      }
+      chosen.sort((p, q) => p.L - q.L);
+      return chosen;
+    }
+    // Apply the planned starts of minute t.
+    commit(t) {
+      const P = this.P, prm = this.prm, chosen = this.chosen, level = this.level;
+      for (let c = 0; c < chosen.length; c++) {
+        const cd = chosen[c], L = cd.L;
+        if (cd.up) {
+          if (level[L] - P.vol[L] < P.poolMin[L]) { cd.k = -1; continue; }
+          level[L] -= P.vol[L]; this.water += P.vol[L];
+        } else { level[L - 1] += P.vol[L]; cascade(P, level, P.N); }
+        const end = t + cd.dur;
+        this.lockFree[L] = end; this.state[L] = cd.up ? 1 : 0;
+        this.kFree[cd.k] = end; this.kPos[cd.k] = L;
+        for (let i = 0; i < cd.boats.length; i++) {
+          const b = cd.boats[i], bt = P.boats[b];
+          const st = this.stage[b]++;
+          const oq = this.lq[L * 2 + (cd.up ? 1 : 0)]; oq.splice(oq.indexOf(b), 1);
+          if (st === bt.stages.length - 1) { this.finish[b] = end; this.remaining--; }
+          else {
+            const ns = bt.stages[st + 1]; this.lq[ns.lock * 2 + (ns.up ? 1 : 0)].push(b); this.avail[b] = end + bt.cross[st] + prm.dly[P.stageOff[b] + st + 1]; this.key[b] = bt.deadline - bt.rem[st + 1] - prm.lam * bt.priority + prm.x[b]; }
+        }
+        if (this.ops) this.ops.push({ lock: L, start: t, dir: cd.up ? 'up' : 'down', boats: cd.boats.map(b => P.boats[b].id), keeper: P.keepers[cd.k].id });
+      }
+    }
+    // Weighted lateness so far plus a lower bound for boats still on the water.
+    lowerBound(t) {
+      const P = this.P; let s = 0;
+      for (let b = 0; b < P.B; b++) {
+        const bt = P.boats[b];
+        if (this.finish[b] >= 0) { const l = this.finish[b] - bt.deadline; if (l > 0) s += l * bt.priority; }
+        else { const a = this.avail[b] > t ? this.avail[b] : t; const l = a + bt.rem[this.stage[b]] - bt.deadline; if (l > 0) s += l * bt.priority; }
+      }
+      return s;
+    }
+    // Run from minute t0 (feeder for t0 already applied if skipFeed). hook(sim, t) may return true to stop early.
+    run(t0, skipFeed, cutoff) {
+      const T = this.P.T;
+      for (let t = t0; t <= T && this.remaining > 0; t++) {
+        if (!(skipFeed && t === t0)) this.feed(t);
+        if (this.P.winEnd[t] === 0) continue;
+        if (cutoff !== undefined && (t & 15) === 0 && this.lowerBound(t) >= cutoff) return Infinity;
+        this.plan(t);
+        if (this.chosen.length) this.commit(t);
+        t = this.skipAfter(t);
+      }
+      return -1;
+    }
+    result() {
+      const P = this.P, T = P.T;
+      let cost = 0, late = 0, unfinished = 0;
+      for (let b = 0; b < P.B; b++) {
+        const bt = P.boats[b];
+        if (this.finish[b] < 0) { unfinished++; cost += bt.priority * (BIG + Math.max(0, T - bt.deadline)); continue; }
+        const l = this.finish[b] - bt.deadline;
+        if (l > 0) { cost += l * bt.priority; late++; }
+      }
+      return { cost, water: this.water, late, unfinished, ops: this.ops, finish: this.finish };
+    }
+  }
+
+  function decode(P, prm, wantOps, D) {
+    const s = new Sim(P, prm, D, wantOps);
+    s.run(0, false);
+    return s.result();
+  }
+
+  function newDecisions(P) {
+    const blocks = []; for (let i = 0; i <= P.N; i++) blocks.push([]);
+    return { blocks, kov: new Map(), bd: new Map(), force: new Set(), pairs: new Map() };
+  }
+  function cloneDecisions(D) {
+    const bd = new Map(); D.bd.forEach((v, k) => bd.set(k, v.map(x => x.slice())));
+    const pairs = new Map(); D.pairs.forEach((v, k) => pairs.set(k, v.map(x => x.slice())));
+    return { blocks: D.blocks.map(b => b.slice()), kov: new Map(D.kov), bd, force: new Set(D.force), pairs };
+  }
+
+  // ---------------------------------------------------------------- rollout improvement
+  // Walk through the day; at every minute where operations would start, try alternatives (delay the lock,
+  // wait for an arriving boat, use another keeper), finish each by the base policy, keep the best.
+  function scoreOf(r) { return r.cost + r.water * 1e-6; }
+
+  function genVariants(main, t, dset) {
+    const P = main.P, out = [];
+    const chosen = main.chosen;
+    const mk = (blocks, kov, force, bdelay, d) => out.push({ tmp: { blocks, kov, force, bdelay }, d });
+    const inChosen = new Set();
+    for (let c = 0; c < chosen.length; c++) {
+      const cd = chosen[c], L = cd.L;
+      inChosen.add(L);
+      const dirIdx = L * 2 + (cd.up ? 1 : 0);
+      const delays = new Set();
+      if (cd.boats.length && cd.cap > 0) {
+        const UA = main.lq[dirIdx];
+        const arr = [];
+        for (let i = 0; i < UA.length; i++) if (main.avail[UA[i]] > t && main.avail[UA[i]] <= t + 200 && P.boats[UA[i]].slots <= cd.cap) arr.push(main.avail[UA[i]]);
+        arr.sort((a, b) => a - b);
+        for (let i = 0; i < arr.length && i < 3; i++) delays.add(arr[i]);
+      }
+      if (cd.boats.length && cd.cap > 0) {
+        const UA = main.lq[dirIdx], b0 = cd.boats[0];
+        const arr = [];
+        for (let i = 0; i < UA.length; i++) { const c2 = UA[i]; if (main.avail[c2] > t && main.avail[c2] <= t + 200 && P.boats[c2].slots <= cd.cap) arr.push(c2); }
+        arr.sort((a, b) => main.avail[a] - main.avail[b]);
+        for (let i = 0; i < arr.length && i < 3; i++) mk([], [], [], [], { kind: 'pair', b: b0, c: arr[i], t });
+      }
+      for (let q = 0; q < dset.length; q++) delays.add(t + dset[q]);
+      if (cd.flip) delays.add(t + 30);
+      delays.forEach(u => { if (u > t) mk([[L, t, u]], [], [], [], { kind: 'block', L, from: t, until: u }); });
+      for (let k = 0; k < P.K; k++) {
+        if (k === cd.k) continue;
+        if (main.kFree[k] + P.walk[main.kPos[k]][L] <= t) mk([], [[L, k, t]], [], [], { kind: 'kov', L, k, t });
+      }
+      if (cd.boats.length > 1) {
+        for (let i = 0; i < cd.boats.length; i++) {
+          const b = cd.boats[i];
+          for (const dl of [6, 18]) mk([], [], [], [[b, t + dl]], { kind: 'bd', b, until: t + dl, t });
+        }
+      }
+    }
+    // spontaneous empty turns at idle locks that boats will need soon
+    for (let L = 1; L <= P.N; L++) {
+      if (inChosen.has(L) || main.lockFree[L] > t) continue;
+      const s = main.state[L], up = s === 0;
+      const oi = L * 2 + (up ? 0 : 1);
+      const fd = opDuration(P, L, up, false, false);
+      if (t + fd > P.winEnd[t] || (P.closures[L].length && closedAt(P, L, t, t + fd))) continue;
+      if (up && main.level[L] - P.vol[L] < P.poolMin[L]) continue;
+      const lst = main.lq[oi]; let need = false;
+      for (let i = 0; i < lst.length; i++) if (main.avail[lst[i]] <= t + 60) { need = true; break; }
+      if (!need) continue;
+      let ok = false;
+      for (let k = 0; k < P.K; k++) if (main.kFree[k] + P.walk[main.kPos[k]][L] <= t) { ok = true; break; }
+      if (ok) mk([], [], [[L, t]], [], { kind: 'force', L, t });
+    }
+    return out;
+  }
+
+  function applyDecision(D, d) {
+    if (d.kind === 'block') D.blocks[d.L].push(d.from, d.until);
+    else if (d.kind === 'kov') D.kov.set(d.t * 64 + d.L, d.k);
+    else if (d.kind === 'force') D.force.add(d.t * 64 + d.L);
+    else if (d.kind === 'pair') { const a = D.pairs.get(d.t) || []; a.push([d.b, d.c]); D.pairs.set(d.t, a); }
+    else if (d.kind === 'bd') { const a = D.bd.get(d.t) || []; a.push([d.b, d.until]); D.bd.set(d.t, a); }
+  }
+
+  function rolloutPass(P, prm, D, opts) {
+    const g = rolloutPassGen(P, prm, D, opts); let r;
+    while (!(r = g.next()).done);
+    return r.value;
+  }
+  function* rolloutPassGen(P, prm, D, opts) {
+    const now = opts.now || (() => Date.now());
+    const deadline = opts.deadline;
+    const dset = opts.delays || [5, 15], tFrom = opts.tFrom === undefined ? 0 : opts.tFrom, tTo = opts.tTo === undefined ? Infinity : opts.tTo;
+    const main = new Sim(P, prm, D, true);
+    const base = main.clone(false); base.run(0, false);
+    let cur = base.result(), curScore = scoreOf(cur);
+    const stats = { decisions: 0, rollouts: 0, accepted: 0 };
+    for (let t = 0; t <= P.T && main.remaining > 0; t++) {
+      main.feed(t);
+      if (P.winEnd[t] === 0) continue;
+      main.plan(t);
+      let freed = false;
+      for (let L = 1; L <= P.N; L++) if (main.lockFree[L] === t) { freed = true; break; }
+      if ((main.chosen.length || freed) && now() < deadline && t >= tFrom && t <= tTo) {
+        const variants = genVariants(main, t, dset);
+        if (variants.length) {
+          stats.decisions++;
+          let bestScore = curScore, bestV = null, bestRes = null;
+          const tieP = opts.tieP || 0, rng = opts.rng;
+          for (let i = 0; i < variants.length; i++) {
+            const v = variants[i];
+            const c = main.clone(false); c.tmp = v.tmp;
+            if (v.d.kind === 'pair') c.setPair(v.d.b, v.d.c);
+            for (let j = 0; j < v.tmp.bdelay.length; j++) { const b = v.tmp.bdelay[j][0]; if (c.avail[b] < v.tmp.bdelay[j][1]) c.avail[b] = v.tmp.bdelay[j][1]; }
+            stats.rollouts++;
+            const rr = c.run(t, true, tieP ? Math.floor(bestScore) + 1 : Math.floor(bestScore));
+            if (rr === Infinity) continue;
+            const res = c.result(), sc = scoreOf(res);
+            if (sc < bestScore - 1e-9 || (tieP && !bestV && Math.abs(sc - curScore) < 1e-9 && Math.floor(sc) === Math.floor(curScore) && sc <= curScore + 1e-9 && rng() < tieP)) { bestScore = sc; bestV = v; bestRes = res; }
+          }
+          if (bestV) {
+            applyDecision(D, bestV.d); if (opts.kindStats) { const kk = bestV.d.kind + (bestV.d.until ? ":" + (bestV.d.until - t <= 5 ? "5" : bestV.d.until - t <= 15 ? "15" : bestV.d.until - t <= 30 ? "30" : "arr") : ""); opts.kindStats[kk] = (opts.kindStats[kk] || 0) + 1; }
+            cur = bestRes; curScore = bestScore; stats.accepted++;
+            main.plan(t);
+          }
+        }
+      }
+      if (main.chosen.length) main.commit(t);
+      t = main.skipAfter(t);
+      yield;
+    }
+    const res = main.result();
+    return { res, stats, ops: main.ops };
+  }
+
+  // ---------------------------------------------------------------- search
+  function makeRng(seed) {
+    let s = (seed >>> 0) || 1;
+    const next = () => { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; };
+    next.gauss = () => { let u = 0; for (let i = 0; i < 6; i++) u += next(); return (u - 3) * Math.SQRT2; };
+    return next;
+  }
+
+  function mutateParams(P, p, rng) {
+    const q = cloneParams(p);
+    const m = rng();
+    const pm1 = () => (rng() < 0.5 ? -1 : 1);
+    if (m < 0.25) {
+      const n = 1 + Math.floor(rng() * 3);
+      for (let i = 0; i < n; i++) { const b = Math.floor(rng() * P.B); q.x[b] += rng.gauss() * (rng() < 0.3 ? 120 : 25); }
+    } else if (m < 0.40) {
+      const n = 1 + Math.floor(rng() * 2);
+      for (let i = 0; i < n; i++) {
+        const j = Math.floor(rng() * P.nStages);
+        q.dly[j] = rng() < 0.25 ? 0 : Math.max(0, Math.round(q.dly[j] + pm1() * (1 + Math.floor(rng() * 20))));
+      }
+    } else if (m < 0.50) {
+      const L = 1 + Math.floor(rng() * P.N); q.H[L] = Math.max(0, Math.round(q.H[L] + pm1() * (1 + Math.floor(rng() * 4))));
+    } else if (m < 0.58) {
+      const L = 1 + Math.floor(rng() * P.N); q.F[L] = Math.max(0, Math.round(q.F[L] + pm1() * (1 + Math.floor(rng() * 4))));
+    } else if (m < 0.63) {
+      const L = 1 + Math.floor(rng() * P.N); q.G[L] = Math.max(0, Math.round(q.G[L] + pm1() * (1 + Math.floor(rng() * 8))));
+    } else if (m < 0.68) {
+      const L = 1 + Math.floor(rng() * P.N); q.R[L] = Math.max(0, Math.round(q.R[L] + pm1() * (2 + Math.floor(rng() * 6))));
+    } else if (m < 0.71) {
+      q.E = Math.max(-5, Math.min(25, q.E + Math.round(rng.gauss() * 3)));
+    } else if (m < 0.75) {
+      q.lam = Math.max(0, q.lam + rng.gauss() * 40);
+    } else if (m < 0.78) {
+      q.phi = Math.max(-100, q.phi + rng.gauss() * 30);
+    } else if (m < 0.82) {
+      q.beta = Math.max(0, Math.min(4, q.beta + rng.gauss() * 0.4));
+    } else if (m < 0.85) {
+      q.W = Math.max(0, Math.min(40, Math.round(q.W + rng.gauss() * 5)));
+    } else if (m < 0.88) {
+      q.CW = Math.max(0, Math.min(200, Math.round(q.CW + rng.gauss() * 25)));
+    } else if (m < 0.93) {
+      const b = Math.floor(rng() * P.B);
+      if (!P.boats[b].barge && P.boats[b].stages.length) {
+        const old = q.cv[b]; if (old >= 0) q.cv[old] = -1;
+        if (rng() < 0.3) q.cv[b] = -1;
+        else {
+          const c = Math.floor(rng() * P.B);
+          if (c !== b && !P.boats[c].barge && P.boats[c].stages.length && P.boats[c].up === P.boats[b].up) {
+            const oc = q.cv[c]; if (oc >= 0) q.cv[oc] = -1;
+            q.cv[b] = c; q.cv[c] = b;
+          }
+        }
+      }
+    } else if (m < 0.97 && P.K > 1) {
+      const L = 1 + Math.floor(rng() * P.N), k = Math.floor(rng() * P.K);
+      q.kb[L * P.K + k] = Math.max(-30, Math.min(30, q.kb[L * P.K + k] + rng.gauss() * 4));
+    } else {
+      for (let i = 0; i < 6; i++) { const b = Math.floor(rng() * P.B); q.x[b] += rng.gauss() * 40; }
+    }
+    return q;
+  }
+
+  function randomParams(P, rng) {
+    const p = newParams(P);
+    p.H.fill(Math.floor(rng() * 14)); p.F.fill(Math.floor(rng() * 10));
+    p.G.fill(rng() < 0.6 ? 0 : Math.floor(rng() * 20)); p.R.fill(rng() < 0.6 ? 0 : Math.floor(rng() * 15));
+    p.E = Math.floor(rng() * 15) - 3; p.lam = rng() * 300; p.phi = rng() * 100 - 20; p.beta = rng() * 3; p.W = Math.floor(rng() * 25);
+    p.CW = [0, 0, 30, 60, 100, 150][Math.floor(rng() * 6)];
+    return p;
+  }
+
+  function serializeD(D) {
+    return { blocks: D.blocks.map(b => b.slice()), kov: Array.from(D.kov.entries()), bd: Array.from(D.bd.entries()), force: Array.from(D.force), pairs: Array.from(D.pairs.entries()) };
+  }
+  function deserializeD(P, j) {
+    const D = newDecisions(P);
+    if (!j) return D;
+    (j.blocks || []).forEach((b, i) => { if (D.blocks[i]) D.blocks[i] = b.slice(); });
+    (j.kov || []).forEach(e => D.kov.set(e[0], e[1]));
+    (j.bd || []).forEach(e => D.bd.set(e[0], e[1].map(x => x.slice())));
+    (j.force || []).forEach(e => D.force.add(e));
+    (j.pairs || []).forEach(e => D.pairs.set(e[0], e[1].map(x => x.slice())));
+    return D;
+  }
+
+  // Multi-start local search: sample a parameter set, improve it with rollout passes, keep the best.
+  class Optimizer {
+    constructor(canal, opts) {
+      opts = opts || {};
+      this.P = opts.P || prepare(canal);
+      this.rng = makeRng(opts.seed || 12345);
+      this.budget = opts.budget || 10000;
+      this.now = opts.now || (() => Date.now());
+      this.startT = this.now();
+      this.deadline = this.startT + this.budget;
+      this.finalFrac = opts.finalFrac || 0.8;    // share of the budget spent on sampling before refining the elite
+      this.best = null;          // {cost, water, late, unfinished, ops, params, D}
+      this.cur = null; this.gen = null;
+      this.evals = 0; this.passes = 0;
+      this.warm = opts.warm || null;   // {params, D}
+      this.log = opts.log || null;
+      this.startRandom = !!opts.startRandom;
+      this.elites = []; this.finalList = null;
+      // baseline so that there is always an answer
+      const P = this.P;
+      const p0 = this.warm ? paramsFromJSON(P, this.warm.params) : newParams(P);
+      const D0 = this.warm ? deserializeD(P, this.warm.D) : newDecisions(P);
+      const r0 = decode(P, p0, true, D0);
+      this.best = { cost: r0.cost, water: r0.water, late: r0.late, unfinished: r0.unfinished, ops: r0.ops, params: p0, D: D0 };
+      this.queue = [];
+      if (P.B === 0 || P.boats.every(b => !b.stages.length)) this.deadline = this.startT;   // nothing to optimise
+      if (this.warm) this.queue.push({ params: cloneParams(p0), D: cloneDecisions(D0), passes: 3 });
+    }
+    better(a, b) { return a.unfinished < b.unfinished || (a.unfinished === b.unfinished && (a.cost < b.cost || (a.cost === b.cost && a.water < b.water))); }
+    addElite(c) {
+      this.elites.push(c);
+      this.elites.sort((a, b) => (this.better(a, b) ? -1 : this.better(b, a) ? 1 : 0));
+      if (this.elites.length > 4) this.elites.length = 4;
+    }
+    startCandidate() {
+      const P = this.P, rng = this.rng;
+      const frac = (this.now() - this.startT) / this.budget;
+      let params, D, passes = 1, isFinal = false;
+      if (this.queue.length) { const q = this.queue.shift(); params = q.params; D = q.D; passes = q.passes || 1; }
+      else if (frac >= this.finalFrac && (this.finalList === null || this.finalList.length)) {
+        if (this.finalList === null) this.finalList = this.elites.slice();
+        const e = this.finalList.shift();
+        if (!e) { this.finalList = []; return this.startCandidate(); }
+        params = e.params; D = cloneDecisions(e.D); passes = 3; isFinal = true;
+      }
+      else if (this.evals === 0 && !this.warm && !this.startRandom) { params = newParams(P); D = newDecisions(P); }
+      else if (this.evals > 0 && rng() < 0.55) {
+        // perturb the best known parameter set; keep or drop its decisions
+        params = this.best.params;
+        const n = 1 + Math.floor(rng() * 3);
+        for (let i = 0; i < n; i++) params = mutateParams(P, params, rng);
+        D = rng() < 0.5 ? cloneDecisions(this.best.D) : newDecisions(P);
+      } else { params = randomParams(P, rng); D = newDecisions(P); }
+      this.cur = { params, D, pass: 0, maxPass: passes, isFinal };
+      this.evals++;
+      this.gen = rolloutPassGen(P, params, D, { deadline: this.deadline, now: this.now });
+    }
+    adopt(g) {
+      if (this.better(g, this.best)) this.best = { cost: g.cost, water: g.water, late: g.late, unfinished: g.unfinished, ops: g.ops, params: g.params, D: g.D };
+    }
+    done() { return this.now() >= this.deadline && !this.gen; }
+    // advance for about ms milliseconds; true while there is still budget
+    step(ms) {
+      const t0 = this.now();
+      while (this.now() - t0 < ms) {
+        if (!this.gen) {
+          if (this.now() >= this.deadline) return false;
+          this.startCandidate();
+        }
+        const r = this.gen.next();
+        if (!r.done) continue;
+        const out = r.value;
+        this.gen = null; this.passes++;
+        const res = out.res;
+        const cand = { cost: res.cost, water: res.water, late: res.late, unfinished: res.unfinished, ops: out.ops, params: this.cur.params, D: this.cur.D };
+        if (this.better(cand, this.best)) {
+          this.best = cand;
+          if (this.log) this.log(this);
+        }
+        this.cur.pass++;
+        if (this.cur.pass === 1 && !this.cur.isFinal) this.addElite(cand);
+        if (out.stats.accepted > 0 && this.cur.pass < this.cur.maxPass && this.now() < this.deadline) {
+          this.gen = rolloutPassGen(this.P, this.cur.params, this.cur.D, { deadline: this.deadline, now: this.now });
+        }
+      }
+      return this.now() < this.deadline || !!this.gen;
+    }
+    schedule() { return { operations: this.best.ops }; }
+    state() { return { params: paramsToJSON(this.best.params), D: serializeD(this.best.D) }; }
+  }
+
+  function solve(canal, opts) {
+    opts = opts || {};
+    const o = new Optimizer(canal, opts);
+    while (o.step(250)) { if (opts.onProgress) opts.onProgress(o); }
+    return { schedule: o.schedule(), state: o.state(), optimizer: o };
+  }
+
+  return { prepare, simulate, decode, Sim, rolloutPass, rolloutPassGen, newDecisions, cloneDecisions, serializeD, deserializeD, Optimizer, solve, newParams, cloneParams, paramsToJSON, paramsFromJSON, mutateParams, randomParams, makeRng, opDuration, closedAt, cascade, BIG };
+});
+
+</script>
+<script>
+/* The Lockkeeper's Ledger - explanation engine. Works out, from a simulated schedule, where every boat
+ * waited and why. Nothing here is written by hand per boat: every sentence comes from the simulation. */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.Explain = factory();
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  function fmt(m) {
+    const d = Math.floor(m / 1440) + 1, r = m % 1440;
+    const h = Math.floor(r / 60), mi = r % 60;
+    return 'D' + d + ' ' + String(h).padStart(2, '0') + ':' + String(mi).padStart(2, '0');
+  }
+  function clock(m) {
+    const r = m % 1440;
+    return String(Math.floor(r / 60)).padStart(2, '0') + ':' + String(r % 60).padStart(2, '0');
+  }
+  function span(a, b) { return fmt(a) + '–' + clock(b); }
+
+  const CAUSE_LABEL = {
+    chamber: 'Chamber at the wrong level',
+    ahead: 'Chamber busy with a boat ahead',
+    keeper: 'No keeper free',
+    water: 'Pool too low',
+    night: 'Lock closed for the night',
+    closure: 'Maintenance closure',
+    pair: 'Held to share a chamber',
+    choice: 'Crew served other work first'
+  };
+
+  function analyze(canal, schedule, Engine) {
+    const P = Engine.prepare(canal);
+    const sim = Engine.simulate(canal, schedule, { P, trace: true });
+    const out = { P, sim, valid: sim.valid, boats: [], keepers: [], causeTotals: {}, lateCauseTotals: {} };
+    if (!sim.valid) return out;
+    const N = P.N, W = N + 1;
+    const ops = sim.ops;
+    const byLock = []; for (let i = 0; i <= N; i++) byLock.push([]);
+    ops.forEach(o => byLock[o.lock].push(o));
+    byLock.forEach(l => l.sort((a, b) => a.start - b.start));
+    const byKeeper = new Map();
+    P.keepers.forEach(k => byKeeper.set(k.id, []));
+    ops.forEach(o => byKeeper.get(o.keeper).push(o));
+    byKeeper.forEach(l => l.sort((a, b) => a.start - b.start));
+    const keeperName = id => { const k = P.keepers[P.keeperById.get(id)]; return k.name || ('Keeper ' + k.id); };
+    const boatName = id => P.boatById.get(id).name;
+    const level = (m, pool) => {
+      const t = Math.max(0, Math.min(sim.traceLen - 1, m - 1));
+      return sim.trace[t * W + pool] + (pool === N && m >= 1 ? P.feeder : 0);
+    };
+    const prevOpOf = (op) => {
+      const l = byKeeper.get(op.keeper); const i = l.indexOf(op);
+      return i > 0 ? l[i - 1] : null;
+    };
+    const opDesc = (q, boatId, forUp) => {
+      // q is an operation on the same lock that was running
+      const others = q.boats.filter(b => b !== boatId).map(boatName);
+      const who = others.length ? others.join(' and ') : null;
+      if (q.up !== forUp) {
+        if (forUp) {
+          return who ? 'the chamber was full and had to be emptied for ' + who + ' coming down' : 'the chamber was full and had to be emptied (an empty turn) before it could take boats up';
+        }
+        return who ? 'the chamber was empty and had to be filled to carry ' + who + ' up' : 'the chamber was empty and had to be filled (an empty turn) before it could take boats down';
+      }
+      return who ? 'the chamber was busy carrying ' + who + ' ' + (q.up ? 'up' : 'down') + ' ahead of it' : 'the chamber was busy with another turn';
+    };
+
+    P.boats.forEach(b => {
+      const opsOf = ops.filter(o => o.boats.indexOf(b.id) >= 0).sort((x, y) => x.start - y.start);
+      const info = { id: b.id, name: b.name, type: b.barge ? 'barge' : 'narrowboat', priority: b.priority, from: b.from, to: b.to, release: b.release, deadline: b.deadline, minFinish: b.minFinish, stages: [], totalWait: 0, causes: {}, finish: null, lateness: 0, ops: opsOf };
+      let arrive = b.release;
+      opsOf.forEach((o, k) => {
+        const segs = [];
+        const keeperOps = byKeeper.get(o.keeper);
+        const prevK = prevOpOf(o);
+        const lockOps = byLock[o.lock];
+        const cuts = [];
+        for (let m = arrive; m < o.start; m++) {
+          let cause = null, text = '';
+          const q = lockOps.find(x => x !== o && x.start <= m && m < x.end);
+          if (q) { cause = q.up !== o.up ? 'chamber' : 'ahead'; text = opDesc(q, b.id, o.up); }
+          else if (P.winEnd[m] === 0) { cause = 'night'; text = 'the locks were shut for the night'; }
+          else {
+            const cl = P.closures[o.lock].find(c => m < c[1] && c[0] < m + o.dur);
+            if (cl && m < cl[1]) { cause = 'closure'; text = 'Lock ' + o.lock + ' was closed for maintenance ' + clock(cl[0]) + '–' + clock(cl[1]); }
+            else if (m + o.dur > P.winEnd[m]) { cause = 'night'; text = 'too late in the day to finish another turn before the lock closed'; }
+            else if (o.up && level(m, o.lock) - o.volume < P.poolMin[o.lock]) {
+              cause = 'water'; text = 'Pool ' + o.lock + ' was too low (' + Math.round(level(m, o.lock)) + ' units, ' + (P.poolMin[o.lock] + o.volume) + ' needed to fill the chamber); water arriving from above';
+            } else if (prevK && m < prevK.end) {
+              cause = 'keeper'; text = 'no keeper free: ' + keeperName(o.keeper) + ' was working Lock ' + prevK.lock;
+            } else if (prevK && m < prevK.end + P.walk[prevK.lock][o.lock]) {
+              cause = 'keeper'; text = 'no keeper free: ' + keeperName(o.keeper) + ' was walking from Lock ' + prevK.lock + ' to Lock ' + o.lock;
+            } else if (!prevK && m < P.walk[P.keepers[P.keeperById.get(o.keeper)].start][o.lock]) {
+              cause = 'keeper'; text = 'no keeper free: ' + keeperName(o.keeper) + ' was walking to Lock ' + o.lock + ' from the starting position';
+            } else {
+              const late = o.boats.filter(x => x !== b.id).map(x => {
+                const ob = P.boatById.get(x); const oi = ops.filter(z => z.boats.indexOf(x) >= 0).sort((p, q2) => p.start - q2.start);
+                const idx = oi.indexOf(o); const av = idx === 0 ? ob.release : oi[idx - 1].end + ob.cross[idx - 1];
+                return { n: ob.name, av };
+              }).filter(x => x.av > m);
+              if (late.length) { cause = 'pair'; text = 'waiting for ' + late[0].n + ' to arrive so they could share the chamber'; }
+              else { cause = 'choice'; text = 'the crew dealt with other boats first'; }
+            }
+          }
+          const last = segs[segs.length - 1];
+          if (last && last.cause === cause && last.text === text && last.to === m) last.to = m + 1;
+          else segs.push({ cause, text, from: m, to: m + 1 });
+        }
+        const wait = o.start - arrive;
+        segs.forEach(s => { s.minutes = s.to - s.from; info.causes[s.cause] = (info.causes[s.cause] || 0) + s.minutes; });
+        info.totalWait += wait;
+        info.stages.push({ index: k, lock: o.lock, up: o.up, arrive, start: o.start, end: o.end, wait, segs, keeper: o.keeper, shared: o.boats.filter(x => x !== b.id).map(boatName), op: o });
+        arrive = o.end + (k < b.cross.length ? b.cross[k] : 0);
+      });
+      const r = sim.boatResults.find(x => x.id === b.id);
+      info.finish = r.finish; info.lateness = r.lateness; info.weighted = r.lateness * b.priority;
+      info.impossible = b.minFinish > b.deadline ? b.minFinish - b.deadline : 0;
+      // sentences
+      info.sentences = [];
+      info.stages.forEach(st => {
+        if (st.wait <= 0) return;
+        const parts = st.segs.map(s => s.minutes + ' min: ' + s.text);
+        const head = b.name + ' waited ' + st.wait + ' min at Lock ' + st.lock + ' (' + span(st.arrive, st.start) + ')';
+        info.sentences.push({ lock: st.lock, minutes: st.wait, text: st.segs.length === 1 ? head + ': ' + st.segs[0].text + '.' : head + ' - ' + parts.join('; ') + '.', segs: st.segs });
+      });
+      out.boats.push(info);
+      Object.keys(info.causes).forEach(c => {
+        out.causeTotals[c] = (out.causeTotals[c] || 0) + info.causes[c];
+        if (info.lateness > 0) out.lateCauseTotals[c] = (out.lateCauseTotals[c] || 0) + info.causes[c] * 1;
+      });
+    });
+    out.boatById = new Map(out.boats.map(b => [b.id, b]));
+    // keeper timelines
+    P.keepers.forEach(k => {
+      const l = byKeeper.get(k.id); const segs = [];
+      let at = k.start, free = 0;
+      l.forEach(o => {
+        const w = P.walk[at][o.lock];
+        if (w > 0) segs.push({ kind: 'walk', from: free, to: free + w, a: at, b: o.lock });
+        segs.push({ kind: 'op', from: o.start, to: o.end, lock: o.lock, op: o });
+        at = o.lock; free = o.end;
+      });
+      out.keepers.push({ id: k.id, name: k.name, start: k.start, segs, ops: l });
+    });
+    out.lateBoats = out.boats.filter(b => b.lateness > 0).sort((a, b) => b.weighted - a.weighted);
+    return out;
+  }
+
+  // Compare two analyses (before / after a disruption)
+  function compare(a, b) {
+    const rows = [];
+    b.boats.forEach(nb => {
+      const ob = a.boatById.get(nb.id);
+      if (!ob) return;
+      const dFinish = nb.finish - ob.finish;
+      const dLate = nb.lateness - ob.lateness;
+      const causes = {};
+      Object.keys(Object.assign({}, nb.causes, ob.causes)).forEach(c => { causes[c] = (nb.causes[c] || 0) - (ob.causes[c] || 0); });
+      rows.push({ id: nb.id, name: nb.name, priority: nb.priority, before: ob, after: nb, dFinish, dLate, dWeighted: (nb.lateness - ob.lateness) * nb.priority, causes });
+    });
+    return rows;
+  }
+
+  return { analyze, compare, fmt, clock, span, CAUSE_LABEL };
+});
+
+</script>
+<script>
+const DATA = {"canal":{"feeder_per_minute":1,"windows":[[360,1320],[1800,2760]],"enter_minutes":5,"enter_minutes_with_barge":8,"exit_minutes":3,"chamber_slots":2,"keeper_speed":6,"keepers":[{"id":1,"name":"Ada","start_lock":2},{"id":2,"name":"Bert","start_lock":5},{"id":3,"name":"Cass","start_lock":8}],"closures":[{"lock":5,"from":720,"to":840}],"pools":[{"id":0,"length":59,"min":0,"max":100000,"level":5000},{"id":1,"length":42,"min":100,"max":320,"level":237},{"id":2,"length":21,"min":100,"max":320,"level":229},{"id":3,"length":35,"min":100,"max":320,"level":176},{"id":4,"length":30,"min":100,"max":320,"level":184},{"id":5,"length":43,"min":100,"max":320,"level":230},{"id":6,"length":35,"min":100,"max":320,"level":218},{"id":7,"length":54,"min":100,"max":320,"level":183},{"id":8,"length":56,"min":100,"max":320,"level":201},{"id":9,"length":20,"min":100,"max":320,"level":197}],"locks":[{"id":1,"volume":71,"fill":10,"empty":7,"state":"high"},{"id":2,"volume":55,"fill":14,"empty":6,"state":"low"},{"id":3,"volume":84,"fill":12,"empty":9,"state":"low"},{"id":4,"volume":53,"fill":8,"empty":6,"state":"low"},{"id":5,"volume":58,"fill":9,"empty":7,"state":"high"},{"id":6,"volume":65,"fill":9,"empty":10,"state":"low"},{"id":7,"volume":56,"fill":13,"empty":7,"state":"high"},{"id":8,"volume":64,"fill":8,"empty":8,"state":"high"},{"id":9,"volume":55,"fill":9,"empty":8,"state":"low"}],"boats":[{"id":1,"name":"Heron","type":"narrow","speed":6,"from":9,"to":0,"release":677,"deadline":1036,"priority":1},{"id":2,"name":"Mayfly","type":"narrow","speed":4,"from":0,"to":9,"release":1983,"deadline":2357,"priority":2},{"id":3,"name":"Old Tom","type":"narrow","speed":6,"from":0,"to":9,"release":561,"deadline":949,"priority":1},{"id":4,"name":"Kestrel","type":"narrow","speed":5,"from":5,"to":8,"release":470,"deadline":640,"priority":1},{"id":5,"name":"Bramble","type":"narrow","speed":6,"from":0,"to":9,"release":511,"deadline":1063,"priority":1},{"id":6,"name":"Quiet Otter","type":"narrow","speed":4,"from":0,"to":9,"release":1098,"deadline":1737,"priority":1},{"id":7,"name":"Saffron","type":"barge","speed":2,"from":8,"to":9,"release":968,"deadline":1004,"priority":1},{"id":8,"name":"Marigold","type":"narrow","speed":4,"from":0,"to":9,"release":1109,"deadline":1514,"priority":1},{"id":9,"name":"Tinker","type":"narrow","speed":4,"from":0,"to":9,"release":661,"deadline":1280,"priority":1},{"id":10,"name":"Lark Rise","type":"narrow","speed":6,"from":7,"to":8,"release":850,"deadline":883,"priority":1},{"id":11,"name":"Dunnock","type":"narrow","speed":5,"from":2,"to":8,"release":1892,"deadline":2157,"priority":1},{"id":12,"name":"Coal Barge 7","type":"narrow","speed":5,"from":5,"to":1,"release":1039,"deadline":1183,"priority":1},{"id":13,"name":"Willow","type":"narrow","speed":6,"from":7,"to":4,"release":708,"deadline":841,"priority":1},{"id":14,"name":"Sixpence","type":"barge","speed":3,"from":4,"to":5,"release":872,"deadline":920,"priority":1},{"id":15,"name":"Moorhen","type":"narrow","speed":4,"from":6,"to":5,"release":2030,"deadline":2076,"priority":3},{"id":16,"name":"Pennywhistle","type":"narrow","speed":5,"from":2,"to":3,"release":440,"deadline":487,"priority":2},{"id":17,"name":"Ferret","type":"barge","speed":3,"from":9,"to":8,"release":926,"deadline":968,"priority":2},{"id":18,"name":"Gritstone","type":"narrow","speed":4,"from":2,"to":7,"release":1062,"deadline":1356,"priority":1},{"id":19,"name":"Wren","type":"narrow","speed":4,"from":2,"to":0,"release":545,"deadline":630,"priority":1},{"id":20,"name":"Harebell","type":"narrow","speed":4,"from":1,"to":9,"release":742,"deadline":1165,"priority":1},{"id":21,"name":"Slow Loris","type":"narrow","speed":4,"from":0,"to":9,"release":668,"deadline":1185,"priority":1},{"id":22,"name":"Nutmeg","type":"narrow","speed":6,"from":0,"to":9,"release":738,"deadline":1105,"priority":1},{"id":23,"name":"Albion","type":"narrow","speed":5,"from":2,"to":3,"release":1037,"deadline":1070,"priority":1},{"id":24,"name":"Cobble","type":"narrow","speed":6,"from":5,"to":2,"release":802,"deadline":919,"priority":3},{"id":25,"name":"Swift","type":"narrow","speed":5,"from":6,"to":2,"release":668,"deadline":837,"priority":1},{"id":26,"name":"Tansy","type":"narrow","speed":4,"from":0,"to":9,"release":996,"deadline":1432,"priority":3},{"id":27,"name":"Ironbridge","type":"barge","speed":3,"from":0,"to":9,"release":845,"deadline":1373,"priority":2},{"id":28,"name":"Fieldfare","type":"narrow","speed":5,"from":0,"to":9,"release":978,"deadline":1550,"priority":2},{"id":29,"name":"Pip","type":"barge","speed":3,"from":4,"to":8,"release":387,"deadline":630,"priority":1},{"id":30,"name":"Wagtail","type":"narrow","speed":5,"from":0,"to":9,"release":470,"deadline":954,"priority":2},{"id":31,"name":"Barley Mow","type":"barge","speed":3,"from":7,"to":6,"release":1058,"deadline":1089,"priority":2},{"id":32,"name":"Kingfisher","type":"narrow","speed":6,"from":4,"to":1,"release":956,"deadline":1086,"priority":1},{"id":33,"name":"Rook","type":"narrow","speed":5,"from":7,"to":8,"release":795,"deadline":834,"priority":1},{"id":34,"name":"Clementine","type":"barge","speed":2,"from":1,"to":9,"release":799,"deadline":1602,"priority":3},{"id":35,"name":"Stoat","type":"narrow","speed":4,"from":1,"to":3,"release":497,"deadline":607,"priority":3},{"id":36,"name":"Gadfly","type":"narrow","speed":4,"from":2,"to":6,"release":404,"deadline":623,"priority":1},{"id":37,"name":"Plover","type":"narrow","speed":6,"from":1,"to":9,"release":802,"deadline":1240,"priority":1},{"id":38,"name":"Humbug","type":"narrow","speed":5,"from":0,"to":9,"release":1006,"deadline":1425,"priority":1},{"id":39,"name":"Linnet","type":"narrow","speed":4,"from":0,"to":9,"release":1128,"deadline":1761,"priority":1},{"id":40,"name":"Shire Horse","type":"narrow","speed":6,"from":0,"to":9,"release":709,"deadline":1199,"priority":1}]},"schedule":{"operations":[{"lock":5,"start":420,"dir":"down","boats":[],"keeper":2},{"lock":5,"start":427,"dir":"up","boats":[29],"keeper":2},{"lock":4,"start":440,"dir":"up","boats":[],"keeper":1},{"lock":4,"start":452,"dir":"down","boats":[],"keeper":2},{"lock":3,"start":454,"dir":"up","boats":[16,36],"keeper":1},{"lock":1,"start":457,"dir":"down","boats":[],"keeper":3},{"lock":1,"start":470,"dir":"up","boats":[30],"keeper":3},{"lock":6,"start":471,"dir":"up","boats":[29],"keeper":2},{"lock":4,"start":483,"dir":"up","boats":[36],"keeper":1},{"lock":6,"start":491,"dir":"down","boats":[],"keeper":2},{"lock":2,"start":497,"dir":"up","boats":[35,30],"keeper":3},{"lock":6,"start":501,"dir":"up","boats":[4],"keeper":2},{"lock":5,"start":504,"dir":"down","boats":[],"keeper":1},{"lock":5,"start":511,"dir":"up","boats":[36],"keeper":1},{"lock":6,"start":518,"dir":"down","boats":[],"keeper":2},{"lock":3,"start":523,"dir":"down","boats":[],"keeper":3},{"lock":4,"start":533,"dir":"down","boats":[],"keeper":1},{"lock":3,"start":534,"dir":"up","boats":[35,30],"keeper":3},{"lock":7,"start":534,"dir":"down","boats":[],"keeper":2},{"lock":7,"start":541,"dir":"up","boats":[29],"keeper":2},{"lock":2,"start":549,"dir":"down","boats":[19],"keeper":1},{"lock":4,"start":561,"dir":"up","boats":[30],"keeper":3},{"lock":7,"start":565,"dir":"down","boats":[],"keeper":2},{"lock":7,"start":572,"dir":"up","boats":[4],"keeper":2},{"lock":1,"start":574,"dir":"down","boats":[19],"keeper":1},{"lock":5,"start":582,"dir":"down","boats":[],"keeper":3},{"lock":1,"start":589,"dir":"up","boats":[3,5],"keeper":1},{"lock":5,"start":589,"dir":"up","boats":[30],"keeper":3},{"lock":8,"start":602,"dir":"down","boats":[],"keeper":2},{"lock":1,"start":607,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":610,"dir":"up","boats":[29],"keeper":2},{"lock":6,"start":615,"dir":"up","boats":[36,30],"keeper":3},{"lock":8,"start":629,"dir":"down","boats":[],"keeper":2},{"lock":2,"start":636,"dir":"up","boats":[3,5],"keeper":1},{"lock":8,"start":637,"dir":"up","boats":[4],"keeper":2},{"lock":7,"start":638,"dir":"down","boats":[],"keeper":3},{"lock":7,"start":645,"dir":"up","boats":[30],"keeper":3},{"lock":3,"start":662,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":663,"dir":"down","boats":[],"keeper":2},{"lock":6,"start":672,"dir":"down","boats":[25],"keeper":3},{"lock":2,"start":675,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":677,"dir":"up","boats":[30],"keeper":2},{"lock":1,"start":688,"dir":"up","boats":[21,9],"keeper":1},{"lock":5,"start":699,"dir":"down","boats":[25],"keeper":3},{"lock":9,"start":705,"dir":"up","boats":[30],"keeper":2},{"lock":1,"start":706,"dir":"down","boats":[],"keeper":1},{"lock":4,"start":719,"dir":"down","boats":[],"keeper":3},{"lock":2,"start":720,"dir":"up","boats":[21,9],"keeper":1},{"lock":9,"start":722,"dir":"down","boats":[1],"keeper":2},{"lock":4,"start":725,"dir":"up","boats":[],"keeper":3},{"lock":4,"start":733,"dir":"down","boats":[25],"keeper":3},{"lock":2,"start":742,"dir":"down","boats":[],"keeper":1},{"lock":2,"start":748,"dir":"up","boats":[20],"keeper":1},{"lock":8,"start":748,"dir":"down","boats":[1],"keeper":2},{"lock":3,"start":753,"dir":"up","boats":[3,5],"keeper":3},{"lock":7,"start":773,"dir":"down","boats":[13,1],"keeper":2},{"lock":3,"start":774,"dir":"down","boats":[25],"keeper":1},{"lock":4,"start":779,"dir":"up","boats":[3,5],"keeper":3},{"lock":3,"start":791,"dir":"up","boats":[21,20],"keeper":1},{"lock":6,"start":794,"dir":"up","boats":[],"keeper":2},{"lock":6,"start":803,"dir":"down","boats":[13,1],"keeper":2},{"lock":2,"start":805,"dir":"down","boats":[],"keeper":3},{"lock":3,"start":811,"dir":"down","boats":[],"keeper":1},{"lock":2,"start":812,"dir":"up","boats":[34],"keeper":3},{"lock":4,"start":826,"dir":"down","boats":[],"keeper":1},{"lock":4,"start":834,"dir":"up","boats":[21,20],"keeper":2},{"lock":2,"start":837,"dir":"down","boats":[],"keeper":3},{"lock":5,"start":840,"dir":"up","boats":[3,5],"keeper":1},{"lock":2,"start":843,"dir":"up","boats":[37],"keeper":3},{"lock":4,"start":850,"dir":"down","boats":[],"keeper":2},{"lock":5,"start":861,"dir":"down","boats":[24,13],"keeper":2},{"lock":6,"start":865,"dir":"up","boats":[5],"keeper":1},{"lock":3,"start":869,"dir":"up","boats":[34],"keeper":3},{"lock":4,"start":881,"dir":"up","boats":[],"keeper":2},{"lock":6,"start":882,"dir":"down","boats":[],"keeper":1},{"lock":4,"start":889,"dir":"down","boats":[24],"keeper":2},{"lock":3,"start":892,"dir":"down","boats":[],"keeper":3},{"lock":6,"start":892,"dir":"up","boats":[3],"keeper":1},{"lock":3,"start":901,"dir":"up","boats":[37,9],"keeper":3},{"lock":5,"start":908,"dir":"up","boats":[14],"keeper":2},{"lock":7,"start":915,"dir":"up","boats":[3,5],"keeper":1},{"lock":3,"start":921,"dir":"down","boats":[24],"keeper":3},{"lock":5,"start":928,"dir":"down","boats":[1],"keeper":2},{"lock":5,"start":943,"dir":"up","boats":[21,20],"keeper":2},{"lock":8,"start":945,"dir":"up","boats":[33,10],"keeper":1},{"lock":4,"start":948,"dir":"up","boats":[34],"keeper":3},{"lock":8,"start":961,"dir":"down","boats":[],"keeper":1},{"lock":4,"start":967,"dir":"down","boats":[1,32],"keeper":2},{"lock":8,"start":969,"dir":"up","boats":[3,5],"keeper":1},{"lock":5,"start":972,"dir":"down","boats":[],"keeper":3},{"lock":4,"start":981,"dir":"up","boats":[37,9],"keeper":2},{"lock":5,"start":982,"dir":"up","boats":[34],"keeper":3},{"lock":9,"start":995,"dir":"up","boats":[3,5],"keeper":1},{"lock":5,"start":1002,"dir":"down","boats":[],"keeper":2},{"lock":6,"start":1010,"dir":"down","boats":[],"keeper":3},{"lock":5,"start":1011,"dir":"up","boats":[37,9],"keeper":2},{"lock":9,"start":1012,"dir":"down","boats":[17],"keeper":1},{"lock":6,"start":1020,"dir":"up","boats":[21,20],"keeper":3},{"lock":9,"start":1031,"dir":"up","boats":[7],"keeper":1},{"lock":3,"start":1039,"dir":"up","boats":[23],"keeper":2},{"lock":6,"start":1040,"dir":"down","boats":[],"keeper":3},{"lock":6,"start":1055,"dir":"up","boats":[37,9],"keeper":3},{"lock":3,"start":1059,"dir":"down","boats":[1,32],"keeper":2},{"lock":7,"start":1070,"dir":"down","boats":[31],"keeper":1},{"lock":6,"start":1072,"dir":"down","boats":[],"keeper":3},{"lock":2,"start":1080,"dir":"down","boats":[1,32],"keeper":2},{"lock":6,"start":1082,"dir":"up","boats":[34],"keeper":3},{"lock":7,"start":1088,"dir":"up","boats":[21,20],"keeper":1},{"lock":1,"start":1101,"dir":"up","boats":[26,22],"keeper":2},{"lock":7,"start":1109,"dir":"down","boats":[],"keeper":3},{"lock":7,"start":1116,"dir":"up","boats":[37,9],"keeper":3},{"lock":8,"start":1118,"dir":"down","boats":[],"keeper":1},{"lock":1,"start":1119,"dir":"down","boats":[1],"keeper":2},{"lock":8,"start":1126,"dir":"up","boats":[21,20],"keeper":1},{"lock":1,"start":1134,"dir":"up","boats":[27],"keeper":2},{"lock":7,"start":1137,"dir":"down","boats":[],"keeper":3},{"lock":8,"start":1142,"dir":"down","boats":[],"keeper":1},{"lock":7,"start":1144,"dir":"up","boats":[34],"keeper":3},{"lock":8,"start":1151,"dir":"up","boats":[37,9],"keeper":1},{"lock":1,"start":1155,"dir":"down","boats":[],"keeper":2},{"lock":1,"start":1162,"dir":"up","boats":[40,28],"keeper":2},{"lock":9,"start":1177,"dir":"down","boats":[],"keeper":1},{"lock":1,"start":1180,"dir":"down","boats":[],"keeper":2},{"lock":5,"start":1181,"dir":"down","boats":[12],"keeper":3},{"lock":9,"start":1185,"dir":"up","boats":[21,20],"keeper":1},{"lock":2,"start":1194,"dir":"up","boats":[22,40],"keeper":2},{"lock":4,"start":1201,"dir":"down","boats":[],"keeper":3},{"lock":9,"start":1202,"dir":"down","boats":[],"keeper":1},{"lock":4,"start":1207,"dir":"up","boats":[],"keeper":3},{"lock":9,"start":1210,"dir":"up","boats":[37,9],"keeper":1},{"lock":4,"start":1215,"dir":"down","boats":[12],"keeper":3},{"lock":2,"start":1216,"dir":"down","boats":[],"keeper":2},{"lock":2,"start":1222,"dir":"up","boats":[26,28],"keeper":2},{"lock":3,"start":1235,"dir":"up","boats":[22,40],"keeper":3},{"lock":8,"start":1237,"dir":"down","boats":[],"keeper":1},{"lock":2,"start":1244,"dir":"down","boats":[],"keeper":2},{"lock":8,"start":1245,"dir":"up","boats":[34],"keeper":1},{"lock":2,"start":1250,"dir":"up","boats":[27],"keeper":2},{"lock":3,"start":1255,"dir":"down","boats":[12],"keeper":3},{"lock":2,"start":1277,"dir":"down","boats":[12],"keeper":2},{"lock":4,"start":1278,"dir":"up","boats":[22,40],"keeper":3},{"lock":9,"start":1278,"dir":"down","boats":[],"keeper":1},{"lock":9,"start":1292,"dir":"up","boats":[34],"keeper":1},{"lock":3,"start":1295,"dir":"up","boats":[26,28],"keeper":2},{"lock":5,"start":1299,"dir":"up","boats":[22,40],"keeper":3},{"lock":3,"start":1800,"dir":"down","boats":[],"keeper":1},{"lock":4,"start":1800,"dir":"down","boats":[],"keeper":2},{"lock":6,"start":1800,"dir":"down","boats":[],"keeper":3},{"lock":3,"start":1809,"dir":"up","boats":[27],"keeper":1},{"lock":6,"start":1810,"dir":"up","boats":[22,40],"keeper":3},{"lock":4,"start":1811,"dir":"up","boats":[26,28],"keeper":2},{"lock":3,"start":1832,"dir":"down","boats":[],"keeper":1},{"lock":5,"start":1832,"dir":"down","boats":[],"keeper":2},{"lock":7,"start":1833,"dir":"down","boats":[],"keeper":3},{"lock":5,"start":1839,"dir":"up","boats":[26,28],"keeper":2},{"lock":7,"start":1840,"dir":"up","boats":[22,40],"keeper":3},{"lock":4,"start":1847,"dir":"down","boats":[],"keeper":1},{"lock":4,"start":1853,"dir":"up","boats":[27],"keeper":1},{"lock":6,"start":1864,"dir":"down","boats":[],"keeper":2},{"lock":8,"start":1870,"dir":"down","boats":[],"keeper":3},{"lock":6,"start":1874,"dir":"up","boats":[26,28],"keeper":2},{"lock":5,"start":1877,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":1878,"dir":"up","boats":[22,40],"keeper":3},{"lock":5,"start":1884,"dir":"up","boats":[27],"keeper":1},{"lock":7,"start":1897,"dir":"down","boats":[],"keeper":2},{"lock":7,"start":1904,"dir":"up","boats":[26,28],"keeper":2},{"lock":9,"start":1904,"dir":"down","boats":[],"keeper":3},{"lock":6,"start":1912,"dir":"down","boats":[],"keeper":1},{"lock":9,"start":1912,"dir":"up","boats":[22,40],"keeper":3},{"lock":6,"start":1922,"dir":"up","boats":[27],"keeper":1},{"lock":8,"start":1934,"dir":"down","boats":[],"keeper":2},{"lock":8,"start":1942,"dir":"up","boats":[26,28],"keeper":3},{"lock":7,"start":1951,"dir":"down","boats":[],"keeper":2},{"lock":7,"start":1958,"dir":"up","boats":[27],"keeper":2},{"lock":3,"start":1960,"dir":"up","boats":[18,11],"keeper":1},{"lock":9,"start":1968,"dir":"down","boats":[],"keeper":3},{"lock":9,"start":1976,"dir":"up","boats":[26,28],"keeper":3},{"lock":1,"start":1991,"dir":"up","boats":[38,6],"keeper":1},{"lock":4,"start":2000,"dir":"down","boats":[],"keeper":2},{"lock":8,"start":2004,"dir":"down","boats":[],"keeper":3},{"lock":4,"start":2006,"dir":"up","boats":[18,11],"keeper":2},{"lock":1,"start":2009,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":2012,"dir":"up","boats":[27],"keeper":3},{"lock":1,"start":2016,"dir":"up","boats":[8,39],"keeper":1},{"lock":5,"start":2027,"dir":"down","boats":[],"keeper":2},{"lock":1,"start":2034,"dir":"down","boats":[],"keeper":1},{"lock":5,"start":2034,"dir":"up","boats":[18,11],"keeper":2},{"lock":1,"start":2041,"dir":"up","boats":[2],"keeper":1},{"lock":9,"start":2041,"dir":"down","boats":[],"keeper":3},{"lock":9,"start":2050,"dir":"up","boats":[27],"keeper":3},{"lock":6,"start":2062,"dir":"down","boats":[15],"keeper":2},{"lock":2,"start":2066,"dir":"up","boats":[38,6],"keeper":1},{"lock":6,"start":2080,"dir":"up","boats":[18,11],"keeper":2},{"lock":2,"start":2088,"dir":"down","boats":[],"keeper":1},{"lock":7,"start":2091,"dir":"down","boats":[],"keeper":3},{"lock":2,"start":2094,"dir":"up","boats":[8,39],"keeper":1},{"lock":7,"start":2106,"dir":"up","boats":[18,11],"keeper":3},{"lock":3,"start":2115,"dir":"down","boats":[],"keeper":2},{"lock":2,"start":2116,"dir":"down","boats":[],"keeper":1},{"lock":2,"start":2122,"dir":"up","boats":[2],"keeper":1},{"lock":3,"start":2124,"dir":"up","boats":[38,6],"keeper":2},{"lock":8,"start":2136,"dir":"down","boats":[],"keeper":3},{"lock":8,"start":2144,"dir":"up","boats":[11],"keeper":3},{"lock":3,"start":2148,"dir":"down","boats":[],"keeper":1},{"lock":4,"start":2150,"dir":"down","boats":[],"keeper":2},{"lock":4,"start":2156,"dir":"up","boats":[38,6],"keeper":2},{"lock":3,"start":2157,"dir":"up","boats":[39,2],"keeper":1},{"lock":4,"start":2174,"dir":"down","boats":[],"keeper":2},{"lock":3,"start":2177,"dir":"down","boats":[],"keeper":1},{"lock":5,"start":2185,"dir":"down","boats":[],"keeper":2},{"lock":3,"start":2186,"dir":"up","boats":[8],"keeper":1},{"lock":4,"start":2187,"dir":"up","boats":[39,2],"keeper":3},{"lock":5,"start":2192,"dir":"up","boats":[38,6],"keeper":2},{"lock":5,"start":2209,"dir":"down","boats":[],"keeper":2},{"lock":4,"start":2212,"dir":"down","boats":[],"keeper":1},{"lock":5,"start":2216,"dir":"up","boats":[39,2],"keeper":2},{"lock":6,"start":2216,"dir":"down","boats":[],"keeper":3},{"lock":4,"start":2218,"dir":"up","boats":[8],"keeper":1},{"lock":6,"start":2226,"dir":"up","boats":[38,6],"keeper":3},{"lock":5,"start":2233,"dir":"down","boats":[],"keeper":2},{"lock":5,"start":2242,"dir":"up","boats":[8],"keeper":2},{"lock":6,"start":2243,"dir":"down","boats":[],"keeper":3},{"lock":7,"start":2252,"dir":"down","boats":[],"keeper":1},{"lock":6,"start":2253,"dir":"up","boats":[39,2],"keeper":3},{"lock":7,"start":2259,"dir":"up","boats":[38,6],"keeper":1},{"lock":6,"start":2270,"dir":"down","boats":[],"keeper":2},{"lock":6,"start":2280,"dir":"up","boats":[8],"keeper":2},{"lock":7,"start":2280,"dir":"down","boats":[],"keeper":3},{"lock":7,"start":2287,"dir":"up","boats":[39,2],"keeper":3},{"lock":8,"start":2289,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":2297,"dir":"up","boats":[38,6],"keeper":1},{"lock":7,"start":2308,"dir":"down","boats":[],"keeper":3},{"lock":8,"start":2313,"dir":"down","boats":[],"keeper":1},{"lock":7,"start":2315,"dir":"up","boats":[8],"keeper":3},{"lock":8,"start":2322,"dir":"up","boats":[39,2],"keeper":1},{"lock":9,"start":2322,"dir":"down","boats":[],"keeper":2},{"lock":9,"start":2330,"dir":"up","boats":[38,6],"keeper":2},{"lock":8,"start":2345,"dir":"down","boats":[],"keeper":3},{"lock":9,"start":2347,"dir":"down","boats":[],"keeper":2},{"lock":8,"start":2353,"dir":"up","boats":[8],"keeper":3},{"lock":9,"start":2355,"dir":"up","boats":[39,2],"keeper":2},{"lock":9,"start":2372,"dir":"down","boats":[],"keeper":2},{"lock":9,"start":2383,"dir":"up","boats":[8],"keeper":3}]},"state":{"params":{"x":[0,0,0,0,0,-32.20518873005498,27.732176600123776,244.57001102431747,0,0,-29.723482388531675,0,0,-27.72603939994875,-9.091393867145475,0,0,120.49200759363913,0,0,-21.382201954037253,0,0,192.30836992111324,0,0,-4.12897922147161,0,0,25.7819553340928,0,0,37.146868209567195,9.653845588840442,-1.5318470049763535,0,0,-42.25661859489719,0,0],"dly":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"H":[11,11,11,11,11,11,11,11,14,11],"F":[8,8,8,8,8,8,10,8,8,8],"R":[7,7,7,7,7,7,7,7,7,7],"G":[0,0,0,0,0,0,0,0,0,0],"kb":[0,0,0,5.523179115753284,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"cv":[18,10,8,4,3,7,-1,5,2,-1,1,31,24,-1,-1,-1,-1,37,0,21,39,19,-1,-1,12,27,-1,25,-1,35,-1,11,-1,-1,-1,29,-1,17,-1,20],"E":6,"lam":152.61247088201344,"phi":16.24136047437787,"beta":1.5892442876178028,"W":4,"CW":30,"strict":0},"D":{"blocks":[[],[1220,1235,1996,2001],[621,636,2086,2091],[1117,1122,1272,1287,2215,2230],[404,434,2037,2052,2163,2168,1806,1811,1973,1978,2206,2211,1986,1991,2203,2208],[375,390,390,420,876,881,374,379],[1025,1040,1050,1055],[1908,1913,1919,1924],[1989,2004,2359,2364,2338,2343],[]],"kov":[[115202,1],[149704,1],[122374,0],[149384,0],[121863,1],[148040,0]],"bd":[[719,[[2,737]]],[865,[[2,883]]],[2175,[[37,2181]]],[1153,[[0,1159]]],[2180,[[5,2186],[38,2186]]],[1100,[[0,1106]]],[2176,[[5,2182]]],[1922,[[39,1928]]],[2186,[[5,2192]]],[2115,[[7,2121]]],[1162,[[37,1168]]],[1194,[[25,1200]]],[2157,[[7,2163]]]],"force":[33222,38849,71683,33158,122375,142148,151368,125383,150984,133634],"pairs":[[1829,[[17,10]]]]}}};
+</script>
+<script>
+(function () {
+  'use strict';
+  const E = Engine, X = Explain;
+  const $ = s => document.querySelector(s);
+  const NS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs, parent, text) {
+    const e = document.createElementNS(NS, tag);
+    if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function h(tag, attrs, html) {
+    const e = document.createElement(tag);
+    if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (html !== undefined) e.innerHTML = html;
+    return e;
+  }
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const lerp = (a, b, f) => a + (b - a) * f;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const ORIG = { canal: DATA.canal, schedule: DATA.schedule, state: DATA.state };
+
+  // ------------------------------------------------------------ state
+  let view = null;          // {canal, schedule, an, model, label}
+  let baseView = null;      // the original plan
+  let replanView = null;
+  let time = 360, playing = false, speed = 30, lastTs = 0;
+  let focusBoat = null, ganttMode = 'lock', ganttDay = 'both', delayMode = 'late';
+  const disr = { closures: [], delays: [] };
+  let geo = null, nodes = null;
+
+  // ------------------------------------------------------------ model
+  function buildView(canal, schedule, label) {
+    const an = X.analyze(canal, schedule, E);
+    const v = { canal, schedule, an, label };
+    if (!an.valid) return v;
+    const P = an.P;
+    v.lockOps = []; for (let i = 0; i <= P.N; i++) v.lockOps.push([]);
+    an.sim.ops.forEach(o => v.lockOps[o.lock].push(o));
+    v.lockOps.forEach(l => l.sort((a, b) => a.start - b.start));
+    return v;
+  }
+
+  function chamberFrac(v, L, t) {
+    const P = v.an.P, ops = v.lockOps[L];
+    let f = P.state0[L], phase = null, op = null;
+    for (let i = 0; i < ops.length; i++) {
+      const o = ops[i];
+      if (o.start > t) break;
+      if (t >= o.end) { f = o.up ? 1 : 0; continue; }
+      const enter = o.empty ? 0 : (o.boats.some(b => P.boatById.get(b).barge) ? P.enterBarge : P.enter);
+      const fd = o.up ? P.fill[L] : P.empty[L];
+      const el = t - o.start;
+      op = o;
+      if (el < enter) { f = o.up ? 0 : 1; phase = 'enter'; }
+      else if (el < enter + fd) { const p = (el - enter) / fd; f = o.up ? p : 1 - p; phase = 'fill'; }
+      else { f = o.up ? 1 : 0; phase = 'exit'; }
+      break;
+    }
+    return { f, phase, op };
+  }
+
+  // ------------------------------------------------------------ canal geometry / scene
+  function buildScene() {
+    const P = view.an.P, N = P.N, svg = $('#canal');
+    svg.innerHTML = '';
+    const W = 1100, H = 350, mL = 34, mR = 26;
+    let total = 0; for (let i = 0; i <= N; i++) total += P.poolLen[i];
+    const sx = (W - mL - mR) / total;
+    const poolX = [], lockX = [0];
+    let x = mL;
+    for (let i = 0; i <= N; i++) { poolX.push(x); x += P.poolLen[i] * sx; }
+    poolX.push(x);
+    for (let i = 1; i <= N; i++) lockX.push(poolX[i]);
+    const step = Math.min(24, 210 / Math.max(1, N)), depthMax = 62;
+    const base = i => 318 - i * step, bank = i => base(i) - depthMax - 10;
+    geo = { W, H, poolX, lockX, base, bank, depthMax, N, sx };
+    nodes = { pools: [], chambers: [], boats: new Map(), keepers: [], poolTxt: [], lockTxt: [], closed: [] };
+    const defs = el('defs', null, svg);
+    const pat = el('pattern', { id: 'hatch', width: 6, height: 6, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, defs);
+    el('rect', { width: 6, height: 6, fill: 'rgba(226,121,92,.25)' }, pat); el('line', { x1: 0, y1: 0, x2: 0, y2: 6, stroke: '#E2795C', 'stroke-width': 2.5 }, pat);
+    const sky = el('rect', { x: 0, y: 0, width: W, height: H, id: 'sky' }, svg);
+    nodes.sky = sky;
+    nodes.sun = el('circle', { r: 11, fill: '#F0C06A' }, svg);
+    nodes.moon = el('circle', { r: 8, fill: '#F2E7D5' }, svg);
+    nodes.stars = el('g', null, svg);
+    for (let i = 0; i < 26; i++) el('circle', { cx: (i * 173) % W, cy: 8 + (i * 37) % 60, r: 0.9, fill: '#F2E7D5' }, nodes.stars);
+    // earth
+    const earth = el('g', null, svg);
+    for (let i = 0; i <= N; i++) {
+      el('rect', { x: poolX[i], y: base(i), width: poolX[i + 1] - poolX[i] + 1, height: H - base(i), fill: 'var(--earth)' }, earth);
+      el('rect', { x: poolX[i], y: bank(i), width: poolX[i + 1] - poolX[i] + 1, height: 4, fill: 'var(--pc-line2)', opacity: .7 }, earth);
+    }
+    // pools
+    for (let i = 0; i <= N; i++) {
+      const w = el('rect', { x: poolX[i], width: poolX[i + 1] - poolX[i], fill: 'var(--water)', opacity: .92 }, svg);
+      nodes.pools.push(w);
+      const ripple = el('rect', { x: poolX[i], height: 2, width: poolX[i + 1] - poolX[i], fill: 'var(--water2)' }, svg);
+      nodes.pools[i].ripple = ripple;
+      nodes.poolTxt.push(el('text', { x: (poolX[i] + poolX[i + 1]) / 2, y: base(i) + 15, 'text-anchor': 'middle', 'font-size': 10, fill: 'var(--pc-soft)' }, svg, ''));
+    }
+    // locks
+    for (let L = 1; L <= N; L++) {
+      const g = el('g', null, svg);
+      const cx = lockX[L], cw = 26;
+      const top = Math.min(base(L) - depthMax - 6, base(L - 1) - depthMax - 6);
+      const floor = base(L - 1);
+      const wall = el('rect', { x: cx - cw / 2, y: top, width: cw, height: floor - top + 4, fill: 'var(--pc-page)', stroke: 'var(--stone)', 'stroke-width': 2, rx: 2 }, g);
+      const water = el('rect', { x: cx - cw / 2 + 1.5, width: cw - 3, fill: 'var(--water)' }, g);
+      const gateL = el('rect', { x: cx - cw / 2 - 2, width: 3, fill: 'var(--stone)' }, g), gateR = el('rect', { x: cx + cw / 2 - 1, width: 3, fill: 'var(--stone)' }, g);
+      const closed = el('rect', { x: cx - cw / 2 - 3, y: top - 4, width: cw + 6, height: floor - top + 10, fill: 'url(#hatch)', opacity: 0 }, g);
+      const lbl = el('text', { x: cx, y: top - 7, 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 600, fill: 'var(--pc-strong)' }, g, 'L' + L);
+      nodes.chambers.push({ water, gateL, gateR, top, floor, cx, cw });
+      nodes.closed.push(closed);
+      nodes.lockTxt.push(el('text', { x: cx, y: floor + 15, 'text-anchor': 'middle', 'font-size': 9, fill: 'var(--pc-accent)' }, g, ''));
+    }
+    // keepers
+    const kcol = ['#F0C06A', '#E2795C', '#8FC1B5', '#B79CE0', '#E8A0B5'];
+    view.an.keepers.forEach((k, i) => {
+      const g = el('g', null, svg);
+      const c = el('circle', { r: 6, fill: kcol[i % kcol.length], stroke: 'var(--pc-page)', 'stroke-width': 1.5 }, g);
+      el('text', { y: 3, 'text-anchor': 'middle', 'font-size': 8, 'font-weight': 700, fill: '#101220' }, g, (k.name || 'K')[0]);
+      const t = el('text', { y: -9, 'text-anchor': 'middle', 'font-size': 9, fill: 'var(--pc-strong)' }, g, k.name || ('K' + k.id));
+      nodes.keepers.push({ g, c, col: kcol[i % kcol.length] });
+    });
+    // boats
+    view.an.boats.forEach(b => {
+      const g = el('g', { style: 'cursor:pointer' }, svg);
+      const w = b.type === 'barge' ? 32 : 20;
+      const r = el('rect', { x: -w / 2, y: -4.5, width: w, height: 9, rx: 3.5, fill: 'var(--pc-strong)', stroke: 'var(--pc-page)', 'stroke-width': 1 }, g);
+      el('text', { y: 2.8, 'text-anchor': 'middle', 'font-size': 7.5, 'font-weight': 700, fill: '#101220' }, g, String(b.id));
+      const tl = el('text', { y: -7, 'text-anchor': 'middle', 'font-size': 9, fill: 'var(--pc-head)', opacity: 0 }, g, b.name);
+      el('title', null, g, b.name + ' (' + b.type + ', priority ' + b.priority + ')');
+      g.addEventListener('click', () => { setFocus(focusBoat === b.id ? null : b.id); });
+      nodes.boats.set(b.id, { g, r, tl });
+    });
+    // legend
+    const lg = $('#canallegend');
+    lg.innerHTML = '<span><i style="background:var(--pc-strong)"></i>boat moving</span><span><i style="background:var(--pc-head)"></i>boat waiting</span><span><i style="background:var(--pc-accent)"></i>finished late</span><span><i style="background:var(--pc-soft)"></i>finished on time</span><span><i style="background:repeating-linear-gradient(45deg,#E2795C,#E2795C 2px,transparent 2px,transparent 4px)"></i>lock closed</span><span>Numbers on boats are boat ids. Click a boat to follow it.</span>';
+  }
+
+  function poolAtX(x) { for (let i = geo.N; i >= 0; i--) if (x >= geo.poolX[i] - 0.01) return i; return 0; }
+
+  function skyAt(t) {
+    const P = view.an.P, m = t % 1440;
+    const h = m / 60;
+    let day = 0;
+    if (h >= 5 && h < 7) day = (h - 5) / 2; else if (h >= 7 && h < 20) day = 1; else if (h >= 20 && h < 22.5) day = 1 - (h - 20) / 2.5;
+    return { day, sunFrac: (h - 6) / 16 };
+  }
+  function mix(c1, c2, f) {
+    const p = c => [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)];
+    const a = p(c1), b = p(c2);
+    return 'rgb(' + a.map((v, i) => Math.round(lerp(v, b[i], f))).join(',') + ')';
+  }
+
+  function drawCanal(t) {
+    if (!view.an.valid) return;
+    const an = view.an, P = an.P, sim = an.sim, N = P.N, W1 = N + 1, g = geo;
+    const cs = getComputedStyle(document.documentElement);
+    const dayC = cs.getPropertyValue('--sky-day').trim() || '#EBDCC0', nightC = cs.getPropertyValue('--sky-night').trim() || '#0B0D1A';
+    const sk = skyAt(t);
+    nodes.sky.setAttribute('fill', mix(nightC.length === 7 ? nightC : '#0B0D1A', dayC.length === 7 ? dayC : '#EBDCC0', sk.day));
+    nodes.stars.setAttribute('opacity', (1 - sk.day) * 0.9);
+    const ang = clamp(sk.sunFrac, -0.1, 1.1);
+    nodes.sun.setAttribute('cx', 60 + ang * 480); nodes.sun.setAttribute('cy', 70 - Math.sin(ang * Math.PI) * 55);
+    nodes.sun.setAttribute('opacity', sk.day > 0.05 ? 1 : 0);
+    const mh = ((t % 1440) / 60 + 6) % 24 / 24;
+    nodes.moon.setAttribute('cx', 700 + mh * 350); nodes.moon.setAttribute('cy', 44); nodes.moon.setAttribute('opacity', 1 - sk.day > 0.5 ? 0.9 : 0);
+    const m = clamp(Math.floor(t), 0, sim.traceLen - 1);
+    const surf = [];
+    for (let i = 0; i <= N; i++) {
+      const lv = Math.min(sim.trace[m * W1 + i], 320 > P.poolMax[i] ? P.poolMax[i] : 320);
+      const d = clamp((i === 0 ? 300 : lv) / 320, 0, 1) * g.depthMax;
+      const y = g.base(i) - d;
+      surf.push(y);
+      const w = nodes.pools[i];
+      w.setAttribute('y', y); w.setAttribute('height', d);
+      w.ripple.setAttribute('y', y);
+      nodes.poolTxt[i].textContent = 'P' + i + (i === 0 ? '' : ' ' + Math.round(sim.trace[m * W1 + i]));
+    }
+    g.surf = surf;
+    // chambers
+    const chInfo = [null];
+    for (let L = 1; L <= N; L++) {
+      const c = nodes.chambers[L - 1];
+      const cf = chamberFrac(view, L, t);
+      const yc = lerp(surf[L - 1], surf[L], cf.f);
+      c.water.setAttribute('y', yc); c.water.setAttribute('height', c.floor - yc + 1);
+      const gy = Math.min(surf[L], surf[L - 1]) - 12;
+      c.gateL.setAttribute('y', cf.phase === 'fill' ? c.floor - 4 : cf.f < 0.5 ? gy + 16 : c.floor - 4);
+      c.gateL.setAttribute('height', 14); c.gateR.setAttribute('y', cf.phase === 'fill' ? c.floor - 4 : cf.f < 0.5 ? c.floor - 4 : gy + 16); c.gateR.setAttribute('height', 14);
+      chInfo.push({ yc, cf });
+      const cl = P.closures[L].find(q => t >= q[0] && t < q[1]);
+      nodes.closed[L - 1].setAttribute('opacity', cl ? 1 : 0);
+      nodes.lockTxt[L - 1].textContent = cl ? 'closed' : (P.winEnd[Math.floor(t)] === 0 ? 'shut' : '');
+    }
+    // boats
+    const queue = {};
+    const bpos = [];
+    an.boats.forEach(b => {
+      const bt = P.boatById.get(b.id);
+      const nd = nodes.boats.get(b.id);
+      const st = b.stages;
+      let x = 0, y = 0, mode = 'hidden';
+      const surfY = p => surf[p] - 4.5;
+      const waitX = (s, q) => s.up ? Math.max(g.poolX[s.lock - 1] + 8, g.lockX[s.lock] - 17 - 16 * q) : Math.min(g.poolX[s.lock + 1] - 8, g.lockX[s.lock] + 17 + 16 * q);
+      const waitPool = s => s.up ? s.lock - 1 : s.lock;
+      const exitX = s => s.up ? g.lockX[s.lock] + 17 : g.lockX[s.lock] - 17;
+      const exitPool = s => s.up ? s.lock : s.lock - 1;
+      if (!st.length) { mode = 'hidden'; }
+      else if (t < b.release) mode = 'hidden';
+      else {
+        let placed = false;
+        for (let k = 0; k < st.length && !placed; k++) {
+          const s = st[k];
+          if (t < s.arrive) {
+            // crossing from previous stage
+            const p = st[k - 1];
+            const f = (t - p.end) / Math.max(1, s.arrive - p.end);
+            x = lerp(exitX(p), waitX(s, 0), f); y = surfY(exitPool(p)); mode = 'move'; placed = true;
+          } else if (t < s.start) {
+            const key = s.lock + (s.up ? 'u' : 'd');
+            const q = queue[key] || 0; queue[key] = q + 1;
+            x = waitX(s, q); y = surfY(waitPool(s)); mode = 'wait'; placed = true;
+          } else if (t < s.end) {
+            const o = s.op, cf = chInfo[s.lock].cf, cx = g.lockX[s.lock];
+            const idx = o.boats.indexOf(b.id), n = o.boats.length;
+            const off = (idx - (n - 1) / 2) * (bt.barge ? 0 : 11);
+            const enter = P.boatById.get(b.id).barge || o.boats.some(z => P.boatById.get(z).barge) ? P.enterBarge : P.enter;
+            const yc = chInfo[s.lock].yc - 4.5;
+            if (cf.phase === 'enter') {
+              const f = clamp((t - s.start) / enter, 0, 1);
+              x = lerp(waitX(s, 0), cx + off, f); y = lerp(surfY(waitPool(s)), yc, f);
+            } else if (cf.phase === 'exit') {
+              const f = clamp((t - (s.end - P.exit)) / P.exit, 0, 1);
+              x = lerp(cx + off, exitX(s), f); y = lerp(yc, surfY(exitPool(s)), f);
+            } else { x = cx + off; y = yc; }
+            mode = 'move'; placed = true;
+          } else if (k < st.length - 1) {
+            const nx = st[k + 1];
+            if (t < nx.arrive) {
+              const f = (t - s.end) / Math.max(1, nx.arrive - s.end);
+              x = lerp(exitX(s), waitX(nx, 0), f); y = surfY(exitPool(s)); mode = 'move'; placed = true;
+            }
+          }
+        }
+        if (!placed) {
+          const s = st[st.length - 1];
+          const key = 'done' + exitPool(s);
+          const q = queue[key] || 0; queue[key] = q + 1;
+          x = exitX(s) + (s.up ? 1 : -1) * (6 + 15 * q); x = clamp(x, g.poolX[exitPool(s)] + 6, g.poolX[exitPool(s) + 1] - 6);
+          y = surfY(exitPool(s)); mode = b.lateness > 0 ? 'late' : 'done';
+        }
+      }
+      if (mode === 'hidden') nd.g.setAttribute('opacity', 0);
+      else {
+        nd.g.setAttribute('opacity', mode === 'done' || mode === 'late' ? 0.75 : 1);
+        nd.g.setAttribute('transform', 'translate(' + x.toFixed(1) + ',' + y.toFixed(1) + ')');
+        nd.r.setAttribute('fill', mode === 'wait' ? 'var(--pc-head)' : mode === 'late' ? 'var(--pc-accent)' : mode === 'done' ? 'var(--pc-soft)' : 'var(--pc-strong)');
+        nd.r.setAttribute('stroke', focusBoat === b.id ? '#fff' : 'var(--pc-page)');
+        nd.r.setAttribute('stroke-width', focusBoat === b.id ? 2 : 1);
+        nd.tl.setAttribute('opacity', focusBoat === b.id ? 1 : 0);
+      }
+    });
+    // keepers
+    an.keepers.forEach((k, i) => {
+      let at = k.start, x = g.lockX[at], state = 'idle at Lock ' + at, working = false;
+      for (let s = 0; s < k.segs.length; s++) {
+        const sg = k.segs[s];
+        if (t < sg.from) break;
+        if (sg.kind === 'walk') {
+          if (t < sg.to) { const f = (t - sg.from) / (sg.to - sg.from); x = lerp(g.lockX[sg.a], g.lockX[sg.b], f); state = 'walking from Lock ' + sg.a + ' to Lock ' + sg.b; at = null; break; }
+          at = sg.b; x = g.lockX[at]; state = 'idle at Lock ' + at;
+        } else {
+          if (t < sg.to) { at = sg.lock; x = g.lockX[at]; working = true; state = 'working Lock ' + sg.lock; break; }
+          at = sg.lock; x = g.lockX[at]; state = 'idle at Lock ' + at;
+        }
+      }
+      const p = poolAtX(x + 1);
+      nodes.keepers[i].g.setAttribute('transform', 'translate(' + x.toFixed(1) + ',' + (g.bank(p) - 8) + ')');
+      nodes.keepers[i].c.setAttribute('stroke', working ? '#fff' : 'var(--pc-page)');
+      nodes.keepers[i].state = state;
+    });
+    drawNow(t);
+  }
+
+  function drawNow(t) {
+    const an = view.an, P = an.P;
+    const box = $('#nowbox');
+    const rows = [];
+    const act = an.sim.ops.filter(o => o.start <= t && t < o.end).sort((a, b) => a.lock - b.lock);
+    const kname = id => { const k = P.keepers[P.keeperById.get(id)]; return k.name || 'Keeper ' + k.id; };
+    const col1 = [], col2 = [], col3 = [];
+    act.forEach(o => {
+      const names = o.boats.map(b => P.boatById.get(b).name);
+      const enter = o.empty ? 0 : (o.boats.some(b => P.boatById.get(b).barge) ? P.enterBarge : P.enter);
+      const el = t - o.start, fd = o.up ? P.fill[o.lock] : P.empty[o.lock];
+      const what = o.empty ? 'an empty turn, ' + (o.up ? 'filling' : 'emptying') : el < enter ? 'boats entering' : el < enter + fd ? (o.up ? 'filling' : 'emptying') : 'boats leaving';
+      col1.push('<div class="row"><b>Lock ' + o.lock + '</b>: ' + what + (names.length ? ' (' + esc(names.join(', ')) + ' going ' + (o.up ? 'up' : 'down') + ')' : '') + '</div>');
+    });
+    if (!col1.length) col1.push('<div class="row">No lock is turning right now.</div>');
+    nodes.keepers.forEach((k, i) => col2.push('<div class="row"><b>' + esc(an.keepers[i].name || ('K' + an.keepers[i].id)) + '</b> ' + esc(k.state || '') + '</div>'));
+    const open = P.winEnd[Math.floor(t)] > 0;
+    const waiting = an.boats.filter(b => b.stages.some(s => t >= s.arrive && t < s.start)).length;
+    const done = an.boats.filter(b => b.finish <= t).length;
+    const closed = []; for (let L = 1; L <= P.N; L++) if (P.closures[L].some(q => t >= q[0] && t < q[1])) closed.push(L);
+    col3.push('<div class="row">' + (open ? 'Locks are open.' : '<b>Night.</b> Locks are shut; boats can still drift between pools.') + '</div>');
+    if (closed.length) col3.push('<div class="row"><b>Closed for maintenance:</b> Lock ' + closed.join(', Lock ') + '</div>');
+    col3.push('<div class="row"><b>' + waiting + '</b> boats waiting at a lock, <b>' + done + '</b> of ' + an.boats.length + ' finished.</div>');
+    box.innerHTML = '<div>' + col1.join('') + '</div><div>' + col2.join('') + '</div><div>' + col3.join('') + '</div>';
+  }
+
+  // ------------------------------------------------------------ transport
+  function setTime(t, fromScrub) {
+    time = clamp(t, 0, 2880);
+    if (!fromScrub) $('#scrub').value = time;
+    $('#clock').textContent = X.fmt(Math.floor(time));
+    drawCanal(time);
+    moveCursor();
+  }
+  function frame(ts) {
+    if (!playing) return;
+    const dt = Math.min(0.1, (ts - lastTs) / 1000); lastTs = ts;
+    const P = view.an.P;
+    const night = P.winEnd[Math.floor(time)] === 0;
+    time += speed * dt * (night ? 8 : 1);
+    if (time >= 2880) { time = 2880; setPlaying(false); }
+    setTime(time);
+    if (playing) requestAnimationFrame(frame);
+  }
+  function setPlaying(p) {
+    playing = p; $('#playbtn').textContent = p ? 'Pause' : (time >= 2880 ? 'Replay' : 'Play');
+    if (p) { if (time >= 2880) time = 0; lastTs = performance.now(); requestAnimationFrame(frame); }
+  }
+  function buildStrip() {
+    const P = view.an.P, s = $('#strip');
+    s.innerHTML = '';
+    s.style.background = 'var(--pc-tile)';
+    let prev = 0;
+    const bar = (a, b, bg, top, ht) => { const d = h('div'); d.style.cssText = 'position:absolute;left:' + (a / 2880 * 100) + '%;width:' + ((b - a) / 2880 * 100) + '%;top:' + top + ';height:' + ht + ';background:' + bg; s.appendChild(d); };
+    bar(0, 2880, 'var(--pc-page)', '0', '100%');
+    P.windows.forEach(w => bar(w[0], w[1], 'var(--pc-line2)', '0', '100%'));
+    for (let L = 1; L <= P.N; L++) P.closures[L].forEach(c => bar(c[0], c[1], 'repeating-linear-gradient(45deg,#E2795C,#E2795C 2px,transparent 2px,transparent 4px)', '55%', '45%'));
+    view.an.boats.forEach(b => { bar(b.deadline, Math.min(2880, b.deadline + 1), 'rgba(240,192,106,.0)', '0', '0'); });
+    $('#scrub').title = 'Lighter band: locks open. Hatched: a closure.';
+  }
+  function moveCursor() {
+    if (!ganttGeo) return;
+    const c = $('#ganttcursor'); if (!c) return;
+    const x = ganttX(time);
+    if (x === null) c.setAttribute('opacity', 0); else { c.setAttribute('opacity', 1); c.setAttribute('x1', x); c.setAttribute('x2', x); }
+  }
+
+  // ------------------------------------------------------------ focus
+  function setFocus(id) {
+    focusBoat = id;
+    const b = id !== null ? view.an.boatById.get(id) : null;
+    $('#focusnote').textContent = b ? 'Following ' + b.name + ' (click it again to release)' : '';
+    drawGantt(); drawCanal(time);
+  }
+
+  // ------------------------------------------------------------ Gantt
+  let ganttGeo = null;
+  function ganttX(t) {
+    if (!ganttGeo) return null;
+    for (const s of ganttGeo.segs) if (t >= s.a - 1 && t <= s.b + 1) return s.x0 + (clamp(t, s.a, s.b) - s.a) * s.k;
+    return null;
+  }
+  function ganttT(x) {
+    for (const s of ganttGeo.segs) if (x >= s.x0 && x <= s.x0 + (s.b - s.a) * s.k) return s.a + (x - s.x0) / s.k;
+    let best = ganttGeo.segs[0]; return best.a;
+  }
+  function drawGantt() {
+    const svg = $('#gantt'); svg.innerHTML = '';
+    if (!view.an.valid) return;
+    const an = view.an, P = an.P;
+    const wrapW = Math.max(300, $('#ganttwrap').clientWidth - 6);
+    const labW = 74, gap = 22;
+    let wins = P.windows.map(w => [w[0] - 8, w[1] + 8]);
+    if (ganttDay === '1') wins = [wins[0]]; else if (ganttDay === '2') wins = [wins[wins.length - 1]];
+    const minK = ganttDay === 'both' ? 0.25 : 0.9;
+    const totalMin = wins.reduce((s, w) => s + (w[1] - w[0]), 0);
+    let avail = wrapW - labW - 8 - gap * (wins.length - 1);
+    let k = Math.max(avail / totalMin, minK);
+    const segs = []; let x0 = labW;
+    wins.forEach(w => { segs.push({ a: w[0], b: w[1], x0, k }); x0 += (w[1] - w[0]) * k + gap; });
+    const width = x0 - gap + 8;
+    const rows = ganttMode === 'lock' ? P.N : an.keepers.length;
+    const rh = 27, top = 30, height = top + rows * rh + 10;
+    svg.setAttribute('width', width); svg.setAttribute('height', height);
+    ganttGeo = { segs, k, width, top, rh };
+    const X0 = t => ganttX(t);
+    // day headers & ticks
+    segs.forEach(s => {
+      el('rect', { x: s.x0, y: top - 4, width: (s.b - s.a) * s.k, height: rows * rh + 6, fill: 'var(--pc-page)', opacity: .45 }, svg);
+      const day = s.a >= 1440 ? 2 : 1;
+      el('text', { x: s.x0 + 2, y: 11, class: 'lab', 'font-weight': 600 }, svg, 'Day ' + day);
+      const first = Math.ceil(s.a / 60) * 60;
+      for (let t = first; t <= s.b; t += (s.k * 60 < 34 ? 120 : 60)) {
+        const xx = s.x0 + (t - s.a) * s.k;
+        el('line', { x1: xx, x2: xx, y1: top - 4, y2: top + rows * rh + 2, stroke: 'var(--pc-line2)', 'stroke-width': 0.6, opacity: .7 }, svg);
+        el('text', { x: xx + 2, y: 24, class: 'tick' }, svg, X.clock(t));
+      }
+    });
+    for (let r = 0; r < rows; r++) {
+      el('line', { x1: labW - 4, x2: width, y1: top + r * rh + rh, y2: top + r * rh + rh, stroke: 'var(--pc-line)', 'stroke-width': 0.6 }, svg);
+      const label = ganttMode === 'lock' ? 'Lock ' + (r + 1) : (an.keepers[r].name || 'Keeper ' + an.keepers[r].id);
+      el('text', { x: 6, y: top + r * rh + rh / 2 + 4, class: 'lab' }, svg, label);
+    }
+    // closures
+    if (ganttMode === 'lock') {
+      for (let L = 1; L <= P.N; L++) P.closures[L].forEach(c => {
+        const xa = X0(c[0]), xb = X0(c[1]);
+        if (xa === null || xb === null) return;
+        const r = el('rect', { x: xa, y: top + (L - 1) * rh + 1, width: xb - xa, height: rh - 2, fill: 'url(#hatch)' }, svg);
+        el('title', null, r, 'Lock ' + L + ' closed for maintenance ' + X.clock(c[0]) + '–' + X.clock(c[1]));
+      });
+    }
+    const opCol = o => ganttMode === 'lock' ? (o.up ? 'var(--up)' : 'var(--down)') : 'hsl(' + ((o.lock * 41) % 360) + ',38%,' + (document.documentElement.dataset.mode === 'day' ? '52%' : '46%') + ')';
+    const focusOps = focusBoat !== null ? new Set(view.an.boatById.get(focusBoat).ops) : null;
+    const rects = [];
+    an.sim.ops.forEach(o => {
+      const xa = X0(o.start), xb = X0(o.end);
+      if (xa === null || xb === null) return;
+      const row = ganttMode === 'lock' ? o.lock - 1 : P.keeperById.get(o.keeper);
+      const y = top + row * rh + 3, hh = rh - 6;
+      const dim = focusOps && !focusOps.has(o);
+      const r = el('rect', { class: 'op', x: xa, y, width: Math.max(2, xb - xa), height: hh, rx: 3, fill: o.empty ? 'none' : opCol(o), stroke: focusOps && !dim ? '#fff' : opCol(o), 'stroke-width': focusOps && !dim ? 2 : 1.2, 'stroke-dasharray': o.empty ? '3 2' : '0', opacity: dim ? 0.25 : 1 }, svg);
+      el('title', null, r, 'Lock ' + o.lock + ' ' + (o.up ? 'up' : 'down') + ' ' + X.span(o.start, o.end) + (o.boats.length ? ' – ' + o.boats.map(b => P.boatById.get(b).name).join(', ') : ' – empty turn') + ' – ' + (P.keepers[P.keeperById.get(o.keeper)].name || 'keeper ' + o.keeper));
+      r.addEventListener('click', () => showOp(o));
+      const w = xb - xa;
+      let txt = '';
+      if (ganttMode === 'lock') txt = o.boats.length ? o.boats.join('·') : '';
+      else txt = 'L' + o.lock + (o.boats.length ? ' ' + o.boats.join('·') : '');
+      if (txt && w > txt.length * 5.2 + 4) el('text', { x: xa + 3, y: y + hh / 2 + 3.5, opacity: dim ? .3 : 1 }, svg, txt);
+    });
+    if (ganttMode === 'keeper') {
+      an.keepers.forEach((kp, r) => kp.segs.forEach(s => {
+        if (s.kind !== 'walk') return;
+        const xa = X0(s.from), xb = X0(s.to);
+        if (xa === null || xb === null) return;
+        const yy = top + r * rh + rh / 2;
+        const ln = el('line', { x1: xa, x2: xb, y1: yy, y2: yy, stroke: 'var(--pc-soft)', 'stroke-width': 1.5, 'stroke-dasharray': '2 2' }, svg);
+        el('title', null, ln, 'Walking from Lock ' + s.a + ' to Lock ' + s.b + ' (' + (s.to - s.from) + ' min)');
+      }));
+    }
+    // focus boat path
+    if (focusBoat !== null && ganttMode === 'lock') {
+      const b = view.an.boatById.get(focusBoat);
+      let d = '';
+      b.stages.forEach(s => {
+        const xa = X0(s.start), xb = X0(s.end);
+        if (xa === null || xb === null) return;
+        const yy = top + (s.lock - 1) * rh + rh / 2;
+        d += (d ? 'L' : 'M') + xa + ',' + yy + 'L' + xb + ',' + yy;
+      });
+      if (d) el('path', { d, fill: 'none', stroke: '#fff', 'stroke-width': 1.2, opacity: .8 }, svg);
+      const dl = X0(b.deadline);
+      if (dl !== null) { el('line', { x1: dl, x2: dl, y1: top, y2: top + rows * rh, stroke: 'var(--pc-accent)', 'stroke-width': 1.5, 'stroke-dasharray': '4 3' }, svg); el('text', { x: dl + 3, y: top + 10, style: 'fill:var(--pc-accent)' }, svg, 'deadline'); }
+    }
+    el('line', { id: 'ganttcursor', x1: 0, x2: 0, y1: top - 6, y2: top + rows * rh + 2, stroke: 'var(--pc-head)', 'stroke-width': 1.8 }, svg);
+    const bg = el('rect', { x: labW, y: 0, width: width - labW, height: height, fill: 'transparent' }, svg);
+    svg.insertBefore(bg, svg.firstChild);
+    bg.addEventListener('click', ev => { const r = svg.getBoundingClientRect(); setTime(ganttT(ev.clientX - r.left)); });
+    moveCursor();
+    $('#gantthelp').innerHTML = (ganttMode === 'lock'
+      ? '<span><i style="background:var(--up)"></i>filling (boats go up)</span><span><i style="background:var(--down)"></i>emptying (boats go down)</span>'
+      : '<span>colour = which lock the keeper is at</span><span><i style="border-top:2px dotted var(--pc-soft);height:0;background:none"></i>walking between locks</span>')
+      + '<span><i style="border:1.5px dashed var(--pc-body);background:none"></i>empty turn (no boats)</span><span>numbers = boat ids</span><span>click empty space to move time</span>';
+  }
+  function showOp(o) {
+    const an = view.an, P = an.P;
+    const kn = P.keepers[P.keeperById.get(o.keeper)].name || ('keeper ' + o.keeper);
+    let s = '<b>Lock ' + o.lock + ' ' + (o.up ? 'filling (boats go up)' : 'emptying (boats go down)') + '</b> ' + X.span(o.start, o.end) + ', worked by <b>' + esc(kn) + '</b>. ';
+    if (o.boats.length) s += 'Aboard: ' + o.boats.map(b => '<b>' + esc(P.boatById.get(b).name) + '</b>').join(' and ') + '. ';
+    else {
+      const nx = view.lockOps[o.lock].find(q => q.start >= o.end && q.boats.length);
+      s += 'An <b>empty turn</b>: nobody aboard, it only moves the chamber to the other level. ' + (nx ? 'It made the chamber ready for ' + nx.boats.map(b => esc(P.boatById.get(b).name)).join(' and ') + ' at ' + X.clock(nx.start) + '.' : 'No boat used the lock afterwards.');
+    }
+    s += ' Water: ' + (o.up ? 'took ' + o.volume + ' units out of Pool ' + o.lock + '.' : 'released ' + o.volume + ' units into Pool ' + (o.lock - 1) + '.');
+    $('#opdetail').innerHTML = s;
+    setTime(o.start);
+  }
+
+  // ------------------------------------------------------------ score + header
+  function drawScore() {
+    const r = view.an.sim, box = $('#scorebox');
+    const b = baseView && view !== baseView ? baseView.an.sim : null;
+    const chip = (k, v, cls, prev) => '<div class="score ' + (cls || '') + '"><span class="v">' + v + '</span><span class="k">' + k + (prev !== undefined ? ' <span class="small">(was ' + prev + ')</span>' : '') + '</span></div>';
+    box.innerHTML = chip('weighted lateness', r.weighted_lateness, 'main', b ? b.weighted_lateness : undefined)
+      + chip('late boats', r.late_boats + ' / ' + view.an.P.B, '', b ? b.late_boats : undefined)
+      + chip('water drawn', r.water_drawn, '', b ? b.water_drawn : undefined)
+      + chip('operations', r.operations, '', b ? b.operations : undefined)
+      + chip('empty turns', r.empty_turns, '', b ? b.empty_turns : undefined)
+      + '<span class="badge ' + (r.valid ? '' : 'bad') + '">' + (r.valid ? 'valid: every rule checked' : 'INVALID') + '</span>'
+      + '<span class="badge">' + esc(view.label) + '</span>';
+    $('#lede').textContent = view.an.P.N + ' locks, ' + view.an.P.K + ' keepers and ' + view.an.P.B + ' boats over two days. Press play, drag the time bar, and open “Why boats waited” for the reason behind every delay. Never seen a canal lock? Start with the “New to canals?” tab.';
+  }
+
+  // ------------------------------------------------------------ delays
+  const CAUSE_HELP = {
+    keeper: 'The lock was ready but the keeper who worked it was still busy at, or walking from, another lock.',
+    chamber: 'The chamber was at the wrong level and had to be filled or emptied first, usually for a boat travelling the other way or as an empty turn.',
+    ahead: 'The chamber was busy carrying another boat the same way, so this boat took the next turn.',
+    water: 'The pool above the lock did not hold enough water to fill the chamber; the crew had to wait for water to run down from the summit.',
+    night: 'Locks are shut from 22:00 to 06:00 (and a turn cannot start if it could not finish before closing).',
+    closure: 'The lock was shut for planned maintenance.',
+    pair: 'A turn was held a few minutes so two boats could share one chamber.',
+    choice: 'The lock, keeper and water were all available, but the schedule served other boats first.'
+  };
+  function drawDelays() {
+    const an = view.an, ov = $('#overview'), P = an.P;
+    if (!an.valid) { ov.innerHTML = '<p>This schedule is not valid, so no explanation can be built.</p>'; return; }
+    const late = an.lateBoats, tot = an.causeTotals;
+    const order = Object.keys(X.CAUSE_LABEL).filter(c => tot[c]).sort((a, b) => tot[b] - tot[a]);
+    const max = order.length ? tot[order[0]] : 1;
+    const totalWait = an.boats.reduce((s, b) => s + b.totalWait, 0);
+    const lateW = an.boats.reduce((s, b) => s + b.weighted, 0);
+    const impossible = an.boats.filter(b => b.impossible > 0);
+    let html = '<h2>' + late.length + ' of ' + an.boats.length + ' boats finished late</h2>';
+    html += '<div class="prose"><p>Lateness costs <b>priority × minutes late</b>; the total is <b>' + lateW + '</b>. ';
+    if (late.length) {
+      const top = late.slice(0, 3).map(b => '<b>' + esc(b.name) + '</b> (' + b.lateness + ' min × priority ' + b.priority + ')').join(', ');
+      html += 'The costliest are ' + top + '. ';
+    }
+    if (order.length) html += 'Across all boats the largest cause of waiting was “<b>' + X.CAUSE_LABEL[order[0]].toLowerCase() + '</b>”' + (order[1] ? ', then “' + X.CAUSE_LABEL[order[1]].toLowerCase() + '”' : '') + '. ';
+    html += (impossible.length ? impossible.length + ' boat' + (impossible.length > 1 ? 's' : '') + ' could not have met the deadline even with no waiting at all.' : 'Every boat could have met its deadline if it had never waited.') + '</p></div>';
+    html += '<div class="causebars">';
+    order.forEach(c => { html += '<div class="cb" title="' + esc(CAUSE_HELP[c] || '') + '"><span>' + X.CAUSE_LABEL[c] + '</span><span class="bar"><i style="width:' + (tot[c] / max * 100) + '%"></i></span><span class="n">' + tot[c] + ' boat-min</span></div>'; });
+    html += '</div><p class="small">Total waiting at locks: ' + totalWait + ' boat-minutes, of which ' + (tot.night || 0) + ' overnight. Hover a bar for what the cause means.</p>';
+    ov.innerHTML = html;
+    drawBoatList();
+  }
+  function boatCard(b, open) {
+    const P = view.an.P;
+    const dl = X.fmt(b.deadline), fin = X.fmt(b.finish);
+    let sum = '<summary><span><span class="nm">' + esc(b.name) + '</span><span class="chip">' + b.type + '</span><span class="chip">priority ' + b.priority + '</span><span class="chip">Pool ' + b.from + ' → ' + b.to + '</span></span>'
+      + (b.lateness > 0 ? '<span class="late">' + b.lateness + ' min late (cost ' + b.weighted + ')</span>' : '<span class="ontime">on time</span>')
+      + '<span class="meta">released ' + X.fmt(b.release) + ' · deadline ' + dl + ' · finished ' + fin + ' · waited ' + b.totalWait + ' min in total</span><span></span></summary>';
+    let body = '<div class="body">';
+    if (b.lateness > 0) {
+      body += '<p class="why">' + esc(b.name) + ' finished ' + b.lateness + ' min after its deadline. ';
+      if (b.impossible > 0) body += 'The route alone needs ' + (b.minFinish - b.release) + ' min, so even with no waiting it would have arrived ' + b.impossible + ' min late. ';
+      const parts = Object.keys(b.causes).sort((x, y) => b.causes[y] - b.causes[x]).map(c => b.causes[c] + ' min ' + X.CAUSE_LABEL[c].toLowerCase());
+      if (parts.length) body += 'Its waiting adds up to ' + parts.join(', ') + '.';
+      body += '</p>';
+    } else body += '<p class="why">' + esc(b.name) + ' arrived ' + (b.deadline - b.finish) + ' min before its deadline.</p>';
+    if (!b.sentences.length) body += '<p>It never had to wait at a lock.</p>';
+    b.sentences.forEach(s => { body += '<p>' + esc(s.text) + '</p>'; });
+    body += '<p><button class="pill" data-follow="' + b.id + '">Follow in the canal &amp; Gantt</button></p></div>';
+    return '<details class="boat"' + (open ? ' open' : '') + '>' + sum + body + '</details>';
+  }
+  function drawBoatList() {
+    const an = view.an, q = ($('#boatfilter').value || '').toLowerCase();
+    let list = delayMode === 'late' ? an.lateBoats.slice() : an.boats.slice().sort((a, b) => b.weighted - a.weighted || b.totalWait - a.totalWait);
+    if (q) list = an.boats.filter(b => b.name.toLowerCase().includes(q));
+    $('#boatlist').innerHTML = list.map((b, i) => boatCard(b, false)).join('') || '<p class="small">No boats match.</p>';
+  }
+
+  // ------------------------------------------------------------ what-if
+  const tstr = m => X.fmt(m);
+  function fillWhatIfControls() {
+    const P = baseView.an.P;
+    $('#w-lock').innerHTML = Array.from({ length: P.N }, (_, i) => '<option value="' + (i + 1) + '">Lock ' + (i + 1) + '</option>').join('');
+    $('#w-boat').innerHTML = baseView.an.boats.map(b => '<option value="' + b.id + '">' + esc(b.name) + ' (released ' + X.fmt(b.release) + ')</option>').join('');
+  }
+  function drawDisruptions() {
+    const ul = $('#w-list'); ul.innerHTML = '';
+    if (!disr.closures.length && !disr.delays.length) ul.innerHTML = '<li class="small">None yet.</li>';
+    disr.closures.forEach((c, i) => { const li = h('li', null, 'Lock ' + c.lock + ' closed ' + tstr(c.from) + ' – ' + tstr(c.to) + ' '); const b = h('button', { class: 'pill ghost' }, 'remove'); b.onclick = () => { disr.closures.splice(i, 1); drawDisruptions(); }; li.appendChild(b); ul.appendChild(li); });
+    disr.delays.forEach((d, i) => { const bt = baseView.an.P.boatById.get(d.boat); const li = h('li', null, esc(bt.name) + ' released ' + d.minutes + ' min late '); const b = h('button', { class: 'pill ghost' }, 'remove'); b.onclick = () => { disr.delays.splice(i, 1); drawDisruptions(); }; li.appendChild(b); ul.appendChild(li); });
+  }
+  function disruptedCanal() {
+    const c = JSON.parse(JSON.stringify(ORIG.canal));
+    disr.closures.forEach(x => c.closures.push({ lock: x.lock, from: x.from, to: x.to }));
+    disr.delays.forEach(d => { const b = c.boats.find(z => z.id === d.boat); b.release += d.minutes; });
+    return c;
+  }
+  let running = null;
+  function runReplan() {
+    if (running) return;
+    if (!disr.closures.length && !disr.delays.length) { $('#w-status').textContent = 'Add at least one disruption first.'; return; }
+    const canal = disruptedCanal();
+    const budget = parseInt($('#w-effort').value, 10);
+    const prog = $('#w-prog'), bar = $('#w-bar');
+    prog.classList.remove('hidden'); bar.style.width = '0'; $('#w-run').disabled = true;
+    $('#w-status').textContent = 'Searching for a new plan…';
+    const oldCheck = E.simulate(canal, ORIG.schedule);
+    let opt;
+    try { opt = new E.Optimizer(canal, { budget, seed: 7, warm: ORIG.state }); } catch (e) { $('#w-status').textContent = 'Could not start: ' + e.message; $('#w-run').disabled = false; return; }
+    const t0 = Date.now();
+    running = true;
+    const tick = () => {
+      const more = opt.step(60);
+      bar.style.width = Math.min(100, (Date.now() - t0) / budget * 100) + '%';
+      $('#w-status').textContent = 'Searching… best weighted lateness so far ' + opt.best.cost + ' (' + opt.evals + ' starting points tried)';
+      if (more) setTimeout(tick, 0); else finish();
+    };
+    const finish = () => {
+      running = null; $('#w-run').disabled = false; prog.classList.add('hidden');
+      const sched = opt.schedule();
+      const chk = E.simulate(canal, sched);
+      if (!chk.valid) { $('#w-status').textContent = 'The search did not find a valid plan: ' + chk.errors[0]; return; }
+      replanView = buildView(canal, sched, 're-planned');
+      replanView.disruption = { closures: disr.closures.slice(), delays: disr.delays.slice() };
+      replanView.oldCheck = oldCheck;
+      $('#w-status').textContent = 'Done in ' + ((Date.now() - t0) / 1000).toFixed(1) + ' s.';
+      switchView(replanView);
+      renderResult();
+    };
+    setTimeout(tick, 20);
+  }
+  function renderResult() {
+    const rv = replanView, box = $('#w-result');
+    if (!rv) { box.innerHTML = ''; return; }
+    const a = baseView.an, b = rv.an;
+    const rows = X.compare(a, b).filter(r => r.dFinish !== 0).sort((x, y) => Math.abs(y.dWeighted) - Math.abs(x.dWeighted) || Math.abs(y.dFinish) - Math.abs(x.dFinish));
+    const later = rows.filter(r => r.dFinish > 0).length, earlier = rows.filter(r => r.dFinish < 0).length;
+    const dw = b.sim.weighted_lateness - a.sim.weighted_lateness;
+    let html = '<h2>What changed</h2><div class="bigcmp">'
+      + '<div class="score main"><span class="v">' + b.sim.weighted_lateness + '</span><span class="k">weighted lateness (was ' + a.sim.weighted_lateness + ', <span class="' + (dw > 0 ? 'worse' : 'better') + '">' + (dw > 0 ? '+' : '') + dw + '</span>)</span></div>'
+      + '<div class="score"><span class="v">' + b.sim.late_boats + '</span><span class="k">late boats (was ' + a.sim.late_boats + ')</span></div>'
+      + '<div class="score"><span class="v">' + b.sim.water_drawn + '</span><span class="k">water drawn (was ' + a.sim.water_drawn + ')</span></div>'
+      + '<div class="score"><span class="v">' + later + ' / ' + earlier + '</span><span class="k">boats later / earlier</span></div></div>';
+    const oc = rv.oldCheck;
+    html += '<p class="prose"><span style="font-family:Georgia,serif">' + (oc.valid ? 'The original plan would still work under these disruptions, but the re-planner found a ' + (dw < 0 ? 'better' : 'different') + ' one.' : 'Leaving the original plan as it was would break <b>' + oc.errors.length + '</b> rule' + (oc.errors.length > 1 ? 's' : '') + ' (for example: ' + esc(oc.errors[0]) + '), so a new plan was needed.') + '</span></p>';
+    html += '<div class="panelhead"><div class="seg" id="viewseg"><button data-v="orig">Show original plan</button><button data-v="new" class="on">Show re-planned</button></div><span class="small">The canal, Gantt chart and explanations above follow the plan you pick.</span></div>';
+    html += '<table class="cmp"><tr><th>Boat</th><th>Finish</th><th>Lateness</th><th>Why it changed</th></tr>';
+    rows.slice(0, 40).forEach(r => { html += '<tr><td><b>' + esc(r.name) + '</b></td><td class="num ' + (r.dFinish > 0 ? 'worse' : 'better') + '">' + (r.dFinish > 0 ? '+' : '') + r.dFinish + ' min</td><td class="num">' + r.before.lateness + ' → ' + r.after.lateness + '</td><td>' + esc(reasonFor(r, rv)) + '</td></tr>'; });
+    html += '</table>';
+    if (!rows.length) html += '<p>No boat finishes at a different time.</p>';
+    else if (rows.length > 40) html += '<p class="small">Showing the 40 largest of ' + rows.length + ' changes.</p>';
+    box.innerHTML = html;
+    $('#viewseg').addEventListener('click', ev => { const v = ev.target.dataset.v; if (!v) return; switchView(v === 'orig' ? baseView : replanView); [...$('#viewseg').children].forEach(c => c.classList.toggle('on', c.dataset.v === v)); });
+  }
+  function reasonFor(r, rv) {
+    const parts = [], P = rv.an.P, dis = rv.disruption;
+    const dl = dis.delays.find(d => d.boat === r.id);
+    if (dl) parts.push('You held it back ' + dl.minutes + ' min at release.');
+    // did its original stages collide with a closure?
+    const hit = [];
+    r.before.stages.forEach(s => dis.closures.forEach(c => { if (c.lock === s.lock && s.start < c.to && c.from < s.end + 1 && !hit.includes(s.lock)) hit.push(s.lock); }));
+    if (hit.length) parts.push('Its original pass through Lock ' + hit.join(', ') + ' fell inside a closure, so it was moved.');
+    const ks = Object.keys(r.causes).filter(c => c !== 'night' && Math.abs(r.causes[c]) >= 5).sort((a, b) => Math.abs(r.causes[b]) - Math.abs(r.causes[a])).slice(0, 3);
+    if (ks.length) parts.push('Waiting changed: ' + ks.map(c => (r.causes[c] > 0 ? '+' : '−') + Math.abs(r.causes[c]) + ' min ' + X.CAUSE_LABEL[c].toLowerCase()).join(', ') + '.');
+    let worst = null; r.after.stages.forEach(s => s.segs.forEach(g => { if (g.cause !== 'night' && (!worst || g.minutes > worst.g.minutes)) worst = { g, s }; }));
+    if (worst && worst.g.minutes >= 8) parts.push('Longest daytime wait now: ' + worst.g.minutes + ' min at Lock ' + worst.s.lock + ' (' + worst.g.text + ').');
+    if (!parts.length) parts.push(r.dFinish > 0 ? 'Other boats were re-ordered ahead of it after the change.' : 'Slots freed by re-ordering let it go earlier.');
+    return parts.join(' ');
+  }
+
+  // ------------------------------------------------------------ notes
+  function drawNotes() {
+    $('#notesbox').innerHTML = '<h2>How the score works</h2>'
+      + '<p><b>Weighted lateness</b> is the sum over every boat of <i>priority × minutes past its deadline</i>. A doctor\'s launch (priority 3) that is ten minutes late costs as much as a holiday boat (priority 1) thirty minutes late. If two plans tie, the one that draws less water through <i>up</i> operations wins. “Operations” counts every turn of every lock; “empty turns” are turns with no boat aboard, needed to put the chamber back at the other level.</p>'
+      + '<h2>Where the numbers come from</h2>'
+      + '<p>The score is produced by <code>engine.js</code>, which is embedded in this page and is the very same file the command-line solver uses. It replays the whole schedule minute by minute: keepers walking, chambers changing level, water leaving and entering pools, the feeder stream, overflow over the weirs, closures and nights. A schedule that breaks any rule is flagged as invalid.</p>'
+      + '<h2>How a wait is explained</h2>'
+      + '<p>For every minute a boat sat at a lock, the page checks in order: was the chamber busy with another turn (and which), were the locks shut for the night, was the lock closed for maintenance, was the pool above too low for the fill, was the keeper who eventually worked the turn still busy or walking, was the turn held so another boat could share it, and otherwise the crew simply served other boats first. Consecutive minutes with the same reason are merged into one sentence. Nothing is written by hand for individual boats.</p>'
+      + '<p class="small">Limits: when two reasons overlap the first one in that list gets the credit; the water test uses pool levels at the start of the minute; the re-planner runs a shorter search than the command-line solver, so its answer is good but not necessarily the best possible.</p>';
+  }
+
+  // ------------------------------------------------------------ intro art
+  function drawIntro() {
+    const g = $('#introart');
+    const frame = (x0, title, lowLevel, boatX, boatY, hi, gateOpenL, gateOpenR) => {
+      const gg = el('g', { transform: 'translate(' + x0 + ',0)' }, g);
+      el('rect', { x: 0, y: 66, width: 34, height: 50, fill: 'var(--earth)' }, gg); el('rect', { x: 66, y: 34, width: 34, height: 82, fill: 'var(--earth)' }, gg);
+      el('rect', { x: 0, y: 84, width: 34, height: 32, fill: 'var(--water)' }, gg); el('rect', { x: 66, y: 52, width: 34, height: 64, fill: 'var(--water)' }, gg);
+      el('rect', { x: 34, y: hi ? 52 : 84, width: 32, height: hi ? 64 : 32, fill: 'var(--water)' }, gg);
+      el('rect', { x: 32, y: 38, width: 3, height: 78, fill: 'var(--stone)', opacity: gateOpenL ? 0.25 : 1 }, gg); el('rect', { x: 65, y: 38, width: 3, height: 78, fill: 'var(--stone)', opacity: gateOpenR ? 0.25 : 1 }, gg);
+      el('rect', { x: boatX, y: boatY, width: 14, height: 6, rx: 2.5, fill: 'var(--pc-head)' }, gg);
+      el('text', { x: 50, y: 12, 'text-anchor': 'middle', 'font-size': 9, fill: 'var(--pc-strong)' }, gg, title);
+      el('text', { x: 50, y: 28, 'text-anchor': 'middle', 'font-size': 7, fill: 'var(--pc-soft)' }, gg, title === '1 wait' ? 'low pool → lock' : title === '2 lift' ? 'gates shut, water in' : 'out to high pool');
+    };
+    frame(0, '1 wait', 0, 10, 77, false, true, false);
+    frame(100, '2 lift', 0, 43, 60, true, false, false);
+    frame(200, '3 leave', 0, 78, 45, true, false, true);
+  }
+
+  // ------------------------------------------------------------ views
+  function switchView(v) {
+    view = v;
+    focusBoat = null; $('#focusnote').textContent = '';
+    buildScene(); buildStrip(); drawScore(); drawGantt(); drawDelays(); setTime(time);
+  }
+
+  function init() {
+    baseView = buildView(ORIG.canal, ORIG.schedule, 'original plan');
+    view = baseView;
+    buildScene(); buildStrip(); drawScore(); drawIntro(); drawNotes(); fillWhatIfControls(); drawDisruptions();
+    drawGantt(); drawDelays(); setTime(360);
+    $('#playbtn').onclick = () => setPlaying(!playing);
+    $('#scrub').addEventListener('input', e => { setTime(parseFloat(e.target.value), true); });
+    $('#speed').onchange = e => { speed = parseFloat(e.target.value); };
+    $('#modebtn').onclick = () => { const r = document.documentElement; const day = r.dataset.mode !== 'day'; r.dataset.mode = day ? 'day' : 'night'; $('#modebtn').textContent = day ? 'Night colours' : 'Day colours'; drawGantt(); drawCanal(time); };
+    document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+      document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
+      ['intro', 'gantt', 'delays', 'whatif', 'notes'].forEach(t => $('#p-' + t).classList.toggle('hidden', t !== b.dataset.tab));
+      if (b.dataset.tab === 'gantt') drawGantt();
+    });
+    $('#ganttmode').onclick = e => { const v = e.target.dataset.v; if (!v) return; ganttMode = v; [...$('#ganttmode').children].forEach(c => c.classList.toggle('on', c.dataset.v === v)); drawGantt(); };
+    $('#ganttday').onclick = e => { const v = e.target.dataset.v; if (!v) return; ganttDay = v; [...$('#ganttday').children].forEach(c => c.classList.toggle('on', c.dataset.v === v)); drawGantt(); };
+    $('#delaymode').onclick = e => { const v = e.target.dataset.v; if (!v) return; delayMode = v; [...$('#delaymode').children].forEach(c => c.classList.toggle('on', c.dataset.v === v)); drawBoatList(); };
+    $('#boatfilter').addEventListener('input', drawBoatList);
+    $('#boatlist').addEventListener('click', e => {
+      const id = e.target.dataset && e.target.dataset.follow;
+      if (!id) return;
+      const b = view.an.boatById.get(parseInt(id, 10));
+      setFocus(b.id);
+      if (b.stages.length) setTime(Math.max(0, b.stages[0].arrive - 5));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    $('#w-addclose').onclick = () => {
+      const p = s => { const [hh, mm] = s.split(':').map(Number); return hh * 60 + mm; };
+      const from = parseInt($('#w-fday').value, 10) * 1440 + p($('#w-from').value), to = parseInt($('#w-tday').value, 10) * 1440 + p($('#w-to').value);
+      if (!(to > from)) { $('#w-status').textContent = 'The closure must end after it starts.'; return; }
+      disr.closures.push({ lock: parseInt($('#w-lock').value, 10), from, to }); drawDisruptions(); $('#w-status').textContent = '';
+    };
+    $('#w-adddelay').onclick = () => { const m = parseInt($('#w-delay').value, 10); if (!(m > 0)) return; disr.delays.push({ boat: parseInt($('#w-boat').value, 10), minutes: m }); drawDisruptions(); $('#w-status').textContent = ''; };
+    $('#w-run').onclick = runReplan;
+    $('#w-reset').onclick = () => { disr.closures.length = 0; disr.delays.length = 0; replanView = null; drawDisruptions(); $('#w-result').innerHTML = ''; $('#w-status').textContent = ''; if (view !== baseView) switchView(baseView); };
+    window.addEventListener('resize', () => { drawGantt(); });
+    document.addEventListener('keydown', e => { if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return; if (e.code === 'Space') { e.preventDefault(); setPlaying(!playing); } });
+  }
+  init();
+})();
+
+</script>
+</body>
+</html>

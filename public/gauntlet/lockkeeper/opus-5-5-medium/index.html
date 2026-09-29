@@ -1,0 +1,2686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lockkeeper's Ledger</title>
+<style>
+:root {
+  --paper: #f7f3e8; --paper2: #efe8d6; --ink: #2a2823; --ink2: #5d584c; --rule: #d9cfb8;
+  --accent: #2c6a96; --up: #2f6fa3; --down: #2f8f6f; --empty: #b8b09c; --late: #b83a2e; --ok: #3d7d3a;
+  --warn: #c07a12; --shadow: 0 1px 2px rgba(60,50,30,.12), 0 2px 8px rgba(60,50,30,.08);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+body { font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 10px 12px 24px; }
+header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 16px; border-bottom: 2px solid var(--ink); padding-bottom: 6px; }
+h1 { font-family: Georgia, "Times New Roman", serif; font-weight: normal; font-size: 26px; margin: 0; letter-spacing: .3px; max-width: 560px; }
+h1 small { display: block; font-size: 13px; color: var(--ink2); font-family: system-ui, sans-serif; letter-spacing: 0; }
+.scores { display: flex; flex-wrap: wrap; gap: 6px; }
+.score { background: #fffdf7; border: 1px solid var(--rule); border-radius: 6px; padding: 3px 9px; min-width: 88px; box-shadow: var(--shadow); }
+.score b { display: block; font-size: 18px; font-variant-numeric: tabular-nums; font-family: Georgia, serif; font-weight: normal; }
+.score span { font-size: 11px; color: var(--ink2); text-transform: uppercase; letter-spacing: .4px; }
+.score em { font-style: normal; font-size: 11px; margin-left: 4px; }
+.score em.better { color: var(--ok); } .score em.worse { color: var(--late); }
+.planbar { display: none; margin: 6px 0 0; padding: 5px 10px; border-radius: 6px; background: #e8f0f7; border: 1px solid #b9cfe2; font-size: 13px; }
+.planbar.show { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.stage { position: relative; margin-top: 8px; border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; background: #cfe3ef; box-shadow: var(--shadow); }
+#canal { display: block; width: 100%; touch-action: none; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 6px 2px 2px; }
+.controls button, .btn { font: inherit; border: 1px solid #b8ab8c; background: #fffdf7; color: var(--ink); border-radius: 6px; padding: 3px 10px; cursor: pointer; }
+.controls button:hover, .btn:hover { background: #fff; border-color: var(--ink2); }
+.btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn.primary:disabled { opacity: .55; cursor: default; }
+#play { min-width: 74px; }
+.scrubwrap { flex: 1 1 260px; min-width: 160px; display: flex; flex-direction: column; }
+#scrub { width: 100%; margin: 0; accent-color: var(--accent); }
+#strip { width: 100%; height: 8px; display: block; }
+#clock { font-variant-numeric: tabular-nums; min-width: 118px; font-weight: 600; }
+.controls label { font-size: 13px; color: var(--ink2); white-space: nowrap; }
+select, input[type=time], input[type=number] { font: inherit; padding: 2px 4px; border: 1px solid #b8ab8c; border-radius: 5px; background: #fffdf7; color: var(--ink); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--ink2); padding: 2px 2px 0; }
+.legend i { display: inline-block; width: 12px; height: 10px; border-radius: 2px; vertical-align: -1px; margin-right: 4px; }
+.tabs { display: flex; gap: 2px; margin-top: 10px; border-bottom: 1px solid var(--ink2); overflow-x: auto; }
+.tabs button { font: inherit; border: 1px solid transparent; border-bottom: none; background: transparent; padding: 6px 14px; cursor: pointer; color: var(--ink2); border-radius: 6px 6px 0 0; white-space: nowrap; }
+.tabs button.on { background: #fffdf7; border-color: var(--ink2); color: var(--ink); margin-bottom: -1px; font-weight: 600; }
+.panel { display: none; background: #fffdf7; border: 1px solid var(--ink2); border-top: none; border-radius: 0 0 8px 8px; padding: 10px 12px; }
+.panel.on { display: block; }
+.ganttbar { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin-bottom: 6px; font-size: 13px; }
+.seg { display: inline-flex; border: 1px solid #b8ab8c; border-radius: 6px; overflow: hidden; }
+.seg button { border: none; border-radius: 0; background: #fffdf7; padding: 2px 9px; font: inherit; cursor: pointer; color: var(--ink2); }
+.seg button.on { background: var(--ink); color: #fff; }
+#gantt { display: block; width: 100%; cursor: crosshair; }
+.tip { position: fixed; z-index: 20; pointer-events: none; background: rgba(28,27,24,.94); color: #fff; font-size: 12.5px; line-height: 1.35; padding: 6px 9px; border-radius: 6px; max-width: 360px; box-shadow: 0 4px 16px rgba(0,0,0,.25); display: none; }
+.tip b { color: #ffe7a8; font-weight: 600; }
+.cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+@media (max-width: 760px) { .cols { grid-template-columns: 1fr; } h1 { font-size: 22px; } .score { min-width: 70px; } .score b { font-size: 16px; } }
+h2 { font-family: Georgia, serif; font-weight: normal; font-size: 18px; margin: 4px 0 6px; }
+h3 { font-size: 14px; margin: 10px 0 4px; }
+.muted { color: var(--ink2); }
+.small { font-size: 12.5px; }
+.bars .row { display: grid; grid-template-columns: 190px 1fr 70px; gap: 6px; align-items: center; margin: 3px 0; font-size: 13px; }
+.bars .track { background: var(--paper2); border-radius: 3px; height: 12px; overflow: hidden; }
+.bars .fill { height: 100%; border-radius: 3px; }
+.bars .num { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink2); }
+@media (max-width: 520px) { .bars .row { grid-template-columns: 120px 1fr 56px; } }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: left; padding: 3px 6px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 600; color: var(--ink2); font-size: 12px; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.late { color: var(--late); } .ontime { color: var(--ok); }
+.boatlist details { border-bottom: 1px solid var(--rule); padding: 4px 0; }
+.boatlist summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.boatlist summary::-webkit-details-marker { display: none; }
+.boatlist summary::before { content: '▸'; color: var(--ink2); width: 10px; }
+.boatlist details[open] summary::before { content: '▾'; }
+.boatlist .nm { font-weight: 600; min-width: 110px; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: -1px; }
+.story { margin: 4px 0 4px 18px; padding: 0; list-style: none; }
+.story li { padding: 2px 0 2px 8px; border-left: 3px solid var(--rule); margin: 2px 0; cursor: pointer; }
+.story li:hover { background: var(--paper); }
+.story li.k-night { border-color: #7c86a8; } .story li.k-keeper { border-color: #c07a12; } .story li.k-water { border-color: #3d8fc4; }
+.story li.k-busy { border-color: #7a6a9a; } .story li.k-turn { border-color: #b8b09c; } .story li.k-closure { border-color: #b83a2e; }
+.story li.k-companion { border-color: #3d7d3a; } .story li.k-held { border-color: #d2a55c; }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; align-items: center; }
+.form { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 6px 0; }
+.chips { display: flex; flex-direction: column; gap: 4px; margin: 6px 0; }
+.chip { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 3px 8px; font-size: 13px; }
+.chip button { border: none; background: none; cursor: pointer; color: var(--late); font-size: 15px; }
+.progress { height: 6px; background: var(--paper2); border-radius: 3px; overflow: hidden; margin: 6px 0; display: none; }
+.progress div { height: 100%; width: 0; background: var(--accent); transition: width .15s; }
+.notice { background: #fbf1dc; border: 1px solid #e6cf9d; border-radius: 6px; padding: 6px 10px; margin: 6px 0; font-size: 13px; }
+.explain p { margin: 6px 0; }
+.explain svg { max-width: 100%; height: auto; }
+.kbd { font: 12px ui-monospace, monospace; border: 1px solid var(--rule); border-radius: 3px; padding: 0 4px; background: var(--paper); }
+footer { margin-top: 12px; font-size: 12px; color: var(--ink2); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>The Lockkeeper's Ledger<small>Two days on the Wendle Navigation. Boats climb or descend the hillside one lock at a time; a keeper has to work every lock, and filling a lock takes water from the pool above it. Everything below is replayed from the schedule and checked against the rules.</small></h1>
+    <div class="scores" id="scores"></div>
+  </header>
+  <div class="planbar" id="planbar"></div>
+
+  <div class="stage"><canvas id="canal" height="340" aria-label="Animated side view of the canal"></canvas></div>
+  <div class="controls">
+    <button id="play" title="Play / pause (space)">▶ Play</button>
+    <select id="speed" title="Playback speed">
+      <option value="5">5 min/s</option><option value="15">15 min/s</option><option value="30" selected>30 min/s</option><option value="60">1 h/s</option><option value="120">2 h/s</option>
+    </select>
+    <span class="scrubwrap"><input type="range" id="scrub" min="0" max="2880" step="1" value="360" aria-label="Time"><canvas id="strip" height="8" title="Grey: night. Red: a lock closed for maintenance."></canvas></span>
+    <span id="clock">Day 1 06:00</span>
+    <button id="d1" title="Jump to day 1, 06:00">Day 1</button>
+    <button id="d2" title="Jump to day 2, 06:00">Day 2</button>
+    <label><input type="checkbox" id="skipnight" checked> skip nights</label>
+    <label><input type="checkbox" id="names"> boat names</label>
+  </div>
+  <div class="legend">
+    <span><i style="background:#3f8fc9"></i>water (pools rise and fall)</span>
+    <span><i style="background:#7a6a55"></i>lock chamber</span>
+    <span><i style="background:#c0392b"></i>boat past its deadline</span>
+    <span><i style="background:#2a2823;border-radius:50%"></i>keeper on the towpath</span>
+    <span><i style="background:repeating-linear-gradient(45deg,#b83a2e 0 3px,#f7d9d4 3px 6px)"></i>lock closed for maintenance</span>
+    <span class="muted">Hover anything for details; click a boat to follow it.</span>
+  </div>
+
+  <nav class="tabs" role="tablist">
+    <button class="on" data-tab="tl">Timeline</button>
+    <button data-tab="dl">Delays explained</button>
+    <button data-tab="dr">Disruption &amp; re-plan</button>
+    <button data-tab="hw">How locks work</button>
+  </nav>
+
+  <section class="panel on" id="tab-tl">
+    <div class="ganttbar">
+      <span class="seg" id="gmode"><button data-v="locks" class="on">By lock</button><button data-v="keepers">By keeper</button></span>
+      <span class="seg" id="gspan"><button data-v="180">3 h</button><button data-v="480" class="on">8 h</button><button data-v="1440">1 day</button><button data-v="2880">Both days</button></span>
+      <label class="small"><input type="checkbox" id="gfollow" checked> follow the clock</label>
+      <span class="small muted" id="gsel"></span>
+    </div>
+    <canvas id="gantt" height="300" aria-label="Gantt chart of lock operations"></canvas>
+    <div class="legend" style="margin-top:4px">
+      <span><i style="background:var(--up)"></i>filling (boats going up)</span>
+      <span><i style="background:var(--down)"></i>emptying (boats going down)</span>
+      <span><i style="background:#e4ded0;border:1px dashed #8d8470"></i>empty turn (no boats)</span>
+      <span><i style="background:#d7d3cb"></i>night</span>
+      <span class="muted">The strip on top shows both days; click it or any bar to move the clock.</span>
+    </div>
+  </section>
+
+  <section class="panel" id="tab-dl">
+    <div class="cols">
+      <div>
+        <h2>Who was late, and why</h2>
+        <p id="dl-summary" class="small"></p>
+        <div class="bars" id="dl-causes"></div>
+        <p class="small muted">Minutes that late boats spent waiting, by cause. Every waiting minute of every boat is classified by replaying the schedule: is it night, is the lock closed or busy, is the chamber being turned, is the pool above too low, can any keeper reach the lock?</p>
+      </div>
+      <div>
+        <h2>Late boats</h2>
+        <div style="max-height:260px;overflow:auto"><table id="dl-late"></table></div>
+      </div>
+    </div>
+    <h2 style="margin-top:12px">Every boat's journey</h2>
+    <div class="filters">
+      <span class="seg" id="dl-filter"><button data-v="all" class="on">All boats</button><button data-v="late">Late only</button><button data-v="wait">Waited 30+ min</button></span>
+      <span class="small muted">Click a line to jump there in the animation.</span>
+    </div>
+    <div class="boatlist" id="dl-boats"></div>
+  </section>
+
+  <section class="panel" id="tab-dr">
+    <div class="cols">
+      <div>
+        <h2>Make trouble</h2>
+        <p class="small">Close a lock for a while or hold a boat back, then press <b>Re-plan</b>. The page runs the same solver as <span class="kbd">solve.js</span> (a shorter search, about 8 seconds) and checks the new plan with the same rules engine.</p>
+        <h3>Close a lock</h3>
+        <div class="form">
+          <select id="dc-lock"></select>
+          <span>from</span><select id="dc-fd"><option value="0">Day 1</option><option value="1">Day 2</option></select><input type="time" id="dc-ft" value="09:00">
+          <span>to</span><select id="dc-td"><option value="0">Day 1</option><option value="1">Day 2</option></select><input type="time" id="dc-tt" value="11:00">
+          <button class="btn" id="dc-add">Add closure</button>
+        </div>
+        <h3>Delay a boat's release</h3>
+        <div class="form">
+          <select id="db-boat"></select>
+          <span>released at</span><select id="db-d"><option value="0">Day 1</option><option value="1">Day 2</option></select><input type="time" id="db-t" value="10:00">
+          <button class="btn" id="db-add">Add delay</button>
+        </div>
+        <div class="chips" id="dr-list"></div>
+        <div class="form">
+          <button class="btn primary" id="dr-run">Re-plan</button>
+          <button class="btn" id="dr-reset">Clear &amp; show original plan</button>
+          <span class="small muted" id="dr-status"></span>
+        </div>
+        <div class="progress" id="dr-prog"><div></div></div>
+      </div>
+      <div>
+        <h2>What changed</h2>
+        <div id="dr-result" class="small muted">No re-plan yet. Add a disruption on the left.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel explain" id="tab-hw">
+    <div class="cols">
+      <div>
+        <h2>A lock in one minute</h2>
+        <p>A canal climbs a hill in <b>steps</b>. Each flat stretch of water is a <b>pool</b>; a <b>lock</b> is a stone chamber with a gate at each end that joins one pool to the next one up.</p>
+        <p><b>Going up:</b> the chamber must be <i>low</i> (level with the pool below). The boat sails in, the keeper shuts the gate and lets water in from the pool above; the boat floats up and sails out at the top. <b>Going down</b> is the reverse: the chamber must be <i>high</i>, and emptying it lets water out into the pool below.</p>
+        <p>If the chamber is at the wrong level, the keeper first has to fill or empty it with nobody inside: an <b>empty turn</b>. A chamber holds two narrowboats or one barge, so boats that travel together save whole lock cycles.</p>
+        <svg viewBox="0 0 420 150" role="img" aria-label="Diagram of a lock filling">
+          <rect x="0" y="0" width="420" height="150" fill="#e7f0f5"/>
+          <path d="M0 150 V100 H150 V60 H270 V60 H420 V150 Z" fill="#b9a57f"/>
+          <rect x="0" y="86" width="150" height="14" fill="#3f8fc9"/>
+          <rect x="270" y="46" width="150" height="14" fill="#3f8fc9"/>
+          <rect x="150" y="60" width="120" height="40" fill="#7a6a55"/>
+          <rect x="156" y="58" width="108" height="42" fill="#5d5142"/>
+          <rect x="156" y="70" width="108" height="30" fill="#3f8fc9" opacity=".9"/>
+          <rect x="150" y="44" width="6" height="56" fill="#3b2f22"/><rect x="264" y="30" width="6" height="30" fill="#3b2f22"/>
+          <rect x="185" y="62" width="50" height="9" rx="3" fill="#8e3b2e"/><rect x="200" y="56" width="18" height="7" fill="#e8d8b4"/>
+          <path d="M300 38 q-30 -20 -60 12" stroke="#2c6a96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+          <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2c6a96"/></marker></defs>
+          <text x="20" y="80" font-size="11" fill="#2a2823">pool below</text><text x="300" y="40" font-size="11" fill="#2a2823">pool above</text>
+          <text x="160" y="116" font-size="11" fill="#2a2823">chamber filling</text><text x="245" y="26" font-size="11" fill="#2c6a96">water in</text>
+        </svg>
+      </div>
+      <div>
+        <h2>The rules this ledger follows</h2>
+        <p><b>Water.</b> Filling lock <i>n</i> takes a chamber-full out of the pool above it; emptying it pours that water into the pool below. A pool may never drop below its minimum, so going up sometimes means waiting while water is sent down from the summit, where a feeder stream adds water every minute. Full pools spill over a weir into the next pool down.</p>
+        <p><b>Keepers.</b> Ada, Bert and Cass each work one lock at a time and have to walk the towpath between locks. With nine locks and three keepers, keepers are the scarcest thing on the canal.</p>
+        <p><b>Hours.</b> Locks work 06:00–22:00 each day; an operation must start and finish inside those hours. Some locks close for maintenance.</p>
+        <p><b>Score.</b> Each boat's lateness (minutes after its deadline) is multiplied by its priority (1–3) and added up: the <i>weighted lateness</i>. Less is better; water drawn breaks ties.</p>
+        <p class="small muted">Keyboard: <span class="kbd">space</span> play/pause, <span class="kbd">←</span>/<span class="kbd">→</span> step 5 minutes.</p>
+      </div>
+    </div>
+  </section>
+  <footer>Offline, self-contained page. The plan was produced by <span class="kbd">solve.js</span>; scores and explanations are recomputed here from the raw schedule by the same rules engine as <span class="kbd">validate.js</span>.</footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>// The Lockkeeper's Ledger - independent rules checker (spec v2.0).
+// Usage: node validate.js canal.json schedule.json
+// Written separately from solve.js on purpose: it re-derives every rule from the spec text,
+// so a bug in the solver's own bookkeeping shows up here as an error.
+'use strict';
+
+function validateSchedule(canal, schedule, opts) {
+  opts = opts || {};
+  const errors = [];
+  const err = (m) => { if (errors.length < 500) errors.push(m); };
+
+  const pools = canal.pools.slice().sort((a, b) => a.id - b.id);
+  const n = pools.length - 1; // number of locks
+  const lockById = {};
+  for (const l of canal.locks) lockById[l.id] = l;
+  for (let i = 1; i <= n; i++) if (!lockById[i]) err(`canal: lock ${i} missing`);
+  const boatById = {};
+  for (const b of canal.boats) boatById[b.id] = b;
+  const keeperById = {};
+  for (const k of canal.keepers) keeperById[k.id] = k;
+  const windows = canal.windows;
+  const slotsCap = canal.chamber_slots;
+
+  // towpath positions and walking times
+  const pos = [0, 0];
+  for (let i = 2; i <= n; i++) pos[i] = pos[i - 1] + pools[i - 1].length;
+  const walk = (a, b) => Math.ceil(Math.abs(pos[a] - pos[b]) / canal.keeper_speed);
+
+  const raw = schedule && Array.isArray(schedule.operations) ? schedule.operations : null;
+  if (!raw) {
+    return { valid: false, errors: ['schedule.operations is missing or not an array'], weighted_lateness: null, water_drawn: null };
+  }
+
+  // ---- per-operation checks ----
+  const ops = [];
+  raw.forEach((o, idx) => {
+    const tag = `op#${idx}`;
+    if (!o || typeof o !== 'object') { err(`${tag}: not an object`); return; }
+    if (!Number.isInteger(o.lock) || !lockById[o.lock] || o.lock < 1 || o.lock > n) { err(`${tag}: bad lock ${o.lock}`); return; }
+    if (!Number.isInteger(o.start)) { err(`${tag}: start must be an integer`); return; }
+    if (o.dir !== 'up' && o.dir !== 'down') { err(`${tag}: dir must be "up" or "down"`); return; }
+    if (!Array.isArray(o.boats)) { err(`${tag}: boats must be a list`); return; }
+    if (!Number.isInteger(o.keeper) || !keeperById[o.keeper]) { err(`${tag}: unknown keeper ${o.keeper}`); return; }
+    const lk = lockById[o.lock];
+    let slots = 0, barge = false, ok = true;
+    const seen = new Set();
+    for (const bid of o.boats) {
+      if (!Number.isInteger(bid) || !boatById[bid]) { err(`${tag}: unknown boat ${bid}`); ok = false; continue; }
+      if (seen.has(bid)) { err(`${tag}: boat ${bid} listed twice`); ok = false; }
+      seen.add(bid);
+      const b = boatById[bid];
+      if (b.type === 'barge') { slots += 2; barge = true; } else slots += 1;
+    }
+    if (slots > slotsCap) err(`${tag}: ${slots} slots aboard, chamber holds ${slotsCap}`);
+    let dur = o.dir === 'up' ? lk.fill : lk.empty;
+    if (o.boats.length > 0) dur += (barge ? canal.enter_minutes_with_barge : canal.enter_minutes) + canal.exit_minutes;
+    const end = o.start + dur;
+    if (!windows.some(([ws, we]) => ws <= o.start && end <= we))
+      err(`${tag}: lock ${o.lock} ${o.dir} ${o.start}-${end} is outside the operating hours`);
+    for (const c of canal.closures || []) {
+      if (c.lock === o.lock && o.start < c.to && c.from < end)
+        err(`${tag}: lock ${o.lock} ${o.start}-${end} overlaps closure ${c.from}-${c.to}`);
+    }
+    if (ok) ops.push({ idx, lock: o.lock, start: o.start, end, dur, dir: o.dir, boats: o.boats.slice(), keeper: o.keeper, vol: lk.volume });
+  });
+
+  // ---- lock sequences: no overlap, chamber state ----
+  const byLock = {};
+  for (const o of ops) (byLock[o.lock] = byLock[o.lock] || []).push(o);
+  for (let i = 1; i <= n; i++) {
+    const list = (byLock[i] || []).sort((a, b) => a.start - b.start);
+    let state = lockById[i] ? lockById[i].state : 'low';
+    let freeAt = -Infinity;
+    for (const o of list) {
+      if (o.start < freeAt) err(`lock ${i}: op at ${o.start} starts before previous op ends at ${freeAt}`);
+      if (o.dir === 'up' && state !== 'low') err(`lock ${i}: up at ${o.start} but chamber is high`);
+      if (o.dir === 'down' && state !== 'high') err(`lock ${i}: down at ${o.start} but chamber is low`);
+      state = o.dir === 'up' ? 'high' : 'low';
+      freeAt = o.end;
+    }
+  }
+
+  // ---- keepers: one op at a time, walking time ----
+  const byKeeper = {};
+  for (const o of ops) (byKeeper[o.keeper] = byKeeper[o.keeper] || []).push(o);
+  for (const k of canal.keepers) {
+    const list = (byKeeper[k.id] || []).sort((a, b) => a.start - b.start);
+    let at = k.start_lock, free = 0;
+    for (const o of list) {
+      const need = free + walk(at, o.lock);
+      if (o.start < need) err(`keeper ${k.id}: op at lock ${o.lock} start ${o.start} but cannot be there before ${need}`);
+      at = o.lock; free = o.end;
+    }
+  }
+
+  // ---- boats: route, order, release, crossing ----
+  const boatOps = {};
+  for (const o of ops) for (const bid of o.boats) (boatOps[bid] = boatOps[bid] || []).push(o);
+  let weighted = 0, lateBoats = 0;
+  const boatResults = [];
+  for (const b of canal.boats) {
+    const up = b.to > b.from;
+    const route = [];
+    if (up) for (let i = b.from + 1; i <= b.to; i++) route.push(i);
+    else for (let i = b.from; i >= b.to + 1; i--) route.push(i);
+    const list = (boatOps[b.id] || []).sort((a, c) => a.start - c.start);
+    if (list.length !== route.length) {
+      err(`boat ${b.id}: appears in ${list.length} operations, route needs ${route.length}`);
+      if (route.length && !list.length) { boatResults.push({ id: b.id, finish: null, lateness: null }); continue; }
+    }
+    let ready = b.release, finish = null, ok = true;
+    for (let k = 0; k < list.length; k++) {
+      const o = list[k];
+      if (k >= route.length) { err(`boat ${b.id}: extra operation at lock ${o.lock}`); ok = false; break; }
+      if (o.lock !== route[k]) { err(`boat ${b.id}: operation ${k + 1} is at lock ${o.lock}, expected lock ${route[k]}`); ok = false; }
+      if (o.dir !== (up ? 'up' : 'down')) { err(`boat ${b.id}: goes ${o.dir} at lock ${o.lock}, must go ${up ? 'up' : 'down'}`); ok = false; }
+      if (o.start < ready) err(`boat ${b.id}: joins lock ${o.lock} at ${o.start} but only arrives at ${ready}`);
+      const pool = up ? o.lock : o.lock - 1; // pool it comes out into
+      ready = o.end + (k + 1 < route.length ? Math.ceil(pools[pool].length / b.speed) : 0);
+      finish = o.end;
+    }
+    if (finish !== null && finish > 2880) err(`boat ${b.id}: finishes at ${finish}, after the two days`);
+    const late = finish === null ? null : Math.max(0, finish - b.deadline);
+    if (late !== null) { weighted += b.priority * late; if (late > 0) lateBoats++; }
+    boatResults.push({ id: b.id, finish, lateness: late });
+  }
+
+  // ---- water, minute by minute ----
+  const level = pools.map(p => p.level);
+  const cascade = () => {
+    for (let p = n; p >= 1; p--) {
+      if (level[p] > pools[p].max) { level[p - 1] += level[p] - pools[p].max; level[p] = pools[p].max; }
+    }
+  };
+  const starts = {};
+  let lastStart = 0;
+  for (const o of ops) { (starts[o.start] = starts[o.start] || []).push(o); if (o.start > lastStart) lastStart = o.start; }
+  let drawn = 0;
+  const trace = opts.trace ? [] : null;
+  const T = Math.max(lastStart, opts.traceTo || 0);
+  for (let t = 0; t <= T; t++) {
+    if (t >= 1) { level[n] += canal.feeder_per_minute; cascade(); }
+    const list = starts[t];
+    if (list) {
+      list.sort((a, b) => a.lock - b.lock);
+      for (const o of list) {
+        if (o.dir === 'up') {
+          level[o.lock] -= o.vol; drawn += o.vol;
+          if (level[o.lock] < pools[o.lock].min)
+            err(`water: lock ${o.lock} up at ${t} takes pool ${o.lock} to ${level[o.lock]} (< min ${pools[o.lock].min})`);
+        } else {
+          level[o.lock - 1] += o.vol; cascade();
+        }
+      }
+    }
+    if (trace) trace.push(level.slice());
+  }
+
+  const empty = ops.filter(o => o.boats.length === 0).length;
+  const res = {
+    valid: errors.length === 0,
+    errors,
+    weighted_lateness: weighted,
+    water_drawn: drawn,
+    late_boats: lateBoats,
+    operations: ops.length,
+    empty_turns: empty,
+    boats: boatResults,
+  };
+  if (trace) res.trace = trace;
+  return res;
+}
+
+if (typeof module !== 'undefined') module.exports = { validateSchedule };
+
+if (typeof require !== 'undefined' && typeof module !== 'undefined' && require.main === module) {
+  const fs = require('fs');
+  const [canalPath, schedPath] = process.argv.slice(2);
+  if (!canalPath || !schedPath) { console.error('usage: node validate.js canal.json schedule.json'); process.exit(2); }
+  let canal, sched;
+  try { canal = JSON.parse(fs.readFileSync(canalPath, 'utf8')); } catch (e) { console.log(JSON.stringify({ valid: false, errors: ['cannot read canal: ' + e.message] })); process.exit(1); }
+  try { sched = JSON.parse(fs.readFileSync(schedPath, 'utf8').replace(/^﻿/, '')); } catch (e) { console.log(JSON.stringify({ valid: false, errors: ['cannot read schedule: ' + e.message] })); process.exit(1); }
+  const r = validateSchedule(canal, sched);
+  delete r.boats;
+  console.log(JSON.stringify(r, null, 1));
+  process.exit(r.valid ? 0 : 1);
+}
+</script>
+<script>// The Lockkeeper's Ledger - scheduler.
+// Usage: node solve.js canal.json [--time SECONDS] [--workers N] [--seed S]
+//                                  [--init genome.json] [--save genome.json] > schedule.json
+//
+// Approach (see NOTES.md): a minute-by-minute dispatch simulator ("decoder") builds a schedule
+// that is valid by construction (it applies the water/keeper/lock/window/closure rules as it
+// goes). How it dispatches is steered by a "genome": priority keys per boat (one set per day),
+// travel groups, defer-to-day-2 flags and a handful of policy knobs. A parallel iterated local
+// search over genomes minimises weighted lateness, then water drawn; a day-2 polish and a
+// rollout (pilot) pass finish the job.
+//
+// This file also runs in the browser (index.html inlines it): everything above the CLI block
+// is plain JS with no Node dependencies.
+'use strict';
+
+var LOCKCORE = (function () {
+  var UP = 1, DOWN = 0;
+  var NEVER = 1e9;
+
+  // ---------- instance preparation ----------
+  function prepare(canal) {
+    var pools = canal.pools.slice().sort(function (a, b) { return a.id - b.id; });
+    var n = pools.length - 1;
+    var locks = [null];
+    for (var i = 1; i <= n; i++) {
+      var l = null;
+      for (var j = 0; j < canal.locks.length; j++) if (canal.locks[j].id === i) l = canal.locks[j];
+      locks.push(l);
+    }
+    var pos = new Int32Array(n + 1);
+    for (i = 2; i <= n; i++) pos[i] = pos[i - 1] + pools[i - 1].length;
+    var walk = [];
+    for (i = 0; i <= n; i++) {
+      walk.push(new Int32Array(n + 1));
+      for (j = 1; j <= n; j++) walk[i][j] = i === 0 ? 0 : Math.ceil(Math.abs(pos[i] - pos[j]) / canal.keeper_speed);
+    }
+    var vol = new Int32Array(n + 1), fill = new Int32Array(n + 1), empt = new Int32Array(n + 1);
+    var cham0 = new Int8Array(n + 1);
+    for (i = 1; i <= n; i++) {
+      vol[i] = locks[i].volume; fill[i] = locks[i].fill; empt[i] = locks[i].empty;
+      cham0[i] = locks[i].state === 'high' ? 1 : 0;
+    }
+    var pmin = new Float64Array(n + 1), pmax = new Float64Array(n + 1), level0 = new Float64Array(n + 1);
+    for (i = 0; i <= n; i++) { pmin[i] = pools[i].min; pmax[i] = i === 0 ? Infinity : pools[i].max; level0[i] = pools[i].level; }
+
+    var windows = canal.windows.map(function (w) { return [w[0], w[1]]; }).sort(function (a, b) { return a[0] - b[0]; });
+    var T = 0, lastStart = 0;
+    for (i = 0; i < windows.length; i++) lastStart = Math.max(lastStart, windows[i][0]);
+    for (i = 0; i < windows.length; i++) T = Math.max(T, windows[i][1]);
+    var winEnd = new Int32Array(T + 1).fill(-1);
+    for (i = 0; i < windows.length; i++) for (var t = Math.max(0, windows[i][0]); t < windows[i][1]; t++) winEnd[t] = Math.max(winEnd[t], windows[i][1]);
+    var closures = [];
+    for (i = 0; i <= n; i++) closures.push([]);
+    (canal.closures || []).forEach(function (c) { if (c.lock >= 1 && c.lock <= n) closures[c.lock].push([c.from, c.to]); });
+
+    var boats = [];
+    canal.boats.forEach(function (b) {
+      var up = b.to > b.from;
+      var route = [];
+      if (up) for (i = b.from + 1; i <= b.to; i++) route.push(i);
+      else for (i = b.from; i >= b.to + 1; i--) route.push(i);
+      var barge = b.type === 'barge';
+      var enter = barge ? canal.enter_minutes_with_barge : canal.enter_minutes;
+      var cross = route.map(function (lk, k) {
+        if (k === route.length - 1) return 0;
+        var pool = up ? lk : lk - 1;
+        return Math.ceil(pools[pool].length / b.speed);
+      });
+      // minimal remaining travel time from route index k (ops alone, no waiting)
+      var rem = new Int32Array(route.length + 1);
+      for (var k = route.length - 1; k >= 0; k--) {
+        var lk = route[k];
+        rem[k] = rem[k + 1] + (up ? fill[lk] : empt[lk]) + enter + canal.exit_minutes + cross[k];
+      }
+      var ridx = new Int16Array(n + 2).fill(-1);
+      route.forEach(function (lk, k) { ridx[lk] = k; });
+      boats.push({
+        ridx: ridx, from: b.from, to: b.to,
+        id: b.id, name: b.name, dir: up ? UP : DOWN, route: route, cross: cross, rem: rem,
+        slots: barge ? 2 : 1, barge: barge, release: b.release, deadline: b.deadline, priority: b.priority,
+      });
+    });
+    var keepers = canal.keepers.map(function (k) { return { id: k.id, name: k.name, start: k.start_lock }; });
+    return {
+      canal: canal, n: n, pos: pos, walk: walk, vol: vol, fill: fill, empt: empt, cham0: cham0,
+      pmin: pmin, pmax: pmax, level0: level0, feeder: canal.feeder_per_minute,
+      T: T, lastStart: lastStart, winEnd: winEnd,
+      // safety margin above pool minimums when levels can be fractional (fractional feeder/levels)
+      eps: (Number.isInteger(canal.feeder_per_minute) &&
+        pools.every(function (p) { return Number.isInteger(p.level) && Number.isInteger(p.min) && Number.isInteger(p.max); }) &&
+        canal.locks.every(function (l) { return Number.isInteger(l.volume); })) ? 0 : 1e-6,
+      closures: closures, boats: boats, nb: boats.length, keepers: keepers, nk: keepers.length,
+      enter: canal.enter_minutes, enterB: canal.enter_minutes_with_barge, exit: canal.exit_minutes, cap: canal.chamber_slots,
+    };
+  }
+
+  function cascade(I, level) {
+    for (var p = I.n; p >= 1; p--) {
+      if (level[p] > I.pmax[p]) { level[p - 1] += level[p] - I.pmax[p]; level[p] = I.pmax[p]; }
+    }
+  }
+
+  function closed(I, lock, s, e) {
+    var cl = I.closures[lock];
+    for (var i = 0; i < cl.length; i++) if (s < cl[i][1] && cl[i][0] < e) return true;
+    return false;
+  }
+
+  // ---------- default policy parameters ----------
+  function defaultParams() {
+    return {
+      wc: 6,       // wait up to wc minutes for a companion to share the chamber
+      wf: 4,       // before turning an empty chamber for waiting boats, wait up to wf minutes for a boat that can use it as-is
+      pre: 3,      // start a pre-emptive turn when the boat is <= turnTime + pre minutes away
+      hw: 30,      // water look-ahead: boats arriving within hw minutes create water demand
+      hk: 12,      // keeper reservation look-ahead (minutes)
+      beta: 1.0,   // weight of dynamic urgency in boat scores
+      fFlip: 0.9,  // score multiplier for turns done for waiting boats
+      fPre: 0.6,   // ... for pre-emptive turns
+      fPump: 0.8,  // ... for water pumping turns
+      reserve: 0,  // water (in lock volumes) a pool keeps back before it is pumped down
+      kmode: 0,    // keeper choice: 0 nearest, 1 earliest-free
+      idlePump: 0, // pump towards full pools when keepers are idle (0/1)
+      zon: 0,      // restrict keepers to zones of neighbouring locks (0/1)
+      ov: 1,       // zone overlap (locks)
+      cuts: null,  // zone boundaries (nk-1 sorted lock numbers)
+      tau: 1e9,    // walking discount (minutes); 1e9 = off
+      ride: 0,     // deferred boats may ride along in empty turns (0/1)
+      stage: 0,    // deferred boats may still move forward on day 1 at the lowest priority (0/1)
+      endH: 360,   // boats within endH minutes of not finishing before the last window closes get absolute priority
+    };
+  }
+
+  // ---------- the decoder: minute-by-minute dispatch simulation ----------
+  // A genome = per-boat priorities for day 1 (keys) and day 2 (keys2), knobs for each day (P, P2),
+  // travel groups (grp: boats with the same id wait for each other and share chambers) and
+  // defer flags (def: the boat only rides in spare chamber space until the last window opens).
+  // makePolicy turns a genome into lookup tables; the simulation state S can be cloned, which
+  // the rollout layer (pilot) and the day-2 polish use.
+
+  // keeper zones (optional): keepers sorted along the towpath, each restricted to a stretch
+  function zones(I, P) {
+    var n = I.n, nk = I.nk;
+    var zlo = new Int32Array(nk).fill(1), zhi = new Int32Array(nk).fill(n);
+    if (P.zon && P.cuts && nk > 1) {
+      var order = [];
+      for (var k = 0; k < nk; k++) order.push(k);
+      order.sort(function (x, y) { return I.pos[I.keepers[x].start] - I.pos[I.keepers[y].start] || x - y; });
+      for (var j = 0; j < nk; j++) {
+        var lo = j === 0 ? 1 : P.cuts[j - 1] + 1, hi = j === nk - 1 ? n : P.cuts[j];
+        zlo[order[j]] = Math.max(1, lo - P.ov); zhi[order[j]] = Math.min(n, hi + P.ov);
+      }
+    }
+    return [zlo, zhi];
+  }
+  function makePolicy(I, gen) {
+    var keys = gen.keys, P = gen.P, grp = gen.grp, def = gen.def;
+    var n = I.n, nb = I.nb, nk = I.nk;
+    var mates = null;
+    if (grp) {
+      mates = [];
+      for (var b0 = 0; b0 < nb; b0++) {
+        var ml = null;
+        if (grp[b0] >= 0) for (var b1 = 0; b1 < nb; b1++) if (b1 !== b0 && grp[b1] === grp[b0]) (ml = ml || []).push(b1);
+        mates.push(ml);
+      }
+    }
+    var z1 = zones(I, P), P2 = gen.P2 || P, z2 = zones(I, P2);
+    var wList = [];
+    for (var i = 0; i < 2 * (n + 1); i++) wList.push([]);
+    return {
+      keys: keys, keys2: gen.keys2 || keys, P: P, P2: P2, mates: mates, def: def || null,
+      zlo: z1[0], zhi: z1[1], zlo2: z2[0], zhi2: z2[1],
+      dList: wList.map(function () { return []; }),
+      // scratch
+      wList: wList, cArr: new Int32Array(2 * (n + 1)), cBoat: new Int32Array(2 * (n + 1)),
+      demand: new Float64Array(n + 2), score: new Float64Array(nb), cands: [],
+      kUsed: new Int8Array(nk), resT: new Float64Array(nk), resL: new Int32Array(nk), chosen: [],
+    };
+  }
+
+  function newState(I, wantOps) {
+    var n = I.n, nb = I.nb, nk = I.nk, boats = I.boats;
+    var S = {
+      t: 0, level: Float64Array.from(I.level0), cham: Int8Array.from(I.cham0), busy: new Int32Array(n + 1),
+      ban: new Int32Array(n + 1), kFree: new Int32Array(nk), kPos: new Int32Array(nk),
+      bIdx: new Int32Array(nb), bReady: new Int32Array(nb), bFin: new Int32Array(nb).fill(-1),
+      done: 0, water: 0, nOps: 0, nEmpty: 0, ops: wantOps ? [] : null,
+    };
+    for (var k = 0; k < nk; k++) S.kPos[k] = I.keepers[k].start;
+    for (var b = 0; b < nb; b++) {
+      S.bReady[b] = boats[b].release;
+      if (boats[b].route.length === 0) { S.bFin[b] = boats[b].release; S.done++; }
+    }
+    return S;
+  }
+
+  function cloneState(S) {
+    return {
+      t: S.t, level: Float64Array.from(S.level), cham: Int8Array.from(S.cham), busy: Int32Array.from(S.busy),
+      ban: Int32Array.from(S.ban), kFree: Int32Array.from(S.kFree), kPos: Int32Array.from(S.kPos),
+      bIdx: Int32Array.from(S.bIdx), bReady: Int32Array.from(S.bReady), bFin: Int32Array.from(S.bFin),
+      done: S.done, water: S.water, nOps: S.nOps, nEmpty: S.nEmpty, ops: null,
+    };
+  }
+
+  // feeder for minute S.t
+  function feed(I, S) {
+    if (S.t >= 1) { S.level[I.n] += I.feeder; cascade(I, S.level); }
+  }
+
+  // decide which operations start at minute S.t (after the feeder). Returns pol.chosen (scratch).
+  function decide(I, pol, S) {
+    var day2 = S.t >= I.lastStart;
+    var n = I.n, nb = I.nb, nk = I.nk, boats = I.boats, P = day2 ? pol.P2 : pol.P, keys = pol.keys, mates = pol.mates;
+    var t = S.t, level = S.level, cham = S.cham, busy = S.busy, kFree = S.kFree, kPos = S.kPos;
+    var bIdx = S.bIdx, bReady = S.bReady, bFin = S.bFin;
+    var wList = pol.wList, cArr = pol.cArr, cBoat = pol.cBoat, demand = pol.demand, score = pol.score;
+    var cands = pol.cands, chosen = pol.chosen, zlo = day2 ? pol.zlo2 : pol.zlo, zhi = day2 ? pol.zhi2 : pol.zhi;
+    var kUsed = pol.kUsed, resT = pol.resT, resL = pol.resL;
+    chosen.length = 0;
+    var we = I.winEnd[t];
+    if (we < 0) return chosen;
+    var i, b, q, k, L;
+    var kk = day2 ? pol.keys2 : keys;
+    var def = pol.def && t < I.lastStart ? pol.def : null, dList = pol.dList;
+    for (i = 0; i < wList.length; i++) { wList[i].length = 0; dList[i].length = 0; cArr[i] = NEVER; cBoat[i] = -1; }
+    for (b = 0; b < nb; b++) {
+      if (bFin[b] >= 0) continue;
+      var B = boats[b];
+      var lk = B.route[bIdx[b]];
+      var slot = lk * 2 + B.dir;
+      var urg = (t + B.rem[bIdx[b]] - B.deadline) / 60;
+      if (urg < -4) urg = -4; else if (urg > 8) urg = 8;
+      score[b] = kk[b] * (1 + P.beta * B.priority * (urg + 4) / 12);
+      // must finish inside the last window: overriding urgency near the end
+      var fslack = I.T - (t + B.rem[bIdx[b]]);
+      var endH = P.endH || 360;
+      var endRisk = fslack < endH;
+      if (endRisk) score[b] += 1e4 * (1 + (endH - fslack) / 60);
+      if (mates && mates[b] && bReady[b] <= t && !endRisk) {
+        var ml2 = mates[b], held = false;
+        for (var mi = 0; mi < ml2.length; mi++) {
+          var m2 = ml2[mi], ri = boats[m2].ridx[lk];
+          if (pol.def && pol.def[m2] && t < I.lastStart) continue;
+          if (ri >= 0 && bFin[m2] < 0 && (bIdx[m2] < ri || (bIdx[m2] === ri && bReady[m2] > t))) { held = true; break; }
+        }
+        if (held) continue;
+      }
+      if (def && def[b]) {
+        if (!P.stage) { if (bReady[b] <= t) dList[slot].push(b); continue; }
+        score[b] *= 1e-3; // staged: may move on day 1, but only when nothing else wants the keepers
+      }
+      if (bReady[b] <= t) wList[slot].push(b);
+      else if (bReady[b] < cArr[slot] || (bReady[b] === cArr[slot] && score[b] > score[cBoat[slot]])) { cArr[slot] = bReady[b]; cBoat[slot] = b; }
+    }
+    cands.length = 0;
+    for (i = 0; i <= n + 1; i++) demand[i] = 0;
+    var reserveW = P.reserve;
+    var sortByScore = function (x, y) { return score[y] - score[x]; };
+
+    for (L = 1; L <= n; L++) {
+      var st = cham[L];
+      var md = st ? DOWN : UP;
+      var wm = wList[L * 2 + md], wo = wList[L * 2 + 1 - md];
+      var cm = cArr[L * 2 + md], co = cArr[L * 2 + 1 - md];
+      var upList = wList[L * 2 + UP];
+      if (upList.length > 0 || cArr[L * 2 + UP] <= t + P.hw) {
+        if (level[L] - I.vol[L] < I.pmin[L] + I.eps) {
+          var ds = 0;
+          for (q = 0; q < upList.length; q++) if (score[upList[q]] > ds) ds = score[upList[q]];
+          if (ds === 0 && cBoat[L * 2 + UP] >= 0) ds = score[cBoat[L * 2 + UP]] * 0.5;
+          if (ds > demand[L]) demand[L] = ds;
+        }
+      }
+      if (busy[L] > t || S.ban[L] > t) continue;
+      if (wm.length > 1) wm.sort(sortByScore);
+      if (wo.length > 1) wo.sort(sortByScore);
+      var turnDur = st ? I.empt[L] : I.fill[L];
+      var canWater = md === DOWN || level[L] - I.vol[L] >= I.pmin[L] + I.eps;
+
+      if (wm.length > 0) {
+        var cap = I.cap, load = [], sc = 0, barge = false;
+        for (q = 0; q < wm.length && cap > 0; q++) {
+          var bb = wm[q];
+          if (load.indexOf(bb) >= 0) continue;
+          // a boat travels with its waiting group mates: load the whole unit or none of it
+          var uSlots = boats[bb].slots, mj, mb;
+          if (mates && mates[bb]) for (mj = 0; mj < mates[bb].length; mj++) { mb = mates[bb][mj]; if (wm.indexOf(mb) >= 0) uSlots += boats[mb].slots; }
+          if (uSlots <= cap) {
+            load.push(bb); cap -= boats[bb].slots; sc += score[bb]; if (boats[bb].barge) barge = true;
+            if (mates && mates[bb]) for (mj = 0; mj < mates[bb].length; mj++) {
+              mb = mates[bb][mj];
+              if (wm.indexOf(mb) >= 0 && load.indexOf(mb) < 0) { load.push(mb); cap -= boats[mb].slots; sc += score[mb]; if (boats[mb].barge) barge = true; }
+            }
+          }
+        }
+        if (load.length === 0) continue;
+        if (def && cap > 0) {
+          var dl = dList[L * 2 + md];
+          for (q = 0; q < dl.length && cap > 0; q++) if (boats[dl[q]].slots <= cap) { load.push(dl[q]); cap -= boats[dl[q]].slots; if (boats[dl[q]].barge) barge = true; }
+        }
+        if (cap > 0 && cm <= t + P.wc) {
+          var cb = cBoat[L * 2 + md];
+          if (cb >= 0 && boats[cb].slots <= cap) { cands.push({ L: L, fut: cm, sc: sc, dur: 0 }); continue; }
+        }
+        if (!canWater) { if (md === UP && sc > demand[L]) demand[L] = sc; continue; }
+        var dur = turnDur + (barge ? I.enterB : I.enter) + I.exit;
+        if (t + dur > we || closed(I, L, t, t + dur)) continue;
+        cands.push({ L: L, fut: t, sc: sc, dur: dur, dir: md, boats: load });
+        continue;
+      }
+      if (wo.length > 0) {
+        if (cm <= t + P.wf) { cands.push({ L: L, fut: cm, sc: score[cBoat[L * 2 + md]], dur: 0 }); continue; }
+        var fsc = score[wo[0]] * P.fFlip;
+        if (!canWater) { if (fsc > demand[L]) demand[L] = fsc; continue; }
+        if (t + turnDur > we || closed(I, L, t, t + turnDur)) continue;
+        var rideB = null, rideBarge = false;
+        if (def && P.ride && dList[L * 2 + md].length) {
+          var dl2 = dList[L * 2 + md], cap2 = I.cap;
+          rideB = [];
+          for (q = 0; q < dl2.length && cap2 > 0; q++) if (boats[dl2[q]].slots <= cap2) { rideB.push(dl2[q]); cap2 -= boats[dl2[q]].slots; if (boats[dl2[q]].barge) rideBarge = true; }
+          var rdur = turnDur + (rideBarge ? I.enterB : I.enter) + I.exit;
+          if (!rideB.length || t + rdur > we || closed(I, L, t, t + rdur)) rideB = null;
+          else { cands.push({ L: L, fut: t, sc: fsc, dur: rdur, dir: md, boats: rideB }); continue; }
+        }
+        cands.push({ L: L, fut: t, sc: fsc, dur: turnDur, dir: md, boats: null });
+        continue;
+      }
+      var dBelow = L >= 2 ? demand[L - 1] : 0;
+      if (dBelow > 0) {
+        if (cm <= t + P.wf) { cands.push({ L: L, fut: cm, sc: score[cBoat[L * 2 + md]], dur: 0 }); continue; }
+        if (st) {
+          if (t + turnDur > we || closed(I, L, t, t + turnDur)) continue;
+          cands.push({ L: L, fut: t, sc: dBelow * P.fPump, dur: turnDur, dir: DOWN, boats: null });
+        } else if (level[L] - I.vol[L] * (1 + reserveW) >= I.pmin[L] + I.eps) {
+          if (t + turnDur > we || closed(I, L, t, t + turnDur)) continue;
+          cands.push({ L: L, fut: t, sc: dBelow * P.fPump, dur: turnDur, dir: UP, boats: null });
+        } else if (L < n) {
+          if (dBelow * 0.95 > demand[L]) demand[L] = dBelow * 0.95;
+        }
+        continue;
+      }
+      if (co < NEVER && co <= t + turnDur + P.pre && cm >= co) {
+        var psc = score[cBoat[L * 2 + 1 - md]] * P.fPre;
+        if (!canWater) { if (co <= t + P.hw && psc > demand[L]) demand[L] = psc; continue; }
+        if (t + turnDur > we || closed(I, L, t, t + turnDur)) continue;
+        cands.push({ L: L, fut: t, sc: psc, dur: turnDur, dir: md, boats: null });
+        continue;
+      }
+      if (cm < NEVER && cm <= t + P.hk) {
+        cands.push({ L: L, fut: cm, sc: score[cBoat[L * 2 + md]], dur: 0 });
+        continue;
+      }
+      if (P.idlePump && L >= 2 && level[L - 1] < I.pmax[L - 1] - I.vol[L] && st === 1) {
+        if (t + turnDur > we || closed(I, L, t, t + turnDur)) continue;
+        cands.push({ L: L, fut: t, sc: 0.01, dur: turnDur, dir: DOWN, boats: null });
+      }
+    }
+
+    if (cands.length === 0) return chosen;
+    if (P.tau < 1e6) {
+      // discount candidates by how far the nearest keeper has to walk
+      for (var c0 = 0; c0 < cands.length; c0++) {
+        var C0 = cands[c0], wmin = 1e9;
+        for (k = 0; k < nk; k++) if (C0.L >= zlo[k] && C0.L <= zhi[k] && I.walk[kPos[k]][C0.L] < wmin) wmin = I.walk[kPos[k]][C0.L];
+        C0.sc = C0.sc / (1 + wmin / P.tau);
+      }
+    }
+    if (cands.length > 1) cands.sort(function (x, y) { return y.sc - x.sc; });
+    for (k = 0; k < nk; k++) { kUsed[k] = 0; resT[k] = Infinity; resL[k] = 0; }
+    for (var c = 0; c < cands.length; c++) {
+      var C = cands[c];
+      if (C.fut <= t) {
+        var best = -1, bestV = Infinity;
+        for (k = 0; k < nk; k++) {
+          if (kUsed[k] || C.L < zlo[k] || C.L > zhi[k]) continue;
+          if (kFree[k] + I.walk[kPos[k]][C.L] > t) continue;
+          if (resT[k] < Infinity && t + C.dur + I.walk[C.L][resL[k]] > resT[k]) continue;
+          var v = P.kmode === 0 ? I.walk[kPos[k]][C.L] * 1000 + kFree[k] : kFree[k] * 1000 + I.walk[kPos[k]][C.L];
+          if (v < bestV) { bestV = v; best = k; }
+        }
+        if (best >= 0) { kUsed[best] = 1; C.k = best; chosen.push(C); continue; }
+      }
+      var need = C.fut <= t ? t : C.fut;
+      var rk = -1, rv = Infinity;
+      for (k = 0; k < nk; k++) {
+        if (kUsed[k] || resT[k] < Infinity || C.L < zlo[k] || C.L > zhi[k]) continue;
+        var a = Math.max(kFree[k] + I.walk[kPos[k]][C.L], need);
+        if (a < rv) { rv = a; rk = k; }
+      }
+      if (rk >= 0) { resT[rk] = rv; resL[rk] = C.L; }
+    }
+    return chosen;
+  }
+
+  // start the chosen operations at minute S.t (in increasing lock order, as the rules require)
+  function commit(I, S, list) {
+    if (!list.length) return;
+    if (list.length > 1) list.sort(function (x, y) { return x.L - y.L; });
+    var t = S.t, boats = I.boats;
+    for (var c = 0; c < list.length; c++) {
+      var C = list[c], L = C.L, end = t + C.dur;
+      if (C.dir === UP) { S.level[L] -= I.vol[L]; S.water += I.vol[L]; }
+      else { S.level[L - 1] += I.vol[L]; cascade(I, S.level); }
+      S.cham[L] = C.dir === UP ? 1 : 0;
+      S.busy[L] = end;
+      S.kFree[C.k] = end; S.kPos[C.k] = L;
+      S.nOps++;
+      var ids = S.ops ? [] : null;
+      if (C.boats) {
+        for (var q = 0; q < C.boats.length; q++) {
+          var b = C.boats[q];
+          if (ids) ids.push(boats[b].id);
+          S.bIdx[b]++;
+          if (S.bIdx[b] >= boats[b].route.length) { S.bFin[b] = end; S.done++; }
+          else S.bReady[b] = end + boats[b].cross[S.bIdx[b] - 1];
+        }
+      } else S.nEmpty++;
+      if (S.ops) S.ops.push({ lock: L, start: t, dir: C.dir === UP ? 'up' : 'down', boats: ids, keeper: I.keepers[C.k].id });
+    }
+  }
+
+  // run the base policy from S to the end of the horizon
+  function rollout(I, pol, S) {
+    var nb = I.nb;
+    while (S.t <= I.T && S.done < nb) {
+      feed(I, S);
+      if (I.winEnd[S.t] >= 0) commit(I, S, decide(I, pol, S));
+      S.t++;
+    }
+    return S;
+  }
+
+  function runUntil(I, pol, S, tEnd) {
+    var nb = I.nb;
+    while (S.t < tEnd && S.t <= I.T && S.done < nb) {
+      feed(I, S);
+      if (I.winEnd[S.t] >= 0) commit(I, S, decide(I, pol, S));
+      S.t++;
+    }
+    return S;
+  }
+
+  function finish(I, S) {
+    var boats = I.boats, wl = 0, unfinished = 0, late = 0;
+    for (var b = 0; b < I.nb; b++) {
+      if (S.bFin[b] < 0) { unfinished++; continue; }
+      var lt = S.bFin[b] - boats[b].deadline;
+      if (lt > 0) { wl += lt * boats[b].priority; late++; }
+    }
+    return { ops: S.ops, wl: wl, water: S.water, unfinished: unfinished, late: late, nOps: S.nOps, nEmpty: S.nEmpty, fin: S.bFin };
+  }
+
+  function decode(I, gen, wantOps) {
+    var pol = makePolicy(I, gen);
+    return finish(I, rollout(I, pol, newState(I, wantOps)));
+  }
+
+  // Pilot method: at every minute where the policy starts operations, also try holding
+  // each of them back (the lock is left alone for a while), roll every alternative out
+  // to the end of day 2 with the base policy, and keep the best. Never worse than the base.
+  function pilot(I, gen, opts) {
+    opts = opts || {};
+    var holds = opts.holds || [6, 20];
+    var deadline = opts.deadline || Infinity;
+    var pol = makePolicy(I, gen);
+    var S = newState(I, true);
+    var nb = I.nb;
+    var bestCost = cost(finish(I, rollout(I, pol, cloneState(S))));
+    while (S.t <= I.T && S.done < nb) {
+      feed(I, S);
+      if (I.winEnd[S.t] >= 0) {
+        var ch = decide(I, pol, S).slice();
+        if (ch.length && Date.now() < deadline) {
+          var alts = [];
+          for (var i = 0; i < ch.length; i++) for (var h = 0; h < holds.length; h++) alts.push([i, holds[h]]);
+          var bestAlt = null, bc = bestCost;
+          for (var a = 0; a < alts.length; a++) {
+            var S2 = cloneState(S);
+            var keep = ch.filter(function (_, j) { return j !== alts[a][0]; });
+            S2.ban[ch[alts[a][0]].L] = S.t + alts[a][1];
+            commit(I, S2, keep);
+            S2.t++;
+            var c = cost(finish(I, rollout(I, pol, S2)));
+            if (c < bc) { bc = c; bestAlt = alts[a]; }
+          }
+          if (bestAlt) {
+            bestCost = bc;
+            S.ban[ch[bestAlt[0]].L] = S.t + bestAlt[1];
+            ch = ch.filter(function (_, j) { return j !== bestAlt[0]; });
+          }
+        }
+        commit(I, S, ch);
+      }
+      S.t++;
+    }
+    return finish(I, S);
+  }
+
+  function cost(r) { return r.unfinished * 1e9 + r.wl * 1e5 + r.water; }
+
+  // ---------- independent quick check of a schedule (guards the final output) ----------
+  function check(I, ops) {
+    var canal = I.canal, n = I.n;
+    var errs = [];
+    var byLock = [], byK = {};
+    for (var i = 0; i <= n; i++) byLock.push([]);
+    var boatOps = {};
+    ops.forEach(function (o) {
+      var hasB = o.boats.length > 0, barge = false, slots = 0;
+      o.boats.forEach(function (id) {
+        var B = I.boats.find(function (x) { return x.id === id; });
+        if (!B) { errs.push('unknown boat ' + id); return; }
+        slots += B.slots; if (B.barge) barge = true; (boatOps[id] = boatOps[id] || []).push(o);
+      });
+      var dur = (o.dir === 'up' ? I.fill[o.lock] : I.empt[o.lock]) + (hasB ? (barge ? I.enterB : I.enter) + I.exit : 0);
+      o._end = o.start + dur;
+      if (slots > I.cap) errs.push('capacity');
+      if (!canal.windows.some(function (w) { return w[0] <= o.start && o._end <= w[1]; })) errs.push('window');
+      if (closed(I, o.lock, o.start, o._end)) errs.push('closure');
+      byLock[o.lock].push(o);
+      (byK[o.keeper] = byK[o.keeper] || []).push(o);
+    });
+    for (i = 1; i <= n; i++) {
+      var st = I.cham0[i], fr = -1;
+      byLock[i].sort(function (a, b) { return a.start - b.start; }).forEach(function (o) {
+        if (o.start < fr) errs.push('lock overlap ' + i);
+        if ((o.dir === 'up') === (st === 1)) errs.push('chamber state ' + i + '@' + o.start);
+        st = o.dir === 'up' ? 1 : 0; fr = o._end;
+      });
+    }
+    I.keepers.forEach(function (k) {
+      var at = k.start, fr = 0;
+      (byK[k.id] || []).sort(function (a, b) { return a.start - b.start; }).forEach(function (o) {
+        if (o.start < fr + I.walk[at][o.lock]) errs.push('keeper ' + k.id + '@' + o.start);
+        at = o.lock; fr = o._end;
+      });
+    });
+    I.boats.forEach(function (B) {
+      var l = (boatOps[B.id] || []).sort(function (a, b) { return a.start - b.start; });
+      if (l.length !== B.route.length) { errs.push('boat count ' + B.id); return; }
+      var ready = B.release;
+      l.forEach(function (o, k) {
+        if (o.lock !== B.route[k] || (o.dir === 'up') !== (B.dir === UP) || o.start < ready) errs.push('boat ' + B.id);
+        ready = o._end + B.cross[k];
+      });
+    });
+    var level = Float64Array.from(I.level0), byT = {}, last = 0;
+    ops.forEach(function (o) { (byT[o.start] = byT[o.start] || []).push(o); if (o.start > last) last = o.start; });
+    for (var t = 0; t <= last; t++) {
+      if (t >= 1) { level[n] += I.feeder; cascade(I, level); }
+      var l = byT[t];
+      if (!l) continue;
+      l.sort(function (a, b) { return a.lock - b.lock; }).forEach(function (o) {
+        if (o.dir === 'up') { level[o.lock] -= I.vol[o.lock]; if (level[o.lock] < I.pmin[o.lock]) errs.push('water ' + o.lock + '@' + t); }
+        else { level[o.lock - 1] += I.vol[o.lock]; cascade(I, level); }
+      });
+    }
+    ops.forEach(function (o) { delete o._end; });
+    return errs;
+  }
+
+  // ---------- search ----------
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  var PARAM_SPACE = {
+    wc: [0, 25], wf: [0, 20], pre: [-5, 15], hw: [0, 90], hk: [0, 40], beta: [0, 4],
+    fFlip: [0.2, 1.5], fPre: [0.1, 1.5], fPump: [0.1, 1.5], reserve: [0, 1.5], kmode: [0, 1], idlePump: [0, 1],
+    zon: [0, 1], ov: [0, 3], tau: [5, 300], endH: [200, 1200], stage: [0, 1], ride: [0, 1],
+  };
+  var INT_PARAMS = { wc: 1, wf: 1, pre: 1, hw: 1, hk: 1, kmode: 1, idlePump: 1, zon: 1, ov: 1, stage: 1, ride: 1 };
+  function defaultCuts(I) {
+    var c = [];
+    for (var j = 1; j < I.nk; j++) c.push(Math.max(1, Math.min(I.n - 1, Math.round(I.n * j / I.nk))));
+    return c;
+  }
+
+  function initialKeys(I, mode, rng) {
+    var keys = new Float64Array(I.nb);
+    for (var b = 0; b < I.nb; b++) {
+      var B = I.boats[b];
+      var slack = B.deadline - B.release - B.rem[0];
+      if (mode === 0) keys[b] = B.priority;
+      else if (mode === 1) keys[b] = B.priority * 200 / Math.max(30, slack + 60);
+      else if (mode === 2) keys[b] = 1 + 1000 / Math.max(100, B.deadline);
+      else keys[b] = B.priority * (0.5 + rng());
+    }
+    return keys;
+  }
+
+  function randomParams(rng, I) {
+    var P = defaultParams();
+    P.cuts = defaultCuts(I);
+    for (var k in PARAM_SPACE) {
+      var r = PARAM_SPACE[k];
+      var v = r[0] + rng() * (r[1] - r[0]);
+      P[k] = INT_PARAMS[k] ? Math.round(v) : v;
+    }
+    return P;
+  }
+
+  // ---- groups (boats that travel together and share chambers) ----
+  function estArrival(B, L) { var k = B.ridx[L]; return B.release + B.rem[0] - B.rem[k]; }
+  function canPair(I, a, b) {
+    var A = I.boats[a], B = I.boats[b];
+    if (A.dir !== B.dir || A.slots + B.slots > I.cap || !A.route.length || !B.route.length) return false;
+    for (var k = 0; k < A.route.length; k++) if (B.ridx[A.route[k]] >= 0) return true;
+    return false;
+  }
+  function pairCost(I, a, b) {
+    var A = I.boats[a], B = I.boats[b], common = 0, first = -1;
+    for (var k = 0; k < A.route.length; k++) if (B.ridx[A.route[k]] >= 0) { common++; if (first < 0) first = A.route[k]; }
+    if (!common) return Infinity;
+    var gap = Math.abs(estArrival(A, first) - estArrival(B, first));
+    var dl = Math.abs(A.deadline - B.deadline) * 0.25;
+    return gap + dl - common * 12;
+  }
+  function initialGroups(I, rng, noise, thresh) {
+    var grp = new Int32Array(I.nb).fill(-1);
+    var pairs = [];
+    for (var a = 0; a < I.nb; a++) for (var b = a + 1; b < I.nb; b++) if (canPair(I, a, b)) {
+      var c = pairCost(I, a, b) + (noise ? (rng() - 0.5) * noise : 0);
+      if (c < thresh) pairs.push([c, a, b]);
+    }
+    pairs.sort(function (x, y) { return x[0] - y[0]; });
+    pairs.forEach(function (p) { if (grp[p[1]] < 0 && grp[p[2]] < 0) { grp[p[1]] = p[1]; grp[p[2]] = p[1]; } });
+    return grp;
+  }
+  function mutateGroups(I, grp, rng) {
+    var g = Int32Array.from(grp);
+    var r = rng();
+    var a = Math.floor(rng() * I.nb), i;
+    if (r < 0.3) { // break a's group
+      if (g[a] < 0) return g;
+      var id = g[a];
+      for (i = 0; i < I.nb; i++) if (g[i] === id) g[i] = -1;
+      return g;
+    }
+    // pair a with some compatible b (breaking their groups)
+    var cands = [];
+    for (var b = 0; b < I.nb; b++) if (b !== a && canPair(I, a, b) && (g[a] < 0 || g[a] !== g[b])) cands.push(b);
+    if (!cands.length) return g;
+    cands.sort(function (x, y) { return pairCost(I, a, x) - pairCost(I, a, y); });
+    var pick = cands[Math.floor(Math.pow(rng(), 2) * cands.length)];
+    var oa = g[a], ob = g[pick];
+    for (i = 0; i < I.nb; i++) if (g[i] >= 0 && (g[i] === oa || g[i] === ob)) g[i] = -1;
+    if (r < 0.65 && oa >= 0 && ob >= 0) {
+      // swap partners: a with pick, and their old partners together if compatible
+      var pa = -1, pb = -1;
+      for (i = 0; i < I.nb; i++) { if (grp[i] === oa && i !== a) pa = i; if (grp[i] === ob && i !== pick) pb = i; }
+      if (pa >= 0 && pb >= 0 && pa !== pick && pb !== a && canPair(I, pa, pb)) { g[pa] = Math.min(pa, pb); g[pb] = Math.min(pa, pb); }
+    }
+    g[a] = Math.min(a, pick); g[pick] = Math.min(a, pick);
+    return g;
+  }
+
+  function mutateKeys(I, keys, rng, m) {
+    var nk = Float64Array.from(keys);
+    for (var j = 0; j < m; j++) {
+      var b = Math.floor(rng() * I.nb);
+      var u = rng();
+      if (u < 0.4) nk[b] *= Math.exp((rng() - 0.5) * 1.6);
+      else if (u < 0.7) { var c = Math.floor(rng() * I.nb); var tmp = nk[b]; nk[b] = nk[c]; nk[c] = tmp; }
+      else nk[b] *= rng() < 0.5 ? 2.5 : 0.4;
+      if (nk[b] < 1e-3) nk[b] = 1e-3; if (nk[b] > 1e3) nk[b] = 1e3;
+    }
+    return nk;
+  }
+
+  function mutate(I, gen, rng, strength) {
+    var ng = { keys: gen.keys, keys2: gen.keys2, P: gen.P, P2: gen.P2, grp: gen.grp, def: gen.def };
+    var r = rng();
+    var m = 1 + Math.floor(rng() * strength);
+    if (gen.r && gen.r.unfinished && rng() < 0.5) {
+      // push a boat that did not finish up the priority list (both days)
+      var unf = [];
+      for (var u = 0; u < I.nb; u++) if (gen.r.fin[u] < 0) unf.push(u);
+      var ub = unf[Math.floor(rng() * unf.length)], f = 2 + rng() * 8;
+      ng.keys = Float64Array.from(gen.keys); ng.keys2 = Float64Array.from(gen.keys2);
+      ng.keys[ub] = Math.min(1e3, ng.keys[ub] * f); ng.keys2[ub] = Math.min(1e3, ng.keys2[ub] * f);
+      if (gen.def[ub]) { ng.def = Int8Array.from(gen.def); ng.def[ub] = 0; }
+      if (rng() < 0.3) { var np0 = Object.assign({}, gen.P); np0.endH = Math.min(1200, (np0.endH || 360) + 120); ng.P = np0; ng.P2 = Object.assign({}, gen.P2, { endH: np0.endH }); }
+      return ng;
+    }
+    if (r < 0.45) ng.keys = mutateKeys(I, gen.keys, rng, m);
+    else if (r < 0.57) ng.keys2 = mutateKeys(I, gen.keys2, rng, m);
+    else if (r < 0.72) {
+      ng.grp = mutateGroups(I, gen.grp, rng);
+      if (rng() < 0.3) ng.grp = mutateGroups(I, ng.grp, rng);
+    } else if (r < 0.8) {
+      var d = Int8Array.from(gen.def), b = Math.floor(rng() * I.nb);
+      d[b] = d[b] ? 0 : 1;
+      ng.def = d;
+    } else if (r < 0.84 && gen.P.zon && I.nk > 1) {
+      var np = Object.assign({}, gen.P);
+      var cuts = np.cuts.slice();
+      var ci = Math.floor(rng() * cuts.length);
+      cuts[ci] += rng() < 0.5 ? -1 : 1;
+      cuts[ci] = Math.max(1, Math.min(I.n - 1, cuts[ci]));
+      cuts.sort(function (a, b) { return a - b; });
+      np.cuts = cuts;
+      ng.P = np;
+    } else {
+      var which = rng() < 0.3 ? 'P2' : 'P';
+      var np2 = Object.assign({}, gen[which]);
+      var names = Object.keys(PARAM_SPACE);
+      var name = names[Math.floor(rng() * names.length)];
+      var rg = PARAM_SPACE[name];
+      var v = np2[name] + (rng() - 0.5) * (rg[1] - rg[0]) * 0.4;
+      if (rng() < 0.2) v = rg[0] + rng() * (rg[1] - rg[0]);
+      v = Math.max(rg[0], Math.min(rg[1], v));
+      np2[name] = INT_PARAMS[name] ? Math.round(v) : v;
+      ng[which] = np2;
+    }
+    return ng;
+  }
+
+  function evalGen(I, gen, wantOps) { return decode(I, gen, wantOps); }
+
+  function genToPlain(g) {
+    return { keys: Array.from(g.keys), keys2: Array.from(g.keys2), P: g.P, P2: g.P2, grp: Array.from(g.grp), def: Array.from(g.def) };
+  }
+  function genFromPlain(I, p) {
+    var P = Object.assign(defaultParams(), p.P || {});
+    if (!P.cuts) P.cuts = defaultCuts(I);
+    var keys = Float64Array.from(p.keys);
+    var P2 = Object.assign(defaultParams(), p.P2 || p.P || {});
+    if (!P2.cuts) P2.cuts = P.cuts.slice();
+    return {
+      keys: keys, keys2: p.keys2 ? Float64Array.from(p.keys2) : Float64Array.from(keys), P: P, P2: P2,
+      grp: p.grp ? Int32Array.from(p.grp) : new Int32Array(I.nb).fill(-1),
+      def: p.def ? Int8Array.from(p.def) : new Int8Array(I.nb),
+    };
+  }
+
+  // Local search from a set of seeds. opts: {timeMs, seed, init: [plain genomes], onProgress}
+  function search(I, opts) {
+    var rng = mulberry32(opts.seed || 1);
+    var t0 = Date.now(), deadline = t0 + (opts.timeMs || 5000);
+    var best = null;
+    function consider(gen) {
+      var r = evalGen(I, gen, false);
+      gen.c = cost(r); gen.r = r;
+      return gen;
+    }
+    function dp() { var p = defaultParams(); p.cuts = defaultCuts(I); return p; }
+    function mkGen(keys, P, grp) {
+      return { keys: keys, keys2: Float64Array.from(keys), P: P, P2: Object.assign({}, P), grp: grp || new Int32Array(I.nb).fill(-1), def: new Int8Array(I.nb) };
+    }
+    function randGen() {
+      return mkGen(initialKeys(I, Math.floor(rng() * 4), rng), rng() < 0.5 ? dp() : randomParams(rng, I),
+        rng() < 0.5 ? null : initialGroups(I, rng, 60, 20 + rng() * 120));
+    }
+    var pool = [];
+    if (opts.init && opts.init.length) {
+      opts.init.forEach(function (p) { pool.push(consider(genFromPlain(I, p))); });
+    }
+    if (!opts.init || !opts.init.length || opts.fresh) {
+      for (var mode = 0; mode < 3; mode++) {
+        pool.push(consider(mkGen(initialKeys(I, mode, rng), dp(), null)));
+        var pz = dp(); pz.zon = 1;
+        pool.push(consider(mkGen(initialKeys(I, mode, rng), pz, null)));
+        pool.push(consider(mkGen(initialKeys(I, mode, rng), dp(), initialGroups(I, rng, 0, 60))));
+      }
+      for (var i = 0; i < 10; i++) pool.push(consider(randGen()));
+    }
+    pool.sort(function (a, b) { return a.c - b.c; });
+    best = pool[0];
+    var cur = pool[0];
+    var evals = pool.length, sinceImp = 0;
+    var temp0 = opts.temp || 0.02;
+    while (Date.now() < deadline) {
+      for (var inner = 0; inner < 10; inner++) {
+        var e = consider(mutate(I, cur, rng, sinceImp > 300 ? 6 : 3));
+        evals++;
+        var frac = (Date.now() - t0) / (deadline - t0);
+        var tol = cur.c * temp0 * (1 - frac) * rng();
+        if (e.c <= cur.c || (e.r.unfinished === 0 && e.c <= cur.c + tol && rng() < 0.1)) cur = e;
+        if (e.c < best.c) { best = e; sinceImp = 0; if (opts.onProgress) opts.onProgress(best, evals); } else sinceImp++;
+        if (sinceImp > (opts.patience || 1500)) {
+          if (rng() < 0.8) { var mm = best; for (var z = 0; z < 3; z++) mm = mutate(I, mm, rng, 6); cur = consider(mm); }
+          else cur = consider(randGen());
+          evals++; sinceImp = 0;
+        }
+      }
+    }
+    return { gen: best, c: best.c, evals: evals };
+  }
+
+  // Repair: keep an existing schedule's order of operations at every lock and for every
+  // keeper, and move operations later only as far as a changed canal (new closures, later
+  // releases) requires. Operations are committed in time order so water is checked exactly.
+  // Returns {ops} or null if the old order cannot be made to work.
+  function repair(I, oldOps, flexKeepers) {
+    var n = I.n, boatIdx = {};
+    I.boats.forEach(function (B, i) { boatIdx[B.id] = i; });
+    var kIdx = {};
+    I.keepers.forEach(function (k, i) { kIdx[k.id] = i; });
+    var ops = oldOps.map(function (o, i) {
+      var barge = false;
+      var bl = o.boats.map(function (id) { var b = boatIdx[id]; if (I.boats[b].barge) barge = true; return b; });
+      var dir = o.dir === 'up' ? UP : DOWN;
+      var d = (dir === UP ? I.fill[o.lock] : I.empt[o.lock]) + (bl.length ? (barge ? I.enterB : I.enter) + I.exit : 0);
+      return { i: i, L: o.lock, dir: dir, boats: bl, k: kIdx[o.keeper], orig: o.start, dur: d, preds: [], succ: [], lo: 0, s: -1, np: 0 };
+    });
+    function link(a, b, gap) { b.preds.push([a, gap]); a.succ.push(b); b.np++; }
+    var byLock = [], byK = [];
+    for (var L = 0; L <= n; L++) byLock.push([]);
+    for (var k = 0; k < I.nk; k++) byK.push([]);
+    ops.forEach(function (o) { byLock[o.L].push(o); byK[o.k].push(o); });
+    var cmp = function (a, b) { return a.orig - b.orig || a.L - b.L; };
+    byLock.forEach(function (l) { l.sort(cmp); for (var j = 1; j < l.length; j++) link(l[j - 1], l[j], 0); });
+    if (!flexKeepers) byK.forEach(function (l, k) {
+      l.sort(cmp);
+      if (l.length) l[0].lo = Math.max(l[0].lo, I.walk[I.keepers[k].start][l[0].L]);
+      for (var j = 1; j < l.length; j++) link(l[j - 1], l[j], I.walk[l[j - 1].L][l[j].L]);
+    });
+    var perBoat = I.boats.map(function () { return []; });
+    ops.forEach(function (o) { o.boats.forEach(function (b) { perBoat[b].push(o); }); });
+    perBoat.forEach(function (l, b) {
+      l.sort(cmp);
+      var B = I.boats[b];
+      if (l.length) l[0].lo = Math.max(l[0].lo, B.release);
+      for (var j = 1; j < l.length; j++) link(l[j - 1], l[j], B.cross[j - 1]);
+    });
+    // lock chamber states must still alternate (they do: the order per lock is unchanged)
+    var ready = ops.filter(function (o) { return o.np === 0; });
+    ready.forEach(function (o) { o.cand = Math.max(o.orig, o.lo); });
+    var level = Float64Array.from(I.level0), lastT = 0, done = 0, guard = 0, lastS = -1, lastL = 0;
+    var kFree = new Int32Array(I.nk), kPos = new Int32Array(I.nk);
+    for (k = 0; k < I.nk; k++) kPos[k] = I.keepers[k].start;
+    while (ready.length) {
+      if (++guard > 400000) return null;
+      var bi = 0;
+      for (var j = 1; j < ready.length; j++) if (ready[j].cand < ready[bi].cand || (ready[j].cand === ready[bi].cand && ready[j].L < ready[bi].L)) bi = j;
+      var o = ready[bi], s = o.cand;
+      if (s + o.dur > I.T) return null;
+      var we = I.winEnd[s];
+      if (we < 0 || s + o.dur > we) {
+        var nx = -1;
+        for (var t2 = s + 1; t2 <= I.T; t2++) if (I.winEnd[t2] >= 0 && t2 + o.dur <= I.winEnd[t2]) { nx = t2; break; }
+        if (nx < 0) return null;
+        o.cand = nx; continue;
+      }
+      var cl = I.closures[o.L], moved = false;
+      for (var c = 0; c < cl.length; c++) if (s < cl[c][1] && cl[c][0] < s + o.dur) { o.cand = cl[c][1]; moved = true; break; }
+      if (moved) continue;
+      // advance water to minute s
+      if (s > lastT) { level[n] += (s - lastT) * I.feeder; cascade(I, level); lastT = s; }
+      if (flexKeepers) {
+        // the original keeper if they can be there, otherwise whoever can get there first
+        var kk = -1, ka = Infinity;
+        for (k = 0; k < I.nk; k++) {
+          var arr = kFree[k] + I.walk[kPos[k]][o.L];
+          if (arr <= s && k === o.k) { kk = k; ka = arr; break; }
+          if (arr < ka || (arr === ka && k === o.k)) { ka = arr; kk = k; }
+        }
+        if (ka > s) { o.cand = ka; continue; }
+        o.kk = kk;
+      }
+      // same-minute operations must be applied in increasing lock order
+      if (s === lastS && o.L < lastL) { o.cand = s + 1; continue; }
+      if (o.dir === UP && level[o.L] - I.vol[o.L] < I.pmin[o.L] + I.eps) { o.cand = s + 1; continue; }
+      // commit
+      if (o.dir === UP) level[o.L] -= I.vol[o.L];
+      else { level[o.L - 1] += I.vol[o.L]; cascade(I, level); }
+      o.s = s; done++; lastS = s; lastL = o.L;
+      if (flexKeepers) { o.k = o.kk; kFree[o.k] = s + o.dur; kPos[o.k] = o.L; }
+      ready.splice(bi, 1);
+      for (j = 0; j < o.succ.length; j++) {
+        var q = o.succ[j];
+        if (--q.np === 0) {
+          var lo = Math.max(q.orig, q.lo);
+          for (var p = 0; p < q.preds.length; p++) lo = Math.max(lo, q.preds[p][0].s + q.preds[p][0].dur + q.preds[p][1]);
+          q.cand = Math.max(lo, s);
+          ready.push(q);
+        }
+      }
+    }
+    if (done !== ops.length) return null;
+    return ops.map(function (o) {
+      return { lock: o.L, start: o.s, dir: o.dir === UP ? 'up' : 'down', boats: o.boats.map(function (b) { return I.boats[b].id; }), keeper: I.keepers[o.k].id };
+    }).sort(function (a, b) { return a.start - b.start || a.lock - b.lock; });
+  }
+
+  // Day-2 polish: day 1 is simulated once; only the day-2 policy (keys2, P2) is searched,
+  // each evaluation starting from the saved end-of-day-1 state.
+  function searchDay2(I, opts) {
+    var rng = mulberry32(opts.seed || 7);
+    var t0 = Date.now(), deadline = t0 + (opts.timeMs || 3000);
+    var base = genFromPlain(I, opts.init[0]);
+    var S1 = runUntil(I, makePolicy(I, base), newState(I, false), I.lastStart);
+    function ev(g) { var r = finish(I, rollout(I, makePolicy(I, g), cloneState(S1))); g.c = cost(r); return g; }
+    var best = ev(base), cur = best, evals = 1, since = 0;
+    function mut(g) {
+      var ng = { keys: g.keys, keys2: g.keys2, P: g.P, P2: g.P2, grp: g.grp, def: g.def };
+      var r = rng();
+      if (r < 0.7) ng.keys2 = mutateKeys(I, g.keys2, rng, 1 + Math.floor(rng() * 3));
+      else {
+        var np = Object.assign({}, g.P2);
+        var names = Object.keys(PARAM_SPACE), name = names[Math.floor(rng() * names.length)], rg = PARAM_SPACE[name];
+        var v = np[name] + (rng() - 0.5) * (rg[1] - rg[0]) * 0.4;
+        if (rng() < 0.2) v = rg[0] + rng() * (rg[1] - rg[0]);
+        v = Math.max(rg[0], Math.min(rg[1], v));
+        np[name] = INT_PARAMS[name] ? Math.round(v) : v;
+        ng.P2 = np;
+      }
+      return ng;
+    }
+    while (Date.now() < deadline) {
+      for (var i = 0; i < 10; i++) {
+        var e = ev(mut(cur)); evals++;
+        if (e.c <= cur.c) cur = e;
+        if (e.c < best.c) { best = e; since = 0; } else since++;
+        if (since > 600) { cur = best; since = 0; }
+      }
+    }
+    return { gen: best, c: best.c, evals: evals };
+  }
+
+  // Plan a whole canal in one call (used by the page): search, then a short pilot pass.
+  function solve(canal, opts) {
+    opts = opts || {};
+    var I = prepare(canal);
+    var res = search(I, opts);
+    var fin = decode(I, res.gen, true);
+    if (opts.pilotMs) {
+      var pr = pilot(I, res.gen, { deadline: Date.now() + opts.pilotMs });
+      if (cost(pr) < cost(fin)) fin = pr;
+    }
+    return { gen: res.gen, result: fin, evals: res.evals, I: I };
+  }
+
+  return {
+    prepare: prepare, decode: decode, pilot: pilot, makePolicy: makePolicy, newState: newState, cloneState: cloneState,
+    rollout: rollout, finish: finish, runUntil: runUntil, repair: repair, searchDay2: searchDay2, evalGen: evalGen, initialGroups: initialGroups, search: search, solve: solve,
+    check: check, cost: cost, genToPlain: genToPlain, genFromPlain: genFromPlain,
+    defaultParams: defaultParams, initialKeys: initialKeys, mulberry32: mulberry32, UP: UP, DOWN: DOWN,
+  };
+})();
+
+if (typeof module !== 'undefined') module.exports = LOCKCORE;
+
+// ---------------- CLI (Node only) ----------------
+if (typeof require !== 'undefined' && typeof module !== 'undefined' && require.main === module && require('worker_threads').isMainThread) {
+  (function () {
+    var fs = require('fs'), os = require('os');
+    var wt = require('worker_threads');
+    var args = process.argv.slice(2);
+    var canalPath = null, timeS = 95, workers = Math.max(1, Math.min(os.cpus().length - 1, 15)), seed = 12345, initPath = null, savePath = null;
+    for (var i = 0; i < args.length; i++) {
+      if (args[i] === '--time') timeS = parseFloat(args[++i]);
+      else if (args[i] === '--workers') workers = parseInt(args[++i], 10);
+      else if (args[i] === '--seed') seed = parseInt(args[++i], 10);
+      else if (args[i] === '--init') initPath = args[++i];
+      else if (args[i] === '--save') savePath = args[++i];
+      else canalPath = args[i];
+    }
+    if (!canalPath) { console.error('usage: node solve.js canal.json [--time S] [--workers N] [--seed S] > schedule.json'); process.exit(2); }
+    var canal = JSON.parse(fs.readFileSync(canalPath, 'utf8'));
+    var I = LOCKCORE.prepare(canal);
+    var t0 = Date.now();
+    var endAt = t0 + timeS * 1000;
+    var init = null;
+    if (initPath && fs.existsSync(initPath)) { try { init = JSON.parse(fs.readFileSync(initPath, 'utf8')); } catch (e) { init = null; } }
+    var best = null; // {c, plain}
+    function offer(plain, c) { if (plain && (!best || c < best.c)) best = { c: c, plain: plain }; }
+    if (init) offer(init, LOCKCORE.cost(LOCKCORE.decode(I, LOCKCORE.genFromPlain(I, init), false)));
+
+    function finish() {
+      var gen = LOCKCORE.genFromPlain(I, best.plain);
+      var fin = LOCKCORE.decode(I, gen, true);
+      var left = endAt - Date.now() - 1500;
+      if (left > 500) {
+        var pr = LOCKCORE.pilot(I, gen, { deadline: Date.now() + left });
+        if (LOCKCORE.cost(pr) < LOCKCORE.cost(fin) && LOCKCORE.check(I, pr.ops).length === 0) fin = pr;
+      }
+      var errs = LOCKCORE.check(I, fin.ops);
+      fin.ops.sort(function (a, b) { return a.start - b.start || a.lock - b.lock; });
+      process.stderr.write('best: weighted_lateness=' + fin.wl + ' water=' + fin.water + ' late=' + fin.late + ' unfinished=' + fin.unfinished +
+        ' ops=' + fin.nOps + ' empty=' + fin.nEmpty + ' selfcheck=' + (errs.length ? errs.slice(0, 5).join(',') : 'ok') +
+        ' time=' + ((Date.now() - t0) / 1000).toFixed(1) + 's\n');
+      if (savePath) fs.writeFileSync(savePath, JSON.stringify(best.plain));
+      process.stdout.write(JSON.stringify({ operations: fin.ops }) + '\n');
+    }
+
+    // search budget: leave ~12% of the time for the final pilot pass
+    // phases: full search (~72%), day-2 polish (~16%), final pilot pass (rest)
+    var searchEnd = t0 + timeS * 1000 * 0.88 - 1500;
+    var fullEnd = t0 + (searchEnd - t0) * 0.82;
+    if (workers <= 1) {
+      var r = LOCKCORE.search(I, { timeMs: Math.max(500, fullEnd - Date.now()), seed: seed, init: init ? [init] : null, fresh: true });
+      offer(LOCKCORE.genToPlain(r.gen), r.c);
+      if (searchEnd - Date.now() > 300) {
+        var r2 = LOCKCORE.searchDay2(I, { timeMs: searchEnd - Date.now(), seed: seed + 1, init: [best.plain] });
+        offer(LOCKCORE.genToPlain(r2.gen), r2.c);
+      }
+      finish();
+      return;
+    }
+    // island model: rounds of independent searches; after each round every island restarts
+    // from its own best or the global best
+    var round = 0, pool = [];
+    var roundMs = Math.max(4000, Math.min(20000, (fullEnd - Date.now()) / 5));
+    var active = 0;
+    var ws = [];
+    for (var w = 0; w < workers; w++) {
+      var worker = new wt.Worker(__filename, { workerData: { canal: canal } });
+      worker.on('error', function (e) { process.stderr.write('worker error: ' + e.message + '\n'); });
+      ws.push({ w: worker, own: null, idx: w });
+    }
+    function launch(slot) {
+      var now = Date.now();
+      if (searchEnd - now < 800) return false;
+      if (now >= fullEnd - 800) {
+        if (slot.d2done || !best) return false;
+        slot.d2done = true; active++;
+        slot.w.postMessage({ mode: 'day2', timeMs: searchEnd - now, seed: seed + slot.idx * 31 + 5, init: [best.plain] });
+        return true;
+      }
+      var remaining = fullEnd - now;
+      var initList = [];
+      if (round === 0) { if (init) initList.push(init); }
+      else {
+        if (slot.own && (slot.idx % 3 !== 0)) initList.push(slot.own.plain);
+        if (best) initList.push(best.plain);
+      }
+      active++;
+      slot.w.postMessage({ timeMs: Math.min(roundMs, remaining), seed: seed + slot.idx * 7919 + round * 104729, init: initList, fresh: round === 0 });
+      return true;
+    }
+    var evalCount = 0;
+    function onMsg(slot, m) {
+      active--;
+      if (m && m.evals) evalCount += m.evals;
+      if (m && m.plain) { if (!slot.own || m.c < slot.own.c) slot.own = { c: m.c, plain: m.plain }; offer(m.plain, m.c); }
+      if (active === 0) {
+        if (process.env.LOCK_VERBOSE) process.stderr.write('round ' + round + ' best ' + (best ? (best.c / 1e5).toFixed(0) : '-') + ' t=' + ((Date.now() - t0) / 1000).toFixed(1) + ' evals ' + evalCount + '\n');
+        round++;
+        var any = false;
+        ws.forEach(function (s) { if (launch(s)) any = true; });
+        if (!any) { ws.forEach(function (s) { s.w.terminate(); }); finish(); }
+      }
+    }
+    ws.forEach(function (s) { s.w.on('message', function (m) { onMsg(s, m); }); });
+    ws.forEach(function (s) { launch(s); });
+  })();
+} else if (typeof require !== 'undefined') {
+  // worker thread entry
+  try {
+    var wtm = require('worker_threads');
+    if (!wtm.isMainThread && wtm.workerData && wtm.workerData.canal) {
+      var I2 = LOCKCORE.prepare(wtm.workerData.canal);
+      wtm.parentPort.on('message', function (msg) {
+        var r2 = msg.mode === 'day2' ? LOCKCORE.searchDay2(I2, { timeMs: msg.timeMs, seed: msg.seed, init: msg.init })
+          : LOCKCORE.search(I2, { timeMs: msg.timeMs, seed: msg.seed, init: msg.init, fresh: msg.fresh });
+        wtm.parentPort.postMessage({ plain: LOCKCORE.genToPlain(r2.gen), c: r2.c, evals: r2.evals });
+      });
+    }
+  } catch (e) { /* not in node */ }
+}
+</script>
+<script>// The Lockkeeper's Ledger - analysis engine used by the page.
+// Takes a canal and a schedule, checks it with validateSchedule (validate.js), and derives
+// everything the page shows: per-minute pool levels, lock/keeper/boat timelines for the
+// animation, and a plain-language explanation of every minute every boat spent waiting.
+// Nothing here is written by hand per boat: each waiting minute is classified by replaying
+// the schedule against the rules.
+'use strict';
+
+var LEDGER = (function () {
+  var DAY = 1440;
+
+  function clock(t) {
+    t = Math.round(t);
+    var d = Math.floor(t / DAY) + 1, m = t % DAY;
+    var hh = Math.floor(m / 60), mm = m % 60;
+    return 'Day ' + d + ' ' + (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm;
+  }
+  function hm(t) {
+    t = Math.round(t);
+    var m = ((t % DAY) + DAY) % DAY;
+    var hh = Math.floor(m / 60), mm = m % 60;
+    return (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm;
+  }
+  function dur(m) {
+    m = Math.round(m);
+    if (m < 60) return m + ' min';
+    var h = Math.floor(m / 60), r = m % 60;
+    return h + ' h' + (r ? ' ' + r + ' min' : '');
+  }
+  function list(names) {
+    if (names.length <= 1) return names.join('');
+    return names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1];
+  }
+
+  function analyse(canal, schedule, validateSchedule) {
+    var pools = canal.pools.slice().sort(function (a, b) { return a.id - b.id; });
+    var n = pools.length - 1;
+    var lockById = {};
+    canal.locks.forEach(function (l) { lockById[l.id] = l; });
+    var boatById = {};
+    canal.boats.forEach(function (b) { boatById[b.id] = b; });
+    var keepers = canal.keepers.slice();
+    var keeperById = {};
+    keepers.forEach(function (k) { keeperById[k.id] = k; });
+    var windows = canal.windows.slice().sort(function (a, b) { return a[0] - b[0]; });
+    var T = 0;
+    windows.forEach(function (w) { T = Math.max(T, w[1]); });
+    var horizon = Math.max(2880, T);
+
+    var V = validateSchedule(canal, schedule, { trace: true, traceTo: horizon });
+    var trace = V.trace; // trace[t][p] = level after all events of minute t
+
+    var pos = [0, 0];
+    for (var i = 2; i <= n; i++) pos[i] = pos[i - 1] + pools[i - 1].length;
+    var walk = function (a, b) { return Math.ceil(Math.abs(pos[a] - pos[b]) / canal.keeper_speed); };
+    var winEndAt = function (t) {
+      for (var w = 0; w < windows.length; w++) if (windows[w][0] <= t && t < windows[w][1]) return windows[w][1];
+      return -1;
+    };
+    var boatName = function (id) { return boatById[id] ? boatById[id].name : 'boat ' + id; };
+    var keeperName = function (id) { return keeperById[id] ? keeperById[id].name : 'keeper ' + id; };
+
+    // ---- normalised operations ----
+    var ops = schedule.operations.map(function (o, idx) {
+      var lk = lockById[o.lock];
+      var barge = o.boats.some(function (id) { return boatById[id] && boatById[id].type === 'barge'; });
+      var turn = o.dir === 'up' ? lk.fill : lk.empty;
+      var enter = o.boats.length ? (barge ? canal.enter_minutes_with_barge : canal.enter_minutes) : 0;
+      var exit = o.boats.length ? canal.exit_minutes : 0;
+      return { idx: idx, lock: o.lock, start: o.start, dir: o.dir, boats: o.boats.slice(), keeper: o.keeper,
+        enter: enter, turn: turn, exit: exit, end: o.start + enter + turn + exit, vol: lk.volume };
+    });
+    var byLock = {};
+    for (i = 1; i <= n; i++) byLock[i] = [];
+    ops.forEach(function (o) { if (byLock[o.lock]) byLock[o.lock].push(o); });
+    for (i = 1; i <= n; i++) {
+      var st = lockById[i] ? lockById[i].state : 'low';
+      byLock[i].sort(function (a, b) { return a.start - b.start; });
+      byLock[i].forEach(function (o, j) { o.before = st; st = o.dir === 'up' ? 'high' : 'low'; o.after = st; o.prev = byLock[i][j - 1] || null; o.next = byLock[i][j + 1] || null; });
+    }
+    var byKeeper = {};
+    keepers.forEach(function (k) { byKeeper[k.id] = []; });
+    ops.forEach(function (o) { if (byKeeper[o.keeper]) byKeeper[o.keeper].push(o); });
+    keepers.forEach(function (k) { byKeeper[k.id].sort(function (a, b) { return a.start - b.start; }); });
+
+    // keeper timelines: work, walk (leaving just in time), wait at a lock
+    var keeperLines = keepers.map(function (k) {
+      var segs = [], at = k.start_lock, free = 0;
+      byKeeper[k.id].forEach(function (o) {
+        var w = walk(at, o.lock);
+        var leave = o.start - w;
+        if (leave > free) segs.push({ type: 'wait', from: free, to: leave, lock: at });
+        if (w > 0) segs.push({ type: 'walk', from: leave, to: o.start, lock: at, toLock: o.lock });
+        segs.push({ type: 'work', from: o.start, to: o.end, lock: o.lock, op: o });
+        at = o.lock; free = o.end;
+      });
+      segs.push({ type: 'wait', from: free, to: horizon, lock: at });
+      return { id: k.id, name: k.name, segs: segs };
+    });
+    function keeperAt(kl, t) {
+      var s = kl.segs;
+      for (var j = 0; j < s.length; j++) if (s[j].from <= t && t < s[j].to) return s[j];
+      return s[s.length - 1];
+    }
+
+    // ---- boat timelines ----
+    var boatOps = {};
+    ops.forEach(function (o) { o.boats.forEach(function (id) { (boatOps[id] = boatOps[id] || []).push(o); }); });
+    var boats = canal.boats.map(function (b) {
+      var up = b.to > b.from;
+      var route = [];
+      if (up) for (var L = b.from + 1; L <= b.to; L++) route.push(L); else for (L = b.from; L >= b.to + 1; L--) route.push(L);
+      var my = (boatOps[b.id] || []).slice().sort(function (a, c) { return a.start - c.start; });
+      var segs = [], ready = b.release, waits = [];
+      my.forEach(function (o, k) {
+        if (o.start > ready) {
+          segs.push({ type: 'wait', from: ready, to: o.start, lock: o.lock, op: o });
+          waits.push({ lock: o.lock, from: ready, to: o.start, op: o, k: k });
+        }
+        segs.push({ type: 'lock', from: o.start, to: o.end, lock: o.lock, op: o });
+        if (k + 1 < my.length) {
+          var pool = up ? o.lock : o.lock - 1;
+          var cross = Math.ceil(pools[pool].length / b.speed);
+          segs.push({ type: 'cross', from: o.end, to: o.end + cross, pool: pool, fromLock: o.lock, toLock: my[k + 1].lock });
+          ready = o.end + cross;
+        }
+      });
+      var finish = my.length ? my[my.length - 1].end : null;
+      return {
+        id: b.id, name: b.name, type: b.type, up: up, from: b.from, to: b.to, route: route, speed: b.speed,
+        release: b.release, deadline: b.deadline, priority: b.priority, ops: my, segs: segs, waits: waits,
+        finish: finish, lateness: finish == null ? null : Math.max(0, finish - b.deadline), arrivals: {},
+      };
+    });
+    var boatInfo = {};
+    boats.forEach(function (b) { boatInfo[b.id] = b; });
+    // arrival time of each boat at each of its locks (for companion checks)
+    boats.forEach(function (b) {
+      var ready = b.release;
+      b.ops.forEach(function (o, k) {
+        b.arrivals[o.lock] = ready;
+        if (k + 1 < b.ops.length) { var pool = b.up ? o.lock : o.lock - 1; ready = o.end + Math.ceil(pools[pool].length / b.speed); }
+      });
+    });
+
+    function opRunning(L, t) {
+      var l = byLock[L];
+      for (var j = 0; j < l.length; j++) { if (l[j].start <= t && t < l[j].end) return l[j]; if (l[j].start > t) break; }
+      return null;
+    }
+    function describeOp(o) {
+      if (!o.boats.length) return null;
+      return list(o.boats.map(boatName));
+    }
+    function keeperStatus(kl, t, L) {
+      var s = keeperAt(kl, t);
+      if (s.type === 'work') return kl.name + ' was working Lock ' + s.lock + (s.op.boats.length ? ' (' + list(s.op.boats.map(boatName)) + ')' : '');
+      if (s.type === 'walk') return kl.name + ' was walking to Lock ' + s.toLock;
+      var nxt = null;
+      for (var j = 0; j < kl.segs.length; j++) if (kl.segs[j].type === 'work' && kl.segs[j].from > t) { nxt = kl.segs[j]; break; }
+      var away = walk(s.lock, L);
+      if (nxt && nxt.lock !== L && nxt.from - t < 90) return kl.name + ' was waiting at Lock ' + s.lock + ' for ' + (nxt.op.boats.length ? list(nxt.op.boats.map(boatName)) : 'a chamber turn') + (nxt.lock !== s.lock ? ' at Lock ' + nxt.lock : '');
+      return kl.name + ' was at Lock ' + s.lock + (away ? ' (' + away + ' min walk away)' : '');
+    }
+    // could keeper kl have worked an op of length d at lock L starting at minute t?
+    function keeperCould(kl, t, L, d) {
+      var prevL = null, prevE = 0, k0 = keeperById[kl.id];
+      prevL = k0.start_lock;
+      var list2 = byKeeper[kl.id];
+      for (var j = 0; j <= list2.length; j++) {
+        var nx = list2[j];
+        if (!nx || nx.start > t) {
+          if (prevE + walk(prevL, L) > t) return false;
+          if (nx && t + d + walk(L, nx.lock) > nx.start) return false;
+          return true;
+        }
+        prevL = nx.lock; prevE = nx.end;
+        if (nx.start <= t && t < nx.end) return false;
+      }
+      return false;
+    }
+
+    // ---- classify every waiting minute ----
+    function classify(b, w, t) {
+      var L = w.lock, o = w.op, lk = lockById[L];
+      var dirWord = b.up ? 'up' : 'down';
+      var needState = b.up ? 'low' : 'high';
+      var we = winEndAt(t);
+      if (we < 0) return { kind: 'night', text: 'the locks were shut for the night' };
+      var minDur = (b.up ? lk.fill : lk.empty) + (b.type === 'barge' ? canal.enter_minutes_with_barge : canal.enter_minutes) + canal.exit_minutes;
+      if (t + minDur > we) return { kind: 'night', text: 'it was too late to get through before the locks shut at ' + hm(we) };
+      var cls = (canal.closures || []).filter(function (c) { return c.lock === L && c.from <= t + minDur && t < c.to; });
+      if (cls.length) return { kind: 'closure', text: 'Lock ' + L + ' was closed for maintenance (' + hm(cls[0].from) + '–' + hm(cls[0].to) + ')' };
+      var R = opRunning(L, t);
+      if (R && R !== o) {
+        var who = describeOp(R);
+        if (who) {
+          if (R.dir !== (b.up ? 'up' : 'down'))
+            return { kind: 'busy', text: 'the chamber was taking ' + who + ' ' + R.dir };
+          var arrived = b.arrivals[L] != null ? b.arrivals[L] : w.from;
+          if (arrived > R.start) return { kind: 'busy', text: b.name + ' arrived just after the chamber had started taking ' + who + ' ' + R.dir };
+          var used = R.boats.reduce(function (a, id) { return a + (boatById[id] && boatById[id].type === 'barge' ? 2 : 1); }, 0);
+          var need = b.type === 'barge' ? 2 : 1;
+          if (used + need > canal.chamber_slots) return { kind: 'busy', text: 'the chamber was full taking ' + who + ' ' + R.dir + ' first' };
+          return { kind: 'busy', text: who + ' went ' + R.dir + ' first without ' + b.name + ' (the plan kept ' + b.name + ' for a later trip)' };
+        }
+        // an empty turn
+        var nx = R.next;
+        var fullEmpty = R.dir === 'down' ? 'full and had to be emptied' : 'empty and had to be filled';
+        if (nx === o) return { kind: 'turn', text: 'the chamber was ' + fullEmpty + ' before ' + b.name + ' could go ' + dirWord };
+        if (nx && nx.boats.length) return { kind: 'turn', text: 'the chamber was being ' + (R.dir === 'down' ? 'emptied' : 'filled') + ' for ' + list(nx.boats.map(boatName)) + ' coming ' + nx.dir };
+        if (R.dir === 'down') return { kind: 'water', text: 'Lock ' + L + ' was busy sending water down to Pool ' + (L - 1) };
+        return { kind: 'busy', text: 'the chamber was being turned' };
+      }
+      // lock idle at t
+      if (b.up) {
+        var lv = trace[Math.min(t, trace.length - 1)][L];
+        if (lv - lk.volume < pools[L].min)
+          return { kind: 'water', text: 'Pool ' + L + ' was too low to fill the lock (it held ' + Math.round(lv) + ', filling needs ' + (pools[L].min + lk.volume) + '); water was on its way down from ' + (L < n ? 'Pool ' + (L + 1) : 'the feeder stream') };
+      }
+      // was the chamber in the wrong state?
+      var prevOp = null, l = byLock[L];
+      for (var j = 0; j < l.length; j++) { if (l[j].end <= t) prevOp = l[j]; else break; }
+      var state = prevOp ? prevOp.after : lk.state;
+      var needDur = state === needState ? minDur : (state === 'high' ? lk.empty : lk.fill);
+      var free = [];
+      keeperLines.forEach(function (kl) { if (keeperCould(kl, t, L, needDur)) free.push(kl); });
+      if (!free.length) {
+        return { kind: 'keeper', text: 'no keeper free: ' + list(keeperLines.map(function (kl) { return keeperStatus(kl, t, L); })) };
+      }
+      // companion: her operation includes a boat that had not arrived yet
+      var later = o.boats.filter(function (id) { return id !== b.id && boatInfo[id] && boatInfo[id].arrivals[L] > t; });
+      if (later.length) return { kind: 'companion', text: 'waiting for ' + list(later.map(boatName)) + ' to share the chamber (one lock cycle for two boats)' };
+      if (state !== needState && b.up && lk.state) {
+        // chamber full, nobody turned it yet
+      }
+      var kl0 = free[0];
+      var nxt = null;
+      for (j = 0; j < kl0.segs.length; j++) if (kl0.segs[j].type === 'work' && kl0.segs[j].from >= t) { nxt = kl0.segs[j]; break; }
+      var saved = nxt ? (nxt.op.boats.length ? list(nxt.op.boats.map(boatName)) + ' at Lock ' + nxt.lock : 'a turn at Lock ' + nxt.lock) : 'other work';
+      return { kind: 'held', text: 'the plan kept the free keeper' + (free.length > 1 ? 's' : '') + ' for other boats (' + kl0.name + ' next served ' + saved + ')' };
+    }
+
+    boats.forEach(function (b) {
+      b.waitSegs = [];
+      b.waits.forEach(function (w) {
+        var cur = null;
+        for (var t = w.from; t < w.to; t++) {
+          var c = classify(b, w, t);
+          if (cur && cur.kind === c.kind && cur.text === c.text) cur.to = t + 1;
+          else {
+            if (cur) b.waitSegs.push(cur);
+            cur = { lock: w.lock, from: t, to: t + 1, kind: c.kind, text: c.text };
+          }
+        }
+        if (cur) b.waitSegs.push(cur);
+      });
+      // merge tiny fragments of the same kind to keep the story readable
+      var merged = [];
+      b.waitSegs.forEach(function (s) {
+        var last = merged[merged.length - 1];
+        if (last && last.lock === s.lock && last.kind === s.kind && last.to === s.from && (s.kind === 'keeper' || s.kind === 'held' || s.kind === 'water')) {
+          last.to = s.to; last.texts = last.texts || [last.text]; if (last.texts.indexOf(s.text) < 0) last.texts.push(s.text);
+        } else merged.push(Object.assign({}, s));
+      });
+      b.waitSegs = merged;
+      b.causes = {};
+      b.waitSegs.forEach(function (s) { b.causes[s.kind] = (b.causes[s.kind] || 0) + (s.to - s.from); });
+      b.totalWait = b.waitSegs.reduce(function (a, s) { return a + s.to - s.from; }, 0);
+      b.story = b.waitSegs.filter(function (s) { return s.to - s.from >= 1; }).map(function (s) {
+        return { lock: s.lock, from: s.from, to: s.to, kind: s.kind,
+          text: b.name + ' waited ' + dur(s.to - s.from) + ' at Lock ' + s.lock + ' (' + hm(s.from) + '–' + hm(s.to) + '): ' + s.text };
+      });
+    });
+
+    // ---- overview ----
+    var KIND_LABEL = { night: 'Locks shut for the night', closure: 'Maintenance closure', busy: 'Chamber busy with other boats', turn: 'Chamber had to be turned first',
+      water: 'Waiting for water', keeper: 'No keeper free', companion: 'Waiting to share a chamber', held: 'Keepers kept for other boats' };
+    var causesLate = {}, causesAll = {};
+    boats.forEach(function (b) {
+      for (var k in b.causes) {
+        causesAll[k] = (causesAll[k] || 0) + b.causes[k];
+        if (b.lateness > 0) causesLate[k] = (causesLate[k] || 0) + b.causes[k];
+      }
+      var main = null;
+      for (k in b.causes) if (k !== 'night' && (!main || b.causes[k] > b.causes[main])) main = k;
+      b.mainCause = main;
+      b.overnight = b.finish != null && b.finish > windows[0][1] && b.release < windows[0][1];
+    });
+    var lateBoats = boats.filter(function (b) { return b.lateness > 0; }).sort(function (a, c) { return c.lateness * c.priority - a.lateness * a.priority; });
+
+    return {
+      canal: canal, n: n, pools: pools, pos: pos, windows: windows, horizon: horizon, validation: V, trace: trace,
+      score: { valid: V.valid, errors: V.errors, weighted_lateness: V.weighted_lateness, late_boats: V.late_boats, water_drawn: V.water_drawn, operations: V.operations, empty_turns: V.empty_turns },
+      ops: ops, byLock: byLock, keeperLines: keeperLines, boats: boats, boatInfo: boatInfo, lateBoats: lateBoats,
+      causesLate: causesLate, causesAll: causesAll, KIND_LABEL: KIND_LABEL, walk: walk, keeperAt: keeperAt,
+    };
+  }
+
+  // compare two analyses of the same boats (before / after a re-plan)
+  function compare(A, B) {
+    var rows = [];
+    A.boats.forEach(function (a) {
+      var b = B.boatInfo[a.id];
+      if (!b) return;
+      var d = (b.finish == null || a.finish == null) ? null : b.finish - a.finish;
+      rows.push({ id: a.id, name: a.name, before: a.finish, after: b.finish, delta: d, lateBefore: a.lateness, lateAfter: b.lateness, priority: a.priority, boatA: a, boatB: b });
+    });
+    return rows;
+  }
+
+  return { analyse: analyse, compare: compare, clock: clock, hm: hm, dur: dur, list: list };
+})();
+
+if (typeof module !== 'undefined') module.exports = LEDGER;
+</script>
+<script>
+var CANAL = {"feeder_per_minute":1,"windows":[[360,1320],[1800,2760]],"enter_minutes":5,"enter_minutes_with_barge":8,"exit_minutes":3,"chamber_slots":2,"keeper_speed":6,"keepers":[{"id":1,"name":"Ada","start_lock":2},{"id":2,"name":"Bert","start_lock":5},{"id":3,"name":"Cass","start_lock":8}],"closures":[{"lock":5,"from":720,"to":840}],"pools":[{"id":0,"length":59,"min":0,"max":100000,"level":5000},{"id":1,"length":42,"min":100,"max":320,"level":237},{"id":2,"length":21,"min":100,"max":320,"level":229},{"id":3,"length":35,"min":100,"max":320,"level":176},{"id":4,"length":30,"min":100,"max":320,"level":184},{"id":5,"length":43,"min":100,"max":320,"level":230},{"id":6,"length":35,"min":100,"max":320,"level":218},{"id":7,"length":54,"min":100,"max":320,"level":183},{"id":8,"length":56,"min":100,"max":320,"level":201},{"id":9,"length":20,"min":100,"max":320,"level":197}],"locks":[{"id":1,"volume":71,"fill":10,"empty":7,"state":"high"},{"id":2,"volume":55,"fill":14,"empty":6,"state":"low"},{"id":3,"volume":84,"fill":12,"empty":9,"state":"low"},{"id":4,"volume":53,"fill":8,"empty":6,"state":"low"},{"id":5,"volume":58,"fill":9,"empty":7,"state":"high"},{"id":6,"volume":65,"fill":9,"empty":10,"state":"low"},{"id":7,"volume":56,"fill":13,"empty":7,"state":"high"},{"id":8,"volume":64,"fill":8,"empty":8,"state":"high"},{"id":9,"volume":55,"fill":9,"empty":8,"state":"low"}],"boats":[{"id":1,"name":"Heron","type":"narrow","speed":6,"from":9,"to":0,"release":677,"deadline":1036,"priority":1},{"id":2,"name":"Mayfly","type":"narrow","speed":4,"from":0,"to":9,"release":1983,"deadline":2357,"priority":2},{"id":3,"name":"Old Tom","type":"narrow","speed":6,"from":0,"to":9,"release":561,"deadline":949,"priority":1},{"id":4,"name":"Kestrel","type":"narrow","speed":5,"from":5,"to":8,"release":470,"deadline":640,"priority":1},{"id":5,"name":"Bramble","type":"narrow","speed":6,"from":0,"to":9,"release":511,"deadline":1063,"priority":1},{"id":6,"name":"Quiet Otter","type":"narrow","speed":4,"from":0,"to":9,"release":1098,"deadline":1737,"priority":1},{"id":7,"name":"Saffron","type":"barge","speed":2,"from":8,"to":9,"release":968,"deadline":1004,"priority":1},{"id":8,"name":"Marigold","type":"narrow","speed":4,"from":0,"to":9,"release":1109,"deadline":1514,"priority":1},{"id":9,"name":"Tinker","type":"narrow","speed":4,"from":0,"to":9,"release":661,"deadline":1280,"priority":1},{"id":10,"name":"Lark Rise","type":"narrow","speed":6,"from":7,"to":8,"release":850,"deadline":883,"priority":1},{"id":11,"name":"Dunnock","type":"narrow","speed":5,"from":2,"to":8,"release":1892,"deadline":2157,"priority":1},{"id":12,"name":"Coal Barge 7","type":"narrow","speed":5,"from":5,"to":1,"release":1039,"deadline":1183,"priority":1},{"id":13,"name":"Willow","type":"narrow","speed":6,"from":7,"to":4,"release":708,"deadline":841,"priority":1},{"id":14,"name":"Sixpence","type":"barge","speed":3,"from":4,"to":5,"release":872,"deadline":920,"priority":1},{"id":15,"name":"Moorhen","type":"narrow","speed":4,"from":6,"to":5,"release":2030,"deadline":2076,"priority":3},{"id":16,"name":"Pennywhistle","type":"narrow","speed":5,"from":2,"to":3,"release":440,"deadline":487,"priority":2},{"id":17,"name":"Ferret","type":"barge","speed":3,"from":9,"to":8,"release":926,"deadline":968,"priority":2},{"id":18,"name":"Gritstone","type":"narrow","speed":4,"from":2,"to":7,"release":1062,"deadline":1356,"priority":1},{"id":19,"name":"Wren","type":"narrow","speed":4,"from":2,"to":0,"release":545,"deadline":630,"priority":1},{"id":20,"name":"Harebell","type":"narrow","speed":4,"from":1,"to":9,"release":742,"deadline":1165,"priority":1},{"id":21,"name":"Slow Loris","type":"narrow","speed":4,"from":0,"to":9,"release":668,"deadline":1185,"priority":1},{"id":22,"name":"Nutmeg","type":"narrow","speed":6,"from":0,"to":9,"release":738,"deadline":1105,"priority":1},{"id":23,"name":"Albion","type":"narrow","speed":5,"from":2,"to":3,"release":1037,"deadline":1070,"priority":1},{"id":24,"name":"Cobble","type":"narrow","speed":6,"from":5,"to":2,"release":802,"deadline":919,"priority":3},{"id":25,"name":"Swift","type":"narrow","speed":5,"from":6,"to":2,"release":668,"deadline":837,"priority":1},{"id":26,"name":"Tansy","type":"narrow","speed":4,"from":0,"to":9,"release":996,"deadline":1432,"priority":3},{"id":27,"name":"Ironbridge","type":"barge","speed":3,"from":0,"to":9,"release":845,"deadline":1373,"priority":2},{"id":28,"name":"Fieldfare","type":"narrow","speed":5,"from":0,"to":9,"release":978,"deadline":1550,"priority":2},{"id":29,"name":"Pip","type":"barge","speed":3,"from":4,"to":8,"release":387,"deadline":630,"priority":1},{"id":30,"name":"Wagtail","type":"narrow","speed":5,"from":0,"to":9,"release":470,"deadline":954,"priority":2},{"id":31,"name":"Barley Mow","type":"barge","speed":3,"from":7,"to":6,"release":1058,"deadline":1089,"priority":2},{"id":32,"name":"Kingfisher","type":"narrow","speed":6,"from":4,"to":1,"release":956,"deadline":1086,"priority":1},{"id":33,"name":"Rook","type":"narrow","speed":5,"from":7,"to":8,"release":795,"deadline":834,"priority":1},{"id":34,"name":"Clementine","type":"barge","speed":2,"from":1,"to":9,"release":799,"deadline":1602,"priority":3},{"id":35,"name":"Stoat","type":"narrow","speed":4,"from":1,"to":3,"release":497,"deadline":607,"priority":3},{"id":36,"name":"Gadfly","type":"narrow","speed":4,"from":2,"to":6,"release":404,"deadline":623,"priority":1},{"id":37,"name":"Plover","type":"narrow","speed":6,"from":1,"to":9,"release":802,"deadline":1240,"priority":1},{"id":38,"name":"Humbug","type":"narrow","speed":5,"from":0,"to":9,"release":1006,"deadline":1425,"priority":1},{"id":39,"name":"Linnet","type":"narrow","speed":4,"from":0,"to":9,"release":1128,"deadline":1761,"priority":1},{"id":40,"name":"Shire Horse","type":"narrow","speed":6,"from":0,"to":9,"release":709,"deadline":1199,"priority":1}]};
+var SCHEDULE = {"operations":[{"lock":4,"start":379,"dir":"up","boats":[],"keeper":2},{"lock":5,"start":382,"dir":"down","boats":[],"keeper":1},{"lock":4,"start":387,"dir":"down","boats":[],"keeper":2},{"lock":5,"start":389,"dir":"up","boats":[29],"keeper":1},{"lock":3,"start":404,"dir":"up","boats":[36],"keeper":2},{"lock":4,"start":415,"dir":"up","boats":[],"keeper":1},{"lock":5,"start":416,"dir":"down","boats":[],"keeper":3},{"lock":4,"start":423,"dir":"down","boats":[],"keeper":1},{"lock":6,"start":431,"dir":"up","boats":[29],"keeper":3},{"lock":3,"start":433,"dir":"down","boats":[],"keeper":2},{"lock":4,"start":433,"dir":"up","boats":[36],"keeper":1},{"lock":3,"start":442,"dir":"up","boats":[16],"keeper":2},{"lock":5,"start":457,"dir":"up","boats":[36],"keeper":1},{"lock":7,"start":458,"dir":"down","boats":[],"keeper":3},{"lock":6,"start":471,"dir":"down","boats":[],"keeper":3},{"lock":1,"start":473,"dir":"down","boats":[],"keeper":2},{"lock":1,"start":480,"dir":"up","boats":[30],"keeper":2},{"lock":6,"start":485,"dir":"up","boats":[36,4],"keeper":3},{"lock":7,"start":487,"dir":"up","boats":[29],"keeper":1},{"lock":2,"start":507,"dir":"up","boats":[30,35],"keeper":2},{"lock":7,"start":511,"dir":"down","boats":[],"keeper":1},{"lock":4,"start":515,"dir":"down","boats":[],"keeper":3},{"lock":7,"start":518,"dir":"up","boats":[4],"keeper":1},{"lock":5,"start":526,"dir":"down","boats":[],"keeper":3},{"lock":3,"start":533,"dir":"down","boats":[],"keeper":2},{"lock":4,"start":538,"dir":"up","boats":[],"keeper":3},{"lock":2,"start":546,"dir":"down","boats":[19],"keeper":2},{"lock":4,"start":546,"dir":"down","boats":[],"keeper":3},{"lock":8,"start":548,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":556,"dir":"up","boats":[4],"keeper":1},{"lock":3,"start":558,"dir":"up","boats":[30,35],"keeper":3},{"lock":1,"start":571,"dir":"down","boats":[19],"keeper":2},{"lock":8,"start":572,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":580,"dir":"up","boats":[29],"keeper":1},{"lock":1,"start":586,"dir":"up","boats":[3,5],"keeper":2},{"lock":5,"start":589,"dir":"up","boats":[],"keeper":3},{"lock":5,"start":598,"dir":"down","boats":[],"keeper":3},{"lock":4,"start":610,"dir":"up","boats":[30],"keeper":3},{"lock":2,"start":611,"dir":"up","boats":[3,5],"keeper":2},{"lock":4,"start":626,"dir":"down","boats":[],"keeper":3},{"lock":5,"start":632,"dir":"up","boats":[30],"keeper":1},{"lock":3,"start":637,"dir":"down","boats":[],"keeper":2},{"lock":3,"start":646,"dir":"up","boats":[3,5],"keeper":2},{"lock":5,"start":649,"dir":"down","boats":[],"keeper":1},{"lock":6,"start":650,"dir":"down","boats":[],"keeper":3},{"lock":6,"start":660,"dir":"up","boats":[30],"keeper":3},{"lock":4,"start":672,"dir":"up","boats":[3,5],"keeper":1},{"lock":1,"start":677,"dir":"down","boats":[],"keeper":2},{"lock":6,"start":677,"dir":"down","boats":[25],"keeper":3},{"lock":1,"start":684,"dir":"up","boats":[21,9],"keeper":2},{"lock":5,"start":693,"dir":"up","boats":[3,5],"keeper":1},{"lock":7,"start":701,"dir":"down","boats":[],"keeper":3},{"lock":7,"start":708,"dir":"up","boats":[30],"keeper":3},{"lock":2,"start":709,"dir":"down","boats":[],"keeper":2},{"lock":2,"start":715,"dir":"up","boats":[21,9],"keeper":2},{"lock":6,"start":718,"dir":"up","boats":[3,5],"keeper":1},{"lock":7,"start":729,"dir":"down","boats":[13],"keeper":3},{"lock":3,"start":741,"dir":"down","boats":[],"keeper":2},{"lock":7,"start":744,"dir":"up","boats":[3,5],"keeper":3},{"lock":6,"start":750,"dir":"down","boats":[13],"keeper":1},{"lock":1,"start":761,"dir":"down","boats":[],"keeper":2},{"lock":1,"start":768,"dir":"up","boats":[22,40],"keeper":2},{"lock":8,"start":774,"dir":"down","boats":[],"keeper":3},{"lock":4,"start":781,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":782,"dir":"up","boats":[3,5],"keeper":3},{"lock":2,"start":793,"dir":"down","boats":[],"keeper":2},{"lock":8,"start":798,"dir":"down","boats":[],"keeper":3},{"lock":2,"start":799,"dir":"up","boats":[22,20],"keeper":2},{"lock":4,"start":799,"dir":"up","boats":[],"keeper":1},{"lock":8,"start":806,"dir":"up","boats":[30,33],"keeper":3},{"lock":4,"start":807,"dir":"down","boats":[],"keeper":1},{"lock":3,"start":819,"dir":"up","boats":[21,9],"keeper":1},{"lock":2,"start":821,"dir":"down","boats":[],"keeper":2},{"lock":2,"start":827,"dir":"up","boats":[37,40],"keeper":2},{"lock":9,"start":832,"dir":"up","boats":[3,5],"keeper":3},{"lock":3,"start":839,"dir":"down","boats":[],"keeper":1},{"lock":5,"start":859,"dir":"down","boats":[25,24],"keeper":1},{"lock":8,"start":859,"dir":"down","boats":[],"keeper":3},{"lock":4,"start":860,"dir":"up","boats":[21,9],"keeper":2},{"lock":8,"start":867,"dir":"up","boats":[10],"keeper":3},{"lock":5,"start":874,"dir":"up","boats":[14],"keeper":1},{"lock":4,"start":876,"dir":"down","boats":[],"keeper":2},{"lock":4,"start":882,"dir":"up","boats":[],"keeper":2},{"lock":4,"start":890,"dir":"down","boats":[25,24],"keeper":2},{"lock":9,"start":893,"dir":"down","boats":[1],"keeper":3},{"lock":3,"start":905,"dir":"up","boats":[22,37],"keeper":1},{"lock":5,"start":909,"dir":"down","boats":[13],"keeper":2},{"lock":9,"start":909,"dir":"up","boats":[30],"keeper":3},{"lock":5,"start":924,"dir":"up","boats":[21,9],"keeper":2},{"lock":3,"start":925,"dir":"down","boats":[25,24],"keeper":1},{"lock":9,"start":926,"dir":"down","boats":[17],"keeper":3},{"lock":2,"start":946,"dir":"down","boats":[],"keeper":1},{"lock":4,"start":946,"dir":"up","boats":[22,37],"keeper":2},{"lock":8,"start":955,"dir":"down","boats":[1],"keeper":3},{"lock":4,"start":962,"dir":"down","boats":[32],"keeper":2},{"lock":5,"start":967,"dir":"down","boats":[],"keeper":1},{"lock":5,"start":974,"dir":"up","boats":[22,37],"keeper":1},{"lock":9,"start":981,"dir":"up","boats":[7],"keeper":3},{"lock":1,"start":993,"dir":"down","boats":[],"keeper":2},{"lock":6,"start":999,"dir":"up","boats":[22,21],"keeper":1},{"lock":1,"start":1000,"dir":"up","boats":[26,28],"keeper":2},{"lock":6,"start":1016,"dir":"down","boats":[],"keeper":1},{"lock":7,"start":1020,"dir":"down","boats":[1],"keeper":3},{"lock":6,"start":1026,"dir":"up","boats":[37,9],"keeper":1},{"lock":2,"start":1029,"dir":"up","boats":[26,28],"keeper":2},{"lock":7,"start":1035,"dir":"up","boats":[22,21],"keeper":3},{"lock":6,"start":1043,"dir":"down","boats":[1],"keeper":1},{"lock":3,"start":1055,"dir":"up","boats":[23,20],"keeper":2},{"lock":7,"start":1058,"dir":"down","boats":[31],"keeper":3},{"lock":4,"start":1074,"dir":"up","boats":[],"keeper":1},{"lock":3,"start":1075,"dir":"down","boats":[32],"keeper":2},{"lock":4,"start":1082,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":1085,"dir":"up","boats":[22,21],"keeper":3},{"lock":4,"start":1088,"dir":"up","boats":[],"keeper":1},{"lock":4,"start":1096,"dir":"down","boats":[],"keeper":1},{"lock":3,"start":1097,"dir":"up","boats":[26,40],"keeper":2},{"lock":9,"start":1111,"dir":"down","boats":[],"keeper":3},{"lock":5,"start":1112,"dir":"down","boats":[1,12],"keeper":1},{"lock":3,"start":1117,"dir":"down","boats":[],"keeper":2},{"lock":9,"start":1119,"dir":"up","boats":[22,21],"keeper":3},{"lock":2,"start":1130,"dir":"down","boats":[32],"keeper":2},{"lock":4,"start":1132,"dir":"up","boats":[26,20],"keeper":1},{"lock":2,"start":1144,"dir":"up","boats":[34],"keeper":2},{"lock":4,"start":1148,"dir":"down","boats":[1,12],"keeper":1},{"lock":7,"start":1155,"dir":"up","boats":[37,9],"keeper":3},{"lock":5,"start":1167,"dir":"up","boats":[26,20],"keeper":1},{"lock":3,"start":1173,"dir":"up","boats":[28,18],"keeper":2},{"lock":5,"start":1184,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":1185,"dir":"down","boats":[],"keeper":3},{"lock":3,"start":1193,"dir":"down","boats":[1,12],"keeper":2},{"lock":8,"start":1193,"dir":"up","boats":[37,9],"keeper":3},{"lock":6,"start":1199,"dir":"up","boats":[26,20],"keeper":1},{"lock":4,"start":1216,"dir":"up","boats":[28,18],"keeper":2},{"lock":9,"start":1219,"dir":"down","boats":[],"keeper":3},{"lock":7,"start":1222,"dir":"down","boats":[],"keeper":1},{"lock":9,"start":1227,"dir":"up","boats":[37,9],"keeper":3},{"lock":7,"start":1229,"dir":"up","boats":[26,20],"keeper":1},{"lock":5,"start":1240,"dir":"up","boats":[28,18],"keeper":2},{"lock":6,"start":1258,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":1258,"dir":"down","boats":[],"keeper":3},{"lock":8,"start":1266,"dir":"up","boats":[26,20],"keeper":3},{"lock":6,"start":1268,"dir":"up","boats":[28,18],"keeper":1},{"lock":2,"start":1272,"dir":"down","boats":[1,12],"keeper":2},{"lock":7,"start":1291,"dir":"down","boats":[],"keeper":1},{"lock":9,"start":1292,"dir":"down","boats":[],"keeper":3},{"lock":1,"start":1293,"dir":"down","boats":[1],"keeper":2},{"lock":7,"start":1298,"dir":"up","boats":[28,18],"keeper":1},{"lock":9,"start":1300,"dir":"up","boats":[26,20],"keeper":3},{"lock":1,"start":1800,"dir":"up","boats":[8,6],"keeper":2},{"lock":3,"start":1800,"dir":"up","boats":[34],"keeper":3},{"lock":8,"start":1800,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":1808,"dir":"up","boats":[28],"keeper":1},{"lock":1,"start":1818,"dir":"down","boats":[],"keeper":2},{"lock":1,"start":1825,"dir":"up","boats":[27],"keeper":2},{"lock":2,"start":1829,"dir":"up","boats":[8,6],"keeper":3},{"lock":9,"start":1834,"dir":"down","boats":[],"keeper":1},{"lock":9,"start":1842,"dir":"up","boats":[28],"keeper":1},{"lock":3,"start":1855,"dir":"down","boats":[],"keeper":3},{"lock":4,"start":1863,"dir":"down","boats":[],"keeper":2},{"lock":3,"start":1864,"dir":"up","boats":[8,6],"keeper":3},{"lock":4,"start":1869,"dir":"up","boats":[34],"keeper":2},{"lock":3,"start":1884,"dir":"down","boats":[],"keeper":3},{"lock":4,"start":1888,"dir":"down","boats":[],"keeper":2},{"lock":5,"start":1891,"dir":"down","boats":[],"keeper":1},{"lock":3,"start":1893,"dir":"up","boats":[11],"keeper":3},{"lock":4,"start":1894,"dir":"up","boats":[8,6],"keeper":2},{"lock":5,"start":1903,"dir":"up","boats":[34],"keeper":1},{"lock":4,"start":1910,"dir":"down","boats":[],"keeper":2},{"lock":2,"start":1917,"dir":"down","boats":[],"keeper":3},{"lock":4,"start":1920,"dir":"up","boats":[11,40],"keeper":2},{"lock":5,"start":1923,"dir":"down","boats":[],"keeper":1},{"lock":2,"start":1924,"dir":"up","boats":[27],"keeper":3},{"lock":6,"start":1938,"dir":"down","boats":[],"keeper":1},{"lock":5,"start":1941,"dir":"up","boats":[8,6],"keeper":2},{"lock":6,"start":1948,"dir":"up","boats":[34],"keeper":1},{"lock":3,"start":1953,"dir":"down","boats":[],"keeper":3},{"lock":5,"start":1958,"dir":"down","boats":[],"keeper":2},{"lock":3,"start":1962,"dir":"up","boats":[27],"keeper":3},{"lock":5,"start":1965,"dir":"up","boats":[11,40],"keeper":2},{"lock":6,"start":1968,"dir":"down","boats":[],"keeper":1},{"lock":7,"start":1984,"dir":"down","boats":[],"keeper":1},{"lock":6,"start":1990,"dir":"up","boats":[8,6],"keeper":2},{"lock":4,"start":1991,"dir":"down","boats":[],"keeper":3},{"lock":7,"start":1991,"dir":"up","boats":[34],"keeper":1},{"lock":4,"start":1997,"dir":"up","boats":[27],"keeper":3},{"lock":6,"start":2007,"dir":"down","boats":[],"keeper":2},{"lock":7,"start":2015,"dir":"down","boats":[],"keeper":1},{"lock":6,"start":2017,"dir":"up","boats":[11,40],"keeper":2},{"lock":5,"start":2021,"dir":"down","boats":[],"keeper":3},{"lock":5,"start":2028,"dir":"up","boats":[27],"keeper":3},{"lock":8,"start":2031,"dir":"down","boats":[],"keeper":1},{"lock":7,"start":2040,"dir":"up","boats":[8,6],"keeper":2},{"lock":8,"start":2042,"dir":"up","boats":[34],"keeper":1},{"lock":6,"start":2056,"dir":"down","boats":[15],"keeper":3},{"lock":7,"start":2061,"dir":"down","boats":[],"keeper":2},{"lock":8,"start":2061,"dir":"down","boats":[],"keeper":1},{"lock":7,"start":2068,"dir":"up","boats":[11,40],"keeper":2},{"lock":6,"start":2074,"dir":"up","boats":[27],"keeper":3},{"lock":9,"start":2079,"dir":"down","boats":[],"keeper":1},{"lock":9,"start":2089,"dir":"up","boats":[34],"keeper":1},{"lock":8,"start":2098,"dir":"up","boats":[8,6],"keeper":2},{"lock":7,"start":2100,"dir":"down","boats":[],"keeper":3},{"lock":7,"start":2107,"dir":"up","boats":[27],"keeper":3},{"lock":9,"start":2109,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":2114,"dir":"down","boats":[],"keeper":2},{"lock":8,"start":2122,"dir":"up","boats":[11,40],"keeper":2},{"lock":9,"start":2128,"dir":"up","boats":[8,6],"keeper":1},{"lock":8,"start":2138,"dir":"down","boats":[],"keeper":2},{"lock":9,"start":2145,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":2149,"dir":"up","boats":[27],"keeper":2},{"lock":9,"start":2153,"dir":"up","boats":[40],"keeper":1},{"lock":1,"start":2166,"dir":"down","boats":[],"keeper":3},{"lock":9,"start":2170,"dir":"down","boats":[],"keeper":1},{"lock":1,"start":2173,"dir":"up","boats":[2,39],"keeper":3},{"lock":9,"start":2187,"dir":"up","boats":[27],"keeper":1},{"lock":1,"start":2191,"dir":"down","boats":[],"keeper":3},{"lock":1,"start":2198,"dir":"up","boats":[38],"keeper":3},{"lock":2,"start":2205,"dir":"down","boats":[],"keeper":2},{"lock":2,"start":2211,"dir":"up","boats":[2,39],"keeper":2},{"lock":3,"start":2227,"dir":"down","boats":[],"keeper":3},{"lock":2,"start":2233,"dir":"down","boats":[],"keeper":2},{"lock":2,"start":2239,"dir":"up","boats":[38],"keeper":2},{"lock":3,"start":2239,"dir":"up","boats":[2,39],"keeper":3},{"lock":4,"start":2249,"dir":"down","boats":[],"keeper":1},{"lock":3,"start":2259,"dir":"down","boats":[],"keeper":3},{"lock":3,"start":2268,"dir":"up","boats":[38],"keeper":3},{"lock":4,"start":2268,"dir":"up","boats":[2,39],"keeper":1},{"lock":5,"start":2276,"dir":"down","boats":[],"keeper":2},{"lock":4,"start":2284,"dir":"down","boats":[],"keeper":1},{"lock":5,"start":2292,"dir":"up","boats":[2,39],"keeper":2},{"lock":4,"start":2295,"dir":"up","boats":[38],"keeper":1},{"lock":6,"start":2306,"dir":"down","boats":[],"keeper":3},{"lock":5,"start":2309,"dir":"down","boats":[],"keeper":2},{"lock":5,"start":2317,"dir":"up","boats":[38],"keeper":2},{"lock":6,"start":2320,"dir":"up","boats":[2,39],"keeper":3},{"lock":7,"start":2329,"dir":"down","boats":[],"keeper":1},{"lock":6,"start":2337,"dir":"down","boats":[],"keeper":3},{"lock":7,"start":2346,"dir":"up","boats":[2,39],"keeper":1},{"lock":6,"start":2347,"dir":"up","boats":[38],"keeper":3},{"lock":8,"start":2360,"dir":"down","boats":[],"keeper":2},{"lock":7,"start":2367,"dir":"down","boats":[],"keeper":1},{"lock":7,"start":2374,"dir":"up","boats":[38],"keeper":1},{"lock":8,"start":2381,"dir":"up","boats":[2,39],"keeper":2},{"lock":9,"start":2390,"dir":"down","boats":[],"keeper":3},{"lock":8,"start":2397,"dir":"down","boats":[],"keeper":2},{"lock":8,"start":2406,"dir":"up","boats":[38],"keeper":2},{"lock":9,"start":2411,"dir":"up","boats":[2,39],"keeper":3},{"lock":9,"start":2428,"dir":"down","boats":[],"keeper":3},{"lock":9,"start":2436,"dir":"up","boats":[38],"keeper":3}]};
+var GENOME = {"keys":[1.0476848269256858,2.1456904250984468,1.463425968392507,1.4119293997672886,0.10765659430399167,450.80575748619486,1.3993349572160474,0.05778556139765043,0.6992515423102218,84.90160952726738,0.5133464636507221,0.15970173374715557,1.440305390365405,51.623657700328096,0.0103582382244774,1000,1.9633999304481753,0.14059382289327665,222.83684499971605,1.5644733018314243,1.6419911911471785,2.3702496796735026,0.9020820779389949,6.624897944214689,15.36711332478712,234.514809278992,0.6306110436180248,40.16057265948965,0.028655839316089997,195.5818089345031,0.37351984392521953,1.2172131686528997,0.015611026017205038,1.6518027710780112,5.4533271166518436,302.095313347604,1.9289939969772363,0.0025,2.8507364842867173,0.011454158789526188],"keys2":[0.001,0.08135882985748567,1.8658750254458483,0.001,1.589450183354907,1.031441033548864,4.592739240660692,9.8555555079475,0.7690444727194019,1.8481572408630325,14.806814437484105,687.8367047016068,1000,0.8721237046821175,2.724209652696068,0.09678001504286333,0.5317047431818757,0.5406849855482648,16.7664548588037,0.005486576088145335,3.934480278703208,0.0850330618091333,0.05192514180524574,0.0014363377270171496,13.898625122167946,0.001,0.3109983432102173,246.05378765695605,247.3136828639468,0.1485339857627993,7.642070590118123,1.0199677451552156,0.1690716110088794,3.8745117270352485,0.0011243584260078165,1.0138121386558963,47.933414224029434,0.032103799356560325,0.012827991087785335,0.06279746884010953],"P":{"wc":25,"wf":2,"pre":-2,"hw":25,"hk":1,"beta":3.6674632973968984,"fFlip":0.7449152166163551,"fPre":1.5,"fPump":0.2697244996484367,"reserve":0.2314514687284827,"kmode":0,"idlePump":0,"zon":0,"ov":2,"cuts":[3,6],"tau":26.734635677887127},"P2":{"wc":11,"wf":0,"pre":13,"hw":54,"hk":0,"beta":4,"fFlip":1.4426218953216448,"fPre":1.5,"fPump":0.8786080926377327,"reserve":0.7540330504300072,"kmode":0,"idlePump":0,"zon":0,"ov":0,"cuts":[3,6],"tau":90.36922832159325},"grp":[-1,-1,-1,-1,-1,5,-1,5,-1,-1,-1,-1,12,-1,12,-1,-1,17,-1,19,-1,19,-1,-1,-1,-1,-1,17,-1,29,-1,-1,29,-1,-1,-1,-1,-1,-1,-1],"def":[0,1,0,0,1,1,0,1,1,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,1,1]};
+</script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var clock = LEDGER.clock, hm = LEDGER.hm, fdur = LEDGER.dur, list = LEDGER.list;
+  var KCOL = ['#c8611a', '#7d4ea0', '#16866f', '#2c6a96', '#9c3d54', '#6b7d1d', '#444'];
+  var CAUSE_COL = { night: '#7c86a8', keeper: '#c07a12', water: '#3d8fc4', busy: '#7a6a9a', turn: '#a69d86', closure: '#b83a2e', companion: '#3d7d3a', held: '#d2a55c' };
+
+  // ------------------------------------------------------------ state
+  var S = {
+    orig: null, plan: null, view: 'orig', t: 360, playing: false, speed: 30,
+    skipNight: true, names: false, sel: null,
+    gmode: 'locks', gspan: 480, gfollow: true, g0: 240, dfilter: 'all',
+    disrupt: [], replan: null,
+  };
+  function cur() { return S.view === 'new' && S.replan ? S.replan : S.orig; }
+
+  function buildPlan(canal, schedule) {
+    var A = LEDGER.analyse(canal, schedule, validateSchedule);
+    return { canal: canal, schedule: schedule, A: A };
+  }
+
+  // ------------------------------------------------------------ scores
+  function renderScores() {
+    var P = cur(), s = P.A.score, o = S.orig.A.score, isNew = P !== S.orig;
+    var items = [
+      ['Weighted lateness', s.weighted_lateness, o.weighted_lateness],
+      ['Late boats', s.late_boats, o.late_boats],
+      ['Water drawn', s.water_drawn, o.water_drawn],
+      ['Operations', s.operations, o.operations],
+      ['Empty turns', s.empty_turns, o.empty_turns],
+    ];
+    $('scores').innerHTML = items.map(function (it) {
+      var d = it[1] - it[2], em = '';
+      if (isNew && d !== 0) em = '<em class="' + (d < 0 ? 'better' : 'worse') + '">' + (d > 0 ? '+' : '') + d + '</em>';
+      return '<div class="score" title="' + it[0] + '"><b>' + it[1].toLocaleString('en-GB') + em + '</b><span>' + it[0] + '</span></div>';
+    }).join('') + (s.valid ? '' : '<div class="score" style="border-color:var(--late)"><b class="late">INVALID</b><span>' + s.errors.length + ' rule breaks</span></div>');
+    var pb = $('planbar');
+    if (S.replan) {
+      pb.className = 'planbar show';
+      pb.innerHTML = 'Showing: <span class="seg" id="viewseg"><button data-v="orig" class="' + (S.view === 'orig' ? 'on' : '') + '">Original plan</button><button data-v="new" class="' + (S.view === 'new' ? 'on' : '') + '">Re-planned (' + S.replan.label + ')</button></span>';
+      pb.querySelectorAll('button').forEach(function (b) { b.onclick = function () { S.view = b.dataset.v; refreshAll(); }; });
+    } else { pb.className = 'planbar'; pb.innerHTML = ''; }
+  }
+
+  // ------------------------------------------------------------ canal geometry
+  var cv = $('canal'), ctx = cv.getContext('2d');
+  var G = null; // geometry cache
+  function layout() {
+    var P = cur(), A = P.A, canal = P.canal, n = A.n;
+    var dpr = window.devicePixelRatio || 1;
+    var W = cv.clientWidth || 1000;
+    var H = Math.round(Math.max(250, Math.min(380, W * 0.33)));
+    if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) {
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); cv.style.height = H + 'px';
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var sc = Math.max(0.55, Math.min(1, W / 1100));
+    var mL = 10, mR = 10, top = 44, bottom = 12;
+    var riverW = 64 * sc, summitW = 74 * sc, lockW = Math.max(16, 24 * sc);
+    var sumLen = 0;
+    for (var i = 1; i < n; i++) sumLen += A.pools[i].length;
+    var k = (W - mL - mR - riverW - summitW - n * lockW) / sumLen;
+    var px0 = [], px1 = [], lx0 = [], lx1 = [];
+    var x = mL;
+    for (i = 0; i <= n; i++) {
+      var w = i === 0 ? riverW : i === n ? summitW : A.pools[i].length * k;
+      px0[i] = x; px1[i] = x + w; x += w;
+      if (i < n) { lx0[i + 1] = x; lx1[i + 1] = x + lockW; x += lockW; }
+    }
+    var stepH = (H - top - bottom - 26) / (n + 0.9);
+    var maxY = [], band = stepH * 0.72, bed = [];
+    for (i = 0; i <= n; i++) { maxY[i] = top + 10 + (n - i) * stepH; bed[i] = maxY[i] + stepH * 1.02; }
+    G = { W: W, H: H, n: n, px0: px0, px1: px1, lx0: lx0, lx1: lx1, maxY: maxY, band: band, bed: bed, stepH: stepH, sc: sc, lockW: lockW };
+  }
+  function surfaceY(i, lvl) {
+    var p = cur().A.pools[i];
+    if (i === 0) return G.maxY[0] + G.band * 0.35;
+    var f = (lvl - p.min) / (p.max - p.min);
+    f = Math.max(-0.35, Math.min(1, f));
+    return G.maxY[i] + (1 - f) * G.band;
+  }
+  function levelAt(i, t) {
+    var tr = cur().A.trace, a = Math.max(0, Math.min(tr.length - 1, Math.floor(t)));
+    var b = Math.min(tr.length - 1, a + 1), f = t - Math.floor(t);
+    return tr[a][i] * (1 - f) + tr[b][i] * f;
+  }
+  function towX(p) { // towpath position (distance units) -> x
+    var A = cur().A, n = A.n;
+    for (var i = 1; i < n; i++) {
+      if (p <= A.pos[i + 1]) {
+        var a = (G.lx0[i] + G.lx1[i]) / 2, b = (G.lx0[i + 1] + G.lx1[i + 1]) / 2;
+        var f = (p - A.pos[i]) / Math.max(1, A.pos[i + 1] - A.pos[i]);
+        return a + (b - a) * Math.max(0, Math.min(1, f));
+      }
+    }
+    return (G.lx0[n] + G.lx1[n]) / 2;
+  }
+  function bankY(x) {
+    for (var i = 0; i <= G.n; i++) if (x <= G.px1[i] + (i < G.n ? G.lockW : 0)) return G.maxY[Math.min(i + (x > G.px1[i] ? 1 : 0), G.n)] - 4;
+    return G.maxY[G.n] - 4;
+  }
+  function lockState(L, t) {
+    var ops = cur().A.byLock[L], st = null, run = null;
+    for (var j = 0; j < ops.length; j++) {
+      var o = ops[j];
+      if (o.start <= t && t < o.end) { run = o; break; }
+      if (o.start > t) break;
+      st = o.after;
+    }
+    var init = null;
+    cur().canal.locks.forEach(function (l) { if (l.id === L) init = l.state; });
+    return { run: run, state: run ? run.before : (st || init) };
+  }
+  function chamberY(L, t) {
+    var ls = lockState(L, t);
+    var lo = surfaceY(L - 1, levelAt(L - 1, t)), hi = surfaceY(L, levelAt(L, t));
+    if (!ls.run) return ls.state === 'high' ? hi : lo;
+    var o = ls.run, f = (t - o.start - o.enter) / o.turn;
+    f = Math.max(0, Math.min(1, f));
+    return o.dir === 'up' ? lo + (hi - lo) * f : hi + (lo - hi) * f;
+  }
+  function isNight(t) {
+    var w = cur().A.windows;
+    for (var i = 0; i < w.length; i++) if (w[i][0] <= t && t < w[i][1]) return false;
+    return true;
+  }
+  function nextWindow(t) {
+    var w = cur().A.windows;
+    for (var i = 0; i < w.length; i++) if (w[i][0] > t) return w[i][0];
+    return null;
+  }
+
+  // boat position at time t -> {x, y, state, text}
+  function boatPos(b, t, queues) {
+    if (t < b.release || !b.segs.length) return null;
+    var fin = b.finish;
+    if (fin != null && t >= fin + 45) return null;
+    var seg = null;
+    for (var i = 0; i < b.segs.length; i++) if (b.segs[i].from <= t && t < b.segs[i].to) { seg = b.segs[i]; break; }
+    var gateX = function (L, up) { return up ? G.lx0[L] - 9 : G.lx1[L] + 9; };
+    var waitPool = function (L, up) { return up ? L - 1 : L; };
+    if (!seg) {
+      if (fin != null && t >= fin) {
+        var last = b.ops[b.ops.length - 1], L0 = last.lock;
+        var ex = b.up ? G.lx1[L0] + 10 + (t - fin) * 0.5 : G.lx0[L0] - 10 - (t - fin) * 0.5;
+        var pi = b.up ? L0 : L0 - 1;
+        return { x: ex, y: surfaceY(pi, levelAt(pi, t)), state: 'done', alpha: Math.max(0, 1 - (t - fin) / 45) };
+      }
+      // before first op with no wait segment: waiting at first lock
+      var L1 = b.route[0];
+      return { x: gateX(L1, b.up), y: surfaceY(waitPool(L1, b.up), levelAt(waitPool(L1, b.up), t)), state: 'wait', lock: L1 };
+    }
+    if (seg.type === 'wait') {
+      var key = seg.lock + (b.up ? 'u' : 'd');
+      var q = (queues[key] = queues[key] || { n: 1, list: [] });
+      var qi = q.list.length; q.list.push(b.id);
+      var wp = waitPool(seg.lock, b.up);
+      // squeeze long queues into the pool
+      var avail = b.up ? gateX(seg.lock, true) - G.px0[wp] - 8 : G.px1[wp] - gateX(seg.lock, false) - 8;
+      var spacing = Math.min((b.type === 'barge' ? 26 : 21) * G.sc, avail / Math.max(1, q.n - 1 || 1));
+      var dx = (b.up ? -1 : 1) * qi * Math.max(4, spacing);
+      return { x: gateX(seg.lock, b.up) + dx, y: surfaceY(wp, levelAt(wp, t)), state: 'wait', lock: seg.lock };
+    }
+    if (seg.type === 'lock') {
+      var o = seg.op, L = seg.lock, cx = (G.lx0[L] + G.lx1[L]) / 2;
+      var idx = o.boats.indexOf(b.id), off = o.boats.length > 1 ? (idx === 0 ? -0.22 : 0.22) * G.lockW : 0;
+      var inX = cx + off, fromX = gateX(L, b.up), outX = b.up ? G.lx1[L] + 10 : G.lx0[L] - 10;
+      var fromPool = b.up ? L - 1 : L, toPool = b.up ? L : L - 1;
+      if (t < o.start + o.enter) {
+        var f = (t - o.start) / o.enter;
+        return { x: fromX + (inX - fromX) * f, y: surfaceY(fromPool, levelAt(fromPool, t)), state: 'lock', lock: L };
+      }
+      if (t < o.start + o.enter + o.turn) return { x: inX, y: chamberY(L, t), state: 'lock', lock: L };
+      var f2 = (t - o.start - o.enter - o.turn) / Math.max(1, o.exit);
+      return { x: inX + (outX - inX) * f2, y: surfaceY(toPool, levelAt(toPool, t)), state: 'lock', lock: L };
+    }
+    // crossing a pool
+    var p = seg.pool, x0 = b.up ? G.lx1[seg.fromLock] + 10 : G.lx0[seg.fromLock] - 10, x1 = gateX(seg.toLock, b.up);
+    var f3 = (t - seg.from) / Math.max(1, seg.to - seg.from);
+    return { x: x0 + (x1 - x0) * f3, y: surfaceY(p, levelAt(p, t)), state: 'cross', pool: p };
+  }
+  function boatColor(id) { return 'hsl(' + ((id * 67) % 360) + ',48%,' + (38 + (id * 13) % 14) + '%)'; }
+
+  // keeper position at time t
+  function keeperPos(kl, t) {
+    var s = cur().A.keeperAt(kl, t), A = cur().A;
+    if (s.type === 'walk') {
+      var f = (t - s.from) / Math.max(1, s.to - s.from);
+      return { x: towX(A.pos[s.lock] + (A.pos[s.toLock] - A.pos[s.lock]) * f), walking: true, seg: s };
+    }
+    return { x: towX(A.pos[s.lock]), walking: false, seg: s };
+  }
+
+  var hits = [];
+  function drawCanal() {
+    layout();
+    var P = cur(), A = P.A, n = A.n, t = S.t, W = G.W, H = G.H;
+    hits = [];
+    var night = isNight(t);
+    // sky
+    var sky = ctx.createLinearGradient(0, 0, 0, H);
+    if (night) { sky.addColorStop(0, '#0f1a33'); sky.addColorStop(1, '#2a3a5c'); }
+    else { sky.addColorStop(0, '#bfdcef'); sky.addColorStop(1, '#eef6f4'); }
+    ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+    if (night) {
+      ctx.fillStyle = 'rgba(255,255,230,.8)';
+      for (var s = 0; s < 40; s++) { var sx = (s * 137.5) % W, sy = (s * 53.3) % (H * 0.45); ctx.fillRect(sx, sy, 1.5, 1.5); }
+      ctx.beginPath(); ctx.arc(W - 40, 26, 10, 0, 7); ctx.fillStyle = '#f4efd2'; ctx.fill();
+      ctx.beginPath(); ctx.arc(W - 35, 22, 9, 0, 7); ctx.fillStyle = '#1a2744'; ctx.fill();
+    } else {
+      ctx.beginPath(); ctx.arc(W - 40, 26, 10, 0, 7); ctx.fillStyle = '#f7d774'; ctx.fill();
+    }
+    // hillside
+    ctx.beginPath(); ctx.moveTo(0, H);
+    for (var i = 0; i <= n; i++) {
+      var yb = G.maxY[i] - 4;
+      ctx.lineTo(i === 0 ? 0 : G.px0[i], yb); ctx.lineTo(i === n ? W : G.px1[i] + (i < n ? G.lockW / 2 : 0), yb);
+    }
+    ctx.lineTo(W, H); ctx.closePath();
+    var gr = ctx.createLinearGradient(0, 0, 0, H);
+    gr.addColorStop(0, night ? '#3d4a36' : '#8fae6a'); gr.addColorStop(0.35, night ? '#433a2c' : '#a88f63'); gr.addColorStop(1, night ? '#2b251c' : '#7d6746');
+    ctx.fillStyle = gr; ctx.fill();
+    // pools
+    for (i = 0; i <= n; i++) {
+      var x0 = G.px0[i], x1 = G.px1[i];
+      ctx.fillStyle = night ? '#241d15' : '#5b4a35';
+      ctx.fillRect(x0, G.maxY[i] - 2, x1 - x0, G.bed[i] - G.maxY[i] + 2);
+      var lv = levelAt(i, t), y = surfaceY(i, lv);
+      var wg = ctx.createLinearGradient(0, y, 0, G.bed[i]);
+      wg.addColorStop(0, night ? '#2d5f86' : '#4b9bd0'); wg.addColorStop(1, night ? '#173551' : '#2a6d9c');
+      ctx.fillStyle = wg; ctx.fillRect(x0, y, x1 - x0, G.bed[i] - y);
+      if (i > 0) {
+        var p = A.pools[i], yMin = G.maxY[i] + G.band;
+        ctx.strokeStyle = 'rgba(184,58,46,.55)'; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(x0, yMin); ctx.lineTo(x1, yMin); ctx.stroke(); ctx.setLineDash([]);
+        if (lv - p.min < 8) { ctx.fillStyle = 'rgba(184,58,46,.18)'; ctx.fillRect(x0, y, x1 - x0, G.bed[i] - y); }
+      }
+      ctx.fillStyle = night ? 'rgba(255,255,255,.55)' : 'rgba(40,35,25,.75)';
+      ctx.font = Math.round(10 * Math.max(0.85, G.sc)) + 'px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      if (x1 - x0 > 22) ctx.fillText(i === 0 ? 'River' : i === n ? 'Summit P' + i : 'P' + i, (x0 + x1) / 2, G.bed[i] + 11);
+      hits.push({ kind: 'pool', i: i, x0: x0, x1: x1, y0: G.maxY[i] - 6, y1: G.bed[i] });
+    }
+    // feeder stream
+    ctx.strokeStyle = night ? '#4d7ea8' : '#5aa6d8'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(W - 6, G.maxY[n] - 30);
+    ctx.quadraticCurveTo(W - 14, G.maxY[n] - 12, W - 24, surfaceY(n, levelAt(n, t)) + 1); ctx.stroke(); ctx.lineWidth = 1;
+    // locks
+    for (var L = 1; L <= n; L++) {
+      var lx0 = G.lx0[L], lx1 = G.lx1[L];
+      var topY = G.maxY[L] - 4, botY = G.bed[L - 1];
+      ctx.fillStyle = night ? '#3a3228' : '#8a7a62'; ctx.fillRect(lx0 - 2, topY, lx1 - lx0 + 4, botY - topY + 2);
+      ctx.fillStyle = night ? '#1d1812' : '#4d4234'; ctx.fillRect(lx0 + 1, topY + 1, lx1 - lx0 - 2, botY - topY);
+      var cy = chamberY(L, t);
+      ctx.fillStyle = night ? '#2d5f86' : '#4b9bd0'; ctx.fillRect(lx0 + 1, cy, lx1 - lx0 - 2, botY - cy);
+      var ls = lockState(L, t), o = ls.run;
+      var lowOpen = o && o.boats.length && ((o.dir === 'up' && t < o.start + o.enter) || (o.dir === 'down' && t >= o.start + o.enter + o.turn));
+      var highOpen = o && o.boats.length && ((o.dir === 'down' && t < o.start + o.enter) || (o.dir === 'up' && t >= o.start + o.enter + o.turn));
+      ctx.fillStyle = '#2b2118';
+      if (!lowOpen) ctx.fillRect(lx0 - 1, G.maxY[L - 1] - 6, 3, botY - G.maxY[L - 1] + 6);
+      if (!highOpen) ctx.fillRect(lx1 - 2, topY - 6, 3, G.bed[L] - topY + 4);
+      ctx.fillStyle = night ? '#e8e2d0' : '#2a2823';
+      ctx.font = 'bold ' + Math.round(10 * Math.max(0.85, G.sc)) + 'px system-ui, sans-serif'; ctx.textAlign = 'center';
+      ctx.fillStyle = night ? 'rgba(255,255,255,.7)' : 'rgba(255,255,255,.92)';
+      ctx.fillText('L' + L, (lx0 + lx1) / 2, botY + 12);
+      if (o) {
+        ctx.fillStyle = o.dir === 'up' ? '#2f6fa3' : '#2f8f6f';
+        var ax = (lx0 + lx1) / 2, ay = topY - 22;
+        ctx.beginPath();
+        if (o.dir === 'up') { ctx.moveTo(ax - 4, ay + 4); ctx.lineTo(ax + 4, ay + 4); ctx.lineTo(ax, ay - 3); }
+        else { ctx.moveTo(ax - 4, ay - 3); ctx.lineTo(ax + 4, ay - 3); ctx.lineTo(ax, ay + 4); }
+        ctx.fill();
+      }
+      (P.canal.closures || []).forEach(function (c) {
+        if (c.lock === L && c.from <= t && t < c.to) {
+          ctx.save(); ctx.beginPath(); ctx.rect(lx0 - 3, topY - 4, lx1 - lx0 + 6, botY - topY + 6); ctx.clip();
+          ctx.strokeStyle = '#b83a2e'; ctx.lineWidth = 3;
+          for (var z = -40; z < 60; z += 7) { ctx.beginPath(); ctx.moveTo(lx0 + z, topY - 4); ctx.lineTo(lx0 + z + 30, botY + 2); ctx.stroke(); }
+          ctx.restore();
+          ctx.fillStyle = '#b83a2e'; ctx.font = 'bold 10px system-ui'; ctx.fillText('CLOSED', (lx0 + lx1) / 2, topY - 32);
+        }
+      });
+      hits.push({ kind: 'lock', L: L, x0: lx0 - 3, x1: lx1 + 3, y0: topY - 30, y1: botY });
+    }
+    // towpath
+    ctx.strokeStyle = night ? 'rgba(230,220,190,.35)' : 'rgba(90,70,40,.45)'; ctx.setLineDash([2, 3]);
+    ctx.beginPath();
+    for (i = 0; i <= n; i++) { ctx.moveTo(G.px0[i], G.maxY[i] - 5); ctx.lineTo(G.px1[i] + (i < n ? G.lockW : 0), G.maxY[i] - 5); }
+    ctx.stroke(); ctx.setLineDash([]);
+    // boats
+    var queues = {};
+    A.boats.forEach(function (b) {
+      for (var i = 0; i < b.segs.length; i++) { var sg = b.segs[i]; if (sg.type === 'wait' && sg.from <= t && t < sg.to) { var key = sg.lock + (b.up ? 'u' : 'd'); (queues[key] = queues[key] || { n: 0, list: [] }).n++; } }
+    });
+    var labels = [];
+    var ordered = A.boats.slice().sort(function (a, b) { return (a.segs.length ? 0 : 1) - (b.segs.length ? 0 : 1) || a.release - b.release; });
+    ordered.forEach(function (b) {
+      var bp = boatPos(b, t, queues);
+      if (!bp) return;
+      var len = (b.type === 'barge' ? 20 : 15) * Math.max(0.75, G.sc), hgt = b.type === 'barge' ? 6 : 5;
+      var x = bp.x, y = bp.y;
+      ctx.globalAlpha = bp.alpha != null ? bp.alpha : 1;
+      var late = b.finish != null ? (t > b.deadline && (bp.state !== 'done' || b.finish > b.deadline)) : t > b.deadline;
+      ctx.fillStyle = boatColor(b.id);
+      ctx.beginPath();
+      ctx.moveTo(x - len / 2, y - hgt); ctx.lineTo(x + len / 2, y - hgt); ctx.lineTo(x + len / 2 - 2, y + 1); ctx.lineTo(x - len / 2 + 2, y + 1); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#efe3c4'; ctx.fillRect(x - len / 4, y - hgt - 3, len / 2, 3);
+      if (late) { ctx.fillStyle = '#c0392b'; ctx.beginPath(); ctx.arc(x, y - hgt - 6, 2.4, 0, 7); ctx.fill(); }
+      if (S.sel === b.id) {
+        ctx.strokeStyle = '#ffd24a'; ctx.lineWidth = 2; ctx.strokeRect(x - len / 2 - 3, y - hgt - 5, len + 6, hgt + 8); ctx.lineWidth = 1;
+      }
+      if (S.names || S.sel === b.id) labels.push({ x: x, y: y - hgt - (late ? 10 : 6), text: b.name, sel: S.sel === b.id });
+      ctx.globalAlpha = 1;
+      hits.push({ kind: 'boat', id: b.id, x0: x - len / 2 - 3, x1: x + len / 2 + 3, y0: y - hgt - 8, y1: y + 4, bp: bp });
+    });
+    // boat names, placed so they do not overlap (the selected boat first)
+    labels.sort(function (a, b) { return (b.sel ? 1 : 0) - (a.sel ? 1 : 0); });
+    var placed = [];
+    labels.forEach(function (lb) {
+      ctx.font = (lb.sel ? 'bold ' : '') + '10px system-ui';
+      var w = ctx.measureText(lb.text).width + 4;
+      for (var k2 = 0; k2 < 4; k2++) {
+        var yy = lb.y - k2 * 11, r = { x0: lb.x - w / 2, x1: lb.x + w / 2, y0: yy - 9, y1: yy + 2 };
+        var clash = placed.some(function (p) { return r.x0 < p.x1 && p.x0 < r.x1 && r.y0 < p.y1 && p.y0 < r.y1; });
+        if (clash && !(lb.sel && k2 === 3)) continue;
+        placed.push(r);
+        if (k2) { ctx.strokeStyle = night ? 'rgba(255,255,255,.4)' : 'rgba(0,0,0,.3)'; ctx.beginPath(); ctx.moveTo(lb.x, lb.y + 2); ctx.lineTo(lb.x, yy + 2); ctx.stroke(); }
+        ctx.textAlign = 'center'; ctx.fillStyle = night ? '#fff' : '#1c1a16';
+        ctx.fillText(lb.text, lb.x, yy);
+        break;
+      }
+    });
+    // keepers
+    A.keeperLines.forEach(function (kl, ki) {
+      var kp = keeperPos(kl, t), x = kp.x;
+      var y = bankY(x) - 2, col = KCOL[ki % KCOL.length];
+      var bob = kp.walking ? Math.sin(t * 3) * 1.2 : 0;
+      ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x, y - 6 + bob); ctx.lineTo(x, y - 14 + bob); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x, y - 6 + bob); ctx.lineTo(x - 3, y + bob * 0.3); ctx.moveTo(x, y - 6 + bob); ctx.lineTo(x + 3, y - bob * 0.3); ctx.stroke();
+      ctx.beginPath(); ctx.arc(x, y - 17 + bob, 3.2, 0, 7); ctx.fill(); ctx.lineWidth = 1;
+      ctx.font = 'bold 10px system-ui'; ctx.textAlign = 'center';
+      ctx.fillStyle = night ? '#fff' : col;
+      ctx.fillText(kl.name, x, y - 24 + bob);
+      hits.push({ kind: 'keeper', k: ki, x0: x - 8, x1: x + 8, y0: y - 34, y1: y + 2 });
+    });
+    // clock and banners
+    ctx.textAlign = 'left'; ctx.font = 'bold 15px Georgia, serif';
+    ctx.fillStyle = night ? '#f3ecd6' : '#1c1a16';
+    ctx.fillText(clock(t), 12, 22);
+    ctx.font = '12px system-ui';
+    var banner = '';
+    if (night) { var nw = nextWindow(t); banner = 'Night: locks shut' + (nw != null ? ' until ' + clock(nw) : ''); }
+    else {
+      var active = (P.canal.closures || []).filter(function (c) { return c.from <= t && t < c.to; });
+      if (active.length) banner = active.map(function (c) { return 'Lock ' + c.lock + ' closed for maintenance until ' + hm(c.to); }).join(' · ');
+    }
+    if (banner) { ctx.fillStyle = night ? '#ffe7a8' : '#b83a2e'; ctx.fillText(banner, W < 720 ? 12 : 150, W < 720 ? 54 : 21); }
+    var busyK = 0; A.keeperLines.forEach(function (kl) { if (A.keeperAt(kl, t).type === 'work') busyK++; });
+    ctx.fillStyle = night ? '#d8d2c0' : '#4a463c'; ctx.textAlign = W < 720 ? 'left' : 'right';
+    var afloat = A.boats.filter(function (b) { return t >= b.release && (b.finish == null || t < b.finish); }).length;
+    ctx.fillText(afloat + ' boats under way · ' + busyK + ' of ' + A.keeperLines.length + ' keepers working', W < 720 ? 12 : W - 90, W < 720 ? 38 : 21);
+  }
+
+  // ------------------------------------------------------------ tooltip
+  var tip = $('tip');
+  function showTip(html, ev) {
+    tip.innerHTML = html; tip.style.display = 'block';
+    var x = ev.clientX + 14, y = ev.clientY + 14;
+    var r = tip.getBoundingClientRect();
+    if (x + r.width > window.innerWidth - 6) x = ev.clientX - r.width - 10;
+    if (y + r.height > window.innerHeight - 6) y = ev.clientY - r.height - 10;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  }
+  function hideTip() { tip.style.display = 'none'; }
+  function boatStatus(b, t) {
+    var A = cur().A;
+    if (t < b.release) return 'not yet released (due ' + clock(b.release) + ')';
+    if (b.finish != null && t >= b.finish) return 'arrived ' + clock(b.finish) + (b.lateness > 0 ? ', <b>' + b.lateness + ' min late</b>' : ', on time');
+    for (var i = 0; i < b.waitSegs.length; i++) {
+      var w = b.waitSegs[i];
+      if (w.from <= t && t < w.to) return 'waiting at Lock ' + w.lock + ' (' + fdur(w.to - w.from) + ' in all): ' + w.text;
+    }
+    for (i = 0; i < b.segs.length; i++) {
+      var s = b.segs[i];
+      if (s.from <= t && t < s.to) {
+        if (s.type === 'lock') return 'going ' + s.op.dir + ' through Lock ' + s.lock + (s.op.boats.length > 1 ? ' with ' + list(s.op.boats.filter(function (x) { return x !== b.id; }).map(function (x) { return A.boatInfo[x].name; })) : '');
+        if (s.type === 'cross') return 'crossing Pool ' + s.pool + ' to Lock ' + s.toLock;
+        if (s.type === 'wait') return 'waiting at Lock ' + s.lock;
+      }
+    }
+    return '';
+  }
+  function boatHead(b) {
+    return '<b>' + b.name + '</b> (' + b.type + ', priority ' + b.priority + ')<br>Pool ' + b.from + ' → Pool ' + b.to + ' · released ' + clock(b.release) + ' · due ' + clock(b.deadline);
+  }
+  cv.addEventListener('mousemove', function (ev) {
+    var r = cv.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top;
+    var A = cur().A, t = S.t;
+    for (var i = hits.length - 1; i >= 0; i--) {
+      var h = hits[i];
+      if (x >= h.x0 && x <= h.x1 && y >= h.y0 && y <= h.y1) {
+        if (h.kind === 'boat') { var b = A.boatInfo[h.id]; showTip(boatHead(b) + '<br>' + boatStatus(b, t), ev); cv.style.cursor = 'pointer'; return; }
+        if (h.kind === 'keeper') {
+          var kl = A.keeperLines[h.k], s = A.keeperAt(kl, t);
+          var what = s.type === 'work' ? 'working Lock ' + s.lock + ' (' + (s.op.dir === 'up' ? 'filling' : 'emptying') + (s.op.boats.length ? ': ' + list(s.op.boats.map(function (x) { return A.boatInfo[x].name; })) : ', empty turn') + ')' : s.type === 'walk' ? 'walking from Lock ' + s.lock + ' to Lock ' + s.toLock : 'waiting at Lock ' + s.lock;
+          showTip('<b>' + kl.name + '</b>, lockkeeper<br>' + what, ev); cv.style.cursor = 'default'; return;
+        }
+        if (h.kind === 'lock') {
+          var ls = lockState(h.L, t), o = ls.run;
+          var txt = '<b>Lock ' + h.L + '</b> joins Pool ' + (h.L - 1) + ' to Pool ' + h.L + '<br>';
+          txt += o ? (o.dir === 'up' ? 'Filling' : 'Emptying') + (o.boats.length ? ' with ' + list(o.boats.map(function (x) { return A.boatInfo[x].name; })) : ' (empty turn)') + ', worked by ' + A.keeperLines.filter(function (k) { return k.id === o.keeper; })[0].name + ' until ' + hm(o.end)
+            : 'Idle, chamber ' + ls.state + ' (level with the pool ' + (ls.state === 'high' ? 'above' : 'below') + ')';
+          (cur().canal.closures || []).forEach(function (c) { if (c.lock === h.L) txt += '<br>Maintenance closure ' + clock(c.from) + '–' + hm(c.to); });
+          showTip(txt, ev); cv.style.cursor = 'default'; return;
+        }
+        if (h.kind === 'pool') {
+          var p = A.pools[h.i], lv = levelAt(h.i, t);
+          showTip(h.i === 0 ? '<b>The river</b> (never runs low)' : '<b>Pool ' + h.i + '</b>' + (h.i === A.n ? ' (summit, fed by a stream)' : '') + '<br>level ' + Math.round(lv) + ' · minimum ' + p.min + ' · spills over at ' + p.max, ev);
+          cv.style.cursor = 'default'; return;
+        }
+      }
+    }
+    hideTip(); cv.style.cursor = 'default';
+  });
+  cv.addEventListener('mouseleave', hideTip);
+  cv.addEventListener('click', function (ev) {
+    var r = cv.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top;
+    for (var i = hits.length - 1; i >= 0; i--) {
+      var h = hits[i];
+      if (h.kind === 'boat' && x >= h.x0 && x <= h.x1 && y >= h.y0 && y <= h.y1) { selectBoat(S.sel === h.id ? null : h.id); return; }
+    }
+    selectBoat(null);
+  });
+
+  // ------------------------------------------------------------ Gantt
+  var gv = $('gantt'), gx = gv.getContext('2d');
+  var ghits = [];
+  var GL = { label: 70, over: 22, axis: 20, row: 24 };
+  function drawGantt() {
+    var P = cur(), A = P.A, n = A.n, dpr = window.devicePixelRatio || 1;
+    var W = gv.clientWidth || 1000;
+    var rows = S.gmode === 'locks' ? n : A.keeperLines.length;
+    var rowH = S.gmode === 'locks' ? (W < 600 ? 20 : 24) : 34;
+    var H = GL.over + 6 + GL.axis + rows * rowH + 4;
+    if (gv.width !== Math.round(W * dpr) || gv.height !== Math.round(H * dpr)) { gv.width = Math.round(W * dpr); gv.height = Math.round(H * dpr); gv.style.height = H + 'px'; }
+    gx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    gx.clearRect(0, 0, W, H);
+    ghits = [];
+    var lab = W < 600 ? 44 : GL.label;
+    var horizon = A.horizon;
+    // span / window
+    var span = Math.min(S.gspan, horizon);
+    if (S.gfollow && (S.t < S.g0 + span * 0.08 || S.t > S.g0 + span * 0.92)) S.g0 = S.t - span * 0.25;
+    if (span >= horizon) S.g0 = 0;
+    S.g0 = Math.max(0, Math.min(horizon - span, S.g0));
+    var t0 = S.g0, t1 = t0 + span;
+    var X = function (t) { return lab + (t - t0) / (t1 - t0) * (W - lab - 6); };
+    var OX = function (t) { return lab + t / horizon * (W - lab - 6); };
+    // overview strip
+    gx.fillStyle = '#f1ebdc'; gx.fillRect(lab, 2, W - lab - 6, GL.over - 4);
+    A.windows.forEach(function (w, i) { });
+    for (var d = 0; d < horizon; d += 1440) {
+      var nightA = [d, d + 360], nightB = [d + 1320, d + 1440];
+      [nightA, nightB].forEach(function (nn) { gx.fillStyle = '#d7d3cb'; gx.fillRect(OX(nn[0]), 2, OX(nn[1]) - OX(nn[0]), GL.over - 4); });
+    }
+    A.ops.forEach(function (o) {
+      gx.fillStyle = o.boats.length ? (o.dir === 'up' ? '#2f6fa3' : '#2f8f6f') : '#b8b09c';
+      var yy = 3 + (o.lock - 1) / n * (GL.over - 6);
+      gx.fillRect(OX(o.start), yy, Math.max(1, OX(o.end) - OX(o.start)), Math.max(1.5, (GL.over - 6) / n));
+    });
+    gx.strokeStyle = '#2a2823'; gx.lineWidth = 1.5; gx.strokeRect(OX(t0), 1.5, OX(t1) - OX(t0), GL.over - 3); gx.lineWidth = 1;
+    gx.fillStyle = '#c0392b'; gx.fillRect(OX(S.t) - 1, 0, 2, GL.over);
+    gx.fillStyle = '#5d584c'; gx.font = '10px system-ui'; gx.textAlign = 'right';
+    gx.fillText('2 days', lab - 6, 15);
+    ghits.push({ kind: 'over', x0: lab, x1: W - 6, y0: 0, y1: GL.over, OX: OX, horizon: horizon, lab: lab, W: W });
+    // axis
+    var yA = GL.over + 6;
+    var body0 = yA + GL.axis, body1 = body0 + rows * rowH;
+    // nights & closures
+    for (d = 0; d < horizon; d += 1440) {
+      [[d, d + 360], [d + 1320, d + 1440]].forEach(function (nn) {
+        var a = Math.max(t0, nn[0]), b = Math.min(t1, nn[1]);
+        if (b > a) { gx.fillStyle = '#e4e0d8'; gx.fillRect(X(a), body0, X(b) - X(a), body1 - body0); }
+      });
+    }
+    // grid & labels
+    var step = span <= 240 ? 30 : span <= 600 ? 60 : span <= 1500 ? 120 : 240;
+    gx.font = '10.5px system-ui'; gx.textAlign = 'center';
+    for (var tt = Math.ceil(t0 / step) * step; tt <= t1; tt += step) {
+      var xx = X(tt);
+      gx.strokeStyle = tt % 1440 === 0 ? '#8d8470' : '#ece5d4'; gx.beginPath(); gx.moveTo(xx, body0); gx.lineTo(xx, body1); gx.stroke();
+      gx.fillStyle = '#5d584c';
+      gx.fillText(tt % 1440 === 0 ? 'Day ' + (tt / 1440 + 1) : hm(tt), xx, yA + 13);
+    }
+    // rows
+    gx.textAlign = 'right'; gx.font = '11px system-ui';
+    for (var r = 0; r < rows; r++) {
+      var ry = body0 + r * rowH;
+      gx.fillStyle = r % 2 ? 'rgba(0,0,0,.018)' : 'rgba(0,0,0,0)'; gx.fillRect(lab, ry, W - lab - 6, rowH);
+      gx.strokeStyle = '#ece5d4'; gx.beginPath(); gx.moveTo(lab, ry + rowH); gx.lineTo(W - 6, ry + rowH); gx.stroke();
+      gx.fillStyle = S.gmode === 'locks' ? '#2a2823' : KCOL[r % KCOL.length];
+      gx.fillText(S.gmode === 'locks' ? 'Lock ' + (r + 1) : A.keeperLines[r].name, lab - 6, ry + rowH / 2 + 4);
+    }
+    gx.save(); gx.beginPath(); gx.rect(lab, body0, W - lab - 6, body1 - body0); gx.clip();
+    if (S.gmode === 'locks') {
+      (P.canal.closures || []).forEach(function (c) {
+        var ry = body0 + (c.lock - 1) * rowH;
+        var a = X(c.from), b = X(c.to);
+        gx.fillStyle = 'rgba(184,58,46,.14)'; gx.fillRect(a, ry + 1, b - a, rowH - 2);
+        gx.strokeStyle = 'rgba(184,58,46,.6)';
+        for (var z = a - rowH; z < b; z += 6) { gx.beginPath(); gx.moveTo(Math.max(a, z), ry + 1 + Math.max(0, a - z)); gx.lineTo(Math.min(b, z + rowH), ry + rowH - 1 - Math.max(0, z + rowH - b)); gx.stroke(); }
+      });
+    }
+    var selOps = S.sel ? A.boatInfo[S.sel].ops : [];
+    function label(txt, x0, x1, y, col) {
+      var w = x1 - x0 - 4;
+      if (w < 14) return;
+      gx.fillStyle = col; gx.font = '10.5px system-ui'; gx.textAlign = 'left';
+      var s = txt;
+      while (s.length > 1 && gx.measureText(s).width > w) s = s.slice(0, -1);
+      if (s !== txt && s.length > 1) s = s.slice(0, -1) + '…';
+      gx.fillText(s, x0 + 2, y);
+    }
+    if (S.gmode === 'locks') {
+      A.ops.forEach(function (o) {
+        if (o.end < t0 || o.start > t1) return;
+        var ry = body0 + (o.lock - 1) * rowH, x0 = X(o.start), x1 = X(o.end);
+        var isSel = selOps.indexOf(o) >= 0;
+        if (o.boats.length) {
+          gx.fillStyle = o.dir === 'up' ? '#2f6fa3' : '#2f8f6f';
+          gx.globalAlpha = S.sel && !isSel ? 0.35 : 1;
+          gx.fillRect(x0, ry + 3, Math.max(1.5, x1 - x0), rowH - 6);
+          gx.globalAlpha = 1;
+          label(o.boats.map(function (id) { return A.boatInfo[id].name; }).join(' + '), x0, x1, ry + rowH / 2 + 4, '#fff');
+        } else {
+          gx.fillStyle = '#e4ded0'; gx.fillRect(x0, ry + 5, Math.max(1.5, x1 - x0), rowH - 10);
+          gx.strokeStyle = '#8d8470'; gx.setLineDash([2, 2]); gx.strokeRect(x0 + .5, ry + 5.5, Math.max(1, x1 - x0 - 1), rowH - 11); gx.setLineDash([]);
+        }
+        if (isSel) { gx.strokeStyle = '#e0a800'; gx.lineWidth = 2.5; gx.strokeRect(x0 - 1, ry + 2, x1 - x0 + 2, rowH - 4); gx.lineWidth = 1; }
+        ghits.push({ kind: 'op', op: o, x0: x0, x1: Math.max(x1, x0 + 3), y0: ry + 2, y1: ry + rowH - 2 });
+      });
+    } else {
+      A.keeperLines.forEach(function (kl, r) {
+        var ry = body0 + r * rowH;
+        kl.segs.forEach(function (s) {
+          if (s.to < t0 || s.from > t1) return;
+          var x0 = X(s.from), x1 = X(s.to);
+          if (s.type === 'walk') {
+            gx.strokeStyle = KCOL[r % KCOL.length]; gx.setLineDash([3, 2]); gx.beginPath(); gx.moveTo(x0, ry + rowH / 2); gx.lineTo(x1, ry + rowH / 2); gx.stroke(); gx.setLineDash([]);
+            if (x1 - x0 > 30) { gx.fillStyle = '#5d584c'; gx.font = '9.5px system-ui'; gx.textAlign = 'center'; gx.fillText('walk → L' + s.toLock, (x0 + x1) / 2, ry + rowH / 2 - 3); }
+            ghits.push({ kind: 'walk', seg: s, kl: kl, x0: x0, x1: x1, y0: ry + 2, y1: ry + rowH - 2 });
+          } else if (s.type === 'work') {
+            var o = s.op, isSel = selOps.indexOf(o) >= 0;
+            gx.fillStyle = o.boats.length ? (o.dir === 'up' ? '#2f6fa3' : '#2f8f6f') : '#cfc7b3';
+            gx.globalAlpha = S.sel && !isSel ? 0.35 : 1;
+            gx.fillRect(x0, ry + 4, Math.max(1.5, x1 - x0), rowH - 8);
+            gx.globalAlpha = 1;
+            label('L' + o.lock + (o.dir === 'up' ? '↑ ' : '↓ ') + (o.boats.length ? o.boats.map(function (id) { return A.boatInfo[id].name; }).join('+') : 'turn'), x0, x1, ry + rowH / 2 + 4, o.boats.length ? '#fff' : '#3a372f');
+            if (isSel) { gx.strokeStyle = '#e0a800'; gx.lineWidth = 2.5; gx.strokeRect(x0 - 1, ry + 3, x1 - x0 + 2, rowH - 6); gx.lineWidth = 1; }
+            ghits.push({ kind: 'op', op: o, x0: x0, x1: Math.max(x1, x0 + 3), y0: ry + 2, y1: ry + rowH - 2 });
+          }
+        });
+      });
+    }
+    gx.restore();
+    // cursor
+    if (S.t >= t0 && S.t <= t1) { gx.fillStyle = '#c0392b'; gx.fillRect(X(S.t) - 1, body0 - 4, 2, body1 - body0 + 4); }
+    ghits.push({ kind: 'body', x0: lab, x1: W - 6, y0: body0, y1: body1, X: X, t0: t0, t1: t1 });
+    var sel = $('gsel');
+    sel.textContent = S.sel ? 'Highlighting ' + A.boatInfo[S.sel].name + ' (click it again or empty space to clear)' : '';
+  }
+  function opTip(o) {
+    var A = cur().A;
+    var kn = A.keeperLines.filter(function (k) { return k.id === o.keeper; })[0];
+    return '<b>Lock ' + o.lock + ' ' + (o.dir === 'up' ? 'filling (up)' : 'emptying (down)') + '</b><br>' + clock(o.start) + ' – ' + hm(o.end) + ' (' + (o.end - o.start) + ' min)<br>' +
+      (o.boats.length ? 'Boats: ' + list(o.boats.map(function (id) { return A.boatInfo[id].name; })) : 'Empty turn: no boats aboard') + '<br>Keeper: ' + (kn ? kn.name : o.keeper) +
+      (o.dir === 'up' ? '<br>Draws ' + o.vol + ' from Pool ' + o.lock : '<br>Releases ' + o.vol + ' into Pool ' + (o.lock - 1));
+  }
+  function gHit(ev) {
+    var r = gv.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top;
+    for (var i = 0; i < ghits.length; i++) { var h = ghits[i]; if (x >= h.x0 && x <= h.x1 && y >= h.y0 && y <= h.y1 && h.kind !== 'body' && h.kind !== 'over') return { h: h, x: x, y: y }; }
+    for (i = 0; i < ghits.length; i++) { h = ghits[i]; if (x >= h.x0 && x <= h.x1 && y >= h.y0 && y <= h.y1) return { h: h, x: x, y: y }; }
+    return null;
+  }
+  gv.addEventListener('mousemove', function (ev) {
+    var g = gHit(ev);
+    if (!g) { hideTip(); return; }
+    if (g.h.kind === 'op') showTip(opTip(g.h.op), ev);
+    else if (g.h.kind === 'walk') showTip('<b>' + g.h.kl.name + '</b> walking Lock ' + g.h.seg.lock + ' → Lock ' + g.h.seg.toLock + '<br>' + hm(g.h.seg.from) + '–' + hm(g.h.seg.to), ev);
+    else if (g.h.kind === 'over') { var tt = (g.x - g.h.lab) / (g.h.W - g.h.lab - 6) * g.h.horizon; showTip('Jump to ' + clock(Math.max(0, tt)), ev); }
+    else hideTip();
+  });
+  gv.addEventListener('mouseleave', hideTip);
+  gv.addEventListener('click', function (ev) {
+    var g = gHit(ev);
+    if (!g) return;
+    if (g.h.kind === 'op') { setT(g.h.op.start); if (g.h.op.boats.length === 1) selectBoat(g.h.op.boats[0]); else if (!g.h.op.boats.length) selectBoat(null); }
+    else if (g.h.kind === 'over') { var tt = (g.x - g.h.lab) / (g.h.W - g.h.lab - 6) * g.h.horizon; S.g0 = tt - S.gspan / 2; setT(Math.round(tt)); }
+    else if (g.h.kind === 'body') { setT(Math.round(g.h.t0 + (g.x - g.h.x0) / (g.h.x1 - g.h.x0) * (g.h.t1 - g.h.t0))); selectBoat(null); }
+  });
+  function segHandler(id, fn) {
+    $(id).querySelectorAll('button').forEach(function (b) {
+      b.onclick = function () { $(id).querySelectorAll('button').forEach(function (x) { x.classList.remove('on'); }); b.classList.add('on'); fn(b.dataset.v); };
+    });
+  }
+  segHandler('gmode', function (v) { S.gmode = v; drawGantt(); });
+  segHandler('gspan', function (v) { S.gspan = +v; S.g0 = S.t - S.gspan * 0.25; drawGantt(); });
+  $('gfollow').onchange = function () { S.gfollow = this.checked; drawGantt(); };
+
+  // ------------------------------------------------------------ delays tab
+  function renderDelays() {
+    var A = cur().A;
+    var late = A.lateBoats;
+    var totalW = A.score.weighted_lateness;
+    var over = A.boats.filter(function (b) { return b.overnight && b.lateness > 0; });
+    $('dl-summary').innerHTML = late.length
+      ? '<b>' + late.length + ' of ' + A.boats.length + ' boats</b> finished after their deadline, for a weighted lateness of <b>' + totalW.toLocaleString('en-GB') + '</b>. ' +
+        (over.length ? over.length + ' of them could not be got through on day 1 and finished on day 2 (' + list(over.slice(0, 6).map(function (b) { return b.name; })) + (over.length > 6 ? ', …' : '') + '). ' : '') +
+        'The biggest share: ' + late.slice(0, 3).map(function (b) { return b.name + ' (' + b.lateness + ' min × ' + b.priority + ')'; }).join(', ') + '.'
+      : 'Every boat reached its destination on time.';
+    var causes = A.causesLate, keys = Object.keys(causes).sort(function (a, b) { return causes[b] - causes[a]; });
+    var max = keys.length ? causes[keys[0]] : 1;
+    $('dl-causes').innerHTML = keys.map(function (k) {
+      return '<div class="row"><span>' + A.KIND_LABEL[k] + '</span><div class="track"><div class="fill" style="width:' + (100 * causes[k] / max).toFixed(1) + '%;background:' + CAUSE_COL[k] + '"></div></div><span class="num">' + fdur(causes[k]) + '</span></div>';
+    }).join('') || '<p class="muted small">No waiting at all.</p>';
+    $('dl-late').innerHTML = '<tr><th>Boat</th><th class="num">Late</th><th class="num">×prio</th><th>Finished</th><th>Main cause</th></tr>' +
+      late.map(function (b) {
+        return '<tr data-b="' + b.id + '" style="cursor:pointer"><td><span class="dot" style="background:' + boatColor(b.id) + '"></span> ' + b.name + '</td><td class="num late">' + b.lateness + '</td><td class="num">' + b.lateness * b.priority + '</td><td>' + clock(b.finish) + '</td><td class="small">' + (b.mainCause ? A.KIND_LABEL[b.mainCause] : '') + '</td></tr>';
+      }).join('');
+    $('dl-late').querySelectorAll('tr[data-b]').forEach(function (tr) { tr.onclick = function () { openBoat(+tr.dataset.b); }; });
+    renderBoatList();
+  }
+  function renderBoatList() {
+    var A = cur().A;
+    var boats = A.boats.slice().sort(function (a, b) { return (b.lateness || 0) * b.priority - (a.lateness || 0) * a.priority || b.totalWait - a.totalWait; });
+    if (S.dfilter === 'late') boats = boats.filter(function (b) { return b.lateness > 0; });
+    if (S.dfilter === 'wait') boats = boats.filter(function (b) { return b.totalWait - (b.causes.night || 0) >= 30; });
+    $('dl-boats').innerHTML = boats.map(function (b) {
+      var status = b.finish == null ? '<span class="late">never finished</span>' : b.lateness > 0 ? '<span class="late">' + b.lateness + ' min late' + (b.priority > 1 ? ' (×' + b.priority + ')' : '') + '</span>' : '<span class="ontime">on time</span>';
+      var head = '<span class="nm"><span class="dot" style="background:' + boatColor(b.id) + '"></span> ' + b.name + '</span><span class="small muted">' + (b.type === 'barge' ? 'barge' : 'narrowboat') + ', Pool ' + b.from + '→' + b.to + ', ' + b.route.length + ' lock' + (b.route.length > 1 ? 's' : '') + '</span>' +
+        '<span class="small">' + status + '</span><span class="small muted">waited ' + fdur(b.totalWait) + '</span>';
+      var body = '<div class="small muted" style="margin:4px 0 0 18px">Released ' + clock(b.release) + ', due ' + clock(b.deadline) + ', arrived ' + (b.finish != null ? clock(b.finish) : '—') + '.' +
+        (b.story.length ? '' : ' Never had to wait.') + '</div>' +
+        '<ul class="story">' + b.story.map(function (s) { return '<li class="k-' + s.kind + '" data-t="' + s.from + '" data-b="' + b.id + '">' + s.text + '</li>'; }).join('') + '</ul>';
+      return '<details data-b="' + b.id + '"><summary>' + head + '</summary>' + body + '</details>';
+    }).join('');
+    $('dl-boats').querySelectorAll('li[data-t]').forEach(function (li) { li.onclick = function () { selectBoat(+li.dataset.b); setT(+li.dataset.t); window.scrollTo({ top: 0, behavior: 'smooth' }); }; });
+  }
+  segHandler('dl-filter', function (v) { S.dfilter = v; renderBoatList(); });
+  function openBoat(id) {
+    switchTab('dl');
+    var d = $('dl-boats').querySelector('details[data-b="' + id + '"]');
+    if (!d) { S.dfilter = 'all'; renderBoatList(); d = $('dl-boats').querySelector('details[data-b="' + id + '"]'); }
+    if (d) { d.open = true; d.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+    selectBoat(id);
+  }
+
+  // ------------------------------------------------------------ disruption & re-plan
+  function fillDisruptForm() {
+    var c = S.orig.canal;
+    $('dc-lock').innerHTML = c.locks.map(function (l) { return '<option value="' + l.id + '">Lock ' + l.id + '</option>'; }).join('');
+    $('db-boat').innerHTML = c.boats.slice().sort(function (a, b) { return a.name < b.name ? -1 : 1; }).map(function (b) { return '<option value="' + b.id + '">' + b.name + ' (released ' + clock(b.release) + ')</option>'; }).join('');
+    $('dc-lock').value = '5';
+  }
+  function readT(dSel, tIn) {
+    var v = $(tIn).value || '00:00', p = v.split(':');
+    return (+$(dSel).value) * 1440 + (+p[0]) * 60 + (+p[1]);
+  }
+  function renderDisruptList() {
+    var bi = S.orig.A.boatInfo;
+    $('dr-list').innerHTML = S.disrupt.map(function (d, i) {
+      var txt = d.type === 'close' ? 'Close Lock ' + d.lock + ' from ' + clock(d.from) + ' to ' + clock(d.to) : 'Release ' + bi[d.boat].name + ' at ' + clock(d.release) + ' (was ' + clock(bi[d.boat].release) + ')';
+      return '<div class="chip"><span>' + txt + '</span><button data-i="' + i + '" title="Remove">×</button></div>';
+    }).join('');
+    $('dr-list').querySelectorAll('button').forEach(function (b) { b.onclick = function () { S.disrupt.splice(+b.dataset.i, 1); renderDisruptList(); }; });
+  }
+  $('dc-add').onclick = function () {
+    var from = readT('dc-fd', 'dc-ft'), to = readT('dc-td', 'dc-tt');
+    if (to <= from) { $('dr-status').textContent = 'The closure must end after it starts.'; return; }
+    S.disrupt.push({ type: 'close', lock: +$('dc-lock').value, from: from, to: to }); $('dr-status').textContent = ''; renderDisruptList();
+  };
+  $('db-boat').onchange = function () {
+    var b = S.orig.A.boatInfo[+this.value], t = b.release + 60;
+    $('db-d').value = String(Math.floor(t / 1440)); $('db-t').value = hm(t);
+  };
+  $('db-add').onclick = function () {
+    var id = +$('db-boat').value, t = readT('db-d', 'db-t');
+    S.disrupt = S.disrupt.filter(function (d) { return !(d.type === 'delay' && d.boat === id); });
+    S.disrupt.push({ type: 'delay', boat: id, release: t }); $('dr-status').textContent = ''; renderDisruptList();
+  };
+  $('dr-reset').onclick = function () {
+    S.disrupt = []; S.replan = null; S.view = 'orig'; renderDisruptList();
+    $('dr-result').innerHTML = 'No re-plan yet. Add a disruption on the left.'; $('dr-result').className = 'small muted';
+    $('dr-status').textContent = ''; refreshAll();
+  };
+  var running = false;
+  $('dr-run').onclick = function () {
+    if (running) return;
+    if (!S.disrupt.length) { $('dr-status').textContent = 'Add a closure or a delay first.'; return; }
+    var canal = JSON.parse(JSON.stringify(S.orig.canal));
+    canal.closures = canal.closures || [];
+    S.disrupt.forEach(function (d) {
+      if (d.type === 'close') canal.closures.push({ lock: d.lock, from: d.from, to: d.to });
+      else canal.boats.forEach(function (b) { if (b.id === d.boat) b.release = d.release; });
+    });
+    var label = S.disrupt.map(function (d) { return d.type === 'close' ? 'L' + d.lock + ' closed ' + hm(d.from) + '–' + hm(d.to) : S.orig.A.boatInfo[d.boat].name + ' late'; }).join(', ');
+    // how does the old plan fare under the new conditions?
+    var oldCheck = validateSchedule(canal, S.orig.schedule);
+    running = true; $('dr-run').disabled = true;
+    var prog = $('dr-prog'); prog.style.display = 'block';
+    var I = LOCKCORE.prepare(canal);
+    var budget = 9000, t0 = Date.now(), best = null, seed = 1;
+    var init = GENOME ? [GENOME] : null;
+    function step() {
+      var r = LOCKCORE.search(I, { timeMs: 220, seed: seed++, init: best ? [best.plain] : init, fresh: !best, patience: 400 });
+      if (!best || r.c < best.c) best = { c: r.c, plain: LOCKCORE.genToPlain(r.gen) };
+      var el = Date.now() - t0;
+      prog.firstChild.style.width = Math.min(100, 100 * el / budget) + '%';
+      var unf = Math.floor(best.c / 1e9);
+      $('dr-status').textContent = 'Searching… best so far: weighted lateness ' + Math.floor((best.c % 1e9) / 1e5) + (unf ? ' (' + unf + ' boats not yet fitted in)' : '');
+      if (el < budget) { setTimeout(step, 0); return; }
+      var gen = LOCKCORE.genFromPlain(I, best.plain);
+      var fin = LOCKCORE.decode(I, gen, true);
+      // candidates: the fresh search, two repairs of the original plan, and the original plan itself
+      var cands = [{ how: 'search', ops: fin.ops }];
+      [false, true].forEach(function (flex) { var ops = LOCKCORE.repair(I, S.orig.schedule.operations, flex); if (ops) cands.push({ how: flex ? 'repair-flex' : 'repair', ops: ops }); });
+      if (oldCheck.valid) cands.push({ how: 'kept', ops: S.orig.schedule.operations });
+      var plan = null;
+      cands.forEach(function (cd) {
+        var v = validateSchedule(canal, { operations: cd.ops });
+        cd.v = v;
+        if (!v.valid) return;
+        if (!plan || v.weighted_lateness < plan.v.weighted_lateness || (v.weighted_lateness === plan.v.weighted_lateness && v.water_drawn < plan.v.water_drawn)) plan = cd;
+      });
+      if (!plan) plan = cands[0];
+      S.replanCands = cands;
+      var how = plan.how;
+      plan = buildPlan(canal, { operations: plan.ops });
+      plan.how = how; plan.kept = how === 'kept';
+      plan.label = label;
+      S.replan = plan; S.view = 'new';
+      running = false; $('dr-run').disabled = false; prog.style.display = 'none';
+      $('dr-status').textContent = 'Done: ' + (plan.A.score.valid ? 'valid plan' : 'INVALID plan') + ' in ' + ((Date.now() - t0) / 1000).toFixed(1) + ' s.';
+      renderReplanResult(oldCheck);
+      refreshAll();
+    }
+    $('dr-status').textContent = 'Searching…';
+    setTimeout(step, 30);
+  };
+  function renderReplanResult(oldCheck) {
+    var A0 = S.orig.A, A1 = S.replan.A, s0 = A0.score, s1 = A1.score;
+    var rows = LEDGER.compare(A0, A1);
+    var later = rows.filter(function (r) { return r.delta > 0; }).sort(function (a, b) { return b.delta * b.priority - a.delta * a.priority; });
+    var earlier = rows.filter(function (r) { return r.delta < 0; }).sort(function (a, b) { return a.delta - b.delta; });
+    var d = s1.weighted_lateness - s0.weighted_lateness;
+    var h = '<p style="color:var(--ink)"><b>New weighted lateness ' + s1.weighted_lateness.toLocaleString('en-GB') + '</b> (' + (d > 0 ? '+' : '') + d + ' against the original ' + s0.weighted_lateness.toLocaleString('en-GB') + '), ' +
+      s1.late_boats + ' late boats (was ' + s0.late_boats + '), water drawn ' + s1.water_drawn + ' (was ' + s0.water_drawn + '). ' + (s1.valid ? 'The new plan passes every rule.' : '<b class="late">The new plan breaks ' + s1.errors.length + ' rules.</b>') + '</p>';
+    if (!oldCheck.valid) h += '<div class="notice">Kept as it was, the original plan would now break ' + oldCheck.errors.length + ' rule' + (oldCheck.errors.length > 1 ? 's' : '') + ', for example: ' + oldCheck.errors[0] + '.</div>';
+    else if (S.replan.kept) h += '<div class="notice">The original plan is still legal under these conditions and nothing better was found, so it is kept as it is.</div>';
+    else h += '<div class="notice">The original plan would still be legal under these conditions, but a better one was found for them.</div>';
+    var HOW = { search: 'a fresh search with the solver (keys, groups and knobs re-optimised for the new conditions)', repair: 'repairing the original plan: same order at every lock and for every keeper, operations pushed later only as far as needed', 'repair-flex': 'repairing the original plan: same order at every lock, keepers re-assigned where that is quicker', kept: 'the original plan' };
+    h += '<p class="small">Best plan came from ' + HOW[S.replan.how] + '. Tried: ' + (S.replanCands || []).map(function (c) { return c.how + ' ' + (c.v.valid ? c.v.weighted_lateness.toLocaleString("en-GB") : 'invalid'); }).join(' · ') + '.</p>';
+    function why(r) {
+      var b = r.boatB, a = r.boatA;
+      var diff = {};
+      Object.keys(b.causes).forEach(function (k) { diff[k] = (b.causes[k] || 0) - (a.causes[k] || 0); });
+      Object.keys(a.causes).forEach(function (k) { if (!(k in diff)) diff[k] = -(a.causes[k] || 0); });
+      var ks = Object.keys(diff).filter(function (k) { return k !== 'night'; }).sort(function (x, y) { return r.delta > 0 ? diff[y] - diff[x] : diff[x] - diff[y]; });
+      var k = ks[0];
+      if (!k || (r.delta > 0 ? diff[k] <= 0 : diff[k] >= 0)) return '';
+      var seg = null;
+      b.story.forEach(function (s) { if (s.kind === k && (!seg || s.to - s.from > seg.to - seg.from)) seg = s; });
+      if (r.delta > 0) return 'more waiting: ' + A1.KIND_LABEL[k].toLowerCase() + ' (+' + fdur(diff[k]) + ')' + (seg ? '. ' + seg.text.replace(b.name + ' waited', 'Now waits') : '');
+      return 'less waiting: ' + A1.KIND_LABEL[k].toLowerCase() + ' (' + fdur(-diff[k]) + ' less)';
+    }
+    h += '<h3>' + later.length + ' boat' + (later.length === 1 ? '' : 's') + ' got later</h3>';
+    h += later.length ? '<table><tr><th>Boat</th><th class="num">Later by</th><th class="num">Late now</th><th>Why</th></tr>' + later.slice(0, 14).map(function (r) {
+      return '<tr><td>' + r.name + '</td><td class="num late">+' + r.delta + '</td><td class="num">' + (r.lateAfter || 0) + '</td><td class="small">' + why(r) + '</td></tr>';
+    }).join('') + '</table>' : '<p class="small muted">None.</p>';
+    h += '<h3>' + earlier.length + ' boat' + (earlier.length === 1 ? '' : 's') + ' got earlier</h3>';
+    h += earlier.length ? '<table><tr><th>Boat</th><th class="num">Earlier by</th><th class="num">Late now</th><th>Why</th></tr>' + earlier.slice(0, 14).map(function (r) {
+      return '<tr><td>' + r.name + '</td><td class="num ontime">' + r.delta + '</td><td class="num">' + (r.lateAfter || 0) + '</td><td class="small">' + why(r) + '</td></tr>';
+    }).join('') + '</table>' : '<p class="small muted">None.</p>';
+    h += '<p class="small muted">Use the switch under the scores to flip the animation, timeline and delay stories between the original and the re-planned schedule.</p>';
+    $('dr-result').innerHTML = h; $('dr-result').className = 'small';
+  }
+
+  // ------------------------------------------------------------ time & playback
+  var scrub = $('scrub');
+  function setT(t) {
+    var A = cur().A;
+    S.t = Math.max(0, Math.min(A.horizon, t));
+    scrub.value = Math.round(S.t);
+    $('clock').textContent = clock(S.t);
+  }
+  scrub.oninput = function () { setT(+scrub.value); };
+  $('play').onclick = function () { S.playing = !S.playing; $('play').textContent = S.playing ? '❚❚ Pause' : '▶ Play'; last = null; };
+  $('speed').onchange = function () { S.speed = +this.value; };
+  $('d1').onclick = function () { setT(360); };
+  $('d2').onclick = function () { setT(1800); };
+  $('skipnight').onchange = function () { S.skipNight = this.checked; };
+  $('names').onchange = function () { S.names = this.checked; };
+  document.addEventListener('keydown', function (e) {
+    if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+    if (e.code === 'Space') { e.preventDefault(); $('play').click(); }
+    if (e.code === 'ArrowRight') setT(S.t + 5);
+    if (e.code === 'ArrowLeft') setT(S.t - 5);
+  });
+  function selectBoat(id) { S.sel = id; drawGantt(); }
+  var last = null;
+  function frame(ts) {
+    if (S.playing) {
+      if (last != null) {
+        var dt = Math.min(0.1, (ts - last) / 1000);
+        var nt = S.t + dt * S.speed;
+        if (S.skipNight && isNight(nt)) { var nw = nextWindow(nt); nt = nw != null ? nw : cur().A.horizon; }
+        if (nt >= cur().A.horizon) { nt = cur().A.horizon; S.playing = false; $('play').textContent = '▶ Play'; }
+        setT(nt);
+      }
+      last = ts;
+    } else last = null;
+    drawCanal();
+    if (tabOn === 'tl') drawGantt();
+    requestAnimationFrame(frame);
+  }
+
+  // ------------------------------------------------------------ tabs & refresh
+  var tabOn = 'tl';
+  function switchTab(k) {
+    tabOn = k;
+    document.querySelectorAll('.tabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === k); });
+    document.querySelectorAll('.panel').forEach(function (p) { p.classList.toggle('on', p.id === 'tab-' + k); });
+    if (k === 'tl') drawGantt();
+  }
+  document.querySelectorAll('.tabs button').forEach(function (b) { b.onclick = function () { switchTab(b.dataset.tab); }; });
+  function drawStrip() {
+    var c = $('strip'), x = c.getContext('2d'), dpr = window.devicePixelRatio || 1, W = c.clientWidth || 300;
+    c.width = Math.round(W * dpr); c.height = Math.round(8 * dpr); x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var A = cur().A, hz = A.horizon, pad = 8, X = function (t) { return pad + t / hz * (W - 2 * pad); };
+    x.fillStyle = '#efe8d6'; x.fillRect(pad, 1, W - 2 * pad, 6);
+    var last = 0;
+    A.windows.forEach(function (w) { x.fillStyle = '#b9b3a6'; x.fillRect(X(last), 1, X(w[0]) - X(last), 6); last = w[1]; });
+    x.fillStyle = '#b9b3a6'; x.fillRect(X(last), 1, X(hz) - X(last), 6);
+    (cur().canal.closures || []).forEach(function (cl) { x.fillStyle = '#b83a2e'; x.fillRect(X(cl.from), 0, Math.max(2, X(cl.to) - X(cl.from)), 8); });
+  }
+  function refreshAll() { renderScores(); renderDelays(); drawGantt(); drawCanal(); drawStrip(); }
+  window.addEventListener('resize', function () { drawCanal(); drawGantt(); drawStrip(); });
+
+  // ------------------------------------------------------------ boot
+  S.orig = buildPlan(CANAL, SCHEDULE);
+  var hz = S.orig.A.horizon;
+  scrub.max = hz;
+  fillDisruptForm();
+  $('db-boat').onchange.call($('db-boat'));
+  renderDisruptList();
+  refreshAll();
+  setT(420);
+  requestAnimationFrame(frame);
+  window.LEDGER_STATE = S;
+})();
+</script>
+</body>
+</html>

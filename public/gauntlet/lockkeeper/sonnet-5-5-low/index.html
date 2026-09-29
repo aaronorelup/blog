@@ -1,0 +1,1491 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lockkeeper's Ledger</title>
+<style>
+:root{--paper:#f6f1e4;--ink:#2b2a26;--muted:#6f6a5c;--card:#fffdf7;--line:#d9d0b8;--teal:#2d7f86;--deep:#1e4f57;--brass:#b07d2b;--red:#b8412f;--green:#3d7a4a;--k1:#2f6fb3;--k2:#c0642d;--k3:#7a4fa3}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 Georgia,'Times New Roman',serif}
+h1,h2,h3{font-family:Georgia,serif;margin:.2em 0}
+h2{font-size:1.25rem;color:var(--deep);border-bottom:2px solid var(--brass);padding-bottom:.2em;margin:0 0 .6em}
+.sans,button,select,input,.chip,table{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+header{padding:14px 16px 6px;max-width:1100px;margin:0 auto}
+header h1{font-size:1.7rem;color:var(--deep)}
+header p{margin:0;color:var(--muted)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 12px 40px}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0;box-shadow:0 1px 0 rgba(0,0,0,.03)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:10px 0 2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.card b{display:block;font-size:1.35rem;color:var(--deep);font-family:system-ui,sans-serif}
+.card span{font-size:.75rem;color:var(--muted);font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.04em}
+.card.bad b{color:var(--red)}
+#transport{position:sticky;top:0;z-index:20;background:rgba(246,241,228,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(4px)}
+#transport .in{max-width:1100px;margin:0 auto;padding:6px 12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#transport input[type=range]{flex:1;min-width:160px;height:30px}
+button{background:var(--deep);color:#fff;border:0;border-radius:6px;padding:6px 12px;cursor:pointer;font-size:.9rem}
+button.alt{background:#fff;color:var(--deep);border:1px solid var(--deep)}
+button:disabled{opacity:.5;cursor:default}
+select,input[type=number],input[type=time]{padding:4px 6px;border:1px solid var(--line);border-radius:5px;background:#fff;font-size:.9rem}
+#clock{font-family:system-ui,sans-serif;font-weight:600;min-width:150px;color:var(--deep)}
+.chip{display:inline-block;padding:1px 8px;border-radius:99px;font-size:.75rem;background:#e7efe9;color:var(--green)}
+.chip.night{background:#22304a;color:#cfe0ff}.chip.closed{background:#f6dcd6;color:var(--red)}
+.scrubwrap{position:relative;flex:1;min-width:160px}
+#scrubbg{position:absolute;left:0;right:0;top:11px;height:8px;border-radius:4px;overflow:hidden;pointer-events:none}
+#scrubbg i{position:absolute;top:0;bottom:0}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:12px}
+@media(max-width:820px){.grid2{grid-template-columns:1fr}}
+#canalbox{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:#dfeaf0}
+#canalsvg{display:block;width:100%;min-width:720px;height:auto}
+.side{font-family:system-ui,sans-serif;font-size:.82rem}
+.side h3{font-size:.9rem;margin:.4em 0 .2em;color:var(--deep)}
+.side ul{margin:0;padding-left:16px}
+.legend span{display:inline-flex;align-items:center;gap:4px;margin-right:10px}
+.legend i{display:inline-block;width:14px;height:8px;border-radius:2px}
+.tabs{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.tabs button{background:#fff;color:var(--deep);border:1px solid var(--deep)}
+.tabs button.on{background:var(--deep);color:#fff}
+#ganttbox{overflow:auto;max-height:560px;border:1px solid var(--line);border-radius:8px;background:#fff}
+#tip{position:fixed;z-index:50;background:#2b2a26;color:#fff;padding:6px 9px;border-radius:6px;font:12px/1.35 system-ui,sans-serif;pointer-events:none;max-width:280px;display:none}
+details.explain{font-family:system-ui,sans-serif;font-size:.9rem}
+details.explain summary{cursor:pointer;font-weight:600;color:var(--deep)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-top:8px}
+.steps div{background:#f4efe0;border-radius:8px;padding:8px}
+table{border-collapse:collapse;width:100%;font-size:.85rem}
+th,td{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{position:sticky;top:0;background:#efe8d3;cursor:pointer}
+tr.late td:first-child{border-left:4px solid var(--red)}
+tr.sel{background:#fff3cf}
+.bar{height:14px;border-radius:3px;display:inline-block;vertical-align:middle}
+.causes .row{display:grid;grid-template-columns:200px 1fr 70px;gap:6px;align-items:center;font-family:system-ui,sans-serif;font-size:.82rem;margin:2px 0}
+@media(max-width:600px){.causes .row{grid-template-columns:110px 1fr 56px}}
+.sent{font-size:.88rem;margin:.25em 0;padding-left:.6em;border-left:3px solid var(--line)}
+.dis{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;font-family:system-ui,sans-serif;font-size:.88rem}
+.dis fieldset{border:1px solid var(--line);border-radius:8px;padding:8px}
+.dis label{display:inline-block;margin:2px 6px 2px 0}
+.tag{display:inline-block;background:#f0e6c8;border-radius:99px;padding:1px 8px;margin:2px;font-size:.8rem}
+.tag b{cursor:pointer;color:var(--red);margin-left:4px}
+.delta.up{color:var(--red)}.delta.dn{color:var(--green)}
+#banner{display:none;background:#fff3cf;border:1px solid var(--brass);border-radius:8px;padding:6px 10px;margin:8px 0;font-family:system-ui,sans-serif;font-size:.88rem}
+progress{width:160px}
+.small{font-size:.8rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>The Lockkeeper's Ledger</h1>
+  <p>The Wendle Navigation: 9 locks, 3 keepers, 40 boats and two days to get everyone over the hill.</p>
+  <div class="cards" id="cards"></div>
+  <div id="banner"></div>
+</header>
+<div id="transport"><div class="in">
+  <button id="play" title="Play / pause (space)">&#9654; Play</button>
+  <div class="scrubwrap"><div id="scrubbg"></div><input id="scrub" type="range" min="0" max="2880" value="360" step="1" aria-label="Time"></div>
+  <span id="clock">Day 1 06:00</span><span id="phase" class="chip">day</span>
+  <label class="small">speed <select id="speed"><option value="6">6 min/s</option><option value="20">20 min/s</option><option value="45" selected>45 min/s</option><option value="90">90 min/s</option><option value="200">200 min/s</option></select></label>
+</div></div>
+<div class="wrap">
+
+<section id="learn">
+  <details class="explain" open>
+    <summary>New to canals? The 60-second guide</summary>
+    <div class="steps">
+      <div><b>A lock is a water lift.</b> The canal climbs a hill in steps. Each step is a <i>pool</i>; between two pools sits a <i>lock</i>: a chamber with a gate at each end.</div>
+      <div><b>Going up:</b> a boat enters the low chamber, the gates close, water is let in from the upper pool (the chamber <i>fills</i>) and the boat rises. It sails out into the upper pool. Going down is the reverse: the chamber <i>empties</i> into the pool below.</div>
+      <div><b>Water is the scarce thing.</b> Every fill takes a chamber-full out of the pool above; every emptying pours one into the pool below. A pool may not fall under its minimum, so the summit feeder stream (and boats coming down) supply the water for boats going up.</div>
+      <div><b>Keepers and hours.</b> Nothing moves unless a keeper is standing at the lock, and keepers must walk between locks. Locks work only 06:00-22:00. A chamber must also be in the right state: an empty "turn" changes it without any boat.</div>
+      <div><b>The score.</b> Every boat has a deadline and a priority (1-3). Weighted lateness = sum of priority &times; minutes late. Lower is better; water drawn breaks ties.</div>
+    </div>
+  </details>
+</section>
+
+<section id="canal">
+  <h2>The canal, animated</h2>
+  <div class="grid2">
+    <div id="canalbox"><svg id="canalsvg" viewBox="0 0 1000 440" role="img" aria-label="Side view of the canal"></svg></div>
+    <div class="side">
+      <div class="legend">
+        <span><i style="background:#2f6fb3"></i>priority 1</span><span><i style="background:#d39b2a"></i>priority 2</span><span><i style="background:#b8412f"></i>priority 3</span>
+        <span><i style="background:#555;width:22px"></i>barge</span><span><i style="border:2px solid #d0201a;background:#fff"></i>past deadline</span>
+      </div>
+      <h3>Happening now</h3><div id="now"></div>
+      <h3>Waiting now</h3><div id="waiting"></div>
+      <h3>Selected boat</h3><div id="selinfo" class="small">Click a boat in the canal, or a row in the tables, to follow it.</div>
+    </div>
+  </div>
+</section>
+
+<section id="ganttsec">
+  <h2>Gantt chart</h2>
+  <div class="tabs" id="gtabs"><button data-v="locks" class="on">By lock</button><button data-v="keepers">By keeper</button><button data-v="boats">By boat (waits coloured by cause)</button></div>
+  <div id="ganttlegend" class="small sans" style="margin-bottom:6px"></div>
+  <div id="ganttbox"></div>
+  <p class="small sans">Click anywhere on the chart to jump there. Night is squeezed; hatched red = maintenance closure. Hover a bar for details; click a bar to follow its first boat.</p>
+</section>
+
+<section id="delays">
+  <h2>Every delay, explained</h2>
+  <div id="overview"></div>
+  <div style="margin:8px 0" class="sans"><label><input type="checkbox" id="lateonly" checked> only boats that finished late</label> <span class="small">Click a boat for its full story.</span></div>
+  <div style="overflow:auto;max-height:420px"><table id="boattable"></table></div>
+  <div id="boatstory"></div>
+</section>
+
+<section id="disrupt">
+  <h2>Disruption mode</h2>
+  <p class="small sans">Close a lock for a while or hold a boat back, then re-plan. The solver runs in your browser (a short search), and the changes against the <b>original plan</b> are listed below.</p>
+  <div class="dis">
+    <fieldset><legend>Close a lock</legend>
+      <label>Lock <select id="dlock"></select></label>
+      <label>Day <select id="dday"><option value="0">1</option><option value="1">2</option></select></label><br>
+      <label>from <input type="time" id="dfrom" value="10:00"></label>
+      <label>to <input type="time" id="dto" value="13:00"></label>
+      <button class="alt" id="addclose">Add closure</button>
+    </fieldset>
+    <fieldset><legend>Delay a boat's release</legend>
+      <label>Boat <select id="dboat"></select></label>
+      <label>by <input type="number" id="dmin" value="90" min="5" max="1200" step="5" style="width:80px"> min</label>
+      <button class="alt" id="adddelay">Add delay</button>
+    </fieldset>
+    <fieldset><legend>Re-plan</legend>
+      <label>search time <select id="dsecs"><option>2</option><option selected>5</option><option>10</option><option>20</option></select> s</label>
+      <button id="replan">Re-plan</button> <button class="alt" id="revert" disabled>Back to original</button><br>
+      <progress id="prog" value="0" max="1" style="visibility:hidden"></progress>
+    </fieldset>
+  </div>
+  <div id="dlist" style="margin:8px 0"></div>
+  <div id="diff"></div>
+</section>
+<p class="small sans">Everything on this page, including the solver, runs offline from this single file.</p>
+</div>
+<div id="tip"></div>
+<script id="data" type="application/json">{"canal":{"feeder_per_minute":1,"windows":[[360,1320],[1800,2760]],"enter_minutes":5,"enter_minutes_with_barge":8,"exit_minutes":3,"chamber_slots":2,"keeper_speed":6,"keepers":[{"id":1,"name":"Ada","start_lock":2},{"id":2,"name":"Bert","start_lock":5},{"id":3,"name":"Cass","start_lock":8}],"closures":[{"lock":5,"from":720,"to":840}],"pools":[{"id":0,"length":59,"min":0,"max":100000,"level":5000},{"id":1,"length":42,"min":100,"max":320,"level":237},{"id":2,"length":21,"min":100,"max":320,"level":229},{"id":3,"length":35,"min":100,"max":320,"level":176},{"id":4,"length":30,"min":100,"max":320,"level":184},{"id":5,"length":43,"min":100,"max":320,"level":230},{"id":6,"length":35,"min":100,"max":320,"level":218},{"id":7,"length":54,"min":100,"max":320,"level":183},{"id":8,"length":56,"min":100,"max":320,"level":201},{"id":9,"length":20,"min":100,"max":320,"level":197}],"locks":[{"id":1,"volume":71,"fill":10,"empty":7,"state":"high"},{"id":2,"volume":55,"fill":14,"empty":6,"state":"low"},{"id":3,"volume":84,"fill":12,"empty":9,"state":"low"},{"id":4,"volume":53,"fill":8,"empty":6,"state":"low"},{"id":5,"volume":58,"fill":9,"empty":7,"state":"high"},{"id":6,"volume":65,"fill":9,"empty":10,"state":"low"},{"id":7,"volume":56,"fill":13,"empty":7,"state":"high"},{"id":8,"volume":64,"fill":8,"empty":8,"state":"high"},{"id":9,"volume":55,"fill":9,"empty":8,"state":"low"}],"boats":[{"id":1,"name":"Heron","type":"narrow","speed":6,"from":9,"to":0,"release":677,"deadline":1036,"priority":1},{"id":2,"name":"Mayfly","type":"narrow","speed":4,"from":0,"to":9,"release":1983,"deadline":2357,"priority":2},{"id":3,"name":"Old Tom","type":"narrow","speed":6,"from":0,"to":9,"release":561,"deadline":949,"priority":1},{"id":4,"name":"Kestrel","type":"narrow","speed":5,"from":5,"to":8,"release":470,"deadline":640,"priority":1},{"id":5,"name":"Bramble","type":"narrow","speed":6,"from":0,"to":9,"release":511,"deadline":1063,"priority":1},{"id":6,"name":"Quiet Otter","type":"narrow","speed":4,"from":0,"to":9,"release":1098,"deadline":1737,"priority":1},{"id":7,"name":"Saffron","type":"barge","speed":2,"from":8,"to":9,"release":968,"deadline":1004,"priority":1},{"id":8,"name":"Marigold","type":"narrow","speed":4,"from":0,"to":9,"release":1109,"deadline":1514,"priority":1},{"id":9,"name":"Tinker","type":"narrow","speed":4,"from":0,"to":9,"release":661,"deadline":1280,"priority":1},{"id":10,"name":"Lark Rise","type":"narrow","speed":6,"from":7,"to":8,"release":850,"deadline":883,"priority":1},{"id":11,"name":"Dunnock","type":"narrow","speed":5,"from":2,"to":8,"release":1892,"deadline":2157,"priority":1},{"id":12,"name":"Coal Barge 7","type":"narrow","speed":5,"from":5,"to":1,"release":1039,"deadline":1183,"priority":1},{"id":13,"name":"Willow","type":"narrow","speed":6,"from":7,"to":4,"release":708,"deadline":841,"priority":1},{"id":14,"name":"Sixpence","type":"barge","speed":3,"from":4,"to":5,"release":872,"deadline":920,"priority":1},{"id":15,"name":"Moorhen","type":"narrow","speed":4,"from":6,"to":5,"release":2030,"deadline":2076,"priority":3},{"id":16,"name":"Pennywhistle","type":"narrow","speed":5,"from":2,"to":3,"release":440,"deadline":487,"priority":2},{"id":17,"name":"Ferret","type":"barge","speed":3,"from":9,"to":8,"release":926,"deadline":968,"priority":2},{"id":18,"name":"Gritstone","type":"narrow","speed":4,"from":2,"to":7,"release":1062,"deadline":1356,"priority":1},{"id":19,"name":"Wren","type":"narrow","speed":4,"from":2,"to":0,"release":545,"deadline":630,"priority":1},{"id":20,"name":"Harebell","type":"narrow","speed":4,"from":1,"to":9,"release":742,"deadline":1165,"priority":1},{"id":21,"name":"Slow Loris","type":"narrow","speed":4,"from":0,"to":9,"release":668,"deadline":1185,"priority":1},{"id":22,"name":"Nutmeg","type":"narrow","speed":6,"from":0,"to":9,"release":738,"deadline":1105,"priority":1},{"id":23,"name":"Albion","type":"narrow","speed":5,"from":2,"to":3,"release":1037,"deadline":1070,"priority":1},{"id":24,"name":"Cobble","type":"narrow","speed":6,"from":5,"to":2,"release":802,"deadline":919,"priority":3},{"id":25,"name":"Swift","type":"narrow","speed":5,"from":6,"to":2,"release":668,"deadline":837,"priority":1},{"id":26,"name":"Tansy","type":"narrow","speed":4,"from":0,"to":9,"release":996,"deadline":1432,"priority":3},{"id":27,"name":"Ironbridge","type":"barge","speed":3,"from":0,"to":9,"release":845,"deadline":1373,"priority":2},{"id":28,"name":"Fieldfare","type":"narrow","speed":5,"from":0,"to":9,"release":978,"deadline":1550,"priority":2},{"id":29,"name":"Pip","type":"barge","speed":3,"from":4,"to":8,"release":387,"deadline":630,"priority":1},{"id":30,"name":"Wagtail","type":"narrow","speed":5,"from":0,"to":9,"release":470,"deadline":954,"priority":2},{"id":31,"name":"Barley Mow","type":"barge","speed":3,"from":7,"to":6,"release":1058,"deadline":1089,"priority":2},{"id":32,"name":"Kingfisher","type":"narrow","speed":6,"from":4,"to":1,"release":956,"deadline":1086,"priority":1},{"id":33,"name":"Rook","type":"narrow","speed":5,"from":7,"to":8,"release":795,"deadline":834,"priority":1},{"id":34,"name":"Clementine","type":"barge","speed":2,"from":1,"to":9,"release":799,"deadline":1602,"priority":3},{"id":35,"name":"Stoat","type":"narrow","speed":4,"from":1,"to":3,"release":497,"deadline":607,"priority":3},{"id":36,"name":"Gadfly","type":"narrow","speed":4,"from":2,"to":6,"release":404,"deadline":623,"priority":1},{"id":37,"name":"Plover","type":"narrow","speed":6,"from":1,"to":9,"release":802,"deadline":1240,"priority":1},{"id":38,"name":"Humbug","type":"narrow","speed":5,"from":0,"to":9,"release":1006,"deadline":1425,"priority":1},{"id":39,"name":"Linnet","type":"narrow","speed":4,"from":0,"to":9,"release":1128,"deadline":1761,"priority":1},{"id":40,"name":"Shire Horse","type":"narrow","speed":6,"from":0,"to":9,"release":709,"deadline":1199,"priority":1}]},"schedule":{"operations":[{"lock":4,"start":360,"dir":"up","boats":[],"keeper":2},{"lock":4,"start":368,"dir":"down","boats":[],"keeper":1},{"lock":5,"start":374,"dir":"down","boats":[],"keeper":3},{"lock":5,"start":387,"dir":"up","boats":[29],"keeper":2},{"lock":3,"start":404,"dir":"up","boats":[36],"keeper":1},{"lock":4,"start":405,"dir":"up","boats":[],"keeper":3},{"lock":5,"start":407,"dir":"down","boats":[],"keeper":2},{"lock":4,"start":413,"dir":"down","boats":[],"keeper":3},{"lock":6,"start":422,"dir":"up","boats":[29],"keeper":2},{"lock":3,"start":424,"dir":"down","boats":[],"keeper":1},{"lock":4,"start":433,"dir":"up","boats":[36],"keeper":3},{"lock":3,"start":440,"dir":"up","boats":[16],"keeper":1},{"lock":6,"start":447,"dir":"down","boats":[],"keeper":2},{"lock":5,"start":457,"dir":"up","boats":[36],"keeper":3},{"lock":7,"start":463,"dir":"down","boats":[],"keeper":2},{"lock":7,"start":470,"dir":"up","boats":[29],"keeper":2},{"lock":1,"start":471,"dir":"down","boats":[],"keeper":1},{"lock":1,"start":478,"dir":"up","boats":[30],"keeper":1},{"lock":6,"start":485,"dir":"up","boats":[4,36],"keeper":3},{"lock":7,"start":494,"dir":"down","boats":[],"keeper":2},{"lock":1,"start":496,"dir":"down","boats":[],"keeper":1},{"lock":7,"start":509,"dir":"up","boats":[4],"keeper":2},{"lock":2,"start":510,"dir":"up","boats":[30,35],"keeper":1},{"lock":4,"start":515,"dir":"down","boats":[],"keeper":3},{"lock":5,"start":526,"dir":"down","boats":[],"keeper":3},{"lock":2,"start":532,"dir":"down","boats":[],"keeper":1},{"lock":2,"start":538,"dir":"up","boats":[],"keeper":1},{"lock":4,"start":538,"dir":"up","boats":[],"keeper":3},{"lock":8,"start":539,"dir":"down","boats":[],"keeper":2},{"lock":4,"start":546,"dir":"down","boats":[],"keeper":3},{"lock":8,"start":547,"dir":"up","boats":[29],"keeper":2},{"lock":2,"start":552,"dir":"down","boats":[19],"keeper":1},{"lock":3,"start":558,"dir":"down","boats":[],"keeper":3},{"lock":8,"start":566,"dir":"down","boats":[],"keeper":2},{"lock":3,"start":567,"dir":"up","boats":[30,35],"keeper":3},{"lock":1,"start":573,"dir":"up","boats":[3,5],"keeper":1},{"lock":8,"start":574,"dir":"up","boats":[4],"keeper":2},{"lock":1,"start":591,"dir":"down","boats":[19],"keeper":1},{"lock":2,"start":598,"dir":"up","boats":[3,5],"keeper":3},{"lock":5,"start":612,"dir":"up","boats":[],"keeper":2},{"lock":3,"start":617,"dir":"down","boats":[],"keeper":1},{"lock":5,"start":621,"dir":"down","boats":[],"keeper":2},{"lock":4,"start":630,"dir":"up","boats":[30],"keeper":3},{"lock":4,"start":646,"dir":"down","boats":[],"keeper":2},{"lock":3,"start":647,"dir":"up","boats":[3,5],"keeper":1},{"lock":5,"start":651,"dir":"up","boats":[],"keeper":3},{"lock":5,"start":660,"dir":"down","boats":[],"keeper":2},{"lock":6,"start":668,"dir":"down","boats":[25],"keeper":3},{"lock":5,"start":669,"dir":"up","boats":[30],"keeper":2},{"lock":4,"start":673,"dir":"up","boats":[3,5],"keeper":1},{"lock":5,"start":686,"dir":"down","boats":[],"keeper":2},{"lock":6,"start":686,"dir":"up","boats":[],"keeper":3},{"lock":6,"start":695,"dir":"down","boats":[],"keeper":3},{"lock":5,"start":696,"dir":"up","boats":[3,5],"keeper":2},{"lock":6,"start":705,"dir":"up","boats":[30],"keeper":3},{"lock":2,"start":706,"dir":"down","boats":[],"keeper":1},{"lock":1,"start":719,"dir":"up","boats":[40,21],"keeper":1},{"lock":6,"start":722,"dir":"down","boats":[],"keeper":3},{"lock":7,"start":726,"dir":"down","boats":[13],"keeper":2},{"lock":6,"start":732,"dir":"up","boats":[3,5],"keeper":3},{"lock":1,"start":737,"dir":"down","boats":[],"keeper":1},{"lock":7,"start":741,"dir":"up","boats":[30],"keeper":2},{"lock":1,"start":744,"dir":"up","boats":[22,9],"keeper":1},{"lock":6,"start":749,"dir":"down","boats":[13],"keeper":3},{"lock":7,"start":762,"dir":"down","boats":[],"keeper":2},{"lock":2,"start":769,"dir":"up","boats":[40,22],"keeper":1},{"lock":7,"start":769,"dir":"up","boats":[3,5],"keeper":2},{"lock":4,"start":780,"dir":"down","boats":[],"keeper":3},{"lock":4,"start":786,"dir":"up","boats":[],"keeper":3},{"lock":2,"start":791,"dir":"down","boats":[],"keeper":1},{"lock":4,"start":794,"dir":"down","boats":[],"keeper":3},{"lock":2,"start":797,"dir":"up","boats":[20,21],"keeper":1},{"lock":8,"start":799,"dir":"down","boats":[],"keeper":2},{"lock":3,"start":806,"dir":"down","boats":[],"keeper":3},{"lock":8,"start":807,"dir":"up","boats":[3,33],"keeper":2},{"lock":3,"start":815,"dir":"up","boats":[40,22],"keeper":3},{"lock":2,"start":819,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":823,"dir":"down","boats":[],"keeper":2},{"lock":2,"start":825,"dir":"up","boats":[37,9],"keeper":1},{"lock":8,"start":831,"dir":"up","boats":[30,5],"keeper":2},{"lock":3,"start":835,"dir":"down","boats":[],"keeper":3},{"lock":2,"start":847,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":847,"dir":"down","boats":[],"keeper":2},{"lock":4,"start":850,"dir":"up","boats":[40,22],"keeper":3},{"lock":2,"start":853,"dir":"up","boats":[34],"keeper":1},{"lock":8,"start":855,"dir":"up","boats":[10],"keeper":2},{"lock":4,"start":866,"dir":"down","boats":[],"keeper":3},{"lock":4,"start":872,"dir":"up","boats":[],"keeper":3},{"lock":4,"start":880,"dir":"down","boats":[],"keeper":3},{"lock":9,"start":881,"dir":"up","boats":[3,30],"keeper":2},{"lock":3,"start":882,"dir":"up","boats":[37,20],"keeper":1},{"lock":5,"start":891,"dir":"down","boats":[25,24],"keeper":3},{"lock":9,"start":898,"dir":"down","boats":[1],"keeper":2},{"lock":3,"start":902,"dir":"down","boats":[],"keeper":1},{"lock":5,"start":906,"dir":"up","boats":[40,22],"keeper":3},{"lock":9,"start":914,"dir":"up","boats":[5],"keeper":2},{"lock":4,"start":917,"dir":"up","boats":[37,20],"keeper":1},{"lock":5,"start":923,"dir":"down","boats":[13],"keeper":3},{"lock":9,"start":931,"dir":"down","boats":[17],"keeper":2},{"lock":4,"start":933,"dir":"down","boats":[25,24],"keeper":1},{"lock":5,"start":941,"dir":"up","boats":[37,20],"keeper":3},{"lock":4,"start":947,"dir":"up","boats":[],"keeper":1},{"lock":4,"start":956,"dir":"down","boats":[32],"keeper":1},{"lock":5,"start":958,"dir":"down","boats":[],"keeper":3},{"lock":8,"start":960,"dir":"down","boats":[1],"keeper":2},{"lock":5,"start":965,"dir":"up","boats":[14],"keeper":3},{"lock":3,"start":976,"dir":"up","boats":[21,9],"keeper":1},{"lock":7,"start":985,"dir":"down","boats":[1],"keeper":2},{"lock":4,"start":990,"dir":"up","boats":[],"keeper":3},{"lock":3,"start":996,"dir":"down","boats":[25,24],"keeper":1},{"lock":4,"start":998,"dir":"down","boats":[],"keeper":3},{"lock":6,"start":1006,"dir":"up","boats":[40,37],"keeper":2},{"lock":5,"start":1009,"dir":"down","boats":[],"keeper":3},{"lock":3,"start":1013,"dir":"up","boats":[34],"keeper":1},{"lock":4,"start":1021,"dir":"up","boats":[21,9],"keeper":3},{"lock":6,"start":1023,"dir":"down","boats":[1],"keeper":2},{"lock":3,"start":1036,"dir":"down","boats":[32],"keeper":1},{"lock":4,"start":1037,"dir":"down","boats":[],"keeper":3},{"lock":6,"start":1041,"dir":"up","boats":[22,20],"keeper":2},{"lock":5,"start":1048,"dir":"up","boats":[21,9],"keeper":3},{"lock":2,"start":1057,"dir":"down","boats":[32],"keeper":1},{"lock":6,"start":1058,"dir":"down","boats":[],"keeper":2},{"lock":5,"start":1065,"dir":"down","boats":[12,1],"keeper":3},{"lock":7,"start":1074,"dir":"up","boats":[40,37],"keeper":2},{"lock":3,"start":1075,"dir":"up","boats":[23,18],"keeper":1},{"lock":4,"start":1085,"dir":"up","boats":[34],"keeper":3},{"lock":7,"start":1095,"dir":"down","boats":[31],"keeper":2},{"lock":4,"start":1104,"dir":"down","boats":[12,1],"keeper":1},{"lock":7,"start":1113,"dir":"up","boats":[22,20],"keeper":2},{"lock":6,"start":1117,"dir":"up","boats":[21,9],"keeper":3},{"lock":4,"start":1118,"dir":"up","boats":[18],"keeper":1},{"lock":7,"start":1134,"dir":"down","boats":[],"keeper":2},{"lock":5,"start":1139,"dir":"up","boats":[34],"keeper":1},{"lock":7,"start":1143,"dir":"up","boats":[21,9],"keeper":2},{"lock":8,"start":1149,"dir":"up","boats":[40,37],"keeper":3},{"lock":5,"start":1159,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":1165,"dir":"down","boats":[],"keeper":3},{"lock":5,"start":1166,"dir":"up","boats":[18],"keeper":1},{"lock":6,"start":1170,"dir":"down","boats":[],"keeper":2},{"lock":8,"start":1173,"dir":"up","boats":[22,20],"keeper":3},{"lock":6,"start":1181,"dir":"up","boats":[34],"keeper":2},{"lock":8,"start":1189,"dir":"down","boats":[],"keeper":3},{"lock":3,"start":1194,"dir":"down","boats":[12,1],"keeper":1},{"lock":8,"start":1197,"dir":"up","boats":[21,9],"keeper":3},{"lock":6,"start":1201,"dir":"down","boats":[],"keeper":2},{"lock":6,"start":1211,"dir":"up","boats":[18],"keeper":2},{"lock":2,"start":1215,"dir":"up","boats":[],"keeper":1},{"lock":7,"start":1222,"dir":"down","boats":[],"keeper":3},{"lock":2,"start":1229,"dir":"down","boats":[12,1],"keeper":1},{"lock":7,"start":1229,"dir":"up","boats":[34],"keeper":3},{"lock":1,"start":1250,"dir":"down","boats":[1],"keeper":1},{"lock":7,"start":1253,"dir":"down","boats":[],"keeper":3},{"lock":9,"start":1253,"dir":"up","boats":[40,37],"keeper":2},{"lock":7,"start":1260,"dir":"up","boats":[18],"keeper":3},{"lock":1,"start":1265,"dir":"up","boats":[26,28],"keeper":1},{"lock":9,"start":1270,"dir":"down","boats":[],"keeper":2},{"lock":9,"start":1278,"dir":"up","boats":[22,20],"keeper":2},{"lock":1,"start":1283,"dir":"down","boats":[],"keeper":1},{"lock":1,"start":1290,"dir":"up","boats":[39,8],"keeper":1},{"lock":8,"start":1290,"dir":"down","boats":[],"keeper":3},{"lock":9,"start":1295,"dir":"down","boats":[],"keeper":2},{"lock":8,"start":1298,"dir":"up","boats":[34],"keeper":3},{"lock":9,"start":1303,"dir":"up","boats":[21,9],"keeper":2},{"lock":1,"start":1308,"dir":"down","boats":[],"keeper":1},{"lock":1,"start":1800,"dir":"up","boats":[27],"keeper":3},{"lock":2,"start":1800,"dir":"up","boats":[26,28],"keeper":2},{"lock":9,"start":1800,"dir":"down","boats":[],"keeper":1},{"lock":9,"start":1808,"dir":"up","boats":[34],"keeper":1},{"lock":1,"start":1821,"dir":"down","boats":[],"keeper":3},{"lock":2,"start":1822,"dir":"down","boats":[],"keeper":2},{"lock":2,"start":1828,"dir":"up","boats":[39,8],"keeper":2},{"lock":9,"start":1828,"dir":"down","boats":[],"keeper":1},{"lock":9,"start":1836,"dir":"up","boats":[7],"keeper":1},{"lock":3,"start":1839,"dir":"up","boats":[26,28],"keeper":3},{"lock":2,"start":1850,"dir":"down","boats":[],"keeper":2},{"lock":2,"start":1856,"dir":"up","boats":[27],"keeper":2},{"lock":3,"start":1859,"dir":"down","boats":[],"keeper":3},{"lock":3,"start":1868,"dir":"up","boats":[39,8],"keeper":3},{"lock":3,"start":1888,"dir":"down","boats":[],"keeper":2},{"lock":4,"start":1893,"dir":"down","boats":[],"keeper":1},{"lock":3,"start":1897,"dir":"up","boats":[11],"keeper":2},{"lock":4,"start":1899,"dir":"up","boats":[26,28],"keeper":3},{"lock":5,"start":1908,"dir":"down","boats":[],"keeper":1},{"lock":4,"start":1915,"dir":"down","boats":[],"keeper":3},{"lock":3,"start":1917,"dir":"down","boats":[],"keeper":2},{"lock":4,"start":1921,"dir":"up","boats":[39,8],"keeper":1},{"lock":5,"start":1926,"dir":"up","boats":[26,28],"keeper":3},{"lock":4,"start":1937,"dir":"down","boats":[],"keeper":2},{"lock":4,"start":1943,"dir":"up","boats":[11],"keeper":2},{"lock":5,"start":1943,"dir":"down","boats":[],"keeper":1},{"lock":5,"start":1950,"dir":"up","boats":[39,8],"keeper":3},{"lock":6,"start":1958,"dir":"down","boats":[],"keeper":1},{"lock":3,"start":1965,"dir":"up","boats":[27],"keeper":2},{"lock":5,"start":1967,"dir":"down","boats":[],"keeper":3},{"lock":6,"start":1968,"dir":"up","boats":[26,28],"keeper":1},{"lock":5,"start":1974,"dir":"up","boats":[11],"keeper":3},{"lock":6,"start":1985,"dir":"down","boats":[],"keeper":1},{"lock":4,"start":1994,"dir":"down","boats":[],"keeper":2},{"lock":6,"start":1995,"dir":"up","boats":[39,8],"keeper":1},{"lock":4,"start":2000,"dir":"up","boats":[27],"keeper":2},{"lock":7,"start":2004,"dir":"down","boats":[],"keeper":3},{"lock":7,"start":2011,"dir":"up","boats":[26,28],"keeper":3},{"lock":6,"start":2012,"dir":"down","boats":[],"keeper":1},{"lock":6,"start":2022,"dir":"up","boats":[11],"keeper":1},{"lock":5,"start":2024,"dir":"down","boats":[],"keeper":2},{"lock":5,"start":2031,"dir":"up","boats":[27],"keeper":2},{"lock":7,"start":2032,"dir":"down","boats":[],"keeper":3},{"lock":6,"start":2039,"dir":"down","boats":[15],"keeper":1},{"lock":7,"start":2039,"dir":"up","boats":[39,8],"keeper":3},{"lock":7,"start":2060,"dir":"down","boats":[],"keeper":3},{"lock":6,"start":2066,"dir":"up","boats":[27],"keeper":2},{"lock":7,"start":2067,"dir":"up","boats":[11],"keeper":1},{"lock":8,"start":2076,"dir":"down","boats":[],"keeper":3},{"lock":8,"start":2084,"dir":"up","boats":[26,28],"keeper":3},{"lock":7,"start":2088,"dir":"down","boats":[],"keeper":1},{"lock":7,"start":2098,"dir":"up","boats":[27],"keeper":2},{"lock":8,"start":2100,"dir":"down","boats":[],"keeper":3},{"lock":8,"start":2108,"dir":"up","boats":[39,8],"keeper":3},{"lock":9,"start":2114,"dir":"down","boats":[],"keeper":1},{"lock":9,"start":2122,"dir":"up","boats":[26,28],"keeper":1},{"lock":8,"start":2124,"dir":"down","boats":[],"keeper":3},{"lock":8,"start":2132,"dir":"up","boats":[11],"keeper":3},{"lock":9,"start":2139,"dir":"down","boats":[],"keeper":1},{"lock":9,"start":2147,"dir":"up","boats":[39,8],"keeper":1},{"lock":8,"start":2148,"dir":"down","boats":[],"keeper":3},{"lock":8,"start":2156,"dir":"up","boats":[27],"keeper":3},{"lock":1,"start":2157,"dir":"up","boats":[6,2],"keeper":2},{"lock":1,"start":2175,"dir":"down","boats":[],"keeper":2},{"lock":9,"start":2179,"dir":"down","boats":[],"keeper":1},{"lock":1,"start":2182,"dir":"up","boats":[38],"keeper":2},{"lock":9,"start":2194,"dir":"up","boats":[27],"keeper":1},{"lock":2,"start":2207,"dir":"down","boats":[],"keeper":2},{"lock":2,"start":2213,"dir":"up","boats":[6,2],"keeper":2},{"lock":3,"start":2224,"dir":"down","boats":[],"keeper":3},{"lock":2,"start":2235,"dir":"down","boats":[],"keeper":2},{"lock":2,"start":2241,"dir":"up","boats":[38],"keeper":2},{"lock":3,"start":2241,"dir":"up","boats":[6,2],"keeper":3},{"lock":4,"start":2251,"dir":"down","boats":[],"keeper":1},{"lock":3,"start":2261,"dir":"down","boats":[],"keeper":3},{"lock":3,"start":2270,"dir":"up","boats":[38],"keeper":2},{"lock":4,"start":2270,"dir":"up","boats":[6,2],"keeper":1},{"lock":5,"start":2281,"dir":"down","boats":[],"keeper":3},{"lock":4,"start":2286,"dir":"down","boats":[],"keeper":1},{"lock":5,"start":2294,"dir":"up","boats":[6,2],"keeper":3},{"lock":4,"start":2297,"dir":"up","boats":[38],"keeper":2},{"lock":6,"start":2305,"dir":"down","boats":[],"keeper":1},{"lock":5,"start":2311,"dir":"down","boats":[],"keeper":3},{"lock":5,"start":2319,"dir":"up","boats":[38],"keeper":2},{"lock":6,"start":2322,"dir":"up","boats":[6,2],"keeper":1},{"lock":7,"start":2331,"dir":"down","boats":[],"keeper":3},{"lock":6,"start":2339,"dir":"down","boats":[],"keeper":1},{"lock":7,"start":2348,"dir":"up","boats":[6,2],"keeper":3},{"lock":6,"start":2349,"dir":"up","boats":[38],"keeper":2},{"lock":8,"start":2364,"dir":"down","boats":[],"keeper":1},{"lock":7,"start":2369,"dir":"down","boats":[],"keeper":3},{"lock":7,"start":2376,"dir":"up","boats":[38],"keeper":2},{"lock":8,"start":2383,"dir":"up","boats":[6,2],"keeper":1},{"lock":9,"start":2398,"dir":"down","boats":[],"keeper":3},{"lock":8,"start":2399,"dir":"down","boats":[],"keeper":1},{"lock":8,"start":2408,"dir":"up","boats":[38],"keeper":2},{"lock":9,"start":2413,"dir":"up","boats":[6,2],"keeper":3},{"lock":9,"start":2430,"dir":"down","boats":[],"keeper":1},{"lock":9,"start":2438,"dir":"up","boats":[38],"keeper":1}]},"params":{"off":[1816.7322863703387,1368.8885395285317,-1765.8807159669132,-979.424148028165,1209.7166003846905,804.7225611726668,1610.378731404371,-291.4711643789667,3613.6879578638045,826.1535739662747,-732.3282913095651,-3391.1450829272726,1013.7319645807719,3.5791700470183745,-1174.3832663509654,-56.73065392771645,3816.0207023186076,1076.0496864743263,521.0571272055043,419.5835066502039,555.0986726613172,-542.1300023817093,-1104.614006562556,-1893.8143338190866,-3752.488537752072,-3908.4440775743706,478.90374404999375,-3019.665839002169,-2772.9293061806243,322.5287774481526,-2601.4802614422456,-870.2569847305275,-670.0525666291543,724.0267241500535,1139.2107151757684,-682.475764220893,-2193.1661259281027,2704.8753226285803,-609.9282446913144,-2599.462985520722],"W":[24,0,21,17,11,13,2,17,24],"L":[24,30,8,21,6,13,30,17,7],"flipPen":-587.1575148858435,"alpha":0.27016060933654457,"kRule":1,"lb":[-267.7910072742219,31.72029953627018,69.8126348635261,-148.91445713341022,-139.3280190519975,165.93072022182034,121.66364283965407,105.00578340680994,85.09386079964395],"kappa":0,"zone":[2,1,1,1,1,2,1,2,0],"zonePen":52.39008957361838,"H":81,"pullPen":-40.94844421310695,"margin":0}}</script>
+<script>var Engine=(function(){
+'use strict';
+// The Lockkeeper's Ledger - solver + simulation engine (Node built-ins only; also runs in the browser).
+// CLI:  node solve.js canal.json > schedule.json   [--params params.json] [--seconds N]
+
+// ---------------------------------------------------------------- preparation
+function prep(c) {
+  const NP = c.pools.length - 1; // top pool index; pools are P0..PNP
+  const NL = c.locks.length;
+  const pos = [0, 0];
+  for (let i = 2; i <= NL; i++) pos[i] = pos[i - 1] + c.pools[i - 1].length;
+  const walk = (a, b) => Math.ceil(Math.abs(pos[a] - pos[b]) / c.keeper_speed);
+  const windows = c.windows.slice().sort((a, b) => a[0] - b[0]);
+  const closures = [];
+  for (let i = 0; i <= NL; i++) closures[i] = [];
+  for (const cl of c.closures || []) if (closures[cl.lock]) closures[cl.lock].push([cl.from, cl.to]);
+  const boats = c.boats.map((b, idx) => {
+    const route = [];
+    if (b.to > b.from) for (let l = b.from + 1; l <= b.to; l++) route.push({ lock: l, dir: 'up' });
+    else if (b.to < b.from) for (let l = b.from; l > b.to; l--) route.push({ lock: l, dir: 'down' });
+    for (const r of route) {
+      const pool = r.dir === 'up' ? r.lock : r.lock - 1;
+      r.cross = Math.ceil(c.pools[pool].length / b.speed);
+    }
+    return { idx, id: b.id, slots: b.type === 'barge' ? c.chamber_slots : 1, barge: b.type === 'barge', route,
+      release: b.release, deadline: b.deadline, pri: b.priority };
+  });
+  const dur = (lock, dir, nb, barge) => {
+    const L = c.locks[lock - 1];
+    let d = dir === 'up' ? L.fill : L.empty;
+    if (nb > 0) d += (barge ? c.enter_minutes_with_barge : c.enter_minutes) + c.exit_minutes;
+    return d;
+  };
+  // minimal remaining time for slack estimate
+  for (const b of boats) {
+    let t = 0;
+    for (const r of b.route) t += dur(r.lock, r.dir, 1, b.barge) + r.cross;
+    b.minTime = t - (b.route.length ? b.route[b.route.length - 1].cross : 0);
+    b.rem = [];
+    let acc = 0;
+    for (let k = b.route.length - 1; k >= 0; k--) { const r = b.route[k]; acc += dur(r.lock, r.dir, 1, b.barge) + (k === b.route.length - 1 ? 0 : r.cross); b.rem[k] = acc; }
+  }
+  return { c, NP, NL, pos, walk, windows, closures, boats, dur };
+}
+
+function windowOf(pp, t) {
+  for (const w of pp.windows) if (t >= w[0] && t < w[1]) return w;
+  return null;
+}
+function canRun(pp, lock, t, d) {
+  const w = windowOf(pp, t);
+  if (!w || t + d > w[1]) return false;
+  for (const cl of pp.closures[lock]) if (t < cl[1] && cl[0] < t + d) return false;
+  return true;
+}
+
+// ---------------------------------------------------------------- dispatcher (greedy, parameterised)
+// prm: { off: Float64Array(nBoats) key offsets, W: hold minutes (per lock), L: look-ahead flip minutes (per lock),
+//        flipPen: urgency penalty of anticipatory flips, kRule }
+function dispatch(pp, prm, wantOps) {
+  const { c, NP, NL, boats, walk } = pp;
+  const NB = boats.length;
+  const level = c.pools.map(p => p.level);
+  const pmin = c.pools.map(p => p.min), pmax = c.pools.map(p => p.max);
+  const state = c.locks.map(l => (l.state === 'high' ? 1 : 0)); // index lock-1
+  const busy = new Array(NL + 1).fill(0);
+  const nk = c.keepers.length;
+  const kfree = new Array(nk).fill(0);
+  const kloc = c.keepers.map(k => k.start_lock);
+  const nx = new Int32Array(NB), arr = new Float64Array(NB), fin = new Float64Array(NB).fill(-1);
+  const queue = [];
+  for (let i = 0; i <= NL; i++) queue.push([]);
+  let remaining = 0;
+  for (const b of boats) {
+    arr[b.idx] = b.release;
+    if (b.route.length) { queue[b.route[0].lock].push(b.idx); remaining++; } else fin[b.idx] = b.release;
+  }
+  const key = prm.key; // Float64Array of urgency per boat (lower = first)
+  const ops = [];
+  let drawn = 0, now = 0;
+  const feeder = c.feeder_per_minute;
+
+  function cascade() {
+    for (let p = NP; p >= 1; p--) {
+      if (level[p] > pmax[p]) { level[p - 1] += level[p] - pmax[p]; level[p] = pmax[p]; }
+    }
+  }
+  function advance(t) {
+    if (t > now) { level[NP] += feeder * (t - now); cascade(); now = t; }
+  }
+  const byKey = (a, b) => key[a] - key[b];
+
+  function pack(list, free) { // list sorted by key
+    const out = [];
+    let used = 0;
+    for (const bi of list) {
+      const s = boats[bi].slots;
+      if (used + s <= free) { out.push(bi); used += s; if (used >= free) break; }
+    }
+    return { out, used };
+  }
+
+  const hasC = new Array(NL + 2).fill(false);
+  const ups = [], downs = [], fut = [];
+  // water pulls: a pool too low for a waiting up-boat asks the lock above to send water down
+  function pulls(t, cands) {
+    for (let i = 1; i < NL; i++) {
+      let urg = Infinity;
+      for (const bi of queue[i]) {
+        const r = boats[bi].route[nx[bi]];
+        if (r.dir === 'up' && arr[bi] <= t + prm.H && key[bi] < urg) urg = key[bi];
+      }
+      if (urg === Infinity) continue;
+      if (level[i] - c.locks[i - 1].volume >= pmin[i] + prm.margin) continue;
+      urg += prm.pullPen;
+      let p = i;
+      while (p < NL) {
+        const j = p + 1;
+        if (busy[j] > t || hasC[j]) break;
+        const Lj = c.locks[j - 1];
+        if (state[j - 1] === 1) {
+          const d = pp.dur(j, 'down', 0, false);
+          if (canRun(pp, j, t, d)) { cands.push({ lock: j, dir: 'down', boats: [], urg, d, empty: true }); hasC[j] = true; }
+          break;
+        }
+        if (level[j] - Lj.volume >= pmin[j] + prm.margin) {
+          const d = pp.dur(j, 'up', 0, false);
+          if (canRun(pp, j, t, d)) { cands.push({ lock: j, dir: 'up', boats: [], urg, d, empty: true }); hasC[j] = true; }
+          break;
+        }
+        p = j;
+      }
+    }
+  }
+  const lastEnd = windowsEnd(pp);
+  for (const w of pp.windows) {
+    for (let t = w[0]; t < w[1]; t++) {
+      if (remaining === 0) break;
+      const cands = [];
+      for (let i = 1; i <= NL; i++) {
+        hasC[i] = false;
+        if (busy[i] > t) continue;
+        const q = queue[i];
+        if (!q.length) continue;
+        const st = state[i - 1];
+        ups.length = 0; downs.length = 0; fut.length = 0;
+        for (const bi of q) {
+          if (arr[bi] > t) { fut.push(bi); continue; }
+          (boats[bi].route[nx[bi]].dir === 'up' ? ups : downs).push(bi);
+        }
+        const Wi = prm.W[i - 1], Li = prm.L[i - 1];
+        const L = c.locks[i - 1];
+        let dir = null, chosen = null, urg = 0, empty = false;
+        const same = st === 0 ? ups : downs, other = st === 0 ? downs : ups;
+        const sdir = st === 0 ? 'up' : 'down';
+        if (same.length) {
+          same.sort(byKey);
+          const pk = pack(same, c.chamber_slots);
+          chosen = pk.out; dir = sdir; urg = key[chosen[0]];
+          let hw = Wi;
+          if (prm.kappa > 0) { let sl = Infinity; for (const bi of chosen) { const v = boats[bi].deadline - t - boats[bi].rem[nx[bi]]; if (v < sl) sl = v; } if (sl > 0) hw += prm.kappa * sl; }
+          if (pk.used < c.chamber_slots && hw > 0) {
+            for (const bi of fut) {
+              if (boats[bi].route[nx[bi]].dir === sdir && arr[bi] <= t + hw && pk.used + boats[bi].slots <= c.chamber_slots) { dir = null; break; }
+            }
+          }
+        } else if (other.length) {
+          // flip needed
+          dir = sdir; chosen = []; empty = true; urg = Infinity;
+          for (const bi of other) if (key[bi] < urg) urg = key[bi];
+          if (Wi > 0) {
+            for (const bi of fut) {
+              if (boats[bi].route[nx[bi]].dir === sdir && arr[bi] <= t + Wi) { dir = null; break; }
+            }
+          }
+        } else if (fut.length && Li > 0) {
+          // anticipatory flip for a boat about to arrive in the other direction
+          const fd = sdir === 'up' ? L.fill : L.empty;
+          let best = Infinity;
+          for (const bi of fut) {
+            const nd = boats[bi].route[nx[bi]].dir;
+            if (nd !== sdir && arr[bi] - t <= fd + Li && arr[bi] > t) { if (key[bi] < best) best = key[bi]; }
+          }
+          if (best < Infinity) { dir = sdir; chosen = []; empty = true; urg = best + prm.flipPen; }
+        }
+        if (dir === null) continue;
+        let barge = false;
+        for (const bi of chosen) if (boats[bi].barge) barge = true;
+        const d = pp.dur(i, dir, chosen.length, barge);
+        if (!canRun(pp, i, t, d)) continue;
+        if (dir === 'up' && level[i] - L.volume < pmin[i]) continue;
+        cands.push({ lock: i, dir, boats: chosen, urg: urg + prm.lb[i - 1], d, empty });
+        hasC[i] = true;
+      }
+      if (prm.H >= 0) pulls(t, cands);
+      if (!cands.length) continue;
+      cands.sort((a, b) => a.urg - b.urg);
+      const usedK = new Array(nk).fill(false);
+      const granted = [];
+      for (const cd of cands) {
+        let bk = -1, bw = 1e9;
+        for (let k = 0; k < nk; k++) {
+          if (usedK[k]) continue;
+          const wk = walk(kloc[k], cd.lock);
+          if (kfree[k] + wk > t) continue;
+          const score = (prm.kRule === 1 ? -(t - kfree[k]) : wk) + (prm.zone[cd.lock - 1] === k ? 0 : prm.zonePen);
+          if (score < bw) { bw = score; bk = k; }
+        }
+        if (bk < 0) continue;
+        usedK[bk] = true; cd.k = bk; granted.push(cd);
+      }
+      granted.sort((a, b) => a.lock - b.lock);
+      advance(t);
+      for (const cd of granted) {
+        const i = cd.lock, L = c.locks[i - 1];
+        if (cd.dir === 'up') {
+          if (level[i] - L.volume < pmin[i]) continue;
+          level[i] -= L.volume; drawn += L.volume;
+          state[i - 1] = 1;
+        } else {
+          level[i - 1] += L.volume; cascade();
+          state[i - 1] = 0;
+        }
+        const end = t + cd.d;
+        busy[i] = end; kfree[cd.k] = end; kloc[cd.k] = i;
+        const ids = [];
+        for (const bi of cd.boats) {
+          const b = boats[bi];
+          const q = queue[i];
+          q.splice(q.indexOf(bi), 1);
+          ids.push(b.id);
+          const r = b.route[nx[bi]];
+          nx[bi]++;
+          if (nx[bi] >= b.route.length) { fin[bi] = end; remaining--; } else {
+            arr[bi] = end + r.cross; queue[b.route[nx[bi]].lock].push(bi);
+          }
+        }
+        if (wantOps !== false) ops.push({ lock: i, start: t, dir: cd.dir, boats: ids, keeper: c.keepers[cd.k].id });
+        else ops.length++;
+      }
+    }
+    if (remaining === 0) break;
+  }
+  let wl = 0, unfinished = 0, late = 0;
+  for (const b of boats) {
+    if (fin[b.idx] < 0) { unfinished++; continue; }
+    const l = Math.max(0, fin[b.idx] - b.deadline);
+    wl += l * b.pri; if (l > 0) late++;
+  }
+  return { ops, wl, unfinished, late, drawn, cost: unfinished * 1e7 + wl + drawn * 1e-5 };
+}
+function windowsEnd(pp) { return pp.windows[pp.windows.length - 1][1]; }
+
+// ---------------------------------------------------------------- search
+function rng(seed) {
+  let s = seed >>> 0 || 1;
+  return () => { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; };
+}
+function gauss(r) { return Math.sqrt(-2 * Math.log(r() + 1e-12)) * Math.cos(2 * Math.PI * r()); }
+
+function makeSearch(canal, opts) {
+  opts = opts || {};
+  const pp = prep(canal);
+  const nb = pp.boats.length, nl = pp.NL, nk = canal.keepers.length;
+  const r = rng(opts.seed || 12345);
+  const clone = p => ({ off: Float64Array.from(p.off), W: p.W.slice(), L: p.L.slice(), flipPen: p.flipPen, alpha: p.alpha, kRule: p.kRule, lb: p.lb.slice(), kappa: p.kappa, zone: p.zone.slice(), zonePen: p.zonePen, H: p.H, pullPen: p.pullPen, margin: p.margin });
+  function keys(p) {
+    const k = new Float64Array(nb);
+    for (const b of pp.boats) k[b.idx] = b.deadline - b.minTime - p.alpha * b.pri * 60 + p.off[b.idx];
+    return k;
+  }
+  function evalP(p, want) { p.key = keys(p); return dispatch(pp, p, want); }
+  const base = () => ({ off: new Float64Array(nb), W: new Array(nl).fill(0), L: new Array(nl).fill(0), flipPen: 0, alpha: 1, kRule: 0, lb: new Array(nl).fill(0), kappa: 0, zone: Array.from({length: nl}, (_, i) => Math.min(nk - 1, Math.floor(i * nk / nl))), zonePen: 0, H: 0, pullPen: 0, margin: 0 });
+  let cur = base();
+  if (opts.init && opts.init.off && opts.init.off.length === nb) {
+    cur = base(); cur.off = Float64Array.from(opts.init.off);
+    if (opts.init.W && opts.init.W.length === nl) cur.W = opts.init.W.slice();
+    if (opts.init.L && opts.init.L.length === nl) cur.L = opts.init.L.slice();
+    cur.flipPen = opts.init.flipPen || 0; cur.alpha = opts.init.alpha == null ? 1 : opts.init.alpha; cur.kRule = opts.init.kRule || 0; cur.kappa = opts.init.kappa || 0; if (opts.init.lb && opts.init.lb.length === nl) cur.lb = opts.init.lb.slice(); if (opts.init.zone && opts.init.zone.length === nl) cur.zone = opts.init.zone.slice(); cur.zonePen = opts.init.zonePen || 0;
+    cur.H = opts.init.H == null ? 0 : opts.init.H; cur.pullPen = opts.init.pullPen || 0; cur.margin = opts.init.margin || 0;
+  }
+  let curR = evalP(cur, false);
+  let best = clone(cur), bestR = curR, bestCost = curR.cost;
+  // a few simple starting points
+  const starts = [];
+  for (const W of [0, 4, 10]) for (const L of [0, 6]) for (const alpha of [0, 1, 3]) for (const H of [-1, 0, 20]) for (const zp of [0, 8]) for (const kp of [0, 0.1]) {
+    const p = base(); p.W.fill(W); p.L.fill(L); p.alpha = alpha; p.H = H; p.zonePen = zp; p.kappa = kp; starts.push(p);
+  }
+  if (!opts.init) for (const p of starts) {
+    const res = evalP(p, false);
+    if (res.cost < bestCost) { best = clone(p); bestR = res; bestCost = res.cost; cur = clone(p); curR = res; }
+  }
+  let iters = 0, sinceImp = 0;
+  let T0 = opts.temp == null ? 3 : opts.temp;
+  const tStart = Date.now();
+  function run(ms, total) {
+    const end = Date.now() + ms;
+    total = total || 1e9;
+    while (Date.now() < end) {
+      iters++;
+      const frac = Math.min(1, (Date.now() - tStart) / total);
+      const temp = T0 * (1 - frac) * (1 - frac) + 1e-3;
+      const nxt = clone(cur);
+      const m = r();
+      const nm = 1 + Math.floor(r() * 3);
+      if (m < 0.7) {
+        for (let j = 0; j < nm; j++) {
+          const b = Math.floor(r() * nb);
+          nxt.off[b] += gauss(r) * (r() < 0.3 ? 150 : 40);
+        }
+      } else if (m < 0.8) {
+        const l = Math.floor(r() * nl); nxt.W[l] = Math.max(0, Math.min(25, nxt.W[l] + Math.round(gauss(r) * 4)));
+      } else if (m < 0.9) {
+        const l = Math.floor(r() * nl); nxt.L[l] = Math.max(0, Math.min(30, nxt.L[l] + Math.round(gauss(r) * 5)));
+      } else if (m < 0.95) {
+        nxt.alpha = Math.max(0, nxt.alpha + gauss(r) * 0.7);
+      } else if (m < 0.965) {
+        nxt.flipPen = nxt.flipPen + gauss(r) * 60;
+      } else if (m < 0.98) {
+        const q = r(); if (q < 0.4) nxt.H = Math.max(-1, Math.min(90, nxt.H + Math.round(gauss(r) * 10))); else if (q < 0.8) nxt.pullPen += gauss(r) * 60; else nxt.margin = Math.max(0, nxt.margin + Math.round(gauss(r) * 20));
+      } else { const q = r(); if (q < 0.15) nxt.kRule = 1 - nxt.kRule; else if (q < 0.3) nxt.kappa = Math.max(0, nxt.kappa + gauss(r) * 0.08); else if (q < 0.6) nxt.zonePen = Math.max(0, nxt.zonePen + gauss(r) * 6); else nxt.zone[Math.floor(r() * nl)] = Math.floor(r() * nk); if (r() < 0.5) nxt.lb[Math.floor(r() * nl)] += gauss(r) * 40; }
+      const res = evalP(nxt, false);
+      const d = res.cost - curR.cost;
+      if (d <= 0 || r() < Math.exp(-d / temp)) {
+        cur = nxt; curR = res;
+        if (res.cost < bestCost - 1e-9) { best = clone(nxt); bestR = res; bestCost = res.cost; sinceImp = 0; }
+      }
+      if (++sinceImp > 4000) { cur = clone(best); curR = bestR; sinceImp = 0; }
+    }
+  }
+  function result() {
+    const p = clone(best); const res = evalP(p, true);
+    return { schedule: { operations: res.ops }, wl: res.wl, drawn: res.drawn, late: res.late, unfinished: res.unfinished,
+      params: { off: Array.from(best.off), W: best.W, L: best.L, flipPen: best.flipPen, alpha: best.alpha, kRule: best.kRule, lb: best.lb, kappa: best.kappa, zone: best.zone, zonePen: best.zonePen, H: best.H, pullPen: best.pullPen, margin: best.margin }, iters };
+  }
+  return { run, result, get cost() { return bestCost; }, get wl() { return bestR.wl; }, get iters() { return iters; } };
+}
+
+function solve(canal, opts) {
+  opts = opts || {};
+  const ms = (opts.seconds || 60) * 1000;
+  const s = makeSearch(canal, opts);
+  s.run(ms, ms);
+  return s.result();
+}
+
+// ---------------------------------------------------------------- simulation engine (validation + trace)
+function simulate(canal, sched) {
+  const pp = prep(canal);
+  const { c, NL, NP, pos, walk } = pp;
+  const errors = [];
+  const err = m => { if (errors.length < 60) errors.push(m); };
+  const rawOps = (sched && sched.operations) || [];
+  const boatById = new Map();
+  pp.boats.forEach(b => boatById.set(b.id, b));
+  const ops = [];
+  rawOps.forEach((o, i) => {
+    let ok = Number.isInteger(o.lock) && o.lock >= 1 && o.lock <= NL && Number.isInteger(o.start) && (o.dir === 'up' || o.dir === 'down') &&
+      Array.isArray(o.boats) && Number.isInteger(o.keeper) && c.keepers.some(k => k.id === o.keeper);
+    if (!ok) { err('op #' + i + ' malformed'); return; }
+    let barge = false, slots = 0, bad = false;
+    const seen = new Set();
+    for (const id of o.boats) {
+      const b = boatById.get(id);
+      if (!b || seen.has(id)) { err('op #' + i + ' bad/duplicate boat ' + id); bad = true; continue; }
+      seen.add(id);
+      if (b.barge) barge = true;
+      slots += b.slots;
+    }
+    if (bad) return;
+    if (slots > c.chamber_slots) err('op #' + i + ' over capacity');
+    const d = pp.dur(o.lock, o.dir, o.boats.length, barge);
+    ops.push({ idx: ops.length, lock: o.lock, start: o.start, dir: o.dir, boats: o.boats.slice(), keeper: o.keeper, dur: d, end: o.start + d, empty: o.boats.length === 0 });
+  });
+  for (const o of ops) {
+    if (!canRun(pp, o.lock, o.start, o.dur)) {
+      const w = windowOf(pp, o.start);
+      err('lock ' + o.lock + ' op at ' + o.start + (!w || o.start + o.dur > w[1] ? ' outside operating hours' : ' overlaps a closure'));
+    }
+  }
+  // chamber states per lock
+  const byLock = [];
+  for (let i = 0; i <= NL; i++) byLock.push([]);
+  ops.forEach(o => byLock[o.lock].push(o));
+  for (let i = 1; i <= NL; i++) {
+    byLock[i].sort((a, b) => a.start - b.start);
+    let st = c.locks[i - 1].state === 'high' ? 1 : 0, free = -Infinity;
+    for (const o of byLock[i]) {
+      if (o.start < free) err('lock ' + i + ' op at ' + o.start + ' overlaps previous operation');
+      if ((o.dir === 'up' && st !== 0) || (o.dir === 'down' && st !== 1)) err('lock ' + i + ' op at ' + o.start + ' needs chamber ' + (o.dir === 'up' ? 'low' : 'high'));
+      st = o.dir === 'up' ? 1 : 0; free = o.end;
+    }
+  }
+  // keepers
+  const byKeeper = new Map();
+  c.keepers.forEach(k => byKeeper.set(k.id, []));
+  ops.forEach(o => byKeeper.get(o.keeper).push(o));
+  for (const k of c.keepers) {
+    const list = byKeeper.get(k.id).sort((a, b) => a.start - b.start);
+    let loc = k.start_lock, free = 0;
+    for (const o of list) {
+      if (o.start < free + walk(loc, o.lock)) err('keeper ' + k.id + ' cannot reach lock ' + o.lock + ' by ' + o.start);
+      loc = o.lock; free = o.end;
+    }
+  }
+  // boats
+  const boatsOut = [];
+  const boatOps = new Map();
+  pp.boats.forEach(b => boatOps.set(b.id, []));
+  ops.forEach(o => o.boats.forEach(id => boatOps.get(id).push(o)));
+  let wl = 0, late = 0;
+  for (const b of pp.boats) {
+    const list = boatOps.get(b.id).sort((a, z) => a.start - z.start);
+    const legs = [];
+    let okRoute = list.length === b.route.length;
+    if (!okRoute) err('boat ' + b.id + ' appears in ' + list.length + ' ops, needs ' + b.route.length);
+    else {
+      let arrive = b.release;
+      for (let k = 0; k < list.length; k++) {
+        const o = list[k], r = b.route[k];
+        if (o.lock !== r.lock || o.dir !== r.dir) { err('boat ' + b.id + ' wrong lock/direction at step ' + k); okRoute = false; break; }
+        if (o.start < arrive) err('boat ' + b.id + ' joins lock ' + o.lock + ' at ' + o.start + ' before arriving at ' + arrive);
+        legs.push({ lock: o.lock, dir: o.dir, arrive, start: o.start, end: o.end, op: o.idx });
+        arrive = o.end + r.cross;
+      }
+    }
+    const finish = list.length ? list[list.length - 1].end : b.release;
+    const lateness = Math.max(0, finish - b.deadline);
+    if (okRoute) { wl += lateness * b.pri; if (lateness > 0) late++; }
+    boatsOut.push({ id: b.id, idx: b.idx, finish, lateness, legs, route: okRoute });
+  }
+  // water
+  const T = windowsEnd(pp);
+  const levels = c.pools.map(() => new Int32Array(T + 1));
+  const lv = c.pools.map(p => p.level);
+  const startsAt = new Map();
+  ops.forEach(o => { if (!startsAt.has(o.start)) startsAt.set(o.start, []); startsAt.get(o.start).push(o); });
+  let drawn = 0;
+  const cas = () => { for (let p = NP; p >= 1; p--) if (lv[p] > c.pools[p].max) { lv[p - 1] += lv[p] - c.pools[p].max; lv[p] = c.pools[p].max; } };
+  for (let t = 0; t <= T; t++) {
+    if (t >= 1) { lv[NP] += c.feeder_per_minute; cas(); }
+    const list = startsAt.get(t);
+    if (list) {
+      list.sort((a, b) => a.lock - b.lock);
+      for (const o of list) {
+        const V = c.locks[o.lock - 1].volume;
+        if (o.dir === 'up') {
+          lv[o.lock] -= V; drawn += V;
+          if (lv[o.lock] < c.pools[o.lock].min) err('pool ' + o.lock + ' drops below minimum at minute ' + t + ' (lock ' + o.lock + ' up)');
+        } else { lv[o.lock - 1] += V; cas(); }
+      }
+    }
+    for (let p = 0; p <= NP; p++) levels[p][t] = lv[p];
+  }
+  const nEmpty = ops.filter(o => o.empty).length;
+  ops.sort((a, b) => a.start - b.start || a.lock - b.lock);
+  ops.forEach((o, i) => o.idx2 = i);
+  return { valid: errors.length === 0, errors, weighted_lateness: wl, water_drawn: drawn, late_boats: late,
+    n_ops: ops.length, n_empty: nEmpty, ops, boats: boatsOut, levels, T, pp };
+}
+
+// ---------------------------------------------------------------- delay explanation
+const CAUSE_LABEL = { night: 'Night / out of hours', closure: 'Lock closed for maintenance', busy: 'Chamber busy with another boat',
+  flip: 'Chamber had to be turned round', crowd: 'Chamber full / other boats went first', keeper: 'No keeper free',
+  water: 'Pool too low (water)', batch: 'Lock held to share a trip', other: 'Scheduling choice' };
+
+function hhmm(t) {
+  const d = Math.floor(t / 1440) + 1, m = t % 1440;
+  return 'D' + d + ' ' + String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+}
+
+function explain(canal, sim) {
+  const pp = sim.pp, c = canal;
+  const bname = id => { const b = c.boats.find(x => x.id === id); return b ? b.name : 'boat ' + id; };
+  const kname = id => { const k = c.keepers.find(x => x.id === id); return k ? k.name : 'keeper ' + id; };
+  const names = ids => ids.map(bname).join(' and ');
+  const opsByLock = [];
+  for (let i = 0; i <= pp.NL; i++) opsByLock.push([]);
+  sim.ops.forEach(o => opsByLock[o.lock].push(o));
+  const kOps = new Map();
+  c.keepers.forEach(k => kOps.set(k.id, []));
+  sim.ops.forEach(o => kOps.get(o.keeper).push(o));
+  function keeperAt(kid, m) {
+    let prev = null;
+    for (const o of kOps.get(kid)) {
+      if (o.start <= m && m < o.end) return { work: o };
+      if (o.end <= m) prev = o;
+    }
+    const k = c.keepers.find(x => x.id === kid);
+    return { loc: prev ? prev.lock : k.start_lock, from: prev ? prev.end : 0 };
+  }
+  const closeAt = w => hhmm(w[1]).slice(3);
+  const result = [];
+  for (const b of sim.boats) {
+    const waits = [], locks = [];
+    for (const leg of b.legs) {
+      const i = leg.lock;
+      if (leg.start <= leg.arrive) continue;
+      const myOp = sim.ops.find(o => o.idx === leg.op);
+      const segs = [];
+      const add = (cause, text, m) => {
+        const last = segs[segs.length - 1];
+        if (last && last.cause === cause && last.text === text && last.to === m) last.to = m + 1;
+        else segs.push({ lock: i, cause, text, from: m, to: m + 1 });
+      };
+      for (let m = leg.arrive; m < leg.start; m++) {
+        const occ = opsByLock[i].find(o => o.start <= m && m < o.end);
+        if (occ) {
+          if (occ.empty) {
+            const after = opsByLock[i].find(o => o.start >= occ.end);
+            const who = after && after.boats.length ? names(after.boats) : 'the next boat';
+            const st = occ.dir === 'up' ? 'empty and had to be filled' : 'full and had to be emptied';
+            const word = after && after.dir === 'down' ? 'coming down' : 'going up';
+            add('flip', 'the chamber was ' + st + ' (an empty turn) for ' + who + ' ' + word, m);
+          } else {
+            add('busy', 'the chamber was busy taking ' + names(occ.boats.filter(x => x !== b.id)) + ' ' + occ.dir, m);
+          }
+          continue;
+        }
+        const n = opsByLock[i].find(o => o.start > m) || myOp;
+        const w = windowOf(pp, m);
+        const clNow = pp.closures[i].find(x => m >= x[0] && m < x[1]);
+        if (!w) { add('night', 'the locks are shut overnight (open 06:00-22:00)', m); continue; }
+        if (clNow) { add('closure', 'Lock ' + i + ' was closed for maintenance until ' + hhmm(clNow[1]), m); continue; }
+        if (m + n.dur > w[1]) { add('night', 'there was not enough daylight left for a full trip before the locks shut at ' + closeAt(w), m); continue; }
+        if (pp.closures[i].find(x => m < x[1] && x[0] < m + n.dur)) { add('closure', 'a trip would have run into the maintenance closure at Lock ' + i, m); continue; }
+        if (n.dir === 'up' && sim.levels[i][m] - c.locks[i - 1].volume < c.pools[i].min) {
+          add('water', 'Pool ' + i + ' was too low to fill the chamber; waiting for water arriving from ' + (i === pp.NP ? 'the feeder stream' : 'above'), m); continue;
+        }
+        const ks = keeperAt(n.keeper, m);
+        if (ks.work) { add('keeper', 'no keeper free: ' + kname(n.keeper) + ' was working Lock ' + ks.work.lock, m); continue; }
+        if (m < ks.from + pp.walk(ks.loc, i)) { add('keeper', 'no keeper free: ' + kname(n.keeper) + ' was walking from Lock ' + ks.loc + ' to Lock ' + i, m); continue; }
+        if (n.boats.includes(b.id)) {
+          const later = n.boats.filter(x => x !== b.id && sim.boats.find(y => y.id === x).legs.some(z => z.op === n.idx && z.arrive > m));
+          if (later.length) add('batch', 'the lock waited for ' + names(later) + ' so they could share one trip', m);
+          else add('other', 'the plan held the lock briefly (keeping it for a better-timed trip)', m);
+        } else if (n.empty) add('flip', 'the chamber needed an empty turn first, for ' + names(n.boats.length ? n.boats : [b.id]), m);
+        else add('crowd', 'the next trip at this lock carried ' + names(n.boats) + ' ' + n.dir + ' first', m);
+      }
+      const byCause = {};
+      for (const sg of segs) { waits.push({ lock: i, from: sg.from, to: sg.to, mins: sg.to - sg.from, cause: sg.cause, text: sg.text }); }
+      const tot = leg.start - leg.arrive;
+      const groups = {};
+      for (const sg of segs) {
+        const g = groups[sg.cause] = groups[sg.cause] || { cause: sg.cause, mins: 0, texts: [] };
+        g.mins += sg.to - sg.from; if (!g.texts.includes(sg.text)) g.texts.push(sg.text);
+        byCause[sg.cause] = (byCause[sg.cause] || 0) + sg.to - sg.from;
+      }
+      const parts = Object.values(groups).sort((x, y) => y.mins - x.mins).map(g => ({ cause: g.cause, mins: g.mins,
+        text: g.texts.slice(0, 2).join('; then ') + (g.texts.length > 2 ? '; and ' + (g.texts.length - 2) + ' more' : '') }));
+      const head = bname(b.id) + ' waited ' + tot + ' min at Lock ' + i;
+      const text = parts.length === 1 ? head + ': ' + parts[0].text
+        : head + ': ' + parts.map(p => p.mins + ' min ' + (p.cause === 'keeper' || p.cause === 'water' || p.cause === 'night' || p.cause === 'closure' ? '- ' : '- ') + p.text).join('. ');
+      locks.push({ lock: i, from: leg.arrive, to: leg.start, mins: tot, parts, byCause, text });
+    }
+    const byCause = {};
+    waits.forEach(w => byCause[w.cause] = (byCause[w.cause] || 0) + w.mins);
+    result.push({ id: b.id, waits, locks, sentences: locks.map(l => l.text), total: waits.reduce((a, w) => a + w.mins, 0), byCause });
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------- CLI
+function bestOf(list) { return list.reduce((a, b) => (b.unfinished - a.unfinished || b.wl - a.wl || b.drawn - a.drawn) < 0 ? b : a); }
+if (typeof require !== 'undefined' && typeof module !== 'undefined') {
+  let wt = null;
+  try { wt = require('worker_threads'); } catch (e) { wt = null; }
+  if (wt && !wt.isMainThread && wt.workerData && wt.workerData.job === 'lockkeeper') {
+    const d = wt.workerData;
+    const s = makeSearch(d.canal, { seed: d.seed, init: d.init, temp: d.temp });
+    s.run(Math.max(0, d.deadline - Date.now()), Math.max(1, d.deadline - Date.now()));
+    wt.parentPort.postMessage(s.result());
+  } else if (require.main === module) {
+    const fs = require('fs');
+    const args = process.argv.slice(2);
+    let file = null, paramsOut = null, seconds = 85, seed = 12345, threads = 0;
+    for (let i = 0; i < args.length; i++) {
+      if (args[i] === '--params') paramsOut = args[++i];
+      else if (args[i] === '--seconds') seconds = +args[++i];
+      else if (args[i] === '--seed') seed = +args[++i];
+      else if (args[i] === '--threads') threads = +args[++i];
+      else file = args[i];
+    }
+    if (!file) { console.error('usage: node solve.js canal.json > schedule.json'); process.exit(2); }
+    const canal = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const finish = res => {
+      if (paramsOut) fs.writeFileSync(paramsOut, JSON.stringify(res.params));
+      console.error('wl=' + res.wl + ' water=' + res.drawn + ' late=' + res.late + ' unfinished=' + res.unfinished + ' iters=' + res.iters);
+      process.stdout.write(JSON.stringify(res.schedule));
+    };
+    const nThreads = threads || Math.max(1, Math.min(8, (require('os').cpus() || []).length - 1));
+    if (!wt || nThreads <= 1) finish(solve(canal, { seconds, seed }));
+    else {
+      const rounds = [{ f: 0.3, temp: 3 }, { f: 0.25, temp: 1.5 }, { f: 0.25, temp: 0.8 }, { f: 0.2, temp: 0.4 }];
+      const t0 = Date.now();
+      (async () => {
+        let best = null, iters = 0;
+        for (let ri = 0; ri < rounds.length; ri++) {
+          const deadline = t0 + Math.round(seconds * 1000 * rounds.slice(0, ri + 1).reduce((a, r) => a + r.f, 0));
+          const jobs = [];
+          for (let w = 0; w < nThreads; w++) {
+            jobs.push(new Promise(resolve => {
+              const wk = new wt.Worker(__filename, { workerData: { job: 'lockkeeper', canal, seed: seed + w * 7919 + ri * 104729, deadline, temp: rounds[ri].temp, init: best ? best.params : null } });
+              wk.once('message', m => resolve(m)); wk.once('error', () => resolve(null)); wk.once('exit', () => resolve(null));
+            }));
+          }
+          const got = (await Promise.all(jobs)).filter(Boolean);
+          if (best) got.push(best);
+          if (!got.length) break;
+          for (const g of got) if (g !== best) iters += g.iters || 0;
+          best = bestOf(got);
+          console.error('round ' + ri + ' best wl=' + best.wl + ' t=' + ((Date.now() - t0) / 1000).toFixed(1));
+        }
+        if (!best) best = solve(canal, { seconds: 10, seed });
+        best.iters = iters;
+        finish(best);
+      })();
+    }
+  }
+}
+if (typeof module !== 'undefined' && module.exports) module.exports = { prep, dispatch, makeSearch, solve, simulate, explain, hhmm, CAUSE_LABEL };
+
+return {prep,dispatch,makeSearch,solve,simulate,explain,hhmm,CAUSE_LABEL};
+})();</script>
+<script>(function () {
+'use strict';
+const E = Engine;
+const D = JSON.parse(document.getElementById('data').textContent);
+const $ = id => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+function S(tag, attrs, parent, text) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text != null) e.textContent = text;
+  if (parent) parent.appendChild(e);
+  return e;
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, f) => a + (b - a) * f;
+const CAUSE_COL = { night: '#5b6478', closure: '#b8412f', busy: '#c9963a', flip: '#8a6fb3', crowd: '#d07a54', keeper: '#2f6fb3', water: '#2aa6b0', batch: '#6aa06a', other: '#999' };
+const KCOL = ['#2f6fb3', '#c0642d', '#7a4fa3', '#3d7a4a', '#a33a5b', '#4d7c8a'];
+const PCOL = { 1: '#2f6fb3', 2: '#d39b2a', 3: '#b8412f' };
+const fmt = t => { t = Math.round(t); const d = Math.floor(t / 1440) + 1, m = t % 1440; return 'Day ' + d + ' ' + String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); };
+const hm = t => E.hhmm(Math.round(t));
+const TMAX = 2880;
+
+function makePlan(canal, schedule) {
+  const sim = E.simulate(canal, schedule);
+  let ex = [];
+  try { ex = E.explain(canal, sim); } catch (e) { console.error(e); }
+  return { canal, schedule, sim, ex, pp: sim.pp };
+}
+let base = makePlan(D.canal, D.schedule);
+let plan = base;
+let dis = { closures: [], delays: [] };
+let selBoat = null, t = 360, playing = false;
+const bname = id => { const b = plan.canal.boats.find(x => x.id === id); return b ? b.name : '#' + id; };
+
+// ------------------------------------------------------------------ score cards
+function cards() {
+  const s = plan.sim, b = base.sim;
+  const items = [['Weighted lateness', s.weighted_lateness, b.weighted_lateness, true], ['Late boats', s.late_boats, b.late_boats, true],
+    ['Water drawn', s.water_drawn, b.water_drawn, true], ['Operations', s.n_ops, b.n_ops], ['Empty turns', s.n_empty, b.n_empty]];
+  let h = '';
+  for (const [n, v, o, key] of items) {
+    let d = '';
+    if (plan !== base && v !== o) d = ' <span class="small delta ' + (v > o ? 'up' : 'dn') + '">' + (v > o ? '+' : '') + (v - o) + ' vs original</span>';
+    h += '<div class="card ' + (key && n === 'Weighted lateness' && v > 0 ? 'bad' : '') + '"><b>' + v + '</b><span>' + n + '</span>' + d + '</div>';
+  }
+  h += '<div class="card"><b style="color:' + (s.valid ? 'var(--green)' : 'var(--red)') + '">' + (s.valid ? 'valid' : 'INVALID') + '</b><span>checked by page engine</span></div>';
+  $('cards').innerHTML = h;
+  const bn = $('banner');
+  if (plan !== base) { bn.style.display = 'block'; bn.innerHTML = '<b>Showing the re-planned schedule.</b> Disruptions: ' + describeDis() + ' Every panel below now follows the new plan.'; } else bn.style.display = 'none';
+}
+function describeDis() {
+  const a = dis.closures.map(c => 'Lock ' + c.lock + ' closed ' + fmt(c.from) + ' to ' + hm(c.to).slice(3));
+  const b = dis.delays.map(d => bname(d.id) + ' released ' + d.min + ' min late');
+  return a.concat(b).join('; ') + '.';
+}
+
+// ------------------------------------------------------------------ canal geometry + svg
+let G = null, V = null;
+function layout(canal) {
+  const NP = canal.pools.length - 1, NL = canal.locks.length;
+  const W = 1000, lockW = 34, m = 14, minPool = 44;
+  const total = canal.pools.reduce((a, p) => a + p.length, 0);
+  const k = (W - 2 * m - NL * lockW - minPool * (NP + 1)) / total;
+  let x = m;
+  const pools = [], locks = [];
+  for (let p = 0; p <= NP; p++) {
+    pools[p] = { x0: x, x1: x + minPool + canal.pools[p].length * k };
+    x = pools[p].x1;
+    if (p < NL) { locks[p + 1] = { x0: x, x1: x + lockW, cx: x + lockW / 2 }; x += lockW; }
+  }
+  const step = 270 / NP, bed = p => 400 - p * step;
+  return { NP, NL, W, lockW, pools, locks, bed };
+}
+function surfaceY(p, level) {
+  const c = plan.canal.pools[p];
+  const h = p === 0 ? 44 : 14 + clamp((level - c.min) / Math.max(1, c.max - c.min), 0, 1) * 46;
+  return G.bed(p) - h;
+}
+function poolLevel(p, tt) {
+  const lv = plan.sim.levels[p], i = clamp(Math.floor(tt), 0, plan.sim.T);
+  let s = 0, n = 0;
+  for (let j = Math.max(0, i - 2); j <= i; j++) { s += lv[j]; n++; }
+  return s / n;
+}
+function buildCanal() {
+  G = layout(plan.canal);
+  const svg = $('canalsvg');
+  svg.innerHTML = '';
+  V = { pools: [], chamber: [], gates: [], lights: [], boats: new Map(), keepers: [], lockLabels: [], poolText: [] };
+  const defs = S('defs', {}, svg);
+  const sky = S('linearGradient', { id: 'sky', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+  S('stop', { offset: 0, 'stop-color': '#bcd9ea' }, sky); S('stop', { offset: 1, 'stop-color': '#eef3e6' }, sky);
+  const water = S('linearGradient', { id: 'water', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+  S('stop', { offset: 0, 'stop-color': '#4aa3ad' }, water); S('stop', { offset: 1, 'stop-color': '#1e6a78' }, water);
+  const hatch = S('pattern', { id: 'hatch', width: 6, height: 6, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, defs);
+  S('rect', { width: 6, height: 6, fill: '#fff' }, hatch); S('rect', { width: 3, height: 6, fill: '#b8412f' }, hatch);
+  S('rect', { x: 0, y: 0, width: 1000, height: 440, fill: 'url(#sky)' }, svg);
+  // distant hills
+  let hp = 'M0 440 L0 330';
+  for (let x = 0; x <= 1000; x += 50) hp += ' L' + x + ' ' + (300 - x * 0.16 + Math.sin(x / 90) * 18);
+  hp += ' L1000 440 Z';
+  S('path', { d: hp, fill: '#c9d8b8', opacity: .7 }, svg);
+  // ground under pools and locks
+  const ground = S('g', {}, svg);
+  for (let p = 0; p <= G.NP; p++) S('rect', { x: G.pools[p].x0, y: G.bed(p), width: G.pools[p].x1 - G.pools[p].x0 + 0.5, height: 440 - G.bed(p), fill: '#8a7a55' }, ground);
+  for (let i = 1; i <= G.NL; i++) S('rect', { x: G.locks[i].x0, y: G.bed(i - 1), width: G.lockW + 0.5, height: 440 - G.bed(i - 1), fill: '#6d5f3f' }, ground);
+  for (let p = 0; p <= G.NP; p++) S('rect', { x: G.pools[p].x0, y: G.bed(p), width: G.pools[p].x1 - G.pools[p].x0, height: 5, fill: '#6f9b4f' }, ground);
+  // water
+  for (let p = 0; p <= G.NP; p++) {
+    V.pools[p] = S('rect', { x: G.pools[p].x0, y: 300, width: G.pools[p].x1 - G.pools[p].x0 + 0.5, height: 60, fill: 'url(#water)', opacity: .95 }, svg);
+    V.poolText[p] = S('text', { x: (G.pools[p].x0 + G.pools[p].x1) / 2, y: G.bed(p) + 20, 'text-anchor': 'middle', 'font-size': 11, fill: '#f4ecd0', 'font-family': 'system-ui' }, svg);
+    S('text', { x: (G.pools[p].x0 + G.pools[p].x1) / 2, y: G.bed(p) + 34, 'text-anchor': 'middle', 'font-size': 10, fill: '#d9caa0', 'font-family': 'system-ui' }, svg, p === 0 ? 'River P0' : p === G.NP ? 'Summit P' + p : 'Pool ' + p);
+  }
+  // min/max marks
+  for (let p = 1; p <= G.NP; p++) {
+    const c = plan.canal.pools[p];
+    S('line', { x1: G.pools[p].x0, x2: G.pools[p].x1, y1: G.bed(p) - 14, y2: G.bed(p) - 14, stroke: '#b8412f', 'stroke-dasharray': '3 3', 'stroke-width': .8, opacity: .8 }, svg);
+  }
+  // locks
+  for (let i = 1; i <= G.NL; i++) {
+    const L = G.locks[i];
+    V.chamber[i] = S('rect', { x: L.x0 + 3, y: 300, width: G.lockW - 6, height: 60, fill: '#3b95a2' }, svg);
+    S('rect', { x: L.x0, y: G.bed(i) - 78, width: 3, height: G.bed(i - 1) - G.bed(i) + 78, fill: '#4b4030' }, svg);
+    S('rect', { x: L.x1 - 3, y: G.bed(i) - 78, width: 3, height: G.bed(i - 1) - G.bed(i) + 78, fill: '#4b4030' }, svg);
+    V.gates[i] = [
+      S('rect', { x: L.x0 - 1, y: G.bed(i - 1) - 90, width: 4, height: 90, fill: '#a3762d' }, svg),
+      S('rect', { x: L.x1 - 3, y: G.bed(i) - 62, width: 4, height: 62 + (G.bed(i - 1) - G.bed(i)) - 62 + 62, fill: '#a3762d' }, svg)];
+    // closure overlay
+    V.gates[i].closed = S('rect', { x: L.x0 - 3, y: G.bed(i) - 84, width: G.lockW + 6, height: G.bed(i - 1) - G.bed(i) + 84, fill: 'url(#hatch)', opacity: 0 }, svg);
+    V.lights[i] = S('circle', { cx: L.cx, cy: G.bed(i) - 96, r: 5, fill: '#999', stroke: '#333', 'stroke-width': 1 }, svg);
+    S('text', { x: L.cx, y: G.bed(i) - 105, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 700, fill: '#2b2a26', 'font-family': 'system-ui' }, svg, 'L' + i);
+    V.lockLabels[i] = S('text', { x: L.cx, y: G.bed(i - 1) + 14, 'text-anchor': 'middle', 'font-size': 8.5, fill: '#f4ecd0', 'font-family': 'system-ui' }, svg, '');
+  }
+  // towpath
+  let tp = '';
+  for (let i = 1; i <= G.NL; i++) tp += (i === 1 ? 'M' : 'L') + G.locks[i].cx + ' ' + (G.bed(i) - 84);
+  S('path', { d: tp, stroke: '#7d6a44', 'stroke-width': 2, 'stroke-dasharray': '2 3', fill: 'none' }, svg);
+  V.boatLayer = S('g', {}, svg);
+  V.keeperLayer = S('g', {}, svg);
+  // boats
+  plan.pp.boats.forEach(b => {
+    if (!b.route.length) return;
+    const g = S('g', { cursor: 'pointer' }, V.boatLayer);
+    const w = b.barge ? 28 : 15;
+    S('path', { d: 'M' + (-w / 2) + ' -6 L' + (w / 2) + ' -6 L' + (w / 2 - 3) + ' 0 L' + (-w / 2 + 3) + ' 0 Z', fill: b.barge ? '#4d4a45' : PCOL[b.pri] || '#2f6fb3', stroke: '#fff', 'stroke-width': .8 }, g);
+    S('rect', { x: -w / 4, y: -10, width: w / 2, height: 4, fill: PCOL[b.pri] || '#2f6fb3', stroke: '#fff', 'stroke-width': .5 }, g);
+    S('text', { x: 0, y: -13, 'text-anchor': 'middle', 'font-size': 7.5, fill: '#1c1c1c', 'font-family': 'system-ui', 'font-weight': 600 }, g, String(b.id));
+    g.dataset.tip = 'b' + b.id; g.dataset.boat = b.id;
+    V.boats.set(b.idx, g);
+  });
+  // keepers
+  plan.canal.keepers.forEach((k, i) => {
+    const g = S('g', {}, V.keeperLayer);
+    S('circle', { cx: 0, cy: -9, r: 5.5, fill: KCOL[i % KCOL.length], stroke: '#fff', 'stroke-width': 1.5 }, g);
+    S('rect', { x: -4, y: -4, width: 8, height: 9, rx: 2, fill: KCOL[i % KCOL.length], stroke: '#fff', 'stroke-width': 1 }, g);
+    S('text', { x: 0, y: -6.5, 'text-anchor': 'middle', 'font-size': 7, fill: '#fff', 'font-family': 'system-ui', 'font-weight': 700 }, g, k.name[0]);
+    S('text', { x: 0, y: 14, 'text-anchor': 'middle', 'font-size': 8, fill: '#222', 'font-family': 'system-ui' }, g, k.name);
+    V.keepers.push(g);
+  });
+  V.night = S('rect', { x: 0, y: 0, width: 1000, height: 440, fill: '#0b1330', opacity: 0, 'pointer-events': 'none' }, svg);
+  V.moon = S('g', { opacity: 0 }, svg);
+  S('circle', { cx: 940, cy: 40, r: 16, fill: '#f3efd0' }, V.moon); S('circle', { cx: 947, cy: 36, r: 14, fill: '#0b1330' }, V.moon);
+  for (let i = 0; i < 24; i++) S('circle', { cx: (i * 173) % 1000, cy: 10 + (i * 61) % 90, r: 1, fill: '#fff' }, V.moon);
+  V.nightText = S('text', { x: 500, y: 26, 'text-anchor': 'middle', 'font-size': 15, fill: '#dfe8ff', 'font-family': 'system-ui', opacity: 0 }, svg, 'Night: the locks are shut');
+  V.clock = S('text', { x: 12, y: 20, 'font-size': 14, 'font-weight': 700, fill: '#1e4f57', 'font-family': 'system-ui' }, svg, '');
+  // indexes per lock / keeper
+  V.opsByLock = [];
+  for (let i = 0; i <= G.NL; i++) V.opsByLock.push([]);
+  plan.sim.ops.forEach(o => V.opsByLock[o.lock].push(o));
+  V.opsByLock.forEach(a => a.sort((x, y) => x.start - y.start));
+  V.opsByKeeper = new Map();
+  plan.canal.keepers.forEach(k => V.opsByKeeper.set(k.id, []));
+  plan.sim.ops.forEach(o => V.opsByKeeper.get(o.keeper).push(o));
+  V.opsByKeeper.forEach(a => a.sort((x, y) => x.start - y.start));
+  svg.onclick = e => { const g = e.target.closest && e.target.closest('[data-boat]'); if (g) selectBoat(+g.dataset.boat); };
+}
+
+function darkness(tt) {
+  let best = 1;
+  for (const w of plan.pp.windows) {
+    if (tt >= w[0] && tt < w[1]) { const d = Math.min(tt - w[0], w[1] - tt); best = Math.min(best, d >= 25 ? 0 : 0.6 * (1 - d / 25)); }
+  }
+  return best === 1 ? 1 : best;
+}
+function inWindow(tt) { return plan.pp.windows.some(w => tt >= w[0] && tt < w[1]); }
+function closureAt(i, tt) { return plan.pp.closures[i].find(c => tt >= c[0] && tt < c[1]); }
+
+function lockFrac(i, tt) { // 0 low .. 1 high, and phase info
+  const list = V.opsByLock[i];
+  let last = null;
+  for (const o of list) { if (o.start <= tt) last = o; else break; }
+  const st0 = plan.canal.locks[i - 1].state === 'high' ? 1 : 0;
+  if (!last) return { f: st0, phase: 'idle' };
+  const c = plan.canal;
+  const hasB = last.boats.length > 0;
+  const barge = last.boats.some(id => c.boats.find(b => b.id === id).type === 'barge');
+  const en = hasB ? (barge ? c.enter_minutes_with_barge : c.enter_minutes) : 0, ex = hasB ? c.exit_minutes : 0;
+  const fd = last.dur - en - ex;
+  const up = last.dir === 'up', a = up ? 0 : 1, b = up ? 1 : 0;
+  const pt = tt - last.start;
+  if (tt >= last.end) return { f: b, phase: 'idle' };
+  if (pt < en) return { f: a, phase: 'enter', op: last, en, fd, ex };
+  if (pt < en + fd) return { f: lerp(a, b, (pt - en) / fd), phase: 'move', op: last, en, fd, ex };
+  return { f: b, phase: 'exit', op: last, en, fd, ex };
+}
+
+function towY(x) {
+  const L = G.locks;
+  if (x <= L[1].cx) return G.bed(1) - 84;
+  for (let i = 1; i < G.NL; i++) if (x <= L[i + 1].cx) return lerp(G.bed(i) - 84, G.bed(i + 1) - 84, (x - L[i].cx) / (L[i + 1].cx - L[i].cx));
+  return G.bed(G.NL) - 84;
+}
+function keeperState(k, tt) {
+  const list = V.opsByKeeper.get(k.id);
+  let prev = null, next = null;
+  for (const o of list) { if (o.start <= tt) prev = o; else { next = o; break; } }
+  if (prev && tt < prev.end) return { x: G.locks[prev.lock].cx, work: prev };
+  const loc0 = prev ? prev.lock : k.start_lock, t0 = prev ? prev.end : 0;
+  if (next) {
+    const wt = plan.pp.walk(loc0, next.lock);
+    if (tt < t0 + wt && wt > 0) return { x: lerp(G.locks[loc0].cx, G.locks[next.lock].cx, (tt - t0) / wt), walking: true, to: next.lock };
+    return { x: G.locks[next.lock].cx, waiting: true };
+  }
+  return { x: G.locks[loc0].cx };
+}
+
+function drawFrame() {
+  const tt = t;
+  const lv = [];
+  for (let p = 0; p <= G.NP; p++) {
+    const l = poolLevel(p, tt); lv[p] = l;
+    const y = surfaceY(p, l);
+    V.pools[p].setAttribute('y', y); V.pools[p].setAttribute('height', G.bed(p) - y);
+    V.poolText[p].textContent = p === 0 ? '' : Math.round(l) + '/' + plan.canal.pools[p].max;
+  }
+  const dk = darkness(tt);
+  V.night.setAttribute('opacity', (dk * 0.62).toFixed(3));
+  V.moon.setAttribute('opacity', dk.toFixed(3)); V.nightText.setAttribute('opacity', dk > 0.9 ? 1 : 0);
+  V.clock.textContent = fmt(tt);
+  const lf = [];
+  for (let i = 1; i <= G.NL; i++) {
+    const s = lockFrac(i, tt); lf[i] = s;
+    const yLow = surfaceY(i - 1, lv[i - 1]), yHigh = surfaceY(i, lv[i]);
+    const y = lerp(yLow, yHigh, s.f);
+    V.chamber[i].setAttribute('y', y); V.chamber[i].setAttribute('height', G.bed(i - 1) - y);
+    s.y = y;
+    const up = s.op && s.op.dir === 'up';
+    const lowOpen = (s.phase === 'idle' && s.f === 0) || (s.phase === 'enter' && up) || (s.phase === 'exit' && !up);
+    const highOpen = (s.phase === 'idle' && s.f === 1) || (s.phase === 'enter' && !up) || (s.phase === 'exit' && up);
+    V.gates[i][0].setAttribute('opacity', lowOpen ? 0.25 : 1); V.gates[i][1].setAttribute('opacity', highOpen ? 0.25 : 1);
+    const cl = closureAt(i, tt);
+    V.gates[i].closed.setAttribute('opacity', cl ? 0.55 : 0);
+    const working = s.phase !== 'idle';
+    V.lights[i].setAttribute('fill', cl ? '#c8321f' : !inWindow(tt) ? '#c8321f' : working ? '#3fb650' : '#e3b93a');
+    V.lockLabels[i].textContent = cl ? 'CLOSED' : !inWindow(tt) ? 'shut' : working ? (s.op.boats.length ? (up ? 'rising' : 'lowering') : 'empty turn') : '';
+  }
+  // boats
+  const queues = new Map();
+  const st = new Map();
+  plan.sim.boats.forEach(b => {
+    const bo = plan.pp.boats[b.idx];
+    if (!b.legs.length || tt < bo.release) { st.set(b.idx, null); return; }
+    let r = null;
+    for (let k = 0; k < b.legs.length; k++) {
+      const leg = b.legs[k];
+      if (tt < leg.start) {
+        if (tt < leg.arrive) r = { mode: 'cross', k, f: (tt - b.legs[k - 1].end) / Math.max(1, leg.arrive - b.legs[k - 1].end) };
+        else { r = { mode: 'wait', k, leg }; const key = leg.lock + leg.dir; (queues.get(key) || queues.set(key, []).get(key)).push({ idx: b.idx, since: leg.arrive }); }
+        break;
+      }
+      if (tt < leg.end) { r = { mode: 'op', k, leg }; break; }
+    }
+    if (!r) r = { mode: 'done', f: (tt - b.legs[b.legs.length - 1].end) / Math.max(1, bo.route[bo.route.length - 1].cross) };
+    st.set(b.idx, r);
+  });
+  queues.forEach(a => { a.sort((x, y) => x.since - y.since || x.idx - y.idx); a.forEach((e, qi) => { st.get(e.idx).qi = qi; }); });
+  const waitX = (lock, dir, qi) => dir === 'up' ? G.locks[lock].x0 - 10 - qi * 15 : G.locks[lock].x1 + 10 + qi * 15;
+  const c = plan.canal;
+  plan.sim.boats.forEach(b => {
+    const g = V.boats.get(b.idx); if (!g) return;
+    const r = st.get(b.idx);
+    if (!r) { g.setAttribute('display', 'none'); return; }
+    g.setAttribute('display', '');
+    const bo = plan.pp.boats[b.idx];
+    let x = 0, y = 0, op = 1;
+    if (r.mode === 'wait') {
+      const lg = r.leg; x = waitX(lg.lock, lg.dir, r.qi || 0);
+      y = surfaceY(lg.dir === 'up' ? lg.lock - 1 : lg.lock, lv[lg.dir === 'up' ? lg.lock - 1 : lg.lock]);
+    } else if (r.mode === 'cross') {
+      const pl = b.legs[r.k - 1], nl = b.legs[r.k];
+      const pool = pl.dir === 'up' ? pl.lock : pl.lock - 1;
+      const x0 = pl.dir === 'up' ? G.locks[pl.lock].x1 + 10 : G.locks[pl.lock].x0 - 10;
+      x = lerp(x0, waitX(nl.lock, nl.dir, 0), clamp(r.f, 0, 1)); y = surfaceY(pool, lv[pool]);
+    } else if (r.mode === 'op') {
+      const lg = r.leg, s = lf[lg.lock], o = s.op || plan.sim.ops[lg.op];
+      const inOp = o.boats.indexOf(b.id), nb = o.boats.length;
+      const slot = nb === 1 ? 0 : (inOp === 0 ? -9 : 9);
+      const cx = G.locks[lg.lock].cx + slot;
+      y = s.y;
+      const wx = waitX(lg.lock, lg.dir, 0);
+      const exX = lg.dir === 'up' ? G.locks[lg.lock].x1 + 10 : G.locks[lg.lock].x0 - 10;
+      const en = s.en != null ? s.en : 0;
+      const pt = tt - lg.start;
+      const barge = o.boats.some(id => c.boats.find(z => z.id === id).type === 'barge');
+      const enD = barge ? c.enter_minutes_with_barge : c.enter_minutes;
+      if (pt < enD) x = lerp(wx, cx, pt / enD);
+      else if (pt > lg.end - lg.start - c.exit_minutes) x = lerp(cx, exX, (pt - (lg.end - lg.start - c.exit_minutes)) / c.exit_minutes);
+      else x = cx;
+    } else {
+      const lg = b.legs[b.legs.length - 1];
+      const pool = lg.dir === 'up' ? lg.lock : lg.lock - 1;
+      const x0 = lg.dir === 'up' ? G.locks[lg.lock].x1 + 10 : G.locks[lg.lock].x0 - 10;
+      const mid = (G.pools[pool].x0 + G.pools[pool].x1) / 2 + ((b.id * 37) % 34) - 17;
+      x = lerp(x0, mid, clamp(r.f, 0, 1)); y = surfaceY(pool, lv[pool]); op = .55;
+    }
+    g.setAttribute('transform', 'translate(' + x.toFixed(1) + ' ' + (y + 1).toFixed(1) + ')');
+    g.setAttribute('opacity', op);
+    const late = tt > bo.deadline && r.mode !== 'done';
+    const body = g.firstChild;
+    body.setAttribute('stroke', late ? '#d0201a' : selBoat === b.id ? '#111' : '#fff');
+    body.setAttribute('stroke-width', late ? 1.8 : selBoat === b.id ? 1.8 : .8);
+    g.lastChild.setAttribute('font-weight', selBoat === b.id ? 800 : 600);
+    g.lastChild.textContent = selBoat === b.id ? b.id + ' ' + bname(b.id) : String(b.id);
+  });
+  // keepers
+  c.keepers.forEach((k, i) => {
+    const s = keeperState(k, tt);
+    V.keepers[i].setAttribute('transform', 'translate(' + (s.x + (i - 1) * 3).toFixed(1) + ' ' + (towY(s.x) - 6).toFixed(1) + ')');
+    V.keepers[i].setAttribute('opacity', s.work ? 1 : 0.85);
+  });
+  return { lf, st };
+}
+
+// ------------------------------------------------------------------ side panels
+let lastPanel = -1;
+function panels() {
+  const now = performance.now();
+  if (now - lastPanel < 120) return; lastPanel = now;
+  const tt = Math.floor(t);
+  const active = plan.sim.ops.filter(o => o.start <= tt && tt < o.end);
+  let h = '';
+  if (!inWindow(tt)) h += '<div>Night: every lock is shut (open 06:00-22:00). Boats can still drift across pools; keepers can walk.</div>';
+  h += '<ul>' + active.map(o => '<li>Lock ' + o.lock + (o.dir === 'up' ? ' &uarr; raising ' : ' &darr; lowering ') + (o.boats.length ? esc(o.boats.map(bname).join(' + ')) : '<i>nobody (empty turn)</i>') + ' &mdash; ' + esc(plan.canal.keepers.find(k => k.id === o.keeper).name) + ', done ' + hm(o.end).slice(3) + '</li>').join('') + '</ul>';
+  if (!active.length && inWindow(tt)) h += '<div class="small">All locks idle.</div>';
+  $('now').innerHTML = h;
+  const wl = [];
+  plan.ex.forEach(e => { const w = e.waits.find(x => tt >= x.from && tt < x.to); if (w) wl.push([e.id, w]); });
+  $('waiting').innerHTML = wl.length ? '<ul>' + wl.slice(0, 7).map(([id, w]) => '<li><b>' + esc(bname(id)) + '</b> at Lock ' + w.lock + ': ' + esc(E.CAUSE_LABEL[w.cause].toLowerCase()) + '</li>').join('') + '</ul>' + (wl.length > 7 ? '<div class="small">and ' + (wl.length - 7) + ' more</div>' : '') : '<div class="small">Nobody is waiting.</div>';
+  renderSel();
+}
+function renderSel() {
+  const d = $('selinfo');
+  if (selBoat == null) { d.innerHTML = 'Click a boat in the canal, or a row in the tables, to follow it.'; return; }
+  const b = plan.canal.boats.find(x => x.id === selBoat), sb = plan.sim.boats.find(x => x.id === selBoat), e = plan.ex.find(x => x.id === selBoat);
+  const tt = t;
+  let status = tt < b.release ? 'not yet released' : tt >= sb.finish ? 'finished at ' + hm(sb.finish) : 'under way';
+  const w = e && e.waits.find(x => tt >= x.from && tt < x.to);
+  d.innerHTML = '<b>' + esc(b.name) + '</b> (#' + b.id + ', ' + b.type + ', priority ' + b.priority + ')<br>Pool ' + b.from + ' &rarr; ' + b.to + '<br>released ' + hm(b.release) + ', due ' + hm(b.deadline) + '<br>' + status + (w ? '<br><b>Waiting:</b> ' + esc(w.text) : '') + '<br>' + (sb.lateness ? '<span style="color:var(--red)">finishes ' + sb.lateness + ' min late</span>' : '<span style="color:var(--green)">on time</span>');
+}
+
+// ------------------------------------------------------------------ Gantt
+let gview = 'locks', GX = null;
+function buildTx() {
+  const pieces = [];
+  let prev = 0;
+  const S0 = 0.95, NIGHT = 0.1;
+  for (const w of plan.pp.windows) { if (w[0] > prev) pieces.push([prev, w[0], NIGHT * S0]); pieces.push([w[0], w[1], S0]); prev = w[1]; }
+  if (prev < TMAX) pieces.push([prev, TMAX, NIGHT * S0]);
+  let x = 0;
+  const cum = pieces.map(p => { const r = { a: p[0], b: p[1], s: p[2], x0: x }; x += (p[1] - p[0]) * p[2]; return r; });
+  return { pieces: cum, total: x, tx: tt => { for (const p of cum) if (tt <= p.b) return p.x0 + (Math.max(tt, p.a) - p.a) * p.s; return x; }, inv: xx => { for (const p of cum) if (xx <= p.x0 + (p.b - p.a) * p.s) return p.a + (xx - p.x0) / p.s; return TMAX; } };
+}
+function buildGantt() {
+  const box = $('ganttbox');
+  const T = buildTx();
+  const LBL = gview === 'boats' ? 120 : 84, HDR = 34;
+  const RH = gview === 'boats' ? 17 : 30;
+  const rows = gview === 'locks' ? plan.canal.locks.map(l => 'Lock ' + l.id) : gview === 'keepers' ? plan.canal.keepers.map(k => k.name) : plan.canal.boats.map(b => b.id + ' ' + b.name);
+  const W = LBL + T.total + 20, H = HDR + rows.length * RH + 6;
+  box.innerHTML = '';
+  const svg = S('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H }, box);
+  GX = { T, LBL, HDR, RH, W, H, svg };
+  const X = tt => LBL + T.tx(tt);
+  GX.X = X;
+  const defs = S('defs', {}, svg);
+  const pat = S('pattern', { id: 'ghatch', width: 6, height: 6, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, defs);
+  S('rect', { width: 6, height: 6, fill: '#fff' }, pat); S('rect', { width: 2.5, height: 6, fill: '#b8412f' }, pat);
+  const pat2 = S('pattern', { id: 'ehatch', width: 5, height: 5, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, defs);
+  S('rect', { width: 5, height: 5, fill: '#fff' }, pat2); S('rect', { width: 1.6, height: 5, fill: '#999' }, pat2);
+  // night + axis
+  T.pieces.forEach(p => { if (p.s < 0.5) S('rect', { x: X(p.a), y: HDR, width: (p.b - p.a) * p.s, height: H - HDR, fill: '#e3e0d6' }, svg); });
+  for (const w of plan.pp.windows) {
+    for (let m = Math.ceil(w[0] / 120) * 120; m <= w[1]; m += 120) {
+      S('line', { x1: X(m), x2: X(m), y1: HDR - 6, y2: H, stroke: '#e6dfc9' }, svg);
+      S('text', { x: X(m) + 2, y: HDR - 9, 'font-size': 10, fill: '#6f6a5c', 'font-family': 'system-ui' }, svg, String(Math.floor((m % 1440) / 60)).padStart(2, '0') + ':00');
+    }
+    S('text', { x: X(w[0]) + 2, y: 12, 'font-size': 11, 'font-weight': 700, fill: '#1e4f57', 'font-family': 'system-ui' }, svg, 'Day ' + (Math.floor(w[0] / 1440) + 1));
+  }
+  rows.forEach((r, i) => {
+    const y = HDR + i * RH;
+    if (i % 2) S('rect', { x: 0, y, width: W, height: RH, fill: '#00000008' }, svg);
+    S('text', { x: 4, y: y + RH / 2 + 4, 'font-size': gview === 'boats' ? 10 : 12, fill: '#2b2a26', 'font-family': 'system-ui', 'font-weight': gview === 'boats' ? 400 : 600 }, svg, r);
+  });
+  const tipOf = o => 'Lock ' + o.lock + (o.dir === 'up' ? ' fill (up) ' : ' empty (down) ') + hm(o.start) + '-' + hm(o.end).slice(3) + '<br>' + (o.boats.length ? esc(o.boats.map(id => bname(id) + ' #' + id).join(', ')) : 'empty turn (no boats)') + '<br>keeper ' + esc(plan.canal.keepers.find(k => k.id === o.keeper).name);
+  const bar = (o, row, colFill, label) => {
+    const x = X(o.start), w = Math.max(2, X(o.end) - x), y = HDR + row * RH + 3;
+    const sel = selBoat != null && o.boats.includes(selBoat);
+    const kc = KCOL[plan.canal.keepers.findIndex(k => k.id === o.keeper) % KCOL.length];
+    const g = S('g', {}, svg);
+    const r = S('rect', { x, y, width: w, height: RH - 6, rx: 3, fill: o.empty ? 'url(#ehatch)' : colFill || kc, stroke: sel ? '#f0b800' : kc, 'stroke-width': sel ? 3 : o.empty ? 1.2 : 0.5 }, g);
+    r.dataset.tip = tipOf(o); r.dataset.op = o.idx; r.dataset.t = o.start;
+    if (w > 18 && label) S('text', { x: x + 3, y: y + (RH - 6) / 2 + 3.5, 'font-size': 10, fill: o.empty ? '#444' : '#fff', 'font-family': 'system-ui', 'pointer-events': 'none' }, g, label);
+    if (sel) svg.appendChild(g);
+  };
+  // closures
+  const clRow = l => gview === 'locks' ? l - 1 : -1;
+  if (gview === 'locks') for (const cl of plan.canal.closures || []) {
+    const rr = clRow(cl.lock); if (rr < 0) continue;
+    const x = X(cl.from), w = X(cl.to) - x;
+    const r = S('rect', { x, y: HDR + rr * RH + 1, width: w, height: RH - 2, fill: 'url(#ghatch)', stroke: '#b8412f', 'stroke-width': 1 }, svg);
+    r.dataset.tip = 'Lock ' + cl.lock + ' closed for maintenance<br>' + hm(cl.from) + ' - ' + hm(cl.to).slice(3);
+  }
+  if (gview === 'locks') plan.sim.ops.forEach(o => bar(o, o.lock - 1, null, (o.dir === 'up' ? '▲' : '▼') + (o.boats.length ? ' ' + o.boats.join(',') : '')));
+  else if (gview === 'keepers') {
+    plan.canal.keepers.forEach((k, ki) => {
+      const list = plan.sim.ops.filter(o => o.keeper === k.id).sort((a, b) => a.start - b.start);
+      let loc = k.start_lock, at = 0;
+      list.forEach(o => {
+        const wt = plan.pp.walk(loc, o.lock);
+        if (wt > 0) {
+          const r = S('rect', { x: X(at), y: HDR + ki * RH + RH / 2 - 2, width: Math.max(1.5, X(at + wt) - X(at)), height: 4, fill: '#8d8877', rx: 2 }, svg);
+          r.dataset.tip = esc(k.name) + ' walking Lock ' + loc + ' to Lock ' + o.lock + '<br>' + hm(at) + ' - ' + hm(at + wt).slice(3) + ' (' + wt + ' min)';
+        }
+        bar(o, ki, null, 'L' + o.lock + (o.dir === 'up' ? '▲' : '▼') + (o.boats.length ? ' ' + o.boats.join(',') : ''));
+        loc = o.lock; at = o.end;
+      });
+    });
+  } else {
+    plan.sim.boats.forEach((b, bi) => {
+      const y = HDR + bi * RH, bo = plan.pp.boats[b.idx];
+      const sel = selBoat === b.id;
+      if (sel) S('rect', { x: 0, y, width: W, height: RH, fill: '#fff3cf' }, svg);
+      const e = plan.ex.find(z => z.id === b.id);
+      b.legs.forEach((lg, k) => {
+        if (k > 0) { const pl = b.legs[k - 1]; S('rect', { x: X(pl.end), y: y + RH / 2 - 1, width: Math.max(1, X(lg.arrive) - X(pl.end)), height: 2, fill: '#b9b4a3' }, svg); }
+        const r = S('rect', { x: X(lg.start), y: y + 3, width: Math.max(2, X(lg.end) - X(lg.start)), height: RH - 6, rx: 2, fill: PCOL[bo.pri] }, svg);
+        r.dataset.tip = esc(bname(b.id)) + ' in Lock ' + lg.lock + (lg.dir === 'up' ? ' (up) ' : ' (down) ') + hm(lg.start) + '-' + hm(lg.end).slice(3); r.dataset.t = lg.start;
+      });
+      (e ? e.waits : []).forEach(w => {
+        const r = S('rect', { x: X(w.from), y: y + 5, width: Math.max(1.5, X(w.to) - X(w.from)), height: RH - 10, fill: CAUSE_COL[w.cause] || '#999', opacity: .9 }, svg);
+        r.dataset.tip = esc(bname(b.id)) + ' waited ' + w.mins + ' min at Lock ' + w.lock + '<br>' + esc(w.text); r.dataset.t = w.from;
+      });
+      const dx = X(bo.deadline);
+      S('path', { d: 'M' + dx + ' ' + (y + 2) + ' l4 ' + (RH / 2 - 2) + ' l-4 ' + (RH / 2 - 2) + ' l-4 -' + (RH / 2 - 2) + 'z', fill: '#d0201a' }, svg).dataset.tip = esc(bname(b.id)) + ' deadline ' + hm(bo.deadline);
+      const rx = X(bo.release);
+      S('rect', { x: rx - 1, y: y + 2, width: 2, height: RH - 4, fill: '#2b2a26' }, svg).dataset.tip = esc(bname(b.id)) + ' released ' + hm(bo.release);
+    });
+  }
+  GX.cursor = S('line', { x1: 0, x2: 0, y1: 0, y2: H, stroke: '#d0201a', 'stroke-width': 1.5, 'pointer-events': 'none' }, svg);
+  svg.addEventListener('click', ev => {
+    const tgt = ev.target;
+    if (tgt.dataset && tgt.dataset.op != null) { const o = plan.sim.ops.find(x => x.idx === +tgt.dataset.op); if (o && o.boats.length) selectBoat(o.boats[0], true); }
+    const r = svg.getBoundingClientRect();
+    const xx = ev.clientX - r.left - LBL;
+    if (xx >= 0) setTime(T.inv(xx));
+  });
+  const lg = $('ganttlegend');
+  if (gview === 'boats') lg.innerHTML = Object.keys(CAUSE_COL).map(k => '<span style="margin-right:10px"><i style="display:inline-block;width:12px;height:8px;background:' + CAUSE_COL[k] + '"></i> ' + E.CAUSE_LABEL[k] + '</span>').join('') + ' &bull; coloured block = in a lock, red diamond = deadline';
+  else lg.innerHTML = plan.canal.keepers.map((k, i) => '<span style="margin-right:12px"><i style="display:inline-block;width:12px;height:8px;background:' + KCOL[i % KCOL.length] + '"></i> ' + esc(k.name) + '</span>').join('') + ' &bull; &#9650; = filling (boats going up) &#9660; = emptying (going down) &bull; hatched grey = empty turn (no boats)';
+  moveCursor(true);
+}
+function moveCursor(force) {
+  if (!GX) return;
+  const x = GX.X(t);
+  GX.cursor.setAttribute('x1', x); GX.cursor.setAttribute('x2', x);
+  const box = $('ganttbox');
+  if (force || playing) {
+    if (x < box.scrollLeft + GX.LBL + 10 || x > box.scrollLeft + box.clientWidth - 40) box.scrollLeft = Math.max(0, x - box.clientWidth / 3);
+  }
+}
+
+// ------------------------------------------------------------------ delays
+let sortKey = 'w', sortDir = -1;
+function renderDelays() {
+  const ex = plan.ex, sim = plan.sim, c = plan.canal;
+  const rows = sim.boats.map(b => {
+    const bo = c.boats.find(x => x.id === b.id), e = ex.find(z => z.id === b.id);
+    let main = '', mm = 0;
+    for (const k in e.byCause) if (e.byCause[k] > mm && k !== 'night') { mm = e.byCause[k]; main = k; }
+    if (!main) { let m2 = 0; for (const k in e.byCause) if (e.byCause[k] > m2) { m2 = e.byCause[k]; main = k; } }
+    return { id: b.id, name: bo.name, type: bo.type, pri: bo.priority, from: bo.from, to: bo.to, rel: bo.release, dl: bo.deadline, fin: b.finish, late: b.lateness, w: b.lateness * bo.priority, waited: e.total, main, e };
+  });
+  const lateRows = rows.filter(r => r.late > 0);
+  const tot = {}, totLate = {};
+  rows.forEach(r => { for (const k in r.e.byCause) { tot[k] = (tot[k] || 0) + r.e.byCause[k]; if (r.late > 0) totLate[k] = (totLate[k] || 0) + r.e.byCause[k]; } });
+  const keys = Object.keys(CAUSE_COL).filter(k => tot[k]).sort((a, b) => (totLate[b] || 0) - (totLate[a] || 0));
+  const mx = Math.max(1, ...keys.map(k => totLate[k] || 0));
+  const sumLate = Object.values(totLate).reduce((a, b) => a + b, 0) || 1;
+  let h = '<p><b>' + lateRows.length + ' of ' + rows.length + ' boats finished late</b> (weighted lateness ' + sim.weighted_lateness + '). Those boats spent ' + sumLate + ' minutes waiting at locks. Where that waiting came from:</p><div class="causes">';
+  keys.forEach(k => { h += '<div class="row"><span>' + E.CAUSE_LABEL[k] + '</span><span><i class="bar" style="width:' + Math.max(2, (totLate[k] || 0) / mx * 100) + '%;background:' + CAUSE_COL[k] + '"></i></span><span>' + (totLate[k] || 0) + ' min <span class="small">(' + Math.round((totLate[k] || 0) / sumLate * 100) + '%)</span></span></div>'; });
+  h += '</div><p class="small sans">Waiting overnight is a consequence: a boat that misses the last daylight slot loses the whole night, so look at the causes of the waits <i>before</i> it too. Crossing a pool is never counted as waiting.</p>';
+  const top = lateRows.slice().sort((a, b) => b.w - a.w).slice(0, 5);
+  if (top.length) {
+    h += '<p><b>Biggest contributors to the score</b></p><ul>' + top.map(r => {
+      const parts = Object.entries(r.e.byCause).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([k, v]) => E.CAUSE_LABEL[k].toLowerCase() + ' (' + v + ' min)').join(' and ');
+      return '<li><a href="#" data-boat="' + r.id + '">' + esc(r.name) + '</a>: ' + r.late + ' min late &times; priority ' + r.pri + ' = ' + r.w + '. It waited ' + r.waited + ' min in total, mostly ' + parts + '.</li>';
+    }).join('') + '</ul>';
+  }
+  $('overview').innerHTML = h;
+  const only = $('lateonly').checked;
+  let list = only ? lateRows : rows;
+  list = list.slice().sort((a, b) => ((a[sortKey] > b[sortKey]) - (a[sortKey] < b[sortKey])) * sortDir || a.id - b.id);
+  const head = [['name', 'Boat'], ['pri', 'Pri'], ['from', 'Route'], ['rel', 'Released'], ['dl', 'Due'], ['fin', 'Finished'], ['late', 'Late (min)'], ['w', 'Weighted'], ['waited', 'Waited'], ['main', 'Main cause']];
+  $('boattable').innerHTML = '<tr>' + head.map(([k, n]) => '<th data-k="' + k + '">' + n + (sortKey === k ? (sortDir > 0 ? ' &uarr;' : ' &darr;') : '') + '</th>').join('') + '</tr>' +
+    list.map(r => '<tr class="' + (r.late ? 'late' : '') + (selBoat === r.id ? ' sel' : '') + '" data-boat="' + r.id + '" style="cursor:pointer"><td>' + esc(r.name) + ' <span class="small">#' + r.id + (r.type === 'barge' ? ' barge' : '') + '</span></td><td>' + r.pri + '</td><td>' + r.from + '&rarr;' + r.to + '</td><td>' + hm(r.rel) + '</td><td>' + hm(r.dl) + '</td><td>' + hm(r.fin) + '</td><td>' + r.late + '</td><td>' + r.w + '</td><td>' + r.waited + '</td><td>' + (r.main ? E.CAUSE_LABEL[r.main] : '-') + '</td></tr>').join('');
+  renderStory();
+}
+function renderStory() {
+  const d = $('boatstory');
+  if (selBoat == null) { d.innerHTML = '<p class="small sans">Select a boat to read where it waited and why.</p>'; return; }
+  const b = plan.canal.boats.find(x => x.id === selBoat), sb = plan.sim.boats.find(x => x.id === selBoat), e = plan.ex.find(x => x.id === selBoat);
+  let h = '<h3>' + esc(b.name) + ' <span class="small sans">#' + b.id + ' &middot; ' + b.type + ' &middot; priority ' + b.priority + ' &middot; pool ' + b.from + ' &rarr; ' + b.to + '</span></h3>';
+  h += '<p class="sans" style="font-size:.88rem">Released ' + hm(b.release) + ', due ' + hm(b.deadline) + ', finished ' + hm(sb.finish) + (sb.lateness ? ' &mdash; <b style="color:var(--red)">' + sb.lateness + ' min late</b> (weighted ' + sb.lateness * b.priority + ').' : ' &mdash; <b style="color:var(--green)">on time</b>.') + ' <button class="alt" id="follow">Follow in the canal</button></p>';
+  if (!e.locks.length) h += '<p>It never had to wait.</p>';
+  h += e.locks.map(l => '<div class="sent"><span class="small sans">' + hm(l.from) + ' &ndash; ' + hm(l.to).slice(3) + '</span><br>' + esc(l.text) + '.</div>').join('');
+  d.innerHTML = h;
+  const f = $('follow'); if (f) f.onclick = () => { setTime(Math.max(0, b.release - 20)); if (!playing) togglePlay(); document.getElementById('canal').scrollIntoView(); };
+}
+
+// ------------------------------------------------------------------ selection / time
+function selectBoat(id, noScroll) {
+  selBoat = id;
+  renderDelays(); buildGantt(); drawFrame(); lastPanel = -1; panels();
+}
+function setTime(v) { t = clamp(v, 0, TMAX); $('scrub').value = t; frameAll(); }
+function frameAll() {
+  drawFrame(); lastPanel = -1; panels(); moveCursor(false);
+  const dk = darkness(t);
+  const ph = $('phase');
+  const anyCl = plan.canal.locks.some(l => closureAt(l.id, t));
+  ph.textContent = dk > 0.9 ? 'night - locks shut' : anyCl ? 'lock closed' : 'locks open';
+  ph.className = 'chip' + (dk > 0.9 ? ' night' : anyCl ? ' closed' : '');
+  $('clock').textContent = fmt(t);
+}
+function togglePlay() {
+  if (t >= TMAX - 1) t = 0;
+  playing = !playing; $('play').innerHTML = playing ? '&#10073;&#10073; Pause' : '&#9654; Play';
+  last = performance.now(); if (playing) requestAnimationFrame(tick);
+}
+let last = 0;
+function tick(now) {
+  if (!playing) return;
+  const dt = Math.min(100, now - last); last = now;
+  const sp = +$('speed').value * (darkness(t) > .9 ? 3 : 1);
+  t += dt / 1000 * sp;
+  if (t >= TMAX) { t = TMAX; playing = false; $('play').innerHTML = '&#9654; Play'; }
+  $('scrub').value = t; frameAll();
+  if (playing) requestAnimationFrame(tick);
+}
+function buildScrubBg() {
+  let h = '';
+  const pct = v => (v / TMAX * 100).toFixed(3) + '%';
+  h += '<i style="left:0;right:0;background:#e6dfc9"></i>';
+  let prev = 0;
+  const segs = [];
+  for (const w of plan.pp.windows) { if (w[0] > prev) segs.push([prev, w[0]]); prev = w[1]; }
+  if (prev < TMAX) segs.push([prev, TMAX]);
+  segs.forEach(s => { h += '<i style="left:' + pct(s[0]) + ';width:' + ((s[1] - s[0]) / TMAX * 100) + '%;background:#3d4a6b"></i>'; });
+  for (const cl of plan.canal.closures || []) h += '<i title="Lock ' + cl.lock + ' closed" style="left:' + pct(cl.from) + ';width:' + ((cl.to - cl.from) / TMAX * 100) + '%;background:rgba(184,65,47,.85);top:4px"></i>';
+  $('scrubbg').innerHTML = h;
+}
+
+// ------------------------------------------------------------------ disruption
+function parseHM(s) { const [a, b] = s.split(':').map(Number); return a * 60 + b; }
+function renderDis() {
+  $('dlist').innerHTML = dis.closures.map((c, i) => '<span class="tag">Lock ' + c.lock + ' closed ' + fmt(c.from) + ' &ndash; ' + hm(c.to).slice(3) + '<b data-rc="' + i + '">&times;</b></span>').join('') +
+    dis.delays.map((d, i) => '<span class="tag">' + esc(bname(d.id)) + ' released ' + d.min + ' min late<b data-rd="' + i + '">&times;</b></span>').join('') || '<span class="small">No disruptions added yet.</span>';
+}
+function modCanal() {
+  const m = JSON.parse(JSON.stringify(D.canal));
+  dis.closures.forEach(c => m.closures.push({ lock: c.lock, from: c.from, to: c.to }));
+  dis.delays.forEach(d => { const b = m.boats.find(x => x.id === d.id); b.release += d.min; });
+  return m;
+}
+function replan() {
+  if (!dis.closures.length && !dis.delays.length) { $('diff').innerHTML = '<p>Add at least one closure or delay first.</p>'; return; }
+  const secs = +$('dsecs').value, mod = modCanal();
+  $('replan').disabled = true; $('prog').style.visibility = 'visible'; $('prog').value = 0;
+  $('diff').innerHTML = '<p>Re-planning&hellip;</p>';
+  const A = E.makeSearch(mod, { seed: 777, init: D.params, temp: 0.8 }), B = E.makeSearch(mod, { seed: 4242, temp: 2 });
+  const t0 = performance.now(), total = secs * 1000;
+  (function step() {
+    const el = performance.now() - t0;
+    if (el >= total) {
+      const rA = A.result(), rB = B.result();
+      const r = (rA.unfinished - rB.unfinished || rA.wl - rB.wl || rA.drawn - rB.drawn) <= 0 ? rA : rB;
+      const np = makePlan(mod, r.schedule);
+      $('replan').disabled = false; $('prog').style.visibility = 'hidden';
+      plan = np; afterPlanChange(true);
+      $('revert').disabled = false;
+      return;
+    }
+    A.run(70, total / 2); B.run(40, total / 2);
+    $('prog').value = el / total;
+    setTimeout(step, 0);
+  })();
+}
+function whyChanged(b, o, n) {
+  const oe = base.ex.find(x => x.id === b.id), ne = plan.ex.find(x => x.id === b.id);
+  const parts = [];
+  const dl = dis.delays.find(d => d.id === b.id);
+  if (dl) parts.push('you held it back ' + dl.min + ' min');
+  const diffs = Object.keys(CAUSE_COL).map(k => [k, (ne.byCause[k] || 0) - (oe.byCause[k] || 0)]).filter(x => x[1] !== 0);
+  const later = n.finish > o.finish;
+  diffs.sort((a, z) => later ? z[1] - a[1] : a[1] - z[1]);
+  diffs.slice(0, 2).forEach(([k, v]) => { if (later ? v > 0 : v < 0) parts.push((v > 0 ? '+' : '') + v + ' min ' + E.CAUSE_LABEL[k].toLowerCase()); });
+  let ex = '';
+  const big = ne.locks.slice().sort((a, z) => z.mins - a.mins)[0];
+  if (later && big && big.mins >= 10) ex = ' Longest wait now: ' + big.text + '.';
+  const clo = dis.closures.filter(c => b.routeLocks.includes(c.lock));
+  if (clo.length && later) parts.push('its route passes Lock ' + clo.map(c => c.lock).join(', ') + ' which you closed');
+  if (!later && !parts.length) parts.push('the re-plan reshuffled who goes first, freeing keeper and chamber time');
+  else if (!later) parts.push('other boats now take up less of the shared keepers and chambers');
+  return parts.join('; ') + '.' + ex;
+}
+function renderDiff() {
+  if (plan === base) { $('diff').innerHTML = ''; return; }
+  const a = base.sim, b = plan.sim;
+  let h = '<h3>What changed</h3><table><tr><th>Score</th><th>Original</th><th>Re-planned</th><th>Change</th></tr>';
+  [['Weighted lateness', 'weighted_lateness'], ['Late boats', 'late_boats'], ['Water drawn', 'water_drawn'], ['Operations', 'n_ops'], ['Empty turns', 'n_empty']].forEach(([n, k]) => {
+    const d = b[k] - a[k]; h += '<tr><td>' + n + '</td><td>' + a[k] + '</td><td>' + b[k] + '</td><td class="delta ' + (d > 0 ? 'up' : d < 0 ? 'dn' : '') + '">' + (d > 0 ? '+' : '') + d + '</td></tr>';
+  });
+  h += '</table>' + (b.valid ? '<p class="small sans">The new schedule passed the rule check.</p>' : '<p style="color:var(--red)">Warning: the re-planned schedule failed validation: ' + esc(b.errors.slice(0, 3).join('; ')) + '</p>');
+  const rows = [];
+  b.boats.forEach(nb => {
+    const ob = a.boats.find(x => x.id === nb.id);
+    const d = nb.finish - ob.finish;
+    if (d !== 0) rows.push({ id: nb.id, d, o: ob, n: nb });
+  });
+  rows.sort((x, y) => Math.abs(y.d) - Math.abs(x.d));
+  const later = rows.filter(r => r.d > 0), earlier = rows.filter(r => r.d < 0);
+  h += '<p><b>' + later.length + ' boats finish later, ' + earlier.length + ' finish earlier</b> (' + (b.boats.length - rows.length) + ' unchanged).</p>';
+  h += '<div style="overflow:auto;max-height:420px"><table><tr><th>Boat</th><th>Finish</th><th>Change</th><th>Lateness</th><th>Why</th></tr>' + rows.slice(0, 40).map(r => {
+    const pb = plan.pp.boats.find(x => x.id === r.id); pb.routeLocks = pb.route.map(z => z.lock);
+    return '<tr><td>' + esc(bname(r.id)) + '</td><td>' + hm(r.o.finish) + ' &rarr; ' + hm(r.n.finish) + '</td><td class="delta ' + (r.d > 0 ? 'up' : 'dn') + '">' + (r.d > 0 ? '+' : '') + r.d + ' min</td><td>' + r.o.lateness + ' &rarr; ' + r.n.lateness + '</td><td>' + esc(whyChanged(pb, r.o, r.n)) + '</td></tr>';
+  }).join('') + '</table></div>' + (rows.length > 40 ? '<p class="small">Showing the 40 biggest changes.</p>' : '');
+  $('diff').innerHTML = h;
+}
+function afterPlanChange(fromReplan) {
+  buildCanal(); buildScrubBg(); buildGantt(); renderDelays(); cards(); renderDis(); if (fromReplan) renderDiff(); else $('diff').innerHTML = '';
+  setTime(t);
+}
+
+// ------------------------------------------------------------------ boot
+function boot() {
+  const c = D.canal;
+  $('dlock').innerHTML = c.locks.map(l => '<option value="' + l.id + '">Lock ' + l.id + '</option>').join('');
+  $('dboat').innerHTML = c.boats.map(b => '<option value="' + b.id + '">' + esc(b.name) + ' (#' + b.id + ')</option>').join('');
+  $('play').onclick = togglePlay;
+  $('scrub').oninput = e => setTime(+e.target.value);
+  document.addEventListener('keydown', e => { if (e.code === 'Space' && !/INPUT|SELECT|TEXTAREA|BUTTON/.test(document.activeElement.tagName)) { e.preventDefault(); togglePlay(); } });
+  $('gtabs').onclick = e => { const b = e.target.closest('button'); if (!b) return; gview = b.dataset.v; [...$('gtabs').children].forEach(x => x.classList.toggle('on', x === b)); buildGantt(); };
+  $('lateonly').onchange = renderDelays;
+  document.addEventListener('click', e => {
+    const a = e.target.closest('[data-boat]');
+    if (a && !a.closest('svg') && !a.closest('.tabs')) { e.preventDefault(); selectBoat(+a.dataset.boat); }
+    const th = e.target.closest('th[data-k]');
+    if (th) { const k = th.dataset.k; if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = -1; } renderDelays(); }
+    const rc = e.target.closest('[data-rc]'); if (rc) { dis.closures.splice(+rc.dataset.rc, 1); renderDis(); }
+    const rd = e.target.closest('[data-rd]'); if (rd) { dis.delays.splice(+rd.dataset.rd, 1); renderDis(); }
+  });
+  $('addclose').onclick = () => {
+    const lock = +$('dlock').value, day = +$('dday').value * 1440, from = day + parseHM($('dfrom').value), to = day + parseHM($('dto').value);
+    if (to <= from) { alert('The closure must end after it starts.'); return; }
+    dis.closures.push({ lock, from, to }); renderDis();
+  };
+  $('adddelay').onclick = () => {
+    const id = +$('dboat').value, min = +$('dmin').value;
+    if (!(min > 0)) return;
+    const ex = dis.delays.find(d => d.id === id); if (ex) ex.min += min; else dis.delays.push({ id, min }); renderDis();
+  };
+  $('replan').onclick = replan;
+  $('revert').onclick = () => { plan = base; $('revert').disabled = true; afterPlanChange(false); };
+  // tooltips
+  const tip = $('tip');
+  document.addEventListener('mousemove', e => {
+    const el = e.target.closest && e.target.closest('[data-tip]');
+    if (!el) { tip.style.display = 'none'; return; }
+    let txt = el.dataset.tip;
+    if (/^b\d+$/.test(txt)) { const id = +txt.slice(1), b = plan.canal.boats.find(x => x.id === id), sb = plan.sim.boats.find(x => x.id === id); txt = '<b>' + esc(b.name) + '</b> #' + id + '<br>' + b.type + ', priority ' + b.priority + '<br>Pool ' + b.from + ' &rarr; ' + b.to + '<br>due ' + hm(b.deadline) + (sb.lateness ? ', ' + sb.lateness + ' min late' : ', on time'); }
+    tip.innerHTML = txt; tip.style.display = 'block';
+    tip.style.left = Math.min(window.innerWidth - 290, e.clientX + 14) + 'px'; tip.style.top = (e.clientY + 14) + 'px';
+  });
+  buildCanal(); buildScrubBg(); buildGantt(); renderDelays(); cards(); renderDis();
+  setTime(360);
+  window.__ledger = { E, get plan() { return plan; }, base, setTime, selectBoat, replan };
+}
+boot();
+})();
+</script>
+</body>
+</html>

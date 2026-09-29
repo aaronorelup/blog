@@ -1,0 +1,791 @@
+{
+ "feeder_per_minute": 2,
+ "windows": [
+  [
+   360,
+   1320
+  ],
+  [
+   1800,
+   2760
+  ]
+ ],
+ "enter_minutes": 5,
+ "enter_minutes_with_barge": 8,
+ "exit_minutes": 3,
+ "chamber_slots": 2,
+ "keeper_speed": 6,
+ "keepers": [
+  {
+   "id": 1,
+   "name": "Ada",
+   "start_lock": 2
+  },
+  {
+   "id": 2,
+   "name": "Bert",
+   "start_lock": 5
+  },
+  {
+   "id": 3,
+   "name": "Cass",
+   "start_lock": 8
+  },
+  {
+   "id": 4,
+   "name": "Dot",
+   "start_lock": 1
+  }
+ ],
+ "closures": [
+  {
+   "lock": 7,
+   "from": 1850,
+   "to": 2000
+  }
+ ],
+ "pools": [
+  {
+   "id": 0,
+   "length": 50,
+   "min": 0,
+   "max": 100000,
+   "level": 5000
+  },
+  {
+   "id": 1,
+   "length": 53,
+   "min": 100,
+   "max": 320,
+   "level": 214
+  },
+  {
+   "id": 2,
+   "length": 29,
+   "min": 100,
+   "max": 320,
+   "level": 218
+  },
+  {
+   "id": 3,
+   "length": 20,
+   "min": 100,
+   "max": 320,
+   "level": 217
+  },
+  {
+   "id": 4,
+   "length": 50,
+   "min": 100,
+   "max": 320,
+   "level": 205
+  },
+  {
+   "id": 5,
+   "length": 49,
+   "min": 100,
+   "max": 320,
+   "level": 199
+  },
+  {
+   "id": 6,
+   "length": 55,
+   "min": 100,
+   "max": 320,
+   "level": 170
+  },
+  {
+   "id": 7,
+   "length": 59,
+   "min": 100,
+   "max": 320,
+   "level": 188
+  },
+  {
+   "id": 8,
+   "length": 48,
+   "min": 100,
+   "max": 320,
+   "level": 217
+  },
+  {
+   "id": 9,
+   "length": 30,
+   "min": 100,
+   "max": 320,
+   "level": 213
+  }
+ ],
+ "locks": [
+  {
+   "id": 1,
+   "volume": 58,
+   "fill": 8,
+   "empty": 10,
+   "state": "low"
+  },
+  {
+   "id": 2,
+   "volume": 49,
+   "fill": 12,
+   "empty": 8,
+   "state": "high"
+  },
+  {
+   "id": 3,
+   "volume": 50,
+   "fill": 8,
+   "empty": 6,
+   "state": "low"
+  },
+  {
+   "id": 4,
+   "volume": 50,
+   "fill": 11,
+   "empty": 9,
+   "state": "low"
+  },
+  {
+   "id": 5,
+   "volume": 87,
+   "fill": 11,
+   "empty": 7,
+   "state": "high"
+  },
+  {
+   "id": 6,
+   "volume": 84,
+   "fill": 12,
+   "empty": 7,
+   "state": "low"
+  },
+  {
+   "id": 7,
+   "volume": 80,
+   "fill": 9,
+   "empty": 10,
+   "state": "low"
+  },
+  {
+   "id": 8,
+   "volume": 70,
+   "fill": 12,
+   "empty": 9,
+   "state": "high"
+  },
+  {
+   "id": 9,
+   "volume": 75,
+   "fill": 12,
+   "empty": 9,
+   "state": "low"
+  }
+ ],
+ "boats": [
+  {
+   "id": 1,
+   "name": "Heron",
+   "type": "narrow",
+   "speed": 5,
+   "from": 0,
+   "to": 9,
+   "release": 1997,
+   "deadline": 2389,
+   "priority": 1
+  },
+  {
+   "id": 2,
+   "name": "Mayfly",
+   "type": "narrow",
+   "speed": 5,
+   "from": 0,
+   "to": 9,
+   "release": 800,
+   "deadline": 1169,
+   "priority": 1
+  },
+  {
+   "id": 3,
+   "name": "Old Tom",
+   "type": "narrow",
+   "speed": 4,
+   "from": 1,
+   "to": 3,
+   "release": 1072,
+   "deadline": 1159,
+   "priority": 1
+  },
+  {
+   "id": 4,
+   "name": "Kestrel",
+   "type": "narrow",
+   "speed": 4,
+   "from": 0,
+   "to": 9,
+   "release": 826,
+   "deadline": 1493,
+   "priority": 1
+  },
+  {
+   "id": 5,
+   "name": "Bramble",
+   "type": "narrow",
+   "speed": 5,
+   "from": 7,
+   "to": 2,
+   "release": 1144,
+   "deadline": 1430,
+   "priority": 2
+  },
+  {
+   "id": 6,
+   "name": "Quiet Otter",
+   "type": "barge",
+   "speed": 2,
+   "from": 0,
+   "to": 9,
+   "release": 613,
+   "deadline": 1590,
+   "priority": 1
+  },
+  {
+   "id": 7,
+   "name": "Saffron",
+   "type": "narrow",
+   "speed": 6,
+   "from": 0,
+   "to": 5,
+   "release": 1014,
+   "deadline": 1291,
+   "priority": 1
+  },
+  {
+   "id": 8,
+   "name": "Marigold",
+   "type": "narrow",
+   "speed": 5,
+   "from": 4,
+   "to": 5,
+   "release": 1883,
+   "deadline": 1925,
+   "priority": 1
+  },
+  {
+   "id": 9,
+   "name": "Tinker",
+   "type": "barge",
+   "speed": 2,
+   "from": 7,
+   "to": 8,
+   "release": 893,
+   "deadline": 945,
+   "priority": 1
+  },
+  {
+   "id": 10,
+   "name": "Lark Rise",
+   "type": "narrow",
+   "speed": 4,
+   "from": 0,
+   "to": 9,
+   "release": 420,
+   "deadline": 991,
+   "priority": 1
+  },
+  {
+   "id": 11,
+   "name": "Dunnock",
+   "type": "narrow",
+   "speed": 4,
+   "from": 0,
+   "to": 9,
+   "release": 1901,
+   "deadline": 2393,
+   "priority": 1
+  },
+  {
+   "id": 12,
+   "name": "Coal Barge 7",
+   "type": "narrow",
+   "speed": 6,
+   "from": 0,
+   "to": 9,
+   "release": 391,
+   "deadline": 966,
+   "priority": 2
+  },
+  {
+   "id": 13,
+   "name": "Willow",
+   "type": "narrow",
+   "speed": 4,
+   "from": 1,
+   "to": 6,
+   "release": 1065,
+   "deadline": 1337,
+   "priority": 1
+  },
+  {
+   "id": 14,
+   "name": "Sixpence",
+   "type": "narrow",
+   "speed": 4,
+   "from": 6,
+   "to": 9,
+   "release": 691,
+   "deadline": 848,
+   "priority": 1
+  },
+  {
+   "id": 15,
+   "name": "Moorhen",
+   "type": "narrow",
+   "speed": 6,
+   "from": 4,
+   "to": 2,
+   "release": 806,
+   "deadline": 860,
+   "priority": 1
+  },
+  {
+   "id": 16,
+   "name": "Pennywhistle",
+   "type": "narrow",
+   "speed": 5,
+   "from": 0,
+   "to": 2,
+   "release": 695,
+   "deadline": 778,
+   "priority": 1
+  },
+  {
+   "id": 17,
+   "name": "Ferret",
+   "type": "narrow",
+   "speed": 6,
+   "from": 0,
+   "to": 9,
+   "release": 2056,
+   "deadline": 2487,
+   "priority": 3
+  },
+  {
+   "id": 18,
+   "name": "Gritstone",
+   "type": "narrow",
+   "speed": 4,
+   "from": 0,
+   "to": 9,
+   "release": 592,
+   "deadline": 1185,
+   "priority": 1
+  },
+  {
+   "id": 19,
+   "name": "Wren",
+   "type": "narrow",
+   "speed": 6,
+   "from": 0,
+   "to": 7,
+   "release": 679,
+   "deadline": 1078,
+   "priority": 1
+  },
+  {
+   "id": 20,
+   "name": "Harebell",
+   "type": "narrow",
+   "speed": 5,
+   "from": 0,
+   "to": 9,
+   "release": 917,
+   "deadline": 1410,
+   "priority": 1
+  },
+  {
+   "id": 21,
+   "name": "Slow Loris",
+   "type": "narrow",
+   "speed": 6,
+   "from": 0,
+   "to": 9,
+   "release": 488,
+   "deadline": 843,
+   "priority": 1
+  },
+  {
+   "id": 22,
+   "name": "Nutmeg",
+   "type": "narrow",
+   "speed": 6,
+   "from": 0,
+   "to": 9,
+   "release": 776,
+   "deadline": 1248,
+   "priority": 2
+  },
+  {
+   "id": 23,
+   "name": "Albion",
+   "type": "narrow",
+   "speed": 5,
+   "from": 9,
+   "to": 2,
+   "release": 634,
+   "deadline": 899,
+   "priority": 1
+  },
+  {
+   "id": 24,
+   "name": "Cobble",
+   "type": "narrow",
+   "speed": 5,
+   "from": 5,
+   "to": 4,
+   "release": 576,
+   "deadline": 613,
+   "priority": 2
+  },
+  {
+   "id": 25,
+   "name": "Swift",
+   "type": "narrow",
+   "speed": 6,
+   "from": 0,
+   "to": 9,
+   "release": 554,
+   "deadline": 1098,
+   "priority": 3
+  },
+  {
+   "id": 26,
+   "name": "Tansy",
+   "type": "narrow",
+   "speed": 6,
+   "from": 1,
+   "to": 5,
+   "release": 460,
+   "deadline": 664,
+   "priority": 1
+  },
+  {
+   "id": 27,
+   "name": "Ironbridge",
+   "type": "narrow",
+   "speed": 5,
+   "from": 0,
+   "to": 9,
+   "release": 2064,
+   "deadline": 2650,
+   "priority": 1
+  },
+  {
+   "id": 28,
+   "name": "Fieldfare",
+   "type": "barge",
+   "speed": 3,
+   "from": 1,
+   "to": 5,
+   "release": 982,
+   "deadline": 1172,
+   "priority": 1
+  },
+  {
+   "id": 29,
+   "name": "Pip",
+   "type": "narrow",
+   "speed": 4,
+   "from": 0,
+   "to": 9,
+   "release": 615,
+   "deadline": 1204,
+   "priority": 1
+  },
+  {
+   "id": 30,
+   "name": "Wagtail",
+   "type": "narrow",
+   "speed": 5,
+   "from": 3,
+   "to": 0,
+   "release": 831,
+   "deadline": 959,
+   "priority": 2
+  },
+  {
+   "id": 31,
+   "name": "Barley Mow",
+   "type": "narrow",
+   "speed": 6,
+   "from": 0,
+   "to": 9,
+   "release": 420,
+   "deadline": 961,
+   "priority": 3
+  },
+  {
+   "id": 32,
+   "name": "Kingfisher",
+   "type": "narrow",
+   "speed": 6,
+   "from": 1,
+   "to": 4,
+   "release": 644,
+   "deadline": 757,
+   "priority": 1
+  },
+  {
+   "id": 33,
+   "name": "Rook",
+   "type": "narrow",
+   "speed": 5,
+   "from": 0,
+   "to": 9,
+   "release": 856,
+   "deadline": 1454,
+   "priority": 1
+  },
+  {
+   "id": 34,
+   "name": "Clementine",
+   "type": "narrow",
+   "speed": 5,
+   "from": 0,
+   "to": 9,
+   "release": 489,
+   "deadline": 1028,
+   "priority": 2
+  },
+  {
+   "id": 35,
+   "name": "Stoat",
+   "type": "narrow",
+   "speed": 4,
+   "from": 5,
+   "to": 6,
+   "release": 1007,
+   "deadline": 1045,
+   "priority": 1
+  },
+  {
+   "id": 36,
+   "name": "Gadfly",
+   "type": "barge",
+   "speed": 3,
+   "from": 0,
+   "to": 9,
+   "release": 698,
+   "deadline": 1385,
+   "priority": 3
+  },
+  {
+   "id": 37,
+   "name": "Plover",
+   "type": "barge",
+   "speed": 3,
+   "from": 5,
+   "to": 3,
+   "release": 1872,
+   "deadline": 1975,
+   "priority": 1
+  },
+  {
+   "id": 38,
+   "name": "Humbug",
+   "type": "narrow",
+   "speed": 4,
+   "from": 5,
+   "to": 8,
+   "release": 898,
+   "deadline": 1051,
+   "priority": 1
+  },
+  {
+   "id": 39,
+   "name": "Linnet",
+   "type": "narrow",
+   "speed": 4,
+   "from": 4,
+   "to": 2,
+   "release": 1064,
+   "deadline": 1126,
+   "priority": 1
+  },
+  {
+   "id": 40,
+   "name": "Shire Horse",
+   "type": "narrow",
+   "speed": 5,
+   "from": 0,
+   "to": 9,
+   "release": 855,
+   "deadline": 1340,
+   "priority": 1
+  },
+  {
+   "id": 41,
+   "name": "Bittern",
+   "type": "narrow",
+   "speed": 6,
+   "from": 9,
+   "to": 3,
+   "release": 1035,
+   "deadline": 1351,
+   "priority": 1
+  },
+  {
+   "id": 42,
+   "name": "Coot",
+   "type": "narrow",
+   "speed": 6,
+   "from": 0,
+   "to": 9,
+   "release": 759,
+   "deadline": 1180,
+   "priority": 1
+  },
+  {
+   "id": 43,
+   "name": "Damselfly",
+   "type": "narrow",
+   "speed": 4,
+   "from": 8,
+   "to": 6,
+   "release": 783,
+   "deadline": 866,
+   "priority": 2
+  },
+  {
+   "id": 44,
+   "name": "Elderflower",
+   "type": "narrow",
+   "speed": 6,
+   "from": 0,
+   "to": 9,
+   "release": 862,
+   "deadline": 1233,
+   "priority": 1
+  },
+  {
+   "id": 45,
+   "name": "Foxglove",
+   "type": "barge",
+   "speed": 3,
+   "from": 8,
+   "to": 6,
+   "release": 488,
+   "deadline": 631,
+   "priority": 3
+  },
+  {
+   "id": 46,
+   "name": "Grebe",
+   "type": "narrow",
+   "speed": 5,
+   "from": 4,
+   "to": 0,
+   "release": 992,
+   "deadline": 1213,
+   "priority": 1
+  },
+  {
+   "id": 47,
+   "name": "Hobby",
+   "type": "narrow",
+   "speed": 5,
+   "from": 0,
+   "to": 9,
+   "release": 769,
+   "deadline": 1276,
+   "priority": 1
+  },
+  {
+   "id": 48,
+   "name": "Ivy Wren",
+   "type": "narrow",
+   "speed": 6,
+   "from": 6,
+   "to": 8,
+   "release": 504,
+   "deadline": 616,
+   "priority": 1
+  },
+  {
+   "id": 49,
+   "name": "Jackdaw",
+   "type": "narrow",
+   "speed": 5,
+   "from": 0,
+   "to": 9,
+   "release": 1124,
+   "deadline": 1507,
+   "priority": 1
+  },
+  {
+   "id": 50,
+   "name": "Kittiwake",
+   "type": "narrow",
+   "speed": 5,
+   "from": 4,
+   "to": 5,
+   "release": 486,
+   "deadline": 517,
+   "priority": 2
+  },
+  {
+   "id": 51,
+   "name": "Lapwing",
+   "type": "narrow",
+   "speed": 6,
+   "from": 2,
+   "to": 9,
+   "release": 541,
+   "deadline": 992,
+   "priority": 1
+  },
+  {
+   "id": 52,
+   "name": "Merlin",
+   "type": "narrow",
+   "speed": 5,
+   "from": 6,
+   "to": 0,
+   "release": 826,
+   "deadline": 1143,
+   "priority": 2
+  },
+  {
+   "id": 53,
+   "name": "Nightjar",
+   "type": "narrow",
+   "speed": 5,
+   "from": 6,
+   "to": 4,
+   "release": 381,
+   "deadline": 457,
+   "priority": 3
+  },
+  {
+   "id": 54,
+   "name": "Osprey",
+   "type": "narrow",
+   "speed": 4,
+   "from": 0,
+   "to": 9,
+   "release": 911,
+   "deadline": 1482,
+   "priority": 2
+  },
+  {
+   "id": 55,
+   "name": "Puffin",
+   "type": "narrow",
+   "speed": 4,
+   "from": 0,
+   "to": 9,
+   "release": 1922,
+   "deadline": 2504,
+   "priority": 3
+  }
+ ]
+}

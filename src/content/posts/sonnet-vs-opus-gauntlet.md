@@ -300,6 +300,120 @@ wrote.
 
 The [hidden tests](/gauntlet/loom/hidden/) are public now too, with their expected outputs.
 
-### Lockkeeper
+### Lockkeeper: Opus takes the top three, and effort finally matters
 
-Running now. Results go here when all ten finish.
+**Every schedule from every session was valid, on all four canals.** Not one broke a rule,
+including on the three hidden canals their solvers had never seen. What separated them was
+how good the schedules were, and here, unlike Loom, the spread was real.
+
+| Session | Public canal | Hidden canals (total) | Wall time | Requests | Peak context | Cost |
+|---|---|---|---|---|---|---|
+| Opus 5.5 Low | 10,933 | 37,132 | 14 min | 32 | 130K | **$2.85** |
+| Opus 5.5 Medium | 8,536 | 31,065 | 1.9 h | 181 | 540K | $24.08 |
+| Opus 5.5 High | **7,181** | 30,261 | 6.0 h | 248 | 554K | $29.55 |
+| Opus 5.5 XHigh | 10,948 | 47,303 | 4.4 h | 241 | 746K | $41.87 |
+| Opus 5.5 Max | 7,245 | **28,650** | 4.5 h | 294 | 862K | $53.62 |
+| Sonnet 5.5 Low | 11,011 | 38,050 | 45 min | 48 | 204K | $3.41 |
+| Sonnet 5.5 Medium | 10,193 | 34,666 | 1.5 h | 163 | 429K | $13.73 |
+| Sonnet 5.5 High | 8,640 | 33,527 | 1.6 h | 186 | 530K | $20.38 |
+| Sonnet 5.5 XHigh | 10,388 | 39,146 | 3.4 h | 228 | 763K | $32.51 |
+| Sonnet 5.5 Max | 8,200 | 28,833 | 8.7 h* | 494 | 962K | **$61.96** |
+
+Scores are weighted minutes late: lower is better. My naive baseline scores 26,387 on the
+public canal. \*I stopped Sonnet Max by hand after 8 hours 42 minutes. It was still tuning its
+solver, and its score is what it had saved at that point.
+
+**Opus won four of the five effort levels head to head**, on both the public canal and the
+hidden ones. The best public schedule was Opus High's, 73% better than my baseline. The best
+solver on unseen canals was Opus Max's. Sonnet won only at XHigh.
+
+**Summed across all five levels, the two models tied on quality and Sonnet was cheaper.**
+Their hidden totals came to 174,411 (Opus) and 174,222 (Sonnet), within a tenth of a
+percent. Opus was 7% better on the public canal. Sonnet's five runs cost $132.00 to Opus's
+$151.97, and that's with Sonnet Max still running up its bill when I stopped it. On this
+task Sonnet wasn't the token hog it was on Loom: from Medium to XHigh it made fewer requests
+than Opus did.
+
+**Effort mattered here in a way it never did in Loom, but not in a straight line.** Medium
+and High and Max beat Low on both models. Then both XHigh runs came in last among the Medium-and-up
+runs, and Opus XHigh's solver was the worst of all ten on the hidden canals, behind both
+Low runs, after four and a half hours and $42. One run per cell is a small sample, but the
+same dip on both models is hard to ignore.
+
+**Cache reads were even more of the bill.** On runs this long, the conversation being
+re-read every turn is enormous. On the Max runs it was 64% (Opus) and 72% (Sonnet) of the
+cost, higher than my overall history.
+
+Every page works, and they all converged on the same design: a hillside of stepped pools, a
+Gantt chart underneath, and a score strip on top. The theme split from Loom mostly didn't
+repeat. All five Opus pages are cream again, but only two of the Sonnet pages went dark
+this time.
+
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:1.2em 0">
+  <a href="/gauntlet/lockkeeper/opus-5-5-low/" style="display:block;text-decoration:none"><img src="/gauntlet/lockkeeper/opus-5-5-low/studio.jpg" alt="Lockkeeper's Ledger built by Opus 5.5 at Low effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Opus 5.5 · Low</span></a>
+  <a href="/gauntlet/lockkeeper/opus-5-5-medium/" style="display:block;text-decoration:none"><img src="/gauntlet/lockkeeper/opus-5-5-medium/studio.jpg" alt="Lockkeeper's Ledger built by Opus 5.5 at Medium effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Opus 5.5 · Medium</span></a>
+  <a href="/gauntlet/lockkeeper/opus-5-5-high/" style="display:block;text-decoration:none"><img src="/gauntlet/lockkeeper/opus-5-5-high/studio.jpg" alt="Lockkeeper's Ledger built by Opus 5.5 at High effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Opus 5.5 · High</span></a>
+  <a href="/gauntlet/lockkeeper/opus-5-5-xhigh/" style="display:block;text-decoration:none"><img src="/gauntlet/lockkeeper/opus-5-5-xhigh/studio.jpg" alt="Lockkeeper's Ledger built by Opus 5.5 at XHigh effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Opus 5.5 · XHigh</span></a>
+  <a href="/gauntlet/lockkeeper/opus-5-5-max/" style="display:block;text-decoration:none"><img src="/gauntlet/lockkeeper/opus-5-5-max/studio.jpg" alt="Lockkeeper's Ledger built by Opus 5.5 at Max effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Opus 5.5 · Max</span></a>
+  <a href="/gauntlet/lockkeeper/sonnet-5-5-low/" style="display:block;text-decoration:none"><img src="/gauntlet/lockkeeper/sonnet-5-5-low/studio.jpg" alt="Lockkeeper's Ledger built by Sonnet 5.5 at Low effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Sonnet 5.5 · Low</span></a>
+  <a href="/gauntlet/lockkeeper/sonnet-5-5-medium/" style="display:block;text-decoration:none"><img src="/gauntlet/lockkeeper/sonnet-5-5-medium/studio.jpg" alt="Lockkeeper's Ledger built by Sonnet 5.5 at Medium effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Sonnet 5.5 · Medium</span></a>
+  <a href="/gauntlet/lockkeeper/sonnet-5-5-high/" style="display:block;text-decoration:none"><img src="/gauntlet/lockkeeper/sonnet-5-5-high/studio.jpg" alt="Lockkeeper's Ledger built by Sonnet 5.5 at High effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Sonnet 5.5 · High</span></a>
+  <a href="/gauntlet/lockkeeper/sonnet-5-5-xhigh/" style="display:block;text-decoration:none"><img src="/gauntlet/lockkeeper/sonnet-5-5-xhigh/studio.jpg" alt="Lockkeeper's Ledger built by Sonnet 5.5 at XHigh effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Sonnet 5.5 · XHigh</span></a>
+  <a href="/gauntlet/lockkeeper/sonnet-5-5-max/" style="display:block;text-decoration:none"><img src="/gauntlet/lockkeeper/sonnet-5-5-max/studio.jpg" alt="Lockkeeper's Ledger built by Sonnet 5.5 at Max effort" loading="lazy" style="width:100%;border:1px solid var(--pc-line,#ccc);border-radius:8px" /><span style="font-size:14px">Sonnet 5.5 · Max</span></a>
+</div>
+
+The [hidden canals](/gauntlet/lockkeeper/hidden/) are public now.
+
+## Why a session can run for nine hours now
+
+Sonnet Max ran for eight hours and forty-two minutes on one prompt, alone: no subagents,
+just one conversation. When I saw it was still going, my first question was how it could
+possibly still have room to think.
+
+It nearly didn't. At 3:21 AM its conversation hit **968,364 tokens**, a hair under the
+million-token window, and Claude Code **auto-compacted** it: it summarized everything so far
+into **19,886 tokens** and carried on. That was the only compaction in the entire gauntlet.
+The peak context of each of the twenty sessions shows why the million-token window is the
+real story. **Seventeen of the twenty went past 200,000 tokens**, which was the whole context
+window for every Claude model until recently. Nine of the ten Lockkeeper runs did.
+
+I didn't know auto-compaction had been there for so long. The history, checked against
+Claude Code's changelog and release dates:
+
+- **February 24, 2025**: Claude Code launches as a research preview. The context window is
+  200K tokens.
+- **March 18, 2025** (v0.2.47): three weeks later, "automatic conversation compaction for
+  infinite conversation length" ships. It's been there ever since. These days it's just
+  rarely needed.
+- **July 11, 2025**: the auto-compact warning moves from 60% to 80% of the window.
+- **August 2025**: the first 1M-token context window, in beta on Sonnet 4.
+- **September 29, 2025**: Anthropic's [effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+  post names the three tricks long-running agents depend on: compaction, keeping notes in
+  files outside the conversation, and handing work to subagents with fresh context.
+- **December 10, 2025**: auto-compaction becomes instant.
+- **Early 2026**: the full million-token window becomes standard at normal prices from the
+  4.6 models on, and compaction becomes an API feature anyone can use in their own agents.
+
+So I think the feeling comes from two things changing at once.
+
+**The ceiling moved fivefold.** In 2025, compaction was something you hit all the time and
+felt: a pause, then a model that had forgotten the details. With a million tokens, a session
+can do hours of real work before it ever has to forget anything, and when it finally does,
+the summary is instant.
+
+**The models got good at long work.** METR measures the length of task, in human time, that
+an agent can finish half the time. In [March 2025](https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/)
+the best model managed about an hour, and the length was doubling every seven months. By
+their [January 2026 update](https://metr.org/blog/2026-1-29-time-horizon-1-1/) the leader was
+past five hours and the recent doubling time was about three months. My own
+[Monster Hunter posts](/ledger/everything-sonnet-got-wrong/) are from summer 2025, pasting
+code into a chat window by hand. This week ten sessions ran themselves for up to nine hours,
+kept notes in files, tested their own work, and only one of them ever filled its head.
+
+The part that actually felt insane is the part I had to do myself: noticing it was still
+going and deciding it was enough. Nothing in the session was going to decide that for it.
+
+### Music videos
+
+Queued now, one session at a time so each gets my GPU to itself. They get a deliberately
+vague prompt: make a 30-second music video, however you like, with any local tool I have.
