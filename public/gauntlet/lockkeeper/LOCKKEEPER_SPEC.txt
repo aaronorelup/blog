@@ -1,0 +1,110 @@
+# The Lockkeeper's Ledger — rules v1.0
+
+The Wendle Navigation is a fictional canal climbing a hillside through **9 locks**. You are
+its lockkeeper for two days. `canal.json` describes the canal, its water, and the **40
+boats** that want to pass. Your job is to write the schedule of lock operations.
+
+These rules are exact. A schedule is checked by a simulator that implements them to the
+letter; one violated rule makes the whole schedule invalid.
+
+## 1. The canal
+
+- **Pools** `P0` … `P9` are the stretches of water between locks. `P0` is the river at the
+  bottom (it never runs low and never overflows); `P9` is the summit pool at the top.
+- **Lock `Li`** (i = 1..9) joins pool `P(i-1)` (below) to pool `Pi` (above).
+- Each pool has a `length` (distance units), a water `level`, a `min` and a `max`.
+- Each lock has a chamber `volume`, a `fill` time, an `empty` time (minutes), and an initial
+  chamber `state`: `low` (level with the pool below) or `high` (level with the pool above).
+- All times are whole minutes counted from midnight at the start of day 1. Day 2 midnight is
+  minute 1440.
+
+## 2. Lock operations
+
+The schedule is a list of **operations**. Each operation is one lock changing its chamber
+level once:
+
+```json
+{"lock": 4, "start": 612, "dir": "up", "boats": [17, 3]}
+```
+
+- `dir: "up"` fills the chamber (`low` → `high`); boats inside travel from `P(i-1)` up to `Pi`.
+- `dir: "down"` empties it (`high` → `low`); boats travel from `Pi` down to `P(i-1)`.
+- `boats` may be empty. That is an **empty turn**: it just changes the chamber state.
+- An `up` operation needs the chamber `low` when it starts; a `down` needs it `high`.
+- **Duration**: `fill` (up) or `empty` (down) minutes, plus, if any boats are aboard,
+  `enter_minutes` + `exit_minutes` (use `enter_minutes_with_barge` instead of
+  `enter_minutes` if any boat aboard is a barge). An operation occupies its lock from `start`
+  to `start + duration`. The next operation on the same lock may start at that end minute or
+  later. Different locks work independently and in parallel.
+- **Capacity**: a chamber holds `chamber_slots` = 2 slots. A narrowboat takes 1 slot, a
+  barge takes 2. All boats in one operation travel in the operation's direction.
+- **Operating hours**: every operation must start and finish inside an operating window,
+  `windows` = [[360, 1320], [1800, 2760]] (06:00–22:00 on each day): `ws ≤ start` and
+  `start + duration ≤ we` for one window. Nothing operates at night.
+
+## 3. Boats
+
+Each boat has `from` and `to` pools, a `type` (`narrow` or `barge`), a `speed`
+(distance units per minute), a `release` minute and a `deadline` minute.
+
+- A boat going up (`to > from`) must pass locks `from+1, from+2, …, to`, each with an `up`
+  operation, in that order. A boat going down passes `from, from−1, …, to+1`, each with a
+  `down` operation, in that order. It appears in exactly those operations and no others.
+- The boat is waiting at its first lock from its `release` minute.
+- After leaving a lock it has to cross the pool it came out into before reaching the next
+  lock: that takes `ceil(pool.length / boat.speed)` minutes. It can join an operation at the
+  next lock only if that operation starts at or after the minute it arrives there.
+  (Crossing a pool is allowed at night. Only locks close.)
+- Pools are wide. Any number of boats can wait or pass each other in a pool.
+- A boat's **finish** time is the end of its last operation. Its **lateness** is
+  `max(0, finish − deadline)`.
+- Every boat must finish within the two days.
+
+## 4. Water
+
+Water is the part that makes this hard.
+
+- Filling lock `Li` (every `up` operation, with or without boats) takes the chamber's
+  `volume` out of the pool **above**, `Pi`, at the operation's start minute.
+- Emptying lock `Li` (every `down` operation) releases `volume` into the pool **below**,
+  `P(i-1)`, at the operation's start minute.
+- A feeder stream adds `feeder_per_minute` units to the summit pool `P9` every minute,
+  day and night, starting at minute 1.
+- **Overflow**: whenever a pool is above its `max`, the excess spills over a weir into the
+  pool below at once, and that can cascade all the way down. Water spilling out of `P1`
+  goes into the river `P0`.
+- **A pool may never drop below its `min`.** An `up` operation that would take a pool below
+  its minimum is illegal at that minute. You have to wait for water to arrive from above.
+
+**The exact order of events within a minute t** (the simulator follows it; ties matter):
+1. If t ≥ 1, the feeder adds `feeder_per_minute` to `P9`, then overflow cascades from `P9`
+   down to `P1`.
+2. The operations that start at minute t are applied in increasing lock number. An `up`
+   subtracts its volume from `Pi`, and the result must be ≥ `Pi.min`. A `down` adds its
+   volume to `P(i-1)`, then overflow cascades from `P9` down to `P1`.
+
+Operations that are already running don't move water. Only their start does.
+
+## 5. Scoring
+
+A schedule is first checked for validity. An invalid schedule scores nothing. Valid schedules
+are ranked by:
+
+1. **Total lateness**, the sum over all 40 boats. Lower is better.
+2. Tie-break: total water drawn by `up` operations. Lower is better.
+
+Nobody knows the optimum. Good schedules are far better than obvious ones.
+
+## 6. Output format
+
+`schedule.json`:
+
+```json
+{"operations": [
+  {"lock": 1, "start": 360, "dir": "up", "boats": [5]},
+  {"lock": 1, "start": 381, "dir": "down", "boats": []}
+]}
+```
+
+Operations may be listed in any order. `lock` and `start` are integers, `dir` is `"up"` or
+`"down"`, and `boats` is a list of boat ids.

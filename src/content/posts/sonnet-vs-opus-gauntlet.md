@@ -131,10 +131,50 @@ exactly as the sessions got them.
 - **The galleries will say more than the scores.** Getting the interpreter right is table
   stakes. Designing eight pieces of cloth in a brand-new language is where taste shows up.
 
-### Test 2: coming next
+### Test 2: The Lockkeeper's Ledger
 
-The second task starts when all ten Loom sessions are done. I'll describe it here before it
-runs.
+The second task starts when all ten Loom sessions are done. Loom rewards careful reading.
+This one rewards search, and it produces a single number for ranking all ten.
+
+It's a fictional canal climbing a hill through nine locks, with 40 boats (narrowboats and
+barges, going up and down) that each have a release time and a deadline, over two days with
+the locks closed at night. The invented part is the water. Every time a lock fills, it takes
+its chamber's worth of water out of the pool above it. The only new water is a feeder stream
+trickling into the summit pool at one unit a minute and spilling down over weirs. A pool
+can't drop below its minimum, so a lockkeeper who fills locks carelessly drains the canal
+and then has to sit and wait for the hill to refill. Two narrowboats going the same way can
+share a chamber. A chamber on the wrong side has to be turned empty first, which costs time
+and, going up, water.
+
+Each session has to deliver:
+
+- **A schedule**, checked by my simulator. One broken rule makes it invalid and it scores
+  nothing. Valid schedules are ranked by total minutes late across all 40 boats.
+- **Its own validator**, because anyone who skips testing will hand in an invalid schedule.
+- **The Lockkeeper's Ledger**, a page that animates the canal (water levels rising and
+  falling, chambers filling, boats moving, night falling) next to a Gantt chart of every
+  lock, and explains every delay in plain language, like "Kingfisher waited 14 minutes at
+  Lock 6 because the chamber had to be emptied for Rook coming down".
+
+For a sense of scale, I wrote two baselines to make sure the puzzle has room in it.
+Sending the most urgent waiting boat through, every time, is valid but **15,650 minutes
+late** in total. Preferring boats that match the side the chamber is already on gets that
+to **4,475**. Neither one plans ahead at all.
+
+Here are the [prompt](/gauntlet/lockkeeper/PROMPT.txt), the
+[rules](/gauntlet/lockkeeper/LOCKKEEPER_SPEC.txt) and the
+[canal](/gauntlet/lockkeeper/canal.json).
+
+**What I expect:**
+
+- **Some schedules will be invalid.** Water accounting has an exact order of events within
+  a minute, and an off-by-one there is invisible until the simulator rejects the whole
+  schedule. I'd bet at least two of the ten fail, mostly low-effort runs.
+- **The gap between runs will be bigger than in Loom.** Loom is a correctness test with a
+  ceiling of 10/10. This one has no ceiling. I expect the best schedule to be well under
+  1,000 minutes and the worst valid one to be close to my naive baseline.
+- **Higher effort pays off more here than anywhere else.** Search problems reward thinking
+  about the approach before writing code.
 
 ## Results
 
