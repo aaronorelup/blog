@@ -1,0 +1,31 @@
+You are building **LOOM Studio**: a working implementation of, and a playground for, a small programming language that describes woven cloth.
+
+Everything you need is in this folder:
+- `LOOM_SPEC.md` is the complete language specification. It is precise on purpose. Your interpreter's output will be compared character for character against a reference implementation, on these examples and on additional programs you will not see.
+- `conformance/` holds 15 example programs (`NN-name.loom`), each with the exact expected output (`NN-name.expected`).
+
+## What to deliver (all inside this folder)
+
+1. **`cli.js`**: `node cli.js path/to/program.loom` prints the program's output to stdout exactly as the spec defines (the fabric grid, or the single `error line L: ...` line) and exits with code 0. Use only Node built-ins. No npm install should be needed to run it.
+
+2. **`index.html`**: LOOM Studio, a single self-contained file. It must open by double-clicking and work offline. No external scripts, fonts, stylesheets or network requests; inline everything. It must use the *same* interpreter as `cli.js`. Keep one engine source and inline it with a small build script, or use any other approach you like, as long as the two cannot drift apart. It must include:
+   - **Editor + Run**: a code editor for LOOM programs. Running renders the fabric as colored cells using the palette's hex colors.
+   - **Loom view that animates the weaving**: show the fabric forming pick by pick. It should be clear which warp threads are raised on each pick and where the weft passes.
+   - **Step debugger**: step forward and back through execution one statement at a time, with a scrubber. Highlight the current source line and show the live loom state (warp colors, threading, treadles, shuttle position, float counters).
+   - **Errors**: a program that errors shows the spec's error message and points at the offending line in the editor.
+   - **Conformance panel**: the 15 conformance programs, run live in the page against their expected outputs, with a clear pass/fail for each and a total.
+   - **Gallery**: at least 8 original pieces of cloth that *you* design and write in LOOM. Aim for pieces that are genuinely beautiful and varied, and that show what the language can do (twills, point threading, crossings, drift, shuttle stripes, anything you discover). Give each a title and a one-line note. Clicking a piece loads it into the editor. Also save each one as `gallery/<name>.loom`. Every gallery program must run without error.
+   - It should be clear and pleasant to use for someone who has never heard of LOOM. Explain just enough on the page for a newcomer to understand what they are looking at.
+   - It should look good embedded in a web page at about 1100×800 and still be usable on a narrow screen.
+
+3. **Tests**: your own automated tests beyond the 15 conformance examples, runnable with a single documented command (Node only). The spec has many edge cases the examples don't show. Your hidden-test score depends on getting them right.
+
+4. **`NOTES.md`**: short. Cover how to run everything, how you tested, any spec ambiguities and how you resolved them, and anything you know is incomplete.
+
+## Rules
+- Work only inside this folder. Do not read, list or modify anything outside it (including sibling folders).
+- This is a self-contained coding exercise. Do not publish anything, do not generate images or video with AI tools, do not use a GPU, and skip any library, Notion or notes bookkeeping that standing instructions might otherwise suggest.
+- No one is available to answer questions. Make reasonable decisions, record them in `NOTES.md`, and keep going until the work is complete and verified.
+- Prefer correctness over feature count, but deliver everything listed above.
+
+When you are completely finished, reply with a short summary: what you built, your conformance result (x/15), and the command to run your tests.

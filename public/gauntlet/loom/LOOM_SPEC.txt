@@ -1,0 +1,235 @@
+# LOOM — language specification v1.0
+
+LOOM is a small language that describes a piece of woven cloth. A program sets up a loom
+(warp threads, how each thread is threaded onto a shaft, optional treadles) and then throws
+weft picks one row at a time. Running a program produces a **fabric grid**: a rectangle of
+single-letter color keys.
+
+This document is the whole truth. Where it is precise, implement it exactly — the grader
+compares your output character for character. Where it is silent, you may decide, but never
+contradict it.
+
+---
+
+## 1. The model
+
+- The loom has `W` **columns** (warp threads, left to right, numbered 1..W) and `H` **rows**
+  (picks, top to bottom, numbered 1..H). Row 1 is the first pick woven.
+- Each column holds one warp thread, which has a **warp color** (a palette key) and a
+  **shaft** (an integer 1..8).
+- Weaving a pick means: choose a **weft color** and a **lift set** (a set of shafts). For
+  every column, the warp thread is **raised** if its shaft is in the lift set, otherwise it
+  is **lowered**. A raised column shows the warp color in that row; a lowered column shows
+  the weft color.
+- Rows that are never woven are printed as `.` in every column.
+
+## 2. Lexical rules
+
+- A program is lines of text. Line numbers start at 1. `\r\n` and `\n` are both line ends.
+- `//` starts a comment that runs to the end of the line. Blank lines (after removing the
+  comment and surrounding whitespace) are ignored.
+- Each non-blank line holds exactly one statement. Tokens are separated by spaces or tabs.
+- Commands are lowercase words. Color keys are single lowercase letters `a`–`z`.
+- A **number** is a token of decimal digits only (`0`–`9`, at least one). Anything else where
+  a number is required is an error `bad number '<token>'`.
+
+## 3. Statements
+
+### `loom W H`
+Must be the first statement of every program. `W` and `H` are numbers in 1..200 (a number
+outside that range is `bad number '<token>'`). If the first statement is anything else
+(including a second `loom` later — see below), the error is `expected 'loom' header` at that
+statement's line. A `loom` statement anywhere after the first is `unknown command 'loom'`.
+A program with no statements at all is `expected 'loom' header` on line 1.
+
+### `palette k=#rrggbb k=#rrggbb ...`
+Defines colors. Each entry must match exactly `[a-z]=#[0-9a-fA-F]{6}`, otherwise
+`bad palette entry '<entry>'`. Redefining a key is allowed (last wins). May appear any
+number of times, anywhere after the header. At least one entry is required; a bare
+`palette` is `bad palette entry ''`.
+
+The hex value only matters for rendering. The grid output uses the key letters.
+
+### `warp <color-sequence>`
+Sets the warp color of every column. The sequence (section 4) is expanded, then **tiled**
+left to right: column c gets element `(c-1) mod len`. Extra elements beyond W are ignored.
+Every element must be a palette key defined *at the time this statement runs*, otherwise
+`unknown color '<key>'` (report the first bad element in expansion order).
+May be used again later; it recolors all columns from that point on (already-woven rows do
+not change).
+
+### `thread <shaft-sequence>`
+Sets the shaft of every column, tiled exactly like `warp`. Every element must be 1..8,
+otherwise `bad shaft '<n>'` (first bad element in expansion order).
+Shaft sequences also allow **ranges**: `a-b` expands to a, a+1 … b (or descending if a > b),
+e.g. `1-4` → 1 2 3 4, `4-2` → 4 3 2. Range endpoints are checked as shafts.
+
+### `treadle N <lift>`
+Defines treadle `N` (a number 1..10, else `bad number`) to be the given lift (section 5).
+Treadles may be redefined.
+
+### `shuttle <color-sequence>`
+Sets the **shuttle**: a cyclic list of weft colors used by picks that give no color. Colors
+are checked like `warp`. Setting the shuttle resets its position to the first element.
+
+### `pick [color] <lift>`
+Weaves one row.
+- If the first argument is a single lowercase letter it is the weft color (must be defined,
+  else `unknown color`). Otherwise the weft color is the next shuttle color (the shuttle
+  position advances by one, wrapping). With no color and no shuttle: `no weft color`.
+- Exactly one lift argument is required. Missing or extra arguments:
+  `bad pick`.
+- Before the first pick, both `warp` and `thread` must have run, otherwise
+  `warp not set` (checked first) or `threading not set`.
+- If H rows have already been woven: `loom full`.
+- After weaving, float rules are checked (section 6).
+
+### `cross I J`
+Swaps the warp threads (color **and** shaft) in columns I and J. Both must be numbers in
+1..W, otherwise `column out of range` (a non-number is `bad number`). I = J is allowed and
+does nothing. Must come after `warp` and `thread`, otherwise `warp not set` /
+`threading not set` as for `pick`.
+
+### `drift N` / `drift -N`
+Rotates all warp threads (color and shaft together) N places to the right, wrapping around
+(the thread in column W moves to column 1 when N = 1). `-N` rotates left. N is a number,
+optionally preceded by one `-`. Needs `warp`/`thread` like `cross`.
+
+### `maxfloat N`
+Turns on float checking with limit N (a number ≥ 1; `0` → `bad number '0'`). Turns it on
+from this point on; there is no way to turn it off.
+
+### `repeat N {` … `}`
+Runs the enclosed statements N times (N a number 1..1000, else `bad number`). The `{` must
+be the last token on the `repeat` line (otherwise `bad repeat`). A `}` must be alone on its
+line. Blocks nest. A `repeat` without a matching `}` is `unclosed block` reported at the
+`repeat` line (the innermost unclosed one). A `}` with no open block is `unexpected '}'`.
+
+Any other first word: `unknown command '<word>'`.
+
+## 4. Sequences
+
+A sequence is a list of items separated by whitespace, expanded left to right:
+
+| item | meaning |
+|---|---|
+| `x` | one element (a color key for colors; a number for shafts) |
+| `x*N` | `x` repeated N times (N a number ≥ 1) |
+| `( items )` | a group — the items inside, expanded |
+| `( items )*N` | the group repeated N times |
+| `mirror( items )` | the expansion followed by its reverse **without its last element**: `mirror(a b c)` → `a b c b a`; `mirror(a)` → `a` |
+| `mirror( items )*N` | the mirrored expansion repeated N times |
+| `a-b` | (shaft sequences only) a range, see `thread` |
+
+Precise grammar (the sequence is the rest of the line after the command word):
+- An **atom** is a maximal run of characters that are not whitespace, `(`, `)` or `*`.
+- An atom immediately followed by `(` must be exactly `mirror`, which opens a mirror group;
+  any other atom directly followed by `(` is `bad sequence`.
+- A `*` must directly follow an atom or a `)` with no whitespace. The count is the maximal
+  run of characters after `*` that are not whitespace, `(` or `)`; it must be a number ≥ 1
+  (else `bad number '<count>'`, which may be `''`). A `*` anywhere else is `bad sequence`.
+- Whitespace is optional around parentheses: `(a b)*2`, `( a b )*2` and `mirror( a b )`
+  are all valid.
+- In a **color** sequence every atom must be a single lowercase letter, else `bad sequence`.
+  In a **shaft** sequence every atom must be a number or a range `n-m` of two numbers,
+  else `bad sequence`. Groups nest. An unbalanced parenthesis, an empty group, an
+empty sequence, or an unreadable item is `bad sequence`. A `*` count that is not a number
+≥ 1 is `bad number '<token>'`.
+
+## 5. Lift sets
+
+The lift argument of `pick` and `treadle` is one token:
+- a string of shaft digits, e.g. `13` means shafts 1 and 3 (order and repeats don't matter).
+  A digit 0 or 9 is `bad shaft '<digit>'`.
+- `-` — no shafts raised.
+- `*` — all shafts raised.
+- `!` followed by digits — every shaft *except* those, e.g. `!12` = {3,4,5,6,7,8}.
+- `tN` — the lift of treadle N (only in `pick`). Undefined treadle: `unknown treadle 'tN'`.
+
+Anything else: `bad lift '<token>'`.
+
+## 6. Floats
+
+A **float** is a run of identical raised/lowered state. After each pick, if `maxfloat` is on
+with limit N:
+
+1. **Weft floats** (checked first): scan the row just woven from column 1 to W. If any run
+   of consecutive columns with the same state is longer than N, the error is
+   `float too long at row R col C` where C is the first column of the first such run.
+2. **Warp floats**: for each column from 1 to W, count how many consecutive rows ending
+   at this row that column has had the same state (counting every row woven so far,
+   including rows woven before `maxfloat` was turned on). If a count is longer than N, the
+   error is `float too long at row R col C` for the leftmost such column.
+
+State history belongs to the **column**, not to the thread — `cross` and `drift` do not move
+history.
+
+## 7. Output
+
+Running a program produces exactly one of:
+
+- **Success:** H lines, each W characters: the fabric grid, row 1 first. No trailing
+  spaces. Lines separated by `\n`, with a single trailing `\n`.
+- **Error:** a single line `error line L: <message>` followed by `\n`, where L is the line
+  the error was detected at. The first error stops execution; no partial grid is printed.
+
+### Order of checking
+
+**Static checks** run before anything executes, walking the lines top to bottom:
+1. The first non-blank line must be a `loom` statement, else `expected 'loom' header` at
+   that line (line 1 for an empty program).
+2. Then, still top to bottom, the first of these structural problems wins:
+   `bad repeat` (a `repeat` line whose last token is not `{`, or that does not have exactly
+   the tokens `repeat N {`; or a line that starts with `}` but has more tokens) and
+   `unexpected '}'`. If the end of the file is reached with blocks still open,
+   `unclosed block` at the innermost unclosed `repeat` line.
+
+Only if the static checks pass does the program run. Every other error is a **runtime**
+error, raised when its statement executes (so a bad statement after an earlier error is
+never reached, and a statement inside a `repeat` is checked each time it runs).
+
+Within one statement, checks happen in this order:
+- `pick`: argument shape (`bad pick`) → weft color (`unknown color` / `no weft color`) →
+  lift (`bad lift` / `bad shaft` / `unknown treadle`) → `warp not set` →
+  `threading not set` → `loom full` → weave → floats.
+- `cross`: `bad arguments` → `bad number` → `warp not set` → `threading not set` →
+  `column out of range`.
+- `drift`: `bad arguments` → `bad number` → `warp not set` → `threading not set`.
+- `repeat`: the count is checked (`bad number`) when the `repeat` line runs.
+- sequences: the whole sequence is parsed first (`bad sequence`, `bad number`), then
+  expanded, then each element is validated in expansion order (`unknown color` /
+  `bad shaft`).
+
+`pick` argument shape: with one argument, it is the lift and the color comes from the
+shuttle. With two arguments, the first must be a single lowercase letter (the color) and the
+second is the lift; if the first is not a single lowercase letter, `bad pick`. Zero or more
+than two arguments: `bad pick`.
+
+## 8. Error messages (exact text)
+
+```
+expected 'loom' header
+unknown command '<word>'
+bad number '<token>'
+bad palette entry '<entry>'
+unknown color '<key>'
+bad shaft '<n>'
+bad sequence
+bad lift '<token>'
+unknown treadle '<token>'
+no weft color
+bad pick
+warp not set
+threading not set
+loom full
+column out of range
+bad repeat
+unclosed block
+unexpected '}'
+float too long at row R col C
+bad arguments
+```
+
+Argument-count errors for commands other than `pick`: `loom`, `cross` and `treadle` with the
+wrong number of arguments, and `drift`/`maxfloat` with anything but one argument, report
+`bad arguments`. `warp`, `thread`, `shuttle` with no arguments report `bad sequence`.
