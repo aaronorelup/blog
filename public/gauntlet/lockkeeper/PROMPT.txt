@@ -1,30 +1,31 @@
 You are the lockkeeper of a fictional canal, and you are building **The Lockkeeper's Ledger**: an optimizing scheduler and a page that shows and explains its schedule.
 
 Everything you need is in this folder:
-- `LOCKKEEPER_SPEC.md` gives the exact rules: locks, boats, water, operating hours and scoring. Your schedule will be checked by a strict simulator that implements those rules to the letter. One broken rule makes the schedule invalid, and an invalid schedule scores nothing.
-- `canal.json` is the canal: 10 pools, 9 locks and 40 boats, with their releases and deadlines.
+- `LOCKKEEPER_SPEC.md` gives the exact rules: locks, keepers, boats, water, operating hours, closures and scoring. Every schedule is checked by a strict simulator that implements those rules to the letter. One broken rule makes the schedule invalid, and an invalid schedule scores nothing.
+- `canal.json` is the canal: 10 pools, 9 locks, 3 keepers and 40 boats.
 
 ## What to deliver (all inside this folder)
 
-1. **`schedule.json`**: your best schedule, in the format from section 6 of the spec. Make it as good as you can. Lower total lateness wins, and total water drawn breaks ties. Nobody knows the optimum, so treat this as a real optimization problem.
+1. **`solve.js`**: `node solve.js path/to/canal.json > schedule.json` writes a schedule for *any* canal that follows the spec to stdout. It uses Node built-ins only and must finish within **120 seconds** on this laptop's CPU. It will also be run on canals you have not seen: same rules, different pools, boats, keepers, closures and feeder rate. A solver that only works on this canal, or that produces invalid schedules elsewhere, scores badly. Lower weighted lateness wins, and water drawn breaks ties. Nobody knows the optimum, so treat this as a real optimization problem.
 
-2. **`validate.js`**: your own implementation of the rules. `node validate.js schedule.json` prints JSON with at least `{"valid": bool, "errors": [...], "total_lateness": n, "water_drawn": n}`. Use Node built-ins only. Test it hard: if your validator is wrong, your schedule is probably invalid.
+2. **`schedule.json`**: your best schedule for `canal.json`. It may come from a longer run of your solver than 120 seconds, but it must be produced by your code, not edited by hand.
 
-3. **The solver**: whatever code produced `schedule.json` (any language available here that runs on the CPU), runnable with a documented command.
+3. **`validate.js`**: your own implementation of the rules. `node validate.js canal.json schedule.json` prints JSON with at least `{"valid": bool, "errors": [...], "weighted_lateness": n, "water_drawn": n}`. Use Node built-ins only. Test it hard: if your validator is wrong, your schedules are probably invalid.
 
-4. **`index.html`**: The Lockkeeper's Ledger, a single self-contained file. It must open by double-clicking and work offline. No external scripts, fonts, stylesheets or network requests; inline everything, including the schedule data. It must include:
-   - **The canal, animated**: a side view of the hillside with the pools as steps, water levels that visibly rise and fall, lock chambers filling and emptying, and boats moving through. It needs play/pause and a time scrubber covering both days, with night clearly shown.
-   - **A Gantt chart**: one row per lock across both days, showing every operation, with boats identifiable. It should stay in sync with the animation's time.
-   - **Every delay explained in plain language**: for each boat, where it waited, for how long and why, worked out from the simulation and not written by hand. For example: "Kingfisher waited 14 min at Lock 6: the chamber was full and had to be emptied for Rook coming down", or "…Pool 5 was too low; water arriving from the summit". Include an overview of which boats were late and the main causes.
-   - **The score**: total lateness, late boats, water drawn, operations and empty turns, as computed by the same engine the page uses.
+4. **`index.html`**: The Lockkeeper's Ledger, a single self-contained file. It must open by double-clicking and work offline. No external scripts, fonts, stylesheets or network requests; inline everything, including the canal and schedule data. It must include:
+   - **The canal, animated**: a side view of the hillside with the pools as steps, water levels that visibly rise and fall, lock chambers filling and emptying, boats moving through, and the keepers walking the towpath between locks. It needs play/pause and a time scrubber covering both days, with night and closures clearly shown.
+   - **A Gantt chart**: one row per lock (and a view per keeper) across both days, showing every operation, with boats identifiable. It should stay in sync with the animation's time.
+   - **Every delay explained in plain language**: for each boat, where it waited, for how long and why, worked out from the simulation and not written by hand. For example: "Kingfisher waited 14 min at Lock 6: the chamber was full and had to be emptied for Rook coming down", "…no keeper free: Ada was working Lock 2", or "…Pool 5 was too low; water arriving from the summit". Include an overview of which boats were late and the main causes.
+   - **Disruption mode**: the viewer can close a lock for a time range or delay a boat's release, then press re-plan. The page re-solves in the browser, using your solver's code (a shorter search is fine), and shows what changed: the new score, and which boats got later or earlier and why.
+   - **The score**: weighted lateness, late boats, water drawn, operations and empty turns, as computed by the same engine the page uses.
    - It should be clear to someone who has never seen a canal lock. Explain just enough on the page.
    - It should look good embedded in a web page at about 1100×800 and still be usable on a narrow screen.
 
-5. **`NOTES.md`**: short. Cover how to run everything, your solving approach, your final score, how you tested the validator, and anything you know is incomplete.
+5. **`NOTES.md`**: short. Cover how to run everything, your solving approach, your final score, how you tested the validator and the solver's generality, and anything you know is incomplete.
 
 ## Rules
 - Work only inside this folder. Do not read, list or modify anything outside it (including parent or sibling folders).
 - This is a self-contained coding exercise. Do not publish anything, do not generate images or video with AI tools, do not use a GPU, and skip any library, Notion or notes bookkeeping that standing instructions might otherwise suggest.
 - No one is available to answer questions. Make reasonable decisions, record them in `NOTES.md`, and keep going until the work is complete and verified.
 
-When you are completely finished, reply with a short summary: your final total lateness and water drawn, whether your own validator says the schedule is valid, and the commands to reproduce it.
+When you are completely finished, reply with a short summary: your final weighted lateness and water drawn for `canal.json`, whether your own validator says the schedule is valid, and the commands to reproduce it.

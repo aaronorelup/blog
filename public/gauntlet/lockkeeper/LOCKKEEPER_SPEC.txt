@@ -1,8 +1,10 @@
-# The Lockkeeper's Ledger — rules v1.0
+# The Lockkeeper's Ledger — rules v2.0
 
-The Wendle Navigation is a fictional canal climbing a hillside through **9 locks**. You are
-its lockkeeper for two days. `canal.json` describes the canal, its water, and the **40
-boats** that want to pass. Your job is to write the schedule of lock operations.
+The Wendle Navigation is a fictional canal climbing a hillside through **9 locks**. You run
+it for two days with a small crew of lockkeepers. `canal.json` describes the canal, its
+water, its keepers and the **40 boats** that want to pass. Your job is to write the schedule
+of lock operations. Your solver will also be run on other canals with the same rules and
+different numbers, so solve the problem, not just this instance.
 
 These rules are exact. A schedule is checked by a simulator that implements them to the
 letter; one violated rule makes the whole schedule invalid.
@@ -24,7 +26,7 @@ The schedule is a list of **operations**. Each operation is one lock changing it
 level once:
 
 ```json
-{"lock": 4, "start": 612, "dir": "up", "boats": [17, 3]}
+{"lock": 4, "start": 612, "dir": "up", "boats": [17, 3], "keeper": 2}
 ```
 
 - `dir: "up"` fills the chamber (`low` → `high`); boats inside travel from `P(i-1)` up to `Pi`.
@@ -41,6 +43,23 @@ level once:
 - **Operating hours**: every operation must start and finish inside an operating window,
   `windows` = [[360, 1320], [1800, 2760]] (06:00–22:00 on each day): `ws ≤ start` and
   `start + duration ≤ we` for one window. Nothing operates at night.
+- **Closures**: `closures` lists maintenance stoppages `{lock, from, to}`. No operation on
+  that lock may overlap the half-open interval `[from, to)`, i.e. an operation is illegal if
+  `start < to` and `from < start + duration`.
+
+## 2a. Lockkeepers
+
+Locks don't work themselves. Every operation names the `keeper` who works it.
+
+- `keepers` lists the crew: each has an `id` and a `start_lock` where they stand at minute 0.
+- A keeper works one operation at a time and must be at the lock for its whole duration.
+- Keepers walk the towpath at `keeper_speed` distance units per minute. Lock `Li` sits at
+  towpath position `sum(length of pools P1 … P(i-1))` (so lock 1 is at 0, and the distance
+  from lock i to lock i+1 is the length of pool `Pi`). Walking from lock a to lock b takes
+  `ceil(|pos(a) − pos(b)| / keeper_speed)` minutes.
+- A keeper can start an operation at lock b only if `start ≥ (end of their previous
+  operation, or 0) + walk(previous lock, or start_lock, → b)`. Walking is allowed at any
+  hour, including at night.
 
 ## 3. Boats
 
@@ -57,7 +76,8 @@ Each boat has `from` and `to` pools, a `type` (`narrow` or `barge`), a `speed`
   (Crossing a pool is allowed at night. Only locks close.)
 - Pools are wide. Any number of boats can wait or pass each other in a pool.
 - A boat's **finish** time is the end of its last operation. Its **lateness** is
-  `max(0, finish − deadline)`.
+  `max(0, finish − deadline)`. Each boat has a `priority` of 1, 2 or 3 (a doctor's
+  launch counts more than a holiday boat).
 - Every boat must finish within the two days.
 
 ## 4. Water
@@ -90,7 +110,7 @@ Operations that are already running don't move water. Only their start does.
 A schedule is first checked for validity. An invalid schedule scores nothing. Valid schedules
 are ranked by:
 
-1. **Total lateness**, the sum over all 40 boats. Lower is better.
+1. **Weighted lateness**: the sum over all boats of `priority × lateness`. Lower is better.
 2. Tie-break: total water drawn by `up` operations. Lower is better.
 
 Nobody knows the optimum. Good schedules are far better than obvious ones.
@@ -101,10 +121,10 @@ Nobody knows the optimum. Good schedules are far better than obvious ones.
 
 ```json
 {"operations": [
-  {"lock": 1, "start": 360, "dir": "up", "boats": [5]},
-  {"lock": 1, "start": 381, "dir": "down", "boats": []}
+  {"lock": 1, "start": 360, "dir": "up", "boats": [5], "keeper": 1},
+  {"lock": 1, "start": 381, "dir": "down", "boats": [], "keeper": 1}
 ]}
 ```
 
-Operations may be listed in any order. `lock` and `start` are integers, `dir` is `"up"` or
-`"down"`, and `boats` is a list of boat ids.
+Operations may be listed in any order. `lock`, `start` and `keeper` are integers, `dir` is
+`"up"` or `"down"`, and `boats` is a list of boat ids.

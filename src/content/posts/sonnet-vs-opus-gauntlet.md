@@ -136,43 +136,64 @@ exactly as the sessions got them.
 The second task starts when all ten Loom sessions are done. Loom rewards careful reading.
 This one rewards search, and it produces a single number for ranking all ten.
 
+I rewrote it after the first Loom results came in. The two low-effort runs both scored 10/10
+on my hidden suite and finished in 8 and 10 minutes, so Loom clearly wasn't going to
+separate anyone. Lockkeeper got three more rules, hidden test canals and a live re-planning
+requirement before it ran.
+
 It's a fictional canal climbing a hill through nine locks, with 40 boats (narrowboats and
-barges, going up and down) that each have a release time and a deadline, over two days with
-the locks closed at night. The invented part is the water. Every time a lock fills, it takes
-its chamber's worth of water out of the pool above it. The only new water is a feeder stream
-trickling into the summit pool at one unit a minute and spilling down over weirs. A pool
-can't drop below its minimum, so a lockkeeper who fills locks carelessly drains the canal
-and then has to sit and wait for the hill to refill. Two narrowboats going the same way can
-share a chamber. A chamber on the wrong side has to be turned empty first, which costs time
-and, going up, water.
+barges, going up and down) that each have a release time, a deadline and a priority, over
+two days with the locks closed at night. The invented part is the water. Every time a lock
+fills, it takes its chamber's worth of water out of the pool above it. The only new water is
+a feeder stream trickling into the summit pool at one unit a minute and spilling down over
+weirs. A pool can't drop below its minimum, so a lockkeeper who fills locks carelessly
+drains the canal and then has to sit and wait for the hill to refill.
+
+On top of that:
+
+- **Three keepers for nine locks.** Ada, Bert and Cass work every operation in person and
+  have to walk the towpath between locks. Getting the crew in the right place is its own
+  scheduling problem.
+- **A maintenance closure** shuts Lock 5 for two hours in the middle of day one.
+- **Priorities.** A priority-3 boat's late minutes count triple.
+- **Shared chambers and wrong-side chambers.** Two narrowboats going the same way can share
+  a chamber. A chamber on the wrong side has to be turned empty first, which costs time and,
+  going up, water.
 
 Each session has to deliver:
 
-- **A schedule**, checked by my simulator. One broken rule makes it invalid and it scores
-  nothing. Valid schedules are ranked by total minutes late across all 40 boats.
+- **A solver** (`node solve.js canal.json`) that I also run on **three canals it has never
+  seen**, with different sizes, crews, closures and feeder rates, under a two-minute limit.
+  That's the Lockkeeper version of Loom's hidden tests: it catches solvers that only work on
+  one input.
+- **Its best schedule** for the public canal, checked by my simulator. One broken rule makes
+  it invalid, and an invalid schedule scores nothing. Valid schedules are ranked by weighted
+  minutes late.
 - **Its own validator**, because anyone who skips testing will hand in an invalid schedule.
 - **The Lockkeeper's Ledger**, a page that animates the canal (water levels rising and
-  falling, chambers filling, boats moving, night falling) next to a Gantt chart of every
-  lock, and explains every delay in plain language, like "Kingfisher waited 14 minutes at
-  Lock 6 because the chamber had to be emptied for Rook coming down".
+  falling, chambers filling, boats moving, keepers walking, night falling) next to a Gantt
+  chart, and explains every delay in plain language, like "Kingfisher waited 14 minutes at
+  Lock 6 because no keeper was free: Ada was working Lock 2".
+- **A disruption mode**: close a lock or delay a boat in the page, press re-plan, and it
+  re-solves in the browser and shows who got later and why.
 
-For a sense of scale, I wrote two baselines to make sure the puzzle has room in it.
-Sending the most urgent waiting boat through, every time, is valid but **15,650 minutes
-late** in total. Preferring boats that match the side the chamber is already on gets that
-to **4,475**. Neither one plans ahead at all.
+For scale, I wrote two baseline dispatchers to prove every canal, including the hidden ones,
+can be solved at all. Sending the most urgent waiting boat through with the nearest free
+keeper is valid on the public canal but comes to **26,387 weighted minutes late**, with 32
+of 40 boats late. Neither baseline plans ahead, and both are bad at moving keepers.
 
 Here are the [prompt](/gauntlet/lockkeeper/PROMPT.txt), the
 [rules](/gauntlet/lockkeeper/LOCKKEEPER_SPEC.txt) and the
-[canal](/gauntlet/lockkeeper/canal.json).
+[public canal](/gauntlet/lockkeeper/canal.json). The hidden canals get published with the
+results.
 
 **What I expect:**
 
 - **Some schedules will be invalid.** Water accounting has an exact order of events within
-  a minute, and an off-by-one there is invisible until the simulator rejects the whole
-  schedule. I'd bet at least two of the ten fail, mostly low-effort runs.
-- **The gap between runs will be bigger than in Loom.** Loom is a correctness test with a
-  ceiling of 10/10. This one has no ceiling. I expect the best schedule to be well under
-  1,000 minutes and the worst valid one to be close to my naive baseline.
+  a minute, and keeper walking times make every operation depend on another lock's
+  operations. I'd bet at least two of the ten fail somewhere across the four canals.
+- **The gap between runs will be much bigger than in Loom.** There's no ceiling. I expect
+  the best solver to cut the baseline by more than 80%.
 - **Higher effort pays off more here than anywhere else.** Search problems reward thinking
   about the approach before writing code.
 
