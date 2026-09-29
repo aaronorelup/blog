@@ -334,8 +334,8 @@ $151.97, and that's with Sonnet Max still running up its bill when I stopped it.
 task Sonnet wasn't the token hog it was on Loom: from Medium to XHigh it made fewer requests
 than Opus did.
 
-**Effort mattered here in a way it never did in Loom, but not in a straight line.** Medium
-and High and Max beat Low on both models. Then both XHigh runs came in last among the Medium-and-up
+**Effort mattered here in a way it never did in Loom, but not in a straight line.** Medium,
+High and Max beat Low on both models. Then both XHigh runs came in last among the Medium-and-up
 runs, and Opus XHigh's solver was the worst of all ten on the hidden canals, behind both
 Low runs, after four and a half hours and $42. One run per cell is a small sample, but the
 same dip on both models is hard to ignore.
