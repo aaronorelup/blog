@@ -478,7 +478,7 @@ $20 and $24, the two most expensive.
 
 **And, below Max, they converged again.** Four of the eight character videos put their lead
 in a yellow raincoat or rain cape, and a fifth in a mustard-yellow hoodie. Nine of the ten
-are at night, most in the rain, under a moon, with warm lamplight everywhere. The two Low
+are set at night or dusk, several in the rain, under a moon, with warm lamplight everywhere. The two Low
 runs independently chose synthwave sunsets. With complete freedom, the models reached for
 the same few pictures, just like the ten tartans in Loom. The only video set in daylight is
 the snail.
