@@ -1,9 +1,9 @@
 ---
 id: "AO-026"
-title: "Sonnet 5.5 is half the price of Opus 5.5 on paper. Across three long tests it was 4% cheaper."
+title: "Sonnet 5.5 is half the price of Opus 5.5 on paper. Across three long tests it was 2% cheaper."
 summary: "Ten Claude Code sessions per test, both models at every effort level, run on an invented language, a canal-scheduling optimizer and a no-rules music video. Cache reads eat Sonnet's discount, Opus was at least as good, and effort turned out to be a dial for how much work gets done, not how hard the model thinks."
 date: 2026-09-28
-status: "in-progress"
+status: "shipped"
 tags: ["claude-code", "gauntlet-loop", "agents", "cost", "lessons"]
 series: ["agent-runs"]
 ---
@@ -422,9 +422,6 @@ That's it. No spec, no grader, no hidden tests. The sessions ran one at a time s
 my laptop's GPU to itself, with everything I have installed available to them: ComfyUI and
 its image, video and song models, Blender, and my own notes on how to use them.
 
-The two Max runs are still to come. They'll run tomorrow, when my usage limit resets, and
-land here.
-
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin:1.2em 0">
   <figure style="margin:0"><video controls preload="none" playsinline poster="/gauntlet/music-video/opus-5-5-low.jpg" src="/gauntlet/music-video/opus-5-5-low.mp4" style="width:100%;border-radius:8px;border:1px solid var(--pc-line,#ccc)"></video><figcaption style="font-size:14px">Opus 5.5 Low · <em>Lantern Tide</em></figcaption></figure>
   <figure style="margin:0"><video controls preload="none" playsinline poster="/gauntlet/music-video/sonnet-5-5-low.jpg" src="/gauntlet/music-video/sonnet-5-5-low.mp4" style="width:100%;border-radius:8px;border:1px solid var(--pc-line,#ccc)"></video><figcaption style="font-size:14px">Sonnet 5.5 Low · <em>Night Drive</em></figcaption></figure>
@@ -434,6 +431,8 @@ land here.
   <figure style="margin:0"><video controls preload="none" playsinline poster="/gauntlet/music-video/sonnet-5-5-high.jpg" src="/gauntlet/music-video/sonnet-5-5-high.mp4" style="width:100%;border-radius:8px;border:1px solid var(--pc-line,#ccc)"></video><figcaption style="font-size:14px">Sonnet 5.5 High · <em>Night Shift</em></figcaption></figure>
   <figure style="margin:0"><video controls preload="none" playsinline poster="/gauntlet/music-video/opus-5-5-xhigh.jpg" src="/gauntlet/music-video/opus-5-5-xhigh.mp4" style="width:100%;border-radius:8px;border:1px solid var(--pc-line,#ccc)"></video><figcaption style="font-size:14px">Opus 5.5 XHigh · <em>Neon Koi</em></figcaption></figure>
   <figure style="margin:0"><video controls preload="none" playsinline poster="/gauntlet/music-video/sonnet-5-5-xhigh.jpg" src="/gauntlet/music-video/sonnet-5-5-xhigh.mp4" style="width:100%;border-radius:8px;border:1px solid var(--pc-line,#ccc)"></video><figcaption style="font-size:14px">Sonnet 5.5 XHigh · <em>Light Load</em></figcaption></figure>
+  <figure style="margin:0"><video controls preload="none" playsinline poster="/gauntlet/music-video/opus-5-5-max.jpg" src="/gauntlet/music-video/opus-5-5-max.mp4" style="width:100%;border-radius:8px;border:1px solid var(--pc-line,#ccc)"></video><figcaption style="font-size:14px">Opus 5.5 Max · <em>The Terrible Snail</em></figcaption></figure>
+  <figure style="margin:0"><video controls preload="none" playsinline poster="/gauntlet/music-video/sonnet-5-5-max.jpg" src="/gauntlet/music-video/sonnet-5-5-max.mp4" style="width:100%;border-radius:8px;border:1px solid var(--pc-line,#ccc)"></video><figcaption style="font-size:14px">Sonnet 5.5 Max · <em>All at Once</em></figcaption></figure>
 </div>
 
 | Session | Video | How it was made | Wall time | Cost |
@@ -446,6 +445,8 @@ land here.
 | Sonnet 5.5 High | Night Shift | Sung song, 7 painted shots, all animated | 58 min | $2.22 |
 | Opus 5.5 XHigh | Neon Koi | Sung city-pop, 11 animated shots, karaoke lyrics | 1 h 41 min | $14.72 |
 | Sonnet 5.5 XHigh | Light Load | Sung synth-pop, 9 animated Hopper-style shots, captions | 1 h 34 min | $9.73 |
+| Opus 5.5 Max | The Terrible Snail | Medieval tavern ballad, 20 manuscript frames, 12 animated clips | 1 h 34 min | $20.11 |
+| Sonnet 5.5 Max | All at Once | Sung song, gouache fireflies, 12 animated clips, lights synced to the kick | 1 h 45 min | $24.38 |
 
 **Effort decided the ambition, and it wasn't subtle.** Both Low runs never touched the GPU.
 Each drew a synthwave sunset in Python and synthesized a tune: good-looking, done in under
@@ -463,11 +464,24 @@ press PLAY on her Walkman exactly as the word "play" is sung. When my ComfyUI se
 mid-render, Opus XHigh read my own troubleshooting notes, restarted it under a GPU lease and
 re-rendered the clip that failed. Nobody asked it to.
 
-**And they converged again.** Four of the six character videos put their lead in a yellow
-raincoat or rain cape, and a fifth in a mustard-yellow hoodie. Nearly all are at night, in
-the rain, under a moon, and warm lamplight is everywhere. The two Low runs independently
-chose synthwave sunsets. With complete freedom, the models reached for the same few pictures,
-just like the ten tartans in Loom.
+**Max is where the ideas changed, not just the polish.** Opus Max made a comedy: a page of a
+14th-century illuminated manuscript comes to life, a little knight rides out to slay a beast
+with "two terrible horns," and the horns belong to a smiling snail with a gold-leaf shell. The
+horse throws him, his sword sparks off its face, and the last shot is the snail wearing his
+helmet. Knight-versus-snail fights are a real thing in the margins of medieval manuscripts,
+which is where it got the idea. Sonnet Max made a lonely firefly flashing out of time with
+the others, until every light in the frame goes dark on each sung "once" of the chorus and
+then pulses with every kick. It tested six painting styles and three motion styles before
+committing, rendered twenty takes of the song, and measured its own sync: a median of 0 ms
+between the flash and the beat. These were the two most original ideas of the ten, and at
+$20 and $24, the two most expensive.
+
+**And, below Max, they converged again.** Four of the eight character videos put their lead
+in a yellow raincoat or rain cape, and a fifth in a mustard-yellow hoodie. Nine of the ten
+are at night, most in the rain, under a moon, with warm lamplight everywhere. The two Low
+runs independently chose synthwave sunsets. With complete freedom, the models reached for
+the same few pictures, just like the ten tartans in Loom. The only video set in daylight is
+the snail.
 
 **One honest caveat that nobody fixed:** every session that made a sung song said, in its own
 words, that it had never heard it. They judged their songs by transcripts and spectrograms.
@@ -483,7 +497,7 @@ session in reverse: the sessions don't know how to stop, and they don't know how
 ## What I learned
 
 **Sonnet 5.5 is half the price on paper and roughly the same price in practice.** Over all
-three tests, the Opus runs cost $235 and the Sonnet runs $225, about 4% cheaper. It was 31%
+three tests, the Opus runs cost $255 and the Sonnet runs $249, about 2% cheaper. It was 31%
 *more* expensive on Loom, 13% cheaper on Lockkeeper, and cheaper on the music videos. Cache
 reads cost the same on both models, and they're the biggest line on any long agentic run,
 so the discount only shows up on the parts that aren't reading the conversation again. Test
@@ -516,10 +530,12 @@ unfinished.
 
 **Max was rarely worth it.** On Loom it cost 16–18× Low for the same perfect score. On
 Lockkeeper it bought the best solver, but only just, for $54 and $62. On Lockkeeper's hidden
-canals, both XHigh runs scored worse than both Low runs. More effort bought more work every time; it only
-sometimes bought a better result.
+canals, both XHigh runs scored worse than both Low runs. The one place Max clearly earned its
+price was the open-ended video, where it bought the only two ideas that didn't look like the
+rest. More effort bought more work every time; it only sometimes bought a better result.
 
 **Given freedom, they all reach for the same few things.** Ten tartans. Two synthwave
 sunsets. Four yellow raincoats. The differences between the models were real but small next
 to how much they agreed on what "good" looks like. If I want something nobody has seen, the
-prompt has to ask for it. Left alone, the models give me what everyone has seen.
+prompt has to ask for it, or I have to pay for Max. Left alone at any other setting, the
+models give me what everyone has seen.
