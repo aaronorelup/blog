@@ -14,6 +14,9 @@ const posts = defineCollection({
     // Keys from src/data/series.js. A post can sit in more than one thread.
     series: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
+    // Soft private: the page still builds and opens by URL, but it is noindex and left out of
+    // every list, feed, thread and hand-off. See src/data/listed.js before listing posts.
+    unlisted: z.boolean().default(false),
   }),
 });
 

@@ -6,6 +6,7 @@ date: 2026-09-30
 status: "shipped"
 tags: ["claude-code", "animation", "canvas", "agents", "characters"]
 series: ["characters", "agent-runs"]
+unlisted: true
 ---
 
 On 26 September I wrote one prompt asking for an animated film of my three characters, and six

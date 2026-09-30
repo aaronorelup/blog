@@ -2,8 +2,9 @@
 // The ledger index, as it appears both inside the homepage's overlay panel and on
 // the standalone /ledger page. Markup and inline styles come straight from the design.
 import { getCollection } from 'astro:content';
+import { isListed } from '../../data/listed.js';
 
-const all = await getCollection('posts', ({ data }) => !data.draft);
+const all = await getCollection('posts', ({ data }) => isListed(data));
 const posts = all.sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf() || b.data.id.localeCompare(a.data.id),
 );

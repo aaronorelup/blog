@@ -4,6 +4,7 @@
 // has exactly one renderer and the two never drift.
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { SERIES } from '../../data/series.js';
+import { isListed } from '../../data/listed.js';
 
 interface Props {
   post: CollectionEntry<'posts'>;
@@ -22,17 +23,19 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
 
 // Every post, in ledger-number order. The threads below list their members in this order, and
 // the older/newer links step through it, so no post ends in a dead end.
-const byId = (await getCollection('posts', ({ data }) => !data.draft)).sort((a, b) =>
-  a.data.id.localeCompare(b.data.id, 'en', { numeric: true }),
+// Unlisted posts are left out of both, so they never surface from another post. An unlisted
+// post itself shows no threads (it isn't a part of them) but keeps its older/newer links.
+const cmp = (a, b) => a.localeCompare(b, 'en', { numeric: true });
+const byId = (await getCollection('posts', ({ data }) => isListed(data))).sort((a, b) =>
+  cmp(a.data.id, b.data.id),
 );
-const threads = post.data.series.map((key) => {
+const threads = (post.data.unlisted ? [] : post.data.series).map((key) => {
   const s = SERIES[key];
   if (!s) throw new Error(`${post.data.id} names series "${key}", which src/data/series.js doesn't define`);
   return { key, ...s, posts: byId.filter((p) => p.data.series.includes(key)) };
 });
-const at = byId.findIndex((p) => p.slug === post.slug);
-const older = byId[at - 1];
-const newer = byId[at + 1];
+const older = byId.filter((p) => cmp(p.data.id, post.data.id) < 0).at(-1);
+const newer = byId.find((p) => cmp(p.data.id, post.data.id) > 0);
 ---
 
 <article data-post-article style="width:100%;max-width:720px;padding-bottom:60px">

@@ -1,8 +1,9 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
+import { isListed } from '../data/listed.js';
 
 export async function GET(context) {
-  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  const posts = await getCollection('posts', ({ data }) => isListed(data));
   return rss({
     title: 'Aaron Orelup — the ledger',
     description: 'Notes on learning AI — agents, automation, and whatever breaks along the way.',

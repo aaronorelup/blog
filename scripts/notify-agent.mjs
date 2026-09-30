@@ -202,8 +202,8 @@ async function main() {
     const slug = path.basename(file, '.md');
     const post = { data: parsed.data, body: parsed.content, slug, url: `${SITE}/ledger/${slug}/` };
 
-    if (post.data.draft) {
-      console.log(`Skipping draft: ${file}`);
+    if (post.data.draft || post.data.unlisted) {
+      console.log(`Skipping ${post.data.draft ? 'draft' : 'unlisted post'}: ${file}`);
       continue;
     }
 

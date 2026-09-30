@@ -10,11 +10,14 @@ interface Props {
   title: string;
   description?: string;
   active?: 'ledger' | 'projects' | 'about';
+  // Unlisted (soft-private) posts: keep search engines off a page that's only reachable by URL.
+  noindex?: boolean;
 }
 const {
   title,
   description = "Aaron Orelup's notes on learning AI, filed as I go.",
   active = 'ledger',
+  noindex = false,
 } = Astro.props;
 ---
 
@@ -25,6 +28,7 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
