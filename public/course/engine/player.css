@@ -146,3 +146,4 @@ h2 { font-size: 24px; margin: 0 0 14px; font-weight: 700; }
 .foot a { text-decoration: none; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.bigplay:disabled { cursor: progress; opacity: .8; }

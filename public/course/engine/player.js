@@ -40,13 +40,27 @@
 
     // audio (or a silent clock while the lesson is still a draft)
     let audio = null, clockT = 0, clockAt = 0, playing = false;
-    if (TL.narrated) { audio = new Audio('audio/mix.mp3'); audio.preload = 'auto'; audio.addEventListener('error', () => { audio = null; }); }
+    if (TL.narrated) {
+      audio = new Audio(); audio.preload = 'auto';
+      audio.addEventListener('error', () => { audio = null; });
+      const src = 'audio/mix.mp3';
+      if (/^https?:/.test(location.protocol)) {
+        // aaronorelup.com answers Range requests with a plain 200, which makes a streamed <audio>
+        // unseekable (scrubbing and chapter jumps snap back to 0:00). A blob URL is always seekable,
+        // so the narration (~6 MB) is fetched whole before the first play.
+        const bp = $('#bigplay'); bp.disabled = true; bp.textContent = 'Loading lesson…';
+        fetch(src).then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.blob(); })
+          .then((b) => { if (audio) audio.src = URL.createObjectURL(b); })
+          .catch(() => { if (audio) audio.src = src; })
+          .finally(() => { bp.disabled = false; bp.textContent = 'Play lesson'; });
+      } else audio.src = src;
+    }
     const now = () => (audio ? audio.currentTime : playing ? clockT + (performance.now() - clockAt) / 1000 * rate : clockT);
     let rate = 1, started = false;
     // before the first play the stage shows a poster frame instead of the black fade-in at 0:00
     const posterT = Math.min(DEF.poster ?? 2.5, DUR);
     const setT = (t) => { started = true; t = Math.max(0, Math.min(DUR - 0.01, t)); if (audio) audio.currentTime = t; clockT = t; clockAt = performance.now(); draw(true); };
-    const play = () => { started = true; if (audio) audio.play(); clockT = now(); clockAt = performance.now(); playing = true; $('#bigplay').hidden = true; $('#play').textContent = 'Pause'; };
+    const play = () => { if (audio && !audio.src) return; started = true; if (audio) audio.play(); clockT = now(); clockAt = performance.now(); playing = true; $('#bigplay').hidden = true; $('#play').textContent = 'Pause'; };
     const pause = () => { clockT = now(); if (audio) audio.pause(); playing = false; $('#play').textContent = 'Play'; };
     const toggle = () => (playing ? pause() : play());
     if (audio) audio.addEventListener('ended', () => { pause(); });
