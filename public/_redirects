@@ -4,9 +4,11 @@
 /posts /ledger 301
 
 # Courses became a section of the site on 2026-10-01: /course/ moved to /courses/<course>/.
-# The proof-of-concept address was promoted to the official first lesson.
-/course/lessons/poc-00-01-the-hidden-curriculum/* /courses/the-hidden-curriculum/lessons/00-01-the-hidden-curriculum/ 301
-/course/lessons/poc-00-01-the-hidden-curriculum /courses/the-hidden-curriculum/lessons/00-01-the-hidden-curriculum/ 301
-/course/lessons/* /courses/the-hidden-curriculum/lessons/:splat 301
-/course/* /courses/the-hidden-curriculum/ 301
+# Cloudflare does not take the first matching rule when two wildcard rules overlap (a broad
+# /course/* beat /course/lessons/*), so these never overlap: exact rules for the old index,
+# one wildcard for lessons. The proof-of-concept lesson's new-path twin is a tiny redirect page
+# (public/courses/the-hidden-curriculum/lessons/poc-00-01-the-hidden-curriculum/).
 /course /courses/the-hidden-curriculum/ 301
+/course/ /courses/the-hidden-curriculum/ 301
+/course/index.html /courses/the-hidden-curriculum/ 301
+/course/lessons/* /courses/the-hidden-curriculum/lessons/:splat 301
