@@ -305,7 +305,10 @@
     browser: (x, y) => { g.beginPath(); g.arc(x, y, 10, 0, 7); g.stroke(); K.line(x - 10, y, x + 10, y, { color: C.soft, w: 1.5 }); },
     code: (x, y) => { K.text('</>', x, y + 6, { font: 'mono', size: 15, color: C.accent, weight: 700, align: 'center' }); },
   };
-  /** app window with title bar; returns the content rect. o: {title, kind, alpha, fill, focus} */
+  /** app window with title bar; returns the content rect. o: {title, kind, alpha, fill, focus, url}
+   *  url (any kind, meant for 'browser'): draws a 60 px address bar under the title bar (lock + mono 26 px
+   *  address); the returned content rect starts below it. o.urlLock: false hides the lock. */
+  const URL_BAR = 60;
   K.win = (x, y, w, h, o = {}) => {
     const bar = 50;
     K.card(x, y, w, h, { fill: o.fill || C.code, stroke: o.focus ? C.head : C.line2, r: 14, alpha: o.alpha, shadow: o.shadow, glow: o.focus ? 0.6 : 0 });
@@ -320,8 +323,21 @@
       K.line(gx - 7, y + 18, gx + 7, y + 32, { color: C.soft, w: 2 }); K.line(gx + 7, y + 18, gx - 7, y + 32, { color: C.soft, w: 2 });
       g.save(); g.strokeStyle = C.soft; g.lineWidth = 2; g.strokeRect(gx - 57, y + 18, 13, 13); g.restore();
       K.line(gx - 106, y + 25, gx - 92, y + 25, { color: C.soft, w: 2 });
+      if (o.url != null) {
+        g.save(); K.rr(x, y, w, h, 14); g.clip();
+        g.fillStyle = C.tile; g.fillRect(x, y + bar, w, URL_BAR);
+        K.line(x, y + bar + URL_BAR, x + w, y + bar + URL_BAR, { color: C.line, w: 1.5 });
+        g.restore();
+        K.rr(x + 16, y + bar + 9, w - 32, URL_BAR - 18, (URL_BAR - 18) / 2); g.fillStyle = C.page; g.fill();
+        const lock = o.urlLock !== false, tx = x + 16 + (lock ? 54 : 22);
+        if (lock) K.icon('lock', x + 46, y + bar + URL_BAR / 2, 24, { color: C.soft, w: 2 });
+        g.save(); K.rr(x + 16, y + bar + 9, w - 32, URL_BAR - 18, (URL_BAR - 18) / 2); g.clip();
+        K.text(String(o.url), tx, y + bar + URL_BAR / 2 + 9, { font: 'mono', size: 26, color: C.body });
+        g.restore();
+      }
     });
-    return { x, y: y + bar, w, h: h - bar };
+    const top = bar + (o.url != null ? URL_BAR : 0);
+    return { x, y: y + top, w, h: h - top };
   };
   /**
    * terminal body. items: [{at, cmd, cps}] typed after a prompt, or [{at, out, color}] printed.
@@ -451,6 +467,14 @@
     house: (s) => { g.beginPath(); g.moveTo(-s * 0.42, -s * 0.02); g.lineTo(0, -s * 0.36); g.lineTo(s * 0.42, -s * 0.02); g.moveTo(-s * 0.3, -s * 0.1); g.lineTo(-s * 0.3, s * 0.32); g.lineTo(s * 0.3, s * 0.32); g.lineTo(s * 0.3, -s * 0.1); g.stroke(); K.rr(-s * 0.08, s * 0.08, s * 0.16, s * 0.24, 2); g.stroke(); },
     wifi: (s) => { for (let i = 1; i <= 3; i++) { g.beginPath(); g.arc(0, s * 0.25, s * 0.14 * i, Math.PI * 1.25, Math.PI * 1.75); g.stroke(); } g.beginPath(); g.arc(0, s * 0.25, s * 0.04, 0, 7); g.fill(); },
     brain: (s) => { g.beginPath(); g.arc(-s * 0.12, -s * 0.08, s * 0.2, Math.PI * 0.6, Math.PI * 1.6); g.arc(s * 0.02, -s * 0.2, s * 0.16, Math.PI * 1.1, Math.PI * 1.9); g.arc(s * 0.16, -s * 0.04, s * 0.18, Math.PI * 1.4, Math.PI * 0.45); g.arc(0, s * 0.14, s * 0.18, Math.PI * 0.1, Math.PI * 0.9); g.closePath(); g.stroke(); g.beginPath(); g.moveTo(0, -s * 0.3); g.quadraticCurveTo(-s * 0.06, 0, 0, s * 0.3); g.stroke(); },
+    // home router: box with two antennas and three status lights
+    router: (s) => { K.rr(-s * 0.4, -s * 0.02, s * 0.8, s * 0.3, s * 0.07); g.stroke(); g.beginPath(); g.moveTo(-s * 0.24, -s * 0.02); g.lineTo(-s * 0.32, -s * 0.38); g.moveTo(s * 0.24, -s * 0.02); g.lineTo(s * 0.32, -s * 0.38); g.stroke(); for (let i = -1; i <= 1; i++) { g.beginPath(); g.arc(i * s * 0.12, s * 0.13, s * 0.035, 0, 7); g.fill(); } },
+    phone: (s) => { K.rr(-s * 0.21, -s * 0.38, s * 0.42, s * 0.76, s * 0.08); g.stroke(); g.beginPath(); g.moveTo(-s * 0.06, -s * 0.29); g.lineTo(s * 0.06, -s * 0.29); g.stroke(); g.beginPath(); g.arc(0, s * 0.28, s * 0.035, 0, 7); g.fill(); },
+    // AI / agent: a four-point sparkle with a small companion
+    sparkle: (s) => {
+      const star = (cx, cy, r) => { g.beginPath(); g.moveTo(cx, cy - r); g.quadraticCurveTo(cx, cy, cx + r, cy); g.quadraticCurveTo(cx, cy, cx, cy + r); g.quadraticCurveTo(cx, cy, cx - r, cy); g.quadraticCurveTo(cx, cy, cx, cy - r); g.closePath(); g.stroke(); };
+      star(-s * 0.06, s * 0.06, s * 0.34); star(s * 0.3, -s * 0.28, s * 0.12);
+    },
   };
   K.icons = Object.keys(ICON);
   /** line icon. o: {color, w, alpha, fill} */

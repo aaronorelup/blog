@@ -17,8 +17,9 @@
     '17': 'Applications', '18': 'Other platforms', '19': 'Payments & users', '20': 'Licenses', '21': 'Capstone',
   };
 
-  // type sizes on the 1920 canvas (COURSE.md: 26 px for labels, 30+ for reading, 20 px only for eyebrows)
-  const TYPE = { name: 38, q: 26, num: 22, mod: 26, aiEyebrow: 20, aiQ: 24, aiNum: 22, aiMod: 24, endLabel: 26 };
+  // type sizes on the 1920 canvas (COURSE.md: 26 px for labels, 30+ for reading, 20 px only for eyebrows).
+  // The Lanterns' label row is 26/30 (raised from 20/24 on 2026-10-01: reviewers found it too small at 1080p).
+  const TYPE = { name: 38, q: 26, num: 22, mod: 26, aiEyebrow: 26, aiQ: 30, aiNum: 22, aiMod: 24, endLabel: 26 };
   // a district card's vertical rhythm, px below its top edge: the name's and the question's baselines,
   // the first module row's baseline, and the row pitch. A pinned row's wash spans baseline -28..+10
   // (38 px), so the 40 px pitch leaves a hairline between two pinned neighbours (01 and 02).
@@ -80,6 +81,8 @@
    *  chips   — show the module rows (default true); `modules: false` is the same switch
    *  lanterns      — 0..1 or (i) => 0..1: how lit the six lanterns are (default 1; 0 = bare ghost string)
    *  lanternLabels — 0..1 alpha of the Lanterns' label row (default 1)
+   *  pinDrop — 0..1: the you-are-here pin falls into place from 90 px above (default 1 = in place; ease it yourself)
+   *  pinGlowK — 0..1: how strongly the pinned row / Start / Finish is lit (wash, gold ring, glow; default 1)
    */
   function draw(t, o = {}) {
     const reveal = (i) => (o.t0 == null ? 1 : K.stagger(t, o.t0, i, 0.22, 0.7));
@@ -87,6 +90,7 @@
     const lit = (id) => (!focusD ? 1 : id === focusD ? 1 : 1 - (o.dim ?? 0.7) * (o.focusK ?? 1));
     const g = K.ctx();
     const mods = o.chips !== false && o.modules !== false;
+    const pg = K.clamp(o.pinGlowK ?? 1);
 
     // garden path
     const pk = o.t0 == null ? (o.path ?? 1) : K.io(t, o.t0, 2.2, 'io') * (o.path ?? 1);
@@ -120,12 +124,12 @@
       }
       K.layer(o.lanternLabels ?? 1, () => {
         const eb = { size: TYPE.aiEyebrow, weight: 600, tracking: 3, upper: true };
-        K.eyebrow(LANTERNS.name + ' · AI', 250, y + 62, { ...eb, color: C.head });
-        K.text(LANTERNS.q, 250 + K.measure(LANTERNS.name + ' · AI', eb) + 20, y + 62, { size: TYPE.aiQ, color: C.soft, font: 'ui' });
+        K.eyebrow(LANTERNS.name + ' · AI', 250, y + 66, { ...eb, color: C.head });
+        K.text(LANTERNS.q, 250 + K.measure(LANTERNS.name + ' · AI', eb) + 24, y + 66, { size: TYPE.aiQ, color: C.body, font: 'ui' });
         if (mods) LANTERNS.mods.forEach((m, i) => {
           const x = lanternChipX(i), pinned = o.pin === m;
-          K.text(m, x, y + 62, { font: 'mono', size: TYPE.aiNum, color: C.head, weight: 600 });
-          K.text(MODULES[m], x + AI_NAME_X, y + 62, { size: TYPE.aiMod, color: pinned ? C.strong : C.body, weight: pinned ? 600 : 400 });
+          K.text(m, x, y + 66, { font: 'mono', size: TYPE.aiNum, color: C.head, weight: 600 });
+          K.text(MODULES[m], x + AI_NAME_X, y + 66, { size: TYPE.aiMod, color: pinned ? C.strong : C.body, weight: pinned ? 600 : 400 });
         });
       });
     });
@@ -143,7 +147,7 @@
         K.text(d.q, d.x + 36, d.y + ROW.q, { size: TYPE.q, color: C.soft, font: 'ui' });
         if (mods) d.mods.forEach((m, j) => {
           const y = d.y + ROW.first + j * ROW.pitch, pinned = o.pin === m;
-          if (pinned) { K.rr(d.x + 22, y - 28, d.w - 44, 38, 19); g.fillStyle = K.rgba(C.head, 0.14); g.fill(); }
+          if (pinned && pg > 0) { K.rr(d.x + 22, y - 28, d.w - 44, 38, 19); g.fillStyle = K.rgba(C.head, 0.14 * pg); g.fill(); }
           K.text(m, d.x + 40, y, { font: 'mono', size: TYPE.num, color: pinned ? C.head : C.gold, weight: 600 });
           K.text(MODULES[m], d.x + 84, y, { size: TYPE.mod, color: pinned ? C.strong : C.body, weight: pinned ? 600 : 400 });
         });
@@ -153,8 +157,11 @@
 
     // gate and end
     [GATE, END].forEach((p, i) => {
-      K.layer(reveal(i === 0 ? 0 : 7) * (focusD ? 1 - (o.dim ?? 0.7) * 0.6 : 1), () => {
-        K.card(p.x - 50, p.y - 50, 100, 100, { r: 50, fill: C.tile, stroke: o.pin === p.mod ? C.head : C.line2, glow: o.pin === p.mod ? 0.8 : 0 });
+      // a focused Start / Finish (focus: '00' or '21') stays lit; every other focus dims them a little
+      const own = focusD === p.id;
+      const pinned = o.pin === p.mod ? pg : 0;
+      K.layer(reveal(i === 0 ? 0 : 7) * (focusD && !own ? 1 - (o.dim ?? 0.7) * 0.6 : 1), () => {
+        K.card(p.x - 50, p.y - 50, 100, 100, { r: 50, fill: C.tile, stroke: K.mixColor(C.line2, C.head, pinned), glow: 0.8 * pinned });
         K.text(p.mod, p.x, p.y + 10, { font: 'mono', size: 28, color: C.head, weight: 700, align: 'center' });
         K.text(p.label, p.x, p.y + 86, { size: TYPE.endLabel, color: C.soft, align: 'center', weight: 600 });
       });
@@ -164,7 +171,8 @@
     if (o.pin) {
       const c = chipPos(o.pin), bob = K.wave(t, 2.4, 5);
       const ends = o.pin === GATE.mod || o.pin === END.mod;
-      const px = ends ? c.x + 58 : c.x + c.w - 14, py = (ends ? c.y - 40 : c.y - 4) + bob;
+      const drop = (1 - K.clamp(o.pinDrop ?? 1)) * -90;
+      const px = ends ? c.x + 58 : c.x + c.w - 14, py = (ends ? c.y - 40 : c.y - 4) + bob + drop;
       K.layer(o.pinK ?? 1, () => K.icon('pin', px, py, 44, { color: C.accent }));
     }
   }

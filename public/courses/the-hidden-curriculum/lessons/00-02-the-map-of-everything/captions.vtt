@@ -1,0 +1,433 @@
+WEBVTT
+
+1
+00:00:01.600 --> 00:00:03.376
+Everything you build with AI sits
+
+2
+00:00:03.376 --> 00:00:05.954
+somewhere on one road: your computer,
+
+3
+00:00:05.954 --> 00:00:09.704
+the network, the internet, services, and AI.
+
+4
+00:00:09.704 --> 00:00:11.701
+When something breaks, the first useful
+
+5
+00:00:11.701 --> 00:00:14.069
+question is which stop it's on.
+
+6
+00:00:14.069 --> 00:00:15.625
+Learn that picture once,
+
+7
+00:00:15.625 --> 00:00:18.539
+and every later lesson has a place to land.
+
+8
+00:00:18.539 --> 00:00:21.640
+Think of it as a road leading out of your room.
+
+9
+00:00:22.091 --> 00:00:24.866
+On the course map, this lesson sits at the Start,
+
+10
+00:00:24.866 --> 00:00:27.559
+in Orientation: what this course is,
+
+11
+00:00:27.559 --> 00:00:29.417
+and the lantern you carry.
+
+12
+00:00:29.417 --> 00:00:30.857
+This is the view from the gate,
+
+13
+00:00:30.857 --> 00:00:33.318
+before you walk into the six districts.
+
+14
+00:00:33.318 --> 00:00:35.199
+One road, five stops,
+
+15
+00:00:35.199 --> 00:00:38.091
+and lanterns strung over the whole thing.
+
+16
+00:00:38.541 --> 00:00:41.502
+Stop one: your computer.
+
+17
+00:00:41.502 --> 00:00:44.659
+Files, folders, programs, the terminal.
+
+18
+00:00:44.659 --> 00:00:46.378
+Everything here is yours,
+
+19
+00:00:46.378 --> 00:00:49.199
+and it still works with the Wi-Fi off.
+
+20
+00:00:49.199 --> 00:00:52.612
+A lot of early confusion lives right here.
+
+21
+00:00:52.612 --> 00:00:54.330
+Aaron, who made this course,
+
+22
+00:00:54.330 --> 00:00:58.289
+once saved his Python as a .txt file.
+
+23
+00:00:58.289 --> 00:00:59.868
+The code was fine.
+
+24
+00:00:59.868 --> 00:01:02.215
+The problem was at stop one.
+
+25
+00:01:02.666 --> 00:01:05.023
+Stop two: the network.
+
+26
+00:01:05.023 --> 00:01:08.169
+Your Wi-Fi, and the router: the box
+
+27
+00:01:08.169 --> 00:01:11.141
+every device at home goes through on its way out.
+
+28
+00:01:11.141 --> 00:01:13.754
+Stop three: the internet.
+
+29
+00:01:13.754 --> 00:01:15.763
+Networks joined to other networks,
+
+30
+00:01:15.763 --> 00:01:17.063
+all over the world.
+
+31
+00:01:17.063 --> 00:01:18.967
+Nobody owns all of it.
+
+32
+00:01:18.967 --> 00:01:21.428
+Stop four: services.
+
+33
+00:01:21.428 --> 00:01:24.574
+GitHub, your email, a payment page.
+
+34
+00:01:24.574 --> 00:01:26.699
+Each one is someone else's computer,
+
+35
+00:01:26.699 --> 00:01:29.834
+running all day, with its door open for requests.
+
+36
+00:01:29.834 --> 00:01:32.249
+And stop five: AI.
+
+37
+00:01:32.249 --> 00:01:35.186
+A model, usually running inside a service,
+
+38
+00:01:35.186 --> 00:01:36.987
+answering in words.
+
+39
+00:01:37.437 --> 00:01:39.109
+Follow one message.
+
+40
+00:01:39.109 --> 00:01:41.988
+You type a question into an AI chat.
+
+41
+00:01:41.988 --> 00:01:44.682
+Your computer hands it to the Wi-Fi,
+
+42
+00:01:44.682 --> 00:01:47.689
+and the router passes it out to the internet.
+
+43
+00:01:47.689 --> 00:01:50.614
+The internet carries it to the right service.
+
+44
+00:01:50.614 --> 00:01:53.204
+The service checks it's really you,
+
+45
+00:01:53.204 --> 00:01:54.133
+runs the model,
+
+46
+00:01:54.133 --> 00:01:56.687
+and sends the answer back down the road.
+
+47
+00:01:56.687 --> 00:01:58.486
+Programs knock at a side counter,
+
+48
+00:01:58.486 --> 00:02:01.842
+called an API, and show a key there.
+
+49
+00:02:01.842 --> 00:02:03.618
+Here's where the picture breaks.
+
+50
+00:02:03.618 --> 00:02:05.963
+It isn't really a straight line.
+
+51
+00:02:05.963 --> 00:02:08.296
+Services call other services.
+
+52
+00:02:08.296 --> 00:02:11.338
+And some AI models run right on your own computer,
+
+53
+00:02:11.338 --> 00:02:13.267
+with no road at all.
+
+54
+00:02:13.717 --> 00:02:15.958
+Now the districts land on the road.
+
+55
+00:02:15.958 --> 00:02:18.918
+The Machine and The Code live on your computer:
+
+56
+00:02:18.918 --> 00:02:22.541
+files, the terminal, languages, packages.
+
+57
+00:02:22.541 --> 00:02:24.619
+The History starts there too.
+
+58
+00:02:24.619 --> 00:02:27.463
+Git saves your work on your own machine;
+
+59
+00:02:27.463 --> 00:02:30.075
+GitHub is the service where it's shared.
+
+60
+00:02:30.075 --> 00:02:31.503
+The Network is the road,
+
+61
+00:02:31.503 --> 00:02:33.581
+and how things talk across it:
+
+62
+00:02:33.581 --> 00:02:38.388
+networking, APIs, websites, the cloud.
+
+63
+00:02:38.388 --> 00:02:40.663
+Trust guards the doors of services:
+
+64
+00:02:40.663 --> 00:02:43.450
+keys, logins, secrets.
+
+65
+00:02:43.450 --> 00:02:45.772
+And Shipping is the day you stop only
+
+66
+00:02:45.772 --> 00:02:48.943
+visiting services, and become one.
+
+67
+00:02:49.394 --> 00:02:51.321
+Three phrases you'll meet early,
+
+68
+00:02:51.321 --> 00:02:53.260
+and each one names a stop.
+
+69
+00:02:53.260 --> 00:02:55.687
+localhost means this computer.
+
+70
+00:02:55.687 --> 00:02:58.995
+A tool running on localhost is in your own room,
+
+71
+00:02:58.995 --> 00:03:01.352
+and nobody else can reach it yet.
+
+72
+00:03:01.352 --> 00:03:04.824
+It works on my machine means two computers differ:
+
+73
+00:03:04.824 --> 00:03:07.076
+different files, different versions,
+
+74
+00:03:07.076 --> 00:03:08.423
+different settings.
+
+75
+00:03:08.423 --> 00:03:11.499
+That gap is a lesson, not a flaw in you.
+
+76
+00:03:11.499 --> 00:03:13.868
+And 401, Unauthorized,
+
+77
+00:03:13.868 --> 00:03:16.596
+means you reached the service, but the door
+
+78
+00:03:16.596 --> 00:03:19.812
+didn't accept your key, or you brought none.
+
+79
+00:03:19.812 --> 00:03:21.414
+Your code may be fine.
+
+80
+00:03:21.414 --> 00:03:22.599
+That's Trust.
+
+81
+00:03:22.599 --> 00:03:26.523
+So when something breaks, ask one question first:
+
+82
+00:03:26.523 --> 00:03:28.986
+which stop am I at?
+
+83
+00:03:29.435 --> 00:03:31.722
+AI shows up at every stop.
+
+84
+00:03:31.722 --> 00:03:34.207
+A coding agent edits files on your computer.
+
+85
+00:03:34.207 --> 00:03:36.714
+It reaches its model across the internet.
+
+86
+00:03:36.714 --> 00:03:40.209
+With MCP, it can reach other services for you.
+
+87
+00:03:40.209 --> 00:03:42.914
+So it matters which stop it's standing at,
+
+88
+00:03:42.914 --> 00:03:44.621
+and which keys it holds.
+
+89
+00:03:44.621 --> 00:03:47.488
+AI is the lantern: it lights every district,
+
+90
+00:03:47.488 --> 00:03:50.311
+but it doesn't walk the streets for you.
+
+91
+00:03:50.762 --> 00:03:53.212
+Some things look important and can wait.
+
+92
+00:03:53.212 --> 00:03:55.418
+How routers pick a path.
+
+93
+00:03:55.418 --> 00:03:57.542
+What's inside a packet.
+
+94
+00:03:57.542 --> 00:03:59.887
+Which cloud company is best.
+
+95
+00:03:59.887 --> 00:04:03.266
+Every acronym on your network settings screen.
+
+96
+00:04:03.266 --> 00:04:05.529
+For now, you only need to know
+
+97
+00:04:05.529 --> 00:04:07.644
+which stop you're standing at.
+
+98
+00:04:08.094 --> 00:04:10.044
+Three things to keep.
+
+99
+00:04:10.044 --> 00:04:12.517
+Everything sits on one road:
+
+100
+00:04:12.517 --> 00:04:15.490
+your computer, the network, the internet,
+
+101
+00:04:15.490 --> 00:04:18.589
+services, and AI lighting all of it.
+
+102
+00:04:18.589 --> 00:04:20.679
+Ask which stop first.
+
+103
+00:04:20.679 --> 00:04:22.722
+A problem in your room and a problem
+
+104
+00:04:22.722 --> 00:04:25.486
+at a service's door need different fixes.
+
+105
+00:04:25.486 --> 00:04:27.657
+A service is someone else's computer,
+
+106
+00:04:27.657 --> 00:04:29.294
+with its door open.
+
+107
+00:04:29.294 --> 00:04:31.674
+Most of the AI you use lives there,
+
+108
+00:04:31.674 --> 00:04:33.707
+and answers back to yours.

@@ -3,8 +3,8 @@
  "title": "The Hidden Curriculum",
  "updated": "2026-10-01",
  "totalLessons": 183,
- "publishedLessons": 1,
- "runtimeSeconds": 315,
+ "publishedLessons": 2,
+ "runtimeSeconds": 591,
  "moduleCount": 22,
  "districtCount": 6,
  "regions": [
@@ -128,7 +128,14 @@
      "id": "00.02",
      "title": "The map of everything",
      "idea": "One picture: your computer → the network → the internet → services → AI, and where every later lesson sits",
-     "status": "locked"
+     "status": "published",
+     "slug": "00-02-the-map-of-everything",
+     "url": "/courses/the-hidden-curriculum/lessons/00-02-the-map-of-everything/",
+     "duration": 276.4,
+     "summary": "Everything you build with AI sits on one road with five stops (your computer, the network, the internet, services, AI), so when something breaks, ask which stop first. This lesson draws that road and gives every later lesson its place on it.",
+     "published": "2026-10-01",
+     "narrator": "Adrian",
+     "poster": "/courses/the-hidden-curriculum/lessons/00-02-the-map-of-everything/poster.jpg"
     },
     {
      "id": "00.03",
@@ -157,7 +164,7 @@
      "status": "locked"
     }
    ],
-   "filed": 1
+   "filed": 2
   },
   {
    "n": "01",
@@ -1433,17 +1440,17 @@
   }
  ],
  "latest": {
-  "id": "00.01",
-  "title": "The hidden curriculum",
-  "idea": "CS teaches theory, IS teaches business systems; the day-to-day tooling is learned by apprenticeship, forums and breaking things",
+  "id": "00.02",
+  "title": "The map of everything",
+  "idea": "One picture: your computer → the network → the internet → services → AI, and where every later lesson sits",
   "status": "published",
-  "slug": "00-01-the-hidden-curriculum",
-  "url": "/courses/the-hidden-curriculum/lessons/00-01-the-hidden-curriculum/",
-  "duration": 315.0,
-  "summary": "Building with AI runs on everyday tools that school rarely teaches, so the gap is in the syllabus, not in you. This lesson shows why, and lays out the map every later lesson is shelved on.",
-  "published": "2026-09-30",
-  "narrator": "RClayton",
-  "poster": "/courses/the-hidden-curriculum/lessons/00-01-the-hidden-curriculum/poster.jpg"
+  "slug": "00-02-the-map-of-everything",
+  "url": "/courses/the-hidden-curriculum/lessons/00-02-the-map-of-everything/",
+  "duration": 276.4,
+  "summary": "Everything you build with AI sits on one road with five stops (your computer, the network, the internet, services, AI), so when something breaks, ask which stop first. This lesson draws that road and gives every later lesson its place on it.",
+  "published": "2026-10-01",
+  "narrator": "Adrian",
+  "poster": "/courses/the-hidden-curriculum/lessons/00-02-the-map-of-everything/poster.jpg"
  },
  "first": {
   "id": "00.01",
