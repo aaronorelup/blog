@@ -1,0 +1,40 @@
+---
+// One module's lessons on a course page's map: released ones link to their player, the rest show a lock whose
+// hover says "Not released yet". A lesson about AI carries a lantern. Uses the #hc-lantern / #hc-lock symbols
+// the course page defines once.
+import { fmtDuration } from '../../data/courses.js';
+
+interface Props {
+  lessons: any[];
+  id?: string;
+  flat?: boolean;
+}
+const { lessons, id, flat = false } = Astro.props;
+---
+
+<ol class={`hc-lessons${flat ? ' is-flat' : ''}`} id={id}>
+  {lessons.map((l) => {
+    const lan = l.lantern && (
+      <span class="hc-l-ai hc-tip" data-tip="A lesson about AI"><svg class="hc-lan" aria-hidden="true"><use href="#hc-lantern" /></svg><span class="sr-only">(about AI)</span></span>
+    );
+    return (
+      <li>
+        {l.status === 'published' ? (
+          <a class="hc-lesson is-open" href={l.url}>
+            <span class="hc-l-id">{l.id}</span>
+            <span class="hc-l-main"><strong>{l.title}{lan}</strong><span>{l.summary || l.idea}</span></span>
+            <span class="hc-l-meta"><span class="hc-dot" aria-hidden="true"></span>{fmtDuration(l.duration)}<span class="hc-watch">Watch →</span></span>
+          </a>
+        ) : (
+          <div class="hc-lesson is-locked">
+            <span class="hc-l-id">{l.id}</span>
+            <span class="hc-l-main"><strong>{l.title}{lan}</strong><span>{l.idea}</span></span>
+            <span class="hc-l-meta">
+              <span class="hc-lock-tag hc-tip" data-tip="Not released yet"><svg class="cs-lock" aria-hidden="true"><use href="#hc-lock" /></svg><span class="sr-only">Not released yet</span></span>
+            </span>
+          </div>
+        )}
+      </li>
+    );
+  })}
+</ol>

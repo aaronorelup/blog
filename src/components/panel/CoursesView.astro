@@ -10,26 +10,25 @@ const lockPath = 'M7 10V7a5 5 0 0 1 10 0v3M5.5 10h13a1 1 0 0 1 1 1v8.5a1 1 0 0 1
 
 <div style="width:100%;max-width:1140px">
   <h1 style="margin:0 0 10px;font-family:'Zen Maru Gothic',sans-serif;font-size:clamp(30px,4vw,44px);line-height:1.1;font-weight:700;color:var(--pc-head);letter-spacing:-0.015em">Courses</h1>
-  <p style="margin:0 0 40px;font-size:14px;line-height:1.75;color:var(--pc-quiet);max-width:680px">Courses made of short, narrated lessons on the parts of building with AI that nobody teaches. They come out one course at a time and fill in one lesson at a time; anything locked opens the day it's filed.</p>
+  <p style="margin:0 0 40px;font-size:14px;line-height:1.75;color:var(--pc-quiet);max-width:680px">Courses made of short, narrated lessons on the parts of building with AI that nobody teaches. They come out one course at a time and fill in one lesson at a time; anything locked opens the day it's released.</p>
 
   <div style="display:flex;flex-direction:column">
     {COURSES.map((c) => {
       const d = c.data;
-      const pct = (100 * d.publishedLessons) / d.totalLessons;
+      const done = d.publishedLessons >= d.totalLessons;
+      // what has been released, never anything that reads like the visitor's own progress (there are no accounts)
       return (
         <a href={c.href} class="cv-row" data-no-fly>
-          <div class="cv-id">{c.code}<br /><span>{d.publishedLessons < d.totalLessons ? 'In progress' : 'Complete'}</span></div>
+          <div class="cv-id">{c.code}<br /><span>{done ? 'Complete' : 'In production'}</span></div>
           <div>
             <h2>{c.title}</h2>
             <p class="cv-tag">{c.tagline}</p>
             <p class="cv-sum">{c.summary}</p>
             <div class="cv-meta">
-              <span><b>{d.publishedLessons}</b> of {d.totalLessons} lessons filed</span>
-              <span>{d.moduleCount} modules</span>
-              <span>{fmtMinutes(d.runtimeSeconds)} so far</span>
-              {d.next && <span>Next up: {d.next.id} {d.next.title}</span>}
+              <span><b>{d.publishedLessons}</b> of {d.totalLessons} lessons available</span>
+              <span>{fmtMinutes(d.runtimeSeconds)} total</span>
+              {!done && <span>More coming soon</span>}
             </div>
-            <div class="cs-bar" role="img" aria-label={`${d.publishedLessons} of ${d.totalLessons} lessons filed`}><i style={`width:${pct > 0 ? Math.max(pct, 1.2).toFixed(2) : 0}%`}></i></div>
             <span class="cv-go">Open the course →</span>
           </div>
           <div class="cv-art"><img src={c.card} alt="" loading="lazy" decoding="async" width="1280" height="720" /></div>

@@ -5,85 +5,111 @@
  "totalLessons": 183,
  "publishedLessons": 1,
  "runtimeSeconds": 315,
- "moduleCount": 24,
- "districts": [
+ "moduleCount": 22,
+ "districtCount": 6,
+ "regions": [
   {
+   "kind": "start",
+   "n": null,
+   "id": "orientation",
+   "name": "Orientation",
+   "q": "what this course is, and the lantern you carry",
+   "mods": [
+    "00"
+   ]
+  },
+  {
+   "kind": "district",
+   "n": 1,
    "id": "machine",
    "name": "The Machine",
    "q": "what's on your computer",
    "mods": [
     "01",
     "02",
-    "04"
+    "03"
    ]
   },
   {
+   "kind": "district",
+   "n": 2,
    "id": "code",
    "name": "The Code",
    "q": "what programs are made of",
    "mods": [
-    "03",
+    "04",
     "05",
-    "12",
-    "15"
+    "06",
+    "07"
    ]
   },
   {
+   "kind": "district",
+   "n": 3,
    "id": "history",
    "name": "The History",
    "q": "how work is saved & shared",
    "mods": [
-    "06"
+    "08"
    ]
   },
   {
+   "kind": "district",
+   "n": 4,
    "id": "network",
    "name": "The Network",
    "q": "how computers talk",
    "mods": [
-    "07",
-    "08",
-    "16",
-    "17",
-    "18"
+    "09",
+    "10",
+    "11",
+    "12",
+    "13"
    ]
   },
   {
+   "kind": "district",
+   "n": 5,
    "id": "trust",
    "name": "Trust",
    "q": "who may do what",
    "mods": [
-    "09",
-    "10",
-    "11"
+    "14",
+    "15",
+    "16"
    ]
   },
   {
+   "kind": "district",
+   "n": 6,
    "id": "shipping",
    "name": "Shipping",
    "q": "getting it to people",
    "mods": [
-    "13",
-    "14",
+    "17",
+    "18",
     "19",
     "20"
    ]
   },
   {
-   "id": "ai",
-   "name": "The Lanterns",
-   "q": "AI lights every district",
+   "kind": "finish",
+   "n": null,
+   "id": "capstone",
+   "name": "Capstone",
+   "q": "one small real project, from idea to running, using every district",
    "mods": [
-    "21",
-    "22"
+    "21"
    ]
   }
  ],
+ "lanternCount": 23,
  "modules": [
   {
    "n": "00",
-   "name": "Orientation: Why Nobody Taught You This",
+   "name": "Orientation: The Map and the Lantern",
    "short": "Orientation",
+   "region": "Orientation",
    "lessons": [
     {
      "id": "00.01",
@@ -102,8 +128,7 @@
      "id": "00.02",
      "title": "The map of everything",
      "idea": "One picture: your computer → the network → the internet → services → AI, and where every later lesson sits",
-     "status": "locked",
-     "next": true
+     "status": "locked"
     },
     {
      "id": "00.03",
@@ -113,6 +138,20 @@
     },
     {
      "id": "00.04",
+     "title": "Model vs app vs agent",
+     "idea": "GPT/Claude/Gemini (models) vs the apps wrapping them vs agents that act",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "00.05",
+     "title": "How LLMs work (just enough)",
+     "idea": "Tokens, context window, temperature, hallucination",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "00.06",
      "title": "How to learn anything technical",
      "idea": "Read the error, search the exact message, read docs, ask AI with context, make a tiny test",
      "status": "locked"
@@ -124,6 +163,7 @@
    "n": "01",
    "name": "Your Computer, Under the Hood",
    "short": "Your Computer, Under the Hood",
+   "region": "The Machine",
    "lessons": [
     {
      "id": "01.01",
@@ -178,6 +218,27 @@
      "title": "CPU, RAM, disk, GPU & VRAM",
      "idea": "What each does and why AI cares about the GPU and its VRAM",
      "status": "locked"
+    },
+    {
+     "id": "01.10",
+     "title": "Running AI models on your own computer",
+     "idea": "Ollama, LM Studio, ComfyUI; VRAM limits; quantization",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "01.11",
+     "title": "The copilot zoo",
+     "idea": "OS (Windows Copilot, Apple Intelligence), browser, email, IDE (GitHub Copilot), vendor (NVIDIA app/G-Assist), Office — what each can see",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "01.12",
+     "title": "What AI is already on your PC?",
+     "idea": "How to inventory assistants, background AI services and their data access",
+     "lantern": true,
+     "status": "locked"
     }
    ],
    "filed": 0
@@ -186,6 +247,7 @@
    "n": "02",
    "name": "The Command Line",
    "short": "The Command Line",
+   "region": "The Machine",
    "lessons": [
     {
      "id": "02.01",
@@ -240,43 +302,64 @@
   },
   {
    "n": "03",
-   "name": "Programming Languages",
-   "short": "Programming Languages",
+   "name": "Development Environments",
+   "short": "Development Environments",
+   "region": "The Machine",
    "lessons": [
     {
      "id": "03.01",
-     "title": "What a programming language actually is",
-     "idea": "Human-readable instructions → something the machine runs",
+     "title": "Text editor vs IDE",
+     "idea": "Notepad → VS Code → full IDEs; what an IDE adds",
      "status": "locked"
     },
     {
      "id": "03.02",
-     "title": "Compiled vs interpreted vs bytecode",
-     "idea": "C/Rust/Go vs Python/JS vs Java/C# — what \"runtime\" means",
+     "title": "VS Code tour",
+     "idea": "Explorer, integrated terminal, extensions, command palette, settings",
      "status": "locked"
     },
     {
      "id": "03.03",
-     "title": "The language tour",
-     "idea": "Python, JavaScript/TypeScript, HTML/CSS, SQL, Bash/PowerShell, C/C++, C#, Java/Kotlin, Swift, Go, Rust, Lua/GDScript — what each is for",
+     "title": "The IDE family",
+     "idea": "Cursor/Windsurf, JetBrains (PyCharm etc.), Visual Studio, Xcode, Android Studio, Unity/Godot editors — when to use which",
      "status": "locked"
     },
     {
      "id": "03.04",
-     "title": "Choosing a language",
-     "idea": "By target: web, AI/data, scripting, mobile, games, systems, automation",
+     "title": "Linters, formatters & type checkers",
+     "idea": "Tools that catch mistakes before you run",
      "status": "locked"
     },
     {
      "id": "03.05",
-     "title": "Libraries, frameworks, SDKs & runtimes",
-     "idea": "Library = you call it; framework = it calls you; SDK = a vendor's toolkit",
+     "title": "The debugger",
+     "idea": "Breakpoints and stepping instead of print() everywhere",
      "status": "locked"
     },
     {
      "id": "03.06",
-     "title": "Data formats",
-     "idea": "JSON, YAML, TOML, CSV, XML, Markdown — config and data files you'll meet daily",
+     "title": "Notebooks",
+     "idea": "Jupyter, Colab — when notebooks beat scripts and when they don't",
+     "status": "locked"
+    },
+    {
+     "id": "03.07",
+     "title": "WSL, dev containers & cloud dev environments",
+     "idea": "Linux on Windows, Codespaces, why teams standardize environments",
+     "status": "locked"
+    },
+    {
+     "id": "03.08",
+     "title": "Coding agents in your editor and terminal",
+     "idea": "Claude Code, Codex, Copilot agent, Cursor — how they read, edit, run",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "03.09",
+     "title": "Instruction files: prompts as code",
+     "idea": "Instructions files (CLAUDE.md etc.), versioning prompts",
+     "lantern": true,
      "status": "locked"
     }
    ],
@@ -284,49 +367,44 @@
   },
   {
    "n": "04",
-   "name": "Development Environments",
-   "short": "Development Environments",
+   "name": "Programming Languages",
+   "short": "Programming Languages",
+   "region": "The Code",
    "lessons": [
     {
      "id": "04.01",
-     "title": "Text editor vs IDE",
-     "idea": "Notepad → VS Code → full IDEs; what an IDE adds",
+     "title": "What a programming language actually is",
+     "idea": "Human-readable instructions → something the machine runs",
      "status": "locked"
     },
     {
      "id": "04.02",
-     "title": "VS Code tour",
-     "idea": "Explorer, integrated terminal, extensions, command palette, settings",
+     "title": "Compiled vs interpreted vs bytecode",
+     "idea": "C/Rust/Go vs Python/JS vs Java/C# — what \"runtime\" means",
      "status": "locked"
     },
     {
      "id": "04.03",
-     "title": "The IDE family",
-     "idea": "Cursor/Windsurf, JetBrains (PyCharm etc.), Visual Studio, Xcode, Android Studio, Unity/Godot editors — when to use which",
+     "title": "The language tour",
+     "idea": "Python, JavaScript/TypeScript, HTML/CSS, SQL, Bash/PowerShell, C/C++, C#, Java/Kotlin, Swift, Go, Rust, Lua/GDScript — what each is for",
      "status": "locked"
     },
     {
      "id": "04.04",
-     "title": "Linters, formatters & type checkers",
-     "idea": "Tools that catch mistakes before you run",
+     "title": "Choosing a language",
+     "idea": "By target: web, AI/data, scripting, mobile, games, systems, automation",
      "status": "locked"
     },
     {
      "id": "04.05",
-     "title": "The debugger",
-     "idea": "Breakpoints and stepping instead of print() everywhere",
+     "title": "Libraries, frameworks, SDKs & runtimes",
+     "idea": "Library = you call it; framework = it calls you; SDK = a vendor's toolkit",
      "status": "locked"
     },
     {
      "id": "04.06",
-     "title": "Notebooks",
-     "idea": "Jupyter, Colab — when notebooks beat scripts and when they don't",
-     "status": "locked"
-    },
-    {
-     "id": "04.07",
-     "title": "WSL, dev containers & cloud dev environments",
-     "idea": "Linux on Windows, Codespaces, why teams standardize environments",
+     "title": "Data formats",
+     "idea": "JSON, YAML, TOML, CSV, XML, Markdown — config and data files you'll meet daily",
      "status": "locked"
     }
    ],
@@ -336,6 +414,7 @@
    "n": "05",
    "name": "Python & JavaScript Ecosystems (Packages)",
    "short": "Python & JavaScript Ecosystems (Packages)",
+   "region": "The Code",
    "lessons": [
     {
      "id": "05.01",
@@ -390,73 +469,45 @@
   },
   {
    "n": "06",
-   "name": "Git, GitHub & Agents on Git",
-   "short": "Git, GitHub & Agents on Git",
+   "name": "Data & Databases",
+   "short": "Data & Databases",
+   "region": "The Code",
    "lessons": [
     {
      "id": "06.01",
-     "title": "What version control is",
-     "idea": "Save points for code with a full history",
+     "title": "Why apps need databases",
+     "idea": "Beyond files",
      "status": "locked"
     },
     {
      "id": "06.02",
-     "title": "Git basics",
-     "idea": "repo, stage, commit, log, diff",
+     "title": "SQL & relational databases",
+     "idea": "SQLite, Postgres, tables, queries",
      "status": "locked"
     },
     {
      "id": "06.03",
-     "title": "Branches & merging",
-     "idea": "Parallel timelines; merge conflicts demystified",
+     "title": "NoSQL & key-value stores",
+     "idea": "Documents, KV, when they fit",
      "status": "locked"
     },
     {
      "id": "06.04",
-     "title": "Git vs GitHub",
-     "idea": "Git = the tool on your PC; GitHub/GitLab/Bitbucket = hosting + collaboration",
+     "title": "Hosted backends",
+     "idea": "Supabase, Firebase, Neon, Cloudflare D1",
      "status": "locked"
     },
     {
      "id": "06.05",
-     "title": "Remotes: clone, push, pull, fork",
-     "idea": "Syncing your copy with the server copy",
+     "title": "Migrations & backups",
+     "idea": "Changing a database without losing data",
      "status": "locked"
     },
     {
      "id": "06.06",
-     "title": "Pull requests, issues & code review",
-     "idea": "How teams (and agents) propose changes",
-     "status": "locked"
-    },
-    {
-     "id": "06.07",
-     "title": ".gitignore & never committing secrets",
-     "idea": "What stays out of the repo and why",
-     "status": "locked"
-    },
-    {
-     "id": "06.08",
-     "title": "Gists",
-     "idea": "Tiny single-file repos for sharing snippets",
-     "status": "locked"
-    },
-    {
-     "id": "06.09",
-     "title": "GitHub Actions (CI/CD)",
-     "idea": "Robots that test/build/deploy on every push",
-     "status": "locked"
-    },
-    {
-     "id": "06.10",
-     "title": "Releases, tags & GitHub Pages",
-     "idea": "Shipping versions and free static hosting",
-     "status": "locked"
-    },
-    {
-     "id": "06.11",
-     "title": "How AI coding agents use git",
-     "idea": "Agents on branches/worktrees, opening PRs, why git makes agent work safe to undo",
+     "title": "Vector databases & embeddings",
+     "idea": "How AI \"searches by meaning\" (RAG)",
+     "lantern": true,
      "status": "locked"
     }
    ],
@@ -464,59 +515,188 @@
   },
   {
    "n": "07",
-   "name": "Networking & the Internet",
-   "short": "Networking & the Internet",
+   "name": "Concurrency: Doing Many Things at Once",
+   "short": "Concurrency",
+   "region": "The Code",
    "lessons": [
     {
      "id": "07.01",
+     "title": "Processes vs threads",
+     "idea": "Separate houses vs roommates",
+     "status": "locked"
+    },
+    {
+     "id": "07.02",
+     "title": "The event loop",
+     "idea": "One worker juggling many waiting tasks (JavaScript, Python asyncio)",
+     "status": "locked"
+    },
+    {
+     "id": "07.03",
+     "title": "async / await",
+     "idea": "Writing code that waits without freezing",
+     "status": "locked"
+    },
+    {
+     "id": "07.04",
+     "title": "Worker threads & worker pools",
+     "idea": "Handing heavy work to helpers",
+     "status": "locked"
+    },
+    {
+     "id": "07.05",
+     "title": "Job queues & the worker loop",
+     "idea": "\"Take a job, do it, report, repeat\" — how render queues and AI pipelines work",
+     "status": "locked"
+    },
+    {
+     "id": "07.06",
+     "title": "Race conditions & locks",
+     "idea": "Why two workers touching one thing breaks it",
+     "status": "locked"
+    },
+    {
+     "id": "07.07",
+     "title": "Multi-agent orchestration",
+     "idea": "Fan-out, review, verify; cost and when it's worth it",
+     "lantern": true,
+     "status": "locked"
+    }
+   ],
+   "filed": 0
+  },
+  {
+   "n": "08",
+   "name": "Git, GitHub & Agents on Git",
+   "short": "Git, GitHub & Agents on Git",
+   "region": "The History",
+   "lessons": [
+    {
+     "id": "08.01",
+     "title": "What version control is",
+     "idea": "Save points for code with a full history",
+     "status": "locked"
+    },
+    {
+     "id": "08.02",
+     "title": "Git basics",
+     "idea": "repo, stage, commit, log, diff",
+     "status": "locked"
+    },
+    {
+     "id": "08.03",
+     "title": "Branches & merging",
+     "idea": "Parallel timelines; merge conflicts demystified",
+     "status": "locked"
+    },
+    {
+     "id": "08.04",
+     "title": "Git vs GitHub",
+     "idea": "Git = the tool on your PC; GitHub/GitLab/Bitbucket = hosting + collaboration",
+     "status": "locked"
+    },
+    {
+     "id": "08.05",
+     "title": "Remotes: clone, push, pull, fork",
+     "idea": "Syncing your copy with the server copy",
+     "status": "locked"
+    },
+    {
+     "id": "08.06",
+     "title": "Pull requests, issues & code review",
+     "idea": "How teams (and agents) propose changes",
+     "status": "locked"
+    },
+    {
+     "id": "08.07",
+     "title": ".gitignore & never committing secrets",
+     "idea": "What stays out of the repo and why",
+     "status": "locked"
+    },
+    {
+     "id": "08.08",
+     "title": "Gists",
+     "idea": "Tiny single-file repos for sharing snippets",
+     "status": "locked"
+    },
+    {
+     "id": "08.09",
+     "title": "GitHub Actions (CI/CD)",
+     "idea": "Robots that test/build/deploy on every push",
+     "status": "locked"
+    },
+    {
+     "id": "08.10",
+     "title": "Releases, tags & GitHub Pages",
+     "idea": "Shipping versions and free static hosting",
+     "status": "locked"
+    },
+    {
+     "id": "08.11",
+     "title": "How AI coding agents use git",
+     "idea": "Agents on branches/worktrees, opening PRs, why git makes agent work safe to undo",
+     "lantern": true,
+     "status": "locked"
+    }
+   ],
+   "filed": 0
+  },
+  {
+   "n": "09",
+   "name": "Networking & the Internet",
+   "short": "Networking & the Internet",
+   "region": "The Network",
+   "lessons": [
+    {
+     "id": "09.01",
      "title": "LAN, WAN & the internet",
      "idea": "Your home network vs everyone else's; router, switch, Wi-Fi",
      "status": "locked"
     },
     {
-     "id": "07.02",
+     "id": "09.02",
      "title": "IP addresses & ports",
      "idea": "Address = building, port = apartment; private vs public IPs",
      "status": "locked"
     },
     {
-     "id": "07.03",
+     "id": "09.03",
      "title": "localhost",
      "idea": "127.0.0.1 — your computer talking to itself; localhost:3000 explained",
      "status": "locked"
     },
     {
-     "id": "07.04",
+     "id": "09.04",
      "title": "Clients & servers",
      "idea": "Who asks, who answers; any computer can be a server",
      "status": "locked"
     },
     {
-     "id": "07.05",
+     "id": "09.05",
      "title": "DNS & domains",
      "idea": "Names → numbers; registrars, records (A, CNAME, TXT, MX)",
      "status": "locked"
     },
     {
-     "id": "07.06",
+     "id": "09.06",
      "title": "HTTP & HTTPS",
      "idea": "Requests, responses, methods, status codes, headers",
      "status": "locked"
     },
     {
-     "id": "07.07",
+     "id": "09.07",
      "title": "TLS certificates",
      "idea": "The padlock; Let's Encrypt; why HTTPS is free now",
      "status": "locked"
     },
     {
-     "id": "07.08",
+     "id": "09.08",
      "title": "Firewalls, NAT, port forwarding & VPNs",
      "idea": "Why your PC isn't reachable from the internet (and how to change that safely)",
      "status": "locked"
     },
     {
-     "id": "07.09",
+     "id": "09.09",
      "title": "CDNs, latency & bandwidth",
      "idea": "Why sites are copied worldwide",
      "status": "locked"
@@ -525,222 +705,80 @@
    "filed": 0
   },
   {
-   "n": "08",
+   "n": "10",
    "name": "APIs, Webhooks & MCP",
    "short": "APIs, Webhooks & MCP",
+   "region": "The Network",
    "lessons": [
     {
-     "id": "08.01",
+     "id": "10.01",
      "title": "What an API is",
      "idea": "A menu of things a program lets other programs do",
      "status": "locked"
     },
     {
-     "id": "08.02",
+     "id": "10.02",
      "title": "Web APIs & REST",
      "idea": "Endpoints, JSON bodies, GET/POST/PUT/DELETE",
      "status": "locked"
     },
     {
-     "id": "08.03",
+     "id": "10.03",
      "title": "Anatomy of one API call",
      "idea": "URL, method, headers, key, JSON body, status code: one request taken apart",
      "status": "locked"
     },
     {
-     "id": "08.04",
+     "id": "10.04",
      "title": "SDKs, rate limits, pagination & errors",
      "idea": "The practical realities of APIs",
      "status": "locked"
     },
     {
-     "id": "08.05",
+     "id": "10.05",
      "title": "Webhooks",
      "idea": "\"Don't call us, we'll call you\" — reverse APIs; polling vs push",
      "status": "locked"
     },
     {
-     "id": "08.06",
+     "id": "10.06",
      "title": "WebSockets & streaming",
      "idea": "Live two-way connections; why AI replies stream token by token",
+     "lantern": true,
      "status": "locked"
     },
     {
-     "id": "08.07",
+     "id": "10.07",
      "title": "GraphQL & RPC (brief)",
      "idea": "Other API styles you'll bump into",
      "status": "locked"
     },
     {
-     "id": "08.08",
+     "id": "10.08",
      "title": "MCP — Model Context Protocol",
      "idea": "A standard plug that lets AI apps use tools; client, server, tools, resources",
-     "status": "locked"
-    },
-    {
-     "id": "08.09",
-     "title": "MCP transports & installing servers",
-     "idea": "stdio (local program) vs HTTP (remote); config files; auth for remote MCP",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "09",
-   "name": "Identity, Authentication & Keys (Developer Side)",
-   "short": "Identity, Authentication & Keys (Developer Side)",
-   "lessons": [
-    {
-     "id": "09.01",
-     "title": "Authentication vs authorization",
-     "idea": "Who are you vs what may you do",
-     "status": "locked"
-    },
-    {
-     "id": "09.02",
-     "title": "Sessions & cookies",
-     "idea": "How a website remembers you're logged in",
-     "status": "locked"
-    },
-    {
-     "id": "09.03",
-     "title": "API keys, app keys, secret vs publishable keys",
-     "idea": "Shared secrets; which keys may appear in a browser and which never may",
-     "status": "locked"
-    },
-    {
-     "id": "09.04",
-     "title": "Tokens & JWTs",
-     "idea": "Access tokens, refresh tokens, expiry, bearer headers",
-     "status": "locked"
-    },
-    {
-     "id": "09.05",
-     "title": "Public/private key cryptography",
-     "idea": "Lock anyone can close, only you can open; signing vs encrypting",
-     "status": "locked"
-    },
-    {
-     "id": "09.06",
-     "title": "SSH keys",
-     "idea": "Passwordless login to servers and GitHub",
-     "status": "locked"
-    },
-    {
-     "id": "09.07",
-     "title": "OAuth 2.0: the big idea",
-     "idea": "Letting an app act for you without giving it your password",
-     "status": "locked"
-    },
-    {
-     "id": "09.08",
-     "title": "OAuth flows",
-     "idea": "Authorization Code + PKCE, Client Credentials, Device Code, refresh — which to use when",
-     "status": "locked"
-    },
-    {
-     "id": "09.09",
-     "title": "OpenID Connect, SSO & \"Sign in with Google\"",
-     "idea": "OAuth + identity",
-     "status": "locked"
-    },
-    {
-     "id": "09.10",
-     "title": "Scopes, consent & revoking access",
-     "idea": "Least privilege for apps",
-     "status": "locked"
-    },
-    {
-     "id": "09.11",
-     "title": "Service accounts & machine identities",
-     "idea": "Logins for robots",
-     "status": "locked"
-    },
-    {
-     "id": "09.12",
-     "title": "Signed webhooks (HMAC)",
-     "idea": "Proving a webhook really came from Stripe/GitHub",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "10",
-   "name": "Personal Security & Secrets",
-   "short": "Personal Security & Secrets",
-   "lessons": [
-    {
-     "id": "10.01",
-     "title": "Passwords & password managers",
-     "idea": "Bitwarden, 1Password: vaults, master password, autofill",
-     "status": "locked"
-    },
-    {
-     "id": "10.02",
-     "title": "Two-factor authentication",
-     "idea": "SMS vs authenticator (TOTP) vs push vs hardware keys",
-     "status": "locked"
-    },
-    {
-     "id": "10.03",
-     "title": "Passkeys",
-     "idea": "Public-key login that can't be phished",
-     "status": "locked"
-    },
-    {
-     "id": "10.04",
-     "title": "Recovery codes & recovery keys",
-     "idea": "The backup door — where to keep them",
-     "status": "locked"
-    },
-    {
-     "id": "10.05",
-     "title": "Hashing vs encryption vs encoding",
-     "idea": "One-way, two-way, and not-security-at-all (base64)",
-     "status": "locked"
-    },
-    {
-     "id": "10.06",
-     "title": "Encryption at rest & in transit",
-     "idea": "BitLocker/FileVault, HTTPS, end-to-end",
-     "status": "locked"
-    },
-    {
-     "id": "10.07",
-     "title": "Keeping app secrets out of plain text",
-     "idea": ".env + .gitignore → OS credential store → op run/Bitwarden Secrets Manager → cloud secret stores",
-     "status": "locked"
-    },
-    {
-     "id": "10.08",
-     "title": "Environment variables: user vs system",
-     "idea": "Where they live, who can read them, what's fine to put there (paths, flags) and what isn't (long-lived secrets)",
+     "lantern": true,
      "status": "locked"
     },
     {
      "id": "10.09",
-     "title": "Windows Credential Manager & DPAPI",
-     "idea": "The OS vault; encryption tied to a Windows account, so only that account can read it (Keychain / libsecret on Mac & Linux)",
+     "title": "MCP transports & installing servers",
+     "idea": "stdio (local program) vs HTTP (remote); config files; auth for remote MCP",
+     "lantern": true,
      "status": "locked"
     },
     {
      "id": "10.10",
-     "title": "The bootstrap secret problem",
-     "idea": "Every automation needs one first secret; where that one secret can safely live",
+     "title": "Tools, skills & MCP in practice",
+     "idea": "Giving an agent abilities",
+     "lantern": true,
      "status": "locked"
     },
     {
      "id": "10.11",
-     "title": "When a key leaks",
-     "idea": "Rotate, revoke, scan history; secret scanning",
-     "status": "locked"
-    },
-    {
-     "id": "10.12",
-     "title": "Least privilege & threat modeling for solo devs",
-     "idea": "What could go wrong, and cheap defenses",
+     "title": "Subscriptions vs API billing",
+     "idea": "Chat plans vs pay-per-token keys",
+     "lantern": true,
      "status": "locked"
     }
    ],
@@ -748,303 +786,60 @@
   },
   {
    "n": "11",
-   "name": "Running Things Without You",
-   "short": "Running Things Without You",
+   "name": "Websites & Hosting",
+   "short": "Websites & Hosting",
+   "region": "The Network",
    "lessons": [
     {
      "id": "11.01",
-     "title": "Background processes & services/daemons",
-     "idea": "Programs with no window",
-     "status": "locked"
-    },
-    {
-     "id": "11.02",
-     "title": "Scheduling",
-     "idea": "Task Scheduler, cron, scheduled cloud jobs",
-     "status": "locked"
-    },
-    {
-     "id": "11.03",
-     "title": "Running without being logged in",
-     "idea": "Services, \"run whether user is logged on or not\", SYSTEM account",
-     "status": "locked"
-    },
-    {
-     "id": "11.04",
-     "title": "The implications",
-     "idea": "Stored credentials, security, persistence, what malware does the same way",
-     "status": "locked"
-    },
-    {
-     "id": "11.05",
-     "title": "Headless machines & servers",
-     "idea": "Computers with no screen; remote access (SSH, RDP)",
-     "status": "locked"
-    },
-    {
-     "id": "11.06",
-     "title": "Logs & monitoring",
-     "idea": "How you find out what happened while you were away",
-     "status": "locked"
-    },
-    {
-     "id": "11.07",
-     "title": "When you leave, does it break?",
-     "idea": "The \"bus factor\": automations tied to personal accounts; moving them to company-owned identities",
-     "status": "locked"
-    },
-    {
-     "id": "11.08",
-     "title": "Windows service accounts & scheduled tasks",
-     "idea": "A login for a robot on one machine, and the scheduled tasks that use it",
-     "status": "locked"
-    },
-    {
-     "id": "11.09",
-     "title": "Robot identities in the cloud",
-     "idea": "Entra ID app registrations and service principals: how a Microsoft 365 automation runs as an app instead of a person",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "12",
-   "name": "Concurrency: Doing Many Things at Once",
-   "short": "Concurrency",
-   "lessons": [
-    {
-     "id": "12.01",
-     "title": "Processes vs threads",
-     "idea": "Separate houses vs roommates",
-     "status": "locked"
-    },
-    {
-     "id": "12.02",
-     "title": "The event loop",
-     "idea": "One worker juggling many waiting tasks (JavaScript, Python asyncio)",
-     "status": "locked"
-    },
-    {
-     "id": "12.03",
-     "title": "async / await",
-     "idea": "Writing code that waits without freezing",
-     "status": "locked"
-    },
-    {
-     "id": "12.04",
-     "title": "Worker threads & worker pools",
-     "idea": "Handing heavy work to helpers",
-     "status": "locked"
-    },
-    {
-     "id": "12.05",
-     "title": "Job queues & the worker loop",
-     "idea": "\"Take a job, do it, report, repeat\" — how render queues and AI pipelines work",
-     "status": "locked"
-    },
-    {
-     "id": "12.06",
-     "title": "Race conditions & locks",
-     "idea": "Why two workers touching one thing breaks it",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "13",
-   "name": "What \"an Application\" Is",
-   "short": "What \"an Application\" Is",
-   "lessons": [
-    {
-     "id": "13.01",
-     "title": "Anatomy of an app",
-     "idea": "Frontend, backend, database, storage, auth",
-     "status": "locked"
-    },
-    {
-     "id": "13.02",
-     "title": "Kinds of apps",
-     "idea": "CLI, desktop, web, mobile, game, browser extension, bot, agent",
-     "status": "locked"
-    },
-    {
-     "id": "13.03",
-     "title": "How executables work",
-     "idea": "Double-click → OS loads machine code; .exe, .app, ELF",
-     "status": "locked"
-    },
-    {
-     "id": "13.04",
-     "title": "Turning scripts into apps",
-     "idea": "PyInstaller, Electron, Tauri, bundlers",
-     "status": "locked"
-    },
-    {
-     "id": "13.05",
-     "title": "Code signing & \"Windows protected your PC\"",
-     "idea": "Certificates, SmartScreen, Gatekeeper, notarization",
-     "status": "locked"
-    },
-    {
-     "id": "13.06",
-     "title": "Installers",
-     "idea": "What they actually do: copy files, registry, shortcuts, PATH; MSI, MSIX, Inno Setup, NSIS",
-     "status": "locked"
-    },
-    {
-     "id": "13.07",
-     "title": "Updaters",
-     "idea": "Checking a server for new versions, auto-update frameworks",
-     "status": "locked"
-    },
-    {
-     "id": "13.08",
-     "title": "Uninstallers",
-     "idea": "Undoing the installer; leftover AppData",
-     "status": "locked"
-    },
-    {
-     "id": "13.09",
-     "title": "App stores",
-     "idea": "Microsoft Store, Mac App Store, Play, App Store, Steam — review and fees",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "14",
-   "name": "Building for Platforms You Don't Own",
-   "short": "Building for Platforms You Don't Own",
-   "lessons": [
-    {
-     "id": "14.01",
-     "title": "Why cross-platform is hard",
-     "idea": "Different OSes, CPUs (x64 vs ARM), screen sizes",
-     "status": "locked"
-    },
-    {
-     "id": "14.02",
-     "title": "Cross-platform frameworks",
-     "idea": "Web, Electron, Tauri, Flutter, React Native, Unity/Godot",
-     "status": "locked"
-    },
-    {
-     "id": "14.03",
-     "title": "CI build matrices",
-     "idea": "GitHub Actions building Mac/Linux/Windows for you",
-     "status": "locked"
-    },
-    {
-     "id": "14.04",
-     "title": "VMs, emulators & cloud devices",
-     "idea": "Testing without owning the hardware",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "15",
-   "name": "Data & Databases",
-   "short": "Data & Databases",
-   "lessons": [
-    {
-     "id": "15.01",
-     "title": "Why apps need databases",
-     "idea": "Beyond files",
-     "status": "locked"
-    },
-    {
-     "id": "15.02",
-     "title": "SQL & relational databases",
-     "idea": "SQLite, Postgres, tables, queries",
-     "status": "locked"
-    },
-    {
-     "id": "15.03",
-     "title": "NoSQL & key-value stores",
-     "idea": "Documents, KV, when they fit",
-     "status": "locked"
-    },
-    {
-     "id": "15.04",
-     "title": "Hosted backends",
-     "idea": "Supabase, Firebase, Neon, Cloudflare D1",
-     "status": "locked"
-    },
-    {
-     "id": "15.05",
-     "title": "Migrations & backups",
-     "idea": "Changing a database without losing data",
-     "status": "locked"
-    },
-    {
-     "id": "15.06",
-     "title": "Vector databases & embeddings",
-     "idea": "How AI \"searches by meaning\" (RAG)",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "16",
-   "name": "Websites & Hosting",
-   "short": "Websites & Hosting",
-   "lessons": [
-    {
-     "id": "16.01",
      "title": "HTML, CSS, JavaScript",
      "idea": "Structure, style, behavior",
      "status": "locked"
     },
     {
-     "id": "16.02",
+     "id": "11.02",
      "title": "Static vs dynamic sites",
      "idea": "Pre-made pages vs pages built per request",
      "status": "locked"
     },
     {
-     "id": "16.03",
+     "id": "11.03",
      "title": "SSG, SSR, SPA & islands",
      "idea": "The rendering acronyms explained",
      "status": "locked"
     },
     {
-     "id": "16.04",
+     "id": "11.04",
      "title": "Astro",
      "idea": "Content-first static sites with islands of interactivity",
      "status": "locked"
     },
     {
-     "id": "16.05",
+     "id": "11.05",
      "title": "React, Next.js & friends",
      "idea": "When you need a heavier framework",
      "status": "locked"
     },
     {
-     "id": "16.06",
+     "id": "11.06",
      "title": "Build steps & dev servers",
      "idea": "npm run dev vs npm run build, the dist folder",
      "status": "locked"
     },
     {
-     "id": "16.07",
+     "id": "11.07",
      "title": "How a domain name finds your site",
      "idea": "Registrar → DNS → host: who owns what in the chain",
      "status": "locked"
     },
     {
-     "id": "16.08",
+     "id": "11.08",
      "title": "Where to host",
      "idea": "GitHub Pages, Cloudflare Pages, Vercel, Netlify, VPS — tradeoffs and costs",
      "status": "locked"
     },
     {
-     "id": "16.09",
+     "id": "11.09",
      "title": "Deploying from git",
      "idea": "Push → auto-deploy; preview deployments",
      "status": "locked"
@@ -1053,36 +848,38 @@
    "filed": 0
   },
   {
-   "n": "17",
+   "n": "12",
    "name": "Cloudflare & the Edge",
    "short": "Cloudflare & the Edge",
+   "region": "The Network",
    "lessons": [
     {
-     "id": "17.01",
+     "id": "12.01",
      "title": "What Cloudflare is",
      "idea": "DNS, CDN, proxy, DDoS shield in front of your site",
      "status": "locked"
     },
     {
-     "id": "17.02",
+     "id": "12.02",
      "title": "Pages & Workers",
      "idea": "Hosting sites and running code at the edge",
      "status": "locked"
     },
     {
-     "id": "17.03",
+     "id": "12.03",
      "title": "Storage: KV, D1, R2, Durable Objects",
      "idea": "Where edge apps keep data",
      "status": "locked"
     },
     {
-     "id": "17.04",
+     "id": "12.04",
      "title": "Workers AI & the Agents SDK",
      "idea": "Running models and stateful agents on Cloudflare",
+     "lantern": true,
      "status": "locked"
     },
     {
-     "id": "17.05",
+     "id": "12.05",
      "title": "Tunnels & Zero Trust",
      "idea": "Safely exposing localhost; protecting private apps",
      "status": "locked"
@@ -1091,50 +888,407 @@
    "filed": 0
   },
   {
-   "n": "18",
+   "n": "13",
    "name": "Containers, Servers & the Cloud",
    "short": "Containers, Servers & the Cloud",
+   "region": "The Network",
    "lessons": [
     {
-     "id": "18.01",
+     "id": "13.01",
      "title": "\"Works on my machine\"",
      "idea": "The problem containers solve",
      "status": "locked"
     },
     {
-     "id": "18.02",
+     "id": "13.02",
      "title": "Docker: images, containers, Dockerfile",
      "idea": "Recipe → packaged box → running box",
      "status": "locked"
     },
     {
-     "id": "18.03",
+     "id": "13.03",
      "title": "Volumes, ports & docker compose",
      "idea": "Data and multiple services",
      "status": "locked"
     },
     {
-     "id": "18.04",
+     "id": "13.04",
      "title": "When to use Docker (and when not)",
      "idea": "Servers and reproducibility yes; simple desktop scripts usually no",
      "status": "locked"
     },
     {
-     "id": "18.05",
+     "id": "13.05",
      "title": "VMs vs containers vs serverless",
      "idea": "Three ways to rent compute",
      "status": "locked"
     },
     {
-     "id": "18.06",
+     "id": "13.06",
      "title": "The big clouds",
      "idea": "AWS, Azure, GCP — and the simpler PaaS options",
      "status": "locked"
     },
     {
-     "id": "18.07",
+     "id": "13.07",
      "title": "Environments: dev, staging, prod",
      "idea": "Why you don't test on live users",
+     "status": "locked"
+    }
+   ],
+   "filed": 0
+  },
+  {
+   "n": "14",
+   "name": "Identity, Authentication & Keys (Developer Side)",
+   "short": "Identity, Authentication & Keys (Developer Side)",
+   "region": "Trust",
+   "lessons": [
+    {
+     "id": "14.01",
+     "title": "Authentication vs authorization",
+     "idea": "Who are you vs what may you do",
+     "status": "locked"
+    },
+    {
+     "id": "14.02",
+     "title": "Sessions & cookies",
+     "idea": "How a website remembers you're logged in",
+     "status": "locked"
+    },
+    {
+     "id": "14.03",
+     "title": "API keys, app keys, secret vs publishable keys",
+     "idea": "Shared secrets; which keys may appear in a browser and which never may",
+     "status": "locked"
+    },
+    {
+     "id": "14.04",
+     "title": "Tokens & JWTs",
+     "idea": "Access tokens, refresh tokens, expiry, bearer headers",
+     "status": "locked"
+    },
+    {
+     "id": "14.05",
+     "title": "Public/private key cryptography",
+     "idea": "Lock anyone can close, only you can open; signing vs encrypting",
+     "status": "locked"
+    },
+    {
+     "id": "14.06",
+     "title": "SSH keys",
+     "idea": "Passwordless login to servers and GitHub",
+     "status": "locked"
+    },
+    {
+     "id": "14.07",
+     "title": "OAuth 2.0: the big idea",
+     "idea": "Letting an app act for you without giving it your password",
+     "status": "locked"
+    },
+    {
+     "id": "14.08",
+     "title": "OAuth flows",
+     "idea": "Authorization Code + PKCE, Client Credentials, Device Code, refresh — which to use when",
+     "status": "locked"
+    },
+    {
+     "id": "14.09",
+     "title": "OpenID Connect, SSO & \"Sign in with Google\"",
+     "idea": "OAuth + identity",
+     "status": "locked"
+    },
+    {
+     "id": "14.10",
+     "title": "Scopes, consent & revoking access",
+     "idea": "Least privilege for apps",
+     "status": "locked"
+    },
+    {
+     "id": "14.11",
+     "title": "Service accounts & machine identities",
+     "idea": "Logins for robots",
+     "status": "locked"
+    },
+    {
+     "id": "14.12",
+     "title": "Giving agents keys safely",
+     "idea": "Scoped tokens, sandboxes, permission prompts, human-in-the-loop",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "14.13",
+     "title": "Signed webhooks (HMAC)",
+     "idea": "Proving a webhook really came from Stripe/GitHub",
+     "status": "locked"
+    }
+   ],
+   "filed": 0
+  },
+  {
+   "n": "15",
+   "name": "Personal Security & Secrets",
+   "short": "Personal Security & Secrets",
+   "region": "Trust",
+   "lessons": [
+    {
+     "id": "15.01",
+     "title": "Passwords & password managers",
+     "idea": "Bitwarden, 1Password: vaults, master password, autofill",
+     "status": "locked"
+    },
+    {
+     "id": "15.02",
+     "title": "Two-factor authentication",
+     "idea": "SMS vs authenticator (TOTP) vs push vs hardware keys",
+     "status": "locked"
+    },
+    {
+     "id": "15.03",
+     "title": "Passkeys",
+     "idea": "Public-key login that can't be phished",
+     "status": "locked"
+    },
+    {
+     "id": "15.04",
+     "title": "Recovery codes & recovery keys",
+     "idea": "The backup door — where to keep them",
+     "status": "locked"
+    },
+    {
+     "id": "15.05",
+     "title": "Hashing vs encryption vs encoding",
+     "idea": "One-way, two-way, and not-security-at-all (base64)",
+     "status": "locked"
+    },
+    {
+     "id": "15.06",
+     "title": "Encryption at rest & in transit",
+     "idea": "BitLocker/FileVault, HTTPS, end-to-end",
+     "status": "locked"
+    },
+    {
+     "id": "15.07",
+     "title": "Keeping app secrets out of plain text",
+     "idea": ".env + .gitignore → OS credential store → op run/Bitwarden Secrets Manager → cloud secret stores",
+     "status": "locked"
+    },
+    {
+     "id": "15.08",
+     "title": "Environment variables: user vs system",
+     "idea": "Where they live, who can read them, what's fine to put there (paths, flags) and what isn't (long-lived secrets)",
+     "status": "locked"
+    },
+    {
+     "id": "15.09",
+     "title": "Windows Credential Manager & DPAPI",
+     "idea": "The OS vault; encryption tied to a Windows account, so only that account can read it (Keychain / libsecret on Mac & Linux)",
+     "status": "locked"
+    },
+    {
+     "id": "15.10",
+     "title": "The bootstrap secret problem",
+     "idea": "Every automation needs one first secret; where that one secret can safely live",
+     "status": "locked"
+    },
+    {
+     "id": "15.11",
+     "title": "When a key leaks",
+     "idea": "Rotate, revoke, scan history; secret scanning",
+     "status": "locked"
+    },
+    {
+     "id": "15.12",
+     "title": "Least privilege & threat modeling for solo devs",
+     "idea": "What could go wrong, and cheap defenses",
+     "status": "locked"
+    },
+    {
+     "id": "15.13",
+     "title": "AI privacy & data use",
+     "idea": "What gets sent, trained on, and retained",
+     "lantern": true,
+     "status": "locked"
+    }
+   ],
+   "filed": 0
+  },
+  {
+   "n": "16",
+   "name": "Running Things Without You",
+   "short": "Running Things Without You",
+   "region": "Trust",
+   "lessons": [
+    {
+     "id": "16.01",
+     "title": "Background processes & services/daemons",
+     "idea": "Programs with no window",
+     "status": "locked"
+    },
+    {
+     "id": "16.02",
+     "title": "Scheduling",
+     "idea": "Task Scheduler, cron, scheduled cloud jobs",
+     "status": "locked"
+    },
+    {
+     "id": "16.03",
+     "title": "Running without being logged in",
+     "idea": "Services, \"run whether user is logged on or not\", SYSTEM account",
+     "status": "locked"
+    },
+    {
+     "id": "16.04",
+     "title": "The implications",
+     "idea": "Stored credentials, security, persistence, what malware does the same way",
+     "status": "locked"
+    },
+    {
+     "id": "16.05",
+     "title": "Headless machines & servers",
+     "idea": "Computers with no screen; remote access (SSH, RDP)",
+     "status": "locked"
+    },
+    {
+     "id": "16.06",
+     "title": "Logs & monitoring",
+     "idea": "How you find out what happened while you were away",
+     "status": "locked"
+    },
+    {
+     "id": "16.07",
+     "title": "When you leave, does it break?",
+     "idea": "The \"bus factor\": automations tied to personal accounts; moving them to company-owned identities",
+     "status": "locked"
+    },
+    {
+     "id": "16.08",
+     "title": "Windows service accounts & scheduled tasks",
+     "idea": "A login for a robot on one machine, and the scheduled tasks that use it",
+     "status": "locked"
+    },
+    {
+     "id": "16.09",
+     "title": "Robot identities in the cloud",
+     "idea": "Entra ID app registrations and service principals: how a Microsoft 365 automation runs as an app instead of a person",
+     "status": "locked"
+    },
+    {
+     "id": "16.10",
+     "title": "Workflow automation platforms",
+     "idea": "n8n, Zapier, Make — when no-code wins",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "16.11",
+     "title": "Scheduled & background agents",
+     "idea": "Agents that run daily without you",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "16.12",
+     "title": "Evals & cost tracking",
+     "idea": "Knowing whether your automation actually works and what it costs",
+     "lantern": true,
+     "status": "locked"
+    }
+   ],
+   "filed": 0
+  },
+  {
+   "n": "17",
+   "name": "What \"an Application\" Is",
+   "short": "What \"an Application\" Is",
+   "region": "Shipping",
+   "lessons": [
+    {
+     "id": "17.01",
+     "title": "Anatomy of an app",
+     "idea": "Frontend, backend, database, storage, auth",
+     "status": "locked"
+    },
+    {
+     "id": "17.02",
+     "title": "Kinds of apps",
+     "idea": "CLI, desktop, web, mobile, game, browser extension, bot, agent",
+     "status": "locked"
+    },
+    {
+     "id": "17.03",
+     "title": "How executables work",
+     "idea": "Double-click → OS loads machine code; .exe, .app, ELF",
+     "status": "locked"
+    },
+    {
+     "id": "17.04",
+     "title": "Turning scripts into apps",
+     "idea": "PyInstaller, Electron, Tauri, bundlers",
+     "status": "locked"
+    },
+    {
+     "id": "17.05",
+     "title": "Code signing & \"Windows protected your PC\"",
+     "idea": "Certificates, SmartScreen, Gatekeeper, notarization",
+     "status": "locked"
+    },
+    {
+     "id": "17.06",
+     "title": "Installers",
+     "idea": "What they actually do: copy files, registry, shortcuts, PATH; MSI, MSIX, Inno Setup, NSIS",
+     "status": "locked"
+    },
+    {
+     "id": "17.07",
+     "title": "Updaters",
+     "idea": "Checking a server for new versions, auto-update frameworks",
+     "status": "locked"
+    },
+    {
+     "id": "17.08",
+     "title": "Uninstallers",
+     "idea": "Undoing the installer; leftover AppData",
+     "status": "locked"
+    },
+    {
+     "id": "17.09",
+     "title": "App stores",
+     "idea": "Microsoft Store, Mac App Store, Play, App Store, Steam — review and fees",
+     "status": "locked"
+    }
+   ],
+   "filed": 0
+  },
+  {
+   "n": "18",
+   "name": "Building for Platforms You Don't Own",
+   "short": "Building for Platforms You Don't Own",
+   "region": "Shipping",
+   "lessons": [
+    {
+     "id": "18.01",
+     "title": "Why cross-platform is hard",
+     "idea": "Different OSes, CPUs (x64 vs ARM), screen sizes",
+     "status": "locked"
+    },
+    {
+     "id": "18.02",
+     "title": "Cross-platform frameworks",
+     "idea": "Web, Electron, Tauri, Flutter, React Native, Unity/Godot",
+     "status": "locked"
+    },
+    {
+     "id": "18.03",
+     "title": "CI build matrices",
+     "idea": "GitHub Actions building Mac/Linux/Windows for you",
+     "status": "locked"
+    },
+    {
+     "id": "18.04",
+     "title": "VMs, emulators & cloud devices",
+     "idea": "Testing without owning the hardware",
      "status": "locked"
     }
    ],
@@ -1144,6 +1298,7 @@
    "n": "19",
    "name": "Payments, Users & Selling Software",
    "short": "Payments, Users & Selling Software",
+   "region": "Shipping",
    "lessons": [
     {
      "id": "19.01",
@@ -1194,6 +1349,7 @@
    "n": "20",
    "name": "Licenses & Legal",
    "short": "Licenses & Legal",
+   "region": "Shipping",
    "lessons": [
     {
      "id": "20.01",
@@ -1229,6 +1385,7 @@
      "id": "20.06",
      "title": "AI model licenses",
      "idea": "Open weights vs open source, non-commercial licenses, output rights",
+     "lantern": true,
      "status": "locked"
     },
     {
@@ -1242,135 +1399,31 @@
   },
   {
    "n": "21",
-   "name": "The AI Assistant Landscape",
-   "short": "The AI Assistant Landscape",
+   "name": "Capstone",
+   "short": "Capstone",
+   "region": "Capstone",
    "lessons": [
     {
      "id": "21.01",
-     "title": "Model vs app vs agent",
-     "idea": "GPT/Claude/Gemini (models) vs the apps wrapping them vs agents that act",
-     "status": "locked"
-    },
-    {
-     "id": "21.02",
-     "title": "How LLMs work (just enough)",
-     "idea": "Tokens, context window, temperature, hallucination",
-     "status": "locked"
-    },
-    {
-     "id": "21.03",
-     "title": "The copilot zoo",
-     "idea": "OS (Windows Copilot, Apple Intelligence), browser, email, IDE (GitHub Copilot), vendor (NVIDIA app/G-Assist), Office — what each can see",
-     "status": "locked"
-    },
-    {
-     "id": "21.04",
-     "title": "What AI is already on my PC?",
-     "idea": "How to inventory assistants, background AI services and their data access",
-     "status": "locked"
-    },
-    {
-     "id": "21.05",
-     "title": "Subscriptions vs API billing",
-     "idea": "Chat plans vs pay-per-token keys",
-     "status": "locked"
-    },
-    {
-     "id": "21.06",
-     "title": "Local models",
-     "idea": "Ollama, LM Studio, ComfyUI; VRAM limits; quantization",
-     "status": "locked"
-    },
-    {
-     "id": "21.07",
-     "title": "Privacy & data use",
-     "idea": "What gets sent, trained on, and retained",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "22",
-   "name": "AI Automation Engineering",
-   "short": "AI Automation Engineering",
-   "lessons": [
-    {
-     "id": "22.01",
-     "title": "Coding agents",
-     "idea": "Claude Code, Codex, Copilot agent, Cursor — how they read, edit, run",
-     "status": "locked"
-    },
-    {
-     "id": "22.02",
-     "title": "Tools, skills & MCP in practice",
-     "idea": "Giving an agent abilities",
-     "status": "locked"
-    },
-    {
-     "id": "22.03",
-     "title": "Prompts as code",
-     "idea": "Instructions files (CLAUDE.md etc.), versioning prompts",
-     "status": "locked"
-    },
-    {
-     "id": "22.04",
-     "title": "Workflow automation platforms",
-     "idea": "n8n, Zapier, Make — when no-code wins",
-     "status": "locked"
-    },
-    {
-     "id": "22.05",
-     "title": "Scheduled & background agents",
-     "idea": "Agents that run daily without you",
-     "status": "locked"
-    },
-    {
-     "id": "22.06",
-     "title": "Multi-agent orchestration",
-     "idea": "Fan-out, review, verify; cost and when it's worth it",
-     "status": "locked"
-    },
-    {
-     "id": "22.07",
-     "title": "Giving agents keys safely",
-     "idea": "Scoped tokens, sandboxes, permission prompts, human-in-the-loop",
-     "status": "locked"
-    },
-    {
-     "id": "22.08",
-     "title": "Evals & cost tracking",
-     "idea": "Knowing whether your automation actually works and what it costs",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "23",
-   "name": "Capstone",
-   "short": "Capstone",
-   "lessons": [
-    {
-     "id": "23.01",
      "title": "Idea → plan",
      "idea": "Scoping a small real product",
      "status": "locked"
     },
     {
-     "id": "23.02",
+     "id": "21.02",
      "title": "Build with an agent",
      "idea": "Repo, venv/npm, git, secrets done right",
+     "lantern": true,
      "status": "locked"
     },
     {
-     "id": "23.03",
+     "id": "21.03",
      "title": "Ship it",
      "idea": "Domain, hosting, auth, payments",
      "status": "locked"
     },
     {
-     "id": "23.04",
+     "id": "21.04",
      "title": "Run it",
      "idea": "Logs, updates, backups, support",
      "status": "locked"
@@ -1379,10 +1432,6 @@
    "filed": 0
   }
  ],
- "next": {
-  "id": "00.02",
-  "title": "The map of everything"
- },
  "latest": {
   "id": "00.01",
   "title": "The hidden curriculum",
