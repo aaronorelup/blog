@@ -516,3 +516,74 @@ ao-frames figcaption .ao-meta {
   font-size: 11.5px;
   color: var(--pc-quiet);
 }
+
+/* <ao-diff>: versions of one text with the changed words marked. Struck = cut, underlined =
+   new; terracotta for what changed, so it reads in both modes without a red/green pair. */
+ao-diff {
+  display: block;
+  margin: 28px 0;
+}
+ao-diff > blockquote { margin: 0 0 12px; }
+.ao-diff-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  margin-bottom: 12px;
+}
+.ao-diff-bar button {
+  font: 600 12.5px/1 Karla, system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--pc-line2);
+  background: transparent;
+  color: var(--pc-strong);
+  cursor: pointer;
+  transition: border-color 180ms cubic-bezier(.4,0,.2,1), color 180ms cubic-bezier(.4,0,.2,1);
+}
+.ao-diff-bar button:hover { border-color: var(--pc-head); color: var(--pc-head); }
+.ao-diff-bar button:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+.ao-diff-bar button[aria-pressed='true'] { border-color: var(--pc-head); color: var(--pc-head); }
+.ao-diff-view {
+  padding: 16px 20px;
+  border-left: 2px solid var(--pc-line2);
+  background: var(--pc-code);
+  border-radius: 0 12px 12px 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 16.5px;
+  line-height: 1.68;
+  color: var(--pc-body);
+  overflow-wrap: anywhere;
+}
+.ao-diff-view del {
+  color: var(--pc-quiet);
+  text-decoration: line-through;
+  text-decoration-color: var(--pc-accent);
+  text-decoration-thickness: 1.5px;
+}
+.ao-diff-view ins {
+  color: var(--pc-strong);
+  text-decoration: underline;
+  text-decoration-color: var(--pc-accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.ao-diff-legend {
+  margin: 8px 0 0;
+  font: 400 12px/1.4 Karla, system-ui, sans-serif;
+  color: var(--pc-quiet);
+}
+ao-diff figcaption {
+  margin-top: 8px;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pc-soft);
+}
+ao-diff figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
+ao-diff figcaption .ao-meta {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: var(--pc-quiet);
+}
