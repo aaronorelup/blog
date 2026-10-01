@@ -17,7 +17,7 @@ SCENE('08', (t, S) => {
   // ---- timing (local seconds; fallbacks = the narrated times) ----
   const c1 = S.cue('keep-1', 1.74), c2 = S.cue('keep-2', 10.58), c3 = S.cue('keep-3', 17.52);
   const r1 = S.find('Nobody', 0, c1 + 3.0);    // "Nobody handed you this map; ..."
-  const r2 = S.find('seven', 0, c2 + 2.5);     // "seven districts, with AI..."
+  const r2 = S.find('six', 0, c2 + 2.5);       // "six districts, with AI..."
   const r3 = S.find('Once', 0, c3 + 3.0);      // "Once you know what a thing is..."
   const tMap = S.find('map', 0, r1 + 1.4);     // "...handed you this map;"
   const tLan = S.find('lanterns', 0, c2 + 4.8);
@@ -81,7 +81,7 @@ SCENE('08', (t, S) => {
   // ---- the three takeaways (same words as lesson.js keep) ----
   const FALLBACK = [
     ['The gap is in the syllabus, not in you.', "Nobody handed you this map; it's a missing semester, not a character flaw."],
-    ['Every confusing thing has a shelf.', 'Seven districts, with AI as the lanterns over all of them.'],
+    ['Every confusing thing has a shelf.', 'Six districts, with AI as the lanterns over all of them.'],
     ['Aim for recognition, not recipes.', 'Once you know what a thing is and where it lives, the how-to is easy to find.'],
   ];
   const keep = (window.__lesson && Array.isArray(window.__lesson.keep) && window.__lesson.keep.length === 3) ? window.__lesson.keep : FALLBACK;

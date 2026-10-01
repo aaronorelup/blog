@@ -9,7 +9,7 @@
    shown as a gloss on each line: go to the folder, run this file. */
 SCENE('06', (t, S) => {
   const g = K.ctx(), C = K.C;
-  const SHELVED = M.TAGS.map((x) => x.mod);                 // '01', '02', '05', '09'
+  const SHELVED = M.TAGS.map((x) => x.mod);                 // '01', '02', '05', '14'
   const DIM = 0.55;
 
   // the map runs on 05's clock, so the gate pin's bob and the lantern sway carry across the crossfade

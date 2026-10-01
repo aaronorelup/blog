@@ -60,7 +60,7 @@
     { label: '.txt → .py', mod: '01' },
     { label: 'cd', mod: '02' },
     { label: '.venv', mod: '05' },
-    { label: 'service account', mod: '09' },
+    { label: 'service account', mod: '14' },
   ];
   const traySlot = (i) => ({ x: layout.tray.x, y: layout.tray.ys[i] });
   const gapSlot = (i) => ({ x: layout.gap.x, y: layout.gap.ys[i], compact: 1 });
@@ -311,7 +311,7 @@
     if (typeof p === 'string') p = { mod: p };
     if (p.mod === '00') return { u: -P.W, v: PATH_Y - 0.04 };
     const d = K.map.DISTRICTS.find((dd) => dd.mods.includes(p.mod));
-    if (!d) return { u: 0.2, v: -0.21 };            // AI modules: on the lantern string
+    if (!d) return { u: 0.2, v: -0.21 };            // not in a district (the lanterns have no modules now): on the string
     const b = miniBlock(d.id), j = d.mods.indexOf(p.mod);
     return { u: b.x + b.w * PIN_U[j % PIN_U.length], v: ROW_Y(b, j) + 0.004 };
   }
@@ -340,11 +340,11 @@
     } else {
       g.fillStyle = T.paper; g.fillRect(x0, -P.H, P.panel, 2 * P.H);
       const lit = o.lit ?? 0;
-      // lantern string and its seven lanterns (AI over every district)
+      // lantern string and its six lanterns (AI over every district; one per district, like map.js)
       g.strokeStyle = T.string; g.lineWidth = 1.3 * px;
       g.beginPath(); g.moveTo(-0.35, -0.245); g.quadraticCurveTo(0, -0.165, 0.35, -0.245); g.stroke();
-      for (let n = 0; n < 7; n++) {
-        const uu = (n + 0.5) / 7, lx = 0.35 * (2 * uu - 1), ly = (1 - uu) * (1 - uu) * -0.245 + 2 * uu * (1 - uu) * -0.165 + uu * uu * -0.245 + 0.027;
+      for (let n = 0; n < 6; n++) {
+        const uu = (n + 0.5) / 6, lx = 0.35 * (2 * uu - 1), ly = (1 - uu) * (1 - uu) * -0.245 + 2 * uu * (1 - uu) * -0.165 + uu * uu * -0.245 + 0.027;
         if (lx < x0 - 0.03 || lx > x1 + 0.03) continue;
         K.glow(lx, ly, 0.05 + 0.025 * lit, C.head, T.halo + 0.4 * lit);
         g.beginPath(); g.ellipse(lx, ly, 0.013, 0.017, 0, 0, 7); g.fillStyle = T.lantern; g.fill();

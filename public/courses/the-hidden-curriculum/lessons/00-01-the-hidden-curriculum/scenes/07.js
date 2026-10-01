@@ -58,7 +58,7 @@ SCENE('07', (t, S) => {
   const srcLab = { size: 28, font: 'ui', weight: 400 };
   const stackBot = BY[2] + BH;
   const HERO = [1480, 520, 320], CORNER = L.tile.corner;   // hero seat: bigger than s07 so the pins read
-  const SHELVED = M.TAGS.map((g) => g.mod);             // '01', '02', '05', '09'
+  const SHELVED = M.TAGS.map((g) => g.mod);             // '01', '02', '05', '14'
   // The three "just" pins, as {dx, dy} offsets from the tile centre in units of s (M.tilePt). Each lands in
   // the district its lesson lives in, beside the gold shelved pins, never on them:
   //   just cd    -> The Machine (02 The command line), between the 01 and 02 pins, at the block's foot

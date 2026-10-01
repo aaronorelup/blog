@@ -221,245 +221,245 @@ with their credentials stored properly.
 Nobody had taught him that either.
 
 56
-00:02:30.854 --> 00:02:34.337
-Here's the shelf: a map with seven districts,
+00:02:30.854 --> 00:02:34.325
+Here's the shelf: a map with six districts,
 
 57
-00:02:34.337 --> 00:02:36.938
+00:02:34.325 --> 00:02:36.589
 each answering one question.
 
 58
-00:02:36.938 --> 00:02:39.898
+00:02:36.589 --> 00:02:39.155
 The Machine: what's on your computer.
 
 59
-00:02:39.898 --> 00:02:42.615
+00:02:39.155 --> 00:02:41.860
 The Code: what programs are made of.
 
 60
-00:02:42.615 --> 00:02:45.994
+00:02:41.860 --> 00:02:45.343
 The History: how work is saved and shared.
 
 61
-00:02:45.994 --> 00:02:48.676
+00:02:45.343 --> 00:02:48.071
 The Network: how computers talk.
 
 62
-00:02:48.676 --> 00:02:51.125
+00:02:48.071 --> 00:02:50.614
 Trust: who may do what.
 
 63
-00:02:51.125 --> 00:02:53.401
+00:02:50.614 --> 00:02:52.855
 Shipping: getting it to people.
 
 64
-00:02:53.401 --> 00:02:55.131
-And strung over all of them,
+00:02:52.855 --> 00:02:55.212
+And strung over all of them: the Lanterns.
 
 65
-00:02:55.131 --> 00:02:56.733
-the seventh: the Lanterns.
-
-66
-00:02:56.733 --> 00:02:58.323
+00:02:55.212 --> 00:02:56.524
 That's AI.
 
+66
+00:02:56.524 --> 00:02:58.778
+It isn't a district of its own.
+
 67
-00:02:58.323 --> 00:02:59.926
+00:02:59.240 --> 00:03:00.854
 It lights every district,
 
 68
-00:02:59.926 --> 00:03:02.526
+00:03:00.854 --> 00:03:03.329
 but it doesn't walk the streets for you.
 
 69
-00:03:02.526 --> 00:03:04.639
-This lesson sits at the gate.
+00:03:03.791 --> 00:03:06.067
+This lesson sits at the start.
 
 70
-00:03:04.639 --> 00:03:06.926
+00:03:06.067 --> 00:03:08.331
 And those loose questions?
 
 71
-00:03:06.926 --> 00:03:10.758
+00:03:08.331 --> 00:03:11.837
 .py and cd live in The Machine.
 
 72
-00:03:10.758 --> 00:03:14.763
+00:03:11.837 --> 00:03:15.007
 .venv lives in The Code.
 
 73
-00:03:14.763 --> 00:03:17.969
+00:03:15.007 --> 00:03:17.922
 Service accounts live in Trust.
 
 74
-00:03:18.419 --> 00:03:22.366
+00:03:18.372 --> 00:03:22.319
 That's the promise: a map, not a manual.
 
 75
-00:03:22.366 --> 00:03:25.373
+00:03:22.319 --> 00:03:25.326
 Every lesson answers five questions:
 
 76
-00:03:25.373 --> 00:03:27.672
+00:03:25.326 --> 00:03:27.625
 what is it, where does it live,
 
 77
-00:03:27.672 --> 00:03:30.865
+00:03:27.625 --> 00:03:30.818
 what is it like, what does it connect to,
 
 78
-00:03:30.865 --> 00:03:32.827
+00:03:30.818 --> 00:03:32.780
 and what will surprise you.
 
 79
-00:03:32.827 --> 00:03:35.892
+00:03:32.780 --> 00:03:35.845
 You won't finish able to do the thing yet.
 
 80
-00:03:35.892 --> 00:03:38.156
+00:03:35.845 --> 00:03:38.109
 You'll recognise it when you meet it.
 
 81
-00:03:38.156 --> 00:03:41.825
+00:03:38.109 --> 00:03:41.778
 Real tools are messier than the map.
 
 82
-00:03:41.825 --> 00:03:43.822
+00:03:41.778 --> 00:03:43.775
 Git lives in The History,
 
 83
-00:03:43.822 --> 00:03:46.202
+00:03:43.775 --> 00:03:46.155
 but it talks across The Network.
 
 84
-00:03:46.202 --> 00:03:49.928
+00:03:46.155 --> 00:03:49.881
 Keys belong to Trust, and they turn up everywhere.
 
 85
-00:03:49.928 --> 00:03:53.702
+00:03:49.881 --> 00:03:53.655
 Memorising commands is safe to skip.
 
 86
-00:03:53.702 --> 00:03:55.826
+00:03:53.655 --> 00:03:55.779
 Your AI can type them.
 
 87
-00:03:55.826 --> 00:03:58.707
+00:03:55.779 --> 00:03:58.660
 Your job is knowing what they mean.
 
 88
-00:03:59.157 --> 00:04:01.015
+00:03:59.110 --> 00:04:00.968
 Two surprises you'll meet early.
 
 89
-00:04:01.015 --> 00:04:02.594
+00:04:00.968 --> 00:04:02.547
 The first is a word: just.
 
 90
-00:04:02.594 --> 00:04:05.043
+00:04:02.547 --> 00:04:04.996
 Just cd into the folder.
 
 91
-00:04:05.043 --> 00:04:08.375
+00:04:04.996 --> 00:04:08.328
 Just activate the venv.
 
 92
-00:04:08.375 --> 00:04:10.593
+00:04:08.328 --> 00:04:10.546
 Just add it to your PATH.
 
 93
-00:04:10.593 --> 00:04:12.323
+00:04:10.546 --> 00:04:12.276
 Tutorials say it.
 
 94
-00:04:12.323 --> 00:04:13.867
+00:04:12.276 --> 00:04:13.820
 Coworkers say it.
 
 95
-00:04:13.867 --> 00:04:16.677
+00:04:13.820 --> 00:04:16.630
 Your AI assistant says it too.
 
 96
-00:04:16.677 --> 00:04:19.661
+00:04:16.630 --> 00:04:19.614
 Every just is a lesson somebody skipped.
 
 97
-00:04:19.661 --> 00:04:21.344
+00:04:19.614 --> 00:04:21.297
 It isn't a sign you're behind.
 
 98
-00:04:21.344 --> 00:04:23.062
+00:04:21.297 --> 00:04:23.015
 It's a pin on the map.
 
 99
-00:04:23.062 --> 00:04:25.942
+00:04:23.015 --> 00:04:25.895
 The second is an error.
 
 100
-00:04:25.942 --> 00:04:28.182
+00:04:25.895 --> 00:04:28.135
 Run a script from the wrong place,
 
 101
-00:04:28.182 --> 00:04:30.400
+00:04:28.135 --> 00:04:30.353
 and you'll see something like this:
 
 102
-00:04:30.400 --> 00:04:34.695
+00:04:30.353 --> 00:04:34.648
 can't open file, no such file or directory.
 
 103
-00:04:34.695 --> 00:04:36.762
+00:04:34.648 --> 00:04:36.715
 That doesn't mean your code is broken.
 
 104
-00:04:36.762 --> 00:04:38.898
+00:04:36.715 --> 00:04:38.851
 Python never even opened it.
 
 105
-00:04:38.898 --> 00:04:41.255
+00:04:38.851 --> 00:04:41.208
 Usually, you're standing in the wrong folder,
 
 106
-00:04:41.255 --> 00:04:44.740
+00:04:41.208 --> 00:04:44.693
 or the file is still called .txt.
 
 107
-00:04:45.189 --> 00:04:46.930
+00:04:45.143 --> 00:04:46.884
 Three things to keep.
 
 108
-00:04:46.930 --> 00:04:49.926
+00:04:46.884 --> 00:04:50.193
 The gap is in the syllabus, not in you.
 
 109
-00:04:49.926 --> 00:04:52.155
+00:04:50.193 --> 00:04:52.121
 Nobody handed you this map;
 
 110
-00:04:52.155 --> 00:04:55.766
+00:04:52.121 --> 00:04:55.789
 it's a missing semester, not a character flaw.
 
 111
-00:04:55.766 --> 00:04:58.285
+00:04:55.789 --> 00:04:58.320
 Every confusing thing has a shelf:
 
 112
-00:04:58.285 --> 00:04:59.388
-seven districts,
+00:04:58.320 --> 00:04:59.655
+six districts,
 
 113
-00:04:59.388 --> 00:05:02.709
+00:04:59.655 --> 00:05:02.999
 with AI as the lanterns over all of them.
 
 114
-00:05:02.709 --> 00:05:05.681
+00:05:02.999 --> 00:05:06.261
 Aim for recognition, not recipes.
 
 115
-00:05:05.681 --> 00:05:09.269
+00:05:06.261 --> 00:05:09.663
 Once you know what a thing is and where it lives,
 
 116
-00:05:09.269 --> 00:05:12.196
+00:05:09.663 --> 00:05:12.382
 the how-to is easy to find.

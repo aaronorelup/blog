@@ -7,9 +7,10 @@
      - the gate pin (M.pin, the scene's one 'back'), the filing move (M.shelve)
    Beats:
      - [[map]]      six districts reveal; the lantern string is only a faint bare cord (no glow, no labels).
-                    On "seven" a count (1-6 on the cards, 7 on the cord) makes the seventh district findable.
+                    On "six" a count (1-6 on the cards) makes the districts countable. The Lanterns are not a
+                    district (map restructured 2026-10-01), so the cord gets no number.
      - roll call    each district lights as it is named.
-     - [[lanterns]] the seven lanterns light left to right, the Lanterns' label row fades in.
+     - [[lanterns]] the six lanterns (one over each district) light left to right, the Lanterns' label row fades in.
      - "lights"     a warm pool falls onto the top edge of every card (top row first).
      - "walk"       a small terracotta walker (you) stands at the Gate and footprints step out toward The Machine,
                     stop short of it and fade to 0.4: the lanterns light the streets, the walking is yours.
@@ -22,13 +23,13 @@
    Focus: map.js's own `focus` can only snap between districts, so the map is drawn unfocused and each
    district is dimmed with a page-coloured veil over its opaque footprint (same result inside the card,
    and it lets the light cross-fade from district to district).
-   Exit: the full map, no focus, the pin bobbing on the gate, rows 01 02 05 09 shelved, stack empty. */
+   Exit: the full map, no focus, the pin bobbing on the start, rows 01 02 05 14 shelved, stack empty. */
 SCENE('05', (t, S) => {
   const C = K.C, L = M.layout, G = () => K.ctx(), MAP = K.map;
 
   // ------------------------------------------------------------------ beats (local seconds)
   const tMap = S.cue('map', 1.74);
-  const tSeven = S.find('seven', 0, 2.33);             // "a map with seven districts"
+  const tSix = S.find('six', 0, 2.33);                 // "a map with six districts"
   const tQuestion = S.find('question', 0, 4.81);       // "...each answering one question."
   const tMachine = S.find('Machine', 0, 6.28);
   const tCode = S.find('Code', 0, 9.24);
@@ -122,21 +123,20 @@ SCENE('05', (t, S) => {
   MAP.DISTRICTS.forEach((d) => (F[d.id] = focusOf(d.id)));
   const rowAlpha = (id) => 1 - F[id].veil;
 
-  // ------------------------------------------------------------------ the lanterns (the seventh district)
-  // map.js's lantern geometry: seven lanterns at x 330 + 176 i hanging from a cord that sags to y + 4
-  const LY = MAP.LANTERNS.y;
-  const lanternX = (i) => 330 + i * 176;
-  const lanternY = (x) => LY - 24 + Math.pow((x - 960) / 710, 2) * -22 + 22;
-  const cordY = (x) => { const u = (x - 250) / 1420; return (LY - 40) + 2 * u * (1 - u) * 44; };
-  // the count on "seven": badges 1-6 ride the districts' staggered reveal (never ahead of their card),
-  // the 7th hangs on the cord between the 4th and 5th lanterns; all gone by the end of "question"
+  // ------------------------------------------------------------------ the lanterns (AI over every district)
+  // map.js's lantern geometry (K.map.lanternAt): one lantern over each district, hanging from a cord that sags
+  const LY = MAP.LANTERNS.y, LN = MAP.LANTERNS.n;
+  const lanternX = (i) => MAP.lanternAt(i).x;
+  const lanternY = (i) => MAP.lanternAt(i).y;
+  // the count on "six": badges 1-6 ride the districts' staggered reveal (never ahead of their card);
+  // all gone by the end of "question". The cord is not counted: the Lanterns are not a district.
   const revealAt = (i) => tMap + 0.22 * i;             // map.js: item i (0 = lanterns, 1-6 = districts) starts here
-  const badgeAt = (i) => (i < 6 ? Math.max(tSeven + 0.12 * i, revealAt(i + 1) + 0.3) : Math.max(tSeven + 0.72, revealAt(6) + 0.55));
+  const badgeAt = (i) => Math.max(tSix + 0.12 * i, revealAt(i + 1) + 0.3);
   const badgeOut = K.io(t, tQuestion + 0.2, 0.5);
-  // until [[lanterns]] the cord is a bare 0.2-alpha ghost; it warms slightly while the "7" names it
-  // and again on "strung over all of them", then on the cue the lanterns light left to right over 0.8 s
-  const hint = 0.25 * K.io(t, badgeAt(6), 0.5) * (1 - badgeOut) + 0.15 * K.io(t, tStrung, 0.7);
-  const litK = (i) => Math.max(hint, K.io(t, tLanterns + 0.075 * i, 0.35));
+  // until [[lanterns]] the cord is a bare 0.2-alpha ghost; it warms slightly on "strung over all of them",
+  // then on the cue the lanterns light left to right
+  const hint = 0.15 * K.io(t, tStrung, 0.7);
+  const litK = (i) => Math.max(hint, K.io(t, tLanterns + 0.09 * i, 0.35));
   const labelsK = K.io(t, tLanterns + 0.35, 0.6, 'out');
   // the lanterns' turn: their glow brightens on top of map.js's, then settles after "walk the streets"
   const aiK = K.io(t, tLanterns, 0.6) * (1 - K.io(t, tWalk + 1.5, 0.8));
@@ -231,7 +231,7 @@ SCENE('05', (t, S) => {
   K.glow(L.tray.glow[0], L.tray.glow[1], L.tray.glow[2], C.head, 0.06 * (1 - K.io(t, tMap, 0.5)));
   if (aiK > 0) {
     K.glow(960, LY + 10, 760, C.head, 0.07 * aiK);
-    for (let i = 0; i < 7; i++) K.glow(lanternX(i), lanternY(lanternX(i)) + 16, 60, C.head, 0.22 * aiK * litK(i));
+    for (let i = 0; i < LN; i++) K.glow(lanternX(i), lanternY(i) + 16, 60, C.head, 0.22 * aiK * litK(i));
   }
   K.glow(GATE.x, GATE.y, 110, C.head, 0.25 * K.io(t, touch - 0.1, 0.6));
 
@@ -241,14 +241,12 @@ SCENE('05', (t, S) => {
     lanterns: litK, lanternLabels: labelsK,
   });
 
-  // the count: 1-6 on the cards (riding each card's rise), 7 on the lantern cord
+  // the count: 1-6 on the cards (riding each card's rise)
   if (t < tQuestion + 0.8) {
     MAP.DISTRICTS.forEach((d, i) => {
       const rise = (1 - K.stagger(t, tMap, i + 1, 0.22, 0.7)) * 20;
       badge(i + 1, d.x + d.w - 44, d.y + 44 + rise, K.io(t, badgeAt(i), 0.35, 'out') * (1 - badgeOut));
     });
-    const bx = (lanternX(3) + lanternX(4)) / 2;
-    badge(7, bx, cordY(bx) + 16, K.io(t, badgeAt(6), 0.35, 'out') * (1 - badgeOut));   // hangs just under the cord
   }
 
   // filed rows (and their label chips) sit under the veils, so they dim with their district exactly like
@@ -258,7 +256,7 @@ SCENE('05', (t, S) => {
     M.shelveRow(M.TAGS[i].mod, K.io(t, f.land + 0.05, 0.5, 'out'));
     fileChip(i, chipK(i));
   });
-  // the .venv callout sits over the rows under Packages (12 Concurrency, 15 Data). An opaque, card-coloured
+  // the .venv callout sits over the rows under Packages (06 Data, 07 Concurrency). An opaque, card-coloured
   // underlay fades those rows out a beat ahead of the callout and brings them back only once it is mostly
   // gone, so the two texts are never on screen at the same strength. Under the veils, so it dims with the card.
   if (VENV.mask > 0.002) {
