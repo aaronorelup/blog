@@ -1,0 +1,465 @@
+WEBVTT
+
+1
+00:00:01.600 --> 00:00:04.491
+Building with AI runs on a second curriculum
+
+2
+00:00:04.491 --> 00:00:06.476
+that school rarely teaches:
+
+3
+00:00:06.476 --> 00:00:10.261
+terminals, files, git, keys, hosting.
+
+4
+00:00:10.261 --> 00:00:11.561
+If you never learned it,
+
+5
+00:00:11.561 --> 00:00:14.917
+the gap is in the syllabus, not in you.
+
+6
+00:00:14.917 --> 00:00:17.784
+This course is the map for it:
+
+7
+00:00:17.784 --> 00:00:21.511
+what each thing is, and where it goes.
+
+8
+00:00:21.511 --> 00:00:23.578
+Aaron, who made this course,
+
+9
+00:00:23.578 --> 00:00:26.666
+has a degree in Information Systems,
+
+10
+00:00:26.666 --> 00:00:29.767
+and still found out the hard way.
+
+11
+00:00:30.218 --> 00:00:32.238
+He wrote Python in Notepad
+
+12
+00:00:32.238 --> 00:00:35.477
+and saved it as a .txt file.
+
+13
+00:00:35.477 --> 00:00:38.589
+He didn't know to rename it to .py.
+
+14
+00:00:38.589 --> 00:00:40.237
+He didn't know to open a terminal
+
+15
+00:00:40.237 --> 00:00:43.163
+and cd into the folder first.
+
+16
+00:00:43.163 --> 00:00:45.508
+And .venv?
+
+17
+00:00:45.508 --> 00:00:47.900
+He had no idea what that was.
+
+18
+00:00:47.900 --> 00:00:49.549
+None of it is hard.
+
+19
+00:00:49.549 --> 00:00:51.847
+Nobody had handed it to him.
+
+20
+00:00:51.847 --> 00:00:55.179
+You probably have your own pile of these, too.
+
+21
+00:00:55.179 --> 00:00:57.689
+Each one has a place.
+
+22
+00:00:58.138 --> 00:01:00.671
+Here's why this happens to smart people.
+
+23
+00:01:01.075 --> 00:01:04.547
+Computer science mostly teaches the ideas:
+
+24
+00:01:04.547 --> 00:01:06.683
+algorithms, data structures,
+
+25
+00:01:06.683 --> 00:01:08.448
+how computation works.
+
+26
+00:01:08.448 --> 00:01:11.385
+Information systems mostly teaches
+
+27
+00:01:11.385 --> 00:01:14.114
+how businesses run on technology:
+
+28
+00:01:14.114 --> 00:01:17.469
+databases, processes, projects.
+
+29
+00:01:17.469 --> 00:01:20.279
+The everyday tools fall in the gap between them:
+
+30
+00:01:20.279 --> 00:01:24.354
+the terminal, the folders, the keys, the hosting.
+
+31
+00:01:24.354 --> 00:01:27.558
+Used everywhere, rarely taught.
+
+32
+00:01:27.558 --> 00:01:30.461
+So most people learn them the old way.
+
+33
+00:01:30.461 --> 00:01:33.618
+Apprenticeship, where someone leans over and says,
+
+34
+00:01:33.618 --> 00:01:36.312
+you need to cd first.
+
+35
+00:01:36.312 --> 00:01:40.828
+Forums, where a stranger answers your exact error.
+
+36
+00:01:40.828 --> 00:01:42.419
+And breaking things.
+
+37
+00:01:42.419 --> 00:01:43.928
+Lots of things.
+
+38
+00:01:43.928 --> 00:01:45.786
+It works, slowly.
+
+39
+00:01:45.786 --> 00:01:47.283
+And everyone ends up
+
+40
+00:01:47.283 --> 00:01:49.897
+with a different set of holes.
+
+41
+00:01:50.347 --> 00:01:53.667
+Even MIT has a course for this gap:
+
+42
+00:01:53.667 --> 00:01:58.288
+The Missing Semester of Your CS Education.
+
+43
+00:01:58.288 --> 00:02:00.436
+Its front page says tool skills
+
+44
+00:02:00.436 --> 00:02:01.934
+are rarely covered in class,
+
+45
+00:02:01.934 --> 00:02:04.837
+and left to students to figure out on their own.
+
+46
+00:02:04.837 --> 00:02:08.180
+Its January 2026 edition includes
+
+47
+00:02:08.180 --> 00:02:10.433
+a lecture on agentic coding.
+
+48
+00:02:10.433 --> 00:02:13.962
+If MIT students need a missing semester,
+
+49
+00:02:13.962 --> 00:02:16.296
+you're allowed to need a missing map.
+
+50
+00:02:16.296 --> 00:02:18.687
+It follows you to work, too.
+
+51
+00:02:18.687 --> 00:02:20.545
+Aaron's automations there ran
+
+52
+00:02:20.545 --> 00:02:22.949
+under his own personal accounts.
+
+53
+00:02:22.949 --> 00:02:24.922
+They had to move to service accounts,
+
+54
+00:02:24.922 --> 00:02:27.755
+with their credentials stored properly.
+
+55
+00:02:27.755 --> 00:02:30.404
+Nobody had taught him that either.
+
+56
+00:02:30.854 --> 00:02:34.337
+Here's the shelf: a map with seven districts,
+
+57
+00:02:34.337 --> 00:02:36.938
+each answering one question.
+
+58
+00:02:36.938 --> 00:02:39.898
+The Machine: what's on your computer.
+
+59
+00:02:39.898 --> 00:02:42.615
+The Code: what programs are made of.
+
+60
+00:02:42.615 --> 00:02:45.994
+The History: how work is saved and shared.
+
+61
+00:02:45.994 --> 00:02:48.676
+The Network: how computers talk.
+
+62
+00:02:48.676 --> 00:02:51.125
+Trust: who may do what.
+
+63
+00:02:51.125 --> 00:02:53.401
+Shipping: getting it to people.
+
+64
+00:02:53.401 --> 00:02:55.131
+And strung over all of them,
+
+65
+00:02:55.131 --> 00:02:56.733
+the seventh: the Lanterns.
+
+66
+00:02:56.733 --> 00:02:58.323
+That's AI.
+
+67
+00:02:58.323 --> 00:02:59.926
+It lights every district,
+
+68
+00:02:59.926 --> 00:03:02.526
+but it doesn't walk the streets for you.
+
+69
+00:03:02.526 --> 00:03:04.639
+This lesson sits at the gate.
+
+70
+00:03:04.639 --> 00:03:06.926
+And those loose questions?
+
+71
+00:03:06.926 --> 00:03:10.758
+.py and cd live in The Machine.
+
+72
+00:03:10.758 --> 00:03:14.763
+.venv lives in The Code.
+
+73
+00:03:14.763 --> 00:03:17.969
+Service accounts live in Trust.
+
+74
+00:03:18.419 --> 00:03:22.366
+That's the promise: a map, not a manual.
+
+75
+00:03:22.366 --> 00:03:25.373
+Every lesson answers five questions:
+
+76
+00:03:25.373 --> 00:03:27.672
+what is it, where does it live,
+
+77
+00:03:27.672 --> 00:03:30.865
+what is it like, what does it connect to,
+
+78
+00:03:30.865 --> 00:03:32.827
+and what will surprise you.
+
+79
+00:03:32.827 --> 00:03:35.892
+You won't finish able to do the thing yet.
+
+80
+00:03:35.892 --> 00:03:38.156
+You'll recognise it when you meet it.
+
+81
+00:03:38.156 --> 00:03:41.825
+Real tools are messier than the map.
+
+82
+00:03:41.825 --> 00:03:43.822
+Git lives in The History,
+
+83
+00:03:43.822 --> 00:03:46.202
+but it talks across The Network.
+
+84
+00:03:46.202 --> 00:03:49.928
+Keys belong to Trust, and they turn up everywhere.
+
+85
+00:03:49.928 --> 00:03:53.702
+Memorising commands is safe to skip.
+
+86
+00:03:53.702 --> 00:03:55.826
+Your AI can type them.
+
+87
+00:03:55.826 --> 00:03:58.707
+Your job is knowing what they mean.
+
+88
+00:03:59.157 --> 00:04:01.015
+Two surprises you'll meet early.
+
+89
+00:04:01.015 --> 00:04:02.594
+The first is a word: just.
+
+90
+00:04:02.594 --> 00:04:05.043
+Just cd into the folder.
+
+91
+00:04:05.043 --> 00:04:08.375
+Just activate the venv.
+
+92
+00:04:08.375 --> 00:04:10.593
+Just add it to your PATH.
+
+93
+00:04:10.593 --> 00:04:12.323
+Tutorials say it.
+
+94
+00:04:12.323 --> 00:04:13.867
+Coworkers say it.
+
+95
+00:04:13.867 --> 00:04:16.677
+Your AI assistant says it too.
+
+96
+00:04:16.677 --> 00:04:19.661
+Every just is a lesson somebody skipped.
+
+97
+00:04:19.661 --> 00:04:21.344
+It isn't a sign you're behind.
+
+98
+00:04:21.344 --> 00:04:23.062
+It's a pin on the map.
+
+99
+00:04:23.062 --> 00:04:25.942
+The second is an error.
+
+100
+00:04:25.942 --> 00:04:28.182
+Run a script from the wrong place,
+
+101
+00:04:28.182 --> 00:04:30.400
+and you'll see something like this:
+
+102
+00:04:30.400 --> 00:04:34.695
+can't open file, no such file or directory.
+
+103
+00:04:34.695 --> 00:04:36.762
+That doesn't mean your code is broken.
+
+104
+00:04:36.762 --> 00:04:38.898
+Python never even opened it.
+
+105
+00:04:38.898 --> 00:04:41.255
+Usually, you're standing in the wrong folder,
+
+106
+00:04:41.255 --> 00:04:44.740
+or the file is still called .txt.
+
+107
+00:04:45.189 --> 00:04:46.930
+Three things to keep.
+
+108
+00:04:46.930 --> 00:04:49.926
+The gap is in the syllabus, not in you.
+
+109
+00:04:49.926 --> 00:04:52.155
+Nobody handed you this map;
+
+110
+00:04:52.155 --> 00:04:55.766
+it's a missing semester, not a character flaw.
+
+111
+00:04:55.766 --> 00:04:58.285
+Every confusing thing has a shelf:
+
+112
+00:04:58.285 --> 00:04:59.388
+seven districts,
+
+113
+00:04:59.388 --> 00:05:02.709
+with AI as the lanterns over all of them.
+
+114
+00:05:02.709 --> 00:05:05.681
+Aim for recognition, not recipes.
+
+115
+00:05:05.681 --> 00:05:09.269
+Once you know what a thing is and where it lives,
+
+116
+00:05:09.269 --> 00:05:12.196
+the how-to is easy to find.
