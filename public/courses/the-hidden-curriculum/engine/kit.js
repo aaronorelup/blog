@@ -1,4 +1,4 @@
-/* The Missing Map — kit.js
+/* The Hidden Curriculum — kit.js
    The drawing toolkit every lesson shares. Canvas 1920x1080.
    Contract: everything draws from time alone. No Date.now(), no Math.random(),
    no state carried between frames — frame N must look identical every time it is drawn,

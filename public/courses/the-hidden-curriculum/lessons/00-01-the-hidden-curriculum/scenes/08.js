@@ -46,7 +46,7 @@ SCENE('08', (t, S) => {
 
   // ---- header: rises just after the 0.6 s crossfade (local -0.4..0.2), landing on "...to keep" (0.85) ----
   // drawn from frame 0 it sat on top of 07's "Surprise two" eyebrow and Command Prompt title bar mid-fade
-  const EYEBROW = 'The Missing Map · 00.01', EY = 200, TY = 285, TITLE = { size: 72 };
+  const EYEBROW = 'The Hidden Curriculum · 00.01', EY = 200, TY = 285, TITLE = { size: 72 };
   K.rise(t, 0.55, () => {
     K.eyebrow(EYEBROW, X, EY);
     K.title('Keep this', X, TY, TITLE);

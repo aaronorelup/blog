@@ -1,4 +1,4 @@
-/* The Missing Map — map.js
+/* The Hidden Curriculum — map.js
    The course map every lesson returns to: seven districts, each answering one question.
    It is the "shelf in your head" — every lesson shows where its idea is stored. */
 (function () {

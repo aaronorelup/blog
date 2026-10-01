@@ -1,4 +1,4 @@
-/* The Missing Map — runtime.js
+/* The Hidden Curriculum — runtime.js
    Turns a lesson (scenes keyed by narration section) plus its word timings (cues.js)
    into one function of time. Exposes the renderer contract:
      window.__meta   {W, H, FPS, DUR}

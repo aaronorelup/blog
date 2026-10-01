@@ -1,0 +1,54 @@
+---
+// The course index, as it appears both inside the homepage's overlay panel and on the
+// standalone /courses page: the Ledger's row layout, one row per course, plus a locked slot
+// for the next course (courses come out one at a time).
+import '../../styles/courses.css';
+import { COURSES, NEXT_COURSE, fmtMinutes } from '../../data/courses.js';
+
+const lockPath = 'M7 10V7a5 5 0 0 1 10 0v3M5.5 10h13a1 1 0 0 1 1 1v8.5a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1Z';
+---
+
+<div style="width:100%;max-width:1140px">
+  <h1 style="margin:0 0 10px;font-family:'Zen Maru Gothic',sans-serif;font-size:clamp(30px,4vw,44px);line-height:1.1;font-weight:700;color:var(--pc-head);letter-spacing:-0.015em">Courses</h1>
+  <p style="margin:0 0 40px;font-size:14px;line-height:1.75;color:var(--pc-quiet);max-width:680px">Courses made of short, narrated lessons on the parts of building with AI that nobody teaches. They come out one course at a time and fill in one lesson at a time; anything locked opens the day it's filed.</p>
+
+  <div style="display:flex;flex-direction:column">
+    {COURSES.map((c) => {
+      const d = c.data;
+      const pct = (100 * d.publishedLessons) / d.totalLessons;
+      return (
+        <a href={c.href} class="cv-row" data-no-fly>
+          <div class="cv-id">{c.code}<br /><span>{d.publishedLessons < d.totalLessons ? 'In progress' : 'Complete'}</span></div>
+          <div>
+            <h2>{c.title}</h2>
+            <p class="cv-tag">{c.tagline}</p>
+            <p class="cv-sum">{c.summary}</p>
+            <div class="cv-meta">
+              <span><b>{d.publishedLessons}</b> of {d.totalLessons} lessons filed</span>
+              <span>{d.moduleCount} modules</span>
+              <span>{fmtMinutes(d.runtimeSeconds)} so far</span>
+              {d.next && <span>Next up: {d.next.id} {d.next.title}</span>}
+            </div>
+            <div class="cs-bar" role="img" aria-label={`${d.publishedLessons} of ${d.totalLessons} lessons filed`}><i style={`width:${pct > 0 ? Math.max(pct, 1.2).toFixed(2) : 0}%`}></i></div>
+            <span class="cv-go">Open the course →</span>
+          </div>
+          <div class="cv-art"><img src={c.card} alt="" loading="lazy" decoding="async" width="1280" height="720" /></div>
+        </a>
+      );
+    })}
+
+    <div class="cv-row cv-locked">
+      <div class="cv-id">{NEXT_COURSE.code}<br /><span>Locked</span></div>
+      <div>
+        <h2>{NEXT_COURSE.title}</h2>
+        <p class="cv-sum">{NEXT_COURSE.summary}</p>
+      </div>
+      <div class="cv-art is-locked">
+        <img src={NEXT_COURSE.card} alt="" loading="lazy" decoding="async" width="1920" height="1080" />
+        <span class="cv-seal"><svg class="cs-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d={lockPath} /></svg>Not announced yet</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="cv-foot">Every lesson comes with captions, chapters, a clickable transcript and an MP4 you can keep. The lessons are drawn in code and narrated; how they're made is in the <a href="/ledger/the-missing-map/" data-ledger-entry="the-missing-map" style="color:var(--pc-accent)">Ledger</a>.</p>
+</div>

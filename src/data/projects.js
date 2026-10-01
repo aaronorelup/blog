@@ -3,8 +3,52 @@
 // designed for the missing state. `tier: "flagship"` puts it in the long-form section.
 //
 // Flagships run on your own machine, so their `href` IS the repo. The browser-playable
-// ones put the play link in `href` and the source in `repo`.
+// ones put the play link in `href` and the source in `repo`. A project with no public repo
+// (and none coming) sets `cta: { label, href, ledger? }` for its button and `noRepo` for the
+// note under it; `ledger` makes the button open the post in the homepage panel's reader.
+import hiddenCurriculum from './courses/the-hidden-curriculum.json';
+
 export const PROJECTS = [
+  {
+    name: 'Wallpaper Breaker',
+    tagline: 'a Windows live-wallpaper app built so Claude can see what it makes',
+    blurb: "My own Windows 11 live-wallpaper app. I started it after agents spent a night building sixteen Wallpaper Engine scenes of my characters, and not one of them ever saw a wallpaper run. Rule one: Claude can render, look at and fix every wallpaper it makes, and I can compare, edit and remix every version.",
+    year: 2026,
+    status: 'building',
+    tier: 'flagship',
+    tags: ['.NET 10', 'TypeScript', 'WebGL2', 'three.js', 'WebView2'],
+    highlights: [
+      ['Made to be seen', 'A headless renderer draws any wallpaper version on the real GPU so Claude can look at it, which means nothing ships unseen.'],
+      ['Your scripts, on your desktop', 'Buttons, hotkeys and live values on a wallpaper run your own scripts, with your own permissions. Scripts never travel with a wallpaper.'],
+      ['Every version kept', 'Layers, effects, puppet rigs and 3D scenes, with versions and notes side by side in the Studio for comparing and remixing.']
+    ],
+    runsOn: 'Windows 11 · multi-monitor · not released yet',
+    shot: '/media/wallpaper-breaker/card.webp',
+    shotLabel: 'The pilot wallpaper: Jefrie cooking in the rain',
+    cta: { label: 'READ HOW IT STARTED →', href: '/ledger/wallpapers-nobody-saw/', ledger: 'wallpapers-nobody-saw' },
+    noRepo: 'Closed source · will be a paid app · no public repo',
+    post: null
+  },
+  {
+    name: 'The Hidden Curriculum',
+    tagline: 'a course on what nobody teaches people who build with AI',
+    blurb: "Terminals, files, git, API keys, OAuth, hosting, Docker, licenses: the layer of everyday tools that school rarely teaches, as short narrated lessons that each build one mental model. Every lesson is drawn in code and made by a crew of agents, and they're filed one at a time.",
+    year: 2026,
+    status: `${hiddenCurriculum.publishedLessons} of ${hiddenCurriculum.totalLessons} lessons filed`,
+    tier: 'flagship',
+    tags: ['course', 'canvas animation', 'ElevenLabs', 'multi-agent'],
+    highlights: [
+      ['A map, not a manual', 'Seven districts, plus a gate and an exit, hold the whole curriculum, and every lesson pins itself to the map, so each new idea has a shelf to land on.'],
+      ['Written three ways, then checked', 'Three competing scripts, a judge, two fact-checkers, a speech-to-text pass on the narration, and reviewers on every scene.'],
+      ['One at a time', 'A new lesson most mornings; locked lessons open on the course page the day they are filed.']
+    ],
+    runsOn: 'In the browser · captions, chapters, transcript and MP4 for every lesson',
+    shot: '/media/the-hidden-curriculum/card-tile.webp',
+    shotLabel: 'Lesson 00.01, the title card',
+    cta: { label: 'OPEN THE COURSE →', href: '/courses/the-hidden-curriculum/' },
+    noRepo: 'No repo · the lessons live on this site',
+    post: null
+  },
   {
     name: 'Wordhord',
     tagline: 'a local-first AI language-learning platform',

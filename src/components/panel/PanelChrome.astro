@@ -1,10 +1,10 @@
 ---
 // The panel's frame: a centred header with the nav, a scrolling body, and a footer.
-// Shared by the homepage overlay and by the standalone /ledger, /projects, /about and
-// post pages, so a card that grows open looks identical to a page loaded cold.
+// Shared by the homepage overlay and by the standalone /ledger, /courses, /projects, /about,
+// course and post pages, so a card that grows open looks identical to a page loaded cold.
 interface Props {
-  // Which nav item is lit. A post lights "ledger".
-  active?: 'ledger' | 'projects' | 'about';
+  // Which nav item is lit. A post lights "ledger"; a course page lights "courses".
+  active?: 'ledger' | 'courses' | 'projects' | 'about';
   // The overlay can collapse back to the scene; a standalone page navigates home.
   overlay?: boolean;
 }
@@ -23,8 +23,9 @@ const lit = (name: string) => (name === active ? 'var(--pc-head)' : 'var(--pc-qu
         class="pc-home"
         style="display:flex;align-items:center;gap:9px;font:inherit;font-size:13.5px;letter-spacing:0.04em;white-space:nowrap;color:var(--pc-strong);text-decoration:none;padding:6px 0;cursor:pointer"
       >← Back to the tea house</a>
-      <nav style={`display:flex;gap:22px;font-size:13.5px;${overlay ? 'padding-right:88px' : ''}`}>
+      <nav class={overlay ? '' : 'pc-navs'} style={`display:flex;gap:22px;font-size:13.5px;${overlay ? 'padding-right:88px' : ''}`}>
         <a href="/ledger" data-nav="ledger" class="pc-nav" style={`color:${lit('ledger')};text-decoration:none`}>Ledger</a>
+        <a href="/courses" data-nav="courses" class="pc-nav" style={`color:${lit('courses')};text-decoration:none`}>Courses</a>
         <a href="/projects" data-nav="projects" class="pc-nav" style={`color:${lit('projects')};text-decoration:none`}>Projects</a>
         <a href="/about" data-nav="about" class="pc-nav" style={`color:${lit('about')};text-decoration:none`}>About</a>
       </nav>

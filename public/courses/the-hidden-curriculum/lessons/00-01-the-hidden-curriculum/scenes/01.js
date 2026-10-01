@@ -14,7 +14,7 @@ SCENE('01', (t, S) => {
   // ---- title block: rises under the engine's 0.6 s fade from black (local -1.6 = lesson frame 0),
   // so the whole card, conclusion included, is composed by 0.8 s global: the poster and anyone who
   // leaves after the first seconds see the conclusion, not an empty plate.
-  K.layer(K.io(t, -1.6, 0.5, 'out'), () => K.eyebrow('The Missing Map · 00.01 Orientation', X, 220));
+  K.layer(K.io(t, -1.6, 0.5, 'out'), () => K.eyebrow('The Hidden Curriculum · 00.01 Orientation', X, 220));
   K.rise(t, -1.5, () => K.title('The hidden curriculum', X, 320, { size: 92 }), 16, 0.5);
   const concl = { font: 'read', italic: true, size: 44, color: C.strong };
   K.rise(t, -1.3, () => K.text('A gap in the syllabus, not in you.', X, 400, concl), 16, 0.5);

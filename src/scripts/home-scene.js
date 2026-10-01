@@ -119,13 +119,20 @@ const RIG = {
   dir:  { day: { c: 0xFFF4E4, i: 0.35, p: [6, 12, 9] }, night: { c: 0xD8E2FF, i: 0.3, p: [-7, 14, 8] } },
 };
 
+// Panel routes: /ledger (and its posts), /projects, /about and /courses open as views of the
+// overlay panel. Only /courses itself is a view; a course page (/courses/<course>/) and its
+// lessons are real pages, so they navigate normally.
+const PANEL_ROUTE = /^\/(?:(?:ledger|projects|about)(?:\/|$)|courses\/?$)/;
+const viewForPath = (p) => (/^\/projects\/?$/.test(p) ? 'projects' : /^\/about\/?$/.test(p) ? 'about' : /^\/courses\/?$/.test(p) ? 'courses' : 'ledger');
+const pathForView = (v) => (v === 'projects' ? '/projects' : v === 'about' ? '/about' : v === 'courses' ? '/courses' : '/ledger');
+
 export class HomeScene {
   constructor(opts) {
     this.opts = Object.assign(
       { nightMode: true, stagingMode: false, showStats: false, forceReducedMotion: false },
       opts,
     );
-    // What the panel is showing. `view` is one of ledger/projects/about; `reader` is a
+    // What the panel is showing. `view` is one of ledger/courses/projects/about; `reader` is a
     // post slug when an entry is open on top of the ledger.
     this.view = 'ledger';
     this.reader = null;
@@ -544,7 +551,7 @@ export class HomeScene {
   applyView() {
     const r = this.reader;
     const shown = r ? 'reader' : this.view;
-    ['ledger', 'projects', 'about', 'reader'].forEach((name) => {
+    ['ledger', 'courses', 'projects', 'about', 'reader'].forEach((name) => {
       const el = document.querySelector('[data-view="' + name + '"]');
       if (el) el.style.display = name === shown ? '' : 'none';
     });
@@ -585,7 +592,7 @@ export class HomeScene {
 
   // the card the visitor clicked grows into the page; the scene keeps running behind it
   openPanel(view, srcEl) {
-    const path = view === 'projects' ? '/projects' : view === 'about' ? '/about' : '/ledger';
+    const path = pathForView(view);
     if (this.panelOpen) { this.navTo(path, { view, reader: null }); return; }
     this.panelSrcEl = srcEl || null;
     const r = srcEl ? srcEl.getBoundingClientRect() : null;
@@ -650,10 +657,10 @@ export class HomeScene {
     window.addEventListener('resize', this.onPanelResize);
     this.onPop = () => this.syncRoute();
     window.addEventListener('popstate', this.onPop);
-    // deep link: /ledger, /projects, /about or /ledger/<slug>/ opens straight into the
+    // deep link: /ledger, /courses, /projects, /about or /ledger/<slug>/ opens straight into the
     // panel, no flight. Astro serves each of those as a real page too, so this only
     // runs when the visitor is already on the homepage document.
-    if (/^\/(ledger|projects|about)(\/|$)/.test(location.pathname)) {
+    if (PANEL_ROUTE.test(location.pathname)) {
       this.syncRoute();
       setTimeout(() => this.openLedgerInstant(), 0);
     }
@@ -754,13 +761,13 @@ export class HomeScene {
 
   syncRoute() {
     const path = location.pathname;
-    if (!/^\/(ledger|projects|about)(\/|$)/.test(path)) {
+    if (!PANEL_ROUTE.test(path)) {
       if (this.panelOpen) this.closePanel(false);
       return;
     }
     const m = path.match(/^\/ledger\/([^/]+)\/?$/);
     const slug = m ? decodeURIComponent(m[1]) : null;
-    this.view = /^\/projects\/?$/.test(path) ? 'projects' : /^\/about\/?$/.test(path) ? 'about' : 'ledger';
+    this.view = viewForPath(path);
     if (slug) { this.openPost(slug, false); }
     else { this.reader = null; this.applyView(); }
     // Going forward into a panel route after backing out of it has to bring the panel
@@ -776,7 +783,7 @@ export class HomeScene {
     this.scrollPanelTop();
   }
 
-  // any ledger/projects/about link grows its card into the full page
+  // any ledger/courses/projects/about link grows its card into the full page
   bindLedger() {
     this.onLedgerClick = (e) => {
       if (e.defaultPrevented || e.button > 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
@@ -812,11 +819,11 @@ export class HomeScene {
         }
       }
 
-      const a = t.closest('a[href="/ledger"], a[href="/projects"], a[href="/about"], [data-ledger-link]');
+      const a = t.closest('a[href="/ledger"], a[href="/courses"], a[href="/projects"], a[href="/about"], [data-ledger-link]');
       if (!a) return;
       e.preventDefault();
       const href = a.getAttribute('href') || '/ledger';
-      const view = href === '/projects' ? 'projects' : href === '/about' ? 'about' : 'ledger';
+      const view = viewForPath(href);
       // already open: this is the panel's own nav, so cross-fade rather than re-grow
       if (this.panelOpen) { this.navTo(href, { view, reader: null }); return; }
       const sec = a.closest('section[data-wp]');
@@ -829,7 +836,7 @@ export class HomeScene {
       const href = a.getAttribute('href');
       if (!href || href.charAt(0) === '#' || /^(mailto:|tel:|javascript:)/i.test(href)) return;
       if (a.hasAttribute('data-ledger-entry') || a.hasAttribute('data-no-fly')) return;
-      if (/^\/(ledger|projects|about)(\/|$)/.test(href)) return;   // these open a card instead
+      if (PANEL_ROUTE.test(href)) return;   // these open a card instead
       if (this.mode === 'exit') { e.preventDefault(); return; }
       e.preventDefault();
       this.flyToLink(a.href, a.target === '_blank');

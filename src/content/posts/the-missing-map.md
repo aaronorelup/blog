@@ -41,7 +41,11 @@ without me.
 The course is called *The Missing Map* for now. It is meant to be conceptual, not a set of
 tutorials: what each thing is, where it lives, and what will surprise you when you meet it. The
 first lesson is a proof of concept and won't be in the final course. You can [watch the whole
-thing](/course/lessons/poc-00-01-the-hidden-curriculum/).
+thing](/courses/the-hidden-curriculum/lessons/00-01-the-hidden-curriculum/).
+
+*Update, 1 October 2026: the course is now called The Hidden Curriculum, and I liked this proof
+of concept enough to make it the official lesson 00.01. It lives on [the course
+page](/courses/the-hidden-curriculum/) with the rest of the lessons as they're filed.*
 
 ## What 44 agents did
 

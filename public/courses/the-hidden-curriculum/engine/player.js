@@ -1,4 +1,4 @@
-/* The Missing Map — player.js
+/* The Hidden Curriculum: player.js
    The lesson page around the canvas: play/pause synced to the narration, scrubber with
    chapter ticks, captions, speed, fullscreen, chapter list, takeaways and a clickable
    transcript. The canvas is always drawn from audio.currentTime, so picture and voice
@@ -13,23 +13,31 @@
   const fmt = (s) => { s = Math.max(0, s); const m = Math.floor(s / 60), x = Math.floor(s % 60); return `${m}:${String(x).padStart(2, '0')}`; };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-  // day/night toggle (night is the default face)
-  const mode = store.get('mode'); if (mode) document.documentElement.dataset.mode = mode;
-  const modeBtn = $('#mode');
+  // day/night: the same switch, storage key and default (night) as the rest of aaronorelup.com
+  const SUN = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FBF3E8" stroke-width="2.1" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4" fill="#FBF3E8" stroke="none"></circle><path d="M12 2v2.4M12 19.6V22M2 12h2.4M19.6 12H22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M19.1 4.9l-1.7 1.7M6.6 17.4l-1.7 1.7"></path></svg>';
+  const MOON = '<svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 14.6A8.6 8.6 0 1 1 9.4 3.8a6.9 6.9 0 0 0 10.8 10.8Z" fill="#151726"></path></svg>';
+  const modeBtn = $('#mode'), knob = $('#mode-knob');
+  const paintMode = () => {
+    const night = document.documentElement.dataset.mode !== 'day';
+    if (modeBtn) modeBtn.setAttribute('aria-pressed', night ? 'true' : 'false');
+    if (knob) { knob.style.transform = night ? 'translateX(36px)' : 'translateX(0)'; knob.innerHTML = night ? MOON : SUN; }
+  };
   if (modeBtn) modeBtn.addEventListener('click', () => {
-    const dark = matchMedia('(prefers-color-scheme: dark)').matches;
-    const cur = document.documentElement.dataset.mode || (dark ? 'night' : 'day');
-    const next = cur === 'night' ? 'day' : 'night';
-    document.documentElement.dataset.mode = next; store.set('mode', next);
+    const night = document.documentElement.dataset.mode !== 'day';
+    if (night) document.documentElement.dataset.mode = 'day'; else delete document.documentElement.dataset.mode;
+    try { localStorage.setItem('scene-mode', night ? 'day' : 'night'); } catch (e) { /* private mode */ }
+    paintMode();
   });
+  paintMode();
 
   if (navigator.webdriver && /render=1/.test(location.search)) return; // the renderer drives the canvas itself
 
   window.__ready.then(() => {
     const TL = window.__timeline, DEF = window.__lesson, DUR = TL.dur;
-    document.title = `${DEF.id} ${DEF.title} · The Missing Map`;
+    document.title = `${DEF.id} ${DEF.title} · The Hidden Curriculum · Aaron Orelup`;
     $('#eyebrow').innerHTML = `Lesson ${esc(DEF.id)} · ${esc(DEF.module || '')}` + (DEF.poc ? '<span class="tag">Proof of concept</span>' : '') + (!TL.narrated ? '<span class="tag">Draft · no narration yet</span>' : '');
     $('#title').textContent = DEF.title;
+    if ($('#crumb-id')) $('#crumb-id').textContent = `Lesson ${DEF.id}`;
     if (TL.voice && TL.voice.name && $('#filed')) $('#filed').textContent += ` · narrated by ${TL.voice.name.split(/\s[-–—]\s/)[0]} (ElevenLabs voice library)`;
     $('#summary').textContent = DEF.summary || '';
 
@@ -39,7 +47,7 @@
     if (!(DEF.keep || []).length) $('#keepbox').hidden = true;
 
     // audio (or a silent clock while the lesson is still a draft)
-    let audio = null, clockT = 0, clockAt = 0, playing = false;
+    let audio = null, clockT = 0, clockAt = 0, playing = false, wantPlay = false;
     if (TL.narrated) {
       audio = new Audio(); audio.preload = 'auto';
       audio.addEventListener('error', () => { audio = null; });
@@ -48,11 +56,25 @@
         // aaronorelup.com answers Range requests with a plain 200, which makes a streamed <audio>
         // unseekable (scrubbing and chapter jumps snap back to 0:00). A blob URL is always seekable,
         // so the narration (~6 MB) is fetched whole before the first play.
-        const bp = $('#bigplay'); bp.disabled = true; bp.textContent = 'Loading lesson…';
-        fetch(src).then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.blob(); })
+        // A press while it loads is remembered and plays the moment the audio is in.
+        const bp = $('#bigplay'); bp.textContent = 'Loading lesson…';
+        const readAll = async (r) => {
+          if (!r.ok) throw new Error(String(r.status));
+          const total = Number(r.headers.get('content-length')) || 0;
+          if (!r.body || !total) return r.blob();
+          const reader = r.body.getReader(), parts = []; let got = 0;
+          for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            parts.push(value); got += value.length;
+            if (!wantPlay) bp.textContent = `Loading lesson… ${Math.min(99, Math.round(100 * got / total))}%`;
+          }
+          return new Blob(parts, { type: 'audio/mpeg' });
+        };
+        fetch(src).then(readAll)
           .then((b) => { if (audio) audio.src = URL.createObjectURL(b); })
           .catch(() => { if (audio) audio.src = src; })
-          .finally(() => { bp.disabled = false; bp.textContent = 'Play lesson'; });
+          .finally(() => { bp.textContent = 'Play lesson'; if (wantPlay) { wantPlay = false; play(); } });
       } else audio.src = src;
     }
     const now = () => (audio ? audio.currentTime : playing ? clockT + (performance.now() - clockAt) / 1000 * rate : clockT);
@@ -60,7 +82,7 @@
     // before the first play the stage shows a poster frame instead of the black fade-in at 0:00
     const posterT = Math.min(DEF.poster ?? 2.5, DUR);
     const setT = (t) => { started = true; t = Math.max(0, Math.min(DUR - 0.01, t)); if (audio) audio.currentTime = t; clockT = t; clockAt = performance.now(); draw(true); };
-    const play = () => { if (audio && !audio.src) return; started = true; if (audio) audio.play(); clockT = now(); clockAt = performance.now(); playing = true; $('#bigplay').hidden = true; $('#play').textContent = 'Pause'; };
+    const play = () => { if (audio && !audio.src) { wantPlay = true; $('#bigplay').textContent = 'Starting…'; $('#play').textContent = 'Loading…'; return; } started = true; if (audio) audio.play(); clockT = now(); clockAt = performance.now(); playing = true; $('#bigplay').hidden = true; $('#play').textContent = 'Pause'; };
     const pause = () => { clockT = now(); if (audio) audio.pause(); playing = false; $('#play').textContent = 'Play'; };
     const toggle = () => (playing ? pause() : play());
     if (audio) audio.addEventListener('ended', () => { pause(); });
@@ -114,7 +136,11 @@
 
     // keyboard
     document.addEventListener('keydown', (e) => {
-      if (e.target.closest('input, textarea, select') && e.key !== ' ') return;
+      // leave the browser's own shortcuts (Ctrl+F, Ctrl+C...) and a focused control's own keys alone
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      const tg = e.target;
+      if (tg.closest('input, textarea, select') && !(e.key === ' ' && tg.id === 'scrub')) return;
+      if (e.key === ' ' && tg.closest('button, a, summary') && !['play', 'bigplay'].includes(tg.id)) return;
       if (e.key === ' ' || e.key === 'k') { e.preventDefault(); toggle(); }
       else if (e.key === 'ArrowRight') setT(now() + 5);
       else if (e.key === 'ArrowLeft') setT(now() - 5);

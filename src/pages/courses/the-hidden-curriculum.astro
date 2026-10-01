@@ -1,0 +1,246 @@
+---
+// The Hidden Curriculum's course page. Everything that changes as lessons are filed (which are
+// out, durations, what's next) comes from src/data/courses/the-hidden-curriculum.json, which the
+// course's publish tool regenerates; the lesson players themselves are static files under
+// public/courses/the-hidden-curriculum/lessons/.
+import PanelPage from '../../layouts/PanelPage.astro';
+import '../../styles/courses.css';
+import { COURSES, fmtDuration } from '../../data/courses.js';
+
+const course = COURSES.find((c) => c.slug === 'the-hidden-curriculum');
+const d = course.data;
+const feature = d.latest || d.first;
+const start = d.first;
+const modulesByN = Object.fromEntries(d.modules.map((m) => [m.n, m]));
+const byId = Object.fromEntries(d.districts.map((x) => [x.id, x]));
+const subtitle = (name) => {
+  const rest = name.includes(':') ? name.split(':').slice(1).join(':').trim() : '';
+  return rest.split(/\s+/).length >= 3 ? rest : '';
+};
+const lessonCount = (mods) => mods.reduce((n, m) => n + m.lessons.length, 0);
+const filedCount = (mods) => mods.reduce((n, m) => n + m.filed, 0);
+const out = d.modules.flatMap((m) => m.lessons).filter((l) => l.status === 'published');
+const avgMin = out.length ? Math.round(out.reduce((n, l) => n + l.duration, 0) / out.length / 60) : null;
+
+// the map, in the order the lessons draw it: the gate, the lanterns, the exit; then the two rows
+const tile = (key, label, mods, q, extra = {}) => ({ key, label, mods, q, ...extra });
+const gate = tile('gate', 'The Gate', [modulesByN['00']].filter(Boolean), 'start here', { code: '00' });
+const exit = tile('exit', 'The Exit', [modulesByN['23']].filter(Boolean), 'ship something real', { code: '23' });
+const district = (id) => tile(id, byId[id].name, byId[id].mods.map((n) => modulesByN[n]).filter(Boolean), byId[id].q);
+const mapTiles = [gate, district('ai'), exit, ...['machine', 'code', 'history', 'shipping', 'trust', 'network'].map(district)];
+
+const lockPath = 'M7 10V7a5 5 0 0 1 10 0v3M5.5 10h13a1 1 0 0 1 1 1v8.5a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1Z';
+const chevPath = 'M5 8l7 7 7-7';
+const faq = [
+  ['Do I need to know how to code?', 'No. The lessons explain what things are and how they fit together. If you build with AI, or want to, that is the only prerequisite.'],
+  ['Is this a tutorial series?', 'No. There are no steps to follow along with. Each lesson builds the mental model first, so when a tutorial (or your AI) tells you to do something, you already know what it is and why it matters.'],
+  ['Why are most lessons locked?', 'They are being made in order, one at a time. A new lesson is filed most mornings, and each one unlocks here the day it is filed. A lock only means "not made yet".'],
+  ['Do I need an account to watch?', 'No. Every lesson that is out plays right here in the browser, with captions, chapters and a transcript, and there is no sign-up.'],
+  ['How is each lesson made?', 'A crew of AI agents writes three versions of the script, picks and merges the best, fact-checks it, voices it with a narrator from the ElevenLabs voice library (a synthetic voice, different for every lesson), then animates and reviews it scene by scene. Every scene is animated in code; the title and end cards sit on one painted backdrop.'],
+];
+---
+
+<PanelPage
+  title="The Hidden Curriculum — a course by Aaron Orelup"
+  description="What nobody taught you about building with AI, drawn as a map you can keep in your head. Short narrated lessons, filed one at a time."
+  active="courses"
+  image="/media/the-hidden-curriculum/og.jpg"
+>
+  <div class="hc">
+    <nav class="hc-crumbs" aria-label="Breadcrumb"><a href="/courses">Courses</a><span aria-hidden="true">/</span><span aria-current="page">The Hidden Curriculum</span></nav>
+
+    <section class="hc-hero">
+      <div>
+        <p class="cs-eyebrow">Course 1 · New lessons most mornings</p>
+        <h1>The Hidden Curriculum</h1>
+        <p class="hc-lede">What nobody taught you about building with AI: terminals, files, git, keys, hosting and the rest, drawn as a map you can keep in your head.</p>
+        <p class="hc-sub">These aren't step-by-step tutorials. Each lesson tells you what a thing is, where it lives, what it connects to, and what will surprise you when you meet it, so the first time you do it for real is not the first time you've heard of it.</p>
+        <div class="hc-stats">
+          <div class="hc-stat"><b>{d.totalLessons}</b><span>lessons</span></div>
+          <div class="hc-stat"><b>{d.moduleCount}</b><span>modules</span></div>
+          <div class="hc-stat"><b>{d.districts.length}</b><span>districts</span></div>
+          <div class="hc-stat"><b>{avgMin ? `~${avgMin}` : '3–6'}</b><span>minutes a lesson</span></div>
+        </div>
+        <p class="hc-next">
+          <span class="hc-dot" aria-hidden="true"></span>{d.publishedLessons} {d.publishedLessons === 1 ? 'lesson' : 'lessons'} out now{d.next ? ` · next up: ${d.next.id} ${d.next.title}` : ''}
+        </p>
+        <div class="hc-cta">
+          {start && <a class="cs-pill is-primary" href={start.url}>Start with lesson {start.id} →</a>}
+          <a class="cs-pill" href="#curriculum">See all {d.totalLessons} lessons</a>
+        </div>
+      </div>
+
+      {feature && (
+        <a class="hc-feature" href={feature.url} aria-label={`Watch lesson ${feature.id}: ${feature.title}, ${fmtDuration(feature.duration)}`}>
+          <img src="/courses/the-hidden-curriculum/engine/assets/teahouse-night.jpg" alt="" width="1920" height="1080" decoding="async" />
+          <span class="hc-play" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="rgb(240,192,106)" /></svg></span>
+          <span class="hc-cap">
+            <span><small>Latest lesson · {feature.id}</small><strong>{feature.title}</strong></span>
+            <span class="hc-dur">{fmtDuration(feature.duration)}</span>
+          </span>
+        </a>
+      )}
+    </section>
+
+    <section class="hc-section">
+      <p class="cs-eyebrow">How it works</p>
+      <h2>Built to give you a framework, not a checklist</h2>
+      <p class="hc-intro">The confusing part of building with AI is rarely the code. It's the dozen things around it that everyone assumes you already know. This course hands them to you in an order that makes sense.</p>
+      <div class="hc-three">
+        <div class="hc-card">
+          <p class="cs-eyebrow">A map, not a manual</p>
+          <h3>Every idea gets a shelf</h3>
+          <p>Seven districts, from the files on your own computer to the network, trust and shipping. Each lesson pins itself to the map, so new ideas land somewhere instead of piling up.</p>
+        </div>
+        <div class="hc-card">
+          <p class="cs-eyebrow">Five questions, every lesson</p>
+          <h3>The same shape each time</h3>
+          <ol>
+            <li>What is it?</li>
+            <li>Where does it live?</li>
+            <li>What is it like?</li>
+            <li>What does it connect to?</li>
+            <li>What will surprise you?</li>
+          </ol>
+        </div>
+        <div class="hc-card">
+          <p class="cs-eyebrow">Short, with a transcript</p>
+          <h3>A few minutes each</h3>
+          <p>Every lesson is animated and narrated, with captions, chapters, a transcript you can click to jump around, and an MP4 to keep.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hc-section" id="map">
+      <p class="cs-eyebrow">The map</p>
+      <h2>Seven districts, a gate and an exit</h2>
+      <p class="hc-intro">Every lesson is filed somewhere on this map, the same one the lessons draw. You start at the gate, the districts hold the ideas, AI hangs over all of them like lanterns, and you leave by the exit when you can ship.</p>
+      <figure class="hc-mapwell">
+        <img src="/media/the-hidden-curriculum/map.webp" alt="The course map as lesson 00.01 draws it: The Lanterns (AI) strung across the top; The Machine, The Code and The History in the first row; Shipping, Trust and The Network in the second; the gate (00) and the exit (23) on the left." width="1600" height="900" decoding="async" />
+        <figcaption>The map as lesson 00.01 draws it. The pin is where you start.</figcaption>
+      </figure>
+      <div class="hc-tiles">
+        {mapTiles.map((x) => {
+          const filed = filedCount(x.mods);
+          const first = x.mods[0];
+          return (
+            <a class={`hc-tile${filed > 0 ? ' is-lit' : ''}`} href={first ? `#module-${first.n}` : '#curriculum'}>
+              <span class="hc-tile-name">{x.code && <span class="hc-tile-code">{x.code}</span>}{x.label}</span>
+              <span class="hc-tile-q">{x.q}</span>
+              <span class="hc-tile-meta">
+                {x.mods.length} {x.mods.length === 1 ? 'module' : 'modules'} · {lessonCount(x.mods)} lessons
+                {filed > 0 ? <b> · {filed} out</b> : null}
+              </span>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+
+    <section class="hc-section" id="curriculum">
+      <div class="hc-head">
+        <div>
+          <p class="cs-eyebrow">Curriculum</p>
+          <h2>{d.moduleCount} modules, {d.totalLessons} lessons</h2>
+          <p>Lessons unlock in order as they're filed. A lock only means a lesson isn't made yet; {d.publishedLessons} {d.publishedLessons === 1 ? 'is' : 'are'} out now.</p>
+        </div>
+        <ul class="hc-legend" aria-label="Legend">
+          <li><span class="hc-dot" aria-hidden="true"></span>Out now</li>
+          <li><span class="hc-dot is-next" aria-hidden="true"></span>Next up</li>
+          <li><svg class="cs-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d={lockPath} /></svg>Not filed yet</li>
+        </ul>
+      </div>
+
+      {d.modules.map((m) => {
+        const mp = (100 * m.filed) / m.lessons.length;
+        const hasNext = m.lessons.some((l) => l.next);
+        return (
+          <details class="hc-module" id={`module-${m.n}`} open={m.filed > 0 || hasNext}>
+            <summary>
+              <span class="hc-mod-n">{m.n}</span>
+              <span class="hc-mod-name">{m.short}{subtitle(m.name) && <small>{subtitle(m.name)}</small>}</span>
+              {m.filed > 0 ? (
+                <>
+                  <span class="hc-mod-count">{m.filed} / {m.lessons.length} out</span>
+                  <span class="cs-bar" aria-hidden="true"><i style={`width:${Math.max(mp, 4).toFixed(2)}%`}></i></span>
+                </>
+              ) : (
+                <>
+                  <span class="hc-mod-count">{m.lessons.length} lessons</span>
+                  <span class="hc-mod-lock" aria-hidden="true"><svg class="cs-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d={lockPath} /></svg></span>
+                </>
+              )}
+              <svg class="hc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={chevPath} /></svg>
+            </summary>
+            <ol class="hc-lessons">
+              {m.lessons.map((l) => (
+                <li>
+                  {l.status === 'published' ? (
+                    <a class="hc-lesson is-open" href={l.url}>
+                      <span class="hc-l-id">{l.id}</span>
+                      <span class="hc-l-main"><strong>{l.title}</strong><span>{l.summary || l.idea}</span></span>
+                      <span class="hc-l-meta"><span class="hc-dot" aria-hidden="true"></span>{fmtDuration(l.duration)}<span class="hc-watch">Watch →</span></span>
+                    </a>
+                  ) : (
+                    <div class={`hc-lesson is-locked${l.next ? ' is-next' : ''}`}>
+                      <span class="hc-l-id">{l.id}</span>
+                      <span class="hc-l-main"><strong>{l.title}</strong><span>{l.idea}</span></span>
+                      <span class="hc-l-meta">
+                        {l.next ? (
+                          <span class="hc-next-tag"><span class="hc-dot is-next" aria-hidden="true"></span>Next up</span>
+                        ) : (
+                          <span class="hc-lock-tag"><svg class="cs-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d={lockPath} /></svg><span class="sr-only">Not filed yet</span></span>
+                        )}
+                      </span>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </details>
+        );
+      })}
+    </section>
+
+    <section class="hc-section hc-maker">
+      <img src="/aaron.webp" alt="Aaron Orelup" width="112" height="112" />
+      <div>
+        <p class="cs-eyebrow">Who's making this</p>
+        <h2>Aaron Orelup</h2>
+        <p>I have a degree in Information Systems and I still learned most of this by breaking things: a Python script saved as .txt, a terminal open in the wrong folder, work automations tied to my own accounts. Once I was building real tools with AI, I kept meeting words nobody had taught me. This is the map I wish someone had handed me.</p>
+        <div class="hc-links">
+          <a href="/ledger/the-missing-map/">How the first lesson was made →</a>
+          <a href="/about">More about me →</a>
+          <a href="/ledger">Read the Ledger →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="hc-section hc-faq">
+      <p class="cs-eyebrow">Questions</p>
+      <h2>Before you start</h2>
+      {faq.map(([q, a]) => (
+        <details>
+          <summary>{q}<svg class="hc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={chevPath} /></svg></summary>
+          <p>{a}</p>
+        </details>
+      ))}
+    </section>
+  </div>
+
+  <!-- a link or address ending in #module-NN opens that module instead of scrolling to a closed one -->
+  <script is:inline>
+    (function () {
+      function open(hash) {
+        var el = hash && document.getElementById(decodeURIComponent(hash.slice(1)));
+        if (el && el.tagName === 'DETAILS') el.open = true;
+      }
+      open(location.hash);
+      addEventListener('hashchange', function () { open(location.hash); });
+      document.addEventListener('click', function (e) {
+        var a = e.target.closest && e.target.closest('a[href^="#module-"]');
+        if (a) open(a.getAttribute('href'));
+      });
+    })();
+  </script>
+</PanelPage>

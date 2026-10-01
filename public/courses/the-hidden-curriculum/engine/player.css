@@ -1,36 +1,24 @@
-/* The Missing Map — lesson page. Tea House tokens (aaron-brand); night is the default. */
+/* The Hidden Curriculum: lesson page. aaronorelup.com's panel tokens (src/styles/panel.css);
+   night is the default, day only when the visitor chose it (localStorage 'scene-mode'). */
 :root {
-  --pc-page:#101220; --pc-bg:rgba(21,23,38,.96); --pc-tile:#201F2C;
-  --pc-hover:#222130; --pc-code:#222130; --pc-scrim:rgba(8,9,18,.44);
-  --pc-head:#F0C06A; --pc-strong:#F2E7D5; --pc-body:#C9BCA9;
-  --pc-soft:#9C917F; --pc-quiet:#8E8375;
-  --pc-line:#302E3E; --pc-line2:#4A445A;
-  --pc-accent:#E2795C; --pc-gold:#C9A227;
-  --pc-shadow:0 34px 100px rgba(0,0,0,.6);
-  --th-blossom:#F7C9D4;
-  --ease:cubic-bezier(.4,0,.2,1);
+  --pc-page: rgb(16, 18, 32); --pc-bg: rgba(21, 23, 38, 0.96); --pc-tile: rgb(32, 31, 44);
+  --pc-hover: rgb(34, 33, 48); --pc-code: rgb(34, 33, 48); --pc-scrim: rgba(8, 9, 18, 0.44);
+  --pc-head: rgb(240, 192, 106); --pc-strong: rgb(242, 231, 213); --pc-body: rgb(201, 188, 169);
+  --pc-soft: rgb(156, 145, 127); --pc-quiet: rgb(142, 131, 117);
+  --pc-line: rgb(48, 46, 62); --pc-line2: rgb(74, 68, 90);
+  --pc-accent: rgb(226, 121, 92); --pc-gold: rgb(201, 162, 39);
+  --pc-shadow: 0 34px 100px rgba(0, 0, 0, 0.6);
+  --ease: cubic-bezier(.4, 0, .2, 1);
   color-scheme: dark;
 }
-@media (prefers-color-scheme: light) {
-  :root:not([data-mode='night']) {
-    --pc-page:#FBF3E8; --pc-bg:rgba(251,243,232,.97); --pc-tile:#F3E7D2;
-    --pc-hover:#F4E9D8; --pc-code:#F0E5D2; --pc-scrim:rgba(251,243,232,.34);
-    --pc-head:#BE7A10; --pc-strong:#3A3A42; --pc-body:#4A4A50;
-    --pc-soft:#6B5E52; --pc-quiet:#7A6C5D;
-    --pc-line:#E2D5C0; --pc-line2:#D0BEA3;
-    --pc-accent:#A85E2B; --pc-gold:#B08A2E;
-    --pc-shadow:0 30px 90px rgba(58,58,66,.22);
-    color-scheme: light;
-  }
-}
 :root[data-mode='day'] {
-  --pc-page:#FBF3E8; --pc-bg:rgba(251,243,232,.97); --pc-tile:#F3E7D2;
-  --pc-hover:#F4E9D8; --pc-code:#F0E5D2; --pc-scrim:rgba(251,243,232,.34);
-  --pc-head:#BE7A10; --pc-strong:#3A3A42; --pc-body:#4A4A50;
-  --pc-soft:#6B5E52; --pc-quiet:#7A6C5D;
-  --pc-line:#E2D5C0; --pc-line2:#D0BEA3;
-  --pc-accent:#A85E2B; --pc-gold:#B08A2E;
-  --pc-shadow:0 30px 90px rgba(58,58,66,.22);
+  --pc-page: rgb(251, 243, 232); --pc-bg: rgba(251, 243, 232, 0.97); --pc-tile: rgb(243, 231, 210);
+  --pc-hover: rgb(244, 233, 216); --pc-code: rgb(240, 229, 210); --pc-scrim: rgba(251, 243, 232, 0.34);
+  --pc-head: rgb(190, 122, 16); --pc-strong: rgb(58, 58, 66); --pc-body: rgb(74, 74, 80);
+  --pc-soft: rgb(107, 94, 82); --pc-quiet: rgb(122, 108, 93);
+  --pc-line: rgb(226, 213, 192); --pc-line2: rgb(208, 190, 163);
+  --pc-accent: rgb(168, 94, 43); --pc-gold: rgb(176, 138, 46);
+  --pc-shadow: 0 30px 90px rgba(58, 58, 66, 0.22);
   color-scheme: light;
 }
 
@@ -39,27 +27,53 @@ html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0; background: var(--pc-page); color: var(--pc-body);
   font: 400 17px/1.68 Georgia, 'Times New Roman', serif;
-  min-height: 100vh;
+  min-height: 100vh; transition: background 300ms ease;
 }
 ::selection { background: var(--pc-line2); color: var(--pc-strong); }
 a { color: var(--pc-accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
 a:hover { text-decoration-thickness: 2px; }
-:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; border-radius: 4px; }
 button { font: 600 15px/1 Karla, 'Segoe UI', sans-serif; color: var(--pc-strong); }
-
-.wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
-.top {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 18px 0; border-bottom: 1px solid var(--pc-line);
-  font: 600 15px/1.2 Karla, sans-serif;
+.skip {
+  position: absolute; left: 16px; top: -64px; z-index: 50; background: var(--pc-bg); color: var(--pc-strong);
+  padding: 12px 18px; border-radius: 12px; border: 2px solid var(--pc-line2); font: 600 15px/1 Karla, sans-serif; text-decoration: none;
 }
-.top a { color: var(--pc-soft); text-decoration: none; }
-.top a:hover { color: var(--pc-head); }
-.brand { font-family: 'Zen Maru Gothic', Karla, sans-serif; font-weight: 700; color: var(--pc-head); letter-spacing: -.01em; }
+.skip:focus { top: 16px; }
+
+/* site chrome: the same header and footer as the Ledger and Projects pages */
+.site-top, .site-foot { display: flex; justify-content: center; padding: 18px clamp(18px, 4vw, 44px); font: 400 13.5px/1.4 Karla, system-ui, sans-serif; }
+.site-top { border-bottom: 1px solid var(--pc-line); }
+.site-foot { border-top: 1px solid var(--pc-line); margin-top: 24px; font-size: 12.5px; color: var(--pc-quiet); }
+.site-row { width: 100%; max-width: 1140px; display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; }
+.site-home { color: var(--pc-strong); text-decoration: none; letter-spacing: .04em; padding: 6px 0; white-space: nowrap; }
+.site-nav { display: flex; gap: 22px; }
+/* the fixed day/night switch sits over the nav's right end until the row is narrower than the window */
+@media (max-width: 1380px) { .site-nav { padding-right: 88px; } }
+.site-nav a, .site-foot a { color: var(--pc-quiet); text-decoration: none; }
+.site-nav a[aria-current] { color: var(--pc-head); }
+.site-nav a:hover, .site-home:hover { color: var(--pc-head); }
+.site-foot p { margin: 0; }
+.site-foot div { display: flex; gap: 20px; flex-wrap: wrap; }
+.site-foot a:hover { color: var(--pc-accent); }
+.mode-toggle {
+  position: fixed; top: 20px; right: 22px; z-index: 41; width: 72px; height: 36px; padding: 0;
+  border: 2px solid var(--pc-line2); border-radius: 999px; background: var(--pc-bg); cursor: pointer; backdrop-filter: blur(6px);
+}
+.mode-knob {
+  position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; border-radius: 999px; background: var(--pc-head);
+  display: flex; align-items: center; justify-content: center; transition: transform 380ms var(--ease), background 300ms ease;
+}
+@media (max-width: 640px) { .site-nav { padding-right: 0; gap: 16px; } .site-top { padding-right: 104px; } }
+
+/* same measure as the site's panel pages: a 1140px column inside the side padding */
+.wrap { max-width: calc(1140px + 2 * clamp(16px, 4vw, 44px)); margin: 0 auto; padding: 0 clamp(16px, 4vw, 44px); }
+.crumbs { display: flex; gap: 8px; flex-wrap: wrap; margin: 30px 0 0; font: 400 13px/1.5 Karla, sans-serif; color: var(--pc-quiet); }
+.crumbs a { color: var(--pc-soft); text-decoration: none; }
+.crumbs a:hover { color: var(--pc-head); }
 
 .eyebrow {
   font: 600 12px/1.4 Karla, sans-serif; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--pc-gold); margin: 40px 0 8px;
+  color: var(--pc-gold); margin: 22px 0 8px;
 }
 .eyebrow .tag { color: var(--pc-accent); margin-left: 10px; }
 h1, h2 { font-family: 'Zen Maru Gothic', Karla, sans-serif; color: var(--pc-head); letter-spacing: -.02em; }
@@ -141,9 +155,20 @@ h2 { font-size: 24px; margin: 0 0 14px; font-weight: 700; }
 
 .foot {
   display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
-  border-top: 1px solid var(--pc-line); padding: 22px 0 60px; font: 600 15px/1.4 Karla, sans-serif; color: var(--pc-quiet);
+  border-top: 1px solid var(--pc-line); padding: 22px 0 40px; font: 600 15px/1.4 Karla, sans-serif; color: var(--pc-quiet);
 }
 .foot a { text-decoration: none; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 .bigplay:disabled { cursor: progress; opacity: .8; }
+
+/* lesson footer: back to the curriculum, on to the next lesson */
+.foot a { color: var(--pc-accent); text-decoration: none; }
+.foot a:hover { color: var(--pc-head); }
+.foot .soon { color: var(--pc-quiet); font-weight: 400; }
+/* on a phone the play button moves off the title card so it never covers the lesson's title */
+@media (max-width: 640px) {
+  .bigplay { top: auto; left: 12px; bottom: 12px; transform: none; padding: 10px 18px; font-size: 15px; }
+  .bigplay:hover { transform: none; }
+  .foot { flex-direction: column; gap: 10px; }
+}

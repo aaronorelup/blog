@@ -1,4 +1,4 @@
-/* The Missing Map — music.js
+/* The Hidden Curriculum — music.js
    A quiet felt-piano and pad bed, synthesized with Web Audio so it is deterministic and
    licence-free. tools/mix.py pulls it with window.__music() and ducks it under the voice. */
 (function () {

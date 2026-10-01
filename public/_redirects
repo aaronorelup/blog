@@ -2,3 +2,11 @@
 # design. AO-004 and AO-005 were syndicated under the old paths, so these stay forever.
 /posts/* /ledger/:splat 301
 /posts /ledger 301
+
+# Courses became a section of the site on 2026-10-01: /course/ moved to /courses/<course>/.
+# The proof-of-concept address was promoted to the official first lesson.
+/course/lessons/poc-00-01-the-hidden-curriculum/* /courses/the-hidden-curriculum/lessons/00-01-the-hidden-curriculum/ 301
+/course/lessons/poc-00-01-the-hidden-curriculum /courses/the-hidden-curriculum/lessons/00-01-the-hidden-curriculum/ 301
+/course/lessons/* /courses/the-hidden-curriculum/lessons/:splat 301
+/course/* /courses/the-hidden-curriculum/ 301
+/course /courses/the-hidden-curriculum/ 301

@@ -2,10 +2,11 @@
 // The homepage: a scroll-driven tea house scene with an overlay panel that grows out of
 // whichever card you click. The scene markup is carried over from the Claude Design
 // artifact; the panel's contents are the same Astro components the standalone /ledger,
-// /projects and /about pages use, so the two can never drift apart.
+// /courses, /projects and /about pages use, so the two can never drift apart.
 import '../styles/panel.css';
 import PanelChrome from '../components/panel/PanelChrome.astro';
 import LedgerView from '../components/panel/LedgerView.astro';
+import CoursesView from '../components/panel/CoursesView.astro';
 import ProjectsView from '../components/panel/ProjectsView.astro';
 import AboutView from '../components/panel/AboutView.astro';
 import Home from '../layouts/Home.astro';
@@ -19,7 +20,7 @@ import Home from '../layouts/Home.astro';
     <nav id="stop-rail" aria-label="Sections" style="display:none;position:absolute;right:clamp(14px,2vw,28px);top:50%;transform:translateY(-50%);flex-direction:column;gap:14px;pointer-events:auto;z-index:3">
       <button type="button" data-goto="0" aria-label="Garden" style="width:11px;height:11px;padding:0;border-radius:999px;border:2px solid #3A3A42;background:#3A3A42;cursor:pointer" data-hv="hv-dot"></button>
       <button type="button" data-goto="1" aria-label="Projects" style="width:11px;height:11px;padding:0;border-radius:999px;border:2px solid #3A3A42;background:transparent;cursor:pointer" data-hv="hv-dot"></button>
-      <button type="button" data-goto="2" aria-label="The ledger" style="width:11px;height:11px;padding:0;border-radius:999px;border:2px solid #3A3A42;background:transparent;cursor:pointer" data-hv="hv-dot"></button>
+      <button type="button" data-goto="2" aria-label="The ledger and courses" style="width:11px;height:11px;padding:0;border-radius:999px;border:2px solid #3A3A42;background:transparent;cursor:pointer" data-hv="hv-dot"></button>
       <button type="button" data-goto="3" aria-label="Who I am" style="width:11px;height:11px;padding:0;border-radius:999px;border:2px solid #3A3A42;background:transparent;cursor:pointer" data-hv="hv-dot"></button>
       <button type="button" data-goto="4" aria-label="On your way out" style="width:11px;height:11px;padding:0;border-radius:999px;border:2px solid #3A3A42;background:transparent;cursor:pointer" data-hv="hv-dot"></button>
     </nav>
@@ -37,6 +38,7 @@ import Home from '../layouts/Home.astro';
     <div id="panel-card" style="position:absolute;left:50%;top:50%;width:0;height:0;opacity:0;box-sizing:border-box;background:var(--pc-bg);border-radius:24px;box-shadow:var(--pc-shadow);overflow:hidden;display:flex;flex-direction:column;transition:left 560ms cubic-bezier(.4,0,.2,1),top 560ms cubic-bezier(.4,0,.2,1),width 560ms cubic-bezier(.4,0,.2,1),height 560ms cubic-bezier(.4,0,.2,1),opacity 380ms ease">
       <PanelChrome overlay={true}>
         <div data-view="ledger"><LedgerView /></div>
+        <div data-view="courses" style="display:none"><CoursesView /></div>
         <div data-view="projects" style="display:none"><ProjectsView /></div>
         <div data-view="about" style="display:none"><AboutView /></div>
         <div data-view="reader" style="display:none"></div>
@@ -125,16 +127,19 @@ import Home from '../layouts/Home.astro';
 
     <section data-wp="3" data-screen-label="3 desk" style="min-height:100vh;display:flex;align-items:center;justify-content:flex-end;padding:0 clamp(20px,6vw,96px);box-sizing:border-box;opacity:1;will-change:opacity,transform">
       <div style="max-width:460px;background:rgba(251,243,232,0.9);backdrop-filter:blur(7px);border-radius:24px;padding:clamp(24px,3.4vw,38px);box-shadow:0 14px 40px rgba(58,58,66,0.12)">
-        <h2 style="margin:0;font-family:'Zen Maru Gothic',serif;font-weight:700;font-size:clamp(28px,3.4vw,40px);color:#BE7A10;line-height:1.1">The Ledger</h2>
-        <p style="margin:16px 0 0;font-size:17px;line-height:1.65;color:#4A4A50;text-wrap:pretty">My contribution to the painful learning curve of AI that we are all facing. Everything from mistakes, to funny moments, to aspirational ideas is all logged away.</p>
-        <a href="/ledger" style="display:inline-block;margin-top:20px;padding:12px 22px;border:2px solid #3A3A42;border-radius:999px;text-decoration:none;font-weight:600;font-size:16px;color:#3A3A42;background:#FBF3E8" data-hv="hv-pink">Read the Ledger →</a>
+        <h2 style="margin:0;font-family:'Zen Maru Gothic',serif;font-weight:700;font-size:clamp(28px,3.4vw,40px);color:#BE7A10;line-height:1.1">The Ledger &amp; Courses</h2>
+        <p style="margin:16px 0 0;font-size:17px;line-height:1.65;color:#4A4A50;text-wrap:pretty">My contribution to the painful learning curve of AI that we are all facing. The Ledger logs everything from mistakes to funny moments to aspirational ideas. The courses are the lessons I wish I'd had: short, narrated, and filed one at a time.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:20px">
+          <a href="/ledger" style="display:inline-block;padding:12px 22px;border:2px solid #3A3A42;border-radius:999px;text-decoration:none;font-weight:600;font-size:16px;color:#3A3A42;background:#FBF3E8" data-hv="hv-pink">Read the Ledger →</a>
+          <a href="/courses" style="display:inline-block;padding:12px 22px;border:2px solid #3A3A42;border-radius:999px;text-decoration:none;font-weight:600;font-size:16px;color:#3A3A42;background:#FBF3E8" data-hv="hv-pink">Browse the courses →</a>
+        </div>
       </div>
     </section>
 
     <section data-wp="4" data-screen-label="4 tea room" style="min-height:100vh;display:flex;align-items:center;justify-content:flex-end;padding:0 clamp(20px,6vw,96px);box-sizing:border-box;opacity:1;will-change:opacity,transform">
       <div style="max-width:480px;background:rgba(251,243,232,0.9);backdrop-filter:blur(7px);border-radius:24px;padding:clamp(24px,3.4vw,38px);box-shadow:0 14px 40px rgba(58,58,66,0.12)">
         <h2 style="margin:0;font-family:'Zen Maru Gothic',serif;font-weight:700;font-size:clamp(28px,3.4vw,40px);color:#BE7A10;line-height:1.1">Right now</h2>
-        <p style="margin:16px 0 0;font-size:17px;line-height:1.65;color:#4A4A50;text-wrap:pretty">Tuning Wordhord against real study sessions, and learning where AI-refereed systems hold up once someone actually uses them.</p>
+        <p style="margin:16px 0 0;font-size:17px;line-height:1.65;color:#4A4A50;text-wrap:pretty">Building two things. <b>Wallpaper Breaker</b> is my own Windows 11 live-wallpaper app, built so Claude can see every wallpaper it makes. <b>The Hidden Curriculum</b> is a course on what nobody teaches people who build with AI, and a new lesson goes up most mornings.</p>
         <p style="margin:14px 0 0;font-size:17px;line-height:1.65;color:#4A4A50;text-wrap:pretty">Sit down a minute — this corner changes the most, so it's the best snapshot of what I'm thinking about this month.</p>
         <a href="/about" style="display:inline-block;margin-top:20px;padding:12px 22px;border:2px solid #3A3A42;border-radius:999px;text-decoration:none;font-weight:600;font-size:16px;color:#3A3A42;background:#FBF3E8" data-hv="hv-pink">More about me →</a>
       </div>

@@ -167,3 +167,10 @@
 @media (max-width: 560px) {
   .pc-row { grid-template-columns: minmax(0, 1fr) !important; gap: 10px 0 !important; }
 }
+
+/* ---------- courses section (2026-10-01) ----------
+   The fixed day/night switch sits over the nav's right end until the 1140px row is narrower
+   than the window; standalone pages pad the nav only in that range (the overlay always does). */
+@media (max-width: 1380px) { .pc-navs { padding-right: 88px; } }
+/* every panel view starts at the header's left edge, whatever its content width */
+#panel-scroll > [data-view] { width: 100%; max-width: 1140px; }

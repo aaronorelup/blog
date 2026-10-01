@@ -1,5 +1,5 @@
 ---
-// Standalone chrome for /ledger, /projects, /about and each post. These are real pages:
+// Standalone chrome for /ledger, /courses, /projects, /about, each course and each post. These are real pages:
 // they render without JavaScript, they're what search engines and RSS readers see, and
 // the homepage overlay fetches its post bodies from them. Visually they're the same
 // panel that grows out of a card on the homepage, just already open.
@@ -9,15 +9,18 @@ import PanelChrome from '../components/panel/PanelChrome.astro';
 interface Props {
   title: string;
   description?: string;
-  active?: 'ledger' | 'projects' | 'about';
+  active?: 'ledger' | 'courses' | 'projects' | 'about';
   // Unlisted (soft-private) posts: keep search engines off a page that's only reachable by URL.
   noindex?: boolean;
+  // A share image (site-relative path; JPG/PNG, ideally 1200x630) for link previews.
+  image?: string;
 }
 const {
   title,
   description = "Aaron Orelup's notes on learning AI, filed as I go.",
   active = 'ledger',
   noindex = false,
+  image,
 } = Astro.props;
 ---
 
@@ -32,6 +35,8 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    {image && <meta property="og:image" content={new URL(image, Astro.site).href} />}
+    {image && <meta name="twitter:card" content="summary_large_image" />}
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
     <link rel="alternate" type="application/rss+xml" title="Aaron Orelup — the ledger" href="/rss.xml" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />

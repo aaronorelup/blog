@@ -4,7 +4,7 @@ LESSON({
   title: 'The hidden curriculum',
   short: 'Hidden curriculum',
   module: 'Orientation',
-  summary: 'Building with AI runs on everyday tools that school rarely teaches, so the gap is in the syllabus, not in you; this lesson shows why, and the map every later lesson is shelved on.',
+  summary: 'Building with AI runs on everyday tools that school rarely teaches, so the gap is in the syllabus, not in you. This lesson shows why, and lays out the map every later lesson is shelved on.',
   keep: [
     ['The gap is in the syllabus, not in you.', "Nobody handed you this map; it's a missing semester, not a character flaw."],
     ['Every confusing thing has a shelf.', 'Seven districts, with AI as the lanterns over all of them.'],
