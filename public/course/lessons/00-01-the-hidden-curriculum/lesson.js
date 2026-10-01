@@ -1,10 +1,9 @@
-/* 00.01 The hidden curriculum (proof of concept): metadata only; scenes live in scenes/NN.js */
+/* 00.01 The hidden curriculum: metadata only; scenes live in scenes/NN.js */
 LESSON({
   id: '00.01',
   title: 'The hidden curriculum',
   short: 'Hidden curriculum',
   module: 'Orientation',
-  poc: true,
   summary: 'Building with AI runs on everyday tools that school rarely teaches, so the gap is in the syllabus, not in you; this lesson shows why, and the map every later lesson is shelved on.',
   keep: [
     ['The gap is in the syllabus, not in you.', "Nobody handed you this map; it's a missing semester, not a character flaw."],
