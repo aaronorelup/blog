@@ -23,7 +23,7 @@
     if (C && C.sections && C.sections.length) {
       const secs = C.sections.map((s) => ({ ...s }));
       keys.forEach((n) => { if (!secs.find((s) => s.n === n)) console.warn('scene', n, 'has no narration section'); });
-      return { narrated: true, lead: C.lead, tail: C.tail, dur: C.duration, sections: secs, captions: C.captions || [], voice: C.voice || null };
+      return { narrated: true, lead: C.lead, tail: C.tail, dur: C.duration, sections: secs, captions: C.captions || [], voice: C.voice || null, guestVoice: C.guest_voice || null };
     }
     // not narrated yet: draft durations so scenes can be authored and previewed silently
     let t = 1.2; const sections = [];

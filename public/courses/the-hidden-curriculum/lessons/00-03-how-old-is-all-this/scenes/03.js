@@ -35,10 +35,10 @@ SCENE('03', (t, S) => {
 
   K.bg({ glow: 0.2, glowX: 620, glowY: 480 });
 
-  // ---- layout (a shorter Notepad than the shared layout: two lines of code don't need 520 px)
-  const [wx, , ww] = L.win, wh = 270;
+  // ---- layout (a shorter Notepad than the shared layout, set lower so the left column is not empty under it)
+  const [wx, , ww] = L.win, wh = 320;
   const lift = -8 * K.io(t, name.notepad - 0.05, 0.5);   // Notepad lifts a touch when named
-  const wy0 = 262, wy = wy0 + lift;
+  const wy0 = 330, wy = wy0 + lift;   // centred ~490: balances the right column (files, terminal, .venv)
   const F = { txt: [1300, 330], py: [1580, 330], s: 110 };
   const [tx, , tw, th] = L.term, ty = 516;          // 46 px lower than the shared spot: room for its tag above
   const V = { x: 1300, y: 780, s: 90 };
@@ -70,7 +70,7 @@ SCENE('03', (t, S) => {
       if (gk > 0) K.glow(wx + ww / 2, wy + wh / 2, ww * 0.55, C.head, 0.22 * gk);
       K.layer(frK * K.lerp(0.4, 1, onK), () => {
         const r = K.win(wx, wy + (1 - frK) * 20, ww, wh, { title: t < tSaved ? 'Untitled - Notepad' : 'script.txt - Notepad', kind: 'notepad', shadow: true });
-        K.editor(r, t, ['name = "Aaron"', 'print("hello", name)'], { typeAt: tNotepad + 0.3, cps: 24, size: 32, gutter: false, syntax: 'none' });
+        K.editor(r, t, ['name = "Aaron"', 'print("hello", name)'], { typeAt: tNotepad + 0.3, cps: 24, size: 36, gutter: false, syntax: 'none' });
       });
     }
 
@@ -139,7 +139,7 @@ SCENE('03', (t, S) => {
   // ---- the line, under the Notepad in two halves on their words
   {
     const o = { font: 'read', size: 46, color: C.strong };
-    const x0 = wx + 4, y0 = wy0 + wh + 120;
+    const x0 = wx + 4, y0 = wy0 + wh + 112;
     K.rise(t, tOldest, () => K.text('Not the latest things.', x0, y0, o), 16, 0.6);
     K.rise(t, tOldestWord - 0.1, () => K.text('The oldest.', x0, y0 + 66, { ...o, color: C.head }), 16, 0.6);
   }

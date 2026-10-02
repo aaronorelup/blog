@@ -38,7 +38,7 @@
     $('#eyebrow').innerHTML = `Lesson ${esc(DEF.id)} · ${esc(DEF.module || '')}` + (DEF.poc ? '<span class="tag">Proof of concept</span>' : '') + (!TL.narrated ? '<span class="tag">Draft · no narration yet</span>' : '');
     $('#title').textContent = DEF.title;
     if ($('#crumb-id')) $('#crumb-id').textContent = `Lesson ${DEF.id}`;
-    if (TL.voice && TL.voice.name && $('#filed')) $('#filed').textContent += ` · narrated by ${TL.voice.name.split(/\s[-–—]\s/)[0]} (ElevenLabs voice library)`;
+    if (TL.voice && TL.voice.name && $('#filed')) $('#filed').textContent += ` · narrated by ${TL.voice.name.split(/\s[-–—]\s/)[0]}${TL.guestVoice && TL.guestVoice.name ? `, with guest ${TL.guestVoice.name.split(/\s[-–—]\s/)[0]}` : ''} (ElevenLabs voice library)`;
     $('#summary').textContent = DEF.summary || '';
 
     // takeaways

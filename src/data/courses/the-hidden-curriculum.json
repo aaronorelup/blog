@@ -2,9 +2,9 @@
  "slug": "the-hidden-curriculum",
  "title": "The Hidden Curriculum",
  "updated": "2026-10-01",
- "totalLessons": 183,
+ "totalLessons": 196,
  "publishedLessons": 3,
- "runtimeSeconds": 909,
+ "runtimeSeconds": 1236,
  "moduleCount": 22,
  "districtCount": 6,
  "regions": [
@@ -103,7 +103,7 @@
    ]
   }
  ],
- "lanternCount": 23,
+ "lanternCount": 24,
  "modules": [
   {
    "n": "00",
@@ -144,8 +144,8 @@
      "status": "published",
      "slug": "00-03-how-old-is-all-this",
      "url": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/",
-     "duration": 317.2,
-     "summary": "Almost everything under your AI tools is decades old (Unix 1969, the web and Python 1991, git 2005) and only the AI layer on top is new (Copilot 2021, ChatGPT 2022, MCP 2024), so learn the old streets once and keep checking the new lanterns.",
+     "duration": 644.8,
+     "summary": "The ideas under your tools are decades old, but old does not mean frozen: versions change every year, security changes fastest (text codes to authenticator apps to passkeys, broken hashes, retired TLS) and AI on top changes fastest of all, so learn the ideas once, check the version, and assume old login advice is out of date.",
      "published": "2026-10-01",
      "narrator": "RClayton",
      "poster": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/poster.jpg"
@@ -1268,8 +1268,8 @@
     },
     {
      "id": "17.09",
-     "title": "App stores",
-     "idea": "Microsoft Store, Mac App Store, Play, App Store, Steam — review and fees",
+     "title": "Desktop app stores",
+     "idea": "Microsoft Store, Mac App Store, Steam, itch.io: why distribute through a store at all (phone stores are 18.06–18.09)",
      "status": "locked"
     }
    ],
@@ -1277,32 +1277,111 @@
   },
   {
    "n": "18",
-   "name": "Building for Platforms You Don't Own",
-   "short": "Building for Platforms You Don't Own",
+   "name": "Other Platforms: Phones, App Stores & Physical Devices",
+   "short": "Other Platforms",
    "region": "Shipping",
    "lessons": [
     {
      "id": "18.01",
      "title": "Why cross-platform is hard",
-     "idea": "Different OSes, CPUs (x64 vs ARM), screen sizes",
+     "idea": "Different OSes, CPUs (x64 vs ARM), screen sizes: one program, many machines",
      "status": "locked"
     },
     {
      "id": "18.02",
-     "title": "Cross-platform frameworks",
-     "idea": "Web, Electron, Tauri, Flutter, React Native, Unity/Godot",
+     "title": "Compatibility basics",
+     "idea": "Minimum vs target OS version, API levels, backward vs forward compatibility, deprecations, CPU architectures, screen sizes and densities, \"check for the feature, not the version\"",
      "status": "locked"
     },
     {
      "id": "18.03",
-     "title": "CI build matrices",
-     "idea": "GitHub Actions building Mac/Linux/Windows for you",
+     "title": "How a phone app is different",
+     "idea": "Sandboxes, permission prompts, the app lifecycle (the OS can pause or kill you), push notifications, battery and offline",
      "status": "locked"
     },
     {
      "id": "18.04",
+     "title": "Native, cross-platform or web",
+     "idea": "Swift/Kotlin vs Flutter, React Native, .NET MAUI vs Electron/Tauri vs Unity/Godot vs installable web apps (PWAs): what each trades away",
+     "status": "locked"
+    },
+    {
+     "id": "18.05",
+     "title": "The mobile toolchains",
+     "idea": "Xcode (why iOS apps need a Mac) and Android Studio; SDKs, simulators vs emulators, running on your own phone",
+     "status": "locked"
+    },
+    {
+     "id": "18.06",
+     "title": "The app stores",
+     "idea": "App Store, Google Play, Microsoft Store, Mac App Store, Steam, Amazon and Galaxy stores, EU alternative marketplaces, sideloading; what each one is for and the 15–30% cut",
+     "status": "locked"
+    },
+    {
+     "id": "18.07",
+     "title": "Getting your app into a store",
+     "idea": "Developer accounts and fees, identity checks, review guidelines and rejections, privacy labels and data-safety forms, beta testing (TestFlight, Play testing tracks)",
+     "status": "locked"
+    },
+    {
+     "id": "18.08",
+     "title": "Signing, IDs & releasing updates",
+     "idea": "Bundle/package IDs, certificates, provisioning profiles, keystores, version numbers vs build numbers, staged rollouts; why losing a signing key is a disaster",
+     "status": "locked"
+    },
+    {
+     "id": "18.09",
+     "title": "Selling inside apps",
+     "idea": "In-app purchases and subscriptions, store billing rules, why outside payment links were restricted and how that is changing",
+     "status": "locked"
+    },
+    {
+     "id": "18.10",
      "title": "VMs, emulators & cloud devices",
      "idea": "Testing without owning the hardware",
+     "status": "locked"
+    },
+    {
+     "id": "18.11",
+     "title": "CI build matrices",
+     "idea": "GitHub Actions building Mac/Linux/Windows, iOS and Android for you",
+     "status": "locked"
+    },
+    {
+     "id": "18.12",
+     "title": "How physical devices work",
+     "idea": "Microcontrollers vs single-board computers (Arduino, ESP32 vs Raspberry Pi), firmware, sensors and actuators, pins",
+     "status": "locked"
+    },
+    {
+     "id": "18.13",
+     "title": "Prototyping electronics",
+     "idea": "Dev boards, breadboards, power and voltage levels, the parts that let the magic smoke out",
+     "status": "locked"
+    },
+    {
+     "id": "18.14",
+     "title": "Firmware & talking to devices",
+     "idea": "Flashing, serial over USB, Bluetooth LE, Wi-Fi, MQTT; the companion app on your phone",
+     "status": "locked"
+    },
+    {
+     "id": "18.15",
+     "title": "From breadboard to product",
+     "idea": "Circuit boards (KiCad, ordering PCBs), enclosures, CAD and 3D printing, small-batch manufacturing",
+     "status": "locked"
+    },
+    {
+     "id": "18.16",
+     "title": "Certification & selling hardware",
+     "idea": "FCC/CE marks, pre-certified radio modules, safety, crowdfunding and hardware stores",
+     "status": "locked"
+    },
+    {
+     "id": "18.17",
+     "title": "AI on devices",
+     "idea": "On-device and edge AI (phone NPUs, tiny models on microcontrollers), and coding agents that write firmware",
+     "lantern": true,
      "status": "locked"
     }
    ],
@@ -1453,8 +1532,8 @@
   "status": "published",
   "slug": "00-03-how-old-is-all-this",
   "url": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/",
-  "duration": 317.2,
-  "summary": "Almost everything under your AI tools is decades old (Unix 1969, the web and Python 1991, git 2005) and only the AI layer on top is new (Copilot 2021, ChatGPT 2022, MCP 2024), so learn the old streets once and keep checking the new lanterns.",
+  "duration": 644.8,
+  "summary": "The ideas under your tools are decades old, but old does not mean frozen: versions change every year, security changes fastest (text codes to authenticator apps to passkeys, broken hashes, retired TLS) and AI on top changes fastest of all, so learn the ideas once, check the version, and assume old login advice is out of date.",
   "published": "2026-10-01",
   "narrator": "RClayton",
   "poster": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/poster.jpg"

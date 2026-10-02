@@ -1,186 +1,197 @@
-// 07 — The lantern: new light on old streets
-// The street of years in full (04's layout), old tags resting at half strength, the lanterns lit at the far end.
-// On "assumes you know the oldest ones" a soft gold light spreads back from the lanterns to 1969 and each old tag
-// brightens as the light's edge passes it. A coding agent (sparkle) hangs under the lanterns and sends four
-// everyday jobs down onto the OLD stretch, one per spoken verb: cd (1971 shell), app.py (1991 Python),
-// .venv (2012), git commit (2005). Each job leaves the agent as a spark, drops past the street's far end, travels
-// left under the street and lands in a row below the tags, carrying its own gold year ("1971 · cd project"); as it
-// lands, that year's node on the street swells once (and the Unix / ~1991 / Git tag it relies on warms). No leader
-// lines: the tag rows below the street leave no clean path, and a line through a pill reads as "belongs to that pill". On "can't tell" a terracotta "?" appears beside the agent and every job pulses.
-// On "oldest ground" a dashed gold arrow arcs from the agent to the 1969 end. On [[light]] the job row steps back,
-// the "new light, old streets" pill gives its slot to the recurring line, which closes the scene as the headline,
-// and on "lights" one warm sweep runs from the lanterns back along the whole street to 1969, warming every old tag
-// in turn, then settles into an even glow along the street ("it lights every district").
-// No lantern tags here: the agent owns the space under the lanterns.
+/* 07 — The market that never closes.
+   The building (left layout) becomes YOUR PROJECT: its sign is the project's own version ("my-app 1.0") and stays that way.
+   Packages come from a market (two stalls that never stop). Each delivery lands inside the door as one parcel with a tag,
+   "colors-kit 2.3.0" -> ... -> "2.4.1" (the recurring repaint, on the tag, not on the sign). The version pill explains 2.4.1
+   and points back at that tag; the lockfile writes the tag's version down and the next delivery knocks against it.
+   Supply chain: two invented parcels, "co1ors-kit" (look-alike name) and "colors-kit" (taken over), both solid terracotta
+   with a small warning glyph. The pin drops on the lockfile; the installer tools pop in a row at the bottom. */
 SCENE('07', (t, S) => {
-  const C = K.C, L = M.layout.s07, gm = M.geom('full');
+  const C = K.C;
+  K.bg({ glow: 0.16, glowX: 1300 });
 
-  // ---- times: every beat on the word that names it
-  const tAssume = S.cue('assume', 3.18);                  // "The newest layer assumes you know the oldest ones."
-  const tAgent = S.find('coding', 0, 6.68);               // "A coding agent will ..."
-  const tCd = S.cue('agent-cd', 8.05);                    // "run C D,"
-  const tPy = S.find('write', 0, tCd + 1.26);             // "write a dot P Y file,"
-  const tVenv = S.find('make', 0, tCd + 3.4);             // "make a dot V E N V,"
-  const tGit = S.find('save', 0, tCd + 5.98);             // "and save its work with git."
-  const tTell = S.find('tell', 0, 17.96);                 // "you can't tell whether it did the right thing."
-  const tGround = S.cue('old-ground', 20.03);             // "The newest thing on the road spends its day on the oldest ground."
-  const tPill = S.find('spends', 0, tGround + 1.4);
-  const tLantern = S.find('lantern', 0, 25.22);           // "AI is the lantern:"
-  const tLight = S.cue('light', 26.09);                   // "it lights every district, but it doesn't walk the streets for you."
+  // ---- cues (local seconds) ----
+  const cMarket = S.cue('market', 4.27), cSemver = S.cue('semver', 13.58), cLock = S.cue('lockfile', 20.87);
+  const cSupply = S.cue('supply-chain', 27.74), cTools = S.cue('tools', 39.0);
+  const wPackages = S.find('packages', 0, 0.61);
+  const wYou = S.find('you', 0, 2.61);
+  const wPyPI = S.find(/^Pie/, 0, 6.18);
+  const wEvery = S.find('every', 0, 12.47);
+  const wVersion = S.find(/^two/, 0, 14.93);
+  const wFirst = S.find('first', 0, 17.78);
+  const wBreak = S.find(/^break/, 0, 19.86);
+  const wLockfile = S.find('lockfile', 0, 21.05);
+  const wExact = S.find('exact', 0, 22.44);
+  const wQuietly = S.find('quietly', 0, 25.41);
+  const wLook = S.find(/^look-alike/, 0, 31.29);
+  const wTake = S.find('take', 0, 32.45);
+  const wPin = S.find('pin', 0, 35.61);
+  const wPip = S.find(/^pip/, 0, 42.38);
+  const wPoetry = S.find('Poetry', 0, 43.25);
+  const wUv = S.find(/^U$/, 0, 45.14);
+  const wAll = S.find('all', 0, 47.21);
 
-  const [ax, ay, as] = L.agent;
-
-  // ---- the agent's four jobs. Each lands in a row below the tag rows (b2 pills end at y 745), x near its year but
-  // nudged into the gaps between pills, and carries its own year, so it never borrows a neighbouring pill's meaning.
-  const rowY = 856;                                        // job anchor; the caption / chip line sits at ~870
-  const jobs = [
-    { kind: 'chip', s: 'cd project', year: M.YEARS.shell, x: 317, at: tCd, tagI: 0 },        // Unix shell, 1971
-    { kind: 'file', s: 'app.py', year: M.YEARS.python, x: 770, at: tPy, tagI: 4 },           // Python, 1991
-    { kind: 'folder', s: '.venv', year: M.YEARS.venv, x: 1440, at: tVenv, tagI: -1 },        // venv, 2012
-    { kind: 'chip', s: 'git commit', year: 2005, x: 1150, at: tGit, tagI: 6, low: true },  // passes under .venv               // Git, 2005
-  ];
-  const FLY = 0.9, SPARK = 0.26;                           // total flight; the first part is a spark only
-  const landAt = (j) => j.at + FLY;
-  const landK = (j) => K.io(t, landAt(j) - 0.15, 0.5);    // the landing settles: warms its year on the street
-  const nodeK = (j) => K.io(t, landAt(j) - 0.1, 0.4);     // the job's year node appears on the street as it lands
-
-  // ---- the light: a pool at the lanterns, then it spreads back to 1969
-  const lightK = K.io(t, tAssume, 1.2);
-  const edgeX = K.lerp(M.X(2020, gm), M.X(1968, gm), lightK);   // the light's left edge (matches M.light)
-  const edgeY = M.yearAt(edgeX, gm);
-  const reached = (year) => K.ease.io(K.clamp((year + 3 - edgeY) / 4));
-  const lineSwell = M.bump(t, tLantern, 1.8);
-  const rest = 1 - 0.6 * K.io(t, tLight, 0.6);              // on [[light]] the job row steps back to 0.4
-
-  // ---- "it lights every district": one warm sweep from the lanterns back to 1969 (0.8 s), then an even settle
-  const tLights = S.find('lights', 0, 26.31);
-  const SW = 0.8, swRaw = K.clamp((t - tLights) / SW);
-  const swOn = t >= tLights && swRaw < 1;
-  const frontX = K.lerp(M.X(2024, gm), M.X(1962, gm), K.ease.io(swRaw));
-  const swEnv = swOn ? Math.sin(Math.PI * swRaw) ** 0.6 : 0;
-  const sweepAt = (x) => swEnv * Math.exp(-(((x - frontX) / 150) ** 2));
-  const settle = K.io(t, tLights + 0.5, 0.9);              // after the sweep: the whole street stays gently lit
-
-  K.bg({ glow: 0.22, glowX: 1660, glowY: 300 });
-  M.light(gm, lightK, { a: 0.3 + 0.06 * lineSwell + 0.04 * settle, h: 150 });
-  // the settled light: an even warm lane along the whole street, 1969 to the lanterns (not only a pool at the far end)
-  if (settle > 0) {
-    const g = K.ctx(), xa = M.X(1967, gm), xb = M.X(2025, gm);
-    const lg = g.createLinearGradient(xa, 0, xb, 0);
-    lg.addColorStop(0, K.rgba(C.head, 0)); lg.addColorStop(0.08, K.rgba(C.head, 0.07 * settle));
-    lg.addColorStop(0.9, K.rgba(C.head, 0.07 * settle)); lg.addColorStop(1, K.rgba(C.head, 0));
-    g.save(); g.fillStyle = lg; g.globalCompositeOperation = 'lighter';
-    // vertical falloff: thin stacked bands with gaussian alpha make a soft lane
-    for (let i = -6; i <= 6; i++) {
-      const a = Math.exp(-((i / 3.2) ** 2));
-      g.globalAlpha = a; g.fillRect(xa, gm.y - 20 + i * 26 - 13, xb - xa, 26);
-    }
-    g.restore();
-  }
-  // the sweep's moving front: a warm bloom travelling along the street
-  if (swEnv > 0) {
-    K.glow(frontX, gm.y - 20, 230, M.palette.lanternGlow, 0.22 * swEnv);
-    K.glow(frontX, gm.y, 90, M.palette.lanternGlow, 0.35 * swEnv);
-  }
-
-  // old tags: half strength until the light reaches them; the tag an agent job lands under warms
-  const itemAlpha = (i) => 0.5 + 0.5 * reached(M.BUILDINGS[i].year);
-  const itemLit = (i) => {
-    const j = jobs.find((x) => x.tagI === i);
-    const job = j ? 0.7 * landK(j) * (0.6 + 0.4 * rest) : 0;
-    const sw = 0.9 * sweepAt(M.itemPos(gm, M.BUILDINGS[i]).x);
-    return Math.min(1, Math.max(job, sw, 0.18 * settle));
-  };
-  M.street(t, { geom: gm, itemAlpha, itemLit, lanterns: 1, lanternTags: 0, lanternGlow: 1 + 0.6 * lineSwell });
-
-  // each job's year on the street: a node (1971 and 2012 have no building of their own) that swells as the job lands
-  jobs.forEach((j) => {
-    const k = nodeK(j);
-    if (k <= 0) return;
-    const x = M.X(j.year, gm), p = M.bump(t, landAt(j) + 0.25, 0.8);
-    if (p > 0) K.glow(x, gm.y, 50, C.head, 0.6 * p);
-    K.line(x, gm.y, x + 0.01, gm.y, { color: C.head, w: 10 + 6 * p, alpha: K.clamp(k * 3) });
+  // ---- the building, left layout: it becomes YOUR PROJECT; the sign is the project's own version ----
+  const L = M.LAYOUTS.left;
+  const own = K.io(t, wYou - 0.1, 0.55);                  // "for you to use": this building is your project
+  const frozen = K.io(t, wExact + 0.6, 0.6);              // the lockfile holds the delivered version
+  M.building(t, {
+    layout: L,
+    sign: own > 0 ? 'my-app 1.0' : 'VS Code', signFrom: own > 0 && own < 1 ? 'VS Code' : null, signK: own > 0 && own < 1 ? own : null,
+    roofLabel: own > 0 ? 'YOUR PROJECT' : 'VS CODE', roofLabelFrom: 'VS CODE', roofLabelK: own > 0 && own < 1 ? own : null,
+    lock: 'key',
+    stoneLabel: 'STONE · THE IDEA',
   });
 
-  // ---- the agent: a sparkle under the lanterns, named "coding agent"
-  const agentK = K.io(t, tAgent, 0.6, 'out');
-  if (agentK > 0) {
-    const send = Math.max(...jobs.map((j) => M.bump(t, j.at - 0.1, 0.7)));
-    K.layer(agentK, () => {
-      K.glow(ax, ay, 90, M.palette.lanternGlow, 0.22 + 0.18 * send);
-      K.at(ax, ay, 0.85 + 0.15 * agentK, 0, () => K.icon('sparkle', 0, 0, as, { color: M.palette.lanternGlow, w: 3.5 }));
-      K.text('coding agent', ax, ay + as * 0.5 + 44, { font: 'ui', weight: 600, size: 26, color: C.accent, align: 'center' });
+  // ---- "packages": three parcels, before the market is named ----
+  const pre = K.io(t, wPackages, 0.5) * (1 - K.io(t, cMarket, 0.5));
+  if (pre > 0) [[1340, 0], [1420, 1], [1500, 2]].forEach(([x, tint], i) => {
+    const k = K.io(t, wPackages + i * 0.12, 0.5, 'out');
+    M.parcel(x, 330 - 16 * (1 - k), 60, { tint, alpha: pre * k });
+  });
+
+  // ---- the market: two stalls that never close ----
+  const STALL_Y = 170;
+  M.stall(t, 1060, STALL_Y, { title: 'NPM · JAVASCRIPT', k: K.io(t, cMarket, 0.6), flow: cMarket + 0.4, every: 1.1, seed: 7 });
+  M.stall(t, 1440, STALL_Y, { title: 'PYPI · PYTHON', k: K.io(t, wPyPI, 0.6), flow: wPyPI + 0.4, every: 1.1, seed: 11 });
+
+  // "every day": a small clock under the stalls
+  const dayK = K.io(t, wEvery, 0.5);
+  if (dayK > 0) K.layer(dayK, () => {
+    K.icon('clock', 1352, 522, 34, { color: C.head });
+    K.text('every day', 1384, 531, { font: 'ui', weight: 600, size: 26, color: C.body });
+  });
+
+  // ---- the delivered package: one parcel inside the house, beside the door, with a version tag ----
+  const NPM_OUT = { x: 1090, y: 444 };                    // where a delivery leaves the npm stall
+  const BOX = { x: 648, y: 702 };                         // inside the walls, under the right window, beside the door
+  const TAG = { x: 800, y: 702 };                         // the tag pill's left edge (outside the wall)
+  const LOCKF = { x: 890, y: 560 };                       // the lockfile, beside the building
+  const deliveries = [
+    [cMarket + 1.4, 'colors-kit 2.3.0'],
+    [cMarket + 4.3, 'colors-kit 2.3.1'],
+    [cMarket + 7.1, 'colors-kit 2.4.0'],
+    [wVersion, 'colors-kit 2.4.1'],
+  ];
+  let di = -1; deliveries.forEach(([at], i) => { if (t >= at - 0.1) di = i; });
+  const boxK = K.io(t, deliveries[0][0] - 0.1, 0.4, 'out');
+  if (boxK > 0) {
+    const thump = deliveries.reduce((a, [at]) => a + M.bump(t, at, 0.35), 0);
+    // a thin string from the parcel to its tag
+    K.layer(boxK, () => K.line(BOX.x + 28, BOX.y, TAG.x, BOX.y, { color: C.line2, w: 2 }));
+    M.parcel(BOX.x, BOX.y - 3 * thump, 50, { tint: 1, alpha: boxK });
+    const at = deliveries[di][0], tk = K.io(t, at - 0.1, 0.5);
+    const tag = deliveries[di][1], from = di > 0 && tk < 1 ? deliveries[di - 1][1] : (di === 0 && tk < 1 ? '' : null);
+    M.paint(TAG.x, TAG.y, tag, {
+      from, k: from != null ? tk : null, size: 26, font: 'mono', weight: 500, align: 'left',
+      lit: 0.85 * frozen, alpha: boxK, blankW: 120,
     });
   }
 
-  // ---- "you can't tell whether it did the right thing": the doubt sits with the agent, and every job pulses
-  const tellPulse = M.bump(t, tTell, 1.0);
-  const qk = K.io(t, tTell, 0.6, 'out');
-  if (qk > 0) {
-    K.layer(qk * (0.55 + 0.45 * rest), () => K.at(1750, 420, 0.7 + 0.3 * qk, 0,
-      () => K.icon('question', 0, 0, 56, { color: C.accent, w: 3.5 })));
-  }
+  // ---- a parcel in flight: from the npm stall to (tx, ty), landing at `land` ----
+  const flight = (land, tx, ty, o = {}) => {
+    const dur = 0.95, a = land - dur;
+    if (t < a || t > land + 0.7) return;
+    const u = K.ease.io(K.seg(t, a, land));
+    const cx = (NPM_OUT.x + tx) / 2, cy = Math.min(NPM_OUT.y, ty) - 40;          // a low arc, over the wall and in
+    const x = (1 - u) * (1 - u) * NPM_OUT.x + 2 * (1 - u) * u * cx + u * u * tx;
+    const y = (1 - u) * (1 - u) * NPM_OUT.y + 2 * (1 - u) * u * cy + u * u * ty;
+    const fadeIn = K.seg(t, a, a + 0.2);
+    const after = K.seg(t, land, land + (o.stop ? 0.7 : 0.2));
+    const s = (o.s || 40) * (o.stop ? 1 - 0.25 * K.ease.in(after) : 1 + 0.25 * after);
+    const dx = o.stop ? 14 * Math.sin(Math.PI * Math.min(1, after * 2)) : 0;   // a small knock back from the lockfile
+    M.parcel(x + dx, y, s, { tint: o.tint ?? 1, alpha: fadeIn * (1 - after) });
+  };
+  deliveries.forEach(([at], i) => flight(at, BOX.x, BOX.y, { tint: i % 3, s: 46 }));
+  // after the lockfile: the next delivery stops at the lockfile, and the package inside stays as it is
+  flight(wQuietly, LOCKF.x + 70, LOCKF.y - 40, { stop: true, tint: 2 });
 
-  // ---- the four jobs: a spark leaves the agent, drops past the street's far end (x > 1760, so it never crosses
-  // the line, a tag or a decade label), then travels left beneath the street and becomes the job as it lands
-  // a job: the artifact plus its own year, written "year · thing" like every tag in the lesson (year in gold mono)
-  const yearParts = (j) => [
-    { s: String(j.year), font: 'mono', weight: 600, size: 26, color: C.head },
-    { s: '  ·  ', font: 'ui', weight: 400, size: 26, color: C.soft },
-    { s: j.s, font: 'mono', weight: 500, size: 26, color: C.strong },
-  ];
-  const partsW = (parts) => parts.reduce((w, p) => w + K.measure(p.s, p), 0);
-  const drawJob = (j, x, y, s, a) => K.layer(a, () => K.at(x, y, s, 0, () => {
-    const parts = yearParts(j), tw = partsW(parts);
-    if (j.kind === 'chip') {
-      const g = K.ctx(), w = tw + 26 * 1.4, h = 26 * 1.85, cy = 14;
-      g.save(); K.rr(-w / 2, cy - h / 2, w, h, h / 2); g.fillStyle = C.tile; g.fill();
-      g.lineWidth = 1.5; g.strokeStyle = K.mixColor(C.line2, C.head, 0.35); g.stroke(); g.restore();
-      K.spans(parts, 0, cy + 26 * 0.34, { size: 26, align: 'center' });
-    } else {
-      if (j.kind === 'file') K.file(0, -50, 64, { ext: 'py' });
-      else K.folder(0, -46, 56);
-      K.spans(parts, 0, 24, { size: 26, align: 'center' });
-    }
+  // ---- semver: the version pill, pointing back at the delivered package's tag ----
+  const PILL = { x: 1420, y: 640 };
+  const pillK = K.io(t, wVersion - 0.25, 0.5);
+  const labelsOut = K.io(t, cSupply + 0.1, 0.5);
+  // the narrated part leads: on "first" the '2' lights gold and "may break" comes in under it;
+  // the other two labels are secondary (never said), so they wait until after "break" and stay at 60 %
+  const hlFirst = K.io(t, wFirst - 0.05, 0.4) * (1 - labelsOut);
+  const lbK = (i) => (i === 0 ? K.io(t, wFirst, 0.5) : 0.6 * K.io(t, wBreak + 0.3 + (i - 1) * 0.25, 0.5)) * (1 - labelsOut);
+  const ringK = K.io(t, wPin + 0.25, 0.8);
+  // a soft arrow from the tag's version number out to the big pill: "a version number like 2.4.1"
+  K.arrow(TAG.x + 300, TAG.y - 6, PILL.x - 124, PILL.y + 6, { k: K.io(t, wVersion - 0.1, 0.6), color: C.soft, w: 2, bend: -14, headSize: 11 });
+  if (pillK > 0) K.layer(pillK, () => K.at(0, 14 * (1 - K.ease.out(pillK)), 1, 0, () => {
+    M.versionPill(PILL.x, PILL.y, {
+      parts: ['2', '4', '1'], size: 40,
+      hl: (i) => (i === 0 ? hlFirst : 0),
+      labels: [{ text: 'may break', color: C.accent }, { text: 'new features', color: C.soft }, { text: 'fixes', color: C.soft }],
+      labelsK: lbK,
+      ring: ringK,
+    });
   }));
-  const bez = (u, a, b, c) => (1 - u) * (1 - u) * a + 2 * (1 - u) * u * b + u * u * c;
-  const SX = 1800, SY = 790;                              // where the spark has passed below the street
-  jobs.forEach((j) => {
-    const k = K.clamp((t - j.at) / FLY);
-    if (k <= 0) return;
-    const ks = SPARK / FLY;
-    const x1 = j.x, y1 = rowY;
-    if (k < ks) {
-      // the spark: out of the agent, right and down past the street's end
-      const u = K.ease.io(k / ks);
-      const x = bez(u, ax + 20, 1835, SX), y = bez(u, ay + 30, ay + 120, SY);
-      K.glow(x, y, 26, M.palette.lanternGlow, 0.7);
-      K.line(x, y, x + 0.01, y, { color: M.palette.lanternGlow, w: 9 });
-      return;
-    }
-    const u = K.ease.out((k - ks) / (1 - ks));
-    const cx = Math.max(x1 + 220, 1560), cy = j.low ? 990 : 915;        // the low arc stays well below the hanging tags
-    const x = bez(u, SX, cx, x1), y = bez(u, SY, cy, y1);
-    const g0 = j.low ? 0.5 : 0.1;                          // stays a spark until it is clear of the far end (and of .venv)
-    const grow = K.ease.io(K.clamp((u - g0) / 0.5));
-    if (grow < 1) K.glow(x, y, 26, M.palette.lanternGlow, 0.7 * (1 - grow));
-    const pulse = 1 + 0.08 * tellPulse;
-    if (tellPulse > 0) K.glow(x1, rowY, 70, C.accent, 0.35 * tellPulse);
-    drawJob(j, x, y, K.lerp(0.55, 1, grow) * pulse, grow * rest);
-  });
 
-  // ---- "the newest thing ... spends its day on the oldest ground": agent → the 1969 end
-  const arrowK = K.io(t, tGround, 1.4);
-  if (arrowK > 0) {
-    const u = M.itemRect(gm, 'unix');
-    K.arrow(ax - 40, ay - 10, u.cx, u.y0 - 10, { k: arrowK, bend: 288, color: C.head, w: 3, dash: [10, 9], headSize: 15, alpha: 0.9 * (0.7 + 0.3 * rest) });
+  // ---- the lockfile, beside the building: it writes down the tag's exact version ----
+  const lfK = K.io(t, wLockfile, 0.6);
+  const knock = M.bump(t, wQuietly, 0.6);
+  if (lfK > 0) {
+    if (knock > 0 || frozen > 0) K.glow(LOCKF.x, LOCKF.y, 90, C.head, 0.1 * frozen + 0.18 * knock);
+    K.file(LOCKF.x, LOCKF.y + 16 * (1 - K.ease.out(lfK)), 90, { ext: 'lock', name: 'lockfile', nameSize: 26, alpha: lfK });
+  }
+  // a short gold arrow from the tag up into the lockfile: this exact version is written down
+  K.arrow(TAG.x + 215, TAG.y - 30, LOCKF.x + 50, LOCKF.y - 14, { k: K.io(t, wExact, 0.6), color: C.head, w: 2.5, bend: 22, headSize: 11 });
+  // the pin drops onto the lockfile
+  const pinK = K.io(t, wPin, 0.5, 'out');
+  if (pinK > 0) K.icon('pin', LOCKF.x, LOCKF.y - 66 - 40 * (1 - pinK), 52, { color: C.head, alpha: Math.min(1, pinK * 1.6) });
+
+  // ---- supply chain: two invented parcels, both marked the same way ----
+  const pairOut = K.io(t, cTools - 0.6, 0.5);
+  const realK = K.io(t, cSupply + 0.3, 0.5) * (1 - pairOut);
+  const fakeK = K.io(t, wLook, 0.5) * (1 - pairOut);
+  const takeK = K.io(t, wTake + 0.15, 0.5);
+  const PAIR_Y = 772, REAL_X = 1270, FAKE_X = 1580, PS = 56;
+  const warn = (x, y, k) => {                               // a small warning glyph: a rounded triangle with "!"
+    if (k <= 0) return;
+    const g = K.ctx(), r = 17;
+    K.layer(k, () => {
+      g.save();
+      g.beginPath(); g.arc(x, y, r + 7, 0, Math.PI * 2); g.fillStyle = C.panel || C.tile; g.fill();
+      g.beginPath(); g.moveTo(x, y - r); g.lineTo(x + r * 0.95, y + r * 0.7); g.lineTo(x - r * 0.95, y + r * 0.7); g.closePath();
+      g.lineJoin = 'round'; g.lineWidth = 2.5; g.strokeStyle = C.accent; g.stroke();
+      g.restore();
+      K.text('!', x, y + 8, { font: 'ui', weight: 700, size: 20, color: C.accent, align: 'center' });
+    });
+  };
+  const mono = { font: 'mono', size: 26 };
+  const labelY = (y) => y - PS * 0.39 + PS * 0.08 + PS * 0.78 + 34;   // same baseline M.parcel uses for its label
+  if (realK > 0) {
+    const y = PAIR_Y + 12 * (1 - K.ease.out(realK));
+    M.parcel(REAL_X, y, PS, { tint: 0, alpha: realK, outline: takeK > 0 ? K.mixColor(C.line2, C.accent, takeK) : null });
+    K.text('colors-kit', REAL_X, labelY(y), { ...mono, color: K.mixColor(C.body, C.accent, takeK), align: 'center', alpha: realK });
+    warn(REAL_X + 40, y - 40, realK * takeK);
+    if (takeK > 0) K.text('taken over', REAL_X, labelY(y) + 40 + 8 * (1 - K.ease.out(takeK)), { font: 'ui', weight: 600, size: 26, color: C.soft, align: 'center', alpha: realK * takeK });
+  }
+  if (fakeK > 0) {
+    const y = PAIR_Y + 12 * (1 - K.ease.out(fakeK));
+    M.parcel(FAKE_X, y, PS, { tint: 0, alpha: fakeK, outline: C.accent });
+    // the near-miss name: the "1" that replaces the "l" is picked out in terracotta
+    const parts = ['co', '1', 'ors-kit'], ws = parts.map((s) => K.measure(s, mono)), total = ws.reduce((a, b) => a + b, 0);
+    let x = FAKE_X - total / 2;
+    parts.forEach((s, i) => {
+      K.text(s, x, labelY(y), { ...mono, weight: i === 1 ? 700 : 400, color: i === 1 ? C.accent : C.body, align: 'left', alpha: fakeK });
+      x += ws[i];
+    });
+    warn(FAKE_X + 40, y - 40, fakeK * K.io(t, wLook + 0.3, 0.4));
+    const capK = K.io(t, wLook + 0.35, 0.5);
+    if (capK > 0) K.text('look-alike name', FAKE_X, labelY(y) + 40 + 8 * (1 - K.ease.out(capK)), { font: 'ui', weight: 600, size: 26, color: C.soft, align: 'center', alpha: fakeK * capK });
   }
 
-  // ---- the headline slot: "new light, old streets" on "spends", then the recurring line takes its place on [[light]]
-  const [px, py] = L.pill;
-  const pillOut = 1 - K.io(t, tLight, 0.35);
-  if (pillOut > 0) K.layer(pillOut, () => K.rise(t, tPill, () =>
-    K.pill('new light, old streets', px, py, { size: 30, color: C.head, stroke: K.mixColor(C.line2, C.head, 0.5) }), 18, 0.6));
-  K.rise(t, tLight + 0.3, () => K.text("It lights every district. It doesn't walk the streets for you.", 960, py + 14,
-    { font: 'read', size: 40, color: C.strong, align: 'center' }), 16, 0.7);
+  // ---- the tools that install packages ----
+  const eyeK = K.io(t, cTools + 0.2, 0.5);
+  if (eyeK > 0) K.eyebrow('Tools that install packages', 1420, 788, { size: 20, align: 'center', tracking: 3, alpha: eyeK });
+  // three pills, evenly gapped and centred on the column
+  const tools = [[wPip, 'pip'], [wPoetry, 'Poetry · 2018'], [wUv, 'uv · 2024']];
+  const pw = tools.map(([, s]) => K.measure(s, { font: 'mono', weight: 600, size: 26 }) + 26 * 1.6), GAP = 56;
+  let tx = 1420 - (pw.reduce((a, b) => a + b, 0) + GAP * (tools.length - 1)) / 2;
+  tools.map(([at, s], i) => { const x = tx + pw[i] / 2; tx += pw[i] + GAP; return [at, s, x]; }).forEach(([at, s, x]) => {
+    const k = K.io(t, at, 0.5, 'out');
+    if (k > 0) K.layer(k, () => K.at(x, 850, 0.9 + 0.1 * k, 0, () => K.pill(s, 0, 0, { size: 26, font: 'mono' })));
+  });
+  const allK = K.io(t, wAll, 0.5);
+  if (allK > 0) K.text('all still in use', 1420, 912 - 8 * (1 - K.ease.out(allK)), { font: 'ui', weight: 600, size: 26, color: C.soft, align: 'center', alpha: allK });
 });

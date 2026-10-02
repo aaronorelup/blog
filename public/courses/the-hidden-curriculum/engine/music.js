@@ -1,6 +1,9 @@
 /* The Hidden Curriculum — music.js
    A quiet felt-piano and pad bed, synthesized with Web Audio so it is deterministic and
-   licence-free. tools/mix.py pulls it with window.__music() and ducks it under the voice. */
+   licence-free. tools/mix.py pulls it with window.__music() and ducks it under the voice.
+   Guest segments (script sections tagged [guest], lessons over 15 min): the calm bed crossfades into a
+   livelier groove (brighter chords, plucked eighth-note arpeggio, bass, soft kick and hats) for the
+   guest's sections, with a rising swell into it and a falling one back out. */
 (function () {
   'use strict';
   const K = window.K;
@@ -28,7 +31,12 @@
     const master = ac.createGain(); master.gain.value = 0.9;
     const wet = ac.createGain(); wet.gain.value = 0.32;
     const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2400;
+    // two buses: the calm bed and (only if there is a guest segment) the lively groove
+    const calm = ac.createGain(); calm.connect(lp);
     lp.connect(master); lp.connect(conv); conv.connect(wet); wet.connect(master); master.connect(ac.destination);
+    const C = window.CUES || {}, gs = (C.sections || []).filter((x) => x.guest);
+    const G = gs.length ? [Math.max(0.5, gs[0].start - 1.2), Math.min(dur, gs[gs.length - 1].end + 1.0)] : null;
+    const XF = 2.4; // crossfade seconds at each hand-over
     // fade in and out
     master.gain.setValueAtTime(0, 0); master.gain.linearRampToValueAtTime(0.9, 2.5);
     master.gain.setValueAtTime(0.9, Math.max(2.6, dur - 3.5)); master.gain.linearRampToValueAtTime(0, dur);
@@ -39,7 +47,7 @@
         o.type = 'sine'; o.frequency.value = f * mult;
         gn.gain.setValueAtTime(0, t0); gn.gain.linearRampToValueAtTime(vol * amp, t0 + 0.012);
         gn.gain.exponentialRampToValueAtTime(0.0001, t0 + len / mult);
-        o.connect(gn).connect(lp); o.start(t0); o.stop(t0 + len / mult + 0.05);
+        o.connect(gn).connect(calm); o.start(t0); o.stop(t0 + len / mult + 0.05);
       });
     };
     const pad = (freqs, t0, len, vol) => {
@@ -49,12 +57,19 @@
         f2.type = 'lowpass'; f2.frequency.value = 650;
         gn.gain.setValueAtTime(0, t0); gn.gain.linearRampToValueAtTime(vol, t0 + len * 0.35);
         gn.gain.linearRampToValueAtTime(0, t0 + len + 0.6);
-        o.connect(f2).connect(gn).connect(lp); o.start(t0); o.stop(t0 + len + 0.7);
+        o.connect(f2).connect(gn).connect(calm); o.start(t0); o.stop(t0 + len + 0.7);
       }));
     };
 
     const beat = 60 / 64, bar = beat * 4;
+    if (G) {
+      calm.gain.setValueAtTime(1, 0);
+      calm.gain.setValueAtTime(1, Math.max(0, G[0] - XF)); calm.gain.linearRampToValueAtTime(0, G[0]);
+      calm.gain.setValueAtTime(0, G[1]); calm.gain.linearRampToValueAtTime(1, Math.min(dur, G[1] + XF));
+      lively(ac, master, conv, G, XF, seed);
+    }
     for (let b = 0, t = 0.4; t < dur; b++, t += bar) {
+      if (G && t > G[0] + 0.2 && t + bar < G[1] - 0.2) continue; // the calm bed rests under the guest
       const ch = PROG[b % 4];
       pad(ch, t, bar, 0.018);
       piano(ch[0] / 2, t, 0.05, 4.2);
@@ -64,6 +79,72 @@
     }
     const buf = await ac.startRendering();
     return toWavB64(buf);
+  }
+
+  // the guest groove: D major again (I – V – vi – IV) at 104 bpm, so the hand-over stays in key
+  function lively(ac, master, conv, G, XF, seed) {
+    const r = K.rng(seed + 7), nz = K.rng(seed + 11);
+    const bus = ac.createGain(), tone = ac.createBiquadFilter(), send = ac.createGain();
+    tone.type = 'lowpass'; tone.frequency.value = 5200; send.gain.value = 0.18;
+    bus.connect(tone); tone.connect(master); tone.connect(send); send.connect(conv);
+    bus.gain.setValueAtTime(0, 0); bus.gain.setValueAtTime(0, Math.max(0, G[0] - XF)); bus.gain.linearRampToValueAtTime(1.15, G[0]);
+    bus.gain.setValueAtTime(1.15, G[1]); bus.gain.linearRampToValueAtTime(0, G[1] + XF);
+    const CH = [[146.83, 185.0, 220.0], [110.0, 138.59, 164.81], [123.47, 146.83, 185.0], [98.0, 123.47, 146.83]];
+    const beat = 60 / 104, bar = beat * 4;
+    const noise = (len) => { const b = ac.createBuffer(1, Math.ceil(ac.sampleRate * len), ac.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = nz() * 2 - 1; return b; };
+    const pluck = (f, t0, vol) => {
+      const o = ac.createOscillator(), g = ac.createGain(), fl = ac.createBiquadFilter();
+      o.type = 'sawtooth'; o.frequency.value = f; fl.type = 'lowpass';
+      fl.frequency.setValueAtTime(3200, t0); fl.frequency.exponentialRampToValueAtTime(500, t0 + 0.25);
+      g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(vol, t0 + 0.006); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.32);
+      o.connect(fl).connect(g).connect(bus); o.start(t0); o.stop(t0 + 0.35);
+    };
+    const bass = (f, t0, len) => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = 'triangle'; o.frequency.value = f / 2;
+      g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(0.11, t0 + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t0 + len);
+      o.connect(g).connect(bus); o.start(t0); o.stop(t0 + len + 0.05);
+    };
+    const kick = (t0) => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.frequency.setValueAtTime(120, t0); o.frequency.exponentialRampToValueAtTime(45, t0 + 0.14);
+      g.gain.setValueAtTime(0.32, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.24);
+      o.connect(g).connect(bus); o.start(t0); o.stop(t0 + 0.26);
+    };
+    const hat = (t0, vol) => {
+      const s = ac.createBufferSource(), g = ac.createGain(), hp = ac.createBiquadFilter();
+      s.buffer = noise(0.06); hp.type = 'highpass'; hp.frequency.value = 7000;
+      g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.05);
+      s.connect(hp).connect(g).connect(bus); s.start(t0);
+    };
+    const chord = (fs, t0, len) => fs.forEach((f, i) => {
+      const o = ac.createOscillator(), g = ac.createGain(), fl = ac.createBiquadFilter();
+      o.type = 'triangle'; o.frequency.value = f * 2; o.detune.value = (i - 1) * 4; fl.type = 'lowpass'; fl.frequency.value = 1800;
+      g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(0.022, t0 + 0.08); g.gain.linearRampToValueAtTime(0.012, t0 + len * 0.6); g.gain.linearRampToValueAtTime(0, t0 + len);
+      o.connect(fl).connect(g).connect(bus); o.start(t0); o.stop(t0 + len + 0.05);
+    });
+    // the groove itself, from the start of the crossfade to the end of the fade-out
+    for (let b = 0, t = Math.max(0.2, G[0] - XF); t < G[1] + XF; b++, t += bar) {
+      const ch = CH[b % 4];
+      chord(ch, t, bar);
+      for (let k = 0; k < 4; k++) {
+        const tb = t + k * beat;
+        if (k === 0 || k === 2) kick(tb);
+        bass(ch[0], tb, beat * 0.9);
+        hat(tb + beat / 2, 0.05 + r() * 0.02);
+        [0, 1].forEach((h) => pluck(ch[(k * 2 + h + (r() < 0.25 ? 1 : 0)) % 3] * 4, tb + h * beat / 2, 0.035 + r() * 0.012));
+      }
+    }
+    // swells: noise rising into the guest, falling back out to the calm bed
+    const swell = (t0, len, up) => {
+      const s = ac.createBufferSource(), bp = ac.createBiquadFilter(), g = ac.createGain();
+      s.buffer = noise(len); bp.type = 'bandpass'; bp.Q.value = 2.5;
+      bp.frequency.setValueAtTime(up ? 400 : 5000, t0); bp.frequency.exponentialRampToValueAtTime(up ? 5000 : 400, t0 + len);
+      g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(up ? 0.07 : 0.05, t0 + len * (up ? 0.9 : 0.15)); g.gain.linearRampToValueAtTime(0, t0 + len);
+      s.connect(bp).connect(g).connect(master); g.connect(conv); s.start(t0);
+    };
+    swell(Math.max(0, G[0] - XF), XF, true);
+    swell(G[1], XF, false);
   }
 
   function toWavB64(buf) {

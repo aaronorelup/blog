@@ -1,30 +1,34 @@
-/* 00.03 · 04 — One long street of years
-   The street of years drawn in full for the first time (geom 'full'), now drawn as a STREET:
+/* 00.03 · 04 — One long street of years  (extended rebuild; v1 scene 04 adapted)
+   The street of years drawn in full (geom 'full'), drawn as a STREET:
    - "Picture one long street": a cobbled road band (kerbs, one paving stone per year) draws in left to right
-     under the street line, decade ticks appearing as it passes.
-   - "with a year painted on every building": ten blank ghost buildings rise out of the road, left to right
-     (houses on both kerbs, roofs up; each house is sized to the sign it will carry, ~1991 is a terrace of three
-     roofs for web · Python · Linux).
-   - Then, cue by cue, the gold walks along the street (litTo, eased ahead of the names) and each building lights
-     and gets its year painted on: the shared year tag hangs on its stem onto the house's facade.
-   - [[far-end]]: the last stretch turns terracotta; the three lanterns (ghosts since frame 0) light one by one on
-     their names, each with its stacked terracotta tag and a thin stem down to its exact year.
-   - "fifty": a gold bracket spans the old street; "few": a short terracotta one spans the lanterns.
-   The houses are drawn here (00-shared.js has no house option yet); see engineRequests: they should move into
-   M.street so 05–09 keep the same buildings.
-   Exit: the whole street with every lit building, brackets held, lanterns glowing, glow settled at centre. */
+     under the street line, decade labels appearing as it passes.
+   - "with a year painted on every building": ten blank ghost houses rise out of the road from "painted", left to right
+     (M.houses, shared now, so 05 can fade the very same houses out).
+   - Then, cue by cue, the gold walks along the street (litTo, eased a beat ahead of the names) and each house lights
+     and gets its year painted on: the shared year tag hangs on its stem onto the house's facade, ON its spoken year.
+   - [[far-end]]: the last stretch turns terracotta; the three lanterns (dark paper ghosts since frame 0) warm on
+     "the lanterns" and light one by one on their names, each with its stacked terracotta tag and a thin stem down to its year.
+   - "More than fifty years of street": a gold bracket spans the old street (0.8 s, from "More");
+     "A few years of lanterns": a short terracotta one spans the lanterns (0.5 s, from "A"), held ~1.2 s before the handover.
+   Exit (= 05's first frame): the whole street with every lit house, brackets held, lanterns glowing, glow settled at centre. */
 SCENE('04', (t, S) => {
-  const M = window.M, C = K.C, gm = M.geom('full'), g = K.ctx();
+  // The ~1991 house sits 22 px lower than the rest of its row (custom row key 'a1w'), so its three-peaked roof
+  // clears the MS-DOS house's bottom-right corner by ~16 px. 05 must start from the same geom + items
+  // (M.geom('full', {a1w: -68}) and BUILDINGS with web.row = 'a1w') so the crossfade matches.
+  const M = window.M, C = K.C, g = K.ctx();
+  const gm = M.geom('full', { a1w: -68 });
+  const items = M.BUILDINGS.map((b) => (b.key === 'web' ? { ...b, row: 'a1w' } : b));
 
   // ---- cues (local seconds)
-  const cSev = S.cue('seventies', 3.9), cEig = S.cue('eighties', 11.1), cNin = S.cue('nineties', 17.6);
-  const cTwo = S.cue('two-thousands', 23), cFar = S.cue('far-end', 30.2);
-  const tLong = S.find('one', 0, 0.55);                 // "Picture one long street"
-  const tEvery = S.find('every', 0, 2.79);              // "...painted on every building"
-  const tFifty = S.find('fifty', 0, 44.5), tFew = S.find('few', 0, 45.8);
-  const tLanterns = S.find('lanterns', 0, 31.8);        // "...the very end of the street, the lanterns."
+  const cSev = S.cue('seventies', 3.3), cEig = S.cue('eighties', 7.7), cNin = S.cue('nineties', 13.6);
+  const cTwo = S.cue('two-thousands', 18.3), cFar = S.cue('far-end', 24.1);
+  const tLong = S.find('one', 0, 0.45);                 // "Picture one long street"
+  const tPainted = S.find('painted', 0, 1.79);          // "...a year painted on every building"
+  // each bracket draws while its own sentence is spoken: "More than fifty years of street." / "A few years of lanterns."
+  const tMore = S.find('More', 0, 36.28), tA = S.find(/^A$/, 0, 37.85);
+  const tLanterns = S.find('lanterns', 0, 25.76);       // "...the very end of the street, the lanterns."
 
-  // ---- the road draws in on "one long street" (ticks appear as it passes)
+  // ---- the road draws in on "one long street"
   const draw = K.lerp(M.Y0, M.Y1, K.io(t, tLong, 1.8, 'io'));
   const xd = M.X(draw, gm);
 
@@ -34,48 +38,46 @@ SCENE('04', (t, S) => {
   let lit = M.Y0;
   runs.forEach(([at, to]) => { lit = K.lerp(lit, to, K.io(t, at - LEAD, M.motion.draw, 'io')); });
 
-  // ---- each building gets its year on its spoken year (or name, when the name is said first)
+  // ---- each house gets its year on its spoken year (or its name, when the name is said first)
   const hangAt = [
-    S.find('1969', 0, 3.9),        // unix
-    S.find('1973', 0, 6.4),        // ethernet
-    S.find('1981', 0, 11.1),       // ms-dos
-    S.find('1983', 0, 14.0),       // dns
-    S.find('web', 0, 17.9),        // ~1991 web · Python · Linux
-    S.find('JavaScript', 0, 21.1), // js
-    S.find('Git', 0, 23.0),        // git ("Git," comes before "GitHub,")
-    S.find('GitHub', 0, 24.6),     // github
-    S.find('Docker', 0, 26.3),     // docker
-    S.find(/^V$/, 0, 28.1),        // vs code ("V S Code")
+    S.find('1969', 0, 3.3),        // unix
+    S.find('1973', 0, 5.68),       // ethernet
+    S.find('1981', 0, 7.7),        // ms-dos
+    S.find('1983', 0, 10.94),      // dns
+    S.find('web', 0, 13.93),       // ~1991 web · Python · Linux
+    S.find('JavaScript', 0, 16.77),// js
+    S.find('Git', 0, 18.32),       // git ("Git," comes before "GitHub,")
+    S.find('GitHub', 0, 19.91),    // github
+    S.find('Docker', 0, 21.13),    // docker
+    S.find(/^V/, 0, 22.49),        // vs code ("V S Code"; shown as "VS")
   ];
   const show = (i) => K.io(t, hangAt[i], M.motion.hang, 'out');
-  // the building being named warms briefly, then rests
+  // the house being named warms briefly, then rests
   const itemLit = (i) => 0.75 * K.io(t, hangAt[i] + 0.2, 0.4) * (1 - K.io(t, hangAt[i] + 2.2, 0.8));
-  // blank buildings rise out of the road on "every building", left to right
-  const riseAt = (i) => tEvery + 0.07 * i;
-  const rise = (i) => K.io(t, riseAt(i), 0.45, 'out');
-  const named = (i) => K.io(t, hangAt[i], 0.4, 'io');      // ghost → lit building
+  // blank ghost houses rise out of the road from "painted", left to right, all standing by "building"
+  const rise = (i) => K.io(t, tPainted + 0.055 * i, 0.45, 'out');
+  const named = (i) => K.io(t, hangAt[i], 0.4, 'io');      // ghost → lit house
 
   // ---- the lanterns: ghosts from frame 0; a faint warmth on "the lanterns"; each lights on its name
   const lightAt = [
-    S.find('GitHub', 1, 32.7),     // "GitHub Copilot"
-    S.find('ChatGPT', 0, 36.2),
-    S.find(/^M$/, 1, 38.4),        // "M C P" (the first M is "M S DOS")
+    S.find('GitHub', 1, 26.61),    // "GitHub Copilot" (the name starts)
+    S.find('ChatGPT', 0, 28.39),
+    S.find(/^M$/, 1, 30.99),       // "M C P" (the first M is "M S DOS")
   ];
   const warm = 0.18 * K.io(t, tLanterns, 0.8);
   const lanterns = (i) => Math.max(warm, K.io(t, lightAt[i], M.motion.light, 'io'));
   const lanternTags = (i) => K.io(t, lightAt[i] + 0.1, M.motion.hang, 'out');
   const stretch = K.io(t, cFar - LEAD, M.motion.draw, 'io');
 
-  // ---- ground: the lamp glow follows the newest lit year, then settles at centre on "fifty"
-  const glowX = K.lerp(M.X(Math.max(lit, 1969), gm), 960, K.io(t, tFifty, 1.2, 'io'));
-  K.bg({ glow: 0.12, glowX, glowY: 560 });
+  // ---- ground: the lamp glow follows the newest lit year, then settles at centre on "More than fifty"
+  const glowX = K.lerp(M.X(Math.max(lit, 1969), gm), 960, K.io(t, tMore, 1.2, 'io'));
+  K.bg({ glow: 0.14, glowX, glowY: 560 });
 
   // ================================================================ the road (under the street line)
-  const RH = 13, roadT = gm.y - RH, roadB = gm.y + RH;
+  const RH = M.HOUSE.RH, roadT = gm.y - RH, roadB = gm.y + RH;
   if (xd > gm.x0) {
     g.save();
     g.beginPath(); g.rect(gm.x0 - 4, roadT - 2, xd - gm.x0 + 4, RH * 2 + 4); g.clip();
-    // surface: muted indigo, a touch lighter than the page
     K.rr(gm.x0 - 2, roadT, (M.X(M.Y1, gm) - gm.x0) + 4, RH * 2, 6);
     g.fillStyle = K.mixColor(C.panel, C.line, 0.75); g.fill();
     // cobbles: one paving stone per year, two courses, the lower course offset half a year
@@ -93,92 +95,28 @@ SCENE('04', (t, S) => {
     g.restore();
   }
 
-  // ================================================================ the buildings
-  // a house is the tag's rect padded into a facade, with a gable roof above it (web · Python · Linux: three roofs).
-  // Above the street a house stands on the far kerb side; below it, on the near side; roofs always point up.
-  const PAD = 7, EAVE = 8, RT = 14;   // low roofs: the near-side roofs clear the decade labels, ~1991's clear MS-DOS
-  const houseGeo = (b) => {
-    const r = M.itemRect(gm, b), above = gm[b.row] < 0;
-    const x0 = r.x0 - PAD, x1 = r.x1 + PAD, y0 = r.y0 - PAD, y1 = r.y1 + PAD;
-    const peaks = b.key === 'web' ? 3 : 1;
-    return { r, above, x0, x1, y0, y1, peaks, top: y0 - RT };
-  };
-  const roofPath = (h, dy) => {
-    const w = (h.x1 - h.x0 + 2 * EAVE) / h.peaks, ys = h.y0 + dy;
-    g.beginPath(); g.moveTo(h.x0 - EAVE, ys + 1);
-    for (let p = 0; p < h.peaks; p++) {
-      const a = h.x0 - EAVE + p * w;
-      g.lineTo(a + w / 2, ys - RT); g.lineTo(a + w, ys + 1);
-    }
-  };
-  const roofStroke = (lk, warmK) => K.mixColor(C.line2, C.head, (0.3 + 0.35 * lk) + 0.3 * warmK);
-  // dy: rise offset; clip: the road edge the house rises out of
-  const houseAt = (i) => {
-    const b = M.BUILDINGS[i], h = houseGeo(b);
-    const rk = rise(i), lk = named(i), wk = K.clamp(itemLit(i));
-    const dy = h.above ? (1 - rk) * (roadT - h.top + 2) : -(1 - rk) * (h.y1 - roadB + 2);
-    return { b, h, rk, lk, wk, dy, a: (0.42 + 0.58 * lk) };
-  };
-  const clipSide = (h) => {
-    g.beginPath();
-    if (h.above) g.rect(0, 0, K.W, roadT - 1); else g.rect(0, roadB + 1, K.W, K.H);
-    g.clip();
-  };
-  const drawHouse = (i) => {
-    const s = houseAt(i), h = s.h; if (s.rk <= 0) return;
-    K.layer(s.a * K.clamp(s.rk * 3), () => {
-      g.save(); clipSide(h);
-      // ghost path to the road (the shared stem draws the lit one over it)
-      const pathEnd = h.above ? h.y1 + s.dy : h.top + s.dy;
-      K.line(h.r.cx, h.above ? roadT : roadB, h.r.cx, pathEnd, { color: C.line2, w: 1.5, alpha: 0.6 * (1 - s.lk) });
-      // facade
-      K.rr(h.x0, h.y0 + s.dy, h.x1 - h.x0, h.y1 - h.y0, 6);
-      g.fillStyle = K.mixColor(C.panel, C.tile, 0.35); g.fill();
-      g.lineWidth = 1.5; g.strokeStyle = K.mixColor(C.line2, C.head, 0.12 + 0.2 * s.lk); g.stroke();
-      // a blank house has a door; it is covered by its sign once the year is painted on
-      const dw = 16, dh = 22, dyB = h.y1 + s.dy;
-      K.rr(h.r.cx - dw / 2, dyB - dh - 2, dw, dh + 2, [8, 8, 0, 0]);
-      g.fillStyle = K.rgba(C.line2, 0.9); g.fill();
-      // roof
-      roofPath(h, s.dy); g.closePath();
-      g.fillStyle = K.mixColor(C.tile, C.head, 0.08 + 0.06 * s.lk); g.fill();
-      roofPath(h, s.dy);
-      g.lineWidth = 1.8 + 0.6 * s.wk; g.lineJoin = 'round'; g.strokeStyle = roofStroke(s.lk, s.wk); g.stroke();
-      g.restore();
-    });
-  };
-  // roofs again over the street layer, so a stem hanging to a near-side sign enters under its roof
-  const drawRoof = (i) => {
-    const s = houseAt(i), h = s.h; if (s.rk <= 0 || h.above) return;
-    K.layer(s.a * K.clamp(s.rk * 3), () => {
-      g.save(); clipSide(h);
-      g.beginPath(); g.rect(h.x0 - EAVE - 2, h.top + s.dy - 4, h.x1 - h.x0 + 2 * EAVE + 4, RT + 4 + PAD - 1); g.clip();
-      g.fillStyle = K.mixColor(C.panel, C.tile, 0.35);
-      g.fillRect(h.x0 + 1, h.y0 + s.dy + 1, h.x1 - h.x0 - 2, PAD - 2);
-      roofPath(h, s.dy); g.closePath();
-      g.fillStyle = K.mixColor(C.tile, C.head, 0.08 + 0.06 * s.lk); g.fill();
-      roofPath(h, s.dy);
-      g.lineWidth = 1.8 + 0.6 * s.wk; g.lineJoin = 'round'; g.strokeStyle = roofStroke(s.lk, s.wk); g.stroke();
-      g.restore();
-    });
-  };
-
   // ---- leader stems: each lantern tag hangs on a thin terracotta stem straight down to its year's node
+  //      The stem's top retracts to the bottom of the lowest pill shown so far, so no stem ever shows in the
+  //      gaps between the stacked pills (it hangs from the stack, not through it).
+  const bottoms = M.LANTERNS.map((_, j) => M.lanternTagRect(gm, j).y1 - 2);
   M.LANTERNS.forEach((L, i) => {
     const k = K.io(t, lightAt[i] + 0.35, 0.6, 'io'); if (k <= 0) return;
-    const r = M.lanternTagRect(gm, i), x = M.X(L.year, gm), y0 = r.y1 - 2, y1 = gm.y - gm.node;
+    let y0 = bottoms[i];
+    for (let j = i + 1; j < M.LANTERNS.length; j++) y0 = K.lerp(y0, Math.max(y0, bottoms[j]), K.ease.io(K.clamp(lanternTags(j) * 1.6)));
+    const x = M.X(L.year, gm), y1 = gm.y - gm.node;
     K.line(x, y0, x, K.lerp(y0, y1, k), { color: K.mixColor(C.line2, C.accent, 0.75), w: 1.5 });
   });
 
-  M.BUILDINGS.forEach((_, i) => drawHouse(i));
+  // ================================================================ houses, street, roofs
+  M.houses(gm, { pass: 'body', rise, named, warm: itemLit, items });
 
   M.street(t, {
-    geom: gm, draw, litTo: lit, show, itemLit,
+    geom: gm, items, draw, litTo: lit, show, itemLit,
     lanterns, lanternTags, stretch, cord: 1,
     tickLabels: 0,                    // drawn below at 26 px (the shared ones are 22 px)
   });
 
-  M.BUILDINGS.forEach((_, i) => drawRoof(i));
+  M.houses(gm, { pass: 'roofs', rise, named, warm: itemLit, items });
 
   // ---- decade labels, 26 px, appearing as the street reaches each decade
   for (let d = 1970; d <= 2020; d += 10) {
@@ -188,6 +126,6 @@ SCENE('04', (t, S) => {
 
   // ---- "More than fifty years of street. A few years of lanterns."
   const by = M.layout.s04.bracketY;
-  M.bracket(gm, 1969, 2020, { k: K.io(t, tFifty, 0.9, 'io'), color: C.head, y: by, label: '50+ years of street' });
-  M.bracket(gm, 2021, 2026, { k: K.io(t, tFew, 0.7, 'io'), color: C.accent, y: by, label: 'a few years of lanterns', align: 'right' });
+  M.bracket(gm, 1969, 2020, { k: K.io(t, tMore, 0.8, 'io'), color: C.head, y: by, label: '50+ years of street' });
+  M.bracket(gm, 2021, 2026, { k: K.io(t, tA, 0.5, 'io'), color: C.accent, y: by, label: 'a few years of lanterns', align: 'right' });
 });

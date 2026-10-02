@@ -1,469 +1,929 @@
 WEBVTT
 
 1
-00:00:01.600 --> 00:00:03.562
+00:00:01.600 --> 00:00:03.609
 In this lesson you'll learn how old
 
 2
-00:00:03.562 --> 00:00:05.780
+00:00:03.609 --> 00:00:06.000
 the tools you build with really are,
 
 3
-00:00:05.780 --> 00:00:08.148
-and why their age matters.
+00:00:06.000 --> 00:00:10.122
+and how fast each part of them is still changing.
 
 4
-00:00:08.148 --> 00:00:10.261
-Almost everything under your AI
+00:00:10.122 --> 00:00:12.386
+Most of it is decades old,
 
 5
-00:00:10.261 --> 00:00:12.583
-tools is decades old,
+00:00:12.386 --> 00:00:14.789
+but old doesn't mean frozen:
 
 6
-00:00:12.583 --> 00:00:15.799
-and only the AI layer on top is new.
+00:00:14.789 --> 00:00:17.645
+everything moves at one of three speeds.
 
 7
-00:00:15.799 --> 00:00:18.701
-The terminal, files, the web,
+00:00:17.645 --> 00:00:22.022
+The ideas barely move, so you learn them once.
 
 8
-00:00:18.701 --> 00:00:21.255
-git: old and settled.
+00:00:22.022 --> 00:00:23.764
+The versions change every year,
 
 9
-00:00:21.255 --> 00:00:25.481
-The AI tools: a few years old, and still changing.
+00:00:23.764 --> 00:00:25.819
+so you check which one you have.
 
 10
-00:00:25.481 --> 00:00:28.535
-So you'll know what to learn deeply once,
+00:00:25.819 --> 00:00:28.977
+Security changes fastest, so assume
 
 11
-00:00:28.535 --> 00:00:30.789
-and what to keep checking.
+00:00:28.977 --> 00:00:32.564
+what you learned a few years ago is out of date.
 
 12
-00:00:31.239 --> 00:00:34.710
-On the course map, this lesson sits at the Start,
+00:00:32.564 --> 00:00:35.351
+And AI, the newest layer on top,
 
 13
-00:00:34.710 --> 00:00:37.915
-in Orientation: what this course is,
+00:00:35.351 --> 00:00:38.545
+changes fastest of all.
 
 14
-00:00:37.915 --> 00:00:40.005
-and the lantern you carry.
+00:00:38.995 --> 00:00:42.350
+On the course map, this lesson sits at the Start,
 
 15
-00:00:40.005 --> 00:00:42.199
-Before you walk into the six districts,
+00:00:42.350 --> 00:00:44.858
+in Orientation: what this course is,
 
 16
-00:00:42.199 --> 00:00:44.556
-it helps to know their ages.
+00:00:44.858 --> 00:00:46.890
+and the lantern you carry.
 
 17
-00:00:44.556 --> 00:00:46.808
-Most of these streets were laid
+00:00:46.890 --> 00:00:49.723
+Every district ahead is an old street,
 
 18
-00:00:46.808 --> 00:00:49.362
-long before AI tools arrived.
+00:00:49.723 --> 00:00:52.532
+laid long before AI arrived.
 
 19
-00:00:49.362 --> 00:00:53.183
-The lanterns, the AI, were strung up last.
+00:00:52.532 --> 00:00:55.481
+Versions and packages come later,
 
 20
-00:00:53.634 --> 00:00:56.002
-Aaron, who made this course, has a degree
+00:00:55.481 --> 00:00:59.080
+in the Code district; git, in History.
 
 21
-00:00:56.002 --> 00:00:58.812
-in Information Systems and Data Science.
+00:00:59.080 --> 00:01:02.912
+The fastest-changing part, logins and locks,
 
 22
-00:00:58.812 --> 00:01:00.855
-He still wrote Python in Notepad,
+00:01:02.912 --> 00:01:06.046
+gets a district of its own: Trust.
 
 23
-00:01:00.855 --> 00:01:04.362
-and saved it as a .txt file.
+00:01:06.046 --> 00:01:09.053
+And the lanterns, the AI, were strung up last,
 
 24
-00:01:04.362 --> 00:01:07.160
-He didn't know to rename it to .py,
+00:01:09.053 --> 00:01:11.667
+and they're still being rehung.
 
 25
-00:01:07.160 --> 00:01:10.956
-or to open a terminal and cd into the folder.
+00:01:12.117 --> 00:01:14.485
+Aaron, who made this course, has a degree
 
 26
-00:01:10.956 --> 00:01:13.476
-He'd never heard of .venv.
+00:01:14.485 --> 00:01:17.295
+in Information Systems and Data Science.
 
 27
-00:01:13.476 --> 00:01:15.055
-None of that was new.
+00:01:17.295 --> 00:01:19.338
+He still wrote Python in Notepad,
 
 28
-00:01:15.055 --> 00:01:18.317
-Notepad came with the first Windows, in 1985.
+00:01:19.338 --> 00:01:22.845
+and saved it as a .txt file.
 
 29
-00:01:18.317 --> 00:01:20.256
-Python is from 1991.
+00:01:22.845 --> 00:01:25.643
+He didn't know to rename it to .py,
 
 30
-00:01:20.256 --> 00:01:23.182
-The Unix shell, from 1971.
+00:01:25.643 --> 00:01:29.439
+or to open a terminal and cd into the folder.
 
 31
-00:01:23.182 --> 00:01:27.861
-And the tool behind .venv joined Python in 2012.
+00:01:29.439 --> 00:01:31.959
+He'd never heard of .venv.
 
 32
-00:01:27.861 --> 00:01:29.660
-Aaron wasn't behind on the latest thing.
+00:01:31.959 --> 00:01:33.538
+None of that was new.
 
 33
-00:01:29.660 --> 00:01:31.378
-He was missing the oldest things,
+00:01:33.538 --> 00:01:36.800
+Notepad came with the first Windows, in 1985.
 
 34
-00:01:31.378 --> 00:01:34.387
-the ones everyone assumes you already have.
+00:01:36.800 --> 00:01:38.739
+Python is from 1991.
 
 35
-00:01:34.836 --> 00:01:36.461
-Picture one long street,
+00:01:38.739 --> 00:01:41.665
+The Unix shell, from 1971.
 
 36
-00:01:36.461 --> 00:01:38.958
-with a year painted on every building.
+00:01:41.665 --> 00:01:46.344
+And the tool behind .venv joined Python in 2012.
 
 37
-00:01:38.958 --> 00:01:41.407
-1969: Unix.
+00:01:46.344 --> 00:01:48.143
+Aaron wasn't behind on the latest thing.
 
 38
-00:01:41.407 --> 00:01:43.509
-1973: Ethernet,
+00:01:48.143 --> 00:01:49.861
+He was missing the oldest things,
 
 39
-00:01:43.509 --> 00:01:46.179
-cables joining the computers in one building.
+00:01:49.861 --> 00:01:52.870
+the ones everyone assumes you already have.
 
 40
-00:01:46.179 --> 00:01:49.000
-1981: MS-DOS.
+00:01:53.320 --> 00:01:54.655
+Picture one long street,
 
 41
-00:01:49.000 --> 00:01:52.298
-1983: DNS, the internet's address book.
+00:01:54.655 --> 00:01:56.617
+with a year painted on every building.
 
 42
-00:01:52.298 --> 00:01:55.433
-Then the web, Python and Linux, all around 1991.
+00:01:56.617 --> 00:01:58.997
+1969: Unix.
 
 43
-00:01:55.433 --> 00:01:57.348
-JavaScript, 1995.
+00:01:58.997 --> 00:02:01.029
+1973: Ethernet.
 
 44
-00:01:57.348 --> 00:01:58.869
-Git, 2005.
+00:02:01.029 --> 00:02:04.257
+1981: MS-DOS.
 
 45
-00:01:58.869 --> 00:02:00.645
-GitHub, 2008.
+00:02:04.257 --> 00:02:06.950
+1983: DNS, the internet's address book.
 
 46
-00:02:00.645 --> 00:02:02.491
-Docker, 2013.
+00:02:06.950 --> 00:02:10.085
+Then the web, Python and Linux, all around 1991.
 
 47
-00:02:02.491 --> 00:02:04.221
-VS Code, 2015.
+00:02:10.085 --> 00:02:11.641
+JavaScript, 1995.
 
 48
-00:02:04.221 --> 00:02:06.009
-And only at the very end of the street,
+00:02:11.641 --> 00:02:13.231
+Git, 2005.
 
 49
-00:02:06.009 --> 00:02:07.820
-the lanterns. GitHub Copilot,
+00:02:13.231 --> 00:02:14.450
+GitHub, 2008.
 
 50
-00:02:07.820 --> 00:02:10.862
-suggesting code in your editor, 2021.
+00:02:14.450 --> 00:02:15.809
+Docker, 2013.
 
 51
-00:02:10.862 --> 00:02:12.754
-ChatGPT, late 2022.
+00:02:15.809 --> 00:02:17.422
+VS Code, 2015.
 
 52
-00:02:12.754 --> 00:02:16.203
-MCP, a standard way to plug AI into other tools,
+00:02:17.422 --> 00:02:18.955
+And only at the very end of the street,
 
 53
-00:02:16.203 --> 00:02:17.944
-November 2024.
+00:02:18.955 --> 00:02:21.706
+the lanterns. GitHub Copilot, 2021.
 
 54
-00:02:17.944 --> 00:02:19.836
-More than fifty years of street.
+00:02:21.706 --> 00:02:24.307
+ChatGPT, late 2022.
 
 55
-00:02:19.836 --> 00:02:22.044
-A few years of lanterns.
+00:02:24.307 --> 00:02:27.836
+MCP, a standard way to plug AI into other tools,
 
 56
-00:02:22.494 --> 00:02:25.513
-Lay those years on the road from the last lesson.
+00:02:27.836 --> 00:02:29.601
+November 2024.
 
 57
-00:02:25.513 --> 00:02:29.147
-Your computer: the shell, files, Python.
+00:02:29.601 --> 00:02:31.168
+More than fifty years of street.
 
 58
-00:02:29.147 --> 00:02:30.482
-Decades old.
+00:02:31.168 --> 00:02:33.190
+A few years of lanterns.
 
 59
-00:02:30.482 --> 00:02:32.397
-The network and the internet:
+00:02:33.640 --> 00:02:36.438
+Every year on that street is a birthday,
 
 60
-00:02:32.397 --> 00:02:35.242
-Ethernet, DNS, the web.
+00:02:36.438 --> 00:02:37.994
+not a finish line.
 
 61
-00:02:35.242 --> 00:02:36.589
-Decades too.
+00:02:37.994 --> 00:02:41.128
+Look closely at one, and it has three parts
 
 62
-00:02:36.589 --> 00:02:39.630
-Services like GitHub, Cloudflare and Stripe:
+00:02:41.128 --> 00:02:43.323
+that age at different speeds.
 
 63
-00:02:39.630 --> 00:02:41.755
-mostly around 2010.
+00:02:43.323 --> 00:02:47.270
+The stone is the idea: a file, a commit,
 
 64
-00:02:41.755 --> 00:02:45.087
-And AI, the last stop, is the newest by far.
+00:02:47.270 --> 00:02:49.928
+a message sent across a network.
 
 65
-00:02:45.087 --> 00:02:47.304
-Here's where the picture breaks.
+00:02:49.928 --> 00:02:51.542
+That barely moves.
 
 66
-00:02:47.304 --> 00:02:50.508
-Every date is a birthday, not a finish line.
+00:02:51.542 --> 00:02:55.896
+The paint is the version, the number on the sign.
 
 67
-00:02:50.508 --> 00:02:53.736
-Python and git still get new versions every year;
+00:02:55.896 --> 00:02:58.775
+It gets redone every year or so.
 
 68
-00:02:53.736 --> 00:02:55.954
-what's old is the idea.
+00:02:58.775 --> 00:03:01.805
+And the lock on the door is security:
 
 69
-00:02:55.954 --> 00:02:59.646
-AI research, too, goes back to the 1950s.
+00:03:01.805 --> 00:03:03.222
+how you prove who you are,
 
 70
-00:02:59.646 --> 00:03:02.072
-What's new is AI you can talk to,
+00:03:03.222 --> 00:03:05.625
+and how secrets get scrambled.
 
 71
-00:03:02.072 --> 00:03:04.732
-inside the tools you use.
+00:03:05.625 --> 00:03:08.133
+Locks get replaced fastest,
 
 72
-00:03:05.183 --> 00:03:09.258
-Knowing the ages explains things you'll meet.
+00:03:08.133 --> 00:03:11.002
+because burglars keep learning.
 
 73
-00:03:09.258 --> 00:03:13.322
-The C:\ at the start of a Windows terminal
+00:03:11.453 --> 00:03:13.183
+Start with the paint.
 
 74
-00:03:13.322 --> 00:03:18.070
-is a habit from MS-DOS, in the early 1980s.
+00:03:13.183 --> 00:03:16.759
+Git is from 2005, and it still ships
 
 75
-00:03:18.070 --> 00:03:22.052
-A git answer from ten years ago often still works.
+00:03:16.759 --> 00:03:19.104
+new versions several times a year.
 
 76
-00:03:22.052 --> 00:03:24.676
-That's not luck; the street hasn't moved.
+00:03:19.104 --> 00:03:23.272
+In 2019 it got git switch and git restore,
 
 77
-00:03:24.676 --> 00:03:28.473
-But an old answer where print has no parentheses
+00:03:23.272 --> 00:03:26.895
+clearer ways to do jobs that checkout still does.
 
 78
-00:03:28.473 --> 00:03:31.271
-is Python 2, retired in 2020.
+00:03:26.895 --> 00:03:29.669
+In 2020, GitHub started calling the first
 
 79
-00:03:31.271 --> 00:03:33.918
-Same street, older building.
+00:03:29.669 --> 00:03:33.326
+branch of new projects main instead of master.
 
 80
-00:03:33.918 --> 00:03:36.170
-And an AI can be out of date about AI,
+00:03:33.326 --> 00:03:35.857
+Python ships a new version every October,
 
 81
-00:03:36.170 --> 00:03:37.970
-because what it learned stops
+00:03:35.857 --> 00:03:39.015
+and Python 2 was retired in 2020.
 
 82
-00:03:37.970 --> 00:03:39.874
-where its training ended.
+00:03:39.015 --> 00:03:43.345
+In 2024, Python 3.13 brought an experimental
 
 83
-00:03:39.874 --> 00:03:44.692
-So: old street, old answers mostly hold.
+00:03:43.345 --> 00:03:45.876
+build that can run a program's threads
 
 84
-00:03:44.692 --> 00:03:47.236
-Lantern: check the date.
+00:03:45.876 --> 00:03:48.651
+on several processor cores at once.
 
 85
-00:03:47.686 --> 00:03:49.323
-That's why AI tools can feel
+00:03:48.651 --> 00:03:52.053
+VS Code used to ship a new release every month.
 
 86
-00:03:49.323 --> 00:03:51.018
-strange to learn with.
+00:03:52.053 --> 00:03:55.675
+In 2026, it went to every week.
 
 87
-00:03:51.018 --> 00:03:54.397
-The newest layer assumes you know the oldest ones.
+00:03:55.675 --> 00:03:57.034
+Same stone.
 
 88
-00:03:54.397 --> 00:03:58.866
-A coding agent will run cd, write a .py file,
+00:03:57.034 --> 00:03:59.868
+Fresh paint, over and over.
 
 89
-00:03:58.866 --> 00:04:03.824
-make a .venv, and save its work with git.
+00:04:00.318 --> 00:04:01.734
+Then there are packages,
 
 90
-00:04:03.824 --> 00:04:05.170
-If you've never met those,
+00:04:01.734 --> 00:04:04.139
+code other people wrote for you to use.
 
 91
-00:04:05.170 --> 00:04:07.817
-you can't tell whether it did the right thing.
+00:04:04.590 --> 00:04:07.888
+npm for JavaScript and PyPI for Python
 
 92
-00:04:07.817 --> 00:04:09.872
-The newest thing on the road spends
+00:04:07.888 --> 00:04:10.442
+are markets that never close:
 
 93
-00:04:09.872 --> 00:04:12.624
-its day on the oldest ground.
+00:04:10.442 --> 00:04:13.901
+new packages and new versions arrive every day.
 
 94
-00:04:12.624 --> 00:04:16.037
-AI is the lantern: it lights every district,
+00:04:13.901 --> 00:04:17.187
+In a version number like 2.4.1,
 
 95
-00:04:16.037 --> 00:04:19.336
-but it doesn't walk the streets for you.
+00:04:17.187 --> 00:04:19.137
+a change to the first part warns
 
 96
-00:04:19.787 --> 00:04:22.283
-You don't need to memorize a single date.
+00:04:19.137 --> 00:04:21.192
+you that something may break.
 
 97
-00:04:22.283 --> 00:04:23.943
-Nobody will quiz you.
+00:04:21.192 --> 00:04:22.609
+A lockfile writes down
 
 98
-00:04:23.943 --> 00:04:25.638
-Who invented what,
+00:04:22.609 --> 00:04:24.513
+the exact versions that worked,
 
 99
-00:04:25.638 --> 00:04:28.634
-and which old system won the argument, can wait.
+00:04:24.513 --> 00:04:28.054
+so your project doesn't quietly change under you.
 
 100
-00:04:28.634 --> 00:04:31.977
-Keep one question for anything new you meet:
+00:04:28.054 --> 00:04:30.841
+And attackers found the market too:
 
 101
-00:04:31.977 --> 00:04:34.718
-is this street, or lantern?
+00:04:30.841 --> 00:04:32.640
+they publish look-alike names,
 
 102
-00:04:34.718 --> 00:04:37.726
-Street: learn it once.
+00:04:32.640 --> 00:04:34.869
+or take over real packages.
 
 103
-00:04:38.491 --> 00:04:41.500
-Lantern: check back often.
+00:04:34.869 --> 00:04:36.855
+So careful people pin their versions
 
 104
-00:04:41.949 --> 00:04:43.052
-Three things to keep.
+00:04:36.855 --> 00:04:38.598
+and update on purpose.
 
 105
-00:04:43.052 --> 00:04:45.885
-Most of what you build on is decades old.
+00:04:39.316 --> 00:04:41.359
+Even the tools that install packages
 
 106
-00:04:45.885 --> 00:04:47.115
-The shell, files,
+00:04:41.359 --> 00:04:45.190
+keep changing: pip, then Poetry in 2018,
 
 107
-00:04:47.115 --> 00:04:49.240
-the web and git had decades to settle,
+00:04:45.190 --> 00:04:49.616
+then uv in 2024, all still in use.
 
 108
-00:04:49.240 --> 00:04:51.144
-so what you learn there lasts.
+00:04:50.065 --> 00:04:52.967
+Now the locks, which change fastest.
 
 109
-00:04:51.144 --> 00:04:54.151
-The AI layer is brand new.
+00:04:52.967 --> 00:04:55.882
+For decades, a password alone opened the door.
 
 110
-00:04:54.151 --> 00:05:00.177
-ChatGPT is from 2022, MCP from 2024,
+00:04:55.882 --> 00:04:58.134
+Passwords leaked and got reused,
 
 111
-00:05:00.177 --> 00:05:01.767
-and both keep changing,
+00:04:58.134 --> 00:05:00.328
+so sites added two factor:
 
 112
-00:05:01.767 --> 00:05:04.658
-so check the date on anything about them.
+00:05:00.328 --> 00:05:03.405
+something you know, plus something you have.
 
 113
-00:05:04.658 --> 00:05:07.328
-Being lost isn't being behind.
+00:05:03.405 --> 00:05:06.122
+The usual second factor was a code
 
 114
-00:05:07.328 --> 00:05:09.024
-Aaron had a degree and still
+00:05:06.122 --> 00:05:08.281
+sent by text message.
 
 115
-00:05:09.024 --> 00:05:10.684
-missed the old basics.
+00:05:08.281 --> 00:05:10.324
+Many sites are moving away from it,
 
 116
-00:05:10.684 --> 00:05:12.286
-They were never new.
+00:05:10.324 --> 00:05:12.170
+because of SIM swapping:
 
 117
-00:05:12.286 --> 00:05:14.528
-Nobody handed them over.
+00:05:12.170 --> 00:05:14.388
+someone talks your phone company into moving
+
+118
+00:05:14.388 --> 00:05:16.211
+your number onto their phone,
+
+119
+00:05:16.211 --> 00:05:18.335
+and your codes go with it.
+
+120
+00:05:18.335 --> 00:05:24.152
+In 2017, NIST, America's standards agency,
+
+121
+00:05:24.152 --> 00:05:26.532
+restricted text message codes.
+
+122
+00:05:26.532 --> 00:05:29.203
+So the codes moved into authenticator apps,
+
+123
+00:05:29.203 --> 00:05:30.909
+like Google Authenticator,
+
+124
+00:05:30.909 --> 00:05:34.079
+Microsoft Authenticator or Authy.
+
+125
+00:05:34.079 --> 00:05:36.401
+They make a fresh code every thirty seconds,
+
+126
+00:05:36.401 --> 00:05:39.385
+from a standard published in 2011.
+
+127
+00:05:39.385 --> 00:05:41.951
+Some apps skip the code and just ask:
+
+128
+00:05:41.951 --> 00:05:43.682
+was this you?
+
+129
+00:05:44.132 --> 00:05:45.595
+The next lock trusts
+
+130
+00:05:45.595 --> 00:05:48.312
+your device instead of a code.
+
+131
+00:05:48.312 --> 00:05:51.864
+A passkey keeps a secret on your phone or laptop.
+
+132
+00:05:51.864 --> 00:05:54.093
+You unlock it with your face,
+
+133
+00:05:54.093 --> 00:05:56.543
+your fingerprint or a PIN,
+
+134
+00:05:56.543 --> 00:05:59.387
+and the secret is never sent to the site,
+
+135
+00:05:59.387 --> 00:06:03.102
+so a fake look-alike site has nothing to steal.
+
+136
+00:06:03.102 --> 00:06:06.400
+The web standard behind it was finished in 2019,
+
+137
+00:06:06.400 --> 00:06:09.708
+and in 2022 Apple, Google
+
+138
+00:06:09.708 --> 00:06:13.400
+and Microsoft committed to passkeys together.
+
+139
+00:06:13.400 --> 00:06:15.467
+The goal is no password at all.
+
+140
+00:06:15.467 --> 00:06:18.462
+And sites stopped asking nicely.
+
+141
+00:06:18.462 --> 00:06:21.190
+GitHub stopped accepting account passwords
+
+142
+00:06:21.190 --> 00:06:26.287
+for git in 2021, and in 2023 it began requiring
+
+143
+00:06:26.287 --> 00:06:29.712
+two factor from everyone who contributes code.
+
+144
+00:06:29.712 --> 00:06:31.500
+A lock you learned a few years ago
+
+145
+00:06:31.500 --> 00:06:34.311
+may already be the old lock.
+
+146
+00:06:34.762 --> 00:06:37.525
+Locks also moved off the door.
+
+147
+00:06:37.525 --> 00:06:41.055
+Instead of every site keeping its own passwords,
+
+148
+00:06:41.055 --> 00:06:44.073
+many hand sign-in to a dedicated service:
+
+149
+00:06:44.073 --> 00:06:45.397
+Sign in with Google,
+
+150
+00:06:45.397 --> 00:06:48.195
+or a company's identity provider.
+
+151
+00:06:48.195 --> 00:06:50.598
+Now there's a service for everything:
+
+152
+00:06:50.598 --> 00:06:55.393
+one for logins, one for secrets, one for keys.
+
+153
+00:06:55.393 --> 00:06:57.321
+Aaron met this at work.
+
+154
+00:06:57.321 --> 00:06:58.772
+His automations were tied
+
+155
+00:06:58.772 --> 00:07:00.351
+to his personal accounts,
+
+156
+00:07:00.351 --> 00:07:03.056
+and they had to move to service accounts,
+
+157
+00:07:03.056 --> 00:07:04.809
+Windows Credential Manager
+
+158
+00:07:04.809 --> 00:07:09.163
+and app registrations in Microsoft Entra.
+
+159
+00:07:09.163 --> 00:07:12.112
+A login for the job, not the person.
+
+160
+00:07:12.112 --> 00:07:14.771
+Even that name moved: Entra was called
+
+161
+00:07:14.771 --> 00:07:18.766
+Azure Active Directory until 2023.
+
+162
+00:07:19.216 --> 00:07:21.468
+Inside every lock is the metal:
+
+163
+00:07:21.468 --> 00:07:23.082
+the math that scrambles data
+
+164
+00:07:23.082 --> 00:07:25.253
+and checks that it wasn't changed.
+
+165
+00:07:25.253 --> 00:07:27.889
+That wears out too, as computers get faster
+
+166
+00:07:27.889 --> 00:07:30.257
+and researchers find shortcuts.
+
+167
+00:07:30.257 --> 00:07:35.771
+MD5, a fingerprint for files, was broken in 2004.
+
+168
+00:07:35.771 --> 00:07:39.545
+SHA-1 fell in 2017, when researchers made two
+
+169
+00:07:39.545 --> 00:07:41.704
+different files with the same fingerprint.
+
+170
+00:07:41.704 --> 00:07:43.864
+The old versions of TLS,
+
+171
+00:07:43.864 --> 00:07:48.589
+the lock behind HTTPS, were retired in 2021.
+
+172
+00:07:48.589 --> 00:07:52.977
+In 2024, NIST published new standards built
+
+173
+00:07:52.977 --> 00:07:55.067
+to survive future quantum computers.
+
+174
+00:07:55.067 --> 00:07:58.864
+Even git, which names every commit with SHA-1,
+
+175
+00:07:58.864 --> 00:08:02.277
+has started moving to SHA-256.
+
+176
+00:08:02.277 --> 00:08:04.262
+Here's where the street picture breaks.
+
+177
+00:08:04.262 --> 00:08:07.177
+On a real street, an old lock has charm.
+
+178
+00:08:07.177 --> 00:08:10.160
+In software, an old lock may be one
+
+179
+00:08:10.160 --> 00:08:12.786
+somebody has already learned to pick.
+
+180
+00:08:13.236 --> 00:08:16.382
+Here's what the speeds look like up close.
+
+181
+00:08:16.382 --> 00:08:18.669
+A tutorial's command fails,
+
+182
+00:08:18.669 --> 00:08:22.094
+or one of its options no longer exists:
+
+183
+00:08:22.094 --> 00:08:24.846
+the paint changed after it was written.
+
+184
+00:08:24.846 --> 00:08:28.341
+One project says master and another says main:
+
+185
+00:08:28.341 --> 00:08:32.416
+same idea, a default GitHub changed in 2020.
+
+186
+00:08:32.416 --> 00:08:35.156
+The word deprecated means this still works,
+
+187
+00:08:35.156 --> 00:08:36.885
+but it's on its way out.
+
+188
+00:08:36.885 --> 00:08:40.763
+It's a warning, not an error, so plan to move.
+
+189
+00:08:40.763 --> 00:08:44.095
+An old answer where print has no parentheses
+
+190
+00:08:44.095 --> 00:08:46.231
+is Python 2.
+
+191
+00:08:46.231 --> 00:08:49.366
+And one day a site you've used for years
+
+192
+00:08:49.366 --> 00:08:51.595
+won't let you in until you set up
+
+193
+00:08:51.595 --> 00:08:55.159
+an authenticator app or a passkey.
+
+194
+00:08:55.159 --> 00:08:57.423
+You didn't do anything wrong.
+
+195
+00:08:57.423 --> 00:08:59.979
+The lock got replaced.
+
+196
+00:09:00.429 --> 00:09:04.632
+AI is the newest layer, and the fastest moving.
+
+197
+00:09:04.632 --> 00:09:06.664
+New models arrive every few months,
+
+198
+00:09:06.664 --> 00:09:08.916
+and old ones get switched off.
+
+199
+00:09:08.916 --> 00:09:11.540
+And an AI learned from a snapshot
+
+200
+00:09:11.540 --> 00:09:14.721
+that stops where its training ended.
+
+201
+00:09:14.721 --> 00:09:17.508
+So it may suggest an old package version,
+
+202
+00:09:17.508 --> 00:09:19.110
+a retired command,
+
+203
+00:09:19.110 --> 00:09:22.163
+or a login method a site no longer accepts.
+
+204
+00:09:22.163 --> 00:09:25.623
+A coding agent still works on the old street:
+
+205
+00:09:25.623 --> 00:09:30.917
+it runs cd, makes a .venv, saves with git.
+
+206
+00:09:30.917 --> 00:09:33.784
+When it reaches for the paint or the locks,
+
+207
+00:09:33.784 --> 00:09:37.175
+ask which version it's assuming, and check.
+
+208
+00:09:37.175 --> 00:09:40.251
+AI is the lantern: it lights every district,
+
+209
+00:09:40.251 --> 00:09:43.179
+but it doesn't walk the streets for you.
+
+210
+00:09:43.629 --> 00:09:45.754
+You don't need to memorize these dates,
+
+211
+00:09:45.754 --> 00:09:48.772
+or which algorithm replaced which.
+
+212
+00:09:48.772 --> 00:09:51.141
+You don't need to chase every release either;
+
+213
+00:09:51.141 --> 00:09:53.823
+most updates will never touch you.
+
+214
+00:09:53.823 --> 00:09:57.828
+Security updates are the exception: take those.
+
+215
+00:09:57.828 --> 00:10:01.230
+Keep one question for anything new you meet:
+
+216
+00:10:01.230 --> 00:10:03.146
+is this street, or lantern?
+
+217
+00:10:03.146 --> 00:10:05.735
+And if it's street, which part?
+
+218
+00:10:05.735 --> 00:10:08.614
+Stone: learn it once.
+
+219
+00:10:08.614 --> 00:10:10.797
+Paint: check the version.
+
+220
+00:10:10.797 --> 00:10:13.931
+Lock: assume it has changed.
+
+221
+00:10:13.931 --> 00:10:16.487
+Lantern: check the date.
+
+222
+00:10:16.937 --> 00:10:18.458
+Three things to keep.
+
+223
+00:10:18.458 --> 00:10:20.699
+Learn the old ideas once.
+
+224
+00:10:20.699 --> 00:10:22.138
+Files, the shell,
+
+225
+00:10:22.138 --> 00:10:25.052
+the web and git had decades to settle.
+
+226
+00:10:25.052 --> 00:10:26.132
+Check the version,
+
+227
+00:10:26.132 --> 00:10:28.431
+and assume the lock has changed.
+
+228
+00:10:28.431 --> 00:10:31.031
+Versions move every year,
+
+229
+00:10:31.031 --> 00:10:33.795
+and security moves faster still.
+
+230
+00:10:33.795 --> 00:10:36.407
+Check the date on anything AI tells you.
+
+231
+00:10:36.407 --> 00:10:39.472
+It is the newest and fastest of all,
+
+232
+00:10:39.472 --> 00:10:42.132
+especially about versions and locks.

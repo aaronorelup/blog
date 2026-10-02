@@ -83,6 +83,11 @@
    *  lanternLabels — 0..1 alpha of the Lanterns' label row (default 1)
    *  pinDrop — 0..1: the you-are-here pin falls into place from 90 px above (default 1 = in place; ease it yourself)
    *  pinGlowK — 0..1: how strongly the pinned row / Start / Finish is lit (wash, gold ring, glow; default 1)
+   *  lanternSway — number or (i) => number: multiplies each lantern's idle sway (built-in amplitude 0.06 rad; default 1)
+   *  lanternDrop — 0..1 or (i) => 0..1: each lantern drops onto the string from 90 px above, like pinDrop (default 1 = hung;
+   *                ease it yourself, e.g. (i) => K.io(t, a + i * .15, .7, 'back'))
+   *  rowWash — { '14': { k, color }, ... }: washes any module row in a colour (k 0..1 eases it; colour default C.head),
+   *            the same 38 px pill as the pinned row, drawn under the row's text so no overlay or text redraw is needed
    *  districtK — 0..1 or (id) => 0..1: per-district visibility, ids 'machine' … 'shipping', 'ai' (the lantern
    *              string), 'gate', 'end' (default 1). Multiplies the card AND its opaque footprint, so at 0 the
    *              district is gone and the garden path shows where it will stand — a staggered reveal you time
@@ -123,9 +128,11 @@
         g.beginPath(); g.moveTo(250, y - 40); g.quadraticCurveTo(960, y + 4, 1670, y - 40); g.stroke(); g.restore();
       });
       for (let i = 0; i < LANTERNS.n; i++) {
-        const { x, y: yy } = lanternAt(i), sway = K.wave(t, 1.1, 0.06, i * 1.7), lk = lanternK(i);
-        if (lk > 0) K.glow(x, yy + 16, 60, C.head, lk * 0.22 * (o.focus === 'ai' || LANTERNS.mods.includes(o.focus) ? 1.8 : 1));
-        K.layer(0.2 + 0.8 * lk, () => K.at(x, yy, 1, sway, () => K.icon('lantern', 0, 16, 46, { color: C.head, w: 2.4 })));
+        const sm = typeof o.lanternSway === 'function' ? o.lanternSway(i) : (o.lanternSway ?? 1);
+        const ld = K.clamp(typeof o.lanternDrop === 'function' ? o.lanternDrop(i) : (o.lanternDrop ?? 1));
+        const { x, y: y0 } = lanternAt(i), yy = y0 - (1 - ld) * 90, sway = K.wave(t, 1.1, 0.06 * sm, i * 1.7), lk = lanternK(i);
+        if (lk > 0) K.glow(x, yy + 16, 60, C.head, lk * ld * 0.22 * (o.focus === 'ai' || LANTERNS.mods.includes(o.focus) ? 1.8 : 1));
+        K.layer((0.2 + 0.8 * lk) * ld, () => K.at(x, yy, 1, sway, () => K.icon('lantern', 0, 16, 46, { color: C.head, w: 2.4 })));
       }
       K.layer(o.lanternLabels ?? 1, () => {
         const eb = { size: TYPE.aiEyebrow, weight: 600, tracking: 3, upper: true };
@@ -152,6 +159,8 @@
         K.text(d.q, d.x + 36, d.y + ROW.q, { size: TYPE.q, color: C.soft, font: 'ui' });
         if (mods) d.mods.forEach((m, j) => {
           const y = d.y + ROW.first + j * ROW.pitch, pinned = o.pin === m;
+          const rw = o.rowWash && o.rowWash[m];
+          if (rw && !(pinned && pg > 0)) { const wk = K.clamp(rw.k ?? 1); if (wk > 0) { K.rr(d.x + 22, y - 28, d.w - 44, 38, 19); g.fillStyle = K.rgba(rw.color || C.head, 0.14 * wk); g.fill(); } }
           if (pinned && pg > 0) { K.rr(d.x + 22, y - 28, d.w - 44, 38, 19); g.fillStyle = K.rgba(C.head, 0.14 * pg); g.fill(); }
           K.text(m, d.x + 40, y, { font: 'mono', size: TYPE.num, color: pinned ? C.head : C.gold, weight: 600 });
           K.text(MODULES[m], d.x + 84, y, { size: TYPE.mod, color: pinned ? C.strong : C.body, weight: pinned ? 600 : 400 });

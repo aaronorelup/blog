@@ -1,11 +1,22 @@
-/* 00.03 How old is all this? — shared drawing (window.M)
-   The lesson's one recurring object is "the street of years": one long horizontal street, 1965 → 2026,
-   with a year painted on every building (a tag hung on a stem from a node on the street) and three
-   paper lanterns (AI) hung ONLY over its far end (2021 · 2022 · 2024). The street is drawn by
-   M.street(t, {geom}) in every scene and only morphs between layouts (M.lerpGeom), dims, lights or
-   loses its year numbers: no scene draws its own timeline.
-   Also here: the year tag (M.tag, also used for 03's stamped years), brackets under the street (04, 08),
-   the gold light spreading back along it (07), pin markers (06), and the 00.02 road (05) re-drawn to match.
+/* 00.03 How old is all this? (extended rebuild) — shared drawing (window.M)
+   Metaphor: "the old street under constant renovation".
+   1. THE STREET OF YEARS (kept from v1, unchanged API): one long street 1965 -> 2026, a year painted on every
+      building, three paper lanterns (AI) hung only over its far end. M.street / M.tag / M.lerpGeom / M.bracket ...
+      New here: M.houses (v1 scene 04's little houses, moved in so 04 and 05 share them) and the 'floor' preset
+      (the dim reminder strip along y 900 that 05, 10 and 13 keep under everything).
+   2. THE BUILDING (new): one tea-house building lifted off the street (Python, ~1991) whose parts age at three
+      speeds, with the lanterns strung over its roof:
+        stone (base)  = the idea      -> barely moves      gold      (C.head)
+        paint (sign)  = the version   -> every year or so  cream     (C.strong on C.tile)
+        lock (door)   = security      -> fastest           terracotta(C.accent)
+        lanterns      = AI            -> fastest of all    gold paper, terracotta glow
+      M.building(t, o) draws it in any layout (M.LAYOUTS: full, left, title, stage, rules, small, corner) and it only
+      ever MOVES between layouts (M.lerpLayout), never gets redrawn differently. M.inBuilding(layout, fn) lets a scene
+      draw extra things in the building's own (full-layout) coordinates; M.at(layout, part) gives screen anchors.
+   3. Recurring pieces: M.paint (a sign that repaints: old words slide up and out, new ones rise in, fresh-paint glow),
+      M.lockIcon (key / text / app / device / passkey ...), M.lockTile + M.LOCKS (the 08-09 lock line), M.strike
+      (the soft dashed diagonal that means "broken / retired": never red, never a cross), M.speedLabel, M.phone,
+      M.gatehouse, M.stall + M.parcel, M.versionPill, M.metal, M.surprise, M.say.
    Only functions and constants: no SCENE() calls. Pure functions of their arguments (no Date.now,
    no Math.random, no state between frames). K.ctx() is read on every call: the runtime swaps canvases. */
 (function () {
@@ -87,6 +98,9 @@
     strip:  { x0: 520, x1: 1400, y: 210, a1: -60, a2: -100, b1: 60, b2: 100, tag: 26, tagA: 0, ticks: 1, tickLabels: 1, band: 0.6,
               cordY: 100, ls: 30, stackX: 1800, stackY: 200, stackDy: 50, node: 4 },
     // 09: decorative footer under the end card (draw at alpha .4)
+    // 05 10 13: the dim reminder strip along the bottom (draw at alpha ~.3; tags sit ON the line, mode 'year')
+    floor:  { x0: 160, x1: 1760, y: 900, a1: 0, a2: 0, b1: 0, b2: 0, tag: 26, tagA: 1, ticks: 0.6, tickLabels: 0, band: 0.6,
+              cordY: 846, ls: 26, stackX: 1800, stackY: 800, stackDy: 50, node: 3.5 },
     footer: { x0: 560, x1: 1360, y: 880, a1: -50, a2: -90, b1: 50, b2: 90, tag: 26, tagA: 0, ticks: 1, tickLabels: 0, band: 0.6,
               cordY: 806, ls: 32, stackX: 1800, stackY: 800, stackDy: 50, node: 3.5 },
   };
@@ -507,10 +521,685 @@
     s09: { rowsY: [320, 500, 680], rowX: 260, paraW: 1400 },
   };
 
+  // ================================================================ v1 scene 04's houses (shared now)
+  // A house is the year tag's rect padded into a facade with a gable roof (~1991 web · Python · Linux: three roofs).
+  // Above the street a house stands on the far kerb, below it on the near kerb; roofs always point up.
+  const HOUSE = { PAD: 7, EAVE: 8, RT: 14, RH: 13 };
+  function houseGeo(gm, b) {
+    const r = itemRect(gm, b), above = gm[b.row || 'a1'] < 0;
+    const x0 = r.x0 - HOUSE.PAD, x1 = r.x1 + HOUSE.PAD, y0 = r.y0 - HOUSE.PAD, y1 = r.y1 + HOUSE.PAD;
+    return { r, above, x0, x1, y0, y1, peaks: b.key === 'web' ? 3 : 1, top: y0 - HOUSE.RT };
+  }
+  function houseRoofPath(h, dy) {
+    const g = G(), { EAVE, RT } = HOUSE, w = (h.x1 - h.x0 + 2 * EAVE) / h.peaks, ys = h.y0 + dy;
+    g.beginPath(); g.moveTo(h.x0 - EAVE, ys + 1);
+    for (let p = 0; p < h.peaks; p++) { const a = h.x0 - EAVE + p * w; g.lineTo(a + w / 2, ys - RT); g.lineTo(a + w, ys + 1); }
+  }
+  /**
+   * the little houses behind the year tags (v1 scene 04). Draw pass 'body' BEFORE M.street and pass 'roofs' AFTER it
+   * (so a stem hanging to a near-side sign enters under its roof).
+   * o: {pass 'body'|'roofs', rise (i)=>0..1 (house rises out of the road), named (i)=>0..1 (ghost -> lit),
+   *     warm (i)=>0..1 (brief warm roof stroke), alpha, items (default BUILDINGS)}
+   */
+  function houses(gm, o = {}) {
+    gm = asGeom(gm);
+    const g = G(), { EAVE, RT, PAD, RH } = HOUSE, roadT = gm.y - RH, roadB = gm.y + RH;
+    const rise = per(o.rise, 1), named = per(o.named, 1), warm = per(o.warm, 0), items = o.items || BUILDINGS;
+    const roofStroke = (lk, wk) => K.mixColor(C.line2, C.head, (0.3 + 0.35 * lk) + 0.3 * wk);
+    const clipSide = (h) => { g.beginPath(); if (h.above) g.rect(0, 0, K.W, roadT - 1); else g.rect(0, roadB + 1, K.W, K.H); g.clip(); };
+    K.layer(o.alpha ?? 1, () => items.forEach((b, i) => {
+      const h = houseGeo(gm, b), rk = clamp01(rise(i)), lk = clamp01(named(i)), wk = clamp01(warm(i));
+      if (rk <= 0) return;
+      const dy = h.above ? (1 - rk) * (roadT - h.top + 2) : -(1 - rk) * (h.y1 - roadB + 2);
+      const a = (0.42 + 0.58 * lk) * K.clamp(rk * 3);
+      if (o.pass === 'roofs') {
+        if (h.above) return;
+        K.layer(a, () => {
+          g.save(); clipSide(h);
+          g.beginPath(); g.rect(h.x0 - EAVE - 2, h.top + dy - 4, h.x1 - h.x0 + 2 * EAVE + 4, RT + 4 + PAD - 1); g.clip();
+          g.fillStyle = K.mixColor(C.panel, C.tile, 0.35); g.fillRect(h.x0 + 1, h.y0 + dy + 1, h.x1 - h.x0 - 2, PAD - 2);
+          houseRoofPath(h, dy); g.closePath(); g.fillStyle = K.mixColor(C.tile, C.head, 0.08 + 0.06 * lk); g.fill();
+          houseRoofPath(h, dy); g.lineWidth = 1.8 + 0.6 * wk; g.lineJoin = 'round'; g.strokeStyle = roofStroke(lk, wk); g.stroke();
+          g.restore();
+        });
+        return;
+      }
+      K.layer(a, () => {
+        g.save(); clipSide(h);
+        K.line(h.r.cx, h.above ? roadT : roadB, h.r.cx, h.above ? h.y1 + dy : h.top + dy, { color: C.line2, w: 1.5, alpha: 0.6 * (1 - lk) });
+        K.rr(h.x0, h.y0 + dy, h.x1 - h.x0, h.y1 - h.y0, 6);
+        g.fillStyle = K.mixColor(C.panel, C.tile, 0.35); g.fill();
+        g.lineWidth = 1.5; g.strokeStyle = K.mixColor(C.line2, C.head, 0.12 + 0.2 * lk); g.stroke();
+        const dw = 16, dh = 22, dyB = h.y1 + dy;
+        K.rr(h.r.cx - dw / 2, dyB - dh - 2, dw, dh + 2, [8, 8, 0, 0]); g.fillStyle = K.rgba(C.line2, 0.9); g.fill();
+        houseRoofPath(h, dy); g.closePath(); g.fillStyle = K.mixColor(C.tile, C.head, 0.08 + 0.06 * lk); g.fill();
+        houseRoofPath(h, dy); g.lineWidth = 1.8 + 0.6 * wk; g.lineJoin = 'round'; g.strokeStyle = roofStroke(lk, wk); g.stroke();
+        g.restore();
+      });
+    }));
+  }
+
+  // ================================================================ THE BUILDING
+  // All geometry is in "full-layout" coordinates (the building centred on x 960, as the storyboard numbers it).
+  // A layout {x, y, s} puts the PIVOT (960, 505: the middle of the building's height) at screen (x, y), scaled s.
+  const BLD = {
+    pivot: { x: 960, y: 505 },
+    stone: { x: 660, y: 700, w: 600, h: 110, r: 12 },              // the idea
+    walls: { x: 700, y: 380, w: 520, h: 320, r: 24 },
+    roof: { cx: 960, by: 390, peak: 300 },                          // eave tips at x 640 / 1280, y 360
+    beam: 492,                                                      // the horizontal timber between sign and door
+    sign: { x: 960, y: 440, size: 30 },                             // the paint
+    door: { x: 900, y: 520, w: 120, h: 180 },                       // the brand's one square element
+    lock: { x: 960, y: 644, s: 56, s2: 44, gap: 52 },               // the lock (one icon at 56, two at 44)
+    windows: [{ x: 744, y: 522, w: 112, h: 84 }, { x: 1064, y: 522, w: 112, h: 84 }],
+    poles: [676, 1244], poleTop: 176, stringY: 190, sag: 16,        // the lantern string over the roof
+    lanterns: { xs: [840, 960, 1080], drop: [12, 6, 12], s: 56 },
+    stoneIcons: { xs: [820, 960, 1100], y: 738, s: 34 },
+    stoneLabelY: [764, 792],                                        // without / with the three stone icons
+    roofLabelY: 364,
+    agent: { x: 1160, y: 262 },                                      // where 13's sparkle sits (right of the lanterns)
+    bounds: { x0: 640, x1: 1280, y0: 150, y1: 810 },
+  };
+  const LAYOUTS = {
+    full:   { x: 960, y: 505, s: 1 },      // 01 (after the title moves away), 05
+    left:   { x: 520, y: 574, s: 0.8 },    // 06–11: right column x 1000–1800 is free; stone top y 730
+    title:  { x: 960, y: 640, s: 0.7 },    // 01 title card: string y ~427, stone bottom y ~853, clears the conclusion at y 340
+    stage:  { x: 700, y: 485, s: 0.9 },    // 13: right column x 1240–1780 free; pole tops y ~189, stone bottom y ~760 (clears a line at y 820)
+    rules:  { x: 640, y: 580, s: 0.8 },    // 14: under the ignore pills (string y ~332); rules at x ~1170
+    small:  { x: 960, y: 250, s: 0.38 },   // 12: thumbnail at top centre (pole tops y ~125, stone bottom y ~366); cards must start at y >= 380
+    corner: { x: 1620, y: 760, s: 0.4 },   // 15 end card: bottom right, y ~637–882
+  };
+  const lay = (L) => (typeof L === 'string' ? LAYOUTS[L] || LAYOUTS.full : L || LAYOUTS.full);
+  /** morph between two layouts (k 0..1, ease it yourself) */
+  function lerpLayout(a, b, k) { a = lay(a); b = lay(b); k = clamp01(k); return { x: lerp(a.x, b.x, k), y: lerp(a.y, b.y, k), s: lerp(a.s, b.s, k) }; }
+  /** a full-layout point (x, y) -> screen {x, y} in layout L */
+  function toScreen(L, x, y) { L = lay(L); return { x: L.x + (x - BLD.pivot.x) * L.s, y: L.y + (y - BLD.pivot.y) * L.s }; }
+  /** run fn(s) with the canvas transformed into the building's full-layout coordinates (draw extras that ride along) */
+  function inBuilding(L, fn) {
+    L = lay(L); const g = G();
+    g.save(); g.translate(L.x, L.y); g.scale(L.s, L.s); g.translate(-BLD.pivot.x, -BLD.pivot.y); fn(L.s); g.restore();
+  }
+  /** full-layout anchor of a part: {x, y, r (right edge for arrows), w, h} */
+  const PART = {
+    stone: { x: 960, y: 755, r: 1262, w: 600, h: 110 },
+    sign: { x: 960, y: 440, r: 1222, w: 260, h: 57 },
+    walls: { x: 960, y: 540, r: 1222, w: 520, h: 320 },
+    door: { x: 960, y: 610, r: 1022, w: 120, h: 180 },
+    lock: { x: 960, y: 644, r: 1022, w: 120, h: 120 },
+    roof: { x: 960, y: 340, r: 1280, w: 640, h: 90 },
+    lanterns: { x: 960, y: 240, r: 1104, w: 300, h: 80 },
+    lantern0: { x: 840, y: 249, r: 860, w: 40, h: 40 },
+    lantern1: { x: 960, y: 241, r: 980, w: 40, h: 40 },
+    lantern2: { x: 1080, y: 249, r: 1100, w: 40, h: 40 },
+    agent: { x: BLD.agent.x, y: BLD.agent.y, r: BLD.agent.x + 30, w: 60, h: 60 },
+    top: { x: 960, y: 150, r: 1280, w: 640, h: 0 },
+    bottom: { x: 960, y: 810, r: 1280, w: 640, h: 0 },
+  };
+  /** screen anchor of a part in layout L: {x, y, r, w, h, s} (w/h already scaled) */
+  function at(L, part) {
+    L = lay(L); const p = PART[part] || PART.walls, c = toScreen(L, p.x, p.y);
+    return { x: c.x, y: c.y, r: toScreen(L, p.r, p.y).x, w: p.w * L.s, h: p.h * L.s, s: L.s };
+  }
+
+  // ---------------------------------------------------------------- the paint (a sign that repaints)
+  /**
+   * a pill sign. text '' or null = blank. Repaint: pass o.from (old words) and o.k 0..1 (ease it yourself, ~0.5 s):
+   * old words slide up and fade (k 0–.45), the pill resizes (.25–.75), new words rise in (.45–1), a soft
+   * "fresh paint" glow swells and settles (no flash).
+   * o: {size 30, font 'ui'|'mono', weight 600, color (text, default C.strong), dim 0..1 (text -> C.quiet),
+   *     lit 0..1 (resting warm edge), warm (glow colour, default C.head), fill, stroke, blankW, align 'center'|'left'|'right', alpha}
+   * returns {x0, x1, cx, w, h}
+   */
+  function paint(x, y, text, o = {}) {
+    const g = G(), size = o.size || 30;
+    const to = { size, font: o.font || 'ui', weight: o.weight || 600 };
+    const repaint = o.from != null && o.k != null;
+    const k = repaint ? clamp01(o.k) : 1;
+    const wOf = (s) => (s ? K.measure(s, to) + size * 1.6 : (o.blankW ?? size * 4.2));
+    const w = repaint ? lerp(wOf(o.from), wOf(text), K.ease.io(K.seg(k, 0.25, 0.75))) : wOf(text), h = size * 1.9;
+    const x0 = o.align === 'left' ? x : o.align === 'right' ? x - w : x - w / 2, cx = x0 + w / 2;
+    const fresh = repaint ? Math.sin(Math.PI * K.seg(k, 0.2, 1)) : 0;
+    const warm = o.warm || C.head, lit = clamp01((o.lit || 0) + 0.9 * fresh);
+    const col = K.mixColor(o.color || C.strong, C.quiet, clamp01(o.dim));
+    K.layer(o.alpha ?? 1, () => {
+      if (lit > 0) K.glow(cx, y, w * 0.8, warm, 0.2 * lit);
+      g.save();
+      K.rr(x0, y - h / 2, w, h, h / 2); g.fillStyle = o.fill || C.tile; g.fill();
+      g.lineWidth = 1.5 + 0.8 * lit; g.strokeStyle = K.mixColor(o.stroke || C.line2, warm, 0.75 * lit);
+      if (lit > 0) { g.shadowColor = K.rgba(warm, 0.5 * lit); g.shadowBlur = 24; }
+      K.rr(x0, y - h / 2, w, h, h / 2); g.stroke();
+      g.restore();
+      g.save(); K.rr(x0, y - h / 2, w, h, h / 2); g.clip();
+      const by = y + size * 0.34;
+      if (repaint && k < 0.45 && o.from) {
+        const ok = K.ease.in(K.seg(k, 0, 0.45));
+        K.text(o.from, cx, by - 18 * ok, { ...to, color: col, align: 'center', alpha: 1 - ok });
+      }
+      if (text && (!repaint || k > 0.45)) {
+        const nk = repaint ? K.ease.out(K.seg(k, 0.45, 1)) : 1;
+        K.text(text, cx, by + 18 * (1 - nk), { ...to, color: col, align: 'center', alpha: nk });
+      }
+      g.restore();
+    });
+    return { x0, x1: x0 + w, cx, w, h };
+  }
+
+  // ---------------------------------------------------------------- locks
+  /** composite lock icons: [outer, inner] (inner drawn small inside the outer) */
+  const LOCK_ICONS = {
+    password: ['key'], key: ['key'], lock: ['lock'], shield: ['shield'], phone: ['phone'], laptop: ['laptop'], device: ['laptop'],
+    text: ['phone', 'envelope'],   // a code by text message
+    app: ['phone', 'clock'],       // authenticator app: time-based codes
+    push: ['phone', 'check'],      // "was this you?"
+    passkey: ['phone', 'key'],     // a secret kept on your device
+  };
+  /**
+   * a lock icon (plain K.icon names or a composite above), centred at (x, y), size s.
+   * o: {color (default C.accent), dim 0..1 (-> C.quiet, .45 alpha), turn (radians, rotates the key / inner icon), alpha, w}
+   */
+  function lockIcon(name, x, y, s, o = {}) {
+    const g = G(), parts = LOCK_ICONS[name] || [name], dim = clamp01(o.dim);
+    const col = K.mixColor(o.color || C.accent, C.quiet, dim), w = o.w || Math.max(2, s * 0.06);
+    K.layer((o.alpha ?? 1) * lerp(1, 0.45, dim), () => {
+      const turn = o.turn || 0;
+      if (parts.length === 1) {
+        g.save(); g.translate(x, y); if (turn) g.rotate(turn); K.icon(parts[0], 0, 0, s, { color: col, w }); g.restore();
+        return;
+      }
+      K.icon(parts[0], x, y, s, { color: col, w });
+      const inner = parts[1], is = s * (inner === 'key' ? 0.36 : 0.34);
+      g.save(); g.translate(x, y + s * 0.0); if (turn) g.rotate(turn); K.icon(inner, 0, 0, is, { color: col, w: Math.max(1.5, w * 0.75) }); g.restore();
+    });
+  }
+  const asLocks = (v) => (v == null ? [] : (Array.isArray(v) ? v : [v]).map((e) => (typeof e === 'string' ? { icon: e } : e)));
+
+  // ---------------------------------------------------------------- the roof (shared by the building and the gatehouses)
+  /** the tea-house roof outline in full-layout coordinates: concave slopes, short ridge, upturned eave tips */
+  function roofPath() {
+    const g = G();
+    g.beginPath();
+    g.moveTo(640, 360);
+    g.quadraticCurveTo(786, 350, 900, 300);
+    g.lineTo(1020, 300);
+    g.quadraticCurveTo(1134, 350, 1280, 360);
+    g.lineTo(1276, 372);
+    g.quadraticCurveTo(1250, 390, 1222, 390);
+    g.lineTo(698, 390);
+    g.quadraticCurveTo(670, 390, 644, 372);
+    g.closePath();
+  }
+  function drawRoof(lit, o = {}) {
+    const g = G(), warm = clamp01(lit);
+    g.save();
+    g.shadowColor = 'rgba(0,0,0,.35)'; g.shadowBlur = 30; g.shadowOffsetY = 10;
+    roofPath(); g.fillStyle = K.mixColor(C.panel, C.tile, 0.55); g.fill();
+    g.shadowColor = 'transparent';
+    // roof tile courses: faint lines following the slope, clipped to the roof
+    g.save(); roofPath(); g.clip();
+    g.strokeStyle = K.rgba(C.line2, 0.55); g.lineWidth = 1.5;
+    for (let j = 1; j <= 3; j++) {
+      const dy = j * 19;
+      g.beginPath(); g.moveTo(640, 360 + dy * 0.2); g.quadraticCurveTo(786, 350 + dy * 0.62, 900, 300 + dy); g.lineTo(1020, 300 + dy);
+      g.quadraticCurveTo(1134, 350 + dy * 0.62, 1280, 360 + dy * 0.2); g.stroke();
+    }
+    g.restore();
+    roofPath(); g.lineWidth = 2; g.lineJoin = 'round'; g.strokeStyle = K.mixColor(C.line2, C.head, 0.2 + 0.5 * warm); g.stroke();
+    // ridge cap
+    g.lineCap = 'round'; g.strokeStyle = K.mixColor(C.line2, C.head, 0.35 + 0.5 * warm); g.lineWidth = 6;
+    g.beginPath(); g.moveTo(894, 300); g.lineTo(1026, 300); g.stroke();
+    g.lineWidth = 3; g.beginPath(); g.moveTo(894, 300); g.quadraticCurveTo(886, 298, 884, 290); g.moveTo(1026, 300); g.quadraticCurveTo(1034, 298, 1036, 290); g.stroke();
+    // fascia (the board along the eaves)
+    g.strokeStyle = K.mixColor(C.line2, C.head, 0.15 + 0.35 * warm); g.lineWidth = 2;
+    g.beginPath(); g.moveTo(668, 380); g.lineTo(1252, 380); g.stroke();
+    g.restore();
+  }
+
+  // ---------------------------------------------------------------- the building
+  const growParts = (v, back) => {
+    if (v && typeof v === 'object') return { stone: 1, walls: 1, roof: 1, door: 1, sign: 1, poles: 1, ...v };
+    const k = v == null ? 1 : clamp01(v);
+    const e = (a, b, ease = 'out') => K.ease[ease](K.seg(k, a, b));
+    return { stone: e(0, 0.3), walls: e(0.2, 0.6, back ? 'back' : 'out'), roof: e(0.45, 0.75), door: e(0.6, 0.85), sign: e(0.7, 0.95), poles: e(0.8, 1) };
+  };
+  /**
+   * THE BUILDING. t drives only idle motion (lantern sway, lock shake).
+   * o: {
+   *   layout: name | {x, y, s}   (or a morph from M.lerpLayout)            alpha: whole building
+   *   grow: 0..1 (05's build-in: stone, walls, roof, door, sign, poles, staggered) or {stone, walls, roof, door, sign, poles}
+   *   growBack: true -> the walls use the scene's one 'back' overshoot
+   *   detail: show small text (default: layout scale >= .6; off on 'small' and 'corner')
+   *   fade: {stone, walls, roof, sign, door, lanterns} per-part alpha (e.g. dim everything but the door)
+   *   // stone
+   *   stoneLit 0..1 (gold edge + glow), stoneLabel (default 'STONE · THE IDEA'; '' hides), stoneIcons: [{icon, k}] (book / check /
+   *   envelope on 05's "file, commit, message"; the label slides down to make room)
+   *   // paint
+   *   sign: words ('' = blank), signFrom + signK (repaint), signFont 'ui'|'mono', signLit 0..1, signDim 0..1
+   *   roofLabel: small eyebrow under the ridge ('PYTHON · 1991'), roofLabelFrom + roofLabelK (crossfade)
+   *   // lock
+   *   lock: icon | [icons | {icon, dim, turn, alpha}]  (LOCK_ICONS names: key text app push device laptop passkey lock shield phone)
+   *   lockFrom + lockK: swap (old icons shrink and fade, new ones grow in), lockLit 0..1 (terracotta glow), lockShake 0..1
+   *   (small ±4 px shake while > 0; give it an envelope like M.bump), doorGlow 0..1 (terracotta light from the door gap)
+   *   windows 0..1 (warm paper windows; default .6)
+   *   // lanterns
+   *   lanterns: 0..1 | (i)=> light (default 1), hang: 0..1 | (i)=> drop-in (default 1), swap: number | (i)=> (13: 1.4 = second
+   *   swap at 40 %: old fades, new drops in), sway: amplitude multiplier | (i)=>, string 0..1 (poles + string; default 1),
+   *   light 0..1 (13: lantern light spreading down over the building)
+   * }
+   * returns the resolved layout {x, y, s}
+   */
+  function building(t, o = {}) {
+    const L = lay(o.layout), g = G(), s = L.s;
+    const detail = o.detail ?? s >= 0.6;
+    const gp = growParts(o.grow, o.growBack);
+    const fade = { stone: 1, walls: 1, roof: 1, sign: 1, door: 1, lanterns: 1, ...(o.fade || {}) };
+    const fit = (size, min) => Math.max(size, min / s);   // keep text at its screen minimum when the building is scaled down
+    inBuilding(L, () => K.layer(o.alpha ?? 1, () => {
+      // ---- light from the lanterns (behind everything)
+      const lightK = clamp01(o.light);
+      if (lightK > 0) {
+        K.glow(960, 260, lerp(220, 760, lightK), palette.lanternGlow, 0.16 + 0.08 * lightK);
+        K.glow(960, 560, lerp(120, 520, lightK), C.head, 0.12 * lightK);
+      }
+      // ---- poles and string (drawn up from the roof)
+      const pk = gp.poles * clamp01(o.string ?? 1);
+      if (pk > 0) K.layer(fade.lanterns, () => {
+        BLD.poles.forEach((px) => {
+          const y0 = 356, y1 = lerp(y0, BLD.poleTop, pk);
+          K.line(px, y0, px, y1, { color: K.mixColor(C.line2, C.soft, 0.25), w: 3.5 });
+          if (pk > 0.98) { g.save(); g.fillStyle = K.mixColor(C.line2, C.soft, 0.4); g.beginPath(); g.arc(px, BLD.poleTop - 2, 4.5, 0, 7); g.fill(); g.restore(); }
+        });
+        const sk = K.seg(pk, 0.7, 1);
+        if (sk > 0) {
+          g.save(); g.strokeStyle = C.line2; g.lineWidth = 2; g.beginPath();
+          const n = 24, a = BLD.poles[0], b = BLD.poles[1];
+          for (let j = 0; j <= n * sk; j++) { const x = lerp(a, b, j / n); const y = stringY(x); j ? g.lineTo(x, y) : g.moveTo(x, y); }
+          g.stroke(); g.restore();
+        }
+      });
+      // ---- stone
+      if (gp.stone > 0 && fade.stone > 0) K.layer(fade.stone * Math.min(1, gp.stone * 1.5), () => {
+        const st = BLD.stone, sl = clamp01(o.stoneLit), sx = lerp(0.3, 1, gp.stone);
+        g.save(); g.translate(960, st.y + st.h); g.scale(sx, 1); g.translate(-960, -(st.y + st.h));
+        if (sl > 0) K.glow(960, st.y + st.h / 2, 420, C.head, 0.14 * sl);
+        K.card(st.x, st.y, st.w, st.h, { r: st.r, fill: K.mixColor(C.tile, C.panel, 0.2), stroke: K.mixColor(C.line2, C.head, 0.55 + 0.45 * sl), lw: 2, glow: 0.7 * sl });
+        // masonry joints, only at the ends (the middle stays clear for the label and icons)
+        g.save(); g.strokeStyle = K.rgba(C.line2, 0.9); g.lineWidth = 1.5;
+        [[st.x + 6, 755, st.x + 104, 755], [st.x + 52, 703, st.x + 52, 755], [st.x + 80, 755, st.x + 80, 807],
+         [st.x + st.w - 104, 755, st.x + st.w - 6, 755], [st.x + st.w - 52, 703, st.x + st.w - 52, 755], [st.x + st.w - 80, 755, st.x + st.w - 80, 807]]
+          .forEach(([a, b, c, d]) => { g.beginPath(); g.moveTo(a, b); g.lineTo(c, d); g.stroke(); });
+        g.restore();
+        const icons = o.stoneIcons || [], ik = icons.length ? clamp01(icons[0].k ?? 1) : 0;
+        icons.forEach((ic, i) => {
+          const k = clamp01(ic.k ?? 1); if (k <= 0) return;
+          K.icon(ic.icon, BLD.stoneIcons.xs[i] ?? 960, BLD.stoneIcons.y - (1 - K.ease.out(k)) * 12, BLD.stoneIcons.s, { color: C.head, alpha: k });
+        });
+        const label = o.stoneLabel ?? 'STONE · THE IDEA';
+        if (detail && label) K.eyebrow(label, 960, lerp(BLD.stoneLabelY[0], BLD.stoneLabelY[1], K.ease.io(ik)),
+          { size: fit(20, 20), align: 'center', tracking: 4, color: K.mixColor(C.soft, C.gold, 0.4 + 0.6 * sl) });
+        g.restore();
+      });
+      // ---- walls (rise from the stone)
+      if (gp.walls > 0) {
+        const wl = BLD.walls, wy = wl.y + wl.h;
+        g.save(); g.translate(960, wy); g.scale(1, Math.max(0.001, gp.walls)); g.translate(-960, -wy);
+        K.layer(fade.walls * Math.min(1, gp.walls * 2), () => {
+          K.card(wl.x, wl.y, wl.w, wl.h, { r: wl.r, fill: C.tile, stroke: C.line2 });
+          // timber: two posts and the beam
+          K.line(wl.x + 22, wl.y + 12, wl.x + 22, wy - 2, { color: K.rgba(C.line2, 1), w: 2 });
+          K.line(wl.x + wl.w - 22, wl.y + 12, wl.x + wl.w - 22, wy - 2, { color: K.rgba(C.line2, 1), w: 2 });
+          K.line(wl.x + 22, BLD.beam, wl.x + wl.w - 22, BLD.beam, { color: C.line2, w: 2 });
+          // warm paper windows (shoji)
+          const wk = clamp01(o.windows ?? 0.6);
+          BLD.windows.forEach((w) => {
+            if (wk > 0) K.glow(w.x + w.w / 2, w.y + w.h / 2, w.w * 0.85, '#F3C878', 0.14 * wk);
+            const pg = g.createLinearGradient(0, w.y, 0, w.y + w.h);
+            pg.addColorStop(0, K.mixColor(C.panel, '#F3C878', 0.1 + 0.42 * wk)); pg.addColorStop(1, K.mixColor(C.panel, '#D98E4E', 0.08 + 0.3 * wk));
+            K.rr(w.x, w.y, w.w, w.h, 3); g.fillStyle = pg; g.fill();
+            g.strokeStyle = K.mixColor(C.panel, C.line2, 0.6); g.lineWidth = 3; g.stroke();
+            g.strokeStyle = K.rgba(C.panel, 0.85); g.lineWidth = 2; g.beginPath();
+            for (let j = 1; j < 4; j++) { g.moveTo(w.x + (w.w * j) / 4, w.y + 2); g.lineTo(w.x + (w.w * j) / 4, w.y + w.h - 2); }
+            for (let j = 1; j < 3; j++) { g.moveTo(w.x + 2, w.y + (w.h * j) / 3); g.lineTo(w.x + w.w - 2, w.y + (w.h * j) / 3); }
+            g.stroke();
+          });
+        });
+        g.restore();
+      }
+      // ---- door (grows down from the beam) and its lock
+      if (gp.door > 0 && fade.door > 0) K.layer(fade.door * Math.min(1, gp.door * 1.5), () => {
+        const d = BLD.door, dg = clamp01(o.doorGlow);
+        g.save(); g.translate(960, d.y + d.h); g.scale(1, lerp(0.4, 1, gp.door)); g.translate(-960, -(d.y + d.h));
+        if (dg > 0) K.glow(960, d.y + d.h / 2, 190, C.accent, 0.3 * dg);
+        g.save(); g.fillStyle = K.mixColor(C.panel, C.page, 0.4); g.fillRect(d.x, d.y, d.w, d.h);
+        if (dg > 0) { const gr = g.createLinearGradient(d.x, 0, d.x + d.w, 0); gr.addColorStop(0, K.rgba(C.accent, 0)); gr.addColorStop(0.5, K.rgba(C.accent, 0.45 * dg)); gr.addColorStop(1, K.rgba(C.accent, 0)); g.fillStyle = gr; g.fillRect(d.x, d.y, d.w, d.h); }
+        g.strokeStyle = C.line2; g.lineWidth = 2; g.strokeRect(d.x, d.y, d.w, d.h);
+        // noren: a short split curtain across the top of the door
+        g.fillStyle = K.mixColor(C.tile, C.accent, 0.42);
+        for (let j = 0; j < 3; j++) { K.rr(d.x + 5 + j * 37.5, d.y + 2, 35, 44, [0, 0, 4, 4]); g.fill(); }
+        g.fillStyle = K.mixColor(C.tile, C.head, 0.5); g.fillRect(d.x + 2, d.y + 2, d.w - 4, 4);
+        g.restore();
+        g.restore();
+        // the lock: one icon at 56, two side by side at 44
+        const lk = clamp01(o.lockLit), shake = clamp01(o.lockShake) * Math.sin(t * 40) * 4;
+        if (lk > 0) K.glow(960, BLD.lock.y, 110, C.accent, 0.26 * lk);
+        const drawSet = (list, a, sc, dy) => {
+          const n = list.length, size = n > 1 ? BLD.lock.s2 : BLD.lock.s;
+          list.forEach((e, i) => {
+            const x = 960 + (i - (n - 1) / 2) * BLD.lock.gap + shake;
+            K.at(x, BLD.lock.y + dy, sc, 0, () => lockIcon(e.icon, 0, 0, size, { dim: e.dim, turn: e.turn, alpha: a * (e.alpha ?? 1) }));
+          });
+        };
+        const to = asLocks(o.lock);
+        if (o.lockFrom != null && o.lockK != null && o.lockK < 1) {
+          const k = clamp01(o.lockK);
+          drawSet(asLocks(o.lockFrom), 1 - K.seg(k, 0, 0.5), lerp(1, 0.7, K.ease.in(K.seg(k, 0, 0.5))), 8 * K.seg(k, 0, 0.5));
+          drawSet(to, K.seg(k, 0.35, 1), lerp(1.25, 1, K.ease.out(K.seg(k, 0.35, 1))), 0);
+        } else drawSet(to, 1, 1, 0);
+      });
+      // ---- roof (drops on)
+      if (gp.roof > 0 && fade.roof > 0) K.layer(fade.roof * gp.roof, () => {
+        g.save(); g.translate(0, -36 * (1 - gp.roof));
+        drawRoof(o.roofLit ?? 0.3);
+        if (detail && o.roofLabel) {
+          const rk = o.roofLabelFrom != null && o.roofLabelK != null ? clamp01(o.roofLabelK) : 1;
+          const eo = { size: fit(20, 20), align: 'center', tracking: 3, color: C.soft, font: 'mono', weight: 600, upper: true };
+          if (rk < 1) K.text(o.roofLabelFrom, 960, BLD.roofLabelY, { ...eo, alpha: 1 - K.seg(rk, 0, 0.5) });
+          K.text(o.roofLabel, 960, BLD.roofLabelY, { ...eo, alpha: K.seg(rk, 0.5, 1) });
+        }
+        g.restore();
+      });
+      // ---- the sign (paint), on the wall above the beam
+      if (gp.sign > 0 && gp.walls > 0.6 && fade.sign > 0) {
+        const txt = detail ? o.sign ?? '' : '';
+        paint(BLD.sign.x, BLD.sign.y, txt, {
+          size: detail ? fit(BLD.sign.size, 26) : BLD.sign.size, font: o.signFont || 'ui', from: detail ? o.signFrom : o.signFrom != null ? '' : null, k: o.signK,
+          lit: o.signLit, dim: o.signDim, alpha: fade.sign * gp.sign, blankW: 150,
+        });
+      }
+      // ---- lanterns
+      if (fade.lanterns > 0 && pk > 0.6) K.layer(fade.lanterns, () => {
+        const lit = per(o.lanterns, 1), hang = per(o.hang, 1), swap = per(o.swap, 0), sway = per(o.sway, 1);
+        BLD.lanterns.xs.forEach((x, i) => {
+          const hk = clamp01(hang(i)); if (hk <= 0) return;
+          const top = stringY(x), drop = BLD.lanterns.drop[i], ls = BLD.lanterns.s;
+          const sw = K.wave(t, motion.sway.speed, motion.sway.amp * sway(i), i * 1.7);
+          const one = (lk, a, dy) => K.layer(a, () => K.at(x, top, 1, sw, () => {
+            K.line(0, 0, 0, drop + dy, { color: C.line2, w: 1.5 });
+            lantern(0, drop + dy, ls, lk);
+          }));
+          const v = Math.max(0, swap(i)), n = Math.floor(v), f = v - n;
+          const lk = clamp01(lit(i));
+          const hangDy = -50 * (1 - K.ease.out(hk)), hangA = Math.min(1, hk * 1.6);
+          if (f > 0) {
+            one(lk, hangA * (1 - K.seg(f, 0, 0.45)), hangDy + 10 * K.ease.in(K.seg(f, 0, 0.45)));
+            const nk = K.seg(f, 0.35, 1);
+            one(lk * (0.6 + 0.4 * nk), hangA * nk, hangDy - 40 * (1 - K.ease.out(nk)));
+          } else one(lk, hangA, hangDy);
+        });
+      });
+    }));
+    return L;
+  }
+  const stringY = (x) => {
+    const a = BLD.poles[0], b = BLD.poles[1];
+    return BLD.stringY + BLD.sag * (1 - Math.pow((2 * (x - a)) / (b - a) - 1, 2));
+  };
+
+  // ---------------------------------------------------------------- speed labels (01, 05, 14) and rules (14)
+  const SPEEDS = {
+    stone: { speed: 'barely moves', rule: 'stone · learn it once', color: C.head, y: 755 },
+    sign: { speed: 'every year', rule: 'paint · check the version', color: C.strong, y: 440 },
+    lock: { speed: 'fastest', rule: 'lock · assume it changed', color: C.accent, y: 644 },
+    lanterns: { speed: 'fastest of all', rule: 'lantern · check the date', color: C.accent, y: 246 },
+  };
+  /**
+   * a label to the right of the building with a short arrow back to its part.
+   * part 'stone'|'sign'|'lock'|'lanterns'; k 0..1 (text slides in from +16 px, then the arrow draws).
+   * o: {kind 'speed'|'rule', text (override), x (left edge; default building's right edge + 70), size 30, color, alpha}
+   */
+  function speedLabel(L, part, k, o = {}) {
+    k = clamp01(k); if (k <= 0) return;
+    L = lay(L);
+    const sp = SPEEDS[part], txt = o.text || sp[o.kind || 'speed'], col = o.color || sp.color, size = o.size || 30;
+    const p = toScreen(L, 0, sp.y), right = toScreen(L, BLD.bounds.x1, 0).x;
+    const x = o.x ?? right + 70, tx = at(L, part === 'lanterns' ? 'lanterns' : part).r + 12;
+    const tk = K.ease.out(K.seg(k, 0, 0.6)), ak = K.ease.io(K.seg(k, 0.3, 1));
+    K.layer(o.alpha ?? 1, () => {
+      K.text(txt, x + 16 * (1 - tk), p.y + size * 0.34, { font: 'ui', weight: 600, size, color: col, alpha: tk });
+      K.arrow(x - 16, p.y, tx, p.y, { k: ak, color: K.mixColor(col, C.soft, 0.35), w: 2.5, headSize: 12 });
+    });
+  }
+
+  // ---------------------------------------------------------------- broken / retired
+  /** the soft dashed diagonal meaning "broken / retired" across a rect, drawn with progress k. o: {color (C.quiet), w 3, alpha} */
+  function strike(x0, y0, x1, y1, k, o = {}) {
+    K.line(x0, y1, x1, y0, { k: clamp01(k), color: o.color || C.quiet, w: o.w || 3, dash: [10, 9], alpha: o.alpha ?? 0.9 });
+  }
+
+  // ---------------------------------------------------------------- the lock line (08, 09)
+  const LOCKS = [
+    { key: 'password', icon: 'key', label: ['password'] },
+    { key: 'text', icon: 'text', label: ['text code'] },
+    { key: 'app', icon: 'app', label: ['authenticator', 'app'] },
+    { key: 'device', icon: 'device', label: ['your', 'device'] },
+    { key: 'passkey', icon: 'passkey', label: ['passkey'] },
+  ];
+  const LOCKLINE = { xs: [1040, 1215, 1390, 1565, 1740], y: 300, s: 90, labelY: 383 };
+  /**
+   * one tile of the lock line: an icon tile with a 26 px label under it.
+   * o: {icon (lockIcon name), label (string | [lines]), k 0..1 reveal (rise + fade), empty (dashed slot, no icon),
+   *     dim 0..1 (retired: .4 alpha, quiet colour, the dashed diagonal), lit 0..1 (terracotta edge glow), s 90, color, alpha}
+   */
+  function lockTile(x, y, o = {}) {
+    const g = G(), s = o.s || LOCKLINE.s, k = clamp01(o.k ?? 1), dim = clamp01(o.dim), lit = clamp01(o.lit);
+    if (o.empty) {
+      K.layer((o.alpha ?? 1) * 0.8, () => { g.save(); g.setLineDash([7, 8]); g.strokeStyle = C.line2; g.lineWidth = 2; K.rr(x - s / 2, y - s / 2, s, s, s * 0.28); g.stroke(); g.restore(); });
+      if (k <= 0) return;
+    }
+    if (k <= 0) return;
+    const dy = (1 - K.ease.out(k)) * 14;
+    K.layer((o.alpha ?? 1) * k * lerp(1, 0.42, dim), () => {
+      if (lit > 0) K.glow(x, y + dy, s * 1.1, C.accent, 0.2 * lit);
+      K.card(x - s / 2, y - s / 2 + dy, s, s, { r: s * 0.28, fill: C.tile, stroke: K.mixColor(C.line2, o.color || C.accent, 0.25 + 0.6 * lit), shadow: false });
+      lockIcon(o.icon || 'key', x, y + dy, s * 0.6, { color: o.color || C.accent, dim });
+      const lines = Array.isArray(o.label) ? o.label : o.label ? [o.label] : [];
+      lines.forEach((ln, i) => K.text(ln, x, y + s / 2 + 38 + i * 30 + dy, { font: 'ui', weight: 600, size: 26, color: K.mixColor(C.strong, C.quiet, dim), align: 'center' }));
+    });
+    if (dim > 0) K.layer((o.alpha ?? 1) * k, () => strike(x - s / 2 - 6, y - s / 2 - 6 + dy, x + s / 2 + 6, y + s / 2 + 6 + dy, dim));
+  }
+
+  // ---------------------------------------------------------------- a phone (08 code, 08 push, 09 passkey, 12)
+  /**
+   * a drawn phone, centred at (x, y), height h (width .52 h). fn(rect) draws the screen content, clipped.
+   * o: {alpha, lit 0..1 (terracotta edge glow), stroke}. returns the screen rect {x, y, w, h, cx, cy}
+   */
+  function phone(x, y, h, o = {}, fn) {
+    const g = G(), w = h * 0.52, x0 = x - w / 2, y0 = y - h / 2, r = h * 0.09, lit = clamp01(o.lit);
+    const scr = { x: x0 + w * 0.08, y: y0 + h * 0.11, w: w * 0.84, h: h * 0.78 };
+    scr.cx = scr.x + scr.w / 2; scr.cy = scr.y + scr.h / 2;
+    K.layer(o.alpha ?? 1, () => {
+      if (lit > 0) K.glow(x, y, h * 0.8, C.accent, 0.2 * lit);
+      K.card(x0, y0, w, h, { r, fill: C.panel, stroke: K.mixColor(o.stroke || C.line2, C.accent, 0.6 * lit), lw: 2.5 });
+      K.rr(scr.x, scr.y, scr.w, scr.h, r * 0.45); g.fillStyle = K.mixColor(C.tile, C.page, 0.2); g.fill();
+      K.line(x - w * 0.12, y0 + h * 0.055, x + w * 0.12, y0 + h * 0.055, { color: C.line2, w: 4 });
+      g.save(); g.beginPath(); g.arc(x, y0 + h * 0.945, h * 0.022, 0, 7); g.fillStyle = C.line2; g.fill(); g.restore();
+      if (fn) { g.save(); K.rr(scr.x, scr.y, scr.w, scr.h, r * 0.45); g.clip(); fn(scr); g.restore(); }
+    });
+    return scr;
+  }
+
+  // ---------------------------------------------------------------- a gatehouse (10): a small building for one job
+  /**
+   * a gatehouse card with the building's roof on top, an icon and a label: one dedicated service.
+   * (x, y) = centre of the card. o: {w 440, h 300, icon 'shield', label 'logins', k 0..1 (rise + fade), lit 0..1, alpha,
+   *   iconColor (C.accent), size (label px; 30, or 26 when h < 200)}
+   * returns {x0, x1, y0, y1, door: {x, y}} (door = where arrows should land: the card's left-middle)
+   */
+  function gatehouse(x, y, o = {}) {
+    const g = G(), w = o.w || 440, h = o.h || 300, k = clamp01(o.k ?? 1), lit = clamp01(o.lit);
+    const x0 = x - w / 2, y0 = y - h / 2, dy = (1 - K.ease.out(k)) * 20, sc = w / 560;
+    if (k > 0) K.layer((o.alpha ?? 1) * k, () => {
+      g.save(); g.translate(0, dy);
+      if (lit > 0) K.glow(x, y, w * 0.7, C.head, 0.12 * lit);
+      K.card(x0, y0, w, h, { r: Math.min(24, h * 0.12), fill: C.tile, stroke: K.mixColor(C.line2, C.head, 0.5 * lit), glow: 0.6 * lit });
+      g.save(); g.translate(x, y0 + 6 * sc); g.scale(sc, sc); g.translate(-960, -390); drawRoof(0.3 + 0.5 * lit); g.restore();
+      const is = Math.min(64, h * 0.3), size = o.size || (h < 200 ? 26 : 30);
+      K.icon(o.icon || 'shield', x, y - h * 0.08, is, { color: o.iconColor || C.accent, w: Math.max(2.5, is * 0.06) });
+      if (o.label) K.text(o.label, x, y + h * 0.3 + size * 0.2, { font: 'ui', weight: 600, size, color: C.strong, align: 'center' });
+      g.restore();
+    });
+    return { x0, x1: x0 + w, y0, y1: y0 + h, door: { x: x0, y } };
+  }
+
+  // ---------------------------------------------------------------- the market (07)
+  /** a little parcel (a package on the market). (x, y) centre, s size. o: {tint 0..2, alpha, outline (stroke colour), label (mono 26 under)} */
+  function parcel(x, y, s, o = {}) {
+    const g = G(), tints = ['#CDB48C', '#B99868', '#D9C7A6'], base = tints[(o.tint ?? 0) % 3];
+    const w = s, h = s * 0.78, x0 = x - w / 2, y0 = y - h / 2 + s * 0.08, top = s * 0.18;
+    K.layer(o.alpha ?? 1, () => {
+      g.save();
+      g.beginPath(); g.moveTo(x0, y0); g.lineTo(x0 + top, y0 - top); g.lineTo(x0 + w + top * 0.2, y0 - top); g.lineTo(x0 + w, y0); g.closePath();
+      g.fillStyle = K.mixColor(base, '#FFF3DC', 0.25); g.fill();
+      K.rr(x0, y0, w, h, 3); g.fillStyle = K.mixColor(base, C.panel, 0.18); g.fill();
+      g.fillStyle = K.mixColor(C.gold, base, 0.35); g.fillRect(x - w * 0.08, y0, w * 0.16, h);
+      if (o.outline) { g.strokeStyle = o.outline; g.lineWidth = 2.5; K.rr(x0 - 4, y0 - top - 4, w + top * 0.2 + 8, h + top + 8, 6); g.stroke(); }
+      g.restore();
+      if (o.label) K.text(o.label, x, y0 + h + 34, { font: 'mono', size: 26, color: o.outline || C.body, align: 'center' });
+    });
+  }
+  /**
+   * a market stall: card (x, y top-left, w 340, h 300) with a noren awning, a 20 px eyebrow, and parcels that keep
+   * arriving (a pure loop of t: one every `every` s from `flow`, eight slots, the oldest fades as a new one lands).
+   * o: {title 'NPM · JAVASCRIPT', k 0..1 reveal, flow (start time; Infinity = none), every 0.8, seed 7, alpha, hold (freeze the
+   *     flow at this time, e.g. when the lockfile pins it)}
+   */
+  function stall(t, x, y, o = {}) {
+    const g = G(), w = o.w || 340, h = o.h || 300, k = clamp01(o.k ?? 1);
+    if (k <= 0) return;
+    const dy = (1 - K.ease.out(k)) * 20;
+    K.layer((o.alpha ?? 1) * k, () => {
+      g.save(); g.translate(0, dy);
+      K.card(x, y, w, h, { fill: C.tile });
+      // noren awning: five panels, warm, with slits
+      g.save(); K.rr(x, y, w, h, 24); g.clip();
+      const n = 5, pw = w / n;
+      for (let j = 0; j < n; j++) {
+        g.fillStyle = j % 2 ? K.mixColor(C.tile, C.head, 0.34) : K.mixColor(C.tile, C.accent, 0.46);
+        K.rr(x + j * pw + 2, y - 8, pw - 4, 58, [0, 0, 10, 10]); g.fill();
+      }
+      g.restore();
+      K.line(x + 10, y + 54, x + w - 10, y + 54, { color: C.line2, w: 2 });
+      if (o.title) K.eyebrow(o.title, x + w / 2, y + 92, { size: 20, align: 'center', tracking: 3 });
+      // parcels: 4 x 2 slots
+      const tt = Math.min(t, o.hold ?? Infinity), flow = o.flow ?? Infinity, every = o.every || 0.8;
+      if (tt >= flow) {
+        const rnd = K.rng(o.seed || 7), order = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => [rnd(), i]).sort((a, b) => a[0] - b[0]).map((p) => p[1]);
+        const nmax = Math.floor((tt - flow) / every);
+        for (let m = Math.max(0, nmax - 8); m <= nmax; m++) {
+          const slot = order[m % 8], ta = flow + m * every, land = K.io(tt, ta, 0.5, 'out'), gone = K.io(tt, flow + (m + 8) * every, 0.35);
+          if (land <= 0 || gone >= 1) continue;
+          const cx = x + 52 + (slot % 4) * ((w - 104) / 3), cy = y + 150 + Math.floor(slot / 4) * 84;
+          parcel(cx, cy - (1 - land) * 60, 48, { tint: m % 3, alpha: Math.min(1, land * 1.5) * (1 - gone) });
+        }
+      }
+      g.restore();
+    });
+  }
+  /**
+   * a version number with its parts called out (07): mono pill "2.4.1" centred at (x, y).
+   * o: {parts ['2','4','1'], size 40, hl (i)=>0..1 (gold glow under a part), labels [{text, color}], labelsK (i)=>0..1, alpha, ring 0..1 (gold ring: pinned)}
+   * returns [{x}] centres of the parts (for your own labels)
+   */
+  function versionPill(x, y, o = {}) {
+    const parts = o.parts || ['2', '4', '1'], size = o.size || 40, mono = { font: 'mono', weight: 600, size };
+    const str = parts.join('.'), tw = K.measure(str, mono), dw = K.measure('.', mono), w = tw + size * 1.6, h = size * 1.9;
+    const hl = per(o.hl, 0), lk = per(o.labelsK, 1), centres = [];
+    let cx = x - tw / 2;
+    parts.forEach((p, i) => { const pw = K.measure(p, mono); centres.push({ x: cx + pw / 2, w: pw }); cx += pw + (i < parts.length - 1 ? dw : 0); });
+    K.layer(o.alpha ?? 1, () => {
+      K.card(x - w / 2, y - h / 2, w, h, { r: h / 2, fill: C.tile, stroke: C.line2, shadow: false });
+      centres.forEach((c, i) => { const k = clamp01(hl(i)); if (k > 0) K.glow(c.x, y, size * 1.2, C.head, 0.3 * k); });
+      let px = x - tw / 2;
+      parts.forEach((p, i) => {
+        const k = clamp01(hl(i));
+        px += K.text(p, px, y + size * 0.36, { ...mono, color: K.mixColor(C.strong, C.head, k) });
+        if (i < parts.length - 1) px += K.text('.', px, y + size * 0.36, { ...mono, color: C.soft });
+      });
+      // labels fan out under the pill (the digits are too close for labels straight below), each on a leader line
+      const n = (o.labels || []).length, spread = o.spread || 210;
+      (o.labels || []).forEach((lb, i) => {
+        const k = clamp01(lk(i)), c = centres[i]; if (k <= 0 || !c || !lb) return;
+        const lx = x + (i - (n - 1) / 2) * spread, y0 = y + h / 2 + 6, y1 = y + h / 2 + 40;
+        const g = G(); g.save(); g.globalAlpha *= k; g.strokeStyle = K.mixColor(C.line2, lb.color || C.soft, 0.4); g.lineWidth = 2; g.lineCap = 'round';
+        g.beginPath(); g.moveTo(c.x, y0); g.bezierCurveTo(c.x, y0 + 20, lx, y1 - 18, lx, y1); g.stroke(); g.restore();
+        K.text(lb.text, lx, y1 + 32, { font: 'ui', weight: 600, size: 26, color: lb.color || C.soft, align: 'center', alpha: k });
+      });
+      if (o.ring) K.ring(x, y, w / 2 + 18, h / 2 + 14, clamp01(o.ring), { color: C.head, w: 3, rot: 0 });
+    });
+    return centres;
+  }
+
+  // ---------------------------------------------------------------- the metal shelf (11)
+  /**
+   * one lock core on 11's shelf: card centred at (x, y), 260 x 150, mono 30 name, mono 22 year eyebrow above it.
+   * o: {name, eyebrow ('BROKEN · 2004'), k 0..1 reveal (rise + fade), broken 0..1 (dims, eyebrow -> quiet, dashed diagonal),
+   *     lit 0..1 (gold edge glow: the new metal), w 260, h 150, alpha}; fn(rect) draws extra content (TLS chips, files).
+   * returns {x0, y0, w, h, cx, cy}
+   */
+  function metal(x, y, o = {}, fn) {
+    const w = o.w || 260, h = o.h || 150, k = clamp01(o.k ?? 1), br = clamp01(o.broken), lit = clamp01(o.lit);
+    if (k <= 0) return null;
+    const dy = (1 - K.ease.out(k)) * 18, x0 = x - w / 2, y0 = y - h / 2 + dy;
+    const top = o.name ? y0 + 100 : y0 + 60;   // content area under the eyebrow (and the name, when there is one)
+    const rect = { x0, y0, w, h, cx: x, cy: y + dy, content: { x: x0 + 16, y: top, w: w - 32, h: y0 + h - 12 - top, cx: x, cy: (top + y0 + h - 12) / 2 } };
+    K.layer((o.alpha ?? 1) * k, () => {
+      K.layer(lerp(1, 0.45, br), () => {
+        if (lit > 0) K.glow(x, y + dy, w * 0.7, C.head, 0.16 * lit);
+        K.card(x0, y0, w, h, { r: 20, fill: C.tile, stroke: K.mixColor(C.line2, C.head, 0.7 * lit), glow: 0.8 * lit, lw: 1.5 + lit });
+        if (o.eyebrow) K.text(o.eyebrow, x, y0 + 42, { font: 'mono', weight: 600, size: 22, color: K.mixColor(lit > 0 ? C.head : C.gold, C.quiet, br), align: 'center', tracking: 2 });
+        if (o.name) K.text(o.name, x, y0 + (fn ? 84 : 100), { font: 'mono', weight: 600, size: 30, color: K.mixColor(C.strong, C.quiet, br), align: 'center' });
+        if (fn) fn(rect);
+      });
+      if (br > 0) strike(x0 + 10, y0 + 10, x0 + w - 10, y0 + h - 10, br);
+    });
+    return rect;
+  }
+
+  // ---------------------------------------------------------------- surprise cards (12)
+  /**
+   * one surprise card centred at (x, y), 500 x 230: a 20 px eyebrow top-left with a dot in the part's colour
+   * (part 'paint' -> cream, 'lock' -> terracotta), then fn(rect) draws the literal form.
+   * o: {eyebrow, part, k 0..1 reveal, lit 0..1, w, h, alpha}. returns the content rect {x, y, w, h} (below the eyebrow)
+   */
+  function surprise(x, y, o = {}, fn) {
+    const g = G(), w = o.w || 500, h = o.h || 230, k = clamp01(o.k ?? 1), lit = clamp01(o.lit);
+    if (k <= 0) return null;
+    const dy = (1 - K.ease.out(k)) * 18, x0 = x - w / 2, y0 = y - h / 2 + dy;
+    const col = o.part === 'lock' ? C.accent : C.strong;
+    const rect = { x: x0 + 28, y: y0 + 64, w: w - 56, h: h - 84 };
+    K.layer((o.alpha ?? 1) * k, () => {
+      K.card(x0, y0, w, h, { fill: C.tile, stroke: K.mixColor(C.line2, col, 0.45 * lit), glow: 0 });
+      g.save(); g.fillStyle = col; g.beginPath(); g.arc(x0 + 34, y0 + 36, 6, 0, 7); g.fill(); g.restore();
+      if (o.eyebrow) K.eyebrow(o.eyebrow, x0 + 50, y0 + 43, { size: 20, tracking: 3 });
+      if (fn) fn(rect);
+    });
+    return rect;
+  }
+
+  // ---------------------------------------------------------------- the scene sentence
+  /** the scene's one sentence ('read' 32, cream, centred), rising 14 px with progress k. o: {size, color, x 960, alpha} */
+  function say(text, y, k, o = {}) {
+    k = clamp01(k); if (k <= 0) return;
+    K.text(text, o.x ?? 960, y + 14 * (1 - K.ease.out(k)), { font: 'read', size: o.size || 32, color: o.color || C.strong, align: o.align || 'center', alpha: k * (o.alpha ?? 1) });
+  }
+
   window.M = {
     palette, type, motion, layout, PRESETS, BUILDINGS, LANTERNS, YEARS, STOPS, ROAD, Y0, Y1,
     geom, lerpGeom, X, yearAt, byKey, words, itemPos, itemRect, lanternAt, lanternTagRect,
     tag, tagSize, street, lanterns, lantern, lanternX, bracket, light, marker, bump, stamp,
     road, stopRect, brain,
+    // v1 houses + the building and its recurring pieces (extended rebuild)
+    HOUSE, houses, BLD, LAYOUTS, PART, SPEEDS, LOCK_ICONS, LOCKS, LOCKLINE,
+    lerpLayout, toScreen, inBuilding, at, building, roofPath, drawRoof, stringY,
+    paint, lockIcon, speedLabel, strike, lockTile, phone, gatehouse, parcel, stall, versionPill, metal, surprise, say,
   };
 })();

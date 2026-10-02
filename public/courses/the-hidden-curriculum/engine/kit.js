@@ -103,6 +103,8 @@
     return c;
   };
   K.withCam = (c, fn) => { g.save(); g.translate(W / 2, H / 2); g.scale(c.z, c.z); g.translate(-c.x, -c.y); fn(); g.restore(); };
+  /** zoom by z about the screen point (x, y), which stays put (no pan at z = 1, unlike K.cam / K.withCam) */
+  K.zoomAt = (x, y, z, fn) => { g.save(); g.translate(x, y); g.scale(z, z); g.translate(-x, -y); fn(); g.restore(); };
 
   // ---------- background ----------
   let grain = null;
@@ -309,13 +311,19 @@
     });
     return h;
   };
-  /** sparse cherry-blossom petals — decoration only, title and end cards only */
+  /** sparse cherry-blossom petals — decoration only, title and end cards only.
+   *  o.avoid: [[x0, y0, x1, y1], ...] keep-out rects (e.g. the title block): a petal fades out over o.fade px
+   *  (default 50) as it nears one, so petals never sit on text and no clip edge leaves slivers. */
   K.petals = (t, o = {}) => {
-    const n = o.n || 5, r = K.rng(o.seed || 5);
+    const n = o.n || 5, r = K.rng(o.seed || 5), avoid = o.avoid || o.keep || [], fade = o.fade ?? 50;
+    const away = (x, y) => Math.min(Infinity, ...avoid.map(([x0, y0, x1, y1]) =>
+      Math.hypot(Math.max(x0 - x, 0, x - x1), Math.max(y0 - y, 0, y - y1))));
     for (let i = 0; i < n; i++) {
       const x0 = r() * W, sp = 18 + r() * 22, ph = r() * 10, size = 9 + r() * 7;
       const y = ((r() * H + t * sp) % (H + 80)) - 40, x = x0 + Math.sin(t * 0.6 + ph) * 40;
-      g.save(); g.globalAlpha *= (o.alpha ?? 0.7); g.translate(x, y); g.rotate(t * 0.8 + ph);
+      const ka = avoid.length ? K.clamp((away(x, y) - size) / Math.max(1, fade)) : 1;
+      if (ka <= 0) continue;
+      g.save(); g.globalAlpha *= (o.alpha ?? 0.7) * ka; g.translate(x, y); g.rotate(t * 0.8 + ph);
       g.fillStyle = i % 2 ? C.blossom : C.blossomDeep;
       g.beginPath(); g.ellipse(0, 0, size, size * 0.55, 0, 0, Math.PI * 2); g.fill(); g.restore();
     }
@@ -329,20 +337,23 @@
     browser: (x, y) => { g.beginPath(); g.arc(x, y, 10, 0, 7); g.stroke(); K.line(x - 10, y, x + 10, y, { color: C.soft, w: 1.5 }); },
     code: (x, y) => { K.text('</>', x, y + 6, { font: 'mono', size: 15, color: C.accent, weight: 700, align: 'center' }); },
   };
-  /** app window with title bar; returns the content rect. o: {title, kind, alpha, fill, focus, url}
+  /** app window with title bar; returns the content rect. o: {title, titleSize, kind, alpha, fill, stroke, focus, url}
+   *  titleSize: title px (default 22; pass 26 where the course minimum applies). stroke: outline colour
+   *  (default C.head when focused, else C.line2), so look-alike windows need no hand-drawn outline.
    *  url (any kind, meant for 'browser'): draws a 60 px address bar under the title bar (lock + mono 26 px
    *  address); the returned content rect starts below it. o.urlLock: false hides the lock. */
   const URL_BAR = 60;
   K.win = (x, y, w, h, o = {}) => {
     const bar = 50;
-    K.card(x, y, w, h, { fill: o.fill || C.code, stroke: o.focus ? C.head : C.line2, r: 14, alpha: o.alpha, shadow: o.shadow, glow: o.focus ? 0.6 : 0 });
+    K.card(x, y, w, h, { fill: o.fill || C.code, stroke: o.stroke || (o.focus ? C.head : C.line2), r: 14, alpha: o.alpha, shadow: o.shadow, glow: o.focus ? 0.6 : 0 });
     K.layer(o.alpha ?? 1, () => {
       g.save(); K.rr(x, y, w, h, 14); g.clip();
       g.fillStyle = C.tile; g.fillRect(x, y, w, bar);
       K.line(x, y + bar, x + w, y + bar, { color: C.line, w: 1.5 });
       g.restore();
       g.save(); g.strokeStyle = C.soft; g.lineWidth = 1.8; (glyph[o.kind] || glyph.notepad)(x + 30, y + bar / 2); g.restore();
-      K.text(o.title || '', x + 56, y + bar / 2 + 8, { size: 22, color: C.body, weight: 600 });
+      const ts = o.titleSize || 22;
+      K.text(o.title || '', x + 56, y + bar / 2 + 8 + (ts - 22) * 0.36, { size: ts, color: C.body, weight: 600 });
       const gx = x + w - 34;
       K.line(gx - 7, y + 18, gx + 7, y + 32, { color: C.soft, w: 2 }); K.line(gx + 7, y + 18, gx - 7, y + 32, { color: C.soft, w: 2 });
       g.save(); g.strokeStyle = C.soft; g.lineWidth = 2; g.strokeRect(gx - 57, y + 18, 13, 13); g.restore();
@@ -493,6 +504,8 @@
     brain: (s) => { g.beginPath(); g.arc(-s * 0.12, -s * 0.08, s * 0.2, Math.PI * 0.6, Math.PI * 1.6); g.arc(s * 0.02, -s * 0.2, s * 0.16, Math.PI * 1.1, Math.PI * 1.9); g.arc(s * 0.16, -s * 0.04, s * 0.18, Math.PI * 1.4, Math.PI * 0.45); g.arc(0, s * 0.14, s * 0.18, Math.PI * 0.1, Math.PI * 0.9); g.closePath(); g.stroke(); g.beginPath(); g.moveTo(0, -s * 0.3); g.quadraticCurveTo(-s * 0.06, 0, 0, s * 0.3); g.stroke(); },
     // home router: box with two antennas and three status lights
     router: (s) => { K.rr(-s * 0.4, -s * 0.02, s * 0.8, s * 0.3, s * 0.07); g.stroke(); g.beginPath(); g.moveTo(-s * 0.24, -s * 0.02); g.lineTo(-s * 0.32, -s * 0.38); g.moveTo(s * 0.24, -s * 0.02); g.lineTo(s * 0.32, -s * 0.38); g.stroke(); for (let i = -1; i <= 1; i++) { g.beginPath(); g.arc(i * s * 0.12, s * 0.13, s * 0.035, 0, 7); g.fill(); } },
+    // warning: rounded triangle with an exclamation mark (deprecation notices, security alerts)
+    warning: (s) => { g.beginPath(); g.moveTo(0, -s * 0.38); g.lineTo(s * 0.42, s * 0.34); g.lineTo(-s * 0.42, s * 0.34); g.closePath(); g.stroke(); g.beginPath(); g.moveTo(0, -s * 0.1); g.lineTo(0, s * 0.12); g.stroke(); g.beginPath(); g.arc(0, s * 0.23, s * 0.035, 0, 7); g.fill(); },
     phone: (s) => { K.rr(-s * 0.21, -s * 0.38, s * 0.42, s * 0.76, s * 0.08); g.stroke(); g.beginPath(); g.moveTo(-s * 0.06, -s * 0.29); g.lineTo(s * 0.06, -s * 0.29); g.stroke(); g.beginPath(); g.arc(0, s * 0.28, s * 0.035, 0, 7); g.fill(); },
     // AI / agent: a four-point sparkle with a small companion
     sparkle: (s) => {
