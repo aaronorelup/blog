@@ -83,6 +83,10 @@
    *  lanternLabels — 0..1 alpha of the Lanterns' label row (default 1)
    *  pinDrop — 0..1: the you-are-here pin falls into place from 90 px above (default 1 = in place; ease it yourself)
    *  pinGlowK — 0..1: how strongly the pinned row / Start / Finish is lit (wash, gold ring, glow; default 1)
+   *  districtK — 0..1 or (id) => 0..1: per-district visibility, ids 'machine' … 'shipping', 'ai' (the lantern
+   *              string), 'gate', 'end' (default 1). Multiplies the card AND its opaque footprint, so at 0 the
+   *              district is gone and the garden path shows where it will stand — a staggered reveal you time
+   *              yourself (e.g. (id) => K.io(t, at[id], .6)), without page-coloured veils.
    */
   function draw(t, o = {}) {
     const reveal = (i) => (o.t0 == null ? 1 : K.stagger(t, o.t0, i, 0.22, 0.7));
@@ -91,6 +95,7 @@
     const g = K.ctx();
     const mods = o.chips !== false && o.modules !== false;
     const pg = K.clamp(o.pinGlowK ?? 1);
+    const dk = (id) => K.clamp(typeof o.districtK === 'function' ? o.districtK(id) : (o.districtK ?? 1));
 
     // garden path
     const pk = o.t0 == null ? (o.path ?? 1) : K.io(t, o.t0, 2.2, 'io') * (o.path ?? 1);
@@ -110,7 +115,7 @@
     // 0.2-alpha ghost with no glow, and the cord follows the mean. o.lanternLabels (0..1, default 1): the
     // label row under the string. Both default to the fully lit map, so existing calls draw exactly as before.
     const lanternK = (i) => K.clamp(typeof o.lanterns === 'function' ? o.lanterns(i) : (o.lanterns ?? 1));
-    K.layer(reveal(0) * lit('ai'), () => {
+    K.layer(reveal(0) * lit('ai') * dk('ai'), () => {
       const y = LANTERNS.y;
       let mean = 0; for (let i = 0; i < LANTERNS.n; i++) mean += lanternK(i) / LANTERNS.n;
       K.layer(0.2 + 0.8 * mean, () => {
@@ -135,11 +140,11 @@
     });
 
     DISTRICTS.forEach((d, i) => {
-      const a = reveal(i + 1) * lit(d.id);
+      const a = reveal(i + 1) * lit(d.id) * dk(d.id);
       const isFocus = focusD === d.id;
       const rise = (1 - reveal(i + 1)) * 20;
       // opaque footprint first, so the garden path never shows through a dimmed district
-      K.layer(reveal(i + 1), () => { K.rr(d.x, d.y + rise, d.w, d.h, 24); g.fillStyle = C.page; g.fill(); });
+      K.layer(reveal(i + 1) * dk(d.id), () => { K.rr(d.x, d.y + rise, d.w, d.h, 24); g.fillStyle = C.page; g.fill(); });
       K.layer(a, () => {
         g.save(); g.translate(0, rise);
         K.card(d.x, d.y, d.w, d.h, { glow: isFocus ? (o.focusK ?? 1) : 0, stroke: isFocus ? C.head : C.line2, fill: K.rgba(C.tile, 0.94) });
@@ -160,7 +165,7 @@
       // a focused Start / Finish (focus: '00' or '21') stays lit; every other focus dims them a little
       const own = focusD === p.id;
       const pinned = o.pin === p.mod ? pg : 0;
-      K.layer(reveal(i === 0 ? 0 : 7) * (focusD && !own ? 1 - (o.dim ?? 0.7) * 0.6 : 1), () => {
+      K.layer(reveal(i === 0 ? 0 : 7) * dk(p.id) * (focusD && !own ? 1 - (o.dim ?? 0.7) * 0.6 : 1), () => {
         K.card(p.x - 50, p.y - 50, 100, 100, { r: 50, fill: C.tile, stroke: K.mixColor(C.line2, C.head, pinned), glow: 0.8 * pinned });
         K.text(p.mod, p.x, p.y + 10, { font: 'mono', size: 28, color: C.head, weight: 700, align: 'center' });
         K.text(p.label, p.x, p.y + 86, { size: TYPE.endLabel, color: C.soft, align: 'center', weight: 600 });

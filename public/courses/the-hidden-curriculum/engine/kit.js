@@ -29,7 +29,9 @@
   // ---------- time & easing ----------
   K.clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
   K.lerp = (a, b, k) => a + (b - a) * k;
-  K.seg = (t, a, b) => K.clamp((t - a) / (b - a));
+  // non-finite or zero-width spans (K.io(t, Infinity) as "never", d = 0) give 0 before b and 1 from b, never NaN
+  // (a NaN alpha is silently ignored by canvas, so the thing would show at full opacity)
+  K.seg = (t, a, b) => { const v = (t - a) / (b - a); return Number.isNaN(v) ? (t >= b ? 1 : 0) : K.clamp(v); };
   K.ease = {
     lin: (x) => x,
     io: (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2),
@@ -65,7 +67,10 @@
 
   // ---------- state helpers ----------
   /** draw fn at alpha a (skips entirely when invisible) */
-  K.layer = (a, fn) => { if (a <= 0.002) return; g.save(); g.globalAlpha *= a; fn(); g.restore(); };
+  K.layer = (a, fn) => {
+    if (Number.isNaN(a) && !K.layer.warned) { console.warn('K.layer: alpha is NaN (drawn at full opacity); check the timing math'); K.layer.warned = 1; }
+    if (a <= 0.002) return; g.save(); g.globalAlpha *= a; fn(); g.restore();
+  };
   /** draw fn translated/scaled/rotated around (x, y) */
   K.at = (x, y, s, rot, fn) => {
     if (typeof s === 'function') { fn = s; s = 1; rot = 0; }
@@ -125,13 +130,31 @@
     g.restore();
   };
   /** full-bleed image (e.g. a painted plate) with slow drift, darkened for legible type on top */
+  // o.mask: [y0, y1] shows only part of the plate — transparent at y0, fully opaque at y1, a vertical alpha
+  // ramp between (y0 > y1 flips it: opaque at the top, fading out downwards). The shade is masked with it, so
+  // what lies under the plate (K.bg) shows through with no seam. Built in a scratch buffer that is fully
+  // redrawn on every call, so the frame is still a pure function of t.
+  let plateBuf = null;
   K.plate = (name, t, o = {}) => {
     const im = K.img[name]; if (!im) return;
     const drift = o.drift ?? 0.012, z = 1.04 + drift * (o.zoom ? t : 0);
     const w = W * z, h = (im.height / im.width) * w;
+    const paint = (c) => {
+      c.drawImage(im, (W - w) / 2 + (o.panX || 0) * t, (H - h) / 2 + (o.panY || 0) * t, w, h);
+      if (o.shade !== 0) { c.fillStyle = K.rgba(C.page, o.shade ?? 0.35); c.fillRect(0, 0, W, H); }
+    };
     g.save(); g.globalAlpha *= o.alpha ?? 1;
-    g.drawImage(im, (W - w) / 2 + (o.panX || 0) * t, (H - h) / 2 + (o.panY || 0) * t, w, h);
-    if (o.shade !== 0) { g.fillStyle = K.rgba(C.page, o.shade ?? 0.35); g.fillRect(0, 0, W, H); }
+    if (o.mask) {
+      if (!plateBuf) { plateBuf = document.createElement('canvas'); plateBuf.width = W; plateBuf.height = H; }
+      const c = plateBuf.getContext('2d');
+      c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 1; c.globalCompositeOperation = 'source-over'; c.clearRect(0, 0, W, H);
+      paint(c);
+      const [y0, y1] = o.mask, m = c.createLinearGradient(0, y0, 0, y1 === y0 ? y0 + 1 : y1);
+      m.addColorStop(0, 'rgba(0,0,0,0)'); m.addColorStop(1, 'rgba(0,0,0,1)');
+      c.globalCompositeOperation = 'destination-in'; c.fillStyle = m; c.fillRect(0, 0, W, H);
+      c.globalCompositeOperation = 'source-over';
+      g.drawImage(plateBuf, 0, 0, W, H);
+    } else paint(g);
     g.restore();
   };
 
@@ -218,6 +241,7 @@
     return w;
   };
   K.line = (x1, y1, x2, y2, o = {}) => {
+    if ((o.k ?? 1) <= 0) return;   // progress 0 draws nothing (a round cap would otherwise leave a dot)
     g.save(); g.strokeStyle = o.color || C.line2; g.lineWidth = o.w || 2; g.lineCap = 'round';
     if (o.dash) g.setLineDash(o.dash);
     if (o.alpha != null) g.globalAlpha *= o.alpha;
@@ -251,11 +275,11 @@
     for (let i = 0; i <= n * k; i++) { const u = i / n; const px = x + w * u, py = y + Math.sin(u * 7 + x) * 2.2; i ? g.lineTo(px, py) : g.moveTo(px, py); }
     g.stroke(); g.restore();
   };
-  /** circle something, drawn with progress k */
+  /** circle something, drawn with progress k. o: {color, w, rot (tilt in radians, default -0.08; 0 = upright)} */
   K.ring = (x, y, rx, ry, k, o = {}) => {
     if (k <= 0) return;
     g.save(); g.strokeStyle = o.color || C.accent; g.lineWidth = o.w || 5; g.lineCap = 'round';
-    g.beginPath(); g.ellipse(x, y, rx, ry, -0.08, -Math.PI * 0.6, -Math.PI * 0.6 + Math.PI * 2.1 * k); g.stroke(); g.restore();
+    g.beginPath(); g.ellipse(x, y, rx, ry, o.rot ?? -0.08, -Math.PI * 0.6, -Math.PI * 0.6 + Math.PI * 2.1 * k); g.stroke(); g.restore();
   };
   K.glow = (x, y, r, color = C.head, a = 0.35) => {
     const gr = g.createRadialGradient(x, y, 0, x, y, r);
@@ -395,7 +419,7 @@
 
   // ---------- files ----------
   const EXT = { py: C.head, txt: C.soft, js: '#E8C66A', md: C.body, bat: C.accent, ps1: '#8FA8D8', exe: C.accent, json: C.gold, env: C.accent, html: C.accent };
-  /** document icon centred at (x, y), height s. o: {ext, name, alpha, color} */
+  /** document icon centred at (x, y), height s. o: {ext, name, nameSize, alpha, color} (nameSize: label px, default max(18, s*0.17)) */
   K.file = (x, y, s, o = {}) => {
     const w = s * 0.78, h = s, fold = s * 0.24, x0 = x - w / 2, y0 = y - h / 2;
     K.layer(o.alpha ?? 1, () => {
@@ -412,7 +436,7 @@
         K.text(label, x0 - s * 0.08 + bw / 2, y0 + h * 0.68 + bs * 1.1, { font: 'mono', size: bs, weight: 700, color: C.page, align: 'center' });
       }
       g.restore();
-      if (o.name) K.text(o.name, x, y + h / 2 + s * 0.28, { font: 'mono', size: Math.max(18, s * 0.17), color: C.body, align: 'center' });
+      if (o.name) K.text(o.name, x, y + h / 2 + s * 0.28, { font: 'mono', size: o.nameSize ?? Math.max(18, s * 0.17), color: C.body, align: 'center' });
     });
   };
   K.folder = (x, y, s, o = {}) => {
@@ -424,7 +448,7 @@
       K.rr(x0, y0 + h * 0.12, w, h * 0.88, 10); g.fill(); g.shadowColor = 'transparent';
       g.fillStyle = K.rgba('#FFE3A8', 0.25); K.rr(x0, y0 + h * 0.3, w, h * 0.7, 10); g.fill();
       g.restore();
-      if (o.name) K.text(o.name, x, y + h / 2 + s * 0.32, { font: 'mono', size: Math.max(18, s * 0.17), color: C.body, align: 'center' });
+      if (o.name) K.text(o.name, x, y + h / 2 + s * 0.32, { font: 'mono', size: o.nameSize ?? Math.max(18, s * 0.17), color: C.body, align: 'center' });
     });
   };
 

@@ -3,8 +3,8 @@
  "title": "The Hidden Curriculum",
  "updated": "2026-10-01",
  "totalLessons": 183,
- "publishedLessons": 2,
- "runtimeSeconds": 591,
+ "publishedLessons": 3,
+ "runtimeSeconds": 895,
  "moduleCount": 22,
  "districtCount": 6,
  "regions": [
@@ -141,7 +141,14 @@
      "id": "00.03",
      "title": "How old is all this?",
      "idea": "A timeline from Unix (1969) to MCP (2024) — most of it is older than you think, the AI layer is brand new",
-     "status": "locked"
+     "status": "published",
+     "slug": "00-03-how-old-is-all-this",
+     "url": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/",
+     "duration": 304.0,
+     "summary": "Almost everything under your AI tools is decades old (Unix 1969, the web and Python 1991, git 2005) and only the AI layer on top is new (Copilot 2021, ChatGPT 2022, MCP 2024), so learn the old streets once and keep checking the new lanterns.",
+     "published": "2026-10-01",
+     "narrator": "Ember",
+     "poster": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/poster.jpg"
     },
     {
      "id": "00.04",
@@ -164,7 +171,7 @@
      "status": "locked"
     }
    ],
-   "filed": 2
+   "filed": 3
   },
   {
    "n": "01",
@@ -1440,17 +1447,17 @@
   }
  ],
  "latest": {
-  "id": "00.02",
-  "title": "The map of everything",
-  "idea": "One picture: your computer → the network → the internet → services → AI, and where every later lesson sits",
+  "id": "00.03",
+  "title": "How old is all this?",
+  "idea": "A timeline from Unix (1969) to MCP (2024) — most of it is older than you think, the AI layer is brand new",
   "status": "published",
-  "slug": "00-02-the-map-of-everything",
-  "url": "/courses/the-hidden-curriculum/lessons/00-02-the-map-of-everything/",
-  "duration": 276.4,
-  "summary": "Everything you build with AI sits on one road with five stops (your computer, the network, the internet, services, AI), so when something breaks, ask which stop first. This lesson draws that road and gives every later lesson its place on it.",
+  "slug": "00-03-how-old-is-all-this",
+  "url": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/",
+  "duration": 304.0,
+  "summary": "Almost everything under your AI tools is decades old (Unix 1969, the web and Python 1991, git 2005) and only the AI layer on top is new (Copilot 2021, ChatGPT 2022, MCP 2024), so learn the old streets once and keep checking the new lanterns.",
   "published": "2026-10-01",
-  "narrator": "Adrian",
-  "poster": "/courses/the-hidden-curriculum/lessons/00-02-the-map-of-everything/poster.jpg"
+  "narrator": "Ember",
+  "poster": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/poster.jpg"
  },
  "first": {
   "id": "00.01",
