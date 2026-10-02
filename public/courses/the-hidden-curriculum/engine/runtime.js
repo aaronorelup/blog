@@ -77,7 +77,8 @@
     }
     if (DEF.badge !== false && !(DEF.noBadge || []).includes(sec.n)) {
       const ba = Math.min(K.io(T - sec.start, -0.2, 0.6, 'out'), 1);
-      K.badge(DEF.id, DEF.short || DEF.title, { alpha: 0.85 * ba });
+      const bb = DEF.badgeBacking, backing = Array.isArray(bb) ? bb.includes(sec.n) : !!bb;
+      K.badge(DEF.id, DEF.short || DEF.title, { alpha: 0.85 * ba, backing });
     }
     target.restore();
   }

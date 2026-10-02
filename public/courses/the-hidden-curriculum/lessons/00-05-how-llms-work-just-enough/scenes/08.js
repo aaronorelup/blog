@@ -1,224 +1,197 @@
-/* 08 — Put the facts on the desk
-   The desk comes back from 07's small bottom band to its standard place (M.DESK) carrying 06's guessed citation
-   ("Source: Smith (2019) p. 42", the model's calm guesses, at 0.5). Then real things are put on it:
-   - eyebrow PUT THE FACTS ON THE DESK (until [[ignore]] brings its own card).
-   - [[facts]] "Paste the exact error": the error card (M.alert calm, mono 28, 07's invented package) slides in
-     along row 0 and pushes the guessed tiles off the desk's left edge (they tip and fall). "attach the file":
-     app.py lands beside it. "share the docs": a docs tile. "Same model": the facts dim back (as if absent);
-     "same question": the question's tiles on row 2 and, without the facts, 07's guess 'pip install fastjsonx'
-     (terracotta). "with the real file": the facts come back, the file warms, the guess is struck out and falls
-     away; "answer": a gold 'import json' tile flies into its slot; "fits": a gold check.
-   - [[sources]] the desk's contents step back (0.5); a chat window (left) asks "Where is that from?", the reply
-     streams; "open the source": an arrow to a small browser window (right, docs.example.org).
-   - [[verify]] the chat and source leave; three specimens (invented on purpose, as in 06/07) line up in the band
-     between the eyebrow and the desk top (y 330, clear of the legs and the caption band) on "every specific";
-     checking gives a verdict on its word: "package" = terracotta cross, struck tile and "doesn't exist" (07's fake
-     package); "path", "version" = gold checks.
-   - [[ignore]] the specimens leave with the eyebrow, the desk steps back to 0.4; a card "SAFE TO IGNORE FOR
-     NOW" takes the same band, with three cream pills (gold hairline) on their words; they stay readable.
-   - "AI is the lantern": everything fades, the desk shrinks into one point, and a single lit lantern hangs over a
-     faint street; [[lantern-line]] "it lights every district," then "but it doesn't walk the streets for you"
-     (same 36 px serif, the second half gold), with a slow 3% push-in to carry the hold.
-   No overshoot in this scene. Pure function of t. */
+// 08 — The knobs, then and now: the lamp over the desk grows dials; the old ones get taped, effort is the dial that matters now.
 SCENE('08', (t, S) => {
   const C = K.C;
-
-  // ---- times (local), each with the measured fallback
-  const cue = (n, fb) => S.cue(n, fb);
-  const w = (re, fb, nth = 0) => S.find(re, nth, fb);
-  const tSrc = cue('sources', 12.11), tVer = cue('verify', 15.27), tIgn = cue('ignore', 21.05), tLine = cue('lantern-line', 27.85);
-  const tPaste = w(/^paste/i, 2.26), tAttach = w(/^attach/i, 3.83), tShare = w(/^share/i, 5.26);
-  const tSame = w(/^same/i, 6.77), tSame2 = w(/^same/i, 7.48, 1);
-  const tReal = w(/^real/i, 8.86), tAnswer = w(/^answer/i, 10.40), tFits = w(/^fits/i, 10.85);
-  const tFrom = w(/^from/i, 13.47), tOpen = w(/^open/i, 14.20);
-  const tEvery = w(/^every/i, 15.74), tPkg = w(/^package/i, 18.25), tPath = w(/^path/i, 19.03), tVersion = w(/^version/i, 19.81);
-  const tTransf = w(/^transformers/i, 22.85), tAttn = w(/^attention/i, 23.73), tMath = w(/^math/i, 24.64);
-  const tAI = w(/^AI$/i, 26.18), tLantern = w(/^lantern/i, 26.94), tBut = w(/^but$/i, 29.45);
-
   K.bg();
 
-  // ---- exit: everything on and around the desk fades as "AI is the lantern" begins; the desk shrinks to a point
-  const gone = K.io(t, tAI - 0.15, 0.5);            // contents out
-  const shrink = K.io(t, tAI + 0.05, 0.8);          // desk rect -> a point where the lantern will hang
-  const all = 1 - gone;
-  const ign = K.io(t, tIgn - 0.1, 0.5);             // [[ignore]]: the desk and its specifics step back to 0.3
+  // ---- cues (local seconds)
+  const cTemp = S.cue('temperature', 3.1), cTop = S.cue('top-p', 7.07), cMax = S.cue('max', 12.69);
+  const cTape = S.cue('taped', 18.13), cEff = S.cue('effort', 25.74), cWrong = S.cue('wrong', 35.43);
+  const w = (word, nth, fb) => S.find(word, nth, fb);
+  const tSend = w('Send', 0, cTape + 5), tError = tSend + 0.8; // error lands on 'you get an error'
+  const tReq = cTape + 1.5; // the request types itself while 'stopped accepting a custom temperature' is said
+  const cOut = cEff + 1.2; // the error panel holds until here, then the effort dial takes over
+  const tThink = w(/^thinking/, 0, cEff + 2.8), tLow = w(/^low$/, 0, cEff + 7.2), tMax = w(/^max\.?$/, 0, cEff + 8.6);
+  const tConf = w(/^wrong\.?$/, 0, cWrong + 2.4), tLess = w('Less', 0, cWrong + 3.7);
+  const tAction = w(/^action/, 0, cWrong + 9.4), tPkg = w('package', 0, cWrong + 10.7), tSet = w('settings', 0, cWrong + 13.4);
 
-  // ---- eyebrow (until the ignore card brings its own)
-  M.eyebrow('Put the facts on the desk', { alpha: K.io(t, 0.25, 0.5) * (1 - K.io(t, tIgn - 0.35, 0.4)) });
+  // ---- the lamp (steady the whole scene)
+  const LX = 960, LY = 210, LS = 1.3, lampBot = LY + 38 * LS;
 
-  // ---- the desk: 07's small band -> standard, at the very start (rows 1 -> 3)
-  const back = K.io(t, -0.05, M.motion.morph);
-  const POINT = { x: 960 - 60, y: 455, w: 120, h: 30 };
-  const R = M.lerpRect(M.lerpRect(M.layout.small, M.DESK, back), POINT, shrink);
-  const rows3 = back >= 0.5;
-  M.desk(t, R, {
-    rows: rows3 ? 3 : 1,
-    grooves: (rows3 ? (back - 0.5) * 2 : 1 - back * 2) * (1 - shrink),
-    // 07 leaves its small desk at 0.9; it steps back to 0.4 for [[ignore]]
-    alpha: K.lerp(0.9, 1, back) * (1 - K.io(t, tAI + 0.35, 0.5)) * (1 - 0.6 * ign * (1 - shrink)),
-  });
+  // ---- opening: the desk drops away below the lamp (the camera tilts up to it)
+  const drop = K.io(t, 1.0, 1.0);
+  if (drop < 1) {
+    const D = M.desk('standard', { cx: 960, cy: 600 + drop * 520 });
+    M.stage(t, { desk: D, lamp: false, alpha: 1 - drop, clerk: { label: 0 } });
+  }
+  M.lamp(t, { x: LX, y: LY, s: LS, cordTop: 130 });
 
-  // as the desk shrinks it turns into light where the lantern will hang
-  if (shrink > 0) K.glow(960, 450, 90 + 120 * shrink, C.head, 0.22 * shrink);
-
-  // fixed positions on the standard desk (contents only show once the desk is back)
-  const X0 = M.rowX0(M.DESK), EDGE = M.DESK.x, Y0 = M.rowY(M.DESK, 0), Y2 = M.rowY(M.DESK, 2);
-  const dimC = (1 - 0.5 * K.io(t, tSrc - 0.2, 0.6)) * (1 - 0.4 * ign);  // 1 -> 0.5 (sources) -> 0.3 (ignore)
-
-  // ---- 06's guessed citation, pushed off the left edge by the pasted error
-  const GUESS = ['Source:', 'Smith', '(2019)', 'p. 42'];
-  const GP = M.flow(GUESS, X0);
-  const gRight = GP[GP.length - 1].x + GP[GP.length - 1].w / 2;
-  const ERR = "ModuleNotFoundError: No module named 'fastjsonx'";
-  const CARD_W = Math.ceil(92 + K.measure(ERR, { font: 'mono', size: 28, weight: 600 }) + 36);
-  const CARD_FROM = 960, CARD_D = 0.9;
-  const cardX = (tt) => K.lerp(CARD_FROM, X0, K.io(tt, tPaste - 0.05, CARD_D));
-  const push = (tt) => Math.max(0, gRight + 14 - cardX(tt));
-  // when tile i's centre passes the edge (bisection on the eased push; deterministic)
-  const crossAt = (xi) => {
-    const need = xi - EDGE, a0 = tPaste - 0.05, a1 = a0 + CARD_D;
-    if (push(a1) < need) return Infinity;
-    let lo = a0, hi = a1;
-    for (let k = 0; k < 28; k++) { const m = (lo + hi) / 2; if (push(m) >= need) hi = m; else lo = m; }
-    return hi;
+  // ---- dial positions: a row of three under the lamp, then a small taped column at left
+  const toCol = K.io(t, cOut, M.motion.grow);
+  const appear = (i) => K.io(t, 1.7 + i * 0.25, 0.6, 'out');
+  const names = ['temperature', 'top-p · top-k', 'max output tokens'];
+  const active = (i) => {
+    const a = [cTemp, cTop, cMax][i], b = [cTop, cMax, cTape][i];
+    return K.io(t, a - 0.1, 0.4) * (1 - K.io(t, b - 0.1, 0.4));
   };
-  // "Same model, same question": the facts step back as if absent, then return "with the real file on the desk"
-  const absent = K.io(t, tSame - 0.1, 0.4) * (1 - K.io(t, tReal - 0.25, 0.45));   // back on "real file"
-  const factsA = 1 - 0.7 * absent;
-  K.layer(all * dimC, () => {
-    const gIn = K.io(t, 0.55, 0.5);
-    GP.forEach((p, i) => {
-      const tc = crossAt(p.x), dt = Math.max(0, t - tc);
-      if (dt > 0.6) return;
-      const x = p.x - push(t) - 70 * dt, y = Y0 + 1500 * dt * dt;
-      M.tile(p.s, x, y, { tone: i ? 'hot' : 'plain', glow: 0.2, alpha: 0.5 * gIn * (1 - K.clamp(dt / 0.6)), rot: -1.6 * dt });
-    });
+  const needle = (i) => {
+    if (i === 0) { // temperature sweeps up (more randomness)
+      return 0.2 + 0.6 * K.io(t, cTemp + 0.3, 1.4);
+    }
+    if (i === 1) { // top-p drops (fewer choices)
+      return 0.9 - 0.5 * K.io(t, cTop + 1.6, 1.2);
+    }
+    return 0.75 - 0.35 * K.io(t, cMax + 0.4, 1.0);
+  };
+  const tapeK = (i) => (i < 2 ? K.io(t, cTape + 0.3 + i * 0.5, 1.5, 'lin') : 0);
+  for (let i = 0; i < 3; i++) {
+    const ap = appear(i);
+    if (ap <= 0) continue;
+    const x = K.lerp(M.layout.dials.xs[i], 230, toCol), y = K.lerp(390, 330 + i * 140, toCol);
+    const r = K.lerp(80, 44, toCol);
+    const lit = 0.25 + 0.75 * active(i);
+    const top = y - r;
+    // cord from the lamp's base (fades as the dials move away to the side)
+    K.line(LX + (i - 1) * 14, lampBot, x, top, { color: C.line2, w: 2, alpha: ap * (1 - toCol), k: ap });
+    K.layer(ap, () => K.at(x, y - (1 - ap) * 30, 1, 0, () => {
+      M.dial(t, 0, 0, needle(i), { r, lit: lit * (1 - 0.6 * toCol), taped: tapeK(i) });
+    }));
+    // labels: centred under the big dial, then to the right of the small one
+    const lk = ap * (1 - K.io(t, cOut, 0.35));
+    if (lk > 0) K.text(names[i], x, y + r + 44, { ...M.type.label, color: K.mixColor(C.soft, C.strong, active(i) + 0.3), align: 'center', alpha: lk });
+    const rk = K.io(t, cOut + 0.8, 0.5);
+    if (rk > 0) K.text(names[i], x + r + 22, y + 9, { ...M.type.label, color: C.soft, alpha: rk });
+  }
 
-    K.layer(factsA, () => {
-      // the pasted error (row 0): slides in from the right and stops at the row's left
-      const ek = K.io(t, tPaste - 0.05, 0.35);
-      M.alert(cardX(t), Y0 - 50, CARD_W, ERR, { size: 28, calm: true, k: ek });
+  // ---- corner eyebrows (then / now)
+  const eThen = K.io(t, 2.0, 0.6) * (1 - K.io(t, cTape - 0.2, 0.4));
+  if (eThen > 0) K.eyebrow('THE OLD DIALS', 100, 176, { alpha: eThen, color: C.soft });
+  const eNow = K.io(t, cTape + 0.1, 0.5);
+  if (eNow > 0) {
+    K.eyebrow('NEWEST CLAUDE MODELS', 100, 176, { alpha: eNow });
+    M.dated('Oct 2026', 100, 214, { alpha: eNow });
+  }
 
-      // the attached file and the shared docs, right of the error card
-      const FX = 1350, DX = 1550;
-      const fk = K.io(t, tAttach, 0.5), fx = FX + 90 * (1 - fk);
-      const warm = K.io(t, tReal, 0.5) * (1 - 0.6 * K.io(t, tReal + 1.2, 0.8));
-      if (warm > 0) K.glow(FX, 520, 130, C.head, 0.4 * warm);
-      if (fk > 0) K.file(fx, 518, 118, { ext: 'py', name: 'app.py', nameSize: 26, alpha: fk });
-      const dk = K.io(t, tShare, 0.5), dx = DX + 90 * (1 - dk);
-      if (dk > 0) K.layer(dk, () => {
-        K.iconTile('book', dx, 512, 104);
-        K.text('docs', dx, 610, { font: 'ui', size: 26, weight: 600, color: C.body, align: 'center' });
+  // ---- the demo panel under the dials (phase A: temperature, top-p, max, taped)
+  const panelK = K.io(t, cTemp - 0.2, 0.5) * (1 - K.io(t, cOut, 0.5));
+  const PX = 500, PY = 580, PW = 920, PH = 270;
+  const cands = [['warm', 0.45], ['bright', 0.25], ['golden', 0.15], ['purple', 0.1], ['loud', 0.05]];
+  const candK = K.io(t, cTemp - 0.1, 0.4) * (1 - K.io(t, cMax - 0.2, 0.4));
+  const replyK = K.io(t, cMax, 0.4) * (1 - K.io(t, cTape - 0.1, 0.4));
+  const termK = K.io(t, cTape + 0.1, 0.4);
+  if (panelK > 0) K.layer(panelK, () => {
+    K.card(PX, PY, PW, PH, { r: 22, fill: K.rgba(C.tile, 0.9), stroke: C.line2 });
+
+    // candidates (temperature + top-p)
+    if (candK > 0) K.layer(candK, () => {
+      // which word gets picked: at low temperature always the top one; as the dial turns up it wanders
+      const hot = K.io(t, cTemp + 0.8, 0.6) > 0.5;
+      const cut = K.io(t, cTop + 1.6, 1.2); // top-p trims the tail
+      let pickI = 0;
+      if (hot && t < cTop - 0.1) pickI = Math.floor((t - cTemp - 0.8) / 0.5) % 3;
+      else if (t >= cTop + 2.8) pickI = Math.floor((t - cTop - 2.8) / 0.9) % 2;
+      // sentence with the chosen next word
+      K.text('The lamp is', 870, 650, { font: 'read', size: 34, color: C.strong, align: 'right' });
+      M.chip(cands[pickI][0], 900 + (K.measure(cands[pickI][0], { font: 'mono', size: 30, weight: 600 }) + 27) / 2, 638, { size: 30, stroke: C.head, fill: K.rgba(C.head, 0.14) });
+      K.text('next word?', 1250, 648, { ...M.type.label, color: C.soft });
+      // five candidates with likelihood bars
+      const ws = cands.map(([s]) => K.measure(s, { font: 'mono', size: 28, weight: 600 }) + 28 * 0.9);
+      const gap = 28, tot = ws.reduce((a, b) => a + b, 0) + gap * 4;
+      let x = 960 - tot / 2;
+      cands.forEach(([s, p], i) => {
+        const cx = x + ws[i] / 2; x += ws[i] + gap;
+        const gone = i >= 2 ? cut : 0, on = i === pickI ? 1 : 0;
+        const a = 1 - 0.8 * gone;
+        M.chip(s, cx, 740, { size: 28, alpha: a, stroke: on ? C.head : K.rgba(C.line2, 1), color: on ? C.head : C.body });
+        const bh = 44 * p / 0.45;
+        K.card(cx - 14, 818 - bh, 28, bh, { r: 4, fill: K.rgba(C.head, (on ? 0.85 : 0.45) * a), stroke: false, shadow: false });
+        if (gone > 0) K.line(cx - ws[i] / 2 + 6, 740, cx - ws[i] / 2 + 6 + (ws[i] - 12) * gone, 740, { color: C.soft, w: 2, alpha: 0.8 });
       });
+      K.line(PX + 40, 820, PX + PW - 40, 820, { color: C.line2, w: 1.5 });
     });
 
-    // same question (row 2): first the facts-free guess (07's fake package), struck out; then the answer that fits
-    const Q = ['why', 'does', 'it', 'fail?'];
-    M.row(t, Q, X0, Y2, { k: (i) => K.stagger(t, tSame2 - 0.1, i, 0.08, 0.45) });
-    const GUESS2 = 'pip install fastjsonx', ANS = 'import json';
-    const gp = M.flow([...Q, GUESS2], X0)[Q.length];
-    const gk = K.io(t, tSame2 + 0.25, 0.4), strike = K.io(t, tReal - 0.05, 0.35), gOut = K.io(t, tReal + 0.55, 0.5);
-    if (gk > 0 && gOut < 1) {
-      const gy = Y2 + (1 - gk) * 10 + 60 * gOut * gOut;
-      M.tile(GUESS2, gp.x, gy, { tone: 'wrong', alpha: 0.85 * gk * (1 - gOut), rot: -0.12 * gOut });
-      if (strike > 0) K.line(gp.x - gp.w / 2 + 14, gy, gp.x - gp.w / 2 + 14 + (gp.w - 28) * strike, gy,
-        { color: C.accent, w: 4, alpha: 1 - gOut });
-    }
-    const ap = M.flow([...Q, ANS], X0)[Q.length], u = K.seg(t, tAnswer - 0.25, tAnswer + 0.2);
-    if (u > 0 && u < 1) M.fly(ANS, 1380, 300, ap.x, Y2, u, { trail: 0.6 });
-    else if (u >= 1) M.tile(ANS, ap.x, Y2 + K.wave(t, M.motion.bob.speed, M.motion.bob.amp), { tone: 'hot' });
-    const ck = K.io(t, tFits, 0.4);
-    if (ck > 0) K.icon('check', ap.x + ap.w / 2 + 44, Y2, 36 * (0.7 + 0.3 * ck), { color: C.head, alpha: ck, w: 4 });
+    // max output tokens: a reply being written, then cut by a hard gold line
+    if (replyK > 0) K.layer(replyK, () => {
+      const x0 = 688, y0 = 680, cell = 26, g6 = 8, per = 16, n = 26, full = 40;
+      K.text('reply', x0, 652, { ...M.type.label, color: C.soft });
+      const t0 = cMax + 0.5, step = 0.14;
+      M.write(t, x0, y0, { t0, step, n, cell, gap: g6, perRow: per });
+      const capK = K.io(t, t0 + n * step - 0.1, 0.4, 'out');
+      // ghost of the rest of the reply that never gets written
+      K.layer(capK * 0.5, () => {
+        for (let i = n; i < full; i++) {
+          const r = Math.floor(i / per), c = i % per;
+          K.card(x0 + c * (cell + g6), y0 + r * (cell + g6), cell, cell, { r: 4, fill: 'rgba(0,0,0,0)', stroke: K.rgba(C.soft, 0.7), shadow: false });
+        }
+      });
+      // the hard cap line, right after token n
+      const cr = Math.floor(n / per), cc = n % per, lx = x0 + cc * (cell + g6) - g6 / 2;
+      K.line(lx, y0 + cr * (cell + g6) - 16, lx, y0 + cr * (cell + g6) + cell + 16, { color: C.head, w: 5, k: capK });
+      K.glow(lx, y0 + cr * (cell + g6) + cell / 2, 50, C.head, 0.25 * capK);
+      K.text('hard cap', lx, y0 + cr * (cell + g6) + cell + 62, { ...M.type.label, color: C.head, align: 'center', alpha: capK });
+    });
+
+    // taped: the request that sets temperature gets an error back
+    if (termK > 0) K.layer(termK, () => {
+      const rect = K.win(PX + 20, PY + 20, PW - 40, PH - 40, { kind: 'terminal', title: 'request → api', titleSize: 26 });
+      if (t >= tReq) K.term(rect, t, [
+        { at: tReq, cmd: 'POST /v1/messages   temperature: 0.7', cps: 24, prompt: '' },
+        { at: tError, out: 'error: temperature is not supported', color: C.accent },
+        { at: tError + 0.35, out: '       for this model', color: C.accent },
+      ], { size: 26, pad: 24, rows: 3, prompt: '' });
+    });
   });
 
-  // ---- [[sources]] a chat (left) and the source itself (right), either side of the eyebrow
-  const upper = all * (1 - K.io(t, tVer - 0.1, 0.45));   // gone before the specimens take their band
-  const chatK = K.io(t, tSrc - 0.05, 0.5);
-  if (chatK > 0 && upper > 0) {
-    const CX = 160, CY = 160, CW = 560, CH = 236, SX = 1200;   // both clear the eyebrow (x 776-1144)
-    K.layer(upper, () => K.at(0, (1 - chatK) * 20, () => {
-      M.chat(t, CX, CY, CW, CH, [
-        { s: 'Where is that from?', who: 'you', k: K.io(t, tSrc + 0.1, 0.4) },
-        { s: 'From the install guide.', who: 'ai', k: K.io(t, tFrom - 0.1, 0.35), stream: tFrom, step: 0.2 },
-      ], { alpha: chatK });
+  // ---- now: the effort dial under the lamp
+  const effK = K.io(t, cOut + 0.4, 0.7, 'back');
+  // effort level: medium, then low, up to max, settles on high
+  const sel = 1 - K.io(t, tLow - 0.1, 0.5) + 4 * K.io(t, tMax - 0.5, 0.7) - 2 * K.io(t, tMax + 0.8, 0.6);
+  const EX = 960, EY = 430, ER = 115;
+  if (effK > 0) {
+    K.line(LX, lampBot, EX, EY - ER, { color: C.line2, w: 2, alpha: K.clamp(effK) });
+    K.layer(K.clamp(effK), () => K.at(EX, EY, 0.7 + 0.3 * effK, 0, () => {
+      M.dial(t, 0, 0, 0.1 + 0.8 * (sel / 4), { r: ER, lit: 1 });
     }));
-    const ay = CY + 50 + 16 + (30 * 1.3 + 24 + 12) + (30 * 1.3 + 24) / 2;   // centre of the reply bubble
-    K.layer(upper, () => {
-      K.arrow(CX + CW + 14, ay, SX - 14, ay, { k: K.io(t, tOpen, 0.45), color: C.soft, w: 3 });
-      const sk = K.io(t, tOpen + 0.3, 0.5);
-      if (sk > 0) K.layer(sk, () => K.at(0, (1 - sk) * 16, () => {
-        const r = K.win(SX, CY, 560, CH, { kind: 'browser', title: 'source', titleSize: 26, url: 'docs.example.org' });
-        K.text('Install guide', r.x + 28, r.y + 44, { font: 'ui', size: 30, weight: 600, color: C.strong });
-        K.line(r.x + 28, r.y + 76, r.x + r.w - 60, r.y + 76, { color: C.line2, w: 8 });
-        K.line(r.x + 28, r.y + 102, r.x + r.w - 180, r.y + 102, { color: C.line2, w: 8 });
-      }));
-    });
+    K.text('effort · thinking', EX, EY + ER + 48, { font: 'ui', weight: 600, size: 30, color: C.head, align: 'center', alpha: K.clamp(effK) });
   }
-
-  // ---- [[verify]] three specifics in the band above the desk; checking each gives a verdict on its word
-  const SPEC = [['fastjsonx', tPkg, false], ['C:\\project\\config.yaml', tPath, true], ['v4.2.1', tVersion, true]];
-  const TAG = "doesn't exist", tagF = { font: 'ui', size: 26, weight: 600 };
-  const tagW = K.measure(TAG, tagF);
-  const ICON_GAP = 20, ICON = 40, GAPX = 90, SY = 330;
-  const items = SPEC.map(([s, , ok]) => {
-    const tw = M.tileW(s);
-    return { tw, w: tw + ICON_GAP + ICON + (ok ? 0 : 12 + tagW) };
+  // the picker and the app row (fade when the "wrong" beat takes the bottom)
+  const lowerOut = 1 - K.io(t, cWrong - 0.2, 0.5);
+  const pickK = K.io(t, cOut + 0.8, 0.5) * lowerOut;
+  if (pickK > 0) M.picker(EX, 690, ['low', 'medium', 'high', 'xhigh', 'max'], sel, { size: 28, alpha: pickK });
+  const appK = K.io(t, tThink, 0.5) * lowerOut;
+  if (appK > 0) K.layer(appK, () => {
+    K.text('in the app', 760, 812, { ...M.type.label, color: C.soft, align: 'right' });
+    M.picker(1010, 803, ['model', 'effort', 'speed'], 1, { size: 26 });
   });
-  let sx = 960 - (items.reduce((a, b) => a + b.w, 0) + GAPX * (items.length - 1)) / 2;
-  K.layer(all * (1 - K.io(t, tIgn - 0.35, 0.4)), () => SPEC.forEach(([s, tw0, ok], i) => {
-    const it = items[i], px = sx + it.tw / 2;
-    sx += it.w + GAPX;
-    const k = K.stagger(t, tEvery - 0.1, i, 0.15, 0.5);
-    if (k <= 0) return;
-    const y = SY + (1 - k) * 10, c = K.io(t, tw0, 0.4);
-    const ix = px + it.tw / 2 + ICON_GAP + ICON / 2;
-    if (ok) {
-      M.tile(s, px, y, { alpha: k });
-      if (c > 0) K.icon('check', ix, SY, ICON * (0.7 + 0.3 * c), { color: C.head, alpha: c, w: 4 });
-    } else {
-      M.tile(s, px, y, { alpha: k * (1 - c) });
-      if (c > 0) {
-        M.tile(s, px, y, { tone: 'wrong', alpha: k * c });
-        K.line(px - it.tw / 2 + 12, y, px - it.tw / 2 + 12 + (it.tw - 24) * c, y, { color: C.accent, w: 4, alpha: c });
-        K.icon('cross', ix, SY, ICON * (0.7 + 0.3 * c), { color: C.accent, alpha: c, w: 4 });
-        K.text(TAG, ix + ICON / 2 + 12, SY + 9, { ...tagF, color: C.accent, alpha: K.io(t, tw0 + 0.15, 0.4) });
-      }
+  // scratch paper: how long the clerk works before it answers (grows with effort)
+  const scrK = K.io(t, cOut + 1.2, 0.5);
+  if (scrK > 0) K.layer(scrK, () => {
+    const nP = 1 + sel * 1.75; // 1 .. 8 sheets
+    for (let i = 0; i < 8; i++) {
+      const k = K.clamp(nP - i);
+      if (k <= 0) continue;
+      const rr = K.rng(30 + i);
+      M.paper(1480 + (rr() - 0.5) * 22, 560 - i * 20 - (1 - k) * 16, { w: 150, h: 96, rot: (rr() - 0.5) * 0.16, alpha: Math.min(1, k * 3), kind: 'text', lines: 3 });
     }
-  }));
+    K.text('scratch work', 1480, 650, { ...M.type.label, color: C.soft, align: 'center' });
+  });
 
-  // ---- [[ignore]] a card of things to skip for now: cream pills with a gold hairline, only the box is dim
-  const ik = ign * all;
-  if (ik > 0) K.layer(ik, () => K.at(0, (1 - ign) * 14, () => {
-    K.card(560, 180, 800, 150, { fill: K.rgba(C.tile, 0.6), stroke: C.line, shadow: false });
-    K.eyebrow('Safe to ignore for now', 960, 226, { size: 20, align: 'center' });
-    const P = [['transformers', tTransf], ['attention', tAttn], ['training math', tMath]];
-    const pf = { font: 'ui', size: 26, weight: 600 };
-    const ws = P.map((p) => K.measure(p[0], pf) + 26 * 1.6), gap = 28;
-    let x = 960 - (ws.reduce((a, b) => a + b, 0) + gap * (P.length - 1)) / 2;
-    P.forEach((p, i) => {
-      const a = K.io(t, p[1] - 0.1, 0.4), px = x + ws[i] / 2;
-      if (a > 0) K.at(0, (1 - a) * 8, () =>
-        K.pill(p[0], px, 284, { size: 26, color: C.strong, stroke: K.rgba(C.gold, 0.75), fill: C.page, alpha: a }));
-      x += ws[i] + gap;
-    });
-  }));
-
-  // ---- the lantern: one lit lantern over a faint street, and the course line (slow 3% push-in to carry the hold)
-  const lk = K.io(t, tLantern - 0.25, 0.7);
-  if (lk > 0) {
-    const zoom = 1 + 0.03 * K.io(t, tLantern, 5.5, 'sine');
-    K.at(960, 560, zoom, 0, () => K.at(-960, -560, () => {
-      K.eyebrow('AI is the lantern', 960, 300, { size: 20, align: 'center', alpha: K.io(t, tAI + 0.1, 0.5) });
-      K.glow(960, 610, 420, C.head, 0.08 * lk);
-      K.line(560, 610, 1360, 610, { color: C.line2, w: 2, alpha: 0.7 * lk, k: K.io(t, tLantern - 0.1, 0.7) });
-      K.line(960, 336, 960, 396, { color: C.gold, w: 2, alpha: 0.5 * lk, k: lk });   // its cord: it hangs, it doesn't walk
-      K.map.lantern(t, 2, { x: 960, y: 410, lit: lk, glowK: 1.8, s: 2.2, alpha: lk, sway: 1 });
-      const lf = { font: 'read', size: 36, align: 'center' };
-      K.rise(t, tLine - 0.05, () => K.text('it lights every district,', 960, 704, { ...lf, color: C.strong }), 14);
-      K.rise(t, tBut - 0.05, () => K.spans([
-        { s: 'but it ', color: C.strong },
-        { s: "doesn't walk the streets for you", color: C.head },
-      ], 960, 764, lf), 12);
-    }));
-  }
+  // ---- still confidently wrong
+  const wrK = K.io(t, cWrong, 0.6);
+  if (wrK > 0) K.layer(wrK, () => {
+    const turned = K.io(t, tConf - 0.1, 0.5);
+    const col = M.mixHex(C.head, C.accent, turned);
+    const x0 = 600, y0 = 650, wd = 720, ht = 130;
+    K.card(x0, y0 + (1 - wrK) * 20, wd, ht, { r: 20, fill: K.rgba(C.tile, 0.95), stroke: K.rgba(col, 0.8), glow: 0.3 });
+    const ix = x0 + 64, iy = y0 + 50 + (1 - wrK) * 20;
+    K.layer(1 - turned, () => K.icon('check', ix, iy, 44, { color: C.head, w: 4 }));
+    K.layer(turned, () => K.icon('warning', ix, iy, 46, { color: C.accent, w: 3 }));
+    K.text('Fixed it. All tests pass.', x0 + 116, iy + 12, { font: 'read', size: 32, color: C.strong });
+    const lk = K.io(t, tLess, 0.5);
+    if (lk > 0) K.text('less often with search and tools · not never', x0 + 116, iy + 58, { ...M.type.label, color: C.soft, alpha: lk });
+  });
+  const p1 = K.io(t, tAction - 0.2, 0.45), p2 = K.io(t, tPkg - 0.2, 0.45);
+  if (p1 > 0) K.layer(p1, () => K.pill('wrong action', 810, 850 + (1 - p1) * 10, { size: 26, color: C.accent, stroke: K.rgba(C.accent, 0.6) }));
+  if (p2 > 0) K.layer(p2, () => K.pill('invented package name', 1110, 850 + (1 - p2) * 10, { size: 26, color: C.accent, stroke: K.rgba(C.accent, 0.6) }));
+  const shK = K.io(t, tSet - 0.1, 0.5);
+  if (shK > 0) M.shelf('The Network', 1840, 880, { k: shK });
 });

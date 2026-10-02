@@ -1,151 +1,167 @@
-/* 00.05 scene 03: Tiles, not letters.
-   The desk (the context window) at its standard rect. "Explain unbelievably short words" types in ABOVE the desk
-   (the desk only ever holds tokens); on "cut" gold slices cut it and the pieces drop onto the desk as tiles (M.split);
-   on "Picture tiles" the tiles hop once in turn. Tiles here are 38 px mono on two rows near the desk's middle so the
-   desk reads full; common words stay whole, the long word splits; [[ids]] each tile flips to show it is really a number;
-   [[strawberry]] "strawberry" lands on row 2 and snaps into three tiles while the ten letters you asked about
-   fade above the desk and are crossed out; [[measure]] the tiles are counted (gold) and the
-   "MEASURED IN TOKENS" card rises top-right with reads / writes / costs on their spoken words.
-   Exit: after "costs" the rows settle to 04's layout (30 px tiles on d.rowY(0) / d.rowY(1)), card held at 0.8. */
+/* 03 — The desk, five years ago and now.
+   The same desk eases from its standard size down to the tiny 2021 desk (text cards, ~2K tokens, one API letter slot),
+   then up to the hall (photos, recordings, rooms, phone lines, a studio). Two things that did not change: the clerk
+   writes one piece at a time, and nothing stays overnight (papers slide off, then are all handed back at once). */
 SCENE('03', (t, S) => {
-  const C = K.C;
-  K.bg();
+  const C = K.C, L = M.layout, COLD = M.palette.cold;
+  K.bg({ glowX: 960, glowY: 220 });
 
-  // ---- timing (cues and spoken words; fallbacks are the measured local times)
-  const cIds = S.cue('ids', 17.93), cStraw = S.cue('strawberry', 22.22), cMeas = S.cue('measure', 31.99);
-  const wCut = S.find(/^cut$/i, 0, 2.67), wPicture = S.find(/^Picture$/i, 0, 4.27);
-  const wCommon = S.find(/^common$/i, 0, 6.01), wLong = S.find(/^long$/i, 0, 9.0), wEnglish = S.find(/^In$/, 0, 13.26);
-  const wThree = S.find(/^three$/i, 0, 15.66), wNumber = S.find(/^number/i, 0, 19.29), wNumbers = S.find(/^numbers/i, 0, 21.22);
-  const wR = S.find(/^R$/, 0, 25.7), wStraw = S.find(/^strawberry/i, 0, 26.37);
-  const wLetters = S.find(/^letters/i, 0, 23.43), wTen = S.find(/^ten$/i, 0, 30.54), wMeasured = S.find(/^measured/i, 0, 34.61);
-  const wRead = S.find(/^read/i, 1, 36.45), wWrite = S.find(/^write/i, 0, 37.87), wCosts = S.find(/^costs/i, 0, 39.13);
+  // ---------------------------------------------------------------- timing
+  const cSmall = S.cue('small-desk', 5.26), cNow = S.cue('now', 21.06), cSame = S.cue('same', 29.25), cOver = S.cue('overnight', 36.69);
+  const tModel = S.find('model', 0, 0.24);
+  const tText = S.find('Text', 0, 9.85), tTwo = S.find('two', 0, 11.33), tThou = S.find('thousand', 0, 11.58);
+  const tSlot = S.find('letter', 0, 13.79), tApi = S.find('API', 0, 15.78), tProg = S.find('programmers', 0, 16.55);
+  const tNoGpt = S.find('ChatGPT', 0, 18.14), tNoMem = S.find('memory', 0, 19.26), tNoTools = S.find('tools', 0, 19.83);
+  const tPhotos = S.find('photos', 0, 23.31), tRec = S.find('recordings', 0, 23.82);
+  const tRooms = S.find('rooms', 0, 24.82), tPhone = S.find('phone', 0, 26.08), tStudio = S.find('studio', 0, 27.37);
+  const tWrites = S.find('writes', 0, 32.54), tPiece = S.find('piece', 0, 33.6);
+  const tEvery = S.find('Every', 0, 39.03), tStarts = S.find('starts', 0, 39.83), tHanded = S.find('handed', 0, 42.53);
 
-  // ---- the desk, standard rect (same as 01's end and 04's start)
-  const d = M.desk(t, M.DESK);
-  M.eyebrow('TOKENS', { alpha: K.io(t, -0.4, 0.6) });
+  // ---------------------------------------------------------------- the desk: standard -> 2021 -> hall
+  const Dstd = M.at(L.std), D21 = M.at(L.y2021), DH = M.at(L.hall);
+  const k1 = K.io(t, cSmall, M.motion.grow), k2 = K.io(t, cNow, M.motion.grow);
+  const D = k2 > 0 ? M.lerpDesk(D21, DH, k2) : M.lerpDesk(Dstd, D21, k1);
 
-  // ---- layout: big tiles (38 px) on two rows around the desk's middle; after "costs" they settle to 04's start
-  //      (30 px on d.rowY(0) / d.rowY(1)) so the crossfade into 04 shows no jump
-  const settle = K.io(t, wCosts + 0.75, 0.8);
-  const SZ = K.lerp(38, 30, settle);
-  // the 38 px tiles stand on the desk's grooves (tile bottom = groove): row A starts on the middle groove, moves up to the
-  // first groove on "strawberry" to make room, row B stands on the third groove
-  const upK = K.io(t, cStraw, 0.7);
-  const yA = K.lerp(K.lerp(585, 495, upK), d.rowY(0), settle), yB = K.lerp(675, d.rowY(1), settle);
-  const TEXT_Y = 318;   // the raw sentence sits above the desk until it is cut
+  // night: the lamp dims and a moon passes, then a new request relights it
+  const night = K.io(t, cOver + 0.15, 0.8) * (1 - K.io(t, tEvery, 0.8));
+  const sameK = K.io(t, cSame, 0.6);                      // "two things did not change": the rest dims
+  const surK = K.io(t, cNow + 0.2, 0.6);                  // surroundings of the hall exist only after 'now'
+  const surA = (1 - 0.7 * sameK) * (1 - K.io(t, cOver, 0.6));
 
-  // ---- row A: "Explain unbelievably short words" types in above the desk, then is cut into tiles that drop onto it
-  const PIECES = ['Explain', ' unbeliev', 'ably', ' short', ' words'];
-  const SPLIT = [1, 2];                                   // the long word's two tiles
-  const IDS = (() => { const r = K.rng(503), len = [4, 5, 2, 4, 4]; return PIECES.map((p, i) => String(Math.floor(r() * 90000 + 10000)).slice(0, len[i])); })();   // arbitrary ids
-  const FULL = PIECES.join(''), F = { ...M.type.tile, size: 38 };
-  const T0 = 0.1, CH = 0.04;                              // typing: one character every 40 ms from 51 s
-  const inK = K.io(t, T0 - 0.1, 0.4);
-  const cutK = K.seg(t, wCut, wCut + 0.5);                // gold slices on "cut"
-  const dropK = K.io(t, wCut + 0.4, 0.7);                 // pieces become tiles and drop onto the desk on "into tokens"
-  // emphasis: "common word ... one tile" dims the split pair; "long or rare word" dims the whole words; "In English" clears
-  const emCommon = K.io(t, wCommon, 0.4) * (1 - K.io(t, wLong, 0.4));
-  const emLong = K.io(t, wLong, 0.4) * (1 - K.io(t, wEnglish, 0.5));
-  const strawDim = K.io(t, cStraw + 0.2, 0.6) * (1 - K.io(t, cMeas, 0.6));
-  const rowA = (i) => (1 - 0.6 * (SPLIT.includes(i) ? emCommon : emLong)) * (1 - 0.6 * strawDim);
-  // "Picture tiles": each tile hops once, in reading order (a structural beat, not idle motion)
-  const hop = (i) => 9 * Math.sin(Math.PI * K.seg(t, wPicture + 0.1 + i * 0.09, wPicture + 0.5 + i * 0.09));
-  // counting on "measured": a gold glow passes over each tile in reading order (row A, then row B)
-  const countGlow = (n) => { const a = wMeasured - 0.3 + n * 0.12; return 0.9 * Math.sin(Math.PI * K.seg(t, a, a + 0.5)); };
+  // ---------------------------------------------------------------- year tag (top-left)
+  const y21 = K.io(t, cSmall, 0.5) * (1 - K.io(t, cNow, 0.4));
+  const y26 = K.io(t, cNow + 0.3, 0.5);
+  if (y21 > 0) M.dated('autumn 2021', 110, 182 - (1 - y21) * 8, { size: 34, alpha: y21 });
+  if (y26 > 0) M.dated('Oct 2026', 110, 182 - (1 - y26) * 8, { size: 34, alpha: y26 });
 
-  let P0;
-  if (t < wCut) {
-    // typing: the plain line grows left to right, a soft caret after it (it is your text, not the model's)
-    const n = Math.max(0, Math.min(FULL.length, Math.floor((t - T0) / CH)));
-    const x0 = 960 - K.measure(FULL, F) / 2;
-    K.layer(inK, () => {
-      if (n > 0) K.text(FULL.slice(0, n), x0, TEXT_Y + 38 * 0.35, { ...F, color: C.strong, align: 'left' });
-      const cx = x0 + K.measure(FULL.slice(0, n), F) + 4;
-      K.line(cx, TEXT_Y - 24, cx, TEXT_Y + 22, { color: C.soft, w: 3, alpha: 1 - K.io(t, wCut - 0.3, 0.3) });
-    });
-  } else if (dropK < 1) {
-    P0 = M.split(PIECES, 960, K.lerp(TEXT_Y, yA, dropK), dropK, { cut: cutK, size: 38 });
-  } else {
-    P0 = M.flow(PIECES.map((s) => s.trim()), 960, { align: 'center', size: SZ });
-    P0.forEach((p, i) => {
-      const fa = K.io(t, cIds + 0.05 + i * 0.08, M.motion.flip), fb = K.io(t, wNumbers + 0.45 + i * 0.08, M.motion.flip);
-      const cg = countGlow(i);
-      if (cg > 0.01) K.glow(p.x, yA, 100, C.head, 0.3 * cg);
-      M.tile(p.s, p.x, yA - hop(i), { size: SZ, flip: fa * (1 - fb), id: IDS[i], alpha: rowA(i), glow: cg, color: cg > 0.3 ? C.head : undefined });
-    });
-  }
+  // ---------------------------------------------------------------- the 2021 API door (left; gone before the hall desk reaches it)
+  const doorA = K.io(t, tSlot - 0.2, 0.6) * (1 - K.io(t, cNow, 0.45));
+  let slot = { x: L.door.x + 85, y: L.door.y + 204 };
+  if (doorA > 0) slot = M.door(t, L.door.x, L.door.y, { alpha: doorA, labelK: K.io(t, tApi - 0.1, 0.5) }).slot;
 
-  // "one word, two tiles": a soft bracket under unbeliev|ably on "long or rare word"
-  if (emLong > 0.002 && P0) {
-    const a = P0[1], b = P0[2], xl = a.x - a.w / 2 + 6, xr = b.x + b.w / 2 - 6, yb = yA + 72;
-    K.layer(emLong, () => {
-      K.line(xl, yb - 10, xl, yb, { color: C.soft, w: 2.5 });
-      K.line(xr, yb - 10, xr, yb, { color: C.soft, w: 2.5 });
-      K.line(xl, yb, xr, yb, { color: C.soft, w: 2.5, k: K.io(t, wLong + 0.1, 0.5) });
-      K.text('one word, two tiles', (xl + xr) / 2, yb + 44, { font: 'ui', weight: 600, size: 28, color: C.body, align: 'center', alpha: K.io(t, wLong + 0.4, 0.4) });
-    });
-  }
-
-  // ---- caption pills above the desk: "≈ ¾ of a word each" on "three quarters", replaced by "the model sees numbers"
-  const PILL_Y = 330;
-  const pQ = K.io(t, wThree - 0.1, 0.5) * (1 - K.io(t, wNumber - 0.3, 0.4));
-  const pN = K.io(t, wNumber, 0.5) * (1 - K.io(t, cStraw, 0.5));
-  if (pQ > 0.002) K.at(0, (1 - pQ) * 10, () => K.pill('≈ ¾ of a word each', 960, PILL_Y, { size: 30, alpha: pQ }));
-  if (pN > 0.002) K.at(0, (1 - pN) * 10, () => K.pill('the model sees numbers', 960, PILL_Y, { size: 30, stroke: C.gold, color: C.head, alpha: pN }));
-
-  // ---- the ten letters (above the desk): appear on "letters", the r's brighten on "R", struck through on "not ten letters"
-  const LET = 'strawberry'.split(''), BW = 52, BG = 10, LX0 = 960 - (LET.length * BW + (LET.length - 1) * BG) / 2, LY = 318;
-  const letGone = K.io(t, cMeas, 0.6);
-  const letFade = K.io(t, wTen, 0.6);
-  const rK = K.io(t, wR, 0.4) * (1 - letFade);
-  LET.forEach((ch, i) => {
-    const k = K.stagger(t, wLetters - 0.1, i, 0.05, 0.4) * (1 - letGone);   // "never sees letters": the letters you'd expect
-    if (k <= 0.002) return;
-    const x = LX0 + i * (BW + BG), isR = ch === 'r';
-    K.layer(k * (1 - 0.75 * letFade), () => K.at(0, (1 - k) * 10, () => {
-      K.card(x, LY - BW / 2, BW, BW, { r: 10, fill: C.tile, stroke: isR ? K.mixColor(C.line2, C.strong, rK) : C.line2, lw: isR ? 1.5 + rK : 1.5, shadow: false });
-      K.text(ch, x + BW / 2, LY + 12, { font: 'mono', weight: 600, size: 34, color: C.strong, align: 'center' });
-    }));
-  });
-  const xK = K.io(t, wTen + 0.1, 0.5);
-  if (xK > 0.002) {   // the ten letters struck through: not what the model sees
-    const xa = LX0 - 16, xb = LX0 + LET.length * (BW + BG) - BG + 16;
-    K.line(xa, LY + 2, xb, LY - 2, { color: C.soft, w: 4, k: xK, alpha: Math.min(1, xK * 3) * (1 - letGone) });
-  }
-
-  // ---- row B: "strawberry" lands as plain text on the word, then snaps into three tiles
-  const S_PIECES = ['str', 'aw', 'berry'];
-  const sIn = K.io(t, wStraw - 0.05, 0.5);
-  const sCut = K.seg(t, wStraw + 0.6, wStraw + 1.1), sSplit = K.io(t, wStraw + 1.05, 0.6);
-  let PB = null;
-  if (sIn > 0.002) {
-    if (sSplit < 1) M.split(S_PIECES, 960 - 30 * (1 - sIn), yB + 8 * (1 - sIn), sSplit, { cut: sCut, alpha: sIn, size: 38 });
-    else {
-      PB = M.flow(S_PIECES, 960, { align: 'center', size: SZ });
-      PB.forEach((p, i) => {
-        const cg = countGlow(PIECES.length + i);
-        if (cg > 0.01) K.glow(p.x, yB, 100, C.head, 0.3 * cg);
-        M.tile(p.s, p.x, yB, { size: SZ, glow: cg, color: cg > 0.3 ? C.head : undefined });
+  // ---------------------------------------------------------------- the hall's surroundings (top band), drawn behind the workspace
+  const clerkX = D.cx, clerkY = D.y0 - 34;
+  if (surK > 0 && surA > 0) K.layer(surK * surA, () => {
+    // rooms: two dashed room outlines, each holding a tiny workspace
+    const rk = K.io(t, tRooms - 0.1, 0.6);
+    if (rk > 0) K.layer(rk, () => {
+      K.text('rooms', 635, 168, { ...M.type.label, color: C.soft, align: 'center' });
+      [470, 650].forEach((x, i) => {
+        const g = K.ctx(), y = 186 + (1 - rk) * 10;
+        g.save(); K.rr(x, y, 150, 120, 16); g.fillStyle = K.rgba(C.tile, 0.6); g.fill();
+        g.setLineDash([7, 6]); g.strokeStyle = K.rgba(C.head, 0.55); g.lineWidth = 2; g.stroke(); g.restore();
+        M.mini(t, x + 75, y + 76, 0.2, { lit: 0.8, alpha: K.io(t, tRooms + i * 0.15, 0.5) });
       });
-    }
-  }
+    });
+    // tools: the far end of the first phone line
+    const tk = K.io(t, tPhone + 0.5, 0.5);
+    if (tk > 0) K.layer(tk, () => {
+      K.text('tools', 1330, 166, { ...M.type.label, color: C.soft, align: 'center' });
+      K.iconTile('terminal', 1330, 218, 72, { stroke: K.rgba(C.accent, 0.6) });
+    });
+    // studio: a small room with a square canvas that slowly resolves
+    const sk = K.io(t, tStudio - 0.3, 0.6);
+    if (sk > 0) K.layer(sk, () => {
+      K.card(1560, 150, 240, 172, { r: 18, fill: K.mixColor(C.tile, C.page, 0.2), stroke: K.rgba(C.accent, 0.75), lw: 2, glow: 0.2 });
+      K.eyebrow('STUDIO', 1626, 182, { size: 20, color: C.accent });
+      M.well(t, 1680, 252, 104, K.io(t, tStudio + 0.2, 4, 'io'), { cells: 26, seed: 3 });
+    });
+    // phone lines: the clerk hands off to tools and to the studio
+    M.phone(t, clerkX + 56, clerkY - 12, 1288, 226, { k: K.io(t, tPhone, 0.7), bend: -20, pulse: true });
+    M.phone(t, clerkX + 56, clerkY + 14, 1556, 262, { k: K.io(t, tPhone + 0.35, 0.8), bend: 46, pulse: true });
+  });
 
-  // ---- [[measure]]: the count, then the card with reads / writes / costs on their spoken words
-  const cntK = K.io(t, wMeasured + 0.75, 0.5);
-  const CNT = { x: K.lerp(1400, 1430, settle), y: yB };
-  if (cntK > 0.002) K.at(0, (1 - cntK) * 10, () => K.pill('8 tokens', CNT.x, CNT.y, { size: K.lerp(30, 26, settle), stroke: C.gold, color: C.head, alpha: cntK }));
-  const cardK = K.io(t, cMeas + 0.15, 0.7);
-  const hold = 1 - 0.2 * K.io(t, wCosts + 0.9, 0.6);
-  const MX = 1260, MY = 146, MW = 520;   // card bottom ~406, clear of the desk top (420)
-  if (cardK > 0.002) {
-    K.at(0, (1 - cardK) * 30, () => {
-      const m = M.meter(MX, MY, MW, 'MEASURED IN TOKENS', [
-        { label: 'reads', v: 0.9, k: K.io(t, wRead - 0.1, 0.7) },
-        { label: 'writes', v: 0.45, k: K.io(t, wWrite - 0.1, 0.7) },
-        { label: 'costs', v: 0.65, k: K.io(t, wCosts - 0.1, 0.7) },
-      ], { labelW: 130, alpha: cardK * hold });
-      // a thin gold thread from the counted tiles up to the card: what is counted is what is measured
-      K.arrow(CNT.x + 70, CNT.y - 30, CNT.x + 150, MY + m.h + 12, { k: K.io(t, wRead - 0.3, 0.6), color: C.gold, w: 2, dash: [6, 8], alpha: 0.55 * hold, bend: -10 });
+  // ---------------------------------------------------------------- the workspace
+  const rulerFill = k2 > 0 ? K.lerp(1, 0.1, k2) : K.io(t, tTwo, 1.2);
+  const countK = K.io(t, tThou, 0.5) * (1 - K.io(t, cNow, 0.4));
+  const st = M.stage(t, {
+    desk: D, lit: 1 - 0.65 * night,
+    wash: night > 0 ? { color: M.mixHex(C.page, COLD, 0.25), a: 0.4 * night } : undefined,
+    lamp: { cordTop: 100 },
+    clerk: { label: K.io(t, tModel, 0.5) * (1 - K.io(t, cNow - 0.3, 0.4)), glow: K.io(t, 0, 0.8) * (1 - 0.6 * K.io(t, cSmall, 1)) },
+    ruler: { fill: rulerFill, count: '~2K tokens', countAt: 'below', countK },
+  });
+
+  // ---------------------------------------------------------------- papers and files (positions ride the desk: standard / 2021 / hall)
+  const tOff = tStarts, tBack = tHanded - 0.25;
+  const offK = K.io(t, tOff, 0.6, 'in'), backK = K.io(t, tBack, 0.6, 'out');
+  const uvAt = (P) => {
+    const a = P[0] || P[1], b = P[1], c = P[2];
+    const u = k2 > 0 ? K.lerp(b[0], c[0], k2) : K.lerp(a[0], b[0], k1);
+    const v = k2 > 0 ? K.lerp(b[1], c[1], k2) : K.lerp(a[1], b[1], k1);
+    return M.spot(D, u, v);
+  };
+  const items = [
+    { id: 'A', kind: 'paper', P: [null, [0.12, 0.5], [0.08, 0.45]], t0: tText, from: -150, rot: -0.05 },
+    { id: 'B', kind: 'paper', P: [[0.5, 0.55], [0.5, 0.55], [0.48, 0.62]], t0: -99, from: 0, rot: 0.03, keep: true },
+    { id: 'L', kind: 'letter', P: [null, [0.88, 0.5], [0.82, 0.62]], t0: tProg, rot: 0.06 },
+    { id: 'png', kind: 'file', ext: 'png', P: [null, null, [0.25, 0.3]], t0: tPhotos, from: -160, rot: -0.06 },
+    { id: 'pdf', kind: 'file', ext: 'pdf', P: [null, null, [0.66, 0.35]], t0: tPhotos + 0.3, from: 160, rot: 0.05 },
+    { id: 'mp3', kind: 'file', ext: 'mp3', P: [null, null, [0.95, 0.4]], t0: tRec, from: 160, rot: 0.04 },
+  ];
+  items.forEach((it) => {
+    if (t < it.t0) return;
+    let p;
+    if (!it.P[1]) p = M.spot(DH, it.P[2][0], it.P[2][1]);
+    else p = uvAt(it.P);
+    let x = p.x, y = p.y, a = 1;
+    if (it.kind === 'letter') {
+      // through the API slot, across to the desk
+      const k = K.io(t, it.t0, 0.9, 'out');
+      x = K.lerp(slot.x, p.x, k); y = K.lerp(slot.y, p.y, k) - Math.sin(k * Math.PI) * 40; a = K.clamp(k * 4);
+    } else if (it.t0 > -50) {
+      const k = K.io(t, it.t0, M.motion.land, 'out');
+      x += it.from * (1 - k); a = K.clamp(k * 1.6);
+    }
+    // the rest dims while the two constants are shown
+    if (!it.keep) a *= 1 - 0.65 * sameK * (1 - backK);
+    // overnight: everything slides off, then is handed back together from the left
+    if (t < tBack) { y += 60 * offK; a *= 1 - offK; }
+    else { x -= 170 * (1 - backK); a = backK; }
+    if (a <= 0.001) return;
+    if (it.kind === 'paper') M.paper(x, y, { alpha: a, rot: it.rot, glow: it.keep ? 0.5 * sameK * (1 - offK) : 0 });
+    else if (it.kind === 'letter') M.letter(x, y, k2 > 0 ? K.lerp(64, 84, k2) : 64, { alpha: a, rot: it.rot });
+    else M.file(x, y, 104, { ext: it.ext, alpha: a, rot: it.rot });
+  });
+
+  // ---------------------------------------------------------------- "BUILDS ON 00.04" (first beat only)
+  const nk = K.io(t, 0.5, 0.5) * (1 - K.io(t, 4, 0.6));
+  if (nk > 0) K.note(1300, 160, 480, 'BUILDS ON 00.04', 'model · app · agent', { size: 30, alpha: nk });
+
+  // ---------------------------------------------------------------- 2021: what did not exist yet
+  [['ChatGPT', tNoGpt], ['memory', tNoMem], ['tools', tNoTools]].forEach(([s, t0], i) => {
+    const k = K.io(t, t0, 0.5) * (1 - K.io(t, cNow, 0.45));
+    if (k <= 0) return;
+    const y = 400 + i * 84, to = { ...M.type.label }, tw = K.measure(s, to), w = tw + 26 + 14 + 48, x0 = 1400 + (1 - k) * 16;
+    K.layer(k, () => {
+      K.card(x0, y - 27, w, 54, { r: 27, fill: C.page, stroke: K.rgba(COLD, 0.7), shadow: false });
+      K.icon('cross', x0 + 34, y, 26, { color: COLD, w: 3 });
+      const tx = x0 + 34 + 13 + 14;
+      K.text(s, tx, y + 9, { ...to, color: COLD });
+      K.line(tx - 4, y, tx - 4 + (tw + 8) * K.io(t, t0 + 0.25, 0.4), y, { color: COLD, w: 3 });
+    });
+  });
+
+  // ---------------------------------------------------------------- constant 1: one piece at a time
+  const wA = sameK * (1 - offK);
+  if (wA > 0 && t >= tWrites) {
+    const n = 10, cell = 18, gap = 6, x0 = D.cx - (n * (cell + gap) - gap) / 2;
+    M.write(t, x0, D.y0 + 44, { t0: tWrites, n, cell, gap, alpha: wA });
+  }
+  const pk = K.io(t, tPiece, 0.5) * (1 - K.io(t, cOver, 0.5));
+  if (pk > 0) K.pill('one piece at a time', D.cx, D.y0 + 128, { size: 26, color: C.head, stroke: K.rgba(C.head, 0.5), fill: C.page, alpha: pk });
+
+  // ---------------------------------------------------------------- constant 2: nothing stays overnight
+  if (night > 0) {
+    const g = K.ctx(), mx = 1690, my = 222, r = 44;
+    K.layer(night, () => {
+      K.glow(mx, my, 150, COLD, 0.22);
+      g.save();
+      g.beginPath(); g.rect(mx - 100, my - 100, 200, 200); g.arc(mx + 20, my - 14, r * 0.9, 0, Math.PI * 2, true); g.clip();
+      g.beginPath(); g.arc(mx, my, r, 0, Math.PI * 2); g.fillStyle = M.mixHex(COLD, '#F2ECE0', 0.4); g.fill();
+      g.restore();
     });
   }
+  const hk = K.io(t, tHanded, 0.5);
+  if (hk > 0) K.pill('handed over every time', 1480, 236, { size: 26, color: C.head, stroke: K.rgba(C.head, 0.5), fill: C.page, alpha: hk });
 });

@@ -1,232 +1,242 @@
-/* 00.05 scene 04 — One tile at a time.
-   03's tiles drop away as the desk narrows; the question "What's the capital of France ?" is already on row 0.
-   The model sweeps (reads) the desk, the tray scores candidates, and it lays the answer on row 1 one tile per step
-   ("The capital of France is Paris . stop"). The chat then streams exactly those tiles, each lighting on the desk as
-   its word lands. Then temperature: row 2 "Write a name for my cat :", the slider reshapes the tray, three tries;
-   on [[twice]] two chats answer "Luna." / "Biscuit." and the desk slot shows the same two answers in turn. */
+/* 04 — Tokens, and a desk that grew.
+   The token ruler on the desk's near edge, and the desk growing from ~2K (2020) to 1M (Oct 2026).
+   Beats: tokens (un|believ|able drops onto the ruler) · all-counts (six things land, the ruler fills) ·
+   growth (dated timeline, desk 420 → 800 → hall) · meter (app status bar) · compare (same sentence,
+   different counts) · breaks (no clerk stays: fresh copies read the whole desk at once). */
 SCENE('04', (t, S) => {
+  const C = K.C, L = M.layout;
   K.bg();
-  const io = K.io, C = K.C;
-  const c = (n, fb) => S.cue(n, fb);
-  const f = (w, n, fb) => S.find(w, n || 0, fb);
-  const bump = (a, d) => Math.sin(Math.PI * K.seg(t, a, a + d));
 
-  // ---- cue times (local) ----
-  const tScore = c('score', 0), tAgain = c('again', 9.24), tStream = c('stream', 17.15);
-  const tDial = c('dial', 26.37), tTwice = c('twice', 41.3);
-  const tReads = f('reads', 0, 0.65), tScores = f('scores', 0, 2.79);
-  const tLays = f('lays', 0, 5.49);                  // "It lays one."
-  const tJoins = f('joins', 0, 7.77);                // "That tile joins the desk"
-  const tStep = f('step', 0, 12.47);                 // "one tile per step"
-  const tMeans = f('means', 0, 15.09), tStop = f('stop', 0, 15.92);
-  const tWatch = f('watching', 0, 24.39);
-  const tTemp = f('temperature', 0, 28.77);
-  const tLow = f('Low', 0, 30.11), tLikeliest = f('likeliest', 0, 31.49);
-  const tHigh = f('High', 0, 35.5), tReaches = f('reaches', 0, 36.44), tOdd = f('odd', 0, 40.16);
-  const tQuestion = f('question', 0, 43.13), tDifferent = f('different', 0, 44.37);
-  const tMost = f('Most', 0, 45.93), tApps = f('apps', 0, 46.43);
+  // ------------------------------------------------------------------ timing (cues + spoken words)
+  const T = {
+    tok: S.cue('tokens', 2.36), piece: S.find('piece', 0, 3.3), rough: S.find('roughly', 0, 4.5), billed: S.find('limited', 0, 7.4),
+    all: S.cue('all-counts', 10.47), hidden: S.find('hidden', 0, 13.4), msg: S.find('message', 0, 15.5),
+    files: S.find('files', 0, 17.0), images: S.find('images', 0, 17.5), tool: S.find('result', 0, 18.7), think: S.find('thinking', 0, 20.4),
+    grow: S.cue('growth', 22.98), y20: S.find('About', 0, 24.65), y23: S.find('hundred', 0, 28.85),
+    y24: S.find('million', 0, 32.65), y26: S.find('today', 0, 35.65),
+    meter: S.cue('meter', 39.74), mword: S.find('meter', 0, 40.6), used: S.find('context', 0, 41.64), left2: S.find('context', 1, 43.34),
+    cmp: S.cue('compare', 45.42), cmpWord: S.find('compare', 0, 47.85), newer: S.find('Newer', 0, 49.85), third: S.find('third', 0, 52.05),
+    brk: S.cue('breaks', 54.5), clerkW: S.find('clerk', 0, 56.14), each: S.find('Each', 0, 57.45), copy: S.find('copy', 0, 58.95),
+    whole: S.find('whole', 0, 60.15),
+  };
+  const io = K.io;
 
-  // ---- the desk: standard -> narrow (03 ends on M.DESK) ----
-  const dk = io(t, tScore, 0.8);
-  const R = M.lerpRect(M.layout.desk, M.layout.narrow, dk);
-  const d = M.desk(t, R, {});
-  const y0 = d.rowY(0), y1 = d.rowY(1), y2 = d.rowY(2);
+  // ------------------------------------------------------------------ the desk: hall (03's exit) → low standard → 2021 → 800 → hall
+  const HALL = M.at(L.hall), LOW = M.at(L.low);
+  const TINY = M.desk('y2021', { cx: 960, cy: 660 });
+  const W800 = M.desk({ w: 800, h: 320 }, { cx: 960, cy: 660 });
+  const HALLG = M.desk('hall', { cx: 960, cy: 660 });     // hall desk lowered under the timeline card
+  const G = M.motion.grow;
+  let D = M.lerpDesk(HALL, LOW, io(t, 0.2, G));
+  D = M.lerpDesk(D, TINY, io(t, T.grow + 0.3, G));
+  D = M.lerpDesk(D, W800, io(t, T.y23, G));
+  D = M.lerpDesk(D, HALLG, io(t, T.y24, G));
+  D = M.lerpDesk(D, HALL, io(t, T.meter, G));
 
-  M.eyebrow('ONE TILE AT A TIME', { x: 740, alpha: io(t, tScore + 0.1, 0.6) });
+  // growth layout factor: the timeline card shows, the lamp hangs from under it
+  const gL = io(t, T.grow, 0.6) * (1 - io(t, T.meter - 0.3, 0.6));
+  const clerkY = D.y0 - 34;
+  const lampDef = clerkY - 52 - 44 - 38 * 1.3;
+  const lampY = K.lerp(lampDef, Math.max(lampDef, 252), gL);
+  const cordTop = K.lerp(lampDef - 60, 238, gL);
 
-  // ---- 03's tiles (its exit layout on M.DESK) drop under the desk and fade, while the crossfade runs ----
-  const OLD = M.flow(['Explain', 'unbeliev', 'ably', 'short', 'words'], 960, { align: 'center' }).map((p) => ({ ...p, y: M.rowY(M.DESK, 0) }))
-    .concat(M.flow(['str', 'aw', 'berry'], 960, { align: 'center' }).map((p) => ({ ...p, y: M.rowY(M.DESK, 1) })));
-  OLD.forEach((p, i) => {
-    const u = io(t, tScore + 0.03 * i, 0.5, 'in');
-    if (u >= 1) return;
-    M.tile(p.s, p.x, p.y + 60 * u, { rot: (i % 2 ? 0.08 : -0.08) * u, alpha: 1 - u });
-  });
+  // ------------------------------------------------------------------ ruler geometry (mirrors M.ruler)
+  const rulerGeo = (Dd, cnt, below) => {
+    const cw = cnt ? K.measure(cnt, { font: 'mono', size: 30, weight: 600 }) + 48 : 0;
+    const xa = Dd.x0 + 30, xb = Dd.x1 - 30 - (cnt && !below ? cw + 14 : 0);
+    return { n: Math.max(1, Math.floor((xb - xa + 6) / 20)), xa, y: Dd.y1 - 30 };
+  };
 
-  // ---- row 0: the question (on the desk within 0.4 s, before "reads") ----
-  const Q = ["What's", 'the', 'capital', 'of', 'France', '?'];
-  M.row(t, Q, d.x0, y0, { k: (i) => io(t, tScore + 0.08 + 0.04 * i, 0.35) });
+  // counter: none until the 2020 tick, then the desk's capacity
+  let count = '', countAt = 'end', countK = 0;
+  if (t >= T.y20 && t < T.y23) { count = '~2K'; countAt = 'below'; countK = io(t, T.y20, 0.4) * (1 - io(t, T.y23 - 0.25, 0.25)); }
+  else if (t >= T.y23 && t < T.y24) { count = '100K'; countK = io(t, T.y23 + 0.3, 0.4) * (1 - io(t, T.y24 - 0.25, 0.25)); }
+  else if (t >= T.y24) { count = '1M'; countK = io(t, T.y24 + 0.3, 0.4); }
 
-  // ---- row 1: the answer the model lays, one tile per step ----
-  const ANS = ['The', 'capital', 'of', 'France', 'is', 'Paris', '.', 'stop'];
-  const CANDS = [
-    ['The', 'Paris', 'It', 'France', "It's"],
-    ['capital', 'city', 'answer', 'French', 'main'],
-    ['of', 'city', 'is', ',', 'for'],
-    ['France', 'French', 'the', 'Paris', 'a'],
-    ['is', 'was', 'has', ',', 'remains'],
-    ['Paris', 'a', 'the', 'located', 'known'],
-    ['.', 'and', ',', 'which', '!'],
-    ['stop', 'It', 'The', 'Its', 'Paris'],
+  // ------------------------------------------------------------------ tokens beat: un|believ|able
+  const PARTS = ['un', 'believ', 'able'];
+  const chipW = (s) => K.measure(s, { font: 'mono', size: 40, weight: 600 }) + 36;
+  const split = io(t, T.piece, 0.5);
+  const gap = 18 * split;
+  const ws = PARTS.map(chipW), total = ws.reduce((a, b) => a + b, 0) + gap * 2;
+  const stripX = 540, stripY = 252;
+  const rg0 = rulerGeo(LOW, '', false);
+  const drop0 = T.billed + 0.2;
+  const chipLanded = (i) => io(t, drop0 + i * 0.15 + 0.62, 0.15);
+
+  // ------------------------------------------------------------------ the six things on the desk
+  const ITEMS = [
+    { key: 'hidden', u: 0.12, v: 0.1, label: 'hidden instructions', sq: 6 },
+    { key: 'msg', u: 0.5, v: 0.1, label: 'messages', sq: 6 },
+    { key: 'files', u: 0.88, v: 0.1, label: 'files', sq: 9 },
+    { key: 'images', u: 0.12, v: 0.62, label: 'images', sq: 7 },
+    { key: 'tool', u: 0.5, v: 0.62, label: 'tool results', sq: 6 },
+    { key: 'think', u: 0.88, v: 0.62, label: 'thinking + reply', sq: 6 },
   ];
-  const SC = [[2.4, 1.4, 1.2, 0.8, 0.5], [2.6, 1.3, 1.0, 0.7, 0.5], [3.0, 1.2, 1.0, 0.6, 0.4], [3.2, 1.2, 0.9, 0.6, 0.4],
-    [2.8, 1.5, 1.0, 0.7, 0.4], [3.2, 1.4, 1.2, 0.8, 0.5], [2.6, 1.6, 1.3, 0.6, 0.3], [2.8, 1.2, 1.0, 0.7, 0.4]];
-  // timing per step: in (candidates fill), pick (gold), fly (lift), dur (flight), settle (gold -> plain)
-  const tOne = tStep - 1.0;                           // "one tile per step" begins
-  const ST = ANS.map((s, i) => {
-    if (i === 0) return { in: tScores + 0.05, stag: 0.15, pick: tLays - 0.1, fly: tLays + 0.25, dur: 0.45, settle: tJoins - 0.2 };
-    if (i === 1) return { in: tAgain + 0.3, stag: 0.06, pick: tAgain + 0.95, fly: tAgain + 1.15, dur: 0.45 };
-    if (i === 7) return { in: tMeans - 0.5, stag: 0.04, pick: tMeans - 0.1, fly: tMeans + 0.05, dur: 0.45, settle: tStop };
-    const b = tOne - 0.4 + 0.7 * (i - 2);
-    return { in: b, stag: 0.04, pick: b + 0.22, fly: b + 0.3, dur: 0.38 };
-  });
-  ST.forEach((st, i) => {
-    st.land = st.fly + st.dur;
-    if (st.settle == null) st.settle = st.land + 0.2;
-    st.out = i < ST.length - 1 ? ST[i + 1].in - 0.15 : Infinity;
-  });
-
-  // ---- the tray: one candidate set per step ----
-  const trayK = io(t, tScores - 0.35, M.motion.move) * (1 - io(t, tStream - 0.55, 0.6));
-  let si = 0; ST.forEach((st, i) => { if (t >= st.in - 0.05) si = i; });
-  const ss = ST[si];
-  let trayPos = null;
-  if (t < tDial) {
-    const fill = (j) => io(t, ss.in + ss.stag * j, si === 0 ? 0.4 : 0.25) * (1 - io(t, ss.out, 0.15));
-    trayPos = M.tray(t, CANDS[si], {
-      k: trayK, temp: 0.5, scores: SC[si], fill,
-      pick: t >= ss.pick ? 0 : undefined, lift: t >= ss.fly ? 1 : 0,
-    });
-    // the picked tile has left: a ghost holds its slot until the tray re-scores
-    const ga = t >= ss.fly ? fill(0) * trayK : 0;
-    if (ga > 0.01) M.tile(CANDS[si][0], trayPos[0].x, trayPos[0].y, { tone: 'ghost', size: 26, alpha: ga });
-  }
-
-  // sweeps: the model reads every tile on the desk (first one slow, the repeat faster, over both rows)
-  const QP = M.flow(Q, d.x0), AP = M.flow(ANS, d.x0);
-  const endOf = (P, n) => P[n - 1].x + P[n - 1].w / 2;
-  M.sweep(d.x0 - 40, endOf(QP, Q.length) + 40, y0, K.seg(t, tReads + 0.05, tReads + 0.05 + M.motion.sweep));
-  M.sweep(d.x0 - 40, endOf(QP, Q.length) + 40, (y0 + y1) / 2, K.seg(t, tAgain + 0.2, tAgain + 0.7), { r: 200 });
-
-  // [[stream]]: each answer tile lights as its word lands in the chat; "watching tiles land": one more ripple
-  const STREAM0 = tStream + 0.85, SSTEP = 0.45;
-  const wordOf = [0, 1, 2, 3, 4, 5, 5, -1];          // "Paris." covers the Paris and . tiles; stop never shows
-  const lit = (i) => {
-    if (wordOf[i] < 0) return 0;
-    return Math.max(bump(STREAM0 + SSTEP * wordOf[i], 0.8), bump(tWatch + 0.1 + 0.09 * i, 0.7));
-  };
-  // a desk tile with a gold overlay (k 0..1) whose text stays at full strength (no half-transparent text mid-blend)
-  const glowTile = (str, x, y, tone, k) => {
-    M.tile(str, x, y, { tone });
-    if (k <= 0.01) return;
-    M.tile(str, x, y, { tone: 'hot', glow: 0.5 * k, alpha: k });
-    K.text(str, x, y + M.tileSize() * 0.35, { ...M.type.tile, size: M.tileSize(), align: 'center', color: K.mixColor(tone === 'soft' ? C.soft : C.strong, C.strong, k) });
-  };
-  ST.forEach((st, i) => {
-    const slot = AP[i];
-    if (t < st.fly) return;
-    if (t < st.land) {
-      const src = trayPos ? trayPos[0] : { x: 1500, y: 316 };
-      M.fly(ANS[i], src.x, src.y, slot.x, y1, (t - st.fly) / st.dur, { bend: -140, trail: 0.6 });
-      return;
+  const drawItem = (key, x, y) => {
+    if (key === 'hidden') M.paper(x, y, { w: 120, h: 72, kind: 'note', pinned: true, lines: 2 });
+    else if (key === 'msg') { M.paper(x - 32, y - 6, { kind: 'msg', w: 100, h: 54, lines: 2 }); M.paper(x + 30, y + 10, { kind: 'msg', w: 100, h: 54, lines: 2 }); }
+    else if (key === 'files') M.file(x, y, 84, { ext: 'pdf' });
+    else if (key === 'images') M.file(x, y, 84, { ext: 'png' });
+    else if (key === 'tool') M.paper(x, y, { kind: 'tool', w: 120, h: 72, lines: 2 });
+    else if (key === 'think') {
+      M.paper(x, y, { w: 120, h: 72, lines: 1 });
+      for (let i = 0; i < 4; i++) K.card(x - 44 + i * 20, y + 8, 14, 14, { r: 3, fill: C.head, stroke: false, shadow: false });
+      M.pen(x + 40, y + 22, { s: 0.6 });
     }
-    const s = io(t, st.settle, i === 0 || i === 7 ? 0.5 : 0.3);
-    const after = i === 7 ? 'soft' : 'plain';
-    glowTile(ANS[i], slot.x, y1, after, Math.max(1 - s, lit(i)));
+  };
+  // phase A (all-counts): each lands on its word, from the nearest edge, with a label
+  const itemsAOut = io(t, T.grow, 0.5);
+  // phase B (meter onwards): all land together on the hall desk, no labels
+  const landB = T.meter + 0.25;
+  const dimK = io(t, T.cmp, 0.5) * (1 - io(t, T.brk, 0.6));
+
+  // ruler fill
+  let fillSq = 0;
+  for (let i = 0; i < 3; i++) fillSq += chipLanded(i);
+  ITEMS.forEach((it) => { fillSq += it.sq * io(t, T[it.key] + 0.2, 0.5); });
+  let fill = (fillSq / rg0.n) * (1 - io(t, T.grow, 0.6));
+  const pctB = K.lerp(38, 41, io(t, T.left2 + 0.5, 0.6));
+  fill += (pctB / 100) * io(t, landB + 0.3, 0.7);
+
+  // ------------------------------------------------------------------ breaks: ghost copies + pulses (drawn before the desk: feet hidden)
+  const GH = [{ x: 720, at: T.each }, { x: 960, at: T.copy }, { x: 1200, at: T.whole }];
+  let pulse = 0;
+  GH.forEach((g) => {
+    const a = K.env(t, g.at, g.at + 1.5, 0.3);
+    if (a > 0) M.clerk(t, g.x, clerkY, { ghost: true, alpha: a });
+    pulse = Math.max(pulse, io(t, g.at + 0.1, 0.25) * (1 - io(t, g.at + 0.45, 0.6)));
+  });
+  const clerkA = Math.max(0, 1 - io(t, T.clerkW, 0.5) + io(t, T.whole + 1.0, 0.6));
+
+  // 2026 tick: a short warm glow on the desk
+  const tickGlow = io(t, T.y26, 0.3) * (1 - io(t, T.y26 + 0.8, 1.0));
+
+  // ------------------------------------------------------------------ the workspace
+  M.stage(t, {
+    desk: D,
+    lamp: { y: lampY, cordTop },
+    clerk: { alpha: clerkA },
+    deskGlow: Math.max(tickGlow, pulse * 0.8),
+    wash: pulse > 0 ? { color: C.head, a: 0.16 * pulse } : undefined,
+    ruler: { fill, count, countAt, countK, alpha: 1 },
   });
 
-  // step counter (above the desk, left): the step being worked on. It ticks up as soon as the previous tile has
-  // landed and the next round starts (step 2 on [[again]]), before the tray shows that step's candidates.
-  const stepAt = ST.map((st, i) => (i === 0 ? ST[0].land : Math.max(ST[i - 1].land, st.in - 0.25)));
-  const nStep = stepAt.filter((a) => t >= a).length;
-  const cAlpha = io(t, ST[0].land, 0.4) * (1 - io(t, tDial, 0.5));
-  if (cAlpha > 0.01 && nStep > 0) {
-    const fresh = t < stepAt[nStep - 1] + 0.4;
-    K.layer(cAlpha, () => K.spans([{ s: 'step ', color: C.soft }, { s: String(nStep), color: fresh ? C.head : C.body }],
-      d.x0, y0 - 110, { font: 'mono', size: 30, weight: 600 }));
-  }
-
-  // ---- [[stream]]: the same question, the same tiles, appearing word by word where the tray was ----
-  const chK = io(t, tStream + 0.05, 0.6) * (1 - io(t, tDial, 0.5));
-  if (chK > 0.01) {
-    K.layer(chK, () => K.at(0, (1 - io(t, tStream + 0.05, 0.6)) * 30, () => {
-      M.chat(t, 1420, 230, 400, 300, [
-        { s: "What's the capital of France?", who: 'you', k: io(t, tStream + 0.3, 0.4) },
-        { s: 'The capital of France is Paris.', who: 'ai', k: io(t, tStream + 0.75, 0.4), stream: STREAM0, step: SSTEP },
-      ]);
-    }));
-  }
-
-  // ---- [[dial]]: temperature; row 2 is a new prompt with an empty slot ----
-  const cat = ['Write', 'a', 'name', 'for', 'my', 'cat', ':'];
-  const catP = M.row(t, cat, d.x0, y2, { k: (i) => io(t, tDial + 0.2 + 0.08 * i, 0.45) });
-  const lastCat = catP[catP.length - 1];
-  const slotL = lastCat.x + lastCat.w / 2 + 14;                 // left edge of the next tile
-  const slotW = 190, slotX = slotL + slotW / 2;
-
-  // the two answers that land in the slot on [[twice]] (they come from tries 1 and 2)
-  const ansA = { s: 'Luna', from: 0, fly: tTwice + 0.7, out: tQuestion + 0.2 };
-  const ansB = { s: 'Biscuit', from: 1, fly: tQuestion + 0.35, out: Infinity };
-  [ansA, ansB].forEach((a) => { a.land = a.fly + M.motion.land; });
-  const slotA = io(t, tDial + 1.0, 0.5) * (1 - io(t, ansA.land, 0.3));
-  if (slotA > 0.01) M.tile('', slotX, y2, { tone: 'ghost', w: slotW, alpha: slotA });
-
-  // the dial: mid -> low -> high -> back to mid ("most apps set the dial for you")
-  const kn = 0.5 - 0.5 * io(t, tLow, 0.7) + io(t, tHigh, 0.8) - 0.5 * io(t, tMost + 0.05, 0.7);
-  if (t >= tTemp - 0.3) {
-    M.slider(t, kn, {
-      draw: io(t, tTemp - 0.2, 0.6), knob: io(t, tTemp + 0.25, 0.6, 'back'),
-      labels: io(t, tTemp + 0.55, 0.5) * (1 - io(t, tMost, 0.45)),
+  // items on the desk
+  if (t < T.meter + 0.1) {
+    if (itemsAOut < 1) K.layer(1 - itemsAOut, () => {
+      ITEMS.forEach((it, i) => {
+        const t0 = T[it.key];
+        if (t < t0) return;
+        const p = M.spot(D, it.u, it.v);
+        const col = i % 3;
+        const fx = col === 0 ? p.x - 260 : col === 2 ? p.x + 260 : p.x;
+        const fy = col === 1 ? p.y + 220 : p.y;
+        const L1 = M.land(t, t0, p.x, p.y, fx, fy);
+        K.layer(L1.a, () => drawItem(it.key, L1.x, L1.y));
+        K.text(it.label, p.x, p.y + 74, { font: 'ui', weight: 600, size: 26, color: C.strong, align: 'center', alpha: io(t, t0 + 0.25, 0.4) });
+      });
     });
-    const pa = io(t, tApps, 0.5);           // "Most apps set the dial for you"
-    if (pa > 0.01) K.pill('the app sets it', 1500, 880, { size: 26, alpha: pa });
-  }
-
-  if (t >= tDial) {
-    const catK = io(t, tDial + 0.8, M.motion.move) * (1 - io(t, tTwice, 0.6));
-    M.tray(t, ['Mochi', 'Luna', 'Pepper', 'Biscuit', 'Admiral'], {
-      k: catK, temp: kn,
-      fill: (i) => io(t, tDial + 1.2 + 0.1 * i, 0.4),
-      pick: t >= tLikeliest - 0.2 && t < tHigh ? 0 : undefined,
+  } else {
+    K.layer(1 - 0.7 * dimK, () => {
+      ITEMS.forEach((it) => {
+        const p = M.spot(D, it.u, it.v);
+        const L1 = M.land(t, landB, p.x, p.y, p.x, p.y + 160);
+        K.layer(L1.a, () => drawItem(it.key, L1.x, L1.y));
+      });
+      // one more message lands while the meter ticks up
+      if (t >= T.left2) {
+        const p = M.spot(D, 0.68, 0.92);
+        const L1 = M.land(t, T.left2, p.x, p.y, p.x + 300, p.y);
+        K.layer(L1.a, () => M.paper(L1.x, L1.y, { kind: 'msg', w: 110, h: 54, lines: 2 }));
+      }
     });
   }
 
-  // three separate tries, above the desk (a desk row is one sequence; tries are separate runs)
-  const triesOut = io(t, tDifferent, 0.6);
-  const tryA = (i) => io(t, tLow + 0.15 + 0.12 * i, 0.5) * (1 - triesOut);
-  const lowPick = ['Mochi', 'Mochi', 'Mochi'], highPick = ['Luna', 'Biscuit', 'Admiral'];
-  const tryXY = (i) => ({ x: 400 + 340 * i, y: 222 + 100 });
-  [0, 1, 2].forEach((i) => {
-    const a = tryA(i); if (a <= 0.01) return;
-    const cx = tryXY(i).x, x = cx - 150, y = 222, w = 300, h = 156;
-    K.layer(a, () => K.at(0, (1 - Math.min(1, io(t, tLow + 0.15 + 0.12 * i, 0.5))) * 20, () => {
-      K.card(x, y, w, h, { r: 20, fill: K.rgba(C.tile, 0.6) });
-      K.eyebrow('TRY ' + (i + 1), x + 28, y + 42, { size: 20 });
-      const ty = y + 100;
-      const lo = io(t, tLikeliest + 0.2 * i, 0.4) * (1 - io(t, tReaches + 0.3 * i, 0.35));
-      const flown = i === 0 ? t >= ansA.fly : i === 1 ? t >= ansB.fly : false;   // the answer leaves for the desk slot
-      const hi = io(t, tReaches + 0.3 * i + 0.35, 0.4) * (flown ? 0 : 1);
-      if (lo > 0.01) M.tile(lowPick[i], cx, ty + (1 - lo) * 10, { tone: 'hot', alpha: lo });
-      if (hi > 0.01) M.tile(highPick[i], cx, ty + (1 - hi) * 10, { tone: 'hot', alpha: hi, rot: i === 2 ? 0.07 * io(t, tOdd - 0.6, 0.6) : 0 });
-      if (flown) M.tile(highPick[i], cx, ty, { tone: 'ghost', size: 30, alpha: 0.6 });
-    }));
+  // ------------------------------------------------------------------ tokens: the word strip, then the chips drop onto the ruler
+  const stripA = io(t, T.tok, 0.5);
+  if (stripA > 0 && t < drop0 + 1.5) {
+    // the whole word first, then it splits into three chips
+    if (split < 1) K.layer(stripA * (1 - io(t, T.piece, 0.2)), () => M.chip('unbelievable', stripX, stripY, { size: 40 }));
+    let x = stripX - total / 2;
+    PARTS.forEach((s, i) => {
+      const cx = x + ws[i] / 2; x += ws[i] + gap;
+      const k = io(t, drop0 + i * 0.15, 0.7, 'io');
+      if (k >= 1) return;
+      const tx = rg0.xa + i * 20 + 7, ty = rg0.y;
+      const px = K.lerp(cx, tx, k), py = K.lerp(stripY, ty, k) - Math.sin(Math.PI * k) * 60;
+      const sc = K.lerp(1, 0.22, k);
+      K.layer(stripA * io(t, T.piece, 0.2) * (1 - K.clamp((k - 0.8) / 0.2)), () =>
+        K.at(px, py, sc, 0, () => M.chip(s, 0, 0, { size: 40, fill: M.mixHex(C.tile, '#3A3020', k), stroke: K.rgba(C.head, 0.6 + 0.4 * k) })));
+    });
+  }
+  // caption
+  const capA = io(t, T.rough, 0.5) * (1 - io(t, drop0 - 0.35, 0.35));
+  if (capA > 0) K.pill('≈ 4 characters of English', stripX, stripY + 92, { size: 26, color: C.body, alpha: capA });
+
+  // ------------------------------------------------------------------ growth: the dated timeline card
+  if (gL > 0) K.layer(gL, () => {
+    K.card(160, 132, 1600, 104, { r: 20, fill: K.rgba(C.page, 0.94), stroke: C.line2 });
+    K.eyebrow('CONTEXT WINDOW', 196, 172);
+    M.dated('Oct 2026', 1724, 172, { align: 'right' });
+    const TK = [
+      { x: 200, s: '2020 · ~2K', at: T.y20 },
+      { x: 480, s: '2023 · 100K · Claude', at: T.y23 },
+      { x: 900, s: '2024 · 1M · Gemini', at: T.y24 },
+      { x: 1300, s: '2026 · 1M · Claude', at: T.y26 },
+    ];
+    const g = K.ctx();
+    TK.forEach((k, i) => {
+      const on = io(t, k.at, 0.4);
+      const cur = i === TK.length - 1 ? on : on * (1 - io(t, TK[i + 1].at, 0.4));
+      if (cur > 0) K.glow(k.x, 208, 34, C.head, 0.5 * cur);
+      g.save(); g.fillStyle = M.mixHex(C.line2, C.head, on); g.beginPath(); g.arc(k.x, 208, 7, 0, Math.PI * 2); g.fill(); g.restore();
+      const col = M.mixHex(M.mixHex(C.quiet, C.body, on), C.strong, cur);
+      K.text(k.s, k.x + 18, 217, { font: 'mono', size: 26, weight: 600, color: col, alpha: 0.55 + 0.45 * on });
+    });
   });
 
-  // the answers in the desk slot: Luna lands, then Biscuit replaces it as the second chat answers
-  [ansA, ansB].forEach((a) => {
-    if (t < a.fly) return;
-    const x = slotL + M.tileW(a.s) / 2;
-    if (t < a.land) {
-      const src = tryXY(a.from);
-      M.fly(a.s, src.x, src.y, x, y2, (t - a.fly) / M.motion.land, { bend: -140, trail: 0.6 });
-      return;
-    }
-    const gone = io(t, a.out, 0.45, 'in');
-    if (gone >= 1) return;
-    const s = io(t, a.land + 0.6, 0.5);
-    if (gone > 0) M.tile(a.s, x, y2 + 40 * gone, { alpha: 1 - gone, rot: -0.06 * gone });
-    else glowTile(a.s, x, y2, 'plain', 1 - s);
+  // ------------------------------------------------------------------ meter: the app's status bar
+  const barK = io(t, T.mword, 0.6, 'out') * (1 - io(t, T.cmp, 0.5));
+  if (barK > 0) {
+    const p = Math.round(pctB);
+    const txtA = io(t, T.used, 0.4);
+    M.ctxBar(1240 + (1 - barK) * 80, 180, 560, (p / 100) * io(t, T.mword + 0.3, 0.8), { alpha: barK, text: txtA > 0 ? `context: ${p}% used · ${100 - p}% left` : '' });
+  }
+
+  // ------------------------------------------------------------------ compare: same sentence, different counts
+  const cmpOut = io(t, T.brk, 0.6);
+  if (t >= T.cmp && cmpOut < 1) K.layer(1 - cmpOut, () => {
+    const card = (cx, t0, label, nFull, nExtra, tExtra) => {
+      const L1 = M.land(t, t0, cx, 560, cx < 960 ? cx - 260 : cx + 260, 560);
+      if (t < t0) return;
+      K.layer(L1.a, () => {
+        const x = L1.x, y = L1.y;
+        M.paper(x, y, { w: 620, h: 240, lines: 0 });
+        K.text('The desk is measured in tokens.', x, y - 56, { font: 'read', size: 30, color: C.ink, align: 'center' });
+        const n = nFull + nExtra, cell = 26, gp = 8, x0 = x - (n * (cell + gp) - gp) / 2;
+        for (let i = 0; i < n; i++) {
+          const at = i < nFull ? t0 + 0.4 + i * 0.07 : tExtra + (i - nFull) * 0.15;
+          const k = io(t, at, 0.25, 'out');
+          if (k <= 0) continue;
+          if (i >= nFull) K.glow(x0 + i * (cell + gp) + cell / 2, y + 2, 30, C.head, 0.5 * k * (1 - io(t, tExtra + 1.2, 0.8)));
+          K.card(x0 + i * (cell + gp), y - 11 - (1 - k) * 6, cell, cell, { r: 5, fill: C.head, stroke: K.rgba(C.ink, 0.5), shadow: false, alpha: k });
+        }
+        K.text(label, x, y + 76, { font: 'mono', size: 26, weight: 600, color: C.ink, align: 'center', alpha: io(t, t0 + 0.5, 0.4) });
+      });
+    };
+    card(560, T.cmp + 0.3, 'older Claude · 100 tokens', 10, 0, 0);
+    card(1360, T.newer, 'newer Claude · up to ~135', 10, 3, T.third);
+    K.pill("counts don't compare", 960, 770, { size: 30, color: C.accent, stroke: K.rgba(C.accent, 0.6), fill: C.page, alpha: io(t, T.cmpWord, 0.4) });
   });
 
-  // ---- [[twice]]: same question, two answers (both from the tries above) ----
-  const answerStroke = K.mixColor(C.line2, C.gold, io(t, tDifferent, 0.5));
-  [[tTwice + 0.35, 'Luna.', 190], [tQuestion - 0.1, 'Biscuit.', 470]].forEach(([t0, ans, y]) => {
-    const k = io(t, t0, 0.6); if (k <= 0.01) return;
-    K.layer(k, () => K.at(0, (1 - k) * 30, () => {
-      M.chat(t, 1420, y, 400, 262, [
-        { s: 'Write a name for my cat:', who: 'you', k: io(t, t0 + 0.15, 0.4) },
-        { s: ans, who: 'ai', k: io(t, t0 + 0.55, 0.4), stroke: answerStroke },
-      ]);
-    }));
-  });
+  // ------------------------------------------------------------------ breaks: no clerk stays
+  const bk = io(t, T.brk, 0.6) * (1 - io(t, S.dur - 0.2, 0.6));
+  if (bk > 0) {
+    M.breaks(200, 172, '', bk, { align: 'left' });
+    K.layer(bk, () => {
+      K.text('No clerk stays.', 200, 224, { font: 'read', size: 32, color: C.strong, italic: true, alpha: io(t, T.clerkW - 0.2, 0.5) });
+      K.text('Each reply: a fresh copy.', 200, 272, { font: 'read', size: 32, color: C.strong, italic: true, alpha: io(t, T.each, 0.5) });
+    });
+  }
 });

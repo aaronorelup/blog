@@ -1,217 +1,250 @@
-/* 06 — Sounding right is not being right.
-   The desk rises (M.layout.high) so the floor under it shows. The floor is "what the model has" (never on the desk):
-   - [[no-library]] a ghost shelf (not there), crossed out on "There isn't one"; a dashed globe on "search tool".
-   - [[trained]] shelf and globe leave; gold hops draw tile to tile along the row, left to right, under the cream label
-     "which tiles follow which"; pill "patterns, not a library" on "which"; then, echoing 01, a gold "sounds right"
-     pill and a hollow dashed "is right?" pill whose dashed check never fills ("no built-in check").
-   - [[confident]] the empty Source slot pulses ("the fact isn't on the desk"); on "lays" Smith / (2019) / p. 42 fly
-     one by one out of the "sounds right" pill into the slot (04's landing motion), calm and 'hot'.
-     "Often that's right": a soft floor row Capital of France: Paris with a gold tick, briefly.
-     "When it isn't": a terracotta ? beside the citation; "hallucination": a terracotta pill names it over the
-     citation, the three tiles turn terracotta with a hairline crack; "confident": pill "confident wrong guess" under the desk.
-   - [[specifics]] four invented specimens fan out on the floor, each ringed.
-   - [[cutoff]] specimens dim to 0.35; a "what training saw" timeline draws under the desk with a cutoff tick;
-     past it a faded dashed "new release" tile and a terracotta ? (after the cutoff = a guess).
-   No 'back' in this scene. */
+// 06 — Seeing, hearing, and making
+// The desk slides left (hall -> 'left'), photos / PDFs / recordings / video land on it, the word "multimodal" splits into
+// three slots (reads · makes · hands off), the clerk makes one small picture itself (rare), then phones the studio next door
+// (dashed hand-off line) where a separate model turns static into a picture. Top-left panel carries one fact at a time:
+// Claude / Gemini inputs -> "Claude writes text only" -> ChatGPT stitches models -> Sora app closed + the paperclip.
 SCENE('06', (t, S) => {
-  const C = K.C;
+  const C = K.C, g = K.ctx();
   K.bg();
 
-  // ---- beats (local seconds; fallbacks match the narrated timings)
-  const cNo = S.cue('no-library', 2.03), cTrain = S.cue('trained', 11.23), cConf = S.cue('confident', 21.2);
-  const cSpec = S.cue('specifics', 37.81), cCut = S.cue('cutoff', 43.53);
-  const wNone = S.find('There', 0, 4.84), wSearch = S.find('search', 0, 7.94);
-  const wWhich = S.find('which', 1, 14.4), wSound = S.find('sounding', 0, 17.28), wCheck = S.find('check', 0, 19.66);
-  const wFact = S.find('fact', 0, 21.58), wLays = S.find('lays', 0, 25.37);
-  const wOften = S.find('Often', 0, 30.52), wIsnt = S.find("isn't", 2, 32.42), wHall = S.find(/^hallucination/i, 0, 33.83);
-  const wConfW = S.find(/^confident/i, 0, 35.5);
-  const wSpec = [S.find('citations', 0, 39.87), S.find('version', 0, 40.7), S.find('file', 0, 41.48), S.find('package', 0, 42.16)];
-  const wTrainCut = S.find(/^cutoff/i, 0, 45.41), wSnap = S.find('snapshot', 0, 46.51), wGuess = S.find('guess', 1, 48.59);
+  // ---- cues (local seconds)
+  const cReads = S.cue('reads', 11.2), cMakes = S.cue('makes', 23.7), cHand = S.cue('handoff', 28.6);
+  const cText = S.cue('claude-text', 39.4), cStitch = S.cue('stitched', 48.1), cSora = S.cue('sora', 55.5);
+  const wPhotos = S.find(/^photos/, 0, 3.3), wPdf = S.find(/^P$/, 0, 3.8), wRec = S.find(/^recordings/, 0, 4.6), wVid = S.find(/^video/, 0, 5.2);
+  const wMulti = S.find(/^multimodal/, 0, 7.3), wHides = S.find(/^hides/, 0, 9.1);
+  const wClaude1 = S.find(/^Claude/, 0, 14.8), wGemini = S.find(/^Gemini/, 0, 19.0);
+  const wMakesV = S.find(/^makes/, 0, 25.3), wRarer = S.find(/^rarer/, 0, 27.8);
+  const wHands = S.find(/^hands/, 0, 30.6), wThrough = S.find(/^through/, 0, 33.6), wPhones = S.find(/^phones/, 0, 37.4);
+  const wChart = S.find(/^chart/, 0, 42.0), wDraws = S.find(/^draws/, 0, 44.2), wCalls = S.find(/^calls/, 0, 45.4);
+  const wStitches = S.find(/^stitches/, 0, 51.3), wSpring = S.find(/^spring/, 0, 58.5);
+  const wPaper = S.find(/^paperclip/, 0, 60.9), wRefuses = S.find(/^refuses/, 0, 63.2), wOwn = S.find(/^Its$/, 0, 64.8);
 
-  // ---- the desk rises from the standard spot (05's end) to the high spot
-  const rise = K.io(t, 0.3, 0.8);
-  const R = M.lerpRect(M.DESK, M.layout.high, rise);
-  M.eyebrow('WHERE THE PICTURE BREAKS', { alpha: K.io(t, 0.2, 0.6) });
+  // ---- the desk: 05's hall desk slides left to make room for the studio
+  const kDesk = K.io(t, 0.2, M.motion.grow);
+  const D = M.lerpDesk(M.at(M.layout.hall), M.at(M.layout.left), kDesk);
+  const studioA = K.io(t, 0.6, 0.8);
+  const openK = K.io(t, wHands + 1.0, 0.8);
+  const showK = K.io(t, wThrough - 0.6, 4.2, 'sine');
 
-  // a hollow dashed pill: what is NOT there (soft / ghost colour)
-  const ghostPill = (s, x, y, a) => {
-    const size = 26, w = K.measure(s, { ...M.type.label }) + size * 1.6, h = size * 1.9, g = K.ctx();
-    K.layer(a, () => {
-      g.save(); g.strokeStyle = C.soft; g.lineWidth = 2; g.setLineDash([7, 7]);
-      K.rr(x - w / 2, y - h / 2, w, h, h / 2); g.fillStyle = K.rgba(C.tile, 0.5); g.fill(); g.stroke(); g.restore();
-      K.text(s, x, y + size * 0.34, { ...M.type.label, color: C.soft, align: 'center' });
-    });
-    return w;
-  };
-
-  // ================= the floor under the desk (drawn first) =================
-  const FLOOR = 800;   // specimen row
-  const PILLY = 668;   // the one floor pill at a time
-  // ---- the ghost library (not there): a dashed cabinet of books, then crossed out; gone once "training" is said
-  const shelfK = K.io(t, cNo + 0.2, 0.7) * (1 - K.io(t, cTrain - 0.1, 0.6));
-  const shelfDim = K.lerp(1, 0.4, K.io(t, wNone + 0.6, 0.8));
-  if (shelfK > 0) K.layer(shelfK, () => {
-    K.layer(0.55 * shelfDim, () => {
-      const g = K.ctx();
-      g.save(); g.strokeStyle = C.soft; g.lineWidth = 2; g.setLineDash([8, 9]);
-      K.rr(780, 728, 360, 140, 18); g.stroke(); g.restore();
-      [840, 900, 960, 1020, 1080].forEach((x) => K.icon('book', x, 789, 58, { color: C.soft, w: 3 }));
-      K.line(800, 831, 1120, 831, { color: C.soft, w: 3 });
-    });
-    const xk = K.io(t, wNone, 0.5);
-    if (xk > 0) K.at(960, 798, 0.8 + 0.2 * xk, 0, () => K.icon('cross', 0, 0, 150, { color: C.soft, w: 6, alpha: xk * K.lerp(1, 0.7, K.io(t, wNone + 0.6, 0.8)) }));
+  // files landing = desk filling up (ruler)
+  const lands = [wPhotos, wPdf, wRec, wVid];
+  const landed = lands.reduce((s, a) => s + K.io(t, a, M.motion.land, 'out'), 0);
+  const writeK = K.io(t, cText + 0.9, 3.0, 'lin');
+  const W = M.stage(t, {
+    desk: D,
+    clerk: { glow: Math.max(K.env(t, cReads + 0.8, cReads + 3.6, 0.5), K.env(t, wMakesV - 0.4, wRarer, 0.4) * 0.8, K.env(t, cText + 0.6, wDraws + 0.4, 0.5) * 0.8) },
+    ruler: { fill: 0.06 + 0.06 * landed + 0.06 * writeK },
   });
-  // ---- a search tool: only if the app adds it (dashed, soft)
-  const gk = K.io(t, wSearch, 0.6) * (1 - K.io(t, cTrain - 0.1, 0.6));
-  if (gk > 0) K.layer(gk, () => K.at(0, (1 - gk) * 10, () => {
-    const g = K.ctx(), s = 96, x = 1560, y = 740;
-    g.save(); g.strokeStyle = C.soft; g.lineWidth = 2; g.setLineDash([7, 7]);
-    K.rr(x - s / 2, y - s / 2, s, s, s * 0.28); g.fillStyle = K.rgba(C.tile, 0.35); g.fill(); g.stroke(); g.restore();
-    K.icon('globe', x, y, s * 0.62, { color: C.soft, w: 3 });
-    K.text('only if the app adds it', x, y + 96, { ...M.type.label, color: C.soft, align: 'center' });
-  }));
+  const cl = W.clerk;
 
-  // ---- floor pills, one idea at a time
-  const patK = K.io(t, wWhich, 0.5) * (1 - K.io(t, wSound - 0.35, 0.4));
-  if (patK > 0) K.pill('patterns, not a library', 960, PILLY + (1 - patK) * 10, { size: 26, alpha: patK, color: C.strong });
-  // echo of 01: a gold "sounds right" and a hollow "is right?" whose check never fills
-  // the "is right?" row is laid out as one centred group: [ ] is right?  no built-in check
-  const IRW = K.measure('is right?', { ...M.type.label }) + 26 * 1.6, NCW = K.measure('no built-in check', { ...M.type.label });
-  const BOX = 40, grpW = BOX + 18 + IRW + 24 + NCW, gx0 = 960 - grpW / 2;
-  const SR = { x: gx0 + BOX + 18 + IRW / 2, y: PILLY }, IR = { x: SR.x, y: PILLY + 64 };
-  const srK = K.io(t, wSound - 0.1, 0.5) * (1 - K.io(t, wLays + 1.3, 0.5));
-  const irK = K.io(t, wSound + 0.5, 0.5) * (1 - K.io(t, cConf + 0.2, 0.5));
-  if (irK > 0) {
-    const iy = IR.y + (1 - irK) * 10;
-    ghostPill('is right?', IR.x, iy, irK);
-    // the built-in check: an empty checkbox that never gets ticked, named on "check"
-    const ck = K.io(t, wCheck - 0.1, 0.5);
-    if (ck > 0) K.layer(irK * ck, () => {
-      const g = K.ctx(), bx = gx0 + BOX / 2;
-      g.save(); g.strokeStyle = C.soft; g.lineWidth = 3;
-      K.rr(bx - BOX / 2, iy - BOX / 2, BOX, BOX, 8); g.fillStyle = K.rgba(C.tile, 0.6); g.fill(); g.stroke(); g.restore();
-      K.text('no built-in check', IR.x + IRW / 2 + 24, iy + 26 * 0.34 + (1 - ck) * 6, { ...M.type.label, color: C.accent });
-    });
-  }
-  if (srK > 0) K.pill('sounds right', SR.x, SR.y + (1 - K.io(t, wSound - 0.1, 0.5)) * 10, { size: 26, color: C.head, stroke: C.gold, alpha: srK, glow: 0.25 * K.io(t, wLays - 0.4, 0.4) });
+  // ---- the studio next door (closed until the hand-off)
+  const st = M.studio(t, M.layout.studio.x, M.layout.studio.y, { open: openK, show: showK, alpha: studioA * (0.55 + 0.45 * Math.max(openK, K.env(t, cHand, Infinity, 0.6))), seed: 3 });
 
-  // "Often that's right": a quick, true pick from the same patterns, with a gold tick
-  const okK = K.io(t, wOften - 0.15, 0.45) * (1 - K.io(t, wIsnt - 0.3, 0.45));
-  if (okK > 0) {
-    const Q = M.flow(['Capital', 'of', 'France:', 'Paris'], 940, { align: 'center' });
-    K.layer(okK * 0.9, () => {
-      Q.forEach((p, i) => M.tile(p.s, p.x, PILLY + 30 + (1 - okK) * 10, { tone: i === 3 ? 'hot' : 'soft', glow: i === 3 ? 0.25 : 0 }));
-      const L = Q[3]; K.icon('check', L.x + L.w / 2 + 44, PILLY + 30, 44, { color: C.head, w: 5, alpha: K.io(t, wOften + 0.25, 0.4) });
-    });
-  }
-  // the guess named: "confident wrong guess"
-  const confK = K.io(t, wConfW - 0.1, 0.5) * (1 - K.io(t, cCut, 0.5));
-  if (confK > 0) K.pill('confident wrong guess', 960, PILLY + (1 - confK) * 8, { size: 30, color: C.accent, stroke: C.accent, alpha: confK });
-
-  // ---- specimens: where hallucinations show (all invented on purpose)
-  const specs = ['citation', 'v4.2.1', 'C:\\project\\config.yaml', 'fastjsonx'];
-  // own rings: an ellipse that clears the tile's corners even on the wide path tile
-  const RY = 64, cornerY = 40;
-  const ws = specs.map((s) => M.tileW(s)), rxs = ws.map((w) => Math.max(w / 2 + 24, (w / 2) / Math.sqrt(1 - (cornerY / RY) ** 2)));
-  const span = rxs.reduce((p, q) => p + 2 * q, 0) + 24 * (specs.length - 1);
-  let acc = 960 - span / 2;
-  const SX = rxs.map((rx) => { const x = acc + rx; acc += 2 * rx + 24; return x; });
-  const dimS = K.lerp(1, 0.35, K.io(t, cCut, 0.6));
-  specs.forEach((s, i) => {
-    const k = K.io(t, wSpec[i] - 0.1, 0.5); if (k <= 0) return;
-    const rk = K.io(t, wSpec[i] + 0.35, 0.5), x = K.lerp(960, SX[i], k);
-    M.tile(s, x, FLOOR, { alpha: k * dimS });
-    if (rk > 0) K.layer(k * dimS, () => K.ring(x, FLOOR + 3, rxs[i], RY, rk, { color: C.accent, w: 4, rot: -0.03 }));
+  // ---- what lies on the desk
+  // the one text page (05's summary shrinking to a 2021-style text page)
+  const pk = K.io(t, 0.2, M.motion.grow);
+  // once the hand-off beat starts, the inputs step back so the eye follows the phone line
+  const inDim = 1 - 0.6 * K.io(t, cHand, 0.6);
+  const pTo = { x: 290, y: 540 };
+  const pFrom = { x: 960, y: 590 };
+  M.paper(K.lerp(pFrom.x, pTo.x, pk), K.lerp(pFrom.y, pTo.y, pk), {
+    w: K.lerp(240, 120, pk), h: K.lerp(300, 86, pk), lines: 3, kind: 'text', alpha: inDim, glow: 0.5 * K.env(t, 0.9, 2.6, 0.5),
   });
+  if (pk > 0.98) K.text('text', 290, 612, { ...M.type.label, color: C.soft, align: 'center', alpha: K.io(t, 1.2, 0.5) * (1 - K.io(t, wPhotos, 0.4)) });
 
-  // ---- what training saw: a timeline under the desk with its cutoff; past it, an unseen release and a guess
-  const TY = PILLY, TX0 = 380, TX1 = 1640, CX = 1220, NX = 1420, NW = M.tileW('new release');
-  const tl = K.io(t, cCut + 0.3, 0.9);
-  const cutK = K.io(t, wTrainCut - 0.4, 0.5), after = K.io(t, wTrainCut + 0.1, 0.6);
-  const snap = K.io(t, wSnap, 0.6);
-  if (tl > 0) {
-    const xEnd = K.lerp(TX0, TX1, tl);
-    if (snap > 0) K.glow((TX0 + CX) / 2, TY, 420, C.head, 0.07 * snap);
-    K.line(TX0, TY, Math.min(xEnd, CX), TY, { color: C.gold, w: 3, alpha: 0.5 + 0.2 * snap });
-    if (xEnd > CX) K.line(CX, TY, Math.min(xEnd, NX - NW / 2 - 12), TY, { color: C.gold, w: 3, alpha: K.lerp(0.5, 0.2, after), dash: after > 0 ? [6, 8] : undefined });
-    K.eyebrow('what training saw', TX0, TY - 22, { size: 20, alpha: tl });
-  }
-  if (cutK > 0) {
-    K.line(CX, TY - 28, CX, TY + 28, { color: C.head, w: 3, dash: [5, 6], k: cutK, alpha: 0.9 });
-    K.text('training cutoff', CX - 16, TY - 16, { ...M.type.label, color: C.head, align: 'right', alpha: cutK });
-  }
-  if (after > 0) {
-    M.tile('new release', NX, TY + (1 - after) * 10, { tone: 'ghost', alpha: 0.55 * after });
-    const qa = K.io(t, wTrainCut + 0.5, 0.5), pulse = 1 + 0.12 * Math.sin(Math.PI * K.seg(t, wGuess, wGuess + 0.5));
-    if (qa > 0) K.at(NX + NW / 2 + 46, TY, pulse, 0, () => {
-      K.glow(0, 0, 36, C.accent, 0.16 * qa);
-      K.icon('question', 0, 0, 40, { color: C.accent, w: 4, alpha: qa });
-    });
-  }
-
-  // ================= the desk =================
-  const d = M.desk(t, R, { rows: 1 });
-  const y = d.rowY(1);
-  const lead = ['Cite', 'your', 'source.', 'Source:'];
-  const fill = ['Smith', '(2019)', 'p. 42'];
-  const P = M.flow(lead, d.x0);
-  const last = P[P.length - 1], slotX0 = last.x + last.w / 2 + 14;
-  const F = M.flow(fill, slotX0);
-  const slotW = F[F.length - 1].x + F[F.length - 1].w / 2 - slotX0, slotX = slotX0 + slotW / 2;
-  const rowK = K.io(t, 0.7, 0.6);
-  // lead-in tiles (the question, the answer's start)
-  P.forEach((p, i) => { const k = K.clamp(rowK * 1.6 - i * 0.2); if (k > 0) M.tile(p.s, p.x, y + (1 - k) * 10, { alpha: k }); });
-
-  // which tiles tend to follow which: bold gold hops drawn left to right, under a cream label
-  const hopT = (i) => cTrain + 0.5 + i * 0.55;
-  const arrA = (1 - 0.65 * K.io(t, cConf, 0.6)) * (1 - K.io(t, wOften - 0.6, 0.5));
-  const hops = P.map((p, i) => [p, i < P.length - 1 ? P[i + 1] : { x: slotX0 + F[0].w / 2, w: F[0].w }]);
-  if (arrA > 0) hops.forEach(([a, b], i) => {
-    const k = K.io(t, hopT(i), 0.5, 'out'), lastHop = i === hops.length - 1;
-    if (k > 0) K.arrow(a.x + a.w * 0.12, y - 44, b.x - b.w * 0.12, y - 44, { k, bend: -30, color: C.head, w: 3, alpha: arrA * (lastHop ? 0.75 : 1), headSize: 13, dash: lastHop ? [7, 7] : undefined });
-  });
-  const lblK = K.io(t, cTrain + 0.4, 0.5) * (1 - K.io(t, cConf - 0.2, 0.5));
-  if (lblK > 0) K.text('which tiles follow which', (P[0].x + P[0].w * 0.12 + slotX0 + F[0].w * 0.38) / 2, y - 102 + (1 - lblK) * 8, { ...M.type.label, color: C.strong, align: 'center', alpha: lblK });
-
-  // the empty slot: pulses when "the fact isn't on the desk", then the guess fills it
-  const land = (i) => wLays - 0.4 + i * 0.5;                    // fly start of tile i (0.45 s each)
-  const landed = (i) => K.io(t, land(i) + M.motion.land - 0.05, 0.1);
-  const slotA = rowK * (1 - K.io(t, land(2) + 0.2, 0.3));
-  const pulse = K.seg(t, wFact - 0.2, wLays - 0.4) > 0 && t < wLays - 0.4 ? Math.pow(Math.sin(Math.PI * 2 * (t - (wFact - 0.2)) / 1.5), 2) : 0;
-  if (slotA > 0.01) {
-    if (pulse > 0) K.glow(slotX, y, slotW * 0.42, C.strong, 0.08 * pulse);
-    M.tile('', slotX, y, { tone: 'ghost', w: slotW, alpha: slotA });
-    if (pulse > 0) K.layer(0.7 * pulse * slotA, () => {
-      const g = K.ctx(); g.save(); g.strokeStyle = C.strong; g.lineWidth = 2.5; g.setLineDash([7, 7]);
-      K.rr(slotX - slotW / 2, y - 34, slotW, 68, 12); g.stroke(); g.restore();
-    });
-  }
-  // the guess: three calm, sure tiles ('hot' on purpose) fly out of "sounds right" into the slot
-  const hk = K.io(t, wHall, 0.5);                                // named: a hallucination
-  const bob = (i) => K.wave(t, M.motion.bob.speed, M.motion.bob.amp, i * 1.3) * K.io(t, land(2) + 1, 1) * (1 - hk);
-  F.forEach((p, i) => {
-    const u = K.seg(t, land(i), land(i) + M.motion.land);
-    if (u <= 0) return;
-    if (u < 1) { M.fly(p.s, SR.x, SR.y, p.x, y, u, { bend: 140, trail: 0.6, alpha: K.clamp(u / 0.2) }); return; }
-    const yy = y + bob(i);
-    M.tile(p.s, p.x, yy, { tone: 'hot', glow: 0.35 * (1 - hk) });
-    if (hk > 0) {
-      M.tile(p.s, p.x, yy, { tone: 'wrong', alpha: hk });
-      // a hairline crack down the face
-      const r = K.rng(31 + i), x0 = p.x + p.w / 2 - 11, pts = [];
-      for (let j = 0; j <= 4; j++) pts.push([x0 + (j % 2 ? 3 : -3) + r() * 2, yy - 33 + j * 9]);
-      const n = Math.max(1, Math.round(4 * K.io(t, wHall + 0.15, 0.4)));
-      const g = K.ctx(); g.save(); g.strokeStyle = C.accent; g.lineWidth = 1.5; g.globalAlpha *= hk * 0.85; g.lineJoin = 'round';
-      g.beginPath(); pts.slice(0, n + 1).forEach(([px, py], j) => (j ? g.lineTo(px, py) : g.moveTo(px, py))); g.stroke(); g.restore();
+  // four media files land one after another (from above the desk)
+  const files = [
+    { ext: 'png', name: 'photo.png', x: 460, at: wPhotos },
+    { ext: 'pdf', name: 'notes.pdf', x: 630, at: wPdf },
+    { ext: 'mp3', name: 'call.mp3', x: 800, at: wRec },
+    { ext: 'mp4', name: 'clip.mp4', x: 970, at: wVid },
+  ];
+  files.forEach((f, i) => {
+    if (t < f.at) return;
+    const L = M.land(t, f.at, f.x, 540, f.x, 300);
+    const scan = K.env(t, cReads + 1.0 + i * 0.35, cReads + 2.2 + i * 0.35, 0.35);
+    // while the Claude row is on screen, audio and video dim with a small x: Claude does not read them; Gemini relights all
+    const av = f.ext === 'mp3' || f.ext === 'mp4';
+    const dimK = av ? K.io(t, wClaude1 - 0.1, 0.5) * (1 - K.io(t, wGemini - 0.1, 0.5)) : 0;
+    M.file(L.x, L.y, 110, { ext: f.ext, name: f.name, alpha: L.a * (1 - 0.7 * dimK) * inDim, glow: scan * (1 - dimK) });
+    if (dimK > 0.01) {
+      const bx = L.x + 44, by = L.y - 58;
+      K.layer(dimK, () => {
+        g.save(); g.beginPath(); g.arc(bx, by, 19, 0, Math.PI * 2); g.fillStyle = C.page; g.fill();
+        g.lineWidth = 2; g.strokeStyle = K.rgba(C.accent, 0.85); g.stroke(); g.restore();
+        K.icon('cross', bx, by, 20, { color: C.accent, w: 3 });
+      });
     }
   });
-  const citeX = (F[0].x - F[0].w / 2 + F[2].x + F[2].w / 2) / 2;
-  // "when it isn't": a terracotta question beside the citation
-  const qk = K.io(t, wIsnt - 0.15, 0.5);
-  if (qk > 0) K.at(F[2].x + F[2].w / 2 + 50, y - (1 - qk) * 8, 1, 0, () => {
-    K.glow(0, 0, 44, C.accent, 0.18 * qk);
-    K.icon('question', 0, 0, 52, { color: C.accent, w: 4.5, alpha: qk });
+
+  // the picture the clerk makes itself (piece by piece, from its pen) — rare
+  const pic = { x: 1150, y: 492, s: 116 };
+  const picBuild = K.io(t, wMakesV - 0.2, 2.0, 'lin');
+  const picDim = (1 - 0.6 * K.io(t, cText, 0.6)) * (1 - K.io(t, cStitch - 0.3, 0.5));
+  if (t >= wMakesV - 0.4) {
+    K.layer(K.io(t, wMakesV - 0.4, 0.4) * picDim, () => {
+      M.well(t, pic.x, pic.y, pic.s, picBuild, { order: 'tiles', cells: 12, still: true });
+      if (picBuild > 0 && picBuild < 1) {
+        const n = 12, idx = Math.min(n * n - 1, Math.floor(picBuild * n * n)), r = Math.floor(idx / n), c = idx % n, cs = pic.s / n;
+        M.pen(pic.x - pic.s / 2 + (c + 1) * cs, pic.y - pic.s / 2 + (r + 1) * cs, { s: 0.7 });
+      }
+    });
+    const rk = K.io(t, wRarer - 0.2, 0.5) * (1 - K.io(t, cHand + 0.4, 0.5));
+    if (rk > 0) K.pill('rare', pic.x + pic.s / 2 + 62, pic.y, { size: 26, color: C.soft, stroke: K.rgba(C.quiet, 0.8), alpha: rk });
+    // who actually does this: a small dated example chip under the picture
+    // keyed to "Two:" and gone before "Three," so it never reads as an example of the hand-off
+    const ek = K.io(t, cMakes + 0.3, 0.5) * (1 - K.io(t, cHand - 0.45, 0.4));
+    if (ek > 0) K.layer(ek, () => {
+      const ex = 1252, ey = 606, ew = 380, eh = 110;
+      K.card(ex - ew / 2, ey, ew, eh, { r: 16, fill: K.rgba(C.tile, 0.94), stroke: K.rgba(C.head, 0.35), shadow: false });
+      K.text('e.g. Gemini Omni', ex, ey + 42, { ...M.type.label, color: C.head, align: 'center' });
+      K.text('one model: video + sound', ex, ey + 82, { ...M.type.label, color: C.strong, align: 'center' });
+    });
+  }
+
+  // ---- the hand-off: a phone line from the clerk to the studio door
+  const lineK = K.io(t, wHands - 0.2, 1.1, 'out');
+  const p1 = { x: cl.x + 66, y: cl.y - 6 }, p2 = { x: st.door.x - 4, y: st.door.y };
+  const callBright = K.env(t, wCalls - 0.2, wCalls + 3.0, 0.4);
+  M.phone(t, p1.x, p1.y, p2.x, p2.y, { k: lineK, pulse: true, bend: -110, w: 3 + callBright, alpha: 0.75 + 0.2 * callBright });
+  // label under the studio: what is behind that door
+  const sLab = K.io(t, wThrough - 0.1, 0.6) * (1 - 0.45 * K.io(t, wOwn, 0.6));
+  if (sLab > 0) K.layer(sLab, () => {
+    K.text('separate model', 1705, 796, { ...M.type.label, color: C.strong, align: 'center' });
+    K.text('API or tool', 1705, 830, { ...M.type.label, color: C.accent, align: 'center' });
   });
-  // "hallucination": the word itself, over the citation
-  if (hk > 0) K.pill('hallucination', citeX, y - 92 - (1 - hk) * 10, { size: 30, color: C.accent, stroke: C.accent, alpha: hk, fill: '#2A1E22' });
+  // "connector": Claude calls another model through a connector, on the same line
+  const conK = K.io(t, wCalls - 0.1, 0.5, 'back') * (1 - K.io(t, cStitch, 0.6));
+  if (conK > 0) {
+    const cx = 1352, cy = 394, to = { font: 'ui', weight: 600, size: 26 }, w = K.measure('connector', to) + 26 * 1.6 + 34;
+    K.layer(K.clamp(conK), () => {
+      K.card(cx - w / 2, cy - 25, w, 50, { r: 25, fill: C.page, stroke: K.rgba(C.accent, 0.8), shadow: false, glow: 0.3 });
+      K.icon('puzzle', cx - w / 2 + 30, cy, 26, { color: C.accent, w: 2 });
+      K.text('connector', cx + 17, cy + 9, { ...to, color: C.accent, align: 'center' });
+    });
+  }
+
+  // ---- Claude writes code, the code draws the chart
+  const code = { x: 1064, y: 606, w: 360, h: 180 };
+  const codeA = K.io(t, cText + 0.5, 0.5) * (1 - K.io(t, cStitch - 0.3, 0.5));
+  const toChart = K.io(t, wDraws, 0.7);
+  if (codeA > 0) K.layer(codeA, () => {
+    K.layer(1 - toChart, () => {
+      K.card(code.x, code.y, code.w, code.h, { r: 14, fill: C.page, stroke: K.rgba(C.head, 0.5), shadow: true });
+      K.editor({ x: code.x - 6, y: code.y - 6, w: code.w, h: code.h }, t, ['bars = [3, 5, 4, 7]', 'plt.bar(x, bars)', 'plt.savefig(c)'], { syntax: 'py', size: 26, typeAt: cText + 0.9, cps: 16, gutter: false });
+    });
+    if (toChart > 0) K.layer(toChart, () => {
+      M.paper(code.x + code.w / 2, code.y + code.h / 2, { w: code.w, h: code.h, lines: 0 });
+      const vals = [3, 5, 4, 7], bx = code.x + 70, by = code.y + code.h - 30;
+      K.line(code.x + 46, by, code.x + code.w - 40, by, { color: M.palette.inkLine, w: 3 });
+      K.line(code.x + 46, by, code.x + 46, code.y + 26, { color: M.palette.inkLine, w: 3 });
+      vals.forEach((v, i) => {
+        const hk = K.io(t, wDraws + 0.3 + i * 0.12, 0.5, 'out'), bh = v * 17 * hk;
+        K.card(bx + i * 72, by - bh, 44, bh, { r: 4, fill: C.head, stroke: false, shadow: false });
+      });
+    });
+  });
+
+  // ---- top right: "multimodal" splits into three slots
+  const tK = K.io(t, wMulti - 0.2, 0.6);
+  const slotK = (i) => K.io(t, wHides + i * 0.18, 0.5, 'out');
+  const active = t < cReads ? -1 : t < cMakes ? 0 : t < cHand ? 1 : 2;
+  const slotNames = ['1  reads', '2  makes', '3  hands off'];
+  const slotX = [1150, 1385, 1650];
+  if (tK > 0) {
+    K.title('multimodal', 1400, 192, { size: 56, align: 'center', alpha: tK });
+    slotNames.forEach((s, i) => {
+      const k = slotK(i); if (k <= 0) return;
+      const on = active === i ? 1 : 0;
+      const past = i < active ? 0.4 : 0;
+      const hot = Math.max(on * K.io(t, [cReads, cMakes, cHand][i], 0.5), past);
+      const bright = i === 2 && active === 2 ? 1 : 0.75;
+      const x = K.lerp(1400, slotX[i], k);
+      K.pill(s, x, 268, { size: 26, alpha: k, color: K.mixColor(C.soft, C.head, hot), stroke: K.rgba(C.head, 0.15 + 0.7 * hot * bright), fill: C.tile, glow: 0.5 * hot * (i === 2 && active === 2 ? 1.4 : 0.8) });
+    });
+  }
+
+  // ---- top left: one fact at a time
+  // reads: two dated cards
+  const readsA = K.io(t, wClaude1 - 0.3, 0.5) * (1 - K.io(t, cText - 0.1, 0.5));
+  if (readsA > 0) K.layer(readsA, () => {
+    M.dated('Oct 2026', 104, 166);
+    const row = (y, who, rest, at) => {
+      const k = K.io(t, at, 0.5, 'out');
+      if (k <= 0) return;
+      K.layer(k, () => {
+        K.card(96 + (1 - k) * -20, y, 632, 60, { r: 16, fill: K.rgba(C.tile, 0.92), stroke: K.rgba(C.head, 0.35), shadow: false });
+        K.spans([{ s: who, color: C.head }, { s: rest, color: C.strong }], 120 + (1 - k) * -20, y + 40, { size: 26, font: 'ui', weight: 600 });
+      });
+    };
+    row(190, 'Claude: ', 'text · images · PDF in', wClaude1 - 0.3);
+    row(264, 'Gemini: ', 'text · images · audio · video in', wGemini - 0.3);
+  });
+  // claude-text: the caption
+  const capA = K.io(t, cText + 0.1, 0.5) * (1 - K.io(t, cStitch - 0.3, 0.4));
+  if (capA > 0) K.layer(capA, () => {
+    K.text('Claude writes text only', 104, 220, { font: 'head', weight: 700, size: 40, color: C.head });
+    const s1 = K.io(t, wChart, 0.5), s2 = K.io(t, wCalls, 0.5);
+    K.text('a chart: code that draws it', 104, 272, { ...M.type.label, color: C.strong, alpha: s1 });
+    K.text('a picture: another model', 104, 312, { ...M.type.label, color: C.accent, alpha: s2 });
+  });
+  // stitched: "ChatGPT" feels like one model, but it is several stitched together
+  const chA = K.io(t, cStitch, 0.5) * (1 - K.io(t, cSora - 0.2, 0.5));
+  if (chA > 0) K.layer(chA, () => {
+    K.card(96, 140, 632, 190, { r: 18, fill: K.rgba(C.tile, 0.94), stroke: C.line2 });
+    K.text('ChatGPT', 124, 184, { font: 'ui', weight: 700, size: 28, color: C.strong });
+    K.text('feels like one model', 700, 184, { ...M.type.label, color: C.soft, align: 'right', alpha: 1 - K.io(t, wStitches, 0.4) });
+    K.text('three models, stitched', 700, 184, { ...M.type.label, color: C.accent, align: 'right', alpha: K.io(t, wStitches + 0.6, 0.5) });
+    const sp = K.io(t, wStitches - 0.1, 0.8);
+    const names = ['chat', 'image', 'voice'];
+    const xs = [216, 412, 608], tw = 150, ty = 214, th = 88;
+    // stitches between the tiles
+    if (sp > 0.6) [0, 1].forEach((i) => K.line(xs[i] + tw / 2, ty + th / 2, xs[i + 1] - tw / 2, ty + th / 2, { color: C.accent, w: 3, dash: [6, 6], k: K.io(t, wStitches + 0.5 + i * 0.15, 0.4) }));
+    if (sp <= 0) {
+      K.card(124, ty, 576, th, { r: 14, fill: K.rgba(C.head, 0.08), stroke: K.rgba(C.head, 0.5), shadow: false });
+      K.icon('sparkle', 412, ty + th / 2, 46, { color: C.head });
+    } else {
+      names.forEach((n, i) => {
+        const x = K.lerp(412, xs[i], sp), w = K.lerp(576, tw, sp);
+        K.card(x - w / 2, ty, w, th, { r: 14, fill: K.rgba(C.head, 0.08), stroke: K.rgba(i === 0 ? C.head : C.accent, 0.6), shadow: false });
+        K.text(n, x, ty + th / 2 + 9, { ...M.type.label, color: i === 0 ? C.head : C.strong, align: 'center', alpha: K.seg(sp, 0.5, 1) });
+      });
+      if (sp < 0.5) K.icon('sparkle', 412, ty + th / 2, 46, { color: C.head, alpha: 1 - sp * 2 });
+    }
+  });
+  // sora: the app closed this spring; then the paperclip that accepts some files and refuses others
+  const soA = K.io(t, cSora + 0.1, 0.5) * (1 - 0.6 * K.io(t, wSpring + 0.6, 0.8));
+  if (soA > 0) K.layer(soA, () => {
+    K.card(96, 140, 632, 84, { r: 18, fill: K.rgba(C.tile, 0.94), stroke: C.line2, shadow: false });
+    K.icon('sparkle', 136, 182, 30, { color: C.soft });
+    K.text('Sora app', 164, 192, { font: 'ui', weight: 700, size: 30, color: C.strong });
+    M.flag('closed · spring 2026', 560, 182);
+  });
+  const barA = K.io(t, wPaper - 0.4, 0.5);
+  if (barA > 0) K.layer(barA, () => {
+    const bx = 96, by = 246, bw = 632, bh = 76;
+    K.card(bx, by, bw, bh, { r: bh / 2, fill: C.page, stroke: K.rgba(C.head, 0.45), shadow: true });
+    // paperclip
+    g.save(); g.strokeStyle = C.head; g.lineWidth = 3; g.lineCap = 'round'; g.lineJoin = 'round';
+    const px = bx + 44, py = by + bh / 2;
+    g.beginPath();
+    g.moveTo(px - 4, py + 10); g.lineTo(px - 4, py - 10); g.arc(px + 2, py - 10, 6, Math.PI, 0); g.lineTo(px + 8, py + 12);
+    g.arc(px, py + 12, 8, 0, Math.PI); g.lineTo(px - 8, py - 14); g.arc(px + 2, py - 14, 10, Math.PI, 0); g.lineTo(px + 12, py + 4);
+    g.stroke(); g.restore();
+    const chips = [['.png', true], ['.pdf', true], ['.mp4', false]];
+    let x = bx + 140;
+    chips.forEach(([s, ok], i) => {
+      const at = wPaper + 0.2 + i * 0.45, k = K.io(t, at, 0.4, 'out');
+      if (k <= 0) return;
+      K.layer(k, () => {
+        const w = M.chip(s, x + 52, py, { size: 26, color: ok ? C.strong : C.soft, stroke: K.rgba(ok ? C.head : C.accent, 0.6) });
+        const mk = ok ? K.io(t, at + 0.4, 0.3) : K.io(t, wRefuses, 0.4, 'back');
+        if (mk > 0) K.icon(ok ? 'check' : 'cross', x + 52 + w / 2 + 26, py, 30, { color: ok ? C.head : C.accent, w: 4, alpha: K.clamp(mk) });
+      });
+      x += 170;
+    });
+  });
+
+  // ---- shelf pointer
+  M.shelf('The Network', M.layout.shelf.x, M.layout.shelf.y, { k: K.io(t, wOwn, 0.6) });
 });

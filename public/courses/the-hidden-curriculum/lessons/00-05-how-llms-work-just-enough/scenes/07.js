@@ -1,174 +1,218 @@
-/* 07 — The surprises you'll hit
-   The tile desk shrinks from 06's raised spot to the bottom band (M.layout.small, one row, tiles 26). Four surprise
-   screens appear above it, two columns (left: chat, error; right: terminal, usage), each on its spoken words, and each
-   points back to the desk, which acts out the cause:
-   - [[letters]] chat "How many r's in strawberry?" / "There are 2 r's in strawberry." ("2" lands on "two"; "2 r's" underlined in terracotta);
-     an arrow drops from the "2" to the desk, where "strawberry" is cut into str | aw | berry. Pill "tiles, not letters".
-   - [[forgot]] the desk fills with a conversation (heat rises); the first tile "use Python" (your own first instruction,
-     a solid user tile: never 05's pinned hidden "Be brief.", which stays) slides off the left edge on "first instructions" (one soft gold edge pass); then on "error" the card "context window
-     exceeded". Pill "the desk filled up".
-   - [[fake]] the model lays "fast" "json" "x" (gold: its confident pick) and the terminal runs pip install fastjsonx,
-     which fails; on "function" it lays "parse" "_fast" and the terminal calls json.parse_fast(data), which fails too;
-     on "doesn't exist" each guessed name gets a terracotta ring and an arrow from the terminal. Pill "a plausible guess".
-   - [[bill]] a USAGE card; "input tokens" grows on "input", "output tokens" on "output"; on "re-sent" the whole
-     conversation slides back onto the desk, a gold sweep counts it, an arrow carries it up to "input tokens", which grows.
-     Pill "the re-sent desk".
-   Earlier cards dim to 0.6 while a new one speaks; after the last word all four settle at 0.85. No overshoot. */
+// 07 — Diffusion: from static to picture
+// Phase A (0 → not-all): inside the studio. A big square canvas well goes from static to the tea-house picture,
+//   step thumbnails on the right, the prompt nudging from the left; then the families list and flow matching.
+// Phase B (not-all → text-diffusion): two wells side by side: diffusion (all at once) vs piece by piece (reported).
+// Phase C (text-diffusion → end): text: a smudged page that sharpens all at once vs words written one after another.
 SCENE('07', (t, S) => {
-  const C = K.C;
-  const w = (re, fb) => S.find(re, 0, fb);
-
-  // ---- times (local)
-  const cL = S.cue('letters', 2.26), cF = S.cue('forgot', 9.88), cK = S.cue('fake', 18.02), cB = S.cue('bill', 26.03);
-  const tTwo = w(/^two/i, 6.44), tTiles = w(/^tiles/i, 7.6);
-  const tFirst = w(/^first/i, 11.33), tError = w(/^error/i, 13.24), tDesk = w(/^desk/i, 16.74);
-  const tPkg = w(/^package/i, 19.12), tFn = w(/^function/i, 21.12), tDoesnt = w(/^doesn/i, 21.9);
-  const tExist = w(/^exist/i, 22.22), tConf = w(/^confident/i, 23.44);
-  const tInput = w(/^input/i, 29.04), tOutput = w(/^output/i, 29.63), tResent = w(/^re-?sent/i, 31.36), tCounted = S.find(/^counted/i, 1, 32.76);  // 2nd "counted": "the re-sent desk, counted"
-  const tEnd = S.dur || 33.76;
-
+  const C = K.C, g = K.ctx();
   K.bg();
 
-  // ---- card alphas: full while speaking, 0.6 while a later one speaks, all 0.85 at the end
-  const settle = K.io(t, tEnd - 0.7, 0.7);
-  const focus = (next) => K.lerp(K.lerp(1, 0.6, K.io(t, next, 0.5)), 0.85, settle);
+  const cNoise = S.cue('noise', 4.6), cSteps = S.cue('steps', 7.5), cPic = S.cue('picture', 15.2);
+  const cFam = S.cue('families', 17.3), cNot = S.cue('not-all', 32.3), cText = S.cue('text-diffusion', 42.2);
+  const cFront = S.cue('frontier', 57.7);
+  const w = (re, n, fb) => S.find(re, n || 0, fb);
+  const tDiff = w(/^diffusion/i, 0, 3.3);
+  const tNudged = w(/^nudged/i, 0, 13.2);
+  const tImages = w(/^images/i, 0, 18.4), tVideo = w(/^video/i, 0, 19.1), tSound = w(/^sound/i, 0, 19.8), tMusic = w(/^music/i, 0, 20.8);
+  const tVoices = w(/^voices/i, 0, 23.7), tFlow = w(/^flow/i, 0, 29.0), tFewer = w(/^fewer/i, 0, 30.5);
+  const tOpenAI = w(/^openai/i, 0, 35.4), tReported = w(/^reported/i, 0, 37.7), tPiece = w(/^piece/i, 0, 39.3);
+  const tMercury = w(/^mercury/i, 0, 46.7), tGoogle = w(/^google/i, 0, 47.3), tSmudged = w(/^smudged/i, 0, 51.0);
+  const tSharpen = w(/^sharpen/i, 0, 52.3), tFast = w(/^fast/i, 0, 54.9), tOneTok = w(/^token$/i, 0, 60.4);
+  const tMachine = w(/^machine/i, 0, 65.5), tOwn = tMachine - 1.6;
 
-  M.eyebrow("Surprises you'll hit", { alpha: K.io(t, 0.3, 0.6) });
+  const A = 1 - K.io(t, cNot, 0.6);                 // phase A visibility
+  const Bin = K.io(t, cNot + 0.6, 0.6), Bout = 1 - K.io(t, cText, 0.6);
+  const Cin = K.io(t, cText + 0.4, 0.7);
 
-  // ---- the desk: 06's raised desk moves down into the bottom band
-  const R = M.lerpRect(M.layout.high, M.layout.small, K.io(t, 0.15, 0.8));
-  // forgot: heat rises as the conversation fills it, eases off when the next surprise starts
-  const heat = 0.7 * K.io(t, cF + 0.5, 1.2) * (1 - K.io(t, cK, 0.8));
-  const tOff = tFirst + 0.1;                        // "use Python" leaves on "first instructions"
-  const edge = Math.sin(Math.PI * K.seg(t, tOff + 0.25, tOff + 0.85));
-  const d = M.desk(t, R, { rows: 1, heat, edge, alpha: 0.9 });
-  const Y = d.rowY(1), SZ = 26, TOP = Y - SZ * 2.27 / 2;   // tile row centre and top edge
-
-  // ===================================================== 1. letters (left column, top): chat
-  const chatA = K.io(t, cL, 0.5) * focus(cF);
-  const CH = { x: 120, y: 205, w: 780, h: 240 };
-  const reply = 'There are 2 r\'s in strawberry.';
-  const tStream = tTwo - 0.55;                    // "2" (third word, 0.25 s per word) lands on "two"
-  const cr = M.chat(t, CH.x, CH.y, CH.w, CH.h, [
-    { s: 'How many r\'s in strawberry?', who: 'you', k: K.io(t, cL + 0.25, 0.4) },
-    { s: reply, who: 'ai', k: K.io(t, tStream - 0.3, 0.3), stream: tStream },
-  ], { size: 28, alpha: chatA });
-  // where the "2" sits in the ai bubble (see M.chat: bubble 1 is one line, 28 px)
-  const cf = { font: 'read', weight: 400, size: 28 };
-  const bub2 = cr.y + 16 + (28 * 1.3 + 24) + 12;
-  const claimW = K.measure("2 r's", cf);           // the wrong claim "2 r's"
-  const twoX = cr.x + 18 + 20 + K.measure('There are ', cf) + claimW / 2, twoY = bub2 + 12 + 28 * 0.95 - 10;
-  const letA = K.env(t, cL, cF + 0.1, 0.4);       // the desk's strawberry + arrow live only during this beat
-  // a terracotta underline marks the wrong claim (a ring would cut the neighbouring words: the spaces are narrow)
-  K.layer(chatA, () => K.mark(twoX - claimW / 2 - 4, twoY + 22, claimW + 8, K.io(t, tTwo + 0.05, 0.45), { color: C.accent, w: 4, alpha: 1 }));
-  const SX = 760;
-  K.layer(letA, () => {
-    K.arrow(twoX + 6, twoY + 36, SX - 40, TOP - 14, { k: K.io(t, tTwo + 0.45, 0.6), bend: 70, color: C.body, w: 2.5, alpha: 0.75 });
-    const sk = K.io(t, tTwo + 0.8, 0.4);
-    M.split(['str', 'aw', 'berry'], SX, Y, K.io(t, tTiles + 0.5, 0.6), { size: SZ, cut: K.seg(t, tTiles, tTiles + 0.5), alpha: sk });
-  });
-
-  // ===================================================== 2. forgot (left column, bottom): the desk fills, an error
-  const CONV = ['use Python', 'hi', 'sure', 'step', 'two', 'and', 'then'];
-  const AFTER = CONV.slice(1).concat(['next']);
-  const fA = K.env(t, cF + 0.4, cK, 0.4);
-  if (fA > 0) K.layer(fA, () => {
-    const P0 = M.flow(CONV, d.x0, { size: SZ }), P1 = M.flow(AFTER, d.x0, { size: SZ });
-    const uOff = K.seg(t, tOff, tOff + 1.3), shift = K.io(t, tOff + 0.55, 0.6);
-    // the first instruction slides off the left edge and drops
-    const o = M.offEdge(P0[0].x, Y, d.edge, Y + 150, uOff);
-    const k0 = K.io(t, cF + 0.5, 0.35);
-    M.tile(CONV[0], o.x, o.y + (1 - k0) * 10, { size: SZ, rot: o.rot, alpha: o.alpha * k0 });
-    for (let i = 1; i < CONV.length; i++) {
-      const k = K.stagger(t, cF + 0.5, i, 0.1, 0.35);
-      M.tile(CONV[i], K.lerp(P0[i].x, P1[i - 1].x, shift), Y + (1 - k) * 10, { size: SZ, alpha: k });
-    }
-    const kn = K.io(t, tOff + 0.95, 0.4);           // the newest message keeps coming in at the right
-    M.tile(AFTER[AFTER.length - 1], P1[P1.length - 1].x, Y + (1 - kn) * 10, { size: SZ, alpha: kn });
-  });
-  M.alert(120, 490, 780, 'context window exceeded', { k: K.io(t, tError, 0.5), alpha: focus(cK) });
-
-  // ===================================================== 3. fake (right column, top): terminal
-  // drawn here rather than with K.term: four rows (two calls, two errors) at 26 px need a 32 px line height
-  const tmA = K.io(t, cK, 0.5) * focus(cB);
-  const TM = { x: 1020, y: 205, w: 780, h: 205 };
-  const tr = K.win(TM.x, TM.y, TM.w, TM.h, { kind: 'terminal', title: 'terminal', titleSize: 26, alpha: tmA });
-  const tCmd = w(/^installs/i, 18.55), tPipErr = tPkg + 0.45, tFnErr = tDoesnt;
-  const TROWS = [
-    { at: tCmd, prompt: 'C:\\Users\\you>', cmd: 'pip install fastjsonx', cps: 30 },
-    { at: tPipErr, out: 'ERROR: No matching distribution found' },
-    { at: tFn - 0.05, prompt: '>>> ', cmd: 'json.parse_fast(data)', cps: 40 },
-    { at: tFnErr, out: 'AttributeError: parse_fast' },
-  ];
-  K.layer(tmA, () => {
-    const TS = 26, LH = 32, tx = tr.x + 28;
-    const caret = (x, y) => { const g = K.ctx(); g.fillStyle = C.strong; g.fillRect(x + 4, y - TS * 0.8, TS * 0.55, TS); };
-    const vis = TROWS.filter((r) => t >= r.at);
-    if (!vis.length) {                               // an idle prompt waits for the first command
-      const px = tx + K.text(TROWS[0].prompt, tx, tr.y + 40, { font: 'mono', size: TS, color: C.head });
-      if (K.caretOn(t)) caret(px, tr.y + 40);
-    }
-    vis.forEach((r, i) => {
-      const y = tr.y + 40 + i * LH;
-      if (r.out != null) { K.text(r.out, tx, y, { font: 'mono', size: TS, color: C.accent }); return; }
-      let x = tx + K.text(r.prompt, tx, y, { font: 'mono', size: TS, color: C.head });
-      x += K.text(K.typed(r.cmd, t, r.at, r.cps), x, y, { font: 'mono', size: TS, color: C.strong });
-      const typing = !K.typedDone(r.cmd, t, r.at, r.cps), last = i === vis.length - 1;
-      if ((typing || last) && K.caretOn(t)) caret(x, y);
-    });
-  });
-  // on the desk: the model's confident (gold) guesses, each a made-up name built from likely pieces
-  const G1 = ['fast', 'json', 'x'], G2 = ['parse', '_fast'];
-  const kA = K.env(t, cK + 0.2, cB, 0.4);
-  if (kA > 0) K.layer(kA, () => {
-    const A = M.flow(G1, 0, { size: SZ }), B = M.flow(G2, 0, { size: SZ });
-    const wA = A[2].x + A[2].w / 2, wB = B[1].x + B[1].w / 2, GAP = 110, x0 = 960 - (wA + GAP + wB) / 2;
-    M.row(t, G1, x0, Y, { size: SZ, tone: 'hot', k: (i) => K.stagger(t, tCmd + 0.1, i, 0.22, 0.4) });
-    M.row(t, G2, x0 + wA + GAP, Y, { size: SZ, tone: 'hot', k: (i) => K.stagger(t, tFn - 0.05, i, 0.22, 0.4) });
-    const ring = (gx0, gx1, at, ax) => {
-      const gcx = (gx0 + gx1) / 2;
-      K.ring(gcx, Y + 2, (gx1 - gx0) / 2 + 36, 52, K.io(t, at, 0.55), { color: C.accent, w: 4, rot: -0.015 });
-      K.arrow(ax, TM.y + TM.h + 8, gcx + 30, TOP - 26, { k: K.io(t, at + 0.4, 0.6), bend: -40, color: C.body, w: 2.5, alpha: 0.75 });
-    };
-    ring(x0, x0 + wA, tDoesnt, 1090);
-    ring(x0 + wA + GAP, x0 + wA + GAP + wB, tExist, 1250);
-  });
-
-  // ===================================================== 4. bill (right column, bottom): usage meter
-  const mA = focus(Infinity);
-  const inK = K.lerp(0.6 * K.io(t, tInput, 0.6), 1, K.io(t, tCounted - 0.2, 0.6));
-  const MT = { x: 1020, y: 446, w: 780 };          // ~27 px under the terminal's pill (was 2 px)
-  const mt = M.meter(MT.x, MT.y, MT.w, 'USAGE', [
-    { label: 'input tokens', v: 0.85, k: inK },
-    { label: 'output tokens', v: 0.22, k: K.io(t, tOutput, 0.6) },
-  ], { labelW: 230, k: K.io(t, cB, 0.5), alpha: mA });
-  // the re-sent desk: the whole conversation slides back on, a sweep counts it (gold), it flows up to "input tokens"
-  const rA = K.io(t, tResent - 0.6, 0.3);
-  if (rA > 0) {
-    const P = M.flow(AFTER, d.x0, { size: SZ });
-    const sw0 = tResent + 0.35, sw1 = sw0 + 0.8;
-    P.forEach((p, i) => {
-      const k = K.stagger(t, tResent - 0.5, i, 0.07, 0.45);
-      const swx = K.lerp(P[0].x - 60, P[P.length - 1].x + 60, K.ease.sine(K.seg(t, sw0, sw1)));
-      const counted = t > sw0 && swx >= p.x;
-      M.tile(p.s, p.x + (1 - k) * 60, Y, { size: SZ, alpha: k, tone: counted ? 'hot' : 'plain', glow: counted ? 0.12 : undefined });
-    });
-    M.sweep(P[0].x - 60, P[P.length - 1].x + 60, Y, K.seg(t, sw0, sw1), { r: 150 });
-    // routed outside the card's left edge, ending at the 'input tokens' label (never across the bars)
-    const src = P[3];
-    K.arrow(src.x + 10, TOP - 8, MT.x + 24, mt.bars[0].y, { k: K.io(t, sw1 - 0.2, 0.6), bend: -46, color: C.head, w: 2.5, alpha: 0.8 * K.lerp(1, 0.7, settle) });
+  // ---------------------------------------------------------------- the big well: moves from the studio (A) to the left of B
+  const mv = K.io(t, cNot, 0.8);
+  // opening: 06's studio (right, 190x420, well 150 at 1705,540) zooms to centre, so the crossfade reads as walking in
+  const zm = K.io(t, 0, 0.8);
+  // a slow push on the canvas from the first frame to 'noise' (keeps the opening alive)
+  const push = 0.94 + 0.06 * K.io(t, 0, cNoise + 0.6, 'sine');
+  // centred at 960 until the steps column arrives, then eased left to make room for it
+  const sx = K.io(t, cSteps - 0.6, 0.8);
+  const cx0 = K.lerp(960, 860, sx);
+  const wx = K.lerp(K.lerp(1705, cx0, zm), 560, mv), wy = K.lerp(K.lerp(540, 530, zm), 500, mv);
+  const ws = K.lerp(K.lerp(150, 600 * push, zm), 380, mv);
+  // k: static → picture over the steps, then the crisp finish on 'picture'; in B the picture dissolves back to
+  // static while moving, then rebuilds alongside the piece-by-piece well
+  const stepT = (i) => cSteps + 0.2 + i * 1.6;      // thumbnail i lands (5 steps, the last one just before 'picture')
+  let kBig = 0.85 * K.clamp((t - stepT(0)) / (stepT(4) - stepT(0))) + 0.15 * K.io(t, cPic, 1.2);
+  const bRun0 = cNot + 2.2, bRun1 = tPiece + 1.4;
+  if (t >= cNot) {
+    const back = 1 - K.io(t, cNot, 1.4);            // dissolve back to static
+    kBig = t < bRun0 ? back : K.io(t, bRun0, bRun1 - bRun0, 'sine');
   }
 
-  // ---- pills: each surprise named by the part of the desk that explains it, tagged on its card's bottom-right edge
-  const pill = (s, card, a, k) => {
-    if (a * k <= 0.002) return;
-    const pw = K.measure(s, { font: 'ui', size: 26, weight: 600 }) + 26 * 1.6;
-    const below = card.below ? 34 : 0;              // 'below' hangs the pill fully under the card instead of on its edge
-    K.layer(a * k, () => K.pill(s, card.x + card.w - 28 - pw / 2, card.y + card.h + below + (1 - k) * 8, { size: 26 }));
-  };
-  pill('tiles, not letters', CH, focus(cF), K.io(t, tTiles, 0.45));
-  pill('the desk filled up', { x: 120, y: 490, w: 780, h: 100 }, focus(cK), K.io(t, tDesk - 0.1, 0.45));
-  pill('a plausible guess', TM, focus(cB), K.io(t, tConf, 0.45));
-  // hangs fully below its card: it sits right of the desk (x > 1380), where the band is free
-  pill('the re-sent desk', { x: MT.x, y: MT.y, w: MT.w, h: mt.h, below: true }, mA, K.io(t, tResent, 0.45));
+  // ---------------------------------------------------------------- phase A: the studio room
+  if (A > 0) K.layer(A, () => {
+    const op = K.io(t, 0, 0.8);
+    // the studio room card: from 06's studio rect to the big room
+    const rx0 = K.lerp(1610, cx0 - 350, zm), ry0 = K.lerp(340, 162, zm), rw = K.lerp(190, 700, zm), rh = K.lerp(420, 716, zm);
+    K.card(rx0, ry0, rw, rh, { r: K.lerp(18, 22, zm), fill: K.rgba(M.mixHex(C.tile, C.page, 0.2), K.lerp(1, 0.55, zm)), stroke: K.rgba(C.accent, 0.7 - 0.35 * zm + 0.35 * op * zm), lw: 2.5 - zm, glow: 0 });
+    if (zm < 1) K.glow(1705, 540, 220, C.accent, 0.16 * (1 - zm));
+    K.eyebrow('STUDIO', rx0 + rw / 2, K.lerp(398, 200, zm), { align: 'center', size: 20, color: C.accent });
+    // the easel legs of 06's studio fade as the canvas grows
+    if (zm < 1) K.layer(1 - zm, () => {
+      const lx = wx, ly = wy + ws / 2 + 6, by = ry0 + rh - 50;
+      K.line(lx - 40, ly, lx - 58, by, { color: C.line2, w: 3 }); K.line(lx + 40, ly, lx + 58, by, { color: C.line2, w: 3 });
+      K.line(lx, ly, lx, by + 10, { color: C.line2, w: 3 });
+    });
+    // title, left column
+    K.layer(K.io(t, tDiff - 0.2, 0.6), () => K.title('diffusion', 310, 300, { size: 60, align: 'center' }));
+    // the prompt card + its nudge line
+    const pk = K.io(t, tNudged - 0.4, 0.6);
+    if (pk > 0) K.layer(pk * (1 - K.io(t, cFam + 6, 0.8) * 0.45), () => {
+      K.card(140, 448, 300, 150, { r: 18, fill: C.page, stroke: K.rgba(C.head, 0.45) });
+      K.eyebrow('PROMPT', 166, 486, { size: 20 });
+      K.text('a tea house', 166, 532, { font: 'read', size: 30, color: C.strong });
+      K.text('at night', 166, 572, { font: 'read', size: 30, color: C.strong });
+      K.arrow(452, 523, 546, 523, { k: K.io(t, tNudged - 0.1, 0.5), color: C.head, dash: [8, 8], w: 3, head: true, alpha: 0.8 });
+      // a pulse on the nudge line each time a step lands
+      for (let i = 0; i < 5; i++) {
+        const u = K.seg(t, stepT(i) - 0.45, stepT(i));
+        if (u > 0 && u < 1 && t > tNudged) { K.glow(452 + 94 * u, 523, 22, C.head, 0.6); }
+      }
+    });
+  });
+
+  // well: blank canvas until the static fades in on 'noise'
+  if (t < cNoise + 0.8 && A > 0) K.layer(A, () => K.card(wx - ws / 2 - 8, wy - ws / 2 - 8, ws + 16, ws + 16, { r: 6, fill: C.page, stroke: C.line2, shadow: true }));
+  // faint static shimmer once 06's finished picture has cleared, rising to full on 'noise'
+  const wellA = (0.32 + 0.68 * K.io(t, cNoise - 0.2, 0.8)) * K.io(t, 1.3, 0.8) * Bout;
+  if (wellA > 0) {
+    M.well(t, wx, wy, ws, kBig, { seed: 7, alpha: wellA });
+    // lift the static's dark end so it reads as grey static, not a black square (M.well's noise floor is #1A1B2C)
+    const lift = wellA * Math.pow(1 - K.clamp(kBig), 1.15) * (1 - K.seg(kBig, 0.6, 0.85));
+    if (lift > 0.01) { g.save(); g.globalCompositeOperation = 'screen'; g.globalAlpha = lift; g.fillStyle = '#4E4A44'; g.fillRect(wx - ws / 2, wy - ws / 2, ws, ws); g.restore(); }
+  }
+  // 06's finished studio picture rides in with the zoom, then clears to a fresh canvas
+  const oldPic = 1 - K.io(t, 1.0, 0.9);
+  if (oldPic > 0) M.well(t, wx, wy, ws, 1, { seed: 3, still: true, alpha: oldPic, frame: false });
+
+  // step thumbnails (right column), each less noisy
+  const thumbOut = 1 - K.io(t, cFam, 0.6);
+  if (A > 0 && thumbOut > 0 && t > cSteps - 0.3) K.layer(A * thumbOut, () => {
+    K.layer(K.io(t, cSteps, 0.5), () => K.eyebrow('STEPS', 1400, 205, { align: 'center', size: 20 }));
+    for (let i = 0; i < 5; i++) {
+      const ty = 287 + i * 122, a0 = stepT(i) - 0.4;
+      const k = K.io(t, a0, 0.5, 'out');
+      if (k <= 0) continue;
+      const newest = i === 4 ? t < cPic + 0.6 : t < stepT(i + 1) - 0.4;
+      K.layer(k, () => {
+        if (newest) K.glow(1400, ty, 90, C.head, 0.18);
+        M.well(t, 1400 + (1 - k) * 30, ty, 100, i / 4, { cells: 30, still: true, seed: 7 });
+        { const lf = Math.pow(1 - i / 4, 1.15) * (1 - K.seg(i / 4, 0.6, 0.85)); if (lf > 0.01) { const x = 1400 + (1 - k) * 30; g.save(); g.globalCompositeOperation = 'screen'; g.globalAlpha *= lf; g.fillStyle = '#4E4A44'; g.fillRect(x - 50, ty - 50, 100, 100); g.restore(); } }
+        if (newest) K.card(1400 - 58, ty - 58, 116, 116, { r: 8, fill: 'rgba(0,0,0,0)', stroke: K.rgba(C.head, 0.8), shadow: false, glow: 0 });
+        K.text(String(i + 1), 1490, ty + 10, { font: 'mono', size: 26, weight: 600, color: newest ? C.head : C.soft });
+      });
+    }
+  });
+
+  // families (right column): images · video · sound effects · music, then voices (mostly not), then flow matching
+  if (A > 0 && t > cFam) K.layer(A, () => {
+    K.layer(K.io(t, cFam + 0.2, 0.5), () => K.eyebrow('SAME TRICK MAKES', 1460, 220, { align: 'center', size: 20 }));
+    [['images', tImages], ['video', tVideo], ['sound effects', tSound], ['music', tMusic]].forEach(([s, at], i) => {
+      const k = K.io(t, at - 0.15, 0.5, 'out');
+      if (k > 0) K.layer(k, () => K.pill(s, 1460 + (1 - k) * 24, 280 + i * 72, { size: 30, color: C.strong }));
+    });
+    const vk = K.io(t, tVoices - 0.1, 0.5);
+    if (vk > 0) K.layer(vk * 0.85, () => {
+      K.pill('voices: mostly not', 1460, 580, { size: 26, color: C.soft });
+    });
+    // flow matching: fewer steps (3 tiny frames instead of 5)
+    const fk = K.io(t, tFlow - 0.2, 0.6);
+    if (fk > 0) K.layer(fk, () => {
+      K.card(1250, 640, 420, 200, { r: 18, fill: C.page, stroke: K.rgba(C.head, 0.4) });
+      K.text('flow matching', 1460, 686, { font: 'ui', weight: 600, size: 30, color: C.head, align: 'center' });
+      [0, 1, 2].forEach((i) => {
+        const kk = K.io(t, tFewer - 0.2 + i * 0.25, 0.4, 'out');
+        if (kk > 0) K.layer(kk, () => M.well(t, 1350 + i * 110, 768, 76, i / 2, { cells: 24, still: true, seed: 7 }));
+        if (i < 2 && kk > 0) K.layer(kk, () => K.text('›', 1405 + i * 110, 778, { font: 'ui', size: 30, color: C.soft, align: 'center' }));
+      });
+    });
+  });
+
+  // ---------------------------------------------------------------- phase B: all at once vs piece by piece
+  const B = Bin * Bout;
+  if (B > 0) K.layer(B, () => {
+    // left label set (the moving well itself is drawn above)
+    K.text('most image models', 560, 270, { font: 'ui', weight: 600, size: 30, color: C.strong, align: 'center' });
+    K.text('the whole picture at once', 560, 746, { font: 'ui', weight: 600, size: 28, color: C.head, align: 'center' });
+    // right: tile by tile in reading order
+    const rk = K.io(t, tOpenAI - 0.3, 0.6);
+    K.layer(rk, () => {
+      K.text("OpenAI's image models", 1360, 270, { font: 'ui', weight: 600, size: 30, color: C.strong, align: 'center' });
+      M.well(t, 1360, 500, 380, K.seg(t, bRun0, bRun1 + 0.6), { order: 'tiles', cells: 24, seed: 7 });
+    });
+    K.layer(K.io(t, tPiece - 0.2, 0.6), () => K.text('piece by piece, like text', 1360, 746, { font: 'ui', weight: 600, size: 28, color: C.head, align: 'center' }));
+    K.layer(K.io(t, tReported - 0.1, 0.5), () => M.flag('reported', 1360, 802));
+    K.layer(K.io(t, cNot + 0.6, 0.6), () => K.text('vs', 960, 512, { font: 'read', size: 34, color: C.soft, align: 'center', italic: true }));
+  });
+
+  // ---------------------------------------------------------------- phase C: text, two ways
+  if (Cin > 0) {
+    const lines = ['A lantern hangs by the door,', 'the window glows gold,', 'and the kettle is on.'];
+    const fo = { font: 'read', size: 32 };
+    const cardY = 380, cardH = 250, rx = 1060, cw = 660;
+    // the diffusion card enters centred, then slides into its left slot when 'frontier' brings its partner
+    const lx = K.lerp(630, 200, K.io(t, cFront - 0.15, 0.6));
+    // left card: diffusion text (smudged → sharp, every word at once)
+    const sharp = K.io(t, tSharpen - 0.3, 2.2, 'sine');
+    const leftDim = 1;
+    K.layer(Cin * leftDim, () => {
+      K.eyebrow('DIFFUSION TEXT · RARE', lx, cardY - 26, { size: 20 });
+      K.card(lx, cardY, cw, cardH, { r: 20, fill: C.paper, stroke: false });
+      const R = K.rng(41 + (sharp < 1 ? Math.floor(t * 10) : 0) * 7919);
+      lines.forEach((ln, li) => {
+        let x = lx + 44;
+        ln.split(' ').forEach((wd) => {
+          const ww = K.measure(wd + ' ', fo), jx = (R() - 0.5) * 14 * (1 - sharp), jy = (R() - 0.5) * 10 * (1 - sharp);
+          const blur = Math.round(9 * (1 - sharp) * 10) / 10;
+          g.save();
+          if (blur > 0.2) g.filter = `blur(${blur}px)`;
+          const col = K.mixColor('#9A8F80', C.ink, sharp);
+          K.text(wd, x + jx, cardY + 80 + li * 58 + jy, { ...fo, color: col, alpha: 0.55 + 0.45 * sharp });
+          g.restore();
+          x += ww;
+        });
+      });
+      // pills: who makes them
+      const p1 = 'Mercury · Inception', p2 = 'Google · experimental';
+      const pw = (s) => K.measure(s, { font: 'ui', weight: 600, size: 26 }) + 42;
+      const w1 = pw(p1), w2 = pw(p2), gap = 18, x0 = lx + cw / 2 - (w1 + w2 + gap) / 2;
+      K.layer(K.io(t, tMercury - 0.3, 0.5), () => K.pill(p1, x0 + w1 / 2, cardY + cardH + 56, { size: 26, color: C.strong }));
+      K.layer(K.io(t, tGoogle - 0.1, 0.5), () => K.pill(p2, x0 + w1 + gap + w2 / 2, cardY + cardH + 56, { size: 26, color: C.strong }));
+      K.layer(K.io(t, tFast - 0.4, 0.5), () => M.flag('fast · not frontier', lx + cw / 2, cardY + cardH + 136));
+    });
+    K.layer(Cin * K.io(t, tMercury - 0.3, 0.6), () => M.dated('Oct 2026', 1840, 172, { align: 'right' }));
+
+    // right card: one token after another
+    const rk = K.io(t, cFront, 0.6);
+    if (rk > 0) K.layer(rk, () => {
+      K.eyebrow('TOP CHAT MODELS', rx, cardY - 26, { size: 20 });
+      K.card(rx, cardY, cw, cardH, { r: 20, fill: C.paper, stroke: K.rgba(C.head, 0.6) });
+      const t0 = cFront + 0.5, step = M.motion.token;
+      let n = 0, penX = rx + 44, penY = cardY + 80;
+      const total = lines.join(' ').split(' ').length;
+      const shown = Math.max(0, Math.min(total, Math.floor((t - t0) / step) + 1));
+      lines.forEach((ln, li) => {
+        let x = rx + 44;
+        ln.split(' ').forEach((wd) => {
+          const ww = K.measure(wd + ' ', fo);
+          if (n < shown) {
+            const k = K.io(t, t0 + n * step, 0.25, 'out');
+            K.text(wd, x, cardY + 80 + li * 58 - (1 - k) * 6, { ...fo, color: C.ink, alpha: k });
+            penX = x + K.measure(wd, fo) + 40; penY = cardY + 80 + li * 58;
+          }
+          x += ww; n++;
+        });
+      });
+      const done = t0 + total * step;
+      if (t >= t0) M.pen(penX, penY, { s: 0.7, alpha: K.clamp(1 - (t - done) / 0.6) });
+      K.layer(K.io(t, tOneTok - 0.6, 0.5), () => K.text('one token after another', rx + cw / 2, cardY + cardH + 66, { font: 'ui', weight: 600, size: 30, color: C.head, align: 'center' }));
+    });
+    K.layer(K.io(t, tOwn, 0.6), () => M.shelf('The Machine', 1840, 880));
+  }
 });

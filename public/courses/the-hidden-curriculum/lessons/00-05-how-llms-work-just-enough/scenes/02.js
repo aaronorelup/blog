@@ -1,147 +1,160 @@
 /* 00.05 · scene 02 — Where it lives
-   The course map (K.map). The desk from 01 waits off-stage and returns unchanged in 03; this scene only shows WHERE
-   the lesson sits (Start, Orientation) and that the Lanterns (AI, never a district) run on the engine from 01.
+   The course map (K.map). The lamp over our desk IS lantern 0 of the map's string (M.lamp draws K.map.lantern(t, 0)),
+   so this scene lifts it out, shows it hanging over a ghost of the desk, then sends it to point at the shelves.
    Beats (local seconds, cues.json):
-     - open            the map assembles as it is named ("On the course map"): map.js's own staggered reveal, the six
-                       lanterns held back as bare ghosts.
-     - [[pin]]         on "Start" the pin drops on the Start gate (the scene's one 'back'); the gate takes its gold ring
-                       and the districts dim to 0.5 (focus '00').
-     - "Orientation"   a two-line Orientation note sits in the top band (y 136-248, over the still-ghost lanterns 0-2,
-                       covering no district), its leader climbing from the Start gate up the left gutter; its line
-                       arrives on "what this course is" and "and the lantern you carry" (a small gold lantern lights
-                       16 px after "you carry" on "lantern"). It leaves before the string lights.
-     - [[lanterns]]    the note leaves; the six lanterns light left to right (stagger 0.15); on "every district" a soft
-                       pool of light falls on each district in map order; the Lanterns' label row fades in.
-     - [[open]]        the camera eases toward the third lantern (z 1 -> 1.5, 0.8 s), the rest of the map steps back (other
-                       lanterns half lit; district cards, Start, Finish, path and label row fade out); a gold ring draws round the spot.
-                       On "engine" the lantern lifts out and the 00.04 engine (scale 0.4, labelled "model") glows in
-                       its place, hung from the same cord; on "look inside" its lid opens a crack.
-   Exit: one small engine glowing in a lantern's place, its lid cracked, the map soft behind. */
+     - lead-in       01's title desk shrinks toward the lower-left corner and fades out by 0.8 s while the map
+                     assembles (map.js's own staggered reveal); the six lanterns are bare ghosts.
+     - [[pin]]       on "Start" the pin drops on the Start gate (the scene's one 'back'); the districts dim.
+     - "lantern"     ("the lantern you carry") lantern 0 lights alone.
+     - [[lanterns]]  the other five light left to right, the districts come back; the label row fades in on "AI";
+                     on "light all six" a pool of lantern light falls on each district.
+     - [[tour]]      lantern 0 is lifted out of the string and glides, growing, to the centre; the map veils and a
+                     ghost of our desk (alpha .35) fades in under it: this lantern is the lamp over our desk. On
+                     "each piece" three faint pieces land on the ghost desk.
+     - [[shelve]]    the ghost desk leaves, the veil lifts, the lantern settles into the gap between the two rows of
+                     districts and three dashed arrows draw from it to the rows that own the deeper lessons, each row
+                     washed as it is named: 06 (memory), 10 (plugins · caching), 15 + 16 (plans · personal agents).
+   Exit: the arrows and labels fade, the lantern dissolves at the hub as its twin on the string fades back in; map calm, pin glowing. */
 SCENE('02', (t, S) => {
-  const C = K.C, MAP = K.map, GATE = MAP.GATE, g = K.ctx();
+  const C = K.C, MAP = K.map, P = M.palette;
 
   // ------------------------------------------------------------------ beats (local seconds)
-  const tPin = S.cue('pin', 2.57);
-  const tOrient = S.find('Orientation', 0, 3.34);
-  const tWhat = S.find('what', 0, 4.56);
-  const tAnd = S.find(/^and$/i, 0, 5.99);
-  const tLanternW = S.find(/^lantern$/i, 0, 6.36);     // "the lantern you carry"
-  const tLan = S.cue('lanterns', 8.01);
-  const tEvery = S.find('every', 0, 9.63);
-  const tOpen = S.cue('open', 12.02);
-  const tEngine = S.find('engine', 0, 13.57);
-  const tLook = S.find('look', 0, 15.45);
+  const tPin = S.cue('pin', 2.69);
+  const tCarry = S.find('lantern', 0, 6.48);              // "the lantern you carry"
+  const tLan = S.cue('lanterns', 8.15);
+  const tAI = S.find(/^AI/, 0, 10.87);
+  const tAll = S.find('light', 0, 13.53);                // "they light all six"
+  const tTour = S.cue('tour', 14.73);
+  const tPiece = S.find('piece', 0, 18.25);
+  const tShelve = S.cue('shelve', 20.94);
+  const tCode = S.find('Code', 0, 22.0);
+  const tPlug = S.find('plugins', 0, 22.77);
+  const tCache = S.find('caching', 0, 23.86);
+  const tPlans = S.find('work', 0, 26.44);
+  const tAgents = S.find('agents', 0, 27.95);
+  // dormant 4th pin: appears only if the narration names The Machine in this section (reviewer asked for the clause
+  // "...and context and instruction files in The Machine"; it needs a re-voice, so until then it never shows)
+  const tMach = S.find(/^Machine/, 0, -1);
+  const hasMach = tMach > 0;
+  const tOut = S.out || 30.4;
+  // the lantern returns to the string early enough to be home, fully lit, before the hand-over (S.out = 30.0)
+  const tBack = Math.min((hasMach ? tMach : tAgents) + 1.0, tOut - 1.0);
 
-  // ------------------------------------------------------------------ the chosen lantern and the engine that replaces it
-  const LI = 2, LP = MAP.lanternAt(LI);                 // the pivot on the string (map.js hangs the icon at (0, 16) local)
-  const S_ENG = M.layout.engineMap.s;                    // 0.4
-  const EH = 70 * S_ENG;                                 // half the engine card's height (world)
-  const EC = { x: LP.x, y: LP.y + 12 + EH };             // engine centre: its lid hangs 12 px under the pivot
-  const Z = 1.5, SCR = { x: 960, y: 520 };               // the engine settles at screen (960, 520)
+  // ------------------------------------------------------------------ the travelling lantern (lantern 0)
+  const L0 = MAP.lanternAt(0);
+  const TOUR = { x: 960, y: 318, s: 1.6 };               // over the ghost desk
+  const HUB = { x: 1088, y: 510, s: 0.95 };              // inside The Code, right of '07 Concurrency', under the memory pill
+  const goTour = K.io(t, tTour, 1.1);
+  const goHub = K.io(t, tShelve - 0.1, 0.9);
+  const goBack = K.io(t, tBack, 0.6);
+  let lx = K.lerp(L0.x, TOUR.x, goTour), ly = K.lerp(L0.y, TOUR.y, goTour), ls = K.lerp(1, TOUR.s, goTour);
+  lx = K.lerp(lx, HUB.x, goHub); ly = K.lerp(ly, HUB.y, goHub); ls = K.lerp(ls, HUB.s, goHub) * (1 - goBack);
+  const lifted = t >= tTour && goBack < 1;               // lift + redraw at the same spot shows no jump; on the way back it
+  // dissolves at the hub while the string's own lantern 0 fades back in (no flight across the cards' text)
 
-  // ------------------------------------------------------------------ camera
-  const cam = K.cam(t, [
-    { at: -10, x: 960, y: 540, z: 1 },
-    { at: tOpen, x: EC.x, y: EC.y + (540 - SCR.y) / Z, z: Z, d: 0.8 },
-  ]);
-  const toScreen = (x, y) => ({ x: (x - cam.x) * cam.z + 960, y: (y - cam.y) * cam.z + 540 });
-
-  // ------------------------------------------------------------------ states
-  const pinDrop = K.io(t, tPin, 0.7, 'back');           // the scene's one overshoot
+  // ------------------------------------------------------------------ map states
+  const pinDrop = K.io(t, tPin, 0.7, 'back');
   const pinGlow = K.io(t, tPin + 0.15, 0.6);
-  const focusK = K.io(t, tPin, 0.8);
-  const openK = K.io(t, tOpen, 0.8);
-  const cardsOut = K.io(t, tOpen - 0.05, 0.45);   // leave faster than the camera travels
-  const ringK = K.io(t, tOpen + 0.35, 0.8);
-  const hideK = K.io(t, tEngine - 0.1, 0.4);
-  const engK = K.io(t, tEngine, 0.5);
-  const lidK = K.io(t, tLook, 0.6);
-  const lanterns = (i) => K.stagger(t, tLan, i, 0.15, 0.6) * (i === LI ? 1 : 1 - 0.5 * openK);
-  const labelK = K.io(t, tLan + 0.9, 0.6) * (1 - K.io(t, tOpen, 0.4));
-  // the Orientation note
-  const noteIn = K.io(t, tOrient, 0.5);
-  const noteOut = K.io(t, tLan - 0.5, 0.4);
-  const noteK = noteIn * (1 - noteOut);
-  const pool = (i) => K.stagger(t, tEvery, i, 0.12, 0.7);
+  const focusK = K.io(t, tPin, 0.8) * (1 - K.io(t, tLan, 0.9));
+  const lanterns = (i) => (i === 0 ? K.io(t, tCarry, 0.6) : K.stagger(t, tLan, i - 1, 0.14, 0.6));
+  const labelK = K.io(t, tAI - 0.3, 0.6);
+  const pool = (i) => K.stagger(t, tAll, i, 0.12, 0.7) * (1 - K.io(t, tTour, 0.6));
+  // the veil over the map while the lantern hangs over our desk
+  const veil = 0.9 * K.io(t, tTour, 0.9) * (1 - K.io(t, tShelve - 0.1, 0.8));
+  const deskK = K.io(t, tTour + 0.5, 0.9) * (1 - K.io(t, tShelve - 0.2, 0.5));
+  // rows that own the deeper lessons, washed as they are named
+  const washA = K.io(t, tShelve, 0.6), washB = K.io(t, tPlug, 0.6), washC = K.io(t, tPlans, 0.6);
+  const washD = hasMach ? K.io(t, tMach, 0.6) : 0;
+  const arrowsOut = 1 - K.io(t, tBack - 0.1, 0.6);
+  const labelsOut = 1 - K.io(t, tOut - 0.5, 0.45);
 
   K.bg();
-  K.withCam(cam, () => {
-    K.glow(GATE.x, GATE.y, 120, C.head, 0.22 * pinGlow * (1 - openK));
-    MAP.draw(t, {
-      t0: 0, focus: '00', focusK, dim: 0.5,
-      pin: '00', pinDrop, pinK: K.io(t, tPin, 0.25) * (1 - cardsOut), pinGlowK: pinGlow,
-      lanterns, lanternLabels: labelK,
-      lanternHide: (i) => (i === LI ? hideK : 0),
-      path: 1 - openK,
-      // [[open]]: the cards, Start and Finish leave as the camera moves in (no zoomed-up, frame-cut district text
-      // behind the engine); the lantern string stays as the soft map behind it
-      districtK: (id) => {
-        if (id === 'ai') return 1;
-        return 1 - cardsOut;
-      },
-    });
 
-    // "every district": lantern light pools on each card, in map order (gone again as the camera moves in)
-    MAP.DISTRICTS.forEach((d, i) => {
-      const k = pool(i) * (1 - openK);
-      if (k > 0.002) K.glow(d.x + d.w / 2, d.y + d.h * 0.42, 250, C.head, 0.1 * k);
-    });
-
-    // ---------------------------------------------------------------- the Orientation note, hung over the gate
-    if (noteK > 0.002) {
-      // A two-line strip in the top band, between the (still ghost) lantern string and the cards' top edge: it covers
-      // no district (only the bare ghost lanterns 0-2, which light only after it has gone), and its leader climbs
-      // from the Start gate through the left gutter, so all six districts stay whole while the narrator names 00.
-      const l1 = K.io(t, tWhat, 0.5, 'out'), l2 = K.io(t, tAnd, 0.5, 'out'), l3 = K.io(t, tAnd + 0.25, 0.5, 'out');
-      const lk = K.io(t, tLanternW, 0.5);
-      const BF = { font: 'ui', size: 30 };
-      const P1 = 'what this course is,', P2 = ' and the lantern', P3 = ' you carry';
-      const w1 = K.measure(P1, BF), w2 = K.measure(P2, BF), w3 = K.measure(P3, BF);
-      const PAD = 28, ICON = 34;
-      const NX = 250, NY = 136, NH = 112, NW = Math.round(PAD + w1 + w2 + w3 + 16 + ICON + PAD);   // bottom at 248: 10 px above the cards
-      const cardA = Math.min(1, noteK * 3), textA = noteK * noteK;
-      const dy = -(1 - noteIn) * 6;   // settles down from above, never toward the cards (top stays at y >= 130)
-      K.layer(cardA, () => {
-        // leader: from the top of the Start ring, up the gutter left of The Machine, into the note's left edge
-        const ax = GATE.x + 13, ay = GATE.y - 48, bx = NX + 1, by = NY + NH - 34 + dy;
-        K.line(ax, ay, bx, by, { color: K.rgba(C.head, 0.7), w: 2 });
-        g.beginPath(); g.arc(ax, ay, 4, 0, Math.PI * 2); g.fillStyle = C.head; g.fill();
-        g.save(); g.translate(0, dy);
-        K.card(NX, NY, NW, NH, { fill: C.tile, stroke: K.rgba(C.head, 0.6), r: 22, shadow: true });
-        g.restore();
-      });
-      K.layer(textA, () => {
-        g.save(); g.translate(0, dy);
-        const tx = NX + PAD, y1 = NY + 46, y2 = NY + 90;
-        K.text('00', tx, y1, { font: 'mono', size: 30, color: C.head, weight: 700 });
-        K.text('Orientation', tx + 52, y1, { font: 'ui', size: 32, color: C.head, weight: 700 });
-        if (l1 > 0) K.text(P1, tx, y2 + (1 - l1) * 8, { ...BF, color: C.body, alpha: l1 });
-        if (l2 > 0) K.text(P2, tx + w1, y2 + (1 - l2) * 8, { ...BF, color: C.body, alpha: l2 });
-        if (l3 > 0) K.text(P3, tx + w1 + w2, y2 + (1 - l3) * 8, { ...BF, color: C.body, alpha: l3 });
-        if (lk > 0 && l3 > 0) {   // the lantern you carry: a small one lights 16 px after the line
-          const lx = tx + w1 + w2 + w3 + 16 + ICON / 2, ly = y2 - 11;
-          K.glow(lx, ly, 42, C.head, 0.3 * lk);
-          K.icon('lantern', lx, ly, ICON, { color: C.head, w: 2.2, alpha: lk });
-        }
-        g.restore();
-      });
-    }
-
-    // ---------------------------------------------------------------- [[open]]: the engine in the lantern's place
-    if (ringK > 0.002) K.ring(EC.x, EC.y - 6, 70, 56, ringK, { color: C.head, w: 1.6, rot: 0 });
-    if (engK > 0.002) {
-      // hung from the lantern's own cord
-      K.line(LP.x, LP.y - 2, LP.x, EC.y - EH + 2, { color: K.rgba(C.soft, 0.7), w: 1.5, alpha: engK });
-      const s = S_ENG * (0.85 + 0.15 * engK);
-      M.engine(t, EC.x, EC.y, s, { alpha: engK, lid: 0.25 * lidK, glow: 0.5 * engK, shadow: true });
-      // a little light escapes through the cracked lid
-      if (lidK > 0.002) K.glow(EC.x - 6, EC.y - EH - 2, 46, C.head, 0.35 * lidK);
-    }
+  // ------------------------------------------------------------------ the map
+  MAP.draw(t, {
+    t0: 0, focus: '00', focusK, dim: 0.55,
+    pin: '00', pinDrop, pinK: K.io(t, tPin, 0.25), pinGlowK: pinGlow,
+    lanterns, lanternLabels: labelK,
+    lanternHide: (i) => (i === 0 && lifted ? 1 : 0),
+    rowWash: { '06': { k: washA }, '10': { k: washB }, '15': { k: washC }, '16': { k: washC }, '03': { k: washD } },
   });
+  // "they light all six": a soft pool of lantern light on each district
+  MAP.DISTRICTS.forEach((d, i) => { const k = pool(i); if (k > 0) K.glow(d.x + d.w / 2, d.y + d.h / 2, 260, C.head, 0.1 * k); });
 
-  // ------------------------------------------------------------------ the engine's name (screen space, fixed 26 px)
-  if (engK > 0.002) {
-    const p = toScreen(EC.x, EC.y + EH);
-    K.pill('model', p.x, p.y + 78, { size: 26, color: C.head, alpha: engK * K.io(t, tEngine + 0.2, 0.5) });
+  // ------------------------------------------------------------------ 01's desk leaving (lead-in only)
+  const shrink = K.io(t, -0.4, 1.1);
+  const leaveA = 1 - K.io(t, 0.1, 0.7);
+  if (leaveA > 0) {
+    const L = M.layout.title;
+    K.layer(leaveA, () => K.at(K.lerp(L.cx, 260, shrink), K.lerp(L.cy, 800, shrink), K.lerp(1, 0.28, shrink), 0, () => {
+      M.stage(t, { desk: M.desk(L.size, { cx: 0, cy: 0 }), lamp: { cordTop: L.lamp.cordTop - L.cy } });
+    }));
+  }
+
+  // ------------------------------------------------------------------ veil + ghost desk (tour)
+  if (veil > 0) K.layer(veil, () => { const g = K.ctx(); g.fillStyle = C.page; g.fillRect(0, 0, K.W, K.H); });
+  const GD = M.desk({ w: 860, h: 280 }, { cx: 960, cy: 640 });
+  if (deskK > 0) {
+    M.stage(t, { desk: GD, lamp: false, clerk: { bob: true }, alpha: 0.35 * deskK, floor: 0.4 });
+    // "where each piece goes": three faint pieces land on the ghost desk
+    const pieces = [
+      (x, y, a) => M.paper(x, y, { w: 120, h: 80, alpha: a }),
+      (x, y, a) => M.file(x, y, 100, { ext: 'png', alpha: a }),
+      (x, y, a) => M.paper(x, y, { w: 110, h: 74, kind: 'note', alpha: a, rot: 0.04 }),
+    ];
+    const spots = [[0.22, 0.55], [0.5, 0.6], [0.78, 0.5]];
+    pieces.forEach((fn, i) => {
+      const p = M.spot(GD, spots[i][0], spots[i][1]);
+      const fromX = i === 0 ? 40 : i === 2 ? 1880 : p.x, fromY = i === 1 ? 1120 : p.y;
+      const ld = M.land(t, tPiece + i * 0.15, p.x, p.y, fromX, fromY, M.motion.land);
+      if (ld.a > 0) fn(ld.x, ld.y, 0.55 * ld.a * deskK);
+    });
+  }
+
+  // ------------------------------------------------------------------ the travelling lantern
+  if (lifted) {
+    // the cone onto the ghost desk only while the desk is there
+    M.lamp(t, { x: lx, y: ly, s: ls, glowK: 1.4 + 0.6 * goTour * (1 - goHub), cone: deskK > 0 ? GD : null, cordTop: ly - 6 * ls, lit: 1 });
+  }
+
+  // ------------------------------------------------------------------ the string's lantern 0 lights back up
+  // fully lit at every moment: the hub lantern shrinks to a spark while its twin grows back on the string from one
+  if (goBack > 0 && goBack < 1) {
+    const p = MAP.lanternAt(0);
+    K.glow(p.x, p.y + 16, 120, C.head, 0.3 * Math.sin(Math.PI * goBack));
+    MAP.lantern(t, 0, { s: goBack, lit: 1 });
+  }
+
+  // ------------------------------------------------------------------ shelve: arrows from the lantern to the rows
+  if (t >= tShelve - 0.2 && labelsOut > 0) {
+    const LC = { x: HUB.x, y: HUB.y + 16 * HUB.s };       // lantern icon centre at the hub
+    const c06 = MAP.chipPos('06'), c10 = MAP.chipPos('10'), c15 = MAP.chipPos('15'), c16 = MAP.chipPos('16');
+    const col = P.handoff || C.accent;
+    // 06 sits right above the hub lantern, so it gets no arrow: its row wash and pill land on "memory"
+    const arrows = [
+      { from: [LC.x + 22, LC.y + 14], to: [c10.x - 18, c10.y], at: tPlug, bend: -0.12 },
+      { from: [LC.x - 10, LC.y + 30], to: [c15.x + 345, (c15.y + c16.y) / 2], at: tPlans, bend: 0.15 },
+    ];
+    if (hasMach) { const c03 = MAP.chipPos('03'); arrows.push({ from: [LC.x - 30, LC.y + 2], to: [650, c03.y + 56], at: tMach, bend: 0.2 }); }
+    if (arrowsOut > 0) K.layer(arrowsOut, () => arrows.forEach((a) => {
+      const k = K.io(t, a.at, 0.6);
+      if (k > 0) K.arrow(a.from[0], a.from[1], a.to[0], a.to[1], { k, bend: a.bend, color: col, w: 3, dash: [8, 8] });
+    }));
+    // labels beside the washed rows (26 px)
+    const lab = (s, x, y, a, align) => K.layer(a * labelsOut, () => K.pill(s, x, y, { size: 26, color: C.head, align }));
+    lab('memory', c06.x + 280, c06.y, K.io(t, tShelve + 0.75, 0.4));   // after the lantern has passed under it
+    // "plugins · caching" is too wide for row 10's free end, so it hangs as a tab under the right end of the
+    // row-10 highlight, inside The Network card, in the empty space right of '11 Websites'
+    {
+      const a = K.io(t, tCache - 0.2, 0.5) * labelsOut;
+      if (a > 0) K.layer(a, () => {
+        const s = 'plugins · caching', size = 26, to = { size, font: 'ui', weight: 600 };
+        const w = K.measure(s, to) + 26, h = 46, xr = c10.d.x + c10.d.w - 22, x0 = xr - w, y0 = c10.y + 22;
+        K.card(x0, y0, w, h, { r: h / 2, fill: C.tile, stroke: C.line2 });
+        K.text(s, x0 + w / 2, y0 + h / 2 + size * 0.34, { ...to, color: C.head, align: 'center' });
+      });
+    }
+    lab('plans · personal agents', 960, c16.y + 50, K.io(t, tAgents - 0.3, 0.5));
+    if (hasMach) lab('context · instructions', 485, MAP.chipPos('03').y + 52, K.io(t, tMach + 0.2, 0.5), 'center');
   }
 });

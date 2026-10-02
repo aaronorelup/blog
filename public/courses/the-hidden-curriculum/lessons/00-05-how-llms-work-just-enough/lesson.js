@@ -1,15 +1,15 @@
-/* 00.05 How LLMs work (just enough): metadata only; scenes live in scenes/NN.js. */
+/* 00.05 How AI models work today: metadata only; scenes live in scenes/NN.js. */
 LESSON({
   id: '00.05',
-  title: 'How LLMs work (just enough)',
-  short: 'How LLMs work',
+  title: 'How AI models work today',
+  short: 'How AI works today',
   module: 'Orientation',
-  summary: 'A large language model cuts your text into tokens and guesses the next one, one at a time, from only what fits on its desk (the context window), so it is trained to sound right, not to be right: put the facts on the desk and check the specifics.',
+  summary: 'Underneath it all is still a model that only knows what is on its desk right now; nearly everything new in the last five years (multimodal hand-offs, diffusion, memory and RAG, instruction files, caching, modes, plugins, plans and always-on agents) is about what gets put on that desk, what it hands off to other models, and where the desk sits.',
   keep: [
-    ['It guesses the next token, over and over.', 'Text is cut into pieces, not letters, and limits and prices count them; temperature sets how adventurous each pick is.'],
-    ['It only sees its desk: the context window.', 'The whole conversation is re-sent every turn, and the oldest parts fall off when the desk fills.'],
-    ['Sounding right isn\'t being right.', 'A confident wrong guess is a hallucination: put the facts on the desk, ask for sources, and check every specific.'],
+    ['The model only knows what\'s on its desk right now.', 'Memory and instruction files are text put back on the desk, and a fuller desk is a worse desk.'],
+    ['Making pictures is mostly a hand-off.', 'It reads many kinds of input, but pictures, video and music usually come from a separate model, most often diffusion.'],
+    ['Same model, many rooms, four meters.', 'Where you meet it changes what it can touch and what it costs, and a warm cache makes repeats cheap.'],
   ],
   images: { plate: '../../engine/assets/teahouse-night.jpg' },
-  noBadge: ['01', '09'],
+  noBadge: ['01', '20'],
 });

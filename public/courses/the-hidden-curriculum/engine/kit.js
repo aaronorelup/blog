@@ -291,10 +291,16 @@
 
   // ---------- scene furniture ----------
   /** top-left lesson badge: "00.01 · THE HIDDEN CURRICULUM" */
+  // o.backing: true (or an opacity 0..1, default 0.55) lays a soft dark pill behind it, for bright scenes
   K.badge = (id, label, o = {}) => {
     K.layer(o.alpha ?? 1, () => {
-      K.text(id, 80, 86, { font: 'mono', size: 22, color: C.head, weight: 600 });
       const w = K.measure(id, { font: 'mono', size: 22, weight: 600 });
+      if (o.backing) {
+        const lw = K.measure(String(label), { font: 'ui', weight: 600, size: 20, tracking: 4, upper: true });
+        const ba = typeof o.backing === 'number' ? o.backing : 0.55;
+        K.card(60, 58, w + 56 + lw + 40, 40, { r: 20, fill: `rgba(8,9,18,${ba})`, stroke: false, shadow: false });
+      }
+      K.text(id, 80, 86, { font: 'mono', size: 22, color: C.head, weight: 600 });
       K.line(80 + w + 16, 79, 80 + w + 40, 79, { color: C.line2, w: 2 });
       K.eyebrow(label, 80 + w + 56, 86, { color: C.soft, size: 20 });
     });
@@ -379,6 +385,7 @@
    * Keeps the newest lines in view. o: {prompt, size, lh, pad, rows}
    * lh: line height (default size*1.5); pad: inner padding (default 28);
    * rows: fixed number of visible rows (default: as many as fit rect.h), so a short window keeps its first line.
+   * idle: false hides the blinking prompt + caret drawn while no item has started yet (for non-shell windows).
    */
   K.term = (rect, t, items, o = {}) => {
     const size = o.size || 28, lh = o.lh || size * 1.5, pad = o.pad ?? 28, prompt = o.prompt ?? 'C:\\Users\\you>';
@@ -403,7 +410,7 @@
       x += K.text(r.text, x, y, { font: 'mono', size, color: r.color || C.strong });
       if (r.caret && K.caretOn(t)) { g.save(); g.fillStyle = C.strong; g.fillRect(x + 4, y - size * 0.8, size * 0.55, size); g.restore(); }
     });
-    if (!rows.length && K.caretOn(t)) {
+    if (!rows.length && o.idle !== false && K.caretOn(t)) {
       const x = rect.x + pad + K.measure(prompt, { font: 'mono', size });
       K.text(prompt, rect.x + pad, rect.y + pad + size, { font: 'mono', size, color: C.head });
       g.save(); g.fillStyle = C.strong; g.fillRect(x + 4, rect.y + pad + size * 0.2, size * 0.55, size); g.restore();

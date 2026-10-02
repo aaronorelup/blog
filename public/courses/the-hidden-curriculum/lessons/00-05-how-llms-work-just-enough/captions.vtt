@@ -1,493 +1,1741 @@
 WEBVTT
 
 1
-00:00:01.600 --> 00:00:03.887
-In this lesson you'll learn just enough
+00:00:01.600 --> 00:00:04.375
+In this lesson you'll learn how today's
 
 2
-00:00:03.887 --> 00:00:05.803
-about how a large language model
+00:00:04.375 --> 00:00:06.407
+AI models work, and how much
 
 3
-00:00:05.803 --> 00:00:08.729
-works to see its surprises coming.
+00:00:06.407 --> 00:00:09.344
+that picture has changed in five years:
 
 4
-00:00:08.729 --> 00:00:09.924
-The short version:
+00:00:09.344 --> 00:00:11.457
+what they take in and make,
 
 5
-00:00:09.924 --> 00:00:13.013
-it cuts your text into pieces called tokens,
+00:00:11.457 --> 00:00:14.545
+how they remember, what they cost,
 
 6
-00:00:13.013 --> 00:00:16.078
-then guesses the next piece, one at a time,
+00:00:14.545 --> 00:00:17.041
+and the many places you'll meet them.
 
 7
-00:00:16.078 --> 00:00:18.934
-using only what fits on its desk.
+00:00:17.041 --> 00:00:19.863
+Underneath it all is still a model
 
 8
-00:00:18.934 --> 00:00:22.278
-It was trained to sound right,
+00:00:19.863 --> 00:00:23.508
+that only knows what's on its desk right now;
 
 9
-00:00:22.278 --> 00:00:24.205
-which is not the same as being right.
+00:00:23.508 --> 00:00:26.132
+nearly everything new since then
 
 10
-00:00:24.205 --> 00:00:26.167
-So lift the hood on the engine
+00:00:26.132 --> 00:00:28.907
+is about what gets put on that desk,
 
 11
-00:00:26.167 --> 00:00:27.955
-from the last lesson.
+00:00:28.907 --> 00:00:31.438
+what it hands off to other models,
 
 12
-00:00:27.955 --> 00:00:29.453
-You won't find gears.
+00:00:31.438 --> 00:00:33.586
+and where the desk sits.
 
 13
-00:00:29.453 --> 00:00:32.740
-You'll find a desk covered in tiles.
+00:00:33.586 --> 00:00:36.477
+Each topic gets a minute or two here;
 
 14
-00:00:33.190 --> 00:00:36.336
-On the course map, this lesson sits at the Start,
+00:00:36.477 --> 00:00:40.217
+most get their own lesson later.
 
 15
-00:00:36.336 --> 00:00:39.181
-in Orientation: what this course is,
+00:00:40.666 --> 00:00:43.928
+On the course map, this lesson sits at the Start,
 
 16
-00:00:39.181 --> 00:00:41.201
-and the lantern you carry.
+00:00:43.928 --> 00:00:46.773
+in Orientation: what this course is,
 
 17
-00:00:41.201 --> 00:00:45.206
-The lanterns strung over every district are AI.
+00:00:46.773 --> 00:00:48.816
+and the lantern you carry.
 
 18
-00:00:45.206 --> 00:00:47.714
-Most of them run on an engine like this,
+00:00:48.816 --> 00:00:52.357
+The lanterns strung over every district are AI.
 
 19
-00:00:47.714 --> 00:00:50.258
-so it's worth one look inside.
+00:00:52.357 --> 00:00:55.399
+They aren't a district; they light all six.
 
 20
-00:00:50.708 --> 00:00:52.635
-Before the model reads anything,
+00:00:55.399 --> 00:00:57.895
+This lesson is a tour of the whole lantern.
 
 21
-00:00:52.635 --> 00:00:54.980
-your text is cut into tokens.
+00:00:57.895 --> 00:00:59.764
+You'll know where each piece goes,
 
 22
-00:00:54.980 --> 00:00:56.513
-Picture tiles.
+00:00:59.764 --> 00:01:01.610
+not how to do it yet.
 
 23
-00:00:56.513 --> 00:00:59.474
-A common word is often one tile.
+00:01:01.610 --> 00:01:03.433
+Memory lands in The Code,
 
 24
-00:00:59.474 --> 00:01:03.967
-A long or rare word gets split into a few.
+00:01:03.433 --> 00:01:07.102
+plugins and caching in The Network,
 
 25
-00:01:03.967 --> 00:01:06.022
-In English, a token averages
+00:01:07.102 --> 00:01:11.016
+work plans and personal agents in Trust.
 
 26
-00:01:06.022 --> 00:01:08.634
-about three quarters of a word.
+00:01:11.467 --> 00:01:13.185
+The model is a brilliant clerk
 
 27
-00:01:08.634 --> 00:01:10.712
-Each tile is really a number;
+00:01:13.185 --> 00:01:16.726
+who knows only what is on the desk right now.
 
 28
-00:01:10.712 --> 00:01:12.930
-the model works in numbers.
+00:01:16.726 --> 00:01:19.733
+Five years ago, in autumn twenty twenty-one,
 
 29
-00:01:12.930 --> 00:01:15.322
-So it never sees letters.
+00:01:19.733 --> 00:01:21.312
+the desk was tiny.
 
 30
-00:01:15.322 --> 00:01:17.899
-Ask it to count the R in strawberry,
+00:01:21.312 --> 00:01:24.645
+Text cards only, about two thousand tokens' worth,
 
 31
-00:01:17.899 --> 00:01:20.929
-and it's looking at two or three tiles,
+00:01:24.645 --> 00:01:26.990
+and one letter slot in the door:
 
 32
-00:01:20.929 --> 00:01:22.694
-not ten letters.
+00:01:26.990 --> 00:01:29.370
+an API for programmers.
 
 33
-00:01:22.694 --> 00:01:26.282
-Tokens are also how everything is measured:
+00:01:29.370 --> 00:01:32.528
+No ChatGPT, no memory, no tools.
 
 34
-00:01:26.282 --> 00:01:27.803
-how much it can read,
+00:01:32.528 --> 00:01:34.548
+Now the desk is the size of a hall,
 
 35
-00:01:27.803 --> 00:01:31.833
-how much it can write, and what it costs.
+00:01:34.548 --> 00:01:37.543
+with photos and recordings on it, and rooms,
 
 36
-00:01:32.282 --> 00:01:34.836
-The model reads every tile on the desk
+00:01:37.543 --> 00:01:40.250
+phone lines and a picture studio around it.
 
 37
-00:01:34.836 --> 00:01:37.565
-and scores every tile it could lay next.
+00:01:40.713 --> 00:01:43.209
+Two things did not change.
 
 38
-00:01:37.565 --> 00:01:39.387
-It lays one.
+00:01:43.209 --> 00:01:46.251
+The clerk still writes one small piece at a time,
 
 39
-00:01:39.387 --> 00:01:41.524
-That tile joins the desk,
+00:01:46.251 --> 00:01:48.155
+guessing what comes next.
 
 40
-00:01:41.524 --> 00:01:43.776
-and it does the whole thing again,
+00:01:48.155 --> 00:01:50.500
+And nothing stays overnight.
 
 41
-00:01:43.776 --> 00:01:45.680
-one tile per step,
+00:01:50.500 --> 00:01:53.147
+Every request starts with a clean desk,
 
 42
-00:01:45.680 --> 00:01:49.430
-until it lays a tile that means stop.
+00:01:53.147 --> 00:01:56.307
+and everything is handed over again.
 
 43
-00:01:49.430 --> 00:01:53.157
-That's why answers appear word by word.
+00:01:56.756 --> 00:01:59.113
+The desk is measured in tokens.
 
 44
-00:01:53.157 --> 00:01:56.442
-There's no finished answer hiding backstage;
+00:01:59.113 --> 00:02:01.330
+A token is a piece of a word,
 
 45
-00:01:56.442 --> 00:01:58.648
-you're watching tiles land.
+00:02:01.330 --> 00:02:03.861
+roughly four characters of English.
 
 46
-00:01:58.648 --> 00:02:02.387
-How it picks is set by a dial called temperature.
+00:02:03.861 --> 00:02:07.228
+You're limited and billed in tokens.
 
 47
-00:02:02.387 --> 00:02:05.243
-Low, and it takes the likeliest tile
+00:02:07.228 --> 00:02:09.527
+Everything on the desk counts:
 
 48
-00:02:05.243 --> 00:02:07.785
-nearly every time: predictable.
+00:02:09.527 --> 00:02:11.919
+the app's hidden instructions,
 
 49
-00:02:07.785 --> 00:02:10.874
-High, and it reaches further down the list:
+00:02:11.919 --> 00:02:15.158
+every message so far, your files and images,
 
 50
-00:02:10.874 --> 00:02:13.579
-varied, sometimes odd.
+00:02:15.158 --> 00:02:16.876
+the result of every tool,
 
 51
-00:02:13.579 --> 00:02:15.982
-That's one reason the same question
+00:02:16.876 --> 00:02:19.732
+its thinking, and its reply.
 
 52
-00:02:15.982 --> 00:02:18.211
-can get two different answers.
+00:02:19.732 --> 00:02:21.393
+The desk grew fast.
 
 53
-00:02:18.211 --> 00:02:21.719
-Most apps set the dial for you.
+00:02:21.393 --> 00:02:25.445
+About two thousand tokens in twenty twenty.
 
 54
-00:02:22.169 --> 00:02:25.257
-The desk is the context window:
+00:02:25.445 --> 00:02:27.407
+A hundred thousand on Claude
 
 55
-00:02:25.257 --> 00:02:27.742
-everything the model can see at once.
+00:02:27.407 --> 00:02:29.218
+in twenty twenty-three.
 
 56
-00:02:27.742 --> 00:02:30.238
-The engine starts cold every message,
+00:02:29.218 --> 00:02:32.190
+A million on Gemini in twenty twenty-four,
 
 57
-00:02:30.238 --> 00:02:32.444
-so every turn the app slides the whole
+00:02:32.190 --> 00:02:34.605
+and today a million is standard
 
 58
-00:02:32.444 --> 00:02:34.928
-conversation back onto the desk:
+00:02:34.605 --> 00:02:36.498
+on Claude's bigger models.
 
 59
-00:02:34.928 --> 00:02:36.821
-the hidden instructions,
+00:02:36.498 --> 00:02:38.437
+You'll see it as a meter:
 
 60
-00:02:36.821 --> 00:02:40.466
-your messages, its replies, any files.
+00:02:38.437 --> 00:02:42.175
+context used, context left.
 
 61
-00:02:40.466 --> 00:02:43.415
-Desks are large, but they do fill.
+00:02:42.175 --> 00:02:43.452
+One catch:
 
 62
-00:02:43.415 --> 00:02:45.227
-Then the app has to choose:
+00:02:43.452 --> 00:02:46.633
+token counts don't compare across models.
 
 63
-00:02:45.227 --> 00:02:47.641
-drop the oldest tiles off the edge,
+00:02:46.633 --> 00:02:48.525
+Newer Claude models can count up
 
 64
-00:02:47.641 --> 00:02:49.871
-squash them into a short summary,
+00:02:48.525 --> 00:02:51.265
+to a third more tokens for the same text.
 
 65
-00:02:49.871 --> 00:02:51.809
-or stop with an error.
+00:02:51.265 --> 00:02:54.156
+Here the picture breaks: no clerk stays.
 
 66
-00:02:51.809 --> 00:02:54.665
-And because everything is re-sent,
+00:02:54.156 --> 00:02:56.130
+Each reply is a fresh copy
 
 67
-00:02:54.665 --> 00:02:59.578
-a long chat uses more tokens with every message.
+00:02:56.130 --> 00:02:58.964
+that reads the whole desk at once.
 
 68
-00:03:00.028 --> 00:03:02.060
-Here's where the picture breaks.
+00:02:59.414 --> 00:03:01.875
+A fuller desk is a worse desk.
 
 69
-00:03:02.060 --> 00:03:04.869
-A desk suggests someone with a library underneath.
+00:03:01.875 --> 00:03:04.940
+As it fills, the clerk gets worse,
 
 70
-00:03:04.869 --> 00:03:06.309
-There isn't one.
+00:03:04.940 --> 00:03:06.995
+well before it's full.
 
 71
-00:03:06.309 --> 00:03:09.072
-Unless the app hands it a search tool,
+00:03:06.995 --> 00:03:09.422
+Researchers at Chroma measured it across
 
 72
-00:03:09.072 --> 00:03:11.255
-the model looks nothing up.
+00:03:09.422 --> 00:03:13.032
+eighteen models in twenty twenty-five:
 
 73
-00:03:11.255 --> 00:03:13.113
-Training taught it which tiles
+00:03:13.032 --> 00:03:14.716
+context rot.
 
 74
-00:03:13.113 --> 00:03:15.376
-tend to follow which.
+00:03:14.716 --> 00:03:16.272
+Things buried in the middle
 
 75
-00:03:15.376 --> 00:03:18.662
-That makes it very good at sounding right,
+00:03:16.272 --> 00:03:18.977
+of a long pile get missed most.
 
 76
-00:03:18.662 --> 00:03:21.228
-with no built-in check that it is right.
+00:03:18.977 --> 00:03:21.961
+So tools now tidy the desk.
 
 77
-00:03:21.228 --> 00:03:23.631
-So when the fact isn't on the desk,
+00:03:21.961 --> 00:03:23.900
+Compaction summarises the pile
 
 78
-00:03:23.631 --> 00:03:25.175
-it doesn't go quiet.
+00:03:23.900 --> 00:03:26.396
+onto one page and carries on.
 
 79
-00:03:25.175 --> 00:03:28.124
-It lays the likeliest-looking tiles,
+00:03:26.396 --> 00:03:28.242
+Claude Code does it by itself,
 
 80
-00:03:28.124 --> 00:03:30.550
-in the same calm voice.
+00:03:28.242 --> 00:03:32.886
+as auto-compact, or when you type /compact.
 
 81
-00:03:30.550 --> 00:03:32.071
-Often that's right.
+00:03:32.886 --> 00:03:35.986
+Old tool results get swept off.
 
 82
-00:03:32.071 --> 00:03:35.345
-When it isn't, that's a hallucination:
+00:03:35.986 --> 00:03:38.807
+A sub-agent gets its own fresh desk
 
 83
-00:03:35.345 --> 00:03:37.841
-a confident wrong guess.
+00:03:38.807 --> 00:03:42.894
+for a side job, and hands back a short report.
 
 84
-00:03:37.841 --> 00:03:40.732
-It shows up in specifics: citations,
+00:03:42.894 --> 00:03:45.007
+Prompt engineering has grown
 
 85
-00:03:40.732 --> 00:03:43.554
-version numbers, file paths, package names.
+00:03:45.007 --> 00:03:47.341
+into context engineering:
 
 86
-00:03:43.554 --> 00:03:46.363
-And anything after its training cutoff,
+00:03:47.341 --> 00:03:49.361
+choosing what goes on the desk.
 
 87
-00:03:46.363 --> 00:03:50.068
-the snapshot from two lessons ago, is a guess too.
+00:03:49.361 --> 00:03:53.635
+It gets its own lesson in The Machine.
 
 88
-00:03:50.519 --> 00:03:52.783
-Four surprises you'll meet.
+00:03:54.084 --> 00:03:57.149
+Five years ago, the desk held only text.
 
 89
-00:03:52.783 --> 00:03:55.558
-Ask how many times R appears in strawberry,
+00:03:57.149 --> 00:03:58.670
+Now photos, PDFs,
 
 90
-00:03:55.558 --> 00:03:58.124
-and some models have answered two.
+00:03:58.670 --> 00:04:01.038
+recordings and video can land on it.
 
 91
-00:03:58.124 --> 00:04:00.399
-Tiles, not letters.
+00:04:01.038 --> 00:04:02.571
+That's multimodal,
 
 92
-00:04:00.399 --> 00:04:03.394
-A long chat forgets your first instructions,
+00:04:02.571 --> 00:04:05.264
+and the word hides three different things.
 
 93
-00:04:03.394 --> 00:04:06.601
-or an error says the context is too long.
+00:04:05.264 --> 00:04:08.921
+One: the model reads many kinds of input.
 
 94
-00:04:07.063 --> 00:04:08.538
-The desk filled up.
+00:04:08.921 --> 00:04:13.066
+Claude reads text, images and PDFs.
 
 95
-00:04:08.538 --> 00:04:10.999
-Code that installs a package,
+00:04:13.066 --> 00:04:15.295
+Gemini takes text, images,
 
 96
-00:04:10.999 --> 00:04:13.774
-or calls a function, that doesn't exist.
+00:04:15.295 --> 00:04:17.814
+audio and video in one request.
 
 97
-00:04:13.774 --> 00:04:16.549
-A confident guess with a plausible name.
+00:04:17.814 --> 00:04:21.541
+Two: the model makes pictures or sound itself.
 
 98
-00:04:16.549 --> 00:04:19.556
-And a bill or usage page counted in tokens,
+00:04:21.541 --> 00:04:22.737
+That's rarer.
 
 99
-00:04:19.556 --> 00:04:21.297
-input and output.
+00:04:22.737 --> 00:04:24.212
+Three, the most common:
 
 100
-00:04:21.297 --> 00:04:24.631
-That's the re-sent desk, counted.
+00:04:24.212 --> 00:04:26.313
+the app hands the job to a separate
 
 101
-00:04:25.081 --> 00:04:27.345
-So put the facts on the desk.
+00:04:26.313 --> 00:04:30.818
+specialist model, through an API or a tool.
 
 102
-00:04:27.345 --> 00:04:28.912
-Paste the exact error,
+00:04:30.818 --> 00:04:33.511
+The clerk phones the studio next door.
 
 103
-00:04:28.912 --> 00:04:31.850
-attach the file, share the docs.
+00:04:33.511 --> 00:04:35.787
+Claude writes only text.
 
 104
-00:04:31.850 --> 00:04:33.521
-Same model, same question:
+00:04:35.787 --> 00:04:37.180
+For a chart or a picture,
 
 105
-00:04:33.521 --> 00:04:37.190
-with the real file on the desk, the answer fits.
+00:04:37.180 --> 00:04:39.223
+it writes code that draws one,
 
 106
-00:04:37.190 --> 00:04:39.013
-Ask where a claim comes from,
+00:04:39.223 --> 00:04:42.173
+or calls another model through a connector.
 
 107
-00:04:39.013 --> 00:04:40.348
-then open the source.
+00:04:42.173 --> 00:04:44.982
+ChatGPT feels like one model,
 
 108
-00:04:40.348 --> 00:04:43.158
-And check every specific before you build on it:
+00:04:44.982 --> 00:04:47.142
+but it stitches several together:
 
 109
-00:04:43.158 --> 00:04:46.130
-the package, the path, the version.
+00:04:47.142 --> 00:04:49.557
+one for images, one for voice.
 
 110
-00:04:46.130 --> 00:04:48.812
-Safe to ignore for now: transformers,
+00:04:49.557 --> 00:04:51.600
+And OpenAI shut down its Sora
 
 111
-00:04:48.812 --> 00:04:51.261
-attention, and the math of training.
+00:04:51.600 --> 00:04:53.620
+video app this spring.
 
 112
-00:04:51.261 --> 00:04:54.535
-AI is the lantern: it lights every district,
+00:04:53.620 --> 00:04:55.547
+You'll meet all this as a paperclip
 
 113
-00:04:54.535 --> 00:04:57.010
-but it doesn't walk the streets for you.
+00:04:55.547 --> 00:04:58.926
+that accepts some files and refuses others.
 
 114
-00:04:57.460 --> 00:04:59.376
-Three things to keep.
+00:04:58.926 --> 00:05:02.098
+Its own lesson lives in The Network.
 
 115
-00:04:59.376 --> 00:05:03.114
-It guesses the next token, over and over.
+00:05:02.547 --> 00:05:04.672
+Most of those studios run a different
 
 116
-00:05:03.114 --> 00:05:05.738
-Text is cut into pieces, not letters,
+00:05:04.672 --> 00:05:07.121
+kind of model, called diffusion.
 
 117
-00:05:05.738 --> 00:05:08.942
-and limits and prices count them.
+00:05:07.121 --> 00:05:10.024
+Picture a page of pure static.
 
 118
-00:05:08.942 --> 00:05:11.322
-It only sees its desk.
+00:05:10.024 --> 00:05:13.275
+The model wipes away a little of the noise,
 
 119
-00:05:11.322 --> 00:05:14.666
-The whole conversation is re-sent every turn,
+00:05:13.275 --> 00:05:17.698
+step by step, each step nudged by your prompt,
 
 120
-00:05:14.666 --> 00:05:19.067
-and the oldest parts fall off when the desk fills.
+00:05:17.698 --> 00:05:19.799
+until a picture is left.
 
 121
-00:05:19.067 --> 00:05:21.331
-Sounding right isn't being right.
+00:05:19.799 --> 00:05:21.634
+The same trick makes images,
 
 122
-00:05:21.331 --> 00:05:25.069
-Put the facts on the desk, ask for sources,
+00:05:21.634 --> 00:05:23.863
+video, sound effects and music,
 
 123
-00:05:25.069 --> 00:05:27.346
-and check every specific.
+00:05:23.863 --> 00:05:26.208
+as far as their makers have said.
+
+124
+00:05:26.208 --> 00:05:28.693
+Voices mostly aren't.
+
+125
+00:05:28.693 --> 00:05:31.514
+Most current ones use a close cousin called
+
+126
+00:05:31.514 --> 00:05:34.834
+flow matching, which needs fewer steps.
+
+127
+00:05:34.834 --> 00:05:37.992
+Not every image model is diffusion, though.
+
+128
+00:05:37.992 --> 00:05:41.196
+OpenAI's image models are reported to build
+
+129
+00:05:41.196 --> 00:05:44.784
+pictures piece by piece, like text.
+
+130
+00:05:44.784 --> 00:05:48.464
+And diffusion can write text, rarely.
+
+131
+00:05:48.464 --> 00:05:51.262
+Inception's Mercury and Google's experimental
+
+132
+00:05:51.262 --> 00:05:54.618
+diffusion models start from a smudged page
+
+133
+00:05:54.618 --> 00:05:56.940
+and sharpen every word at once.
+
+134
+00:05:56.940 --> 00:06:00.214
+Very fast, but not yet frontier quality.
+
+135
+00:06:00.214 --> 00:06:02.663
+Every top chat model still writes
+
+136
+00:06:02.663 --> 00:06:05.090
+one token after another.
+
+137
+00:06:05.090 --> 00:06:07.273
+How generators work gets its own
+
+138
+00:06:07.273 --> 00:06:09.538
+lesson in The Machine.
+
+139
+00:06:09.989 --> 00:06:13.089
+The lamp over the desk used to have dials.
+
+140
+00:06:13.089 --> 00:06:15.353
+Temperature: how much randomness
+
+141
+00:06:15.353 --> 00:06:17.059
+goes into each guess.
+
+142
+00:06:17.059 --> 00:06:20.333
+Top P and top K: how many candidate
+
+143
+00:06:20.333 --> 00:06:22.679
+words the clerk may choose from.
+
+144
+00:06:22.679 --> 00:06:24.803
+Max output tokens:
+
+145
+00:06:24.803 --> 00:06:28.123
+a hard cap on the length of the reply.
+
+146
+00:06:28.123 --> 00:06:30.295
+This year, the newest Claude models
+
+147
+00:06:30.295 --> 00:06:33.151
+stopped accepting a custom temperature.
+
+148
+00:06:33.151 --> 00:06:35.728
+Send one, and you get an error.
+
+149
+00:06:35.728 --> 00:06:39.408
+The dial that matters now is effort, or thinking:
+
+150
+00:06:39.408 --> 00:06:42.682
+how long the clerk works before it answers,
+
+151
+00:06:42.682 --> 00:06:45.422
+from low up to max.
+
+152
+00:06:45.422 --> 00:06:49.067
+And the clerk can still be confidently wrong.
+
+153
+00:06:49.067 --> 00:06:53.177
+Less often with search and tools, but not never.
+
+154
+00:06:53.177 --> 00:06:55.407
+Now it can also take a wrong action,
+
+155
+00:06:55.407 --> 00:06:58.727
+or invent a package that doesn't exist.
+
+156
+00:06:58.727 --> 00:07:02.537
+The settings get their own lesson in The Network.
+
+157
+00:07:02.987 --> 00:07:04.891
+The clerk keeps nothing,
+
+158
+00:07:04.891 --> 00:07:09.013
+so every memory is paper put back on the desk.
+
+159
+00:07:09.013 --> 00:07:11.486
+There are five ways it comes back.
+
+160
+00:07:11.486 --> 00:07:14.225
+One: the conversation itself.
+
+161
+00:07:14.225 --> 00:07:18.231
+The app re-sends every message, every turn.
+
+162
+00:07:18.231 --> 00:07:21.725
+Two: a memory the assistant keeps about you,
+
+163
+00:07:21.725 --> 00:07:24.140
+a profile it writes itself.
+
+164
+00:07:24.140 --> 00:07:27.658
+Claude, ChatGPT and Gemini all have one,
+
+165
+00:07:27.658 --> 00:07:30.734
+and on Claude it's no longer a paid extra.
+
+166
+00:07:30.734 --> 00:07:33.765
+Three: searching old chats with a tool.
+
+167
+00:07:33.765 --> 00:07:37.666
+You'll see a line like: searched past chats.
+
+168
+00:07:37.666 --> 00:07:39.906
+Four: stores outside the app,
+
+169
+00:07:39.906 --> 00:07:41.706
+reached by tool calls.
+
+170
+00:07:41.706 --> 00:07:43.412
+Memory files on your computer,
+
+171
+00:07:43.412 --> 00:07:46.466
+which Claude Code keeps, or a page in Notion
+
+172
+00:07:46.466 --> 00:07:49.159
+or Google Drive, through a connector.
+
+173
+00:07:49.159 --> 00:07:50.669
+Five: RAG,
+
+174
+00:07:50.669 --> 00:07:53.594
+short for retrieval augmented generation,
+
+175
+00:07:53.594 --> 00:07:56.450
+the general name for what three and four do.
+
+176
+00:07:56.450 --> 00:07:58.250
+Fetch the relevant pieces,
+
+177
+00:07:58.250 --> 00:08:00.908
+put them on the desk, then answer.
+
+178
+00:08:00.908 --> 00:08:03.253
+Vector search is one way to fetch;
+
+179
+00:08:03.253 --> 00:08:05.541
+coding agents now mostly search
+
+180
+00:08:05.541 --> 00:08:07.468
+with plain file tools.
+
+181
+00:08:07.468 --> 00:08:12.460
+Each one costs a tool call, desk space, or both.
+
+182
+00:08:12.460 --> 00:08:16.990
+Memory and RAG get their own lessons in The Code.
+
+183
+00:08:17.441 --> 00:08:20.645
+Some paper sits on the desk every turn.
+
+184
+00:08:20.645 --> 00:08:22.654
+First, the system prompt:
+
+185
+00:08:22.654 --> 00:08:25.371
+the app's own hidden instructions,
+
+186
+00:08:25.371 --> 00:08:28.041
+read before anything you type.
+
+187
+00:08:28.041 --> 00:08:31.675
+Anthropic publishes the ones for its Claude apps.
+
+188
+00:08:31.675 --> 00:08:33.707
+Second, your standing instructions:
+
+189
+00:08:33.707 --> 00:08:36.737
+preferences, styles and project instructions,
+
+190
+00:08:36.737 --> 00:08:39.686
+set once and re-sent every turn.
+
+191
+00:08:39.686 --> 00:08:43.308
+Third, instruction files that load themselves.
+
+192
+00:08:43.308 --> 00:08:46.849
+Put a file called CLAUDE.md at the root
+
+193
+00:08:46.849 --> 00:08:49.275
+of a project, and Claude Code reads
+
+194
+00:08:49.275 --> 00:08:51.911
+it at the start of every session there.
+
+195
+00:08:51.911 --> 00:08:53.745
+Your user folder, your company
+
+196
+00:08:53.745 --> 00:08:56.369
+and sub-folders can have one too.
+
+197
+00:08:56.369 --> 00:09:00.885
+AGENTS.md is the open version other tools use,
+
+198
+00:09:00.885 --> 00:09:03.196
+and Claude Code now reads it too,
+
+199
+00:09:03.196 --> 00:09:05.670
+when there's no CLAUDE.md.
+
+200
+00:09:06.133 --> 00:09:10.997
+GEMINI.md and Cursor's rules are the same idea.
+
+201
+00:09:10.997 --> 00:09:12.843
+But a note is not a lock.
+
+202
+00:09:12.843 --> 00:09:15.583
+Hooks and permissions enforce.
+
+203
+00:09:15.583 --> 00:09:18.265
+A long note gets followed less,
+
+204
+00:09:18.265 --> 00:09:21.237
+and it costs tokens every turn.
+
+205
+00:09:21.237 --> 00:09:22.967
+Instruction files get their own
+
+206
+00:09:22.967 --> 00:09:25.082
+lesson in The Machine.
+
+207
+00:09:25.532 --> 00:09:29.236
+Re-sending the whole desk is slow and expensive,
+
+208
+00:09:29.236 --> 00:09:31.523
+so providers keep it warm.
+
+209
+00:09:31.523 --> 00:09:34.472
+With prompt caching, the provider stores the work
+
+210
+00:09:34.472 --> 00:09:37.316
+it did reading the start of your request,
+
+211
+00:09:37.316 --> 00:09:40.521
+the prefix, and reuses it when the next
+
+212
+00:09:40.521 --> 00:09:43.470
+request starts exactly the same way.
+
+213
+00:09:43.470 --> 00:09:45.873
+Order matters: tools first,
+
+214
+00:09:45.873 --> 00:09:48.868
+then the system prompt, then the messages.
+
+215
+00:09:48.868 --> 00:09:51.295
+Change anything near the top, and everything
+
+216
+00:09:51.295 --> 00:09:54.035
+below it is laid out again from scratch.
+
+217
+00:09:54.035 --> 00:09:58.377
+The layout sits under a timer, its time to live.
+
+218
+00:09:58.377 --> 00:10:00.118
+Five minutes by default,
+
+219
+00:10:00.118 --> 00:10:02.243
+or an hour at a higher price,
+
+220
+00:10:02.243 --> 00:10:05.807
+and every reuse resets the clock.
+
+221
+00:10:05.807 --> 00:10:09.325
+Claude Code keeps it an hour on a subscription,
+
+222
+00:10:09.325 --> 00:10:12.193
+and five minutes on an API key.
+
+223
+00:10:12.193 --> 00:10:13.470
+Take a longer break,
+
+224
+00:10:13.470 --> 00:10:17.220
+and your next message rebuilds the whole desk.
+
+225
+00:10:17.220 --> 00:10:20.030
+Other things break it too: switching models,
+
+226
+00:10:20.030 --> 00:10:22.387
+changing tools, dropping old images,
+
+227
+00:10:22.387 --> 00:10:26.603
+compaction, and on older models, effort.
+
+228
+00:10:27.367 --> 00:10:30.212
+Editing CLAUDE.md doesn't;
+
+229
+00:10:30.212 --> 00:10:33.416
+the edit waits for your next session.
+
+230
+00:10:33.416 --> 00:10:35.703
+The cache isn't the clerk remembering.
+
+231
+00:10:35.703 --> 00:10:37.897
+It's stored arithmetic,
+
+232
+00:10:37.897 --> 00:10:40.929
+thrown away when the timer runs out.
+
+233
+00:10:41.379 --> 00:10:43.678
+That's why the bill has four meters.
+
+234
+00:10:43.678 --> 00:10:46.940
+Normal input: fresh paper, full price.
+
+235
+00:10:46.940 --> 00:10:51.236
+Cache write: laying the desk out for reuse,
+
+236
+00:10:51.236 --> 00:10:53.233
+at a little more than input.
+
+237
+00:10:53.233 --> 00:10:56.565
+On Claude, a quarter more for five minutes,
+
+238
+00:10:56.565 --> 00:10:58.329
+double for an hour.
+
+239
+00:10:58.329 --> 00:11:01.336
+Cache read: reusing the layout,
+
+240
+00:11:01.336 --> 00:11:04.007
+at a tenth of the input price, or less.
+
+241
+00:11:04.007 --> 00:11:06.665
+Output: everything the clerk writes,
+
+242
+00:11:06.665 --> 00:11:08.581
+its thinking included.
+
+243
+00:11:08.581 --> 00:11:10.137
+That's the expensive meter,
+
+244
+00:11:10.137 --> 00:11:12.830
+about five times the input price.
+
+245
+00:11:12.830 --> 00:11:16.441
+The API reports these four counts.
+
+246
+00:11:16.441 --> 00:11:19.587
+So a long chat costs more every turn,
+
+247
+00:11:19.587 --> 00:11:21.224
+even if you type one word,
+
+248
+00:11:21.224 --> 00:11:23.755
+because the whole desk is sent again.
+
+249
+00:11:23.755 --> 00:11:26.971
+It's cheap only while the cache is warm.
+
+250
+00:11:26.971 --> 00:11:30.257
+And cached tokens are cheaper, not smaller.
+
+251
+00:11:30.257 --> 00:11:32.358
+They still fill the desk.
+
+252
+00:11:32.358 --> 00:11:35.818
+OpenAI and Google cache automatically;
+
+253
+00:11:35.818 --> 00:11:40.311
+on Claude's API, you switch it on.
+
+254
+00:11:40.311 --> 00:11:43.912
+The meters get their own lesson in The Network.
+
+255
+00:11:44.362 --> 00:11:48.100
+The same clerk works in many rooms and buildings.
+
+256
+00:11:48.100 --> 00:11:50.167
+A mode is the kind of job.
+
+257
+00:11:50.167 --> 00:11:52.872
+A platform is where it runs,
+
+258
+00:11:52.872 --> 00:11:54.753
+and what it can touch.
+
+259
+00:11:54.753 --> 00:11:59.083
+Claude's modes were chat, Cowork and Code.
+
+260
+00:11:59.083 --> 00:12:01.510
+Cowork, launched in January,
+
+261
+00:12:01.510 --> 00:12:05.156
+is an agent for office work on your files.
+
+262
+00:12:05.156 --> 00:12:08.616
+In mid-September, Anthropic began merging chat
+
+263
+00:12:08.616 --> 00:12:12.017
+and Cowork into one Claude that decides
+
+264
+00:12:12.017 --> 00:12:14.699
+whether to answer you or do the work.
+
+265
+00:12:14.699 --> 00:12:18.438
+It's rolling out to Pro and Max first.
+
+266
+00:12:18.438 --> 00:12:21.190
+Claude Code stays its own room.
+
+267
+00:12:21.190 --> 00:12:24.150
+The buildings: the browser, the desktop app,
+
+268
+00:12:24.150 --> 00:12:26.913
+your phone, the terminal CLI,
+
+269
+00:12:26.913 --> 00:12:30.095
+editor extensions, and cloud sessions
+
+270
+00:12:30.095 --> 00:12:32.788
+that run on Anthropic's machines.
+
+271
+00:12:32.788 --> 00:12:34.100
+Local sees your files,
+
+272
+00:12:34.100 --> 00:12:36.492
+and stops when your laptop sleeps.
+
+273
+00:12:36.492 --> 00:12:38.546
+Cloud sees only what you give it,
+
+274
+00:12:38.546 --> 00:12:40.789
+and keeps going with the lid shut.
+
+275
+00:12:41.252 --> 00:12:42.796
+OpenAI pulled Chat,
+
+276
+00:12:42.796 --> 00:12:46.813
+Work and Codex into one desktop app in July.
+
+277
+00:12:46.813 --> 00:12:51.737
+Google folded Gemini CLI into Antigravity in June.
+
+278
+00:12:52.200 --> 00:12:54.976
+Coding agents live in The Machine.
+
+279
+00:12:55.426 --> 00:12:57.922
+A skill is a folder of instructions:
+
+280
+00:12:57.922 --> 00:13:02.972
+a file called SKILL.md, and sometimes scripts.
+
+281
+00:13:02.972 --> 00:13:05.213
+Only its label sits on the desk;
+
+282
+00:13:05.213 --> 00:13:08.174
+the pages load when the clerk needs them.
+
+283
+00:13:08.174 --> 00:13:12.853
+It's an open format other tools now use too.
+
+284
+00:13:12.853 --> 00:13:15.709
+A connector is a phone line to another service,
+
+285
+00:13:15.709 --> 00:13:20.933
+like Gmail, Notion or GitHub, built on MCP.
+
+286
+00:13:20.933 --> 00:13:23.975
+A plugin is a boxed kit: skills,
+
+287
+00:13:23.975 --> 00:13:26.645
+connectors, commands and hooks, together.
+
+288
+00:13:26.645 --> 00:13:29.060
+You get them from the app's directory,
+
+289
+00:13:29.060 --> 00:13:31.278
+the Claude Marketplace,
+
+290
+00:13:31.278 --> 00:13:33.751
+reported at over two thousand add-ons,
+
+291
+00:13:33.751 --> 00:13:36.990
+and Claude Code plugin marketplaces,
+
+292
+00:13:36.990 --> 00:13:38.790
+which are git repositories.
+
+293
+00:13:38.790 --> 00:13:41.146
+OpenAI has its own too.
+
+294
+00:13:41.146 --> 00:13:44.989
+Every third-party add-on is code you're trusting.
+
+295
+00:13:44.989 --> 00:13:47.392
+OpenClaw's skill store held hundreds
+
+296
+00:13:47.392 --> 00:13:50.515
+of malicious ones this February.
+
+297
+00:13:50.515 --> 00:13:52.897
+All three live in The Network.
+
+298
+00:13:53.347 --> 00:13:56.424
+Same clerk, different building rules.
+
+299
+00:13:56.424 --> 00:14:00.812
+Individual plans, Free, Pro and Max,
+
+300
+00:14:00.812 --> 00:14:03.459
+mostly differ in how much you can use.
+
+301
+00:14:03.459 --> 00:14:05.828
+And since autumn twenty twenty-five,
+
+302
+00:14:05.828 --> 00:14:09.078
+consumer chats, paid ones included,
+
+303
+00:14:09.078 --> 00:14:12.654
+may be used for training unless you turn that off.
+
+304
+00:14:12.654 --> 00:14:16.195
+Team and Enterprise add the company building:
+
+305
+00:14:16.195 --> 00:14:18.169
+single sign-on at the door,
+
+306
+00:14:18.169 --> 00:14:21.025
+admins choosing which connectors,
+
+307
+00:14:21.025 --> 00:14:23.509
+plugins and skills are allowed,
+
+308
+00:14:23.509 --> 00:14:26.679
+audit logs, custom data retention,
+
+309
+00:14:26.679 --> 00:14:29.709
+and instruction files pushed to every machine.
+
+310
+00:14:29.709 --> 00:14:32.101
+Work plans aren't trained on by default,
+
+311
+00:14:32.101 --> 00:14:36.083
+and admins get notice before products change.
+
+312
+00:14:36.083 --> 00:14:36.954
+Since April,
+
+313
+00:14:36.954 --> 00:14:39.624
+a Claude subscription's included usage can't
+
+314
+00:14:39.624 --> 00:14:42.713
+power third-party agents like OpenClaw.
+
+315
+00:14:42.713 --> 00:14:44.245
+Those are billed separately,
+
+316
+00:14:44.245 --> 00:14:47.090
+by usage or an API key.
+
+317
+00:14:47.090 --> 00:14:51.236
+Plans at work get their own lesson in Trust.
+
+318
+00:14:51.686 --> 00:14:53.787
+Claude Design launched in April
+
+319
+00:14:53.787 --> 00:14:57.433
+as a research preview: describe a visual,
+
+320
+00:14:57.433 --> 00:15:00.417
+and Claude drafts it as layout and code,
+
+321
+00:15:00.417 --> 00:15:02.460
+not with an image model.
+
+322
+00:15:02.460 --> 00:15:06.083
+Since September it lives inside chats too,
+
+323
+00:15:06.083 --> 00:15:09.450
+now in beta, next to Claude Docs and Slides.
+
+324
+00:15:09.450 --> 00:15:10.495
+And voice.
+
+325
+00:15:10.495 --> 00:15:11.807
+It's built two ways.
+
+326
+00:15:11.807 --> 00:15:14.500
+A pipeline: speech to text,
+
+327
+00:15:14.500 --> 00:15:16.822
+then the model, then text to speech.
+
+328
+00:15:16.822 --> 00:15:18.366
+It takes turns.
+
+329
+00:15:18.366 --> 00:15:21.083
+Or a model that hears and speaks sound directly,
+
+330
+00:15:21.083 --> 00:15:24.415
+catching your tone, and listens while it talks,
+
+331
+00:15:24.415 --> 00:15:25.984
+so you can cut in.
+
+332
+00:15:26.435 --> 00:15:28.699
+OpenAI's GPT Live
+
+333
+00:15:28.699 --> 00:15:31.776
+and Google's Gemini Live work that way.
+
+334
+00:15:31.776 --> 00:15:34.434
+Claude's voice mode can now use the bigger
+
+335
+00:15:34.434 --> 00:15:37.163
+models and your connected apps.
+
+336
+00:15:37.163 --> 00:15:38.428
+It takes turns,
+
+337
+00:15:38.428 --> 00:15:41.377
+and Anthropic hasn't said how it's built.
+
+338
+00:15:41.377 --> 00:15:43.885
+Builders get a lesson in Shipping;
+
+339
+00:15:43.885 --> 00:15:46.696
+voice, in The Network.
+
+340
+00:15:47.146 --> 00:15:49.723
+Last, a desk that never closes.
+
+341
+00:15:49.723 --> 00:15:52.556
+A personal agent runs all the time,
+
+342
+00:15:52.556 --> 00:15:54.321
+on its own computer.
+
+343
+00:15:54.321 --> 00:15:56.225
+You message it from a chat app,
+
+344
+00:15:56.225 --> 00:15:57.839
+it keeps a long memory,
+
+345
+00:15:57.839 --> 00:16:00.741
+and it has broad permission to act.
+
+346
+00:16:00.741 --> 00:16:04.166
+One camp is open source and self-hosted.
+
+347
+00:16:04.166 --> 00:16:06.616
+OpenClaw started as Clawdbot,
+
+348
+00:16:06.616 --> 00:16:08.996
+and went viral in January.
+
+349
+00:16:08.996 --> 00:16:10.505
+Hermes Agent,
+
+350
+00:16:10.505 --> 00:16:13.559
+a rival from Nous Research, followed in February,
+
+351
+00:16:13.559 --> 00:16:17.169
+and turns problems it solves into its own skills.
+
+352
+00:16:17.169 --> 00:16:20.699
+Your machine, your keys, your risk.
+
+353
+00:16:20.699 --> 00:16:23.648
+In February, OpenClaw had its crisis:
+
+354
+00:16:23.648 --> 00:16:25.169
+more than a hundred thousand
+
+355
+00:16:25.169 --> 00:16:27.537
+installs left open to the internet.
+
+356
+00:16:27.537 --> 00:16:30.916
+The other camp is hosted by a big company.
+
+357
+00:16:30.916 --> 00:16:35.153
+Meta's Muse launched in September, in the US.
+
+358
+00:16:35.153 --> 00:16:38.857
+OpenAI announced dots at the end of September,
+
+359
+00:16:38.857 --> 00:16:40.657
+rolling out now.
+
+360
+00:16:40.657 --> 00:16:44.801
+Google has Gemini Spark, on its paid AI plans.
+
+361
+00:16:44.801 --> 00:16:47.971
+Their computer, their approval rules.
+
+362
+00:16:47.971 --> 00:16:51.512
+Anthropic's nearest pieces are cloud sessions,
+
+363
+00:16:51.512 --> 00:16:54.171
+scheduled routines, and Dispatch,
+
+364
+00:16:54.171 --> 00:16:56.759
+which sends a task from your phone.
+
+365
+00:16:56.759 --> 00:16:59.198
+Their own lesson is in Trust.
+
+366
+00:16:59.198 --> 00:17:01.752
+So what's myth, and what's still true?
+
+367
+00:17:01.752 --> 00:17:03.286
+Here's June.
+
+368
+00:17:03.736 --> 00:17:06.302
+Thanks. Ten myths, fast.
+
+369
+00:17:06.302 --> 00:17:08.612
+Myth one: set temperature to zero,
+
+370
+00:17:08.612 --> 00:17:10.725
+and you get the same answer every time.
+
+371
+00:17:10.725 --> 00:17:11.933
+Wrong twice.
+
+372
+00:17:11.933 --> 00:17:13.604
+The newest Claude models return
+
+373
+00:17:13.604 --> 00:17:15.114
+an error if you set it,
+
+374
+00:17:15.114 --> 00:17:18.341
+and zero never guaranteed the same answer anyway.
+
+375
+00:17:18.341 --> 00:17:21.569
+Myth two: it remembers me. Not quite.
+
+376
+00:17:21.569 --> 00:17:23.786
+It re-reads a profile it wrote,
+
+377
+00:17:23.786 --> 00:17:26.480
+searches your old chats, or opens a file.
+
+378
+00:17:26.480 --> 00:17:28.420
+Nothing lives inside the model.
+
+379
+00:17:29.022 --> 00:17:30.183
+Myth three:
+
+380
+00:17:30.183 --> 00:17:32.947
+a bigger window means it remembers everything.
+
+381
+00:17:32.947 --> 00:17:35.628
+No. A fuller desk is a worse desk.
+
+382
+00:17:35.628 --> 00:17:38.867
+Myth four: all AI art is diffusion.
+
+383
+00:17:38.867 --> 00:17:40.133
+Mostly, not all.
+
+384
+00:17:40.133 --> 00:17:41.897
+Some image models build pictures
+
+385
+00:17:41.897 --> 00:17:43.813
+piece by piece, like text.
+
+386
+00:17:43.813 --> 00:17:46.263
+Myth five: Claude can draw that for you.
+
+387
+00:17:46.263 --> 00:17:47.714
+It writes code that draws,
+
+388
+00:17:47.714 --> 00:17:49.421
+or it calls another model.
+
+389
+00:17:49.421 --> 00:17:51.965
+The paintbrush belongs to someone else.
+
+390
+00:17:52.415 --> 00:17:57.163
+Five more. Myth six: cached tokens are free.
+
+391
+00:17:57.163 --> 00:18:00.194
+Writing the cache costs more than normal input.
+
+392
+00:18:00.194 --> 00:18:01.273
+Reading it is cheap,
+
+393
+00:18:01.273 --> 00:18:03.514
+but those tokens still fill the desk.
+
+394
+00:18:03.514 --> 00:18:05.848
+And a coffee break longer than the timer means
+
+395
+00:18:05.848 --> 00:18:08.507
+your next message rebuilds from scratch.
+
+396
+00:18:08.507 --> 00:18:10.922
+Myth seven: I pay for Pro,
+
+397
+00:18:10.922 --> 00:18:13.592
+so my chats aren't used for training.
+
+398
+00:18:13.592 --> 00:18:16.727
+Consumer plans may be, unless you switch it off.
+
+399
+00:18:16.727 --> 00:18:19.037
+Work plans aren't, by default.
+
+400
+00:18:19.037 --> 00:18:22.671
+Myth eight: my subscription can run any agent.
+
+401
+00:18:22.671 --> 00:18:25.515
+Not on your plan's usage, not since April.
+
+402
+00:18:25.515 --> 00:18:27.326
+Those are billed separately.
+
+403
+00:18:27.326 --> 00:18:31.401
+Myth nine: CLAUDE.md is a rule it must obey.
+
+404
+00:18:31.401 --> 00:18:33.003
+It's a note on the desk.
+
+405
+00:18:33.003 --> 00:18:35.035
+Hooks and permissions are the locks.
+
+406
+00:18:35.035 --> 00:18:38.657
+Myth ten: Sora is where AI video lives.
+
+407
+00:18:38.657 --> 00:18:40.933
+OpenAI shut that app this spring;
+
+408
+00:18:40.933 --> 00:18:42.674
+the other studios carry on.
+
+409
+00:18:42.674 --> 00:18:45.103
+That's the round. Back to you.
+
+410
+00:18:45.553 --> 00:18:47.376
+Thanks, June.
+
+411
+00:18:47.376 --> 00:18:50.847
+Where is this heading, going by this year's moves?
+
+412
+00:18:50.847 --> 00:18:53.355
+Fewer modes: one agent
+
+413
+00:18:53.355 --> 00:18:56.791
+that decides whether to answer or to work.
+
+414
+00:18:56.791 --> 00:18:58.521
+Agents that keep running on their own
+
+415
+00:18:58.521 --> 00:19:00.483
+computers in the cloud.
+
+416
+00:19:00.483 --> 00:19:02.492
+And curating the desk,
+
+417
+00:19:02.492 --> 00:19:04.988
+instead of only making it bigger.
+
+418
+00:19:04.988 --> 00:19:07.463
+Beyond that, nobody knows yet.
+
+419
+00:19:07.926 --> 00:19:10.155
+Safe to ignore for now:
+
+420
+00:19:10.155 --> 00:19:12.245
+version numbers, leaderboards,
+
+421
+00:19:12.245 --> 00:19:14.694
+and the maths inside the model.
+
+422
+00:19:14.694 --> 00:19:16.656
+Three things to keep.
+
+423
+00:19:16.656 --> 00:19:20.385
+The model only knows what's on its desk right now.
+
+424
+00:19:20.848 --> 00:19:22.728
+Memory and instruction files
+
+425
+00:19:22.728 --> 00:19:25.189
+are text put back on the desk,
+
+426
+00:19:25.189 --> 00:19:28.080
+and a fuller desk is a worse desk.
+
+427
+00:19:28.080 --> 00:19:30.994
+Making pictures is mostly a hand-off.
+
+428
+00:19:30.994 --> 00:19:33.374
+It reads many kinds of input,
+
+429
+00:19:33.374 --> 00:19:34.791
+but pictures, video
+
+430
+00:19:34.791 --> 00:19:38.146
+and music usually come from a separate model,
+
+431
+00:19:38.146 --> 00:19:40.468
+most often diffusion.
+
+432
+00:19:40.468 --> 00:19:44.149
+Same model, many rooms, four meters.
+
+433
+00:19:44.149 --> 00:19:47.040
+Where you meet it changes what it can touch
+
+434
+00:19:47.040 --> 00:19:48.514
+and what it costs,
+
+435
+00:19:48.514 --> 00:19:51.616
+and a warm cache makes repeats cheap.
