@@ -620,7 +620,7 @@ class AoDiff extends HTMLElement {
 // the clip's full length (the playhead runs across it; click it to seek) and a <figcaption>.
 // A direct child <figcaption> captions the set. Keys, with the list focused: up/down pick a
 // clip, space plays, C toggles A/B. Only one clip on the page plays at a time, and the element
-// stops when the homepage swaps posts. Without JS the figures stack with native controls.
+// stops when the homepage swaps posts or closes the reader. Without JS the figures stack with native controls.
 const AO_LISTEN_PLAY = 'ao-listen-play';
 const fmtTime = (s) => (isFinite(s) ? Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0') : '0:00');
 
@@ -714,6 +714,8 @@ class AoListen extends HTMLElement {
       play.textContent = a.paused ? 'Play' : 'Pause';
     };
     const loop = () => {
+      // The homepage hides the reader rather than removing it when it closes; stop with it.
+      if (!this.getClientRects().length) { cur.audio.pause(); return; }
       draw();
       if (!cur.audio.paused) this._raf = requestAnimationFrame(loop);
     };
