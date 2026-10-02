@@ -587,3 +587,136 @@ ao-diff figcaption .ao-meta {
   font-size: 11.5px;
   color: var(--pc-quiet);
 }
+
+/* <ao-listen>: renders of one line, heard at the same moment. One stage (title, spectrogram
+   with a playhead, transport) over a list of clips. Without JS the figures stack. */
+ao-listen {
+  display: block;
+  margin: 8px 0 28px;
+}
+ao-listen > figure { margin: 0 0 14px; }
+ao-listen > figure > audio { width: 100%; display: block; }
+ao-listen > figure > img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+  margin-top: 6px;
+}
+ao-listen figcaption {
+  margin-top: 8px;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pc-soft);
+}
+ao-listen figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
+ao-listen figcaption .ao-meta,
+.ao-listen-now .ao-meta {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: var(--pc-quiet);
+}
+.ao-listen-stage {
+  border: 1px solid var(--pc-line);
+  border-radius: 12px;
+  padding: 14px 14px 12px;
+  background: var(--pc-code);
+}
+.ao-listen-now {
+  margin: 0 0 10px;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  min-height: 2.6em;
+}
+.ao-listen-now b { display: block; color: var(--pc-head); font-weight: 600; }
+.ao-listen-spec {
+  position: relative;
+  aspect-ratio: 900 / 160;
+  background: #120d1c;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  touch-action: none;
+}
+ao-listen .ao-listen-spec img { width: 100%; height: 100%; display: block; object-fit: fill; }
+ao-listen .ao-listen-spec.ao-listen-nospec img { display: none; }
+.ao-listen-spec:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+.ao-listen-head {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--pc-head);
+  box-shadow: 0 0 10px var(--pc-head);
+  pointer-events: none;
+}
+.ao-listen-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin-top: 10px;
+}
+.ao-listen-bar button {
+  font: 600 12.5px/1 Karla, system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--pc-line2);
+  background: transparent;
+  color: var(--pc-strong);
+  cursor: pointer;
+  transition: border-color 180ms cubic-bezier(.4,0,.2,1), color 180ms cubic-bezier(.4,0,.2,1);
+}
+.ao-listen-bar button:hover:not(:disabled) { border-color: var(--pc-head); color: var(--pc-head); }
+.ao-listen-bar button:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+.ao-listen-bar button[aria-pressed='true'] { border-color: var(--pc-accent); color: var(--pc-accent); }
+.ao-listen-bar button:disabled { opacity: 0.4; cursor: default; }
+.ao-listen-clock {
+  margin-left: auto;
+  font: 12px ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--pc-quiet);
+}
+ao-listen ol.ao-listen-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 6px;
+}
+.ao-listen-list:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; border-radius: 8px; }
+ao-listen .ao-listen-list li { margin: 0; padding: 0; font-size: inherit; }
+.ao-listen-list li::before { content: none; }
+.ao-listen-list button {
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  border: 1px solid var(--pc-line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--pc-body);
+  font: 13px/1.35 Karla, system-ui, sans-serif;
+  cursor: pointer;
+  transition: border-color 180ms cubic-bezier(.4,0,.2,1), background 180ms cubic-bezier(.4,0,.2,1);
+}
+.ao-listen-list button b { display: block; color: var(--pc-strong); font-weight: 600; }
+.ao-listen-list button span {
+  display: block;
+  margin-top: 2px;
+  font: 11px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--pc-quiet);
+}
+.ao-listen-list button:hover { border-color: var(--pc-line2); background: var(--pc-hover); }
+.ao-listen-list button[aria-current='true'] { border-color: var(--pc-head); background: var(--pc-hover); }
+.ao-listen-list button[aria-current='true'] b { color: var(--pc-head); }
+ao-listen > figcaption { margin-top: 10px; }
+@media (max-width: 560px) {
+  ao-listen ol.ao-listen-list { grid-template-columns: 1fr; }
+}
