@@ -4,7 +4,7 @@
  "updated": "2026-10-01",
  "totalLessons": 183,
  "publishedLessons": 3,
- "runtimeSeconds": 895,
+ "runtimeSeconds": 909,
  "moduleCount": 22,
  "districtCount": 6,
  "regions": [
@@ -144,10 +144,10 @@
      "status": "published",
      "slug": "00-03-how-old-is-all-this",
      "url": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/",
-     "duration": 304.0,
+     "duration": 317.2,
      "summary": "Almost everything under your AI tools is decades old (Unix 1969, the web and Python 1991, git 2005) and only the AI layer on top is new (Copilot 2021, ChatGPT 2022, MCP 2024), so learn the old streets once and keep checking the new lanterns.",
      "published": "2026-10-01",
-     "narrator": "Ember",
+     "narrator": "RClayton",
      "poster": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/poster.jpg"
     },
     {
@@ -1453,10 +1453,10 @@
   "status": "published",
   "slug": "00-03-how-old-is-all-this",
   "url": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/",
-  "duration": 304.0,
+  "duration": 317.2,
   "summary": "Almost everything under your AI tools is decades old (Unix 1969, the web and Python 1991, git 2005) and only the AI layer on top is new (Copilot 2021, ChatGPT 2022, MCP 2024), so learn the old streets once and keep checking the new lanterns.",
   "published": "2026-10-01",
-  "narrator": "Ember",
+  "narrator": "RClayton",
   "poster": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/poster.jpg"
  },
  "first": {
