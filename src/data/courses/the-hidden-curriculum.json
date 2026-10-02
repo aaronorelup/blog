@@ -3,8 +3,8 @@
  "title": "The Hidden Curriculum",
  "updated": "2026-10-01",
  "totalLessons": 196,
- "publishedLessons": 3,
- "runtimeSeconds": 1236,
+ "publishedLessons": 4,
+ "runtimeSeconds": 1519,
  "moduleCount": 22,
  "districtCount": 6,
  "regions": [
@@ -155,7 +155,14 @@
      "title": "Model vs app vs agent",
      "idea": "GPT/Claude/Gemini (models) vs the apps wrapping them vs agents that act",
      "lantern": true,
-     "status": "locked"
+     "status": "published",
+     "slug": "00-04-model-vs-app-vs-agent",
+     "url": "/courses/the-hidden-curriculum/lessons/00-04-model-vs-app-vs-agent/",
+     "duration": 283.2,
+     "summary": "The model is the engine (a lab's file of numbers: text in, text out, no memory), the app is the car built around it (chat window, saved chats, hidden instructions, the bill), and an agent is that car allowed to drive, with tools, a loop and you deciding what it may do.",
+     "published": "2026-10-01",
+     "narrator": "Adrian",
+     "poster": "/courses/the-hidden-curriculum/lessons/00-04-model-vs-app-vs-agent/poster.jpg"
     },
     {
      "id": "00.05",
@@ -171,7 +178,7 @@
      "status": "locked"
     }
    ],
-   "filed": 3
+   "filed": 4
   },
   {
    "n": "01",
@@ -1526,17 +1533,18 @@
   }
  ],
  "latest": {
-  "id": "00.03",
-  "title": "How old is all this?",
-  "idea": "A timeline from Unix (1969) to MCP (2024) — most of it is older than you think, the AI layer is brand new",
+  "id": "00.04",
+  "title": "Model vs app vs agent",
+  "idea": "GPT/Claude/Gemini (models) vs the apps wrapping them vs agents that act",
+  "lantern": true,
   "status": "published",
-  "slug": "00-03-how-old-is-all-this",
-  "url": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/",
-  "duration": 644.8,
-  "summary": "The ideas under your tools are decades old, but old does not mean frozen: versions change every year, security changes fastest (text codes to authenticator apps to passkeys, broken hashes, retired TLS) and AI on top changes fastest of all, so learn the ideas once, check the version, and assume old login advice is out of date.",
+  "slug": "00-04-model-vs-app-vs-agent",
+  "url": "/courses/the-hidden-curriculum/lessons/00-04-model-vs-app-vs-agent/",
+  "duration": 283.2,
+  "summary": "The model is the engine (a lab's file of numbers: text in, text out, no memory), the app is the car built around it (chat window, saved chats, hidden instructions, the bill), and an agent is that car allowed to drive, with tools, a loop and you deciding what it may do.",
   "published": "2026-10-01",
-  "narrator": "RClayton",
-  "poster": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/poster.jpg"
+  "narrator": "Adrian",
+  "poster": "/courses/the-hidden-curriculum/lessons/00-04-model-vs-app-vs-agent/poster.jpg"
  },
  "first": {
   "id": "00.01",

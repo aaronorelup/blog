@@ -72,6 +72,21 @@
   const PATH = [[GATE.x, GATE.y], [485, GATE.y], [960, GATE.y], [1435, GATE.y], [1720, GATE.y], [1720, END.y], [1435, END.y], [960, END.y], [485, END.y], [END.x, END.y]];
 
   /**
+   * one lantern exactly as the map draws it (glow + swaying icon), so a scene can lift lantern i out of the map
+   * (o.lanternHide) and carry it elsewhere with nothing jumping. o: x, y (default lanternAt(i)); lit 0..1 (as
+   * o.lanterns, default 1); sway (multiplier, default 1); alpha 0..1 (default 1); glowK (glow multiplier, default 1;
+   * the map uses 1.8 when focus is 'ai'); s (scale, default 1). The sway phase is per-index, so pass the same i.
+   */
+  function lantern(t, i, o = {}) {
+    const p = lanternAt(i), x = o.x ?? p.x, y = o.y ?? p.y, s = o.s ?? 1;
+    const lk = K.clamp(o.lit ?? 1), a = K.clamp(o.alpha ?? 1);
+    if (a <= 0) return;
+    const sway = K.wave(t, 1.1, 0.06 * (o.sway ?? 1), i * 1.7);
+    if (lk > 0) K.glow(x, y + 16 * s, 60 * s, C.head, lk * a * 0.22 * (o.glowK ?? 1));
+    K.layer((0.2 + 0.8 * lk) * a, () => K.at(x, y, s, sway, () => K.icon('lantern', 0, 16, 46, { color: C.head, w: 2.4 })));
+  }
+
+  /**
    * draw the map. o:
    *  t0      — when the staggered reveal starts (omit: fully visible)
    *  focus   — district id or module id to light up; others dim
@@ -86,6 +101,8 @@
    *  lanternSway — number or (i) => number: multiplies each lantern's idle sway (built-in amplitude 0.06 rad; default 1)
    *  lanternDrop — 0..1 or (i) => 0..1: each lantern drops onto the string from 90 px above, like pinDrop (default 1 = hung;
    *                ease it yourself, e.g. (i) => K.io(t, a + i * .15, .7, 'back'))
+   *  lanternHide — 0..1 or (i) => 0..1: lifts a lantern out of the map in place (1 = gone, cord and labels stay; default 0).
+   *                Redraw it yourself with K.map.lantern(t, i, {...}) to move it, so it keeps the map's sway and glow
    *  rowWash — { '14': { k, color }, ... }: washes any module row in a colour (k 0..1 eases it; colour default C.head),
    *            the same 38 px pill as the pinned row, drawn under the row's text so no overlay or text redraw is needed
    *  districtK — 0..1 or (id) => 0..1: per-district visibility, ids 'machine' … 'shipping', 'ai' (the lantern
@@ -127,12 +144,13 @@
         g.save(); g.strokeStyle = K.rgba(C.soft, 0.5); g.lineWidth = 1.5;
         g.beginPath(); g.moveTo(250, y - 40); g.quadraticCurveTo(960, y + 4, 1670, y - 40); g.stroke(); g.restore();
       });
+      const boost = o.focus === 'ai' || LANTERNS.mods.includes(o.focus) ? 1.8 : 1;
       for (let i = 0; i < LANTERNS.n; i++) {
         const sm = typeof o.lanternSway === 'function' ? o.lanternSway(i) : (o.lanternSway ?? 1);
         const ld = K.clamp(typeof o.lanternDrop === 'function' ? o.lanternDrop(i) : (o.lanternDrop ?? 1));
-        const { x, y: y0 } = lanternAt(i), yy = y0 - (1 - ld) * 90, sway = K.wave(t, 1.1, 0.06 * sm, i * 1.7), lk = lanternK(i);
-        if (lk > 0) K.glow(x, yy + 16, 60, C.head, lk * ld * 0.22 * (o.focus === 'ai' || LANTERNS.mods.includes(o.focus) ? 1.8 : 1));
-        K.layer((0.2 + 0.8 * lk) * ld, () => K.at(x, yy, 1, sway, () => K.icon('lantern', 0, 16, 46, { color: C.head, w: 2.4 })));
+        const lh = K.clamp(typeof o.lanternHide === 'function' ? o.lanternHide(i) : (o.lanternHide ?? 0));
+        const { y: y0 } = lanternAt(i);
+        lantern(t, i, { y: y0 - (1 - ld) * 90, lit: lanternK(i), sway: sm, alpha: ld * (1 - lh), glowK: boost });
       }
       K.layer(o.lanternLabels ?? 1, () => {
         const eb = { size: TYPE.aiEyebrow, weight: 600, tracking: 3, upper: true };
@@ -191,5 +209,5 @@
     }
   }
 
-  K.map = { MODULES, DISTRICTS, LANTERNS, GATE, END, TYPE, ROW, draw, chipPos, districtOf, lanternAt, district: (id) => byId[id] };
+  K.map = { MODULES, DISTRICTS, LANTERNS, GATE, END, TYPE, ROW, draw, lantern, chipPos, districtOf, lanternAt, district: (id) => byId[id] };
 })();

@@ -1,0 +1,461 @@
+WEBVTT
+
+1
+00:00:01.600 --> 00:00:02.900
+In this lesson you'll learn
+
+2
+00:00:02.900 --> 00:00:05.269
+the difference between an AI model,
+
+3
+00:00:05.269 --> 00:00:08.334
+the app you use it in, and an agent.
+
+4
+00:00:08.334 --> 00:00:09.936
+The model is the engine,
+
+5
+00:00:09.936 --> 00:00:12.200
+the app is the car built around it,
+
+6
+00:00:12.200 --> 00:00:16.066
+and an agent is that same car, allowed to drive,
+
+7
+00:00:16.066 --> 00:00:18.225
+with you in the passenger seat.
+
+8
+00:00:18.225 --> 00:00:19.839
+Know which one you're dealing with,
+
+9
+00:00:19.839 --> 00:00:23.683
+and most of AI's surprises start to make sense.
+
+10
+00:00:24.134 --> 00:00:25.214
+On the course map,
+
+11
+00:00:25.214 --> 00:00:28.836
+this lesson sits at the Start, in Orientation:
+
+12
+00:00:28.836 --> 00:00:31.924
+what this course is, and the lantern you carry.
+
+13
+00:00:31.924 --> 00:00:35.721
+The lanterns strung over every district are AI.
+
+14
+00:00:35.721 --> 00:00:37.288
+This lesson opens one up
+
+15
+00:00:37.288 --> 00:00:39.902
+and names the parts inside.
+
+16
+00:00:40.352 --> 00:00:41.780
+Start with the engine.
+
+17
+00:00:41.780 --> 00:00:43.707
+A model is a huge set of numbers,
+
+18
+00:00:43.707 --> 00:00:46.052
+called weights, saved in files.
+
+19
+00:00:46.052 --> 00:00:48.909
+A lab trains it on enormous amounts of text,
+
+20
+00:00:48.909 --> 00:00:50.778
+and runs it on its servers.
+
+21
+00:00:50.778 --> 00:00:53.634
+OpenAI makes the GPT models.
+
+22
+00:00:53.634 --> 00:00:55.515
+Anthropic makes Claude.
+
+23
+00:00:55.515 --> 00:00:57.198
+Google makes Gemini.
+
+24
+00:00:57.198 --> 00:01:00.147
+At its core: text in, more text out.
+
+25
+00:01:00.147 --> 00:01:02.609
+On its own, an engine has no seats,
+
+26
+00:01:02.609 --> 00:01:05.873
+no wheel, and no memory of the last run.
+
+27
+00:01:06.322 --> 00:01:07.866
+Now build a car around it.
+
+28
+00:01:07.866 --> 00:01:10.200
+The app is the part you actually touch:
+
+29
+00:01:10.200 --> 00:01:14.937
+ChatGPT, the Claude app, the Gemini app, Copilot.
+
+30
+00:01:14.937 --> 00:01:17.351
+It adds the chat window, saved chats,
+
+31
+00:01:17.351 --> 00:01:20.382
+file uploads, safety checks, and the bill.
+
+32
+00:01:20.382 --> 00:01:22.657
+And hidden instructions, called a system prompt,
+
+33
+00:01:22.657 --> 00:01:24.515
+that the model reads first.
+
+34
+00:01:24.515 --> 00:01:26.361
+One engine can sit in many cars:
+
+35
+00:01:26.361 --> 00:01:28.544
+the lab's own app, a code editor,
+
+36
+00:01:28.544 --> 00:01:30.157
+a company's help desk.
+
+37
+00:01:30.157 --> 00:01:33.048
+And one car can swap engines, with a model picker.
+
+38
+00:01:33.048 --> 00:01:35.068
+That's why the names blur.
+
+39
+00:01:35.068 --> 00:01:37.321
+ChatGPT is the car.
+
+40
+00:01:37.321 --> 00:01:40.769
+GPT, followed by a number, is the engine.
+
+41
+00:01:40.769 --> 00:01:42.092
+With Claude and Gemini,
+
+42
+00:01:42.092 --> 00:01:44.426
+the car and the engine share a name.
+
+43
+00:01:44.426 --> 00:01:46.063
+The numbers change often;
+
+44
+00:01:46.063 --> 00:01:48.096
+learn the layers instead.
+
+45
+00:01:48.547 --> 00:01:51.670
+An agent is the same car, allowed to drive.
+
+46
+00:01:51.670 --> 00:01:54.433
+It gets tools: it can read your files,
+
+47
+00:01:54.433 --> 00:01:57.591
+run commands in a terminal, and edit code.
+
+48
+00:01:57.591 --> 00:02:00.598
+And it works in a loop: decide the next step,
+
+49
+00:02:00.598 --> 00:02:02.444
+do it, check what happened,
+
+50
+00:02:02.444 --> 00:02:05.149
+and go again, until it's done or stuck.
+
+51
+00:02:05.149 --> 00:02:08.655
+Coding agents, like Claude Code, work this way.
+
+52
+00:02:08.655 --> 00:02:10.443
+Aaron, who made this course,
+
+53
+00:02:10.443 --> 00:02:14.913
+once wrote Python in Notepad and saved it as .txt.
+
+54
+00:02:14.913 --> 00:02:17.595
+He didn't know to rename it .py,
+
+55
+00:02:17.595 --> 00:02:22.239
+to cd into the folder, or what .venv was.
+
+56
+00:02:22.239 --> 00:02:24.805
+A plain chat window could write that code today,
+
+57
+00:02:24.805 --> 00:02:27.162
+but the steps around it stay yours.
+
+58
+00:02:27.162 --> 00:02:28.787
+An agent can take them.
+
+59
+00:02:28.787 --> 00:02:30.877
+You stay in the passenger seat.
+
+60
+00:02:30.877 --> 00:02:33.443
+By default, most coding agents ask before
+
+61
+00:02:33.443 --> 00:02:36.684
+they run a command, and you can say no.
+
+62
+00:02:37.133 --> 00:02:39.060
+Here's where the picture breaks.
+
+63
+00:02:39.060 --> 00:02:41.173
+A real engine runs the whole trip.
+
+64
+00:02:41.173 --> 00:02:42.590
+A model doesn't.
+
+65
+00:02:42.590 --> 00:02:44.981
+With every message, it starts cold and rereads
+
+66
+00:02:44.981 --> 00:02:47.582
+the conversation the app sends back in.
+
+67
+00:02:47.582 --> 00:02:50.728
+So the memory lives in the car, not the engine.
+
+68
+00:02:50.728 --> 00:02:52.713
+Programs can skip the car and reach
+
+69
+00:02:52.713 --> 00:02:56.115
+the engine through an API, with a key.
+
+70
+00:02:56.115 --> 00:02:58.217
+That's the engine on a test bench:
+
+71
+00:02:58.217 --> 00:03:00.759
+no chat window, no saved chats,
+
+72
+00:03:00.759 --> 00:03:02.768
+unless the program builds them.
+
+73
+00:03:02.768 --> 00:03:04.521
+And there's no separate driver.
+
+74
+00:03:04.521 --> 00:03:07.006
+The engine still only makes text.
+
+75
+00:03:07.006 --> 00:03:09.932
+Some of that text says: run this command.
+
+76
+00:03:09.932 --> 00:03:11.859
+The app is what actually runs it,
+
+77
+00:03:11.859 --> 00:03:14.171
+and only if it's allowed.
+
+78
+00:03:14.621 --> 00:03:16.862
+Four surprises you'll meet early.
+
+79
+00:03:16.862 --> 00:03:18.557
+Ask two apps the same question,
+
+80
+00:03:18.557 --> 00:03:20.600
+and you get two different answers.
+
+81
+00:03:20.600 --> 00:03:22.202
+Different hidden instructions,
+
+82
+00:03:22.202 --> 00:03:23.897
+sometimes a different engine,
+
+83
+00:03:23.897 --> 00:03:26.278
+and a little randomness every time.
+
+84
+00:03:26.278 --> 00:03:28.356
+A program calling the API knows
+
+85
+00:03:28.356 --> 00:03:30.573
+nothing about your chats in the app.
+
+86
+00:03:30.573 --> 00:03:32.651
+Same engine, different door.
+
+87
+00:03:32.651 --> 00:03:35.902
+An agent stops and asks: allow this command?
+
+88
+00:03:35.902 --> 00:03:37.760
+That's the passenger seat working.
+
+89
+00:03:37.760 --> 00:03:39.838
+Read it before you say yes.
+
+90
+00:03:39.838 --> 00:03:42.114
+And which model is this app using?
+
+91
+00:03:42.114 --> 00:03:43.588
+Check its model picker;
+
+92
+00:03:43.588 --> 00:03:45.423
+some apps choose for you.
+
+93
+00:03:45.423 --> 00:03:46.619
+Don't ask the model:
+
+94
+00:03:46.619 --> 00:03:49.430
+its answer about itself isn't reliable.
+
+95
+00:03:49.879 --> 00:03:52.538
+When an agent drives, it crosses the map.
+
+96
+00:03:52.538 --> 00:03:53.734
+It works in your files
+
+97
+00:03:53.734 --> 00:03:55.928
+and your terminal: the Machine.
+
+98
+00:03:55.928 --> 00:03:59.295
+It can save its work with git: the History.
+
+99
+00:03:59.295 --> 00:04:02.302
+It may hold keys to your accounts: Trust.
+
+100
+00:04:02.302 --> 00:04:05.135
+AI is the lantern: it lights every district,
+
+101
+00:04:05.135 --> 00:04:07.329
+but it doesn't walk the streets for you.
+
+102
+00:04:07.329 --> 00:04:09.930
+Even an agent only goes where you let it.
+
+103
+00:04:09.930 --> 00:04:12.995
+And which model tops this month's leaderboard?
+
+104
+00:04:12.995 --> 00:04:14.750
+Safe to ignore for now.
+
+105
+00:04:15.200 --> 00:04:16.779
+Three things to keep.
+
+106
+00:04:16.779 --> 00:04:18.590
+The model is the engine:
+
+107
+00:04:18.590 --> 00:04:20.413
+a lab's file of numbers.
+
+108
+00:04:20.413 --> 00:04:23.803
+Text in, text out, no memory of you.
+
+109
+00:04:23.803 --> 00:04:25.347
+The app is the car:
+
+110
+00:04:25.347 --> 00:04:27.936
+the chat window, your saved chats,
+
+111
+00:04:27.936 --> 00:04:30.235
+the hidden instructions and the bill.
+
+112
+00:04:30.235 --> 00:04:32.650
+One engine sits in many cars.
+
+113
+00:04:32.650 --> 00:04:35.227
+An agent is the car you let drive:
+
+114
+00:04:35.227 --> 00:04:38.629
+tools, a loop, and you in the passenger seat,
+
+115
+00:04:38.629 --> 00:04:40.581
+deciding what it may do.
