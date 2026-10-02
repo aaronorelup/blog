@@ -1,10 +1,10 @@
 {
  "slug": "the-hidden-curriculum",
  "title": "The Hidden Curriculum",
- "updated": "2026-10-01",
+ "updated": "2026-10-02",
  "totalLessons": 196,
- "publishedLessons": 4,
- "runtimeSeconds": 1519,
+ "publishedLessons": 5,
+ "runtimeSeconds": 1849,
  "moduleCount": 22,
  "districtCount": 6,
  "regions": [
@@ -169,7 +169,14 @@
      "title": "How LLMs work (just enough)",
      "idea": "Tokens, context window, temperature, hallucination",
      "lantern": true,
-     "status": "locked"
+     "status": "published",
+     "slug": "00-05-how-llms-work-just-enough",
+     "url": "/courses/the-hidden-curriculum/lessons/00-05-how-llms-work-just-enough/",
+     "duration": 330.0,
+     "summary": "A large language model cuts your text into tokens and guesses the next one, one at a time, from only what fits on its desk (the context window), so it is trained to sound right, not to be right: put the facts on the desk and check the specifics.",
+     "published": "2026-10-02",
+     "narrator": "RClayton",
+     "poster": "/courses/the-hidden-curriculum/lessons/00-05-how-llms-work-just-enough/poster.jpg"
     },
     {
      "id": "00.06",
@@ -178,7 +185,7 @@
      "status": "locked"
     }
    ],
-   "filed": 4
+   "filed": 5
   },
   {
    "n": "01",
@@ -1533,18 +1540,18 @@
   }
  ],
  "latest": {
-  "id": "00.04",
-  "title": "Model vs app vs agent",
-  "idea": "GPT/Claude/Gemini (models) vs the apps wrapping them vs agents that act",
+  "id": "00.05",
+  "title": "How LLMs work (just enough)",
+  "idea": "Tokens, context window, temperature, hallucination",
   "lantern": true,
   "status": "published",
-  "slug": "00-04-model-vs-app-vs-agent",
-  "url": "/courses/the-hidden-curriculum/lessons/00-04-model-vs-app-vs-agent/",
-  "duration": 283.2,
-  "summary": "The model is the engine (a lab's file of numbers: text in, text out, no memory), the app is the car built around it (chat window, saved chats, hidden instructions, the bill), and an agent is that car allowed to drive, with tools, a loop and you deciding what it may do.",
-  "published": "2026-10-01",
-  "narrator": "Adrian",
-  "poster": "/courses/the-hidden-curriculum/lessons/00-04-model-vs-app-vs-agent/poster.jpg"
+  "slug": "00-05-how-llms-work-just-enough",
+  "url": "/courses/the-hidden-curriculum/lessons/00-05-how-llms-work-just-enough/",
+  "duration": 330.0,
+  "summary": "A large language model cuts your text into tokens and guesses the next one, one at a time, from only what fits on its desk (the context window), so it is trained to sound right, not to be right: put the facts on the desk and check the specifics.",
+  "published": "2026-10-02",
+  "narrator": "RClayton",
+  "poster": "/courses/the-hidden-curriculum/lessons/00-05-how-llms-work-just-enough/poster.jpg"
  },
  "first": {
   "id": "00.01",

@@ -376,10 +376,12 @@
   };
   /**
    * terminal body. items: [{at, cmd, cps}] typed after a prompt, or [{at, out, color}] printed.
-   * Keeps the newest lines in view. o: {prompt, size}
+   * Keeps the newest lines in view. o: {prompt, size, lh, pad, rows}
+   * lh: line height (default size*1.5); pad: inner padding (default 28);
+   * rows: fixed number of visible rows (default: as many as fit rect.h), so a short window keeps its first line.
    */
   K.term = (rect, t, items, o = {}) => {
-    const size = o.size || 28, lh = size * 1.5, pad = 28, prompt = o.prompt ?? 'C:\\Users\\you>';
+    const size = o.size || 28, lh = o.lh || size * 1.5, pad = o.pad ?? 28, prompt = o.prompt ?? 'C:\\Users\\you>';
     const rows = [];
     items.forEach((it, idx) => {
       if (t < it.at) return;
@@ -392,7 +394,7 @@
         String(it.out).split('\n').forEach((ln) => rows.push({ text: ln, color: it.color || C.body }));
       }
     });
-    const maxRows = Math.floor((rect.h - pad * 2) / lh);
+    const maxRows = o.rows > 0 ? Math.floor(o.rows) : Math.floor((rect.h - pad * 2) / lh);
     const shown = rows.slice(Math.max(0, rows.length - maxRows));
     shown.forEach((r, i) => {
       const y = rect.y + pad + size + i * lh;
