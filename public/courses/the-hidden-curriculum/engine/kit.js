@@ -249,11 +249,12 @@
     if (o.alpha != null) g.globalAlpha *= o.alpha;
     g.beginPath(); g.moveTo(x1, y1); g.lineTo(K.lerp(x1, x2, o.k ?? 1), K.lerp(y1, y2, o.k ?? 1)); g.stroke(); g.restore();
   };
-  /** arrow that draws itself: o.k = progress 0..1, o.bend = curve amount (px), o.color, o.w, o.head, o.dash */
+  /** arrow that draws itself: o.k = progress 0..1, o.bend = curve amount (px), o.cx/o.cy = explicit quadratic control point (overrides bend), o.color, o.w, o.head, o.dash */
   K.arrow = (x1, y1, x2, y2, o = {}) => {
     const k = K.clamp(o.k ?? 1); if (k <= 0) return;
     const mx = (x1 + x2) / 2, my = (y1 + y2) / 2, dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy) || 1;
-    const bend = o.bend || 0, cx = mx - (dy / len) * bend, cy = my + (dx / len) * bend;
+    const bend = o.bend || 0;
+    const cx = o.cx != null && o.cy != null ? o.cx : mx - (dy / len) * bend, cy = o.cx != null && o.cy != null ? o.cy : my + (dx / len) * bend;
     const P = (u) => [(1 - u) * (1 - u) * x1 + 2 * (1 - u) * u * cx + u * u * x2, (1 - u) * (1 - u) * y1 + 2 * (1 - u) * u * cy + u * u * y2];
     g.save(); g.strokeStyle = g.fillStyle = o.color || C.soft; g.lineWidth = o.w || 3; g.lineCap = 'round'; g.lineJoin = 'round';
     if (o.alpha != null) g.globalAlpha *= o.alpha;
@@ -263,6 +264,39 @@
     const [ex, ey] = P(k); g.lineTo(ex, ey); g.stroke(); g.setLineDash([]);
     if (o.head !== false) {
       const [bx, by] = P(Math.max(0, k - 0.02)); const a = Math.atan2(ey - by, ex - bx), hs = o.headSize || 16;
+      g.beginPath(); g.moveTo(ex, ey); g.lineTo(ex - hs * Math.cos(a - 0.45), ey - hs * Math.sin(a - 0.45));
+      g.lineTo(ex - hs * Math.cos(a + 0.45), ey - hs * Math.sin(a + 0.45)); g.closePath(); g.fill();
+    }
+    g.restore();
+  };
+  /** self-drawing smooth path through waypoints [[x, y], ...] (Catmull-Rom spline, passes through every point).
+   *  o: {k (progress 0..1, by arc length), head (default true), headSize, color, w, dash, alpha, tension (tangent scale: 0.5 = Catmull-Rom, 0 = straight segments)} */
+  K.path = (pts, o = {}) => {
+    const k = K.clamp(o.k ?? 1); if (k <= 0 || !pts || pts.length < 2) return;
+    const ten = o.tension ?? 0.5, P = [pts[0], ...pts, pts[pts.length - 1]], poly = [];
+    for (let i = 1; i < P.length - 2; i++) {
+      const [p0, p1, p2, p3] = [P[i - 1], P[i], P[i + 1], P[i + 2]];
+      for (let j = i === 1 ? 0 : 1; j <= 24; j++) {
+        const u = j / 24, u2 = u * u, u3 = u2 * u;
+        const h00 = 2 * u3 - 3 * u2 + 1, h10 = u3 - 2 * u2 + u, h01 = -2 * u3 + 3 * u2, h11 = u3 - u2;
+        const h = (a, b, c, d) => h00 * b + h10 * ten * (c - a) + h01 * c + h11 * ten * (d - b);
+        poly.push([h(p0[0], p1[0], p2[0], p3[0]), h(p0[1], p1[1], p2[1], p3[1])]);
+      }
+    }
+    const cum = [0]; for (let i = 1; i < poly.length; i++) cum.push(cum[i - 1] + Math.hypot(poly[i][0] - poly[i - 1][0], poly[i][1] - poly[i - 1][1]));
+    const L = cum[cum.length - 1] * k;
+    g.save(); g.strokeStyle = g.fillStyle = o.color || C.soft; g.lineWidth = o.w || 3; g.lineCap = 'round'; g.lineJoin = 'round';
+    if (o.alpha != null) g.globalAlpha *= o.alpha;
+    if (o.dash) g.setLineDash(o.dash);
+    g.beginPath(); g.moveTo(poly[0][0], poly[0][1]);
+    let ex = poly[0][0], ey = poly[0][1], bx = ex, by = ey;
+    for (let i = 1; i < poly.length; i++) {
+      if (cum[i] >= L) { const f = (L - cum[i - 1]) / ((cum[i] - cum[i - 1]) || 1); bx = poly[i - 1][0]; by = poly[i - 1][1]; ex = K.lerp(bx, poly[i][0], f); ey = K.lerp(by, poly[i][1], f); break; }
+      bx = poly[i - 1][0]; by = poly[i - 1][1]; ex = poly[i][0]; ey = poly[i][1]; g.lineTo(ex, ey);
+    }
+    g.lineTo(ex, ey); g.stroke(); g.setLineDash([]);
+    if (o.head !== false && (ex !== bx || ey !== by)) {
+      const a = Math.atan2(ey - by, ex - bx), hs = o.headSize || 16;
       g.beginPath(); g.moveTo(ex, ey); g.lineTo(ex - hs * Math.cos(a - 0.45), ey - hs * Math.sin(a - 0.45));
       g.lineTo(ex - hs * Math.cos(a + 0.45), ey - hs * Math.sin(a + 0.45)); g.closePath(); g.fill();
     }
@@ -516,6 +550,8 @@
     // warning: rounded triangle with an exclamation mark (deprecation notices, security alerts)
     warning: (s) => { g.beginPath(); g.moveTo(0, -s * 0.38); g.lineTo(s * 0.42, s * 0.34); g.lineTo(-s * 0.42, s * 0.34); g.closePath(); g.stroke(); g.beginPath(); g.moveTo(0, -s * 0.1); g.lineTo(0, s * 0.12); g.stroke(); g.beginPath(); g.arc(0, s * 0.23, s * 0.035, 0, 7); g.fill(); },
     phone: (s) => { K.rr(-s * 0.21, -s * 0.38, s * 0.42, s * 0.76, s * 0.08); g.stroke(); g.beginPath(); g.moveTo(-s * 0.06, -s * 0.29); g.lineTo(s * 0.06, -s * 0.29); g.stroke(); g.beginPath(); g.arc(0, s * 0.28, s * 0.035, 0, 7); g.fill(); },
+    // document: page outline with a folded corner and three text lines (a line-icon cousin of K.file)
+    file: (s) => { g.beginPath(); g.moveTo(-s * 0.28, -s * 0.38); g.lineTo(s * 0.1, -s * 0.38); g.lineTo(s * 0.28, -s * 0.2); g.lineTo(s * 0.28, s * 0.38); g.lineTo(-s * 0.28, s * 0.38); g.closePath(); g.moveTo(s * 0.1, -s * 0.38); g.lineTo(s * 0.1, -s * 0.2); g.lineTo(s * 0.28, -s * 0.2); g.stroke(); g.beginPath(); for (let i = 0; i < 3; i++) { const y = -s * 0.04 + i * s * 0.13; g.moveTo(-s * 0.15, y); g.lineTo(i === 2 ? s * 0.03 : s * 0.15, y); } g.stroke(); },
     // AI / agent: a four-point sparkle with a small companion
     sparkle: (s) => {
       const star = (cx, cy, r) => { g.beginPath(); g.moveTo(cx, cy - r); g.quadraticCurveTo(cx, cy, cx + r, cy); g.quadraticCurveTo(cx, cy, cx, cy + r); g.quadraticCurveTo(cx, cy, cx - r, cy); g.quadraticCurveTo(cx, cy, cx, cy - r); g.closePath(); g.stroke(); };

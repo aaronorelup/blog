@@ -1,10 +1,10 @@
 {
  "slug": "the-hidden-curriculum",
  "title": "The Hidden Curriculum",
- "updated": "2026-10-02",
- "totalLessons": 196,
- "publishedLessons": 5,
- "runtimeSeconds": 2714,
+ "updated": "2026-10-03",
+ "totalLessons": 206,
+ "publishedLessons": 6,
+ "runtimeSeconds": 3031,
  "moduleCount": 22,
  "districtCount": 6,
  "regions": [
@@ -103,7 +103,7 @@
    ]
   }
  ],
- "lanternCount": 24,
+ "lanternCount": 34,
  "modules": [
   {
    "n": "00",
@@ -182,10 +182,17 @@
      "id": "00.06",
      "title": "How to learn anything technical",
      "idea": "Read the error, search the exact message, read docs, ask AI with context, make a tiny test",
-     "status": "locked"
+     "status": "published",
+     "slug": "00-06-how-to-learn-anything-technical",
+     "url": "/courses/the-hidden-curriculum/lessons/00-06-how-to-learn-anything-technical/",
+     "duration": 316.9,
+     "summary": "Read the error, search its exact words, check the official docs, ask the AI with the evidence on its desk, and settle it with a tiny test: AI now does most of the legwork, so your job is to give it the clues and check the verdict.",
+     "published": "2026-10-03",
+     "narrator": "Adrian",
+     "poster": "/courses/the-hidden-curriculum/lessons/00-06-how-to-learn-anything-technical/poster.jpg"
     }
    ],
-   "filed": 5
+   "filed": 6
   },
   {
    "n": "01",
@@ -265,6 +272,13 @@
      "id": "01.12",
      "title": "What AI is already on your PC?",
      "idea": "How to inventory assistants, background AI services and their data access",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "01.13",
+     "title": "How image, video and sound generators work",
+     "idea": "Diffusion and flow models: noise to picture in steps; why image, video, music and voice generators work this way; diffusion for text exists but is rare",
      "lantern": true,
      "status": "locked"
     }
@@ -387,6 +401,13 @@
      "id": "03.09",
      "title": "Instruction files: prompts as code",
      "idea": "Instructions files (CLAUDE.md etc.), versioning prompts",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "03.10",
+     "title": "Context engineering: managing the window",
+     "idea": "Why models get worse as the window fills (context rot); compaction, clearing tool results, sub-agents, loading tools and skills on demand",
      "lantern": true,
      "status": "locked"
     }
@@ -535,6 +556,13 @@
      "id": "06.06",
      "title": "Vector databases & embeddings",
      "idea": "How AI \"searches by meaning\" (RAG)",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "06.07",
+     "title": "How AI apps remember",
+     "idea": "The model keeps nothing: memory is text put back in the window. Re-sent conversation, self-kept memory, chat search, memory files and connectors (Notion, Drive) via tool calls",
      "lantern": true,
      "status": "locked"
     }
@@ -806,6 +834,34 @@
      "id": "10.11",
      "title": "Subscriptions vs API billing",
      "idea": "Chat plans vs pay-per-token keys",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "10.12",
+     "title": "Plugin and skill marketplaces",
+     "idea": "Skills vs connectors vs plugins; directories, the Claude Marketplace, git-repo plugin marketplaces; every add-on is code you trust (malicious skills in the wild)",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "10.13",
+     "title": "Prompt caching and the token meters",
+     "idea": "Input, cache write, cache read, output; the prefix rule and what breaks a cache; time to live (5 min / 1 h); why long chats cost more each turn",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "10.14",
+     "title": "Multimodal APIs",
+     "idea": "Sending images, audio, video and PDFs to a model; models that generate media natively vs apps that hand off to a generator model",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "10.15",
+     "title": "Voice AI",
+     "idea": "Voice modes: speech-to-text, model, text-to-speech pipelines vs native speech-to-speech; turn-taking and interruptions",
      "lantern": true,
      "status": "locked"
     }
@@ -1138,6 +1194,13 @@
      "idea": "What gets sent, trained on, and retained",
      "lantern": true,
      "status": "locked"
+    },
+    {
+     "id": "15.14",
+     "title": "AI at work: enterprise plans and admin controls",
+     "idea": "Individual vs Team/Enterprise: SSO, admin allow-lists for connectors, plugins and skills, audit logs, retention, managed instruction files, training defaults",
+     "lantern": true,
+     "status": "locked"
     }
    ],
    "filed": 0
@@ -1222,6 +1285,13 @@
      "idea": "Knowing whether your automation actually works and what it costs",
      "lantern": true,
      "status": "locked"
+    },
+    {
+     "id": "16.13",
+     "title": "Always-on personal agents",
+     "idea": "OpenClaw, Hermes Agent, Meta Muse, OpenAI dots: self-hosted vs hosted assistants that act for you around the clock, and their security record",
+     "lantern": true,
+     "status": "locked"
     }
    ],
    "filed": 0
@@ -1284,6 +1354,13 @@
      "id": "17.09",
      "title": "Desktop app stores",
      "idea": "Microsoft Store, Mac App Store, Steam, itch.io: why distribute through a store at all (phone stores are 18.06–18.09)",
+     "status": "locked"
+    },
+    {
+     "id": "17.10",
+     "title": "AI design and app builders",
+     "idea": "Claude Design, Docs and Slides, and other AI tools that build layouts, pages and apps; what they make (code, not pictures) and where the result lives",
+     "lantern": true,
      "status": "locked"
     }
    ],
@@ -1540,18 +1617,17 @@
   }
  ],
  "latest": {
-  "id": "00.05",
-  "title": "How AI models work today",
-  "idea": "~20 min. Five years of change: LLMs → multimodal models (see/hear/generate, some via API), diffusion models (image, video, audio; rarely text); tokens, context and why models degrade as it fills; memory and RAG (chat search, self-kept memory, files/Notion via tools); system prompts and injected instruction files (CLAUDE.md); settings (temperature, top-p...); caching and token billing (input, output, cache write, cache read); modes (chat, Cowork, Code) and platforms (web, desktop, CLI, cloud); skills vs connectors vs plugins and their marketplaces; individual vs enterprise; other surfaces (Claude Design, voice modes); personal agents (OpenClaw and similar). Brief here, own lessons later",
-  "lantern": true,
+  "id": "00.06",
+  "title": "How to learn anything technical",
+  "idea": "Read the error, search the exact message, read docs, ask AI with context, make a tiny test",
   "status": "published",
-  "slug": "00-05-how-llms-work-just-enough",
-  "url": "/courses/the-hidden-curriculum/lessons/00-05-how-llms-work-just-enough/",
-  "duration": 1194.3,
-  "summary": "Underneath it all is still a model that only knows what is on its desk right now; nearly everything new in the last five years (multimodal hand-offs, diffusion, memory and RAG, instruction files, caching, modes, plugins, plans and always-on agents) is about what gets put on that desk, what it hands off to other models, and where the desk sits.",
-  "published": "2026-10-02",
-  "narrator": "RClayton",
-  "poster": "/courses/the-hidden-curriculum/lessons/00-05-how-llms-work-just-enough/poster.jpg"
+  "slug": "00-06-how-to-learn-anything-technical",
+  "url": "/courses/the-hidden-curriculum/lessons/00-06-how-to-learn-anything-technical/",
+  "duration": 316.9,
+  "summary": "Read the error, search its exact words, check the official docs, ask the AI with the evidence on its desk, and settle it with a tiny test: AI now does most of the legwork, so your job is to give it the clues and check the verdict.",
+  "published": "2026-10-03",
+  "narrator": "Adrian",
+  "poster": "/courses/the-hidden-curriculum/lessons/00-06-how-to-learn-anything-technical/poster.jpg"
  },
  "first": {
   "id": "00.01",

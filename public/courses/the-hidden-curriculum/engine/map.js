@@ -92,6 +92,9 @@
    *  focus   — district id or module id to light up; others dim
    *  dim     — how far unfocused districts fade (0..1, default 0.7)
    *  pin     — module id to mark "you are here"
+   *  pinSize — the pin icon's size (default 44; the tip stays on the same spot at any size)
+   *  pinColor — the pin's colour (default C.accent)
+   *  highlight — district id or module id, or an array of them: also lit (undimmed, gold outline) alongside focus (no glow)
    *  path    — 0..1 progress of the dashed garden path (default 1)
    *  chips   — show the module rows (default true); `modules: false` is the same switch
    *  lanterns      — 0..1 or (i) => 0..1: how lit the six lanterns are (default 1; 0 = bare ghost string)
@@ -113,7 +116,8 @@
   function draw(t, o = {}) {
     const reveal = (i) => (o.t0 == null ? 1 : K.stagger(t, o.t0, i, 0.22, 0.7));
     const focusD = o.focus ? (byId[o.focus] ? o.focus : (districtOf(o.focus) || {}).id) : null;
-    const lit = (id) => (!focusD ? 1 : id === focusD ? 1 : 1 - (o.dim ?? 0.7) * (o.focusK ?? 1));
+    const hiD = (Array.isArray(o.highlight) ? o.highlight : o.highlight ? [o.highlight] : []).map((h) => (byId[h] ? h : (districtOf(h) || {}).id)).filter(Boolean);
+    const lit = (id) => (!focusD || id === focusD || hiD.includes(id) ? 1 : 1 - (o.dim ?? 0.7) * (o.focusK ?? 1));
     const g = K.ctx();
     const mods = o.chips !== false && o.modules !== false;
     const pg = K.clamp(o.pinGlowK ?? 1);
@@ -172,7 +176,7 @@
       K.layer(reveal(i + 1) * dk(d.id), () => { K.rr(d.x, d.y + rise, d.w, d.h, 24); g.fillStyle = C.page; g.fill(); });
       K.layer(a, () => {
         g.save(); g.translate(0, rise);
-        K.card(d.x, d.y, d.w, d.h, { glow: isFocus ? (o.focusK ?? 1) : 0, stroke: isFocus ? C.head : C.line2, fill: K.rgba(C.tile, 0.94) });
+        K.card(d.x, d.y, d.w, d.h, { glow: isFocus ? (o.focusK ?? 1) : 0, stroke: isFocus || hiD.includes(d.id) ? C.head : C.line2, fill: K.rgba(C.tile, 0.94) });
         K.title(d.name, d.x + 36, d.y + ROW.name, { size: TYPE.name });
         K.text(d.q, d.x + 36, d.y + ROW.q, { size: TYPE.q, color: C.soft, font: 'ui' });
         if (mods) d.mods.forEach((m, j) => {
@@ -205,7 +209,8 @@
       const ends = o.pin === GATE.mod || o.pin === END.mod;
       const drop = (1 - K.clamp(o.pinDrop ?? 1)) * -90;
       const px = ends ? c.x + 58 : c.x + c.w - 14, py = (ends ? c.y - 40 : c.y - 4) + bob + drop;
-      K.layer(o.pinK ?? 1, () => K.icon('pin', px, py, 44, { color: C.accent }));
+      const ps = o.pinSize ?? 44;   // the icon's tip sits 0.38 * size below its centre: keep the tip where the 44 px pin's is
+      K.layer(o.pinK ?? 1, () => K.icon('pin', px, py - (ps - 44) * 0.38, ps, { color: o.pinColor || C.accent }));
     }
   }
 
