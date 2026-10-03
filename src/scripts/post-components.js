@@ -907,16 +907,30 @@ class AoCues extends HTMLElement {
       each((v, i) => { v.muted = i !== k; });
       sound.forEach((b, i) => b.setAttribute('aria-pressed', String(i === k)));
     };
-    // A seek asked for before a video has its metadata is lost (and reads back as 0), so it is
-    // held as `want` and applied on loadedmetadata; until then nothing resyncs to the lead.
+    // The host answers Range requests with the whole file (200, not 206), so a browser can only
+    // seek inside what it has already buffered; a seek past that lands on 0. When a seek needs
+    // more than is buffered, each cut is fetched once in full and played from a blob, which
+    // seeks anywhere. `want` holds the target meanwhile, and nothing resyncs to the lead.
     let want = null;
-    const seekOne = (v, t) => {
-      v.preload = 'auto';
-      if (v.readyState >= 1) { try { v.currentTime = t; } catch (e) {} return; }
-      v.addEventListener('loadedmetadata', () => {
-        if (want !== null) { try { v.currentTime = want; } catch (e) {} }
-        if (vids.every((x) => x.readyState >= 1)) want = null;
-      }, { once: true });
+    const urls = [];
+    const whole = new Map();
+    const canSeek = (v, t) => {
+      if (v.readyState < 1) return false;
+      for (let i = 0; i < v.seekable.length; i++) if (v.seekable.start(i) <= t && t <= v.seekable.end(i) + 0.05) return true;
+      return false;
+    };
+    const loadWhole = (v) => {
+      if (!whole.has(v)) {
+        whole.set(v, fetch(v.currentSrc || v.src)
+          .then((r) => r.blob())
+          .then((blob) => new Promise((res) => {
+            const u = URL.createObjectURL(blob);
+            urls.push(u);
+            v.addEventListener('loadedmetadata', res, { once: true });
+            v.src = u;
+          })));
+      }
+      return whole.get(v);
     };
     const start = () => {
       document.dispatchEvent(new CustomEvent(AO_LISTEN_PLAY, { detail: this }));
@@ -929,10 +943,25 @@ class AoCues extends HTMLElement {
     const stop = () => each((v) => v.pause());
     const toggle = () => (lead.paused ? start() : stop());
     const seek = (t, go) => {
-      want = vids.every((v) => v.readyState >= 1) ? null : t;
-      each((v) => seekOne(v, t));
+      if (vids.every((v) => canSeek(v, t))) {
+        want = null;
+        each((v) => { v.currentTime = t; });
+        show(t);
+        if (go) start();
+        return;
+      }
+      const resume = go || !lead.paused;
+      want = t;
+      stop();
       show(t);
-      if (go) start();
+      clock.textContent = 'loading the cuts…';
+      Promise.all(vids.map(loadWhole)).then(() => {
+        if (want !== t) return;
+        want = null;
+        each((v) => { v.currentTime = t; });
+        show(t);
+        if (resume) start();
+      }, () => { want = null; show(); });
     };
     scrub.addEventListener('input', () => seek(parseFloat(scrub.value), false));
 
@@ -941,7 +970,7 @@ class AoCues extends HTMLElement {
       const t = typeof at === 'number' ? at : want !== null ? want : lead.currentTime;
       if (isFinite(lead.duration)) scrub.max = String(lead.duration);
       scrub.value = String(t);
-      clock.textContent = fmtTime(t) + ' / ' + fmtTime(lead.duration);
+      clock.textContent = want !== null ? 'loading the cuts…' : fmtTime(t) + ' / ' + fmtTime(lead.duration);
       play.textContent = lead.paused ? 'Play' : 'Pause';
       let cur = null;
       for (const c of cues) if (c.t <= t + 0.05) cur = c; else break;
@@ -978,7 +1007,7 @@ class AoCues extends HTMLElement {
     hear(0);
     this._onOther = (e) => { if (e.detail !== this) stop(); };
     document.addEventListener(AO_LISTEN_PLAY, this._onOther);
-    this._stop = stop;
+    this._stop = () => { stop(); urls.forEach((u) => URL.revokeObjectURL(u)); };
     this.classList.add('ao-cues-ready');
     show();
   }
