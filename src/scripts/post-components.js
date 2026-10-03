@@ -13,6 +13,7 @@
 //   <ao-frames fps="24" marks="46:Impact|47:Red frame"> <video …></video> <figcaption>…
 //   <ao-diff labels="Draft|Final"> <blockquote>…</blockquote> <blockquote>…</blockquote> <figcaption>…
 //   <ao-listen ref="a"> <figure data-id="a"><audio …></audio><img …><figcaption>…</figure> …
+//   <ao-cues labels="v1|v2"> <video …></video> <video …></video> <ol><li data-t="1:44.97">…</li></ol> <figcaption>…
 //
 // Usage notes live in the blog's CLAUDE.md, "Post components".
 import '../styles/post-components.css';
@@ -811,6 +812,173 @@ class AoListen extends HTMLElement {
   }
 }
 
+// ---------------------------------------------------------------------------------------
+// <ao-cues>: one or more cuts of the same timeline (a music video and its re-edit, a film
+// and its previs) played in lockstep beside a list of timed cues: lyric lines, shots, chapters.
+// The cue being played is lit; clicking a cue sends every video there. Two cuts of a song are
+// compared at the same bar instead of from memory.
+//   labels="A|B"   one tag per video (default: each video's title, else Cut 1, Cut 2)
+// Children: one or more <video>, then an <ol> whose <li data-t="m:ss.xx"> are the cues, then
+// an optional <figcaption>. The first video sets the clock and the others follow it. Only one
+// video is heard at a time; a Sound button per video picks which. Without JS: the videos with
+// their own controls, and the cue list as a plain ordered list.
+const parseCue = (v) => {
+  const parts = String(v || '').trim().split(':').map(Number);
+  if (!parts.length || parts.some((n) => !isFinite(n))) return NaN;
+  return parts.reduce((acc, n) => acc * 60 + n, 0);
+};
+
+class AoCues extends HTMLElement {
+  connectedCallback() {
+    if (this._ready) return;
+    const vids = [...this.querySelectorAll(':scope > video')];
+    const ol = this.querySelector(':scope > ol');
+    if (!vids.length || !ol) return;
+    this._ready = true;
+    const labels = (this.getAttribute('labels') || '').split('|').map((s) => s.trim());
+    const name = (k) => labels[k] || vids[k].title || 'Cut ' + (k + 1);
+    const lead = vids[0];
+    const cues = [...ol.children]
+      .map((li) => ({ li, t: parseCue(li.dataset.t) }))
+      .filter((c) => isFinite(c.t))
+      .sort((a, b) => a.t - b.t);
+
+    this.style.setProperty('--ao-cues-n', String(Math.min(vids.length, 2)));
+    const grid = document.createElement('div');
+    grid.className = 'ao-cues-grid';
+    vids[0].before(grid);
+    vids.forEach((v, k) => {
+      const cell = document.createElement('div');
+      cell.className = 'ao-cues-cell';
+      const tag = document.createElement('span');
+      tag.className = 'ao-cues-tag';
+      tag.textContent = name(k);
+      v.removeAttribute('controls');
+      v.removeAttribute('loop');
+      v.playsInline = true;
+      v.addEventListener('click', () => toggle());
+      cell.append(v, tag);
+      grid.append(cell);
+    });
+
+    const bar = document.createElement('div');
+    bar.className = 'ao-cues-bar';
+    const btn = (label, title, fn) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = label;
+      b.title = title;
+      b.addEventListener('click', fn);
+      bar.append(b);
+      return b;
+    };
+    const play = btn('Play', 'Play or pause every cut', () => toggle());
+    const sound = vids.length > 1
+      ? vids.map((v, k) => btn('Sound: ' + name(k), 'Hear this cut', () => hear(k)))
+      : [];
+    const scrub = document.createElement('input');
+    scrub.type = 'range';
+    scrub.min = '0';
+    scrub.max = '1';
+    scrub.step = '0.01';
+    scrub.value = '0';
+    scrub.setAttribute('aria-label', 'Position');
+    const clock = document.createElement('span');
+    clock.className = 'ao-cues-clock';
+    bar.append(scrub, clock);
+    grid.after(bar);
+
+    ol.classList.add('ao-cues-list');
+    ol.setAttribute('aria-label', 'Cues: choose one to jump there');
+    for (const c of cues) {
+      const time = document.createElement('time');
+      time.textContent = fmtTime(c.t);
+      c.li.prepend(time);
+      c.li.tabIndex = 0;
+      c.li.setAttribute('role', 'button');
+      c.li.addEventListener('click', () => seek(c.t, true));
+      c.li.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); seek(c.t, true); }
+      });
+    }
+
+    const each = (fn) => vids.forEach(fn);
+    const hear = (k) => {
+      each((v, i) => { v.muted = i !== k; });
+      sound.forEach((b, i) => b.setAttribute('aria-pressed', String(i === k)));
+    };
+    const start = () => {
+      document.dispatchEvent(new CustomEvent(AO_LISTEN_PLAY, { detail: this }));
+      each((v) => {
+        v.preload = 'auto';
+        if (v !== lead && Math.abs(v.currentTime - lead.currentTime) > 0.1) v.currentTime = lead.currentTime;
+        v.play().catch(() => {});
+      });
+    };
+    const stop = () => each((v) => v.pause());
+    const toggle = () => (lead.paused ? start() : stop());
+    const seek = (t, go) => {
+      each((v) => { v.preload = 'auto'; try { v.currentTime = t; } catch (e) {} });
+      show(t);
+      if (go) start();
+    };
+    scrub.addEventListener('input', () => seek(parseFloat(scrub.value), false));
+
+    let lit = null;
+    const show = (at) => {
+      const t = typeof at === 'number' ? at : lead.currentTime;
+      if (isFinite(lead.duration)) scrub.max = String(lead.duration);
+      scrub.value = String(t);
+      clock.textContent = fmtTime(t) + ' / ' + fmtTime(lead.duration);
+      play.textContent = lead.paused ? 'Play' : 'Pause';
+      let cur = null;
+      for (const c of cues) if (c.t <= t + 0.05) cur = c; else break;
+      if (cur === lit) return;
+      if (lit) lit.li.removeAttribute('aria-current');
+      lit = cur;
+      if (!cur) return;
+      cur.li.setAttribute('aria-current', 'true');
+      // Scroll the list itself, never the page: scrollIntoView would yank the reader along.
+      const top = cur.li.offsetTop - ol.offsetTop;
+      if (top < ol.scrollTop || top + cur.li.offsetHeight > ol.scrollTop + ol.clientHeight) {
+        ol.scrollTop = Math.max(0, top - ol.clientHeight / 3);
+      }
+    };
+    // Followers drift a little on their own; nudge them back to the lead clock.
+    const follow = () => {
+      for (const v of vids) {
+        if (v === lead) continue;
+        if (Math.abs(v.currentTime - lead.currentTime) > 0.15) v.currentTime = lead.currentTime;
+        if (lead.paused !== v.paused) (lead.paused ? v.pause() : v.play().catch(() => {}));
+      }
+    };
+    const loop = () => {
+      show();
+      if (lead.paused) { this._raf = 0; return; }
+      this._raf = requestAnimationFrame(loop);
+    };
+    for (const ev of ['play', 'pause', 'seeked', 'loadedmetadata', 'ended']) lead.addEventListener(ev, () => show());
+    lead.addEventListener('play', () => { if (!this._raf) loop(); });
+    lead.addEventListener('timeupdate', follow);
+    lead.addEventListener('pause', follow);
+
+    hear(0);
+    this._onOther = (e) => { if (e.detail !== this) stop(); };
+    document.addEventListener(AO_LISTEN_PLAY, this._onOther);
+    this._stop = stop;
+    this.classList.add('ao-cues-ready');
+    show();
+  }
+
+  disconnectedCallback() {
+    if (this._stop) this._stop();
+    if (this._raf) cancelAnimationFrame(this._raf);
+    if (this._onOther) document.removeEventListener(AO_LISTEN_PLAY, this._onOther);
+    this._raf = 0;
+    this._ready = false;
+  }
+}
+
 if (!customElements.get('ao-compare')) customElements.define('ao-compare', AoCompare);
 if (!customElements.get('ao-game')) customElements.define('ao-game', AoGame);
 if (!customElements.get('ao-model')) customElements.define('ao-model', AoModel);
@@ -819,3 +987,4 @@ if (!customElements.get('ao-slider')) customElements.define('ao-slider', AoSlide
 if (!customElements.get('ao-frames')) customElements.define('ao-frames', AoFrames);
 if (!customElements.get('ao-diff')) customElements.define('ao-diff', AoDiff);
 if (!customElements.get('ao-listen')) customElements.define('ao-listen', AoListen);
+if (!customElements.get('ao-cues')) customElements.define('ao-cues', AoCues);
