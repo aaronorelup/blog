@@ -907,18 +907,30 @@ class AoCues extends HTMLElement {
       each((v, i) => { v.muted = i !== k; });
       sound.forEach((b, i) => b.setAttribute('aria-pressed', String(i === k)));
     };
+    // A seek asked for before a video has its metadata is lost (and reads back as 0), so it is
+    // held as `want` and applied on loadedmetadata; until then nothing resyncs to the lead.
+    let want = null;
+    const seekOne = (v, t) => {
+      v.preload = 'auto';
+      if (v.readyState >= 1) { try { v.currentTime = t; } catch (e) {} return; }
+      v.addEventListener('loadedmetadata', () => {
+        if (want !== null) { try { v.currentTime = want; } catch (e) {} }
+        if (vids.every((x) => x.readyState >= 1)) want = null;
+      }, { once: true });
+    };
     const start = () => {
       document.dispatchEvent(new CustomEvent(AO_LISTEN_PLAY, { detail: this }));
       each((v) => {
         v.preload = 'auto';
-        if (v !== lead && Math.abs(v.currentTime - lead.currentTime) > 0.1) v.currentTime = lead.currentTime;
+        if (want === null && v !== lead && Math.abs(v.currentTime - lead.currentTime) > 0.1) v.currentTime = lead.currentTime;
         v.play().catch(() => {});
       });
     };
     const stop = () => each((v) => v.pause());
     const toggle = () => (lead.paused ? start() : stop());
     const seek = (t, go) => {
-      each((v) => { v.preload = 'auto'; try { v.currentTime = t; } catch (e) {} });
+      want = vids.every((v) => v.readyState >= 1) ? null : t;
+      each((v) => seekOne(v, t));
       show(t);
       if (go) start();
     };
@@ -926,7 +938,7 @@ class AoCues extends HTMLElement {
 
     let lit = null;
     const show = (at) => {
-      const t = typeof at === 'number' ? at : lead.currentTime;
+      const t = typeof at === 'number' ? at : want !== null ? want : lead.currentTime;
       if (isFinite(lead.duration)) scrub.max = String(lead.duration);
       scrub.value = String(t);
       clock.textContent = fmtTime(t) + ' / ' + fmtTime(lead.duration);
@@ -946,6 +958,7 @@ class AoCues extends HTMLElement {
     };
     // Followers drift a little on their own; nudge them back to the lead clock.
     const follow = () => {
+      if (want !== null) return;
       for (const v of vids) {
         if (v === lead) continue;
         if (Math.abs(v.currentTime - lead.currentTime) > 0.15) v.currentTime = lead.currentTime;
