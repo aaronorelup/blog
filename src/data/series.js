@@ -19,6 +19,10 @@ export const SERIES = {
     title: 'Long agent runs, and reading what they did',
     blurb: 'Overnight runs with dozens of agents, and what the transcripts showed afterwards.',
   },
+  'hidden-curriculum': {
+    title: 'The Hidden Curriculum',
+    blurb: 'The course agents build one lesson a day, and the lessons I sent back.',
+  },
   characters: {
     title: 'My characters, made with agents',
     blurb: 'Jefrie in 3D and Echo, built with Blender, TRELLIS.2, ComfyUI and Higgsfield.',

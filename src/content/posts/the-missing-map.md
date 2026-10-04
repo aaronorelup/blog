@@ -5,7 +5,7 @@ summary: "On 30 September I typed out every developer word I never got taught an
 date: 2026-10-01
 status: "in-progress"
 tags: ["claude-code", "agents", "animation", "elevenlabs", "lessons"]
-series: ["agent-runs"]
+series: ["hidden-curriculum", "agent-runs"]
 ---
 
 On 30 September I asked Claude where I was supposed to have learned terminals, `.venv`, API

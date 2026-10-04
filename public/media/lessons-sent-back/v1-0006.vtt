@@ -1,0 +1,477 @@
+WEBVTT
+
+1
+00:00:01.600 --> 00:00:04.537
+In this lesson you'll learn a five-step habit
+
+2
+00:00:04.537 --> 00:00:07.777
+for getting unstuck on anything technical,
+
+3
+00:00:07.777 --> 00:00:10.273
+and how AI changed who does each step
+
+4
+00:00:10.273 --> 00:00:13.061
+without changing why the steps matter.
+
+5
+00:00:13.663 --> 00:00:16.879
+Read the error, search its exact words,
+
+6
+00:00:16.879 --> 00:00:18.620
+check the official docs,
+
+7
+00:00:18.620 --> 00:00:21.221
+ask the AI with the evidence on its desk,
+
+8
+00:00:21.221 --> 00:00:23.833
+and settle it with a tiny test:
+
+9
+00:00:23.833 --> 00:00:26.887
+AI can now do most of the legwork, so your job
+
+10
+00:00:26.887 --> 00:00:29.545
+is to give it the clues and check the verdict.
+
+11
+00:00:29.545 --> 00:00:32.007
+Every district ahead brings new errors;
+
+12
+00:00:32.007 --> 00:00:34.226
+this works on all of them.
+
+13
+00:00:34.676 --> 00:00:36.986
+This lesson is the last stop at the Start,
+
+14
+00:00:36.986 --> 00:00:38.333
+before The Machine.
+
+15
+00:00:38.333 --> 00:00:40.771
+Lesson one said this is learned through forums
+
+16
+00:00:40.771 --> 00:00:44.314
+and breaking things; here it becomes a habit.
+
+17
+00:00:45.079 --> 00:00:47.888
+Five years ago: read the traceback,
+
+18
+00:00:47.888 --> 00:00:50.767
+Google it, land on Stack Overflow,
+
+19
+00:00:50.767 --> 00:00:53.020
+check the docs, try something.
+
+20
+00:00:53.020 --> 00:00:55.794
+Stack Overflow was the wall of case reports:
+
+21
+00:00:55.794 --> 00:00:58.256
+over a million new questions a year.
+
+22
+00:00:58.256 --> 00:01:00.392
+Today, new questions are down
+
+23
+00:01:00.392 --> 00:01:02.633
+about ninety-nine percent from peak.
+
+24
+00:01:02.633 --> 00:01:04.060
+It was already shrinking;
+
+25
+00:01:04.060 --> 00:01:06.824
+after ChatGPT, it fell off a cliff.
+
+26
+00:01:06.824 --> 00:01:08.414
+The old answers are still there,
+
+27
+00:01:08.414 --> 00:01:10.506
+and inside the AI.
+
+28
+00:01:10.956 --> 00:01:13.615
+Getting unstuck is solving a small case.
+
+29
+00:01:13.615 --> 00:01:15.600
+One case file with five tabs:
+
+30
+00:01:15.600 --> 00:01:19.698
+clue, search, rulebook, briefing, experiment.
+
+31
+00:01:19.698 --> 00:01:22.763
+In twenty twenty-one, you worked every tab alone.
+
+32
+00:01:22.763 --> 00:01:25.562
+Now last lesson's clerk sits beside you,
+
+33
+00:01:25.562 --> 00:01:27.802
+knowing only what's on its desk.
+
+34
+00:01:27.802 --> 00:01:30.693
+In a chat app, you carry the evidence to it;
+
+35
+00:01:30.693 --> 00:01:33.155
+an agent walks to your files itself.
+
+36
+00:01:33.155 --> 00:01:36.034
+Either way, you sign the last page.
+
+37
+00:01:36.034 --> 00:01:37.973
+Here the picture breaks.
+
+38
+00:01:37.973 --> 00:01:39.691
+An error isn't a culprit;
+
+39
+00:01:39.691 --> 00:01:41.757
+it's a note written to help you.
+
+40
+00:01:41.757 --> 00:01:43.441
+There's no final reveal,
+
+41
+00:01:43.441 --> 00:01:45.811
+just the next step that works.
+
+42
+00:01:46.261 --> 00:01:49.140
+First tab: the clue.
+
+43
+00:01:49.140 --> 00:01:51.973
+An error names the file, the line,
+
+44
+00:01:51.973 --> 00:01:53.657
+and the kind of failure.
+
+45
+00:01:53.657 --> 00:01:55.979
+Find the line that names the failure;
+
+46
+00:01:55.979 --> 00:01:59.566
+in a Python traceback, that's the last one.
+
+47
+00:01:59.566 --> 00:02:01.632
+Errors got friendlier too;
+
+48
+00:02:01.632 --> 00:02:04.964
+many suggest the fix: did you mean...
+
+49
+00:02:04.964 --> 00:02:07.194
+Agents read errors too;
+
+50
+00:02:07.194 --> 00:02:10.050
+the error is your check they understood.
+
+51
+00:02:10.050 --> 00:02:12.755
+Second tab: search the exact message,
+
+52
+00:02:12.755 --> 00:02:15.506
+minus your own names and paths.
+
+53
+00:02:15.506 --> 00:02:18.397
+The tool's words find everyone who hit it.
+
+54
+00:02:18.397 --> 00:02:20.417
+Search an error today and you usually
+
+55
+00:02:20.417 --> 00:02:23.946
+get an AI answer first, sources underneath.
+
+56
+00:02:23.946 --> 00:02:25.991
+Click through to the source.
+
+57
+00:02:26.442 --> 00:02:28.694
+Third tab: the rulebook,
+
+58
+00:02:28.694 --> 00:02:30.819
+the official docs for your version.
+
+59
+00:02:30.819 --> 00:02:32.363
+Everything else is a summary;
+
+60
+00:02:32.363 --> 00:02:34.151
+summaries go stale.
+
+61
+00:02:34.151 --> 00:02:40.374
+Docs now have a second door for AI: llms.txt,
+
+62
+00:02:40.374 --> 00:02:44.089
+a simple file many docs publish for AI tools.
+
+63
+00:02:44.089 --> 00:02:47.688
+Microsoft, Amazon and Google also run servers
+
+64
+00:02:47.688 --> 00:02:50.358
+so AI can search their current docs.
+
+65
+00:02:50.358 --> 00:02:53.028
+Make sure the AI read your version's rulebook,
+
+66
+00:02:53.028 --> 00:02:54.387
+not its memory.
+
+67
+00:02:54.387 --> 00:02:56.488
+Fourth tab: the briefing.
+
+68
+00:02:56.488 --> 00:02:58.869
+The exact error, your versions,
+
+69
+00:02:58.869 --> 00:03:02.328
+the command, the file, on the clerk's desk.
+
+70
+00:03:02.328 --> 00:03:04.813
+Agents gather most of it themselves.
+
+71
+00:03:04.813 --> 00:03:07.994
+Ask for the explanation, not just the fix.
+
+72
+00:03:07.994 --> 00:03:10.119
+In one study this January, learners
+
+73
+00:03:10.119 --> 00:03:13.439
+who let AI write the code understood less,
+
+74
+00:03:13.439 --> 00:03:15.204
+especially at debugging;
+
+75
+00:03:15.204 --> 00:03:17.748
+those who asked it to explain did better.
+
+76
+00:03:18.211 --> 00:03:21.312
+Most assistants now offer a learning mode.
+
+77
+00:03:21.762 --> 00:03:25.338
+The new risk: the clerk as a confident witness,
+
+78
+00:03:25.338 --> 00:03:27.486
+fluent and almost right.
+
+79
+00:03:27.486 --> 00:03:30.574
+In Stack Overflow's twenty twenty-five survey,
+
+80
+00:03:30.574 --> 00:03:32.466
+almost-right answers topped
+
+81
+00:03:32.466 --> 00:03:36.054
+developers' frustrations, picked by two-thirds.
+
+82
+00:03:36.054 --> 00:03:38.132
+Only about three in a hundred highly
+
+83
+00:03:38.132 --> 00:03:41.255
+trust AI answers, yet most use them.
+
+84
+00:03:41.255 --> 00:03:43.009
+It goes wrong three ways.
+
+85
+00:03:43.009 --> 00:03:45.272
+Functions since renamed or retired;
+
+86
+00:03:45.272 --> 00:03:47.618
+models learned from older code.
+
+87
+00:03:47.618 --> 00:03:50.555
+Command flags that sound right and don't exist.
+
+88
+00:03:50.555 --> 00:03:52.749
+And packages that don't exist:
+
+89
+00:03:52.749 --> 00:03:54.897
+in one twenty twenty-six study,
+
+90
+00:03:54.897 --> 00:03:58.624
+about one AI coding answer in twenty named one.
+
+91
+00:03:58.624 --> 00:04:00.551
+Attackers register those names,
+
+92
+00:04:00.551 --> 00:04:03.663
+so the install works, with their code inside.
+
+93
+00:04:03.663 --> 00:04:05.509
+The picture breaks here too:
+
+94
+00:04:05.509 --> 00:04:07.331
+this witness saw nothing.
+
+95
+00:04:07.331 --> 00:04:10.477
+It predicts, so it can be fluent and wrong.
+
+96
+00:04:10.477 --> 00:04:13.567
+Checking matters more now, not less.
+
+97
+00:04:14.018 --> 00:04:17.594
+The last tab settles it: a tiny test.
+
+98
+00:04:17.594 --> 00:04:19.347
+The smallest run that proves
+
+99
+00:04:19.347 --> 00:04:22.493
+or disproves an answer, in a scratch file.
+
+100
+00:04:22.493 --> 00:04:25.373
+Pass or fail, you know more.
+
+101
+00:04:25.373 --> 00:04:27.927
+Coding agents like Claude Code and Codex
+
+102
+00:04:27.927 --> 00:04:30.980
+are built around this, and can run it for you.
+
+103
+00:04:30.980 --> 00:04:33.581
+You still need to know what it proves.
+
+104
+00:04:33.581 --> 00:04:36.460
+The direction: agents doing more of the loop,
+
+105
+00:04:36.460 --> 00:04:39.084
+and more docs written for machines first.
+
+106
+00:04:39.084 --> 00:04:42.996
+Your job: clues in, verdict checked.
+
+107
+00:04:42.996 --> 00:04:45.005
+Safe to ignore for now:
+
+108
+00:04:45.005 --> 00:04:48.117
+memorising flags, which tool is best,
+
+109
+00:04:48.117 --> 00:04:50.173
+and forum etiquette.
+
+110
+00:04:50.623 --> 00:04:52.225
+The error is the first clue,
+
+111
+00:04:52.225 --> 00:04:54.791
+and its exact words are the search key.
+
+112
+00:04:54.791 --> 00:04:56.904
+Find the line that names the failure,
+
+113
+00:04:56.904 --> 00:04:58.704
+and never paraphrase it.
+
+114
+00:04:58.704 --> 00:05:00.747
+Give the AI the evidence, then check
+
+115
+00:05:00.747 --> 00:05:03.406
+its verdict against the docs for your version.
+
+116
+00:05:03.406 --> 00:05:05.275
+A tiny test settles it.
+
+117
+00:05:05.275 --> 00:05:08.282
+Until a run proves it, an answer is a guess.
+
+118
+00:05:08.282 --> 00:05:11.452
+AI is the lantern: it lights every district,
+
+119
+00:05:11.452 --> 00:05:14.286
+but it doesn't walk the streets for you.

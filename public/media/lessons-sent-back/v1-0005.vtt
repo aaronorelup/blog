@@ -1,0 +1,493 @@
+WEBVTT
+
+1
+00:00:01.600 --> 00:00:03.887
+In this lesson you'll learn just enough
+
+2
+00:00:03.887 --> 00:00:05.803
+about how a large language model
+
+3
+00:00:05.803 --> 00:00:08.729
+works to see its surprises coming.
+
+4
+00:00:08.729 --> 00:00:09.924
+The short version:
+
+5
+00:00:09.924 --> 00:00:13.013
+it cuts your text into pieces called tokens,
+
+6
+00:00:13.013 --> 00:00:16.078
+then guesses the next piece, one at a time,
+
+7
+00:00:16.078 --> 00:00:18.934
+using only what fits on its desk.
+
+8
+00:00:18.934 --> 00:00:22.278
+It was trained to sound right,
+
+9
+00:00:22.278 --> 00:00:24.205
+which is not the same as being right.
+
+10
+00:00:24.205 --> 00:00:26.167
+So lift the hood on the engine
+
+11
+00:00:26.167 --> 00:00:27.955
+from the last lesson.
+
+12
+00:00:27.955 --> 00:00:29.453
+You won't find gears.
+
+13
+00:00:29.453 --> 00:00:32.740
+You'll find a desk covered in tiles.
+
+14
+00:00:33.190 --> 00:00:36.336
+On the course map, this lesson sits at the Start,
+
+15
+00:00:36.336 --> 00:00:39.181
+in Orientation: what this course is,
+
+16
+00:00:39.181 --> 00:00:41.201
+and the lantern you carry.
+
+17
+00:00:41.201 --> 00:00:45.206
+The lanterns strung over every district are AI.
+
+18
+00:00:45.206 --> 00:00:47.714
+Most of them run on an engine like this,
+
+19
+00:00:47.714 --> 00:00:50.258
+so it's worth one look inside.
+
+20
+00:00:50.708 --> 00:00:52.635
+Before the model reads anything,
+
+21
+00:00:52.635 --> 00:00:54.980
+your text is cut into tokens.
+
+22
+00:00:54.980 --> 00:00:56.513
+Picture tiles.
+
+23
+00:00:56.513 --> 00:00:59.474
+A common word is often one tile.
+
+24
+00:00:59.474 --> 00:01:03.967
+A long or rare word gets split into a few.
+
+25
+00:01:03.967 --> 00:01:06.022
+In English, a token averages
+
+26
+00:01:06.022 --> 00:01:08.634
+about three quarters of a word.
+
+27
+00:01:08.634 --> 00:01:10.712
+Each tile is really a number;
+
+28
+00:01:10.712 --> 00:01:12.930
+the model works in numbers.
+
+29
+00:01:12.930 --> 00:01:15.322
+So it never sees letters.
+
+30
+00:01:15.322 --> 00:01:17.899
+Ask it to count the R in strawberry,
+
+31
+00:01:17.899 --> 00:01:20.929
+and it's looking at two or three tiles,
+
+32
+00:01:20.929 --> 00:01:22.694
+not ten letters.
+
+33
+00:01:22.694 --> 00:01:26.282
+Tokens are also how everything is measured:
+
+34
+00:01:26.282 --> 00:01:27.803
+how much it can read,
+
+35
+00:01:27.803 --> 00:01:31.833
+how much it can write, and what it costs.
+
+36
+00:01:32.282 --> 00:01:34.836
+The model reads every tile on the desk
+
+37
+00:01:34.836 --> 00:01:37.565
+and scores every tile it could lay next.
+
+38
+00:01:37.565 --> 00:01:39.387
+It lays one.
+
+39
+00:01:39.387 --> 00:01:41.524
+That tile joins the desk,
+
+40
+00:01:41.524 --> 00:01:43.776
+and it does the whole thing again,
+
+41
+00:01:43.776 --> 00:01:45.680
+one tile per step,
+
+42
+00:01:45.680 --> 00:01:49.430
+until it lays a tile that means stop.
+
+43
+00:01:49.430 --> 00:01:53.157
+That's why answers appear word by word.
+
+44
+00:01:53.157 --> 00:01:56.442
+There's no finished answer hiding backstage;
+
+45
+00:01:56.442 --> 00:01:58.648
+you're watching tiles land.
+
+46
+00:01:58.648 --> 00:02:02.387
+How it picks is set by a dial called temperature.
+
+47
+00:02:02.387 --> 00:02:05.243
+Low, and it takes the likeliest tile
+
+48
+00:02:05.243 --> 00:02:07.785
+nearly every time: predictable.
+
+49
+00:02:07.785 --> 00:02:10.874
+High, and it reaches further down the list:
+
+50
+00:02:10.874 --> 00:02:13.579
+varied, sometimes odd.
+
+51
+00:02:13.579 --> 00:02:15.982
+That's one reason the same question
+
+52
+00:02:15.982 --> 00:02:18.211
+can get two different answers.
+
+53
+00:02:18.211 --> 00:02:21.719
+Most apps set the dial for you.
+
+54
+00:02:22.169 --> 00:02:25.257
+The desk is the context window:
+
+55
+00:02:25.257 --> 00:02:27.742
+everything the model can see at once.
+
+56
+00:02:27.742 --> 00:02:30.238
+The engine starts cold every message,
+
+57
+00:02:30.238 --> 00:02:32.444
+so every turn the app slides the whole
+
+58
+00:02:32.444 --> 00:02:34.928
+conversation back onto the desk:
+
+59
+00:02:34.928 --> 00:02:36.821
+the hidden instructions,
+
+60
+00:02:36.821 --> 00:02:40.466
+your messages, its replies, any files.
+
+61
+00:02:40.466 --> 00:02:43.415
+Desks are large, but they do fill.
+
+62
+00:02:43.415 --> 00:02:45.227
+Then the app has to choose:
+
+63
+00:02:45.227 --> 00:02:47.641
+drop the oldest tiles off the edge,
+
+64
+00:02:47.641 --> 00:02:49.871
+squash them into a short summary,
+
+65
+00:02:49.871 --> 00:02:51.809
+or stop with an error.
+
+66
+00:02:51.809 --> 00:02:54.665
+And because everything is re-sent,
+
+67
+00:02:54.665 --> 00:02:59.578
+a long chat uses more tokens with every message.
+
+68
+00:03:00.028 --> 00:03:02.060
+Here's where the picture breaks.
+
+69
+00:03:02.060 --> 00:03:04.869
+A desk suggests someone with a library underneath.
+
+70
+00:03:04.869 --> 00:03:06.309
+There isn't one.
+
+71
+00:03:06.309 --> 00:03:09.072
+Unless the app hands it a search tool,
+
+72
+00:03:09.072 --> 00:03:11.255
+the model looks nothing up.
+
+73
+00:03:11.255 --> 00:03:13.113
+Training taught it which tiles
+
+74
+00:03:13.113 --> 00:03:15.376
+tend to follow which.
+
+75
+00:03:15.376 --> 00:03:18.662
+That makes it very good at sounding right,
+
+76
+00:03:18.662 --> 00:03:21.228
+with no built-in check that it is right.
+
+77
+00:03:21.228 --> 00:03:23.631
+So when the fact isn't on the desk,
+
+78
+00:03:23.631 --> 00:03:25.175
+it doesn't go quiet.
+
+79
+00:03:25.175 --> 00:03:28.124
+It lays the likeliest-looking tiles,
+
+80
+00:03:28.124 --> 00:03:30.550
+in the same calm voice.
+
+81
+00:03:30.550 --> 00:03:32.071
+Often that's right.
+
+82
+00:03:32.071 --> 00:03:35.345
+When it isn't, that's a hallucination:
+
+83
+00:03:35.345 --> 00:03:37.841
+a confident wrong guess.
+
+84
+00:03:37.841 --> 00:03:40.732
+It shows up in specifics: citations,
+
+85
+00:03:40.732 --> 00:03:43.554
+version numbers, file paths, package names.
+
+86
+00:03:43.554 --> 00:03:46.363
+And anything after its training cutoff,
+
+87
+00:03:46.363 --> 00:03:50.068
+the snapshot from two lessons ago, is a guess too.
+
+88
+00:03:50.519 --> 00:03:52.783
+Four surprises you'll meet.
+
+89
+00:03:52.783 --> 00:03:55.558
+Ask how many times R appears in strawberry,
+
+90
+00:03:55.558 --> 00:03:58.124
+and some models have answered two.
+
+91
+00:03:58.124 --> 00:04:00.399
+Tiles, not letters.
+
+92
+00:04:00.399 --> 00:04:03.394
+A long chat forgets your first instructions,
+
+93
+00:04:03.394 --> 00:04:06.601
+or an error says the context is too long.
+
+94
+00:04:07.063 --> 00:04:08.538
+The desk filled up.
+
+95
+00:04:08.538 --> 00:04:10.999
+Code that installs a package,
+
+96
+00:04:10.999 --> 00:04:13.774
+or calls a function, that doesn't exist.
+
+97
+00:04:13.774 --> 00:04:16.549
+A confident guess with a plausible name.
+
+98
+00:04:16.549 --> 00:04:19.556
+And a bill or usage page counted in tokens,
+
+99
+00:04:19.556 --> 00:04:21.297
+input and output.
+
+100
+00:04:21.297 --> 00:04:24.631
+That's the re-sent desk, counted.
+
+101
+00:04:25.081 --> 00:04:27.345
+So put the facts on the desk.
+
+102
+00:04:27.345 --> 00:04:28.912
+Paste the exact error,
+
+103
+00:04:28.912 --> 00:04:31.850
+attach the file, share the docs.
+
+104
+00:04:31.850 --> 00:04:33.521
+Same model, same question:
+
+105
+00:04:33.521 --> 00:04:37.190
+with the real file on the desk, the answer fits.
+
+106
+00:04:37.190 --> 00:04:39.013
+Ask where a claim comes from,
+
+107
+00:04:39.013 --> 00:04:40.348
+then open the source.
+
+108
+00:04:40.348 --> 00:04:43.158
+And check every specific before you build on it:
+
+109
+00:04:43.158 --> 00:04:46.130
+the package, the path, the version.
+
+110
+00:04:46.130 --> 00:04:48.812
+Safe to ignore for now: transformers,
+
+111
+00:04:48.812 --> 00:04:51.261
+attention, and the math of training.
+
+112
+00:04:51.261 --> 00:04:54.535
+AI is the lantern: it lights every district,
+
+113
+00:04:54.535 --> 00:04:57.010
+but it doesn't walk the streets for you.
+
+114
+00:04:57.460 --> 00:04:59.376
+Three things to keep.
+
+115
+00:04:59.376 --> 00:05:03.114
+It guesses the next token, over and over.
+
+116
+00:05:03.114 --> 00:05:05.738
+Text is cut into pieces, not letters,
+
+117
+00:05:05.738 --> 00:05:08.942
+and limits and prices count them.
+
+118
+00:05:08.942 --> 00:05:11.322
+It only sees its desk.
+
+119
+00:05:11.322 --> 00:05:14.666
+The whole conversation is re-sent every turn,
+
+120
+00:05:14.666 --> 00:05:19.067
+and the oldest parts fall off when the desk fills.
+
+121
+00:05:19.067 --> 00:05:21.331
+Sounding right isn't being right.
+
+122
+00:05:21.331 --> 00:05:25.069
+Put the facts on the desk, ask for sources,
+
+123
+00:05:25.069 --> 00:05:27.346
+and check every specific.
