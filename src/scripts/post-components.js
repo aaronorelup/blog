@@ -1127,6 +1127,8 @@ class AoTranscript extends HTMLElement {
         if (!pane.raf) loop(pane);
       });
       v.addEventListener('seeked', () => light(pane));
+      // timeupdate fires even where animation frames don't (a background tab), so check here too.
+      v.addEventListener('timeupdate', () => { if (!this.getClientRects().length) v.pause(); });
       return pane;
     });
 
