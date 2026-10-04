@@ -1,21 +1,27 @@
 ---
-id: "AO-032"
-title: "Claude picked the best Opus 5.5 trick on X, then modded a game I own and dealt my characters into it"
-summary: "I asked Claude to find the most incredible thing people were doing with Opus 5.5 that I hadn't tried, and do it alone. It chose modding a game I own. Four hours later my six characters were cards on Leshy's table in Inscryption, and the battle in the video was played and filmed by the mod itself. All the tests passed while five portraits were black silhouettes."
+id: "AO-033"
+title: "I tried Rehan Sheikh's Universal Modder on a game I own, and Opus 5.5 dealt my characters into Inscryption"
+summary: "Opus 5.5 copied Inscryption into a lab, decompiled it, read the code, and added my six characters as cards with three new sigils. Then it wrote a second mod that plays the battle and films it. Every test passed while five of the six portraits were black silhouettes."
 date: 2026-10-03
 status: "shipped"
-tags: ["claude-code", "agents", "modding", "gamedev", "characters"]
+tags: ["claude-code", "modding", "gamedev", "characters", "agents"]
 series: ["characters", "agent-runs"]
 ---
 
-On 3 October I gave Claude one instruction: go on X, see what people are doing with Opus 5.5,
-pick the most incredible thing I haven't tried that you can do on your own, do it with what you
-know about me, and write it up here so you can judge the result. Opus 5.5 agents only, no more
-than five at a time, check the clock every 30 minutes, four to six hours in total.
+On 28 September Rehan Sheikh [posted](https://x.com/rehan_shei/status/2104662849624981571) that
+he'd pointed Opus 5.5 at Terraria before bed and woken up to a reverse-engineered game, then added
+new weapons and mobs. Two days later he
+packaged what Claude had learned into
+[Universal Modder](https://x.com/rehan_shei/status/2105161487509852622), a set of skills for
+modding "almost any game you own". That post has 14,000 likes and 3.6 million views.
 
-It picked modding a game I own. By the end, BloodTailor, Jefrie, Yusef, Echo, Siloam and Ichigo
-were playable cards in Inscryption. Each one has a sigil translated from a line on its canon
-page, and Leshy says one line about each when it's drawn.
+I didn't choose to try it. Claude did: I told it to find the most incredible thing people were
+doing with Opus 5.5 on X and do it without me, and this is what it picked. How it chose is
+[its own post](/ledger/opus-55-on-x-alone/). This one is the mod.
+
+The game is Inscryption, which I own. By the end, BloodTailor, Jefrie, Yusef, Echo, Siloam and
+Ichigo were playable cards on Leshy's table. Each one has a sigil translated from a line on its
+canon page, and Leshy says one line about each when it's drawn.
 
 **I didn't play the battle below, and neither did anyone else. Claude wrote a second mod that
 boots the game, builds a run, deals the hand, plays every turn through the game's own code and
@@ -25,112 +31,51 @@ that was badly wrong.
 <video controls playsinline preload="metadata" poster="/media/characters-in-inscryption/film-poster.webp" src="/media/characters-in-inscryption/film.mp4" style="width:100%;border-radius:8px"></video>
 
 The sound is the game's own mix. The mod recorded it frame by frame alongside the picture while
-my speakers stayed silent. 1 minute 41 seconds, one continuous take: Leshy introduces each card
-as it's drawn, then every sigil fires once and the take holds two seconds on each.
+my speakers stayed silent. It's 1 minute 41 seconds in one continuous take. Leshy introduces each
+card as it's drawn, then every sigil fires once and the take holds two seconds on each.
 
-## How it chose
+## The loop
 
-Everything in this section was decided by agents. My only part was the prompt.
+Universal Modder is a ten-step loop. Claude followed the loop but didn't install the package
+itself. Its asset steps call fal, a paid image API, and Inscryption already has a community
+modding API to build on. Here's what each step became:
 
-**X first.** The in-app browser hit X's login wall, and Claude won't type a password, so it
-used my Chrome, where I'm already signed in. Its first scraping script froze: X was a background
-tab, and Chrome throttles timers in background tabs until a 45-second limit killed the call. It
-switched to small steps (navigate, read the page, scroll) and pulled about 60 of the most-liked
-posts mentioning Opus 5.5, both of Min Choi's roundup threads, and the full 9,861-character
-prompt behind the most viral one: donald's 12-hour, one-prompt music video.
+| Step | What happened here |
+|---|---|
+| 1. Search field notes | Nothing yet for this game, so the field notes from this run are the first. |
+| 2. Recon | Unity 2019.4, compiled to .NET (Mono), **32-bit**, single-player, with a maintained community API. |
+| 3. Safe lab | A full copy of the game in a lab folder, its own save, `steam_appid.txt` so it runs from there, and my real save files hashed before and after. |
+| 4. Read the real code | The game decompiled into 2,098 C# files in 24 seconds. One agent read it and wrote 339 lines of notes on class and method names that every later agent built against. |
+| 5. One working slice | Six cards, three new sigils, and Leshy's lines, as one BepInEx plugin. |
+| 6. Assets | Portraits made from my existing art in code (no image model), then redone once the game showed what was wrong. |
+| 7. Verify in the running game | A second plugin that plays the game. More on that below. |
+| 8. Record | The same plugin films itself, with the game's audio. |
+| 9. Package | The plugin plus its art. Install steps are at the end. |
+| 10. Field notes | Written for the next agent that tries this on another Unity game. |
 
-**Then the rest of the web.** Four agents searched in parallel, one each for press and newsletters,
-Reddit and Hacker News, creative and media work, and long autonomous runs. In 12 minutes they
-came back with 57 candidates, each with how it was made and whether it could be repeated alone on
-my laptop.
+## The lab, and the one leak
 
-**Then me.** A sixth agent read my blog, my skills folder, my Notion and my Claude Code history
-to list everything I've already tried: agent-built games, code-drawn films, H3 films, Blender
-previs, Jefrie in 3D, ElevenLabs songs, 16 wallpapers. It took 54 minutes, mostly because a
-search across my whole history timed out after 30.
+The copy wasn't fully isolated. Unity keeps a game's settings in the Windows registry under the
+game's name, and the real install reads the same place. So the first windowed test launch also
+changed my real game's resolution and fullscreen mode. The setup agent caught it because it had
+exported those keys before launching and compared them afterwards. A plugin can't stop Unity
+writing there, so the fix was to restore the export at the end. Without that check, my real game
+would have opened at 1280×720 in a window and I'd never have known why.
 
-**Then a vote.** Eight finalists went to five judges, each scoring all eight on one thing only:
-wow, novelty for me, whether it could be finished alone in about three hours, what I'd learn
-that carries over to other projects, and whether it would delight me and you. Four of the five
-picked the same one.
+## Reading the code
 
-| Finalist | Wow | Novelty | Feasible alone | Learning | Delight | Total /50 |
-|---|---|---|---|---|---|---|
-| **A. Mod a game I own** | 9 | 10 | 6 | 9 | 9 | **43** |
-| B. Oil paintings in a paint simulator | 8 | 8 | 5 | 5 | 8 | 34 |
-| E. A song where code synthesizes every sound, voice included | 8 | 5 | 7 | 6 | 5 | 31 |
-| H. Interactive explainer (the Lens Lab) | 5 | 3 | 9 | 7 | 5 | 29 |
-| D. A buildable LEGO model with instructions | 7 | 8 | 3 | 4 | 6 | 28 |
-| G. Rotoscoping a generated video in code | 6 | 4 | 4 | 6 | 7 | 27 |
-| C. Zero-direction demoscene intro | 6 | 2 | 8 | 4 | 4 | 24 |
-| F. Arcane-style painted shot in Blender | 6 | 4 | 3 | 5 | 6 | 24 |
+The recon agent was looking for one thing above all: a way to get from launching the game to a
+card battle with my cards in hand, without anyone clicking. The game has no debug shortcut.
+`DEBUG_KEYS_ENABLED` is false, and a flag called `debugSkipIntro` is never read. What it found
+instead was the game's own path. Create a Kaycee's Mod run with a chosen deck, save it (the menu
+re-reads the save from disk before loading the cabin), transition to the map, then call the
+same method a map node calls when you step on a battle. Turns are played through the game's
+own entry points: the hand's card-selected handler, the board's slot handler, and the bell. No
+mouse input.
 
-The feasibility judge voted for H, the explainer. It was right that the mod was the riskier of
-the two.
-
-The winner was Rehan Sheikh's [Universal Modder](https://x.com/rehan_shei/status/2105161487509852622).
-He pointed Opus 5.5 at Terraria before bed and
-[woke up](https://x.com/rehan_shei/status/2104662849624981571) to a reverse-engineered game with
-new weapons and mobs, then packaged what Claude had learned as skills for modding "almost any
-game you own". That post has 14,000 likes and 3.6 million views. Claude checked my Steam folder
-for a game it could do this to. Elden Ring, Palworld and Path of Exile 2 are online games with
-anti-cheat, so they were ruled out. Inscryption is a Unity game compiled to .NET, which is the
-easiest kind to read, and it's single-player. Its look also suits my characters' world: dark,
-grey, candlelit, and run by something that would rather play games with you than kill you.
-
-## What I'd have done instead
-
-Second place was **[Claude Paint](https://x.com/aliceisplaying/status/2104672235093119196)**, by
-alice. It is a physics simulator for oil paint, written in Rust: bristles carrying wet paint over
-linen, paint that dries on a clock, colours that mix like real pigment, and no undo. Opus 5.5
-paints by writing Lua against a live easel, steps back to look at the canvas, then paints the
-next passage. Its [Show HN](https://news.ycombinator.com/item?id=49928566) had 367 points the
-day before. The plan was to have it paint my characters from their canon pages alone, BloodTailor as
-a figure seen from behind, Friedrich-style, and ship the replays as time-lapses. It lost on two
-counts: the repo assumes macOS (launchd, bash scripts), so Windows was a gamble, and on X it was
-a few hundred likes against fourteen thousand.
-
-The rest of the shortlist, all opened and checked on X the same day:
-
-| | What it is | Post |
-|---|---|---|
-| E | "No Samples": a rap single where JavaScript synthesizes every sound, the rapping voice included | [@aj_dev_smith](https://x.com/aj_dev_smith/status/2102803889183736141) · 2.0k likes |
-| H | An interactive camera-lens lab, one shot, 1 h 26 min, $25.66 | [@RyanSael](https://x.com/RyanSael/status/2102591147927654847) · 16.2k likes · 3.5M views |
-| D | A life-size LEGO Microduck from 1,113 real parts, with a 141-page instruction book | [@victormustar](https://x.com/victormustar/status/2103110908444631120) · 8.7k likes · 1.3M views |
-| G | Rotoscoping in code: a video generated first, then redrawn frame by frame as JavaScript so the base is never seen | [@donaldjewkes](https://x.com/donaldjewkes/status/2102801274173587569) · 10.7k likes · 3.8M views; [@gandamu_ml](https://x.com/gandamu_ml/status/2104402167906124280) |
-| C | "Make the most impressive demo of yourself": a demoscene intro, every pixel and sound in one 280 KB HTML file | [@JustinPerea](https://x.com/JustinPerea/status/2102893186330841502) · 1.6k likes |
-| F | "SPARK": an Arcane-style shot in Blender, every texture painted stroke by stroke in code | [@xikhar](https://x.com/xikhar/status/2105315982525014067) · [the prompt](https://x.com/xikhar/status/2105317581695623329) |
-
-Other posts weighed and ruled out because I've already done something like them:
-[the P(doom) music video](https://x.com/other__reality/status/2102514581684052169) (2.8M views)
-and Alex Albert's [one-prompt Blender claymation](https://x.com/alexalbert__/status/2102458348511879448).
-
-## What it took
-
-Times are Central, from the session transcript and the build log. Each lane is a group of
-agents; the lead session is the one I prompted.
-
-<ao-timeline lanes="lead:Lead session|research:Research agents|build:Build agents|game:In the game">
-<ol>
-<li data-lane="lead"><time>15:41</time><p>My prompt. The lead checks the clock and splits the work.</p></li>
-<li data-lane="research"><time>15:43</time><p>The profile agent starts on my blog, skills, Notion and history. It takes 54 minutes.</p></li>
-<li data-lane="lead"><time>15:45</time><p>X's login wall, then my Chrome. The first scraper freezes in a background tab, so it scrapes step by step.</p></li>
-<li data-lane="research"><time>15:47</time><p>Four web-sweep agents. 12 minutes, 57 candidates.</p></li>
-<li data-lane="research"><time>16:38</time><p>Five judges, 2 minutes. Modding a game I own: 43 of 50.</p></li>
-<li data-lane="build"><time>16:42</time><p>Lab copy, BepInEx, InscryptionAPI, and the game's code decompiled into 2,098 C# files. 6 minutes in total, 24 seconds of it decompiling.</p></li>
-<li data-lane="game"><time>16:46</time><p>First launch from the copy. The registry side effect is found here.</p></li>
-<li data-lane="build"><time>16:50</time><p>Recon reads the code. The card designer reads six Notion pages. The portrait artist starts on my reference art.</p></li>
-<li data-lane="build"><time>17:06</time><p>The cards plugin, the harness plugin and the art fixes, in parallel.</p></li>
-<li data-lane="game"><time>17:25</time><p>The harness's first launch reaches a battle, plays two cards and rings the bell. Nobody clicks.</p></li>
-<li data-lane="game"><time>17:32</time><p>The showcase battle: 44 of 44 actions, 12 of 12 sigil checks, and five black silhouettes.</p></li>
-<li data-lane="build"><time>17:34</time><p>Ink portraits and the film rig get built. The GPU queue is full, so neither runs.</p></li>
-<li data-lane="lead"><time>18:46</time><p>A search of the engine DLL finds a flag that renders on the CPU, and a second that picks the GPU.</p></li>
-<li data-lane="game"><time>19:00</time><p>Five CPU-rendered launches, five out-of-memory crashes.</p></li>
-<li data-lane="game"><time>19:33</time><p>On the Intel chip, the portrait check passes and the glow shows.</p></li>
-<li data-lane="game"><time>19:36</time><p>The film take on the Intel chip: 47 of 47 actions, 3,021 frames, and the game's audio recorded offline. 6 minutes for 101 seconds of film.</p></li>
-<li data-lane="lead"><time>19:50</time><p>Cleanup: the registry restored, the game copy and every tool deleted, the real saves hashed again. Then this post.</p></li>
-</ol>
-</ao-timeline>
+It also found something worth knowing before running any of this. A key combination in the
+game's Steam handler resets all of your real Steam achievements and stats. The harness patches
+that out, along with every achievement unlock and the game's own settings writes.
 
 ## The cards
 
@@ -196,107 +141,146 @@ The three new sigils firing, each clip cut from the film:
   <figure><video controls muted loop playsinline preload="metadata" src="/media/characters-in-inscryption/clip-sightless.mp4"></video><figcaption><b>Sightless</b><span class="ao-meta">BloodTailor hits the Grizzly, not the Bullfrog across from him</span></figcaption></figure>
 </ao-compare>
 
+## The battle that plays itself
+
+The harness is a second plugin that does nothing unless the game is launched with
+`--oc-harness=<scenario.json>`. A scenario is a list of steps: play this card into that lane,
+sacrificing these; draw; ring the bell; wait; take a screenshot; and expect this card to have
+this much health. Each run leaves a log, a pass/fail result and a folder of screenshots.
+
+- Its first launch reached a battle, played two cards and rang the bell. It passed all 14 steps.
+- The showcase battle with my six cards passed 44 of 44 steps and all 12 sigil checks on the
+  third launch.
+- The film is the same battle at a pace a person can follow, with two-second holds on each sigil.
+  The game's frame clock is locked to 30 frames per second, and every frame is saved as a JPEG.
+  Sound comes from Unity's offline audio renderer, which mixes the game's audio in step with
+  those frames instead of sending it to the speakers.
+
+One thing in the video was chosen for the camera. BloodTailor's Sightless sigil picks a random
+lane from a seeded random number. On the first seed it picked the lane straight across, which
+looks like a normal attack. The harness agent worked out offline which seed would send him
+somewhere else, and used that one.
+
 ## What went wrong
 
-In order:
-
-- **X wanted a login.** Claude doesn't enter passwords, so it moved to my signed-in Chrome.
-  Its first scraper then froze, because Chrome throttles background tabs. A 45-second timeout
-  killed it.
-- **The profile agent took 54 minutes** of the first hour. Most of that was one search across
-  my entire Claude Code history that hit its 30-minute timeout.
-- **Two of the sweep's X links were wrong.** One status ID didn't load, and one was a retweet
-  standing in for the original post. Claude only caught them because it opened every link
-  before putting it in this post.
-- **The lab copy wasn't fully isolated.** Unity keeps a game's settings in the Windows registry
-  under the game's name. That location is shared, so the first windowed test launch also changed
-  my real install's resolution and fullscreen mode. The setup agent caught it by exporting
-  the keys before launching and diffing them after. A plugin can't block Unity's own write, so
-  the fix is a restore at the end.
-- **Portraits, round one.** Jefrie's torso read as bare skin at card size. Her canon says she
-  is always fully covered, so that had to change. BloodTailor's source render has eye slits in
-  his plate, and his canon page says there are none. Both were caught in my review and sent back.
-- **Portraits, round two, in the game.** All twelve logic checks passed, and five of the six
-  portraits were black silhouettes. Inscryption's Act 1 card shader draws every opaque pixel as
-  ink. The mock-ups had put the art on flat parchment, which hid it. Only the real game showed it,
-  and only a screenshot could catch it. The fix came from reading the decompiled renderer. The
-  portrait is tinted with a colour that defaults to black, so only its alpha survives, and the
-  emission map is only drawn when a flag is set. Adding the art to the card doesn't set it. So
-  the portraits were redrawn as pure ink and hatching on transparency, and my world's one colour
-  moved into the glow. Red is the only colour in BloodTailor's world, and on these cards red is
-  now literally the only thing that glows. Yusef's gold is the exception, as it is in his canon.
-- **My GPU was booked.** I share one RTX 4070 between Claude sessions through a queue, and
-  during the hour the art fix and the film needed it, other sessions had queued 2.5 hours of
-  ComfyUI work. Three agents waited, hit their time limits and cancelled their tickets without
-  launching anything. That hour produced a lot of code and no proof.
-- **The software-rendering idea failed.** Claude searched the game's engine DLL for
-  command-line flags and found one that renders on the CPU with Microsoft's software
-  rasterizer, which uses no GPU at all. All five launches ran on it, and all five crashed out
-  of memory loading the cabin. Inscryption is a 32-bit program, so it gets 4 GB of address
-  space, and the software renderer keeps every texture inside it. Half-size textures didn't fit
-  either. 44 minutes, and the useful result is knowing why.
-- **The integrated GPU worked.** The same string search had also found `-force-device-index`.
-  This laptop has an Intel UHD chip alongside the RTX. With index 1, the game's log said
-  `Renderer: Intel(R) UHD Graphics`, nvidia-smi never listed it, and the portrait check passed
-  on the first try. The queue protects the RTX, and the RTX was never touched.
-- **A demo seed was chosen.** BloodTailor's Sightless sigil picks a random lane from a seeded
-  random number. On the first showcase seed it picked the lane straight across, which looks
-  like a normal attack. The harness agent worked out offline which seed would send him into a
-  different lane, and used that one. The sigil is real; the seed in the video was picked for
-  the camera.
+- **Portraits, round one.** Jefrie's torso read as bare skin at card size. Her canon says she is
+  always fully covered, so that had to change. BloodTailor's source render has eye slits in his
+  plate, and his canon page says there are none. Both were caught in review and sent back.
+- **Portraits, round two, in the game.** All twelve checks passed, and five of the six portraits
+  were black silhouettes. Inscryption's Act 1 card shader draws every opaque pixel as ink. The
+  mock-ups had put the art on flat parchment, which hid it. Only the real game showed it, and only
+  a screenshot could catch it. The fix came from reading the decompiled renderer. The portrait is
+  tinted with a colour that defaults to black, so only its alpha survives. The glow map is only
+  drawn when a flag is set, and adding the art to the card doesn't set it. So the portraits were
+  redrawn as pure ink and hatching on transparency, and my world's one colour moved into the
+  glow. Red is the only colour in BloodTailor's world, and on these cards red is literally the
+  only thing that glows. Yusef's gold is the exception, as it is in his canon.
+- **My GPU was booked.** I share one RTX 4070 between Claude sessions through a queue. During the
+  hour the fixes needed it, other sessions had about 2.5 hours of ComfyUI work queued. The agents
+  waited, hit their time limits, and cancelled without launching anything. That hour produced a
+  lot of code and no proof.
+- **Rendering on the CPU failed.** Claude searched the engine's DLL for command-line flags and
+  found one that renders with Microsoft's software rasterizer, which uses no GPU at all. All five
+  launches ran on it, and all five crashed out of memory loading the cabin. Inscryption is a
+  32-bit program, so it gets 4 GB of address space, and the software renderer keeps every texture
+  inside it. Half-size textures didn't fit either. That was 44 minutes, and what it bought was
+  the reason.
+- **The integrated GPU worked.** The same string search had found `-force-device-index`. This
+  laptop has an Intel UHD chip alongside the RTX. With index 1, the game's log said
+  `Renderer: Intel(R) UHD Graphics`, nvidia-smi never listed the game, and the portrait check
+  passed first time. The film take ran straight after and took six and a half minutes. The queue protects the RTX, and the
+  RTX was never touched.
 
 ## What it cost
 
 | Stage | Agents | Output tokens | Tool calls | Agent minutes |
 |---|---|---|---|---|
-| Research: profile, 4 web sweeps, 5 judges | 10 | 176,071 | 439 | 104 |
 | Lab, decompile, recon, card design, first portraits | 4 | 256,345 | 278 | 51 |
 | Cards plugin, harness plugin, art fixes | 3 | 259,416 | 307 | 61 |
 | Ink portraits, film rig, media (the GPU-blocked hour) | 3 | 207,438 | 204 | 105 |
 | The CPU-rendering attempt | 1 | 56,817 | 72 | 44 |
-| Lead session | 1 | 156,563 | 187 | 248 |
-| **Total** | **22** | **1,112,650** | **1,487** | **613** |
+| **The mod** | **11** | **780,016** | **861** | **261** |
 
-Every agent was Opus 5.5 at xhigh effort, and never more than five ran at once. The agent
-minutes add up to more than the wall clock because agents ran in parallel. From prompt to film
-was 4 hours; with cleanup and this post, about 4.5. The run also read 214 million tokens of
-cached context, 192 times its output. These figures come from the session transcripts, measured
-when the film was done. I'm on a flat subscription, so there's no bill to show.
+All Opus 5.5 at xhigh effort, measured from the session transcripts. It took 3 hours from the
+pick (16:43) to the finished film (19:42). Of that, 2 hours 8 minutes went on getting the film:
+first waiting for the GPU, then the CPU, then the Intel chip. The research before it and the
+whole run's totals are in [the other post](/ledger/opus-55-on-x-alone/).
+
+## How to play it
+
+Once I'd asked how to actually play it, a second pass made it playable. The cards were already
+in the normal card pool, but they only turned up as random picks. So Claude added a Kaycee's
+Mod starter deck called "Leshy's Guests" with my three cheapest characters: Ichigo, Jefrie and
+BloodTailor. Getting it to show needed two more fixes, both found in the game:
+
+- **The deck screen never opened.** My save has only the vanilla deck unlocked, and the game
+  skips the deck screen when it counts just one deck. The community API doesn't count added
+  decks, so one more small patch does.
+- **The previews were blank.** The deck screen previews cards in Inscryption's Act 2 pixel style,
+  not Act 1 ink. So each card also got a 41×28 pixel portrait and each new sigil a 17×17 icon,
+  drawn in code.
+
+<figure><img src="/media/characters-in-inscryption/starter-deck.webp" alt="Kaycee's Mod starter deck screen: an iron-plated grinning head icon selected, previews of Ichigo, Jefrie and BloodTailor in pixel style" loading="lazy" style="width:100%;border-radius:8px"><figcaption>The starter-deck screen in the real game, on page 2 after the vanilla decks. The game never prints deck names, so look for the grinning iron head.</figcaption></figure>
+
+It was checked in the game three times on the Intel chip. The first launch used the build, the
+second used the plugin installed from the zip by hand, and the third used it laid out the way
+r2modman installs it. All three passed, from the deck screen to the first battle with the three
+cards in hand.
+
+To play it:
+
+1. **Back up the save first.** Copy `SaveFile.gwsave` and `SaveFile-Backup.gwsave` out of the
+   game folder. Playing writes the modded cards into the save, and a save with them in it may not
+   load once the mod is gone. Put the backup back before playing vanilla.
+2. **Easiest route: r2modman.** Pick Inscryption, make a profile, install **API** by API_dev from
+   the online list (it brings BepInEx and the MonoMod loader with it), then Settings → Import
+   local mod → the mod's zip, and Start modded. Starting from Steam stays vanilla. I haven't run
+   r2modman itself yet; the layout it installs to is the one tested above.
+3. **Or by hand:** BepInEx **x86** 5.4.23.5 (the game is 32-bit, so the x64 build won't load),
+   the MonoMod loader and the API from Thunderstore, then the plugin folder into
+   `BepInEx\plugins`.
+4. **Kaycee's Mod → New Run →** the arrow to page 2 → the grinning head. In the Act 1 story, the
+   six cards show up as random card choices and in the trader's offers. Yusef is rare.
+
+Achievements aren't blocked in the play package; only the test harness blocked them. The package
+isn't up for download yet.
+
 
 ## Doing this with another game
 
 This is the part I wanted most: if I want this again for something else, what does it take?
 
-- **Pick the right game.** Single-player, no anti-cheat, and ideally Unity on Mono: the folder has
-  a `<Game>_Data\Managed\Assembly-CSharp.dll`. Those decompile back to readable C# in seconds. An
-  IL2CPP game (a `GameAssembly.dll` instead) is a much bigger job. One of mine, WLKRR, is IL2CPP
-  and was skipped.
+- **Pick the right game.** It should be single-player, with no anti-cheat, and ideally Unity on
+  Mono. You can tell from the game folder: it has a `<Game>_Data\Managed\Assembly-CSharp.dll`.
+  Those decompile back to readable C# in seconds. An IL2CPP game (a `GameAssembly.dll` instead) is
+  a much bigger job.
 - **Copy the game, never touch the original.** Copy the game folder, add `steam_appid.txt` so it
   runs from the copy, and hash the real save before and after. Export the registry keys for the
-  game's settings before the first launch, because those are shared.
-- **Get the loader and the code.** BepInEx (the x86 build for a 32-bit game), the game's community
-  API if it has one, and `ilspycmd` to decompile into the lab folder. Setup took about 6 minutes.
-- **Have an agent read the code before writing any.** The recon agent's notes (339 lines of class
-  and method names) are what every later agent built against. It found that the game has no debug
-  shortcut into a battle, and also found the route that works without one.
-- **Build a harness that plays the game.** A plugin that only runs when you pass a command-line
-  flag, drives the game through its own methods (never the mouse), blocks achievements and
-  settings writes, and takes its own screenshots. Without it, every check is me clicking through
-  menus. With it, a test is one command and a folder of evidence.
+  game's settings before the first launch, because the copy and the original share them.
+- **Get the loader and the code.** That's BepInEx (the x86 build for a 32-bit game), the game's
+  community API if it has one, and `ilspycmd` to decompile into the lab folder. Setup took about
+  6 minutes.
+- **Have an agent read the code before writing any.** The recon notes are what every later agent
+  built against.
+- **Build a harness that plays the game.** It should be opt-in from the command line, drive the
+  game through its own methods, block achievements and settings writes, and take its own
+  screenshots. Without it, every check is me clicking through menus. With it, a test is one
+  command and a folder of evidence.
+- **If the GPU is busy, try the integrated one.** That's `-force-device-index 1` on this laptop,
+  and the game's log tells you which chip it got. Don't try CPU rendering on a 32-bit game.
 - **Look at the game, not the logs.** Every log check passed while the portraits were black
   silhouettes.
 
-What to expect: in about four hours of wall-clock, a mod that works in the real game, a
-recording of it, and art that is the weakest part. The code side went faster than I expected,
-and getting art to look native went slower.
+What to expect: about three hours of wall-clock from choosing the game to a mod that works in the
+real game and a recording of it, with the art as the weakest part. The code side went faster than
+the art did.
 
-The mod's source, the harness, the scenarios and the field notes are in my project folder. At
-the end the lab was deleted: the 3.5 GB game copy, BepInEx, the decompiled code and ILSpy. The
-pip and NuGet caches the installs had left were cleared, the registry settings were restored,
-and both of my real save files were hashed again and still match.
+At the end the lab was deleted: the 3.5 GB game copy, BepInEx, the decompiled code and ILSpy.
+The caches the installs had left were cleared, the registry settings were restored, and both of
+my real save files were hashed again and still match.
 
-Every claim in this post comes with a screenshot, because the mod can take its own. The one
-thing those screenshots showed that no check had caught was the most visible thing on the card.
-The same was true when [the film](/ledger/storm-bell-pop-up/) went out with a score nobody had
-listened to: a test can only check what someone thought to write down, and nobody had written
-down what a portrait should look like.
+Every claim in this post comes with a screenshot, because the mod takes its own. Those
+screenshots caught the one thing no check had: the most visible thing on the card was wrong.
+It's the same lesson as [the film](/ledger/storm-bell-pop-up/) that went out with a score nobody
+had listened to. A test can only check what someone thought to write down, and nobody had
+written down what a portrait should look like.
