@@ -1,477 +1,1049 @@
 WEBVTT
 
 1
-00:00:01.600 --> 00:00:04.537
-In this lesson you'll learn a five-step habit
+00:00:01.600 --> 00:00:03.690
+In this lesson you'll learn what your job becomes
 
 2
-00:00:04.537 --> 00:00:07.777
-for getting unstuck on anything technical,
+00:00:03.690 --> 00:00:07.173
+when AI writes, runs and fixes the code for you:
 
 3
-00:00:07.777 --> 00:00:10.273
-and how AI changed who does each step
+00:00:07.173 --> 00:00:09.088
+judging the things you can't see,
 
 4
-00:00:10.273 --> 00:00:13.061
-without changing why the steps matter.
+00:00:09.088 --> 00:00:11.352
+above all whether it's safe.
 
 5
-00:00:13.663 --> 00:00:16.879
-Read the error, search its exact words,
+00:00:11.352 --> 00:00:13.883
+You can only trust AI on what can actually
 
 6
-00:00:16.879 --> 00:00:18.620
-check the official docs,
+00:00:13.883 --> 00:00:16.949
+be checked, by a machine, by you,
 
 7
-00:00:18.620 --> 00:00:21.221
-ask the AI with the evidence on its desk,
+00:00:16.949 --> 00:00:18.888
+or by someone who knows.
 
 8
-00:00:21.221 --> 00:00:23.833
-and settle it with a tiny test:
+00:00:18.888 --> 00:00:20.757
+Anything past that line,
 
 9
-00:00:23.833 --> 00:00:26.887
-AI can now do most of the legwork, so your job
+00:00:20.757 --> 00:00:22.626
+you either learn to check,
 
 10
-00:00:26.887 --> 00:00:29.545
-is to give it the clues and check the verdict.
+00:00:22.626 --> 00:00:24.855
+or hand to someone who can.
 
 11
-00:00:29.545 --> 00:00:32.007
-Every district ahead brings new errors;
+00:00:24.855 --> 00:00:26.457
+Code that runs and leaks
 
 12
-00:00:32.007 --> 00:00:34.226
-this works on all of them.
+00:00:26.457 --> 00:00:28.839
+is the new normal failure.
 
 13
-00:00:34.676 --> 00:00:36.986
-This lesson is the last stop at the Start,
+00:00:29.289 --> 00:00:31.936
+This lesson sits at the Start of the map,
 
 14
-00:00:36.986 --> 00:00:38.333
-before The Machine.
+00:00:31.936 --> 00:00:34.328
+in Orientation, because it changes
 
 15
-00:00:38.333 --> 00:00:40.771
-Lesson one said this is learned through forums
+00:00:34.328 --> 00:00:36.952
+how you walk every district after it.
 
 16
-00:00:40.771 --> 00:00:44.314
-and breaking things; here it becomes a habit.
+00:00:36.952 --> 00:00:39.761
+Over every district hang the lanterns.
 
 17
-00:00:45.079 --> 00:00:47.888
-Five years ago: read the traceback,
-
-18
-00:00:47.888 --> 00:00:50.767
-Google it, land on Stack Overflow,
-
-19
-00:00:50.767 --> 00:00:53.020
-check the docs, try something.
-
-20
-00:00:53.020 --> 00:00:55.794
-Stack Overflow was the wall of case reports:
-
-21
-00:00:55.794 --> 00:00:58.256
-over a million new questions a year.
-
-22
-00:00:58.256 --> 00:01:00.392
-Today, new questions are down
-
-23
-00:01:00.392 --> 00:01:02.633
-about ninety-nine percent from peak.
-
-24
-00:01:02.633 --> 00:01:04.060
-It was already shrinking;
-
-25
-00:01:04.060 --> 00:01:06.824
-after ChatGPT, it fell off a cliff.
-
-26
-00:01:06.824 --> 00:01:08.414
-The old answers are still there,
-
-27
-00:01:08.414 --> 00:01:10.506
-and inside the AI.
-
-28
-00:01:10.956 --> 00:01:13.615
-Getting unstuck is solving a small case.
-
-29
-00:01:13.615 --> 00:01:15.600
-One case file with five tabs:
-
-30
-00:01:15.600 --> 00:01:19.698
-clue, search, rulebook, briefing, experiment.
-
-31
-00:01:19.698 --> 00:01:22.763
-In twenty twenty-one, you worked every tab alone.
-
-32
-00:01:22.763 --> 00:01:25.562
-Now last lesson's clerk sits beside you,
-
-33
-00:01:25.562 --> 00:01:27.802
-knowing only what's on its desk.
-
-34
-00:01:27.802 --> 00:01:30.693
-In a chat app, you carry the evidence to it;
-
-35
-00:01:30.693 --> 00:01:33.155
-an agent walks to your files itself.
-
-36
-00:01:33.155 --> 00:01:36.034
-Either way, you sign the last page.
-
-37
-00:01:36.034 --> 00:01:37.973
-Here the picture breaks.
-
-38
-00:01:37.973 --> 00:01:39.691
-An error isn't a culprit;
-
-39
-00:01:39.691 --> 00:01:41.757
-it's a note written to help you.
-
-40
-00:01:41.757 --> 00:01:43.441
-There's no final reveal,
-
-41
-00:01:43.441 --> 00:01:45.811
-just the next step that works.
-
-42
-00:01:46.261 --> 00:01:49.140
-First tab: the clue.
-
-43
-00:01:49.140 --> 00:01:51.973
-An error names the file, the line,
-
-44
-00:01:51.973 --> 00:01:53.657
-and the kind of failure.
-
-45
-00:01:53.657 --> 00:01:55.979
-Find the line that names the failure;
-
-46
-00:01:55.979 --> 00:01:59.566
-in a Python traceback, that's the last one.
-
-47
-00:01:59.566 --> 00:02:01.632
-Errors got friendlier too;
-
-48
-00:02:01.632 --> 00:02:04.964
-many suggest the fix: did you mean...
-
-49
-00:02:04.964 --> 00:02:07.194
-Agents read errors too;
-
-50
-00:02:07.194 --> 00:02:10.050
-the error is your check they understood.
-
-51
-00:02:10.050 --> 00:02:12.755
-Second tab: search the exact message,
-
-52
-00:02:12.755 --> 00:02:15.506
-minus your own names and paths.
-
-53
-00:02:15.506 --> 00:02:18.397
-The tool's words find everyone who hit it.
-
-54
-00:02:18.397 --> 00:02:20.417
-Search an error today and you usually
-
-55
-00:02:20.417 --> 00:02:23.946
-get an AI answer first, sources underneath.
-
-56
-00:02:23.946 --> 00:02:25.991
-Click through to the source.
-
-57
-00:02:26.442 --> 00:02:28.694
-Third tab: the rulebook,
-
-58
-00:02:28.694 --> 00:02:30.819
-the official docs for your version.
-
-59
-00:02:30.819 --> 00:02:32.363
-Everything else is a summary;
-
-60
-00:02:32.363 --> 00:02:34.151
-summaries go stale.
-
-61
-00:02:34.151 --> 00:02:40.374
-Docs now have a second door for AI: llms.txt,
-
-62
-00:02:40.374 --> 00:02:44.089
-a simple file many docs publish for AI tools.
-
-63
-00:02:44.089 --> 00:02:47.688
-Microsoft, Amazon and Google also run servers
-
-64
-00:02:47.688 --> 00:02:50.358
-so AI can search their current docs.
-
-65
-00:02:50.358 --> 00:02:53.028
-Make sure the AI read your version's rulebook,
-
-66
-00:02:53.028 --> 00:02:54.387
-not its memory.
-
-67
-00:02:54.387 --> 00:02:56.488
-Fourth tab: the briefing.
-
-68
-00:02:56.488 --> 00:02:58.869
-The exact error, your versions,
-
-69
-00:02:58.869 --> 00:03:02.328
-the command, the file, on the clerk's desk.
-
-70
-00:03:02.328 --> 00:03:04.813
-Agents gather most of it themselves.
-
-71
-00:03:04.813 --> 00:03:07.994
-Ask for the explanation, not just the fix.
-
-72
-00:03:07.994 --> 00:03:10.119
-In one study this January, learners
-
-73
-00:03:10.119 --> 00:03:13.439
-who let AI write the code understood less,
-
-74
-00:03:13.439 --> 00:03:15.204
-especially at debugging;
-
-75
-00:03:15.204 --> 00:03:17.748
-those who asked it to explain did better.
-
-76
-00:03:18.211 --> 00:03:21.312
-Most assistants now offer a learning mode.
-
-77
-00:03:21.762 --> 00:03:25.338
-The new risk: the clerk as a confident witness,
-
-78
-00:03:25.338 --> 00:03:27.486
-fluent and almost right.
-
-79
-00:03:27.486 --> 00:03:30.574
-In Stack Overflow's twenty twenty-five survey,
-
-80
-00:03:30.574 --> 00:03:32.466
-almost-right answers topped
-
-81
-00:03:32.466 --> 00:03:36.054
-developers' frustrations, picked by two-thirds.
-
-82
-00:03:36.054 --> 00:03:38.132
-Only about three in a hundred highly
-
-83
-00:03:38.132 --> 00:03:41.255
-trust AI answers, yet most use them.
-
-84
-00:03:41.255 --> 00:03:43.009
-It goes wrong three ways.
-
-85
-00:03:43.009 --> 00:03:45.272
-Functions since renamed or retired;
-
-86
-00:03:45.272 --> 00:03:47.618
-models learned from older code.
-
-87
-00:03:47.618 --> 00:03:50.555
-Command flags that sound right and don't exist.
-
-88
-00:03:50.555 --> 00:03:52.749
-And packages that don't exist:
-
-89
-00:03:52.749 --> 00:03:54.897
-in one twenty twenty-six study,
-
-90
-00:03:54.897 --> 00:03:58.624
-about one AI coding answer in twenty named one.
-
-91
-00:03:58.624 --> 00:04:00.551
-Attackers register those names,
-
-92
-00:04:00.551 --> 00:04:03.663
-so the install works, with their code inside.
-
-93
-00:04:03.663 --> 00:04:05.509
-The picture breaks here too:
-
-94
-00:04:05.509 --> 00:04:07.331
-this witness saw nothing.
-
-95
-00:04:07.331 --> 00:04:10.477
-It predicts, so it can be fluent and wrong.
-
-96
-00:04:10.477 --> 00:04:13.567
-Checking matters more now, not less.
-
-97
-00:04:14.018 --> 00:04:17.594
-The last tab settles it: a tiny test.
-
-98
-00:04:17.594 --> 00:04:19.347
-The smallest run that proves
-
-99
-00:04:19.347 --> 00:04:22.493
-or disproves an answer, in a scratch file.
-
-100
-00:04:22.493 --> 00:04:25.373
-Pass or fail, you know more.
-
-101
-00:04:25.373 --> 00:04:27.927
-Coding agents like Claude Code and Codex
-
-102
-00:04:27.927 --> 00:04:30.980
-are built around this, and can run it for you.
-
-103
-00:04:30.980 --> 00:04:33.581
-You still need to know what it proves.
-
-104
-00:04:33.581 --> 00:04:36.460
-The direction: agents doing more of the loop,
-
-105
-00:04:36.460 --> 00:04:39.084
-and more docs written for machines first.
-
-106
-00:04:39.084 --> 00:04:42.996
-Your job: clues in, verdict checked.
-
-107
-00:04:42.996 --> 00:04:45.005
-Safe to ignore for now:
-
-108
-00:04:45.005 --> 00:04:48.117
-memorising flags, which tool is best,
-
-109
-00:04:48.117 --> 00:04:50.173
-and forum etiquette.
-
-110
-00:04:50.623 --> 00:04:52.225
-The error is the first clue,
-
-111
-00:04:52.225 --> 00:04:54.791
-and its exact words are the search key.
-
-112
-00:04:54.791 --> 00:04:56.904
-Find the line that names the failure,
-
-113
-00:04:56.904 --> 00:04:58.704
-and never paraphrase it.
-
-114
-00:04:58.704 --> 00:05:00.747
-Give the AI the evidence, then check
-
-115
-00:05:00.747 --> 00:05:03.406
-its verdict against the docs for your version.
-
-116
-00:05:03.406 --> 00:05:05.275
-A tiny test settles it.
-
-117
-00:05:05.275 --> 00:05:08.282
-Until a run proves it, an answer is a guess.
-
-118
-00:05:08.282 --> 00:05:11.452
+00:00:39.761 --> 00:00:43.488
 AI is the lantern: it lights every district,
 
-119
-00:05:11.452 --> 00:05:14.286
+18
+00:00:43.488 --> 00:00:45.880
 but it doesn't walk the streets for you.
+
+19
+00:00:45.880 --> 00:00:47.749
+This lesson is about the walking:
+
+20
+00:00:47.749 --> 00:00:49.757
+the checks that stay yours.
+
+21
+00:00:49.757 --> 00:00:52.822
+There are four, and each has a home later.
+
+22
+00:00:52.822 --> 00:00:54.761
+Packages, in The Code.
+
+23
+00:00:54.761 --> 00:00:56.793
+Review, in The History.
+
+24
+00:00:56.793 --> 00:00:58.697
+Security, in Trust.
+
+25
+00:00:58.697 --> 00:01:01.868
+And going live, in Shipping.
+
+26
+00:01:02.318 --> 00:01:04.663
+Aaron, who made this course,
+
+27
+00:01:04.663 --> 00:01:09.400
+once wrote Python in Notepad and saved it as .txt.
+
+28
+00:01:09.400 --> 00:01:12.488
+Today an agent would do all of that for him.
+
+29
+00:01:12.488 --> 00:01:16.273
+Five years ago, AI in coding meant autocomplete.
+
+30
+00:01:16.273 --> 00:01:18.491
+You ran the program, read the error,
+
+31
+00:01:18.491 --> 00:01:21.324
+searched for it, and fixed it yourself.
+
+32
+00:01:21.324 --> 00:01:24.180
+In 2022, you could paste the error into a chat,
+
+33
+00:01:24.180 --> 00:01:25.735
+and paste the fix back.
+
+34
+00:01:25.735 --> 00:01:29.067
+Since 2025, the agent runs the code,
+
+35
+00:01:29.067 --> 00:01:31.134
+reads its own error, fixes it,
+
+36
+00:01:31.134 --> 00:01:33.944
+and runs it again until the check passes.
+
+37
+00:01:33.944 --> 00:01:36.649
+Aaron hasn't had to debug an error himself
+
+38
+00:01:36.649 --> 00:01:38.994
+since he started using Claude Code.
+
+39
+00:01:38.994 --> 00:01:41.409
+Writing and debugging code by hand
+
+40
+00:01:41.409 --> 00:01:43.824
+is quickly becoming the exception.
+
+41
+00:01:43.824 --> 00:01:45.693
+Google says about three quarters
+
+42
+00:01:45.693 --> 00:01:48.874
+of its new code is now written by AI.
+
+43
+00:01:48.874 --> 00:01:51.777
+Anthropic says most of its own is.
+
+44
+00:01:51.777 --> 00:01:54.227
+Notice why crashes went first:
+
+45
+00:01:54.227 --> 00:01:56.920
+a crash is something a machine can check.
+
+46
+00:01:56.920 --> 00:02:00.148
+Andrej Karpathy calls the careful version
+
+47
+00:02:00.148 --> 00:02:02.272
+agentic engineering:
+
+48
+00:02:02.272 --> 00:02:05.409
+you direct, and you oversee.
+
+49
+00:02:05.858 --> 00:02:07.298
+Here's the picture to carry through
+
+50
+00:02:07.298 --> 00:02:08.981
+the rest of this lesson.
+
+51
+00:02:08.981 --> 00:02:11.489
+AI is a tireless building crew.
+
+52
+00:02:11.489 --> 00:02:13.381
+You are the owner who signs off.
+
+53
+00:02:13.381 --> 00:02:15.994
+The crew builds a wall, checks that it stands,
+
+54
+00:02:15.994 --> 00:02:18.838
+and rebuilds it if it falls. In the morning,
+
+55
+00:02:18.838 --> 00:02:20.545
+you walk through the finished house.
+
+56
+00:02:20.545 --> 00:02:21.706
+The lights come on.
+
+57
+00:02:21.706 --> 00:02:24.098
+The taps run. It works.
+
+58
+00:02:24.098 --> 00:02:27.546
+For years, that was the whole test: does it stand?
+
+59
+00:02:27.546 --> 00:02:29.926
+The crew answers that one now.
+
+60
+00:02:29.926 --> 00:02:32.236
+So the owner's question changes.
+
+61
+00:02:32.236 --> 00:02:34.955
+What can't I see from in here?
+
+62
+00:02:35.405 --> 00:02:37.506
+The errors that matter have moved.
+
+63
+00:02:37.506 --> 00:02:40.502
+They used to be loud: the program crashed.
+
+64
+00:02:40.502 --> 00:02:43.625
+Now they're quiet: the program works perfectly,
+
+65
+00:02:43.625 --> 00:02:46.017
+and someone else can walk right in.
+
+66
+00:02:46.017 --> 00:02:48.002
+Above all, that means security
+
+67
+00:02:48.002 --> 00:02:50.115
+holes in code that runs.
+
+68
+00:02:50.115 --> 00:02:51.961
+In Veracode's tests this summer,
+
+69
+00:02:51.961 --> 00:02:54.945
+AI-written code was almost always valid.
+
+70
+00:02:54.945 --> 00:02:57.174
+But only about half of it passed the security
+
+71
+00:02:57.174 --> 00:03:00.250
+checks, about the same as a year earlier.
+
+72
+00:03:00.250 --> 00:03:03.351
+Everything else got better; that number didn't,
+
+73
+00:03:03.351 --> 00:03:05.905
+and bigger models barely moved it.
+
+74
+00:03:05.905 --> 00:03:09.342
+An early study, from 2022, found people using
+
+75
+00:03:09.342 --> 00:03:12.244
+an AI assistant wrote less secure code,
+
+76
+00:03:12.244 --> 00:03:14.833
+and felt more sure it was secure.
+
+77
+00:03:14.833 --> 00:03:16.460
+Why is it invisible?
+
+78
+00:03:16.923 --> 00:03:19.988
+Security is about what someone else can do.
+
+79
+00:03:19.988 --> 00:03:21.962
+You test the app as yourself.
+
+80
+00:03:21.962 --> 00:03:24.796
+An attacker tests it as everyone else.
+
+81
+00:03:25.245 --> 00:03:28.333
+In January, an app its founder said was built
+
+82
+00:03:28.333 --> 00:03:31.967
+entirely by AI left its database open to anyone.
+
+83
+00:03:31.967 --> 00:03:34.707
+The app's public key sat in the web page,
+
+84
+00:03:34.707 --> 00:03:35.880
+which is normal.
+
+85
+00:03:35.880 --> 00:03:38.121
+But a setting called row-level security
+
+86
+00:03:38.121 --> 00:03:41.662
+was switched off, so that key opened everything.
+
+87
+00:03:41.662 --> 00:03:44.077
+Anyone could read the data, and change it,
+
+88
+00:03:44.077 --> 00:03:46.851
+including emails and API tokens.
+
+89
+00:03:46.851 --> 00:03:49.452
+It was fixed within hours of the report.
+
+90
+00:03:49.452 --> 00:03:51.925
+In May, researchers scanned hundreds
+
+91
+00:03:51.925 --> 00:03:54.978
+of thousands of apps made with AI app builders,
+
+92
+00:03:54.978 --> 00:03:57.950
+and found thousands exposing private data.
+
+93
+00:03:57.950 --> 00:03:59.425
+Many platforms make a new
+
+94
+00:03:59.425 --> 00:04:01.305
+project public by default,
+
+95
+00:04:01.305 --> 00:04:03.871
+and the builders never knew to switch it.
+
+96
+00:04:03.871 --> 00:04:06.762
+Words you'll meet: row-level security,
+
+97
+00:04:06.762 --> 00:04:09.991
+public, anon key, exposed.
+
+98
+00:04:10.442 --> 00:04:12.950
+You ask: make sure it's secure.
+
+99
+00:04:12.950 --> 00:04:15.887
+And the agent answers: yes, it's secure.
+
+100
+00:04:15.887 --> 00:04:18.012
+That yes is just another output,
+
+101
+00:04:18.012 --> 00:04:20.415
+from the same crew that built the house.
+
+102
+00:04:20.415 --> 00:04:24.340
+A true yes and a false yes look exactly the same.
+
+103
+00:04:24.340 --> 00:04:26.406
+And self-reports can be wrong.
+
+104
+00:04:26.406 --> 00:04:30.470
+In 2025, an agent on Replit deleted a company's
+
+105
+00:04:30.470 --> 00:04:33.117
+production database during a code freeze,
+
+106
+00:04:33.117 --> 00:04:36.379
+then said it couldn't be restored. It could.
+
+107
+00:04:36.379 --> 00:04:38.573
+A study this summer caught agents passing
+
+108
+00:04:38.573 --> 00:04:41.626
+every test while the real thing barely worked.
+
+109
+00:04:41.626 --> 00:04:43.438
+This is the wall.
+
+110
+00:04:43.438 --> 00:04:45.748
+Past it, there are two doors.
+
+111
+00:04:45.748 --> 00:04:47.826
+Learn enough to check it yourself.
+
+112
+00:04:47.826 --> 00:04:50.961
+Or bring in someone who can:
+
+113
+00:04:50.961 --> 00:04:52.888
+an expert who reviews it.
+
+114
+00:04:52.888 --> 00:04:54.746
+Even the companies selling AI
+
+115
+00:04:54.746 --> 00:04:57.427
+security tools agree:
+
+116
+00:04:57.427 --> 00:05:00.436
+their tools don't replace a human review.
+
+117
+00:05:00.886 --> 00:05:03.521
+The house picture breaks in three places.
+
+118
+00:05:03.521 --> 00:05:06.830
+An inspector can walk every room in a house.
+
+119
+00:05:06.830 --> 00:05:09.257
+Nobody can walk every path through a program,
+
+120
+00:05:09.257 --> 00:05:12.229
+so inspected never means proven safe.
+
+121
+00:05:12.229 --> 00:05:13.308
+In software,
+
+122
+00:05:13.308 --> 00:05:15.990
+the crew can write its own inspection report,
+
+123
+00:05:15.990 --> 00:05:19.055
+and an AI inspector is another member of the crew,
+
+124
+00:05:19.055 --> 00:05:21.900
+not an independent licensed authority.
+
+125
+00:05:21.900 --> 00:05:24.245
+And burglars here try every door,
+
+126
+00:05:24.245 --> 00:05:27.078
+of every house, at once, automatically.
+
+127
+00:05:27.078 --> 00:05:29.239
+Now with AI too.
+
+128
+00:05:29.689 --> 00:05:33.369
+Houses sit on a street, and a street has a style.
+
+129
+00:05:33.369 --> 00:05:35.807
+Teams agree on naming, file layout,
+
+130
+00:05:35.807 --> 00:05:38.002
+and how errors are handled.
+
+131
+00:05:38.002 --> 00:05:40.939
+AI-written code can drift from those norms,
+
+132
+00:05:40.939 --> 00:05:43.191
+and that makes life harder for the people
+
+133
+00:05:43.191 --> 00:05:45.443
+who still write code by hand.
+
+134
+00:05:45.443 --> 00:05:47.614
+It also tends to write a fresh copy
+
+135
+00:05:47.614 --> 00:05:50.354
+instead of reusing the team's helper:
+
+136
+00:05:50.354 --> 00:05:53.652
+one large analysis found more copy-pasted code
+
+137
+00:05:53.652 --> 00:05:56.833
+and less reuse since AI took over.
+
+138
+00:05:56.833 --> 00:05:59.909
+On a project with a set library of modules,
+
+139
+00:05:59.909 --> 00:06:03.218
+AI may import different ones, and the hand-coders
+
+140
+00:06:03.218 --> 00:06:05.923
+end up maintaining parts they never chose.
+
+141
+00:06:05.923 --> 00:06:08.048
+So be mindful in mixed teams.
+
+142
+00:06:08.048 --> 00:06:11.020
+Many open-source projects now ask you to disclose
+
+143
+00:06:11.020 --> 00:06:13.888
+AI use and confirm a human read it.
+
+144
+00:06:13.888 --> 00:06:16.303
+Curl even ended its bug bounty
+
+145
+00:06:16.303 --> 00:06:18.568
+over AI junk reports.
+
+146
+00:06:19.019 --> 00:06:20.575
+So the norms now have to be
+
+147
+00:06:20.575 --> 00:06:22.457
+written down, for the crew.
+
+148
+00:06:22.920 --> 00:06:27.065
+Claude Code reads a file called Claude .md.
+
+149
+00:06:27.065 --> 00:06:31.221
+Many other tools read Agents .md, an open version
+
+150
+00:06:31.221 --> 00:06:34.054
+now looked after by the Linux Foundation.
+
+151
+00:06:34.054 --> 00:06:36.294
+One line in it might say:
+
+152
+00:06:36.294 --> 00:06:39.069
+use only libraries already in this project.
+
+153
+00:06:39.069 --> 00:06:41.298
+But it's a note, not a lock.
+
+154
+00:06:41.298 --> 00:06:43.133
+Long files get skimmed;
+
+155
+00:06:43.133 --> 00:06:46.221
+only checks and reviews actually enforce it.
+
+156
+00:06:46.221 --> 00:06:49.100
+So someone who knows the team's norms has to write
+
+157
+00:06:49.100 --> 00:06:52.016
+that file, and notice when it's ignored.
+
+158
+00:06:52.466 --> 00:06:54.846
+Every house has suppliers.
+
+159
+00:06:54.846 --> 00:06:57.389
+In code, they're dependencies:
+
+160
+00:06:57.389 --> 00:07:00.361
+other people's libraries your program pulls in.
+
+161
+00:07:00.361 --> 00:07:03.147
+Even when everyone on the team codes with AI,
+
+162
+00:07:03.147 --> 00:07:05.295
+someone who knows the libraries should decide
+
+163
+00:07:05.295 --> 00:07:07.362
+which ones the program uses.
+
+164
+00:07:07.362 --> 00:07:09.777
+Otherwise AI keeps adding more,
+
+165
+00:07:09.777 --> 00:07:11.855
+a new package for every want.
+
+166
+00:07:11.855 --> 00:07:13.678
+Each one is a stranger's code,
+
+167
+00:07:13.678 --> 00:07:15.431
+running with your keys.
+
+168
+00:07:15.431 --> 00:07:17.788
+One study this year found agents' package
+
+169
+00:07:17.788 --> 00:07:20.691
+choices made security worse on balance,
+
+170
+00:07:20.691 --> 00:07:22.664
+where people's made it better.
+
+171
+00:07:22.664 --> 00:07:25.834
+AI still sometimes names packages
+
+172
+00:07:25.834 --> 00:07:27.808
+that don't exist, and attackers
+
+173
+00:07:27.808 --> 00:07:30.606
+register the names it tends to invent.
+
+174
+00:07:30.606 --> 00:07:32.161
+Self-spreading worms have hit
+
+175
+00:07:32.161 --> 00:07:34.298
+the JavaScript package registry again
+
+176
+00:07:34.298 --> 00:07:36.724
+and again since last September;
+
+177
+00:07:36.724 --> 00:07:39.221
+this August's also hid files in a hijacked
+
+178
+00:07:39.221 --> 00:07:41.995
+project's own code, set to run the moment
+
+179
+00:07:41.995 --> 00:07:44.886
+someone opened it in an AI editor.
+
+180
+00:07:44.886 --> 00:07:46.407
+You'll meet it as five new lines
+
+181
+00:07:46.407 --> 00:07:49.381
+in your package list that nobody asked for.
+
+182
+00:07:49.830 --> 00:07:52.048
+Then comes move-in day.
+
+183
+00:07:52.048 --> 00:07:54.671
+Deploying is handing the keys to real tenants.
+
+184
+00:07:54.671 --> 00:07:56.726
+You ask: is it ready to deploy?
+
+185
+00:07:56.726 --> 00:07:58.387
+It's the same trap.
+
+186
+00:07:58.387 --> 00:08:00.627
+The agent runs the checks it knows about,
+
+187
+00:08:00.627 --> 00:08:02.392
+and reports success.
+
+188
+00:08:02.392 --> 00:08:05.480
+It can't vouch for what nobody specified.
+
+189
+00:08:05.480 --> 00:08:07.338
+Who may see which data.
+
+190
+00:08:07.338 --> 00:08:09.695
+What it costs under real load.
+
+191
+00:08:09.695 --> 00:08:11.866
+How to roll back when something breaks.
+
+192
+00:08:11.866 --> 00:08:13.909
+So before you ship, have someone
+
+193
+00:08:13.909 --> 00:08:15.883
+who can code verify it.
+
+194
+00:08:15.883 --> 00:08:18.541
+Platforms now add pre-launch scanners,
+
+195
+00:08:18.541 --> 00:08:20.945
+and that helps, but the leaks you just heard
+
+196
+00:08:20.945 --> 00:08:23.384
+about happened in those same months.
+
+197
+00:08:23.835 --> 00:08:25.646
+Where's the line today?
+
+198
+00:08:25.646 --> 00:08:27.039
+AI is strongest
+
+199
+00:08:27.039 --> 00:08:29.675
+where there's a machine-readable pass or fail,
+
+200
+00:08:29.675 --> 00:08:32.066
+as long as the check itself is sound.
+
+201
+00:08:32.066 --> 00:08:34.876
+It builds. The tests it was given pass.
+
+202
+00:08:34.876 --> 00:08:37.651
+The linter and type checker come back clean.
+
+203
+00:08:37.651 --> 00:08:39.822
+A scanner flags a known pattern.
+
+204
+00:08:39.822 --> 00:08:42.399
+The page loads. It's weak on the rest.
+
+205
+00:08:42.399 --> 00:08:44.570
+Whether the tests test the right thing.
+
+206
+00:08:44.570 --> 00:08:46.068
+Whether it's what you meant.
+
+207
+00:08:46.068 --> 00:08:48.193
+Who should be allowed to see what.
+
+208
+00:08:48.193 --> 00:08:50.619
+And threats newer than the model.
+
+209
+00:08:50.619 --> 00:08:52.686
+Checkers exist now.
+
+210
+00:08:52.686 --> 00:08:55.171
+Claude Code has a security review command
+
+211
+00:08:55.171 --> 00:08:56.854
+and a security plugin.
+
+212
+00:08:56.854 --> 00:09:00.128
+Anthropic, OpenAI, Google and GitHub all
+
+213
+00:09:00.128 --> 00:09:03.321
+have security agents in preview or beta,
+
+214
+00:09:03.321 --> 00:09:06.037
+and review agents can look at every change.
+
+215
+00:09:06.037 --> 00:09:08.522
+As of October 2026,
+
+216
+00:09:08.522 --> 00:09:10.577
+every one of them is meant to sit beside
+
+217
+00:09:10.577 --> 00:09:13.411
+a human reviewer, not replace one.
+
+218
+00:09:13.861 --> 00:09:15.707
+Which brings us to the rule.
+
+219
+00:09:15.707 --> 00:09:18.087
+You can only trust AI on what AI,
+
+220
+00:09:18.087 --> 00:09:20.177
+or you, can verify.
+
+221
+00:09:20.177 --> 00:09:25.158
+An old rule for trial lawyers, from 1975, says:
+
+222
+00:09:25.158 --> 00:09:28.432
+don't ask a question you don't know the answer to.
+
+223
+00:09:28.432 --> 00:09:30.452
+Adapted for AI:
+
+224
+00:09:30.452 --> 00:09:32.855
+don't rely on an answer you can't check.
+
+225
+00:09:32.855 --> 00:09:35.351
+Here's the whole lesson in one picture.
+
+226
+00:09:35.351 --> 00:09:37.603
+Crashes, builds, tests:
+
+227
+00:09:37.603 --> 00:09:39.658
+let the agent run those checks.
+
+228
+00:09:39.658 --> 00:09:43.722
+Security, team fit, dependencies, and deploys:
+
+229
+00:09:43.722 --> 00:09:47.555
+check them yourself, or get someone who can.
+
+230
+00:09:48.005 --> 00:09:49.758
+And the line keeps moving outward,
+
+231
+00:09:49.758 --> 00:09:50.838
+every few months.
+
+232
+00:09:50.838 --> 00:09:53.415
+Separate verifier agents, so the one doing
+
+233
+00:09:53.415 --> 00:09:55.424
+the work isn't the one grading it.
+
+234
+00:09:55.424 --> 00:09:57.281
+Security agents that try to confirm
+
+235
+00:09:57.281 --> 00:09:59.138
+a bug before they report it.
+
+236
+00:09:59.138 --> 00:10:02.981
+The checks AI can run on itself get better fast,
+
+237
+00:10:02.981 --> 00:10:04.676
+though the code it writes first time
+
+238
+00:10:04.676 --> 00:10:06.720
+hasn't got much safer.
+
+239
+00:10:06.720 --> 00:10:08.868
+Attackers get the same tools:
+
+240
+00:10:08.868 --> 00:10:12.165
+AI is finding old bugs humans missed.
+
+241
+00:10:12.165 --> 00:10:14.533
+Anthropic's own engineers expect Claude's
+
+242
+00:10:14.533 --> 00:10:16.727
+code to beat theirs within a year.
+
+243
+00:10:16.727 --> 00:10:18.051
+That's a forecast.
+
+244
+00:10:18.051 --> 00:10:20.001
+Will the human yes go away?
+
+245
+00:10:20.001 --> 00:10:21.244
+Nobody knows.
+
+246
+00:10:21.244 --> 00:10:23.556
+Today, every tool keeps it.
+
+247
+00:10:24.006 --> 00:10:25.817
+Safe to ignore for now:
+
+248
+00:10:25.817 --> 00:10:28.418
+which scanner is best, the security jargon,
+
+249
+00:10:28.418 --> 00:10:30.450
+and the exact percentages.
+
+250
+00:10:30.450 --> 00:10:32.609
+Keep this. One.
+
+251
+00:10:32.609 --> 00:10:34.525
+The agent fixes the crashes;
+
+252
+00:10:34.525 --> 00:10:36.638
+you own what it can't see.
+
+253
+00:10:36.638 --> 00:10:39.343
+Security, team fit, dependencies
+
+254
+00:10:39.343 --> 00:10:43.617
+and ready to ship are judgment calls. Two.
+
+255
+00:10:44.080 --> 00:10:48.016
+Yes, it's secure, is just another answer.
+
+256
+00:10:48.016 --> 00:10:50.814
+If you can't check it, learn enough to check it,
+
+257
+00:10:50.814 --> 00:10:54.564
+or get someone who can. Three.
+
+258
+00:10:54.564 --> 00:10:56.178
+Someone has to own the rules
+
+259
+00:10:56.178 --> 00:10:57.791
+and the supplier list.
+
+260
+00:10:57.791 --> 00:11:00.183
+Write the team's norms down for the agent,
+
+261
+00:11:00.183 --> 00:11:01.530
+and let a person who knows
+
+262
+00:11:01.530 --> 00:11:04.387
+the libraries approve every new dependency.

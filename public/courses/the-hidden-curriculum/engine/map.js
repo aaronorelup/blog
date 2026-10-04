@@ -94,7 +94,8 @@
    *  pin     — module id to mark "you are here"
    *  pinSize — the pin icon's size (default 44; the tip stays on the same spot at any size)
    *  pinColor — the pin's colour (default C.accent)
-   *  highlight — district id or module id, or an array of them: also lit (undimmed, gold outline) alongside focus (no glow)
+   *  highlight — district id or module id, or an array of them: also lit (undimmed, gold outline) alongside focus (no glow).
+   *              Or a map { id: 0..1 } / a function (districtId) => 0..1 to ease each district's outline and un-dimming in
    *  path    — 0..1 progress of the dashed garden path (default 1)
    *  chips   — show the module rows (default true); `modules: false` is the same switch
    *  lanterns      — 0..1 or (i) => 0..1: how lit the six lanterns are (default 1; 0 = bare ghost string)
@@ -116,8 +117,19 @@
   function draw(t, o = {}) {
     const reveal = (i) => (o.t0 == null ? 1 : K.stagger(t, o.t0, i, 0.22, 0.7));
     const focusD = o.focus ? (byId[o.focus] ? o.focus : (districtOf(o.focus) || {}).id) : null;
-    const hiD = (Array.isArray(o.highlight) ? o.highlight : o.highlight ? [o.highlight] : []).map((h) => (byId[h] ? h : (districtOf(h) || {}).id)).filter(Boolean);
-    const lit = (id) => (!focusD || id === focusD || hiD.includes(id) ? 1 : 1 - (o.dim ?? 0.7) * (o.focusK ?? 1));
+    // highlight: id | [ids] (on = 1), { id: 0..1 } or (districtId) => 0..1; hiK(id) is each district's 0..1 highlight
+    const toD = (h) => (byId[h] ? h : (districtOf(h) || {}).id);
+    let hiK;
+    if (typeof o.highlight === 'function') hiK = (id) => K.clamp(+o.highlight(id) || 0);
+    else if (o.highlight && typeof o.highlight === 'object' && !Array.isArray(o.highlight)) {
+      const hm = {};
+      for (const [h, v] of Object.entries(o.highlight)) { const d = toD(h); if (d) hm[d] = Math.max(hm[d] || 0, K.clamp(+v || 0)); }
+      hiK = (id) => hm[id] || 0;
+    } else {
+      const hiD = (Array.isArray(o.highlight) ? o.highlight : o.highlight ? [o.highlight] : []).map(toD).filter(Boolean);
+      hiK = (id) => (hiD.includes(id) ? 1 : 0);
+    }
+    const lit = (id) => (!focusD || id === focusD ? 1 : 1 - (o.dim ?? 0.7) * (o.focusK ?? 1) * (1 - hiK(id)));
     const g = K.ctx();
     const mods = o.chips !== false && o.modules !== false;
     const pg = K.clamp(o.pinGlowK ?? 1);
@@ -176,7 +188,7 @@
       K.layer(reveal(i + 1) * dk(d.id), () => { K.rr(d.x, d.y + rise, d.w, d.h, 24); g.fillStyle = C.page; g.fill(); });
       K.layer(a, () => {
         g.save(); g.translate(0, rise);
-        K.card(d.x, d.y, d.w, d.h, { glow: isFocus ? (o.focusK ?? 1) : 0, stroke: isFocus || hiD.includes(d.id) ? C.head : C.line2, fill: K.rgba(C.tile, 0.94) });
+        K.card(d.x, d.y, d.w, d.h, { glow: isFocus ? (o.focusK ?? 1) : 0, stroke: isFocus ? C.head : (hk => (hk >= 1 ? C.head : hk <= 0 ? C.line2 : K.mixColor(C.line2, C.head, hk)))(hiK(d.id)), fill: K.rgba(C.tile, 0.94) });
         K.title(d.name, d.x + 36, d.y + ROW.name, { size: TYPE.name });
         K.text(d.q, d.x + 36, d.y + ROW.q, { size: TYPE.q, color: C.soft, font: 'ui' });
         if (mods) d.mods.forEach((m, j) => {

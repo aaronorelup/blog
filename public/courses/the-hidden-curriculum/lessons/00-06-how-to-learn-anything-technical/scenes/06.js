@@ -1,211 +1,173 @@
-/* 00.06 scene 06: The confident witness.
-   The clerk steps up on a witness stand, confident and almost right. Two dated survey cards, then three claim cards
-   (the three ways it goes wrong), each checked by a dashed line against the rulebook (or the package index), which
-   answers with a cross / warning. At [[saw-nothing]] the stand sinks back to an ordinary clerk at its desk and the
-   check-lines brighten together. File small, bottom-left, tabs [2, 2, 2, 2, 0].
-   Opening continues 05's last frame: file at 'left', the clerk at its long desk with the four evidence cards. Over
-   ~1 s the cards clear, the file slides and shrinks to the corner, and the clerk moves left while its desk shrinks
-   into the thin sliver, which the witness stand then replaces at 'confident'. */
+/* 06 What that looks like: one real house whose public key opened every room (Moltbook), then a street of
+   AI-built apps, some left public by default (RedAccess). */
 SCENE('06', (t, S) => {
-  const C = K.C, g = K.ctx();
-  K.bg();
+  const C = K.C, P = M.palette;
+  K.bg({ glow: 0.32, glowX: 520, glowY: 600 });
 
-  const cue = (n, f) => S.cue(n, f);
-  const w = (word, nth, f) => S.find(word, nth, f);
-  const tWit = cue('witness', 0), tSur = cue('survey', 5.72), tOld = cue('shape-old', 19.49);
-  const tFlag = cue('shape-flag', 25.86), tPkg = cue('shape-package', 28.79), tShop = cue('fake-shop', 36.86);
-  const tSaw = cue('saw-nothing', 41.9);
+  // ---- beats (local seconds)
+  const tMolt = S.cue('moltbook', 0);
+  const tKey = S.find('public', 0, 7.2);
+  const tNormal = S.find('normal', 0, 9.85);
+  const tRls = S.cue('rls', 11.75);
+  const tOpened = S.find('opened', 0, 14.9);
+  const tAnyone = S.find('Anyone', 1, 16.4);
+  const tEmails = S.find('emails', 0, 19.3);
+  const tFixed = S.cue('fixed', 21.6);
+  const tRed = S.cue('redaccess', 24.2);
+  const tPublic = S.cue('public', 34.7);
+  const tWords = S.cue('words', 38.6);
 
-  // ---------------------------------------------------------------- the file: from 05's 'left' to the corner
-  const fk = K.io(t, 0.6, M.motion.move);
-  const F = M.lerpGeo('left', 'corner', fk);
-  const tChk0 = S.find('Checking', 0, 48.72);
-  // the Rulebook tab flashes as 'Checking matters more' lands: this scene's argument is that tab
-  M.drawFile(t, F, { tabs: [2, 2, 2, 2, 0], caseNo: false, flash: [0, 0, K.env(t, tChk0, Infinity, 0.6), 0, 0] });
-
-  // ---------------------------------------------------------------- the rulebook (referee), from 05's spot to the right
-  // 05 ended with the docs window faded out behind its study card, so the rulebook fades back in at its own spot
-  const rbIn = K.io(t, 0.7, 0.6);
-  const RB = { x: 1420, y: 200 + (1 - rbIn) * 18, w: 420, h: 320 };
-  const tCheck = w('Checking', 0, 48.72);
-  const bright = K.io(t, tCheck, 0.6);
-  if (rbIn > 0) M.rulebook(RB.x, RB.y, RB.w, RB.h, { alpha: rbIn, litK: 1, lines: 1, focus: bright > 0.5 });
-
-  // ---------------------------------------------------------------- the witness
-  const cx = 520, cy = 430, csz = 110;
-  const tConf = w('confident', 0, 2.32);
-  const up = K.io(t, tConf, 0.7) * (1 - K.io(t, tSaw, 0.7));
-  // travel: 05's spot (1745, 585, size 96, long desk) -> the witness spot; the desk shrinks into M.clerk's own sliver
-  const mk = K.io(t, 0.6, 1.0);   // one ease for the clerk and its desk, so the clerk rides the desk
-  const csz2 = K.lerp(96, csz, mk);
-  const SL = { x: cx - csz * 1.3, y: cy + csz * 0.62, w: csz * 2.6 };
-  const DK0 = { x: 945, y: 618, w: 895, h: 248 };
-  const dk = mk;
-  const deskX = K.lerp(DK0.x, SL.x, dk), deskW = K.lerp(DK0.w, SL.w, dk), deskY = K.lerp(DK0.y, SL.y, dk);
-  const ccx = deskX + deskW / 2 + K.lerp(1745 - (DK0.x + DK0.w / 2), 0, mk), ccy = deskY + K.lerp(585 - DK0.y, cy - SL.y, mk);
-  const deskA = 1 - K.io(t, 1.6, 0.25);
-  if (deskA > 0) K.layer(deskA, () => {
-    const x = K.lerp(DK0.x, SL.x, dk), y = K.lerp(DK0.y, SL.y, dk), ww = K.lerp(DK0.w, SL.w, dk), h = K.lerp(DK0.h, 0, dk);
-    const lip = 18, ins = 22 * (1 - dk), legY = y + h + lip - 2;
-    K.card(x + ww * K.lerp(0.06, 0.08, dk), legY, 14, 30, { r: 3, fill: M.palette.woodDark, shadow: false });
-    K.card(x + ww * K.lerp(0.94, 0.92, dk) - 14, legY, 14, 30, { r: 3, fill: M.palette.woodDark, shadow: false });
-    if (h > 1) {
-      g.save(); g.beginPath(); g.moveTo(x + ins, y); g.lineTo(x + ww - ins, y); g.lineTo(x + ww, y + h); g.lineTo(x, y + h); g.closePath();
-      g.fillStyle = '#211F2C'; g.fill(); g.strokeStyle = K.rgba(C.line2, 0.9); g.lineWidth = 1.5; g.stroke(); g.restore();
-      K.line(x + ins, y, x + ww - ins, y, { color: K.rgba(C.head, 0.6 * (1 - dk)), w: 2.5 });
-    }
-    K.card(x, y + h, ww, lip, { r: 6, fill: M.palette.wood, stroke: K.rgba(C.line2, 0.9), shadow: false });
-    K.line(x + 10, y + h + 2, x + ww - 10, y + h + 2, { color: K.rgba(C.head, 0.25), w: 2 });
+  // ---- the house: starts large (continuity with 05's hero house), shows the open database on "database ... open
+  //      to anyone", then closes and slides to the side position while the key is introduced
+  const L = M.layout.side;
+  const tDb = S.find('database', 0, 4.7), tOpen = S.find('open', 0, 5.3);
+  const mv = K.io(t, tDb + 1.95, 0.8);                       // ~6.65: move to the side
+  const HX = K.lerp(760, L.x, mv), HY = K.lerp(600, L.y, mv), HS = K.lerp(400, L.s, mv);
+  const cutA = K.io(t, tDb, 0.7) * (1 - K.io(t, tDb + 1.85, 0.7));
+  const hotA = K.io(t, tOpen, 0.5) * (1 - K.io(t, tDb + 1.8, 0.6));
+  const cut = Math.max(cutA, K.io(t, tRls + 0.5, 0.9) * (1 - K.io(t, tFixed + 0.3, 0.9)));
+  const hotOrder = { front: 0, living: 1, data: 2, back: 3 };
+  const hot = (key) => Math.max(key === 'data' ? hotA : 0,
+    K.io(t, tOpened + hotOrder[key] * 0.3, 0.6) * (1 - K.io(t, tFixed + 0.1, 0.6)));
+  const gm = M.house(t, HX, HY, HS, {
+    lights: 1,
+    cutaway: cut,
+    roomHot: hot,
+    backOpen: hotA,
+    leak: K.io(t, tOpen + 0.2, M.motion.leak, 'lin') * (1 - K.io(t, tDb + 1.8, 0.5)),
+    roomIcons: { data: K.io(t, tEmails, 0.01) > 0 ? 'envelope' : 'server' },
   });
-  // 05's four evidence cards on the desk (same layout as 05): they clear first
-  const evOut = 1 - K.io(t, 0.15, 0.45);
-  if (evOut > 0) {
-    const evW = (o) => {
-      const E = { error: 'the exact error', versions: 'your versions', command: 'the command', file: 'the file' }[o.kind];
-      return Math.max(o.w || 300, K.measure(o.text, M.type.mono) + 116, K.measure((o.eyebrow || E).toUpperCase(), { font: 'ui', weight: 600, size: 20, tracking: 4 }) + 116);
-    };
-    const ev = [
-      { kind: 'error', text: "NameError: name 'pirnt' is not defined" },
-      { kind: 'versions', text: 'Python 3.14', eyebrow: 'versions', w: 1 },
-      { kind: 'command', text: 'python app.py', w: 1 },
-      { kind: 'file', text: 'app.py', w: 1 },
-    ];
-    const deskCx = DK0.x + DK0.w / 2, gap = 10;
-    ev[0].x = deskCx - evW(ev[0]) / 2 - 85; ev[0].y = 630;
-    const row2 = evW(ev[1]) + evW(ev[2]) + evW(ev[3]) + 2 * gap;
-    ev[1].x = deskCx - row2 / 2; ev[1].y = 750;
-    ev[2].x = ev[1].x + evW(ev[1]) + gap; ev[2].y = 750;
-    ev[3].x = ev[2].x + evW(ev[2]) + gap; ev[3].y = 750;
-    K.layer(evOut, () => ev.forEach((e, i) => M.evidence(e.x, e.y + (1 - evOut) * 16, { kind: e.kind, text: e.text, eyebrow: e.eyebrow, w: e.w, rot: i % 2 ? 0.006 : -0.006, lit: i ? 1 : 0 })));
+  // phase A label on the right: what "open to anyone" means
+  // "built entirely by AI": the crew that built it hovers beside the house until it moves aside (the scene's one 'back' pop)
+  const crewOut = 1 - K.io(t, tDb + 1.8, 0.5);
+  if (crewOut > 0) M.crewGroup(t, 1380, 440, 3, 64, { k: K.io(t, S.find('built', 0, 2.8), 0.7), alpha: crewOut });
+  M.chip('database open to anyone', 1380, 630, 'unseen', { k: K.io(t, tOpen, 0.5, 'out'), alpha: 1 - K.io(t, tDb + 1.8, 0.5) });
+
+  // ---- Moltbook card above the house (rides left with it)
+  M.dated(K.lerp(470, 230, mv), 150, 580, 'Moltbook · Jan 2026', 'Built entirely by AI, its founder said. Database open to anyone.',
+    { kind: 'unseen', k: K.io(t, tMolt, 0.6, 'out') });
+
+  // ---- the right-hand evidence (browser page + database setting), cleared when the street arrives
+  const clearK = 1 - K.io(t, tRed - 0.45, 0.5);
+  const winK = K.io(t, Math.max(tKey, tDb + 2.6), 0.7, 'out') * clearK;
+  const D = gm.door;
+  const keyX = D.x, keyY = D.y - D.h * 0.05;
+  // the key, pinned on the front door (gold: normal, meant to be seen); it glows when it opens everything
+  const keyK = K.io(t, tKey, 0.5, 'out');
+  if (keyK > 0) {
+    const glowK = K.io(t, tRls + 0.3, 0.6) * (1 - K.io(t, tFixed, 0.6));
+    K.layer(keyK * (1 - cut), () => {
+      if (glowK > 0) K.glow(keyX, keyY, 70, C.head, 0.5 * glowK);
+      K.icon('key', keyX, keyY, 46, { color: K.mixColor(P.machine, '#FFE7B0', glowK * 0.6), w: 3.5 });
+    });
   }
-  const sliverK = mk >= 1 ? K.io(t, 1.55, 0.3) * (1 - K.io(t, tConf, 0.5)) + K.io(t, tSaw + 0.3, 0.6) : 0;
-  M.clerk(t, ccx, ccy, csz2, { stand: up, confident: up, desk: sliverK, glow: 0.8 });
-  const lift = up * csz * 0.55;
+  const WX = 820, WY = 236, WW = 700, WH = 210;
+  if (winK > 0) {
+    K.layer(winK, () => {
+      const tether = 1 - cut;
+      const g = K.ctx(); g.save(); g.translate((1 - winK) * -60, 0);
+      // a thin dashed tether from the key to the page
+      K.path([[keyX + 26, keyY - 10], [WX - 60, keyY - 90], [WX + 2, WY + WH - 40]], { color: C.line2, w: 2, dash: [6, 8], head: false, k: winK, alpha: tether });
+      const r = K.win(WX, WY, WW, WH, { kind: 'browser', title: 'page source', titleSize: 26, url: 'app.example', urlLock: false });
+      K.text('anon key: eyJhbGciOi…', r.x + 30, r.y + 62, { font: 'mono', weight: 600, size: 30, color: C.head });
+      g.restore();
+    });
+  }
+  M.chip('normal: meant to be public', WX + WW / 2, WY + WH + 50, 'machine', { k: K.io(t, tNormal, 0.5, 'out'), alpha: clearK });
 
-  // speech card "Here's the fix." with its 'almost right' warning
-  const spK = K.io(t, w('witness', 0, 2.88), 0.5);
-  const spDim = 1 - 0.6 * K.io(t, tSaw, 0.7);
-  const tailK = 1 - K.io(t, tSaw, 0.5);
-  if (spK > 0) K.layer(spK * spDim, () => {
-    const x = 300, y = 140 + (1 - spK) * 16, W = 400, H = 124;
-    // tail toward the clerk (fades as the stand sinks)
-    if (tailK > 0) { g.save(); g.globalAlpha *= tailK; g.fillStyle = '#262333'; g.strokeStyle = K.rgba(C.head, 0.55); g.lineWidth = 1.5;
-    g.beginPath(); g.moveTo(cx - 26, y + H - 2); g.lineTo(cx - 4, cy - csz / 2 - lift - 14); g.lineTo(cx + 14, y + H - 2); g.closePath(); g.fill(); g.stroke(); g.restore(); }
-    K.card(x, y, W, H, { r: 20, fill: '#262333', stroke: K.rgba(C.head, 0.55) });
-    if (tailK > 0) { g.save(); g.globalAlpha *= tailK; g.fillStyle = '#262333'; g.fillRect(cx - 24, y + H - 4, 36, 6); g.restore(); }
-    K.text("Here's the fix.", x + 32, y + 56, { font: 'read', italic: true, size: 40, color: C.strong });
-    K.text('almost right', x + 32, y + 100, { font: 'ui', weight: 600, size: 28, color: K.rgba(C.accent, 0.95 * K.io(t, w('almost', 0, 4.31), 0.5)) });
+  // database setting card (separate from the page)
+  const dbK = K.io(t, tRls, 0.6, 'out') * clearK;
+  if (dbK > 0) {
+    K.layer(dbK, () => {
+      const x = WX, y = 640, w = WW, h = 130;
+      K.card(x, y, w, h, { r: 18, stroke: K.mixColor(C.line2, P.unseen, 0.6) });
+      K.eyebrow('database settings', x + 30, y + 44, { size: 22, color: C.head });
+      K.text('row-level security: off', x + 30, y + 98, { font: 'mono', weight: 600, size: 30, color: P.unseen });
+      K.icon('warning', x + w - 50, y + h / 2, 44, { color: P.unseen, w: 3 });
+    });
+  }
+  // "anyone: read + change" after the key opens everything
+  M.chip('anyone could read and change it', WX + WW / 2, 830, 'unseen', { k: K.io(t, tAnyone, 0.5, 'out'), alpha: clearK });
+
+  // ---- under the house: what was exposed, then fixed
+  const emK = K.io(t, tEmails, 0.5, 'out') * (1 - K.io(t, tFixed - 0.2, 0.4));
+  if (emK > 0) M.label('emails · API tokens', L.x, 800, 'unseen', { alpha: emK });
+  M.chip('fixed within hours of the report', L.x, 800, 'machine', { k: K.io(t, tFixed, 0.5, 'out') });
+
+  // ---- the street: a 3×3 block of AI-built apps (RedAccess scan); the exposed ones light up in a cascade on
+  //      "found thousands exposing": terracotta halo, open door, leak trail
+  M.dated(1000, 150, 800, 'RedAccess · May 2026', '~5,000 of ~380,000 scanned apps exposing data',
+    { kind: 'unseen', k: K.io(t, tRed + 0.15, 0.6, 'out') });
+  const tThousands = S.find('thousands', 1, 30.2);
+  const openSet = { 1: 0, 3: 1, 8: 2, 5: 3 };              // 4 of the 9 exposed, cascade order
+  const rows = [430, 590, 750];
+  const GX = 1500, GAP = 200, SS = 140;
+  const exK = (idx) => openSet[idx] == null ? 0 : K.io(t, tThousands + openSet[idx] * 0.25, 0.6, 'out');
+  rows.forEach((ry, r) => {
+    const rowK = K.io(t, tRed + 0.4 + r * 0.35, 0.8, 'out');
+    if (rowK <= 0) return;
+    // halos behind the exposed houses
+    for (let c = 0; c < 3; c++) {
+      const e = exK(r * 3 + c);
+      if (e > 0) { const hg = M.geo(GX + (c - 1) * GAP, ry, SS); K.glow((hg.body.x0 + hg.body.x1) / 2, (hg.bounds.y0 + hg.bounds.y1) / 2, SS * 0.75, C.accent, 0.42 * e); }
+    }
+    const geos = M.street(t, GX, ry, 3, SS, GAP, {
+      k: rowK,
+      each: (c) => {
+        const idx = r * 3 + c, e = exK(idx);
+        return {
+          lights: (i) => ((r * 3 + c + i) % 3 === 0 ? 0.25 : 0.9),
+          tint: e > 0 ? K.mixColor(P.outline, P.unseen, e) : undefined,
+          leak: openSet[idx] == null ? 0 : K.io(t, tThousands + openSet[idx] * 0.25 + 0.2, M.motion.leak, 'lin'),
+        };
+      },
+    });
+    // doors swing open (terracotta) on the exposed ones
+    geos.forEach((hg, c) => {
+      const ok = exK(r * 3 + c);
+      if (ok <= 0) return;
+      const d = hg.door, g = K.ctx();
+      K.glow(d.x, d.y, 40, C.accent, 0.5 * ok);
+      g.save();
+      g.fillStyle = '#0B0C16'; g.fillRect(d.x - d.w / 2, d.y - d.h / 2, d.w, d.h);       // the opening
+      const sw = d.w * 0.9 * Math.sin(ok * 1.2);                                        // door leaf swings out left
+      g.beginPath();
+      g.moveTo(d.x - d.w / 2, d.y - d.h / 2); g.lineTo(d.x - d.w / 2 - sw, d.y - d.h / 2 - sw * 0.2);
+      g.lineTo(d.x - d.w / 2 - sw, d.y + d.h / 2 + sw * 0.1); g.lineTo(d.x - d.w / 2, d.y + d.h / 2); g.closePath();
+      g.fillStyle = K.mixColor(P.wood, C.accent, 0.45); g.fill();
+      g.strokeStyle = P.unseen; g.lineWidth = 2; g.stroke();
+      g.restore();
+    });
   });
 
-  // under the clerk: 'a confident witness' -> 'saw nothing · predicts'
-  const labA = K.io(t, w('witness', 0, 2.88), 0.5) * (1 - K.io(t, tSaw, 0.5));
-  const labB = K.io(t, w('saw', 0, 44.4), 0.5);
-  if (labA > 0) K.text('a confident witness', cx, 590, { font: 'ui', weight: 600, size: 28, color: K.rgba(C.head, labA), align: 'center' });
-  if (labB > 0) K.text('saw nothing · predicts', cx, 590, { font: 'ui', weight: 600, size: 28, color: K.rgba(C.head, labB), align: 'center' });
+  // ---- the default toggle: sits on "Public"
+  const tgK = K.io(t, tPublic, 0.6, 'out');
+  if (tgK > 0) {
+    K.layer(tgK, () => {
+      const cx = 1000, cy = 560, w = 300, h = 64, x0 = cx - w / 2, y0 = cy - h / 2;
+      K.eyebrow('new project default', cx, y0 - 22, { size: 22, align: 'center', color: C.head });
+      K.card(x0, y0, w, h, { r: h / 2, fill: C.tile, stroke: C.line2, shadow: false });
+      const g = K.ctx();
+      g.save(); K.rr(x0 + 5, y0 + 5, w / 2 - 5, h - 10, (h - 10) / 2); g.fillStyle = K.rgba(C.accent, 0.28); g.fill();
+      g.strokeStyle = C.accent; g.lineWidth = 2; g.stroke(); g.restore();
+      K.text('Public', x0 + w / 4 + 2, cy + 10, { font: 'ui', weight: 600, size: 28, color: C.accent, align: 'center' });
+      K.text('Private', x0 + w * 3 / 4, cy + 10, { font: 'ui', weight: 600, size: 28, color: C.soft, align: 'center' });
+    });
+  }
 
-  // ---------------------------------------------------------------- survey (middle column, gone before the claims)
-  const colX = 720, colW = 620;
-  const surOut = 1 - K.io(t, tOld, 0.5);
-  const chipK = K.io(t, w('Stack', 0, 5.94), 0.5) * surOut;
-  if (chipK > 0) M.dated('Stack Overflow · 2025 survey', colX + colW / 2, 180, { alpha: chipK });
-  const stat = (y, k, big, bigK, l1, l2, l2K) => {
+  // ---- words you'll meet
+  const words = [['row-level security', 'unseen', S.find('row-level', 1, tWords + 1)], ['public', 'unseen', S.find('public', 2, tWords + 2.2)],
+    ['anon key', 'machine', S.find('anon', 0, tWords + 2.9)], ['exposed', 'unseen', S.find('exposed', 0, tWords + 3.6)]];
+  const ws = words.map(([s]) => K.measure(s, { font: 'mono', weight: 600, size: 28 }) + 28 * 1.6);
+  const gap = 28, total = ws.reduce((a, b) => a + b, 0) + gap * (ws.length - 1);
+  let px = 1300 - total / 2;
+  words.forEach(([s, kind, at], i) => {
+    const k = K.io(t, Math.max(at, tWords), 0.5, 'out');
+    const cx = px + ws[i] / 2; px += ws[i] + gap;
     if (k <= 0) return;
-    K.layer(k * surOut, () => {
-      const yy = y + (1 - k) * 20, H = 150;
-      K.card(colX, yy, colW, H, { r: 20, fill: '#242130', stroke: K.rgba(C.head, 0.35) });
-      if (bigK > 0) K.text(big, colX + 100, yy + H / 2 + 24, { font: 'head', weight: 700, size: 66, color: K.rgba(C.head, bigK), align: 'center' });
-      K.text(l1, colX + 200, yy + H / 2 - 8, { font: 'ui', weight: 600, size: 30, color: C.strong });
-      if (l2K > 0) K.text(l2, colX + 200, yy + H / 2 + 36, { font: 'ui', weight: 600, size: 30, color: K.rgba(C.soft, l2K) });
-    });
-  };
-  stat(240, K.io(t, w('almost-right', 0, 8.81), M.motion.land), '2/3', K.io(t, w('two-thirds', 0, 12.91), 0.5),
-    'top frustration:', "'almost right' answers", K.io(t, w('almost-right', 0, 8.81) + 0.3, 0.5));
-  stat(410, K.io(t, w('Only', 0, 14.29), M.motion.land), '~3%', K.io(t, w('three', 0, 15.02), 0.5),
-    'highly trust AI answers', 'yet most use them', K.io(t, w('yet', 0, 17.96) - 0.1, 0.4));
-
-  // ---------------------------------------------------------------- the three claims + check-lines
-  const lineAlpha = 0.75 + 0.25 * bright, lineW = 3 + 1.5 * bright;
-  const chk = (x1, y1, x2, y2, a, d, bend) => {
-    const k = K.io(t, a, d, 'io');
-    if (k <= 0) return;
-    if (bright > 0) K.layer(bright, () => K.arrow(x1, y1, x2, y2, { k, bend, color: K.rgba(C.head, 0.25), w: 12, head: false }));
-    M.clerkLine(x1, y1, x2, y2, k, { bend, alpha: lineAlpha, w: lineW });
-  };
-
-  // claim card: M.claim's layout with a 28 px label (M.claim's 26 px Karla reads small beside the 28 px mono line)
-  const claim = (x, y, o) => {
-    const h = 128;
-    K.layer(o.alpha, () => {
-      K.card(x, y, o.w, h, { r: 18, fill: '#242130', stroke: K.mixColor(C.line2, C.accent, o.vk * 0.7) });
-      K.text(o.text, x + 28, y + 52, { font: 'mono', weight: 600, size: 28, color: o.textColor || C.strong });
-      K.text(o.label, x + 28, y + 100, { font: 'ui', weight: 600, size: 28, color: C.soft });
-      M.cross(x + o.w - 46, y + h / 2, 52, o.vk, { disc: true });
-    });
-  };
-
-  // claim 1: renamed or retired
-  const c1y = 170, c1K = K.io(t, w('Functions', 0, 21.25), M.motion.land);
-  const c1L = w('models', 0, 23.51), c1V = w('code', 0, 24.9);
-  if (c1K > 0) claim(colX, c1y + (1 - c1K) * 18, { w: colW, text: 'DeprecationWarning', textColor: C.accent, label: 'renamed or retired', vk: K.io(t, c1V, 0.5), alpha: c1K });
-  chk(colX + colW, c1y + 64, RB.x, 300, c1L, 1.2, -20);
-
-  // claim 2: flags that don't exist
-  const c2y = 318, c2K = K.io(t, w('Command', 0, 25.86), M.motion.land);
-  const c2L = w('sound', 0, 26.89), c2V = w('exist.', 0, 27.86);
-  if (c2K > 0) claim(colX, c2y + (1 - c2K) * 18, { w: colW, text: '--turbo', label: 'unknown flag', vk: K.io(t, c2V, 0.5), alpha: c2K });
-  chk(colX + colW, c2y + 64, RB.x, 430, c2L, 0.9, 10);
-
-  // claim 3: packages that don't exist. One tall card holds the command AND pip's output, like rows 1 and 2.
-  const c3y = 466, c3H = 186, c3K = K.io(t, w('packages', 0, 29.05), M.motion.land);
-  const c3V = K.io(t, w('register', 0, 37.52), 0.5);
-  const errAt = w('exist', 1, 30.1), okAt = w('install', 0, 39.17);
-  if (c3K > 0) K.layer(c3K, () => {
-    const y = c3y + (1 - c3K) * 18;
-    K.card(colX, y, colW, c3H, { r: 18, fill: '#242130', stroke: K.mixColor(C.line2, C.accent, c3V * 0.7) });
-    K.text('pip install fastjson-utils', colX + 28, y + 52, { font: 'mono', weight: 600, size: 28, color: C.strong });
-    if (c3V > 0) K.icon('warning', colX + colW - 46, y + 42, 46, { color: C.accent, alpha: c3V });
-    // divider between the command and its output
-    const dk = K.io(t, errAt, 0.4);
-    if (dk > 0) K.line(colX + 28, y + 76, colX + 28 + (colW - 56) * dk, y + 76, { color: K.rgba(C.line2, 0.9), w: 1.5 });
-    const errS = 'ERROR: No matching distribution', okS = 'Successfully installed fastjson-utils';
-    const errOut = 1 - K.io(t, okAt - 0.35, 0.3);
-    if (t > errAt && errOut > 0) K.text(K.typed(errS, t, errAt, 40), colX + 24, y + 116, { font: 'mono', weight: 600, size: 26, color: K.rgba(C.soft, errOut) });
-    if (t > okAt) K.text(K.typed(okS, t, okAt, 40), colX + 24, y + 116, { font: 'mono', weight: 600, size: 26, color: C.strong });
-    const atkK = K.io(t, w('their', 0, 40.31), 0.5);
-    if (atkK > 0) K.text("installs fine, attacker's code", colX + 28, y + 162, { font: 'ui', weight: 600, size: 28, color: K.rgba(C.accent, atkK) });
+    K.layer(k, () => K.at(0, (1 - k) * 14, 1, 0, () => K.pill(s, cx, 880, {
+      size: 28, font: 'mono', color: kind === 'machine' ? C.head : C.accent,
+      stroke: kind === 'machine' ? K.mixColor(C.line2, C.head, 0.5) : K.mixColor(C.line2, C.accent, 0.6),
+    })));
   });
-
-  // dated chip for the package study: directly under the pip card, left-aligned with it
-  const stK = K.io(t, w('study', 0, 32.44), 0.5);
-  const stS = '~5% of answers · 2026 preprint';
-  if (stK > 0) M.dated(stS, colX + (K.measure(stS, { font: 'mono', size: 26, weight: 600 }) + 36) / 2, c3y + c3H + 44, { alpha: stK });
-
-  // the package index slot under the rulebook: empty outline -> attacker's shop front
-  const PX = 1420, PY = 570, PW = 420, PH = 196;
-  const slotK = K.io(t, errAt, 0.5);
-  if (slotK > 0) K.layer(slotK, () => {
-    K.card(PX, PY, PW, PH, { r: 18, fill: '#1F1D2A', stroke: K.rgba(C.line2, 0.9), shadow: false });
-    K.icon('server', PX + 38, PY + 36, 30, { color: C.soft });
-    K.text('package index', PX + 64, PY + 46, { font: 'ui', weight: 600, size: 28, color: C.soft });
-    const shop = K.io(t, w('register', 0, 37.52), 0.6);
-    const ix = PX + 26, iy = PY + 72, iw = PW - 52, ih = 72;
-    // empty slot: dashed outline
-    if (shop < 1) K.layer(1 - shop, () => {
-      g.save(); g.setLineDash([10, 9]); g.strokeStyle = K.rgba(C.soft, 0.6); g.lineWidth = 2; K.rr(ix, iy, iw, ih, 12); g.stroke(); g.restore();
-      K.text('no such package', ix + iw / 2, iy + ih / 2 + 10, { font: 'ui', weight: 600, size: 28, color: K.rgba(C.soft, 0.75), align: 'center' });
-    });
-    if (shop > 0) K.layer(shop, () => {
-      K.card(ix, iy, iw, ih, { r: 12, fill: '#2B2230', stroke: K.rgba(C.accent, 0.8), shadow: false });
-      K.icon('warning', ix + 36, iy + ih / 2, 36, { color: C.accent });
-      K.text('fastjson-utils', ix + 70, iy + ih / 2 + 10, { font: 'mono', weight: 600, size: 28, color: C.strong });
-    });
-    const rk2 = K.io(t, w('names', 0, 38.21), 0.5);
-    if (rk2 > 0) K.text('attackers register the name', PX + 26, PY + PH - 20, { font: 'ui', weight: 600, size: 28, color: K.rgba(C.accent, rk2) });
-  });
-  // claim 3's check-line goes to the package index
-  chk(colX + colW, c3y + 42, PX, PY + 108, errAt + 0.2, 0.9, -60);
-
-  // ---------------------------------------------------------------- the lesson of it
-  const pK = K.io(t, tCheck + 0.2, 0.5);
-  if (pK > 0) K.pill('check against the rulebook', 1615, 840, { size: 30, color: C.head, fill: '#1C1B2A', stroke: K.rgba(C.head, 0.6), alpha: pK });
 });

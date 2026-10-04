@@ -1,557 +1,740 @@
-/* 00.06 How to learn anything technical: shared drawing (window.M)
-   The lesson's one recurring object is THE CASE FILE: a night-manila folder with a cream case sheet inside and
-   FIVE TABS along its top edge (Clue, Search, Rulebook, Briefing, Experiment). It never gets redrawn from scratch:
-   scenes move / scale it with M.geo() and light one tab at a time. Around it:
-     YOU      (cream person, solid cream lines = your work, your signature),
-     the CLERK (00.05's sparkle tile in gold glow, dashed gold lines = its legwork), optionally at a low DESK or on a
-              witness STAND,
-     the RULEBOOK (official docs window with version pills and a slim /llms.txt edition),
-     EVIDENCE cards (error / versions / command / file), CLAIM cards with a verdict, ticks / crosses, the CLOSED stamp.
-   Only functions and constants: no SCENE() calls. Pure functions of their arguments (no Date.now, no Math.random,
-   no state between frames). K.ctx() is read on every call: the runtime swaps canvases. */
+/* 00.06 Trust what you can verify: shared drawing (window.M)
+   The lesson's one recurring object is THE HOUSE, with its CREW and its OWNER:
+     the HOUSE   = the software. A small two-storey tea house (curved eaves, wood corner posts, stepping stones),
+                   built in 01 and never off screen. It can be under construction (brick courses), lit, cut away
+                   into four rooms (front door = lock, window = globe, data = server, back door = key), leaking,
+                   given an off-style wing, split into a gold "machine checks" half and a terracotta "you check" half,
+                   and repeated along a street.
+     the CREW    = AI: glowing gold sparkle sprites with a tiny bob.
+     the OWNER   = you: a gold figure (meeple) who signs off. Other figures share the same body: inspector (shield),
+                   burglar (quiet colour, key), tenants, hand-coders, the signer (code).
+     plus repeated furniture: chat bubbles, dated cards and badges, verdict chips, supplier vans, the checklist,
+     the plaque/notice, the owner's view cone and the leak trail.
+   Colour law (whole lesson): GOLD (C.head) = what a machine can check / the crew / the owner.
+                              TERRACOTTA (C.accent) = what nobody sees: holes, leaks, drift, unknowns.
+                              No status green or red. Pink only via K.petals on 01 and 16.
+   Only functions and constants: no SCENE() calls. Pure functions of their arguments (no Date.now, no
+   Math.random, no state between frames). K.ctx() is read on every call: the runtime swaps canvases. */
 (function () {
   'use strict';
   const K = window.K, C = K.C;
   const G = () => K.ctx();
   const pick = (v, d) => (v == null ? d : v);
   const c01 = (v) => K.clamp(+v || 0);
-  // hex-in, hex-out colour mix (K.mixColor returns rgb(), which cannot be mixed again)
-  const hx = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
-  const mix = (h1, h2, k) => { const a = hx(h1), b = hx(h2), q = K.clamp(k); return '#' + [0, 1, 2].map((i) => Math.round(a[i] + (b[i] - a[i]) * q).toString(16).padStart(2, '0')).join(''); };
 
   // ---------------------------------------------------------------- palette, type, motion
-  // One meaning per colour, the whole lesson long:
-  //   gold (C.head)        = lit tab, the clerk and its legwork (dashed gold lines), the lantern
-  //   cream (C.strong)     = YOU and your work (solid cream lines, your tick, your signature)
-  //   terracotta (C.accent)= warnings, crosses, the CLOSED stamp, attackers. Never decoration.
-  //   manila (folder)      = the case file; quiet greys (line2/soft) = unworked tabs, paraphrases, old/dim things
-  //   pink                 = K.petals on 01 and 08 only.
   const palette = {
-    folder: '#2C2633', folderLow: '#231F2C', tabOff: '#2A2532', folderEdge: '#8C6E45', sheet: '#3A3340', sheetLine: K.rgba(C.paper, 0.10),
-    clerk: C.head, you: C.strong, warn: C.accent, stamp: C.accent, off: C.line2, offIcon: '#A89D8B', done: K.rgba(C.head, 0.55),
-    wood: '#5B3A26', woodDark: '#3F2918', beam: '#4E3120',
-    youDash: null, clerkDash: [12, 11],
+    machine: C.head,          // checkable: crew, check marks, gold half, ticked rows
+    unseen: C.accent,         // not visible / not checked: holes, leaks, drift, open rows
+    owner: C.head,
+    crew: C.head,
+    inspector: C.strong,
+    burglar: C.quiet,
+    tenant: C.soft,
+    coder: C.body,
+    outline: '#8A7E8E',       // house line work (warm grey, readable on the night ground)
+    wall: '#26232F',          // plaster
+    wallLit: '#2E2933',
+    roof: '#1C1A28',
+    roofEdge: '#5E5468',
+    wood: '#6B4630',          // posts and beams
+    woodHi: '#8A5E40',
+    brick: '#5A3E33',
+    brickLine: '#7A5646',
+    glass: '#1B1C2C',
+    lamp: '#F6CF84',          // lit window
+    room: C.tile,
+    ground: '#3A3446',
   };
   const type = {
-    label: { font: 'ui', weight: 600, size: 26 },
-    read: { font: 'ui', weight: 600, size: 30 },
-    mono: { font: 'mono', weight: 600, size: 26 },
-    body: { font: 'read', size: 30 },
+    label: { font: 'ui', weight: 600, size: 26 },    // labels under things, chips, tags (minimum)
+    read: { font: 'ui', weight: 600, size: 30 },     // anything to be read
+    mono: { font: 'mono', weight: 600, size: 26 },   // literals (package.json, row-level security: off)
+    body: { font: 'read', size: 30 },                // Georgia lines
   };
-  const motion = { move: 0.7, light: 0.45, land: 0.6, bob: { speed: 1.5, amp: 3 } };
-
-  // ---------------------------------------------------------------- tabs
-  const TABS = [
-    { id: 'clue', label: 'Clue', icon: 'warning' },
-    { id: 'search', label: 'Search', icon: 'globe' },
-    { id: 'rulebook', label: 'Rulebook', icon: 'book' },
-    { id: 'briefing', label: 'Briefing', icon: 'chat' },
-    { id: 'experiment', label: 'Experiment', icon: 'check' },
-  ];
-  const TAB_INDEX = { clue: 0, search: 1, rulebook: 2, briefing: 3, experiment: 4 };
-  const idx = (i) => (typeof i === 'string' ? TAB_INDEX[i] : i);
-
-  // ---------------------------------------------------------------- file geometry
-  const BODY = { w: 800, h: 530 };
-  const TAB = { w: 154, h: 92, gap: 6, overlap: 10 };
-  // named positions from the storyboard (cx, cy = centre of the folder BODY; tabs sit above it)
-  const POS = {
-    home: { cx: 960, cy: 595, s: 1 },        // 03: x 560–1360, y 330–860, tabs y ~256–330
-    title: { cx: 1440, cy: 560, s: 0.6 },    // 01: x 1200–1680
-    room: { cx: 530, cy: 610, s: 0.82 },     // 02: centre-left case room, x 200–860
-    side: { cx: 340, cy: 470, s: 0.55 },     // 04: top-left x 120–560
-    left: { cx: 530, cy: 610, s: 0.96 },     // 05: x 146–914 (in-tab labels still 26 px)
-    corner: { cx: 300, cy: 800, s: 0.45 },   // 06: bottom-left x 120–480
-    bench: { cx: 700, cy: 595, s: 1 },       // 07: x 300–1100
-    shelf: { cx: 1490, cy: 600, s: 0.5 },    // 08: under the lantern
+  const motion = {
+    move: 0.7,                       // structural moves
+    pop: 0.5,                        // things appearing
+    bob: { speed: 1.7, amp: 4 },     // crew idle bob (px at s 60)
+    sway: { speed: 0.9, amp: 1.5 },  // people idle sway (px)
+    leak: 1.2,                       // leak trail draws over 1.2 s
+  };
+  // where things sit (from storyboard.md; text stays in x 80–1840, y 130–930)
+  const layout = {
+    safe: { x0: 80, x1: 1840, y0: 130, y1: 930 },
+    hero: { x: 960, y: 600, s: 420 },      // 04: the mental-model house
+    left: { x: 700, y: 600, s: 420 },      // 05, 12: house left, cards right
+    side: { x: 520, y: 600, s: 300 },      // 06, 11: house left third
+    small: { x: 420, y: 600, s: 300 },     // 07
+    title: { x: 960, y: 690, s: 260 },     // 01 title card
+    plaque: { x: 960, y: 680, s: 300 },    // 14
+    rightCol: { x0: 1180, x1: 1800 },      // data cards beside a left house
   };
 
-  /** geometry of the file at (cx, cy) scale s, in SCREEN coords. Pass a POS name or {cx, cy, s}.
-   *  returns {cx, cy, s, w, h, x0, y0, x1, y1, tabTop, tabs:[{x, y, w, h, cx, cy, top, label, icon, id}],
-   *           sheet:{x, y, w, h}, sign:{x0, x1, y}, stamp:{x, y}, inner:{x, y, w, h}} */
-  function geo(a, b, c) {
-    let cx, cy, s;
-    if (typeof a === 'string') ({ cx, cy, s } = POS[a]);
-    else if (typeof a === 'object') ({ cx, cy, s } = a);
-    else { cx = a; cy = b; s = pick(c, 1); }
-    const w = BODY.w * s, h = BODY.h * s, x0 = cx - w / 2, y0 = cy - h / 2;
-    const tw = TAB.w * s, th = TAB.h * s, gap = TAB.gap * s, row = 5 * tw + 4 * gap;
-    const tabTop = y0 - th + TAB.overlap * s;
-    const tabs = TABS.map((T, i) => {
-      const x = cx - row / 2 + i * (tw + gap);
-      return { ...T, i, x, y: tabTop, w: tw, h: th, cx: x + tw / 2, cy: tabTop + (th - TAB.overlap * s) / 2, top: tabTop };
-    });
-    const sheet = { x: x0 + 34 * s, y: y0 + 30 * s, w: w - 68 * s, h: h - 58 * s };
+  // ---------------------------------------------------------------- the house: geometry
+  /** geometry of the house centred at (x, y) with size s (body ≈ 0.76 s wide; whole house incl. eaves ≈ 1.1 s
+   *  wide and 0.8 s tall; y is the middle of the walls, the ground line is at y + 0.36 s).
+   *  Returns {x, y, s, body, ground, eave, ridgeY, door, windows[3], rooms{living,data,front,back},
+   *  backDoor{x, y}, wing{x0,x1,y0,y1}, bounds{x0,x1,y0,y1}} in canvas coords. */
+  function geo(x, y, s) {
+    const u = (v) => v * s;
+    const body = { x0: x - u(0.38), x1: x + u(0.38), y0: y - u(0.1), y1: y + u(0.36) };
+    const mid = y + u(0.13);
+    const pad = u(0.03), gap = u(0.02);
+    const rw = (body.x1 - body.x0 - pad * 2 - gap) / 2;
+    const rh1 = mid - body.y0 - pad - gap / 2, rh2 = body.y1 - mid - pad - gap / 2;
+    const room = (cx, top, h, icon, name) => ({ x: cx, y: top, w: rw, h, cx: cx + rw / 2, cy: top + h / 2, icon, name });
+    const lx = body.x0 + pad, rx = body.x0 + pad + rw + gap;
     return {
-      cx, cy, s, w, h, x0, y0, x1: x0 + w, y1: y0 + h, tabTop, tabs, sheet,
-      inner: { x: sheet.x + 40 * s, y: sheet.y + 70 * s, w: sheet.w - 80 * s, h: sheet.h - 170 * s },
-      sign: { x0: sheet.x + 50 * s, x1: sheet.x + sheet.w * 0.52, y: sheet.y + sheet.h - 62 * s },
-      stamp: { x: sheet.x + sheet.w - 170 * s, y: sheet.y + sheet.h - 92 * s },
+      x, y, s, body, mid,
+      ground: y + u(0.36),
+      eave: { x0: x - u(0.53), x1: x + u(0.53), y: y - u(0.1) },
+      ridgeY: y - u(0.36),
+      door: { x: x - u(0.19), y: body.y1 - u(0.1), w: u(0.12), h: u(0.2) },
+      windows: [
+        { x: x - u(0.19), y: y + u(0.015), w: u(0.15), h: u(0.1) },   // upper left
+        { x: x + u(0.19), y: y + u(0.015), w: u(0.15), h: u(0.1) },   // upper right
+        { x: x + u(0.19), y: y + u(0.245), w: u(0.15), h: u(0.1) },   // lower right
+      ],
+      rooms: {
+        living: room(lx, body.y0 + pad, rh1, 'globe', 'window'),
+        data: room(rx, body.y0 + pad, rh1, 'server', 'data'),
+        front: room(lx, mid + gap / 2, rh2, 'lock', 'front door'),
+        back: room(rx, mid + gap / 2, rh2, 'key', 'back door'),
+      },
+      backDoor: { x: body.x1, y: body.y1 - u(0.09) },
+      wing: { x0: body.x1, x1: body.x1 + u(0.26), y0: y + u(0.02), y1: body.y1 },
+      bounds: { x0: x - u(0.56), x1: x + u(0.56), y0: y - u(0.38), y1: y + u(0.4) },
     };
   }
-  /** blend two geometries (ease k yourself; motion.move for slides) */
-  function lerpGeo(A, B, k) {
-    const a = typeof A === 'string' ? POS[A] : A, b = typeof B === 'string' ? POS[B] : B;
-    return geo(K.lerp(a.cx, b.cx, k), K.lerp(a.cy, b.cy, k), K.lerp(a.s, b.s, k));
-  }
 
-  // tab state value v: 0 = off (unworked), 1 = lit (being worked), 2 = done (worked, keeps a gold tick).
-  // Fractions blend (0→1 lights, 1→2 settles). Build it as K.io(t, a) + K.io(t, b).
-  function tabLook(v) {
-    const lit = v <= 1 ? c01(v) : c01(2 - v); // 0..1..0
-    const done = c01(v - 1);
-    return { lit, done };
-  }
-
-  function tabPath(x, y, w, h, s) {
-    const g = G(), r = 14 * s, sl = 6 * s;
+  function roofPath(gm) {
+    const g = G(), s = gm.s, x = gm.x, u = (v) => v * s;
+    const ey = gm.eave.y, ry = gm.ridgeY;
     g.beginPath();
-    g.moveTo(x, y + h);
-    g.lineTo(x + sl, y + r);
-    g.quadraticCurveTo(x + sl + 2 * s, y, x + sl + r, y);
-    g.lineTo(x + w - sl - r, y);
-    g.quadraticCurveTo(x + w - sl - 2 * s, y, x + w - sl, y + r);
-    g.lineTo(x + w, y + h);
+    g.moveTo(x - u(0.56), ey - u(0.045));                                   // upturned left tip
+    g.quadraticCurveTo(x - u(0.5), ey + u(0.005), x - u(0.42), ey);          // eave underside
+    g.lineTo(x + u(0.42), ey);
+    g.quadraticCurveTo(x + u(0.5), ey + u(0.005), x + u(0.56), ey - u(0.045));
+    g.quadraticCurveTo(x + u(0.28), ry + u(0.15), x + u(0.13), ry);         // concave slope up
+    g.lineTo(x - u(0.13), ry);
+    g.quadraticCurveTo(x - u(0.28), ry + u(0.15), x - u(0.56), ey - u(0.045));
     g.closePath();
   }
 
-  /** one tab at its geometry T (from geo().tabs). v: state value (see tabLook). o: {reveal 0..1, label bool, s, flash 0..1} */
-  function drawTab(t, T, v, o = {}) {
-    const g = G(), s = o.s || 1, rv = c01(pick(o.reveal, 1));
-    if (rv <= 0) return;
-    const { lit, done } = tabLook(v), flash = c01(o.flash);
-    const rise = (1 - rv) * T.h * 0.7;
-    K.layer(rv, () => {
-      g.save();
-      // glow behind a lit tab
-      const glowA = Math.max(lit, flash * 0.8);
-      if (glowA > 0) K.glow(T.cx, T.y + T.h * 0.45 + rise, T.w * 0.85, C.head, 0.30 * glowA);
-      tabPath(T.x, T.y + rise, T.w, T.h, s);
-      const fill = mix(mix(palette.tabOff, '#3A3128', done), '#5E4826', Math.max(lit * 0.95, flash * 0.75));
-      g.fillStyle = fill; g.fill();
-      g.lineWidth = Math.max(1.5, 2 * s);
-      g.strokeStyle = mix(mix('#5A536A', '#9C8455', done), C.head, Math.max(lit, flash));
-      g.stroke();
-      g.restore();
-      // icon + label
-      const showLabel = o.label !== false && s >= 0.95;
-      const iy = T.y + rise + (showLabel ? 27 * s : (T.h - TAB.overlap * s) / 2);
-      const icol = mix(mix(palette.offIcon, C.strong, done * 0.7), C.head, Math.max(lit, flash));
-      K.icon(T.icon, T.cx, iy, (showLabel ? 32 : 40) * s, { color: icol, w: Math.max(2, 2.6 * s) });
-      if (showLabel) {
-        const lc = mix(mix(palette.offIcon, C.strong, done * 0.7), C.head, Math.max(lit, flash));
-        K.text(T.label, T.cx, T.y + rise + 70 * s, { font: 'ui', weight: 600, size: Math.max(26, 26 * s), color: lc, align: 'center', tracking: -0.4 });
-      }
-      // done tick: a small gold disc on the tab's upper right corner
-      if (done > 0) {
-        const bx = T.x + T.w - 16 * s, by = T.y + rise + 6 * s, br = Math.max(11, 14 * s);
-        K.layer(done, () => {
-          g.save(); g.beginPath(); g.arc(bx, by, br, 0, 7); g.fillStyle = C.head; g.fill();
-          g.lineWidth = 2; g.strokeStyle = C.page; g.stroke(); g.restore();
-          K.icon('check', bx, by + 1, br * 1.5, { color: C.page, w: Math.max(2.5, 3 * s) });
+  /** core house drawing (no split). o: see M.house */
+  function drawHouse(t, gm, o) {
+    const g = G(), s = gm.s, u = (v) => v * s, B = gm.body;
+    const lw = Math.max(1.6, s * 0.007);
+    const ink = o.tint || palette.outline;
+    const build = c01(pick(o.build, 1)), lights = c01(o.lights), cut = c01(o.cutaway), ghost = !!o.ghost;
+    const walls = K.clamp((build - 0.08) / 0.6), roofK = K.clamp((build - 0.7) / 0.2), finish = K.clamp((build - 0.9) / 0.1);
+    g.save();
+    g.lineJoin = 'round'; g.lineCap = 'round';
+
+    // ground + stepping stones (always first; the plot)
+    const gk = K.clamp(build / 0.08);
+    if (!o.noGround) {
+      const gr = g.createLinearGradient(gm.x - u(0.7), 0, gm.x + u(0.7), 0);
+      gr.addColorStop(0, K.rgba(palette.ground, 0)); gr.addColorStop(0.5, palette.ground); gr.addColorStop(1, K.rgba(palette.ground, 0));
+      g.globalAlpha = gk; g.strokeStyle = gr; g.lineWidth = lw * 1.4;
+      g.beginPath(); g.moveTo(gm.x - u(0.7), gm.ground); g.lineTo(gm.x + u(0.7), gm.ground); g.stroke();
+      if (s >= 160) {
+        g.fillStyle = K.rgba(palette.ground, 0.9);
+        [[-0.2, 0.06, 0.07], [-0.15, 0.11, 0.06]].forEach(([dx, dy, w]) => {
+          g.beginPath(); g.ellipse(gm.x + u(dx), gm.ground + u(dy) * 0.6, u(w) / 2, u(w) / 6, 0, 0, 7); g.fill();
         });
       }
-    });
-  }
-
-  /** the CASE FILE. F = geo(...). o:
-   *   tabs: [v0..v4] or {clue: v, ...} or a number for all (state values, see tabLook); default 0
-   *   reveal: number | [k0..k4]  tabs pop up (0 hidden .. 1 shown); default 1
-   *   flash: [f0..f4]            a one-off glow on a tab (keep-this beats), 0..1
-   *   labels: 'auto' | 'in' | 'none' | 'above'   in-tab labels need s >= 0.92 ('auto' does that); 'above' adds a
-   *            26 px pill over every LIT tab (use at small scales, one or two at a time)
-   *   sheet: 0..1 (the cream case sheet inside; default 1), caseNo: 'CASE 00.06' eyebrow (s >= 0.8 only)
-   *   sign: 0..1 signature line draws; signed: 0..1 your scribble; signLabel: 0..1 "you" under the line
-   *   stamp: 0..1 CLOSED stamp lands (ease it 'back' for the scene's one overshoot)
-   *   glow: 0..1 warm rim, dim: 0..1 (wash it back), alpha
-   *   content: fn(F) draws inside the sheet (clipped to it) */
-  function drawFile(t, F, o = {}) {
-    const g = G(), s = F.s;
-    const tv = (i) => {
-      const v = o.tabs;
-      if (v == null) return 0;
-      if (typeof v === 'number') return v;
-      if (Array.isArray(v)) return pick(v[i], 0);
-      return pick(v[TABS[i].id], 0);
-    };
-    const rv = (i) => (Array.isArray(o.reveal) ? pick(o.reveal[i], 0) : pick(o.reveal, 1));
-    const fl = (i) => (Array.isArray(o.flash) ? pick(o.flash[i], 0) : 0);
-    const labels = o.labels || 'auto';
-    const inTab = labels === 'in' || (labels === 'auto' && s >= 0.92);
-    K.layer(pick(o.alpha, 1), () => {
-      // contact shadow
-      g.save();
-      const sh = g.createRadialGradient(F.cx, F.y1 + 10 * s, 0, F.cx, F.y1 + 10 * s, F.w * 0.6);
-      sh.addColorStop(0, 'rgba(4,5,12,.5)'); sh.addColorStop(1, 'rgba(4,5,12,0)');
-      g.translate(F.cx, F.y1 + 10 * s); g.scale(1, 0.08); g.translate(-F.cx, -(F.y1 + 10 * s));
-      g.fillStyle = sh; g.fillRect(F.x0 - 100, F.y1 - F.w, F.w + 200, F.w * 2); g.restore();
-      // back panel (tabs belong to it)
-      F.tabs.forEach((T, i) => drawTab(t, T, tv(i), { s, reveal: rv(i), label: inTab, flash: fl(i) }));
-      // body
-      g.save();
-      g.shadowColor = 'rgba(0,0,0,.45)'; g.shadowBlur = 70 * s; g.shadowOffsetY = 24 * s;
-      K.rr(F.x0, F.y0, F.w, F.h, 22 * s);
-      const bg = g.createLinearGradient(0, F.y0, 0, F.y1);
-      bg.addColorStop(0, palette.folder); bg.addColorStop(1, palette.folderLow);
-      g.fillStyle = bg; g.fill(); g.restore();
-      if (o.glow) { g.save(); g.shadowColor = K.rgba(C.head, 0.55 * o.glow); g.shadowBlur = 50 * s; K.rr(F.x0, F.y0, F.w, F.h, 22 * s); g.strokeStyle = K.rgba(C.head, 0.5 * o.glow); g.lineWidth = 3; g.stroke(); g.restore(); }
-      g.save(); K.rr(F.x0, F.y0, F.w, F.h, 22 * s); g.lineWidth = Math.max(1.5, 2 * s); g.strokeStyle = K.rgba(C.head, 0.55); g.stroke(); g.restore();
-      // the case sheet
-      const sk = c01(pick(o.sheet, 1));
-      if (sk > 0) {
-        const S = F.sheet;
-        K.layer(sk, () => {
-          g.save();
-          g.translate(S.x + S.w / 2, S.y + S.h / 2); g.rotate(-0.006); g.translate(-(S.x + S.w / 2), -(S.y + S.h / 2));
-          K.rr(S.x, S.y, S.w, S.h, 10 * s); g.fillStyle = palette.sheet; g.fill();
-          g.lineWidth = 1.2; g.strokeStyle = K.rgba(C.paper, 0.14); g.stroke();
-          g.save(); K.rr(S.x, S.y, S.w, S.h, 10 * s); g.clip();
-          // ruled lines + margin
-          for (let y = S.y + 64 * s; y < S.y + S.h - 16 * s; y += 44 * s) K.line(S.x + 18 * s, y, S.x + S.w - 18 * s, y, { color: palette.sheetLine, w: Math.max(1, 1.4 * s) });
-          K.line(S.x + 36 * s, S.y + 8 * s, S.x + 36 * s, S.y + S.h - 8 * s, { color: K.rgba(C.accent, 0.16), w: Math.max(1, 1.4 * s) });
-          if (o.content) o.content(F);
-          g.restore();
-          g.restore();
-          // case number eyebrow and paperclip
-          if (s >= 0.8 && o.caseNo !== false) K.eyebrow(o.caseNo || 'CASE 00.06', S.x + 56 * s, S.y + 46 * s, { size: 22, color: K.rgba(C.head, 0.75) });
-          clip(S.x + S.w - 70 * s, S.y - 14 * s, s);
-        });
-      }
-      // signature
-      const sg = c01(o.sign), sd = c01(o.signed), sl = c01(pick(o.signLabel, s >= 0.7 ? o.sign : 0));
-      if (sg > 0) {
-        K.line(F.sign.x0, F.sign.y, F.sign.x1, F.sign.y, { k: sg, color: C.strong, w: Math.max(2, 2.5 * s), alpha: 0.9 });
-        K.text('×', F.sign.x0 - 4 * s, F.sign.y - 10 * s, { font: 'ui', size: Math.max(22, 30 * s), color: K.rgba(C.strong, 0.8 * sg), align: 'right' });
-      }
-      if (sd > 0) scribble(F.sign.x0 + 20 * s, F.sign.y - 10 * s, (F.sign.x1 - F.sign.x0) * 0.62, s, sd);
-      if (sl > 0) K.text('you', F.sign.x0, F.sign.y + 38 * s, { font: 'ui', weight: 600, size: Math.max(26, 28 * s), color: K.rgba(C.strong, 0.85 * sl) });
-      // stamp
-      if (o.stamp != null && o.stamp > 0) stamp(F.stamp.x, F.stamp.y, o.stamp, { s });
-      // dim wash
-      if (o.dim) { g.save(); g.globalAlpha *= 0.6 * c01(o.dim); g.fillStyle = C.page; K.rr(F.x0 - 4, F.tabTop - 4, F.w + 8, F.y1 - F.tabTop + 8, 22 * s); g.fill(); g.restore(); }
-      // callout labels over lit tabs
-      if (labels === 'above') F.tabs.forEach((T, i) => {
-        const { lit } = tabLook(tv(i)); const a = Math.min(lit, rv(i));
-        if (a > 0.02) K.pill(T.label, T.cx, T.top - 30 - (1 - a) * 8, { size: 26, color: C.head, stroke: K.rgba(C.head, 0.6), alpha: a });
-      });
-    });
-  }
-
-  function clip(x, y, s) {
-    const g = G();
-    g.save(); g.strokeStyle = '#B9AD98'; g.lineWidth = Math.max(2, 3 * s); g.lineCap = 'round';
-    g.beginPath();
-    g.moveTo(x, y + 60 * s); g.lineTo(x, y + 10 * s); g.arc(x + 10 * s, y + 10 * s, 10 * s, Math.PI, 0); g.lineTo(x + 20 * s, y + 66 * s);
-    g.arc(x + 6 * s, y + 66 * s, 14 * s, 0, Math.PI); g.lineTo(x - 8 * s, y + 18 * s);
-    g.stroke(); g.restore();
-  }
-
-  /** your handwritten signature, drawn left→right with progress k */
-  function scribble(x, y, w, s, k) {
-    const g = G(); if (k <= 0) return;
-    g.save(); g.strokeStyle = C.strong; g.lineWidth = Math.max(2, 3 * s); g.lineCap = 'round'; g.lineJoin = 'round';
-    g.beginPath();
-    const n2 = 140, loops = 6, r = 13 * s;
-    for (let i = 0; i <= n2 * k; i++) {
-      const u = i / n2, ph = u * loops * Math.PI * 2, amp = (0.7 + 0.45 * Math.sin(u * 9.1 + 0.6)) * (u < 0.12 ? 1.25 : 1);
-      const px = x + w * u - Math.sin(ph) * r * 0.95;
-      const py = y - (1 - Math.cos(ph)) * r * amp + u * 8 * s;
-      i ? g.lineTo(px, py) : g.moveTo(px, py);
+      g.globalAlpha = 1;
     }
-    g.stroke(); g.restore();
-  }
 
-  /** the terracotta CLOSED stamp centred at (x, y). k: land progress (0 = in the air, 1 = landed; 'back' easing ok).
-   *  o: {s 1, rot -0.14, text 'CLOSED', alpha} */
-  function stamp(x, y, k, o = {}) {
-    const g = G(), s = pick(o.s, 1); if (k <= 0) return;
-    const sc = s * K.lerp(1.6, 1, Math.min(1.2, k)), a = c01(k * 1.6) * pick(o.alpha, 1);
-    const txt = o.text || 'CLOSED', size = 52;
-    K.layer(a, () => K.at(x, y, sc, pick(o.rot, -0.14), () => {
-      const w = K.measure(txt, { font: 'ui', weight: 700, size, tracking: 8 }) + 64, h = 96;
+    // walls (rise from the ground while building)
+    if (walls > 0) {
       g.save();
-      g.strokeStyle = C.accent; g.lineWidth = 5; K.rr(-w / 2, -h / 2, w, h, 16); g.stroke();
-      g.lineWidth = 2; K.rr(-w / 2 + 9, -h / 2 + 9, w - 18, h - 18, 10); g.stroke();
+      const top = K.lerp(B.y1, B.y0, walls);
+      g.beginPath(); g.rect(B.x0 - u(0.05), top, B.x1 - B.x0 + u(0.1), B.y1 - top + 2); g.clip();
+      // plaster
+      const wallFill = ghost ? K.rgba(palette.wall, 0.35) : K.mixColor(palette.wall, palette.wallLit, lights);
+      g.fillStyle = wallFill; g.fillRect(B.x0, B.y0, B.x1 - B.x0, B.y1 - B.y0);
+      // brick courses while building, fading to a faint texture when finished
+      const bk = (1 - finish) * 0.9 + 0.08;
+      if (!ghost && s >= 120) {
+        const rows = 9, rh = (B.y1 - B.y0) / rows, bw = rh * 2.2;
+        g.strokeStyle = K.rgba(palette.brickLine, bk * (1 - cut)); g.lineWidth = Math.max(1, lw * 0.6);
+        for (let r = 0; r < rows; r++) {
+          const yy = B.y1 - r * rh;
+          g.beginPath(); g.moveTo(B.x0, yy - rh); g.lineTo(B.x1, yy - rh); g.stroke();
+          for (let xx = B.x0 + (r % 2 ? bw / 2 : 0); xx < B.x1; xx += bw) { g.beginPath(); g.moveTo(xx, yy); g.lineTo(xx, yy - rh); g.stroke(); }
+        }
+      }
+      // floor beam + corner posts (wood)
+      if (!ghost) {
+        g.fillStyle = palette.wood;
+        g.fillRect(B.x0 - u(0.012), B.y0, u(0.024), B.y1 - B.y0);
+        g.fillRect(B.x1 - u(0.012), B.y0, u(0.024), B.y1 - B.y0);
+        g.globalAlpha = 1 - cut * 0.6;
+        g.fillRect(B.x0, gm.mid - u(0.012), B.x1 - B.x0, u(0.024));
+        g.globalAlpha = 1;
+      }
+      // facade: door + windows (fade out in cutaway)
+      const fk = finish * (1 - cut) * (ghost ? 0.3 : 1);
+      if (fk > 0) {
+        g.globalAlpha = fk;
+        const D = gm.door;
+        g.fillStyle = palette.woodHi; K.rr(D.x - D.w / 2, D.y - D.h / 2, D.w, D.h, u(0.012)); g.fill();
+        g.strokeStyle = palette.wood; g.lineWidth = lw; g.stroke();
+        g.fillStyle = palette.lamp; g.beginPath(); g.arc(D.x + D.w * 0.3, D.y + u(0.01), Math.max(1.5, u(0.008)), 0, 7); g.fill();
+        gm.windows.forEach((w, i) => {
+          const lk = typeof o.lights === 'function' ? c01(o.lights(i)) : lights;
+          g.fillStyle = K.mixColor(palette.glass, palette.lamp, lk * 0.92);
+          K.rr(w.x - w.w / 2, w.y - w.h / 2, w.w, w.h, u(0.01)); g.fill();
+          g.strokeStyle = palette.wood; g.lineWidth = lw; g.stroke();
+          // shoji cross bars
+          g.strokeStyle = K.rgba(lk > 0.3 ? palette.woodHi : palette.outline, 0.7); g.lineWidth = Math.max(1, lw * 0.6);
+          g.beginPath(); g.moveTo(w.x, w.y - w.h / 2); g.lineTo(w.x, w.y + w.h / 2); g.moveTo(w.x - w.w / 2, w.y); g.lineTo(w.x + w.w / 2, w.y); g.stroke();
+        });
+        g.globalAlpha = 1;
+      }
+      // wall outline
+      g.strokeStyle = ink; g.lineWidth = lw; g.strokeRect(B.x0, B.y0, B.x1 - B.x0, B.y1 - B.y0);
       g.restore();
-      K.text(txt, 4, 18, { font: 'ui', weight: 700, size, color: C.accent, align: 'center', tracking: 8 });
-      // ink wear: a few page-coloured nicks (deterministic)
-      const R = K.rng(606);
-      g.save(); g.fillStyle = K.rgba(palette.sheet, 0.55);
-      for (let i = 0; i < 18; i++) { g.beginPath(); g.arc((R() - 0.5) * w * 0.95, (R() - 0.5) * h * 0.9, 1.5 + R() * 3, 0, 7); g.fill(); }
-      g.restore();
-    }));
-  }
+    }
 
-  // ---------------------------------------------------------------- figures
-  /** YOU: cream person at (x, y) (centre), size px (120 standard, 90 small). o: {alpha, label 0..1 ('you'), bob, glow} */
-  function you(t, x, y, size, o = {}) {
-    const g = G(), sz = pick(size, 120);
-    const by = o.bob === false ? 0 : K.wave(t, 1.1, 2, 1.3);
-    K.layer(pick(o.alpha, 1), () => {
-      g.save(); g.fillStyle = 'rgba(4,5,12,.45)'; g.beginPath(); g.ellipse(x, y + sz * 0.5, sz * 0.42, sz * 0.07, 0, 0, 7); g.fill(); g.restore();
-      if (o.glow) K.glow(x, y, sz * 0.9, C.strong, 0.12 * o.glow);
-      K.icon('person', x, y + by, sz, { color: C.strong, w: Math.max(3, sz * 0.045) });
-      const lk = c01(o.label);
-      if (lk > 0) K.text(o.labelText || 'you', x, y + sz * 0.5 + 40, { font: 'ui', weight: 600, size: 28, color: K.rgba(C.strong, 0.9 * lk), align: 'center' });
-    });
-  }
-
-  /** the CLERK (00.05's model): sparkle tile in a soft gold glow, centre (x, y). size px (96 standard, 72 small).
-   *  o: {alpha, glow 0..1 (default .8), bob, label 0..1 + labelText ('the clerk'), labelSide 'below'|'right',
-   *      ghost (outline only), desk 0..1 (thin desk sliver under it), stand 0..1 (witness stand rises under it), confident 0..1} */
-  function clerk(t, x, y, size, o = {}) {
-    const sz = pick(size, 96), gl = pick(o.glow, 0.8), conf = c01(o.confident);
-    const st = c01(o.stand), lift = st * sz * 0.55;
-    const by = (o.bob === false ? 0 : K.wave(t, motion.bob.speed, motion.bob.amp)) - lift;
-    K.layer(pick(o.alpha, 1), () => {
-      if (st > 0) {
-        // witness stand: a small podium whose top meets the clerk's base as it rises
-        const g = G(), ground = y + sz * 0.62, top = y + sz * 0.5 - lift + 8, tw = sz * 1.5, bw = sz * 1.9;
-        g.save();
-        g.beginPath(); g.moveTo(x - tw / 2, top); g.lineTo(x + tw / 2, top); g.lineTo(x + bw / 2, ground); g.lineTo(x - bw / 2, ground); g.closePath();
-        const sg = g.createLinearGradient(0, top, 0, ground); sg.addColorStop(0, '#3A3040'); sg.addColorStop(1, '#231F2C');
-        g.fillStyle = sg; g.fill(); g.lineWidth = 2; g.strokeStyle = K.rgba(C.head, 0.35 + 0.35 * conf); g.stroke();
+    // cutaway rooms
+    if (cut > 0 && walls >= 1) {
+      Object.keys(gm.rooms).forEach((key, i) => {
+        const R = gm.rooms[key];
+        const rk = K.clamp(cut * 1.6 - i * 0.15);
+        if (rk <= 0) return;
+        const roomLit = o.roomLit ? c01(typeof o.roomLit === 'function' ? o.roomLit(key) : o.roomLit[key]) : 0;
+        const hot = o.roomHot ? c01(typeof o.roomHot === 'function' ? o.roomHot(key) : o.roomHot[key]) : 0;
+        g.save(); g.globalAlpha *= rk;
+        K.rr(R.x, R.y, R.w, R.h, Math.min(12, u(0.03)));
+        g.fillStyle = K.mixColor(K.mixColor(palette.room, '#3A3226', roomLit), '#3A2522', hot); g.fill();
+        g.strokeStyle = hot > 0.05 ? K.mixColor(C.line2, palette.unseen, hot) : K.mixColor(C.line2, palette.machine, roomLit * 0.8);
+        g.lineWidth = lw; g.stroke();
         g.restore();
-        K.line(x - tw / 2 - 8, top, x + tw / 2 + 8, top, { color: K.rgba(C.head, 0.6 + 0.3 * conf), w: 4 });
+        if (roomLit > 0) K.layer(rk * roomLit, () => K.glow(R.cx, R.cy, R.w * 0.55, C.head, 0.22));
+        const ic = (o.roomIcons && o.roomIcons[key]) || R.icon;
+        const icColor = hot > 0.05 ? palette.unseen : roomLit > 0.3 ? palette.machine : C.body;
+        K.icon(ic, R.cx, R.cy, Math.min(R.w, R.h) * 0.5, { color: icColor, alpha: rk, w: Math.max(2, s * 0.008) });
+      });
+      // back door: opening in the right wall of the back room
+      const bo = c01(o.backOpen);
+      if (bo > 0) {
+        const bd = gm.backDoor, dh = u(0.15), dw = u(0.08) * Math.sin(bo * 1.2);
+        g.save();
+        g.fillStyle = '#0B0C16'; g.fillRect(bd.x - lw * 2, bd.y - dh / 2, lw * 4, dh);      // the opening
+        g.beginPath(); g.moveTo(bd.x, bd.y - dh / 2); g.lineTo(bd.x + dw, bd.y - dh / 2 - dw * 0.25);
+        g.lineTo(bd.x + dw, bd.y + dh / 2 + dw * 0.1); g.lineTo(bd.x, bd.y + dh / 2); g.closePath();
+        g.fillStyle = K.mixColor(palette.wood, C.accent, 0.35); g.fill();
+        g.strokeStyle = palette.unseen; g.lineWidth = lw * 1.3; g.stroke();
+        g.restore();
+        K.layer(bo, () => K.glow(bd.x + u(0.03), bd.y, u(0.12), C.accent, 0.3));
       }
-      if (o.desk) deskSliver(x - sz * 1.3, y + sz * 0.62, sz * 2.6, { alpha: c01(o.desk) });
-      if (gl > 0) K.glow(x, y + by, sz * (1.35 + 0.5 * conf), C.head, (0.22 + 0.12 * conf) * gl);
-      if (o.ghost) {
-        K.card(x - sz / 2, y + by - sz / 2, sz, sz, { r: sz * 0.28, fill: K.rgba(C.tile, 0.25), stroke: K.rgba(C.head, 0.5), shadow: false });
-        K.icon('sparkle', x, y + by, sz * 0.62, { color: C.head, alpha: 0.6 });
-      } else {
-        K.iconTile('sparkle', x, y + by, sz, { glow: gl * (0.6 + 0.4 * conf), stroke: K.rgba(C.head, 0.55 + 0.3 * conf) });
+    }
+
+    // off-style wing (09): flat box, round window, terracotta outline; slides out of the right wall
+    const wk = c01(o.wing);
+    if (wk > 0 && walls >= 1) {
+      const Wg = gm.wing, wx1 = K.lerp(Wg.x0, Wg.x1, K.ease.out(wk));
+      g.save();
+      g.fillStyle = K.rgba('#2A2028', 1); g.fillRect(Wg.x0, Wg.y0, wx1 - Wg.x0, Wg.y1 - Wg.y0);
+      g.strokeStyle = palette.unseen; g.lineWidth = lw * 1.2;
+      g.beginPath(); g.moveTo(Wg.x0, Wg.y0); g.lineTo(wx1, Wg.y0); g.lineTo(wx1, Wg.y1); g.lineTo(Wg.x0, Wg.y1); g.stroke();
+      g.fillStyle = palette.unseen; g.fillRect(Wg.x0, Wg.y0 - u(0.03), wx1 - Wg.x0 + u(0.02) * wk, u(0.03));
+      if (wk > 0.6) {
+        g.globalAlpha = K.clamp((wk - 0.6) / 0.4);
+        g.beginPath(); g.arc((Wg.x0 + Wg.x1) / 2, (Wg.y0 + Wg.y1) / 2 - u(0.02), u(0.045), 0, 7); g.stroke();
       }
-      const lk = c01(o.label);
-      if (lk > 0) {
-        const s0 = o.labelText || 'the clerk';
-        if (o.labelSide === 'right') K.text(s0, x + sz / 2 + 20, y + by + 10, { font: 'ui', weight: 600, size: 28, color: K.rgba(C.head, lk) });
-        else K.text(s0, x, y + sz * 0.5 + 44 + (st > 0 ? sz * 0.12 : 0) + (o.desk ? 56 : 0), { font: 'ui', weight: 600, size: 28, color: K.rgba(C.head, lk), align: 'center' });
+      g.restore();
+    }
+
+    // roof (lands from above while building)
+    if (roofK > 0) {
+      g.save();
+      g.globalAlpha *= roofK;
+      g.translate(0, -(1 - K.ease.out(roofK)) * u(0.12));
+      roofPath(gm);
+      g.fillStyle = ghost ? K.rgba(palette.roof, 0.4) : palette.roof; g.fill();
+      g.strokeStyle = ink; g.lineWidth = lw; g.stroke();
+      if (!ghost) {
+        // ridge cap + under-eave beam + roof tile lines
+        g.strokeStyle = palette.roofEdge; g.lineWidth = lw * 1.6;
+        g.beginPath(); g.moveTo(gm.x - u(0.15), gm.ridgeY); g.lineTo(gm.x + u(0.15), gm.ridgeY); g.stroke();
+        if (s >= 120) {
+          g.lineWidth = Math.max(1, lw * 0.6); g.strokeStyle = K.rgba(palette.roofEdge, 0.55);
+          for (let i = -3; i <= 3; i++) {
+            const bx = gm.x + u(i * 0.042);
+            g.beginPath(); g.moveTo(bx, gm.ridgeY + u(0.01)); g.lineTo(gm.x + u(i * 0.13), gm.eave.y - u(0.01)); g.stroke();
+          }
+        }
+        g.fillStyle = palette.wood; g.fillRect(gm.body.x0 - u(0.02), gm.eave.y - u(0.012), gm.body.x1 - gm.body.x0 + u(0.04), u(0.024));
       }
-    });
+      g.restore();
+    }
+    g.restore();
+
+    // window glow (outside the clip so it spills)
+    if (lights > 0 && finish > 0 && cut < 1) {
+      gm.windows.forEach((w, i) => {
+        const lk = typeof o.lights === 'function' ? c01(o.lights(i)) : lights;
+        if (lk > 0) K.layer(lk * finish * (1 - cut), () => K.glow(w.x, w.y, u(0.16), C.head, 0.32));
+      });
+    }
+
+    // leak (01): a thin terracotta trickle out of the back door, along the ground to the right
+    const lk = c01(o.leak);
+    if (lk > 0 && walls >= 1) {
+      const p = leakPts(gm);
+      K.path(p, { k: lk, color: palette.unseen, w: Math.max(2, s * 0.009), head: false, dash: [u(0.02), u(0.025)] });
+      const r = K.rng(7);
+      for (let i = 0; i < 5; i++) {
+        const v = (i + 0.5) / 5;
+        if (v > lk) break;
+        const ph = (t * 0.6 + r()) % 1;
+        const px = K.lerp(p[1][0], p[p.length - 1][0], v), py = p[p.length - 1][1] + 2;
+        K.layer((1 - ph) * 0.8, () => { const g2 = G(); g2.fillStyle = palette.unseen; g2.beginPath(); g2.arc(px + ph * u(0.03), py, Math.max(2, u(0.008)), 0, 7); g2.fill(); });
+      }
+    }
   }
 
-  function deskSliver(x, y, w, o = {}) {
+  /** points of the leak trail (from the back door corner along the ground to the right) */
+  function leakPts(gm) {
+    const s = gm.s, u = (v) => v * s;
+    return [[gm.body.x1, gm.backDoor.y], [gm.body.x1 + u(0.06), gm.ground - u(0.01)], [gm.body.x1 + u(0.22), gm.ground + u(0.005)], [gm.body.x1 + u(0.48), gm.ground + u(0.01)]];
+  }
+
+  /** THE HOUSE.
+   *  t: scene time (for the leak drips). x, y: centre of the walls. s: size (300–420 hero, 260 title, 200 small,
+   *  100–140 street; below 120 the brick/roof-tile detail drops out).
+   *  o: {
+   *    build: 0..1      construction (0–.08 ground, .08–.68 brick walls rise, .7–.9 roof lands, .9–1 plaster + windows). default 1
+   *    lights: 0..1 | (i) => 0..1   window glow (i 0 upper-left, 1 upper-right, 2 lower-right)
+   *    cutaway: 0..1    facade fades, four room cards appear: living (globe), data (server), front (lock), back (key)
+   *    roomLit: {living, data, front, back} 0..1 or (key) => 0..1   gold room wash (checked / seen / lit by the cone)
+   *    roomHot: same shape                                           terracotta room wash (exposed)
+   *    roomIcons: {key: iconName}   override a room's icon (e.g. back: 'lock' → drawn open by scene)
+   *    backOpen: 0..1   back door opening (terracotta) in the back room's right wall (cutaway only)
+   *    leak: 0..1       terracotta trickle from the back door along the ground (01)
+   *    wing: 0..1       off-style wing slides out of the right wall (09)
+   *    split: {k, at, labels}   gold left / terracotta right halves; at 0..1 = boundary across the house (0.5 middle)
+   *    ghost: true      faint outline-only version (05's "2021" house, background streets)
+   *    tint: hex        override the line colour
+   *    alpha, noGround
+   *  }
+   *  returns geo(x, y, s) so the scene can attach things to rooms, door, back door, roof. */
+  function house(t, x, y, s, o = {}) {
+    const gm = geo(x, y, s);
+    const sp = o.split;
+    K.layer(pick(o.alpha, 1), () => {
+      if (!sp || c01(sp.k) <= 0) { drawHouse(t, gm, o); return; }
+      const k = c01(sp.k), at = pick(sp.at, 0.5);
+      const b = gm.bounds, bx = K.lerp(b.x0, b.x1, at);
+      const g = G();
+      const tinted = (color) => ({ ...o, tint: K.mixColor(palette.outline, color, k) });
+      // a soft colour wash over walls and roof, so each half reads as gold / terracotta at a glance
+      const wash = (color) => {
+        g.save(); g.globalAlpha *= 0.16 * k; g.fillStyle = color;
+        g.fillRect(gm.body.x0, gm.body.y0, gm.body.x1 - gm.body.x0, gm.body.y1 - gm.body.y0);
+        roofPath(gm); g.fill(); g.restore();
+      };
+      g.save(); g.beginPath(); g.rect(b.x0 - s, b.y0 - s, bx - (b.x0 - s), b.y1 - b.y0 + 2 * s); g.clip();
+      drawHouse(t, gm, tinted(palette.machine)); wash(palette.machine);
+      g.restore();
+      g.save(); g.beginPath(); g.rect(bx, b.y0 - s, b.x1 + s - bx, b.y1 - b.y0 + 2 * s); g.clip();
+      drawHouse(t, gm, tinted(palette.unseen)); wash(palette.unseen);
+      g.restore();
+      K.line(bx, b.y0 - s * 0.06, bx, b.y1 + s * 0.04, { color: C.strong, w: 2, dash: [8, 8], alpha: k });
+    });
+    return gm;
+  }
+
+  /** a street of n houses in a row, centred at (cx, y), size s, gap px between centres.
+   *  o: {k: reveal 0..1 (left to right), focus: index drawn full, others dimmed by o.dim (default .55),
+   *      each: (i) => house options (lights, wing, cutaway...), ghost: true}  returns array of geo */
+  function street(t, cx, y, n, s, gap, o = {}) {
+    const out = [];
+    for (let i = 0; i < n; i++) {
+      const x = cx + (i - (n - 1) / 2) * gap;
+      const k = o.k == null ? 1 : K.clamp(o.k * (n + 1) - i);
+      const ho = { ...(o.each ? o.each(i) : {}), ghost: o.ghost };
+      const dim = o.focus != null && i !== o.focus ? pick(o.dim, 0.55) : 1;
+      if (k > 0) out.push(house(t, x, y + (1 - K.ease.out(k)) * 20, s, { ...ho, alpha: K.ease.out(k) * dim * pick(ho.alpha, 1) }));
+      else out.push(geo(x, y, s));
+    }
+    return out;
+  }
+
+  // ---------------------------------------------------------------- people and crew
+  /** a figure (meeple: round head + capsule body), FEET at (x, y), height s (80–160; 60 minimum).
+   *  role: 'owner' (gold) | 'inspector' (cream, shield) | 'burglar' (quiet, key, cap) | 'tenant' (soft) |
+   *        'coder' (body colour, hand-coder) | 'signer' (cream, code badge)
+   *  o: {prop: 'shield'|'key'|'clipboard'|'code'|'book'|'question'|null, propK 0..1, ai: 0..1 (sparkle badge on
+   *      the chest: AI inspector / AI-armed burglar), color, alpha, label, labelColor, labelSize (30), labelBelow,
+   *      face: -1|1 (prop side), sway (idle, default on), i (phase)}
+   *  returns {x, y, head: {x, y}, hand: {x, y}, top} */
+  function person(t, x, y, s, role = 'owner', o = {}) {
+    const R = {
+      owner: { color: palette.owner, prop: null },
+      inspector: { color: palette.inspector, prop: 'shield' },
+      burglar: { color: palette.burglar, prop: 'key', cap: true },
+      tenant: { color: palette.tenant, prop: null },
+      coder: { color: palette.coder, prop: 'code' },
+      signer: { color: palette.inspector, prop: 'code' },
+    }[role] || { color: C.strong };
+    const color = o.color || R.color, prop = o.prop === undefined ? R.prop : o.prop, face = o.face || 1;
+    const sway = o.sway === false ? 0 : K.wave(t, motion.sway.speed, motion.sway.amp, (o.i || 0) * 1.9);
+    const g = G();
+    const hx = x + sway * 0.4, hy = y - s * 0.8, hr = s * 0.14;
+    const hand = { x: x + face * s * 0.3, y: y - s * 0.4 };
+    K.layer(pick(o.alpha, 1), () => {
+      g.save();
+      g.lineWidth = Math.max(2, s * 0.035); g.strokeStyle = color; g.lineJoin = 'round';
+      // shadow on the ground
+      g.fillStyle = 'rgba(0,0,0,.28)'; g.beginPath(); g.ellipse(x, y + 2, s * 0.22, s * 0.035, 0, 0, 7); g.fill();
+      // body
+      g.fillStyle = K.mixColor(C.tile, color, 0.22);
+      K.rr(x - s * 0.2, y - s * 0.6, s * 0.4, s * 0.6, [s * 0.18, s * 0.18, s * 0.05, s * 0.05]); g.fill(); g.stroke();
+      // head
+      g.fillStyle = K.mixColor(C.tile, color, 0.35);
+      g.beginPath(); g.arc(hx, hy, hr, 0, 7); g.fill(); g.stroke();
+      if (R.cap) { g.fillStyle = '#2A2833'; g.beginPath(); g.arc(hx, hy - hr * 0.05, hr * 1.05, Math.PI, 0); g.closePath(); g.fill(); g.stroke(); g.fillStyle = color; K.rr(hx - hr * 0.7, hy - hr * 0.05 - hr * 0.16, hr * 1.4 + face * hr * 0.6, hr * 0.32, hr * 0.12); g.fill(); g.fillStyle = '#1A1922'; K.rr(hx - hr * 0.62, hy + hr * 0.25, hr * 1.24, hr * 0.32, hr * 0.14); g.fill(); }
+      g.restore();
+      // prop in the hand
+      if (prop && c01(pick(o.propK, 1)) > 0) {
+        K.layer(c01(pick(o.propK, 1)), () => {
+          if (prop === 'clipboard') {
+            const w = s * 0.26, h = s * 0.32;
+            g.save(); g.fillStyle = C.paper; K.rr(hand.x - w / 2, hand.y - h / 2, w, h, 4); g.fill();
+            g.strokeStyle = palette.wood; g.lineWidth = Math.max(2, s * 0.02); g.stroke();
+            g.strokeStyle = K.rgba(C.ink, 0.7); g.lineWidth = Math.max(1, s * 0.012);
+            for (let i = 0; i < 3; i++) { g.beginPath(); g.moveTo(hand.x - w * 0.3, hand.y - h * 0.15 + i * h * 0.2); g.lineTo(hand.x + w * 0.3, hand.y - h * 0.15 + i * h * 0.2); g.stroke(); }
+            g.fillStyle = palette.wood; g.fillRect(hand.x - w * 0.2, hand.y - h / 2 - 3, w * 0.4, 6);
+            g.restore();
+          } else {
+            K.card(hand.x - s * 0.17, hand.y - s * 0.17, s * 0.34, s * 0.34, { r: s * 0.1, fill: C.tile, stroke: color, shadow: false });
+            K.icon(prop, hand.x, hand.y, s * 0.24, { color: prop === 'key' && role === 'burglar' ? color : prop === 'shield' ? palette.machine : color, w: Math.max(2, s * 0.025) });
+          }
+        });
+      }
+      // AI badge on the chest
+      const ai = c01(o.ai);
+      if (ai > 0) {
+        K.layer(ai, () => {
+          K.glow(x, y - s * 0.34, s * 0.2, C.head, 0.35);
+          sparkleShape(x, y - s * 0.34, s * 0.2, palette.crew, 1);
+        });
+      }
+      if (o.label) {
+        const below = o.labelBelow !== false;
+        K.text(o.label, x, below ? y + (o.labelSize || 30) + 16 : y - s - 18, { ...type.read, size: o.labelSize || 30, color: o.labelColor || color, align: 'center' });
+      }
+    });
+    return { x, y, head: { x: hx, y: hy }, hand, top: y - s };
+  }
+
+  /** filled four-point sparkle (crew body) centred at (x, y), radius r */
+  function sparkleShape(x, y, r, color, a = 1) {
+    const g = G();
+    const star = (cx, cy, rr) => {
+      g.beginPath(); g.moveTo(cx, cy - rr);
+      g.quadraticCurveTo(cx + rr * 0.12, cy - rr * 0.12, cx + rr, cy);
+      g.quadraticCurveTo(cx + rr * 0.12, cy + rr * 0.12, cx, cy + rr);
+      g.quadraticCurveTo(cx - rr * 0.12, cy + rr * 0.12, cx - rr, cy);
+      g.quadraticCurveTo(cx - rr * 0.12, cy - rr * 0.12, cx, cy - rr);
+      g.closePath();
+    };
+    g.save(); g.globalAlpha *= a;
+    g.fillStyle = color; star(x, y, r); g.fill();
+    g.fillStyle = K.rgba('#FFF4DA', 0.55); star(x, y, r * 0.4); g.fill();
+    g.fillStyle = color; star(x + r * 0.95, y - r * 0.85, r * 0.32); g.fill();
+    g.restore();
+  }
+
+  /** A CREW MEMBER (AI): a glowing gold sparkle with a small idle bob. Centre (x, y), size s (40–90; 60 default).
+   *  o: {i: phase index (give each member its own), alpha, glow (0..1, default .8), dim 0..1 (fades to C.soft,
+   *      e.g. when its "yes" is doubted), carry: 'brick'|'file'|'puzzle'|null (a small thing it holds below),
+   *      label, labelColor, labelSize (30), shield: 0..1 (verifier badge, 15)}
+   *  returns {x, y} of the drawn (bobbing) centre */
+  function crew(t, x, y, s = 60, o = {}) {
+    const i = o.i || 0;
+    const by = y + K.wave(t, motion.bob.speed, motion.bob.amp * s / 60, i * 2.1);
+    const col = K.mixColor(palette.crew, C.soft, c01(o.dim));
+    K.layer(pick(o.alpha, 1), () => {
+      K.glow(x, by, s * 0.9, C.head, 0.28 * pick(o.glow, 0.8) * (1 - c01(o.dim)));
+      sparkleShape(x, by, s * 0.42, col, 1);
+      if (o.carry) {
+        if (o.carry === 'brick') {
+          const g = G(); g.save(); g.fillStyle = palette.brick; g.strokeStyle = palette.brickLine; g.lineWidth = 2;
+          K.rr(x - s * 0.22, by + s * 0.5, s * 0.44, s * 0.18, 3); g.fill(); g.stroke(); g.restore();
+        } else K.icon(o.carry, x, by + s * 0.62, s * 0.36, { color: C.body });
+      }
+      const sh = c01(o.shield);
+      if (sh > 0) K.layer(sh, () => {
+        const bs = Math.max(40, s * 0.6);
+        K.card(x - s * 0.45 - bs / 2, by + s * 0.3 - bs / 2, bs, bs, { r: bs * 0.3, fill: C.tile, stroke: palette.machine, shadow: false });
+        K.icon('shield', x - s * 0.45, by + s * 0.3, bs * 0.66, { color: palette.machine, w: Math.max(2.5, bs * 0.06) });
+      });
+      if (o.label) K.text(o.label, x, y + s * 0.95 + (o.labelSize || 30) * 0.6, { ...type.read, size: o.labelSize || 30, color: o.labelColor || palette.crew, align: 'center' });
+    });
+    return { x, y: by };
+  }
+
+  /** n crew members in a loose cluster around (x, y). o: {spread (s * 1.3), k reveal (staggered pop), dim, alpha, carry}
+   *  returns array of centres */
+  function crewGroup(t, x, y, n = 3, s = 60, o = {}) {
+    const sp = pick(o.spread, s * 1.3), out = [];
+    const offs = [[0, 0], [0.9, 0.55], [-0.85, 0.6], [0.2, 1.15], [-0.1, -0.9]];
+    for (let i = 0; i < n; i++) {
+      const [dx, dy] = offs[i % offs.length];
+      const k = o.k == null ? 1 : K.clamp(o.k * (n + 0.5) - i);
+      const px = x + dx * sp, py = y + dy * sp * 0.7;
+      if (k > 0) K.at(px, py, 0.6 + 0.4 * K.ease.back(k), () => crew(t, 0, 0, s, { ...o, i: i + (o.i || 0), alpha: pick(o.alpha, 1) * Math.min(1, k * 1.5), label: null }));
+      out.push({ x: px, y: py });
+    }
+    return out;
+  }
+
+  // ---------------------------------------------------------------- talk, cards, chips
+  /** chat bubble. (x, y) = centre of the box. who: 'owner' (gold stroke, tail bottom-left) | 'crew' (sparkle tab,
+   *  tail bottom-right). o: {size (32), maxW (520), check: 0..1 (gold check after the text), dim 0..1 (text → soft),
+   *  tail: 'left'|'right'|'none', alpha, k: pop 0..1}  returns {w, h} */
+  function bubble(text, x, y, who = 'owner', o = {}) {
+    const size = o.size || 32, padX = size * 0.9, padY = size * 0.62;
+    const to = { font: 'ui', weight: 600, size };
+    const lines = K.wrap(text, (o.maxW || 520) - padX * 2, to);
+    const tw = Math.max(...lines.map((l) => K.measure(l, to)));
+    const ck = c01(o.check), extra = ck > 0 ? size * 1.3 : 0;
+    const crewTab = who === 'crew' ? size * 1.3 : 0;
+    const w = tw + padX * 2 + extra + crewTab, lh = size * 1.32, h = lines.length * lh + padY * 2 - (lh - size) + 4;
+    const x0 = x - w / 2, y0 = y - h / 2;
+    const tail = o.tail || (who === 'crew' ? 'right' : 'left');
+    const stroke = who === 'owner' ? palette.owner : C.line2;
+    const k = pick(o.k, 1);
+    if (k <= 0) return { w, h };
+    K.layer(pick(o.alpha, 1) * K.ease.out(c01(k)), () => K.at(x, y, 0.9 + 0.1 * K.ease.out(c01(k)), () => {
+      const g = G(); g.save(); g.translate(-x, -y);
+      K.card(x0, y0, w, h, { r: Math.min(26, h / 2), fill: who === 'crew' ? '#262234' : C.tile, stroke, shadow: true });
+      if (tail !== 'none') {
+        const tx = tail === 'left' ? x0 + w * 0.22 : x0 + w * 0.78, dir = tail === 'left' ? -1 : 1;
+        g.beginPath(); g.moveTo(tx - 14, y0 + h - 1); g.lineTo(tx + dir * 18, y0 + h + 22); g.lineTo(tx + 14, y0 + h - 1); g.closePath();
+        g.fillStyle = who === 'crew' ? '#262234' : C.tile; g.fill();
+        g.strokeStyle = stroke; g.lineWidth = 1.5;
+        g.beginPath(); g.moveTo(tx - 14, y0 + h); g.lineTo(tx + dir * 18, y0 + h + 22); g.lineTo(tx + 14, y0 + h); g.stroke();
+      }
+      if (who === 'crew') sparkleShape(x0 + padX * 0.75 + size * 0.2, y0 + padY + size * 0.42, size * 0.38, palette.crew);
+      const col = K.mixColor(C.strong, C.soft, c01(o.dim));
+      lines.forEach((ln, i) => K.text(ln, x0 + padX + crewTab, y0 + padY + size * 0.82 + i * lh, { ...to, color: col }));
+      if (ck > 0) K.icon('check', x0 + w - padX - size * 0.45, y0 + padY + size * 0.45, size * 1.1, { color: K.mixColor(palette.machine, C.soft, c01(o.dim)), alpha: ck, w: 4 });
+      g.restore();
+    }));
+    return { w, h };
+  }
+
+  /** small tag pill for dates and status. kind: 'date' (gold mono) | 'preview' | 'beta' (soft outline) |
+   *  'forecast' (terracotta outline, upper) | 'paraphrase' (soft italic) | 'asof' (gold outline, upper)
+   *  centred at (x, y); size 26 (minimum). returns width */
+  function tag(text, x, y, kind = 'date', o = {}) {
+    const st = {
+      date: { color: C.head, stroke: C.line2, font: 'mono' },
+      preview: { color: C.body, stroke: C.soft, upper: true, tracking: 2 },
+      beta: { color: C.body, stroke: C.soft, upper: true, tracking: 2 },
+      forecast: { color: C.accent, stroke: C.accent, upper: true, tracking: 3 },
+      paraphrase: { color: C.soft, stroke: C.line2 },
+      asof: { color: C.head, stroke: C.head, upper: true, tracking: 3 },
+    }[kind] || {};
+    return K.pill(text, x, y, { size: o.size || 26, color: st.color, stroke: st.stroke, font: st.font, upper: st.upper, tracking: st.tracking, alpha: o.alpha, fill: o.fill || C.tile });
+  }
+
+  /** DATED CARD: an eyebrow date line + 1–3 lines of text, for every sourced fact on screen.
+   *  (x, y) = top-left, width w. date e.g. "Veracode · Jul 2026". text wraps at 30 px Karla.
+   *  o: {size (30), kind: 'neutral'|'machine'|'unseen' (left rule colour), badge: {text, kind} (tag at top-right),
+   *      alpha, k (rise 0..1), mono: true (text in mono, for literals)}  returns height */
+  function dated(x, y, w, date, text, o = {}) {
+    const size = o.size || 30, pad = 28;
+    const tf = o.mono ? { font: 'mono', weight: 600, size: size - 2 } : { font: 'ui', weight: 600, size };
+    const lines = K.wrap(text, w - pad * 2 - 8, tf), lh = size * 1.3;
+    const h = pad * 2 + 34 + lines.length * lh - (lh - size);
+    const k = pick(o.k, 1);
+    if (k <= 0) return h;
+    const rule = { neutral: C.line2, machine: palette.machine, unseen: palette.unseen }[o.kind || 'neutral'];
+    K.layer(pick(o.alpha, 1) * K.ease.out(c01(k)), () => {
+      const g = G(); g.save(); g.translate(0, (1 - K.ease.out(c01(k))) * 18);
+      K.card(x, y, w, h, { r: 18 });
+      g.fillStyle = rule; K.rr(x + 10, y + 16, 5, h - 32, 3); g.fill();
+      K.eyebrow(date, x + pad + 8, y + pad + 16, { size: 22, color: C.head, tracking: 3 });
+      lines.forEach((ln, i) => K.text(ln, x + pad + 8, y + pad + 34 + size * 0.86 + i * lh, { ...tf, color: o.color || C.strong }));
+      if (o.badge) {
+        const bw = K.measure(o.badge.text, { font: 'ui', weight: 600, size: 22, upper: true, tracking: 2 }) + 22 * 1.6;
+        tag(o.badge.text, x + w - pad - bw / 2, y + pad + 8, o.badge.kind || 'preview', { size: 22 });
+      }
+      g.restore();
+    });
+    return h;
+  }
+
+  /** VERDICT CHIP: icon + label pill. kind: 'machine' (gold, check) | 'unseen' (terracotta, warning) |
+   *  'ask' (terracotta, question) | 'neutral' (cream, no icon) | 'off' (soft, struck) ; centred at (x, y).
+   *  o: {size (30; 26 min), icon (override), alpha, k (pop), glow}  returns width */
+  function chip(text, x, y, kind = 'machine', o = {}) {
+    const size = o.size || 30;
+    const st = {
+      machine: { c: palette.machine, icon: 'check', stroke: K.mixColor(C.line2, C.head, 0.55) },
+      unseen: { c: palette.unseen, icon: 'warning', stroke: K.mixColor(C.line2, C.accent, 0.6) },
+      ask: { c: palette.unseen, icon: 'question', stroke: K.mixColor(C.line2, C.accent, 0.6) },
+      neutral: { c: C.strong, icon: null, stroke: C.line2 },
+      off: { c: C.soft, icon: null, stroke: C.line },
+    }[kind];
+    const ic = o.icon === undefined ? st.icon : o.icon;
+    const to = { font: 'ui', weight: 600, size };
+    const iw = ic ? size * 1.15 : 0;
+    const w = K.measure(text, to) + size * 1.6 + iw, h = size * 1.9;
+    const k = pick(o.k, 1);
+    if (k <= 0) return w;
+    K.layer(pick(o.alpha, 1), () => K.pop(k * 0.5, 0, x, y, () => {
+      K.card(x - w / 2, y - h / 2, w, h, { r: h / 2, fill: C.tile, stroke: st.stroke, shadow: false, glow: o.glow });
+      if (ic) K.icon(ic, x - w / 2 + size * 0.8 + iw * 0.35, y, size * 0.95, { color: st.c, w: Math.max(2.5, size * 0.09) });
+      K.text(text, x - w / 2 + size * 0.8 + iw, y + size * 0.34, { ...to, color: kind === 'off' ? C.soft : kind === 'neutral' ? C.strong : st.c });
+      if (kind === 'off') K.line(x - w / 2 + size * 0.6, y, x + w / 2 - size * 0.6, y, { color: C.soft, w: 2 });
+    }, 0.5));
+    return w;
+  }
+
+  /** a plain label in one of the lesson's meanings. kind: 'machine' gold | 'unseen' terracotta | 'note' soft |
+   *  'plain' cream. Default 30 px Karla 600, centred. returns width */
+  function label(text, x, y, kind = 'plain', o = {}) {
+    const color = { machine: palette.machine, unseen: palette.unseen, note: C.soft, plain: C.strong }[kind] || kind;
+    return K.text(text, x, y, { ...type.read, size: o.size || 30, color, align: o.align || 'center', alpha: o.alpha, italic: o.italic });
+  }
+
+  // ---------------------------------------------------------------- suppliers
+  /** SUPPLIER VAN (a dependency): a pill-shaped van card on wheels, cargo icon + mono name. FEET (road) at
+   *  (x, y), size s = length (140–240; 180 default).
+   *  o: {name ('requests'), icon ('puzzle'), ghost: 0..1 (dashed outline, no name: an invented package),
+   *      warn: 0..1 (terracotta warning badge on the roof), keyK: 0..1 (your key hangs on it, gold),
+   *      driver: 0..1 (burglar silhouette in the cab), crate: 0..1 (a small file icon in the cargo with a
+   *      terracotta glow: hidden code), alpha, tint (outline colour), roll: wheel rotation (pass distance/radius)}
+   *  returns {x, y, top, cab: {x, y}} */
+  function van(t, x, y, s = 180, o = {}) {
+    const g = G(), h = s * 0.56, wr = s * 0.085;
+    const x0 = x - s / 2, y0 = y - h - wr * 1.1;
+    const ghost = c01(o.ghost);
+    const stroke = o.tint || (ghost > 0.5 ? C.soft : K.mixColor(C.line2, C.head, 0.35));
+    K.layer(pick(o.alpha, 1), () => {
+      g.save();
+      g.fillStyle = 'rgba(0,0,0,.3)'; g.beginPath(); g.ellipse(x, y + 2, s * 0.5, s * 0.04, 0, 0, 7); g.fill();
+      if (ghost > 0) g.setLineDash([10, 8]);
+      // cargo box + cab
+      g.lineWidth = Math.max(2, s * 0.012); g.strokeStyle = stroke;
+      g.fillStyle = ghost > 0.5 ? K.rgba(C.tile, 0.4) : '#25222F';
+      K.rr(x0, y0, s * 0.68, h, s * 0.08); g.fill(); g.stroke();
+      K.rr(x0 + s * 0.7, y0 + h * 0.28, s * 0.3, h * 0.72, [s * 0.12, s * 0.06, s * 0.04, s * 0.04]); g.fill(); g.stroke();
+      g.setLineDash([]);
+      // cab window
+      g.fillStyle = K.mixColor(palette.glass, C.line2, 0.4); K.rr(x0 + s * 0.76, y0 + h * 0.38, s * 0.17, h * 0.28, 5); g.fill();
+      // wheels
+      [x0 + s * 0.18, x0 + s * 0.82].forEach((wx) => {
+        g.fillStyle = '#121320'; g.strokeStyle = stroke; g.beginPath(); g.arc(wx, y - wr, wr, 0, 7); g.fill(); g.stroke();
+        const a = o.roll || 0; g.beginPath(); g.moveTo(wx, y - wr); g.lineTo(wx + Math.cos(a) * wr * 0.7, y - wr + Math.sin(a) * wr * 0.7); g.stroke();
+      });
+      g.restore();
+      // cargo icon + name
+      const cx = x0 + s * 0.34;
+      K.icon(o.icon || 'puzzle', cx, y0 + h * (o.name && ghost < 0.5 ? 0.32 : 0.5), s * 0.2, { color: ghost > 0.5 ? C.soft : C.head, w: Math.max(2, s * 0.015) });
+      if (o.name && ghost < 0.5) K.text(o.name, cx, y0 + h * 0.7, { font: 'mono', weight: 600, size: Math.max(22, Math.min(26, s * 0.13)), color: C.strong, align: 'center', maxW: s * 0.62 });
+      const dr = c01(o.driver);
+      if (dr > 0) K.layer(dr, () => {
+        g.save(); g.fillStyle = palette.burglar;
+        g.beginPath(); g.arc(x0 + s * 0.845, y0 + h * 0.5, h * 0.1, 0, 7); g.fill();
+        g.fillRect(x0 + s * 0.845 - h * 0.12, y0 + h * 0.37, h * 0.24, h * 0.06);
+        g.restore();
+      });
+      const cr = c01(o.crate);
+      if (cr > 0) K.layer(cr, () => { K.glow(x0 + s * 0.56, y0 + h * 0.5, s * 0.14, C.accent, 0.45); K.icon('file', x0 + s * 0.56, y0 + h * 0.5, s * 0.16, { color: palette.unseen, w: 2.5 }); });
+      const wk = c01(o.warn);
+      if (wk > 0) K.layer(wk, () => { K.card(x0 + s * 0.04, y0 - s * 0.2, s * 0.18, s * 0.18, { r: s * 0.05, fill: C.tile, stroke: palette.unseen, shadow: false }); K.icon('warning', x0 + s * 0.13, y0 - s * 0.11, s * 0.13, { color: palette.unseen, w: 2.5 }); });
+      const kk = c01(o.keyK);
+      if (kk > 0) K.layer(kk, () => { K.glow(x0 + s * 0.6, y0 - s * 0.12, s * 0.16, C.head, 0.45); K.icon('key', x0 + s * 0.6, y0 - s * 0.12, s * 0.22, { color: palette.machine, w: 3.5 }); });
+    });
+    return { x, y, top: y0, cab: { x: x0 + s * 0.85, y: y0 + h * 0.5 } };
+  }
+
+  // ---------------------------------------------------------------- checklist, plaque, cone
+  /** CHECKLIST card (12 deploy list, also 13): (x, y) top-left, width w.
+   *  rows: [{s, kind: 'machine' (gold check, ticked) | 'unseen' (terracotta empty box), k 0..1 reveal}]
+   *  o: {title (eyebrow), size (30), signK 0..1 (signature line draws + scribble), signLabel ('signed by someone
+   *      who can code'), alpha}  returns height */
+  function checklist(x, y, w, rows, o = {}) {
+    const size = o.size || 30, pad = 32, rh = size * 1.75;
+    const head = o.title ? 46 : 0, sign = o.signK != null ? 96 : 0;
+    const h = pad * 2 + head + rows.length * rh + sign - (rh - size * 1.2);
     const g = G();
     K.layer(pick(o.alpha, 1), () => {
-      g.save();
-      const lg = g.createLinearGradient(0, y, 0, y + 22);
-      lg.addColorStop(0, palette.wood); lg.addColorStop(1, palette.woodDark);
-      K.rr(x, y, w, 18, 6); g.fillStyle = lg; g.fill();
-      g.strokeStyle = K.rgba(C.line2, 0.9); g.lineWidth = 1.5; g.stroke();
-      K.line(x + 10, y + 2, x + w - 10, y + 2, { color: K.rgba(C.head, 0.25), w: 2 });
-      g.fillStyle = palette.woodDark; K.rr(x + w * 0.08, y + 16, 12, 30, 3); g.fill(); K.rr(x + w * 0.92 - 12, y + 16, 12, 30, 3); g.fill();
-      g.restore();
-    });
-  }
-
-  /** the clerk's DESK, a long low night-wood desk whose surface holds evidence cards. (x, y) = top-left of the surface,
-   *  w, h = surface size (h ≥ 120). o: {alpha, lit 0..1 (lamp pool), legs (true)}. returns surface rect {x, y, w, h} */
-  function desk(x, y, w, h, o = {}) {
-    const g = G(), lip = 20, inset = Math.min(30, w * 0.03), lit = pick(o.lit, 0.8);
-    K.layer(pick(o.alpha, 1), () => {
-      g.save();
-      if (o.legs !== false) { g.fillStyle = palette.woodDark; K.rr(x + w * 0.05, y + h + lip - 4, 16, 34, 4); g.fill(); K.rr(x + w * 0.95 - 16, y + h + lip - 4, 16, 34, 4); g.fill(); }
-      const lg = g.createLinearGradient(0, y + h, 0, y + h + lip);
-      lg.addColorStop(0, palette.beam); lg.addColorStop(1, palette.woodDark);
-      K.rr(x, y + h - 6, w, lip + 6, 8); g.fillStyle = lg; g.fill();
-      g.shadowColor = 'rgba(0,0,0,.4)'; g.shadowBlur = 50; g.shadowOffsetY = 16;
-      g.beginPath(); g.moveTo(x + inset, y); g.lineTo(x + w - inset, y); g.lineTo(x + w, y + h); g.lineTo(x, y + h); g.closePath();
-      const tg = g.createLinearGradient(0, y, 0, y + h);
-      tg.addColorStop(0, palette.woodDark); tg.addColorStop(1, palette.wood);
-      g.fillStyle = tg; g.fill(); g.shadowColor = 'transparent';
-      g.strokeStyle = K.rgba(C.line2, 0.9); g.lineWidth = 1.5; g.stroke();
-      g.clip();
-      if (lit > 0) {
-        g.translate(x + w / 2, y + h * 0.45); g.scale(1, (h / w) * 1.6);
-        const pg = g.createRadialGradient(0, 0, 0, 0, 0, w * 0.55);
-        pg.addColorStop(0, K.rgba(C.head, 0.24 * lit)); pg.addColorStop(1, K.rgba(C.head, 0));
-        g.fillStyle = pg; g.fillRect(-w, -w, w * 2, w * 2);
-      }
-      g.restore();
-      K.line(x + 12, y + h - 2, x + w - 12, y + h - 2, { color: K.rgba(C.head, 0.25), w: 2 });
-    });
-    return { x: x + inset, y, w: w - 2 * inset, h };
-  }
-
-  // ---------------------------------------------------------------- lines of work
-  /** the clerk's legwork: dashed gold hops over the tops of tabs. F = geo(); upto: last tab index (0..4) or id;
-   *  k 0..1 progress over the whole path. o: {from: {x, y} (start, e.g. the clerk), first (0), lift (px, 46*s), alpha, color, dash, w, dots true} */
-  function legwork(F, k, o = {}) { hops(F, k, { color: C.head, dash: palette.clerkDash, ...o }); }
-  /** your work: same path, solid cream */
-  function yourwork(F, k, o = {}) { hops(F, k, { color: C.strong, dash: null, ...o }); }
-  function hops(F, k, o) {
-    const g = G(); k = c01(k); if (k <= 0) return;
-    const first = idx(pick(o.first, 0)), last = idx(pick(o.upto, 4)), lift = pick(o.lift, 40 * F.s);
-    const pts = [], dir = last >= first ? 1 : -1;
-    if (o.from) pts.push([o.from.x, o.from.y]);
-    for (let i = first; dir > 0 ? i <= last : i >= last; i += dir) pts.push([F.tabs[i].cx - 14 * F.s, F.tabs[i].top - 18 * F.s]);
-    // sample a chain of arcs (the leg from `from` bends gently, the hops between tabs arc by `lift`)
-    const P = [];
-    for (let j = 0; j < pts.length - 1; j++) {
-      const [x1, y1] = pts[j], [x2, y2] = pts[j + 1];
-      const far = o.from && j === 0, cx = (x1 + x2) / 2, cy = far ? Math.min(y1, y2) - 30 : Math.min(y1, y2) - lift;
-      for (let i = 0; i <= 24; i++) { const u = i / 24; if (j && !i) continue; P.push([(1 - u) * (1 - u) * x1 + 2 * (1 - u) * u * cx + u * u * x2, (1 - u) * (1 - u) * y1 + 2 * (1 - u) * u * cy + u * u * y2, j + u]); }
-    }
-    if (P.length < 2) return;
-    const nShow = Math.max(2, Math.round(P.length * k));
-    K.layer(pick(o.alpha, 1), () => {
-      g.save(); g.strokeStyle = o.color; g.lineWidth = o.w || 3; g.lineCap = 'round'; g.lineJoin = 'round';
-      if (o.dash) g.setLineDash(o.dash);
-      g.beginPath(); for (let i = 0; i < nShow; i++) i ? g.lineTo(P[i][0], P[i][1]) : g.moveTo(P[i][0], P[i][1]);
-      g.stroke(); g.restore();
-      if (o.dots !== false) {
-        const reached = P[nShow - 1][2];
-        pts.forEach(([x, y], j) => { if (j === 0 && o.from) return; if (reached >= j - 0.001) { g.save(); g.fillStyle = o.color; g.beginPath(); g.arc(x, y, Math.max(4, 6 * F.s), 0, 7); g.fill(); g.restore(); } });
-      }
-    });
-  }
-
-  /** a dashed gold line from the clerk to (x2, y2) (k = progress). o: K.arrow opts (bend, head, alpha) */
-  function clerkLine(x1, y1, x2, y2, k, o = {}) { K.arrow(x1, y1, x2, y2, { k, color: C.head, w: 3, dash: palette.clerkDash, headSize: 14, ...o }); }
-  /** a solid cream line of yours */
-  function youLine(x1, y1, x2, y2, k, o = {}) { K.arrow(x1, y1, x2, y2, { k, color: C.strong, w: 3, headSize: 14, ...o }); }
-
-  /** the loop arrow: Experiment back over the top to Clue (k = progress). o: {lift (px above tab tops, 120*s), alpha} */
-  function loop(F, k, o = {}) {
-    const a = F.tabs[4], b = F.tabs[0], lift = pick(o.lift, 120 * F.s);
-    K.arrow(a.cx, a.top - 10, b.cx, b.top - 10, { k, bend: lift * 2, color: K.rgba(C.head, 0.85), w: 3, headSize: 15, alpha: pick(o.alpha, 1) });
-  }
-
-  /** a tick you draw (cream by default) at (x, y), size px, progress k. o: {color, w, disc (filled backing)} */
-  function tick(x, y, size, k, o = {}) {
-    const g = G(); k = c01(k); if (k <= 0) return;
-    const s = size, col = o.color || C.strong;
-    if (o.disc) { g.save(); g.globalAlpha *= Math.min(1, k * 2); g.beginPath(); g.arc(x, y, s * 0.55, 0, 7); g.fillStyle = K.rgba(col, 0.14); g.fill(); g.strokeStyle = K.rgba(col, 0.6); g.lineWidth = 2; g.stroke(); g.restore(); }
-    const P = [[x - s * 0.3, y], [x - s * 0.08, y + s * 0.22], [x + s * 0.32, y - s * 0.22]];
-    const L1 = Math.hypot(P[1][0] - P[0][0], P[1][1] - P[0][1]), L2 = Math.hypot(P[2][0] - P[1][0], P[2][1] - P[1][1]);
-    const d = k * (L1 + L2);
-    g.save(); g.strokeStyle = col; g.lineWidth = o.w || Math.max(3, s * 0.1); g.lineCap = 'round'; g.lineJoin = 'round';
-    g.beginPath(); g.moveTo(P[0][0], P[0][1]);
-    if (d <= L1) g.lineTo(K.lerp(P[0][0], P[1][0], d / L1), K.lerp(P[0][1], P[1][1], d / L1));
-    else { g.lineTo(P[1][0], P[1][1]); g.lineTo(K.lerp(P[1][0], P[2][0], (d - L1) / L2), K.lerp(P[1][1], P[2][1], (d - L1) / L2)); }
-    g.stroke(); g.restore();
-  }
-  /** a terracotta cross at (x, y), size px, progress k (two strokes). o: {color, w, disc} */
-  function cross(x, y, size, k, o = {}) {
-    const g = G(); k = c01(k); if (k <= 0) return;
-    const s = size * 0.28, col = o.color || C.accent;
-    if (o.disc) { g.save(); g.globalAlpha *= Math.min(1, k * 2); g.beginPath(); g.arc(x, y, size * 0.55, 0, 7); g.fillStyle = K.rgba(col, 0.14); g.fill(); g.strokeStyle = K.rgba(col, 0.6); g.lineWidth = 2; g.stroke(); g.restore(); }
-    const k1 = c01(k * 2), k2 = c01(k * 2 - 1);
-    K.line(x - s, y - s, x + s, y + s, { k: k1, color: col, w: o.w || Math.max(3, size * 0.1) });
-    K.line(x + s, y - s, x - s, y + s, { k: k2, color: col, w: o.w || Math.max(3, size * 0.1) });
-  }
-
-  // ---------------------------------------------------------------- evidence, claims, rulebook
-  const EVID = {
-    error: { icon: 'warning', eyebrow: 'the exact error', color: C.accent },
-    versions: { icon: 'gear', eyebrow: 'your versions', color: C.head },
-    command: { icon: 'terminal', eyebrow: 'the command', color: C.head },
-    file: { icon: null, eyebrow: 'the file', color: C.head },
-    note: { icon: 'chat', eyebrow: 'note', color: C.head },
-  };
-  /** an EVIDENCE card, top-left (x, y). o: {kind 'error'|'versions'|'command'|'file'|'note', text (mono), eyebrow,
-   *  w (360), alpha, lit 0..1 (gold rim), rot}. Height 112. returns {w, h} */
-  function evidence(x, y, o = {}) {
-    const E = EVID[o.kind || 'note'], h = 112;
-    const w = Math.max(pick(o.w, 300), K.measure(o.text || '', type.mono) + 116, K.measure((o.eyebrow || E.eyebrow).toUpperCase(), { font: 'ui', weight: 600, size: 20, tracking: 4 }) + 116);
-    K.layer(pick(o.alpha, 1), () => K.at(x + w / 2, y + h / 2, 1, pick(o.rot, 0), () => {
-      const X = -w / 2, Y = -h / 2, lit = c01(o.lit);
-      K.card(X, Y, w, h, { r: 16, fill: '#262333', stroke: mix(C.line2, C.head, lit * 0.8), glow: lit * 0.5 });
-      if (E.icon) K.icon(E.icon, X + 44, Y + h / 2, 40, { color: E.color });
-      else K.file(X + 44, Y + h / 2, 52, { ext: 'py' });
-      K.eyebrow(o.eyebrow || E.eyebrow, X + 84, Y + 40, { size: 20 });
-      const tw = w - 104;
-      K.text(o.text || '', X + 84, Y + 82, { font: 'mono', weight: 600, size: 26, color: C.strong, maxW: tw });
-    }));
-    return { w, h };
-  }
-
-  /** a CLAIM card (06's confident answers), top-left (x, y). o: {text (mono 28), label (Karla 26 soft, under),
-   *  w (480), verdict 'cross'|'check'|'warn', vk 0..1 (verdict draws), alpha, textColor}. Height 128 with label, 84 without. */
-  function claim(x, y, o = {}) {
-    const w = pick(o.w, 480), h = o.label ? 128 : 84;
-    K.layer(pick(o.alpha, 1), () => {
-      const vk = c01(o.vk), bad = o.verdict === 'cross' || o.verdict === 'warn';
-      K.card(x, y, w, h, { r: 18, fill: '#242130', stroke: mix(C.line2, bad ? C.accent : C.head, vk * 0.7) });
-      K.text(o.text || '', x + 28, y + 52, { font: 'mono', weight: 600, size: 28, color: o.textColor || C.strong, maxW: w - 110 });
-      if (o.label) K.text(o.label, x + 28, y + 98, { font: 'ui', weight: 600, size: 26, color: C.soft });
-      const vx = x + w - 46, vy = y + h / 2;
-      if (o.verdict === 'cross') cross(vx, vy, 52, vk, { disc: true });
-      else if (o.verdict === 'check') tick(vx, vy, 52, vk, { disc: true, color: C.head });
-      else if (o.verdict === 'warn' && vk > 0) K.icon('warning', vx, vy, 46, { color: C.accent, alpha: vk });
-    });
-    return { w, h };
-  }
-
-  /** the RULEBOOK: the official docs window for your version. (x, y, w, h) like K.win. o: {t, url ('docs.example.dev/v3'),
-   *  versions (['v2.x', 'v3.x']), current (index lit, default last), litK 0..1 (current version glows), title ('Official docs'),
-   *  edition 0..1 (slim /llms.txt edition slides out from behind the right edge), alpha, focus, lines 0..1 (text bars draw)}
-   *  returns {content, edition:{x, y, w, h} (the slim book's rect, for arrows)} */
-  function rulebook(x, y, w, h, o = {}) {
-    const ed = c01(o.edition);
-    let rect = null;
-    // the slim /llms.txt edition: a thin book lying flat that slides DOWN out from behind the window's bottom edge
-    const ew = 300, eh = 66, ex = x + 36, ey = y + h - eh - 6 + ed * (eh + 18);
-    K.layer(pick(o.alpha, 1), () => {
-      if (ed > 0) {
-        K.card(ex, ey, ew, eh, { r: 12, fill: '#2E2838', stroke: K.rgba(C.head, 0.8), glow: 0.4 * ed, shadow: false });
-        K.line(ex + 18, ey + 12, ex + 18, ey + eh - 12, { color: K.rgba(C.head, 0.5), w: 3 });
-        K.line(ex + 28, ey + 12, ex + 28, ey + eh - 12, { color: K.rgba(C.head, 0.25), w: 2 });
-        K.text('/llms.txt', ex + 46, ey + eh / 2 + 10, { font: 'mono', weight: 600, size: 28, color: C.head });
-        K.icon('sparkle', ex + ew - 34, ey + eh / 2, 30, { color: C.head, alpha: 0.85 });
-      }
-      rect = K.win(x, y, w, h, { kind: 'browser', title: o.title || 'Official docs', titleSize: 26, url: o.url || 'docs.example.dev/v3', focus: o.focus });
-      const R = rect, vs = o.versions || ['v2.x', 'v3.x'], cur = pick(o.current, vs.length - 1), lk = c01(pick(o.litK, 1));
-      const narrow = R.w < 620;
-      K.icon('book', R.x + 46, R.y + 50, 52, { color: C.head });
-      K.text(o.heading || 'Reference', R.x + 90, R.y + 62, { font: 'head', weight: 700, size: 34, color: C.head });
-      // version pills: right of the heading, or on their own row in a narrow window
-      let px = R.x + R.w - 30; const py = narrow ? R.y + 116 : R.y + 50;
-      if (narrow) px = R.x + 34 + vs.reduce((a2, v) => a2 + K.measure(v, { font: 'mono', size: 26, weight: 600 }) + 48, -12);
-      for (let i = vs.length - 1; i >= 0; i--) {
-        const pw = K.measure(vs[i], { font: 'mono', size: 26, weight: 600 }) + 36;
-        const on = i === cur ? lk : 0;
-        K.pill(vs[i], px - pw / 2, py, { size: 26, font: 'mono', color: mix(C.soft, C.page, on), fill: mix(C.tile, C.head, on), stroke: mix(C.line2, C.head, on), glow: on * 0.5 });
-        px -= pw + 12;
-      }
-      const lines = c01(pick(o.lines, 1)), ws = [0.86, 0.72, 0.8, 0.55, 0.78, 0.66], l0 = narrow ? 176 : 112;
-      for (let i = 0; i < ws.length; i++) {
-        const ly = R.y + l0 + i * 34; if (ly > R.y + R.h - 24) break;
-        K.line(R.x + 34, ly, R.x + 34 + (R.w - 68) * ws[i], ly, { k: c01(lines * 1.4 - i * 0.08), color: K.rgba(C.body, 0.28), w: 10 });
-      }
-    });
-    return { content: rect, edition: { x: ex, y: ey, w: ew, h: eh, cx: ex + ew / 2, cy: ey + eh / 2 } };
-  }
-
-  /** a dated chip (sources and versions on screen): mono 26 gold-ish pill centred at (x, y). o: {alpha, color} returns width */
-  function dated(s, x, y, o = {}) {
-    return K.pill(s, x, y, { size: 26, font: 'mono', color: o.color || C.head, stroke: K.rgba(C.head, 0.45), fill: '#1C1B2A', alpha: o.alpha });
-  }
-
-  /** a vertical legend of the five tabs (for small-scale files, e.g. the title card): rows of icon + label at (x, y),
-   *  states like drawFile's tabs. o: {gap 54, size 30, alpha, reveal} */
-  function tabLegend(x, y, tabs, o = {}) {
-    const gap = pick(o.gap, 54), size = pick(o.size, 30);
-    K.layer(pick(o.alpha, 1), () => TABS.forEach((T, i) => {
-      const v = Array.isArray(tabs) ? pick(tabs[i], 0) : (typeof tabs === 'number' ? tabs : 0);
-      const rv = Array.isArray(o.reveal) ? pick(o.reveal[i], 0) : pick(o.reveal, 1);
-      if (rv <= 0) return;
-      const { lit, done } = tabLook(v), col = mix(mix(C.soft, C.body, done), C.head, lit);
-      K.layer(rv, () => {
-        K.icon(T.icon, x + 18, y + i * gap - size * 0.32, size * 1.1, { color: col });
-        K.text(T.label, x + 50, y + i * gap, { font: 'ui', weight: 600, size, color: col });
+      K.card(x, y, w, h, { r: 20 });
+      if (o.title) K.eyebrow(o.title, x + pad, y + pad + 18);
+      rows.forEach((r, i) => {
+        const k = c01(pick(r.k, 1)); if (k <= 0) return;
+        const ry = y + pad + head + i * rh + size * 0.6;
+        K.layer(K.ease.out(k), () => {
+          const bx = x + pad + size * 0.5;
+          K.rr(bx - size * 0.45, ry - size * 0.45, size * 0.9, size * 0.9, 6);
+          g.save(); g.lineWidth = 2.5; g.strokeStyle = r.kind === 'machine' ? palette.machine : palette.unseen; g.stroke(); g.restore();
+          if (r.kind === 'machine') K.icon('check', bx, ry, size * 0.95, { color: palette.machine, w: 4 });
+          K.text(r.s, x + pad + size * 1.5, ry + size * 0.34, { font: 'ui', weight: 600, size, color: r.kind === 'machine' ? C.strong : palette.unseen });
+        });
       });
-    }));
+      if (o.signK != null) {
+        const sk = c01(o.signK), sy = y + h - pad - 34;
+        K.line(x + pad, sy, x + w - pad, sy, { color: C.line2, w: 2 });
+        if (sk > 0) {
+          const pts = [];
+          for (let i = 0; i <= 24; i++) { const u = i / 24; pts.push([x + pad + 20 + u * (w * 0.42), sy - 14 + Math.sin(u * 19) * 9 * (1 - u * 0.3)]); }
+          K.path(pts, { k: sk, color: C.head, w: 3, head: false, tension: 0.4 });
+        }
+        K.text(o.signLabel || 'signed: someone who can code', x + pad, sy + 30, { font: 'ui', weight: 600, size: 26, color: sk > 0.9 ? C.head : C.soft });
+      }
+    });
+    return h;
   }
 
-  const M = {
-    palette, type, motion, TABS, TAB_INDEX, POS, BODY, TAB,
-    geo, lerpGeo, tabLook, drawFile, drawTab, stamp, scribble,
-    you, clerk, desk, deskSliver,
-    legwork, yourwork, clerkLine, youLine, loop, tick, cross,
-    evidence, claim, rulebook, dated, tabLegend,
-    layout: POS,
-  };
-  window.M = M;
+  /** PLAQUE / posted notice: a wood-framed paper card with centred text (14 the rule, 10 the house rule).
+   *  (x, y) = centre, width w. o: {size (44), font ('head' gold on paper → ink), sub (smaller second line),
+   *  k reveal 0..1, alpha, pins: true (two brass pins: a posted notice)}  returns height */
+  function plaque(text, x, y, w, o = {}) {
+    const size = o.size || 44, pad = 34;
+    const tf = { font: o.font || 'head', weight: 700, size };
+    const lines = K.wrap(text, w - pad * 2, tf), lh = size * 1.25;
+    const subF = { font: 'read', size: 30, italic: true };
+    const subLines = o.sub ? K.wrap(o.sub, w - pad * 2, subF) : [];
+    const h = pad * 2 + lines.length * lh - (lh - size) + (subLines.length ? 22 + subLines.length * 40 : 0) + 8;
+    const k = c01(pick(o.k, 1));
+    if (k <= 0) return h;
+    const g = G();
+    K.layer(pick(o.alpha, 1) * K.ease.out(k), () => K.at(x, y, 0.94 + 0.06 * K.ease.out(k), () => {
+      g.save(); g.translate(-x, -y);
+      const x0 = x - w / 2, y0 = y - h / 2;
+      K.card(x0 - 10, y0 - 10, w + 20, h + 20, { r: 16, fill: palette.wood, stroke: palette.woodHi });
+      K.card(x0, y0, w, h, { r: 10, fill: C.paper, stroke: C.paperShade, shadow: false });
+      lines.forEach((ln, i) => K.text(ln, x, y0 + pad + size * 0.8 + i * lh, { ...tf, color: C.ink, align: 'center', tracking: -0.5 }));
+      subLines.forEach((ln, i) => K.text(ln, x, y0 + pad + lines.length * lh + 22 + 28 + i * 40, { ...subF, color: '#5A4E44', align: 'center' }));
+      if (o.pins) [x0 + 22, x0 + w - 22].forEach((px) => { g.fillStyle = C.gold; g.beginPath(); g.arc(px, y0 + 20, 7, 0, 7); g.fill(); });
+      g.restore();
+    }));
+    return h;
+  }
+
+  /** the owner's VIEW CONE (05): a soft gold wedge from (x, y) towards angle ang (radians, 0 = right),
+   *  half-spread sp, length len, reveal k. Things outside it are what the owner can't see. */
+  function cone(x, y, ang, sp, len, k = 1, color = C.head) {
+    k = c01(k); if (k <= 0) return;
+    const g = G(); g.save();
+    const r = g.createRadialGradient(x, y, 0, x, y, len * k);
+    r.addColorStop(0, K.rgba(color, 0.32)); r.addColorStop(1, K.rgba(color, 0));
+    g.fillStyle = r; g.beginPath(); g.moveTo(x, y); g.arc(x, y, len * k, ang - sp, ang + sp); g.closePath(); g.fill();
+    g.restore();
+  }
+
+  window.M = { palette, type, motion, layout, geo, house, street, leakPts, person, crew, crewGroup, sparkleShape,
+    bubble, tag, dated, chip, label, van, checklist, plaque, cone };
 })();

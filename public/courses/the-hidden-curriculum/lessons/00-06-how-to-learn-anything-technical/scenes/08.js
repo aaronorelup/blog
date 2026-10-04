@@ -1,85 +1,172 @@
-/* 08 — Keep this
-   End card. The closed case file (all tabs done, signed, stamped) sits small on a thin shelf at right under a lantern.
-   Left column: three takeaways rise on their cues (bold gold lead, cream Georgia rest); each one glows its tabs once
-   (Clue+Search, Rulebook+Briefing, Experiment; the stamp warms at keep-3). [[lantern]]: the lantern brightens, its
-   light washes down over the file, and the closing line appears in italic. Sparse petals avoid the text and file. */
+/* 00.06 · 08 — Where the picture breaks.
+   The house metaphor visibly cracks in three places (three dots under the eyebrow fill as each is named):
+   1 [[rooms]] an inspector walks all four rooms, each checked gold; [[not-proven]] a thicket of program paths
+     spreads far past the walls: "inspected ≠ proven safe".
+   2 [[own-report]] camera slides the house left; an inspection report signed by a crew sparkle; on "AI" the
+     inspector gets the AI badge: "AI inspector = another crew member", "independent authority" struck.
+   3 [[every-door]] camera pulls back to the street (09's layout: 5 houses, s 220, gap 330, y 560); burglars at
+     every door at once; on "Now with AI" some of them get the AI sparkle.
+   World coords = the street; the opening frame is the street's middle house zoomed to the hero size (s ≈ 420). */
 SCENE('08', (t, S) => {
-  const C = K.C;
-  const cK1 = S.cue('keep-1', 0), cK2 = S.cue('keep-2', 8.08), cK3 = S.cue('keep-3', 12.78), cL = S.cue('lantern', 17.66);
+  const C = K.C, P = M.palette;
+  const cRooms = S.cue('rooms', 2.64), cNot = S.cue('not-proven', 8.77),
+    cOwn = S.cue('own-report', 12.42), cDoor = S.cue('every-door', 22.08);
+  const tPath = S.find('path', 0, 7.22), tOwnWord = S.find('own', 0, 13.48), tAI = S.find('AI', 0, 15.45),
+    tMember = S.find('member', 0, 16.9), tNot = S.find(/^not$/, 0, 18.17), tNow = S.find('Now', 0, 26.19);
 
-  // ------------------------------------------------------------ ground: night, plate in the lower band
-  K.bg({ glow: 0.45, glowX: 1490, glowY: 260 });
-  K.plate('plate', t, { shade: 0.55, mask: [620, 860] });
+  // ---- camera: world street (middle house at 960, 560, s 220) seen at hero size, then left, then all of it
+  const SW = 220, HX = 960, HY = 560, Z = 420 / SW;
+  const cyHero = HY - 60 / Z, cxLeft = HX + 260 / Z;
+  const cam = K.cam(t, [
+    { at: 0, x: HX, y: cyHero, z: Z },
+    { at: cOwn - 0.2, x: cxLeft, y: cyHero, z: Z, d: 0.9 },
+    { at: cDoor - 0.4, x: 960, y: 540, z: 1, d: 1.5 },
+  ]);
+  const toScreen = (x, y) => [960 + cam.z * (x - cam.x), 540 + cam.z * (y - cam.y)];
 
-  // ------------------------------------------------------------ right: the shelved file under the lantern
-  const F = M.geo('shelf');
-  const litK = K.io(t, cL, 0.9);                      // the lantern brightens on [[lantern]]
-  const LX = 1490, LY = 230;
-  // light from the lantern washing down onto the file (soft, widening glows; no hard cone edge)
-  if (litK > 0) {
-    K.glow(F.cx, F.y0 - 40, 360, C.head, 0.10 * litK);
-    K.glow(F.cx, F.cy, 300, C.head, 0.08 * litK);
-  }
-  // shelf: a thin night-wood board with a lit top edge
-  const SY = F.y1 + 14;
-  K.card(F.cx - 250, SY, 500, 14, { r: 4, fill: M.palette.wood, stroke: false, shadow: false });
-  K.line(F.cx - 246, SY + 1, F.cx + 246, SY + 1, { color: K.rgba(C.head, 0.35 + 0.35 * litK), w: 1.5 });
-  K.layer(0.5, () => K.line(F.cx - 236, SY + 14, F.cx + 236, SY + 14, { color: M.palette.woodDark, w: 3 }));
+  K.bg({ glow: 0.4, glowX: 960, glowY: 600 });
 
-  // flashes: each glows once on its takeaway
-  const fl = (a) => K.env(t, a + 0.15, a + 1.9, 0.5);
-  const f1 = fl(cK1), f2 = fl(cK2), f3 = fl(cK3);
-  M.drawFile(t, F, {
-    tabs: 2, sign: 1, signed: 1, stamp: 1, caseNo: false,
-    flash: [f1, f1, f2, f2, f3],
-    glow: 0.25 + 0.75 * litK,
-  });
-  // the CLOSED stamp warms at keep-3 and stays a little warmer
-  const stK = K.io(t, cK3 + 0.15, 0.6) * (1 - 0.6 * K.io(t, cK3 + 1.9, 0.8));
-  if (stK > 0) K.glow(F.stamp.x, F.stamp.y, 120, C.accent, 0.22 * stK);
+  // ---- house timeline
+  const cutK = K.io(t, 0.5, 1.0) * (1 - K.io(t, cDoor - 1.0, 0.7));
+  const gm = M.geo(HX, HY, SW), R = gm.rooms;
+  const order = ['front', 'living', 'data', 'back'];
+  const arrive = [cRooms + 0.35, cRooms + 1.25, cRooms + 2.15, cRooms + 3.05];   // reach each room
+  const litK = (key) => K.io(t, arrive[order.indexOf(key)], 0.5, 'out');
+  const neighK = K.io(t, cDoor - 0.2, 1.0, 'out');
 
-  K.map.lantern(t, 0, { x: LX, y: LY, s: 1.4, lit: 0.6 + 0.4 * litK, glowK: 1 + 1.4 * litK });
-
-  // ------------------------------------------------------------ left: three takeaways
-  const X = 236, NX = 186, W = 900;
-  const keep = [
-    ['The error is the first clue, and its exact words are the search key.', 'Find the line that names the failure, and never paraphrase it.'],
-    ['Give the AI the evidence, then check its verdict.', 'Put the error, versions, command and file on its desk; check any package, flag or function it names against the docs for your version.'],
-    ['A tiny test settles it.', 'Until a run proves it, an answer is a guess.'],
-  ];
-  const LEAD = { font: 'head', weight: 700, size: 40 }, REST = { font: 'read', size: 30 };
-  const LLH = 50, RLH = 40, GAP = 44;
-  K.layer(K.io(t, -0.6, 0.6), () => K.title('Keep this', X - 50, 196, { size: 56 }));
-  let y = 262;
-  const ats = [cK1 + 0.1, cK2, cK3];
-  keep.forEach(([lead, rest], i) => {
-    const ll = K.wrap(lead, W, LEAD), rl = K.wrap(rest, W, REST);
-    const y0 = y;
-    y += ll.length * LLH + 8 + rl.length * RLH + GAP;
-    const k = K.io(t, ats[i], 0.7, 'out');
-    if (k <= 0) return;
-    const dy = (1 - k) * 22;
-    K.layer(k, () => {
-      K.text(String(i + 1), NX, y0 + 36 + dy, { font: 'head', weight: 700, size: 40, color: K.rgba(C.head, 0.75), align: 'center' });
-      ll.forEach((s, j) => K.text(s, X, y0 + 36 + j * LLH + dy, { ...LEAD, color: C.head }));
-      const ry = y0 + 36 + ll.length * LLH + 6;
-      rl.forEach((s, j) => K.text(s, X, ry + j * RLH + dy, { ...REST, color: C.strong }));
+  K.withCam(cam, () => {
+    M.street(t, 960, HY, 5, SW, 330, {
+      each: (i) => i === 2
+        ? { cutaway: cutK, roomLit: litK }
+        : { alpha: neighK },
     });
+
+    // checks in each room as the inspector reaches it
+    order.forEach((key, i) => {
+      const r = R[key], ck = K.io(t, arrive[i] + 0.1, 0.45, 'out') * cutK;
+      if (ck > 0) K.icon('check', r.x + r.w - 11, r.y + 11, 13 * (0.7 + 0.3 * ck), { color: P.machine, alpha: ck, w: 2.2 });
+    });
+
+    // the inspector's dotted route and the inspector himself (world size 37 → about 70 on screen)
+    const feet = order.map((k) => [R[k].x + 10, R[k].y + R[k].h - 3]);
+    const routeK = K.seg(t, arrive[0], arrive[3]);
+    const inspA = K.io(t, cRooms, 0.4) * cutK;
+    if (inspA > 0) {
+      K.path(feet, { k: routeK, color: C.strong, w: 1.4, dash: [3, 5], head: false, alpha: 0.55 * cutK, tension: 0 });
+      let px = feet[0][0], py = feet[0][1];
+      for (let i = 1; i < 4; i++) {
+        const m = K.io(t, arrive[i] - 0.65, 0.65, 'io');
+        if (m <= 0) break;
+        px = K.lerp(feet[i - 1][0], feet[i][0], m); py = K.lerp(feet[i - 1][1], feet[i][1], m);
+      }
+      M.person(t, px, py, 37, 'inspector', { alpha: inspA, ai: K.io(t, tAI, 0.6, 'out') });
+    }
   });
 
-  // closing line, on [[lantern]]
-  const qk = K.io(t, cL + 0.2, 0.8, 'out');
-  if (qk > 0) K.layer(qk, () => {
-    const qy = y + 26 + (1 - qk) * 16;
-    K.line(X, qy - 46, X + 120, qy - 46, { color: K.rgba(C.head, 0.5), w: 2 });
-    K.para('AI is the lantern: it lights every district, but it doesn’t walk the streets for you.', X, qy, W,
-      { font: 'read', size: 30, italic: true, lh: 40, color: C.head });
+  // ---- break 1: the thicket of paths (screen space, around the house)
+  const webIn = K.io(t, tPath - 0.3, 0.1), webOut = 1 - K.io(t, cOwn - 0.6, 0.8);
+  if (webIn > 0 && webOut > 0) {
+    const r = K.rng(808), N = 44, hx = 960, hy = 600;
+    const col = K.mixColor(C.line2, C.accent, 0.45);
+    K.layer(webOut, () => {
+      for (let i = 0; i < N; i++) {
+        const sx = hx + (r() - 0.5) * 300, sy = hy - 20 + (r() - 0.5) * 170;
+        let ang = r() * Math.PI * 2, x = sx, y = sy;
+        const pts = [[x, y]], steps = 5 + Math.floor(r() * 3);
+        for (let j = 0; j < steps; j++) {
+          ang += (r() - 0.5) * 1.3;
+          const len = 70 + r() * 70;
+          x += Math.cos(ang) * len; y += Math.sin(ang) * len * 0.62;
+          // keep inside an ellipse clear of the eyebrow and the chip band
+          const ex = (x - hx) / 760, ey = (y - (hy - 10)) / 285, d = Math.hypot(ex, ey);
+          if (d > 1) { x = hx + (x - hx) / d; y = hy - 10 + (y - hy + 10) / d; ang += Math.PI * 0.6; }
+          pts.push([x, y]);
+        }
+        const k = K.stagger(t, tPath - 0.2, i, 0.035, 1.1, 'out');
+        if (k <= 0) continue;
+        K.path(pts, { k, color: col, w: 1.8, head: false, alpha: 0.75 });
+        const g = K.ctx();
+        pts.forEach((p, j) => {
+          if (j / (pts.length - 1) > k) return;
+          g.save(); g.globalAlpha *= 0.8; g.fillStyle = col; g.beginPath(); g.arc(p[0], p[1], 3.2, 0, 7); g.fill(); g.restore();
+        });
+      }
+    });
+  }
+
+  // ---- break 1 chips (bottom band, one idea at a time)
+  const chipY = 878;
+  const roomsChip = K.io(t, arrive[3] + 0.2, 0.5, 'out') * (1 - K.io(t, cNot - 0.45, 0.4));
+  if (roomsChip > 0) M.chip('every room checked', 960, chipY, 'machine', { k: 1, alpha: roomsChip });
+  const npChip = K.io(t, cNot, 0.5, 'out') * (1 - K.io(t, cOwn - 0.6, 0.6));
+  if (npChip > 0) M.chip('inspected ≠ proven safe', 960, chipY, 'unseen', { k: Math.min(1, npChip * 1.6), alpha: npChip });
+
+  // ---- break 2: the report card in the right column
+  const repOut = 1 - K.io(t, cDoor - 1.3, 0.5);
+  const repK = K.io(t, cOwn + 0.15, 0.6, 'out') * repOut;
+  const CX = 1190, CY = 250, CW = 600, CH = 400;
+  if (repK > 0) {
+    K.layer(repK, () => {
+      const g = K.ctx(); g.save(); g.translate(0, (1 - repK) * 18);
+      K.card(CX, CY, CW, CH, { r: 20, stroke: K.mixColor(C.line2, C.head, 0.35) });
+      K.eyebrow('INSPECTION REPORT', CX + 40, CY + 58, { size: 22 });
+      const rows = ['every room: safe', 'no problems found'];
+      rows.forEach((s, i) => {
+        const y = CY + 122 + i * 58;
+        K.icon('check', CX + 56, y - 10, 30, { color: P.machine, w: 3 });
+        K.text(s, CX + 88, y, { font: 'ui', weight: 600, size: 30, color: C.strong });
+      });
+      K.line(CX + 40, CY + 248, CX + CW - 40, CY + 248, { color: C.line2, w: 1.5 });
+      K.text('signed by', CX + 40, CY + 318, { font: 'ui', weight: 600, size: 26, color: C.soft });
+      // the crew's sparkle signs it on "own"
+      const sg = K.io(t, tOwnWord - 0.1, 0.6, 'out');
+      if (sg > 0) {
+        K.glow(CX + 210, CY + 308, 52 * sg, C.head, 0.3 * sg);
+        M.sparkleShape(CX + 210, CY + 308, 30 * K.ease.out(sg), P.crew, sg);
+        K.text('the crew', CX + 252, CY + 318, { font: 'ui', weight: 600, size: 26, color: P.crew, alpha: sg });
+      }
+      // the inspector, on the card's right, gets the AI badge
+      M.person(t, CX + CW - 110, CY + CH - 34, 110, 'inspector', { ai: K.io(t, tAI, 0.6, 'out'), i: 1 });
+      g.restore();
+    });
+  }
+  const aiLab = K.io(t, tMember - 0.4, 0.6, 'out') * repOut;
+  if (aiLab > 0) M.label('AI inspector = another crew member', CX + CW / 2, CY + CH + 70, 'machine', { alpha: aiLab });
+  const offK = K.io(t, tNot, 0.5, 'out') * repOut;
+  if (offK > 0) M.chip('independent authority', CX + CW / 2, CY + CH + 150, 'off', { k: Math.min(1, offK * 1.6), alpha: offK });
+
+  // ---- break 3: burglars at every door of every house (screen = world here, z ends at 1)
+  if (t > cDoor - 0.5) {
+    const bs = 64, ground = HY + 0.36 * SW;
+    const spots = [];
+    for (let i = 0; i < 5; i++) {
+      const hx = 960 + (i - 2) * 330;
+      spots.push({ x: hx - 0.19 * SW - 2, face: 1 });            // front door
+      spots.push({ x: hx + 0.38 * SW + 22, face: -1 });          // back door
+    }
+    const orderB = [3, 6, 0, 9, 4, 1, 7, 2, 8, 5];                // "at once": scattered, not left to right
+    const aiSet = new Set([1, 3, 4, 6, 9]);
+    spots.forEach((sp, j) => {
+      const k = K.stagger(t, cDoor + 0.6, orderB.indexOf(j), 0.12, 0.6, 'out');
+      if (k <= 0) return;
+      const [sx, sy] = toScreen(sp.x, ground);
+      const ai = aiSet.has(j) ? K.stagger(t, tNow + 0.1, [...aiSet].indexOf(j), 0.12, 0.5, 'out') : 0;
+      M.person(t, sx, sy + (1 - k) * 14, bs * cam.z, 'burglar', { alpha: k, face: sp.face, ai, i: j });
+    });
+    const d1 = K.io(t, cDoor + 1.0, 0.5, 'out');
+    if (d1 > 0) M.chip('every door, every house, at once', 960, 790, 'unseen', { k: Math.min(1, d1 * 1.6), alpha: d1 });
+    const d2 = K.io(t, tNow, 0.5, 'out');
+    if (d2 > 0) M.chip('now with AI too', 960, 870, 'unseen', { k: Math.min(1, d2 * 1.6), alpha: d2, icon: 'sparkle' });
+  }
+
+  // ---- eyebrow + three-break counter (screen space, from the first frame)
+  K.eyebrow('WHERE THE PICTURE BREAKS', 960, 168, { align: 'center', size: 22 });
+  [cNot, cOwn, cDoor].forEach((at, i) => {
+    const x = 960 + (i - 1) * 34, y = 202, f = K.io(t, at, 0.5, 'out');
+    const g = K.ctx(); g.save();
+    g.lineWidth = 2; g.strokeStyle = K.mixColor(C.line2, C.accent, f);
+    g.beginPath(); g.arc(x, y, 8, 0, 7); g.stroke();
+    if (f > 0) { g.globalAlpha *= f; g.fillStyle = C.accent; g.beginPath(); g.arc(x, y, 8, 0, 7); g.fill(); }
+    g.restore();
   });
-
-  // the five-step habit named under the shelf (tabs are icon-only at this scale)
-  K.layer(K.io(t, -0.6, 0.6) * 0.9, () => K.text('Clue · Search · Rulebook · Briefing · Experiment', F.cx, SY + 62,
-    { font: 'ui', weight: 600, size: 26, color: K.rgba(C.head, 0.85), align: 'center' }));
-
-  // ------------------------------------------------------------ petals, kept off the text and the file
-  K.petals(t, { n: 5, seed: 8, alpha: 0.6, avoid: [[120, 130, 1180, 930], [1170, 160, 1810, 850]] });
 });

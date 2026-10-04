@@ -1,194 +1,144 @@
-/* 00.06 scene 07: The experiment that closes the case.
-   The file slides from 06's corner to the bench position; the Experiment tab lights. The tiny test checks one of 06's
-   confident-witness claims (a made-up turbo= flag) in a three-line scratch file: the run fails with TypeError
-   (claim disproved, terracotta cross), then the rerun without the invented flag passes (cream tick). The clerk's
-   agent runs the SAME scratch file and gets the same TypeError; you ring it: "what does it prove?". Direction: the clerk's legwork reaches all five tabs, a /llms.txt chip on the Rulebook. Your job is
-   written on the case sheet (clues in, verdict checked); signature, then the CLOSED stamp ('back', the scene's one
-   overshoot). At [[ignore]] the bench clears and three grey cards land on a two-plank shelf at right. In the last
-   0.6 s before the hand-over everything else fades and the file glides to 08's shelf position, so only one file
-   exists across the crossfade. */
+/* 07 "Make sure it's secure": the owner asks, the crew says yes; a true yes and a false yes look the same;
+   two dated self-report failures; then the line (a wall from your side) with two doors (learn to check it / bring in an expert). */
 SCENE('07', (t, S) => {
-  const C = K.C, g = K.ctx();
-  K.bg();
+  const C = K.C, P = M.palette, g = K.ctx();
+  K.bg({ glow: 0.32, glowX: 700, glowY: 640 });
+  const DY = 80;                                   // whole group sits 80 px lower (bottom quarter used)
 
   // ---- beats (local seconds)
-  const cBench = S.cue('bench', 0);
-  const cResult = S.cue('result', 8.47);
-  const cAgent = S.cue('agent-runs', 11.35);
-  const cHead = S.cue('heading', 19.56);
-  const cIgnore = S.cue('ignore', 28.98);
-  const wLast = S.find('settles', 0, cBench + 0.9);
-  const wTiny = S.find('tiny', 0, cBench + 2.2);
-  const wSmallest = S.find('smallest', 0, cBench + 3.8);
-  const wScratch = S.find('scratch', 0, cBench + 7.1);
-  const wFail = S.find(/^fail/, 0, cResult + 0.75);
-  const wKnow = S.find('know', 0, cResult + 1.5);
-  const wStill = S.find('still', 0, cAgent + 5.8);
-  const wProves = S.find(/^proves\./, 0, cAgent + 7.0);
-  const wDoing = S.find('doing', 0, cHead + 1.4);
-  const wDocs = S.find('docs', 0, cHead + 3.4);
-  const wJob = S.find('job', 0, cHead + 5.7);
-  const wClues = S.find('clues', 0, cHead + 6.7);
-  const wVerdict = S.find('verdict', 0, cHead + 7.9);
-  const wChecked = S.find('checked', 0, cHead + 8.5);
-  const wFlags = S.find('memorising', 0, cIgnore + 2.0);
-  const wTool = S.find('which', 0, cIgnore + 3.6);
-  const wForum = S.find('forum', 0, cIgnore + 5.4);
-  const tOut = S.out || (S.dur + 0.4);
+  const tAsk = S.cue('ask', 0.9);
+  const tYes = S.cue('yes', 3.9);
+  const tOut = S.find('output', 0, 6.97);          // "just another output"
+  const tTwo = S.cue('two-yeses', 10);
+  const tFalse = S.find('false', 0, 11.4);
+  const tWrong = S.find('self-reports', 0, 14.1);
+  const tRep = S.cue('replit', 16);
+  const tCould = S.find(/^could\.$/i, 0, 24.8);
+  const tStudy = S.find('study', 0, 26.1);
+  const tWall = S.cue('wall', 31.8);
+  const tDoors = S.find('doors', 0, 34.4);
+  const tLearn = S.cue('learn', 35.3);
+  const tExpert = S.cue('expert', 38.3);
+  const tVend = S.find('companies', 0, 42.9);
 
-  // ---- exit: everything but the file fades, then the file glides to 08's shelf spot
-  const endFade = 1 - K.io(t, tOut - 0.62, 0.4);
-  const shelfK = K.io(t, tOut - 0.55, 0.7);
-  // the bench (editor, results, agent log, legwork, /llms.txt) clears at [[ignore]]
-  const benchA = 1 - K.io(t, cIgnore, 0.6);
+  // ---- the house (small, built, lit) and its crew
+  const gm = M.house(t, 420, 600 + DY, 300, { lights: 1 });
+  const ground = gm.ground;                        // 788
+  const dimK = K.io(t, tWrong, 0.8);               // doubt: the yes goes soft
+  const crewC = M.crew(t, 655, 420 + DY, 64, { i: 1, dim: dimK });
 
-  // ---- the case file: corner (06's end) -> bench -> (exit) shelf
-  const Fb = M.lerpGeo('corner', 'bench', K.io(t, cBench + 0.1, M.motion.move));
-  const F = shelfK > 0 ? M.lerpGeo(Fb, 'shelf', shelfK) : Fb;
-  const expV = K.io(t, wLast, M.motion.light) + K.io(t, wVerdict, M.motion.light);
-  const signK = K.io(t, wJob - 0.2, 0.8);
-  const signedK = K.io(t, wClues, 1.3, 'sine');
-  const stampK = K.io(t, wChecked + 0.25, 0.6, 'back');
+  // ---- the owner
+  M.person(t, 900, ground, 150, 'owner', { i: 0 });
 
-  // ---- you, left of the file
-  const youX = 175, youY = 600;
-  M.you(t, youX, youY, 110, { alpha: K.io(t, cBench + 0.2, 0.6) * endFade, label: K.io(t, cBench + 0.4, 0.6) });
+  // ---- owner asks
+  const askK = K.io(t, tAsk - 0.1, 0.5, 'out');
+  const askFade = 1 - K.io(t, tRep, 0.6);
+  if (askFade > 0) M.bubble('Make sure it\'s secure.', 1010, 478 + DY, 'owner', { k: askK, alpha: askFade, size: 32 });
 
-  // your job, written on the case sheet: two cream pills (screen coords of the pills, for your line)
-  const p1 = K.io(t, wClues, 0.5), p2 = K.io(t, wVerdict, 0.5);
-  M.drawFile(t, F, {
-    tabs: [2, 2, 2, 2, expV],
-    sign: signK, signed: signedK, stamp: stampK,
-    caseNo: shelfK > 0.3 ? false : undefined,
-    content: (Fc) => {
-      const s = Fc.s, cA = endFade;
-      // the experiment's result goes into the case file, in your hand (no numerals: Georgia's old-style figures)
-      const a = K.io(t, cResult + 0.5, 0.6) * cA;
-      if (a > 0) K.text('Experiment: turbo= does not exist', Fc.inner.x + 30 * s, Fc.inner.y + 52 * s, { font: 'read', italic: true, size: 32 * s, color: K.rgba(C.strong, 0.9 * a) });
-      const py = Fc.inner.y + 172 * s;
-      if (p1 > 0) K.pill('clues in', Fc.inner.x + 120 * s, py, { size: 28 * s, color: C.strong, stroke: K.rgba(C.strong, 0.5), alpha: p1 * cA });
-      if (p2 > 0) {
-        const px = Fc.inner.x + 400 * s;
-        const w = K.pill('verdict checked', px, py, { size: 28 * s, color: C.strong, stroke: K.rgba(C.strong, 0.5), alpha: p2 * cA });
-        if (cA > 0) K.layer(cA, () => M.tick(px + w / 2 + 36 * s, py, 44 * s, K.io(t, wChecked, 0.5)));
-      }
-    },
-    glow: 0.35 * K.io(t, wChecked + 0.4, 0.8),
-  });
-  // your line to "clues in" (the clue comes from you)
-  if (p1 > 0 && shelfK <= 0) {
-    const py = F.inner.y + 172 * F.s;
-    K.layer(endFade, () => M.youLine(youX + 40, youY + 20, F.inner.x + 30, py, K.io(t, wClues, 0.7), { bend: -30 }));
+  // ---- crew answers yes (bubble 1), then a twin slides out beside it
+  const yesK = K.io(t, tYes - 0.05, 0.5, 'out');
+  const checkK = K.io(t, tYes + 0.6, 0.4);
+  const twoK = K.io(t, tTwo, 0.7, 'io');
+  const by = 262 + DY, b1x = 470;
+  const b2x = K.lerp(b1x, 905, twoK);
+  // during "two yeses": a slow alternating highlight between the twins (they look the same)
+  const altK = K.env(t, tTwo + 0.8, tWrong, 0.6);
+  if (altK > 0) {
+    const ph = 0.5 + 0.5 * Math.sin((t - tTwo - 0.8) * Math.PI / 1.4 - Math.PI / 2);
+    K.glow(b1x, by, 230, C.head, 0.3 * altK * (1 - ph));
+    K.glow(905, by, 230, C.head, 0.3 * altK * ph);
+  }
+  if (twoK > 0) M.bubble('Yes, it\'s secure.', b2x, by, 'crew', { k: 1, alpha: Math.min(1, twoK * 2), check: 1, dim: dimK, tail: 'none', size: 30 });
+  M.bubble('Yes, it\'s secure.', b1x, by, 'crew', { k: yesK, check: checkK, dim: dimK, tail: twoK > 0.5 ? 'none' : 'right', size: 30 });
+
+  // "just another output" (before the twins), then "true?" / "false?" under the twins, same colour
+  const outK = K.env(t, tOut - 0.1, tTwo - 0.2, 0.4);
+  if (outK > 0) M.label('just another output', b1x, by + 88, 'note', { alpha: outK });
+  const tfK = K.io(t, tTwo + 0.6, 0.5);
+  if (tfK > 0) {
+    M.label('true?', b1x, by + 92, 'plain', { alpha: tfK });
+    M.label('false?', 905, by + 92, 'plain', { alpha: K.io(t, Math.max(tTwo + 0.6, tFalse - 0.1), 0.5) });
   }
 
-  // ---- the bench: editor window (scratch file) testing the AI's answer from 04
-  const edK = K.io(t, wTiny, M.motion.land);
-  const EX = 1180, EY = 290, EW = 620, EH = 232;
-  if (edK > 0 && benchA > 0) K.layer(edK * benchA, () => K.at(0, (1 - edK) * 40, 1, 0, () => {
-    const R = K.win(EX, EY, EW, EH, { kind: 'code', title: 'scratch/test_idea.py', titleSize: 26, focus: expV > 0.5 && expV < 1.5 && t < cHead });
-    K.editor(R, t, ['# AI says: try turbo=True', 'import json', 'json.loads("{}", turbo=True)'], { syntax: 'py', typeAt: wSmallest, cps: 18, size: 28 });
-    // "scratch" underlined as it is said
-    K.mark(EX + 56, EY + 42, K.measure('scratch', { font: 'ui', weight: 600, size: 26 }), K.io(t, wScratch, 0.5), { w: 4 });
-  }));
-
-  // ---- result strips: run 1 disproves the AI's claim (TypeError, terracotta cross); the rerun without the
-  // invented flag passes (your cream tick). Pass or fail, you know more.
-  const failA = K.io(t, cResult, 0.5) * benchA;
-  const S1Y = 540, S2Y = 652;
-  if (failA > 0) K.layer(failA, () => {
-    const x = EX, w = EW, h = 96;
-    K.card(x, S1Y, w, h, { r: 14, fill: C.tile, stroke: K.rgba(C.accent, 0.55), shadow: false });
-    K.text('output', x + 24, S1Y + 36, { font: 'ui', weight: 600, size: 26, color: C.soft });
-    K.text('TypeError', x + 120, S1Y + 37, { font: 'mono', weight: 600, size: 28, color: C.accent });
-    K.text("unexpected keyword argument 'turbo'", x + 24, S1Y + 78, { font: 'mono', size: 26, color: C.strong });
-    M.cross(x + w - 40, S1Y + 30, 40, K.io(t, cResult + 0.2, 0.5));
+  // ---- two self-reports that were wrong (right column), cleared when the wall rises
+  const cardsOut = 1 - K.io(t, tWall - 0.5, 0.5);
+  if (cardsOut > 0) K.layer(cardsOut, () => {
+    const cx = 1190, cw = 620, cy1 = 200;
+    const h1 = M.dated(cx, cy1, cw, 'Replit / SaaStr · Jul 2025',
+      'An agent deleted a production database, then said it couldn\'t be restored.',
+      { kind: 'unseen', k: K.io(t, tRep, 0.6, 'out') });
+    const couldK = K.io(t, tCould - 0.05, 0.5);
+    if (couldK > 0) M.chip('it could', cx + cw - 110, cy1 + h1 + 12 + 26, 'unseen', { k: couldK });
+    M.dated(cx, cy1 + h1 + 12 + 52 + 34, cw, 'Preprint · Jun 2026',
+      '"Building to the Test": agents passed every test while the real thing barely worked.',
+      { kind: 'unseen', k: K.io(t, tStudy, 0.6, 'out') });
   });
-  const passA = K.io(t, wKnow - 0.3, 0.5) * benchA;
-  if (passA > 0) K.layer(passA, () => K.at(0, (1 - passA) * 16, 1, 0, () => {
-    const x = EX, w = EW, h = 70;
-    K.card(x, S2Y, w, h, { r: 14, fill: C.tile, stroke: C.line2, shadow: false });
-    K.text('rerun without turbo=', x + 24, S2Y + 45, { font: 'ui', weight: 600, size: 26, color: C.soft });
-    const lx = x + 24 + K.measure('rerun without turbo=', { font: 'ui', weight: 600, size: 26 }) + 22;
-    K.text('runs', lx, S2Y + 46, { font: 'mono', size: 28, color: C.strong });
-    M.tick(x + w - 40, S2Y + h / 2, 44, K.io(t, wKnow, 0.5));
-  }));
-  const passLbl = K.io(t, wKnow, 0.5) * (1 - K.io(t, cIgnore - 0.6, 0.5));
-  if (passLbl > 0) K.text('pass or fail, you know more', EX, 772, { font: 'read', italic: true, size: 30, color: K.rgba(C.body, passLbl) });
 
-  // ---- the agent's log above the editor: the clerk runs the SAME scratch file and gets the same result
-  const logK = K.io(t, cAgent, 0.5);
-  const LX = EX, LY = 172, LW = EW, LH = 80;
-  const msgHead = 'ran test_idea.py: ', msgVal = 'TypeError';
-  const mono = { font: 'mono', size: 28 };
-  const vx = LX + 96 + K.measure(msgHead, mono) + 14, vw = K.measure(msgVal, mono);
-  if (logK > 0 && benchA > 0) K.layer(logK * benchA, () => {
-    K.card(LX, LY, LW, LH, { r: 16, fill: K.rgba(C.tile, 0.9), stroke: K.rgba(C.head, 0.5), shadow: false });
-    M.clerk(t, LX + 46, LY + LH / 2, 56, { glow: 0.6 });
-    const msg = msgHead + msgVal;
-    const t0 = cAgent + 0.4, cps = 22;
-    const typed = K.typed(msg, t, t0, cps);
-    const head = typed.slice(0, msgHead.length), tail = typed.slice(msgHead.length);
-    const x0 = LX + 96, y0 = LY + LH / 2 + 10;
-    K.text(head, x0, y0, { ...mono, color: C.body });
-    if (tail) K.text(tail, vx, y0, { ...mono, color: C.accent });
-  });
-  // you ring the agent's result: what does it prove?
-  const ringOut = 1 - K.io(t, cHead - 0.5, 0.45);
-  const ringK = K.io(t, wStill, 0.7) * ringOut;
-  if (ringK > 0) {
-    K.layer(ringOut, () => K.ring(vx + vw / 2, LY + LH / 2 + 1, vw / 2 + 20, 30, K.io(t, wStill, 0.7), { color: C.strong, w: 4, rot: 0 }));
-    const qa = K.io(t, wProves - 0.5, 0.5) * ringOut;
-    K.text('what does it prove?', LX + LW, 152, { font: 'ui', weight: 600, size: 28, color: K.rgba(C.strong, qa), align: 'right' });
-  }
+  // ---- the wall, front view, standing on the same ground as the house
+  const W = { x0: 1180, x1: 1780, y0: 340 + DY, y1: ground };
+  const wallK = K.io(t, tWall, 0.8, 'out');
+  const doorH = 250, doorW = 160;
+  const doors = [
+    { x: 1330, k: K.io(t, tLearn, 0.7), label: 'learn to check it' },
+    { x: 1630, k: K.io(t, tExpert, 0.7), label: 'bring in an expert' },
+  ];
+  const doorsK = K.io(t, tDoors - 0.15, 0.5);
+  if (wallK > 0) {
+    const top = K.lerp(W.y1, W.y0, wallK);
+    // shadow at its foot
+    g.save(); g.fillStyle = 'rgba(0,0,0,.28)'; g.beginPath(); g.ellipse((W.x0 + W.x1) / 2, W.y1 + 3, (W.x1 - W.x0) * 0.54, 8, 0, 0, 7); g.fill(); g.restore();
+    g.save();
+    g.beginPath(); g.rect(W.x0 - 12, top - 14, W.x1 - W.x0 + 24, W.y1 - top + 14); g.clip();
+    // body: a plain slate face (no brick courses: brick belongs to the crew's wall in 04)
+    const sg = g.createLinearGradient(0, W.y0, 0, W.y1);
+    sg.addColorStop(0, '#34303F'); sg.addColorStop(1, '#25222E');
+    g.fillStyle = sg; g.fillRect(W.x0, W.y0, W.x1 - W.x0, W.y1 - W.y0);
+    g.strokeStyle = P.outline; g.lineWidth = 3; g.strokeRect(W.x0, W.y0, W.x1 - W.x0, W.y1 - W.y0);
+    g.restore();
+    // the course's "line" motif: dashed cream rule along the top edge (same dash as the split divider in 14)
+    if (wallK > 0.98) {
+      const lk = K.io(t, tWall + 0.7, 0.6);
+      K.line(W.x0 - 24, W.y0, W.x1 + 24, W.y0, { k: lk, color: C.strong, w: 3, dash: [8, 8] });
+    }
+    // label above the line
+    M.label("the line: can't check it", (W.x0 + W.x1) / 2, W.y0 - 40, 'plain', { alpha: K.io(t, tWall + 0.9, 0.5) });
 
-  // ---- where it's heading
-  const headA = K.io(t, cHead, 0.5) * benchA;
-  if (headA > 0) K.eyebrow("WHERE IT'S HEADING", LX + LW, 152, { align: 'right', alpha: headA });
-  // the clerk's legwork now reaches all five tabs (right to left, from the agent log)
-  const legK = K.seg(t, wDoing - 0.2, wDoing + 1.8);
-  if (legK > 0 && benchA > 0) M.legwork(F, K.io(legK, 0, 1, 'sine'), { from: { x: LX, y: LY + LH / 2 }, first: 4, upto: 0, lift: 22, alpha: (0.95 - 0.35 * K.io(t, wJob, 0.8)) * benchA });
-  // a slim /llms.txt book stacks on the Rulebook tab
-  const bookK = K.io(t, wDocs, M.motion.land);
-  if (bookK > 0 && benchA > 0) {
-    const T = F.tabs[2], bw = 214, bh = 44, bx = T.cx - bw / 2, by = 150 - (1 - bookK) * 30;
-    K.layer(bookK * benchA, () => {
-      K.card(bx, by, bw, bh, { r: 8, fill: C.tile, stroke: K.rgba(C.head, 0.75), shadow: false });
-      K.line(bx + 10, by + 6, bx + 10, by + bh - 6, { color: K.rgba(C.head, 0.6), w: 3 });
-      K.icon('sparkle', bx + 34, by + bh / 2, 22, { color: C.head });
-      K.text('/llms.txt', bx + 54, by + bh / 2 + 9, { font: 'mono', size: 26, color: C.head });
+    // doors (closed outlines on "two doors", then they swing open)
+    doors.forEach((d, i) => {
+      if (doorsK <= 0) return;
+      const x0 = d.x - doorW / 2, y0 = W.y1 - doorH;
+      K.layer(doorsK, () => {
+        // opening: dark inside, gold light once open
+        g.save(); g.fillStyle = '#14131D'; K.rr(x0, y0, doorW, doorH, [14, 14, 0, 0]); g.fill(); g.restore();
+        if (d.k > 0) {
+          g.save(); g.beginPath(); K.rr(x0, y0, doorW, doorH, [14, 14, 0, 0]); g.clip();
+          K.glow(d.x, y0 + doorH * 0.55, doorH * 0.6, C.head, 0.45 * d.k);
+          g.restore();
+          K.glow(d.x, W.y1 - 4, doorW * 0.9, C.head, 0.18 * d.k);
+          if (i === 0) K.layer(d.k, () => K.icon('book', d.x, y0 + doorH * 0.5, 96, { color: P.machine, w: 4 }));
+          else M.person(t, d.x - 16, W.y1 - 6, 170, 'inspector', { i: 3, alpha: d.k });
+        }
+        // door leaf, hinged on the left, swinging inward-out (narrows as it opens)
+        const sw = Math.cos(d.k * Math.PI * 0.46);
+        g.save();
+        g.fillStyle = K.mixColor(P.wood, '#3A2618', d.k * 0.5); g.strokeStyle = P.woodHi; g.lineWidth = 3;
+        K.rr(x0, y0, doorW * sw, doorH, [14, 14, 0, 0]); g.fill(); g.stroke();
+        if (sw > 0.35) {
+          g.fillStyle = K.rgba(P.lamp, 0.85);
+          g.beginPath(); g.arc(x0 + doorW * sw - 22 * sw, y0 + doorH * 0.55, 6, 0, 7); g.fill();
+        }
+        g.restore();
+        // frame
+        g.save(); g.strokeStyle = d.k > 0 ? K.mixColor(P.outline, C.head, d.k) : P.outline; g.lineWidth = 4;
+        g.beginPath(); g.moveTo(x0, W.y1); g.lineTo(x0, y0 + 14); g.quadraticCurveTo(x0, y0, x0 + 14, y0);
+        g.lineTo(x0 + doorW - 14, y0); g.quadraticCurveTo(x0 + doorW, y0, x0 + doorW, y0 + 14); g.lineTo(x0 + doorW, W.y1); g.stroke();
+        g.restore();
+        if (d.k > 0) M.label(d.label, d.x, W.y1 + 44, 'machine', { alpha: K.io(t, (i ? tExpert : tLearn) + 0.2, 0.5) });
+      });
     });
-  }
 
-  // ---- safe to ignore for now: three grey cards land on a two-plank shelf at right
-  const shA = K.io(t, cIgnore + 0.3, 0.6) * endFade;
-  if (shA > 0) {
-    const size = 28, h = 56, rowGap = 36;
-    const rowY = [640, 640 + h + rowGap];
-    K.eyebrow('Safe to ignore for now', EX, 600, { alpha: shA, color: C.soft });
-    // planks: one under each row of cards
-    const plankAt = [wFlags - 0.3, wForum - 0.3];
-    rowY.forEach((ry, i) => K.layer(shA * K.io(t, plankAt[i], 0.5), () => {
-      const py = ry + h + 4;
-      K.card(EX - 16, py, 640, 12, { r: 4, fill: M.palette.wood, stroke: false, shadow: false });
-      K.line(EX - 12, py + 1, EX + 620, py + 1, { color: K.rgba(C.head, 0.25), w: 1.5 });
-    }));
-    const items = [['memorising flags', wFlags], ['which tool is best', wTool], ['forum etiquette', wForum]];
-    let x = EX, row = 0;
-    const gap = 14;
-    items.forEach(([s, at]) => {
-      const w = K.measure(s, { font: 'ui', weight: 600, size }) + 44;
-      if (x + w > EX + 620) { x = EX; row++; }
-      const y = rowY[row];
-      const k = K.io(t, at, M.motion.land);
-      if (k > 0) {
-        const dim = 1 - 0.15 * K.io(t, at + 0.6, 0.6);
-        const dx = (1 - k) * 60, dy = -(1 - k) * 50 + Math.sin(k * Math.PI) * -10;
-        K.layer(k * dim * endFade, () => {
-          K.card(x + dx, y + dy, w, h, { r: 14, fill: K.rgba(C.tile, 0.85), stroke: C.line2, shadow: false });
-          K.text(s, x + dx + 22, y + dy + 38, { font: 'ui', weight: 600, size, color: K.rgba(C.strong, 0.8) });
-        });
-      }
-      x += w + gap;
-    });
+    // vendors agree
+    const vK = K.io(t, tVend, 0.5);
+    if (vK > 0) M.chip('vendors: doesn\'t replace human review', (W.x0 + W.x1) / 2, W.y1 + 106, 'neutral', { k: vK });
   }
 });

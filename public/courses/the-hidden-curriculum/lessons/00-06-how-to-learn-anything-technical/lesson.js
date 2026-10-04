@@ -1,15 +1,15 @@
-/* 00.06 How to learn anything technical: metadata only; scenes live in scenes/NN.js. */
+/* 00.06 Trust what you can verify: metadata only; scenes live in scenes/NN.js. */
 LESSON({
   id: '00.06',
-  title: 'How to learn anything technical',
-  short: 'Getting unstuck',
+  title: 'Trust what you can verify',
+  short: 'What you can verify',
   module: 'Orientation',
-  summary: 'Read the error, search its exact words, check the official docs, ask the AI with the evidence on its desk, and settle it with a tiny test: AI now does most of the legwork, so your job is to give it the clues and check the verdict.',
+  summary: 'You can only trust AI on what can actually be checked: agents now fix their own crashes, so your job is judging what they cannot see (security holes in code that works, team norms, dependencies, "ready to deploy"), and past that line you either learn to check it or bring in someone who can.',
   keep: [
-    ['The error is the first clue, and its exact words are the search key.', 'Find the line that names the failure, and never paraphrase it to a search box or an AI.'],
-    ['Give the AI the evidence, then check its verdict.', 'Put the error, versions, command and file on its desk, and check any package, flag or function it names against the docs for your version.'],
-    ['A tiny test settles it.', 'Until the smallest possible run proves an answer, it is a guess, whoever wrote it.'],
+    ['The agent fixes the crashes; you own what it can\'t see.', 'Errors a machine can check, it handles. Security, team fit, dependencies and "ready to ship" are judgment calls.'],
+    ['"Yes, it\'s secure" is just another answer.', 'If you can\'t check it, either learn enough to check it or get someone who can.'],
+    ['Someone has to own the rules and the supplier list.', 'Write the team\'s norms down for the agent, and let a person who knows the libraries approve every new dependency.'],
   ],
   images: { plate: '../../engine/assets/teahouse-night.jpg' },
-  noBadge: ['01', '08'],
+  noBadge: ['01', '16'],
 });

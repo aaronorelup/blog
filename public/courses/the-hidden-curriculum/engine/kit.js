@@ -55,12 +55,22 @@
   /** hold a value on 'twos' for a hand-made feel */
   K.step = (t, fps = 12) => Math.floor(t * fps) / fps;
 
-  K.rgba = (hex, a) => {
-    const n = parseInt(hex.slice(1), 16);
+  /** colour string -> 24-bit int. Accepts '#rrggbb', '#rgb' and 'rgb(r,g,b)' / 'rgba(r,g,b,a)' (alpha ignored),
+   *  so K.rgba and K.mixColor can take each other's output (nested mixes used to come out NaN = black). */
+  const colorInt = (c) => {
+    c = String(c).trim();
+    const m = /^rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/i.exec(c);
+    if (m) return ((Math.round(+m[1]) & 255) << 16) | ((Math.round(+m[2]) & 255) << 8) | (Math.round(+m[3]) & 255);
+    let h = c.replace('#', '');
+    if (h.length === 3 || h.length === 4) h = h.slice(0, 3).split('').map((x) => x + x).join('');
+    return parseInt(h.slice(0, 6), 16);
+  };
+  K.rgba = (col, a) => {
+    const n = colorInt(col);
     return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
   };
   K.mixColor = (h1, h2, k) => {
-    const a = parseInt(h1.slice(1), 16), b = parseInt(h2.slice(1), 16);
+    const a = colorInt(h1), b = colorInt(h2);
     const ch = (s) => Math.round(K.lerp((a >> s) & 255, (b >> s) & 255, k));
     return `rgb(${ch(16)},${ch(8)},${ch(0)})`;
   };
