@@ -1133,11 +1133,11 @@ class AoTranscript extends HTMLElement {
     // The host answers Range requests with the whole file (200, not 206), so a seek past what is
     // buffered lands on 0. Then the video is fetched once in full and played from a blob.
     const urls = [];
-    const canSeek = (v, t) => {
-      if (v.readyState < 1) return false;
-      for (let i = 0; i < v.seekable.length; i++) if (v.seekable.start(i) <= t && t <= v.seekable.end(i) + 0.05) return true;
+    const inside = (ranges, t) => {
+      for (let i = 0; i < ranges.length; i++) if (ranges.start(i) <= t && t <= ranges.end(i) - 0.25) return true;
       return false;
     };
+    const canSeek = (v, t) => v.readyState >= 1 && (inside(v.seekable, t) || inside(v.buffered, t));
     const seek = (pane, t) => {
       const { v } = pane;
       const go = () => { v.currentTime = t; v.play().catch(() => {}); light(pane, t); };
@@ -1184,6 +1184,8 @@ class AoTranscript extends HTMLElement {
       }
     };
     const loop = (pane) => {
+      // The homepage hides the reader rather than removing it when it closes; stop with it.
+      if (!this.getClientRects().length) { pane.v.pause(); pane.raf = 0; return; }
       light(pane);
       if (pane.v.paused) { pane.raf = 0; return; }
       pane.raf = requestAnimationFrame(() => loop(pane));
