@@ -1,10 +1,10 @@
 {
  "slug": "the-hidden-curriculum",
  "title": "The Hidden Curriculum",
- "updated": "2026-10-03",
- "totalLessons": 206,
- "publishedLessons": 6,
- "runtimeSeconds": 3381,
+ "updated": "2026-10-04",
+ "totalLessons": 210,
+ "publishedLessons": 7,
+ "runtimeSeconds": 3688,
  "moduleCount": 22,
  "districtCount": 6,
  "regions": [
@@ -103,7 +103,7 @@
    ]
   }
  ],
- "lanternCount": 34,
+ "lanternCount": 38,
  "modules": [
   {
    "n": "00",
@@ -182,6 +182,7 @@
      "id": "00.06",
      "title": "Trust what you can verify",
      "idea": "Agents now write, run and debug their own code, so hand-coding and hand-debugging are nearly obsolete; your new job is judging what you cannot see: security holes in code that works, team norms and the project's chosen libraries (AI drifts and keeps adding dependencies), and \"ready to deploy\" claims. You can only trust AI on what it can verify; past that, learn to check it yourself or bring in an expert",
+     "lantern": true,
      "status": "published",
      "slug": "00-06-how-to-learn-anything-technical",
      "url": "/courses/the-hidden-curriculum/lessons/00-06-how-to-learn-anything-technical/",
@@ -204,7 +205,14 @@
      "id": "01.01",
      "title": "Files are just bytes",
      "idea": "A .py file is a text file; the extension is a label that tells the OS which program opens it",
-     "status": "locked"
+     "status": "published",
+     "slug": "01-01-files-are-just-bytes",
+     "url": "/courses/the-hidden-curriculum/lessons/01-01-files-are-just-bytes/",
+     "duration": 307.0,
+     "summary": "Every file is just a row of numbers called bytes, and the extension is a label on its name that picks which program opens it, not what is inside; this lesson draws that picture so nothing an agent does with your files surprises you.",
+     "published": "2026-10-04",
+     "narrator": "RClayton",
+     "poster": "/courses/the-hidden-curriculum/lessons/01-01-files-are-just-bytes/poster.jpg"
     },
     {
      "id": "01.02",
@@ -283,7 +291,7 @@
      "status": "locked"
     }
    ],
-   "filed": 0
+   "filed": 1
   },
   {
    "n": "02",
@@ -691,6 +699,13 @@
      "id": "08.11",
      "title": "How AI coding agents use git",
      "idea": "Agents on branches/worktrees, opening PRs, why git makes agent work safe to undo",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "08.12",
+     "title": "Contributing with AI: team norms and AI policies",
+     "idea": "Mixed human/AI teams: AI code drifting from conventions and the agreed libraries, open-source AI disclosure policies, reviewing AI-written pull requests",
      "lantern": true,
      "status": "locked"
     }
@@ -1201,6 +1216,20 @@
      "idea": "Individual vs Team/Enterprise: SSO, admin allow-lists for connectors, plugins and skills, audit logs, retention, managed instruction files, training defaults",
      "lantern": true,
      "status": "locked"
+    },
+    {
+     "id": "15.15",
+     "title": "Prompt injection and attacks on agents",
+     "idea": "Text in a page, file or email can steer an agent that reads it; why tool access turns that into real damage, and the defenses so far",
+     "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "15.16",
+     "title": "AI that checks code: review and security agents",
+     "idea": "What 2026 review and security agents (scanners, /security-review, autofix) catch, what they miss, and why a human still approves",
+     "lantern": true,
+     "status": "locked"
     }
    ],
    "filed": 0
@@ -1361,6 +1390,12 @@
      "title": "AI design and app builders",
      "idea": "Claude Design, Docs and Slides, and other AI tools that build layouts, pages and apps; what they make (code, not pictures) and where the result lives",
      "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "17.11",
+     "title": "Ready to ship? What to check before real users",
+     "idea": "Who can see what, secrets, costs, rollback and monitoring: the checks an agent cannot vouch for when you ask \"is it ready to deploy?\"",
      "status": "locked"
     }
    ],
@@ -1617,17 +1652,17 @@
   }
  ],
  "latest": {
-  "id": "00.06",
-  "title": "Trust what you can verify",
-  "idea": "Agents now write, run and debug their own code, so hand-coding and hand-debugging are nearly obsolete; your new job is judging what you cannot see: security holes in code that works, team norms and the project's chosen libraries (AI drifts and keeps adding dependencies), and \"ready to deploy\" claims. You can only trust AI on what it can verify; past that, learn to check it yourself or bring in an expert",
+  "id": "01.01",
+  "title": "Files are just bytes",
+  "idea": "A .py file is a text file; the extension is a label that tells the OS which program opens it",
   "status": "published",
-  "slug": "00-06-how-to-learn-anything-technical",
-  "url": "/courses/the-hidden-curriculum/lessons/00-06-how-to-learn-anything-technical/",
-  "duration": 667.0,
-  "summary": "You can only trust AI on what can actually be checked: agents now fix their own crashes, so your job is judging what they cannot see (security holes in code that works, team norms, dependencies, \"ready to deploy\"), and past that line you either learn to check it or bring in someone who can.",
-  "published": "2026-10-03",
-  "narrator": "Adrian",
-  "poster": "/courses/the-hidden-curriculum/lessons/00-06-how-to-learn-anything-technical/poster.jpg"
+  "slug": "01-01-files-are-just-bytes",
+  "url": "/courses/the-hidden-curriculum/lessons/01-01-files-are-just-bytes/",
+  "duration": 307.0,
+  "summary": "Every file is just a row of numbers called bytes, and the extension is a label on its name that picks which program opens it, not what is inside; this lesson draws that picture so nothing an agent does with your files surprises you.",
+  "published": "2026-10-04",
+  "narrator": "RClayton",
+  "poster": "/courses/the-hidden-curriculum/lessons/01-01-files-are-just-bytes/poster.jpg"
  },
  "first": {
   "id": "00.01",

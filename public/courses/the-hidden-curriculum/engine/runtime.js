@@ -53,9 +53,11 @@
       has: (name) => !!(sec.cues && sec.cues[name] != null),
       /** local time the i-th spoken word starts (handy for "on this word" sync) */
       word(idx) { const w = (sec.words || [])[idx]; return w ? w[1] - sec.start : 0; },
-      /** local start time of the first spoken word matching re (nth occurrence) */
+      /** local start time of the first spoken word matching re (nth occurrence). A string is a literal,
+       *  case-insensitive prefix ('T.' matches only "T."; '.' is not a wildcard); pass a RegExp for patterns. */
       find(re, nth = 0, fallback = 0) {
-        const rx = re instanceof RegExp ? re : new RegExp('^' + re, 'i');
+        const rx = re instanceof RegExp ? re
+          : new RegExp('^' + String(re).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
         const hits = (sec.words || []).filter((w) => rx.test(w[0].replace(/[^\w'.-]/g, '')));
         return hits[nth] ? hits[nth][1] - sec.start : fallback;
       },
