@@ -136,6 +136,8 @@
 .pc-prose video { max-width: 100%; height: auto; display: block; border-radius: 8px; }
 .pc-prose hr { border: 0; border-top: 1px solid var(--pc-line); margin: 34px 0; }
 .pc-prose table { width: 100%; border-collapse: collapse; margin: 0 0 20px; font-size: 15px; }
+/* A table wider than a phone scrolls inside itself instead of being clipped by the page. */
+@media (max-width: 640px) { .pc-prose table { display: block; overflow-x: auto; } }
 .pc-prose th,
 .pc-prose td { border: 1px solid var(--pc-line); padding: 8px 12px; text-align: left; color: var(--pc-body); }
 .pc-prose th { color: var(--pc-strong); }
