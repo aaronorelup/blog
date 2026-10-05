@@ -18,7 +18,8 @@ rail the harness spawned and set her on, and cuts down goblins with her scythe.
 The limit is new behaviour. A custom character can only reuse what Megabonk already has: its
 attack classes, its passives, its stats. When I wanted something the game doesn't do, a first
 jump launched by her tail, that took a BepInEx plugin: 241 lines of C# that hook the game's own
-jump. In the game, from a standing start on flat ground, it sends her 5.77 m up, against 3.70 m
+jump. In the game, on flat ground, starting with no upward or downward speed (she was running),
+it sends her 5.77 m up, against 3.70 m
 for the same jump without it. So no,
 you're not stuck with the game's existing mechanics. New ones are possible, but they're a
 different kind of mod, and you have to read the game's code to write one.
@@ -214,10 +215,10 @@ float extra = Mathf.Min((k - 1f) * gameUp, MaxExtraUpSpeed);     // k = sqrt(1.6
 rb.AddForce(new Vector3(0f, extra, 0f), ForceMode.VelocityChange);
 ```
 
-- **From a standing start on flat ground, it goes about 1.6 times as high.** Height grows with
+- **On flat ground, starting with no upward or downward speed, it goes about 1.6 times as high.** Height grows with
   the square of launch speed, so 1.2649 times the speed should give 1.6 times the height. Claude's
   harness checked it against a control: the same first jump from the ground 2 seconds later, on
-  the same ground, with the boost switched off in memory for that one jump. Both started at rest.
+  the same ground, with the boost switched off in memory for that one jump. Both started with no vertical speed.
   The tail jump took off at 17.71 m/s and peaked at 5.77 m. The control took off at the game's own
   14.00 m/s and peaked at 3.70 m. That's 1.56 times the height and 1.60 times the take-off speed
   squared, the same to the hundredth in two runs. Claude's guess for the small gap is the few
