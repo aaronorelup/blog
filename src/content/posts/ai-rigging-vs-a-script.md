@@ -110,7 +110,7 @@ running, jumping, grinding and fighting in Claude's test runs in the game, in
 
 <ao-compare cols="1">
   <figure class="wide">
-    <img src="/media/ai-rigging-vs-a-script/input-mesh-v2.webp" alt="Jefrie's 3,000-triangle game model, textured, in a T-pose from front, side, back and the other side: a pale mask with dark eye holes, a red pointed hat and cape, black spiked armour, and a huge spiked tail lying straight behind her on the ground" loading="lazy">
+    <img src="/media/ai-rigging-vs-a-script/input-mesh-v2.webp" alt="Jefrie's 3,000-triangle game model, textured, in a T-pose from front, side, back and the other side: a pale mask with dark eye holes, red leather ear points, a red cape, black coiled sleeves, and a huge spiked tail lying straight behind her on the ground" loading="lazy">
     <figcaption><b>The input every tool got</b><span class="ao-meta">3,000 triangles, 0.95 m tall at working scale, one 256 px texture · version 2, tail straight behind her · unrigged GLB</span></figcaption>
   </figure>
 </ao-compare>
@@ -295,9 +295,11 @@ On the SkinTokens rig, where the tail belongs to her thigh, the tail flaps with 
   and the tearing stops. The weights are still messy.
 - **SkinTokens drops what a humanoid doesn't have.** On bipeds its auto-rig emits a fixed human
   template. Someone reported the same thing upstream for capes, skirts and hair.
-- **UniMate's first 12 jobs all failed, each within 1.5 to 3.1 seconds.** Blender's glTF export
-  writes a material extension (`KHR_materials_specular`) and a scale channel on every bone;
-  UniMate's validator rejects both. A small cleaner fixed it.
+- **UniMate's first 12 jobs all failed, each within 1.5 to 3.1 seconds,** and all 12 with the
+  same error: `ValueError: Unsupported glTF extensions`. Blender's glTF export writes a material
+  extension (`KHR_materials_specular`), and UniMate's validator rejects any extension.
+  Re-validating afterwards found a second rejection: the scale channel Blender writes on every
+  bone. A small cleaner removes both.
 - **UniMate's official preparation for new rigs isn't out.** On 4 October the maintainer wrote
   that it was "coming today". When I checked on the 5th, nothing new was on GitHub or Hugging
   Face, so the ComfyUI pack's own conditioning from the rest pose was used. This is the one result

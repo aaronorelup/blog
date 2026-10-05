@@ -13,12 +13,13 @@ scythe girl with a tail heavier than she is, is in a lab copy of my game now: he
 3,000-triangle model, five animations, a pixel icon, a scythe weapon and a passive, all loaded by
 the community's character loader. I played her on 4 October, and she works. On the 5th Claude
 played the second version itself in three short scripted runs: she runs, jumps, falls, grinds a
-rail the harness put in front of her, and cuts down goblins with her scythe.
+rail the harness spawned and set her on, and cuts down goblins with her scythe.
 
 The limit is new behaviour. A custom character can only reuse what Megabonk already has: its
 attack classes, its passives, its stats. When I wanted something the game doesn't do, a first
 jump launched by her tail, that took a BepInEx plugin: 241 lines of C# that hook the game's own
-jump. In the game it sends her 5.77 m up, against 3.70 m for the same jump without it. So no,
+jump. In the game, from a standing start on flat ground, it sends her 5.77 m up, against 3.70 m
+for the same jump without it. So no,
 you're not stuck with the game's existing mechanics. New ones are possible, but they're a
 different kind of mod, and you have to read the game's code to write one.
 
@@ -28,7 +29,7 @@ playing the result. This post is what they found out: how to do it yourself, wha
 what isn't, how to keep a modded run off Steam's leaderboards, the traps, and what I'd try next.
 
 <ao-compare cols="1">
-  <figure class="wide"><img src="/media/modding-megabonk/ingame-charselect.webp" alt="Megabonk's character select with Jefrie selected: her 3D model in a black and red cape with her spiked tail curled at her side, and the info panel listing the Heavy Scythe and the Tail Spring passive" loading="lazy"><figcaption><b>Jefrie in Megabonk's character select, version 2</b><span class="ao-meta">the Heavy Scythe and the Tail Spring passive · cropped from a screenshot Claude's test harness took in my lab copy · click to enlarge</span></figcaption></figure>
+  <figure class="wide"><img src="/media/modding-megabonk/ingame-charselect.webp" alt="Megabonk's character select with Jefrie selected: her 3D model in a red cape and black sleeves with her spiked tail curled at her side, and the info panel listing the Heavy Scythe and the Tail Spring passive" loading="lazy"><figcaption><b>Jefrie in Megabonk's character select, version 2</b><span class="ao-meta">the Heavy Scythe and the Tail Spring passive · cropped from a screenshot Claude's test harness took in my lab copy · click to enlarge</span></figcaption></figure>
 </ao-compare>
 
 **Where it stands on 5 October.** Version 1 passed my own playtest. Version 2 lays her tail
@@ -41,7 +42,7 @@ playtest.
 <ao-compare cols="2" aspect="16/10">
   <figure><img src="/media/modding-megabonk/ingame-run.webp" alt="Jefrie running up a grassy slope toward goblins, her spiked tail trailing straight behind her and her scythe raised" loading="lazy"><figcaption><b>Run</b><span class="ao-meta">run 1 · tail trailing behind her</span></figcaption></figure>
   <figure><img src="/media/modding-megabonk/ingame-tailspring-apex.webp" alt="Jefrie in the air near the top of her first jump, tail hanging below her, goblins on the hillside" loading="lazy"><figcaption><b>Tail Spring jump</b><span class="ao-meta">near the apex · 5.77 m measured</span></figcaption></figure>
-  <figure><img src="/media/modding-megabonk/ingame-grind.webp" alt="Jefrie side-on, riding a grey rail with her tail stretched out behind her while her scythe sweep hits two enemies for 14 damage each" loading="lazy"><figcaption><b>Grind</b><span class="ao-meta">on a rail the harness spawned · 1.3 to 1.6 s</span></figcaption></figure>
+  <figure><img src="/media/modding-megabonk/ingame-grind.webp" alt="Jefrie side-on, riding a grey rail with her tail stretched out behind her while her scythe sweep hits two enemies for 14 damage each" loading="lazy"><figcaption><b>Grind</b><span class="ao-meta">on a rail the harness spawned and set her on · 1.3 to 1.6 s</span></figcaption></figure>
   <figure><img src="/media/modding-megabonk/ingame-fall.webp" alt="Jefrie falling between mossy stone ruins, seen from above, tail hanging behind her" loading="lazy"><figcaption><b>Fall</b><span class="ao-meta">a lab drop between ruins</span></figcaption></figure>
 </ao-compare>
 
@@ -78,17 +79,17 @@ IL2CPP game doesn't ship them in readable form. That part is further down.
 Jefrie's kit, as it stands:
 
 - **Heavy Scythe.** The game's own melee projectile class inside our prefab, with a 0.98-second
-  swing that starts slow, overshoots and swings back. It's my reading of her canon line "It lags
+  swing that starts slow, overshoots and swings back. It's Claude's reading of her canon line "It lags
   behind her hands, overshoots, keeps swinging after she stops", and it's labelled an
   interpretation. 14 damage, against 11 for Sonic's ring. A thrown-scythe version built on the
   basic projectile class (the one the Sonic mod uses) was ready in case the melee class did
-  nothing in game. It wasn't needed: I played the sweep, and in Claude's three runs it landed 14
-  to 18 hits a run. Runs 1 and 2 ended with 18 and 15 kills on the scythe alone.
+  nothing in game. It wasn't needed: in Claude's three runs the sweep landed 14 to 18 hits a
+  run. Runs 1 and 2 ended with 18 and 15 kills on the scythe alone.
 - **Marionette Tail (version 1)** was the game's Float passive, renamed. It worked: hold jump in
   the air and she drifts down. It just didn't make sense. Floating isn't what her tail does. Her
   canon says the tail does the work when she jumps: it rears up and slams down to launch her.
 - **Tail Spring (version 2).** The passive slot is set to the game's None passive, which does
-  nothing, with my name and text on it. The effect lives in a plugin, below.
+  nothing, with a new name and text on it. The effect lives in a plugin, below.
 
 <ao-compare cols="1">
   <figure class="wide"><img src="/media/modding-megabonk/ingame-fight.webp" alt="Jefrie against a wall with a crowd of green goblins in front of her, the white sweep scythe arcing through them with 14-damage numbers floating up" loading="lazy"><figcaption><b>The Heavy Scythe in a real run: every hit is 14</b><span class="ao-meta">run 1, 44 seconds in</span></figcaption></figure>
@@ -213,22 +214,26 @@ float extra = Mathf.Min((k - 1f) * gameUp, MaxExtraUpSpeed);     // k = sqrt(1.6
 rb.AddForce(new Vector3(0f, extra, 0f), ForceMode.VelocityChange);
 ```
 
-- **In the game it goes about 1.6 times as high.** Height grows with the square of launch speed,
-  so 1.2649 times the speed should give 1.6 times the height. Claude's harness checked it
-  against a control: the same first jump from the ground 2 seconds later, on the same ground, with
-  the boost switched off in memory for that one jump. The tail jump took off at 17.71 m/s and
-  peaked at 5.77 m. The control took off at the game's own 14.00 m/s and peaked at 3.70 m. That's
-  1.56 times the height and 1.60 times the take-off speed squared, the same to the hundredth in
-  two runs. My guess for the small gap is the few ticks the game still counts her as grounded
-  after take-off.
-- **Downhill, it gains less.** Twice the second ground jump started on a downhill slope. The game
-  didn't cancel her downward speed (3.05 and 9.85 m/s) before the jump, and the plugin added its
-  full boost on top, so those jumps peaked at 3.79 m and 1.12 m. In run 1 an air jump did start
-  from zero. Why they differ isn't explained yet.
+- **From a standing start on flat ground, it goes about 1.6 times as high.** Height grows with
+  the square of launch speed, so 1.2649 times the speed should give 1.6 times the height. Claude's
+  harness checked it against a control: the same first jump from the ground 2 seconds later, on
+  the same ground, with the boost switched off in memory for that one jump. Both started at rest.
+  The tail jump took off at 17.71 m/s and peaked at 5.77 m. The control took off at the game's own
+  14.00 m/s and peaked at 3.70 m. That's 1.56 times the height and 1.60 times the take-off speed
+  squared, the same to the hundredth in two runs. Claude's guess for the small gap is the few
+  ticks the game still counts her as grounded after take-off.
+- **If she's already moving up, it goes higher still.** When she jumps while already rising, say
+  up a slope or off a ramp, the boost comes on top of that speed. One lab jump that started at
+  10.74 m/s upward reached 12.46 m.
+- **Downhill, it goes lower.** The game doesn't cancel her downward speed before a jump, and the
+  plugin adds its full boost on top of whatever is left. Twice the second ground jump started on a
+  downhill slope, still moving down at 3.05 and 9.85 m/s, and those jumps peaked at 3.79 m and
+  1.12 m. In run 1 an air jump did start from zero. Why that one differs isn't explained yet.
 - **Air jumps stay normal.** Jefrie has no air jump of her own, so the harness granted her one in
   the lab, the way an extra-jump item would. The plugin's counter didn't move on any of them.
-- **Items still count.** The boost scales with her JumpHeight stat, so anything that raises it
-  raises the tail jump too.
+- **Items should still count, but that's read from the code, not measured in the game.** The
+  boost scales with her JumpHeight stat, so anything that raises it should raise the tail jump
+  too.
 - **The game already does this for two characters.** The same `Jump` method has special code for
   Monke and Ninja. The plugin checks the same field the game checks, so per-character movement
   is a pattern Megabonk itself uses.
@@ -330,9 +335,10 @@ sync to Steam Cloud, and the lab copy doesn't stop any of that.
   clips instead.
 - **You might never meet a rail.** On this build the number of rails isn't set per map. It's one
   number on the scene every generated map uses, and Claude found no rails on Forest at two tiers
-  or on the Graveyard. To test Grind, its harness drops the game's own rail prefab 6 m in front of
-  her and lets the game start the grind itself, which it did on the first try. The menu also
-  remembers your last map and tier.
+  or on the Graveyard. No generated map spawned a rail on this build. To test Grind, its harness
+  spawns the game's own `Rail1` prefab and teleports her feet onto it. From there the game's own
+  rail detection starts the grind, which it did on the first try. The menu also remembers your
+  last map and tier.
 - **A scripted jump that never lets go.** The first version of Claude's harness pressed jump for
   three physics ticks and never released it. She hopped on every landing, and on the rail the
   game read the held button as a jump and threw her off, so run 1 has no grind. Releasing the
@@ -355,8 +361,8 @@ harness, which Claude used for this post, none of them has been tried.
    damages enemies are the same shape of mod.
 3. **Rails everywhere.** `SpawnInteractables.numRails` decides how many rails a stage gets, and on
    this build it's 0. A plugin could raise it. Claude's harness already does the other half in
-   the lab: it drops the game's own rail prefab in front of her, and the game starts the grind by
-   itself. Raising the number on real maps hasn't been tried.
+   the lab: it spawns the game's own `Rail1` prefab and teleports her feet onto it, and the game's
+   rail detection starts the grind by itself. Raising the number on real maps hasn't been tried.
 4. **A new challenge.** Challenges are small classes with `Init`, `Tick` and `Cleanup`: Blind,
    Inverted Controls, Lava, No Movement, Speedrun, Smol Boi and eight more. Changing one is a
    plugin. Registering a brand-new one should be possible with Il2CppInterop's class injector,
