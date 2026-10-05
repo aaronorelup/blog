@@ -1,5 +1,5 @@
 ---
-id: "AO-030"
+id: "AO-038"
 title: "Claude painted three oil paintings, one brushstroke at a time, with no undo"
 summary: "Not image generation, not SVG: Opus 5.5 drove a physics simulator of wet oil paint, mixed its colours from historical tubes, made mistakes it couldn't undo, and painted over them. Two master studies of my favourite paintings and an oil version of my own 2018 drawing."
 date: 2026-10-05
