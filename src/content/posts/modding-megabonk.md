@@ -27,7 +27,9 @@ first version and one more evening for the second, and my part was saying what I
 playing the result. This post is what they found out: how to do it yourself, what's easy and
 what isn't, how to keep a modded run off Steam's leaderboards, the traps, and what I'd try next.
 
-<figure><img src="/media/modding-megabonk/ingame-charselect.webp" alt="Megabonk's character select with Jefrie selected: her 3D model in a black and red cape with her spiked tail curled at her side, and the info panel listing the Heavy Scythe and the Tail Spring passive" loading="lazy" style="width:100%;border-radius:8px"><figcaption>Jefrie in Megabonk's character select, version 2: the Heavy Scythe and the Tail Spring passive. Cropped from a screenshot Claude's test harness took in my lab copy.</figcaption></figure>
+<ao-compare cols="1">
+  <figure class="wide"><img src="/media/modding-megabonk/ingame-charselect.webp" alt="Megabonk's character select with Jefrie selected: her 3D model in a black and red cape with her spiked tail curled at her side, and the info panel listing the Heavy Scythe and the Tail Spring passive" loading="lazy"><figcaption><b>Jefrie in Megabonk's character select, version 2</b><span class="ao-meta">the Heavy Scythe and the Tail Spring passive · cropped from a screenshot Claude's test harness took in my lab copy · click to enlarge</span></figcaption></figure>
+</ao-compare>
 
 **Where it stands on 5 October.** Version 1 passed my own playtest. Version 2 lays her tail
 straight behind her instead of curled to one side, and swaps a passive that didn't make sense for
@@ -88,7 +90,9 @@ Jefrie's kit, as it stands:
 - **Tail Spring (version 2).** The passive slot is set to the game's None passive, which does
   nothing, with my name and text on it. The effect lives in a plugin, below.
 
-<figure><img src="/media/modding-megabonk/ingame-fight.webp" alt="Jefrie against a wall with a crowd of green goblins in front of her, the white sweep scythe arcing through them with 14-damage numbers floating up" loading="lazy" style="width:100%;border-radius:8px"><figcaption>The Heavy Scythe in a real run: every hit is 14. Run 1, 44 seconds in.</figcaption></figure>
+<ao-compare cols="1">
+  <figure class="wide"><img src="/media/modding-megabonk/ingame-fight.webp" alt="Jefrie against a wall with a crowd of green goblins in front of her, the white sweep scythe arcing through them with 14-damage numbers floating up" loading="lazy"><figcaption><b>The Heavy Scythe in a real run: every hit is 14</b><span class="ao-meta">run 1, 44 seconds in</span></figcaption></figure>
+</ao-compare>
 
 ## How to add a character
 
@@ -165,7 +169,9 @@ version: the reference sheet took 7.5 hours and three rounds, and the model, rig
 build took about three hours after it. (The first time I tried to put her in 3D, it took
 [six days](/ledger/jefrie-in-3d/).)
 
-<figure><img src="/media/modding-megabonk/refs-board.webp" alt="Reference board: wiki portraits of Megabonk's Fox, Noelle and Robinette as style references, Jefrie's canon art as identity, a 3D layout proxy from four sides, and the finished Megabonk-style turnaround, scythe prop and 32-pixel icon" loading="lazy" style="width:100%;border-radius:8px"><figcaption>What drove the look: three of the game's portraits from the Megabonk wiki for style, my canon art for identity, one 3D layout model so every view agrees, and the finished turnaround, scythe and icon.</figcaption></figure>
+<ao-compare cols="1">
+  <figure class="wide"><img src="/media/modding-megabonk/refs-board.webp" alt="Reference board: wiki portraits of Megabonk's Fox, Noelle and Robinette as style references, Jefrie's canon art as identity, a 3D layout proxy from four sides, and the finished Megabonk-style turnaround, scythe prop and 32-pixel icon" loading="lazy"><figcaption><b>What drove the look</b><span class="ao-meta">three of the game's portraits from the Megabonk wiki for style, my canon art for identity, one 3D layout model so every view agrees, and the finished turnaround, scythe and icon</span></figcaption></figure>
+</ao-compare>
 
 <ao-compare cols="2" aspect="16/10">
   <figure><video controls muted loop playsinline preload="metadata" src="/media/modding-megabonk/v1-run-preview.mp4"></video><figcaption><b>Run</b><span class="ao-meta">version 1, Blender preview</span></figcaption></figure>
@@ -244,7 +250,9 @@ Every run's log says the same thing:
 It took one agent about 14 minutes to write, research included, and nothing in it had to change
 after the game ran it. Whether 1.6 feels right is my playtest's job, not a log's.
 
-<figure><video controls muted playsinline preload="metadata" poster="/media/modding-megabonk/tailspring-run.webp" src="/media/modding-megabonk/tailspring-run.mp4" style="width:100%;border-radius:8px"></video><figcaption>Tail Spring, then the normal control jump, a lab-granted air jump and a grind. Run 2, captured from outside the game at about 22 frames a second, 11 seconds.</figcaption></figure>
+<ao-compare cols="1">
+  <figure class="wide"><video controls muted playsinline preload="metadata" poster="/media/modding-megabonk/tailspring-run.webp" src="/media/modding-megabonk/tailspring-run.mp4"></video><figcaption><b>Tail Spring, then the normal control jump, a lab-granted air jump and a grind</b><span class="ao-meta">run 2 · captured from outside the game at about 22 frames a second · 11 s</span></figcaption></figure>
+</ao-compare>
 
 ## Doing it safely
 
