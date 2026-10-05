@@ -118,4 +118,16 @@ actions, so:
 It ran about 25 minutes of CPU for all three paintings and moved my weekly usage by about
 two percent. The simulator is all CPU, so my GPU sat this one out.
 
-I'll add the time-lapses here when they finish rendering.
+## The time-lapses
+
+Each one is the painting's log replayed from the first chunk, with a frame saved every 45
+seconds of painting time. Nothing here was recorded; it's re-painted from the log.
+
+<video controls muted playsinline preload="metadata" poster="/media/oil-paintings/strawberry-girl.webp" src="/media/oil-paintings/strawberry-timelapse.mp4" style="width:100%;border-radius:8px"></video>
+
+<video controls muted playsinline preload="metadata" poster="/media/oil-paintings/spring-study.webp" src="/media/oil-paintings/spring-timelapse.mp4" style="width:100%;border-radius:8px"></video>
+
+<video controls muted playsinline preload="metadata" poster="/media/oil-paintings/court-study.webp" src="/media/oil-paintings/court-timelapse.mp4" style="width:100%;border-radius:8px"></video>
+
+You can see the mistakes go in and get painted out: the navy block in the spring study, the
+chalky wall in the courtroom.
