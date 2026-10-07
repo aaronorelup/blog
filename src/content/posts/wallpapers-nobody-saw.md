@@ -187,6 +187,16 @@ The pilot's file list has 2,206 entries, every one marked chosen, candidate or r
 how it was made. There are 319 review images, and it is on its sixth round of fixes. It isn't a
 wallpaper yet: nothing in it moves until the effects go on.
 
+**Update, 7 October:** the effects went on. Claude made four moods from these layers, and this
+is one of them, "Weight and Momentum", for one whole 60-second loop. Her stir, head, ears and
+cape move every 6 seconds, the flail every 10, and a wet sheen runs round the tail coil. It comes
+from the app's render tool, the one whose frame matched the engine's exactly, so these are the
+frames the engine draws, not a recording of a screen.
+
+<ao-compare cols="1" aspect="16/9">
+  <figure><video controls muted loop playsinline preload="metadata" poster="/media/wallpapers-nobody-saw/pilot-v016.webp" src="/media/wallpapers-nobody-saw/pilot-v016.mp4"></video><figcaption><b>Jefrie cooking, v016 "Weight and Momentum"</b><span class="ao-meta">one 60 s loop at 30 fps · built 29 Sep by Claude after a critic pass · rendered 7 Oct with wb render clip at 1920×1080 from the 3840×2160 project · the GPU readout top right is blank because a render has no live data</span></figcaption></figure>
+</ao-compare>
+
 The rejected column is the useful part. Asking Qwen to "keep only the tail" redrew the tail
 or broke it apart, three tries out of three. Asking SAM for "red spike" found the ear point.
 oneObsession left hard seams outpainting a painterly image. In September, failures like these
