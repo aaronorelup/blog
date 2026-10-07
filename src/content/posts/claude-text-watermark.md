@@ -1,7 +1,7 @@
 ---
 id: "AO-040"
 title: "Claude's text is watermarked now, and the mark only lives where Claude had a choice"
-summary: "Since August, Anthropic watermarks what Claude writes with a version of Google DeepMind's SynthID-Text. The mark is in which words get picked, so the text reads the same and an answer with only one right version comes out unchanged, and only Anthropic's key can check it. An animated lesson and five demos show how it works, what edits do to it, and what would remove it."
+summary: "Since August, Anthropic watermarks what Claude writes with a version of Google DeepMind's SynthID-Text. The mark is in which words get picked, so the text reads the same and an answer with only one right version comes out unchanged, and only Anthropic's key can check it. An animated explainer and five demos show how it works, what edits do to it, and what would remove it."
 date: 2026-10-06
 status: "shipped"
 tags: ["claude", "watermarking", "synthid", "interactive", "agents"]
@@ -16,7 +16,7 @@ preview:
 
 Anthropic started watermarking what its models write in August. The watermark lets Anthropic check
 whether a piece of text was written by one of its models. The remarkable part is where it lives: in
-the word choices themselves, without making the writing any worse. I made an animated lesson and
+the word choices themselves, without making the writing any worse. I made an animated explainer and
 five demos to show how it works.
 
 ## The short version
@@ -68,7 +68,7 @@ without making the writing worse, and SynthID-Text does it with a tournament.
 
 Here is the same thing, animated. It walks through everything the demos below let you try.
 
-<figure class="sid-video"><video controls playsinline preload="none" poster="/media/claude-text-watermark/lesson.webp" src="/media/claude-text-watermark/lesson.mp4"><track kind="captions" srclang="en" label="English" src="/media/claude-text-watermark/lesson.vtt"></video><figcaption>How SynthID-Text works · 4:46 · narrated by RClayton (ElevenLabs) · drawn in code</figcaption></figure>
+<figure class="sid-video"><video controls playsinline preload="none" poster="/media/claude-text-watermark/explainer.webp" src="/media/claude-text-watermark/explainer.mp4"><track kind="captions" srclang="en" label="English" src="/media/claude-text-watermark/explainer.vtt"></video><figcaption>How SynthID-Text works · 4:34 · voice and music by ElevenLabs · animation drawn in code</figcaption></figure>
 
 ## Try it: one tournament
 
@@ -221,9 +221,9 @@ Four Opus 5.5 agents at low reasoning effort did the reading: the paper and its 
 pages, who can check, and the attack papers. Two more re-read Anthropic's pages and the robustness
 numbers as raw text, which corrected several quotes the first pass had paraphrased and removed two
 numbers nobody could find in the source. Claude Opus 5.5 built the demos from the paper and Google
-DeepMind's code and drafted the post. The lesson was made with the engine behind
-[The Hidden Curriculum](/courses/the-hidden-curriculum/): Claude wrote the script, ElevenLabs read
-it, and seven Claude agents animated a scene each.
+DeepMind's code and drafted the post. For the explainer, Claude wrote the script, seven Claude agents
+animated a scene each in code, ElevenLabs voiced it and generated its music, and Qwen-Image 2.1 painted
+the desk-lamp backdrop on my laptop.
 
 The demos' model is a hand-written menu of word choices, a token is a whole word, and the seed is
 made the demo's own way, so it can't check real Claude text; nothing public can. Because every toy

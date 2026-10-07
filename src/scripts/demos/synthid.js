@@ -865,28 +865,51 @@ function partEdit(root) {
   });
   const stripBox = h('input', { type: 'checkbox', checked: true, onchange: (e) => { strip = e.target.checked; render(); } });
 
+  // Each edit button works once and stays lit, so the row reads as a record of what was done to
+  // the letter; Reset puts the letter back and unlights them.
+  const used = [];
+  const once = (label, fn) => {
+    const b = btn(label, () => {
+      if (b.disabled) return;
+      b.disabled = true;
+      b.classList.add('used');
+      b.setAttribute('aria-pressed', 'true');
+      fn();
+    });
+    used.push(b);
+    return b;
+  };
+  const reset = () => {
+    for (const b of used) {
+      b.disabled = false;
+      b.classList.remove('used');
+      b.removeAttribute('aria-pressed');
+    }
+    set(LETTER_CLAUDE, 'Back to Claude’s original letter.', LETTER_CLAUDE);
+  };
+
   root.append(
     h('div', { class: 'sid-eyebrow' }, 'Demo 4 · edit it, or try to remove it'),
     lede('Claude’s letter again. Type into it, or press a button, and the checker below updates. A wavy underline marks a word whose four previous tokens changed: the checker now gives it new, random round assignments, so its evidence is gone.'),
     area,
     h('div', { class: 'sid-sub' }, 'Or let something else do the editing'),
     h('div', { class: 'sid-row sid-controls' },
-      btn('Swap 1 word in 10 for a synonym', () => swap(0.1)),
-      btn('Swap 1 word in 4', () => swap(0.25)),
-      btn('Add an invisible character every 4 words', invisible),
-      btn('Ask Claude to reword it', () => {
+      once('Swap 1 word in 10 for a synonym', () => swap(0.1)),
+      once('Swap 1 word in 4', () => swap(0.25)),
+      once('Add an invisible character every 4 words', invisible),
+      once('Ask Claude to reword it', () => {
         const t = generate().text;
         set(t, 'Claude reworded the whole letter. It’s new text from the same model with the same key, so it carries a new watermark of its own.', t);
       }),
-      btn('Reword it with a model that doesn’t have the key', () => set(generate({ watermark: false }).text, 'A model without the key reworded the letter. Every word was picked with ordinary randomness, so there is nothing for the checker to find.')),
-      btn('The emoji trick', emoji),
-      btn('Keep only the first 40 words', () => {
+      once('Reword it with a model that doesn’t have the key', () => set(generate({ watermark: false }).text, 'A model without the key reworded the letter. Every word was picked with ordinary randomness, so there is nothing for the checker to find.')),
+      once('The emoji trick', emoji),
+      once('Keep only the first 40 words', () => {
         let n = 0;
         let cut = area.value.length;
         for (const m of area.value.matchAll(/[\p{L}\p{N}][\p{L}\p{N}'’]*/gu)) if (++n === 40) { cut = m.index + m[0].length; break; }
         set(area.value.slice(0, cut), 'The same watermarked words, just fewer of them. Each word carries the same evidence as before; there’s less of it.');
       }),
-      btn('Reset', () => set(LETTER_CLAUDE, 'Back to Claude’s original letter.', LETTER_CLAUDE))),
+      btn('Reset', reset)),
     h('label', { class: 'sid-check' }, stripBox, ' Checker removes invisible characters before checking'),
     status,
     legend(true),

@@ -56,6 +56,8 @@ ao-demo { display: block; margin: 30px 0 34px; }
 .sid-text:focus-visible,
 .sid-area:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
 .sid-btn:disabled { opacity: 0.45; cursor: default; border-color: var(--pc-line2); color: var(--pc-body); }
+/* Demo 4's one-shot edit buttons: once used they stay lit until Reset. */
+.sid-btn.used:disabled { opacity: 1; border-color: var(--pc-head); color: var(--pc-head); background: rgb(var(--sid-heat) / 0.12); }
 
 .sid-check { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--pc-soft); cursor: pointer; margin: 4px 0; }
 .sid-check input { accent-color: var(--pc-head); }
