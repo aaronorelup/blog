@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini Loom</title>
+<meta name="description" content="A small Loom in the browser: read a base model's branching futures, choose between them, watch the tree and count your bits of selection. After Loom by janus (@repligate).">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Karla:wght@400;600&display=swap">
+<!-- Zen Maru Gothic only sets headings: ask for just the Latin glyphs they use, not its Japanese subsets (the Explorer does the same) -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap&text=%20%21%22%23%24%25%26%27%28%29%2A%2B%2C-.%2F0123456789%3A%3B%3C%3D%3E%3F%40ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5C%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D~%E2%80%99%E2%80%98%E2%80%9C%E2%80%9D%C2%B7%E2%86%92%E2%86%90%E2%89%88%C3%97%E2%88%92%E2%80%93%E2%80%94%E2%80%A6%E2%90%A3%E2%8F%8E">
+<script>
+  // Set the mode before first paint: the link's mode=, else (inside the post) the post's own
+  // choice so the embed matches it, else this tool's last choice, else the site's, else night.
+  (function () {
+    var m = null, inPost = true;
+    try { inPost = window.self !== window.top; } catch (e) {}
+    try {
+      var tool = localStorage.getItem('mini-loom-mode'), site = localStorage.getItem('scene-mode');
+      m = inPost ? (site || tool) : (tool || site);
+    } catch (e) {}
+    var h = /(?:^|[#&])mode=(day|night)/.exec(location.hash);
+    if (h) m = h[1];
+    if (m === 'day') document.documentElement.dataset.mode = 'day';
+  })();
+</script>
+<link rel="stylesheet" href="loom.css">
+<script type="module" src="loom.js"></script>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="bar">
+    <h1 class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">Mini Loom</span></h1>
+    <div class="seed-wrap">
+      <button class="pill seed-btn" id="seedBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="seedMenu">
+        <span class="seed-label" id="seedLabel">Loading…</span><span class="chev" aria-hidden="true">▾</span>
+      </button>
+      <div class="menu" id="seedMenu" role="menu" aria-label="Choose a seed" hidden></div>
+    </div>
+    <div class="tools">
+      <button class="pill" id="tokBtn" aria-pressed="false" title="Token view (T)">Tokens</button>
+      <button class="pill" id="mapBtn" aria-pressed="false" title="Large tree map (M)">Map</button>
+      <button class="pill" id="taskBtn" aria-expanded="false" aria-controls="taskDialog" title="Things to try">Try this <span class="count" id="taskCount">0/4</span></button>
+      <button class="pill live-pill" id="liveBtn" title="Grow new branches with a model in your browser"><span class="dot" aria-hidden="true"></span><span id="liveBtnText">Live model</span></button>
+      <button class="pill" id="modeBtn" title="Switch day and night">Day</button>
+    </div>
+  </header>
+
+  <main class="main" id="main">
+    <section class="reader" aria-label="Reading pane">
+      <div class="reader-scroll" id="scroller">
+        <div class="reader-head">
+          <div class="eyebrow" id="eyebrow">&nbsp;</div>
+          <div class="reader-actions">
+            <button class="pill small" id="editBtn" hidden>Edit this passage</button>
+            <button class="pill small" id="rootBtn" title="Back to the prompt (Home)">Back to root</button>
+          </div>
+        </div>
+        <p class="grown-by" id="grownBy"></p>
+        <div class="legend" id="tokLegend" hidden>
+          <span class="legend-ramp" aria-hidden="true"></span>
+          <span>Token view: quiet means unlikely, gold means likely. Hover, tap or focus a token to see what else the model considered.</span>
+        </div>
+        <article class="doc" id="doc" aria-live="off"></article>
+        <section class="fork" id="fork" aria-label="Futures"></section>
+        <p class="keys" id="keys" aria-hidden="true">
+          <span><kbd>←</kbd><kbd>→</kbd> parent / child</span>
+          <span><kbd>↑</kbd><kbd>↓</kbd> siblings</span>
+          <span><kbd>1</kbd>–<kbd id="keyN">4</kbd> choose</span>
+          <span><kbd>T</kbd> tokens</span>
+          <span><kbd>M</kbd> map</span>
+          <span class="live-only"><kbd>G</kbd> grow</span>
+        </p>
+      </div>
+    </section>
+
+    <aside class="side" id="side" aria-label="Tree map and meter">
+      <section class="mapbox" id="mapbox" aria-label="Tree map">
+        <div class="map-head">
+          <h2 class="map-title-static eyebrow">Multiverse</h2>
+          <button class="map-title" id="mapToggle" aria-expanded="true" aria-controls="mapStage"><span class="eyebrow">Multiverse</span><span class="chev" aria-hidden="true">▾</span></button>
+          <span class="map-stats" id="mapStats"></span>
+          <span class="map-btns">
+            <button class="pill tiny" id="zoomOut" aria-label="Zoom out">−</button>
+            <button class="pill tiny" id="zoomIn" aria-label="Zoom in">+</button>
+            <button class="pill tiny" id="fitBtn" title="Show the whole tree">Fit</button>
+            <button class="pill tiny" id="mapClose" hidden>Close</button>
+          </span>
+        </div>
+        <div class="map-stage" id="mapStage">
+          <canvas id="map" tabindex="0" role="img" aria-label="Tree map"></canvas>
+          <div class="map-tip" id="mapTip" hidden></div>
+        </div>
+        <div class="map-legend" aria-hidden="true">
+          <span><i class="lg-dot solid"></i>read</span>
+          <span><i class="lg-dot hollow"></i>not yet</span>
+          <span><i class="lg-line"></i>your path</span>
+          <span class="lg-you"><i class="lg-sq"></i>you wrote</span>
+        </div>
+      </section>
+
+      <section class="meter" id="meter" aria-label="Bits of selection">
+        <div class="meter-top">
+          <span class="eyebrow">Bits of selection</span>
+          <button class="link" id="bitsHelp">what is this?</button>
+        </div>
+        <div class="meter-body">
+          <div class="meter-num"><span id="bitsNum">0</span><span class="unit">bits</span></div>
+          <div class="meter-text">
+            <p id="bitsLine1">You chose 0 times.</p>
+            <p id="bitsLine2">The model wrote 0 words. You wrote 0.</p>
+          </div>
+        </div>
+        <div class="bit-strip" id="bitStrip" aria-hidden="true"></div>
+      </section>
+
+      <section class="tasks" id="tasksSide" aria-label="Try this"></section>
+    </aside>
+  </main>
+
+  <footer class="credit" id="credit">
+    Inspired by <a href="https://github.com/socketteer/loom" target="_blank" rel="noopener">Loom</a> by janus (<a href="https://x.com/repligate" target="_blank" rel="noopener">@repligate</a>) · <a href="https://github.com/socketteer/loom" target="_blank" rel="noopener">github.com/socketteer/loom</a> · <span id="creditModel">trees grown with a base model</span>
+  </footer>
+
+  <div class="popover" id="tokPop" role="tooltip" hidden></div>
+  <div class="sr-only" id="announce" aria-live="polite"></div>
+</div>
+
+<!-- Shown by CSS alone (no flash) when the frame is small both ways: the post's 16:9 embed on a phone -->
+<div class="room" id="room">
+  <div class="room-card" role="group" aria-labelledby="roomTitle">
+    <span class="eyebrow"><span class="brand-mark" aria-hidden="true"></span>After Loom by janus · @repligate</span>
+    <h2 id="roomTitle">Mini Loom needs more room than this frame has.</h2>
+    <div class="room-row">
+      <button class="pill primary" id="roomFull" hidden>Fullscreen</button>
+      <a class="pill" id="roomTab" href="./" target="_blank" rel="noopener">Open in its own tab ↗</a>
+    </div>
+    <button class="link" id="roomStay">Use it here anyway</button>
+  </div>
+</div>
+
+<dialog id="taskDialog" class="dlg" aria-labelledby="taskDlgTitle">
+  <div class="dlg-head"><h2 id="taskDlgTitle">Try this</h2><button class="pill small" data-close>Close</button></div>
+  <div id="tasksDlgBody"></div>
+</dialog>
+
+<dialog id="bitsDialog" class="dlg" aria-labelledby="bitsDlgTitle">
+  <div class="dlg-head"><h2 id="bitsDlgTitle">Bits of selection</h2><button class="pill small" data-close>Close</button></div>
+  <div class="prose">
+    <p>Every time you pick one future out of several, you put information into the text. Choosing 1 of 2 is 1 bit, 1 of 4 is 2 bits, 1 of 8 is 3 bits: log<sub>2</sub> of the number of options. The meter adds these up along the path on screen and sets them next to the words the model wrote.</p>
+    <p>It counts choices, not effort. It treats every option as equally weighted, so it is the most a choice among that many options can carry.</p>
+    <blockquote>“I could steer the text anywhere I wished without having to write a word.”<cite>janus, <a href="https://www.lesswrong.com/posts/bxt7uCiHam4QXrQAA/cyborgism#Appendix__Testimony_of_a_Cyborg" target="_blank" rel="noopener">Testimony of a Cyborg</a> (2023)</cite></blockquote>
+    <p>janus, who posts as repligate, defined bits of selection in her essay <a href="https://generative.ink/posts/quantifying-curation/" target="_blank" rel="noopener">Quantifying curation</a> (2021), crediting the idea to a suggestion by Gurkenglas.</p>
+  </div>
+</dialog>
+
+<dialog id="liveDialog" class="dlg wide" aria-labelledby="liveDlgTitle">
+  <div class="dlg-head"><h2 id="liveDlgTitle">Grow your own branches</h2><button class="pill small" data-close>Close</button></div>
+  <div class="prose">
+    <p id="liveIntro">A small base model can run inside your browser and grow new futures from any point in the tree, or from a prompt you write.</p>
+    <p class="note" id="liveCompare"></p>
+    <p class="note" id="liveDevice">Checking what your browser supports…</p>
+  </div>
+  <div class="live-load">
+    <button class="pill primary" id="liveLoad">Load a live model</button>
+    <button class="link" id="liveSmall" hidden></button>
+    <div class="progress" id="liveProgress" hidden><div class="progress-bar"><i id="liveBar"></i></div><span id="liveStatus"></span></div>
+  </div>
+  <fieldset class="settings" id="liveSettings">
+    <legend class="eyebrow">Settings for new branches</legend>
+    <label><span class="lab">Branches <output id="outBranches">4</output></span><input type="range" id="setBranches" min="2" max="8" step="1" value="4"></label>
+    <label><span class="lab">Length in tokens <output id="outTokens">28</output></span><input type="range" id="setTokens" min="8" max="64" step="1" value="28"></label>
+    <label><span class="lab">Temperature <output id="outTemp">1.0</output></span><input type="range" id="setTemp" min="0.2" max="1.5" step="0.1" value="1.0"></label>
+    <label class="check"><input type="checkbox" id="setStop" checked> <span id="stopLabel">Stop at the end of a sentence</span></label>
+  </fieldset>
+  <p class="note small">Top-p is fixed at 0.95. Probabilities shown are the model's own, before temperature. Downloaded once, then kept in your browser's cache. Nothing you type leaves your browser.</p>
+  <div class="dlg-foot"><button class="pill" id="writeOwn" hidden>Write your own prompt</button></div>
+</dialog>
+
+<dialog id="editDialog" class="dlg wide" aria-labelledby="editDlgTitle">
+  <div class="dlg-head"><h2 id="editDlgTitle">Edit this passage</h2><button class="pill small" data-close>Close</button></div>
+  <p class="note" id="editNote">Your version becomes a new sibling, marked as written by you. The model's version stays in the tree.</p>
+  <textarea id="editText" rows="6" spellcheck="true"></textarea>
+  <div class="dlg-foot"><button class="pill" data-close>Cancel</button><button class="pill primary" id="editSave">Save and grow from it</button></div>
+</dialog>
+</body>
+</html>

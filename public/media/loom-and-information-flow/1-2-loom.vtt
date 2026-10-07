@@ -1,0 +1,401 @@
+WEBVTT
+
+1
+00:00:01.600 --> 00:00:04.224
+In this video you'll learn what Loom is,
+
+2
+00:00:04.224 --> 00:00:08.020
+where it came from, and how its interface works.
+
+3
+00:00:08.020 --> 00:00:12.374
+Loom is a tree-based interface for base models:
+
+4
+00:00:12.374 --> 00:00:15.695
+at any point it shows several continuations,
+
+5
+00:00:15.695 --> 00:00:18.237
+and you choose which branch to follow,
+
+6
+00:00:18.237 --> 00:00:20.455
+edit, or grow.
+
+7
+00:00:20.455 --> 00:00:25.436
+It was built by janus, who posts as @repligate.
+
+8
+00:00:25.436 --> 00:00:29.418
+The last video drew the tree of possible texts.
+
+9
+00:00:29.418 --> 00:00:32.786
+Loom is a way to walk around inside it.
+
+10
+00:00:33.236 --> 00:00:37.996
+janus learned of GPT-3 in the summer of 2020
+
+11
+00:00:37.996 --> 00:00:41.015
+and used it through AI Dungeon, which she calls
+
+12
+00:00:41.015 --> 00:00:43.894
+the only public way in at the time.
+
+13
+00:00:43.894 --> 00:00:46.425
+She let the model write mostly on its own,
+
+14
+00:00:46.425 --> 00:00:49.014
+and retried, cut short,
+
+15
+00:00:49.014 --> 00:00:52.183
+or edited outputs that went wrong.
+
+16
+00:00:52.183 --> 00:00:53.507
+But in her words,
+
+17
+00:00:53.507 --> 00:00:57.338
+"Adventures on AI Dungeon are single-history":
+
+18
+00:00:57.338 --> 00:01:00.055
+each new try replaced the last.
+
+19
+00:01:00.055 --> 00:01:02.644
+So she saved other branches by hand,
+
+20
+00:01:02.644 --> 00:01:04.536
+first in linked documents,
+
+21
+00:01:04.536 --> 00:01:07.045
+then as a tree in a whiteboard app.
+
+22
+00:01:07.045 --> 00:01:08.507
+Next she built a web app
+
+23
+00:01:08.507 --> 00:01:11.839
+that ran many AI Dungeon games at once:
+
+24
+00:01:11.839 --> 00:01:15.415
+up to a dozen continuations, side by side.
+
+25
+00:01:15.415 --> 00:01:18.933
+Once OpenAI gave her direct access to the model,
+
+26
+00:01:18.933 --> 00:01:20.814
+she began building Loom.
+
+27
+00:01:20.814 --> 00:01:24.448
+She wrote it up on her website in February 2021;
+
+28
+00:01:24.448 --> 00:01:27.318
+its code is open source on GitHub.
+
+29
+00:01:27.767 --> 00:01:31.331
+Everything in Loom is a node: a piece of text.
+
+30
+00:01:31.331 --> 00:01:33.897
+A node's parent is the text before it,
+
+31
+00:01:33.897 --> 00:01:36.974
+and its children are possible next pieces.
+
+32
+00:01:36.974 --> 00:01:39.969
+Press G, and Loom asks the model for several
+
+33
+00:01:39.969 --> 00:01:43.766
+continuations of a set length at once,
+
+34
+00:01:43.766 --> 00:01:45.530
+each a new child.
+
+35
+00:01:45.530 --> 00:01:47.667
+Read them, pick one,
+
+36
+00:01:47.667 --> 00:01:49.965
+and generate again from there.
+
+37
+00:01:49.965 --> 00:01:52.218
+Or go back to any earlier node
+
+38
+00:01:52.218 --> 00:01:54.296
+and branch there instead.
+
+39
+00:01:54.296 --> 00:01:56.072
+The other children stay in the tree,
+
+40
+00:01:56.072 --> 00:01:57.872
+so nothing is lost.
+
+41
+00:01:57.872 --> 00:02:01.099
+Any node can also be edited by hand:
+
+42
+00:02:01.099 --> 00:02:03.885
+fix a word, or add half a sentence.
+
+43
+00:02:03.885 --> 00:02:05.940
+janus calls the core of her method
+
+44
+00:02:05.940 --> 00:02:09.075
+"manual iterative rejection sampling":
+
+45
+00:02:09.075 --> 00:02:13.185
+ask for continuations, fewer than five on average,
+
+46
+00:02:13.185 --> 00:02:15.310
+sometimes over a hundred, keep one,
+
+47
+00:02:15.310 --> 00:02:17.957
+reject the rest, and go on.
+
+48
+00:02:17.957 --> 00:02:21.801
+She built Loom to make that loop fast.
+
+49
+00:02:22.252 --> 00:02:25.213
+Loom shows one tree in several ways.
+
+50
+00:02:25.213 --> 00:02:27.082
+Read mode shows the current node
+
+51
+00:02:27.082 --> 00:02:31.006
+and its ancestors as one continuous document,
+
+52
+00:02:31.006 --> 00:02:34.175
+with an outline of the tree in a sidebar.
+
+53
+00:02:34.175 --> 00:02:35.801
+Visualize mode draws
+
+54
+00:02:35.801 --> 00:02:38.587
+the multiverse as a tree diagram;
+
+55
+00:02:38.587 --> 00:02:41.211
+zoom out to see its overall shape.
+
+56
+00:02:41.211 --> 00:02:43.464
+The keyboard moves you through it:
+
+57
+00:02:43.464 --> 00:02:47.144
+right goes to a child, left to the parent,
+
+58
+00:02:47.144 --> 00:02:49.837
+up and down to the siblings.
+
+59
+00:02:49.837 --> 00:02:52.682
+Loom also keeps each generated
+
+60
+00:02:52.682 --> 00:02:54.957
+token's probability:
+
+61
+00:02:54.957 --> 00:02:57.372
+it can shade the text by how strongly
+
+62
+00:02:57.372 --> 00:02:59.624
+the model predicted each token,
+
+63
+00:02:59.624 --> 00:03:01.563
+and you can click a token to swap
+
+64
+00:03:01.563 --> 00:03:04.326
+in one of the model's alternatives.
+
+65
+00:03:04.326 --> 00:03:06.985
+Its block multiverse view
+
+66
+00:03:06.985 --> 00:03:10.282
+lays future text out as blocks,
+
+67
+00:03:10.282 --> 00:03:12.256
+left to right in time,
+
+68
+00:03:12.256 --> 00:03:15.100
+each as tall as its probability.
+
+69
+00:03:15.100 --> 00:03:17.573
+Click one, and the view zooms in,
+
+70
+00:03:17.573 --> 00:03:20.977
+as if that text had already been chosen.
+
+71
+00:03:21.427 --> 00:03:23.621
+Later versions of Loom can also
+
+72
+00:03:23.621 --> 00:03:25.374
+use other model providers,
+
+73
+00:03:25.374 --> 00:03:28.567
+and models running on your own computer.
+
+74
+00:03:28.567 --> 00:03:33.002
+By early 2023, the AI safety company Conjecture
+
+75
+00:03:33.002 --> 00:03:36.509
+was hosting a version of Loom called Bonsai.
+
+76
+00:03:36.509 --> 00:03:39.620
+That year, a developer called celeste started
+
+77
+00:03:39.620 --> 00:03:42.964
+a Loom inside the note-taking app Obsidian,
+
+78
+00:03:42.964 --> 00:03:45.750
+and janus has contributed to it.
+
+79
+00:03:45.750 --> 00:03:49.164
+Base models, meanwhile, got harder to reach.
+
+80
+00:03:49.164 --> 00:03:54.063
+OpenAI retired the original GPT-3 base models
+
+81
+00:03:54.063 --> 00:03:58.312
+in January 2024, and scheduled its last two
+
+82
+00:03:58.312 --> 00:04:01.333
+to shut down in September 2026.
+
+83
+00:04:01.912 --> 00:04:04.489
+janus has written that she almost always
+
+84
+00:04:04.489 --> 00:04:07.902
+uses base models, because their randomness
+
+85
+00:04:07.902 --> 00:04:11.873
+is what makes steering by choice possible.
+
+86
+00:04:11.873 --> 00:04:13.777
+Base models with open weights
+
+87
+00:04:13.777 --> 00:04:15.484
+can still be run locally.
+
+88
+00:04:15.484 --> 00:04:19.118
+Every pick in Loom is a choice among branches.
+
+89
+00:04:19.118 --> 00:04:21.800
+The next video measures how much
+
+90
+00:04:21.800 --> 00:04:24.936
+one choice can steer, in bits.
+
+91
+00:04:25.385 --> 00:04:27.475
+Keep this. One.
+
+92
+00:04:27.475 --> 00:04:30.842
+Loom shows the multiverse as a tree you can walk:
+
+93
+00:04:30.842 --> 00:04:33.326
+generate several children, pick one,
+
+94
+00:04:33.326 --> 00:04:37.425
+go back and branch, or edit by hand. Two.
+
+95
+00:04:37.425 --> 00:04:40.292
+Loom grew out of janus's own practice.
+
+96
+00:04:40.292 --> 00:04:42.069
+She built it to speed up a loop
+
+97
+00:04:42.069 --> 00:04:44.240
+she already ran by hand:
+
+98
+00:04:44.240 --> 00:04:49.640
+generate many, keep one, go on. Three.
+
+99
+00:04:50.103 --> 00:04:53.447
+Loom is meant for base models, whose variety
+
+100
+00:04:53.447 --> 00:04:56.525
+makes the branches worth choosing between.

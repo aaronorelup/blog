@@ -1,0 +1,445 @@
+WEBVTT
+
+1
+00:00:01.600 --> 00:00:03.574
+In this video you'll learn the orders
+
+2
+00:00:03.574 --> 00:00:06.639
+in which a transformer's computation can happen,
+
+3
+00:00:06.639 --> 00:00:09.681
+the one route back down, and how to explore
+
+4
+00:00:09.681 --> 00:00:11.993
+it all in the tool on this page.
+
+5
+00:00:12.455 --> 00:00:15.102
+The computation is a causal graph that can be
+
+6
+00:00:15.102 --> 00:00:18.736
+sliced into time steps in several valid ways.
+
+7
+00:00:18.736 --> 00:00:21.581
+Information never flows down or left;
+
+8
+00:00:21.581 --> 00:00:24.681
+the only way back down is a sampled token.
+
+9
+00:00:24.681 --> 00:00:26.805
+janus, who posts as @repligate,
+
+10
+00:00:26.805 --> 00:00:28.698
+argues that the architecture permits
+
+11
+00:00:28.698 --> 00:00:31.577
+introspection on earlier computations;
+
+12
+00:00:31.577 --> 00:00:34.876
+how much models use it is a separate question.
+
+13
+00:00:35.326 --> 00:00:38.275
+Take the grid: four positions reading "You
+
+14
+00:00:38.275 --> 00:00:41.328
+are absolutely correct," and four layers.
+
+15
+00:00:41.328 --> 00:00:43.697
+janus treats it as a causal graph,
+
+16
+00:00:43.697 --> 00:00:46.611
+after Stephen Wolfram's physics project.
+
+17
+00:00:46.611 --> 00:00:48.271
+Every cell is an event,
+
+18
+00:00:48.271 --> 00:00:51.313
+and arrows show which events need which.
+
+19
+00:00:51.313 --> 00:00:53.565
+The graph fixes what depends on what,
+
+20
+00:00:53.565 --> 00:00:55.551
+but not a single clock.
+
+21
+00:00:55.551 --> 00:00:58.604
+A foliation cuts it into time slices:
+
+22
+00:00:58.604 --> 00:01:00.671
+steps in which everything an event
+
+23
+00:01:00.671 --> 00:01:02.785
+needs came in an earlier step.
+
+24
+00:01:03.248 --> 00:01:07.207
+Reading a known prompt, a GPU goes layer by layer:
+
+25
+00:01:07.207 --> 00:01:10.121
+every position at once, four steps.
+
+26
+00:01:10.121 --> 00:01:12.501
+janus draws diagonal slices:
+
+27
+00:01:12.501 --> 00:01:15.949
+a wave moving up and to the right, seven steps.
+
+28
+00:01:15.949 --> 00:01:18.202
+Both need the input already written.
+
+29
+00:01:18.202 --> 00:01:20.442
+Generating goes column by column:
+
+30
+00:01:20.442 --> 00:01:22.416
+each new position waits for the token
+
+31
+00:01:22.416 --> 00:01:24.368
+sampled from the one before.
+
+32
+00:01:24.831 --> 00:01:26.293
+Sixteen steps.
+
+33
+00:01:26.293 --> 00:01:29.184
+Every legal order gives the same result.
+
+34
+00:01:29.184 --> 00:01:30.914
+The order is a choice;
+
+35
+00:01:30.914 --> 00:01:33.400
+what can reach what is not.
+
+36
+00:01:33.851 --> 00:01:37.520
+Take a result at layer three of position two.
+
+37
+00:01:37.520 --> 00:01:39.923
+It can only travel up and to the right,
+
+38
+00:01:39.923 --> 00:01:41.525
+into higher layers,
+
+39
+00:01:41.525 --> 00:01:44.511
+never to the lower layers of a later position.
+
+40
+00:01:44.973 --> 00:01:46.622
+While the model writes,
+
+41
+00:01:46.622 --> 00:01:49.722
+only one kind of route leads back to the bottom:
+
+42
+00:01:49.722 --> 00:01:52.393
+the result shapes the probabilities at the top
+
+43
+00:01:52.393 --> 00:01:55.295
+of its column, one token is sampled,
+
+44
+00:01:55.295 --> 00:01:58.128
+and it becomes the next position's input.
+
+45
+00:01:58.128 --> 00:02:00.067
+That channel is narrow:
+
+46
+00:02:00.067 --> 00:02:04.165
+one token out of about 128,000 carries
+
+47
+00:02:04.165 --> 00:02:07.137
+at most about seventeen bits, against
+
+48
+00:02:07.137 --> 00:02:10.261
+thousands of numbers in the residual stream.
+
+49
+00:02:10.261 --> 00:02:13.604
+That token is the branch point you saw in Loom.
+
+50
+00:02:13.604 --> 00:02:17.134
+In janus's terms, the KV cache gives no deeper
+
+51
+00:02:17.134 --> 00:02:21.127
+sequential paths through earlier states, but "a
+
+52
+00:02:21.127 --> 00:02:24.773
+vast number of parallel computational paths."
+
+53
+00:02:24.773 --> 00:02:26.874
+Each climbs one layer at a time,
+
+54
+00:02:26.874 --> 00:02:30.394
+so none can be deeper than the stack is tall.
+
+55
+00:02:30.843 --> 00:02:32.770
+Her thread follows an exchange
+
+56
+00:02:32.770 --> 00:02:34.407
+about introspection.
+
+57
+00:02:34.407 --> 00:02:35.905
+The objection:
+
+58
+00:02:35.905 --> 00:02:39.005
+a model carries no state between tokens,
+
+59
+00:02:39.005 --> 00:02:41.431
+so its report of its earlier thinking may
+
+60
+00:02:41.431 --> 00:02:43.962
+be rebuilt from the words on the page.
+
+61
+00:02:43.962 --> 00:02:47.189
+Video 2.2 showed that later positions read
+
+62
+00:02:47.189 --> 00:02:49.697
+earlier keys and values at every layer,
+
+63
+00:02:49.697 --> 00:02:53.250
+computed from internal states, not just words.
+
+64
+00:02:53.250 --> 00:02:56.303
+Cached or recomputed, they are the same numbers.
+
+65
+00:02:56.303 --> 00:02:59.787
+So janus concludes that saying a model cannot,
+
+66
+00:02:59.787 --> 00:03:02.805
+in principle, introspect on its computations
+
+67
+00:03:02.805 --> 00:03:06.242
+at earlier tokens is wrong about the architecture.
+
+68
+00:03:06.242 --> 00:03:09.493
+In her words, "The architecture permits it."
+
+69
+00:03:09.493 --> 00:03:11.594
+How much models use it, she says,
+
+70
+00:03:11.594 --> 00:03:13.603
+is "a separate question,"
+
+71
+00:03:13.603 --> 00:03:15.599
+though she thinks they do.
+
+72
+00:03:15.599 --> 00:03:18.212
+Research has started to test this:
+
+73
+00:03:18.212 --> 00:03:21.764
+in an Anthropic paper from October 2025,
+
+74
+00:03:21.764 --> 00:03:24.168
+Claude models sometimes noticed concepts
+
+75
+00:03:24.168 --> 00:03:26.548
+injected into their activations,
+
+76
+00:03:26.548 --> 00:03:29.986
+unreliably and in narrow settings.
+
+77
+00:03:30.436 --> 00:03:31.736
+All of this can be tried
+
+78
+00:03:31.736 --> 00:03:35.068
+in the Information Flow Explorer, on this page.
+
+79
+00:03:35.068 --> 00:03:36.868
+Two highways:
+
+80
+00:03:36.868 --> 00:03:39.190
+point at a cell to see what it reads,
+
+81
+00:03:39.190 --> 00:03:42.824
+from below and the left, and what reads it.
+
+82
+00:03:42.824 --> 00:03:46.237
+Reach: click a cell to wash its past violet
+
+83
+00:03:46.237 --> 00:03:48.141
+and its future terracotta;
+
+84
+00:03:48.141 --> 00:03:51.150
+turn on generating to add the one way down.
+
+85
+00:03:51.915 --> 00:03:54.562
+Paths: step through janus's three
+
+86
+00:03:54.562 --> 00:03:56.965
+routes from A to B, then scale up
+
+87
+00:03:56.965 --> 00:03:58.881
+to a real model and compare the count
+
+88
+00:03:58.881 --> 00:04:01.552
+with the atoms in the observable universe.
+
+89
+00:04:02.015 --> 00:04:04.615
+Time slices: play the three orders,
+
+90
+00:04:04.615 --> 00:04:06.879
+then schedule the grid yourself.
+
+91
+00:04:06.879 --> 00:04:07.762
+A cell that isn't
+
+92
+00:04:07.762 --> 00:04:09.818
+ready says what it's waiting for.
+
+93
+00:04:10.281 --> 00:04:12.046
+Inside one cell:
+
+94
+00:04:12.046 --> 00:04:15.169
+real attention weights from GPT-2 small,
+
+95
+00:04:15.169 --> 00:04:16.922
+for every layer and head.
+
+96
+00:04:16.922 --> 00:04:18.305
+Then puzzles:
+
+97
+00:04:18.768 --> 00:04:20.567
+can this point reach that one?
+
+98
+00:04:20.567 --> 00:04:22.343
+Every rule in these four videos
+
+99
+00:04:22.343 --> 00:04:24.516
+can be checked there, by hand.
+
+100
+00:04:24.967 --> 00:04:27.010
+Keep this. One.
+
+101
+00:04:27.010 --> 00:04:29.669
+The computation has more than one valid order,
+
+102
+00:04:29.669 --> 00:04:33.094
+and every order gives the same result. Two.
+
+103
+00:04:33.094 --> 00:04:35.544
+The only way down is a sampled token,
+
+104
+00:04:35.544 --> 00:04:39.003
+at most about seventeen bits. Three.
+
+105
+00:04:39.003 --> 00:04:42.103
+Later positions read earlier internal states,
+
+106
+00:04:42.103 --> 00:04:44.228
+so janus argues the architecture
+
+107
+00:04:44.228 --> 00:04:45.946
+permits introspection;
+
+108
+00:04:45.946 --> 00:04:49.011
+how much models use it is a separate question.
+
+109
+00:04:49.011 --> 00:04:51.844
+The ideas in this series are janus's;
+
+110
+00:04:51.844 --> 00:04:53.481
+her thread and the Cyborgism
+
+111
+00:04:53.481 --> 00:04:55.828
+post are linked on this page.

@@ -1,0 +1,64 @@
+{
+ "seeds": [
+  {
+   "id": "lighthouse",
+   "title": "The lighthouse keeper",
+   "file": "lighthouse.json",
+   "nodes": 609,
+   "min_depth": 4,
+   "depth": 8,
+   "bytes": 1389248,
+   "prompt": "The lighthouse keeper had not spoken to another person in eleven years. On the night the radio finally crackled to life, the voice on the other end said"
+  },
+  {
+   "id": "jacquard",
+   "title": "Jacquard's punched cards",
+   "file": "jacquard.json",
+   "nodes": 609,
+   "min_depth": 4,
+   "depth": 8,
+   "bytes": 1465636,
+   "prompt": "In 1804, Joseph Marie Jacquard demonstrated a loom that was controlled by a chain of punched cards. Each card"
+  },
+  {
+   "id": "manual",
+   "title": "The Weaver's Handbook",
+   "file": "manual.json",
+   "nodes": 609,
+   "min_depth": 4,
+   "depth": 8,
+   "bytes": 1458309,
+   "prompt": "THE WEAVER'S HANDBOOK\n\nChapter One: Reading the Warp\n\nEvery new weaver begins the same way:"
+  },
+  {
+   "id": "advice",
+   "title": "One week to learn",
+   "file": "advice.json",
+   "nodes": 609,
+   "min_depth": 4,
+   "depth": 8,
+   "bytes": 1460468,
+   "prompt": "Forum thread: Learning and self-improvement\n\nQ: I have one week to learn something completely new. How should I spend it?\n\nA:"
+  }
+ ],
+ "model": {
+  "id": "Qwen/Qwen3-1.7B-Base",
+  "label": "Qwen3 1.7B Base",
+  "params": "1.7B",
+  "license": "Apache-2.0",
+  "url": "https://huggingface.co/Qwen/Qwen3-1.7B-Base",
+  "dtype": "bfloat16"
+ },
+ "sampling": {
+  "temperature": 1.0,
+  "top_p": 0.95,
+  "top_k": null,
+  "repetition_penalty": null,
+  "branch_tokens": 32,
+  "branches": 4,
+  "stop_at_sentence_end": true,
+  "min_tokens_before_sentence_stop": 12,
+  "logprobs": "full temperature-1 distribution before top-p truncation; special tokens removed",
+  "top_alternatives": 4
+ }
+}

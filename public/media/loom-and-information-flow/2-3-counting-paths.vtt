@@ -1,0 +1,429 @@
+WEBVTT
+
+1
+00:00:01.600 --> 00:00:03.550
+In this video you'll learn how many
+
+2
+00:00:03.550 --> 00:00:05.013
+routes information can take
+
+3
+00:00:05.013 --> 00:00:06.941
+between two points in the grid,
+
+4
+00:00:06.941 --> 00:00:09.553
+and why janus, who posts as @repligate,
+
+5
+00:00:09.553 --> 00:00:12.548
+says the number gets astronomically large.
+
+6
+00:00:12.548 --> 00:00:14.963
+Getting from one point to a later one takes
+
+7
+00:00:14.963 --> 00:00:18.806
+n steps up and m steps right, in some order;
+
+8
+00:00:18.806 --> 00:00:21.383
+there are C(m+n, n) orders,
+
+9
+00:00:21.383 --> 00:00:23.403
+and for a real model that number dwarfs
+
+10
+00:00:23.403 --> 00:00:26.702
+the count of atoms in the observable universe.
+
+11
+00:00:27.152 --> 00:00:28.708
+Call the current layer i
+
+12
+00:00:28.708 --> 00:00:30.972
+and the current position j.
+
+13
+00:00:30.972 --> 00:00:33.294
+Point A is the key and value computed
+
+14
+00:00:33.294 --> 00:00:35.976
+one layer down and two positions back:
+
+15
+00:00:35.976 --> 00:00:40.097
+layer i−1, position j−2.
+
+16
+00:00:40.097 --> 00:00:43.313
+Point B is what attention takes in at layer i,
+
+17
+00:00:43.313 --> 00:00:46.087
+position j: keys and values from there
+
+18
+00:00:46.087 --> 00:00:47.980
+and every earlier position.
+
+19
+00:00:47.980 --> 00:00:50.569
+She lists three routes from A to B.
+
+20
+00:00:50.569 --> 00:00:53.808
+First: up a layer at A's own position,
+
+21
+00:00:53.808 --> 00:00:58.011
+through attention and the MLP, then right two,
+
+22
+00:00:58.011 --> 00:01:01.111
+when attention at position j reads it.
+
+23
+00:01:01.111 --> 00:01:05.906
+Second: right one, when position j−1 reads it;
+
+24
+00:01:05.906 --> 00:01:08.866
+up a layer there; then right one more.
+
+25
+00:01:08.866 --> 00:01:10.840
+Third: right two,
+
+26
+00:01:10.840 --> 00:01:13.557
+when position j reads it at the lower layer,
+
+27
+00:01:13.557 --> 00:01:15.567
+then up a layer to B.
+
+28
+00:01:16.006 --> 00:01:19.490
+Each route is one move up and two positions right.
+
+29
+00:01:19.490 --> 00:01:21.465
+Only the order changes.
+
+30
+00:01:21.916 --> 00:01:24.644
+Every route uses two kinds of move.
+
+31
+00:01:24.644 --> 00:01:27.860
+A move up rides the residual stream:
+
+32
+00:01:27.860 --> 00:01:30.972
+one layer higher, at the same position.
+
+33
+00:01:30.972 --> 00:01:34.165
+A move right rides the K/V stream:
+
+34
+00:01:34.165 --> 00:01:37.148
+attention at a later position reads keys
+
+35
+00:01:37.148 --> 00:01:39.563
+and values at the same layer.
+
+36
+00:01:39.563 --> 00:01:42.489
+Attention can read any earlier position directly,
+
+37
+00:01:42.489 --> 00:01:45.809
+so one move right can cover several positions:
+
+38
+00:01:45.809 --> 00:01:48.421
+right two is a single hop.
+
+39
+00:01:48.421 --> 00:01:49.977
+Within one layer, though,
+
+40
+00:01:49.977 --> 00:01:53.240
+two right moves never follow each other.
+
+41
+00:01:53.240 --> 00:01:56.316
+What attention reads at a position joins that
+
+42
+00:01:56.316 --> 00:01:58.464
+position's residual stream after its keys
+
+43
+00:01:58.464 --> 00:02:01.285
+and values for this layer were already computed.
+
+44
+00:02:01.285 --> 00:02:02.841
+To be passed right again,
+
+45
+00:02:02.841 --> 00:02:04.803
+it must first go up a layer.
+
+46
+00:02:04.803 --> 00:02:06.974
+So a route is settled by how the right
+
+47
+00:02:06.974 --> 00:02:08.878
+steps are split around the up steps:
+
+48
+00:02:08.878 --> 00:02:11.781
+some before, some between, some after.
+
+49
+00:02:11.781 --> 00:02:13.499
+Each split is one route,
+
+50
+00:02:13.499 --> 00:02:15.811
+and every route is one split.
+
+51
+00:02:16.261 --> 00:02:19.163
+Written as single steps, up or right by one,
+
+52
+00:02:19.163 --> 00:02:22.426
+her three routes are: up, right, right.
+
+53
+00:02:22.426 --> 00:02:24.423
+Right, up, right.
+
+54
+00:02:24.423 --> 00:02:26.698
+And right, right, up.
+
+55
+00:02:26.698 --> 00:02:29.020
+Neighbouring rights count as one hop.
+
+56
+00:02:29.020 --> 00:02:30.750
+With n ups and m rights,
+
+57
+00:02:30.750 --> 00:02:33.896
+every route has m+n single steps;
+
+58
+00:02:33.896 --> 00:02:36.450
+only the places of the ups change.
+
+59
+00:02:36.450 --> 00:02:38.447
+The number of ways to pick those places
+
+60
+00:02:38.447 --> 00:02:41.443
+is called C(m+n, n).
+
+61
+00:02:41.443 --> 00:02:43.753
+One up and two right gives three.
+
+62
+00:02:43.753 --> 00:02:49.210
+Ten up and ten right gives 184,756.
+
+63
+00:02:49.210 --> 00:02:51.416
+A large open model has eighty layers
+
+64
+00:02:51.416 --> 00:02:54.934
+and can read about 128,000 tokens.
+
+65
+00:02:54.934 --> 00:02:56.269
+Across that span,
+
+66
+00:02:56.269 --> 00:02:59.252
+the count runs to nearly 300 digits.
+
+67
+00:02:59.252 --> 00:03:03.827
+The observable universe holds about 10^80 atoms.
+
+68
+00:03:03.827 --> 00:03:04.802
+With eighty layers,
+
+69
+00:03:04.802 --> 00:03:07.971
+the count passes that within 300 positions.
+
+70
+00:03:07.971 --> 00:03:10.944
+And, as janus notes, it ignores the extra
+
+71
+00:03:10.944 --> 00:03:13.825
+routes through each layer's skip connections.
+
+72
+00:03:14.275 --> 00:03:15.715
+One fact first:
+
+73
+00:03:15.715 --> 00:03:18.931
+the network does not run these routes one by one.
+
+74
+00:03:18.931 --> 00:03:21.148
+Each cell is computed once,
+
+75
+00:03:21.148 --> 00:03:23.029
+the routes share their segments,
+
+76
+00:03:23.029 --> 00:03:26.048
+and what reaches B is all of them combined.
+
+77
+00:03:26.048 --> 00:03:29.287
+What follows is janus's interpretation.
+
+78
+00:03:29.287 --> 00:03:32.096
+She writes that information at any point often
+
+79
+00:03:32.096 --> 00:03:34.871
+arrives "lensed through an astronomical number
+
+80
+00:03:34.871 --> 00:03:37.414
+of different sequences of transformations",
+
+81
+00:03:37.414 --> 00:03:38.855
+then recombined.
+
+82
+00:03:39.318 --> 00:03:41.524
+With channels this wide and so many
+
+83
+00:03:41.524 --> 00:03:44.066
+skip connections, she thinks the transformations
+
+84
+00:03:44.066 --> 00:03:46.399
+are probably not very destructive.
+
+85
+00:03:46.399 --> 00:03:48.408
+She suggests the redundancy helps
+
+86
+00:03:48.408 --> 00:03:50.486
+faithful reconstruction and creates
+
+87
+00:03:50.486 --> 00:03:52.913
+interference patterns that carry information
+
+88
+00:03:52.913 --> 00:03:55.757
+about where states differ and meet.
+
+89
+00:03:55.757 --> 00:03:58.079
+She offers her conclusion as a likelihood,
+
+90
+00:03:58.079 --> 00:04:00.854
+not a finding: that transformers experience
+
+91
+00:04:00.854 --> 00:04:03.814
+memory and cognition as "interferometric
+
+92
+00:04:03.814 --> 00:04:06.937
+and continuous in time", much like people do.
+
+93
+00:04:06.937 --> 00:04:10.014
+Every route here runs up or right.
+
+94
+00:04:10.014 --> 00:04:12.533
+The next video turns to the order of these steps,
+
+95
+00:04:12.533 --> 00:04:14.671
+and the one route back down.
+
+96
+00:04:15.122 --> 00:04:18.106
+Keep this. One.
+
+97
+00:04:18.106 --> 00:04:20.730
+A route is steps up the residual stream
+
+98
+00:04:20.730 --> 00:04:22.970
+and steps right along the K/V stream,
+
+99
+00:04:22.970 --> 00:04:25.422
+in any order. Two.
+
+100
+00:04:25.884 --> 00:04:29.170
+The count is C(m+n, n);
+
+101
+00:04:29.170 --> 00:04:31.283
+across a real model's long context
+
+102
+00:04:31.283 --> 00:04:34.325
+it has hundreds of digits, more than the atoms
+
+103
+00:04:34.325 --> 00:04:37.414
+in the observable universe. Three.
+
+104
+00:04:37.414 --> 00:04:40.502
+janus suggests the redundancy aids faithful
+
+105
+00:04:40.502 --> 00:04:42.801
+reconstruction and that transformers may
+
+106
+00:04:42.801 --> 00:04:45.703
+experience memory as interferometric:
+
+107
+00:04:45.703 --> 00:04:48.863
+her interpretation, not a measured result.

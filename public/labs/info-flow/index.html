@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" data-mode="night">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Information Flow Explorer</title>
+<meta name="description" content="An interactive version of janus's (@repligate) thread on how information flows through transformers: the residual stream, the K/V stream, the routes between two points, time slices, and real attention from GPT-2 small.">
+<meta name="color-scheme" content="dark light">
+<script>try{var m=localStorage.getItem('ao-info-flow-mode');if(m==='day'||m==='night')document.documentElement.dataset.mode=m;}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Karla:wght@400;600&display=swap">
+<!-- Zen Maru Gothic only sets headings: ask for just the Latin glyphs they use, not its Japanese subsets (224 KB of CSS) -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap&text=%20%21%22%23%24%25%26%27%28%29%2A%2B%2C-.%2F0123456789%3A%3B%3C%3D%3E%3F%40ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5C%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D~%E2%80%99%E2%80%98%E2%80%9C%E2%80%9D%C2%B7%E2%86%92%E2%86%90%E2%89%88%C3%97%E2%88%92%E2%80%93%E2%80%94%E2%80%A6%E2%90%A3%E2%8F%8E">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23101220'/%3E%3Cpath d='M10 26V6M22 26V6' stroke='%23F2E7D5' stroke-width='2.4'/%3E%3Cpath d='M10 20C14 25 18 25 22 18' stroke='%238B6CFF' stroke-width='2.4' fill='none'/%3E%3Ccircle cx='10' cy='20' r='3' fill='%238B6CFF'/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="app" id="app">
+  <header class="top">
+    <div class="brand">
+      <span class="eyebrow">After janus · @repligate</span>
+      <h1>Information Flow Explorer</h1>
+    </div>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Modes"></nav>
+    <div class="tools">
+      <button type="button" class="pill ghost small" id="legendBtn" aria-expanded="false" aria-controls="legendPop">Legend</button>
+      <button type="button" class="pill ghost small" id="themeBtn" aria-label="Switch to day mode">Day</button>
+    </div>
+  </header>
+
+  <main class="body">
+    <section class="stage" id="stage" aria-label="Grid">
+      <button type="button" class="grid-chip" id="gridChip" aria-expanded="false" aria-controls="gridPop"></button>
+      <div class="grid-host" id="gridHost"></div>
+      <div class="alt-host" id="altHost" hidden></div>
+      <div class="pop grid-pop" id="gridPop" hidden role="dialog" aria-label="Grid settings">
+        <label class="fld">
+          <span class="fld-l">Sentence</span>
+          <span class="row">
+            <input type="text" id="sentence" maxlength="120" spellcheck="false" autocomplete="off" aria-describedby="sentNote">
+            <button type="button" class="pill small" id="sentApply">Use</button>
+          </span>
+        </label>
+        <p class="note" id="sentNote">One word = one position here; real tokenizers split differently.</p>
+        <div class="row two">
+          <div class="fld"><span class="fld-l" id="layLbl">Layers</span>
+            <div class="stepper" role="group" aria-labelledby="layLbl"><button type="button" data-d="-1" data-t="L" aria-label="Fewer layers">−</button><output id="layOut">4</output><button type="button" data-d="1" data-t="L" aria-label="More layers">+</button></div></div>
+          <div class="fld"><span class="fld-l" id="posLbl">Positions</span>
+            <div class="stepper" role="group" aria-labelledby="posLbl"><button type="button" data-d="-1" data-t="P" aria-label="Fewer positions">−</button><output id="posOut">4</output><button type="button" data-d="1" data-t="P" aria-label="More positions">+</button></div></div>
+        </div>
+        <label class="check"><input type="checkbox" id="detailChk"> <span>Detailed cells</span> <span class="note" id="detailNote"></span></label>
+        <div class="row end"><button type="button" class="pill ghost small" id="gridReset">Back to janus's example</button><button type="button" class="pill small" id="gridDone">Done</button></div>
+      </div>
+    </section>
+    <aside class="panel" id="panel" role="tabpanel" aria-live="off"></aside>
+  </main>
+
+  <footer class="foot">
+    <p class="credit">After janus's (<a href="https://x.com/repligate" target="_blank" rel="noopener">@repligate</a>) thread <a href="https://x.com/repligate/status/1965960676104712451" target="_blank" rel="noopener">“How information flows through transformers”</a>, Sept 2025</p>
+    <div class="legend" id="legendPop" role="group" aria-label="Legend">
+      <span class="lg"><svg viewBox="0 0 22 12" aria-hidden="true"><path d="M2 6H17" class="lg-res"/><path d="M14 2L19 6L14 10" class="lg-res"/></svg>residual stream</span>
+      <span class="lg"><svg viewBox="0 0 22 12" aria-hidden="true"><circle cx="5" cy="6" r="3.4" class="lg-kvd"/><path d="M9 6C13 10 16 2 20 6" class="lg-kv"/></svg>K/V</span>
+      <span class="lg"><svg viewBox="0 0 22 12" aria-hidden="true"><rect x="5" y="2" width="12" height="8" rx="2" class="lg-att"/></svg>attention</span>
+      <span class="lg"><svg viewBox="0 0 22 12" aria-hidden="true"><rect x="5" y="2" width="12" height="8" rx="2" class="lg-mlp"/></svg>MLP</span>
+      <span class="lg"><svg viewBox="0 0 22 12" aria-hidden="true"><path d="M2 9C8 9 12 3 20 3" class="lg-route"/></svg>route</span>
+      <span class="lg"><svg viewBox="0 0 22 12" aria-hidden="true"><path d="M2 6H20" class="lg-tok"/></svg>sampled token</span>
+    </div>
+  </footer>
+</div>
+
+<div class="tiny" id="tiny" hidden>
+  <div class="tiny-card">
+    <span class="eyebrow">After janus · @repligate</span>
+    <h2>Information Flow Explorer</h2>
+    <p>This explorer needs more room than this frame has.</p>
+    <div class="row">
+      <button type="button" class="pill" id="tinyFull">Full screen</button>
+      <a class="pill ghost" id="tinyTab" href="./" target="_blank" rel="noopener">Open in its own tab ↗</a>
+    </div>
+    <button type="button" class="linkish" id="tinyStay">Use it here anyway</button>
+  </div>
+</div>
+<div class="sr-only" id="live" aria-live="polite"></div>
+<noscript><p class="noscript">This explorer needs JavaScript. The ideas are janus's: read her thread at <a href="https://x.com/repligate/status/1965960676104712451">x.com/repligate/status/1965960676104712451</a>.</p></noscript>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

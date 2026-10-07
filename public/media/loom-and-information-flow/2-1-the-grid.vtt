@@ -1,0 +1,429 @@
+WEBVTT
+
+1
+00:00:01.600 --> 00:00:03.992
+In this video you'll learn the picture that janus,
+
+2
+00:00:03.992 --> 00:00:07.927
+who posts as @repligate, draws of a transformer:
+
+3
+00:00:07.927 --> 00:00:10.064
+one column for every token,
+
+4
+00:00:10.064 --> 00:00:13.326
+one row for every layer, and the vertical
+
+5
+00:00:13.326 --> 00:00:16.112
+highway called the residual stream.
+
+6
+00:00:16.112 --> 00:00:18.527
+A transformer reading text is a grid,
+
+7
+00:00:18.527 --> 00:00:20.059
+a copy of the same network
+
+8
+00:00:20.059 --> 00:00:23.206
+at every token position, stacked in layers;
+
+9
+00:00:23.206 --> 00:00:25.563
+the residual stream carries each position's
+
+10
+00:00:25.563 --> 00:00:27.757
+state upward, and information only
+
+11
+00:00:27.757 --> 00:00:30.439
+ever moves up or to the right.
+
+12
+00:00:30.439 --> 00:00:34.247
+The picture comes from her September 2025 thread,
+
+13
+00:00:34.247 --> 00:00:36.998
+How information flows through transformers,
+
+14
+00:00:36.998 --> 00:00:38.345
+written because she found
+
+15
+00:00:38.345 --> 00:00:41.098
+the usual explainers unhelpful.
+
+16
+00:00:41.549 --> 00:00:44.707
+Take janus's own example, three words:
+
+17
+00:00:44.707 --> 00:00:46.634
+You are absolutely.
+
+18
+00:00:46.634 --> 00:00:50.187
+In GPT-2, each is one token.
+
+19
+00:00:50.187 --> 00:00:52.439
+Each token gets its own position,
+
+20
+00:00:52.439 --> 00:00:55.167
+and each position gets its own column.
+
+21
+00:00:55.167 --> 00:00:58.767
+In her words, positions are "copies of the network
+
+22
+00:00:58.767 --> 00:01:01.518
+for each token-position in the context."
+
+23
+00:01:01.518 --> 00:01:03.271
+The copies are identical:
+
+24
+00:01:03.271 --> 00:01:05.640
+the same network with the same weights.
+
+25
+00:01:05.640 --> 00:01:07.834
+They differ only in their input token
+
+26
+00:01:07.834 --> 00:01:10.017
+and where they sit in the text.
+
+27
+00:01:10.017 --> 00:01:12.618
+At the top, every column outputs
+
+28
+00:01:12.618 --> 00:01:14.672
+a next-token distribution,
+
+29
+00:01:14.672 --> 00:01:17.354
+the same kind you saw in part one.
+
+30
+00:01:17.354 --> 00:01:19.920
+In her diagram, the first predicts are,
+
+31
+00:01:19.920 --> 00:01:23.252
+the second absolutely, and the third correct.
+
+32
+00:01:23.252 --> 00:01:25.447
+Every column makes a prediction,
+
+33
+00:01:25.447 --> 00:01:27.931
+but when the model generates text,
+
+34
+00:01:27.931 --> 00:01:31.194
+only the last column's prediction is sampled.
+
+35
+00:01:31.194 --> 00:01:33.411
+The sampled token, correct,
+
+36
+00:01:33.411 --> 00:01:36.884
+then becomes the input of a fourth column.
+
+37
+00:01:37.334 --> 00:01:40.608
+Now the rows: each column is a stack of layers,
+
+38
+00:01:40.608 --> 00:01:42.222
+and the token passes up through
+
+39
+00:01:42.222 --> 00:01:44.056
+every layer in order.
+
+40
+00:01:44.056 --> 00:01:46.227
+Every position has every layer,
+
+41
+00:01:46.227 --> 00:01:48.247
+so the whole picture is a grid:
+
+42
+00:01:48.247 --> 00:01:51.661
+positions run across, layers run up.
+
+43
+00:01:51.661 --> 00:01:53.948
+Each layer has its own weights,
+
+44
+00:01:53.948 --> 00:01:57.628
+and every position in a row uses that same layer.
+
+45
+00:01:57.628 --> 00:02:01.111
+One cell of the grid is one layer at one position.
+
+46
+00:02:01.111 --> 00:02:04.606
+Inside each cell, janus draws a purple dot,
+
+47
+00:02:04.606 --> 00:02:07.079
+a blue box and a fuchsia box;
+
+48
+00:02:07.079 --> 00:02:09.726
+the next video opens the cell up.
+
+49
+00:02:09.726 --> 00:02:11.677
+Her drawing shows two layers,
+
+50
+00:02:11.677 --> 00:02:13.395
+with dots for the rest.
+
+51
+00:02:13.395 --> 00:02:15.624
+Real models have many more.
+
+52
+00:02:15.624 --> 00:02:20.198
+GPT-2 small, from 2019, has 12.
+
+53
+00:02:20.198 --> 00:02:25.516
+The large versions of Llama 3.1 have 80 and 126.
+
+54
+00:02:25.516 --> 00:02:27.536
+So 80 layers reading a few hundred
+
+55
+00:02:27.536 --> 00:02:30.440
+tokens make tens of thousands of cells.
+
+56
+00:02:30.889 --> 00:02:33.501
+What climbs a column is a vector:
+
+57
+00:02:33.501 --> 00:02:35.254
+a long list of numbers.
+
+58
+00:02:35.254 --> 00:02:37.007
+The token enters at the bottom
+
+59
+00:02:37.007 --> 00:02:39.039
+as one of these vectors.
+
+60
+00:02:39.039 --> 00:02:44.217
+In GPT-2 small, it is 768 numbers wide.
+
+61
+00:02:44.217 --> 00:02:48.722
+In the largest Llama 3.1, it is over 16,000.
+
+62
+00:02:48.722 --> 00:02:51.613
+Each layer reads the vector, computes something,
+
+63
+00:02:51.613 --> 00:02:53.831
+and adds the result back in.
+
+64
+00:02:53.831 --> 00:02:57.198
+No layer replaces it; each one only adds.
+
+65
+00:02:57.198 --> 00:02:59.984
+So the vector at the top is the starting vector
+
+66
+00:02:59.984 --> 00:03:03.572
+plus everything every layer added along the way.
+
+67
+00:03:03.572 --> 00:03:06.393
+This running sum is the residual stream.
+
+68
+00:03:06.393 --> 00:03:09.063
+It is the black arrow in janus's diagram,
+
+69
+00:03:09.063 --> 00:03:11.199
+and in her words it "flows vertically
+
+70
+00:03:11.199 --> 00:03:13.638
+through layers at each position."
+
+71
+00:03:13.638 --> 00:03:16.436
+Its width, called the model's hidden dimension,
+
+72
+00:03:16.436 --> 00:03:19.512
+limits how much one position can carry at once;
+
+73
+00:03:19.512 --> 00:03:21.428
+janus calls it the bottleneck.
+
+74
+00:03:21.428 --> 00:03:23.378
+At the top, the final vector is turned
+
+75
+00:03:23.378 --> 00:03:26.085
+into the next-token distribution.
+
+76
+00:03:26.535 --> 00:03:30.448
+Taken alone, a column knows only its own token.
+
+77
+00:03:30.448 --> 00:03:32.456
+Climbing only its own stream,
+
+78
+00:03:32.456 --> 00:03:34.372
+the column for absolutely
+
+79
+00:03:34.372 --> 00:03:36.798
+would never learn that You came first,
+
+80
+00:03:36.798 --> 00:03:40.641
+yet it needs the earlier words to predict correct.
+
+81
+00:03:40.641 --> 00:03:43.671
+So something has to carry information sideways,
+
+82
+00:03:43.671 --> 00:03:46.307
+from earlier columns to later ones.
+
+83
+00:03:46.307 --> 00:03:48.884
+That is the grid's rule of direction:
+
+84
+00:03:48.884 --> 00:03:52.007
+inside the network, information moves only up,
+
+85
+00:03:52.007 --> 00:03:54.422
+through the layers, or to the right,
+
+86
+00:03:54.422 --> 00:03:56.234
+toward later positions.
+
+87
+00:03:56.234 --> 00:04:00.402
+Never down: no layer reads from a layer above it.
+
+88
+00:04:00.402 --> 00:04:04.175
+Never left: no position reads from a later one,
+
+89
+00:04:04.175 --> 00:04:05.650
+so nothing in the grid sees
+
+90
+00:04:05.650 --> 00:04:07.797
+the text that comes after it.
+
+91
+00:04:07.797 --> 00:04:10.398
+The one route back to the bottom runs outside
+
+92
+00:04:10.398 --> 00:04:13.021
+the network, through the sampled token,
+
+93
+00:04:13.021 --> 00:04:16.377
+which the last video in this part returns to.
+
+94
+00:04:16.377 --> 00:04:18.339
+Up is the residual stream.
+
+95
+00:04:18.339 --> 00:04:20.034
+Right is her second highway,
+
+96
+00:04:20.034 --> 00:04:23.542
+the K/V stream, and that is the next video.
+
+97
+00:04:23.992 --> 00:04:26.861
+Keep this. One.
+
+98
+00:04:27.812 --> 00:04:30.482
+A transformer reading text is a grid:
+
+99
+00:04:30.482 --> 00:04:32.096
+one copy of the same network
+
+100
+00:04:32.096 --> 00:04:33.884
+at every token position,
+
+101
+00:04:33.884 --> 00:04:36.972
+each copy a stack of layers. Two.
+
+102
+00:04:36.972 --> 00:04:38.504
+The residual stream carries
+
+103
+00:04:38.504 --> 00:04:41.047
+each position's state up its column;
+
+104
+00:04:41.047 --> 00:04:43.926
+every layer reads it and adds its result.
+
+105
+00:04:43.926 --> 00:04:46.132
+Three. Inside the network,
+
+106
+00:04:46.132 --> 00:04:49.174
+information moves only up or to the right:
+
+107
+00:04:49.174 --> 00:04:51.555
+never down, and never left.

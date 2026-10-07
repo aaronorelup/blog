@@ -1,0 +1,417 @@
+WEBVTT
+
+1
+00:00:01.600 --> 00:00:04.862
+In this video you'll learn what the Cyborgism post
+
+2
+00:00:04.862 --> 00:00:08.578
+means by working inside a loop with a base model,
+
+3
+00:00:08.578 --> 00:00:12.200
+and how to try a small Loom on this page.
+
+4
+00:00:12.200 --> 00:00:14.081
+In the cyborg way of working,
+
+5
+00:00:14.081 --> 00:00:17.076
+the human keeps the goal and the judgment
+
+6
+00:00:17.076 --> 00:00:20.106
+while the model supplies the breadth;
+
+7
+00:00:20.106 --> 00:00:23.067
+Mini Loom lets you feel that loop
+
+8
+00:00:23.067 --> 00:00:26.376
+with real trees grown in advance.
+
+9
+00:00:26.376 --> 00:00:29.011
+The ideas come from janus,
+
+10
+00:00:29.011 --> 00:00:33.980
+who posts as @repligate, and from Cyborgism,
+
+11
+00:00:33.980 --> 00:00:38.220
+by Nicholas Kees Dupuis and janus.
+
+12
+00:00:38.670 --> 00:00:43.500
+Cyborgism, from February 2023, responds to plans
+
+13
+00:00:43.500 --> 00:00:47.180
+to hand research to automated AI assistants:
+
+14
+00:00:47.180 --> 00:00:50.338
+agents that take a goal and work on their own.
+
+15
+00:00:50.338 --> 00:00:52.671
+The authors list what base models
+
+16
+00:00:52.671 --> 00:00:54.239
+lack for that job:
+
+17
+00:00:54.239 --> 00:00:58.337
+a steady goal, coherence over long stretches,
+
+18
+00:00:58.337 --> 00:01:00.752
+staying grounded in reality.
+
+19
+00:01:00.752 --> 00:01:02.865
+Filling those gaps, they argue,
+
+20
+00:01:02.865 --> 00:01:06.151
+is a step toward the dangerous kind of system.
+
+21
+00:01:06.151 --> 00:01:08.623
+Their alternative is the cyborg:
+
+22
+00:01:08.623 --> 00:01:11.956
+a person in a fast loop with a base model,
+
+23
+00:01:11.956 --> 00:01:14.429
+using tools built for it.
+
+24
+00:01:14.429 --> 00:01:17.029
+The human supplies the missing pieces,
+
+25
+00:01:17.029 --> 00:01:18.980
+direction and judgment;
+
+26
+00:01:18.980 --> 00:01:21.430
+the model supplies variation,
+
+27
+00:01:21.430 --> 00:01:23.937
+many continuations at once.
+
+28
+00:01:23.937 --> 00:01:27.153
+In the post's words, the tools should "extend
+
+29
+00:01:27.153 --> 00:01:30.810
+human agency rather than replace it."
+
+30
+00:01:30.810 --> 00:01:33.910
+The aim was to speed up alignment research,
+
+31
+00:01:33.910 --> 00:01:37.952
+the work of making AI systems safe.
+
+32
+00:01:38.402 --> 00:01:41.119
+The picture underneath comes from janus's
+
+33
+00:01:41.119 --> 00:01:46.053
+earlier post Simulators, from September 2022.
+
+34
+00:01:46.053 --> 00:01:47.841
+A base model, she argues,
+
+35
+00:01:47.841 --> 00:01:51.022
+is not one character with goals of its own.
+
+36
+00:01:51.022 --> 00:01:53.124
+It simulates whatever
+
+37
+00:01:53.124 --> 00:01:55.527
+could have written the text so far:
+
+38
+00:01:55.527 --> 00:02:00.554
+a novelist, a forum thread, a manual, a lecture.
+
+39
+00:02:00.554 --> 00:02:02.621
+She calls the model the simulator,
+
+40
+00:02:02.621 --> 00:02:05.639
+and the characters it produces simulacra.
+
+41
+00:02:05.639 --> 00:02:08.252
+The prompt sets up a world:
+
+42
+00:02:08.252 --> 00:02:09.703
+what kind of document,
+
+43
+00:02:09.703 --> 00:02:12.304
+who is speaking, what has happened.
+
+44
+00:02:12.304 --> 00:02:14.811
+Everything after it tends to fit,
+
+45
+00:02:14.811 --> 00:02:18.447
+but a prompt rarely pins down one world.
+
+46
+00:02:19.049 --> 00:02:20.825
+In Mini Loom's lighthouse story,
+
+47
+00:02:20.825 --> 00:02:24.308
+an isolated keeper's radio crackles to life.
+
+48
+00:02:24.308 --> 00:02:27.315
+In one branch the voice might ask for help;
+
+49
+00:02:27.315 --> 00:02:30.311
+in another, it might know the keeper's name.
+
+50
+00:02:30.311 --> 00:02:34.073
+Each branch is a world the same prompt allows.
+
+51
+00:02:34.073 --> 00:02:36.778
+Weaving is choosing among them.
+
+52
+00:02:36.778 --> 00:02:39.924
+In her testimony, curation controls "which
+
+53
+00:02:39.924 --> 00:02:44.558
+hallucinated situation gets lazily rendered."
+
+54
+00:02:45.007 --> 00:02:47.991
+Mini Loom runs in your browser, on this page.
+
+55
+00:02:47.991 --> 00:02:51.009
+Its trees were grown in advance by a real
+
+56
+00:02:51.009 --> 00:02:56.675
+base model, Qwen3, with 1.7 billion parameters.
+
+57
+00:02:56.675 --> 00:02:58.091
+The reading pane shows
+
+58
+00:02:58.091 --> 00:03:00.715
+your current path as one document,
+
+59
+00:03:00.715 --> 00:03:03.966
+each chosen piece faintly marked.
+
+60
+00:03:03.966 --> 00:03:06.218
+Under it are four futures.
+
+61
+00:03:06.218 --> 00:03:08.157
+Each card shows its text,
+
+62
+00:03:08.157 --> 00:03:11.582
+a bar for how expected its words were, on average,
+
+63
+00:03:11.582 --> 00:03:15.796
+and the odds of the whole passage, usually tiny.
+
+64
+00:03:15.796 --> 00:03:17.526
+Click one, or press its number,
+
+65
+00:03:17.526 --> 00:03:19.291
+and it joins the page.
+
+66
+00:03:19.291 --> 00:03:23.796
+Token view tints every token by its probability;
+
+67
+00:03:23.796 --> 00:03:27.789
+tap one to see what else the model considered.
+
+68
+00:03:27.789 --> 00:03:29.961
+The map draws the whole tree,
+
+69
+00:03:29.961 --> 00:03:31.923
+with your path in gold.
+
+70
+00:03:31.923 --> 00:03:34.128
+Click any node to jump there.
+
+71
+00:03:34.128 --> 00:03:36.532
+The meter counts your bits of selection
+
+72
+00:03:36.532 --> 00:03:38.448
+against the model's words.
+
+73
+00:03:38.448 --> 00:03:42.256
+If you want, a much smaller live model downloads
+
+74
+00:03:42.256 --> 00:03:45.982
+on request and grows branches from any node,
+
+75
+00:03:45.982 --> 00:03:48.933
+or from your own prompt.
+
+76
+00:03:49.383 --> 00:03:51.032
+Four things to try.
+
+77
+00:03:51.032 --> 00:03:54.190
+One: pick the most surprising branch,
+
+78
+00:03:54.190 --> 00:03:57.185
+the one the model expected least, every time,
+
+79
+00:03:57.185 --> 00:03:59.902
+and watch how far the text wanders.
+
+80
+00:03:59.902 --> 00:04:01.991
+Two: go back to the root
+
+81
+00:04:01.991 --> 00:04:04.326
+and take a different first branch.
+
+82
+00:04:04.326 --> 00:04:06.868
+Same prompt, a different world.
+
+83
+00:04:06.868 --> 00:04:09.678
+Three: find a narrow place in the tree,
+
+84
+00:04:09.678 --> 00:04:11.535
+where the four futures say nearly
+
+85
+00:04:11.535 --> 00:04:14.031
+the same thing, and a wide one.
+
+86
+00:04:14.031 --> 00:04:18.211
+Four: compare your bits with the model's words.
+
+87
+00:04:18.211 --> 00:04:21.775
+Each choice among four adds two bits;
+
+88
+00:04:21.775 --> 00:04:25.049
+the model writes every word in between.
+
+89
+00:04:25.049 --> 00:04:28.973
+Every branch point you pass is one sampled token.
+
+90
+00:04:28.973 --> 00:04:31.318
+Part two goes inside the model,
+
+91
+00:04:31.318 --> 00:04:34.140
+to what happens between one token and the next,
+
+92
+00:04:34.140 --> 00:04:37.274
+and why that sampled token is the only thing
+
+93
+00:04:37.274 --> 00:04:39.981
+that travels back down to the bottom.
+
+94
+00:04:40.431 --> 00:04:43.217
+Keep this. One.
+
+95
+00:04:43.217 --> 00:04:45.005
+The human steers and the model
+
+96
+00:04:45.005 --> 00:04:46.584
+supplies the breadth:
+
+97
+00:04:46.584 --> 00:04:48.755
+you keep the goal and the judgment,
+
+98
+00:04:48.755 --> 00:04:52.436
+a base model offers the possibilities.
+
+99
+00:04:52.436 --> 00:04:55.988
+Two. A prompt allows many worlds:
+
+100
+00:04:55.988 --> 00:04:58.833
+janus describes a base model as a simulator,
+
+101
+00:04:58.833 --> 00:05:01.366
+and each branch is one of those worlds.
+
+102
+00:05:01.968 --> 00:05:04.023
+Three. Weaving is reading,
+
+103
+00:05:04.023 --> 00:05:05.729
+choosing and going back;
+
+104
+00:05:05.729 --> 00:05:08.691
+Mini Loom lets you try it and count your bits.
