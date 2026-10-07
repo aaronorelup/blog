@@ -1,10 +1,10 @@
 {
  "slug": "the-hidden-curriculum",
  "title": "The Hidden Curriculum",
- "updated": "2026-10-04",
- "totalLessons": 210,
- "publishedLessons": 7,
- "runtimeSeconds": 3688,
+ "updated": "2026-10-07",
+ "totalLessons": 213,
+ "publishedLessons": 8,
+ "runtimeSeconds": 4297,
  "moduleCount": 22,
  "districtCount": 6,
  "regions": [
@@ -103,7 +103,7 @@
    ]
   }
  ],
- "lanternCount": 38,
+ "lanternCount": 39,
  "modules": [
   {
    "n": "00",
@@ -218,7 +218,14 @@
      "id": "01.02",
      "title": "File extensions & associations",
      "idea": "Showing hidden extensions, renaming .txt → .py, \"Open with\", default apps",
-     "status": "locked"
+     "status": "published",
+     "slug": "01-02-file-extensions-associations",
+     "url": "/courses/the-hidden-curriculum/lessons/01-02-file-extensions-associations/",
+     "duration": 609.2,
+     "summary": "The extension is a label in a file's name and your computer keeps a ledger matching each label to a program, so renaming changes the label but never the bytes, while Open with set to Always and default apps edit the ledger; this lesson draws that picture as of October 2026, with AI tools now making the files.",
+     "published": "2026-10-07",
+     "narrator": "Adrian",
+     "poster": "/courses/the-hidden-curriculum/lessons/01-02-file-extensions-associations/poster.jpg"
     },
     {
      "id": "01.03",
@@ -291,7 +298,7 @@
      "status": "locked"
     }
    ],
-   "filed": 1
+   "filed": 2
   },
   {
    "n": "02",
@@ -462,6 +469,12 @@
      "id": "04.06",
      "title": "Data formats",
      "idea": "JSON, YAML, TOML, CSV, XML, Markdown — config and data files you'll meet daily",
+     "status": "locked"
+    },
+    {
+     "id": "04.07",
+     "title": "Text encoding: Unicode, UTF-8 and garbled characters",
+     "idea": "Text is bytes plus an agreement: code points, UTF-8 vs UTF-16, why Ã© (mojibake) appears and how to read it (deferred from 01.01)",
      "status": "locked"
     }
    ],
@@ -879,6 +892,13 @@
      "idea": "Voice modes: speech-to-text, model, text-to-speech pipelines vs native speech-to-speech; turn-taking and interruptions",
      "lantern": true,
      "status": "locked"
+    },
+    {
+     "id": "10.16",
+     "title": "What \"Opus made this\" leaves out",
+     "idea": "~20 min, case study (Aaron asked for it out of sequence, 2026-10-03/04). Bare Opus 5.5 vs Opus connected to engines, generators and pipelines, from controlled experiments run for this lesson: what the model really did, what references, generators, songs and people supplied, its narrow default taste, that it never hears or plays its own work, and the bill (Seedance 2.5, keep ratios, the 10,000-character \"one prompt\"). Uses real media exhibits (first lesson with video clips and played audio)",
+     "lantern": true,
+     "status": "locked"
     }
    ],
    "filed": 0
@@ -1229,6 +1249,12 @@
      "title": "AI that checks code: review and security agents",
      "idea": "What 2026 review and security agents (scanners, /security-review, autofix) catch, what they miss, and why a human still approves",
      "lantern": true,
+     "status": "locked"
+    },
+    {
+     "id": "15.17",
+     "title": "Dangerous files",
+     "idea": "Double extensions (invoice.pdf.exe), Mark of the Web, risky attachment types: a file's name can lie about what it does (deferred from 01.01)",
      "status": "locked"
     }
    ],
@@ -1652,17 +1678,17 @@
   }
  ],
  "latest": {
-  "id": "01.01",
-  "title": "Files are just bytes",
-  "idea": "A .py file is a text file; the extension is a label that tells the OS which program opens it",
+  "id": "01.02",
+  "title": "File extensions & associations",
+  "idea": "Showing hidden extensions, renaming .txt → .py, \"Open with\", default apps",
   "status": "published",
-  "slug": "01-01-files-are-just-bytes",
-  "url": "/courses/the-hidden-curriculum/lessons/01-01-files-are-just-bytes/",
-  "duration": 307.0,
-  "summary": "Every file is just a row of numbers called bytes, and the extension is a label on its name that picks which program opens it, not what is inside; this lesson draws that picture so nothing an agent does with your files surprises you.",
-  "published": "2026-10-04",
-  "narrator": "RClayton",
-  "poster": "/courses/the-hidden-curriculum/lessons/01-01-files-are-just-bytes/poster.jpg"
+  "slug": "01-02-file-extensions-associations",
+  "url": "/courses/the-hidden-curriculum/lessons/01-02-file-extensions-associations/",
+  "duration": 609.2,
+  "summary": "The extension is a label in a file's name and your computer keeps a ledger matching each label to a program, so renaming changes the label but never the bytes, while Open with set to Always and default apps edit the ledger; this lesson draws that picture as of October 2026, with AI tools now making the files.",
+  "published": "2026-10-07",
+  "narrator": "Adrian",
+  "poster": "/courses/the-hidden-curriculum/lessons/01-02-file-extensions-associations/poster.jpg"
  },
  "first": {
   "id": "00.01",

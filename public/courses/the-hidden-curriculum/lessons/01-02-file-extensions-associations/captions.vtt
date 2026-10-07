@@ -1,0 +1,921 @@
+WEBVTT
+
+1
+00:00:01.600 --> 00:00:03.713
+In this lesson you'll learn how your computer
+
+2
+00:00:03.713 --> 00:00:06.012
+decides which program opens a file,
+
+3
+00:00:06.012 --> 00:00:08.044
+and how you change that decision.
+
+4
+00:00:08.044 --> 00:00:10.876
+The extension is a label in the file's name,
+
+5
+00:00:10.876 --> 00:00:12.328
+your computer keeps a table
+
+6
+00:00:12.328 --> 00:00:14.835
+that matches each label to a program,
+
+7
+00:00:14.835 --> 00:00:17.761
+renaming changes the label but never the bytes,
+
+8
+00:00:17.761 --> 00:00:19.920
+and Open with, set to always,
+
+9
+00:00:19.920 --> 00:00:22.639
+and default apps are how you edit that table.
+
+10
+00:00:23.101 --> 00:00:25.807
+AI tools now make files and pick their labels;
+
+11
+00:00:25.807 --> 00:00:28.653
+the table still decides what opens them.
+
+12
+00:00:29.103 --> 00:00:31.321
+We're still in District One, The Machine,
+
+13
+00:00:31.321 --> 00:00:33.526
+which asks what's on your computer.
+
+14
+00:00:33.526 --> 00:00:36.278
+This is its second stop.
+
+15
+00:00:36.278 --> 00:00:40.121
+Last lesson, a file became a string of beads,
+
+16
+00:00:40.121 --> 00:00:44.033
+the bytes, with a paper tag tied on: its name.
+
+17
+00:00:44.033 --> 00:00:47.423
+Aaron, who made this course, has an IT degree.
+
+18
+00:00:47.423 --> 00:00:50.941
+He still saved Python in Notepad as .txt,
+
+19
+00:00:50.941 --> 00:00:52.450
+and didn't know that renaming
+
+20
+00:00:52.450 --> 00:00:55.121
+it to .py was the fix.
+
+21
+00:00:55.121 --> 00:00:56.618
+Nobody had told him.
+
+22
+00:00:56.618 --> 00:00:59.253
+This lesson is the why behind that rename:
+
+23
+00:00:59.253 --> 00:01:01.250
+one small change to a tag,
+
+24
+00:01:01.250 --> 00:01:03.771
+and a different program answers.
+
+25
+00:01:04.222 --> 00:01:06.080
+Now meet the porter.
+
+26
+00:01:06.080 --> 00:01:07.566
+When you double-click a file,
+
+27
+00:01:07.566 --> 00:01:09.446
+the porter takes the string.
+
+28
+00:01:09.446 --> 00:01:11.780
+On Windows that's File Explorer;
+
+29
+00:01:11.780 --> 00:01:13.835
+on a Mac, Finder.
+
+30
+00:01:13.835 --> 00:01:16.122
+The porter never looks at the beads.
+
+31
+00:01:16.122 --> 00:01:17.643
+It reads only the tag,
+
+32
+00:01:17.643 --> 00:01:20.824
+and only the part after the last dot.
+
+33
+00:01:20.824 --> 00:01:22.961
+Then it turns to a ledger on the desk,
+
+34
+00:01:22.961 --> 00:01:26.699
+runs a finger down to the row for .txt,
+
+35
+00:01:26.699 --> 00:01:30.716
+and reads the door written there: Notepad.
+
+36
+00:01:30.716 --> 00:01:32.550
+It carries the string to that door
+
+37
+00:01:32.550 --> 00:01:34.222
+and hands it over.
+
+38
+00:01:34.222 --> 00:01:37.275
+The beads are never untied on the way.
+
+39
+00:01:37.275 --> 00:01:39.249
+That ledger has a proper name:
+
+40
+00:01:39.249 --> 00:01:40.944
+file associations.
+
+41
+00:01:40.944 --> 00:01:43.359
+And there's one ledger per user account,
+
+42
+00:01:43.359 --> 00:01:45.576
+so two people sharing a PC can get
+
+43
+00:01:45.576 --> 00:01:48.643
+different programs for the same file.
+
+44
+00:01:49.094 --> 00:01:52.426
+Look closer at one row, and it's more than a door.
+
+45
+00:01:52.426 --> 00:01:55.503
+A row holds the program that opens the label,
+
+46
+00:01:55.503 --> 00:01:58.730
+the icon stamped on every file wearing it,
+
+47
+00:01:58.730 --> 00:02:01.482
+and the type's name you see in the folder,
+
+48
+00:02:01.482 --> 00:02:04.593
+like Python file or Text document.
+
+49
+00:02:04.593 --> 00:02:06.312
+It also holds the commands
+
+50
+00:02:06.312 --> 00:02:08.471
+on that type's right-click menu.
+
+51
+00:02:08.471 --> 00:02:10.770
+That's why a renamed file's icon
+
+52
+00:02:10.770 --> 00:02:13.301
+changes the instant you press Enter.
+
+53
+00:02:13.301 --> 00:02:14.984
+Not one bead moved.
+
+54
+00:02:14.984 --> 00:02:17.840
+The porter just reads a different row now.
+
+55
+00:02:17.840 --> 00:02:21.080
+And a label with no row at all gets a blank icon,
+
+56
+00:02:21.080 --> 00:02:25.296
+and a question: which app should open this file?
+
+57
+00:02:25.745 --> 00:02:28.055
+Windows and Mac still hide most extensions
+
+58
+00:02:28.055 --> 00:02:31.167
+by default, and neither has announced a change.
+
+59
+00:02:31.167 --> 00:02:33.280
+The tag is folded at the last dot,
+
+60
+00:02:33.280 --> 00:02:35.416
+so you only see the front.
+
+61
+00:02:35.416 --> 00:02:40.165
+A file really named hello.py.txt
+
+62
+00:02:40.165 --> 00:02:42.370
+shows up as hello.py.
+
+63
+00:02:42.370 --> 00:02:44.019
+It's still a text file.
+
+64
+00:02:44.019 --> 00:02:46.237
+You can't fix a label you can't see.
+
+65
+00:02:46.237 --> 00:02:49.627
+Showing extensions is one setting on each system.
+
+66
+00:02:49.627 --> 00:02:52.901
+On recent Windows, it sits on a settings page
+
+67
+00:02:52.901 --> 00:02:55.049
+Windows now calls Advanced.
+
+68
+00:02:55.049 --> 00:02:57.731
+A Mac can also hide the extension per file,
+
+69
+00:02:57.731 --> 00:03:00.831
+so two files in one folder can disagree.
+
+70
+00:03:00.831 --> 00:03:02.758
+People who build things nearly always
+
+71
+00:03:02.758 --> 00:03:04.780
+switch extensions on.
+
+72
+00:03:05.230 --> 00:03:07.645
+Renaming rewrites the tag.
+
+73
+00:03:07.645 --> 00:03:10.257
+The beads stay put.
+
+74
+00:03:10.257 --> 00:03:12.405
+Microsoft says it plainly:
+
+75
+00:03:12.405 --> 00:03:15.040
+renaming won't convert the file.
+
+76
+00:03:15.040 --> 00:03:17.014
+That's why Aaron's fix worked.
+
+77
+00:03:17.014 --> 00:03:20.532
+His beads were already Python text; the .txt
+
+78
+00:03:20.532 --> 00:03:23.214
+tag was just sending them to the wrong door.
+
+79
+00:03:23.214 --> 00:03:29.530
+But rename photo.png to .jpg and nothing converts.
+
+80
+00:03:29.530 --> 00:03:31.863
+It may still open, because photo apps
+
+81
+00:03:31.863 --> 00:03:35.114
+read the beads, but it's still a PNG.
+
+82
+00:03:35.114 --> 00:03:37.703
+Real conversion happens inside an app,
+
+83
+00:03:37.703 --> 00:03:39.862
+with Save As or Export.
+
+84
+00:03:39.862 --> 00:03:42.126
+The warning you get when you change an extension
+
+85
+00:03:42.126 --> 00:03:45.226
+is the porter saying: you're moving rows.
+
+86
+00:03:45.226 --> 00:03:48.361
+And the classic trap: with extensions hidden,
+
+87
+00:03:48.361 --> 00:03:51.960
+or Notepad saving as a text document, typing
+
+88
+00:03:51.960 --> 00:03:58.485
+hello.py as the name can end up as hello.py.txt.
+
+89
+00:03:58.485 --> 00:04:00.797
+It looks right. It isn't.
+
+90
+00:04:01.247 --> 00:04:03.557
+Open with is you telling the porter
+
+91
+00:04:03.557 --> 00:04:06.263
+which door, for this one file.
+
+92
+00:04:06.263 --> 00:04:08.317
+There are two kinds of answer.
+
+93
+00:04:08.317 --> 00:04:10.384
+A one-time choice opens the file
+
+94
+00:04:10.384 --> 00:04:13.147
+in that program and leaves the ledger alone.
+
+95
+00:04:13.147 --> 00:04:15.074
+An always choice picks up the pen
+
+96
+00:04:15.074 --> 00:04:17.489
+and rewrites the row, so every file
+
+97
+00:04:17.489 --> 00:04:19.997
+with that label goes there from now on.
+
+98
+00:04:19.997 --> 00:04:22.969
+On a Mac, picking a different app in a file's
+
+99
+00:04:22.969 --> 00:04:25.999
+info window changes only that one file,
+
+100
+00:04:25.999 --> 00:04:27.740
+unless you press Change All.
+
+101
+00:04:27.740 --> 00:04:30.376
+So a Mac can remember a choice per file.
+
+102
+00:04:30.376 --> 00:04:32.711
+Windows remembers per label.
+
+103
+00:04:33.161 --> 00:04:35.425
+Default apps, in Windows Settings,
+
+104
+00:04:35.425 --> 00:04:38.467
+is the ledger itself, opened like a book.
+
+105
+00:04:38.467 --> 00:04:42.147
+A default app is just the program a row points to.
+
+106
+00:04:42.147 --> 00:04:45.514
+You can look it up by label, one row at a time.
+
+107
+00:04:45.514 --> 00:04:47.929
+Or look it up by app: pick a browser,
+
+108
+00:04:47.929 --> 00:04:49.763
+and see every label it can open,
+
+109
+00:04:49.763 --> 00:04:51.981
+and who holds each row now.
+
+110
+00:04:51.981 --> 00:04:54.883
+Here's proof the ledger works label by label.
+
+111
+00:04:54.883 --> 00:04:57.530
+When Windows eleven launched in twenty twenty-one,
+
+112
+00:04:57.530 --> 00:04:59.260
+switching your browser meant changing
+
+113
+00:04:59.260 --> 00:05:01.396
+each label one by one.
+
+114
+00:05:01.396 --> 00:05:03.277
+A one-click Set default button
+
+115
+00:05:03.277 --> 00:05:04.962
+came back the next spring.
+
+116
+00:05:05.425 --> 00:05:07.155
+In Europe, since last year,
+
+117
+00:05:07.155 --> 00:05:09.929
+that button rewrites many more rows at once.
+
+118
+00:05:09.929 --> 00:05:12.381
+Same ledger, a bigger pen.
+
+119
+00:05:12.832 --> 00:05:15.258
+You're not the only one holding a pen.
+
+120
+00:05:15.258 --> 00:05:18.416
+Installers write rows: install a code editor,
+
+121
+00:05:18.416 --> 00:05:21.760
+or Python, and it can claim .py.
+
+122
+00:05:21.760 --> 00:05:23.583
+Updates write rows too.
+
+123
+00:05:23.583 --> 00:05:25.835
+A twenty twenty-three update taught Windows
+
+124
+00:05:25.835 --> 00:05:30.421
+to open seven Z and RAR archives itself.
+
+125
+00:05:30.421 --> 00:05:32.685
+Since twenty twenty-three, Microsoft's rule
+
+126
+00:05:32.685 --> 00:05:35.402
+is that apps should send you to Settings to ask,
+
+127
+00:05:35.402 --> 00:05:37.654
+not quietly take the row.
+
+128
+00:05:37.654 --> 00:05:39.094
+Since twenty twenty-four,
+
+129
+00:05:39.094 --> 00:05:41.730
+Windows guards some rows, like web links
+
+130
+00:05:41.730 --> 00:05:44.702
+and PD Fs, so only you can change them.
+
+131
+00:05:44.702 --> 00:05:45.816
+And since last year,
+
+132
+00:05:45.816 --> 00:05:48.579
+it records your choice in a new, locked form.
+
+133
+00:05:48.579 --> 00:05:50.100
+One side effect: sometimes,
+
+134
+00:05:50.100 --> 00:05:52.341
+after an upgrade, a new default doesn't stick
+
+135
+00:05:52.341 --> 00:05:54.419
+until you reset your defaults.
+
+136
+00:05:54.419 --> 00:05:57.579
+And people still report apps grabbing file types.
+
+137
+00:05:58.028 --> 00:05:59.700
+Here's where the picture breaks:
+
+138
+00:05:59.700 --> 00:06:01.732
+there isn't one ledger.
+
+139
+00:06:01.732 --> 00:06:04.402
+Windows keeps its table in the registry.
+
+140
+00:06:04.402 --> 00:06:06.759
+A Mac maps the label to a type,
+
+141
+00:06:06.759 --> 00:06:08.372
+then the type to an app,
+
+142
+00:06:08.372 --> 00:06:10.764
+and keeps per-file choices.
+
+143
+00:06:10.764 --> 00:06:13.678
+Linux desktops also peek at the contents,
+
+144
+00:06:13.678 --> 00:06:16.581
+and keep your choices in a plain text file.
+
+145
+00:06:16.581 --> 00:06:19.158
+And the porter only works the front door:
+
+146
+00:06:19.158 --> 00:06:20.946
+double-click, Open with,
+
+147
+00:06:20.946 --> 00:06:23.477
+the system's own open command.
+
+148
+00:06:23.477 --> 00:06:28.864
+Name the program yourself, python notes.txt,
+
+149
+00:06:28.864 --> 00:06:31.081
+and no ledger is consulted.
+
+150
+00:06:31.081 --> 00:06:34.564
+So double-clicking script.py and typing
+
+151
+00:06:34.564 --> 00:06:38.349
+python script.py can run different Pythons.
+
+152
+00:06:38.349 --> 00:06:40.660
+The double-click runs whichever
+
+153
+00:06:40.660 --> 00:06:43.400
+Python the ledger points at,
+
+154
+00:06:43.400 --> 00:06:46.778
+not the one in your project's .venv.
+
+155
+00:06:46.778 --> 00:06:49.715
+And on the web, the server's label decides,
+
+156
+00:06:49.715 --> 00:06:51.505
+not the extension.
+
+157
+00:06:51.955 --> 00:06:54.579
+Programs keep private ledgers too.
+
+158
+00:06:54.579 --> 00:06:57.783
+VS Code reads the extension to pick its colours
+
+159
+00:06:57.783 --> 00:07:00.813
+and checks, which it calls the language mode,
+
+160
+00:07:00.813 --> 00:07:02.230
+and you can remap it.
+
+161
+00:07:02.230 --> 00:07:08.127
+So hello.py.txt opens in Notepad,
+
+162
+00:07:08.127 --> 00:07:11.645
+and gets no Python colours in VS Code either.
+
+163
+00:07:11.645 --> 00:07:13.897
+Two ledgers, one label.
+
+164
+00:07:13.897 --> 00:07:17.334
+With no label at all, it guesses from the content.
+
+165
+00:07:17.334 --> 00:07:18.681
+Around AI,
+
+166
+00:07:18.681 --> 00:07:21.897
+labels are promises about how to load a file.
+
+167
+00:07:21.897 --> 00:07:25.287
+Older model files, like .ckpt,
+
+168
+00:07:25.287 --> 00:07:27.226
+could run code when loaded;
+
+169
+00:07:27.226 --> 00:07:30.245
+.safetensors was made so they can't.
+
+170
+00:07:30.245 --> 00:07:33.983
+.gguf marks a local model.
+
+171
+00:07:33.983 --> 00:07:36.224
+And MCP bundles are zips wearing
+
+172
+00:07:36.224 --> 00:07:39.056
+their own label, like a Word file.
+
+173
+00:07:39.056 --> 00:07:42.911
+Renaming one to .safetensors doesn't make it safe.
+
+174
+00:07:42.911 --> 00:07:45.014
+It just won't load.
+
+175
+00:07:45.465 --> 00:07:47.590
+Double-click a .py file,
+
+176
+00:07:47.590 --> 00:07:50.237
+and what happens depends on the machine.
+
+177
+00:07:50.237 --> 00:07:51.258
+Often it runs,
+
+178
+00:07:51.258 --> 00:07:53.847
+and the window closes before you can read it.
+
+179
+00:07:53.847 --> 00:07:56.912
+It ran; it didn't open for editing.
+
+180
+00:07:56.912 --> 00:07:58.956
+A box asking which app to open
+
+181
+00:07:58.956 --> 00:08:01.452
+it with means the label has no row.
+
+182
+00:08:01.452 --> 00:08:03.600
+A file with no extension at all gets
+
+183
+00:08:03.600 --> 00:08:06.328
+a blank icon and the same question.
+
+184
+00:08:06.328 --> 00:08:09.346
+Sometimes a default won't stick after an upgrade.
+
+185
+00:08:09.346 --> 00:08:10.449
+That's a side effect
+
+186
+00:08:10.449 --> 00:08:12.412
+of the locked record from earlier,
+
+187
+00:08:12.412 --> 00:08:15.442
+and resetting your defaults usually fixes it.
+
+188
+00:08:15.442 --> 00:08:17.578
+The icon changed after a rename,
+
+189
+00:08:17.578 --> 00:08:19.366
+but the file won't open?
+
+190
+00:08:19.366 --> 00:08:21.595
+The new door can't read those beads.
+
+191
+00:08:21.595 --> 00:08:25.578
+And invoice.pdf.exe is the folded tag's
+
+192
+00:08:25.578 --> 00:08:28.526
+other face: a program in a costume.
+
+193
+00:08:28.526 --> 00:08:31.140
+The Trust district covers that one.
+
+194
+00:08:31.590 --> 00:08:33.494
+Five years ago, you created
+
+195
+00:08:33.494 --> 00:08:35.503
+and named every file yourself,
+
+196
+00:08:35.503 --> 00:08:38.289
+and AI was autocomplete inside it.
+
+197
+00:08:38.289 --> 00:08:40.251
+Since twenty twenty-three,
+
+198
+00:08:40.251 --> 00:08:42.933
+and everywhere by now, assistants like Claude
+
+199
+00:08:42.933 --> 00:08:46.729
+and ChatGPT hand you real Word, Excel,
+
+200
+00:08:46.729 --> 00:08:50.177
+PowerPoint and PDF files, and coding agents
+
+201
+00:08:50.177 --> 00:08:53.335
+write project files with labels they choose.
+
+202
+00:08:53.335 --> 00:08:55.553
+When an agent shows you a file,
+
+203
+00:08:55.553 --> 00:08:58.304
+it usually asks the same porter.
+
+204
+00:08:58.304 --> 00:09:00.928
+When it runs code, it names the program
+
+205
+00:09:00.928 --> 00:09:02.858
+and walks past the ledger.
+
+206
+00:09:03.808 --> 00:09:05.770
+Windows has started adding AI
+
+207
+00:09:05.770 --> 00:09:08.022
+actions to the right-click menu,
+
+208
+00:09:08.022 --> 00:09:10.693
+and which ones you get depends on the label:
+
+209
+00:09:10.693 --> 00:09:14.547
+image tools only for JPG and PNG.
+
+210
+00:09:14.547 --> 00:09:17.101
+Windows is also previewing a way for agents
+
+211
+00:09:17.101 --> 00:09:20.317
+to reach files, only in folders you allow;
+
+212
+00:09:20.317 --> 00:09:22.918
+it still reports the extension separately.
+
+213
+00:09:22.918 --> 00:09:25.403
+Mac OS twenty-seven now suggests
+
+214
+00:09:25.403 --> 00:09:27.237
+file names from what's inside,
+
+215
+00:09:27.237 --> 00:09:29.257
+but the label still picks the app.
+
+216
+00:09:29.257 --> 00:09:31.893
+The direction looks like more rows only
+
+217
+00:09:31.893 --> 00:09:34.377
+you can change, and more doors for agents
+
+218
+00:09:34.377 --> 00:09:36.353
+that need your permission.
+
+219
+00:09:36.802 --> 00:09:38.543
+Safe to ignore for now:
+
+220
+00:09:38.543 --> 00:09:40.924
+the registry, prog I Ds,
+
+221
+00:09:40.924 --> 00:09:43.977
+Mac type identifiers, Linux mime files,
+
+222
+00:09:43.977 --> 00:09:46.705
+and every menu path. Keep this.
+
+223
+00:09:46.705 --> 00:09:49.898
+One: the extension is a label in the name.
+
+224
+00:09:49.898 --> 00:09:52.359
+Two: your computer keeps a ledger
+
+225
+00:09:52.359 --> 00:09:54.495
+from label to program.
+
+226
+00:09:54.495 --> 00:09:57.897
+Three: renaming changes the label;
+
+227
+00:09:57.897 --> 00:09:59.279
+Open with's Always
+
+228
+00:09:59.279 --> 00:10:01.868
+and default apps change the ledger.
+
+229
+00:10:01.868 --> 00:10:04.027
+Next on the map: folders,
+
+230
+00:10:04.027 --> 00:10:06.502
+paths and the working directory.
