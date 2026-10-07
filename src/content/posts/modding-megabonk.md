@@ -6,6 +6,15 @@ date: 2026-10-05
 status: "in-progress"
 tags: ["claude-code", "modding", "gamedev", "characters", "agents"]
 series: ["characters", "agent-runs"]
+preview:
+  verdict: "Works, still in a lab copy"
+  takeaway: "A new character is a data problem and a new mechanic a reading problem. The most careful work was safety: a lab copy shares my save and Steam account."
+  points:
+    - "The code was the small part: the jump plugin took one agent 14 minutes. Her reference sheet alone took 7.5 hours."
+    - "The game's mod check only guards the global board, for big scores. Turn score uploads off, then block them in a plugin."
+    - "Prove the loader first: the original broke in December 2025. Use Shadowth117's fix, and test with the Sonic mod."
+  image: "/media/previews/modding-megabonk.webp"
+  alt: "Jefrie's 3D model in Megabonk's character select, scythe beside her, next to the panel listing her Heavy Scythe and Tail Spring"
 ---
 
 Megabonk takes a whole new playable character without a single line of code. Jefrie, my grinning

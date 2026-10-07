@@ -6,6 +6,15 @@ date: 2026-10-05
 status: "shipped"
 tags: ["claude-code", "comfyui", "blender", "3d", "rigging", "agents"]
 series: ["characters"]
+preview:
+  verdict: "The scripted rig won"
+  takeaway: "Tails and capes are where the AI rigging tools broke, and they are most of Jefrie's outline. SkinTokens only handled her tail on our script's bones."
+  points:
+    - "Still useful, untested in-game: SkinTokens to check body weights, UniRig to guess extra chains, UniMate to sketch idles."
+    - "Put them in a second ComfyUI (11.99 GB, its own Python). My main one's pip freeze stayed byte-identical throughout."
+    - "Every fix a verifier agent forced on the first draft went the AI tools' way. Watch agents grading their own pipeline."
+  image: "/media/previews/ai-rigging-vs-a-script.webp"
+  alt: "Two grey clay renders of Jefrie with her tail lifted: our scripted rig lifts it smoothly on the left, UniRig's breaks into shards on the right"
 ---
 
 None of the AI rigging or animation models beat the rig Claude built for Jefrie by script, so the

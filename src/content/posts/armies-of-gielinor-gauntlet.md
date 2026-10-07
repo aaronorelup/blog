@@ -7,6 +7,15 @@ status: "shipped"
 tags: ["claude-code", "gauntlet-loop", "gamedev", "agents", "lessons"]
 series: ["agent-runs"]
 draft: false
+preview:
+  verdict: "Playable; 58 known defects"
+  takeaway: "Decide the model mix before an overnight run: one Fable 5 orchestrator steering Opus 5 workers fit the night, while a session left to choose ran all-Fable."
+  points:
+    - "Build and gauntlet: 8h36m, almost 20 hours of agent time, 76 agents, just under 4M Opus 5 output tokens and 263k Fable."
+    - "The prep session picked Fable 5 for everything itself: one evening took 30% of my weekly Fable limit on a Max 20x plan."
+    - "Three sessions with no shared memory, each writing the next one's prompt. Every sprite and sound was generated fresh."
+  image: "/media/previews/armies-of-gielinor-gauntlet.webp"
+  alt: "The Armies of Gielinor recreation running in the browser: an isometric map with a river, villages and a hero unit"
 ---
 
 Armies of Gielinor was a turn-based strategy game Jagex shipped on FunOrb.

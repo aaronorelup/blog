@@ -7,6 +7,15 @@ status: "in-progress"
 tags: ["claude-code", "blender", "3d", "agents", "comfyui"]
 series: ["characters"]
 draft: false
+preview:
+  verdict: "Each got one thing right"
+  takeaway: "Hand-built models walked within a day but weren't very good; the generated mesh looked like her from every side but couldn't bend until an agent rebuilt it."
+  points:
+    - "GPT-6 Astra's model looked better than Claude's, from one angle only. In a same-prompt walk-off, I picked Claude's."
+    - "TRELLIS.2 made her in 321 s as one fused 685,000-triangle shell. Rebuilt in 1 h 46 min: 20,600 quads, a 29-bone rig."
+    - "Her rules, like a tail heavier than she is, came from correcting twenty versions. My first prompt was one line long."
+  image: "/media/previews/jefrie-in-3d.webp"
+  alt: "Jefrie's rebuilt TRELLIS.2 model from the front and three-quarter view: half mask, red cape, black armour and a coiled scaly tail"
 ---
 
 Between 19 and 25 September two agents built Jefrie, my original character, as a 3D model about

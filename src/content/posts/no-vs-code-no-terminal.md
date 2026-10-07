@@ -7,6 +7,13 @@ status: "note"
 tags: ["origin", "python", "local-llm", "git", "lessons"]
 series: ["origin"]
 draft: false
+preview:
+  verdict: "The code was the easy part"
+  takeaway: "The beginner barrier was questions, not knowledge: the model wrote the code, but it couldn't set up my machine or tell me what I didn't know to ask."
+  points:
+    - "What stopped me: not knowing a file's folder matters to Python, no VS Code, and no terminal, so GitHub was a wall."
+    - "I did git by hand the whole time, badly, and only much later learned VS Code would just do it for me."
+    - "Each gap was invisible until I ran into it. Then one sentence from the model fixed it for good."
 ---
 
 First of five posts about how I got here.

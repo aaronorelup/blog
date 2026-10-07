@@ -5,6 +5,12 @@ summary: "A public ledger for what I'm learning about AI, instead of scattered n
 date: 2026-08-02
 status: "note"
 tags: ["meta"]
+preview:
+  verdict: "Notes, filed in public"
+  takeaway: "What I learn about AI lived in scratch files and my head: fine today, useless to me in six months, invisible to anyone else. So it goes here."
+  points:
+    - "Entries are short and unpolished, filed as I go."
+    - "Some will be how I fixed something. Some will be half-formed ideas I'm still testing."
 ---
 
 I've been deep in learning AI for a while now — agents, automation, the whole stack — and

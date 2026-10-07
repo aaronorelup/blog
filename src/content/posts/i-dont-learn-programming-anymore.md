@@ -7,6 +7,13 @@ status: "note"
 tags: ["claude-code", "claude-cowork", "openclaw", "agents", "prompting", "lessons"]
 series: ["origin"]
 draft: false
+preview:
+  verdict: "You get what you aim it at"
+  takeaway: "AI didn't decide whether I learned. Aimed at learning, I learned a full stack; aimed at building, I built more, faster, and lost track of my own code."
+  points:
+    - "What I learn now is operating, not programming: which tool, which model at which thinking level, what runs unattended."
+    - "Give the model fewer rules than you think, but state the known knowns, or every agent re-derives them every time."
+    - "Still open: if I never build another foundation by hand, will I know when the model is wrecking one?"
 ---
 
 Last of five — if you landed here first, the whole series is indexed at the bottom.

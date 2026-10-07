@@ -6,6 +6,13 @@ date: 2026-08-08
 status: "in-progress"
 tags: ["agents", "claude-code", "workflow", "prompting", "lessons"]
 series: ["origin"]
+preview:
+  verdict: "Agent time was never scarce"
+  takeaway: "Keeping agents busy was the wrong goal. The scarce thing was a version of the project that held still long enough for me to understand it."
+  points:
+    - "The reviews added up to three or four hours. The real cost was reloading the project in my head twenty times."
+    - "Having reports read aloud through ElevenLabs fixed the reading fatigue and did nothing about the switching."
+    - "Still unproven: I don't know the right size for a burst. The biggest so far ran 8 hours and spawned 76 agents."
 ---
 
 At the end of [I don't learn programming anymore](/ledger/i-dont-learn-programming-anymore/)

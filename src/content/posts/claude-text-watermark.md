@@ -5,6 +5,13 @@ summary: "Since August, Claude's writing carries a version of Google DeepMind's 
 date: 2026-10-06
 status: "shipped"
 tags: ["claude", "watermarking", "synthid", "interactive", "agents"]
+preview:
+  verdict: "Long text keeps the mark"
+  takeaway: "Spread over every free word choice, the mark survives heavy edits to long text; a Claude rephrase re-marks it, and a pass through a keyless model removes it."
+  points:
+    - "If Claude rewrote a 90,000-word novel of mine, I'd need to change about half its words for even odds of slipping past."
+    - "Short text is fragile: one synonym in ten drops the demo's 163-word letter from 3.7σ to about 1.2σ, under the flag line."
+    - "A hit only says Claude was involved. A light proofread of a 3,000-word essay is flagged about 2% of the time."
 ---
 
 Claude's text has carried a watermark since August. Nothing is added to the words: the mark is in

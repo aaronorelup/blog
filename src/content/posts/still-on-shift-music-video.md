@@ -6,6 +6,16 @@ date: 2026-09-26
 status: "shipped"
 tags: ["claude-code", "godot", "gamedev", "trailer", "ffmpeg"]
 series: ["blackwater"]
+preview:
+  verdict: "Shipped; noclip was the trap"
+  takeaway: "It worked because the prompt ruled out footage and AI video, and the game already had a test harness that a script could drive from the inside."
+  points:
+    - "The first final render was flat grey: noclip turns off the fog too. Dropping it showed nine cameras sat inside rock."
+    - "4,943 frames, about 49 GPU-minutes: a previs, two final passes and 18 shot re-renders, each decided by contact sheets."
+    - "It logged 84 sound cues so each game sample lands on its frame. Nobody listened to the mix before it shipped."
+  image: "/media/previews/still-on-shift-music-video.webp"
+  loop: "/media/previews/still-on-shift-music-video.mp4"
+  alt: "The game's red Heart glowing in its apse, the lyric \"Something still beats at the bottom\" beneath it"
 ---
 
 This is a music video for [BLACKWATER](/ledger/blackwater-weekend/), the cave-diving zombies

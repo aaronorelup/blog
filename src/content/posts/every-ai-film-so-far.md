@@ -5,6 +5,16 @@ summary: "Between September 23rd and October 4th my laptop made a 13-minute Jefr
 date: 2026-10-05
 status: "shipped"
 tags: ["minimax-h3", "ai-video", "comfyui", "previs", "lessons"]
+preview:
+  verdict: "As good as my notes"
+  takeaway: "Chaining six-second H3 clips makes long films on a laptop, but the chain keeps its mistakes. Drift can't be fixed after, only prevented with painted end frames."
+  points:
+    - "End frames are a dial: none and H3 drifts to CGI, all and it copies bad ones. Every 3 in action, 5 or 6 in calm, worked."
+    - "Words summon things: lantern light gave a campfire, thunder gave lightning, cloud gave cotton, red wax read as blood."
+    - "On 8 GB, other sessions' loaded models turned a 5-minute clip into 49. With a previs, use two image references at most."
+  image: "/media/previews/every-ai-film-so-far.webp"
+  loop: "/media/previews/every-ai-film-so-far.mp4"
+  alt: "Jefrie with her red cape, long tail and red scythe in a moonlit muddy yard by a watchtower, winding up a sweep"
 ---
 
 Today I cleaned out my films folder. My drive had filled up again, and the folder was twenty-odd gigabytes of

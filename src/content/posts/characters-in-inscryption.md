@@ -6,6 +6,15 @@ date: 2026-10-03
 status: "shipped"
 tags: ["claude-code", "modding", "gamedev", "characters", "agents"]
 series: ["characters", "agent-runs"]
+preview:
+  verdict: "Worked; logs missed the art"
+  takeaway: "A Unity game on Mono took agents three hours from pick to a working, filmed mod. The code was quick; only screenshots caught the art being wrong."
+  points:
+    - "The black portraits: the card shader draws every opaque pixel as ink. Fix: ink on transparency, colour in the glow."
+    - "Pick a single-player Unity game on Mono: it decompiles to C# in seconds. A copy still shares the original's registry."
+    - "With my RTX booked, CPU rendering crashed all five launches (a 32-bit game gets 4 GB). The Intel GPU passed first time."
+  image: "/media/previews/characters-in-inscryption.webp"
+  alt: "Ichigo, Jefrie, Yusef and Siloam as ink-drawn Inscryption cards on Leshy's table, under his Bullfrog and Grizzly cards"
 ---
 
 On 28 September Rehan Sheikh [posted](https://x.com/rehan_shei/status/2104662849624981571) that

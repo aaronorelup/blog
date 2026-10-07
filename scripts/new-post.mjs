@@ -37,6 +37,8 @@ if (fs.existsSync(filePath)) {
   process.exit(1);
 }
 
+// The preview stub is commented out so a placeholder can never ship as a hover card; until it's
+// written, the card falls back to the post's opening lines and the build lists it as missing.
 const content = `---
 id: "${nextId}"
 title: "${title.replace(/"/g, '\\"')}"
@@ -44,6 +46,14 @@ summary: "One line for the ledger list and the syndicated posts."
 date: ${today}
 status: "note"
 tags: []
+# The hover card: write it once the post is finished. PREVIEWS.md is the spec.
+# preview:
+#   verdict: "2-5 words: the outcome"
+#   takeaway: "The one sentence to walk away with, 90-160 characters. Not the summary again."
+#   points:
+#     - "A finding the summary doesn't say, with its number. 120 characters at most."
+#   image: "/media/previews/${slug}.webp"   # node scripts/preview-media.mjs ${slug} <source>
+#   alt: "What the picture shows"
 ---
 
 Start writing here.

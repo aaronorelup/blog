@@ -6,6 +6,16 @@ date: 2026-09-28
 status: "shipped"
 tags: ["claude-code", "gauntlet-loop", "agents", "cost", "lessons"]
 series: ["agent-runs"]
+preview:
+  verdict: "Half price, same bill"
+  takeaway: "Cache reads cost $0.20 per million on both models and are the biggest line on any long agent run, so Sonnet's discount only touches the rest of the bill."
+  points:
+    - "Sonnet cost 31% more on the invented-language test, with up to 2.4× the requests, and 13% less on the canal optimizer."
+    - "Low effort isn't shallow, it does less: Low to Max, Opus took 9× the actions but thought only 1.7× as long per action."
+    - "Max cost 16–18× Low for the same score, but bought the two most original music videos, one a knight losing to a snail."
+  image: "/media/previews/sonnet-vs-opus-gauntlet.webp"
+  loop: "/media/previews/sonnet-vs-opus-gauntlet.mp4"
+  alt: "The last shot of Opus 5.5 Max's music video: a gold-shelled manuscript snail wearing the knight's plumed helmet"
 ---
 
 On the pricing page, Sonnet 5.5 costs half of what Opus 5.5 costs for everything except

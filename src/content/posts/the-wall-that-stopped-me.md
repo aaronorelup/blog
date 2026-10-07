@@ -7,6 +7,13 @@ status: "note"
 tags: ["llm-monster-hunter", "react", "burnout", "fable-5", "claude-code", "documentation", "lessons"]
 series: ["origin", "llm-monster-hunter"]
 draft: false
+preview:
+  verdict: "Cleared on the first night"
+  takeaway: "Specs I'd written months earlier, expecting them to be worthless, are why the $200 week worked: the model cashed a check I'd spent a summer writing."
+  points:
+    - "The fix: move state out of React into an external store fed by the stream, each piece of UI subscribed to its slice."
+    - "Then 137 commits in four days, and every requirement I'd ever written was built. A month later I'm still reviewing it."
+    - "Large, tedious, risky, nothing new in it: any one is survivable. All four together will end a solo project."
 ---
 
 Fourth of five. Previously:

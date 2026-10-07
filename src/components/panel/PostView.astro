@@ -104,4 +104,7 @@ const newer = byId.find((p) => cmp(p.data.id, post.data.id) > 0);
   // Custom elements posts can use in their Markdown (<ao-compare>, <ao-model>). The homepage
   // panel imports the same module in openPost(), since it only copies this article's HTML.
   import '../../scripts/post-components.js';
+  // Links to other posts (the threads, older/newer, cross-links in the text) open their preview
+  // card on hover, the same card as a ledger row (PREVIEWS.md).
+  import '../../scripts/ledger-preview.js';
 </script>

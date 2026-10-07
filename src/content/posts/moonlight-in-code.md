@@ -7,6 +7,16 @@ status: "shipped"
 tags: ["claude-code", "agents", "animation", "canvas", "lessons"]
 series: ["blackwater"]
 draft: false
+preview:
+  verdict: "One style doc made it match"
+  takeaway: "Three tools, no visible seams: before any agent started, the session wrote one style document and drew the man once, and every scene started from those."
+  points:
+    - "It got the casting right where the Blender cut didn't: the first lines of what I gave it say who waits and who dives."
+    - "Canvas rendered slowest, 11.1 s per second of video against 3.7 for HyperFrames. The whole run: $101 at API list prices."
+    - "Still weak: hands, her coat reading like a loaf of bread, and at 2:15 he jumps from kneeling to sitting."
+  image: "/media/previews/moonlight-in-code.webp"
+  loop: "/media/previews/moonlight-in-code.mp4"
+  alt: "The man on the jetty by his lantern under the moon, Moonlight lettered across the sky and her lamp glowing far below on the guide line"
 ---
 
 Claude made a new music video for "Moonlight at the Waterline", all 2:45 of it, without an image

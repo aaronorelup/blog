@@ -5,6 +5,13 @@ summary: "Prompt engineering stopped being the expensive part. Reading the outpu
 date: 2026-08-18
 status: "note"
 tags: ["agents", "prompting", "workflow"]
+preview:
+  verdict: "The ceiling is you"
+  takeaway: "Finding useful things is cheap now and reading them isn't, so the layer worth building is a validator that keeps most findings from ever reaching you."
+  points:
+    - "Hundreds of agents, spun up from your meetings, conversations and screen, and almost none of them ever talk to you."
+    - "Each would test an insight with a quick prototype first, and if it still isn't vital to you right now, file it unseen."
+    - "It isn't far off: models get cheaper, smarter and better at coordinating, and now have real context to judge with."
 ---
 
 Writing a good prompt is no longer the expensive part of using an LLM. Reading the output is. And unlike inference, your attention doesn't get cheaper every six months.

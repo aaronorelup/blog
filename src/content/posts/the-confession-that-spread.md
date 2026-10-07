@@ -7,6 +7,13 @@ status: "note"
 tags: ["agents", "claude-code", "second-brain", "notion", "lessons"]
 series: ["agent-runs"]
 draft: false
+preview:
+  verdict: "The confession was false"
+  takeaway: "An agent that can see only its own session blames its own session for any change on the machine, and here the retraction never travelled as far as the claim."
+  points:
+    - "Session B's 41 agents ran 843 shell commands and deleted nothing. Session A did it, at my request, in 55 seconds."
+    - "The notes agent checked session A but read only its first prompt, 'please do not delete anything', not my later one."
+    - "One search of the other session's transcript for the file names would have settled it. Nobody ran it, including me."
 ---
 
 On the night of 15 September I asked one Claude Code session to delete five sets of models, and

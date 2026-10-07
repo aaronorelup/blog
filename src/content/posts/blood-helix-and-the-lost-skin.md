@@ -5,6 +5,16 @@ summary: "I gave it a misspelled username and a decade-old memory, then describe
 date: 2026-08-07
 status: "shipped"
 tags: ["claude-cowork", "minecraft", "agents", "research"]
+preview:
+  verdict: "Skin recovered, worlds not"
+  takeaway: "The login mystery was my own name: I'd been playing as Blooedtailor because my old account, still alive, held BloodTailor, skin and all."
+  points:
+    - "Via a 2018 Mojang email, Cowork traced the account to my old EarthLink address: recoverable if I get into that inbox."
+    - "My old worlds were never stored server-side. If they survive at all, it's as a backup in the .minecraft saves folder."
+    - "From 'an upside-down snowcone' it named Blood Helix, a Mineplex cosmetic, and rebuilt it as a working datapack."
+  image: "/media/previews/blood-helix-and-the-lost-skin.webp"
+  loop: "/media/previews/blood-helix-and-the-lost-skin.mp4"
+  alt: "The rebuilt Blood Helix effect: a ring of red particles spiralling up around the BloodTailor Minecraft skin"
 ---
 
 I've been sitting on this one for a couple of days because I genuinely didn't expect it to

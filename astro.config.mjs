@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import rehypePostImages from './scripts/rehype-post-images.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 // Dev-only. The scene is a canvas, so the only way to review it is to render a frame and
 // look at it; this lets the page POST a data URL and have it land in captures/ as a file.
@@ -37,8 +38,23 @@ function captureEndpoint() {
   };
 }
 
+// The hover-card endpoint (src/pages/ledger/previews.json.js) checks every card's media file
+// on disk. The dev server is usually started from the folder above with --root blog, so
+// process.cwd() isn't the project; hand the endpoint Astro's own idea of public/.
+function publicDirConstant() {
+  return {
+    name: 'public-dir-constant',
+    hooks: {
+      'astro:config:setup': ({ config, updateConfig }) => {
+        updateConfig({ vite: { define: { __PUBLIC_DIR__: JSON.stringify(fileURLToPath(config.publicDir)) } } });
+      },
+    },
+  };
+}
+
 export default defineConfig({
   site: 'https://aaronorelup.com',
+  integrations: [publicDirConstant()],
   markdown: {
     // Both themes, emitted as CSS custom properties rather than a baked-in
     // background — panel.css picks one based on the day/night mode. A single

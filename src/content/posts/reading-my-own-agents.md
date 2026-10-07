@@ -7,6 +7,13 @@ status: "shipped"
 tags: ["claude-code", "agents", "tools", "mcp", "gauntlet-loop"]
 series: ["agent-runs"]
 draft: false
+preview:
+  verdict: "It reads, it doesn't guess"
+  takeaway: "Claude Code keeps what each agent was for in one file and what it did in another, and no viewer joined them. Joined, 80 anonymous rows got names."
+  points:
+    - "The gauntlet loop did converge: critics raised 380 findings in round one, 126 in round two and 0 in round three."
+    - "One agent wrote 90,189 characters of reasoning against 479 of prose. It thought enormously hard and then fell over."
+    - "Unknowns show as a dash with the reason, never 0, so a missing price is never a quiet $0. Stdio only, no upload."
 ---
 
 Every time you run Claude Code it writes a transcript. Every subagent it spawns writes its

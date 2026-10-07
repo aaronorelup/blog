@@ -5,6 +5,16 @@ summary: "One prompt got me a 30-second training montage starring Clawd, the Cla
 date: 2026-09-26
 status: "shipped"
 tags: ["claude-code", "animation", "web-audio", "canvas"]
+preview:
+  verdict: "Good picture, unheard score"
+  takeaway: "The picture got good because the session could look at its own frames; the score could only be measured. Give the agent a way to check what you care about most."
+  points:
+    - "The score built about 5,000 audio nodes at once and left them connected. Fixing that cut its render from 81 s to 4.5."
+    - "Eight fix passes came from looking at frames. One caught a 3D pagoda seen from underneath: a camera sign was flipped."
+    - "In the Jefrie follow-up, H3 copied the look of a coloured Blender reference. A grey one plus painted end frames worked."
+  image: "/media/previews/clawd-growth-montage.webp"
+  loop: "/media/previews/clawd-growth-montage.mp4"
+  alt: "Clawd, the blocky terracotta Claude Code mascot, standing on a mountain summit in front of a rising sun"
 ---
 
 This is a 30-second animated short about Clawd, the little terracotta Claude Code mascot,

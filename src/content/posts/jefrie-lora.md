@@ -6,6 +6,15 @@ date: 2026-09-28
 status: "shipped"
 tags: ["comfyui", "lora", "stable-diffusion", "characters", "claude-code"]
 series: ["characters"]
+preview:
+  verdict: "Worked: 27 of 30"
+  takeaway: "Caption the training pictures with only what changes, and the LoRA soaks the rest into one trigger word: her huge tail shows up without being asked for."
+  points:
+    - "65 images (48 I picked, plus sheet views and nine turntable frames), 1,480 steps, 56.6 minutes on an 8 GB laptop GPU."
+    - "The first run did four images in 19 hours: a config from a broken install had it on the CPU. A guard now stops that."
+    - "Misses: her day job (one training image showed it), sleeping, a close crouch. Next run: more day-job and relaxed poses."
+  image: "/media/previews/jefrie-lora.webp"
+  alt: "A LoRA render of Jefrie standing on a path through a sunny flower field: half mask, red cape, grey armour and a scaly tail"
 ---
 
 Jefrie was born in a model that could never draw her again. She came out of oneObsession, an

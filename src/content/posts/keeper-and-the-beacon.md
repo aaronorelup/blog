@@ -6,6 +6,15 @@ date: 2026-08-05
 status: "shipped"
 tags: ["claude-code", "llm-monster-hunter", "agents", "elevenlabs", "playtesting", "presentations"]
 series: ["llm-monster-hunter"]
+preview:
+  verdict: "Played it, fixed five bugs"
+  takeaway: "Have the agent capture evidence as it works and narrate it at the end: eleven minutes gave me full context on a two-hour session, no cold boot."
+  points:
+    - "It found five real bugs by playing, the worst silently eating any message over 500 characters, and fixed all five."
+    - "Capture has to happen during the work: asked for afterwards, none of those screenshots would exist."
+    - "Its review: the story is the strongest system and the referee is too kind. It never once said no to a good speech."
+  image: "/media/previews/keeper-and-the-beacon.webp"
+  alt: "Luminel Aeterna, the agent's moth-fey companion after evolving, its wings turned into star charts"
 ---
 
 I've been building an AI-native monster-catching RPG for a while now — the code manages

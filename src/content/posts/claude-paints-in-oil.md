@@ -5,6 +5,15 @@ summary: "Not image generation, not SVG: Opus 5.5 drove a physics simulator of w
 date: 2026-10-05
 status: "in-progress"
 tags: ["claude-code", "opus-5-5", "oil-paint", "simulation", "art"]
+preview:
+  verdict: "Worked, mistakes and all"
+  takeaway: "Driving a simulated brush instead of predicting pixels, Claude had to work like a painter: chart its colours, block in, paint over what it couldn't undo."
+  points:
+    - "Before painting, it mixed 287 tube colours and about 1,200 more for ones it couldn't hit, measuring each off the canvas."
+    - "No undo: a mask left a navy block on a wall, and a grey fix it hadn't checked chalked over faces. Both were painted out."
+    - "About 25 CPU-minutes and about 2% of my weekly usage for all three. Without phthalo, it couldn't match my turquoise."
+  image: "/media/previews/claude-paints-in-oil.webp"
+  alt: "Claude's oil painting of a pink-haired girl with red strawberry spots in her hair, an orange sun and a small red crab behind her"
 ---
 
 <img src="/media/oil-paintings/strawberry-girl.webp" alt="An oil painting of a pink-haired girl with red strawberry spots in her hair, lying back on a pastel beach with an orange sun, yellow sand, turquoise water and a small red crab" style="width:100%;border-radius:8px">

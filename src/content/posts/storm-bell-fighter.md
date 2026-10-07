@@ -7,6 +7,16 @@ status: "shipped"
 tags: ["claude-code", "godot", "gamedev", "agents", "blender"]
 series: ["characters", "agent-runs"]
 draft: false
+preview:
+  verdict: "The characters took the time"
+  takeaway: "A full fight ran on stand-ins 69 minutes after the first commit. The fighters took a day more, one job at a time through the one Blender on my laptop."
+  points:
+    - "Final QA found 75 problems, 3 of them blockers. One drew particle garbage over the fight while all 40 tests passed."
+    - "TRELLIS.2 blurred BloodTailor's grin and welded his cloak to his arms, so an agent scripted him in Blender from scratch."
+    - "130 agents, all Opus 5.5, made 12,590 model requests: about $1,730 at API list prices, mostly cached context read again."
+  image: "/media/previews/storm-bell-fighter.webp"
+  loop: "/media/previews/storm-bell-fighter.mp4"
+  alt: "Jefrie swinging her scythe at a crouching BloodTailor in the finished game, a cage dome behind them"
 ---
 
 One Claude Code session built a complete 1v1 fighting game of my two characters, Jefrie and

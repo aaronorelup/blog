@@ -6,6 +6,15 @@ date: 2026-10-04
 status: "in-progress"
 tags: ["claude-code", "agents", "animation", "elevenlabs", "lessons"]
 series: ["hidden-curriculum", "agent-runs"]
+preview:
+  verdict: "Current facts, wrong topic"
+  takeaway: "A research step makes a lesson's facts current, but it can't tell when the topic itself is out of date if the only evidence is how one person works now."
+  points:
+    - "After 00.05, two research agents go first: the subject now, and how it changed since 2021, each claim sourced and dated."
+    - "00.06 got 2026 numbers, but its curriculum row assumed the learner reads the error, and every agent worked inside that."
+    - "Being sent back made the course longer: the rebuilds added ten lessons and four, and ran 31 minutes to the originals' 11."
+  image: "/media/previews/lessons-sent-back.webp"
+  alt: "Title card of the rejected first version of lesson 00.06, How to learn anything technical, with its five-step habit for getting unstuck on an error"
 ---
 
 Since [the first lesson](/ledger/the-missing-map/) on 30 September, agents have published six

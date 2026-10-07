@@ -6,6 +6,13 @@ date: 2026-08-02
 status: "shipped"
 tags: ["claude-code", "three-js", "gamedev", "elevenlabs", "lessons"]
 series: ["blackwater"]
+preview:
+  verdict: "Ask for tools, not fixes"
+  takeaway: "A model that can't see its own 3D bugs will still build you an editor to fix them, so on any 3D project my first ask is now tests and developer tools."
+  points:
+    - "Even given screenshots and coordinates, it couldn't fix a tunnel clipping through a cave node. Its level editor let me."
+    - "Lyrics that must match the lore come from the lore bible; lyrics that only carry a feeling, from the music model."
+    - "Sound before visuals: ElevenLabs voice lines made programmer art feel alive. 58 commits in four days, and it's playable."
 ---
 
 I had a pile of Claude Code credits about to reset and no plan for them. So I spent them

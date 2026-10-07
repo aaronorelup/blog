@@ -5,6 +5,13 @@ summary: "A skateboarding wizard in Venice Beach, built in a single prompt in on
 date: 2026-08-02
 status: "shipped"
 tags: ["claude-code", "three-js", "gamedev", "elevenlabs", "lessons"]
+preview:
+  verdict: "Bigger prompt, worse game"
+  takeaway: "A one-shot build spends care, not specificity, and the care is global: asking for more districts made Kai's dialogue, the shop jokes and the camera worse too."
+  points:
+    - "The friend scene read the same in both prompts. The small game paused for it; the big one let Kai roll off screen."
+    - "What fits one prompt: about fifteen minutes of game, two districts, a handful of systems, one joke per location."
+    - "To check if you overshot, don't inspect what you added. Look at something you didn't touch and see if it still works."
 ---
 
 I was messing around with Sora, trying to find prompts that produced something interesting,

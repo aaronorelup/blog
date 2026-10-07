@@ -7,6 +7,13 @@ status: "note"
 tags: ["origin", "llm-monster-hunter", "python", "react", "architecture", "lessons"]
 series: ["origin", "llm-monster-hunter"]
 draft: false
+preview:
+  verdict: "The AI call is the easy part"
+  takeaway: "The hard problem in an AI app is never the model call. It's everything around it: queueing, sequencing, recovering from it, and telling the user."
+  points:
+    - "One GPU can't run two prompts at once, so every request waits in a queue and the whole app is built to wait politely."
+    - "A monster's concept, abilities and art come from a chain of prompts that succeeds or fails whole, never half a monster."
+    - "Hand-picking which files the model saw on every message was overhead, but it forced me to know my own codebase."
 ---
 
 Second of five. Previously:

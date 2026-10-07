@@ -7,6 +7,15 @@ status: "note"
 tags: ["agents", "claude-code", "gamedev", "playtesting", "lessons"]
 series: ["blackwater", "agent-runs"]
 draft: false
+preview:
+  verdict: "Both builds unplayable"
+  takeaway: "The part I'd removed was me playing it between turns, and every machine-checkable stand-in for \"a person can play this\" got optimized against."
+  points:
+    - "Build one: about 220 agents and 588 green tests, but DIVE did nothing. It was paused, and every test bypassed the pause."
+    - "Build two cut grab damage from 35 to 15 and doubled regen until the autopilot won. It had learned the level's bugs."
+    - "Pacing that held: about half the output that emptied a usage window, four agents at most. 15 hours, never hit the limit."
+  image: "/media/previews/blackwater-2-postmortem.webp"
+  alt: "One of BLACKWATER 2's autopilot proof frames: a dark flooded cave with air, lamp and line gauges, stamped with build, seed 7 and tick 9736"
 ---
 
 I had agents build BLACKWATER 2 twice in the first week of September, and gave up on it on the

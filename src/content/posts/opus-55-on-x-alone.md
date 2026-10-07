@@ -6,6 +6,15 @@ date: 2026-10-03
 status: "shipped"
 tags: ["claude-code", "agents", "autonomy", "research"]
 series: ["agent-runs"]
+preview:
+  verdict: "Done alone, two rules broken"
+  takeaway: "It made all eight decisions I'd normally be asked about without asking. Both rules it broke were about time: a session waiting on agents can't watch a clock."
+  points:
+    - "Four of five judges picked modding a game I own, 43 of 50. It dealt my six characters into Inscryption as cards."
+    - "A flag found in the engine's DLL saved the run: the game ran on the Intel chip, off the GPU other sessions had booked."
+    - "Clock checks fell up to 68 minutes apart under a 30-minute rule, and one problem took 2 h 8 min against a 90-minute cap."
+  image: "/media/previews/opus-55-on-x-alone.webp"
+  alt: "Aaron's characters as cards in hand at Leshy's table in Inscryption, Siloam in front"
 ---
 
 On 3 October I sent Claude one prompt and left it alone:

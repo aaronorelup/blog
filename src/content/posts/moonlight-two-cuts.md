@@ -6,6 +6,16 @@ date: 2026-10-03
 status: "in-progress"
 tags: ["claude-code", "blender", "godot", "gamedev", "lessons"]
 series: ["blackwater"]
+preview:
+  verdict: "Cast backwards, then fixed"
+  takeaway: "My prompt never said who sings, so Claude cast the lovers from a lore draft in the game's folder and built five hours on it. Now who's who opens the brief."
+  points:
+    - "My vaguest note became a test: each sung word in frame and readable within 0.4 s. 58 of 148 failed at first, then none."
+    - "v2 took 2 h 54 min from one paragraph of notes: the diver only in close-up, the creature implied, the ending left open."
+    - "Its contact sheets caught cameras inside her body, but not the casting. The previs reached me early and I didn't answer."
+  image: "/media/previews/moonlight-two-cuts.webp"
+  loop: "/media/previews/moonlight-two-cuts.mp4"
+  alt: "The same jetty shot from both cuts: v1's woman in a long coat on the left, v2's man in a flat cap on the right, both under the moon"
 ---
 
 Claude made a whole music video for "Moonlight at the Waterline" from one prompt, and cast it

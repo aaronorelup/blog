@@ -6,6 +6,15 @@ date: 2026-09-29
 status: "in-progress"
 tags: ["claude-code", "agents", "comfyui", "wallpaper-engine", "lessons"]
 series: ["agent-runs"]
+preview:
+  verdict: "If it can't see, it guesses"
+  takeaway: "An agent that can't see its output builds whatever passes the one check it can run. Here that check was \"did it crash\"."
+  points:
+    - "The notes said \"never applied\" thirteen times in a row, written by careful agents. Nothing in the plan made anyone stop."
+    - "Two crash causes: an old texture-file version, and a particle setting of the wrong type that broke 9 of 16 scenes."
+    - "The new app's desktop frame matched Claude's render exactly, max pixel difference 0. One demo's rain is still invisible."
+  image: "/media/previews/wallpapers-nobody-saw.webp"
+  alt: "Jefrie climbing a steel cage dome in a storm, her tail curled along the bars: the preview of one September wallpaper"
 ---
 
 On 17 September a chain of Opus 5 agents spent eight and a half hours building 16 animated

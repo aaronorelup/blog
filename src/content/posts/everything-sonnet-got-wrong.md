@@ -7,6 +7,13 @@ status: "note"
 tags: ["llm-monster-hunter", "prompting", "context-window", "lessons"]
 series: ["origin", "llm-monster-hunter"]
 draft: false
+preview:
+  verdict: "Never delegate blind"
+  takeaway: "Never hand the model a decision you can't evaluate. It won't flag a bad name, a bloated design, a full context window or a file it never saw."
+  points:
+    - "The form component reached 25 props because each new component inherited every prop of the last one, plus one more."
+    - "As the context window fills, it gets less intelligent, more sycophantic and more hallucinatory, with no warning at all."
+    - "A bad name is a bug that compiles: a file I wrongly called a service steered every decision about it for months."
 ---
 
 Third of five. Previously:

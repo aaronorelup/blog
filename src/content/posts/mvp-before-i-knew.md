@@ -6,6 +6,13 @@ date: 2026-08-24
 status: "note"
 tags: ["agents", "claude-code", "workflow", "lessons", "gamedev"]
 draft: false
+preview:
+  verdict: "Be the boss, not the cleanup"
+  takeaway: "The test isn't whether AI could do it but whether I need to be the one who did: hand over tedium I already understand, keep deciding what to build."
+  points:
+    - "One prompt cleared the Monster Hunter work I'd burned out on. Then I handed over every goal and stopped recognizing it."
+    - "For a Claude Code log viewer I asked for an MVP first; hours of review later I knew I wanted a simple UI and an MCP."
+    - "AI amplifies the taste you have and doesn't install taste you don't, so I have to pick a few things to get deep in."
 ---
 
 Brett has been writing software for over twenty years. His employer went to a conference, came

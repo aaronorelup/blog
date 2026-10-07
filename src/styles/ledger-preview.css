@@ -1,0 +1,180 @@
+/* The hover card for a post (src/scripts/ledger-preview.js, spec in PREVIEWS.md).
+
+   It takes the hovered row's own colour (--pc-hover), so it reads as that row opened out
+   rather than as something laid on top of the page. All colours are the panel's variables,
+   which the homepage scene tweens between day and night; the card sits inside #panel-screen
+   to inherit them.
+
+   Cheap on purpose: opacity and a 4px transform are the only things that animate, there is
+   no backdrop blur (expensive over the scene's canvas on a weak GPU), and the shadow never
+   changes. */
+
+.lp-card {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 6;
+  box-sizing: border-box;
+  width: 372px;
+  max-height: calc(100vh - 24px);
+  overflow: hidden;
+  border: 1px solid var(--pc-line2);
+  border-radius: 14px;
+  background: var(--pc-hover);
+  box-shadow: 0 16px 44px rgba(12, 10, 24, 0.3);
+  font-family: Karla, system-ui, sans-serif;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 90ms ease, transform 90ms ease, visibility 0s linear 90ms;
+}
+
+/* No `visibility: visible` here: the homepage hides #panel-screen with visibility, and an
+   explicit `visible` on a child would show the card through a closed panel. */
+.lp-card.lp-on {
+  opacity: 1;
+  visibility: inherit;
+  transform: none;
+  transition: opacity 120ms ease, transform 120ms ease, visibility 0s;
+}
+
+.lp-card [hidden],
+.lp-card.lp-compact .lp-media,
+.lp-card.lp-tight .lp-points { display: none !important; }
+
+/* 640×360 files in a 16:9 box, so the card is its final height before a byte arrives. The
+   tile colour shows while the still loads; the still fades in, and a loop fades in over it
+   once it is actually playing. Full bleed across the top of the card by default (the negative
+   margins cancel the body's padding); where the full card won't fit beside a row without
+   covering its title, place() shrinks it to a thumbnail the text wraps around. */
+.lp-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  margin: -14px -18px 14px;
+  background: var(--pc-tile);
+  border-bottom: 1px solid var(--pc-line);
+}
+.lp-card.lp-thumb .lp-media {
+  float: right;
+  width: 128px;
+  margin: 2px 0 8px 14px;
+  border: 1px solid var(--pc-line);
+  border-radius: 7px;
+}
+.lp-points,
+.lp-excerpt { clear: both; }
+.lp-img,
+.lp-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+.lp-img.lp-ready,
+.lp-video.lp-ready { opacity: 1; }
+
+.lp-body { padding: 14px 18px 16px; }
+
+.lp-meta {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--pc-quiet);
+  margin: 0 0 8px;
+}
+
+.lp-title {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 15px;
+  line-height: 1.35;
+  font-weight: 700;
+  color: var(--pc-head);
+  margin: 0 0 10px;
+  text-wrap: pretty;
+}
+
+/* The outcome, stamped: the one thing to read if you read nothing else. */
+.lp-verdict {
+  display: inline-block;
+  margin: 0 0 10px;
+  padding: 3px 9px 2px;
+  border: 1.5px solid var(--pc-accent);
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--pc-accent);
+}
+
+.lp-takeaway {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--pc-strong);
+  text-wrap: pretty;
+}
+
+.lp-points {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--pc-line);
+}
+.lp-points li {
+  position: relative;
+  margin: 0 0 7px;
+  padding-left: 15px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--pc-body);
+  text-wrap: pretty;
+}
+.lp-points li:last-child { margin-bottom: 0; }
+.lp-points li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--pc-accent);
+  opacity: 0.8;
+}
+
+/* A post with no preview yet: its opening lines, labelled as such. */
+.lp-excerpt {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--pc-body);
+  text-wrap: pretty;
+}
+.lp-label {
+  display: block;
+  margin: 0 0 4px;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pc-quiet);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-card,
+  .lp-card.lp-on { transform: none; }
+}
+
+/* Belt and braces: the script never starts on these devices, and paper has no hover. */
+@media (hover: none), (pointer: coarse), print {
+  .lp-card { display: none !important; }
+}

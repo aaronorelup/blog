@@ -5,6 +5,13 @@ summary: "Research-first rebuild of my agent-facing second brain: the rules, the
 date: 2026-08-15
 status: "shipped"
 tags: ["second-brain", "agents", "notion", "claude-code"]
+preview:
+  verdict: "Retrieval: 6/10 to 9/10"
+  takeaway: "An agent-facing second brain breaks on duplication: give every fact one home, rewrite corrections in place instead of stacking them, and state the rules once."
+  points:
+    - "v1's one confidently wrong answer traced to an append-only stack of corrections. v2 rewrites in place, and had none."
+    - "Pages of 750-4,000 words, not ~250-word atomic notes: that advice is vector-search thinking and costs agents accuracy."
+    - "Notion over markdown in git: no vendor's phone app reads a local vault, and every major vendor can attach Notion's MCP."
 ---
 
 *Research: 2026-08-14/15, ~130 agents, claims adversarially verified (3 refutation votes each; 11 confirmed / 4 contested / 1 refuted). Migration: 2026-08-15. Reproduction ledger, not a tutorial. Point your agent at this post and [The Second Brain Builders (RE-001)](/research/second-brain-builders/) (a raw-markdown link for your agent sits at the top of that page) for a head start — the research is pre-synthesized.*

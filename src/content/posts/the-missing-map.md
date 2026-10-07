@@ -6,6 +6,15 @@ date: 2026-10-01
 status: "in-progress"
 tags: ["claude-code", "agents", "animation", "elevenlabs", "lessons"]
 series: ["hidden-curriculum", "agent-runs"]
+preview:
+  verdict: "The checks made it safe"
+  takeaway: "An agent that knew the material wrote a line a beginner would learn wrong. Another, told to read the script the way a beginner would, caught it."
+  points:
+    - "A draft said Python's can't-open-file error \"usually\" isn't your code. It never is: Python never opened the file."
+    - "Also caught: the AI in scene 6 typing the command scene 7 shows failing, and a narrator voice saying \"uh\" throughout."
+    - "$134 at API list prices for a 5:15 lesson. The daily job's first try at the next one stopped at its first command."
+  image: "/media/previews/the-missing-map.webp"
+  alt: "Title card of lesson 00.01, The hidden curriculum, over a painted tea house at night"
 ---
 
 On 30 September I asked Claude where I was supposed to have learned terminals, `.venv`, API

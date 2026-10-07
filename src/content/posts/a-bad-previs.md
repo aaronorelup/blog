@@ -6,6 +6,16 @@ date: 2026-09-27
 status: "shipped"
 tags: ["previs", "blender", "minimax-h3", "ai-video", "lessons"]
 series: ["characters"]
+preview:
+  verdict: "The previs made it worse"
+  takeaway: "A video model copies the motion in a Blender guide animation (a previs) as faithfully as its camera, bad animation included."
+  points:
+    - "Mine held attacks Opus 5.5 had failed to animate. MiniMax-H3 kept every beat of them, down to the dangling legs."
+    - "Without a previs the motion felt far better, but where Jefrie stood and which way her scythe swung were often unclear."
+    - "Even a previs of grey boxes and spheres dragged the motion down. Keep it simple enough that you can animate it well."
+  image: "/media/previews/a-bad-previs.webp"
+  loop: "/media/previews/a-bad-previs.mp4"
+  alt: "Jefrie's marionette attack side by side: the no-previs take on the left, the previs take on the right"
 ---
 
 A previs hands the video model two things: where the camera goes, and how the character moves.

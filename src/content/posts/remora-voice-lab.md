@@ -6,6 +6,13 @@ date: 2026-10-02
 status: "in-progress"
 tags: ["claude-code", "gamedev", "elevenlabs", "sound-design", "lessons"]
 series: ["blackwater"]
+preview:
+  verdict: "The data shimmer won"
+  takeaway: "An agent that can't hear can still make your ears fast: same line, same loudness, same moment, one click apart, so only the real difference is left."
+  points:
+    - "Data shimmer: three copies of REMORA's voice drifting 11 to 25 ms behind. Not in my first prompt; I chose it by ear."
+    - "Numbers cut failures before I listened: of 16 Glitch² programs, one kept all ten words for the transcriber, six none."
+    - "Everyday lines get a rolled glitch, shimmer and whisper; a special line or two, a five-take stack. Not in the game yet."
 ---
 
 On 1 October I asked Claude to make REMORA, the robot voice in the diver's ear in
