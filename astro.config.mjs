@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import rehypePostImages from './scripts/rehype-post-images.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -50,6 +51,9 @@ export default defineConfig({
       },
       defaultColor: false,
     },
+    // Every post picture gets its file's width and height (no jumping text as they load), and
+    // a data-full link to a larger copy when one sits beside it. See the plugin.
+    rehypePlugins: [rehypePostImages],
   },
   vite: {
     plugins: [captureEndpoint()],

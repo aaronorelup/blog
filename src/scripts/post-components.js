@@ -16,15 +16,569 @@
 //   <ao-cues labels="v1|v2"> <video …></video> <video …></video> <ol><li data-t="1:44.97">…</li></ol> <figcaption>…
 //   <ao-demo name="synthid" part="tournament"> fallback text </ao-demo>
 //
-// Usage notes live in the blog's CLAUDE.md, "Post components".
+// Two behaviours need no tag at all and apply to every post: one player at a time (below),
+// and the image viewer (every picture in a post opens full size, zooms and pages through the
+// post's other pictures). Usage notes live in the blog's CLAUDE.md, "Post components".
 import '../styles/post-components.css';
+
+const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fmtTime = (s) => (isFinite(s) ? Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0') : '0:00');
+
+// ---------------------------------------------------------------------------------------
+// One player at a time, across the whole page. A "player" is whatever plays as one unit: a
+// lone <video> or <audio>, a component that drives several in step (a synced <ao-compare>,
+// <ao-cues>, <ao-listen>), a same-origin iframe with its own player in it, or a running
+// <ao-game>. Starting one pauses every other, so a reader never has two soundtracks at once
+// and a forgotten loop never keeps decoding three screens up.
+//
+// What a playing player does when it leaves the screen depends on what it is:
+//   - hidden outright (the homepage closed the reader or switched views): it stops.
+//   - scrolled away and silent (a muted loop, a B-roll clip): it pauses, and carries on when
+//     it is scrolled back to, unless something else has played since.
+//   - scrolled away with sound: it keeps playing, because the reader may be listening while
+//     they read on, and a small bar at the foot of the window says what's playing, with
+//     pause, a way back to it, and close.
+//   - a game pauses itself (see <ao-game>).
+// Components can give their element aoPlay()/aoPause() (and aoTitle()/aoClock() for the bar);
+// anything else is driven through the media elements inside it.
+const AO_LISTEN_PLAY = 'ao-listen-play'; // detail: the player that just started
+const AO_STOP = 'ao-stop'; // the homepage closing the reader: stop everything
+const GROUPS = 'ao-cues, ao-compare[sync], ao-listen, ao-game';
+const isMediaEl = (el) => !!el && (el.tagName === 'VIDEO' || el.tagName === 'AUDIO');
+const playerOf = (el) => (el.closest && el.closest(GROUPS)) || frameOf.get(el.ownerDocument) || el;
+const frameOf = new WeakMap(); // an iframe's document -> the iframe, for media inside it
+const frames = new Set();
+let current = null;
+
+const mediaOf = (p) => {
+  if (isMediaEl(p)) return [p];
+  if (p.tagName === 'IFRAME') {
+    try { return [...p.contentDocument.querySelectorAll('video, audio')]; } catch (e) { return []; }
+  }
+  return [...p.querySelectorAll('video, audio')];
+};
+const isPlaying = (p) => (p.aoPlaying ? p.aoPlaying() : mediaOf(p).some((m) => !m.paused && !m.ended));
+// Silent: everything playing is muted, at zero volume, or a video that has played a while and
+// decoded no sound. A player whose media are all paused for a moment (cuts waiting on a stalled
+// one) isn't silent, it's waiting.
+const isSilent = (p) => {
+  const on = mediaOf(p).filter((m) => !m.paused);
+  return on.length > 0 && on.every((m) => m.muted || m.volume === 0 || (m.tagName === 'VIDEO' &&
+    (m.mozHasAudio === false || (m.webkitAudioDecodedByteCount === 0 && m.currentTime > 1))));
+};
+const pausePlayer = (p) => (p.aoPause ? p.aoPause() : mediaOf(p).forEach((m) => { if (!m.paused) m.pause(); }));
+
+function claim(p) {
+  const changed = current !== p;
+  if (changed && current) {
+    current._aoResume = null;
+    pausePlayer(current);
+  }
+  current = p;
+  // Anything else still playing stops too: a player that started before this module loaded,
+  // or one inside a frame that was never seen starting.
+  for (const m of document.querySelectorAll('video, audio')) if (!m.paused && playerOf(m) !== p) m.pause();
+  for (const f of frames) if (f !== p) mediaOf(f).forEach((m) => { if (!m.paused) m.pause(); });
+  if (changed) document.dispatchEvent(new CustomEvent(AO_LISTEN_PLAY, { detail: p }));
+  watch(p);
+  nowPlaying.update();
+}
+
+const onMediaPlay = (e) => { if (isMediaEl(e.target)) claim(playerOf(e.target)); };
+document.addEventListener('play', onMediaPlay, true);
+// The bar's clock and buttons follow whatever the current player's media do.
+for (const type of ['pause', 'ended', 'timeupdate', 'volumechange']) {
+  document.addEventListener(type, (e) => { if (current && isMediaEl(e.target) && playerOf(e.target) === current) nowPlaying.update(type); }, true);
+}
+document.addEventListener(AO_STOP, () => {
+  for (const m of document.querySelectorAll('video, audio')) if (!m.paused) m.pause();
+  for (const f of frames) mediaOf(f).forEach((m) => m.pause());
+  if (current) { current._aoResume = null; pausePlayer(current); }
+  nowPlaying.update();
+});
+
+// A same-origin iframe (the BLACKWATER player page, say) is a player too: its media are
+// reachable, so starting one pauses the post's and the other way round.
+function hookFrame(f) {
+  if (frames.has(f) || f.closest('ao-game')) return;
+  let doc;
+  try { doc = f.contentDocument; } catch (e) { return; }
+  if (!doc || doc.URL === 'about:blank') return;
+  frames.add(f);
+  frameOf.set(doc, f);
+  doc.addEventListener('play', (e) => { if (isMediaEl(e.target)) claim(f); }, true);
+  for (const type of ['pause', 'ended', 'timeupdate']) doc.addEventListener(type, () => { if (current === f) nowPlaying.update(type); }, true);
+}
+document.addEventListener('load', (e) => { if (e.target && e.target.tagName === 'IFRAME') hookFrame(e.target); }, true);
+
+// Where the current player is, relative to the screen.
+const sight = 'IntersectionObserver' in window
+  ? new IntersectionObserver((entries) => entries.forEach((e) => onSight(e.target, e.isIntersecting)))
+  : null;
+const watched = new WeakSet();
+function watch(p) {
+  if (!sight || watched.has(p) || p.localName === 'ao-game') return;
+  watched.add(p);
+  sight.observe(p);
+}
+function onSight(p, inView) {
+  p._aoInView = inView;
+  if (inView) {
+    const resume = p._aoResume;
+    p._aoResume = null;
+    if (resume && p === current) (p.aoPlay ? p.aoPlay() : resume.forEach((m) => m.play().catch(() => {})));
+  } else if (!p.isConnected || !p.getClientRects().length) {
+    p._aoResume = null;
+    pausePlayer(p);
+  } else if (p === current && isPlaying(p) && isSilent(p)) {
+    p._aoResume = mediaOf(p).filter((m) => !m.paused);
+    pausePlayer(p);
+  }
+  nowPlaying.update();
+}
+
+// The bar at the foot of the window while something with sound plays off screen.
+const titleOf = (p) => {
+  if (p.aoTitle) return p.aoTitle();
+  const own = p.querySelector?.(':scope > figcaption b');
+  const fig = p.closest('figure')?.querySelector('figcaption b');
+  const text = (own || fig)?.textContent.trim() || p.getAttribute('label') || p.title || p.getAttribute('aria-label');
+  if (text) return text;
+  // A bare video in the prose: name it after the section it sits in.
+  let block = p;
+  while (block.parentElement && !block.parentElement.classList.contains('pc-prose')) block = block.parentElement;
+  for (let n = block.previousElementSibling; n; n = n.previousElementSibling) {
+    if (/^H[2-4]$/.test(n.tagName)) return (p.tagName === 'AUDIO' ? 'Audio' : 'Video') + ' · ' + n.textContent.trim();
+  }
+  return p.tagName === 'AUDIO' ? 'Audio in this post' : 'Video in this post';
+};
+const clockOf = (p) => (p.aoClock ? p.aoClock() : mediaOf(p).find((m) => !m.paused) || mediaOf(p)[0]);
+
+const ICON_PAUSE = '<svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><rect x="2" y="1.5" width="3" height="9" rx=".8" fill="currentColor"/><rect x="7" y="1.5" width="3" height="9" rx=".8" fill="currentColor"/></svg>';
+const ICON_PLAY = '<svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M3.2 1.6v8.8L10.4 6z" fill="currentColor"/></svg>';
+// Bring a player back into view. Smooth where the browser animates it; if it hasn't got there
+// in a moment (reduced motion, a throttled pane), jump.
+const reveal = (el) => {
+  if (reducedMotion()) { el.scrollIntoView({ block: 'center' }); return; }
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(() => {
+    const r = el.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > innerHeight) el.scrollIntoView({ block: 'center' });
+  }, 800);
+};
+
+const nowPlaying = {
+  el: null,
+  showing: null,
+  build() {
+    const el = document.createElement('div');
+    el.className = 'ao-np';
+    el.setAttribute('role', 'region');
+    el.setAttribute('aria-label', 'Now playing');
+    el.hidden = true;
+    el.innerHTML =
+      '<button type="button" class="ao-np-toggle" aria-label="Pause"></button>' +
+      '<span class="ao-np-what"><b></b><span class="ao-np-clock"></span></span>' +
+      '<button type="button" class="ao-np-back">Back to it</button>' +
+      '<button type="button" class="ao-np-close" aria-label="Stop and close">×</button>';
+    el.querySelector('.ao-np-toggle').addEventListener('click', () => {
+      const p = this.showing;
+      if (!p) return;
+      if (isPlaying(p)) { p._aoHeld = true; pausePlayer(p); }
+      else if (p.aoPlay) p.aoPlay();
+      else { const m = clockOf(p); if (m) m.play().catch(() => {}); }
+      this.update();
+    });
+    el.querySelector('.ao-np-back').addEventListener('click', () => {
+      const p = this.showing;
+      if (p) reveal(p);
+    });
+    el.querySelector('.ao-np-close').addEventListener('click', () => {
+      const p = this.showing;
+      if (p) { p._aoHeld = false; p._aoResume = null; pausePlayer(p); }
+      this.hide();
+    });
+    document.body.appendChild(el);
+    this.el = el;
+  },
+  update(type) {
+    const p = current;
+    const off = p && p.isConnected && p._aoInView === false && !!p.getClientRects().length;
+    const playing = off && isPlaying(p);
+    if (p && !off) p._aoHeld = false;
+    if (!off || !(playing ? !isSilent(p) : p._aoHeld)) { this.hide(); return; }
+    if (!this.el) this.build();
+    if (this.showing !== p) {
+      this.showing = p;
+      this.el.querySelector('.ao-np-what b').textContent = titleOf(p);
+    }
+    const t = this.el.querySelector('.ao-np-toggle');
+    if (t.dataset.on !== String(playing)) { t.dataset.on = String(playing); t.innerHTML = playing ? ICON_PAUSE : ICON_PLAY; }
+    t.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+    const m = clockOf(p);
+    this.el.querySelector('.ao-np-clock').textContent = m ? fmtTime(m.currentTime) + ' / ' + fmtTime(m.duration) : '';
+    if (this.el.hidden) {
+      this.el.hidden = false;
+      void this.el.offsetWidth; // start the slide-in from the hidden position
+      this.el.classList.add('ao-np-in');
+    }
+  },
+  hide() {
+    this.showing = null;
+    if (!this.el || this.el.hidden) return;
+    this.el.classList.remove('ao-np-in');
+    this.el.hidden = true;
+  },
+};
+
+// ---------------------------------------------------------------------------------------
+// The image viewer. Every picture in a post opens full size on click (or Enter), in a viewer
+// that zooms (wheel, pinch, double-tap, +/-, or a click on the picture) around the pointer,
+// pans by dragging, and pages through the post's other pictures in reading order (arrows,
+// swipe, the side buttons), so the frames of one comparison or the sheets of one film are a
+// keypress apart. The post's own copy shows at once; a larger file, if the image names one in
+// data-full="…" (or in srcset), replaces it at the same size when it arrives. Pictures inside
+// links, sliders, model and game posters and spectrograms keep their own click.
+const NO_VIEWER = 'a[href], button, ao-slider, ao-model, ao-game, ao-listen, [data-no-zoom]';
+const viewable = (img) =>
+  img.tagName === 'IMG' && !!img.closest('[data-post-article], .pc-prose') && !img.closest(NO_VIEWER);
+const bestSrc = (img) => {
+  if (img.dataset.full) return img.dataset.full;
+  const set = (img.getAttribute('srcset') || '').split(',').map((s) => s.trim().split(/\s+/))
+    .filter((p) => p[0] && /^\d+w$/.test(p[1] || '')).sort((a, b) => parseInt(b[1], 10) - parseInt(a[1], 10));
+  return set.length ? set[0][0] : img.currentSrc || img.src;
+};
+const captionOf = (img) => {
+  const cap = img.closest('figure, ao-slider')?.querySelector('figcaption');
+  const title = cap?.querySelector('b')?.textContent.trim() || '';
+  const meta = cap?.querySelector('.ao-meta')?.textContent.trim() || '';
+  // A slider's two sides share one caption; each side's own label leads.
+  if (img.dataset.label) return { title: img.dataset.label, meta: [title, meta].filter(Boolean).join(' · ') };
+  if (title || meta) return { title, meta };
+  return { title: cap ? cap.textContent.trim() : '', meta: cap ? '' : img.alt || '' };
+};
+
+const viewer = {
+  dlg: null,
+  list: [],
+  i: 0,
+  s: 1, tx: 0, ty: 0, // zoom (1 = fitted to the screen) and pan from centre, in screen px
+  fit: { w: 0, h: 0 },
+  nat: { w: 0, h: 0 },
+  build() {
+    const d = document.createElement('dialog');
+    d.className = 'ao-lb';
+    d.setAttribute('aria-label', 'Image viewer');
+    d.tabIndex = -1;
+    d.innerHTML =
+      '<div class="ao-lb-stage"><img class="ao-lb-img" alt="" draggable="false"><span class="ao-lb-wait" hidden>loading full size…</span></div>' +
+      '<div class="ao-lb-top"><span class="ao-lb-count"></span><span class="ao-lb-tools">' +
+      '<button type="button" data-act="out" aria-label="Zoom out" title="Zoom out (−)">−</button>' +
+      '<button type="button" data-act="fit" class="ao-lb-zoom" title="Fit to screen (0)">fit</button>' +
+      '<button type="button" data-act="in" aria-label="Zoom in" title="Zoom in (+)">+</button>' +
+      '<a class="ao-lb-orig" target="_blank" rel="noopener" title="Open the file in a new tab">file ↗</a>' +
+      '<button type="button" data-act="close" class="ao-lb-close" aria-label="Close" title="Close (Esc)">×</button>' +
+      '</span></div>' +
+      '<button type="button" class="ao-lb-nav ao-lb-prev" data-act="prev" aria-label="Previous picture" title="Previous (←)">‹</button>' +
+      '<button type="button" class="ao-lb-nav ao-lb-next" data-act="next" aria-label="Next picture" title="Next (→)">›</button>' +
+      '<div class="ao-lb-cap"><b></b><span></span></div>';
+    document.body.appendChild(d);
+    this.dlg = d;
+    this.img = d.querySelector('.ao-lb-img');
+    this.stage = d.querySelector('.ao-lb-stage');
+    this.wait = d.querySelector('.ao-lb-wait');
+    d.addEventListener('click', (e) => {
+      const act = e.target.closest('[data-act]')?.dataset.act;
+      if (act === 'close') this.close();
+      else if (act === 'prev') this.go(-1);
+      else if (act === 'next') this.go(1);
+      else if (act === 'in') this.zoomTo(this.s * 1.6);
+      else if (act === 'out') this.zoomTo(this.s / 1.6);
+      else if (act === 'fit') this.zoomTo(this.s > 1.01 ? 1 : this.actual());
+    });
+    d.addEventListener('cancel', (e) => { e.preventDefault(); this.close(); });
+    // close() does the cleanup itself; this catches a close from anywhere else.
+    d.addEventListener('close', () => { if (!d.open) this.cleanup(); }); // a late event after a quick reopen is ignored
+    d.addEventListener('keydown', (e) => this.key(e));
+    d.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const k = e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? 400 : 1;
+      this.zoomAt(e.clientX, e.clientY, this.s * Math.exp(-e.deltaY * k * 0.0016));
+    }, { passive: false });
+    this.pointers();
+    this.onResize = () => this.layout(true);
+  },
+  // list: the pictures to page through (default: every viewable one in the same post).
+  open(img, list) {
+    const root = img.closest('[data-post-article]') || img.closest('.pc-prose') || document;
+    this.list = list || [...root.querySelectorAll('img')].filter(viewable);
+    if (!this.list.includes(img)) this.list = [img];
+    if (!this.dlg) this.build();
+    this.opener = img;
+    this.dlg.classList.toggle('ao-lb-single', this.list.length < 2);
+    if (!this.dlg.open) {
+      this.cleaned = false;
+      this.dlg.showModal();
+      this.dlg.focus();
+      window.addEventListener('resize', this.onResize);
+      // Back closes the viewer rather than leaving the post (what a phone user reaches for). The
+      // homepage's router owns its history, so there the viewer only closes when the route moves.
+      if (!document.querySelector('[data-view="reader"]')) {
+        history.pushState(Object.assign({}, history.state, { aoViewer: true }), '');
+        this.pushed = true;
+      }
+    }
+    this.show(this.list.indexOf(img));
+  },
+  // Cleanup runs here, not only on the dialog's close event: that event is queued for the next
+  // rendered frame, and history.back() must not wait on one.
+  close() {
+    if (!this.dlg?.open) return;
+    this.dlg.close();
+    this.cleanup();
+  },
+  cleanup() {
+    if (this.cleaned) return;
+    this.cleaned = true;
+    window.removeEventListener('resize', this.onResize);
+    if (this.pushed) { this.pushed = false; history.back(); }
+    this.img.removeAttribute('src');
+    // Back to the picture the viewer was opened from, without the page jumping to it.
+    try { this.opener?.focus({ preventScroll: true }); } catch (e) { /* not focusable */ }
+  },
+  go(step) {
+    if (this.list.length < 2) return;
+    this.show((this.i + step + this.list.length) % this.list.length);
+  },
+  show(i) {
+    this.i = i;
+    const src = this.list[i];
+    const shown = src.currentSrc || src.src;
+    const full = bestSrc(src);
+    this.nat = { w: src.naturalWidth || 1600, h: src.naturalHeight || 900 };
+    this.img.alt = src.alt || '';
+    this.img.src = shown;
+    this.dlg.querySelector('.ao-lb-orig').href = full;
+    this.dlg.querySelector('.ao-lb-count').textContent = this.list.length > 1 ? i + 1 + ' / ' + this.list.length : '';
+    const cap = captionOf(src);
+    this.dlg.querySelector('.ao-lb-cap b').textContent = cap.title;
+    this.dlg.querySelector('.ao-lb-cap span').textContent = cap.meta;
+    this.dlg.querySelector('.ao-lb-cap').hidden = !cap.title && !cap.meta;
+    this.layout(false);
+    this.wait.hidden = true;
+    if (full !== shown) {
+      const big = new Image();
+      big.decoding = 'async';
+      const slow = setTimeout(() => { if (this.i === i) this.wait.hidden = false; }, 250);
+      big.onload = () => {
+        clearTimeout(slow);
+        if (this.i !== i || !this.dlg.open) return;
+        this.wait.hidden = true;
+        this.img.src = full;
+        this.nat = { w: big.naturalWidth, h: big.naturalHeight };
+        this.layout(this.s > 1.01);
+      };
+      big.onerror = () => { clearTimeout(slow); this.wait.hidden = true; };
+      big.src = full;
+    }
+    // Have the neighbours ready, so paging never waits.
+    for (const k of [i + 1, i - 1]) {
+      const n = this.list[(k + this.list.length) % this.list.length];
+      if (n && n !== src && !n.complete) { const pre = new Image(); pre.src = n.currentSrc || n.src; }
+    }
+  },
+  // Fit the picture into the space between the toolbar and the caption, never past its own
+  // pixels. keep=true leaves the zoom where it is (a larger file arrived, or the window moved).
+  layout(keep) {
+    const r = this.stage.getBoundingClientRect();
+    const scale = Math.min(r.width / this.nat.w, r.height / this.nat.h, 1);
+    const prev = this.fit.w;
+    this.fit = { w: Math.max(1, this.nat.w * scale), h: Math.max(1, this.nat.h * scale) };
+    this.img.style.width = this.fit.w + 'px';
+    this.img.style.height = this.fit.h + 'px';
+    if (keep && prev) {
+      const k = prev / this.fit.w;
+      this.s *= k;
+    } else {
+      this.s = 1; this.tx = 0; this.ty = 0;
+    }
+    this.apply();
+  },
+  actual() { return Math.max(2, this.nat.w / this.fit.w); },
+  max() { return Math.max(4, (this.nat.w / this.fit.w) * 3); },
+  zoomTo(s) {
+    const r = this.stage.getBoundingClientRect();
+    this.zoomAt(r.left + r.width / 2, r.top + r.height / 2, s);
+  },
+  // Zoom so the point under (x, y) stays under it.
+  zoomAt(x, y, s) {
+    const r = this.stage.getBoundingClientRect();
+    const next = Math.min(this.max(), Math.max(1, s));
+    const cx = r.left + r.width / 2 + this.tx;
+    const cy = r.top + r.height / 2 + this.ty;
+    const k = next / this.s;
+    this.tx = x - (x - cx) * k - (r.left + r.width / 2);
+    this.ty = y - (y - cy) * k - (r.top + r.height / 2);
+    this.s = next;
+    this.apply();
+  },
+  apply(drag) {
+    const r = this.stage.getBoundingClientRect();
+    const w = this.fit.w * this.s;
+    const h = this.fit.h * this.s;
+    // Keep the picture over the stage: centred on an axis where it fits, edge to edge where not.
+    const mx = Math.max(0, (w - r.width) / 2);
+    const my = Math.max(0, (h - r.height) / 2);
+    if (this.s <= 1.001) { this.s = 1; if (!drag) { this.tx = 0; this.ty = 0; } }
+    else { this.tx = Math.min(mx, Math.max(-mx, this.tx)); this.ty = Math.min(my, Math.max(-my, this.ty)); }
+    this.img.style.transform = `translate(-50%, -50%) translate(${this.tx}px, ${this.ty}px) scale(${this.s})`;
+    this.dlg.classList.toggle('ao-lb-zoomed', this.s > 1.01);
+    const z = this.dlg.querySelector('.ao-lb-zoom');
+    z.textContent = this.s > 1.01 ? Math.round((this.s * this.fit.w / this.nat.w) * 100) + '%' : 'fit';
+    z.setAttribute('aria-label', this.s > 1.01 ? 'Zoomed to ' + z.textContent + '; fit to screen' : 'Show at full size');
+  },
+  key(e) {
+    const k = e.key;
+    // Keys the viewer uses stop here: the homepage closes its reader on Escape and would
+    // otherwise close it under the viewer.
+    if (['Escape', 'ArrowRight', 'ArrowLeft', 'PageDown', 'PageUp', 'Home', 'End', '+', '=', '-', '_', '0', '1'].includes(k)) e.stopPropagation();
+    if (k === 'Escape') { e.preventDefault(); this.close(); }
+    else if (k === 'ArrowRight' || k === 'PageDown') { e.preventDefault(); this.go(1); }
+    else if (k === 'ArrowLeft' || k === 'PageUp') { e.preventDefault(); this.go(-1); }
+    else if (k === 'Home') { e.preventDefault(); this.show(0); }
+    else if (k === 'End') { e.preventDefault(); this.show(this.list.length - 1); }
+    else if (k === '+' || k === '=') { e.preventDefault(); this.zoomTo(this.s * 1.6); }
+    else if (k === '-' || k === '_') { e.preventDefault(); this.zoomTo(this.s / 1.6); }
+    else if (k === '0') { e.preventDefault(); this.zoomTo(1); }
+    else if (k === '1') { e.preventDefault(); this.zoomTo(this.nat.w / this.fit.w); }
+  },
+  // Mouse: click the picture to zoom in there, click again to fit; drag to pan when zoomed;
+  // click the dark around it to close. Touch: double-tap zooms, pinch zooms, one finger pans
+  // when zoomed and swipes to the next picture (or down, to close) when not.
+  pointers() {
+    const pts = new Map();
+    let start = null; // gesture start: pointer positions, zoom, pan
+    let lastTap = 0;
+    const st = this.stage;
+    const mid = () => {
+      const v = [...pts.values()];
+      return { x: (v[0].x + v[1].x) / 2, y: (v[0].y + v[1].y) / 2, d: Math.hypot(v[0].x - v[1].x, v[0].y - v[1].y) || 1 };
+    };
+    st.addEventListener('pointerdown', (e) => {
+      if (e.button > 0) return;
+      st.setPointerCapture(e.pointerId);
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      start = { x: e.clientX, y: e.clientY, s: this.s, tx: this.tx, ty: this.ty, moved: false, onImg: e.target === this.img, type: e.pointerType, two: pts.size === 2 ? mid() : null };
+      this.dlg.classList.add('ao-lb-active');
+    });
+    st.addEventListener('pointermove', (e) => {
+      if (!pts.has(e.pointerId) || !start) return;
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size === 2) {
+        const m = mid();
+        if (!start.two) start = { ...start, two: m, s: this.s, tx: this.tx, ty: this.ty };
+        start.moved = true;
+        const r = st.getBoundingClientRect();
+        // Pinch: scale about the starting midpoint, then follow the midpoint as it moves.
+        const k = Math.min(this.max(), Math.max(1, start.s * (m.d / start.two.d))) / start.s;
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        this.s = start.s * k;
+        this.tx = start.two.x - (start.two.x - (cx + start.tx)) * k - cx + (m.x - start.two.x);
+        this.ty = start.two.y - (start.two.y - (cy + start.ty)) * k - cy + (m.y - start.two.y);
+        this.apply(true);
+        return;
+      }
+      const dx = e.clientX - start.x;
+      const dy = e.clientY - start.y;
+      if (Math.hypot(dx, dy) > 6) start.moved = true;
+      if (!start.moved) return;
+      if (this.s > 1.01) { this.tx = start.tx + dx; this.ty = start.ty + dy; this.apply(); }
+      else if (start.type !== 'mouse') {
+        // Swipe preview: the picture follows the finger.
+        this.img.style.transform = `translate(-50%, -50%) translate(${Math.abs(dx) > Math.abs(dy) ? dx : 0}px, ${Math.abs(dy) > Math.abs(dx) ? Math.max(0, dy) : 0}px)`;
+      }
+    });
+    const end = (e) => {
+      if (!pts.has(e.pointerId)) return;
+      const was = pts.get(e.pointerId);
+      pts.delete(e.pointerId);
+      if (pts.size) { start = { ...start, x: [...pts.values()][0].x, y: [...pts.values()][0].y, s: this.s, tx: this.tx, ty: this.ty, two: null }; return; }
+      this.dlg.classList.remove('ao-lb-active');
+      const g = start;
+      start = null;
+      if (!g || e.type === 'pointercancel') { this.apply(); return; }
+      const dx = was.x - g.x;
+      const dy = was.y - g.y;
+      if (g.moved) {
+        if (g.two || this.s > 1.01 || g.type === 'mouse') { this.apply(); return; }
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.3) { this.go(dx < 0 ? 1 : -1); return; }
+        if (dy > 90 && dy > Math.abs(dx) * 1.3) { this.close(); return; }
+        this.apply();
+        return;
+      }
+      // A tap or a click.
+      if (g.type === 'mouse') {
+        if (!g.onImg) { if (this.s <= 1.01) this.close(); return; }
+        if (this.s > 1.01) this.zoomTo(1);
+        else this.zoomAt(g.x, g.y, this.actual());
+        return;
+      }
+      const now = performance.now();
+      if (now - lastTap < 320) {
+        lastTap = 0;
+        if (this.s > 1.01) this.zoomTo(1); else this.zoomAt(g.x, g.y, Math.max(2.5, this.actual()));
+        return;
+      }
+      lastTap = now;
+      if (!g.onImg && this.s <= 1.01) setTimeout(() => { if (lastTap === now) this.close(); }, 330);
+    };
+    st.addEventListener('pointerup', end);
+    st.addEventListener('pointercancel', end);
+  },
+};
+
+window.addEventListener('popstate', () => {
+  if (!viewer.dlg?.open) return;
+  viewer.pushed = false; // that entry is already gone
+  viewer.close();
+});
+document.addEventListener(AO_STOP, () => viewer.close());
+document.addEventListener('click', (e) => {
+  if (e.defaultPrevented || e.button > 0) return;
+  const img = e.target.closest && e.target.closest('img');
+  if (img && viewable(img)) { e.preventDefault(); viewer.open(img); }
+});
+document.addEventListener('keydown', (e) => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.tagName === 'IMG' && viewable(e.target)) {
+    e.preventDefault();
+    viewer.open(e.target);
+  }
+});
+
+// Make a post's pictures reachable from the keyboard and hook its same-origin frames. Runs on
+// the standalone page by itself; the homepage calls it after it swaps a post in.
+export function enhance(root = document) {
+  for (const img of root.querySelectorAll('img')) {
+    if (!viewable(img) || img.hasAttribute('tabindex')) continue;
+    img.tabIndex = 0;
+    img.setAttribute('role', 'button');
+    img.setAttribute('aria-haspopup', 'dialog');
+    if (!img.hasAttribute('decoding')) img.decoding = 'async';
+  }
+  for (const f of root.querySelectorAll('iframe')) {
+    try { if (f.contentDocument?.readyState === 'complete') hookFrame(f); } catch (e) { /* cross-origin */ }
+  }
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => enhance());
+else enhance();
 
 // ---------------------------------------------------------------------------------------
 // <ao-compare>: a grid of same-sized frames, so outputs can be judged side by side.
 //   cols="N"      columns on wide screens (default 2; phones always get 1, tablets 2)
 //   aspect="w/h"  the frame every item is fitted into, letterboxed on one background
 //   sync          videos inside play, pause and seek together
-// Clicking a still opens it full size in a <dialog>.
+// Its stills open in the image viewer like every other picture in a post.
 class AoCompare extends HTMLElement {
   connectedCallback() {
     if (this._ready) return;
@@ -33,13 +587,6 @@ class AoCompare extends HTMLElement {
     this.style.setProperty('--ao-cols', String(Math.max(1, cols)));
     const aspect = this.getAttribute('aspect');
     if (aspect) this.style.setProperty('--ao-aspect', aspect);
-
-    this.addEventListener('click', (e) => {
-      const img = e.target.closest('img');
-      if (!img || !this.contains(img)) return;
-      openLightbox(img.currentSrc || img.src, img.alt);
-    });
-
     if (this.hasAttribute('sync')) this.syncVideos();
   }
 
@@ -67,21 +614,6 @@ class AoCompare extends HTMLElement {
       if (!near(v, l.currentTime)) v.currentTime = l.currentTime;
     }), true);
   }
-}
-
-let lightbox;
-function openLightbox(src, alt) {
-  if (!lightbox) {
-    lightbox = document.createElement('dialog');
-    lightbox.className = 'ao-lightbox';
-    lightbox.innerHTML = '<img alt=""><button type="button" aria-label="Close">×</button>';
-    lightbox.addEventListener('click', () => lightbox.close());
-    document.body.appendChild(lightbox);
-  }
-  const img = lightbox.querySelector('img');
-  img.src = src;
-  img.alt = alt || '';
-  lightbox.showModal();
 }
 
 // ---------------------------------------------------------------------------------------
@@ -300,7 +832,7 @@ class AoTimeline extends HTMLElement {
 // ---------------------------------------------------------------------------------------
 // <ao-game>: a game from public/games/ played inside the post. Like <ao-model>, nothing
 // downloads until the reader asks: a poster and a Play button first, then an iframe of the
-// game's own page. A fullscreen button and an "own tab" link sit under the frame.
+// game's own page. Fullscreen, Stop and an "own tab" link sit under the frame.
 //   src     the game's page, e.g. /games/storm-bell/
 //   poster  still shown before loading
 //   size    shown on the button so the reader knows what the click costs
@@ -308,35 +840,31 @@ class AoTimeline extends HTMLElement {
 //   aspect  the frame, default 16/9
 //   note    one line under the frame (controls, what it needs)
 // The inner markup (a link to the game) is the no-JS fallback.
+//
+// A running game is a player like a video (see "One player at a time"). It pauses, sound and
+// drawing both, when it is scrolled off screen, when the tab is hidden, when anything else on
+// the page starts playing, and when the homepage closes the reader; a veil over the frame says
+// so and resumes it on a click, so a fight never restarts under hands that aren't on the keys.
+// The game page is same-origin, so pausing needs nothing from the game: its window's
+// requestAnimationFrame is held (no frames, no GPU) and every AudioContext it made is
+// suspended. If that hook can't be made, the game is unloaded instead. Stop unloads it either way.
 class AoGame extends HTMLElement {
   connectedCallback() {
     if (this._ready) return;
     this._ready = true;
-    const src = this.getAttribute('src');
-    const poster = this.getAttribute('poster');
-    const label = this.getAttribute('label') || 'Game';
+    this._src = this.getAttribute('src');
+    this._label = this.getAttribute('label') || 'Game';
     const size = this.getAttribute('size');
     const note = this.getAttribute('note');
     const aspect = this.getAttribute('aspect');
     if (aspect) this.style.setProperty('--ao-aspect', aspect);
     this.setAttribute('role', 'group');
-    this.setAttribute('aria-label', label);
+    this.setAttribute('aria-label', this._label);
     this.innerHTML = '';
 
-    const stage = document.createElement('div');
-    stage.className = 'ao-game-stage';
-    if (poster) {
-      const img = document.createElement('img');
-      img.src = poster; img.alt = label; img.loading = 'lazy'; img.className = 'ao-game-poster';
-      stage.appendChild(img);
-    }
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'ao-model-load ao-game-load';
-    btn.textContent = 'Play it here' + (size ? ' (' + size + ')' : '');
-    btn.addEventListener('click', () => this.load(src, label));
-    stage.appendChild(btn);
-    this.appendChild(stage);
+    this._stage = document.createElement('div');
+    this._stage.className = 'ao-game-stage';
+    this.appendChild(this._stage);
 
     const bar = document.createElement('div');
     bar.className = 'ao-game-bar';
@@ -346,42 +874,183 @@ class AoGame extends HTMLElement {
       n.textContent = note;
       bar.appendChild(n);
     }
-    const full = document.createElement('button');
-    full.type = 'button';
-    full.className = 'ao-game-full';
-    full.textContent = 'Fullscreen';
-    full.hidden = true;
-    full.addEventListener('click', () => {
-      const f = this.querySelector('iframe');
-      (f?.requestFullscreen || f?.webkitRequestFullscreen)?.call(f);
-      f?.focus();
+    const mk = (text, cls, fn) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ao-game-btn ' + cls;
+      b.textContent = text;
+      b.hidden = true;
+      b.addEventListener('click', fn);
+      bar.appendChild(b);
+      return b;
+    };
+    this._full = mk('Fullscreen', 'ao-game-full', () => {
+      const f = this._frame;
+      if (!f) return;
+      if (this._paused) this.resume();
+      (f.requestFullscreen || f.webkitRequestFullscreen)?.call(f);
+      f.focus();
     });
-    bar.appendChild(full);
+    this._stopBtn = mk('Stop game', 'ao-game-stop', () => this.unload('Stopped. Play it again to start over.'));
+    this._stopBtn.title = 'Unload the game: frees its memory and stops everything it was doing';
     const tab = document.createElement('a');
-    tab.href = src;
+    tab.href = this._src;
     tab.target = '_blank';
     tab.rel = 'noopener';
     tab.textContent = 'Open in its own tab ↗';
+    tab.addEventListener('click', () => this.unload('Opened in its own tab.'));
     bar.appendChild(tab);
     this.appendChild(bar);
+    this._sizeText = size;
+    this.poster();
+
+    this.aoPause = () => this.pause('Paused while something else plays.');
+    this.aoPlaying = () => !!this._frame && !this._paused;
+    this._onOther = (e) => { if (e.detail !== this) this.aoPause(); };
+    this._onStop = () => this.pause('Paused.');
+    this._onVis = () => { if (document.hidden) this.pause('Paused while the tab was in the background.'); };
+    document.addEventListener(AO_LISTEN_PLAY, this._onOther);
+    document.addEventListener(AO_STOP, this._onStop);
+    document.addEventListener('visibilitychange', this._onVis);
+    if ('IntersectionObserver' in window) {
+      this._io = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting || !this._frame) return;
+        if (document.fullscreenElement === this._frame) return;
+        this.pause(this.getClientRects().length ? 'Paused when you scrolled away.' : 'Paused.');
+      });
+      this._io.observe(this._stage);
+    }
   }
 
-  load(src, label) {
-    const stage = this.querySelector('.ao-game-stage');
+  poster(message) {
+    const stage = this._stage;
+    stage.replaceChildren();
+    const poster = this.getAttribute('poster');
+    if (poster) {
+      const img = document.createElement('img');
+      img.src = poster; img.alt = this._label; img.loading = 'lazy'; img.className = 'ao-game-poster';
+      stage.appendChild(img);
+    }
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'ao-model-load ao-game-load';
+    btn.textContent = (message ? 'Play again' : 'Play it here') + (this._sizeText ? ' (' + this._sizeText + ')' : '');
+    btn.addEventListener('click', () => this.load());
+    stage.appendChild(btn);
+    if (message) {
+      const m = document.createElement('p');
+      m.className = 'ao-game-msg';
+      m.textContent = message;
+      stage.appendChild(m);
+    }
+    this._full.hidden = true;
+    this._stopBtn.hidden = true;
+  }
+
+  load() {
     const frame = document.createElement('iframe');
-    frame.src = src;
-    frame.title = label;
+    frame.src = this._src;
+    frame.title = this._label;
     frame.allow = 'fullscreen; gamepad; autoplay';
     frame.allowFullscreen = true;
-    stage.replaceChildren(frame);
-    frame.addEventListener('load', () => frame.focus());
-    const full = this.querySelector('.ao-game-full');
-    if (full) full.hidden = false;
+    const veil = document.createElement('button');
+    veil.type = 'button';
+    veil.className = 'ao-game-veil';
+    veil.hidden = true;
+    veil.innerHTML = '<span class="ao-game-veil-msg"></span><span class="ao-game-veil-go">Resume</span>';
+    veil.addEventListener('click', () => this.resume());
+    this._stage.replaceChildren(frame, veil);
+    this._frame = frame;
+    this._veil = veil;
+    this._paused = false;
+    this._hook = null;
+    frame.addEventListener('load', () => {
+      this._hook = this.hookFrame(frame);
+      if (!this._paused) frame.focus();
+    });
+    this._full.hidden = false;
+    this._stopBtn.hidden = false;
+    claim(this);
+  }
+
+  // Reach into the game's window (same origin) before its engine starts, which only happens
+  // on the first key or click inside it: hold animation frames and track its AudioContexts.
+  hookFrame(frame) {
+    let w;
+    try { w = frame.contentWindow; if (!w || !w.document) return null; } catch (e) { return null; }
+    const hook = { held: [], ctxs: [], paused: false };
+    const raf = w.requestAnimationFrame.bind(w);
+    w.requestAnimationFrame = (cb) => {
+      if (hook.paused) { hook.held.push(cb); return 0; }
+      return raf(cb);
+    };
+    hook.raf = raf;
+    // A link in the game's own page (its "back" link, say) would load the whole site inside the
+    // frame; open those at the top level instead.
+    try {
+      const d = w.document;
+      if (!d.querySelector('base[target]')) { const b = d.createElement('base'); b.target = '_top'; d.head.prepend(b); }
+    } catch (e) { /* no head yet */ }
+    for (const name of ['AudioContext', 'webkitAudioContext']) {
+      const Real = w[name];
+      if (typeof Real !== 'function') continue;
+      w[name] = new Proxy(Real, {
+        construct(target, args, newTarget) {
+          const ctx = Reflect.construct(target, args, newTarget === w[name] ? target : newTarget);
+          hook.ctxs.push(ctx);
+          return ctx;
+        },
+      });
+    }
+    // Starting the game from inside its own frame counts as pressing play.
+    w.addEventListener('pointerdown', () => claim(this), true);
+    w.addEventListener('keydown', () => { if (current !== this) claim(this); }, true);
+    return hook;
+  }
+
+  pause(message) {
+    if (!this._frame || this._paused) return;
+    const hook = this._hook;
+    // No hook (the frame isn't loaded yet, or isn't reachable): stopping is the only pause.
+    if (!hook) { this.unload(message.replace(/^Paused/, 'Stopped')); return; }
+    this._paused = true;
+    hook.paused = true;
+    for (const c of hook.ctxs) if (c.state === 'running') c.suspend().catch(() => {});
+    try { for (const m of this._frame.contentDocument.querySelectorAll('video, audio')) m.pause(); } catch (e) { /* gone */ }
+    if (document.activeElement === this._frame) this._frame.blur();
+    this._veil.querySelector('.ao-game-veil-msg').textContent = message;
+    this._veil.hidden = false;
+  }
+
+  resume() {
+    const hook = this._hook;
+    if (!this._frame || !this._paused || !hook) return;
+    this._paused = false;
+    hook.paused = false;
+    for (const cb of hook.held.splice(0)) hook.raf(cb);
+    for (const c of hook.ctxs) if (c.state === 'suspended') c.resume().catch(() => {});
+    this._veil.hidden = true;
+    this._frame.focus();
+    claim(this);
+  }
+
+  unload(message) {
+    if (!this._frame) return;
+    this._frame = null;
+    this._hook = null;
+    this._paused = false;
+    this.poster(message);
   }
 
   disconnectedCallback() {
     // The homepage swaps posts in and out of one host; stop the game when this one leaves.
-    this.querySelector('iframe')?.remove();
+    this._frame = null;
+    this._stage?.replaceChildren();
+    this._io?.disconnect();
+    document.removeEventListener(AO_LISTEN_PLAY, this._onOther);
+    document.removeEventListener(AO_STOP, this._onStop);
+    document.removeEventListener('visibilitychange', this._onVis);
+    this._ready = false;
   }
 }
 
@@ -438,7 +1107,17 @@ class AoSlider extends HTMLElement {
     range.addEventListener('input', set);
     set();
 
-    stage.append(line, tagA, tagB, range);
+    // The frame is all slider, so a click can't open the picture: this button does, both sides.
+    a.dataset.label = la;
+    b.dataset.label = lb;
+    const zoom = document.createElement('button');
+    zoom.type = 'button';
+    zoom.className = 'ao-slider-zoom';
+    zoom.textContent = 'Full size';
+    zoom.title = 'Open both pictures full size, to zoom in';
+    zoom.addEventListener('click', () => viewer.open(parseFloat(range.value) < 50 ? b : a, [a, b]));
+
+    stage.append(line, tagA, tagB, range, zoom);
     this.prepend(stage);
     this.classList.add('ao-slider-ready');
   }
@@ -623,8 +1302,6 @@ class AoDiff extends HTMLElement {
 // A direct child <figcaption> captions the set. Keys, with the list focused: up/down pick a
 // clip, space plays, C toggles A/B. Only one clip on the page plays at a time, and the element
 // stops when the homepage swaps posts or closes the reader. Without JS the figures stack with native controls.
-const AO_LISTEN_PLAY = 'ao-listen-play';
-const fmtTime = (s) => (isFinite(s) ? Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0') : '0:00');
 
 class AoListen extends HTMLElement {
   connectedCallback() {
@@ -746,7 +1423,7 @@ class AoListen extends HTMLElement {
       if (wasPlaying) start();
     };
     const start = () => {
-      document.dispatchEvent(new CustomEvent(AO_LISTEN_PLAY, { detail: this }));
+      claim(this);
       cur.audio.play().catch(() => {});
     };
     const toggle = () => (cur.audio.paused ? start() : cur.audio.pause());
@@ -799,6 +1476,10 @@ class AoListen extends HTMLElement {
     this._onOther = (e) => { if (e.detail !== this) cur.audio.pause(); };
     document.addEventListener(AO_LISTEN_PLAY, this._onOther);
     this._stop = () => clips.forEach((c) => c.audio.pause());
+    this.aoPlay = start;
+    this.aoPause = () => cur.audio.pause();
+    this.aoClock = () => cur.audio;
+    this.aoTitle = () => cur.title;
 
     figs[0].before(stage, list);
     this.classList.add('ao-listen-ready');
@@ -823,6 +1504,11 @@ class AoListen extends HTMLElement {
 // an optional <figcaption>. The first video sets the clock and the others follow it. Only one
 // video is heard at a time; a Sound button per video picks which. Without JS: the videos with
 // their own controls, and the cue list as a plain ordered list.
+//
+// Keeping two videos together: a follower that drifts a little is sped up or slowed down by a
+// few percent until it's back (a seek on every timeupdate makes the browser drop its buffer
+// and the follower stalls for good), and only a big gap gets a seek. If any cut runs out of
+// buffered video, they all wait for it, and set off together again when it has caught up.
 const parseCue = (v) => {
   const parts = String(v || '').trim().split(':').map(Number);
   if (!parts.length || parts.some((n) => !isFinite(n))) return NaN;
@@ -839,6 +1525,7 @@ class AoCues extends HTMLElement {
     const labels = (this.getAttribute('labels') || '').split('|').map((s) => s.trim());
     const name = (k) => labels[k] || vids[k].title || 'Cut ' + (k + 1);
     const lead = vids[0];
+    const followers = vids.slice(1);
     const cues = [...ol.children]
       .map((li) => ({ li, t: parseCue(li.dataset.t) }))
       .filter((c) => isFinite(c.t))
@@ -873,7 +1560,7 @@ class AoCues extends HTMLElement {
       bar.append(b);
       return b;
     };
-    const play = btn('Play', 'Play or pause every cut', () => toggle());
+    const play = btn('Play', 'Play or pause every cut (space)', () => toggle());
     const sound = vids.length > 1
       ? vids.map((v, k) => btn('Sound: ' + name(k), 'Hear this cut', () => hear(k)))
       : [];
@@ -904,75 +1591,81 @@ class AoCues extends HTMLElement {
     }
 
     const each = (fn) => vids.forEach(fn);
+    let heard = 0;
     const hear = (k) => {
+      heard = k;
       each((v, i) => { v.muted = i !== k; });
       sound.forEach((b, i) => b.setAttribute('aria-pressed', String(i === k)));
     };
-    // The host answers Range requests with the whole file (200, not 206), so a browser can only
-    // seek inside what it has already buffered; a seek past that lands on 0. When a seek needs
-    // more than is buffered, each cut is fetched once in full and played from a blob, which
-    // seeks anywhere. `want` holds the target meanwhile, and nothing resyncs to the lead.
-    let want = null;
-    const urls = [];
-    const whole = new Map();
-    const canSeek = (v, t) => {
-      if (v.readyState < 1) return false;
-      for (let i = 0; i < v.seekable.length; i++) if (v.seekable.start(i) <= t && t <= v.seekable.end(i) + 0.05) return true;
-      return false;
-    };
-    const loadWhole = (v) => {
-      if (!whole.has(v)) {
-        whole.set(v, fetch(v.currentSrc || v.src)
-          .then((r) => r.blob())
-          .then((blob) => new Promise((res) => {
-            const u = URL.createObjectURL(blob);
-            urls.push(u);
-            v.addEventListener('loadedmetadata', res, { once: true });
-            v.src = u;
-          })));
+
+    // What the reader asked for, which the videos' own paused flags can't say: while one cut
+    // waits for data the others are paused on purpose, and that isn't the reader pausing.
+    let want = false;
+    const stalled = new Set();
+    const ours = new WeakSet(); // pauses made here, so their pause events aren't read as the reader's
+    const pauseOne = (v) => { if (!v.paused) { ours.add(v); v.pause(); } };
+    // Line every follower up with the lead, then set them all off.
+    const go = () => {
+      for (const v of followers) {
+        v.playbackRate = 1;
+        if (Math.abs(v.currentTime - lead.currentTime) > 0.05) v.currentTime = lead.currentTime;
       }
-      return whole.get(v);
+      each((v) => { if (v.paused) v.play().catch(() => {}); });
     };
     const start = () => {
-      document.dispatchEvent(new CustomEvent(AO_LISTEN_PLAY, { detail: this }));
-      each((v) => {
-        v.preload = 'auto';
-        if (want === null && v !== lead && Math.abs(v.currentTime - lead.currentTime) > 0.1) v.currentTime = lead.currentTime;
-        v.play().catch(() => {});
-      });
+      want = true;
+      stalled.clear();
+      claim(this);
+      each((v) => { v.preload = 'auto'; });
+      go();
+      show();
     };
-    const stop = () => each((v) => v.pause());
-    const toggle = () => (lead.paused ? start() : stop());
-    const seek = (t, go) => {
-      if (vids.every((v) => canSeek(v, t))) {
-        want = null;
-        each((v) => { v.currentTime = t; });
-        show(t);
-        if (go) start();
-        return;
-      }
-      const resume = go || !lead.paused;
-      want = t;
-      stop();
+    const stop = () => {
+      want = false;
+      stalled.clear();
+      each((v) => { pauseOne(v); v.playbackRate = 1; });
+      show();
+    };
+    const toggle = () => (want ? stop() : start());
+    const seek = (t, play) => {
+      each((v) => { v.currentTime = t; });
       show(t);
-      clock.textContent = 'loading the cuts…';
-      Promise.all(vids.map(loadWhole)).then(() => {
-        if (want !== t) return;
-        want = null;
-        each((v) => { v.currentTime = t; });
-        show(t);
-        if (resume) start();
-      }, () => { want = null; show(); });
+      if (play && !want) start();
     };
     scrub.addEventListener('input', () => seek(parseFloat(scrub.value), false));
+    // A cut that runs dry while the others play: they wait for it, then all go on together.
+    // Recovery is read from each cut's own buffer, not from its "playing" event: a cut that
+    // stalls while another is also stalled gets paused, and a paused cut never fires one.
+    const ready = (v) => v.readyState >= 3 && !v.seeking;
+    const settle = () => {
+      if (!want || !stalled.size) return;
+      for (const v of [...stalled]) if (ready(v)) stalled.delete(v);
+      if (!stalled.size) go();
+      show();
+    };
+    for (const v of vids) {
+      v.addEventListener('waiting', () => {
+        if (!want) return;
+        stalled.add(v);
+        for (const o of vids) if (o !== v) pauseOne(o);
+        show();
+      });
+      for (const ev of ['canplay', 'canplaythrough', 'seeked', 'playing']) v.addEventListener(ev, settle);
+      v.addEventListener('pause', () => {
+        if (ours.has(v)) { ours.delete(v); return; }
+        // Paused from outside this element (the bar at the foot, a media key): the reader's pause.
+        if (want && !v.ended) stop();
+      });
+    }
+    lead.addEventListener('ended', () => stop());
 
     let lit = null;
     const show = (at) => {
-      const t = typeof at === 'number' ? at : want !== null ? want : lead.currentTime;
+      const t = typeof at === 'number' ? at : lead.currentTime;
       if (isFinite(lead.duration)) scrub.max = String(lead.duration);
       scrub.value = String(t);
-      clock.textContent = want !== null ? 'loading the cuts…' : fmtTime(t) + ' / ' + fmtTime(lead.duration);
-      play.textContent = lead.paused ? 'Play' : 'Pause';
+      clock.textContent = want && stalled.size ? 'loading…' : fmtTime(t) + ' / ' + fmtTime(lead.duration);
+      play.textContent = want ? 'Pause' : 'Play';
       let cur = null;
       for (const c of cues) if (c.t <= t + 0.05) cur = c; else break;
       if (cur === lit) return;
@@ -986,29 +1679,45 @@ class AoCues extends HTMLElement {
         ol.scrollTop = Math.max(0, top - ol.clientHeight / 3);
       }
     };
-    // Followers drift a little on their own; nudge them back to the lead clock.
+    // Followers drift on their own. Close a small gap with the playback rate (a few percent
+    // either way, which nobody hears), and seek only when the gap is too big for that.
     const follow = () => {
-      if (want !== null) return;
-      for (const v of vids) {
-        if (v === lead) continue;
-        if (Math.abs(v.currentTime - lead.currentTime) > 0.15) v.currentTime = lead.currentTime;
-        if (lead.paused !== v.paused) (lead.paused ? v.pause() : v.play().catch(() => {}));
+      if (!want || stalled.size || lead.paused) return;
+      for (const v of followers) {
+        if (v.seeking || v.paused) continue;
+        const gap = lead.currentTime - v.currentTime;
+        if (Math.abs(gap) > 0.6) { v.playbackRate = 1; v.currentTime = lead.currentTime + 0.05; }
+        else if (Math.abs(gap) > 0.04) v.playbackRate = 1 + Math.max(-0.08, Math.min(0.08, gap * 0.5));
+        else if (v.playbackRate !== 1) v.playbackRate = 1;
       }
     };
-    const loop = () => {
+    let lastFollow = 0;
+    const loop = (now) => {
       show();
+      if (now - lastFollow > 120) { lastFollow = now; follow(); }
       if (lead.paused) { this._raf = 0; return; }
       this._raf = requestAnimationFrame(loop);
     };
     for (const ev of ['play', 'pause', 'seeked', 'loadedmetadata', 'ended']) lead.addEventListener(ev, () => show());
-    lead.addEventListener('play', () => { if (!this._raf) loop(); });
+    lead.addEventListener('play', () => { if (!this._raf) this._raf = requestAnimationFrame(loop); });
+    // Animation frames stop in a background tab; timeupdate doesn't.
     lead.addEventListener('timeupdate', follow);
-    lead.addEventListener('pause', follow);
+    this.addEventListener('keydown', (e) => {
+      if (e.key === ' ' && (e.target === this || e.target.tagName === 'VIDEO')) { e.preventDefault(); toggle(); }
+    });
 
     hear(0);
-    this._onOther = (e) => { if (e.detail !== this) stop(); };
+    this.aoPlay = start;
+    this.aoPause = stop;
+    this.aoPlaying = () => want;
+    this.aoClock = () => lead;
+    this.aoTitle = () => {
+      const cap = this.querySelector(':scope > figcaption b')?.textContent.trim();
+      return (cap ? cap + ' · ' : '') + 'sound: ' + name(heard);
+    };
+    this._onOther = (e) => { if (e.detail !== this && want) stop(); };
     document.addEventListener(AO_LISTEN_PLAY, this._onOther);
-    this._stop = () => { stop(); urls.forEach((u) => URL.revokeObjectURL(u)); };
+    this._stop = () => stop();
     this.classList.add('ao-cues-ready');
     show();
   }
@@ -1089,7 +1798,7 @@ class AoTranscript extends HTMLElement {
       const cap = fig.querySelector('figcaption');
       if (cap) cap.append(count);
       v.after(box);
-      const pane = { fig, v, box, count, lines: [], lit: null, whole: null };
+      const pane = { fig, v, box, count, lines: [], lit: null };
       fetch(track.src).then((r) => (r.ok ? r.text() : Promise.reject(r.status))).then((text) => {
         box.textContent = '';
         let para = null;
@@ -1123,50 +1832,21 @@ class AoTranscript extends HTMLElement {
         }
         mark();
       }, () => { box.textContent = 'The transcript could not be loaded.'; });
-      v.addEventListener('play', () => {
-        document.dispatchEvent(new CustomEvent(AO_LISTEN_PLAY, { detail: v }));
-        if (!pane.raf) loop(pane);
-      });
+      v.addEventListener('play', () => { if (!pane.raf) loop(pane); });
       v.addEventListener('seeked', () => light(pane));
       // timeupdate fires even where animation frames don't (a background tab), so check here too.
       v.addEventListener('timeupdate', () => { if (!this.getClientRects().length) v.pause(); });
       return pane;
     });
 
-    // The host answers Range requests with the whole file (200, not 206), so a seek past what is
-    // buffered lands on 0. Then the video is fetched once in full and played from a blob.
-    const urls = [];
-    const inside = (ranges, t) => {
-      for (let i = 0; i < ranges.length; i++) if (ranges.start(i) <= t && t <= ranges.end(i) - 0.25) return true;
-      return false;
-    };
-    const canSeek = (v, t) => v.readyState >= 1 && (inside(v.seekable, t) || inside(v.buffered, t));
+    // Jump to a line and play from there. A video that hasn't loaded yet (preload="none") takes
+    // the time once its metadata is in; play() is what starts that load.
     const seek = (pane, t) => {
       const { v } = pane;
-      const go = () => { v.currentTime = t; v.play().catch(() => {}); light(pane, t); };
-      if (canSeek(v, t) || pane.whole === 'done') { go(); return; }
-      if (v.readyState < 1) {
-        v.preload = 'metadata';
-        v.addEventListener('loadedmetadata', () => seek(pane, t), { once: true });
-        v.load();
-        return;
-      }
-      pane.count.dataset.note = 'loading the whole video…';
-      paint(pane);
-      if (!pane.whole) {
-        pane.whole = fetch(v.currentSrc || v.src).then((r) => r.blob()).then((blob) => new Promise((res) => {
-          const u = URL.createObjectURL(blob);
-          urls.push(u);
-          v.addEventListener('loadedmetadata', res, { once: true });
-          v.src = u;
-        }));
-      }
-      pane.whole.then(() => {
-        pane.whole = 'done';
-        delete pane.count.dataset.note;
-        paint(pane);
-        go();
-      }, () => { pane.whole = null; delete pane.count.dataset.note; paint(pane); });
+      light(pane, t);
+      if (v.readyState >= 1) v.currentTime = t;
+      else v.addEventListener('loadedmetadata', () => { v.currentTime = t; }, { once: true });
+      v.play().catch(() => {});
     };
 
     const light = (pane, at) => {
@@ -1196,9 +1876,8 @@ class AoTranscript extends HTMLElement {
 
     const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const paint = (pane) => {
-      const note = pane.count.dataset.note;
       const q = input.value.trim();
-      pane.count.textContent = note || (q ? `“${q}”: ${pane.hits || 0} ${pane.hits === 1 ? 'time' : 'times'}` : '');
+      pane.count.textContent = (q ? `“${q}”: ${pane.hits || 0} ${pane.hits === 1 ? 'time' : 'times'}` : '');
     };
     const mark = () => {
       const q = input.value.trim();
@@ -1235,7 +1914,6 @@ class AoTranscript extends HTMLElement {
     document.addEventListener(AO_LISTEN_PLAY, this._onOther);
     this._stop = () => {
       panes.forEach((p) => { p.v.pause(); if (p.raf) cancelAnimationFrame(p.raf); p.raf = 0; });
-      urls.forEach((u) => URL.revokeObjectURL(u));
     };
     this.classList.add('ao-tr-ready');
   }

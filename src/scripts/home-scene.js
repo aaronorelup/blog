@@ -623,6 +623,8 @@ export class HomeScene {
   closePanel(push) {
     if (!this.panelOpen) return;
     if (push !== false) history.pushState({}, '', '/');
+    // The reader is hidden, not removed, so a video or game in the post would play on unseen.
+    document.dispatchEvent(new CustomEvent('ao-stop'));
     const el = this.panelSrcEl, r = el ? el.getBoundingClientRect() : null;
     this.panelInner = '0';
     this._panelClosing = true;
@@ -742,8 +744,9 @@ export class HomeScene {
       if (this.reader !== slug) return;              // visitor moved on while it loaded
       host.innerHTML = this.postCache[slug];
       host.dataset.slug = slug;
-      // Scripts in the copied HTML never run, so the post's custom elements come from here.
-      if (host.querySelector('ao-compare, ao-model, ao-timeline, ao-game, ao-slider, ao-frames, ao-diff, ao-listen, ao-cues, ao-transcript, ao-demo')) import('./post-components.js');
+      // Scripts in the copied HTML never run, so the post's custom elements come from here,
+      // and so do the behaviours every post gets (the image viewer, one player at a time).
+      import('./post-components.js').then((m) => { if (host.dataset.slug === slug) m.enhance(host); });
       this.scrollPanelTop();
     } catch (_) {
       location.href = '/ledger/' + slug + '/';       // the real page always works
