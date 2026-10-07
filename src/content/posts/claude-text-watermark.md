@@ -1,15 +1,18 @@
 ---
 id: "AO-040"
 title: "Claude's text is watermarked now, and the mark only lives where Claude had a choice"
-summary: "Since August, Claude's writing carries a version of Google DeepMind's SynthID-Text watermark, and only Anthropic's key can read it, through a private API for regulators, press, researchers and schools. It hides in choices like 'grey' versus 'overcast', so 'Paris', a URL or a quote you asked for comes out the way it would have and carries none of it. Five demos run the published algorithm in your browser: the tournament, the exact answers, the detector, your edits, and what scrubbing it would take."
+summary: "Since August, Claude's writing carries a version of Google DeepMind's SynthID-Text watermark, and only Anthropic's key can read it, through a private API for regulators, press, researchers and schools. It hides in choices like 'grey' versus 'overcast', so 'Paris' as the capital of France, a URL or a quote you asked for comes out the way it would have and carries none of it. Five demos run the published algorithm in your browser: the tournament, the exact answers, the detector, your edits, and what scrubbing it would take."
 date: 2026-10-06
 status: "shipped"
 tags: ["claude", "watermarking", "synthid", "interactive", "agents"]
 ---
 
 Claude's text has carried a watermark since August. Nothing is added to the words: the mark is in
-*which* words got picked, and only where picking was a real choice. "Grey" or "overcast" can carry
-it. "Paris" can't. Only Anthropic holds the key that reads it, and for now only regulators, police,
+*which* words got picked, and only where picking was a real choice. Writing "grey" where "overcast"
+would do as well can carry it. Answering "Paris" to "what's the capital of France?" can't, because
+there was nothing else to say. The word isn't the point: ask for a city known for its food and
+"Paris" is one good answer among many, so picking it can carry the mark like any other free choice.
+Only Anthropic holds the key that reads it, and for now only regulators, police,
 journalists, fact-checkers, researchers, schools and EU civil-society groups can ask Anthropic to
 check, plus companies that need it for their own compliance.
 
@@ -84,12 +87,13 @@ answers to the same prompt; how much variety Claude's version keeps, Anthropic h
 
 ## Why "Paris" comes out as Paris
 
-If the model is 99.95% sure the next word is "Paris", nearly every candidate the tournament draws
+Take "What's the capital of France?" If the model is 99.95% sure the next word is "Paris", nearly every candidate the tournament draws
 is "Paris", and Paris beats Paris. There's nothing to tilt. That's the answer for most exact text:
 a URL, a file path, a quote you asked for word for word, the digits of a sum. Each of those tokens
 is near-certain, so it comes out the way it would have anyway, and it carries none of the mark.
 Anthropic's own example is Newton's *Principia*: the next word has to be *Mathematica*, so the
-watermark has "nothing to act on". Code gets less of it for the same reason.
+watermark has "nothing to act on". Code gets less of it for the same reason. None of this is about the word itself: in "a city famous for its
+food is", "Paris" is one of a dozen good candidates, and there the tournament does its usual work.
 
 <ao-demo name="synthid" part="certain">
 The interactive demo needs JavaScript.
@@ -205,8 +209,9 @@ which would need the key.
 ## What I take from it
 
 The watermark isn't on the facts. It's on the taste: "sits" or "stands", "grey" or "overcast", the
-words that were Claude's to pick rather than mine or the world's. Paris belongs to everyone, so it
-carries nothing.
+words that were Claude's to pick rather than mine or the world's. Paris as the capital of France
+belongs to everyone, so it carries nothing. Paris as a good place to eat was Claude's pick, and it
+can.
 
 This post was drafted by Claude Opus 5.5, which is on Anthropic's table. So the sentences I didn't
 rewrite probably carry the mark, and the ones I did carry less of it. That seems about right.
