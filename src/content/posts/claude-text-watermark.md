@@ -1,217 +1,209 @@
 ---
 id: "AO-040"
 title: "Claude's text is watermarked now, and the mark only lives where Claude had a choice"
-summary: "Since August, Claude's writing carries a version of Google DeepMind's SynthID-Text watermark, and only Anthropic's key can read it, through a private API for regulators, press, researchers and schools. It hides in choices like 'grey' versus 'overcast', so 'Paris' as the capital of France, a URL or a quote you asked for comes out the way it would have and carries none of it. Five demos run the published algorithm in your browser: the tournament, the exact answers, the detector, your edits, and what scrubbing it would take."
+summary: "Since August, Anthropic watermarks what Claude writes with a version of Google DeepMind's SynthID-Text. The mark is in which words get picked, so the text reads the same and an answer with only one right version comes out unchanged, and only Anthropic's key can check it. An animated lesson and five demos show how it works, what edits do to it, and what would remove it."
 date: 2026-10-06
 status: "shipped"
 tags: ["claude", "watermarking", "synthid", "interactive", "agents"]
 preview:
   verdict: "Long text keeps the mark"
-  takeaway: "Spread over every free word choice, the mark survives heavy edits to long text; a Claude rephrase re-marks it, and a pass through a keyless model removes it."
+  takeaway: "The mark is a slight lean in Claude's free word choices. Long text keeps it through heavy edits; a Claude rephrase re-marks it, and a pass through a model without the key removes it."
   points:
     - "If Claude rewrote a 90,000-word novel of mine, I'd need to change about half its words for even odds of slipping past."
-    - "Short text is fragile: one synonym in ten drops the demo's 163-word letter from 3.7σ to about 1.2σ, under the flag line."
+    - "Short text is fragile: swapping one word in ten for a synonym takes the demo's 163-word letter from 52.0% + to about 50.7%, under the flag line."
     - "A hit only says Claude was involved. A light proofread of a 3,000-word essay is flagged about 2% of the time."
 ---
 
-Claude's text has carried a watermark since August. Nothing is added to the words: the mark is in
-*which* words got picked, and only where picking was a real choice. Writing "grey" where "overcast"
-would do as well can carry it. Answering "Paris" to "what's the capital of France?" can't, because
-there was nothing else to say. The word isn't the point: ask for a city known for its food and
-"Paris" is one good answer among many, so picking it can carry the mark like any other free choice.
-Only Anthropic holds the key that reads it, and for now only regulators, police,
-journalists, fact-checkers, researchers, schools and EU civil-society groups can ask Anthropic to
-check, plus companies that need it for their own compliance.
+Anthropic started watermarking what its models write in August. The watermark lets Anthropic check
+whether a piece of text was written by one of its models. The remarkable part is where it lives: in
+the word choices themselves, without making the writing any worse. I made an animated lesson and
+five demos to show how it works.
 
-I wanted to see how both halves could be true at once, a mark in every long answer that never
-touches an exact one, so I had Claude build the mechanism small enough to watch. The five demos
-below run the algorithm from the 2024 Nature paper in your browser, on a toy model.
+## The short version
 
-## When, who, where
+- **The system is SynthID-Text.** Google DeepMind published it in
+  [Nature in 2024](https://www.nature.com/articles/s41586-024-08025-4), and Anthropic's
+  [announcement](https://www.anthropic.com/news/claude-text-watermark) says Claude uses "a version
+  of" it.
+- **It started on 2 August 2026.** Claude models released since then have it from launch, and older
+  ones are being added. Anthropic's [help page](https://support.claude.com/en/articles/16266773) lists
+  which models have it; as of this week that's every model on the list, from Haiku 4.5 to Fable 5.1.
+- **It's on every Anthropic platform, with no opt-out.** The API, the Claude apps, Claude Code and
+  the rest, plus Claude through AWS, Google Cloud and Microsoft Foundry, worldwide.
+- **The reason is the EU AI Act,** which since 2 August requires AI providers to mark AI-generated
+  content in a way a machine can detect.
+- **Only organisations Anthropic approves can check.** Regulators, police, journalists,
+  fact-checkers, researchers, schools and EU civil-society groups can apply through a form on
+  [Anthropic's page](https://www.anthropic.com/news/claude-text-watermark), and so can companies that
+  need it for their own compliance. There is no public checker.
+- **A hit means Claude was probably involved.** It can't say who wrote the text, or whether Claude
+  wrote it or only edited it, and no hit doesn't mean a human wrote it.
 
-- **It's SynthID-Text.** Anthropic's [announcement](https://www.anthropic.com/news/claude-text-watermark)
-  (14 August) calls Claude's watermark "a version of the SynthID-Text approach" from Google
-  DeepMind's [2024 Nature paper](https://www.nature.com/articles/s41586-024-08025-4). Anthropic
-  hasn't published its own settings.
-- **Since 2 August 2026.** Models launched in the EU from that date carry it at launch, and older
-  ones are being added over the coming months. Anthropic's
-  [help page](https://support.claude.com/en/articles/16266773) keeps a table: as of this week every
-  model on it, from Haiku 4.5 and Opus 4.5 up to Fable 5.1, is watermarked on Anthropic's own apps
-  and API.
-- **Everywhere, and no opt-out is mentioned.** It's applied in the model, so it's in the API, the
-  Claude apps, Claude Code, Cowork and Claude Tag, and through AWS, Google Cloud and Microsoft
-  Foundry for most of the newer models (Bedrock finishes rolling out by 12 October). It's worldwide
-  because, Anthropic says, it has no reliable way to limit it to one region yet.
-- **Why: the EU AI Act.** Article 50(2) has required machine-readable marking of AI-generated
-  content since 2 August. Anthropic signed the EU's Code of Practice on Transparency of
-  AI-Generated Content in July, one of about 190 signatories, and says other big model makers will
-  mark their text too, each with their own key.
-- **Who can check: almost nobody, yet.** Detection is a private-preview API for the organisations
-  the EU law names (regulators, law enforcement, media, fact-checkers, independent researchers,
-  educational organisations, EU civil-society groups) plus companies that must verify watermarks
-  for their own compliance. You register interest through a form on
-  [Anthropic's page](https://www.anthropic.com/news/claude-text-watermark); wider access is planned,
-  with no date. There is no public checker. AI-detector services like Pangram don't have the key,
-  and Google's [open-source SynthID code](https://github.com/google-deepmind/synthid-text) only finds
-  marks made with keys you hold.
-- **A hit means Claude was probably involved. Nothing more.** It can't tell "Claude wrote this" from
-  "Claude heavily edited this", it carries nothing about you, your organisation or your chat, and a
-  miss doesn't prove a human wrote the text. Files are handled differently: PNGs, JPGs and SVGs
-  Claude makes get a signed C2PA content credential in their metadata, which anyone can read.
+## How SynthID-Text works
 
-## How one word gets picked
+There are many ways to watermark text. SynthID-Text makes some tokens a little more likely than
+others, depending on the tokens before them. In text without the watermark, which tokens get picked
+doesn't lean any particular way. In watermarked text it leans, slightly. The trick is leaning
+without making the writing worse, and SynthID-Text does it with a tournament.
 
-Every time Claude writes a token, it has a list of candidates and a probability for each. Normally
-a random number picks one. SynthID replaces the random number with a knockout tournament:
+1. **A tournament picks each token.** It has a set number of rounds (the paper uses 30). Each round,
+   the contestants are paired off and one from each pair goes through. The contestant that wins the
+   last round is the token that gets generated.
+2. **The contestants come from the model's own odds.** Instead of sampling the next token straight
+   from its probability distribution, the model fills the tournament with contestants, each holding
+   a token drawn from that distribution. The more likely a token, the more contestants hold it.
+3. **Every token gets a + or a − for each round: its round assignments.** They're set before the
+   tournament starts, at random, using the secret key and the four previous tokens as the seed. Every
+   contestant holding the same token has the same assignments.
+4. **In each match, + beats −.** If both contestants have the same sign, the winner is picked at
+   random.
+5. **Better assignments win more often.** A token with more +'s has a better chance of winning the
+   tournament and being generated. It's still always a token the model wanted; the watermark only
+   decides which of them wins.
+6. **The checker recreates the assignments.** They depend only on the previous tokens and the key, so
+   whoever holds the key can recreate them for any text that still has the same previous tokens. In
+   text without the watermark, about half of all the assignments of the tokens that were picked are +.
+   The more a text leans toward +, the more likely it was watermarked, and the longer the text, the
+   less that lean can be luck.
 
-1. **Every candidate gets 30 coins.** Each coin is 0 or 1, computed by hashing the secret key, the
-   previous four tokens, and the candidate itself. Same key, same four tokens, same candidate: same
-   coins, every time.
-2. **Candidates are drawn from the model's own odds and paired off.** In each layer, a candidate
-   whose coin is 1 beats one whose coin is 0. A tie is settled by a fair flip.
-3. **The winner is always a word the model already wanted.** It's just more likely to be one whose
-   coins are 1.
+Here is the same thing, animated. It walks through everything the demos below let you try.
 
-Later, anyone with the key can recompute every word's coins. Ordinary text averages half ones.
-Watermarked text averages a little more, and over a few hundred words "a little more" stops looking
-like luck.
+<figure class="sid-video"><video controls playsinline preload="none" poster="/media/claude-text-watermark/lesson.webp" src="/media/claude-text-watermark/lesson.mp4"><track kind="captions" srclang="en" label="English" src="/media/claude-text-watermark/lesson.vtt"></video><figcaption>How SynthID-Text works · 4:46 · narrated by RClayton (ElevenLabs) · drawn in code</figcaption></figure>
+
+## Try it: one tournament
+
+The toy model below is finishing a sentence. First you see each possible next word's odds and its
+round assignments; then a tournament of eight contestants over three rounds; then what happens if
+you run that tournament many times.
 
 <ao-demo name="synthid" part="tournament">
 The interactive demo needs JavaScript.
 </ao-demo>
 
-The real thing doesn't play 2<sup>30</sup> matches. It applies all 30 layers straight to the
-probabilities: in each layer, probability moves from the candidates whose coin is 0 to the ones
-whose coin is 1, and the result is the exact odds of who would have won. That's what the gold bars
-are.
+Switch the last chart to 30 rounds, like the real system, and one word takes nearly all the odds:
+for a given key and four previous tokens, the choice is all but settled. Anthropic describes it the
+same way: the key and the few words before decide which word gets picked. Across everything the
+model writes, the previous tokens keep changing, so each word still wins as often as the model
+wanted. The paper does report some loss of variety between answers to the same prompt; how much
+variety Claude's version keeps, Anthropic hasn't said.
 
-They also show something I hadn't understood from the paper: thirty layers nearly settle the
-choice. For one key and one set of four previous tokens, a single word takes almost all the odds.
-Anthropic's own description puts it the same way: the key and a few words before settle which word
-gets picked. What randomness is left comes from the small odds the other words keep and from steps that
-aren't watermarked at all, like a repeated context. The paper reports some loss of variety between
-answers to the same prompt; how much variety Claude's version keeps, Anthropic hasn't said.
+## When there's only one right answer
 
-## Why "Paris" comes out as Paris
+Ask "what's the capital of France?" and the model is 99.95% sure the answer is "Paris". Nearly
+every contestant holds "Paris", so Paris plays Paris and wins, whatever the round assignments say.
+The watermark has nothing to act on, and the answer comes out exactly as it would have. The same
+goes for a URL, a file path or a quote you asked for word for word: each of their tokens is nearly
+certain. Anthropic's own example is Newton's *Principia*: the next word has to be *Mathematica*, so
+the watermark has "nothing to act on".
 
-Take "What's the capital of France?" If the model is 99.95% sure the next word is "Paris", nearly every candidate the tournament draws
-is "Paris", and Paris beats Paris. There's nothing to tilt. That's the answer for most exact text:
-a URL, a file path, a quote you asked for word for word, the digits of a sum. Each of those tokens
-is near-certain, so it comes out the way it would have anyway, and it carries none of the mark.
-Anthropic's own example is Newton's *Principia*: the next word has to be *Mathematica*, so the
-watermark has "nothing to act on". Code gets less of it for the same reason. None of this is about the word itself: in "a city famous for its
-food is", "Paris" is one of a dozen good candidates, and there the tournament does its usual work.
+It isn't about the word. Ask for a city famous for its food and "Paris" is one good answer among
+several, so the round assignments decide which city wins, and the watermark works as usual.
 
 <ao-demo name="synthid" part="certain">
 The interactive demo needs JavaScript.
 </ao-demo>
 
-Running it over 100,000 contexts showed me a wrinkle I didn't expect.
+Running it over 100,000 different sets of previous tokens turned up one wrinkle I didn't expect.
 
-- **On average, nothing changes.** Each layer moves probability around without changing its
-  expected share, so averaged over contexts every token's odds are exactly the model's own. The
-  paper proves this.
-- **But errors aren't spread evenly any more.** For a 99.95%-sure answer, the wrong answers got
-  *rarer* than the model's own odds in 99.5% of contexts. In about 1 in 450 they rose above 1%, and
-  in the unluckiest one a wrong word won outright. The watermark doesn't add mistakes; it gathers
-  the few the model would have made into a few contexts.
-- **The surer the model, the rarer that gets.** At 99.995% (the URL example) it's about 1 context
-  in 2,400. Slide "Set it yourself" all the way up and it doesn't happen once in 100,000.
+- **On average, nothing changes.** Averaged over every set of previous tokens, each word comes out
+  exactly as often as the model wanted. The paper proves this.
+- **But the rare mistakes get gathered up.** For a 99.95%-sure answer, the wrong answers got *rarer*
+  than the model's own odds in 99.5% of cases. In about 1 in 450 they rose above 1%, and in the
+  unluckiest one a wrong word won outright.
+- **The surer the model, the rarer that gets.** Slide "Set it yourself" all the way up and it
+  doesn't happen once in 100,000.
 
 That's arithmetic on the published algorithm, not something I measured on Claude. Anthropic says
-the nudge isn't applied where exact output is required, without saying how. The checkbox shows one
-way it can be true: trim the unlikely tail before the tournament (the paper applies the watermark
-after any top-k or top-p trimming), and a 99.95% answer becomes the only candidate. What Claude's
-sampler does there isn't public. The same goes for temperature 0: in the published version, greedy
-decoding leaves nothing to tilt, and Anthropic doesn't say what its version does.
+the watermark isn't applied where an exact output is required, without saying how. The checkbox
+shows one way that can be true: drop very unlikely words before the tournament (the paper applies
+the watermark after this kind of trimming), and "Paris" is the only contestant left. What Claude's
+sampler does there isn't public, and neither is what happens at temperature 0.
 
-## Checking a text
+## How the checker works
 
-The detector never needs the model. It needs the words, the key and the hash: it recomputes every
-word's coins and averages them.
+The checker never needs the model. It needs the text, the key and the way the seed is made. It
+recreates every token's round assignments and counts the +.
 
 <ao-demo name="synthid" part="detect">
 The interactive demo needs JavaScript.
 </ao-demo>
 
-- **Shorten it.** The whole letter, 163 words, lands 3.7 standard deviations above chance, past the
-  flag line: unwatermarked text scores that high about 1 time in 9,000. The first 40 words alone
-  don't clear it. Short text doesn't hold enough choices, which is why Anthropic says detection
+- **Shorten it.** The whole letter, 163 words, comes out 52.0% +, past the flag line at 51.5%: text
+  without the watermark scores that high about 1 time in 770. The first 40 words alone come out
+  50.8%, which isn't enough. Short text holds too few choices, which is why Anthropic says detection
   doesn't work well on small samples.
-- **Switch to the unwatermarked letter.** Same menu, same kind of words, no lean.
-- **Use the wrong key.** Claude's letter, checked with someone else's key, scores like coin flips.
-  That's the whole access story in one button: the mark is only visible to whoever holds the key,
-  and today that's Anthropic.
+- **Switch to the letter written without the watermark.** Same kind of words, about 50% +.
+- **Check Claude's letter with a different key.** About 50% again. The assignments only mean
+  something with the key that made them, which is why only the key holder can check.
 
-## What your edits do, and what happens to a book
+## What edits do
 
-Each coin depends on the four tokens before it, so changing one word breaks five windows: its own
-and the next four. Every other word keeps its evidence. Change a word in the letter and watch the
-wavy underline run four tokens past it.
+Each token's round assignments are seeded by the four tokens before it. So changing one token
+changes five tokens' assignments: its own, and the four after it. The checker gives those five new,
+random assignments, and their evidence is gone. Every other token keeps its evidence. Change a word
+in the letter below and watch the wavy underline run four tokens past it.
 
 <ao-demo name="synthid" part="edit">
 The interactive demo needs JavaScript.
 </ao-demo>
 
-So "a small edit" is the wrong unit. What matters is how many windows survive, which of them, and
-how long the text is. Swap one word in ten for a synonym and only about a third of the windows
-break, but the letter's score falls from 3.7σ to around 1.2σ, under the line nearly every time. The
-words you can swap for a synonym are exactly the ones Claude was free to choose, so those are the
-windows that held the evidence. The letter is also short. A book is not.
+So "a small edit" is the wrong unit. What matters is which tokens you change and how long the text
+is. Swap one word in ten for a synonym and the letter falls from 52.0% + to about 50.7%, under the
+flag line nearly every time. The words you can swap for a synonym are exactly the ones the model
+was free to choose, so those are the ones holding the evidence. And the letter is short. A book is
+not.
 
-The book is the case I actually care about. Say I had Claude rewrite a book I wrote, then did the
-final pass myself:
+Say I had Claude rewrite a book I wrote, then did the final pass myself:
 
 <ao-demo name="synthid" part="book">
 The interactive demo needs JavaScript.
 </ao-demo>
 
-- **If Claude rewrote it, the mark is in Claude's choices,** and my final pass only removes it
+- **If Claude rewrote it, the mark is in Claude's word choices,** and my final pass only removes it
   around the words I change. In a 90,000-word novel I'd have to change about half of all the words
-  before it had even odds of getting through. Two things move that number in opposite directions:
-  real edits cluster in sentences and break fewer neighbours than scattered ones, while edits aimed
-  at word choices (as in demo 4) remove the evidence faster than edits that land anywhere.
+  before it was a coin flip whether the checker flagged it. Edits bunched into sentences break fewer
+  neighbours than scattered ones; edits aimed at word choices, as in demo 4, remove more.
 - **If Claude only proofread it, there's almost nothing to find.** Most of the words are mine. Set
   "a light proofread": a 3,000-word essay is flagged about 2% of the time. Anthropic says the same.
 - **Either way, a hit would only say Claude was involved,** which would be true. It can't say who
   wrote the book.
 
-The published numbers agree in shape. The paper's own test deleted 20% or 50% of words and found
+The published numbers agree in shape. The paper's own test deleted 20% or 50% of the words and found
 the mark still detectable with high accuracy on long enough text. A 2025 study
-([SynGuard](https://arxiv.org/abs/2508.20228)) swapped synonyms into 200-token texts, aiming for
-70% of the words, and still caught 82% of them at a 3.5% false-positive rate. That's far sturdier
-than my toy letter, though that attack stops early when it runs out of words it can swap, so the
-share it actually changed can be lower than its target.
+([SynGuard](https://arxiv.org/abs/2508.20228)) swapped synonyms into 200-token texts, aiming for 70%
+of the words, and still caught 82% of them at a 3.5% false-positive rate. That's far sturdier than my
+toy letter, though that attack stops early when it runs out of words it can swap, so the share it
+actually changed can be lower than its target.
 
-## What it would take to scrub it
+## What it would take to remove it
 
-This part is me speculating, with demo 4 as a sandbox. None of it has been tested against Claude,
+This part is speculation, with demo 4 as a sandbox. None of it has been tested against Claude,
 which would need the key.
 
-- **An invisible character every four tokens: beats a lazy detector, not a real one.** Each
-  zero-width space is a token, so every four-token window contains one and every coin is fresh.
-  Untick "strip invisible characters" in demo 4 and the score collapses. But a detector can delete
-  invisible characters before checking, which is one line of code, and the mark comes straight
-  back. Visible junk survives that, and wrecks the text.
+- **An invisible character every four tokens beats a careless checker, not a real one.** Each
+  zero-width space is a token, so every set of four previous tokens contains one and every round
+  assignment is redrawn. Untick "removes invisible characters" in demo 4 and the score collapses. But
+  a checker can delete invisible characters before checking, which is one line of code, and the
+  mark comes straight back. Visible junk survives that, and ruins the text.
 - **Making Claude write the junk does work.** Ask for an emoji after every word, then delete them
-  ("The emoji trick" in demo 4). Claude's coins were tossed with an emoji in every window, so once
-  they're gone every window is new. It costs a strange prompt and probably some quality, and a
-  provider could answer by hashing only real words, after which someone tries the next thing.
-- **Asking Claude to rephrase every sentence: useless.** A rewording by Claude is new Claude text
-  under the same key, so it gets a fresh watermark. Anthropic says the same about translation: a
-  Claude translation is marked, because every word in it is Claude's.
-- **Synonyms for the unimportant words: works on short text, slow on long text.** The
-  "unimportant" words, the ones you can swap without changing the meaning, are exactly the free
-  choices where the mark lives, so each swap removes real evidence and breaks four windows after
-  it. One swap in four wipes the toy letter. On something book-length you'd be rewriting a large
-  share of it, and the SynGuard numbers above suggest real text holds up better than my toy.
-- **One pass through a model that doesn't have the key: this is the one that works.** Every word
-  gets re-chosen with ordinary randomness. A [July 2026 study](https://arxiv.org/abs/2607.16010)
-  found paraphrasing removed the mark from 98.3% of the SynthID texts that had been detected (on an
-  open-source reimplementation that already missed 80% before any attack, so read that loosely).
-  The paper calls a thorough paraphrase by a strong model a strong attack, and Anthropic agrees a
-  complete rewrite removes the mark, adding that by then it's arguably not AI-generated text any
-  more.
+  ("The emoji trick" in demo 4). Every word was picked with an emoji among its four previous tokens,
+  so once they're gone the checker sees different previous tokens everywhere. It costs a strange
+  prompt and probably some quality, and a provider could answer by ignoring emoji when it makes the
+  seed, after which someone tries the next thing.
+- **Asking Claude to rephrase every sentence doesn't work.** A rewording by Claude is new Claude text
+  under the same key, so it gets a new watermark. Anthropic says the same about translation: a Claude
+  translation is marked, because every word in it is Claude's.
+- **Swapping synonyms for the unimportant words works on short text and is slow on long text.** The
+  words you can swap without changing the meaning are exactly the free choices where the mark lives,
+  so each swap removes real evidence. One swap in four wipes the toy letter. On something book-length
+  you'd be rewriting a large share of it, and the SynGuard numbers above suggest real text holds up
+  better than my toy.
+- **One pass through a model that doesn't have the key is the one that works.** Every word gets
+  picked again with ordinary randomness. A [July 2026 study](https://arxiv.org/abs/2607.16010) found
+  paraphrasing removed the mark from 98.3% of the SynthID texts that had been detected (on an
+  open-source reimplementation that already missed 80% before any attack, so read that loosely). The
+  paper calls a thorough paraphrase by a strong model a strong attack, and Anthropic agrees a complete
+  rewrite removes the mark, adding that by then it's arguably not AI-generated text any more.
 
 ## What I take from it
 
@@ -220,20 +212,20 @@ words that were Claude's to pick rather than mine or the world's. Paris as the c
 belongs to everyone, so it carries nothing. Paris as a good place to eat was Claude's pick, and it
 can.
 
-This post was drafted by Claude Opus 5.5, which is on Anthropic's table. So the sentences I didn't
+This post was drafted by Claude Opus 5.5, which is on Anthropic's list. So the sentences I didn't
 rewrite probably carry the mark, and the ones I did carry less of it. That seems about right.
 
 ## How this was made
 
 Four Opus 5.5 agents at low reasoning effort did the reading: the paper and its code, Anthropic's
-pages, the detector landscape, and the attack papers. Two more re-read Anthropic's pages and the
-robustness numbers as raw text, which corrected several quotes the first pass had paraphrased and
-removed two numbers nobody could find in the source. The six of them wrote about 31,000 tokens of
-output between them, and none took more than two minutes. Claude Opus 5.5 then built the demos from
-the paper and Google DeepMind's code and drafted this post, which took the main session about
-200,000 output tokens; the whole run took about 35 minutes.
+pages, who can check, and the attack papers. Two more re-read Anthropic's pages and the robustness
+numbers as raw text, which corrected several quotes the first pass had paraphrased and removed two
+numbers nobody could find in the source. Claude Opus 5.5 built the demos from the paper and Google
+DeepMind's code and drafted the post. The lesson was made with the engine behind
+[The Hidden Curriculum](/courses/the-hidden-curriculum/): Claude wrote the script, ElevenLabs read
+it, and seven Claude agents animated a scene each.
 
-The demos' model is a hand-written menu of word choices, a token is a whole word, and the hash is
-the demo's own, so it can't check real Claude text; nothing public can. Because every toy letter
-shares its fixed words, any one key tilts unwatermarked letters slightly; the demo uses the first
-small key whose unwatermarked letters average exactly chance.
+The demos' model is a hand-written menu of word choices, a token is a whole word, and the seed is
+made the demo's own way, so it can't check real Claude text; nothing public can. Because every toy
+letter shares its fixed words, any one key tilts unwatermarked letters slightly; the demo uses the
+first small key whose unwatermarked letters average exactly 50% +.

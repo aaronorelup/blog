@@ -1,17 +1,20 @@
 // SynthID-Text, small enough to watch. Mounted by <ao-demo name="synthid" part="…"> in
 // AO-040 (claude-text-watermark.md); one module, five parts:
 //
-//   tournament  how one word is picked: coins hashed from a key and the last 4 tokens
-//   certain     why a near-certain token ("Paris", a URL) comes out the same
-//   detect      scoring a text for the watermark, and why only the key holder can
-//   edit        what edits, rewording and tricks do to the score
+//   tournament  how one token is picked: contestants drawn from the odds, a + or − per round
+//               (the round assignments) from the key and the four previous tokens, + beats −
+//   certain     why a token with one right answer ("Paris" for France's capital) comes out the same
+//   detect      the checker: recreate each token's assignments and count the +
+//   edit        what edits, rewording and tricks do to that count
 //   book        expected detection for a long text after you edit it
+//
+// The post calls the paper's g-values "round assignments" (1 = +, 0 = −) and its layers "rounds".
 //
 // The watermark is the published algorithm (Dathathri et al., Nature 634, 2024, and
 // google-deepmind/synthid-text): Bernoulli(0.5) g-values from a hash of the key, the previous
 // H = 4 tokens and the candidate, one per tournament layer; m = 30 layers applied to the
-// probabilities with the paper's vectorised update; repeated-context masking; the weighted
-// mean score. The hash is ours, so nothing here can check real Claude or Gemini text.
+// probabilities with the paper's vectorised update; repeated-context masking; the paper's
+// mean score (the share of + across every round of every checked token). The hash is ours, so nothing here can check real Claude or Gemini text.
 // What is NOT real is the model: a hand-written menu of word choices stands in for Claude,
 // and a token is a whole word or a single punctuation mark.
 import '../../styles/demos/synthid.css';
@@ -19,20 +22,15 @@ import '../../styles/demos/synthid.css';
 const H = 4; // context tokens hashed with the key (the paper's H; ngram_len = 5 in the code)
 const M = 30; // tournament layers (the paper's m)
 
-// detector_mean.py's weighted mean: linspace(10, 1, m), rescaled to sum to m, so early layers,
-// which carry most of the signal, count most.
-const W = (() => {
-  const raw = Array.from({ length: M }, (_, i) => 10 - (9 * i) / (M - 1));
-  const sum = raw.reduce((a, b) => a + b, 0);
-  return raw.map((x) => (x * M) / sum);
-})();
-// One token's score is 0.5 on average without a watermark; this is its spread.
-const TOKEN_SD = (0.5 * Math.sqrt(W.reduce((a, w) => a + w * w, 0))) / M;
+// One token's share of + is 0.5 on average without a watermark; this is its spread. (The paper
+// also has a weighted mean that counts early rounds more; the plain share is easier to explain
+// and still flags the demo letter.)
+const TOKEN_SD = 0.5 / Math.sqrt(M);
 const FLAG_Z = 2.326; // one-sided, 1% false positives: the paper's operating point
 
 // Keys are arbitrary integers. The toy's letters all share their fixed words, so each key gives
 // unwatermarked letters a small constant offset; "claude" is the first small integer whose
-// unwatermarked letters average a score of 0.500 (key 3: mean z -0.05 over 120 letters).
+// unwatermarked letters average a share of + of 50% (key 3: mean z -0.08 over 200 letters).
 const KEYS = { claude: 3, other: 0x0ddba110 };
 
 // ------------------------------------------------------------------------------------------
@@ -69,7 +67,7 @@ function gvals(key, ctx, tok) {
 }
 const tokScore = (g) => {
   let s = 0;
-  for (let l = 0; l < M; l++) s += W[l] * g[l];
+  for (let l = 0; l < M; l++) s += g[l];
   return s / M;
 };
 const ones = (g, n = M) => {
@@ -82,9 +80,9 @@ const ones = (g, n = M) => {
 // probability toward the candidates whose coin is 1, by exactly as much as it takes from the
 // ones whose coin is 0, so the total stays 1. This is the exact distribution of the winner of
 // a 2^m-candidate knockout, without drawing 2^m candidates.
-function tilt(p, rows) {
+function tilt(p, rows, depth = M) {
   const q = Float64Array.from(p);
-  for (let l = 0; l < M; l++) {
+  for (let l = 0; l < depth; l++) {
     let mass = 0;
     for (let i = 0; i < q.length; i++) mass += q[i] * rows[i][l];
     for (let i = 0; i < q.length; i++) q[i] *= 1 + rows[i][l] - mass;
@@ -115,7 +113,7 @@ function pick(p, r) {
 }
 // Upper tail of the standard normal.
 function upper(z) {
-  if (z <= 0) return 1 - upper(-z);
+  if (z < 0) return 1 - upper(-z);
   if (z > 3) {
     const z2 = z * z;
     return (Math.exp(-z2 / 2) / (z * Math.sqrt(2 * Math.PI))) * (1 - 1 / z2 + 3 / (z2 * z2) - 15 / (z2 * z2 * z2));
@@ -300,6 +298,7 @@ const SEED = 2026;
 const LETTER_CLAUDE = generate({ seed: SEED }).text;
 const LETTER_PLAIN = generate({ seed: SEED, watermark: false }).text;
 
+
 // ------------------------------------------------------------------------------------------
 // DOM helpers.
 function h(tag, attrs, ...kids) {
@@ -329,10 +328,13 @@ function segmented(options, value, onchange, label) {
   row.append(...buttons);
   return row;
 }
-const bits = (g, n = M, cls = '') => h('span', { class: 'sid-bits ' + cls, 'aria-hidden': 'true' }, Array.from({ length: n }, (_, l) => h('i', { class: g[l] ? 'on' : '' })));
+// Round assignments as chips: a gold "+" or a hollow "−".
+const chip = (on, cls = '') => h('i', { class: 'sid-sign ' + (on ? 'plus ' : 'minus ') + cls, 'aria-label': on ? 'plus' : 'minus' }, on ? '+' : '−');
+const chips = (g, n = M, cls = '') => h('span', { class: 'sid-signs ' + cls }, Array.from({ length: n }, (_, l) => chip(g[l])));
+const lede = (...kids) => h('p', { class: 'sid-lede' }, ...kids);
 const pct = (x) => {
   if (x >= 0.9999995) return '100%';
-  if (x < 0.000005) return x <= 0 ? '0%' : '<0.001%';
+  if (x < 0.000005) return x <= 0 ? '0%' : 'under 0.001%';
   // Near-certain odds keep digits until the first one that isn't a 9: 99.950%, 99.99987%.
   if (x > 0.99) return (x * 100).toFixed(clamp(Math.ceil(-Math.log10(1 - x)) - 1, 2, 6)) + '%';
   if (x >= 0.1) return (x * 100).toFixed(0) + '%';
@@ -340,54 +342,59 @@ const pct = (x) => {
   if (x >= 0.0001) return (x * 100).toFixed(2) + '%';
   return (x * 100).toFixed(3) + '%';
 };
+const share = (x) => (x * 100).toFixed(1) + '%';
 const oneIn = (p) => {
-  if (p <= 0 || 1 / p > 1e12) return 'less than once in a trillion';
+  if (p <= 0 || 1 / p > 1e12) return 'less than once in a trillion tries';
   const n = 1 / p;
   if (n < 1.5) return 'most of the time';
   return 'about 1 time in ' + Math.round(n).toLocaleString('en-US');
 };
+const fmt = (x) => x.toLocaleString('en-US');
 
-// The score readout shared by the detect and edit parts.
+// The checker's readout, shared by the detect and edit parts.
 function scorePanel() {
   const el = h('div', { class: 'sid-score', 'aria-live': 'polite' });
   const verdict = h('div', { class: 'sid-verdict' });
-  const line = h('p', { class: 'sid-score-line' });
+  const big = h('p', { class: 'sid-big' });
   const gauge = h('div', { class: 'sid-gauge', 'aria-hidden': 'true' });
   const band = h('span', { class: 'sid-gauge-band' });
   const flag = h('span', { class: 'sid-gauge-flag' });
   const dot = h('span', { class: 'sid-gauge-dot' });
-  const lo = -3;
-  const hi = 9;
-  const at = (z) => ((clamp(z, lo, hi) - lo) / (hi - lo)) * 100 + '%';
-  band.style.left = at(-2);
-  band.style.width = `calc(${at(2)} - ${at(-2)})`;
-  flag.style.left = at(FLAG_Z);
   gauge.append(band, flag, dot);
-  const axis = h('div', { class: 'sid-gauge-axis', 'aria-hidden': 'true' },
-    h('span', { style: `left:${at(0)}` }, 'chance'),
-    h('span', { style: `left:${at(FLAG_Z)}` }, 'flag line'),
-    h('span', { style: `left:${at(hi)}`, class: 'end' }, '9σ'));
-  el.append(verdict, gauge, axis, line);
+  const axis = h('div', { class: 'sid-gauge-axis', 'aria-hidden': 'true' });
+  const line = h('p', { class: 'sid-score-line' });
+  el.append(verdict, big, gauge, axis, line);
   return {
     el,
     update(r) {
-      dot.style.left = at(r.z);
-      el.dataset.state = r.z >= FLAG_Z ? 'yes' : r.z >= 1.28 ? 'maybe' : 'no';
-      verdict.textContent = r.n < 1 ? 'Nothing to score' : r.z >= FLAG_Z ? 'Watermark found' : r.z >= 1.28 ? 'Uncertain' : 'No watermark found';
       const sd = TOKEN_SD / Math.sqrt(Math.max(1, r.n));
+      // The axis is in percent of +, scaled to this length: chance sits in the middle third.
+      const lo = 0.5 - 4 * sd, hi = 0.5 + 8 * sd;
+      const at = (x) => ((clamp(x, lo, hi) - lo) / (hi - lo)) * 100 + '%';
+      const flagAt = 0.5 + FLAG_Z * sd;
+      band.style.left = at(0.5 - 1.96 * sd);
+      band.style.width = `calc(${at(0.5 + 1.96 * sd)} - ${at(0.5 - 1.96 * sd)})`;
+      flag.style.left = at(flagAt);
+      dot.style.left = at(r.score);
+      axis.replaceChildren(
+        h('span', { style: `left:${at(0.5)}` }, '50%'),
+        h('span', { style: `left:${at(flagAt)}`, class: 'flag' }, 'flag line ' + share(flagAt)),
+        h('span', { style: `left:${at(hi)}`, class: 'end' }, share(hi)),
+      );
+      el.dataset.state = r.n < 1 ? 'no' : r.z >= FLAG_Z ? 'yes' : r.z >= 1.28 ? 'maybe' : 'no';
+      verdict.textContent = r.n < 1 ? 'Nothing to check' : r.z >= FLAG_Z ? 'Watermark found' : r.z >= 1.28 ? 'Not sure' : 'No watermark found';
+      big.replaceChildren(h('b', null, share(r.score)), ` of the round assignments are + (${r.n} tokens checked × 30 rounds)`);
       line.replaceChildren(
-        h('b', null, r.score.toFixed(3)),
-        ` over ${r.n} scored tokens. Text without this watermark averages 0.500, give or take ${sd.toFixed(3)}; this is `,
-        h('b', null, (r.z >= 0 ? '+' : '') + r.z.toFixed(1) + 'σ'),
-        `. Unwatermarked text scores this high ${oneIn(r.p)}.`,
+        `Text without the watermark lands near 50%: at this length, between ${share(0.5 - 1.96 * sd)} and ${share(0.5 + 1.96 * sd)} 95% of the time (the shaded band). `,
+        r.n < 1 ? '' : `It would score ${share(r.score)} or more ${oneIn(r.p)}. The checker flags a text past the dashed line, where an unwatermarked text lands only 1 time in 100.`,
       );
     },
   };
 }
 
-// The text with each scored token shaded by how much evidence it carries.
+// The text, each checked token shaded by how many of its assignments are +.
 function tokenView(onPick) {
-  const el = h('div', { class: 'sid-text', tabindex: '0', 'aria-label': 'The text, shaded by watermark evidence per word' });
+  const el = h('div', { class: 'sid-text', tabindex: '0', 'aria-label': 'The text, shaded by how many of each token’s round assignments are plus' });
   el.addEventListener('click', (e) => {
     const s = e.target.closest('[data-i]');
     if (s) onPick?.(Number(s.dataset.i));
@@ -413,29 +420,41 @@ function tokenView(onPick) {
     },
   };
 }
+function legend(withBroken) {
+  return h('div', { class: 'sid-key-row' },
+    h('span', null, h('i', { class: 'sw gold' }), 'mostly + (evidence)'),
+    h('span', null, h('i', { class: 'sw plain' }), 'about half +'),
+    h('span', null, h('i', { class: 'sw grey' }), 'not checked'),
+    withBroken ? h('span', null, h('i', { class: 'sw wavy' }), 'previous tokens changed: evidence gone') : null);
+}
 function tokenDetail(r, i, key) {
   const x = r.toks[i];
   if (!x) return '';
   if (x.state !== 'scored') {
-    const why = { edge: 'it has fewer than 4 tokens before it', repeat: 'its 4-token context already appeared earlier, so it was masked', beyond: 'it is past the length being checked' }[x.state];
-    return h('span', null, h('b', null, `“${x.t || '·'}”`), ` isn’t scored: ${why}.`);
+    const why = {
+      edge: 'it doesn’t have four tokens before it yet',
+      repeat: 'the same four previous tokens already appeared earlier, and the checker skips repeats (so does the watermark)',
+      beyond: 'it is past the length being checked',
+    }[x.state];
+    return h('span', null, h('b', null, `“${x.t || '·'}”`), ` isn’t checked: ${why}.`);
   }
   return h('span', null,
-    h('b', null, `“${x.t}”`), ' after ', h('i', null, x.ctx.map((c) => (IS_INVISIBLE.test(c) ? '·' : c)).join(' ')),
-    `: ${ones(x.g)} of its 30 coins are 1 under ${key === KEYS.claude ? 'Claude’s' : 'this'} key (weighted score ${x.s.toFixed(2)}). `,
-    bits(x.g, M, 'inline'));
+    h('b', null, `“${x.t}”`), ', after the four previous tokens ', h('i', null, x.ctx.map((c) => (IS_INVISIBLE.test(c) ? '·' : c)).join(' ')),
+    `: ${ones(x.g)} of its 30 round assignments are + under ${key === KEYS.claude ? 'Claude’s' : 'this'} key. `,
+    chips(x.g, M, 'small'));
 }
 
 // ------------------------------------------------------------------------------------------
 // Part: tournament.
 const SENTENCE = ['The', 'tea', 'house', 'sits', 'at', 'the', 'edge', 'of', 'the'];
-const SWAPS = { 4: ['at', 'by'], 6: ['edge', 'end', 'foot'] };
+const SWAPS = { 6: ['edge', 'end', 'foot'] };
 const NEXT = [['garden', 0.34], ['river', 0.2], ['forest', 0.16], ['town', 0.12], ['sea', 0.1], ['world', 0.08]];
+const ROUNDS = 3; // in the bracket; the real system plays M
 
 function partTournament(root) {
   const words = SENTENCE.slice();
   let key = KEYS.claude;
-  let draw = [];
+  let depth = ROUNDS;
   let rounds = [];
   let shown = 0;
   let timer = 0;
@@ -443,11 +462,13 @@ function partTournament(root) {
   const g = (w) => gvals(key, ctx(), w);
 
   const sentence = h('p', { class: 'sid-sentence' });
+  const table = h('div', { class: 'sid-grid' });
   const bracket = h('div', { class: 'sid-bracket', 'aria-live': 'polite' });
   const say = h('p', { class: 'sid-note' });
-  const exact = h('div', { class: 'sid-bars' });
-  const playBtn = btn('Play the next layer', () => step());
-  const allBtn = btn('Play all three', () => playAll());
+  const result = h('div', { class: 'sid-pairs' });
+  const resultSay = h('p', { class: 'sid-note' });
+  const playBtn = btn('Play the next round', () => step());
+  const allBtn = btn('Play all rounds', () => playAll());
 
   function renderSentence() {
     const c0 = words.length - H;
@@ -456,19 +477,25 @@ function partTournament(root) {
         const inCtx = i >= c0;
         const swaps = SWAPS[i];
         const node = swaps
-          ? h('button', { type: 'button', class: 'sid-word swap' + (inCtx ? ' ctx' : ''), title: 'Change this word', onclick: () => { words[i] = swaps[(swaps.indexOf(words[i]) + 1) % swaps.length]; reset(); } }, w)
+          ? h('button', { type: 'button', class: 'sid-word swap ctx', title: 'Change this word', onclick: () => { words[i] = swaps[(swaps.indexOf(words[i]) + 1) % swaps.length]; reset(); } }, w)
           : h('span', { class: 'sid-word' + (inCtx ? ' ctx' : '') }, w);
         return [node, ' '];
       }).flat(),
       h('span', { class: 'sid-blank' }, '____'),
     );
   }
+  function renderTable() {
+    table.replaceChildren(
+      h('span', { class: 'hd' }, 'Next word'), h('span', { class: 'hd' }, 'Model’s odds'), h('span', { class: 'hd' }, 'Round assignments: 1 · 2 · 3'),
+      ...NEXT.map(([w, p]) => [h('span', { class: 'w' }, w), h('span', { class: 'n' }, pct(p)), chips(g(w), ROUNDS)]).flat(),
+    );
+  }
   function newDraw() {
     clearTimeout(timer);
     const p = NEXT.map((x) => x[1]);
-    draw = Array.from({ length: 8 }, () => NEXT[pick(p, Math.random)][0]);
+    const draw = Array.from({ length: 8 }, () => NEXT[pick(p, Math.random)][0]);
     rounds = [draw.map((w) => ({ w }))];
-    for (let l = 0; l < 3; l++) {
+    for (let l = 0; l < ROUNDS; l++) {
       const prev = rounds[l];
       const next = [];
       for (let i = 0; i < prev.length; i += 2) {
@@ -478,7 +505,7 @@ function partTournament(root) {
         const gb = g(b.w)[l];
         const tie = ga === gb;
         const win = tie ? (Math.random() < 0.5 ? a : b) : ga > gb ? a : b;
-        next.push({ w: win.w, tie, from: [a.w, b.w] });
+        next.push({ w: win.w, why: tie ? (a.w === b.w ? `${a.w} vs ${a.w}` : 'same sign: coin flip') : '+ beat −' });
       }
       rounds.push(next);
     }
@@ -486,7 +513,7 @@ function partTournament(root) {
     renderBracket();
   }
   function renderBracket() {
-    const heads = ['8 draws', 'Layer 1', 'Layer 2', 'Layer 3'];
+    const heads = ['8 contestants', 'After round 1', 'After round 2', 'Winner'];
     const cells = [];
     heads.forEach((t, c) => cells.push(h('div', { class: 'sid-bhead', style: `grid-column:${c + 1};grid-row:1` }, t)));
     rounds.forEach((round, c) => {
@@ -494,72 +521,91 @@ function partTournament(root) {
       const span = 8 / round.length;
       round.forEach((x, i) => {
         const gv = g(x.w);
-        const chip = h('div', {
-          class: 'sid-chip' + (c === 3 ? ' won' : '') + (x.tie ? ' tie' : ''),
+        cells.push(h('div', {
+          class: 'sid-chip' + (c === ROUNDS ? ' won' : ''),
           style: `grid-column:${c + 1};grid-row:${2 + i * span} / span ${span}`,
-        }, h('span', { class: 'w' }, x.w), h('span', { class: 'sid-bits small' }, [0, 1, 2].map((l) => h('i', { class: (gv[l] ? 'on' : '') + (l === shown && c === shown && shown < 3 ? ' now' : '') }))));
-        cells.push(chip);
+        },
+        h('span', { class: 'w' }, x.w),
+        h('span', { class: 'sid-signs small' }, [0, 1, 2].map((l) => chip(gv[l], l === shown && c === shown && shown < ROUNDS ? 'now' : l < c ? 'used' : ''))),
+        x.why ? h('span', { class: 'why' }, x.why) : null));
       });
     });
     bracket.replaceChildren(...cells);
-    playBtn.disabled = shown >= 3;
-    allBtn.disabled = shown >= 3;
-    if (shown === 0) say.textContent = 'Eight candidates drawn from the model’s own odds, with repeats. Each carries three coins, one per layer, set by the key and the four highlighted words. A coin is 1 (filled) or 0, half and half.';
-    else if (shown < 3) {
-      const ties = rounds[shown].filter((x) => x.tie).length;
-      say.textContent = `Layer ${shown}: each pair compares coin ${shown}. A 1 beats a 0` + (ties ? `; ${ties === 1 ? 'one match was a tie, settled' : ties + ' matches were ties, settled'} by a fair coin flip.` : '.');
-    } else say.textContent = `“${rounds[3][0].w}” wins this three-layer bracket. Every candidate was a word the model already wanted; what changed is which of them won, and the winner tends to be one whose coins are 1. The real thing plays thirty layers (the bars below), so its favourite in this context can differ.`;
+    playBtn.disabled = shown >= ROUNDS;
+    allBtn.disabled = shown >= ROUNDS;
+    if (shown === 0) {
+      const counts = {};
+      for (const x of rounds[0]) counts[x.w] = (counts[x.w] || 0) + 1;
+      const list = Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([w, n]) => `${w} ×${n}`).join(', ');
+      say.textContent = `Eight contestants drawn at random from the model’s odds: ${list}. Every copy of a word carries that word’s round assignments. The outlined sign is the one the next round compares.`;
+    } else if (shown < ROUNDS) {
+      say.textContent = `Round ${shown}: the contestants were paired off, and each pair compared its round-${shown} sign. A + beats a −; two of the same sign is a coin flip. Winners moved right.`;
+    } else {
+      say.textContent = `“${rounds[ROUNDS][0].w}” wins, so it becomes the next word. Every contestant was a word the model already wanted; the watermark only decided which of them won.`;
+    }
   }
   function step() {
-    if (shown < 3) shown++;
+    if (shown < ROUNDS) shown++;
     renderBracket();
   }
   function playAll() {
     clearTimeout(timer);
     const go = () => {
-      if (shown >= 3) return;
+      if (shown >= ROUNDS) return;
       step();
-      timer = setTimeout(go, 650);
+      timer = setTimeout(go, 700);
     };
     go();
   }
-  function renderExact() {
+  function renderResult() {
     const p = NEXT.map((x) => x[1]);
-    const rows = NEXT.map((x) => g(x[0]));
-    const q = tilt(p, rows);
-    exact.replaceChildren(
-      h('div', { class: 'sid-bars-head' }, h('span', null, 'Word'), h('span', null, 'Model alone → with the watermark, this context'), h('span', null, '')),
-      ...NEXT.map(([w, pw], i) => [
-        h('span', { class: 'sid-bar-label' }, w),
-        h('div', { class: 'sid-bar' },
-          h('span', { class: 'model', style: `width:${pw * 100}%` }),
-          h('span', { class: 'wm', style: `width:${q[i] * 100}%` }),
-          bits(rows[i], M, 'under')),
-        h('span', { class: 'sid-bar-num' }, `${pct(pw)} → ${pct(q[i])}`),
-      ]).flat(),
+    const q = tilt(p, NEXT.map((x) => g(x[0])), depth);
+    let best = 0;
+    q.forEach((v, i) => { if (v > q[best]) best = i; });
+    result.replaceChildren(
+      h('div', { class: 'sid-pairs-key' }, h('span', null, h('i', { class: 'sw outline' }), 'without the watermark'), h('span', null, h('i', { class: 'sw gold' }), `with it (${depth} rounds, these previous tokens, this key)`)),
+      ...NEXT.map(([w, pw], i) => h('div', { class: 'sid-pair' },
+        h('span', { class: 'w' }, w),
+        h('div', { class: 'bars' }, h('span', { class: 'b0', style: `width:${pw * 100}%` }), h('span', { class: 'b1', style: `width:${q[i] * 100}%` })),
+        h('span', { class: 'n' }, `${pct(pw)} → ${pct(q[i])}`))),
     );
+    const w = NEXT[best][0];
+    let up = 0;
+    let down = 0;
+    q.forEach((v, i) => {
+      if (v / p[i] > q[up] / p[up]) up = i;
+      if (v / p[i] < q[down] / p[down]) down = i;
+    });
+    const plusses = (i) => ones(g(NEXT[i][0]), depth);
+    resultSay.textContent = depth === ROUNDS
+      ? `Words with more + win more often. “${NEXT[up][0]}” (${plusses(up)} of 3 +) goes from ${pct(p[up])} to ${pct(q[up])}; “${NEXT[down][0]}” (${plusses(down)} of 3 +) drops from ${pct(p[down])} to ${pct(q[down])}. Change the previous tokens (click “edge”) or the key and the + and − are redrawn, so other words get the boost. Averaged over every possible set of previous tokens, each word wins exactly as often as the model wanted.`
+      : `With 30 rounds, one word takes nearly all the odds in any one spot: here “${w}”, ${pct(q[best])}. Averaged over every possible set of previous tokens, each word still wins exactly as often as the model wanted.`;
   }
   function reset() {
     renderSentence();
+    renderTable();
     newDraw();
-    renderExact();
+    renderResult();
   }
 
   root.append(
-    h('div', { class: 'sid-eyebrow' }, 'Demo 1 · picking one word'),
+    h('div', { class: 'sid-eyebrow' }, 'Demo 1 · one tournament'),
+    lede('The model is finishing this sentence. Highlighted: the four previous tokens. Click “edge” to change one of them.'),
     sentence,
-    h('div', { class: 'sid-row sid-controls' },
-      btn('Draw 8 new candidates', () => newDraw()),
-      playBtn,
-      allBtn,
-      segmented([[KEYS.claude, 'Claude’s key'], [KEYS.other, 'Another key']], key, (v) => { key = v; reset(); }, 'Key')),
+    h('div', { class: 'sid-row sid-keyrow' }, h('span', { class: 'sid-label' }, 'Secret key'),
+      segmented([[KEYS.claude, 'Claude’s key'], [KEYS.other, 'A different key']], key, (v) => { key = v; reset(); }, 'Secret key')),
+    h('div', { class: 'sid-sub' }, '1. Each possible next word gets a + or − per round'),
+    table,
+    h('p', { class: 'sid-note' }, 'These come from the secret key and the four previous tokens, used as a seed. Same key and same previous tokens give the same signs every time; change either and every sign is redrawn.'),
+    h('div', { class: 'sid-sub' }, '2. The tournament'),
+    h('div', { class: 'sid-rules' }, chip(true), ' beats ', chip(false), h('span', { class: 'sep' }, '·'), chip(true), chip(true), ' or ', chip(false), chip(false), ' : coin flip'),
+    h('div', { class: 'sid-row sid-controls' }, btn('Draw 8 new contestants', () => newDraw()), playBtn, allBtn),
     bracket,
     say,
-    h('div', { class: 'sid-sub' }, 'All 30 layers, computed exactly'),
-    exact,
-    h('p', { class: 'sid-caption' },
-      h('b', null, 'How to read it. '),
-      'The outline is how often the model alone picks each word; the gold bar is how often the watermarked tournament does, for this exact context and key. The 30 squares under each bar are that word’s coins, layer 1 on the left. Thirty layers nearly settle the choice: in any one context, one word takes almost all the odds. Click “edge” or “at” to change the context, or switch keys, and the coins reshuffle. Across many contexts each word still wins exactly as often as the model wanted; demo 2 shows that average.'),
+    h('div', { class: 'sid-sub' }, '3. If you ran this tournament many times'),
+    segmented([[ROUNDS, '3 rounds, like the bracket'], [M, '30 rounds, like the real system']], depth, (v) => { depth = v; renderResult(); }, 'Rounds'),
+    result,
+    resultSay,
   );
   reset();
   return { destroy: () => clearTimeout(timer) };
@@ -568,15 +614,15 @@ function partTournament(root) {
 // ------------------------------------------------------------------------------------------
 // Part: certain.
 const CASES = [
-  { id: 'paris', label: 'Capital of France', lead: 'What is the capital of France? → The capital of France is', ctx: ['capital', 'of', 'France', 'is'], c: [['Paris', 0.9995], ['Lyon', 0.0002], ['Marseille', 0.0002], ['the', 0.0001]] },
+  { id: 'paris', label: 'Capital of France', lead: 'What is the capital of France? The capital of France is', ctx: ['capital', 'of', 'France', 'is'], c: [['Paris', 0.9995], ['Lyon', 0.0002], ['Marseille', 0.0002], ['the', 0.0001]] },
+  { id: 'food', label: 'A city famous for its food', lead: 'Name a city famous for its food:', ctx: ['famous', 'for', 'its', 'food'], c: [['Paris', 0.3], ['Lyon', 0.2], ['Tokyo', 0.18], ['Naples', 0.12], ['Bangkok', 0.1], ['New Orleans', 0.1]] },
   { id: 'url', label: 'A URL', lead: 'The post is at aaronorelup.com/led', ctx: ['.', 'com', '/', 'led'], c: [['ger', 0.99995], ['ge', 0.00003], ['gers', 0.00002]] },
-  { id: 'quote', label: 'A verbatim quote', lead: 'Copy it exactly: “The kettle remembers everyone…” → “The kettle remembers', ctx: ['“', 'The', 'kettle', 'remembers'], c: [['everyone', 0.9999], ['everybody', 0.00007], ['anyone', 0.00003]] },
-  { id: 'poem', label: 'A line of a poem', lead: 'Write me a poem about rain. → The rain fell on the', ctx: ['rain', 'fell', 'on', 'the'], c: [['roof', 0.28], ['garden', 0.22], ['river', 0.16], ['window', 0.14], ['city', 0.1], ['sea', 0.1]] },
-  { id: 'custom', label: 'Set it yourself', lead: 'A word the model is sure of, with three alternatives →', ctx: ['your', 'own', 'test', 'case'], c: null },
+  { id: 'quote', label: 'A quote, word for word', lead: 'Copy it exactly: “The kettle remembers everyone…” → “The kettle remembers', ctx: ['“', 'The', 'kettle', 'remembers'], c: [['everyone', 0.9999], ['everybody', 0.00007], ['anyone', 0.00003]] },
+  { id: 'custom', label: 'Set it yourself', lead: 'A question with one right answer, and three wrong ones the model gives a sliver of chance to.', ctx: ['your', 'own', 'test', 'case'], c: null },
 ];
 function customCase(slider) {
   const wrong = 0.5 * Math.pow(10, -slider / 25);
-  return [['right', 1 - wrong], ['alt one', wrong * 0.6], ['alt two', wrong * 0.25], ['alt three', wrong * 0.15]];
+  return [['right answer', 1 - wrong], ['wrong one', wrong * 0.6], ['wrong two', wrong * 0.25], ['wrong three', wrong * 0.15]];
 }
 function nucleus(c, topP) {
   if (!topP) return c;
@@ -589,7 +635,7 @@ function nucleus(c, topP) {
   }
   return keep.map(([w, p]) => [w, p / acc]);
 }
-// Ten thousand different contexts: the same odds, fresh coins each time.
+// Many different sets of previous tokens: the same odds, freshly drawn round assignments each time.
 function sweep(p, n = 10000, seed = 11) {
   const r = rng(seed);
   const k = p.length;
@@ -612,15 +658,15 @@ function sweep(p, n = 10000, seed = 11) {
     if (wrong > 0.01) over1++;
     worst = Math.min(worst, q[0]);
   }
-  return { avg, ev: ev - 0.5, rarer, over1, worst, n };
+  return { avg, ev, rarer, over1, worst, n };
 }
 
 function partCertain(root) {
-  const N = 100000; // the rare contexts matter here, so sample enough of them to show up
+  const N = 100000; // the rare cases matter here, so sample enough of them to show up
   let which = 'paris';
   let slider = 75;
   let topP = 0;
-  let ctxRoll = 0;
+  let roll = 0;
   let timer = 0;
   const cache = new Map();
   const sweepOf = (p) => {
@@ -628,21 +674,20 @@ function partCertain(root) {
     if (!cache.has(id)) cache.set(id, sweep(p, N));
     return cache.get(id);
   };
-  const lead = h('p', { class: 'sid-sentence' });
-  const bars = h('div', { class: 'sid-bars' });
+  const question = h('p', { class: 'sid-sentence' });
+  const pairs = h('div', { class: 'sid-pairs' });
   const facts = h('ul', { class: 'sid-facts' });
   const sliderWrap = h('label', { class: 'sid-slider', hidden: true });
-  const range = h('input', { type: 'range', min: '0', max: '150', value: String(slider), 'aria-label': 'How sure the model is' });
+  const range = h('input', { type: 'range', min: '0', max: '150', value: String(slider), 'aria-label': 'How sure the model is of the right answer' });
   const rangeOut = h('span', { class: 'sid-slider-out' });
-  sliderWrap.append(h('span', null, 'How sure the model is'), range, rangeOut);
+  sliderWrap.append(h('span', null, 'How sure the model is of the right answer'), range, rangeOut);
   range.addEventListener('input', () => {
     slider = Number(range.value);
     rangeOut.textContent = pct(customCase(slider)[0][1]);
     clearTimeout(timer);
     timer = setTimeout(render, 160);
   });
-  const poemEv = sweep(CASES[3].c.map((x) => x[1]), 4000, 3).ev;
-  const signed = (x) => (Math.abs(x) < 0.0005 ? '0.000' : (x > 0 ? '+' : '−') + Math.abs(x).toFixed(3));
+  const foodShare = sweep(CASES[1].c.map((x) => x[1]), 4000, 3).ev;
 
   function render() {
     const cs = CASES.find((x) => x.id === which);
@@ -650,62 +695,62 @@ function partCertain(root) {
     const c = nucleus(raw, topP);
     sliderWrap.hidden = which !== 'custom';
     rangeOut.textContent = pct(raw[0][1]);
-    lead.replaceChildren(h('span', { class: 'quiet' }, cs.lead + ' '), h('span', { class: 'sid-blank' }, '____'));
+    question.replaceChildren(h('span', { class: 'quiet' }, cs.lead + ' '), h('span', { class: 'sid-blank' }, '____'));
     const p = c.map((x) => x[1]);
-    const ctx = ctxRoll ? [...cs.ctx.slice(1), '#' + ctxRoll] : cs.ctx;
+    const ctx = roll ? [...cs.ctx.slice(1), '#' + roll] : cs.ctx;
     const q = c.length > 1 ? tilt(p, c.map((x) => gvals(KEYS.claude, ctx, x[0]))) : p;
     const s = sweepOf(p);
-    bars.replaceChildren(
-      h('div', { class: 'sid-bars-head' }, h('span', null, 'Word'), h('span', null, 'Model alone · this context · average of 100,000'), h('span', null, '')),
+    pairs.replaceChildren(
+      h('div', { class: 'sid-pairs-key' }, h('span', null, h('i', { class: 'sw outline' }), 'without the watermark'), h('span', null, h('i', { class: 'sw gold' }), 'with it, for these previous tokens (30 rounds)')),
       ...raw.map(([w, pw]) => {
         const i = c.findIndex((x) => x[0] === w);
         const qi = i < 0 ? 0 : q[i];
-        const ai = i < 0 ? 0 : s.avg[i];
-        return [
-          h('span', { class: 'sid-bar-label' + (i < 0 ? ' cut' : '') }, w),
-          h('div', { class: 'sid-bar' },
-            h('span', { class: 'model', style: `width:${pw * 100}%` }),
-            h('span', { class: 'wm', style: `width:${qi * 100}%` }),
-            h('span', { class: 'avg', style: `left:${ai * 100}%` })),
-          h('span', { class: 'sid-bar-num' }, i < 0 ? 'trimmed' : `${pct(pw)} · ${pct(qi)} · ${pct(ai)}`),
-        ];
-      }).flat(),
+        return h('div', { class: 'sid-pair' + (i < 0 ? ' cut' : '') },
+          h('span', { class: 'w' }, w),
+          h('div', { class: 'bars' }, h('span', { class: 'b0', style: `width:${pw * 100}%` }), h('span', { class: 'b1', style: `width:${qi * 100}%` })),
+          h('span', { class: 'n' }, i < 0 ? 'removed' : `${pct(pw)} → ${pct(qi)}`));
+      }),
     );
     const top = c[0][0];
     const wrong0 = 1 - p[0];
-    const free = which === 'poem';
-    const fmt = (x) => x.toLocaleString('en-US');
-    facts.replaceChildren(
-      h('li', null, h('b', null, free ? 'Same odds on average. ' : 'Same answer, on average. '),
-        `Across ${fmt(N)} sampled contexts, “${top}” came out ${pct(s.avg[0])} of the time with the watermark; the model alone, ${pct(p[0])}. In theory the two are identical (the paper proves it); any difference in the last digit is sampling noise.`),
-      h('li', null, h('b', null, `Evidence this word carries: ${signed(s.ev)}. `),
-        free ? 'This is where the watermark lives: the model had real options, so the winner’s coins lean to 1.'
-          : `A word in the poem carries +${poemEv.toFixed(3)}. This one carries nothing the detector can use.`),
-      c.length === 1
-        ? h('li', null, h('b', null, 'Nothing to tilt. '), 'After trimming, one candidate is left, so every context gives the same answer and the watermark has nothing to act on.')
-        : h('li', null, h('b', null, 'Where the odds move. '),
-          free
-            ? 'In any one context the odds are reshuffled (the gold bar), but a word outside the model’s own list can never appear.'
-            : `In ${fmt(s.rarer)} of ${fmt(N)} contexts the wrong answers got rarer than the model’s own ${pct(wrong0)}. ` +
-              (s.over1
-                ? `In ${fmt(s.over1)} (about 1 in ${fmt(Math.round(N / s.over1))}) they rose above 1%, and in the unluckiest one “${top}” fell to ${pct(s.worst)}. That is the published algorithm’s arithmetic, not a measurement of Claude: on average the watermark adds no errors, but it gathers the few there are into a few contexts.`
-                : 'In none did they rise above 1%.')),
-    );
+    const free = p[0] < 0.9;
+    let best = 0;
+    q.forEach((v, i) => { if (v > q[best]) best = i; });
+    const items = [];
+    if (c.length === 1) {
+      items.push(h('li', null, h('b', null, 'Nothing to choose between. '), `After removing everything under 1%, “${top}” is the only word left, so every contestant is “${top}” and every tournament picks it.`));
+    } else if (free) {
+      items.push(h('li', null, h('b', null, 'Here: ' + (q[best] > 0.5 ? `“${c[best][0]}” takes most of the odds. ` : 'the odds are reshuffled. ')),
+        `With these previous tokens, “${c[best][0]}” comes out ${pct(q[best])} of the time instead of ${pct(p[best])}: over 30 rounds its + and − beat the other cities’. Press “Try different previous tokens” and another city gets the boost.`));
+      items.push(h('li', null, h('b', null, `Over ${fmt(N)} different previous tokens, the odds are the model’s own. `),
+        c.slice(0, 4).map(([w], i) => `${w} ${pct(s.avg[i])} (model: ${pct(p[i])})`).join(', ') + '. The watermark picks which good answer wins each time; it doesn’t change how often each one wins overall.'));
+      items.push(h('li', null, h('b', null, `The chosen city’s round assignments are ${share(s.ev)} + on average. `), 'More than the 50% that chance gives. That lean is what the checker looks for.'));
+    } else {
+      items.push(h('li', null, h('b', null, `Here: “${top}” comes out ${pct(q[0])} of the time. `),
+        `Without the watermark: ${pct(p[0])}. Nearly every contestant is “${top}”, so whatever the round assignments say, “${top}” plays “${top}” and wins.`));
+      items.push(h('li', null, h('b', null, `Over ${fmt(N)} different previous tokens: ${pct(s.avg[0])}. `),
+        `Without the watermark: ${pct(p[0])}. On average the watermark doesn’t change the odds; any difference in the last digit is sampling noise.`));
+      items.push(h('li', null, h('b', null, `The checker gets nothing from it. `),
+        `The round assignments of “${top}” come out ${share(s.ev)} + on average, the same as chance. A city in the food question comes out ${share(foodShare)}.`));
+      items.push(h('li', null, h('b', null, 'The rare exception. '),
+        s.over1
+          ? `In ${fmt(s.over1)} of the ${fmt(N)} (about 1 in ${fmt(Math.round(N / s.over1))}), a wrong answer’s chance rose above 1%, and in the unluckiest one “${top}” fell to ${pct(s.worst)}. In ${fmt(s.rarer)} the wrong answers got rarer than the model’s own ${pct(wrong0)}. So the watermark adds no mistakes on average, but it gathers the few there are into a few spots. That is the published algorithm’s arithmetic, not a measurement of Claude; removing very unlikely words first (the checkbox) avoids it.`
+          : `Not one of the ${fmt(N)} pushed a wrong answer above 1%.`));
+    }
+    facts.replaceChildren(...items);
   }
 
   root.append(
     h('div', { class: 'sid-eyebrow' }, 'Demo 2 · when there is one right answer'),
-    segmented(CASES.map((x) => [x.id, x.label]), which, (v) => { which = v; ctxRoll = 0; render(); }, 'Example'),
+    lede('Pick a question. Each row compares how often a word comes out without the watermark and with it. The odds are made up for illustration; the tournament is the real algorithm with 30 rounds.'),
+    segmented(CASES.map((x) => [x.id, x.label]), which, (v) => { which = v; roll = 0; render(); }, 'Question'),
     sliderWrap,
-    lead,
-    bars,
+    question,
+    pairs,
     h('div', { class: 'sid-row sid-controls' },
-      btn('Try another context', () => { ctxRoll++; render(); }),
-      h('label', { class: 'sid-check' }, h('input', { type: 'checkbox', onchange: (e) => { topP = e.target.checked ? 0.99 : 0; render(); } }), ' Trim the unlikely tail first (top-p 0.99)')),
+      btn('Try different previous tokens', () => { roll++; render(); }),
+      h('label', { class: 'sid-check' }, h('input', { type: 'checkbox', onchange: (e) => { topP = e.target.checked ? 0.99 : 0; render(); } }), ' Remove words under 1% before the tournament (top-p 0.99)')),
     facts,
-    h('p', { class: 'sid-caption' },
-      h('b', null, 'How to read it. '),
-      'Outline: the model alone. Gold bar: with the watermark, in one particular context. Tick: the watermark averaged over 100,000 contexts, which lands on the outline. The probabilities are illustrative, not measured from Claude.'),
   );
   render();
   return { destroy: () => clearTimeout(timer) };
@@ -727,7 +772,7 @@ function partDetect(root) {
   range.addEventListener('input', () => { limit = Number(range.value); render(); });
   const key = () => (which === 'other' ? KEYS.other : KEYS.claude);
   function detail() {
-    info.replaceChildren(picked >= 0 ? tokenDetail(r, picked, key()) : 'Click any word to see its 30 coins.');
+    info.replaceChildren(picked >= 0 ? tokenDetail(r, picked, key()) : 'Click any word to see its 30 round assignments.');
   }
   function render() {
     const text = which === 'plain' ? LETTER_PLAIN : LETTER_CLAUDE;
@@ -738,15 +783,14 @@ function partDetect(root) {
     detail();
   }
   root.append(
-    h('div', { class: 'sid-eyebrow' }, 'Demo 3 · checking a text'),
-    segmented([['claude', 'Claude’s letter'], ['plain', 'Same menu, no watermark'], ['other', 'Claude’s letter, wrong key']], which, (v) => { which = v; picked = -1; render(); }, 'Text'),
+    h('div', { class: 'sid-eyebrow' }, 'Demo 3 · the checker'),
+    lede('A letter the toy model wrote. The checker reads it one token at a time: it takes the four previous tokens and the key, recreates that token’s 30 round assignments, and counts the +.'),
+    segmented([['claude', 'Claude’s letter'], ['plain', 'A letter written without the watermark'], ['other', 'Claude’s letter, checked with a different key']], which, (v) => { which = v; picked = -1; render(); }, 'Text'),
     h('label', { class: 'sid-slider' }, h('span', null, 'Check only the first'), range, rangeOut),
+    legend(false),
     view.el,
     info,
     panel.el,
-    h('p', { class: 'sid-caption' },
-      h('b', null, 'How to read it. '),
-      'Gold behind a word means its coins came up mostly 1. Words the model had no choice over, like “Paris” or the address, light up at random too: that’s the noise the real evidence has to beat. Grey words aren’t scored: the first four have no full context, and a repeated context is masked. The detector never sees the model or the menu, only the words, the key and the hash. Scored with the paper’s weighted mean; Google’s production detector is a trained Bayesian scorer that does better on short text.'),
   );
   render();
   return {};
@@ -755,13 +799,12 @@ function partDetect(root) {
 // ------------------------------------------------------------------------------------------
 // Part: edit.
 function partEdit(root) {
-  let reference = LETTER_CLAUDE;
-  let refGrams = ngrams(reference);
+  let refGrams = ngrams(LETTER_CLAUDE);
   let strip = true;
   let picked = -1;
   let r;
-  const area = h('textarea', { class: 'sid-area', rows: '9', spellcheck: 'false', 'aria-label': 'The letter. Edit it and the score updates.' });
-  area.value = reference;
+  const area = h('textarea', { class: 'sid-area', rows: '9', spellcheck: 'false', 'aria-label': 'The letter. Edit it and the checker updates.' });
+  area.value = LETTER_CLAUDE;
   const view = tokenView((i) => { picked = i; info.replaceChildren(tokenDetail(r, i, KEYS.claude)); });
   const panel = scorePanel();
   const status = h('p', { class: 'sid-status', 'aria-live': 'polite' });
@@ -774,15 +817,12 @@ function partEdit(root) {
     panel.update(r);
     const scored = r.toks.filter((x) => x.state === 'scored');
     const intact = scored.filter((x) => refGrams.has([...x.ctx, x.t].join('\u0002'))).length;
-    kept.textContent = `${intact} of ${scored.length} scored tokens still have the 5-token window Claude wrote them in.`;
+    kept.textContent = `${intact} of ${scored.length} checked tokens still have the same four previous tokens Claude wrote them after.`;
     if (picked >= 0) info.replaceChildren(tokenDetail(r, picked, KEYS.claude));
   }
   function set(text, msg, newRef) {
     area.value = text;
-    if (newRef) {
-      reference = newRef;
-      refGrams = ngrams(newRef);
-    }
+    if (newRef) refGrams = ngrams(newRef);
     picked = -1;
     info.textContent = '';
     status.replaceChildren(...[msg].flat());
@@ -804,68 +844,67 @@ function partEdit(root) {
       const alts = [...SYNONYMS.get(x.t)];
       out = out.slice(0, x.at) + alts[Math.floor(Math.random() * alts.length)] + out.slice(x.at + x.t.length);
     }
-    set(out, `Swapped ${want} of ${wordsN} words for a synonym. Each swap changes that word and the context of the next four tokens, so the wavy underlines spread past the word itself.`);
+    set(out, `Swapped ${want} of ${wordsN} words for a synonym. Each swap gives that word and the next four tokens new previous tokens, so their round assignments are redrawn at random.`);
   }
   function invisible() {
     let n = 0;
     const out = area.value.replace(/[\p{L}\p{N}][\p{L}\p{N}'’]*/gu, (w) => (++n % 4 === 0 ? w + '​' : w));
-    set(out, `Added ${Math.floor(n / 4)} zero-width spaces, one after every fourth word. They don’t show on screen, but each one is a token, so every 4-token window now contains one. Untick “strip invisible characters” to see what a naive detector would make of it.`);
+    set(out, `Added ${Math.floor(n / 4)} zero-width spaces, one after every fourth word. You can’t see them, but each is a token, so every set of four previous tokens now contains one. Untick “remove invisible characters” to see what a checker that doesn’t clean the text would make of it.`);
   }
   function emoji() {
     const g = generate({ junk: '🙂' });
     const preview = g.raw.split(/\s+/).slice(0, 9).join(' ');
-    set(g.text, [h('b', null, 'What Claude wrote: '), preview + ' … ', h('b', null, 'After you delete the faces: '), 'the letter above. The coins were tossed with a face in every window; with the faces gone, every window is new.'], g.text);
+    set(g.text, [h('b', null, 'What Claude wrote: '), preview + ' … ', h('b', null, 'After you delete the faces: '), 'the letter above. Every word was picked with a face among its four previous tokens. With the faces gone, the checker sees different previous tokens everywhere.'], g.text);
     refGrams = ngrams(g.raw);
     render();
   }
 
   area.addEventListener('input', () => {
-    status.textContent = 'Your edits. Every changed token breaks its own window and the next four.';
+    status.textContent = 'Your edits. Each changed token redraws its own round assignments and those of the next four tokens.';
     render();
   });
   const stripBox = h('input', { type: 'checkbox', checked: true, onchange: (e) => { strip = e.target.checked; render(); } });
 
   root.append(
-    h('div', { class: 'sid-eyebrow' }, 'Demo 4 · edit it, or try to scrub it'),
+    h('div', { class: 'sid-eyebrow' }, 'Demo 4 · edit it, or try to remove it'),
+    lede('Claude’s letter again. Type into it, or press a button, and the checker below updates. A wavy underline marks a word whose four previous tokens changed: the checker now gives it new, random round assignments, so its evidence is gone.'),
     area,
     h('div', { class: 'sid-sub' }, 'Or let something else do the editing'),
     h('div', { class: 'sid-row sid-controls' },
-      btn('Swap 1 word in 10', () => swap(0.1)),
+      btn('Swap 1 word in 10 for a synonym', () => swap(0.1)),
       btn('Swap 1 word in 4', () => swap(0.25)),
       btn('Add an invisible character every 4 words', invisible),
       btn('Ask Claude to reword it', () => {
         const t = generate().text;
-        set(t, 'Claude reworded the whole letter. It’s new text from the same model with the same key, so it carries a fresh watermark of its own.', t);
+        set(t, 'Claude reworded the whole letter. It’s new text from the same model with the same key, so it carries a new watermark of its own.', t);
       }),
-      btn('Reword it with an unwatermarked model', () => set(generate({ watermark: false }).text, 'A model without this key reworded the letter. Every word was chosen with ordinary randomness, so there is nothing for the detector to find.')),
+      btn('Reword it with a model that doesn’t have the key', () => set(generate({ watermark: false }).text, 'A model without the key reworded the letter. Every word was picked with ordinary randomness, so there is nothing for the checker to find.')),
       btn('The emoji trick', emoji),
       btn('Keep only the first 40 words', () => {
         let n = 0;
         let cut = area.value.length;
         for (const m of area.value.matchAll(/[\p{L}\p{N}][\p{L}\p{N}'’]*/gu)) if (++n === 40) { cut = m.index + m[0].length; break; }
-        set(area.value.slice(0, cut), 'The same watermarked words, just fewer of them. The evidence per word hasn’t changed; there’s less of it.');
+        set(area.value.slice(0, cut), 'The same watermarked words, just fewer of them. Each word carries the same evidence as before; there’s less of it.');
       }),
       btn('Reset', () => set(LETTER_CLAUDE, 'Back to Claude’s original letter.', LETTER_CLAUDE))),
-    h('label', { class: 'sid-check' }, stripBox, ' Detector strips invisible characters before checking'),
+    h('label', { class: 'sid-check' }, stripBox, ' Checker removes invisible characters before checking'),
     status,
+    legend(true),
     view.el,
     h('p', { class: 'sid-note' }, kept),
     info,
     panel.el,
-    h('p', { class: 'sid-caption' },
-      h('b', null, 'How to read it. '),
-      'A wavy underline marks a scored token whose 5-token window (four tokens of context, plus itself) isn’t one Claude wrote, so its coins are fresh and carry no evidence. The rewording buttons draw a new letter from the same menu: a stand-in for a real paraphrase, which would change more than single words.'),
+    h('p', { class: 'sid-caption' }, 'The rewording buttons write a new letter from the same menu of word choices: a stand-in for a real paraphrase, which would change more than single words.'),
   );
   render();
-  status.textContent = 'Claude’s letter, untouched. Type into it, or press a button.';
+  status.textContent = 'Claude’s letter, untouched.';
   return {};
 }
 
 // ------------------------------------------------------------------------------------------
 // Part: book. Expected detection after editing, from the letter's own evidence per word.
 function partBook(root) {
-  // Average evidence per scored word over many fresh letters, so the chart doesn't hang on
-  // one lucky draw.
+  // Average evidence per word over many fresh letters, so the chart doesn't hang on one lucky draw.
   let ev = 0;
   let n = 0;
   let words = 0;
@@ -882,8 +921,14 @@ function partBook(root) {
     { id: 'essay', label: 'A 3,000-word essay', n: 3000, cls: 'l2' },
     { id: 'novel', label: 'A 90,000-word novel', n: 90000, cls: 'l3' },
   ];
-  let share = 1;
-  const flagged = (len, r) => 1 - upper(perWord * share * Math.sqrt(len) * Math.pow(1 - r, 5) - FLAG_Z);
+  let mine = 1;
+  const flagged = (len, r) => 1 - upper(perWord * mine * Math.sqrt(len) * Math.pow(1 - r, 5) - FLAG_Z);
+  const evenAt = (len) => {
+    if (flagged(len, 0) < 0.5) return null;
+    let r = 0;
+    while (r < 0.95 && flagged(len, r) >= 0.5) r += 0.0025;
+    return r;
+  };
 
   const NS = 'http://www.w3.org/2000/svg';
   const svgEl = (tag, attrs) => {
@@ -896,10 +941,11 @@ function partBook(root) {
   const pad = { l: 46, r: 96, t: 16, b: 40 };
   const X = (r) => pad.l + (r / 0.6) * (Wd - pad.l - pad.r);
   const Y = (p) => pad.t + (1 - p) * (Ht - pad.t - pad.b);
-  const svg = svgEl('svg', { viewBox: `0 0 ${Wd} ${Ht}`, class: 'sid-chart', role: 'img', 'aria-label': 'Chance of being flagged against the share of words edited, for three lengths' });
+  const svg = svgEl('svg', { viewBox: `0 0 ${Wd} ${Ht}`, class: 'sid-chart', role: 'img', 'aria-label': 'Chance the checker flags the text against the share of words edited, for three lengths' });
   const tip = h('div', { class: 'sid-tip', hidden: true });
   const wrap = h('div', { class: 'sid-chart-wrap' }, svg, tip);
   const table = h('table', { class: 'sid-table' });
+  const say = h('p', { class: 'sid-note' });
 
   function draw() {
     svg.replaceChildren();
@@ -938,7 +984,6 @@ function partBook(root) {
       }
       labels.push({ L, x: x + 7, y: y - 7 });
     }
-    // Lines that never reach even odds can start at nearly the same height; push those apart.
     labels.sort((a, b) => b.y - a.y);
     for (let i = 1; i < labels.length; i++) {
       if (Math.abs(labels[i].x - labels[i - 1].x) < 90 && labels[i - 1].y - labels[i].y < 15) labels[i].y = labels[i - 1].y - 15;
@@ -950,10 +995,16 @@ function partBook(root) {
     }
     svg.append(svgEl('line', { class: 'cross', x1: 0, x2: 0, y1: pad.t, y2: Ht - pad.b, visibility: 'hidden' }));
     table.replaceChildren(
-      h('caption', null, 'Chance of being flagged, by share of words edited'),
+      h('caption', null, 'Chance the checker flags it, by share of words edited'),
       h('tr', null, h('th', null, 'Edited'), ...LENGTHS.map((L) => h('th', null, L.label.replace(/^A /, '')))),
       ...[0, 0.1, 0.2, 0.3, 0.4, 0.5].map((r) => h('tr', null, h('td', null, Math.round(r * 100) + '%'), ...LENGTHS.map((L) => h('td', null, pct(flagged(L.n, r)))))),
     );
+    const novel = evenAt(90000);
+    const email = flagged(300, 0);
+    say.textContent = (novel == null
+      ? `With this little of the wording Claude’s, even an untouched novel is flagged only ${pct(flagged(90000, 0))} of the time. `
+      : `With this much of the wording Claude’s, you’d have to change about ${Math.round(novel * 100)}% of a novel’s words before it’s a coin flip whether the checker flags it. `)
+      + `An untouched 300-word email is flagged ${pct(email)} of the time.`;
   }
   function hover(e) {
     const box = svg.getBoundingClientRect();
@@ -964,7 +1015,7 @@ function partBook(root) {
     cross.setAttribute('x2', X(r));
     cross.setAttribute('visibility', 'visible');
     tip.hidden = false;
-    tip.replaceChildren(h('b', null, `You change ${Math.round(r * 100)}% of the words`), ...LENGTHS.map((L) => h('span', null, `${L.label.replace(/^A /, '')}: ${pct(flagged(L.n, r))} flagged`)));
+    tip.replaceChildren(h('b', null, `You change ${Math.round(r * 100)}% of the words`), ...LENGTHS.map((L) => h('span', null, `${L.label.replace(/^A /, '')}: flagged ${pct(flagged(L.n, r))}`)));
     const left = (X(r) / Wd) * box.width;
     tip.style.left = Math.min(box.width - 190, Math.max(0, left + 12)) + 'px';
   }
@@ -975,17 +1026,17 @@ function partBook(root) {
   });
 
   root.append(
-    h('div', { class: 'sid-eyebrow' }, 'Demo 5 · your book, after your edits'),
-    h('div', { class: 'sid-sub' }, 'How much of the wording was Claude’s?'),
-    segmented([[1, 'All of it (Claude wrote or rewrote it)'], [0.5, 'About half'], [0.1, 'A tenth'], [0.02, 'A light proofread']], share, (v) => { share = v; draw(); }, 'Share of the wording that was Claude’s'),
+    h('div', { class: 'sid-eyebrow' }, 'Demo 5 · a book, after your edits'),
+    lede('How likely the checker is to flag a text after you’ve edited it, for three lengths. Pick how much of the wording Claude chose in the first place.'),
+    segmented([[1, 'All of it (Claude wrote or rewrote it)'], [0.5, 'About half'], [0.1, 'A tenth'], [0.02, 'A light proofread']], mine, (v) => { mine = v; draw(); }, 'Share of the wording Claude chose'),
     h('div', { class: 'sid-legend', 'aria-hidden': 'true' },
-      h('span', { class: 'sid-legend-y' }, 'Chance the detector flags it'),
+      h('span', { class: 'sid-legend-y' }, 'Up: chance the checker flags it'),
       ...LENGTHS.map((L) => h('span', { class: 'sid-key ' + L.cls }, h('i'), L.label.replace(/^A /, '')))),
     wrap,
+    say,
     h('details', { class: 'sid-more' }, h('summary', null, 'The same numbers as a table'), table),
     h('p', { class: 'sid-caption' },
-      h('b', null, 'What this assumes. '),
-      'Every word Claude chose carries as much evidence as a word in the letter above, and your edits land on words at random. Edits aimed at the free word choices remove evidence faster (demo 4); edits bunched into sentences break fewer neighbours than scattered ones. A flag means a score past the 1%-false-positive line. Real tokens are smaller than words and real detectors are better than this one, so read the shape, not the decimals.'),
+      'Assumes every word Claude chose carries as much evidence as a word in the letter above, and that your edits land on words at random. Edits aimed at word choices remove evidence faster (demo 4); edits bunched into one sentence break fewer neighbours. Real tokens are smaller than words and real checkers are better than this one, so read the shape, not the decimals.'),
   );
   draw();
   return {};

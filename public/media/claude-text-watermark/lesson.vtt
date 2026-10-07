@@ -1,0 +1,417 @@
+WEBVTT
+
+1
+00:00:01.400 --> 00:00:05.011
+In this lesson you'll learn how SynthID text
+
+2
+00:00:05.011 --> 00:00:08.389
+hides a watermark in an AI's word choices.
+
+3
+00:00:08.389 --> 00:00:10.909
+Nothing is added to the text.
+
+4
+00:00:10.909 --> 00:00:14.775
+Instead, it tilts which word gets picked,
+
+5
+00:00:14.775 --> 00:00:18.130
+and only when the model had a real choice.
+
+6
+00:00:18.130 --> 00:00:20.521
+So the writing reads the same,
+
+7
+00:00:20.521 --> 00:00:23.761
+exact answers stay exact, and anyone holding
+
+8
+00:00:23.761 --> 00:00:27.688
+the secret key can check for the mark.
+
+9
+00:00:27.688 --> 00:00:31.322
+Say the model is finishing this sentence:
+
+10
+00:00:31.322 --> 00:00:33.841
+the tea house sits at the edge of the blank.
+
+11
+00:00:33.841 --> 00:00:35.896
+It has its odds.
+
+12
+00:00:35.896 --> 00:00:38.497
+Garden, thirty-four percent.
+
+13
+00:00:38.497 --> 00:00:39.832
+River, twenty.
+
+14
+00:00:39.832 --> 00:00:41.527
+Forest, sixteen.
+
+15
+00:00:41.527 --> 00:00:43.013
+And a few more.
+
+16
+00:00:43.013 --> 00:00:45.847
+Normally a random number would pick one.
+
+17
+00:00:46.275 --> 00:00:50.652
+SynthID runs a tournament instead.
+
+18
+00:00:50.652 --> 00:00:52.010
+It fills the bracket
+
+19
+00:00:52.010 --> 00:00:54.704
+with contestants drawn from those odds,
+
+20
+00:00:54.704 --> 00:00:57.421
+so likely words get more contestants.
+
+21
+00:00:57.421 --> 00:01:00.335
+Before the first match, every possible word
+
+22
+00:01:00.335 --> 00:01:03.563
+gets a plus or a minus for each round.
+
+23
+00:01:03.563 --> 00:01:05.722
+Those are its round assignments.
+
+24
+00:01:05.722 --> 00:01:07.905
+They come from the secret key
+
+25
+00:01:07.905 --> 00:01:10.378
+and the four tokens before the blank,
+
+26
+00:01:10.378 --> 00:01:13.872
+so the same key and the same four tokens
+
+27
+00:01:13.872 --> 00:01:16.275
+always give the same assignments.
+
+28
+00:01:16.275 --> 00:01:20.119
+In each match, a plus beats a minus.
+
+29
+00:01:20.119 --> 00:01:24.333
+Two pluses, or two minuses, and it's a coin flip.
+
+30
+00:01:24.333 --> 00:01:26.574
+The last contestant standing
+
+31
+00:01:26.574 --> 00:01:28.187
+is the word that gets written.
+
+32
+00:01:28.187 --> 00:01:31.322
+Here, river had the better assignments,
+
+33
+00:01:31.322 --> 00:01:33.915
+and river won.
+
+34
+00:01:33.915 --> 00:01:35.575
+With these four tokens,
+
+35
+00:01:35.575 --> 00:01:37.735
+the assignments favour river.
+
+36
+00:01:37.735 --> 00:01:40.010
+Change the tokens before the blank,
+
+37
+00:01:40.010 --> 00:01:42.448
+and every assignment is redrawn.
+
+38
+00:01:42.448 --> 00:01:44.062
+Now garden is favoured.
+
+39
+00:01:44.062 --> 00:01:45.548
+Now forest.
+
+40
+00:01:45.548 --> 00:01:48.508
+Across thousands of different sentences,
+
+41
+00:01:48.508 --> 00:01:50.041
+each word still wins
+
+42
+00:01:50.041 --> 00:01:52.711
+about as often as the model wanted.
+
+43
+00:01:52.711 --> 00:01:55.463
+The real system plays thirty rounds,
+
+44
+00:01:55.463 --> 00:01:57.495
+not three, so in any one spot
+
+45
+00:01:57.495 --> 00:02:00.467
+the assignments nearly decide the word.
+
+46
+00:02:00.467 --> 00:02:03.149
+But averaged over everything the model writes,
+
+47
+00:02:03.149 --> 00:02:04.716
+the odds are its own.
+
+48
+00:02:04.716 --> 00:02:07.495
+That's why the quality holds.
+
+49
+00:02:07.495 --> 00:02:10.689
+Now ask: what's the capital of France?
+
+50
+00:02:11.152 --> 00:02:13.857
+The model is almost certain it's Paris.
+
+51
+00:02:13.857 --> 00:02:16.760
+So almost every contestant is Paris.
+
+52
+00:02:16.760 --> 00:02:19.395
+Paris plays Paris, and Paris wins,
+
+53
+00:02:19.395 --> 00:02:21.522
+whatever the assignments say.
+
+54
+00:02:21.984 --> 00:02:24.481
+The watermark had nothing to act on,
+
+55
+00:02:24.481 --> 00:02:27.163
+so the answer stays exact.
+
+56
+00:02:27.163 --> 00:02:30.495
+The same goes for a web address, a file path,
+
+57
+00:02:30.495 --> 00:02:34.129
+or a quote you asked for word for word.
+
+58
+00:02:34.129 --> 00:02:37.124
+But ask for a city famous for its food,
+
+59
+00:02:37.124 --> 00:02:40.572
+and Paris is one good answer among many.
+
+60
+00:02:40.572 --> 00:02:42.314
+Now the assignments matter,
+
+61
+00:02:42.314 --> 00:02:45.739
+and the watermark does its usual work.
+
+62
+00:02:45.739 --> 00:02:47.445
+It's not about the word.
+
+63
+00:02:47.445 --> 00:02:51.105
+It's about whether there was a choice.
+
+64
+00:02:51.105 --> 00:02:53.729
+The checker never needs the model.
+
+65
+00:02:53.729 --> 00:02:56.678
+It reads the text one token at a time.
+
+66
+00:02:56.678 --> 00:02:58.570
+For each token, it takes the four
+
+67
+00:02:58.570 --> 00:03:01.844
+tokens before it, adds the secret key,
+
+68
+00:03:01.844 --> 00:03:05.676
+and recreates that token's round assignments.
+
+69
+00:03:05.676 --> 00:03:08.265
+Then it counts the pluses.
+
+70
+00:03:08.265 --> 00:03:10.958
+Text written without the watermark
+
+71
+00:03:10.958 --> 00:03:13.350
+lands near half pluses.
+
+72
+00:03:13.350 --> 00:03:16.577
+Watermarked text leans toward plus,
+
+73
+00:03:16.577 --> 00:03:18.133
+and the longer the text,
+
+74
+00:03:18.133 --> 00:03:20.420
+the less that lean can be luck.
+
+75
+00:03:20.420 --> 00:03:21.721
+Check with the wrong key,
+
+76
+00:03:21.721 --> 00:03:25.006
+and the assignments are just noise.
+
+77
+00:03:25.006 --> 00:03:26.364
+Back to half.
+
+78
+00:03:26.364 --> 00:03:28.907
+That's why only the key holder can check.
+
+79
+00:03:28.907 --> 00:03:30.544
+And a hit only says the model
+
+80
+00:03:30.544 --> 00:03:32.216
+was probably involved.
+
+81
+00:03:32.216 --> 00:03:35.505
+It can't say who wrote the text.
+
+82
+00:03:35.505 --> 00:03:37.084
+Change one token,
+
+83
+00:03:37.084 --> 00:03:40.288
+and five tokens get new assignments:
+
+84
+00:03:40.288 --> 00:03:42.877
+that one, and the four after it,
+
+85
+00:03:42.877 --> 00:03:46.035
+because their previous tokens changed.
+
+86
+00:03:46.035 --> 00:03:48.148
+Their evidence is gone.
+
+87
+00:03:48.148 --> 00:03:51.155
+Every other token keeps its evidence.
+
+88
+00:03:51.155 --> 00:03:54.429
+Swapping in synonyms does the most damage,
+
+89
+00:03:54.429 --> 00:03:57.389
+because synonyms are exactly the free choices
+
+90
+00:03:57.389 --> 00:03:59.711
+where the watermark lives.
+
+91
+00:03:59.711 --> 00:04:03.055
+Asking the same model to reword the text
+
+92
+00:04:03.055 --> 00:04:06.689
+just writes new watermarked text.
+
+93
+00:04:06.689 --> 00:04:10.056
+A rewrite by a model without the key picks
+
+94
+00:04:10.056 --> 00:04:13.775
+every word again, and the watermark is gone.
+
+95
+00:04:13.775 --> 00:04:16.619
+So length is everything.
+
+96
+00:04:16.619 --> 00:04:20.555
+A short email can lose its mark to a few edits.
+
+97
+00:04:20.555 --> 00:04:22.982
+A whole book keeps it through a lot of them.
+
+98
+00:04:22.982 --> 00:04:24.595
+Three things to keep.
+
+99
+00:04:24.595 --> 00:04:28.706
+The watermark lives in free word choices.
+
+100
+00:04:28.706 --> 00:04:31.051
+Exact answers stay exact,
+
+101
+00:04:31.051 --> 00:04:33.721
+because there was nothing to choose.
+
+102
+00:04:33.721 --> 00:04:36.136
+And the checker counts pluses,
+
+103
+00:04:36.136 --> 00:04:39.991
+so long text keeps the mark, and a rewrite
+
+104
+00:04:39.991 --> 00:04:43.057
+by a model without the key removes it.
