@@ -1935,6 +1935,8 @@ class AoTranscript extends HTMLElement {
 // A body is counted, not kept, and reading stops at cap bytes (default 2 MB): an ignored
 // Range on a 25 MB video then costs the reader 2 MB, and the row says where it stopped.
 const FETCH_HEADERS = ['content-range', 'content-length', 'accept-ranges', 'content-type'];
+// HTTP/2 carries no reason phrase, so res.statusText is empty there; these are the usual ones.
+const STATUS_TEXT = { 200: 'OK', 206: 'Partial Content', 304: 'Not Modified', 404: 'Not Found', 416: 'Range Not Satisfiable' };
 const fmtBytes = (n) => (n < 10000 ? n.toLocaleString('en-US') + ' bytes'
   : n < 1e6 ? (n / 1000).toFixed(1) + ' KB' : (n / 1e6).toFixed(2) + ' MB');
 class AoFetch extends HTMLElement {
@@ -1983,7 +1985,7 @@ class AoFetch extends HTMLElement {
         try {
           const headers = range ? { Range: range } : {};
           const res = await fetch(url, { method, headers, cache: 'no-store', signal: ctl.signal });
-          const lines = ['HTTP ' + res.status + ' ' + (res.statusText || '')];
+          const lines = ['HTTP ' + res.status + ' ' + (res.statusText || STATUS_TEXT[res.status] || '')];
           for (const h of FETCH_HEADERS) {
             const v = res.headers.get(h);
             if (v) lines.push(h.replace(/(^|-)\w/g, (m) => m.toUpperCase()) + ': ' + v);
