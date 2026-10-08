@@ -3,7 +3,7 @@ id: "AO-038"
 title: "Claude painted three oil paintings, one brushstroke at a time, with no undo"
 summary: "Not image generation, not SVG: Opus 5.5 drove a physics simulator of wet oil paint, mixed its colours from historical tubes, made mistakes it couldn't undo, and painted over them. Two master studies of my favourite paintings and an oil version of my own 2018 drawing."
 date: 2026-10-05
-status: "in-progress"
+status: "shipped"
 tags: ["claude-code", "opus-5-5", "oil-paint", "simulation", "art"]
 preview:
   verdict: "Worked, mistakes and all"
@@ -119,8 +119,8 @@ actions, so:
   time. (Coming below.)
 - **Paintings under paintings.** Paint one picture, let it dry, paint another over it. The
   first survives as ridges in the surface and shows through wherever the new paint is thin,
-  like a pentimento in an X-ray. That's the next thing I'm having it do, with three paintings
-  of my characters stacked on one canvas.
+  like a pentimento in an X-ray. I had it do exactly this with three paintings of my
+  characters; it's at the bottom of this post.
 - **A stroke plan a real robot arm could follow.** Positions, pressures, loads, which pile.
 - **Teaching.** You can watch a passage go wrong and see exactly which decision did it.
 
@@ -140,3 +140,36 @@ seconds of painting time. Nothing here was recorded; it's re-painted from the lo
 
 You can see the mistakes go in and get painted out: the navy block in the spring study, the
 chalky wall in the courtroom.
+
+## Three paintings on one canvas
+
+Then I gave it a harder job: three ChatGPT images of my characters Jefrie and BloodTailor,
+painted one on top of the other on a single canvas, with each painting saved on its own before
+the next one buried it. The ChatGPT images had problems. They were crunchy, Jefrie's scythe was
+wrong, and her tail floated behind her instead of growing out of her. So I told it to fix those
+rather than copy them. It read both characters' canon first, gave her a single scythe blade
+with the red eye at its base and a bare haft, and joined her tail at her lower back.
+
+<video controls muted playsinline preload="metadata" poster="/media/oil-paintings/stack-3-twilight-feast.webp" src="/media/oil-paintings/stack-timelapse.mp4" style="width:100%;border-radius:8px"></video>
+
+That's all 54 chunks replayed from one log: the first painting, buried by the second, buried
+by the third.
+
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+<img src="/media/oil-paintings/stack-1-crimson-scythe.webp" alt="Layer one: Jefrie lunging with her scythe in front of BloodTailor's blood vortex, muddy and hard to read" style="width:100%;border-radius:6px">
+<img src="/media/oil-paintings/stack-2-crimson-warden.webp" alt="Layer two: a low-angle BloodTailor in a cathedral of chains, Jefrie's tail arcing over him" style="width:100%;border-radius:6px">
+<img src="/media/oil-paintings/stack-3-twilight-feast.webp" alt="Layer three: BloodTailor and Jefrie at a campfire under the iron dome at dusk" style="width:100%;border-radius:6px">
+</div>
+
+These are much worse than the first three, and the reason is worth knowing. Squaring up
+works by grouping a picture into colour zones. On the museum paintings, the zones followed the
+forms: a navy boy against a green wall. On these images almost everything is red, orange or
+near-black, so the zones cut straight across the figures and the figures dissolved. Its first
+pass also copied the ChatGPT crunch faithfully, as noise. Smoothing the reference first made it
+worse: the figures turned into blobs. Only the campfire, the top layer, reads properly.
+
+The fix isn't more passes, it's a different plan. Decide the values first, draw the figures
+as shapes by hand, then colour inside them. That's what a painter would do with a busy
+picture, and the simulator would let it. This run ran out of my weekly usage before it got
+the chance.
+
