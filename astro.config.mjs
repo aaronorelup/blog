@@ -52,6 +52,18 @@ function publicDirConstant() {
   };
 }
 
+// Only main may reach the site. Workers Builds builds every branch pushed to GitHub, and on
+// 2026-10-08 it deployed one to production: a cloud session had branched from the stale
+// `master` (2026-08-02), so the live site went back two months until it was rolled back.
+// Failing the build is what stops the deploy. Local builds don't set WORKERS_CI.
+const ciBranch = process.env.WORKERS_CI ? process.env.WORKERS_CI_BRANCH : null;
+if (ciBranch && ciBranch !== 'main') {
+  throw new Error(
+    `Not building "${ciBranch}" on Cloudflare: only main deploys aaronorelup.com. ` +
+      'Rebase the branch onto main and merge it there (see CLAUDE.md).',
+  );
+}
+
 export default defineConfig({
   site: 'https://aaronorelup.com',
   integrations: [publicDirConstant()],
