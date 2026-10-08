@@ -10,7 +10,7 @@ preview:
   verdict: "The scripted rig won"
   takeaway: "Tails and capes are where the AI rigging tools broke, and they are most of Jefrie's outline. SkinTokens only handled her tail on our script's bones."
   points:
-    - "Update, 8 Oct: closest is SkinTokens' body weights with our scripted tail and cape, worse than ours on 1 of 50 checks."
+    - "Update, 8 Oct: closest is SkinTokens' body weights with our scripted tail and cape; best run worse on 1 of 50 checks."
     - "Put them in a second ComfyUI (11.99 GB, its own Python). My main one's pip freeze stayed byte-identical throughout."
     - "Every fix a verifier agent forced on the first draft went the AI tools' way. Watch agents grading their own pipeline."
   image: "/media/previews/ai-rigging-vs-a-script.webp"
@@ -37,7 +37,8 @@ tested UniMate's newest release. Nothing AI-made went into Unity or the game thi
 
 **Corrected from the post below:**
 
-- **Weld before UniRig:** the welded mesh gave a worse body in 3 of 3 runs. Feed it as
+- **Weld before UniRig:** the welded mesh gave a worse body in 3 of 3 runs. That copy was also
+  an OBJ with different normals, so welding itself isn't proven to be the cause. Feed it as
   exported, then fix the seams.
 - **UniRig's free-form template as a first guess at extra chains:** in 7 of 7 runs, none ran
   along the tail.
@@ -57,16 +58,20 @@ tested UniMate's newest release. Nothing AI-made went into Unity or the game thi
 - **A skeleton you already have:** SkinTokens skin-only with **`use_postprocess` off**. The
   ComfyUI pack turns it on, and on Jefrie that handed her pelvis, chest and forearms to the joint
   below them. In a wrist-only test, 123 of 185 forearm vertices moved with it on, 0 with it off.
-- **Feed SkinTokens a denser copy** (12,000 vertices) and map the weights back to the game mesh:
+- **Feed SkinTokens a denser copy** (12,000 triangles) and map the weights back to the game mesh:
   a better body, no help for the cape.
 - **UniRig:** rig a copy without the tail, then average the weights across each texture seam.
-  The cracks went from 0.787 of her height to 0, in about a second.
+  The cracks went from 0.787 of her height to 0, in about a second. Those two were measured
+  separately, not together: the averaging on the full mesh as exported, the tail-less runs on
+  welded copies, which have no seams.
 - **UniMate, body only:** no tail or cape bones, small end bones at the feet, hands and head,
   the mixamo normalisation, its exact training sentences and 3 seeds. On a Mixamo rig, its
   Mixamo-only model plus a constant height fix. Still non-commercial.
 - **The best hybrid: AI body weights, scripted tail and cape.** SkinTokens' body weights on our
   skeleton, with the script's tail and cape weights, were worse than our rig on 1 of 50 checks
-  across her five game clips and better on 2. That's what I'd try first on a new character.
+  across her five game clips and better on 2. That was the best of several runs, which vary:
+  through the ComfyUI node the same settings gave 2 worse and 2 better, and none of the 39
+  weight sets passed the bar set before the test. That's what I'd try first on a new character.
 
 *The rest of this post is the first test, as filed on 5 October.*
 
