@@ -1171,3 +1171,53 @@ ao-transcript figcaption .ao-meta,
   .ao-tr-grid { grid-template-columns: minmax(0, 1fr); }
   .ao-tr-text { height: 200px; }
 }
+
+/* <ao-fetch>: requests the reader sends from their own browser, each with its answer. Without JS
+   the labels are a plain list. */
+ao-fetch { display: block; margin: 28px 0; }
+ao-fetch > ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.pc-prose ao-fetch.ao-fetch-ready > ol > li { margin: 0; padding: 14px 16px; border: 1px solid var(--pc-line); border-radius: 16px; }
+.ao-fetch-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.ao-fetch-label { font: 600 14px/1.35 Karla, system-ui, sans-serif; color: var(--pc-strong); }
+ao-fetch button {
+  font: 600 12.5px/1 Karla, system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--pc-line2);
+  background: transparent;
+  color: var(--pc-strong);
+  cursor: pointer;
+  transition: border-color 180ms cubic-bezier(.4,0,.2,1), color 180ms cubic-bezier(.4,0,.2,1);
+}
+ao-fetch button:hover:not(:disabled) { border-color: var(--pc-head); color: var(--pc-head); }
+ao-fetch button:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+ao-fetch button:disabled { opacity: 0.5; cursor: default; }
+.ao-fetch-all { margin-bottom: 12px; }
+:root .pc-prose ao-fetch pre.ao-fetch-req,
+:root .pc-prose ao-fetch pre.ao-fetch-out {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: 0;
+  font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+:root .pc-prose ao-fetch pre.ao-fetch-req { background: transparent; border: 1px dashed var(--pc-line2); color: var(--pc-soft); }
+:root .pc-prose ao-fetch pre.ao-fetch-out { background: var(--pc-code); color: var(--pc-body); border: 0; border-left: 2px solid var(--pc-line2); }
+:root .pc-prose ao-fetch pre.ao-fetch-ok { border-left-color: var(--pc-head); }
+:root .pc-prose ao-fetch pre.ao-fetch-whole { border-left-color: var(--pc-accent); }
+ao-fetch figcaption {
+  margin-top: 10px;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pc-soft);
+}
+ao-fetch figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
+ao-fetch figcaption .ao-meta {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: var(--pc-quiet);
+}
