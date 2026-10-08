@@ -10,12 +10,65 @@ preview:
   verdict: "The scripted rig won"
   takeaway: "Tails and capes are where the AI rigging tools broke, and they are most of Jefrie's outline. SkinTokens only handled her tail on our script's bones."
   points:
-    - "Still useful, untested in-game: SkinTokens to check body weights, UniRig to guess extra chains, UniMate to sketch idles."
+    - "Update, 8 Oct: closest is SkinTokens' body weights with our scripted tail and cape, worse than ours on 1 of 50 checks."
     - "Put them in a second ComfyUI (11.99 GB, its own Python). My main one's pip freeze stayed byte-identical throughout."
     - "Every fix a verifier agent forced on the first draft went the AI tools' way. Watch agents grading their own pipeline."
   image: "/media/previews/ai-rigging-vs-a-script.webp"
   alt: "Two grey clay renders of Jefrie with her tail lifted: our scripted rig lifts it smoothly on the left, UniRig's breaks into shards on the right"
 ---
+
+## Update, 8 October: I tested them properly
+
+**The scripted rig still wins on Jefrie, but the AI tools are better than this post made them
+look.** I asked Claude to find out when they're worth using. It ran 17 more experiments, each
+re-checked by a verifier agent, on Jefrie, Mixamo's X Bot, an adult diver and BloodTailor, then
+tested UniMate's newest release. Nothing AI-made went into Unity or the game this time either.
+
+- **For the two riggers, it was mostly the tail and the cape.** They were 84.5% of the vertices
+  that moved wrongly in SkinTokens' auto-rig, and cutting the tail off the mesh removed 92 to 93%
+  of UniRig's.
+- **For UniMate, mostly not.** The tail caused one of its six failures and half of another. The
+  rest was our recipe and the model's own limits.
+- **On the characters they were trained for, they're good.** SkinTokens matched an artist's rig
+  on the X Bot, and UniMate's Mixamo-only model made believable runs and jumps on a Mixamo rig.
+- **UniMate v3 and its official preparation for new rigs, out on 5 October, didn't change her
+  result.** Same skeleton, motion within seed-to-seed noise of the old model on the run and the
+  jump, faster takes (27 to 39 s against 43 to 48), and 2 of 6 jumps that end in the air.
+
+**Corrected from the post below:**
+
+- **Weld before UniRig:** the welded mesh gave a worse body in 3 of 3 runs. Feed it as
+  exported, then fix the seams.
+- **UniRig's free-form template as a first guess at extra chains:** in 7 of 7 runs, none ran
+  along the tail.
+- **UniMate with the tail locked, to sketch an idle:** she crouches, and the tail sits under the
+  floor in 60 of 60 frames.
+- **"UniMate's official preparation for new rigs isn't out":** it is, see above.
+- **"The tail and the cape are where these tools break":** only for the riggers, and part of
+  SkinTokens' body error was one setting.
+- **FootLock finding nothing:** that's by design. It only pins feet already near the floor, and
+  an in-place run has none.
+- **UniMate's humanoid checkpoint, "not tried":** tried now, above.
+
+**What I'd do now:**
+
+- **A plain humanoid, limbs apart, nothing hanging off it:** SkinTokens' auto-rig, then rename
+  the fingers (21 of 30 were wrong on the X Bot).
+- **A skeleton you already have:** SkinTokens skin-only with **`use_postprocess` off**. The
+  ComfyUI pack turns it on, and on Jefrie that handed her pelvis, chest and forearms to the joint
+  below them. In a wrist-only test, 123 of 185 forearm vertices moved with it on, 0 with it off.
+- **Feed SkinTokens a denser copy** (12,000 vertices) and map the weights back to the game mesh:
+  a better body, no help for the cape.
+- **UniRig:** rig a copy without the tail, then average the weights across each texture seam.
+  The cracks went from 0.787 of her height to 0, in about a second.
+- **UniMate, body only:** no tail or cape bones, small end bones at the feet, hands and head,
+  the mixamo normalisation, its exact training sentences and 3 seeds. On a Mixamo rig, its
+  Mixamo-only model plus a constant height fix. Still non-commercial.
+- **The best hybrid: AI body weights, scripted tail and cape.** SkinTokens' body weights on our
+  skeleton, with the script's tail and cape weights, were worse than our rig on 1 of 50 checks
+  across her five game clips and better on 2. That's what I'd try first on a new character.
+
+*The rest of this post is the first test, as filed on 5 October.*
 
 None of the AI rigging or animation models beat the rig Claude built for Jefrie by script, so the
 scripted one stays in the game. The closest was SkinTokens, a small language model that writes
