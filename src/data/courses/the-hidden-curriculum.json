@@ -1,10 +1,10 @@
 {
  "slug": "the-hidden-curriculum",
  "title": "The Hidden Curriculum",
- "updated": "2026-10-07",
+ "updated": "2026-10-08",
  "totalLessons": 213,
- "publishedLessons": 8,
- "runtimeSeconds": 4297,
+ "publishedLessons": 9,
+ "runtimeSeconds": 4934,
  "moduleCount": 22,
  "districtCount": 6,
  "regions": [
@@ -231,7 +231,14 @@
      "id": "01.03",
      "title": "Folders, paths & the working directory",
      "idea": "Absolute vs relative paths, C:\\ vs /, why \"run it from the right folder\" matters",
-     "status": "locked"
+     "status": "published",
+     "slug": "01-03-folders-paths-the-working-directory",
+     "url": "/courses/the-hidden-curriculum/lessons/01-03-folders-paths-the-working-directory/",
+     "duration": 637.4,
+     "summary": "A path is an address, and a relative path only makes sense from the working directory of the program that reads it.",
+     "published": "2026-10-08",
+     "narrator": "RClayton",
+     "poster": "/courses/the-hidden-curriculum/lessons/01-03-folders-paths-the-working-directory/poster.jpg"
     },
     {
      "id": "01.04",
@@ -298,7 +305,7 @@
      "status": "locked"
     }
    ],
-   "filed": 2
+   "filed": 3
   },
   {
    "n": "02",
@@ -1678,17 +1685,17 @@
   }
  ],
  "latest": {
-  "id": "01.02",
-  "title": "File extensions & associations",
-  "idea": "Showing hidden extensions, renaming .txt → .py, \"Open with\", default apps",
+  "id": "01.03",
+  "title": "Folders, paths & the working directory",
+  "idea": "Absolute vs relative paths, C:\\ vs /, why \"run it from the right folder\" matters",
   "status": "published",
-  "slug": "01-02-file-extensions-associations",
-  "url": "/courses/the-hidden-curriculum/lessons/01-02-file-extensions-associations/",
-  "duration": 609.2,
-  "summary": "The extension is a label in a file's name and your computer keeps a ledger matching each label to a program, so renaming changes the label but never the bytes, while Open with set to Always and default apps edit the ledger; this lesson draws that picture as of October 2026, with AI tools now making the files.",
-  "published": "2026-10-07",
-  "narrator": "Adrian",
-  "poster": "/courses/the-hidden-curriculum/lessons/01-02-file-extensions-associations/poster.jpg"
+  "slug": "01-03-folders-paths-the-working-directory",
+  "url": "/courses/the-hidden-curriculum/lessons/01-03-folders-paths-the-working-directory/",
+  "duration": 637.4,
+  "summary": "A path is an address, and a relative path only makes sense from the working directory of the program that reads it.",
+  "published": "2026-10-08",
+  "narrator": "RClayton",
+  "poster": "/courses/the-hidden-curriculum/lessons/01-03-folders-paths-the-working-directory/poster.jpg"
  },
  "first": {
   "id": "00.01",

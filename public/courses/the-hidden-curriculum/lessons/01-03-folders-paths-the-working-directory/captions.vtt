@@ -1,0 +1,905 @@
+WEBVTT
+
+1
+00:00:01.600 --> 00:00:03.643
+In this lesson you'll learn how a path
+
+2
+00:00:03.643 --> 00:00:06.151
+points to a file, and why the same
+
+3
+00:00:06.151 --> 00:00:08.009
+name can point somewhere different
+
+4
+00:00:08.009 --> 00:00:10.760
+depending on where a program was started.
+
+5
+00:00:10.760 --> 00:00:12.153
+A path is an address,
+
+6
+00:00:12.153 --> 00:00:15.230
+and a relative path only makes sense
+
+7
+00:00:15.230 --> 00:00:17.018
+from the working directory
+
+8
+00:00:17.018 --> 00:00:19.329
+of the program that reads it.
+
+9
+00:00:19.329 --> 00:00:21.140
+Nobody handed you this map.
+
+10
+00:00:21.140 --> 00:00:23.276
+That's not a character flaw.
+
+11
+00:00:23.276 --> 00:00:25.099
+It's a missing semester.
+
+12
+00:00:25.099 --> 00:00:27.154
+Aaron, who made this course,
+
+13
+00:00:27.154 --> 00:00:30.091
+had an IT degree and still didn't know to open
+
+14
+00:00:30.091 --> 00:00:33.760
+a terminal and cd into the folder first.
+
+15
+00:00:33.760 --> 00:00:36.501
+So here's the shelf to put this on.
+
+16
+00:00:36.951 --> 00:00:40.829
+This lesson sits in District One, The Machine.
+
+17
+00:00:40.829 --> 00:00:43.093
+That district answers one question:
+
+18
+00:00:43.093 --> 00:00:44.859
+what's on your computer?
+
+19
+00:00:45.322 --> 00:00:48.724
+Module 01 is about how that stuff is laid out.
+
+20
+00:00:48.724 --> 00:00:51.521
+Every file on your computer has an address,
+
+21
+00:00:51.521 --> 00:00:54.250
+a line of text that says where it is.
+
+22
+00:00:54.250 --> 00:00:56.620
+A path is that line of text.
+
+23
+00:00:57.070 --> 00:00:59.682
+Picture a map drawn on the disk.
+
+24
+00:00:59.682 --> 00:01:03.641
+Its edge is the root, where every address begins.
+
+25
+00:01:03.641 --> 00:01:06.660
+On Windows, each drive has its own root,
+
+26
+00:01:06.660 --> 00:01:09.469
+so there is one edge per drive.
+
+27
+00:01:09.469 --> 00:01:12.233
+Now picture giving directions on that map:
+
+28
+00:01:12.233 --> 00:01:15.263
+three streets east, then two up.
+
+29
+00:01:15.263 --> 00:01:18.166
+Those directions only work from one spot.
+
+30
+00:01:18.166 --> 00:01:20.778
+So put a you-are-here dot on the map.
+
+31
+00:01:20.778 --> 00:01:23.274
+That dot is the working directory.
+
+32
+00:01:23.274 --> 00:01:25.805
+Every running program has one.
+
+33
+00:01:25.805 --> 00:01:27.245
+Keep this picture.
+
+34
+00:01:27.245 --> 00:01:30.161
+The map is going to get a second dot.
+
+35
+00:01:30.610 --> 00:01:34.360
+An absolute path is a full street address.
+
+36
+00:01:34.360 --> 00:01:36.949
+It starts at the root of the disk,
+
+37
+00:01:36.949 --> 00:01:40.444
+the edge of the map, and counts from there.
+
+38
+00:01:40.444 --> 00:01:42.441
+So it reads the same wherever
+
+39
+00:01:42.441 --> 00:01:44.496
+the dot happens to be.
+
+40
+00:01:44.496 --> 00:01:48.164
+On Windows, the root begins with a drive letter,
+
+41
+00:01:48.164 --> 00:01:51.171
+so you'll see C:\,
+
+42
+00:01:51.171 --> 00:01:53.958
+then folder names, then the file.
+
+43
+00:01:53.958 --> 00:01:55.664
+On macOS and Linux,
+
+44
+00:01:55.664 --> 00:01:58.927
+the root is a single forward slash.
+
+45
+00:01:58.927 --> 00:02:01.620
+Microsoft's own wording is that a full
+
+46
+00:02:01.620 --> 00:02:04.511
+path starts from a drive or a root.
+
+47
+00:02:04.511 --> 00:02:07.170
+The backslash is the Windows habit,
+
+48
+00:02:07.170 --> 00:02:10.688
+and the forward slash is the Unix habit.
+
+49
+00:02:10.688 --> 00:02:14.148
+Windows generally accepts forward slashes too,
+
+50
+00:02:14.148 --> 00:02:16.133
+and so does PowerShell.
+
+51
+00:02:16.133 --> 00:02:19.384
+The separator is a naming convention.
+
+52
+00:02:19.384 --> 00:02:23.530
+The operating system decides what the name means.
+
+53
+00:02:23.980 --> 00:02:27.173
+A relative path leaves out the start.
+
+54
+00:02:27.173 --> 00:02:29.495
+It says three streets from here,
+
+55
+00:02:29.495 --> 00:02:32.525
+and here means the working directory.
+
+56
+00:02:32.525 --> 00:02:36.089
+Every running program has a working directory.
+
+57
+00:02:36.089 --> 00:02:38.945
+It is set when the program starts,
+
+58
+00:02:38.945 --> 00:02:42.904
+and it is inherited from whatever started it.
+
+59
+00:02:42.904 --> 00:02:44.297
+If you typed the command,
+
+60
+00:02:44.297 --> 00:02:47.049
+the place you typed it became the dot.
+
+61
+00:02:47.049 --> 00:02:51.031
+A relative path is measured from that directory.
+
+62
+00:02:51.031 --> 00:02:53.098
+Not from the file that contains it,
+
+63
+00:02:53.098 --> 00:02:55.688
+and not from the root of the disk.
+
+64
+00:02:56.151 --> 00:02:59.193
+Many terminals show the dot in the prompt.
+
+65
+00:02:59.193 --> 00:03:01.039
+PowerShell's default prompt looks
+
+66
+00:03:01.039 --> 00:03:04.046
+like PSC colon backslash,
+
+67
+00:03:04.046 --> 00:03:07.146
+then your folder, then a greater-than sign.
+
+68
+00:03:07.146 --> 00:03:08.771
+That prompt is the dot,
+
+69
+00:03:08.771 --> 00:03:10.838
+printed on the screen for you.
+
+70
+00:03:10.838 --> 00:03:14.113
+Read it before you trust any relative name.
+
+71
+00:03:14.564 --> 00:03:18.314
+Here is where "it works on my machine" comes from.
+
+72
+00:03:18.314 --> 00:03:20.427
+Imagine a script that opens a file
+
+73
+00:03:20.427 --> 00:03:24.305
+called data dot see SV, by its bare name.
+
+74
+00:03:24.305 --> 00:03:26.290
+Run it from the project folder,
+
+75
+00:03:26.290 --> 00:03:28.438
+and the name finds the file.
+
+76
+00:03:28.438 --> 00:03:30.110
+The script works.
+
+77
+00:03:30.110 --> 00:03:31.979
+Run it from another folder,
+
+78
+00:03:31.979 --> 00:03:35.299
+and the same name looks in that folder,
+
+79
+00:03:35.299 --> 00:03:37.610
+finds nothing, and fails.
+
+80
+00:03:37.610 --> 00:03:39.177
+The code did not change.
+
+81
+00:03:39.177 --> 00:03:41.011
+The dot moved.
+
+82
+00:03:41.011 --> 00:03:44.378
+Your friend's dot sits on their own project,
+
+83
+00:03:44.378 --> 00:03:46.399
+so for them it works.
+
+84
+00:03:46.399 --> 00:03:49.591
+Both of you are right about your own dot.
+
+85
+00:03:49.591 --> 00:03:52.413
+When a relative name fails, check where the
+
+86
+00:03:52.413 --> 00:03:55.595
+program was standing before you check the file.
+
+87
+00:03:56.045 --> 00:03:58.518
+Three shortcuts show up in paths.
+
+88
+00:03:58.518 --> 00:04:00.062
+Tilde means your home folder,
+
+89
+00:04:00.062 --> 00:04:02.709
+and the shell expands it for you.
+
+90
+00:04:02.709 --> 00:04:04.207
+On Windows, that is usually
+
+91
+00:04:04.207 --> 00:04:08.886
+something like C:\Users and your name.
+
+92
+00:04:08.886 --> 00:04:11.405
+A single dot means this folder.
+
+93
+00:04:11.405 --> 00:04:14.888
+Two dots mean the folder one step up.
+
+94
+00:04:14.888 --> 00:04:17.895
+You only need to recognize them for now.
+
+95
+00:04:17.895 --> 00:04:19.892
+Now the place where the picture breaks.
+
+96
+00:04:19.892 --> 00:04:22.144
+Real people carry their own dot.
+
+97
+00:04:22.144 --> 00:04:24.617
+A computer's dot is a stored value
+
+98
+00:04:24.617 --> 00:04:27.183
+inside each running program.
+
+99
+00:04:27.183 --> 00:04:29.435
+When one program starts another,
+
+100
+00:04:29.435 --> 00:04:32.976
+the child gets a copy, not a shared pointer.
+
+101
+00:04:32.976 --> 00:04:36.482
+So there are many copies, one per running program.
+
+102
+00:04:36.482 --> 00:04:40.035
+And the top of the disk has nowhere further to go.
+
+103
+00:04:40.035 --> 00:04:43.971
+Two dots at the root stay at the root.
+
+104
+00:04:43.971 --> 00:04:47.804
+Don't stretch the metaphor past that edge.
+
+105
+00:04:48.254 --> 00:04:51.296
+So what does a cd actually do?
+
+106
+00:04:51.296 --> 00:04:54.372
+It changes the dot for the session that ran it,
+
+107
+00:04:54.372 --> 00:04:56.276
+and only that session.
+
+108
+00:04:56.276 --> 00:04:59.400
+A child process cannot move its parent.
+
+109
+00:04:59.400 --> 00:05:02.453
+If a program changes its own folder,
+
+110
+00:05:02.453 --> 00:05:06.005
+the window you typed into keeps its own dot.
+
+111
+00:05:06.005 --> 00:05:07.538
+That is the general rule,
+
+112
+00:05:07.538 --> 00:05:11.137
+for every program that keeps a working directory.
+
+113
+00:05:11.137 --> 00:05:14.666
+Python is the clearest case of a second list.
+
+114
+00:05:14.666 --> 00:05:17.836
+Other tools have their own lookups too.
+
+115
+00:05:17.836 --> 00:05:21.226
+Node, for example, resolves a required file
+
+116
+00:05:21.226 --> 00:05:24.395
+from the calling file's folder, not the shell's.
+
+117
+00:05:24.395 --> 00:05:27.158
+When you run python script .py,
+
+118
+00:05:27.158 --> 00:05:30.165
+the import list starts with that script's folder.
+
+119
+00:05:30.165 --> 00:05:32.360
+With dash M or dash C,
+
+120
+00:05:32.360 --> 00:05:34.809
+it starts with the current folder.
+
+121
+00:05:34.809 --> 00:05:37.479
+Python 3.11 added dash P
+
+122
+00:05:37.479 --> 00:05:42.019
+and an environment variable, PYTHON safe path,
+
+123
+00:05:42.019 --> 00:05:45.293
+which stop Python putting those folders first.
+
+124
+00:05:45.293 --> 00:05:48.613
+That story belongs to 05.02.
+
+125
+00:05:48.613 --> 00:05:50.761
+A file path and an import path
+
+126
+00:05:50.761 --> 00:05:52.829
+are two different lookups.
+
+127
+00:05:53.281 --> 00:05:55.998
+On macOS, on Linux, and in Git Bash,
+
+128
+00:05:55.998 --> 00:05:59.957
+you'll often see: no such file or directory.
+
+129
+00:05:59.957 --> 00:06:04.624
+Read it as: this name is not found from this dot.
+
+130
+00:06:04.624 --> 00:06:07.097
+Python is more specific.
+
+131
+00:06:07.097 --> 00:06:08.606
+You'll see a line like:
+
+132
+00:06:08.606 --> 00:06:13.018
+FileNotFoundError, then bracketed err-no two,
+
+133
+00:06:13.018 --> 00:06:15.363
+then no such file or directory,
+
+134
+00:06:15.363 --> 00:06:19.404
+then the name in quotes, data dot see SV.
+
+135
+00:06:19.404 --> 00:06:20.820
+The name is right.
+
+136
+00:06:20.820 --> 00:06:22.863
+The place is wrong.
+
+137
+00:06:22.863 --> 00:06:25.243
+PowerShell usually says something like:
+
+138
+00:06:25.243 --> 00:06:28.854
+cannot find path, because it does not exist.
+
+139
+00:06:28.854 --> 00:06:31.327
+Check the exact words on your own screen,
+
+140
+00:06:31.327 --> 00:06:33.567
+because they change with the command.
+
+141
+00:06:33.567 --> 00:06:40.557
+In Git Bash, C:\Users shows up as /c/Users.
+
+142
+00:06:40.557 --> 00:06:42.983
+Same place, another spelling.
+
+143
+00:06:42.983 --> 00:06:45.015
+If you use Claude Code,
+
+144
+00:06:45.015 --> 00:06:46.850
+a tool result may end with:
+
+145
+00:06:46.850 --> 00:06:52.109
+Shell cwd was reset to, and then a folder.
+
+146
+00:06:52.109 --> 00:06:53.641
+Some people report seeing
+
+147
+00:06:53.641 --> 00:06:57.148
+that after a cd left the project,
+
+148
+00:06:57.148 --> 00:07:00.598
+and the shell went back to the project folder.
+
+149
+00:07:01.047 --> 00:07:03.787
+Five years ago, in 2021,
+
+150
+00:07:03.787 --> 00:07:07.595
+no mainstream coding agent ran commands for you.
+
+151
+00:07:07.595 --> 00:07:10.300
+The person at the keyboard typed every cd,
+
+152
+00:07:10.300 --> 00:07:13.075
+and only that person moved the dot.
+
+153
+00:07:13.075 --> 00:07:15.722
+Claude Code opened as a limited research
+
+154
+00:07:15.722 --> 00:07:19.356
+preview in the terminal in February 2025.
+
+155
+00:07:19.356 --> 00:07:23.826
+Codex CLI followed in April 2025.
+
+156
+00:07:23.826 --> 00:07:26.183
+Now a coding agent runs commands
+
+157
+00:07:26.183 --> 00:07:28.598
+from a working directory it inherited,
+
+158
+00:07:28.598 --> 00:07:31.187
+and it types the cd itself.
+
+159
+00:07:31.187 --> 00:07:33.625
+Claude Code's shell keeps its folder
+
+160
+00:07:33.625 --> 00:07:35.877
+from one command to the next.
+
+161
+00:07:35.877 --> 00:07:39.093
+Users have reported that a cd out of the project,
+
+162
+00:07:39.093 --> 00:07:41.322
+or out of an added directory,
+
+163
+00:07:41.322 --> 00:07:43.853
+gets pulled back to the project folder,
+
+164
+00:07:43.853 --> 00:07:45.804
+and the result says so.
+
+165
+00:07:45.804 --> 00:07:48.985
+Subagents don't carry a cd over.
+
+166
+00:07:48.985 --> 00:07:52.793
+The sandbox runs on macOS, Linux,
+
+167
+00:07:52.793 --> 00:07:56.287
+and Windows Subsystem for Linux version two,
+
+168
+00:07:56.287 --> 00:07:58.633
+per the docs read this month.
+
+169
+00:07:58.633 --> 00:08:00.746
+Native Windows runs commands without
+
+170
+00:08:00.746 --> 00:08:03.137
+that sandbox, so on Windows,
+
+171
+00:08:03.137 --> 00:08:05.993
+the folder rule is the one that matters.
+
+172
+00:08:05.993 --> 00:08:08.652
+Some people have reported the folder
+
+173
+00:08:08.652 --> 00:08:11.125
+resetting between every command.
+
+174
+00:08:11.125 --> 00:08:13.888
+That is a reported issue, not a rule.
+
+175
+00:08:13.888 --> 00:08:16.326
+A worktree is a second folder
+
+176
+00:08:16.326 --> 00:08:19.669
+for the same project, on its own branch,
+
+177
+00:08:19.669 --> 00:08:21.504
+sharing one history.
+
+178
+00:08:21.504 --> 00:08:24.000
+The detail is 08.11.
+
+179
+00:08:24.000 --> 00:08:26.554
+Agents can resolve paths for you
+
+180
+00:08:26.554 --> 00:08:28.017
+when they know the folder.
+
+181
+00:08:28.017 --> 00:08:29.016
+You still need to know
+
+182
+00:08:29.016 --> 00:08:30.572
+which folder they're standing in,
+
+183
+00:08:30.572 --> 00:08:32.789
+and whether it's the project you think.
+
+184
+00:08:32.789 --> 00:08:35.076
+Where this goes next is a guess.
+
+185
+00:08:35.076 --> 00:08:37.340
+Agents will probably do more of the typing,
+
+186
+00:08:37.340 --> 00:08:39.896
+and the question will still be the same.
+
+187
+00:08:40.346 --> 00:08:42.437
+You can skip these for now.
+
+188
+00:08:43.028 --> 00:08:47.335
+Windows paths have a 260-character default.
+
+189
+00:08:47.335 --> 00:08:50.273
+Apps have to opt in before that limit lifts,
+
+190
+00:08:50.273 --> 00:08:52.420
+and it takes both a system setting
+
+191
+00:08:52.420 --> 00:08:54.940
+and the app's own manifest.
+
+192
+00:08:54.940 --> 00:08:58.028
+That's module one, lesson eight.
+
+193
+00:08:58.028 --> 00:09:00.733
+Forward slashes mostly work on Windows,
+
+194
+00:09:00.733 --> 00:09:02.649
+so you don't need to fight them.
+
+195
+00:09:02.649 --> 00:09:05.075
+WSL reaches your C drive
+
+196
+00:09:05.075 --> 00:09:08.128
+under slash mount slash C.
+
+197
+00:09:08.128 --> 00:09:12.772
+Python's dash P option and PYTHON safe path
+
+198
+00:09:12.772 --> 00:09:15.977
+are module five, lesson two's story.
+
+199
+00:09:15.977 --> 00:09:18.637
+You don't need to memorize any of this today.
+
+200
+00:09:19.088 --> 00:09:21.410
+This connects to five shelves.
+
+201
+00:09:21.410 --> 00:09:26.124
+Hidden files, like .git and .venv,
+
+202
+00:09:26.124 --> 00:09:28.422
+are paths with a dot in front.
+
+203
+00:09:28.422 --> 00:09:32.219
+That's module one, lesson four.
+
+204
+00:09:32.219 --> 00:09:35.899
+A bare name like python, with no folder at all,
+
+205
+00:09:35.899 --> 00:09:38.465
+is found a different way, through PATH.
+
+206
+00:09:38.465 --> 00:09:41.658
+That's module one, lesson five.
+
+207
+00:09:41.658 --> 00:09:44.920
+Moving around with cd, ls,
+
+208
+00:09:44.920 --> 00:09:48.589
+and the prompt is module two, lesson three.
+
+209
+00:09:48.589 --> 00:09:50.795
+Running a file, and the imports it makes,
+
+210
+00:09:50.795 --> 00:09:53.535
+is module five, lesson two.
+
+211
+00:09:53.535 --> 00:09:55.868
+And a second folder for the same project,
+
+212
+00:09:55.868 --> 00:09:59.456
+on its own branch, is a worktree on git.
+
+213
+00:09:59.456 --> 00:10:02.673
+That's module eight, lesson eleven.
+
+214
+00:10:03.123 --> 00:10:04.656
+Keep this.
+
+215
+00:10:04.656 --> 00:10:06.780
+One: a path is an address.
+
+216
+00:10:06.780 --> 00:10:09.265
+An absolute path starts at the root,
+
+217
+00:10:09.265 --> 00:10:10.797
+and a relative path starts
+
+218
+00:10:10.797 --> 00:10:12.933
+where the program stands.
+
+219
+00:10:12.933 --> 00:10:15.023
+Two: every running program
+
+220
+00:10:15.023 --> 00:10:17.067
+has a working directory.
+
+221
+00:10:17.067 --> 00:10:20.282
+It is inherited from whatever started the program,
+
+222
+00:10:20.282 --> 00:10:24.183
+and a cd moves only the session that ran it.
+
+223
+00:10:24.183 --> 00:10:27.190
+Three: the same name can mean a different file.
+
+224
+00:10:27.190 --> 00:10:28.827
+When something isn't found,
+
+225
+00:10:28.827 --> 00:10:31.068
+check the folder the program is in.
+
+226
+00:10:31.068 --> 00:10:34.773
+With an agent, check which project it's in too.
