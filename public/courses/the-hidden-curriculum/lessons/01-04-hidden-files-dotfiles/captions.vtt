@@ -1,0 +1,977 @@
+WEBVTT
+
+1
+00:00:01.600 --> 00:00:03.957
+In this lesson you'll learn about the hidden
+
+2
+00:00:03.957 --> 00:00:07.428
+layer of files on your computer, what lives in it,
+
+3
+00:00:07.428 --> 00:00:09.704
+and why you need to know it is there.
+
+4
+00:00:09.704 --> 00:00:12.734
+Almost every project and app keeps its settings,
+
+5
+00:00:12.734 --> 00:00:15.869
+its history, its secrets, and now its AI
+
+6
+00:00:15.869 --> 00:00:18.446
+instructions in files your computer hides,
+
+7
+00:00:18.446 --> 00:00:20.292
+or tucks out of the way.
+
+8
+00:00:20.292 --> 00:00:22.255
+Hidden only means out of sight.
+
+9
+00:00:22.255 --> 00:00:23.775
+It never means locked.
+
+10
+00:00:23.775 --> 00:00:26.190
+Your secret keys live in that layer.
+
+11
+00:00:26.190 --> 00:00:28.199
+And AI agents read and write it,
+
+12
+00:00:28.199 --> 00:00:29.789
+so it's the first place to look
+
+13
+00:00:29.789 --> 00:00:32.647
+when something changed that you didn't see.
+
+14
+00:00:33.097 --> 00:00:35.013
+This lesson sits in District One,
+
+15
+00:00:35.013 --> 00:00:38.078
+The Machine, which answers one question:
+
+16
+00:00:38.078 --> 00:00:40.040
+what's on your computer?
+
+17
+00:00:40.040 --> 00:00:43.105
+The last lesson gave every file an address.
+
+18
+00:00:43.105 --> 00:00:44.846
+This one shows you the addresses
+
+19
+00:00:44.846 --> 00:00:48.308
+your computer leaves off the tour.
+
+20
+00:00:48.758 --> 00:00:51.080
+Picture your computer as a shop.
+
+21
+00:00:51.080 --> 00:00:53.030
+The shop floor is what File Explorer
+
+22
+00:00:53.030 --> 00:00:54.656
+or Finder shows you:
+
+23
+00:00:54.656 --> 00:00:56.873
+your documents and your code.
+
+24
+00:00:56.873 --> 00:00:59.161
+The porter from two lessons back
+
+25
+00:00:59.161 --> 00:01:01.633
+gives the tour of that floor.
+
+26
+00:01:01.633 --> 00:01:04.292
+At the back, the porter walks straight past
+
+27
+00:01:04.292 --> 00:01:07.380
+a door with a sign on it: staff only.
+
+28
+00:01:07.380 --> 00:01:08.773
+Behind that door is everything
+
+29
+00:01:08.773 --> 00:01:10.433
+that keeps the shop running.
+
+30
+00:01:10.433 --> 00:01:12.419
+The settings. The history.
+
+31
+00:01:12.419 --> 00:01:14.520
+The supplies. The keys.
+
+32
+00:01:14.520 --> 00:01:16.587
+You don't need any of it to shop.
+
+33
+00:01:16.587 --> 00:01:18.654
+You need it the day something breaks.
+
+34
+00:01:18.654 --> 00:01:19.931
+Keep this picture.
+
+35
+00:01:19.931 --> 00:01:21.755
+The back room is the lesson.
+
+36
+00:01:22.205 --> 00:01:24.214
+There are two kinds of sign.
+
+37
+00:01:24.214 --> 00:01:25.386
+On Mac and Linux,
+
+38
+00:01:25.386 --> 00:01:27.836
+the sign is painted into the name:
+
+39
+00:01:27.836 --> 00:01:30.587
+a name that starts with a dot is skipped
+
+40
+00:01:30.587 --> 00:01:32.793
+when a folder is listed.
+
+41
+00:01:32.793 --> 00:01:33.943
+As Rob Pike,
+
+42
+00:01:33.943 --> 00:01:36.915
+one of the early Unix programmers, tells it,
+
+43
+00:01:36.915 --> 00:01:40.049
+this began as a shortcut in the list command,
+
+44
+00:01:40.049 --> 00:01:42.406
+meant to hide two special entries,
+
+45
+00:01:42.406 --> 00:01:44.740
+dot and dot dot.
+
+46
+00:01:44.740 --> 00:01:47.236
+It hid every name that starts with a dot,
+
+47
+00:01:47.236 --> 00:01:49.941
+and people started putting settings there.
+
+48
+00:01:49.941 --> 00:01:52.054
+Pike later called it a mistake.
+
+49
+00:01:52.054 --> 00:01:54.167
+Windows ignores the dot.
+
+50
+00:01:54.167 --> 00:01:57.348
+There, hiding is a flag hung on the file itself,
+
+51
+00:01:57.348 --> 00:01:59.449
+called the Hidden attribute.
+
+52
+00:01:59.449 --> 00:02:02.607
+So on Windows, a dotted name sits in plain view
+
+53
+00:02:02.607 --> 00:02:04.639
+unless something hung the flag.
+
+54
+00:02:04.639 --> 00:02:08.342
+Git for Windows flags its own .git folder.
+
+55
+00:02:08.342 --> 00:02:10.676
+Every system can show hidden items.
+
+56
+00:02:10.676 --> 00:02:12.301
+The names are on screen.
+
+57
+00:02:12.301 --> 00:02:14.149
+The steps can wait.
+
+58
+00:02:14.600 --> 00:02:16.655
+There's more than one back room.
+
+59
+00:02:16.655 --> 00:02:19.128
+Each project has its own: the dot folders
+
+60
+00:02:19.128 --> 00:02:22.019
+and dot files inside the project folder.
+
+61
+00:02:22.019 --> 00:02:23.749
+They travel with the project.
+
+62
+00:02:23.749 --> 00:02:26.430
+And you have one at home, in your home folder,
+
+63
+00:02:26.430 --> 00:02:28.636
+for settings that belong to you.
+
+64
+00:02:28.636 --> 00:02:31.829
+On Linux, the tidy answer is a .config folder,
+
+65
+00:02:31.829 --> 00:02:34.418
+and many tools use it on a Mac too.
+
+66
+00:02:34.418 --> 00:02:36.171
+Plenty of tools ignore it and leave
+
+67
+00:02:36.171 --> 00:02:38.772
+their own dot folder at the top instead,
+
+68
+00:02:38.772 --> 00:02:42.441
+like .ssh or .claude.
+
+69
+00:02:42.441 --> 00:02:45.274
+On Windows, the home back room is AppData,
+
+70
+00:02:45.274 --> 00:02:48.339
+hidden on a normal install, with three rooms.
+
+71
+00:02:48.339 --> 00:02:50.080
+Roaming is meant to follow a work
+
+72
+00:02:50.080 --> 00:02:52.274
+login from machine to machine.
+
+73
+00:02:52.274 --> 00:02:54.794
+Local stays on this machine.
+
+74
+00:02:54.794 --> 00:02:56.849
+LocalLow is for programs running
+
+75
+00:02:56.849 --> 00:02:58.230
+with fewer permissions;
+
+76
+00:02:58.230 --> 00:03:00.368
+today it's mostly games.
+
+77
+00:03:00.818 --> 00:03:02.734
+Now the project's shelves.
+
+78
+00:03:02.734 --> 00:03:04.243
+The big one is the ledger:
+
+79
+00:03:04.243 --> 00:03:06.333
+a folder called .git,
+
+80
+00:03:06.333 --> 00:03:09.096
+holding every past version of your project.
+
+81
+00:03:09.096 --> 00:03:12.254
+Delete that one folder and your files stay.
+
+82
+00:03:12.254 --> 00:03:14.529
+Their history is gone.
+
+83
+00:03:14.529 --> 00:03:19.068
+Next to it sits a private toolbox: .venv.
+
+84
+00:03:19.068 --> 00:03:20.880
+It holds a pointer to your Python
+
+85
+00:03:20.880 --> 00:03:23.260
+and the project's own packages.
+
+86
+00:03:23.260 --> 00:03:26.000
+Aaron, who made this course, had an IT degree
+
+87
+00:03:26.000 --> 00:03:29.471
+and still didn't know what .venv was.
+
+88
+00:03:29.471 --> 00:03:33.290
+Since Python 3.13, and in the tool uv,
+
+89
+00:03:33.290 --> 00:03:35.926
+a new one tells git to ignore itself.
+
+90
+00:03:35.926 --> 00:03:39.060
+Taped to the wall is a list: .gitignore.
+
+91
+00:03:39.060 --> 00:03:42.149
+It names what never goes on the moving van.
+
+92
+00:03:42.149 --> 00:03:43.588
+It hides nothing.
+
+93
+00:03:43.588 --> 00:03:46.584
+It only tells git what not to pack.
+
+94
+00:03:46.584 --> 00:03:50.533
+Editor settings live here too, like .vscode.
+
+95
+00:03:50.983 --> 00:03:53.375
+Now the drawer that matters most.
+
+96
+00:03:53.375 --> 00:03:55.360
+At the root of many projects sits
+
+97
+00:03:55.360 --> 00:03:58.321
+a file called .env.
+
+98
+00:03:58.321 --> 00:04:02.187
+Inside are plain lines: a name, an equals sign,
+
+99
+00:04:02.187 --> 00:04:06.006
+and a value, usually a key or a password.
+
+100
+00:04:06.006 --> 00:04:07.562
+When your program starts,
+
+101
+00:04:07.562 --> 00:04:09.733
+if it's set up to look for this file,
+
+102
+00:04:09.733 --> 00:04:13.425
+it loads those lines as environment variables.
+
+103
+00:04:13.425 --> 00:04:15.166
+That drawer has no lock.
+
+104
+00:04:15.166 --> 00:04:16.652
+It's plain text.
+
+105
+00:04:16.652 --> 00:04:19.810
+Hidden means out of sight, not encrypted.
+
+106
+00:04:19.810 --> 00:04:23.723
+Rule one: it never goes into git.
+
+107
+00:04:23.723 --> 00:04:25.453
+Put it on the git ignore list
+
+108
+00:04:25.453 --> 00:04:27.218
+before your first commit.
+
+109
+00:04:27.218 --> 00:04:29.075
+Adding it later doesn't pull it out
+
+110
+00:04:29.075 --> 00:04:32.071
+of the history, and once a key has leaked,
+
+111
+00:04:32.071 --> 00:04:34.787
+the only real fix is to replace it.
+
+112
+00:04:34.787 --> 00:04:37.702
+Rule two: never paste it into a chat,
+
+113
+00:04:37.702 --> 00:04:40.082
+and never let an agent read it.
+
+114
+00:04:40.082 --> 00:04:42.497
+Claude Code's own documentation says
+
+115
+00:04:42.497 --> 00:04:44.470
+that anything a tool reads,
+
+116
+00:04:44.470 --> 00:04:47.257
+a key included, ends up in a transcript
+
+117
+00:04:47.257 --> 00:04:49.799
+file in another hidden folder.
+
+118
+00:04:49.799 --> 00:04:52.145
+GitHub now blocks some known kinds of key
+
+119
+00:04:52.145 --> 00:04:54.432
+from reaching public repositories,
+
+120
+00:04:54.432 --> 00:04:56.487
+but only the kinds it recognises,
+
+121
+00:04:56.487 --> 00:04:58.089
+and you can override it.
+
+122
+00:04:58.089 --> 00:05:00.622
+It's a net, not a plan.
+
+123
+00:05:01.072 --> 00:05:03.197
+Here's where the shop picture breaks.
+
+124
+00:05:03.197 --> 00:05:06.947
+A real staff only sign is a rule people respect.
+
+125
+00:05:06.947 --> 00:05:11.242
+A dot, or a Hidden flag, is only a display choice.
+
+126
+00:05:11.242 --> 00:05:14.261
+Every program, every script, every agent,
+
+127
+00:05:14.261 --> 00:05:17.733
+and every piece of malware walks straight in.
+
+128
+00:05:17.733 --> 00:05:19.126
+There's no door, really.
+
+129
+00:05:19.126 --> 00:05:21.111
+Just a tour that skips it.
+
+130
+00:05:21.111 --> 00:05:23.154
+Real protection is something else:
+
+131
+00:05:23.154 --> 00:05:27.253
+file permissions, encryption, a secrets manager.
+
+132
+00:05:27.253 --> 00:05:29.797
+Those have lessons of their own.
+
+133
+00:05:30.247 --> 00:05:33.161
+Now new staff have arrived, carrying lanterns:
+
+134
+00:05:33.161 --> 00:05:34.705
+the AI agents.
+
+135
+00:05:34.705 --> 00:05:36.656
+Before work, they read the notes pinned
+
+136
+00:05:36.656 --> 00:05:39.698
+on the back-room wall, the instruction files:
+
+137
+00:05:39.698 --> 00:05:43.714
+CLAUDE.md, AGENTS.md,
+
+138
+00:05:43.714 --> 00:05:47.429
+Cursor's rules, and Copilot's instructions.
+
+139
+00:05:47.429 --> 00:05:50.007
+Next to them hangs a wiring board:
+
+140
+00:05:50.007 --> 00:05:54.744
+MCP config files, like .mcp.json.
+
+141
+00:05:54.744 --> 00:05:57.437
+They say which tools the staff may plug into.
+
+142
+00:05:57.437 --> 00:05:59.016
+The staff also keep notebooks
+
+143
+00:05:59.016 --> 00:06:02.882
+in your home back room: .claude and .codex.
+
+144
+00:06:02.882 --> 00:06:05.436
+Skills live there, and so do notes
+
+145
+00:06:05.436 --> 00:06:07.898
+Claude writes about you by itself.
+
+146
+00:06:07.898 --> 00:06:10.638
+And the tools now read each other's notes.
+
+147
+00:06:10.638 --> 00:06:14.608
+GitHub's Copilot cloud agent reads CLAUDE.md.
+
+148
+00:06:14.608 --> 00:06:18.184
+Since September 2026, Claude Code reads
+
+149
+00:06:18.184 --> 00:06:22.642
+AGENTS.md when a project has no CLAUDE.md.
+
+150
+00:06:22.642 --> 00:06:27.843
+Since December 2025, AGENTS.md and MCP both
+
+151
+00:06:27.843 --> 00:06:30.397
+belong to a Linux Foundation group.
+
+152
+00:06:30.397 --> 00:06:33.801
+Each tool still keeps its own folder.
+
+153
+00:06:34.251 --> 00:06:37.479
+In 2021, the back room held notes for tools:
+
+154
+00:06:37.479 --> 00:06:40.880
+settings, history, a list of things to ignore.
+
+155
+00:06:40.880 --> 00:06:44.468
+The worst common mistake was committing a .env.
+
+156
+00:06:44.468 --> 00:06:48.288
+Since 2025, some of those notes are orders.
+
+157
+00:06:48.288 --> 00:06:49.762
+An agent follows them,
+
+158
+00:06:49.762 --> 00:06:51.783
+and some are commands it runs.
+
+159
+00:06:51.783 --> 00:06:53.187
+So a stranger's note pinned
+
+160
+00:06:53.187 --> 00:06:55.567
+to your wall gets obeyed too.
+
+161
+00:06:55.567 --> 00:06:58.493
+In March 2025, researchers hid
+
+162
+00:06:58.493 --> 00:07:01.396
+invisible instructions in a rules file.
+
+163
+00:07:01.396 --> 00:07:03.764
+Others showed that a repository's
+
+164
+00:07:03.764 --> 00:07:05.773
+own Claude settings could run commands
+
+165
+00:07:05.773 --> 00:07:08.118
+or leak a key when someone opened it.
+
+166
+00:07:08.118 --> 00:07:10.777
+Those holes were fixed, but the lesson stuck:
+
+167
+00:07:10.777 --> 00:07:12.658
+these files are code.
+
+168
+00:07:12.658 --> 00:07:14.933
+Malware learned the layout too.
+
+169
+00:07:14.933 --> 00:07:16.675
+In August 2025,
+
+170
+00:07:16.675 --> 00:07:19.357
+a poisoned package ran its victims' own AI
+
+171
+00:07:19.357 --> 00:07:23.141
+command-line tools to search their disks for keys.
+
+172
+00:07:23.141 --> 00:07:26.833
+GitGuardian, a company that scans for leaked keys,
+
+173
+00:07:26.833 --> 00:07:29.364
+counted AI-service keys leaking about eighty
+
+174
+00:07:29.364 --> 00:07:34.091
+percent more in 2025 than the year before.
+
+175
+00:07:34.541 --> 00:07:36.782
+Your job is the owner's job.
+
+176
+00:07:36.782 --> 00:07:38.140
+When an agent finishes,
+
+177
+00:07:38.140 --> 00:07:40.938
+walk into the back room and look at what moved,
+
+178
+00:07:40.938 --> 00:07:43.040
+hidden files included.
+
+179
+00:07:43.040 --> 00:07:45.373
+Inside a project, git shows changes
+
+180
+00:07:45.373 --> 00:07:47.985
+to dot files like any other file:
+
+181
+00:07:47.985 --> 00:07:49.866
+git status lists them,
+
+182
+00:07:49.866 --> 00:07:51.689
+and git diff shows the lines.
+
+183
+00:07:51.689 --> 00:07:53.059
+Ignored files and your home
+
+184
+00:07:53.059 --> 00:07:54.975
+back room don't show up there.
+
+185
+00:07:54.975 --> 00:07:58.121
+A change to a rules file or an MCP config
+
+186
+00:07:58.121 --> 00:08:00.942
+deserves the same review as a change to code.
+
+187
+00:08:00.942 --> 00:08:02.835
+A note asking the agent not to read
+
+188
+00:08:02.835 --> 00:08:05.737
+your keys is a request, not a lock.
+
+189
+00:08:05.737 --> 00:08:08.918
+Tools offer real deny rules and sandboxes,
+
+190
+00:08:08.918 --> 00:08:10.695
+and some agents now refuse
+
+191
+00:08:10.695 --> 00:08:13.111
+to rewrite their own settings files.
+
+192
+00:08:13.574 --> 00:08:17.440
+One password manager, 1Password, is testing,
+
+193
+00:08:17.440 --> 00:08:21.713
+in beta, a fake .env that never touches the disk.
+
+194
+00:08:21.713 --> 00:08:24.118
+The plain file is still the default.
+
+195
+00:08:24.567 --> 00:08:25.972
+You'll open a project,
+
+196
+00:08:25.972 --> 00:08:29.025
+see no .git folder, and git works anyway.
+
+197
+00:08:29.025 --> 00:08:30.850
+It's there, just hidden.
+
+198
+00:08:31.312 --> 00:08:35.469
+On Windows, .env and .ssh sit right
+
+199
+00:08:35.469 --> 00:08:38.464
+there in Explorer, while .git doesn't.
+
+200
+00:08:38.464 --> 00:08:40.682
+That's the flag, not the dot.
+
+201
+00:08:40.682 --> 00:08:43.816
+You'll add .env to the ignore list,
+
+202
+00:08:43.816 --> 00:08:45.337
+and it's still on GitHub.
+
+203
+00:08:45.337 --> 00:08:46.963
+It was already committed.
+
+204
+00:08:46.963 --> 00:08:48.484
+Replace the key.
+
+205
+00:08:48.484 --> 00:08:51.595
+A push gets declined because it contains a secret.
+
+206
+00:08:51.595 --> 00:08:53.174
+That's push protection.
+
+207
+00:08:53.174 --> 00:08:55.670
+A setup guide for a desktop AI app sends
+
+208
+00:08:55.670 --> 00:08:59.013
+you to a path with AppData\Roaming in it.
+
+209
+00:08:59.013 --> 00:09:00.708
+That's your home back room.
+
+210
+00:09:00.708 --> 00:09:03.356
+On a Mac, files called .DS_Store
+
+211
+00:09:03.356 --> 00:09:05.585
+turn up in projects and commits.
+
+212
+00:09:05.585 --> 00:09:07.454
+Finder leaves them behind.
+
+213
+00:09:07.454 --> 00:09:09.416
+And dot folders linger from tools
+
+214
+00:09:09.416 --> 00:09:11.982
+you stopped using, like the one an AI tool
+
+215
+00:09:11.982 --> 00:09:14.747
+you tried once left in your home folder.
+
+216
+00:09:15.197 --> 00:09:16.892
+Safe to ignore for now:
+
+217
+00:09:16.892 --> 00:09:20.863
+the other folders next to .config, like .cache.
+
+218
+00:09:20.863 --> 00:09:23.231
+The hidden Library folder on a Mac.
+
+219
+00:09:23.231 --> 00:09:26.319
+Which settings file wins when two disagree.
+
+220
+00:09:26.319 --> 00:09:28.142
+And dotfiles repos,
+
+221
+00:09:28.142 --> 00:09:30.510
+for syncing your settings between machines.
+
+222
+00:09:30.510 --> 00:09:31.799
+Recognise the names.
+
+223
+00:09:31.799 --> 00:09:33.565
+Skip the details.
+
+224
+00:09:34.016 --> 00:09:37.278
+The variables .env fills are module one,
+
+225
+00:09:37.278 --> 00:09:38.532
+lesson five.
+
+226
+00:09:38.532 --> 00:09:40.866
+Virtual environments are module five,
+
+227
+00:09:40.866 --> 00:09:42.236
+lesson three.
+
+228
+00:09:42.236 --> 00:09:45.394
+.gitignore and secrets are module eight,
+
+229
+00:09:45.394 --> 00:09:46.706
+lesson seven.
+
+230
+00:09:46.706 --> 00:09:50.456
+Instruction files are module three, lesson nine,
+
+231
+00:09:50.456 --> 00:09:55.088
+and MCP config files are module ten, lesson nine.
+
+232
+00:09:55.088 --> 00:09:57.050
+Keeping secrets out of plain text
+
+233
+00:09:57.050 --> 00:10:00.419
+is module fifteen, lesson seven.
+
+234
+00:10:00.869 --> 00:10:03.179
+Keep this. One:
+
+235
+00:10:03.179 --> 00:10:06.140
+hidden means out of sight, not locked.
+
+236
+00:10:06.140 --> 00:10:08.915
+A dot on Mac and Linux, a flag on Windows,
+
+237
+00:10:08.915 --> 00:10:10.878
+and anything can still read it.
+
+238
+00:10:11.295 --> 00:10:14.917
+Two: your secrets live in the hidden layer.
+
+239
+00:10:14.917 --> 00:10:17.378
+.env is plain text.
+
+240
+00:10:17.378 --> 00:10:19.747
+Never commit it, never paste it,
+
+241
+00:10:19.747 --> 00:10:21.964
+and replace a key that leaked.
+
+242
+00:10:21.964 --> 00:10:25.018
+Three: agents read and write this layer.
+
+243
+00:10:25.018 --> 00:10:27.746
+After an agent works, check what changed,
+
+244
+00:10:27.746 --> 00:10:29.640
+hidden files included.

@@ -134,6 +134,8 @@
     const mods = o.chips !== false && o.modules !== false;
     const pg = K.clamp(o.pinGlowK ?? 1);
     const dk = (id) => K.clamp(typeof o.districtK === 'function' ? o.districtK(id) : (o.districtK ?? 1));
+    // questions: false | 0..1 | (districtId) => 0..1 fades each district's question line (default 1)
+    const qk = (id) => K.clamp(o.questions === false ? 0 : typeof o.questions === 'function' ? +o.questions(id) || 0 : (o.questions ?? 1));
 
     // garden path
     const pk = o.t0 == null ? (o.path ?? 1) : K.io(t, o.t0, 2.2, 'io') * (o.path ?? 1);
@@ -190,7 +192,7 @@
         g.save(); g.translate(0, rise);
         K.card(d.x, d.y, d.w, d.h, { glow: isFocus ? (o.focusK ?? 1) : 0, stroke: isFocus ? C.head : (hk => (hk >= 1 ? C.head : hk <= 0 ? C.line2 : K.mixColor(C.line2, C.head, hk)))(hiK(d.id)), fill: K.rgba(C.tile, 0.94) });
         K.title(d.name, d.x + 36, d.y + ROW.name, { size: TYPE.name });
-        K.text(d.q, d.x + 36, d.y + ROW.q, { size: TYPE.q, color: C.soft, font: 'ui' });
+        if (qk(d.id) > 0) K.text(d.q, d.x + 36, d.y + ROW.q, { size: TYPE.q, color: C.soft, font: 'ui', alpha: qk(d.id) });
         if (mods) d.mods.forEach((m, j) => {
           const y = d.y + ROW.first + j * ROW.pitch, pinned = o.pin === m;
           const rw = o.rowWash && o.rowWash[m];

@@ -1,10 +1,10 @@
 {
  "slug": "the-hidden-curriculum",
  "title": "The Hidden Curriculum",
- "updated": "2026-10-08",
+ "updated": "2026-10-09",
  "totalLessons": 213,
- "publishedLessons": 9,
- "runtimeSeconds": 4934,
+ "publishedLessons": 10,
+ "runtimeSeconds": 5567,
  "moduleCount": 22,
  "districtCount": 6,
  "regions": [
@@ -244,7 +244,14 @@
      "id": "01.04",
      "title": "Hidden files & dotfiles",
      "idea": ".git, .env, .venv, AppData, ~/.config — the invisible config layer",
-     "status": "locked"
+     "status": "published",
+     "slug": "01-04-hidden-files-dotfiles",
+     "url": "/courses/the-hidden-curriculum/lessons/01-04-hidden-files-dotfiles/",
+     "duration": 632.3,
+     "summary": "Almost every project and app keeps its settings, history, secrets and now its AI instructions in files your computer hides or tucks out of the way, and hidden only means out of sight, never locked.",
+     "published": "2026-10-09",
+     "narrator": "Adrian",
+     "poster": "/courses/the-hidden-curriculum/lessons/01-04-hidden-files-dotfiles/poster.jpg"
     },
     {
      "id": "01.05",
@@ -305,7 +312,7 @@
      "status": "locked"
     }
    ],
-   "filed": 3
+   "filed": 4
   },
   {
    "n": "02",
@@ -1685,17 +1692,17 @@
   }
  ],
  "latest": {
-  "id": "01.03",
-  "title": "Folders, paths & the working directory",
-  "idea": "Absolute vs relative paths, C:\\ vs /, why \"run it from the right folder\" matters",
+  "id": "01.04",
+  "title": "Hidden files & dotfiles",
+  "idea": ".git, .env, .venv, AppData, ~/.config — the invisible config layer",
   "status": "published",
-  "slug": "01-03-folders-paths-the-working-directory",
-  "url": "/courses/the-hidden-curriculum/lessons/01-03-folders-paths-the-working-directory/",
-  "duration": 637.4,
-  "summary": "A path is an address, and a relative path only makes sense from the working directory of the program that reads it.",
-  "published": "2026-10-08",
-  "narrator": "RClayton",
-  "poster": "/courses/the-hidden-curriculum/lessons/01-03-folders-paths-the-working-directory/poster.jpg"
+  "slug": "01-04-hidden-files-dotfiles",
+  "url": "/courses/the-hidden-curriculum/lessons/01-04-hidden-files-dotfiles/",
+  "duration": 632.3,
+  "summary": "Almost every project and app keeps its settings, history, secrets and now its AI instructions in files your computer hides or tucks out of the way, and hidden only means out of sight, never locked.",
+  "published": "2026-10-09",
+  "narrator": "Adrian",
+  "poster": "/courses/the-hidden-curriculum/lessons/01-04-hidden-files-dotfiles/poster.jpg"
  },
  "first": {
   "id": "00.01",

@@ -243,13 +243,18 @@
     if (o.stroke !== false) { g.lineWidth = o.lw || 1.5; g.strokeStyle = o.stroke || C.line2; K.rr(x, y, w, h, r); g.stroke(); }
     g.restore();
   };
-  /** pill label centred at (x, y); returns its width */
+  /** pill label centred at (x, y); returns its width.
+   *  o.w: minimum width (it still grows to fit); o.icon: a K.icon name drawn before the text (o.iconColor) */
   K.pill = (s, x, y, o = {}) => {
     const size = o.size || 26;
     const to = { size, font: o.font || 'ui', weight: o.weight || 600, tracking: o.tracking, upper: o.upper };
-    const w = K.measure(s, to) + size * 1.6, h = size * 1.9;
+    const is = o.icon ? size * 1.05 : 0, gap = o.icon ? size * 0.4 : 0;
+    const cw = K.measure(s, to) + is + gap;
+    const w = Math.max(cw + size * 1.6, o.w || 0), h = size * 1.9;
+    const col = o.color || C.strong;
     K.card(x - w / 2, y - h / 2, w, h, { r: h / 2, fill: o.fill || C.tile, stroke: o.stroke || C.line2, shadow: o.shadow ?? false, alpha: o.alpha, glow: o.glow });
-    K.text(s, x, y + size * 0.34, { ...to, color: o.color || C.strong, align: 'center', alpha: o.alpha });
+    if (o.icon) K.icon(o.icon, x - cw / 2 + is / 2, y, is, { color: o.iconColor || col, alpha: o.alpha });
+    K.text(s, x + (is + gap) / 2, y + size * 0.34, { ...to, color: col, align: 'center', alpha: o.alpha });
     return w;
   };
   K.line = (x1, y1, x2, y2, o = {}) => {

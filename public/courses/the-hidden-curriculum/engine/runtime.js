@@ -54,11 +54,15 @@
       /** local time the i-th spoken word starts (handy for "on this word" sync) */
       word(idx) { const w = (sec.words || [])[idx]; return w ? w[1] - sec.start : 0; },
       /** local start time of the first spoken word matching re (nth occurrence). A string is a literal,
-       *  case-insensitive prefix ('T.' matches only "T."; '.' is not a wildcard); pass a RegExp for patterns. */
-      find(re, nth = 0, fallback = 0) {
+       *  case-insensitive prefix ('T.' matches only "T."; '.' is not a wildcard); pass a RegExp for patterns.
+       *  opt.whole (strings only): match the whole word, so find('hid', 0, fb, { whole: true }) skips "hide";
+       *  trailing sentence punctuation on the spoken word is ignored ("hid." still matches). */
+      find(re, nth = 0, fallback = 0, opt = {}) {
+        const whole = !(re instanceof RegExp) && !!(opt && opt.whole);
         const rx = re instanceof RegExp ? re
-          : new RegExp('^' + String(re).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-        const hits = (sec.words || []).filter((w) => rx.test(w[0].replace(/[^\w'.-]/g, '')));
+          : new RegExp('^' + String(re).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + (whole ? '$' : ''), 'i');
+        const clean = (s) => s.replace(/[^\w'.-]/g, '');
+        const hits = (sec.words || []).filter((w) => rx.test(clean(w[0])) || (whole && rx.test(clean(w[0]).replace(/[.'-]+$/, ''))));
         return hits[nth] ? hits[nth][1] - sec.start : fallback;
       },
     };
