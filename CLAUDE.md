@@ -14,6 +14,9 @@ that only has the repo (a cloud session, a fresh clone) needs before it touches 
 - **Only `main` deploys.** A build of any other branch fails on purpose (`astro.config.mjs`).
   To publish from a branch, rebase it onto `origin/main` and merge it into `main` (fast-forward
   or a PR). Never force-push `main`.
+- **After a push, ask the live site what it is running:** `curl -s https://aaronorelup.com/version.json`
+  should show `"branch": "main"` and the commit you pushed, a few minutes after the push. If it
+  shows another branch or an old commit, the deploy went wrong; say so instead of carrying on.
 
 ## Writing a post
 

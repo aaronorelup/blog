@@ -1934,6 +1934,8 @@ class AoTranscript extends HTMLElement {
 // data-method="HEAD" optional) whose text is the label, then an optional <figcaption>.
 // A body is counted, not kept, and reading stops at cap bytes (default 2 MB): an ignored
 // Range on a 25 MB video then costs the reader 2 MB, and the row says where it stopped.
+// data-show="body" on a row also prints the body (its first 4 KB, JSON indented) for small
+// text answers worth reading, like /version.json.
 const FETCH_HEADERS = ['content-range', 'content-length', 'accept-ranges', 'content-type'];
 // HTTP/2 carries no reason phrase, so res.statusText is empty there; these are the usual ones.
 const STATUS_TEXT = { 200: 'OK', 206: 'Partial Content', 304: 'Not Modified', 404: 'Not Found', 416: 'Range Not Satisfiable' };
@@ -1952,6 +1954,7 @@ class AoFetch extends HTMLElement {
       try { same = new URL(url, location.href).origin === location.origin; } catch (e) { /* bad url */ }
       const method = (li.dataset.method || 'GET').toUpperCase();
       const range = li.dataset.range || '';
+      const showBody = li.dataset.show === 'body';
       const label = li.textContent.trim();
       li.replaceChildren();
       const head = document.createElement('div');
@@ -1992,14 +1995,21 @@ class AoFetch extends HTMLElement {
           }
           let got = 0;
           let stopped = false;
+          const kept = [];
           if (res.body && method !== 'HEAD') {
             const reader = res.body.getReader();
             for (;;) {
               const { done, value } = await reader.read();
               if (done) break;
+              if (showBody && got < 4096) kept.push(value.slice(0, 4096 - got));
               got += value.byteLength;
               if (got >= cap) { stopped = true; reader.cancel().catch(() => {}); break; }
             }
+          }
+          if (showBody && kept.length) {
+            let text = new TextDecoder().decode(await new Blob(kept).arrayBuffer());
+            try { text = JSON.stringify(JSON.parse(text), null, 2); } catch (e) { /* not JSON, or cut short */ }
+            lines.push('', text.trimEnd() + (got > 4096 ? '\n…' : ''));
           }
           const ms = Math.round(performance.now() - t0);
           lines.push('');
@@ -2008,7 +2018,7 @@ class AoFetch extends HTMLElement {
           lines.push('Time: ' + ms + ' ms');
           if (range && res.status === 200) lines.push('The Range header was ignored: this is the whole file.');
           out.textContent = lines.join('\n');
-          out.classList.add(res.status === 206 ? 'ao-fetch-ok' : 'ao-fetch-whole');
+          out.classList.add(res.status === 206 || (showBody && !range && res.ok) ? 'ao-fetch-ok' : 'ao-fetch-whole');
         } catch (e) {
           out.textContent = ctl.signal.aborted ? 'Stopped.' : 'The request failed: ' + ((e && e.message) || e);
         } finally {
