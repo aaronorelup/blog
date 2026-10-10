@@ -1,10 +1,10 @@
 {
  "slug": "the-hidden-curriculum",
  "title": "The Hidden Curriculum",
- "updated": "2026-10-09",
+ "updated": "2026-10-10",
  "totalLessons": 213,
- "publishedLessons": 10,
- "runtimeSeconds": 5567,
+ "publishedLessons": 11,
+ "runtimeSeconds": 6249,
  "moduleCount": 22,
  "districtCount": 6,
  "regions": [
@@ -257,7 +257,14 @@
      "id": "01.05",
      "title": "Environment variables & PATH",
      "idea": "How typing python finds the right program; why \"not recognized as a command\" happens",
-     "status": "locked"
+     "status": "published",
+     "slug": "01-05-environment-variables-path",
+     "url": "/courses/the-hidden-curriculum/lessons/01-05-environment-variables-path/",
+     "duration": 682.3,
+     "summary": "Every program starts with a copy of its parent's settings, its environment, and PATH in it is an ordered list of folders where the first match wins, so which program runs and which keys it can see depend on who started it and when.",
+     "published": "2026-10-10",
+     "narrator": "RClayton",
+     "poster": "/courses/the-hidden-curriculum/lessons/01-05-environment-variables-path/poster.jpg"
     },
     {
      "id": "01.06",
@@ -312,7 +319,7 @@
      "status": "locked"
     }
    ],
-   "filed": 4
+   "filed": 5
   },
   {
    "n": "02",
@@ -1692,17 +1699,17 @@
   }
  ],
  "latest": {
-  "id": "01.04",
-  "title": "Hidden files & dotfiles",
-  "idea": ".git, .env, .venv, AppData, ~/.config — the invisible config layer",
+  "id": "01.05",
+  "title": "Environment variables & PATH",
+  "idea": "How typing python finds the right program; why \"not recognized as a command\" happens",
   "status": "published",
-  "slug": "01-04-hidden-files-dotfiles",
-  "url": "/courses/the-hidden-curriculum/lessons/01-04-hidden-files-dotfiles/",
-  "duration": 632.3,
-  "summary": "Almost every project and app keeps its settings, history, secrets and now its AI instructions in files your computer hides or tucks out of the way, and hidden only means out of sight, never locked.",
-  "published": "2026-10-09",
-  "narrator": "Adrian",
-  "poster": "/courses/the-hidden-curriculum/lessons/01-04-hidden-files-dotfiles/poster.jpg"
+  "slug": "01-05-environment-variables-path",
+  "url": "/courses/the-hidden-curriculum/lessons/01-05-environment-variables-path/",
+  "duration": 682.3,
+  "summary": "Every program starts with a copy of its parent's settings, its environment, and PATH in it is an ordered list of folders where the first match wins, so which program runs and which keys it can see depend on who started it and when.",
+  "published": "2026-10-10",
+  "narrator": "RClayton",
+  "poster": "/courses/the-hidden-curriculum/lessons/01-05-environment-variables-path/poster.jpg"
  },
  "first": {
   "id": "00.01",

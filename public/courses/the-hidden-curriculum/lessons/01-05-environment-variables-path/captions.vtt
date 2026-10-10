@@ -1,0 +1,981 @@
+WEBVTT
+
+1
+00:00:01.600 --> 00:00:04.003
+In this lesson you'll learn how your computer
+
+2
+00:00:04.003 --> 00:00:05.931
+finds the right program when you type
+
+3
+00:00:05.931 --> 00:00:08.740
+a name like python, and about the hidden
+
+4
+00:00:08.740 --> 00:00:11.772
+settings every program carries with it.
+
+5
+00:00:12.235 --> 00:00:13.640
+Every program starts
+
+6
+00:00:13.640 --> 00:00:16.101
+with a copy of its parent's settings,
+
+7
+00:00:16.101 --> 00:00:18.330
+called its environment.
+
+8
+00:00:18.330 --> 00:00:20.281
+One of those settings, path,
+
+9
+00:00:20.281 --> 00:00:22.452
+is an ordered list of folders,
+
+10
+00:00:22.452 --> 00:00:24.727
+and the first match wins.
+
+11
+00:00:24.727 --> 00:00:28.396
+So which program runs, and which keys it can see,
+
+12
+00:00:28.396 --> 00:00:31.196
+depends on who started it, and when.
+
+13
+00:00:31.740 --> 00:00:34.203
+"Not recognized as a command."
+
+14
+00:00:34.619 --> 00:00:36.209
+The wrong Python.
+
+15
+00:00:36.209 --> 00:00:38.671
+An AI tool billing the wrong account.
+
+16
+00:00:38.671 --> 00:00:41.353
+That's one idea, not three problems.
+
+17
+00:00:41.353 --> 00:00:45.789
+And agents now work inside it too.
+
+18
+00:00:46.239 --> 00:00:49.095
+This lesson sits in the first district,
+
+19
+00:00:49.095 --> 00:00:52.439
+The Machine, which answers one question:
+
+20
+00:00:52.439 --> 00:00:54.772
+what's on your computer?
+
+21
+00:00:54.772 --> 00:00:57.605
+Module one, lesson five.
+
+22
+00:00:57.605 --> 00:01:01.111
+The last two lessons showed where files live,
+
+23
+00:01:01.111 --> 00:01:03.572
+and what hides in the back room.
+
+24
+00:01:03.572 --> 00:01:05.929
+This one shows what every running
+
+25
+00:01:05.929 --> 00:01:08.647
+program carries out the door.
+
+26
+00:01:09.098 --> 00:01:12.268
+Picture every running program as a courier.
+
+27
+00:01:12.268 --> 00:01:15.913
+Another program sends it out: File Explorer,
+
+28
+00:01:15.913 --> 00:01:19.268
+a terminal, an editor, or an agent.
+
+29
+00:01:19.268 --> 00:01:21.277
+That sender is its parent.
+
+30
+00:01:21.277 --> 00:01:24.481
+At the door, the parent copies its own
+
+31
+00:01:24.481 --> 00:01:29.253
+satchel of labelled cards and hands over the copy.
+
+32
+00:01:29.253 --> 00:01:30.762
+Then the door closes,
+
+33
+00:01:30.762 --> 00:01:33.467
+and the satchel belongs to the courier.
+
+34
+00:01:33.467 --> 00:01:36.927
+Nothing you change at home reaches it on the road.
+
+35
+00:01:36.927 --> 00:01:39.109
+And nothing the courier changes
+
+36
+00:01:39.109 --> 00:01:41.025
+ever comes back home.
+
+37
+00:01:41.025 --> 00:01:43.463
+The you-are-here dot from two lessons
+
+38
+00:01:43.463 --> 00:01:46.646
+ago travels the same way, as a copy.
+
+39
+00:01:47.097 --> 00:01:49.465
+Each card is an environment variable:
+
+40
+00:01:49.465 --> 00:01:53.099
+a name, and a value that is plain text.
+
+41
+00:01:53.099 --> 00:01:55.886
+One card says where your home folder is.
+
+42
+00:01:55.886 --> 00:01:58.742
+Another says where temporary files go.
+
+43
+00:01:58.742 --> 00:02:01.703
+And one long card is called path.
+
+44
+00:02:01.703 --> 00:02:02.701
+On Windows,
+
+45
+00:02:02.701 --> 00:02:06.161
+the master copy sits in two drawers at home,
+
+46
+00:02:06.161 --> 00:02:08.924
+one for you and one for the whole system,
+
+47
+00:02:08.924 --> 00:02:11.722
+and new programs get both combined.
+
+48
+00:02:11.722 --> 00:02:13.487
+On a Mac or on Linux,
+
+49
+00:02:13.487 --> 00:02:15.925
+the shell's startup files write it.
+
+50
+00:02:15.925 --> 00:02:18.769
+The screen shows how to peek inside;
+
+51
+00:02:18.769 --> 00:02:20.559
+you don't need it yet.
+
+52
+00:02:21.008 --> 00:02:24.270
+Path is one card holding a list of folders.
+
+53
+00:02:24.270 --> 00:02:28.195
+Picture them as numbered streets.
+
+54
+00:02:28.195 --> 00:02:31.062
+On Windows, semicolons separate them;
+
+55
+00:02:31.062 --> 00:02:33.953
+on a Mac and Linux, colons.
+
+56
+00:02:33.953 --> 00:02:36.821
+When you type a bare name like python,
+
+57
+00:02:36.821 --> 00:02:39.212
+the courier walks the streets in order,
+
+58
+00:02:39.212 --> 00:02:42.022
+and goes into the first shop with that name.
+
+59
+00:02:42.022 --> 00:02:43.949
+First match wins.
+
+60
+00:02:43.949 --> 00:02:47.003
+Shops further down are never visited.
+
+61
+00:02:47.003 --> 00:02:50.463
+On Windows, it also tries the endings
+
+62
+00:02:50.463 --> 00:02:52.738
+Windows counts as programs,
+
+63
+00:02:52.738 --> 00:02:56.500
+so python finds python.exe.
+
+64
+00:02:56.500 --> 00:02:59.402
+And on Windows, the system's list comes first,
+
+65
+00:02:59.402 --> 00:03:01.921
+and your own list is added after it.
+
+66
+00:03:01.921 --> 00:03:04.545
+Shells check their own built-in commands
+
+67
+00:03:04.545 --> 00:03:07.007
+and aliases before path.
+
+68
+00:03:07.007 --> 00:03:08.632
+Old Command Prompt
+
+69
+00:03:08.632 --> 00:03:11.534
+even looks in the current folder first;
+
+70
+00:03:11.534 --> 00:03:14.810
+PowerShell deliberately doesn't.
+
+71
+00:03:15.261 --> 00:03:17.374
+Not recognized means one thing:
+
+72
+00:03:17.374 --> 00:03:19.324
+the courier walked every street
+
+73
+00:03:19.324 --> 00:03:21.612
+and found no shop with that name.
+
+74
+00:03:21.612 --> 00:03:24.038
+Usually, it isn't installed.
+
+75
+00:03:24.038 --> 00:03:25.199
+Or it's installed,
+
+76
+00:03:25.199 --> 00:03:27.544
+but its folder isn't on the list.
+
+77
+00:03:27.544 --> 00:03:28.786
+Or it's on the list,
+
+78
+00:03:28.786 --> 00:03:31.642
+but this terminal left home before the change.
+
+79
+00:03:31.642 --> 00:03:33.198
+Or it's a typo.
+
+80
+00:03:33.198 --> 00:03:35.787
+The message comes in three outfits.
+
+81
+00:03:35.787 --> 00:03:39.514
+Command Prompt: not recognized as an internal
+
+82
+00:03:39.514 --> 00:03:43.032
+or external command. PowerShell:
+
+83
+00:03:43.032 --> 00:03:46.376
+not recognized as the name of a cmdlet.
+
+84
+00:03:46.376 --> 00:03:48.442
+Bash and zsh:
+
+85
+00:03:48.442 --> 00:03:50.497
+command not found.
+
+86
+00:03:50.497 --> 00:03:52.670
+Same empty street.
+
+87
+00:03:53.120 --> 00:03:54.525
+The quieter problem:
+
+88
+00:03:54.525 --> 00:03:56.951
+several shops can share one name.
+
+89
+00:03:56.951 --> 00:04:00.875
+Python from an installer, from conda or uv,
+
+90
+00:04:00.875 --> 00:04:03.917
+and a stand-in from the Microsoft Store.
+
+91
+00:04:03.917 --> 00:04:06.251
+The courier takes the first.
+
+92
+00:04:06.251 --> 00:04:08.875
+On this course's Windows machine,
+
+93
+00:04:08.875 --> 00:04:11.893
+python had three candidates, in this order:
+
+94
+00:04:11.893 --> 00:04:15.701
+a Python 3.10 install, the Store stand-in,
+
+95
+00:04:15.701 --> 00:04:17.849
+and a Miniconda Python.
+
+96
+00:04:17.849 --> 00:04:21.077
+The first one won, and Python 3.10
+
+97
+00:04:21.077 --> 00:04:24.084
+reached its end of life this month.
+
+98
+00:04:24.084 --> 00:04:25.384
+Nobody chose that.
+
+99
+00:04:25.384 --> 00:04:26.940
+The order did.
+
+100
+00:04:26.940 --> 00:04:30.051
+That Store stand-in is a signpost:
+
+101
+00:04:30.051 --> 00:04:31.932
+with no Python installed,
+
+102
+00:04:31.932 --> 00:04:34.661
+it opens the Microsoft Store.
+
+103
+00:04:34.661 --> 00:04:37.772
+Found on the list doesn't mean installed.
+
+104
+00:04:37.772 --> 00:04:41.290
+Since Python 3.14, its install manager
+
+105
+00:04:41.290 --> 00:04:43.786
+makes the real python a signpost too,
+
+106
+00:04:43.786 --> 00:04:47.025
+pointing at the install, so check where it leads.
+
+107
+00:04:47.025 --> 00:04:48.198
+To see who wins,
+
+108
+00:04:48.198 --> 00:04:50.230
+ask the shell for every candidate,
+
+109
+00:04:50.230 --> 00:04:54.167
+in order, or ask Python where it lives.
+
+110
+00:04:54.617 --> 00:04:58.576
+Activating the project's .venv folder pins
+
+111
+00:04:58.576 --> 00:05:01.653
+its street to the top of the courier's list.
+
+112
+00:05:01.653 --> 00:05:04.172
+Now python means the project's Python,
+
+113
+00:05:04.172 --> 00:05:06.982
+because its street comes first.
+
+114
+00:05:06.982 --> 00:05:09.536
+But only in that one shell,
+
+115
+00:05:09.536 --> 00:05:12.055
+and the couriers it sends.
+
+116
+00:05:12.055 --> 00:05:14.261
+Another terminal isn't in it,
+
+117
+00:05:14.261 --> 00:05:17.198
+and neither is an agent's separate shell.
+
+118
+00:05:17.198 --> 00:05:20.565
+That's how "I activated it" and "it's using
+
+119
+00:05:20.565 --> 00:05:23.282
+the wrong Python" can both be true:
+
+120
+00:05:23.282 --> 00:05:26.533
+you activated it in a different window.
+
+121
+00:05:26.533 --> 00:05:29.517
+Newer tools skip the activating.
+
+122
+00:05:29.517 --> 00:05:32.895
+uv run finds the project's environment directly,
+
+123
+00:05:32.895 --> 00:05:36.578
+and puts it first for just that one command.
+
+124
+00:05:37.027 --> 00:05:40.173
+You install a tool, and the installer
+
+125
+00:05:40.173 --> 00:05:43.877
+adds a street to the master copy at home.
+
+126
+00:05:43.877 --> 00:05:46.582
+But the terminal you had open left home earlier,
+
+127
+00:05:46.582 --> 00:05:48.532
+carrying the old card.
+
+128
+00:05:48.532 --> 00:05:50.854
+So it says not recognized.
+
+129
+00:05:50.854 --> 00:05:53.490
+The fix is to send a new courier:
+
+130
+00:05:53.490 --> 00:05:55.579
+open a new terminal.
+
+131
+00:05:55.579 --> 00:05:57.286
+Since 2023,
+
+132
+00:05:57.286 --> 00:06:01.013
+a new tab in Windows Terminal picks up the change;
+
+133
+00:06:01.013 --> 00:06:03.730
+a tab that was already open does not.
+
+134
+00:06:03.730 --> 00:06:06.063
+A terminal inside an editor gets
+
+135
+00:06:06.063 --> 00:06:08.002
+its satchel from the editor,
+
+136
+00:06:08.002 --> 00:06:11.020
+so the editor usually needs a restart.
+
+137
+00:06:11.020 --> 00:06:12.681
+Agents too.
+
+138
+00:06:12.681 --> 00:06:15.978
+Claude Code reads your environment when it starts,
+
+139
+00:06:15.978 --> 00:06:19.497
+so it needs a restart to see a change.
+
+140
+00:06:19.948 --> 00:06:21.875
+Here is where the picture breaks.
+
+141
+00:06:21.875 --> 00:06:24.000
+A real satchel can be sealed.
+
+142
+00:06:24.000 --> 00:06:25.869
+An environment can't.
+
+143
+00:06:25.869 --> 00:06:27.204
+Any program, script
+
+144
+00:06:27.204 --> 00:06:29.991
+or agent you start can read every card,
+
+145
+00:06:29.991 --> 00:06:33.195
+and copies them on to its own couriers.
+
+146
+00:06:33.195 --> 00:06:37.433
+Some shops on the list are signposts, not shops.
+
+147
+00:06:37.433 --> 00:06:39.918
+Store and install-manager aliases
+
+148
+00:06:39.918 --> 00:06:42.739
+and version-manager shims
+
+149
+00:06:42.739 --> 00:06:44.573
+forward you somewhere else,
+
+150
+00:06:44.573 --> 00:06:48.288
+so "which" can name the signpost, not the program.
+
+151
+00:06:48.288 --> 00:06:50.982
+And there is no single environment.
+
+152
+00:06:50.982 --> 00:06:55.593
+There are as many satchels as running programs.
+
+153
+00:06:56.042 --> 00:06:59.223
+Now the cards that matter most: keys.
+
+154
+00:06:59.223 --> 00:07:01.928
+AI tools look for your key on a card
+
+155
+00:07:01.928 --> 00:07:03.623
+with a known name,
+
+156
+00:07:03.623 --> 00:07:07.826
+like the Open AI or Anthropic key variable.
+
+157
+00:07:07.826 --> 00:07:10.554
+That keeps the key out of your code.
+
+158
+00:07:10.554 --> 00:07:14.084
+Last lesson's .env file is how the key
+
+159
+00:07:14.084 --> 00:07:16.522
+usually gets into the satchel:
+
+160
+00:07:16.522 --> 00:07:19.460
+a library loads it, or a runtime:
+
+161
+00:07:19.460 --> 00:07:22.838
+Bun on its own, Node when asked.
+
+162
+00:07:22.838 --> 00:07:25.578
+But inheritance cuts both ways.
+
+163
+00:07:25.578 --> 00:07:28.074
+A key in your terminal's satchel is copied
+
+164
+00:07:28.074 --> 00:07:30.965
+into every courier you send from it.
+
+165
+00:07:30.965 --> 00:07:32.509
+Including an agent,
+
+166
+00:07:32.509 --> 00:07:35.412
+and every command and package it runs.
+
+167
+00:07:35.412 --> 00:07:38.581
+If the Anthropic key variable is set,
+
+168
+00:07:38.581 --> 00:07:41.240
+Claude Code uses that key,
+
+169
+00:07:41.240 --> 00:07:43.225
+and its pay-per-use billing,
+
+170
+00:07:43.225 --> 00:07:44.967
+instead of your subscription,
+
+171
+00:07:44.967 --> 00:07:47.033
+even when you're logged in.
+
+172
+00:07:47.033 --> 00:07:50.168
+It asks once in an interactive session,
+
+173
+00:07:50.168 --> 00:07:52.281
+but never in a scripted run.
+
+174
+00:07:52.281 --> 00:07:56.114
+Its status screen shows which one is paying.
+
+175
+00:07:56.564 --> 00:07:58.689
+Five years ago, only programs
+
+176
+00:07:58.689 --> 00:08:01.545
+you started yourself opened the satchel.
+
+177
+00:08:01.545 --> 00:08:05.039
+Now agents install tools, edit path,
+
+178
+00:08:05.039 --> 00:08:09.254
+create environments and write .env files for you,
+
+179
+00:08:09.254 --> 00:08:11.820
+and they send out couriers of their own.
+
+180
+00:08:11.820 --> 00:08:13.817
+Attackers noticed.
+
+181
+00:08:13.817 --> 00:08:17.520
+In August 2025, a poisoned package stole
+
+182
+00:08:17.520 --> 00:08:20.551
+.env files and steered victims' own AI
+
+183
+00:08:20.551 --> 00:08:23.384
+command-line tools to hunt for keys;
+
+184
+00:08:23.384 --> 00:08:26.391
+that autumn, an npm worm harvested
+
+185
+00:08:26.391 --> 00:08:28.933
+tokens from environment variables.
+
+186
+00:08:28.933 --> 00:08:31.011
+In December 2025,
+
+187
+00:08:31.011 --> 00:08:35.260
+npm revoked its old long-lived publishing tokens.
+
+188
+00:08:35.260 --> 00:08:38.499
+Agent tools now offer ways to strip
+
+189
+00:08:38.499 --> 00:08:41.460
+keys from what their commands inherit,
+
+190
+00:08:41.460 --> 00:08:44.235
+mostly switched off by default.
+
+191
+00:08:44.235 --> 00:08:46.673
+The direction is to hand a key to one command
+
+192
+00:08:46.673 --> 00:08:50.226
+for one run, or keep it behind a proxy,
+
+193
+00:08:50.226 --> 00:08:53.140
+instead of leaving it in every satchel.
+
+194
+00:08:53.140 --> 00:08:55.104
+That's still early.
+
+195
+00:08:55.553 --> 00:08:57.724
+Agents do the setup now.
+
+196
+00:08:57.724 --> 00:09:00.522
+Your job is to check it, with two questions.
+
+197
+00:09:00.522 --> 00:09:03.367
+First: which program actually ran?
+
+198
+00:09:03.367 --> 00:09:04.516
+Ask the shell,
+
+199
+00:09:04.516 --> 00:09:07.442
+or ask the agent to show you the full path.
+
+200
+00:09:07.442 --> 00:09:09.926
+Second: where do my keys live,
+
+201
+00:09:09.926 --> 00:09:11.412
+and who can see them?
+
+202
+00:09:11.412 --> 00:09:13.908
+Which file, which variable,
+
+203
+00:09:13.908 --> 00:09:16.683
+which terminal the agent was started from,
+
+204
+00:09:16.683 --> 00:09:18.657
+and which account pays.
+
+205
+00:09:18.657 --> 00:09:21.095
+A rule asking an agent not to read
+
+206
+00:09:21.095 --> 00:09:23.858
+your keys is a request, not a fence.
+
+207
+00:09:23.858 --> 00:09:27.423
+Real fences, like sandboxes and key scrubbing,
+
+208
+00:09:27.423 --> 00:09:30.965
+are module fourteen, lesson twelve.
+
+209
+00:09:31.415 --> 00:09:33.331
+The surprises you'll hit.
+
+210
+00:09:33.331 --> 00:09:34.735
+You install something,
+
+211
+00:09:34.735 --> 00:09:38.509
+and the same terminal still says not recognized.
+
+212
+00:09:38.509 --> 00:09:39.809
+Open a new one.
+
+213
+00:09:39.809 --> 00:09:44.209
+Typing python opens the Microsoft Store.
+
+214
+00:09:44.209 --> 00:09:46.450
+That's the stand-in winning.
+
+215
+00:09:46.450 --> 00:09:49.724
+Python and py can start two different Pythons.
+
+216
+00:09:49.724 --> 00:09:53.764
+On a Mac, python isn't found, but python3 is.
+
+217
+00:09:53.764 --> 00:09:56.388
+And on newer Macs, brew isn't found
+
+218
+00:09:56.388 --> 00:09:59.522
+until Homebrew's folder joins the path.
+
+219
+00:09:59.522 --> 00:10:02.878
+Pip install worked, but the import fails:
+
+220
+00:10:02.878 --> 00:10:05.176
+the package went to a different Python
+
+221
+00:10:05.176 --> 00:10:07.243
+than the one that ran.
+
+222
+00:10:07.243 --> 00:10:11.283
+An agent's export or activation didn't stick.
+
+223
+00:10:11.283 --> 00:10:15.372
+In some agents, each command gets a fresh shell.
+
+224
+00:10:15.822 --> 00:10:17.807
+Safe to ignore for now:
+
+225
+00:10:17.807 --> 00:10:20.176
+editing the registry by hand,
+
+226
+00:10:20.176 --> 00:10:23.043
+the full rules for which command wins,
+
+227
+00:10:23.043 --> 00:10:25.586
+how version-manager shims work,
+
+228
+00:10:25.586 --> 00:10:28.245
+and environment editor tools.
+
+229
+00:10:28.245 --> 00:10:30.149
+The neighbours on the map:
+
+230
+00:10:30.149 --> 00:10:32.598
+shells, in module two.
+
+231
+00:10:32.598 --> 00:10:35.687
+Many Pythons and virtual environments,
+
+232
+00:10:35.687 --> 00:10:37.161
+in module five.
+
+233
+00:10:37.161 --> 00:10:39.692
+Giving agents keys safely,
+
+234
+00:10:39.692 --> 00:10:42.467
+keeping secrets out of plain text,
+
+235
+00:10:42.467 --> 00:10:46.101
+and user versus system variables,
+
+236
+00:10:46.101 --> 00:10:49.980
+in District Five, Trust.
+
+237
+00:10:50.430 --> 00:10:52.288
+Every program carries a copy
+
+238
+00:10:52.288 --> 00:10:54.598
+of its parent's environment.
+
+239
+00:10:54.598 --> 00:10:57.733
+Changes at home only reach programs
+
+240
+00:10:57.733 --> 00:11:01.518
+started afterwards, so open a new terminal.
+
+241
+00:11:01.518 --> 00:11:05.640
+Path is an ordered list, and the first match wins.
+
+242
+00:11:05.640 --> 00:11:09.564
+To know which program ran, ask the shell.
+
+243
+00:11:09.564 --> 00:11:12.037
+Keys in the environment go wherever
+
+244
+00:11:12.037 --> 00:11:16.019
+you send programs, agents included.
+
+245
+00:11:16.019 --> 00:11:19.666
+Know where yours live, and who can read them.

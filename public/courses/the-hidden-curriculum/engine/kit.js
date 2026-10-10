@@ -567,6 +567,8 @@
     phone: (s) => { K.rr(-s * 0.21, -s * 0.38, s * 0.42, s * 0.76, s * 0.08); g.stroke(); g.beginPath(); g.moveTo(-s * 0.06, -s * 0.29); g.lineTo(s * 0.06, -s * 0.29); g.stroke(); g.beginPath(); g.arc(0, s * 0.28, s * 0.035, 0, 7); g.fill(); },
     // document: page outline with a folded corner and three text lines (a line-icon cousin of K.file)
     file: (s) => { g.beginPath(); g.moveTo(-s * 0.28, -s * 0.38); g.lineTo(s * 0.1, -s * 0.38); g.lineTo(s * 0.28, -s * 0.2); g.lineTo(s * 0.28, s * 0.38); g.lineTo(-s * 0.28, s * 0.38); g.closePath(); g.moveTo(s * 0.1, -s * 0.38); g.lineTo(s * 0.1, -s * 0.2); g.lineTo(s * 0.28, -s * 0.2); g.stroke(); g.beginPath(); for (let i = 0; i < 3; i++) { const y = -s * 0.04 + i * s * 0.13; g.moveTo(-s * 0.15, y); g.lineTo(i === 2 ? s * 0.03 : s * 0.15, y); } g.stroke(); },
+    // program / executable (python.exe, node, git): an app window with a title bar and a run triangle
+    program: (s) => { K.rr(-s * 0.4, -s * 0.32, s * 0.8, s * 0.64, s * 0.08); g.stroke(); g.beginPath(); g.moveTo(-s * 0.4, -s * 0.15); g.lineTo(s * 0.4, -s * 0.15); g.stroke(); for (let i = 0; i < 3; i++) { g.beginPath(); g.arc(-s * 0.3 + i * s * 0.09, -s * 0.235, s * 0.025, 0, 7); g.fill(); } g.beginPath(); g.moveTo(-s * 0.09, -s * 0.04); g.lineTo(s * 0.15, s * 0.085); g.lineTo(-s * 0.09, s * 0.21); g.closePath(); g.stroke(); },
     // AI / agent: a four-point sparkle with a small companion
     sparkle: (s) => {
       const star = (cx, cy, r) => { g.beginPath(); g.moveTo(cx, cy - r); g.quadraticCurveTo(cx, cy, cx + r, cy); g.quadraticCurveTo(cx, cy, cx, cy + r); g.quadraticCurveTo(cx, cy, cx - r, cy); g.quadraticCurveTo(cx, cy, cx, cy - r); g.closePath(); g.stroke(); };
@@ -574,6 +576,7 @@
     },
   };
   K.icons = Object.keys(ICON);
+  ICON.exe = ICON.program; // alias, kept out of K.icons so lists show each glyph once
   /** line icon. o: {color, w, alpha, fill} */
   K.icon = (name, x, y, s, o = {}) => {
     const fn = ICON[name]; if (!fn) return;
