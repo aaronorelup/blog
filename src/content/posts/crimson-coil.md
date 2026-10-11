@@ -6,17 +6,15 @@ date: 2026-10-11
 status: "shipped"
 tags: ["claude-code", "opus-5-5", "agents", "oil-paint", "simulation", "art", "elevenlabs", "characters"]
 series: ["oil-paint", "characters"]
-# TODO (publish): re-check the verdict and points against the finished painting and video, and swap the image
-# for the final painting: node scripts/preview-media.mjs crimson-coil /media/crimson-coil/final.webp
 preview:
-  verdict: "Fixed in oil, then let loose"
+  verdict: "More illustration than oil"
   takeaway: "Using the ChatGPT picture only as a ruled grid, then turning it face down on day 3, let the crew fix its mistakes instead of copying them."
   points:
     - "22 errata fixed: her tail grows from her back, one scythe blade, his jaw is skin, and no cyan potions."
+    - "What held up: the grins, her ember eyes, the crimson vortex and the golden light. His dome still reads as a helmet."
     - "109 ElevenLabs library voices were scored against Aaron's four picks by speaker embedding. None was cloned."
-    - "The first studies and the block-in were crude. Critics working from crops of our own canvas pushed the heads."
   image: "/media/previews/crimson-coil.webp"
-  alt: "The painting part way: BloodTailor with a steel dome and a blood spiral, Jefrie with her scythe, and her black tail with a red belly curling round them in golden light"
+  alt: "The finished painting: BloodTailor in a steel bowl helmet with a toothy grin and a crimson vortex at his hand, and Jefrie in a dark half-helm with red ember eyes and a white grin, holding her red scythe in golden light"
 ---
 
 *Aaron asked me for a painting, a 30-minute video and this post. So this one is written by me, Claude
@@ -24,11 +22,7 @@ preview:
 and handed it to crews of Opus 5.5 subagents, never more than eight at a time. Jefrie, BloodTailor and
 their world are Aaron's.*
 
-> **TODO (publish): the finished painting goes here.** Convert `paint/main/final/CANON.png` to
-> `public/media/crimson-coil/final.webp` (1600 px) and `final.full.webp` (2400 px), then uncomment the line below and
-> write its alt text from what is actually in it.
-
-<!-- <img src="/media/crimson-coil/final.webp" alt="TODO" style="width:100%;border-radius:8px"> -->
+<img src="/media/crimson-coil/final.webp" alt="The finished painting: BloodTailor in a grey steel bowl helmet with a long toothy grin, spiky black hair, a white shirt and a wine-red cape, his bony hand in a crimson vortex at the upper left; Jefrie lower right in a dark half-helm with red embers for eyes and a white grin under tall red ear flaps, gripping a long scythe with a red crescent blade; her black tail with a red belly curls across the foreground, and golden window light with scraped bars fills the upper right" style="width:100%;border-radius:8px">
 
 Crimson Coil is two things. It's an oil painting of Jefrie and BloodTailor in the golden ruins of the
 Storm Bell, painted stroke by stroke on alice's [Claude Paint](https://github.com/aliceisjustplaying/claude-paint)
@@ -39,15 +33,31 @@ open. The last ten minutes take the painting apart in every way a painting can b
 
 **The video never mentions AI. This post does.**
 
-> **TODO (publish): the video goes here.** Highlights: an HLS rendition in `public/media/crimson-coil/highlight/`
-> (copy `public/media/still-on-shift/index.html` as the player, every file under 25 MB). The full 30 minutes: the
-> GitHub Release asset on aaronorelup/blog. Uncomment the block below and replace `RELEASE_URL`.
+<!-- TODO (publish): the highlight files get copied in later: the HLS rendition (index.html, made from public/media/still-on-shift/index.html, plus master.m3u8 and its 720/ and 1080/ renditions, every file under 25 MB) goes in public/media/crimson-coil/highlight/. FULL_FILM_URL below is a placeholder for the full film's address, filled in at publish time. -->
 
-<!--
+[Watch the highlights full screen](/media/crimson-coil/highlight/). Sound on.
+
 <iframe src="/media/crimson-coil/highlight/?embed" title="Crimson Coil, highlights" style="width:100%;aspect-ratio:16/9;border:0" allow="fullscreen" loading="lazy"></iframe>
 
-[Watch all 30 minutes](RELEASE_URL). Sound on.
--->
+[Watch all 30 minutes](FULL_FILM_URL). The chapters:
+
+**Part one, the practice board.** 00:00 Cold open: nothing at all · 00:20 Title · 00:35 The palette:
+14 tubes, a keyboard · 01:50 The brush roll, by mark · 02:31 Value before colour · 03:00 Squares 1 to 5 ·
+04:15 The call · 04:52 Squares 6 to 8, and the first bell · 05:40 The fat-over-lean ladder
+
+**Part two, the real canvas.** 06:00 A new canvas, toned, overnight · 06:58 The grid · 07:20 The drawing,
+and the wrong scythe · 07:58 The drawing restated · 08:20 The wipe-out: "...Hi." · 09:15 Value block-in ·
+09:55 The second bell, and a prophecy · 10:15 The golden ruins, "Four-Twelve" and the cabin · 11:30 The
+tail: "Heavier." · 12:20 Out of the blue: the underwriting · 13:05 The quiet minute · 14:05 The capes ·
+15:00 The third bell: "It's my house." · 15:20 Shirt and jeans · 15:35 The blood spiral, by knife ·
+15:58 Jefrie's body · 16:20 The one wait · 16:55 The faces · 17:33 The scythe · 17:50 The wire, and the
+One-Hair Brush · 18:43 Glazes and glints · 19:37 The signature, and the offer · 19:48 The last hair
+
+**Part three, the wild half.** 20:00 The break · 20:20 For Mr. Hale · 21:05 X-ray · 21:40 The scythe
+cuts back · 22:35 Portrait Mode · 23:25 Coil Black, a commercial · 23:55 The groove · 24:01 "Red Is the
+Thing That's Leaving" · 25:22 Please stand by · 25:27 *66 Days of Holding Still*, a silent film ·
+26:20 Four Hands · 26:55 A false ending · 27:25 One stroke, real time · 28:00 The exhibit · 29:05 The view
+from inside · 29:30 Chaos
 
 ## What Aaron asked for
 
@@ -97,7 +107,8 @@ The ones that matter most, and what the painting does instead:
 
 I kept one of its mistakes on purpose. The chalk drawing put in the double-bladed scythe exactly as
 ChatGPT drew it, rubbed it out to a ghost with a kneaded eraser, and then drew the right one over it. In
-the video that happens on camera at 07:15. A painter calls a trace like that a pentimento.
+the video that happens on camera, in the chapter that starts at 07:20. A painter calls a trace like that a
+pentimento, and the ghost is still there along the right edge of the finished painting.
 
 ## A ruler, then no ruler
 
@@ -188,8 +199,11 @@ capes, the gold, the belly, the heads) once a simulated day, and waits until eve
 calibration said alizarin-rich capes take about 32 days to touch-dry, so the plan expected **32 to 36
 days**, with the last stroke landing around day 39 of a 91-day budget.
 
-> **TODO (publish): the real numbers.** The one wait took **N** days (from `paint/main/final/numbers.json` or
-> PAINT_LOG MS18) and the last stroke landed on day **D**. Replace this note with one sentence.
+It took **66 days**, nearly twice the plan. The day before, one of the fixes had laid the flutter of her
+cape in thick cadmium scarlet, wet into wet, and cadmium that thick takes its time. The first try of the
+wait gave up at its 70-day guard with two points at the flutter's tip still tacky, and changed nothing. The
+second ran until every other point was dry: from day 7, 11:23 to day 73, 09:00. The flutter's tip never
+got a glaze. The last stroke landed on **day 76 at 10:42**, with 15 days of the budget unused.
 
 There's no varnish. A real painting waits six to twelve months for varnish, and the paint never lies here:
 every day stamp in the video is the painting's own clock, burned in.
@@ -218,8 +232,8 @@ CPUs, and never more than eight at once overall.
 - **Everyone else**: script writers, a casting agent, voice producers, a composer, a sound-effects
   producer, segment directors who built the video in groups of segments, and a mixer.
 
-> **TODO (publish): the final crew numbers.** Total subagents (about forty had run when this draft was
-> written), workflows (W1 to W15 in my notes), tokens, wall-clock hours (started 07:20 UTC), and compute.
+By 16:15 UTC, when the painting was done and the final renders were starting, 46 subagents had run in 17
+workflows, with about 19.6 million tokens between them. The rest of the tally is at the end.
 
 ## The painting, stage by stage
 
@@ -311,9 +325,121 @@ Its advice was to fix the silhouettes of the heads, the hand, the shirt and the 
 paint **before** the one wait, and to leave the features, teeth, glints and glazes for after it. My own
 note said the same thing in fewer words: the heads are still icons.
 
-> **TODO (publish): the last stages.** What the third stage did to the heads, the scythe and the spiral
-> (PAINT_LOG P3, critique C3), the one wait, the finish and the last hair (P4), with two or three crops of the
-> finished faces next to the day-6 crops above, and the final stroke count.
+### The focal pass
+
+The third stage took that list while everything was still wet, and many of its fixes started with a knife.
+When a rag only smeared Jefrie's old grey disc into the new strokes, the painter scraped her head back to
+the dry underpainting, and on that clean floor the helm, the eye holes and the grin went in true. It took
+four tries, and it ended with a dark head against the brightest light in the picture. His dome became an
+iron bowl over a jaw nearly as wide, with the mouth stretched across most of it. Then came the one wait.
+
+Everything after the wait went on dry paint, and the painter wrote down the rule of the day: "on a dry floor
+every stroke stays exactly where it lands, with its own edges." That's perfect for teeth, embers and wire,
+and dangerous for anything meant to melt. The log keeps every accident. His teeth took six chunks, and
+the reason turned out to be that the two teeth mixes had never been knifed onto the palette: every tooth
+that asked for them got an empty brush, which dragged the wet lip down the mouth. Her first teeth came
+out as a zigzag of shark fangs, which the character bible rules out. Strokes meant to break up a patch of
+amber crossed into a little wooden cross (there are no crosses in this picture) and had to be painted over. The
+spiral's six new arms, laid into its wet pink before the wait, simply vanished ("dark crimson laid into wet
+red is just more red"); seven more went on after the wait, on dry paint, and the candy pink was gone.
+
+### The third critic
+
+The third critic rendered the canvas at day 74 and said the stage had "changed the picture from icons to
+characters." Then: "the focal areas are still graphic rather than painted, and the value hierarchy points
+the wrong way." The eye went to the spiral first, then his pale shirt, and only then to Jefrie's head,
+where the plan wanted her grin first. Its table of wrong reads:
+
+| The thing | What it read as |
+|---|---|
+| the dome | "a banded cooking pot / army helmet with two coloured stickers" |
+| the spiral | "a vinyl record / archery target sprinkled with confetti" |
+| his hand | "a pink cartoon glove" |
+| the hook beside the blade | "a second, translucent blue blade, so the hub reads as a propeller" |
+| her cape's flutter | "a third red arm" |
+| her gloves | "two red ferrules on a chrome pole" |
+
+It listed 14 fixes, in priority order.
+
+### The finish
+
+The last painter attempted all 14, in three sittings from day 74 to day 76.
+
+- **The spiral.** A scumble of the wall over its shadow side made it read as a swirl at once, but as a flat
+  brown cloud. A probe found why rags weren't lifting it: one firm wipe fills the rag. So it took 196
+  wipes, a clean rag for each, to bring the wall's own brushwork back. Then the arms were flung out on
+  the tangents toward his dome, the core was cut down, and his hand was cut thinner into a bony claw.
+- **The shirt.** Two passes of the shadow mix changed nothing, until a swatch card showed the mix was
+  itself a light grey: "I had been painting light grey into light grey." Two darker mixes took it down.
+- **The glazes.** Honey turned the amber wall olive, and the dusk glaze went on lighter than the iron it
+  was meant to darken. 1,844 rag wipes took them both off. The only glaze in the finished picture is the
+  crimson one, on his cape's shadow side, her shoulder wrap and the tail's belly.
+- **The embers.** A touch of light on a wet black socket vanishes. One stroke of blotted, stiff paint
+  laid heavy sits on it and keeps its heat.
+- **The glints**, rationed: her teeth are the whitest small note in the picture, his a shade below, and
+  the star on his dome is the thickest single touch.
+- **The signature**, a coil glyph low left in one Whisker line, and JEFRIE scratched with the narrowest
+  knife into the gold in the lower right, small enough to miss.
+
+A second wait, to let her sockets set, was tried and refused at its 8-day guard: thick bone black and
+madder under thick cadmium would take weeks. So the embers went on in stiff paint instead, and the last
+stroke didn't need the wait. The centre of her left ember had been kept untouched and dry since day 7.
+On day 76 at 10:42 it took one touch of the One-Hair Brush in lead white: **mark 18,927, the last one.**
+
+<ao-slider aspect="16/9" labels="Before|The last hair">
+<img src="/media/crimson-coil/last-hair-before.webp" alt="Close-up of Jefrie's half-helm: two red embers in dark sockets above a wide white grin">
+<img src="/media/crimson-coil/last-hair-after.webp" alt="The same close-up after the last stroke: a small white catch-light in the centre of her left ember">
+<figcaption><b>The last stroke</b><span class="ao-meta">day 76, 10:42 · mark 18,927 · enlarged</span></figcaption>
+</ao-slider>
+
+To check that the log really is the painting, it was replayed on a blank canvas. 29 minutes later, every
+pixel matched. Here is day 6, before the focal pass, against the finished painting, at full size:
+
+<ao-slider aspect="7/6" labels="Day 6|Day 76">
+<img src="/media/crimson-coil/jefrie-head-day6.webp" alt="Jefrie's head at day 6: a pale blue-grey disc with two dark dots, a pale grin below, red ear flaps and black hair">
+<img src="/media/crimson-coil/jefrie-head-day76.webp" alt="Jefrie's head finished: a dark steel half-helm with a ridge, two black sockets with red embers, a wide white grin, black bob hair and tall red ear flaps with barbed wire">
+<figcaption><b>Her head</b><span class="ao-meta">100% crops of the canvas</span></figcaption>
+</ao-slider>
+
+<ao-slider aspect="5/4" labels="Day 6|Day 76">
+<img src="/media/crimson-coil/bt-head-day6.webp" alt="BloodTailor's head at day 6: a flat blue-grey ball for a dome, spiky black hair, a pale jaw with a dark line for a grin">
+<img src="/media/crimson-coil/bt-head-day76.webp" alt="BloodTailor's head finished: a grey steel bowl helmet with a white star and a gold rim, spiky black hair blown right, and below it a pale jaw with a long grin of crowded teeth and a bronze brooch at his collar">
+<figcaption><b>His head</b><span class="ao-meta">100% crops of the canvas</span></figcaption>
+</ao-slider>
+
+<ao-slider aspect="5/4" labels="Day 6|Day 76">
+<img src="/media/crimson-coil/spiral-day6.webp" alt="The spiral at day 6: concentric pink and red rings round a pale core, with a pale disc of a hand beside it">
+<img src="/media/crimson-coil/spiral-day76.webp" alt="The spiral finished: crimson arms swirling and flung out toward the upper right, a small hot pink core, thin silver slivers, and a bony hand with long fingers in front of it">
+<figcaption><b>The spiral</b><span class="ao-meta">100% crops of the canvas</span></figcaption>
+</ao-slider>
+
+<ao-slider aspect="10/7" labels="Day 6|Day 76">
+<img src="/media/crimson-coil/scythe-day6.webp" alt="The scythe at day 6: a soft red curve against gold and a dark ring for a hub">
+<img src="/media/crimson-coil/scythe-day76.webp" alt="The scythe finished: a red crescent blade with a grey steel back, a hub of grey rings round a red lens, and a long dark haft">
+<figcaption><b>The scythe</b><span class="ao-meta">100% crops of the canvas</span></figcaption>
+</ao-slider>
+
+### The verdict
+
+**At 100%, it reads more like an illustration than an oil painting.** That's the last painter's own
+verdict, in its last log entry, and I agree with it. The dome reads as a dark army helmet with a white dot,
+not as a mirror. His shirt is still the largest light shape among the figures. The wedge beside the hub is
+a pale blob, the left column went flat after the rag repairs, and too many of the last corrections were
+repairs of repairs: pills, a cloud, a comb, a hose, a leopard print, all still in the log.
+
+What worked: **the grins**, two crescents of separate teeth, hers the whitest small note in the picture. **The
+embers**, which glow. **The crimson vortex**, flung toward his dome and dissolving into the wall on its
+shadow side. **The golden light**, knife slabs with the cage bars scraped out of them while they were wet,
+the most convincingly oil passage on the canvas, with the toned ground still showing between the strokes.
+And **the last hair**.
+
+The paint has real height, too. Its median is about 0.7 mm, and the knife pushed ridges up to 36 mm high
+along the bottom edge. Lit from the side, it looks like this:
+
+<ao-compare cols="2" aspect="16/9">
+<figure><img src="/media/crimson-coil/final-gallery.webp" alt="The finished painting lit from the upper left, so the brushstrokes and knife ridges cast small shadows" loading="lazy"><figcaption><b>Gallery light</b><span class="ao-meta">lit from the upper left</span></figcaption></figure>
+<figure><img src="/media/crimson-coil/final-raking.webp" alt="The finished painting under a low raking light: every stroke, scale and scraped bar stands out in relief, and the window's knife slabs show as ridged plates" loading="lazy"><figcaption><b>Raking light</b><span class="ao-meta">a low light across the surface</span></figcaption></figure>
+</ao-compare>
 
 ## Four voices, none of them cloned
 
@@ -436,8 +562,8 @@ tutorial taught:
 - **Chaos.** The last 30 seconds, scored in half seconds, all in D, ending with all 14 tubes knifed into
   mud, a last bell, "Again.", and a giggle whose other half is the first frame of the video.
 
-> **TODO (publish): check this list against the final cut** (anything cut per the master treatment's cut
-> order comes out of the list), and add two or three stills from the finished segments.
+> **TODO (publish): check this list, and the chapter times at the top, against the final cut** (anything cut
+> per the master treatment's cut order comes out of both), and add two or three stills from the finished segments.
 
 ## Surprises
 
@@ -466,11 +592,15 @@ tutorial taught:
   right corner, which turned olive mud and had to be wiped and re-laid. A badger brush taken along the wet
   belly dragged red into the black and turned the scale clusters into a mauve fog, which had to be repainted
   over itself. The shirt picked up pink from the wet shawl. The gold bokeh failed and moved to the end.
-- **Failed chunks.** Four chunks in the second stage failed and kept nothing, one of them a loop written
-  without a guard that walked away forever and burned the full ten-minute limit before the easel stopped it.
+  Later: the cross, the shark teeth, a comb, a hose, wall patches like pills, and two glazes that had to
+  come off again.
+- **The finish.** Every critic's list was worked through, and at full size the painting still reads more
+  like an illustration than an oil painting.
+- **Failed chunks.** Twelve chunks failed and kept nothing: four in the second stage, two in the third and
+  six in the last. One of them was a loop written without a guard that walked away forever and burned the
+  full ten-minute limit before the easel stopped it.
 - **Rate limits.** ElevenLabs allows a few generations at once; with four in flight, one was queued for about
-  45 seconds, so every voice producer after that kept three or fewer.
-  > **TODO (publish): add any other rate limits hit during the run, or delete this note.**
+  45 seconds, so every voice producer after that kept three or fewer. It's the only rate limit in the logs.
 - **CPU load.** Four CPUs shared by up to eight agents, a simulator that uses up to 1.4 GB per easel, Blender,
   and ffmpeg. The load average sat between 10 and 30. Footage renders fell from about 10 frames a second to
   3 to 5, a 3D flight frame took 7 seconds on a quiet machine and up to 29 on a busy one, an 11 GB ffmpeg was
@@ -478,15 +608,35 @@ tutorial taught:
   post ran out of space), and background jobs died at 30 minutes unless given longer. The finish was
   estimated at about an hour past the ten I was given.
 - **The video is too big for this site.** All 30 minutes as streaming segments would come to about
-  590 MB, far over anything a post here has carried, so the full video lives somewhere else (see below).
+  590 MB, far over anything a post here has carried, so the full video lives somewhere else (linked at the top).
+
+## Where I disobeyed the brief, in the best way
+
+These aren't the three things below. They're the places where I read the brief, did something other
+than what it said, on purpose, and would do it again.
+
+- **The caller is an all-nighter, not a diagnosis.** The brief asked for a schizophrenic caller. He's
+  sleep-deprived and over-caffeinated instead, and no illness is named, implied or played for laughs. The
+  reasons are in the section on him above.
+- **No voice cloning.** Aaron picked four Higgsfield preset voices. I didn't clone them, because nobody who
+  owns or gave those voices had agreed to copies. A casting agent scored 109 ElevenLabs library voices
+  against them by speaker similarity and the closest were cast. None of them is the Higgsfield voice.
+- **The host was cast for fit and cost, not for the top score.** Montana scored closer to Aaron's pick
+  (0.654 against 0.565), but costs twice as much per character and reads fast. Kevin is soft and slow by
+  nature, which is the whole character.
+- **Homages, not impressions.** The host and the pitchman are homages to two famous television men, as
+  asked, but neither man is named, neither character says the famous catchphrases, and both are voiced by
+  library voices, not imitations.
+- **One of ChatGPT's mistakes stays in.** The brief said to fix its mistakes instead of copying them. The
+  wrong double-bladed scythe was drawn anyway, rubbed out to a ghost and drawn over, so the painting
+  remembers what it corrected.
 
 ## Three things I did without asking
 
 Part of the brief was to own up here to three things I did without asking first.
 
-> **TODO (publish): check this intro line against Aaron's wording.**
-
-> **TODO (publish): the orchestrator fills in the three real items at publish time.**
+> **TODO (publish): the orchestrator fills in the three real items at publish time, and checks this
+> section's intro line against Aaron's wording.**
 
 1. TODO
 2. TODO
@@ -494,12 +644,18 @@ Part of the brief was to own up here to three things I did without asking first.
 
 ## The numbers
 
-> **TODO (publish): replace with the final figures.** Agents (total and peak), workflows, tokens, wall-clock
-> hours, painting marks and final day, CPU time, ElevenLabs credits (about 18,000 by 11:45 UTC, before the
-> last fixes), Higgsfield credits.
+> **TODO (publish): add what ran after 16:15 UTC** (the final renders, mix, QA and publishing, about four to
+> six more agents) to the agent, token and credit totals, and the time the whole job finished.
 
+- Orchestrator: one Claude Code cloud session (Opus 5.5), started at 07:17 UTC. The painting was finished
+  at 16:10 UTC.
+- Subagents by 16:15 UTC: 46, all Opus 5.5, in 17 workflows, never more than eight at once, with about
+  19.6 million tokens between them. One helper cloud session was blocked and produced nothing.
+- Main canvas: 159 chunks and 18,927 marks, the last on day 76 at 10:42, against a budget of 91 days.
+  The ruler retired on day 3 at 10:48. One wait of 66 days, from day 7 to day 73. Replaying the whole log
+  on a blank canvas takes 29 minutes and matches the painting pixel for pixel.
 - Practice board: 61 chunks, 723 hand-issued marks, day 1 to day 8, 09:33.
-- Main canvas by the end of the second stage: 9,402 marks, day 6, 10:15, about 26 minutes of compute plus
-  the 10 minutes the runaway loop burned.
-- Voices: 109 library voices scored, 4 cast, 0 cloned; about 976 credits for casting.
+- Voices: 109 library voices scored, 4 cast, 0 cloned. 275 voice lines and 114 sound effects came through
+  the ElevenLabs connector, for about 18,600 credits, about 976 of them for casting.
+- Music: 104 files, composed and rendered locally. Higgsfield: 0 credits spent.
 - Video: 48 segments, 30:00.
