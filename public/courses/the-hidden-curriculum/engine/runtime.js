@@ -70,8 +70,11 @@
 
   function drawScene(i, T, target) {
     const sec = TL.sections[i], B = bounds();
-    const fn = DEF.scenes[sec.n]; if (!fn) return;
+    const fn = DEF.scenes[sec.n];
     K.use(target);
+    // a section with no scene yet (scenes written in parallel) shows the plain background,
+    // never a stale frame left in the buffer by an earlier draw
+    if (!fn) { target.save(); target.clearRect(0, 0, K.W, K.H); K.bg(); target.restore(); return; }
     target.save();
     target.clearRect(0, 0, K.W, K.H);
     const S = sceneApi(sec, i, B);
@@ -109,7 +112,14 @@
     let i = 0; while (i < TL.sections.length - 1 && T >= B[i + 1]) i++;
     const into = T - B[i];
     const tr = (DEF.transition && DEF.transition[TL.sections[i].n]) || 'fade';
-    if (i > 0 && into < XFADE && tr !== 'cut') {
+    if (i > 0 && into < XFADE && tr === 'dip') {
+      // dip through the background: the outgoing scene fades to K.bg over the first half,
+      // the incoming one fades in from K.bg over the second half (never two busy frames at once)
+      const h = XFADE / 2, out = into < h;
+      drawScene(out ? i - 1 : i, T, bufA.getContext('2d'));
+      const k = out ? 1 - K.ease.io(into / h) : K.ease.io((into - h) / h);
+      K.use(ctx); ctx.save(); K.bg(); ctx.globalAlpha = k; ctx.drawImage(bufA, 0, 0); ctx.restore();
+    } else if (i > 0 && into < XFADE && tr !== 'cut') {
       drawScene(i - 1, T, bufA.getContext('2d'));
       drawScene(i, T, bufB.getContext('2d'));
       const k = K.ease.io(into / XFADE);

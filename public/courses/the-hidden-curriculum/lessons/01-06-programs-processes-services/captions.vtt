@@ -1,0 +1,989 @@
+WEBVTT
+
+1
+00:00:01.600 --> 00:00:03.713
+In this lesson you'll learn the difference
+
+2
+00:00:03.713 --> 00:00:05.652
+between a program on your disk,
+
+3
+00:00:05.652 --> 00:00:07.800
+a process running it right now,
+
+4
+00:00:07.800 --> 00:00:09.785
+and a service your computer keeps running
+
+5
+00:00:09.785 --> 00:00:12.061
+in the background with no window.
+
+6
+00:00:12.061 --> 00:00:14.731
+A program is a file of instructions.
+
+7
+00:00:14.731 --> 00:00:17.366
+A process is one running copy of it.
+
+8
+00:00:17.366 --> 00:00:19.387
+A service is a process the operating
+
+9
+00:00:19.387 --> 00:00:22.115
+system starts and keeps alive by itself.
+
+10
+00:00:22.115 --> 00:00:25.157
+File, running copy, kept alive.
+
+11
+00:00:25.157 --> 00:00:27.432
+"Port already in use",
+
+12
+00:00:27.432 --> 00:00:29.580
+a server that outlived its window,
+
+13
+00:00:29.580 --> 00:00:33.655
+an AI tool busy in the background: all one idea.
+
+14
+00:00:33.655 --> 00:00:35.838
+Your agent can find and stop those.
+
+15
+00:00:35.838 --> 00:00:38.427
+Your part is knowing what ought to be running.
+
+16
+00:00:38.427 --> 00:00:39.902
+Aaron, who made this course,
+
+17
+00:00:39.902 --> 00:00:42.433
+has an Information Systems degree,
+
+18
+00:00:42.433 --> 00:00:44.511
+and once wrote Python in Notepad,
+
+19
+00:00:44.511 --> 00:00:48.458
+saved as .txt, with no idea how to run it.
+
+20
+00:00:48.458 --> 00:00:49.607
+It just sat there:
+
+21
+00:00:49.607 --> 00:00:53.034
+a program that never became a process.
+
+22
+00:00:53.484 --> 00:00:55.678
+This lesson sits in the first district,
+
+23
+00:00:55.678 --> 00:00:57.536
+The Machine, which asks:
+
+24
+00:00:57.536 --> 00:00:59.393
+what's on your computer?
+
+25
+00:00:59.393 --> 00:01:01.762
+Module one, lesson six.
+
+26
+00:01:01.762 --> 00:01:03.027
+Last lesson,
+
+27
+00:01:03.027 --> 00:01:05.535
+every program left home with a satchel:
+
+28
+00:01:05.535 --> 00:01:07.880
+a copy of its parent's settings.
+
+29
+00:01:07.880 --> 00:01:09.761
+Now meet the programs carrying them,
+
+30
+00:01:09.761 --> 00:01:11.899
+and count how many are out.
+
+31
+00:01:12.349 --> 00:01:15.159
+Picture a kitchen shelf of recipe cards.
+
+32
+00:01:15.159 --> 00:01:16.772
+Each card is a program:
+
+33
+00:01:16.772 --> 00:01:19.002
+instructions, doing nothing.
+
+34
+00:01:19.002 --> 00:01:21.730
+A process is a cook working from one card,
+
+35
+00:01:21.730 --> 00:01:24.203
+right now. It gets a ticket number,
+
+36
+00:01:24.203 --> 00:01:27.767
+called a process ID, or PID.
+
+37
+00:01:27.767 --> 00:01:30.820
+Its own stretch of counter, which is memory.
+
+38
+00:01:30.820 --> 00:01:32.922
+And the satchel handed over at the door
+
+39
+00:01:32.922 --> 00:01:34.860
+by whoever sent it in:
+
+40
+00:01:34.860 --> 00:01:39.075
+File Explorer, a terminal, an editor, an agent.
+
+41
+00:01:39.075 --> 00:01:41.130
+That sender is its parent.
+
+42
+00:01:41.130 --> 00:01:44.450
+Many cooks can work from the same card at once.
+
+43
+00:01:44.450 --> 00:01:46.563
+On the laptop this course is made on,
+
+44
+00:01:46.563 --> 00:01:48.351
+eleven copies of node were running
+
+45
+00:01:48.351 --> 00:01:50.197
+at one moment this month.
+
+46
+00:01:50.197 --> 00:01:53.519
+One recipe, eleven processes.
+
+47
+00:01:53.970 --> 00:01:57.256
+Under the picture, a process is private memory,
+
+48
+00:01:57.256 --> 00:02:00.355
+a PID, a copy of the environment,
+
+49
+00:02:00.355 --> 00:02:04.535
+and an account it runs as, usually yours.
+
+50
+00:02:04.535 --> 00:02:06.497
+Inside are threads:
+
+51
+00:02:06.497 --> 00:02:08.169
+workers sharing its counter.
+
+52
+00:02:08.169 --> 00:02:09.725
+That's module seven.
+
+53
+00:02:09.725 --> 00:02:12.906
+On the course laptop, at one moment, four hundred
+
+54
+00:02:12.906 --> 00:02:15.425
+and fifty-seven processes were running.
+
+55
+00:02:15.425 --> 00:02:17.260
+One app is often several:
+
+56
+00:02:17.260 --> 00:02:20.069
+a browser, VS Code, Ollama.
+
+57
+00:02:20.069 --> 00:02:21.869
+Here's where the kitchen breaks.
+
+58
+00:02:21.869 --> 00:02:23.297
+A cook has judgement;
+
+59
+00:02:23.297 --> 00:02:25.839
+a process follows its card exactly.
+
+60
+00:02:25.839 --> 00:02:28.150
+Cooks really work side by side.
+
+61
+00:02:28.150 --> 00:02:30.576
+A computer runs only as many processes
+
+62
+00:02:30.576 --> 00:02:32.887
+at once as it has processor cores,
+
+63
+00:02:32.887 --> 00:02:35.569
+and switches between the rest very fast.
+
+64
+00:02:35.569 --> 00:02:38.251
+And a cook can glance at a neighbour's counter.
+
+65
+00:02:38.251 --> 00:02:41.421
+A process can't, unless the system lets it in,
+
+66
+00:02:41.421 --> 00:02:43.175
+the way a debugger is.
+
+67
+00:02:43.624 --> 00:02:45.760
+Some cooks you never sent in.
+
+68
+00:02:45.760 --> 00:02:47.838
+A service is a process the operating
+
+69
+00:02:47.838 --> 00:02:49.870
+system's own manager starts,
+
+70
+00:02:49.870 --> 00:02:52.262
+often at boot, with no window.
+
+71
+00:02:52.262 --> 00:02:54.340
+It can run with nobody signed in,
+
+72
+00:02:54.340 --> 00:02:57.254
+and the manager can restart it if it stops.
+
+73
+00:02:57.254 --> 00:03:00.540
+On Windows, many services share one host program,
+
+74
+00:03:00.540 --> 00:03:02.920
+shown as Service Host.
+
+75
+00:03:02.920 --> 00:03:04.244
+On the course laptop,
+
+76
+00:03:04.244 --> 00:03:06.833
+a hundred and sixty-six services were running;
+
+77
+00:03:06.833 --> 00:03:08.412
+ninety-seven Service Host
+
+78
+00:03:08.412 --> 00:03:10.536
+processes carried many of them.
+
+79
+00:03:10.536 --> 00:03:11.836
+On a Mac or Linux,
+
+80
+00:03:11.836 --> 00:03:14.344
+the same idea is called a daemon.
+
+81
+00:03:14.344 --> 00:03:17.235
+In between sits the tray app: it arrives
+
+82
+00:03:17.235 --> 00:03:19.917
+when you sign in and leaves when you sign out.
+
+83
+00:03:19.917 --> 00:03:22.912
+On Windows and Mac, Ollama is one of those,
+
+84
+00:03:22.912 --> 00:03:24.433
+not a service.
+
+85
+00:03:24.433 --> 00:03:27.080
+Three kinds of cook: apps you open,
+
+86
+00:03:27.080 --> 00:03:29.182
+tray apps that clock in with you,
+
+87
+00:03:29.182 --> 00:03:31.761
+and night staff the building hires.
+
+88
+00:03:32.211 --> 00:03:34.568
+Every kitchen keeps a staff board.
+
+89
+00:03:34.568 --> 00:03:36.948
+On Windows, it's Task Manager:
+
+90
+00:03:36.948 --> 00:03:39.676
+Control, Shift, Escape.
+
+91
+00:03:39.676 --> 00:03:40.768
+Five years ago,
+
+92
+00:03:40.768 --> 00:03:43.229
+it was mostly for ending a frozen app.
+
+93
+00:03:43.229 --> 00:03:45.713
+The Processes tab groups every cook:
+
+94
+00:03:45.713 --> 00:03:49.614
+apps, background processes, Windows processes.
+
+95
+00:03:49.614 --> 00:03:54.177
+Details gives one row per process, with its PID.
+
+96
+00:03:54.177 --> 00:03:56.452
+Services lists the night staff;
+
+97
+00:03:56.452 --> 00:03:59.831
+Startup apps, who clocks in when you sign in.
+
+98
+00:03:59.831 --> 00:04:02.559
+End task stops a process at once.
+
+99
+00:04:02.559 --> 00:04:05.357
+Whatever it hadn't saved is gone.
+
+100
+00:04:05.357 --> 00:04:07.598
+Newer Windows 11 builds add two
+
+101
+00:04:07.598 --> 00:04:09.699
+hidden columns you can switch on:
+
+102
+00:04:09.699 --> 00:04:13.542
+NPU, which process uses the AI chip,
+
+103
+00:04:13.542 --> 00:04:16.967
+and Isolation, for apps running fenced in.
+
+104
+00:04:16.967 --> 00:04:20.044
+On a Mac, the board is Activity Monitor;
+
+105
+00:04:20.044 --> 00:04:23.273
+on Linux, top or htop.
+
+106
+00:04:23.724 --> 00:04:26.882
+A window is a door to the cook, not the cook.
+
+107
+00:04:26.882 --> 00:04:27.706
+Close the door,
+
+108
+00:04:27.706 --> 00:04:30.109
+and the cook can still be at the counter.
+
+109
+00:04:30.109 --> 00:04:32.037
+Three kinds keep working:
+
+110
+00:04:32.037 --> 00:04:33.906
+tray apps like Ollama;
+
+111
+00:04:33.906 --> 00:04:36.332
+services, which never had a door;
+
+112
+00:04:36.332 --> 00:04:38.933
+and children whose parent went away.
+
+113
+00:04:38.933 --> 00:04:41.034
+On Windows, ending a parent doesn't
+
+114
+00:04:41.034 --> 00:04:43.217
+automatically end what it started.
+
+115
+00:04:43.217 --> 00:04:45.690
+Tools that want to stop everything they launched
+
+116
+00:04:45.690 --> 00:04:48.116
+have to group those processes first.
+
+117
+00:04:48.116 --> 00:04:49.312
+Late last year,
+
+118
+00:04:49.312 --> 00:04:51.866
+a Windows update briefly made Task Manager
+
+119
+00:04:51.866 --> 00:04:54.211
+itself keep running after you closed it.
+
+120
+00:04:54.211 --> 00:04:56.721
+Microsoft fixed it in November.
+
+121
+00:04:57.171 --> 00:04:59.470
+A server is a process that stays running
+
+122
+00:04:59.470 --> 00:05:01.583
+and waits at a numbered serving hatch,
+
+123
+00:05:01.583 --> 00:05:03.696
+called a port, for orders.
+
+124
+00:05:03.696 --> 00:05:06.819
+Only one process can hold a port at a time.
+
+125
+00:05:06.819 --> 00:05:08.874
+Numbers you'll often see:
+
+126
+00:05:08.874 --> 00:05:14.458
+3000 for many Node apps, 5173 for Vite,
+
+127
+00:05:14.458 --> 00:05:19.125
+8000 for Python, 8188 for ComfyUI,
+
+128
+00:05:19.125 --> 00:05:25.278
+1234 for LM Studio, and 11434 for Ollama.
+
+129
+00:05:25.278 --> 00:05:27.718
+Localhost means your own machine.
+
+130
+00:05:28.180 --> 00:05:29.515
+On the course laptop,
+
+131
+00:05:29.515 --> 00:05:32.489
+twenty-seven hatches were open at once.
+
+132
+00:05:32.940 --> 00:05:38.234
+Node says: address already in use, port 3000.
+
+133
+00:05:38.234 --> 00:05:40.231
+A cook is already at that hatch,
+
+134
+00:05:40.231 --> 00:05:43.008
+usually an earlier copy you thought you stopped.
+
+135
+00:05:43.470 --> 00:05:45.641
+Vite's version is quieter.
+
+136
+00:05:45.641 --> 00:05:48.938
+It says port 5173 is in use,
+
+137
+00:05:48.938 --> 00:05:53.072
+trying another one, and opens 5174.
+
+138
+00:05:53.072 --> 00:05:55.126
+Now two copies run,
+
+139
+00:05:55.126 --> 00:05:57.425
+and your browser may still show the old one.
+
+140
+00:05:57.425 --> 00:06:00.862
+Start a second Ollama, and it can't take its port.
+
+141
+00:06:00.862 --> 00:06:03.347
+People call that leftover a zombie.
+
+142
+00:06:03.347 --> 00:06:06.063
+Strictly, a zombie has already finished:
+
+143
+00:06:06.063 --> 00:06:07.793
+just an entry the system keeps
+
+144
+00:06:07.793 --> 00:06:10.522
+until its parent collects it, using nothing.
+
+145
+00:06:10.522 --> 00:06:12.739
+The thing holding your port is alive.
+
+146
+00:06:12.739 --> 00:06:16.897
+It's a leftover, or orphan, whose parent is gone.
+
+147
+00:06:17.347 --> 00:06:18.485
+Five years ago,
+
+148
+00:06:18.485 --> 00:06:21.712
+a builder ran maybe one dev server,
+
+149
+00:06:21.712 --> 00:06:24.464
+in a terminal they opened themselves.
+
+150
+00:06:24.464 --> 00:06:27.274
+Now AI tools start their own.
+
+151
+00:06:27.274 --> 00:06:29.735
+A local model server is just a long-running
+
+152
+00:06:29.735 --> 00:06:32.138
+process on a localhost port.
+
+153
+00:06:32.138 --> 00:06:34.692
+On the course laptop, Ollama's tray app
+
+154
+00:06:34.692 --> 00:06:39.092
+is the parent of the Ollama server, at port 11434.
+
+155
+00:06:39.092 --> 00:06:42.331
+One app, two programs, two processes.
+
+156
+00:06:42.331 --> 00:06:44.340
+By default it keeps the model loaded
+
+157
+00:06:44.340 --> 00:06:47.092
+for about five minutes after your last question,
+
+158
+00:06:47.092 --> 00:06:49.367
+so that memory stays taken.
+
+159
+00:06:49.367 --> 00:06:52.490
+LM Studio and Microsoft's Foundry Local
+
+160
+00:06:52.490 --> 00:06:55.114
+run windowless servers too.
+
+161
+00:06:55.114 --> 00:06:58.168
+Ollama's server has no password by default:
+
+162
+00:06:58.168 --> 00:07:01.732
+fine on localhost, risky opened to the network,
+
+163
+00:07:01.732 --> 00:07:05.344
+and researchers have found many exposed online.
+
+164
+00:07:05.794 --> 00:07:09.823
+When your AI app opens, it hires a crew.
+
+165
+00:07:09.823 --> 00:07:12.597
+Each local MCP server in its config
+
+166
+00:07:12.597 --> 00:07:15.175
+is a child process the app launches.
+
+167
+00:07:15.175 --> 00:07:17.752
+Five servers, five extra cooks,
+
+168
+00:07:17.752 --> 00:07:19.714
+often node or python.
+
+169
+00:07:19.714 --> 00:07:21.885
+They get the satchel the app packs,
+
+170
+00:07:21.885 --> 00:07:23.534
+often with keys in the config,
+
+171
+00:07:23.534 --> 00:07:25.577
+and run with your permissions.
+
+172
+00:07:25.577 --> 00:07:28.363
+When the app closes, it's meant to stop them,
+
+173
+00:07:28.363 --> 00:07:30.151
+politely, then by force,
+
+174
+00:07:30.151 --> 00:07:33.170
+and it should restart one that crashes.
+
+175
+00:07:33.170 --> 00:07:35.770
+A remote one is somebody else's cook,
+
+176
+00:07:35.770 --> 00:07:37.814
+in somebody else's kitchen.
+
+177
+00:07:37.814 --> 00:07:40.147
+This year, researchers stressed
+
+178
+00:07:40.147 --> 00:07:43.073
+that a local MCP config line is,
+
+179
+00:07:43.073 --> 00:07:45.395
+in effect, a command to run.
+
+180
+00:07:45.395 --> 00:07:47.334
+The makers call that by design;
+
+181
+00:07:47.334 --> 00:07:49.470
+their docs advise caution.
+
+182
+00:07:49.470 --> 00:07:52.862
+Treat adding one like installing software.
+
+183
+00:07:53.313 --> 00:07:56.494
+A coding agent is a head cook sending in helpers.
+
+184
+00:07:56.494 --> 00:07:59.420
+Every command it runs is its own child process,
+
+185
+00:07:59.420 --> 00:08:02.531
+so a dev server it starts belongs to the agent.
+
+186
+00:08:02.531 --> 00:08:05.248
+Long commands go to the background.
+
+187
+00:08:05.248 --> 00:08:08.545
+In Claude Code, /tasks lists them,
+
+188
+00:08:08.545 --> 00:08:11.111
+and it says it cleans them up when it exits.
+
+189
+00:08:11.111 --> 00:08:12.701
+Not every tool does.
+
+190
+00:08:12.701 --> 00:08:14.083
+What's new is fences:
+
+191
+00:08:14.083 --> 00:08:16.173
+sandboxes limiting what its commands
+
+192
+00:08:16.173 --> 00:08:18.112
+and their children can touch.
+
+193
+00:08:18.112 --> 00:08:20.945
+As of this month, Claude Code's sandbox
+
+194
+00:08:20.945 --> 00:08:25.948
+covers Mac, Linux and WSL2, not native Windows.
+
+195
+00:08:25.948 --> 00:08:28.410
+Codex's Windows sandbox also stops
+
+196
+00:08:28.410 --> 00:08:30.558
+leftover child processes.
+
+197
+00:08:30.558 --> 00:08:33.170
+And Microsoft's Execution Containers,
+
+198
+00:08:33.170 --> 00:08:35.666
+a way to fence agents in on Windows,
+
+199
+00:08:35.666 --> 00:08:38.093
+became generally available this month.
+
+200
+00:08:38.093 --> 00:08:40.113
+Some agents use them already;
+
+201
+00:08:40.113 --> 00:08:41.866
+others say they will.
+
+202
+00:08:41.866 --> 00:08:44.362
+Task Manager's Isolation column shows only
+
+203
+00:08:44.362 --> 00:08:47.160
+the fences built on Windows' app containers.
+
+204
+00:08:47.160 --> 00:08:49.412
+Vendors are moving toward agents as their own
+
+205
+00:08:49.412 --> 00:08:52.595
+kind of process, with their own account.
+
+206
+00:08:53.045 --> 00:08:56.145
+Some of the night staff are already AI.
+
+207
+00:08:56.145 --> 00:08:58.455
+On the course laptop, the services list
+
+208
+00:08:58.455 --> 00:09:02.228
+included Windows AI Components Host, a Codex
+
+209
+00:09:02.228 --> 00:09:06.129
+sandbox service shown under the name ChatGPT,
+
+210
+00:09:06.129 --> 00:09:08.985
+and a Copilot elevation service.
+
+211
+00:09:08.985 --> 00:09:10.645
+Chrome can download its own
+
+212
+00:09:10.645 --> 00:09:13.014
+on-device model in the background;
+
+213
+00:09:13.014 --> 00:09:16.137
+newer versions have a switch to turn it off.
+
+214
+00:09:16.137 --> 00:09:18.993
+Taking stock of them, and what each can see,
+
+215
+00:09:18.993 --> 00:09:22.187
+is module one, lesson twelve.
+
+216
+00:09:22.638 --> 00:09:25.599
+The agent can find a process and stop it.
+
+217
+00:09:25.599 --> 00:09:27.897
+Your job is to judge what should be running,
+
+218
+00:09:27.897 --> 00:09:29.488
+with five questions.
+
+219
+00:09:29.488 --> 00:09:31.868
+Is it a file, a running copy,
+
+220
+00:09:31.868 --> 00:09:34.921
+or a service that comes back after a restart?
+
+221
+00:09:34.921 --> 00:09:37.963
+Who started it: you, a terminal,
+
+222
+00:09:37.963 --> 00:09:41.028
+an agent, a tray app, or the system?
+
+223
+00:09:41.028 --> 00:09:42.375
+Which port does it hold?
+
+224
+00:09:42.375 --> 00:09:44.116
+Does it carry your keys?
+
+225
+00:09:44.116 --> 00:09:45.892
+And is it fenced in, or running
+
+226
+00:09:45.892 --> 00:09:47.622
+with your full access?
+
+227
+00:09:47.622 --> 00:09:48.957
+Whoever started it,
+
+228
+00:09:48.957 --> 00:09:52.336
+the system's board shows nearly every process;
+
+229
+00:09:52.336 --> 00:09:56.843
+WSL and virtual machines show as one row.
+
+230
+00:09:57.293 --> 00:09:59.220
+Safe to ignore for now:
+
+231
+00:09:59.220 --> 00:10:00.695
+threads and priorities,
+
+232
+00:10:00.695 --> 00:10:02.970
+what each Service Host row does,
+
+233
+00:10:02.970 --> 00:10:04.735
+and Efficiency mode.
+
+234
+00:10:04.735 --> 00:10:09.205
+Don't memorise PIDs; they change every run.
+
+235
+00:10:09.205 --> 00:10:12.597
+Power tools like Process Explorer can wait.
+
+236
+00:10:13.046 --> 00:10:16.041
+Keep this. A program is a recipe;
+
+237
+00:10:16.041 --> 00:10:18.317
+a process is a cook using it.
+
+238
+00:10:18.317 --> 00:10:20.337
+One file can run many times,
+
+239
+00:10:20.337 --> 00:10:23.495
+each with its own number, memory and settings.
+
+240
+00:10:23.495 --> 00:10:25.469
+A service is a process the system
+
+241
+00:10:25.469 --> 00:10:27.686
+keeps alive with no window.
+
+242
+00:10:27.686 --> 00:10:30.101
+Closing a window doesn't end a process,
+
+243
+00:10:30.101 --> 00:10:32.214
+and "port already in use" usually
+
+244
+00:10:32.214 --> 00:10:34.733
+means an old copy holds the hatch.
+
+245
+00:10:34.733 --> 00:10:37.322
+Your AI tools are processes too.
+
+246
+00:10:37.322 --> 00:10:39.969
+They run as you, with your keys.
+
+247
+00:10:39.969 --> 00:10:43.210
+Know what should run, and whether it's fenced in.

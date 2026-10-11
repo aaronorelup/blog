@@ -569,6 +569,10 @@
     file: (s) => { g.beginPath(); g.moveTo(-s * 0.28, -s * 0.38); g.lineTo(s * 0.1, -s * 0.38); g.lineTo(s * 0.28, -s * 0.2); g.lineTo(s * 0.28, s * 0.38); g.lineTo(-s * 0.28, s * 0.38); g.closePath(); g.moveTo(s * 0.1, -s * 0.38); g.lineTo(s * 0.1, -s * 0.2); g.lineTo(s * 0.28, -s * 0.2); g.stroke(); g.beginPath(); for (let i = 0; i < 3; i++) { const y = -s * 0.04 + i * s * 0.13; g.moveTo(-s * 0.15, y); g.lineTo(i === 2 ? s * 0.03 : s * 0.15, y); } g.stroke(); },
     // program / executable (python.exe, node, git): an app window with a title bar and a run triangle
     program: (s) => { K.rr(-s * 0.4, -s * 0.32, s * 0.8, s * 0.64, s * 0.08); g.stroke(); g.beginPath(); g.moveTo(-s * 0.4, -s * 0.15); g.lineTo(s * 0.4, -s * 0.15); g.stroke(); for (let i = 0; i < 3; i++) { g.beginPath(); g.arc(-s * 0.3 + i * s * 0.09, -s * 0.235, s * 0.025, 0, 7); g.fill(); } g.beginPath(); g.moveTo(-s * 0.09, -s * 0.04); g.lineTo(s * 0.15, s * 0.085); g.lineTo(-s * 0.09, s * 0.21); g.closePath(); g.stroke(); },
+    // mouse pointer: the classic arrow cursor, tip at the top-left (x, y is the icon's centre, not the tip)
+    pointer: (s) => { g.beginPath(); g.moveTo(-s * 0.22, -s * 0.38); g.lineTo(-s * 0.22, s * 0.24); g.lineTo(-s * 0.07, s * 0.1); g.lineTo(s * 0.05, s * 0.36); g.lineTo(s * 0.14, s * 0.32); g.lineTo(s * 0.02, s * 0.06); g.lineTo(s * 0.22, s * 0.06); g.closePath(); g.stroke(); },
+    // restart / reload: an open circular arrow, clockwise, arrowhead at the top
+    restart: (s) => { const r = s * 0.3, hl = s * 0.13; g.beginPath(); g.arc(0, 0, r, -Math.PI * 0.12, Math.PI * 1.5); g.stroke(); g.beginPath(); g.moveTo(-hl * 0.5, -r - hl * 0.8); g.lineTo(hl * 0.45, -r); g.lineTo(-hl * 0.5, -r + hl * 0.8); g.stroke(); },
     // AI / agent: a four-point sparkle with a small companion
     sparkle: (s) => {
       const star = (cx, cy, r) => { g.beginPath(); g.moveTo(cx, cy - r); g.quadraticCurveTo(cx, cy, cx + r, cy); g.quadraticCurveTo(cx, cy, cx, cy + r); g.quadraticCurveTo(cx, cy, cx - r, cy); g.quadraticCurveTo(cx, cy, cx, cy - r); g.closePath(); g.stroke(); };
