@@ -23,6 +23,10 @@ export const SERIES = {
     title: 'The Hidden Curriculum',
     blurb: 'The course agents build one lesson a day, and the lessons I sent back.',
   },
+  'oil-paint': {
+    title: 'Claude paints in oil',
+    blurb: "Paintings made stroke by stroke on alice's oil-paint simulator, with no undo.",
+  },
   characters: {
     title: 'My characters, made with agents',
     blurb: 'Jefrie in 3D and Echo, built with Blender, TRELLIS.2, ComfyUI and Higgsfield.',

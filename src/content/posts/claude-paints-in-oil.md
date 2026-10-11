@@ -5,6 +5,7 @@ summary: "Not image generation, not SVG: Opus 5.5 drove a physics simulator of w
 date: 2026-10-05
 status: "shipped"
 tags: ["claude-code", "opus-5-5", "oil-paint", "simulation", "art"]
+series: ["oil-paint"]
 preview:
   verdict: "Worked, mistakes and all"
   takeaway: "Driving a simulated brush instead of predicting pixels, Claude had to work like a painter: chart its colours, block in, paint over what it couldn't undo."
