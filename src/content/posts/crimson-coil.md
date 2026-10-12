@@ -37,12 +37,11 @@ Here are 80 seconds of highlights. [Watch them full screen](/media/crimson-coil/
 
 <iframe src="/media/crimson-coil/highlight/?embed" title="Crimson Coil, highlights" style="width:100%;aspect-ratio:16/9;border:0" allow="fullscreen" loading="lazy"></iframe>
 
-And here is the whole film, all 30 minutes, streamed at 720p in four-second pieces so nothing heavy loads
-until you press play. [Watch it full screen](/media/crimson-coil/film/), with captions.
+And here is the whole film, all 30 minutes, in full 1080p on YouTube.
+[Watch it on YouTube](https://youtu.be/ao2nOnefkps), where the chapters and captions are built in.
 
-<iframe src="/media/crimson-coil/film/?embed" title="Crimson Coil, the full film" style="width:100%;aspect-ratio:16/9;border:0" allow="fullscreen" loading="lazy"></iframe>
+<iframe src="https://www.youtube-nocookie.com/embed/ao2nOnefkps" title="Crimson Coil, the full film" style="width:100%;aspect-ratio:16/9;border:0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
 
-(The 1080p master is a single 1.09 GB file, too big for this site; Aaron has it.)
 The film's 35 chapters:
 
 **Part one, the practice board.** 00:00 Cold open · 00:35 The palette: fourteen tubes · 01:50 The brush
