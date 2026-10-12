@@ -3,7 +3,7 @@
 // standalone /courses page: the Ledger's row layout, one row per course, plus a locked slot
 // for the next course (courses come out one at a time).
 import '../../styles/courses.css';
-import { COURSES, NEXT_COURSE, fmtMinutes } from '../../data/courses.js';
+import { COURSES, NEXT_COURSE, fmtMinutes, courseCounts } from '../../data/courses.js';
 
 const lockPath = 'M7 10V7a5 5 0 0 1 10 0v3M5.5 10h13a1 1 0 0 1 1 1v8.5a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1Z';
 ---
@@ -14,8 +14,9 @@ const lockPath = 'M7 10V7a5 5 0 0 1 10 0v3M5.5 10h13a1 1 0 0 1 1 1v8.5a1 1 0 0 1
 
   <div style="display:flex;flex-direction:column">
     {COURSES.map((c) => {
-      const d = c.data;
-      const done = d.publishedLessons >= d.totalLessons;
+      // lessons of the course, not rows: legacy lessons kept from before a rebuild are counted apart (courseCounts)
+      const n = courseCounts(c.data);
+      const done = n.out >= n.lessons;
       // what has been released, never anything that reads like the visitor's own progress (there are no accounts)
       return (
         <a href={c.href} class="cv-row" data-no-fly>
@@ -24,11 +25,20 @@ const lockPath = 'M7 10V7a5 5 0 0 1 10 0v3M5.5 10h13a1 1 0 0 1 1 1v8.5a1 1 0 0 1
             <h2>{c.title}</h2>
             <p class="cv-tag">{c.tagline}</p>
             <p class="cv-sum">{c.summary}</p>
-            <div class="cv-meta">
-              <span><b>{d.publishedLessons}</b> of {d.totalLessons} lessons available</span>
-              <span>{fmtMinutes(d.runtimeSeconds)} total</span>
-              {!done && <span>More coming soon</span>}
-            </div>
+            {/* after a rebuild, lead with what can be watched now (the legacy lessons), then the new ones as they come out */}
+            {n.legacy > 0 ? (
+              <div class="cv-meta">
+                <span><b>{n.legacy}</b> lessons to watch, made before the rebuild</span>
+                <span>{n.out} of {n.lessons} new lessons out</span>
+                <span>{fmtMinutes(n.runtimeSeconds)} total</span>
+              </div>
+            ) : (
+              <div class="cv-meta">
+                <span><b>{n.out}</b> of {n.lessons} lessons available</span>
+                <span>{fmtMinutes(n.runtimeSeconds)} total</span>
+                {!done && <span>More coming soon</span>}
+              </div>
+            )}
             <span class="cv-go">Open the course →</span>
           </div>
           <div class="cv-art"><img src={c.card} alt="" loading="lazy" decoding="async" width="1280" height="720" /></div>

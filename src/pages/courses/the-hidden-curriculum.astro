@@ -4,61 +4,113 @@
 // src/data/courses/the-hidden-curriculum.json, which the course's publish tool regenerates from its
 // curriculum.md; the lesson players themselves are static files under public/courses/the-hidden-curriculum/lessons/.
 //
-// The map IS the curriculum: a path from Start through the six districts to the Finish, each district holding
-// its run of modules, each module its lessons. AI is not a district: lessons about AI sit in the district they
-// belong to and carry a lantern. The site knows nothing about a visitor (no accounts), so nothing here may read
-// like personal progress ("next up", "in progress"): it only says what has been released.
+// The map IS the curriculum: a path from Start through the districts to the Finish (how many, their names and
+// their questions all come from the data), each district holding its run of modules, each module its lessons.
+// AI is not a district: lessons about AI sit in the district they belong to and carry a lantern. The site knows
+// nothing about a visitor (no accounts), so nothing here may read like personal progress ("next up", "in
+// progress"): it only says what has been released.
+//
+// Since the 2026-10-12 rebuild the data also holds legacy lessons: made before it, on the old map, and kept on the
+// site for good (publish.py never takes one down), listed right after the new slot they stand in for. They show
+// their own old number (legacyId), carry a "Legacy" tag and are not counted as lessons of the course; a slot
+// covered by a legacy lesson listed in another module (coveredBy) reads as covered by it, never as a second copy
+// of that video. courseCounts in data/courses.js does the counting. Data from before the rebuild has no legacy
+// rows, so `rebuilt` is false there and the lines that describe the rebuild stay out (the page may deploy first).
 import PanelPage from '../../layouts/PanelPage.astro';
 import Coin from '../../components/Coin.astro';
 import LessonList from '../../components/courses/LessonList.astro';
 import '../../styles/courses.css';
-import { COURSES, fmtDuration, fmtMinutes } from '../../data/courses.js';
+import { COURSES, fmtDuration, fmtMinutes, courseCounts, isLegacyRow } from '../../data/courses.js';
+
+const REPO = 'https://github.com/aaronorelup/The-Hidden-Curriculum';
+const ISSUES = `${REPO}/issues/new/choose`;
+const SOURCES = `${REPO}/blob/main/curriculum/sources.md`;
+const REBUILT = '2026-10-12';
+// the tag's hover note keeps the ISO date; the prose writes the date out once (the map's intro)
+const LEGACY_NOTE = `Made before the ${REBUILT} rebuild, on the old map`;
+const LEGACY_LEGEND = 'Made before the rebuild, on the old map';
 
 const course = COURSES.find((c) => c.slug === 'the-hidden-curriculum');
 const d = course.data;
-const feature = d.latest || d.first;
-const start = d.first;
+const all = courseCounts(d);
+const rebuilt = all.legacy > 0;
+const rows = d.modules.flatMap((m) => m.lessons);
+// the number a row shows: a legacy lesson keeps its own old one (the one its video's badge shows)
+const shownId = (l) => (isLegacyRow(l) && l.legacyId) || l.id;
+// the slots whose new lesson is out: a legacy tag stops saying it stands in for those
+const outIds = rows.filter((l) => l.status === 'published' && !l.legacy).map((l) => l.id);
+const legacyBySlug = Object.fromEntries(rows.filter(isLegacyRow).map((l) => [l.slug, { shown: shownId(l), title: l.title, url: l.url }]));
+// what can be watched: every released row except a slot that only points at a legacy lesson (coveredBy)
+const watchable = rows.filter((l) => l.status === 'published' && !l.coveredBy);
+const feature = (d.latest && !d.latest.coveredBy && d.latest) || watchable[watchable.length - 1];
+const start = watchable[0];
 const modulesByN = Object.fromEntries(d.modules.map((m) => [m.n, m]));
 const subtitle = (name) => {
   const rest = name.includes(':') ? name.split(':').slice(1).join(':').trim() : '';
   return rest.split(/\s+/).length >= 3 ? rest : '';
 };
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-const out = d.modules.flatMap((m) => m.lessons).filter((l) => l.status === 'published');
-const avgMin = out.length ? Math.round(out.reduce((n, l) => n + l.duration, 0) / out.length / 60) : null;
+const word = (n) => ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'][n] ?? String(n);
+const avgMin = watchable.length ? Math.round(watchable.reduce((n, l) => n + (l.duration || 0), 0) / watchable.length / 60) : null;
+const plural = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
+const modCounts = Object.fromEntries(d.modules.map((m) => [m.n, courseCounts(d, m)]));
 const regions = d.regions.map((r) => {
   const mods = r.mods.map((n) => modulesByN[n]).filter(Boolean);
-  const lessons = mods.flatMap((m) => m.lessons);
+  const sum = (k) => mods.reduce((n, m) => n + modCounts[m.n][k], 0);
   return {
     ...r,
     mods,
-    total: lessons.length,
-    avail: lessons.filter((l) => l.status === 'published').length,
-    ai: lessons.filter((l) => l.lantern).length,
+    total: sum('lessons'),
+    out: sum('out'),
+    legacy: sum('legacy'),
+    lit: sum('watchable') > 0,
+    ai: sum('ai'),
     range: mods.length > 1 ? `Modules ${mods[0].n}–${mods[mods.length - 1].n}` : `Module ${mods[0]?.n}`,
     eyebrow: r.kind === 'start' ? 'Start here' : r.kind === 'finish' ? 'Finish' : `District ${r.n} of ${d.districtCount}`,
   };
 });
-const plural = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+const startRegion = regions.find((r) => r.kind === 'start');
+const finishRegion = regions.find((r) => r.kind === 'finish');
+const modLabel = (m) => {
+  const c = modCounts[m.n];
+  const main = c.out > 0 ? `${c.out} of ${c.lessons} available` : plural(c.lessons, 'lesson');
+  return c.legacy > 0 ? `${main} · ${c.legacy} legacy` : main;
+};
+// where the lanterns hang: the first lesson about AI in each of the first two districts that have one
+const lanternExamples = regions
+  .filter((r) => r.kind === 'district')
+  .map((r) => ({ r, l: r.mods.flatMap((m) => m.lessons).find((l) => l.lantern && !l.legacy) }))
+  .filter((x) => x.l)
+  .slice(0, 2);
+// one lantern per district on the string, spread evenly whatever their number
+const lanternX = (i, n) => (n > 1 ? 36 + (i * 258) / (n - 1) : 165);
 
 const lockPath = 'M7 10V7a5 5 0 0 1 10 0v3M5.5 10h13a1 1 0 0 1 1 1v8.5a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1Z';
 const chevPath = 'M5 8l7 7 7-7';
+const ext = (href, text) => `<a href="${href}" target="_blank" rel="noopener">${text} ↗</a>`;
+// [question, answer as HTML]: every link in here is written in this file, nothing in the HTML comes from the data
 const faq = [
-  ['Do I need to know how to code?', 'No. The lessons explain what things are and how they fit together. If you build with AI, or want to, that is the only prerequisite.'],
-  ['Is this a tutorial series?', 'No. There are no steps to follow along with. Each lesson builds the mental model first, so when a tutorial (or your AI) tells you to do something, you already know what it is and why it matters.'],
-  ['Why are most lessons locked?', 'They are being made in order, one at a time, and each one unlocks here the day it is released. A lock only means "not released yet".'],
-  ['Where is the AI section?', 'There isn\'t one, on purpose. AI shows up in every district, so the lessons about it sit where they belong: coding agents with development environments, agents on git with Git, keys for agents with Trust. They carry a lantern on the map, and every other lesson says where AI shows up, when it does.'],
+  ['Do I need to know how to code?', 'No. Agents write, run and debug code now, so no lesson teaches you to type or fix it by hand. The lessons are about what the agent is doing for you, and the parts that are still yours to check.'],
+  ['Is this a tutorial series?', 'No. There are no steps to follow along with. Each lesson builds a mental model of one thing: what it is, where it lives, what it connects to, what will surprise you, and what you do versus what the agent does.'],
+  ['Where do the lessons come from?', rebuilt
+    ? `The new ones come from other people’s hard-won knowledge, not from an AI’s guess of what to teach. The curriculum was rebuilt from 251 dated sources: university courses, practitioner essays, incident reports, security standards, surveys, tool docs and the questions beginners keep asking. Each new lesson is built on a few of them and credits them by name; the full list is ${ext(SOURCES, 'on GitHub')}. The ${all.legacy} legacy lessons come from the first version, built on Claude’s own sense of what to teach.`
+    : `The lessons out now come from the first version, built on Claude’s own sense of what to teach. The curriculum is being rebuilt from 251 dated sources: university courses, practitioner essays, incident reports, security standards, surveys, tool docs and the questions beginners keep asking. Each new lesson will be built on a few of them and credit them by name; the full list is ${ext(SOURCES, 'on GitHub')}.`],
+  ['Can I suggest a lesson, or a fix?', `Please do. ${ext(ISSUES, 'Open an issue on GitHub')} with something you wish you’d known, a question you want a lesson to answer, a source the course should be built on, or a lesson that is wrong or out of date. Pull requests to the lesson specs are welcome too. Each one becomes evidence, and the map is rebuilt as the gaps move.`],
+  ...(all.legacy > 0
+    ? [['What does “legacy” mean?', `The ${all.legacy} lessons released before the rebuild. They keep their old numbers and a legacy tag and stay up, listed beside the new lessons they stand in for; when a new lesson is made it takes the slot, and the legacy video stays watchable. Some of them still draw the old map.`]]
+    : []),
+  ['Why are most lessons locked?', 'They are made in order, one at a time, and each one unlocks here the day it is released. A lock only means “not released yet”.'],
   ['Do I need an account to watch?', 'No. Every released lesson plays right here in the browser, with captions, chapters and a transcript, and there is no sign-up. That also means the site has no idea what you have watched; it only shows what has been released.'],
-  ['How is each lesson made?', 'A crew of AI agents writes three versions of the script, picks and merges the best, fact-checks it, voices it with a narrator from the ElevenLabs voice library (a synthetic voice, different for every lesson), then animates and reviews it scene by scene. Every scene is animated in code; the title and end cards sit on one painted backdrop.'],
+  ['How is each lesson made?', `A crew of AI agents re-reads the lesson’s sources, checks what changed this month, writes three versions of the script, merges the best, fact-checks it four ways, voices it with a synthetic narrator from the ElevenLabs voice library, records the real screens it shows, animates it scene by scene in code and reviews it twice. Every lesson’s files are in the ${ext(REPO, 'GitHub repo')}, so anyone can change one and render it again.`],
 ];
 ---
 
 <PanelPage
   title="The Hidden Curriculum — a course by Aaron Orelup"
-  description="What nobody taught you about building with AI, drawn as a map you can keep in your head. Short narrated lessons, released one at a time."
+  description="The small gaps that stop people building with AI, filled one short narrated lesson at a time, on a curriculum rebuilt from dated outside sources as the gaps move."
   active="courses"
-  image="/media/the-hidden-curriculum/og.jpg"
+  image="/courses/the-hidden-curriculum/engine/assets/teahouse-night.jpg"
 >
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <!-- the course's chōchin lantern (engine/kit.js icon 'lantern'), drawn on a 24 grid -->
@@ -80,29 +132,39 @@ const faq = [
       <div>
         <p class="cs-eyebrow">Course 1 · In production</p>
         <h1>The Hidden Curriculum</h1>
-        <p class="hc-lede">What nobody taught you about building with AI: terminals, files, git, keys, hosting and the rest, drawn as a map you can keep in your head.</p>
-        <p class="hc-sub">These aren't step-by-step tutorials. Each lesson tells you what a thing is, where it lives, what it connects to, and what will surprise you when you meet it, so the first time you do it for real is not the first time you've heard of it.</p>
+        <p class="hc-lede">Anyone can build almost anything with AI now. What stops you is the small gaps nobody teaches, and this course fills them, one short lesson at a time.</p>
+        {rebuilt ? (
+          <p class="hc-sub">The gaps move every week, so the course moves with them. Each new lesson is built on other people’s dated sources and credits them by name, and each one draws the same line: the agent handles what can be verified; you check what it can’t, or bring in someone who can.</p>
+        ) : (
+          <p class="hc-sub">The gaps move every week, so the course moves with them. It draws one line throughout: the agent handles what can be verified; you check what it can’t, or bring in someone who can.</p>
+        )}
         <div class="hc-stats">
-          <div class="hc-stat"><b>{d.totalLessons}</b><span>lessons</span></div>
+          <div class="hc-stat"><b>{all.lessons}</b><span>lessons</span></div>
           <div class="hc-stat"><b>{d.moduleCount}</b><span>modules</span></div>
           <div class="hc-stat"><b>{d.districtCount}</b><span>districts</span></div>
-          <div class="hc-stat"><b>{avgMin ? `~${avgMin}` : '3–6'}</b><span>minutes a lesson</span></div>
+          <div class="hc-stat"><b>{avgMin ? `~${avgMin}` : '5–20'}</b><span>minutes a lesson</span></div>
         </div>
-        <p class="hc-avail">
-          <span class="hc-dot" aria-hidden="true"></span>{d.publishedLessons} of {d.totalLessons} lessons available · {fmtMinutes(d.runtimeSeconds)} total · more coming soon
-        </p>
+        {all.legacy > 0 ? (
+          <p class="hc-avail">
+            <span class="hc-dot" aria-hidden="true"></span><span>{all.out} of {all.lessons} new lessons out · {all.legacy} legacy lessons to watch · {fmtMinutes(all.runtimeSeconds)} total</span>
+          </p>
+        ) : (
+          <p class="hc-avail">
+            <span class="hc-dot" aria-hidden="true"></span><span>{all.out} of {all.lessons} lessons available · {fmtMinutes(all.runtimeSeconds)} total · more coming soon</span>
+          </p>
+        )}
         <div class="hc-cta">
-          {start && <a class="cs-pill is-primary" href={start.url}>Start with lesson {start.id} →</a>}
+          {start && <a class="cs-pill is-primary" href={start.url}>Start with lesson {shownId(start)}{isLegacyRow(start) ? ' (legacy)' : ''} →</a>}
           <a class="cs-pill" href="#curriculum">Browse the map ↓</a>
         </div>
       </div>
 
       {feature && (
-        <a class="hc-feature" href={feature.url} aria-label={`Watch lesson ${feature.id}: ${feature.title}, ${fmtDuration(feature.duration)}`}>
+        <a class="hc-feature" href={feature.url} aria-label={`Watch lesson ${shownId(feature)}${isLegacyRow(feature) ? ' (legacy)' : ''}: ${feature.title}, ${fmtDuration(feature.duration)}`}>
           <img src="/courses/the-hidden-curriculum/engine/assets/teahouse-night.jpg" alt="" width="1920" height="1080" decoding="async" />
           <span class="hc-play" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="rgb(240,192,106)" /></svg></span>
           <span class="hc-cap">
-            <span><small>Latest lesson · {feature.id}</small><strong>{feature.title}</strong></span>
+            <span><small>Latest lesson · {shownId(feature)}{isLegacyRow(feature) && ' · Legacy'}</small><strong>{feature.title}</strong></span>
             <span class="hc-dur">{fmtDuration(feature.duration)}</span>
           </span>
         </a>
@@ -113,34 +175,31 @@ const faq = [
       <summary>
         <span>
           <span class="cs-eyebrow">How it works</span>
-          <span class="hc-how-t">A framework, not a checklist</span>
-          <span class="hc-how-hint">Lesson {start?.id ?? '00.01'} covers this too; open it if you'd rather read.</span>
+          <span class="hc-how-t">Small gaps, real sources, your part</span>
+          <span class="hc-how-hint">The core idea, where the lessons come from, and what is still yours to check.</span>
         </span>
         <svg class="hc-chev" aria-hidden="true"><use href="#hc-chev" /></svg>
       </summary>
       <div class="hc-how-body">
-        <p class="hc-intro">The confusing part of building with AI is rarely the code. It's the dozen things around it that everyone assumes you already know. This course hands them to you in an order that makes sense.</p>
         <div class="hc-three">
           <div class="hc-card">
-            <p class="cs-eyebrow">A map, not a manual</p>
-            <h3>Every idea gets a shelf</h3>
-            <p>Six districts, walked in order: from the files on your own computer, out to the network, trust and shipping. Each lesson pins itself to the map, so new ideas land somewhere instead of piling up.</p>
+            <p class="cs-eyebrow">The core idea</p>
+            <h3>Small gaps stop people</h3>
+            <p>Where the agent actually works, what its “done” is worth, which key may sit in a web page, what runs while you’re away. Each gap is small, and any one can stop a build. The course fills them and is updated as they move.</p>
           </div>
           <div class="hc-card">
-            <p class="cs-eyebrow">Five questions, every lesson</p>
-            <h3>The same shape each time</h3>
-            <ol>
-              <li>What is it?</li>
-              <li>Where does it live?</li>
-              <li>What is it like?</li>
-              <li>What does it connect to?</li>
-              <li>What will surprise you?</li>
-            </ol>
+            <p class="cs-eyebrow">Built on sources</p>
+            <h3>Other people’s hard-won knowledge</h3>
+            {rebuilt ? (
+              <p>The topics don’t come from an AI’s guess of what to teach. The curriculum was rebuilt from 251 dated sources, and each new lesson credits the ones it is built on by name. <a href={SOURCES} target="_blank" rel="noopener">Every source, with dates ↗</a></p>
+            ) : (
+              <p>The topics won’t come from an AI’s guess of what to teach. The curriculum is being rebuilt from 251 dated sources, and each new lesson will credit the ones it is built on by name. <a href={SOURCES} target="_blank" rel="noopener">Every source, with dates ↗</a></p>
+            )}
           </div>
           <div class="hc-card">
-            <p class="cs-eyebrow">Short, with a transcript</p>
-            <h3>A few minutes each</h3>
-            <p>Every lesson is animated and narrated, with captions, chapters, a transcript you can click to jump around, and an MP4 to keep.</p>
+            <p class="cs-eyebrow">Your part</p>
+            <h3>Check what the agent can’t</h3>
+            <p>Agents write, run and fix code now. The agent handles what can be verified; you check what it cannot, security above all, and when you can’t check it either, you bring in an expert who can.{rebuilt && ' Every new lesson says which part is yours.'}</p>
           </div>
         </div>
       </div>
@@ -150,16 +209,16 @@ const faq = [
       <div class="hc-head">
         <div>
           <p class="cs-eyebrow">The map</p>
-          <h2>Start, six districts, finish</h2>
-          <p class="hc-intro">This is the whole course, in the order it's released. Start at Orientation, walk the six districts from your own computer out to the people using what you ship, and finish by building one real project. Open a module to see its lessons.</p>
+          <h2>Start, {word(d.districtCount)} districts, finish</h2>
+          <p class="hc-intro">This is the whole course, in order: {startRegion ? `${startRegion.name} first, then` : 'first'} {word(d.districtCount)} districts that each answer one question, then {finishRegion ? `the ${finishRegion.name}` : 'the finish'}. Open a module to see its lessons.{rebuilt && ` The ${all.legacy} lessons marked legacy were made before the curriculum was rebuilt on 12 October 2026; they keep their old numbers and stay up, listed beside the new lessons they stand in for.`}</p>
         </div>
       </div>
 
       <div class="hc-lanterns">
         <svg class="hc-string" viewBox="0 0 330 74" aria-hidden="true" focusable="false">
           <path d="M6 10 Q165 44 324 10" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.2" />
-          {[0, 1, 2, 3, 4, 5].map((i) => {
-            const x = 36 + i * 51.6;
+          {Array.from({ length: d.districtCount }, (_, i) => {
+            const x = lanternX(i, d.districtCount);
             const y = 10 + 34 * (1 - Math.pow((x - 165) / 159, 2)) * 0.5 + 3;
             return (
               <g class="hc-string-l" style={`--i:${i}`}>
@@ -172,7 +231,7 @@ const faq = [
         </svg>
         <div>
           <p class="cs-eyebrow">The lanterns</p>
-          <p>AI isn't a district. It hangs over all six, like lanterns over the streets. The {d.lanternCount} lessons about AI sit inside the district they belong to and carry a lantern <svg class="hc-lan" aria-label="lantern" role="img"><use href="#hc-lantern" /></svg>: coding agents with development environments, agents on git with Git. Every other lesson also says where AI shows up, when it does.</p>
+          <p>AI isn’t a district. It hangs over every one of them, like lanterns over the streets. The {d.lanternCount} lessons about AI itself sit in the district they belong to and carry a lantern <svg class="hc-lan" aria-label="lantern" role="img"><use href="#hc-lantern" /></svg>{lanternExamples.length > 0 ? `: ${lanternExamples.map((x, i) => (i === 0 ? `“${x.l.title}” is in ${x.r.name}` : `“${x.l.title}” in ${x.r.name}`)).join(', ')}.` : '.'} Almost every other lesson is about working with an agent too.</p>
         </div>
       </div>
 
@@ -181,6 +240,7 @@ const faq = [
           <li><span class="hc-dot" aria-hidden="true"></span>Available</li>
           <li><svg class="cs-lock" aria-hidden="true"><use href="#hc-lock" /></svg>Not released yet</li>
           <li><svg class="hc-lan" aria-hidden="true"><use href="#hc-lantern" /></svg>About AI</li>
+          {rebuilt && <li><span class="hc-legacy">Legacy</span><span class="sr-only">: </span>{LEGACY_LEGEND}</li>}
         </ul>
         <button type="button" class="hc-toggle" data-expand aria-pressed="false">Open every module</button>
       </div>
@@ -190,7 +250,7 @@ const faq = [
           const single = r.kind !== 'district';
           const m0 = r.mods[0];
           return (
-            <li class={`hc-stop is-${r.kind}${r.avail > 0 ? ' is-lit' : ''}`} id={`district-${r.id}`}>
+            <li class={`hc-stop is-${r.kind}${r.lit ? ' is-lit' : ''}`} id={`district-${r.id}`}>
               <span class="hc-marker" aria-hidden="true">{r.kind === 'district' ? r.n : ''}</span>
               <div class="hc-stop-head">
                 <p class="cs-eyebrow">{r.eyebrow}</p>
@@ -199,28 +259,29 @@ const faq = [
                 <p class="hc-stop-meta">
                   <span>{r.range}</span>
                   <span>{plural(r.total, 'lesson')}</span>
-                  {r.avail > 0 && <b>{r.avail} available</b>}
+                  {r.out > 0 && <b>{r.out} available</b>}
+                  {r.legacy > 0 && <span>{r.legacy} legacy</span>}
                   {r.ai > 0 && <span class="hc-ai"><svg class="hc-lan" aria-hidden="true"><use href="#hc-lantern" /></svg>{r.ai} about AI</span>}
                 </p>
               </div>
 
               {single ? (
-                <LessonList lessons={m0.lessons} id={`module-${m0.n}`} flat />
+                <LessonList lessons={m0.lessons} id={`module-${m0.n}`} flat legacyBySlug={legacyBySlug} legacyNote={LEGACY_NOTE} outIds={outIds} />
               ) : (
                 <div class="hc-mods">
                   {r.mods.map((m) => {
-                    const ai = m.lessons.filter((l) => l.lantern).length;
+                    const c = modCounts[m.n];
                     return (
-                      <details class={`hc-module${m.filed > 0 ? ' is-lit' : ''}`} id={`module-${m.n}`} open={m.filed > 0}>
+                      <details class={`hc-module${c.watchable > 0 ? ' is-lit' : ''}`} id={`module-${m.n}`} open={c.watchable > 0}>
                         <summary>
                           <span class="hc-mod-n">{m.n}</span>
                           <span class="hc-mod-name">{m.short}{subtitle(m.name) && <small>{subtitle(m.name)}</small>}</span>
-                          <span class="hc-mod-ai">{ai > 0 && <span class="hc-tip" data-tip={`${plural(ai, 'lesson')} about AI`}><svg class="hc-lan" aria-hidden="true"><use href="#hc-lantern" /></svg>{ai}<span class="sr-only"> about AI</span></span>}</span>
-                          <span class="hc-mod-count">{m.filed > 0 ? `${m.filed} of ${m.lessons.length} available` : plural(m.lessons.length, 'lesson')}</span>
-                          <span class="hc-mod-lock">{m.filed === 0 && <span class="hc-tip" data-tip="Not released yet"><svg class="cs-lock" aria-hidden="true"><use href="#hc-lock" /></svg><span class="sr-only">Not released yet</span></span>}</span>
+                          <span class="hc-mod-ai">{c.ai > 0 && <span class="hc-tip" data-tip={`${plural(c.ai, 'lesson')} about AI`}><svg class="hc-lan" aria-hidden="true"><use href="#hc-lantern" /></svg>{c.ai}<span class="sr-only"> about AI</span></span>}</span>
+                          <span class="hc-mod-count">{modLabel(m)}</span>
+                          <span class="hc-mod-lock">{c.watchable === 0 && <span class="hc-tip" data-tip="Not released yet"><svg class="cs-lock" aria-hidden="true"><use href="#hc-lock" /></svg><span class="sr-only">Not released yet</span></span>}</span>
                           <svg class="hc-chev" aria-hidden="true"><use href="#hc-chev" /></svg>
                         </summary>
-                        <LessonList lessons={m.lessons} />
+                        <LessonList lessons={m.lessons} legacyBySlug={legacyBySlug} legacyNote={LEGACY_NOTE} outIds={outIds} />
                       </details>
                     );
                   })}
@@ -232,16 +293,34 @@ const faq = [
       </ol>
     </section>
 
+    <section class="hc-section hc-help">
+      <p class="cs-eyebrow">A community project</p>
+      <h2>Tell us what you wish you’d known</h2>
+      <p class="hc-intro">The course is rebuilt as the gaps move, and the people building with AI are the best evidence of where they are. Every issue becomes evidence for a lesson, or a new one.</p>
+      <ul class="hc-asks">
+        <li><b>Something you wish you’d known</b> before you built with AI, and where it bit you.</li>
+        <li><b>A question</b> you keep running into and want a lesson to answer.</li>
+        <li><b>A source</b>: a post, talk, report, study or incident write-up that names what people need to know now.</li>
+        <li><b>A correction</b>: a lesson that is wrong, or out of date even when its facts are right.</li>
+      </ul>
+      <div class="hc-cta">
+        <a class="cs-pill" href={ISSUES} target="_blank" rel="noopener">Open an issue on GitHub ↗</a>
+        <a class="cs-pill" href={REPO} target="_blank" rel="noopener">The course on GitHub ↗</a>
+      </div>
+    </section>
+
     <section class="hc-section hc-maker">
       <Coin src="/aaron.webp" label="Aaron Orelup: flip the coin" size={112} />
       <div>
         <p class="cs-eyebrow">Who's making this</p>
         <h2>Aaron Orelup</h2>
         <p>I have a degree in Information Systems and I still learned most of this by breaking things: a Python script saved as .txt, a terminal open in the wrong folder, work automations tied to my own accounts. Once I was building real tools with AI, I kept meeting words nobody had taught me. This is the map I wish someone had handed me.</p>
+        <p>The first version was built on Claude’s own sense of what to teach, and I sent two of its lessons back for being years out of date. So {rebuilt ? 'I had it rebuilt' : 'I’m having it rebuilt'} from other people’s work instead. If you know a gap it’s missing, I’d love to hear about it.</p>
         <div class="hc-links">
+          <a href="/ledger/curriculum-from-sources/">Why it was rebuilt →</a>
           <a href="/ledger/the-missing-map/">How the first lesson was made →</a>
+          <a href={REPO} target="_blank" rel="noopener">The course on GitHub ↗</a>
           <a href="/about">More about me →</a>
-          <a href="/ledger">Read the Ledger →</a>
         </div>
       </div>
     </section>
@@ -252,7 +331,7 @@ const faq = [
       {faq.map(([q, a]) => (
         <details>
           <summary>{q}<svg class="hc-chev" aria-hidden="true"><use href="#hc-chev" /></svg></summary>
-          <p>{a}</p>
+          <p set:html={a} />
         </details>
       ))}
     </section>

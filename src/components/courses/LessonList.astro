@@ -2,26 +2,72 @@
 // One module's lessons on a course page's map: released ones link to their player, the rest show a lock whose
 // hover says "Not released yet". A lesson about AI carries a lantern. Uses the #hc-lantern / #hc-lock symbols
 // the course page defines once.
+//
+// Since the 2026-10-12 rebuild there are two more kinds of row (see courseCounts in data/courses.js):
+// - a legacy lesson ("legacy": true), made before the rebuild on the old map and kept on the site for good, listed
+//   right after the new slot it stands in for: it shows its own old number ("legacyId", the one its video's badge
+//   shows) with a small "Legacy" tag, sits indented under the slot, and links to its player. Its tag names the new
+//   lessons it stands in for ("covers", with "coverTitles") as "new 00.02 “…”", so they are never read as the
+//   legacy row that has the same number. It carries no lantern of its own: the slot's row does;
+// - a slot covered by a legacy lesson listed in another module ("coveredBy"): it shows the slot's own number and
+//   title and says which legacy lesson covers it, never a second "Watch" of the same video.
 import { fmtDuration } from '../../data/courses.js';
 
 interface Props {
   lessons: any[];
   id?: string;
   flat?: boolean;
+  /** legacy rows by slug, for the "covered by" rows: { shown, title, url } */
+  legacyBySlug?: Record<string, { shown: string; title: string; url: string }>;
+  legacyNote?: string;
+  /** IDs of the slots whose new lesson is out, course-wide (a legacy row's covers can sit in another module) */
+  outIds?: string[];
 }
-const { lessons, id, flat = false } = Astro.props;
+const { lessons, id, flat = false, legacyBySlug = {}, legacyNote = 'Made before the curriculum was rebuilt, on the old map', outIds = [] } = Astro.props;
 ---
 
 <ol class={`hc-lessons${flat ? ' is-flat' : ''}`} id={id}>
-  {lessons.map((l) => {
-    const lan = l.lantern && (
+  {lessons.map((l, i) => {
+    // a lesson about AI carries a lantern; a legacy row does not (it inherits "lantern" from any slot it covers,
+    // and the slot's own row already carries it, so the drawn lanterns match the counts)
+    const lan = l.lantern && !(l.legacy && !l.coveredBy) && (
       <span class="hc-l-ai hc-tip" data-tip="A lesson about AI"><svg class="hc-lan" aria-hidden="true"><use href="#hc-lantern" /></svg><span class="sr-only">(about AI)</span></span>
     );
+    // a covered row carries its legacy lesson's url and old number too; the lookup adds that lesson's title
+    const by = l.coveredBy && (legacyBySlug[l.coveredBy] || { shown: l.legacyId || '', title: '', url: l.url });
+    const legacy = l.legacy && !l.coveredBy;
+    const shown = legacy ? l.legacyId || l.id : l.id;
+    // the note on a legacy tag, plus which new lessons it stands in for (its "covers", named with their titles);
+    // a new lesson that is already out is no longer waited for
+    const covers = (legacy && l.covers) || [];
+    const name = (c) => (l.coverTitles?.[covers.indexOf(c)] ? `${c} “${l.coverTitles[covers.indexOf(c)]}”` : c);
+    const join = (xs) => (xs.length > 1 ? `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}` : xs[0]);
+    const pending = covers.filter((c) => !outIds.includes(c));
+    const many = (xs, one, more) => (xs.length > 1 ? more : one);
+    // legacy lessons that stand in for no new lesson come last in their module, under a small label of their own,
+    // so they never read as standing in for the slot listed just above them
+    const background = (x) => x && x.legacy && !x.coveredBy && !(x.covers || []).length;
+    const groupStart = background(l) && !background(lessons[i - 1]);
+    const tip = `${legacyNote}.${
+      pending.length
+        ? ` Stands in for new ${many(pending, 'lesson', 'lessons')} ${join(pending.map(name))} until ${many(pending, 'it is', 'they are')} made, and stays up after.`
+        : covers.length
+          ? ` Its new ${many(covers, 'lesson', 'lessons')} ${join(covers.map(name))} ${many(covers, 'is', 'are')} out; it stays up beside ${many(covers, 'it', 'them')}.`
+          : ' Kept as background; no new lesson replaces it.'
+    }`;
     return (
+      <Fragment>
+      {groupStart && <li class="hc-l-group">Legacy, kept as background</li>}
       <li>
-        {l.status === 'published' ? (
-          <a class="hc-lesson is-open" href={l.url}>
+        {by ? (
+          <div class="hc-lesson is-covered">
             <span class="hc-l-id">{l.id}</span>
+            <span class="hc-l-main"><strong>{l.title}{lan}</strong><span>Covered for now by <a href={by.url}>{[by.shown, by.title].filter(Boolean).join(' ')}</a>, a legacy lesson.</span></span>
+            <span class="hc-l-meta"><span class="hc-cov">Covered</span></span>
+          </div>
+        ) : l.status === 'published' ? (
+          <a class={`hc-lesson is-open${legacy ? ' is-legacy' : ''}`} href={l.url}>
+            <span class="hc-l-id">{legacy && <span class="sr-only">Old number </span>}{shown}{legacy && <span class="hc-legacy hc-tip" data-tip={tip}>Legacy<span class="sr-only">: {tip}</span></span>}</span>
             <span class="hc-l-main"><strong>{l.title}{lan}</strong><span>{l.summary || l.idea}</span></span>
             <span class="hc-l-meta"><span class="hc-dot" aria-hidden="true"></span>{fmtDuration(l.duration)}<span class="hc-watch">Watch →</span></span>
           </a>
@@ -35,6 +81,7 @@ const { lessons, id, flat = false } = Astro.props;
           </div>
         )}
       </li>
+      </Fragment>
     );
   })}
 </ol>

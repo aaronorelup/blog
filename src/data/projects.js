@@ -3,10 +3,19 @@
 // designed for the missing state. `tier: "flagship"` puts it in the long-form section.
 //
 // Flagships run on your own machine, so their `href` IS the repo. The browser-playable
-// ones put the play link in `href` and the source in `repo`. A project with no public repo
-// (and none coming) sets `cta: { label, href, ledger? }` for its button and `noRepo` for the
-// note under it; `ledger` makes the button open the post in the homepage panel's reader.
+// ones put the play link in `href` and the source in `repo`. A flagship used somewhere else
+// (on this site, say) sets `cta: { label, href, ledger? }` for its button, then either `repo`
+// (a link to its public repo under the button, worded by `repoLabel`) or `noRepo` (the note
+// under it when there is no public repo, and none coming); `ledger` makes the button open the
+// post in the homepage panel's reader.
 import hiddenCurriculum from './courses/the-hidden-curriculum.json';
+import { courseCounts } from './courses.js';
+
+// lessons of the course, not rows of its data: legacy lessons kept from before a rebuild are counted
+// apart. Data from before the rebuild has no legacy rows: then the card says nothing about the rebuild
+// (this file may deploy before the data does).
+const hc = courseCounts(hiddenCurriculum);
+const hcRebuilt = hc.legacy > 0;
 
 export const PROJECTS = [
   {
@@ -32,21 +41,25 @@ export const PROJECTS = [
   {
     name: 'The Hidden Curriculum',
     tagline: 'a course on what nobody teaches people who build with AI',
-    blurb: "Terminals, files, git, API keys, OAuth, hosting, Docker, licenses: the layer of everyday tools that school rarely teaches, as short narrated lessons that each build one mental model. Every lesson is drawn in code and made by a crew of agents, and they're filed one at a time.",
+    blurb: "Anyone can build almost anything with AI now; what stops people is small gaps nobody teaches, and they move every week. Short narrated lessons, each one a single mental model: where the agent works, what its “done” is worth, which keys are public, what runs while you're away. Every lesson is drawn in code and made by a crew of agents.",
     year: 2026,
-    status: `${hiddenCurriculum.publishedLessons} of ${hiddenCurriculum.totalLessons} lessons filed`,
+    status: hcRebuilt ? `${hc.out} of ${hc.lessons} new lessons out · ${hc.legacy} legacy` : `${hc.out} of ${hc.lessons} lessons out`,
     tier: 'flagship',
     tags: ['course', 'canvas animation', 'ElevenLabs', 'multi-agent'],
     highlights: [
-      ['A map, not a manual', 'Seven districts, plus a gate and an exit, hold the whole curriculum, and every lesson pins itself to the map, so each new idea has a shelf to land on.'],
-      ['Written three ways, then checked', 'Three competing scripts, a judge, two fact-checkers, a speech-to-text pass on the narration, and reviewers on every scene.'],
-      ['One at a time', 'A new lesson most mornings; locked lessons open on the course page the day they are filed.']
+      hcRebuilt
+        ? ['Built on sources', 'Curriculum rebuilt on 2026-10-12 from 251 dated sources; every new lesson credits the ones it is built on, by name.']
+        : ['Built on sources', 'The curriculum is being rebuilt from 251 dated sources; every new lesson will credit the ones it is built on, by name.'],
+      ['Written three ways, then checked', 'Three competing scripts, a judge, four fact-checkers, a speech-to-text pass on the narration, and reviewers on every scene.'],
+      ['A community project', 'Anyone can open an issue with what they wish they had known; the map is rebuilt as the gaps move.']
     ],
     runsOn: 'In the browser · captions, chapters, transcript and MP4 for every lesson',
-    shot: '/media/the-hidden-curriculum/card-tile.webp',
-    shotLabel: 'Lesson 00.01, the title card',
+    // the painted plate: card-tile.webp still shows the old 00.01 title card and its retired topics
+    shot: '/courses/the-hidden-curriculum/engine/assets/teahouse-night.jpg',
+    shotLabel: 'The course’s painted backdrop',
     cta: { label: 'OPEN THE COURSE →', href: '/courses/the-hidden-curriculum/' },
-    noRepo: 'No repo · the lessons live on this site',
+    repo: 'https://github.com/aaronorelup/The-Hidden-Curriculum',
+    repoLabel: 'The course on GitHub ↗',
     post: null
   },
   {
