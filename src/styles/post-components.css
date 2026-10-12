@@ -1221,3 +1221,106 @@ ao-fetch figcaption .ao-meta {
   font-size: 11.5px;
   color: var(--pc-quiet);
 }
+
+/* <ao-bars>: a bar chart over a plain table. The table stays for screen readers (visually
+   hidden once the chart is drawn); without JS it shows as an ordinary post table. Series
+   colours are gold, terracotta, then two quiet tones, so two series read in both modes. */
+ao-bars {
+  display: block;
+  margin: 28px 0;
+  min-width: 0;
+}
+.ao-bars-chart {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  padding: 16px 18px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 12px;
+  background: var(--pc-code);
+}
+.ao-bars-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-bottom: 4px;
+  font: 600 12px/1.4 Karla, system-ui, sans-serif;
+  color: var(--pc-strong);
+}
+.ao-bars-key::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border-radius: 2px;
+  vertical-align: -1px;
+  background: var(--bar);
+}
+.ao-bars-row {
+  display: grid;
+  grid-template-columns: minmax(0, 38%) minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+.ao-bars-label {
+  font: 400 13.5px/1.3 Karla, system-ui, sans-serif;
+  color: var(--pc-body);
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.ao-bars-track { display: grid; gap: 3px; }
+.ao-bars-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 12px;
+}
+.ao-bars-bar {
+  flex: 0 0 auto;
+  width: calc(var(--w) * (100% - 8em));
+  min-width: 2px;
+  height: 12px;
+  border-radius: 0 3px 3px 0;
+  background: var(--bar);
+}
+.ao-bars-val {
+  flex: 0 0 auto;
+  font: 12px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--pc-quiet);
+  white-space: nowrap;
+}
+.ao-bars-s0 { --bar: var(--pc-head); }
+.ao-bars-s1 { --bar: var(--pc-accent); }
+.ao-bars-s2 { --bar: var(--pc-quiet); }
+.ao-bars-s3 { --bar: var(--pc-line2); }
+.ao-bars-ready > .ao-bars-table {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+ao-bars > figcaption {
+  margin-top: 8px;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pc-soft);
+}
+ao-bars > figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
+ao-bars > figcaption .ao-meta {
+  display: block;
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: var(--pc-quiet);
+}
+@media (max-width: 640px) {
+  .ao-bars-chart { padding: 12px; }
+  .ao-bars-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .ao-bars-label { text-align: left; }
+}
