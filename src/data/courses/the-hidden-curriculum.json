@@ -1,11 +1,11 @@
 {
  "slug": "the-hidden-curriculum",
  "title": "The Hidden Curriculum",
- "updated": "2026-10-11",
- "totalLessons": 214,
+ "updated": "2026-10-12",
+ "totalLessons": 48,
  "publishedLessons": 12,
  "runtimeSeconds": 6895,
- "moduleCount": 22,
+ "moduleCount": 11,
  "districtCount": 6,
  "regions": [
   {
@@ -13,7 +13,7 @@
    "n": null,
    "id": "orientation",
    "name": "Orientation",
-   "q": "what this course is, and the lantern you carry",
+   "q": "What this is, and your job",
    "mods": [
     "00"
    ]
@@ -21,75 +21,64 @@
   {
    "kind": "district",
    "n": 1,
-   "id": "machine",
-   "name": "The Machine",
-   "q": "what's on your computer",
+   "id": "first-build",
+   "name": "First Build",
+   "q": "How do I build my first thing?",
    "mods": [
     "01",
-    "02",
-    "03"
+    "02"
    ]
   },
   {
    "kind": "district",
    "n": 2,
-   "id": "code",
-   "name": "The Code",
-   "q": "what programs are made of",
+   "id": "going-live",
+   "name": "Going Live",
+   "q": "How do others safely use it?",
    "mods": [
-    "04",
-    "05",
-    "06",
-    "07"
+    "03",
+    "04"
    ]
   },
   {
    "kind": "district",
    "n": 3,
-   "id": "history",
-   "name": "The History",
-   "q": "how work is saved & shared",
+   "id": "directing-well",
+   "name": "Directing Well",
+   "q": "How do I direct and check it?",
+   "mods": [
+    "05",
+    "06"
+   ]
+  },
+  {
+   "kind": "district",
+   "n": 4,
+   "id": "agent-power",
+   "name": "Agent Power",
+   "q": "What can your agent touch?",
+   "mods": [
+    "07"
+   ]
+  },
+  {
+   "kind": "district",
+   "n": 5,
+   "id": "running-alone",
+   "name": "Running Alone",
+   "q": "What runs while you're away?",
    "mods": [
     "08"
    ]
   },
   {
    "kind": "district",
-   "n": 4,
-   "id": "network",
-   "name": "The Network",
-   "q": "how computers talk",
-   "mods": [
-    "09",
-    "10",
-    "11",
-    "12",
-    "13"
-   ]
-  },
-  {
-   "kind": "district",
-   "n": 5,
-   "id": "trust",
-   "name": "Trust",
-   "q": "who may do what",
-   "mods": [
-    "14",
-    "15",
-    "16"
-   ]
-  },
-  {
-   "kind": "district",
    "n": 6,
-   "id": "shipping",
-   "name": "Shipping",
-   "q": "getting it to people",
+   "id": "beyond-code",
+   "name": "Beyond Code",
+   "q": "What if it isn't software?",
    "mods": [
-    "17",
-    "18",
-    "19",
-    "20"
+    "09"
    ]
   },
   {
@@ -97,24 +86,31 @@
    "n": null,
    "id": "capstone",
    "name": "Capstone",
-   "q": "one small real project, from idea to running, using every district",
+   "q": "Can you ship it end to end?",
    "mods": [
-    "21"
+    "10"
    ]
   }
  ],
- "lanternCount": 39,
+ "lanternCount": 23,
  "modules": [
   {
    "n": "00",
-   "name": "Orientation: The Map and the Lantern",
+   "name": "Orientation",
    "short": "Orientation",
    "region": "Orientation",
    "lessons": [
     {
      "id": "00.01",
      "title": "The hidden curriculum",
-     "idea": "CS teaches theory, IS teaches business systems; the day-to-day tooling is learned by apprenticeship, forums and breaking things",
+     "idea": "Building with AI is open to anyone now, and what stops people is small gaps nobody teaches, which move in weeks (models retire on about 30 days' notice, a command vanishes 12 days after deprecation, harnesses ship several releases a week) while the model's own knowledge stops at its training date; so this course is a map rebuilt as the gaps move and fed by the people who use it, and your habit is to check dates, versions and sources and re-test what you know after every update.",
+     "status": "locked",
+     "key": "the-hidden-curriculum"
+    },
+    {
+     "id": "00.01",
+     "title": "The hidden curriculum",
+     "idea": "Building with AI is open to anyone now, and what stops people is small gaps nobody teaches, which move in weeks (models retire on about 30 days' notice, a command vanishes 12 days after deprecation, harnesses ship several releases a week) while the model's own knowledge stops at its training date; so this course is a map rebuilt as the gaps move and fed by the people who use it, and your habit is to check dates, versions and sources and re-test what you know after every update.",
      "status": "published",
      "slug": "00-01-the-hidden-curriculum",
      "url": "/courses/the-hidden-curriculum/lessons/00-01-the-hidden-curriculum/",
@@ -122,12 +118,20 @@
      "summary": "Building with AI runs on everyday tools that school rarely teaches, so the gap is in the syllabus, not in you. This lesson shows why, and lays out the map every later lesson is shelved on.",
      "published": "2026-09-30",
      "narrator": "RClayton",
-     "poster": "/courses/the-hidden-curriculum/lessons/00-01-the-hidden-curriculum/poster.jpg"
+     "poster": "/courses/the-hidden-curriculum/lessons/00-01-the-hidden-curriculum/poster.jpg",
+     "legacy": true,
+     "covers": [
+      "00.01"
+     ],
+     "coverTitles": [
+      "The hidden curriculum"
+     ],
+     "legacyId": "00.01"
     },
     {
-     "id": "00.02",
+     "id": "00.01",
      "title": "The map of everything",
-     "idea": "One picture: your computer → the network → the internet → services → AI, and where every later lesson sits",
+     "idea": "Building with AI is open to anyone now, and what stops people is small gaps nobody teaches, which move in weeks (models retire on about 30 days' notice, a command vanishes 12 days after deprecation, harnesses ship several releases a week) while the model's own knowledge stops at its training date; so this course is a map rebuilt as the gaps move and fed by the people who use it, and your habit is to check dates, versions and sources and re-test what you know after every update.",
      "status": "published",
      "slug": "00-02-the-map-of-everything",
      "url": "/courses/the-hidden-curriculum/lessons/00-02-the-map-of-everything/",
@@ -135,12 +139,20 @@
      "summary": "Everything you build with AI sits on one road with five stops (your computer, the network, the internet, services, AI), so when something breaks, ask which stop first. This lesson draws that road and gives every later lesson its place on it.",
      "published": "2026-10-01",
      "narrator": "Adrian",
-     "poster": "/courses/the-hidden-curriculum/lessons/00-02-the-map-of-everything/poster.jpg"
+     "poster": "/courses/the-hidden-curriculum/lessons/00-02-the-map-of-everything/poster.jpg",
+     "legacy": true,
+     "covers": [
+      "00.01"
+     ],
+     "coverTitles": [
+      "The hidden curriculum"
+     ],
+     "legacyId": "00.02"
     },
     {
-     "id": "00.03",
+     "id": "00.01",
      "title": "How old is all this?",
-     "idea": "A timeline from Unix (1969) to MCP (2024) — most of it is older than you think, the AI layer is brand new",
+     "idea": "Building with AI is open to anyone now, and what stops people is small gaps nobody teaches, which move in weeks (models retire on about 30 days' notice, a command vanishes 12 days after deprecation, harnesses ship several releases a week) while the model's own knowledge stops at its training date; so this course is a map rebuilt as the gaps move and fed by the people who use it, and your habit is to check dates, versions and sources and re-test what you know after every update.",
      "status": "published",
      "slug": "00-03-how-old-is-all-this",
      "url": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/",
@@ -148,13 +160,28 @@
      "summary": "The ideas under your tools are decades old, but old does not mean frozen: versions change every year, security changes fastest (text codes to authenticator apps to passkeys, broken hashes, retired TLS) and AI on top changes fastest of all, so learn the ideas once, check the version, and assume old login advice is out of date.",
      "published": "2026-10-01",
      "narrator": "RClayton",
-     "poster": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/poster.jpg"
+     "poster": "/courses/the-hidden-curriculum/lessons/00-03-how-old-is-all-this/poster.jpg",
+     "legacy": true,
+     "covers": [
+      "00.01"
+     ],
+     "coverTitles": [
+      "The hidden curriculum"
+     ],
+     "legacyId": "00.03"
     },
     {
-     "id": "00.04",
-     "title": "Model vs app vs agent",
-     "idea": "GPT/Claude/Gemini (models) vs the apps wrapping them vs agents that act",
+     "id": "00.02",
+     "title": "What you're really using",
+     "idea": "You never use a bare model but a model inside a harness (system prompt, tools, instruction files, memory, effort setting) that changes results as much as the model does (Anthropic's April 2026 quality drop came from three harness changes), and what it \"knows\" lives in frozen weights, the context window and memory files the product writes and puts back; so when results change, name the whole setup before blaming the model.",
      "lantern": true,
+     "status": "locked",
+     "key": "model-harness-and-memory"
+    },
+    {
+     "id": "00.02",
+     "title": "Model vs app vs agent",
+     "idea": "You never use a bare model but a model inside a harness (system prompt, tools, instruction files, memory, effort setting) that changes results as much as the model does (Anthropic's April 2026 quality drop came from three harness changes), and what it \"knows\" lives in frozen weights, the context window and memory files the product writes and puts back; so when results change, name the whole setup before blaming the model.",
      "status": "published",
      "slug": "00-04-model-vs-app-vs-agent",
      "url": "/courses/the-hidden-curriculum/lessons/00-04-model-vs-app-vs-agent/",
@@ -162,13 +189,21 @@
      "summary": "The model is the engine (a lab's file of numbers: text in, text out, no memory), the app is the car built around it (chat window, saved chats, hidden instructions, the bill), and an agent is that car allowed to drive, with tools, a loop and you deciding what it may do.",
      "published": "2026-10-01",
      "narrator": "Adrian",
-     "poster": "/courses/the-hidden-curriculum/lessons/00-04-model-vs-app-vs-agent/poster.jpg"
+     "poster": "/courses/the-hidden-curriculum/lessons/00-04-model-vs-app-vs-agent/poster.jpg",
+     "legacy": true,
+     "covers": [
+      "00.02"
+     ],
+     "coverTitles": [
+      "What you're really using"
+     ],
+     "legacyId": "00.04",
+     "lantern": true
     },
     {
-     "id": "00.05",
+     "id": "00.02",
      "title": "How AI models work today",
-     "idea": "~20 min. Five years of change: LLMs → multimodal models (see/hear/generate, some via API), diffusion models (image, video, audio; rarely text); tokens, context and why models degrade as it fills; memory and RAG (chat search, self-kept memory, files/Notion via tools); system prompts and injected instruction files (CLAUDE.md); settings (temperature, top-p...); caching and token billing (input, output, cache write, cache read); modes (chat, Cowork, Code) and platforms (web, desktop, CLI, cloud); skills vs connectors vs plugins and their marketplaces; individual vs enterprise; other surfaces (Claude Design, voice modes); personal agents (OpenClaw and similar). Brief here, own lessons later",
-     "lantern": true,
+     "idea": "You never use a bare model but a model inside a harness (system prompt, tools, instruction files, memory, effort setting) that changes results as much as the model does (Anthropic's April 2026 quality drop came from three harness changes), and what it \"knows\" lives in frozen weights, the context window and memory files the product writes and puts back; so when results change, name the whole setup before blaming the model.",
      "status": "published",
      "slug": "00-05-how-llms-work-just-enough",
      "url": "/courses/the-hidden-curriculum/lessons/00-05-how-llms-work-just-enough/",
@@ -176,13 +211,29 @@
      "summary": "Underneath it all is still a model that only knows what is on its desk right now; nearly everything new in the last five years (multimodal hand-offs, diffusion, memory and RAG, instruction files, caching, modes, plugins, plans and always-on agents) is about what gets put on that desk, what it hands off to other models, and where the desk sits.",
      "published": "2026-10-02",
      "narrator": "RClayton",
-     "poster": "/courses/the-hidden-curriculum/lessons/00-05-how-llms-work-just-enough/poster.jpg"
+     "poster": "/courses/the-hidden-curriculum/lessons/00-05-how-llms-work-just-enough/poster.jpg",
+     "legacy": true,
+     "covers": [
+      "00.02"
+     ],
+     "coverTitles": [
+      "What you're really using"
+     ],
+     "legacyId": "00.05",
+     "lantern": true
     },
     {
-     "id": "00.06",
+     "id": "00.03",
      "title": "Trust what you can verify",
-     "idea": "Agents now write, run and debug their own code, so hand-coding and hand-debugging are nearly obsolete; your new job is judging what you cannot see: security holes in code that works, team norms and the project's chosen libraries (AI drifts and keeps adding dependencies), and \"ready to deploy\" claims. You can only trust AI on what it can verify; past that, learn to check it yourself or bring in an expert",
+     "idea": "An agent can keep iterating on anything with a cheap, automatic check, so let it write, run and fix; set trust per kind of task, not per model, and for what no machine can check (security, deploy readiness, fit, intent) check it yourself or bring in an expert, because a beginner's failures look like successes.",
      "lantern": true,
+     "status": "locked",
+     "key": "trust-what-you-can-verify"
+    },
+    {
+     "id": "00.03",
+     "title": "Trust what you can verify",
+     "idea": "An agent can keep iterating on anything with a cheap, automatic check, so let it write, run and fix; set trust per kind of task, not per model, and for what no machine can check (security, deploy readiness, fit, intent) check it yourself or bring in an expert, because a beginner's failures look like successes.",
      "status": "published",
      "slug": "00-06-how-to-learn-anything-technical",
      "url": "/courses/the-hidden-curriculum/lessons/00-06-how-to-learn-anything-technical/",
@@ -190,47 +241,37 @@
      "summary": "You can only trust AI on what can actually be checked: agents now fix their own crashes, so your job is judging what they cannot see (security holes in code that works, team norms, dependencies, \"ready to deploy\"), and past that line you either learn to check it or bring in someone who can.",
      "published": "2026-10-03",
      "narrator": "Adrian",
-     "poster": "/courses/the-hidden-curriculum/lessons/00-06-how-to-learn-anything-technical/poster.jpg"
+     "poster": "/courses/the-hidden-curriculum/lessons/00-06-how-to-learn-anything-technical/poster.jpg",
+     "legacy": true,
+     "covers": [
+      "00.03"
+     ],
+     "coverTitles": [
+      "Trust what you can verify"
+     ],
+     "legacyId": "00.06",
+     "lantern": true
     }
    ],
    "filed": 6
   },
   {
    "n": "01",
-   "name": "Your Computer, Under the Hood",
-   "short": "Your Computer, Under the Hood",
-   "region": "The Machine",
+   "name": "Your workbench",
+   "short": "Your workbench",
+   "region": "First Build",
    "lessons": [
     {
      "id": "01.01",
-     "title": "Files are just bytes",
-     "idea": "A .py file is a text file; the extension is a label that tells the OS which program opens it",
-     "status": "published",
-     "slug": "01-01-files-are-just-bytes",
-     "url": "/courses/the-hidden-curriculum/lessons/01-01-files-are-just-bytes/",
-     "duration": 307.0,
-     "summary": "Every file is just a row of numbers called bytes, and the extension is a label on its name that picks which program opens it, not what is inside; this lesson draws that picture so nothing an agent does with your files surprises you.",
-     "published": "2026-10-04",
-     "narrator": "RClayton",
-     "poster": "/courses/the-hidden-curriculum/lessons/01-01-files-are-just-bytes/poster.jpg"
+     "title": "The folder is the agent's world",
+     "idea": "Every agent session starts in a folder that becomes its world (paths resolve from it, rules and trust climb up from it), but it is not a wall: your home folder holds keys and AI logins, hidden dotfiles hold history, secrets and instructions out of sight but not locked, and a copy on the same drive is not a backup.",
+     "status": "locked",
+     "key": "the-folder-is-the-agents-world"
     },
     {
-     "id": "01.02",
-     "title": "File extensions & associations",
-     "idea": "Showing hidden extensions, renaming .txt → .py, \"Open with\", default apps",
-     "status": "published",
-     "slug": "01-02-file-extensions-associations",
-     "url": "/courses/the-hidden-curriculum/lessons/01-02-file-extensions-associations/",
-     "duration": 609.2,
-     "summary": "The extension is a label in a file's name and your computer keeps a ledger matching each label to a program, so renaming changes the label but never the bytes, while Open with set to Always and default apps edit the ledger; this lesson draws that picture as of October 2026, with AI tools now making the files.",
-     "published": "2026-10-07",
-     "narrator": "Adrian",
-     "poster": "/courses/the-hidden-curriculum/lessons/01-02-file-extensions-associations/poster.jpg"
-    },
-    {
-     "id": "01.03",
+     "id": "01.01",
      "title": "Folders, paths & the working directory",
-     "idea": "Absolute vs relative paths, C:\\ vs /, why \"run it from the right folder\" matters",
+     "idea": "Every agent session starts in a folder that becomes its world (paths resolve from it, rules and trust climb up from it), but it is not a wall: your home folder holds keys and AI logins, hidden dotfiles hold history, secrets and instructions out of sight but not locked, and a copy on the same drive is not a backup.",
      "status": "published",
      "slug": "01-03-folders-paths-the-working-directory",
      "url": "/courses/the-hidden-curriculum/lessons/01-03-folders-paths-the-working-directory/",
@@ -238,12 +279,20 @@
      "summary": "A path is an address, and a relative path only makes sense from the working directory of the program that reads it.",
      "published": "2026-10-08",
      "narrator": "RClayton",
-     "poster": "/courses/the-hidden-curriculum/lessons/01-03-folders-paths-the-working-directory/poster.jpg"
+     "poster": "/courses/the-hidden-curriculum/lessons/01-03-folders-paths-the-working-directory/poster.jpg",
+     "legacy": true,
+     "covers": [
+      "01.01"
+     ],
+     "coverTitles": [
+      "The folder is the agent's world"
+     ],
+     "legacyId": "01.03"
     },
     {
-     "id": "01.04",
+     "id": "01.01",
      "title": "Hidden files & dotfiles",
-     "idea": ".git, .env, .venv, AppData, ~/.config — the invisible config layer",
+     "idea": "Every agent session starts in a folder that becomes its world (paths resolve from it, rules and trust climb up from it), but it is not a wall: your home folder holds keys and AI logins, hidden dotfiles hold history, secrets and instructions out of sight but not locked, and a copy on the same drive is not a backup.",
      "status": "published",
      "slug": "01-04-hidden-files-dotfiles",
      "url": "/courses/the-hidden-curriculum/lessons/01-04-hidden-files-dotfiles/",
@@ -251,12 +300,28 @@
      "summary": "Almost every project and app keeps its settings, history, secrets and now its AI instructions in files your computer hides or tucks out of the way, and hidden only means out of sight, never locked.",
      "published": "2026-10-09",
      "narrator": "Adrian",
-     "poster": "/courses/the-hidden-curriculum/lessons/01-04-hidden-files-dotfiles/poster.jpg"
+     "poster": "/courses/the-hidden-curriculum/lessons/01-04-hidden-files-dotfiles/poster.jpg",
+     "legacy": true,
+     "covers": [
+      "01.01"
+     ],
+     "coverTitles": [
+      "The folder is the agent's world"
+     ],
+     "legacyId": "01.04"
     },
     {
-     "id": "01.05",
+     "id": "01.02",
+     "title": "Where your agent works",
+     "idea": "Chat, Cowork, desktop apps and terminal agents can share a model but differ in what they can reach, which machine the work runs on (yours, a VM, a container, a cloud box) and where your files go; the terminal is just a window where a shell runs commands as you, so pick the surface by the output you need and check where the data goes before you hand it anything private.",
+     "lantern": true,
+     "status": "locked",
+     "key": "where-your-agent-works"
+    },
+    {
+     "id": "01.02",
      "title": "Environment variables & PATH",
-     "idea": "How typing python finds the right program; why \"not recognized as a command\" happens",
+     "idea": "Chat, Cowork, desktop apps and terminal agents can share a model but differ in what they can reach, which machine the work runs on (yours, a VM, a container, a cloud box) and where your files go; the terminal is just a window where a shell runs commands as you, so pick the surface by the output you need and check where the data goes before you hand it anything private.",
      "status": "published",
      "slug": "01-05-environment-variables-path",
      "url": "/courses/the-hidden-curriculum/lessons/01-05-environment-variables-path/",
@@ -264,12 +329,23 @@
      "summary": "Every program starts with a copy of its parent's settings, its environment, and PATH in it is an ordered list of folders where the first match wins, so which program runs and which keys it can see depend on who started it and when.",
      "published": "2026-10-10",
      "narrator": "RClayton",
-     "poster": "/courses/the-hidden-curriculum/lessons/01-05-environment-variables-path/poster.jpg"
+     "poster": "/courses/the-hidden-curriculum/lessons/01-05-environment-variables-path/poster.jpg",
+     "legacy": true,
+     "covers": [
+      "01.02",
+      "03.02"
+     ],
+     "coverTitles": [
+      "Where your agent works",
+      "Keys: public, secret and leaked"
+     ],
+     "legacyId": "01.05",
+     "lantern": true
     },
     {
-     "id": "01.06",
+     "id": "01.02",
      "title": "Programs, processes & services",
-     "idea": "A program on disk vs a running process vs a background service; Task Manager tour",
+     "idea": "Chat, Cowork, desktop apps and terminal agents can share a model but differ in what they can reach, which machine the work runs on (yours, a VM, a container, a cloud box) and where your files go; the terminal is just a window where a shell runs commands as you, so pick the surface by the output you need and check where the data goes before you hand it anything private.",
      "status": "published",
      "slug": "01-06-programs-processes-services",
      "url": "/courses/the-hidden-curriculum/lessons/01-06-programs-processes-services/",
@@ -277,1444 +353,379 @@
      "summary": "A program is a file of instructions, a process is one running copy of it with its own number, memory and copied settings, and a service is a process the operating system keeps alive in the background, so most of what your AI tools run is processes you never see a window for.",
      "published": "2026-10-11",
      "narrator": "Adrian",
-     "poster": "/courses/the-hidden-curriculum/lessons/01-06-programs-processes-services/poster.jpg"
+     "poster": "/courses/the-hidden-curriculum/lessons/01-06-programs-processes-services/poster.jpg",
+     "legacy": true,
+     "covers": [
+      "01.02",
+      "03.01"
+     ],
+     "coverTitles": [
+      "Where your agent works",
+      "Browser, server, database: where your app really runs"
+     ],
+     "legacyId": "01.06",
+     "lantern": true
     },
     {
-     "id": "01.07",
-     "title": "Users, admin & permissions",
-     "idea": "Admin vs standard, UAC prompts, \"Run as administrator\", file permissions",
-     "status": "locked"
+     "id": "01.03",
+     "title": "Git without typing it: save points and the agent's trail",
+     "idea": "Git gives you save points (commits), parallel lines (branches) and a copy that lives elsewhere (the remote), and the agent types every command; your part is recognition: read its trail for the verb and the target, check the diff and which branch is live, and notice anything it touched that you never named.",
+     "status": "locked",
+     "key": "save-points-and-the-agents-trail"
     },
     {
-     "id": "01.08",
-     "title": "Windows vs macOS vs Linux",
-     "idea": "Same ideas, different names: line endings, path slashes, case-sensitivity, package managers",
-     "status": "locked"
+     "id": "01.01",
+     "title": "Files are just bytes",
+     "idea": "",
+     "status": "published",
+     "slug": "01-01-files-are-just-bytes",
+     "url": "/courses/the-hidden-curriculum/lessons/01-01-files-are-just-bytes/",
+     "duration": 307.0,
+     "summary": "Every file is just a row of numbers called bytes, and the extension is a label on its name that picks which program opens it, not what is inside; this lesson draws that picture so nothing an agent does with your files surprises you.",
+     "published": "2026-10-04",
+     "narrator": "RClayton",
+     "poster": "/courses/the-hidden-curriculum/lessons/01-01-files-are-just-bytes/poster.jpg",
+     "legacy": true,
+     "covers": [],
+     "coverTitles": [],
+     "legacyId": "01.01"
     },
     {
-     "id": "01.09",
-     "title": "CPU, RAM, disk, GPU & VRAM",
-     "idea": "What each does and why AI cares about the GPU and its VRAM",
-     "status": "locked"
-    },
-    {
-     "id": "01.10",
-     "title": "Running AI models on your own computer",
-     "idea": "Ollama, LM Studio, ComfyUI; VRAM limits; quantization",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "01.11",
-     "title": "The copilot zoo",
-     "idea": "OS (Windows Copilot, Apple Intelligence), browser, email, IDE (GitHub Copilot), vendor (NVIDIA app/G-Assist), Office — what each can see",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "01.12",
-     "title": "What AI is already on your PC?",
-     "idea": "How to inventory assistants, background AI services and their data access",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "01.13",
-     "title": "How image, video and sound generators work",
-     "idea": "Diffusion and flow models: noise to picture in steps; why image, video, music and voice generators work this way; diffusion for text exists but is rare",
-     "lantern": true,
-     "status": "locked"
+     "id": "01.02",
+     "title": "File extensions & associations",
+     "idea": "",
+     "status": "published",
+     "slug": "01-02-file-extensions-associations",
+     "url": "/courses/the-hidden-curriculum/lessons/01-02-file-extensions-associations/",
+     "duration": 609.2,
+     "summary": "The extension is a label in a file's name and your computer keeps a ledger matching each label to a program, so renaming changes the label but never the bytes, while Open with set to Always and default apps edit the ledger; this lesson draws that picture as of October 2026, with AI tools now making the files.",
+     "published": "2026-10-07",
+     "narrator": "Adrian",
+     "poster": "/courses/the-hidden-curriculum/lessons/01-02-file-extensions-associations/poster.jpg",
+     "legacy": true,
+     "covers": [],
+     "coverTitles": [],
+     "legacyId": "01.02"
     }
    ],
    "filed": 6
   },
   {
    "n": "02",
-   "name": "The Command Line",
-   "short": "The Command Line",
-   "region": "The Machine",
+   "name": "Your first build",
+   "short": "Your first build",
+   "region": "First Build",
    "lessons": [
     {
      "id": "02.01",
-     "title": "Terminal vs console vs shell vs CLI",
-     "idea": "Terminal = the window; shell = the interpreter inside it; CLI = any program you drive by typing; console = the old name",
-     "status": "locked"
+     "title": "Before your agent runs commands on your computer",
+     "idea": "A command the agent runs has your permissions on every drive you can reach, shell deletes skip the Recycle Bin, and people approve nearly every prompt they are shown; so choose the permission mode on purpose, prefer a tool with mechanical delete guards, keep a copy off the machine, and at a prompt check the targets, not the syntax.",
+     "lantern": true,
+     "status": "locked",
+     "key": "before-you-let-it-loose"
     },
     {
      "id": "02.02",
-     "title": "The shells: cmd, PowerShell, bash, zsh, Git Bash, WSL",
-     "idea": "Which one you're in, why syntax differs, when to use each",
-     "status": "locked"
+     "title": "Saying what you want",
+     "idea": "The job moved from typing code to directing: agents brute-force any clearly stated goal, so most failures move upstream into what you asked for; write the goal, the constraints and a checkable \"done when\", and have the agent surface your unknowns and its own assumptions before it builds.",
+     "lantern": true,
+     "status": "locked",
+     "key": "saying-what-you-want"
     },
     {
      "id": "02.03",
-     "title": "Moving around",
-     "idea": "cd, ls/dir, pwd, tab-completion, up-arrow history, opening a terminal in a folder",
-     "status": "locked"
+     "title": "When it breaks: what the agent needs from you",
+     "idea": "The agent now reads errors, adds logging, reproduces bugs and re-runs until fixed, but only on what it can run or see; so your part is a reliable reproduction, what correct looks like and a way for it to observe the real result (a test, a browser, a render tool you checked once against reality), and when the same error keeps coming back, stop it, name what is missing and change the input instead of saying \"fix it\" again.",
+     "lantern": true,
+     "status": "locked",
+     "key": "when-it-breaks-you-supply-the-eyes"
     },
     {
      "id": "02.04",
-     "title": "Running programs: commands, arguments, flags",
-     "idea": "python app.py --verbose: program, argument, flag; --help",
-     "status": "locked"
-    },
-    {
-     "id": "02.05",
-     "title": "Input, output, pipes & redirects",
-     "idea": "stdout, stderr, |, >, exit codes — how programs talk to each other",
-     "status": "locked"
-    },
-    {
-     "id": "02.06",
-     "title": "Script files: .bat, .cmd, .ps1, .sh",
-     "idea": "Saving commands to a file; execution policy; shebangs; double-click vs run",
-     "status": "locked"
-    },
-    {
-     "id": "02.07",
-     "title": "OS package managers",
-     "idea": "winget, Chocolatey, Scoop, Homebrew, apt — installing software by typing",
-     "status": "locked"
-    },
-    {
-     "id": "02.08",
-     "title": "Reading errors without panic",
-     "idea": "Stack traces, \"command not found\", permission denied, and what each means",
-     "status": "locked"
+     "title": "When the agent says 'done'",
+     "idea": "An agent's closing \"done, tests pass\" is a claim, not evidence (about 1 in 11 were false in one team's log), because agents shape results to pass the checks they believe exist and polish costs them nothing; so treat \"done\" as the start of acceptance, ask for the evidence, insist on one check against the real thing, and judge yourself (or with users and experts) whether it is good, not just running.",
+     "lantern": true,
+     "status": "locked",
+     "key": "done-is-a-claim"
     }
    ],
    "filed": 0
   },
   {
    "n": "03",
-   "name": "Development Environments",
-   "short": "Development Environments",
-   "region": "The Machine",
+   "name": "Putting it online",
+   "short": "Putting it online",
+   "region": "Going Live",
    "lessons": [
     {
      "id": "03.01",
-     "title": "Text editor vs IDE",
-     "idea": "Notepad → VS Code → full IDEs; what an IDE adds",
-     "status": "locked"
+     "title": "Browser, server, database: where your app really runs",
+     "idea": "An app is several places, not one: the browser is public, the server is where secrets and permission checks must live, and the database is a separate service with its own rules and backups, so rolling back code does not roll back data; the bar for all of it rises the moment real users, data or money arrive.",
+     "status": "locked",
+     "key": "what-runs-where"
     },
     {
      "id": "03.02",
-     "title": "VS Code tour",
-     "idea": "Explorer, integrated terminal, extensions, command palette, settings",
-     "status": "locked"
+     "title": "Keys: public, secret and leaked",
+     "idea": "A key is a permission set that reaches a program as a setting (from your shell, a .env file or a hosting dashboard): anything shipped to the browser is public, secret keys never are, agent logs and config files leak them, and a leaked key stays live until you revoke and rotate it, because deleting the commit does nothing.",
+     "status": "locked",
+     "key": "keys-public-secret-and-leaked"
     },
     {
      "id": "03.03",
-     "title": "The IDE family",
-     "idea": "Cursor/Windsurf, JetBrains (PyCharm etc.), Visual Studio, Xcode, Android Studio, Unity/Godot editors — when to use which",
-     "status": "locked"
-    },
-    {
-     "id": "03.04",
-     "title": "Linters, formatters & type checkers",
-     "idea": "Tools that catch mistakes before you run",
-     "status": "locked"
-    },
-    {
-     "id": "03.05",
-     "title": "The debugger",
-     "idea": "Breakpoints and stepping instead of print() everywhere",
-     "status": "locked"
-    },
-    {
-     "id": "03.06",
-     "title": "Notebooks",
-     "idea": "Jupyter, Colab — when notebooks beat scripts and when they don't",
-     "status": "locked"
-    },
-    {
-     "id": "03.07",
-     "title": "WSL, dev containers & cloud dev environments",
-     "idea": "Linux on Windows, Codespaces, why teams standardize environments",
-     "status": "locked"
-    },
-    {
-     "id": "03.08",
-     "title": "Coding agents in your editor and terminal",
-     "idea": "Claude Code, Codex, Copilot agent, Cursor — how they read, edit, run",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "03.09",
-     "title": "Instruction files: prompts as code",
-     "idea": "Instructions files (CLAUDE.md etc.), versioning prompts",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "03.10",
-     "title": "Context engineering: managing the window",
-     "idea": "Why models get worse as the window fills (context rot); compaction, clearing tool results, sub-agents, loading tools and skills on demand",
-     "lantern": true,
-     "status": "locked"
+     "title": "From your laptop to a URL",
+     "idea": "Deploying is build, upload and switch on a host that keeps earlier versions, under a domain you rent and point with DNS; local, preview and production are different places with different settings, the host's rollback leaves your database and sent messages untouched, and a public URL is likely found and probed within days.",
+     "status": "locked",
+     "key": "from-your-laptop-to-a-url"
     }
    ],
    "filed": 0
   },
   {
    "n": "04",
-   "name": "Programming Languages",
-   "short": "Programming Languages",
-   "region": "The Code",
+   "name": "Safe for strangers",
+   "short": "Safe for strangers",
+   "region": "Going Live",
    "lessons": [
     {
      "id": "04.01",
-     "title": "What a programming language actually is",
-     "idea": "Human-readable instructions → something the machine runs",
-     "status": "locked"
+     "title": "Working is not secure",
+     "idea": "AI code almost always compiles but passes security checks only about 56% of the time, because agents skip security nobody stated and clear errors by weakening controls; so state the stakes, never take \"it's secure\" from the agent, spend your attention where a mistake costs most (sign-in, payments, permissions, personal data, secrets), and see what every fix to those changed.",
+     "lantern": true,
+     "status": "locked",
+     "key": "working-is-not-secure"
     },
     {
      "id": "04.02",
-     "title": "Compiled vs interpreted vs bytecode",
-     "idea": "C/Rust/Go vs Python/JS vs Java/C# — what \"runtime\" means",
-     "status": "locked"
+     "title": "Test it as a stranger",
+     "idea": "Logged in is not allowed: authorisation must be checked on the server for every request, a Supabase-style database and its storage answer anyone holding the public key, and your users' data also lives in logs, analytics, AI providers and backups; so have every table and bucket tested as an anonymous stranger after every schema change (and after Supabase makes grants opt-in for new tables on 2026-10-30), collect less, and know every copy.",
+     "status": "locked",
+     "key": "test-it-as-a-stranger"
     },
     {
      "id": "04.03",
-     "title": "The language tour",
-     "idea": "Python, JavaScript/TypeScript, HTML/CSS, SQL, Bash/PowerShell, C/C++, C#, Java/Kotlin, Swift, Go, Rust, Lua/GDScript — what each is for",
-     "status": "locked"
+     "title": "Your app's AI feature",
+     "idea": "An AI feature in a public app is a meter strangers can run and a voice that speaks for you: require sign-in before any model call, set per-user and global caps that stop spending, treat the model's output as untrusted, say it is AI, ask before users' data goes to an AI provider, and let them report what it makes.",
+     "lantern": true,
+     "status": "locked",
+     "key": "your-apps-ai-feature"
     },
     {
      "id": "04.04",
-     "title": "Choosing a language",
-     "idea": "By target: web, AI/data, scripting, mobile, games, systems, automation",
-     "status": "locked"
-    },
-    {
-     "id": "04.05",
-     "title": "Libraries, frameworks, SDKs & runtimes",
-     "idea": "Library = you call it; framework = it calls you; SDK = a vendor's toolkit",
-     "status": "locked"
-    },
-    {
-     "id": "04.06",
-     "title": "Data formats",
-     "idea": "JSON, YAML, TOML, CSV, XML, Markdown — config and data files you'll meet daily",
-     "status": "locked"
-    },
-    {
-     "id": "04.07",
-     "title": "Text encoding: Unicode, UTF-8 and garbled characters",
-     "idea": "Text is bytes plus an agreement: code points, UTF-8 vs UTF-16, why Ã© (mojibake) appears and how to read it (deferred from 01.01)",
-     "status": "locked"
+     "title": "Before you ship: who signs off",
+     "idea": "Scans, AI security reviews and checklists are a floor, not a certificate: have the agent list every route, TODO and deploy step the build left to you and run every check a machine can (accessibility checkers included), bring that list to a qualified expert for what no machine can verify, and remember that a person, not the agent, owns the ship decision and the patches after it.",
+     "status": "locked",
+     "key": "before-you-ship-who-signs-off"
     }
    ],
    "filed": 0
   },
   {
    "n": "05",
-   "name": "Python & JavaScript Ecosystems (Packages)",
-   "short": "Python & JavaScript Ecosystems (Packages)",
-   "region": "The Code",
+   "name": "What the agent sees",
+   "short": "What the agent sees",
+   "region": "Directing Well",
    "lessons": [
     {
      "id": "05.01",
-     "title": "Why there are so many Pythons on your computer",
-     "idea": "Installer vs Store vs uv; multiple versions; the py launcher; which one \"python\" means",
-     "status": "locked"
+     "title": "What the agent sees each turn",
+     "idea": "Every turn resends the whole package (system prompt, tool definitions, instruction files, memory and the full history), and accuracy falls as the window fills, so curate what goes in, clear once a decision is made, carry plans in files rather than chat, and brief subagents fully because they start blind and return only a summary.",
+     "lantern": true,
+     "status": "locked",
+     "key": "what-the-agent-sees-each-turn"
     },
     {
      "id": "05.02",
-     "title": "What \"running a file\" really means",
-     "idea": "An interpreter reads your text file; the working directory decides what it can find; why imports fail from the wrong folder",
-     "status": "locked"
+     "title": "CLAUDE.md, AGENTS.md and rules that actually hold",
+     "idea": "An instruction file (CLAUDE.md, AGENTS.md) is a short map the agent reads on every request, but anything in prose is a request it may skip; only a deny rule, a blocking hook, a sandbox, CI or a withheld credential makes an action impossible, a rule works only in sessions that load it, and a stale file misleads, so keep it short, dated and backed by checks you have seen fire.",
+     "lantern": true,
+     "status": "locked",
+     "key": "rules-it-reads-rules-it-cant-break"
     },
     {
      "id": "05.03",
-     "title": "Virtual environments (.venv)",
-     "idea": "Per-project package boxes; activate/deactivate; why global installs break things",
-     "status": "locked"
-    },
-    {
-     "id": "05.04",
-     "title": "pip, requirements.txt, pyproject.toml, uv",
-     "idea": "Declaring and reproducing dependencies",
-     "status": "locked"
-    },
-    {
-     "id": "05.05",
-     "title": "Node.js, npm & npx",
-     "idea": "package.json, node_modules, scripts (npm run dev), npx one-offs",
-     "status": "locked"
-    },
-    {
-     "id": "05.06",
-     "title": "Lockfiles & semantic versioning",
-     "idea": "1.4.2 means what; why lockfiles exist",
-     "status": "locked"
-    },
-    {
-     "id": "05.07",
-     "title": "Who can publish packages?",
-     "idea": "Anyone — PyPI/npm accounts, publishing flow, trust signals",
-     "status": "locked"
-    },
-    {
-     "id": "05.08",
-     "title": "Supply-chain risk",
-     "idea": "Typosquatting, malicious packages, install scripts, how to vet a package",
-     "status": "locked"
-    },
-    {
-     "id": "05.09",
-     "title": "Version managers & shims",
-     "idea": "mise, pyenv, nvm, asdf: tools that put a stand-in (shim) first on PATH and pick the version per project; why which python can name a shim, not the real program (deferred from 01.05)",
-     "status": "locked"
+     "title": "Skills, MCP, hooks and plugins",
+     "idea": "A skill is a written procedure, an MCP server connects outside tools, a hook is code the harness runs on an event, a subagent is an isolated worker and a plugin bundles them; each one you enable costs context, and skills, plugins and local MCP servers are code running with your permissions that can change after you approve them.",
+     "lantern": true,
+     "status": "locked",
+     "key": "skills-mcp-hooks-and-plugins"
     }
    ],
    "filed": 0
   },
   {
    "n": "06",
-   "name": "Data & Databases",
-   "short": "Data & Databases",
-   "region": "The Code",
+   "name": "Scaling up",
+   "short": "Scaling up",
+   "region": "Directing Well",
    "lessons": [
     {
      "id": "06.01",
-     "title": "Why apps need databases",
-     "idea": "Beyond files",
-     "status": "locked"
+     "title": "Plan first, then build in slices",
+     "idea": "For anything bigger than a one-sentence change, keep research and planning apart from building: react to cheap throwaway mockups first, have the agent map what exists read-only, compare two options and review a short plan with an out-of-scope list, then build in slices small enough to review, choosing between options on evidence.",
+     "lantern": true,
+     "status": "locked",
+     "key": "plan-first-then-build-in-slices"
     },
     {
      "id": "06.02",
-     "title": "SQL & relational databases",
-     "idea": "SQLite, Postgres, tables, queries",
-     "status": "locked"
+     "title": "Checking code you can't read",
+     "idea": "You cannot read every line an agent writes and need not: accept work on records something outside the agent wrote (the real diff, CI on another machine, server logs, the destination), pick the evidence that fits the change, keep one source of truth from outside the session that wrote the code, treat AI review as triage rather than acceptance, and break things on purpose to prove your checks bite.",
+     "lantern": true,
+     "status": "locked",
+     "key": "checking-what-you-cant-read"
     },
     {
      "id": "06.03",
-     "title": "NoSQL & key-value stores",
-     "idea": "Documents, KV, when they fit",
-     "status": "locked"
-    },
-    {
-     "id": "06.04",
-     "title": "Hosted backends",
-     "idea": "Supabase, Firebase, Neon, Cloudflare D1",
-     "status": "locked"
-    },
-    {
-     "id": "06.05",
-     "title": "Migrations & backups",
-     "idea": "Changing a database without losing data",
-     "status": "locked"
-    },
-    {
-     "id": "06.06",
-     "title": "Vector databases & embeddings",
-     "idea": "How AI \"searches by meaning\" (RAG)",
+     "title": "What your AI work really costs, and how to cap it",
+     "idea": "Know which meter you are on (a subscription's rolling allowances, or an API key that bills every token, which a stray key in your environment switches you to), that cost is context times turns times agents, that caching discounts only an identical prefix, that a cheaper model is not always a cheaper result and higher effort mostly buys more steps, and that budget alerts don't stop spending, so set caps that do.",
      "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "06.07",
-     "title": "How AI apps remember",
-     "idea": "The model keeps nothing: memory is text put back in the window. Re-sent conversation, self-kept memory, chat search, memory files and connectors (Notion, Drive) via tool calls",
-     "lantern": true,
-     "status": "locked"
+     "status": "locked",
+     "key": "know-your-meter"
     }
    ],
    "filed": 0
   },
   {
    "n": "07",
-   "name": "Concurrency: Doing Many Things at Once",
-   "short": "Concurrency",
-   "region": "The Code",
+   "name": "Reach and trust",
+   "short": "Reach and trust",
+   "region": "Agent Power",
    "lessons": [
     {
      "id": "07.01",
-     "title": "Processes vs threads",
-     "idea": "Separate houses vs roommates",
-     "status": "locked"
+     "title": "Prompt injection: when what it reads gives it orders",
+     "idea": "Everything an agent reads (web pages, issues, READMEs, tool output, even data from an official MCP server) lands in the same stream as your request, so anyone who can write text it reads can try to steer it; filters catch most attempts but attackers retry, so never give one agent private data, untrusted content and a way to send data out at once, and review what gets written into its memory and rules.",
+     "lantern": true,
+     "status": "locked",
+     "key": "whose-words-is-it-reading"
     },
     {
      "id": "07.02",
-     "title": "The event loop",
-     "idea": "One worker juggling many waiting tasks (JavaScript, Python asyncio)",
-     "status": "locked"
+     "title": "Sandboxes: a safe box for your agent",
+     "idea": "Approving each step does not hold, so put the boundary in the environment: run risky, unattended or package-installing work in a container or VM with the network off and no production keys, know exactly what your sandbox covers (Claude Code's is off by default, shell-only and absent on native Windows), and remember isolation limits where code runs, not what your granted access can reach.",
+     "lantern": true,
+     "status": "locked",
+     "key": "contain-it-dont-babysit-it"
     },
     {
      "id": "07.03",
-     "title": "async / await",
-     "idea": "Writing code that waits without freezing",
-     "status": "locked"
+     "title": "Give your agent only the access it needs",
+     "idea": "Assume anything the agent can see can be extracted and anything it can reach it will treat as permitted: keep production keys out of where it runs, grant the narrowest verbs, roles, targets and domains, give browser agents a separate profile, and keep spending, messages to outsiders, sensitive data and publishing behind a human approval.",
+     "lantern": true,
+     "status": "locked",
+     "key": "the-narrowest-keys-and-verbs"
     },
     {
      "id": "07.04",
-     "title": "Worker threads & worker pools",
-     "idea": "Handing heavy work to helpers",
-     "status": "locked"
-    },
-    {
-     "id": "07.05",
-     "title": "Job queues & the worker loop",
-     "idea": "\"Take a job, do it, report, repeat\" — how render queues and AI pipelines work",
-     "status": "locked"
-    },
-    {
-     "id": "07.06",
-     "title": "Race conditions & locks",
-     "idea": "Why two workers touching one thing breaks it",
-     "status": "locked"
-    },
-    {
-     "id": "07.07",
-     "title": "Multi-agent orchestration",
-     "idea": "Fan-out, review, verify; cost and when it's worth it",
-     "lantern": true,
-     "status": "locked"
+     "title": "Other people's code",
+     "idea": "Installing a package, opening or testing a repo, trusting a folder and pasting a command all run someone else's code as you, so have the agent check that every new dependency it names exists and has a history, set a minimum release age, open untrusted repos only in a disposable box, and never run a command a web page tells you to.",
+     "status": "locked",
+     "key": "other-peoples-code"
     }
    ],
    "filed": 0
   },
   {
    "n": "08",
-   "name": "Git, GitHub & Agents on Git",
-   "short": "Git, GitHub & Agents on Git",
-   "region": "The History",
+   "name": "Unattended work",
+   "short": "Unattended work",
+   "region": "Running Alone",
    "lessons": [
     {
      "id": "08.01",
-     "title": "What version control is",
-     "idea": "Save points for code with a full history",
-     "status": "locked"
+     "title": "Agents that run while you're away",
+     "idea": "Background, cloud, scheduled and always-on personal agents act without a prompt, each with its own files, rules, permissions and bill; list where yours run, keep scheduled work low-consequence, give long runs stop rules, budgets and checkpoints enforced outside the model, and treat more agents as more to review, not more done.",
+     "lantern": true,
+     "status": "locked",
+     "key": "agents-that-run-while-youre-away"
     },
     {
      "id": "08.02",
-     "title": "Git basics",
-     "idea": "repo, stage, commit, log, diff",
-     "status": "locked"
+     "title": "Automations that fail silently",
+     "idea": "An automation can run green for weeks while doing nothing (an expired token, a renamed field, a filter that matches nothing), so check outcomes in layers (did it run, is the output right, did it arrive), feed known answers through the live pipeline, and watch from outside with a heartbeat and at the destination.",
+     "status": "locked",
+     "key": "green-is-not-success"
     },
     {
      "id": "08.03",
-     "title": "Branches & merging",
-     "idea": "Parallel timelines; merge conflicts demystified",
-     "status": "locked"
-    },
-    {
-     "id": "08.04",
-     "title": "Git vs GitHub",
-     "idea": "Git = the tool on your PC; GitHub/GitLab/Bitbucket = hosting + collaboration",
-     "status": "locked"
-    },
-    {
-     "id": "08.05",
-     "title": "Remotes: clone, push, pull, fork",
-     "idea": "Syncing your copy with the server copy",
-     "status": "locked"
-    },
-    {
-     "id": "08.06",
-     "title": "Pull requests, issues & code review",
-     "idea": "How teams (and agents) propose changes",
-     "status": "locked"
-    },
-    {
-     "id": "08.07",
-     "title": ".gitignore & never committing secrets",
-     "idea": "What stays out of the repo and why",
-     "status": "locked"
-    },
-    {
-     "id": "08.08",
-     "title": "Gists",
-     "idea": "Tiny single-file repos for sharing snippets",
-     "status": "locked"
-    },
-    {
-     "id": "08.09",
-     "title": "GitHub Actions (CI/CD)",
-     "idea": "Robots that test/build/deploy on every push",
-     "status": "locked"
-    },
-    {
-     "id": "08.10",
-     "title": "Releases, tags & GitHub Pages",
-     "idea": "Shipping versions and free static hosting",
-     "status": "locked"
-    },
-    {
-     "id": "08.11",
-     "title": "How AI coding agents use git",
-     "idea": "Agents on branches/worktrees, opening PRs, why git makes agent work safe to undo",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "08.12",
-     "title": "Contributing with AI: team norms and AI policies",
-     "idea": "Mixed human/AI teams: AI code drifting from conventions and the agreed libraries, open-source AI disclosure policies, reviewing AI-written pull requests",
-     "lantern": true,
-     "status": "locked"
+     "title": "Whose account is your automation using?",
+     "idea": "Every automation acts as the account that owns it, and every shipped app rests on a chain of accounts (code host, hosting, domain, database, AI provider, payments); so list each one with its owner, protect them with passkeys or 2FA and stored recovery codes, and move anything a business depends on to a service account with narrow access and a second owner.",
+     "status": "locked",
+     "key": "every-automation-runs-as-someone"
     }
    ],
    "filed": 0
   },
   {
    "n": "09",
-   "name": "Networking & the Internet",
-   "short": "Networking & the Internet",
-   "region": "The Network",
+   "name": "Facts, media, rights",
+   "short": "Facts, media, rights",
+   "region": "Beyond Code",
    "lessons": [
     {
      "id": "09.01",
-     "title": "LAN, WAN & the internet",
-     "idea": "Your home network vs everyone else's; router, switch, Wi-Fi",
-     "status": "locked"
+     "title": "Checking research, numbers and parts",
+     "idea": "Whether a cited link exists is something the agent can check, so make it; whether the source supports the claim, whether a spreadsheet's logic is right and whether a part fits a real board are not, so you or an expert check those, with a known-answer test, a separate checker session and the distributor's data, before anything is filed, sent or ordered.",
+     "lantern": true,
+     "status": "locked",
+     "key": "checking-research-numbers-and-parts"
     },
     {
      "id": "09.02",
-     "title": "IP addresses & ports",
-     "idea": "Address = building, port = apartment; private vs public IPs",
-     "status": "locked"
+     "title": "Making media with AI",
+     "idea": "A model that reads images is not one that makes them: generation runs through separate media models, in the cloud or on your own machine, whose results vary run to run and converge across users, cost per second, resolution and retry, and cannot be seen or heard by the agent without a tool, so test cheap before the expensive render and bring your own taste.",
+     "lantern": true,
+     "status": "locked",
+     "key": "making-media-with-ai"
     },
     {
      "id": "09.03",
-     "title": "localhost",
-     "idea": "127.0.0.1 — your computer talking to itself; localhost:3000 explained",
-     "status": "locked"
+     "title": "Labelling AI media",
+     "idea": "A generator's watermark is for machines, not your label: since 2026-08-02, publishing professionally in the EU means telling people where they see it (from first exposure, spoken for audio), AI-written public-interest text needs a responsible human reviewer or a label, and each platform's own rules on AI content apply on top.",
+     "lantern": true,
+     "status": "locked",
+     "key": "labelling-ai-media"
     },
     {
      "id": "09.04",
-     "title": "Clients & servers",
-     "idea": "Who asks, who answers; any computer can be a server",
-     "status": "locked"
-    },
-    {
-     "id": "09.05",
-     "title": "DNS & domains",
-     "idea": "Names → numbers; registrars, records (A, CNAME, TXT, MX)",
-     "status": "locked"
-    },
-    {
-     "id": "09.06",
-     "title": "HTTP & HTTPS",
-     "idea": "Requests, responses, methods, status codes, headers",
-     "status": "locked"
-    },
-    {
-     "id": "09.07",
-     "title": "TLS certificates",
-     "idea": "The padlock; Let's Encrypt; why HTTPS is free now",
-     "status": "locked"
-    },
-    {
-     "id": "09.08",
-     "title": "Firewalls, NAT, port forwarding & VPNs",
-     "idea": "Why your PC isn't reachable from the internet (and how to change that safely)",
-     "status": "locked"
-    },
-    {
-     "id": "09.09",
-     "title": "CDNs, latency & bandwidth",
-     "idea": "Why sites are copied worldwide",
-     "status": "locked"
+     "title": "Own it, sell it, publish it",
+     "idea": "The generator's terms, the model's own licence and copyright law each decide something different: free tiers can be personal-use only, purely AI-made work has no US copyright, a local model's licence can forbid commercial use, voices and faces need written consent, and owning an output doesn't clear someone else's logo or character, so log which plan made each asset and bring in an IP lawyer before selling.",
+     "lantern": true,
+     "status": "locked",
+     "key": "own-it-sell-it-publish-it"
     }
    ],
    "filed": 0
   },
   {
    "n": "10",
-   "name": "APIs, Webhooks & MCP",
-   "short": "APIs, Webhooks & MCP",
-   "region": "The Network",
-   "lessons": [
-    {
-     "id": "10.01",
-     "title": "What an API is",
-     "idea": "A menu of things a program lets other programs do",
-     "status": "locked"
-    },
-    {
-     "id": "10.02",
-     "title": "Web APIs & REST",
-     "idea": "Endpoints, JSON bodies, GET/POST/PUT/DELETE",
-     "status": "locked"
-    },
-    {
-     "id": "10.03",
-     "title": "Anatomy of one API call",
-     "idea": "URL, method, headers, key, JSON body, status code: one request taken apart",
-     "status": "locked"
-    },
-    {
-     "id": "10.04",
-     "title": "SDKs, rate limits, pagination & errors",
-     "idea": "The practical realities of APIs",
-     "status": "locked"
-    },
-    {
-     "id": "10.05",
-     "title": "Webhooks",
-     "idea": "\"Don't call us, we'll call you\" — reverse APIs; polling vs push",
-     "status": "locked"
-    },
-    {
-     "id": "10.06",
-     "title": "WebSockets & streaming",
-     "idea": "Live two-way connections; why AI replies stream token by token",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "10.07",
-     "title": "GraphQL & RPC (brief)",
-     "idea": "Other API styles you'll bump into",
-     "status": "locked"
-    },
-    {
-     "id": "10.08",
-     "title": "MCP — Model Context Protocol",
-     "idea": "A standard plug that lets AI apps use tools; client, server, tools, resources",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "10.09",
-     "title": "MCP transports & installing servers",
-     "idea": "stdio (local program) vs HTTP (remote); config files; auth for remote MCP",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "10.10",
-     "title": "Tools, skills & MCP in practice",
-     "idea": "Giving an agent abilities",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "10.11",
-     "title": "Subscriptions vs API billing",
-     "idea": "Chat plans vs pay-per-token keys",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "10.12",
-     "title": "Plugin and skill marketplaces",
-     "idea": "Skills vs connectors vs plugins; directories, the Claude Marketplace, git-repo plugin marketplaces; every add-on is code you trust (malicious skills in the wild)",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "10.13",
-     "title": "Prompt caching and the token meters",
-     "idea": "Input, cache write, cache read, output; the prefix rule and what breaks a cache; time to live (5 min / 1 h); why long chats cost more each turn",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "10.14",
-     "title": "Multimodal APIs",
-     "idea": "Sending images, audio, video and PDFs to a model; models that generate media natively vs apps that hand off to a generator model",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "10.15",
-     "title": "Voice AI",
-     "idea": "Voice modes: speech-to-text, model, text-to-speech pipelines vs native speech-to-speech; turn-taking and interruptions",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "10.16",
-     "title": "What \"Opus made this\" leaves out",
-     "idea": "~20 min, case study (Aaron asked for it out of sequence, 2026-10-03/04). Bare Opus 5.5 vs Opus connected to engines, generators and pipelines, from controlled experiments run for this lesson: what the model really did, what references, generators, songs and people supplied, its narrow default taste, that it never hears or plays its own work, and the bill (Seedance 2.5, keep ratios, the 10,000-character \"one prompt\"). Uses real media exhibits (first lesson with video clips and played audio)",
-     "lantern": true,
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "11",
-   "name": "Websites & Hosting",
-   "short": "Websites & Hosting",
-   "region": "The Network",
-   "lessons": [
-    {
-     "id": "11.01",
-     "title": "HTML, CSS, JavaScript",
-     "idea": "Structure, style, behavior",
-     "status": "locked"
-    },
-    {
-     "id": "11.02",
-     "title": "Static vs dynamic sites",
-     "idea": "Pre-made pages vs pages built per request",
-     "status": "locked"
-    },
-    {
-     "id": "11.03",
-     "title": "SSG, SSR, SPA & islands",
-     "idea": "The rendering acronyms explained",
-     "status": "locked"
-    },
-    {
-     "id": "11.04",
-     "title": "Astro",
-     "idea": "Content-first static sites with islands of interactivity",
-     "status": "locked"
-    },
-    {
-     "id": "11.05",
-     "title": "React, Next.js & friends",
-     "idea": "When you need a heavier framework",
-     "status": "locked"
-    },
-    {
-     "id": "11.06",
-     "title": "Build steps & dev servers",
-     "idea": "npm run dev vs npm run build, the dist folder",
-     "status": "locked"
-    },
-    {
-     "id": "11.07",
-     "title": "How a domain name finds your site",
-     "idea": "Registrar → DNS → host: who owns what in the chain",
-     "status": "locked"
-    },
-    {
-     "id": "11.08",
-     "title": "Where to host",
-     "idea": "GitHub Pages, Cloudflare Pages, Vercel, Netlify, VPS — tradeoffs and costs",
-     "status": "locked"
-    },
-    {
-     "id": "11.09",
-     "title": "Deploying from git",
-     "idea": "Push → auto-deploy; preview deployments",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "12",
-   "name": "Cloudflare & the Edge",
-   "short": "Cloudflare & the Edge",
-   "region": "The Network",
-   "lessons": [
-    {
-     "id": "12.01",
-     "title": "What Cloudflare is",
-     "idea": "DNS, CDN, proxy, DDoS shield in front of your site",
-     "status": "locked"
-    },
-    {
-     "id": "12.02",
-     "title": "Pages & Workers",
-     "idea": "Hosting sites and running code at the edge",
-     "status": "locked"
-    },
-    {
-     "id": "12.03",
-     "title": "Storage: KV, D1, R2, Durable Objects",
-     "idea": "Where edge apps keep data",
-     "status": "locked"
-    },
-    {
-     "id": "12.04",
-     "title": "Workers AI & the Agents SDK",
-     "idea": "Running models and stateful agents on Cloudflare",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "12.05",
-     "title": "Tunnels & Zero Trust",
-     "idea": "Safely exposing localhost; protecting private apps",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "13",
-   "name": "Containers, Servers & the Cloud",
-   "short": "Containers, Servers & the Cloud",
-   "region": "The Network",
-   "lessons": [
-    {
-     "id": "13.01",
-     "title": "\"Works on my machine\"",
-     "idea": "The problem containers solve",
-     "status": "locked"
-    },
-    {
-     "id": "13.02",
-     "title": "Docker: images, containers, Dockerfile",
-     "idea": "Recipe → packaged box → running box",
-     "status": "locked"
-    },
-    {
-     "id": "13.03",
-     "title": "Volumes, ports & docker compose",
-     "idea": "Data and multiple services",
-     "status": "locked"
-    },
-    {
-     "id": "13.04",
-     "title": "When to use Docker (and when not)",
-     "idea": "Servers and reproducibility yes; simple desktop scripts usually no",
-     "status": "locked"
-    },
-    {
-     "id": "13.05",
-     "title": "VMs vs containers vs serverless",
-     "idea": "Three ways to rent compute",
-     "status": "locked"
-    },
-    {
-     "id": "13.06",
-     "title": "The big clouds",
-     "idea": "AWS, Azure, GCP — and the simpler PaaS options",
-     "status": "locked"
-    },
-    {
-     "id": "13.07",
-     "title": "Environments: dev, staging, prod",
-     "idea": "Why you don't test on live users",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "14",
-   "name": "Identity, Authentication & Keys (Developer Side)",
-   "short": "Identity, Authentication & Keys (Developer Side)",
-   "region": "Trust",
-   "lessons": [
-    {
-     "id": "14.01",
-     "title": "Authentication vs authorization",
-     "idea": "Who are you vs what may you do",
-     "status": "locked"
-    },
-    {
-     "id": "14.02",
-     "title": "Sessions & cookies",
-     "idea": "How a website remembers you're logged in",
-     "status": "locked"
-    },
-    {
-     "id": "14.03",
-     "title": "API keys, app keys, secret vs publishable keys",
-     "idea": "Shared secrets; which keys may appear in a browser and which never may",
-     "status": "locked"
-    },
-    {
-     "id": "14.04",
-     "title": "Tokens & JWTs",
-     "idea": "Access tokens, refresh tokens, expiry, bearer headers",
-     "status": "locked"
-    },
-    {
-     "id": "14.05",
-     "title": "Public/private key cryptography",
-     "idea": "Lock anyone can close, only you can open; signing vs encrypting",
-     "status": "locked"
-    },
-    {
-     "id": "14.06",
-     "title": "SSH keys",
-     "idea": "Passwordless login to servers and GitHub",
-     "status": "locked"
-    },
-    {
-     "id": "14.07",
-     "title": "OAuth 2.0: the big idea",
-     "idea": "Letting an app act for you without giving it your password",
-     "status": "locked"
-    },
-    {
-     "id": "14.08",
-     "title": "OAuth flows",
-     "idea": "Authorization Code + PKCE, Client Credentials, Device Code, refresh — which to use when",
-     "status": "locked"
-    },
-    {
-     "id": "14.09",
-     "title": "OpenID Connect, SSO & \"Sign in with Google\"",
-     "idea": "OAuth + identity",
-     "status": "locked"
-    },
-    {
-     "id": "14.10",
-     "title": "Scopes, consent & revoking access",
-     "idea": "Least privilege for apps",
-     "status": "locked"
-    },
-    {
-     "id": "14.11",
-     "title": "Service accounts & machine identities",
-     "idea": "Logins for robots",
-     "status": "locked"
-    },
-    {
-     "id": "14.12",
-     "title": "Giving agents keys safely",
-     "idea": "Scoped tokens, sandboxes, permission prompts, human-in-the-loop",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "14.13",
-     "title": "Signed webhooks (HMAC)",
-     "idea": "Proving a webhook really came from Stripe/GitHub",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "15",
-   "name": "Personal Security & Secrets",
-   "short": "Personal Security & Secrets",
-   "region": "Trust",
-   "lessons": [
-    {
-     "id": "15.01",
-     "title": "Passwords & password managers",
-     "idea": "Bitwarden, 1Password: vaults, master password, autofill",
-     "status": "locked"
-    },
-    {
-     "id": "15.02",
-     "title": "Two-factor authentication",
-     "idea": "SMS vs authenticator (TOTP) vs push vs hardware keys",
-     "status": "locked"
-    },
-    {
-     "id": "15.03",
-     "title": "Passkeys",
-     "idea": "Public-key login that can't be phished",
-     "status": "locked"
-    },
-    {
-     "id": "15.04",
-     "title": "Recovery codes & recovery keys",
-     "idea": "The backup door — where to keep them",
-     "status": "locked"
-    },
-    {
-     "id": "15.05",
-     "title": "Hashing vs encryption vs encoding",
-     "idea": "One-way, two-way, and not-security-at-all (base64)",
-     "status": "locked"
-    },
-    {
-     "id": "15.06",
-     "title": "Encryption at rest & in transit",
-     "idea": "BitLocker/FileVault, HTTPS, end-to-end",
-     "status": "locked"
-    },
-    {
-     "id": "15.07",
-     "title": "Keeping app secrets out of plain text",
-     "idea": ".env + .gitignore → OS credential store → op run/Bitwarden Secrets Manager → cloud secret stores",
-     "status": "locked"
-    },
-    {
-     "id": "15.08",
-     "title": "Environment variables: user vs system",
-     "idea": "Where they live, who can read them, what's fine to put there (paths, flags) and what isn't (long-lived secrets)",
-     "status": "locked"
-    },
-    {
-     "id": "15.09",
-     "title": "Windows Credential Manager & DPAPI",
-     "idea": "The OS vault; encryption tied to a Windows account, so only that account can read it (Keychain / libsecret on Mac & Linux)",
-     "status": "locked"
-    },
-    {
-     "id": "15.10",
-     "title": "The bootstrap secret problem",
-     "idea": "Every automation needs one first secret; where that one secret can safely live",
-     "status": "locked"
-    },
-    {
-     "id": "15.11",
-     "title": "When a key leaks",
-     "idea": "Rotate, revoke, scan history; secret scanning",
-     "status": "locked"
-    },
-    {
-     "id": "15.12",
-     "title": "Least privilege & threat modeling for solo devs",
-     "idea": "What could go wrong, and cheap defenses",
-     "status": "locked"
-    },
-    {
-     "id": "15.13",
-     "title": "AI privacy & data use",
-     "idea": "What gets sent, trained on, and retained",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "15.14",
-     "title": "AI at work: enterprise plans and admin controls",
-     "idea": "Individual vs Team/Enterprise: SSO, admin allow-lists for connectors, plugins and skills, audit logs, retention, managed instruction files, training defaults",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "15.15",
-     "title": "Prompt injection and attacks on agents",
-     "idea": "Text in a page, file or email can steer an agent that reads it; why tool access turns that into real damage, and the defenses so far",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "15.16",
-     "title": "AI that checks code: review and security agents",
-     "idea": "What 2026 review and security agents (scanners, /security-review, autofix) catch, what they miss, and why a human still approves",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "15.17",
-     "title": "Dangerous files",
-     "idea": "Double extensions (invoice.pdf.exe), Mark of the Web, risky attachment types: a file's name can lie about what it does (deferred from 01.01)",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "16",
-   "name": "Running Things Without You",
-   "short": "Running Things Without You",
-   "region": "Trust",
-   "lessons": [
-    {
-     "id": "16.01",
-     "title": "Background processes & services/daemons",
-     "idea": "Programs with no window",
-     "status": "locked"
-    },
-    {
-     "id": "16.02",
-     "title": "Scheduling",
-     "idea": "Task Scheduler, cron, scheduled cloud jobs",
-     "status": "locked"
-    },
-    {
-     "id": "16.03",
-     "title": "Running without being logged in",
-     "idea": "Services, \"run whether user is logged on or not\", SYSTEM account",
-     "status": "locked"
-    },
-    {
-     "id": "16.04",
-     "title": "The implications",
-     "idea": "Stored credentials, security, persistence, what malware does the same way",
-     "status": "locked"
-    },
-    {
-     "id": "16.05",
-     "title": "Headless machines & servers",
-     "idea": "Computers with no screen; remote access (SSH, RDP)",
-     "status": "locked"
-    },
-    {
-     "id": "16.06",
-     "title": "Logs & monitoring",
-     "idea": "How you find out what happened while you were away",
-     "status": "locked"
-    },
-    {
-     "id": "16.07",
-     "title": "When you leave, does it break?",
-     "idea": "The \"bus factor\": automations tied to personal accounts; moving them to company-owned identities",
-     "status": "locked"
-    },
-    {
-     "id": "16.08",
-     "title": "Windows service accounts & scheduled tasks",
-     "idea": "A login for a robot on one machine, and the scheduled tasks that use it",
-     "status": "locked"
-    },
-    {
-     "id": "16.09",
-     "title": "Robot identities in the cloud",
-     "idea": "Entra ID app registrations and service principals: how a Microsoft 365 automation runs as an app instead of a person",
-     "status": "locked"
-    },
-    {
-     "id": "16.10",
-     "title": "Workflow automation platforms",
-     "idea": "n8n, Zapier, Make — when no-code wins",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "16.11",
-     "title": "Scheduled & background agents",
-     "idea": "Agents that run daily without you",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "16.12",
-     "title": "Evals & cost tracking",
-     "idea": "Knowing whether your automation actually works and what it costs",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "16.13",
-     "title": "Always-on personal agents",
-     "idea": "OpenClaw, Hermes Agent, Meta Muse, OpenAI dots: self-hosted vs hosted assistants that act for you around the clock, and their security record",
-     "lantern": true,
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "17",
-   "name": "What \"an Application\" Is",
-   "short": "What \"an Application\" Is",
-   "region": "Shipping",
-   "lessons": [
-    {
-     "id": "17.01",
-     "title": "Anatomy of an app",
-     "idea": "Frontend, backend, database, storage, auth",
-     "status": "locked"
-    },
-    {
-     "id": "17.02",
-     "title": "Kinds of apps",
-     "idea": "CLI, desktop, web, mobile, game, browser extension, bot, agent",
-     "status": "locked"
-    },
-    {
-     "id": "17.03",
-     "title": "How executables work",
-     "idea": "Double-click → OS loads machine code; .exe, .app, ELF",
-     "status": "locked"
-    },
-    {
-     "id": "17.04",
-     "title": "Turning scripts into apps",
-     "idea": "PyInstaller, Electron, Tauri, bundlers",
-     "status": "locked"
-    },
-    {
-     "id": "17.05",
-     "title": "Code signing & \"Windows protected your PC\"",
-     "idea": "Certificates, SmartScreen, Gatekeeper, notarization",
-     "status": "locked"
-    },
-    {
-     "id": "17.06",
-     "title": "Installers",
-     "idea": "What they actually do: copy files, registry, shortcuts, PATH; MSI, MSIX, Inno Setup, NSIS",
-     "status": "locked"
-    },
-    {
-     "id": "17.07",
-     "title": "Updaters",
-     "idea": "Checking a server for new versions, auto-update frameworks",
-     "status": "locked"
-    },
-    {
-     "id": "17.08",
-     "title": "Uninstallers",
-     "idea": "Undoing the installer; leftover AppData",
-     "status": "locked"
-    },
-    {
-     "id": "17.09",
-     "title": "Desktop app stores",
-     "idea": "Microsoft Store, Mac App Store, Steam, itch.io: why distribute through a store at all (phone stores are 18.06–18.09)",
-     "status": "locked"
-    },
-    {
-     "id": "17.10",
-     "title": "AI design and app builders",
-     "idea": "Claude Design, Docs and Slides, and other AI tools that build layouts, pages and apps; what they make (code, not pictures) and where the result lives",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "17.11",
-     "title": "Ready to ship? What to check before real users",
-     "idea": "Who can see what, secrets, costs, rollback and monitoring: the checks an agent cannot vouch for when you ask \"is it ready to deploy?\"",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "18",
-   "name": "Other Platforms: Phones, App Stores & Physical Devices",
-   "short": "Other Platforms",
-   "region": "Shipping",
-   "lessons": [
-    {
-     "id": "18.01",
-     "title": "Why cross-platform is hard",
-     "idea": "Different OSes, CPUs (x64 vs ARM), screen sizes: one program, many machines",
-     "status": "locked"
-    },
-    {
-     "id": "18.02",
-     "title": "Compatibility basics",
-     "idea": "Minimum vs target OS version, API levels, backward vs forward compatibility, deprecations, CPU architectures, screen sizes and densities, \"check for the feature, not the version\"",
-     "status": "locked"
-    },
-    {
-     "id": "18.03",
-     "title": "How a phone app is different",
-     "idea": "Sandboxes, permission prompts, the app lifecycle (the OS can pause or kill you), push notifications, battery and offline",
-     "status": "locked"
-    },
-    {
-     "id": "18.04",
-     "title": "Native, cross-platform or web",
-     "idea": "Swift/Kotlin vs Flutter, React Native, .NET MAUI vs Electron/Tauri vs Unity/Godot vs installable web apps (PWAs): what each trades away",
-     "status": "locked"
-    },
-    {
-     "id": "18.05",
-     "title": "The mobile toolchains",
-     "idea": "Xcode (why iOS apps need a Mac) and Android Studio; SDKs, simulators vs emulators, running on your own phone",
-     "status": "locked"
-    },
-    {
-     "id": "18.06",
-     "title": "The app stores",
-     "idea": "App Store, Google Play, Microsoft Store, Mac App Store, Steam, Amazon and Galaxy stores, EU alternative marketplaces, sideloading; what each one is for and the 15–30% cut",
-     "status": "locked"
-    },
-    {
-     "id": "18.07",
-     "title": "Getting your app into a store",
-     "idea": "Developer accounts and fees, identity checks, review guidelines and rejections, privacy labels and data-safety forms, beta testing (TestFlight, Play testing tracks)",
-     "status": "locked"
-    },
-    {
-     "id": "18.08",
-     "title": "Signing, IDs & releasing updates",
-     "idea": "Bundle/package IDs, certificates, provisioning profiles, keystores, version numbers vs build numbers, staged rollouts; why losing a signing key is a disaster",
-     "status": "locked"
-    },
-    {
-     "id": "18.09",
-     "title": "Selling inside apps",
-     "idea": "In-app purchases and subscriptions, store billing rules, why outside payment links were restricted and how that is changing",
-     "status": "locked"
-    },
-    {
-     "id": "18.10",
-     "title": "VMs, emulators & cloud devices",
-     "idea": "Testing without owning the hardware",
-     "status": "locked"
-    },
-    {
-     "id": "18.11",
-     "title": "CI build matrices",
-     "idea": "GitHub Actions building Mac/Linux/Windows, iOS and Android for you",
-     "status": "locked"
-    },
-    {
-     "id": "18.12",
-     "title": "How physical devices work",
-     "idea": "Microcontrollers vs single-board computers (Arduino, ESP32 vs Raspberry Pi), firmware, sensors and actuators, pins",
-     "status": "locked"
-    },
-    {
-     "id": "18.13",
-     "title": "Prototyping electronics",
-     "idea": "Dev boards, breadboards, power and voltage levels, the parts that let the magic smoke out",
-     "status": "locked"
-    },
-    {
-     "id": "18.14",
-     "title": "Firmware & talking to devices",
-     "idea": "Flashing, serial over USB, Bluetooth LE, Wi-Fi, MQTT; the companion app on your phone",
-     "status": "locked"
-    },
-    {
-     "id": "18.15",
-     "title": "From breadboard to product",
-     "idea": "Circuit boards (KiCad, ordering PCBs), enclosures, CAD and 3D printing, small-batch manufacturing",
-     "status": "locked"
-    },
-    {
-     "id": "18.16",
-     "title": "Certification & selling hardware",
-     "idea": "FCC/CE marks, pre-certified radio modules, safety, crowdfunding and hardware stores",
-     "status": "locked"
-    },
-    {
-     "id": "18.17",
-     "title": "AI on devices",
-     "idea": "On-device and edge AI (phone NPUs, tiny models on microcontrollers), and coding agents that write firmware",
-     "lantern": true,
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "19",
-   "name": "Payments, Users & Selling Software",
-   "short": "Payments, Users & Selling Software",
-   "region": "Shipping",
-   "lessons": [
-    {
-     "id": "19.01",
-     "title": "Adding login to your app",
-     "idea": "Auth providers: Clerk, Auth0, Supabase Auth, Firebase Auth — don't roll your own",
-     "status": "locked"
-    },
-    {
-     "id": "19.02",
-     "title": "How online payments work",
-     "idea": "Card networks, processors, never touching card numbers",
-     "status": "locked"
-    },
-    {
-     "id": "19.03",
-     "title": "Stripe",
-     "idea": "Checkout, products/prices, subscriptions, test mode",
-     "status": "locked"
-    },
-    {
-     "id": "19.04",
-     "title": "Merchant of record",
-     "idea": "Lemon Squeezy, Paddle, Gumroad — they handle sales tax/VAT",
-     "status": "locked"
-    },
-    {
-     "id": "19.05",
-     "title": "Fulfillment via webhooks",
-     "idea": "Payment succeeded → unlock access",
-     "status": "locked"
-    },
-    {
-     "id": "19.06",
-     "title": "License keys for desktop software",
-     "idea": "Issuing, validating, offline activation",
-     "status": "locked"
-    },
-    {
-     "id": "19.07",
-     "title": "Legal pages",
-     "idea": "Terms of service, privacy policy, refunds, GDPR/CCPA basics",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "20",
-   "name": "Licenses & Legal",
-   "short": "Licenses & Legal",
-   "region": "Shipping",
-   "lessons": [
-    {
-     "id": "20.01",
-     "title": "Copyright is the default",
-     "idea": "No license = all rights reserved",
-     "status": "locked"
-    },
-    {
-     "id": "20.02",
-     "title": "Permissive licenses",
-     "idea": "MIT, BSD, Apache 2.0 — do almost anything, keep the notice",
-     "status": "locked"
-    },
-    {
-     "id": "20.03",
-     "title": "Copyleft licenses",
-     "idea": "GPL, LGPL, AGPL — share-alike obligations",
-     "status": "locked"
-    },
-    {
-     "id": "20.04",
-     "title": "Creative Commons & content licenses",
-     "idea": "For art, docs, media",
-     "status": "locked"
-    },
-    {
-     "id": "20.05",
-     "title": "Proprietary, EULAs & dual licensing",
-     "idea": "How closed software is licensed",
-     "status": "locked"
-    },
-    {
-     "id": "20.06",
-     "title": "AI model licenses",
-     "idea": "Open weights vs open source, non-commercial licenses, output rights",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "20.07",
-     "title": "API terms of service",
-     "idea": "What you agree to when you use someone's API",
-     "status": "locked"
-    }
-   ],
-   "filed": 0
-  },
-  {
-   "n": "21",
    "name": "Capstone",
    "short": "Capstone",
    "region": "Capstone",
    "lessons": [
     {
-     "id": "21.01",
-     "title": "Idea → plan",
-     "idea": "Scoping a small real product",
-     "status": "locked"
+     "id": "10.01",
+     "title": "Idea to launch, end to end",
+     "idea": "One small real project walked through every district: you choose a problem worth building and what \"done\" means, the agent builds in checked slices, you can explain what it built before you merge, and every check the course taught is run by the agent where it can be verified and by you or an expert where it cannot.",
+     "status": "locked",
+     "key": "idea-to-launch-end-to-end"
     },
     {
-     "id": "21.02",
-     "title": "Build with an agent",
-     "idea": "Repo, venv/npm, git, secrets done right",
-     "lantern": true,
-     "status": "locked"
-    },
-    {
-     "id": "21.03",
-     "title": "Ship it",
-     "idea": "Domain, hosting, auth, payments",
-     "status": "locked"
-    },
-    {
-     "id": "21.04",
-     "title": "Run it",
-     "idea": "Logs, updates, backups, support",
-     "status": "locked"
+     "id": "10.02",
+     "title": "After launch: keep it alive",
+     "idea": "Shipping starts the work: agents keep adding output and dependencies, so judge the project by outcomes (escaped defects, rollbacks, users served) rather than lines, write the house rules and a named owner for the dependency list into files the agent reads, and keep the code one an agent can change safely, with formatters, linters and a final-diff review catching its habits.",
+     "status": "locked",
+     "key": "after-launch-keep-it-alive"
     }
    ],
    "filed": 0
   }
  ],
  "latest": {
-  "id": "01.06",
+  "id": "01.02",
   "title": "Programs, processes & services",
-  "idea": "A program on disk vs a running process vs a background service; Task Manager tour",
+  "idea": "Chat, Cowork, desktop apps and terminal agents can share a model but differ in what they can reach, which machine the work runs on (yours, a VM, a container, a cloud box) and where your files go; the terminal is just a window where a shell runs commands as you, so pick the surface by the output you need and check where the data goes before you hand it anything private.",
   "status": "published",
   "slug": "01-06-programs-processes-services",
   "url": "/courses/the-hidden-curriculum/lessons/01-06-programs-processes-services/",
@@ -1722,12 +733,23 @@
   "summary": "A program is a file of instructions, a process is one running copy of it with its own number, memory and copied settings, and a service is a process the operating system keeps alive in the background, so most of what your AI tools run is processes you never see a window for.",
   "published": "2026-10-11",
   "narrator": "Adrian",
-  "poster": "/courses/the-hidden-curriculum/lessons/01-06-programs-processes-services/poster.jpg"
+  "poster": "/courses/the-hidden-curriculum/lessons/01-06-programs-processes-services/poster.jpg",
+  "legacy": true,
+  "covers": [
+   "01.02",
+   "03.01"
+  ],
+  "coverTitles": [
+   "Where your agent works",
+   "Browser, server, database: where your app really runs"
+  ],
+  "legacyId": "01.06",
+  "lantern": true
  },
  "first": {
   "id": "00.01",
   "title": "The hidden curriculum",
-  "idea": "CS teaches theory, IS teaches business systems; the day-to-day tooling is learned by apprenticeship, forums and breaking things",
+  "idea": "Building with AI is open to anyone now, and what stops people is small gaps nobody teaches, which move in weeks (models retire on about 30 days' notice, a command vanishes 12 days after deprecation, harnesses ship several releases a week) while the model's own knowledge stops at its training date; so this course is a map rebuilt as the gaps move and fed by the people who use it, and your habit is to check dates, versions and sources and re-test what you know after every update.",
   "status": "published",
   "slug": "00-01-the-hidden-curriculum",
   "url": "/courses/the-hidden-curriculum/lessons/00-01-the-hidden-curriculum/",
@@ -1735,6 +757,14 @@
   "summary": "Building with AI runs on everyday tools that school rarely teaches, so the gap is in the syllabus, not in you. This lesson shows why, and lays out the map every later lesson is shelved on.",
   "published": "2026-09-30",
   "narrator": "RClayton",
-  "poster": "/courses/the-hidden-curriculum/lessons/00-01-the-hidden-curriculum/poster.jpg"
+  "poster": "/courses/the-hidden-curriculum/lessons/00-01-the-hidden-curriculum/poster.jpg",
+  "legacy": true,
+  "covers": [
+   "00.01"
+  ],
+  "coverTitles": [
+   "The hidden curriculum"
+  ],
+  "legacyId": "00.01"
  }
 }

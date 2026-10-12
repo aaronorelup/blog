@@ -133,6 +133,13 @@ h2 { font-size: 24px; margin: 0 0 14px; font-weight: 700; }
 .keep li { padding: 12px 0; border-top: 1px solid var(--pc-line); }
 .keep li:last-child { border-bottom: 1px solid var(--pc-line); }
 .keep b { color: var(--pc-strong); }
+.credits { margin: 8px 0 32px; }
+.credits-note { color: var(--pc-soft); margin: 0 0 12px; }
+.credits-list { list-style: none; padding: 0; margin: 0; font: 400 16px/1.5 Karla, sans-serif; }
+.credits-list li { padding: 8px 0; border-top: 1px solid var(--pc-line); }
+.credits-list li:last-child { border-bottom: 1px solid var(--pc-line); }
+.credits-list b { color: var(--pc-strong); font-weight: 600; }
+.credits-list .d { color: var(--pc-quiet); font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
 .chapters { list-style: none; padding: 0; margin: 0; font: 400 16px/1.4 Karla, sans-serif; }
 .chapters button {
   width: 100%; display: flex; gap: 14px; align-items: baseline; text-align: left;

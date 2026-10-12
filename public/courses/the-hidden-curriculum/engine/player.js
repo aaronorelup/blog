@@ -32,6 +32,12 @@
 
   if (navigator.webdriver && /render=1/.test(location.search)) return; // the renderer drives the canvas itself
 
+  // a lesson with video or sound exhibits downloads them whole before its first frame (runtime.js): show how far along
+  window.addEventListener('lesson-media', (e) => {
+    const bp = $('#bigplay'), d = e.detail || {};
+    if (bp && !window.__readyDone) bp.textContent = d.total ? `Loading lesson… ${Math.min(99, Math.round(100 * d.got / d.total))}%` : 'Loading lesson…';
+  });
+
   window.__ready.then(() => {
     const TL = window.__timeline, DEF = window.__lesson, DUR = TL.dur;
     document.title = `${DEF.id} ${DEF.title} · The Hidden Curriculum · Aaron Orelup`;
@@ -45,6 +51,19 @@
     const keep = $('#keep');
     (DEF.keep || []).forEach((k) => { const li = document.createElement('li'); li.innerHTML = `<b>${esc(k[0])}</b> ${esc(k[1] || '')}`; keep.appendChild(li); });
     if (!(DEF.keep || []).length) $('#keepbox').hidden = true;
+
+    // credits: the sources this lesson is built on (lesson.js `credits`, since 2026-10-12; legacy pages have none)
+    const cred = $('#credits');
+    if (cred) {
+      const list = (DEF.credits || []).filter((c) => c && (c.title || c.who));
+      list.forEach((c) => {
+        const li = document.createElement('li');
+        const title = c.url && /^https?:\/\//.test(c.url) ? `<a href="${esc(c.url)}" rel="noreferrer noopener">${esc(c.title || c.url)}</a>` : esc(c.title || '');
+        li.innerHTML = `${c.who ? `<b>${esc(c.who)}</b>, ` : ''}${title}${c.date ? ` <span class="d">(${esc(c.date)})</span>` : ''}`;
+        cred.appendChild(li);
+      });
+      if (!list.length && $('#creditsbox')) $('#creditsbox').hidden = true;
+    }
 
     // audio (or a silent clock while the lesson is still a draft)
     let audio = null, clockT = 0, clockAt = 0, playing = false, wantPlay = false;
@@ -83,7 +102,10 @@
     const posterT = Math.min(DEF.poster ?? 2.5, DUR);
     const setT = (t) => { started = true; t = Math.max(0, Math.min(DUR - 0.01, t)); if (audio) audio.currentTime = t; clockT = t; clockAt = performance.now(); draw(true); };
     const play = () => { if (audio && !audio.src) { wantPlay = true; $('#bigplay').textContent = 'Starting…'; $('#play').textContent = 'Loading…'; return; } started = true; if (audio) audio.play(); clockT = now(); clockAt = performance.now(); playing = true; $('#bigplay').hidden = true; $('#play').textContent = 'Pause'; };
-    const pause = () => { clockT = now(); if (audio) audio.pause(); playing = false; $('#play').textContent = 'Play'; };
+    const pause = () => {
+      clockT = now(); if (audio) audio.pause(); playing = false; $('#play').textContent = 'Play';
+      if (clips.length || sounds.length) { clips.forEach((v) => v.pause()); sounds.forEach(([, a]) => a.pause()); draw(true); }
+    };
     const toggle = () => (playing ? pause() : play());
     if (audio) audio.addEventListener('ended', () => { pause(); });
 
@@ -100,7 +122,7 @@
 
     // speed
     const speeds = [1, 1.25, 1.5, 1.75, 2]; let si = 0;
-    $('#speed').addEventListener('click', () => { clockT = now(); clockAt = performance.now(); si = (si + 1) % speeds.length; rate = speeds[si]; if (audio) audio.playbackRate = rate; $('#speed').textContent = rate + '×'; });
+    $('#speed').addEventListener('click', () => { clockT = now(); clockAt = performance.now(); si = (si + 1) % speeds.length; rate = speeds[si]; if (audio) audio.playbackRate = rate; $('#speed').textContent = rate + '×'; draw(true); });
 
     // captions
     let ccOn = store.get('cc') !== '0';
@@ -149,6 +171,72 @@
       else if (/^[0-9]$/.test(e.key)) setT(DUR * Number(e.key) / 10);
     });
 
+    // media exhibits (lesson.js videos:{} and sounds:{}). K.video draws whatever frame each <video> shows, so the clips
+    // the drawn scene asks for (K.want, refilled by every draw) play muted in step with the narration clock. Smooth, not
+    // frame-exact: a playing clip more than 0.15 s off is re-seeked, a smaller drift is steered out with the playback
+    // rate. Paused or scrubbed, each clip is seeked to its exact frame and the stage redrawn on 'seeked'. Clips no
+    // scene wants are paused. Sounds (K.heard) play at 1x from where the scene is, re-seeked when more than 0.1 s off.
+    const clips = Object.values((window.K && K.vid) || {});
+    const sounds = Object.entries((window.K && K.snd) || {});
+    const pace = new Map();   // clip or sound -> {T, m, speed}: last sample of the scene's media clock (1 = real time, 0 = held)
+    // guess: the speed assumed until the first 0.1 s has been measured (clips: 0, hold the frame; sounds: 1, so a
+    // sound's first 0.1 s is not lost)
+    const paceOf = (key, T, m, guess) => {
+      let p = pace.get(key);
+      if (!p || T < p.T || T - p.T > 1 || m < p.m - 0.001) p = { T, m, speed: p ? p.speed : guess };   // new, scrubbed or looped
+      else if (T - p.T >= 0.1) p = { T, m, speed: (m - p.m) / (T - p.T) };
+      pace.set(key, p);
+      return p.speed;
+    };
+    clips.forEach((v) => v.addEventListener('seeked', () => { if (!playing) draw(true); }));
+    // Chromium drops a clip's readyState while it seeks, and a <video> in that state draws nothing: keep a copy of
+    // the frame on screen (v.__hold, which K.video draws meanwhile) so a scrub or resync never flashes the box empty
+    const seekClip = (v, t) => {
+      if (v.readyState >= 2 && v.videoWidth) {
+        const c = v.__hold || (v.__hold = document.createElement('canvas'));
+        if (c.width !== v.videoWidth || c.height !== v.videoHeight) { c.width = v.videoWidth; c.height = v.videoHeight; }
+        c.getContext('2d').drawImage(v, 0, 0);
+      }
+      v.currentTime = t;
+    };
+    function syncClips(T) {
+      clips.forEach((v) => {
+        const w = K.want.get(v);
+        if (!w) { if (!v.paused) v.pause(); pace.delete(v); return; }
+        const speed = paceOf(v, T, w.m, 0);
+        if (v.loop !== !!w.loop) v.loop = !!w.loop;
+        if (playing && speed > 0.05) {
+          const drift = v.currentTime - w.m, lead = 0.05 * speed * rate;   // + = the clip runs ahead; lead covers the seek itself
+          // more than 0.15 s off (or starting more than a frame off): jump; a smaller drift is steered out with the
+          // playback rate (at most 20 %, nothing inside half a frame), so the picture never visibly skips
+          if (!v.seeking && (Math.abs(drift) > 0.15 || (v.paused && Math.abs(drift) > 1 / w.fps))) seekClip(v, w.m + lead);
+          const steer = Math.abs(drift) < 0.5 / w.fps ? 0 : Math.max(-0.2, Math.min(0.2, -2 * drift));
+          const r = Math.min(16, Math.max(0.0625, speed * rate * (1 + steer)));
+          if (Math.abs(v.playbackRate - r) > 0.005) v.playbackRate = r;
+          if (v.paused && !(v.ended && !w.loop)) v.play().catch(() => {});
+        } else {
+          if (!v.paused) v.pause();
+          if (Math.abs(v.currentTime - w.t) > 0.5 / w.fps && !v.seeking) seekClip(v, w.t);
+        }
+      });
+    }
+    function syncSounds(T) {
+      sounds.forEach(([name, a]) => {
+        const h = K.heard.get(name);
+        if (!h) { if (!a.paused) a.pause(); pace.delete(a); return; }
+        const speed = paceOf(a, T, h.m, 1);
+        // like the MP4 (tools/render.py), a sound plays only while its time runs with the lesson clock
+        if (!playing || Math.abs(speed - 1) > 0.1) { if (!a.paused) a.pause(); return; }
+        const vol = Math.min(1, Math.max(0, h.gain));
+        if (Math.abs(a.volume - vol) > 0.001) a.volume = vol;
+        // start (or jump back in) exactly where the scene is, and re-seek only past 0.1 s. No rate steering as for clips:
+        // Chromium's <audio> stalls ~40 ms on every playbackRate change (measured 2026-10-12), so steering never settles
+        if (!a.seeking && (a.paused || Math.abs(a.currentTime - h.m) > 0.1)) a.currentTime = h.m;
+        if (Math.abs(a.playbackRate - rate) > 0.001) a.playbackRate = rate;
+        if (a.paused) a.play().catch(() => {});
+      });
+    }
+
     const cc = $('#cc'), timeEl = $('#time');
     let lastSpan = null, lastCap = null, lastChap = -1;
     const chapBtns = [...chap.querySelectorAll('button')];
@@ -156,6 +244,9 @@
       const T = now();
       if (!playing && !force) return;
       window.__seek(started ? T : posterT);
+      // a hidden tab: Chromium pauses video-only media there anyway, so park the clips (they re-sync when it shows again)
+      if (clips.length) { if (document.hidden) clips.forEach((v) => { if (!v.paused) v.pause(); }); else syncClips(started ? T : posterT); }
+      if (sounds.length) syncSounds(started ? T : posterT);
       if (!dragging) scrub.value = Math.round(T / DUR * 1000);
       timeEl.textContent = `${fmt(T)} / ${fmt(DUR)}`;
       // captions
@@ -176,7 +267,10 @@
       if (!audio && playing && T >= DUR - 0.02) pause();
     }
     (function loop() { draw(false); requestAnimationFrame(loop); })();
+    // a hidden tab gets no animation frames while the narration plays on: keep the sounds starting and stopping on cue
+    // (Chromium runs a hidden tab's timers about once a second, so a sound may start up to a second in, at its right time)
+    if (sounds.length || clips.length) setInterval(() => { if (document.hidden && playing) draw(false); }, 250);
     draw(true);
-    window.__player = { get audio() { return audio; }, now, setT, play, pause, draw };  // for debugging
+    window.__player = { get audio() { return audio; }, now, setT, play, pause, draw, clips, sounds };  // for debugging
   });
 })();

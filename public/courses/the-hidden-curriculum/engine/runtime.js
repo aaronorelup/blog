@@ -3,8 +3,11 @@
    into one function of time. Exposes the renderer contract:
      window.__meta   {W, H, FPS, DUR}
      window.__seek(T) draw absolute time T
-     window.__frame(T, q) draw and return a JPEG data URL
-     window.__ready  promise; window.__readyDone flips true when fonts/images are in
+     window.__frame(T, q) draw and return a JPEG data URL (a promise of one when the frame shows video:
+                     every clip is first seeked to its exact frame; Playwright's evaluate awaits it)
+     window.__png(T)  the same as a lossless PNG
+     window.__heard() the sounds the last draw asked for: [[name, seconds into it, gain], ...] (tools/render.py)
+     window.__ready  promise; window.__readyDone flips true when fonts/images/videos/sounds are in
      window.__music() base64 WAV of the score (engine/music.js) */
 (function () {
   'use strict';
@@ -108,6 +111,8 @@
 
   function seek(T) {
     if (!DEF) return;
+    // K.video / K.sound calls during this draw record which clip frames and sounds it needs
+    K.want.clear(); K.heard.clear();
     const B = bounds();
     let i = 0; while (i < TL.sections.length - 1 && T >= B[i + 1]) i++;
     const into = T - B[i];
@@ -146,10 +151,22 @@
     window.__timeline = TL;
     window.__lesson = DEF;
     window.__seek = seek;
-    window.__frame = (T, q = 0.95) => { seek(T); return canvas.toDataURL('image/jpeg', q); };
-    window.__png = (T) => { seek(T); return canvas.toDataURL('image/png'); };
+    // frame-exact video: draw once (K.video records the frame each clip needs); when a clip is not on it, seek every
+    // such clip to the frame's centre, await 'seeked', draw again. A frame with no video stays synchronous.
+    const settle = (T) => {
+      seek(T);
+      if (!K.want.size) return null;
+      return (async () => { for (let i = 0; i < 3; i++) { if (!(await K.settleVideos())) break; seek(T); } })();
+    };
+    window.__frame = (T, q = 0.95) => { const p = settle(T); return p ? p.then(() => canvas.toDataURL('image/jpeg', q)) : canvas.toDataURL('image/jpeg', q); };
+    window.__png = (T) => { const p = settle(T); return p ? p.then(() => canvas.toDataURL('image/png')) : canvas.toDataURL('image/png'); };
+    window.__heard = () => [...K.heard].map(([n, h]) => [n, h.m, h.gain]);
     await K.fontsReady();
-    await K.loadImages(DEF.images);
+    await Promise.all([
+      K.loadImages(DEF.images),
+      // videos and sounds are fetched whole before frame 0; the page shows the download as 'lesson-media' events
+      K.loadMedia(DEF.videos, DEF.sounds, (got, total) => window.dispatchEvent(new CustomEvent('lesson-media', { detail: { got, total } }))),
+    ]);
     if (DEF.setup) DEF.setup();
     seek(Math.min(DEF.poster ?? 2.5, TL.dur));
     window.__readyDone = true;
