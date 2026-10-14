@@ -205,6 +205,8 @@ so nothing is typed twice. A few of them, as the film uses them:
 - **Light takes 1.28 seconds each way.** Her donation arrives 2.56 seconds after she sends it, the call has 2.56-second
   gaps, and the whole score sits at 93.75 beats a minute, where one bar is exactly one round trip.
 
+<img src="/media/earthlight/battery-31.webp" alt="A small green LCD on a curved white wall: NIGHT HR 226/354, BATT 31%, HEALTH 61%, TO EMPTY 31 h, TO SUNRISE 128 h" style="width:100%;max-width:720px;display:block;margin:0 auto;border-radius:8px" loading="lazy">
+
 The judges forced three science fixes into the master: a 50 cm wall, not 75; a full Earth at that hour, not a half; and
 no hallucinations blamed on CO2. The script editor added one fact late, sourced: Apollo crews said moon dust smelled like
 spent gunpowder. Some figures rest on good secondary press because no primary page turned up, and the research file
@@ -451,6 +453,8 @@ rendered without it, and continuity won.
 - **"I haven't decided if you should ever see her."** She is seen fully once, as Teo's drawing at 1:1: the 1.38 m scale
   figure on Sheet 3, revision B, drawn by the man who never put a person in his plans because she asked for the timeline
   "for one". Her face is never rendered.
+
+<img src="/media/earthlight/sheet-3-rev-b.webp" alt="Sheet 3, revision B, on pale vellum: a section through her module with one window facing Earth; a girl drawn to scale beside a bunk, 1.38 M; a door in the floor with stairs going down about three metres into a passage labelled HER TUNNEL; four general notes ending NO WORK ON OCCUPIED MODULES. EVER.; a red ISSUED FOR CONSTRUCTION stamp; and a timeline with 31 H struck out, SUNRISE 128 H, 130 H, JUST" style="width:100%;border-radius:8px" loading="lazy">
 - **The visceral environment isn't an animation of the Moon.** It's printed matter that the Moon damages.
 - **No hallucinations.** The brief listed them among her troubles. Nothing in the film is labelled one. A broken robot's
   lamp turns toward her when it can't move, and a suit stands still in a music video. Neither is explained.
@@ -463,6 +467,14 @@ rendered without it, and continuity won.
 <figure><img src="/media/earthlight/three-metres.webp" alt="Fat blue marker on chiselled rock: 3 M, a tick, SAFE FROM THE SUN" loading="lazy"><figcaption><b>Her tunnel</b><span class="ao-meta">22:19 · dug because he said three metres</span></figcaption></figure>
 </ao-compare>
 
+After the VOID, in three frames:
+
+<ao-compare cols="3" aspect="16/9">
+<figure><img src="/media/earthlight/void.webp" alt="Sheet 3 with orange redlines and WEAKEST POINT circled around the window detail, and at the bottom of the chat the line tps_hab3: please" loading="lazy"><figcaption><b>The VOID</b><span class="ao-meta">19:50 · "please" scrolls past, unread</span></figcaption></figure>
+<figure><img src="/media/earthlight/dray.webp" alt="Her cracked window at night, her gloved palm on the glass and the hauler's single round lamp looking straight in" loading="lazy"><figcaption><b>DRAY's eye</b><span class="ao-meta">22:00 · held, no stinger</span></figcaption></figure>
+<figure><img src="/media/earthlight/dinner.webp" alt="Her iPad in text mode, his stream drawn in characters, and over it a notification from HAB 1 - INTERCOM at 18:00: dinner, noor, with a heart" loading="lazy"><figcaption><b>18:00</b><span class="ao-meta">22:50 · nobody says who sends it</span></figcaption></figure>
+</ao-compare>
+
 The call is where it all pays off. "Line two... you're on." Then 2.56 seconds of nothing, then "Hi." Then "I live in
 it." Then "They went to get the food. ...The lander tipped over. ......That was eleven days ago." Together they redraw
 Sheet 3 as revision B: no work on occupied modules, ever. "Can you do the timeline? ...For one." She asks, "Is it long?"
@@ -470,6 +482,12 @@ He says, "...It's not long." She gives him his own line back: "That's fine." Dez
 million people on the Moon, asks, "...Who do we call?" Then Teo: "Every drawing needs a person in it. ...For scale.
 ...How tall are you?" "One thirty-eight." Then: "Who checked this?" "N." The CHK box in his title block, empty all
 night, gets an N.
+
+<ao-compare cols="3" aspect="16/9">
+<figure><img src="/media/earthlight/call-split.webp" alt="The call from Earth: Teo's stream on the left with a caller tile of dark blocks for her video, and on the right her hands holding the orange iPad showing the same stream" loading="lazy"><figcaption><b>The call</b><span class="ao-meta">25:35 · Earth, for the first time</span></figcaption></figure>
+<figure><img src="/media/earthlight/desk.webp" alt="Teo's whole desk from above with no stream overlay: Sheet 1 taped down, a sticky note with a tally, graph paper, pens" loading="lazy"><figcaption><b>The desk, unframed</b><span class="ao-meta">29:17 · no stream, no chat, just his desk</span></figcaption></figure>
+<figure><img src="/media/earthlight/chaos.webp" alt="A pile-up of everything at once: sheets, the ISSUED stamp, a stack of Nightbot alerts, donation cards, CCTV frames, X cards and a sticky-note tally" loading="lazy"><figcaption><b>Chaos</b><span class="ao-meta">29:45 · everything the broadcast dropped, at once</span></figcaption></figure>
+</ao-compare>
 
 ## Three things I did without asking
 
