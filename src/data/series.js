@@ -31,4 +31,8 @@ export const SERIES = {
     title: 'My characters, made with agents',
     blurb: 'Jefrie in 3D and Echo, built with Blender, TRELLIS.2, ComfyUI and Higgsfield.',
   },
+  'evening-television': {
+    title: 'I Love My Evening Television',
+    blurb: 'Thirty-minute films made by crews of agents from one prompt each, calm until minute 20.',
+  },
 };

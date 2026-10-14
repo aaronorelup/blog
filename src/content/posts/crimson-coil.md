@@ -5,7 +5,7 @@ summary: "A crew of Opus 5.5 agents repainted the flawed ChatGPT picture of Jefr
 date: 2026-10-11
 status: "shipped"
 tags: ["claude-code", "opus-5-5", "agents", "oil-paint", "simulation", "art", "elevenlabs", "characters"]
-series: ["oil-paint", "characters"]
+series: ["oil-paint", "characters", "evening-television"]
 preview:
   verdict: "More illustration than oil"
   takeaway: "Using the ChatGPT picture only as a ruled grid, then turning it face down on day 3, let the crew fix its mistakes instead of copying them."

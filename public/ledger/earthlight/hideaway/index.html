@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="dark">
+<title>SAFE FROM THE SUN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rock: #0f0d0b;          /* the dark down here (never pure black) */
+    --rock-2: #171410;
+    --chalk: #ece8de;
+    --marker: #23408a;        /* her fat blue marker */
+    --lamp: 255, 214, 150;    /* FINCH's lamp, warm */
+    --case: #d4642a;          /* the orange rubber case */
+    --glass: #11141a;
+    --panel: #252a34;
+    --ui: #e6e9ef;
+    --ui-soft: #9aa3b2;
+    --heart: #e5484d;
+    --focus: #f0c06a;
+    --ease: cubic-bezier(.4, 0, .2, 1);
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--rock); }
+  body {
+    margin: 0; background: var(--rock); color: var(--chalk);
+    font-family: Inter, system-ui, sans-serif; overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { display: block; width: 100%; height: auto; }
+  ::selection { background: #4a445a; color: var(--chalk); }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+  /* the helmet lamp: wherever you look, a little light; the rest stays dark */
+  .lamp {
+    position: fixed; inset: 0; pointer-events: none; z-index: 5;
+    background: radial-gradient(circle at var(--lx, 50%) var(--ly, 46%),
+      rgba(15, 13, 11, 0) 0, rgba(15, 13, 11, 0) 240px,
+      rgba(15, 13, 11, .26) 460px, rgba(15, 13, 11, .48) 820px);
+    transition: background .2s linear;
+  }
+
+  main { position: relative; z-index: 1; }
+  .scene { position: relative; margin: 0 auto; max-width: 1180px; }
+  .scene img { box-shadow: 0 40px 120px rgba(0, 0, 0, .55); }
+  .gap { height: 34vh; }
+  .gap.short { height: 18vh; }
+  .gap.long { height: 52vh; }
+
+  /* her marker on the stair wall */
+  .mark {
+    position: absolute; font-family: 'Gloria Hallelujah', cursive; color: var(--marker);
+    white-space: nowrap; opacity: .9; mix-blend-mode: multiply; line-height: 1;
+    text-shadow: 0 0 1px rgba(35, 64, 138, .5);
+  }
+  .mark.m1 { left: 71%; top: 50%; font-size: clamp(16px, 3.2vw, 40px); transform: rotate(-9deg) skewY(-14deg); }
+  .mark.m2 { left: 64.5%; top: 27%; font-size: clamp(11px, 2vw, 25px); transform: rotate(-13deg) skewY(-18deg); opacity: .8; }
+
+  /* FINCH: the lamp on its stalk */
+  .finch {
+    position: absolute; left: 53.6%; top: 47.1%; width: 0; height: 0; pointer-events: none;
+    transform: translate(var(--fx, 0px), var(--fy, 0px));
+  }
+  .finch::before, .finch::after {
+    content: ""; position: absolute; border-radius: 50%; transform: translate(-50%, -50%);
+  }
+  .finch::before {   /* the bloom */
+    width: clamp(90px, 16vw, 210px); height: clamp(90px, 16vw, 210px);
+    background: radial-gradient(circle, rgba(var(--lamp), .34) 0, rgba(var(--lamp), .12) 34%, rgba(var(--lamp), 0) 70%);
+    opacity: var(--bloom, .75); transition: opacity 2.4s var(--ease);
+    animation: breathe 7s ease-in-out infinite; animation-play-state: paused;
+  }
+  .finch.awake::before { animation-play-state: running; }
+  .finch::after {    /* the bulb */
+    width: clamp(6px, 1vw, 12px); height: clamp(6px, 1vw, 12px);
+    background: rgba(255, 244, 222, .95); box-shadow: 0 0 18px 6px rgba(var(--lamp), .55);
+  }
+  @keyframes breathe { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.12); } }
+
+  /* the liner, and what is taped to it */
+  .liner {
+    position: relative; padding: 9vh 16px 12vh;
+    background:
+      radial-gradient(ellipse at 50% 40%, rgba(var(--lamp), .10), rgba(0, 0, 0, 0) 60%),
+      linear-gradient(115deg, #3a3833 0%, #24221f 18%, #4a4740 31%, #2a2824 46%, #3f3c36 61%, #23211e 78%, #3b3934 100%);
+  }
+  .liner::before {    /* crinkles in the foil */
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .55; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='420' height='420'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='.012 .03' numOctaves='4' seed='9'/><feDiffuseLighting lighting-color='%23ffffff' surfaceScale='3.2'><feDistantLight azimuth='225' elevation='38'/></feDiffuseLighting></filter><rect width='100%' height='100%' filter='url(%23f)'/></svg>");
+  }
+  .liner::after {     /* tape seams */
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5;
+    background:
+      linear-gradient(90deg, rgba(0, 0, 0, 0) 32.6%, rgba(200, 196, 186, .22) 32.6%, rgba(200, 196, 186, .22) 34.4%, rgba(0, 0, 0, 0) 34.4%),
+      linear-gradient(90deg, rgba(0, 0, 0, 0) 69.2%, rgba(200, 196, 186, .18) 69.2%, rgba(200, 196, 186, .18) 70.8%, rgba(0, 0, 0, 0) 70.8%);
+  }
+  .drawings {
+    position: relative; z-index: 1; max-width: 1080px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(28px, 6vw, 72px) clamp(18px, 4vw, 48px);
+    align-items: center;
+  }
+  .card {
+    position: relative; margin: 0; transform: rotate(var(--r, 0deg));
+    transition: transform .18s var(--ease);
+  }
+  .card img { box-shadow: 0 30px 80px rgba(0, 0, 0, .55), 0 2px 0 rgba(0, 0, 0, .25); }
+  .card::before, .card::after {   /* tape */
+    content: ""; position: absolute; top: -12px; width: 64px; height: 24px; z-index: 2;
+    background: linear-gradient(180deg, rgba(214, 212, 204, .78), rgba(178, 175, 166, .72));
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+  }
+  .card::before { left: 12%; transform: rotate(-6deg); }
+  .card::after { right: 12%; transform: rotate(5deg); }
+  .card:hover { transform: rotate(var(--r, 0deg)) translateY(-4px); }
+  .card.wide { grid-column: span 2; }
+  .card.small { width: 72%; justify-self: center; }
+  .card.whole { grid-column: 1 / -1; width: min(100%, 560px); justify-self: center; }
+
+  /* her iPad, on the sleeping bag */
+  .pad-wrap { display: flex; justify-content: center; padding: 0 16px; }
+  .pad {
+    position: relative; width: min(100%, 560px); padding: 18px; border-radius: 34px;
+    background: linear-gradient(160deg, #e0733a, var(--case) 45%, #b9531f);
+    box-shadow: 0 50px 120px rgba(0, 0, 0, .6), inset 0 2px 0 rgba(255, 255, 255, .18), inset 0 -3px 0 rgba(0, 0, 0, .2);
+  }
+  .pad::before {   /* silver tape on one corner */
+    content: ""; position: absolute; right: -10px; bottom: 26px; width: 92px; height: 34px; z-index: 3;
+    transform: rotate(-38deg); border-radius: 2px;
+    background: linear-gradient(180deg, #c9cbcf, #9fa3a9 60%, #b8bbc0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .35);
+  }
+  .pad::after {    /* a small cartoon dog sticker */
+    content: ""; position: absolute; left: 22px; bottom: 6px; width: 30px; height: 10px; border-radius: 6px;
+    background: #f2e6c8; opacity: .85; box-shadow: inset 0 0 0 2px #7a5a3a;
+  }
+  .glass {
+    position: relative; overflow: hidden; border-radius: 16px; background: var(--glass);
+    padding: 14px 16px 40px; min-height: 420px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .04), inset 0 0 60px rgba(191, 214, 255, .05);
+  }
+  .crack { position: absolute; left: 0; top: 0; width: 46%; height: 46%; pointer-events: none; z-index: 4; opacity: .7; }
+  .status {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; font-weight: 600; color: var(--ui); letter-spacing: .01em; margin-bottom: 14px;
+  }
+  .status .right { display: flex; gap: 8px; align-items: center; color: var(--ui-soft); font-weight: 600; }
+  .batt { width: 24px; height: 11px; border: 1.5px solid var(--ui-soft); border-radius: 3px; position: relative; }
+  .batt::before { content: ""; position: absolute; left: 1.5px; top: 1.5px; bottom: 1.5px; width: 22%; background: #f0b429; border-radius: 1px; }
+  .batt::after { content: ""; position: absolute; right: -4px; top: 3px; width: 2px; height: 4px; background: var(--ui-soft); border-radius: 0 1px 1px 0; }
+  .bolt { width: 9px; height: 12px; }
+  .note {
+    background: var(--panel); border-radius: 14px; padding: 12px 14px 14px; color: var(--ui);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .35); margin-bottom: 10px;
+  }
+  .note .head { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--ui-soft); text-transform: uppercase; }
+  .note .head .t { text-transform: none; font-weight: 600; letter-spacing: 0; }
+  .note .body { font-size: 19px; font-weight: 700; margin-top: 6px; }
+  .note .body .h { color: var(--heart); }
+  .note.old { background: rgba(37, 42, 52, .72); }
+  .note.old .body, .note.older .body, .note.oldest .body { font-size: 15px; font-weight: 600; }
+  .note.older { background: rgba(37, 42, 52, .46); color: rgba(230, 233, 239, .7); }
+  .note.oldest { background: rgba(37, 42, 52, .26); color: rgba(230, 233, 239, .45); }
+  .talk { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 14px 0 6px; }
+  .talk button {
+    width: 92px; height: 92px; border-radius: 50%; border: 0; cursor: pointer;
+    background: #5d6577; color: var(--ui); font: 700 10px/1.2 Inter, system-ui, sans-serif; letter-spacing: .06em;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .4); transition: background .18s var(--ease), transform .18s var(--ease);
+    touch-action: none; -webkit-user-select: none; user-select: none;
+  }
+  .talk button[aria-pressed="true"] { background: #c99a2e; transform: scale(.97); }
+  .talk .state { font-size: 11px; color: var(--ui-soft); min-height: 1em; }
+  .meter { width: 160px; height: 2px; border-top: 2px dashed rgba(240, 180, 41, .0); transition: border-color .18s var(--ease); }
+  .talk button[aria-pressed="true"] ~ .meter { border-top-color: rgba(240, 180, 41, .9); }
+  .files { margin-top: 18px; color: var(--ui); }
+  .files .crumb { font-size: 11px; color: var(--ui-soft); letter-spacing: .02em; margin: 0 0 8px 2px; }
+  .file {
+    display: flex; gap: 12px; align-items: center; width: 100%; text-align: left;
+    background: transparent; border: 0; border-top: 1px solid rgba(255, 255, 255, .06);
+    color: var(--ui); padding: 10px 2px; font: inherit;
+  }
+  button.file { cursor: pointer; }
+  button.file:hover .name { text-decoration: underline; text-decoration-color: rgba(230, 233, 239, .4); }
+  .file .ico { width: 34px; height: 42px; border-radius: 5px; flex: none; display: grid; place-items: center; font-size: 9px; font-weight: 700; letter-spacing: .04em; }
+  .file .ico.audio { background: #2f3646; color: #9db3e0; }
+  .file .ico.dwg { background: #12325d; color: #d7e6ff; }
+  .file .name { font-size: 14px; font-weight: 600; }
+  .file .meta { font-size: 11px; color: var(--ui-soft); margin-top: 2px; }
+
+  dialog {
+    width: min(96vw, 1280px); max-height: 92vh; padding: 0; border: 0; border-radius: 14px;
+    background: #0d1016; color: var(--ui); overflow: hidden;
+    box-shadow: 0 40px 120px rgba(0, 0, 0, .7);
+  }
+  dialog::backdrop { background: rgba(8, 7, 6, .82); }
+  dialog .bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; font-size: 13px; }
+  dialog .bar button { background: none; border: 0; color: #8fb4ff; font: 600 15px Inter, system-ui, sans-serif; cursor: pointer; padding: 4px 6px; }
+  dialog .view { overflow: auto; max-height: calc(92vh - 46px); background: #e9eaec; }
+  dialog .view img { width: 100%; max-width: none; cursor: zoom-in; }
+  dialog .view.zoom img { width: 2400px; cursor: zoom-out; }
+
+  .sig { text-align: center; font-family: 'Gloria Hallelujah', cursive; color: var(--chalk); opacity: .38; font-size: 22px; padding: 0 0 14vh; }
+
+  @media (max-width: 720px) {
+    .drawings { grid-template-columns: repeat(2, 1fr); }
+    .card.wide { grid-column: span 2; }
+    .gap { height: 24vh; } .gap.long { height: 36vh; }
+    .glass { min-height: 0; }
+    .card::before, .card::after { width: 38px; height: 18px; top: -9px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lamp { transition: none; }
+    .finch::before { animation: none; transition: none; }
+    .card, .talk button { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="lamp" aria-hidden="true"></div>
+<main>
+
+  <div class="gap short"></div>
+
+  <figure class="scene" style="margin-top:0">
+    <img src="img/hatch.webp" width="1440" height="810" alt="The floor of a small curved room, seen from above in the dark: the edge of a bunk, and a rug cut from a silver thermal blanket pulled back from a round floor hatch with a wheel in its lid.">
+  </figure>
+
+  <div class="gap"></div>
+
+  <figure class="scene">
+    <img src="img/stair.webp" width="1344" height="768" loading="lazy" alt="A crooked stair cut down into grey rock, turning as it goes. One small lamp burns far below.">
+    <span class="mark m1">&mdash; 1 M</span>
+    <span class="mark m2">&mdash; 2 M</span>
+  </figure>
+
+  <div class="gap"></div>
+
+  <figure class="scene" style="max-width:980px">
+    <img src="img/three-m.webp" width="1280" height="720" loading="lazy" alt="Fat blue marker on chiselled rock: 3 M, a tick, and under it, SAFE FROM THE SUN.">
+  </figure>
+
+  <div class="gap long"></div>
+
+  <figure class="scene" id="gallery">
+    <img src="img/gallery.webp" width="1344" height="768" loading="lazy" alt="A low tunnel lined with crinkled silver fabric and tape, six metres long. A rolled sleeping bag lies along one wall. In the middle stands a small walker robot with a round white shell, one bent leg, and a lamp on a stalk that curves forward. The lamp is lit. Cards are taped to the wall.">
+    <span class="finch" id="finch" aria-hidden="true"></span>
+  </figure>
+
+  <div class="gap short"></div>
+
+  <section class="liner" aria-label="Drawings taped to the tunnel wall">
+    <div class="drawings">
+      <figure class="card" style="--r:-2.2deg"><img src="img/rain.webp" width="760" height="608" loading="lazy" alt="Crayon on ration-box card: a grey cloud with blue rain falling from it, the word RAIN, and a small question mark."></figure>
+      <figure class="card small" style="--r:1.6deg"><img src="img/home.webp" width="640" height="782" loading="lazy" alt="Crayon on white card: a round blue and green Earth with a smiling face and yellow rays around it, and the word HOME underneath."></figure>
+      <figure class="card" style="--r:-1deg"><img src="img/dog.webp" width="700" height="560" loading="lazy" alt="Crayon on white card: a brown dog with pointed ears and a long tail, and the word DOG."></figure>
+      <figure class="card wide" style="--r:.8deg"><img src="img/robots.webp" width="900" height="485" loading="lazy" alt="Crayon on ration-box card: four robots in a row, a digger with round wheels, a tall crane on tracks, a long machine on many wheels, and a little walker with a lamp on a stalk."></figure>
+      <figure class="card small" style="--r:-2.6deg"><img src="img/me.webp" width="560" height="700" loading="lazy" alt="Crayon on white card: a stick figure in a round helmet, labelled me."></figure>
+      <figure class="card" style="--r:2.2deg"><img src="img/copy-1.webp" width="700" height="490" loading="lazy" alt="Blue marker on ration-box card, a copy of a drawing: the number 1, a section through the ground with a deep pit in the middle, and a small circle in the sky."></figure>
+      <figure class="card" style="--r:-1.4deg"><img src="img/tail.webp" width="700" height="560" loading="lazy" alt="Crayon on ration-box card: a grinning masked girl with pointed red ears and red eyes, holding a scythe with a red blade, and a long dark tail curling along the bottom. Signed N."></figure>
+      <figure class="card small" style="--r:1.2deg"><img src="img/sun.webp" width="512" height="512" loading="lazy" alt="Crayon on white card: a yellow sun with a smiling face and orange rays."></figure>
+      <figure class="card whole" style="--r:-.6deg"><img src="img/copy-3.webp" width="760" height="532" loading="lazy" alt="Blue marker on ration-box card, a copy of a drawing: the number 3, a round module with a row of bunks inside and one window circled in red, and under its floor a short line, a door, with stairs zigzagging down from it."></figure>
+    </div>
+  </section>
+
+  <div class="gap"></div>
+
+  <figure class="scene">
+    <img src="img/wall.webp" width="1344" height="768" loading="lazy" alt="The end of the tunnel: a wall of rock with a window drawn on it in chalk, four panes, and an Earth in the top right pane. Beside the window, eleven chalk strokes in a tally. Under it, in chalk, a floor with a door in it, its lid open, stairs going down, and 3 M written beside them. A lamp on a curved stalk lights the wall from below.">
+  </figure>
+
+  <div class="gap"></div>
+
+  <div class="pad-wrap">
+    <div class="pad">
+      <div class="glass">
+        <svg class="crack" viewBox="0 0 200 200" aria-hidden="true">
+          <g fill="none" stroke="rgba(230,236,245,.55)" stroke-width=".7" stroke-linecap="round">
+            <path d="M2 6 L28 20 L44 22 L71 38 L96 44 L130 63 L171 72"/>
+            <path d="M28 20 L36 41 L52 58 L60 86 L79 112"/>
+            <path d="M44 22 L58 12 L74 9"/>
+            <path d="M71 38 L84 61 L88 79"/>
+          </g>
+        </svg>
+        <div class="status">
+          <span>18:07</span>
+          <span class="right">BASE-NET
+            <svg class="bolt" viewBox="0 0 9 12" aria-hidden="true"><path d="M5.5 0 L0 7 H4 L3.5 12 L9 5 H5 Z" fill="#f0b429"/></svg>
+            <span class="batt" role="img" aria-label="battery low, charging"></span>
+          </span>
+        </div>
+
+        <div class="note">
+          <div class="head"><span>HAB 1 &middot; Intercom</span><span class="t">18:00</span></div>
+          <div class="body">dinner, noor <span class="h">&hearts;</span></div>
+          <div class="talk">
+            <button type="button" id="talk" aria-pressed="false" aria-describedby="talkstate">HOLD TO<br>TALK</button>
+            <span class="meter" aria-hidden="true"></span>
+            <span class="state" id="talkstate" aria-live="polite">closed</span>
+          </div>
+        </div>
+        <div class="note old"><div class="head"><span>HAB 1 &middot; Intercom</span><span class="t">Yesterday, 18:00</span></div><div class="body">dinner, noor <span class="h">&hearts;</span></div></div>
+        <div class="note older"><div class="head"><span>HAB 1 &middot; Intercom</span><span class="t">2 days ago, 18:00</span></div><div class="body">dinner, noor <span class="h">&hearts;</span></div></div>
+        <div class="note oldest"><div class="head"><span>HAB 1 &middot; Intercom</span><span class="t">3 days ago, 18:00</span></div><div class="body">dinner, noor <span class="h">&hearts;</span></div></div>
+
+        <div class="files">
+          <p class="crumb">On My iPad &rsaquo; Downloads</p>
+          <div class="file">
+            <span class="ico audio" aria-hidden="true">M4A</span>
+            <span><span class="name">Never Rises, Never Sets</span><br><span class="meta">Tranquility Homestead &middot; 1:55</span></span>
+          </div>
+          <button type="button" class="file" id="open-sheet">
+            <span class="ico dwg" aria-hidden="true">PDF</span>
+            <span><span class="name">EARTHLIGHT &ndash; 3 of 14 &ndash; rev B</span><br><span class="meta">longhand &middot; residential module &middot; issued for construction</span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gap long"></div>
+  <p class="sig" aria-hidden="true">N.</p>
+</main>
+
+<dialog id="sheet" aria-label="EARTHLIGHT, sheet 3 of 14, revision B">
+  <div class="bar"><button type="button" id="close-sheet">Done</button><span>3 of 14 &middot; rev B</span><span style="width:48px"></span></div>
+  <div class="view" id="view">
+    <img src="img/sheet-3-rev-b.webp" width="2400" height="1697" loading="lazy" alt="A drawing in black line on pale vellum: a section through a residential module with one window facing a small circle labelled EARTH. Inside, standing beside a bunk, a girl drawn to scale: a bob of hair with a tuft at the crown, an oversized hoodie with a pocket, rolled cuffs, hands at her sides, socks; a dimension line beside her reads 1.38 M. In the floor, labelled DOOR IN THE FLOOR, a hatch with stairs going down about three metres into a long passage labelled HER TUNNEL, with a dotted line on toward the pit, TO THE PIT: 17 degrees. General notes: 1. All plant idle until sunrise. Fleet to cold sleep, accept losses. 2. Except MOLE-1: extend HAB 3 tunnel to 3 m cover. 3. Restore HAB 3: air, heat, light. 4. No work on occupied modules. Ever. A red stamp: ISSUED FOR CONSTRUCTION, REV B, T.V. A timeline along the bottom: now, 31 h struck out, sunrise 128 h, 130 h, just, Earth launch. Title block: EARTHLIGHT, a city for the Moon, sheet 3 of 14, residential module, rev B, drawn T.V., checked N., scale 1:30, office longhand.">
+  </div>
+</dialog>
+
+<script>
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var root = document.documentElement;
+  var lamp = document.querySelector('.lamp');
+
+  // the helmet lamp follows where you look (pointer); on touch it stays where a helmet would point
+  if (!reduce) {
+    window.addEventListener('pointermove', function (e) {
+      if (e.pointerType === 'touch') return;
+      lamp.style.setProperty('--lx', e.clientX + 'px');
+      lamp.style.setProperty('--ly', e.clientY + 'px');
+    }, { passive: true });
+  }
+
+  // FINCH's lamp. It should not be able to move.
+  var finch = document.getElementById('finch');
+  var gallery = document.getElementById('gallery');
+  var tx = 0, ty = 0, cx = 0, cy = 0, seen = false;
+  if (finch && gallery) {
+    var running = false, near = false;
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        es.forEach(function (en) {
+          near = en.isIntersecting;
+          finch.classList.toggle('awake', near && !reduce);
+          if (en.isIntersecting && en.intersectionRatio > .6 && !seen) {
+            seen = true;
+            setTimeout(function () { finch.style.setProperty('--bloom', '1'); }, 2600);
+          }
+        });
+      }, { threshold: [0, .6, 1] }).observe(gallery);
+    }
+    if (!reduce) {
+      window.addEventListener('pointermove', function (e) {
+        var r = gallery.getBoundingClientRect();
+        var fx = r.left + r.width * .536, fy = r.top + r.height * .471;
+        var dx = e.clientX - fx, dy = e.clientY - fy, d = Math.hypot(dx, dy) || 1;
+        var k = Math.min(1, d / 600) * r.width * .006;
+        tx = dx / d * k; ty = dy / d * k;
+        if (near && !running) { running = true; requestAnimationFrame(step); }
+      }, { passive: true });
+      function step() {
+        cx += (tx - cx) * .02; cy += (ty - cy) * .02;
+        finch.style.setProperty('--fx', cx.toFixed(2) + 'px');
+        finch.style.setProperty('--fy', cy.toFixed(2) + 'px');
+        if (near && (Math.abs(tx - cx) > .02 || Math.abs(ty - cy) > .02)) requestAnimationFrame(step); else running = false;
+      }
+    }
+  }
+
+  // HAB 1. Hold to talk.
+  var talk = document.getElementById('talk'), state = document.getElementById('talkstate');
+  function open() { talk.setAttribute('aria-pressed', 'true'); state.textContent = 'OPEN · HAB 1'; }
+  function shut() { talk.setAttribute('aria-pressed', 'false'); state.textContent = 'closed'; }
+  talk.addEventListener('pointerdown', function (e) { e.preventDefault(); try { talk.setPointerCapture(e.pointerId); } catch (_) {} open(); });
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(function (t) { talk.addEventListener(t, shut); });
+  talk.addEventListener('keydown', function (e) { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); open(); } });
+  talk.addEventListener('keyup', function (e) { if (e.key === ' ' || e.key === 'Enter') shut(); });
+  talk.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+  // the sheet
+  var dlg = document.getElementById('sheet'), view = document.getElementById('view');
+  document.getElementById('open-sheet').addEventListener('click', function () {
+    if (dlg.showModal) dlg.showModal(); else window.location.href = 'img/sheet-3-rev-b.webp';
+  });
+  document.getElementById('close-sheet').addEventListener('click', function () { dlg.close(); view.classList.remove('zoom'); });
+  view.querySelector('img').addEventListener('click', function () { view.classList.toggle('zoom'); });
+})();
+</script>
+</body>
+</html>
