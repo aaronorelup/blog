@@ -1,0 +1,985 @@
+WEBVTT
+
+1
+00:00:01.400 --> 00:00:03.594
+In this lesson you'll learn how chat,
+
+2
+00:00:03.594 --> 00:00:07.530
+Cowork, desktop apps and terminal agents
+
+3
+00:00:07.530 --> 00:00:09.736
+differ in what they can reach,
+
+4
+00:00:09.736 --> 00:00:12.139
+which computer the work runs on,
+
+5
+00:00:12.139 --> 00:00:15.262
+and where your files and chats end up.
+
+6
+00:00:15.262 --> 00:00:18.525
+The same model can sit behind every surface,
+
+7
+00:00:18.525 --> 00:00:20.928
+so pick the surface by the output
+
+8
+00:00:20.928 --> 00:00:22.786
+and what it must reach,
+
+9
+00:00:22.786 --> 00:00:25.015
+and before anything private goes in,
+
+10
+00:00:25.015 --> 00:00:27.128
+check which machine runs the work
+
+11
+00:00:27.128 --> 00:00:29.961
+and where your files and chats go.
+
+12
+00:00:29.961 --> 00:00:31.749
+Since the sixth of October,
+
+13
+00:00:31.749 --> 00:00:35.034
+Pro and Max users who kept Cowork local
+
+14
+00:00:35.034 --> 00:00:37.287
+find new tasks run in the cloud,
+
+15
+00:00:37.287 --> 00:00:40.015
+and, says Anthropic's help center,
+
+16
+00:00:40.015 --> 00:00:41.443
+you can't switch back.
+
+17
+00:00:41.443 --> 00:00:42.511
+Same app.
+
+18
+00:00:42.511 --> 00:00:45.043
+A different computer doing the work.
+
+19
+00:00:45.043 --> 00:00:47.702
+Here's where this lesson sits on the map.
+
+20
+00:00:47.702 --> 00:00:49.362
+We're in First Build,
+
+21
+00:00:49.362 --> 00:00:52.381
+the district about How do I build my first thing,
+
+22
+00:00:52.381 --> 00:00:54.830
+on the shelf called Your workbench.
+
+23
+00:00:54.830 --> 00:00:56.107
+That's where everything
+
+24
+00:00:56.107 --> 00:00:59.614
+in this lesson gets stored.
+
+25
+00:00:59.614 --> 00:01:02.308
+Picture one worker: the model.
+
+26
+00:01:02.308 --> 00:01:04.862
+It always thinks in the vendor's building.
+
+27
+00:01:04.862 --> 00:01:07.938
+And your computer is a house of rooms.
+
+28
+00:01:07.938 --> 00:01:09.993
+The worker can reach any room;
+
+29
+00:01:09.993 --> 00:01:14.301
+what changes is which shelves it can touch.
+
+30
+00:01:14.301 --> 00:01:16.379
+In Anthropic's desktop app,
+
+31
+00:01:16.379 --> 00:01:18.097
+Chat is the front counter:
+
+32
+00:01:18.097 --> 00:01:21.174
+conversation, with no access to your files.
+
+33
+00:01:21.174 --> 00:01:22.753
+Cowork is the back office:
+
+34
+00:01:22.753 --> 00:01:24.959
+you hand over a job and walk away.
+
+35
+00:01:24.959 --> 00:01:26.375
+Code is your own workshop,
+
+36
+00:01:26.375 --> 00:01:29.417
+working directly on your local files.
+
+37
+00:01:29.417 --> 00:01:32.203
+Before agents, there was only the counter;
+
+38
+00:01:32.203 --> 00:01:35.826
+the only privacy question was your chat log.
+
+39
+00:01:35.826 --> 00:01:38.113
+So pick the room by what you want back,
+
+40
+00:01:38.113 --> 00:01:39.657
+not by the logo.
+
+41
+00:01:39.657 --> 00:01:42.072
+OpenAI draws the same lines:
+
+42
+00:01:42.072 --> 00:01:44.847
+Chat while the answer is still taking shape,
+
+43
+00:01:44.847 --> 00:01:48.852
+Work for documents, Codex for working software.
+
+44
+00:01:48.852 --> 00:01:51.256
+Here the picture first breaks:
+
+45
+00:01:51.256 --> 00:01:53.961
+it isn't always the same worker.
+
+46
+00:01:53.961 --> 00:01:56.596
+In September, OpenAI shipped new models
+
+47
+00:01:56.596 --> 00:01:59.325
+to Work and Codex, but not Chat.
+
+48
+00:01:59.325 --> 00:02:02.634
+What always differs is the reach.
+
+49
+00:02:02.634 --> 00:02:06.001
+Ethan Mollick adds the stakes: when they're low,
+
+50
+00:02:06.001 --> 00:02:08.474
+the options are all at least fine;
+
+51
+00:02:08.474 --> 00:02:11.899
+when they're high, use the most advanced model.
+
+52
+00:02:11.899 --> 00:02:13.989
+Even the bill can differ:
+
+53
+00:02:13.989 --> 00:02:16.624
+your plan's allowance, or,
+
+54
+00:02:16.624 --> 00:02:21.999
+once you approve a saved API key,
+
+55
+00:02:21.999 --> 00:02:24.530
+billing per token instead.
+
+56
+00:02:24.530 --> 00:02:27.921
+That's the lesson on your meter.
+
+57
+00:02:27.921 --> 00:02:29.721
+On the sixteenth of September,
+
+58
+00:02:29.721 --> 00:02:31.265
+Anthropic announced Cowork
+
+59
+00:02:31.265 --> 00:02:34.144
+and chat are merging into one Claude,
+
+60
+00:02:34.144 --> 00:02:37.163
+rolling out on Pro and Max first.
+
+61
+00:02:37.163 --> 00:02:39.995
+You type into one box; Claude works out
+
+62
+00:02:39.995 --> 00:02:42.677
+whether you need a quick answer or a task.
+
+63
+00:02:42.677 --> 00:02:43.710
+By default,
+
+64
+00:02:43.710 --> 00:02:46.578
+merged Claude asks before taking an action.
+
+65
+00:02:46.578 --> 00:02:49.132
+Your app may show three tabs or one box;
+
+66
+00:02:49.132 --> 00:02:52.012
+the rooms behind it still differ.
+
+67
+00:02:52.012 --> 00:02:54.891
+The back office moved across town.
+
+68
+00:02:54.891 --> 00:02:57.945
+Anthropic's help center says new Cowork tasks
+
+69
+00:02:57.945 --> 00:03:01.846
+on Pro and Max run in the cloud: an isolated,
+
+70
+00:03:01.846 --> 00:03:05.259
+temporary environment on Anthropic's servers.
+
+71
+00:03:05.259 --> 00:03:06.420
+For local work,
+
+72
+00:03:06.420 --> 00:03:09.764
+Anthropic points you to Claude Code.
+
+73
+00:03:09.764 --> 00:03:12.504
+Running locally isn't staying local, though:
+
+74
+00:03:12.504 --> 00:03:16.358
+what it reads still goes to Anthropic's servers.
+
+75
+00:03:16.358 --> 00:03:19.876
+Team and Enterprise keep local Cowork,
+
+76
+00:03:19.876 --> 00:03:21.873
+with cloud in beta.
+
+77
+00:03:21.873 --> 00:03:24.473
+A cloud task reaches your house only
+
+78
+00:03:24.473 --> 00:03:27.213
+through a hatch: the folders you connected,
+
+79
+00:03:27.213 --> 00:03:29.047
+while the app is open.
+
+80
+00:03:29.047 --> 00:03:31.822
+ChatGPT's Work splits the same way:
+
+81
+00:03:31.822 --> 00:03:34.191
+local work can use your files;
+
+82
+00:03:34.191 --> 00:03:36.222
+cloud work can't.
+
+83
+00:03:36.222 --> 00:03:38.486
+In May, Anthropic called Cowork
+
+84
+00:03:38.486 --> 00:03:40.820
+a virtual machine on your computer;
+
+85
+00:03:40.820 --> 00:03:43.699
+for Pro and Max, that's stale.
+
+86
+00:03:43.699 --> 00:03:45.313
+Second break in the picture:
+
+87
+00:03:45.313 --> 00:03:47.822
+rooms move without you.
+
+88
+00:03:47.822 --> 00:03:49.610
+Claude Code, your workshop,
+
+89
+00:03:49.610 --> 00:03:52.199
+runs one loop through many doors:
+
+90
+00:03:52.199 --> 00:03:54.393
+the terminal, the desktop app,
+
+91
+00:03:54.393 --> 00:03:57.749
+your code editor, the browser, even Slack.
+
+92
+00:03:57.749 --> 00:03:59.374
+And the bench moves.
+
+93
+00:03:59.374 --> 00:04:02.508
+Local: your machine, full access.
+
+94
+00:04:02.508 --> 00:04:04.911
+Cloud: virtual machines
+
+95
+00:04:04.911 --> 00:04:07.872
+Anthropic or your organization runs.
+
+96
+00:04:07.872 --> 00:04:09.939
+Remote Control: your machine,
+
+97
+00:04:09.939 --> 00:04:11.599
+steered from a browser.
+
+98
+00:04:11.599 --> 00:04:16.243
+The desktop app offers Local, Cloud, SSH or WSL.
+
+99
+00:04:16.243 --> 00:04:19.784
+WSL is a Linux guest room inside Windows;
+
+100
+00:04:19.784 --> 00:04:22.071
+SSH, a line to another machine,
+
+101
+00:04:22.071 --> 00:04:24.985
+where the app installs Claude Code itself.
+
+102
+00:04:24.985 --> 00:04:27.632
+Ethan Mollick adds a second axis:
+
+103
+00:04:27.632 --> 00:04:30.686
+Codex and Claude Code expose the work itself;
+
+104
+00:04:30.686 --> 00:04:34.577
+Cowork and Work hand back a finished result.
+
+105
+00:04:34.577 --> 00:04:37.375
+The terminal is the workshop's speaking tube:
+
+106
+00:04:37.375 --> 00:04:38.826
+just the window.
+
+107
+00:04:38.826 --> 00:04:42.031
+The shell is the program at the other end,
+
+108
+00:04:42.031 --> 00:04:43.865
+reading each line.
+
+109
+00:04:43.865 --> 00:04:47.534
+Anthropic's terminal guide says Windows has two,
+
+110
+00:04:47.534 --> 00:04:49.798
+PowerShell and CMD.
+
+111
+00:04:49.798 --> 00:04:52.654
+PowerShell's prompt starts with PS;
+
+112
+00:04:52.654 --> 00:04:54.337
+CMD's doesn't.
+
+113
+00:04:54.337 --> 00:04:56.183
+A Mac uses zsh.
+
+114
+00:04:56.183 --> 00:04:58.459
+One real line: echo first,
+
+115
+00:04:58.459 --> 00:05:00.990
+double ampersand, echo second.
+
+116
+00:05:00.990 --> 00:05:03.023
+CMD prints both.
+
+117
+00:05:03.474 --> 00:05:06.330
+Windows PowerShell says the token double
+
+118
+00:05:06.330 --> 00:05:09.257
+ampersand is not a valid statement separator.
+
+119
+00:05:09.257 --> 00:05:12.171
+Same window, different shell, different meaning.
+
+120
+00:05:12.171 --> 00:05:15.191
+Whatever goes down the tube runs
+
+121
+00:05:15.654 --> 00:05:18.080
+as you, with your permissions.
+
+122
+00:05:18.080 --> 00:05:20.066
+What to check first is the lesson
+
+123
+00:05:20.066 --> 00:05:21.934
+on letting it loose.
+
+124
+00:05:21.934 --> 00:05:25.568
+You'll see: claude is not recognized.
+
+125
+00:05:25.568 --> 00:05:27.298
+That usually means the install
+
+126
+00:05:27.298 --> 00:05:29.956
+folder isn't on your PATH yet.
+
+127
+00:05:29.956 --> 00:05:33.730
+Recognise it; once Claude Code runs,
+
+128
+00:05:33.730 --> 00:05:37.677
+/doctor checks and fixes its own setup.
+
+129
+00:05:37.677 --> 00:05:41.253
+On Windows, the agent's shell may be Git Bash
+
+130
+00:05:41.253 --> 00:05:43.970
+while yours is PowerShell, so a command
+
+131
+00:05:43.970 --> 00:05:46.953
+copied from its trail can fail in yours.
+
+132
+00:05:46.953 --> 00:05:48.811
+You may never open one:
+
+133
+00:05:48.811 --> 00:05:52.399
+the desktop app runs commands without it.
+
+134
+00:05:52.399 --> 00:05:57.182
+To go deep, MIT's Missing Semester still opens
+
+135
+00:05:57.182 --> 00:05:59.586
+with two days of the shell.
+
+136
+00:05:59.586 --> 00:06:01.896
+Sometimes the work gets a computer
+
+137
+00:06:01.896 --> 00:06:03.582
+inside your computer.
+
+138
+00:06:04.044 --> 00:06:08.642
+MIT's Missing Semester names two kinds.
+
+139
+00:06:08.642 --> 00:06:11.985
+A virtual machine abstracts the entire computer,
+
+140
+00:06:11.985 --> 00:06:14.238
+with its own operating system:
+
+141
+00:06:14.238 --> 00:06:17.222
+a detached house on its own foundations.
+
+142
+00:06:17.222 --> 00:06:20.600
+A container packages an app with its files
+
+143
+00:06:20.600 --> 00:06:22.899
+but shares the host's kernel:
+
+144
+00:06:22.899 --> 00:06:25.047
+a flat in a shared building.
+
+145
+00:06:25.047 --> 00:06:27.740
+Docker, the best-known container tool,
+
+146
+00:06:27.740 --> 00:06:29.704
+was on Aaron's gap list.
+
+147
+00:06:30.109 --> 00:06:34.288
+MIT notes Docker's isolation is weaker
+
+148
+00:06:34.288 --> 00:06:36.122
+than a virtual machine's.
+
+149
+00:06:36.122 --> 00:06:39.071
+Still, its exercises say an agent
+
+150
+00:06:39.071 --> 00:06:41.196
+that skips approvals
+
+151
+00:06:41.196 --> 00:06:45.851
+isn't secure run directly, but may be acceptable
+
+152
+00:06:45.851 --> 00:06:48.789
+inside a virtual machine or container.
+
+153
+00:06:48.789 --> 00:06:53.028
+That box is the lesson on sandboxes.
+
+154
+00:06:53.028 --> 00:06:56.151
+A cloud session is the vendor's spare workshop:
+
+155
+00:06:56.151 --> 00:07:00.226
+an isolated virtual machine Anthropic manages,
+
+156
+00:07:00.226 --> 00:07:03.454
+still working after you close your laptop.
+
+157
+00:07:03.454 --> 00:07:07.680
+claude --cloud clones your branch from GitHub,
+
+158
+00:07:07.680 --> 00:07:10.559
+not the files on your bench, so push first.
+
+159
+00:07:10.559 --> 00:07:12.068
+On Anthropic's hosting,
+
+160
+00:07:12.068 --> 00:07:14.948
+your GitHub credentials never enter it.
+
+161
+00:07:14.948 --> 00:07:19.115
+With no GitHub remote, or no Claude GitHub App,
+
+162
+00:07:19.115 --> 00:07:22.506
+your project is bundled and uploaded instead.
+
+163
+00:07:22.506 --> 00:07:24.781
+Untracked files stay home;
+
+164
+00:07:24.781 --> 00:07:27.765
+committed ones go up, keys included.
+
+165
+00:07:27.765 --> 00:07:31.016
+On a Mac, Linux or WSL,
+
+166
+00:07:31.016 --> 00:07:33.988
+uncommitted edits to files named like keys,
+
+167
+00:07:33.988 --> 00:07:36.832
+such as .env, stay too.
+
+168
+00:07:36.832 --> 00:07:39.328
+On native Windows, uncommitted changes
+
+169
+00:07:39.328 --> 00:07:42.208
+to tracked files upload whatever their name.
+
+170
+00:07:42.208 --> 00:07:44.565
+Know what crosses.
+
+171
+00:07:44.565 --> 00:07:46.446
+First, on Pro and Max,
+
+172
+00:07:46.446 --> 00:07:50.057
+desktop no longer means on your computer:
+
+173
+00:07:50.057 --> 00:07:53.540
+Cowork's work, including local files it opens,
+
+174
+00:07:53.540 --> 00:07:56.500
+is processed on Anthropic's servers.
+
+175
+00:07:56.500 --> 00:08:00.506
+A task fetches a copy of just the file it needs;
+
+176
+00:08:00.506 --> 00:08:03.838
+delete the session and those copies go too,
+
+177
+00:08:03.838 --> 00:08:07.065
+under Anthropic's retention practices.
+
+178
+00:08:07.065 --> 00:08:10.421
+Close your laptop and Claude keeps going;
+
+179
+00:08:10.421 --> 00:08:13.962
+scheduled tasks run with your computer off.
+
+180
+00:08:13.962 --> 00:08:15.831
+Second, the hatch:
+
+181
+00:08:15.831 --> 00:08:18.454
+any connected folder is reachable,
+
+182
+00:08:18.454 --> 00:08:22.042
+and on a computer your organization manages,
+
+183
+00:08:22.042 --> 00:08:24.573
+those are your employer's files.
+
+184
+00:08:24.573 --> 00:08:29.321
+So Anthropic advises one dedicated working folder;
+
+185
+00:08:29.321 --> 00:08:30.982
+Ethan Mollick connects only
+
+186
+00:08:30.982 --> 00:08:34.012
+a non-private part of his Google Drive.
+
+187
+00:08:34.012 --> 00:08:38.518
+The folder lesson's habit, carried across town.
+
+188
+00:08:38.518 --> 00:08:41.235
+And every landlord keeps a logbook.
+
+189
+00:08:41.235 --> 00:08:42.698
+First, training.
+
+190
+00:08:42.698 --> 00:08:44.892
+Claude's Free, Pro and Max plans,
+
+191
+00:08:44.892 --> 00:08:47.725
+Claude Code included, have a setting:
+
+192
+00:08:47.725 --> 00:08:50.279
+Help improve our AI models.
+
+193
+00:08:50.279 --> 00:08:53.994
+On, data can be kept up to five years; off,
+
+194
+00:08:53.994 --> 00:08:57.175
+deleted chats are purged within thirty days.
+
+195
+00:08:57.175 --> 00:08:59.219
+Pro is a consumer plan;
+
+196
+00:08:59.219 --> 00:09:03.212
+Team, Enterprise and the API are commercial.
+
+197
+00:09:03.212 --> 00:09:04.884
+Switching it off doesn't reach
+
+198
+00:09:04.884 --> 00:09:06.788
+training already started.
+
+199
+00:09:06.788 --> 00:09:09.389
+Second, memory is a separate store.
+
+200
+00:09:09.389 --> 00:09:10.689
+Delete a chat;
+
+201
+00:09:10.689 --> 00:09:14.207
+its memories stay until you delete them too.
+
+202
+00:09:14.207 --> 00:09:17.411
+Third, keep work and home in separate accounts;
+
+203
+00:09:17.411 --> 00:09:19.907
+shared logins aren't supported.
+
+204
+00:09:19.907 --> 00:09:21.324
+Others differ:
+
+205
+00:09:21.324 --> 00:09:24.435
+Google has humans review some Gemini chats,
+
+206
+00:09:24.435 --> 00:09:27.466
+and keeps reviewed ones up to three years,
+
+207
+00:09:27.466 --> 00:09:30.287
+even after you delete your activity.
+
+208
+00:09:30.287 --> 00:09:32.632
+Ask any tool four questions.
+
+209
+00:09:32.632 --> 00:09:34.037
+Is there a training setting?
+
+210
+00:09:34.037 --> 00:09:35.790
+Do people review chats?
+
+211
+00:09:35.790 --> 00:09:38.472
+How long is data kept with it off?
+
+212
+00:09:38.472 --> 00:09:40.376
+What does deleting reach?
+
+213
+00:09:40.376 --> 00:09:42.117
+The picture's last break:
+
+214
+00:09:42.117 --> 00:09:45.334
+leaving a room doesn't take every copy with you.
+
+215
+00:09:45.334 --> 00:09:48.782
+The agent decides whether a request needs a task,
+
+216
+00:09:48.782 --> 00:09:51.058
+writes commands for its own shell,
+
+217
+00:09:51.058 --> 00:09:53.380
+and fixes its own setup.
+
+218
+00:09:53.380 --> 00:09:56.561
+Asked, it can usually fetch each vendor's privacy
+
+219
+00:09:56.561 --> 00:10:00.543
+pages and answer the four questions, dated.
+
+220
+00:10:00.543 --> 00:10:03.028
+You choose the room, by the output;
+
+221
+00:10:03.028 --> 00:10:06.859
+local or cloud; the account and its settings;
+
+222
+00:10:06.859 --> 00:10:10.226
+one dedicated folder, never your home folder.
+
+223
+00:10:10.226 --> 00:10:12.083
+And the approval level:
+
+224
+00:10:12.083 --> 00:10:14.684
+current Claude Code starts in Auto,
+
+225
+00:10:14.684 --> 00:10:18.016
+where a classifier blocks risky actions
+
+226
+00:10:18.016 --> 00:10:20.152
+instead of asking you.
+
+227
+00:10:20.152 --> 00:10:22.044
+Ethan Mollick's advice:
+
+228
+00:10:22.044 --> 00:10:25.249
+until you trust the system, keep it asking.
+
+229
+00:10:25.249 --> 00:10:27.838
+No agent can tell you whether your employer,
+
+230
+00:10:27.838 --> 00:10:31.030
+a client contract or a privacy law lets
+
+231
+00:10:31.030 --> 00:10:32.969
+that data go there.
+
+232
+00:10:32.969 --> 00:10:35.187
+So before work data goes in,
+
+233
+00:10:35.187 --> 00:10:37.729
+ask your IT or security admin;
+
+234
+00:10:37.729 --> 00:10:40.411
+for patient, client or customer data,
+
+235
+00:10:40.411 --> 00:10:43.001
+whoever owns compliance.
+
+236
+00:10:43.001 --> 00:10:44.325
+Keep this.
+
+237
+00:10:44.325 --> 00:10:46.380
+Pick the room by the output:
+
+238
+00:10:46.380 --> 00:10:50.199
+the model may be shared, but the reach never is.
+
+239
+00:10:50.199 --> 00:10:52.835
+Ask which computer runs the work:
+
+240
+00:10:52.835 --> 00:10:56.561
+yours, a box inside it, a machine down the line,
+
+241
+00:10:56.561 --> 00:10:59.626
+or the vendor's cloud, working on a copy.
+
+242
+00:10:59.626 --> 00:11:02.448
+Check the account before anything private goes in,
+
+243
+00:11:02.448 --> 00:11:05.954
+and for work data, ask whoever owns it.
+
+244
+00:11:05.954 --> 00:11:09.623
+This lesson is built on work by Ethan Mollick,
+
+245
+00:11:09.623 --> 00:11:13.779
+MIT's Missing Semester, and Anthropic's blog,
+
+246
+00:11:13.779 --> 00:11:16.323
+help center and terminal guide.

@@ -1,0 +1,10 @@
+{
+ "mode": "terminal",
+ "shell": "powershell",
+ "cwd_display": "C:\\Users\\you\\demo",
+ "timeout": 60,
+ "commands": [
+  "$PSVersionTable.PSVersion",
+  "echo first && echo second"
+ ]
+}

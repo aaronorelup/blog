@@ -1,0 +1,91 @@
+{
+ "version": 1,
+ "kind": "terminal",
+ "recorded": "2026-10-14",
+ "tool": "tools/capture.py terminal",
+ "shell": "powershell",
+ "cwd_display": "C:\\Users\\you\\demo",
+ "commands": [
+  {
+   "cmd": "$PSVersionTable.PSVersion",
+   "prompt": "PS C:\\Users\\you\\demo> ",
+   "exit": 0,
+   "dur": 0.41,
+   "out": [
+    [
+     0.383,
+     "",
+     "out"
+    ],
+    [
+     0.383,
+     "Major  Minor  Build  Revision",
+     "out"
+    ],
+    [
+     0.384,
+     "-----  -----  -----  --------",
+     "out"
+    ],
+    [
+     0.384,
+     "5      1      26100  9444    ",
+     "out"
+    ],
+    [
+     0.384,
+     "",
+     "out"
+    ],
+    [
+     0.384,
+     "",
+     "out"
+    ]
+   ]
+  },
+  {
+   "cmd": "echo first && echo second",
+   "prompt": "PS C:\\Users\\you\\demo> ",
+   "exit": 1,
+   "dur": 0.737,
+   "out": [
+    [
+     0.708,
+     "At line:1 char:12",
+     "err"
+    ],
+    [
+     0.708,
+     "+ echo first && echo second",
+     "err"
+    ],
+    [
+     0.708,
+     "+            ~~",
+     "err"
+    ],
+    [
+     0.708,
+     "The token '&&' is not a valid statement separator in this version.",
+     "err"
+    ],
+    [
+     0.709,
+     "    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException",
+     "err"
+    ],
+    [
+     0.709,
+     "    + FullyQualifiedErrorId : InvalidEndOfLine",
+     "err"
+    ],
+    [
+     0.709,
+     " ",
+     "err"
+    ]
+   ]
+  }
+ ]
+}

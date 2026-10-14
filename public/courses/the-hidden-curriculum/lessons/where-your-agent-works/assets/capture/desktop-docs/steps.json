@@ -1,0 +1,118 @@
+{
+ "mode": "browser",
+ "size": [
+  1024,
+  576
+ ],
+ "dpr": 1.875,
+ "fps": 30,
+ "crf": 23,
+ "start": [
+  700,
+  420
+ ],
+ "redact": [],
+ "steps": [
+  {
+   "do": "goto",
+   "url": "https://code.claude.com/docs/en/desktop-quickstart",
+   "settle": 1500
+  },
+  {
+   "do": "wait_for",
+   "text": "three tabs",
+   "timeout": 30000,
+   "settle": 400
+  },
+  {
+   "do": "scroll",
+   "to": "#content > ul:has(strong:text-is(\"Cowork\"))",
+   "block": 0.5,
+   "ms": 900
+  },
+  {
+   "do": "wait",
+   "ms": 500
+  },
+  {
+   "do": "mark",
+   "name": "tabs",
+   "boxes": {
+    "list": "#content > ul:has(strong:text-is(\"Cowork\"))",
+    "intro": "#content span:has-text(\"three tabs\")"
+   }
+  },
+  {
+   "do": "shot",
+   "name": "tabs",
+   "boxes": {
+    "list": "#content > ul:has(strong:text-is(\"Cowork\"))",
+    "intro": "#content span:has-text(\"three tabs\")"
+   }
+  },
+  {
+   "do": "wait",
+   "ms": 600
+  },
+  {
+   "do": "scroll",
+   "to": "div.prose:has(> ul > li > strong:text-is(\"SSH\")) span:has(> strong:text-is(\"Local\"))",
+   "block": 0.4,
+   "ms": 1500
+  },
+  {
+   "do": "wait",
+   "ms": 500
+  },
+  {
+   "do": "mark",
+   "name": "local",
+   "boxes": {
+    "line": "div.prose:has(> ul > li > strong:text-is(\"SSH\")) span:has(> strong:text-is(\"Local\"))"
+   }
+  },
+  {
+   "do": "shot",
+   "name": "local",
+   "boxes": {
+    "line": "div.prose:has(> ul > li > strong:text-is(\"SSH\")) span:has(> strong:text-is(\"Local\"))"
+   }
+  },
+  {
+   "do": "wait",
+   "ms": 500
+  },
+  {
+   "do": "scroll",
+   "to": "ul:has(> li > strong:text-is(\"SSH\"))",
+   "block": 0.5,
+   "ms": 1100
+  },
+  {
+   "do": "wait_for",
+   "text": "SSH",
+   "timeout": 15000,
+   "settle": 400
+  },
+  {
+   "do": "mark",
+   "name": "envs",
+   "boxes": {
+    "list": "ul:has(> li > strong:text-is(\"SSH\"))",
+    "intro": "div.prose:has(> ul > li > strong:text-is(\"SSH\")) span:has-text(\"You can also select\")"
+   }
+  },
+  {
+   "do": "shot",
+   "name": "envs",
+   "boxes": {
+    "list": "ul:has(> li > strong:text-is(\"SSH\"))",
+    "intro": "div.prose:has(> ul > li > strong:text-is(\"SSH\")) span:has-text(\"You can also select\")"
+   }
+  },
+  {
+   "do": "wait",
+   "ms": 1000
+  }
+ ]
+}

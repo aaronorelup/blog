@@ -1,0 +1,128 @@
+{
+ "version": 1,
+ "kind": "browser",
+ "recorded": "2026-10-14",
+ "tool": "tools/capture.py browser",
+ "video": "video.mp4",
+ "size": [
+  1920,
+  1080
+ ],
+ "viewport": [
+  1024,
+  576
+ ],
+ "dpr": 1.875,
+ "fps": 30,
+ "duration": 5.467,
+ "start": {
+  "x": 1312.5,
+  "y": 787.5
+ },
+ "events": [
+  {
+   "t": 0.0,
+   "kind": "nav",
+   "title": "Use Claude Cowork on web, desktop, and mobile | Claude Help Center",
+   "url": "https://support.claude.com/en/articles/15520349-use-claude-cowork-on-web-desktop-and-mobile"
+  },
+  {
+   "t": 1.061,
+   "kind": "scroll",
+   "t1": 2.469,
+   "x": 1312.5,
+   "y": 787.5,
+   "dy": 3222.0
+  },
+  {
+   "t": 2.975,
+   "kind": "nav",
+   "title": "Use Claude Cowork on web, desktop, and mobile | Claude Help Center",
+   "url": "https://support.claude.com/en/articles/15520349-use-claude-cowork-on-web-desktop-and-mobile"
+  },
+  {
+   "t": 3.255,
+   "kind": "mark",
+   "boxes": {
+    "heading": [
+     607.5,
+     324.31,
+     1282.5,
+     51.56
+    ],
+    "line1": [
+     607.5,
+     398.38,
+     1282.5,
+     174.38
+    ],
+    "line2": [
+     607.5,
+     402.38,
+     1256.81,
+     78.59
+    ],
+    "settings": [
+     869.98,
+     445.97,
+     254.92,
+     35.0
+    ]
+   },
+   "name": "change"
+  },
+  {
+   "t": 3.306,
+   "kind": "shot",
+   "url": "https://support.claude.com/en/articles/15520349-use-claude-cowork-on-web-desktop-and-mobile",
+   "name": "change",
+   "file": "shots/change.webp"
+  }
+ ],
+ "shapes": [
+  [
+   0.0,
+   "arrow"
+  ]
+ ],
+ "shots": [
+  {
+   "name": "change",
+   "file": "shots/change.webp",
+   "t": 3.306,
+   "url": "https://support.claude.com/en/articles/15520349-use-claude-cowork-on-web-desktop-and-mobile",
+   "title": "Use Claude Cowork on web, desktop, and mobile | Claude Help Center",
+   "size": [
+    1920,
+    1080
+   ],
+   "boxes": {
+    "heading": [
+     607.5,
+     324.31,
+     1282.5,
+     51.56
+    ],
+    "line1": [
+     607.5,
+     398.38,
+     1282.5,
+     174.38
+    ],
+    "line2": [
+     607.5,
+     402.38,
+     1256.81,
+     78.59
+    ],
+    "settings": [
+     869.98,
+     445.97,
+     254.92,
+     35.0
+    ]
+   }
+  }
+ ],
+ "redact": []
+}

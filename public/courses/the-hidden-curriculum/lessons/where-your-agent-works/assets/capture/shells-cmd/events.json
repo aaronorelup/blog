@@ -1,0 +1,28 @@
+{
+ "version": 1,
+ "kind": "terminal",
+ "recorded": "2026-10-14",
+ "tool": "tools/capture.py terminal",
+ "shell": "cmd",
+ "cwd_display": "C:\\Users\\you\\demo",
+ "commands": [
+  {
+   "cmd": "echo first && echo second",
+   "prompt": "C:\\Users\\you\\demo>",
+   "exit": 0,
+   "dur": 0.066,
+   "out": [
+    [
+     0.061,
+     "first ",
+     "out"
+    ],
+    [
+     0.062,
+     "second",
+     "out"
+    ]
+   ]
+  }
+ ]
+}

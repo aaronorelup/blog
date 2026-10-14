@@ -1,0 +1,9 @@
+{
+ "mode": "terminal",
+ "shell": "cmd",
+ "cwd_display": "C:\\Users\\you\\demo",
+ "timeout": 60,
+ "commands": [
+  "echo first && echo second"
+ ]
+}

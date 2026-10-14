@@ -420,8 +420,12 @@
         K.rr(px, py, pw, ph, ph / 2); g.fillStyle = C.page; g.fill();
         const lock = o.urlLock !== false, tx = px + (lock ? 46 : 20);
         if (lock) K.icon('lock', px + 24, y + bar / 2, 22, { color: C.soft, w: 2 });
+        // an address longer than the pill ends in an ellipsis before the window buttons, never cut mid-glyph
+        const uf = { font: 'mono', size: o.urlSize || 26 }, room = px + pw - 18 - tx;
+        let u = String(o.url);
+        if (K.measure(u, uf) > room) { while (u.length > 1 && K.measure(u + '…', uf) > room) u = u.slice(0, -1); u += '…'; }
         g.save(); K.rr(px, py, pw, ph, ph / 2); g.clip();
-        K.text(String(o.url), tx, y + bar / 2 + 9, { font: 'mono', size: o.urlSize || 26, color: C.body });
+        K.text(u, tx, y + bar / 2 + 9, { ...uf, color: C.body });
         g.restore();
       }
       if (o.url != null && !compact) {
@@ -1128,6 +1132,12 @@
   // Everything the camera depends on, as one string: the memo keys of K.demo (per capture) and K.shot (global).
   const camKey = (o) => JSON.stringify([o.zoom, o.lead, o.hold, o.join, o.camD, o.minHold, o.follow !== false, o.zooms || null,
     (o.callouts || []).filter((k) => k.zoom).map((k) => [k.at, k.until, k.dur, k.box, k.zoom])]);
+  /** a callout box, or the bounding box of a list of them */
+  const boxUnion = (b) => {
+    if (!Array.isArray(b[0])) return b;
+    const x0 = Math.min(...b.map((r) => r[0])), y0 = Math.min(...b.map((r) => r[1]));
+    return [x0, y0, Math.max(...b.map((r) => r[0] + r[2])) - x0, Math.max(...b.map((r) => r[1] + r[3])) - y0];
+  };
   const autoCam = (c, o) => {
     const zmax = o.zoom ?? 1.8, lead = o.lead ?? 1.25, hold = o.hold ?? 1.1, join = o.join ?? 2.6, d = o.camD ?? 1.15;
     const minHold = o.minHold ?? 0.6;
@@ -1142,7 +1152,8 @@
       const zs = o.zooms.slice().sort((a, b) => a.at - b.at);
       zs.forEach((zm, i) => {
         const b = zm.box, z = zm.z ?? fitZ(b, 0.7), nx = zs[i + 1];
-        keys.push({ at: zm.at, d: zm.d ?? d, sx: b ? b[0] + b[2] / 2 : zm.x, sy: b ? b[1] + b[3] / 2 : zm.y, z });
+        // snap: true jumps straight to this framing (a capture that fades in already cropped, or a hard cut)
+        keys.push({ at: zm.snap ? zm.at - 0.002 : zm.at, d: zm.snap ? 0.001 : zm.d ?? d, sx: b ? b[0] + b[2] / 2 : zm.x, sy: b ? b[1] + b[3] / 2 : zm.y, z });
         if (zm.until != null && !(nx && nx.at < zm.until + (zm.d ?? d))) keys.push({ at: zm.until, d: zm.d ?? d, sx: null, z: 1 });
       });
     } else if (o.follow !== false) {
@@ -1151,7 +1162,7 @@
         const b = e.box;
         focus.push({ t: (e.keys && e.keys.length ? e.keys[0][0] : e.t), t1: e.t1 ?? e.t, x: b ? b[0] + b[2] / 2 : e.x, y: b ? b[1] + b[3] / 2 : e.y, z: fitZ(b, 0.85) });
       });
-      (o.callouts || []).forEach((k) => { if (k.zoom) focus.push({ t: k.at, t1: k.until ?? k.at + (k.dur ?? 2.5), x: k.box[0] + k.box[2] / 2, y: k.box[1] + k.box[3] / 2, z: typeof k.zoom === 'number' ? k.zoom : fitZ(k.box, 0.7) }); });
+      (o.callouts || []).forEach((k) => { if (k.zoom) { const b = boxUnion(k.box); focus.push({ t: k.at, t1: k.until ?? k.at + (k.dur ?? 2.5), x: b[0] + b[2] / 2, y: b[1] + b[3] / 2, z: typeof k.zoom === 'number' ? k.zoom : fitZ(b, 0.7) }); } });
       focus.sort((a, b) => a.t - b.t);
       // a type step starts with a focusing click on the same field: one focus, not two
       const merged = [];
@@ -1195,6 +1206,7 @@
    *  title, draw(x, y, w, h) (draws the picture into that box), keys (camera, source px), cursor: {x, y, kind,
    *  press, clicks: [t...]} | null, ripples: [{t, x, y}], chips: [{t0, t1, text, typing, box}], presses: [{t, key}],
    *  callouts, frame, alpha, cursorScale} */
+  let dimCanvas = null;   // scratch canvas for a multi-box callout's dim
   const screenView = (v) => {
     const t = v.t, [x, y, w, hIn] = rectArgs(v.rect), [sw, sh] = v.size;
     const bar = v.chrome === 'none' ? 0 : 50;
@@ -1238,17 +1250,37 @@
         const kIn = K.io(t, co.at, 0.7, 'out'), kOut = K.io(t, until, 0.5, 'in'), k = kIn * (1 - kOut);
         if (k <= 0.002) return;
         const pad = co.pad ?? 10;
-        const [ax, ay] = at(co.box[0], co.box[1]), [bx, by] = at(co.box[0] + co.box[2], co.box[1] + co.box[3]);
-        const rx = ax - pad, ry = ay - pad, rw = bx - ax + pad * 2, rh = by - ay + pad * 2;
-        if (co.dim !== false) {
+        // box: [x, y, w, h], or a list of them (a highlight that wraps over lines): one shared dim cutout, one outline
+        // each, the label placed against their union
+        const multi = Array.isArray(co.box[0]);
+        const rects = (multi ? co.box : [co.box]).map((bb) => {
+          const [ax, ay] = at(bb[0], bb[1]), [bx, by] = at(bb[0] + bb[2], bb[1] + bb[3]);
+          return [ax - pad, ay - pad, bx - ax + pad * 2, by - ay + pad * 2];
+        });
+        const rx = Math.min(...rects.map((r) => r[0])), ry = Math.min(...rects.map((r) => r[1]));
+        const rw = Math.max(...rects.map((r) => r[0] + r[2])) - rx, rh = Math.max(...rects.map((r) => r[1] + r[3])) - ry;
+        if (co.dim !== false && !multi) {
           g.save(); g.beginPath(); g.rect(F[0], F[1], F[2], F[3]); g.roundRect(rx, ry, rw, rh, 14);
           g.fillStyle = K.rgba(C.page, (co.dim ?? 0.42) * k); g.fill('evenodd'); g.restore();
+        } else if (co.dim !== false) {
+          // overlapping boxes would cancel out under evenodd: punch them out of the dim on a scratch canvas instead
+          const cv = g.canvas, oc = (dimCanvas = dimCanvas || document.createElement('canvas'));
+          if (oc.width !== cv.width || oc.height !== cv.height) { oc.width = cv.width; oc.height = cv.height; }
+          const og = oc.getContext('2d');
+          og.setTransform(1, 0, 0, 1, 0, 0); og.clearRect(0, 0, oc.width, oc.height); og.setTransform(g.getTransform());
+          og.globalCompositeOperation = 'source-over'; og.fillStyle = K.rgba(C.page, (co.dim ?? 0.42) * k);
+          og.beginPath(); og.roundRect(F[0], F[1], F[2], F[3], FR); og.fill();
+          og.globalCompositeOperation = 'destination-out'; og.fillStyle = '#000';
+          rects.forEach((r) => { og.beginPath(); og.roundRect(r[0], r[1], r[2], r[3], 14); og.fill(); });
+          g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.drawImage(oc, 0, 0); g.restore();
         }
-        g.save(); g.globalAlpha *= 1 - kOut;
-        const per = 2 * (rw + rh);
-        g.setLineDash([per * kIn, per]); g.lineWidth = 4; g.strokeStyle = C.head; g.lineCap = 'round';
-        g.shadowColor = K.rgba(C.head, 0.55); g.shadowBlur = 18;
-        K.rr(rx, ry, rw, rh, 14); g.stroke(); g.restore();
+        rects.forEach(([qx, qy, qw, qh]) => {
+          g.save(); g.globalAlpha *= 1 - kOut;
+          const per = 2 * (qw + qh);
+          g.setLineDash([per * kIn, per]); g.lineWidth = 4; g.strokeStyle = C.head; g.lineCap = 'round';
+          g.shadowColor = K.rgba(C.head, 0.55); g.shadowBlur = 18;
+          K.rr(qx, qy, qw, qh, 14); g.stroke(); g.restore();
+        });
         if (co.text) {
           const size = co.size || 30, tw = K.measure(co.text, { font: 'ui', size, weight: 700 }), pw = tw + size * 1.4, ph = size * 1.9;
           const below = co.side === 'bottom' || (co.side !== 'top' && ry - ph - 16 < Math.max(F[1] + 12, 120));
@@ -1542,7 +1574,8 @@
       row.forEach((p) => { xx += K.text(p.s, xx, yy, { font: 'mono', size, color: p.color }); });
       if (first + i === caretRow && (typingNow || K.caretOn(t))) { g.save(); g.fillStyle = C.strong; g.fillRect(xx + 3, yy - size * 0.8, size * 0.55, size * 0.98); g.restore(); }
     });
-    // o.marks: [{at, until | dur, match: 'text' | /regex/, text}] box the newest visible line that matches, with a label
+    // o.marks: [{at, until | dur, match: 'text' | /regex/, text, side: 'above'|'below', labelAt: [x, y]}] box the
+    // newest visible line that matches, with a label (beside the line when it leaves room, else under the box)
     (o.marks || []).forEach((mk) => {
       const until = mk.until ?? mk.at + (mk.dur ?? 2.8);
       const kIn = K.io(t, mk.at, 0.6, 'out'), kOut = K.io(t, until, 0.45, 'in');
@@ -1563,8 +1596,11 @@
       if (mk.text) {
         const ls = 28, tw = K.measure(mk.text, { font: 'ui', size: ls, weight: 700 }), pw = tw + ls * 1.4, ph = ls * 1.9;
         // beside the line when the whole line leaves room, else just under the box (never over the line's own text)
-        const endX = r.x + pad + hit.rowLen * cw, right = endX + 28 + pw < r.x + r.w - 16;
-        const lx = right ? endX + 28 : K.clamp(bx, r.x + 16, r.x + r.w - pw - 16), ly = right ? by + bh / 2 - ph / 2 : by + bh + 8;
+        // mk.side 'above' / 'below' forces a side (above keeps the next output line clear when the line fills the
+        // width); mk.labelAt [x, y] puts the label's top-left corner anywhere (e.g. in the title bar)
+        const endX = r.x + pad + hit.rowLen * cw, right = !mk.side && endX + 28 + pw < r.x + r.w - 16;
+        const lx = mk.labelAt ? mk.labelAt[0] : right ? endX + 28 : K.clamp(bx, r.x + 16, r.x + r.w - pw - 16);
+        const ly = mk.labelAt ? mk.labelAt[1] : right ? by + bh / 2 - ph / 2 : mk.side === 'above' ? by - ph - 8 : by + bh + 8;
         const kl = K.io(t, mk.at + 0.25, 0.5, 'out') * (1 - kOut);
         K.layer(kl, () => {
           K.card(lx, ly, pw, ph, { r: ph / 2, fill: C.tile, stroke: C.head, shadow: true });

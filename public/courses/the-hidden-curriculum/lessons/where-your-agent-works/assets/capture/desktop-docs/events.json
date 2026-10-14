@@ -1,0 +1,212 @@
+{
+ "version": 1,
+ "kind": "browser",
+ "recorded": "2026-10-14",
+ "tool": "tools/capture.py browser",
+ "video": "video.mp4",
+ "size": [
+  1920,
+  1080
+ ],
+ "viewport": [
+  1024,
+  576
+ ],
+ "dpr": 1.875,
+ "fps": 30,
+ "duration": 10.433,
+ "start": {
+  "x": 1312.5,
+  "y": 787.5
+ },
+ "events": [
+  {
+   "t": 0.0,
+   "kind": "nav",
+   "title": "Get started with the desktop app - Claude Code Docs",
+   "url": "https://code.claude.com/docs/en/desktop-quickstart"
+  },
+  {
+   "t": 1.04,
+   "kind": "scroll",
+   "t1": 1.949,
+   "x": 1312.5,
+   "y": 787.5,
+   "dy": 1595.0
+  },
+  {
+   "t": 2.725,
+   "kind": "mark",
+   "boxes": {
+    "list": [
+     681.0,
+     367.06,
+     1171.5,
+     345.0
+    ],
+    "intro": [
+     681.0,
+     277.06,
+     1171.5,
+     52.5
+    ]
+   },
+   "name": "tabs"
+  },
+  {
+   "t": 2.747,
+   "kind": "shot",
+   "url": "https://code.claude.com/docs/en/desktop-quickstart",
+   "name": "tabs",
+   "file": "shots/tabs.webp"
+  },
+  {
+   "t": 3.594,
+   "kind": "scroll",
+   "t1": 5.1,
+   "x": 1312.5,
+   "y": 787.5,
+   "dy": 2022.0
+  },
+  {
+   "t": 5.876,
+   "kind": "mark",
+   "boxes": {
+    "line": [
+     767.25,
+     379.78,
+     1083.38,
+     105.0
+    ]
+   },
+   "name": "local"
+  },
+  {
+   "t": 5.896,
+   "kind": "shot",
+   "url": "https://code.claude.com/docs/en/desktop-quickstart",
+   "name": "local",
+   "file": "shots/local.webp"
+  },
+  {
+   "t": 6.571,
+   "kind": "scroll",
+   "t1": 7.683,
+   "x": 1312.5,
+   "y": 787.5,
+   "dy": 498.0
+  },
+  {
+   "t": 8.366,
+   "kind": "mark",
+   "boxes": {
+    "list": [
+     767.25,
+     288.78,
+     1083.38,
+     502.5
+    ],
+    "intro": [
+     767.25,
+     198.78,
+     1083.38,
+     52.5
+    ]
+   },
+   "name": "envs"
+  },
+  {
+   "t": 8.39,
+   "kind": "shot",
+   "url": "https://code.claude.com/docs/en/desktop-quickstart",
+   "name": "envs",
+   "file": "shots/envs.webp"
+  }
+ ],
+ "shapes": [
+  [
+   0.0,
+   "arrow"
+  ],
+  [
+   1.959,
+   "hand"
+  ],
+  [
+   5.103,
+   "arrow"
+  ]
+ ],
+ "shots": [
+  {
+   "name": "tabs",
+   "file": "shots/tabs.webp",
+   "t": 2.747,
+   "url": "https://code.claude.com/docs/en/desktop-quickstart",
+   "title": "Get started with the desktop app - Claude Code Docs",
+   "size": [
+    1920,
+    1080
+   ],
+   "boxes": {
+    "list": [
+     681.0,
+     367.06,
+     1171.5,
+     345.0
+    ],
+    "intro": [
+     681.0,
+     277.06,
+     1171.5,
+     52.5
+    ]
+   }
+  },
+  {
+   "name": "local",
+   "file": "shots/local.webp",
+   "t": 5.896,
+   "url": "https://code.claude.com/docs/en/desktop-quickstart",
+   "title": "Get started with the desktop app - Claude Code Docs",
+   "size": [
+    1920,
+    1080
+   ],
+   "boxes": {
+    "line": [
+     767.25,
+     379.78,
+     1083.38,
+     105.0
+    ]
+   }
+  },
+  {
+   "name": "envs",
+   "file": "shots/envs.webp",
+   "t": 8.39,
+   "url": "https://code.claude.com/docs/en/desktop-quickstart",
+   "title": "Get started with the desktop app - Claude Code Docs",
+   "size": [
+    1920,
+    1080
+   ],
+   "boxes": {
+    "list": [
+     767.25,
+     288.78,
+     1083.38,
+     502.5
+    ],
+    "intro": [
+     767.25,
+     198.78,
+     1083.38,
+     52.5
+    ]
+   }
+  }
+ ],
+ "redact": []
+}

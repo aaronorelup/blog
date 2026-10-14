@@ -469,7 +469,7 @@
   }
 
   // ------------------------------------------------------------------ the standard map section
-  /** the "you are here" card: eyebrow + the lesson's short title (balanced over up to three lines). Returns {w, h}. */
+  /** the "you are here" card: eyebrow + the lesson's title (balanced over up to three lines). Returns {w, h}. */
   function hereCard(x, y, title, o = {}) {
     const w = o.w ?? cardW(title), lines = wrapLines(title, w - 64, { font: 'ui', size: 30, weight: 600 }, 3), h = 36 + 22 + 18 + lines.length * 38 + 14;
     if (o.measureOnly) return { w, h };
@@ -486,10 +486,10 @@
    * The standard "Where this sits on the map" scene: scenes/02.js is SCENE('02', (t, S) => K.map.intro(t, S)).
    * The map assembles; the lesson's district comes into focus as [[district]] is spoken (its question underlined;
    * for the Start / Finish a note with its name and question appears by the circle); the pin drops on the module
-   * row at [[module]]; a "you are here" card with the lesson's short title sits by the pin; then everything rests.
+   * row at [[module]]; a "you are here" card with the lesson's title sits by the pin; then everything rests.
    * Times come from S.cue('district') / S.cue('module') with fallbacks proportional to S.dur, so a draft without
    * narration still plays. o: lesson (key or id; default the lesson being played), title (card text; default
-   * lesson.js short), pin (override what is pinned), tDistrict / tModule (override the beats), t0 (assembly start,
+   * lesson.js title), pin (override what is pinned), tDistrict / tModule (override the beats), t0 (assembly start,
    * default -0.3), card: false (no card), map: {...} (extra K.map.draw options).
    */
   function intro(t, S, o = {}) {
@@ -510,14 +510,22 @@
     const focusK = K.io(t, tD, 0.8);
     const where = target ? target.id : null;
     const isEnd = target && (target.type === 'gate' || target.type === 'end');
-    const title = o.title ?? ((les && D.key && les.key === D.key) || (les && D.id && les.id === D.id) ? (D.short || D.title) : null) ?? (les && les.title) ?? D.short ?? D.title ?? '';
+    // the card names the lesson as its title card does (its full title, wrapped over up to three lines), not lesson.js
+    // short, which is for the badge
+    const title = o.title ?? ((les && D.key && les.key === D.key) || (les && D.id && les.id === D.id) ? (D.title || D.short) : null) ?? (les && les.title) ?? D.title ?? D.short ?? '';
     const cardOn = o.card !== false && !!title;
     // where the card goes is settled before drawing, because it decides which end of the row the pin sits at
     const spot = target && !isEnd && cardOn ? placeCard(L, target, title) : null;
+    const endBox = target && isEnd ? endLayout(L, target, title, cardOn) : null;
+    // every district card the note or card will cover fades out completely before the note or card fades in, so
+    // the two never show through each other (no half-read neighbour behind a half-faded card)
+    const covered = spot ? coveredBy(L, spot, spot.d.id) : endBox ? coveredBy(L, endBox.cover, null) : [];
+    const hideK = !covered.length ? 0 : spot ? K.io(t, tM + 0.05, 0.4) : K.io(t, tD - 0.2, 0.4);
+    const shownK = (id) => districtK(id) * (covered.includes(id) ? 1 - hideK : 1);
 
     K.bg();
     draw(t, {
-      districtK, path: K.io(t, t0, asm + 0.4, 'io'), lanterns, lanternLabels: K.io(t, t0 + asm * 0.6, 0.6),
+      districtK: shownK, path: K.io(t, t0, asm + 0.4, 'io'), lanterns, lanternLabels: K.io(t, t0 + asm * 0.6, 0.6),
       focus: where, focusK, pin: target || undefined,
       pinK: K.io(t, tM - 0.05, 0.25), pinDrop: K.io(t, tM - 0.05, 0.7, 'back'), pinGlowK: K.io(t, tM + 0.15, 0.6),
       ...(spot && spot.pinSide ? { pinSide: spot.pinSide } : {}), ...(spot && spot.pinX != null ? { pinX: spot.pinX } : {}),
@@ -536,7 +544,6 @@
       }
       if (cardK <= 0 || !spot) return;
       const { x, y, w, side } = spot;
-      veil(spot, cardK, spot.d.id);
       K.layer(cardK, () => {
         if (spot.ax != null) {
           const bx = side === -1 ? x + w : x;
@@ -552,8 +559,28 @@
     const p = target.type === 'gate' ? L.GATE : L.END;
     const noteK = K.io(t, tD + 0.2, 0.5);
     if (noteK <= 0) return;
+    const { nx, nw, ql, ny, nh, cx, cy, cw, ch, eyebrow, stacked } = endBox;
+    K.layer(noteK, () => {
+      K.line(p.x + 52, p.y, nx - 4, p.y, { color: K.rgba(C.head, 0.7), w: 2, k: K.io(t, tD + 0.2, 0.4) });
+      g2().save(); g2().translate((1 - noteK) * 14, 0);
+      K.card(nx, ny, nw, nh, { fill: K.rgba(C.tile, 0.98), stroke: K.rgba(C.head, 0.55), r: 20, shadow: true });
+      K.eyebrow(eyebrow, nx + 36, ny + 36 + 16, { size: 22, tracking: 3, color: C.head });
+      ql.forEach((ln, i) => K.text(ln, nx + 36, ny + 36 + 22 + 20 + 22 + i * 36, { font: 'ui', size: 28, color: C.body, maxW: nw - 72 }));
+      g2().restore();
+    });
+    if (cardK > 0 && ch) K.layer(cardK, () => {
+      g2().save(); g2().translate(stacked ? 0 : (1 - cardK) * -14, stacked ? (1 - cardK) * 12 : 0);
+      hereCard(cx, cy, title, { w: cw });
+      g2().restore();
+    });
+  }
+
+  /** where intro() puts the Start / Finish note and the card with it (no drawing): { nx, nw, ql, ny, nh, cx, cy, cw, ch,
+   *  eyebrow, stacked, cover } (cover: the rect the two take, which hides the district cards under it) */
+  function endLayout(L, target, title, cardOn) {
+    const p = target.type === 'gate' ? L.GATE : L.END;
     // as wide as the district card beside the circle, so the note ends flush with the card it covers (and only that
-    // card is veiled); at least 380 px
+    // card is hidden); at least 380 px
     const row = L.DISTRICTS.filter((d) => Math.abs(d.y + d.h / 2 - p.y) < d.h / 2).sort((a, b) => a.x - b.x)[0];
     const nx = p.x + 50 + 34, QF = { font: 'ui', size: 28 };
     let nw = row ? Math.max(380, row.x + row.w - nx) : 540;
@@ -580,20 +607,11 @@
     if (row && full <= row.h) y = K.clamp(p.y - full / 2, row.y, row.y + row.h - full);
     const ny = stacked ? y : y + (full - nh) / 2;
     const cx = stacked ? nx : nxt ? Math.max(nx + nw + 14, nxt.x) : nx + nw + 14, cy = stacked ? y + nh + 14 : y + (full - ch) / 2;
-    veil({ x: nx, y, w: stacked ? nw : cx + cw - nx, h: full }, noteK, null);
-    K.layer(noteK, () => {
-      K.line(p.x + 52, p.y, nx - 4, p.y, { color: K.rgba(C.head, 0.7), w: 2, k: K.io(t, tD + 0.2, 0.4) });
-      g2().save(); g2().translate((1 - noteK) * 14, 0);
-      K.card(nx, ny, nw, nh, { fill: K.rgba(C.tile, 0.98), stroke: K.rgba(C.head, 0.55), r: 20, shadow: true });
-      K.eyebrow(eyebrow, nx + 36, ny + 36 + 16, { size: 22, tracking: 3, color: C.head });
-      ql.forEach((ln, i) => K.text(ln, nx + 36, ny + 36 + 22 + 20 + 22 + i * 36, { font: 'ui', size: 28, color: C.body, maxW: nw - 72 }));
-      g2().restore();
-    });
-    if (cardK > 0 && ch) K.layer(cardK, () => {
-      g2().save(); g2().translate(stacked ? 0 : (1 - cardK) * -14, stacked ? (1 - cardK) * 12 : 0);
-      hereCard(cx, cy, title, { w: cw });
-      g2().restore();
-    });
+    return { nx, nw, ql, ny, nh, cx, cy, cw, ch, eyebrow, stacked, cover: { x: nx, y, w: stacked ? nw : cx + cw - nx, h: full } };
+  }
+  /** ids of the district cards a rect overlaps (12 px margin), except `keep` */
+  function coveredBy(L, r, keep) {
+    return L.DISTRICTS.filter((d) => d.id !== keep && d.x < r.x + r.w + 12 && r.x - 12 < d.x + d.w && d.y < r.y + r.h + 12 && r.y - 12 < d.y + d.h).map((d) => d.id);
   }
 
   /**
@@ -655,16 +673,6 @@
     return { d, c, x, y, w, h, side, pinSide, pinX, ax, ay: c.y };
   }
   const g2 = () => K.ctx();
-  /** page-coloured veil over every district card a note or card covers (but not `keep`), so nothing half-covered
-   *  peeks out from under it (k 0..1 eases it with the card) */
-  function veil(r, k, keep) {
-    if (k <= 0) return;
-    const L = lay(), g = K.ctx();
-    L.DISTRICTS.forEach((d) => {
-      if (d.id === keep || !(d.x < r.x + r.w + 12 && r.x - 12 < d.x + d.w && d.y < r.y + r.h + 12 && r.y - 12 < d.y + d.h)) return;
-      K.rr(d.x - 1, d.y - 1, d.w + 2, d.h + 2, 25); g.save(); g.fillStyle = K.rgba(C.page, 0.97 * k); g.fill(); g.restore();
-    });
-  }
 
   /** how long a one-line label may be, measured in this label's own characters, plus the longest leading run of its
    *  words that fits (not ending on '&', 'and'...), as a ready-made suggestion */

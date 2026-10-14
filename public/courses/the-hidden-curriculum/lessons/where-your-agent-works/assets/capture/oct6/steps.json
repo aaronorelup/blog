@@ -1,0 +1,62 @@
+{
+ "mode": "browser",
+ "size": [
+  1024,
+  576
+ ],
+ "dpr": 1.875,
+ "fps": 30,
+ "crf": 23,
+ "start": [
+  700,
+  420
+ ],
+ "redact": [],
+ "steps": [
+  {
+   "do": "goto",
+   "url": "https://support.claude.com/en/articles/15520349-use-claude-cowork-on-web-desktop-and-mobile",
+   "settle": 1500
+  },
+  {
+   "do": "wait_for",
+   "text": "On October 6, 2026",
+   "timeout": 30000,
+   "settle": 400
+  },
+  {
+   "do": "scroll",
+   "to": "article p:has-text(\"On October 6, 2026\")",
+   "block": 0.45,
+   "ms": 1400
+  },
+  {
+   "do": "wait",
+   "ms": 500
+  },
+  {
+   "do": "mark",
+   "name": "change",
+   "boxes": {
+    "heading": "article h2:has-text(\"What changed for Pro and Max plans\")",
+    "line1": "article p:has-text(\"On October 6, 2026\")",
+    "line2": "article p:has-text(\"On October 6, 2026\") b:text-is(\"Only on your computer\")",
+    "settings": "article p:has-text(\"On October 6, 2026\") a:has-text(\"Settings > General\")"
+   }
+  },
+  {
+   "do": "shot",
+   "name": "change",
+   "boxes": {
+    "heading": "article h2:has-text(\"What changed for Pro and Max plans\")",
+    "line1": "article p:has-text(\"On October 6, 2026\")",
+    "line2": "article p:has-text(\"On October 6, 2026\") b:text-is(\"Only on your computer\")",
+    "settings": "article p:has-text(\"On October 6, 2026\") a:has-text(\"Settings > General\")"
+   }
+  },
+  {
+   "do": "wait",
+   "ms": 1000
+  }
+ ]
+}
