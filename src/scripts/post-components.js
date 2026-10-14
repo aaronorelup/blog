@@ -14,6 +14,7 @@
 //   <ao-diff labels="Draft|Final"> <blockquote>…</blockquote> <blockquote>…</blockquote> <figcaption>…
 //   <ao-listen ref="a"> <figure data-id="a"><audio …></audio><img …><figcaption>…</figure> …
 //   <ao-cues labels="v1|v2"> <video …></video> <video …></video> <ol><li data-t="1:44.97">…</li></ol> <figcaption>…
+//   <ao-shots> <video …></video> <ol><li data-t="0:05.4"><img …>Label</li></ol> <figcaption>…
 //   <ao-demo name="synthid" part="tournament"> fallback text </ao-demo>
 //
 // Two behaviours need no tag at all and apply to every post: one player at a time (below),
@@ -2123,6 +2124,78 @@ class AoBars extends HTMLElement {
 }
 
 // ---------------------------------------------------------------------------------------
+// <ao-shots>: a video with its shots laid out as a strip of thumbnails underneath, so a reader
+// can see the whole edit at a glance and jump to any shot. For reels, trailers, films, cuts.
+// Children: one <video>, then an <ol> whose <li data-t="m:ss.xx"> each hold an <img> (the shot's
+// thumbnail) and a short label, then an optional <figcaption>. The shot being played is lit and
+// kept in view inside the strip (never by scrolling the page); clicking one plays from there.
+// Arrow keys move along the strip. Without JS: the video, then the thumbnails as a plain list.
+const shotTime = (v) => {
+  const p = String(v || '').trim().split(':').map(Number);
+  return !p.length || p.some((n) => !isFinite(n)) ? NaN : p.reduce((a, n) => a * 60 + n, 0);
+};
+class AoShots extends HTMLElement {
+  connectedCallback() {
+    if (this._ready) return;
+    const video = this.querySelector(':scope > video');
+    const list = this.querySelector(':scope > ol');
+    if (!video || !list) return;
+    this._ready = true;
+    const shots = [];
+    for (const li of list.querySelectorAll(':scope > li')) {
+      const t = shotTime(li.dataset.t);
+      if (!isFinite(t)) continue;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ao-shots-btn';
+      while (li.firstChild) b.append(li.firstChild);
+      const at = document.createElement('span');
+      at.className = 'ao-shots-at';
+      const m = Math.floor(t / 60), sec = t - m * 60;
+      at.textContent = m + ':' + (sec < 10 ? '0' : '') + sec.toFixed(1);
+      b.append(at);
+      b.title = 'Play from ' + at.textContent;
+      li.append(b);
+      shots.push({ t, li, b });
+    }
+    if (!shots.length) return;
+    shots.sort((a, z) => a.t - z.t);
+    list.classList.add('ao-shots-strip');
+    const go = (s) => {
+      video.currentTime = s.t + 0.02;
+      video.play().catch(() => {});
+    };
+    shots.forEach((s, i) => {
+      s.b.addEventListener('click', () => go(s));
+      s.b.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+        e.preventDefault();
+        shots[Math.min(shots.length - 1, Math.max(0, i + (e.key === 'ArrowLeft' ? -1 : 1)))].b.focus();
+      });
+    });
+    let lit = null;
+    const show = () => {
+      const now = video.currentTime;
+      let cur = shots[0];
+      for (const s of shots) if (s.t <= now + 0.01) cur = s;
+      if (cur === lit) return;
+      if (lit) { lit.li.classList.remove('is-current'); lit.b.removeAttribute('aria-current'); }
+      lit = cur;
+      cur.li.classList.add('is-current');
+      cur.b.setAttribute('aria-current', 'true');
+      // Keep the lit shot in view inside the strip only; scrollIntoView would move the page.
+      const l = cur.li.offsetLeft - list.offsetLeft, r = l + cur.li.offsetWidth;
+      if (l < list.scrollLeft || r > list.scrollLeft + list.clientWidth) {
+        list.scrollTo({ left: Math.max(0, l - (list.clientWidth - cur.li.offsetWidth) / 2), behavior: 'smooth' });
+      }
+    };
+    for (const ev of ['timeupdate', 'seeked', 'loadedmetadata']) video.addEventListener(ev, show);
+    show();
+    this.classList.add('ao-shots-ready');
+  }
+}
+
+// ---------------------------------------------------------------------------------------
 // <ao-demo name="x" part="y">: an interactive demo written for one post. Its code lives in
 // src/scripts/demos/<name>.js and is a separate chunk, fetched only when a post uses it, so
 // one post's demo never weighs on the others. The module exports mount(host, part), which
@@ -2162,3 +2235,4 @@ if (!customElements.get('ao-listen')) customElements.define('ao-listen', AoListe
 if (!customElements.get('ao-cues')) customElements.define('ao-cues', AoCues);
 if (!customElements.get('ao-fetch')) customElements.define('ao-fetch', AoFetch);
 if (!customElements.get('ao-bars')) customElements.define('ao-bars', AoBars);
+if (!customElements.get('ao-shots')) customElements.define('ao-shots', AoShots);
