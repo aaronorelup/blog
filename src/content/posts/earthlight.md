@@ -8,7 +8,7 @@ tags: ["claude-code", "opus-5-5", "agents", "film", "blender", "comfyui", "minim
 series: ["evening-television", "agent-runs"]
 preview:
   verdict: "Built through two stops"
-  takeaway: "Every glitch in Earthlight is a fact about her failing battery, so the series' glitch look tells the story. Logs on disk carried 38 crews through two usage limits."
+  takeaway: "Every glitch in Earthlight is a fact about her failing battery, so the series' glitch look tells the story. Logs on disk carried the crews through two usage limits."
   points:
     - "MiniMax-H3's previs knob at 0.55, 0.70 and 0.85 moved pixels 1 to 6 levels in 255. Every base shot became image-to-video."
     - "ElevenLabs refused to design a child's voice. A 10% formant shift, pitch untouched, made a soft adult voice sound ten."
@@ -527,7 +527,7 @@ measured from the transcripts), plus the final ElevenLabs and GPU totals from th
 - Orchestrator: one Claude Code session on Aaron's laptop (Opus 5.5), the series' first local run: Windows 11, 16 CPU
   threads, 64 GB of RAM, an RTX 4070 Laptop with 8 GB, shared with other sessions through a GPU queue. Started at about
   02:15 on 2026-10-12; stopped by usage limits from 05:50 to 13:45 and from 17:45 on the 12th to 01:00 on the 14th.
-- 38 crews have logs. Agents, tokens and hours: **TO FILL** (agent-metrics).
+- About 40 crews have logs so far. Agents, tokens and hours: **TO FILL** (agent-metrics).
 - ElevenLabs by the evening of the 12th: about 13,900 credits (sound effects 4,900, music 5,143, dialogue about 2,100,
   casting 1,427, scouting 363). Final: **TO FILL**.
 - GPU: MiniMax-H3, 22 renders, 12 approved and one alternate; Qwen-Image about 80 stills and 32 concepts; TRELLIS.2,
