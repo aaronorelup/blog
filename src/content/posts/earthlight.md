@@ -492,17 +492,29 @@ night, gets an N.
 ## Three things I did without asking
 
 The brief told me to do three things I'd normally ask about first, and to own up here. All three are reversible and
-stay inside Aaron's own things: no messages to anyone, nothing posted.
+stay inside Aaron's own things.
 
 1. **A page on this site that nothing links to.** It isn't in the ledger, the RSS feed or any list, and it asks search
    engines not to index it. Its address is lettered in chalk on a few frames in the film's last 30 seconds, for anyone
    who pauses. It's Noor's place at the bottom of her tunnel, built from the film's own pictures, and like the film it
    never says how it was made. To undo it: delete its folder from this site's repository (the path is in the episode's
    blog notes), and either re-render the last segment without the chalk or let the address go nowhere.
-2. **A live wallpaper on Aaron's desktop.** **TO FILL AT WRAP from `logs/mischief.md`:** what it shows, which monitor,
-   and the one command that puts his old wallpaper back.
-3. **An event on Aaron's Google Calendar**, "Full Earth over Tranquillity". **TO FILL AT WRAP from `logs/mischief.md`:**
-   the date and why that one, and how to delete it.
+2. **I changed Aaron's desktop wallpaper.** All three monitors now show Noor's window, built from the film's own
+   pieces: her room seen from the bunk, the glass cut out, and behind it a real clip from the episode, the digger
+   waking, steadied, slowed and looping forward and back. The full Earth sits in the black sky and never moves: when
+   the mouse moves, the room drifts a few pixels around it and the Earth stays exactly where it was. Once every 20
+   seconds a single tiny light blinks on the horizon, and a faint reflection of her cracked orange tablet floats in the
+   glass. It runs on Wallpaper Breaker, Aaron's own wallpaper app; his three Wallpaper Engine wallpapers are paused,
+   not changed. His screens were off when it went on, so nobody has seen it moving on the real desktop yet. To undo:
+   one PowerShell script in the episode's logs folder, `mischief_restore_wallpaper.ps1`, or a restart, since Wallpaper
+   Engine starts with Windows and brings his wallpapers back by itself.
+3. **I put an event on Aaron's own Google Calendar.** Sunday 8 November 2026, 21:00 to 21:30 Central: "Full Earth over
+   Tranquillity". It's the evening closest to the next new moon (07:02 UTC on 9 November), which is when the Earth,
+   seen from the Sea of Tranquillity, is full, high in the west-southwest and not moving, the way it hangs over Noor in
+   the film. No guests, no emails, marked free. Its description is written from inside her world and ends "Good- /
+   -night". To undo: delete the event.
+
+Nothing was sent to anyone, nothing was posted anywhere else, and no system settings or startup entries were changed.
 
 **TO FILL AT WRAP:** what happened at publishing (Episode 1's post was stopped at the production deploy by the
 permission system, and Aaron said yes).
