@@ -2196,6 +2196,147 @@ class AoShots extends HTMLElement {
 }
 
 // ---------------------------------------------------------------------------------------
+// <ao-blind>: rows of outputs made from the same brief (one row per prompt, one figure per
+// model, agent or setting), shown labelled, with a "Judge blind" button. Blind, each row is
+// shuffled, every caption is hidden and the pictures stop opening the viewer (its caption would
+// give the answer away); the reader picks one per row, then Reveal puts the labels back, marks
+// the picks and counts them. A figure with data-verdict="…" carries someone else's pick (a
+// judge agent, a reviewer), shown on reveal and compared with the reader's.
+// Children: <div data-row="Row title"> each holding <figure>s (an <img> and a <figcaption>
+// whose <b> is the label), then an optional <figcaption> for the set.
+//   aspect="w/h"  the frame every picture is fitted into (default 4/3)
+// Without JS the rows are plain figures with their captions.
+class AoBlind extends HTMLElement {
+  connectedCallback() {
+    if (this._ready) return;
+    const rows = [...this.querySelectorAll(':scope > div')].map((el) => ({
+      el,
+      figs: [...el.querySelectorAll(':scope > figure')],
+      pick: null,
+    })).filter((r) => r.figs.length > 1);
+    if (!rows.length) return;
+    this._ready = true;
+    const aspect = this.getAttribute('aspect');
+    if (aspect) this.style.setProperty('--ao-aspect', aspect);
+    const labelOf = (f) => f.querySelector('figcaption b')?.textContent.trim() || '?';
+
+    for (const r of rows) {
+      r.el.classList.add('ao-blind-row');
+      r.el.style.setProperty('--ao-cols', String(r.figs.length));
+      const title = r.el.getAttribute('data-row');
+      if (title) {
+        const h = document.createElement('p');
+        h.className = 'ao-blind-title';
+        h.textContent = title;
+        r.el.prepend(h);
+      }
+      r.figs.forEach((f) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'ao-blind-pick';
+        b.addEventListener('click', () => choose(r, f));
+        f.append(b);
+        f.querySelector('img')?.addEventListener('click', () => {
+          if (this.classList.contains('is-blind')) choose(r, f);
+        });
+      });
+    }
+
+    const bar = document.createElement('div');
+    bar.className = 'ao-blind-bar';
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'ao-blind-btn';
+    const reveal = document.createElement('button');
+    reveal.type = 'button';
+    reveal.className = 'ao-blind-btn';
+    reveal.textContent = 'Reveal';
+    const status = document.createElement('p');
+    status.className = 'ao-blind-status';
+    status.setAttribute('aria-live', 'polite');
+    bar.append(toggle, reveal, status);
+    this.prepend(bar);
+
+    const picked = () => rows.filter((r) => r.pick).length;
+    const choose = (r, f) => {
+      if (!this.classList.contains('is-blind')) return;
+      r.pick = r.pick === f ? null : f;
+      r.figs.forEach((g) => g.classList.toggle('is-picked', g === r.pick));
+      paint();
+    };
+    const paint = () => {
+      const blind = this.classList.contains('is-blind');
+      toggle.textContent = blind ? 'Show labels' : 'Judge blind';
+      reveal.hidden = !blind;
+      reveal.disabled = !picked();
+      rows.forEach((r) => r.figs.forEach((f, i) => {
+        const b = f.querySelector('.ao-blind-pick');
+        const letter = String.fromCharCode(65 + Number(f.style.order || i));
+        b.textContent = f === r.pick ? 'Picked ' + letter : 'Pick ' + letter;
+        b.setAttribute('aria-pressed', String(f === r.pick));
+      }));
+      if (blind) status.textContent = 'Pick one in each row, then Reveal. ' + picked() + ' of ' + rows.length + ' picked.';
+    };
+    const shuffle = (n) => {
+      const a = [...Array(n).keys()];
+      for (let i = n - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
+    const imgs = () => [...this.querySelectorAll('figure img')];
+    toggle.addEventListener('click', () => {
+      const blind = !this.classList.contains('is-blind');
+      this.classList.remove('is-revealed');
+      this.classList.toggle('is-blind', blind);
+      for (const r of rows) {
+        r.pick = null;
+        const order = shuffle(r.figs.length);
+        r.figs.forEach((f, i) => {
+          f.classList.remove('is-picked');
+          f.style.order = blind ? String(order[i]) : '';
+          f.querySelector('.ao-blind-verdict')?.remove();
+        });
+      }
+      // Blind, a click picks; the viewer would show the caption, so it is switched off.
+      for (const img of imgs()) {
+        if (blind) img.setAttribute('data-no-zoom', '');
+        else img.removeAttribute('data-no-zoom');
+      }
+      if (!blind) status.textContent = '';
+      paint();
+    });
+    reveal.addEventListener('click', () => {
+      this.classList.remove('is-blind');
+      this.classList.add('is-revealed');
+      for (const img of imgs()) img.removeAttribute('data-no-zoom');
+      const tally = new Map();
+      let agree = 0, judged = 0;
+      for (const r of rows) {
+        const ref = r.figs.find((f) => f.hasAttribute('data-verdict'));
+        if (ref) {
+          const v = document.createElement('span');
+          v.className = 'ao-blind-verdict';
+          v.textContent = ref.getAttribute('data-verdict');
+          ref.append(v);
+        }
+        if (!r.pick) continue;
+        tally.set(labelOf(r.pick), (tally.get(labelOf(r.pick)) || 0) + 1);
+        if (ref) { judged++; if (ref === r.pick) agree++; }
+      }
+      const parts = [...tally].sort((a, b) => b[1] - a[1]).map(([k, n]) => k + ' ' + n);
+      status.textContent = 'Your picks: ' + parts.join(' · ') + '.' +
+        (judged ? ' You agreed with the marked pick in ' + agree + ' of ' + judged + ' rows.' : '');
+      reveal.hidden = true;
+      toggle.textContent = 'Judge blind again';
+    });
+    paint();
+    this.classList.add('ao-blind-ready');
+  }
+}
+
+// ---------------------------------------------------------------------------------------
 // <ao-demo name="x" part="y">: an interactive demo written for one post. Its code lives in
 // src/scripts/demos/<name>.js and is a separate chunk, fetched only when a post uses it, so
 // one post's demo never weighs on the others. The module exports mount(host, part), which
@@ -2236,3 +2377,4 @@ if (!customElements.get('ao-cues')) customElements.define('ao-cues', AoCues);
 if (!customElements.get('ao-fetch')) customElements.define('ao-fetch', AoFetch);
 if (!customElements.get('ao-bars')) customElements.define('ao-bars', AoBars);
 if (!customElements.get('ao-shots')) customElements.define('ao-shots', AoShots);
+if (!customElements.get('ao-blind')) customElements.define('ao-blind', AoBlind);

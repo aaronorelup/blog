@@ -1424,3 +1424,131 @@ ao-shots figcaption .ao-meta {
   ao-shots > ol > li,
   .pc-prose ao-shots > ol > li { width: 108px; }
 }
+
+/* <ao-blind>: rows of same-brief outputs; "Judge blind" shuffles each row and hides the labels,
+   the reader picks one per row, Reveal brings the labels back and counts the picks. */
+ao-blind {
+  --ao-aspect: 4/3;
+  display: block;
+  margin: 8px 0 28px;
+  min-width: 0;
+}
+.ao-blind-bar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  padding: 10px 0;
+  background: var(--pc-page);
+}
+.ao-blind-btn {
+  font: 600 13px/1 Karla, system-ui, sans-serif;
+  color: var(--pc-strong);
+  background: var(--pc-tile);
+  border: 1px solid var(--pc-line2);
+  border-radius: 999px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+.ao-blind-btn:hover:not(:disabled) { border-color: var(--pc-head); color: var(--pc-head); }
+.ao-blind-btn:disabled { opacity: 0.45; cursor: default; }
+.ao-blind-btn[hidden] { display: none; }
+.ao-blind-status {
+  flex: 1 1 220px;
+  margin: 0 !important;
+  font: 400 13px/1.4 Karla, system-ui, sans-serif !important;
+  color: var(--pc-soft);
+}
+.ao-blind-row {
+  --ao-cols: 3;
+  display: grid;
+  grid-template-columns: repeat(var(--ao-cols), minmax(0, 1fr));
+  gap: 12px;
+  margin: 6px 0 22px;
+}
+p.ao-blind-title {
+  grid-column: 1 / -1;
+  order: -1;
+  margin: 0 !important;
+  font: 600 13.5px/1.35 Karla, system-ui, sans-serif !important;
+  color: var(--pc-strong);
+}
+.ao-blind-row > figure {
+  position: relative;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-radius: 9px;
+}
+.ao-blind-row > figure > img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--ao-aspect);
+  object-fit: contain;
+  background: #15141f;
+  border: 1px solid var(--pc-line);
+  border-radius: 8px;
+  display: block;
+  max-width: 100%;
+}
+.ao-blind-row figcaption {
+  margin-top: 8px;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pc-soft);
+}
+.ao-blind-row figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
+.ao-blind-row figcaption .ao-meta,
+ao-blind > figcaption .ao-meta {
+  display: block;
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: var(--pc-quiet);
+}
+ao-blind > figcaption {
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pc-soft);
+}
+ao-blind > figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
+.ao-blind-pick { display: none; }
+ao-blind.is-blind .ao-blind-row figcaption { display: none; }
+ao-blind.is-blind .ao-blind-row > figure > img { cursor: pointer; }
+ao-blind.is-blind .ao-blind-pick {
+  display: block;
+  margin-top: 8px;
+  font: 600 12.5px/1 Karla, system-ui, sans-serif;
+  color: var(--pc-body);
+  background: transparent;
+  border: 1px solid var(--pc-line2);
+  border-radius: 999px;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+ao-blind.is-blind .ao-blind-pick:hover { border-color: var(--pc-head); color: var(--pc-head); }
+ao-blind .is-picked > img { border-color: var(--pc-head); box-shadow: 0 0 0 2px var(--pc-head); }
+ao-blind.is-blind .is-picked .ao-blind-pick { color: var(--pc-page); background: var(--pc-head); border-color: var(--pc-head); }
+ao-blind.is-revealed .is-picked figcaption b::after {
+  content: ' · your pick';
+  font-weight: 400;
+  color: var(--pc-head);
+}
+.ao-blind-verdict {
+  align-self: flex-start;
+  margin-top: 6px;
+  font: 600 11.5px/1 Karla, system-ui, sans-serif;
+  color: var(--pc-accent);
+  border: 1px solid var(--pc-accent);
+  border-radius: 999px;
+  padding: 4px 8px;
+}
+@media (max-width: 640px) {
+  .ao-blind-row { grid-template-columns: minmax(0, 1fr); }
+}
