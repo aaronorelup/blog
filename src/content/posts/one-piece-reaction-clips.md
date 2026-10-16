@@ -1,17 +1,17 @@
 ---
 id: "AO-051"
 title: "Finding one moment in five reaction videos, with and without a transcript API"
-summary: "I asked Claude Code to find YouTubers reacting to one specific moment in One Piece and cut their reactions into clips. It got five, checked frame by frame, in 18 minutes. Next I run the same job through Arcmira, a transcript-search MCP, and compare."
+summary: "I asked Claude Code to find YouTubers reacting to one specific moment in One Piece and cut their reactions into clips, once with ordinary tools and once through Arcmira, a transcript-search MCP. One way got five clips. The other was faster and cheaper, and found nothing."
 date: 2026-10-16
 status: "in-progress"
 tags: ["claude-code", "video", "ffmpeg", "yt-dlp", "mcp", "arcmira"]
 preview:
-  verdict: "Five clips, frames did the work"
-  takeaway: "Captions get an agent to within a minute or two of a moment in a reaction video. Looking at the frames is what finds it; matching audio didn't work at all."
+  verdict: "Manual: 5 clips. Arcmira: 0"
+  takeaway: "A transcript index only helps if the videos you want are in it. Arcmira covers podcasts and talk shows, not anime reaction channels, so plain YouTube search won."
   points:
-    - "5 verified clips from 16 reaction videos, in 17 min 51 s and 35 model requests, about $2.13 at list price."
-    - "Audio matching across videos failed every time: about 0.2 correlation, wrong positions, likely altered episode audio."
-    - "The \"To Be Continued\" card right after the smile was the most reliable landmark, better than any caption."
+    - "Manual: 5 verified clips in 17 min 51 s, 35 requests, about $2.13. Captions found the minute; frames found the moment."
+    - "Arcmira: 24 searches in 2 min 45 s, 14 requests, about $0.94 plus 20 credits. No reaction to episode 715 in its index."
+    - "Matching the episode's audio across videos failed every time, about 0.2 correlation, likely because reactors alter it."
 ---
 
 Arcmira's founder emailed me after reading the [Clawd montage post](/posts/clawd-growth-montage/).
@@ -24,8 +24,9 @@ reaction to it. The moment is in episode 715, "Senor's Elegy of Love." Senor Pin
 Russian has been unresponsive since an accident. He puts on their dead son's baby bonnet,
 and she smiles for the first time. It's about ten seconds of anime, and it wrecks people.
 
-This post is the first half: Claude Code doing it with ordinary tools. The second half,
-the same job through Arcmira, gets added here when it's done.
+I ran it twice. First Claude Code did it with ordinary tools. Then a fresh Claude Code session
+did the same job with Arcmira doing the finding. The [comparison](#the-same-job-through-arcmira)
+is at the end, with the time, tokens and results of both.
 
 ## What it did
 
@@ -103,12 +104,65 @@ Measured from Claude Code's own session log, not estimated:
 Most of the cache reads are the contact sheets. Every one of those images stays in context
 and gets re-read on each later request.
 
-## Next: the same job through Arcmira
+## The same job through Arcmira
 
-Arcmira's MCP gives an agent transcript search with timestamps, and can order a transcript for a
-video it hasn't indexed yet. Going by its docs, the index leans toward podcasts and long-form
-interviews, so I don't know if these reaction channels are in it. That's part of what I want to
-find out. Step 2 in the list above is the part it should replace. Steps 3 and 4, opening the
-video and looking at it, are probably still on the agent.
+Arcmira's MCP server gives an agent four tools. The one that does the work, `arcmira_execute_read`,
+runs a short JavaScript program against their API: search transcripts, resolve a name to an
+entity, list a channel's episodes, fetch one video's captions with timestamps. I'm on the free
+plan: 1,000 credits a month, and the newest 30 days of video held back, which doesn't matter for
+reactions posted years ago.
 
-I'll run the same request through it, measure time and tokens the same way, and add the results here.
+The rules for the second run were simple. Arcmira does all the finding and locating, so no
+YouTube search and no YouTube captions. Once it names a video and a timestamp, the agent can
+download a short window to check the frames and cut the clip, the same as the first run. It ran
+in a fresh session, so its token count doesn't include anything from the first run.
+
+It found nothing. Over 8 tool calls it ran 24 transcript searches and 9 name lookups: the
+episode number, "Senor Pink bonnet", "Russian smile", "Gimlet", the auto-caption spelling
+"Senior Pink", the Dressrosa arc, and a date window covering 2015 to 2020, when these reactions
+went up. "One Piece" resolves only as a product mentioned in passing on talk shows and TEDx
+talks. Senor Pink and Doflamingo don't resolve at all. The searches came back with Talk Python
+and Y Combinator, matching words like "piece" and "episode".
+
+The closest it got was a real reaction channel, Studio Gek, reacting to episodes 511 to 516,
+200 episodes too early. Asked about that channel directly, Arcmira reports 0 searchable videos.
+It had surfaced one passage from it and indexed nothing else. Two One Piece podcast channels also
+show 0.
+
+So Arcmira's index doesn't have these videos. Going by what came back, it covers podcasts and
+talk and news shows, mostly from 2024 on, and anime reaction channels aren't in it. That isn't a bug, and it isn't the
+free plan's delay. It's a different slice of YouTube from the one I needed. The session sent
+Arcmira one feedback note about the gap.
+
+## Side by side
+
+Both measured from Claude Code's own session logs. The Arcmira column leaves out a first
+attempt that stopped after about 15 seconds because the tools hadn't loaded yet.
+
+| | Manual (yt-dlp + captions + frames) | Arcmira |
+|---|---|---|
+| Wall-clock time | 17 min 51 s | 2 min 45 s |
+| Model requests | 35 | 14 |
+| Output tokens | 22K | 12.7K |
+| Cache writes / cache reads | 79K / 5.3M | 41K / 1.8M |
+| List-price model cost | $2.13 | about $0.94 |
+| Arcmira credits | none | 20 of 1,000 |
+| Candidate videos found | 16 | 0 (1 reaction channel, wrong episode) |
+| Clips verified | 5 | 0 |
+
+The Arcmira run was faster and cheaper because it stopped early: once the index came back empty,
+there was nothing to download or look at. A fair comparison would need a job where both methods
+can find something.
+
+Connecting it took longer than running it. The Claude desktop app didn't pass my API key to
+sessions, so the first attempt saw the tools as "needs authentication" even though the key
+worked from a terminal. It ran through a small Python client that calls the same MCP server directly,
+and I later added Arcmira as a custom connector, which worked. That's maybe twenty minutes of
+setup on top of the table.
+
+What I take from it: a search index is only as good as what's in it, and you can't tell that
+from the outside. Arcmira's own docs say it covers podcasts and long-form interviews, and that's
+exactly where it stopped. For "what did podcasters say about this company last month" it's
+probably the right tool. For "find me thirty strangers crying at the same anime scene", YouTube's
+own search and some contact sheets still win. Either way, the step that actually found the
+moment was looking at the frames, and neither method skips that.
