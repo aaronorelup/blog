@@ -1552,3 +1552,117 @@ ao-blind.is-revealed .is-picked figcaption b::after {
 @media (max-width: 640px) {
   .ao-blind-row { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* <ao-runs>: agents of one run on one clock, a lane per phase, overlapping agents stacked.
+   Lanes alternate gold and terracotta so neighbouring phases stay apart in both modes. */
+ao-runs {
+  display: block;
+  margin: 28px 0;
+  min-width: 0;
+}
+.ao-runs-chart {
+  display: grid;
+  gap: 6px;
+  padding: 16px 18px 12px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 12px;
+  background: var(--pc-code);
+}
+.ao-runs-chart p.ao-runs-sum {
+  margin: 0 0 4px;
+  font: 600 12px/1.4 Karla, system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pc-gold);
+}
+.ao-runs-row {
+  display: grid;
+  grid-template-columns: 9.5em minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+.ao-runs-lane {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  font: 400 12px/1.25 Karla, system-ui, sans-serif;
+  color: var(--pc-quiet);
+}
+.ao-runs-lane b { font-weight: 600; font-size: 13px; color: var(--pc-strong); }
+.ao-runs-axis {
+  position: relative;
+  height: 16px;
+  border-bottom: 1px solid var(--pc-line2);
+}
+.ao-runs-tick {
+  position: absolute;
+  bottom: 3px;
+  transform: translateX(-50%);
+  font: 11px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--pc-quiet);
+  white-space: nowrap;
+}
+.ao-runs-track {
+  --h: 7px;
+  --g: 2px;
+  position: relative;
+  height: calc(var(--slots) * (var(--h) + var(--g)) + 6px);
+  min-height: 14px;
+  border-bottom: 1px solid var(--pc-line);
+}
+.ao-runs-c0 { --bar: var(--pc-head); }
+.ao-runs-c1 { --bar: var(--pc-accent); }
+.ao-runs-bar {
+  position: absolute;
+  top: calc(3px + var(--slot) * (var(--h) + var(--g)));
+  height: var(--h);
+  min-width: 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: var(--bar);
+  opacity: 0.8;
+  cursor: pointer;
+  transition: opacity 180ms cubic-bezier(.4, 0, .2, 1);
+}
+.ao-runs-bar:hover,
+.ao-runs-bar.is-on { opacity: 1; box-shadow: 0 0 0 2px var(--pc-strong); z-index: 1; }
+.ao-runs-bar:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+.ao-runs-chart p.ao-runs-read {
+  min-height: 2.9em;
+  margin: 6px 0 0;
+  font: 400 13px/1.45 Karla, system-ui, sans-serif;
+  color: var(--pc-soft);
+}
+.ao-runs-read b { font-weight: 600; color: var(--pc-strong); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.ao-runs-ready > .ao-runs-table {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+ao-runs > figcaption {
+  margin-top: 8px;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pc-soft);
+}
+ao-runs > figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
+ao-runs > figcaption .ao-meta {
+  display: block;
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: var(--pc-quiet);
+}
+@media (max-width: 640px) {
+  .ao-runs-chart { padding: 12px; }
+  .ao-runs-row { grid-template-columns: minmax(0, 1fr); gap: 3px; }
+  .ao-runs-axisrow .ao-runs-lane { display: none; }
+  .ao-runs-lane { flex-direction: row; gap: 8px; align-items: baseline; text-align: left; }
+}
