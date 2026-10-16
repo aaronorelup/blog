@@ -1,365 +1,248 @@
 ---
 id: "AO-051"
-title: "Testing a transcript-search MCP against doing it by hand"
-summary: "I gave Claude Code the same research jobs twice, once with ordinary tools and once through Arcmira, a YouTube and podcast transcript-search MCP: anime reaction clips, then my own name and yesterday's Tesla Roadster reveal. Every number and result is here so you can judge it yourself."
+title: "Can Claude find a specific moment in a YouTube video, and does Arcmira help?"
+summary: "I'd never asked Claude to pull exact moments out of videos or research who said what on YouTube. So I ran three tests, with and without Arcmira, a transcript-search tool built for exactly that. Every clip it found is on this page; judge them yourself."
 date: 2026-10-16
 status: "in-progress"
-tags: ["claude-code", "video", "ffmpeg", "yt-dlp", "mcp", "arcmira"]
+tags: ["claude-code", "video", "research", "yt-dlp", "mcp", "arcmira"]
 preview:
-  verdict: "By hand found more, twice"
-  takeaway: "Arcmira was faster and cheaper both times but found less: its index skips anime reaction channels, and the free plan can't see the newest 30 days."
+  verdict: "Claude alone is strong"
+  takeaway: "Claude alone found and cut exact moments from YouTube videos for $2-3 a job. Arcmira found a different part of YouTube: podcasts and finance shows."
   points:
-    - "Reaction clips: by hand 5 verified clips in 17 min 51 s ($2.13). Arcmira 0 in 2 min 45 s ($0.94 + 20 credits)."
-    - "Roadster reveal: by hand 18 videos, sponsors and 9 quoted moments in 12 min ($2.09). Arcmira: blocked by the 30-day delay."
-    - "Arcmira's channel sponsor lists weren't delayed: sponsors last seen the day of the reveal, which YouTube search can't give you."
+    - "On a SpaceX question, the two lists of videos had zero overlap: space channels by hand, podcasts and finance shows via Arcmira."
+    - "Every quote either method found matched YouTube's captions word for word. Their timestamps were up to 19 seconds off."
+    - "Arcmira's free plan can't see the last 30 days or anime channels, and one broad search used 580 of its 1,000 monthly credits."
+  image: "/media/previews/one-piece-reaction-clips.webp"
+  loop: "/media/previews/one-piece-reaction-clips.mp4"
+  alt: "The new Tesla Roadster lifting off on rocket thrusters and flying over a line of parked Teslas at night"
 ---
 
-Arcmira's founder emailed me after reading the [Clawd montage post](/posts/clawd-growth-montage/).
-Arcmira indexes podcast and YouTube transcripts and gives an AI agent search over them
-through an MCP server. Their pitch was about the gap between *finding* a passage and
-*choosing a cut*, which is a real gap. So I picked a job that lives right in it.
-
-The job: find YouTubers reacting to one moment in One Piece, and cut out each person's
-reaction to it. The moment is in episode 715, "Senor's Elegy of Love." Senor Pink's wife
-Russian has been unresponsive since an accident. He puts on their dead son's baby bonnet,
-and she smiles for the first time. It's about ten seconds of anime, and it wrecks people.
-
-I ran it twice. First Claude Code did it with ordinary tools. Then a fresh Claude Code session
-did the same job with Arcmira doing the finding. The [comparison](#the-same-job-through-arcmira)
-is further down, with the time, tokens and results of both.
-
-That first job turned out to be a bad fit for Arcmira, so I ran a second test closer to what
-it's built for: [where my name comes up, and who covered yesterday's Tesla Roadster
-reveal](#test-2-my-name-and-the-tesla-roadster-reveal). A third test, on a SpaceX story old
-enough for Arcmira's free plan to see, is next. I'm giving every result and number so you can
-draw your own conclusions.
-
-## What it did
-
-Everything ran locally with yt-dlp, ffmpeg and Python, which I already had installed.
-
-1. **Search.** Two YouTube searches through yt-dlp ("one piece episode 715 reaction" and a
-   variant) returned about 30 videos. It skipped the mashups, which stitch many reactors
-   together, and kept 16 videos from individual channels.
-2. **Captions.** It pulled YouTube's English auto-captions for all 16 and searched them for
-   "bonnet", "smile" and "the hat". That got hits in most of them, things like "She smiled
-   dude" or "oh that's a pink Bonnet".
-3. **Download a window.** For 8 videos it downloaded only 2.5 minutes around the caption hit,
-   not the whole 40-minute video.
-4. **Look.** It built contact sheets, one frame every 2 to 3 seconds with a timestamp burned in,
-   and read them. Then it built one-frame-per-second sheets around the moment to set the
-   in and out points.
-5. **Cut.** ffmpeg cut each clip from the bonnet reveal to just after the "To Be Continued"
-   card, and wrote a manifest with the source links and timestamps.
-
-## The clips
-
-Here's what it found. The links jump to the start of each clip on YouTube, so you can check
-them yourself.
-
-| Channel | Source timestamps | Length | What's in it |
-|---|---|---|---|
-| [Rice & Ginger](https://www.youtube.com/watch?v=H9fSb0d0OIE&t=1572s) | 26:12–26:46 | 34 s | Bonnet, smile, card |
-| [YaBoyRockLee Reactions](https://www.youtube.com/watch?v=QnamL-G2btY&t=1588s) | 26:28–27:07 | 39 s | Bonnet, smile, card |
-| [Aliciaxlife](https://www.youtube.com/watch?v=-S2BDjcmFRY&t=1023s) | 17:03–17:37 | 34 s | Bonnet, smile, card (a VTuber, so it's an avatar reacting) |
-| [Carlie & Ange](https://www.youtube.com/watch?v=EPQj0fiJPls&t=1108s) | 18:28–19:04 | 36 s | Bonnet, smile; the episode overlay is very faint |
-| [Haylo & Kiss](https://www.youtube.com/watch?v=wa_w9jMaJIA&t=1380s) | 23:00–23:22 | 22 s | Bonnet, smile; their edit cuts the card |
-
-I'm not rehosting the clips. They're other people's videos with other people's faces in them.
-
-Three more didn't make it. For Into The Void and TGL Reacts the first window landed after
-the moment, and the retry download stalled at zero bytes, so it stopped them. For Haylo &
-Kiss the first wider window found a different smile: Senor Pink remembering it during the
-next episode's fight. That's the same visual, said in the same words, and it's the wrong
-moment. Only the frames told them apart.
-
-## What didn't work
-
-**Matching audio.** The plan was to take the episode audio of the moment from one video and
-find it in all the others by cross-correlation. The episode is the same in every reaction,
-so it should line up no matter where each person paused. It didn't. The reference matched
-itself at 0.99. Every other video scored around 0.2 and landed in the wrong place, including
-when it tried small pitch shifts. I'd guess these channels alter the episode audio to get past
-YouTube's copyright matching, but that's a guess, not something we checked.
-
-**Matching the picture** was never going to work either. Most of these channels shrink the
-episode into a small blurred bubble in a corner for the same reason.
-
-**Captions put it in the right minute, not the right second.** People talk about a moment
-before it happens ("is that what made her smile?") and long after it. The first window for
-three of the eight videos missed the moment entirely.
-
-What actually worked was the "To Be Continued" card. In episode 715 the smile is the last
-beat before the card, and the card is big red text on black. Even blurred into a bubble,
-you can see it on a contact sheet. Thirty seconds before the card covers the bonnet, the
-smile and the reaction.
-
-## What it cost
-
-Measured from Claude Code's own session log, not estimated:
-
-| | Manual method |
-|---|---|
-| Wall-clock time | 17 min 51 s |
-| Model requests | 35 |
-| Output tokens | 22K |
-| Cache writes / cache reads | 79K / 5.3M |
-| List-price cost | $2.13 |
-| Videos searched / clips verified | 16 / 5 |
-
-Most of the cache reads are the contact sheets. Every one of those images stays in context
-and gets re-read on each later request.
-
-## The same job through Arcmira
-
-Arcmira's MCP server gives an agent four tools. The one that does the work, `arcmira_execute_read`,
-runs a short JavaScript program against their API: search transcripts, resolve a name to an
-entity, list a channel's episodes, fetch one video's captions with timestamps. I'm on the free
-plan: 1,000 credits a month, and the newest 30 days of video held back, which doesn't matter for
-reactions posted years ago.
-
-The rules for the second run were simple. Arcmira does all the finding and locating, so no
-YouTube search and no YouTube captions. Once it names a video and a timestamp, the agent can
-download a short window to check the frames and cut the clip, the same as the first run. It ran
-in a fresh session, so its token count doesn't include anything from the first run.
-
-It found nothing. Over 8 tool calls it ran 24 transcript searches and 9 name lookups: the
-episode number, "Senor Pink bonnet", "Russian smile", "Gimlet", the auto-caption spelling
-"Senior Pink", the Dressrosa arc, and a date window covering 2015 to 2020, when these reactions
-went up. "One Piece" resolves only as a product mentioned in passing on talk shows and TEDx
-talks. Senor Pink and Doflamingo don't resolve at all. The searches came back with Talk Python
-and Y Combinator, matching words like "piece" and "episode".
-
-The closest it got was a real reaction channel, Studio Gek, reacting to episodes 511 to 516,
-200 episodes too early. Asked about that channel directly, Arcmira reports 0 searchable videos.
-It had surfaced one passage from it and indexed nothing else. Two One Piece podcast channels also
-show 0.
-
-So Arcmira's index doesn't have these videos. Going by what came back, it covers podcasts and
-talk and news shows, mostly from 2024 on, and anime reaction channels aren't in it. That isn't a bug, and it isn't the
-free plan's delay. It's a different slice of YouTube from the one I needed. The session sent
-Arcmira one feedback note about the gap.
-
-## Side by side
-
-Both measured from Claude Code's own session logs. The Arcmira column leaves out a first
-attempt that stopped after about 15 seconds because the tools hadn't loaded yet.
-
-| | Manual (yt-dlp + captions + frames) | Arcmira |
-|---|---|---|
-| Wall-clock time | 17 min 51 s | 2 min 45 s |
-| Model requests | 35 | 14 |
-| Output tokens | 22K | 12.7K |
-| Cache writes / cache reads | 79K / 5.3M | 41K / 1.8M |
-| List-price model cost | $2.13 | about $0.94 |
-| Arcmira credits | none | 20 of 1,000 |
-| Candidate videos found | 16 | 0 (1 reaction channel, wrong episode) |
-| Clips verified | 5 | 0 |
-
-The Arcmira run was faster and cheaper because it stopped early: once the index came back empty,
-there was nothing to download or look at. A fair comparison would need a job where both methods
-can find something.
-
-Connecting it took longer than running it. The Claude desktop app didn't pass my API key to
-sessions, so the first attempt saw the tools as "needs authentication" even though the key
-worked from a terminal. It ran through a small Python client that calls the same MCP server directly,
-and I later added Arcmira as a custom connector, which worked. That's maybe twenty minutes of
-setup on top of the table.
-
-What I take from it: a search index is only as good as what's in it, and you can't tell that
-from the outside. Arcmira's own docs say it covers podcasts and long-form interviews, and that's
-exactly where it stopped. For "what did podcasters say about this company last month" it's
-probably the right tool. For "find me thirty strangers crying at the same anime scene", YouTube's
-own search and some contact sheets still win. Either way, the step that actually found the
-moment was looking at the frames, and neither method skips that.
-
-## Test 2: my name, and the Tesla Roadster reveal
-
-The anime test was unfair to Arcmira, since its index doesn't cover anime reaction channels.
-So the second test asked the kind of thing it's sold for:
-
-- **Part A.** Where and when has "Aaron Orelup" come up on YouTube or in podcasts? I expected nothing.
-- **Part B.** Tesla revealed the new Roadster yesterday (October 15) and showed it jumping over a
-  line of other cars. List the YouTube videos that covered it, with each one's sponsors, and for
-  the top 10, the creator's main takeaway and the most memorable moment, with a timestamped link.
-
-Both runs got the same written task, ran at the same time as fresh subagents on the same model
-(Opus 5.5), and were told to stop after about 25 minutes of effort and say honestly how far they
-got.
-
-- **By hand:** web search, yt-dlp (YouTube search, video metadata and descriptions) and
-  YouTube's auto-captions. No Arcmira.
-- **Arcmira:** Arcmira for everything about the videos (finding them, sponsors, quotes,
-  timestamps). Web search was allowed only to confirm what the event was. Free plan, captions
-  only, a 300-credit cap.
-
-One thing everyone should know before the results: **Arcmira's free plan withholds the newest
-30 days of video.** On the day of the test it served media only through September 16. A reveal
-from yesterday is outside that, and I knew it would be. I ran it anyway, because "can I find out
-what people said about yesterday's news" is a fair thing to want from a tool like this, and the
-answer on the free plan is part of the result.
-
-### Results side by side
-
-| | By hand | Arcmira (free plan) |
-|---|---|---|
-| Wall-clock time | 11 min 58 s | 5 min 58 s |
-| Model requests | 29 | 24 |
-| Output tokens | 32K | 26K |
-| Cache writes / cache reads | 164K / 3.2M | 99K / 2.6M |
-| List-price model cost | $2.09 | $1.54 |
-| Arcmira credits | none | 56 (980 to 924) |
-| Part A: "Aaron Orelup" | 10 videos with the name in a title, channel name or description; spoken mentions can't be searched | Not in the index; 0 passages for "Orelup" |
-| Part B: event confirmed | Yes: Oct 15 evening, SpaceX's McGregor, Texas site | Yes: same |
-| Part B: videos found | 18, with views | 0: blocked by the 30-day delay |
-| Part B: sponsors | Checked for all 18 (descriptions and captions) | Channel-level lists for 6 likely channels, not per video |
-| Part B: top-10 takeaways / quoted moments | 10 / 9 (one video has no captions) | 0 / 0 |
-
-The Arcmira time includes a short second pass: partway through I told it to stop chasing the
-reveal once the block was confirmed, and to record what it could still offer instead. Both runs'
-numbers come from Claude Code's session logs. I checked the by-hand run's views, titles and
-dates against the metadata it downloaded, and its sponsor finds and quotes against the captions
-and descriptions. They match.
-
-### Part A: my name
-
-**By hand** found the name only where it's written down, never spoken, because YouTube's search
-doesn't look inside captions. Two hits are my own uploads ([Ep 1: Crimson Coil](https://www.youtube.com/watch?v=7TusXDOgV4Y)
-and [Ep 2: Earthlight](https://www.youtube.com/watch?v=URjg8hSlzz8), posted two days ago). There
-were also three videos from a local band's channel that list "Aaron Orelup on Bass" in the
-description, and five videos of a 2018 speech event that list an Aaron Orelup as speaker 6. It
-didn't check whether either of those is me. A search for "Aaron Orelup podcast" returned nothing.
-
-**Arcmira** searched speech, which is the part YouTube search can't do. The name isn't an entity
-in its index. A passage search for "Aaron Orelup" returned 5 passages, all about other people
-called Aaron or Aron (a caller named "Aaron from Ann Arbor" on The Dave Chang Show, for one).
-"Orelup" alone returned 0. That covers the shows Arcmira indexes, through September 16.
-
-Both answers come to "never on a podcast", which is what I expected. They get there from opposite
-sides: one looks at titles and descriptions, the other at what people said out loud.
-
-### Part B: what happened
-
-Both runs confirmed it from news coverage. On the evening of October 15, at SpaceX's test site in
-McGregor, Texas, after a weather delay from October 1, Tesla showed the new Roadster:
-
-- It drove upside down on an inverted ramp, held on by an underbody fan.
-- It used SpaceX cold-gas thrusters to jump over a line of Teslas: a Cybercab, Cybertruck, Semi,
-  Model Y and Model 3, per [TechCrunch](https://techcrunch.com/2026/10/15/tesla-reveals-spacex-powered-roadster-that-flies-and-falls-with-style/).
-  Gizmodo called it a corkscrew over "the entire Tesla vehicle fleet".
-- It ran 0-60 mph in 0.81 seconds, live.
-- Musk said production starts in 2028. No final price was given.
-
-The two runs named the versions differently. The by-hand run had Performance, Thrust and an
-invite-only single-seat flying model, with reservations of $50k and $250k. The Arcmira run, from
-other articles, had Performance, Thrust and Rocket. I'm leaving both as each run reported them.
-
-### Part B, by hand: the videos
-
-Ranked by views on October 16 around 4 pm Central. Tesla's three short promo clips are left out.
-"None found" means it checked both the description and the captions.
-
-| # | Channel (subscribers) | Video | Views | Sponsors (where found) |
-|---|---|---|---|---|
-| 1 | Tesla (3.04M) | [Roadster Event](https://www.youtube.com/watch?v=qt5p-_tE8d0) | 4,573,564 | none; official stream |
-| 2 | CNET (4.1M) | [Everything That Happened in 10 Minutes](https://www.youtube.com/watch?v=TWHXrLzUKJc) | 4,096,441 | none found |
-| 3 | VideoFromSpace (2.16M) | [Tesla Unveils 'Flying' Roadster](https://www.youtube.com/watch?v=eqOfmtTJD1A) | 2,549,873 | none found |
-| 4 | carwow (11.1M) | [New Tesla Roadster is here, and it's INSANE!](https://www.youtube.com/watch?v=4bbfRQDC6cs) | 2,288,009 | none found |
-| 5 | ABC News (19.9M) | [Elon Musk unveils Tesla's new Roadster](https://www.youtube.com/watch?v=BYWy6SyJRZo) | 1,700,086 | none found |
-| 6 | YOUCAR (2.67M) | [NEW TESLA ROADSTER - It Can Fly!!!](https://www.youtube.com/watch?v=Fdhwkap2DFU) | 1,520,329 | none in description; no captions, so an ad read can't be ruled out |
-| 7 | Hagerty (3.87M) | [The FLYING Tesla Roadster explained...](https://www.youtube.com/watch?v=22rvpUecLts) | 1,130,426 | Hagerty's own insurance (ad read ~2:20, description) |
-| 8 | DPCcars (428K) | [Tesla Roadster Finally Unveiled](https://www.youtube.com/watch?v=j8lbY_D7xcY) | 666,668 | none found |
-| 9 | DragTimes (564K) | [INSIDE LOOK! I saw the Flying Tesla Roadster](https://www.youtube.com/watch?v=_lq-DpCE9rU) | 656,395 | no ad read; one dealer link, relationship unknown |
-| 10 | Top Gear (9.55M) | [New Tesla Roadster: SpaceX Thrusters...](https://www.youtube.com/watch?v=JdkIOhFmbKI) | 636,809 | none found |
-| 11 | news.com.au (1.39M) | [Tesla's new Roadster can FLY](https://www.youtube.com/watch?v=aN6strasoHA) | 571,446 | none found |
-| 12 | 7NEWS Australia (2.26M) | [Elon Musk unveils flying Tesla Roadster](https://www.youtube.com/watch?v=_iRhJ1JBRrg) | 554,362 | none in description; no captions |
-| 13 | REC Anything (314K) | [All New 2028 Tesla Roadster can Fly](https://www.youtube.com/watch?v=d2jH2x1HWxE) | 458,368 | none found |
-| 14 | Valuetainment (7.16M) | [Elon Musk Just Changed Cars Forever](https://www.youtube.com/watch?v=GwffNnmuqfk) | 430,805 | no ad read; a Kalshi link in the description, sponsorship unconfirmed |
-| 15 | Solving The Money Problem (304K) | [Tesla Roadster Literally Flies](https://www.youtube.com/watch?v=OhKR-klyTHw) | 273,486 | **AG1** (ad read ~9:40, description) |
-| 16 | NDTV (16.1M) | [Musk Unveils New Flying Car](https://www.youtube.com/watch?v=8B52ozuefgU) | 256,637 | none found |
-| 17 | Ryan Shaw (347K) | [Tesla's Roadster Just Launched](https://www.youtube.com/watch?v=A2SpqBtHvOs) | 240,667 | no ad read; affiliate and referral links only |
-| 18 | Out of Spec Reviews (328K) | [I Went To The Tesla Roadster Unveil!](https://www.youtube.com/watch?v=7oFL2ObpM08) | 183,778 | **IONNA, Lincoln Electric** (ad read near the start, description) |
-
-Only two of the 18 had a paid third-party sponsor. Most of the top videos are news outlets and
-event re-uploads, which don't carry ad reads.
-
-**The top 10's takeaways and most memorable moments.** Quotes are YouTube's auto-captions word for
-word. Each timestamp is the start of a 20-second caption window, so it can be up to 20 seconds early.
-
-1. **Tesla:** pitched as "the last best driver's car" that also flies, production in 2028.
-   [11:20](https://www.youtube.com/watch?v=qt5p-_tE8d0&t=680): "Tony Hawk would be proud. We call
-   that the kick flip... I think we could have cleared more than our whole fleet."
-2. **CNET:** a supercut of the event, no commentary of its own.
-   [2:00](https://www.youtube.com/watch?v=TWHXrLzUKJc&t=120): "Well, it worked."
-3. **VideoFromSpace:** event footage, no commentary.
-   [1:20](https://www.youtube.com/watch?v=eqOfmtTJD1A&t=80): "Flying cars are real... the future
-   promised us flying cars, but instead we got 140 characters. Well, not anymore."
-4. **carwow:** impressed but sceptical. The 0.81 s run is unverified, the demo cars looked
-   lightened, and 2028 deserves "a fairly big pinch of salt".
-   [0:40](https://www.youtube.com/watch?v=4bbfRQDC6cs&t=40): "I didn't really believe it. But
-   after last night's event, I might have to eat some humble pie."
-5. **ABC News:** the trims and prices, and a reminder of the 2017 deposits for a car never delivered.
-   [1:00](https://www.youtube.com/watch?v=BYWy6SyJRZo&t=60): "There is skepticism surrounding the announcement."
-6. **YOUCAR:** an upbeat spec rundown, taken from the description only because there are no
-   captions, so it's unverified. No moment.
-7. **Hagerty:** a technical walk-round with Tesla's Lars Moravy, recorded before the reveal, with
-   a postscript after it. [26:40](https://www.youtube.com/watch?v=22rvpUecLts&t=1600): "It seems
-   almost more real and yet more unreal. I I cannot see how that is ever going to go on sale somehow."
-8. **DPCcars:** a re-upload of the full event.
-   [19:00](https://www.youtube.com/watch?v=j8lbY_D7xcY&t=1140): "...attempt to jump the Snake River
-   Canyon. >> Oh yeah, >> let's give it another shot."
-9. **DragTimes:** a thrilled in-person walkaround; you "can't buy the one that flies".
-   [14:20](https://www.youtube.com/watch?v=_lq-DpCE9rU&t=860): "Everyone's been texting me right
-   now. They didn't think it was real."
-10. **Top Gear:** a design deep-dive recorded before the reveal; it might be a game-changer.
-    [48:40](https://www.youtube.com/watch?v=JdkIOhFmbKI&t=2920): "For me, this feels like a Bugatti
-    Veyron moment where the top brass set absolutely impossible ideals..."
-
-What slowed it down: YouTube rate-limited the caption downloads (HTTP 429), so it had to retry
-with delays. Two videos have no captions, and one news site blocked fetching.
-
-### Part B, Arcmira: what it could and couldn't do
-
-Its search for videos from October 14 onward came back with a gate:
-`freshness_requires_paid`, "Results on this plan stop at 2026-09-16; media published after it
-requires Pro," and a link to start a Pro trial. It didn't try to get around it, so it has no
-reveal videos, views, takeaways or moments.
-
-Here's what it could still add from inside the served window. None of it is about the reveal itself.
-
-**Channels that talked about the Tesla Roadster before**, counting indexed episodes through
-September 16 that mention it: WVFRM Podcast (10), TBPN (8), John Coogan (4), The Iced Coffee Hour
-(4), Bloomberg Podcasts (3), then Core Memory, Eli the Computer Guy, etn. and Doug DeMuro (2 each).
-Searches for Marques Brownlee, Out of Spec Reviews, Fully Charged Show and Donut by name found nothing.
-
-**Those channels' recurring sponsors**, with ad-read counts and the date each was last seen:
-
-| Channel | Top recurring sponsors |
-|---|---|
-| WVFRM Podcast | Shopify (71, last Oct 2), Framer (32, Oct 9), Netsuite (25), Coda (19), Visible (14) |
-| TBPN | Ramp (313, Oct 14), Figma (220, Oct 8), Public (198, Oct 14), Vanta (167), AdQuick (151, lapsed) |
-| Doug DeMuro | DeleteMe (7, Sep 11), Cars & Bids (6, Oct 15), Shopify (5), Warby Parker (5, Oct 9), Mothers (4, Oct 15) |
-| The Iced Coffee Hour | Shopify (19, Oct 11), Netsuite (7), Upwork (5), Gusto (4), Opus Clip (4) |
-| John Coogan | Ramp (33), Figma (24), Public (22), Vanta (18), Restream (17) |
-| Bloomberg Podcasts | OpenAI (62), Bloomberg (49), Comcast Business (21), ChatGPT (18), Cincinnati Insurance (17) |
-
-Those last-seen dates run up to October 15, so sponsor data isn't held back the way video search
-is. Nothing in the by-hand toolkit gives you a channel's sponsor history like that. You'd have to
-read every description yourself.
-
-**Pre-event chatter** it found: John Coogan and Bloomberg Podcasts on August 14 about leaked plans
-for a flying Roadster demo, a passing "there will be the Roadster" on 20VC on September 12, and TBPN
-on September 15 ("Because he's coming out with the Roadster." / "But that's in October, right?").
-
-None of the six channels Arcmira ranked highest for Roadster talk showed up in the by-hand top 18.
-They're podcasts and talk shows, while the by-hand list is car channels, news outlets and
-re-uploads. That's two different slices of YouTube.
-
-### What I'd take from test 2
-
-On the free plan, Arcmira can't answer questions about the last month, and "who covered
-yesterday's news" is exactly that. Doing it by hand worked better than I expected: 18 videos,
-sponsors checked, nine quoted moments, in 12 minutes for about two dollars. What by hand can't do
-is search what people *said*. My name test shows that from the other side: YouTube search only
-found me where I'm written down. Test 3 asks a SpaceX question old enough for the free plan to
-see, so both methods are working with the same videos.
+I'd never used Claude to find a specific moment in a video, or to research who said what on
+YouTube. Then Arcmira's founder emailed me after my [Clawd montage post](/posts/clawd-growth-montage/).
+Arcmira indexes YouTube and podcast transcripts and lets an AI agent search them through an MCP
+server, a plug-in connection for tools like Claude. I wanted two answers, fast:
+
+1. **How good is Claude at this already, with only free tools?**
+2. **Is Arcmira useful to me right now, and for what?**
+
+So I gave Claude Code three research jobs and ran each one twice, at the same time, in fresh
+sessions on the same model (Opus 5.5):
+
+- **Claude alone:** web search, plus yt-dlp to search YouTube and read video details and captions.
+- **With Arcmira:** Arcmira for everything about the videos. Web search only to confirm what an event was.
+
+Time and tokens come from Claude Code's own logs. Then I had Claude cut every moment either side
+found into a clip, so you can check the work without leaving this page.
+
+## The short answer
+
+- **Claude alone is genuinely good at this.** In every test it found the videos, read their
+  captions and descriptions, and pinned down quotes word for word. A job took 12 to 26 minutes
+  and $2 to $3 of model time.
+- **Arcmira searches a different part of YouTube.** On the same SpaceX question, Claude alone
+  found space channels: NASASpaceflight, Marcus House, Everyday Astronaut. Arcmira found
+  podcasts and finance shows: All-In, Bloomberg, ARK Invest. **Not one video was on both lists.**
+- **Arcmira hears names that are only spoken.** That's the thing Claude alone can't do, because
+  YouTube's search only reads titles and descriptions. For "who's talking about this person or
+  company on podcasts", Arcmira was clearly better.
+- **Arcmira has hard limits as it stands.** Its index skips whole genres (anime reaction channels
+  weren't in it at all), and the free plan can't see the last 30 days. Credits also go fast: one
+  test used 580 of the 1,000 a month.
+- **Both methods got timestamps wrong by up to 19 seconds**, but every quote was real. When I
+  re-timed each clip from the captions' word timings, all 33 quotes I tried were found, word for word.
+
+| | Test 1: anime reactions | | Test 2: yesterday's Tesla reveal | | Test 3: SpaceX, July |  |
+|---|---|---|---|---|---|---|
+| | **Alone** | **Arcmira** | **Alone** | **Arcmira** | **Alone** | **Arcmira** |
+| Videos found | 5 clips | 0 | 18 | 0 (blocked) | 20 | 12 |
+| Quotes with timestamps | | | 9 | | 10 | 10 |
+| Person mentions found | | | | | 14 (+12 likely) | 15 (of ~32 counted) |
+| Time | 17:51 | 2:45 | 11:58 | 5:58 | 25:55 | 7:54 |
+| Model cost (list price) | $2.13 | $0.94 | $2.09 | $1.54 | $3.16 | $2.16 |
+| Arcmira credits | | 20 | | 56 | | 580 |
+
+Arcmira's free plan gives 1,000 credits a month; extra credits cost $0.002 each, so test 3's 580
+would be about $1.16.
+
+## Test 3: a SpaceX question both could see
+
+This is the fair fight, so it goes first. Arcmira's free plan serves nothing newer than 30 days,
+so this test only counted videos from June 18 to September 16, which is everything it can see.
+
+1. Where has SpaceX president **Gwynne Shotwell** come up on YouTube and podcasts?
+2. Which videos covered **Starship Flight 13** in July (an abort at T-0 on July 16, then a flight
+   on July 24 that deployed 20 Starlink satellites, made the ship's softest splashdown yet, and
+   hit the water hard with the booster)? For each: sponsors, the creator's main takeaway, and for
+   the top 10, the most memorable moment.
+
+### Claude alone: the space channels
+
+It ranked 20 videos by views, from VideoFromSpace's 1.03 million down. These are its top 10
+moments, each clip cut to the second the words were said:
+
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/m01-videofromspace.jpg" src="/media/arcmira-test/starship/m01-videofromspace.mp4" style="width:100%"></video><figcaption><b>VideoFromSpace</b> (1.03M views), SpaceX's webcast: "it didn't look like we lit all 13 engines that we were planning for that initial landing burn." <a href="https://www.youtube.com/watch?v=2TF98WKebD4&t=452s">7:32</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/m02-nsf.jpg" src="/media/arcmira-test/starship/m02-nsf.mp4" style="width:100%"></video><figcaption><b>NASASpaceflight</b> (954K), 4 hours into the stream: "The ship hasn't exploded, but it is on fire." <a href="https://www.youtube.com/watch?v=lC3RDO7tdLc&t=15087s">4:11:27</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/m03-marcushouse.jpg" src="/media/arcmira-test/starship/m03-marcushouse.mp4" style="width:100%"></video><figcaption><b>Marcus House</b> (759K): an incredible mission, booster landing aside. "I suspect flight 14 may not go for the Super Heavy catch like we were hoping." <a href="https://www.youtube.com/watch?v=hF3CHBq56DA&t=525s">8:45</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/m04-ap.jpg" src="/media/arcmira-test/starship/m04-ap.mp4" style="width:100%"></video><figcaption><b>Associated Press</b> (669K), SpaceX's host: "I'm losing my mind right now. We are still getting views from on board the ship with it in the water." <a href="https://www.youtube.com/watch?v=uI6pKTGyNq4&t=6031s">1:40:31</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/m05-everydayastronaut.jpg" src="/media/arcmira-test/starship/m05-everydayastronaut.mp4" style="width:100%"></video><figcaption><b>Everyday Astronaut</b> (660K): "Oh, it didn't blow up. Come on." Tim Dodd expects orbit on flight 14 or 15. <a href="https://www.youtube.com/watch?v=-pR0eOj9hK0&t=9665s">2:41:05</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/m06-nsf-abort.jpg" src="/media/arcmira-test/starship/m06-nsf-abort.mp4" style="width:100%"></video><figcaption><b>NASASpaceflight</b>, the July 16 abort (654K): "We have ignition and we have an abort. Starship is not launching today." <a href="https://www.youtube.com/watch?v=vYpQwwf1XNw&t=10352s">2:52:32</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/m07-whataboutit.jpg" src="/media/arcmira-test/starship/m07-whataboutit.mp4" style="width:100%"></video><figcaption><b>What about it!?</b> (607K): "Ship 40 did a soft splashdown, and soft isn't cutting it." <a href="https://www.youtube.com/watch?v=ixSigvIlLcw&t=1357s">22:37</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/m08-whataboutit-stream.jpg" src="/media/arcmira-test/starship/m08-whataboutit-stream.mp4" style="width:100%"></video><figcaption><b>What about it!?</b> stream (505K): "It didn't even explode. Look at this." <a href="https://www.youtube.com/watch?v=KZDeJv7Ba-8&t=13566s">3:46:06</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/m09-scottmanley.jpg" src="/media/arcmira-test/starship/m09-scottmanley.mp4" style="width:100%"></video><figcaption><b>Scott Manley</b> (475K): the ship was exceptional, the booster wasn't. "We wait for the big kaboom and there is no kaboom." <a href="https://www.youtube.com/watch?v=_EN5Jsl_G0I&t=1191s">19:51</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/m10-marcushouse-preview.jpg" src="/media/arcmira-test/starship/m10-marcushouse-preview.mp4" style="width:100%"></video><figcaption><b>Marcus House</b>, July 11 preview (381K): "here we are with our first more official hints on the target dates for Starship flight 13." <a href="https://www.youtube.com/watch?v=ecG1Hm5sf70&t=53s">0:53</a></figcaption></figure>
+</div>
+
+**Sponsors it found, per video:** Outskill, Mammouth AI and Surfshark as ad reads in the captions,
+and BlueDot, Abacus AI and Incogni in descriptions. Most live streams and news channels had none.
+
+**Shotwell:** 14 confirmed mentions and about 12 likely ones, mostly from titles and
+descriptions: the Starbase Louisiana announcement in August, the Q2 earnings call, Starlink Mobile.
+It could only confirm spoken mentions in two videos it already had captions for. It guessed the
+real total is 50 to 150, with low confidence, because every new search kept finding more.
+
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/s04-spaceflightnow-shotwell.jpg" src="/media/arcmira-test/starship/s04-spaceflightnow-shotwell.mp4" style="width:100%;max-width:560px"></video><figcaption><b>Spaceflight Now</b>, one of its two spoken finds: "with President Gwynne Shotwell saying to CNBC that it might happen as soon as flight 14." <a href="https://www.youtube.com/watch?v=kUxOr5WK_Qs&t=368s">6:08</a></figcaption></figure>
+
+**What slowed it down:** YouTube refused most caption downloads after a burst (HTTP 429), so it
+got captions for only 13 of 21 videos. It read 4-to-6-hour live streams by keyword only.
+
+### With Arcmira: the podcasts and finance shows
+
+Arcmira found 12 videos, from different channels entirely: All-In, Bloomberg, Farzad, Limitless, ARK
+Invest and live-stream re-broadcasts. It could only rank them roughly: it returns views for a
+channel's 25 newest indexed episodes only, so it had view counts for just 4 of the 12. Its top 10
+moments:
+
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/a01-nypost.jpg" src="/media/arcmira-test/starship/a01-nypost.mp4" style="width:100%"></video><figcaption><b>New York Post</b> restream of the abort: "we did trigger a hold on the booster that aborted our liftoff as we were starting to light those Raptor engines." <a href="https://www.youtube.com/watch?v=yXMzm03TQXg&t=1560s">26:00</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/a02-allin.jpg" src="/media/arcmira-test/starship/a02-allin.mp4" style="width:100%"></video><figcaption><b>All-In</b>, David Sacks on Starlink V3: "So over 20 times more capacity per launch. That's the power of it." <a href="https://www.youtube.com/watch?v=muRIXCDw-k0&t=2227s">37:07</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/a03-bloomberg-surveillance.jpg" src="/media/arcmira-test/starship/a03-bloomberg-surveillance.mp4" style="width:100%"></video><figcaption><b>Bloomberg Surveillance</b>, the abort as a stock story: SpaceX "shares are down 3.6% in the premarket after the company scrubbed its latest Starship launch." <a href="https://www.youtube.com/watch?v=bGbORnmy2h0&t=1631s">27:11</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/a04-businessweek-tv.jpg" src="/media/arcmira-test/starship/a04-businessweek-tv.mp4" style="width:100%"></video><figcaption><b>Bloomberg Businessweek Daily</b>: "Starship has actually yet to achieve orbit." <a href="https://www.youtube.com/watch?v=OJkv4b0kecg&t=652s">10:52</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/a05-businessweek-podcast.jpg" src="/media/arcmira-test/starship/a05-businessweek-podcast.mp4" style="width:100%"></video><figcaption><b>Bloomberg Businessweek</b>, podcast feed of the same segment: "relatively successful launch recently. Uh, what are we still waiting for?" <a href="https://www.youtube.com/watch?v=S0nXcQc8RX4&t=639s">10:39</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/a06-farzad-understands.jpg" src="/media/arcmira-test/starship/a06-farzad-understands.mp4" style="width:100%"></video><figcaption><b>Farzad</b> (14K views): the real payoff is Starlink V3, "a satellite that has 10 times the bandwidth of the current Starlink V2 satellites." <a href="https://www.youtube.com/watch?v=g6Xbjo278a4&t=821s">13:41</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/a07-farzad-realizes.jpg" src="/media/arcmira-test/starship/a07-farzad-realizes.mp4" style="width:100%"></video><figcaption><b>Farzad</b> (13K) on the heat shield: "It literally has to dump 700 tons of TNT in a matter of minutes." <a href="https://www.youtube.com/watch?v=TnaJyLkf8Jk&t=230s">3:50</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/a08-limitless.jpg" src="/media/arcmira-test/starship/a08-limitless.mp4" style="width:100%"></video><figcaption><b>Limitless</b> (11K): "do you know how long it takes to build a Starship now? It's two weeks." <a href="https://www.youtube.com/watch?v=nbt7ZI9bW2o&t=1207s">20:07</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/a09-farzad-restream.jpg" src="/media/arcmira-test/starship/a09-farzad-restream.mp4" style="width:100%"></video><figcaption><b>Farzad</b> restream of SpaceX's webcast: "That is the softest splashdown we have ever had with the Starship there in the Indian Ocean." <a href="https://www.youtube.com/watch?v=CwRS6g7Z1Eg&t=2132s">35:32</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/a10-ark.jpg" src="/media/arcmira-test/starship/a10-ark.mp4" style="width:100%"></video><figcaption><b>ARK Invest</b>: "was it a success? Yes. Did they do everything they wanted? No." <a href="https://www.youtube.com/watch?v=XWZWiTKqafs&t=50s">0:50</a></figcaption></figure>
+</div>
+
+**Sponsors:** channel-level only, from each channel's sponsor history (All-In: OKX, Circle,
+Airwallex, AppLovin; Farzad: Rebellionaire; Limitless: Qualcomm). It couldn't confirm the ad read
+in any single video, because the free plan won't let a search end at a date ("The before filter
+requires Pro").
+
+**Shotwell is where it shone.** It matched her exactly ("President and COO of SpaceX") and
+counted about 32 episodes across 16 channels in the window: All-In 6, Bloomberg Podcasts 4, and
+so on. It quoted what people said about her, including in videos that never name her in the
+title or description:
+
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/s01-allin-shotwell.jpg" src="/media/arcmira-test/starship/s01-allin-shotwell.mp4" style="width:100%"></video><figcaption><b>All-In</b>, introducing her as a guest: "she's the glue to the tornado." (Claude alone found this one too.) <a href="https://www.youtube.com/watch?v=iwBOQeFPAwg&t=19s">0:19</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/s02-limitless-shotwell.jpg" src="/media/arcmira-test/starship/s02-limitless-shotwell.mp4" style="width:100%"></video><figcaption><b>Limitless</b>: "Gwynne Shotwell, the COO, the like godsend of SpaceX, basically the effective CEO." <a href="https://www.youtube.com/watch?v=nbt7ZI9bW2o&t=1231s">20:31</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/starship/s03-bloomberg-shotwell.jpg" src="/media/arcmira-test/starship/s03-bloomberg-shotwell.mp4" style="width:100%"></video><figcaption><b>Bloomberg Tech</b>: "I did take notice of Gwen Shotwell, the president of SpaceX, talking about Starlink Mobile." <a href="https://www.youtube.com/watch?v=KbGLVK1Nnk4&t=229s">3:49</a></figcaption></figure>
+</div>
+
+Four of its 15 listed mentions came back as "about her" without her name in the returned passage,
+and it marked those unverified.
+
+**The credits surprise:** test 3 used 580 credits, more than half the month's free allowance. Two
+calls asked for up to 100 mention rows each, and Arcmira charges 4 credits per row after the first 5.
+The agent blamed "other agents spending from the same account", which was wrong: I checked, and it
+was the only thing using Arcmira at the time.
+
+### Why the lists don't overlap
+
+Arcmira's index barely covers dedicated space channels. It reported one NASASpaceflight video, indexed
+through 2025, and Marcus House indexed only to July 11; Everyday Astronaut and Scott Manley didn't
+resolve at all. Meanwhile YouTube's search ranks the big space channels first, and never surfaces a
+two-hour finance podcast that spends five minutes on Starship. Each method is blind to the other's half.
+
+## Test 2: yesterday's Tesla reveal, and my own name
+
+Tesla revealed the new Roadster on October 15, at SpaceX's test site in McGregor, Texas, and flew it
+over a line of other Teslas on rocket thrusters. I asked which videos covered it, their sponsors and
+the top 10's best moments. I also asked where my own name has come up, expecting never.
+
+**Arcmira couldn't do the reveal at all.** Its search for anything after September 16 came back
+with `freshness_requires_paid`: "Results on this plan stop at 2026-09-16; media published after it
+requires Pro." What it could still offer was each channel's sponsor history, with dates running up
+to the day of the reveal. That data isn't held back, and nothing free gives it to you.
+
+**Claude alone** found 18 videos in 12 minutes, checked each for sponsors (only two had a paid
+one: AG1, and IONNA with Lincoln Electric), and found the best moment in nine of the top ten. The
+tenth, YOUCAR, has no captions:
+
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/roadster/01-tesla.jpg" src="/media/arcmira-test/roadster/01-tesla.mp4" style="width:100%"></video><figcaption><b>Tesla</b> (4.57M views): "Tony Hawk would be proud. We call that the kick flip... I think we could have cleared more than our whole fleet." <a href="https://www.youtube.com/watch?v=qt5p-_tE8d0&t=693s">11:33</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/roadster/02-cnet.jpg" src="/media/arcmira-test/roadster/02-cnet.mp4" style="width:100%"></video><figcaption><b>CNET</b> (4.10M), a supercut: "Well, it worked." <a href="https://www.youtube.com/watch?v=TWHXrLzUKJc&t=138s">2:18</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/roadster/03-videofromspace.jpg" src="/media/arcmira-test/roadster/03-videofromspace.mp4" style="width:100%"></video><figcaption><b>VideoFromSpace</b> (2.55M): "Flying cars are real... instead we got 140 characters. Well, not anymore." <a href="https://www.youtube.com/watch?v=eqOfmtTJD1A&t=82s">1:22</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/roadster/04-carwow.jpg" src="/media/arcmira-test/roadster/04-carwow.mp4" style="width:100%"></video><figcaption><b>carwow</b> (2.29M), impressed but sceptical: "I might have to eat some humble pie." <a href="https://www.youtube.com/watch?v=4bbfRQDC6cs&t=52s">0:52</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/roadster/05-abc.jpg" src="/media/arcmira-test/roadster/05-abc.mp4" style="width:100%"></video><figcaption><b>ABC News</b> (1.70M): "There is skepticism surrounding the announcement." <a href="https://www.youtube.com/watch?v=BYWy6SyJRZo&t=68s">1:08</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/roadster/07-hagerty.jpg" src="/media/arcmira-test/roadster/07-hagerty.mp4" style="width:100%"></video><figcaption><b>Hagerty</b> (1.13M): "It seems almost more real and yet more unreal... I cannot see how that is ever going to go on sale somehow." <a href="https://www.youtube.com/watch?v=22rvpUecLts&t=1602s">26:42</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/roadster/08-dpccars.jpg" src="/media/arcmira-test/roadster/08-dpccars.mp4" style="width:100%"></video><figcaption><b>DPCcars</b> (667K), Musk: "...attempt to jump the Snake River Canyon." <a href="https://www.youtube.com/watch?v=j8lbY_D7xcY&t=1143s">19:03</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/roadster/09-dragtimes.jpg" src="/media/arcmira-test/roadster/09-dragtimes.mp4" style="width:100%"></video><figcaption><b>DragTimes</b> (656K), at the event: "Everyone's been texting me right now. They didn't think it was real." <a href="https://www.youtube.com/watch?v=_lq-DpCE9rU&t=871s">14:31</a></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/roadster/10-topgear.jpg" src="/media/arcmira-test/roadster/10-topgear.mp4" style="width:100%"></video><figcaption><b>Top Gear</b> (637K): "For me, this feels like a Bugatti Veyron moment..." <a href="https://www.youtube.com/watch?v=JdkIOhFmbKI&t=2925s">48:45</a></figcaption></figure>
+</div>
+
+**My name:** both said "never on a podcast", from opposite sides. Claude alone found my own two
+uploads, plus a band and a 2018 speech event that list an Aaron Orelup in their descriptions, which
+may or may not be me. Arcmira found no "Orelup" in anything said on the shows it indexes. A spoken
+mention with no written trace would only show up through Arcmira.
+
+## Test 1: one moment across reaction videos
+
+The first job was the one I actually wanted, and the hardest: find YouTubers filming themselves
+watching One Piece episode 715, and cut out their reaction to one ten-second moment. Senor Pink
+puts on his dead son's baby bonnet for his wife Russian, who hasn't responded to anything since an
+accident, and she smiles for the first time.
+
+**Claude alone** found five, each clip running from the bonnet to just after the smile:
+
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/onepiece/01-rice-and-ginger.jpg" src="/media/arcmira-test/onepiece/01-rice-and-ginger.mp4" style="width:100%"></video><figcaption><a href="https://www.youtube.com/watch?v=H9fSb0d0OIE&t=1572s">Rice &amp; Ginger</a>, 26:12</figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/onepiece/02-yaboyrocklee.jpg" src="/media/arcmira-test/onepiece/02-yaboyrocklee.mp4" style="width:100%"></video><figcaption><a href="https://www.youtube.com/watch?v=QnamL-G2btY&t=1588s">YaBoyRockLee Reactions</a>, 26:28</figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/onepiece/03-aliciaxlife.jpg" src="/media/arcmira-test/onepiece/03-aliciaxlife.mp4" style="width:100%"></video><figcaption><a href="https://www.youtube.com/watch?v=-S2BDjcmFRY&t=1023s">Aliciaxlife</a> (a VTuber), 17:03</figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/onepiece/04-carlie-and-ange.jpg" src="/media/arcmira-test/onepiece/04-carlie-and-ange.mp4" style="width:100%"></video><figcaption><a href="https://www.youtube.com/watch?v=EPQj0fiJPls&t=1108s">Carlie &amp; Ange</a>, 18:28</figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/arcmira-test/onepiece/05-haylo-and-kiss.jpg" src="/media/arcmira-test/onepiece/05-haylo-and-kiss.mp4" style="width:100%"></video><figcaption><a href="https://www.youtube.com/watch?v=wa_w9jMaJIA&t=1380s">Haylo &amp; Kiss</a>, 23:00</figcaption></figure>
+</div>
+
+Here, captions weren't enough. People talk about a scene before and after it happens, and for one
+channel the first caption match was the same smile remembered in the next episode. So Claude
+downloaded a couple of minutes around each match, laid out one frame per second, and looked.
+Matching the episode's own audio across videos failed completely: these channels shrink the anime
+into a blurred corner and alter its sound, presumably to get past YouTube's copyright matching.
+
+**Arcmira found nothing.** Over 24 searches, its closest hit was one reaction channel 200 episodes
+short, for which it holds no searchable videos.
+
+## So is Arcmira useful to me right now?
+
+**What Claude already does well without it:** finding videos on a topic, ranking them by views,
+reading each one's captions and description, finding the exact second something was said, checking
+sponsors, and cutting the clip. Expect $2 to $3 and 12 to 26 minutes per job like these, plus a few
+minutes of scripted cutting if you want clips. It's precise once it has a video's captions, and if
+it needs to see something, it can look at the frames.
+
+**What you give up without Arcmira:**
+
+- **Podcasts and finance or business shows.** YouTube search ranks them low for a topic; Arcmira
+  finds them. In test 3 that was an entirely different set of 12 videos.
+- **Spoken mentions.** A name or company that's said but never written in a title or description.
+- **Sponsor histories** for a channel, with counts and dates.
+- **Counts.** "About 32 episodes on 16 channels" in one call, where Claude alone could only guess "50 to 150".
+
+**What's harder with Arcmira:**
+
+- **Coverage you can't see in advance.** No anime reaction channels, little dedicated space
+  coverage. You only find out by searching.
+- **The free plan's 30-day delay**, plus Pro-only filters such as ending a search at a date.
+  Recent news, the first thing I'd want, is out.
+- **Credits go fast.** One careless call with a large row limit can use half a month's allowance.
+- **Setup and rough edges.** In the Claude desktop app, the documented sign-in didn't show up for
+  me and an API key set from the terminal didn't reach sessions. Adding it as a custom connector
+  worked. Each request is a small JavaScript program with a 30-second limit, and a few timed out.
+
+**My verdict for now:** Claude alone covers most of what I'd do, including the part I cared about
+most, finding and cutting exact moments. Arcmira is worth having for one job: tracking what
+podcasts and business shows say about a person, company or topic. For that it found things Claude
+couldn't, and the useful version is probably two runs side by side, not one tool instead of the other.
