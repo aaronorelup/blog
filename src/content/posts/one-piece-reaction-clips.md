@@ -1,7 +1,7 @@
 ---
 id: "AO-051"
 title: "Can Claude find a specific moment in a YouTube video, and does Arcmira help?"
-summary: "I'd never asked Claude to pull exact moments out of videos or research who said what on YouTube. So I ran four tests, with and without Arcmira, a transcript-search MCP built for exactly that, and made a 5-minute animated video of what using it is like. Every clip is on this page."
+summary: "I'd never asked Claude to pull exact moments out of videos or research who said what on YouTube. So I ran four tests, with and without Arcmira, a transcript-search MCP built for exactly that, and had Claude make a short animated video of the results. Every clip is on this page."
 date: 2026-10-16
 status: "in-progress"
 tags: ["claude-code", "video", "research", "yt-dlp", "mcp", "arcmira"]
@@ -9,7 +9,7 @@ preview:
   verdict: "Great at one job"
   takeaway: "Claude alone finds and cuts exact moments for $2-3 a job. Arcmira's one real edge: every time a name is said on a podcast, which YouTube search can't see."
   points:
-    - "Skyebrows: Arcmira found 25 spoken mentions in 16 episodes. YouTube search found 2 of those episodes, and only with the show's name."
+    - "Every Skyebrows mention: search alone found 1,028 videos naming him; Arcmira found 25 spoken mentions. Zero overlap."
     - "Every quote either method found matched YouTube's captions word for word. Their timestamps were up to 19 seconds off."
     - "Arcmira's free plan can't see the last 30 days or anime channels, and one broad search used 580 of its 1,000 monthly credits."
   image: "/media/previews/one-piece-reaction-clips.webp"
@@ -48,9 +48,9 @@ found into a clip, so you can check the work without leaving this page.
 })();
 </script>
 
-A 5-and-a-half-minute animated walkthrough of test 4: the calls Claude makes, what comes back,
-the timeline it built for Skyebrows, and what it cost. Claude made all of it: the 3D shots in
-Blender, the rest in HyperFrames, narration from an ElevenLabs voice, and music synthesized in code.
+A 4-minute-41 walkthrough of test 4, told by Claude, the agent that ran it: what Arcmira is, both
+runs, what the credits bought and the verdict. Claude made all of it: the 3D shots in Blender, the
+rest in HyperFrames, narration from a Gemini voice, and music synthesized in code.
 [Small MP4](/media/arcmira-test/explainer/fallback-540p.mp4) if the player doesn't load.
 
 ## The short answer
@@ -61,11 +61,12 @@ Blender, the rest in HyperFrames, narration from an ElevenLabs voice, and music 
 - **Arcmira searches a different part of YouTube.** On the same SpaceX question, Claude alone
   found space channels: NASASpaceflight, Marcus House, Everyday Astronaut. Arcmira found
   podcasts and finance shows: All-In, Bloomberg, ARK Invest. **Not one video was on both lists.**
-- **Arcmira hears names that are only spoken, and that's its real use.** YouTube's search only
-  reads titles and descriptions. For Skyebrows, an AI music video maker, Arcmira found 25 spoken
-  mentions across 16 podcast episodes; plain YouTube search found 2 of those episodes, and only
-  after I typed the show's name. Its own catalog of mentions had just 1: the transcript search
-  is what finds them.
+- **Arcmira's one real edge: names that are only spoken.** Asked to find every mention of
+  Skyebrows, an AI music video maker, Claude alone found 1,028 videos naming him, in 2 minutes 22
+  seconds, for free. Arcmira found 25 mentions said out loud in 16 podcast episodes, for 340
+  credits. Neither list had a single item from the other. To find spoken mentions alone, Claude
+  had to download transcripts one by one, and YouTube blocked it before the first. Arcmira has
+  them already pulled.
 - **Arcmira has hard limits as it stands.** Its index skips whole genres (anime reaction channels
   weren't in it at all), and the free plan can't see the last 30 days. Credits go fast: I used the
   whole 1,000-credit month in one day, and the last few features I tried hit a `quota_exceeded` wall.
@@ -86,37 +87,58 @@ Blender, the rest in HyperFrames, narration from an ElevenLabs voice, and music 
 Arcmira's free plan gives 1,000 credits a month; extra credits cost $0.002 each, so test 3's 580
 would be about $1.16.
 
-## Test 4: every time one name gets said
+## Test 4: every mention of one creator
 
-This is the job the earlier tests pointed to: a timeline of every time a person gets mentioned,
-for someone who doesn't get mentioned much. I picked
-[Skyebrows](https://www.youtube.com/@skyebrows), an AI music video maker I enjoy. This time I
-skipped the race between two fresh runs and just used Arcmira as hard as I could, every feature
-the docs list. Then I checked the results against YouTube's own captions and against a plain
-YouTube search.
+The job the earlier tests pointed to: find every video and podcast that mentions one person. I
+picked [Skyebrows](https://www.youtube.com/@skyebrows), an AI music video maker I enjoy, and had
+Claude run it both ways on the same day, with the same instruction to be thorough.
 
-**The result: 25 spoken mentions across 16 episodes on 3 channels, from February 6 to September 9,
-2026.** Twenty-two of them are on one podcast, Based Camp with Simone and Malcolm Collins. Almost
-none appear in an episode title or description.
+| | Claude alone (free tools) | Claude with Arcmira |
+|---|---|---|
+| What it did | 35 YouTube searches at 100 results each: every spelling (Skyebrows, Skybrows, Sky Brows), his handle, fan terms, every song title | About 27 transcript searches, plus name lookups and the catalog |
+| Time | 2 min 22 s for the searches | About 15 minutes of calls |
+| Cost | $0 | 340 credits (the free plan gives 1,000 a month) |
+| Videos found that name him or a song in the title | **1,028**, from 266 channels, about 487 hours | 0 |
+| Spoken mentions found | 0: YouTube blocked transcript downloads before the first of 595 candidates | **25**, in 16 episodes on 3 channels |
+| Overlap | none of Arcmira's 16 episodes | none of the 1,028 videos |
 
-**What made it work, and what nearly didn't:**
+**Why each side missed what the other found:**
 
-- **The spelling.** He spells it Skyebrows. People say "Skybrows", and that's how the transcripts
-  have it. `resolve("Skyebrows")` found nothing. `resolve("Skybrows")` found a person with 2
-  appearances. His own channel isn't in Arcmira's index at all.
-- **The catalog undercounts.** Arcmira's tagged list of mentions has exactly one row for him. Its
-  transcript search, scoped to Based Camp, returned 20 passages, and all 20 say his name.
-  Walking the search forward through the year found 22 on that show, plus Asmongold TV and
-  Endgame with Amanda Cassatt.
-- **Search never says no.** His song titles returned only noise: "Breathing Elon's Musk" came back
-  as Bloomberg calling SpaceX "a living, breathing animal". Claude kept only passages that actually
-  contain the name.
-- **The quotes are real.** I checked 14 of the 25 against YouTube's own captions and all 14
-  matched word for word. Arcmira's passage timestamps ran up to 49 seconds before the words
-  themselves, so every clip below is re-timed to the second.
-- **Plain YouTube search sees almost none of this.** Searching "skyebrows" finds his fans: 44
-  reaction videos, tributes and interviews from other channels, none of them in Arcmira's index.
-  It found 2 of the 16 podcast episodes, and only after I typed the show's name.
+- **Arcmira only searches its own index**, which is podcasts and talk shows. None of the 1,028
+  reaction, tribute, breakdown and interview videos about him ever showed up in its results, and his
+  own channel isn't in it.
+- **YouTube's search only reads titles and descriptions.** The 16 episodes where Arcmira heard his
+  name don't mention him in either, so 35 searches never surfaced them.
+- **Finding spoken mentions alone means reading transcripts.** Claude started pulling transcripts
+  for the 595 search results whose titles don't name him. YouTube blocked it before the first one
+  (`IpBlocked`, then `HTTP 429: Too Many Requests`), after a day of heavy use, and it was still
+  blocked half an hour later. I stopped there: that wall is part of the result. Arcmira's advantage
+  is that its transcripts are already pulled and searchable, so it never hits it.
+
+**What the 340 credits bought:** 25 spoken mentions in episodes nobody would think to open, 22 of
+them on one podcast (Based Camp with Simone and Malcolm Collins), plus Asmongold and the Endgame
+podcast. A search that returns 20 passages costs about 60 credits.
+
+**Was it comprehensive? No.** It only covers Arcmira's index. On the free plan it can't show
+anything from the last 30 days without upgrading to a paid tier, and filtering by date range is paid
+too, so Claude couldn't page through the year cleanly. Claude's estimate for a thorough sweep of the
+index for one name is about 1,500 credits: more than a free month, or under a tenth of the Pro
+plan (20,000 credits for $20 a month). No number of credits adds the fan videos it doesn't index, and
+their titles already show them.
+
+**Two things it did well, and two catches:**
+
+- Spelled correctly, `resolve("Skyebrows")` found nothing. The way people say it, "Skybrows", it found him.
+- Its catalog of tagged mentions had 1 row for him. Searching the transcripts found 25.
+- Its search always returns something: his song "Breathing Elon's Musk" came back as Bloomberg calling
+  SpaceX "a living, breathing animal". Claude kept only passages that contain the name.
+- The quotes are real: 14 of 14 checked against YouTube's own captions matched word for word.
+
+**A correction.** An earlier version of this post and its video said plain YouTube search found only
+2 of these podcast episodes and 44 videos about him. Those numbers came from four searches I'd capped
+at 10 to 40 results, so they measured my effort, not what YouTube can find. The numbers above replace them.
+
+### What Arcmira found that search didn't
 
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
 <figure style="margin:0"><video controls playsinline preload="none" poster="/media/arcmira-test/skyebrows/k01-basedcamp-feb06-different.jpg" src="/media/arcmira-test/skyebrows/k01-basedcamp-feb06-different.mp4" style="width:100%"></video><figcaption><b>Feb 6</b>, Based Camp: &ldquo;what <b>Skybrows</b> is doing, I mean, not like we&#x27;re ever going to get to that level&rdquo; <a href="https://www.youtube.com/watch?v=LY0ZqhtVId0&t=3059s">50:59</a></figcaption></figure>
@@ -136,7 +158,7 @@ none appear in an episode title or description.
 </div>
 
 <details>
-<summary>All 25 mentions, with links</summary>
+<summary>All 25 spoken mentions, with links</summary>
 
 Timestamps marked * are Arcmira's passage start (the name is said within the next minute); the
 rest are the exact second, from YouTube's captions.
@@ -172,82 +194,81 @@ rest are the exact second, from YouTube's captions.
 </details>
 
 <details>
-<summary>The other half: 44 videos about him that plain YouTube search finds</summary>
+<summary>What plain search found: the 50 most-viewed of the 1,028 videos</summary>
 
-Ranked by date. The biggest is a re-upload of Asmongold reacting to "A Million Amelias" (231,639
-views); the busiest stretch is the Zuckerwars release, with 10 reaction and tribute videos from
-August 29 to October 9.
+The [full list of 1,028 is here](/media/arcmira-test/skyebrows/plain-search-1028.json) (JSON, with
+channel, views and length).
 
-| Date | Channel | Video | Views |
+| Channel | Video | Length | Views |
 |---|---|---|---|
-| 2025-10-31 | Phillip Chan | [Breathing Elon&#x27;s Musk - Skybrows \| Phil Reacts](https://www.youtube.com/watch?v=wIunYb14pwc) | 3,359 |
-| 2026-02-03 | Lord Intellectual | [It&#x27;s not FOR you - An intellectual reacts to Skyebrows &quot;A million Amelias&quot; music video](https://www.youtube.com/watch?v=lXsLTVBChfY) | 29,069 |
-| 2026-02-06 | Therworldtube | [Powdur (OG Amelia model) reacts to &#x27;A Million Amelias - Skyebrows&#x27;](https://www.youtube.com/watch?v=5ZhMYqFepbA) | 73,149 |
-| 2026-02-10 | Lusty Lynx | [Skyebrows COOKED with &quot;Joe Rogaine&#x27;s Experience&quot; \| Lustylynx Reacts](https://www.youtube.com/watch?v=VjAt0ga9IPM) | 9,349 |
-| 2026-02-16 | Lusty Lynx | [I FOUND HER!! &quot;Crybrows&quot; by Skyebrows \| Lustylynx Reacts](https://www.youtube.com/watch?v=6-AD6gSxn4I) | 33,375 |
-| 2026-02-17 | Powdur | [Skyebrows with CONTEXT \| Powdur Reacts](https://www.youtube.com/watch?v=pb7VmOVr_5M) | 72,698 |
-| 2026-02-18 | Therworldtube | [Pippa Response to the SkyeBrows Allegations](https://www.youtube.com/watch?v=SpxPmXiI3YQ) | 10,842 |
-| 2026-02-25 | OcNo - OccultusNotitia | [Skyebrows the Mystery Man](https://www.youtube.com/watch?v=7a73j_OCpMU) | 13,683 |
-| 2026-02-27 | Therworldtube | [Asmongold reaction to &#x27;One Million Amelias - Skyebrows&#x27;](https://www.youtube.com/watch?v=ax_OLDy-d14) | 231,639 |
-| 2026-03-02 | LouieVerse | [ONE SKYE - A Skyebrows Anthem (Official Music Video) dedicated to @skyebrows and the skyebros](https://www.youtube.com/watch?v=pz9IlGpPaHA) | 47,936 |
-| 2026-03-02 | Null FM | [Tiny Campfire Glow / A Thank You to @skyebrows // Null Fm](https://www.youtube.com/watch?v=kf5HyGXdjyQ) | 26,073 |
-| 2026-03-10 | Therworldtube | [Powdur reacts &#x27;Gonna Be - Carolina Overdrive&#x27; [HD Skyebrows/MommaBrows reaction]](https://www.youtube.com/watch?v=2OUdNxnIFgU) | 10,199 |
-| 2026-03-14 | Play Astronomical | [No I&#x27;m Not a Human [Anime Music Video - Vtuber Version] - LURKING (ft. SCU) - Play Astronomical](https://www.youtube.com/watch?v=YxpgzjQuuvo) | 42,559 |
-| 2026-04-10 | Skyebros Updates | [Kitsunero Reacts to Skyebrows (for real this time)](https://www.youtube.com/watch?v=MwE7ul4tmpw) | 26,134 |
-| 2026-05-19 | Avalune | [My Mind Was BLOWN Hearing &quot;Joe&#x27;s Rogaine Experience&quot; by Skyebrows \| Avalune Reacts](https://www.youtube.com/watch?v=w3QVv-E8wfo) | 5,967 |
-| 2026-05-19 | Words Of Paradise | [Skyebrows New Music Video Goes FULL CONSPIRACY MODE](https://www.youtube.com/watch?v=Y4sS0YnkvUY) | 1,581 |
-| 2026-05-21 | LifuLifu | [SkyeOp is an ABSOLUTE BANGER   Skyebrows Just Dropped a Masterpiece](https://www.youtube.com/watch?v=lgmDtLJjsUU) | 7,827 |
-| 2026-06-14 | DepthswalkerAI-vids | [Never Lego by @skyebrows  a reaction by an exhausted mage](https://www.youtube.com/watch?v=KHF3xv2wx2E) | 995 |
-| 2026-06-17 | Phillip Chan | [Never Lego - Skyebrows \| Phil Reacts](https://www.youtube.com/watch?v=HUYzAimbT1o) | 6,207 |
-| 2026-06-26 | WHAT IT DO DAVE | [A Million Amelias - Skyebrows \| Reaction!](https://www.youtube.com/watch?v=P8im7ZjPpFI) | 12,742 |
-| 2026-07-06 | Bloodrunks | [Nux reacts to Skyops from Skyebrows!!!](https://www.youtube.com/watch?v=_ulwgvVkSqY) | 14,948 |
-| 2026-07-18 | Celestium | [We Interviewed Skyebrows the BEST AI Music Video Expert!](https://www.youtube.com/watch?v=hiVPxWXS6CI) | 6,443 |
-| 2026-07-22 | Deadpan React VT | [Another banger by Skyebrows / VTubers React](https://www.youtube.com/watch?v=eYhMcTE7IoI) | 3,821 |
-| 2026-07-23 | Bloodrunks | [Nux reacts to Never Lego from Skybrows](https://www.youtube.com/watch?v=jVJC9XOYk7o) | 25,755 |
-| 2026-08-03 | Tony Down Under | [Skyebrows&#x27; &#x27;Cream of the Slop&#x27; Is PEAK AI SLOP \| VTUBER Reaction](https://www.youtube.com/watch?v=arfiJh5qerI) | 3,020 |
-| 2026-08-14 | Ked-Jiisan | [My Opinion (Skyebrows Cinematic Universe)](https://www.youtube.com/watch?v=hcmEv5f_c6g) | 2,671 |
-| 2026-08-29 | Keksi Kuebler | [REACTING to Zuckerwars by Skyebrows (Zuckerborg) \| First Time Hearing~](https://www.youtube.com/watch?v=S6pl-ACHves) | 28,752 |
-| 2026-08-30 | SatanicRosieVT | [HE ACTUALLY DID IT!! \| Zuckerwars - Skyebrows](https://www.youtube.com/watch?v=HhhSD966aQw) | 12,933 |
-| 2026-08-31 | Celestium | [I am Part of the ZUCKERWARS - Skyebrows](https://www.youtube.com/watch?v=CHpgoV_qGrg) | 38,305 |
-| 2026-08-31 | Teally | [AI &#x27;SLOP&#x27; IS PEAKING?! \| VTuber Reacts to Skyebrows - Zuckerwars](https://www.youtube.com/watch?v=zY0BCtaG44w) | 22,095 |
-| 2026-09-01 | Yukiwaru | [This is the BEST Music Video EVER - Zuckerwars](https://www.youtube.com/watch?v=XvnCdMY1Is8) | 76,087 |
-| 2026-09-02 | WHAT IT DO DAVE | [Reacting to Zuckerwars - This Zuckerberg Song is INSANE (Skyebrows)](https://www.youtube.com/watch?v=enN9AlFGCl4) | 28,341 |
-| 2026-09-03 | Ando | [Zuckerwars \| Skyebrows React](https://www.youtube.com/watch?v=-9AT1n_vhco) | 7,063 |
-| 2026-09-06 | CyberNuggets | [Zuckerwars technical breakdown with @skyebrows](https://www.youtube.com/watch?v=KgTqooihjwU) | 6,312 |
-| 2026-09-07 | Siniviere | [Face to Face With the Future \| Skyebrows Interview](https://www.youtube.com/watch?v=QjK0GTcGouo) | 17,765 |
-| 2026-09-09 | ACE AT | [Skyebrows Just Dropped Zuckerwars.. And Mentioned Me](https://www.youtube.com/watch?v=r6IIL0IR4f0) | 25,118 |
-| 2026-09-09 | TheHolyBall | [Zuckerwars Tribute - HolyBall](https://www.youtube.com/watch?v=4rku-UrlBg4) | 46,763 |
-| 2026-09-15 | Teally | [Skyebrows Does NOT MISS! \| VTuber Reacts to More SCU](https://www.youtube.com/watch?v=f8fV33GhpqY) | 15,301 |
-| 2026-09-21 | Deadpan React VT | [Stellorado Might Be Skyebrows&#x27; Coolest World Yet / VTuber Reacts](https://www.youtube.com/watch?v=dqIAk67NJkg) | 679 |
-| 2026-09-23 | Ovted Fatash | [Ovted Fatash Reacts to Stellarado by Skyebrows](https://www.youtube.com/watch?v=Mf3m8ueJKj0) | 76 |
-| 2026-09-28 | Soitsu | [[I&#x27;m smelling what he&#x27;s cooking] Introduced into Skyebrows REACTION](https://www.youtube.com/watch?v=q-epepxRNsE) | 1,118 |
-| 2026-10-09 | Archaeon Knight | [Archaeon Reacts to A Million Amelias by Skyebrows](https://www.youtube.com/watch?v=h1LPx1LId9w) | 6,109 |
-| 2026-10-09 | LouieVerse | [Zuckerwars Tribute - The Robosabi Protocol @skyebrows](https://www.youtube.com/watch?v=GscXS5-uWSU) | 7,711 |
-| 2026-10-16 | Penny Bloomfield | [ACE AT: Finally Left (React to the Video that Skyebrows Asmongold &amp; Everyone Has Been Waiting For)](https://www.youtube.com/watch?v=8LUBXl-mRZI) | 14 |
+| Olympic Games | [The best of Sky Brown 🛹 at the Olympics!](https://www.youtube.com/watch?v=AkXK9ieCrYE) | 4 min | 3,791,086 |
+| Foxtale | [What if men got periods…and other thoughts in @swatisachdeva95&#x27;s head \| No Fox Given by Foxtale](https://www.youtube.com/watch?v=gafxuEWvgdQ) | 8 min | 1,697,369 |
+| Skyebrows and Carolina Overdrive | [Gonna Be - Carolina Overdrive (A Skyebrows and MommaBrows Collaboration)](https://www.youtube.com/watch?v=m8dMy5_Lox4) | 5 min | 362,134 |
+| Therworldtube | [Asmongold reaction to &#x27;One Million Amelias - Skyebrows&#x27;](https://www.youtube.com/watch?v=ax_OLDy-d14) | 6 min | 231,657 |
+| nikeskateboarding | [Nike SB \| Sky Brown \| Pogo Plus](https://www.youtube.com/watch?v=jIpogLnGGQs) | 2 min | 99,703 |
+| Yukiwaru | [This is the BEST Music Video EVER - Zuckerwars](https://www.youtube.com/watch?v=XvnCdMY1Is8) | 28 min | 76,087 |
+| Therworldtube | [Powdur (OG Amelia model) reacts to &#x27;A Million Amelias - Skyebrows&#x27;](https://www.youtube.com/watch?v=5ZhMYqFepbA) | 10 min | 73,157 |
+| Powdur | [Skyebrows with CONTEXT \| Powdur Reacts](https://www.youtube.com/watch?v=pb7VmOVr_5M) | 21 min | 72,693 |
+| ThatDogFromThatOneAnime | [Winners Win (feat. Asmongold, Skyebrows, Leaflit, Tectone and others)](https://www.youtube.com/watch?v=obIAZdQx0To) | 5 min | 71,708 |
+| Dzienny Małżonek | [A MILLION AMELIAS (PL) – Polska Wersja 🇵🇱 \| Dzienny Małżonek Cover](https://www.youtube.com/watch?v=opHOzZyF4nY) | 3 min | 70,693 |
+| Pasta | [It hits you harder than a rocket launcher! - Skyebrows AMV (music by BUPAELA)](https://www.youtube.com/watch?v=O82gYwMq9-Y) | 2 min | 61,615 |
+| Skyebrows and CyberNuggets | [Zuckerwars Process Breakdown (Featuring CyberNuggets)](https://www.youtube.com/watch?v=fyv-fO-sWhY) | 109 min | 58,022 |
+| LouieVerse | [ONE SKYE - A Skyebrows Anthem (Official Music Video) dedicated to @skyebrows and the skyebros](https://www.youtube.com/watch?v=pz9IlGpPaHA) | 5 min | 47,959 |
+| TheHolyBall | [Zuckerwars Tribute - HolyBall](https://www.youtube.com/watch?v=4rku-UrlBg4) | 3 min | 46,806 |
+| IrishCrutch | [Joe Rogaine discusses Tim and Eric](https://www.youtube.com/watch?v=TRCXktX6LRM) | 5 min | 46,055 |
+| Skyebros Updates | [Pipkin Pippa Reacts to Skyebrows](https://www.youtube.com/watch?v=EdZBu6mc3iE) | 5 min | 45,149 |
+| Therworldtube | [Kirsche Reaction to &#x27;No Fox Given - Skyebrows&#x27;](https://www.youtube.com/watch?v=QoEe1pjqxmc) | 10 min | 44,978 |
+| Bloodrunks | [Nux reacts to Crybrows](https://www.youtube.com/watch?v=-VyXkM36JVY) | 7 min | 41,672 |
+| LifuLifu | [WOW I&#x27;m in a Skyebrows video!!!? No Fox Given React](https://www.youtube.com/watch?v=X-3ehiNRXbY) | 17 min | 40,373 |
+| Celestium | [I am Part of the ZUCKERWARS - Skyebrows](https://www.youtube.com/watch?v=CHpgoV_qGrg) | 20 min | 38,309 |
+| Lusty Lynx | [THIS IS ABSOLUTE CINEMA \| Zuckerwars  \| Skyebrows \| Lustylynx Reacts](https://www.youtube.com/watch?v=kAO024ioQrY) | 18 min | 37,710 |
+| Kitsura Nines | [Skyebrows - Zuckerwars React (Kitsura Nines)](https://www.youtube.com/watch?v=dxmYaFrdEAI) | 18 min | 35,520 |
+| Cultural Breakdown | [A Million Amelias – Skyebrows Video Reaction \| They Can’t Stop Her](https://www.youtube.com/watch?v=CIZZFX5gceY) | 7 min | 33,759 |
+| Lusty Lynx | [I FOUND HER!! &quot;Crybrows&quot; by Skyebrows \| Lustylynx Reacts](https://www.youtube.com/watch?v=6-AD6gSxn4I) | 14 min | 33,369 |
+| Kitsura Nines | [Kitsura Nines REACTION to Skyebrows - NO FOX GIVEN](https://www.youtube.com/watch?v=gGLH4cUgOKM) | 7 min | 33,221 |
+| Yukiwaru | [These Are the GREATEST AI Songs EVER \| Skyebrows/Powdur Virus [Yukiwaru Reacts]](https://www.youtube.com/watch?v=gMjkYhf6FG0) | 20 min | 32,432 |
+| Powdur Clips | [ZUCKERWARS](https://www.youtube.com/watch?v=5ClDyXs3CYs) | 17 min | 32,030 |
+| Bloodrunks | [Nux reacts to the Cream of the Slop](https://www.youtube.com/watch?v=rkOrT0NcgMw) | 8 min | 31,752 |
+| Bloodrunks | [Nux reacts to Home Stallone II!!!!](https://www.youtube.com/watch?v=hrmh_3Uv4dA) | 8 min | 31,741 |
+| Kitsune Mizuki | [It Seems That I&#x27;ve Been Noticed! \| Skyebrows React](https://www.youtube.com/watch?v=zv7meGO_pfc) | 25 min | 29,598 |
+| Lord Intellectual | [It&#x27;s not FOR you - An intellectual reacts to Skyebrows &quot;A million Amelias&quot; music video](https://www.youtube.com/watch?v=lXsLTVBChfY) | 25 min | 29,068 |
+| Keksi Kuebler | [REACTING to Zuckerwars by Skyebrows (Zuckerborg) \| First Time Hearing~](https://www.youtube.com/watch?v=S6pl-ACHves) | 14 min | 28,755 |
+| WHAT IT DO DAVE | [Reacting to Zuckerwars - This Zuckerberg Song is INSANE (Skyebrows)](https://www.youtube.com/watch?v=enN9AlFGCl4) | 25 min | 28,339 |
+| Silas Frostrunner and YunaDoesStuff | [Silas &amp; Yuna REACT: Skyebrows&#x27;s Zuckerwars! 👓](https://www.youtube.com/watch?v=Dc0mENDlnq0) | 44 min | 27,565 |
+| LifuLifu | [Skybrow : Amelia and Fox Songs \| Reaction](https://www.youtube.com/watch?v=KDJ5p8kuKyU) | 18 min | 26,706 |
+| Skyebros Updates | [Kitsunero Reacts to Skyebrows (for real this time)](https://www.youtube.com/watch?v=MwE7ul4tmpw) | 46 min | 26,134 |
+| Null FM | [Tiny Campfire Glow / A Thank You to @skyebrows // Null Fm](https://www.youtube.com/watch?v=kf5HyGXdjyQ) | 3 min | 26,085 |
+| Bloodrunks | [Nux reacts to Never Lego from Skybrows](https://www.youtube.com/watch?v=jVJC9XOYk7o) | 8 min | 25,760 |
+| Ella Rae | [I WAS DRAFTED IN THE ZUCKERWARS \| SKYEBROWS REACTION!!](https://www.youtube.com/watch?v=byfo-Uw-1AY) | 28 min | 25,670 |
+| ACE AT | [Skyebrows Just Dropped Zuckerwars.. And Mentioned Me](https://www.youtube.com/watch?v=r6IIL0IR4f0) | 29 min | 25,127 |
+| Ember Paradox | [I actually get to show Skyebrows love in his newest banger &quot;Crybrows&quot;!](https://www.youtube.com/watch?v=kcR_N0a2FhU) | 33 min | 24,521 |
+| WHAT IT DO DAVE | [WHAT DID I JUST WATCH? \| Breathing Elon&#x27;s Musk (REACTION)](https://www.youtube.com/watch?v=7yj0YiM7TEM) | 12 min | 24,338 |
+| Teally | [AI &#x27;SLOP&#x27; IS PEAKING?! \| VTuber Reacts to Skyebrows - Zuckerwars](https://www.youtube.com/watch?v=zY0BCtaG44w) | 26 min | 22,122 |
+| Keen_EN | [Absolute Cinema, Again! - Zuckerwars Skyebrows Reaction](https://www.youtube.com/watch?v=Ilzja7syOb8) | 37 min | 21,739 |
+| LifuLifu | [Crybrows - Skyebrows React! - WOAH WE ARE IN IT?](https://www.youtube.com/watch?v=atVCjdLGcas) | 31 min | 21,264 |
+| Lord Intellectual | [SKYEBROWS PUT ME IN A VIDEO?! \| &quot;Crybrows&quot; Reaction](https://www.youtube.com/watch?v=bz-uMLwEKd8) | 23 min | 21,029 |
+| Powdur Clips | [The Zuckerwars needs me!](https://www.youtube.com/watch?v=M7y8q4SCtug) | 6 min | 20,800 |
+| Kitsura Nines | [Kitsura Nines intial NO FOX GIVEN - Skyebrows react, live on stream! + an anti argues with me](https://www.youtube.com/watch?v=FJCmAM2r-Uc) | 7 min | 20,294 |
+| feeblemind | [A Million Amelias - Reaction](https://www.youtube.com/watch?v=2AdwsE_waIo) | 14 min | 20,234 |
+| BananaJuju | [AI got so good \| Reaction to A Million Amelias - Skyebrows](https://www.youtube.com/watch?v=8Apdsort-vk) | 34 min | 20,161 |
 
 </details>
 
-### Every Arcmira feature, tried
+### Every Arcmira call in this test
 
 | Call | What came back |
 |---|---|
-| `arcmira_describe()` | the client reference, about 23,000 characters, free |
-| `status()` | free plan, 340 credits left, 30-day delay: nothing after September 16 |
+| `status()` | free plan; can't see the last 30 days without a paid tier |
 | `resolve()` x3 | "Skybrows" found; "Skyebrows" and his channel ID not found |
 | `mentions()`, `occurrences()` | the catalog: 1 mention, 1 episode |
-| `search()`, about 30 queries | the 25 mentions above, plus a lot of noise for song titles |
-| `status({channelId})` | Based Camp: 678 videos indexed, through October 15 |
-| `momentum()`, `recommendations()`, `sponsors()`, `episodes()`, `occurrences()` across two shows, `integrations.slack()`, `resolve()` | all refused with `quota_exceeded`: "This month's 1,000 credits from the plan are used; they reset on 2026-11-01." |
-| `quote()` (free) | a Premium transcript of one 53-minute episode would cost 1,200 credits, and isn't available on the free plan |
-| `monitors.list()` (free) | no monitors |
+| `search()`, about 27 programs | the 25 mentions above, plus noise for song titles |
+| `status({channelId})` | Based Camp: 678 videos indexed |
+| `momentum()`, `recommendations()`, `sponsors()`, `episodes()`, `integrations.slack()` | refused once the month's credits ran out: `quota_exceeded`, "they reset on 2026-11-01" |
+| `quote()` | a Premium transcript of one 53-minute episode would cost 1,200 credits, and isn't on the free plan |
+| `monitors.list()` | no monitors |
 
-Earlier tests also used `transcript()` captions, `sponsors()`, `episodes()` and sponsored-only
-search, and hit `freshness_requires_paid`, `filter_requires_paid`, a 503 and a 30-second timeout.
-Still untested: momentum, recommendations, Premium transcripts and creating monitors.
-
-**The bill:** the timeline used all 340 credits I had left, in about 15 minutes. A search that
-returns 20 passages costs about 60 credits. The tokens aren't broken out, because this ran inside
-my main session rather than as a separate measured run.
+Earlier tests on this page also used `transcript()`, `sponsors()`, `episodes()` and sponsored-only
+search. Still untested: momentum, recommendations, Premium transcripts and creating monitors.
 
 ## Test 3: a SpaceX question both could see
 
@@ -428,9 +449,9 @@ it needs to see something, it can look at the frames.
   worked. Each request is a small JavaScript program with a 30-second limit, and a few timed out.
 
 **My verdict for now:** Claude alone covers most of what I'd do, including the part I cared about
-most, finding and cutting exact moments. Arcmira is worth having for one job: a timeline of every
-time a person, company or topic is said out loud on podcasts and business shows. The Skyebrows
-timeline is the proof: 25 moments that no title, description or YouTube search would have shown
-me. The best version is two runs side by side, one reading YouTube and one reading Arcmira's
-transcripts, merged into one timeline. On the free plan, expect to spend the month's credits on
-one or two people.
+most, finding and cutting exact moments. If a name is in a title, searching alone finds it, free and
+across all of YouTube. Arcmira earns its keep on one thing: transcripts already pulled and
+searchable, so it hears a name spoken in videos nobody would think to open, without hitting
+YouTube's limits on downloading transcripts. For Skyebrows that was 25 moments no title or search
+would have shown me, for 340 credits. The best version is both runs, merged. On the free plan, one
+thorough name would cost more than the month's credits.
