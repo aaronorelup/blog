@@ -12,3 +12,9 @@
 /course/ /courses/the-hidden-curriculum/ 301
 /course/index.html /courses/the-hidden-curriculum/ 301
 /course/lessons/* /courses/the-hidden-curriculum/lessons/:splat 301
+
+# AO-051 was renamed on 2026-10-16 to say what it is about. Static rules beat the /posts/* splat.
+/ledger/one-piece-reaction-clips /ledger/arcmira-mcp-test/ 301
+/ledger/one-piece-reaction-clips/ /ledger/arcmira-mcp-test/ 301
+/posts/one-piece-reaction-clips /ledger/arcmira-mcp-test/ 301
+/posts/one-piece-reaction-clips/ /ledger/arcmira-mcp-test/ 301

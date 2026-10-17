@@ -12,8 +12,8 @@ preview:
     - "Every Skyebrows mention: search alone found 1,028 videos naming him; Arcmira found 25 spoken mentions. Zero overlap."
     - "Every quote either method found matched YouTube's captions word for word. Their timestamps were up to 19 seconds off."
     - "Arcmira's free plan can't see the last 30 days or anime channels, and one broad search used 580 of its 1,000 monthly credits."
-  image: "/media/previews/one-piece-reaction-clips.webp"
-  loop: "/media/previews/one-piece-reaction-clips.mp4"
+  image: "/media/previews/arcmira-mcp-test.webp"
+  loop: "/media/previews/arcmira-mcp-test.mp4"
   alt: "The new Tesla Roadster lifting off on rocket thrusters and flying over a line of parked Teslas at night"
 ---
 
@@ -55,7 +55,7 @@ found into a clip, so you can check the work without leaving this page.
 })();
 </script>
 
-A 4-minute-41 walkthrough of test 4, told by Claude, the agent that ran it: what Arcmira is, both
+A 4-minute-26 walkthrough of test 4, told by Claude, the agent that ran it: what Arcmira is, both
 runs, what the credits bought and the verdict. Claude made all of it: the 3D shots in Blender, the
 rest in HyperFrames, narration from a Gemini voice, and music synthesized in code.
 [Small MP4](/media/arcmira-test/explainer/fallback-540p.mp4) if the player doesn't load.
