@@ -37,14 +37,21 @@ found into a clip, so you can check the work without leaving this page.
 ## Watch: what using the MCP is like
 
 <video id="mcp-explainer" controls playsinline preload="none" poster="/media/arcmira-test/explainer/poster.jpg" style="width:100%"></video>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
 <script>
 (function () {
-  var v = document.getElementById("mcp-explainer"), src = "/media/arcmira-test/explainer/index.m3u8";
-  if (!v) return;
-  if (window.Hls && Hls.isSupported()) { var h = new Hls(); h.loadSource(src); h.attachMedia(v); }
-  else if (v.canPlayType("application/vnd.apple.mpegurl")) { v.src = src; }
-  else { v.src = "/media/arcmira-test/explainer/fallback-540p.mp4"; }
+  var v = document.getElementById("mcp-explainer");
+  var src = "/media/arcmira-test/explainer/index.m3u8", mp4 = "/media/arcmira-test/explainer/fallback-540p.mp4";
+  if (!v || v.dataset.ready) return; v.dataset.ready = "1";
+  function attach() {
+    if (window.Hls && Hls.isSupported()) { var h = new Hls(); h.loadSource(src); h.attachMedia(v); }
+    else if (v.canPlayType("application/vnd.apple.mpegurl") === "probably") { v.src = src; }
+    else { v.src = mp4; }
+  }
+  if (window.Hls) { attach(); return; }
+  var s = document.createElement("script");
+  s.src = "https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js";
+  s.onload = attach; s.onerror = function () { v.src = mp4; };
+  document.head.appendChild(s);
 })();
 </script>
 
