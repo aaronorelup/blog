@@ -42,7 +42,7 @@ if (fs.existsSync(filePath)) {
 const content = `---
 id: "${nextId}"
 title: "${title.replace(/"/g, '\\"')}"
-summary: "One line for the ledger list and the syndicated posts."
+summary: "One line for the ledger list."
 date: ${today}
 status: "note"
 tags: []

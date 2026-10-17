@@ -22,7 +22,7 @@ const posts = defineCollection({
     // Sequential ledger id, e.g. "AO-001". Assigned by scripts/new-post.mjs.
     id: z.string(),
     title: z.string(),
-    // One-line summary shown in the ledger list and used as the syndication hook.
+    // One-line summary shown in the ledger list.
     summary: z.string(),
     date: z.coerce.date(),
     status: z.enum(['note', 'in-progress', 'shipped']).default('note'),
@@ -31,7 +31,7 @@ const posts = defineCollection({
     series: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
     // Soft private: the page still builds and opens by URL, but it is noindex and left out of
-    // every list, feed, thread and hand-off. See src/data/listed.js before listing posts.
+    // every list, feed and thread. See src/data/listed.js before listing posts.
     unlisted: z.boolean().default(false),
     // Optional so a post without one still builds; it then gets its opening lines as a card,
     // and the build lists it as missing one.

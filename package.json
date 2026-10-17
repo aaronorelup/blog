@@ -7,14 +7,12 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "new-post": "node scripts/new-post.mjs",
-    "notify-agent": "node scripts/notify-agent.mjs"
+    "new-post": "node scripts/new-post.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.9",
     "astro": "^4.15.0",
     "gray-matter": "^4.0.3",
-    "nodemailer": "^9.0.5",
     "three": "^0.160.0"
   }
 }

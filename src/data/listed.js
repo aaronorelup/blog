@@ -1,7 +1,6 @@
 // Which posts appear anywhere a reader browses: the ledger list (homepage panel and /ledger),
-// the RSS feed, the series threads and the older/newer links under a post, the agent hand-off
-// email, and any search, tag or category page added later. Use this, not `!data.draft`,
-// whenever you list posts.
+// the RSS feed, the series threads and the older/newer links under a post, and any search,
+// tag or category page added later. Use this, not `!data.draft`, whenever you list posts.
 //
 // draft: true     -> not built at all.
 // unlisted: true  -> "soft private". The page still builds at /ledger/<slug>/ so Aaron can open
