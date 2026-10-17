@@ -1,15 +1,15 @@
 ---
 id: "AO-051"
 title: "Can Claude find a specific moment in a YouTube video, and does Arcmira help?"
-summary: "I'd never asked Claude to pull exact moments out of videos or research who said what on YouTube. So I ran three tests, with and without Arcmira, a transcript-search tool built for exactly that. Every clip it found is on this page; judge them yourself."
+summary: "I'd never asked Claude to pull exact moments out of videos or research who said what on YouTube. So I ran four tests, with and without Arcmira, a transcript-search MCP built for exactly that, and made a 5-minute animated video of what using it is like. Every clip is on this page."
 date: 2026-10-16
 status: "in-progress"
 tags: ["claude-code", "video", "research", "yt-dlp", "mcp", "arcmira"]
 preview:
-  verdict: "Claude alone is strong"
-  takeaway: "Claude alone found and cut exact moments from YouTube videos for $2-3 a job. Arcmira found a different part of YouTube: podcasts and finance shows."
+  verdict: "Great at one job"
+  takeaway: "Claude alone finds and cuts exact moments for $2-3 a job. Arcmira's one real edge: every time a name is said on a podcast, which YouTube search can't see."
   points:
-    - "On a SpaceX question, the two lists of videos had zero overlap: space channels by hand, podcasts and finance shows via Arcmira."
+    - "Skyebrows: Arcmira found 25 spoken mentions in 16 episodes. YouTube search found 2 of those episodes, and only with the show's name."
     - "Every quote either method found matched YouTube's captions word for word. Their timestamps were up to 19 seconds off."
     - "Arcmira's free plan can't see the last 30 days or anime channels, and one broad search used 580 of its 1,000 monthly credits."
   image: "/media/previews/one-piece-reaction-clips.webp"
@@ -25,7 +25,7 @@ server, a plug-in connection for tools like Claude. I wanted two answers, fast:
 1. **How good is Claude at this already, with only free tools?**
 2. **Is Arcmira useful to me right now, and for what?**
 
-So I gave Claude Code three research jobs and ran each one twice, at the same time, in fresh
+So I gave Claude Code four research jobs. The first three ran twice, at the same time, in fresh
 sessions on the same model (Opus 5.5):
 
 - **Claude alone:** web search, plus yt-dlp to search YouTube and read video details and captions.
@@ -33,6 +33,25 @@ sessions on the same model (Opus 5.5):
 
 Time and tokens come from Claude Code's own logs. Then I had Claude cut every moment either side
 found into a clip, so you can check the work without leaving this page.
+
+## Watch: what using the MCP is like
+
+<video id="mcp-explainer" controls playsinline preload="none" poster="/media/arcmira-test/explainer/poster.jpg" style="width:100%"></video>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
+<script>
+(function () {
+  var v = document.getElementById("mcp-explainer"), src = "/media/arcmira-test/explainer/index.m3u8";
+  if (!v) return;
+  if (v.canPlayType("application/vnd.apple.mpegurl")) { v.src = src; }
+  else if (window.Hls && Hls.isSupported()) { var h = new Hls(); h.loadSource(src); h.attachMedia(v); }
+  else { v.src = "/media/arcmira-test/explainer/fallback-540p.mp4"; }
+})();
+</script>
+
+A 5-and-a-half-minute animated walkthrough of test 4: the calls Claude makes, what comes back,
+the timeline it built for Skyebrows, and what it cost. Claude made all of it: the 3D shots in
+Blender, the rest in HyperFrames, narration from an ElevenLabs voice, and music synthesized in code.
+[Small MP4](/media/arcmira-test/explainer/fallback-540p.mp4) if the player doesn't load.
 
 ## The short answer
 
@@ -42,14 +61,17 @@ found into a clip, so you can check the work without leaving this page.
 - **Arcmira searches a different part of YouTube.** On the same SpaceX question, Claude alone
   found space channels: NASASpaceflight, Marcus House, Everyday Astronaut. Arcmira found
   podcasts and finance shows: All-In, Bloomberg, ARK Invest. **Not one video was on both lists.**
-- **Arcmira hears names that are only spoken.** That's the thing Claude alone can't do, because
-  YouTube's search only reads titles and descriptions. For "who's talking about this person or
-  company on podcasts", Arcmira was clearly better.
+- **Arcmira hears names that are only spoken, and that's its real use.** YouTube's search only
+  reads titles and descriptions. For Skyebrows, an AI music video maker, Arcmira found 25 spoken
+  mentions across 16 podcast episodes; plain YouTube search found 2 of those episodes, and only
+  after I typed the show's name. Its own catalog of mentions had just 1: the transcript search
+  is what finds them.
 - **Arcmira has hard limits as it stands.** Its index skips whole genres (anime reaction channels
-  weren't in it at all), and the free plan can't see the last 30 days. Credits also go fast: one
-  test used 580 of the 1,000 a month.
-- **Both methods got timestamps wrong by up to 19 seconds**, but every quote was real. When I
-  re-timed each clip from the captions' word timings, all 33 quotes I tried were found, word for word.
+  weren't in it at all), and the free plan can't see the last 30 days. Credits go fast: I used the
+  whole 1,000-credit month in one day, and the last few features I tried hit a `quota_exceeded` wall.
+- **Both methods got timestamps wrong**, by up to 19 seconds (Arcmira's passage starts, by up to 49),
+  but every quote was real. Re-timed from the captions' word timings, all 47 quotes I tried were found
+  word for word.
 
 | | Test 1: anime reactions | | Test 2: yesterday's Tesla reveal | | Test 3: SpaceX, July |  |
 |---|---|---|---|---|---|---|
@@ -63,6 +85,169 @@ found into a clip, so you can check the work without leaving this page.
 
 Arcmira's free plan gives 1,000 credits a month; extra credits cost $0.002 each, so test 3's 580
 would be about $1.16.
+
+## Test 4: every time one name gets said
+
+This is the job the earlier tests pointed to: a timeline of every time a person gets mentioned,
+for someone who doesn't get mentioned much. I picked
+[Skyebrows](https://www.youtube.com/@skyebrows), an AI music video maker I enjoy. This time I
+skipped the race between two fresh runs and just used Arcmira as hard as I could, every feature
+the docs list. Then I checked the results against YouTube's own captions and against a plain
+YouTube search.
+
+**The result: 25 spoken mentions across 16 episodes on 3 channels, from February 6 to September 9,
+2026.** Twenty-two of them are on one podcast, Based Camp with Simone and Malcolm Collins. Almost
+none appear in an episode title or description.
+
+**What made it work, and what nearly didn't:**
+
+- **The spelling.** He spells it Skyebrows. People say "Skybrows", and that's how the transcripts
+  have it. `resolve("Skyebrows")` found nothing. `resolve("Skybrows")` found a person with 2
+  appearances. His own channel isn't in Arcmira's index at all.
+- **The catalog undercounts.** Arcmira's tagged list of mentions has exactly one row for him. Its
+  transcript search, scoped to Based Camp, returned 20 passages, and all 20 say his name.
+  Walking the search forward through the year found 22 on that show, plus Asmongold TV and
+  Endgame with Amanda Cassatt.
+- **Search never says no.** His song titles returned only noise: "Breathing Elon's Musk" came back
+  as Bloomberg calling SpaceX "a living, breathing animal". Claude kept only passages that actually
+  contain the name.
+- **The quotes are real.** I checked 14 of the 25 against YouTube's own captions and all 14
+  matched word for word. Arcmira's passage timestamps ran up to 49 seconds before the words
+  themselves, so every clip below is re-timed to the second.
+- **Plain YouTube search sees almost none of this.** Searching "skyebrows" finds his fans: 44
+  reaction videos, tributes and interviews from other channels, none of them in Arcmira's index.
+  It found 2 of the 16 podcast episodes, and only after I typed the show's name.
+
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
+<figure style="margin:0"><video controls playsinline preload="none" poster="/media/arcmira-test/skyebrows/k01-basedcamp-feb06-different.jpg" src="/media/arcmira-test/skyebrows/k01-basedcamp-feb06-different.mp4" style="width:100%"></video><figcaption><b>Feb 6</b>, Based Camp: &ldquo;what <b>Skybrows</b> is doing, I mean, not like we&#x27;re ever going to get to that level&rdquo; <a href="https://www.youtube.com/watch?v=LY0ZqhtVId0&t=3059s">50:59</a></figcaption></figure>
+<figure style="margin:0"><video controls playsinline preload="none" poster="/media/arcmira-test/skyebrows/k02-basedcamp-feb06-superfun.jpg" src="/media/arcmira-test/skyebrows/k02-basedcamp-feb06-superfun.mp4" style="width:100%"></video><figcaption><b>Feb 6</b>, Based Camp: &ldquo;<b>Sky Brows</b> videos in general are super fun. I love that.&rdquo; <a href="https://www.youtube.com/watch?v=LY0ZqhtVId0&t=3137s">52:17</a></figcaption></figure>
+<figure style="margin:0"><video controls playsinline preload="none" poster="/media/arcmira-test/skyebrows/k03-asmongold-mar14.jpg" src="/media/arcmira-test/skyebrows/k03-asmongold-mar14.mp4" style="width:100%"></video><figcaption><b>Mar 14</b>, Asmongold TV: &ldquo;Another video will also be coming where I react to a video that <b>Skybrows</b> made which I am included&rdquo; <a href="https://www.youtube.com/watch?v=XrVrdfURxFg&t=59s">0:59</a></figcaption></figure>
+<figure style="margin:0"><video controls playsinline preload="none" poster="/media/arcmira-test/skyebrows/k04-basedcamp-mar24-funlooking.jpg" src="/media/arcmira-test/skyebrows/k04-basedcamp-mar24-funlooking.mp4" style="width:100%"></video><figcaption><b>Mar 24</b>, Based Camp: &ldquo;There is a constant AI witch hunt on the left and the right is just like <b>skybrows</b> like this is fun looking&rdquo; <a href="https://www.youtube.com/watch?v=z-JiZRk6fls&t=2002s">33:22</a></figcaption></figure>
+<figure style="margin:0"><video controls playsinline preload="none" poster="/media/arcmira-test/skyebrows/k05-basedcamp-apr02-coolkids.jpg" src="/media/arcmira-test/skyebrows/k05-basedcamp-apr02-coolkids.mp4" style="width:100%"></video><figcaption><b>Apr 2</b>, Based Camp: &ldquo;the <b>Skybrows</b> videos to me the interesting it&#x27;s felt like there&#x27;s a party of cool kids&rdquo; <a href="https://www.youtube.com/watch?v=P1Di8GRFkRI&t=4772s">79:32</a></figcaption></figure>
+<figure style="margin:0"><video controls playsinline preload="none" poster="/media/arcmira-test/skyebrows/k06-basedcamp-apr21-platform.jpg" src="/media/arcmira-test/skyebrows/k06-basedcamp-apr21-platform.mp4" style="width:100%"></video><figcaption><b>Apr 21</b>, Based Camp: &ldquo;if you&#x27;re putting together something like a <b>skybrows</b> type video because I want to be the best place to put those together&rdquo; <a href="https://www.youtube.com/watch?v=l3-6iPUF7hY&t=170s">2:50</a></figcaption></figure>
+<figure style="margin:0"><video controls playsinline preload="none" poster="/media/arcmira-test/skyebrows/k07-kirsche-jun19-motivation.jpg" src="/media/arcmira-test/skyebrows/k07-kirsche-jun19-motivation.mp4" style="width:100%"></video><figcaption><b>Jun 19</b>, Based Camp, with Kirsche: &ldquo;you obviously were a big motivation for like <b>Skybrows</b> to do some of his early videos&rdquo; <a href="https://www.youtube.com/watch?v=dRAnjMAXYSM&t=2663s">44:23</a></figcaption></figure>
+<figure style="margin:0"><video controls playsinline preload="none" poster="/media/arcmira-test/skyebrows/k08-basedcamp-jul08-universe.jpg" src="/media/arcmira-test/skyebrows/k08-basedcamp-jul08-universe.mp4" style="width:100%"></video><figcaption><b>Jul 8</b>, Based Camp: &ldquo;having it called the <b>Skybrows</b> Cinematic Universe, I think makes perfect sense&rdquo; <a href="https://www.youtube.com/watch?v=NljTXtSCUaw&t=1097s">18:17</a></figcaption></figure>
+<figure style="margin:0"><video controls playsinline preload="none" poster="/media/arcmira-test/skyebrows/k09-basedcamp-jul08-viral.jpg" src="/media/arcmira-test/skyebrows/k09-basedcamp-jul08-viral.mp4" style="width:100%"></video><figcaption><b>Jul 8</b>, Based Camp: &ldquo;When the first <b>SkyBrows</b> video went viral that went viral, the Elon video&rdquo; <a href="https://www.youtube.com/watch?v=NljTXtSCUaw&t=2172s">36:12</a></figcaption></figure>
+<figure style="margin:0"><video controls playsinline preload="none" poster="/media/arcmira-test/skyebrows/k10-basedcamp-jul08-cantmake.jpg" src="/media/arcmira-test/skyebrows/k10-basedcamp-jul08-cantmake.mp4" style="width:100%"></video><figcaption><b>Jul 8</b>, Based Camp: &ldquo;if you look at the <b>Skybrows</b>, <b>Skybrows</b>, and I can&#x27;t make videos like the ones he makes&rdquo; <a href="https://www.youtube.com/watch?v=NljTXtSCUaw&t=2509s">41:49</a></figcaption></figure>
+<figure style="margin:0"><video controls playsinline preload="none" poster="/media/arcmira-test/skyebrows/k11-basedcamp-jul22-foxgirl.jpg" src="/media/arcmira-test/skyebrows/k11-basedcamp-jul22-foxgirl.mp4" style="width:100%"></video><figcaption><b>Jul 22</b>, Based Camp: &ldquo;And then compare that to like a fox girl from a <b>Skybrows</b> video&rdquo; <a href="https://www.youtube.com/watch?v=8nevpXypPW4&t=436s">7:16</a></figcaption></figure>
+<figure style="margin:0"><video controls playsinline preload="none" poster="/media/arcmira-test/skyebrows/k12-basedcamp-aug24-storyboard.jpg" src="/media/arcmira-test/skyebrows/k12-basedcamp-aug24-storyboard.mp4" style="width:100%"></video><figcaption><b>Aug 24</b>, Based Camp, with Aydin Paladin: &ldquo;bro, I bet if you storyboarded something that <b>SkyBrows</b> team would love to make it&rdquo; <a href="https://www.youtube.com/watch?v=ZJ6bYFdVH3M&t=2830s">47:10</a></figcaption></figure>
+<figure style="margin:0"><video controls playsinline preload="none" poster="/media/arcmira-test/skyebrows/k13-basedcamp-sep03-ownvideos.jpg" src="/media/arcmira-test/skyebrows/k13-basedcamp-sep03-ownvideos.mp4" style="width:100%"></video><figcaption><b>Sep 3</b>, Based Camp: &ldquo;working on creating a good one for music video generation so you can create your own <b>SkyBrows</b> videos&rdquo; <a href="https://www.youtube.com/watch?v=Hxt4fDwBBag&t=2757s">45:57</a></figcaption></figure>
+<figure style="margin:0"><video controls playsinline preload="none" poster="/media/arcmira-test/skyebrows/k14-endgame-sep09-universe.jpg" src="/media/arcmira-test/skyebrows/k14-endgame-sep09-universe.mp4" style="width:100%"></video><figcaption><b>Sep 9</b>, Endgame with Amanda Cassatt: &ldquo;our cultural sphere are aware of is the <b>Skybrow</b> cinematic universe&rdquo; <a href="https://www.youtube.com/watch?v=nYI7VXAWCLc&t=1423s">23:43</a></figcaption></figure>
+</div>
+
+<details>
+<summary>All 25 mentions, with links</summary>
+
+Timestamps marked * are Arcmira's passage start (the name is said within the next minute); the
+rest are the exact second, from YouTube's captions.
+
+| Date (2026) | Channel | Link | What was said |
+|---|---|---|---|
+| 02-06 | Based Camp | [50:59](https://www.youtube.com/watch?v=LY0ZqhtVId0&t=3059s) | what Skybrows is doing, I mean, not like we&#x27;re ever going to get to that level |
+| 02-06 | Based Camp | [52:17](https://www.youtube.com/watch?v=LY0ZqhtVId0&t=3137s) | Sky Brows videos in general are super fun |
+| 03-14 | Asmongold TV | [0:59](https://www.youtube.com/watch?v=XrVrdfURxFg&t=59s) | Another video will also be coming where I react to a video that Skybrows made which I am included |
+| 03-24 | Based Camp | [33:22](https://www.youtube.com/watch?v=z-JiZRk6fls&t=2002s) | There is a constant AI witch hunt on the left and the right is just like skybrows like this is fun looking |
+| 04-02 | Based Camp | [40:06](https://www.youtube.com/watch?v=P1Di8GRFkRI&t=2406s)* | Like we all watch Skybrows |
+| 04-02 | Based Camp | [1:17:44](https://www.youtube.com/watch?v=P1Di8GRFkRI&t=4664s)* | did stuff like skybrows play a role in that or is that not as relevant |
+| 04-02 | Based Camp | [1:19:33](https://www.youtube.com/watch?v=P1Di8GRFkRI&t=4773s) | the Skybrows videos to me the interesting it&#x27;s felt like there&#x27;s a party of cool kids |
+| 04-08 | Based Camp | [24:29](https://www.youtube.com/watch?v=1__Pq8wMSuo&t=1469s)* | (the name comes up in a passage about VTubers on the right) |
+| 04-21 | Based Camp | [2:51](https://www.youtube.com/watch?v=l3-6iPUF7hY&t=171s) | if you&#x27;re putting together something like a skybrows type video because I want to be the best place to put those together too online |
+| 04-21 | Based Camp | [14:29](https://www.youtube.com/watch?v=l3-6iPUF7hY&t=869s)* | And meanwhile, we&#x27;ve got like skybrows on our side |
+| 05-13 | Based Camp | [37:07](https://www.youtube.com/watch?v=p_o-KIJ-XIY&t=2227s)* | (the name comes up in a list of creators on the right) |
+| 05-14 | Based Camp | [27:34](https://www.youtube.com/watch?v=BctZVqV87-c&t=1654s)* | What is coming out of the the Skybrows |
+| 06-12 | Based Camp | [33:50](https://www.youtube.com/watch?v=F3aj5KRpLMQ&t=2030s)* | we&#x27;re the ones that have our Skybrows and our, all of these AI music videos and stuff |
+| 06-12 | Based Camp | [54:43](https://www.youtube.com/watch?v=F3aj5KRpLMQ&t=3283s)* | I get so excited when I see like Skybrows and stuff like this |
+| 06-19 | Based Camp (guest Kirsche) | [44:23](https://www.youtube.com/watch?v=dRAnjMAXYSM&t=2663s) | you obviously were a big motivation for like Skybrows to do some of his early videos |
+| 07-08 | Based Camp | [18:17](https://www.youtube.com/watch?v=NljTXtSCUaw&t=1097s) | having it called the Skybrows Cinematic Universe, I think makes perfect sense |
+| 07-08 | Based Camp | [36:13](https://www.youtube.com/watch?v=NljTXtSCUaw&t=2173s) | When the first SkyBrows video went viral that went viral, the Elon video |
+| 07-08 | Based Camp | [41:50](https://www.youtube.com/watch?v=NljTXtSCUaw&t=2510s) | if you look at the Skybrows, Skybrows, and I can&#x27;t make videos like the ones he makes |
+| 07-22 | Based Camp | [7:16](https://www.youtube.com/watch?v=8nevpXypPW4&t=436s) | compare that to like a fox girl from a Skybrows video |
+| 07-22 | Based Camp | [42:22](https://www.youtube.com/watch?v=8nevpXypPW4&t=2542s)* | We can give you Skybrows |
+| 08-07 | Based Camp | [34:58](https://www.youtube.com/watch?v=ji2zsf20xDA&t=2098s)* | Skybrows, holy ball |
+| 08-24 | Based Camp (guest Aydin Paladin) | [47:11](https://www.youtube.com/watch?v=ZJ6bYFdVH3M&t=2831s) | I bet if you storyboarded something that SkyBrows team would love to make it |
+| 09-03 | Based Camp | [45:57](https://www.youtube.com/watch?v=Hxt4fDwBBag&t=2757s) | working on creating a good one for music video generation so you can create your own SkyBrows videos |
+| 09-09 | Endgame with Amanda Cassatt | [23:44](https://www.youtube.com/watch?v=nYI7VXAWCLc&t=1424s) | our cultural sphere are aware of is the Skybrow cinematic universe |
+| 09-09 | Endgame with Amanda Cassatt | [34:33](https://www.youtube.com/watch?v=nYI7VXAWCLc&t=2073s)* | when you look at Skybrows videos, when you look at the videos that are coming out |
+
+</details>
+
+<details>
+<summary>The other half: 44 videos about him that plain YouTube search finds</summary>
+
+Ranked by date. The biggest is a re-upload of Asmongold reacting to "A Million Amelias" (231,639
+views); the busiest stretch is the Zuckerwars release, with 10 reaction and tribute videos from
+August 29 to October 9.
+
+| Date | Channel | Video | Views |
+|---|---|---|---|
+| 2025-10-31 | Phillip Chan | [Breathing Elon&#x27;s Musk - Skybrows \| Phil Reacts](https://www.youtube.com/watch?v=wIunYb14pwc) | 3,359 |
+| 2026-02-03 | Lord Intellectual | [It&#x27;s not FOR you - An intellectual reacts to Skyebrows &quot;A million Amelias&quot; music video](https://www.youtube.com/watch?v=lXsLTVBChfY) | 29,069 |
+| 2026-02-06 | Therworldtube | [Powdur (OG Amelia model) reacts to &#x27;A Million Amelias - Skyebrows&#x27;](https://www.youtube.com/watch?v=5ZhMYqFepbA) | 73,149 |
+| 2026-02-10 | Lusty Lynx | [Skyebrows COOKED with &quot;Joe Rogaine&#x27;s Experience&quot; \| Lustylynx Reacts](https://www.youtube.com/watch?v=VjAt0ga9IPM) | 9,349 |
+| 2026-02-16 | Lusty Lynx | [I FOUND HER!! &quot;Crybrows&quot; by Skyebrows \| Lustylynx Reacts](https://www.youtube.com/watch?v=6-AD6gSxn4I) | 33,375 |
+| 2026-02-17 | Powdur | [Skyebrows with CONTEXT \| Powdur Reacts](https://www.youtube.com/watch?v=pb7VmOVr_5M) | 72,698 |
+| 2026-02-18 | Therworldtube | [Pippa Response to the SkyeBrows Allegations](https://www.youtube.com/watch?v=SpxPmXiI3YQ) | 10,842 |
+| 2026-02-25 | OcNo - OccultusNotitia | [Skyebrows the Mystery Man](https://www.youtube.com/watch?v=7a73j_OCpMU) | 13,683 |
+| 2026-02-27 | Therworldtube | [Asmongold reaction to &#x27;One Million Amelias - Skyebrows&#x27;](https://www.youtube.com/watch?v=ax_OLDy-d14) | 231,639 |
+| 2026-03-02 | LouieVerse | [ONE SKYE - A Skyebrows Anthem (Official Music Video) dedicated to @skyebrows and the skyebros](https://www.youtube.com/watch?v=pz9IlGpPaHA) | 47,936 |
+| 2026-03-02 | Null FM | [Tiny Campfire Glow / A Thank You to @skyebrows // Null Fm](https://www.youtube.com/watch?v=kf5HyGXdjyQ) | 26,073 |
+| 2026-03-10 | Therworldtube | [Powdur reacts &#x27;Gonna Be - Carolina Overdrive&#x27; [HD Skyebrows/MommaBrows reaction]](https://www.youtube.com/watch?v=2OUdNxnIFgU) | 10,199 |
+| 2026-03-14 | Play Astronomical | [No I&#x27;m Not a Human [Anime Music Video - Vtuber Version] - LURKING (ft. SCU) - Play Astronomical](https://www.youtube.com/watch?v=YxpgzjQuuvo) | 42,559 |
+| 2026-04-10 | Skyebros Updates | [Kitsunero Reacts to Skyebrows (for real this time)](https://www.youtube.com/watch?v=MwE7ul4tmpw) | 26,134 |
+| 2026-05-19 | Avalune | [My Mind Was BLOWN Hearing &quot;Joe&#x27;s Rogaine Experience&quot; by Skyebrows \| Avalune Reacts](https://www.youtube.com/watch?v=w3QVv-E8wfo) | 5,967 |
+| 2026-05-19 | Words Of Paradise | [Skyebrows New Music Video Goes FULL CONSPIRACY MODE](https://www.youtube.com/watch?v=Y4sS0YnkvUY) | 1,581 |
+| 2026-05-21 | LifuLifu | [SkyeOp is an ABSOLUTE BANGER   Skyebrows Just Dropped a Masterpiece](https://www.youtube.com/watch?v=lgmDtLJjsUU) | 7,827 |
+| 2026-06-14 | DepthswalkerAI-vids | [Never Lego by @skyebrows  a reaction by an exhausted mage](https://www.youtube.com/watch?v=KHF3xv2wx2E) | 995 |
+| 2026-06-17 | Phillip Chan | [Never Lego - Skyebrows \| Phil Reacts](https://www.youtube.com/watch?v=HUYzAimbT1o) | 6,207 |
+| 2026-06-26 | WHAT IT DO DAVE | [A Million Amelias - Skyebrows \| Reaction!](https://www.youtube.com/watch?v=P8im7ZjPpFI) | 12,742 |
+| 2026-07-06 | Bloodrunks | [Nux reacts to Skyops from Skyebrows!!!](https://www.youtube.com/watch?v=_ulwgvVkSqY) | 14,948 |
+| 2026-07-18 | Celestium | [We Interviewed Skyebrows the BEST AI Music Video Expert!](https://www.youtube.com/watch?v=hiVPxWXS6CI) | 6,443 |
+| 2026-07-22 | Deadpan React VT | [Another banger by Skyebrows / VTubers React](https://www.youtube.com/watch?v=eYhMcTE7IoI) | 3,821 |
+| 2026-07-23 | Bloodrunks | [Nux reacts to Never Lego from Skybrows](https://www.youtube.com/watch?v=jVJC9XOYk7o) | 25,755 |
+| 2026-08-03 | Tony Down Under | [Skyebrows&#x27; &#x27;Cream of the Slop&#x27; Is PEAK AI SLOP \| VTUBER Reaction](https://www.youtube.com/watch?v=arfiJh5qerI) | 3,020 |
+| 2026-08-14 | Ked-Jiisan | [My Opinion (Skyebrows Cinematic Universe)](https://www.youtube.com/watch?v=hcmEv5f_c6g) | 2,671 |
+| 2026-08-29 | Keksi Kuebler | [REACTING to Zuckerwars by Skyebrows (Zuckerborg) \| First Time Hearing~](https://www.youtube.com/watch?v=S6pl-ACHves) | 28,752 |
+| 2026-08-30 | SatanicRosieVT | [HE ACTUALLY DID IT!! \| Zuckerwars - Skyebrows](https://www.youtube.com/watch?v=HhhSD966aQw) | 12,933 |
+| 2026-08-31 | Celestium | [I am Part of the ZUCKERWARS - Skyebrows](https://www.youtube.com/watch?v=CHpgoV_qGrg) | 38,305 |
+| 2026-08-31 | Teally | [AI &#x27;SLOP&#x27; IS PEAKING?! \| VTuber Reacts to Skyebrows - Zuckerwars](https://www.youtube.com/watch?v=zY0BCtaG44w) | 22,095 |
+| 2026-09-01 | Yukiwaru | [This is the BEST Music Video EVER - Zuckerwars](https://www.youtube.com/watch?v=XvnCdMY1Is8) | 76,087 |
+| 2026-09-02 | WHAT IT DO DAVE | [Reacting to Zuckerwars - This Zuckerberg Song is INSANE (Skyebrows)](https://www.youtube.com/watch?v=enN9AlFGCl4) | 28,341 |
+| 2026-09-03 | Ando | [Zuckerwars \| Skyebrows React](https://www.youtube.com/watch?v=-9AT1n_vhco) | 7,063 |
+| 2026-09-06 | CyberNuggets | [Zuckerwars technical breakdown with @skyebrows](https://www.youtube.com/watch?v=KgTqooihjwU) | 6,312 |
+| 2026-09-07 | Siniviere | [Face to Face With the Future \| Skyebrows Interview](https://www.youtube.com/watch?v=QjK0GTcGouo) | 17,765 |
+| 2026-09-09 | ACE AT | [Skyebrows Just Dropped Zuckerwars.. And Mentioned Me](https://www.youtube.com/watch?v=r6IIL0IR4f0) | 25,118 |
+| 2026-09-09 | TheHolyBall | [Zuckerwars Tribute - HolyBall](https://www.youtube.com/watch?v=4rku-UrlBg4) | 46,763 |
+| 2026-09-15 | Teally | [Skyebrows Does NOT MISS! \| VTuber Reacts to More SCU](https://www.youtube.com/watch?v=f8fV33GhpqY) | 15,301 |
+| 2026-09-21 | Deadpan React VT | [Stellorado Might Be Skyebrows&#x27; Coolest World Yet / VTuber Reacts](https://www.youtube.com/watch?v=dqIAk67NJkg) | 679 |
+| 2026-09-23 | Ovted Fatash | [Ovted Fatash Reacts to Stellarado by Skyebrows](https://www.youtube.com/watch?v=Mf3m8ueJKj0) | 76 |
+| 2026-09-28 | Soitsu | [[I&#x27;m smelling what he&#x27;s cooking] Introduced into Skyebrows REACTION](https://www.youtube.com/watch?v=q-epepxRNsE) | 1,118 |
+| 2026-10-09 | Archaeon Knight | [Archaeon Reacts to A Million Amelias by Skyebrows](https://www.youtube.com/watch?v=h1LPx1LId9w) | 6,109 |
+| 2026-10-09 | LouieVerse | [Zuckerwars Tribute - The Robosabi Protocol @skyebrows](https://www.youtube.com/watch?v=GscXS5-uWSU) | 7,711 |
+| 2026-10-16 | Penny Bloomfield | [ACE AT: Finally Left (React to the Video that Skyebrows Asmongold &amp; Everyone Has Been Waiting For)](https://www.youtube.com/watch?v=8LUBXl-mRZI) | 14 |
+
+</details>
+
+### Every Arcmira feature, tried
+
+| Call | What came back |
+|---|---|
+| `arcmira_describe()` | the client reference, about 23,000 characters, free |
+| `status()` | free plan, 340 credits left, 30-day delay: nothing after September 16 |
+| `resolve()` x3 | "Skybrows" found; "Skyebrows" and his channel ID not found |
+| `mentions()`, `occurrences()` | the catalog: 1 mention, 1 episode |
+| `search()`, about 30 queries | the 25 mentions above, plus a lot of noise for song titles |
+| `status({channelId})` | Based Camp: 678 videos indexed, through October 15 |
+| `momentum()`, `recommendations()`, `sponsors()`, `episodes()`, `occurrences()` across two shows, `integrations.slack()`, `resolve()` | all refused with `quota_exceeded`: "This month's 1,000 credits from the plan are used; they reset on 2026-11-01." |
+| `quote()` (free) | a Premium transcript of one 53-minute episode would cost 1,200 credits, and isn't available on the free plan |
+| `monitors.list()` (free) | no monitors |
+
+Earlier tests also used `transcript()` captions, `sponsors()`, `episodes()` and sponsored-only
+search, and hit `freshness_requires_paid`, `filter_requires_paid`, a 503 and a 30-second timeout.
+Still untested: momentum, recommendations, Premium transcripts and creating monitors.
+
+**The bill:** the timeline used all 340 credits I had left, in about 15 minutes. A search that
+returns 20 passages costs about 60 credits. The tokens aren't broken out, because this ran inside
+my main session rather than as a separate measured run.
 
 ## Test 3: a SpaceX question both could see
 
@@ -243,6 +428,9 @@ it needs to see something, it can look at the frames.
   worked. Each request is a small JavaScript program with a 30-second limit, and a few timed out.
 
 **My verdict for now:** Claude alone covers most of what I'd do, including the part I cared about
-most, finding and cutting exact moments. Arcmira is worth having for one job: tracking what
-podcasts and business shows say about a person, company or topic. For that it found things Claude
-couldn't, and the useful version is probably two runs side by side, not one tool instead of the other.
+most, finding and cutting exact moments. Arcmira is worth having for one job: a timeline of every
+time a person, company or topic is said out loud on podcasts and business shows. The Skyebrows
+timeline is the proof: 25 moments that no title, description or YouTube search would have shown
+me. The best version is two runs side by side, one reading YouTube and one reading Arcmira's
+transcripts, merged into one timeline. On the free plan, expect to spend the month's credits on
+one or two people.
