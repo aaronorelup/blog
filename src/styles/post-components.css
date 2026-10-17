@@ -1755,3 +1755,392 @@ ao-calc > figcaption .ao-meta {
   .ao-calc-box { grid-template-columns: minmax(0, 1fr); padding: 12px; }
   .ao-calc-results { padding: 14px 0 0; border-left: 0; border-top: 1px solid var(--pc-line2); }
 }
+
+/* <ao-series>: one column per day over a plain table (visually hidden once drawn, kept for screen
+   readers). Columns stretch with the card; lines keep their width (non-scaling stroke). */
+ao-series {
+  display: block;
+  margin: 28px 0;
+  min-width: 0;
+}
+.ao-series-chart {
+  display: grid;
+  gap: 8px;
+  padding: 14px 18px 12px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 12px;
+  background: var(--pc-code);
+  font-family: Karla, system-ui, sans-serif;
+}
+.ao-series-top { display: flex; flex-wrap: wrap; gap: 6px; }
+.ao-series-top button {
+  padding: 5px 11px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--pc-body);
+  font: 600 12.5px/1.2 Karla, system-ui, sans-serif;
+  cursor: pointer;
+}
+.ao-series-top button:hover { color: var(--pc-strong); border-color: var(--pc-quiet); }
+.ao-series-top button:not(.ao-series-key)[aria-pressed='true'] {
+  background: var(--pc-head);
+  border-color: var(--pc-head);
+  color: var(--pc-page);
+}
+.ao-series-top .ao-series-key { color: var(--pc-strong); }
+.ao-series-top .ao-series-key::before {
+  content: '';
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 6px;
+  border-radius: 2px;
+  background: var(--bar);
+}
+.ao-series-top .ao-series-key[aria-pressed='false'] { color: var(--pc-quiet); text-decoration: line-through; opacity: 0.75; }
+.ao-series-top .ao-series-key[aria-pressed='false']::before { background: transparent; box-shadow: inset 0 0 0 1.5px var(--bar); }
+.ao-series-top button:focus-visible { outline: 2px solid var(--pc-accent); outline-offset: 2px; }
+.ao-series-body { display: grid; touch-action: pan-y; }
+.ao-series-plot {
+  position: relative;
+  height: 210px;
+  margin-top: 6px;
+  cursor: crosshair;
+  border-radius: 4px;
+}
+.ao-series-plot:focus-visible { outline: 2px solid var(--pc-accent); outline-offset: 4px; }
+.ao-series-plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.ao-series-plot rect { fill: var(--bar); }
+.ao-series-chart .ao-series-plot rect.ao-series-muted { fill: var(--pc-quiet); opacity: 0.5; }
+.ao-series-avg {
+  fill: none;
+  stroke: var(--pc-head);
+  stroke-width: 2.2px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.ao-series-s0 { --bar: var(--pc-head); }
+.ao-series-s1 { --bar: var(--pc-accent); }
+.ao-series-s2 { --bar: var(--pc-quiet); }
+.ao-series-s3 { --bar: var(--pc-body); }
+.ao-series-grids { position: absolute; inset: 0; pointer-events: none; }
+.ao-series-grid { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--pc-line2); }
+.ao-series-grid span {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  font: 10.5px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--pc-quiet);
+}
+.ao-series-hl {
+  position: absolute;
+  top: -4px;
+  bottom: 0;
+  border-radius: 2px;
+  background: var(--pc-strong);
+  opacity: 0.1;
+  pointer-events: none;
+}
+.ao-series-hl[hidden] { display: none; }
+.ao-series-x { position: relative; height: 18px; border-top: 1px solid var(--pc-line2); }
+.ao-series-x span {
+  position: absolute;
+  top: 4px;
+  transform: translateX(-50%);
+  font: 10.5px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--pc-quiet);
+  white-space: nowrap;
+}
+.ao-series-x span.is-first { transform: none; margin-left: -4px; }
+.ao-series-x span.is-last { transform: translateX(-100%); margin-left: 4px; }
+.ao-series-marks { position: relative; height: 12px; }
+.ao-series-mark {
+  position: absolute;
+  top: 3px;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  border-radius: 50%;
+  background: var(--pc-accent);
+  opacity: 0.75;
+}
+.ao-series-mark.is-many { box-shadow: 0 0 0 1.5px var(--pc-accent); }
+.ao-series-mark.is-on { opacity: 1; box-shadow: 0 0 0 2px var(--pc-strong); }
+.ao-series-chart p.ao-series-read {
+  min-height: 2.9em;
+  margin: 2px 0 0;
+  font: 400 13px/1.5 Karla, system-ui, sans-serif;
+  color: var(--pc-soft);
+}
+.ao-series-read b { font-weight: 600; color: var(--pc-strong); }
+.ao-series-read .is-shown { color: var(--pc-head); font-weight: 600; }
+.ao-series-read .ao-series-val[class*='ao-series-s']::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 5px;
+  border-radius: 2px;
+  background: var(--bar);
+}
+.ao-series-read .ao-series-note,
+.ao-series-read .ao-series-hint { display: block; color: var(--pc-quiet); }
+.ao-series-read .ao-series-note { color: var(--pc-accent); }
+.ao-series-ready > .ao-series-table {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.ao-series-ready > ol { display: none; }
+ao-series > figcaption,
+ao-funnel > figcaption,
+ao-ask > figcaption {
+  margin-top: 8px;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pc-soft);
+}
+ao-series > figcaption b,
+ao-funnel > figcaption b,
+ao-ask > figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
+ao-series > figcaption .ao-meta,
+ao-funnel > figcaption .ao-meta,
+ao-ask > figcaption .ao-meta {
+  display: block;
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: var(--pc-quiet);
+}
+@media (max-width: 640px) {
+  .ao-series-chart { padding: 12px; }
+  .ao-series-plot { height: 170px; }
+}
+
+/* <ao-funnel>: one bar for the whole split, then a row per layer with what it took and what was
+   left. Layer colours cycle through six quiet tones; what is left at the end is gold. */
+ao-funnel {
+  display: block;
+  margin: 28px 0;
+  min-width: 0;
+}
+.ao-funnel-box {
+  display: grid;
+  gap: 10px;
+  padding: 16px 18px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 12px;
+  background: var(--pc-code);
+  font-family: Karla, system-ui, sans-serif;
+}
+.ao-funnel-box p.ao-funnel-sum {
+  margin: 0;
+  font: 600 12px/1.4 Karla, system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pc-gold);
+}
+.ao-funnel-bar {
+  display: flex;
+  height: 18px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--pc-line);
+}
+.ao-funnel-seg {
+  flex: 0 1 0;
+  min-width: 3px;
+  background: var(--seg);
+  transition: opacity 160ms cubic-bezier(.4, 0, .2, 1);
+}
+.ao-funnel-seg + .ao-funnel-seg { box-shadow: inset 1px 0 0 var(--pc-code); }
+.ao-funnel-bar:has(.is-on) .ao-funnel-seg:not(.is-on) { opacity: 0.3; }
+.ao-funnel-f0 { --seg: var(--pc-accent); }
+.ao-funnel-f1 { --seg: var(--pc-quiet); }
+.ao-funnel-f2 { --seg: color-mix(in srgb, var(--pc-accent) 55%, var(--pc-line)); }
+.ao-funnel-f3 { --seg: var(--pc-line2); }
+.ao-funnel-f4 { --seg: color-mix(in srgb, var(--pc-quiet) 50%, var(--pc-line)); }
+.ao-funnel-f5 { --seg: var(--pc-soft); }
+.ao-funnel-left { --seg: var(--pc-head); }
+ao-funnel ol.ao-funnel-rows { display: grid; gap: 10px; margin: 4px 0 0; padding: 0; list-style: none; }
+ao-funnel li.ao-funnel-row {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 6px 8px 8px;
+  border-radius: 8px;
+  font: 400 13.5px/1.45 Karla, system-ui, sans-serif;
+  color: var(--pc-soft);
+}
+ao-funnel li.ao-funnel-row.is-on { background: var(--pc-hover); }
+.ao-funnel-head { display: flex; flex-wrap: wrap; gap: 2px 12px; align-items: baseline; justify-content: space-between; }
+.ao-funnel-head b { font: 600 14px/1.3 Karla, system-ui, sans-serif; color: var(--pc-strong); }
+.ao-funnel-head b::before {
+  content: '';
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 7px;
+  border-radius: 2px;
+  background: var(--seg);
+}
+.ao-funnel-row.is-total .ao-funnel-head b::before { display: none; }
+.ao-funnel-row:last-child .ao-funnel-head b::before { background: var(--pc-head); }
+.ao-funnel-nums {
+  font: 12.5px/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--pc-body);
+  white-space: nowrap;
+}
+.ao-funnel-track { position: relative; height: 6px; border-radius: 3px; background: var(--pc-line); }
+.ao-funnel-keep { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: var(--pc-body); opacity: 0.5; }
+.ao-funnel-row.is-total .ao-funnel-keep { opacity: 0.75; }
+.ao-funnel-gone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  min-width: 2px;
+  border-radius: 0 3px 3px 0;
+  background: repeating-linear-gradient(135deg, var(--seg) 0 3px, transparent 3px 6px);
+}
+.ao-funnel-row:last-child .ao-funnel-keep { background: var(--pc-head); opacity: 1; }
+.ao-funnel-note code { font-size: 0.86em; }
+ao-funnel button.ao-funnel-more {
+  justify-self: start;
+  margin-top: 2px;
+  padding: 3px 10px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--pc-body);
+  font: 600 12px/1.2 Karla, system-ui, sans-serif;
+  cursor: pointer;
+}
+ao-funnel button.ao-funnel-more:hover { color: var(--pc-strong); border-color: var(--pc-quiet); }
+ao-funnel button.ao-funnel-more[aria-expanded='true'] { color: var(--pc-strong); border-color: var(--pc-head); }
+ao-funnel button.ao-funnel-more:focus-visible { outline: 2px solid var(--pc-accent); outline-offset: 2px; }
+ao-funnel ul.ao-funnel-ex { margin: 4px 0 0; padding-left: 18px; }
+ao-funnel ul.ao-funnel-ex li {
+  margin: 0 0 3px;
+  font: 12.5px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--pc-body);
+  overflow-wrap: anywhere;
+}
+.ao-funnel-ready > ol { display: none; }
+@media (max-width: 640px) {
+  .ao-funnel-box { padding: 12px; }
+  ao-funnel li.ao-funnel-row { padding: 4px 2px 6px; }
+}
+
+/* <ao-ask>: questions an agent was asked, each opening onto the call it made and the answer. */
+ao-ask {
+  display: grid;
+  gap: 8px;
+  margin: 28px 0;
+  min-width: 0;
+  font-family: Karla, system-ui, sans-serif;
+}
+.ao-ask-filter { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+.ao-ask-filter button {
+  padding: 5px 11px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--pc-body);
+  font: 600 12.5px/1.2 Karla, system-ui, sans-serif;
+  cursor: pointer;
+}
+.ao-ask-filter button:hover { color: var(--pc-strong); border-color: var(--pc-quiet); }
+.ao-ask-filter button[aria-pressed='true'] { background: var(--pc-head); border-color: var(--pc-head); color: var(--pc-page); }
+.ao-ask-filter button:focus-visible { outline: 2px solid var(--pc-accent); outline-offset: 2px; }
+ao-ask > details {
+  border: 1px solid var(--pc-line2);
+  border-radius: 10px;
+  background: var(--pc-code);
+}
+ao-ask > details[hidden] { display: none; }
+ao-ask > details > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+  position: relative;
+  padding: 12px 16px 12px 36px;
+  list-style: none;
+  cursor: pointer;
+  border-radius: 10px;
+}
+ao-ask > details > summary::-webkit-details-marker { display: none; }
+ao-ask > details > summary::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 17px;
+  border: 5px solid transparent;
+  border-left-color: var(--pc-head);
+  transform-origin: 2px 5px;
+  transition: transform 160ms cubic-bezier(.4, 0, .2, 1);
+}
+ao-ask > details[open] > summary::before { transform: rotate(90deg); }
+ao-ask > details > summary:hover { background: var(--pc-hover); }
+ao-ask > details > summary:focus-visible { outline: 2px solid var(--pc-accent); outline-offset: 2px; }
+.ao-ask-q { font: 600 15px/1.4 Karla, system-ui, sans-serif; color: var(--pc-strong); }
+.ao-ask-tag {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: baseline;
+  font: 12px/1.4 Karla, system-ui, sans-serif;
+  color: var(--pc-quiet);
+}
+.pc-prose .ao-ask-tag code { padding: 0 4px; font-size: 11.5px; color: var(--pc-soft); background: var(--pc-hover); }
+ao-ask > details > :not(summary) { margin-left: 16px; margin-right: 16px; }
+ao-ask > details > :last-child { margin-bottom: 14px; }
+ao-ask button.ao-ask-copy {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 3px 10px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--pc-body);
+  font: 600 12px/1.2 Karla, system-ui, sans-serif;
+  cursor: pointer;
+}
+ao-ask button.ao-ask-copy:hover { color: var(--pc-strong); border-color: var(--pc-quiet); }
+ao-ask button.ao-ask-copy:focus-visible { outline: 2px solid var(--pc-accent); outline-offset: 2px; }
+.pc-prose ao-ask > details > pre {
+  margin-top: 0;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--pc-body);
+  background: var(--pc-page);
+}
+:root[data-mode='day'] .pc-prose ao-ask > details > pre { background: #fff; }
+.pc-prose ao-ask > details > p,
+.pc-prose ao-ask > details > ul li {
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.pc-prose ao-ask > details > p { margin-bottom: 10px; }
+.pc-prose ao-ask > details > ul { margin-bottom: 10px; }
+@media (max-width: 640px) {
+  ao-ask > details > summary { padding: 10px 12px 10px 30px; }
+  ao-ask > details > summary::before { left: 12px; top: 15px; }
+  ao-ask > details > :not(summary) { margin-left: 12px; margin-right: 12px; }
+}
+/* A measured-separately layer (a positive value after the first): what it leaves out is
+   unconfirmed, not removed, so it is striped gold rather than given a layer colour. */
+.ao-funnel-seg.ao-funnel-left.is-maybe {
+  background: repeating-linear-gradient(135deg, var(--pc-head) 0 3px, color-mix(in srgb, var(--pc-head) 28%, transparent) 3px 6px);
+}
+.ao-funnel-gone.is-maybe { background: repeating-linear-gradient(135deg, var(--pc-head) 0 3px, transparent 3px 6px); }

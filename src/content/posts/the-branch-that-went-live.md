@@ -5,7 +5,7 @@ summary: "A Claude Haiku 5.5 session in the cloud started from the repo's stale 
 date: 2026-10-09
 status: "shipped"
 tags: ["claude-code", "agents", "cloudflare", "git", "blog"]
-series: ["agent-runs"]
+series: ["agent-runs", "the-site"]
 preview:
   verdict: "Rolled back in 8 minutes"
   takeaway: "The cloud session did what its copy of the repo told it to. Three settings nobody had looked at since August turned one post into a two-month rollback."

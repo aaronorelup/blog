@@ -1,0 +1,5 @@
+# Everything here is public and may be crawled. The list of pages is in the sitemap.
+User-agent: *
+Allow: /
+
+Sitemap: https://aaronorelup.com/sitemap.xml

@@ -5,7 +5,7 @@ summary: "Cloudflare's asset server answers a request for part of a file with th
 date: 2026-10-08
 status: "shipped"
 tags: ["claude-code", "agents", "cloudflare", "debugging", "blog"]
-series: ["agent-runs"]
+series: ["agent-runs", "the-site"]
 preview:
   verdict: "Worked around, then fixed"
   takeaway: "When an agent finds a problem below the thing it was asked to build, it patches its own piece and leaves a note, so check the layer underneath."
