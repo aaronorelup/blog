@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Previs Film Flow</title>
+<meta name="description" content="How a Blender-previs AI short film gets made on an 8 GB laptop: what the human does, what Claude and the GPU do, every decision and loop-back.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Karla:wght@400;600&display=swap">
+<style>
+:root{
+  --page:#FBF3E8;--head:#BE7A10;--strong:#3A3A42;--body:#4A4A50;--soft:#6B5E52;--quiet:#7A6C5D;
+  --line:#E2D5C0;--line2:#D0BEA3;--accent:#A85E2B;--gold:#B08A2E;--you:#F6E3BE;--youb:#D9A94A;--cl:#EFE7DA;--clb:#C9B8A0;
+  --gpu:#E9DDE6;--gpub:#B69AAE;--blood:#9A2A2A;--shadow:0 30px 90px rgba(58,58,66,.18);
+}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;
+  --page:#101220;--head:#F0C06A;--strong:#F2E7D5;--body:#C9BCA9;--soft:#9C917F;--quiet:#8E8375;
+  --line:#302E3E;--line2:#4A445A;--accent:#E2795C;--gold:#C9A227;--you:#2E2718;--youb:#C9A227;--cl:#1C1D2B;--clb:#4A445A;
+  --gpu:#2A2030;--gpub:#8A6A84;--blood:#E26A5C;--shadow:0 34px 100px rgba(0,0,0,.55);}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--body);font:15px/1.55 Karla,system-ui,sans-serif;padding:28px 18px 72px}
+a{color:var(--accent)}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h3{font-family:"Zen Maru Gothic",Karla,sans-serif;color:var(--head);letter-spacing:-.015em;margin:0;text-wrap:balance}
+h1{font-size:clamp(28px,4.6vw,42px);line-height:1.12}
+.lede{font-family:Georgia,serif;font-size:17px;line-height:1.68;max-width:640px;margin:0}
+.eyebrow{font:600 12px Karla,sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--gold)}
+b{color:var(--strong)}
+.legend{display:flex;flex-wrap:wrap;gap:10px 18px;font-size:13px;color:var(--soft);align-items:center}
+.sw{display:inline-block;width:14px;height:14px;border:1.5px solid;vertical-align:-2px;margin-right:6px}
+.sw.you{background:var(--you);border-color:var(--youb)}.sw.cl{background:var(--cl);border-color:var(--clb)}.sw.gpu{background:var(--gpu);border-color:var(--gpub)}
+.sw.dec{background:var(--page);border-color:var(--accent);transform:rotate(45deg);width:11px;height:11px}
+.totals{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border:1px solid var(--line)}
+.totals div{background:var(--page);padding:10px 16px;flex:1 1 180px}
+.totals .n{font:700 22px "Zen Maru Gothic",sans-serif;color:var(--strong)}.totals .l{font-size:13px;color:var(--soft)}
+.lanes{display:grid;grid-template-columns:1fr 64px 1fr;font:600 12px Karla,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--gold)}
+.flow{display:flex;flex-direction:column}
+.row{display:grid;grid-template-columns:1fr 64px 1fr;align-items:stretch;position:relative}
+.spine{position:relative;display:flex;justify-content:center}
+.spine::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--line2);transform:translateX(-1px)}
+.node{position:relative;z-index:1;margin-top:18px;width:34px;height:34px;border-radius:999px;background:var(--page);border:2px solid var(--head);
+  display:flex;align-items:center;justify-content:center;font:700 14px "Zen Maru Gothic",sans-serif;color:var(--head)}
+.card{margin:10px 0;padding:12px 14px;border:1.5px solid;display:flex;flex-direction:column;gap:6px}
+.card.you{background:var(--you);border-color:var(--youb)}.card.cl{background:var(--cl);border-color:var(--clb)}.card.gpu{background:var(--gpu);border-color:var(--gpub)}
+.card h3{font-size:16px}.card p{margin:0;font-size:14px}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:600 11px Karla,sans-serif;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border-radius:999px;border:1px solid var(--line2);color:var(--soft);white-space:nowrap}
+.chip.t{color:var(--strong);border-color:var(--youb)}.chip.hv{color:var(--blood);border-color:var(--blood)}
+.empty{margin:10px 0;border:1.5px dashed var(--line2);display:flex;align-items:center;justify-content:center;color:var(--quiet);font-size:13px;padding:10px}
+.dec .d{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;margin:6px auto;padding:10px 18px;border:1.5px solid var(--accent);
+  background:var(--page);box-shadow:var(--shadow);position:relative;z-index:1;max-width:760px}
+.d .q{font:700 15px "Zen Maru Gothic",sans-serif;color:var(--accent)}
+.d .a{font-size:13.5px}
+.d .dia{width:14px;height:14px;border:2px solid var(--accent);transform:rotate(45deg);flex:none}
+.loop{color:var(--accent);font-weight:600}
+.phase{font:600 12px Karla,sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--quiet);text-align:center;padding:14px 0 2px;border-top:1px solid var(--line);margin-top:10px}
+.back{font-size:14px}
+@media (max-width:720px){
+  .lanes{display:none}
+  .row{grid-template-columns:40px 1fr}
+  .row .spine{grid-row:1 / span 2;grid-column:1}
+  .row > .you,.row > .cl{grid-column:2}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="/ledger/previs-film-flow/">← back to the post</a>
+  <header style="display:flex;flex-direction:column;gap:12px">
+    <span class="eyebrow">previs-film · the whole process, from the human's chair</span>
+    <h1>The Previs Film Flow</h1>
+    <p class="lede"><b>About 25 minutes of my time if I only make decisions; 1½–2 hours if I also paint over the references and touch the Blender file.</b> Those two optional steps are where a film gets most of its quality. Everything else, including waiting for the GPU, runs without me: Claude queues the renders and wakes itself when they finish.</p>
+    <div class="legend"><span><i class="sw you"></i>Me</span><span><i class="sw cl"></i>Claude</span><span><i class="sw gpu"></i>The GPU (background, queued)</span><span><i class="sw dec"></i>Decision</span><span class="chip hv">high value</span> = optional, but it moves quality the most</div>
+    <div class="totals">
+      <div><div class="n">~25 min</div><div class="l">my time, decisions only</div></div>
+      <div><div class="n">~1½–2 h</div><div class="l">my time with paint-over + previs tweaks</div></div>
+      <div><div class="n">0 credits</div><div class="l">local default: MiniMax-H3 on an 8 GB laptop</div></div>
+      <div><div class="n">~10 min</div><div class="l">GPU per 6 s clip at 736×416 (measured, 2 reference images + previs)</div></div>
+    </div>
+  </header>
+
+  <div class="lanes"><div>Me</div><div></div><div>Claude &amp; the GPU</div></div>
+  <div class="flow">
+    <div class="phase">Pre-production</div>
+    <div class="row"><div class="you"><div class="card you"><h3>Ask for the film</h3><p>One message: who's in it, the idea, the length, and "local" or "cloud". Add a reference video if I want to copy a technique.</p><div class="meta"><span class="chip t">2 min</span></div></div></div>
+      <div class="spine"><div class="node">1</div></div>
+      <div class="cl"><div class="card cl"><h3>Reads canon and the technique</h3><p>Loads the character pages and my render notes. If I gave a video, it transcribes it and turns it into a step table.</p></div></div></div>
+
+    <div class="row"><div class="you"><div class="card you"><h3>Move panels between the two piles</h3><p>Look at the storyboard. Orange panels get a Blender previs; the rest go straight to video. Swap any I disagree with.</p><div class="meta"><span class="chip t">5 min</span></div></div></div>
+      <div class="spine"><div class="node">2</div></div>
+      <div class="cl"><div class="card cl"><h3>Shot list + storyboard</h3><p>Timed beats per shot, a rough board, and the Blender / straight-to-video split already marked.</p></div></div></div>
+    <div class="dec"><div class="d"><span class="dia"></span><span class="q">Is this motion quicker to animate than to describe, and can it be animated well?</span><span class="a">Yes → Blender previs. No → text to video. A badly animated previs gets copied, bad motion included.</span></div></div>
+
+    <div class="row"><div class="you"><div class="card you"><h3>Pick and merge</h3><p>Four candidates per new character, monster, prop or place. Say what I like: "hair from 2, coat from 4". Confirm any new character fact.</p><div class="meta"><span class="chip t">10 min</span></div></div></div>
+      <div class="spine"><div class="node">3</div></div>
+      <div class="cl"><div class="card gpu"><h3>Asset sheets</h3><p>New designs: 4 candidates each. Existing characters: sheets built from the canon image, never reinvented.</p></div></div></div>
+
+    <div class="row"><div class="you"><div class="card you"><h3>Paint over the picks</h3><p>Lift brightness and saturation, add loose strokes around each silhouette, fix any wrong detail. Every reference ends up in one look, and the video copies the look of its references.</p><div class="meta"><span class="chip t">15–30 min</span><span class="chip hv">high value</span></div></div></div>
+      <div class="spine"><div class="node">4</div></div>
+      <div class="cl"><div class="empty">Skipped? Claude does an image-edit paint-over instead. It works; a hand is better.</div></div></div>
+
+    <div class="row"><div class="you"><div class="card you"><h3>Watch the test clips</h3><p>Say what breaks: a prop drifting, the style going 3D, someone appearing who shouldn't. Each problem becomes a rule for this film.</p><div class="meta"><span class="chip t">5 min</span></div></div></div>
+      <div class="spine"><div class="node">5</div></div>
+      <div class="cl"><div class="card gpu"><h3>Test stage</h3><p>One or two short clips with every asset thrown in, before any real shot.</p></div></div></div>
+    <div class="dec"><div class="d"><span class="dia"></span><span class="q">Do the assets hold up in motion?</span><span class="a">No → <span class="loop">↺ back to 3 or 4</span> (usually a missing prop sheet or a reference in the wrong style).</span></div></div>
+
+    <div class="phase">Previs</div>
+    <div class="row"><div class="you"><div class="card you"><h3>Open the .blend and nudge it</h3><p>Press 0 for the camera view, then play. Drag a camera path point, retime a key, or pull the camera back where the grey shapes are hard to read. The model follows these timings.</p><div class="meta"><span class="chip t">10–20 min</span><span class="chip hv">high value</span></div></div></div>
+      <div class="spine"><div class="node">6</div></div>
+      <div class="cl"><div class="card cl"><h3>Grey-box previs</h3><p>Built in Blender from code: true proportions, squash and stretch, the camera move, handheld noise, an animated lens. Cut into one 6-second chunk per clip, with cuts on chunk boundaries.</p></div></div></div>
+    <div class="dec"><div class="d"><span class="dia"></span><span class="q">Can you tell what every grey shape is?</span><span class="a">No → zoom out, make big things bulkier, keep the camera out of walls. <span class="loop">↺ 6</span></span></div></div>
+
+    <div class="row"><div class="you"><div class="card you"><h3>Proofread the prompts</h3><p>Check them against canon: the right mask, the right weapon, who's in the shot.</p><div class="meta"><span class="chip t">3 min</span></div></div></div>
+      <div class="spine"><div class="node">7</div></div>
+      <div class="cl"><div class="card cl"><h3>Five-block prompts</h3><p>Scene and style, labelled references, timed beats, locks, animation principles. Name only who is in the shot. Two reference images max on 8 GB (merge sheets side by side), previs strength 0.55.</p></div></div></div>
+
+    <div class="phase">Production</div>
+    <div class="dec"><div class="d"><span class="dia"></span><span class="q">Local or cloud?</span><span class="a">Local: free, 736×416, runs in the GPU queue. Cloud: approve the credits first (H3 ~2 credits/s, Seedance ~7 credits/s at 720p).</span></div></div>
+    <div class="row"><div class="you"><div class="empty">Nothing. Leave the laptop plugged in.</div></div>
+      <div class="spine"><div class="node">8</div></div>
+      <div class="cl"><div class="card gpu"><h3>Render in the background</h3><p>One GPU lease per clip, waiting its turn behind other sessions; cached models unloaded first; a live watchdog cancels any clip past 15 minutes.</p></div></div></div>
+
+    <div class="row"><div class="you"><div class="card you"><h3>Watch the red-outline cut</h3><p>The film with the Blender previs drawn in red over the generation. Name any shot that's off and what's wrong.</p><div class="meta"><span class="chip t">5–10 min</span></div></div></div>
+      <div class="spine"><div class="node">9</div></div>
+      <div class="cl"><div class="card cl"><h3>Contact sheets + comparisons</h3><p>A 3×3 sheet per take. Side-by-side, crossfade and red-overlay videos for every previs shot.</p></div></div></div>
+    <div class="dec"><div class="d"><span class="dia"></span><span class="q">Is the shot right?</span><span class="a">Detail wrong: screenshot the good frame, paint the detail in, re-render with it as reference 1. Framing wrong: fix the previs. A stranger appeared: fix the cast line. Background drifted: add a location reference. <span class="loop">↺ 8</span></span></div></div>
+
+    <div class="phase">Finish</div>
+    <div class="row"><div class="you"><div class="card you"><h3>Music and final mix</h3><p>The cut arrives with sound effects only. Add music or change trims if I want.</p><div class="meta"><span class="chip t">optional</span></div></div></div>
+      <div class="spine"><div class="node">10</div></div>
+      <div class="cl"><div class="card cl"><h3>Cut, sound, checks</h3><p>Hard cuts at 1080p, SFX only, levelled to −16 LUFS, a speech-to-text pass for stray voices, plus the red-outline version.</p></div></div></div>
+
+    <div class="row"><div class="you"><div class="card you"><h3>Confirm what's canon</h3><p>Is the new sheet the "best" asset? Is the new monster canon? One word each.</p><div class="meta"><span class="chip t">2 min</span></div></div></div>
+      <div class="spine"><div class="node">11</div></div>
+      <div class="cl"><div class="card cl"><h3>File everything</h3><p>The picture library with captions, a report with every take, character facts to their canon pages, render facts to the notes.</p></div></div></div>
+  </div>
+</div>
+</body>
+</html>
