@@ -2,21 +2,35 @@
   "name": "aaronorelup-blog",
   "compatibility_date": "2026-08-01",
 
-  // The site is static files. The one script, worker/media.js, exists because the asset server
-  // answers a Range request with the whole file, so no video on the site could seek; it answers
-  // byte ranges for video and audio and nothing else. Only the files run_worker_first names
-  // reach it ("*" matches across folders); every other request is served as an asset first.
-  "main": "worker/media.js",
+  // The site is static files. The one script, worker/index.js, does two jobs: worker/media.js
+  // answers byte ranges for video and audio (the asset server answers a Range request with the
+  // whole file, so no video on the site could seek), and worker/reads.js is the live reader
+  // counter at /api/reads. Only the paths run_worker_first names reach it ("*" matches across
+  // folders); every other request is served as an asset first, without running any code.
+  "main": "worker/index.js",
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
     "run_worker_first": [
       "/*.mp4", "/*.m4v", "/*.webm", "/*.mov",
       "/*.mp3", "/*.m4a", "/*.aac", "/*.wav", "/*.ogg", "/*.oga", "/*.opus", "/*.flac",
+      "/api/*",
       // Games load their own sound in one piece and never seek it.
       "!/games/*"
     ]
   },
+
+  // The reader counter's database (one table, worker/reads.sql). Created 2026-10-17 through the
+  // Cloudflare Developer Platform connection, not wrangler.
+  "d1_databases": [
+    { "binding": "DB", "database_name": "blog-reads", "database_id": "f3f7223c-1bd1-467e-8d85-4b4f7f9bce97" }
+  ],
+
+  // Per Cloudflare location, per key: reads per address per post, and stat lookups per address.
+  "ratelimits": [
+    { "name": "READS_LIMIT", "namespace_id": "1701", "simple": { "limit": 6, "period": 60 } },
+    { "name": "STATS_LIMIT", "namespace_id": "1702", "simple": { "limit": 30, "period": 60 } }
+  ],
 
   // Workers Logs: one line per request the script handles (URL, status, CPU and wall time, how it
   // ended), kept by Cloudflare and readable from the dashboard or the observability API. Off until
