@@ -16,5 +16,10 @@
       // Games load their own sound in one piece and never seek it.
       "!/games/*"
     ]
-  }
+  },
+
+  // Workers Logs: one line per request the script handles (URL, status, CPU and wall time, how it
+  // ended), kept by Cloudflare and readable from the dashboard or the observability API. Off until
+  // 2026-10-17, so when the analytics showed two requests killed for CPU there was nothing to read.
+  "observability": { "enabled": true }
 }
