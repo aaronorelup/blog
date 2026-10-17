@@ -42,8 +42,8 @@ found into a clip, so you can check the work without leaving this page.
 (function () {
   var v = document.getElementById("mcp-explainer"), src = "/media/arcmira-test/explainer/index.m3u8";
   if (!v) return;
-  if (v.canPlayType("application/vnd.apple.mpegurl")) { v.src = src; }
-  else if (window.Hls && Hls.isSupported()) { var h = new Hls(); h.loadSource(src); h.attachMedia(v); }
+  if (window.Hls && Hls.isSupported()) { var h = new Hls(); h.loadSource(src); h.attachMedia(v); }
+  else if (v.canPlayType("application/vnd.apple.mpegurl")) { v.src = src; }
   else { v.src = "/media/arcmira-test/explainer/fallback-540p.mp4"; }
 })();
 </script>
