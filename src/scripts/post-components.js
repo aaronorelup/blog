@@ -2505,6 +2505,173 @@ class AoRuns extends HTMLElement {
 // src/scripts/demos/<name>.js and is a separate chunk, fetched only when a post uses it, so
 // one post's demo never weighs on the others. The module exports mount(host, part), which
 // returns { destroy } or null; whatever the element held before is the no-JS fallback.
+// ---------------------------------------------------------------------------------------
+// <ao-calc>: a calculator the reader can turn, for a post whose numbers depend on choices
+// (how many minutes, how many takes per keeper, which size). Children: a <ul> of inputs, an
+// <ol> of results, an optional <figcaption>.
+//   <li data-var="mins" data-min="1" data-max="60" data-step="1" data-value="10">Label</li>
+//     a slider; data-unit is printed after its value
+//   <li data-var="size" data-options="736×416:7|1344×768:19" data-value="1344×768">Label</li>
+//     one button per option; the variable takes the number after the colon
+//   <li data-f="mins / 60 * size * 1.09" data-prefix="$" data-unit="per run" data-digits="2">Label</li>
+//     a result: + - * / ^, parentheses, min max round ceil floor abs, and the variables above
+// Without JS the labels stay as two plain lists, so the caption should carry one worked example.
+const calcFns = { min: Math.min, max: Math.max, round: Math.round, ceil: Math.ceil, floor: Math.floor, abs: Math.abs };
+function calcCompile(src) {
+  const toks = String(src).match(/\d+\.?\d*|\.\d+|[A-Za-z_]\w*|[-+*/^(),]/g) || [];
+  let i = 0;
+  const peek = () => toks[i];
+  const eat = (t) => { if (toks[i] !== t) throw new Error('ao-calc: expected ' + t + ' in ' + src); i++; };
+  const primary = () => {
+    const t = toks[i++];
+    if (t === undefined) throw new Error('ao-calc: unexpected end of ' + src);
+    if (t === '(') { const e = expr(); eat(')'); return e; }
+    if (t === '-') { const e = power(); return (v) => -e(v); }
+    if (/^[\d.]/.test(t)) { const n = parseFloat(t); return () => n; }
+    if (calcFns[t] && peek() === '(') {
+      eat('(');
+      const args = [expr()];
+      while (peek() === ',') { i++; args.push(expr()); }
+      eat(')');
+      return (v) => calcFns[t](...args.map((a) => a(v)));
+    }
+    if (/^[A-Za-z_]/.test(t)) return (v) => (t in v ? v[t] : NaN);
+    throw new Error('ao-calc: unexpected ' + t + ' in ' + src);
+  };
+  const power = () => {
+    const b = primary();
+    if (peek() !== '^') return b;
+    i++;
+    const e = power();
+    return (v) => Math.pow(b(v), e(v));
+  };
+  const term = () => {
+    let a = power();
+    while (peek() === '*' || peek() === '/') {
+      const op = toks[i++], l = a, r = power();
+      a = op === '*' ? (v) => l(v) * r(v) : (v) => l(v) / r(v);
+    }
+    return a;
+  };
+  const expr = () => {
+    let a = term();
+    while (peek() === '+' || peek() === '-') {
+      const op = toks[i++], l = a, r = term();
+      a = op === '+' ? (v) => l(v) + r(v) : (v) => l(v) - r(v);
+    }
+    return a;
+  };
+  const f = expr();
+  if (i < toks.length) throw new Error('ao-calc: unexpected ' + toks[i] + ' in ' + src);
+  return f;
+}
+const calcFmt = (n, digits) => !Number.isFinite(n) ? '–'
+  : n.toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+class AoCalc extends HTMLElement {
+  connectedCallback() {
+    if (this._ready) return;
+    const inputs = [...this.querySelectorAll(':scope > ul > li[data-var]')];
+    const outs = [...this.querySelectorAll(':scope > ol > li[data-f]')];
+    if (!inputs.length || !outs.length) return;
+    this._ready = true;
+    const vars = {};
+    const box = document.createElement('div');
+    box.className = 'ao-calc-box';
+    const controls = document.createElement('div');
+    controls.className = 'ao-calc-inputs';
+    const results = document.createElement('div');
+    results.className = 'ao-calc-results';
+    results.setAttribute('aria-live', 'polite');
+    const update = [];
+    const run = () => update.forEach((u) => u());
+
+    inputs.forEach((li, n) => {
+      const name = li.dataset.var;
+      const label = li.textContent.trim();
+      const row = document.createElement('div');
+      row.className = 'ao-calc-input';
+      const id = 'aocalc-' + Math.random().toString(36).slice(2, 8) + n;
+      if (li.dataset.options) {
+        const opts = li.dataset.options.split('|').map((o) => {
+          const k = o.lastIndexOf(':');
+          return { label: o.slice(0, k).trim(), value: parseFloat(o.slice(k + 1)) };
+        });
+        const cap = document.createElement('span');
+        cap.className = 'ao-calc-label';
+        cap.id = id;
+        cap.textContent = label;
+        const group = document.createElement('div');
+        group.className = 'ao-calc-opts';
+        group.setAttribute('role', 'group');
+        group.setAttribute('aria-labelledby', id);
+        const start = opts.find((o) => o.label === li.dataset.value) || opts[0];
+        vars[name] = start.value;
+        for (const o of opts) {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.textContent = o.label;
+          b.setAttribute('aria-pressed', String(o === start));
+          b.addEventListener('click', () => {
+            vars[name] = o.value;
+            for (const x of group.children) x.setAttribute('aria-pressed', String(x === b));
+            run();
+          });
+          group.append(b);
+        }
+        row.append(cap, group);
+      } else {
+        const min = parseFloat(li.dataset.min ?? 0), max = parseFloat(li.dataset.max ?? 100);
+        const step = li.dataset.step || 'any';
+        const unit = li.dataset.unit || '';
+        const cap = document.createElement('label');
+        cap.className = 'ao-calc-label';
+        cap.htmlFor = id;
+        cap.textContent = label;
+        const val = document.createElement('output');
+        val.className = 'ao-calc-val';
+        const range = document.createElement('input');
+        range.type = 'range';
+        range.id = id;
+        range.min = min; range.max = max; range.step = step;
+        range.value = li.dataset.value ?? min;
+        const show = () => {
+          vars[name] = parseFloat(range.value);
+          val.textContent = range.value + (unit ? ' ' + unit : '');
+        };
+        show();
+        range.addEventListener('input', () => { show(); run(); });
+        row.append(cap, val, range);
+      }
+      controls.append(row);
+    });
+
+    for (const li of outs) {
+      let f;
+      try { f = calcCompile(li.dataset.f); } catch (e) { console.warn(e.message); f = () => NaN; }
+      const digits = parseInt(li.dataset.digits ?? '0', 10);
+      const prefix = li.dataset.prefix || '';
+      const unit = li.dataset.unit || '';
+      const row = document.createElement('div');
+      row.className = 'ao-calc-out';
+      const label = document.createElement('span');
+      label.className = 'ao-calc-label';
+      label.textContent = li.textContent.trim();
+      const num = document.createElement('span');
+      num.className = 'ao-calc-num';
+      row.append(label, num);
+      results.append(row);
+      update.push(() => {
+        const v = f(vars);
+        num.textContent = prefix + calcFmt(v, digits) + (unit ? ' ' + unit : '');
+      });
+    }
+    run();
+    box.append(controls, results);
+    this.querySelector(':scope > ul').before(box);
+    this.classList.add('ao-calc-ready');
+  }
+}
+
 const DEMOS = {
   synthid: () => import('./demos/synthid.js'),
 };
@@ -2543,3 +2710,4 @@ if (!customElements.get('ao-bars')) customElements.define('ao-bars', AoBars);
 if (!customElements.get('ao-shots')) customElements.define('ao-shots', AoShots);
 if (!customElements.get('ao-blind')) customElements.define('ao-blind', AoBlind);
 if (!customElements.get('ao-runs')) customElements.define('ao-runs', AoRuns);
+if (!customElements.get('ao-calc')) customElements.define('ao-calc', AoCalc);
