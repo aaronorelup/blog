@@ -27,5 +27,8 @@ npm run new-post "Title of the post"
 
 That creates `src/content/posts/<slug>.md` with the next free `AO-###` and today's date. Never
 pick an `AO-###` by hand. Put pictures under `public/media/<slug>/` as WebP, not multi-MB PNGs.
+The full-size originals of anything you generate for a post (renders, clips, songs) are filed in Aaron's studio
+library, not here: `studio push blog-posts <folder> --agent <you>` (how to get `studio`, the rules and the closed
+lists: `curl -s https://hq.soul-orelup.workers.dev/api/library/rules`). The repo keeps only the web copy.
 Every post needs a `preview:` block; `PREVIEWS.md` is the spec. Run `npm run build` before
 pushing; it fails on a bad preview or a missing file.
