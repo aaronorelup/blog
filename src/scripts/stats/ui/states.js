@@ -136,7 +136,7 @@ export function showState(loaded, { onRetry } = {}) {
   if (eyebrow) eyebrow.textContent = 'TRAFFIC · FILED DAILY';
   switch (loaded.state) {
     case 'gathering': {
-      const el = lede([{ b: 'Still gathering the numbers' }, ', about a day a minute. Give it an hour and the month will be here.']);
+      const el = lede([{ b: 'Still gathering the numbers' }, ', a day every few minutes. The first day shows soon; give it a couple of hours and the month will be here.']);
       el?.append(leaves());
       emptyGate();
       break;
