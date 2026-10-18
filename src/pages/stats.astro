@@ -1,0 +1,163 @@
+---
+// /stats: who asks this site for pages, sorted into plain answers, filed once a day.
+//
+// Everything a reader needs before any JavaScript arrives is server HTML: the question, a
+// paragraph that answers it in words (pointing at AO-057 for the October numbers), every
+// chapter's question, and the four questions the sorting asks. The numbers come from
+// /api/stats (worker/stats.js), fetched by the inline script below before any module has even
+// downloaded; src/scripts/stats/main.js picks that answer up and draws the page.
+//
+// The posts the page may name are listed here at build time, listed posts only (isListed), so
+// an unlisted post can never be resolved to a title, whatever the snapshot says.
+import fs from 'node:fs';
+import path from 'node:path';
+import PanelPage from '../layouts/PanelPage.astro';
+import { getCollection } from 'astro:content';
+import { isListed } from '../data/listed.js';
+import { COURSES } from '../data/courses.js';
+import '../styles/stats/base.css';
+
+const posts = (await getCollection('posts', ({ data }) => isListed(data)))
+  .map((p) => ({ id: p.data.id, slug: p.slug, title: p.data.title, date: p.data.date.toISOString().slice(0, 10) }))
+  .sort((a, b) => a.id.localeCompare(b.id));
+
+// The slug-shaped words the site's own non-post pages use (/games/grind-and-grimoire/, a course's
+// lessons, a research page), so core/agg.js isPublicPath can drop any other word shaped like a
+// post slug: the page's second line of defence after the Worker's, against an unlisted post's
+// slug turning up in a path. Unlisted slugs themselves are never put in this list.
+const SLUGGY = /^[a-z0-9]+(?:-[a-z0-9]+){2,}$/;
+const unlisted = new Set((await getCollection('posts', ({ data }) => !isListed(data))).map((p) => p.slug.toLowerCase()));
+const PUBLIC_DIR = typeof __PUBLIC_DIR__ === 'string' ? __PUBLIC_DIR__ : path.join(process.cwd(), 'public');
+const siteWords = new Set();
+const addWords = (s) => String(s).toLowerCase().split(/[^a-z0-9-]+/).forEach((w) => { if (SLUGGY.test(w)) siteWords.add(w); });
+const dirs = (...rel) => {
+  try { return fs.readdirSync(path.join(PUBLIC_DIR, ...rel), { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => e.name); }
+  catch (e) { return []; }
+};
+for (const sec of ['games', 'labs', 'presentations', 'research', 'tools', 'gauntlet']) dirs(sec).forEach(addWords);
+for (const c of dirs('courses')) { addWords(c); dirs('courses', c, 'lessons').forEach(addWords); }
+try { (await getCollection('research')).forEach((d) => addWords(d.slug)); } catch (e) { /* no research collection */ }
+COURSES.forEach((c) => addWords(c.href));
+const words = [...siteWords].filter((w) => ![...unlisted].some((u) => w.includes(u))).sort();
+const build = {
+  posts,
+  labels: {
+    '/': 'The homepage (the tea house)',
+    '/ledger/': 'The ledger (list of posts)',
+    '/courses/': 'Courses',
+    '/projects/': 'Projects',
+    '/about/': 'About',
+    '/stats/': 'This page',
+  },
+  courses: COURSES.map((c) => ({ href: c.href, title: c.title })),
+  words,
+};
+// </script> can't appear inside the JSON, so every < is escaped
+const json = JSON.stringify(build).replace(/</g, '\\u003c');
+
+// chapters 01–04: question only on the server; their modules draw the rest
+const chapters = [
+  { key: 'machines', no: '01', kicker: 'Machines', q: 'Which machines?' },
+  { key: 'growing', no: '02', kicker: 'Growth', q: 'Is it growing?' },
+  { key: 'people', no: '03', kicker: 'Readers', q: 'What do people read, and where are they?' },
+  { key: 'rhythm', no: '04', kicker: 'Rhythm', q: 'When do people come, and is it fast for them?' },
+];
+
+// the four questions, in the order the sorting asks them (DESIGN.md §A.4 05)
+const gates = [
+  { q: 'Badge?', rule: 'Does Cloudflare vouch for it as a known bot? Then it is a bot that says who it is: a search engine, an AI crawler, a link preview.' },
+  { q: 'Wrong door?', rule: "Did the site answer with an error, like 'not found'? That is almost always a scanner trying addresses this site never had." },
+  { q: 'A program?', rule: 'Does it name a program instead of a browser (curl, Python, a browser run by a script), or give no name at all? Then it is a script or an agent.' },
+  { q: 'Old browser?', rule: 'Is its browser more than a year out of date? People do run old browsers; not this many, this often. Most of these are probably bots in costume.' },
+];
+---
+
+<PanelPage
+  title="Who reads this site? · Stats · Aaron Orelup"
+  description="A daily snapshot of who asks aaronorelup.com for pages: people, AI and search bots, scripts and scanners, sorted in plain words."
+  active="stats"
+>
+  <script is:inline>
+    // Start the one request this page needs at HTML parse, in parallel with the module download.
+    // main.js (core/data.js) consumes this promise once. The st-js class is set here too, before
+    // first paint, so the space the charts will take is reserved from the first frame (no layout
+    // shift) while a browser without JavaScript never reserves it.
+    document.documentElement.classList.add('st-js');
+    window.__stStats = fetch('/api/stats' + (/[?&]state=/.test(location.search) ? '?state=' + encodeURIComponent(new URLSearchParams(location.search).get('state')) : ''))
+      .then(function (r) { return r.text().then(function (t) { return { status: r.status, text: t }; }); })
+      .catch(function () { return { status: 0, text: null }; });
+  </script>
+  <script type="application/json" id="st-build" set:html={json} />
+
+  <main class="st" data-view="stats">
+    <header class="st-head">
+      <p class="st-eyebrow" data-st-eyebrow>Traffic · filed daily</p>
+      <h1 id="st-h1" class="st-h1">Who reads this site?</h1>
+    </header>
+
+    <div class="st-bar-sentinel" data-st-sentinel aria-hidden="true"></div>
+    <div class="st-bar" data-st-bar aria-disabled="true">
+      <div class="st-bar-row">
+        <div class="st-pills" role="radiogroup" aria-label="Which days to show">
+          <button type="button" class="st-pill" role="radio" aria-checked="true" disabled>30 days</button>
+          <button type="button" class="st-pill" role="radio" aria-checked="false" disabled>7 days</button>
+          <button type="button" class="st-pill" role="radio" aria-checked="false" disabled>Latest day</button>
+        </div>
+        <button type="button" class="st-pill st-pill-ask" disabled>
+          <span class="st-ask-wide">All questions</span><span class="st-ask-narrow">Questions</span>
+        </button>
+      </div>
+    </div>
+    <p class="st-coverage" data-st-coverage hidden></p>
+
+    <section id="st-top" class="st-hero" data-st-chapter="top" aria-labelledby="st-h1">
+      <p class="st-lede" data-st-lede aria-live="polite">
+        <span class="st-nojs">Every day, Cloudflare counts who asked this site for pages: people,
+        search engines, AI crawlers, scripts and scanners. This page sorts those counts into plain
+        answers, filed once a day. The charts need JavaScript; the October answer is in
+        <a href="/ledger/who-visits-a-new-website/">AO-057</a>: mostly machines, and me.</span>
+        <span class="st-js-only st-loading">Sorting the latest filing…</span>
+      </p>
+      <p class="st-sub" data-st-sub></p>
+      <div class="st-gate" data-st-gate></div>
+      <div class="st-drawer" data-st-drawer></div>
+      <div data-st-slot="chips"></div>
+      <div data-st-slot="noticed"></div>
+    </section>
+
+    {chapters.map((c) => (
+      <section id={`st-${c.key}`} class="st-ch" data-st-chapter={c.key} aria-labelledby={`st-q-${c.key}`}>
+        <p class="st-kicker"><span class="st-no">{c.no}</span> {c.kicker}</p>
+        <h2 id={`st-q-${c.key}`} class="st-q">{c.q}</h2>
+        <p class="st-answer" data-st-answer><span class="st-nojs st-nojs-line">This answer needs JavaScript.</span></p>
+        <p class="st-context" data-st-context></p>
+        <div class="st-body" data-st-body></div>
+        <nav class="st-follow" data-st-follow aria-label={`Next questions after ${c.q}`}></nav>
+      </section>
+    ))}
+
+    <section id="st-how" class="st-ch" data-st-chapter="how" aria-labelledby="st-q-how">
+      <p class="st-kicker"><span class="st-no">05</span> Method</p>
+      <h2 id="st-q-how" class="st-q">How was this counted?</h2>
+      <p class="st-answer" data-st-answer>
+        Every page Cloudflare sent went through four questions, in order. The first yes decides its
+        pile. Whatever is left is probably people, and that includes Aaron reading his own site.
+      </p>
+      <p class="st-context" data-st-context></p>
+      <div class="st-body" data-st-body>
+        <ol class="st-how-list">
+          {gates.map((g) => (
+            <li><b>{g.q}</b><span>{g.rule}</span></li>
+          ))}
+          <li class="is-left"><b>Everything left: probably people.</b><span>A recent browser that didn't say it was a bot or a program, and got a real page. Aaron browsing his own site is in here too.</span></li>
+        </ol>
+      </div>
+      <nav class="st-follow" data-st-follow aria-label="Next questions after How was this counted?"></nav>
+    </section>
+  </main>
+</PanelPage>
+
+<script>
+  import '../scripts/stats/main.js';
+  import '../scripts/ledger-preview.js';
+</script>

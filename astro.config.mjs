@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import rehypePostImages from './scripts/rehype-post-images.mjs';
+import statsPages from './scripts/stats-pages.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -38,6 +39,39 @@ function captureEndpoint() {
   };
 }
 
+// Dev-only. /api/stats is answered by the Worker (worker/stats.js) in production; `astro dev`
+// has no Worker, so this answers it from .stats-fixture.json at the project root (gitignored).
+// ?state=not-connected, ?state=gathering and ?state=error show the page's other answers. The
+// file is found from this config's own folder, not process.cwd(): the dev server is usually
+// started from the folder above with --root blog.
+const PROJECT_DIR = path.dirname(fileURLToPath(import.meta.url));
+function statsFixture() {
+  return {
+    name: 'stats-fixture',
+    apply: 'serve',
+    configureServer(server) {
+      server.middlewares.use('/api/stats', (req, res) => {
+        const state = new URL(req.originalUrl || req.url, 'http://localhost').searchParams.get('state');
+        const send = (status, body, cache = 'no-store') => {
+          res.statusCode = status;
+          res.setHeader('Content-Type', 'application/json; charset=utf-8');
+          res.setHeader('Cache-Control', cache);
+          res.end(body);
+        };
+        const file = path.join(PROJECT_DIR, '.stats-fixture.json');
+        if (state === 'error') return send(500, JSON.stringify({ error: 'The traffic numbers could not be read just now.' }));
+        if (state === 'gathering') {
+          return send(503, JSON.stringify({ error: 'The first numbers are still being gathered. They start to appear a few minutes after the counter starts, and fill in over the next couple of hours.', state: 'gathering' }));
+        }
+        if (state === 'not-connected' || !fs.existsSync(file)) {
+          return send(503, JSON.stringify({ error: 'The traffic numbers aren’t connected yet.', state: 'not-connected' }));
+        }
+        send(200, fs.readFileSync(file, 'utf8'), 'public, max-age=300');
+      });
+    },
+  };
+}
+
 // The hover-card endpoint (src/pages/ledger/previews.json.js) checks every card's media file
 // on disk. The dev server is usually started from the folder above with --root blog, so
 // process.cwd() isn't the project; hand the endpoint Astro's own idea of public/.
@@ -66,7 +100,8 @@ if (ciBranch && ciBranch !== 'main') {
 
 export default defineConfig({
   site: 'https://aaronorelup.com',
-  integrations: [publicDirConstant()],
+  // statsPages: dist/stats-pages.txt, the public pages /api/stats may name (worker/stats.js).
+  integrations: [publicDirConstant(), statsPages()],
   markdown: {
     // Both themes, emitted as CSS custom properties rather than a baked-in
     // background — panel.css picks one based on the day/night mode. A single
@@ -84,6 +119,6 @@ export default defineConfig({
     rehypePlugins: [rehypePostImages],
   },
   vite: {
-    plugins: [captureEndpoint()],
+    plugins: [captureEndpoint(), statsFixture()],
   },
 });

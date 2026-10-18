@@ -1,0 +1,181 @@
+/* 01 · Which machines? — the tabs, the four shelves, the guest book rows and the door wall.
+   Imported by machines/machines.js so it ships in the chapter's own lazy chunk. Every rule is
+   scoped under .st (the bot and door cards use ui/pop's own card styles).
+   Text wears text tokens; a mark colour (--st-bot, --st-scanner…) only ever paints a mark. */
+
+/* ---------- tabs ---------- */
+.st .st-mach-tabs {
+  display: flex; flex-wrap: wrap; gap: 2px 26px;
+  border-bottom: 1px solid var(--pc-line);
+  margin: 0 0 28px;
+}
+.st .st-mach-tab {
+  appearance: none; background: none; border: 0; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 44px; padding: 8px 0 10px; margin-bottom: -1px;
+  font: 600 14.5px/1.2 Karla, system-ui, sans-serif; color: var(--pc-soft);
+  border-bottom: 2px solid transparent;
+  transition: color .18s cubic-bezier(.4,0,.2,1), border-color .18s cubic-bezier(.4,0,.2,1);
+}
+.st .st-mach-tab:hover { color: var(--pc-strong); }
+/* The underline is a mark and keeps the gold. The name is 14.5px text, and --pc-head on the day
+   cream is 3.2:1, so it wears --st-head-sm: the same gold, darkened in day mode to pass AA. */
+.st .st-mach-tab.is-on { color: var(--st-head-sm); border-bottom-color: var(--pc-head); }
+.st .st-mach-tabglyph { display: inline-flex; width: 12px; height: 12px; }
+.st .st-mach-tabglyph svg { display: block; }
+.st .st-mach-tabn {
+  font-variant-numeric: tabular-nums; font-weight: 600; color: var(--pc-quiet);
+  font-size: 13px;
+}
+.st .st-mach-tab.is-on .st-mach-tabn { color: var(--pc-strong); }
+
+/* ---------- a shelf ---------- */
+.st .st-mach-panel:not([hidden]) { display: flex; flex-direction: column; gap: 18px; }
+.st .st-mach-panel > * { margin: 0; min-width: 0; }
+.st .st-mach-panel > .st-mach-eyebrow { margin-bottom: -12px; }
+.st .st-mach-panel > .st-mach-sent + .st-mach-note { margin-top: -8px; }
+.st .st-mach-eyebrow {
+  margin: 0; font: 600 11px/1.4 Karla, system-ui, sans-serif; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--pc-gold);
+}
+.st .st-mach-sent {
+  margin: 0; max-width: 680px;
+  font: 400 17px/1.68 Georgia, 'Times New Roman', serif; color: var(--pc-body);
+}
+.st .st-mach-sent strong, .st .st-mach-where b, .st .st-mach-note strong { color: var(--pc-strong); font-weight: 700; }
+.st .st-mach-note, .st .st-mach-where {
+  margin: 0; max-width: 620px;
+  font: 400 15px/1.6 Georgia, 'Times New Roman', serif; color: var(--pc-soft);
+}
+.st .st-mach-where { color: var(--pc-body); }
+/* numbers inside a Georgia sentence stay in Georgia, bold, as Noticed sets them */
+.st .st-mach-n { font-family: inherit; font-weight: 700; font-variant-numeric: tabular-nums lining-nums; }
+.st .st-mach-mono {
+  font: 13px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace; color: var(--pc-strong);
+  background: none; padding: 0; overflow-wrap: anywhere;
+}
+.st .st-mach-link {
+  font: 600 14px/1.4 Karla, system-ui, sans-serif; color: var(--pc-accent);
+  text-decoration: none; white-space: nowrap; display: inline-block; padding: 4px 0;
+}
+.st .st-mach-link:hover { color: var(--pc-strong); }
+
+/* ---------- purpose filter and split ---------- */
+.st .st-mach-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.st .st-mach-pill { display: inline-flex; align-items: center; gap: 6px; }
+.st .st-mach-pilln { font-variant-numeric: tabular-nums; color: var(--pc-quiet); font-weight: 600; }
+.st .st-mach-pill[aria-pressed='true'] .st-mach-pilln { color: var(--pc-strong); }
+.st .st-mach-split { max-width: 100%; }
+
+/* ---------- ranked rows (ui/bars.js draws them; these are the shelves' extras) ---------- */
+.st .st-mach-name { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; min-width: 0; }
+.st .st-mach-tag {
+  font: 600 11.5px/1.3 Karla, system-ui, sans-serif; color: var(--pc-soft); white-space: nowrap;
+  border: 1px solid var(--pc-line2); border-radius: 999px; padding: 1px 8px;
+}
+.st .st-mach-chips { display: flex; flex-wrap: wrap; gap: 4px 6px; padding-top: 4px; }
+.st .st-mach-chip {
+  font: 400 12px/1.4 Karla, system-ui, sans-serif; color: var(--pc-body);
+  border: 1px solid var(--pc-line); border-radius: 999px; padding: 1px 8px; white-space: nowrap;
+}
+.st .st-mach-chip.is-more { color: var(--pc-quiet); }
+.st .st-mach-chipq { color: var(--pc-quiet); }
+.st .st-mach-otherline {
+  margin: 10px 0 0; font: 400 13.5px/1.5 Karla, system-ui, sans-serif; color: var(--pc-soft);
+  font-variant-numeric: tabular-nums;
+}
+.st .st-mach-otherline[hidden] { display: none; }
+
+/* a company, opened: its bots */
+.st .st-mach-bots { list-style: none; margin: 0; padding: 0 0 0 14px; border-left: 2px solid var(--pc-line); }
+.st .st-mach-bot {
+  display: grid; grid-template-columns: minmax(0, max-content) minmax(0, 1fr) auto auto;
+  column-gap: 14px; align-items: baseline; padding: 6px 0;
+  font: 400 13.5px/1.45 Karla, system-ui, sans-serif; color: var(--pc-body);
+}
+.st .st-mach-botname {
+  appearance: none; background: none; border: 0; padding: 6px 0; margin: -6px 0; cursor: pointer;
+  font: 600 14px/1.3 Karla, system-ui, sans-serif; color: var(--pc-strong); text-align: left;
+  text-decoration: underline dotted var(--pc-line2); text-underline-offset: 3px; text-decoration-thickness: 1px;
+  overflow-wrap: anywhere; min-height: 32px;
+}
+.st .st-mach-botname:hover { text-decoration-color: var(--pc-head); }
+.st .st-mach-botwhat { color: var(--pc-soft); }
+.st .st-mach-botn { font-variant-numeric: tabular-nums; color: var(--pc-quiet); white-space: nowrap; }
+.st .st-mach-botn b { color: var(--pc-strong); font-weight: 600; }
+.st .st-mach-botdays { color: var(--pc-quiet); white-space: nowrap; font-size: 12.5px; }
+
+/* ---------- the door wall ---------- */
+/* families sit side by side on a wide screen (three doors to a row in each), one under another
+   on a phone, so the wall stays a wall and not a long corridor */
+.st .st-mach-wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 30px 40px; align-items: start; }
+.st .st-mach-fam { margin: 0; }
+.st .st-mach-famname {
+  margin: 0 0 10px; font: 600 14px/1.3 Karla, system-ui, sans-serif; color: var(--pc-strong);
+  padding-bottom: 8px; border-bottom: 1px solid var(--pc-line);
+}
+.st .st-mach-famrest { margin: 8px 0 0; font: 400 13px/1.4 Karla, system-ui, sans-serif; color: var(--pc-quiet); }
+.st .st-mach-famn { font-weight: 400; color: var(--pc-quiet); font-variant-numeric: tabular-nums; }
+.st .st-mach-doors {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 8px;
+}
+.st .st-mach-doors > li { margin: 0; min-width: 0; }
+.st .st-mach-door {
+  appearance: none; background: none; border: 0; cursor: pointer; width: 100%;
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  padding: 10px 4px 10px; border-radius: 14px; color: inherit; font: inherit;
+  transition: background-color .18s cubic-bezier(.4,0,.2,1);
+}
+.st .st-mach-door:hover { background: var(--pc-hover); }
+.st .st-mach-doorart {
+  position: relative; display: block; width: 56px; height: 76px; box-sizing: border-box;
+  border: 1px solid var(--st-scanner); border-radius: 28px 28px 4px 4px;
+  perspective: 160px;
+}
+/* the door leaf: a hairline panel inside the frame, which swings open a little on hover */
+.st .st-mach-doorart::before {
+  content: ''; position: absolute; inset: 5px 5px 0 5px;
+  border: 1px solid var(--pc-line2); border-bottom: 0; border-radius: 22px 22px 2px 2px;
+  transform-origin: left center; transition: transform .2s cubic-bezier(.4,0,.2,1);
+}
+.st .st-mach-door:hover .st-mach-doorart::before { transform: rotateY(-28deg); }
+.st .st-mach-knocker {
+  position: absolute; right: 9px; top: 60%; width: 4px; height: 4px; margin-top: -2px;
+  border-radius: 50%; background: var(--st-scanner);
+}
+.st .st-mach-doorpath {
+  display: block; max-width: 100%; text-align: center; overflow-wrap: break-word;
+  font: 11px/1.35 ui-monospace, SFMono-Regular, Consolas, monospace; color: var(--pc-body);
+}
+.st .st-mach-doorn { font: 600 13px/1.2 Karla, system-ui, sans-serif; color: var(--pc-strong); font-variant-numeric: tabular-nums; }
+.st .st-mach-doorn .st-mach-atleast { font-weight: 400; font-size: 11.5px; }
+.st .st-mach-doorbar { display: block; width: 56px; height: 4px; }
+.st .st-mach-doorbar > span { display: block; height: 4px; min-width: 2px; background: var(--st-scanner); border-radius: 0 2px 2px 0; }
+
+.st .st-mach-figtools { margin-top: 4px; }
+
+/* ---------- phones ---------- */
+@media (max-width: 560px) {
+  .st .st-mach-tabs { gap: 0 18px; }
+  .st .st-mach-tab { font-size: 14px; }
+  .st .st-mach-bot { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'nm n' 'what what' 'days days'; row-gap: 0; }
+  .st .st-mach-botname { grid-area: nm; }
+  .st .st-mach-botn { grid-area: n; }
+  .st .st-mach-botwhat { grid-area: what; }
+  .st .st-mach-botdays { grid-area: days; }
+  .st .st-mach-wall { grid-template-columns: minmax(0, 1fr); gap: 26px; }
+  .st .st-mach-doors { gap: 4px 4px; }
+  .st .st-mach-doorart { width: 46px; height: 62px; border-radius: 23px 23px 4px 4px; }
+  .st .st-mach-doorart::before { border-radius: 18px 18px 2px 2px; }
+  .st .st-mach-knocker { right: 7px; }
+  .st .st-mach-doorbar { width: 46px; }
+  .st .st-mach-sent { font-size: 16.5px; }
+}
+
+@media (forced-colors: active) {
+  .st .st-mach-doorbar > span, .st .st-mach-knocker { background: CanvasText; forced-color-adjust: none; }
+  .st .st-mach-doorart { border-color: CanvasText; }
+  .st .st-mach-tab.is-on { border-bottom-color: Highlight; }
+}
+

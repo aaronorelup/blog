@@ -1,0 +1,214 @@
+/* Chapter 04: the Lantern Clock and the page-paint playback (src/scripts/stats/rhythm/).
+   Every mark colour is a CSS variable, so day and night need no script. Gold is people only:
+   the wedges and the weekday columns; the speed figure's painted skeleton uses the text tones. */
+
+/* ---------- 4a, the clock ---------- */
+.st .st-rhy-when {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 20px 56px; align-items: center;
+  margin-top: 22px;
+}
+/* the pills sit on the column's left edge like every other figure's; the dial keeps 32px on its
+   left for the "6 pm" label, which hangs outside the circle */
+.st .st-rhy-left { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.st .st-rhy-tz { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 8px; }
+.st .st-rhy-dial {
+  position: relative; width: 300px; aspect-ratio: 1; margin: 30px 40px 32px 32px;
+  border-radius: 50%; touch-action: manipulation; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+/* The focus ring is drawn inside the circle, between the rim's ticks and the hour labels: an
+   outline on the element's box would run straight through "midnight", "noon", "6 am" and "6 pm". */
+.st .st-rhy-dial:focus-visible { outline: none; box-shadow: inset 0 0 0 3px var(--pc-head); }
+.st .st-rhy-svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.st .st-rhy-rim { fill: none; stroke: var(--pc-line); stroke-width: 1; }
+.st .st-rhy-tick { stroke: var(--pc-line2); stroke-width: 1; }
+.st .st-rhy-tick.is-long { stroke: var(--pc-quiet); }
+.st .st-rhy-hub { fill: none; stroke: var(--pc-line2); stroke-width: 1; }
+.st .st-rhy-night { fill: var(--pc-hover); }
+.st .st-rhy-wedges { filter: drop-shadow(0 0 5px var(--st-person-glow, transparent)); }
+.st .st-rhy-wedge { fill: var(--st-person, var(--pc-head)); opacity: .82; transition: opacity .18s cubic-bezier(.4,0,.2,1); }
+.st .st-rhy-wedge.is-on { opacity: 1; }
+.st .st-rhy-sel { fill: none; stroke: var(--pc-strong); stroke-width: 1.5; stroke-linejoin: round; pointer-events: none; }
+.st .st-rhy-labels text { font: 600 11px Karla, system-ui, sans-serif; fill: var(--pc-quiet); }
+.st .st-rhy-now line { stroke: var(--pc-accent); stroke-width: 1.5; stroke-linecap: round; }
+.st .st-rhy-now circle { fill: var(--pc-accent); }
+.st .st-rhy-nowt { font: 600 10px Karla, system-ui, sans-serif; fill: var(--pc-soft); transition: opacity .2s; }
+.st .st-rhy-svg.is-turning .st-rhy-nowt, .st .st-rhy-svg.is-turning .st-rhy-sel { opacity: 0; }
+
+.st .st-rhy-centre {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 74px;
+  display: flex; flex-direction: column; align-items: center; text-align: center; line-height: 1.2;
+  pointer-events: none;
+}
+.st .st-rhy-cspan { font: 700 18px/1.15 'Zen Maru Gothic', system-ui, sans-serif; color: var(--st-head-sm); white-space: nowrap; }
+.st .st-rhy-cspan.is-long { font-size: 11px; letter-spacing: -.01em; }
+.st .st-rhy-cnum { font: 13px Karla, system-ui, sans-serif; color: var(--pc-soft); margin-top: 3px; white-space: nowrap; }
+.st .st-rhy-cshare { font: 12px Karla, system-ui, sans-serif; color: var(--pc-quiet); font-variant-numeric: tabular-nums; }
+
+.st .st-rhy-side { min-width: 0; max-width: 460px; }
+.st .st-rhy-readout {
+  font: 600 16px/1.45 Karla, system-ui, sans-serif; color: var(--pc-strong); margin: 0;
+  min-height: 2.9em; font-variant-numeric: tabular-nums;
+}
+.st .st-rhy-note { font: 15px/1.55 Georgia, serif; color: var(--pc-body); margin: 10px 0 0; }
+.st .st-rhy-caveat { font: 13px/1.5 Karla, system-ui, sans-serif; color: var(--pc-quiet); margin: 10px 0 0; }
+.st .st-rhy-side .st-invite { margin: 8px 0 0; }
+/* one tools row and its tables at the foot of the figure, across both columns */
+.st .st-rhy-when > .st-tools, .st .st-rhy-tables { grid-column: 1 / -1; }
+.st .st-rhy-when > .st-tools { margin-top: 0; }
+.st .st-rhy-tables .st-table + .st-table { margin-top: 22px; }
+/* The wrapper does the hiding here, so the tables inside carry no .st-sr of their own, and on a
+   phone base.css makes every such table a sideways scroller. Inside a 1px clipped wrapper that
+   turned each one into an invisible Tab stop. While the wrapper is hidden they stay plain tables. */
+.st .st-rhy-tables.st-sr .st-table { display: table; overflow: visible; }
+
+.st .st-rhy-wk { margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--pc-line); }
+.st .st-rhy-wkhead { font: 600 11px Karla, system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--pc-quiet); margin: 0 0 8px; }
+.st .st-rhy-wkcols { display: grid; grid-template-columns: repeat(7, minmax(0, 54px)); position: relative; }
+.st .st-rhy-wkend { grid-column: 6 / 8; grid-row: 1; background: var(--pc-hover); border-radius: 10px; }
+.st .st-rhy-wkcol {
+  position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  min-height: 44px; padding: 6px 0 8px; margin: 0; border: 0; border-radius: 10px; background: none;
+  font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.st .st-rhy-wkval { font: 600 12px Karla, system-ui, sans-serif; color: var(--pc-strong); font-variant-numeric: tabular-nums; height: 15px; white-space: nowrap; visibility: hidden; }
+.st .st-rhy-wkcol.is-on .st-rhy-wkval { visibility: visible; }
+.st .st-rhy-wkbox { display: flex; align-items: flex-end; justify-content: center; width: 100%; height: 48px; border-bottom: 1px solid var(--pc-line2); }
+.st .st-rhy-wkbar { position: relative; display: block; width: 16px; background: var(--st-stripe); box-shadow: inset 0 0 0 1px var(--st-person, var(--pc-head)); border-radius: 4px 4px 0 0; overflow: hidden; opacity: .72; transition: height .45s cubic-bezier(.4,0,.2,1), opacity .18s; }
+.st .st-rhy-wklo { position: absolute; left: 0; right: 0; bottom: 0; background: var(--st-person, var(--pc-head)); transition: height .45s cubic-bezier(.4,0,.2,1); }
+.st .st-rhy-wkcol.is-on .st-rhy-wkbar { opacity: 1; }
+.st .st-rhy-wklab { font: 600 11px Karla, system-ui, sans-serif; color: var(--pc-quiet); }
+.st .st-rhy-wkcol.is-on .st-rhy-wklab { color: var(--pc-strong); }
+.st .st-rhy-wkcap { font: 15px/1.55 Georgia, serif; color: var(--pc-body); margin: 10px 0 0; }
+
+/* ---------- 4b, speed ---------- */
+.st .st-rhy-kick { font: 600 11px Karla, system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--pc-gold); margin: 0 0 8px; }
+.st .st-rhy-sgrid { display: grid; grid-template-columns: minmax(0, 620px) minmax(0, 1fr); gap: 8px 64px; align-items: center; margin-top: 26px; }
+.st .st-rhy-saside { max-width: 400px; }
+.st .st-rhy-stage { max-width: 620px; }
+.st .st-rhy-frames { display: flex; justify-content: center; align-items: flex-end; gap: 28px; }
+.st .st-rhy-dev {
+  display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 8px; margin: 0;
+  border: 0; border-radius: 14px; background: none; color: inherit; font: inherit; cursor: pointer;
+  transition: background .18s cubic-bezier(.4,0,.2,1); -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) and (pointer: fine) { .st .st-rhy-dev:hover { background: var(--pc-hover); } }
+.st .st-rhy-dev-svg { display: block; height: auto; overflow: visible; }
+.st .st-rhy-dev-desktop .st-rhy-dev-svg { width: 240px; }
+.st .st-rhy-dev-mobile .st-rhy-dev-svg { width: 104px; }
+.st .st-rhy-screen { fill: var(--pc-page); stroke: var(--pc-quiet); stroke-opacity: .7; stroke-width: 1.5; }
+.st .st-rhy-base { fill: none; stroke: var(--pc-quiet); stroke-opacity: .7; stroke-width: 1.5; }
+.st .st-rhy-hair { stroke: var(--pc-line); stroke-width: 1; }
+/* The painted skeleton has to read as the page arriving. In the near-surface tones (tile, line)
+   it sat at 1.1 to 2:1 on the screen fill and a painted laptop looked like the blank phone beside
+   it, so it uses the text tones instead. Still never gold: gold is people. */
+.st .st-rhy-sk-h { fill: var(--pc-soft); }
+.st .st-rhy-sk-img { fill: var(--pc-line2); }
+.st .st-rhy-sk-mt { fill: none; stroke: var(--pc-quiet); stroke-width: 1.2; stroke-linejoin: round; stroke-linecap: round; }
+.st .st-rhy-sk-l { fill: var(--pc-quiet); opacity: .55; }
+.st .st-rhy-paint { opacity: 0; transition: opacity .12s linear; }
+.st .st-rhy-dev.is-painted .st-rhy-paint { opacity: 1; }
+.st .st-rhy-none { font: 600 11px Karla, system-ui, sans-serif; fill: var(--pc-quiet); }
+.st .st-rhy-devcap { font: 600 12px Karla, system-ui, sans-serif; color: var(--pc-soft); }
+
+.st .st-rhy-ruler { position: relative; height: 130px; margin: 20px 14px 0; }
+.st .st-rhy-axis { position: absolute; left: 0; right: 0; top: 30px; height: 1px; background: var(--pc-line2); }
+.st .st-rhy-tk { position: absolute; top: 30px; width: 1px; height: 5px; margin-left: -.5px; background: var(--pc-line2); }
+.st .st-rhy-tk.is-major { height: 8px; background: var(--pc-quiet); }
+.st .st-rhy-tkl {
+  position: absolute; top: 40px; transform: translateX(-50%); white-space: nowrap;
+  font: 10.5px ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; color: var(--pc-quiet);
+}
+/* the dashed "good" line starts under the tick labels, so it never runs through "2.5" */
+.st .st-rhy-good { position: absolute; top: 56px; height: 54px; border-left: 1px dashed var(--pc-quiet); }
+.st .st-rhy-goodl { position: absolute; top: 112px; transform: translateX(calc(-100% - 6px)); white-space: nowrap; font: 12px Karla, system-ui, sans-serif; color: var(--pc-quiet); }
+.st .st-rhy-head { position: absolute; top: 16px; height: 22px; width: 1.5px; margin-left: -.75px; background: var(--pc-strong); opacity: 0; transition: opacity .2s; }
+.st .st-rhy-head.is-on { opacity: 1; }
+.st .st-rhy-headl {
+  position: absolute; bottom: calc(100% + 1px); left: 50%; transform: translateX(-50%); white-space: nowrap;
+  font: 10.5px ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; color: var(--pc-strong); font-variant-numeric: tabular-nums;
+}
+.st .st-rhy-stem { position: absolute; top: 31px; width: 1px; margin-left: -.5px; background: var(--pc-line2); opacity: 0; transition: opacity .18s; }
+.st .st-rhy-stem.lane-0 { height: 25px; }
+.st .st-rhy-stem.lane-1 { height: 51px; }
+.st .st-rhy-stamp {
+  position: absolute; left: min(calc(var(--x) - 11px), calc(100% - 76px)); display: inline-flex; align-items: center; gap: 5px;
+  height: 22px; padding: 0 9px; box-sizing: border-box; border: 1px solid var(--pc-line2); border-radius: 999px; background: var(--pc-page);
+  font: 600 12px Karla, system-ui, sans-serif; color: var(--pc-strong); white-space: nowrap; font-variant-numeric: tabular-nums;
+  opacity: 0; transform: translateY(-8px);
+  transition: opacity .18s cubic-bezier(.2,.8,.2,1), transform .18s cubic-bezier(.2,.8,.2,1);
+}
+.st .st-rhy-stamp.lane-0 { top: 56px; }
+.st .st-rhy-stamp.lane-1 { top: 82px; }
+.st .st-rhy-stamp.is-on, .st .st-rhy-stem.is-on { opacity: 1; transform: none; }
+.st .st-rhy-ico { width: 16px; height: 12px; fill: none; stroke: var(--pc-soft); stroke-width: 1.3; stroke-linecap: round; }
+
+.st .st-rhy-ctl { max-width: 620px; display: flex; justify-content: flex-end; }
+.st .st-rhy-replay {
+  min-height: 44px; padding: 0 2px; border: 0; background: none; cursor: pointer;
+  font: 13px Karla, system-ui, sans-serif; color: var(--pc-quiet); transition: color .18s;
+}
+.st .st-rhy-replay:hover { color: var(--pc-accent); }
+
+.st .st-rhy-feel { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.st .st-rhy-feelk { font: 600 11px Karla, system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--pc-quiet); flex-basis: 100%; }
+.st .st-rhy-tap { position: relative; overflow: hidden; display: inline-grid; place-items: center; }
+.st .st-rhy-tapghost, .st .st-rhy-taptext { grid-area: 1 / 1; }
+.st .st-rhy-tapghost { visibility: hidden; }
+.st .st-rhy-tap.is-waiting { background: var(--pc-hover); }
+.st .st-rhy-tap.is-answered { color: var(--st-head-sm); border-color: var(--pc-head); }
+.st .st-rhy-tap::after {
+  content: ''; position: absolute; left: 50%; top: 50%; width: 120%; aspect-ratio: 1; border-radius: 50%;
+  background: var(--pc-head); opacity: 0; transform: translate(-50%, -50%) scale(0); pointer-events: none;
+}
+.st .st-rhy-tap.is-answered::after { animation: st-rhy-ripple .18s cubic-bezier(0,0,.2,1); }
+@keyframes st-rhy-ripple { from { opacity: .28; transform: translate(-50%, -50%) scale(.1); } to { opacity: 0; transform: translate(-50%, -50%) scale(1); } }
+
+.st .st-rhy-foot { font: 13px/1.5 Karla, system-ui, sans-serif; color: var(--pc-quiet); margin: 18px 0 0; max-width: 620px; }
+.st .st-rhy-saside .st-invite { margin: 6px 0 0; }
+
+.st .st-rhy-card { max-width: 300px; }
+.st-rhy-card .st-rhy-card-t { font: 600 14px Karla, system-ui, sans-serif; color: var(--pc-strong); margin: 0 0 8px; }
+.st-rhy-card .st-rhy-card-p { font: 15px/1.55 Georgia, serif; color: var(--pc-body); margin: 0 0 8px; }
+.st-rhy-card .st-rhy-card-m { font: 12px/1.45 Karla, system-ui, sans-serif; color: var(--pc-quiet); margin: 4px 0 0; }
+
+/* ---------- narrower ---------- */
+@media (max-width: 1000px) {
+  .st .st-rhy-sgrid { grid-template-columns: minmax(0, 1fr); }
+  .st .st-rhy-saside { max-width: 620px; }
+}
+@media (max-width: 860px) {
+  /* one column, in reading order: clock, what it says, then its tools, then the weekdays */
+  .st .st-rhy-when { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .st .st-rhy-left, .st .st-rhy-side { display: contents; }
+  .st .st-rhy-tz { order: 1; justify-self: start; }
+  .st .st-rhy-dial { order: 2; justify-self: center; }
+  .st .st-rhy-readout { order: 3; }
+  .st .st-rhy-note { order: 4; }
+  .st .st-rhy-caveat { order: 5; }
+  .st .st-rhy-side > .st-invite { order: 6; }
+  .st .st-rhy-wk { order: 7; }
+  .st .st-rhy-when > .st-tools { order: 8; margin-top: 14px; }
+  .st .st-rhy-tables { order: 9; }
+}
+@media (max-width: 480px) {
+  .st .st-rhy-dial { width: 280px; margin: 28px 34px 30px; }
+  .st .st-rhy-wkcols { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .st .st-rhy-frames { gap: 14px; }
+}
+@media (max-width: 420px) {
+  .st .st-rhy-dev-desktop .st-rhy-dev-svg { width: 200px; }
+  .st .st-rhy-dev { padding: 6px 4px; }
+}
+@media (max-width: 359px) {
+  .st .st-rhy-dial { width: 250px; margin: 26px 30px 28px; }
+  .st .st-rhy-dev-desktop .st-rhy-dev-svg { width: 180px; }
+  .st .st-rhy-dev-mobile .st-rhy-dev-svg { width: 92px; }
+}
+
+@media (forced-colors: active) {
+  .st .st-rhy-wedge { fill: CanvasText; }
+  .st .st-rhy-wkbar { forced-color-adjust: none; background: repeating-linear-gradient(135deg, CanvasText 0 2px, Canvas 2px 5px); box-shadow: inset 0 0 0 1px CanvasText; }
+  .st .st-rhy-wedges { filter: none; }
+  .st .st-rhy-wklo { forced-color-adjust: none; background: CanvasText; }
+  .st .st-rhy-dial:focus-visible { outline: 3px solid CanvasText; outline-offset: 10px; }
+}

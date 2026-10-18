@@ -29,6 +29,9 @@ The rest of this post is how that answer was found, what each connection can see
 the questions I'd ask first if I were starting a site today. Nothing here has been optimised:
 no SEO work, no social posting, no ads, 55 posts before this one.
 
+*The numbers below stop on 17 October. The same counts, sorted the same way and refreshed every
+day, are on [the site's stats page](/stats).*
+
 ## 77 days, by the dashboard's numbers
 
 <ao-series show="Requests" avg="7">

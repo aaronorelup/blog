@@ -1,0 +1,172 @@
+/* Chapter 02, "Is it growing?": the long view (every day since launch) and the sorted 30 days.
+   Every rule is scoped under .st so nothing here can reach a post or the panel. Mark colours are
+   the --st-* kind tokens from base.css; text only ever wears text tokens. */
+
+.st .st-grow-fig { margin: 0; min-width: 0; }
+.st .st-grow-fig + .st-grow-fig { margin-top: 64px; }
+
+/* ---- controls ---- */
+.st .st-grow-ctrl {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
+  margin: 18px 0 12px;
+}
+.st .st-grow-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.st .st-grow-binnote { font: 13px/1.4 Karla, system-ui, sans-serif; color: var(--pc-quiet); }
+.st .st-grow-pill-in { display: inline-flex; align-items: center; gap: 6px; }
+.st .st-grow-chev { flex: none; }
+
+/* the kind chips double as the legend */
+.st .st-grow-legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; }
+.st .st-grow-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  min-height: 34px; padding: 0 12px 0 10px;
+  border: 1px solid var(--pc-line2); border-radius: 999px;
+  background: transparent; color: var(--pc-strong);
+  font: 600 13px/1 Karla, system-ui, sans-serif;
+  cursor: pointer;
+  transition: background-color 180ms cubic-bezier(.4,0,.2,1), border-color 180ms cubic-bezier(.4,0,.2,1), color 180ms cubic-bezier(.4,0,.2,1);
+}
+.st .st-grow-chip:hover { background: var(--pc-hover); }
+.st .st-grow-chip-glyph { flex: none; transition: opacity 180ms cubic-bezier(.4,0,.2,1); }
+.st .st-grow-chip-num {
+  font: 11.5px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--pc-quiet); font-variant-numeric: tabular-nums;
+}
+/* a layer switched off: dashed, quiet, its glyph faded (the shape still says which it was) */
+.st .st-grow-chip:not(.st-grow-chip--only)[aria-pressed='false'] { border-style: dashed; color: var(--pc-quiet); }
+.st .st-grow-chip:not(.st-grow-chip--only)[aria-pressed='false'] .st-grow-chip-glyph { opacity: .35; }
+.st .st-grow-chip[aria-disabled='true'] { cursor: default; }
+.st .st-grow-chip--only[aria-pressed='true'] {
+  border-color: var(--pc-head); color: var(--pc-head); background: var(--pc-hover);
+}
+:root[data-mode='day'] .st .st-grow-chip--only[aria-pressed='true'] {
+  border-color: var(--pc-strong); color: var(--pc-strong); box-shadow: inset 0 0 0 1px var(--pc-strong);
+}
+.st .st-grow-chip--only { margin-left: 4px; }
+
+.st .st-grow-hint {
+  margin: 6px 0 2px;
+  font: 14px/1.5 Karla, system-ui, sans-serif; color: var(--pc-soft);
+}
+.st .st-grow-textbtn {
+  font: inherit; font-weight: 600; color: var(--pc-accent);
+  background: none; border: 0; padding: 4px 2px; margin: -4px 0; cursor: pointer;
+  text-decoration: underline dotted; text-underline-offset: 3px;
+}
+.st .st-grow-textbtn:hover { color: var(--pc-strong); }
+
+/* ---- readout: one quiet line that the pointer, finger or arrow keys drive ---- */
+.st .st-grow-readout {
+  margin: 10px 0 4px; min-height: 1.5em;
+  font: 14px/1.5 Karla, system-ui, sans-serif; color: var(--pc-body);
+  font-variant-numeric: tabular-nums;
+}
+.st .st-grow-readout b { color: var(--pc-strong); font-weight: 700; }
+.st .st-grow-readout .is-unit { color: var(--pc-strong); font-weight: 600; }
+.st .st-grow-readout a { color: var(--pc-accent); font-weight: 600; text-decoration: none; }
+.st .st-grow-readout a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.st .st-grow-rk { white-space: nowrap; }
+.st .st-grow-readrow {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px;
+  margin: 10px 0 4px; min-height: 44px;
+}
+.st .st-grow-readrow .st-grow-readout { flex: 1 1 420px; margin: 0; }
+.st .st-grow-pick { flex: none; display: flex; align-items: center; gap: 8px; }
+.st .st-grow-pick:empty, .st .st-grow-gate[hidden] { display: none; }
+
+/* ---- the plot ---- */
+.st .st-grow-plot {
+  position: relative; margin-top: 4px;
+  touch-action: pan-y;               /* a vertical swipe still scrolls the page */
+  -webkit-tap-highlight-color: transparent;
+  user-select: none; -webkit-user-select: none;
+  border-radius: 8px;
+}
+.st .st-grow-plot:focus { outline: none; }
+.st .st-grow-plot:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+.st .st-grow-svg { display: block; overflow: visible; }
+
+.st .st-grow-grid line { stroke: var(--pc-line); stroke-width: 1; }
+.st .st-grow-axis { stroke: var(--pc-line2); stroke-width: 1; }
+.st .st-grow-tick {
+  font: 10.5px ui-monospace, SFMono-Regular, Menlo, monospace;
+  fill: var(--pc-quiet); font-variant-numeric: tabular-nums;
+}
+.st .st-grow-hoverband { fill: var(--pc-hover); }
+
+/* long view: one series in the quiet total colour, never gold */
+.st .st-grow-col { fill: var(--st-total, var(--pc-quiet)); transition: opacity 200ms cubic-bezier(.4,0,.2,1); }
+.st .st-grow-col.is-on { fill: var(--pc-strong); }
+.st .st-grow-mean {
+  fill: none; stroke: var(--pc-strong); stroke-width: 1.5; stroke-opacity: .7;
+  stroke-linejoin: round; stroke-linecap: round;
+  transition: opacity 200ms cubic-bezier(.4,0,.2,1);
+}
+.st .st-grow-bracket path:first-child { fill: none; stroke: var(--pc-head); stroke-width: 1; }
+.st .st-grow-bracket-label { font: 12px Karla, system-ui, sans-serif; fill: var(--pc-soft); }
+.st .st-grow-bracket-chev {
+  fill: none; stroke: var(--pc-soft); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* sorted: the five kinds, people on the ground */
+.st .st-grow-day { transition: opacity 200ms cubic-bezier(.4,0,.2,1); }
+.st .st-grow-seg { transition: fill 200ms cubic-bezier(.4,0,.2,1), opacity 200ms cubic-bezier(.4,0,.2,1); }
+.st .st-grow-seg[data-seg='person-lo'] { fill: var(--st-person); }
+.st .st-grow-seg[data-seg='person-hi'] { fill: url(#st-grow-stripe); }
+.st .st-grow-stripe-ink { fill: var(--st-person); }
+.st .st-grow-seg[data-seg='stale'] { fill: var(--st-stale); }
+.st .st-grow-seg[data-seg='agent'] { fill: var(--st-agent); }
+.st .st-grow-seg[data-seg='scanner'] { fill: var(--st-scanner); }
+.st .st-grow-seg[data-seg='bot'] { fill: var(--st-bot); }
+.st .is-people-only .st-grow-seg:not([data-seg^='person']) { fill: var(--pc-quiet); opacity: .4; }
+.st .st-grow-ring { fill: none; stroke: var(--pc-strong); stroke-width: 2; }
+.st .st-grow-direct { font: 600 12px Karla, system-ui, sans-serif; fill: var(--pc-strong); }
+
+/* post marks: real links laid over the plot, so a mouse gets the site's hover card */
+.st .st-grow-marks { position: absolute; inset: 0; pointer-events: none; }
+.st .st-grow-post {
+  position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px;
+  display: grid; place-items: center; pointer-events: auto; border-radius: 50%;
+}
+.st .st-grow-post-dot {
+  display: block; width: 5px; height: 5px; border-radius: 50%; background: var(--pc-accent);
+  transition: transform 180ms cubic-bezier(.4,0,.2,1);
+}
+.st .st-grow-post.is-many .st-grow-post-dot {
+  width: 7px; height: 7px; background: transparent; box-shadow: inset 0 0 0 1.5px var(--pc-accent);
+}
+.st .st-grow-post:hover .st-grow-post-dot { transform: scale(1.5); }
+/* on touch the whole column band is the target; a stray tap shouldn't open a post */
+@media (hover: none), (pointer: coarse) {
+  .st .st-grow-post { pointer-events: none; }
+}
+
+.st .st-grow-note { margin: 8px 0 0; font: 13px/1.5 Karla, system-ui, sans-serif; color: var(--pc-soft); }
+
+/* Prev / Next day: phones and touch screens only */
+.st .st-grow-steps { display: none; gap: 8px; margin-top: 10px; }
+@media (max-width: 640px), (pointer: coarse) {
+  .st .st-grow-steps { display: flex; }
+  .st .st-grow-steps .st-pill { flex: 1 1 0; min-height: 44px; justify-content: center; text-align: center; }
+  .st .st-grow-chip { min-height: 40px; }
+  .st .st-grow-steps + .st-grow-pick { margin-top: 8px; }
+  .st .st-grow-steps + .st-grow-pick .st-grow-gate { flex: 1 1 auto; min-height: 44px; justify-content: center; }
+  .st .st-grow-readrow { min-height: 0; }
+}
+@media (max-width: 560px) {
+  .st .st-grow-fig + .st-grow-fig { margin-top: 48px; }
+  .st .st-grow-readout { min-height: 3em; }
+  /* the sorted readout wraps to three lines; the gate pill has moved under the chart */
+  #st-sorted.st-grow-fig .st-grow-readout { min-height: 4.5em; flex-basis: 100%; }
+  .st .st-grow-chip--only { margin-left: 0; }
+}
+
+@media (forced-colors: active) {
+  .st .st-grow-col, .st .st-grow-seg, .st .st-grow-stripe-ink { fill: CanvasText; }
+  .st .st-grow-seg[data-seg='person-hi'] { fill: url(#st-grow-stripe); }
+  .st .st-grow-mean, .st .st-grow-ring, .st .st-grow-bracket path { stroke: CanvasText; }
+  .st .st-grow-post-dot { background: LinkText; }
+}
+
+/* Prev at the first day, Next at the last: still focusable, visibly spent */
+.st .st-grow-steps .st-pill[aria-disabled='true'] { opacity: .45; cursor: default; }

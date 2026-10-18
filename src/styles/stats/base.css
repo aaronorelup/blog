@@ -1,0 +1,724 @@
+/* /stats: the shared layer. Tokens for the five kinds, the page's type scale, the chapter
+   anatomy every section repeats, the sticky range bar, pills, defined words, tables, the
+   popover, and the page states. Package stylesheets add only their own .st-<pkg>-* classes,
+   all scoped under .st, so nothing here or there can leak into a post's .pc-prose.
+
+   Colour rule the whole page keeps: gold marks people and nothing else; text never wears a
+   mark colour (identity comes from the glyph beside it). */
+
+/* ---------- tokens ----------
+   The popover and the Questions sheet live outside .st (in <body>), so they carry the tokens too. */
+.st,
+.st-pop,
+[data-st-sheet] {
+  --st-person: #F0C06A;
+  --st-person-glow: rgba(240, 192, 106, 0.2);
+  --st-bot: #F16F46;
+  --st-scanner: #726757;
+  --st-agent: #A8A3A0;
+  --st-stale: #607EC2;
+  --st-you: #F7C9D4;
+  --st-total: var(--pc-quiet);
+  --st-stripe: repeating-linear-gradient(135deg, var(--st-person) 0 2px, transparent 2px 5px);
+  /* the gate's drawn height (hero/gate-layout.js frame(): 0.34 × the stage, 320–380px), reserved
+     before the hero mounts so nothing below it moves when it does */
+  --st-gate-h: clamp(320px, calc(0.34 * min(1140px, 100vw - 2 * clamp(18px, 4vw, 44px))), 380px);
+  --st-head-sm: var(--pc-head);
+  --st-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --st-zen: 'Zen Maru Gothic', sans-serif;
+  --st-serif: Georgia, 'Times New Roman', serif;
+}
+:root[data-mode='day'] .st,
+:root[data-mode='day'] .st-pop,
+:root[data-mode='day'] [data-st-sheet] {
+  /* Marks by day, contrast on #FBF3E8: bots 5.9, scripts 5.9, people 3.8, scanners 3.1, old
+     browsers 3.1. Scripts were #403C39 (9.8:1), a near-black block that out-shouted the gold
+     people beside it; at night the order is people, scripts, bots. A gold deeper than this one
+     reads brown and nears the bots' red for deutan readers (ΔE 9.1 here), so people take the
+     third place with the neutrals under them, and scripts sit just above scanners as at night.
+     validate_palette.js (light, station order): CVD adjacent 15.4, all pairs 9.1; normal vision
+     adjacent 15.5; all pairs 12.0 (scanners and people, never adjacent, cross against disc). */
+  --st-person: #AD6F0D;
+  --st-person-glow: transparent;
+  --st-bot: #AF2E13;
+  --st-scanner: #918A83;
+  --st-agent: #635D58;
+  --st-stale: #6B8ACF;
+  /* Day text tokens. On the cream panel the brand's gold (2.9:1), heading amber (3.2:1) and
+     terracotta (4.4:1) are too light for small text, and every eyebrow, kicker, figure question
+     and link here is small. These are the same hues, darkened to 4.5:1 or better. Marks keep
+     their own --st-* colours; only text reads these. */
+  --pc-gold: rgb(138, 104, 22);
+  --pc-accent: rgb(160, 86, 36);
+  --st-head-sm: rgb(150, 92, 8);
+}
+/* the stage is wide from 720px of its own width (gate-layout.js WIDE_MIN); narrower, it is the
+   rail, whose height hardly changes with width */
+@media (max-width: 781px) { .st { --st-gate-h: 392px; } }
+@media (max-width: 560px) { .st { --st-gate-h: 352px; } }
+@media (max-width: 340px) { .st { --st-gate-h: 396px; } }
+
+/* ---------- the column ---------- */
+.st {
+  /* Positioned so the visually hidden tables (.st-sr, position:absolute) belong to the column.
+     Without it their containing block was #panel-card, outside the scroller, and they gave that
+     overflow:hidden card thirteen thousand pixels of overflow: any focus or scrollIntoView then
+     scrolled the card itself, carrying the site header away and leaving the day/night switch
+     on top of the sticky bar. */
+  position: relative;
+  /* #panel-scroll is a flex row: without this the column is stretched to the scroller's own
+     height and the sticky bar's containing block ends one screen down */
+  align-self: flex-start;
+  width: 100%;
+  max-width: 1140px;
+  min-width: 0;
+  box-sizing: border-box;
+  padding-bottom: 96px;
+  color: var(--pc-body);
+  font-family: Karla, system-ui, sans-serif;
+}
+.st *,
+.st *::before,
+.st *::after { box-sizing: border-box; }
+/* Focus moved by the keyboard lands below the sticky bar, not under it (the router's own scrolls
+   already subtract the bar). The scroller is focused on load so the keyboard can scroll it at
+   once (main.js); it needs no ring for that. */
+#panel-scroll:has(> .st) { scroll-padding-top: 64px; }
+#panel-scroll:has(> .st):focus { outline: none; }
+/* Phones and short screens: the footer scrolls with the page (main.js moves it in), so the fixed
+   header and the sticky bar aren't joined by a fixed footer in a small window. */
+#panel-scroll:has(> .st) { flex-wrap: wrap; align-content: flex-start; }
+/* inside the column's gutters: bleeding into them made the scroller wider than the screen */
+#panel-scroll > footer.st-foot-moved { flex: none; width: 100%; padding-left: 0 !important; padding-right: 0 !important; }
+
+/* :where() keeps this at element weight: as `.st button` it outranked every one-class rule
+   below (.st-pill, .st-tool, .st-textbtn), and pills and tool rows came out in body text */
+:where(.st) button { font: inherit; color: inherit; }
+/* `hidden` wins over every display rule on the page (pills are inline-flex, rows are grid) */
+.st [hidden] { display: none !important; }
+.st a { color: var(--pc-accent); }
+.st p { margin: 0; }
+.st .st-tab { font-variant-numeric: tabular-nums; }
+
+/* ---------- head ---------- */
+.st-head { padding: 0 0 4px; }
+.st-eyebrow {
+  margin: 0 0 6px;
+  font: 600 11px/1.5 Karla, system-ui, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pc-gold);
+  min-height: 1.5em;
+}
+.st-eyebrow .st-eyebrow-stale { color: var(--pc-accent); }
+.st-h1 {
+  margin: 0;
+  font: 700 44px/1.2 var(--st-zen);
+  letter-spacing: -0.01em;
+  color: var(--pc-head);
+  text-wrap: balance;
+}
+@media (max-width: 600px) {
+  .st-h1 { font-size: 30px; }
+  .st-eyebrow-time { display: none; }
+}
+
+/* ---------- the sticky range bar ----------
+   A direct child of .st so it stays stuck for the whole page. Sticky offsets count from
+   #panel-scroll's content edge, which sits 34px below its top (the scroller's padding), so
+   top: 0 left a 34px gap with the page showing through above the bar (measured with
+   getBoundingClientRect). top: -34px puts it flush with the scroller's edge. */
+.st-bar-sentinel { height: 1px; margin-bottom: -1px; }
+.st-bar {
+  position: sticky;
+  top: -34px;
+  z-index: 5;
+  padding: 0;
+  background: var(--pc-bg);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  /* full bleed without widening anything: a spread shadow paints the bar's background out to
+     the panel's edges (shadows never add scrollable overflow), and clip-path keeps it one bar
+     tall. When stuck, a second shadow one pixel lower is the hairline. */
+  box-shadow: 0 0 0 100vmax var(--pc-bg);
+  clip-path: inset(0 -100vmax);
+}
+.st-bar.is-stuck {
+  box-shadow: 0 0 0 100vmax var(--pc-bg), 0 1px 0 100vmax var(--pc-line);
+  clip-path: inset(0 -100vmax -1px);
+}
+.st-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  max-width: 1140px;
+  margin: 0 auto;
+}
+.st-bar-now {
+  display: none;
+  flex: 1 1 auto;
+  min-width: 0;
+  font: 400 13px/1.3 Karla, system-ui, sans-serif;
+  color: var(--pc-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (min-width: 900px) {
+  .st-bar.is-stuck .st-bar-now:not(:empty) { display: block; }
+  .st-bar.is-stuck .st-pills { flex: none; }
+}
+.st-pills { display: flex; flex-wrap: wrap; gap: 8px; flex: 1 1 auto; min-width: 0; }
+/* the weekday is dropped from a day pill when room is short ("30 Sep", not "Wed 30 Sep") */
+.st-pill-wd::after { content: ' '; }
+.st-bar .st-pill-ask { margin-left: auto; flex: none; }
+.st-pill-ask .st-ask-narrow { display: none; }
+@media (max-width: 600px) {
+  .st-pill-ask .st-ask-wide { display: none; }
+  .st-pill-ask .st-ask-narrow { display: inline; }
+}
+.st-bar[aria-disabled='true'] .st-pill { opacity: 0.45; cursor: default; }
+.st .st-coverage {
+  margin: 10px 0 0;
+  font: 400 13px/1.4 Karla, system-ui, sans-serif;
+  color: var(--pc-quiet);
+}
+@media (max-width: 480px) {
+  /* The pills stay one unit and Questions keeps its own size; if the two can't share the row
+     (a picked day at 320px), Questions wraps under it, right-aligned, instead of overlapping. */
+  .st-bar-row { gap: 6px; flex-wrap: wrap; padding: 4px 0; }
+  .st-pills { gap: 6px; flex-wrap: nowrap; flex: none; }
+  .st-pills .st-pill-latest.is-replaced { display: none; }
+}
+/* a picked day carries a close mark, so it gives up its weekday first (400px and under); the latest
+   day keeps "Sat 17 Oct" down to 340px */
+@media (max-width: 400px) {
+  .st-pill-picked .st-pill-wd { display: none; }
+}
+@media (max-width: 340px) {
+  .st-pill-wd { display: none; }
+}
+/* A short window (a landscape phone, 400% zoom) has no height to spare for a pinned bar. */
+@media (max-height: 520px) {
+  .st-bar { position: relative; top: 0; }
+}
+
+/* ---------- pills ---------- */
+.st-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--pc-line2);
+  background: transparent;
+  color: var(--pc-strong);
+  font: 600 13.5px/1 Karla, system-ui, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 180ms cubic-bezier(.4, 0, .2, 1), border-color 180ms cubic-bezier(.4, 0, .2, 1), color 180ms cubic-bezier(.4, 0, .2, 1);
+}
+.st-pill:hover:not([disabled]) { background: var(--pc-hover); }
+.st-pill[aria-checked='true'],
+.st-pill[aria-pressed='true'],
+.st-pill[aria-selected='true'] {
+  border-color: var(--pc-head);
+  color: var(--pc-head);
+  background: var(--pc-hover);
+}
+:root[data-mode='day'] .st-pill[aria-checked='true'],
+:root[data-mode='day'] .st-pill[aria-pressed='true'],
+:root[data-mode='day'] .st-pill[aria-selected='true'] {
+  border-color: var(--pc-strong);
+  box-shadow: inset 0 0 0 1px var(--pc-strong);
+  color: var(--pc-strong);
+}
+.st-pill[disabled] { cursor: default; }
+/* Try again while trying: aria-disabled keeps it focusable (ui/states.js retryPill) */
+.st-state-actions .st-pill[aria-disabled='true'] { cursor: progress; opacity: 0.7; }
+.st-pill .st-pill-x {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-right: -6px;
+  border-radius: 999px;
+}
+.st-pill .st-pill-x:hover { background: var(--pc-line); }
+@media (max-width: 600px) {
+  .st-pill { height: 40px; padding: 0 13px; position: relative; }
+  /* 44px of hit area around a 40px pill */
+  .st-pill::after { content: ''; position: absolute; inset: -2px -2px; }
+}
+/* three range pills and Questions on one row at 390px (and 360px): 354px of room */
+@media (max-width: 480px) {
+  .st-bar .st-pill { padding: 0 11px; font-size: 13px; }
+}
+@media (max-width: 380px) {
+  .st-pill { padding: 0 10px; font-size: 13px; }
+  .st-bar .st-pill { padding: 0 9px; }
+}
+/* 320px: tighter still, so a picked day and Questions keep sharing the row */
+@media (max-width: 340px) {
+  .st-bar-row, .st-pills { gap: 4px; }
+  .st-bar .st-pill { padding: 0 7px; font-size: 12.5px; }
+  .st-bar .st-pill .st-pill-x { margin-right: -3px; }
+}
+
+/* quiet text buttons (Show all, Try again's sibling links, Back to pages) */
+.st-textbtn {
+  border: 0;
+  padding: 6px 0;
+  background: none;
+  font: 600 13px/1.4 Karla, system-ui, sans-serif;
+  color: var(--pc-accent);
+  cursor: pointer;
+}
+.st-textbtn:hover { color: var(--pc-strong); }
+
+/* ---------- the hero's server-rendered frame (P2 fills it) ---------- */
+.st-hero { padding-top: 16px; }
+.st-lede {
+  max-width: 820px;
+  min-height: 2.8em;
+  font: 500 25px/1.4 var(--st-zen);
+  color: var(--pc-strong);
+  text-wrap: pretty;
+}
+.st-lede a { color: var(--pc-accent); }
+.st-lede strong, .st-lede .st-num { font-weight: 700; color: var(--pc-strong); }
+.st-sub {
+  max-width: 620px;
+  margin-top: 14px !important;
+  font: 400 17px/1.68 var(--st-serif);
+  color: var(--pc-body);
+}
+.st-sub:empty { display: none; }
+/* From 720px the sub sits between the lede and the gate (hero.css puts it under the rail below
+   that): hold its two lines while the hero is on its way, or the gate and chips drop 60px when it
+   fills. */
+@media (min-width: 720px) {
+  .st-js .st-sub:empty { display: block; min-height: calc(2 * 1.68 * 17px); }
+}
+.st-note { margin-top: 14px !important; font: 400 14px/1.5 Karla, system-ui, sans-serif; color: var(--pc-quiet); }
+/* reserved only when JavaScript will fill it (stats.astro sets .st-js inline, before first paint) */
+.st-gate { position: relative; height: 0; }
+.st-js .st-gate { height: var(--st-gate-h); margin-top: 28px; }
+/* the slots under the gate hold their usual height until their modules fill them, so the first
+   chapter doesn't paint above the fold and then get pushed down */
+.st-js [data-st-slot='chips']:empty { min-height: 80px; }
+.st-js [data-st-slot='noticed']:empty { min-height: 255px; }
+@media (max-width: 600px) {
+  .st-js [data-st-slot='chips']:empty { min-height: 150px; }
+  .st-js [data-st-slot='noticed']:empty { min-height: 360px; }
+}
+html:not(.st-js) .st-bar { display: none; }
+.st-mark-person { text-decoration: underline 2px var(--st-person); text-underline-offset: 4px; }
+@media (max-width: 600px) {
+  .st-lede { font-size: 20px; line-height: 1.35; min-height: 5.4em; }
+}
+.st-lede.is-loading { color: var(--pc-quiet); }
+
+/* ---------- chapters ---------- */
+.st-ch { padding-top: 112px; scroll-margin-top: 72px; }
+/* A lazy chapter waiting to mount (main.js) holds a screen and a half, about what it will take
+   once drawn. As a bare skeleton every chapter sat inside the 150% "near" margin at once and the
+   whole page mounted on load; at this height only the next one is near. */
+.st-ch[data-st-pending] { min-height: 150vh; }
+.st-kicker {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px !important;
+  font: 600 11px/1.4 Karla, system-ui, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pc-gold);
+}
+.st-no { font: 400 12px/1 var(--st-mono); letter-spacing: 0; color: var(--pc-quiet); }
+.st-q {
+  margin: 0;
+  font: 700 clamp(22px, 2.4vw, 28px)/1.25 var(--st-zen);
+  color: var(--pc-head);
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+.st-answer {
+  max-width: 680px;
+  min-height: 1.4em;
+  margin-top: 14px !important;
+  font: 500 clamp(19px, 1.9vw, 23px)/1.4 var(--st-zen);
+  color: var(--pc-strong);
+  text-wrap: pretty;
+}
+.st-answer strong { font-weight: 700; }
+.st-context {
+  max-width: 620px;
+  margin-top: 12px !important;
+  font: 400 17px/1.68 var(--st-serif);
+  color: var(--pc-body);
+}
+.st-context:empty { display: none; }
+.st-body { margin-top: 28px; min-width: 0; }
+.st-body:empty { margin-top: 0; }
+.st-nojs-line { font: 400 15px/1.5 Karla, system-ui, sans-serif; color: var(--pc-quiet); }
+/* a reserved line while a chapter's module is still on its way */
+.st-js .st-answer:has(> .st-nojs:only-child)::before {
+  content: '';
+  display: block;
+  width: min(520px, 80%);
+  height: 0.9em;
+  margin-top: 0.25em;
+  border-radius: 6px;
+  background: var(--pc-line);
+  opacity: 0.6;
+}
+@media (max-width: 600px) {
+  .st-ch { padding-top: 72px; }
+}
+
+/* chapter entrance: the text rises once, when a quarter of the chapter is in view */
+@media (prefers-reduced-motion: no-preference) {
+  .st-js .st-ch:not(.is-in) > :is(.st-kicker, .st-q, .st-answer, .st-context) { opacity: 0; transform: translateY(12px); }
+  .st-js .st-ch.is-in > :is(.st-kicker, .st-q, .st-answer, .st-context) {
+    transition: opacity 420ms cubic-bezier(.2, .8, .2, 1), transform 420ms cubic-bezier(.2, .8, .2, 1);
+  }
+}
+@media print {
+  .st-js .st-ch > * { opacity: 1 !important; transform: none !important; }
+}
+
+/* ---------- figures ---------- */
+.st-fig { margin: 0; min-width: 0; }
+.st-fig + .st-fig { margin-top: 64px; }
+.st-fq { margin: 0; font: 700 17px/1.35 var(--st-zen); color: var(--st-head-sm); }
+.st-fa { max-width: 620px; margin-top: 6px !important; font: 400 16px/1.6 var(--st-serif); color: var(--pc-body); }
+.st-invite { margin-top: 10px !important; font: 400 13px/1.4 Karla, system-ui, sans-serif; color: var(--pc-quiet); }
+.st-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin-top: 14px;
+}
+.st-tool {
+  min-height: 32px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  font: 400 13px/1.3 Karla, system-ui, sans-serif;
+  color: var(--pc-quiet);
+  cursor: pointer;
+  transition: color 180ms cubic-bezier(.4, 0, .2, 1);
+}
+.st-tool:hover { color: var(--pc-accent); }
+@media (max-width: 600px) { .st-tool { min-height: 44px; } }
+
+/* ---------- follow-ups ---------- */
+.st-follow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 28px;
+}
+.st-follow:empty { display: none; }
+.st-follow-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  font: 600 14px/1.3 Karla, system-ui, sans-serif;
+  color: var(--pc-accent) !important;
+  text-decoration: none;
+}
+.st-follow-link:hover span { text-decoration: underline; text-underline-offset: 3px; }
+.st-follow-link .st-arrow { flex: none; }
+@media (max-width: 600px) { .st-follow-link { min-height: 44px; } }
+
+/* ---------- defined words ---------- */
+/* A <span role="button">, not a <button>: a button is an atomic inline box and can't break
+   across lines, so "bots that say who they are" had to move whole and left ragged answers. */
+.st-term {
+  display: inline;
+  cursor: help;
+  text-decoration: underline 1px dotted var(--pc-line2);
+  text-underline-offset: 3px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: text-decoration-color 180ms cubic-bezier(.4, 0, .2, 1);
+}
+.st-term:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 2px; border-radius: 3px; }
+/* the glyph stays with the word after it */
+.st-term .st-term-lead { white-space: nowrap; }
+.st-term:hover,
+.st-term[data-st-pop-open] { text-decoration-color: var(--pc-head); }
+.st-kindword .st-glyph { display: inline-block; vertical-align: -0.04em; margin-right: 0.28em; }
+.st-kindword.is-lit { text-decoration: underline 2px solid var(--pc-head); }
+.st-num { font-variant-numeric: tabular-nums; }
+.st-prov {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 700;
+  color: var(--pc-strong);
+  cursor: help;
+  text-decoration: underline 1px dotted var(--pc-line2);
+  text-underline-offset: 4px;
+}
+.st-prov.st-mark-person { text-decoration: underline 2px solid var(--st-person); }
+.st-prov:hover { text-decoration-color: var(--pc-head); }
+.st-link { color: var(--pc-accent); text-underline-offset: 2px; }
+
+/* ---------- glyphs ---------- */
+.st-glyph { flex: none; overflow: visible; }
+
+/* ---------- tables (the brand's one square element) ---------- */
+.st-table {
+  width: 100%;
+  margin-top: 14px;
+  border-collapse: collapse;
+  font: 400 13px/1.4 Karla, system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: var(--pc-body);
+}
+.st-table caption { text-align: left; padding: 0 0 8px; font-weight: 600; color: var(--pc-strong); }
+.st-table th,
+.st-table td { border: 1px solid var(--pc-line); padding: 6px 10px; text-align: left; vertical-align: top; }
+.st-table thead th { color: var(--pc-strong); font-weight: 600; }
+.st-table tbody th { min-width: 9ch; font-weight: 400; color: var(--pc-body); overflow-wrap: break-word; hyphens: auto; }
+.st-table .is-num { text-align: right; }
+/* On a phone a five- or six-column table ran off the right edge inside its own scroller, the
+   counts last and out of sight, with nothing to say it scrolled. Under 600px each row is a small
+   card instead: its label on top, the counts on one line under it (each named by its column,
+   from data-label), then any long text. The cells keep their table roles (ui/table.js sets them),
+   so a screen reader still hears a table once display stops being one. */
+@media (max-width: 600px) {
+  .st-table:not(.st-sr) { display: block; }
+  .st-table:not(.st-sr) caption { display: block; }
+  .st-table:not(.st-sr) thead {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+  .st-table:not(.st-sr) tbody { display: block; border-top: 1px solid var(--pc-line); }
+  .st-table:not(.st-sr) tr {
+    display: flex; flex-wrap: wrap; column-gap: 18px; row-gap: 3px;
+    padding: 9px 2px; border-bottom: 1px solid var(--pc-line);
+  }
+  .st-table:not(.st-sr) th,
+  .st-table:not(.st-sr) td { border: 0; padding: 0; }
+  .st-table:not(.st-sr) tbody th { flex: 1 0 100%; min-width: 0; font-weight: 600; color: var(--pc-strong); }
+  .st-table:not(.st-sr) td { order: 2; flex: 1 0 100%; min-width: 0; overflow-wrap: anywhere; }
+  .st-table:not(.st-sr) td.is-num { order: 1; flex: 0 1 auto; text-align: left; white-space: nowrap; }
+  .st-table:not(.st-sr) td[data-label]::before { content: attr(data-label) '\00a0 '; color: var(--pc-soft); }
+  .st-table:not(.st-sr) td:empty { display: none; }
+}
+.st-sr {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+/* A table can't be squeezed to 1px (it is always as wide as its content), so a hidden table twin
+   still stuck out to the right and the column scrolled sideways. Off to the left instead, where
+   overflow never scrolls; its static top is kept, and screen readers read it as before. */
+.st-table.st-sr { left: -10000px !important; }
+.st-js .st-nojs { display: none !important; }
+html:not(.st-js) .st-js-only { display: none !important; }
+.st-loading { color: var(--pc-quiet); }
+
+/* ---------- ranked bars (ui/bars.js) ---------- */
+.st-bars { list-style: none; margin: 0; padding: 0; }
+.st-bars-row { position: relative; border-top: 1px solid var(--pc-line); }
+.st-bars-row:last-child { border-bottom: 1px solid var(--pc-line); }
+.st-bars-main {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 38%) minmax(0, 1fr) auto;
+  /* The bar and its number line up with the label's first line, not the middle of the whole
+     label block: with a sub-line or chips under a name, centring dropped the bar 14 to 25px
+     below the name it measures. The row itself still centres in its 44px when the label is one
+     line (align-content). */
+  align-items: start;
+  align-content: center;
+  gap: 4px 14px;
+  min-height: 44px;
+  padding: 8px 0;
+}
+.st-bars.has-share .st-bars-main { grid-template-columns: minmax(0, 38%) minmax(0, 1fr) auto 44px; }
+.st-bars-hit {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  transition: background 180ms cubic-bezier(.4, 0, .2, 1);
+}
+.st-bars-hit:hover,
+.st-bars-hit[aria-expanded='true'] { background: var(--pc-hover); }
+.st-bars-row.is-selectable .st-bars-main > :not(.st-bars-hit) { position: relative; z-index: 1; pointer-events: none; }
+.st-bars-row.is-selectable .st-bars-main a { pointer-events: auto; }
+.st-bars-label { min-width: 0; font: 600 14px/1.35 Karla, system-ui, sans-serif; color: var(--pc-strong); overflow-wrap: anywhere; }
+.st-bars-sub { display: block; margin-top: 2px; font: 400 12.5px/1.4 Karla, system-ui, sans-serif; color: var(--pc-soft); }
+/* 4.5px = (14px × 1.35 − 10px) / 2: the 10px bar centred on the label's first 18.9px line */
+.st-bars-track { position: relative; display: block; height: 10px; min-width: 0; margin-top: 4.5px; }
+.st-bars-bar { position: relative; display: block; height: 10px; border-radius: 0 4px 4px 0; overflow: hidden; }
+.st-bars-stripe { position: absolute; top: 0; bottom: 0; right: 0; background: var(--st-stripe); }
+.st-bars-value { font: 600 13px/1.3 Karla, system-ui, sans-serif; font-variant-numeric: tabular-nums; color: var(--pc-strong); white-space: nowrap; text-align: right; }
+.st-bars-atleast, .st-bars-meta { font-weight: 400; color: var(--pc-quiet); }
+.st-bars-share { font: 400 11.5px/1.3 var(--st-mono); color: var(--pc-quiet); text-align: right; }
+.st-bars-value, .st-bars-share { line-height: 18.9px; }
+.st-bars-more { padding: 4px 0 14px; }
+.st-bars-all { margin-top: 8px; }
+@media (max-width: 559px) {
+  .st-bars-main,
+  .st-bars.has-share .st-bars-main {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: 'label label' 'track value';
+  }
+  .st-bars.has-share .st-bars-main { grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: 'label label label' 'track value share'; }
+  .st-bars-main { align-items: center; }
+  .st-bars-label { grid-area: label; }
+  .st-bars-track { grid-area: track; margin-top: 0; }
+  .st-bars-value { grid-area: value; }
+  .st-bars-share { grid-area: share; }
+}
+
+/* the people range as two bars (ui/bars.js rangeBar) */
+.st-rangebar { display: grid; gap: 10px; }
+.st-rangebar-row { display: grid; grid-template-columns: minmax(0, 40%) minmax(0, 1fr); align-items: center; gap: 14px; }
+.st-rangebar-label { font: 600 14px/1.35 Karla, system-ui, sans-serif; color: var(--pc-strong); }
+.st-rangebar-track { display: block; height: 12px; }
+.st-rangebar-bar { display: block; height: 12px; border-radius: 0 4px 4px 0; }
+.st-rangebar-bar.is-solid { background: var(--st-person); }
+.st-rangebar-bar.is-stripe { background: var(--st-stripe); box-shadow: inset 0 0 0 1px var(--st-person); }
+@media (max-width: 559px) { .st-rangebar-row { grid-template-columns: 1fr; gap: 6px; } }
+
+/* ---------- split bar (ui/split.js) ---------- */
+.st-split-bar { display: flex; gap: 2px; width: 100%; border-radius: 4px; overflow: hidden; }
+.st-split-seg { display: block; min-width: 2px; height: 100%; }
+.st-split-labels { display: flex; gap: 2px; margin-top: 6px; }
+.st-split-label { min-width: 0; overflow: hidden; font: 400 12px/1.35 Karla, system-ui, sans-serif; color: var(--pc-soft); }
+.st-split-label b { display: block; font-weight: 600; color: var(--pc-strong); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st-split-rest { margin-top: 4px !important; font: 400 12px/1.4 Karla, system-ui, sans-serif; color: var(--pc-quiet); }
+
+/* ---------- drawer (ui/drawer.js) ---------- */
+.st-drawer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 280ms cubic-bezier(.4, 0, .2, 1);
+}
+.st-drawer[data-open='true'] { grid-template-rows: 1fr; }
+.st-drawer-inner { min-height: 0; overflow: hidden; }
+.st-drawer[data-open='false'] .st-drawer-inner { visibility: hidden; transition: visibility 0s 280ms; }
+
+/* ---------- popover (ui/pop.js), in <body> ---------- */
+.st-pop {
+  position: fixed;
+  z-index: 60;
+  box-sizing: border-box;
+  max-width: min(320px, calc(100vw - 32px));
+  padding: 16px 18px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 24px;
+  background: var(--pc-bg);
+  box-shadow: var(--pc-shadow);
+  color: var(--pc-body);
+  font: 400 15px/1.55 Georgia, 'Times New Roman', serif;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.st-pop:focus { outline: none; }
+.st-pop:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+.st-pop[hidden] { display: none; }
+.st-pop p { margin: 0; }
+.st-pop p + p { margin-top: 8px; }
+.st-pop .st-pop-title { font: 600 14px/1.4 Karla, system-ui, sans-serif; color: var(--pc-strong); }
+.st-pop .st-pop-title + p { margin-top: 4px; }
+.st-pop .st-pop-meta { font: 400 12px/1.4 Karla, system-ui, sans-serif; color: var(--pc-quiet); }
+.st-pop .st-pop-links { display: flex; flex-wrap: wrap; gap: 4px 16px; font: 600 13.5px/1.4 Karla, system-ui, sans-serif; }
+.st-pop a { color: var(--pc-accent); }
+.st-pop-tip { padding: 10px 14px; font-size: 14px; border-radius: 16px; }
+
+/* ---------- page states (ui/states.js) ---------- */
+.st-state-lede strong { color: var(--pc-strong); }
+.st .st-state-actions { margin-top: 18px; }
+.st-leaves { display: inline-flex; gap: 5px; margin-left: 10px; vertical-align: middle; }
+.st-leaves i {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 6px 0 6px 0;
+  background: var(--pc-soft);
+  animation: st-steep 2.4s cubic-bezier(.4, 0, .2, 1) infinite;
+}
+.st-leaves i:nth-child(2) { animation-delay: 0.3s; }
+.st-leaves i:nth-child(3) { animation-delay: 0.6s; }
+@keyframes st-steep {
+  0%, 100% { transform: translateY(0) rotate(0); opacity: 0.45; }
+  35% { transform: translateY(-5px) rotate(90deg); opacity: 1; }
+  70% { transform: translateY(1px) rotate(180deg); opacity: 0.7; }
+}
+.st-empty-gate { position: relative; display: block; width: 100%; }
+.st-empty-gate canvas { display: block; }
+.st-empty-label { position: absolute; left: 30px; margin: 0; font: 400 11px/1.2 Karla, system-ui, sans-serif; color: var(--pc-quiet); white-space: nowrap; }
+.st-empty-label b { display: block; margin-top: 3px; font: 600 15px/1.2 Karla, system-ui, sans-serif; color: var(--pc-soft); }
+
+/* the static four questions (#st-how before P7 enhances it, and in every failure state) */
+.st-how-list { max-width: 680px; margin: 0; padding: 0; list-style: none; counter-reset: st-q; }
+.st-how-list li {
+  counter-increment: st-q;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 2px 8px;
+  padding: 14px 0;
+  border-top: 1px solid var(--pc-line);
+}
+.st-how-list li:last-child { border-bottom: 1px solid var(--pc-line); }
+.st-how-list li::before {
+  content: counter(st-q, decimal-leading-zero);
+  grid-row: span 2;
+  padding-top: 3px;
+  font: 400 12px/1.4 var(--st-mono);
+  color: var(--pc-quiet);
+}
+.st-how-list li.is-left::before { content: ''; }
+.st-how-list b { font: 600 15px/1.4 Karla, system-ui, sans-serif; color: var(--pc-strong); }
+.st-how-list span { font: 400 16px/1.6 var(--st-serif); color: var(--pc-body); }
+
+/* ---------- motion and contrast preferences ---------- */
+/* Reduced motion means no transitions at all, not very short ones. A 0.01ms transition on every
+   element still transitions visibility, and visibility is inherited: when a hero drawer opened,
+   its body and title spent that instant hidden, focus() on the title did nothing, and keyboard
+   focus never reached the drawer a link had opened (nothing here waits on transitionend). */
+@media (prefers-reduced-motion: reduce) {
+  .st *, .st *::before, .st *::after { transition: none !important; animation: none !important; }
+  .st-pop { transition: none !important; }
+}
+@media (forced-colors: active) {
+  .st-bars-bar, .st-split-seg, .st-rangebar-bar { forced-color-adjust: none; background: CanvasText !important; }
+  .st-rangebar-bar.is-stripe { background: repeating-linear-gradient(135deg, CanvasText 0 2px, Canvas 2px 5px) !important; }
+  /* Forced colors throw away the gold border, the tint and the gold text that mark a pressed
+     pill, so every toggle (purpose pills, Pages/Files, Posts/Every page, the map's layers, the
+     growing chart's "only" chip, the Sieve's samples) looked unpressed. A Highlight border keeps it. */
+  .st-pill[aria-checked='true'],
+  .st-pill[aria-pressed='true'],
+  .st-pill[aria-selected='true'],
+  .st .st-grow-chip--only[aria-pressed='true'],
+  .st .st-how-sample[aria-pressed='true'] { border: 2px solid Highlight; }
+  .st-glyph path { forced-color-adjust: none; fill: CanvasText; stroke: CanvasText; }
+  .st-glyph path[fill='none'] { fill: none; }
+}

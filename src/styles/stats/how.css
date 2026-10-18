@@ -1,0 +1,154 @@
+/* 05 · How was this counted? The Sieve, the range bars, the blind spots and the filing line.
+   Everything is scoped under .st so no site rule can reach in or out. Text wears text tokens
+   only; the kinds are told apart by their glyphs, never by coloured words. */
+
+/* ---- The visitors to try */
+.st .st-how-samples { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 8px; }
+.st .st-how-sample {
+  font: 600 14px/1 Karla, system-ui, sans-serif; height: 36px; padding: 0 15px; border-radius: 999px;
+  border: 1px solid var(--pc-line2); background: transparent; color: var(--pc-strong); cursor: pointer;
+  transition: background 180ms cubic-bezier(.4,0,.2,1), border-color 180ms cubic-bezier(.4,0,.2,1), color 180ms cubic-bezier(.4,0,.2,1);
+}
+.st .st-how-sample:hover { background: var(--pc-hover); }
+.st .st-how-sample[aria-pressed='true'] { border-color: var(--pc-head); color: var(--pc-head); background: var(--pc-hover); }
+:root[data-mode='day'] .st .st-how-sample[aria-pressed='true'] { border-color: var(--pc-strong); color: var(--pc-strong); box-shadow: inset 0 0 0 1px var(--pc-strong); }
+.st .st-how-sample-you { border-style: dashed; }
+
+/* ---- The sieve: a chute on the left the card falls down, the questions, their counts, bins */
+/* The top padding is the waiting card's berth: it sits above the first hairline, never on it. */
+.st .st-how-sieve { position: relative; padding-top: 64px; margin-top: 6px; }
+.st .st-how-gates { list-style: none; margin: 0; padding: 0; }
+.st .st-how-gate {
+  display: grid; grid-template-columns: 230px 64px minmax(0, 1fr) 132px 150px;
+  grid-template-areas: 'slot stamp q n bin'; column-gap: 16px; align-items: center;
+  min-height: 66px; padding: 10px 0; border-top: 1px solid var(--pc-line2);
+}
+.st .st-how-slot { grid-area: slot; position: relative; align-self: stretch; display: flex; align-items: center; justify-content: center; }
+/* The chute: a dashed line through every gate, from where the card appears to the end. */
+.st .st-how-slot::before { content: ''; position: absolute; top: -11px; bottom: -11px; left: 50%; border-left: 1px dashed var(--pc-line2); }
+.st .st-how-gate:first-child .st-how-slot::before { top: -64px; }
+.st .st-how-end .st-how-slot::before { bottom: 50%; }
+.st .st-how-node {
+  position: relative; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--pc-line2);
+  background: var(--pc-page); color: var(--pc-soft); font: 600 11.5px/22px Karla, system-ui, sans-serif; text-align: center;
+  transition: border-color 200ms cubic-bezier(.4,0,.2,1), color 200ms cubic-bezier(.4,0,.2,1);
+}
+.st .st-how-node-dot { width: 10px; height: 10px; border-style: dashed; }
+.st .st-how-node-end { width: 12px; height: 12px; background: var(--pc-line2); border: 0; }
+.st .st-how-asked .st-how-node { border-color: var(--pc-strong); color: var(--pc-strong); }
+
+.st .st-how-gq { grid-area: q; margin: 0; font: 15px/1.5 Georgia, 'Times New Roman', serif; color: var(--pc-body); max-width: 520px; }
+.st .st-how-gq b { font: 600 15px/1.5 Karla, system-ui, sans-serif; color: var(--pc-strong); margin-right: 4px; }
+.st .st-how-gn { grid-area: n; justify-self: end; font: 600 14px/1.3 Karla, system-ui, sans-serif; color: var(--pc-strong); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.st .st-how-gn.st-how-gn-soft { color: var(--pc-soft); font-weight: 500; }
+.st .st-how-bin {
+  grid-area: bin; justify-self: start; display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 13px;
+  border: 1px dashed var(--pc-line2); border-radius: 999px; font: 600 13px/1 Karla, system-ui, sans-serif; color: var(--pc-soft);
+  white-space: nowrap; transition: background 200ms cubic-bezier(.4,0,.2,1), border-color 200ms cubic-bezier(.4,0,.2,1), color 200ms cubic-bezier(.4,0,.2,1);
+}
+.st .st-how-bin.st-how-landed { border-style: solid; border-color: var(--pc-strong); color: var(--pc-strong); background: var(--pc-hover); }
+
+/* The stamp a gate gives the visitor: a little rubber-stamp "no" or "yes" with the pile's glyph. */
+.st .st-how-stamp { grid-area: stamp; justify-self: center; display: inline-flex; align-items: center; gap: 5px; min-height: 22px; }
+.st .st-how-stamp:empty { visibility: hidden; }
+.st .st-how-no, .st .st-how-yes {
+  padding: 3px 7px; border-radius: 5px; font: 700 11px/1 Karla, system-ui, sans-serif; letter-spacing: .1em; text-transform: uppercase;
+  transform: rotate(-4deg); animation: st-how-stamp 180ms cubic-bezier(0,0,.2,1);
+}
+.st .st-how-no { color: var(--pc-quiet); border: 1px solid var(--pc-line2); }
+.st .st-how-yes { color: var(--pc-strong); border: 1.5px solid var(--pc-strong); }
+@keyframes st-how-stamp { from { opacity: 0; transform: rotate(-4deg) scale(1.5); } to { opacity: 1; transform: rotate(-4deg) scale(1); } }
+
+/* 15px text: --pc-head on the day cream is 3.2:1, so the lit question wears --st-head-sm (the
+   same gold, darkened by day to pass AA), as the machines tab does. */
+.st .st-how-at .st-how-gq b, .st .st-how-hit .st-how-gq b { color: var(--st-head-sm); }
+.st .st-how-second { border-top-style: dotted; min-height: 56px; }
+.st .st-how-second .st-how-gq, .st .st-how-second .st-how-gq b { color: var(--pc-soft); }
+.st .st-how-second .st-how-gq { font-size: 14.5px; }
+.st .st-how-end { border-top: 1px solid var(--pc-line2); }
+
+/* The falling request card. Placed with transforms only; hidden until a drop starts. */
+.st .st-how-drop {
+  position: absolute; left: 0; top: 0; z-index: 2; width: 206px; box-sizing: border-box; padding: 7px 11px;
+  display: flex; flex-direction: column; gap: 1px; border: 1px solid var(--pc-line2); border-radius: 12px;
+  background: linear-gradient(var(--pc-bg), var(--pc-bg)), var(--pc-page); box-shadow: 0 14px 40px rgba(0, 0, 0, .28);
+  opacity: 0; pointer-events: none; will-change: transform;
+}
+:root[data-mode='day'] .st .st-how-drop { box-shadow: 0 14px 40px rgba(58, 58, 66, .16); }
+.st .st-how-l1, .st .st-how-l2 { font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st .st-how-l1 { color: var(--pc-strong); }
+.st .st-how-l2 { color: var(--pc-soft); }
+.st .st-how-now { display: none; }
+:root .st .st-how-drop.st-how-idle { opacity: 1; border-style: dashed; background: transparent; box-shadow: none; }
+.st .st-how-idle .st-how-l1 { color: var(--pc-soft); font-family: Karla, system-ui, sans-serif; font-weight: 600; }
+.st .st-how-idle .st-how-l2 { color: var(--pc-quiet); font-family: Karla, system-ui, sans-serif; }
+
+.st .st-how-result { margin-top: 20px; min-height: 3.4em; max-width: 640px; }
+.st .st-how-rline { margin: 0; font: 600 15px/1.5 Karla, system-ui, sans-serif; color: var(--pc-strong); }
+.st .st-how-why { margin: 6px 0 0; font: 16px/1.6 Georgia, 'Times New Roman', serif; color: var(--pc-body); }
+.st .st-how-youlink { display: inline-block; margin-top: 8px; font: 600 14px/1.4 Karla, system-ui, sans-serif; color: var(--pc-accent); text-decoration: none; }
+.st .st-how-youlink:hover { color: var(--pc-strong); }
+
+/* ---- Why a range, and the blind spots: bold-lead lists */
+.st .st-how-bars { margin: 18px 0 22px; max-width: 760px; }
+.st .st-how-reasons { list-style: none; margin: 0; padding: 0; max-width: 620px; }
+.st .st-how-reasons li { margin: 0 0 12px; padding-left: 18px; position: relative; font: 17px/1.68 Georgia, 'Times New Roman', serif; color: var(--pc-body); }
+.st .st-how-reasons li::before { content: ''; position: absolute; left: 0; top: .72em; width: 6px; height: 6px; border-radius: 50%; background: var(--pc-line2); }
+.st .st-how-reasons strong { color: var(--pc-strong); font-weight: 700; }
+
+/* ---- The filing */
+.st .st-how-filedp, .st .st-how-snag, .st .st-how-links { margin: 10px 0 0; max-width: 620px; font: 16px/1.65 Georgia, 'Times New Roman', serif; color: var(--pc-body); }
+.st .st-how-snag { color: var(--pc-soft); }
+.st .st-how-links { font: 14px/1.6 Karla, system-ui, sans-serif; color: var(--pc-quiet); }
+.st .st-how-link { color: var(--pc-accent); text-decoration: none; }
+.st .st-how-link:hover { color: var(--pc-strong); }
+.st .st-how-mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
+
+/* ---- Middling widths: the chute narrows, the bins drop under the counts */
+@media (max-width: 1000px) {
+  .st .st-how-gate { grid-template-columns: 200px 60px minmax(0, 1fr) auto; grid-template-areas: 'slot stamp q n' 'slot stamp q bin'; row-gap: 6px; }
+  .st .st-how-bin { justify-self: end; }
+  .st .st-how-drop { width: 184px; }
+}
+
+/* ---- Phones: one column. The card sits above the questions; a ticket falls down the rail
+   and swings into the bin chip at the gate's right edge. */
+@media (max-width: 639px) {
+  .st .st-how-samples { gap: 6px; }
+  .st .st-how-sample { height: 40px; padding: 0 14px; }
+  /* The card, full size, above the gates. At rest it is the dashed waiting card. */
+  .st .st-how-now {
+    display: flex; flex-direction: column; gap: 1px; margin: 12px 0 0; padding: 8px 12px; min-height: 37px;
+    border: 1px solid var(--pc-line2); border-radius: 12px;
+  }
+  .st .st-how-now.st-how-idle { border-style: dashed; }
+  .st .st-how-sieve { padding-top: 18px; }
+  .st .st-how-gate {
+    grid-template-columns: 28px minmax(0, 1fr) auto auto; grid-template-areas: 'slot q q q' 'slot n stamp bin';
+    column-gap: 10px; row-gap: 8px; padding: 12px 0;
+  }
+  .st .st-how-gate:first-child .st-how-slot::before { top: -18px; }
+  .st .st-how-slot::before { top: -13px; bottom: -13px; }
+  .st .st-how-gn { justify-self: start; }
+  .st .st-how-stamp { justify-self: end; }
+  .st .st-how-bin { justify-self: end; height: 30px; padding: 0 11px; font-size: 12.5px; }
+  .st .st-how-end .st-how-gq { grid-area: q; }
+  .st .st-how-gq { font-size: 15px; }
+  /* The ticket: the request card in miniature, two lines of "text" on a card, riding the rail. */
+  .st .st-how-drop {
+    width: 24px; height: 19px; padding: 0; border: 1.5px solid var(--pc-strong); border-radius: 5px; box-shadow: none;
+    background: linear-gradient(var(--pc-strong), var(--pc-strong)) 4px 5px / 13px 2px no-repeat,
+      linear-gradient(var(--pc-soft), var(--pc-soft)) 4px 10px / 9px 2px no-repeat, var(--pc-page);
+  }
+  .st .st-how-drop .st-how-l1, .st .st-how-drop .st-how-l2 { display: none; }
+  :root .st .st-how-drop.st-how-idle { opacity: 0; }
+  .st .st-how-reasons li { font-size: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st .st-how-no, .st .st-how-yes { animation: none; }
+}
+@media (forced-colors: active) {
+  .st .st-how-bin.st-how-landed, .st .st-how-yes { border-color: CanvasText; }
+  .st .st-how-drop { border: 1px solid CanvasText; }
+}

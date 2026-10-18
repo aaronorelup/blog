@@ -1,0 +1,444 @@
+/* Chapter 00: the lede, the Gate and its drawers (src/scripts/stats/hero/). Everything is scoped
+   under .st so no site rule can reach in, and every colour is a --pc-* or --st-* token, so day
+   and night both come for free. Text never wears a mark colour: identity is the glyph beside it. */
+
+/* ---------- the answer ---------- */
+
+.st .st-hero-on .st-lede {
+  margin: 0 0 8px;
+  max-width: 820px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 500;
+  font-size: clamp(20px, 2.1vw, 25px);
+  line-height: 1.42;
+  letter-spacing: -0.01em;
+  color: var(--pc-strong);
+  text-wrap: pretty;
+}
+.st .st-hero-on .st-lede.st-lede-loading { color: var(--pc-quiet); }
+.st .st-verdict { font-weight: 700; }
+.st .st-lede .st-num,
+.st .st-lede-strong { font-weight: 700; color: var(--pc-strong); font-variant-numeric: tabular-nums; }
+
+/* The three provenance numbers. Low and high wear the people underline (a mark, not text
+   colour); the total gets the quiet dotted underline every explained word has. */
+.st .st-prov {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-decoration: underline dotted var(--pc-line2) 1px;
+  text-underline-offset: 4px;
+  border-radius: 4px;
+  transition: text-decoration-color 180ms cubic-bezier(.4,0,.2,1);
+}
+.st .st-prov:hover { text-decoration-color: var(--pc-head); }
+.st .st-prov-person {
+  text-decoration: underline solid var(--st-person) 2px;
+  text-underline-offset: 5px;
+}
+.st .st-hero-on .st-sub {
+  margin: 0 0 6px;
+  max-width: 620px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 17px;
+  line-height: 1.68;
+  color: var(--pc-body);
+  text-wrap: pretty;
+}
+.st .st-sub-note { display: block; margin-top: 6px; color: var(--pc-soft); }
+
+/* ---------- the gate ---------- */
+
+.st .st-hero-on [data-st-gate].st-gate-host {
+  position: relative;
+  height: auto;
+  min-height: 0;
+  margin: 0 0 8px;
+  contain: layout;
+}
+.st .st-gate-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  min-height: 36px;
+  margin-bottom: 0;
+}
+.st .st-gate-status {
+  flex: 1 1 200px;
+  margin: 0;
+  font: 400 12.5px/1.4 Karla, system-ui, sans-serif;
+  color: var(--pc-quiet);
+}
+.st .st-gate-topright {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+}
+.st .st-gate-key {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 12px;
+  margin: 0;
+  font: 400 12px/1.4 Karla, system-ui, sans-serif;
+  color: var(--pc-quiet);
+}
+/* Wide, with room beside the doorway: the key stands in the stage's top-right corner, one item
+   a line. It is words only, so it never takes the pointer from the piles under it. */
+.st .st-gate-key.st-gate-key-in {
+  position: absolute;
+  top: 0;
+  right: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0;
+  text-align: right;
+  pointer-events: none;
+}
+.st .st-gate-keyitem { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.st .st-gate-keyitem svg { flex: none; }
+
+.st .st-gate-textbtn {
+  font: 600 12.5px/1 Karla, system-ui, sans-serif;
+  color: var(--pc-accent);
+  background: none;
+  border: 0;
+  padding: 8px 2px;
+  cursor: pointer;
+}
+.st .st-gate-textbtn:hover { color: var(--pc-strong); }
+.st .st-gate-files { color: var(--pc-soft); }
+
+.st .st-gate-you {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 999px;
+  background: transparent;
+  font: 600 13.5px/1 Karla, system-ui, sans-serif;
+  color: var(--pc-strong);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 180ms cubic-bezier(.4,0,.2,1), border-color 180ms cubic-bezier(.4,0,.2,1);
+}
+.st .st-gate-you:hover { background: var(--pc-hover); border-color: var(--pc-head); }
+:root[data-mode='day'] .st .st-gate-you[data-st-pop-open] { outline: 2px solid var(--pc-strong); outline-offset: 0; }
+
+.st .st-gate-stage {
+  position: relative;
+  width: 100%;
+}
+.st .st-gate-bg,
+.st .st-gate-fx {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+}
+.st .st-gate-fx { touch-action: pan-y; }
+/* The word layers cover the stage but only their buttons take the pointer, so the canvas under
+   them still gets hover and clicks on the piles. */
+.st .st-gate-stations,
+.st .st-gate-piles,
+.st .st-gate-bracket,
+.st .st-gate-stamps {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.st .st-gate-station {
+  position: absolute;
+  height: 22px;
+  padding: 0 7px;
+  transform: translateX(-50%);
+  pointer-events: auto;
+  background: none;
+  border: 0;
+  border-radius: 999px;
+  font: 600 12.5px/22px Karla, system-ui, sans-serif;
+  color: var(--pc-soft);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 180ms cubic-bezier(.4,0,.2,1), opacity 200ms cubic-bezier(.4,0,.2,1);
+}
+/* Gold is the people's colour, so a question lights in ink, not gold. */
+.st .st-gate-station:hover,
+.st .st-gate-station[data-st-pop-open] { color: var(--pc-strong); }
+
+.st .st-gate-label {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 4px 2px 2px;
+  pointer-events: auto;
+  background: none;
+  border: 0;
+  border-radius: 12px;
+  text-align: center;
+  color: var(--pc-strong);
+  cursor: pointer;
+  transition: opacity 200ms cubic-bezier(.4,0,.2,1);
+}
+.st .st-gate-eb {
+  font: 600 10.5px/13px Karla, system-ui, sans-serif;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--pc-gold);
+}
+.st .st-gate-name {
+  display: inline;
+  font: 600 14px/17px Karla, system-ui, sans-serif;
+  color: var(--pc-strong);
+}
+.st .st-gate-name svg { vertical-align: -1px; margin-right: 5px; }
+.st .st-gate-wide .st-gate-name { text-wrap: balance; }
+/* Wide labels are a fixed grid: eyebrow, a two-line slot for the name, then the figures. A
+   one-line name and a two-line name leave all five numbers on one baseline. */
+.st .st-gate-wide .st-gate-label {
+  display: grid;
+  grid-template-rows: 13px 34px auto;
+  justify-items: center;
+  row-gap: 1px;
+  padding: 2px 2px 0;
+}
+.st .st-gate-wide .st-gate-name { align-self: start; }
+.st .st-gate-nobr { white-space: nowrap; }
+.st .st-gate-nametext {
+  text-decoration: underline 2px transparent;
+  text-underline-offset: 4px;
+  transition: color 180ms cubic-bezier(.4,0,.2,1), text-decoration-color 180ms cubic-bezier(.4,0,.2,1);
+}
+/* A lit pile (hovered, focused, or its drawer open) marks its name with an underline in its own
+   kind's colour, a mark rather than text colour. Only the people's name turns gold. */
+.st .st-gate-label:hover .st-gate-nametext,
+.st .st-gate-label:focus-visible .st-gate-nametext,
+.st .st-gate-label.st-gate-lit .st-gate-nametext { color: var(--pc-strong); text-decoration-color: var(--pc-line2); }
+.st .st-gate-label[data-kind='bot']:is(:hover, :focus-visible, .st-gate-lit) .st-gate-nametext { text-decoration-color: var(--st-bot); }
+.st .st-gate-label[data-kind='scanner']:is(:hover, :focus-visible, .st-gate-lit) .st-gate-nametext { text-decoration-color: var(--st-scanner); }
+.st .st-gate-label[data-kind='agent']:is(:hover, :focus-visible, .st-gate-lit) .st-gate-nametext { text-decoration-color: var(--st-agent); }
+.st .st-gate-label[data-kind='stale']:is(:hover, :focus-visible, .st-gate-lit) .st-gate-nametext { text-decoration-color: var(--st-stale); }
+.st .st-gate-label[data-kind='person']:is(:hover, :focus-visible, .st-gate-lit) .st-gate-nametext { color: var(--st-head-sm); text-decoration-color: var(--st-person); }
+.st .st-gate-fig { display: flex; flex-direction: column; align-items: center; }
+.st .st-gate-num {
+  font: 600 20px/22px Karla, system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: var(--pc-strong);
+}
+.st .st-gate-share {
+  font: 400 11.5px/14px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--pc-quiet);
+  transition: opacity 160ms cubic-bezier(0,0,.2,1);
+}
+/* hidden until its pile has finished landing, so a label never reads "0 · 35%" */
+.st .st-gate-share-wait { opacity: 0; }
+/* The other piles step back while one is lit. Their words drop to --pc-quiet (still 4.5:1 or
+   better in both modes) rather than fading, and a focused label is never dimmed: the canvas
+   veil does the visual dimming. */
+.st .st-gate-station.st-gate-dim,
+.st .st-gate-label.st-gate-dim :is(.st-gate-eb, .st-gate-nametext, .st-gate-num) { color: var(--pc-quiet); }
+.st .st-gate-label.st-gate-dim svg { opacity: .35; transition: opacity 200ms cubic-bezier(.4,0,.2,1); }
+.st .st-gate-label.st-gate-dim:focus-visible .st-gate-eb { color: var(--pc-gold); }
+.st .st-gate-label.st-gate-dim:focus-visible :is(.st-gate-nametext, .st-gate-num) { color: var(--pc-strong); }
+.st .st-gate-label.st-gate-dim:focus-visible svg { opacity: 1; }
+
+.st .st-gate-blab {
+  position: absolute;
+  font: 600 12px/1.3 Karla, system-ui, sans-serif;
+  color: var(--pc-strong);
+  opacity: 0;
+  transition: opacity 160ms cubic-bezier(.4,0,.2,1) 220ms;
+}
+.st .st-gate-bracket-in .st-gate-blab { opacity: 1; }
+.st .st-gate-bracket.st-gate-dim .st-gate-blab { color: var(--pc-quiet); }
+
+.st .st-gate-stamp {
+  position: absolute;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font: 600 11px/1 Karla, system-ui, sans-serif;
+  color: var(--pc-quiet);
+  white-space: nowrap;
+  animation: st-gate-stamp 220ms cubic-bezier(0,0,.2,1);
+}
+.st .st-gate-stamp-yes { color: var(--pc-strong); }
+.st .st-gate-stamp-tall { transform: none; line-height: 14px; }
+@keyframes st-gate-stamp { from { opacity: 0; } to { opacity: 1; } }
+
+/* Wide: "Am I in here?", the status line and Skip/Replay in one row under the labels. */
+.st .st-gate-foot { display: none; }
+.st .st-gate-wide .st-gate-top { display: none; }
+.st .st-gate-wide .st-gate-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  min-height: 36px;
+  margin-top: 6px;
+}
+/* The first replay's trigger line (gate.js). Invisible, but it has a box to observe. */
+.st .st-gate-ground { position: absolute; left: 0; right: 0; height: 2px; opacity: 0; pointer-events: none; }
+
+/* ---------- tall: the phone rail ---------- */
+
+.st .st-gate-tall .st-gate-top {
+  flex-wrap: nowrap;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.st .st-gate-tall .st-gate-key { flex: 1 1 auto; min-width: 0; }
+.st .st-gate-tall .st-gate-status { flex: 1 1 100%; order: 3; margin: 0; }
+.st .st-gate-tall .st-gate-status-text { display: none; }
+.st .st-gate-tall .st-gate-skip { margin-left: auto; }
+.st .st-gate-tall .st-gate-station {
+  height: 13px;
+  padding: 0;
+  transform: none;
+  font: 400 11px/13px Karla, system-ui, sans-serif;
+  color: var(--pc-quiet);
+}
+/* a 14px line, but a 26px target: the hit area reaches up into the gap above the row */
+.st .st-gate-tall .st-gate-station::before { content: ''; position: absolute; inset: -9px -8px -3px; }
+.st .st-gate-tall .st-gate-label {
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 0 0 30px;
+  border-radius: 6px;
+  text-align: left;
+}
+.st .st-gate-tall .st-gate-eb { display: none; }
+.st .st-gate-tall .st-gate-name { line-height: 21px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st .st-gate-tall .st-gate-fig { flex-direction: row; align-items: baseline; gap: 6px; line-height: 21px; }
+.st .st-gate-tall .st-gate-num { font-size: 15px; line-height: 21px; }
+.st .st-gate-tall .st-gate-share::before { content: '\00b7\00a0'; }
+.st .st-gate-tall .st-gate-blab { white-space: nowrap; font-size: 11.5px; line-height: 16px; }
+.st .st-gate-tall .st-gate-foot { display: block; margin-top: 2px; }
+.st .st-gate-tall .st-gate-you { height: 40px; }
+.st .st-gate-tall .st-gate-key { font-size: 12px; }
+
+/* The sub sentence moves under the rail on phones: answer, piles, then the explanation. */
+@media (max-width: 719px) {
+  .st .st-hero-on { display: flex; flex-direction: column; }
+  .st .st-hero-on > * { order: 3; }
+  .st .st-hero-on > .st-lede { order: 0; }
+  .st .st-hero-on > [data-st-gate] { order: 1; }
+  .st .st-hero-on > [data-st-drawer] { order: 1; }   /* a tapped row opens right under the rail */
+  .st .st-hero-on > .st-sub { order: 2; margin-top: 10px; }
+  .st .st-hero-on > .st-lede { margin-bottom: 10px; line-height: 1.35; }
+}
+/* A short laptop window does the same: with the sub above it, a 1280x720 screen had no room for
+   the pile numbers or "Am I in here?" over the fixed footer. Under the stage, the gate (which also
+   sizes itself to the window, gate.js fitH) shows its numbers and buttons on the first screen. */
+@media (min-width: 720px) and (max-height: 819px) {
+  .st .st-hero-on { display: flex; flex-direction: column; }
+  .st .st-hero-on > * { order: 3; }
+  .st .st-hero-on > .st-lede { order: 0; margin-bottom: 14px; }
+  .st .st-hero-on > [data-st-gate] { order: 1; }
+  .st .st-hero-on > [data-st-drawer] { order: 1; }
+  .st .st-hero-on > .st-sub { order: 2; margin-top: 4px; }
+}
+/* The sentence about the four questions says "Below" where it sits above the gate and "Above"
+   where it sits under it (hero.js fourQuestions); these are the same queries that move it. */
+.st .st-sub-up { display: none; }
+@media (max-width: 719px), (min-width: 720px) and (max-height: 819px) {
+  .st .st-sub-dn { display: none; }
+  .st .st-sub-up { display: inline; }
+}
+
+/* ---------- drawers ---------- */
+
+.st .st-gate-drawer {
+  max-width: 760px;
+  padding: 22px 0 6px;
+  border-top: 1px solid var(--pc-line);
+}
+.st .st-gate-dhead { margin-bottom: 12px; }
+.st .st-gate-deb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 4px;
+  font: 600 10.5px/1.3 Karla, system-ui, sans-serif;
+  letter-spacing: .12em;
+  color: var(--pc-gold);
+}
+.st .st-gate-dtitle {
+  margin: 0;
+  font: 700 17px/1.3 'Zen Maru Gothic', sans-serif;
+  /* 17px bold is still small text, and by day the heading amber is 3.2:1 on cream; the
+     darkened small-heading amber (as the figure questions use) clears 4.5:1. Night is unchanged. */
+  color: var(--st-head-sm);
+}
+.st .st-gate-dbody > p { max-width: 640px; }
+.st .st-gate-dlead,
+.st .st-gate-dtext {
+  margin: 0 0 14px;
+  font: 400 16px/1.6 Georgia, 'Times New Roman', serif;
+  color: var(--pc-body);
+}
+.st .st-gate-dlead strong { color: var(--pc-strong); font-weight: 700; }
+.st .st-gate-dlink { color: var(--pc-accent); text-decoration: none; }
+.st .st-gate-dlink:hover { color: var(--pc-strong); text-decoration: underline; text-underline-offset: 3px; }
+.st .st-gate-dpath {
+  font: 400 13px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--pc-strong);
+  overflow-wrap: anywhere;
+}
+.st .st-gate-dhonest {
+  margin: 0 0 12px;
+  font: 400 15px/1.6 Georgia, 'Times New Roman', serif;
+  color: var(--pc-soft);
+}
+.st .st-gate-dnote { margin: 0 0 12px; font: 400 13px/1.5 Karla, system-ui, sans-serif; color: var(--pc-quiet); }
+.st .st-gate-splits { display: grid; gap: 14px; margin: 4px 0 20px; max-width: 640px; }
+.st .st-gate-split { display: grid; grid-template-columns: 72px 1fr; align-items: start; gap: 12px; }
+.st .st-gate-splitlab { margin: 0; font: 600 13px/12px Karla, system-ui, sans-serif; color: var(--pc-soft); }
+.st .st-gate-dbars { margin: 0 0 14px; }
+.st .st-gate-dlinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  margin: 10px 0 0;
+}
+.st .st-gate-dmore,
+.st .st-gate-poplink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  font: 600 14px/1.2 Karla, system-ui, sans-serif;
+  color: var(--pc-accent);
+  text-decoration: none;
+}
+.st .st-gate-dmore:hover { color: var(--pc-strong); }
+.st-pop .st-gate-poplink { display: inline-flex; align-items: center; gap: 5px; font: 600 13.5px/1.3 Karla, system-ui, sans-serif; color: var(--pc-accent); text-decoration: none; }
+.st-pop .st-gate-poplink:hover { color: var(--pc-strong); }
+
+/* "Am I in here?": its result opens in the drawer slot, under a pink rule instead of the
+   hairline. The one pink rule on the page besides the guest's ring. */
+.st .st-gate-youdrawer { border-top: 2px solid var(--st-you, #F7C9D4); }
+.st .st-gate-youdrawer .st-gate-dtitle { display: inline-block; }
+.st .st-gate-youdrawer .st-gate-dtitle:focus { outline: none; }
+.st .st-gate-youdrawer .st-gate-dtitle:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; border-radius: 4px; }
+
+@media (max-width: 559px) {
+  .st .st-gate-split { grid-template-columns: 1fr; gap: 6px; }
+}
+
+@media (forced-colors: active) {
+  .st .st-prov-person { text-decoration-color: CanvasText; }
+}

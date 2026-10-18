@@ -174,5 +174,10 @@
    The fixed day/night switch sits over the nav's right end until the 1140px row is narrower
    than the window; standalone pages pad the nav only in that range (the overlay always does). */
 @media (max-width: 1380px) { .pc-navs { padding-right: 88px; } }
+/* five nav items no longer fit beside the day/night switch on a phone: the nav wraps to its own
+   row under "Back to the tea house", where the switch isn't, so it needs no right padding. */
+@media (max-width: 480px) {
+  .pc-navs, .pc-navs-o { padding-right: 0 !important; gap: 16px !important; }
+}
 /* every panel view starts at the header's left edge, whatever its content width */
 #panel-scroll > [data-view] { width: 100%; max-width: 1140px; }

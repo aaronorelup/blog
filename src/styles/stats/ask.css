@@ -1,0 +1,122 @@
+/* Asking: the question chips and "Noticed this month" under the gate, and the Questions sheet.
+   Scoped under .st (the sheet is appended inside .st too). */
+
+.st .st-ask-ico { flex: none; display: block; }
+
+/* ---- Chips: wrapped pills, never a sideways rail */
+.st .st-ask-chiplist { display: flex; flex-wrap: wrap; gap: 8px; margin: 26px 0 0; padding: 0; list-style: none; }
+.st .st-ask-chiplist li { margin: 0; }
+.st .st-ask-chip {
+  position: relative; display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 15px; box-sizing: border-box;
+  border: 1px solid var(--pc-line2); border-radius: 999px; background: transparent; color: var(--pc-strong);
+  font: 600 14px/1 Karla, system-ui, sans-serif; text-decoration: none; white-space: nowrap; cursor: pointer;
+  transition: background 180ms cubic-bezier(.4,0,.2,1), border-color 180ms cubic-bezier(.4,0,.2,1), color 180ms cubic-bezier(.4,0,.2,1);
+}
+.st .st-ask-chip:hover { background: var(--pc-hover); border-color: var(--pc-quiet); }
+/* Surprise me and All questions are pills like the rest, set apart by place: a hairline rule
+   before them, unless they wrapped to the start of a row (chips.js says so with .st-ask-wrapped). */
+.st .st-ask-chiplist .st-ask-tools:not(.st-ask-wrapped) { display: flex; align-items: center; gap: 8px; }
+.st .st-ask-chiplist .st-ask-tools:not(.st-ask-wrapped)::before { content: ''; width: 1px; height: 20px; margin: 0 4px 0 2px; background: var(--pc-line2); }
+
+/* ---- Noticed this month */
+.st .st-ask-noticed { margin-top: 38px; max-width: 980px; transition: opacity 420ms cubic-bezier(.2,.8,.2,1), transform 420ms cubic-bezier(.2,.8,.2,1); }
+.st .st-ask-noticed.st-ask-wait { opacity: 0; transform: translateY(10px); }
+.st .st-ask-noticed-h { margin: 0 0 4px; font: 600 11px/1.4 Karla, system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--pc-quiet); }
+.st .st-ask-notes { list-style: none; margin: 0; padding: 0; }
+.st .st-ask-note {
+  display: grid; grid-template-columns: 150px minmax(0, 620px) auto; column-gap: 28px; align-items: baseline;
+  padding: 15px 0; border-top: 1px solid var(--pc-line);
+}
+.st .st-ask-eyebrow { margin: 0; font: 600 11px/1.6 Karla, system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--pc-gold); }
+.st .st-ask-sent { margin: 0; font: 17px/1.6 Georgia, 'Times New Roman', serif; color: var(--pc-body); }
+.st .st-ask-sent strong { color: var(--pc-strong); font-weight: 700; font-variant-numeric: tabular-nums; }
+.st .st-ask-show {
+  display: inline-flex; align-items: center; gap: 5px; justify-self: start; min-height: 32px;
+  font: 600 14px/1 Karla, system-ui, sans-serif; color: var(--pc-accent); text-decoration: none; white-space: nowrap;
+}
+.st .st-ask-show:hover { color: var(--pc-strong); }
+.st .st-ask-show .st-ask-ico { transition: transform 180ms cubic-bezier(.4,0,.2,1); }
+.st .st-ask-show:hover .st-ask-ico { transform: translateX(3px); }
+
+@media (max-width: 639px) {
+  .st .st-ask-more { display: none; }
+  .st .st-ask-chiplist { gap: 6px; margin-top: 22px; }
+  .st .st-ask-chiplist .st-ask-tools:not(.st-ask-wrapped) { gap: 6px; }
+  .st .st-ask-chip { height: 40px; padding: 0 13px; font-size: 13.5px; gap: 6px; }
+  /* 40px drawn, 44px to the finger. */
+  .st .st-ask-chip::after { content: ''; position: absolute; inset: -2px 0; }
+  .st .st-ask-noticed { margin-top: 30px; }
+  .st .st-ask-note { grid-template-columns: minmax(0, 1fr); row-gap: 4px; padding: 14px 0; }
+  .st .st-ask-note:nth-child(n+3) { display: none; }
+  .st .st-ask-sent { font-size: 16.5px; }
+  .st .st-ask-show { min-height: 44px; }
+}
+
+@media (max-width: 380px) {
+  .st .st-ask-chiplist { gap: 5px; }
+  .st .st-ask-chip { padding: 0 10px; font-size: 13px; gap: 5px; }
+}
+
+/* ---- The Questions sheet */
+/* It lives in <body>, outside .st (a fixed layer inside the scroller would scroll with it), so it
+   carries its own box model; base.css gives [data-st-sheet] the kind tokens. */
+[data-st-sheet].st-ask-layer { position: fixed; inset: 0; z-index: 50; }
+[data-st-sheet].st-ask-layer[hidden] { display: none; }
+[data-st-sheet], [data-st-sheet] *, [data-st-sheet] *::before, [data-st-sheet] *::after { box-sizing: border-box; }
+[data-st-sheet] p, [data-st-sheet] h2, [data-st-sheet] h3, [data-st-sheet] ul { margin: 0; }
+[data-st-sheet] .st-ask-scrim { position: absolute; inset: 0; background: var(--pc-scrim); }
+[data-st-sheet] .st-ask-sheet {
+  position: fixed; display: flex; flex-direction: column; box-sizing: border-box;
+  background: linear-gradient(var(--pc-bg), var(--pc-bg)), var(--pc-page); color: var(--pc-body); box-shadow: var(--pc-shadow);
+}
+[data-st-sheet] .st-ask-grab { display: none; }
+[data-st-sheet] .st-ask-top { position: relative; padding: 22px 24px 10px; border-bottom: 1px solid var(--pc-line); }
+[data-st-sheet] .st-ask-title { margin: 0; padding-right: 48px; font: 700 22px/1.25 'Zen Maru Gothic', sans-serif; letter-spacing: -.01em; color: var(--pc-head); outline: none; }
+[data-st-sheet] .st-ask-x {
+  position: absolute; top: 14px; right: 14px; width: 44px; height: 44px; display: grid; place-items: center;
+  border: 0; border-radius: 999px; background: transparent; color: var(--pc-soft); cursor: pointer;
+  transition: background 180ms cubic-bezier(.4,0,.2,1), color 180ms cubic-bezier(.4,0,.2,1);
+}
+[data-st-sheet] .st-ask-x:hover { background: var(--pc-hover); color: var(--pc-strong); }
+[data-st-sheet] .st-ask-for { margin: 4px 0 14px; font: 13px/1.45 Karla, system-ui, sans-serif; color: var(--pc-quiet); }
+[data-st-sheet] .st-ask-field { position: relative; }
+[data-st-sheet] .st-ask-field .st-ask-ico { position: absolute; left: 15px; top: 14px; color: var(--pc-quiet); pointer-events: none; }
+[data-st-sheet] .st-ask-input {
+  width: 100%; height: 44px; box-sizing: border-box; padding: 0 16px 0 40px; border: 1px solid var(--pc-line2); border-radius: 999px;
+  background: transparent; color: var(--pc-strong); font: 15px/1 Karla, system-ui, sans-serif;
+  transition: border-color 180ms cubic-bezier(.4,0,.2,1);
+}
+[data-st-sheet] .st-ask-input::placeholder { color: var(--pc-quiet); }
+[data-st-sheet] .st-ask-input:focus { outline: 3px solid var(--pc-head); outline-offset: 2px; }
+/* The native clear button is a blue cross in every theme; Backspace does the same job. */
+[data-st-sheet] .st-ask-input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+[data-st-sheet] .st-ask-count { margin: 8px 0 0; min-height: 1.4em; font: 12px/1.4 Karla, system-ui, sans-serif; color: var(--pc-quiet); }
+[data-st-sheet] .st-ask-list { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 14px 28px; scrollbar-width: thin; scrollbar-color: var(--pc-line2) transparent; }
+[data-st-sheet] .st-ask-group[hidden] { display: none; }
+[data-st-sheet] .st-ask-gh { margin: 20px 10px 4px; font: 600 11px/1.4 Karla, system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--pc-gold); }
+[data-st-sheet] .st-ask-qs { list-style: none; margin: 0; padding: 0; }
+[data-st-sheet] .st-ask-qs li[hidden] { display: none; }
+[data-st-sheet] .st-ask-q {
+  display: block; width: 100%; padding: 11px 10px 12px; border: 0; border-radius: 12px; background: transparent; text-align: left; cursor: pointer;
+  transition: background 180ms cubic-bezier(.4,0,.2,1);
+}
+[data-st-sheet] .st-ask-q:hover { background: var(--pc-hover); }
+[data-st-sheet] .st-ask-qq { display: block; font: 600 15px/1.4 Karla, system-ui, sans-serif; color: var(--pc-strong); }
+[data-st-sheet] .st-ask-qa { display: block; margin-top: 3px; font: 15px/1.5 Georgia, 'Times New Roman', serif; color: var(--pc-body); }
+[data-st-sheet] .st-ask-none { margin: 0; padding: 14px 10px 0; font: 15px/1.55 Georgia, 'Times New Roman', serif; color: var(--pc-soft); }
+
+@media (min-width: 640px) {
+  [data-st-sheet] .st-ask-sheet { top: 0; right: 0; bottom: 0; width: 420px; max-width: calc(100vw - 32px); border-left: 1px solid var(--pc-line2); }
+}
+@media (max-width: 639px) {
+  [data-st-sheet] .st-ask-sheet { left: 0; right: 0; bottom: 0; height: 86vh; height: 86dvh; border-radius: 22px 22px 0 0; border-top: 1px solid var(--pc-line2); }
+  [data-st-sheet] .st-ask-sheet.st-ask-dragging { transition: none; }
+  [data-st-sheet] .st-ask-grab { display: flex; justify-content: center; align-items: center; height: 22px; padding-top: 6px; touch-action: none; cursor: grab; }
+  [data-st-sheet] .st-ask-grab span { width: 40px; height: 4px; border-radius: 2px; background: var(--pc-line2); }
+  [data-st-sheet] .st-ask-top { padding: 4px 16px 10px; touch-action: none; }
+  [data-st-sheet] .st-ask-x { top: 0; right: 6px; }
+  [data-st-sheet] .st-ask-list { padding: 0 6px 32px; }
+}
+@media (forced-colors: active) {
+  .st .st-ask-chip, [data-st-sheet] .st-ask-input { border-color: CanvasText; }
+}

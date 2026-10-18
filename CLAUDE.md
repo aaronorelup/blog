@@ -32,3 +32,13 @@ library, not here: `studio push blog-posts <folder> --agent <you>` (how to get `
 lists: `curl -s https://hq.soul-orelup.workers.dev/api/library/rules`). The repo keeps only the web copy.
 Every post needs a `preview:` block; `PREVIEWS.md` is the spec. Run `npm run build` before
 pushing; it fails on a bad preview or a missing file.
+
+## The stats page (/stats)
+
+A public page of the site's own traffic, one snapshot a day. `src/pages/stats.astro` and
+`src/scripts/stats/` draw it from `/api/stats`; `worker/stats.js` serves that from D1 and fills
+it with a cron that runs every minute (`wrangler.jsonc`), one small step per run, because the
+free plan gives a Worker 10 ms of CPU per run. Its token is the Worker secret
+`CF_ANALYTICS_TOKEN`; without it `/api/stats` answers 503 and the page says the numbers aren't
+connected. Never add anything keyed on a visitor's IP address, and never let an unlisted post
+show there (the build's `/stats-pages.txt` is the list of pages it may name).

@@ -1,0 +1,192 @@
+/* Chapter 03: what people read, and where they are (src/scripts/stats/people/). Imported by
+   people.js, so it arrives with the chapter's lazy chunk. Every rule is scoped under .st; colours
+   are the page's tokens only (--pc-* text, --st-* marks), so day and night switch by themselves. */
+
+/* ---------- shared bits of both figures ---------- */
+.st .st-ppl-where { margin-top: 64px; }
+.st .st-ppl-toggle { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 20px; }
+.st .st-ppl-pill { display: inline-flex; align-items: center; gap: 7px; }
+.st .st-ppl-pill svg { flex: none; }
+.st .st-ppl-pill.is-off { opacity: 0.55; }
+.st .st-ppl-tools { margin-top: 18px; }
+/* "Readers who stayed": why the list is short, between the toggle and the list it explains */
+.st .st-ppl-scope { margin: -6px 0 18px; max-width: 620px; font: 14px/1.5 Karla, system-ui, sans-serif; color: var(--pc-soft); }
+.st .st-ppl-empty { font: 16px/1.6 Georgia, serif; color: var(--pc-quiet); margin: 8px 0 0; max-width: 620px; }
+
+/* ---------- figure 3a: what do they read? ---------- */
+.st .st-ppl-listhead {
+  display: flex; justify-content: space-between; gap: 16px;
+  padding: 0 0 8px 66px; border-bottom: 1px solid var(--pc-line);
+  font: 600 11px/1.2 Karla, system-ui, sans-serif; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--pc-quiet);
+}
+.st .st-ppl-listhead[hidden] { display: none; }
+.st .st-ppl-read .st-bars-label { min-width: 0; }
+.st .st-ppl-lab { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.st .st-ppl-id {
+  flex: none; width: 56px;
+  font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--pc-accent);
+}
+.st .st-ppl-title {
+  min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  font: 15px/1.4 Karla, system-ui, sans-serif; color: var(--pc-strong); text-decoration: none;
+  /* above the row's full-width button, so the title stays a real link */
+  position: relative; z-index: 1;
+}
+a.st-ppl-title:hover { color: var(--st-head-sm); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+/* site pages have no AO number: on a wide screen their names keep to the title column */
+.st .st-ppl-lab.is-noid { padding-left: 66px; }
+.st .st-ppl-title.is-raw { font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--pc-soft); }
+.st .st-ppl-read li.is-open { background: var(--pc-hover); border-radius: 6px; }
+/* titles are the point of this list: give them more of the row than the shared 38% */
+@media (min-width: 560px) {
+  .st .st-ppl-read .st-bars-main { grid-template-columns: minmax(0, 56%) minmax(0, 1fr) auto; }
+}
+
+.st .st-ppl-dinner { padding: 4px 14px 4px 66px; max-width: 700px; }
+.st .st-ppl-strip {
+  display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 2px;
+  height: 14px; max-width: 560px; touch-action: pan-y;
+}
+.st .st-ppl-marks { height: 3px; margin-top: 3px; }
+.st .st-ppl-cell { border-radius: 2px; background: var(--st-person, #f0c06a); opacity: var(--a, 1); min-width: 0; }
+.st .st-ppl-cell.is-zero { background: var(--pc-line); opacity: 1; }
+.st .st-ppl-cell.is-under { background: transparent; opacity: 1; box-shadow: inset 0 0 0 1px var(--pc-line2); }
+.st .st-ppl-cell.is-on { outline: 2px solid var(--pc-strong); outline-offset: 1px; }
+.st .st-ppl-went { display: block; height: 3px; border-radius: 1px; background: var(--pc-accent); }
+.st .st-ppl-axis {
+  display: flex; justify-content: space-between; max-width: 560px; margin-top: 4px;
+  font: 11.5px/1.3 Karla, system-ui, sans-serif; color: var(--pc-quiet); font-variant-numeric: tabular-nums;
+}
+.st .st-ppl-readout { margin: 8px 0 0; min-height: 1.5em; font: 14px/1.5 Karla, system-ui, sans-serif; color: var(--pc-body); font-variant-numeric: tabular-nums; }
+.st .st-ppl-key {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 6px 0 0;
+  font: 12px/1.3 Karla, system-ui, sans-serif; color: var(--pc-quiet);
+}
+.st .st-ppl-key .st-ppl-cell { display: inline-block; width: 10px; height: 10px; }
+.st .st-ppl-key .st-ppl-went { display: inline-block; width: 10px; }
+.st .st-ppl-key span:nth-child(2) { margin-right: 10px; }
+.st .st-ppl-facts {
+  list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 22px;
+  font: 13.5px/1.5 Karla, system-ui, sans-serif; color: var(--pc-soft);
+}
+.st .st-ppl-go {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; min-height: 32px;
+  font: 600 14px/1 Karla, system-ui, sans-serif; color: var(--pc-accent); text-decoration: none;
+}
+.st .st-ppl-go:hover { color: var(--st-head-sm); }
+
+.st .st-ppl-sources { margin: 30px 0 0; max-width: 640px; font: 16px/1.62 Georgia, serif; color: var(--pc-body); }
+.st .st-ppl-srchead { color: var(--pc-strong); font-weight: 700; }
+
+/* ---------- figure 3b: where are they? ---------- */
+.st .st-ppl-wgrid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 26px; }
+@media (min-width: 900px) {
+  .st .st-ppl-wgrid { grid-template-columns: minmax(0, 64fr) minmax(0, 36fr); gap: 40px; align-items: start; }
+}
+.st .st-ppl-maphost { width: 100%; }
+/* the list beside the map runs longer than the map; keep the map in view while reading it */
+@media (min-width: 900px) {
+  .st .st-ppl-mapcol { position: sticky; top: 76px; }
+}
+.st .st-ppl-map { display: block; width: 100%; height: auto; overflow: visible; user-select: none; -webkit-tap-highlight-color: transparent; }
+.st .st-ppl-land { fill: none; stroke: var(--pc-line2); stroke-linecap: round; }
+:root[data-mode='day'] .st .st-ppl-land { opacity: 0.75; }
+.st .st-ppl-conts text {
+  font: 600 10.5px Karla, system-ui, sans-serif; letter-spacing: 0.14em; fill: var(--pc-quiet);
+  paint-order: stroke; stroke: var(--pc-bg); stroke-width: 4px; stroke-linejoin: round;
+  transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.st .st-ppl-conts text.is-hidden { opacity: 0; }
+
+.st .st-ppl-layer { --kc: var(--st-person, #f0c06a); transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1); }
+.st .st-ppl-layer.is-bot { --kc: var(--st-bot, #f16f46); }
+.st .st-ppl-layer.is-scanner { --kc: var(--st-scanner, #726757); }
+.st .st-ppl-layer.is-in, .st .st-ppl-layer.is-out { opacity: 0; }
+.st .st-ppl-layer.is-out { pointer-events: none; }
+.st .st-ppl-dots { fill: none; stroke: var(--kc); stroke-linecap: round; }
+.st .st-ppl-crumb { fill: var(--kc); opacity: 0.62; }
+.st .st-ppl-hit { fill: transparent; }
+.st .st-ppl-bg { fill: var(--pc-bg); }
+.st .st-ppl-cl, .st .st-ppl-labels text, .st .st-ppl-leaders * { transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1); }
+.st .st-ppl-map.is-focus .st-ppl-cl:not(.is-lit),
+.st .st-ppl-map.is-focus .st-ppl-labels text:not(.is-lit),
+.st .st-ppl-map.is-focus .st-ppl-lead:not(.is-lit),
+.st .st-ppl-map.is-focus .st-ppl-leaders :not(.is-lit) { opacity: 0.35; }
+.st .st-ppl-leaders line { stroke: var(--pc-line2); stroke-width: 1; }
+.st .st-ppl-labels .st-ppl-lead { stroke: var(--pc-quiet); stroke-width: 1; }
+.st .st-ppl-leaders circle { fill: var(--pc-line2); }
+.st .st-ppl-labels text {
+  font: 600 11px Karla, system-ui, sans-serif; fill: var(--pc-strong); font-variant-numeric: tabular-nums;
+  paint-order: stroke; stroke: var(--pc-bg); stroke-width: 3.5px; stroke-linejoin: round;
+}
+.st .st-ppl-ring {
+  fill: none; stroke: var(--pc-head); stroke-width: 2;
+  transform-box: fill-box; transform-origin: center;
+  animation: st-ppl-ring 600ms cubic-bezier(0, 0, 0.2, 1) 2 both;
+}
+.st .st-ppl-ring.is-still { animation: none; opacity: 1; }
+@keyframes st-ppl-ring {
+  from { transform: scale(0.9); opacity: 1; }
+  to { transform: scale(1.7); opacity: 0; }
+}
+
+.st .st-ppl-mapkey {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 10px 0 0;
+  font: 12.5px/1.3 Karla, system-ui, sans-serif; color: var(--pc-quiet);
+}
+.st .st-ppl-kitem { display: inline-flex; align-items: center; gap: 7px; margin-right: 14px; white-space: nowrap; }
+.st .st-ppl-kdot { --kc: var(--st-person, #f0c06a); display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--kc); }
+.st .st-ppl-kdot.is-bot { --kc: var(--st-bot, #f16f46); }
+.st .st-ppl-kdot.is-scanner { --kc: var(--st-scanner, #726757); }
+.st .st-ppl-kdot.is-crumb { width: 5px; height: 5px; opacity: 0.62; }
+.st .st-ppl-kline { display: inline-block; width: 16px; height: 1px; background: var(--pc-line2); }
+
+.st .st-ppl-subhead {
+  margin: 0 0 10px; font: 600 11px/1.2 Karla, system-ui, sans-serif; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--pc-quiet);
+}
+.st .st-ppl-subhead[hidden], .st .st-ppl-cont[hidden], .st .st-ppl-clist[hidden] { display: none; }
+.st .st-ppl-cont { margin-bottom: 26px; }
+/* "under 1%" needs more than the shared 44px share column */
+@media (min-width: 560px) {
+  .st .st-ppl-clist .st-bars.has-share .st-bars-main { grid-template-columns: minmax(0, 38%) minmax(0, 1fr) auto auto; }
+}
+.st .st-ppl-clist .st-bars-share { white-space: nowrap; min-width: 30px; }
+.st .st-ppl-clist li.is-lit { background: var(--pc-hover); border-radius: 8px; }
+.st .st-ppl-unplaced {
+  display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 12px;
+  min-height: 44px; margin-top: 6px; padding: 0 4px; border: 0; border-top: 1px solid var(--pc-line);
+  background: none; cursor: pointer; text-align: left;
+  font: 14px/1.3 Karla, system-ui, sans-serif; color: var(--pc-soft);
+}
+.st .st-ppl-unplaced:hover { color: var(--pc-accent); }
+.st .st-ppl-unplaced[hidden] { display: none; }
+.st .st-ppl-unval { font-weight: 600; font-variant-numeric: tabular-nums; }
+.st .st-ppl-note { margin: 22px 0 0; max-width: 620px; font: 13px/1.5 Karla, system-ui, sans-serif; color: var(--pc-quiet); }
+.st-pop .st-ppl-cardlist {
+  list-style: none; margin: 8px 0 0; padding: 8px 0 0; border-top: 1px solid var(--pc-line);
+  font: 13px/1.5 Karla, system-ui, sans-serif; color: var(--pc-soft);
+}
+
+/* ---------- phones ---------- */
+@media (max-width: 559px) {
+  .st .st-ppl-listhead { padding-left: 0; }
+  .st .st-ppl-dinner { padding: 4px 4px 14px; }
+  .st .st-ppl-id { width: auto; }
+  /* ...and on a phone, where the numbers have no column, they start at the list's edge */
+  .st .st-ppl-lab.is-noid { padding-left: 0; }
+  /* a phone has the whole row for the title: let it take two lines instead of an ellipsis */
+  .st .st-ppl-title { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
+}
+/* three toggles on one row at 360px and up */
+@media (max-width: 420px) {
+  .st .st-ppl-toggle { gap: 6px; }
+  .st .st-ppl-toggle .st-pill { padding: 0 10px; font-size: 13.5px; }
+  .st .st-ppl-pill { gap: 5px; }
+}
+
+@media (forced-colors: active) {
+  .st .st-ppl-dots { stroke: CanvasText; }
+  .st .st-ppl-crumb, .st .st-ppl-cell { fill: CanvasText; background: CanvasText; }
+}
