@@ -18,3 +18,10 @@
 /ledger/one-piece-reaction-clips/ /ledger/arcmira-mcp-test/ 301
 /posts/one-piece-reaction-clips /ledger/arcmira-mcp-test/ 301
 /posts/one-piece-reaction-clips/ /ledger/arcmira-mcp-test/ 301
+
+# AO-058 was rewritten on 2026-10-18, from a build log of the paper loop into a post about the
+# marionette line, and moved to a slug that says so.
+/ledger/paper-jefrie /ledger/the-marionette-line/ 301
+/ledger/paper-jefrie/ /ledger/the-marionette-line/ 301
+/posts/paper-jefrie /ledger/the-marionette-line/ 301
+/posts/paper-jefrie/ /ledger/the-marionette-line/ 301
