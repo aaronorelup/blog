@@ -2246,3 +2246,114 @@ ao-matrix > figcaption { margin-top: 14px; font-size: 13px; }
   }
   .ao-matrix-cell.none { font-size: 11px; }
 }
+
+/* <ao-pan>: a very wide picture panned across at a readable height, with a minimap. Until the
+   element upgrades (or without JS) the images and caption stack at the page's width. */
+ao-pan {
+  --ao-pan-h: 360px;
+  display: block;
+  margin: 8px 0 28px;
+}
+ao-pan:not(.ao-pan-ready) > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+.ao-pan-stage {
+  height: min(var(--ao-pan-h), 62vw);
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: #15141f;
+  border: 1px solid var(--pc-line);
+  border-radius: 8px;
+  cursor: grab;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  touch-action: pan-x pan-y;
+}
+.ao-pan-stage::-webkit-scrollbar { display: none; }
+.ao-pan-stage.ao-pan-dragging { cursor: grabbing; user-select: none; }
+.ao-pan-stage:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+.ao-pan-track { height: 100%; width: max-content; }
+/* ao-pan in front: .pc-prose img (height: auto) has the same specificity as a bare class rule. */
+ao-pan .ao-pan-track > img {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+ao-pan .ao-pan-track > img.ao-pan-off { display: none; }
+.ao-pan-mini {
+  position: relative;
+  margin-top: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #15141f;
+  touch-action: none;
+}
+ao-pan .ao-pan-mini > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  opacity: 0.55;
+  pointer-events: none;
+}
+.ao-pan-win {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border: 2px solid var(--pc-head);
+  border-radius: 3px;
+  box-shadow: 0 0 14px rgba(240, 192, 106, 0.4);
+  background: rgba(240, 192, 106, 0.08);
+  pointer-events: none;
+}
+.ao-pan-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 0;
+}
+.ao-pan-btn {
+  font: 600 13px/1 Karla, system-ui, sans-serif;
+  color: var(--pc-soft);
+  background: transparent;
+  border: 1px solid var(--pc-line2);
+  border-radius: 999px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: color 180ms cubic-bezier(.4, 0, .2, 1), border-color 180ms cubic-bezier(.4, 0, .2, 1), background 180ms cubic-bezier(.4, 0, .2, 1);
+}
+.ao-pan-btn:hover { border-color: var(--pc-head); color: var(--pc-head); }
+.ao-pan-btn[aria-pressed='true'] { color: var(--pc-strong); background: var(--pc-tile); border-color: var(--pc-head); }
+.ao-pan-btn:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+.ao-pan-glide { margin-left: auto; }
+.ao-pan-zoom { cursor: zoom-in; }
+ao-pan figcaption {
+  margin-top: 10px;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pc-soft);
+}
+ao-pan figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
+ao-pan figcaption .ao-meta {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: var(--pc-quiet);
+}
+@media (max-width: 640px) {
+  .ao-pan-glide { margin-left: 0; }
+}
