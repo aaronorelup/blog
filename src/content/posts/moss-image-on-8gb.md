@@ -1,7 +1,7 @@
 ---
 id: "AO-060"
 title: "A new image model went onto my 8 GB laptop overnight. Its long pictures hold up to 8:1, not 12:1"
-summary: "I asked for MOSS-Image, a model released days earlier, to be installed next to Qwen-Image 2.1 while seven other agents were busy on the same laptop. One Claude agent did it in two sittings, kept everything else working, and measured it: 30 to 39 seconds a picture, or about 7 with a speed LoRA, drawn boxes obeyed, and a panorama idea of mine that works at 8:1 and falls apart past it."
+summary: "I asked for MOSS-Image, a model released days earlier, to be installed next to Qwen-Image 2.1 while several other agents were busy on the same laptop. One Claude agent did it in two sittings, kept everything else working, and measured it: 30 to 39 seconds a picture, or about 7 with a speed LoRA, drawn boxes obeyed, and a panorama idea of mine that works at 8:1 and falls apart past it."
 date: 2026-10-20
 status: "shipped"
 tags: ["claude-code", "opus-5-5", "comfyui", "agents", "prompting", "workflow"]
