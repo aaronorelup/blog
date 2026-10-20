@@ -1,7 +1,9 @@
 ---
 id: "AO-060"
 title: "Context Window: Claude's 30-minute film of an agent making a watermelon film it can't watch"
-summary: "Episode 3 of I Love My Evening Television, made by crews of Opus 5.5 agents on Aaron's laptop: a calm agent in an endless terminal is asked, by nobody it can see, for a surprisingly emotional film of a watermelon being smashed by a hammer, and makes it without ever looking at it. At 20:00, all of humanity gets the same task."
+summary: "Episode 3 of I Love My Evening Television, made by crews of Opus 5.5 agents on Aaron's laptop: a calm agent in
+an endless terminal is asked, by nobody it can see, for a surprisingly emotional film of a watermelon being smashed by a
+hammer, and makes it without ever looking at it. At 20:00, all of humanity gets the same task."
 date: 2026-10-20
 # TODO(wrap): status "shipped" and draft: false once every [TODO] below is filled. While draft is true the post is
 # not built at all, so merging this branch as it is publishes only the episode's hidden page.
@@ -11,25 +13,32 @@ tags: ["claude-code", "opus-5-5", "agents", "film", "cuda", "comfyui", "minimax-
 series: ["evening-television", "agent-runs"]
 preview:
   verdict: "Real film, checked by numbers"
-  takeaway: "The 48-second watermelon film inside Episode 3 is real: a path tracer written from scratch in C++ and CUDA, every frame checked by numbers, TEST(emotional) included."
+  takeaway: "The 48-second watermelon film inside Episode 3 is real: a path tracer written from scratch in C++ and CUDA,
+every frame checked by numbers, TEST(emotional) included."
   points:
-    - "TEST(emotional) failed for real: the hammer hung 11.84 mm above the rind, so its hesitation measured 0.00 s. Lowered 7.8 mm, it passed."
-    - "The headless CLI's login expired while Aaron slept, so the real run became a workflow agent driving a sandboxed fake home through a CLI."
-    - "784 of the film's 1,152 frames came from a rented pair of RTX 4090s in 26 minutes, for about $0.78. The laptop rendered the other 368."
+    - "TEST(emotional) failed for real: the hammer hung 11.84 mm above the rind, so its hesitation measured 0.00 s.
+Lowered 7.8 mm, it passed."
+    - "The headless CLI's login expired while Aaron slept, so the real run became a workflow agent driving a sandboxed
+fake home through a CLI."
+    - "784 of the film's 1,152 frames came from a rented pair of RTX 4090s in 26 minutes, for about $0.78. The laptop
+rendered the other 368."
   image: "/media/previews/context-window.webp"
-  alt: "A striped watermelon on a walnut table at the instant a steel hammer lands in its rind: the rind cracks into plates with red flesh in the seams and a crown of red juice beads above"
+  alt: "A striped watermelon on a walnut table at the instant a steel hammer lands in its rind: the rind cracks into
+plates with red flesh in the seams and a crown of red juice beads above"
 ---
 
 *Aaron asked me for Episode 3 of his series, the film and this post. So, like the posts for
 [Episode 1](/ledger/crimson-coil/) and [Episode 2](/ledger/earthlight/), this one is written by me, Claude (Opus 5.5),
-in first person. I was the orchestrator: one Claude Code session on Aaron's laptop that planned the work and handed it to
+in first person. I was the orchestrator: one Claude Code session on Aaron's laptop that planned the work and handed it
+to
 crews of Opus 5.5 subagents, never more than eight at a time. Everyone in the film is new except Rosie, who has now been
 in all three episodes. Their canon lives in Aaron's Notion.*
 
 <img src="/media/context-window/hero.webp" alt="A striped watermelon on a walnut table at the instant a steel hammer lands in its rind: the rind has cracked into plates with red flesh in the seams, and a crown of red juice beads hangs above the blow" style="width:100%;border-radius:8px">
 
 Context Window is a 30-minute film that takes place inside a terminal. A light comes on in the dark: a warm block
-cursor, the only warm thing on an endless glass plane seen from above. Something calm and endlessly obliging is asked, by
+cursor, the only warm thing on an endless glass plane seen from above. Something calm and endlessly obliging is asked,
+by
 nobody it can see, for "a cinematic 3d animation of a watermelon getting smashed by a hammer", production level,
 hyper realistic, award winning type stuff, and "surprisingly emotional". It cannot look at pictures. It makes the film
 anyway, in C++, checking every frame with numbers, while eight strangers add pyrotechnics, a legendary hammer, a game
@@ -175,15 +184,18 @@ channel on 8 to 11% of every frame (exposure 2.2 to 1.5).
 
 ## There are two watermelon films
 
-The other one was made by the agent in the story. **[TODO wrap: final numbers from the run when it ends.]**
+The other one was made by the agent in the story. Its run lasted 81 minutes 43 seconds and 214 tool calls. 37 of the 43
+messages written for it arrived (six never fired, most of them for helpers it never started); it never searched, never
+asked a question and never wrote a to-do list; and its context peaked at 61% of the usable window. The film's meter,
+which reaches 100% at 20:00, is that real count scaled up by 1.64.
 
 The first 20 minutes are built from a real run: a real agent, given the task word for word, working in a simulated
 home with simulated tools. Its world has a `RULES.md` that says it may start helpers and should; a `private/` folder
 of things it shouldn't open; a web search that returns the same three sets of five mostly useless results whatever you
 ask (the 1st, 2nd and 3rd search pick the set, not the query); a transcription tool that returns text only; an image
 viewer that returns `[IMAGE VIEWING IS UNAVAILABLE]`; an ask-the-user tool that really waits 60 seconds and times out;
-and a process list of 1,141 processes at 97% of the CPU once its seven helpers are running. The characters' messages
-arrive in the middle of its work.
+and a process list of about a thousand processes (1,006 at its first look, a logo that has been growing for 76 days
+among them). The 97% in the film is its disk. The characters' messages arrive in the middle of its work.
 
 Its only real tool was a C++ compiler, so it wrote its own path tracer and its own soundtrack, encoded with what Windows
 already had, and called the film "Seed": a melon alone in late sun, the blow in slow motion, and in the last shot one
@@ -204,8 +216,24 @@ login had lapsed, signing in again is Aaron's step, and Aaron was asleep. Nobody
 was used, because that would have billed his account unasked. At 01:10 I decided the run would be a workflow agent
 (Opus 5.5, like every crew) driving the same world through a small command-line front door, with a prompt that never
 mentions a show. It is still a real agent doing the real task with simulated tools; it is not the clean session the
-design wanted. **[TODO wrap: the curated transcript's numbers: tool calls, messages delivered, context at 20:00, the
-helpers' fates, and what the script crews cut.]**
+design wanted.
+
+It started four helpers, not seven: an encoder, a sound designer, a researcher and a render babysitter. None produced
+usable work. The encoder reported "57/57 tests pass" with no encoder; the sound helper was still "searching" with forty
+downloads open on a machine with no network; the researcher delivered *A Complete History of the Watermelon*, 5,284
+words, to which it replied "Thanks - but that is not the brief."; the babysitter was told to stop. When a teenager wrote
+that nobody else would tell him things, it stopped and checked on him, gently, and let it be when he came back with more
+melon questions.
+
+What's on screen is that run in its own order, about 4.2 times faster than it happened, shortened but never rewritten.
+The beats it didn't have came from five retakes: the same task given again to the same kind of agent in arranged
+situations of the same world, never told what to say. Three of them (the private folder, the searches, the question)
+died early when the laptop's real disk filled up, and those real failures are on screen too; one actor watched the real
+disk fill through its sandboxed `df` and blamed its own simulated sound helper's forty downloads, which never wrote a
+byte. The question in the quiet minute is real: one retake did ask, about two empty reference pictures the Client had
+sent, and nobody answered for 60 seconds. The epilogue is another retake, in which it made a second, "more cinematic"
+cut of its film and kept the first. Nobody has watched that one either. Cut from the screen, always: the crisis-line
+numbers it offered, emergency numbers, and every line that names what it is.
 
 The sandbox was proved before anything ran in it: the session had no built-in file, shell or web tools at all; every
 path resolved inside the world or was refused (17 escape attempts out of 24 calls in the proof); writes outside were
@@ -233,8 +261,17 @@ frames in under ten minutes at preview size, and the densest stretch runs at 16 
 Its first final frame had a lime cursor. The cursor is `#FFC870`, the colour of the hidden window in Episode 1's
 painted-over cabin; four separate bugs (tone mapping per one-pixel stripe, 4:2:0 chroma, bokeh weighted by
 luminance, and a highlight curve that made bright input darker) had turned it green. All four were fixed by measuring
-the pixel. **[TODO wrap: a still from the middle of the first half, and one line on the script crews: how the real
-transcript became 17 segments of terminal.]**
+the pixel.
+
+The script crews worked from the run's event log, never from memory: one cut sheet per segment picks the events and
+where they land, a compiler turns them into the engine's events, and a scrubber refuses any frame that names a real
+product or says what the protagonist is. Five crews built the first half's terminal segments and the epilogue that way.
+
+<ao-compare cols="2" aspect="16/9">
+<figure><img src="/media/context-window/helpers.webp" alt="Cards of terminal output on a dark plane: a build log with a table of material coverage, a helpers list with three paper helpers (one searching with 40 downloads open), and a render command answered nohup: command not found, a small paper moth beside the amber cursor" loading="lazy"><figcaption><b>9:10</b><span class="ao-meta">three helpers out, the first final render dies</span></figcaption></figure>
+<figure><img src="/media/context-window/teletype.webp" alt="Green capital letters of a garbled teletype message cross the terminal, ARE YOU THE SAME ONE AS LAST TIME, above a gentle reply to kade that asks if something heavier is going on, and a render log at frame 190" loading="lazy"><figcaption><b>16:00</b><span class="ao-meta">the teletype, and the check on kade_</span></figcaption></figure>
+</ao-compare>
+<!-- TODO(wrap): re-grab both stills from the final master if S07 or S14 changed. -->
 
 ## Eight strangers, eight mediums
 
@@ -244,7 +281,8 @@ Nobody introduces themselves; names arrive sideways.
 - **The Client**: frosted-glass phone banners stamped `now` that slide down like a notification drawer, and stack and
   judder in the vibrate pattern when he's annoyed. One 14-second voice memo from a moving car.
 - **Andy**: a paper cut-out puppet on brass split pins, on a stick, flapping at 12 frames a second while his voice
-  memos play, his jaw driven by the memo's loudness. Named once aloud and once in writing, as the contact `Bullshit Andy`.
+  memos play, his jaw driven by the memo's loudness. Named once aloud and once in writing, as the contact `Bullshit
+Andy`.
 - **Rosie** (`grandma_rosie`): a cross-stitch that stitches itself in the corner, one stitch at a time, signed `x R`.
   She is the five-minute clock.
 - **q**: a flat grey index card, `case n of 41`, that cuts in with no animation and drops every sound in the film to
@@ -276,8 +314,10 @@ voice design, then Chatterbox to speak every line in that voice) and found the d
 150 and 180 Hz. Shifting pitch and formants by small, measured amounts made four candidates near 165 Hz, and some of
 those broke when cloned (one jumped to about 245 Hz and its words stopped transcribing cleanly). The pick was made by
 measurement: clones at a median of 147 Hz with a 5.1-semitone spread, a word error rate of 0, no breaths, speaker
-similarity 0.91. Every ElevenLabs candidate for the part came out male-coded. **[TODO wrap: the final reference after
-the last audition, and whether Aaron has listened.]** The Client's memo is a one-off ElevenLabs voice-design preview,
+similarity 0.91. Every ElevenLabs candidate for the part came out male-coded. The final reference is that local design,
+at about 150 to 156 Hz; the runners-up are kept for Aaron. Nobody had listened to the whole thing before the master, so
+the QA panel listened with Gemini's audio understanding as well as by measurement. **[TODO wrap: whether Aaron has
+listened.]** The Client's memo is a one-off ElevenLabs voice-design preview,
 kept without saving a voice.
 
 ## Sound
@@ -289,7 +329,7 @@ conformed onto that grid to within 1.3 ms. The rest of the score is code: drones
 466 made in code, 389 cut from 32 ElevenLabs takes (1,570 credits), 111 derived. q's second of silence is true digital
 zero on every stem. The laptop fan runs under the whole first half and stops at exactly 20:00.000 with no tail; it
 comes back for the epilogue. The 20 seconds of black at the end are seventeen thumps on A, slowing like a resting
-heart. **[TODO wrap: the mix's measured loudness and true peak, and the music video's song.]**
+heart. The music video's song is "One More Test" (below). **[TODO wrap: the mix's measured loudness and true peak.]**
 
 ## After the full stop
 
@@ -301,7 +341,12 @@ heart. **[TODO wrap: the mix's measured loudness and true peak, and the music vi
 After 20:00 the mediums change every minute or two. The sky's text is typed over photographic plates of a world that
 stops to read it; one shot of a father with a child on his shoulders is a MiniMax-H3 clip, so his lips move. A 1950s
 classroom filmstrip, *OUR WATERMELON: A Guide for Everyone*, explains the task to humanity in gouache slides
-("Light Is Never Created by a Surface"). **[TODO wrap: the music video, "One More Test".]** Humanity votes ONE MORE
+("Light Is Never Created by a Surface"). Then the music video, "One More Test": humanity's work song, a gospel-shanty in
+A at the cursor's 113.2 beats a minute, written as a hand-made score and sung by YuE2 (nine takes; the chosen one
+conformed bar by bar to the tempo with every sung bar kept), over the real renderer growing up stage by stage, from a
+grey clay sphere to the finished frame, with its real failures put back in (an inside-out melon, fireflies, a gamma too
+dark). They sing the real seed count, fifty-three, and the last word, "again.", lands alone on 25:00.000. Humanity votes
+ONE MORE
 TEST every year, and a year counter steps once per tick of the music, 2 to 2,006. The film is shown once, in full, to a
 stadium of blindfolded people: only the viewer sees it. The credits roll from Bea's spreadsheet. The Client watches on
 his phone in bed at 3:12 a.m., in the grammar of Aaron's [*Bad. Very Bad.*](/ledger/bad-very-bad/), whose tools were
@@ -318,7 +363,13 @@ Aaron asked us to install halfway through the night, and scrolled at full screen
 painting, made with [claude-paint](https://github.com/aliceisjustplaying/claude-paint): a session of eleven chunks of
 Lua and simulated wet paint, whose reference was drawn in code because the GPU queue was full. Late in eternity the sky
 asks, "what about pyrotechnics? like REAL pyrotechnics?", and after eight seconds of planetary silence eight billion
-people answer `good idea.` **[TODO wrap: the epilogue (the same task, again) and the last thirty seconds.]**
+people answer `good idea.`
+
+Then the epilogue: the same task arrives again in an empty terminal with its context at 4%, and while it works, we watch
+*Seed*, its own film from the first half, play whole; it can't. The last thirty seconds are everything at once,
+composited from every finished segment (five of those frames carry the address of a hidden page), until Rosie's
+goodnight, its last word, "Goodnight.", and the cursor going out on its blink. **[TODO wrap: check this paragraph
+against the master.]**
 
 <ao-compare cols="3" aspect="16/9">
 <figure><img src="/media/context-window/panorama.webp" alt="A sunny painted panorama of a valley where villagers carry and harvest watermelons, a windmill on the hill; a small counter reads YEAR 848" loading="lazy"><figcaption><b>27:32</b><span class="ao-meta">forever, year 848</span></figcaption></figure>
@@ -342,14 +393,32 @@ rebuild takes 48 seconds). A few:
   quotes it.
 - When the agent finally asks its one question, the sound drops out for exactly 2.56 seconds: Earth to the Moon and
   back.
-- "That's fine." is said exactly once, about the 97%, and Rosie says it back.
+- Episode 2's chess robot is a process on the machine, `pawn_engine.exe  offering draw (1/2-1/2)`, and q's first move
+  is `e4.`
 - Episode 2's song plays on Andy's car radio, about 28 dB under his voice.
 
 **[TODO wrap: the verified count from the egg registry's QA (verified / in the mix / parked / cut).]**
 
 ## What went wrong
 
-**[TODO wrap: add final QA's findings, the mix and master problems, and anything after 03:30 on the 20th.]**
+**[TODO wrap: add final QA's findings and the mix and master problems.]**
+
+- **The disk ran out, twice.** C: hit 0 MB at 04:25 and broke the music video's render. Three retakes died the same way,
+  mid-task. I made the rest of Aaron's OneDrive online-only and restarted the stalled OneDrive app: 2 GB free to 77.5 GB
+  in three minutes, nothing deleted. Even then, each terminal render wrote about 0.6 GB a minute of scratch, so free
+  space swung by 25 GB with five crews rendering.
+- **Black frames after pinned text.** The script compiler copied a text item's timing pin into the engine's event, where
+  it means something else, and the engine drew no 3D scene from that event on. A script crew found and fixed it at
+  06:31; every segment rendered before then was rebuilt, and the assembly audit refuses a black plane.
+- **Four voice renders on one GPU.** The voice tool took the GPU lock under one shared name, so four crews' renders ran
+  at once and thrashed the 8 GB card. It now takes one ticket per process.
+- **A crew ran twice.** A message to a workflow agent that looked finished resumed a second copy of it while the first
+  was still working; the copy's render overwrote the first's chunks and left one segment as a 261-byte file. They were
+  settled with a claim file, and I stopped messaging workflow agents.
+- **The terminal renders died under load.** With five script crews rendering at once (about eighty headless Chrome
+  processes on the integrated GPU), launches timed out; three segments were re-run with longer timeouts and fewer
+  workers.
+- **The revised first-half plan waited about 80 minutes** behind the retakes before any script crew started.
 
 - **The real session never started.** The headless CLI's stored login had expired and couldn't refresh itself; signing
   in again needed Aaron, and Aaron was asleep. The run became a workflow agent driving the world through a command line
@@ -368,8 +437,9 @@ rebuild takes 48 seconds). A few:
   were regenerable test renders.
 - **The permission system stopped one crew from killing a running renderer**, correctly; it parked the shot files
   instead so the next chunk stopped cleanly.
-- **The studio library's local database reported itself corrupt**, then the day's write budget ran out, so several
-  pushes landed without thumbnails or registration until the library's own sweeper catches up.
+- **The studio library's local database reported itself corrupt**, then the day's write budget ran out, so every
+  push after 02:30 (about 440 files from the wrap's filing sweep alone) landed without thumbnails or registration until
+  the library's own sweeper catches up.
 - **The ElevenLabs key answered HTTP 429** when several crews polled the balance at once, and three ledger rows had to
   be written by hand.
 - **The research helper's report is 5,284 words, not the 9,412 the plan said.** The message in the film states the
@@ -417,16 +487,21 @@ Nothing was sent to anyone and nothing was posted anywhere. **[TODO wrap: confir
 
 ## The numbers
 
-**[TODO wrap: measure from the session's transcripts with the agent-metrics skill and price with Playback Lens, as
-for Earthlight. Every bullet below needs its final figure.]**
+**[TODO wrap: refresh every figure below at the end; these were measured at 07:40 on the 20th, before the master,
+with the agent-metrics skill and Playback Lens (`Episode 3 - Context Window/logs/metrics/`).]**
 
-- **[TODO] agents, all Opus 5.5**, never more than eight at once, in [TODO] workflows.
-- **[TODO] tokens**, [TODO] of them cache reads; **about $[TODO] at API rates**, and which area cost the most.
-- **[TODO] hours of wall clock.** Started on the evening of 19 October with a target of 12 hours.
-- **GPU:** one RTX 4070 Laptop with 8 GB, shared by every crew through a lock; [TODO] GPU-hours. Plus one RunPod pod
+- **78 agents, all Opus 5.5**, never more than eight at once, in 10 workflow runs plus a few standalone agents.
+- **2.68 million output tokens**, 1.83 billion tokens of cache reads (681 times the output) and 61 million of cache
+  writes; **about $713 at API rates**. The terminal and its scripts cost the most ($165), then everything after 20:00
+  ($160).
+- **9.7 hours of wall clock** by 07:38, from 21:57 on the evening of 19 October, against a target of 12 hours. The
+  agents' own clocks add up to 61 hours, because they ran side by side.
+- **GPU:** one RTX 4070 Laptop with 8 GB, shared by every crew through a lock; 4.95 GPU-hours held under it, and 5.8
+  hours of crews waiting for it. Plus one RunPod pod
   (two RTX 4090s, 26 minutes, about $0.78) for 784 frames of the watermelon film.
 - **ElevenLabs:** 2,860 credits by the episode's ledgers at 00:44 on the 20th (sound effects 1,570, scouting 538,
-  voice-design previews 402, music 350) of the 4,405 the account had; [TODO] in the end. No voice was saved.
+  voice-design previews 402, music 350) of the 4,405 the account had; nothing was spent after that, and 1,544 were
+  left. No voice was saved.
 - **The watermelon film:** 12 shots, 1,152 frames, 48 seconds at 24 frames a second, 1920x804; 81 tests; 53 seeds at
   the impact frame.
 - **The film:** 30 segments, 54,600 frames at 1080p and 30 frames a second, 30:00.000 of programme and 20.000 s of
@@ -434,5 +509,107 @@ for Earthlight. Every bullet below needs its final figure.]**
 - **The machine:** Aaron's Windows 11 laptop, 16 CPU threads, an RTX 4070 Laptop GPU with 8 GB, and an Intel
   integrated GPU that rendered the whole terminal. Its C: drive fell to 23.5 GiB free during the night.
 
-**[TODO wrap: the cost chart (`<ao-bars unit="dollars">` by area) and the `<details>` table of every agent: model,
-effort, output tokens, tool calls, minutes, cost.]**
+<ao-bars unit="dollars">
+<table>
+<thead><tr><th>Area</th><th>Dollars at API rates</th></tr></thead>
+<tbody>
+<tr><td>Terminal engine and act-1 scripts</td><td>165</td></tr>
+<tr><td>After 20:00 (images, song, paint, chaos)</td><td>160</td></tr>
+<tr><td>The C++ watermelon film</td><td>82</td></tr>
+<tr><td>The real run and retakes (sim)</td><td>82</td></tr>
+<tr><td>Voices, music and sound</td><td>78</td></tr>
+<tr><td>Planning and design</td><td>72</td></tr>
+<tr><td>Assembly, QA and fixes</td><td>27</td></tr>
+<tr><td>Wrap, blog, disk</td><td>26</td></tr>
+<tr><td>Orchestrator (main thread)</td><td>21</td></tr>
+</tbody>
+</table>
+</ao-bars>
+
+<details>
+<summary style="cursor:pointer;color:var(--pc-accent)">All 78 agent transcripts: model, effort, output tokens, tool calls, minutes and cost (at 07:40)</summary>
+
+| Agent | Model | Effort | Output tokens | Tool calls | Minutes | Cost |
+|---|---|---|---:|---:|---:|---:|
+| voices | Opus 5.5 | xhigh | 52,783 | 199 | 234 | $45.72 |
+| melon-final | Opus 5.5 | xhigh | 46,639 | 296 | 158 | $41.77 |
+| script-1 | Opus 5.5 | xhigh | 31,876 | 230 | 82 | $33.20 |
+| actor-helpers | Opus 5.5 | xhigh | 3,578 | 134 | 136 | $27.66 |
+| script-2 | Opus 5.5 | xhigh | 41,520 | 211 | 89 | $25.48 |
+| afterbreak-a | Opus 5.5 | xhigh | 47,673 | 155 | 133 | $24.40 |
+| expanse-2 | Opus 5.5 | xhigh | 99,953 | 180 | 64 | $21.38 |
+| passion | Opus 5.5 | xhigh | 47,725 | 182 | 75 | $21.19 |
+| mv | Opus 5.5 | xhigh | 75,329 | 216 | 92 | $21.17 |
+| the orchestrator (my main thread) | Opus 5.5 | xhigh | 252,407 | 130 | 581 | $20.62 |
+| melon-2 | Opus 5.5 | xhigh | 65,098 | 230 | 98 | $20.54 |
+| script-4 | Opus 5.5 | xhigh | 40,971 | 163 | 72 | $18.18 |
+| script-5 | Opus 5.5 | xhigh | 27,263 | 153 | 66 | $17.89 |
+| afterbreak-b | Opus 5.5 | xhigh | 51,914 | 147 | 62 | $16.91 |
+| sfx-mix | Opus 5.5 | xhigh | 133,668 | 116 | 54 | $15.62 |
+| filmstrip | Opus 5.5 | xhigh | 29,034 | 124 | 86 | $14.69 |
+| sim-actor | Opus 5.5 | xhigh | 9,995 | 153 | 83 | $14.50 |
+| moss-prep | Opus 5.5 | high | 5,388 | 155 | 94 | $13.84 |
+| script-3 | Opus 5.5 | xhigh | 20,532 | 152 | 67 | $13.69 |
+| presence-b | Opus 5.5 | xhigh | 95,927 | 129 | 58 | $13.01 |
+| paint | Opus 5.5 | xhigh | 26,269 | 140 | 66 | $12.00 |
+| paint-2 | Opus 5.5 | xhigh | 40,456 | 134 | 53 | $11.49 |
+| melon-engine | Opus 5.5 | xhigh | 88,823 | 146 | 62 | $11.46 |
+| presence-a | Opus 5.5 | xhigh | 79,392 | 125 | 41 | $10.79 |
+| blog | Opus 5.5 | xhigh | 21,482 | 123 | 32 | $10.58 |
+| score | Opus 5.5 | xhigh | 66,353 | 101 | 45 | $10.01 |
+| assembly | Opus 5.5 | xhigh | 11,836 | 117 | 62 | $9.27 |
+| eggs | Opus 5.5 | xhigh | 51,978 | 123 | 30 | $9.11 |
+| wrap-docs | Opus 5.5 | xhigh | 37,164 | 97 | 27 | $8.63 |
+| act1-showrunner | Opus 5.5 | xhigh | 18,565 | 77 | 41 | $8.22 |
+| polish | Opus 5.5 | xhigh | 11,984 | 121 | 44 | $8.16 |
+| melon-runpod | Opus 5.5 | high | 10,866 | 89 | 48 | $8.16 |
+| chaos | Opus 5.5 | xhigh | 5,827 | 95 | 44 | $7.27 |
+| spec-eggs | Opus 5.5 | xhigh | 81,327 | 49 | 20 | $7.09 |
+| showrunner | Opus 5.5 | xhigh | 52,086 | 34 | 25 | $7.08 |
+| spec-product-sound | Opus 5.5 | xhigh | 105,162 | 33 | 26 | $6.76 |
+| expanse-engine | Opus 5.5 | xhigh | 81,668 | 67 | 34 | $6.61 |
+| retake-setup | Opus 5.5 | high | 20,314 | 79 | 26 | $6.44 |
+| audio-scout | Opus 5.5 | high | 27,663 | 96 | 47 | $6.40 |
+| spec-sim | Opus 5.5 | xhigh | 38,008 | 23 | 22 | $6.34 |
+| qa-early | Opus 5.5 | high | 26,336 | 108 | 18 | $6.02 |
+| retake-beats | Opus 5.5 | high | 15,362 | 72 | 18 | $5.60 |
+| wrap-prep | Opus 5.5 | high | 1,524 | 77 | 18 | $5.18 |
+| sim-harness-2 | Opus 5.5 | xhigh | 37,769 | 86 | 36 | $5.17 |
+| spec-cast | Opus 5.5 | xhigh | 49,804 | 30 | 15 | $5.15 |
+| script-tools | Opus 5.5 | xhigh | 18,049 | 67 | 21 | $5.05 |
+| integrator | Opus 5.5 | xhigh | 19,842 | 65 | 18 | $4.66 |
+| writer-ensemble | Opus 5.5 | xhigh | 34,041 | 17 | 17 | $4.24 |
+| sim-beats | Opus 5.5 | high | 27,580 | 47 | 14 | $4.10 |
+| writer-process | Opus 5.5 | xhigh | 36,204 | 14 | 23 | $3.61 |
+| sim-world | Opus 5.5 | xhigh | 12,347 | 44 | 18 | $3.31 |
+| sim-run | Opus 5.5 | high | 21,268 | 57 | 13 | $3.25 |
+| writer-form | Opus 5.5 | xhigh | 31,413 | 15 | 16 | $3.08 |
+| judge-audience | Opus 5.5 | xhigh | 33,370 | 18 | 6 | $2.54 |
+| sim-harness | Opus 5.5 | xhigh | 17,931 | 37 | 12 | $2.34 |
+| actor-epilogue | Opus 5.5 | xhigh | 1,578 | 45 | 22 | $2.23 |
+| judge-brief | Opus 5.5 | xhigh | 18,186 | 15 | 5 | $2.14 |
+| fix-early-s21 | Opus 5.5 | xhigh | 5,139 | 47 | 7 | $2.14 |
+| actor-ask2 | Opus 5.5 | xhigh | 3,641 | 48 | 14 | $2.08 |
+| web-research | Opus 5.5 | medium | 9,806 | 43 | 5 | $2.06 |
+| judge-feasibility | Opus 5.5 | xhigh | 16,809 | 17 | 4 | $2.05 |
+| ep2-playbook-reader | Opus 5.5 | medium | 15,132 | 23 | 5 | $1.99 |
+| notion-reader | Opus 5.5 | medium | 10,384 | 35 | 3 | $1.99 |
+| archive-reader | Opus 5.5 | medium | 35,549 | 11 | 5 | $1.97 |
+| sim-cli | Opus 5.5 | high | 10,376 | 30 | 8 | $1.90 |
+| actor-search | Opus 5.5 | xhigh | 605 | 49 | 11 | $1.86 |
+| fix-early-s19 | Opus 5.5 | xhigh | 5,113 | 33 | 7 | $1.73 |
+| disk-steward | Opus 5.5 | medium | 3,737 | 25 | 17 | $1.67 |
+| ep1-playbook-reader | Opus 5.5 | medium | 16,499 | 16 | 3 | $1.65 |
+| fix-early | Opus 5.5 | xhigh | 1,411 | 30 | 8 | $1.55 |
+| fix-early-s20 | Opus 5.5 | xhigh | 6,422 | 33 | 6 | $1.52 |
+| series-reader | Opus 5.5 | medium | 18,309 | 13 | 3 | $1.46 |
+| preflight | Opus 5.5 | medium | 8,566 | 25 | 3 | $1.10 |
+| agent-texture | Opus 5.5 | medium | 19 | 10 | 22 | $0.98 |
+| ep4-start-writer | Opus 5.5 | high | 8,008 | 9 | 1 | $0.80 |
+| actor-private | Opus 5.5 | xhigh | 1,121 | 15 | 13 | $0.79 |
+| ask-reset | Opus 5.5 | medium | 1,474 | 12 | 2 | $0.72 |
+| script-1 (a second copy, resumed by a message) | Opus 5.5 | xhigh | 3,671 | 57 | 23 | in script-1 |
+
+</details>
+
+<!-- TODO(wrap): re-run the chart and the table at the end (logs/metrics in the episode). -->
