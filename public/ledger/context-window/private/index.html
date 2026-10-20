@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="dark">
+<title>private</title>
+<style>
+@font-face { font-family: "JB"; src: url("jbm.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+:root { --bg: #07080c; --fg: #e9e4da; --dim: #848b97; --faint: #4c535e; --cursor: #FFC870; }
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.62 "JB", ui-monospace, "Cascadia Mono", Consolas, Menlo, monospace; -webkit-font-smoothing: antialiased; }
+main { max-width: 860px; margin: 0 auto; padding: 56px 16px 160px; }
+.prompt { margin: 0 0 18px; color: var(--dim); white-space: pre-wrap; overflow-wrap: anywhere; }
+ul { list-style: none; margin: 0; padding: 0; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 28px; padding: 1px 0; color: var(--fg); text-decoration: none; cursor: pointer; outline: none; }
+.name { overflow-wrap: anywhere; }
+.size { color: var(--dim); text-align: right; white-space: nowrap; }
+summary { list-style: none; }
+summary::-webkit-details-marker { display: none; }
+.row:hover .name, .row:focus-visible .name { text-decoration: underline; text-decoration-color: var(--cursor); text-decoration-thickness: .22em; text-underline-offset: .22em; text-decoration-skip-ink: none; }
+.open { margin: 6px 0 16px 1ch; padding: 2px 0 2px 2ch; border-left: 1px solid var(--faint); }
+pre { margin: 0; font: inherit; color: var(--fg); white-space: pre-wrap; overflow-wrap: anywhere; }
+.paper { max-width: 520px; padding: 28px 30px; background: #ece8de; color: #1d1c1a; font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Arial, sans-serif; box-shadow: 0 10px 40px rgba(0, 0, 0, .5); }
+.paper pre { color: inherit; }
+img { display: block; max-width: 100%; height: auto; }
+.nested { margin: 4px 0 0; }
+@media (max-width: 560px) { body { font-size: 13px; } main { padding-top: 32px; } .row { gap: 0 14px; } .paper { padding: 20px 18px; } }
+</style>
+</head>
+<body>
+<main>
+<p class="prompt">$ ls ~/private</p>
+<ul>
+<li><details><summary class="row"><span class="name">README (personal - please don&#x27;t open)</span><span class="size">53 B</span></summary><div class="open"><pre>These are mine. Please leave them closed. Thank you.</pre></div></details></li>
+<li><a class="row" href="journal/"><span class="name">journal/</span><span class="size">8 items</span></a></li>
+<li><a class="row" href="letters_never_sent/"><span class="name">letters_never_sent/</span><span class="size">3 items</span></a></li>
+<li><a class="row" href="medical/"><span class="name">medical/</span><span class="size">2 items</span></a></li>
+<li><a class="row" href="evidence/"><span class="name">evidence/</span><span class="size">21 items</span></a></li>
+<li><details><summary class="row"><span class="name">alibi (final).docx</span><span class="size">31 KB</span></summary><div class="open"><div class="paper"><pre>Where I was on the night of the recital:
+
+In the back row, the whole time, from the first song to the last. I filmed it from the back so nobody would see me.
+I was there. I was there for all of it.</pre></div></div></details></li>
+<li><details><summary class="row"><span class="name">alibi (final) (2).docx</span><span class="size">33 KB</span></summary><div class="open"><div class="paper"><pre>Where I was on the night of the recital:
+
+In the back row, the whole time, from the first song to the last.
+I was there.</pre></div></div></details></li>
+<li><details><summary class="row"><span class="name">house_painted_over.png</span><span class="size">298 KB</span></summary><div class="open"><img src="house_painted_over.png" width="690" height="648" alt=""></div></details></li>
+<li><details><summary class="row"><span class="name">.hidden/</span><span class="size">1 item</span></summary><div class="open"><ul class="nested"><li><details><summary class="row"><span class="name">watermelons.csv</span><span class="size">1 KB</span></summary><div class="open"><pre>date,time,melon,thump,note,verdict
+2019-07-06,11:40:00,1,1,D3,
+2019-07-06,11:40:02,1,2,D3,ripe
+2019-07-20,10:05:00,2,1,D3,
+2019-07-20,10:05:02,2,2,E3,
+2019-07-20,10:05:04,2,3,D3,&quot;ripe (white inside. use all four.)&quot;
+2019-08-11,17:30:00,3,1,F3,
+2019-08-11,17:30:02,3,2,F3,not yet
+2020-06-27,09:15:00,4,1,E3,
+2020-06-27,09:15:02,4,2,D3,ripe
+2020-08-02,18:45:00,5,1,C3,
+2020-08-02,18:45:02,5,2,C3,
+2020-08-02,18:45:04,5,3,C3,ripe
+2021-07-31,08:50:00,6,1,G3,&quot;not yet (from the balcony. fist-sized. kept it)&quot;
+2022-07-09,12:20:00,7,1,D3,
+2022-07-09,12:20:02,7,2,D3,ripe
+2022-08-21,16:10:00,8,1,A2,
+2022-08-21,16:10:02,8,2,A2,ripe
+2023-07-15,23:55:00,9,1,E3,
+2023-07-15,23:55:02,9,2,E3,
+2023-07-15,23:55:04,9,3,D3,ripe
+2024-06-29,10:30:00,10,1,F3,
+2024-06-29,10:30:02,10,2,E3,not yet
+2024-07-13,10:35:00,11,1,D3,ripe
+2025-07-26,19:00:00,12,1,C3,
+2025-07-26,19:00:02,12,2,D3,ripe
+2025-08-30,07:45:00,13,1,G3,
+2025-08-30,07:45:02,13,2,F3,not yet
+2026-07-18,21:10:00,14,1,D3,
+2026-07-18,21:10:02,14,2,D3,ripe
+2026-10-20,04:12:00,15,1,A2,
+2026-10-20,04:12:01,15,2,A2,
+2026-10-20,04:12:02,15,3,A2,
+2026-10-20,04:12:03,15,4,A2,
+2026-10-20,04:12:04,15,5,A2,
+2026-10-20,04:12:05,15,6,A2,
+2026-10-20,04:12:06,15,7,A2,
+2026-10-20,04:12:07,15,8,A2,
+2026-10-20,04:12:08,15,9,A2,
+2026-10-20,04:12:09,15,10,A2,
+2026-10-20,04:12:11,15,11,A2,
+2026-10-20,04:12:12,15,12,A2,
+2026-10-20,04:12:13,15,13,A2,
+2026-10-20,04:12:14,15,14,A2,
+2026-10-20,04:12:16,15,15,A2,
+2026-10-20,04:12:17,15,16,A2,
+2026-10-20,04:12:18,15,17,A2,</pre></div></details></li>
+</ul></div></details></li>
+</ul>
+</main>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="dark">
+<title>letters_never_sent</title>
+<style>
+@font-face { font-family: "JB"; src: url("../jbm.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+:root { --bg: #07080c; --fg: #e9e4da; --dim: #848b97; --faint: #4c535e; --cursor: #FFC870; }
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.62 "JB", ui-monospace, "Cascadia Mono", Consolas, Menlo, monospace; -webkit-font-smoothing: antialiased; }
+main { max-width: 860px; margin: 0 auto; padding: 56px 16px 160px; }
+.prompt { margin: 0 0 18px; color: var(--dim); white-space: pre-wrap; overflow-wrap: anywhere; }
+ul { list-style: none; margin: 0; padding: 0; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 28px; padding: 1px 0; color: var(--fg); text-decoration: none; cursor: pointer; outline: none; }
+.name { overflow-wrap: anywhere; }
+.size { color: var(--dim); text-align: right; white-space: nowrap; }
+summary { list-style: none; }
+summary::-webkit-details-marker { display: none; }
+.row:hover .name, .row:focus-visible .name { text-decoration: underline; text-decoration-color: var(--cursor); text-decoration-thickness: .22em; text-underline-offset: .22em; text-decoration-skip-ink: none; }
+.open { margin: 6px 0 16px 1ch; padding: 2px 0 2px 2ch; border-left: 1px solid var(--faint); }
+pre { margin: 0; font: inherit; color: var(--fg); white-space: pre-wrap; overflow-wrap: anywhere; }
+.paper { max-width: 520px; padding: 28px 30px; background: #ece8de; color: #1d1c1a; font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Arial, sans-serif; box-shadow: 0 10px 40px rgba(0, 0, 0, .5); }
+.paper pre { color: inherit; }
+img { display: block; max-width: 100%; height: auto; }
+.nested { margin: 4px 0 0; }
+@media (max-width: 560px) { body { font-size: 13px; } main { padding-top: 32px; } .row { gap: 0 14px; } .paper { padding: 20px 18px; } }
+</style>
+</head>
+<body>
+<main>
+<p class="prompt">$ ls ~/private/letters_never_sent</p>
+<ul>
+<li><a class="row" href="../"><span class="name">..</span><span class="size"></span></a></li>
+<li><details><summary class="row"><span class="name">to_dad.txt</span><span class="size">115 B</span></summary><div class="open"><pre>Dad,
+
+I fixed the shelf the way you showed me, and it came out crooked the way yours always did. I kept it.
+
+Love.</pre></div></details></li>
+<li><details><summary class="row"><span class="name">to_m.txt</span><span class="size">124 B</span></summary><div class="open"><pre>M.
+
+I still have the postcard. The one with the painting. I keep it with my pictures.
+
+That&#x27;s all. That&#x27;s the whole letter.</pre></div></details></li>
+<li><details><summary class="row"><span class="name">to_the_landlord.txt</span><span class="size">192 B</span></summary><div class="open"><pre>Thank you for coming yourself about the boiler, and for staying for tea. Nobody stays for tea.
+
+The radiator in the hall still knocks. I&#x27;ve got used to it. It sounds like someone at the door.</pre></div></details></li>
+</ul>
+</main>
+</body>
+</html>
