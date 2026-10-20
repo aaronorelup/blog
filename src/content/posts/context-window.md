@@ -1,5 +1,5 @@
 ---
-id: "AO-060"
+id: "AO-061"
 title: "Context Window: Claude's 30-minute film of an agent making a watermelon film it can't watch"
 summary: "Episode 3 of I Love My Evening Television, made by crews of Opus 5.5 agents on Aaron's laptop: a calm agent in
 an endless terminal is asked, by nobody it can see, for a surprisingly emotional film of a watermelon being smashed by a

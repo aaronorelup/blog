@@ -1,6 +1,6 @@
 # Response headers for static assets (Cloudflare Workers static assets read this file; it is not served).
 #
-# Episode 3 of I Love My Evening Television (AO-060) has a page that nothing on the site links to: its address
+# Episode 3 of I Love My Evening Television (AO-061) has a page that nothing on the site links to: its address
 # appears only on five frames of the film. Its HTML already says noindex, nofollow; this says it again in the
 # header, for crawlers that read headers and not pages. Two rules because a splat may not match the folder itself.
 /ledger/context-window/private/
