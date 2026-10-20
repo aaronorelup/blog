@@ -2277,7 +2277,8 @@ ao-pan:not(.ao-pan-ready) > img {
 .ao-pan-stage.ao-pan-dragging { cursor: grabbing; user-select: none; }
 .ao-pan-stage:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
 .ao-pan-track { height: 100%; width: max-content; }
-.ao-pan-track > img {
+/* ao-pan in front: .pc-prose img (height: auto) has the same specificity as a bare class rule. */
+ao-pan .ao-pan-track > img {
   display: block;
   height: 100%;
   width: auto;
@@ -2288,7 +2289,7 @@ ao-pan:not(.ao-pan-ready) > img {
   user-select: none;
   -webkit-user-drag: none;
 }
-.ao-pan-track > img.ao-pan-off { display: none; }
+ao-pan .ao-pan-track > img.ao-pan-off { display: none; }
 .ao-pan-mini {
   position: relative;
   margin-top: 8px;
@@ -2298,7 +2299,7 @@ ao-pan:not(.ao-pan-ready) > img {
   background: #15141f;
   touch-action: none;
 }
-.ao-pan-mini > img {
+ao-pan .ao-pan-mini > img {
   display: block;
   width: 100%;
   height: auto;
