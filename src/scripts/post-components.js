@@ -243,7 +243,7 @@ const nowPlaying = {
 // keypress apart. The post's own copy shows at once; a larger file, if the image names one in
 // data-full="…" (or in srcset), replaces it at the same size when it arrives. Pictures inside
 // links, sliders, model and game posters and spectrograms keep their own click.
-const NO_VIEWER = 'a[href], button, ao-slider, ao-model, ao-game, ao-listen, [data-no-zoom], .ao-matrix-off';
+const NO_VIEWER = 'a[href], button, ao-slider, ao-pan, ao-model, ao-game, ao-listen, [data-no-zoom], .ao-matrix-off';
 const viewable = (img) =>
   img.tagName === 'IMG' && !!img.closest('[data-post-article], .pc-prose') && !img.closest(NO_VIEWER);
 const bestSrc = (img) => {
@@ -3198,6 +3198,211 @@ class AoAsk extends HTMLElement {
 // one post's demo never weighs on the others. The module exports mount(host, part), which
 // returns { destroy } or null; whatever the element held before is the no-JS fallback.
 // ---------------------------------------------------------------------------------------
+// <ao-pan>: a picture far wider than the page (a panorama, a long strip, a storyboard), shown
+// at a readable height and panned across instead of shrunk to a sliver. Drag it, swipe it,
+// use a trackpad, or focus it and use the arrow keys (Home/End jump to the ends); a minimap
+// under it shows the whole picture and where the frame is, and a click on it jumps there.
+//   views="A|B"            two or more <img>s become views of one place, one button each; the
+//                          frame keeps its place as a fraction of the width, so pictures of
+//                          different lengths (an 8:1 and a 12:1 strip) are compared at the
+//                          same point of their story
+//   stops="0.3:Bridge|…"   buttons that glide the frame's centre to a fraction of the width
+//   height="360"           the frame's height in px on wide screens (phones get less)
+// Adds Glide (a slow pan to the end; any touch stops it) and Full size (the image viewer).
+// Without JS: the images and caption stack, at the page's width.
+class AoPan extends HTMLElement {
+  connectedCallback() {
+    if (this._ready) return;
+    const imgs = [...this.querySelectorAll(':scope > img')];
+    if (!imgs.length) return;
+    this._ready = true;
+    this.imgs = imgs;
+    const h = parseFloat(this.getAttribute('height') || '');
+    if (h > 0) this.style.setProperty('--ao-pan-h', h + 'px');
+    const views = (this.getAttribute('views') || '').split('|').map((v) => v.trim());
+    imgs.forEach((img, i) => { img.dataset.label = views[i] || img.alt || 'View ' + (i + 1); });
+
+    const stage = document.createElement('div');
+    stage.className = 'ao-pan-stage';
+    stage.tabIndex = 0;
+    stage.setAttribute('role', 'region');
+    stage.setAttribute('aria-label', 'Wide picture: drag, or use the arrow keys, to pan');
+    const track = document.createElement('div');
+    track.className = 'ao-pan-track';
+    track.append(...imgs);
+    stage.append(track);
+    this.stage = stage;
+
+    const mini = document.createElement('div');
+    mini.className = 'ao-pan-mini';
+    mini.setAttribute('aria-hidden', 'true');
+    this.miniImg = document.createElement('img');
+    this.miniImg.alt = '';
+    this.miniImg.draggable = false;
+    this.miniImg.setAttribute('data-no-zoom', '');
+    this.win = document.createElement('span');
+    this.win.className = 'ao-pan-win';
+    mini.append(this.miniImg, this.win);
+
+    const bar = document.createElement('div');
+    bar.className = 'ao-pan-bar';
+    const mk = (label, cls, fn, title) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ao-pan-btn' + (cls ? ' ' + cls : '');
+      b.textContent = label;
+      if (title) b.title = title;
+      b.addEventListener('click', fn);
+      bar.append(b);
+      return b;
+    };
+    this.viewBtns = imgs.length > 1 ? imgs.map((img, i) => mk(img.dataset.label, 'ao-pan-view', () => this.show(i))) : [];
+    for (const part of (this.getAttribute('stops') || '').split('|')) {
+      const k = part.indexOf(':');
+      const f = parseFloat(k < 0 ? part : part.slice(0, k));
+      if (!isFinite(f)) continue;
+      mk(k < 0 ? Math.round(f * 100) + '%' : part.slice(k + 1).trim(), 'ao-pan-stop', () => this.glideTo(f, 900), 'Pan to here');
+    }
+    this.glideBtn = mk('Glide', 'ao-pan-glide', () => (this.anim ? this.stop() : this.glide()), 'Pan slowly to the end');
+    mk('Full size', 'ao-pan-zoom', () => viewer.open(this.imgs[this.cur], this.imgs), 'Open the picture full size, to zoom in');
+
+    const cap = this.querySelector(':scope > figcaption');
+    this.insertBefore(bar, cap || null);
+    this.insertBefore(mini, bar);
+    this.insertBefore(stage, mini);
+
+    // Mouse drag pans (touch and trackpads already scroll natively).
+    let drag = null;
+    stage.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      this.stop();
+      drag = { x: e.clientX, left: stage.scrollLeft };
+      stage.setPointerCapture(e.pointerId);
+      stage.classList.add('ao-pan-dragging');
+    });
+    stage.addEventListener('pointermove', (e) => {
+      if (drag) stage.scrollLeft = drag.left - (e.clientX - drag.x);
+    });
+    const end = () => { drag = null; stage.classList.remove('ao-pan-dragging'); };
+    stage.addEventListener('pointerup', end);
+    stage.addEventListener('pointercancel', end);
+    stage.addEventListener('wheel', () => this.stop(), { passive: true });
+    stage.addEventListener('touchstart', () => this.stop(), { passive: true });
+    stage.addEventListener('keydown', (e) => {
+      const step = stage.clientWidth * (e.shiftKey ? 0.9 : 0.25);
+      const go = { ArrowRight: step, ArrowLeft: -step, End: Infinity, Home: -Infinity }[e.key];
+      if (go === undefined) return;
+      e.preventDefault();
+      this.stop();
+      const to = isFinite(go) ? stage.scrollLeft + go : go > 0 ? stage.scrollWidth : 0;
+      stage.scrollTo({ left: to, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    });
+    stage.addEventListener('scroll', () => this.paint(), { passive: true });
+
+    const jump = (e) => {
+      const r = mini.getBoundingClientRect();
+      this.stop();
+      this.centreAt((e.clientX - r.left) / r.width);
+    };
+    let miniDrag = false;
+    mini.addEventListener('pointerdown', (e) => { miniDrag = true; mini.setPointerCapture(e.pointerId); jump(e); });
+    mini.addEventListener('pointermove', (e) => { if (miniDrag) jump(e); });
+    mini.addEventListener('pointerup', () => { miniDrag = false; });
+
+    for (const img of imgs) img.addEventListener('load', () => this.paint());
+    this.ro = new ResizeObserver(() => this.paint());
+    this.ro.observe(stage);
+    this.onStop = () => this.stop();
+    document.addEventListener('ao-stop', this.onStop);
+    this.cur = 0;
+    this.show(0);
+    this.classList.add('ao-pan-ready');
+  }
+
+  disconnectedCallback() {
+    this.stop();
+    if (this.ro) this.ro.disconnect();
+    if (this.onStop) document.removeEventListener('ao-stop', this.onStop);
+  }
+
+  // Where the frame's centre sits, as a fraction of the picture's width.
+  frac() {
+    const s = this.stage;
+    return s.scrollWidth > 0 ? (s.scrollLeft + s.clientWidth / 2) / s.scrollWidth : 0;
+  }
+
+  centreAt(f) {
+    const s = this.stage;
+    s.scrollLeft = Math.max(0, Math.min(s.scrollWidth - s.clientWidth, f * s.scrollWidth - s.clientWidth / 2));
+  }
+
+  show(i) {
+    const keep = this.frac();
+    this.cur = i;
+    this.imgs.forEach((img, k) => {
+      const on = k === i;
+      img.classList.toggle('ao-pan-off', !on);
+      if (on) img.loading = 'eager';
+    });
+    this.viewBtns.forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)));
+    const img = this.imgs[i];
+    this.miniImg.src = img.currentSrc || img.src;
+    const restore = () => {
+      if (this._shown) this.centreAt(keep);
+      this._shown = true;
+      this.paint();
+    };
+    if (img.complete && img.naturalWidth) restore(); else img.addEventListener('load', restore, { once: true });
+  }
+
+  paint() {
+    const s = this.stage;
+    if (!s || !s.scrollWidth) return;
+    this.win.style.left = (s.scrollLeft / s.scrollWidth) * 100 + '%';
+    this.win.style.width = Math.min(100, (s.clientWidth / s.scrollWidth) * 100) + '%';
+  }
+
+  glideTo(f, ms) {
+    this.stop();
+    const s = this.stage;
+    const to = Math.max(0, Math.min(s.scrollWidth - s.clientWidth, f * s.scrollWidth - s.clientWidth / 2));
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { s.scrollLeft = to; return; }
+    this.run(s.scrollLeft, to, ms, (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2));
+  }
+
+  // About 30 seconds for the whole width, the pace of a scroll video.
+  glide() {
+    const s = this.stage;
+    const max = s.scrollWidth - s.clientWidth;
+    if (max <= 0) return;
+    const from = s.scrollLeft >= max - 2 ? 0 : s.scrollLeft;
+    this.run(from, max, 30000 * ((max - from) / max), (t) => t);
+    this.glideBtn.textContent = 'Stop';
+    this.glideBtn.setAttribute('aria-pressed', 'true');
+  }
+
+  run(from, to, ms, ease) {
+    const s = this.stage;
+    const t0 = performance.now();
+    const step = (now) => {
+      const t = Math.min(1, (now - t0) / Math.max(1, ms));
+      s.scrollLeft = from + (to - from) * ease(t);
+      if (t < 1) this.anim = requestAnimationFrame(step); else this.stop();
+    };
+    this.anim = requestAnimationFrame(step);
+  }
+
+  stop() {
+    if (this.anim) cancelAnimationFrame(this.anim);
+    this.anim = 0;
+    if (this.glideBtn) {
+      this.glideBtn.textContent = 'Glide';
+      this.glideBtn.setAttribute('aria-pressed', 'false');
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------------------
 // <ao-matrix>: one subject run through a grid of settings (a method per row, a target per
 // column), every cell shown the same size, with buttons that switch every cell between views of
 // the same output at once (textured / clay, before / after, front / back).
@@ -3353,3 +3558,4 @@ if (!customElements.get('ao-series')) customElements.define('ao-series', AoSerie
 if (!customElements.get('ao-funnel')) customElements.define('ao-funnel', AoFunnel);
 if (!customElements.get('ao-ask')) customElements.define('ao-ask', AoAsk);
 if (!customElements.get('ao-matrix')) customElements.define('ao-matrix', AoMatrix);
+if (!customElements.get('ao-pan')) customElements.define('ao-pan', AoPan);
