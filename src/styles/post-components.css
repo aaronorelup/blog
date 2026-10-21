@@ -2357,3 +2357,144 @@ ao-pan figcaption .ao-meta {
 @media (max-width: 640px) {
   .ao-pan-glide { margin-left: 0; }
 }
+
+/* <ao-treemap>: nested rectangles, areas in proportion, over a plain table. Tiles are tinted
+   with their column's colour over the panel's code background, so labels stay --pc-strong in
+   both modes; the hovered or focused tile is outlined gold. */
+ao-treemap {
+  display: block;
+  margin: 28px 0;
+  min-width: 0;
+  --tm-0: var(--pc-head);
+  --tm-1: var(--pc-accent);
+  --tm-2: color-mix(in srgb, var(--pc-strong) 80%, var(--pc-accent));
+  --tm-3: var(--pc-gold);
+  --tm-4: var(--pc-line2);
+  --tm-5: color-mix(in srgb, var(--pc-accent) 50%, var(--pc-line2));
+  --tm-6: var(--pc-soft);
+  --tm-7: color-mix(in srgb, var(--pc-quiet) 45%, var(--pc-page));
+}
+.ao-tm {
+  padding: 14px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 12px;
+  background: var(--pc-code);
+}
+.ao-tm-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-bottom: 12px;
+}
+.ao-tm-bar button {
+  padding: 5px 12px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--pc-body);
+  font: 600 12.5px/1.2 Karla, system-ui, sans-serif;
+  cursor: pointer;
+}
+.ao-tm-bar button:hover { color: var(--pc-strong); border-color: var(--pc-quiet); }
+.ao-tm-bar button[aria-pressed='true'] { background: var(--pc-head); border-color: var(--pc-head); color: var(--pc-page); }
+.ao-tm-bar button:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+.ao-tm-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font: 600 12px/1.4 Karla, system-ui, sans-serif;
+  color: var(--pc-strong);
+}
+.ao-tm-key::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border-radius: 2px;
+  vertical-align: -1px;
+  background: var(--tm);
+}
+.ao-tm-stage {
+  position: relative;
+  aspect-ratio: var(--ao-aspect, 16 / 10);
+  overflow: hidden;
+  border-radius: 6px;
+  outline: none;
+  touch-action: pan-y;
+}
+.ao-tm-stage:focus-visible { box-shadow: 0 0 0 3px var(--pc-head); }
+.ao-tm-block {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px solid var(--pc-page);
+  background: var(--pc-page);
+}
+.ao-tm-name {
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  top: 3px;
+  overflow: hidden;
+  font: 600 11.5px/14px Karla, system-ui, sans-serif;
+  color: var(--pc-strong);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ao-tm-tile {
+  position: absolute;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--tm) 55%, var(--pc-code));
+  box-shadow: inset 3px 0 0 var(--tm);
+  transition: box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ao-tm-tile.ao-tm-on { box-shadow: inset 0 0 0 2px var(--pc-strong); }
+.ao-tm-label {
+  position: absolute;
+  left: 7px;
+  right: 4px;
+  bottom: 3px;
+  overflow: hidden;
+  font: 400 11px/13px Karla, system-ui, sans-serif;
+  color: var(--pc-strong);
+  text-shadow: 0 0 3px var(--pc-page), 0 0 2px var(--pc-page), 0 0 1px var(--pc-page);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ao-tm p.ao-tm-read {
+  min-height: 2.9em;
+  margin: 10px 0 0;
+  font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--pc-soft);
+}
+.ao-treemap-ready > .ao-tm-table {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+ao-treemap > figcaption {
+  margin-top: 8px;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pc-soft);
+}
+ao-treemap > figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
+ao-treemap > figcaption .ao-meta {
+  display: block;
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: var(--pc-quiet);
+}
+@media (max-width: 640px) {
+  .ao-tm { padding: 10px; }
+  .ao-tm-stage { aspect-ratio: var(--ao-aspect-phone, 4 / 5); }
+}
