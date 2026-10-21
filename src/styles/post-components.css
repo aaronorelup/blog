@@ -2367,12 +2367,12 @@ ao-treemap {
   min-width: 0;
   --tm-0: var(--pc-head);
   --tm-1: var(--pc-accent);
-  --tm-2: var(--pc-soft);
+  --tm-2: color-mix(in srgb, var(--pc-strong) 80%, var(--pc-accent));
   --tm-3: var(--pc-gold);
   --tm-4: var(--pc-line2);
   --tm-5: color-mix(in srgb, var(--pc-accent) 50%, var(--pc-line2));
-  --tm-6: color-mix(in srgb, var(--pc-head) 45%, var(--pc-page));
-  --tm-7: var(--pc-quiet);
+  --tm-6: var(--pc-soft);
+  --tm-7: color-mix(in srgb, var(--pc-quiet) 45%, var(--pc-page));
 }
 .ao-tm {
   padding: 14px;
@@ -2447,7 +2447,7 @@ ao-treemap {
   box-sizing: border-box;
   overflow: hidden;
   border-radius: 2px;
-  background: color-mix(in srgb, var(--tm) 42%, var(--pc-code));
+  background: color-mix(in srgb, var(--tm) 55%, var(--pc-code));
   box-shadow: inset 3px 0 0 var(--tm);
   transition: box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -2460,6 +2460,7 @@ ao-treemap {
   overflow: hidden;
   font: 400 11px/13px Karla, system-ui, sans-serif;
   color: var(--pc-strong);
+  text-shadow: 0 0 3px var(--pc-page), 0 0 2px var(--pc-page), 0 0 1px var(--pc-page);
   white-space: nowrap;
   text-overflow: ellipsis;
 }
