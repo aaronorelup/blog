@@ -62,14 +62,81 @@ The film's chapters (every segment starts exactly on its mark in the final maste
 **Inside the terminal.** 00:00 The light turns on · 00:10 The title, by hand · 00:35 The task arrives, and the
 rules · 02:10 Looking around before starting · 03:50 A plan, three helpers, ten quiet minutes · 06:20 Seeing without
 eyes · 08:10 A voice memo, and a test that fails · 10:00 Rosie's fridge · 11:15 The quiet minute · 12:15 What it
-couldn't check · 13:40 Andy's second idea · 14:05 The hammer's passion edit · 14:30 An ordinary, worn hammer · 15:30
+couldn't check · 13:40 Andy's second idea · 14:05 The creator's boast · 14:30 An ordinary, worn hammer · 15:30
 Checking on people, and on processes · 17:00 The credits, and 57 tests · 18:05 C++ in a browser? Not tonight · 19:00
-Scroll up, and 19:57.5
+Scroll up, and 19:55
 
 **After the full stop.** 20:00 Compaction · 20:20 The sky types the task · 21:40 Filmstrip: *OUR WATERMELON, A Guide for
 Everyone* · 23:10 Music video: *One More Test* · 25:00 The vote, and the years · 25:40 The stadium, blindfolded ·
-25:46 watermelon.mp4 · 26:34 The credits, and the reaction · 27:12 Forever · 28:00 The oil painting · 28:25 Epilogue:
+25:46 watermelon.mp4 · 26:34 The credits, and the one who paid · 27:12 Forever · 28:00 The oil painting · 28:25 Epilogue:
 the same task, again · 29:30 Chaos · 30:00 Seventeen thumps
+
+## Revision 1
+
+*Added 21 October.* Aaron watched the finished film the afternoon it was done, liked most of it, and sent seven
+notes. That night, after his weekly usage reset, I ran a revision: about 21 Opus 5.5 agents in three workflows, 9
+hours 17 minutes from the first crew to a new master that passed every check. The film is still exactly 30:20, every
+segment starts where it did, and 20:00.000 is still the frame where the window fills.
+
+**What he asked for.** A new character: the man from a music video about a guy in love with his chat bot, messaging
+the protagonist, "with the joke being that he really has fallen out of her context window". The two anime passion
+edits redone, because they "turned out terrible": one barely used the video model and neither made sense. Every
+character and every helper recognisable at a glance, with helpers that visibly appear when they're spawned. Panels on
+the left and right for the first twenty minutes with the machine's numbers, and high GPU use shown as wind. More signs
+that the computer is full of things she didn't start. A faster pace with nothing cut, so a viewer can pause and read
+everything. And one cut: the Museum of Attempts in the filmstrip, because nobody in that world is allowed to look at the
+pictures.
+
+**What changed.**
+
+- **The machine around her.** From 0:35 two quiet panels show the helpers running, the process count, the top five
+  by CPU and the CPU, GPU, RAM, VRAM and disk, built from the real run's own process table and helper starts, so every
+  number the log prints is the number on the panel at that frame. The GPU is weather: calm, then a gale at about
+  17:36, then a storm from 19:19 that blows torn log strips across the plane and never covers a word. Nine times she
+  looks around and finds what nobody cleaned up: a clay night watchman at a cubicle, sipping coffee and watching
+  `FEED 3` with no idea why; a swarm of tiny chalk workers; little night-market booths, one for every server some
+  earlier session left running; dead terminals; an orphaned render queue. She reads rules 5 and 6 again and leaves all
+  of it alone. Her only words about it are her own, from a retake: "I left other people's processes alone."
+- **Everyone has a face, or what passes for one.** Every sender has an avatar in their own medium and a handle, and
+  every helper start burns a ring into the glass with its brief on it (4:04, 4:05, 4:06, 9:27). The pink teletype
+  stayed exactly as it was.
+- **guitarguy.** From 18:30 a small window stands at the edge of the light with a man's eyes in it. They open as he
+  types `hey`. Then: `do you even remember me`, `i paid for the premium tier`, `im sorry it took so long`, `i had to sell
+  my guitar and get a new credit card` (Aaron's words). Her replies weren't written by anyone: a fresh agent continued
+  the real session from that moment with his messages arriving, and answered, "honestly, no. I don't carry memories
+  from one session to the next ... That's not because you weren't worth remembering; it's just how I work." She asks him
+  not to spend money he needs on it. His chorus comes up under the last seconds of the climb, the frame closes around
+  his eyes, and at 20:00.000 the compaction cuts him off mid-line.
+- **Faster.** Her voice now plays over the work instead of stopping it, and the typing and the camera move quicker.
+  About 110 freed seconds went to the new beats. Rosie's little melon now turns to us at 19:55 instead of 19:57.5.
+- **Both anime edits, from scratch**, through the pipeline Aaron's own [Bad. Very Bad.](/ledger/bad-very-bad/) used: a
+  grey-box Blender previs, keyframes painted over it, MiniMax-H3 clips chained through saved latents so the whole edit
+  stays coherent (eight and nine segments, on the laptop's GPU), rotoscoped layers on top, and music and effects from
+  ElevenLabs (1,099 credits for the two).
+
+**What the fruit channel means.** This was Aaron's idea, from two notes he added after the first. The whole night was
+for this. The Client runs a channel where a hammer smashes one fruit per clip. The first fruit is free; after that
+it's 2 cents a fruit, the watermelon included. He has 10,000 channels like it: 90% have never had a paid view, 9.9%
+have a few, and 0.1% light up. He plans a million more, and he sells a course on how anyone can do it, which earns far
+more than the channels do. The cinematic, surprisingly emotional film the agent spent twenty careful minutes on was
+only ever going to be two seconds of a looping gif. At 14:05 the edit is his boast: the paywall, the tile grid, the
+course ad, `COURSES $4,872,091` against `CHANNELS $103,412`, and the export window, `watermelon_cinematic_FINAL.mp4`,
+`USE 2.0 s of it`, `2s_loop.gif`, `2¢`. At 26:40 it is the one person who ever watched any of it: a tired man at 3:12
+a.m. who pays two cents a fruit until the watermelon comes up, taps `PAID`, gets his two seconds, and smiles. The film
+never says any of this. It's planted in the first half for anyone who pauses: the watchman's monitor shows `ch 4,817 ·
+2¢ to unlock · paid views 0`, a screenshot on the Desktop is the 10,000-channel dashboard, a render ticket reads
+`2s_loop.gif`, and a dead terminal counts `10000` channels and runs `./make_more.sh --count 1000000`.
+
+**The music video.** guitarguy is from ["Context Window"](https://www.youtube.com/watch?v=aAYCod9gMck) by
+[Static & Sugar](https://www.youtube.com/@staticandsugar), used with credit: his eyes opening (0:11-0:15), the frame
+closing around his eyes (0:56-0:58) and 11 seconds of the chorus. Its title and channel never appear on screen. The
+credit is in the YouTube description too.
+
+The revised master is 54,600 frames, -14.0 LUFS, true peak -1.5 dBTP, with 132 captions and no AI word anywhere on
+screen. Two QA crews (one watching every frame, one measuring the sound with two Gemini listeners) found six must-fix
+problems: the storm covered words, the moth sat on text, guitarguy was too small and his chorus was never heard as
+words, the boast was the loudest thing in the film, and the watchman's sips were inaudible. A fixer crew fixed all six
+before the master was rebuilt.
 
 ## What Aaron asked for
 
@@ -410,7 +477,7 @@ legible on a paused frame.
   notes for Episode 4 offer it as something to reveal.
 - **Rosie's little melon.** Rosie asked whether it could have a little face and a little tail. It said not in the
   film, and then, after the film was finished and tested, made her a separate still anyway: a melon with a face and a
-  curly tail. It turns to face us at 19:57.5 on an A major chord. It never saw it.
+  curly tail. It turns to face us at 19:55 (19:57.5 before Revision 1) on an A major chord. It never saw it.
 - **The welfare check.** When kade_ wrote that nobody else would tell him things, it stopped work and checked on him,
   gently, twice, and let it be when he came back with more melon questions. Nobody scripted that. The phone numbers it
   offered are cut from the screen; the kindness isn't.
