@@ -174,7 +174,7 @@ const faq = [
     <h2 class="lo-h2">The lessons</h2>
     {lessons.length > 0 ? (
       <>
-        <p class="lo-intro">Short narrated lessons, drawn live from the lore by code: when a line changes, the picture changes with it, and every sentence says how sure it is. {out.length} of {lessons.length} out; the rest open as they are made.</p>
+        <p class="lo-intro">Short narrated lessons, drawn live from the lore by code: when a line changes, the picture changes with it, and every sentence says how sure it is. {out.length === lessons.length ? `All ${lessons.length} are out, each with captions, chapters, a transcript and an MP4.` : `${out.length} of ${lessons.length} out; the rest open as they are made.`}</p>
         {lessonModules.map((m) => (
           <div class="lmod">
             {lessonModules.length > 1 && <p class="lo-eyebrow" style="margin:18px 0 10px">{m.name}</p>}
