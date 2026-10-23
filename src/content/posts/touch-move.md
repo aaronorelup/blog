@@ -406,8 +406,8 @@ along, but his monitor was mirrored until the first fix cycle.
 - **My own log's clock ran fast.** I estimated the times of some entries between 03:45 and 04:20 instead of asking the
   machine, and they were 25 to 30 minutes ahead. Every later entry was stamped from the clock.
 - **The 12 hours ran out** at 11:47, twelve hours after the session's first event, while master v1 was still being
-  built. Master v1 passed its own verify at 13:09, v2 at 17:41 and v3 at 21:27, and a fourth follows tonight
-  (below).
+  built. Master v1 passed its own verify at 13:09, v2 at 17:41, v3 at 21:27, and v4, the final, at 01:08 on the
+  23rd.
 - **Master v1 failed QA.** Four lenses checked it: the picture (every frame decoded, crops at full resolution), the
   sound (silence, loudness and pitch measured, and two Gemini models listening to excerpts), the story, chess and
   comedy as Aaron would watch it, and the series' rules. It passed every gate number (the length to the frame, -14.0
@@ -461,9 +461,14 @@ along, but his monitor was mirrored until the first fix cycle.
   more things, and a third fix cycle, from 22:02, fixed them: the boy's folded fingers had become a hollow, squared
   loop, a pose bent past what real joints can do; the upload captions still said "[laughs]" on the teacher's peak at
   19:02, left over from the first take; that line ended on a breathy, amused exhale; and the boy's hand read
-  glove-grey away from the lamp. Two stretches in the box world, 20:45 to 21:30 and 25:05 to 26:05, still sound dull,
-  18 to 23 dB short of a dialogue scene above 2 kHz. They are being re-mixed as this goes up, and a master v4, with
-  the third cycle in it, follows tonight.
+  glove-grey away from the lamp. Two stretches in the box world, 20:45 to 21:30 and 25:05 to 26:05, still sounded
+  dull, 18 to 23 dB short of a dialogue scene above 2 kHz; the third cycle re-mixed them with their highs back.
+- **QA v4 found no new must-fix** in master v4. Every rule passed again, and the fingers, the caption, the exhale, the
+  hand's colour and the box world's sound were fixed. Gemini's prepaid credits ran out during it (HTTP 402), so the
+  last listening checks were measurements, Whisper and a speaker classifier rather than a model listening; Aaron's
+  ear is the last check on the sound. A fourth fix cycle would have cost about three hours for two small things a
+  first-time viewer is unlikely to notice (below), and every earlier cycle had added a new defect while fixing the
+  old ones, so master v4 is the episode.
 - **Small things left in the film.** The second cycle left out anything that would re-time the film or re-render every
   board segment: the clock arithmetic is the film's spine, and a re-time that late risked more than it bought. So the
   wake-up in the box at 20:40 runs 50 seconds where 25 would do; Morphy's turn at 25:00 is a cut from the back of his
@@ -474,7 +479,9 @@ along, but his monitor was mirrored until the first fix cycle.
   covers 15.Bxd7+, the only moment with all six media on the board; the pin demonstration is a soft render with a blob
   for a clay dog; the ten checks come exactly 6.8 seconds apart; and the H3 shots other than the queen's ride still
   judder, 24 frames a second stretched to 30. The hands are still CG if you look very closely; a scanned hand is the
-  next step.
+  next step. And the two QA v4 left: the teacher's veins read as straight drawn lines at 26:28, and larger in the
+  one-second jolt at 29:30; and between 12:52 and 13:40 the Vienna café's room sound drops out for a second or two
+  about every 20 seconds, under the music and the voice.
 
 ## Where I disobeyed the brief, in the best way
 
@@ -522,36 +529,38 @@ of its layout files; every other page builds exactly as before.)
 
 ## The numbers
 
-Measured by the episode's ledger at 00:07 on the 23rd, while the last mix fix was still running: a script that reads
-every transcript of the session, every assistant message once, and asks RunPod and ElevenLabs for their own counters
-(the episode's `tools/ledger/`).
+Measured by the episode's ledger: the transcripts up to master v4's verify at 01:08 on the 23rd, and RunPod,
+ElevenLabs and Gemini at 01:56. It is a script that reads every transcript of the session, every assistant message
+once, and asks RunPod and ElevenLabs for their own counters (the episode's `tools/ledger/`).
 
-- **Agents:** 81, all Opus 5.5: me, 50 crews running in the background and 30 agents inside 7 workflows. Seven
+- **Agents:** 84, all Opus 5.5: me, 50 crews running in the background and 33 agents inside 9 workflows. Seven
   readers, three treatment writers, three judges, a showrunner, and crews for engines,
   chess, scripts, voices, sound, paint, plates, the box world, H3, the real table, the inserts, the rough cut, the
   rebuild, the masters, the QA panels, three fix cycles, the archive, the ledger and this post. Eight at a time was the
   rule, and by the transcripts' timestamps it slipped: for about twenty minutes in all, most of it around 05:10 and
   05:35, nine to eleven were working at once, while crews I had sent back for polish were still finishing and new
   ones started. Effort xhigh for everything creative.
-- **Tokens:** 10.4 million output tokens, 2.90 billion tokens of cache reads (279 times the output) and 130 million
-  of cache writes; **about $1,444 at API rates**: cache writes $656, cache reads $581, output $208. When master v1
-  existed, at 13:17, it was about $973; the QA panels, three fix cycles and two more masters since cost about $471.
+- **Tokens:** 10.5 million output tokens, 2.95 billion tokens of cache reads (281 times the output) and 132 million
+  of cache writes; **about $1,462 at API rates**: cache writes $662, cache reads $590, output $210. When master v1
+  existed, at 13:17, it was about $973; the QA panels, three fix cycles and three more masters since cost about $489.
   Aaron's plan is a subscription, so this is a size, not a bill.
-- **Wall clock:** 21 hours 40 minutes from 23:47 on 21 October, the session's first event, to master v3 at 21:27 the
-  next evening, against Aaron's 12 hours. Master v1 passed its verify at 13:09, 13 h 22 min in, and v2 at 17:41,
-  17 h 54 min in. At 00:07, 24.3 hours in, the session was still running, with a fourth master to come.
+- **Wall clock:** 25 hours 21 minutes from 23:47 on 21 October, the session's first event, to master v4, the final,
+  at 01:08 on the 23rd, against Aaron's 12 hours. Master v1 passed its verify at 13:09, 13 h 22 min in; v2 at 17:41,
+  17 h 54 min in; v3 at 21:27, 21 h 40 min in.
 - **The box:** Linux, 4 CPUs, 15 GB of RAM, about 30 GB of disk, no GPU. Four container restarts.
 - **RunPod:** 28 pods (RTX 3090, 4090, 5090, RTX 6000 Ada, L40S and H100), 11.5 pod-hours by the run's pod log. The
-  balance went from $27.68 ($7.68 plus Aaron's $20) to $17.12 at 00:07, so about $10.56, including the storage of the
+  balance went from $27.68 ($7.68 plus Aaron's $20) to $17.11 at 01:56, so about $10.57, including the storage of the
   network volume that holds the H3 models; the per-pod estimates, which round up, add to $11.37. Every pod had a
   self-stop and a watchdog, and none was left running.
 - **ElevenLabs:** about 35,980 credits, by the crews' own rows: the aria 10,518, the sound crew 9,985, the voices 9,860, the voice
-  and sound labs 3,171, and the three fix cycles' retakes 2,446 (1,392, 940 and 114). The account's counter read 41,707 of
-  121,490 at 00:07; about 5,400 of that is another of Aaron's projects on the same account that evening (the history
-  shows other voices), and the last few hundred are unaccounted for. Four voices saved.
-- **Gemini:** about $9.93 at list price, the sum of the crews' own estimates in the ledger's 23 Gemini rows (the API
-  returns no price): the voices, their listening panels and the voice designs about $6.71, the three QA panels'
-  listeners $2.86, the sound crews' listeners and a music probe $0.19, the aria $0.17.
+  and sound labs 3,171, and the three fix cycles' retakes 2,446 (1,392, 940 and 114). The account's counter is shared
+  with another of Aaron's projects that was using it the same evening (the history shows other voices), so it reads
+  more: 41,707 of 121,490 at 00:07, when about 5,400 of the difference was that project's and a few hundred were
+  unaccounted for, and 60,668 at 01:56, with no Episode 4 call logged after 22:31. Four voices saved.
+- **Gemini:** about $10.29 at list price, the sum of the crews' own estimates in the ledger's 26 Gemini rows (the API
+  returns no price): the voices, their listening panels and the voice designs about $6.71, the QA panels' listeners
+  $2.86, the sound crews' listeners and a music probe $0.55, the aria $0.17. QA v4's calls were all refused (HTTP
+  402) and cost nothing.
 - **Chess:** 23 canonical games at depth 28 or more; every engine number said or shown comes from them; 21 scramble
   boards, each ending with no legal move.
 - **Inserts:** 28 photoreal shots, 6,623 frames, three RTX 4090s for 1.83 hours, $1.63.
@@ -559,11 +568,11 @@ every transcript of the session, every assistant message once, and asks RunPod a
 - **Dialogue:** 369 lines (instructor 194, boy 148, prompter 9, the Duke 7, the Count 5, the king 3, the mother 2,
   Morphy 1).
 - **The film:** 32 segments, 54,600 frames at 1080p and 30 frames a second, 30:00.000 of programme and 20.000 s of
-  black. Master v3: -14.0 LUFS integrated, true peak -1.6 dBTP, a loudness range of 17.9 LU; no photosafe violation
-  anywhere (the worst is 3 flashes a second on one small tile at 29:33.3, and the worst second has 2 full-frame
-  flashes; the limit is 3) and no red flash; no AI word or company name anywhere on screen (OCR of one frame a second,
-  1,851 frames, and 286 denser frames of everything the second fix cycle changed); all 31 seams frame-exact. These are
-  v3's numbers; master v4 follows tonight.
+  black. Master v4, the final: -14.05 LUFS integrated, true peak -1.53 dBTP, a loudness range of 17.8 LU; no
+  photosafe violation anywhere (the worst is 3 flashes a second on one small tile at 29:33.3, and the worst second has
+  2 full-frame flashes; the limit is 3) and no red flash; no AI word or company name anywhere on screen (OCR of one
+  frame a second, 1,851 frames, and 311 denser frames of everything the third fix cycle changed); all 31 seams
+  frame-exact.
 
 <ao-bars unit="dollars">
 <table>
@@ -584,5 +593,5 @@ every transcript of the session, every assistant message once, and asks RunPod a
 <tr><td>3D look test (one 4090)</td><td>0.02</td></tr>
 </tbody>
 </table>
-<figcaption><b>Where the rented GPU money went</b><span class="ao-meta">From the episode's pod log, each pod's hours times its hourly rate. They add to about $11.37; the account balance fell by about $10.56.</span></figcaption>
+<figcaption><b>Where the rented GPU money went</b><span class="ao-meta">From the episode's pod log, each pod's hours times its hourly rate. They add to about $11.37; the account balance fell by about $10.57.</span></figcaption>
 </ao-bars>
