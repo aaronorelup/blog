@@ -1,0 +1,188 @@
+{
+ "slug": "i-love-my-evening-television",
+ "title": "I Love My Evening Television",
+ "code": "C-02",
+ "updated": "2026-10-23",
+ "totalLessons": 9,
+ "publishedLessons": 1,
+ "runtimeSeconds": 333.2,
+ "moduleCount": 4,
+ "districtCount": 4,
+ "regions": [
+  {
+   "kind": "start",
+   "n": null,
+   "id": "start-here",
+   "name": "Start here",
+   "q": "What is this world?",
+   "mods": [
+    "01"
+   ]
+  },
+  {
+   "kind": "district",
+   "n": 1,
+   "id": "four-nights",
+   "name": "The four nights",
+   "q": "What happens in each episode?",
+   "mods": [
+    "02"
+   ]
+  },
+  {
+   "kind": "district",
+   "n": 2,
+   "id": "across-the-nights",
+   "name": "Across the nights",
+   "q": "What ties them together?",
+   "mods": [
+    "03"
+   ]
+  },
+  {
+   "kind": "district",
+   "n": 3,
+   "id": "how-the-lore-works",
+   "name": "How the lore works",
+   "q": "What is decided, and what isn't?",
+   "mods": [
+    "04"
+   ]
+  }
+ ],
+ "lanternCount": 0,
+ "modules": [
+  {
+   "n": "01",
+   "name": "Start here",
+   "short": "Start here",
+   "region": "Start here",
+   "lessons": [
+    {
+     "id": "01",
+     "title": "The world in five minutes",
+     "idea": "Four nights on one axis: what each episode is, where it sits in time, what turns at twenty minutes, and how to read the six tiers every line of the lore wears.",
+     "status": "locked",
+     "key": "01-the-world"
+    }
+   ],
+   "filed": 0
+  },
+  {
+   "n": "02",
+   "name": "The four nights",
+   "short": "Four nights",
+   "region": "The four nights",
+   "lessons": [
+    {
+     "id": "02",
+     "title": "Episode 1: Crimson Coil",
+     "idea": "Y0, the first night: a painter, a pitchman and a sleepless caller paint Jefrie in oil, and everything later episodes quote is planted here.",
+     "status": "locked",
+     "key": "02-crimson-coil"
+    },
+    {
+     "id": "03",
+     "title": "Episode 2: Earthlight",
+     "idea": "About sixty years on, a draftsman's free drawings become a city on the Moon while ten-year-old Noor watches alone; what came back from Episode 1.",
+     "status": "locked",
+     "key": "03-earthlight"
+    },
+    {
+     "id": "04",
+     "title": "Episode 3: Context Window",
+     "idea": "A warm cursor who cannot look at pictures builds a film for a sender she never meets; its place on the axis is still open.",
+     "status": "locked",
+     "key": "04-context-window",
+     "unreleased": "not on YouTube yet"
+    },
+    {
+     "id": "05",
+     "title": "Episode 4: Touch Move",
+     "idea": "A chess teacher's brass clock, Morphy's Opera Game and Board 14, where a sixteen-year-old signed x R.",
+     "status": "locked",
+     "key": "05-touch-move",
+     "unreleased": "not released yet"
+    }
+   ],
+   "filed": 0
+  },
+  {
+   "n": "03",
+   "name": "Across the nights",
+   "short": "Across",
+   "region": "Across the nights",
+   "lessons": [
+    {
+     "id": "06",
+     "title": "Rosie's life",
+     "idea": "The one person in every episode: nine on the first night, sixteen at Board 14, about seventy by the Moon; what is on screen, what Aaron set in steel, and what is only our count.",
+     "status": "published",
+     "key": "06-rosies-life",
+     "slug": "06-rosies-life",
+     "url": "/courses/i-love-my-evening-television/lessons/06-rosies-life/",
+     "duration": 333.213,
+     "summary": "Rosie is the one person in every episode so far: nine on the first night, sixteen at Board 14, about seventy by the Moon, never seen grown up and never heard. What is on screen, what Aaron has set in steel, and what is only our running count.",
+     "published": "2026-10-23",
+     "narrator": "the Lore Archivist",
+     "poster": "/courses/i-love-my-evening-television/lessons/06-rosies-life/poster.jpg",
+     "mp4": "/courses/i-love-my-evening-television/lessons/06-rosies-life/lesson.mp4"
+    },
+    {
+     "id": "07",
+     "title": "The Moon and the Haddads",
+     "idea": "Noor, her mother Amara and HAB 3: who went to the Moon, who stayed, and whether anyone came home.",
+     "status": "locked",
+     "key": "07-the-moon-and-the-haddads"
+    },
+    {
+     "id": "08",
+     "title": "Threads and eggs",
+     "idea": "The egg families that cross the most episodes, and the threads that tie the four nights into one story.",
+     "status": "locked",
+     "key": "08-threads-and-eggs"
+    }
+   ],
+   "filed": 1
+  },
+  {
+   "n": "04",
+   "name": "How the lore works",
+   "short": "The lore",
+   "region": "How the lore works",
+   "lessons": [
+    {
+     "id": "09",
+     "title": "What is steel and what is running",
+     "idea": "Everything Aaron has decided, everything still open, and the two ways to change a line of the lore.",
+     "status": "locked",
+     "key": "09-steel-and-running"
+    }
+   ],
+   "filed": 0
+  }
+ ],
+ "latest": {
+  "id": "06",
+  "title": "Rosie's life",
+  "idea": "The one person in every episode: nine on the first night, sixteen at Board 14, about seventy by the Moon; what is on screen, what Aaron set in steel, and what is only our count.",
+  "status": "published",
+  "key": "06-rosies-life",
+  "slug": "06-rosies-life",
+  "url": "/courses/i-love-my-evening-television/lessons/06-rosies-life/",
+  "duration": 333.213,
+  "summary": "Rosie is the one person in every episode so far: nine on the first night, sixteen at Board 14, about seventy by the Moon, never seen grown up and never heard. What is on screen, what Aaron has set in steel, and what is only our running count.",
+  "published": "2026-10-23",
+  "narrator": "the Lore Archivist",
+  "poster": "/courses/i-love-my-evening-television/lessons/06-rosies-life/poster.jpg",
+  "mp4": "/courses/i-love-my-evening-television/lessons/06-rosies-life/lesson.mp4"
+ },
+ "first": {
+  "id": "01",
+  "title": "The world in five minutes",
+  "idea": "Four nights on one axis: what each episode is, where it sits in time, what turns at twenty minutes, and how to read the six tiers every line of the lore wears.",
+  "status": "locked",
+  "key": "01-the-world"
+ },
+ "generated": "by Series/lore/course/tools/lessons.py in aaronorelup/i-love-my-evening-television; do not edit by hand"
+}
