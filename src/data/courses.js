@@ -4,6 +4,24 @@
 // Courses come out one at a time; the locked slot stands for whatever comes next, with no title
 // until there is a real one.
 import hiddenCurriculum from './courses/the-hidden-curriculum.json';
+import lore from './lore/lore.json';
+
+// C-02's lessons come from its own data file once the lessons crew writes it (the same shape as C-01's, written by
+// Series/lore/course/tools/lessons.py); until then the course lists its planned lessons, all locked.
+const loreLessonFiles = import.meta.glob('./courses/i-love-my-evening-television.json', { eager: true, import: 'default' });
+const LORE_PLAN = [
+  'The world in five minutes', 'Episode 1: Crimson Coil', 'Episode 2: Earthlight', 'Episode 3: Context Window', 'Episode 4: Touch Move',
+  'Rosie’s life', 'The Moon and the Haddads', 'Threads and eggs', 'What is steel and what is running',
+];
+const loreLessons = Object.values(loreLessonFiles)[0] || {
+  slug: 'i-love-my-evening-television',
+  title: 'I Love My Evening Television',
+  modules: [{ n: '01', name: 'The lore', short: 'The lore', lessons: LORE_PLAN.map((title, i) => ({ id: String(i + 1).padStart(2, '0'), title, status: 'locked' })) }],
+};
+const loreLines = ['episodes', 'characters', 'things', 'world', 'timeline_docs']
+  .flatMap((k) => lore[k] || [])
+  .reduce((n, e) => n + e.sections.reduce((m, s) => m + s.bullets.length, 0), 0) +
+  ['eggs', 'threads', 'questions'].reduce((n, k) => n + (lore[k] || []).reduce((m, s) => m + s.bullets.length, 0), 0);
 
 export const COURSES = [
   {
@@ -19,12 +37,29 @@ export const COURSES = [
     card: '/courses/the-hidden-curriculum/engine/assets/teahouse-night.jpg',
     data: hiddenCurriculum,
   },
+  {
+    code: 'C-02',
+    slug: 'i-love-my-evening-television',
+    href: '/courses/i-love-my-evening-television/',
+    title: 'I Love My Evening Television',
+    tagline: 'The lore of my TV series, and how sure we are of each line',
+    summary:
+      'Half-hour episodes of a gentle programme that breaks at twenty minutes; every cast is new, the world is the same. A character sheet for everyone, the timeline, every easter egg and the threads between episodes, unreleased ones included, with every line marked by how sure it is: set in steel, on screen, planted, a running assumption, an idea, or open.',
+    card: '/courses/i-love-my-evening-television/card.webp',
+    data: loreLessons,
+    // what the course holds besides its lessons: the lore pages are its main part
+    extra: [
+      `<b>${(lore.characters || []).length}</b> character sheets`,
+      `${loreLines.toLocaleString('en-US')} lines of lore`,
+      `${(lore.episodes || []).length} episodes`,
+    ],
+  },
 ];
 
 export const NEXT_COURSE = {
-  code: 'C-02',
+  code: 'C-03',
   title: 'The next course',
-  summary: 'Not announced yet. When it is, its title goes here, and it opens a lesson at a time like C-01.',
+  summary: 'Not announced yet. When it is, its title goes here, and it opens a lesson at a time like the others.',
   card: '/courses/the-hidden-curriculum/engine/assets/teahouse-night.jpg',
 };
 

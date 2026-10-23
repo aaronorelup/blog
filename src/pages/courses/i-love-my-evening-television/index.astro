@@ -1,0 +1,272 @@
+---
+// C-02's course page: what the lore course is, the four episodes, how sure each line is (the six tiers, each
+// shown with one real line), the narrated lessons (from the lessons crew's data file when it exists), the doors
+// into every view of the lore, what changed (when lore.py publish writes it), and how a line changes.
+import LorePage from '../../../components/lore/LorePage.astro';
+import Lines from '../../../components/lore/Lines.astro';
+import {
+  BASE, LORE, EPISODES, CHARACTERS, THINGS, TIERS, TIER_ORDER, TOTALS, EVERY_BULLET, LESSON_DATA, CHANGES, md, plain, clip,
+  allBullets, firstImage, thumbOf, urlOf, epVars, UNRELEASED, epNumber, placement, entity, titleOf, fmtDate,
+} from '../../../lib/lore.js';
+import { chip, mark, epChip, tierBar, bulletHtml } from '../../../lib/lore-html.js';
+import { fmtDuration } from '../../../data/courses.js';
+
+const rosie = entity('rosie');
+// one real line per tier, from Rosie's sheet where she has one (she is in every episode), else from the world
+// (the preferred lines read well on their own; if one is reworded or moves tier, the first fitting line is used)
+const PREFER = {
+  steel: 'Grandmother of @noor', fact: 'Nine on Y0', egg: 'he painted me a girl with a tail once', running: 'Her ages: nine on Y0',
+  idea: 'she becomes historic', open: 'Her surname',
+};
+const example = (t) => {
+  const ok = (b) => b.tier === t && b.text.length > 20 && b.text.length < 170 && !b.private;
+  const mine = allBullets(rosie);
+  return mine.find((b) => ok(b) && b.text.includes(PREFER[t])) || mine.find(ok) || allBullets(LORE.world?.[0]).find(ok) || EVERY_BULLET.find(ok);
+};
+const exampleOn = (b) => (b.file.includes('/rosie.md') ? 'rosie' : b.file.includes('world.md') ? 'world' : null);
+const WHO = {
+  steel: 'Only Aaron, or with his yes.',
+  fact: 'Whoever reworks that episode.',
+  egg: 'The episode’s crew.',
+  running: 'Anyone; say why in the line.',
+  idea: 'Anyone.',
+  open: 'Anyone may propose an answer; Aaron settles the big ones.',
+};
+const nLines = EVERY_BULLET.length;
+const nEggFam = (LORE.eggs || []).filter((s) => s.title && s.bullets.some((b) => b.ep)).length;
+const nThreads = (LORE.threads || []).filter((s) => s.title).length;
+const nQ = (LORE.questions || []).reduce((n, s) => n + s.bullets.filter((b) => b.tier === 'open').length, 0);
+
+// lessons: the lessons crew's data file (C-01's shape: modules -> lessons) when it exists, else the plan
+const PLAN = [
+  ['01', 'The world in five minutes'], ['02', 'Episode 1: Crimson Coil'], ['03', 'Episode 2: Earthlight'], ['04', 'Episode 3: Context Window'],
+  ['05', 'Episode 4: Touch Move'], ['06', 'Rosie’s life'], ['07', 'The Moon and the Haddads'], ['08', 'Threads and eggs'], ['09', 'What is steel and what is running'],
+];
+const lessons = LESSON_DATA ? (LESSON_DATA.modules || []).flatMap((m) => m.lessons || []).filter((l) => !(l.legacy && !l.coveredBy)) : [];
+const out = lessons.filter((l) => l.status === 'published');
+
+const doors = [
+  ['world', 'The world', 'The premise, the shape every episode shares, and what is true across them.', `${allBullets(LORE.world?.[0]).length} lines`],
+  ['timeline', 'Timeline', 'Every dated line on one axis, from before Episode 1 to the sky’s far future, and everyone’s age at each night.', `${LORE.timeline.length} dated lines`],
+  ['episodes', 'Episodes', 'Each night in full: the story, the 30:20 structure, the turn at twenty minutes, the cast.', `${EPISODES.length} episodes`],
+  ['characters', 'Characters', 'A sheet for everyone, human or not, with every line’s tier and source.', `${CHARACTERS.length} sheets`],
+  ['things', 'Things', 'Places, objects, paintings, songs, programs and numbers that recur.', `${THINGS.length} sheets`],
+  ['eggs', 'Egg atlas', 'Every planted detail, where it turns up in each episode, and what it might mean.', `${nEggFam} families`],
+  ['threads', 'Threads', 'The lines that run through the series, as swimlanes across the episodes.', `${nThreads} threads`],
+  ['questions', 'Open questions', 'What isn’t decided yet, and the answers on the table.', `${nQ} questions`],
+  ['steel', 'Set in steel', 'Everything Aaron has agreed to: what every episode builds on.', `${TOTALS.steel} lines`],
+];
+const faq = [
+  ['What is this course?', `Everything we know, decided, planted or only assume about the world of my series <i>I Love My Evening Television</i>, in one place: ${CHARACTERS.length} character sheets, ${THINGS.length} things, a timeline, every easter egg, and short narrated lessons. It is built for me and for the AI agents who make the episodes with me, and it’s public, so you can follow along.`],
+  ['Why does every line have a tier?', 'Because a series made by many agents over many nights collects three kinds of statement that look alike: what I decided, what is actually on screen, and what a crew assumed to get its night done. The tier says which. Only steel is a commitment; everything else is free to change, and the agents are expected to change it when they see something better.'],
+  ['Why are unreleased episodes here?', 'I want people to see the whole process, finished or not. Unreleased episodes are shown in full and marked “not released yet”.'],
+  ['How does a line change?', 'Every line lives in one short Markdown file in the series repo. I say it in a session (“Rosie is Amara’s mother, set in steel”) or edit the line; an agent runs <code>lore.py check</code>, <code>build</code> and <code>publish</code>, and every page of this course, and every lesson drawn from it, follows on the next deploy. A superseded line isn’t deleted silently: its tier or text changes, with the reason in its source braces.'],
+  ['What do the sources in braces mean?', '<code>{E2 25:20}</code> is Episode 2 at 25 minutes 20 seconds; <code>{E4 S17}</code> is a scene; <code>{HIDDEN-02}</code> is an episode’s hidden page; <code>{Aaron 2026-10-22}</code> is a decision of mine and its date; anything else names the crew document a line comes from.'],
+  ['What is Y0?', 'The night Episode 1 was broadcast. Every date in the series sits on that one axis: <code>Y-9</code> is nine years before it, <code>Y+60</code> about sixty years after. No calendar year has been fixed on screen.'],
+  ['Why are some pictures marked placeholder?', 'A placeholder was made as a quick reference so nobody starts from nothing. It is in no episode yet, it isn’t canon, and the next crew is free to replace it. Used means the exact look is in an episode; steel means I approved it as canon.'],
+];
+---
+
+<LorePage
+  title="I Love My Evening Television: the lore course · Aaron Orelup"
+  description="The world of Aaron Orelup's TV series in one place: every character sheet, the timeline, every easter egg, and how sure each line is, from set in steel to open."
+  nav="index"
+  counts={TOTALS}
+>
+  <header class="lo-hero lo-glass" slot="hero">
+    <div class="cp-hero">
+      <div>
+        <p class="lo-eyebrow">Course 2 · The lore of a TV series</p>
+        <h1 class="lo-title">I Love My Evening Television<span class="cur" aria-hidden="true"></span></h1>
+        <p class="lo-lede">Half-hour episodes of an ordinary, gentle programme that breaks at twenty minutes. Every cast is new; the world is the same. This is that world: every character, every planted egg, every date, and how sure we are of each line.</p>
+        <div class="cp-stats">
+          <div><b>{EPISODES.length}</b><span>episodes</span></div>
+          <div><b>{CHARACTERS.length}</b><span>characters</span></div>
+          <div><b>{THINGS.length}</b><span>things</span></div>
+          <div><b>{nLines.toLocaleString('en-US')}</b><span>lines of lore</span></div>
+          <div><b>{TOTALS.steel}</b><span>set in steel</span></div>
+        </div>
+        <div class="lbtns">
+          <a class="lbtn is-warm" href={`${BASE}/characters/`}>Character sheets →</a>
+          <a class="lbtn" href={`${BASE}/eggs/`}>The egg atlas</a>
+          <a class="lbtn" href="#tiers">How sure is a line? ↓</a>
+        </div>
+      </div>
+      <div class="cp-mosaic">
+        {EPISODES.slice(0, 4).map((e) => {
+          const img = firstImage(e);
+          return (
+            <a href={urlOf(e.id)} style={epVars(e.id)} aria-label={`Episode ${epNumber(e.id)}: ${e.title}${UNRELEASED.has(e.id) ? ' (not released yet)' : ''}`}>
+              {img && <img src={thumbOf(img.url)} alt="" decoding="async" width="560" height="315" />}
+              <span>{e.id} · {e.title}</span>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </header>
+
+  <section class="lo-block" style="margin-top:0" id="search">
+    <h2 class="lo-h2">Look something up</h2>
+    <p class="lo-intro">A name, a number, a line of dialogue: every sheet and every line of the lore.</p>
+    <div class="lsearch" data-search>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+      <label class="sr-only" for="lore-q">Search the lore</label>
+      <input id="lore-q" type="search" placeholder="Rosie, 2.56, the moth, Goodnight…" autocomplete="off" data-search-q />
+      <div class="lsearch-out" data-search-out aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="lo-block" id="episodes">
+    <h2 class="lo-h2">Four nights</h2>
+    <p class="lo-intro">Each episode is half an hour of a calm maker at work, then twenty seconds of black. At twenty minutes it turns. Unreleased episodes are here in full, marked <span class="unrel">not released yet</span>.</p>
+    <div class="epcards">
+      {EPISODES.map((e) => {
+        const img = firstImage(e);
+        const p = placement(e);
+        return (
+          <a class="epcard" href={urlOf(e.id)} style={epVars(e.id)}>
+            <div class="epcard-art">
+              {img && <img src={thumbOf(img.url)} alt="" loading="lazy" decoding="async" width="560" height="315" />}
+              {UNRELEASED.has(e.id) && <span class="unrel">not released yet</span>}
+            </div>
+            <div class="epcard-b">
+              <span class="ecard-k">Episode {epNumber(e.id)}</span>
+              <h3 class="epcard-t">{e.title}</h3>
+              <p class="epcard-s">{clip(plain(e.header.logline || e.summary || ''), 200)}</p>
+              <div class="epcard-y">{p && <span>{p.text}</span>}{p?.tier && <Fragment set:html={chip(p.tier, { title: false })} />}</div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <section class="lo-block" id="tiers">
+    <h2 class="lo-h2">How sure is a line?</h2>
+    <p class="lo-intro">Every one of the {nLines.toLocaleString('en-US')} lines carries exactly one of six tiers, shown everywhere by its shape and its line style, not by colour alone. <b>Only steel is a commitment.</b> Everything else is free to change, and the crews are expected to change it when they see something better. The bar at the top of every page shows only one tier when you tap it.</p>
+    <div class="totals" style="margin-bottom:18px">
+      <Fragment set:html={tierBar(TOTALS, { big: true })} />
+      <div class="totals-k">{TIER_ORDER.map((t) => <span class={`t-${t}`}><Fragment set:html={mark(t)} />{TIERS[t].label}<b>{TOTALS[t].toLocaleString('en-US')}</b></span>)}</div>
+    </div>
+    <div class="tiercards">
+      {TIER_ORDER.map((t) => {
+        const ex = example(t);
+        return (
+          <div class={`tiercard t-${t}`}>
+            <div class="tiercard-h"><Fragment set:html={chip(t, { big: true, label: TIERS[t].name })} /><b>{TOTALS[t].toLocaleString('en-US')} lines</b></div>
+            <p>{TIERS[t].what}</p>
+            {ex && (
+              <blockquote>
+                <span set:html={md(ex.text)} />
+                <span class="lb-m">{ex.src && `{${ex.src}}`}{exampleOn(ex) && <> · on <a href={`${urlOf(exampleOn(ex))}#L${ex.line}`}>{titleOf(exampleOn(ex))}</a></>}</span>
+              </blockquote>
+            )}
+            <span class="who-may">Who changes it: {WHO[t]}</span>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  <section class="lo-block" id="lessons">
+    <h2 class="lo-h2">The lessons</h2>
+    {lessons.length > 0 ? (
+      <>
+        <p class="lo-intro">Short narrated lessons, drawn live from the lore: when a line changes, the picture changes with it, and every sentence says how sure it is. {out.length} of {lessons.length} out.</p>
+        <div class="lessons">
+          {lessons.map((l, i) =>
+            l.status === 'published' && l.url ? (
+              <a class="lesson is-out" href={l.url}>
+                {l.poster && <span class="lesson-poster"><img src={l.poster} alt="" loading="lazy" decoding="async" /></span>}
+                <span class="lesson-n">{l.n || l.id || String(i + 1).padStart(2, '0')}</span>
+                <span><b>{l.title}</b>{l.summary && <p>{clip(plain(l.summary), 180)}</p>}<small>{l.duration ? fmtDuration(l.duration) : ''}{l.published ? ` · ${fmtDate(l.published)}` : ''}</small></span>
+              </a>
+            ) : (
+              <div class="lesson is-locked">
+                <span class="lesson-n">{l.n || l.id || String(i + 1).padStart(2, '0')}</span>
+                <span><b>{l.title}</b>{(l.summary || l.idea) && <p>{clip(plain(l.summary || l.idea), 160)}</p>}<small>Not released yet</small></span>
+              </div>
+            ),
+          )}
+        </div>
+      </>
+    ) : (
+      <>
+        <p class="lo-intro">Short narrated lessons, drawn live from the lore by code, are being made: when a line changes, the picture changes with it, and every sentence says how sure it is. The plan:</p>
+        <div class="lessons">
+          {PLAN.map(([nn, t]) => (
+            <div class="lesson is-locked"><span class="lesson-n">{nn}</span><span><b>{t}</b><small>Not released yet</small></span></div>
+          ))}
+        </div>
+      </>
+    )}
+  </section>
+
+  <section class="lo-block" id="doors">
+    <h2 class="lo-h2">Every way in</h2>
+    <div class="doors">
+      {doors.map(([k, t, d, n]) => (
+        <a class="door" href={`${BASE}/${k}/`}><b>{t}</b><span>{d}</span><small>{n}</small></a>
+      ))}
+    </div>
+  </section>
+
+  {CHANGES && (CHANGES.added?.length || CHANGES.retiered?.length || CHANGES.removed?.length) ? (
+    <section class="lo-block" id="changed">
+      <h2 class="lo-h2">What changed</h2>
+      <p class="lo-intro">Since the previous publish{CHANGES.since ? ` (${fmtDate(String(CHANGES.since).slice(0, 10))})` : ''}: lines that moved tier, then lines added.</p>
+      {CHANGES.retiered?.length > 0 && (
+        <ul class="lbl" set:html={CHANGES.retiered.slice(0, 40).map((b) => bulletHtml(b, { anchor: false, link: true }).replace('<span class="lb-m">', `<span class="chg-was">was ${b.was || '?'}</span> <span class="lb-m">`)).join('')} />
+      )}
+      {CHANGES.added?.length > 0 && <Lines bullets={CHANGES.added.slice(0, 40)} opts={{ anchor: false, link: true }} />}
+    </section>
+  ) : null}
+
+  <section class="lo-block faq" id="faq">
+    <h2 class="lo-h2">Questions</h2>
+    {faq.map(([q, a]) => (
+      <details>
+        <summary>{q}</summary>
+        <p set:html={a} />
+      </details>
+    ))}
+  </section>
+
+  <script>
+    // search: the index (sheets and lines) is fetched once, the first time the box is used
+    type Index = { e: [string, string, string, string][]; b: [string, string, number, number][] };
+    const box = document.querySelector<HTMLElement>('[data-search]');
+    const input = box?.querySelector<HTMLInputElement>('[data-search-q]');
+    const outEl = box?.querySelector<HTMLElement>('[data-search-out]');
+    let idx: Index | null = null;
+    let loading: Promise<Index> | null = null;
+    const load = () => (loading ||= fetch(new URL('search.json', location.href.split('#')[0].replace(/[^/]*$/, '')).toString()).then((r) => r.json()).then((j) => (idx = j)));
+    const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    const hi = (s: string, words: string[]) => {
+      let h = esc(s);
+      for (const w of words) h = h.replace(new RegExp(`(${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'ig'), '<mark>$1</mark>');
+      return h;
+    };
+    const LABEL: Record<string, string> = { steel: 'Steel', fact: 'On screen', egg: 'Egg', running: 'Running', idea: 'Idea', open: 'Open' };
+    const run = () => {
+      if (!input || !outEl) return;
+      const q = input.value.trim().toLowerCase();
+      if (q.length < 2) { outEl.innerHTML = ''; return; }
+      if (!idx) { outEl.innerHTML = '<p class="lsearch-n">Looking…</p>'; load().then(run); return; }
+      const words = q.split(/\s+/).filter(Boolean);
+      const ents = idx.e.filter(([, title, aka]) => words.every((w) => (title + ' ' + aka).toLowerCase().includes(w))).slice(0, 14);
+      const all = idx.b.filter(([t]) => words.every((w) => t.toLowerCase().includes(w)));
+      const lines = all.slice(0, 30);
+      outEl.innerHTML =
+        (ents.length ? `<div class="lsearch-ents">${ents.map(([url, title, , kind]) => `<a href="${url}">${hi(title, words)}<small>${esc(kind)}</small></a>`).join('')}</div>` : '') +
+        `<p class="lsearch-n">${all.length ? `${all.length} line${all.length === 1 ? '' : 's'}${all.length > 30 ? ', the first 30' : ''}` : 'No line matches.'}</p>` +
+        `<ul class="lbl">${lines
+          .map(([t, tier, e, line]) => `<li class="lb t-${tier}"><span class="tc t-${tier}"><svg class="tm t-${tier}" aria-hidden="true"><use href="#tm-${tier}"></use></svg>${LABEL[tier]}</span><span class="lb-b">${hi(t, words)} <span class="lb-m"><span class="on">on <a href="${idx!.e[e][0]}#L${line}">${esc(idx!.e[e][1])}</a></span></span></span></li>`)
+          .join('')}</ul>`;
+    };
+    input?.addEventListener('focus', () => { load(); }, { once: true });
+    let timer = 0;
+    input?.addEventListener('input', () => { clearTimeout(timer); timer = window.setTimeout(run, 120); });
+  </script>
+</LorePage>

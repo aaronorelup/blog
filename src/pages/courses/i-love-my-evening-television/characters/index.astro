@@ -1,0 +1,15 @@
+---
+// The character sheets index: every character in the lore, human or not, grouped by kind.
+import EntityIndex from '../../../../components/lore/EntityIndex.astro';
+import { CHARACTERS, CHARACTER_GROUPS, BASE } from '../../../../lib/lore.js';
+---
+<EntityIndex
+  list={CHARACTERS}
+  groups={CHARACTER_GROUPS}
+  nav="characters"
+  title="Characters"
+  eyebrow="Character sheets"
+  lede={`Everyone in the series, human or not: ${CHARACTERS.length} sheets, from the people who stay up for someone to the robots, programs, helpers and presences who keep them company.`}
+  sub={`Every episode has an all-new cast, so most sheets belong to one night; a few cross between episodes, and one person is in all of them. A picture marked <b>Used</b> is a frame from an episode; <b>Steel</b> is a look Aaron approved; <b>Placeholder</b> was made as a quick reference, is in no episode yet, and is free to change.`}
+  description="Character sheets for everyone in Aaron Orelup's TV series I Love My Evening Television, each line marked steel, on screen, egg, running, idea or open."
+/>

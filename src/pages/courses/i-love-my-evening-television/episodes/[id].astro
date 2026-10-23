@@ -1,0 +1,245 @@
+---
+// One page per episode (Series/lore/episodes/E<n>.md), in the episode's own palette: logline, release state and
+// links, its place on the Y axis, the 30:00 + 20 s structure as a strip, then every section of its file, its
+// cast and the egg families it plants or answers. Unreleased episodes are shown in full, labelled.
+import LorePage from '../../../../components/lore/LorePage.astro';
+import LoreSection from '../../../../components/lore/LoreSection.astro';
+import {
+  BASE, EPISODES, CHARACTERS, THINGS, LORE, md, plain, clip, allBullets, countTiers, slugify, cleanTitle, urlOf, firstImage, thumbOf,
+  imageSize, epVars, UNRELEASED, epNumber, editHref, KIND_LABEL, placement, ageAt, mdTitle,
+} from '../../../../lib/lore.js';
+import { chip, epChip, badge, tierBar, marks } from '../../../../lib/lore-html.js';
+import { placementSvg } from '../../../../lib/lore-svg.js';
+
+export function getStaticPaths() {
+  return EPISODES.map((ep) => ({ params: { id: ep.id }, props: { ep } }));
+}
+const { ep } = Astro.props;
+const n = epNumber(ep.id);
+const un = UNRELEASED.has(ep.id);
+const bullets = allBullets(ep);
+const counts = countTiers(bullets);
+const h = ep.header;
+const p = placement(ep);
+
+// links: the first URL in each header, and what the header says around it
+const linkOf = (v) => {
+  const m = String(v || '').match(/https?:\/\/\S+?(?=[\s)]|$)/);
+  return m ? { url: m[0], note: String(v).replace(m[0], '').replace(/^\s*\(|\)\s*$/g, '').trim() } : null;
+};
+const links = [
+  ['YouTube', h.youtube],
+  ['The blog post', h.blog],
+  ['The hidden page', h.hidden],
+].map(([label, v]) => ({ label, v, l: linkOf(v) })).filter((x) => x.v);
+
+// the structure strip: every Structure line with a time range, on 30:00 of programme + 20 s of black
+const toS = (t) => t.split(':').reduce((a, x) => a * 60 + parseFloat(x), 0);
+const END = 30 * 60 + 20;
+const structure = ep.sections.find((s) => s.title === 'Structure');
+const segs = (structure?.bullets || [])
+  .map((b) => {
+    const m = b.text.match(/(\d{1,2}:\d{2}(?:\.\d+)?)\s*[-–]\s*(\d{1,2}:\d{2}(?:\.\d+)?)/);
+    if (!m) return null;
+    const a = toS(m[1]), z = toS(m[2]);
+    if (!(z > a) || z > END + 1) return null;
+    const sc = (b.text.match(/\bS(\d{2,3})\b/) || [])[0] || '';
+    return { b, a, z, sc };
+  })
+  .filter(Boolean)
+  .sort((x, y) => x.a - y.a);
+const pct = (s) => `${((s / END) * 100).toFixed(3)}%`;
+const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
+
+const ids = new Set();
+const secs = ep.sections.map((s) => {
+  let id = slugify(cleanTitle(s.title || 'lines'));
+  while (ids.has(id)) id += '-2';
+  ids.add(id);
+  return { s, id };
+});
+
+const cast = CHARACTERS.filter((c) => c.episodes.includes(ep.id));
+const things = THINGS.filter((c) => c.episodes.includes(ep.id));
+// the egg families (eggs.md sections) with a line in this episode
+const eggFams = (LORE.eggs || [])
+  .filter((s) => s.title)
+  .map((s) => ({ s, mine: s.bullets.filter((b) => b.ep === ep.id) }))
+  .filter((x) => x.mine.length);
+const threads = (LORE.threads || [])
+  .filter((s) => s.title)
+  .map((s) => ({ s, mine: s.bullets.filter((b) => b.ep === ep.id) }))
+  .filter((x) => x.mine.length);
+
+const images = await Promise.all((ep.images || []).filter((i) => i.url).map(async (i) => ({ ...i, size: await imageSize(i.url) })));
+const hero = images[0];
+const skip = new Set(['id', 'released', 'year', 'youtube', 'blog', 'hidden', 'summary', 'logline']);
+const facts = Object.entries(h).filter(([k]) => !skip.has(k));
+const prev = EPISODES.find((e) => epNumber(e.id) === n - 1);
+const next = EPISODES.find((e) => epNumber(e.id) === n + 1);
+---
+
+<LorePage
+  title={`Episode ${n}: ${ep.title} · I Love My Evening Television`}
+  description={clip(plain(h.logline || ep.summary || ''), 200)}
+  crumbs={[['Episodes', `${BASE}/episodes/`], [`Episode ${n}`]]}
+  nav="episodes"
+  counts={counts}
+  ep={ep.id}
+>
+  <header class="lo-hero lo-glass" slot="hero">
+    <div class="ep-hero">
+      <div>
+        <p class="lo-eyebrow"><Fragment set:html={epChip(ep.id, { big: true })} /> Episode {n}{p ? ` · ${p.text}` : ''}</p>
+        <h1 class="lo-title">{ep.title}<span class="cur" aria-hidden="true"></span></h1>
+        <div class="sheet-head">
+          {un ? <span class="unrel" style="color:var(--pc-strong)">not released yet</span> : <span class="unrel" style="border-style:solid">released</span>}
+          {p && <span class="lb-m" style="font-size:13px">placed at <b style="color:var(--pc-strong)">{p.text}</b></span>}
+          {p?.tier && <Fragment set:html={chip(p.tier)} />}
+        </div>
+        {h.logline && <p class="lo-lede" set:html={md(h.logline)} />}
+        {ep.summary && <p class="lo-sub" set:html={md(ep.summary)} />}
+        <div class="ep-links">
+          {links.map(({ label, l, v }) =>
+            l ? (
+              <a class="lbtn" href={l.url} target="_blank" rel="noopener" title={l.note || undefined}>{label} ↗</a>
+            ) : (
+              <span class="lbtn" style="opacity:.75;cursor:default" title={v}>{label}: {clip(String(v), 40)}</span>
+            ),
+          )}
+        </div>
+      </div>
+      {hero && (
+        <figure class={`lfig is-${hero.status}`} style="margin:0">
+          <div class="lfig-img"><img src={hero.url} alt={plain(hero.caption)} width={hero.size?.w} height={hero.size?.h} decoding="async" /><Fragment set:html={badge(hero.status)} /></div>
+          <figcaption><span set:html={md(hero.caption)} /> <span class="lb-m">{hero.src && `{${hero.src}}`}</span></figcaption>
+        </figure>
+      )}
+    </div>
+  </header>
+
+  <div class="sheet">
+    <div class="sheet-top">
+      <div class="panel">
+        <h3>The record</h3>
+        <dl class="facts">
+          <dt>Released</dt><dd>{un ? 'not released yet' : 'yes'}</dd>
+          {links.filter((x) => x.l && x.l.note).map(({ label, l }) => (<><dt>{label.replace('The ', '')}</dt><dd>{l.note}</dd></>))}
+          {facts.map(([k, v]) => (<><dt>{k}</dt><dd set:html={md(String(v))} /></>))}
+          <dt>Lines</dt><dd>{bullets.length}<Fragment set:html={tierBar(counts)} /></dd>
+          <dt>File</dt><dd><a class="lb-m" href={editHref(ep.file, 1)} rel="nofollow">{ep.file.replace('Series/lore/', '')}</a></dd>
+        </dl>
+      </div>
+      {images.length > 1 && (
+        <div class="lfigs is-strip">
+          {images.slice(1).map((img) => (
+            <figure class={`lfig is-${img.status}`}>
+              <div class="lfig-img"><img src={img.url} alt={plain(img.caption)} width={img.size?.w} height={img.size?.h} loading="lazy" decoding="async" /><Fragment set:html={badge(img.status)} /></div>
+              <figcaption><span set:html={md(img.caption)} /> <span class="lb-m">{img.src && `{${img.src}}`}</span></figcaption>
+            </figure>
+          ))}
+        </div>
+      )}
+    </div>
+
+    <div class="sheet-main">
+      <nav class="jump" aria-label="Sections of this episode">
+        <a href="#on-the-axis">On the axis</a>
+        {segs.length > 0 && <a href="#the-strip">30:20</a>}
+        {secs.filter(({ s }) => s.title).map(({ s, id }) => <a href={`#${id}`}>{cleanTitle(s.title)}<b>{s.bullets.length}</b></a>)}
+        <a href="#cast">Cast<b>{cast.length}</b></a>
+        {eggFams.length > 0 && <a href="#eggs-here">Eggs<b>{eggFams.length}</b></a>}
+      </nav>
+
+      {ep.prose?.length > 0 && <div class="lo-prose" style="margin-bottom:22px">{ep.prose.map((x) => <p set:html={md(x)} />)}</div>}
+
+      <section class="lsec" id="on-the-axis">
+        <h2>On the Y axis<small>Y0 = the night of Episode 1</small></h2>
+        <div class="axis-frame" style="--minw:0px" set:html={placementSvg(ep.id)} />
+        {ep.year && (
+          <ul class="lbl"><li class={`lb t-${ep.year.tier}`}><Fragment set:html={chip(ep.year.tier)} /><span class="lb-b">Placed at <b>{p?.text}</b>. <span class="lb-m">{ep.year.src && `{${ep.year.src}}`}</span></span></li></ul>
+        )}
+      </section>
+
+      {segs.length > 0 && (
+        <section class="lsec" id="the-strip">
+          <h2>Thirty minutes and twenty seconds<small>{segs.length} parts</small></h2>
+          <p class="lo-intro" style="margin-top:10px">Every episode is 30:00 of programme, then 20 seconds of black with something under it. The warm line is 20:00, where each one turns. Tap a part to read it.</p>
+          <div class="strip">
+            <div class="strip-bar">
+              {segs.map((x, i) => (
+                <a class="strip-seg" href={`#L${x.b.line}`} style={`left:${pct(x.a)};width:${pct(x.z - x.a)};--k:${x.a >= 1200 ? (i % 2 ? 58 : 46) : i % 2 ? 30 : 20}%`} title={`${fmt(x.a)}–${fmt(x.z)} ${plain(x.b.text).replace(/^[\d:.\s–-]+/, '')}`}>
+                  {x.z - x.a > 75 ? x.sc.replace(/^S0?/, '') : ''}
+                </a>
+              ))}
+              <span class="strip-black" style={`left:${pct(1800)}`} title="20 seconds of black"></span>
+              <span class="strip-turn" style={`left:${pct(1200)}`} aria-hidden="true"></span>
+            </div>
+            <div class="strip-scale" aria-hidden="true">
+              <span class="is-start" style="left:0">0:00</span>
+              <span style={`left:${pct(600)}`}>10:00</span>
+              <span class="is-turn" style={`left:${pct(1200)}`}>20:00</span>
+              <span class="is-end" style="left:100%">30:20</span>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {secs.map(({ s, id }) => <LoreSection section={s} id={id} self={ep.id} opts={{ showEp: false }} />)}
+
+      <section class="lsec" id="cast">
+        <h2>Cast<small>{cast.length} characters · {things.length} things</small></h2>
+        <div class="egrid is-compact" style="margin-top:14px">
+          {cast.map((c) => {
+            const img = firstImage(c);
+            const age = c.born?.year ? ageAt(c.born, ep) : null;
+            return (
+              <a class="ecard" href={urlOf(c.id)}>
+                <div class="ecard-art">
+                  {img ? <img src={thumbOf(img.url)} alt="" loading="lazy" decoding="async" width="560" height="315" /> : <span class="ecard-none" aria-hidden="true">{c.title.replace(/^the\s+/i, '').charAt(0).toUpperCase()}</span>}
+                  {img && <Fragment set:html={badge(img.status)} />}
+                </div>
+                <div class="ecard-b">
+                  <span class="ecard-k">{KIND_LABEL[c.kind] || c.kind}{age ? ` · ${age.text} here` : ''}</span>
+                  <h3 class="ecard-t">{c.title}</h3>
+                  {c.summary && <p class="ecard-s">{clip(plain(c.summary), 170)}</p>}
+                </div>
+              </a>
+            );
+          })}
+        </div>
+        {things.length > 0 && (
+          <div class="mentions" style="margin-top:16px">
+            {things.map((t) => <a href={urlOf(t.id)}>{t.title}</a>)}
+          </div>
+        )}
+      </section>
+
+      {eggFams.length > 0 && (
+        <section class="lsec" id="eggs-here">
+          <h2>Egg families in this episode<small>{eggFams.length}</small></h2>
+          <p class="lo-intro" style="margin-top:10px">The families of planted details this episode takes part in, from the <a href={`${BASE}/eggs/`}>egg atlas</a>: each mark is one line about it here.</p>
+          <div class="mentions">
+            {eggFams.map(({ s, mine }) => (
+              <a href={`${BASE}/eggs/#${slugify(cleanTitle(s.title))}`} data-fsec><span set:html={mdTitle(s.title)} /> <span set:html={marks(mine, 8)} style="display:inline-flex;gap:2px;vertical-align:-1px" /></a>
+            ))}
+          </div>
+        </section>
+      )}
+      {threads.length > 0 && (
+        <section class="lsec" id="threads-here">
+          <h2>Threads through this episode<small>{threads.length}</small></h2>
+          <div class="mentions" style="margin-top:12px">
+            {threads.map(({ s, mine }) => <a href={`${BASE}/threads/#${slugify(cleanTitle(s.title))}`}><span set:html={mdTitle(s.title)} /><b>{mine.length}</b></a>)}
+          </div>
+        </section>
+      )}
+
+      <nav class="pager" aria-label="Other episodes">
+        {prev && <a href={urlOf(prev.id)}><span>← Episode {epNumber(prev.id)}</span>{prev.title}</a>}
+        {next && <a class="is-next" href={urlOf(next.id)}><span>Episode {epNumber(next.id)} →</span>{next.title}</a>}
+      </nav>
+    </div>
+    <div class="sheet-bot"></div>
+  </div>
+</LorePage>
