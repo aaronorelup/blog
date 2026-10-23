@@ -344,12 +344,12 @@ The plan had 20 eggs, each one doing a job in the story rather than sitting in a
 - **The breathing card** from Episode 2, taped inside the lid; the paper moth from Episode 3 at every lamp; Episode 3's
   clay night watchman as the arbiter of Board 14's hall, nodding off at monitor `FEED 3`; a grey index card, `Rc2+`.
 
-The series' egg archive ended up listing 23. By QA's count on master v1, with the archive crew's checks of v2's frames,
-22 of the 23 were where they were meant to be, two of them only weakly: the bus shelter at the park, which old players
-sit behind out of the wind, faces the wrong way, and that doesn't read; and the blueprint rooks' title block has no
-lettering at board size. Episode 3's night watchman was there, but his monitor was mirrored until the first fix cycle.
-The one black seed beside the watermelon slice on the real table was missing until the second fix cycle put it there.
-In the finished master: TBD-AT-WRAP-V3 of 23.
+The series' egg archive ended up listing 23, and all 23 are in the finished film where they were meant to be, two of
+them only weakly: the bus shelter at the park, which old players sit behind out of the wind, faces the wrong way, and
+that doesn't read; and the blueprint rooks' title block has no lettering at board size. That is QA's count on master
+v1, the archive crew's checks of v2's frames, and QA v3's check of the last one, the black seed beside the watermelon
+slice on the real table, missing until the second fix cycle put it there. Episode 3's night watchman was there all
+along, but his monitor was mirrored until the first fix cycle.
 
 ## Surprises
 
@@ -406,7 +406,8 @@ In the finished master: TBD-AT-WRAP-V3 of 23.
 - **My own log's clock ran fast.** I estimated the times of some entries between 03:45 and 04:20 instead of asking the
   machine, and they were 25 to 30 minutes ahead. Every later entry was stamped from the clock.
 - **The 12 hours ran out** at 11:47, twelve hours after the session's first event, while master v1 was still being
-  built. Master v1 passed its own verify at 13:09 and v2 at 17:41; the finished master, v3, came at TBD-AT-WRAP-V3.
+  built. Master v1 passed its own verify at 13:09, v2 at 17:41 and v3 at 21:27, and a fourth follows tonight
+  (below).
 - **Master v1 failed QA.** Four lenses checked it: the picture (every frame decoded, crops at full resolution), the
   sound (silence, loudness and pitch measured, and two Gemini models listening to excerpts), the story, chess and
   comedy as Aaron would watch it, and the series' rules. It passed every gate number (the length to the frame, -14.0
@@ -454,7 +455,15 @@ In the finished master: TBD-AT-WRAP-V3 of 23.
   teacher, knitted sleeves with ribbed cuffs. The sounds already there after 20:00 (the fall, the tuning orchestra,
   the gods' murmur, the real table's room) came up 2 to 5.5 dB, a board's boom now goes into the planned silence at
   20:00, the roll before the aria rings on into its first note, the black seed is on the table, and the black band in
-  the stairwell shots of the gods is painted over. What QA v3 found in master v3: TBD-AT-WRAP-V3.
+  the stairwell shots of the gods is painted over. Master v3 passed its verify at 21:27.
+- **QA v3 passed every rule** on master v3: -14.0 LUFS, -1.6 dBTP, no photosafe violation anywhere, no banned word,
+  31 frame-exact seams. The jolt's edge, the grid's jump, the seed and the stairwell band were fixed. It found four
+  more things, and a third fix cycle, from 22:02, fixed them: the boy's folded fingers had become a hollow, squared
+  loop, a pose bent past what real joints can do; the upload captions still said "[laughs]" on the teacher's peak at
+  19:02, left over from the first take; that line ended on a breathy, amused exhale; and the boy's hand read
+  glove-grey away from the lamp. Two stretches in the box world, 20:45 to 21:30 and 25:05 to 26:05, still sound dull,
+  18 to 23 dB short of a dialogue scene above 2 kHz. They are being re-mixed as this goes up, and a master v4, with
+  the third cycle in it, follows tonight.
 - **Small things left in the film.** The second cycle left out anything that would re-time the film or re-render every
   board segment: the clock arithmetic is the film's spine, and a re-time that late risked more than it bought. So the
   wake-up in the box at 20:40 runs 50 seconds where 25 would do; Morphy's turn at 25:00 is a cut from the back of his
@@ -513,34 +522,36 @@ of its layout files; every other page builds exactly as before.)
 
 ## The numbers
 
-Measured by the episode's ledger at 17:38 TBD-AT-WRAP-V3: a script that reads every transcript of the session, every
-assistant message once, and asks RunPod and ElevenLabs for their own counters (the episode's `tools/ledger/`).
+Measured by the episode's ledger at 00:07 on the 23rd, while the last mix fix was still running: a script that reads
+every transcript of the session, every assistant message once, and asks RunPod and ElevenLabs for their own counters
+(the episode's `tools/ledger/`).
 
-- **Agents:** 70 TBD-AT-WRAP-V3, all Opus 5.5: me, 49 crews running in the background and 20 agents inside 5
-  workflows TBD-AT-WRAP-V3. Seven readers, three treatment writers, three judges, a showrunner, and crews for engines,
+- **Agents:** 81, all Opus 5.5: me, 50 crews running in the background and 30 agents inside 7 workflows. Seven
+  readers, three treatment writers, three judges, a showrunner, and crews for engines,
   chess, scripts, voices, sound, paint, plates, the box world, H3, the real table, the inserts, the rough cut, the
-  rebuild, the masters, the QA panels, two fix cycles, the archive, the ledger and this post. Eight at a time was the
+  rebuild, the masters, the QA panels, three fix cycles, the archive, the ledger and this post. Eight at a time was the
   rule, and by the transcripts' timestamps it slipped: for about twenty minutes in all, most of it around 05:10 and
   05:35, nine to eleven were working at once, while crews I had sent back for polish were still finishing and new
   ones started. Effort xhigh for everything creative.
-- **Tokens:** 9.38 million output tokens TBD-AT-WRAP-V3, 2.52 billion tokens of cache reads TBD-AT-WRAP-V3 (268
-  times the output) and 98.8 million of cache writes TBD-AT-WRAP-V3; **about $1,188 at API rates** TBD-AT-WRAP-V3:
-  cache reads $504, cache writes $496, output $188. Aaron's plan is a subscription, so this is a size, not a bill.
-- **Wall clock:** TBD-AT-WRAP-V3 from 23:47 on 21 October, the session's first event, to the finished master at
-  TBD-AT-WRAP-V3, against Aaron's 12 hours. Master v1 passed its verify at 13:09, 13 h 22 min in, and v2 at 17:41,
-  17 h 54 min in.
+- **Tokens:** 10.4 million output tokens, 2.90 billion tokens of cache reads (279 times the output) and 130 million
+  of cache writes; **about $1,444 at API rates**: cache writes $656, cache reads $581, output $208. When master v1
+  existed, at 13:17, it was about $973; the QA panels, three fix cycles and two more masters since cost about $471.
+  Aaron's plan is a subscription, so this is a size, not a bill.
+- **Wall clock:** 21 hours 40 minutes from 23:47 on 21 October, the session's first event, to master v3 at 21:27 the
+  next evening, against Aaron's 12 hours. Master v1 passed its verify at 13:09, 13 h 22 min in, and v2 at 17:41,
+  17 h 54 min in. At 00:07, 24.3 hours in, the session was still running, with a fourth master to come.
 - **The box:** Linux, 4 CPUs, 15 GB of RAM, about 30 GB of disk, no GPU. Four container restarts.
-- **RunPod:** 27 pods TBD-AT-WRAP-V3 (RTX 3090, 4090, 5090, RTX 6000 Ada, L40S and H100), 11.0 pod-hours by the run's
-  pod log. The balance went from $27.68 ($7.68 plus Aaron's $20) to $18.27 at 17:38 TBD-AT-WRAP-V3, so about $9.41
-  TBD-AT-WRAP-V3, including the storage of the network volume that holds the H3 models; the per-pod estimates, which
-  round up, add to $10.95, including the last pod's $0.65, which ran after that reading. Every pod had a self-stop and a watchdog, and none
-  was left running.
-- **ElevenLabs:** 34,926 TBD-AT-WRAP-V3 of the 121,490 credits Aaron's upgrade gave, by the subscription counter at
-  17:38: the aria 10,518, the sound crew 9,985, the voices 9,860, the voice and sound labs 3,171, the first fix
-  cycle's retakes 1,392. The second cycle's 30 retakes used 940 more after that reading. Four voices saved.
-- **Gemini:** about $6.84 TBD-AT-WRAP-V3 at list price, the sum of the crews' own estimates in the ledger at 17:38
-  (the API returns no price): the voices, their listening panels and the voice designs about $5.10, the first QA
-  panel's listeners $1.40, the sound crews' listeners and a music probe $0.19, the aria $0.17.
+- **RunPod:** 28 pods (RTX 3090, 4090, 5090, RTX 6000 Ada, L40S and H100), 11.5 pod-hours by the run's pod log. The
+  balance went from $27.68 ($7.68 plus Aaron's $20) to $17.12 at 00:07, so about $10.56, including the storage of the
+  network volume that holds the H3 models; the per-pod estimates, which round up, add to $11.37. Every pod had a
+  self-stop and a watchdog, and none was left running.
+- **ElevenLabs:** 41,707 of the 121,490 credits Aaron's upgrade gave, by the subscription counter at 00:07. The
+  crews' own rows account for about 35,980 of them: the aria 10,518, the sound crew 9,985, the voices 9,860, the voice
+  and sound labs 3,171, and the three fix cycles' retakes 2,446 (1,392, 940 and 114). The other 5,700 or so are on the
+  counter but in no crew's row yet. Four voices saved.
+- **Gemini:** about $9.93 at list price, the sum of the crews' own estimates in the ledger's 23 Gemini rows (the API
+  returns no price): the voices, their listening panels and the voice designs about $6.71, the three QA panels'
+  listeners $2.86, the sound crews' listeners and a music probe $0.19, the aria $0.17.
 - **Chess:** 23 canonical games at depth 28 or more; every engine number said or shown comes from them; 21 scramble
   boards, each ending with no legal move.
 - **Inserts:** 28 photoreal shots, 6,623 frames, three RTX 4090s for 1.83 hours, $1.63.
@@ -548,10 +559,11 @@ assistant message once, and asks RunPod and ElevenLabs for their own counters (t
 - **Dialogue:** 369 lines (instructor 194, boy 148, prompter 9, the Duke 7, the Count 5, the king 3, the mother 2,
   Morphy 1).
 - **The film:** 32 segments, 54,600 frames at 1080p and 30 frames a second, 30:00.000 of programme and 20.000 s of
-  black; -14.0 LUFS integrated TBD-AT-WRAP-V3, true peak -1.58 dBTP TBD-AT-WRAP-V3; the worst second has 2
-  full-frame flashes TBD-AT-WRAP-V3 (the limit is 3) and no red flash; no AI word or company name anywhere on screen
-  TBD-AT-WRAP-V3 (OCR of one frame a second, 1,851 frames, and a denser pass over every shot a fix cycle changed).
-  Those are master v2's; master v3's: TBD-AT-WRAP-V3.
+  black. Master v3: -14.0 LUFS integrated, true peak -1.6 dBTP, a loudness range of 17.9 LU; no photosafe violation
+  anywhere (the worst is 3 flashes a second on one small tile at 29:33.3, and the worst second has 2 full-frame
+  flashes; the limit is 3) and no red flash; no AI word or company name anywhere on screen (OCR of one frame a second,
+  1,851 frames, and 286 denser frames of everything the second fix cycle changed); all 31 seams frame-exact. These are
+  v3's numbers; master v4 follows tonight.
 
 <ao-bars unit="dollars">
 <table>
@@ -566,10 +578,11 @@ assistant message once, and asks RunPod and ElevenLabs for their own counters (t
 <tr><td>Voices (one 3090)</td><td>0.65</td></tr>
 <tr><td>Fix cycle 1: the hall's monitor (a 5090 that never started, then an L40S)</td><td>0.47</td></tr>
 <tr><td>Voice lab (one 4090)</td><td>0.43</td></tr>
+<tr><td>Fix cycle 3: the boy's fingers and skin (one 4090)</td><td>0.42</td></tr>
 <tr><td>Clay hall, park and watermelon (5090s and a 4090)</td><td>0.17</td></tr>
 <tr><td>Fix cycle 1: the sleepy checks (one 3090)</td><td>0.07</td></tr>
 <tr><td>3D look test (one 4090)</td><td>0.02</td></tr>
 </tbody>
 </table>
-<figcaption><b>Where the rented GPU money went</b><span class="ao-meta">From the episode's pod log, each pod's hours times its hourly rate. They add to about $10.95; the account balance fell by about $9.41 by 17:38 TBD-AT-WRAP-V3.</span></figcaption>
+<figcaption><b>Where the rented GPU money went</b><span class="ao-meta">From the episode's pod log, each pod's hours times its hourly rate. They add to about $11.37; the account balance fell by about $10.56.</span></figcaption>
 </ao-bars>
