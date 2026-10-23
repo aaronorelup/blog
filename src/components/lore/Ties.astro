@@ -1,0 +1,33 @@
+---
+// A sheet's ties: each line under "## Ties" as a small card, the sheet it points to (its first @reference) on the
+// left with its picture, the card's left edge in the tie's line style (double = steel, dashed = running ...).
+import { md, urlOf, entity, thumbOf, firstImage, isEpisodeCode, editHref } from '../../lib/lore.js';
+import { chip } from '../../lib/lore-html.js';
+
+interface Props { bullets: any[]; self?: string }
+const { bullets, self = '' } = Astro.props;
+const cards = bullets.map((b) => {
+  const target = (b.refs || []).find((r) => r !== self && !isEpisodeCode(r)) || (b.refs || [])[0] || null;
+  const e = target ? entity(target) : null;
+  const img = e ? firstImage(e) : null;
+  return { b, target, e, img };
+});
+---
+<ul class="ties lbl">
+  {cards.map(({ b, target, e, img }) => (
+    <li class={`tie lb t-${b.tier}`} id={`L${b.line}`}>
+      {target && urlOf(target) ? (
+        <a class="tie-pic" href={urlOf(target)} aria-label={e?.title || target} tabindex="-1">
+          {img ? <img src={thumbOf(img.url)} alt="" loading="lazy" decoding="async" /> : <span aria-hidden="true">{(e?.title || target).replace(/^the\s+/i, '').charAt(0).toUpperCase()}</span>}
+        </a>
+      ) : (
+        <span class="tie-pic" aria-hidden="true">·</span>
+      )}
+      <div class="tie-b">
+        <Fragment set:html={chip(b.tier)} />
+        <span set:html={md(b.text)} />
+        <span class="lb-m">{b.src && <span class="src">{`{${b.src}}`}</span>} <a class="ed" href={editHref(b)} rel="nofollow" title="Edit this line in Aaron's repo (private: Aaron and the crews)">edit</a></span>
+      </div>
+    </li>
+  ))}
+</ul>

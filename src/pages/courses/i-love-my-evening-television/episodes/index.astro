@@ -1,0 +1,62 @@
+---
+// The four episodes (and every later one: the list is the lore's episodes/ folder), in order, each in its palette.
+import LorePage from '../../../../components/lore/LorePage.astro';
+import Lines from '../../../../components/lore/Lines.astro';
+import { BASE, EPISODES, md, plain, clip, allBullets, countTiers, urlOf, firstImage, thumbOf, epVars, UNRELEASED, epNumber, placement, LORE, mdTitle } from '../../../../lib/lore.js';
+import { chip, tierBar } from '../../../../lib/lore-html.js';
+import { placementSvg } from '../../../../lib/lore-svg.js';
+
+const all = countTiers(EPISODES.flatMap(allBullets));
+const shape = (LORE.world?.[0]?.sections || []).find((s) => /shape every episode/i.test(s.title));
+---
+
+<LorePage
+  title="Episodes · I Love My Evening Television"
+  description="The episodes of Aaron Orelup's TV series I Love My Evening Television: each one half an hour of a gentle programme that breaks at twenty minutes."
+  crumbs={[['Episodes']]}
+  nav="episodes"
+  counts={all}
+>
+  <header class="lo-hero" slot="hero">
+    <p class="lo-eyebrow">{EPISODES.length} episodes · {EPISODES.filter((e) => !UNRELEASED.has(e.id)).length} released</p>
+    <h1 class="lo-title">Episodes<span class="cur" aria-hidden="true"></span></h1>
+    <p class="lo-lede">Each episode is half an hour of an ordinary, gentle programme with a calm maker at its centre, and each one breaks at twenty minutes. Every cast is new; the world is the same.</p>
+    <p class="lo-sub">Unreleased episodes are shown in full here, marked <span class="unrel">not released yet</span>: Aaron wants the course to show his whole process, finished or not.</p>
+  </header>
+
+  <div class="epcards">
+    {EPISODES.map((e) => {
+      const img = firstImage(e);
+      const p = placement(e);
+      const c = countTiers(allBullets(e));
+      return (
+        <a class="epcard" href={urlOf(e.id)} style={epVars(e.id)}>
+          <div class="epcard-art">
+            {img && <img src={thumbOf(img.url)} alt="" loading="lazy" decoding="async" width="560" height="315" />}
+            {UNRELEASED.has(e.id) && <span class="unrel">not released yet</span>}
+          </div>
+          <div class="epcard-b">
+            <span class="ecard-k">Episode {epNumber(e.id)}</span>
+            <h2 class="epcard-t">{e.title}</h2>
+            <p class="epcard-s">{clip(plain(e.header.logline || e.summary || ''), 230)}</p>
+            <div class="epcard-y">{p && <span>{p.text}</span>}{p?.tier && <Fragment set:html={chip(p.tier)} />}<span style="margin-left:auto">{allBullets(e).length} lines</span></div>
+            <Fragment set:html={tierBar(c)} />
+          </div>
+        </a>
+      );
+    })}
+  </div>
+
+  <section class="lo-block">
+    <h2 class="lo-h2">Four nights on one axis</h2>
+    <p class="lo-intro">Y0 is the night of Episode 1's broadcast. Where each later night sits is only as sure as its mark: a dashed one is a running assumption, a hollow one with a question mark is still open. The <a href={`${BASE}/timeline/`}>timeline</a> has every dated line.</p>
+    <div class="axis-frame" style="--minw:0px;max-width:820px" set:html={placementSvg('')} />
+  </section>
+
+  {shape && (
+    <section class="lo-block lsec" data-fsec>
+      <h2><span set:html={mdTitle(shape.title)} /><small>{shape.bullets.length} lines, from the world</small></h2>
+      <Lines bullets={shape.bullets} opts={{ anchor: false, link: true }} />
+    </section>
+  )}
+</LorePage>

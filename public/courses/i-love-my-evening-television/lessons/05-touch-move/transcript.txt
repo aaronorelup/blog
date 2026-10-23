@@ -1,0 +1,81 @@
+Episode 4: Touch Move: lesson 05 of I Love My Evening Television (C-02)
+https://aaronorelup.com/courses/i-love-my-evening-television/lessons/05-touch-move/
+
+[0:01] 01 Fifteen minutes each
+
+Episode 4, Touch Move, is not released yet, and it is on this course anyway, labelled so. A brass clock with two dials is set to fifteen minutes each, and a fountain pen writes the title on a score sheet: Touch Move. This much Aaron has decided: a chess lesson between a passionate teacher and a nine-year-old boy, with the board at the centre for the first twenty minutes, and chess that is interesting in its own right. The boy shows how he usually wins: Scholar's Mate on his tablet, against pawn.hab3, which offers him a draw. Then the teacher makes him Black. You're a Duke. And a Count. They replay Morphy's Opera Game of 1858, and the boy tries to guess each of the Duke's moves first. At twenty minutes the teacher's flag falls with his fingertip still on Morphy's mating rook, and the whole programme tips over, like a resigned king.
+
+  [STEEL] Unreleased episodes (Episode 3 not yet on YouTube, Episode 4 not yet out) are on the lore course anyway, labelled "not released yet". {Aaron 2026-10-22}
+  [FACT] A brass clock with two dials is set to fifteen minutes each; the title is written by a fountain pen on a scoresheet: Event: TOUCH MOVE. {E4 0:10-0:35}
+  [STEEL] A chess lesson between an exceptionally passionate instructor and a nine-year-old boy; for about the first twenty minutes the chessboard is the central picture. {Aaron 2026-10-19, E4 concept §1, §10}
+  [STEEL] The chess must be genuinely interesting in its own right, not background for comedy. {Aaron 2026-10-19, E4 concept §1}
+  [FACT] The reluctant boy (The boy) shows how he usually wins: Scholar's Mate on his tablet (Lantern) against pawn.hab3 (PAWN), which offers a draw. {E4 0:35-1:00}
+  [FACT] The teacher (Daniel Fenn, the instructor) makes him Black: "You're a Duke. ...And a Count." They replay Morphy's Opera Game of 1858 (The Opera Game) and he guesses each of the Duke's moves first. {E4 1:35-1:54}
+  [FACT] The teacher spends his own time on stories and his flag falls at 20:00.000 with his fingertip still on Morphy's mating rook. {E4 19:57-20:00}
+  [FACT] The whole programme (board window, column, dials, scoresheet, BALANCE strip) rotates 90 degrees about the frame's lower-right corner like a resigned king going over, tearing at the pivot and splitting RGB. {E4 20:00.033-20:01.0}
+
+[1:10] 02 The teacher
+
+The teacher is never seen whole, and never his face. His name, Daniel Fenn, is written on an old score sheet, as Black. Aaron asked for a teacher who loves chess and loves sharing it, never as a performance, modelled on Doctor Hiriluk, from One Piece: never give up on your imagination when it looks hopeless. And Aaron decided he is not naive: he knows when a position is lost. His only praise, all night, is one word: Yes. When the boy says he has used far more time, he answers: I talk more. By our reading, he spends his own clock on the boy on purpose.
+
+  [FACT] Never seen whole; never his face. {E4 0:00-30:00}
+  [FACT] His name, Daniel Fenn, is written on the Board-14 sheet as Black and as Black's signature. {E4 26:32-26:50; 29:47}
+  [STEEL] Genuinely loves chess and loves sharing it; his enjoyment is sincere, never performative. {Aaron 2026-10-19, E4 concept §2}
+  [STEEL] Personality reference: Dr. Hiriluk (One Piece): players should not give up on their imagination when it looks hopeless. {Aaron 2026-10-19, E4 concept §2}
+  [STEEL] He knows when a position is objectively lost; he is not naive. {Aaron 2026-10-19, E4 concept §2}
+  [FACT] His only praise is "Yes.": at 10...Qb4+, at Board 14's Rc2+, at the Vienna picture. {E4 11:01; 17:54; 19:42}
+  [FACT] "I talk more." when the boy notes he has used far more time. {E4 6:51.47}
+  [RUNNING] He spends his own clock on the boy on purpose: "I talk more." then "Then I'll lose on time." {E4 6:51.47; 18:06.32}
+
+[2:01] 03 The boy and his pictures
+
+Aaron has decided who the boy is: nine, rated about a thousand, never formally taught. His mother arranged the lesson; he did not ask for it. In forty seconds, why do I have to do this, becomes: what if I get it right? His imagination fills the board, one medium for each kind of piece: crayon pawns with faces, engraved bishops, playdough knights, oil-painted queens, daguerreotype kings and blueprint rooks. He grabs a pawn, and the teacher says the rule, the only time in the film: Touch move. You touched it, you move it. So he holds the pawn in the air for forty-two silent seconds, and finds a better move than the Duke's.
+
+  [STEEL] Nine years old, rated about 1000; knows the rules and some tactics, never formally taught. {Aaron 2026-10-19, E4 concept §3}
+  [STEEL] His mother arranged the lesson; he did not ask for it. {Aaron 2026-10-19, E4 concept §3}
+  [FACT] The reluctant boy: "Why do I have to do this? What's so cool about chess anyway?" turns into "What if I get it right?" in 40 seconds. {E4 0:19-1:59}
+  [FACT] The boy's six media, one per kind of piece: crayon pawns with faces, copperplate-engraved bishops, Coil Black playdough knights in stop motion on twos, oil-painted queens, daguerreotype kings, blueprint rooks. {E4 2:40-18:13}
+  [FACT] "Touch move. You touched it, you move it." Said once. {E4 10:04.46}
+  [FACT] Holds the pawn in the air through the quiet minute (42 s), then finds "Queen b4. Check. Then the queens come off.", better than the Duke's move. {E4 10:08-10:56.23}
+
+[3:00] 04 Board 14
+
+Late in the lesson, the boy asks: Did you ever give up? And the teacher says: Once. I was ten, he says. I had ten minutes on my clock. He stopped it, and shook her hand. The position is fictional; the crew labelled it so in every file. The teacher leads him only with questions, and the boy finds one: Rook c2, check. If he takes it, I can't move. If he doesn't, I keep doing it. Later, at the real table, the boy plays it out, and the teacher strikes out the old result and writes in a draw. The boy, checking, doesn't see. White signed the sheet x R. The film never says who she was: the signature is a planted egg. By our running count, it was Rosie, at sixteen.
+
+  [FACT] "Did you ever give up?" "Once." {E4 16:33}
+  [FACT] "I was ten. I had ten minutes on my clock." He stopped it and shook her hand. {E4 16:38-16:50}
+  [RUNNING] FICTIONAL, labelled so in every file; inside the film never presented as history. {E4 ONSCREEN rule 5}
+  [FACT] "You tell me. You're Black." Then leads the boy to the draw only with questions. {E4 16:57.07-17:30}
+  [FACT] The boy finds it: "Rook c2. Check. If he takes it, I can't move. If he doesn't, I keep doing it." "Like the man in the park." {E4 17:37.76; 17:46.10}
+  [FACT] The teacher strikes 1–0 and writes ½–½; the boy, checking, doesn't see. {E4 27:32.6-27:39}
+  [EGG] White was Rosie (x R), sixteen. {E4 26:37; E4-EGG-21}
+  [RUNNING] His opponent is Rosie, sixteen (born Y-9). {E4 MASTER_TREATMENT §1}
+
+[4:06] 05 Into the box
+
+Early on, the boy asks where the captured pieces go. In the box. And then? And the teacher says: That's a good question. At twenty minutes the film answers by going there, falling with the night's twelve captured pieces through the felt, the stitches and the wood. Inside the lid is a cross-stitched x R, its centre the one warm stitch. Taped beside it, a card: when scared, twelve in, twenty-four hold, twenty-four out, ten hold. They are the same words as Noor's card on the Moon, in Episode 2: a planted egg. Why the teacher has them is open. Down there, the captured pieces keep an opera house, and the sacrificed queen sings. At exactly twenty-five minutes, Morphy's face appears, in oil, for the first time.
+
+  [FACT] "Where do they go?" "In the box." "And then?" "...That's a good question." {E4 3:32.36-3:40}
+  [FACT] The question planted at 3:32 ("Where do they go?" "In the box.") is answered by going there. {E4 3:32; 20:00}
+  [FACT] At 20:00 the film falls into it with the twelve captured pieces, through the felt, the stitches (giant ropes) and the wood. {E4 20:01.5-20:40}
+  [FACT] Inside the lid: a cross-stitched x R, cornflower on linen, its centre stitch the one warm #FFC870 stitch. {E4 20:17-20:23; 26:05; S28}
+  [FACT] A hand-lettered breathing card taped beside the stitching: WHEN SCARED: 12 IN - 24 HOLD - 24 OUT - 10 HOLD. {E4 20:23.5-20:27}
+  [EGG] The same words as Noor's card in Episode 2. {E4 21:43; E4-EGG-13}
+  [OPEN] Why the instructor's card has Noor's words, and whose hand lettered it. {E4 S24}
+  [FACT] The programme tips over and falls into the piece box, where the captured pieces keep an opera house (The opera house of the captured); the sacrificed queen (The oil queen) sings; Morphy's face appears on 25:00.000. {E4 20:00-25:00}
+  [FACT] Morphy's face in oil on 25:00.000. {E4 25:00.000}
+
+[5:11] 06 Nobody claimed
+
+Who won tonight's game is open: the mate stood on the board, the flag fell first, the hand had not let go, and nobody claimed. Every draw offer from pawn.hab3 lands two point five six seconds after the boy's move, and whether it is Episode 2's PAWN, still on the Moon, is open. At the very end, a small hand accepts the draw, and the teacher says, very quietly: Goodnight.
+
+  [OPEN] Who won the lesson's game: the mate was on the board, the flag fell first, the hand had not let go, nobody claimed. {E4 20:00}
+  [FACT] pawn.hab3's draw offers, each 2.56 s after the boy's move (The round trip): declined at 0:58, 6:12 and 18:13; accepted, half asleep, at 29:57. {E4 0:58.16; 6:12.56; 18:13.56; 29:57.133}
+  [OPEN] Whether pawn.hab3 is Episode 2's PAWN, still on the Moon. {E4 0:43}
+  [FACT] A small hand accepts pawn.hab3's draw; the teacher says "Goodnight."; Black's flag falls in the dark and changes nothing. {E4 29:57-30:00}
+
+[5:46] 07 What to keep
+
+Then Black's flag falls in the dark, and changes nothing. Next: Rosie's life.
+
+  [FACT] The clock nobody stopped: Black's flag falls at 30:00.000 and changes nothing; the tick slows into a heartbeat; a new game is set up in the dark. {E4 30:00-30:20}

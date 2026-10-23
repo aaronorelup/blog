@@ -1,0 +1,165 @@
+---
+// One sheet: a character's or a thing's whole lore file, in file order. The header (name, aka, born, episodes,
+// summary), the reference pictures with their USED / STEEL / PLACEHOLDER badge, the lifeline on the Y axis when
+// there is a birth year, then every "##" section with each line's tier, source and edit link. The left column
+// on a wide screen (pictures and facts first, "mentioned on" last) folds above and below the lines on a phone.
+import LorePage from './LorePage.astro';
+import LoreSection from './LoreSection.astro';
+import {
+  BASE, md, esc, plain, clip, urlOf, titleOf, editHref, allBullets, countTiers, slugify, cleanTitle, mentionedOn, entity,
+  KIND_LABEL, IMAGE_STATUS, imageSize, TIERS, LESSON_DATA, UNRELEASED, EPISODES, ageAt, epVars,
+} from '../../lib/lore.js';
+import { chip, epChip, tierBar, badge } from '../../lib/lore-html.js';
+import { lifelineSvg } from '../../lib/lore-svg.js';
+
+interface Props { ent: any; list: any[]; group: 'character' | 'thing' }
+const { ent, list, group } = Astro.props;
+const plural = group === 'character' ? 'characters' : 'things';
+const groupTitle = group === 'character' ? 'Characters' : 'Things';
+const bullets = allBullets(ent);
+const counts = countTiers(bullets);
+const kind = KIND_LABEL[ent.kind] || ent.kind || '';
+
+const ids = new Set();
+const secs = ent.sections.map((s) => {
+  let id = slugify(cleanTitle(s.title || 'lines'));
+  while (ids.has(id)) id += '-2';
+  ids.add(id);
+  return { s, id };
+});
+
+const images = await Promise.all((ent.images || []).filter((i) => i.url).map(async (i) => ({ ...i, size: await imageSize(i.url) })));
+const pictureNote = ent.header.picture || '';
+const born = ent.born?.year ? ent.born : null;
+const died = ent.died?.year ? ent.died : null;
+// a thing's "born:" is when it begins (a shelter built, a base founded)
+const bornWord = group === 'thing' ? 'from' : 'born';
+const life = lifelineSvg(ent);
+// the age at each episode, in words, under the drawing (the drawing is small on a phone)
+const ages = born ? EPISODES.map((e) => ({ e, age: ageAt(born, e) })).filter((x) => x.age) : [];
+const aka = ent.header.aka || '';
+const mentions = mentionedOn(ent.id).filter((m) => urlOf(m.id));
+const i = list.findIndex((e) => e.id === ent.id);
+const prev = i > 0 ? list[i - 1] : null;
+const next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+const skip = new Set(['id', 'kind', 'aka', 'episodes', 'summary', 'born', 'died', 'picture', 'year']);
+const extra = Object.entries(ent.header).filter(([k]) => !skip.has(k));
+// lessons that name this sheet, when the lessons crew's data says so (a lesson's "entities" or "refs")
+const lessons = (LESSON_DATA?.modules || []).flatMap((m) => m.lessons || []).filter((l) => (l.entities || l.refs || []).includes(ent.id));
+const desc = clip(plain(ent.summary || `${ent.title}: ${kind} in Aaron Orelup's series I Love My Evening Television.`), 200);
+const firstImg = images[0]?.url;
+---
+
+<LorePage
+  title={`${ent.title}: ${group === 'character' ? 'character sheet' : kind.toLowerCase() || 'sheet'} · I Love My Evening Television`}
+  description={desc}
+  image={firstImg && !firstImg.endsWith('.webp') ? firstImg : undefined}
+  crumbs={[[groupTitle, `${BASE}/${plural}/`], [ent.title]]}
+  nav={plural}
+  counts={counts}
+>
+  <header class="lo-hero" slot="hero">
+    <p class="lo-eyebrow">{group === 'character' ? 'Character sheet' : 'Sheet'} · {kind}</p>
+    <h1 class="lo-title">{ent.title}<span class="cur" aria-hidden="true"></span></h1>
+    <div class="sheet-head">
+      {ent.episodes.map((c) => <Fragment set:html={epChip(c, { big: true })} />)}
+      {born && (
+        <span class="lb-m" style="font-size:13px">{bornWord} <b style="color:var(--pc-strong)">{born.year.text}</b></span>
+      )}
+      {born && born.tier && <Fragment set:html={chip(born.tier)} />}
+    </div>
+    {aka && <p class="sheet-aka"><b>Also</b><span set:html={md(aka)} /></p>}
+    {ent.summary && <p class="sheet-sum" set:html={md(ent.summary)} />}
+  </header>
+
+  <div class="sheet">
+    <div class="sheet-top">
+      {images.length > 0 ? (
+        <div class={`lfigs is-strip${images.length === 1 ? ' is-one' : ''}`}>
+          {images.map((img) => (
+            <figure class={`lfig is-${img.status || 'none'}`} id={`L${img.line}`}>
+              <div class="lfig-img">
+                <a href={img.url}><img src={img.url} alt={plain(img.caption) || ent.title} width={img.size?.w} height={img.size?.h} loading="lazy" decoding="async" /></a>
+                <Fragment set:html={badge(img.status)} />
+              </div>
+              <figcaption>
+                <span set:html={md(img.caption)} />
+                {img.status === 'placeholder' && <span class="ph-note"><b>Placeholder</b>{IMAGE_STATUS.placeholder.note}.</span>}
+                <span class="lb-m">{img.src && <span class="src">{`{${img.src}}`}</span>} <a class="ed" href={editHref(img.file, img.line)} rel="nofollow" title="Edit this picture's line in Aaron's repo (private)">edit</a></span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      ) : (
+        <div class="nopic">
+          <b>No picture yet</b>
+          {pictureNote ? <span set:html={md(pictureNote)} /> : 'Nobody has filed a reference picture for this one yet.'}
+        </div>
+      )}
+
+      <div class="panel">
+        <h3>At a glance</h3>
+        <dl class="facts">
+          <dt>Kind</dt><dd>{kind}</dd>
+          {born && (<><dt>{bornWord}</dt><dd>{born.year.text}{born.tier && <Fragment set:html={chip(born.tier)} />}{born.src && <span class="lb-m"> {`{${born.src}}`}</span>}</dd></>)}
+          {died && (<><dt>Died</dt><dd>{died.year.text}{died.tier && <Fragment set:html={chip(died.tier)} />}{died.src && <span class="lb-m"> {`{${died.src}}`}</span>}</dd></>)}
+          {ent.episodes.length > 0 && (<><dt>In</dt><dd>{ent.episodes.map((c) => <Fragment set:html={epChip(c) + ' '} />)}{ent.episodes.some((c) => UNRELEASED.has(c)) && <span class="lb-m">dashed: not released yet</span>}</dd></>)}
+          {extra.map(([k, v]) => (<><dt>{k}</dt><dd set:html={md(String(v))} /></>))}
+          <dt>Lines</dt><dd>{bullets.length}<Fragment set:html={tierBar(counts)} /></dd>
+          <dt>File</dt><dd><a class="lb-m" href={editHref(ent.file, 1)} rel="nofollow">{ent.file.replace('Series/lore/', '')}</a></dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="sheet-main">
+      {secs.length > 2 && (
+        <nav class="jump" aria-label="Sections of this sheet">
+          {life && <a href="#on-the-axis">On the axis</a>}
+          {secs.filter(({ s }) => s.title).map(({ s, id }) => <a href={`#${id}`}>{cleanTitle(s.title)}<b>{s.bullets.length}</b></a>)}
+        </nav>
+      )}
+      {ent.prose?.length > 0 && <div class="lo-prose" style="margin-bottom:22px">{ent.prose.map((p) => <p set:html={md(p)} />)}</div>}
+      {life && (
+        <section class="lsec" id="on-the-axis">
+          <h2>On the Y axis<small>Y0 = the night of Episode 1</small></h2>
+          <div class="axis-frame" style="--minw:0px" set:html={life} />
+          {ages.length > 0 && (
+            <ul class="ages">
+              {ages.map(({ e, age }) => (
+                <li style={epVars(e.id)} class={ent.episodes.includes(e.id) ? 'is-in' : ''}>
+                  <Fragment set:html={epChip(e.id)} />
+                  <b>{age.text}</b>
+                  <Fragment set:html={chip(age.tier)} />
+                </li>
+              ))}
+            </ul>
+          )}
+          <p class="ax-hint">Ages at each episode come from the birth year and the episode's place on the axis, and are only as sure as the weaker of the two (their mark says which). Empty decades are drawn short, at the break marks. <a href={`${BASE}/timeline/?who=${ent.id}#lines`}>{ent.title} on the whole timeline →</a></p>
+        </section>
+      )}
+      {secs.map(({ s, id }) => <LoreSection section={s} id={id} self={ent.id} />)}
+
+      <nav class="pager" aria-label={`Other ${plural}`}>
+        {prev && <a href={urlOf(prev.id)}><span>← Previous</span>{prev.title}</a>}
+        {next && <a class="is-next" href={urlOf(next.id)}><span>Next →</span>{next.title}</a>}
+      </nav>
+    </div>
+
+    <div class="sheet-bot">
+      {mentions.length > 0 && (
+        <div class="panel">
+          <h3>Mentioned on {mentions.length} other {mentions.length === 1 ? 'page' : 'pages'}</h3>
+          <div class="mentions">
+            {mentions.map((m) => <a href={urlOf(m.id)}>{titleOf(m.id)}<b>{m.n}</b></a>)}
+          </div>
+        </div>
+      )}
+      {lessons.length > 0 && (
+        <div class="panel">
+          <h3>In these lessons</h3>
+          <div class="mentions">{lessons.map((l) => <a href={l.url}>{l.title}</a>)}</div>
+        </div>
+      )}
+    </div>
+  </div>
+</LorePage>

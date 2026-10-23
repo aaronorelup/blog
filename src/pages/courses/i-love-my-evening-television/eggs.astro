@@ -1,0 +1,172 @@
+---
+// The egg atlas: every family of planted details (a "##" section of eggs.md) as a row of a family x episode
+// matrix, then each family in full: where it appears in each episode and what it might mean as a story point.
+// Then the complete list Aaron asked for: every line tagged [egg] anywhere in the lore, by episode.
+import LorePage from '../../../components/lore/LorePage.astro';
+import Lines from '../../../components/lore/Lines.astro';
+import {
+  BASE, LORE, EPISODES, CHARACTERS, THINGS, md, mdTitle, cleanTitle, slugify, countTiers, epVars, UNRELEASED, epNumber, urlOf, allBullets, bulletEp, titleOf,
+} from '../../../lib/lore.js';
+import { epChip, marks, listHtml } from '../../../lib/lore-html.js';
+
+const secs = (LORE.eggs || []).filter((s) => s.title);
+const intro = (LORE.eggs || []).find((s) => !s.title);
+const isFamily = (s) => s.bullets.some((b) => b.ep);
+const LATE = /^(threads across families|contradictions|never quoted yet|inside one episode)/i;
+const rules = secs.filter((s) => !isFamily(s) && !LATE.test(cleanTitle(s.title)));
+const families = secs.filter((s) => isFamily(s) && !LATE.test(cleanTitle(s.title)));
+const late = secs.filter((s) => LATE.test(cleanTitle(s.title)));
+const famId = (s) => slugify(cleanTitle(s.title));
+
+// every [egg] line on a sheet (episodes, characters, things, the world), by the episode it is in
+const sheets = [...EPISODES, ...CHARACTERS, ...THINGS, ...(LORE.world || [])];
+const eggLines = sheets.flatMap((e) => allBullets(e).filter((b) => b.tier === 'egg').map((b) => ({ b, on: e.id })));
+const byEp = new Map();
+for (const x of eggLines) {
+  const k = x.b.ep || bulletEp(x.b) || '';
+  if (!byEp.has(k)) byEp.set(k, []);
+  byEp.get(k).push(x);
+}
+const eggEps = [...byEp.entries()].sort((a, b) => (a[0] ? epNumber(a[0]) : 1e6) - (b[0] ? epNumber(b[0]) : 1e6));
+const counts = countTiers([...secs.flatMap((s) => s.bullets), ...eggLines.map((x) => x.b)]);
+const totalApp = families.reduce((n, s) => n + s.bullets.filter((b) => b.ep).length, 0);
+---
+
+<LorePage
+  title="Egg atlas · I Love My Evening Television"
+  description="Every easter egg in Aaron Orelup's TV series I Love My Evening Television: where each planted detail appears in every episode, and what it might mean."
+  crumbs={[['Egg atlas']]}
+  nav="eggs"
+  counts={counts}
+>
+  <header class="lo-hero" slot="hero">
+    <p class="lo-eyebrow">{families.length} families · {totalApp} appearances · {eggLines.length} egg lines on the sheets</p>
+    <h1 class="lo-title">Egg atlas<span class="cur" aria-hidden="true"></span></h1>
+    <p class="lo-lede">Every episode carries easter eggs from all the episodes before it. Here is each family of planted details, where it turns up in every episode, and what it might mean.</p>
+    <p class="lo-sub">An <b>egg</b> line is a detail that is on screen while its meaning is only implied. Lines about what a family means are mostly <b>ideas</b>: proposals for connecting the plots, not decisions. The complete list of egg lines is <a href="#every-egg">at the bottom</a>.</p>
+  </header>
+
+  {rules.length > 0 && (
+    <section class="lo-block" style="margin-top:0">
+      {rules.map((s) => (
+        <details class="fold" id={famId(s)} data-fsec>
+          <summary><span class="ft" set:html={mdTitle(s.title)} /><small>{s.bullets.length} lines</small></summary>
+          <div class="fold-b">
+            {s.prose?.length > 0 && <div class="lo-prose">{s.prose.map((p) => <p set:html={md(p)} />)}</div>}
+            <Lines bullets={s.bullets} />
+          </div>
+        </details>
+      ))}
+    </section>
+  )}
+
+  <section class="lo-block" id="matrix" style="margin-top:34px">
+    <h2 class="lo-h2">The atlas</h2>
+    <p class="lo-intro">One row per family, one column per episode. Each mark is one line about the family in that episode, in its tier's shape: a solid dot is on screen, an egg is planted, a dashed ring is a running assumption, a dotted ring an idea. Tap a row or a cell to read it.</p>
+    <div class="mx-wrap">
+      <table class="mx">
+        <colgroup><col class="c-name" />{EPISODES.map(() => <col class="c-cell" />)}<col class="c-cell" /></colgroup>
+        <thead>
+          <tr>
+            <th scope="col">Family</th>
+            {EPISODES.map((e) => <th scope="col" style={epVars(e.id)}><Fragment set:html={epChip(e.id)} /></th>)}
+            <th scope="col" title="Lines about what it means, across the episodes">Means</th>
+          </tr>
+        </thead>
+        <tbody>
+          {families.map((s) => {
+            const series = s.bullets.filter((b) => !b.ep);
+            return (
+              <tr>
+                <th scope="row"><a href={`#${famId(s)}`} set:html={mdTitle(s.title.replace(/\s*\(.*\)\s*$/, ''))} /></th>
+                {EPISODES.map((e) => {
+                  const mine = s.bullets.filter((b) => b.ep === e.id);
+                  return (
+                    <td class="c-ep" style={epVars(e.id)}>
+                      {mine.length ? (
+                        <a class="cell" href={`#${famId(s)}-${e.id}`} title={`${mine.length} in Episode ${epNumber(e.id)}`}>
+                          <Fragment set:html={marks(mine, 6)} />
+                        </a>
+                      ) : (
+                        <span class="none" aria-label="none">·</span>
+                      )}
+                      {mine.length > 6 && <span class="n">{mine.length}</span>}
+                    </td>
+                  );
+                })}
+                <td>
+                  {series.length ? <a class="cell" href={`#${famId(s)}-means`}><Fragment set:html={marks(series, 6)} /></a> : <span class="none">·</span>}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="lo-block" id="families">
+    <h2 class="lo-h2">The families</h2>
+    <p class="lo-intro">Each family in full: where it appears in each episode, oldest first, then what it might mean.</p>
+    {intro?.prose?.length > 0 && <details class="fold" style="max-width:760px;margin-bottom:24px"><summary><span class="ft" style="font-size:16px">How the atlas was gathered, and how to read a line</span></summary><div class="fold-b lo-prose">{intro.prose.map((p) => <p set:html={md(p)} />)}</div></details>}
+    {families.map((s) => {
+      const series = s.bullets.filter((b) => !b.ep);
+      return (
+        <section class="lsec" id={famId(s)} data-fsec>
+          <h2><span set:html={mdTitle(s.title)} /><small>{s.bullets.length} lines</small></h2>
+          {s.prose?.length > 0 && <div class="lo-prose">{s.prose.map((p) => <p set:html={md(p)} />)}</div>}
+          {EPISODES.map((e) => {
+            const mine = s.bullets.filter((b) => b.ep === e.id);
+            return mine.length > 0 && (
+              <div class="epg" style={epVars(e.id)} id={`${famId(s)}-${e.id}`} data-fsec>
+                <div class="epg-h">
+                  <Fragment set:html={epChip(e.id)} />
+                  <h3><a href={urlOf(e.id)}>{e.title}</a></h3>
+                  {UNRELEASED.has(e.id) && <span class="unrel">not released yet</span>}
+                </div>
+                <Lines bullets={mine} opts={{ showEp: false }} />
+              </div>
+            );
+          })}
+          {series.length > 0 && (
+            <div class="epg is-series" id={`${famId(s)}-means`} data-fsec>
+              <div class="epg-h"><h3>What it means</h3></div>
+              <Lines bullets={series} />
+            </div>
+          )}
+        </section>
+      );
+    })}
+  </section>
+
+  {late.length > 0 && (
+    <section class="lo-block" id="across">
+      <h2 class="lo-h2">Across the families</h2>
+      {late.map((s) => (
+        <section class="lsec" id={famId(s)} data-fsec>
+          <h2><span set:html={mdTitle(s.title)} /><small>{s.bullets.length} lines</small></h2>
+          {s.prose?.length > 0 && <div class="lo-prose">{s.prose.map((p) => <p set:html={md(p)} />)}</div>}
+          <Lines bullets={s.bullets} />
+        </section>
+      ))}
+    </section>
+  )}
+
+  <section class="lo-block" id="every-egg">
+    <h2 class="lo-h2">Every egg line in the lore</h2>
+    <p class="lo-intro">The complete list: all {eggLines.length} lines tagged <b>egg</b> on an episode's, a character's or a thing's sheet, by episode, each with the sheet it is on. Open an episode to read its eggs.</p>
+    {eggEps.map(([code, xs]) => (
+      <details class="fold" style={code ? epVars(code) : undefined} data-fsec>
+        <summary>
+          {code && <Fragment set:html={epChip(code, { link: false })} />}
+          <span class="ft">{code ? titleOf(code) : 'Across the episodes'}</span>
+          {code && UNRELEASED.has(code) && <span class="unrel">not released yet</span>}
+          <small>{xs.length} eggs</small>
+        </summary>
+        <div class="fold-b">
+          <ul class="lbl" set:html={xs.map((x) => listHtml([x.b], { showEp: false, on: x.on, anchor: false, link: true })).join('')} />
+        </div>
+      </details>
+    ))}
+  </section>
+</LorePage>

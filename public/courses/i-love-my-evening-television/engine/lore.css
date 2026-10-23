@@ -1,0 +1,66 @@
+/* I Love My Evening Television: the lore course's skin over player.css (dark glass, the #FFC870 cursor, six tiers).
+   Night only: the canvas is always the dark broadcast glass, so the page around it is too. */
+:root, :root[data-mode='day'] {
+  --pc-page: #0A0B10; --pc-bg: rgba(17, 19, 27, 0.94); --pc-tile: #151823; --pc-hover: #1B1F2C; --pc-code: #10121A;
+  --pc-head: #FFC870; --pc-strong: #F2E7D5; --pc-body: #C9C3B6; --pc-soft: #A29F97; --pc-quiet: #85827B;
+  --pc-line: #232733; --pc-line2: #363B4A; --pc-accent: #FFC870; --pc-gold: #FFC870;
+  --t-steel: #CFD8E3; --t-fact: #F2E7D5; --t-egg: #FFC870; --t-running: #7FA7C9; --t-idea: #B9A3E3; --t-open: #E2795C;
+  color-scheme: dark;
+}
+body.lore { background: var(--pc-page); font-family: Gelasio, Georgia, 'Times New Roman', serif; }
+.cc-below:empty::before { content: 'Captions appear here.'; color: var(--pc-quiet); font-weight: 400; }
+body.lore h1, body.lore h2 { font-family: Gelasio, Georgia, 'Times New Roman', serif; font-weight: 400; color: var(--pc-strong); letter-spacing: -.01em; }
+body.lore h2 { color: var(--pc-head); font-size: 22px; letter-spacing: .02em; }
+body.lore .site-nav { padding-right: 0; }
+@media (max-width: 640px) { body.lore .site-top { padding-right: 16px; } }
+
+/* tier chips: shape and line style carry the tier, never colour alone */
+.tier { display: inline-flex; align-items: center; gap: 6px; padding: 1px 9px 1px 7px; border-radius: 999px; border: 1.5px solid currentColor;
+  font: 700 11px/1.6 Karla, sans-serif; letter-spacing: .14em; text-transform: uppercase; vertical-align: 2px; background: rgba(10,11,16,.7); white-space: nowrap; }
+.tier::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
+.tier small { font-size: 10px; letter-spacing: .08em; opacity: .85; text-transform: none; }
+.tier.t-steel { color: var(--t-steel); border-style: double; border-width: 3px; } .tier.t-steel::before { box-shadow: 0 0 0 2px #0A0B10, 0 0 0 3.5px currentColor; width: 6px; height: 6px; }
+.tier.t-fact { color: var(--t-fact); }
+.tier.t-egg { color: var(--t-egg); } .tier.t-egg::before { border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; width: 7px; height: 9px; }
+.tier.t-running { color: var(--t-running); border-style: dashed; } .tier.t-running::before { background: none; border: 1.5px dashed currentColor; }
+.tier.t-idea { color: var(--t-idea); border-style: dotted; } .tier.t-idea::before { background: none; border: 1.5px dotted currentColor; }
+.tier.t-open { color: var(--t-open); } .tier.t-open::before { content: '?'; background: none; width: auto; height: auto; font-size: 11px; line-height: 1; }
+.cc .tier { font-size: 12px; margin-right: 8px; }
+.tierbar { display: flex; flex-wrap: wrap; gap: 8px 8px; align-items: center; margin: 6px 0 0; font: 400 14px/1.5 Karla, sans-serif; color: var(--pc-soft); }
+.tierbar .tb-note { flex-basis: 100%; margin-top: 2px; }
+
+/* transcript words wear their claim's tier */
+.tx .w.t-running, .tx .w.t-idea, .tx .w.t-open { text-decoration: underline dashed; text-decoration-color: var(--t-running); text-underline-offset: 4px; }
+.tx .w.t-idea { text-decoration-style: dotted; text-decoration-color: var(--t-idea); }
+.tx .w.t-open { text-decoration-color: var(--t-open); }
+.tx .w.t-steel { color: var(--t-steel); text-decoration: underline double; text-decoration-color: var(--t-steel); text-underline-offset: 4px; }
+.tx .w.t-egg { text-decoration: underline; text-decoration-color: var(--t-egg); text-underline-offset: 4px; }
+.credits-list li { display: block; }
+.credits-list .tier { margin-right: 6px; }
+.credits-list a.edit { font: 600 12px/1 Karla, sans-serif; margin-left: 6px; }
+.files { display: flex; flex-wrap: wrap; gap: 8px 20px; font: 600 14px/1.5 Karla, sans-serif; margin: 0 0 8px; }
+.files a { color: var(--pc-soft); text-decoration: none; border-bottom: 1px solid var(--pc-line2); }
+.files a:hover { color: var(--pc-head); }
+.files a[hidden] { display: none; }
+
+/* captions: over the picture on a wide screen; under it on a phone, where they would cover a quarter of the frame */
+.cc-below { display: none; }
+@media (max-width: 700px) {
+  .stage .cc { display: none; }
+  .cc-below { display: block; min-height: 3.2em; margin: 8px 0 0; padding: 8px 12px; border-radius: 10px; background: #11131B;
+    border: 1px solid var(--pc-line); color: var(--pc-strong); font: 600 16px/1.45 Karla, sans-serif; text-wrap: balance; }
+  .cc-below .tier { font-size: 10px; margin-right: 6px; vertical-align: 1px; }
+  .controls { gap: 8px; }
+  .time { min-width: 0; }
+  .scrub { flex-basis: 100%; order: 5; }
+  .lede { font-size: 17px; }
+}
+.stage:fullscreen .cc, .stage.pseudo-fs .cc { display: block; }
+
+/* full screen where the browser can't (iPhone): the stage fills the window */
+.fs-close { display: none; }
+.stage.pseudo-fs { position: fixed; inset: 0; z-index: 100; width: 100vw; height: 100vh; height: 100dvh; aspect-ratio: auto; border: 0; background: #000; }
+.stage.pseudo-fs canvas { object-fit: contain; }
+.stage.pseudo-fs .fs-close { display: block; position: absolute; top: max(10px, env(safe-area-inset-top)); right: max(10px, env(safe-area-inset-right)); z-index: 3;
+  width: 44px; height: 44px; border-radius: 22px; border: 1px solid var(--pc-line2); background: rgba(10,11,16,.8); color: var(--pc-strong); font: 400 26px/1 Karla, sans-serif; }
+body.pseudo-fs-on { overflow: hidden; }

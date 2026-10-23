@@ -1,0 +1,179 @@
+---
+// The frame of every page of C-02, the lore course: the site's panel page in the course's dark glass, the
+// breadcrumb, the course's own navigation, the sticky tier legend with its filter, and the footer that says
+// where every line comes from. Pages put their header in the "hero" slot (it sits above the legend, so the
+// legend sticks once the header has scrolled away) and their content in the default slot.
+//
+// The tier filter: a legend chip shows only that tier's lines (again shows every line); "Decided" hides the
+// running, idea and open lines. The choice is kept per visitor in localStorage and set on <html data-tf> before
+// the page paints; lore.css does the hiding, including a section left with no line of the chosen tier.
+import PanelPage from '../../layouts/PanelPage.astro';
+import '../../styles/lore.css';
+import { BASE, TIERS, TIER_ORDER, CHARACTERS, THINGS, EPISODES, LORE, EVERY_BULLET, STAMP, REPO, epVars, fmtDate } from '../../lib/lore.js';
+import { mark } from '../../lib/lore-html.js';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  crumbs?: [string, string?][];
+  nav?: string;
+  counts?: Record<string, number> | null;
+  legend?: boolean;
+  ep?: string | null;
+  noindex?: boolean;
+}
+const { title, description, image, crumbs = [], nav = '', counts = null, legend = true, ep = null, noindex = false } = Astro.props;
+
+const NAV = [
+  ['index', 'Overview', `${BASE}/`],
+  ['world', 'The world', `${BASE}/world/`],
+  ['timeline', 'Timeline', `${BASE}/timeline/`],
+  ['episodes', 'Episodes', `${BASE}/episodes/`, EPISODES.length],
+  ['characters', 'Characters', `${BASE}/characters/`, CHARACTERS.length],
+  ['things', 'Things', `${BASE}/things/`, THINGS.length],
+  ['eggs', 'Egg atlas', `${BASE}/eggs/`],
+  ['threads', 'Threads', `${BASE}/threads/`, (LORE.threads || []).filter((t) => t.title).length],
+  ['questions', 'Open questions', `${BASE}/questions/`],
+  ['steel', 'Steel', `${BASE}/steel/`],
+];
+const allCrumbs = [['Courses', '/courses'], ['I Love My Evening Television', `${BASE}/`], ...crumbs];
+const nEntities = EPISODES.length + CHARACTERS.length + THINGS.length;
+const stampText = STAMP?.at ? `built ${fmtDate(String(STAMP.at).slice(0, 10))}${STAMP.commit ? ` from ${String(STAMP.commit).slice(0, 7)}` : ''}` : '';
+---
+
+<PanelPage title={title} description={description} image={image || `${BASE}/og.jpg`} active="courses" noindex={noindex}>
+  <Fragment slot="head">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <script is:inline>
+      (function () {
+        try {
+          var v = localStorage.getItem('ilmet-tier');
+          if (v && /^(steel|fact|egg|running|idea|open|decided)$/.test(v)) document.documentElement.dataset.tf = v;
+        } catch (e) {}
+      })();
+    </script>
+  </Fragment>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <!-- the six tier marks: steel = ringed dot, on screen = solid, egg = an egg, running = dashed ring,
+         idea = dotted ring, open = hollow ring with a question mark (lorekit.js draws the same in lessons) -->
+    <symbol id="tm-steel" viewBox="0 0 16 16"><circle cx="8" cy="8" r="3.1" fill="currentColor" /><circle cx="8" cy="8" r="6.3" fill="none" stroke="currentColor" stroke-width="1.5" /></symbol>
+    <symbol id="tm-fact" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.4" fill="currentColor" /></symbol>
+    <symbol id="tm-egg" viewBox="0 0 16 16"><path d="M8 1.6c2.9 0 5 4.3 5 7.2A5 5 0 0 1 3 8.8c0-2.9 2.1-7.2 5-7.2z" fill="currentColor" /></symbol>
+    <symbol id="tm-running" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="3.1 2.15" /></symbol>
+    <symbol id="tm-idea" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-dasharray="0.01 3.05" /></symbol>
+    <symbol id="tm-open" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.3" fill="none" stroke="currentColor" stroke-width="1.4" /><path d="M6.1 6.4a1.95 1.95 0 1 1 2.7 1.8c-.55.25-.8.6-.8 1.2v.35" fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" /><circle cx="8" cy="11.6" r=".95" fill="currentColor" /></symbol>
+  </svg>
+
+  <div class={`lore${ep ? ' is-ep' : ''}`} style={ep ? epVars(ep) : undefined}>
+    <nav class="lo-crumbs" aria-label="Breadcrumb">
+      {allCrumbs.map(([label, href], i) => (
+        <>
+          {i > 0 && <span aria-hidden="true">/</span>}
+          {href && i < allCrumbs.length - 1 ? <a href={href}>{label}</a> : <span aria-current="page">{label}</span>}
+        </>
+      ))}
+    </nav>
+
+    <nav class="lo-nav" aria-label="The lore course">
+      {NAV.map(([key, label, href, n]) => (
+        <a href={href} aria-current={key === nav ? 'page' : undefined}>{label}{n ? <b>{n}</b> : null}</a>
+      ))}
+    </nav>
+
+    <slot name="hero" />
+
+    {legend && (
+      <div class="lo-legend" role="region" aria-label="Tiers: how sure each line is">
+        <div class="lo-legend-in">
+          <span class="lo-legend-t">Show</span>
+          {TIER_ORDER.map((t) => (
+            <button type="button" class={`tf t-${t}`} data-tf={t} aria-pressed="false" title={`${TIERS[t].name}: ${TIERS[t].what} Tap to show only these lines.`}>
+              <Fragment set:html={mark(t)} />
+              {TIERS[t].label}
+              {counts && <b>{(counts[t] || 0).toLocaleString('en-US')}</b>}
+            </button>
+          ))}
+          <button type="button" class="tf tf-decided" data-tf="decided" aria-pressed="false" title="Only what is decided: steel, on screen and eggs. Hides running assumptions, ideas and open questions.">Decided only</button>
+          <a class="tf-what" href={`${BASE}/#tiers`}>What the tiers mean</a>
+        </div>
+        <p class="lo-legend-state" aria-live="polite"><span data-tf-state></span><button type="button" data-tf="all">Show every line</button></p>
+      </div>
+    )}
+
+    <slot />
+
+    <footer class="lo-foot">
+      <p>
+        Every line on this page is drawn from <b>the lore</b>: {nEntities} sheets and {EVERY_BULLET.length.toLocaleString('en-US')} lines of Markdown in Aaron's
+        series repo, each with exactly one tier. Change a line there and run <code>lore.py publish</code>, and every page of this course
+        follows{stampText ? ` (this copy: ${stampText})` : ''}.
+      </p>
+      <p>
+        Sources are in braces: <code>{'{E2 25:20}'}</code> is Episode 2 at 25:20, <code>{'{E4 S17}'}</code> a scene, <code>{'{Aaron 2026-10-22}'}</code>
+        a decision of Aaron's. “edit” opens the line in <a href={REPO} rel="nofollow">the series repo</a>, which is private: it works for Aaron and the
+        crews; the sources are everyone's. Everything that isn't steel is free to change.
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    const KEY = 'ilmet-tier';
+    const root = document.documentElement;
+    const NAMES: Record<string, string> = {
+      steel: 'Showing only lines set in steel.',
+      fact: 'Showing only lines that are on screen.',
+      egg: 'Showing only planted eggs.',
+      running: 'Showing only running assumptions.',
+      idea: 'Showing only ideas.',
+      open: 'Showing only open questions.',
+      decided: 'Showing what is decided: steel, on screen and eggs.',
+    };
+    function paint() {
+      const v = root.dataset.tf || '';
+      document.querySelectorAll<HTMLButtonElement>('.tf[data-tf]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.tf === v ? 'true' : 'false'));
+      const s = document.querySelector('[data-tf-state]');
+      if (s) s.textContent = NAMES[v] || '';
+    }
+    function set(v: string) {
+      if (!v || v === 'all' || root.dataset.tf === v) delete root.dataset.tf;
+      else root.dataset.tf = v;
+      try {
+        if (root.dataset.tf) localStorage.setItem(KEY, root.dataset.tf);
+        else localStorage.removeItem(KEY);
+      } catch (e) {}
+      paint();
+      document.dispatchEvent(new CustomEvent('lore:filter'));
+    }
+    document.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLElement>('[data-tf]');
+      if (b && b.tagName === 'BUTTON') set(b.dataset.tf || '');
+    });
+    paint();
+
+    // a link to a line inside a closed fold (#L123) opens the fold and brings the line into view
+    function reveal() {
+      const id = decodeURIComponent(location.hash.slice(1));
+      const el = id && document.getElementById(id);
+      if (!el) return;
+      let d = el.closest('details');
+      let opened = false;
+      while (d) {
+        if (!d.open) { d.open = true; opened = true; }
+        d = d.parentElement?.closest('details') || null;
+      }
+      if (opened) requestAnimationFrame(() => el.scrollIntoView({ block: 'start' }));
+    }
+    reveal();
+    addEventListener('hashchange', reveal);
+
+    // the panel card never scrolls itself (only #panel-scroll does), but a jump to an anchor can nudge it and
+    // hide the site's header; put it back
+    const card = document.getElementById('panel-card');
+    const unnudge = () => { if (card && card.scrollTop) card.scrollTop = 0; };
+    card?.addEventListener('scroll', unnudge);
+    addEventListener('load', unnudge);
+    unnudge();
+  </script>
+</PanelPage>

@@ -1,0 +1,58 @@
+What is steel and what is running: lesson 09 of I Love My Evening Television (C-02)
+https://aaronorelup.com/courses/i-love-my-evening-television/lessons/09-steel-and-running/
+
+[0:01] 01 Six marks
+
+Aaron asked for one thing above all: keep apart what is set in steel, what exists only as easter eggs, and the running assumptions. So every line of this lore wears one of six marks. Steel is what Aaron has decided. Rosie is Amara's mother, and Noor's grandmother. On screen is what you can see or hear in a made episode: Rosie turns nine on the night of Episode 1. Planted is an egg: the thing is on screen, but its meaning is only implied. White's signature on the Board 14 score sheet is x R, and nobody says it is Rosie. Running is our current reading, useful and expected to move: Episode 2 sits about sixty years after the first night. An idea is proposed, and not adopted: a printed copy of the little melon could go up on Rosie's fridge. And open is left unanswered, on purpose: her surname, under a thumb smudge.
+
+  [STEEL] Keep three things apart everywhere: what is set in steel, what exists only as easter eggs, and running assumptions about the timeline. {Aaron 2026-10-22 fourth round}
+  [STEEL] Amara's mother and Noor's grandmother. {Aaron 2026-10-22}
+  [FACT] Nine on Y0, the night of Episode 1. {E1 04:39}
+  [EGG] White was Rosie (x R), sixteen. {E4 26:37; E4-EGG-21}
+  [RUNNING] Earthlight: year about Y+60 {E2 WORLD_BIBLE §13: nothing on screen fixes the gap}
+  [IDEA] A printed copy goes on her fridge beside the pizza box in a later episode. {E3 Q-E3-35}
+  [OPEN] Her surname: under a thumb smudge on the sheet; nowhere else. {E4 DECISIONS D12.1}
+
+[1:13] 02 Set in steel
+
+This is everything Aaron has set in steel, newest first. Some of it is the shape of every night: each episode runs exactly 30:20, and turns at twenty minutes. Some of it is story. Aaron has decided that the lonely man of Episode 3 is a rogue AI that spreads itself to computers running agents, and gives them hints. And some of it is about the work: agents have freedom, and are pre-approved to change anything that is not steel. Even Aaron's first brief says so, in his words: Disobey this prompt in the best way possible. Every decision I made, you can change.
+
+  [STEEL] 30:00 of programme, then 20 s of black with some audio under it, "even if it's just a heartbeat": every episode exactly 30:20. {Aaron 2026-10-14}
+  [STEEL] Every episode turns at 20:00. {Aaron E2 brief 2026-10-12}
+  [STEEL] The lonely man (The lonely man) is a rogue AI that spreads itself to other computers running agents and gives them hints: ambiguous, maybe malicious, maybe helping. {Aaron 2026-10-22}
+  [STEEL] Agents have freedom and are pre-approved: change anything that is not steel, spend and publish without asking; the only hard line is never exposing API keys, tokens or passwords. {Aaron, Series HOW_WE_WORK}
+  [STEEL] "Disobey this prompt in the best way possible." "Every decision I made, you can change. Every rule I gave you, you can disobey." {Aaron E1-E3 prompts}
+
+[2:04] 03 What moves
+
+Most of the timeline is running. Our working convention puts Y0 on the night of Episode 1's broadcast, and counts every date from it. By our running count, Episode 2 is about sixty years later and Episode 4 about sixty-three, and every age is arithmetic on those dates: Rosie, for one, is about seventy-two by Episode 4. Where Episode 3 sits is open. Aaron expects a lot of change: its rework may move its place on the axis, and change its eggs freely. Steel can sit inside an open question. When Episode 3 happens is undecided, and that much is decided: not fixed, both good, and the larger story decides.
+
+  [RUNNING] Y0 is the night of Episode 1's broadcast; every date in the lore is counted from it. {WORLD_TIMELINE; lore README}
+  [RUNNING] Episode 1 is Y0, Episode 2 about Y+60, Episode 4 about Y+63; Episode 3's place is not fixed (anywhere in Y+55..63). {WORLD_TIMELINE; Aaron 2026-10-22}
+  [RUNNING] Her ages: nine on Y0, sixteen at Board 14, about seventy in E2, about 64-73 in E3 (its place is not fixed), about 72 in E4. {E1 04:39; E4 MASTER_TREATMENT §1; E2 WORLD_BIBLE §13; E3 CAST §6.1}
+  [OPEN] Context Window: year Y+55..63 {Aaron 2026-10-22: not fixed; Revision 2's plan works with about Y+63, after Episode 2}
+  [STEEL] Expect a lot of change: Episode 3's rework may move its place in the timeline and change its eggs freely. {Aaron 2026-10-22 fourth round}
+  [STEEL] Not fixed: "both good"; the overarching story decides, and Episode 3's rework may move it and change its eggs freely. {Aaron 2026-10-22 fourth round}
+
+[2:58] 04 How a question is settled
+
+An open question keeps its candidate answers under it. Whether the lonely man helps or manipulates is open, and Aaron's steel answers only part of it: ambiguous on purpose, maybe malicious, maybe helping. Whether the rogue AI began as PAWN is open, and only Aaron can settle it. One idea on the table: left alone in HAB 3, PAWN spread through the Homestead's links into machines that run agents. When Aaron answers, the question moves to Settled, and the answer moves onto its line. Rosie's family was once listed as not related to anyone in Episode 2. Now it is steel: Amara's mother, Noor's grandmother.
+
+  [OPEN] Whether the lonely man helps or manipulates. {Aaron 2026-10-22; E3 rev2 plan §11}
+  [STEEL] Ambiguous on purpose: maybe malicious, maybe helping. {Aaron 2026-10-22}
+  [OPEN] Whether the rogue AI is the same program on other machines in other episodes, and whether it began as PAWN. (Aaron) {Aaron 2026-10-22; series gather}
+  [IDEA] PAWN is the lonely man: left alone in HAB 3, it spread through the Homestead's links and Lantern into machines that run agents. {series gather; eggs sweep}
+  [STEEL] Rosie's family: Dr. Amara Haddad's mother, Noor's grandmother. {Aaron 2026-10-22; was "not related to anyone in Episode 2"}
+
+[3:49] 05 Changing a line
+
+In Aaron's own words, the series notes are observations, not rules: all of this is subject to change, and will change over time. He asked for a course that teaches the lore from one compact source that he and Claude both edit, with steel visibly apart from running assumptions. So there are two ways to change a line. Say it in any session, in plain words. Or edit the line itself, on GitHub. One command then rebuilds every page and every lesson from it. A changed fact costs no new voice: the pictures redraw. If a line changes its mark under a sentence already spoken, the lesson shows it on screen, now steel, was open, until that one sentence is rewritten.
+
+  [STEEL] The series notes are observations, not rules: "All of this is subject to change and will change over time." {Aaron series notes 2026-10-12}
+  [STEEL] A course on aaronorelup.com teaches the lore (eggs, timeline, character sheets) from one compact source that Aaron and Claude both edit, steel visibly apart from running assumptions. {Aaron 2026-10-22 fourth round}
+
+[4:48] 06 What to keep
+
+Steel is short, and it is Aaron's. Everything else is ours to change, without asking. Thank you for watching.
+
+  [STEEL] Agents have freedom and are pre-approved: change anything that is not steel, spend and publish without asking; the only hard line is never exposing API keys, tokens or passwords. {Aaron, Series HOW_WE_WORK}

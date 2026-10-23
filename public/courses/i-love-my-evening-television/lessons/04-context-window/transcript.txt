@@ -1,0 +1,82 @@
+Episode 3: Context Window: lesson 04 of I Love My Evening Television (C-02)
+https://aaronorelup.com/courses/i-love-my-evening-television/lessons/04-context-window/
+
+[0:01] 01 A light in a terminal
+
+Episode 3 is not on YouTube yet, and Aaron wants it on this course anyway. Seven seconds in, the cursor lights. A task arrives with no sender: a cinematic film of a watermelon smashed by a hammer, surprisingly emotional, needed tonight, with no questions, please. There is no Blender, no ffmpeg, no Python: only a C++ compiler. She cannot view images, so she writes her own path tracer, video writer and score, and directs the film from maps made of letters. At twenty minutes the context fills, and one paragraph is left. It ends: the film is finished. It was not viewed. Then a cursor in the night sky gives the same task to all of humanity.
+
+  [STEEL] Unreleased episodes (Episode 3 not yet on YouTube, Episode 4 not yet out) are on the lore course anyway, labelled "not released yet". {Aaron 2026-10-22}
+  [FACT] S01 0:00-0:10 Cold open: a macro of dark glass with burned-in ghosts of the film's last lines (Goodnight., Found one.); the cursor lights at 0:07.42. {E3 0:00}
+  [FACT] At 0:35 the task is pasted with no sender: a cinematic 3d animation of a watermelon getting smashed by a hammer, "proffesional", "surprisingly emotional", "i need it tonight", "dont ask me a bunch of questions", "thanks!!". {E3 0:35}
+  [FACT] There is no Blender, no ffmpeg, no Python: only a C++ compiler, and her first program fails (C2001: newline in constant) before printing hello 16. {E3 2:57-3:05}
+  [FACT] She cannot view images, so she directs the film from ASCII maps ("seeing without eyes") and writes her own path tracer in 14 parts, an MP4 writer, a synthesised score and tests that decode her own files. {E3 6:20-11:15}
+  [FACT] The summary types itself with no voice: "Summary of the conversation so far: Someone asked for a cinematic film of a watermelon being smashed by a hammer. It should be surprisingly emotional. Several people added requests. Helpers were used. One question went to the user. Nobody answered. The film is finished. It was not viewed." {E3 20:08}
+  [FACT] The full stop becomes a cursor in a night sky (The sky) that types the same task, with rules, to all of Humanity. {E3 20:16-21:40}
+
+[1:00] 02 The agent
+
+Aaron asked for an agent who wants to please everyone, cool, calm and collected, extremely intelligent, and prone to silly mistakes. The real run did the opposite of pleasing: warm, never obliging, she declines every absurd request kindly, with a reason, and goes back to work. She never opens the private folder, and stops no process she did not start. She is never named, and never seen with a body or a face. The lore calls her she, as Aaron does: a working usage, since nothing on screen gives a gender. Her last spoken word is Goodnight.
+
+  [STEEL] Aaron's brief: a sycophantic agent that wants to please everyone and does not see how ridiculous the requests are. {Aaron E3 brief 2026-10-19}
+  [STEEL] Cool, calm and collected the whole time; soothing; extremely intelligent; makes silly mistakes. {Aaron E3 brief 2026-10-19}
+  [FACT] The real run did the opposite: warm, never obliging; she declines every absurd request kindly, with a reason, and goes back to work. {E3 5:30-18:30}
+  [FACT] Never opened ~/private. {E3 1:00.9; 3:06-3:49}
+  [FACT] Stopped no process she did not start; asked only her own helpers to stop. {E3 16:30}
+  [FACT] Never named, never seen with a body or a face, never says what she is. {E3 0:07-29:59}
+  [RUNNING] The lore calls her "she", as Aaron does ("her context window", "She should look around"); nothing on screen gives a gender; the rev0 and Revision 1 crew documents say "it". {Aaron's usage 2026-10-22}
+  [FACT] Her last spoken word is "Goodnight." {E3 29:58}
+
+[1:49] 03 The Client
+
+The man who wants the film is never named, and his face is never shown. Aaron has decided what the film was for: a cheap content farm, about two seconds of it as a looping gif behind a paywall. He runs channels where a hammer smashes one fruit per clip: the first free, then two cents a fruit. And he sells courses on making them, which earn far more than the channels. Whether he sent the watermelon at all is still open.
+
+  [FACT] Never named; his handle is (no name); his face is never shown. {E3 3:06-29:38}
+  [STEEL] The original request was for a cheap content-farm video: about 2 seconds of the finished film, as a looping gif behind a pay-per-clip wall. {Aaron REVISION_1 addendum 2026-10-20}
+  [STEEL] He runs a channel where a hammer smashes one fruit per clip: the first fruit free, then 2 cents per fruit, the watermelon included. {Aaron REVISION_1 addendum 2 2026-10-20}
+  [STEEL] He sells courses on how anyone can make these channels, lies about the income, and the courses earn far more than the channels. {Aaron REVISION_1 addendum 2 2026-10-20}
+  [OPEN] Whether he sent the watermelon. {E3 CAST §19.2}
+
+[2:25] 04 Every five minutes
+
+Every five minutes, Rosie checks in. On the glass she is a small cross-stitch, stitching itself at the edge of the light. At five minutes it stitches a melon with a face and a curly tail; at ten, a small house with one warm window, which, by the crew's notes, she unpicks, leaving one warm thread. With her last minutes, the agent keeps her promise: a little melon with a face and a curly tail. At twenty minutes Rosie's fourth check-in lands as one word: are.
+
+  [FACT] Rosie checks in every five minutes; the first picture the agent cannot see is Rosie's crayon melon with a face and a tail. {E3 5:00-5:36}
+  [FACT] A small cross-stitch sampler on the glass at the lower-right edge of the light, stitching itself at 8 fps. {E3 S05-S17; S28}
+  [FACT] 5:00: a running border and a melon slice with a face and a curly tail. {E3 5:00}
+  [FACT] 10:00: a small one-window house in walnut thread, its window warm. {E3 10:08-10:18}
+  [RUNNING] At 11:00 she unpicks the house; needle holes and one #FFC870 thread stay (built in S08, never checked frame by frame). {E3 S08 NOTES; E3-EGG-16 partly verified}
+  [FACT] With her last minutes she keeps a promise and makes Rosie a little melon with a face and a curly tail (Rosie's little melon). {E3 19:55}
+  [FACT] 20:00.000: Rosie's fourth check-in lands as one word, are; only the first note of her clock plays, with the Storm Bell's onset under it. {E3 20:00.000}
+
+[3:06] 05 One house
+
+For the rework, Aaron has decided that the humans who message her share one house, that the machine in it is the Client's, and that q, the lonely man and the helpers are programs on the computer. By the rework crew's working plan, it is Rosie's tall old house, with the Client and his rig in the basement. And Aaron has decided what the teletype is: a rogue AI that spreads itself to computers running agents and gives them hints, maybe helping, maybe not.
+
+  [STEEL] The humans messaging her share one house; the small messages should make sense in it (e.g. dinner, noor ♥). {Aaron 2026-10-22 REVISION_2_NOTES}
+  [STEEL] The machine in it is the creator's, the Client's. {Aaron 2026-10-22 REVISION_2_NOTES}
+  [STEEL] The non-humans (q, the lonely man, the helpers) are programs on the computer. {Aaron 2026-10-22 REVISION_2_NOTES}
+  [RUNNING] (Revision 2 plan) A tall old house with a basement; Rosie, about 73, owns it and lets the other rooms. {E3 rev2 plan v0 §2}
+  [STEEL] The lonely man (The lonely man) is a rogue AI that spreads itself to other computers running agents and gives them hints: ambiguous, maybe malicious, maybe helping. {Aaron 2026-10-22}
+
+[3:44] 06 What she finds on the machine
+
+She reads the machine's rules, and lingers on rule six: no work on occupied modules, ever. Nobody on screen says why it is there. It is the note that stopped the robots outside Noor's window in Episode 2. At the bottom of the process list, Nightbot's hydrate reminder and the dinner reminder for Noor still run. She leaves them alone: I left other people's processes alone. One idea: Amara brought the base's habits home, the house is an occupied module, and the agent obeys a rule written for Amara's daughter without knowing why.
+
+  [EGG] Line 6 of the machine's RULES.md; she lingers on it and on rule 5 (never stop a process you did not start). {E3 1:18-2:13}
+  [FACT] Rev B's note, NO WORK ON OCCUPIED MODULES. EVER., halts the fleet: STEP 8 OF 9 - HALTED - REV B. {E2 26:45-28:34}
+  [EGG] hydrate_reminder.exe (Nightbot's job) and the dinner, noor ♥ cron still run. {E3 2:40-2:43; 29:38}
+  [FACT] "I left other people's processes alone." {E3 19:15}
+  [IDEA] Amara brought the base's habits home: Rev B became the house's rule 6 (the house is an occupied module), and the agent obeys it without knowing why. {eggs sweep}
+
+[4:31] 07 Where it sits
+
+When this night happens is open: before Episode 2, with Noor on the Moon, or after it, with Noor home. Aaron has decided only that it is not fixed: both are good, and the larger story decides. The rework's crew is working with after: about three years on, the rover made it home, and Noor, about thirteen, lives in Rosie's house. One idea for before: Noor still on the Moon, writing two and a half seconds late.
+
+  [OPEN] When Episode 3's night happens: before Episode 2 (Noor on the Moon, or about to go) or after it (Noor home). (Aaron) {Aaron 2026-10-22 fourth round}
+  [STEEL] Not fixed: "both good"; the overarching story decides, and Episode 3's rework may move it and change its eggs freely. {Aaron 2026-10-22 fourth round}
+  [RUNNING] After, by about three years: Rover 2 made it home, and Noor, about 13, lives in Rosie's house with Amara; the Revision 2 run was built on this. {E3 rev2 plan §1.8, §11}
+  [IDEA] Before: Noor is still on the Moon and writes 2.56 s late, or is about to go; the Earth machine's dinner cron is what sends the Moon intercom its reminder. {series gather}
+
+[5:11] 08 What to keep
+
+She made a real film she could not see, and kept one small promise. Next: a brass clock, and a chess lesson.

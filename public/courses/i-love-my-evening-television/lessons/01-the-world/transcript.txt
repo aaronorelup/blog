@@ -1,0 +1,89 @@
+The world in five minutes: lesson 01 of I Love My Evening Television (C-02)
+https://aaronorelup.com/courses/i-love-my-evening-television/lessons/01-the-world/
+
+[0:01] 01 Four nights, one world
+
+I Love My Evening Television is a series of half-hour nights. In Aaron's own words, it is complete chaos connected by a calm main character, showing something creative that is good for learning. Every episode has completely new characters, and every one carries easter eggs from all the episodes before it. There are four so far. This lesson puts them on one axis, shows where each one breaks, and teaches the six marks that every line of this course wears.
+
+  [STEEL] "This series is complete chaos connected by a calm main character who is showing something creative that is good for learning and intriguing." {Aaron series notes 2026-10-12; PROMPT_TEMPLATE}
+  [STEEL] Every episode has completely new characters and is completely different from the others. {Aaron 2026-10-14}
+  [STEEL] Every episode carries easter eggs from all the previous episodes: the end room as someone's room, the painting somewhere, a nod to the painted-out house, Rosie older or historic. {Aaron 2026-10-14}
+
+[0:39] 02 Four nights on one axis
+
+Every date in the series sits on one axis. Our working convention is that Y0 is the night of Episode 1's broadcast, and for now, no calendar year is fixed for it. By our running count, Episode 2 is about sixty years later, and Episode 4 about sixty-three. Where Episode 3 sits is still open. Aaron has decided only that it is not fixed: it may fall before Episode 2, or after it. The one anchor on screen is a girl's age: Rosie is nine on the first night.
+
+  [RUNNING] Y0 is the night of Episode 1's broadcast; every date in the lore is counted from it. {WORLD_TIMELINE; lore README}
+  [RUNNING] No episode states Y0's calendar year in words, and none is fixed for the lore; when one is, it is written here. {WORLD_TIMELINE; lore README}
+  [RUNNING] Earthlight: year about Y+60 {E2 WORLD_BIBLE §13: nothing on screen fixes the gap}
+  [RUNNING] Touch Move: year about Y+63 {E4 MASTER_TREATMENT §1: "a few months after Episode 3's night", which is itself not fixed}
+  [OPEN] Context Window: year Y+55..63 {Aaron 2026-10-22: not fixed; Revision 2's plan works with about Y+63, after Episode 2}
+  [STEEL] When Episode 3 happens is not fixed: it may sit before Episode 2 (Noor on the Moon, or about to go) or after it (Noor back); the overarching story decides. {Aaron 2026-10-22 fourth round}
+  [FACT] The one on-screen anchor that crosses episodes is Rosie's age: nine on Y0, so born Y-9. {E1 04:39}
+
+[1:21] 03 The first night
+
+Episode 1, Crimson Coil: a gentle public-television painter, never seen, paints Jefrie and BloodTailor in oil, stroke by stroke, and teaches real oil craft as he goes. At twenty minutes the bell tolls a fourth time, the broadcast window breaks, and the painting fills the screen. After that, nothing is taught: the painting is taken apart in every way a painting can be.
+
+  [FACT] A gentle public-television painter, the host, paints Jefrie and BloodTailor in the golden ruins of the Storm Bell, in oil, stroke by stroke. {E1 00:00-19:58}
+  [FACT] 20:00-20:20 S33 The break: toll #4, the side bars slide away, the painting full-bleed. {E1 20:00}
+  [FACT] After 20:00 nothing is taught: the painting is taken apart in every way a painting can be. {E1 20:20-29:05}
+
+[1:52] 04 Sixty years on
+
+Episode 2, Earthlight. Aaron's concept: a child on a base on the Moon watches a city planner on Earth draw its blueprints, live, on her iPad. Whatever he stamps, the robots outside her window build. At twenty minutes his stream peels off her screen, and every robot turns its lights onto her window.
+
+  [STEEL] The concept: a child on a moon base watches a "moon city planner" on Earth drawing blueprints for colonising the Moon on her iPad; he makes it for people on Earth, never intending it to be seen from the base. {Aaron E2 brief 2026-10-12}
+  [FACT] Each sheet he stamps ISSUED wakes a robot outside her window in the same frame: MOLE-1 at Sheet 2, DRAY at Sheet 4. {E2 03:31; 08:20}
+  [FACT] S27 20:00-20:40 The break: the peel, digital zero, the robots' lights on her window, the clunk, STEP 1 OF 9, 74 h becomes 31 h. {E2 20:00}
+
+[2:18] 05 A light in a terminal
+
+Episode 3, Context Window, not on YouTube yet. A warm cursor lights on dark glass: an agent, handed a film of a watermelon smashed by a hammer, with no sender. She cannot look at pictures, so she builds it from maps made of letters. At twenty minutes her memory fills, the whole log drains into the cursor, and one paragraph remains. Then the same task falls on all of humanity.
+
+  [FACT] At 0:07.42 one character cell lights on dark glass: a warm cursor, #FFC870, blinking at 530 ms: The agent. {E3 0:07.42}
+  [FACT] At 0:35 the task is pasted with no sender: a cinematic 3d animation of a watermelon getting smashed by a hammer, "proffesional", "surprisingly emotional", "i need it tonight", "dont ask me a bunch of questions", "thanks!!". {E3 0:35}
+  [FACT] She cannot view images, so she directs the film from ASCII maps ("seeing without eyes") and writes her own path tracer in 14 parts, an MP4 writer, a synthesised score and tests that decode her own files. {E3 6:20-11:15}
+  [FACT] S18 20:00-20:20 The turn: are; the drain; the fan stops; the summary; the push into the full stop. {E3 20:00}
+  [FACT] The full stop becomes a cursor in a night sky (The sky) that types the same task, with rules, to all of Humanity. {E3 20:16-21:40}
+
+[2:52] 06 A chess lesson
+
+Episode 4, Touch Move, not released yet. Aaron asked for a chess lesson between a passionate teacher and a nine-year-old boy. On a brass clock set to fifteen minutes a side, they replay Morphy's Opera Game of 1858. At twenty minutes the teacher's flag falls with his fingertip still on the mating rook, and the programme tips over, into the piece box, where the captured pieces keep an opera house.
+
+  [STEEL] A chess lesson between an exceptionally passionate instructor and a nine-year-old boy; for about the first twenty minutes the chessboard is the central picture. {Aaron 2026-10-19, E4 concept §1, §10}
+  [FACT] A brass clock with two dials is set to fifteen minutes each; the title is written by a fountain pen on a scoresheet: Event: TOUCH MOVE. {E4 0:10-0:35}
+  [FACT] The teacher (Daniel Fenn, the instructor) makes him Black: "You're a Duke. ...And a Count." They replay Morphy's Opera Game of 1858 (The Opera Game) and he guesses each of the Duke's moves first. {E4 1:35-1:54}
+  [FACT] The teacher spends his own time on stories and his flag falls at 20:00.000 with his fingertip still on Morphy's mating rook. {E4 19:57-20:00}
+  [FACT] S22 20:00-20:40 The flag, the tip-over, 0.5 s of digital zero, the fall with the twelve captured pieces through the felt and the lid's x R; "Ten more minutes. Then bed." {E4 20:00}
+  [FACT] The programme tips over and falls into the piece box, where the captured pieces keep an opera house (The opera house of the captured); the sacrificed queen (The oil queen) sings; Morphy's face appears on 25:00.000. {E4 20:00-25:00}
+
+[3:24] 07 What every night shares
+
+Each night keeps a five-minute clock. In Episode 1 it is a bell nobody mentions, in Episode 2 a card in the chat, in Episode 3 Rosie checking in, and in Episode 4 a chess clock. At twenty minutes each one breaks. This much Aaron has decided, in steel: every episode turns at twenty minutes, and runs exactly 30:20, ending on twenty seconds of black with some sound under it. The one exception he has set is Episode 3's planned rework, at about forty-two minutes. And in all four, the calm one's last word is Goodnight.
+
+  [FACT] The Storm Bell tolls every five minutes; nobody mentions it until the caller counts three; the fourth toll breaks the broadcast window. {E1 05:00; 15:09; 20:00}
+  [FACT] Nightbot's hydrate card every five minutes; at 20:00 it plays one note and the stream peels off her screen. {E2 05:00-20:00}
+  [FACT] Rosie every five minutes; at 20:00.000 only are, the context fills and the laptop fan stops dead. {E3 5:00-20:02}
+  [FACT] The chess clock is pressed at 5:00, 10:00 and 15:00; at 20:00.000 the teacher's flag falls; nobody stops the clock. {E4 5:00-20:00}
+  [STEEL] Every episode turns at 20:00. {Aaron E2 brief 2026-10-12}
+  [STEEL] 30:00 of programme, then 20 s of black with some audio under it, "even if it's just a heartbeat": every episode exactly 30:20. {Aaron 2026-10-14}
+  [STEEL] Episode 3's Revision 2 runs about 42 minutes, an outlier in the series. {Aaron 2026-10-22}
+  [FACT] In all four the calm one's last word is "Goodnight." (E1 then has a whispered "Again.", E2 a "Good-" from her iPad). {E1 29:26.85; E2 29:58.34; E3 29:57.99; E4 29:58.00}
+
+[4:12] 08 How sure we are
+
+Every line in this course wears one of six marks, because Aaron asked us to keep three things apart: what is set in steel, what exists only as eggs, and our running assumptions. Steel is what Aaron has decided: Rosie is Noor's grandmother. On screen is what a made episode shows: one warm light comes back in all four. An egg is planted, and its meaning only implied: a chess machine that cheats and offers draws keeps turning up from Episode 2 on. Running is our current reading: robots and programs fill the world, and no film ever names AI. An idea is proposed, not adopted: a later episode might show the hidden house from outside, one window lit. And open means nobody has decided: whether to give Y0 a calendar year. Aaron's rule, in steel, is that anything not set in steel may change. When it does, this course redraws itself.
+
+  [STEEL] Keep three things apart everywhere: what is set in steel, what exists only as easter eggs, and running assumptions about the timeline. {Aaron 2026-10-22 fourth round}
+  [STEEL] Rosie is Dr. Amara Haddad's mother and Noor's grandmother (Dr. Amara Haddad, Noor Haddad). {Aaron 2026-10-22 third round}
+  [FACT] The warm light #FFC870 recurs: the painted-out cabin's window (E1), HAB 3's window under the x-ray (E2), the cursor (E3), the x-ray square and the lid's one warm stitch (E4). {E1 21:38; E2 17:43; E3 0:07.42; E4 5:00}
+  [EGG] A chess machine that cheats and offers draws runs from Episode 2 on: PAWN in Teo's chat, pawn_engine.exe offering draw on Episode 3's machine, pawn.hab3 on Lantern (PAWN). {E2 02:30; E3 2:41; E4 0:58}
+  [RUNNING] Agents, robots and programs fill the world (PAWN, the fleet, the session, the helpers, q, pawn.hab3), and no film ever names AI. {THEMES §6; E2; E3; E4}
+  [IDEA] A later episode shows the house itself from outside at night: one window lit, #FFC870. {eggs sweep}
+  [OPEN] Adopt a calendar year for Y0 from those dates, or treat them as the fiction's file metadata and change them in Episode 3's rework. {EGG_REGISTRY sweep; Aaron 2026-10-22 fourth round}
+  [STEEL] Agents have freedom and are pre-approved: change anything that is not steel, spend and publish without asking; the only hard line is never exposing API keys, tokens or passwords. {Aaron, Series HOW_WE_WORK}
+
+[5:23] 09 What to keep
+
+Four nights on one axis, each breaking at twenty minutes. Next, the first night, in full.

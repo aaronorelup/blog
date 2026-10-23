@@ -1,0 +1,103 @@
+---
+// An index of sheets (characters or things): a card per sheet, grouped by kind, with its picture and badge, its
+// other names, its episodes as chips in their colours, and a bar of its lines by tier. A filter box and the
+// episode chips narrow the cards in the page (no request); the tier legend lights each card's share of a tier.
+import LorePage from './LorePage.astro';
+import { BASE, EPISODES, allBullets, countTiers, firstImage, thumbOf, plain, clip, epVars, KIND_LABEL, grouped, urlOf, UNRELEASED, TIER_ORDER } from '../../lib/lore.js';
+import { epChip, tierBar, zeroTiers, badge } from '../../lib/lore-html.js';
+
+interface Props { list: any[]; groups: any[]; nav: string; title: string; eyebrow: string; lede: string; sub?: string; description: string }
+const { list, groups, nav, title, eyebrow, lede, sub = '', description } = Astro.props;
+const sections = grouped(list, groups);
+const all = countTiers(list.flatMap(allBullets));
+const cards = (items) =>
+  items.map((e) => {
+    const c = countTiers(allBullets(e));
+    const img = firstImage(e);
+    const q = [e.title, e.id, e.header.aka || '', e.summary || '', KIND_LABEL[e.kind] || ''].join(' ').toLowerCase();
+    return { e, c, img, q, n: allBullets(e).length };
+  });
+---
+
+<LorePage title={`${title} · I Love My Evening Television`} description={description} crumbs={[[title]]} nav={nav} counts={all}>
+  <header class="lo-hero" slot="hero">
+    <p class="lo-eyebrow">{eyebrow}</p>
+    <h1 class="lo-title">{title}<span class="cur" aria-hidden="true"></span></h1>
+    <p class="lo-lede">{lede}</p>
+    {sub && <p class="lo-sub" set:html={sub} />}
+  </header>
+
+  <div class="filterbar" data-cardfilter>
+    <label class="lsearch">
+      <span class="sr-only">Filter by a name or a word</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+      <input type="search" placeholder={`Filter the ${list.length} ${nav}: a name or a word`} data-q autocomplete="off" />
+    </label>
+    <div class="fchips" role="group" aria-label="Only those in an episode">
+      {EPISODES.map((ep) => (
+        <button type="button" class="fchip" style={epVars(ep.id)} data-ep={ep.id} aria-pressed="false" title={`Only those in Episode ${ep.id.slice(1)}${UNRELEASED.has(ep.id) ? ' (not released yet)' : ''}`}>{ep.id}</button>
+      ))}
+    </div>
+  </div>
+
+  <nav class="jump" aria-label="Kinds">
+    {sections.map((g) => <a href={`#${g.key}`}>{g.title}<b>{g.items.length}</b></a>)}
+  </nav>
+
+  {sections.map((g) => (
+    <section class="lo-block" id={g.key} data-cardgroup>
+      <h2 class="lo-h2" style="margin-bottom:14px">{g.title} <small class="lb-m" style="font-size:12px">{g.items.length}</small></h2>
+      <div class="egrid is-compact">
+        {cards(g.items).map(({ e, c, img, q, n }) => (
+          <a class="ecard" href={urlOf(e.id)} data-q={q} data-eps={e.episodes.join(' ')} data-zero={zeroTiers(c)}>
+            <div class="ecard-art">
+              {img ? (
+                <img src={thumbOf(img.url)} alt="" loading="lazy" decoding="async" width="560" height="315" />
+              ) : (
+                <span class="ecard-none" aria-hidden="true">{e.title.replace(/^the\s+/i, '').charAt(0).toUpperCase()}</span>
+              )}
+              {img && <Fragment set:html={badge(img.status)} />}
+            </div>
+            <div class="ecard-b">
+              <span class="ecard-k">{KIND_LABEL[e.kind] || e.kind}{e.born?.year ? ` · ${e.group === 'thing' ? 'from' : 'born'} ${e.born.year.text}` : ''}</span>
+              <h3 class="ecard-t">{e.title}</h3>
+              {e.header.aka && <p class="ecard-a">{plain(e.header.aka)}</p>}
+              {e.summary && <p class="ecard-s">{clip(plain(e.summary), 220)}</p>}
+              <div class="ecard-f">
+                {e.episodes.map((code) => <Fragment set:html={epChip(code, { link: false })} />)}
+                <span class="ecard-n">{n} lines</span>
+              </div>
+              <Fragment set:html={tierBar(c)} />
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  ))}
+  <p class="lo-empty" data-empty>Nothing matches. Try another name, or clear the episode chips.</p>
+
+  <script>
+    const bar = document.querySelector('[data-cardfilter]');
+    if (bar) {
+      const input = bar.querySelector<HTMLInputElement>('[data-q]');
+      const chips = [...bar.querySelectorAll<HTMLButtonElement>('[data-ep]')];
+      const cards = [...document.querySelectorAll<HTMLElement>('.ecard[data-q]')];
+      const groups = [...document.querySelectorAll<HTMLElement>('[data-cardgroup]')];
+      const empty = document.querySelector('[data-empty]');
+      const run = () => {
+        const words = (input?.value || '').toLowerCase().split(/\s+/).filter(Boolean);
+        const eps = chips.filter((c) => c.getAttribute('aria-pressed') === 'true').map((c) => c.dataset.ep);
+        let shown = 0;
+        cards.forEach((c) => {
+          const ok = words.every((w) => c.dataset.q!.includes(w)) && eps.every((e) => (c.dataset.eps || '').split(' ').includes(e!));
+          c.classList.toggle('is-hidden-card', !ok);
+          if (ok) shown++;
+        });
+        groups.forEach((g) => (g.hidden = !g.querySelector('.ecard:not(.is-hidden-card)')));
+        empty?.classList.toggle('is-on', shown === 0);
+      };
+      input?.addEventListener('input', run);
+      chips.forEach((c) => c.addEventListener('click', () => { c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); run(); }));
+    }
+  </script>
+</LorePage>

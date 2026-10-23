@@ -1,0 +1,96 @@
+Episode 1: Crimson Coil: lesson 02 of I Love My Evening Television (C-02)
+https://aaronorelup.com/courses/i-love-my-evening-television/lessons/02-crimson-coil/
+
+[0:01] 01 The first night
+
+Episode 1 is the night the whole axis is counted from: by our working convention, Y0. Aaron asked for a thirty-minute oil paint-along of his own two characters, Jefrie and BloodTailor, with four voices who never introduce themselves. For twenty minutes a gentle painter teaches real oil craft: value, edges, wet-in-wet, glazing, fat over lean. Then the bell tolls, the side bars slide away, and the painting fills the screen. After that it is flown over, X-rayed, cut back, sung, filmed silent, over-painted, hung and relit.
+
+  [RUNNING] Crimson Coil: year Y0 {lore README: the axis is counted from this night}
+  [STEEL] Aaron's brief: a 30-minute voiced oil paint-along of Jefrie and BloodTailor, recreating a flawed ChatGPT picture and fixing its mistakes (her tail and weapon, his metal jaw, capes you can't read). {Aaron E1 brief 2026-10-11}
+  [STEEL] Four voices who never introduce themselves: a homage to a famous public-television painter, a homage to a famous TV pitchman, a man up all night on caffeine and a stimulant, and Jefrie herself. {Aaron E1 brief 2026-10-11}
+  [FACT] He teaches real oil craft as he goes: value, edges, wet-in-wet, glazing, fat over lean. {E1 02:34-19:26}
+  [FACT] 20:00-20:20 S33 The break: toll #4, the side bars slide away, the painting full-bleed. {E1 20:00}
+  [FACT] Then it is flown over, X-rayed, cut back, gossiped over, sold, sung, filmed silent, over-painted, hung and relit. {E1 20:20-29:05}
+
+[0:46] 02 The painter you never see
+
+The host is never seen: no face, no hands, only his brush, his voice and the subtitles. Aaron cast him as a homage to a famous public-television painter; and as a working rule he is never named and never impersonated. Paintings speak to him, and he answers with total courtesy, as if it happens all the time. He gives the last stroke away, and his last clean word, said softly to the viewer, is Goodnight. By our running reading, every calm one after him rhymes him: Teo, the agent and the chess teacher, each ending on Goodnight.
+
+  [FACT] Never seen: no face, no hands on screen; brush, voice and subtitles only. {E1}
+  [STEEL] The brief cast him as the first of four voices: a homage to a famous public-television painter. {Aaron E1 brief 2026-10-11}
+  [RUNNING] An unnamed homage: never named, never impersonated, none of the real man's catchphrases, no cloned voice. {E1 treatment §0.2; Q-E1-27; THEMES}
+  [FACT] Paintings speak to him and he answers with total courtesy, as if it happens all the time. {E1 08:55}
+  [FACT] He gives the last stroke away: "...I think this one's hers." {E1 19:44}
+  [FACT] "Goodnight." His last clean word, said softly to the viewer in the end room. {E1 29:26.85}
+  [RUNNING] Every later calm maker rhymes him: Teo, the agent, the instructor, each ending on "Goodnight." {E2 29:58.34; E3 29:58; E4 29:58.00}
+
+[1:34] 03 The girl in the painting
+
+Jefrie is Aaron's own character, set in steel: a small young warrior girl from the same dark world as BloodTailor. But Aaron has also said that Episode 1's Jefrie is not actually going to be canon Jefrie: her lines are only what Jefrie would say. Inside the painting she is silent until the rag gives her a mouth, and her first remark is about the host's first story: she has been listening since the start. She tells the painter to make her tail heavier, and she is right. By our running reading, she never returns as cast: only as a painting, a print, a drawing or a sound.
+
+  [STEEL] Aaron's original character: a small young warrior girl in the same dark world as BloodTailor and Yusef; introduced 2026-09-08, named 2026-09-09. {Notion: Jefrie}
+  [STEEL] Episode 1's Jefrie is "not actually going to be canon Jefrie", but her lines are based on what Jefrie would say. {Aaron E1 brief 2026-10-11}
+  [FACT] In Episode 1 she is the girl inside the painting; she speaks only once the rag has given her a mouth. {E1 08:52}
+  [FACT] She has been listening since the start: her first remark is about the host's first story. {E1 08:59}
+  [FACT] Heavier: Jefrie corrects the tail root and is right (11:59-12:11); the caption *as thick as she is* becomes THICKER; the song's tag (25:19); the chaos chant (29:42). {E1 11:59; 25:19; 29:42}
+  [RUNNING] From Episode 2 on she returns as a painting, a print, a drawing or a sound, never as cast. {Aaron 2026-10-14: new characters every episode; Q-E1-31}
+
+[2:22] 04 The caller
+
+At four forty-seven in the morning, a caller rings in, painting along since the 2 a.m. airing, for his little sister: it's for my sister, Rosie. She's nine today. He counts things, the bell, the days, the seconds, and he is usually right: he predicts the last stroke at exactly twenty minutes. At five-oh-nine, Rosie's painting is done: attempt number four, on a pizza-box lid. Then he falls asleep on the line.
+
+  [FACT] 4:47 a.m. on the LINE 1 LCD: he rings in, on canvas three. {E1 04:16.5}
+  [FACT] A man painting along with the show since "the two a.m. one". {E1 04:17}
+  [FACT] Rosie's big brother: "It's for my sister, Rosie. She's nine today." {E1 04:34}
+  [FACT] He counts things: the bell, the days, the seconds. {E1 10:00; 15:01; 19:37}
+  [FACT] He is usually right: the last stroke at twenty minutes, the bell, the house in the X-ray. {E1 10:07; 15:01; 21:34}
+  [FACT] Finished at 5:09 a.m., attempt #4, on a pizza-box lid. {E1 26:37; 27:55}
+  [FACT] The caller finishes Rosie's painting, the pizza-box painting, at 5:09 a.m. and falls asleep on the line. {E1 26:37; 27:25}
+
+[3:00] 05 The pitchman
+
+The pitchman shouts in capitals, prices everything, and owns the phrase BUT WAIT, which the host bans. Aaron cast him as a homage to a famous TV pitchman. He has carried a one-hair brush for eleven years and never got it wet. That night it makes the last stroke: a catch-light in Jefrie's eye, with nobody holding it.
+
+  [FACT] Owns the phrase BUT WAIT; the host bans it. {E1 01:08}
+  [STEEL] The brief cast him as the second voice: a homage to a famous TV pitchman. {Aaron E1 brief 2026-10-11}
+  [FACT] Has carried a One-Hair Brush for eleven years and never got it wet. {E1 17:50-18:20}
+  [FACT] His One-Hair Brush makes the last stroke, in Jefrie's eye, with nobody holding it. {E1 19:57.5}
+
+[3:29] 06 The house he paints out
+
+Eleven minutes in, the host paints a small cabin with one lit window into the ruins, and says only: there, that one's just for me. Three strokes of gold paint it out. After the turn, an X-ray finds it, and its window is the only warm pixel on the plate. He says: I always put one in. Usually it's the part you paint over. It is the series' longest-running egg. Teo draws a one-window cabin and rubs it out, Episode 3's agent is a cursor the colour of that window, and in Episode 4 only the colour is left. Why he puts one in is still open.
+
+  [FACT] The host, as it sits on the canvas: "There. That one's just for me." {E1 11:20}
+  [FACT] Three opaque strokes of Cathedral Gold paint it out. {E1 11:20.5-11:27}
+  [FACT] Lead white gives it away to the X-ray; its window warms to #FFC870, the only warm pixel. {E1 21:38}
+  [FACT] Host: "...Oh. You found it." / "I always put one in. Usually it's the part you paint over." {E1 21:28-21:32}
+  [EGG] Teo draws a tiny one-window cabin on the west rim of Sheet 1's pit, dabs the window orange and rubs it out without a word; the orange ghost stays. {E2 02:57.5-03:02; EGG-03}
+  [EGG] The cursor is its window: a warm #FFC870 block, the only warm light on the plane, blinking at 530 ms; lit at 0:07.42, out on its blink at 29:59.467. {E3 0:07.42-29:59.467; E3-EGG-01}
+  [EGG] Only its colour: the warm #FFC870 caret in Lantern's move box, blinking at 530 ms. {E4 0:44-0:46; E4-EGG-11}
+  [OPEN] Why the host puts one in every painting. {E1 21:29}
+
+[4:19] 07 A bell every five minutes
+
+Behind them stands the Storm Bell: in Aaron's own canon, Jefrie's home. In Episode 1 it tolls every five minutes, and nobody mentions it until the caller counts three. Its fourth toll breaks the broadcast window at twenty minutes. Later nights bury it: re-pitched to F under every chat chime in Episode 2, and to A under Rosie's check-ins in Episode 3. One idea on the table: D, F and A walk a D minor chord, and a later episode might ring it on D again, at twenty minutes.
+
+  [STEEL] It is Jefrie's home; she hunts the strangers who come near it. {Notion: Jefrie 2026-09-26}
+  [FACT] Nobody mentions it until the caller counts three. {E1 15:01}
+  [FACT] Toll #4 breaks the 3:2 broadcast window at 20:00. {E1 20:00}
+  [EGG] Re-pitched from D to F, far under every Nightbot chime, nearer each time; at 20:00 only its first 0.40 s. {E2 05:00; 10:00; 15:00; 20:00.000; 25:00.000; 29:38.56; EGG-05}
+  [EGG] Re-pitched from D to A (+7 semitones, hum 55 Hz) under Rosie's five-minute clock at 5:00, 10:00 and 15:00; only its onset at 20:00.000; once more in the chaos. {E3 5:00; 10:00; 15:00; 20:00; 29:38.54; E3-EGG-10}
+  [IDEA] Its keys walk the D minor triad, D (E1), F (E2), A (E3); a later episode finishes it: heard as a bell, on D again, at 20:00, when someone finally says "That's five." {eggs sweep}
+
+[4:59] 08 What it leaves open
+
+The first night leaves a lot open on purpose. Nobody knows whose room the end room is. The caller's name is unknown, and so is what became of him. And how Rosie knew about the girl with the tail, nineteen hours before the broadcast, is still open. Even whether the show was live is open: the caller asks, and gets only, hi, friend.
+
+  [OPEN] Whose room the end room is on Y0: a man ("He's tired"), never named. {E1 29:13}
+  [OPEN] The caller's name, and what became of him after 5:12 a.m. {E1}
+  [OPEN] How Rosie knew "the girl with the tail" nineteen hours before this broadcast. {E1 04:39}
+  [OPEN] Whether the show is live: the caller asks "is this live?" and gets "Hi, friend."; the painting's clock runs 76 days in twenty minutes. {E1 04:17}
+
+[5:26] 09 What to keep
+
+By our running count, Episode 2's film quotes this night twelve times, and Episode 3's twenty-five. Next: sixty years on, a city for the Moon.
+
+  [RUNNING] Quoted so far by 12 eggs in Episode 2's film, 25 in Episode 3's master (one of them also quoting Episode 2) and 7 registry rows in Episode 4. {EGG_REGISTRY; E4 SUMMARY}

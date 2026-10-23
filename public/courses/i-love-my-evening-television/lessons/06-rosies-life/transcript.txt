@@ -1,0 +1,73 @@
+Rosie's life: lesson 06 of I Love My Evening Television (C-02)
+https://aaronorelup.com/courses/i-love-my-evening-television/lessons/06-rosies-life/
+
+[0:01] 01 The one person in every episode
+
+By our running count, Rosie is the one person in all four episodes so far, and she is only ever words: her brother's lines, a name in a chat, a check-in, a signature. She is never seen as a grown woman, and never heard. This lesson puts her whole life on one axis, and marks how sure we are of every line.
+
+  [RUNNING] The one person in all four episodes: her brother's lines (E1), a chat handle (E2), a check-in (E3), a signature (E4). {E1 04:17; E2 07:27; E3 5:00; E4 26:37}
+  [FACT] Never seen as an adult in any episode. {E1-E4}
+  [FACT] Never voiced in any episode. {E1-E4}
+
+[0:27] 02 Nine on the first night
+
+Every date in the series sits on one axis, and our working convention is that Y0 is the night of Episode 1. That night, Rosie turns nine. It is the one age the films ever put on screen, so she was born nine years before. This much Aaron has decided, in steel: she is the mother of Doctor Amara Haddad, and the grandmother of Noor. Every other age is arithmetic, and only as sure as its dates. By our running count she is sixteen at a chess tournament about seven years on, about seventy in Episode 2, and about seventy-two in Episode 4. Episode 3 has no fixed place yet, so her age there is open: anywhere from her mid-sixties to seventy-three.
+
+  [RUNNING] Y0 is the night of Episode 1's broadcast; every date in the lore is counted from it. {WORLD_TIMELINE; lore README}
+  [FACT] Nine on Y0, the night of Episode 1. {E1 04:39}
+  [FACT] The one on-screen anchor that crosses episodes is Rosie's age: nine on Y0, so born Y-9. {E1 04:39}
+  [FACT] Rosie: born Y-9 {E1 04:39}
+  [STEEL] Amara's mother and Noor's grandmother. {Aaron 2026-10-22}
+  [RUNNING] Her ages: nine on Y0, sixteen at Board 14, about seventy in E2, about 64-73 in E3 (its place is not fixed), about 72 in E4. {E1 04:39; E4 MASTER_TREATMENT §1; E2 WORLD_BIBLE §13; E3 CAST §6.1}
+  [OPEN] Her exact age in Episode 3: about 73 after Episode 2 (the rev2 plan; Y-9 math gives 72 at Y+63), about 64-69 before it. {Aaron 2026-10-22: placement not fixed}
+
+[1:26] 03 The girl with the tail
+
+On her ninth birthday she asked her big brother for the girl with the tail. He stayed up all night, painting along with a late-night television show, and at five-oh-nine in the morning it was done: a grin with about four hundred teeth, and a tail, in oil, on the lid of a pizza box. About sixty years later, in Episode 2, a chat name, grandma_rosie, types into a stranger's livestream: he painted me a girl with a tail once, on a pizza box; still on my fridge. Nobody on screen says it is her. In Episode 3 she sends a photograph of that fridge: the painting, faded, under magnets. Beside it, too small to read, is a child's crayon of the same girl, signed N. Which crayon really hangs there is still open: the film shows the girl with the tail; a later plan puts Noor's crayon melon there instead. And one idea we like: everyone who loves Rosie draws her a tail.
+
+  [FACT] "She asked for the girl with the tail. That was nineteen hours ago." {E1 04:39}
+  [FACT] Oil on a pizza-box lid: a crude grin with about four hundred teeth, and a tail. {E1 27:55}
+  [EGG] grandma_rosie: "he painted me a girl with a tail once. on a pizza box. for my ninth birthday. still on my fridge" {E2 14:07.5; visible 14:21-14:30; EGG-06}
+  [EGG] Rosie's fridge photo, seen once at a grazing angle: the pizza box, faded, under magnets. {E3 10:17-10:22; E3-EGG-15}
+  [EGG] Beside it a child's crayon of the girl with the tail, signed "N." (not legible at 1080p). {E3 10:21-10:22; E3-EGG-45}
+  [OPEN] Which crayon hangs beside it: the made episode shows the girl with the tail signed N.; Aaron's option and the rev2 plan put Noor's crayon melon there. {E3 10:21; E3 rev2 plan v0 §2; Aaron 2026-10-22}
+  [IDEA] Everyone who loves Rosie draws her a tail: her brother in oil, Noor in crayon, the agent on a melon. {series gather}
+
+[2:39] 04 Every five minutes
+
+Episode 3 is where she comes closest. Every five minutes, in lowercase, signed x R, she asks whatever is working on the machine whether it is doing all right in there. She asks for a little face and a little tail on the melon in its film, and her drawing is the first picture the agent cannot see. With her last minutes, the agent keeps her promise to Rosie: a little melon, with a face and a curly tail. And the last word spoken in the film is the agent's goodnight, to her. In Episode 4 she is a signature. A chess teacher keeps a yellowed score sheet from Board 14 of a junior tournament: White, R., signed x R in a rounder hand. The film never says it is Rosie: the same signature, x R, is a planted egg. By our running count she was sixteen that day, and afterwards she showed the ten-year-old who had resigned to her that the game was a draw.
+
+  [FACT] Every five minutes, lowercase, two spaces after each full stop, signed x R: hello dear., its getting cold here., are you doing all right in there?; at 20:00.000 only are. {E3 5:00.000-20:00.000}
+  [FACT] She asks for "a little face" and "a little tail" on the melon; her drawing is the first picture the agent cannot see. {E3 5:10-5:53}
+  [FACT] With her last minutes the agent keeps her promise: Rosie's little melon with a face and a curly tail. {E3 19:55.000}
+  [FACT] "did it come out nice?  x R" / "im so glad.  x R"; then "goodnight in there.  x R", and the agent's last word, "Goodnight.", is to her. {E3 S28; 29:57; 29:57.99}
+  [FACT] The yellowed sheet: White "R." with the surname under a thumb smudge, signed x R in a rounder hand, 1–0. {E4 26:32-26:50}
+  [EGG] x R is how Rosie signs in Episode 3: his opponent at sixteen was Rosie. {E4 26:37; E4-EGG-21}
+  [RUNNING] She was sixteen at Board 14, about seven years after Episode 1: "Nine plus seven is sixteen. Nobody ever says it." {E4 MASTER_TREATMENT §1}
+  [EGG] Afterwards she shows him the draw: "She showed me afterwards." {E4 17:59.32}
+
+[3:53] 05 What is set in steel
+
+Her sheet keeps what Aaron has decided apart from what we only assume. Set in steel: she can come back older, or as a historic person in the eyes of a later episode's people. Also in steel: every episode carries eggs from all the earlier ones, Rosie among them. Then the running rules, which any crew may change: she stays unseen and unheard; as a working rule she writes in lowercase, with two spaces after a full stop; and, for now, the pizza box stays on her fridge.
+
+  [STEEL] She can come back as an older character or as a historic person in the eyes of a later episode's people. {Aaron 2026-10-14; E3 prompt 2026-10-19}
+  [STEEL] Every episode carries eggs from all previous ones, Rosie older or historic among them. {Aaron 2026-10-14}
+  [RUNNING] Never seen as an adult, never heard: text, a signature, stitches. {NEXT_EPISODE}
+  [RUNNING] Lowercase, two spaces after full stops, x R. {E3 CAST §6.3}
+  [RUNNING] The pizza box stays with her, on her fridge. {E2 14:07.5; E3 S08}
+
+[4:33] 06 What nobody knows yet
+
+Some things are left open on purpose. Her surname is under a thumb smudge on that score sheet, and nowhere else. Nobody knows whether she realised that the girl calling in from the Moon in Episode 2 was her own granddaughter, or whether she ever sees the little melon that was made for her. One idea on the table: a printed copy goes up on her fridge, beside the pizza box, in a later episode.
+
+  [OPEN] Her surname: under a thumb smudge on the sheet; nowhere else. {E4 DECISIONS D12.1}
+  [OPEN] Whether she knew the girl on Teo's call was Noor, or that Noor was undeclared on the Moon. {E2 27:51}
+  [OPEN] Whether she ever sees her little melon. {E3 19:55}
+  [IDEA] A printed copy goes on her fridge beside the pizza box in a later episode. {E3 Q-E3-35}
+
+[5:05] 07 What to keep
+
+Nine on the first night; about seventy by the Moon, by our running count. One idea we keep coming back to: every night, someone stays up for someone, because of her. Change a line of the lore, and this lesson redraws itself the next time you press play.
+
+  [RUNNING] Her ages: nine on Y0, sixteen at Board 14, about seventy in E2, about 64-73 in E3 (its place is not fixed), about 72 in E4. {E1 04:39; E4 MASTER_TREATMENT §1; E2 WORLD_BIBLE §13; E3 CAST §6.1}
+  [IDEA] The series' quiet engine: each night someone stays up for someone because of her (her brother; Teo, after "stay up for her"; the agent's promise; a boy shown the draw). {series gather}

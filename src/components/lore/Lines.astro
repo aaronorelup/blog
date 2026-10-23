@@ -1,0 +1,7 @@
+---
+// A list of lore lines (see bulletHtml in lib/lore-html.js for the options).
+import { listHtml } from '../../lib/lore-html.js';
+interface Props { bullets: any[]; opts?: Record<string, any>; class?: string }
+const { bullets, opts = {}, class: cls = '' } = Astro.props;
+---
+{bullets.length > 0 && <ul class={`lbl ${cls}`} set:html={listHtml(bullets, opts)} />}

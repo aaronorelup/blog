@@ -1,0 +1,82 @@
+The Moon and the Haddads: lesson 07 of I Love My Evening Television (C-02)
+https://aaronorelup.com/courses/i-love-my-evening-television/lessons/07-the-moon-and-the-haddads/
+
+[0:01] 01 Three generations
+
+In Episode 2, a child on a Moon base watches a planner draw, live, on her iPad. She is Noor. This much Aaron has decided, in steel: she is Rosie's granddaughter, and the daughter of Doctor Amara Haddad. Also in steel: she is ten years old in Episode 2. By our running count she was born about fifty years after the first night, when Rosie was about fifty-nine. By the crew's working story, she came up to the Moon at seven, with her mother, on the first flight that welcomed families. The chat's loyalty toast says she has watched Teo's streams for one thousand and ninety-four days. When a chat name, grandma_rosie, writes: stay up for her, love, our reading is that her grandmother is asking Teo to stay up for Noor. Nobody on screen connects them.
+
+  [STEEL] A child on a Moon base watching the planner's video on her iPad; she looks up and sees what he describes. {Aaron E2 brief 2026-10-12}
+  [STEEL] Rosie's granddaughter and Amara's daughter. {Aaron 2026-10-22}
+  [STEEL] Ten years old in Episode 2. {Aaron 2026-10-22 fourth round, who calls it a fact on screen; no line or text on screen states the number}
+  [RUNNING] Born; Rosie is about 59. {E2 WORLD_BIBLE §3; REVISION_2_NOTES}
+  [RUNNING] Came up at seven, 1,094 days before Episode 2's night, on the first "families welcome" flight with her mother. {E2 WORLD_BIBLE §3}
+  [FACT] Lantern's loyalty toast: tps_hab3, watching 1,094 days. {E2 00:31}
+  [RUNNING] Under Aaron's steel, grandma_rosie's "stay up for her, love" is her grandmother asking Teo to stay up for her; nobody on screen connects them. {E2 27:51.6; Aaron 2026-10-22}
+
+[1:03] 02 Personal effects, one
+
+On the base's roster, her home is storage: HAB 3, personal effects, occupancy zero. The manifest reads thirteen adults, and personal effects, one. By our reading, she is that one: the company never declared her. When she finally calls in, she says it in three sentences: They went to get the food. The lander tipped over. That was eleven days ago. She eats on her mother's badge, and a machine calls her Doctor Haddad. Under an x-ray of the Moon base, her window is the only warm pixel, and below it is a tunnel that is on no sheet. She dug three metres, because Teo said so. At the end, Teo rubs out population thirteen on his sheet, and letters fourteen. She is counted.
+
+  [FACT] On the roster: HAB 3: STORAGE - PERSONAL EFFECTS - OCCUPANCY 0 (ROSTER). {E2 06:56}
+  [FACT] The manifest: 13 ADULTS - PERSONAL EFFECTS (1); UNDECLARED OCCUPANT: DO NOT USE PUBLIC CHANNELS. {E2 06:56-07:01}
+  [RUNNING] She is the PERSONAL EFFECTS (1): the company never declared her. {E2 WORLD_BIBLE §10}
+  [FACT] Gone with the others: "They went to get the food. The lander tipped over. That was eleven days ago." {E2 26:31}
+  [FACT] Eats on her mother's badge, and a machine calls her "Dr. Haddad". {E2 09:37-09:42}
+  [FACT] The x-ray of the real base warms its window to #FFC870, the only warm pixel, and finds a tunnel under it on no sheet. {E2 17:42-17:46}
+  [FACT] She dug three metres because he said so. {E2 27:01}
+  [FACT] Teo rubs out POP. 13 on Sheet 1 and letters 14: she is counted. {E2 29:15-29:30}
+
+[2:04] 03 Her mother
+
+Amara is never seen or heard in any episode. On screen she is a badge: Tranquility Homestead, Haddad A, life support. Even her first name has never been on screen. But machines still greet her daughter by her name: Good evening, Doctor Haddad. Ration two of three. At six every evening, a message arrives from HAB 1: dinner, Noor, with a heart. Noor holds the talk key, says nothing, and lets go. By the crew's reading, Amara set that reminder years ago, and, the crew assumes, wrote the breathing card on Noor's wall, in her own hand. Our running guess is that she left with the twelve other adults, in both rovers, to salvage a supply lander that had tipped: thirty hours, back before dark. Sixty-two kilometres away, beside the lander, one red beacon blinks. Nobody remarks on it. The crew's reading: it is the six people of Rover 2, with her among them.
+
+  [FACT] Never seen or heard in any episode. {E2 09:37-28:58; E3; E4}
+  [FACT] Her badge: TRANQUILITY HOMESTEAD / HADDAD A / ECLSS. {E2 09:37; 20:57}
+  [FACT] On screen she is HADDAD A and Dr. Haddad; "Amara" has never been on screen. {E2 09:37; 09:39.8}
+  [FACT] Two machines greet her daughter by her name: the dispenser, "Good evening, Dr. Haddad. Ration two of three." {E2 09:39.8}
+  [FACT] The HAB 1 intercom sends dinner, noor with a heart at 18:00; Noor holds the talk key, says nothing, lets go. {E2 22:50-22:57}
+  [RUNNING] Set the daily 18:00 "dinner, noor" reminder years ago. {E2 MASTER_TREATMENT §3; WORLD_BIBLE §10}
+  [RUNNING] Wrote the breathing card in her own hand: WHEN SCARED: 12 IN - 24 HOLD - 24 OUT - 10 HOLD. {E2 WORLD_BIBLE §7.1}
+  [RUNNING] Left with the twelve other adults in both rovers 264 h before the night, 38 h before sunset, to salvage RESUPPLY 6: "thirty hours, back before dark". {E2 WORLD_BIBLE §10}
+  [FACT] One red beacon blinks 62 km away, beside the lander; nobody remarks on it. {E2 28:58.07-28:58.43}
+  [RUNNING] The blink is Rover 2's six, her among them. {E2 WORLD_BIBLE §10}
+
+[3:21] 04 Only things that are hers
+
+By our count, the made Episode 3 never names Noor, or mentions her. After Episode 2, the family comes back only as things. In Episode 3, at the bottom of the machine's schedule: eighteen hundred, daily, dinner, Noor, with a heart. The film's credits say: Checked, N.. On Rosie's fridge, a crayon of the girl with the tail, signed N., too small to read. And Aaron has decided that the crayon watermelon was drawn by a Doctor Haddad, when very young. Which one is still open: Noor at about five, or Amara as a girl. In Episode 4, her mother's words are taped inside a chess teacher's box lid, newly lettered, and a scared rook breathes by them. And a robot named pawn.hab3 answers the boy exactly two point five six seconds late, the round trip to the Moon, as a regular in Episode 2's chat worked it out. By our running reading, Noor herself is held back on purpose.
+
+  [RUNNING] Never named or mentioned in the made episode (Revision 1). {WORLD_TIMELINE}
+  [EGG] 18:00 daily notify "dinner, noor ♥" in the machine's schedule. {E3 2:38-2:43; 16:15.9}
+  [EGG] Bea's credits: Checked ........ N. {E3 17:09-17:38; 26:39}
+  [EGG] A crayon of the girl with the tail signed "N." beside the pizza box on Rosie's fridge; the "N." does not read. {E3 10:21-10:22}
+  [STEEL] The crayon watermelon was drawn by "Dr. Haddad" when very young. {Aaron 2026-10-22 second round}
+  [OPEN] Which "Dr. Haddad" drew the crayon watermelon when very young: Noor at about five, or Amara as a girl. {Aaron 2026-10-22 second round}
+  [EGG] The breathing card's words, newly lettered, inside Daniel Fenn's box lid; a scared rook breathes by them. {E4 20:23.5-20:27; 21:43-22:19}
+  [EGG] pawn.hab3 answers 2.56 s late; the usher's tray holds thirteen opera glasses and one small pair; slot 14 of the refreshment case holds one pink coconut snowball, never bought. {E4 0:43-0:58; 21:30-21:41}
+  [FACT] regolith_rob: "384,400 / 299,792 = 1.28. round trip 2.56." {E2 25:50}
+  [RUNNING] Noor herself is held back on purpose. {E4 EGG_REGISTRY note; NEXT_EPISODE}
+
+[4:35] 05 Did anyone come home?
+
+Whether anyone came back from the Moon, Rover 2, the crew or Amara, is open. Whether Teo's redrawn plan was enough is open too: a hundred and thirty hours of battery, against a hundred and twenty-eight hours of night. The crew's rule: by design, nobody finds out on screen. The crew reworking Episode 3 is working with yes: Rover 2 made it home at sunrise. One idea on the table: leave it unanswered forever, and answer it only sideways: the reminder, the tablet, pawn.hab3.
+
+  [OPEN] Whether anyone came back from the Moon: Rover 2, the crew, Amara. (Aaron) {E2 MASTER_TREATMENT §4; WORLD_TIMELINE}
+  [OPEN] Whether Rev B was enough: 130 h of battery against 128 h of night. {E2 28:27}
+  [RUNNING] Nobody finds out on screen, by design. {E2 MASTER_TREATMENT §0.2}
+  [RUNNING] Rover 2 made it home at sunrise and the residents were brought to Earth (Aaron's option, the rev2 crew's working choice). {E3 rev2 plan §11; Aaron 2026-10-22 option}
+  [IDEA] Leave it unanswered forever, answered only sideways: the cron, the tablet, pawn.hab3. {NEXT_EPISODE}
+
+[5:16] 06 Where Noor is now
+
+Where Noor is on Episode 3's night is open too: home, or still on the Moon. In the rework's working plan she is about thirteen, a chat name in Rosie's house that is never named: mom says bed. And whether Noor is ever seen is open. In Aaron's words: I haven't decided if you should ever see her. The crews' working rule: no rendered face, ever, and Episode 4 holds her back on purpose.
+
+  [OPEN] Where Noor is on Episode 3's night, and whether she is one of the nine or present only through things in the house. (Aaron) {Aaron 2026-10-22 third round}
+  [RUNNING] She is jojo.builds, about 13, never named: "i know what it looks like up there", "mom says bed. gn basement". {E3 rev2 plan §7, §11}
+  [OPEN] Whether Noor is ever seen: "I haven't decided if you should ever see her." (Aaron) {Aaron E2 brief 2026-10-12}
+  [RUNNING] The crews' rule: no rendered face and no full-body animation of her, ever; Episode 4 holds her back on purpose. {Notion: Noor Haddad; E4 EGG_REGISTRY note}
+
+[5:48] 07 What to keep
+
+Her mother, on screen, is a badge, a watch and a name on a dispenser. Next: the threads and eggs that tie all four nights together.
+
+  [FACT] Never seen in any episode: a badge, a watch, a name on a dispenser. {E2 09:37-09:42; 20:58}

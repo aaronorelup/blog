@@ -1,0 +1,15 @@
+---
+// The things index: places, objects, works, songs, programs, pages and numbers that recur in the lore.
+import EntityIndex from '../../../../components/lore/EntityIndex.astro';
+import { THINGS, THING_GROUPS } from '../../../../lib/lore.js';
+---
+<EntityIndex
+  list={THINGS}
+  groups={THING_GROUPS}
+  nav="things"
+  title="Things"
+  eyebrow="Places, objects, works and numbers"
+  lede={`The ${THINGS.length} places, objects, paintings, songs, programs, pages and numbers that recur across the episodes: the cabin with one lit window, the Storm Bell, HAB 3, Board 14, 2.56 seconds.`}
+  sub="Most of the series' easter eggs are things: an object planted in one episode and found again, changed, in the next. Each sheet says where it appears and what it might mean."
+  description="Every place, object, work, song, program and number that recurs in Aaron Orelup's TV series I Love My Evening Television, with each line's tier and source."
+/>
