@@ -7,3 +7,9 @@
   X-Robots-Tag: noindex, nofollow
 /ledger/context-window/private/*
   X-Robots-Tag: noindex, nofollow
+#
+# Episode 4 (AO-063) has one too: its address appears only on five frames of the film. Same two rules, same reason.
+/ledger/touch-move/board-14/
+  X-Robots-Tag: noindex, nofollow
+/ledger/touch-move/board-14/*
+  X-Robots-Tag: noindex, nofollow

@@ -9,11 +9,13 @@ import PanelChrome from '../components/panel/PanelChrome.astro';
 interface Props {
   title: string;
   description?: string;
-  active?: 'stats' | 'ledger' | 'courses' | 'projects' | 'about';
+  active?: 'stats' | 'ledger' | 'courses' | 'projects' | 'about' | 'none';
   // Unlisted (soft-private) posts: keep search engines off a page that's only reachable by URL.
   noindex?: boolean;
   // A share image (site-relative path; JPG/PNG, ideally 1200x630) for link previews.
   image?: string;
+  // The footer's line after the copyright (PanelChrome's own line when left out).
+  tagline?: string;
 }
 const {
   title,
@@ -21,6 +23,7 @@ const {
   active = 'ledger',
   noindex = false,
   image,
+  tagline,
 } = Astro.props;
 ---
 
@@ -92,7 +95,7 @@ const {
 
     <div id="panel-screen" style="position:fixed;inset:0;display:flex;flex-direction:column;background:var(--pc-page)">
       <div id="panel-card" style="position:absolute;inset:0;box-sizing:border-box;background:var(--pc-bg);overflow:hidden;display:flex;flex-direction:column">
-        <PanelChrome active={active}>
+        <PanelChrome active={active} tagline={tagline}>
           <slot />
         </PanelChrome>
       </div>

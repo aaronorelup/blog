@@ -1,0 +1,85 @@
+---
+// The page for an address that has no page. Astro writes it to dist/404.html, and the asset
+// server sends it, with status 404, for any path that matches no file
+// (wrangler.jsonc: assets.not_found_handling = "404-page"). Before 2026-10-22 there was none and a
+// missing page answered 404 with an empty body.
+//
+// The picture is an analog chess clock drawn here, a few hundred bytes of SVG: the left side's
+// minute hand has reached twelve and its flag has dropped; the right side has three minutes
+// left and its hand is lifting its own flag. Analog clocks are set so time runs out at 6:00.
+import PanelPage from '../layouts/PanelPage.astro';
+
+const P = "font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.68;color:var(--pc-body);margin:0 0 20px;text-wrap:pretty";
+const A = 'color:var(--pc-accent);text-decoration:underline;text-underline-offset:2px';
+
+// A point on a dial: clockwise degrees from twelve.
+const at = (cx: number, cy: number, deg: number, r: number) => {
+  const a = (deg * Math.PI) / 180;
+  return [+(cx + r * Math.sin(a)).toFixed(1), +(cy - r * Math.cos(a)).toFixed(1)];
+};
+const CY = 99;
+const faces = [
+  // Lost on time: 6:00 exactly, the flag hanging straight down from its pivot.
+  { cx: 75, hour: 180, minute: 0, flag: [82, 70, 82, 84] },
+  // Three minutes left: 5:57, the minute hand pushing the flag up.
+  { cx: 165, hour: 178.5, minute: 342, flag: [172, 70, 158, 73] },
+];
+const ticks = (cx: number) =>
+  Array.from({ length: 12 }, (_, i) => {
+    const long = i % 3 === 0;
+    const [x1, y1] = at(cx, CY, i * 30, long ? 25 : 27);
+    const [x2, y2] = at(cx, CY, i * 30, 30);
+    return { x1, y1, x2, y2, w: long ? 2 : 1.2 };
+  });
+---
+<PanelPage
+  title="Lost on time — Aaron Orelup"
+  description="There is no page at this address."
+  active="none"
+  tagline=""
+  noindex
+>
+  <div style="width:100%;max-width:760px;padding-bottom:60px">
+    <p style="margin:0 0 10px;font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--pc-quiet)">404 · Not found</p>
+    <h1 style="margin:0 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-size:clamp(30px,4vw,40px);line-height:1.15;font-weight:700;color:var(--pc-head);letter-spacing:-0.015em">Lost on time.</h1>
+    <p style="margin:0 0 34px;font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.55;color:var(--pc-soft);max-width:620px;text-wrap:pretty">
+      There is no page at this address. Its flag fell before a move was made.
+    </p>
+    <div style="height:1px;background:var(--pc-line);margin:0 0 30px"></div>
+
+    <svg
+      viewBox="0 0 240 150"
+      width="240"
+      height="150"
+      role="img"
+      aria-labelledby="clock-title"
+      style="display:block;max-width:100%;height:auto;margin:0 0 28px"
+    >
+      <title id="clock-title">A chess clock. The flag on the left side has fallen.</title>
+      <rect x="58" y="34" width="34" height="18" rx="3" style="fill:var(--pc-line2)" />
+      <rect x="148" y="45" width="34" height="7" rx="2" style="fill:var(--pc-line2)" />
+      <rect x="16" y="52" width="208" height="94" rx="10" style="fill:var(--pc-tile);stroke:var(--pc-line2);stroke-width:2" />
+      {faces.map((f) => {
+        const [hx, hy] = at(f.cx, CY, f.hour, 16);
+        const [mx, my] = at(f.cx, CY, f.minute, 27);
+        return (
+          <g>
+            <circle cx={f.cx} cy={CY} r="33" style="fill:var(--pc-bg);stroke:var(--pc-line2);stroke-width:2" />
+            {ticks(f.cx).map((t) => (
+              <line x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} style={`stroke:var(--pc-quiet);stroke-width:${t.w}`} />
+            ))}
+            <line x1={f.flag[0]} y1={f.flag[1]} x2={f.flag[2]} y2={f.flag[3]} style="stroke:var(--pc-accent);stroke-width:3;stroke-linecap:round" />
+            <circle cx={f.flag[0]} cy={f.flag[1]} r="1.8" style="fill:var(--pc-accent)" />
+            <line x1={f.cx} y1={CY} x2={hx} y2={hy} style="stroke:var(--pc-strong);stroke-width:3;stroke-linecap:round" />
+            <line x1={f.cx} y1={CY} x2={mx} y2={my} style="stroke:var(--pc-strong);stroke-width:2;stroke-linecap:round" />
+            <circle cx={f.cx} cy={CY} r="2.4" style="fill:var(--pc-strong)" />
+          </g>
+        );
+      })}
+    </svg>
+
+    <p style={P}>A game lost on time is lost. This one offers a draw anyway.</p>
+    <p style="margin:6px 0 26px;font-family:'Zen Maru Gothic',sans-serif;font-size:clamp(40px,7vw,56px);line-height:1;font-weight:700;color:var(--pc-head);letter-spacing:0.01em">½–½?</p>
+    <p style={P}><a href="/" style={A}>Accept, and go home</a></p>
+  </div>
+</PanelPage>

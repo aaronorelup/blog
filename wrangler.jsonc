@@ -12,6 +12,10 @@
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
+    // A path that matches no file gets dist/404.html (src/pages/404.astro) with status 404, from
+    // the asset server itself; before 2026-10-22 it was a 404 with an empty body. The Worker's own
+    // answers (byte ranges, /api/*) are unchanged: it still sees a 404 for a missing file.
+    "not_found_handling": "404-page",
     "run_worker_first": [
       "/*.mp4", "/*.m4v", "/*.webm", "/*.mov",
       "/*.mp3", "/*.m4a", "/*.aac", "/*.wav", "/*.ogg", "/*.oga", "/*.opus", "/*.flac",

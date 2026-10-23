@@ -3,12 +3,14 @@
 // Shared by the homepage overlay and by the standalone /stats, /ledger, /courses, /projects, /about,
 // course and post pages, so a card that grows open looks identical to a page loaded cold.
 interface Props {
-  // Which nav item is lit. A post lights "ledger"; a course page lights "courses".
-  active?: 'stats' | 'ledger' | 'courses' | 'projects' | 'about';
+  // Which nav item is lit. A post lights "ledger"; a course page lights "courses"; the 404 page, none.
+  active?: 'stats' | 'ledger' | 'courses' | 'projects' | 'about' | 'none';
   // The overlay can collapse back to the scene; a standalone page navigates home.
   overlay?: boolean;
+  // The footer's line after the copyright. The 404 page leaves it out.
+  tagline?: string;
 }
-const { active = 'ledger', overlay = false } = Astro.props;
+const { active = 'ledger', overlay = false, tagline = 'Notes on learning AI, filed as I go.' } = Astro.props;
 
 const lit = (name: string) => (name === active ? 'var(--pc-head)' : 'var(--pc-quiet)');
 ---
@@ -39,7 +41,7 @@ const lit = (name: string) => (name === active ? 'var(--pc-head)' : 'var(--pc-qu
 
   <footer style="flex:none;display:flex;justify-content:center;padding:18px clamp(18px,4vw,44px);border-top:1px solid var(--pc-line)">
     <div style="width:100%;max-width:1140px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap">
-      <p style="margin:0;font-size:12.5px;color:var(--pc-quiet)">© {new Date().getFullYear()} Aaron Orelup. Notes on learning AI, filed as I go.</p>
+      <p style="margin:0;font-size:12.5px;color:var(--pc-quiet)">© {new Date().getFullYear()} Aaron Orelup.{tagline && ` ${tagline}`}</p>
       <div style="display:flex;gap:20px;font-size:12.5px">
         <a href="/rss.xml" class="pc-foot" style="color:var(--pc-quiet);text-decoration:none">RSS</a>
         <a href="https://github.com/Bloodtailor" target="_blank" rel="noreferrer noopener" class="pc-foot" style="color:var(--pc-quiet);text-decoration:none">GitHub</a>
