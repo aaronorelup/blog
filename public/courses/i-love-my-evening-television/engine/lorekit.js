@@ -59,9 +59,14 @@
   L.key = (b) => (b ? `${b.file}:${b.line}` : '');
   /** the episode a bullet belongs to: its own code, else the first one its source names */
   L.bep = (b) => (b && (b.ep || ((/\bE\d+\b/.exec(b.src || '') || [])[0]))) || null;
+  /** 'His @one-hair-brush' -> 'His One-Hair Brush' (a determiner or a possessive before a 'The ...' title drops the article) */
+  L.DET = /(?:\b(?:a|an|his|her|its|their|my|our|your|this|that|every|each|no|whose)|['\u2019]s)\s*$/i;
   /** lore text for the screen: @ids become names, code marks and emphasis marks go */
-  L.plain = (s) => String(s || '').replace(/@([A-Za-z0-9][A-Za-z0-9-]*)\s*\(([^()]*)\)/g, (m, id, p) => (byId[id] && (p.includes(byId[id].title) || byId[id].title.includes(p)) ? `@${id}` : m))
-    .replace(/@([A-Za-z0-9][A-Za-z0-9-]*)/g, (m, id) => (byId[id] ? byId[id].title : id)).replace(/`/g, '').replace(/\*([^*]+)\*/g, '$1')
+  L.plain = (s) => String(s || '')
+    // 'The lonely man (@lonely-man)' -> 'The lonely man': a name already written out before its id needs no second copy
+    .replace(/\s*\(@([A-Za-z0-9][A-Za-z0-9-]*)\)/g, (m, id, off, str) => (byId[id] && str.slice(0, off).toLowerCase().endsWith(byId[id].title.toLowerCase().replace(/^the /, '')) ? '' : m))
+    .replace(/@([A-Za-z0-9][A-Za-z0-9-]*)\s*\(([^()]*)\)/g, (m, id, p) => { const T = byId[id] && byId[id].title; if (!T) return m; const [pl, tl] = [p.toLowerCase(), T.toLowerCase()]; return p.includes(T) || T.includes(p) || (p.length > 3 && (pl.includes(tl) || tl.includes(pl))) ? `@${id}` : m; })
+    .replace(/(\b[Tt]he\s+)?@([A-Za-z0-9][A-Za-z0-9-]*)/g, (m, art, id, off, str) => { const t = byId[id] ? byId[id].title : id; if (!art) { if (!/^The\s/.test(t)) return t; const pre = str.slice(0, off); if (L.DET.test(pre)) return t.slice(4); return /[\w,;]\s*$/.test(pre) ? 'the ' + t.slice(4) : t; } if (/^The\s/.test(t)) return art + t.slice(4); const mt = /, the (.+)$/.exec(t); return art + (mt ? mt[1] : t); }).replace(/`/g, '').replace(/\*([^*]+)\*/g, '$1')
     .replace(/"([^"]*)"/g, '\u201C$1\u201D').replace(/(\w)'(\w)/g, '$1\u2019$2').replace(/\s+/g, ' ').trim();
   /** a citation {id, q} -> what it points at in the CURRENT lore: {entity, tier, text, src, year, refs, file, line} */
   L.resolve = (cite) => {
@@ -202,10 +207,19 @@
     const c = g(); c.save(); c.globalAlpha *= o.alpha ?? 1; c.shadowColor = 'rgba(255,200,112,.75)'; c.shadowBlur = 18;
     c.fillStyle = '#FFC870'; c.fillRect(x, y - (o.h || 34), o.w || 16, o.h || 34); c.restore();
   };
+  /** K.wrap, but a word wider than the box (a URL, a file path) is broken where it fills the line instead of running
+   *  out of its card (LORE: lesson 08's 29:47 scene drew aaronorelup.com/ledger/... across the next column) */
+  L.wrap = (s, w, font) => K.wrap(String(s).split('\n').map((para) => para.split(' ').map((word) => {
+    if (K.measure(word, font) <= w) return word;
+    const parts = []; let cur = '';
+    for (const ch of word) { if (cur && K.measure(cur + ch, font) > w) { parts.push(cur); cur = ch; } else cur += ch; }
+    if (cur) parts.push(cur);
+    return parts.join(' ');
+  }).join(' ')).join('\n'), w, font);
   /** wrapped text, at most o.max lines (the last one ends in … when cut); returns the height used */
   L.textBox = (s, x, y, w, o = {}) => {
     const size = o.size || 30, lh = o.lh || Math.round(size * 1.3), font = { font: o.font || 'ui', size, weight: o.weight, italic: o.italic, tracking: o.tracking };
-    let lines = K.wrap(L.plain(s), w, font);
+    let lines = L.wrap(L.plain(s), w, font);
     if (o.max && lines.length > o.max) {
       lines = lines.slice(0, o.max);
       let last = lines[o.max - 1];
@@ -215,7 +229,7 @@
     if (!o.measure) lines.forEach((ln, i) => K.text(ln, x, y + i * lh, { ...font, color: o.color || C.body, alpha: o.alpha, align: o.align }));
     return lines.length * lh;
   };
-  L.lines = (s, w, o = {}) => K.wrap(L.plain(s), w, { font: o.font || 'ui', size: o.size || 30, weight: o.weight, italic: o.italic });
+  L.lines = (s, w, o = {}) => L.wrap(L.plain(s), w, { font: o.font || 'ui', size: o.size || 30, weight: o.weight, italic: o.italic });
   /** an episode chip "E2 Earthlight" in its palette; returns the width */
   L.epChip = (code, x, y, o = {}) => {
     const e = L.ep(code); if (!e) return 0;
@@ -282,6 +296,10 @@
       const a = K.env(t, cur.local - 0.15, cur.localEnd + 0.5, 0.3), [cx, cy, cw] = o.calloutAt || [360, 806, 1200];
       K.layer(a, () => {
         const h = L.lineCard(cur.b, 0, 0, cw, { measure: true, size: 30, max: 3 });
+        // a full-width scrim first, so the scene's own cards under it fade instead of peeking out at its sides
+        const g = K.ctx(), y0 = cy - 110, y1 = cy + h + 90, gr = g.createLinearGradient(0, y0, 0, y1);
+        [[0, 0], [0.3, 0.8], [0.75, 0.8], [1, 0]].forEach(([k, al]) => gr.addColorStop(k, `rgba(6,7,12,${al})`));
+        g.fillStyle = gr; g.fillRect(0, y0, W, y1 - y0);
         K.card(cx - 24, cy - 24, cw + 48, h + 48, { r: 26, fill: 'rgba(6,7,12,.78)', stroke: false, shadow: true });
         L.lineCard(cur.b, cx, cy, cw, { hl: 1, size: 30, max: 3 });
       });
@@ -355,7 +373,7 @@
   L.lineCard = (b, x, y, w, o = {}) => {
     const size = o.size || 28, max = o.max || 2, hl = o.hl || 0, pad = 18;
     const font = { font: o.font || 'ui', size, weight: o.weight };
-    const lines = (() => { let ls = K.wrap(L.plain(b.text), w - 64 - pad, font); if (ls.length > max) { ls = ls.slice(0, max); let l = ls[max - 1]; while (l.length > 1 && K.measure(l + '…', font) > w - 64 - pad) l = l.slice(0, -1).trimEnd(); ls[max - 1] = l + '…'; } return ls; })();
+    const lines = (() => { let ls = L.wrap(L.plain(b.text), w - 64 - pad, font); if (ls.length > max) { ls = ls.slice(0, max); let l = ls[max - 1]; while (l.length > 1 && K.measure(l + '…', font) > w - 64 - pad) l = l.slice(0, -1).trimEnd(); ls[max - 1] = l + '…'; } return ls; })();
     const lh = Math.round(size * 1.28), srcH = o.src === false || !b.src ? 0 : 30;
     const h = pad * 2 + lines.length * lh - (lh - size) + srcH + 6;
     if (o.measure) return h;
@@ -516,7 +534,7 @@
       K.layer(K.io(t, 2.4, 0.6), () => K.text(`${bs.length} dated lines · Y0 = the night of Episode 1`, 80, 930, { font: 'ui', size: 24, color: C.soft }));
       // the line being spoken, as a callout
       if (cur && cur.b && cur.b.year && cur.b.line != null) {
-        const a = K.env(t, cur.local - 0.15, cur.localEnd + 0.6, 0.3), x = Math.min(1180, Math.max(80, ax.x(cur.b.year.min) - 360));
+        const a = K.env(t, cur.local - 0.15, cur.localEnd + 0.6, 0.3), x = Math.min(W - 80 - 760, Math.max(80, ax.x(cur.b.year.min) - 360));
         K.layer(a, () => L.lineCard(cur.b, x, 456, 760, { hl: 1, size: 28, max: 2 }));
       }
       L.foot(t, S);
@@ -752,8 +770,9 @@
       const sec = E.sections.find((s) => /structure/i.test(s.title));
       const ts = (x) => { const p = x.split(':').map(Number); return p.length === 2 ? p[0] * 60 + p[1] : p[0] * 3600 + p[1] * 60 + p[2]; };
       const segs = ((sec && sec.bullets) || []).map((b) => {
-        const m = /^(\d{1,2}:\d{2}(?:\.\d+)?)\s*[-–]\s*(\d{1,2}:\d{2}(?:\.\d+)?)\s+(?:(S\d+\w*)\s+)?([^:.;]+)/.exec(b.text);
-        return m ? { b, a: ts(m[1]), z: ts(m[2]), id: m[3] || '', name: m[4].trim() } : null;
+        // either order: '00:00-00:20 S01 Cold open: ...' (E1) or 'S01 00:00-00:10 Paper: ...' (E2-E4)
+        const m = /^(?:(S\d+\w*)\s+)?(\d{1,2}:\d{2}(?:\.\d+)?)\s*[-–]\s*(\d{1,2}:\d{2}(?:\.\d+)?)\s+(?:(S\d+\w*)\s+)?([^:.;]+)/.exec(b.text);
+        return m ? { b, a: ts(m[2]), z: ts(m[3]), id: m[1] || m[4] || '', name: m[5].trim() } : null;
       }).filter(Boolean);
       const turn = ((E.sections.find((s) => /the turn/i.test(s.title)) || {}).bullets) || [];
       return { segs, turn };
@@ -807,7 +826,8 @@
         code: c,
         ims: L.pics(P).filter((im) => (/E\d+/.exec(im.src || '') || [])[0] === c),
         bs: L.bullets(P).filter((b) => L.bep(b) === c && ['fact', 'egg', 'steel'].includes(b.tier)),
-      }));
+        weak: L.bullets(P).filter((b) => L.bep(b) === c && !['fact', 'egg', 'steel'].includes(b.tier)),
+      })).map((c) => (c.bs.length ? c : { ...c, bs: c.weak, onlyWeak: true }));
     });
     return (t, S) => {
       if (!P) return notFound(t, `@${o.focus}`);
@@ -823,9 +843,12 @@
           const col = L.epc(c.code);
           L.epChip(c.code, x, 300, { size: 24, hl: active });
           let y = 336;
-          const im = c.ims[0];
+          // the picture: the one whose source shares a timestamp with the line just spoken here (the X-ray when the X-ray
+          // is spoken), else the column's first
+          const imFor = (k) => { const st = (k.b && k.b.src && k.b.src.match(/\d{1,2}:\d{2}/g)) || []; return c.ims.find((x) => st.some((z) => (x.src || '').includes(z))); };
+          const im = said.filter((k) => t >= k.local - 0.2).map(imFor).filter(Boolean).pop() || c.ims[0];
           if (im) { const [w, h] = L.fit(im, cw - 20, 300); L.card(im, x + 10 + (cw - 20 - w) / 2, y + 10, w, h, { hl: active, caption: false }); y += h + 40; }
-          else {
+          else if (!c.onlyWeak) {
             const qb = c.bs.find((b) => /["“]/.test(b.text)) || c.bs[0];
             const qt = qb ? L.plain(qb.text).replace(/^[^“]*“/, '“').replace(/”[^”]*$/, '”') : '';
             const qh = qb ? L.textBox(qt, 0, 0, cw - 60, { measure: true, size: 30, lh: 40, max: 5, font: 'read', italic: true }) : 60;
@@ -834,7 +857,7 @@
             y += qh + 86;
           }
           // its lines here: the cited ones first, then the strongest
-          const quoted = im ? null : (c.bs.find((b) => /["“]/.test(b.text)) || c.bs[0]);
+          const quoted = im || c.onlyWeak ? null : (c.bs.find((b) => /["“]/.test(b.text)) || c.bs[0]);
           if (quoted) S.placed.add(L.key(quoted));
           const order = [...said.map((k) => c.bs.find((b) => L.key(b) === L.key(k.b))), ...c.bs].filter((b, j, arr) => b && b !== quoted && arr.indexOf(b) === j);
           for (const b of order) {
@@ -963,7 +986,7 @@
       L.bg(t);
       L.head(t, S, { eyebrow: o.name ? `Open questions: ${o.name}` : 'Still open' });
       const qs = Q(), cited = L.cited(S), cur = L.now(S, t);
-      S.placed = new Set(qs.flatMap((q) => [q.q, ...q.answers]).map(L.key));
+      S.placed = new Set();   // LORE: only what fits is placed; a cited question that did not fit comes up as a card
       // the questions this scene speaks about, in the order spoken, else the first ones
       const said = cited.map((c) => qs.find((q) => L.key(q.q) === L.key(c.b) || q.answers.some((a) => L.key(a) === L.key(c.b)))).filter(Boolean);
       const order = [...said, ...qs].filter((q, i, arr) => arr.indexOf(q) === i).slice(0, o.max || 4);
@@ -974,10 +997,13 @@
         const hl = Math.max(L.lit(S, t, q.q), ...q.answers.map((a) => L.lit(S, t, a)));
         const a = K.io(t, at, 0.6, 'out');
         const qh = L.textBox(q.q.text, 0, 0, 1560, { measure: true, size: 34, max: 2 });
-        const ans = q.answers.filter((x) => x.tier !== 'open').slice(0, 2);
+        // the answers on the table: the ones the narration cites first (as they are spoken), then the rest, three at most
+        const citedAns = cited.map((c) => q.answers.find((a) => L.key(a) === L.key(c.b))).filter(Boolean);
+        const ans = [...citedAns, ...q.answers].filter((x, j, arr) => x.tier !== 'open' && arr.indexOf(x) === j).slice(0, Math.max(2, Math.min(3, citedAns.length)));
         const ah = ans.reduce((s, x) => s + L.lineCard(x, 0, 0, 1560, { measure: true, size: 24, max: 1, src: false }) + 8, 0);
         const h = 44 + qh + (ans.length ? 18 + ah : 0) + 10;
         if (y + h > 930) return;
+        [q.q, ...ans].forEach((x) => S.placed.add(L.key(x)));
         K.layer(a * (cur && !hl && said.length ? 0.55 : 1), () => {
           K.card(80, y, 1760, h, { r: 20, fill: 'rgba(17,19,27,.92)', stroke: K.rgba(L.tier('open').color, 0.3 + 0.6 * hl), glow: hl * 0.8, shadow: false, lw: 2 });
           L.tdot(130, y + 50, 22, 'open', { glow: hl });
