@@ -32,6 +32,8 @@ const images = await Promise.all((ent.images || []).filter((i) => i.url).map(asy
 const pictureNote = ent.header.picture || '';
 const born = ent.born?.year ? ent.born : null;
 const died = ent.died?.year ? ent.died : null;
+// a thing's "born:" is when it begins (a shelter built, a base founded)
+const bornWord = group === 'thing' ? 'from' : 'born';
 const life = lifelineSvg(ent);
 // the age at each episode, in words, under the drawing (the drawing is small on a phone)
 const ages = born ? EPISODES.map((e) => ({ e, age: ageAt(born, e) })).filter((x) => x.age) : [];
@@ -62,7 +64,7 @@ const firstImg = images[0]?.url;
     <div class="sheet-head">
       {ent.episodes.map((c) => <Fragment set:html={epChip(c, { big: true })} />)}
       {born && (
-        <span class="lb-m" style="font-size:13px">born <b style="color:var(--pc-strong)">{born.year.text}</b></span>
+        <span class="lb-m" style="font-size:13px">{bornWord} <b style="color:var(--pc-strong)">{born.year.text}</b></span>
       )}
       {born && born.tier && <Fragment set:html={chip(born.tier)} />}
     </div>
@@ -99,7 +101,7 @@ const firstImg = images[0]?.url;
         <h3>At a glance</h3>
         <dl class="facts">
           <dt>Kind</dt><dd>{kind}</dd>
-          {born && (<><dt>Born</dt><dd>{born.year.text}{born.tier && <Fragment set:html={chip(born.tier)} />}{born.src && <span class="lb-m"> {`{${born.src}}`}</span>}</dd></>)}
+          {born && (<><dt>{bornWord}</dt><dd>{born.year.text}{born.tier && <Fragment set:html={chip(born.tier)} />}{born.src && <span class="lb-m"> {`{${born.src}}`}</span>}</dd></>)}
           {died && (<><dt>Died</dt><dd>{died.year.text}{died.tier && <Fragment set:html={chip(died.tier)} />}{died.src && <span class="lb-m"> {`{${died.src}}`}</span>}</dd></>)}
           {ent.episodes.length > 0 && (<><dt>In</dt><dd>{ent.episodes.map((c) => <Fragment set:html={epChip(c) + ' '} />)}{ent.episodes.some((c) => UNRELEASED.has(c)) && <span class="lb-m">dashed: not released yet</span>}</dd></>)}
           {extra.map(([k, v]) => (<><dt>{k}</dt><dd set:html={md(String(v))} /></>))}

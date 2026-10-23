@@ -59,7 +59,7 @@ const cards = (items) =>
               {img && <Fragment set:html={badge(img.status)} />}
             </div>
             <div class="ecard-b">
-              <span class="ecard-k">{KIND_LABEL[e.kind] || e.kind}{e.born?.year ? ` · born ${e.born.year.text}` : ''}</span>
+              <span class="ecard-k">{KIND_LABEL[e.kind] || e.kind}{e.born?.year ? ` · ${e.group === 'thing' ? 'from' : 'born'} ${e.born.year.text}` : ''}</span>
               <h3 class="ecard-t">{e.title}</h3>
               {e.header.aka && <p class="ecard-a">{plain(e.header.aka)}</p>}
               {e.summary && <p class="ecard-s">{clip(plain(e.summary), 220)}</p>}

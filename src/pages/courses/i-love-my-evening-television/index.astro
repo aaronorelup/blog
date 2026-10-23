@@ -42,7 +42,8 @@ const PLAN = [
   ['01', 'The world in five minutes'], ['02', 'Episode 1: Crimson Coil'], ['03', 'Episode 2: Earthlight'], ['04', 'Episode 3: Context Window'],
   ['05', 'Episode 4: Touch Move'], ['06', 'Rosie’s life'], ['07', 'The Moon and the Haddads'], ['08', 'Threads and eggs'], ['09', 'What is steel and what is running'],
 ];
-const lessons = LESSON_DATA ? (LESSON_DATA.modules || []).flatMap((m) => m.lessons || []).filter((l) => !(l.legacy && !l.coveredBy)) : [];
+const lessonModules = LESSON_DATA ? (LESSON_DATA.modules || []).map((m) => ({ name: m.name || m.short || '', lessons: (m.lessons || []).filter((l) => !(l.legacy && !l.coveredBy)) })).filter((m) => m.lessons.length) : [];
+const lessons = lessonModules.flatMap((m) => m.lessons);
 const out = lessons.filter((l) => l.status === 'published');
 
 const doors = [
@@ -173,23 +174,28 @@ const faq = [
     <h2 class="lo-h2">The lessons</h2>
     {lessons.length > 0 ? (
       <>
-        <p class="lo-intro">Short narrated lessons, drawn live from the lore: when a line changes, the picture changes with it, and every sentence says how sure it is. {out.length} of {lessons.length} out.</p>
-        <div class="lessons">
-          {lessons.map((l, i) =>
-            l.status === 'published' && l.url ? (
-              <a class="lesson is-out" href={l.url}>
-                {l.poster && <span class="lesson-poster"><img src={l.poster} alt="" loading="lazy" decoding="async" /></span>}
-                <span class="lesson-n">{l.n || l.id || String(i + 1).padStart(2, '0')}</span>
-                <span><b>{l.title}</b>{l.summary && <p>{clip(plain(l.summary), 180)}</p>}<small>{l.duration ? fmtDuration(l.duration) : ''}{l.published ? ` · ${fmtDate(l.published)}` : ''}</small></span>
-              </a>
-            ) : (
-              <div class="lesson is-locked">
-                <span class="lesson-n">{l.n || l.id || String(i + 1).padStart(2, '0')}</span>
-                <span><b>{l.title}</b>{(l.summary || l.idea) && <p>{clip(plain(l.summary || l.idea), 160)}</p>}<small>Not released yet</small></span>
-              </div>
-            ),
-          )}
-        </div>
+        <p class="lo-intro">Short narrated lessons, drawn live from the lore by code: when a line changes, the picture changes with it, and every sentence says how sure it is. {out.length} of {lessons.length} out; the rest open as they are made.</p>
+        {lessonModules.map((m) => (
+          <div class="lmod">
+            {lessonModules.length > 1 && <p class="lo-eyebrow" style="margin:18px 0 10px">{m.name}</p>}
+            <div class="lessons">
+              {m.lessons.map((l, i) =>
+                l.status === 'published' && l.url ? (
+                  <a class="lesson is-out" href={l.url.endsWith('/') ? l.url : `${l.url}/`}>
+                    {l.poster && <span class="lesson-poster"><img src={l.poster} alt="" loading="lazy" decoding="async" onerror="this.parentNode.remove()" /></span>}
+                    <span class="lesson-n">{l.n || l.id || String(i + 1).padStart(2, '0')}</span>
+                    <span><b>{l.title}</b>{(l.summary || l.idea) && <p>{clip(plain(l.summary || l.idea), 180)}</p>}<small>{l.duration ? fmtDuration(Number(l.duration)) : ''}{l.published ? ` · ${fmtDate(l.published)}` : ''}{l.unreleased ? ` · the episode is ${l.unreleased}` : ''}</small></span>
+                  </a>
+                ) : (
+                  <div class="lesson is-locked">
+                    <span class="lesson-n">{l.n || l.id || String(i + 1).padStart(2, '0')}</span>
+                    <span><b>{l.title}</b>{(l.summary || l.idea) && <p>{clip(plain(l.summary || l.idea), 160)}</p>}<small>Not released yet</small></span>
+                  </div>
+                ),
+              )}
+            </div>
+          </div>
+        ))}
       </>
     ) : (
       <>

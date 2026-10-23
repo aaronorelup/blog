@@ -42,3 +42,14 @@ free plan gives a Worker 10 ms of CPU per run. Its token is the Worker secret
 `CF_ANALYTICS_TOKEN`; without it `/api/stats` answers 503 and the page says the numbers aren't
 connected. Never add anything keyed on a visitor's IP address, and never let an unlisted post
 show there (the build's `/stats-pages.txt` is the list of pages it may name).
+
+## The lore course (C-02, /courses/i-love-my-evening-television/)
+
+Every page of it is drawn at build time from `src/data/lore/lore.json`, which the series repo writes
+(`python3 Series/lore/tools/lore.py publish --blog <this repo>` in `aaronorelup/i-love-my-evening-television`),
+together with its pictures in `public/courses/i-love-my-evening-television/media/`. Never edit either by hand:
+change the line in the series repo's `Series/lore/` and publish again. The pages are
+`src/pages/courses/i-love-my-evening-television/`, their pieces `src/components/lore/` and `src/lib/lore*.js`, the
+look `src/styles/lore.css`. The lessons (`public/courses/i-love-my-evening-television/lessons/`) and their data
+(`src/data/courses/i-love-my-evening-television.json`) come from the series repo's `lessons.py`; the course page
+lists them when that file exists. Index-card thumbnails are made at build time (`scripts/lore-thumbs.mjs`).

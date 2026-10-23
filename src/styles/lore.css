@@ -635,12 +635,7 @@ select.lsel {
 .mx td.c-ep { background: color-mix(in srgb, var(--ep) 6%, transparent); }
 .mx .cell { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 2px; max-width: 92px; text-decoration: none; padding: 3px; border-radius: 6px; }
 .mx .cell:hover { background: color-mix(in srgb, var(--ep, var(--warm)) 22%, transparent); }
-.mx .cell @media (max-width: 400px) {
-  .mx thead th { font-size: 10px; padding: 8px 0; }
-  .mx thead .epc { padding: 2px 3px; font-size: 10.5px; }
-  .mx td { padding: 6px 1px; }
-}
-.mk { width: 11px; height: 11px; color: var(--tc); }
+.mx .cell .mk { width: 11px; height: 11px; color: var(--tc); }
 .mx .n { display: block; font: 400 10.5px var(--mono); color: var(--pc-quiet); margin-top: 1px; }
 .mx .none { color: var(--pc-line2); font-family: var(--mono); }
 @media (max-width: 640px) {
@@ -667,6 +662,7 @@ select.lsel {
 .qcard .qa { margin: 2px 0 0 0; padding-left: 14px; border-left: 2px solid var(--pc-line2); }
 @media (min-width: 641px) { .qcard .qa { margin-left: 7.1em; padding-left: 14px; } .qcard .qa .lb { grid-template-columns: 6.8em minmax(0, 1fr); } }
 .qcard .qa .lb { padding: 7px 0; }
+.qcard .qa-h { margin: 8px 0 0; font: 500 10.5px/1.4 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--pc-quiet); }
 .who {
   display: inline-block; margin-left: 4px; font: 700 10px/1 Karla, sans-serif; letter-spacing: 0.12em; text-transform: uppercase;
   padding: 4px 7px; border-radius: 999px; border: 3px double var(--t-steel); color: var(--t-steel); vertical-align: 1px; white-space: nowrap;

@@ -50,7 +50,7 @@ const shape = (LORE.world?.[0]?.sections || []).find((s) => /shape every episode
   <section class="lo-block">
     <h2 class="lo-h2">Four nights on one axis</h2>
     <p class="lo-intro">Y0 is the night of Episode 1's broadcast. Where each later night sits is only as sure as its mark: a dashed one is a running assumption, a hollow one with a question mark is still open. The <a href={`${BASE}/timeline/`}>timeline</a> has every dated line.</p>
-    <div class="axis-frame" style="--minw:0px" set:html={placementSvg('')} />
+    <div class="axis-frame" style="--minw:0px;max-width:820px" set:html={placementSvg('')} />
   </section>
 
   {shape && (

@@ -137,7 +137,7 @@ export function lifelineSvg(ent) {
   s += tierLine(bx, LY, ex, LY, born.tier || 'running', 'var(--pc-strong)', 2);
   if (!ent.died?.year) s += `<path d="M${X1 - 2} ${LY - 5} l6 5 l-6 5" fill="none" stroke="var(--pc-strong)" stroke-width="1.6"/>`;
   s += tierDot(bx, LY, born.tier || 'running', TC(born.tier || 'running'), 6, `Born ${born.year.text} (${TIERS[born.tier || 'running'].name})`);
-  s += `<text class="svgt" x="${f1(bx)}" y="${LY - 12}" text-anchor="${bx < X0 + 40 ? 'start' : 'middle'}" font-size="11" style="fill:var(--pc-soft)">born ${esc(born.year.text)}</text>`;
+  s += `<text class="svgt" x="${f1(bx)}" y="${LY - 12}" text-anchor="${bx < X0 + 40 ? 'start' : 'middle'}" font-size="11" style="fill:var(--pc-soft)">${ent.group === 'thing' ? 'from' : 'born'} ${esc(born.year.text)}</text>`;
   for (const b of own) {
     if (b.year.min === born.year.min) continue;
     s += tierDot(ax.x(b.year.min), LY, b.tier, TC(b.tier), 3.6, `${b.year.text}: ${b.text}`);
