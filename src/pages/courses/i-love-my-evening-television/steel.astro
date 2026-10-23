@@ -1,0 +1,85 @@
+---
+// What is set in steel: every [steel] line in the lore, the page Aaron and every crew check before building. By
+// sheet (sheets with the newest decision first, each sheet's lines newest first by the date in their source), or
+// by the day it was decided.
+import LorePage from '../../../components/lore/LorePage.astro';
+import { LORE, EPISODES, CHARACTERS, THINGS, allBullets, srcDate, fmtDate, titleOf, urlOf, pageOfFile, entity } from '../../../lib/lore.js';
+import { bulletHtml, chip } from '../../../lib/lore-html.js';
+
+const sheets = [...EPISODES, ...CHARACTERS, ...THINGS, ...(LORE.world || []), ...(LORE.timeline_docs || [])];
+const lines = [
+  ...sheets.flatMap((e) => allBullets(e).filter((b) => b.tier === 'steel').map((b) => ({ b, on: e.id, date: srcDate(b.src) }))),
+  ...['eggs', 'threads', 'questions'].flatMap((k) => (LORE[k] || []).flatMap((s) => s.bullets.filter((b) => b.tier === 'steel').map((b) => ({ b, on: k, date: srcDate(b.src) })))),
+];
+const byDate = (a, b) => (b.date || '').localeCompare(a.date || '') || a.b.line - b.b.line;
+const groups = new Map();
+for (const x of lines) {
+  if (!groups.has(x.on)) groups.set(x.on, []);
+  groups.get(x.on).push(x);
+}
+const bySheet = [...groups.entries()]
+  .map(([on, xs]) => ({ on, xs: xs.sort(byDate), newest: xs.map((x) => x.date || '').sort().pop() }))
+  .sort((a, b) => (b.newest || '').localeCompare(a.newest || '') || b.xs.length - a.xs.length);
+const days = new Map();
+for (const x of lines) {
+  const k = x.date || '';
+  if (!days.has(k)) days.set(k, []);
+  days.get(k).push(x);
+}
+const byDay = [...days.entries()].sort((a, b) => (b[0] || '0').localeCompare(a[0] || '0'));
+const counts = { steel: lines.length, fact: 0, egg: 0, running: 0, idea: 0, open: 0 };
+const kindOf = (id) => {
+  const e = entity(id);
+  if (!e) return 'Page';
+  return { episode: 'Episode', character: 'Character', thing: 'Thing' }[e.group] || 'Page';
+};
+---
+
+<LorePage
+  title="Set in steel · I Love My Evening Television"
+  description="Everything Aaron Orelup has set in steel for his TV series I Love My Evening Television: the decisions every episode builds on."
+  crumbs={[['Steel']]}
+  nav="steel"
+  counts={counts}
+>
+  <header class="lo-hero" slot="hero">
+    <p class="lo-eyebrow">{lines.length} lines · {bySheet.length} sheets · {byDay.filter(([d]) => d).length} days of decisions</p>
+    <h1 class="lo-title">Set in steel<span class="cur" aria-hidden="true"></span></h1>
+    <p class="lo-lede">Everything Aaron has agreed to. Every episode and every crew builds on these lines, and only Aaron changes them. Everything else in the lore is free to change.</p>
+    <p class="lo-sub"><Fragment set:html={chip('steel', { big: true })} /> The date is the one in each line's source: when Aaron said it.</p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Group the lines">
+    <button type="button" role="tab" aria-selected="true" data-tab="sheet">By sheet</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="day">By day</button>
+  </div>
+
+  <div data-view="sheet">
+    {bySheet.map(({ on, xs, newest }) => (
+      <section class="lsec" data-fsec id={`s-${on}`}>
+        <h2><a href={urlOf(on) || pageOfFile(xs[0].b.file)} style="text-decoration:none">{titleOf(on)}</a><small>{kindOf(on)} · {xs.length} {xs.length === 1 ? 'line' : 'lines'}{newest ? ` · latest ${fmtDate(newest)}` : ''}</small></h2>
+        <ul class="lbl" set:html={xs.map((x) => bulletHtml(x.b, { anchor: false, link: true })).join('')} />
+      </section>
+    ))}
+  </div>
+
+  <div data-view="day" hidden>
+    {byDay.map(([d, xs]) => (
+      <section class="lsec" data-fsec>
+        <h2>{d ? fmtDate(d) : 'Undated'}<small>{xs.length} {xs.length === 1 ? 'line' : 'lines'}</small></h2>
+        <ul class="lbl" set:html={xs.map((x) => bulletHtml(x.b, { anchor: false, link: true, on: x.on })).join('')} />
+      </section>
+    ))}
+  </div>
+
+  <script>
+    const tabs = [...document.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    const views = [...document.querySelectorAll<HTMLElement>('[data-view]')];
+    const show = (k: string) => {
+      tabs.forEach((t) => t.setAttribute('aria-selected', t.dataset.tab === k ? 'true' : 'false'));
+      views.forEach((v) => (v.hidden = v.dataset.view !== k));
+    };
+    tabs.forEach((t) => t.addEventListener('click', () => show(t.dataset.tab!)));
+    if (location.hash === '#by-day') show('day');
+  </script>
+</LorePage>

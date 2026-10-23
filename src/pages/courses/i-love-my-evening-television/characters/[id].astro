@@ -1,0 +1,11 @@
+---
+// One character sheet per character in the lore (Series/lore/characters/<id>.md).
+import EntitySheet from '../../../../components/lore/EntitySheet.astro';
+import { CHARACTERS } from '../../../../lib/lore.js';
+
+export function getStaticPaths() {
+  return CHARACTERS.map((ent) => ({ params: { id: ent.id }, props: { ent } }));
+}
+const { ent } = Astro.props;
+---
+<EntitySheet ent={ent} list={CHARACTERS} group="character" />

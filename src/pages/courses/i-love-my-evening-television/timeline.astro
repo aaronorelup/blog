@@ -1,0 +1,152 @@
+---
+// The timeline: every dated line of the lore on one Y axis (Y0 = the night of Episode 1's broadcast). On top, the
+// four episodes and every life with a birth year, drawn on the warped axis (empty decades short, with a break);
+// then every dated line in order, grouped by year, filterable by episode and by character; then the timeline
+// file's undated lines (the worlds inside the fictions, real history, ages).
+import LorePage from '../../../components/lore/LorePage.astro';
+import Lines from '../../../components/lore/Lines.astro';
+import {
+  BASE, LORE, EPISODES, md, mdTitle, countTiers, bulletEps, titleOf, urlOf, epVars, UNRELEASED, placement, slugify, cleanTitle, entity, esc,
+} from '../../../lib/lore.js';
+import { bulletHtml, epChip } from '../../../lib/lore-html.js';
+import { seriesChartSvg, LIVES } from '../../../lib/lore-svg.js';
+
+const dated = LORE.timeline;
+const doc = (LORE.timeline_docs || [])[0];
+const undatedSecs = (doc?.sections || []).map((s) => ({ ...s, bullets: s.bullets.filter((b) => !b.year) })).filter((s) => s.bullets.length);
+const counts = countTiers([...dated, ...undatedSecs.flatMap((s) => s.bullets)]);
+const chart = seriesChartSvg();
+
+// year groups: one per span on the axis, labelled by the text most lines use for it
+const groups = new Map();
+for (const b of dated) {
+  const k = `${b.year.min}|${b.year.max}`;
+  if (!groups.has(k)) groups.set(k, { min: b.year.min, max: b.year.max, list: [], texts: new Map() });
+  const g = groups.get(k);
+  g.list.push(b);
+  g.texts.set(b.year.text, (g.texts.get(b.year.text) || 0) + 1);
+}
+const years = [...groups.values()]
+  .sort((a, b) => a.min - b.min || a.max - b.max)
+  .map((g) => {
+    const label = [...g.texts.entries()].sort((a, b) => b[1] - a[1])[0][0];
+    const eps = EPISODES.filter((e) => {
+      const p = placement(e);
+      return p && p.min === g.min && p.max === g.max;
+    });
+    return { ...g, label, eps };
+  });
+
+const who = (b) => [...new Set([b.entity !== 'timeline' ? b.entity : null, ...(b.refs || [])].filter(Boolean))];
+const people = new Map();
+for (const b of dated) for (const id of who(b)) if (entity(id) && !/^E\d+$/.test(id)) people.set(id, (people.get(id) || 0) + 1);
+const peopleList = [...people.entries()].filter(([, n]) => n >= 1).sort((a, b) => titleOf(a[0]).localeCompare(titleOf(b[0])));
+
+const lineHtml = (b, label) =>
+  bulletHtml(b, {
+    showYear: b.year.text !== label,
+    on: b.entity !== 'timeline' ? b.entity : null,
+    anchor: b.entity === 'timeline',
+    attrs: `data-eps="${esc(bulletEps(b).join(' '))}" data-who="${esc(who(b).join(' '))}"`,
+  });
+---
+
+<LorePage
+  title="Timeline · I Love My Evening Television"
+  description="Every dated event of Aaron Orelup's TV series I Love My Evening Television on one axis, Y0 being the night of Episode 1, each with how sure it is."
+  crumbs={[['Timeline']]}
+  nav="timeline"
+  counts={counts}
+>
+  <header class="lo-hero" slot="hero">
+    <p class="lo-eyebrow">{dated.length} dated lines · {years.length} points on the axis</p>
+    <h1 class="lo-title">Timeline<span class="cur" aria-hidden="true"></span></h1>
+    <p class="lo-lede">Every dated line of the series on one axis. <b style="color:var(--pc-strong);font-weight:400">Y0</b> is the night Episode 1 was broadcast; <code>Y+60</code> is about sixty years later. No calendar year is fixed on screen.</p>
+    {doc?.prose?.[0] && <details class="fold" style="max-width:760px"><summary><span class="ft" style="font-size:16px">How the axis works</span></summary><div class="fold-b lo-prose">{doc.prose.map((p) => <p set:html={md(p)} />)}</div></details>}
+  </header>
+
+  <section class="lo-block" style="margin-top:0">
+    <h2 class="lo-h2">Four nights and {LIVES.length} lives</h2>
+    <p class="lo-intro">Each column is an episode's night, in its colour; a dashed edge means its place is a running assumption. Each row is someone with a birth year, with their age at the episodes they are in (<code>~</code> = about). Empty decades are drawn short, at the break marks.</p>
+    <div class="axis-frame" style="--minw:900px" set:html={chart.svg} />
+    <p class="ax-hint is-phone">Swipe the chart sideways to see every episode.</p>
+  </section>
+
+  <section class="lo-block" id="lines">
+    <h2 class="lo-h2">Every dated line</h2>
+    <p class="lo-intro">In order on the axis. A line from a character's or a thing's sheet says whose it is; the tier legend above narrows by tier.</p>
+    <div class="filterbar" data-tlfilter>
+      <div class="fchips" role="group" aria-label="Only lines from an episode">
+        {EPISODES.map((e) => <button type="button" class="fchip" style={epVars(e.id)} data-ep={e.id} aria-pressed="false">{e.id}</button>)}
+      </div>
+      <label>
+        <span class="sr-only">Only lines about</span>
+        <select class="lsel" data-who>
+          <option value="">Everyone and everything</option>
+          {peopleList.map(([id, n]) => <option value={id}>{titleOf(id)} ({n})</option>)}
+        </select>
+      </label>
+      <span class="lb-m" data-tlcount></span>
+    </div>
+
+    <div data-tl>
+      {years.map((g) => (
+        <div class="yr" data-fsec id={`y_${g.min}_${g.max}`}>
+          <div class="yr-h">
+            <b>{g.label}</b>
+            {g.eps.map((e) => <Fragment set:html={epChip(e.id)} />)}
+            {g.eps.length > 0 && <span>{g.eps.map((e) => `Episode ${e.id.slice(1)}'s night`).join(', ')}{g.eps.some((e) => UNRELEASED.has(e.id)) ? ' (not released yet)' : ''}</span>}
+          </div>
+          <ul class="lbl" set:html={g.list.map((b) => lineHtml(b, g.label)).join('')} />
+        </div>
+      ))}
+    </div>
+    <p class="lo-empty" data-tlempty>No dated line matches. Clear a chip or pick someone else.</p>
+  </section>
+
+  {undatedSecs.length > 0 && (
+    <section class="lo-block" id="undated">
+      <h2 class="lo-h2">Off the axis</h2>
+      <p class="lo-intro">The timeline file's undated lines: clocks inside the fictions, real history on screen, and ages worked out across time.</p>
+      {undatedSecs.map((s) => (
+        <section class="lsec" id={slugify(cleanTitle(s.title))} data-fsec>
+          <h2><span set:html={mdTitle(s.title)} /><small>{s.bullets.length} lines</small></h2>
+          {s.prose?.length > 0 && <div class="lo-prose">{s.prose.map((p) => <p set:html={md(p)} />)}</div>}
+          <Lines bullets={s.bullets} />
+        </section>
+      ))}
+    </section>
+  )}
+
+  <script>
+    const bar = document.querySelector('[data-tlfilter]');
+    if (bar) {
+      const chips = [...bar.querySelectorAll<HTMLButtonElement>('[data-ep]')];
+      const sel = bar.querySelector<HTMLSelectElement>('[data-who]');
+      const count = bar.querySelector('[data-tlcount]');
+      const lines = [...document.querySelectorAll<HTMLElement>('[data-tl] .lb')];
+      const groups = [...document.querySelectorAll<HTMLElement>('[data-tl] .yr')];
+      const empty = document.querySelector('[data-tlempty]');
+      const run = () => {
+        const eps = chips.filter((c) => c.getAttribute('aria-pressed') === 'true').map((c) => c.dataset.ep!);
+        const who = sel?.value || '';
+        let n = 0;
+        lines.forEach((li) => {
+          const le = (li.dataset.eps || '').split(' ');
+          const lw = (li.dataset.who || '').split(' ');
+          const ok = (!eps.length || eps.some((e) => le.includes(e))) && (!who || lw.includes(who));
+          li.classList.toggle('is-hide', !ok);
+          if (ok) n++;
+        });
+        groups.forEach((g) => g.classList.toggle('is-empty', !g.querySelector('.lb:not(.is-hide)')));
+        if (count) count.textContent = eps.length || who ? `${n} of ${lines.length} lines` : '';
+        empty?.classList.toggle('is-on', n === 0);
+      };
+      chips.forEach((c) => c.addEventListener('click', () => { c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); run(); }));
+      sel?.addEventListener('change', run);
+      // a link like timeline/?who=rosie opens filtered
+      const q = new URLSearchParams(location.search).get('who');
+      if (q && sel && [...sel.options].some((o) => o.value === q)) { sel.value = q; run(); }
+    }
+  </script>
+</LorePage>

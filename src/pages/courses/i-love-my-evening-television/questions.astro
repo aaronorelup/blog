@@ -1,0 +1,100 @@
+---
+// The open questions (questions.md): each [open] line is a question, and the lines under it up to the next
+// [open] are the answers on the table ([idea] proposed, [running] what a crew builds on now, [steel] the part
+// Aaron has decided). "(Aaron)" marks a question only Aaron settles. Then every other [open] line in the lore.
+import LorePage from '../../../components/lore/LorePage.astro';
+import Lines from '../../../components/lore/Lines.astro';
+import { LORE, EPISODES, CHARACTERS, THINGS, md, mdTitle, cleanTitle, slugify, countTiers, allBullets, titleOf, urlOf } from '../../../lib/lore.js';
+import { bulletHtml } from '../../../lib/lore-html.js';
+
+const secs = (LORE.questions || []).filter((s) => s.title);
+const intro = (LORE.questions || []).find((s) => !s.title);
+const AARON = /\s*\(Aaron\)\s*$/;
+const cards = (s) => {
+  const out = [];
+  let cur = null;
+  for (const b of s.bullets) {
+    if (b.tier === 'open') {
+      cur = { q: b, a: [] };
+      out.push(cur);
+    } else if (cur) cur.a.push(b);
+    else out.push({ q: null, a: [b] });
+  }
+  return out;
+};
+const nQ = secs.reduce((n, s) => n + s.bullets.filter((b) => b.tier === 'open').length, 0);
+const nAaron = secs.reduce((n, s) => n + s.bullets.filter((b) => b.tier === 'open' && AARON.test(b.text)).length, 0);
+
+// every other [open] line, by where it lives
+const where = [
+  ['Episodes', EPISODES],
+  ['Characters', CHARACTERS],
+  ['Things', THINGS],
+  ['The world and the timeline', [...(LORE.world || []), ...(LORE.timeline_docs || [])]],
+];
+const elsewhere = where
+  .map(([title, list]) => ({ title, items: list.flatMap((e) => allBullets(e).filter((b) => b.tier === 'open').map((b) => ({ b, on: e.id }))) }))
+  .concat([
+    { title: 'Eggs and threads', items: [...(LORE.eggs || []), ...(LORE.threads || [])].flatMap((s) => s.bullets.filter((b) => b.tier === 'open').map((b) => ({ b, on: s.doc }))) },
+  ])
+  .filter((g) => g.items.length);
+const counts = countTiers([...secs.flatMap((s) => s.bullets), ...elsewhere.flatMap((g) => g.items.map((x) => x.b))]);
+const qHtml = (b) => {
+  const aaron = AARON.test(b.text);
+  const html = bulletHtml({ ...b, text: b.text.replace(AARON, '') });
+  return aaron ? html.replace('<span class="lb-m">', '<span class="who" title="This one decides the series\' story, not one episode\'s: Aaron settles it">Aaron settles it</span> <span class="lb-m">') : html;
+};
+---
+
+<LorePage
+  title="Open questions · I Love My Evening Television"
+  description="What is still open in Aaron Orelup's TV series I Love My Evening Television, and the answers on the table for each question."
+  crumbs={[['Open questions']]}
+  nav="questions"
+  counts={counts}
+>
+  <header class="lo-hero" slot="hero">
+    <p class="lo-eyebrow">{nQ} questions · {nAaron} for Aaron · {elsewhere.reduce((n, g) => n + g.items.length, 0)} more open lines on the sheets</p>
+    <h1 class="lo-title">Open questions<span class="cur" aria-hidden="true"></span></h1>
+    <p class="lo-lede">What nobody has decided yet, on purpose or not, and the answers on the table. A question marked <span class="who">Aaron settles it</span> decides the series' story rather than one episode's.</p>
+    {intro?.prose?.length > 0 && <details class="fold" style="max-width:760px"><summary><span class="ft" style="font-size:16px">How a question is answered</span></summary><div class="fold-b lo-prose">{intro.prose.map((p) => <p set:html={md(p)} />)}</div></details>}
+  </header>
+
+  <nav class="jump" aria-label="Topics">
+    {secs.map((s) => <a href={`#${slugify(cleanTitle(s.title))}`}>{cleanTitle(s.title)}<b>{s.bullets.filter((b) => b.tier === 'open').length || s.bullets.length}</b></a>)}
+    <a href="#elsewhere">On the sheets</a>
+  </nav>
+
+  {secs.map((s) => (
+    <section class="lsec" id={slugify(cleanTitle(s.title))} data-fsec>
+      <h2><span set:html={mdTitle(s.title)} /><small>{s.bullets.filter((b) => b.tier === 'open').length} questions</small></h2>
+      {s.prose?.length > 0 && <div class="lo-prose">{s.prose.map((p) => <p set:html={md(p)} />)}</div>}
+      {cards(s).map(({ q, a }) => (
+        <div class="qcard" data-fsec>
+          {q && <ul class="lbl" set:html={qHtml(q)} />}
+          {a.length > 0 && (q ? (
+            <div class="qa">
+              <p class="qa-h">On the table</p>
+              <Lines bullets={a} />
+            </div>
+          ) : (
+            <Lines bullets={a} />
+          ))}
+        </div>
+      ))}
+    </section>
+  ))}
+
+  <section class="lo-block" id="elsewhere">
+    <h2 class="lo-h2">Open on the sheets</h2>
+    <p class="lo-intro">Every other line tagged <b>open</b>, where it lives: most are a character's or an episode's small unknowns (a surname, an age, what became of someone).</p>
+    {elsewhere.map((g) => (
+      <details class="fold" data-fsec>
+        <summary><span class="ft">{g.title}</span><small>{g.items.length} open</small></summary>
+        <div class="fold-b">
+          <ul class="lbl" set:html={g.items.map((x) => bulletHtml(x.b, { on: x.on, anchor: false, link: true })).join('')} />
+        </div>
+      </details>
+    ))}
+  </section>
+</LorePage>

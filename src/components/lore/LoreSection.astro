@@ -1,0 +1,44 @@
+---
+// One "## Section" of a lore file: its title, its prose, its lines. "By episode" sections are grouped by episode,
+// each group in its episode's colour; "Ties" sections are drawn as cards, one per tie, in the tie's line style.
+import Lines from './Lines.astro';
+import Ties from './Ties.astro';
+import { md, mdTitle, byEpisode, entity, epVars, epNumber, UNRELEASED, urlOf } from '../../lib/lore.js';
+import { epChip } from '../../lib/lore-html.js';
+
+interface Props { section: any; id: string; self?: string; opts?: Record<string, any> }
+const { section: s, id, self = '', opts = {} } = Astro.props;
+const t = (s.title || '').toLowerCase();
+const grouped = t === 'by episode' || (s.bullets.filter((b) => b.ep).length >= Math.max(3, s.bullets.length * 0.6) && t !== 'ties');
+const groups = grouped ? byEpisode(s.bullets) : [];
+const n = s.bullets.length;
+---
+<section class="lsec" id={id} data-fsec>
+  {s.title && <h2><span set:html={mdTitle(s.title)} /><small>{n} {n === 1 ? 'line' : 'lines'}</small></h2>}
+  {s.prose?.length > 0 && <div class="lo-prose">{s.prose.map((p) => <p set:html={md(p)} />)}</div>}
+  {t === 'ties' ? (
+    <Ties bullets={s.bullets} self={self} />
+  ) : grouped ? (
+    groups.map(([code, list]) => {
+      const e = code ? entity(code) : null;
+      return (
+        <div class={`epg${code ? '' : ' is-series'}`} style={code ? epVars(code) : undefined} data-fsec>
+          <div class="epg-h">
+            {code ? (
+              <>
+                <Fragment set:html={epChip(code)} />
+                <h3><a href={urlOf(code)}>{e ? e.title : `Episode ${epNumber(code)}`}</a></h3>
+                {UNRELEASED.has(code) && <span class="unrel">not released yet</span>}
+              </>
+            ) : (
+              <h3>Across the episodes</h3>
+            )}
+          </div>
+          <Lines bullets={list} opts={{ ...opts, showEp: false }} />
+        </div>
+      );
+    })
+  ) : (
+    <Lines bullets={s.bullets} opts={opts} />
+  )}
+</section>

@@ -4,8 +4,17 @@
 // not be handed to a crawler here any more than it appears in a list.
 import { getCollection } from 'astro:content';
 import { isListed } from '../data/listed.js';
+import lore from '../data/lore/lore.json';
 
-const PAGES = ['/', '/ledger/', '/projects/', '/about/', '/courses/', '/courses/the-hidden-curriculum/', '/research/'];
+const LORE = '/courses/i-love-my-evening-television';
+const PAGES = [
+  '/', '/ledger/', '/projects/', '/about/', '/courses/', '/courses/the-hidden-curriculum/', '/research/',
+  // C-02, the lore course: its pages and one per episode, character and thing
+  ...['', 'world/', 'timeline/', 'episodes/', 'characters/', 'things/', 'eggs/', 'threads/', 'questions/', 'steel/'].map((p) => `${LORE}/${p}`),
+  ...(lore.episodes || []).map((e) => `${LORE}/episodes/${e.id}/`),
+  ...(lore.characters || []).map((e) => `${LORE}/characters/${e.id}/`),
+  ...(lore.things || []).map((e) => `${LORE}/things/${e.id}/`),
+];
 const day = (d) => d.toISOString().slice(0, 10);
 
 export async function GET(context) {

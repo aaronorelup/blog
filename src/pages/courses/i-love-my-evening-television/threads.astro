@@ -1,0 +1,97 @@
+---
+// The threads: the cross-episode lines of the series (threads.md, one "##" per thread) as swimlanes across the
+// episodes, then each thread in full, grouped by episode, with its series-wide lines (mostly ideas for
+// connecting the plots) last.
+import LorePage from '../../../components/lore/LorePage.astro';
+import Lines from '../../../components/lore/Lines.astro';
+import { LORE, EPISODES, md, mdTitle, cleanTitle, slugify, countTiers, epVars, UNRELEASED, epNumber, urlOf } from '../../../lib/lore.js';
+import { epChip, marks } from '../../../lib/lore-html.js';
+
+const threads = (LORE.threads || []).filter((s) => s.title);
+const intro = (LORE.threads || []).find((s) => !s.title);
+const tid = (s) => slugify(cleanTitle(s.title));
+const counts = countTiers(threads.flatMap((s) => s.bullets));
+---
+
+<LorePage
+  title="Threads · I Love My Evening Television"
+  description="The threads that run through Aaron Orelup's TV series I Love My Evening Television, episode by episode: Rosie's life, the Moon, 2.56 seconds, the moth, Goodnight."
+  crumbs={[['Threads']]}
+  nav="threads"
+  counts={counts}
+>
+  <header class="lo-hero" slot="hero">
+    <p class="lo-eyebrow">{threads.length} threads across {EPISODES.length} episodes</p>
+    <h1 class="lo-title">Threads<span class="cur" aria-hidden="true"></span></h1>
+    <p class="lo-lede">Every episode has a new cast, and yet some things keep coming back: a person, a family, a number, a moth, a word. These are the threads, episode by episode.</p>
+    {intro?.prose?.length > 0 && <details class="fold" style="max-width:760px"><summary><span class="ft" style="font-size:16px">How to read a thread</span></summary><div class="fold-b lo-prose">{intro.prose.map((p) => <p set:html={md(p)} />)}</div></details>}
+  </header>
+
+  <section class="lo-block" style="margin-top:0" id="lanes">
+    <h2 class="lo-h2">The swimlanes</h2>
+    <p class="lo-intro">A row per thread and a lane per episode; each mark is one line of the thread in that episode, in its tier's shape. The last lane is the thread across the series: what connects it, mostly ideas.</p>
+    <div class="mx-wrap">
+      <table class="mx">
+        <colgroup><col class="c-name" />{EPISODES.map(() => <col class="c-cell" />)}<col class="c-cell" /></colgroup>
+        <thead>
+          <tr>
+            <th scope="col">Thread</th>
+            {EPISODES.map((e) => <th scope="col" style={epVars(e.id)}><Fragment set:html={epChip(e.id)} /></th>)}
+            <th scope="col" title="Lines across the episodes">Across</th>
+          </tr>
+        </thead>
+        <tbody>
+          {threads.map((s) => {
+            const series = s.bullets.filter((b) => !b.ep);
+            return (
+              <tr>
+                <th scope="row"><a href={`#${tid(s)}`} set:html={mdTitle(s.title)} /></th>
+                {EPISODES.map((e) => {
+                  const mine = s.bullets.filter((b) => b.ep === e.id);
+                  return (
+                    <td class="c-ep" style={epVars(e.id)}>
+                      {mine.length ? <a class="cell" href={`#${tid(s)}-${e.id}`} title={`${mine.length} in Episode ${epNumber(e.id)}`}><Fragment set:html={marks(mine, 6)} /></a> : <span class="none">·</span>}
+                      {mine.length > 6 && <span class="n">{mine.length}</span>}
+                    </td>
+                  );
+                })}
+                <td>{series.length ? <a class="cell" href={`#${tid(s)}-across`}><Fragment set:html={marks(series, 6)} /></a> : <span class="none">·</span>}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="lo-block" id="threads">
+    {threads.map((s) => {
+      const series = s.bullets.filter((b) => !b.ep);
+      return (
+        <section class="lsec" id={tid(s)} data-fsec>
+          <h2><span set:html={mdTitle(s.title)} /><small>{s.bullets.length} lines</small></h2>
+          {s.prose?.length > 0 && <div class="lo-prose">{s.prose.map((p) => <p set:html={md(p)} />)}</div>}
+          {EPISODES.map((e) => {
+            const mine = s.bullets.filter((b) => b.ep === e.id);
+            return mine.length > 0 && (
+              <div class="epg" style={epVars(e.id)} id={`${tid(s)}-${e.id}`} data-fsec>
+                <div class="epg-h">
+                  <Fragment set:html={epChip(e.id)} />
+                  <h3><a href={urlOf(e.id)}>{e.title}</a></h3>
+                  {UNRELEASED.has(e.id) && <span class="unrel">not released yet</span>}
+                </div>
+                <Lines bullets={mine} opts={{ showEp: false }} />
+              </div>
+            );
+          })}
+          {series.length > 0 && (
+            <div class="epg is-series" id={`${tid(s)}-across`} data-fsec>
+              <div class="epg-h"><h3>Across the episodes</h3></div>
+              <Lines bullets={series} />
+            </div>
+          )}
+        </section>
+      );
+    })}
+  </section>
+</LorePage>

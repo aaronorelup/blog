@@ -1,0 +1,11 @@
+---
+// One sheet per place, object, work, song, program or number in the lore (Series/lore/things/<id>.md).
+import EntitySheet from '../../../../components/lore/EntitySheet.astro';
+import { THINGS } from '../../../../lib/lore.js';
+
+export function getStaticPaths() {
+  return THINGS.map((ent) => ({ params: { id: ent.id }, props: { ent } }));
+}
+const { ent } = Astro.props;
+---
+<EntitySheet ent={ent} list={THINGS} group="thing" />

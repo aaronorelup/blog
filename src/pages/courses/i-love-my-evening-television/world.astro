@@ -1,0 +1,38 @@
+---
+// The world (world.md): the frame for the rest of the lore. The premise, the shape every episode shares, the Y
+// axis, what is true across the episodes, the conventions the crews keep, and the ideas bank.
+import LorePage from '../../../components/lore/LorePage.astro';
+import LoreSection from '../../../components/lore/LoreSection.astro';
+import { LORE, md, allBullets, countTiers, slugify, cleanTitle, plain, clip } from '../../../lib/lore.js';
+
+const w = (LORE.world || [])[0];
+const counts = countTiers(allBullets(w));
+const ids = new Set();
+const secs = (w?.sections || []).map((s) => {
+  let id = slugify(cleanTitle(s.title || 'lines'));
+  while (ids.has(id)) id += '-2';
+  ids.add(id);
+  return { s, id };
+});
+---
+
+<LorePage
+  title="The world · I Love My Evening Television"
+  description={clip(plain(w?.summary || "The world of Aaron Orelup's TV series I Love My Evening Television."), 200)}
+  crumbs={[['The world']]}
+  nav="world"
+  counts={counts}
+>
+  <header class="lo-hero" slot="hero">
+    <p class="lo-eyebrow">The frame for everything else</p>
+    <h1 class="lo-title">The world<span class="cur" aria-hidden="true"></span></h1>
+    {w?.summary && <p class="lo-lede" set:html={md(w.summary)} />}
+  </header>
+  <nav class="jump" aria-label="Sections">
+    {secs.filter(({ s }) => s.title).map(({ s, id }) => <a href={`#${id}`}>{cleanTitle(s.title)}<b>{s.bullets.length}</b></a>)}
+  </nav>
+  {w?.prose?.length > 0 && <details class="fold" style="max-width:760px;margin-bottom:26px"><summary><span class="ft" style="font-size:16px">Where these lines come from</span></summary><div class="fold-b lo-prose">{w.prose.map((p) => <p set:html={md(p)} />)}</div></details>}
+  <div style="max-width:900px">
+    {secs.map(({ s, id }) => <LoreSection section={s} id={id} self="world" />)}
+  </div>
+</LorePage>
