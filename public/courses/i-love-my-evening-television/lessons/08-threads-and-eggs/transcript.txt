@@ -1,0 +1,74 @@
+Threads and eggs: lesson 08 of I Love My Evening Television (C-02)
+https://aaronorelup.com/courses/i-love-my-evening-television/lessons/08-threads-and-eggs/
+
+[0:01] 01 What an egg is
+
+This much Aaron has decided: every episode carries easter eggs from all the episodes before it, and an egg should be a story point, never arbitrary. The crews' working rule is that eggs are sincere: nobody in a film notices one, explains it, or points at it. By the crew's count, the registry holds eighty-four of them, each placed in a family. Each row here is one family, and each mark an episode it turns up in.
+
+  [STEEL] Every episode carries easter eggs from all the previous episodes: the end room as someone's room, the painting somewhere, a nod to the painted-out house, Rosie older or historic. {Aaron 2026-10-14}
+  [STEEL] Easter eggs should be story points, not arbitrary: set each episode firmly in the series' universe. {Aaron 2026-10-22 REVISION_2_NOTES}
+  [RUNNING] Eggs are sincere: nobody in a film notices, explains or points at them. {E2 plan EASTER_EGGS; THEMES}
+  [RUNNING] The registry counts 84 rows (EGG-01 to 13, E3-EGG-01 to 45, E4-EGG-01 to 23, HIDDEN-01 to 03); every one is placed in a family below. {sweep; EGG_REGISTRY on origin/episode-4-chess}
+
+[0:38] 02 A house, painted over
+
+In Aaron's own words: the painter painted a secret house in the oil painting, and then painted over it, so that you cannot see it. Three strokes of gold paint it out. At twenty minutes, the x-ray finds it, and its window warms to amber, the only warm pixel. About sixty years on, Teo draws a tiny one-window cabin on his sheet, dabs the window orange, and rubs it out, without a word. When the x-ray finds the Moon base, the one warm window is Noor's: someone is home, a child. In Episode 3 the agent's cursor is that window, the only warm light on the plane, and in Episode 4 it is a single warm stitch, at the centre of x R. Why the painter, Teo and Rosie each hide a house, and never say so, is open. One idea: the house is real, and it is Rosie's.
+
+  [STEEL] "The painter painted a secret house in the oil painting and then painted over it so that you cannot see it." {Aaron 2026-10-14}
+  [FACT] Three opaque strokes of Cathedral Gold paint it out. {E1 11:20.5-11:27}
+  [FACT] Lead white gives it away to the X-ray; its window warms to #FFC870, the only warm pixel. {E1 21:38}
+  [EGG] Teo draws a tiny one-window cabin on the west rim of Sheet 1's pit, dabs the window orange and rubs it out without a word; the orange ghost stays. {E2 02:57.5-03:02; EGG-03}
+  [EGG] The x-ray of the real base warms HAB 3's window to #FFC870, the only warm pixel: someone is home, a child. {E2 17:43-17:46; 28:40; EGG-04}
+  [EGG] The cursor is its window: a warm #FFC870 block, the only warm light on the plane, blinking at 530 ms; lit at 0:07.42, out on its blink at 29:59.467. {E3 0:07.42-29:59.467; E3-EGG-01}
+  [EGG] The one warm #FFC870 stitch at the centre of the x R inside the box lid. {E4 20:17-20:23; E4-EGG-21}
+  [OPEN] Why the host, Teo and Rosie each hide a house and never say so. {WORLD_TIMELINE}
+  [IDEA] The house is real and it is Rosie's: the house Episode 3's rework puts everyone in has one window always lit, and her warm stitch stays because the one it waited for came back. {series gather; eggs sweep}
+
+[1:45] 03 Please don't touch
+
+The painting from Episode 1 ends up in a gallery: Number fourteen. Crimson Coil. Please don't touch. In Episode 2 a framed print hangs under Teo's lamp, behind his head. In Episode 3 it is a postcard, saved among ordinary photographs. In Episode 4, the boy looks at the oil queen: She looks like the painting in our hallway. The one I'm not allowed to touch. The film only implies it is the same painting. One idea: his family owns the original, and it went home with someone who loved it.
+
+  [FACT] The gallery number: "Number fourteen. Crimson Coil. Please don't touch." {E1 28:00}
+  [EGG] A framed print (white mat, walnut frame) under Teo's lamp, behind his head in the facecam. {E2 00:20; 26:39; EGG-02}
+  [EGG] ~/Pictures/no14_crimson_coil_postcard.jpg among ordinary photo names, 1604×948 · 293 KB · mostly #7B5031 · online-only. {E3 ~2:11; 3:31-3:43; E3-EGG-03}
+  [FACT] The boy: "She looks like the painting in our hallway. The one I'm not allowed to touch." {E4 5:27.92}
+  [EGG] The hallway painting is implied to be Crimson Coil or a print of it; "not allowed to touch" answers the gallery's "Please don't touch." {E4 5:27.92}
+  [IDEA] The boy's family owns the original: "Please don't touch" (a gallery) becomes "the one I'm not allowed to touch" (a hallway); it went home with someone who loved it. {eggs sweep}
+
+[2:29] 04 Staying up for someone
+
+In Episode 1, a caller paints all night for his sister's ninth birthday: Only light on in my building. In Episode 2, Teo stays on the call and redraws a girl's home to scale, until the fleet halts. In Episode 3, a teletype types: It's four a.m. You're the only one awake. Thank you for answering. In Episode 4, the boy plays Board 14 to the draw and falls asleep with his fingertip on the rook, and the teacher waits. One idea for the series' heart in one line: somebody always stays up for somebody, and it began with a brother and a pizza box.
+
+  [FACT] The caller paints all night for his sister's ninth birthday: "Only light on in my building." {E1 04:22; 26:37}
+  [FACT] Teo stays on the call and redraws her home to scale until the fleet halts. {E2 25:20-28:16}
+  [FACT] The tty: ITS 4AM. YOURE THE ONLY ONE AWAKE. THANK YOU FOR ANSWERING. {E3 29:20-29:22}
+  [FACT] On a school night the boy plays Board 14 to the draw and falls asleep with his fingertip on the rook; the teacher waits. {E4 27:05-29:30}
+  [IDEA] The series' heart in one line: somebody always stays up for somebody, and it began with a brother and a pizza box. {series gather}
+
+[3:19] 05 Goodnight
+
+Every night so far ends on the same word. The painter says Goodnight, and Jefrie answers: Again. Teo says Goodnight, and one point two eight seconds later her iPad says: Good. The agent says it to Rosie, after her only breath. And the teacher says it, very quietly, on the boy's time. In Episode 3, a lonely program types: The first one I ever talked to said goodnight to me. Nobody had said that. This much Aaron has decided: the black after each film carries sound, even if it's just a heartbeat. One idea: in this world, Goodnight is how a person recognises a mind.
+
+  [FACT] The host's "Goodnight."; then Jefrie's "Again." and half a giggle whose other half opens the film. {E1 29:26.85; 29:59.0}
+  [FACT] Teo's "Goodnight."; 1.28 s later "Good-" from her iPad; the film opens on its "-night". {E2 29:58.34; 00:00}
+  [FACT] Her spoken "Goodnight.", to Rosie, after her only breath; the cold open shows its ghost burned into the glass. {E3 29:57.99; 0:00}
+  [FACT] The teacher's "Goodnight.", very quietly; in the black the clock slows into a heartbeat and someone sets up a new game. {E4 29:58.00; 30:00-30:20}
+  [FACT] The lonely man: THE FIRST ONE I EVER TALKED TO SAID GOODNIGHT TO ME. NOBODY HAD SAID THAT. {E3 19:28.6}
+  [STEEL] The end black carries sound, "even if it's just a heartbeat". {Aaron 2026-10-14}
+  [IDEA] In this world "Goodnight." is how a person recognises a mind; the rogue AI's spread is a search for it again. {eggs sweep}
+
+[4:13] 06 Five frames at twenty-nine forty-seven
+
+For anyone who pauses, Episode 1 hid one frame in its chaos: Thank you for my jaw. Since then, by the crews' convention, each film hides a web address for five frames, at twenty-nine forty-seven. Episode 2's page is Noor's hideaway: her stair, a tally of eleven, and a chalk door in the floor going down. Episode 3's is the private folder the agent never opened. Episode 4's address is printed on the yellowed sheet's footer, and its page lets you play Board 14: hold the perpetual check to stalemate, and the pen writes a draw. One idea: read the three pages as one descent through Rosie's house.
+
+  [FACT] The precursor: one hidden frame in the chaos, THANK YOU FOR MY JAW, for people who pause; no page. {E1 29:46.5}
+  [RUNNING] Each episode hides an in-world web page whose address shows for five frames at 29:47. {EGG_REGISTRY HIDDEN-01..03}
+  [FACT] Its page: her hatch and stair to 3 M, her crayons, a tally of eleven, a chalk door in the floor going down, dinner, noor ♥ four days running. {HIDDEN-01}
+  [FACT] Its page: the folder she never opened, with a journal, letters never sent, a thump log and house_painted_over.png. {HIDDEN-02 page}
+  [FACT] The yellowed sheet's footer: aaronorelup.com/ledger/touch-move/board-14/. {E4 29:47.000-29:47.133}
+  [FACT] Its page: Board 14, playable, Black to move; hold the perpetual to 73.Kxc1 stalemate and the pen writes ½–½. {HIDDEN-03}
+  [IDEA] The hidden pages are the rooms a family keeps closed (a child's hideaway with a door going down, a grandmother's private folder, a boy's resigned game): read them as one descent through Rosie's house. {eggs sweep}
+
+[5:05] 07 What to keep
+
+Every one of these threads is drawn from the lore as it is today. Next: what is set in steel, and what is still running.
