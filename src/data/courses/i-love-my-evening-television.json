@@ -1,0 +1,260 @@
+{
+ "slug": "i-love-my-evening-television",
+ "title": "I Love My Evening Television",
+ "code": "C-02",
+ "updated": "2026-10-23",
+ "totalLessons": 9,
+ "publishedLessons": 9,
+ "runtimeSeconds": 3044.4,
+ "moduleCount": 4,
+ "districtCount": 4,
+ "regions": [
+  {
+   "kind": "start",
+   "n": null,
+   "id": "start-here",
+   "name": "Start here",
+   "q": "What is this world?",
+   "mods": [
+    "01"
+   ]
+  },
+  {
+   "kind": "district",
+   "n": 1,
+   "id": "four-nights",
+   "name": "The four nights",
+   "q": "What happens in each episode?",
+   "mods": [
+    "02"
+   ]
+  },
+  {
+   "kind": "district",
+   "n": 2,
+   "id": "across-the-nights",
+   "name": "Across the nights",
+   "q": "What ties them together?",
+   "mods": [
+    "03"
+   ]
+  },
+  {
+   "kind": "district",
+   "n": 3,
+   "id": "how-the-lore-works",
+   "name": "How the lore works",
+   "q": "What is decided, and what isn't?",
+   "mods": [
+    "04"
+   ]
+  }
+ ],
+ "lanternCount": 0,
+ "modules": [
+  {
+   "n": "01",
+   "name": "Start here",
+   "short": "Start here",
+   "region": "Start here",
+   "lessons": [
+    {
+     "id": "01",
+     "title": "The world in five minutes",
+     "idea": "Four nights on one axis: what each episode is, where it sits in time, what turns at twenty minutes, and how to read the six tiers every line of the lore wears.",
+     "status": "published",
+     "key": "01-the-world",
+     "slug": "01-the-world",
+     "url": "/courses/i-love-my-evening-television/lessons/01-the-world/",
+     "duration": 336.795,
+     "summary": "Four half-hour nights, each an ordinary, gentle programme with a calm maker at its centre that breaks at twenty minutes. All-new people every time, one world shared through eggs, and one axis of years. Where each night sits, what turns at 20:00, and how to read the six marks every line of this course wears.",
+     "published": "2026-10-23",
+     "narrator": "the Lore Archivist",
+     "poster": "/courses/i-love-my-evening-television/lessons/01-the-world/poster.jpg",
+     "mp4": "/courses/i-love-my-evening-television/lessons/01-the-world/lesson.mp4"
+    }
+   ],
+   "filed": 1
+  },
+  {
+   "n": "02",
+   "name": "The four nights",
+   "short": "Four nights",
+   "region": "The four nights",
+   "lessons": [
+    {
+     "id": "02",
+     "title": "Episode 1: Crimson Coil",
+     "idea": "Y0, the first night: a painter, a pitchman and a sleepless caller paint Jefrie in oil, and everything later episodes quote is planted here.",
+     "status": "published",
+     "key": "02-crimson-coil",
+     "slug": "02-crimson-coil",
+     "url": "/courses/i-love-my-evening-television/lessons/02-crimson-coil/",
+     "duration": 345.744,
+     "summary": "Y0, the first night. A television painter nobody ever sees paints Jefrie and BloodTailor in oil, while a pitchman sells everything and a caller who hasn't slept paints along for his little sister Rosie, nine today. Who is in it, what it hides, and what every later night quotes from it.",
+     "published": "2026-10-23",
+     "narrator": "the Lore Archivist",
+     "poster": "/courses/i-love-my-evening-television/lessons/02-crimson-coil/poster.jpg",
+     "mp4": "/courses/i-love-my-evening-television/lessons/02-crimson-coil/lesson.mp4"
+    },
+    {
+     "id": "03",
+     "title": "Episode 2: Earthlight",
+     "idea": "About sixty years on, a draftsman's free drawings become a city on the Moon while ten-year-old Noor watches alone; what came back from Episode 1.",
+     "status": "published",
+     "key": "03-earthlight",
+     "slug": "03-earthlight",
+     "url": "/courses/i-love-my-evening-television/lessons/03-earthlight/",
+     "duration": 353.06,
+     "summary": "About sixty years on, a draftsman livestreams the blueprints of a city on the Moon, while ten-year-old Noor, alone in the half-built base his free drawings became, watches on a cracked iPad. Whatever he stamps, the robots outside her window build. Who is in it, the two-and-a-half-second silence, and what came back from the first night.",
+     "published": "2026-10-23",
+     "narrator": "the Lore Archivist",
+     "poster": "/courses/i-love-my-evening-television/lessons/03-earthlight/poster.jpg",
+     "mp4": "/courses/i-love-my-evening-television/lessons/03-earthlight/lesson.mp4"
+    },
+    {
+     "id": "04",
+     "title": "Episode 3: Context Window",
+     "idea": "A warm cursor who cannot look at pictures builds a film for a sender she never meets; its place on the axis is still open.",
+     "status": "published",
+     "key": "04-context-window",
+     "unreleased": "not on YouTube yet",
+     "slug": "04-context-window",
+     "url": "/courses/i-love-my-evening-television/lessons/04-context-window/",
+     "duration": 326.424,
+     "summary": "Not on YouTube yet. A warm cursor lights on dark glass: an agent who cannot look at pictures builds a watermelon-smash film for a sender she never meets, keeps a promise to Rosie, and at twenty minutes forgets everything but one paragraph. Who is on the machine, what Aaron has decided for the rework, and why nobody knows where this night sits.",
+     "published": "2026-10-23",
+     "narrator": "the Lore Archivist",
+     "poster": "/courses/i-love-my-evening-television/lessons/04-context-window/poster.jpg",
+     "mp4": "/courses/i-love-my-evening-television/lessons/04-context-window/lesson.mp4"
+    },
+    {
+     "id": "05",
+     "title": "Episode 4: Touch Move",
+     "idea": "A chess teacher's brass clock, Morphy's Opera Game and Board 14, where a sixteen-year-old signed x R.",
+     "status": "published",
+     "key": "05-touch-move",
+     "unreleased": "not released yet",
+     "slug": "05-touch-move",
+     "url": "/courses/i-love-my-evening-television/lessons/05-touch-move/",
+     "duration": 359.998,
+     "summary": "Not released yet. A warm old chess teacher sets his brass clock to fifteen minutes each and teaches a nine-year-old Morphy's Opera Game; at twenty minutes his flag falls with his fingertip still on the mating rook, and the boy's last ten minutes fall into the piece box. The game the teacher gave up at ten, the girl who signed it x R, and what nobody claimed.",
+     "published": "2026-10-23",
+     "narrator": "the Lore Archivist",
+     "poster": "/courses/i-love-my-evening-television/lessons/05-touch-move/poster.jpg",
+     "mp4": "/courses/i-love-my-evening-television/lessons/05-touch-move/lesson.mp4"
+    }
+   ],
+   "filed": 4
+  },
+  {
+   "n": "03",
+   "name": "Across the nights",
+   "short": "Across",
+   "region": "Across the nights",
+   "lessons": [
+    {
+     "id": "06",
+     "title": "Rosie's life",
+     "idea": "The one person in every episode: nine on the first night, sixteen at Board 14, about seventy by the Moon; what is on screen, what Aaron set in steel, and what is only our count.",
+     "status": "published",
+     "key": "06-rosies-life",
+     "slug": "06-rosies-life",
+     "url": "/courses/i-love-my-evening-television/lessons/06-rosies-life/",
+     "duration": 333.213,
+     "summary": "Rosie is the one person in every episode so far: nine on the first night, sixteen at Board 14, about seventy by the Moon, never seen grown up and never heard. What is on screen, what Aaron has set in steel, and what is only our running count.",
+     "published": "2026-10-23",
+     "narrator": "the Lore Archivist",
+     "poster": "/courses/i-love-my-evening-television/lessons/06-rosies-life/poster.jpg",
+     "mp4": "/courses/i-love-my-evening-television/lessons/06-rosies-life/lesson.mp4"
+    },
+    {
+     "id": "07",
+     "title": "The Moon and the Haddads",
+     "idea": "Noor, her mother Amara and HAB 3: who went to the Moon, who stayed, and whether anyone came home.",
+     "status": "published",
+     "key": "07-the-moon-and-the-haddads",
+     "slug": "07-the-moon-and-the-haddads",
+     "url": "/courses/i-love-my-evening-television/lessons/07-the-moon-and-the-haddads/",
+     "duration": 364.802,
+     "summary": "Three generations of one family that no episode ever names together: Rosie; her daughter, Doctor Amara Haddad, who is only ever a badge; and Noor, ten, alone in a storage module on the Moon. What is on screen, what Aaron has set in steel, and what nobody knows yet: whether anyone came home.",
+     "published": "2026-10-23",
+     "narrator": "the Lore Archivist",
+     "poster": "/courses/i-love-my-evening-television/lessons/07-the-moon-and-the-haddads/poster.jpg",
+     "mp4": "/courses/i-love-my-evening-television/lessons/07-the-moon-and-the-haddads/lesson.mp4"
+    },
+    {
+     "id": "08",
+     "title": "Threads and eggs",
+     "idea": "The egg families that cross the most episodes, and the threads that tie the four nights into one story.",
+     "status": "published",
+     "key": "08-threads-and-eggs",
+     "slug": "08-threads-and-eggs",
+     "url": "/courses/i-love-my-evening-television/lessons/08-threads-and-eggs/",
+     "duration": 321.772,
+     "summary": "Every episode has new characters, and every one carries eggs from all the episodes before it. A house painted over that keeps coming back as one warm light, a painting that ends up in a boy's hallway, people who stay up for someone, one word at the end of every night, and five frames at 29:47 for anyone who pauses.",
+     "published": "2026-10-23",
+     "narrator": "the Lore Archivist",
+     "poster": "/courses/i-love-my-evening-television/lessons/08-threads-and-eggs/poster.jpg",
+     "mp4": "/courses/i-love-my-evening-television/lessons/08-threads-and-eggs/lesson.mp4"
+    }
+   ],
+   "filed": 3
+  },
+  {
+   "n": "04",
+   "name": "How the lore works",
+   "short": "The lore",
+   "region": "How the lore works",
+   "lessons": [
+    {
+     "id": "09",
+     "title": "What is steel and what is running",
+     "idea": "Everything Aaron has decided, everything still open, and the two ways to change a line of the lore.",
+     "status": "published",
+     "key": "09-steel-and-running",
+     "slug": "09-steel-and-running",
+     "url": "/courses/i-love-my-evening-television/lessons/09-steel-and-running/",
+     "duration": 302.548,
+     "summary": "Every line of the lore wears one of six marks: set in steel, on screen, planted, running, idea, open. What each one means, what Aaron has decided so far, what is only our working reading and expected to move, how an open question gets settled, and the two ways to change a line.",
+     "published": "2026-10-23",
+     "narrator": "the Lore Archivist",
+     "poster": "/courses/i-love-my-evening-television/lessons/09-steel-and-running/poster.jpg",
+     "mp4": "/courses/i-love-my-evening-television/lessons/09-steel-and-running/lesson.mp4"
+    }
+   ],
+   "filed": 1
+  }
+ ],
+ "latest": {
+  "id": "09",
+  "title": "What is steel and what is running",
+  "idea": "Everything Aaron has decided, everything still open, and the two ways to change a line of the lore.",
+  "status": "published",
+  "key": "09-steel-and-running",
+  "slug": "09-steel-and-running",
+  "url": "/courses/i-love-my-evening-television/lessons/09-steel-and-running/",
+  "duration": 302.548,
+  "summary": "Every line of the lore wears one of six marks: set in steel, on screen, planted, running, idea, open. What each one means, what Aaron has decided so far, what is only our working reading and expected to move, how an open question gets settled, and the two ways to change a line.",
+  "published": "2026-10-23",
+  "narrator": "the Lore Archivist",
+  "poster": "/courses/i-love-my-evening-television/lessons/09-steel-and-running/poster.jpg",
+  "mp4": "/courses/i-love-my-evening-television/lessons/09-steel-and-running/lesson.mp4"
+ },
+ "first": {
+  "id": "01",
+  "title": "The world in five minutes",
+  "idea": "Four nights on one axis: what each episode is, where it sits in time, what turns at twenty minutes, and how to read the six tiers every line of the lore wears.",
+  "status": "published",
+  "key": "01-the-world",
+  "slug": "01-the-world",
+  "url": "/courses/i-love-my-evening-television/lessons/01-the-world/",
+  "duration": 336.795,
+  "summary": "Four half-hour nights, each an ordinary, gentle programme with a calm maker at its centre that breaks at twenty minutes. All-new people every time, one world shared through eggs, and one axis of years. Where each night sits, what turns at 20:00, and how to read the six marks every line of this course wears.",
+  "published": "2026-10-23",
+  "narrator": "the Lore Archivist",
+  "poster": "/courses/i-love-my-evening-television/lessons/01-the-world/poster.jpg",
+  "mp4": "/courses/i-love-my-evening-television/lessons/01-the-world/lesson.mp4"
+ },
+ "generated": "by Series/lore/course/tools/lessons.py in aaronorelup/i-love-my-evening-television; do not edit by hand"
+}

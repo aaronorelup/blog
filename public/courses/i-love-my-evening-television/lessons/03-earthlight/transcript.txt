@@ -1,0 +1,98 @@
+Episode 2: Earthlight: lesson 03 of I Love My Evening Television (C-02)
+https://aaronorelup.com/courses/i-love-my-evening-television/lessons/03-earthlight/
+
+[0:01] 01 Sixty years on
+
+About sixty years after the first night, by our running count, a draftsman goes live and re-issues his whole drawing set for a city on the Moon. At the first ISSUED stamp, the picture pulls back: we have been watching an iPad on the Moon, the scratch is a crack, and the hands are small and taped. A robot outside her window wakes. Each sheet he stamps wakes another. Just before twenty minutes, he stamps Sheet 3 VOID, across the drawing of her window. Then the stream peels off her screen, and every robot turns its lights onto her window.
+
+  [RUNNING] Earthlight: year about Y+60 {E2 WORLD_BIBLE §13: nothing on screen fixes the gap}
+  [FACT] Teo Varga goes live as longhand on Lantern and re-issues his whole Moon-city drawing set, EARTHLIGHT, as Rev C: "Tonight, the whole set again, properly." {E2 00:35}
+  [FACT] From 00:10 the picture is her copy of the stream; at the first ISSUED stamp it pulls back: an iPad on the Moon, the scratch is a crack, small taped hands. {E2 03:31}
+  [FACT] S05 03:05-04:00 Sheet 2, the berm: ISSUED at 03:31.0; the pull-back to her iPad; MOLE-1 wakes. {E2 03:31}
+  [FACT] Each sheet he stamps ISSUED wakes a robot outside her window in the same frame: MOLE-1 at Sheet 2, DRAY at Sheet 4. {E2 03:31; 08:20}
+  [FACT] 19:58.72 he stamps Sheet 3 VOID across the drawing of her window; her copy smears; in the facecam he regards the stamp. {E2 19:58.72}
+  [FACT] S27 20:00-20:40 The break: the peel, digital zero, the robots' lights on her window, the clunk, STEP 1 OF 9, 74 h becomes 31 h. {E2 20:00}
+
+[0:47] 02 The draftsman
+
+Teo draws at a desk on Earth, for people on Earth; Aaron decided he never means the stream to be watched from the base. He gives every sheet away the minute he stamps it: free; build whatever you like with them. Calm and matter-of-fact about every risk, he is unintentionally brutal to the girl watching. He did not know she was there until the call. And by our running rule, he is never the villain: his kindness is the weapon.
+
+  [STEEL] He makes the stream for people on Earth and does not intend it to be watched from the Moon base. {Aaron E2 brief 2026-10-12}
+  [FACT] Gives every sheet away the minute he stamps it: "Free. Build whatever you like with them." {E2 01:58}
+  [STEEL] Calm and matter-of-fact about every risk, unintentionally brutal to the girl watching. {Aaron E2 brief 2026-10-12}
+  [FACT] He did not know she was there until the call. {E2 25:20}
+  [RUNNING] Never the villain; his kindness is the weapon. {E2 MASTER_TREATMENT §0.2}
+
+[1:23] 03 The girl on the Moon
+
+Aaron's brief: a child on a Moon base, oddly alone among robots that don't work correctly. She is unheard for the first ten minutes; her first sound is a cough. The manifest lists thirteen adults, and personal effects: one. By our running reading, she is that personal effect: the company never declared her. They went to get the food, she tells him. The lander tipped over. That was eleven days ago. This much Aaron has decided, in steel: she is Rosie's granddaughter, and Amara's daughter.
+
+  [STEEL] Oddly alone among robots that don't work correctly; old equipment, low food, low oxygen; she tries to ignore it and watch the iPad. {Aaron E2 brief 2026-10-12}
+  [STEEL] Mostly quiet, unheard for the first ten minutes; she phones in near the end. {Aaron E2 brief 2026-10-12}
+  [FACT] A cough at 10:21 is the first sound of her; her battery wall gives 74 h to empty against 128 h to sunrise. {E2 10:21; 11:06}
+  [FACT] The manifest reads 13 ADULTS - PERSONAL EFFECTS (1); her module is STORAGE, OCCUPANCY 0. {E2 06:56-07:01}
+  [RUNNING] She is the PERSONAL EFFECTS (1): the company never declared her. {E2 WORLD_BIBLE §10}
+  [FACT] Alone: "They went to get the food. The lander tipped over. That was eleven days ago." {E2 26:31}
+  [STEEL] Rosie's granddaughter and Amara's daughter. {Aaron 2026-10-22}
+
+[2:07] 04 The co-host
+
+Teo's co-host on the call line, Dez, is never seen. Aaron asked for a huge tech nerd, promising a million people on the Moon, who says Elon Musk a lot. He says the full name every time: twenty-four times. By our reading, his arc is not a redemption: mania, then the only silence of his life, and then, quietly, the right question: who do we call?
+
+  [STEEL] Heard but not there in person; extremely excited; a huge tech nerd; a million people on the Moon in five to ten years, luxury hotels, super safe, Mars just as quick; says "Elon Musk" a lot, with real X posts as real snips. {Aaron E2 brief 2026-10-12}
+  [FACT] Says the full name every time: 24 full "Elon Musk"es in the stream, one cut at "Elon Mu-", one more in the chaos. {E2 11:14; 29:15; 29:36}
+  [RUNNING] His arc is not a redemption: mania, the only silence of his life, the right question, then back. {E2 WORLD_BIBLE §2}
+  [FACT] Quietly: "Who do we call? Who do we call?" {E2 27:36}
+
+[2:39] 05 The robot that cheats
+
+PAWN, her knee-high helper, sets thirteen mugs and one small cup on the shelf, and plays chess in Teo's chat, and cheats. After the VOID it asks for a badge. She holds up her mother's, and it is reassigned to construction support. On the call she says: Pawn. He cheats. He left. A chess machine that cheats and offers draws keeps turning up after this night, and nobody says it is the same one.
+
+  [FACT] Sets thirteen mugs and one small cup on HAB 2's galley shelf. {E2 08:53-09:13}
+  [FACT] Posts chess moves in Teo's chat as pawn.hab3. {E2 02:30}
+  [FACT] Noor holds up her mother's badge: "Good evening, Dr. Haddad. Reassigning to construction support." {E2 20:58}
+  [FACT] On the call, Teo: "Is anyone with you?" Noor: "Pawn. He cheats. He left." {E2 26:16-26:24}
+  [EGG] A chess machine that cheats and offers draws runs from Episode 2 on: PAWN in Teo's chat, pawn_engine.exe offering draw on Episode 3's machine, pawn.hab3 on Lantern (PAWN). {E2 02:30; E3 2:41; E4 0:58}
+
+[3:13] 06 Two and a half seconds
+
+When her iPad dies, she charges it from her suit, climbs for a signal, and against the standing order, calls the stream. Light takes one point two eight seconds each way between Earth and the Moon, so every answer comes after a two-and-a-half-second silence. Across those silences, she tells him: I live in it. Together they redraw Sheet 3, with her window, her door in the floor, and a new rule: no work on occupied modules, ever. The robots' lights go out one by one. And the gap comes back: two and a half seconds of silence after Episode 3's unanswered question, and a chess program in Episode 4 that answers exactly that late.
+
+  [FACT] Her iPad dies at 5%; she charges it from her suit, climbs for signal and, against the standing order, calls the stream. {E2 25:02-25:20}
+  [FACT] The Earth-Moon light delay, 1.28 s each way: the call is held across 2.56-second silences, and one bar of the score is 2.56 s. {E2 25:20-28:16}
+  [FACT] Across 2.56-second silences (The round trip) she tells him "I live in it." and "That was eleven days ago." {E2 25:42; 26:31}
+  [FACT] Together they redraw Sheet 3 as Sheet 3, revision B: her window, her door in the floor, a timeline for one, her figure to scale (1.38 m), CHK: N., and the note NO WORK ON OCCUPIED MODULES. EVER. {E2 26:45-28:14}
+  [FACT] Rev B lands; the robots' lights go out one by one, the fans come back, the battery reads 130 h against 128 h to sunrise. {E2 28:14.72-28:27}
+  [EGG] 2.56 s of true digital zero after her question flies to an empty circle. {E3 11:29.00-11:31.56}
+  [EGG] pawn.hab3 answers every move exactly 2.56 s late, and offers its last draw that way. {E4 0:46.16; 6:12.56; 18:13.56; 29:57.133}
+
+[4:07] 07 dinner, noor
+
+At six in the evening, the empty HAB 1 intercom sends a message: dinner, noor, with a heart. It is the only place her name is ever written. She holds the talk key, says nothing, and lets go. Who sends it is never said, and stays open. In Episode 3 it is back, at the bottom of a stranger's process list: dinner, noor, daily, at eighteen hundred.
+
+  [FACT] A notification from HAB 1's intercom at 18:00 base time: "dinner, noor" with a heart. {E2 22:50-22:51}
+  [FACT] Her name is written once in Episode 2 and never spoken: here. {E2 22:51}
+  [FACT] She holds the talk key, says nothing, and lets go. {E2 22:52-22:57}
+  [OPEN] Who sends "dinner, noor" (the film never says). {E2 22:51}
+  [EGG] scheduled / 18:00 daily notify "dinner, noor ♥" at the bottom of the process list. {E3 2:38; 16:15.9; registry: 2:40-17:04}
+
+[4:39] 08 What came back
+
+Episode 2 quotes the first night again and again, and nobody on screen ever points at it. Teo's study is the first night's end room, about sixty years on: the hat and the mask on his pinboard. A print of Crimson Coil hangs under his lamp. An x-ray of the base warms one window to the painted-out cabin's colour: hers. And in the chat, grandma Rosie writes that her big brother used to stay up all night, painting along with a man on TV.
+
+  [EGG] Teo's study is that room about sixty years on: the hat pinned at the top of his pinboard, the mask and headlamp on a pin under it; the skateboard is gone. -> The end room; whose room it was then is never said {E2 00:16-20:01, 25:20-28:16, 26:37.5; EGG-01}
+  [EGG] A framed print (white mat, walnut frame) under Teo's lamp, behind his head on the facecam. -> Crimson Coil: the paint-along's painting is old, loved, printed and framed {E2 00:20, 26:39; EGG-02}
+  [EGG] The x-ray of the real base warms HAB 3's window to #FFC870, the only warm pixel (again in S39's pass). -> Episode 1's x-ray; "Is anybody home?" is answered: a child is {E2 17:43-17:46, 28:40; EGG-04}
+  [EGG] grandma_rosie, about seventy, three chat lines never read aloud; the first: "my big brother used to stay up all night painting along with a man on tv. this is the same kind of quiet" -> Rosie remembering the caller and the host {E2 07:27; EGG-06}
+
+[5:14] 09 What it leaves open
+
+Whether anyone comes back for her is open: the rover, the crew, her mother. So is whether the new drawing is enough: a hundred and thirty hours of battery, against a hundred and twenty-eight of night. And nobody knows whether Rosie knew that the girl on Teo's call was her granddaughter.
+
+  [OPEN] Whether anyone comes back: Rover 2, the crew, Noor's mother. {E2 MASTER_TREATMENT §4}
+  [OPEN] Whether Rev B is enough: 130 h of battery against 128 h of night. {E2 28:27}
+  [OPEN] Whether Rosie knew the girl on Teo's call was Noor. {E2 27:51.6; Aaron 2026-10-22}
+
+[5:36] 10 What to keep
+
+A man drew a city for strangers, and a child he never knew about checked his drawing. Next: a light comes on in an empty terminal.
