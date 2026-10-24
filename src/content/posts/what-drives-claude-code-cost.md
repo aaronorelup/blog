@@ -15,15 +15,16 @@ preview:
     - "Wrong: Claude Code does show a session's tokens and dollars in /usage. It keeps no weekly or monthly history."
 ---
 
-Since 7 July I've used $31,387 of Claude Code at API list prices: 510 sessions and 223,024
-requests, on one Claude Max 20x subscription. People ask me what makes it expensive, and I have
+I moved from Claude Pro to Max 20x on 5 July 2026 and have maxed out its weekly limit most weeks
+since. In the 16 weeks from 7 July, when my transcripts start, I used $31,387 of Claude Code at
+API list prices: 510 sessions and 223,024 requests, all on that one subscription. People ask me what makes it expensive, and I have
 a handful of answers I give. This post checks each one against the transcripts of those
 sessions, read with [Playback Lens](/ledger/reading-my-own-agents/), plus one small test I ran
 today. Every number here is in [results.json](/media/what-drives-claude-code-cost/results.json).
 
 The dollars are API-equivalent: what the same tokens would cost at the list prices on
 [Anthropic's pricing page](https://platform.claude.com/docs/en/about-claude/pricing). I didn't
-pay them. I paid $200 a month.
+pay them. I paid $200 a month: about $800 so far before tax, for 39 times that.
 
 ## The answers
 
@@ -188,13 +189,51 @@ So in October one weekly limit held roughly $2,400 to $3,000 of my Claude Code u
 shared with claude.ai and my cloud sessions, which the Lens doesn't see, so treat those as
 floors.
 
+## Every token, by model
+
+Lifetime, 7 July to 24 October, re-read the evening of the 24th (the Lens had picked up $13 more
+by then). Output includes thinking. Cache writes are the 5-minute and 1-hour writes together.
+
+| Model | Input | Output | Cache writes | Cache reads |
+|---|---|---|---|---|
+| Opus 5.5 | 260K | 116.8M | 952.6M | 35,481M |
+| Fable 5 | 416K | 15.9M | 105.8M | 3,818M |
+| Opus 5 | 330K | 39.9M | 162.3M | 7,079M |
+| Fable 5.1 | 788K | 14.5M | 83.6M | 1,953M |
+| Sonnet 5 | 245K | 24.1M | 128.9M | 5,273M |
+| Sonnet 5.5 | 9K | 6.9M | 28.2M | 1,154M |
+| Opus 4.8 | 38K | 0.2M | 3.1M | 32M |
+| Haiku 4.5 | 15K | 1.0M | 7.1M | 96M |
+| Haiku 5.5 | 1K | 1.0M | 7.1M | 74M |
+| **Total** | **2.1M** | **220.4M** | **1,478.6M** | **54,959M** |
+
+The same tokens at API list prices:
+
+| Model | Input | Output | Cache writes | Cache reads | Total |
+|---|---|---|---|---|---|
+| Opus 5.5 | $1 | $2,336 | $5,127 | $7,096 | $14,560 |
+| Fable 5 | $4 | $797 | $1,914 | $3,818 | $6,534 |
+| Opus 5 | $2 | $998 | $1,184 | $3,540 | $5,723 |
+| Fable 5.1 | $8 | $723 | $1,278 | $488 | $2,497 |
+| Sonnet 5 | <$1 | $241 | $343 | $1,055 | $1,639 |
+| Sonnet 5.5 | <$1 | $69 | $96 | $212 | $377 |
+| Opus 4.8 | <$1 | $5 | $23 | $16 | $44 |
+| Haiku 4.5 | <$1 | $5 | $9 | $10 | $24 |
+| Haiku 5.5 | <$1 | <$1 | $1 | $1 | $2 |
+| **Total** | **$15** | **$5,175** | **$9,975** | **$16,235** | **$31,400** |
+
+Each row re-adds exactly from the pricing page's rates; Sonnet 5.5's reads are at $0.20 to
+7 October and $0.10 after. Cache reads are the biggest line for six of the nine models. Fable
+5.1 is the clearest exception: its reads cost a fortieth of its input price.
+
 ## Where the price change shows
 
 Sessions of mine fetched the pricing page on 28 September and 2 October, and both times it
 listed Sonnet 5.5 cache hits at $0.20. The Wayback Machine's copies still show $0.20 at 10:00 UTC
 on 7 October. By 21:15 UTC that day the footnote included Sonnet 5.5 in the 0.05× rate, and by
-04:32 UTC on 8 October the table said $0.10. My Lens rate table switches on 12 October, so
-Sonnet 5.5 reads from 8 to 11 October are priced a little high in the weekly table.
+04:32 UTC on 8 October the table said $0.10. When I made the weekly table, my Lens rate table
+switched on 12 October, so Sonnet 5.5 reads from 8 to 11 October are priced a little high there;
+it switches on the 8th now, as in the table by model.
 Sonnet 5.5 is 1.2% of my spend, so it barely moves.
 
 ## What it comes to

@@ -166,7 +166,11 @@
   "plan": "Claude Max 20x",
   "usd_per_month": 200.0,
   "price_source": "https://support.claude.com/en/articles/11049741-what-is-the-max-plan",
-  "usd_per_week_equivalent": 46.15
+  "usd_per_week_equivalent": 46.15,
+  "since": "2026-07-05 (upgraded from Claude Pro; renews on the 5th of each month)",
+  "billing_months_started_by_2026-10-24": 4,
+  "usd_paid_before_tax_approx": 800,
+  "aaron_says": "maxed out the weekly limit most weeks"
  },
  "weeks_wed_to_tue": [
   {
@@ -1141,5 +1145,139 @@
   },
   "session_totals_usd_2026-10-01_to_10-23": "1.62 to 3.01 (orchestrator plus subagent)",
   "opus_pair": "none found: every run's subagent was Sonnet (Sonnet 5 until late September, then Sonnet 5.5)"
+ },
+ "by_model_lifetime": {
+  "measured": "2026-10-24 evening (Lens had $13 more than the figure in the post's opening)",
+  "notes": "output includes thinking; cache_write = 5-minute + 1-hour writes; usd at pricing-page list rates; Sonnet 5.5 cache reads $0.20/MTok to 2026-10-07, $0.10 from 2026-10-08",
+  "rows": [
+   {
+    "model": "Opus 5.5",
+    "input": 260447,
+    "output": 116787129,
+    "cache_write": 952582576,
+    "cache_read": 35480624668,
+    "usd_input": 1.04,
+    "usd_output": 2335.74,
+    "usd_cache_write": 5127.28,
+    "usd_cache_read": 7096.12,
+    "usd_total": 14560.19,
+    "note": ""
+   },
+   {
+    "model": "Fable 5",
+    "input": 415829,
+    "output": 15947653,
+    "cache_write": 105822081,
+    "cache_read": 3817828467,
+    "usd_input": 4.16,
+    "usd_output": 797.38,
+    "usd_cache_write": 1914.37,
+    "usd_cache_read": 3817.83,
+    "usd_total": 6533.74,
+    "note": ""
+   },
+   {
+    "model": "Opus 5",
+    "input": 330277,
+    "output": 39934370,
+    "cache_write": 162290432,
+    "cache_read": 7079340657,
+    "usd_input": 1.65,
+    "usd_output": 998.36,
+    "usd_cache_write": 1183.67,
+    "usd_cache_read": 3539.67,
+    "usd_total": 5723.35,
+    "note": ""
+   },
+   {
+    "model": "Fable 5.1",
+    "input": 788366,
+    "output": 14459718,
+    "cache_write": 83552114,
+    "cache_read": 1953295585,
+    "usd_input": 7.88,
+    "usd_output": 722.99,
+    "usd_cache_write": 1277.99,
+    "usd_cache_read": 488.32,
+    "usd_total": 2497.18,
+    "note": ""
+   },
+   {
+    "model": "Sonnet 5",
+    "input": 244890,
+    "output": 24082048,
+    "cache_write": 128890698,
+    "cache_read": 5272777673,
+    "usd_input": 0.49,
+    "usd_output": 240.82,
+    "usd_cache_write": 343.04,
+    "usd_cache_read": 1054.56,
+    "usd_total": 1638.91,
+    "note": ""
+   },
+   {
+    "model": "Sonnet 5.5",
+    "input": 8886,
+    "output": 6907359,
+    "cache_write": 28187418,
+    "cache_read": 1154032969,
+    "usd_input": 0.02,
+    "usd_output": 69.07,
+    "usd_cache_write": 95.71,
+    "usd_cache_read": 212.08,
+    "usd_total": 376.88,
+    "note": "reads split $0.20/$0.10 at 8 Oct"
+   },
+   {
+    "model": "Opus 4.8",
+    "input": 37630,
+    "output": 219641,
+    "cache_write": 3102880,
+    "cache_read": 31656048,
+    "usd_input": 0.19,
+    "usd_output": 5.49,
+    "usd_cache_write": 22.91,
+    "usd_cache_read": 15.83,
+    "usd_total": 44.42,
+    "note": ""
+   },
+   {
+    "model": "Haiku 4.5",
+    "input": 14861,
+    "output": 1023823,
+    "cache_write": 7110469,
+    "cache_read": 95910384,
+    "usd_input": 0.01,
+    "usd_output": 5.12,
+    "usd_cache_write": 8.89,
+    "usd_cache_read": 9.59,
+    "usd_total": 23.61,
+    "note": ""
+   },
+   {
+    "model": "Haiku 5.5",
+    "input": 1284,
+    "output": 997796,
+    "cache_write": 7090507,
+    "cache_read": 73681052,
+    "usd_input": 0.0,
+    "usd_output": 0.5,
+    "usd_cache_write": 0.9,
+    "usd_cache_read": 0.74,
+    "usd_total": 2.14,
+    "note": ""
+   }
+  ],
+  "total": {
+   "input": 2102470,
+   "output": 220359537,
+   "cache_write": 1478629175,
+   "cache_read": 54959147503,
+   "usd_input": 15.45,
+   "usd_output": 5175.47,
+   "usd_cache_write": 9974.75,
+   "usd_cache_read": 16234.74,
+   "usd_total": 31400.42
+  }
  }
 }
