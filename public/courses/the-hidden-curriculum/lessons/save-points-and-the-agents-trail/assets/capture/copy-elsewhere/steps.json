@@ -1,0 +1,42 @@
+{
+ "mode": "terminal",
+ "shell": "bash",
+ "cwd_display": "C:\\Users\\you\\notes-site",
+ "timeout": 60,
+ "commands": [
+  "git init -b main",
+  "echo \"notes\" > notes.txt",
+  "git add notes.txt",
+  "git commit -m \"First save point\"",
+  "git remote -v",
+  "git init --bare -q -b main ../station.git",
+  "ls -d ../*.git",
+  "git remote add origin ../station.git",
+  "git push -u origin main",
+  "echo \"more\" >> notes.txt",
+  "git commit -am \"Second save point\"",
+  "git status",
+  "git remote -v"
+ ],
+ "marks": {
+  "_about": "terminal captures have no mark steps: scenes box these lines with K.termReplay marks (match), timed on K.termTimes('copy-elsewhere', o).items[i]; the card under the window reads 'a local folder standing in for GitHub'; the stand-in remote is a sibling folder (../station.git), outside the project folder, so deleting the project would not take it (re-captured 2026-10-24); items 3 and 10 stay the two commits (00-shared capId)",
+  "no-copy": {
+   "item": 4,
+   "match": "git remote -v",
+   "text": "no copy elsewhere",
+   "note": "the command prints nothing: box the command line itself (or the empty prompt after it) at items[4].done"
+  },
+  "only-here": {
+   "item": 11,
+   "match": "ahead of 'origin/main' by 1 commit",
+   "text": "only on this machine",
+   "scene": "06"
+  },
+  "now-one": {
+   "item": 12,
+   "match": "(push)",
+   "text": "now there is one",
+   "scene": "06"
+  }
+ }
+}

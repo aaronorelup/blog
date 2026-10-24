@@ -396,7 +396,10 @@
    *  titleSize: title px (default 22; pass 26 where the course minimum applies). stroke: outline colour
    *  (default C.head when focused, else C.line2), so look-alike windows need no hand-drawn outline.
    *  url (any kind, meant for 'browser'): draws a 60 px address bar under the title bar (lock + mono 26 px
-   *  address); the returned content rect starts below it. o.urlLock: false hides the lock. */
+   *  address); the returned content rect starts below it. o.urlLock: false hides the lock.
+   *  icon: a K.icon name drawn in place of the kind's title-bar glyph (iconColor, default C.soft); the title text
+   *  still comes from o.title, so a scene can swap the icon without redrawing the title. buttons: false hides the
+   *  minimise / maximise / close buttons. */
   const URL_BAR = 60;
   K.win = (x, y, w, h, o = {}) => {
     const bar = 50;
@@ -406,14 +409,17 @@
       g.fillStyle = C.tile; g.fillRect(x, y, w, bar);
       K.line(x, y + bar, x + w, y + bar, { color: C.line, w: 1.5 });
       g.restore();
-      g.save(); g.strokeStyle = C.soft; g.lineWidth = 1.8; (glyph[o.kind] || glyph.notepad)(x + 30, y + bar / 2); g.restore();
+      if (o.icon) K.icon(o.icon, x + 30, y + bar / 2, 30, { color: o.iconColor || C.soft, w: 2 });
+      else { g.save(); g.strokeStyle = C.soft; g.lineWidth = 1.8; (glyph[o.kind] || glyph.notepad)(x + 30, y + bar / 2); g.restore(); }
       const ts = o.titleSize || 22;
       const compact = o.compact && o.url != null;
       if (!compact) K.text(o.title || '', x + 56, y + bar / 2 + 8 + (ts - 22) * 0.36, { size: ts, color: C.body, weight: 600 });
       const gx = x + w - 34;
-      K.line(gx - 7, y + 18, gx + 7, y + 32, { color: C.soft, w: 2 }); K.line(gx + 7, y + 18, gx - 7, y + 32, { color: C.soft, w: 2 });
-      g.save(); g.strokeStyle = C.soft; g.lineWidth = 2; g.strokeRect(gx - 57, y + 18, 13, 13); g.restore();
-      K.line(gx - 106, y + 25, gx - 92, y + 25, { color: C.soft, w: 2 });
+      if (o.buttons !== false) {
+        K.line(gx - 7, y + 18, gx + 7, y + 32, { color: C.soft, w: 2 }); K.line(gx + 7, y + 18, gx - 7, y + 32, { color: C.soft, w: 2 });
+        g.save(); g.strokeStyle = C.soft; g.lineWidth = 2; g.strokeRect(gx - 57, y + 18, 13, 13); g.restore();
+        K.line(gx - 106, y + 25, gx - 92, y + 25, { color: C.soft, w: 2 });
+      }
       if (compact) {
         // o.compact: the address pill sits in the title bar itself (one 50 px bar, like a real browser), no title text
         const px = x + 62, pw = w - 62 - 150, ph = 38, py = y + (bar - ph) / 2;
@@ -1532,7 +1538,9 @@
     K.layer(o.alpha ?? 1, () => drawTerm(c, sch, r, t, o));
     return sch;
   };
-  const drawTerm = (c, sch, r, t, o) => {
+  // the replay's visible rows at capture time t (no drawing): shared by drawTerm and K.termRows, so a scene that
+  // hangs its own boxes or links on a line uses exactly the rows the replay draws
+  const termLayout = (c, sch, r, t, o) => {
     const size = o.size || 30, lh = o.lh || size * 1.45, pad = o.pad ?? 30;
     const cw = K.measure('M', { font: 'mono', size }), cols = Math.max(10, Math.floor((r.w - pad * 2) / cw));
     const blank = o.blank ?? (c.shell === 'cmd');
@@ -1568,27 +1576,59 @@
     const maxRows = Math.max(1, Math.floor((r.h - pad * 2 + (lh - size)) / lh));
     const first = Math.max(0, rows.length - maxRows);
     const shown = rows.slice(first);
+    return { size, lh, pad, cw, cols, first, shown, caretRow, typingNow };
+  };
+  // the newest visible row matching `match` ('text' | /regex/): {i, from, len, rowLen} (i indexes the visible rows)
+  const termFind = (shown, match) => {
+    let hit = null;
+    shown.forEach((row, i) => {
+      const s = row.map((p) => p.s).join('');
+      const m = match instanceof RegExp ? match.exec(s) : (s.indexOf(match) >= 0 ? { index: s.indexOf(match), 0: match } : null);
+      if (m) hit = { i, from: m.index, len: m[0].length, rowLen: s.length };
+    });
+    return hit;
+  };
+  /**
+   * the rows a K.termReplay(rect, t, name, o) draws at capture time t, without drawing (same rect, t, name, o):
+   * {size, lh, pad, cw, cols, rows: [{i, s, x, y, top, h, endX}], find(match, {padX})}. y is the text baseline,
+   * top/h the row's band (a mark box's), endX where the row's text ends. find('text' | /regex/) returns the newest
+   * visible matching row as {i, s, from, len, x, w, y, endX, bx, by, bw, bh} (x/w: the matched characters; bx..bh:
+   * the box a mark draws, padX 10 px each side by default), or null. For hand-drawn boxes, links and labels.
+   */
+  K.termRows = (rect, t, name, o = {}) => {
+    const c = K.capture(name);
+    const r = Array.isArray(rect) ? { x: rect[0], y: rect[1], w: rect[2], h: rect[3] } : rect;
+    if (!c || c.kind !== 'terminal') return { rows: [], find: () => null };
+    const L = termLayout(c, termSchedule(c, o), r, t, o), { size, lh, pad, cw } = L;
+    const rows = L.shown.map((row, i) => {
+      const s = row.map((p) => p.s).join(''), y = r.y + pad + size * 0.85 + i * lh;
+      return { i, s, x: r.x + pad, y, top: y - size * 0.98, h: size * 1.4, endX: r.x + pad + s.length * cw };
+    });
+    const find = (match, fo = {}) => {
+      const hit = termFind(L.shown, match); if (!hit) return null;
+      const row = rows[hit.i], px = fo.padX ?? 10, x = r.x + pad + hit.from * cw, w = hit.len * cw;
+      return { i: hit.i, s: row.s, from: hit.from, len: hit.len, x, w, y: row.y, endX: row.endX, bx: x - px, by: row.top, bw: w + px * 2, bh: row.h };
+    };
+    return { size, lh, pad, cw, cols: L.cols, rows, find };
+  };
+  const drawTerm = (c, sch, r, t, o) => {
+    const { size, lh, pad, cw, first, shown, caretRow, typingNow } = termLayout(c, sch, r, t, o);
     shown.forEach((row, i) => {
       const yy = r.y + pad + size * 0.85 + i * lh;
       let xx = r.x + pad;
       row.forEach((p) => { xx += K.text(p.s, xx, yy, { font: 'mono', size, color: p.color }); });
       if (first + i === caretRow && (typingNow || K.caretOn(t))) { g.save(); g.fillStyle = C.strong; g.fillRect(xx + 3, yy - size * 0.8, size * 0.55, size * 0.98); g.restore(); }
     });
-    // o.marks: [{at, until | dur, match: 'text' | /regex/, text, side: 'above'|'below', labelAt: [x, y]}] box the
+    // o.marks: [{at, until | dur, match: 'text' | /regex/, text, side: 'above'|'below'|'right', labelAt: [x, y], padX}] box the
     // newest visible line that matches, with a label (beside the line when it leaves room, else under the box)
     (o.marks || []).forEach((mk) => {
       const until = mk.until ?? mk.at + (mk.dur ?? 2.8);
       const kIn = K.io(t, mk.at, 0.6, 'out'), kOut = K.io(t, until, 0.45, 'in');
       if (kIn * (1 - kOut) <= 0.002) return;
-      let hit = null;
-      shown.forEach((row, i) => {
-        const s = row.map((p) => p.s).join('');
-        const m = mk.match instanceof RegExp ? mk.match.exec(s) : (s.indexOf(mk.match) >= 0 ? { index: s.indexOf(mk.match), 0: mk.match } : null);
-        if (m) hit = { i, from: m.index, len: m[0].length, rowLen: s.length };
-      });
+      const hit = termFind(shown, mk.match);
       if (!hit) return;
-      const yy = r.y + pad + size * 0.85 + hit.i * lh;
-      const bx = r.x + pad + hit.from * cw - 10, bw = hit.len * cw + 20, by = yy - size * 0.98, bh = size * 1.4;
+      const yy = r.y + pad + size * 0.85 + hit.i * lh, px = mk.padX ?? 10;
+      const bx = r.x + pad + hit.from * cw - px, bw = hit.len * cw + px * 2, by = yy - size * 0.98, bh = size * 1.4;
       g.save(); g.globalAlpha *= 1 - kOut;
       const per = 2 * (bw + bh);
       g.setLineDash([per * kIn, per]); g.lineWidth = 3.5; g.strokeStyle = C.head; g.shadowColor = K.rgba(C.head, 0.5); g.shadowBlur = 14;
@@ -1598,7 +1638,8 @@
         // beside the line when the whole line leaves room, else just under the box (never over the line's own text)
         // mk.side 'above' / 'below' forces a side (above keeps the next output line clear when the line fills the
         // width); mk.labelAt [x, y] puts the label's top-left corner anywhere (e.g. in the title bar)
-        const endX = r.x + pad + hit.rowLen * cw, right = !mk.side && endX + 28 + pw < r.x + r.w - 16;
+        // mk.side 'right' forces the label beside the line's end even when it runs past the window edge
+        const endX = r.x + pad + hit.rowLen * cw, right = mk.side === 'right' || (!mk.side && endX + 28 + pw < r.x + r.w - 16);
         const lx = mk.labelAt ? mk.labelAt[0] : right ? endX + 28 : K.clamp(bx, r.x + 16, r.x + r.w - pw - 16);
         const ly = mk.labelAt ? mk.labelAt[1] : right ? by + bh / 2 - ph / 2 : mk.side === 'above' ? by - ph - 8 : by + bh + 8;
         const kl = K.io(t, mk.at + 0.25, 0.5, 'out') * (1 - kOut);

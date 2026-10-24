@@ -1,0 +1,140 @@
+{
+ "version": 1,
+ "kind": "terminal",
+ "recorded": "2026-10-23",
+ "tool": "tools/capture.py terminal",
+ "shell": "bash",
+ "cwd_display": "C:\\Users\\you\\demo-site",
+ "commands": [
+  {
+   "cmd": "git init -b main",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.052,
+   "out": [
+    [
+     0.049,
+     "Initialized empty Git repository in C:/Users/you/demo-site/.git/",
+     "out"
+    ]
+   ]
+  },
+  {
+   "cmd": "printf \"<h1>Helo</h1>\\n\" > index.html",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.017,
+   "out": []
+  },
+  {
+   "cmd": "printf \"branch: main\\n\" > deploy.yml",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.017,
+   "out": []
+  },
+  {
+   "cmd": "git add .",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.04,
+   "out": []
+  },
+  {
+   "cmd": "git commit -m \"Site as it was\"",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.058,
+   "out": [
+    [
+     0.055,
+     "[main (root-commit) f4c7e1d] Site as it was",
+     "out"
+    ],
+    [
+     0.055,
+     " 2 files changed, 2 insertions(+)",
+     "out"
+    ],
+    [
+     0.055,
+     " create mode 100644 deploy.yml",
+     "out"
+    ],
+    [
+     0.055,
+     " create mode 100644 index.html",
+     "out"
+    ]
+   ]
+  },
+  {
+   "cmd": "git switch -c fix/typo",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.043,
+   "out": [
+    [
+     0.04,
+     "Switched to a new branch 'fix/typo'",
+     "err"
+    ]
+   ]
+  },
+  {
+   "cmd": "sed -i \"s/Helo/Hello/\" index.html",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.029,
+   "out": []
+  },
+  {
+   "cmd": "echo \"branch: fix/typo\" >> deploy.yml",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.017,
+   "out": []
+  },
+  {
+   "cmd": "git commit -am \"Fix typo on homepage\"",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.062,
+   "out": [
+    [
+     0.059,
+     "[fix/typo 7ab161c] Fix typo on homepage",
+     "out"
+    ],
+    [
+     0.059,
+     " 2 files changed, 2 insertions(+), 1 deletion(-)",
+     "out"
+    ]
+   ]
+  },
+  {
+   "cmd": "git diff --stat main",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.043,
+   "out": [
+    [
+     0.04,
+     " deploy.yml | 1 +",
+     "out"
+    ],
+    [
+     0.04,
+     " index.html | 2 +-",
+     "out"
+    ],
+    [
+     0.04,
+     " 2 files changed, 2 insertions(+), 1 deletion(-)",
+     "out"
+    ]
+   ]
+  }
+ ]
+}

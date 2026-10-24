@@ -1,0 +1,193 @@
+{
+ "version": 1,
+ "kind": "terminal",
+ "recorded": "2026-10-24",
+ "tool": "tools/capture.py terminal",
+ "shell": "bash",
+ "cwd_display": "C:\\Users\\you\\notes-site",
+ "commands": [
+  {
+   "cmd": "git init -b main",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.048,
+   "out": [
+    [
+     0.045,
+     "Initialized empty Git repository in C:/Users/you/notes-site/.git/",
+     "out"
+    ]
+   ]
+  },
+  {
+   "cmd": "echo \"notes\" > notes.txt",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.018,
+   "out": []
+  },
+  {
+   "cmd": "git add notes.txt",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.042,
+   "out": []
+  },
+  {
+   "cmd": "git commit -m \"First save point\"",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.059,
+   "out": [
+    [
+     0.056,
+     "[main (root-commit) ed214fa] First save point",
+     "out"
+    ],
+    [
+     0.056,
+     " 1 file changed, 1 insertion(+)",
+     "out"
+    ],
+    [
+     0.056,
+     " create mode 100644 notes.txt",
+     "out"
+    ]
+   ]
+  },
+  {
+   "cmd": "git remote -v",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.036,
+   "out": []
+  },
+  {
+   "cmd": "git init --bare -q -b main ../station.git",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.049,
+   "out": []
+  },
+  {
+   "cmd": "ls -d ../*.git",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.024,
+   "out": [
+    [
+     0.022,
+     "../station.git",
+     "out"
+    ]
+   ]
+  },
+  {
+   "cmd": "git remote add origin ../station.git",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.037,
+   "out": []
+  },
+  {
+   "cmd": "git push -u origin main",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.159,
+   "out": [
+    [
+     0.156,
+     "branch 'main' set up to track 'origin/main'.",
+     "out"
+    ],
+    [
+     0.156,
+     "To ../station.git",
+     "err"
+    ],
+    [
+     0.156,
+     " * [new branch]      main -> main",
+     "err"
+    ]
+   ]
+  },
+  {
+   "cmd": "echo \"more\" >> notes.txt",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.018,
+   "out": []
+  },
+  {
+   "cmd": "git commit -am \"Second save point\"",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.061,
+   "out": [
+    [
+     0.058,
+     "[main 5c266db] Second save point",
+     "out"
+    ],
+    [
+     0.058,
+     " 1 file changed, 1 insertion(+)",
+     "out"
+    ]
+   ]
+  },
+  {
+   "cmd": "git status",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.04,
+   "out": [
+    [
+     0.037,
+     "On branch main",
+     "out"
+    ],
+    [
+     0.037,
+     "Your branch is ahead of 'origin/main' by 1 commit.",
+     "out"
+    ],
+    [
+     0.037,
+     "  (use \"git push\" to publish your local commits)",
+     "out"
+    ],
+    [
+     0.037,
+     "",
+     "out"
+    ],
+    [
+     0.037,
+     "nothing to commit, working tree clean",
+     "out"
+    ]
+   ]
+  },
+  {
+   "cmd": "git remote -v",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.036,
+   "out": [
+    [
+     0.033,
+     "origin  ../station.git (fetch)",
+     "out"
+    ],
+    [
+     0.033,
+     "origin  ../station.git (push)",
+     "out"
+    ]
+   ]
+  }
+ ]
+}

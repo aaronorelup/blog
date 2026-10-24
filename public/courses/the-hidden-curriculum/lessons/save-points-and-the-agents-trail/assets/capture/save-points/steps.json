@@ -1,0 +1,51 @@
+{
+ "mode": "terminal",
+ "shell": "bash",
+ "cwd_display": "C:\\Users\\you\\demo-site",
+ "timeout": 60,
+ "commands": [
+  "git init -b main",
+  "echo \"<h1>Hello</h1>\" > index.html",
+  "git add index.html",
+  "git commit -m \"Add homepage\"",
+  "echo \"<p>About</p>\" > about.html",
+  "git add about.html",
+  "git commit -m \"Add about page\"",
+  "git switch -c feature/contact",
+  "echo \"<p>Contact</p>\" > contact.html",
+  "git add contact.html",
+  "git commit -m \"Add contact page\"",
+  "echo \"<p>Phone</p>\" >> contact.html",
+  "git commit -am \"Add phone number\"",
+  "git switch main",
+  "git merge --no-ff feature/contact -m \"Merge contact page\"",
+  "git log --graph --oneline --decorate --all"
+ ],
+ "marks": {
+  "_about": "terminal captures have no mark steps: scenes box these lines with K.termReplay marks (match), timed on K.termTimes('save-points', o).items[i]",
+  "save-point-1": {
+   "item": 3,
+   "match": "(root-commit)",
+   "text": "save point 1",
+   "scene": "04"
+  },
+  "save-point-2": {
+   "item": 6,
+   "match": "Add about page",
+   "text": "save point 2",
+   "scene": "04"
+  },
+  "on-main": {
+   "item": 15,
+   "match": "HEAD -> main",
+   "text": "you are on main",
+   "scene": "05"
+  },
+  "side-trail": {
+   "item": 15,
+   "match": "feature/contact",
+   "text": "the side trail's signpost",
+   "scene": "05"
+  }
+ }
+}

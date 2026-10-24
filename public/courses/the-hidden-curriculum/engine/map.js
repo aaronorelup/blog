@@ -412,7 +412,7 @@
         lantern(t, i, { y: y0 - (1 - ld) * 90, lit: lanternK(i), sway: sm, alpha: ld * (1 - lh), glowK: boost });
       }
       K.layer(o.lanternLabels ?? 1, () => {
-        const eb = { size: TYPE.aiEyebrow, weight: 600, tracking: 3, upper: true };
+        const eb = { size: TYPE.aiEyebrow, weight: 600, tracking: 3, upper: true, font: 'ui' };   // font: measured in the face it is drawn in
         K.eyebrow(LANTERNS.name + ' · AI', LANTERNS.x0, y + 66, { ...eb, color: C.head });
         K.text(LANTERNS.q, LANTERNS.x0 + K.measure(LANTERNS.name + ' · AI', eb) + 24, y + 66, { size: TYPE.aiQ, color: C.body, font: 'ui' });
       });

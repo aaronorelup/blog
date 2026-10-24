@@ -1,0 +1,256 @@
+{
+ "version": 1,
+ "kind": "terminal",
+ "recorded": "2026-10-23",
+ "tool": "tools/capture.py terminal",
+ "shell": "bash",
+ "cwd_display": "C:\\Users\\you\\demo-site",
+ "commands": [
+  {
+   "cmd": "git init -b main",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.053,
+   "out": [
+    [
+     0.05,
+     "Initialized empty Git repository in C:/Users/you/demo-site/.git/",
+     "out"
+    ]
+   ]
+  },
+  {
+   "cmd": "echo \"<h1>Hello</h1>\" > index.html",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.017,
+   "out": []
+  },
+  {
+   "cmd": "git add index.html",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.04,
+   "out": []
+  },
+  {
+   "cmd": "git commit -m \"Add homepage\"",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.061,
+   "out": [
+    [
+     0.058,
+     "[main (root-commit) e433343] Add homepage",
+     "out"
+    ],
+    [
+     0.058,
+     " 1 file changed, 1 insertion(+)",
+     "out"
+    ],
+    [
+     0.058,
+     " create mode 100644 index.html",
+     "out"
+    ]
+   ]
+  },
+  {
+   "cmd": "echo \"<p>About</p>\" > about.html",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.017,
+   "out": []
+  },
+  {
+   "cmd": "git add about.html",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.04,
+   "out": []
+  },
+  {
+   "cmd": "git commit -m \"Add about page\"",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.064,
+   "out": [
+    [
+     0.061,
+     "[main 498e3ca] Add about page",
+     "out"
+    ],
+    [
+     0.061,
+     " 1 file changed, 1 insertion(+)",
+     "out"
+    ],
+    [
+     0.061,
+     " create mode 100644 about.html",
+     "out"
+    ]
+   ]
+  },
+  {
+   "cmd": "git switch -c feature/contact",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.044,
+   "out": [
+    [
+     0.041,
+     "Switched to a new branch 'feature/contact'",
+     "err"
+    ]
+   ]
+  },
+  {
+   "cmd": "echo \"<p>Contact</p>\" > contact.html",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.02,
+   "out": []
+  },
+  {
+   "cmd": "git add contact.html",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.043,
+   "out": []
+  },
+  {
+   "cmd": "git commit -m \"Add contact page\"",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.059,
+   "out": [
+    [
+     0.057,
+     "[feature/contact 8106e94] Add contact page",
+     "out"
+    ],
+    [
+     0.057,
+     " 1 file changed, 1 insertion(+)",
+     "out"
+    ],
+    [
+     0.057,
+     " create mode 100644 contact.html",
+     "out"
+    ]
+   ]
+  },
+  {
+   "cmd": "echo \"<p>Phone</p>\" >> contact.html",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.016,
+   "out": []
+  },
+  {
+   "cmd": "git commit -am \"Add phone number\"",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.066,
+   "out": [
+    [
+     0.063,
+     "[feature/contact f2fa359] Add phone number",
+     "out"
+    ],
+    [
+     0.063,
+     " 1 file changed, 1 insertion(+)",
+     "out"
+    ]
+   ]
+  },
+  {
+   "cmd": "git switch main",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.046,
+   "out": [
+    [
+     0.043,
+     "Switched to branch 'main'",
+     "err"
+    ]
+   ]
+  },
+  {
+   "cmd": "git merge --no-ff feature/contact -m \"Merge contact page\"",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.076,
+   "out": [
+    [
+     0.058,
+     "Merge made by the 'ort' strategy.",
+     "out"
+    ],
+    [
+     0.073,
+     " contact.html | 2 ++",
+     "out"
+    ],
+    [
+     0.073,
+     " 1 file changed, 2 insertions(+)",
+     "out"
+    ],
+    [
+     0.073,
+     " create mode 100644 contact.html",
+     "out"
+    ]
+   ]
+  },
+  {
+   "cmd": "git log --graph --oneline --decorate --all",
+   "prompt": "$ ",
+   "exit": 0,
+   "dur": 0.038,
+   "out": [
+    [
+     0.035,
+     "*   0839e49 (HEAD -> main) Merge contact page",
+     "out"
+    ],
+    [
+     0.035,
+     "|\\  ",
+     "out"
+    ],
+    [
+     0.035,
+     "| * f2fa359 (feature/contact) Add phone number",
+     "out"
+    ],
+    [
+     0.035,
+     "| * 8106e94 Add contact page",
+     "out"
+    ],
+    [
+     0.035,
+     "|/  ",
+     "out"
+    ],
+    [
+     0.035,
+     "* 498e3ca Add about page",
+     "out"
+    ],
+    [
+     0.035,
+     "* e433343 Add homepage",
+     "out"
+    ]
+   ]
+  }
+ ]
+}

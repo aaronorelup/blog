@@ -1,10 +1,10 @@
 {
  "slug": "the-hidden-curriculum",
  "title": "The Hidden Curriculum",
- "updated": "2026-10-14",
+ "updated": "2026-10-24",
  "totalLessons": 48,
- "publishedLessons": 13,
- "runtimeSeconds": 7573,
+ "publishedLessons": 14,
+ "runtimeSeconds": 8208,
  "moduleCount": 11,
  "districtCount": 6,
  "regions": [
@@ -377,7 +377,14 @@
      "id": "01.03",
      "title": "Git without typing it: save points and the agent's trail",
      "idea": "Git gives you save points (commits), parallel lines (branches) and a copy that lives elsewhere (the remote), and the agent types every command; your part is recognition: read its trail for the verb and the target, check the diff and which branch is live, and notice anything it touched that you never named.",
-     "status": "locked",
+     "status": "published",
+     "slug": "save-points-and-the-agents-trail",
+     "url": "/courses/the-hidden-curriculum/lessons/save-points-and-the-agents-trail/",
+     "duration": 635.1,
+     "summary": "The agent types every git command, so your part is recognition: know that a save point and a copy elsewhere exist, which branch is live, what the diff changed, and whether it touched anything you never named.",
+     "published": "2026-10-24",
+     "narrator": "Adrian",
+     "poster": "/courses/the-hidden-curriculum/lessons/save-points-and-the-agents-trail/poster.jpg",
      "key": "save-points-and-the-agents-trail"
     },
     {
@@ -415,7 +422,7 @@
      "legacyId": "01.02"
     }
    ],
-   "filed": 7
+   "filed": 8
   },
   {
    "n": "02",
@@ -730,19 +737,18 @@
   }
  ],
  "latest": {
-  "id": "01.02",
-  "title": "Where your agent works",
-  "idea": "Chat, Cowork, desktop apps and terminal agents can share a model but differ in what they can reach, which machine the work runs on (yours, a VM, a container, a cloud box) and where your files go; the terminal is just a window where a shell runs commands as you, so pick the surface by the output you need and check where the data goes before you hand it anything private.",
-  "lantern": true,
+  "id": "01.03",
+  "title": "Git without typing it: save points and the agent's trail",
+  "idea": "Git gives you save points (commits), parallel lines (branches) and a copy that lives elsewhere (the remote), and the agent types every command; your part is recognition: read its trail for the verb and the target, check the diff and which branch is live, and notice anything it touched that you never named.",
   "status": "published",
-  "slug": "where-your-agent-works",
-  "url": "/courses/the-hidden-curriculum/lessons/where-your-agent-works/",
-  "duration": 678.5,
-  "summary": "The same model can sit behind chat, Cowork, desktop apps and terminal agents, so pick the surface by the output and what it must reach, and before anything private goes in, check which computer runs the work and where your files and chats go.",
-  "published": "2026-10-14",
-  "narrator": "RClayton",
-  "poster": "/courses/the-hidden-curriculum/lessons/where-your-agent-works/poster.jpg",
-  "key": "where-your-agent-works"
+  "slug": "save-points-and-the-agents-trail",
+  "url": "/courses/the-hidden-curriculum/lessons/save-points-and-the-agents-trail/",
+  "duration": 635.1,
+  "summary": "The agent types every git command, so your part is recognition: know that a save point and a copy elsewhere exist, which branch is live, what the diff changed, and whether it touched anything you never named.",
+  "published": "2026-10-24",
+  "narrator": "Adrian",
+  "poster": "/courses/the-hidden-curriculum/lessons/save-points-and-the-agents-trail/poster.jpg",
+  "key": "save-points-and-the-agents-trail"
  },
  "first": {
   "id": "00.01",

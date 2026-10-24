@@ -1,0 +1,35 @@
+{
+ "mode": "terminal",
+ "shell": "bash",
+ "cwd_display": "C:\\Users\\you\\demo-site",
+ "timeout": 60,
+ "commands": [
+  "git init -b main",
+  "printf \"<h1>Helo</h1>\\n\" > index.html",
+  "printf \"branch: main\\n\" > deploy.yml",
+  "git add .",
+  "git commit -m \"Site as it was\"",
+  "git switch -c fix/typo",
+  "sed -i \"s/Helo/Hello/\" index.html",
+  "echo \"branch: fix/typo\" >> deploy.yml",
+  "git commit -am \"Fix typo on homepage\"",
+  "git diff --stat main"
+ ],
+ "marks": {
+  "_about": "terminal captures have no mark steps: scenes box these lines with K.termReplay marks (match), timed on K.termTimes('changed-files', o).items[9]",
+  "stray": {
+   "item": 9,
+   "match": "deploy.yml",
+   "text": "the file you never asked about",
+   "color": "accent",
+   "scene": "08"
+  },
+  "asked": {
+   "item": 9,
+   "match": "index.html",
+   "text": "the file you asked about",
+   "color": "gold",
+   "scene": "08"
+  }
+ }
+}
