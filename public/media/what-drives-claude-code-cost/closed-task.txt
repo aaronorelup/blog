@@ -1,0 +1,78 @@
+The closed-task test of 2026-10-24 (AO-065), exactly as the six subagents got it.
+Each ran as a Claude Code subagent (general-purpose type) with model opus or sonnet and effort low, medium or high, in its own copy of this folder.
+
+===== PROMPT (folder path shortened to <folder>) =====
+Closed task. Follow these steps exactly and do nothing else.
+
+Folder: <folder>
+
+1. Read SPEC.md and test_duration.py in that folder.
+2. Write duration.py in that folder, implementing parse_duration exactly as SPEC.md says.
+3. Run the tests with Bash: python -I "<folder>/test_duration.py"
+4. If anything fails, fix duration.py and run the tests again, until the output is ALL 39 PASSED.
+
+Do not edit the test file, create any other file, read anything outside that folder, load skills, or start agents. When the tests pass, reply with one line: DONE, then the number of times you ran the tests.
+
+===== SPEC.md =====
+# parse_duration
+
+Write `duration.py` with one function, `parse_duration(text: str) -> int`, that returns a
+length of time in whole seconds. It accepts exactly four formats and raises `ValueError` for
+anything else.
+
+1. **Plain seconds.** One or more digits: `"45"` is 45.
+2. **Units.** One or more groups of `<digits><unit>`, units `d` (86400), `h` (3600),
+   `m` (60), `s` (1), case-insensitive. Groups may be separated by one space or nothing.
+   Each unit appears at most once, and units must appear in the order d, h, m, s.
+   `"1h30m"`, `"1h 30m"` and `"2D 5S"` are valid; `"30m1h"`, `"1h1h"` and `"1h  30m"`
+   (two spaces) are not.
+3. **Clock.** `M:SS` or `H:MM:SS`. `H` and `M` are one or more digits; `MM` and `SS` are
+   exactly two digits from 00 to 59. `"1:30"` is 90; `"1:02:03"` is 3723; `"1:60"` and
+   `"1:2"` are invalid.
+4. **ISO 8601 subset.** `P`, then optionally `<digits>D`, then optionally `T` followed by
+   one or more of `<digits>H`, `<digits>M`, `<digits>S` in that order. Upper case only.
+   At least one number must appear. `"PT1H30M"` is 5400; `"P1DT2S"` is 86402; `"P"`,
+   `"PT"`, `"P1DT"` and `"pt1h"` are invalid.
+
+Leading and trailing whitespace is ignored. An empty or all-space string is invalid.
+Signs, decimals and any other character make the input invalid. Zero is a valid answer
+(`"0s"` is 0).
+
+===== test_duration.py =====
+import sys
+sys.path.insert(0, __file__.rsplit("\\", 1)[0].rsplit("/", 1)[0])
+from duration import parse_duration
+
+GOOD = [
+    ("45", 45), ("0", 0), ("0s", 0), ("90s", 90), ("2d", 172800), ("1h30m", 5400),
+    ("1h 30m", 5400), ("2D 5S", 172805), ("1d2h3m4s", 93784), ("  7m  ", 420),
+    ("1:30", 90), ("0:05", 5), ("1:02:03", 3723), ("100:00:00", 360000),
+    ("PT1H30M", 5400), ("P1DT2S", 86402), ("P2D", 172800), ("PT0S", 0), ("PT90M", 5400),
+]
+BAD = [
+    "", "   ", "-5", "1.5h", "30m1h", "1h1h", "1h  30m", "1x", "h", "1:60", "1:2",
+    "1:02:3", ":30", "P", "PT", "P1DT", "pt1h", "PT1M1H", "1h30", "P1H",
+]
+
+failed = 0
+for text, want in GOOD:
+    try:
+        got = parse_duration(text)
+    except Exception as e:  # noqa: BLE001
+        got = f"raised {type(e).__name__}"
+    if got != want:
+        failed += 1
+        print(f"FAIL {text!r}: want {want}, got {got}")
+for text in BAD:
+    try:
+        got = parse_duration(text)
+        failed += 1
+        print(f"FAIL {text!r}: want ValueError, got {got!r}")
+    except ValueError:
+        pass
+    except Exception as e:  # noqa: BLE001
+        failed += 1
+        print(f"FAIL {text!r}: want ValueError, got {type(e).__name__}")
+
+total = len(GOOD) + len(BAD)
+print(f"ALL {total} PASSED" if not failed else f"{failed} of {total} FAILED")

@@ -1,0 +1,1145 @@
+{
+ "title": "Seven things I believed about Claude Code costs, checked against $31,000 of my own use (AO-065)",
+ "post": "https://aaronorelup.com/ledger/what-drives-claude-code-cost/",
+ "units": "usd = API-equivalent dollars at list price; tokens are counts; ratios are plain numbers",
+ "measured_on": "2026-10-24",
+ "source": "Playback Lens 0.3.2 (pricing v2026-09-24 plus user rates), reading Claude Code transcripts on one laptop",
+ "pricing": {
+  "page": "https://platform.claude.com/docs/en/about-claude/pricing (read 2026-10-24)",
+  "per_mtok": {
+   "opus-5.5": {
+    "input": 4,
+    "write_5m": 5,
+    "write_1h": 8,
+    "cache_read": 0.2,
+    "output": 20
+   },
+   "sonnet-5.5": {
+    "input": 2,
+    "write_5m": 2.5,
+    "write_1h": 4,
+    "cache_read": 0.1,
+    "output": 10
+   }
+  },
+  "footnote_today": "Cache hits and refreshes on Claude Opus 5.5 and Claude Sonnet 5.5 are priced at 0.05x the base input price.",
+  "sonnet_5_5_cache_read_history": [
+   {
+    "when": "2026-09-28 22:01 and 2026-10-02 13:23",
+    "seen_in": "WebFetch results recorded in my transcripts",
+    "sonnet_cache_read": 0.2
+   },
+   {
+    "when": "2026-10-07 10:00 UTC",
+    "seen_in": "Wayback Machine snapshot",
+    "sonnet_cache_read": 0.2,
+    "footnote": "0.05x on Claude Opus 5.5"
+   },
+   {
+    "when": "2026-10-07 21:15 UTC",
+    "seen_in": "Wayback Machine snapshot",
+    "sonnet_cache_read": 0.2,
+    "footnote": "0.05x on Claude Opus 5.5 and Claude Sonnet 5.5"
+   },
+   {
+    "when": "2026-10-08 04:32 UTC",
+    "seen_in": "Wayback Machine snapshot",
+    "sonnet_cache_read": 0.1
+   },
+   {
+    "when": "2026-10-12 00:59",
+    "seen_in": "a pricing page fetch recorded in my transcripts",
+    "sonnet_cache_read": 0.1
+   },
+   {
+    "when": "2026-10-24",
+    "seen_in": "the live page",
+    "sonnet_cache_read": 0.1
+   }
+  ],
+  "lens_rate_table": "Sonnet 5.5 cache reads $0.20 through 2026-10-11, $0.10 from 2026-10-12. The archive puts the change on the page between 10-07 and 10-08, so 10-08 to 10-11 Sonnet 5.5 reads are priced $0.10/MTok high in the weekly figures (Sonnet 5.5 is 1.2% of all spend)."
+ },
+ "all_time": {
+  "requests": 223024,
+  "sessions": 510,
+  "span": "2026-07-07 to 2026-10-24",
+  "tokens": {
+   "input": 2100000.0,
+   "output": 220200000.0,
+   "cache_write_5m": 1168800000.0,
+   "cache_write_1h": 308000000.0,
+   "cache_read": 54931700000.0,
+   "thinking_recorded": 78357384,
+   "thinking_recorded_on_requests": 165336,
+   "thinking_not_recorded_on_requests": 57691
+  },
+  "usd": {
+   "input": 15.445,
+   "output_incl_thinking": 5173.1686,
+   "cache_write": 9965.0921,
+   "cache_read": 16233.7993,
+   "total": 31387.5049
+  },
+  "share_of_cost": {
+   "input": 0.05,
+   "output_incl_thinking": 16.48,
+   "cache_write": 31.75,
+   "cache_read": 51.72
+  },
+  "share_of_tokens_cache_read": 97.0
+ },
+ "by_model": [
+  {
+   "model": "claude-opus-5-5",
+   "requests": 129068,
+   "usd": 14543.6296,
+   "output_tokens": 116700000.0,
+   "cache_write_tokens": 951100000.0,
+   "cache_read_tokens": 35453800000.0
+  },
+  {
+   "model": "claude-fable-5",
+   "requests": 13248,
+   "usd": 6533.7427,
+   "output_tokens": 15900000.0,
+   "cache_write_tokens": 105800000.0,
+   "cache_read_tokens": 3817800000.0
+  },
+  {
+   "model": "claude-opus-5",
+   "requests": 36206,
+   "usd": 5723.3519,
+   "output_tokens": 39900000.0,
+   "cache_write_tokens": 162300000.0,
+   "cache_read_tokens": 7079300000.0
+  },
+  {
+   "model": "claude-fable-5-1",
+   "requests": 8944,
+   "usd": 2497.1792,
+   "output_tokens": 14500000.0,
+   "cache_write_tokens": 83500000.0,
+   "cache_read_tokens": 1953300000.0
+  },
+  {
+   "model": "claude-sonnet-5",
+   "requests": 28618,
+   "usd": 1638.9078,
+   "output_tokens": 24100000.0,
+   "cache_write_tokens": 128900000.0,
+   "cache_read_tokens": 5272800000.0
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "requests": 4404,
+   "usd": 380.4783,
+   "output_tokens": 6900000.0,
+   "cache_write_tokens": 27900000.0,
+   "cache_read_tokens": 1153200000.0
+  },
+  {
+   "model": "claude-opus-4-8",
+   "requests": 125,
+   "usd": 44.417,
+   "output_tokens": 220000.0,
+   "cache_write_tokens": 3140000.0,
+   "cache_read_tokens": 31700000.0
+  },
+  {
+   "model": "claude-haiku-4-5",
+   "requests": 1767,
+   "usd": 23.6131,
+   "output_tokens": 1000000.0,
+   "cache_write_tokens": 7100000.0,
+   "cache_read_tokens": 95900000.0
+  },
+  {
+   "model": "claude-haiku-5-5",
+   "requests": 640,
+   "usd": 2.1388,
+   "output_tokens": 1000000.0,
+   "cache_write_tokens": 7120000.0,
+   "cache_read_tokens": 73700000.0
+  }
+ ],
+ "subscription": {
+  "plan": "Claude Max 20x",
+  "usd_per_month": 200.0,
+  "price_source": "https://support.claude.com/en/articles/11049741-what-is-the-max-plan",
+  "usd_per_week_equivalent": 46.15
+ },
+ "weeks_wed_to_tue": [
+  {
+   "week": "2026-07-01 to 2026-07-07",
+   "ends_tuesday": "2026-07-07",
+   "api_equivalent_usd": 63.27,
+   "x_weekly_share_of_200_plan": 1.4,
+   "complete": false,
+   "note": "only 07-07 recorded (corpus starts 2026-07-07)"
+  },
+  {
+   "week": "2026-07-08 to 2026-07-14",
+   "ends_tuesday": "2026-07-14",
+   "api_equivalent_usd": 940.36,
+   "x_weekly_share_of_200_plan": 20.4,
+   "complete": true,
+   "note": ""
+  },
+  {
+   "week": "2026-07-15 to 2026-07-21",
+   "ends_tuesday": "2026-07-21",
+   "api_equivalent_usd": 1542.46,
+   "x_weekly_share_of_200_plan": 33.4,
+   "complete": true,
+   "note": ""
+  },
+  {
+   "week": "2026-07-22 to 2026-07-28",
+   "ends_tuesday": "2026-07-28",
+   "api_equivalent_usd": 745.94,
+   "x_weekly_share_of_200_plan": 16.2,
+   "complete": true,
+   "note": ""
+  },
+  {
+   "week": "2026-07-29 to 2026-08-04",
+   "ends_tuesday": "2026-08-04",
+   "api_equivalent_usd": 1459.11,
+   "x_weekly_share_of_200_plan": 31.6,
+   "complete": true,
+   "note": ""
+  },
+  {
+   "week": "2026-08-05 to 2026-08-11",
+   "ends_tuesday": "2026-08-11",
+   "api_equivalent_usd": 2068.09,
+   "x_weekly_share_of_200_plan": 44.8,
+   "complete": true,
+   "note": ""
+  },
+  {
+   "week": "2026-08-12 to 2026-08-18",
+   "ends_tuesday": "2026-08-18",
+   "api_equivalent_usd": 1924.9,
+   "x_weekly_share_of_200_plan": 41.7,
+   "complete": true,
+   "note": ""
+  },
+  {
+   "week": "2026-08-19 to 2026-08-25",
+   "ends_tuesday": "2026-08-25",
+   "api_equivalent_usd": 1050.5,
+   "x_weekly_share_of_200_plan": 22.8,
+   "complete": true,
+   "note": ""
+  },
+  {
+   "week": "2026-08-26 to 2026-09-01",
+   "ends_tuesday": "2026-09-01",
+   "api_equivalent_usd": 884.89,
+   "x_weekly_share_of_200_plan": 19.2,
+   "complete": true,
+   "note": ""
+  },
+  {
+   "week": "2026-09-02 to 2026-09-08",
+   "ends_tuesday": "2026-09-08",
+   "api_equivalent_usd": 1352.56,
+   "x_weekly_share_of_200_plan": 29.3,
+   "complete": true,
+   "note": ""
+  },
+  {
+   "week": "2026-09-09 to 2026-09-15",
+   "ends_tuesday": "2026-09-15",
+   "api_equivalent_usd": 1745.08,
+   "x_weekly_share_of_200_plan": 37.8,
+   "complete": true,
+   "note": ""
+  },
+  {
+   "week": "2026-09-16 to 2026-09-22",
+   "ends_tuesday": "2026-09-22",
+   "api_equivalent_usd": 2629.75,
+   "x_weekly_share_of_200_plan": 57.0,
+   "complete": true,
+   "note": ""
+  },
+  {
+   "week": "2026-09-23 to 2026-09-29",
+   "ends_tuesday": "2026-09-29",
+   "api_equivalent_usd": 6004.85,
+   "x_weekly_share_of_200_plan": 130.1,
+   "complete": true,
+   "note": ""
+  },
+  {
+   "week": "2026-09-30 to 2026-10-06",
+   "ends_tuesday": "2026-10-06",
+   "api_equivalent_usd": 3092.58,
+   "x_weekly_share_of_200_plan": 67.0,
+   "complete": true,
+   "note": ""
+  },
+  {
+   "week": "2026-10-07 to 2026-10-13",
+   "ends_tuesday": "2026-10-13",
+   "api_equivalent_usd": 2398.55,
+   "x_weekly_share_of_200_plan": 52.0,
+   "complete": true,
+   "note": ""
+  },
+  {
+   "week": "2026-10-14 to 2026-10-20",
+   "ends_tuesday": "2026-10-20",
+   "api_equivalent_usd": 3003.51,
+   "x_weekly_share_of_200_plan": 65.1,
+   "complete": true,
+   "note": ""
+  },
+  {
+   "week": "2026-10-21 to 2026-10-27",
+   "ends_tuesday": "2026-10-27",
+   "api_equivalent_usd": 481.09,
+   "x_weekly_share_of_200_plan": 10.4,
+   "complete": false,
+   "note": "partial: 10-21 to 10-24 so far"
+  }
+ ],
+ "week_stats_complete_weeks": {
+  "count": 15,
+  "mean": 2056.21,
+  "median": 1745.08,
+  "max": 6004.85,
+  "top5_mean": 3425.85
+ },
+ "months": [
+  {
+   "month": "2026-07 (from 07-07)",
+   "api_equivalent_usd": 3292.02,
+   "days_covered": 25,
+   "x_200_plan": 16.5
+  },
+  {
+   "month": "2026-08",
+   "api_equivalent_usd": 6911.34,
+   "days_covered": 31,
+   "x_200_plan": 34.6
+  },
+  {
+   "month": "2026-09",
+   "api_equivalent_usd": 12466.5,
+   "days_covered": 30,
+   "x_200_plan": 62.3
+  },
+  {
+   "month": "2026-10 (to 10-24)",
+   "api_equivalent_usd": 8717.59,
+   "days_covered": 24,
+   "x_200_plan": 43.6
+  }
+ ],
+ "limit_evidence": [
+  {
+   "when": "2026-07-18",
+   "what": "Aaron: he had barely used that week's limit with two days left"
+  },
+  {
+   "when": "2026-08-09",
+   "what": "a multi-agent run that landed at 98% of weekly usage (his Notion note, quoted in a later session)"
+  },
+  {
+   "when": "2026-09-23",
+   "what": "Aaron: 'right now I have one free weekly limit reset'"
+  },
+  {
+   "when": "2026-09-29",
+   "what": "Aaron: 'I'm going to hit my weekly limit soon, it resets tonight'"
+  },
+  {
+   "when": "2026-10-12",
+   "what": "Claude Code: \"You've hit your weekly limit · resets Oct 13, 11pm\" (the only weekly-limit stop in the transcripts)"
+  },
+  {
+   "when": "2026-10-20",
+   "what": "Aaron: 'You started this project at 62% of your weekly usage limit used up, and now you are 93%. It resets in 12 hours.'"
+  }
+ ],
+ "gauntlet_AO_026": {
+  "post": "/ledger/sonnet-vs-opus-gauntlet/",
+  "runs": [
+   {
+    "test": "loom",
+    "model": "opus-5.5",
+    "effort": "low",
+    "requests": 23,
+    "output_tokens": 45144,
+    "thinking_tokens": 7065,
+    "non_thinking_output_tokens": 38079,
+    "thinking_per_request": 307,
+    "cache_write_tokens": 90986,
+    "cache_read_tokens": 1826018,
+    "usd_at_prices_when_run": 1.9962,
+    "usd_at_todays_prices": 1.9962
+   },
+   {
+    "test": "loom",
+    "model": "opus-5.5",
+    "effort": "medium",
+    "requests": 63,
+    "output_tokens": 121952,
+    "thinking_tokens": 47741,
+    "non_thinking_output_tokens": 74211,
+    "thinking_per_request": 758,
+    "cache_write_tokens": 187750,
+    "cache_read_tokens": 8712121,
+    "usd_at_prices_when_run": 5.684,
+    "usd_at_todays_prices": 5.684
+   },
+   {
+    "test": "loom",
+    "model": "opus-5.5",
+    "effort": "high",
+    "requests": 50,
+    "output_tokens": 159680,
+    "thinking_tokens": 79165,
+    "non_thinking_output_tokens": 80515,
+    "thinking_per_request": 1583,
+    "cache_write_tokens": 224234,
+    "cache_read_tokens": 7682942,
+    "usd_at_prices_when_run": 6.5245,
+    "usd_at_todays_prices": 6.5245
+   },
+   {
+    "test": "loom",
+    "model": "opus-5.5",
+    "effort": "xhigh",
+    "requests": 105,
+    "output_tokens": 318233,
+    "thinking_tokens": 179799,
+    "non_thinking_output_tokens": 138434,
+    "thinking_per_request": 1712,
+    "cache_write_tokens": 466885,
+    "cache_read_tokens": 23003370,
+    "usd_at_prices_when_run": 14.3207,
+    "usd_at_todays_prices": 14.3207
+   },
+   {
+    "test": "loom",
+    "model": "opus-5.5",
+    "effort": "max",
+    "requests": 155,
+    "output_tokens": 872079,
+    "thinking_tokens": 636172,
+    "non_thinking_output_tokens": 235907,
+    "thinking_per_request": 4104,
+    "cache_write_tokens": 1053477,
+    "cache_read_tokens": 41327468,
+    "usd_at_prices_when_run": 32.4019,
+    "usd_at_todays_prices": 32.4019
+   },
+   {
+    "test": "loom",
+    "model": "sonnet-5.5",
+    "effort": "low",
+    "requests": 55,
+    "output_tokens": 72694,
+    "thinking_tokens": 21197,
+    "non_thinking_output_tokens": 51497,
+    "thinking_per_request": 385,
+    "cache_write_tokens": 132909,
+    "cache_read_tokens": 5956292,
+    "usd_at_prices_when_run": 2.4501,
+    "usd_at_todays_prices": 1.8544
+   },
+   {
+    "test": "loom",
+    "model": "sonnet-5.5",
+    "effort": "medium",
+    "requests": 76,
+    "output_tokens": 140120,
+    "thinking_tokens": 50955,
+    "non_thinking_output_tokens": 89165,
+    "thinking_per_request": 670,
+    "cache_write_tokens": 200347,
+    "cache_read_tokens": 11252313,
+    "usd_at_prices_when_run": 4.4534,
+    "usd_at_todays_prices": 3.3281
+   },
+   {
+    "test": "loom",
+    "model": "sonnet-5.5",
+    "effort": "high",
+    "requests": 111,
+    "output_tokens": 234365,
+    "thinking_tokens": 107800,
+    "non_thinking_output_tokens": 126565,
+    "thinking_per_request": 971,
+    "cache_write_tokens": 316560,
+    "cache_read_tokens": 26519378,
+    "usd_at_prices_when_run": 8.9142,
+    "usd_at_todays_prices": 6.2623
+   },
+   {
+    "test": "loom",
+    "model": "sonnet-5.5",
+    "effort": "xhigh",
+    "requests": 213,
+    "output_tokens": 571975,
+    "thinking_tokens": 313273,
+    "non_thinking_output_tokens": 258702,
+    "thinking_per_request": 1471,
+    "cache_write_tokens": 941056,
+    "cache_read_tokens": 57015684,
+    "usd_at_prices_when_run": 20.2953,
+    "usd_at_todays_prices": 14.5938
+   },
+   {
+    "test": "loom",
+    "model": "sonnet-5.5",
+    "effort": "max",
+    "requests": 244,
+    "output_tokens": 1137545,
+    "thinking_tokens": 746637,
+    "non_thinking_output_tokens": 390908,
+    "thinking_per_request": 3060,
+    "cache_write_tokens": 1521830,
+    "cache_read_tokens": 102608663,
+    "usd_at_prices_when_run": 43.8587,
+    "usd_at_todays_prices": 34.512
+   },
+   {
+    "test": "lockkeeper",
+    "model": "opus-5.5",
+    "effort": "low",
+    "requests": 32,
+    "output_tokens": 68250,
+    "thinking_tokens": 22995,
+    "non_thinking_output_tokens": 45255,
+    "thinking_per_request": 719,
+    "cache_write_tokens": 114988,
+    "cache_read_tokens": 2807079,
+    "usd_at_prices_when_run": 2.8466,
+    "usd_at_todays_prices": 2.8466
+   },
+   {
+    "test": "lockkeeper",
+    "model": "opus-5.5",
+    "effort": "medium",
+    "requests": 181,
+    "output_tokens": 369360,
+    "thinking_tokens": 178406,
+    "non_thinking_output_tokens": 190954,
+    "thinking_per_request": 986,
+    "cache_write_tokens": 524482,
+    "cache_read_tokens": 62490001,
+    "usd_at_prices_when_run": 24.0825,
+    "usd_at_todays_prices": 24.0825
+   },
+   {
+    "test": "lockkeeper",
+    "model": "opus-5.5",
+    "effort": "high",
+    "requests": 248,
+    "output_tokens": 385909,
+    "thinking_tokens": 189503,
+    "non_thinking_output_tokens": 196406,
+    "thinking_per_request": 764,
+    "cache_write_tokens": 538836,
+    "cache_read_tokens": 87576642,
+    "usd_at_prices_when_run": 29.5462,
+    "usd_at_todays_prices": 29.5462
+   },
+   {
+    "test": "lockkeeper",
+    "model": "opus-5.5",
+    "effort": "xhigh",
+    "requests": 241,
+    "output_tokens": 566510,
+    "thinking_tokens": 291777,
+    "non_thinking_output_tokens": 274733,
+    "thinking_per_request": 1211,
+    "cache_write_tokens": 730544,
+    "cache_read_tokens": 123488166,
+    "usd_at_prices_when_run": 41.8741,
+    "usd_at_todays_prices": 41.8741
+   },
+   {
+    "test": "lockkeeper",
+    "model": "opus-5.5",
+    "effort": "max",
+    "requests": 294,
+    "output_tokens": 619566,
+    "thinking_tokens": 350053,
+    "non_thinking_output_tokens": 269513,
+    "thinking_per_request": 1191,
+    "cache_write_tokens": 846101,
+    "cache_read_tokens": 172302489,
+    "usd_at_prices_when_run": 53.623,
+    "usd_at_todays_prices": 53.623
+   },
+   {
+    "test": "lockkeeper",
+    "model": "sonnet-5.5",
+    "effort": "low",
+    "requests": 48,
+    "output_tokens": 129652,
+    "thinking_tokens": 58603,
+    "non_thinking_output_tokens": 71049,
+    "thinking_per_request": 1221,
+    "cache_write_tokens": 188495,
+    "cache_read_tokens": 6806250,
+    "usd_at_prices_when_run": 3.4119,
+    "usd_at_todays_prices": 2.7313
+   },
+   {
+    "test": "lockkeeper",
+    "model": "sonnet-5.5",
+    "effort": "medium",
+    "requests": 163,
+    "output_tokens": 298267,
+    "thinking_tokens": 150860,
+    "non_thinking_output_tokens": 147407,
+    "thinking_per_request": 926,
+    "cache_write_tokens": 413106,
+    "cache_read_tokens": 45450285,
+    "usd_at_prices_when_run": 13.7258,
+    "usd_at_todays_prices": 9.1808
+   },
+   {
+    "test": "lockkeeper",
+    "model": "sonnet-5.5",
+    "effort": "high",
+    "requests": 186,
+    "output_tokens": 395907,
+    "thinking_tokens": 220864,
+    "non_thinking_output_tokens": 175043,
+    "thinking_per_request": 1187,
+    "cache_write_tokens": 514174,
+    "cache_read_tokens": 71815892,
+    "usd_at_prices_when_run": 20.3797,
+    "usd_at_todays_prices": 13.1981
+   },
+   {
+    "test": "lockkeeper",
+    "model": "sonnet-5.5",
+    "effort": "xhigh",
+    "requests": 228,
+    "output_tokens": 594932,
+    "thinking_tokens": 352574,
+    "non_thinking_output_tokens": 242358,
+    "thinking_per_request": 1546,
+    "cache_write_tokens": 747456,
+    "cache_read_tokens": 117838364,
+    "usd_at_prices_when_run": 32.5077,
+    "usd_at_todays_prices": 20.7239
+   },
+   {
+    "test": "lockkeeper",
+    "model": "sonnet-5.5",
+    "effort": "max",
+    "requests": 494,
+    "output_tokens": 1162200,
+    "thinking_tokens": 741121,
+    "non_thinking_output_tokens": 421079,
+    "thinking_per_request": 1500,
+    "cache_write_tokens": 1490366,
+    "cache_read_tokens": 221871647,
+    "usd_at_prices_when_run": 61.9598,
+    "usd_at_todays_prices": 39.7726
+   },
+   {
+    "test": "music-video",
+    "model": "opus-5.5",
+    "effort": "low",
+    "requests": 9,
+    "output_tokens": 6139,
+    "thinking_tokens": 491,
+    "non_thinking_output_tokens": 5648,
+    "thinking_per_request": 55,
+    "cache_write_tokens": 37497,
+    "cache_read_tokens": 391291,
+    "usd_at_prices_when_run": 0.5011,
+    "usd_at_todays_prices": 0.5011
+   },
+   {
+    "test": "music-video",
+    "model": "opus-5.5",
+    "effort": "medium",
+    "requests": 58,
+    "output_tokens": 27926,
+    "thinking_tokens": 6388,
+    "non_thinking_output_tokens": 21538,
+    "thinking_per_request": 110,
+    "cache_write_tokens": 159414,
+    "cache_read_tokens": 7483761,
+    "usd_at_prices_when_run": 3.331,
+    "usd_at_todays_prices": 3.331
+   },
+   {
+    "test": "music-video",
+    "model": "opus-5.5",
+    "effort": "high",
+    "requests": 60,
+    "output_tokens": 44116,
+    "thinking_tokens": 16218,
+    "non_thinking_output_tokens": 27898,
+    "thinking_per_request": 270,
+    "cache_write_tokens": 157563,
+    "cache_read_tokens": 7256742,
+    "usd_at_prices_when_run": 3.5949,
+    "usd_at_todays_prices": 3.5949
+   },
+   {
+    "test": "music-video",
+    "model": "opus-5.5",
+    "effort": "xhigh",
+    "requests": 156,
+    "output_tokens": 164605,
+    "thinking_tokens": 83311,
+    "non_thinking_output_tokens": 81294,
+    "thinking_per_request": 534,
+    "cache_write_tokens": 397898,
+    "cache_read_tokens": 41238184,
+    "usd_at_prices_when_run": 14.7242,
+    "usd_at_todays_prices": 14.7242
+   },
+   {
+    "test": "music-video",
+    "model": "opus-5.5",
+    "effort": "max",
+    "requests": 162,
+    "output_tokens": 227495,
+    "thinking_tokens": 124614,
+    "non_thinking_output_tokens": 102881,
+    "thinking_per_request": 769,
+    "cache_write_tokens": 531467,
+    "cache_read_tokens": 56514462,
+    "usd_at_prices_when_run": 20.1058,
+    "usd_at_todays_prices": 20.1058
+   },
+   {
+    "test": "music-video",
+    "model": "sonnet-5.5",
+    "effort": "low",
+    "requests": 7,
+    "output_tokens": 6942,
+    "thinking_tokens": 494,
+    "non_thinking_output_tokens": 6448,
+    "thinking_per_request": 71,
+    "cache_write_tokens": 36052,
+    "cache_read_tokens": 285752,
+    "usd_at_prices_when_run": 0.2708,
+    "usd_at_todays_prices": 0.2422
+   },
+   {
+    "test": "music-video",
+    "model": "sonnet-5.5",
+    "effort": "medium",
+    "requests": 18,
+    "output_tokens": 10162,
+    "thinking_tokens": 1788,
+    "non_thinking_output_tokens": 8374,
+    "thinking_per_request": 99,
+    "cache_write_tokens": 64714,
+    "cache_read_tokens": 1206339,
+    "usd_at_prices_when_run": 0.6018,
+    "usd_at_todays_prices": 0.4812
+   },
+   {
+    "test": "music-video",
+    "model": "sonnet-5.5",
+    "effort": "high",
+    "requests": 43,
+    "output_tokens": 38967,
+    "thinking_tokens": 17961,
+    "non_thinking_output_tokens": 21006,
+    "thinking_per_request": 418,
+    "cache_write_tokens": 166748,
+    "cache_read_tokens": 5838019,
+    "usd_at_prices_when_run": 2.2244,
+    "usd_at_todays_prices": 1.6406
+   },
+   {
+    "test": "music-video",
+    "model": "sonnet-5.5",
+    "effort": "xhigh",
+    "requests": 121,
+    "output_tokens": 163194,
+    "thinking_tokens": 82420,
+    "non_thinking_output_tokens": 80774,
+    "thinking_per_request": 681,
+    "cache_write_tokens": 395666,
+    "cache_read_tokens": 32556381,
+    "usd_at_prices_when_run": 9.7264,
+    "usd_at_todays_prices": 6.4707
+   },
+   {
+    "test": "music-video",
+    "model": "sonnet-5.5",
+    "effort": "max",
+    "requests": 199,
+    "output_tokens": 403041,
+    "thinking_tokens": 256188,
+    "non_thinking_output_tokens": 146853,
+    "thinking_per_request": 1287,
+    "cache_write_tokens": 691303,
+    "cache_read_tokens": 87933339,
+    "usd_at_prices_when_run": 24.3831,
+    "usd_at_todays_prices": 15.5898
+   }
+  ],
+  "loom_sonnet_max_opus_subagents": {
+   "requests": 67,
+   "usd": 15.8327,
+   "note": "Three subagents of the Sonnet 5.5 Max Loom session ran on Opus 5.5. They are inside that session's figures; thinking is not split by model."
+  },
+  "head_to_head": [
+   {
+    "test": "loom",
+    "effort": "low",
+    "opus_usd": 1.9962,
+    "sonnet_usd_when_run": 2.4501,
+    "sonnet_usd_today": 1.8544,
+    "cheaper_when_run": "opus",
+    "cheaper_today": "sonnet",
+    "sonnet_requests_over_opus": 2.39
+   },
+   {
+    "test": "loom",
+    "effort": "medium",
+    "opus_usd": 5.684,
+    "sonnet_usd_when_run": 4.4534,
+    "sonnet_usd_today": 3.3281,
+    "cheaper_when_run": "sonnet",
+    "cheaper_today": "sonnet",
+    "sonnet_requests_over_opus": 1.21
+   },
+   {
+    "test": "loom",
+    "effort": "high",
+    "opus_usd": 6.5245,
+    "sonnet_usd_when_run": 8.9142,
+    "sonnet_usd_today": 6.2623,
+    "cheaper_when_run": "opus",
+    "cheaper_today": "sonnet",
+    "sonnet_requests_over_opus": 2.22
+   },
+   {
+    "test": "loom",
+    "effort": "xhigh",
+    "opus_usd": 14.3207,
+    "sonnet_usd_when_run": 20.2953,
+    "sonnet_usd_today": 14.5938,
+    "cheaper_when_run": "opus",
+    "cheaper_today": "opus",
+    "sonnet_requests_over_opus": 2.03
+   },
+   {
+    "test": "loom",
+    "effort": "max",
+    "opus_usd": 32.4019,
+    "sonnet_usd_when_run": 43.8587,
+    "sonnet_usd_today": 34.512,
+    "cheaper_when_run": "opus",
+    "cheaper_today": "opus",
+    "sonnet_requests_over_opus": 1.57
+   },
+   {
+    "test": "lockkeeper",
+    "effort": "low",
+    "opus_usd": 2.8466,
+    "sonnet_usd_when_run": 3.4119,
+    "sonnet_usd_today": 2.7313,
+    "cheaper_when_run": "opus",
+    "cheaper_today": "sonnet",
+    "sonnet_requests_over_opus": 1.5
+   },
+   {
+    "test": "lockkeeper",
+    "effort": "medium",
+    "opus_usd": 24.0825,
+    "sonnet_usd_when_run": 13.7258,
+    "sonnet_usd_today": 9.1808,
+    "cheaper_when_run": "sonnet",
+    "cheaper_today": "sonnet",
+    "sonnet_requests_over_opus": 0.9
+   },
+   {
+    "test": "lockkeeper",
+    "effort": "high",
+    "opus_usd": 29.5462,
+    "sonnet_usd_when_run": 20.3797,
+    "sonnet_usd_today": 13.1981,
+    "cheaper_when_run": "sonnet",
+    "cheaper_today": "sonnet",
+    "sonnet_requests_over_opus": 0.75
+   },
+   {
+    "test": "lockkeeper",
+    "effort": "xhigh",
+    "opus_usd": 41.8741,
+    "sonnet_usd_when_run": 32.5077,
+    "sonnet_usd_today": 20.7239,
+    "cheaper_when_run": "sonnet",
+    "cheaper_today": "sonnet",
+    "sonnet_requests_over_opus": 0.95
+   },
+   {
+    "test": "lockkeeper",
+    "effort": "max",
+    "opus_usd": 53.623,
+    "sonnet_usd_when_run": 61.9598,
+    "sonnet_usd_today": 39.7726,
+    "cheaper_when_run": "opus",
+    "cheaper_today": "sonnet",
+    "sonnet_requests_over_opus": 1.68
+   },
+   {
+    "test": "music-video",
+    "effort": "low",
+    "opus_usd": 0.5011,
+    "sonnet_usd_when_run": 0.2708,
+    "sonnet_usd_today": 0.2422,
+    "cheaper_when_run": "sonnet",
+    "cheaper_today": "sonnet",
+    "sonnet_requests_over_opus": 0.78
+   },
+   {
+    "test": "music-video",
+    "effort": "medium",
+    "opus_usd": 3.331,
+    "sonnet_usd_when_run": 0.6018,
+    "sonnet_usd_today": 0.4812,
+    "cheaper_when_run": "sonnet",
+    "cheaper_today": "sonnet",
+    "sonnet_requests_over_opus": 0.31
+   },
+   {
+    "test": "music-video",
+    "effort": "high",
+    "opus_usd": 3.5949,
+    "sonnet_usd_when_run": 2.2244,
+    "sonnet_usd_today": 1.6406,
+    "cheaper_when_run": "sonnet",
+    "cheaper_today": "sonnet",
+    "sonnet_requests_over_opus": 0.72
+   },
+   {
+    "test": "music-video",
+    "effort": "xhigh",
+    "opus_usd": 14.7242,
+    "sonnet_usd_when_run": 9.7264,
+    "sonnet_usd_today": 6.4707,
+    "cheaper_when_run": "sonnet",
+    "cheaper_today": "sonnet",
+    "sonnet_requests_over_opus": 0.78
+   },
+   {
+    "test": "music-video",
+    "effort": "max",
+    "opus_usd": 20.1058,
+    "sonnet_usd_when_run": 24.3831,
+    "sonnet_usd_today": 15.5898,
+    "cheaper_when_run": "opus",
+    "cheaper_today": "sonnet",
+    "sonnet_requests_over_opus": 1.23
+   }
+  ],
+  "totals": {
+   "loom": {
+    "opus_usd": 60.93,
+    "sonnet_usd_when_run": 79.97,
+    "sonnet_usd_today": 60.55,
+    "sonnet_vs_opus_when_run_pct": 31.3,
+    "sonnet_vs_opus_today_pct": -0.6
+   },
+   "lockkeeper": {
+    "opus_usd": 151.97,
+    "sonnet_usd_when_run": 131.98,
+    "sonnet_usd_today": 85.61,
+    "sonnet_vs_opus_when_run_pct": -13.2,
+    "sonnet_vs_opus_today_pct": -43.7
+   },
+   "music-video": {
+    "opus_usd": 42.26,
+    "sonnet_usd_when_run": 37.21,
+    "sonnet_usd_today": 24.42,
+    "sonnet_vs_opus_when_run_pct": -12.0,
+    "sonnet_vs_opus_today_pct": -42.2
+   },
+   "all": {
+    "opus_usd": 255.16,
+    "sonnet_usd_when_run": 249.16,
+    "sonnet_usd_today": 170.58,
+    "sonnet_vs_opus_when_run_pct": -2.3,
+    "sonnet_vs_opus_today_pct": -33.1
+   }
+  },
+  "effort_spread": [
+   {
+    "test": "loom",
+    "model": "opus-5.5",
+    "cost_max_over_low": 16.2,
+    "requests_max_over_low": 6.7,
+    "non_thinking_output_max_over_low": 6.2,
+    "thinking_total_max_over_low": 90.0,
+    "thinking_per_request_max_over_low": 13.37,
+    "thinking_per_request_growth_per_level_pct": 91
+   },
+   {
+    "test": "loom",
+    "model": "sonnet-5.5",
+    "cost_max_over_low": 17.9,
+    "requests_max_over_low": 4.4,
+    "non_thinking_output_max_over_low": 7.6,
+    "thinking_total_max_over_low": 35.2,
+    "thinking_per_request_max_over_low": 7.95,
+    "thinking_per_request_growth_per_level_pct": 68
+   },
+   {
+    "test": "lockkeeper",
+    "model": "opus-5.5",
+    "cost_max_over_low": 18.8,
+    "requests_max_over_low": 9.2,
+    "non_thinking_output_max_over_low": 6.0,
+    "thinking_total_max_over_low": 15.2,
+    "thinking_per_request_max_over_low": 1.66,
+    "thinking_per_request_growth_per_level_pct": 13
+   },
+   {
+    "test": "lockkeeper",
+    "model": "sonnet-5.5",
+    "cost_max_over_low": 18.2,
+    "requests_max_over_low": 10.3,
+    "non_thinking_output_max_over_low": 5.9,
+    "thinking_total_max_over_low": 12.6,
+    "thinking_per_request_max_over_low": 1.23,
+    "thinking_per_request_growth_per_level_pct": 5
+   },
+   {
+    "test": "music-video",
+    "model": "opus-5.5",
+    "cost_max_over_low": 40.1,
+    "requests_max_over_low": 18.0,
+    "non_thinking_output_max_over_low": 18.2,
+    "thinking_total_max_over_low": 253.8,
+    "thinking_per_request_max_over_low": 13.98,
+    "thinking_per_request_growth_per_level_pct": 93
+   },
+   {
+    "test": "music-video",
+    "model": "sonnet-5.5",
+    "cost_max_over_low": 90.0,
+    "requests_max_over_low": 28.4,
+    "non_thinking_output_max_over_low": 22.8,
+    "thinking_total_max_over_low": 518.6,
+    "thinking_per_request_max_over_low": 18.13,
+    "thinking_per_request_growth_per_level_pct": 106
+   }
+  ],
+  "sonnet_over_opus_cost_ratio_same_effort": {
+   "min": 0.18,
+   "max": 1.42
+  },
+  "note": "The music-video totals leave out a 4-request Sonnet Medium false start ($0.29), as the post did."
+ },
+ "closed_task_test_2026_10_24": {
+  "task": "Implement parse_duration(text) to a one-page spec so a 39-case test file passes (four input formats, ValueError otherwise). Direct step-by-step instructions, no freedom.",
+  "how": "Six Claude Code subagents started at once from this session (general-purpose type, model opus or sonnet, effort low/medium/high), one folder each, measured afterwards with lens_usage group_by=agent.",
+  "caveat": "One run per cell. Runs of the same model started together shared part of their cached system prompt, so the first one of each model paid ~127K of cache writes and the others ~85K; compare cells with equal writes.",
+  "runs": [
+   {
+    "model": "opus-5.5",
+    "effort": "low",
+    "passed": "39/39 on the first test run",
+    "requests": 3,
+    "output_tokens": 1545,
+    "thinking_tokens": 0,
+    "cache_write_tokens": 126325,
+    "cache_read_tokens": 234011,
+    "usd": 0.7094,
+    "cache_write_share_pct": 89
+   },
+   {
+    "model": "opus-5.5",
+    "effort": "medium",
+    "passed": "39/39 on the first test run",
+    "requests": 4,
+    "output_tokens": 1983,
+    "thinking_tokens": 434,
+    "cache_write_tokens": 126745,
+    "cache_read_tokens": 360538,
+    "usd": 0.7455,
+    "cache_write_share_pct": 85
+   },
+   {
+    "model": "opus-5.5",
+    "effort": "high",
+    "passed": "39/39 on the first test run",
+    "requests": 4,
+    "output_tokens": 2028,
+    "thinking_tokens": 487,
+    "cache_write_tokens": 85064,
+    "cache_read_tokens": 402298,
+    "usd": 0.5464,
+    "cache_write_share_pct": 78
+   },
+   {
+    "model": "sonnet-5.5",
+    "effort": "low",
+    "passed": "39/39 on the first test run",
+    "requests": 3,
+    "output_tokens": 1676,
+    "thinking_tokens": 362,
+    "cache_write_tokens": 126861,
+    "cache_read_tokens": 234821,
+    "usd": 0.3574,
+    "cache_write_share_pct": 89
+   },
+   {
+    "model": "sonnet-5.5",
+    "effort": "medium",
+    "passed": "39/39 on the first test run",
+    "requests": 3,
+    "output_tokens": 1894,
+    "thinking_tokens": 429,
+    "cache_write_tokens": 84966,
+    "cache_read_tokens": 276943,
+    "usd": 0.2591,
+    "cache_write_share_pct": 82
+   },
+   {
+    "model": "sonnet-5.5",
+    "effort": "high",
+    "passed": "39/39 on the first test run",
+    "requests": 3,
+    "output_tokens": 1648,
+    "thinking_tokens": 119,
+    "cache_write_tokens": 84598,
+    "cache_read_tokens": 276937,
+    "usd": 0.2557,
+    "cache_write_share_pct": 83
+   }
+  ],
+  "total_usd": 2.8735
+ },
+ "daily_candy_job": {
+  "what": "nightly closed job, a Sonnet subagent with fixed instructions",
+  "2026-10-23_subagent": {
+   "model": "sonnet-5.5",
+   "requests": 35,
+   "output_tokens": 19000,
+   "cache_write_tokens": 188000,
+   "cache_read_tokens": 6500000.0,
+   "usd": {
+    "output": 0.1899,
+    "cache_write": 0.471,
+    "cache_read": 0.6529,
+    "total": 1.314
+   }
+  },
+  "session_totals_usd_2026-10-01_to_10-23": "1.62 to 3.01 (orchestrator plus subagent)",
+  "opus_pair": "none found: every run's subagent was Sonnet (Sonnet 5 until late September, then Sonnet 5.5)"
+ }
+}
