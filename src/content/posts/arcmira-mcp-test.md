@@ -1,7 +1,7 @@
 ---
 id: "AO-051"
 title: "Can Claude find a specific moment in a YouTube video, and does Arcmira help?"
-summary: "I'd never asked Claude to pull exact moments out of videos or research who said what on YouTube. So I ran four tests, with and without Arcmira, a transcript-search MCP built for exactly that, and had Claude make a short animated video of the results. Every clip is on this page."
+summary: "I'd never asked Claude to pull exact moments out of videos or research who said what on YouTube. So I ran four tests, with and without Arcmira, a transcript-search MCP built for exactly that, and had Claude cut every moment either side found into a clip. Every clip is on this page."
 date: 2026-10-16
 status: "in-progress"
 tags: ["claude-code", "video", "research", "yt-dlp", "mcp", "arcmira"]
@@ -17,8 +17,45 @@ preview:
   alt: "The new Tesla Roadster lifting off on rocket thrusters and flying over a line of parked Teslas at night"
 ---
 
+## So is Arcmira useful to me right now?
+
+**My verdict for now:** Claude alone covers most of what I'd do, including the part I cared about
+most, finding and cutting exact moments. If a name is in a title, searching alone finds it, free and
+across all of YouTube. Arcmira earns its keep on one thing: transcripts already pulled and
+searchable, so it hears a name spoken in videos nobody would think to open, without hitting
+YouTube's limits on downloading transcripts. For Skyebrows that was 25 moments no title or search
+would have shown me, for 340 credits. The best version is both runs, merged. On the free plan, one
+thorough name would cost more than the month's credits.
+
+**What Claude already does well without it:** finding videos on a topic, ranking them by views,
+reading each one's captions and description, finding the exact second something was said, checking
+sponsors, and cutting the clip. Expect $2 to $3 and 12 to 26 minutes per job like these, plus a few
+minutes of scripted cutting if you want clips. It's precise once it has a video's captions, and if
+it needs to see something, it can look at the frames.
+
+**What you give up without Arcmira:**
+
+- **Podcasts and finance or business shows.** YouTube search ranks them low for a topic; Arcmira
+  finds them. In test 3 that was an entirely different set of 12 videos.
+- **Spoken mentions.** A name or company that's said but never written in a title or description.
+- **Sponsor histories** for a channel, with counts and dates.
+- **Counts.** "About 32 episodes on 16 channels" in one call, where Claude alone could only guess "50 to 150".
+
+**What's harder with Arcmira:**
+
+- **Coverage you can't see in advance.** No anime reaction channels, little dedicated space
+  coverage. You only find out by searching.
+- **The free plan's 30-day delay**, plus Pro-only filters such as ending a search at a date.
+  Recent news, the first thing I'd want, is out.
+- **Credits go fast.** One careless call with a large row limit can use half a month's allowance.
+- **Setup and rough edges.** In the Claude desktop app, the documented sign-in didn't show up for
+  me and an API key set from the terminal didn't reach sessions. Adding it as a custom connector
+  worked. Each request is a small JavaScript program with a 30-second limit, and a few timed out.
+
+## How I tested it
+
 I'd never used Claude to find a specific moment in a video, or to research who said what on
-YouTube. Then Arcmira's founder emailed me after my [Clawd montage post](/posts/clawd-growth-montage/).
+YouTube. Then Arcmira's founder emailed me after my [Clawd montage post](/ledger/clawd-growth-montage/).
 Arcmira indexes YouTube and podcast transcripts and lets an AI agent search them through an MCP
 server, a plug-in connection for tools like Claude. I wanted two answers, fast:
 
@@ -34,33 +71,7 @@ sessions on the same model (Opus 5.5):
 Time and tokens come from Claude Code's own logs. Then I had Claude cut every moment either side
 found into a clip, so you can check the work without leaving this page.
 
-## Watch: what using the MCP is like
-
-<video id="mcp-explainer" controls playsinline preload="none" poster="/media/arcmira-test/explainer/poster.jpg" style="width:100%"></video>
-<script>
-(function () {
-  var v = document.getElementById("mcp-explainer");
-  var src = "/media/arcmira-test/explainer/index.m3u8", mp4 = "/media/arcmira-test/explainer/fallback-540p.mp4";
-  if (!v || v.dataset.ready) return; v.dataset.ready = "1";
-  function attach() {
-    if (window.Hls && Hls.isSupported()) { var h = new Hls(); h.loadSource(src); h.attachMedia(v); }
-    else if (v.canPlayType("application/vnd.apple.mpegurl") === "probably") { v.src = src; }
-    else { v.src = mp4; }
-  }
-  if (window.Hls) { attach(); return; }
-  var s = document.createElement("script");
-  s.src = "https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js";
-  s.onload = attach; s.onerror = function () { v.src = mp4; };
-  document.head.appendChild(s);
-})();
-</script>
-
-A 4-minute-26 walkthrough of test 4, told by Claude, the agent that ran it: what Arcmira is, both
-runs, what the credits bought and the verdict. Claude made all of it: the 3D shots in Blender, the
-rest in HyperFrames, narration from a Gemini voice, and music synthesized in code.
-[Small MP4](/media/arcmira-test/explainer/fallback-540p.mp4) if the player doesn't load.
-
-## The short answer
+## The four tests in short
 
 - **Claude alone is genuinely good at this.** In every test it found the videos, read their
   captions and descriptions, and pinned down quotes word for word. A job took 12 to 26 minutes
@@ -141,7 +152,7 @@ their titles already show them.
   SpaceX "a living, breathing animal". Claude kept only passages that contain the name.
 - The quotes are real: 14 of 14 checked against YouTube's own captions matched word for word.
 
-**A correction.** An earlier version of this post and its video said plain YouTube search found only
+**A correction.** An earlier version of this post said plain YouTube search found only
 2 of these podcast episodes and 44 videos about him. Those numbers came from four searches I'd capped
 at 10 to 40 results, so they measured my effort, not what YouTube can find. The numbers above replace them.
 
@@ -427,38 +438,3 @@ into a blurred corner and alter its sound, presumably to get past YouTube's copy
 
 **Arcmira found nothing.** Over 24 searches, its closest hit was one reaction channel 200 episodes
 short, for which it holds no searchable videos.
-
-## So is Arcmira useful to me right now?
-
-**What Claude already does well without it:** finding videos on a topic, ranking them by views,
-reading each one's captions and description, finding the exact second something was said, checking
-sponsors, and cutting the clip. Expect $2 to $3 and 12 to 26 minutes per job like these, plus a few
-minutes of scripted cutting if you want clips. It's precise once it has a video's captions, and if
-it needs to see something, it can look at the frames.
-
-**What you give up without Arcmira:**
-
-- **Podcasts and finance or business shows.** YouTube search ranks them low for a topic; Arcmira
-  finds them. In test 3 that was an entirely different set of 12 videos.
-- **Spoken mentions.** A name or company that's said but never written in a title or description.
-- **Sponsor histories** for a channel, with counts and dates.
-- **Counts.** "About 32 episodes on 16 channels" in one call, where Claude alone could only guess "50 to 150".
-
-**What's harder with Arcmira:**
-
-- **Coverage you can't see in advance.** No anime reaction channels, little dedicated space
-  coverage. You only find out by searching.
-- **The free plan's 30-day delay**, plus Pro-only filters such as ending a search at a date.
-  Recent news, the first thing I'd want, is out.
-- **Credits go fast.** One careless call with a large row limit can use half a month's allowance.
-- **Setup and rough edges.** In the Claude desktop app, the documented sign-in didn't show up for
-  me and an API key set from the terminal didn't reach sessions. Adding it as a custom connector
-  worked. Each request is a small JavaScript program with a 30-second limit, and a few timed out.
-
-**My verdict for now:** Claude alone covers most of what I'd do, including the part I cared about
-most, finding and cutting exact moments. If a name is in a title, searching alone finds it, free and
-across all of YouTube. Arcmira earns its keep on one thing: transcripts already pulled and
-searchable, so it hears a name spoken in videos nobody would think to open, without hitting
-YouTube's limits on downloading transcripts. For Skyebrows that was 25 moments no title or search
-would have shown me, for 340 credits. The best version is both runs, merged. On the free plan, one
-thorough name would cost more than the month's credits.
