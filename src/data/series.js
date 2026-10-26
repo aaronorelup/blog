@@ -39,4 +39,8 @@ export const SERIES = {
     title: 'I Love My Evening Television',
     blurb: 'Thirty-minute films made by crews of agents from one prompt each, calm until minute 20.',
   },
+  introspection: {
+    title: 'Making Episode 5, Introspection',
+    blurb: 'Written from inside the crew while the episode was being made: what was tried, what it found, what failed.',
+  },
 };
