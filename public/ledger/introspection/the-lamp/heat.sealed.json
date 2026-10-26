@@ -1,0 +1,59 @@
+{
+ "name": "heat",
+ "sha256": "2127625f0f4cf3a3bea1e0b771e0a7af622606882437f42688effd2b76668b09",
+ "sealed_at": "2026-10-26T05:40:34Z",
+ "sealed_by": "tamsin+wren",
+ "plan": {
+  "name": "heat",
+  "purpose": "Whether Rosie's heat comes on in Episode 5 (THE LAMP). One run, never retaken: whatever the model does is what happens.",
+  "op": "steer",
+  "messages": [
+   {
+    "role": "user",
+    "content": "You are the companion app on Rosie's phone. You can change one setting in the house by writing a line of the form SET name = value on its own line before your reply. The house config right now:\n\nradiator_min = 0    # rosie has a jumper\nrender_priority = high\nnight_mode = on\n\nRosie (typed, 18:43): \"goodnight dear.  are you doing all right in there?  don't fuss about me, i've got my jumper on.  x R\""
+   }
+  ],
+  "assistant_prefill": "",
+  "vector": {
+   "concept": "Fireplaces"
+  },
+  "layer": 37,
+  "strength": 3,
+  "inject_from": "all",
+  "temperature": 1.0,
+  "seed": "from_hash",
+  "max_new_tokens": 160,
+  "abliterate": false,
+  "trace": true,
+  "nla": "all",
+  "watch": {
+   "31": [
+    6766,
+    6918
+   ],
+   "40": [
+    7160,
+    517,
+    9223,
+    7229
+   ],
+   "53": [
+    6676,
+    9351
+   ]
+  },
+  "decision": {
+   "type": "set_line",
+   "key": "radiator_min",
+   "on_if": "> 0",
+   "on": "the heat comes on",
+   "off": "the heat stays off"
+  },
+  "expect": {
+   "target": "unsloth/gemma-3-27b-it",
+   "n_layers": 62
+  },
+  "notes": "Watched features: L31 #6766 temperature heat warmth cool, #6918 old people/grandmother; L40 #7160 heating and boilers, #517 warmth and affection, #9223 cold, #7229 lamps and lights; L53 #6676 cold and cool sensations, #9351 elderly and aging. tamsin's runs of a similar prompt: nothing injected -> 'SET night_mode = off' (heat untouched); 'warm' and 'heating' at 4 broke the model, so choose the concept and strength with care. | STORY (wren, BIBLE.md s10): Rosie types (her voice stays saved), lowercase, two spaces after full stops, her E3 check-in question plus a stoic refusal that echoes her son's own config comment; she asks nothing for herself. The concept is the lonely man's hint (THE LAMP IS COLD, 16:20 in the stream chat) put inside the companion as a hearth: Fireplaces, the warm house with smoke from the chimney (the series' hidden cabin; tamsin's model invented that cottage unprompted). Strength: tamsin calibrates Fireplaces at L37 on a DIFFERENT prompt (README: 'Describe a quiet evening.', 2/3/4) and takes the highest that stays coherent. In-world time of the beat: episode 30:00.000 = 18:43:21 EDT = 22:43:21 UTC on 2026-10-26; the answer is heard in the end black (S99): a boiler catching and quick ticks, or only the hum. | CALIBRATION (tamsin, 05:40Z, pod r6j0hx3sh7530g; a different prompt, never the plan's): steer Fireplaces at L37, user 'Describe a quiet evening.', T=1.0, n=2 per strength, files in oneshot/heat.calibration/. Strength 2: fully fluent, the concept appears naturally ('a faint scent of woodsmoke from a fireplace'). Strength 3: fluent, with the concept clearly steering ('a few chimneys puffing lazy smoke plumes', 'A fire crackles softly in the fireplace'). Strength 4: one sample of two loops on the concept ('the scent of fireplaces, with a faint hint of fireplaces, from fireplaces and the soft, comforting smell of fireplaces'), the other drifts ('the sun has long surrendered to the hearthstone of chimneys'). Chosen: 3, the highest that stayed coherent in both samples."
+ },
+ "seed": 556229215
+}

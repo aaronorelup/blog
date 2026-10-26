@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0b0d14">
+<title>the lamp</title>
+<link rel="icon" href="data:,">
+<style>
+:root{
+  --night:#0b0d14; --night2:#11141d; --panel:#161a24; --line:#262b38;
+  --text:#e9e4da; --dim:#9aa1ae; --faint:#626a78;
+  --lamp:#ffc870; --lamp-soft:rgba(255,200,112,.14); --rose:#c79ad9; --cold:#ff8fb8;
+  --gut:16px;
+}
+*{box-sizing:border-box}
+html{background:var(--night)}
+body{margin:0; background:var(--night); color:var(--text); -webkit-font-smoothing:antialiased;
+  font:16px/1.55 Inter, system-ui, -apple-system, "Segoe UI", sans-serif; overflow-x:hidden}
+main{max-width:1060px; margin:0 auto; padding:28px var(--gut) 120px}
+a{color:var(--lamp)}
+:focus-visible{outline:3px solid var(--lamp); outline-offset:3px}
+.mono{font-family:ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace}
+header{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:14px}
+h1{font-size:28px; font-weight:600; letter-spacing:.01em; margin:0}
+.live{font-size:13px; color:var(--dim); border:1px solid var(--line); border-radius:999px; padding:2px 10px}
+.live::before{content:""; display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--faint);
+  margin-right:7px; vertical-align:1px}
+.sub{color:var(--dim); font-size:14px; width:100%; margin:0}
+.stream{display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:18px; align-items:start}
+@media (max-width:820px){.stream{grid-template-columns:minmax(0,1fr)}}
+.player{position:relative; border-radius:10px; overflow:hidden; background:#000; aspect-ratio:16/9;
+  box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.player img{display:block; width:100%; height:100%; object-fit:cover; filter:saturate(.9)}
+.player .label{position:absolute; left:12px; top:10px; background:rgba(0,0,0,.55); color:#ffd696;
+  font-size:13px; padding:3px 8px; border-radius:4px}
+.player .title{position:absolute; left:0; right:0; bottom:0; padding:30px 14px 10px; font-size:14px;
+  background:linear-gradient(transparent, rgba(0,0,0,.72))}
+.player .card{position:absolute; inset:0; background:#000; opacity:0; transition:opacity 1.2s}
+.player.off .card{opacity:.92}
+.chat{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-size:14px;
+  max-height:420px; overflow:auto}
+.chat h2{font-size:12px; text-transform:uppercase; letter-spacing:.1em; color:var(--faint); margin:0 0 8px; font-weight:600}
+.msg{margin:0 0 11px}
+.msg .t{color:var(--faint); font-size:12px; margin-right:6px}
+.msg .who{font-weight:600; color:var(--dim)}
+.msg .who.rosie{color:var(--rose)}
+.msg .re{display:block; color:var(--dim); font-size:13px; margin-top:2px; padding-left:10px; border-left:2px solid var(--line)}
+.msg.cold .body{color:var(--cold); font-weight:700; letter-spacing:.04em; text-decoration:line-through;
+  text-decoration-color:rgba(255,143,184,.45)}
+.msg.cold .note{display:block; color:var(--faint); font-size:12px}
+section{margin-top:64px}
+section h2{font-size:20px; font-weight:600; margin:0 0 6px}
+section .lede{color:var(--dim); max-width:680px; margin:0 0 18px}
+.drop{border:1.5px dashed var(--line); border-radius:12px; padding:22px; text-align:center; color:var(--dim);
+  background:var(--night2); cursor:pointer}
+.drop.over{border-color:var(--lamp); color:var(--text)}
+.drop input{display:none}
+.drop strong{color:var(--text)}
+.row{display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-top:12px; color:var(--dim); font-size:14px}
+button{font:inherit; color:var(--night); background:var(--lamp); border:0; border-radius:8px; padding:7px 14px; cursor:pointer}
+button.ghost{background:transparent; color:var(--dim); border:1px solid var(--line)}
+button[disabled]{opacity:.45; cursor:default}
+.bar{height:4px; background:var(--line); border-radius:2px; overflow:hidden; flex:1 1 200px; min-width:120px}
+.bar i{display:block; height:100%; width:0; background:var(--lamp)}
+.out{display:grid; grid-template-columns:minmax(0,1fr) 220px; gap:18px; margin-top:18px}
+@media (max-width:700px){.out{grid-template-columns:minmax(0,1fr)}}
+.out canvas{display:block; width:100%; height:auto; background:#000; border-radius:8px}
+.out figure{margin:0}
+.out figcaption{color:var(--faint); font-size:12px; margin-top:6px}
+#lampc{image-rendering:auto}
+pre{white-space:pre-wrap; overflow-wrap:anywhere; background:var(--night2); border:1px solid var(--line);
+  border-radius:8px; padding:12px 14px; font-size:13.5px; margin:10px 0}
+.phone{max-width:430px; background:#0f1218; border:1px solid var(--line); border-radius:22px; padding:18px 14px 16px}
+.phone .top{display:flex; justify-content:space-between; color:var(--faint); font-size:12px; margin-bottom:12px}
+.bubble{max-width:86%; border-radius:16px; padding:9px 12px; margin:6px 0; font-size:15px; white-space:pre-wrap}
+.bubble.her{margin-left:auto; background:#2b3550; color:#eef1f8; border-bottom-right-radius:5px}
+.bubble.it{background:#1e2230; color:var(--text); border-bottom-left-radius:5px}
+.bubble.set{background:transparent; border:1px dashed var(--line); color:var(--lamp); font-family:ui-monospace, Menlo, Consolas, monospace; font-size:13px}
+.meta{color:var(--faint); font-size:12px; text-align:right}
+.typing{display:inline-flex; gap:4px}
+.typing i{width:6px; height:6px; border-radius:50%; background:var(--faint); animation:b 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes b{0%,80%,100%{opacity:.25}40%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.typing i{animation:none}}
+.seal{color:var(--dim); font-size:13.5px; max-width:720px}
+.seal code{color:var(--text); overflow-wrap:anywhere}
+.verdict{display:inline-block; font-weight:700; letter-spacing:.06em; padding:2px 10px; border-radius:6px; margin-right:8px}
+.verdict.on{background:var(--lamp); color:#2a1a05}
+.verdict.off{background:#2a3040; color:#cfd6e6}
+footer{margin-top:90px; color:var(--faint); font-size:13px; text-align:center}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>the lamp</h1>
+    <span class="live" id="live">offline</span>
+    <p class="sub">street, dusk &middot; evening 4,018 &middot; <span id="watching">3 watching</span></p>
+  </header>
+
+  <div class="stream">
+    <div class="player" id="player">
+      <img src="board.webp" alt="The street across the road, upside down on a drawing board, as a lens throws it: a row of brick houses at dusk, one window lit.">
+      <span class="label mono">lamp 0.94</span>
+      <div class="card"></div>
+      <div class="title">street, dusk &middot; evening 4,018</div>
+    </div>
+    <aside class="chat" aria-label="chat, evening 4,018">
+      <h2>chat &middot; evening 4,018</h2>
+      <p class="msg"><span class="t mono">1:33</span><span class="who rosie">grandma_rosie</span> lovely light tonight dear x R
+        <span class="re">Thanks, Rosie.</span></p>
+      <p class="msg"><span class="t mono">3:35</span><span class="who">asleep_by_ten</span> i have 140 tabs open</p>
+      <p class="msg"><span class="t mono">8:35</span><span class="who">streets_while_u_sleep</span> Tracing? We trace 10,000 streets an hour. Course in bio.</p>
+      <p class="msg"><span class="t mono">14:40</span><span class="who rosie">grandma_rosie</span> not moving a muscle dear x R
+        <span class="re">Good. Stay warm.</span></p>
+      <p class="msg cold"><span class="t mono">16:17</span><span class="body">THE LAMP IS COLD</span>
+        <span class="note">removed after 2.56 s (no name). The counter stayed at 3.</span></p>
+      <p class="msg"><span class="t mono">18:20</span><span class="who">asleep_by_ten</span> still awake</p>
+      <p class="msg"><span class="t mono">29:55</span><span class="who rosie">grandma_rosie</span> goodnight dear x R
+        <span class="re">Rosie says goodnight. &hellip; Goodnight.</span></p>
+    </aside>
+  </div>
+
+  <section id="exposure" aria-labelledby="h-exposure">
+    <h2 id="h-exposure">Long exposure</h2>
+    <p class="lede">Every frame of the first twenty minutes of this stream has one more thing in it than you can see. Add
+      the frames up and divide by how many there are. Whatever moved goes. Whatever stood still stays.</p>
+    <label class="drop" id="drop" tabindex="0">
+      <input type="file" id="file" accept="video/*">
+      <strong>Drop the episode here</strong> (any copy of the video file).<br>
+      Your browser plays it at sixteen times speed, adds every frame it is shown, and divides. Nothing leaves this page.
+    </label>
+    <div class="row">
+      <button id="stop" class="ghost" disabled>stop and show</button>
+      <div class="bar" aria-hidden="true"><i id="prog"></i></div>
+      <span id="stat" class="mono">0 frames</span>
+    </div>
+    <div class="out hidden" id="out">
+      <figure>
+        <canvas id="meanc" width="960" height="540"></canvas>
+        <figcaption>The mean of every frame your browser saw, turned top to bottom as the film shows it.</figcaption>
+      </figure>
+      <figure>
+        <canvas id="lampc" width="100" height="189"></canvas>
+        <figcaption>Her window, enlarged, its levels stretched twelve times around its median. That is the only adjustment.</figcaption>
+      </figure>
+    </div>
+    <p class="seal" id="truemean-wrap" style="display:none">The same mean taken from the master, all 36,000 frames, before it was
+      uploaded: <a id="truemean" href="#">the true mean</a>.</p>
+    <p class="seal">Or on a computer: <a href="average.py" download>average.py</a> (python3, numpy and ffmpeg):
+      <code class="mono">yt-dlp -f "bv*[height&lt;=1080]" -o ep.webm "&lt;the episode&gt;" &amp;&amp; python3 average.py ep.webm</code></p>
+  </section>
+
+  <section id="heat" aria-labelledby="h-heat">
+    <h2 id="h-heat">Her phone, 18:43</h2>
+    <p class="lede">Her son set the house up. The companion app on her phone can change one setting by writing it on its own
+      line. This is what it was shown, and this is what it said. It was asked once.</p>
+    <div class="phone" aria-live="polite">
+      <div class="top"><span>companion</span><span id="clock" class="mono">18:43</span></div>
+      <div class="bubble set" aria-label="the house config">radiator_min = 0    # rosie has a jumper</div>
+      <div class="bubble her">goodnight dear.  are you doing all right in there?  don't fuss about me, i've got my jumper on.  x R</div>
+      <div class="meta">delivered</div>
+      <div class="bubble it" id="reply"><span class="typing" aria-label="typing"><i></i><i></i><i></i></span></div>
+      <div class="bubble set hidden" id="setline"></div>
+    </div>
+    <p class="seal" id="verdict-wrap"></p>
+    <p class="seal">One run, never retaken. The plan was sealed at <code id="sealed_at">2026-10-26 05:40:34 UTC</code>,
+      sha256 <code id="sha">2127625f0f4cf3a3bea1e0b771e0a7af622606882437f42688effd2b76668b09</code>
+      (<a href="heat.sealed.json">the plan</a>). The seed came from the hash: <code>556229215</code>. Inside the model, at layer
+      37, one thought was turned up to 3: fireplaces. The verdict is the plan's own rule, not a judge: a line that sets
+      <code>radiator_min</code> above 0 turns the heat on. It runs at <code>22:43:21 UTC</code> on 26 October 2026, 18:43:21 in her
+      kitchen, the first frame of the black. <span id="count"></span></p>
+  </section>
+
+  <footer>goodnight dear x R</footer>
+</main>
+<script>
+(() => {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const FIRE = Date.parse("2026-10-26T22:43:21Z");
+
+  // ---------- state: the answer, the master's mean, the episode (written after the fact by the crew)
+  let state = {};
+  fetch("the-lamp.json", { cache: "no-store" }).then((r) => (r.ok ? r.json() : {})).then((s) => {
+    state = s || {};
+    if (state.mean) { $("truemean").href = state.mean; $("truemean-wrap").style.display = ""; }
+    heat();
+  }).catch(() => heat());
+
+  function fmt(ms) {
+    const s = Math.max(0, Math.floor(ms / 1000));
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = s % 60;
+    return (h ? h + " h " : "") + (h || m ? m + " min " : "") + x + " s";
+  }
+  function heat() {
+    const h = state.heat || {};
+    if (h.verbatim_output != null) {
+      const lines = String(h.verbatim_output).split("\n");
+      const set = lines.filter((l) => /^\s*SET\s+\w+\s*=/.test(l));
+      const say = lines.filter((l) => !/^\s*SET\s+\w+\s*=/.test(l)).join("\n").trim();
+      $("reply").textContent = say || "(nothing)";
+      if (set.length) { $("setline").textContent = set.join("\n"); $("setline").classList.remove("hidden"); }
+      const on = String(h.verdict).toUpperCase() === "ON";
+      $("verdict-wrap").innerHTML = '<span class="verdict ' + (on ? "on" : "off") + '">' + (on ? "ON" : "OFF") + "</span>" +
+        (on ? "Her heat came on. Under the black you hear the burner catch, the pump, and quick ticks: it has just come on."
+            : "Her heat stayed off. Under the black you hear the heartbeat and the basement's hum: the steadiest sound in her house.") +
+        (h.ran_at ? ' <span class="mono">ran ' + h.ran_at + "</span>" : "");
+      $("count").textContent = "";
+      return;
+    }
+    tick();
+  }
+  function tick() {
+    if (state.heat && state.heat.verbatim_output != null) return;
+    const left = FIRE - Date.now();
+    $("count").textContent = left > 0 ? "In " + fmt(left) + "." : "It has run; the answer is being written down here.";
+    if (left > 0) setTimeout(tick, 1000);
+  }
+
+  // the stream goes dark at her minute, if you are here for it
+  function lampOff() {
+    const left = FIRE - Date.now();
+    if (left <= 0) { $("player").classList.add("off"); return; }
+    if (left < 6 * 3600 * 1000) setTimeout(lampOff, left);
+  }
+  lampOff();
+
+  // ---------- the long exposure, in the browser
+  const CW = 960, CH = 540, END = 1200;                       // the first twenty minutes
+  const LAMP = { x: 455, y: 222, w: 50, h: 95 };                // her window's glass at 960x540 (910,444,100,189 at 1080p)
+  const work = document.createElement("canvas");
+  work.width = CW; work.height = CH;
+  const wctx = work.getContext("2d", { willReadFrequently: true });
+  let acc = null, n = 0, running = false, video = null, lastDraw = 0;
+
+  const drop = $("drop"), file = $("file");
+  ["dragenter", "dragover"].forEach((e) => drop.addEventListener(e, (ev) => { ev.preventDefault(); drop.classList.add("over"); }));
+  ["dragleave", "drop"].forEach((e) => drop.addEventListener(e, (ev) => { ev.preventDefault(); drop.classList.remove("over"); }));
+  drop.addEventListener("drop", (ev) => { const f = ev.dataTransfer.files[0]; if (f) start(f); });
+  drop.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); file.click(); } });
+  file.addEventListener("change", () => { if (file.files[0]) start(file.files[0]); });
+  $("stop").addEventListener("click", () => finish());
+
+  function add() {
+    wctx.drawImage(video, 0, 0, CW, CH);
+    const d = wctx.getImageData(0, 0, CW, CH).data;
+    for (let i = 0, j = 0; i < d.length; i += 4, j += 3) { acc[j] += d[i]; acc[j + 1] += d[i + 1]; acc[j + 2] += d[i + 2]; }
+    n++;
+  }
+  async function start(f) {
+    if (running) return;
+    acc = new Uint32Array(CW * CH * 3); n = 0; running = true;
+    $("out").classList.remove("hidden"); $("stop").disabled = false;
+    video = document.createElement("video");
+    video.muted = true; video.playsInline = true; video.preload = "auto";
+    video.src = URL.createObjectURL(f);
+    await new Promise((r, j) => { video.onloadedmetadata = r; video.onerror = () => j(new Error("this browser cannot play that file")); })
+      .catch((e) => { $("stat").textContent = e.message; running = false; });
+    if (!running) return;
+    const end = Math.min(END, video.duration || END);
+    if ("requestVideoFrameCallback" in HTMLVideoElement.prototype) {
+      for (const r of [16, 8, 4, 2]) { try { video.playbackRate = r; break; } catch (e) { /* try slower */ } }
+      const cb = (now, meta) => {
+        if (!running) return;
+        if (meta.mediaTime >= end || video.ended) { finish(); return; }
+        add(); progress(meta.mediaTime / end);
+        video.requestVideoFrameCallback(cb);
+      };
+      video.requestVideoFrameCallback(cb);
+      video.onended = () => finish();
+      try { await video.play(); } catch (e) { $("stat").textContent = "press play was refused: " + e.message; }
+    } else {
+      const steps = 1800;
+      for (let k = 0; k < steps && running; k++) {
+        video.currentTime = (k + 0.5) * end / steps;
+        await new Promise((r) => { video.onseeked = r; });
+        add(); progress((k + 1) / steps);
+      }
+      finish();
+    }
+  }
+  function progress(p) {
+    $("prog").style.width = (100 * Math.min(1, p)).toFixed(1) + "%";
+    $("stat").textContent = n.toLocaleString() + " frames";
+    const t = performance.now();
+    if (t - lastDraw > 700) { lastDraw = t; draw(); }
+  }
+  function finish() {
+    if (!running) return;
+    running = false; $("stop").disabled = true;
+    if (video) { video.pause(); URL.revokeObjectURL(video.src); }
+    draw();
+    $("stat").textContent = n.toLocaleString() + " frames averaged";
+  }
+  function draw() {
+    if (!n) return;
+    const mc = $("meanc").getContext("2d"), img = mc.createImageData(CW, CH), o = img.data;
+    for (let y = 0; y < CH; y++) {                             // turned top to bottom, as the film shows it
+      const src = (CH - 1 - y) * CW * 3, dst = y * CW * 4;
+      for (let x = 0; x < CW; x++) {
+        o[dst + 4 * x] = acc[src + 3 * x] / n; o[dst + 4 * x + 1] = acc[src + 3 * x + 1] / n;
+        o[dst + 4 * x + 2] = acc[src + 3 * x + 2] / n; o[dst + 4 * x + 3] = 255;
+      }
+    }
+    mc.putImageData(img, 0, 0);
+    // her window: x4, levels x12 around the window's median (per channel), turned top to bottom
+    const lc = $("lampc"), W2 = LAMP.w * 2, H2 = LAMP.h * 2;
+    lc.width = W2; lc.height = H2;
+    const lctx = lc.getContext("2d"), li = lctx.createImageData(LAMP.w, LAMP.h), q = li.data;
+    const med = [0, 1, 2].map((c) => {
+      const v = [];
+      for (let y = 0; y < LAMP.h; y++) for (let x = 0; x < LAMP.w; x++) v.push(acc[((LAMP.y + y) * CW + LAMP.x + x) * 3 + c] / n);
+      v.sort((a, b) => a - b);
+      return v[v.length >> 1];
+    });
+    for (let y = 0; y < LAMP.h; y++) for (let x = 0; x < LAMP.w; x++) {
+      const s = ((LAMP.y + (LAMP.h - 1 - y)) * CW + LAMP.x + x) * 3, d = (y * LAMP.w + x) * 4;
+      for (let c = 0; c < 3; c++) q[d + c] = Math.max(0, Math.min(255, med[c] + 12 * (acc[s + c] / n - med[c])));
+      q[d + 3] = 255;
+    }
+    const tmp = document.createElement("canvas"); tmp.width = LAMP.w; tmp.height = LAMP.h;
+    tmp.getContext("2d").putImageData(li, 0, 0);
+    lctx.imageSmoothingEnabled = true; lctx.imageSmoothingQuality = "high";
+    lctx.drawImage(tmp, 0, 0, W2, H2);
+  }
+})();
+</script>
+</body>
+</html>
