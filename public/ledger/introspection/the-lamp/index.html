@@ -150,6 +150,8 @@ footer{margin-top:90px; color:var(--faint); font-size:13px; text-align:center}
         <figcaption>Her window, enlarged, its levels stretched twelve times around its median. That is the only adjustment.</figcaption>
       </figure>
     </div>
+    <p class="seal" id="ep-wrap" style="display:none">The episode: <a id="ep" href="#" rel="noreferrer">watch it, or download it</a>
+      and drop the file above.</p>
     <p class="seal" id="truemean-wrap" style="display:none">The same mean taken from the master, all 36,000 frames, before it was
       uploaded: <a id="truemean" href="#">the true mean</a>.</p>
     <p class="seal">Or on a computer: <a href="average.py" download>average.py</a> (python3, numpy and ffmpeg):
@@ -190,6 +192,7 @@ footer{margin-top:90px; color:var(--faint); font-size:13px; text-align:center}
   fetch("the-lamp.json", { cache: "no-store" }).then((r) => (r.ok ? r.json() : {})).then((s) => {
     state = s || {};
     if (state.mean) { $("truemean").href = state.mean; $("truemean-wrap").style.display = ""; }
+    if (state.episode && /^https:\/\//.test(state.episode)) { $("ep").href = state.episode; $("ep-wrap").style.display = ""; }
     heat();
   }).catch(() => heat());
 
