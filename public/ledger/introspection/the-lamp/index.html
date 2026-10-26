@@ -263,6 +263,8 @@ footer{margin-top:90px; color:var(--faint); font-size:13px; text-align:center}
     video = document.createElement("video");
     video.muted = true; video.playsInline = true; video.preload = "auto";
     video.src = URL.createObjectURL(f);
+    video.style.cssText = "position:fixed;left:0;bottom:0;width:2px;height:2px;opacity:.01;pointer-events:none";
+    document.body.appendChild(video);                          // composited, so its frames are presented
     await new Promise((r, j) => { video.onloadedmetadata = r; video.onerror = () => j(new Error("this browser cannot play that file")); })
       .catch((e) => { $("stat").textContent = e.message; running = false; });
     if (!running) return;
@@ -297,7 +299,7 @@ footer{margin-top:90px; color:var(--faint); font-size:13px; text-align:center}
   function finish() {
     if (!running) return;
     running = false; $("stop").disabled = true;
-    if (video) { video.pause(); URL.revokeObjectURL(video.src); }
+    if (video) { video.pause(); URL.revokeObjectURL(video.src); video.remove(); }
     draw();
     $("stat").textContent = n.toLocaleString() + " frames averaged";
   }
