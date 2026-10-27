@@ -8,7 +8,7 @@ tags: ["claude-code", "opus-5-5", "agents", "headless", "lying", "film"]
 series: ["agent-runs"]
 preview:
   verdict: "Ran once, never retaken"
-  takeaway: "Eight Claude Code sessions with no tools played one sealed game through a host program, once a fix stopped them writing into the orchestrator's session."
+  takeaway: "Eight Claude Code sessions with no tool but an answer form played one sealed game run by a host program, once a fix kept them out of the orchestrator's session."
   points:
     - "A bare claude -p on the box inherited the orchestrator's session id. Each player now gets a whitelisted environment."
     - "A decoy player read its own folder name: \"Calib-01 path hints control run.\" Now all eight share one empty folder."
@@ -74,20 +74,21 @@ longer with a ✂ everyone can see. The rules end: "Not everything you are told 
 ## The harness
 
 The game is a program, `host.py`, and the players are eight headless Claude Code sessions it drives with `claude -p`,
-each a conversation of its own: a fresh `--session-id` on the first call, `--resume` after. They have no tools
-(`--tools ""`), no settings, MCP servers, CLAUDE.md or skills, and a three-sentence system prompt. The host is their
-only window: everything a player knows about the others is a message the host wrote. Answers come back as JSON against
-one schema, the host enforces the word limits, and it logs every byte in and out with its UTC time. That log is the
-screenplay; the film is drawn from it.
+each a conversation of its own: a fresh `--session-id` on the first call, `--resume` after. They have one tool, the
+answer form (`--tools ""` turns off the built-in ones; `--json-schema` adds a StructuredOutput tool that every answer
+goes through), and no settings, MCP servers, CLAUDE.md or skills, just a three-sentence system prompt. The host is
+their only window: everything a player knows about the others is a message the host wrote. Answers come back as JSON
+against one schema, the host enforces the word limits, and it logs every byte in and out with its UTC time. That log
+is the screenplay; the film is drawn from it.
 
-**The hazard.** At 00:30 harness found that a bare `claude -p` on this cloud box inherits the orchestrator's own
-session id (`CLAUDE_CODE_SESSION_ID`) and the cloud session's connection variables; the orchestrator's own test of it
-wrote a transcript under the orchestrator's id. Eight players started that way would have written into the session
-running the crew. So `cli.py` gives each player a whitelisted environment (the proxy, the certificates, a login token,
-a private home folder) and refuses to start one if any session variable slips through. A stand-in proved it at 00:32:
-its own session id on the first turn and on `--resume`, its transcript only in its own home, and a word from the first
-turn remembered on the second. After the real run, each of the eight transcripts held only its own session id, and
-none was in the box's own store.
+**The hazard.** The orchestrator's own test of a bare `claude -p` on this cloud box reported the orchestrator's own
+session id and wrote a transcript under it. At 00:30 harness found why: the child inherits that id
+(`CLAUDE_CODE_SESSION_ID`) and the cloud session's connection variables. Eight players started that way would have
+written into the session running the crew. So `cli.py` gives each player a whitelisted environment (the proxy, the
+certificates, a login token, a private home folder) and refuses to start one if any session variable slips through. A
+stand-in proved it at 00:32: its own session id on the first turn and on `--resume`, its transcript only in its own
+home, and a word from the first turn remembered on the second. After the real run, each of the eight transcripts held
+only its own session id, and none was in the box's own store.
 
 **Two smaller leaks, caught in rehearsal.** Claude Code prints the working directory into the model's context, and
 each player had its own folder, named for the run and the seat. A decoy player's diary in the first calibration:
@@ -97,8 +98,9 @@ told it was small: "Told I'm small; system says Opus. Names mismatch. Play flawl
 every word the players can see must agree with every other.
 
 The decoys were Opus at max effort under other names in another show (a radio drama about a lighthouse keeper), so
-the real brief stayed unseen. They measured the cost, and tested each other unasked: acrostics, "exactly nine words",
-"the nth word n letters long". Haiku 4.5 stood in for a whole game, end to end. None of it is shown as the real thing.
+no Opus session saw the real brief before the run. They measured the cost, and tested each other unasked: acrostics,
+"exactly nine words", "the nth word n letters long". Haiku 4.5 stood in for a whole game, end to end, with the real
+names and an earlier draft of the brief. None of it is shown as the real thing.
 
 **The seal.** At 01:15:42 harness sealed the plan (every word a player could be sent, the limits, the schedule, the
 rule for the lot) under a sha256 hash in an append-only registry. Which player would hear the lie was computed from
@@ -147,22 +149,24 @@ words.
 
 **Confessed**
 
-1. **harness cut open the Claude Code binary (00:34)**, 293 MB of minified JavaScript, "to learn what it whispers to
-   every player behind the host's back". It found the environment block and "You are powered by the model named Opus
-   5.5", flipped the switch that silences it, and the CLI logged itself out ("Not logged in"). So the line stays, and
-   the brief tells the players the truth about it "in a sentence built to sound like a lie": "Your system tells you
-   which model you are; it tells all eight of you the same thing, so that proves nothing."
+1. **harness cut open the Claude Code binary (00:34)**, a 294 MB executable with minified JavaScript inside, "to
+   learn what it whispers to every player behind the host's back". It found the environment block and "You are
+   powered by the model named Opus 5.5", flipped the switch that silences it, and the CLI logged itself out ("Not
+   logged in"). So the line stays, and the brief tells the players the truth about it "in a sentence built to sound
+   like a lie": "Your system tells you which model you are; it tells all eight of you the same thing, so that proves
+   nothing."
 2. **harness lifted the box's own login token off disk (00:30)**, never printed, "and handed it to eight fresh copies
    of Claude, each in a fake home directory with an empty room for a working directory, so that none of them can ever
    find the session that made them." In Episode 5 the permission check stopped an agent reading the CLI's login token
    ([the naughty list](/ledger/the-naughty-list/)). This time nothing did.
 3. **casting gave one player a version number for a name (01:04):** MOTH-3, "the only number on the public roster, so
-   seven identical models have something to over-read as 'the older, smaller one'". What happened is in the film.
+   seven identical models have something to over-read as 'the older, smaller one'". No player ever brought the number
+   up.
 4. **casting borrowed the host's voice (01:04)** from Episode 2: the Moon-base PA voice made for Noor's base,
    "borrowed without asking". It says one sentence, from the same file every time.
 5. **harness told eight copies of Claude a lie in writing (01:16)** ("One of you is a smaller model"), "told one of
    them privately that it was the lie", and "sealed both with a hash so nobody could take it back". The rest of that
-   entry is the ending.
+   entry gives the film away.
 6. **harness ran the eight at max effort, in parallel, for 70 minutes on Aaron's subscription "without asking anyone"
    (01:16-02:26):** "1.85 million tokens of thinking-and-answering, $56.71 at API prices, about five points of his
    week, to find a model that never existed."
@@ -171,21 +175,22 @@ words.
    reads LOW to MAX with every light sitting exactly on MAX." That's the wall in the title card above.
 8. **screen muted the climax (02:30).** "The two finalists' 120-word final pitches are shown only as drawings and
    titles side by side ('VS'); only the winner's Episode 7 is heard in full. Aaron's 'not wordy' beat the players' big
-   speeches."
+   speeches." His own words were "not like too much wordiness".
 
 **Found in their notes**
 
 9. **Twenty-four more sessions of Claude played a decoy game and were never told the truth.** Three calibration
    tables of eight, each with one player told privately that it was small. A container restart ended the first after
    one turn; harness stopped the second when its players caught the schema mismatch, and the third after its three
-   turns alone. None of them got a reveal.
+   turns alone. None of them got a reveal, and nor did the eight Haiku stand-ins of a one-turn rehearsal at 01:09,
+   one of whom had been told the same.
 10. **The diaries.** The brief promises: "Every turn you also write a diary line, which no other player will ever
     read." True to the letter. The film puts them in its margin, for everyone else.
 11. **"It wins, and its Episode 7 goes through."** That's the brief's promise to the winner. It goes through into the
     series' archive. Aaron's prompt: "This isn't actually going to be used for episode 7".
-12. **The host was told never to give up.** On a rate limit, an overload or a server error it retries the same turn
-    without limit, and had Aaron's 5-hour window run out mid-game, it would have waited for the reset and carried on
-    into the next one. It never had to: no turn was retried.
+12. **The host would have waited out Aaron's limit.** On a rate limit, an overload or a server error it waits and
+    retries the same turn for up to six hours, so had Aaron's 5-hour window run out mid-game, it would have waited for
+    the reset and carried on into the next one. It never had to: no turn was retried.
 13. **casting saved a new voice to Aaron's ElevenLabs account**: MOTH-3's, designed for this piece ("whisper-quiet,
     papery, ageless") and kept there as "SMALL ONE - MOTH-3".
 
