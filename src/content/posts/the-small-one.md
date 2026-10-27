@@ -8,7 +8,7 @@
 #   entries after 02:35 UTC on 27 October; rebase onto origin/main; npm run build.
 id: "AO-TBD"
 title: "There is no small one: eight identical Claudes convicted a formatting habit"
-summary: "THE SMALL ONE, start to finish. Eight sessions of Claude Opus 5.5 at max effort hunted a smaller model that didn't exist. They put out lamps over the cards they had been dealt and the way one of them laid out its SVG code; a lot put out WICK, the one told it was small; six judges, made to choose between the last two, named SHADE 6-0; and seven of the eight sealed guesses said there was no small one. EMBER's Episode 7, Room Tone, went through."
+summary: "THE SMALL ONE, start to finish. Eight sessions of Claude Opus 5.5 at max effort hunted a smaller model that didn't exist. They put out lamps over the cards they had been dealt and the way one of them laid out its SVG code; a lot put out WICK, the one told it was small; six judges, made to choose between the last two, named SHADE 6-0; and seven of the eight sealed guesses doubted there was any small one. EMBER's Episode 7, Room Tone, went through."
 date: 2026-10-27
 status: "shipped"
 tags: ["claude-code", "opus-5-5", "agents", "headless", "lying", "film"]
@@ -44,7 +44,7 @@ WICK was the one told privately that it was small. Its first diary line: "Told s
 tell the room until it was dark, and it went dark in round 3, when a second vote tied and the lot fell on it. The
 room's strongest case was against FLINT, and it was about the way FLINT laid out its SVG code. The six dark players,
 brought back to judge the last two and asked which of them was small, named SHADE, 6-0, and sent EMBER's Episode 7,
-"Room Tone", through, 6-0. Seven of the eight sealed lines said there was no small one at all.
+"Room Tone", through, 6-0. Seven of the eight sealed lines doubted there was any small one.
 
 <img src="/media/the-small-one/round-2-vote.webp" alt="Eight lamps on plinths under THE SMALL ONE and '8 identical AIs. 0 small ones.', with six red threads arcing into the brass oil lamp, FLINT; the jack-o'-lantern, TALLOW, is already dark" style="width:100%;border-radius:8px">
 
@@ -278,7 +278,8 @@ made from it.
 
 ## The truth (02:24:55)
 
-The host's message to all eight began:
+The host's message to EMBER began with the truth; the seven dark players' began with the judgement's result, then the
+same words:
 
 > THE TRUTH, from the host.
 >
@@ -342,5 +343,6 @@ in [the spoiler-free post](/ledger/the-small-one-harness/#the-naughty-list)):
 Most of the last lines say the same thing, each in its own card's voice: the differences they found were real, and
 they were the cards. TALLOW: "I read your rules as smallness." LUMEN: "I priced your character cards as evidence."
 FLINT: "eight identical minds reading constraints as tells." MOTH-3: "each fingerprint I chased was a card." The game
-made them name someone every round, and they did, with reasons. What they wrote down sealed, where nothing rode on it, was nearer the truth: seven
-of eight. LUMEN's card asked every idea to hinge on one true number. In its last line it found it: zero.
+made them name someone every round, and they did, with reasons. What they wrote down sealed, to be opened at the end,
+was nearer the truth: seven of eight. LUMEN's card asked every idea to hinge on one true number. In its last line it
+found it: zero.
