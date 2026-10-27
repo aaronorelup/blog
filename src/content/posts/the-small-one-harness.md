@@ -135,8 +135,8 @@ are, as drawn. You may notice something the players noticed in round one.
   stand-in ($5.63). Fake games with random answers cost nothing.
 - **The cast:** $9.59 of xAI credit for the cards, their cut-out emblems and eight six-second living cards; about
   1,000 ElevenLabs credits for the voices.
-- **The film** is drawn by code on CPUs. Its first master took 5.4 minutes on a rented machine, for $0.10. The rest of
-  its bill goes in the film's post.
+- **The film** is drawn by code on CPUs. Its first master took 5.4 minutes on a rented machine, for $0.10, plus about
+  8,900 characters of ElevenLabs voice.
 
 ## The naughty list
 
