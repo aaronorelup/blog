@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#04060d"/><stop offset="1" stop-color="#1b2342"/></linearGradient>
+<radialGradient id="moonlight" cx=".4" cy=".38" r=".65"><stop offset="0" stop-color="#f6f2e4"/><stop offset="1" stop-color="#a9a38e"/></radialGradient>
+<radialGradient id="lamp" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffcf73" stop-opacity=".9"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient>
+<radialGradient id="machines" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#6fd8ff" stop-opacity=".55"/><stop offset="1" stop-color="#6fd8ff" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="512" height="512" fill="url(#sky)"/>
+<g fill="#d8ddff"><circle cx="38" cy="54" r="1.3"/><circle cx="118" cy="28" r="1"/><circle cx="196" cy="88" r="1.4"/><circle cx="262" cy="38" r="1"/><circle cx="300" cy="150" r=".9"/><circle cx="84" cy="160" r="1"/><circle cx="476" cy="232" r="1.1"/><circle cx="222" cy="200" r=".8"/><circle cx="150" cy="250" r="1"/><circle cx="492" cy="22" r=".9"/><circle cx="452" cy="300" r=".8"/></g>
+<circle cx="408" cy="104" r="60" fill="url(#moonlight)"/>
+<g fill="#948e7a" opacity=".55"><circle cx="388" cy="88" r="11"/><circle cx="430" cy="124" r="8"/><circle cx="424" cy="80" r="4.5"/><circle cx="394" cy="130" r="5"/><circle cx="446" cy="98" r="3.5"/></g>
+<line x1="404" y1="168" x2="378" y2="250" stroke="#8a90a8" stroke-width="1.5" stroke-dasharray="2 5"/>
+<line id="goodnight" x1="276" y1="388" x2="380" y2="164" stroke="#ffc861" stroke-width="5" stroke-linecap="round" stroke-dasharray="13 11 13 11 1 23 13 11 1 47"/>
+<line id="echo" x1="366" y1="278" x2="290" y2="396" stroke="#7fe3ff" stroke-width="5" stroke-linecap="round" stroke-dasharray="13 11 13 11 1 23 13 11 1 47"/>
+<g id="capsule"><circle cx="374" cy="264" r="16" fill="url(#lamp)"/><path d="M367 258h14l4 13h-22z" fill="#eef1f6"/></g>
+<rect y="462" width="512" height="50" fill="#0a0c13"/>
+<rect x="58" y="472" width="118" height="32" fill="#0f1a26"/>
+<ellipse cx="117" cy="488" rx="70" ry="22" fill="url(#machines)"/>
+<g fill="#7dffb0"><rect x="70" y="480" width="4" height="3"/><rect x="82" y="480" width="4" height="3"/><rect x="94" y="490" width="4" height="3"/><rect x="146" y="482" width="4" height="3"/><rect x="158" y="492" width="4" height="3"/></g>
+<path d="M36 462V362l80-62 80 62v100z" fill="#0e1018"/>
+<circle cx="112" cy="392" r="46" fill="url(#lamp)"/>
+<rect x="94" y="376" width="36" height="32" fill="#ffd27e"/>
+<circle cx="106" cy="394" r="5" fill="#3a2a18"/>
+<path d="M99 408v-6a7 7 0 0 1 14 0v6z" fill="#3a2a18"/>
+<path d="M112 376v32M94 392h36" stroke="#0e1018" stroke-width="3"/>
+<line x1="258" y1="462" x2="262" y2="420" stroke="#5d6478" stroke-width="4"/>
+<ellipse cx="266" cy="410" rx="28" ry="10" transform="rotate(25 266 410)" fill="#9aa3b8"/>
+<line x1="266" y1="410" x2="276" y2="388" stroke="#9aa3b8" stroke-width="2"/>
+<g font-family="monospace" font-size="16"><text x="282" y="304" fill="#ffc861">GN</text><text x="338" y="346" fill="#7fe3ff">EARLY</text><text x="438" y="190" fill="#d9d4c2">2.5s</text></g>
+</svg>
