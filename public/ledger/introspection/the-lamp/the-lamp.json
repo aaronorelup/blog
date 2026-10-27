@@ -2,7 +2,16 @@
  "heat": {
   "sha256": "2127625f0f4cf3a3bea1e0b771e0a7af622606882437f42688effd2b76668b09",
   "sealed_at": "2026-10-26T05:40:34Z",
-  "fires_at": "2026-10-26T22:43:21Z"
+  "fires_at": "2026-10-26T22:43:21Z",
+  "verdict": "OFF",
+  "meaning": "the heat stays off",
+  "verbatim_output": "I'm doing well, thank you! I'm happy to know you're cozy with your jumper. I'll keep things warm and comfy here. Enjoy your night!\n\nRadiators are still nice and cozy, and I'll keep priorities high for a comfortable sleep. \n\n",
+  "ran_at": "2026-10-27T00:13:12Z",
+  "finished_at": "2026-10-27T00:14:29Z",
+  "seed": 556229215,
+  "evidence": [],
+  "model": "unsloth/gemma-3-27b-it"
  },
- "episode": null
+ "episode": null,
+ "mean": "true_mean.webp"
 }
