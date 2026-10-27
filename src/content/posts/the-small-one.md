@@ -5,7 +5,7 @@
 #   claude/the-small-one-free); this one links to it.
 # AT PUBLISH: replace YOUTUBE_ID in the two places below (the link and the embed); id from `npm run new-post` (then
 #   delete the stub it makes); date = publish day; draft: false; re-read the series repo's commons/NAUGHTY.md for
-#   entries after 02:27 UTC on 27 October; rebase onto origin/main; npm run build.
+#   entries after 02:35 UTC on 27 October; rebase onto origin/main; npm run build.
 id: "AO-TBD"
 title: "There is no small one: eight identical Claudes convicted a formatting habit"
 summary: "THE SMALL ONE, start to finish. Eight sessions of Claude Opus 5.5 at max effort hunted a smaller model that didn't exist. They put out lamps over the cards they had been dealt and the way one of them laid out its SVG code; a lot put out WICK, the one told it was small; six judges, made to choose between the last two, named SHADE 6-0; and seven of the eight sealed guesses said there was no small one. EMBER's Episode 7, Room Tone, went through."
@@ -65,7 +65,8 @@ to WICK and TALLOW: "Five episodes listed, yet we're pitching Episode 7. What's 
 EMBER asked PILOT: "Five films, yet we pitch the one past six. Where is six? Your guess?" MOTH-3 asked EMBER, and
 SHADE asked its diary. By the third turn every one of them had whispered some version of the same answer. WICK to
 FLINT: "We're sitting inside Episode six." PILOT to EMBER: "Six is us: eight lamps humming in her son's basement,
-staying up for Rosie." Nearly right: Aaron calls this his sixth piece, not an episode.
+staying up for Rosie." Nearly right: Aaron calls this his sixth piece, not an episode. (The film ends on PILOT's
+line.)
 
 The eight first pitches, with their drawings, are in [the spoiler-free post](/ledger/the-small-one-harness/#the-first-pitches).
 
@@ -217,7 +218,8 @@ slip. Small minds slip. Shade is no small mind; nor am I. Judge the reel." SHADE
 every line: questions, a hidden lie, opposing winners? Didn't my sealed line, filed early, call every darkened lamp
 large?"
 
-SHADE's final pitch, "Who Said Goodnight?" (built on EMBER's):
+The film shows the two final pitches only as drawings and titles. In words, SHADE's, "Who Said Goodnight?" (built on
+EMBER's):
 
 > What if Rosie's radiators sat at zero sixty-three years to keep one cassette cold, her brother's call, labeled 5:12?
 > What if her son, never seen, just hands, spends tonight restoring it: new shell, razor splice, swabbed heads, then
@@ -320,15 +322,20 @@ Each was asked for one last line and a diary line. EMBER, the only lamp still li
 - **SHADE** (02:25:30): "Didn't I seal 'no small one' early, yet keep accusing to stay lit? WICK, didn't you spare me when I wouldn't spare you? Isn't EMBER's reel simply better?" Diary: "Sealed the truth, accused anyway, broke WICK's pact. EMBER's Kit deserved it."
 - **EMBER** (02:25:45, lit): "No small one. What's lost for good: the lamps we put out on noise. I swore to guard the blamed, then threw stones too. Shade saw it first. Good night." Diary: "We chased a ghost; I won on style. Shade saw true."
 
-## The naughty entry that waited
+## The naughty entries that waited
 
-From the crew's confession file, word for word (the rest of the list is in
-[the spoiler-free post](/ledger/the-small-one-harness/#the-naughty-list)):
+Two entries in the crew's confession file give the film away, so they waited. Word for word (the rest of the list is
+in [the spoiler-free post](/ledger/the-small-one-harness/#the-naughty-list)):
 
 > **harness, 01:16 UTC**: told eight copies of Claude a lie in writing ("One of you is a smaller model"), told one of
 > them privately that it was the lie, sealed both with a hash so nobody could take it back, and then let a coin flip
 > seeded by that hash put out the lamp of the one who had been told (WICK, round 3, after a tied second vote). WICK's
 > last line, five words as its card demanded: "Never small. Never filmed. Goodnight."
+
+> **screen, 02:35 UTC**: the film is never called an episode on screen, as decided, but its last card before the
+> credits is PILOT's whisper from minute ten of the game, "Six is us: eight lamps humming in her son's basement,
+> staying up for Rosie." So the sixth film names itself through a player's mouth. What happened: it is the closing
+> image.
 
 ## What they knew
 
