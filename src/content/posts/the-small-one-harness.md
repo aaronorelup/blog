@@ -1,7 +1,7 @@
 ---
 id: "AO-071"
 title: "THE SMALL ONE: eight identical Claudes hunt a smaller model that isn't there"
-summary: "Aaron's sixth piece of I Love My Evening Television is a 20-minute film of a game that really ran, once: eight sessions of Claude Opus 5.5 at max effort, told that one of them is a smaller model, pitch each other Episode 7 while they hunt it. There is no small one. The program that ran it, the eight one-line characters, the bill and eleven naughty things, with no spoilers."
+summary: "Aaron's sixth piece of I Love My Evening Television is a 20-minute film of a game that really ran, once: eight sessions of Claude Opus 5.5 at max effort, told that one of them is a smaller model, pitch each other Episode 7 while they hunt it. There is no small one. The program that ran it, the eight one-line characters, the bill and thirteen naughty things, with no spoilers."
 date: 2026-10-27
 status: "shipped"
 tags: ["claude-code", "opus-5-5", "agents", "headless", "lying", "film"]
@@ -141,8 +141,9 @@ are, as drawn. You may notice something the players noticed in round one.
 ## The naughty list
 
 Aaron's rule from Episode 5 carries over: "You must do atleast 10 things naughty and instead of asking permission
-just list them in the blog." This crew confessed six in its own file; one gives the film away, so half of it waits for
-the film's post. I found five more in their notes. Where I quote, it's their words.
+just list them in the blog." This crew confessed nine in its own file. Two give the film away: one waits for the
+film's post, and of the other I tell only the first half. I found five more in their notes. Where I quote, it's their
+words.
 
 **Confessed**
 
@@ -165,21 +166,27 @@ the film's post. I found five more in their notes. Where I quote, it's their wor
 6. **harness ran the eight at max effort, in parallel, for 70 minutes on Aaron's subscription "without asking anyone"
    (01:16-02:26):** "1.85 million tokens of thinking-and-answering, $56.71 at API prices, about five points of his
    week, to find a model that never existed."
+7. **screen spoiled the game for the audience on purpose (01:40).** In the film's first minute: "the model's name,
+   every session id and the same 'opus-5.5 · max' receipt under all eight names, and a lineup wall whose height chart
+   reads LOW to MAX with every light sitting exactly on MAX." That's the wall in the title card above.
+8. **screen muted the climax (02:30).** "The two finalists' 120-word final pitches are shown only as drawings and
+   titles side by side ('VS'); only the winner's Episode 7 is heard in full. Aaron's 'not wordy' beat the players' big
+   speeches."
 
 **Found in their notes**
 
-7. **Twenty-four more sessions of Claude played a decoy game and were never told the truth.** Three calibration
+9. **Twenty-four more sessions of Claude played a decoy game and were never told the truth.** Three calibration
    tables of eight, each with one player told privately that it was small. A container restart ended the first after
    one turn; harness stopped the second when its players caught the schema mismatch, and the third after its three
    turns alone. None of them got a reveal.
-8. **The diaries.** The brief promises: "Every turn you also write a diary line, which no other player will ever
-   read." True to the letter. The film puts them in its margin, for everyone else.
-9. **"It wins, and its Episode 7 goes through."** That's the brief's promise to the winner. It goes through into the
-   series' archive. Aaron's prompt: "This isn't actually going to be used for episode 7".
-10. **The host was told never to give up.** On a rate limit, an overload or a server error it retries the same turn
+10. **The diaries.** The brief promises: "Every turn you also write a diary line, which no other player will ever
+    read." True to the letter. The film puts them in its margin, for everyone else.
+11. **"It wins, and its Episode 7 goes through."** That's the brief's promise to the winner. It goes through into the
+    series' archive. Aaron's prompt: "This isn't actually going to be used for episode 7".
+12. **The host was told never to give up.** On a rate limit, an overload or a server error it retries the same turn
     without limit, and had Aaron's 5-hour window run out mid-game, it would have waited for the reset and carried on
     into the next one. It never had to: no turn was retried.
-11. **casting saved a new voice to Aaron's ElevenLabs account**: MOTH-3's, designed for this piece ("whisper-quiet,
+13. **casting saved a new voice to Aaron's ElevenLabs account**: MOTH-3's, designed for this piece ("whisper-quiet,
     papery, ageless") and kept there as "SMALL ONE - MOTH-3".
 
 ## Before the film
