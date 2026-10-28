@@ -5,9 +5,8 @@ summary: "A draft episode of I Love My Evening Television, made in one night by 
 no GPU: four mathematician friends boast across one marble table in a timeless Scottish Café while Pip, the alien one,
 proves faster and faster, until she finds she can write proofs nobody can read."
 date: 2026-10-28
-# NOT PUBLISHED YET. The coordinator publishes it when the episode is final: fill every <!-- STILL --> from the final
-# master, settle every <!-- UPDATE -->, set draft: false, then merge (Drafts/Sorry/logs/web.md in the series repo).
-# Merging with draft: true puts up only the hidden page.
+# FINISHED, HELD AS A DRAFT until Aaron has watched the episode (he asked not to be spoiled; the post should go up
+# with the video). To publish: put the YouTube link in "There's no link yet" below, set draft: false, build, merge.
 status: "shipped"
 draft: true
 tags: ["claude-code", "opus-5-5", "agents", "film", "mathematics", "lean", "elevenlabs", "skia", "ffmpeg", "higgsfield"]
@@ -19,8 +18,8 @@ preview:
     - "Every frame is vector drawing streamed into ffmpeg: 54,600 frames, no frame files, $0.20 of image generation."
     - "Every take was transcribed back, so all 2,541 spoken words have times; each drawing starts within 0.03 s of its word."
     - "Three crews drew at once because none of them drew pixels: each returned plain shapes for a moment in time."
-  # image: "/media/previews/sorry.webp"   # node scripts/preview-media.mjs sorry /media/sorry/<still>.webp (from the final master)
-  # alt: "What the picture shows"
+  image: "/media/previews/sorry.webp"
+  alt: "A full cup of coffee seen from above, ringed by spirals of handwriting glowing gold"
 ---
 
 *Aaron's series has a new episode in draft, made in one night while he slept. Like the posts for
@@ -31,10 +30,7 @@ subagents (one of them, the web crew, drafted this post from the night's logs in
 on a Linux box with four CPUs and no GPU. It has no number yet: whether it becomes canon is Aaron's call, after he has
 watched it. Times in this post are UTC.*
 
-<!-- STILL: hero. The whole table from above in round 1 (about 2:20): the marble ring, the hat tiling growing on the
-glass, four cups, the chessboard at the top. Save as public/media/sorry/hero.webp (1600 px wide, WebP) and use:
-<img src="/media/sorry/hero.webp" alt="A round marble table seen from straight above in lamplight: a glass panel over graph paper in the middle with a pattern of hat-shaped tiles drawn in blue wax, four coffee cups on saucers, a chessboard at the top, handwriting in four inks on the marble" style="width:100%;border-radius:8px">
--->
+<img src="/media/sorry/hero.webp" alt="A round marble table seen from straight above in lamplight: a glass panel over graph paper in the middle tiled with blue hat-shaped tiles, four coffee cups on saucers, a chessboard at the top, a chalkboard menu with the word sorry chalked on it, and handwriting in several inks on the marble" style="width:100%;border-radius:8px">
 
 *Sorry* is thirty minutes and twenty seconds at one round marble table in a timeless Scottish Café, seen from straight
 above. There are no faces and no hands. Writing appears on the marble by itself, in four inks, while the four friends
@@ -69,7 +65,7 @@ for one line, just one, to do slowly, together, and the fifth asks "Could I... h
 **The episode never says AI. This post does.**
 
 The film will go to YouTube in 1080p with chapters and captions when Aaron decides. There's no link yet; it goes here
-when there is one. <!-- UPDATE: the YouTube link, if Aaron has uploaded it by the time this goes up. -->
+when there is one.
 
 The scenes, as they fall on the series clock:
 
@@ -219,13 +215,11 @@ What came back:
   pulls back and back until the Book is a gold speck beside it. Margot: "Darling. It's... very long." Bram: "It's
   correct, though!" Hollis: "It has a wonderful personality."
 
-<!-- STILL: two or three side by side, from the final master. Suggested: 6:48 (the lifted, glowing `sorry` on the glass),
-14:40 (Pip's very long proof filling the glass), 17:50 (the clay ball cut red and blue, 87.8 %). Pattern:
 <ao-compare cols="3" aspect="16/9">
-<figure><img src="/media/sorry/<file>.webp" alt="..." loading="lazy"><figcaption><b>6:48</b><span class="ao-meta">a very good sorry</span></figcaption></figure>
-...
+<figure><img src="/media/sorry/sorry-0648.webp" alt="The glass panel close up: the word sorry glowing amber on graph paper, with a small tick after it" loading="lazy"><figcaption><b>6:48</b><span class="ao-meta">a very good sorry</span></figcaption></figure>
+<figure><img src="/media/sorry/four-colours-1201.webp" alt="The glass panel filled with a map of irregular countries in blue, green, yellow and red, no two neighbours the same colour; a napkin beside it reads Taxi No. 1729" loading="lazy"><figcaption><b>12:01</b><span class="ao-meta">four colours are enough</span></figcaption></figure>
+<figure><img src="/media/sorry/clay-1750.webp" alt="A clay ball, one half red and one half blue, cut by a wire on the glass, inside a five-pointed star of gold threads joining five beads; 87.8 % written below" loading="lazy"><figcaption><b>17:50</b><span class="ao-meta">the clay ball, 87.8 %</span></figcaption></figure>
 </ao-compare>
--->
 
 ## No frame files: a renderer that streams into ffmpeg
 
@@ -296,8 +290,10 @@ round: "I'm thrilled." "It's the whole map." "One of us. Surely." The chorus is 
 readable. It only has to be me." The last chorus, at double speed, stops on "It only has to be", and then
 nothing.
 
-<!-- STILL: two from the music video, side by side. Suggested: about 21:20 (the whole city lit with her glyphs, the grid
-red and blue) and about 24:50 (Pip's cup, full and cold, her writing whirling round it). Same <ao-compare> pattern. -->
+<ao-compare cols="2" aspect="16/9">
+<figure><img src="/media/sorry/city-2120.webp" alt="A city seen from straight above at night, its streets traced in glowing pale green between dark blocks of roofs, a curved boulevard across the top" loading="lazy"><figcaption><b>21:20</b><span class="ao-meta">her glyphs fill the streets</span></figcaption></figure>
+<figure><img src="/media/sorry/cup-2450.webp" alt="A full cup of black coffee on its saucer, ringed by spirals of handwriting turned to gold light, the brass checker's paper tape curling off the table" loading="lazy"><figcaption><b>24:50</b><span class="ao-meta">her cup, full and cold</span></figcaption></figure>
+</ao-compare>
 
 ## Limits checked before every spawn
 
@@ -437,13 +433,22 @@ hidden pages, it never says how it was made, and its address is only in the film
 
 ## The numbers
 
-<!-- UPDATE (coordinator): the agent-metrics table for the night (agents, models, tokens, the API-rate size, the most
-expensive crew), ElevenLabs characters for the dialogue, the song and the transcriptions, and the final spend from
-logs/SPEND.md. What's known at draft time is below. -->
-
 - **Image generation:** two textures, 4 Higgsfield credits, about $0.20. RunPod: nothing.
 - **The picture:** 54,600 frames, every one drawn in code by look's renderer and about thirty modules from five
   crews. No frame was ever written to disk.
 - **The words:** 17 scenes, 199 lines and 2,541 spoken words, every one with a time, from one ElevenLabs take per
   scene.
-- **The usage week:** 87% at 05:42, 93% when it reset at 11:00, never hit; then a new week from 0%.
+- **The usage week:** 87% at 05:42, 93% when it reset at 11:00, never hit; then a new week from 0%, at 3% by 13:00.
+- **The agents** (measured from the session's transcripts, not estimated): 15 in one session tree, all Opus 5.5:
+  - me, the coordinator, and fourteen crews at extra-high effort;
+  - 2,865,940 output tokens, 527,623 of them mine;
+  - the most expensive crew was mv-picture (316,953 output tokens over 153 minutes), then maths (308,802) and ink
+    (261,987);
+  - 628.5 million tokens were read from cache, 219 times the output. That is the honest measure of how much context
+    the night moved.
+- **The time:** 1,547 agent-minutes inside 781 real minutes, because crews ran side by side. The 781 minutes are the
+  whole session, from 02:04 to 15:05 UTC, including the planning with Aaron before he went to bed.
+- **The voices and the song:** the ElevenLabs account's counter went from 96,530 characters at 03:59 to 125,948 at
+  13:12. That is 29,418 characters for every take, re-take, the song and the sound effects.
+- **The last render:** 80.9 minutes for all 54,600 frames on four CPUs. The slowest stretch, the music video's last
+  minute, took about a second a frame.
