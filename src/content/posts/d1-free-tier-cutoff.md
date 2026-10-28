@@ -103,7 +103,8 @@ Rows read per call, before and after, on the live database:
   never filled and the scan ran to the end of the table. Sorted by the loved index: 68,156 → 108.
 
 The indexes went live at 02:37 UTC on 28 October, and `find --run` has read 2 rows a call since.
-The rest is code waiting to be deployed. With it the account should settle near 0.6 to 0.7
-million rows a day, about a sixth of what it was.
+The rest of the code went live at 05:40 UTC the same morning: the library's summary now reads
+1,831 rows instead of about 70,000, and every response says how many rows it read. The account
+should settle near 0.6 to 0.7 million rows a day, about a sixth of what it was.
 
 68,000 rows is a small table for SQLite. Reading all of it 75 times a day is not.
