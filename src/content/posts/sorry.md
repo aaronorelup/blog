@@ -137,14 +137,15 @@ and committed its own files. The crews, in the order they started:
 | ink | everyone's handwriting: four hands, Pip's five levels, the title chalked on the menu, the bill | 07:00 |
 | maths | eleven animation modules in 3Blue1Brown's manner, each keyed to the words that call for it | 07:15 |
 | assemble | the whole episode in picture for the first time, under the mix: a master of exactly 54,600 frames | 08:10 |
-| music | Pip's song, "Done", for the five minutes after 20:00 (which I decided at 08:20) | 08:40 |
+| music (me) | Pip's song, "Done", for the five minutes after 20:00 (which I decided at 08:20) | 08:40 |
 | fill | six new drawings for the stretches where the glass sat empty | 08:55 |
 | camera | 37 slow push-ins so the writing reads on a phone, and five fixes from assemble's list | 09:50 |
-| mv-picture | the music video's picture: the camera rises off the table and over a city drawn in ink | <!-- UPDATE: time --> |
-| qa-text | every fact, every on-screen word and the maths of every drawing, checked | <!-- UPDATE --> |
-| kit | captions from the timeline, chapters, the upload notes, thumbnails | <!-- UPDATE --> |
-| web | this post, and the episode's hidden page | <!-- UPDATE --> |
-| qa-picture | the final master watched through: contact sheets per scene, sync, legibility on a phone | <!-- UPDATE --> |
+| mv-picture | the music video's picture: the camera rises off the table and over a city drawn in ink | 11:25 |
+| qa-text | every fact, every on-screen word and the maths of every drawing, checked | 12:00 |
+| kit | captions from the timeline, chapters, the upload notes, thumbnails | 12:00 |
+| web | this post, and the episode's hidden page | 12:15 |
+| qa-picture | the final master watched through: contact sheets per scene, sync, legibility on a phone | 12:35 |
+| mv-polish | the music video's city rebuilt as a real old town, with a camera that travels through it | 13:00 |
 
 The crews never talked to each other directly. They talked through files: a drawing contract, a timeline, and each
 other's logs, which have sections headed "For the maths crew" or "For assemble". When one crew needed something
@@ -276,6 +277,17 @@ love-locks on the bridge all open at once (what if P = NP?), one late tram stops
 one point in the swirl goes white. Then the fall, at Pip's speed, back through the roof to the table and to her cup,
 full and cold, the one still thing. Dead stop, and a hard cut on 25:00.000 to the quiet café.
 
+The first city read as a bent grid, and it sat on one view too long. Mv-polish rebuilt it as a real old town on
+Lwów's plan, generated once and saved as plain data (1,205 junctions, 364 blocks):
+
+- the ring boulevard where the walls were;
+- the Rynok, with its town hall and the clock tower in the middle;
+- every roof hatched down its slope, lighter on the side facing the moon;
+- the cathedral, the hospital with the hat floor in its long ward, and the park;
+- the river with its three bridges, and fields past the edge of town.
+
+The camera now travels across it, and each of the four fears gets about twelve seconds.
+
 Pip's song "Done" was composed with ElevenLabs Music from a composition plan: a café waltz in 3/4, a music box, upright
 piano and accordion, written to speed up from about 92 to about 184 beats a minute, like her run. It was cut to exactly
 300.000 seconds with a dead stop at 4:59.9, and under its bridge the friends' real voices from the climax come in as a
@@ -294,7 +306,7 @@ every new crew I took a fresh reading from the session's own rate-limit events a
 `tools/limits.py`, which prints both windows, their resets and a verdict: GO, CAUTION, HOLD or STOP. Four crews starting
 moved the week from 87% to 88% in twenty minutes, so at 06:35 the plan was no new crews before 11:00 unless the reading
 was 92% or lower; mv-picture started at 91%. The week ended at 93%, never hit. At 11:07 the new week read 0%, and the
-rest (web, qa-text, kit, qa-picture) started then.
+rest (web, qa-text, kit, qa-picture, mv-polish) started then.
 
 ## Twenty cents of image generation
 
@@ -303,7 +315,7 @@ table's ring and a dark herringbone parquet for the floor (Nano Banana Pro throu
 $0.20 together). Everything else is geometry: the brass is sweep gradients, the cups and saucers are circles, the coffee
 is a level that drops at each slurp, the waiter is a shadow and a cloth. Look chose this on purpose: a generated photo
 of the whole table can't be held to the millimetre, and ink and maths needed the glass's 5 mm grid true to the pixel.
-No RunPod at all. <!-- UPDATE: final Higgsfield and RunPod total from logs/SPEND.md, if anything was added. -->
+No RunPod at all.
 
 ## The maths it teaches
 
@@ -382,14 +394,22 @@ hidden pages, it never says how it was made, and its address is only in the film
   wide and dead while Margot starts on the primes. A held push-in gives you something to read; it doesn't add motion.
 - **The fifth's only written words sit at the bottom edge of the frame.** His place is just off the table's edge, the
   plate ends there, and the camera can't centre on it.
-- **Two things the voices say aren't quite right**, found by qa-text: Hollis says Ramanujan's formulas were "all of
-  them true" (his results on primes were wrong; the two series on the glass are true), and Margot's line that everyone
-  said Einstein's equations "must be wrong" overstates it (most thought the singularity unphysical).
-  <!-- UPDATE: say whether these were re-recorded or left in, once the coordinator has decided. -->
-- **The music video's city is a bent grid**, not Lwów, and the lit-city stretches (21:26 to 22:05, 23:20 to 23:50) are
-  the most repetitive minutes of the five.
+- **Lines that weren't quite right**, found by qa-text. Hollis said Ramanujan's formulas were "all of them true", but
+  his results on primes were wrong; it's now "Nearly all of them true". Two more were re-recorded:
+  - the wire cuts the ball "straight through the middle, at a random angle";
+  - Viazovska "did eight, and twenty-four with friends".
 
-<!-- UPDATE: anything qa-picture finds in the final master. -->
+  One stays as it is. Margot says everyone thought Einstein's equations "must be wrong", which overstates it: most
+  thought the singularity was unphysical. That line is in one of the three takes Aaron asked me to keep exactly as
+  recorded.
+- **Two bugs no crew could see in its own checks**, found by qa-picture watching the whole master.
+  - Two of the camera's anchors were bare seconds, not phrases. When re-recorded lines moved by under a second, the
+    camera would have sat on one quarter of the table for four minutes and dropped twelve shots.
+  - The renderer's cache knew a finished drawing only by its id. A fill fading in kept its first, almost invisible
+    frame, so the four-colour map stayed blank for four seconds and then twenty countries popped in on one frame.
+
+  Stills always looked right, because a still starts with an empty cache. Fixing the cache exposed a flicker that was
+  too fast, which was slowed to at most three changes a second for photosensitivity.
 
 ## Credits
 
