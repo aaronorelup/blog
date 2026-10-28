@@ -13,3 +13,10 @@
   X-Robots-Tag: noindex, nofollow
 /ledger/touch-move/board-14/*
   X-Robots-Tag: noindex, nofollow
+#
+# The draft episode *Sorry* has one at the top level, /sorry/ (chalked on the slate for five frames at 29:47). Same two
+# rules; scripts/stats-pages.mjs keeps it out of /stats-pages.txt, since it isn't under a post.
+/sorry/
+  X-Robots-Tag: noindex, nofollow
+/sorry/*
+  X-Robots-Tag: noindex, nofollow
