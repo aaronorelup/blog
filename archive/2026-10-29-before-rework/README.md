@@ -2,7 +2,6 @@
 
 These are the 72 ledger posts exactly as they were at commit `45c02e1` (AO-072), the last commit
 before the October rework that rewrote titles, descriptions, callouts and bodies across the ledger.
-The git tag `pre-rework-2026-10-29` points at that commit too.
 
 Nothing here is built into the site. The folder sits outside `src/`, so Astro never reads it.
 
@@ -26,5 +25,5 @@ Two things changed around the posts that an old file won't know about:
 To see exactly what the rework changed in one post:
 
 ```bash
-git diff pre-rework-2026-10-29 -- src/content/posts/<slug>.md
+git diff 45c02e1 -- src/content/posts/<slug>.md
 ```
