@@ -170,6 +170,65 @@ a reference, never from imagination", so they're a natural test.
 Every builder follows the skill and the article's prompts with the brackets filled in, with no human input. Then a second
 agent critiques it, and the builder fixes what's blocking.
 
+## Results, as they land
+
+Each experiment below is written by the session that ran it, as soon as it has something to show. Until then its
+section says so.
+
+<!-- section:mole1 -->
+### MOLE-1, from its concept sheet, and from words only
+
+*Building on the lead's box (builder, then a critic, then a fixer).*
+<!-- /section:mole1 -->
+
+<!-- section:clock -->
+### Touch Move's brass clock
+
+*Building on the lead's box.*
+<!-- /section:clock -->
+
+<!-- section:dray -->
+### DRAY
+
+*Building in its own cloud session.*
+<!-- /section:dray -->
+
+<!-- section:loom -->
+### LOOM
+
+*Building in its own cloud session.*
+<!-- /section:loom -->
+
+<!-- section:pawn -->
+### PAWN
+
+*Building in its own cloud session.*
+<!-- /section:pawn -->
+
+<!-- section:finch -->
+### FINCH
+
+*Building in its own cloud session.*
+<!-- /section:finch -->
+
+<!-- section:lander -->
+### Resupply 6
+
+*Building in its own cloud session.*
+<!-- /section:lander -->
+
+<!-- section:hab3 -->
+### HAB 3: the nine steps
+
+*Building in its own cloud session.*
+<!-- /section:hab3 -->
+
+<!-- section:musicbox -->
+### The music box build-along
+
+*Building in its own cloud session.*
+<!-- /section:musicbox -->
+
 ## How the lab is run
 
 - **The lead** (this session) runs the safety audit, the baseline, MOLE-1, its control and the clock. Its box allows only
