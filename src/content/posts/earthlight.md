@@ -38,9 +38,13 @@ Here are 80 seconds of highlights. They spoil the whole film. [Watch them full s
 
 <iframe src="/media/earthlight/highlight/?embed" title="Earthlight, highlights" style="width:100%;aspect-ratio:16/9;border:0" allow="fullscreen" loading="lazy"></iframe>
 
-The whole film, all 30 minutes and the minute of black, premieres on YouTube in 1080p, with the chapters and captions
-built in. Aaron uploads it himself, so there's no link yet; it goes here when there is one. The full film doesn't live
-on this site: Episode 1's 258 MB stream in the site's repository was the hardest of its three things to undo.
+And here is the whole film, all 30 minutes, in full 1080p on YouTube.
+[Watch it on YouTube](https://youtu.be/URjg8hSlzz8), where the chapters and captions are built in.
+
+<iframe src="https://www.youtube-nocookie.com/embed/URjg8hSlzz8" title="Earthlight, the full film" style="width:100%;aspect-ratio:16/9;border:0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+
+The full film doesn't live on this site: Episode 1's 258 MB stream in the site's repository was the hardest of its
+three things to undo.
 
 The film's chapters. YouTube's list stops at 19:27 on purpose, so the description sells only the stream. Here is all of
 it, checked against the final master:

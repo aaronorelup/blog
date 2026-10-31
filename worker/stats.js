@@ -2,7 +2,7 @@
 //
 //   GET /api/stats   the stored snapshot (contract v1, described on the page and in the brief),
 //                    returned as the text it was stored as; 503 with { error, state } until the
-//                    first one exists (plus lastError: { at, message } when the last try failed)
+//                    first one exists. Cloudflare's own error text stays in D1 and the logs.
 //
 // The numbers come from Cloudflare's GraphQL Analytics API (token: the CF_ANALYTICS_TOKEN secret)
 // and are gathered by a cron trigger that runs every minute (wrangler.jsonc). That sounds like a
@@ -113,13 +113,11 @@ export async function serveStats(request, env) {
     }
   }
   if (!body) {
-    // Still no snapshot: say why, including the last thing that went wrong, so a refused token
-    // doesn't read as "still gathering" for ever.
-    const extra = lastError && lastError.message ? { lastError } : {};
+    // Still no snapshot: say why, so a refused token doesn't read as "still gathering" for ever.
     if (!env.CF_ANALYTICS_TOKEN || (lastError && AUTH.test(lastError.message || ''))) {
-      return json({ error: 'The traffic numbers aren’t connected yet.', state: 'not-connected', ...extra }, 503);
+      return json({ error: 'The traffic numbers aren’t connected right now.', state: 'not-connected' }, 503);
     }
-    return json({ error: 'The first numbers are still being gathered. They start to appear a few minutes after the counter starts, and fill in over the next couple of hours.', state: 'gathering', ...extra }, 503);
+    return json({ error: 'The first numbers are still being gathered. They start to appear a few minutes after the counter starts, and fill in over the next couple of hours.', state: 'gathering' }, 503);
   }
   const res = new Response(body, {
     headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=300' },
@@ -444,7 +442,8 @@ async function rebuild(ctx) {
     bodies.push([r.d, body]);
   }
   for (const d of [...pending]) if (!stored.some((r) => r.d === d)) pending.delete(d);
-  const lastError = readJSON(s.lastError, null);
+  const failed = readJSON(s.lastError, null);
+  const lastError = failed ? { at: failed.at } : null; // when, never Cloudflare's text
   const totalsFirst = (/"rows":\[\["(\d{4}-\d{2}-\d{2})"/.exec(s.totals) || [])[1] || LAUNCH;
   const text =
     '{"v":1,"site":' + JSON.stringify(SITE) +

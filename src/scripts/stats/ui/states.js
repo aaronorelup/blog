@@ -163,7 +163,7 @@ export function showState(loaded, { onRetry } = {}) {
       break;
     }
     default: // not-connected
-      lede([{ b: "The numbers aren't connected yet." }, " Cloudflare has been counting since August; this page starts showing it after its first nightly filing. Meanwhile, ", { link: AO057, label: 'AO-057' }, " has October's."]);
+      lede([{ b: "The numbers aren't connected right now." }]);
       emptyGate();
       break;
   }

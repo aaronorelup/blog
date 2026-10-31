@@ -290,6 +290,6 @@ my real save files were hashed again and still match.
 
 Every claim in this post comes with a screenshot, because the mod takes its own. Those
 screenshots caught the one thing no check had: the most visible thing on the card was wrong.
-It's the same lesson as [the film](/ledger/storm-bell-pop-up/) that went out with a score nobody
+It's the same lesson as an earlier film of mine that went out with a score nobody
 had listened to. A test can only check what someone thought to write down, and nobody had
 written down what a portrait should look like.

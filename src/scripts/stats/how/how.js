@@ -260,9 +260,8 @@ function fillFiled(ctx, p, snag, links) {
   const err = snap.run && snap.run.lastError;
   snag.hidden = !err;
   if (err) {
-    const msg = String(err.message || 'an error').replace(/\s+/g, ' ').slice(0, 140);
     const at = err.at ? fmt.localStamp(err.at) : 'some point';
-    snag.textContent = `Last night's update hit a snag at ${at} (${msg}); these are the numbers from the run before.`;
+    snag.textContent = `Last night's update hit a snag at ${at}. These are the numbers from the run before.`;
   }
 
   links.replaceChildren();

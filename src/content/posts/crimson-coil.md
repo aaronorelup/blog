@@ -38,9 +38,9 @@ Here are 80 seconds of highlights. [Watch them full screen](/media/crimson-coil/
 <iframe src="/media/crimson-coil/highlight/?embed" title="Crimson Coil, highlights" style="width:100%;aspect-ratio:16/9;border:0" allow="fullscreen" loading="lazy"></iframe>
 
 And here is the whole film, all 30 minutes, in full 1080p on YouTube.
-[Watch it on YouTube](https://youtu.be/ao2nOnefkps), where the chapters and captions are built in.
+[Watch it on YouTube](https://youtu.be/7TusXDOgV4Y), where the chapters and captions are built in.
 
-<iframe src="https://www.youtube-nocookie.com/embed/ao2nOnefkps" title="Crimson Coil, the full film" style="width:100%;aspect-ratio:16/9;border:0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://www.youtube-nocookie.com/embed/7TusXDOgV4Y" title="Crimson Coil, the full film" style="width:100%;aspect-ratio:16/9;border:0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
 
 The film's 35 chapters:
 

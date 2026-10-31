@@ -20,7 +20,7 @@ Second of five. Previously:
 [No VS Code, no terminal, no idea](/ledger/no-vs-code-no-terminal/).
 
 On **8 June 2025** I made the first commit to
-[LLM Monster Hunter](https://github.com/Bloodtailor/LlmMonsterHunter) — seventeen days
+[LLM Monster Hunter](https://github.com/aaronorelup/LlmMonsterHunter) — seventeen days
 after Claude Sonnet 4 shipped. By **23 August** there were 366 commits and then, for
 reasons in [a later post](/ledger/the-wall-that-stopped-me/), nothing at all for ten
 months.

@@ -54,7 +54,7 @@ chapter. Even the disaster became part of the story.
 It also did the job I actually assigned: it found five real bugs by walking into them
 (the worst one silently ate any message over 500 characters — its best in-character
 speech died in that box), fixed all five, wrote a regression test, ran my full CI
-gauntlet, and opened [the PR](https://github.com/Bloodtailor/LlmMonsterHunter/pull/183).
+gauntlet, and opened [the PR](https://github.com/aaronorelup/LlmMonsterHunter/pull/183).
 Its honest review: the game is fair, the story is the strongest system, and the referee
 is too kind — it never once said no to a good speech. That last note is now on my tuning
 list.

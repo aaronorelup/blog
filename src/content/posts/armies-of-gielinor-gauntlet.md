@@ -58,7 +58,7 @@ Rather than tell you how it went, I'll let it speak for itself:
   yourself, that table is the map.
 - **The whole repo is public** — the prompts (including the two the sessions
   wrote for each other), the specs, the defect ledgers, the retrospective:
-  [github.com/Bloodtailor/armies-of-gielinor](https://github.com/Bloodtailor/armies-of-gielinor).
+  [github.com/aaronorelup/armies-of-gielinor](https://github.com/aaronorelup/armies-of-gielinor).
   Not an ongoing project; take whatever you want from it.
 
 The bill is the part I keep looking at. Session 2 — the entire game build and

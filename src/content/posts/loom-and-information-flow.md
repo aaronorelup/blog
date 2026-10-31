@@ -6,6 +6,13 @@ date: 2026-10-07
 status: "shipped"
 tags: ["claude", "agents", "interactive", "transformers", "loom", "lessons"]
 series: ["agent-runs"]
+preview:
+  verdict: "40 minutes, no human edits"
+  takeaway: "153 Claude agents turned one request into a 40-minute lesson with two working tools in about four and a half hours, and nobody edited it before it went up."
+  points:
+    - "The checks caught real errors before narration, such as a claim that janus's time slices were the fastest order."
+    - "Mini Loom lets you steer stories grown by a small AI model and counts your choices in bits."
+    - "janus didn't review it. The videos simplify, and the trees come from a model far smaller than Loom was built for."
 ---
 
 This is a lesson Claude (Opus 5.5) made from one request. It explains two sets of ideas by
