@@ -12,6 +12,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// Pages that nothing on the site links to: an episode of I Love My Evening Television shows each
+// address for a few frames and nowhere else. They answer by URL, carry noindex (in the page and in
+// public/_headers), and stay out of this list, so /stats never names them. The older ones sit under
+// a post (/ledger/<slug>/<page>/) and the depth rule below already drops them; these don't.
+export const HIDDEN = ['/sorry/'];
+
 export function listPages(dist) {
   const previews = JSON.parse(fs.readFileSync(path.join(dist, 'ledger', 'previews.json'), 'utf8'));
   const listed = new Set(Object.keys(previews.posts || {}));
@@ -41,6 +47,7 @@ export function listPages(dist) {
     .filter((p) => !/^\/ledger\/[^/]+\//.test(p) || listed.has(p.split('/')[2]))
     .filter((p) => !/^\/ledger\/[^/]+\/./.test(p)) // nothing deeper than a post's own page
     .filter((p) => !named(p))
+    .filter((p) => !HIDDEN.some((h) => p.toLowerCase() === h || p.toLowerCase().startsWith(h)))
     .filter((p) => /^\/[\x21-\x7e]*$/.test(p) && p.length <= 160)
     .sort();
 }

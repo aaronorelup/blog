@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#140e0a">
+<title>sorry</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono&family=Kalam&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&text=xR&display=swap" rel="stylesheet">
+<style>
+:root{
+  --floor:#140e0a;
+  --cream:#efe3cb; --muted:#cfbb9b; --faint:#8f7d64;
+  --gold:#FFC870; --amber:#a96a10; --brass:#c9a04a;
+  --chalk:#f2eee6; --slate:#2b302f;
+  --ink:#2b241f; --ink-soft:#5f5144;
+  --red:#b8382e; --blue:#2f5ea8;
+  --paper:#f4efe1;
+  --gut:16px;
+}
+*{box-sizing:border-box}
+html{background:var(--floor)}
+body{
+  margin:0; min-height:100vh; color:var(--cream);
+  font:19px/1.5 "Cormorant Garamond",Georgia,"Times New Roman",serif;
+  background:
+    radial-gradient(80% 42% at 50% 0%, rgba(255,200,112,.22), rgba(255,200,112,0) 72%),
+    radial-gradient(130% 100% at 50% 30%, rgba(0,0,0,0) 35%, rgba(0,0,0,.62) 100%),
+    url(img/parquet.webp) center top / 440px repeat,
+    var(--floor);
+  -webkit-tap-highlight-color:transparent;
+  overflow-x:hidden;
+}
+main{max-width:860px; margin:0 auto; padding:32px var(--gut) 0}
+button{font:inherit}
+
+/* the slate, chalked */
+.slate{position:relative; width:min(400px,100%); aspect-ratio:2.15/1; margin:5vh auto 14vh;
+  border-radius:7px; border:13px solid #5a3b22;
+  background:
+    radial-gradient(60% 50% at 30% 35%, rgba(255,255,255,.06), rgba(255,255,255,0) 70%),
+    radial-gradient(40% 40% at 75% 70%, rgba(255,255,255,.04), rgba(255,255,255,0) 70%),
+    var(--slate);
+  box-shadow:0 26px 50px rgba(0,0,0,.6), inset 0 0 22px rgba(0,0,0,.55), 0 0 0 1px rgba(255,220,160,.12)}
+.slate .word{position:absolute; inset:0; display:grid; place-items:center; padding-bottom:6%;
+  font:400 clamp(58px,15vw,92px)/1 Kalam,"Comic Sans MS",cursive; color:var(--chalk); opacity:.9;
+  text-shadow:0 0 1px rgba(255,255,255,.5), 1px 1px 0 rgba(255,255,255,.08);
+  animation:chalk 2s cubic-bezier(.55,.1,.45,1) .35s both}
+.slate svg{position:absolute; left:22%; width:56%; bottom:16%; height:14%; overflow:visible}
+.slate svg path{fill:none; stroke:var(--chalk); stroke-width:3.2; stroke-linecap:round; opacity:.75;
+  stroke-dasharray:240; stroke-dashoffset:240; animation:under .7s ease-out 2.45s forwards}
+@keyframes chalk{from{clip-path:inset(0 100% 0 0)} to{clip-path:inset(0 0 0 0)}}
+@keyframes under{to{stroke-dashoffset:0}}
+
+/* the three toys */
+.toy{margin:0 auto 17vh}
+.toy h2{font:400 31px/1.1 Kalam,"Comic Sans MS",cursive; color:var(--chalk); opacity:.93; margin:0 0 6px; letter-spacing:.01em}
+.toy .say{font-style:italic; font-size:22px; line-height:1.4; color:var(--cream); margin:0 0 20px; max-width:34em}
+.toy .after{font-style:italic; color:var(--muted); font-size:19px; line-height:1.45; margin:22px 0 0; max-width:38em}
+
+.btn{appearance:none; border:0; border-radius:999px; padding:10px 20px; min-height:44px;
+  font:600 18px/1 "Cormorant Garamond",Georgia,serif; letter-spacing:.03em; color:#2a1c0a;
+  background:linear-gradient(180deg,#f2d993,#c79c43 58%,#a77f2f);
+  box-shadow:0 1px 0 rgba(255,255,255,.45) inset, 0 3px 9px rgba(0,0,0,.35); cursor:pointer;
+  transition:transform .08s, filter .15s}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.42; cursor:default; filter:none; transform:none}
+.btn:focus-visible,.quiet:focus-visible{outline:2px solid var(--gold); outline-offset:3px}
+.quiet{appearance:none; background:none; border:0; padding:8px 2px; min-height:40px; color:inherit; font-style:italic;
+  font-size:18px; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px; cursor:pointer; opacity:.78}
+.quiet:hover{opacity:1}
+.quiet[hidden]{display:none}
+
+/* Efron's dice, on the marble */
+.marble{position:relative; border-radius:28px; padding:clamp(8px,2.6vw,22px) clamp(8px,2.6vw,22px) clamp(16px,3vw,24px);
+  background:url(img/marble.webp) center/cover, #ebe5da; color:var(--ink);
+  box-shadow:0 30px 60px rgba(0,0,0,.55), 0 0 0 3px rgba(201,160,74,.75), 0 0 0 4px rgba(60,40,15,.6), inset 0 0 50px rgba(60,40,20,.14)}
+#dice-svg{display:block; width:100%; height:auto; max-width:600px; margin:0 auto; user-select:none; -webkit-user-select:none}
+#dice-svg .face{fill:#fbf8f1; stroke:#b4a790; stroke-width:1.4}
+#dice-svg .fc.up .face{stroke:var(--amber); stroke-width:3.4}
+#dice-svg .big .face{stroke-width:2; filter:url(#d-shadow)}
+#dice-svg .net{cursor:pointer; outline:none}
+#dice-svg .net .hit{fill:transparent}
+#dice-svg .net .ring{fill:none; stroke:transparent; stroke-width:3; transition:stroke .2s}
+#dice-svg .net:hover .ring,#dice-svg .net:focus-visible .ring{stroke:rgba(43,36,31,.28)}
+#dice-svg .net.you .ring{stroke:var(--ink); stroke-dasharray:7 6}
+#dice-svg .net.me .ring{stroke:var(--amber); stroke-width:3.5}
+#dice-svg .dl{font:600 24px "Cormorant Garamond",Georgia,serif; fill:var(--ink); text-anchor:middle; letter-spacing:.04em}
+#dice-svg .tag{font:italic 500 19px "Cormorant Garamond",Georgia,serif; fill:var(--ink-soft); text-anchor:middle}
+#dice-svg .arrow path{fill:none; stroke:#8a7660; stroke-width:2; transition:stroke .25s}
+#dice-svg .arrow .al{font:italic 500 20px "Cormorant Garamond",Georgia,serif; fill:#6e5d4b; text-anchor:middle}
+#dice-svg .arrow .al2{font:600 22px "Cormorant Garamond",Georgia,serif; fill:#4d3f33; text-anchor:middle}
+#dice-svg .arrow.lit path{stroke:var(--amber); stroke-width:3.4}
+#dice-svg .arrow.lit .al2{fill:var(--amber)}
+#dice-svg .m-plain{fill:#8a7660} #dice-svg .m-lit{fill:var(--amber)}
+#dice-svg .hint{font:italic 500 21px "Cormorant Garamond",Georgia,serif; fill:rgba(255,214,150,.82); text-anchor:middle}
+#dice-svg .who{font:italic 500 19px "Cormorant Garamond",Georgia,serif; fill:rgba(255,226,180,.9); text-anchor:middle}
+#dice-svg .letter{font:600 40px "Cormorant Garamond",Georgia,serif; fill:#b4a790; text-anchor:middle}
+#dice-svg .spin{transform-box:fill-box; transform-origin:center}
+#dice-svg .spin.tumble{animation:tumble .52s cubic-bezier(.3,.6,.4,1)}
+@keyframes tumble{0%{transform:rotate(-30deg) scale(.82)} 35%{transform:rotate(22deg) scale(1.08)} 65%{transform:rotate(-9deg) scale(.97)} 100%{transform:none}}
+.dice-row{display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:10px 14px; margin:6px 0 0}
+.dice-say{min-height:1.5em; text-align:center; font-size:21px; margin:8px 6px 4px; color:var(--ink)}
+.slatebox{margin:16px auto 0; max-width:520px; border-radius:9px; padding:12px 16px 12px;
+  background:radial-gradient(70% 60% at 30% 30%, rgba(255,255,255,.05), rgba(255,255,255,0)), var(--slate);
+  border:7px solid #5a3b22; box-shadow:0 8px 18px rgba(0,0,0,.35), inset 0 0 14px rgba(0,0,0,.5);
+  color:var(--chalk); font-family:Kalam,"Comic Sans MS",cursive}
+.slatebox .row{display:grid; grid-template-columns:5.2em 1fr; align-items:center; gap:10px; min-height:34px}
+.slatebox .lab{font-size:17px; opacity:.8; white-space:nowrap}
+.slatebox .marks{display:flex; flex-wrap:wrap; gap:2px 6px; align-items:center; min-height:28px}
+.slatebox .marks svg{width:30px; height:26px; flex:none}
+.slatebox .marks svg path{fill:none; stroke:var(--chalk); stroke-width:2; stroke-linecap:round; opacity:.86}
+.slatebox .num{font-size:24px; line-height:1}
+.slatebox .sum{margin:6px 0 0; font-size:17px; opacity:.85; min-height:1.4em}
+.marble .swapline{text-align:center; margin:6px 0 -6px}
+
+/* Pip's handwriting */
+.desk{position:relative; max-width:720px}
+.leaf{position:relative; transform:rotate(-.45deg)}
+#moji{display:block; width:100%; min-height:212px; resize:vertical; border:0; border-radius:3px; margin:0;
+  padding:20px 20px 20px 24px; color:#3a3d43; font:500 24px/1.5 Caveat,"Segoe Print","Bradley Hand",cursive;
+  background-color:var(--paper);
+  background-image:linear-gradient(rgba(70,135,115,.17) 1px,transparent 1px), linear-gradient(90deg,rgba(70,135,115,.17) 1px,transparent 1px);
+  background-size:13px 13px; background-position:-1px -1px;
+  box-shadow:0 18px 40px rgba(0,0,0,.5), 0 1px 0 rgba(255,255,255,.5) inset; overflow-wrap:anywhere}
+#moji:focus{outline:2px solid rgba(255,200,112,.6); outline-offset:3px}
+.checker{display:flex; flex-direction:column; align-items:center; margin:26px 0 0}
+.brass{display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:center;
+  padding:12px 14px; border-radius:12px;
+  background:linear-gradient(160deg,#f3d995 0%,#c99b45 38%,#9c7429 70%,#d8b264 100%);
+  box-shadow:0 14px 26px rgba(0,0,0,.5), 0 1px 0 rgba(255,255,255,.5) inset, 0 -2px 0 rgba(0,0,0,.25) inset}
+.eye{display:grid; place-items:center; width:38px; height:38px; border-radius:50%; flex:none;
+  background:radial-gradient(circle at 40% 35%,#f6f1e2,#d9d0bb); border:3px solid #7d5c22;
+  color:#a39a86; font:700 20px/1 Georgia,serif; transition:color .2s, box-shadow .3s}
+.eye.busy{color:#7d5c22; animation:blink .5s steps(2) infinite}
+.eye.ok{color:#2f7d45; box-shadow:0 0 14px rgba(255,200,112,.9)}
+@keyframes blink{50%{opacity:.45}}
+.plate{font:600 13px/1 "JetBrains Mono",ui-monospace,monospace; letter-spacing:.32em; color:#4a3410; padding:6px 6px 6px 9px;
+  border:1px solid rgba(74,52,16,.55); border-radius:3px; background:rgba(255,240,200,.25)}
+.lever{background:linear-gradient(180deg,#5a3d1c,#3b2610); color:#f5e2b8; box-shadow:0 2px 0 rgba(255,255,255,.18) inset,0 3px 8px rgba(0,0,0,.4)}
+.slot{width:min(86%,560px); height:9px; margin-top:-2px; border-radius:0 0 6px 6px; background:#1a120a; box-shadow:inset 0 3px 4px rgba(0,0,0,.8)}
+.tape{position:relative; width:min(82%,540px); margin:-4px auto 0; padding:16px 18px 34px;
+  background:#f7f2e5; color:#25221e; box-shadow:0 14px 26px rgba(0,0,0,.45);
+  -webkit-mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/14px 100%;
+          mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/14px 100%;
+  animation:feed .35s ease-out}
+.tape[hidden]{display:none}
+@keyframes feed{from{transform:translateY(-14px); opacity:.2}}
+.tape pre{margin:0; font:400 14px/1.6 "JetBrains Mono",ui-monospace,"DejaVu Sans Mono",Menlo,monospace; white-space:pre-wrap; overflow-wrap:anywhere; min-height:1.6em}
+.tape .kw{color:#1f4f8f}
+.tape .sorry{color:var(--amber); text-decoration:underline wavy #e0a33a; text-decoration-thickness:1px; text-underline-offset:3px}
+.tape .cm{color:#7b766c}
+.tape .warn{margin:12px 0 0; font:400 13px/1.4 "JetBrains Mono",ui-monospace,monospace; color:var(--amber)}
+.tape .warn[hidden]{display:none}
+.stamp{position:absolute; right:14px; bottom:22px; width:42px; height:42px; border-radius:50%;
+  display:grid; place-items:center; color:#6b4a12; font:700 24px/1 Georgia,serif;
+  border:3px solid #b8913f; background:radial-gradient(circle at 40% 35%,#ffe9b5,#e6c070);
+  opacity:0; transform:scale(1.6) rotate(-20deg); transition:opacity .25s, transform .35s cubic-bezier(.2,1.6,.4,1)}
+.stamp.on{opacity:1; transform:none; box-shadow:0 0 18px rgba(255,200,112,.85)}
+.pipbar{display:flex; justify-content:space-between; align-items:center; gap:10px; margin:8px 4px 0; min-height:40px}
+.mech{font:400 13px/1.4 "JetBrains Mono",ui-monospace,monospace; color:var(--faint); letter-spacing:.02em}
+
+/* the clay ball, on the glass */
+#clay-svg{display:block; width:100%; max-width:min(620px,78vh); height:auto; margin:0 auto; touch-action:none; cursor:grab;
+  user-select:none; -webkit-user-select:none; outline:none; filter:drop-shadow(0 26px 40px rgba(0,0,0,.55))}
+#clay-svg.dragging{cursor:grabbing}
+#clay-svg:focus-visible .rim{stroke:var(--gold)}
+#clay-svg .thread{stroke:#8d8478; stroke-width:1.8; stroke-dasharray:6 5; fill:none}
+#clay-svg .thread.split{stroke:#d18d16; stroke-width:3.4; stroke-dasharray:none; filter:url(#cl-glow)}
+#clay-svg .stick{stroke:#cfae7b; stroke-width:3.4; stroke-linecap:round}
+#clay-svg .bead{stroke:#2a2420; stroke-width:1.5}
+#clay-svg .side{fill:none; stroke-width:4.5}
+#clay-svg .name{font:italic 500 22px "Cormorant Garamond",Georgia,serif; fill:#3a2f26}
+#clay-svg .count{font:italic 500 25px "Cormorant Garamond",Georgia,serif; fill:#3a2f26; text-anchor:middle}
+.clay-row{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px 18px; max-width:620px; margin:14px auto 0}
+.clay-say{margin:0; flex:1 1 280px; font-size:20px; line-height:1.4; color:var(--cream); min-height:2.8em}
+
+/* the end */
+.end{text-align:center; padding:2vh 0 13vh}
+.end svg{width:120px; height:120px; display:block; margin:0 auto 12px; opacity:.9}
+.sig{margin:0; font:400 38px/1 "Pinyon Script","Snell Roundhand",cursive; color:var(--cream); opacity:.42}
+
+noscript p{color:var(--muted); font-style:italic; text-align:center}
+
+@media (max-width:560px){
+  .toy .say{font-size:20px}
+  .toy h2{font-size:28px}
+  .tape{width:94%; padding:14px 14px 34px}
+  .slot{width:96%}
+  .tape pre{font-size:13px}
+  .clay-say{font-size:19px}
+}
+@media (prefers-reduced-motion:reduce){
+  .slate .word,.slate svg path,.tape,#dice-svg .spin.tumble{animation:none}
+  .slate svg path{stroke-dashoffset:0}
+  .stamp{transition:none}
+}
+</style>
+</head>
+<body>
+<main>
+
+  <div class="slate" aria-label="sorry">
+    <div class="word" aria-hidden="true">sorry</div>
+    <svg viewBox="0 0 220 20" preserveAspectRatio="none" aria-hidden="true"><path d="M4 12 C 50 7, 110 15, 160 9 S 205 11, 216 8"/></svg>
+  </div>
+
+  <section class="toy" id="dice" aria-labelledby="dice-h">
+    <h2 id="dice-h">Efron's dice</h2>
+    <p class="say">Pick any die. I'll pick second, and I'll win two times out of three.</p>
+    <div class="marble">
+      <svg id="dice-svg" viewBox="0 0 640 640" role="group" aria-label="Four dice in a circle. Each one beats the next, two times in three."></svg>
+      <p class="dice-say" id="dice-say" aria-live="polite"></p>
+      <div class="dice-row">
+        <button class="btn" id="roll1" type="button" disabled>Roll</button>
+        <button class="btn" id="roll100" type="button" disabled>Roll a hundred</button>
+      </div>
+      <div class="slatebox" aria-live="polite">
+        <div class="row"><span class="lab">you pay</span><span class="marks" id="t-you"></span></div>
+        <div class="row"><span class="lab">I pay</span><span class="marks" id="t-me"></span></div>
+        <p class="sum" id="dice-sum"></p>
+      </div>
+      <p class="swapline"><button class="quiet" id="swap" type="button" hidden>Now you pick second</button></p>
+    </div>
+    <p class="after">The four at the table are these dice. Whoever chooses last wins.</p>
+  </section>
+
+  <section class="toy" id="pip" aria-labelledby="pip-h">
+    <h2 id="pip-h">Pip's handwriting</h2>
+    <p class="say">It doesn't have to be readable.</p>
+    <div class="desk">
+      <div class="leaf"><textarea id="moji" rows="7" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Pip's handwriting. Paste any garbled text here."></textarea></div>
+      <div class="pipbar"><span class="mech">windows-1252 &rarr; bytes &rarr; utf-8</span><button class="quiet" id="herline" type="button" hidden>her line</button></div>
+      <div class="checker">
+        <div class="brass">
+          <span class="eye" id="eye" aria-hidden="true">&#10003;</span>
+          <span class="plate" aria-hidden="true">LEAN</span>
+          <button class="btn lever" id="read" type="button">Read it the old way</button>
+        </div>
+        <div class="slot" aria-hidden="true"></div>
+        <div class="tape" id="tape" hidden aria-live="polite">
+          <pre id="tape-text"></pre>
+          <p class="warn" id="warn" hidden>&#9888; declaration uses 'sorry'</p>
+          <span class="stamp" id="stamp" aria-hidden="true">&#10003;</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="toy" id="clay" aria-labelledby="clay-h">
+    <h2 id="clay-h">The clay ball</h2>
+    <p class="say">Five at one table, and each of them feuds with the two beside them. Drag the wire to cut the ball in two. A feud is split when the pair end up on different halves.</p>
+    <svg id="clay-svg" viewBox="-320 -320 640 640" tabindex="0" role="slider" aria-label="The wire" aria-valuemin="0" aria-valuemax="179" aria-valuenow="35"></svg>
+    <div class="clay-row">
+      <p class="clay-say" id="clay-say" aria-live="polite"></p>
+      <button class="btn" id="seat" type="button">Seat the feuds far apart</button>
+    </div>
+    <p class="after">Put everyone on a ball, every feud as far apart as it will go, then cut anywhere: on any table, on average, the wire splits at least 87.8&nbsp;% as many feuds as the best cut does (Goemans and Williamson, 1995). If Khot's Unique Games Conjecture is right (and P&nbsp;&ne;&nbsp;NP), no fast method does better.</p>
+  </section>
+
+  <noscript><p>The dice, the checker and the wire need a little JavaScript.</p></noscript>
+
+  <footer class="end">
+    <svg viewBox="-60 -60 120 120" aria-hidden="true">
+      <defs>
+        <radialGradient id="cup-cof" cx=".42" cy=".4" r=".7"><stop offset="0" stop-color="#4a2e1b"/><stop offset=".75" stop-color="#2a180d"/><stop offset="1" stop-color="#1d1008"/></radialGradient>
+        <radialGradient id="cup-sau" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#f7f3ea"/><stop offset="1" stop-color="#cfc6b4"/></radialGradient>
+      </defs>
+      <ellipse cx="4" cy="6" rx="52" ry="52" fill="rgba(0,0,0,.35)"/>
+      <circle r="50" fill="url(#cup-sau)" stroke="#b9a986" stroke-width="1"/>
+      <circle r="47" fill="none" stroke="#c9a04a" stroke-width=".8" opacity=".8"/>
+      <rect x="31" y="-6" width="20" height="12" rx="6" fill="#efe9dd" stroke="#bfb39c" stroke-width="1"/>
+      <circle r="33" fill="#f4f0e7" stroke="#bfb39c" stroke-width="1.2"/>
+      <circle r="30.5" fill="none" stroke="#c9a04a" stroke-width=".8"/>
+      <circle r="27" fill="url(#cup-cof)"/>
+      <circle r="27" fill="none" stroke="#6b4a33" stroke-width="2.2" opacity=".55"/>
+      <path d="M-14 -9 C -6 -14, 6 -12, 12 -6" fill="none" stroke="#8a6a52" stroke-width="1.2" opacity=".45"/>
+      <path d="M-9 8 C -2 12, 9 10, 14 3" fill="none" stroke="#8a6a52" stroke-width="1" opacity=".3"/>
+    </svg>
+    <p class="sig" aria-hidden="true">x R</p>
+  </footer>
+
+</main>
+
+<script>
+(() => {
+  'use strict';
+  const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const NS = 'http://www.w3.org/2000/svg';
+  const $ = (id) => document.getElementById(id);
+  function el(tag, attrs, parent) {
+    const e = document.createElementNS(NS, tag);
+    if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  const rad = (a) => a * Math.PI / 180;
+  // fair 0..n-1 from the browser's random source
+  const buf = new Uint8Array(128); let bi = 128;
+  function rnd(n) {
+    const lim = 256 - (256 % n);
+    for (;;) {
+      if (bi >= buf.length) { crypto.getRandomValues(buf); bi = 0; }
+      const v = buf[bi++];
+      if (v < lim) return v % n;
+    }
+  }
+
+  /* ---------------- Efron's dice ---------------- */
+  const DICE = [
+    { id: 'A', who: 'Hollis', faces: [4, 4, 4, 4, 0, 0], ink: '#1f1c1a' },
+    { id: 'B', who: 'Pip',    faces: [3, 3, 3, 3, 3, 3], ink: '#565a62' },
+    { id: 'C', who: 'Margot', faces: [6, 6, 2, 2, 2, 2], ink: '#6a3d9a' },
+    { id: 'D', who: 'Bram',   faces: [5, 5, 5, 1, 1, 1], ink: '#b3312a' },
+  ];
+  const beater = (i) => (i + 3) % 4; // A beats B, B beats C, C beats D, D beats A
+  const PIPS = {
+    0: [], 1: [[0, 0]], 2: [[-1, -1], [1, 1]], 3: [[-1, -1], [0, 0], [1, 1]],
+    4: [[-1, -1], [1, -1], [-1, 1], [1, 1]], 5: [[-1, -1], [1, -1], [0, 0], [-1, 1], [1, 1]],
+    6: [[-1, -1], [-1, 0], [-1, 1], [1, -1], [1, 0], [1, 1]],
+  };
+  const dsvg = $('dice-svg');
+  const C0 = 320, POS = [[320, 100], [538, 320], [320, 540], [102, 320]], ANG = [-90, 0, 90, 180];
+  const pt = (a, r) => [C0 + r * Math.cos(rad(a)), C0 + r * Math.sin(rad(a))];
+
+  const ddefs = el('defs', null, dsvg);
+  ddefs.innerHTML =
+    '<radialGradient id="d-velvet" cx=".5" cy=".42" r=".62"><stop offset="0" stop-color="#8e1f2b"/><stop offset=".7" stop-color="#5e1019"/><stop offset="1" stop-color="#3c0910"/></radialGradient>' +
+    '<filter id="d-shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="2" dy="5" stdDeviation="3.5" flood-color="#000" flood-opacity=".45"/></filter>';
+  for (const id of ['m-plain', 'm-lit']) {
+    const m = el('marker', { id, viewBox: '0 0 10 10', refX: '7', refY: '5', markerWidth: '15', markerHeight: '15', markerUnits: 'userSpaceOnUse', orient: 'auto' }, ddefs);
+    el('path', { d: 'M0,0 L10,5 L0,10 z', class: id }, m);
+  }
+
+  function drawPips(inner, n, s, ink) {
+    while (inner.childNodes.length > 1) inner.removeChild(inner.lastChild);
+    const d = s * 0.27;
+    for (const [x, y] of PIPS[n]) el('circle', { cx: (x * d).toFixed(2), cy: (y * d).toFixed(2), r: (s * 0.088).toFixed(2), fill: ink }, inner);
+  }
+  function makeFace(parent, cx, cy, s, n, ink, cls) {
+    const g = el('g', { transform: 'translate(' + cx + ' ' + cy + ')', class: cls || 'fc' }, parent);
+    const inner = el('g', { class: 'spin' }, g);
+    el('rect', { x: -s / 2, y: -s / 2, width: s, height: s, rx: s * 0.2, class: 'face' }, inner);
+    drawPips(inner, n, s, ink);
+    return { g, inner, s };
+  }
+
+  // the circle: arrow i runs from die i to die i+1 (die i beats die i+1)
+  const arrows = [];
+  for (let i = 0; i < 4; i++) {
+    const R = 236, a0 = ANG[i] + 27, a1 = ANG[i] + 63;
+    const [x0, y0] = pt(a0, R), [x1, y1] = pt(a1, R);
+    const g = el('g', { class: 'arrow' }, dsvg);
+    const path = el('path', { d: 'M' + x0.toFixed(1) + ',' + y0.toFixed(1) + ' A' + R + ',' + R + ' 0 0 1 ' + x1.toFixed(1) + ',' + y1.toFixed(1), 'marker-end': 'url(#m-plain)' }, g);
+    const [lx, ly] = pt(ANG[i] + 45, 286);
+    const t1 = el('text', { x: lx.toFixed(1), y: (ly - 9).toFixed(1), class: 'al' }, g); t1.textContent = 'beats';
+    const t2 = el('text', { x: lx.toFixed(1), y: (ly + 14).toFixed(1), class: 'al2' }, g); t2.textContent = '2 in 3';
+    arrows.push({ g, path, t2, n: 0, w: 0 });
+  }
+
+  // the velvet, and the two dice that are rolled on it
+  el('ellipse', { cx: 320, cy: 322, rx: 134, ry: 100, fill: 'url(#d-velvet)', stroke: '#c9a04a', 'stroke-width': 2.5 }, dsvg);
+  el('ellipse', { cx: 320, cy: 322, rx: 126, ry: 92, fill: 'none', stroke: 'rgba(0,0,0,.35)', 'stroke-width': 6 }, dsvg);
+  const hint = el('text', { x: 320, y: 329, class: 'hint' }, dsvg); hint.textContent = 'pick a die';
+  const bigYou = makeFace(dsvg, 268, 308, 78, 0, '#000', 'big');
+  const bigMe = makeFace(dsvg, 372, 308, 78, 0, '#000', 'big');
+  const letYou = el('text', { x: 268, y: 322, class: 'letter' }, dsvg);
+  const letMe = el('text', { x: 372, y: 322, class: 'letter' }, dsvg);
+  const tagYou = el('text', { x: 268, y: 378, class: 'who' }, dsvg); tagYou.textContent = 'you';
+  const tagMe = el('text', { x: 372, y: 378, class: 'who' }, dsvg); tagMe.textContent = 'me';
+
+  // the four dice, unfolded, around the circle
+  const nets = DICE.map((d, i) => {
+    const [cx, cy] = POS[i];
+    const g = el('g', { class: 'net', tabindex: '0', role: 'button', 'aria-label': 'Die ' + d.id + ', ' + d.who + ': ' + d.faces.join(', ') }, dsvg);
+    el('rect', { x: cx - 72, y: cy - 74, width: 144, height: 128, rx: 14, class: 'hit' }, g);
+    el('rect', { x: cx - 68, y: cy - 41, width: 136, height: 92, rx: 12, class: 'ring' }, g);
+    const lab = el('text', { x: cx, y: cy - 52, class: 'dl' }, g); lab.textContent = d.id + '. ' + d.who;
+    const FS = 36, G = 6;
+    const faces = d.faces.map((n, k) => makeFace(g, cx + ((k % 3) - 1) * (FS + G), cy + 5 + (Math.floor(k / 3) - 0.5) * (FS + G), FS, n, d.ink));
+    g.addEventListener('click', () => pick(i));
+    g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(i); } });
+    return { g, faces };
+  });
+
+  const st = { mode: 'second', you: -1, me: -1, youWins: 0, meWins: 0, total: 0, rolled: false, busy: false, last: null };
+  const sayD = $('dice-say'), sumD = $('dice-sum'), roll1 = $('roll1'), roll100 = $('roll100'), swap = $('swap');
+  const tYou = $('t-you'), tMe = $('t-me');
+
+  function arrowFor(a, b) { // the arrow between two neighbouring dice, or -1
+    if (b === (a + 1) % 4) return a;
+    if (a === (b + 1) % 4) return b;
+    return -1;
+  }
+  function say(s) { sayD.textContent = s; }
+  const fmt = (n) => n.toLocaleString('en-GB');
+
+  function tally(box, n) {
+    box.textContent = '';
+    if (n > 50) { const s = document.createElement('span'); s.className = 'num'; s.textContent = fmt(n); box.appendChild(s); return; }
+    for (let g = 0; g * 5 < n; g++) {
+      const k = Math.min(5, n - g * 5);
+      const s = el('svg', { viewBox: '0 0 30 26', 'aria-hidden': 'true' }, box);
+      let d = '';
+      for (let m = 0; m < Math.min(4, k); m++) {
+        const j = Math.sin((g * 7 + m) * 12.9898) * 43758.5453, jx = (j - Math.floor(j) - 0.5) * 2.2;
+        d += 'M' + (5 + m * 5.6).toFixed(1) + ' 3 L' + (5 + m * 5.6 + jx).toFixed(1) + ' 23 ';
+      }
+      if (k === 5) d += 'M1 18 L27 7';
+      el('path', { d }, s);
+    }
+  }
+
+  function refresh() {
+    nets.forEach((n, i) => {
+      n.g.classList.toggle('you', i === st.you);
+      n.g.classList.toggle('me', i === st.me);
+      n.faces.forEach((f, k) => f.g.classList.toggle('up', !!st.last && ((i === st.you && k === st.last[0]) || (i === st.me && k === st.last[1]))));
+    });
+    const lit = st.you >= 0 && st.me >= 0 ? arrowFor(st.you, st.me) : -1;
+    arrows.forEach((a, i) => {
+      a.g.classList.toggle('lit', i === lit);
+      a.path.setAttribute('marker-end', i === lit ? 'url(#m-lit)' : 'url(#m-plain)');
+      a.t2.textContent = a.n ? Math.round(100 * a.w / a.n) + ' % of ' + fmt(a.n) : '2 in 3';
+    });
+    const ready = st.you >= 0 && st.me >= 0;
+    roll1.disabled = roll100.disabled = !ready;
+    const showYou = st.you >= 0, showMe = st.me >= 0;
+    bigYou.g.style.display = letYou.style.display = tagYou.style.display = showYou ? '' : 'none';
+    bigMe.g.style.display = letMe.style.display = tagMe.style.display = showMe ? '' : 'none';
+    hint.style.display = showYou || showMe ? 'none' : '';
+    if (!st.rolled) {
+      if (showYou) { drawPips(bigYou.inner, 0, 78, '#000'); letYou.textContent = DICE[st.you].id; }
+      if (showMe) { drawPips(bigMe.inner, 0, 78, '#000'); letMe.textContent = DICE[st.me].id; }
+    }
+    letYou.style.visibility = letMe.style.visibility = st.rolled ? 'hidden' : 'visible';
+    tally(tYou, st.meWins);
+    tally(tMe, st.youWins);
+    sumD.textContent = st.total ? "I've won " + fmt(st.meWins) + ' of ' + fmt(st.total) + ' (' + Math.round(100 * st.meWins / st.total) + ' %).' : '';
+    if (st.mode === 'second') { swap.textContent = 'Now you pick second'; swap.hidden = st.total < 30; }
+    else { swap.textContent = "I'll pick second again"; swap.hidden = false; }
+  }
+
+  function pick(i) {
+    if (st.busy) return;
+    if (st.mode === 'second') {
+      st.you = i; st.me = beater(i);
+      say('You took ' + DICE[i].id + ". I'll take " + DICE[st.me].id + '.');
+    } else {
+      if (i === st.me) { say("That one's mine. Take another."); return; }
+      st.you = i;
+      say('You took ' + DICE[i].id + '. Roll.');
+    }
+    st.youWins = st.meWins = st.total = 0; st.rolled = false; st.last = null;
+    refresh();
+  }
+
+  function roll(k) {
+    if (st.busy || st.you < 0 || st.me < 0) return;
+    const Y = DICE[st.you], M = DICE[st.me], a = arrowFor(st.you, st.me);
+    let iy = 0, im = 0, fy = 0, fm = 0;
+    for (let j = 0; j < k; j++) {
+      iy = rnd(6); im = rnd(6); fy = Y.faces[iy]; fm = M.faces[im];
+      if (fy > fm) st.youWins++; else st.meWins++; // these dice never tie
+      st.total++;
+      if (a >= 0) { arrows[a].n++; if (a === st.you ? fy > fm : fm > fy) arrows[a].w++; }
+    }
+    const finish = () => {
+      drawPips(bigYou.inner, fy, 78, Y.ink); drawPips(bigMe.inner, fm, 78, M.ink);
+      st.rolled = true; st.last = [iy, im]; st.busy = false;
+      if (k === 1) say(fy + ' against ' + fm + '. ' + (fy > fm ? 'I pay.' : 'You pay.'));
+      else say('A hundred more. The last: ' + fy + ' against ' + fm + '.');
+      refresh();
+    };
+    if (reduce || k > 1) { finish(); return; }
+    st.busy = true; st.rolled = true;
+    letYou.style.visibility = letMe.style.visibility = 'hidden';
+    for (const b of [bigYou, bigMe]) { b.inner.classList.remove('tumble'); void b.inner.getBBox(); b.inner.classList.add('tumble'); }
+    let t = 0;
+    const flick = setInterval(() => {
+      drawPips(bigYou.inner, Y.faces[rnd(6)], 78, Y.ink); drawPips(bigMe.inner, M.faces[rnd(6)], 78, M.ink);
+      if (++t >= 6) { clearInterval(flick); finish(); }
+    }, 80);
+  }
+
+  roll1.addEventListener('click', () => roll(1));
+  roll100.addEventListener('click', () => roll(100));
+  swap.addEventListener('click', () => {
+    if (st.busy) return;
+    st.youWins = st.meWins = st.total = 0; st.rolled = false; st.last = null;
+    if (st.mode === 'second') {
+      st.mode = 'first'; st.me = rnd(4); st.you = -1;
+      say("I'll pick first this time: " + DICE[st.me].id + '. Your turn.');
+    } else {
+      st.mode = 'second'; st.me = st.you = -1;
+      say('');
+    }
+    refresh();
+  });
+  refresh();
+
+  /* ---------------- Pip's handwriting ---------------- */
+  // Pip's line as she writes it after the unlock: real Lean, its UTF-8 bytes read as Windows-1252, a few marks on top.
+  const HER_LINE = "t͢h̅éo̳r̽e͊m gȏod̈́nǐgh̼t (̷r͎ : R̸ȯsie͛) :ͪ â̟ˆ͛€ Îµ > 0,̋ âˆ́ƒ̍ Î͆´͛ > 0ͩ, w̸ar̨m r̗ Îµ Î´̼ := by\n  int̏r͢o̼ Îͥµ hÎ̃µ̷; r̢efĩne âŸ͘¨Î͝µ / 2̿, b̝y p̥osͬitȉv͝ìty̤,ͭ ?͋_â̟Ÿ̵©\n  simpͫ on̠ly [j͒uͧmͅp̀ēr,̻ â̰†̓\u0090 heat_l̖e]́  --ͦ â͟Šͦ¢̮ r̔.͜r͔oọm̀ â͕‰̻¥͈ 2̾1\n  exa͍c͑t so̡rryͅ";
+  const ta = $('moji'), readB = $('read'), tape = $('tape'), pre = $('tape-text'), warn = $('warn'), stamp = $('stamp'), eye = $('eye'), her = $('herline');
+  ta.value = HER_LINE;
+  const grow = () => { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight + 4, 900) + 'px'; };
+  grow();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(grow);
+  window.addEventListener('resize', grow);
+
+  let REV = null, U8 = null;
+  try {
+    const W = new TextDecoder('windows-1252');
+    U8 = new TextDecoder('utf-8', { fatal: true });
+    REV = new Map();
+    for (let b = 0; b < 256; b++) REV.set(W.decode(Uint8Array.of(b)), b);
+  } catch (e) { REV = null; }
+  const byteOf = (ch) => {
+    if (REV.has(ch)) return REV.get(ch);
+    const c = ch.codePointAt(0);
+    return c >= 0x80 && c <= 0x9f ? c : -1; // the same mistake made with Latin-1
+  };
+  const MARKS = /[̀-ͯ҃-҉᪰-᫿᷀-᷿⃐-⃿︠-︯]/g;
+  function once(s) {
+    const cs = Array.from(s);
+    let out = '';
+    for (let i = 0; i < cs.length;) {
+      const b0 = byteOf(cs[i]);
+      const len = b0 >= 0xc2 && b0 <= 0xdf ? 2 : b0 >= 0xe0 && b0 <= 0xef ? 3 : b0 >= 0xf0 && b0 <= 0xf4 ? 4 : 0;
+      if (len && i + len <= cs.length) {
+        const bytes = [b0];
+        let ok = true;
+        for (let j = 1; j < len; j++) { const b = byteOf(cs[i + j]); if (b < 0x80 || b > 0xbf) { ok = false; break; } bytes.push(b); }
+        if (ok) { try { out += U8.decode(Uint8Array.from(bytes)); i += len; continue; } catch (e) { /* not UTF-8 after all */ } }
+      }
+      out += cs[i]; i++;
+    }
+    return out;
+  }
+  function fix(s) {
+    let t = s.replace(MARKS, '');
+    for (let k = 0; k < 4; k++) { const u = once(t); if (u === t) break; t = u; } // read twice, if it was garbled twice
+    return t;
+  }
+  const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  function hl(line) {
+    const c = line.indexOf('--');
+    const code = c >= 0 ? line.slice(0, c) : line, cm = c >= 0 ? line.slice(c) : '';
+    const h = esc(code)
+      .replace(/\b(theorem|lemma|example|def|by|intro|refine|simp|only|exact|have|show|fun|rw|calc)\b/g, '<span class="kw">$1</span>')
+      .replace(/\bsorry\b/g, '<span class="sorry">sorry</span>');
+    return h + (cm ? '<span class="cm">' + esc(cm) + '</span>' : '');
+  }
+  let timer = 0;
+  function print() {
+    if (!REV) { pre.textContent = 'This browser cannot read Windows-1252.'; tape.hidden = false; return; }
+    const out = fix(ta.value);
+    clearInterval(timer);
+    tape.hidden = false;
+    stamp.classList.remove('on'); warn.hidden = true;
+    eye.classList.remove('ok'); eye.classList.add('busy');
+    tape.setAttribute('aria-busy', 'true');
+    const chars = Array.from(out);
+    const done = () => {
+      pre.innerHTML = out.split('\n').map(hl).join('\n');
+      warn.hidden = !/\bsorry\b/.test(out);
+      stamp.classList.add('on');
+      eye.classList.remove('busy'); eye.classList.add('ok');
+      tape.setAttribute('aria-busy', 'false');
+    };
+    if (reduce || !chars.length) { done(); return; }
+    let i = 0;
+    const step = Math.max(2, Math.ceil(chars.length / 110));
+    pre.textContent = '';
+    timer = setInterval(() => {
+      i = Math.min(chars.length, i + step);
+      pre.textContent = chars.slice(0, i).join('');
+      if (i >= chars.length) { clearInterval(timer); done(); }
+    }, 18);
+  }
+  readB.addEventListener('click', print);
+  ta.addEventListener('input', () => { her.hidden = ta.value === HER_LINE; grow(); });
+  her.addEventListener('click', () => { ta.value = HER_LINE; her.hidden = true; grow(); ta.focus(); });
+
+  /* ---------------- the clay ball ---------------- */
+  const csvg = $('clay-svg');
+  const PEOPLE = [['Pip', '#8f949c'], ['Hollis', '#1f1c1a'], ['Bram', '#b3312a'], ['Margot', '#6a3d9a'], ['the fifth', '#efe6cf']];
+  const RB = 188, RL = 230, BALL = 84, WIRE = 282;
+  const seated = (k) => -90 + 72 * k;          // neighbours side by side round the table
+  const DELTA = [0, 72, 144, -144, -72];         // to -90 + 144k: every feud as far apart as it will go
+  let t = 0, phi = rad(35), animating = false, dragging = false, lastCount = -1;
+
+  const cdefs = el('defs', null, csvg);
+  cdefs.innerHTML =
+    '<pattern id="cl-minor" width="10" height="10" patternUnits="userSpaceOnUse" x="-320" y="-320"><path d="M10 0 L0 0 0 10" fill="none" stroke="rgba(60,125,100,.17)" stroke-width=".8"/></pattern>' +
+    '<pattern id="cl-major" width="50" height="50" patternUnits="userSpaceOnUse" x="-320" y="-320"><rect width="50" height="50" fill="url(#cl-minor)"/><path d="M50 0 L0 0 0 50" fill="none" stroke="rgba(60,125,100,.33)" stroke-width="1.1"/></pattern>' +
+    '<linearGradient id="cl-brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4dc98"/><stop offset=".35" stop-color="#c39338"/><stop offset=".6" stop-color="#8a6420"/><stop offset="1" stop-color="#e2be6a"/></linearGradient>' +
+    '<radialGradient id="cl-sheen" cx=".38" cy=".3" r=".75"><stop offset="0" stop-color="rgba(255,255,255,.34)"/><stop offset=".45" stop-color="rgba(255,255,255,.06)"/><stop offset="1" stop-color="rgba(255,255,255,0)"/></radialGradient>' +
+    '<radialGradient id="cl-lamp" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="rgba(255,214,150,.22)"/><stop offset="1" stop-color="rgba(255,214,150,0)"/></radialGradient>' +
+    '<radialGradient id="cl-ball" cx=".36" cy=".32" r=".75"><stop offset="0" stop-color="rgba(255,255,255,.42)"/><stop offset=".35" stop-color="rgba(255,255,255,.08)"/><stop offset=".8" stop-color="rgba(0,0,0,.12)"/><stop offset="1" stop-color="rgba(0,0,0,.38)"/></radialGradient>' +
+    '<filter id="cl-glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur in="SourceGraphic" stdDeviation="3.2" result="b"/><feFlood flood-color="#FFC870" flood-opacity=".95"/><feComposite in2="b" operator="in" result="g"/><feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
+    '<filter id="cl-soft" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="3" dy="7" stdDeviation="6" flood-color="#2a1a0a" flood-opacity=".35"/></filter>';
+
+  el('circle', { r: 300, fill: '#efe9d6' }, csvg);
+  el('circle', { r: 300, fill: 'url(#cl-major)' }, csvg);
+  el('circle', { r: 300, fill: 'url(#cl-lamp)' }, csvg);
+  const ballShadow = el('ellipse', { cx: 8, cy: 14, rx: BALL + 6, ry: BALL + 4, fill: 'rgba(40,25,10,.22)' }, csvg);
+  const gSticks = el('g', null, csvg);
+  const ballG = el('g', { filter: 'url(#cl-soft)' }, csvg);
+  const halfA = el('path', { fill: '#b8382e' }, ballG);
+  const halfB = el('path', { fill: '#2f5ea8' }, ballG);
+  el('circle', { r: BALL, fill: 'url(#cl-ball)' }, ballG);
+  const gThreads = el('g', null, csvg);
+  const gBeads = el('g', null, csvg);
+  const gNames = el('g', null, csvg);
+  el('circle', { r: 300, fill: 'url(#cl-sheen)', 'pointer-events': 'none' }, csvg);
+  el('circle', { r: 300, fill: 'none', stroke: 'url(#cl-brass)', 'stroke-width': 15, class: 'rim' }, csvg);
+  el('circle', { r: 292, fill: 'none', stroke: 'rgba(90,60,20,.35)', 'stroke-width': 1.5 }, csvg);
+  const wireG = el('g', null, csvg);
+  const wireU = el('line', { stroke: 'rgba(30,30,30,.35)', 'stroke-width': 4, 'stroke-linecap': 'round' }, wireG);
+  const wire = el('line', { stroke: '#e9edf0', 'stroke-width': 1.8, 'stroke-linecap': 'round' }, wireG);
+  const handles = [0, 1].map(() => el('rect', { x: -18, y: -7, width: 36, height: 14, rx: 7, fill: '#a77b4f', stroke: '#5c3e22', 'stroke-width': 1.5 }, wireG));
+  const countT = el('text', { x: 0, y: 274, class: 'count' }, csvg);
+
+  const sticks = [], beads = [], rings = [], names = [], threads = [];
+  for (let k = 0; k < 5; k++) {
+    sticks.push(el('line', { class: 'stick' }, gSticks));
+    threads.push(el('line', { class: 'thread' }, gThreads));
+    rings.push(el('circle', { r: 17, class: 'side' }, gBeads));
+    beads.push(el('circle', { r: 11, class: 'bead', fill: PEOPLE[k][1] }, gBeads));
+    const n = el('text', { class: 'name' }, gNames); n.textContent = PEOPLE[k][0];
+    names.push(n);
+  }
+  const clSay = $('clay-say'), seatB = $('seat');
+
+  function drawClay() {
+    const ux = Math.cos(phi), uy = Math.sin(phi);
+    const ax = (BALL * ux).toFixed(2), ay = (BALL * uy).toFixed(2), bx = (-BALL * ux).toFixed(2), by = (-BALL * uy).toFixed(2);
+    halfA.setAttribute('d', 'M' + ax + ',' + ay + ' A' + BALL + ',' + BALL + ' 0 0 1 ' + bx + ',' + by + ' Z');
+    halfB.setAttribute('d', 'M' + ax + ',' + ay + ' A' + BALL + ',' + BALL + ' 0 0 0 ' + bx + ',' + by + ' Z');
+    const P = [], side = [];
+    for (let k = 0; k < 5; k++) {
+      const a = rad(seated(k) + DELTA[k] * t), c = Math.cos(a), s = Math.sin(a);
+      P.push([RB * c, RB * s]);
+      side.push(Math.sin(a - phi) >= 0 ? 1 : -1);
+      sticks[k].setAttribute('x1', (40 * c).toFixed(2)); sticks[k].setAttribute('y1', (40 * s).toFixed(2));
+      sticks[k].setAttribute('x2', ((RB - 12) * c).toFixed(2)); sticks[k].setAttribute('y2', ((RB - 12) * s).toFixed(2));
+      for (const e of [beads[k], rings[k]]) { e.setAttribute('cx', P[k][0].toFixed(2)); e.setAttribute('cy', P[k][1].toFixed(2)); }
+      rings[k].setAttribute('stroke', side[k] > 0 ? '#b8382e' : '#2f5ea8');
+      const side3 = c > 0.4 ? 'start' : c < -0.4 ? 'end' : 'middle', rr = side3 === 'middle' ? RL : RB + 24;
+      names[k].setAttribute('text-anchor', side3);
+      names[k].setAttribute('x', (rr * c).toFixed(2)); names[k].setAttribute('y', (rr * s + 7).toFixed(2));
+    }
+    let count = 0;
+    for (let k = 0; k < 5; k++) {
+      const j = (k + 1) % 5, split = side[k] !== side[j];
+      if (split) count++;
+      const L = threads[k];
+      L.setAttribute('x1', P[k][0].toFixed(2)); L.setAttribute('y1', P[k][1].toFixed(2));
+      L.setAttribute('x2', P[j][0].toFixed(2)); L.setAttribute('y2', P[j][1].toFixed(2));
+      L.classList.toggle('split', split);
+    }
+    const wx = (WIRE * ux).toFixed(2), wy = (WIRE * uy).toFixed(2);
+    for (const w of [wire, wireU]) { w.setAttribute('x1', wx); w.setAttribute('y1', wy); w.setAttribute('x2', -wx); w.setAttribute('y2', -wy); }
+    const deg = (phi * 180 / Math.PI + 90);
+    handles[0].setAttribute('transform', 'translate(' + wx + ' ' + wy + ') rotate(' + deg.toFixed(1) + ')');
+    handles[1].setAttribute('transform', 'translate(' + (-wx) + ' ' + (-wy) + ') rotate(' + deg.toFixed(1) + ')');
+    countT.textContent = count + ' of 5 feuds split';
+    const d = Math.round(((phi * 180 / Math.PI) % 180 + 180) % 180);
+    csvg.setAttribute('aria-valuenow', String(d));
+    csvg.setAttribute('aria-valuetext', count + ' of 5 feuds split');
+    if (!animating && count !== lastCount) {
+      lastCount = count;
+      if (t < 0.5) clSay.textContent = count <= 2 ? 'Neighbours sit together, so wherever the wire goes, it splits two feuds at most.' : count + ' of 5.';
+      else clSay.textContent = count === 4 ? "Four of five, wherever the wire goes. Five is odd, so one feud always stays at the table: four is the best there is." : count + ' of 5. Turn the wire a little.';
+    }
+  }
+
+  function fromEvent(e) {
+    const m = csvg.getScreenCTM();
+    if (!m) return;
+    const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(m.inverse());
+    if (Math.hypot(p.x, p.y) < 10) return;
+    phi = Math.atan2(p.y, p.x);
+    drawClay();
+  }
+  csvg.addEventListener('pointerdown', (e) => { dragging = true; csvg.classList.add('dragging'); try { csvg.setPointerCapture(e.pointerId); } catch (_) {} fromEvent(e); });
+  csvg.addEventListener('pointermove', (e) => { if (dragging) fromEvent(e); });
+  const endDrag = () => { dragging = false; csvg.classList.remove('dragging'); };
+  csvg.addEventListener('pointerup', endDrag);
+  csvg.addEventListener('pointercancel', endDrag);
+  csvg.addEventListener('keydown', (e) => {
+    const k = e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -1 : e.key === 'ArrowRight' || e.key === 'ArrowUp' ? 1 : 0;
+    if (!k) return;
+    e.preventDefault();
+    phi += rad(4 * k);
+    drawClay();
+  });
+  seatB.addEventListener('click', () => {
+    if (animating) return;
+    const from = t, to = t < 0.5 ? 1 : 0;
+    seatB.disabled = true;
+    const done = () => {
+      t = to; animating = false; lastCount = -1; seatB.disabled = false;
+      seatB.textContent = to ? 'Back to their seats' : 'Seat the feuds far apart';
+      drawClay();
+    };
+    if (reduce) { done(); return; }
+    animating = true;
+    clSay.textContent = to ? 'They move apart…' : 'Back they go…';
+    const t0 = performance.now(), dur = 1700;
+    const step = (now) => {
+      const x = Math.min(1, (now - t0) / dur), e = x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+      t = from + (to - from) * e;
+      drawClay();
+      if (x < 1) requestAnimationFrame(step); else done();
+    };
+    requestAnimationFrame(step);
+  });
+  drawClay();
+})();
+</script>
+</body>
+</html>
