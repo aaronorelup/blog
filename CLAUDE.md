@@ -43,6 +43,16 @@ Every post needs a `preview:` block and a `topic`. Go through the checklist at t
 `WRITING.md`, then run `npm run build` before pushing: it fails on a bad preview or a missing
 file. Once Aaron says go, set `draft: false`, push to `main` and check `/version.json`.
 
+## Video and audio (R2, not git)
+
+- Video, audio and HLS live in the private R2 bucket `aaronorelup-site-media`, not in git. The
+  Worker serves them at their normal URLs. Images and `.vtt` captions stay in `public/`.
+- To add one: drop it in `public/media/<slug>/`, run `npm run media:push`, then commit the post
+  and `src/data/media-manifest.json`.
+- The build fails on any video or audio in `public/` outside `courses/`, or on any file over
+  25 MiB.
+- After a deploy, run `npm run media:verify`. Details are in `docs/MEDIA.md`.
+
 ## The stats page (/stats)
 
 A public page of the site's own traffic, one snapshot a day. `src/pages/stats.astro` and
