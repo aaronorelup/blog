@@ -30,11 +30,11 @@ follow while the experiments run, so it changes as results land and gets rewritt
 <tr><td>Is it safe?</td><td>4 auditors and 1 checker on the lead's box</td><td>Done 21:00</td><td>Safe, with two precautions. $11.58</td></tr>
 <tr><td>Baseline: the skill's own three machines</td><td>Lead</td><td>Done</td><td>Install 5 s, all six pages built in 1 s, 15.8 s per 1080p frame without a GPU</td></tr>
 <tr><td>The same capture on a rented GPU</td><td>1 agent and two Runpod pods</td><td>Done 21:55</td><td>95x faster per frame. The whole V8 film in 4 minutes for $0.08 of GPU time. $2.23 of tokens</td></tr>
-<tr><td>MOLE-1, built from its concept sheet</td><td>Builder, then a critic, then a fixer (lead's box)</td><td>Building, Step 3</td><td></td></tr>
+<tr><td>MOLE-1, built from its concept sheet</td><td>Builder, then a critic, then a fixer (lead's box)</td><td>Building, Step 6</td><td></td></tr>
 <tr><td>MOLE-1 from words only (the control)</td><td>1 builder (lead's box)</td><td>Queued</td><td></td></tr>
-<tr><td>Touch Move's brass clock</td><td>Builder, critic, fixer (lead's box)</td><td>Building, Step 2</td><td></td></tr>
+<tr><td>Touch Move's brass clock</td><td>Builder, critic, fixer (lead's box)</td><td>Building, Step 7</td><td></td></tr>
 <tr><td>DRAY, LOOM, PAWN and FINCH</td><td>One cloud session each</td><td>Started 21:41</td><td></td></tr>
-<tr><td>Resupply 6, the lander that tipped</td><td>Cloud session</td><td>Started 21:41</td><td></td></tr>
+<tr><td>Resupply 6, the lander that tipped</td><td>Cloud session</td><td>Done 22:56</td><td>Lands upright at 1.5 m/s with 13.0 kJ to spare; at 7.0 m/s it tips. $15.88 of tokens; final film rendered on a GPU in 5.4 min for $0.045</td></tr>
 <tr><td>HAB 3: the nine steps</td><td>Cloud session</td><td>Started 21:41</td><td></td></tr>
 <tr><td>A music box build-along of "Never Rises, Never Sets"</td><td>Cloud session</td><td>Started 21:41</td><td></td></tr>
 <tr><td>Paint the machine; a film as a video model's motion guide</td><td>Not started</td><td>Waits for finished films</td><td></td></tr>
