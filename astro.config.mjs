@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import rehypePostImages from './scripts/rehype-post-images.mjs';
 import statsPages from './scripts/stats-pages.mjs';
 import loreThumbs from './scripts/lore-thumbs.mjs';
+import media from './scripts/media/integration.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -103,7 +104,8 @@ export default defineConfig({
   site: 'https://aaronorelup.com',
   // statsPages: dist/stats-pages.txt, the public pages /api/stats may name (worker/stats.js).
   // loreThumbs: small copies of the lore course's pictures for its index cards (scripts/lore-thumbs.mjs).
-  integrations: [publicDirConstant(), statsPages(), loreThumbs()],
+  // media: no video or audio in public/ outside courses/, nothing over 25 MiB (docs/MEDIA.md).
+  integrations: [publicDirConstant(), statsPages(), loreThumbs(), media()],
   markdown: {
     // Both themes, emitted as CSS custom properties rather than a baked-in
     // background — panel.css picks one based on the day/night mode. A single

@@ -1,4 +1,5 @@
-// The byte length of every video and audio file in public/, for worker/media.js. A 206 has to
+// The byte length of every video and audio file in public/ (only public/courses/ keeps any; the
+// rest is in R2, which knows its own lengths), for worker/media.js. A 206 has to
 // state the file's length, and inside a Worker the asset binding doesn't give it (no
 // Content-Length on what it returns), so the build writes it down. Regenerated on every build
 // from the files themselves, so it can't drift from them.

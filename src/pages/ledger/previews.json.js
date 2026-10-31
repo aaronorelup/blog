@@ -9,6 +9,7 @@ import path from 'node:path';
 import { getCollection } from 'astro:content';
 import { isListed } from '../../data/listed.js';
 import { PREVIEW_MEDIA } from '../../data/preview-budget.js';
+import R2_MEDIA from '../../data/media-manifest.json';
 
 // Set by the integration in astro.config.mjs: the cwd is often the folder above the project.
 const PUBLIC_DIR = typeof __PUBLIC_DIR__ === 'string' ? __PUBLIC_DIR__ : path.join(process.cwd(), 'public');
@@ -57,10 +58,11 @@ export async function GET() {
 
 // A missing file would be a broken picture in the card, and an oversized one is exactly the slow
 // hover this budget exists to prevent. Both stop the build, like an undefined series key does.
+// A loop is video, so it is in R2 and its size is in the manifest (docs/MEDIA.md).
 function checkMedia(id, src, cap) {
   const file = path.join(PUBLIC_DIR, src);
-  if (!fs.existsSync(file)) throw new Error(`${id}: preview media ${src} doesn't exist under public/`);
-  const bytes = fs.statSync(file).size;
+  const bytes = fs.existsSync(file) ? fs.statSync(file).size : R2_MEDIA[src]?.bytes;
+  if (bytes === undefined) throw new Error(`${id}: preview media ${src} is neither under public/ nor in R2 (src/data/media-manifest.json)`);
   if (bytes > cap) {
     throw new Error(`${id}: preview media ${src} is ${(bytes / 1024).toFixed(1)} KB, over the ` +
       `${cap / 1024} KB cap. Remake it with scripts/preview-media.mjs (PREVIEWS.md).`);

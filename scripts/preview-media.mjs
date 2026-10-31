@@ -23,6 +23,7 @@
 
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PREVIEW_MEDIA } from '../src/data/preview-budget.js';
@@ -52,7 +53,7 @@ if (!fs.existsSync(path.join(ROOT, 'src', 'content', 'posts', `${slug}.md`))) di
 if (!(opts.dur > 0 && opts.dur <= maxLoopSeconds)) die(`--dur must be between 0 and ${maxLoopSeconds} seconds`);
 if (!['cover', 'blur'].includes(opts.fit)) die('--fit is cover or blur');
 
-const src = resolveSource(source);
+const src = await resolveSource(source);
 const probe = ffprobe(src);
 // An animated GIF counts as a video (ffmpeg reads it like one); a WebP, PNG or JPEG is a still.
 const isVideo = probe.duration > 0.5 && probe.codec !== 'webp' && !/\.(webp|png|jpe?g|avif)$/i.test(src);
@@ -86,7 +87,7 @@ if (isVideo && !opts.still) {
 
 console.log('');
 console.log(`still  ${rel(stillPath)}  ${kb(stillBytes)} (target ${kb(stillTarget)})`);
-if (loopBytes) console.log(`loop   ${rel(loopPath)}  ${kb(loopBytes)} (target ${kb(loopTarget)}), ${opts.dur} s from ${opts.at} s`);
+if (loopBytes) console.log(`loop   ${rel(loopPath)}  ${kb(loopBytes)} (target ${kb(loopTarget)}), ${opts.dur} s from ${opts.at} s; npm run media:push puts it in R2`);
 console.log('\nIn the post\'s preview: block:\n');
 console.log(`  image: "/media/previews/${slug}.webp"`);
 if (loopBytes) console.log(`  loop: "/media/previews/${slug}.mp4"`);
@@ -123,11 +124,18 @@ function squeeze(settings, target, encode, file, what) {
   return bytes;
 }
 
-function resolveSource(s) {
+// A path on disk, a file under public/, or a site path whose file is in R2 (docs/MEDIA.md),
+// which is downloaded from the live site to a temporary file.
+async function resolveSource(s) {
   const candidates = [s, path.join(ROOT, 'public', s.replace(/^\/+/, ''))];
   const hit = candidates.find((c) => fs.existsSync(c) && fs.statSync(c).isFile());
-  if (!hit) die(`Can't find ${s} (tried it as a path and under public/)`);
-  return hit;
+  if (hit) return hit;
+  if (!s.startsWith('/')) die(`Can't find ${s} (tried it as a path and under public/)`);
+  const res = await fetch(`https://aaronorelup.com${s}`);
+  if (!res.ok) die(`Can't find ${s} on disk, under public/ or on the live site (${res.status})`);
+  const tmp = path.join(os.tmpdir(), `preview-source${path.extname(s)}`);
+  fs.writeFileSync(tmp, Buffer.from(await res.arrayBuffer()));
+  return tmp;
 }
 
 function ffprobe(file) {
