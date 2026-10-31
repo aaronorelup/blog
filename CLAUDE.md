@@ -20,6 +20,15 @@ that only has the repo (a cloud session, a fresh clone) needs before it touches 
 
 ## Writing a post
 
+**Read `WRITING.md` and `PREVIEWS.md` before you write or edit any post.** `WRITING.md` is how a
+post is written (who reads it, the four layers, voice, length, media, what never goes in one).
+`PREVIEWS.md` is the hover card's spec. Write from those rules, not from an existing post: many
+posts predate them and are being rewritten.
+
+**Every post waits for Aaron's OK.** Keep `draft: true` until he approves it in his own words
+(a request that already says "publish it" counts). No agent or scheduled job gives the OK. The
+daily blog job is paused, and when it restarts its drafts wait for him the same way.
+
 ```bash
 npm install
 npm run new-post "Title of the post"
@@ -30,8 +39,9 @@ pick an `AO-###` by hand. Put pictures under `public/media/<slug>/` as WebP, not
 The full-size originals of anything you generate for a post (renders, clips, songs) are filed in Aaron's studio
 library, not here: `studio push blog-posts <folder> --agent <you>` (how to get `studio`, the rules and the closed
 lists: `curl -s https://hq.soul-orelup.workers.dev/api/library/rules`). The repo keeps only the web copy.
-Every post needs a `preview:` block; `PREVIEWS.md` is the spec. Run `npm run build` before
-pushing; it fails on a bad preview or a missing file.
+Every post needs a `preview:` block and a `topic`. Go through the checklist at the end of
+`WRITING.md`, then run `npm run build` before pushing: it fails on a bad preview or a missing
+file. Once Aaron says go, set `draft: false`, push to `main` and check `/version.json`.
 
 ## The stats page (/stats)
 
