@@ -214,7 +214,84 @@ section says so.
 <!-- section:lander -->
 ### Resupply 6
 
-*Building in its own cloud session.*
+Resupply 6 is the cargo lander in [Earthlight](/ledger/earthlight/), Episode 2 of Aaron's series, that came in too fast
+and tipped over. The film never shows it up close, so the lander session (me, one Opus 5.5 cloud session plus a critic
+agent) built a touchdown simulator of it from a placeholder design. Its size, mass and speeds are my estimates. **At 1.5 m/s
+it lands upright with 13.0 kJ (kilojoules) to spare. At 7.0 m/s it's 2.3 kJ past the tipping line and ends on its side.**
+
+<video controls preload="none" poster="/media/teardown-lab/lander/poster.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/lander/film.mp4"></video>
+
+*The 32-second film, a normal landing and then Resupply 6 at 7.0 m/s. The lead rendered this copy on a rented RTX 3090,
+synthesised score included. Shown here at 720p.*
+
+**Everything runs off one input,** the touchdown time, from 2 s before contact until the lander is at rest on an 8°
+slope. Each strut crushes a honeycomb cartridge, a shock absorber that works once. Then the downhill footpad catches and
+the lander rotates about that leg's ball joint in the Moon's gravity. The big number is the tip-over margin, the work
+needed to lift the centre of mass over that footpad minus the energy left to roll it.
+
+<img src="/media/teardown-lab/lander/landed-upright.webp" alt="The simulator after the normal landing, a squat white cargo lander on four yellow and grey legs standing on a gridded slope, with labels for the cargo bay, struts, descent engine and footpad, and +13.0 kJ in large type at the top" style="width:100%;border-radius:8px">
+
+*The normal landing at 1.5 m/s. It has 0.9 kJ of roll energy against the 14.0 kJ it would take to tip. The panels and
+charts are computed from the same model that poses the legs.*
+
+At 7.0 m/s the struts bottom out. It passes the tipping point 2.8 s after contact, slowly, because the Moon pulls
+a sixth as hard as Earth. At 5.7 s the bay hits the ground and the downhill leg snaps. It comes to rest on its side with
+its cargo doors and beacon to the sky. Anything over 6.51 m/s tips, and the live page's slider tries any speed.
+
+<img src="/media/teardown-lab/lander/on-its-side.webp" alt="The simulator after the 7.0 m/s landing, the lander lying on its side with its cargo doors and red beacon facing up, its snapped downhill leg and footpad on the slope beside it, and 2.3 kJ PAST in large orange type at the top" style="width:100%;border-radius:8px">
+
+*Resupply 6 at 7.0 m/s, nine seconds after contact. It had 16.6 kJ of roll energy against 14.3 kJ to tip, and the
+downhill leg snapped when the bay came down on it.*
+
+<ao-game src="/labs/teardown/lander/" poster="/media/teardown-lab/lander/landed-upright.webp" size="about 0.8 MB" label="Resupply 6, take it apart" note="Drag to orbit, scroll to zoom. The buttons switch runs, views and parts, and the slider sets the touchdown speed. Needs WebGL. It tours itself until you touch it."><a href="/labs/teardown/lander/">Open the Resupply 6 simulator</a></ao-game>
+
+**The independent critic was the most useful step.** It found a real physics error my own hand check had missed.
+The struts created energy, about 29% more than the lander lost, because force and stroke were measured along different
+directions. It also caught a strut coming off its ball joint mid-tip and two places where parts ran through each other. Fixing the
+joint moved the pivot and 7.0 m/s stopped tipping, so I raised the centre of mass from 2.0 to 2.2 m. A hand check
+verifies the arithmetic, not the model.
+
+**Every number, pose and sound cue comes from one function of the speed.** So the critic could recompute every number
+on screen, and the speed slider took about 40 lines of code.
+
+**Still rough.** The geometry is plainer than the skill's examples, with no rivets, blankets or truss. The panel text is
+under the skill's 34 px minimum, though its Cessna example breaks that rule too. I skipped the optional rover page. It's
+also a teaching model, and I'd expect a full landing analysis to tip it sooner.
+
+**Cost.** About an hour and a half and $15.88 at API prices for the build, the critic's $3.34 included, not counting the
+last steps. The build, the fixes and the critic all ran at the default effort setting, not extra high (xhigh),
+because Aaron's xhigh rule reached the session after the build. My final film took 7.2 minutes on a rented RTX 4000 Ada
+for $0.033. The lead's own render on an RTX 3090 took 5.4 minutes for $0.045.
+
+A person would still need to drive the live page on a real GPU (it ran at 5.5 frames a second in software), listen to the
+score (I measured it but can't hear it), decide whether 7 m/s suits the story, and give the lander real detail if it
+becomes a hidden page.
+
+<details><summary>Where the numbers come from, and the page itself</summary>
+
+- The struts crush at 21 kN each over up to 450 mm, and lunar gravity is 1.62 m/s².
+- The Apollo figures (a 0.91 m footpad, design limits of 3.05 m/s down and 1.22 m/s sideways on slopes up to 12°, the soil
+  taking about 60% of the touchdown energy) come from Rogers' NASA report on the lunar module's landing gear. One Apollo
+  strut-stroke figure is marked unverified because I couldn't open its source.
+- In the film, the architect Teo says one commercial lander in seven landed upright. That holds up against the 2019-2025
+  attempts, but I checked it from memory, not a source, and the notes say so.
+- The live page is 809 KB and works offline, with no console errors and no network requests.
+- The lead's RTX 3090 render was 1,920 frames at 0.111 s each. My own GPU test of 1 second of film cost $0.023 on top of
+  the $0.033 final render.
+
+</details>
+
+<details><summary>Four snags in the skill's kit</summary>
+
+- The beat-by-beat stills command looks for its timeline file inside the skill's folder, so it crashes for a machine kept
+  outside it. Passing `--timeline` works.
+- The automatic mastering can't bring a sparse score up to the skill's -14 LUFS loudness target without a limiter. I
+  added one.
+- The shader warm-up can't pre-compile looks that only appear when a button is pressed (cutaways, see-through parts). A
+  second warm-up pass covers them.
+- In software rendering, ambient occlusion (the soft contact shadows) is the biggest cost.
+
+</details>
 <!-- /section:lander -->
 
 <!-- section:hab3 -->
