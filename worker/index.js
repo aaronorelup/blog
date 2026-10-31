@@ -1,5 +1,5 @@
 // The blog's one Worker. Only the paths wrangler.jsonc's run_worker_first names ever reach it,
-// for three jobs: byte ranges for video and audio (media.js; the asset server ignores Range), the
+// for three jobs: video and audio from R2, with byte ranges (media.js), the
 // live reader counter at /api/reads (reads.js, D1), and the daily traffic snapshot at /api/stats
 // (stats.js, D1). Every other request on the site is a static asset served without running any
 // code. The snapshot is gathered by the cron trigger in wrangler.jsonc, which calls scheduled()

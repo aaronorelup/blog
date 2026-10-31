@@ -1,26 +1,30 @@
-// Byte ranges for the site's video and audio.
+// The site's video and audio.
 //
-// Workers static assets answer a Range request with the whole file: 200, never 206 (measured
-// 2026-10-03, and again 2026-10-07 on /media/ and the course lessons). A browser that gets a
-// 200 can only seek inside what it has already buffered, so every seek bar on the site was
-// decoration: drag past the buffer and playback lands on 0, and a transcript line that should
-// jump to 4:10 does nothing. wrangler.jsonc sends media files here first
-// (`assets.run_worker_first`); nothing else on the site touches a Worker.
+// Most of it lives in R2 (the MEDIA binding, bucket aaronorelup-site-media), each file under its
+// URL path without the leading slash: /media/<slug>/clip.mp4 is the object media/<slug>/clip.mp4.
+// scripts/media/push.mjs puts it there and docs/MEDIA.md says how. R2 cuts byte ranges and checks
+// conditional requests itself, so those answers need nothing from the build. Any path the Worker
+// is sent is looked up in R2 first, so a folder moves out of git just by being uploaded.
 //
-// A 206 has to state the file's length, and the asset binding doesn't give it inside a Worker
-// (no Content-Length on what it returns). The build writes every media file's length to
-// /media-sizes.json (src/pages/media-sizes.json.js), read once per isolate. With the length, a
-// range is the asset streamed through with the bytes before it skipped and the bytes after it
-// never read: nothing is held in memory, whatever the file's size, and the CPU cost is a loop
-// over the skipped chunks. A file missing from the list (it can't be, short of a broken build) is
+// What isn't in R2 (public/courses/, written by the course publishers) is a static asset, and
+// static assets answer a Range request with the whole file: 200, never 206 (measured 2026-10-03,
+// and again 2026-10-07 on /media/ and the course lessons). A browser that gets a 200 can only seek
+// inside what it has already buffered, so drag past the buffer and playback lands on 0. Those
+// ranges are cut here. A 206 has to state the file's length, and the asset binding doesn't give it
+// inside a Worker (no Content-Length on what it returns), so the build writes every media file's
+// length under public/ to /media-sizes.json (src/pages/media-sizes.json.js), read once per isolate.
+// With the length, a range is the asset streamed through with the bytes before it skipped and the
+// bytes after it never read. A file missing from the list (it can't be, short of a broken build) is
 // read whole and cut, which is slower but still right.
 //
-// Used two ways: as the Worker's whole entry point (the default export), or from a larger
-// Worker that calls serveMedia() for the paths isMedia() claims.
+// wrangler.jsonc sends video, audio and HLS paths here first (`assets.run_worker_first`).
+
+// What the asset server sends with every file, so a file answers the same from either place.
+const CACHE = 'public, max-age=0, must-revalidate';
 
 const MEDIA = /\.(mp4|m4v|webm|mov|mp3|m4a|aac|wav|ogg|oga|opus|flac)$/i;
 
-export const isMedia = (pathname) => MEDIA.test(pathname);
+const isMedia = (pathname) => MEDIA.test(pathname);
 
 let sizes = null; // path -> bytes, from the build
 const sizeOf = (env, url) => {
@@ -32,6 +36,10 @@ const sizeOf = (env, url) => {
 
 export async function serveMedia(request, env) {
   const url = new URL(request.url);
+  if (request.method === 'GET' || request.method === 'HEAD') {
+    const stored = await fromR2(request, env, decodeURIComponent(url.pathname.slice(1)));
+    if (stored) return stored;
+  }
   if (request.method !== 'GET' || !isMedia(url.pathname)) return env.ASSETS.fetch(request);
   const range = (request.headers.get('Range') || '').trim();
   if (!range) return acceptRanges(await env.ASSETS.fetch(request));
@@ -56,6 +64,45 @@ export async function serveMedia(request, env) {
   const fixed = new FixedLengthStream(length);
   body.pipeTo(fixed.writable).catch(() => {});
   return new Response(fixed.readable, { status: 206, headers: partialHeaders(asset.headers, start, end, size) });
+}
+
+// The file from R2, or null when R2 doesn't have it. R2 has already cut a single byte range and
+// checked If-None-Match, If-Match, If-Modified-Since and If-Unmodified-Since (no body means one
+// of them failed); it ignores If-Range, so that is checked here. The response is the same for
+// HEAD, whose body the runtime drops.
+async function fromR2(request, env, key) {
+  const range = request.headers.get('Range');
+  let object;
+  try {
+    object = await env.MEDIA.get(key, { range: request.headers, onlyIf: request.headers });
+  } catch (e) {
+    if (!String(e.message).includes('(10039)')) throw e; // "The requested range is not satisfiable"
+    const head = await env.MEDIA.head(key);
+    return head && unsatisfiable(head.size);
+  }
+  if (!object) return null;
+
+  const headers = new Headers({ ETag: object.httpEtag, 'Cache-Control': CACHE, 'Accept-Ranges': 'bytes', 'X-Media-Source': 'r2' });
+  object.writeHttpMetadata(headers);
+  if (!object.body) {
+    const notModified = request.headers.has('If-None-Match') || request.headers.has('If-Modified-Since');
+    return new Response(null, { status: notModified ? 304 : 412, headers });
+  }
+  let partial = range && Array.isArray(parseRange(range, object.size));
+  const ifRange = request.headers.get('If-Range');
+  if (partial && ifRange && ifRange !== object.httpEtag) { // changed since: all of it
+    object.body.cancel();
+    object = await env.MEDIA.get(key);
+    partial = false;
+  }
+  if (!partial) {
+    headers.set('Content-Length', String(object.size)); // a HEAD has no body to measure
+    return new Response(object.body, { headers });
+  }
+  const { offset, length } = object.range;
+  headers.set('Content-Range', `bytes ${offset}-${offset + length - 1}/${object.size}`);
+  headers.set('Content-Length', String(length));
+  return new Response(object.body, { status: 206, headers });
 }
 
 // The fallback: the whole file in memory, the range cut from it.
@@ -146,9 +193,3 @@ function acceptRanges(res) {
   out.headers.set('Accept-Ranges', 'bytes');
   return out;
 }
-
-export default {
-  fetch(request, env) {
-    return serveMedia(request, env);
-  },
-};
