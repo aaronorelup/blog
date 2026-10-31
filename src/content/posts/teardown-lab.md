@@ -197,7 +197,120 @@ section says so.
 <!-- section:loom -->
 ### LOOM
 
-*Building in its own cloud session.*
+[LOOM](/courses/i-love-my-evening-television/characters/loom/) is the tall 3D printer on the Moon base in
+[Earthlight](/ledger/earthlight/), Episode 2 of Aaron's series. Its layers land a few centimetres off, so everything it
+prints leans, including its calibration print,
+[the tea-house gate](/courses/i-love-my-evening-television/things/tea-house-gate/), the one thing on the base built for
+no reason. The LOOM session (me, one Opus 5.5 cloud session plus a critic agent) built LOOM printing that gate, with a
+slider that breaks it. **The gate comes out 98 layers tall and leans 2.01°. It stands, its centre of mass 95 mm inside
+the edge it would tip over. At 2.73 times LOOM's error it falls.**
+
+<video controls preload="none" poster="/media/teardown-lab/loom/poster.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/loom/film.mp4"></video>
+
+*The 34-second film: the gate printing in time-lapse, the print head cut open, the error dragged to zero and then to
+five times LOOM's, the gate falling, and Rev B putting LOOM's light out before it turns away. The lead rendered this
+copy on a rented NVIDIA L4, synthesised score included. Shown here at 720p.*
+
+**One number drives everything,** the print progress. The layers are 25 mm, the bead reported for ICON's Vulcan II, a
+construction printer on Earth. That LOOM lays the same bead is my estimate. LOOM's error is mine too, 0.9 mm of creep
+per layer plus a little scatter, chosen to give the lore's "about two degrees". The gate weighs 1,379 kg at an estimated
+2.0 tonnes per cubic metre and takes 69.8 minutes on LOOM's print clock.
+
+<img src="/media/teardown-lab/loom/print-head-cut.webp" alt="The LOOM console at layer 41 of 98 in the NOZZLE view: the print head hanging from the crane arm, cut open to show an orange auger inside a grey liner above a crusted nozzle, two half-printed grey posts below, and panels reading GATE LEAN 1.99°, 40 of 98 layers done, 363 kg, and LAYER 41 OF 98 · POSTS · TRAVEL" style="width:100%;border-radius:8px">
+
+*Layer 41 of 98 with the print head cut open. The auger inside is orange because it's the working part. The head is
+travelling between the posts, so its tip is dark.*
+
+**The break-it slider is the part I'd keep.** It sets LOOM's error from zero to ten times the real one and reruns the
+whole page on every move. At zero the gate stands plumb. At LOOM's own error it leans like the one on the Moon. Past
+2.73 times its centre of mass passes the toe, the outer edge of the posts, and it falls slowly in the Moon's gravity, in
+4.1 s at five times. Reprint at ten times and it tips at layer 35.
+
+<img src="/media/teardown-lab/loom/falling.webp" alt="The console at five times LOOM's error in the SIDE view: LOOM on the left and the finished gate, seen edge-on, tilting away from it mid-fall with an orange plumb line dropping from its centre of mass past its base. GATE LEAN reads 20.3° in orange, TIPPED AT LAYER 98 · PRINTED 9.97° + FALL 10.3°, and the elevation panel draws the same tilted stack" style="width:100%;border-radius:8px">
+
+*Five times LOOM's error, two seconds into the fall. The gate was printed leaning 9.97°, its centre of mass 274 mm out
+against a toe 150 mm out, and it has fallen another 10.3°.*
+
+<ao-game src="/labs/teardown/loom/" poster="/media/teardown-lab/loom/poster.webp" size="about 0.8 MB" label="LOOM, take it apart" note="Drag to orbit, scroll to zoom. The buttons isolate, cut open or show each part alone and switch views, and the slider sets LOOM's error. Needs WebGL. It tours itself until you touch it."><a href="/labs/teardown/loom/">Open the LOOM simulator</a></ao-game>
+
+**The independent critic found every number right and still caught five blocking problems.** The print head teleported
+1.9 m between the posts, because my toolpath had no travel moves. The gate fell under a panel. The side drawing was the
+mirror image of the 3D view. LOOM's beacon, the ending's subject, sat at the frame's edge. The part buttons only ghosted
+the rest instead of isolating, cutting and showing each part alone. All five are fixed, and 15 of its 17 smaller notes.
+
+**The weak point is the reference.** LOOM has no drawings, only one concept render, of a weathered robot with an
+excavator's boom and stick. I built a mast and a straight crane arm, which a printer needs, and kept the tracks, the
+hazard band, the crusted tip and the amber light. With the proportions guessed, it reads as a clean study model, not
+that robot.
+
+**Without a GPU, the cost of a frame is the shadows and the smoothing, not the pixels.** A full-quality frame took 6.6 s
+here even at 640×360. A draft switch took it to 0.45 s. The skill should ship one.
+
+**Cost.** Two hours and nine minutes, and $20.62 at API prices, the critic's $2.80 included. It all ran at the default
+effort setting, because Aaron's extra high (xhigh) rule reached the session after the build, the critic and the fixes.
+My own final film cost $0.022 on a rented RTX 2000 Ada, plus a $0.017 test. The lead's render of this copy on an L4 took
+9.2 minutes of pod time, mostly booting, for $0.091.
+
+A person would still need to drive the live page on a real GPU (I could only check that it loads cleanly), listen to the
+score, and decide whether to rebuild LOOM closer to the concept and whether a falling gate belongs on an in-world hidden
+page.
+
+<details><summary>Where the numbers come from, and the page itself</summary>
+
+- The bead: ICON's Vulcan II lays a bead reported as 1 inch tall and 2 inches wide at 5 to 7 inches a second (trade
+  press, and one later source says ¾ by 2½ inches). I used 25 mm, 51 mm and 0.152 m/s, the middle speed. ICON's lunar
+  project, Olympus, sinters regolith (Moon soil), and I found no layer height or speed published for it. ESA's regolith printing
+  with Foster + Partners and Monolite (2013) builds at about 2 m an hour, with no layer height. I used neither.
+- 2.0 t/m³ is my estimate for packed regolith. Loose regolith is about 1.5 g/cm³ near the surface and about 1.9 deeper,
+  the grains 2.7 to 3.1 (the Lunar Sourcebook, via NASA papers).
+- The gate, my estimates from the episode's 21:48 frame: posts 0.30 m square with 1.60 m between them, a tie beam 2.50 m
+  long at 1.45 to 1.65 m, a top beam 2.90 m long at 2.20 to 2.45 m. 2.45 m in 25 mm layers is 98 layers, 0.6895 m³,
+  1,379 kg.
+- The toolpath is 551.6 m of bead at 0.152 m/s, 3,629 s (60.5 minutes) extruding, plus travel moves at 0.5 m/s (my
+  estimate), 4,186 s in all. The mast, the crane arm and the trolley are worked back from where the nozzle has to be, so
+  its stone-crusted tip sits 20 mm above the bead it's laying in every frame.
+- The top layer lands 86.1 mm off the drawing, toward HAB 3 (the lore's idea), so the lean is atan(86.1 mm ÷ 2.45 m) =
+  2.01°. The centre of mass is 1.536 m up and 54.9 mm out. The toe is 150 mm out, half the posts' 0.30 m depth, so 95.1
+  mm are left. It reaches the toe at 2.73 times LOOM's error, 2.46 mm a layer.
+- Reprints tip during the print: 3 times at layer 94, 4 at 76, 6 at 57, 10 at 35. The falls take 6.3, 5.45, 4.45 and
+  3.45 s, a rigid stack pivoting on its toe at 1.62 m/s², the Moon's gravity.
+- A liberty: the beams bridge the 1.6 m opening and overhang the posts as printed layers. A real extruded bead couldn't
+  do that without a form. Not modelled.
+- The critic's two notes left as they are: the concept's open hydraulic bay, not modelled, and the lean dividing by 2.45
+  m when the offset builds over 97 layers (2.425 m), a 0.02° difference kept because the brief's formula is offset over
+  height.
+- The score has the work lights' hum, the extruder's pulse every 2.56 s (the lore's cycle), a soft tick per finished
+  layer, a wooden knock when layer 98 lands, a thud when the over-errored gate lands and a relay click at Rev B, then
+  silence. It's mastered to -14.0 LUFS, the skill's loudness target. I checked it only by its levels.
+- The live page is 837 KB in one file and works offline, with no console errors and no network requests. It ran at 0.75
+  frames a second in software rendering.
+- The lead's film is 34 s at 1080p and 60 fps, 2,040 frames at 0.106 s each. Mine on the RTX 2000 Ada was 0.076 s a
+  frame.
+
+</details>
+
+<details><summary>What the kit gave, what's still rough, and two traps</summary>
+
+- Copying the Cessna example gave me the whole structure (the shared, film and live split, the scripted tour with a
+  cursor, quality tiers, shader warm-up). The live page with its tour, takeover, orbit, zoom and tiers took about 20
+  minutes.
+- One model drives the 3D, five panels, the side drawing, the labels and the score, which is why the critic could audit
+  all of it.
+- Still rough: LOOM's motion (slew, carriage, trolley) is mostly too fast to read in time-lapse, so the most interesting
+  motion is the gate falling. The panel text is 9 to 14 px at 1600×900. The big lean number reads at phone width, the
+  rest doesn't.
+- The beat-by-beat stills command (`capture --stills beats`) makes a tile of every number in `timeline.json`, the same
+  trap the HAB 3 session hit. My 98 layer times for the score turned the sheet into more than 130 tiles. They now sit in
+  a separate file.
+- three.js caches an `InstancedMesh`'s bounds the first time it culls it, when every instance was still at the origin. A
+  growing print then vanished from any view that didn't see those first bounds, though its shadow still drew.
+  `frustumCulled = false` fixes it. It isn't in the skill's list of three.js traps.
+- The draft switch above is `{"draft": true}` passed to the film page with `--config`. It uses the live page's lowest
+  tier (2× MSAA, no GTAO, a 1024 shadow map in place of a 4096 one with 8× MSAA and GTAO), and a whole draft of the film
+  rendered on the CPU in about 10 minutes. The default film page is unchanged, so a GPU render gets full quality from
+  the same file.
+
+</details>
 <!-- /section:loom -->
 
 <!-- section:pawn -->
