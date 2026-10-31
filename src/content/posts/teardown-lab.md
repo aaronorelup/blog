@@ -11,7 +11,7 @@ preview:
   takeaway: "teardown is a template, a rulebook and a frame-exact video pipeline for Claude. Pinned, it's safe to run; nine parallel experiments are testing what it makes."
   points:
     - "Three audits found nothing malicious. The install pulls an unpinned branch of a two-day-old repo, so pin the commit."
-    - "With no GPU, one 1080p frame took 15.8 s to capture. The article's 26-second film would take about 7 hours."
+    - "No GPU: 15.8 s per 1080p frame. A $0.28-an-hour Runpod GPU: 0.17 s, and the whole V8 film in 4 minutes."
     - "The audit cost $11.58 at API prices. Nine sessions now build the series' Moon machines, a clock and a music box."
   image: "/media/previews/teardown-lab.webp"
   alt: "teardown's V8 example: a cutaway V8 engine in the middle of a pale console of gauges, charts and buttons"
@@ -29,7 +29,7 @@ follow while the experiments run, so it changes as results land and gets rewritt
 <tbody>
 <tr><td>Is it safe?</td><td>4 auditors and 1 checker on the lead's box</td><td>Done 21:00</td><td>Safe, with two precautions. $11.58</td></tr>
 <tr><td>Baseline: the skill's own three machines</td><td>Lead</td><td>Done</td><td>Install 5 s, all six pages built in 1 s, 15.8 s per 1080p frame without a GPU</td></tr>
-<tr><td>The same capture on a rented GPU</td><td>1 agent and a Runpod pod ($3 cap)</td><td>Running</td><td></td></tr>
+<tr><td>The same capture on a rented GPU</td><td>1 agent and two Runpod pods</td><td>Done 21:55</td><td>95x faster per frame. The whole V8 film in 4 minutes for $0.08 of GPU time. $2.23 of tokens</td></tr>
 <tr><td>MOLE-1, built from its concept sheet</td><td>Builder, then a critic, then a fixer (lead's box)</td><td>Building, Step 3</td><td></td></tr>
 <tr><td>MOLE-1 from words only (the control)</td><td>1 builder (lead's box)</td><td>Queued</td><td></td></tr>
 <tr><td>Touch Move's brass clock</td><td>Builder, critic, fixer (lead's box)</td><td>Building, Step 2</td><td></td></tr>
@@ -114,8 +114,34 @@ The lab runs on Claude Code cloud boxes: 4 CPU cores and no graphics card, so Ch
 - Installing the pinned skill took 4.7 s (53 MB). Building all six example pages took 1.2 s; each is one file of 818-831 KB.
 - The live pages draw too slowly in software to screenshot within Playwright's 30 s timeout.
 - One 1920×1080 frame of the V8 film took 55 s including start-up. One second of film (60 frames) took **947 s: 15.8 s per
-  frame**. At that rate the article's 26-second V8 film would take about 7 hours. So review stills stay on the CPU, and
-  finished films go to a GPU; an agent is testing a rented Runpod GPU now.
+  frame**. At that rate the article's 26-second V8 film would take about 7 hours. Review stills can stay on the CPU;
+  finished films can't.
+
+## The same capture on a rented GPU: 95 times faster
+
+An agent rented a GPU on Runpod and ran the identical capture there. Chrome in the container used the card on the first
+try, through ANGLE on Vulkan, once the pod was created with `NVIDIA_DRIVER_CAPABILITIES=all` and Chrome was started with
+`--use-angle=vulkan` (the skill's own flags alone fall back to software).
+
+<table>
+<thead><tr><th>One second of the V8 film, 1920×1080, 60 frames</th><th>Per frame</th><th>Total, with start-up</th></tr></thead>
+<tbody>
+<tr><td>Cloud box, 4 CPU cores, no GPU</td><td>15.8 s</td><td>985 s</td></tr>
+<tr><td>Runpod RTX 4000 Ada ($0.28 an hour), same command, 3 runs</td><td>0.17 s</td><td>12.1-13.3 s</td></tr>
+</tbody>
+</table>
+
+- The pod's 16 CPU cores without the GPU managed 6.5 s a frame, so the speed is the graphics card, not a bigger machine.
+- The whole 26-second V8 film (1,560 frames) rendered in 230 s; with the score and the mux, 4 minutes 13 s, against about
+  6.8 hours on the CPU box. Most of the remaining 0.17 s per frame is the browser's screenshot (129 ms), not drawing.
+- Both pods together were alive 18.5 minutes: **$0.084**. The agent's tokens cost more ($2.23) than the GPU.
+- It left a script that ships any machine to a fresh pod, renders it, brings the video back and terminates the pod. Every
+  session in the lab now renders its finished film that way; a five-minute film should take under an hour of pod time,
+  about $0.30.
+
+<video controls preload="none" poster="/media/teardown-lab/v8-gpu-film-poster.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/v8-gpu-film.mp4"></video>
+
+*teardown's own V8 film, rendered on the rented GPU with its synthesised score, as the skill ships it (shown here at 720p).*
 
 ## What's being built, and why these
 
