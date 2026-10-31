@@ -5,6 +5,8 @@
 // URL path without the leading slash (/media/<slug>/clip.mp4 is the object media/<slug>/clip.mp4),
 // and the Worker (worker/media.js) serves them at the same URLs. public/courses/ is the exception:
 // the course publishers in other repos write it, so its media stay in git until they upload too.
+// So does public/media/teardown-lab/ (AO-073): a live notebook a fleet of other sessions is still
+// writing, video included. Leave it to them; move it once that post is finished.
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -15,7 +17,7 @@ export const PUBLIC = path.join(ROOT, 'public');
 export const BUCKET = 'aaronorelup-site-media';
 export const SITE = 'https://aaronorelup.com';
 export const MANIFEST = path.join(ROOT, 'src', 'data', 'media-manifest.json');
-export const STAYS_IN_GIT = 'courses/';
+export const STAYS_IN_GIT = ['courses/', 'media/teardown-lab/'];
 
 export const TYPES = {
   mp4: 'video/mp4', m4v: 'video/x-m4v', webm: 'video/webm', mov: 'video/quicktime',
@@ -34,8 +36,9 @@ export function publicFiles(dir = PUBLIC) {
   });
 }
 
-// The video and audio under public/ that belong in R2 (everything outside public/courses/).
-export const localMedia = () => publicFiles().filter(([url]) => typeOf(url) && !url.startsWith('/' + STAYS_IN_GIT));
+// The video and audio under public/ that belong in R2 (everything outside STAYS_IN_GIT).
+export const localMedia = () =>
+  publicFiles().filter(([url]) => typeOf(url) && !STAYS_IN_GIT.some((dir) => url.startsWith('/' + dir)));
 
 // { "/media/<slug>/clip.mp4": { bytes, etag } }; etag is the file's MD5, which is what R2 reports
 // for an object uploaded in one piece, so the live ETag proves the bytes are the same.

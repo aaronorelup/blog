@@ -2,7 +2,7 @@
 //
 // On `astro build`: stop if a file under public/ is over Cloudflare's 25 MiB static-asset cap
 // (one such file fails the whole deploy), or if video or audio sits under public/ outside
-// courses/ (it belongs in R2, and git would carry it for ever).
+// the folders files.mjs keeps in git (it belongs in R2, and git would carry it for ever).
 // On `astro dev`: a file in the manifest that isn't on disk is sent to the live site, which serves
 // it from R2, so the posts' players work locally too.
 import fs from 'node:fs';
