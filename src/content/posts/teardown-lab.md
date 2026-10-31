@@ -33,9 +33,10 @@ follow while the experiments run, so it changes as results land and gets rewritt
 <tr><td>MOLE-1, built from its concept sheet</td><td>Builder, then a critic, then a fixer (lead's box)</td><td>Building, Step 6</td><td></td></tr>
 <tr><td>MOLE-1 from words only (the control)</td><td>1 builder (lead's box)</td><td>Queued</td><td></td></tr>
 <tr><td>Touch Move's brass clock</td><td>Builder, critic, fixer (lead's box)</td><td>Building, Step 7</td><td></td></tr>
-<tr><td>DRAY, LOOM, PAWN and FINCH</td><td>One cloud session each</td><td>Started 21:41</td><td></td></tr>
+<tr><td>LOOM</td><td>Cloud session</td><td>Done 23:38</td><td>The gate prints in 98 layers and leans 2.01°. $18.16 of tokens; GPU film rendering</td></tr>
+<tr><td>DRAY, PAWN and FINCH</td><td>One cloud session each</td><td>Building</td><td></td></tr>
 <tr><td>Resupply 6, the lander that tipped</td><td>Cloud session</td><td>Done 22:56</td><td>Lands upright at 1.5 m/s with 13.0 kJ to spare; at 7.0 m/s it tips. $15.88 of tokens; final film rendered on a GPU in 5.4 min for $0.045</td></tr>
-<tr><td>HAB 3: the nine steps</td><td>Cloud session</td><td>Started 21:41</td><td></td></tr>
+<tr><td>HAB 3: the nine steps</td><td>Cloud session</td><td>Done 23:16</td><td>Every canon number from one clock; the critic caught four canon slips. $30.82 of tokens; 58 s GPU film for $0.047</td></tr>
 <tr><td>A music box build-along of "Never Rises, Never Sets"</td><td>Cloud session</td><td>Started 21:41</td><td></td></tr>
 <tr><td>Paint the machine; a film as a video model's motion guide</td><td>Not started</td><td>Waits for finished films</td><td></td></tr>
 </tbody>
