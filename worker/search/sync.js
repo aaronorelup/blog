@@ -3,6 +3,7 @@
 // deploy it re-embeds the docs whose hash moved, 10 a run, and drops removed docs (an unlisted post) with their
 // vectors. indexVersion() is the manifest v the index last fully matched, which keys search's cache.
 import { buildJson } from '../lib/build-files.js';
+import { memo } from '../lib/memo.js';
 import { ensure } from '../lib/sql.js';
 import { embed, MANIFEST } from './retrieve.js';
 import SCHEMA from './search.sql';
@@ -66,14 +67,7 @@ async function embedDoc(env, m, doc, old) {
 }
 
 // The manifest v the index last fully matched ('' before the first full sync), re-read at most every 30 s.
-let version = null; // { at, read }
-export function indexVersion(env, now = Date.now()) {
-  if (!version || now - version.at >= 30e3) {
-    const read = ensure(env.DB, SCHEMA)
-      .then(() => env.DB.prepare("SELECT v FROM search_state WHERE k = 'v'").first('v'))
-      .then((v) => v ?? '');
-    read.catch(() => { if (version?.read === read) version = null; });
-    version = { at: now, read };
-  }
-  return version.read;
-}
+export const indexVersion = memo(30e3, async (env) => {
+  await ensure(env.DB, SCHEMA);
+  return (await env.DB.prepare("SELECT v FROM search_state WHERE k = 'v'").first('v')) ?? '';
+});

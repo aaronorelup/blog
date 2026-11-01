@@ -1,5 +1,6 @@
 // Switches and caps: the D1 table flags (flags.sql) over the defaults below, re-read at most every 30 s per
 // isolate, so a flip takes effect within 30 s and survives deploys. spend() is the atomic daily cap.
+import { memo } from './memo.js';
 import { ensure } from './sql.js';
 import SCHEMA from './flags.sql';
 
@@ -7,25 +8,16 @@ const DEFAULTS = {
   search: 'on', ask: 'on', tts: 'on', search_daily: 20000, ask_daily: 1000,
   ask_min_score: 0.45, tts_daily_credits: 15000, tts_credit_floor: 0.4,
 };
-const TTL = 30e3;
-let cached = null; // { at, read }
 
 export const today = (t = Date.now()) => new Date(t).toISOString().slice(0, 10);
 
-export function flags(env, now = Date.now()) {
-  if (!cached || now - cached.at >= TTL) {
-    const read = ensure(env.DB, SCHEMA)
-      .then(() => env.DB.prepare('SELECT k, v FROM flags').all())
-      .then(({ results }) => {
-        const out = { ...DEFAULTS };
-        for (const { k, v } of results) out[k] = typeof DEFAULTS[k] === 'number' ? Number(v) : v;
-        return out;
-      });
-    read.catch(() => { if (cached?.read === read) cached = null; });
-    cached = { at: now, read };
-  }
-  return cached.read;
-}
+export const flags = memo(30e3, async (env) => {
+  await ensure(env.DB, SCHEMA);
+  const { results } = await env.DB.prepare('SELECT k, v FROM flags').all();
+  const out = { ...DEFAULTS };
+  for (const { k, v } of results) out[k] = typeof DEFAULTS[k] === 'number' ? Number(v) : v;
+  return out;
+});
 
 // Adds n to today's total for `what`, unless that would pass max: then nothing changes and the answer is false.
 // One statement, so two requests can't both read "under" and both write past the cap.

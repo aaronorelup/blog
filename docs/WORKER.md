@@ -13,6 +13,7 @@ needs a secret or state. Only the paths `run_worker_first` names reach it: video
 | `worker/lib/http.js` | `json(body, status, headers)`, `status(code, headers)` (both `no-store` unless told otherwise), `sameOrigin(request)`, `readJson(request, max)` (a POST body, `null` when over `max` bytes) |
 | `worker/lib/sql.js` | `ensure(db, schema)`: runs a feature's `.sql` file once per isolate, before its first query |
 | `worker/lib/flags.js` + `flags.sql` | `flags(env)`: switches and caps; `spend(env, what, n, max)`: the atomic daily cap; `today()` |
+| `worker/lib/memo.js` | `memo(ms, read)`: a D1 read shared for `ms` per isolate (the switches, the search index's `v`) |
 | `worker/lib/session.js` | `mint(env)` and `verify(env, token)`: Ask tokens, HMAC-signed with `SESSION_KEY`, valid 30 minutes |
 | `worker/lib/text.js` | `normalize(q)`, `scrub(q)` and `sha256(s)` for search and Ask queries |
 | `worker/lib/build-files.js` | `buildJson(env, path)`: a build file through `ASSETS`, parsed once per isolate |
