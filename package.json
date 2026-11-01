@@ -9,7 +9,7 @@
     "preview": "astro preview",
     "postinstall": "patch-package",
     "test": "node --test \"tests/unit/*.test.mjs\" \"src/scripts/stats/core/*.test.mjs\"",
-    "new-post": "node scripts/new-post.mjs",
+    "new-post": "node scripts/tools/new-post.mjs",
     "media:push": "node scripts/media/push.mjs",
     "media:verify": "node scripts/media/verify.mjs",
     "e2e": "playwright test -c tests/e2e/playwright.config.mjs",
