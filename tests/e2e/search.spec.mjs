@@ -162,12 +162,17 @@ test('search-6 the meaning half joins the list once typing stops, with no sessio
 test('search-11 a search still answering when Ask opens draws nothing there and asks no meaning', async ({ page, context }) => {
   const seen = await watch(page, context);
   await page.goto('/ledger/');
-  await input(page).fill('gpu');
-  await page.locator('[data-mode="ask"]').click();   // inside the 400 ms the meaning half waits for
-  await expect(page.locator('[data-mode="ask"]')).toHaveAttribute('aria-pressed', 'true');
-  // The words half's answer comes in, and the meaning half's 400 ms pass.
+  await input(page).focus();
   await expect.poll(() => page.evaluate(() => performance.getEntriesByName('search:index').length)).toBe(1);
-  await page.waitForTimeout(800);
+  // From here the page's timers wait on a paused clock, so Ask opens inside the meaning half's 400 ms and Pagefind's
+  // debounce however busy the box is; then both pass.
+  await page.clock.install();
+  await page.clock.pauseAt(Date.now() + 100);
+  await input(page).fill('gpu');
+  await page.locator('[data-mode="ask"]').click();
+  await expect(page.locator('[data-mode="ask"]')).toHaveAttribute('aria-pressed', 'true');
+  await page.clock.runFor(1000);
+  await page.waitForTimeout(500);
   await expect(page.locator('[data-search-out] .results')).toHaveCount(0);
   expect(seen.api.filter((a) => a === 'GET /api/search')).toEqual([]);
 });
