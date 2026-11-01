@@ -1,5 +1,5 @@
-/* Page-wide rules of the panel pages (PanelPage): the page colour, the body font, focus, selection and the skip
-   link. The homepage keeps its own (Home.astro) until T3.2. */
+/* Page-wide rules of every page (PanelPage and Home): the page colour, the body font, focus, selection and the skip
+   link. */
 html { scroll-behavior: auto; }
 body {
   margin: 0;

@@ -1,7 +1,6 @@
 /* The panel's frame (components/chrome/): the standalone page's screen and card, the header and its nav, the scroller,
    the footer and the day/night switch; the header every view opens with; and the hover states views still put on
-   inline-styled markup (their !important beats those inline colours until each view moves to classes). The homepage
-   gets this file through panel.css until T3.2. */
+   inline-styled markup (their !important beats those inline colours until each view moves to classes). */
 
 /* A standalone page is the panel already open (layouts/PanelPage.astro). */
 .pc-screen { position: fixed; inset: 0; display: flex; flex-direction: column; background: var(--pc-page); }
