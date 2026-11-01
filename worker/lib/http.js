@@ -21,5 +21,5 @@ export async function readJson(request, max) {
   if (Number(request.headers.get('Content-Length')) > max) return null;
   const text = await request.text();
   if (new TextEncoder().encode(text).length > max) return null;
-  try { return JSON.parse(text) ?? {}; } catch { return {}; }
+  try { return JSON.parse(text) || {}; } catch { return {}; }
 }

@@ -56,7 +56,7 @@
   "triggers": { "crons": ["* * * * *", "*/10 * * * *"] },
 
   // Not secrets: the zone, account and Web Analytics site the snapshot reads, and the hosts a Turnstile solve may
-  // come from (.dev.vars sets localhost). Secrets, never in this file (scripts/tools/put-secret.mjs):
+  // come from (.dev.vars: example.com, the test secret's). Secrets, never in this file (scripts/tools/put-secret.mjs):
   // CF_ANALYTICS_TOKEN SESSION_KEY TURNSTILE_SECRET DEEPSEEK_API_KEY ELEVENLABS_API_KEY
   "vars": {
     "STATS_ZONE": "05a0357d9b9837a590501e934b886ae7",
