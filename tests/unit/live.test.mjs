@@ -71,7 +71,7 @@ test('an unknown <ao-*> tag only warns in AO-073, and fails the render of any ot
   await assert.rejects(md.render(typo, { fileURL: other, frontmatter: {} }), /<ao-sliderr> is not a post component/);
 });
 
-test('AO-073 rendered blank is still a search doc, and its pushes leave the search manifest v alone', () => {
+test('AO-073 rendered blank is still a search doc; its pushes leave the search manifest v alone, its unlisting does not', () => {
   const lead = shortVersion(post.summary, post.preview ?? {});
   const doc = (s, text) => docOf({ kind: 'post', id: s === slug ? 'AO-073' : 'AO-048', slug: s, title: 'T', lead, text });
   const sections = [{ anchor: 'a', heading: 'A', text: 'The fleet wrote this.', folded: false }];
@@ -82,4 +82,5 @@ test('AO-073 rendered blank is still a search doc, and its pushes leave the sear
   assert.deepEqual(before.live, [`post:${slug}`]);
   assert.equal(after.v, before.v);
   assert.notEqual(after.docs[`post:${slug}`], before.docs[`post:${slug}`]);
+  assert.notEqual(manifestOf([doc('earthlight', { sections })]).v, before.v, 'AO-073 unlisted moves v, so the sync drops it');
 });

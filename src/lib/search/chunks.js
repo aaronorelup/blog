@@ -1,7 +1,7 @@
 // Search's chunks: a listed post or its notes → one doc of chunks of at most MAX characters, which worker/search/
 // sync.js embeds from /search/docs/<kind>-<slug>.json. Chunk 0 is the lead (a post's short version, anchor "short";
 // a notes page's summary, at the top); then one per h2 section of the extraction, folded text kept, split at block
-// boundaries. manifestOf() hashes each doc; its v leaves the live notebooks out, so their pushes keep the cache.
+// boundaries. manifestOf() hashes each doc; v leaves out the live notebooks' hashes, so their pushes keep the cache.
 import { isLive } from '../../data/exempt.js';
 import { sha256hex, short } from '../text/hash.js';
 
@@ -37,11 +37,11 @@ export const docKey = (doc) => `${doc.kind}:${doc.slug}`;           // its key i
 export const docName = (doc) => `${doc.kind}-${doc.slug}`;          // its file: /search/docs/<name>.json
 const hashOf = (doc) => short(sha256hex(EMBED + JSON.stringify(doc)));
 
-// { v, model, live, docs: { 'post:<slug>': hash } }: v hashes every doc's hash but the live notebooks', which
-// `live` names so sync.js checks those one by one.
+// { v, model, live, docs: { 'post:<slug>': hash } }: v hashes every doc's key and hash, but only the key of a live
+// notebook, which `live` names so sync.js checks its hash on its own. A live notebook unlisted still moves v.
 export function manifestOf(docs) {
   const all = docs.map((d) => [docKey(d), hashOf(d)]);
   const live = docs.filter((d) => isLive(d.slug)).map(docKey);
-  const steady = all.filter(([key]) => !live.includes(key));
+  const steady = all.map(([key, hash]) => (live.includes(key) ? [key] : [key, hash]));
   return { v: short(sha256hex(JSON.stringify(steady))), model: MODEL, live, docs: Object.fromEntries(all) };
 }
