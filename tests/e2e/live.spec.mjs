@@ -1,6 +1,6 @@
 // The deployed site, after a push (P step 4): GET and HEAD requests only, never a POST, so no run counts a read,
 // writes search counts or spends a cap. Every baseline path answers, media come from R2 in byte ranges, the APIs
-// answer in their shapes, and the homepage and a post load clean.
+// answer in their shapes, the homepage and a post load clean, and the lantern door has somewhere to go.
 import { test, expect } from '@playwright/test';
 import { readBaseline } from '../../scripts/build/contracts.mjs';
 import { isLivePath } from '../../src/data/exempt.js';
@@ -48,4 +48,13 @@ test('live-5 the homepage and a post load without a script error', async ({ page
   await page.goto(Object.keys(targets.pages).find((p) => targets.pages[p].kind === 'post' && !targets.pages[p].live));
   await allDefined(page);
   expect(errors).toEqual([]);
+});
+
+test('live-6 the lantern door goes on to its own https address (worker/lantern.js), not one of this site', async ({ request, baseURL }) => {
+  const r = await request.get('/api/lantern', { maxRedirects: 0 });
+  expect(r.status()).toBe(302);
+  expect(r.headers()['cache-control']).toBe('no-store');
+  const to = new URL(r.headers().location);
+  expect(to.protocol).toBe('https:');
+  expect(to.host === new URL(baseURL).host).toBe(false);   // compared, never printed: the address is private
 });
