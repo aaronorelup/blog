@@ -46,6 +46,29 @@ shown by `moonlight-two-cuts` (stills) and `storm-bell-fighter` (`sync`).
 
 ## <ao-diff>
 
+Versions of the same text with the changed words marked, so a reader sees what an edit, a fact-check or a judge did
+to a line instead of being told. One button per version: an earlier one shows its words struck through where they
+were cut and the last version's new words underlined (a word-level diff against the last); the last shows as it
+stands.
+
+| Attribute | |
+|---|---|
+| `labels="Draft\|Final"` | one name per version, in order (default Version 1, 2, …) |
+
+Children: one `<blockquote>` per version, the last being the one the others are compared to; an optional
+`<figcaption>` sits underneath. Without JS the blockquotes and the caption stack.
+
+```html
+<ao-diff labels="Draft|Final">
+<blockquote>The first take of the line.</blockquote>
+<blockquote>The line as it went out.</blockquote>
+<figcaption><b>What the edit did</b></figcaption>
+</ao-diff>
+```
+
+Behaviours: diff-1. Used by `curriculum-from-sources`, `first-lesson-on-the-new-map` and `the-missing-map` (the
+best example).
+
 ## <ao-fetch>
 
 ## <ao-frames>

@@ -5,7 +5,6 @@
 // page and openPost() imports it on the homepage, and the browser upgrades the tags either way.
 // The stylesheet is imported by this module, so it reaches both surfaces with it.
 //
-//   <ao-diff labels="Draft|Final"> <blockquote>…</blockquote> <blockquote>…</blockquote> <figcaption>…
 //   <ao-listen ref="a"> <figure data-id="a"><audio …></audio><img …><figcaption>…</figure> …
 //   <ao-cues labels="v1|v2"> <video …></video> <video …></video> <ol><li data-t="1:44.97">…</li></ol> <figcaption>…
 //   <ao-shots> <video …></video> <ol><li data-t="0:05.4"><img …>Label</li></ol> <figcaption>…
@@ -28,95 +27,6 @@ import { enhance } from '../elements/enhance.js';
 export { enhance };
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => enhance());
 else enhance();
-
-// ---------------------------------------------------------------------------------------
-// <ao-diff>: versions of the same text, with the words that changed marked, so a reader can
-// see exactly what an edit, a fact-check or a judge did to a line instead of being told.
-//   labels="A|B|…"   one tag per version, in order (default: Version 1, 2, …)
-// Each child <blockquote> is one version; the LAST is the one the others are compared to.
-// A button per version: an earlier one shows its words struck through where they were cut and
-// the last version's new words underlined; the last one shows that version clean. An optional
-// <figcaption> sits underneath. Without JS the blockquotes and caption simply stack.
-const diffWords = (a, b) => {
-  // Word-level LCS. Tokens keep their trailing space, so joining them rebuilds the text.
-  const tok = (s) => s.replace(/\s+/g, ' ').trim().match(/\S+\s*/g) || [];
-  const A = tok(a), B = tok(b);
-  const key = (w) => w.trim().toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
-  const n = A.length, m = B.length;
-  const L = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
-  for (let i = n - 1; i >= 0; i--) {
-    for (let j = m - 1; j >= 0; j--) {
-      L[i][j] = key(A[i]) === key(B[j]) ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
-    }
-  }
-  const out = [];
-  const push = (type, w) => {
-    const last = out[out.length - 1];
-    if (last && last.type === type) last.text += w;
-    else out.push({ type, text: w });
-  };
-  let i = 0, j = 0;
-  while (i < n && j < m) {
-    if (key(A[i]) === key(B[j])) { push('same', B[j]); i++; j++; }
-    else if (L[i + 1][j] >= L[i][j + 1]) push('del', A[i++]);
-    else push('ins', B[j++]);
-  }
-  while (i < n) push('del', A[i++]);
-  while (j < m) push('ins', B[j++]);
-  return out;
-};
-
-class AoDiff extends HTMLElement {
-  connectedCallback() {
-    if (this._ready) return;
-    const quotes = [...this.querySelectorAll(':scope > blockquote')];
-    if (quotes.length < 2) return;
-    this._ready = true;
-    const labels = (this.getAttribute('labels') || '').split('|');
-    const texts = quotes.map((q) => q.textContent);
-    const name = (k) => (labels[k] || '').trim() || 'Version ' + (k + 1);
-    const last = quotes.length - 1;
-
-    const bar = document.createElement('div');
-    bar.className = 'ao-diff-bar';
-    const view = document.createElement('div');
-    view.className = 'ao-diff-view';
-    view.setAttribute('aria-live', 'polite');
-    const legend = document.createElement('p');
-    legend.className = 'ao-diff-legend';
-
-    const buttons = [];
-    const show = (k) => {
-      buttons.forEach((b, x) => b.setAttribute('aria-pressed', String(x === k)));
-      view.replaceChildren();
-      if (k === last) {
-        view.append(texts[last].replace(/\s+/g, ' ').trim());
-        legend.textContent = name(last) + ', as it stands.';
-        return;
-      }
-      for (const part of diffWords(texts[k], texts[last])) {
-        if (part.type === 'same') { view.append(part.text); continue; }
-        const el = document.createElement(part.type);
-        el.textContent = part.text.trimEnd();
-        view.append(el, part.text.endsWith(' ') ? ' ' : '');
-      }
-      legend.textContent = 'Struck through: only in ' + name(k) + '. Underlined: only in ' + name(last) + '.';
-    };
-    quotes.forEach((q, k) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = k === last ? name(k) : name(k) + ' \u2192 ' + name(last);
-      b.addEventListener('click', () => show(k));
-      bar.append(b);
-      buttons.push(b);
-      q.hidden = true;
-    });
-
-    quotes[0].before(bar, view, legend);
-    this.classList.add('ao-diff-ready');
-    show(0);
-  }
-}
 
 // ---------------------------------------------------------------------------------------
 // <ao-listen>: several renders of the same audio, compared by ear at the same moment. One
@@ -2567,7 +2477,6 @@ class AoDemo extends HTMLElement {
 
 if (!customElements.get('ao-demo')) customElements.define('ao-demo', AoDemo);
 if (!customElements.get('ao-transcript')) customElements.define('ao-transcript', AoTranscript);
-if (!customElements.get('ao-diff')) customElements.define('ao-diff', AoDiff);
 if (!customElements.get('ao-listen')) customElements.define('ao-listen', AoListen);
 if (!customElements.get('ao-cues')) customElements.define('ao-cues', AoCues);
 if (!customElements.get('ao-fetch')) customElements.define('ao-fetch', AoFetch);
