@@ -339,8 +339,9 @@ its static rung mid-test.
 
 ## Search and Ask Goobie (`search.spec.mjs`)
 
-`/api/*` answers come from `fixtures/api.json` (search-200 and ask-200 were recorded from `wrangler dev`); Turnstile
-is a stub that solves at once with the test response.
+`/api/*` answers come from `fixtures/api.json` (search-200 and ask-200 were recorded from `wrangler dev`; no
+`related` list names AO-073, so no check waits on the live notebook); Turnstile is a stub that solves at once with the
+test response.
 
 | Behaviour | Spec |
 |---|---|
