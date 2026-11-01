@@ -328,6 +328,8 @@ its static rung mid-test.
 | A project's own page ("Start the course", `data-no-fly`) leaves at once from the panel, with no flight | overlay-21 |
 | Ask works again in a ledger mounted afresh: its Turnstile widget goes into the box on screen | overlay-22 |
 | A view opened just after scrolling a post opens at its top: the post keeps its place only in its own history entry | overlay-23 |
+| No view brings a second copy of the site's rules: the homepage links site.css, so opening the ledger, projects, about and a post adopts no stylesheet | overlay-24 |
+| A view in the panel has the colours it has on its own page, by day and by night, and its focused search box looks the same | overlay-25 |
 
 ## Pages (`ledger.spec.mjs`, `pages.spec.mjs`)
 
