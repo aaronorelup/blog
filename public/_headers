@@ -13,3 +13,14 @@
   X-Robots-Tag: noindex, nofollow
 /ledger/touch-move/board-14/*
   X-Robots-Tag: noindex, nofollow
+#
+# Caching. /_astro/ and /fonts/ files carry a content hash in their names, so a changed file is a new URL: keep them
+# for a year without asking again. Pagefind's index is rebuilt with every deploy; icons are remade rarely.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+/pagefind/*
+  Cache-Control: public, max-age=300
+/media/icons/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
