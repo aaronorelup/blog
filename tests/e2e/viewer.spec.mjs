@@ -175,6 +175,8 @@ test('viewer-7 a pinch zooms', async ({ page, browserName }) => {
 
 test('viewer-8 Esc closes it, and so does Back without leaving the post', async ({ page }) => {
   await pics(page).first().click();
+  // The viewer's UI loads on the first open (_core/viewer-ui.js): Esc is for a viewer the reader can see.
+  await expect(dlg(page)).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(dlg(page)).toBeHidden();
   await pics(page).first().click();
