@@ -1423,13 +1423,13 @@ new bass line, which round 1 didn't have, matches the bass stem on 90% of its no
 
 *The first two lines of chorus 1. The blue bars are the new notes, the small red dots the singer's pitch measured on the
 vocal stem, the red dotted boxes round 1's notes and the orange dashed ones the episode's own music-box version. On
-"Never rises" round 1 sits a fourth to a fifth above what's sung.*
+"Never rises" round 1 sits mostly a fourth to a fifth above what's sung, a whole step on "ri".*
 
 **Round 1 went wrong in six ways,** each now written down note by note.
 
 - Where chorus 1 was unclear, it borrowed notes from the last chorus, which sings a different, higher tune to the same
   words.
-- It took its pitches from a pitch track of the full mix, which is right on only 14 of the chorus's 33 words.
+- It took its pitches from a pitch track of the full mix, which is right on fewer than half of chorus 1's words.
 - It had one pitch per word and split it across syllables by guesswork.
 - It changed two notes by taste, to make the line sound right, away from what's sung.
 - It timed notes from the lyric timestamps, which mark the start of a word's consonant, not the sung vowel.
