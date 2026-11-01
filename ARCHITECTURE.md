@@ -94,6 +94,7 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 | `wrangler.jsonc` | the Worker `blog`, every binding, `run_worker_first`, both crons, the vars (secrets by name only) |
 | `.dev.vars.example` | the local test keys for `wrangler dev` (copy to the git-ignored `.dev.vars`) |
 | `.node-version` | 22.23.4, the Node Workers Builds uses |
+| `public/_headers` | noindex for two hidden pages; a year, `immutable`, for the content-hashed `/_astro/*` and `/fonts/*` |
 | `archive/2026-10-29-before-rework/` | every post as it was before the rework (read only) |
 
 ### `src/content/` and `src/data/`
@@ -108,6 +109,8 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 | `src/data/picks.js` | `START_HERE` (T2.2 fills it with 5 listed slugs) and `REEL` |
 | `src/data/limits.js` | every text cap and target, preview media, icon, project picture and og sizes |
 | `src/data/exempt.js` | `LIVE_NOTEBOOKS`, `isLive()`, `isLivePath()`: what no rule may fail or touch |
+| `src/data/site.js` | `NAV` (key, href, label, overlay) and `SOCIAL`: the chrome's links; a NAV key is also a view's name |
+| `src/data/fonts.json` | written by `scripts/tools/fonts.mjs`: the font preload, each self-hosted face's range, the code points no family has |
 | `src/data/banned-phrases.js` | the phrases and dead links WRITING.md bans (plain: nothing private) |
 | `src/data/never-publish.json` | salted SHA-256 of the private never-publish terms (`npm run never-publish:hash`) |
 | `src/data/public-keys.js` | keys meant to be public: Ask's Turnstile site key |
@@ -122,13 +125,16 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 |---|---|
 | `src/lib/content.js` | the only importer of `astro:content`: `allPosts`, `listedPosts`, `notesBySlug`, `research`, `projects`, `renderEntry`, `slugOf` |
 | `src/lib/{posts,cards,icons,dates,paths}.js` | listing and order, the card shape, icons by id, UTC dates, `PUBLIC_DIR` |
+| `src/lib/build.js` | `COMMIT`, the commit a build is made from (the `ao-build` meta) |
 | `src/lib/lore*.js` | the lore course's data and drawings |
 | `src/pages/index.astro` + `src/layouts/Home.astro` | the homepage: the tea house scene and its overlay |
 | `src/pages/{ledger,projects,about,courses,stats,404}.astro`, `ledger/[slug].astro` | the panel pages |
 | `src/pages/courses/**`, `src/pages/research/**` | the course and research pages |
-| `src/layouts/PanelPage.astro` | head, mode script and chrome for every panel page |
-| `src/components/panel/*View.astro`, `PanelChrome.astro` | each panel view, shared by its page and the homepage overlay (split into feature folders by T1.4, T2.2, T2.5, T3.1) |
-| `src/components/lore/`, `courses/LessonList.astro`, `Coin.astro` | the lore course, the lesson list, the avatar coin |
+| `src/layouts/PanelPage.astro` | every panel page: `site.css`, `chrome/Head`, `ModeToggle`, `PanelChrome` (`active` lights the nav, `view` names the view) |
+| `src/components/chrome/` | `Head` (share tags, `ao-build` meta, font preload, the pre-paint mode script; both layouts), `PanelChrome` (header, nav, scroller, footer; `data-active-view`, and `data-panel-view` on a standalone page's view wrapper), `ModeToggle` |
+| `src/components/{about,courses,research}/` | `AboutView`; `CoursesView`, `LessonList`, `Coin`; `ResearchView` |
+| `src/components/panel/*View.astro` | the ledger, projects and post views (into feature folders by T2.1, T2.2, T2.5); `PanelChrome`, `AboutView`, `CoursesView` are stubs for `index.astro` until T3.1 |
+| `src/components/lore/` | the lore course |
 
 ### `src/scripts/` and `src/styles/` (the browser)
 
@@ -139,7 +145,12 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 | `src/scripts/ledger-preview.js` + `.css` | the hover card (split into `scripts/cards/` by T2.2) |
 | `src/scripts/home-scene.js` | the homepage scene and overlay (split into `scripts/home/` by T3.1 and T3.2) |
 | `src/scripts/stats/**`, `src/styles/stats/**` | the `/stats` page: its own code, kept as is |
-| `src/styles/panel.css` | the panel look and the `--pc-*` tokens (into `tokens.css` and `site.css` by T1.4) |
+| `src/scripts/mode.js` | the panel pages' day/night toggle: `data-mode`, the stored choice, `aria-pressed` |
+| `src/styles/tokens.css` | every colour as a day/night pair, the `--pc-*` and `--home-*` tokens per mode (plain strings: the `/stats` canvas parses them), the homepage tween (`:root[data-tweening]` mixes by `--mix`), fonts, type scale, space, radii, z |
+| `src/styles/site.css` | the one stylesheet of every panel page: tokens, base, chrome, prose, about, research (later tasks add theirs) |
+| `src/styles/{base,chrome,prose,about,research}.css` | page-wide rules; the frame, the view header, shared hover states; long-form text (`.pc-prose`); the text pages (`.page-*`: About, 404); a research document |
+| `src/styles/fonts.css`, `public/fonts/` | written by `scripts/tools/fonts.mjs`: Google's own woff2 slices, self-hosted under content-hashed names |
+| `src/styles/panel.css` | an `@import` stub (tokens, chrome, prose, about) for `index.astro` until T3.2 |
 | `src/styles/lore.css`, `courses.css` | the course looks |
 
 ### `scripts/` (Node)
@@ -154,7 +165,8 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 | `scripts/media/` | `files.mjs` (what is media, `STAYS_IN_GIT`), `push.mjs`, `verify.mjs`, `integration.mjs` (the guard) |
 | `scripts/tools/new-post.mjs` | `npm run new-post`: the next `AO-###`, the v2 frontmatter |
 | `scripts/tools/never-publish-hash.mjs` | `npm run never-publish:hash`: the private list → `never-publish.json` |
-| `scripts/tools/budgets.mjs` | the page-weight budgets (section "Budgets") |
+| `scripts/tools/budgets.mjs` | the page-weight budgets (section "Budgets") and the font check |
+| `scripts/tools/fonts.mjs` | `node scripts/tools/fonts.mjs` after a build: fetches Google's slices for the code points the pages show, rewrites `public/fonts/`, `fonts.css`, `fonts.json`; `misses(dist)` |
 | `scripts/tools/element-usage.mjs`, `dist-diff.mjs` | every `<ao-*>`, video and iframe per built page (`--diff` for rewrites); two builds compared |
 | `scripts/lib/{secrets,cfapi}.mjs`, `scripts/tools/put-secret.mjs` | `secret(NAME)` from the environment or Infisical; the Cloudflare API client that finds or makes the Worker's resources; `put-secret` sets one Worker secret, never printing it |
 | `scripts/preview-media.mjs` | a post's card still and loop (`PREVIEWS.md`) |
@@ -196,7 +208,9 @@ names from a reader of the repo, not from someone set on guessing them.
 
 **Budgets** (`scripts/tools/budgets.mjs`, gzipped, without fonts and media): a post page minus its prose ≤ 20 KB
 (chrome HTML 4, CSS 15, JS up front 8), the ledger's chrome ≤ 6 KB and ≤ 220 B a row, the homepage before the
-scene chunk ≤ 30 KB (HTML 12, entry JS 12). Printed by every build, never failing it.
+scene chunk ≤ 30 KB (HTML 12, entry JS 12). Printed by every build, never failing it. A display code point the
+self-hosted fonts miss is a warning in the build and a failure of `node scripts/tools/budgets.mjs` and of
+`tests/unit/fonts.test.mjs`; `node scripts/tools/fonts.mjs` fixes it.
 `tests/unit/budgets.test.mjs` (in `npm test`) checks the measuring on a made-up `dist/`; from W4 it fails at 20%
 over. On 2026-11-01 the worst post page was 53.4 KB and the homepage 71.7 KB.
 
@@ -211,6 +225,7 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
 | `/ledger/previews.json` = `{ posts: { slug: card } }`, keys = listed slugs | `verify-dist` |
 | `/stats-pages.txt`: no unlisted slug, nothing deeper than `/ledger/<slug>/` except `/ledger/<listed>/notes/` | `verify-dist`, `agg.test.mjs` |
 | `/version.json` and the main-only guard in `astro.config.mjs` | unchanged |
+| every page's `<meta name="ao-build" content="<commit>">` (the overlay compares it before mounting a fetched page) | `chrome/Head.astro` |
 | what the course publishers write: `public/courses/**`, `src/data/courses/*.json`, `src/data/lore/*.json` | never moved |
 | the overlay: `data-panel-view`, `data-panel-host`, `data-post-article`, `data-ledger-entry`, `data-close-reader`, `data-panel-home`, `data-no-fly`, the `ao-stop` event | `tests/e2e/` |
 | AO-073's paths (`LIVE_NOTEBOOKS`) are never edited, and nothing about them fails a build | `exempt.js` read by every rule, `tests/unit/live*.test.mjs` |
@@ -242,7 +257,8 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   `element.js` and `style.css`, and a `## <ao-<name>>` section in `docs/COMPONENTS.md` (`npm run check` asks for
   it). Add its behaviours to `tests/e2e/INVENTORY.md` with a spec.
 - **A page type.** A file in `src/pages/` inside `PanelPage`, its view in `src/components/`, classes only (no
-  `style=`). If the homepage overlay should open it, give its wrapper `data-panel-view="<name>"`. It goes into
+  `style=`), colours and type from `tokens.css`. If the homepage overlay should open it, pass `view="<name>"` to
+  `PanelPage` (its wrapper gets `data-panel-view`) and add it to `NAV` in `src/data/site.js`. It goes into
   `stats-pages.txt` automatically if it is a public page.
 - **A content kind.** A collection in `src/content.config.ts` with a schema in `src/schemas/`, read only through
   `src/lib/content.js`, and its files added to the checker's scopes (`never-publish.mjs`, `links.mjs`).
