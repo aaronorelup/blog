@@ -7,6 +7,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "test": "node --test \"tests/unit/*.test.mjs\" \"src/scripts/stats/core/*.test.mjs\"",
     "new-post": "node scripts/new-post.mjs",
     "media:push": "node scripts/media/push.mjs",
     "media:verify": "node scripts/media/verify.mjs",
