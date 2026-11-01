@@ -18,6 +18,7 @@ needs a secret or state. Only the paths `run_worker_first` names reach it: video
 | `worker/lib/text.js` | `normalize(q)`, `scrub(q)` and `sha256(s)` for search and Ask queries |
 | `worker/lib/build-files.js` | `buildJson(env, path)`: a build file through `ASSETS`, parsed once per isolate |
 | `worker/media/serve.js` | everything that isn't `/api/`: R2 first, then the asset, with byte ranges |
+| `worker/lantern.js` | `GET /api/lantern`, the homepage's lantern door: a redirect to `LANTERN_URL` |
 | `worker/reads/` | `GET` and `POST /api/reads`, the reader counter (AO-057's demo) |
 | `worker/stats/` | `GET` and `HEAD /api/stats`, and `runStep`, the traffic snapshot's cron (`shape.js` is its pure half) |
 | `worker/session/serve.js` | `GET`, `POST /api/session`: whether Ask is on; a Turnstile solve becomes an Ask token |
@@ -37,6 +38,7 @@ needs a secret or state. Only the paths `run_worker_first` names reach it: video
 | `POST /api/session {turnstile}` | `200 { token, exp }`, an Ask token for 30 minutes; `403` not from one of the site's pages; `413` a body over 3 KB (a Turnstile response can be 2,048 characters); `401` siteverify says no, or the solve's hostname isn't in `TURNSTILE_HOSTNAMES`, or its action isn't `ask` |
 | `GET /api/search?q=` | `200 { v, hits: [{ slug, kind, anchor, heading, text, score }] }`, the best 2 chunks of each of the best 8 posts (`kind` is `post` or `notes`; `anchor` `''` is the top of the page, `short` the short version); `400` `q` under 3 or over 200 characters once normalised; `429` past 600 a minute here, or 20 a minute for that query; `503` the `search` flag is off, or `search_daily` is spent (until 00:00 UTC). No token |
 | `POST /api/ask {q}`, header `X-AO-Session` | `200 { answer, cites: [{ n, slug, kind, anchor, heading, title }], related: [slug], cached }` (`kind` is `post` or `notes`: a notes cite links to `/ledger/<slug>/notes/#<anchor>`), or `200 { answer: null, reason, related }` with `reason` `off` (the flag, or no key), `not-found` (no chunk scores `ask_min_score`; no DeepSeek call; the 3 closest posts), `resting` (`ask_daily` spent) or `busy` (DeepSeek failed, timed out or was cut short; nothing cached); `413` a body over 2 KB; `401` no valid token; `400` `q` under 3 or over 300 characters; `429` past 6 a minute in that session, or 60 a minute here |
+| `GET /api/lantern` | `302` to `LANTERN_URL`, `no-store`: the lantern door on the homepage's coin (five night tosses in a row) opens here, so its address is in no file of this public repo |
 | any media path, `/read/*` | R2 (`MEDIA`) when it has the object, cutting ranges and checking `If-*` itself; else the asset, with ranges cut from `/media-sizes.json` (a length it can't learn means the whole file, `200`, `Accept-Ranges: bytes`); a `/read/<slug>/<hash>.json` that isn't recorded yet is `200 { ready: false }`, `no-store` |
 
 R2 objects under `read/` go out `immutable`: their names are hashes of their text.
@@ -125,6 +127,7 @@ Every limiter is `simple`, counted per Cloudflare location and approximate. None
 | Secret | Where its value comes from |
 |---|---|
 | `CF_ANALYTICS_TOKEN` | the snapshot's read-only analytics token (set) |
+| `LANTERN_URL` | where the lantern door goes (`GET /api/lantern`); Aaron's own address, set from the box, never written in a file (set) |
 | `SESSION_KEY` | `put-secret.mjs SESSION_KEY` makes 32 random bytes; rotating it ends every Ask session |
 | `TURNSTILE_SECRET` | `put-secret.mjs TURNSTILE_SECRET` reads it from the widget |
 | `DEEPSEEK_API_KEY` | Ask's DeepSeek key, from Infisical (`put-secret.mjs DEEPSEEK_API_KEY`; set). Without it Ask is `off` |
