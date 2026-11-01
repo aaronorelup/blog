@@ -150,8 +150,7 @@ playable games. They stay and they lead. Put each one where it answers a questio
 comparison beats twenty pictures.
 
 - The components (`<ao-compare>`, `<ao-slider>`, `<ao-calc>`, `<ao-bars>` and the rest) are
-  listed with their markup at the top of `src/scripts/post-components.js` (and in
-  `docs/COMPONENTS.md` once it exists). Use one before building something new.
+  listed with their markup in `docs/COMPONENTS.md`. Use one before building something new.
 - Pictures go under `public/media/<slug>/` as WebP, sized for the page, not multi-MB PNGs.
 - Video and audio live in R2, not in git, at their normal URLs. Put the file in
   `public/media/<slug>/`, run `npm run media:push`, and commit the post with

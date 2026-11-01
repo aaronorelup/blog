@@ -1,3 +1,0 @@
-/* Styles for the post custom elements in src/scripts/post-components.js. Imported by that
-   module, so they reach both the standalone post page and the homepage panel. Uses the
-   panel's --pc-* tokens, so day and night both work. */

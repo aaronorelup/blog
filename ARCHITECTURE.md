@@ -19,7 +19,7 @@ modules and custom elements.
 | Folder | Runs as |
 |---|---|
 | `src/pages/`, `src/layouts/`, `src/components/` | server-rendered markup, at build time |
-| `src/scripts/` (and `src/elements/`, planned T1.2) | the browser |
+| `src/scripts/`, `src/elements/` | the browser |
 | `src/lib/` | pure functions at build time: no DOM, no fs except `paths.js` |
 | `src/data/` | hand-kept data files, one decision each; the generated ones say who writes them |
 | `src/content/` | posts, notes and research as Markdown (`src/content/CLAUDE.md`) |
@@ -183,7 +183,7 @@ warns in a live notebook.
 
 | Path | What |
 |---|---|
-| `src/scripts/post-components.js` + `src/styles/post-components.css` | the `<ao-*>` classes and their CSS not yet in `src/elements/` (T1.2 moves them one by one; the file becomes a shim, deleted by T3.2) |
+| `src/scripts/post-components.js` | a shim, `export { enhance }` from `src/elements/enhance.js`, for `home-scene.js` until T3.1 (deleted by T3.2) |
 | `src/elements/` | the post components (`src/elements/CLAUDE.md`), one folder per tag (`ao-x/element.js`, `ao-x/style.css`): `enhance.js` (viewer hook, frames, `upgrade`), `registry.js` (a tag's `element.js` loads when a post has it), `_core/` (one player at a time, the now-playing bar, the viewer hook; the viewer and its zoom load on the first open), `_lib/` (times, tables, `h()`) |
 | `src/scripts/lazy.js` | `lazy(load, fallbackUrl)`: every dynamic import; a lost chunk (a deploy since the page loaded) navigates to `fallbackUrl` or reloads once |
 | `src/styles/elements.css` | the viewer, the now-playing bar, `.visually-hidden`: linked from `PostView`, the notes page and `index.astro` (into `site.css` by T3.2); an element's own CSS is inlined into its articles by `components/post/ElementStyles.astro` |
@@ -294,9 +294,9 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
 
 - **A post.** `src/content/posts/<slug>.md` → schema → Markdown and its plugins → `PostView.astro` inside
   `PanelPage` at `/ledger/<slug>/`. The article carries the CSS of the `<ao-*>` it uses (`ElementStyles`), and the
-  page loads `post-components.js`, whose `enhance()` imports each of those tags' `src/elements/<tag>/element.js`
-  (the tags not moved yet are still defined in that file). On the homepage the overlay fetches that page, copies
-  `[data-post-article]` in and imports the same module, so the tags upgrade the same way. Notes pages render the same chrome with the note's content.
+  page calls `enhance()` (`src/elements/enhance.js`), which imports each of those tags' `src/elements/<tag>/element.js`.
+  On the homepage the overlay fetches that page, copies `[data-post-article]` in and calls the same `enhance()` (through
+  the `post-components.js` shim until T3.1), so the tags upgrade the same way. Notes pages render the same chrome with the note's content.
 - **The hover card.** `previews.json` is built from listed posts' `preview:` (or their opening lines). On a device
   that can hover, `scripts/cards/` fetches it once when idle and opens a card on any `/ledger/<slug>/` link. On a
   phone a ledger row's stamp opens the same short version in place, from the page's own HTML.
