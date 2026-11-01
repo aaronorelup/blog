@@ -79,7 +79,8 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 
 | File | Made by | Read by |
 |---|---|---|
-| `/ledger/<slug>/`, `/ledger/<slug>/notes/` | `src/pages/ledger/[slug].astro`, `[slug]/notes.astro` | readers, the homepage overlay (it fetches the page and lifts `[data-post-article]`) |
+| `/ledger/<slug>/`, `/ledger/<slug>/notes/` | `src/pages/ledger/[slug].astro`, `[slug]/notes.astro` | readers, the homepage overlay (it fetches the page and mounts its view, `article[data-post-article][data-panel-view]`) |
+| `/og/<slug>.jpg` | `src/pages/og/[slug].jpg.js`, drawn by `src/lib/og/` | X and other link previews: each listed post's `og:image`, `?v=<h8>` |
 | `/ledger/previews.json` | `src/pages/ledger/previews.json.js` | `src/scripts/cards/data.js` (the hover card, search results, Goobie's related posts), `worker/reads/serve.js`, `worker/stats/index.js` |
 | `/pagefind/` | `scripts/build/pagefind.mjs` (Pagefind's Node API over `dist/ledger/**/*.html`) | `src/scripts/search/keyword.js`: only what carries `data-pagefind-body` (a listed post's or notes page's text) is in it |
 | `/stats-pages.txt` | `scripts/build/stats-pages.mjs` | `worker/stats/index.js`: the only pages `/stats` may name |
@@ -151,32 +152,35 @@ fails the build, or only warns in a live notebook.
 | `src/data/public-keys.js` | keys meant to be public: Ask's Turnstile site key |
 | `src/data/media-manifest.json` | every file in the R2 bucket, its size and MD5 (`npm run media:push`) |
 | `src/data/listed.js`, `preview-budget.js` | one-line re-exports until W4 (`isListed` lives in `src/lib/posts.js`) |
-| `src/data/series.js`, `courses.js` | v1 threads (until T2.1), the courses |
+| `src/data/series.js`, `courses.js` | v1 threads, read by nothing since T2.1 (W4 deletes it); the courses |
 | `src/data/courses/*.json`, `src/data/lore/*.json` | written by the course publishers in other repos: never by hand |
 
 ### `src/lib/`, `src/pages/`, `src/layouts/`, `src/components/`
 
 | Path | What |
 |---|---|
-| `src/lib/content.js` | the only importer of `astro:content`: `allPosts`, `listedPosts`, `notesBySlug`, `research`, `projects`, `renderEntry`, `slugOf` |
-| `src/lib/{posts,cards,icons,dates,paths}.js` | listing and order, the card shape, icons by id, UTC dates, `PUBLIC_DIR` |
+| `src/lib/content.js` | the only importer of `astro:content`: `allPosts`, `listedPosts`, `notesBySlug`, `research`, `projects`, `renderEntry`, `textOf` (the extraction), `slugOf` |
+| `src/lib/{posts,cards,icons,dates,paths}.js` | listing, ledger order, older/newer and `related()` (Read next: project, then topic, then date), the card shape, icons by id, UTC dates, `PUBLIC_DIR` |
 | `src/lib/glyphs.js` | the line drawings: a topic's glyph (where a post has no icon) and the search lens; Astro and the browser read it |
 | `src/lib/text/rules.js`, `hash.js` | what a reader reads (shared with the browser's read-aloud), content hashes |
-| `src/lib/text/plain.js` | a post's Markdown as plain words, and its reading minutes (the card's and the ledger row's) |
+| `src/lib/text/plain.js` | a post's Markdown as plain words (the fallback card), and reading minutes from `text.words` (the post header's, the card's and the ledger row's) |
+| `src/lib/og/` | `card.js` draws a share card with sharp (1200×630 JPEG: icon or glyph, id and topic, the title in Zen Maru Gothic from `src/assets/fonts/`, the verdict); `image.js` names it by hash, keeps it in `node_modules/.astro/og/`, and until `STRICT` lets a failed card fall back to `public/og/default.jpg` (a live notebook's always) |
 | `src/lib/build.js` | `COMMIT`, the commit a build is made from (the `ao-build` meta) |
 | `src/lib/search/chunks.js`, `docs.js` | a listed post or its notes → search chunks (the short version, then each h2 section, at most 1,500 characters) and the manifest; `docs.js` reads the build's posts once |
 | `src/lib/lore*.js` | the lore course's data and drawings |
 | `src/lib/projects.js` | the projects page's data: `SECTIONS`, order, state chips, needs glyphs, pictures or icons, `DERIVED` (the course's live lesson count); a card linking an unlisted post fails the build |
 | `src/pages/index.astro` + `src/layouts/Home.astro` | the homepage: the tea house scene and its overlay |
-| `src/pages/{ledger,projects,about,courses,stats,404}.astro`, `ledger/[slug].astro` | the panel pages |
+| `src/pages/{ledger,projects,about,courses,stats,404}.astro`, `ledger/[slug].astro`, `ledger/[slug]/notes.astro` | the panel pages |
+| `src/pages/og/[slug].jpg.js` | each listed post's share card (`src/lib/og/`) |
 | `src/pages/courses/**`, `src/pages/research/**` | the course and research pages |
 | `src/pages/search/` | `manifest.json.js`, `docs/[doc].json.js`: search's build files |
-| `src/layouts/PanelPage.astro` | every panel page: `site.css`, `chrome/Head`, `ModeToggle`, `PanelChrome` (`active` lights the nav, `view` names the view) |
+| `src/layouts/PanelPage.astro` | every panel page: `site.css`, `chrome/Head` (`published`: shared as an article), `ModeToggle`, `PanelChrome` (`active` lights the nav, `view` names the view), and `mountView` on its `[data-panel-view]` |
 | `src/components/chrome/` | `Head` (share tags, `ao-build` meta, font preload, the pre-paint mode script; both layouts), `PanelChrome` (header, nav, scroller, footer; `data-active-view`, and `data-panel-view` on a standalone page's view wrapper), `ModeToggle`, `Glyph` |
 | `src/components/ledger/` | `LedgerView` (`/ledger/`), `SearchBox` (the box and its Search \| Ask Goobie switch), `StartHere`, `Chips` (topic and project counts, real links `?topic=`), `LedgerRow` (icon or glyph, title link with `data-ledger-entry`, summary, meta, the stamp's `<details>` short version) |
 | `src/components/{about,courses,research}/` | `AboutView`; `CoursesView`, `LessonList`, `Coin`; `ResearchView` |
 | `src/components/projects/` | `ProjectsView` (`/projects`), `JumpRow`, `Highlights` (the reel from `picks.js REEL` and the cards marked `highlight`), `ProjectSection`, `ProjectCard`, `NeedsGlyph` |
-| `src/components/panel/*View.astro` | the post view (into `post/` by T2.1); `PanelChrome`, `AboutView`, `CoursesView`, `ProjectsView` and `LedgerView` are stubs for `index.astro` until T3.1 (`LedgerView`'s also mounts `views/ledger.js` in the overlay) |
+| `src/components/post/` | `PostView` (the article: `data-post-article`, `data-panel-view` `post` or `notes`, `data-slug`), `PostHeader` (icon or glyph, id · date · minutes, topic and project chips, title `data-r=t`, summary `data-r=s`, the byline on `voice: claude` pages, `ReadAloud`), `ShortVersion` (`#short`, the post's card), `NotesLink`, `Contents` (4+ h2 or 900+ words), `Related`, `PostNav`, `ElementStyles`, `ReadAloud` (a stub until T2.4) |
+| `src/components/panel/*View.astro` | `PanelChrome`, `AboutView`, `CoursesView`, `ProjectsView` and `LedgerView`: stubs for `index.astro` until T3.1 (`LedgerView`'s also mounts `views/ledger.js` in the overlay) |
 | `src/components/lore/` | the lore course |
 
 ### `src/scripts/` and `src/styles/` (the browser)
@@ -188,23 +192,25 @@ fails the build, or only warns in a live notebook.
 | `src/scripts/lazy.js` | `lazy(load, fallbackUrl)`: every dynamic import; a lost chunk (a deploy since the page loaded) navigates to `fallbackUrl` or reloads once |
 | `src/styles/elements.css` | the viewer, the now-playing bar, `.visually-hidden`: linked from `PostView`, the notes page and `index.astro` (into `site.css` by T3.2); an element's own CSS is inlined into its articles by `components/post/ElementStyles.astro` |
 | `src/elements/ao-demo/demos/<name>/` | the two `<ao-demo>` demos, `synthid` (AO-040: `model.js` the watermark maths, `ui.js`, a file per part, `index.js` mounts) and `cf` (AO-057), each an `index.js` exporting `mount(host, part)` and a `style.css` |
-| `src/scripts/cards/` + `src/styles/cards.css` | the hover card: `data.js` (`previews.json`, fetched once and shared), `render.js` (the element and where it goes; the icon when a card has no still), `hover.js` (when: listeners, timings, media). `ledger-preview.js` is a one-line stub that `stats.astro`, `PostView`, `notes.astro` and `views/projects.js` import until W4 |
+| `src/scripts/cards/` + `src/styles/cards.css` | the hover card: `data.js` (`previews.json`, fetched once and shared), `render.js` (the element and where it goes; the icon when a card has no still), `hover.js` (when: listeners, timings, media). `ledger-preview.js` is a one-line stub that `stats.astro` and `views/projects.js` import until W4 |
 | `src/scripts/ledger/` | `filter.js` (the chips: one topic or project, `?topic=` read on load and kept with `replaceState`), `feed.js` (`bindFeedCopy`) |
 | `src/scripts/search/` + `src/styles/search.css` | `box.js` (the box, `/`, the switch), `keyword.js` (Pagefind, on first focus), `semantic.js` (`/api/search`, 400 ms after typing, at most 40 a page), `merge.js` (reciprocal rank), `results.js` (rows, `pagePath(slug, kind)` and deep links `?hl=&hs=#heading`), `terms.js`, `ask.js` (Ask Goobie: `/api/session`, Turnstile only when Ask is on, the session in `sessionStorage`, `/api/ask`) |
-| `src/scripts/post/highlight.js` | marks a deep link's sentence (or words) in its section, opens its `<details>`, centres it in `#panel-scroll`; called by `arrive.js` |
-| `src/scripts/post/arrive.js` | where a link into a post lands, once its components have drawn (`enhance()`'s promise): the `#heading` back at the top unless the reader has scrolled, then `highlight()`; the post and notes pages call it (T2.1 moves the call into `views/post.js`) |
+| `src/scripts/post/` | `highlight.js` (marks a deep link's sentence or words in its section, opens its `<details>`, centres it in `#panel-scroll`; loaded only for a `?hl=`/`?hs=` link), `contents.js` (the contents list: open beside the text from 1180 px, the heading read marked by an IntersectionObserver on `#panel-scroll`), `details.js` (opens the `<details>` holding the `#target`) |
+| `src/scripts/views/index.js` | `mountView(root, fallbackUrl)`: imports `./<data-panel-view>.js` (through `lazy`) and runs its `mount(root)`; no module, no-op. `PanelPage` calls it, and the overlay will |
+| `src/scripts/views/post.js`, `notes.js` | the post view: `enhance()`, the contents list, folded details, where a link lands once the components drew (the place kept in `history.state` for Reload and Back, else the `#heading`, then `highlight`), the hover card (mouse only), and the Listen hook T2.4 fills; `notes.js` is the same without Listen |
 | `src/scripts/home-scene.js` | the homepage scene and overlay (split into `scripts/home/` by T3.1 and T3.2) |
 | `src/scripts/stats/**`, `src/styles/stats/**` | the `/stats` page: its own code, kept as is |
 | `src/scripts/mode.js` | the panel pages' day/night toggle: `data-mode`, the stored choice, `aria-pressed` |
 | `src/scripts/views/projects.js` | the projects view's module (`mount(root)` → unmount): the hover card on its post links |
 | `src/scripts/views/ledger.js` | the ledger view's module: chips, search box, feed copy, hover card |
 | `src/styles/tokens.css` | every colour as a day/night pair, the `--pc-*` and `--home-*` tokens per mode (plain strings: the `/stats` canvas parses them), the homepage tween (`:root[data-tweening]` mixes by `--mix`), fonts, type scale, space, radii, z |
-| `src/styles/site.css` | the one stylesheet of every panel page: tokens, base, chrome, prose, cards, ledger, search, projects, about, research (later tasks add theirs) |
-| `src/styles/{base,chrome,prose,about,research}.css` | page-wide rules; the frame, the view header, shared hover states; long-form text (`.pc-prose`); the text pages (`.page-*`: About, 404); a research document |
+| `src/styles/site.css` | the one stylesheet of every panel page: tokens, base, chrome, prose, post, cards, ledger, search, projects, about, research (later tasks add theirs) |
+| `src/styles/post.css` | the post page (`.post-*`, `.short-*`, `.toc*`, `.notes-link`, `.rel-*`); each part carries its own width, so a copy of the article's insides lays out the same |
+| `src/styles/{base,chrome,prose,about,research}.css` | page-wide rules; the frame, the view header, shared hover states; long-form text (`.pc-prose`, folded `<details>`); the text pages (`.page-*`: About, 404); a research document |
 | `src/styles/projects.css` | the projects page (`.proj-*`), on `--pc-*` tokens only so the overlay's tween carries it |
 | `src/styles/ledger.css` | the ledger (`.row-*`, `.chip*`, `.start-*`, `.month`, `.ledger-feed*`), on `--pc-*` tokens only |
 | `src/styles/fonts.css`, `public/fonts/` | written by `scripts/tools/fonts.mjs`: Google's own woff2 slices, self-hosted under content-hashed names |
-| `src/styles/panel.css` | an `@import` stub (tokens, chrome, prose, cards, ledger, search, projects, about) for `index.astro` until T3.2 |
+| `src/styles/panel.css` | an `@import` stub (tokens, chrome, prose, post, cards, ledger, search, projects, about) for `index.astro` until T3.2 |
 | `src/styles/lore.css`, `courses.css` | the course looks |
 
 ### `scripts/` (Node)
@@ -268,7 +274,7 @@ the private agent kit (`skills/blog-post/never-publish.txt`); the repo holds onl
 names from a reader of the repo, not from someone set on guessing them.
 
 **Budgets** (`scripts/tools/budgets.mjs`, gzipped, without fonts and media): a post page minus its prose ≤ 20 KB
-(chrome HTML 4, CSS 15, JS up front 8), each element's own chunks and inlined CSS ≤ 6 KB (`ao-series`, `ao-game`
+(chrome HTML 4, CSS 15, JS up front 8: the page's scripts, their static imports and its view's module), each element's own chunks and inlined CSS ≤ 6 KB (`ao-series`, `ao-game`
 10; one row names the element nearest its budget), the ledger's chrome ≤ 6 KB and ≤ 220 B a row, the homepage before the
 scene chunk ≤ 30 KB (HTML 12, entry JS 12). Printed by every build, never failing it. A display code point the
 self-hosted fonts miss is a warning in the build and a failure of `node scripts/tools/budgets.mjs` and of
@@ -294,11 +300,13 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
 
 ## Data flows
 
-- **A post.** `src/content/posts/<slug>.md` → schema → Markdown and its plugins → `PostView.astro` inside
-  `PanelPage` at `/ledger/<slug>/`. The article carries the CSS of the `<ao-*>` it uses (`ElementStyles`), and the
-  page calls `enhance()` (`src/elements/enhance.js`), which imports each of those tags' `src/elements/<tag>/element.js`.
-  On the homepage the overlay fetches that page, copies `[data-post-article]` in and calls the same `enhance()` (through
-  the `post-components.js` shim until T3.1), so the tags upgrade the same way. Notes pages render the same chrome with the note's content.
+- **A post.** `src/content/posts/<slug>.md` → schema → Markdown and its plugins → `components/post/PostView.astro`
+  inside `PanelPage` at `/ledger/<slug>/`, its share card at `/og/<slug>.jpg`. The article carries the CSS of the
+  `<ao-*>` it uses (`ElementStyles`); `PanelPage` runs `views/post.js`, which calls `enhance()`
+  (`src/elements/enhance.js`, importing each of those tags' `src/elements/<tag>/element.js`), then the contents list,
+  the details and where the link lands. The homepage overlay fetches that page and mounts a copy of its
+  `[data-panel-view]` article with the same module (until T3.1 it copies `[data-post-article]` in and calls
+  `enhance()` through the `post-components.js` shim). A notes page is the same view given its note (`data-panel-view="notes"`).
 - **The hover card.** `previews.json` is built from listed posts' `preview:` (or their opening lines). On a device
   that can hover, `scripts/cards/` fetches it once when idle and opens a card on any `/ledger/<slug>/` link. On a
   phone a ledger row's stamp opens the same short version in place, from the page's own HTML.

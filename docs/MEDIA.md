@@ -65,3 +65,14 @@ fails if it can't fit. The caps are in `src/data/limits.js`, and `npm run check`
   node scripts/tools/preview-media.mjs /media/<folder>/<clip>.mp4 --at 12 --out public/media/projects/<name>.webp --size 640x360 --cap 60k
   ```
   `--fit blur`, `--focus` and `--crop` work as in `PREVIEWS.md`. Look at the result before committing it.
+
+## Share cards (og:image)
+
+Nothing to make by hand: the build draws each listed post's card, `/og/<slug>.jpg` (1200×630 JPEG, at most 150 KB),
+from its icon (or its topic's glyph), id, topic, title and verdict, with sharp and the Latin subset of Zen Maru
+Gothic 700 in `src/assets/fonts/` (`src/lib/og/`). The page's `og:image` carries `?v=<h8>`, the hash of what is
+drawn, so X fetches a card again when its title, verdict or icon changes. Drawn cards are kept in
+`node_modules/.astro/og/`, which Workers Builds restores between builds when its build cache is on, so a build
+redraws only the changed ones. A card that fails to draw falls back to `public/og/default.jpg` (a live notebook's
+always; any post's until `STRICT` in `src/lib/og/image.js` is on). An unlisted post has no card. A new design: bump
+`V` in that file.
