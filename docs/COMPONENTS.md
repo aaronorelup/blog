@@ -19,6 +19,27 @@ section here.
 
 ## <ao-compare>
 
+A grid of same-sized frames, pictures or videos, so outputs are judged side by side.
+
+| Attribute | |
+|---|---|
+| `cols="N"` | columns on a wide screen (default 2); a tablet shows at most 2, a phone 1 |
+| `aspect="w/h"` | the frame every item is fitted into, letterboxed on one background (default `4/3`) |
+| `sync` | its videos play, pause and seek together, as one player (`GROUPS` in `_core/player.js`) |
+
+Children: one `<figure>` per item, an `<img>` or a `<video>` and an optional `<figcaption>` (a `<b>` title and a
+`.ao-meta` line). `<figure class="wide">` spans the whole row, for a sheet that is already side by side.
+
+```html
+<ao-compare cols="2" aspect="16/9">
+<figure><img src="/media/x/a.webp" alt="…"><figcaption><b>A</b><span class="ao-meta">what it is</span></figcaption></figure>
+<figure><img src="/media/x/b.webp" alt="…"><figcaption><b>B</b></figcaption></figure>
+</ao-compare>
+```
+
+Behaviours: compare-1 to compare-3; its stills open in the image viewer. Used by 24 posts (`INVENTORY.md`); best
+shown by `moonlight-two-cuts` (stills) and `storm-bell-fighter` (`sync`).
+
 ## <ao-cues>
 
 ## <ao-demo>

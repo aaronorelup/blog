@@ -2,61 +2,6 @@
    module, so they reach both the standalone post page and the homepage panel. Uses the
    panel's --pc-* tokens, so day and night both work. */
 
-ao-compare {
-  --ao-cols: 2;
-  --ao-aspect: 4/3;
-  display: grid;
-  grid-template-columns: repeat(var(--ao-cols), minmax(0, 1fr));
-  gap: 14px;
-  margin: 8px 0 28px;
-}
-/* A wide figure spans the whole row: for sheets that are already side by side. */
-ao-compare > figure.wide { grid-column: 1 / -1; }
-ao-compare > figure {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-ao-compare > figure > img,
-ao-compare > figure > video {
-  width: 100%;
-  aspect-ratio: var(--ao-aspect);
-  object-fit: contain;
-  background: #15141f;
-  border: 1px solid var(--pc-line);
-  border-radius: 8px;
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-ao-compare > figure.wide > img,
-ao-compare > figure.wide > video { aspect-ratio: auto; }
-ao-compare figcaption {
-  margin-top: 8px;
-  font-family: Karla, system-ui, sans-serif;
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--pc-soft);
-}
-ao-compare figcaption b {
-  display: block;
-  font-weight: 600;
-  color: var(--pc-strong);
-}
-ao-compare figcaption .ao-meta {
-  display: block;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11.5px;
-  color: var(--pc-quiet);
-}
-@media (max-width: 900px) {
-  ao-compare { grid-template-columns: repeat(min(var(--ao-cols), 2), minmax(0, 1fr)); }
-}
-@media (max-width: 560px) {
-  ao-compare { grid-template-columns: minmax(0, 1fr); }
-}
-
 ao-model {
   display: block;
   position: relative;
