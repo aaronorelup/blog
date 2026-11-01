@@ -41,9 +41,9 @@ Someone who reads only the card leaves knowing what the post found.
 - Only what the post says. Failures stay failures. The card is never more sure than the post.
 - A picture from the post (`image`, 640×360 WebP, aim 30 KB) and, if the subject moves, a
   3-second silent `loop` (640×360 H.264, aim 150 KB, 4 seconds at most).
-- The build's hard caps, in `src/data/preview-budget.js`, are the outer limit: verdict 36,
+- The build's hard caps, in `src/data/limits.js`, are the outer limit: verdict 36,
   takeaway 200, point 150 characters, 3 points, still 48 KB, loop 240 KB. The targets here are
-  the rule, and the post checker in the build holds you to them.
+  the rule, and `npm run check` holds you to them.
 
 **4. The post: conclusions first, then the rundown, then the details.**
 
@@ -135,8 +135,7 @@ cost table) and that's far more than the deep dive tier, split it:
 - The short post stays at its URL (`src/content/posts/<slug>.md`). It says what the thing is,
   where to watch or play it, what was interesting about making it, and the conclusions.
 - The full making-of moves, intact, to `src/content/notes/<slug>.md`. It shows at
-  `/ledger/<slug>/notes/` (that page is being built). Its fields are whatever the notes
-  collection in `src/content/config.ts` asks for.
+  `/ledger/<slug>/notes/`. Its frontmatter is three lines (the end of "Frontmatter" below).
 - The short post links to it in plain words: "The whole making-of is on
   [its notes page](/ledger/<slug>/notes/)."
 - The never-publish rules apply to the notes page too.
@@ -178,12 +177,13 @@ a caption, alt text or a filename:
 - Money: his pay, savings, debts, what he can afford. (Costs of a test, like "$2.44 on a rented
   GPU", are fine.)
 - Credentials, keys, tokens, or private links (private repos, private dashboards, his command
-  centre at hq.soul-orelup.workers.dev).
+  centre).
 - His private AI chat logs and roleplay chats.
 - A character's private backstory. Only what's already public about a character.
 
 And never link an unlisted post (`unlisted: true`) or the hidden easter-egg pages inside the
-film posts. The exact names to watch for are in the blog-post skill in Aaron's agent kit.
+film posts. The exact names to watch for are in the blog-post skill in Aaron's agent kit, and
+`npm run check` catches them (it holds only their hashes, so the public repo never names them).
 
 ## Frontmatter
 
@@ -193,11 +193,10 @@ Start every post with `npm run new-post "Title of the post"`. It makes
 
 ```yaml
 ---
-id: "AO-073"
+id: "AO-0XX"                      # from new-post, never by hand
 title: "How much a rented cloud GPU speeds up my AI videos"
 summary: "I rented a big graphics card online to render my AI video clips. How much faster it really was than my 8 GB laptop, what made the difference, and what an hour of video costs."
 date: 2026-11-02
-status: "note"                    # note | in-progress | shipped
 topic: "video"                    # required
 project: ["evening-television"]   # optional
 draft: true                       # until Aaron says it's good
@@ -217,7 +216,22 @@ preview:
 - `project` (optional), any of: `evening-television`, `blackwater`, `hidden-curriculum`,
   `characters`, `oil-paint`, `llm-monster-hunter`, `origin`. Only when the post really is part of
   that project.
-- Don't make up new tags.
+- No `status`, `tags` or `series`: older posts still carry them until they're rewritten.
+- The icon needs no field. It is `public/media/icons/<id>.webp` (256 px, at most 24 KB) and
+  `<id>-96.webp` (at most 6 KB), named by the post's id. `icon:` overrides the path only when a
+  post must share another's.
+- A notes page (`src/content/notes/<slug>.md`) has only this, with `post` the same slug as its
+  file:
+
+```yaml
+---
+post: "renting-a-gpu"
+title: "Renting a cloud GPU: the full test notes"
+summary: "Every run, setting and cost from the test, in order."
+---
+```
+
+- Don't make up new topics or projects. They live in `src/data/taxonomy.js`.
 - `draft: true` means the page isn't built at all. `unlisted: true` is different: the page builds
   at its URL but shows up in no list. Never use one to mean the other.
 
@@ -240,7 +254,7 @@ Check before you show him:
 - [ ] Links to his other posts and projects work, and none goes to a never-link page.
 - [ ] Nothing from the never-publish list, anywhere (text, alt, captions, filenames).
 - [ ] `topic` is set. `project` only if it fits.
-- [ ] The post checker in the build passes, and `npm run build` passes.
+- [ ] `npm run check -- <your files>` shows no errors, and `npm run build` passes.
 - [ ] You looked at the page (desktop and phone, day and night) and the hover card.
 - [ ] Generated originals are in the studio library.
 
