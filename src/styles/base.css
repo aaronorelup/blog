@@ -1,0 +1,19 @@
+/* Page-wide rules of the panel pages (PanelPage): the page colour, the body font, focus, selection and the skip
+   link. The homepage keeps its own (Home.astro) until T3.2. */
+html { scroll-behavior: auto; }
+body {
+  margin: 0;
+  background: var(--pc-page);
+  color: var(--pc-body);
+  font-family: var(--font-body);
+  transition: background 300ms ease;
+}
+:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; border-radius: 4px; }
+::selection { background: var(--pc-line2); }
+.skip {
+  position: absolute; left: 16px; top: -64px; z-index: var(--z-skip);
+  background: var(--pc-bg); color: var(--pc-strong);
+  padding: 12px 18px; border-radius: 12px; border: 2px solid var(--pc-line2);
+  font-weight: 600; text-decoration: none;
+}
+.skip:focus { top: 16px; }

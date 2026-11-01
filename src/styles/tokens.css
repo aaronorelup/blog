@@ -1,0 +1,113 @@
+/* The only source of colour and type. Each mode's --pc-* token is a plain value with today's exact string: the /stats
+   canvas reads them with getPropertyValue and a comma regex, and lore.css re-themes the chrome by overriding them.
+   Only the homepage's day/night tween (html[data-tweening], --mix from 0 day to 1 night) mixes the pairs.
+   fonts.css is written by scripts/tools/fonts.mjs. */
+@import './fonts.css';
+
+@property --mix { syntax: '<number>'; inherits: true; initial-value: 1; }
+
+:root {
+  --day-page: rgb(251, 243, 232);       --night-page: rgb(16, 18, 32);
+  --day-bg: rgba(251, 243, 232, 0.97);  --night-bg: rgba(21, 23, 38, 0.96);
+  --day-head: rgb(190, 122, 16);        --night-head: rgb(240, 192, 106);
+  --day-strong: rgb(58, 58, 66);        --night-strong: rgb(242, 231, 213);
+  --day-body: rgb(74, 74, 80);          --night-body: rgb(201, 188, 169);
+  --day-quiet: rgb(122, 108, 93);       --night-quiet: rgb(142, 131, 117);
+  --day-soft: rgb(107, 94, 82);         --night-soft: rgb(156, 145, 127);
+  --day-line: rgb(226, 213, 192);       --night-line: rgb(48, 46, 62);
+  --day-line2: rgb(208, 190, 163);      --night-line2: rgb(74, 68, 90);
+  --day-accent: rgb(168, 94, 43);       --night-accent: rgb(226, 121, 92);
+  --day-gold: rgb(176, 138, 46);        --night-gold: rgb(201, 162, 39);
+  --day-tile: rgb(243, 231, 210);       --night-tile: rgb(32, 31, 44);
+  --day-hover: rgb(244, 233, 216);      --night-hover: rgb(34, 33, 48);
+  --day-code: rgb(240, 229, 210);       --night-code: rgb(34, 33, 48);
+  --day-scrim: rgba(251, 243, 232, 0.34); --night-scrim: rgba(8, 9, 18, 0.44);
+  --day-shadow: 0 30px 90px rgba(58, 58, 66, 0.22); --night-shadow: 0 34px 100px rgba(0, 0, 0, 0.6);
+
+  /* The homepage's cards, buttons and coin (home-scene.js paints them until T3.2 moves them onto these). */
+  --day-home-card: rgba(251, 243, 232, 0.9);    --night-home-card: rgba(21, 23, 38, 0.86);
+  --day-home-shadow: 0 14px 40px rgba(58, 58, 66, 0.12); --night-home-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --day-home-head: rgb(190, 122, 16);           --night-home-head: rgb(240, 192, 106);
+  --day-home-body: rgb(74, 74, 80);             --night-home-body: rgb(198, 194, 212);
+  --day-home-quiet: rgb(107, 94, 82);           --night-home-quiet: rgb(143, 138, 163);
+  --day-home-btn-bg: rgb(251, 243, 232);        --night-home-btn-bg: rgba(240, 192, 106, 0.1);
+  --day-home-btn-line: rgb(58, 58, 66);         --night-home-btn-line: rgb(198, 194, 212);
+  --day-home-btn-text: rgb(58, 58, 66);         --night-home-btn-text: rgb(242, 236, 223);
+  --day-home-dot: rgb(58, 58, 66);              --night-home-dot: rgb(198, 194, 212);
+  --day-home-flash: rgb(255, 255, 255);         --night-home-flash: rgb(12, 14, 24);
+  --day-home-coin: rgb(247, 201, 212);          --night-home-coin: rgb(59, 46, 68);
+  --day-home-coin-rim: rgb(58, 58, 66);         --night-home-coin-rim: rgb(90, 84, 112);
+
+  --mix: 1;
+  --pc-page: var(--night-page); --pc-bg: var(--night-bg); --pc-head: var(--night-head);
+  --pc-strong: var(--night-strong); --pc-body: var(--night-body); --pc-quiet: var(--night-quiet);
+  --pc-soft: var(--night-soft); --pc-line: var(--night-line); --pc-line2: var(--night-line2);
+  --pc-accent: var(--night-accent); --pc-gold: var(--night-gold); --pc-tile: var(--night-tile);
+  --pc-hover: var(--night-hover); --pc-code: var(--night-code); --pc-scrim: var(--night-scrim);
+  --pc-shadow: var(--night-shadow);
+  --home-card: var(--night-home-card); --home-shadow: var(--night-home-shadow); --home-head: var(--night-home-head);
+  --home-body: var(--night-home-body); --home-quiet: var(--night-home-quiet); --home-btn-bg: var(--night-home-btn-bg);
+  --home-btn-line: var(--night-home-btn-line); --home-btn-text: var(--night-home-btn-text);
+  --home-dot: var(--night-home-dot); --home-flash: var(--night-home-flash); --home-coin: var(--night-home-coin);
+  --home-coin-rim: var(--night-home-coin-rim);
+
+  --font-display: 'Zen Maru Gothic', sans-serif;
+  --font-body: Karla, system-ui, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --text-xs: 11.5px; --text-sm: 12.5px; --text-md: 14px; --text-body: 15.5px; --text-lg: 17px;
+  --text-h1: clamp(30px, 4vw, 44px);
+  --space-1: 4px; --space-2: 8px; --space-3: 14px; --space-4: 18px; --space-5: 24px; --space-6: 34px;
+  --space-7: 44px; --space-8: 60px;
+  --radius-s: 8px; --radius-m: 10px; --radius-l: 24px; --radius-pill: 999px;
+  --ease-panel: cubic-bezier(.4, 0, .2, 1);
+  --z-panel: 34; --z-toggle: 41; --z-skip: 50;
+}
+
+:root[data-mode='day'] {
+  --mix: 0;
+  --pc-page: var(--day-page); --pc-bg: var(--day-bg); --pc-head: var(--day-head);
+  --pc-strong: var(--day-strong); --pc-body: var(--day-body); --pc-quiet: var(--day-quiet);
+  --pc-soft: var(--day-soft); --pc-line: var(--day-line); --pc-line2: var(--day-line2);
+  --pc-accent: var(--day-accent); --pc-gold: var(--day-gold); --pc-tile: var(--day-tile);
+  --pc-hover: var(--day-hover); --pc-code: var(--day-code); --pc-scrim: var(--day-scrim);
+  --pc-shadow: var(--day-shadow);
+  --home-card: var(--day-home-card); --home-shadow: var(--day-home-shadow); --home-head: var(--day-home-head);
+  --home-body: var(--day-home-body); --home-quiet: var(--day-home-quiet); --home-btn-bg: var(--day-home-btn-bg);
+  --home-btn-line: var(--day-home-btn-line); --home-btn-text: var(--day-home-btn-text);
+  --home-dot: var(--day-home-dot); --home-flash: var(--day-home-flash); --home-coin: var(--day-home-coin);
+  --home-coin-rim: var(--day-home-coin-rim);
+}
+
+/* During the homepage's tween only, the colours follow --mix; the shadows follow data-mode, which flips at 0.5.
+   :root[...] and last in the file, so it outranks the day block. Without color-mix the tween snaps. */
+@supports (color: color-mix(in srgb, red, blue)) {
+  :root[data-tweening] {
+    --pc-page: color-mix(in srgb, var(--day-page), var(--night-page) calc(var(--mix) * 100%));
+    --pc-bg: color-mix(in srgb, var(--day-bg), var(--night-bg) calc(var(--mix) * 100%));
+    --pc-head: color-mix(in srgb, var(--day-head), var(--night-head) calc(var(--mix) * 100%));
+    --pc-strong: color-mix(in srgb, var(--day-strong), var(--night-strong) calc(var(--mix) * 100%));
+    --pc-body: color-mix(in srgb, var(--day-body), var(--night-body) calc(var(--mix) * 100%));
+    --pc-quiet: color-mix(in srgb, var(--day-quiet), var(--night-quiet) calc(var(--mix) * 100%));
+    --pc-soft: color-mix(in srgb, var(--day-soft), var(--night-soft) calc(var(--mix) * 100%));
+    --pc-line: color-mix(in srgb, var(--day-line), var(--night-line) calc(var(--mix) * 100%));
+    --pc-line2: color-mix(in srgb, var(--day-line2), var(--night-line2) calc(var(--mix) * 100%));
+    --pc-accent: color-mix(in srgb, var(--day-accent), var(--night-accent) calc(var(--mix) * 100%));
+    --pc-gold: color-mix(in srgb, var(--day-gold), var(--night-gold) calc(var(--mix) * 100%));
+    --pc-tile: color-mix(in srgb, var(--day-tile), var(--night-tile) calc(var(--mix) * 100%));
+    --pc-hover: color-mix(in srgb, var(--day-hover), var(--night-hover) calc(var(--mix) * 100%));
+    --pc-code: color-mix(in srgb, var(--day-code), var(--night-code) calc(var(--mix) * 100%));
+    --pc-scrim: color-mix(in srgb, var(--day-scrim), var(--night-scrim) calc(var(--mix) * 100%));
+    --home-card: color-mix(in srgb, var(--day-home-card), var(--night-home-card) calc(var(--mix) * 100%));
+    --home-head: color-mix(in srgb, var(--day-home-head), var(--night-home-head) calc(var(--mix) * 100%));
+    --home-body: color-mix(in srgb, var(--day-home-body), var(--night-home-body) calc(var(--mix) * 100%));
+    --home-quiet: color-mix(in srgb, var(--day-home-quiet), var(--night-home-quiet) calc(var(--mix) * 100%));
+    --home-btn-bg: color-mix(in srgb, var(--day-home-btn-bg), var(--night-home-btn-bg) calc(var(--mix) * 100%));
+    --home-btn-line: color-mix(in srgb, var(--day-home-btn-line), var(--night-home-btn-line) calc(var(--mix) * 100%));
+    --home-btn-text: color-mix(in srgb, var(--day-home-btn-text), var(--night-home-btn-text) calc(var(--mix) * 100%));
+    --home-dot: color-mix(in srgb, var(--day-home-dot), var(--night-home-dot) calc(var(--mix) * 100%));
+    --home-flash: color-mix(in srgb, var(--day-home-flash), var(--night-home-flash) calc(var(--mix) * 100%));
+    --home-coin: color-mix(in srgb, var(--day-home-coin), var(--night-home-coin) calc(var(--mix) * 100%));
+    --home-coin-rim: color-mix(in srgb, var(--day-home-coin-rim), var(--night-home-coin-rim) calc(var(--mix) * 100%));
+  }
+}

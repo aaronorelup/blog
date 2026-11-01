@@ -1,0 +1,30 @@
+/* The plain text pages: About (components/about/AboutView.astro, also in the homepage overlay) and the 404 page.
+   Their header is .page-*; their text is .pc-prose (prose.css). */
+.page { width: 100%; max-width: 760px; padding-bottom: var(--space-8); }
+.page-kicker {
+  margin: 0 0 10px; font-size: var(--text-sm); letter-spacing: 0.08em; text-transform: uppercase; color: var(--pc-quiet);
+}
+.page-title {
+  margin: 0 0 12px; font-family: var(--font-display); font-size: clamp(30px, 4vw, 40px); line-height: 1.15;
+  font-weight: 700; color: var(--pc-head); letter-spacing: -0.015em;
+}
+.page-lede {
+  margin: 0 0 34px; font-family: var(--font-serif); font-size: var(--text-lg); line-height: 1.55; color: var(--pc-soft);
+  max-width: 620px; text-wrap: pretty;
+}
+.page-rule { height: 1px; background: var(--pc-line); margin: 0 0 30px; }
+
+/* 404: a chess clock whose left flag has fallen, and the offer of a draw. */
+.lost-clock { display: block; max-width: 100%; height: auto; margin: 0 0 28px; }
+.lost-cap { fill: var(--pc-line2); }
+.lost-case { fill: var(--pc-tile); stroke: var(--pc-line2); stroke-width: 2; }
+.lost-face { fill: var(--pc-bg); stroke: var(--pc-line2); stroke-width: 2; }
+.lost-tick { stroke: var(--pc-quiet); }
+.lost-flag { stroke: var(--pc-accent); stroke-width: 3; stroke-linecap: round; }
+.lost-pivot { fill: var(--pc-accent); }
+.lost-hand { stroke: var(--pc-strong); stroke-linecap: round; }
+.lost-hub { fill: var(--pc-strong); }
+.lost-draw {
+  margin: 6px 0 26px; font-family: var(--font-display); font-size: clamp(40px, 7vw, 56px); line-height: 1;
+  font-weight: 700; color: var(--pc-head); letter-spacing: 0.01em;
+}
