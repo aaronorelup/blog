@@ -1,6 +1,5 @@
 // The arithmetic behind "Is it growing?", kept apart from the drawing so Node can test it.
 // Nothing here touches the DOM; every function takes plain data and returns plain data.
-// (calc.test.mjs exercises it: `node --test src/scripts/stats/growing/`.)
 
 const DAY = 864e5;
 

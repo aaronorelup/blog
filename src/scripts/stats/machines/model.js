@@ -1,7 +1,7 @@
 // The thinking behind "Which machines?", with no DOM in it: which kind took the most, who the
 // busiest single machine was and how to describe it in a few words, how bots group into
 // companies under a purpose filter, how doors group into families. machines.js and the four
-// panel modules turn these into markup; model.test.mjs checks them from Node.
+// panel modules turn these into markup.
 //
 // Everything here reads a RangeView (core/view.js) and the words dictionary, and never the raw
 // days: the view has already applied the privacy and display guards, so a name that reaches this

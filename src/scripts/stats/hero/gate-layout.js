@@ -1,6 +1,6 @@
 // The Gate's geometry, with no DOM: where the road runs, where each pile stands, how many pages
-// one dot stands for, and which slot every dot lands in. Pure, so it runs under `node --test`
-// (gate-layout.test.mjs) and so a resize mid-replay is just "lay it out again and carry on".
+// one dot stands for, and which slot every dot lands in. Pure, so a resize mid-replay is just
+// "lay it out again and carry on".
 //
 // Two shapes share one model:
 // - wide (stage 720px and up): a garden road left to right, four lanterns, five piles standing on
