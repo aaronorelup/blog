@@ -1,5 +1,5 @@
-// The meaning half of search and Ask's excerpts: a query embedded with the model the index was built with (the
-// manifest's) and the nearest chunks from Vectorize, with the metadata sync.js stored. Search and Ask both call it.
+// The meaning half of search, and Ask's: a query embedded with the model the index was built with (the manifest's)
+// and the nearest chunks from Vectorize, with the metadata sync.js stored (search) or as ids only (Ask's nearest()).
 import { buildJson } from '../lib/build-files.js';
 
 export const MANIFEST = '/search/manifest.json';
@@ -16,6 +16,13 @@ export async function retrieve(env, q, topK) {
   const { matches } = await env.SEARCH_INDEX.query(vector, { topK, returnMetadata: 'all' });
   return matches.map(({ score, metadata: m }) => (
     { slug: m.s, kind: m.k, anchor: m.a, heading: m.h, text: m.t, title: m.T, voice: m.v, score }));
+}
+
+// The topK nearest chunks' ids (AO-063:4, AO-063n:4 for a notes page), best first: Vectorize's ids-only query, whose
+// topK may be 100 where one with metadata stops at 50.
+export async function nearest(env, vector, topK) {
+  const { matches } = await env.SEARCH_INDEX.query(vector, { topK, returnMetadata: 'none' });
+  return matches.map((m) => m.id);
 }
 
 // The best `per` chunks of each of the best `posts` posts, in score order (a post's notes count as the post).
