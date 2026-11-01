@@ -1,0 +1,42 @@
+---
+// The panel's frame: a centred header with the nav, a scrolling body and a footer. The homepage overlay and every
+// standalone panel page share it, so a card that grows open looks like the page loaded cold.
+// active: the lit nav item (data-active-view, a NAV key; a post lights ledger, the 404 page 'none').
+// view: a standalone page's view name (data-panel-view on its wrapper, the module views/<view>.js mounts).
+import { NAV, SOCIAL } from '../../data/site.js';
+
+interface Props {
+  active?: string;
+  view?: string;
+  // The overlay starts faded out; the homepage fades it in once the card has grown.
+  overlay?: boolean;
+  // The footer's line after the copyright. The 404 page leaves it out.
+  tagline?: string;
+}
+const { active = 'ledger', view, overlay = false, tagline = 'Notes on learning AI, filed as I go.' } = Astro.props;
+---
+
+<div id="panel-inner" class:list={['pc-inner', { 'is-overlay': overlay }]} data-active-view={active}>
+  <header class="pc-bar pc-bar-top">
+    <div class="pc-bar-row">
+      <a href="/" data-panel-home data-no-fly class="pc-home">← Back to the tea house</a>
+      <nav class={overlay ? 'pc-navs-o' : 'pc-navs'}>
+        {NAV.map((n) => <a href={n.href} data-nav={n.key} class="pc-nav">{n.label}</a>)}
+      </nav>
+    </div>
+  </header>
+
+  <div id="panel-scroll" class="pc-scroll">
+    {view ? <div class="pc-view" data-panel-view={view}><slot /></div> : <slot />}
+  </div>
+
+  <footer class="pc-bar pc-bar-foot">
+    <div class="pc-bar-row">
+      <p class="pc-copy">© {new Date().getFullYear()} Aaron Orelup.{tagline && ` ${tagline}`}</p>
+      <div class="pc-foots">
+        <a href="/rss.xml" class="pc-foot">RSS</a>
+        {SOCIAL.map((s) => <a href={s.href} target="_blank" rel="noreferrer noopener" class="pc-foot">{s.label}</a>)}
+      </div>
+    </div>
+  </footer>
+</div>
