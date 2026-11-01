@@ -1,11 +1,11 @@
 # Behaviour inventory
 
 Every bespoke behaviour of the site, the pages that use it and the check that holds it. Rows come from the code:
-each `addEventListener` and each documented attribute of a component has one (`src/scripts/post-components.js`,
-`src/scripts/demos/*`, `src/scripts/home-scene.js`, `src/scripts/cards/`, `src/scripts/ledger/`, `src/scripts/search/`,
-`src/scripts/post/highlight.js`, the inline scripts of the
-standalone pages). A spec id is the start of a test title (`npm run e2e -- -g core-4`). Unless a row says otherwise
-it passes on both projects, `desktop` (Chromium 1440×900) and `phone` (WebKit, iPhone 13).
+each `addEventListener` and each documented attribute of a component has one (`src/elements/**`,
+`src/scripts/home-scene.js`, `src/scripts/cards/`, `src/scripts/ledger/`, `src/scripts/search/`,
+`src/scripts/post/highlight.js`, the inline scripts of the standalone pages). A spec id is the start of a test title
+(`npm run e2e -- -g core-4`). Unless a row says otherwise it passes on both projects, `desktop` (Chromium 1440×900)
+and `phone` (WebKit, iPhone 13).
 
 The pages listed are those of the build this was written from; the specs don't read this list. They take their
 pages from `tests/e2e/targets.json`, which `scripts/tools/element-usage.mjs` rewrites from `dist/` before every run,
@@ -382,8 +382,9 @@ load without a script error (live-5).
 
 - **home-4, the rail dots.** The active section lies over the rail at every tier and on both projects, so a click on
   a dot lands on the section and the scene doesn't move. The keys, the wheel and a swipe work.
-- **overlay-4, a lost chunk.** `openPost` imports `post-components.js` with no fallback: when a deploy has replaced
-  the chunk, the post shows un-upgraded. T1.2's `lazy()` navigates to the real page instead.
+- **overlay-4, a lost chunk.** `openPost` imports `post-components.js` (the shim, whose chunk carries `enhance()`) with
+  no fallback: when a deploy has replaced the chunk, the post shows un-upgraded. T1.2's `lazy(load, fallbackUrl)`
+  navigates to the real page instead, once T3.1's `openPost` imports through it.
 
 Smaller quirk: after `ao-stop` a running game's veil reads "Paused while something else plays." (the page-wide stop
 reaches the game through its `aoPause` first), where "Paused." was meant. game-4 asserts only that it is paused.

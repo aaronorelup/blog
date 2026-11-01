@@ -1,4 +1,4 @@
-// The players every post shares (post-components.js, "One player at a time"): one player at a time, sync groups,
+// The players every post shares (src/elements/_core/player.js): one player at a time, sync groups,
 // pausing off screen, the now-playing bar, ao-stop and same-origin iframes. INVENTORY.md rows core-1 to core-11.
 import { test, expect } from './fixtures.mjs';
 import {
