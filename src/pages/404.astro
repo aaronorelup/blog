@@ -1,10 +1,8 @@
 ---
 // The page for an address that has no page: Astro writes dist/404.html, and the asset server sends it with status 404
-// for any path that matches no file (wrangler.jsonc: assets.not_found_handling = "404-page").
-//
-// The picture is an analog chess clock drawn here, a few hundred bytes of SVG: the left side's
-// minute hand has reached twelve and its flag has dropped; the right side has three minutes
-// left and its hand is lifting its own flag. Analog clocks are set so time runs out at 6:00.
+// for any path that matches no file (wrangler.jsonc: assets.not_found_handling = "404-page"). The picture is an analog
+// chess clock, a few hundred bytes of SVG: the left side's minute hand has reached twelve and its flag has dropped;
+// the right side has three minutes left and its hand is lifting its own flag (analog clocks run out at 6:00).
 import PanelPage from '../layouts/PanelPage.astro';
 
 // A point on a dial: clockwise degrees from twelve.
