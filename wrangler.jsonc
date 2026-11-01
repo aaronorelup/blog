@@ -62,7 +62,9 @@
     "STATS_ZONE": "05a0357d9b9837a590501e934b886ae7",
     "STATS_ACCOUNT": "d4d2707426a98d95ebd2a70357cc2f0a",
     "STATS_SITE": "8a8d2e6e818f49028f2cd730f85a00fb",
-    "TURNSTILE_HOSTNAMES": "aaronorelup.com"
+    "TURNSTILE_HOSTNAMES": "aaronorelup.com",
+    // Ask's DeepSeek endpoint; the stall test points `wrangler dev --var DEEPSEEK_URL:...` at a stub (docs/ASK.md).
+    "DEEPSEEK_URL": "https://api.deepseek.com/chat/completions"
   },
 
   // Workers Logs: one line per request the script handles, and what each cron job logged.

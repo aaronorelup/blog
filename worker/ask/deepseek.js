@@ -1,24 +1,65 @@
-// complete(env, messages): one DeepSeek chat call, thinking off (on by default, it would spend the 400 tokens on
-// reasoning, ignore temperature and run past the timeout), 20 s at most, no retry. The answer's text, or null when
-// the call failed, was cut short or came back empty: the caller answers 'busy' and caches nothing.
-export const MODEL = 'deepseek-flash'; // DeepSeek-V4.1-Flash, as GET https://api.deepseek.com/models lists it
-const CUT_SHORT = new Set(['length', 'insufficient_system_resource']);
+// call(env, body, opts): one DeepSeek chat call to env.DEEPSEEK_URL, no retry. body is the request (body.js builds
+// it, thinking off: on by default, it would spend the answer on reasoning and ignore temperature). With stream, each
+// content delta goes to onText, `first` ms may pass before the first one and `total` ms in all; past either the call
+// is aborted. Answers { status (0: no answer), text, finish, usage (null when it never came), ms, firstMs, error }.
+export const MODEL = 'deepseek-flash';   // DeepSeek-V4.1-Flash, as GET https://api.deepseek.com/models lists it
 
-export async function complete(env, messages) {
+export async function call(env, body, { stream = false, first = 0, total, onText = () => {} }) {
   const start = Date.now();
-  const out = await fetch('https://api.deepseek.com/chat/completions', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${env.DEEPSEEK_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: MODEL, messages, max_tokens: 400, temperature: 0.2,
-                           thinking: { type: 'disabled' }, stream: false }),
-    signal: AbortSignal.timeout(20e3),
-  }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`status ${r.status}`))))
-    .catch((e) => { console.log('ask deepseek failed', e.message); return null; });
-  if (!out) return null;
-  const [choice] = out.choices ?? [];
-  const u = out.usage ?? {};
-  console.log('ask deepseek', choice?.finish_reason, `${u.prompt_tokens} in`, `${u.completion_tokens} out`,
-    `${u.completion_tokens_details?.reasoning_tokens ?? 0} reasoning`, `${Date.now() - start} ms`);
-  const text = choice?.message?.content?.trim();
-  return text && !CUT_SHORT.has(choice.finish_reason) ? text : null;
+  const ctrl = new AbortController();
+  const out = { status: 0, text: '', finish: null, usage: null, ms: 0, firstMs: null, error: null };
+  const stop = (why) => () => { out.error = why; ctrl.abort(); };
+  const totalT = setTimeout(stop('timeout'), total);
+  let firstT = first ? setTimeout(stop('no first token'), first) : 0;
+  try {
+    const r = await fetch(env.DEEPSEEK_URL, {
+      method: 'POST', body, signal: ctrl.signal,
+      headers: { Authorization: `Bearer ${env.DEEPSEEK_API_KEY}`, 'Content-Type': 'application/json' },
+    });
+    out.status = r.status;
+    if (r.status === 402) console.error('ask deepseek 402: the account is out of balance');
+    if (!r.ok) await r.body?.cancel();
+    else if (!stream) {
+      const j = await r.json();
+      [out.text, out.finish, out.usage] = [j.choices?.[0]?.message?.content ?? '', j.choices?.[0]?.finish_reason, j.usage ?? null];
+    } else {
+      await events(r.body, (ev) => {
+        if (ev.usage) out.usage = ev.usage;
+        const [choice] = ev.choices ?? [];
+        if (choice?.finish_reason) out.finish = choice.finish_reason;
+        const d = choice?.delta?.content;
+        if (!d) return;
+        if (out.firstMs === null) { out.firstMs = Date.now() - start; clearTimeout(firstT); firstT = 0; }
+        out.text += d;
+        onText(d);
+      });
+    }
+  } catch (e) {
+    out.error ??= e.message;
+  } finally {
+    clearTimeout(totalT);
+    clearTimeout(firstT);
+    out.ms = Date.now() - start;
+  }
+  return out;
+}
+
+// The SSE body's JSON events, through "data: [DONE]"; keep-alive comments and blank lines skipped.
+async function events(body, each) {
+  const reader = body.pipeThrough(new TextDecoderStream()).getReader();
+  let buf = '';
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) return;
+    buf += value;
+    let i;
+    while ((i = buf.indexOf('\n')) >= 0) {
+      const line = buf.slice(0, i).trim();
+      buf = buf.slice(i + 1);
+      if (!line.startsWith('data:')) continue;
+      const data = line.slice(5).trim();
+      if (data === '[DONE]') { await reader.cancel(); return; }
+      each(JSON.parse(data));
+    }
+  }
 }
