@@ -44,10 +44,10 @@ had been told to doubt, who caught what).
 | `loop` | no, and only with `image` | 640×360 H.264, 3 s (4 at most), ≤ 150 KB | 240 KB, or a file that isn't there |
 | `alt` | with `image` | what the picture shows | |
 
-The caps live in `src/data/preview-budget.js`. The schema (`src/content/config.ts`) refuses text
-over them, and the previews endpoint (`src/pages/ledger/previews.json.js`) refuses missing or
-oversized media, so `npm run build` fails before either can ship. The tighter "aim for" numbers
-are the writing rules, checked by the post checker in the build.
+The caps live in `src/data/limits.js`. The schema (`src/schemas/preview.ts`) refuses text over
+them, and the checker (`scripts/check/assets.mjs`, the first step of `npm run build`) refuses
+missing or oversized media, so the build fails before either can ship. The tighter "aim for"
+numbers are the writing rules, checked by `npm run check`.
 
 ## Writing it
 
@@ -165,13 +165,13 @@ anyone on a phone.
 
 ## How it works (for whoever changes it)
 
-- `src/content/config.ts`: the `preview` schema.
-- `src/data/preview-budget.js`: the numbers, in one place. Change one there and the schema, the
-  endpoint and the media script move together.
+- `src/schemas/preview.ts`: the `preview` schema.
+- `src/data/limits.js`: the numbers, in one place. Change one there and the schema, the checker
+  and the media script move together.
+- `scripts/check/assets.mjs`: every preview still and loop exists and is under its cap.
 - `src/pages/ledger/previews.json.js`: builds `/ledger/previews.json` from listed posts only
   (`isListed`, so unlisted and draft posts never surface in a card), with reading time, and for a
-  post without a preview, its opening lines. Fails the build on a missing or oversized media file
-  and prints which posts have no preview.
+  post without a preview, its opening lines. It prints which posts have no preview.
 - The Worker reads `/ledger/previews.json` too, as its list of real posts (`worker/reads.js`,
   and `worker/stats.js` when `/stats-pages.txt` is missing), so keep its shape
   (`{ "posts": { "<slug>": card } }`).
