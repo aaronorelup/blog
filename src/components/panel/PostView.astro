@@ -42,7 +42,7 @@ const newer = byId.find((p) => cmp(p.data.id, post.data.id) > 0);
   <p style="margin:0 0 34px;font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.55;color:var(--pc-soft);text-wrap:pretty">{post.data.summary}</p>
   <div style="height:1px;background:var(--pc-line);margin:0 0 34px"></div>
 
-  <div class="pc-prose">
+  <div class="pc-prose" data-pagefind-body={post.data.unlisted ? undefined : ''}>
     <Content />
   </div>
 

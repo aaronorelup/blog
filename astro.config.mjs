@@ -4,6 +4,7 @@ import statsPages from './scripts/build/stats-pages.mjs';
 import devStatsFixture from './scripts/build/dev-stats-fixture.mjs';
 import loreThumbs from './scripts/lore-thumbs.mjs';
 import media from './scripts/media/integration.mjs';
+import pagefind from './scripts/build/pagefind.mjs';
 import verifyDist from './scripts/build/verify-dist.mjs';
 import { fileURLToPath } from 'node:url';
 
@@ -32,8 +33,9 @@ export default defineConfig({
   // statsPages: dist/stats-pages.txt, the public pages /api/stats may name (worker/stats/index.js).
   // loreThumbs: small copies of the lore course's pictures for its index cards (scripts/lore-thumbs.mjs).
   // media: no video or audio in public/ outside courses/, nothing over 25 MiB (docs/MEDIA.md).
+  // pagefind: the ledger's words index, dist/pagefind/ (scripts/build/pagefind.mjs).
   // verifyDist: the frozen contracts over dist/, last so every file is written (scripts/build/verify-dist.mjs).
-  integrations: [statsPages(), loreThumbs(), media(), verifyDist()],
+  integrations: [statsPages(), loreThumbs(), media(), pagefind(), verifyDist()],
   markdown: {
     // Both themes, emitted as CSS custom properties rather than a baked-in
     // background — panel.css picks one based on the day/night mode. A single
