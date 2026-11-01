@@ -1457,7 +1457,7 @@ rendered it on a rented NVIDIA L4 in 8.4 minutes of pod time, score included. Sh
 <video controls preload="none" poster="/media/teardown-lab/r2-noskill/poster-words.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/r2-noskill/film-words.mp4"></video>
 
 *No skill + words only, the 29.5-second film. MOLE-1 wakes when Rev B lands at 28:14.72, rolls to the drift mouth beside
-HAB 3 and digs its first load at real speed. Then a time-lapse shows one frame per load until the floor reaches 3.00 m to
+HAB 3 and takes its first bites at real speed. Then a time-lapse shows one frame per load until the floor reaches 3.00 m to
 a two-note chime, and a card checks the 7.3 kPa from the model. A cursor clicks through the views and parts as it goes.
 Rendered on a rented NVIDIA L4 with four browser pages capturing at once, score included. Shown here at 720p.*
 
@@ -1509,7 +1509,7 @@ GPU test, and the words-only build's capture was too slow for the pod.
   from nowhere. The fixer rebuilt it as RASSOR's own layer-by-layer trench, now 15.2 tonnes in 191 loads and 6.5 hours.
   The arm also ran through the spinning drum with the canon's silver tape buried inside it.
 - **The words-only build's critic found four blocking problems and 17 smaller ones.** Two pairs of parts passed about 1 cm
-  through each other, which the builder's collision checker missed with the wrong scoop radius. And the dig rate came
+  through each other, which the builder's collision checker missed, with the wrong scoop radius and no check of the arm against the battery. And the dig rate came
   from NASA's drum tests, not RASSOR's published figures as the prompt asked, 5.3 times too fast. At the published rate
   the drift would have finished after sunrise, so the fixer made it smaller, 20.6 tonnes in 258 loads, done 27 hours
   before sunrise. A strict reading of RASSOR's 2.7 tonnes a day still wouldn't finish in time, and that's left to a
@@ -1696,9 +1696,9 @@ The Earth sits in the same spot in every frame and on every card, and only its p
 
 **The film builds the box while it plays.** The host fits the melody comb, winds the spring and starts the chorus 50
 seconds in, and it plays without a stop until 4:31. Meanwhile he adds the bass comb, then the card wheel, then the
-praxinoscope drum. Each one goes in during a window the model works out, a stretch of the turn when no pin can touch it
-on the way in, and joins the tune on the first pin that reaches it. The bass comb slides its last 30 mm in at the end of
-the tune, with the nearest bass pin 1.3 mm from its teeth, and plays its first note five seconds later, in time, because
+praxinoscope drum. The bass comb and the card wheel each go in during a window the model works out, a stretch of the turn when no pin can
+touch them on the way in, and join the tune on the first pin that reaches them. The drum can drop onto its turning
+spindle at any moment. The bass comb slides its last 30 mm in at the end of a turn, with the nearest bass pin 1.3 mm from its teeth, and plays its first note five seconds later, in time, because
 its pins were on the cylinder all along. All of it has to fit in one winding of the spring. The first layout ran 6:12
 and needed about a third more spring than the box has, so the session's timeline generator searched 506,250 ways of
 spacing the pauses for the shortest film that fits. It uses 2.3 of the spring's 2.5 turns.
@@ -1774,7 +1774,7 @@ credits.
   sit on glides.
 - The arrangement is 80 notes: 30 for the lead, 27 for the echo, 20 for the bass and a three-note closing chord, which is
   the session's own. The melody comb has 11 teeth from E-flat 5 to C6, the bass comb 5 from F3 to D-flat 4.
-- The echo is the song's own two-part group echo. It scores 33%, or 50% if either part counts, against round 1's 0%.
+- The echo is taken from the song's own two-part group echo. It scores 33%, or 50% if either part counts, against round 1's 0%.
   It scores low partly by construction, two parts against a pitch track that follows one voice.
 - Episode 1's song had no stems saved, so Demucs split it, and a new lyric-free mode plucks once per stable sung note.
   Its lead scores 97% and its bass 95%. Those are high because the vocal is synthetic and holds flat pitches. They say
@@ -1882,7 +1882,7 @@ as a motion guide** gives a clip of the machine to AI video models, which redo a
 uses the machine's own numbers to check in code what they kept. The paint session ran both on round 1's brass chess
 clock from [Touch Move](/ledger/touch-move/). **Painting the clock once and carrying the paint on its moving parts made
 a painted film with no flicker on anything that stands still, for a twentieth of the painting work of repainting every
-frame. The video models all kept the clock's timing, but only 4 of 8 clips tipped the flag that a moving hand has to
+frame. The video models all dropped White's flag on time, but only 4 of 8 clips tipped the flag that a moving hand has to
 lift.**
 
 **The painter is a stand-in.** The brief asked for [Claude Paint](/ledger/claude-paints-in-oil/), the oil-paint
@@ -1960,7 +1960,7 @@ White's flag falls and the plungers swap.
 *The guide, top left, and the eight clips, 5 seconds at 16 frames a second. White's flag falls about a second in, then
 Black's minute hand on the right-hand dial sweeps to 12 and should lift Black's flag.*
 
-- **The timing survived.** White's flag falls and the plungers swap within one frame, a sixteenth of a second, of the
+- **The first event kept time.** White's flag falls and the plungers swap within one frame, a sixteenth of a second, of the
   machine in every clip that shows them, and every dial sits within about a pixel of where it should.
 - **Black's flag split them.** Black's minute hand has to lift it. Both Seedance clips, FLUX's drafting clip and VACE's
   photoreal clip with outlines tip it on time. FLUX's photoreal clip melts it into a blob that spreads the right way at
@@ -2003,7 +2003,7 @@ here can do, pick a model and a look (Seedance kept the motion best here) and tr
 <tr><td>VACE drafting, depth</td><td>1.4° / 6.5°</td><td>doesn't turn</td><td>+0.6</td><td>Black's hour hand not drawn. The flag, a black "I", never tips</td></tr>
 <tr><td>VACE drafting, depth and outlines</td><td>0.8° / 5.1°</td><td>doesn't turn</td><td>-0.1</td><td>All hands there. The red flag smears sideways into a bow shape</td></tr>
 <tr><td>VACE photoreal, depth</td><td>2.5° / 4.6°</td><td>14° of smear</td><td>+1.0</td><td>Every hand a pale ghost, but Black's minute hand sweeps from 10 to 12 on time. The flag's stem dissolves into the arriving hand</td></tr>
-<tr><td>VACE photoreal, depth and outlines</td><td>1.5° / 2.5°</td><td>tips, +0.9 frame</td><td>+0.5</td><td>All four hands follow the machine</td></tr>
+<tr><td>VACE photoreal, depth and outlines</td><td>1.5° / 2.5°</td><td>tips, +0.9 frame</td><td>+0.5</td><td>All four hands there. Black's minute hand sweeps with the machine, the hour hands sit 8 to 9° off</td></tr>
 <tr><td>FLUX 3 edit, drafting</td><td>2.9° / 4.8°</td><td>tips, -0.5 frame</td><td>-0.4</td><td>A third hand on White's dial. White's flag moves again later. No plunger move</td></tr>
 <tr><td>FLUX 3 edit, photoreal</td><td>no sweep</td><td>melts on time</td><td>0.0</td><td>Hands re-posed and Black's dial frozen at about 10:00. The flag melts with no hand to lift it</td></tr>
 <tr><td>Seedance 2.5 edit, drafting</td><td>0.3° / 2.8°</td><td>tips, +0.1 frame</td><td>+0.6</td><td>As good as the guide</td></tr>
@@ -2019,7 +2019,7 @@ here can do, pick a model and a look (Seedance kept the motion best here) and tr
 - Before the clock, VACE was tested on a made-up guide, a 12-tooth wheel turning once and a dial whose hand ticks. The
   painted wheel turned with the guide to within about a degree in every frame, and exactly 12 teeth went past. The ticks
   arrived on time but lost their in-between frame and snapped through.
-- VACE is Wan 2.1 VACE, the 1.3-billion-parameter version, run on Runpod. Only an L4 was in stock, the slowest card on
+- VACE is Wan 2.1 VACE, the 1.3-billion-parameter version, run on Runpod. After the first pod only an L4 was in stock, the slowest card on
   the list, at about 22 seconds a step and 12 minutes a clip. The first pod, an RTX 4090, had a broken GPU and cost
   $0.012. The four pods came to 80.7 minutes and $0.78, of a $4.00 budget.
 - A FLUX edit cost 15 credits and a Seedance edit 18.
@@ -2054,7 +2054,7 @@ here can do, pick a model and a look (Seedance kept the motion best here) and tr
 - All in, per second of film: repainting 446 CPU seconds, fixed seeds 426, the carried painting 21 with a still-parts
   render (177 as built), the painted materials 180. On a GPU the renders and passes would shrink to a small part of that.
   The painting itself is CPU work and would stay the same unless the painter were ported.
-- The critic's other catches in Part A, all fixed: costs that mixed CPU seconds with wall-clock seconds, which made the
+- The critic's other catches in the painting experiments, all fixed: costs that mixed CPU seconds with wall-clock seconds, which made the
   painted materials look about 3.5 times cheaper, the 0.3% figure first written as "none", and small wrong numbers.
 - The seam problem: the V8, the Cessna, the Strandbeest and the clock all use ambient occlusion. Within one page load a
   frame always comes out the same. Across loads, on the clock, 46,000 of 400,000 pixels changed, by up to 34 levels.
@@ -2078,8 +2078,8 @@ here can do, pick a model and a look (Seedance kept the motion best here) and tr
 
 The Homestead session put all seven of round 1's Moon machines into one scene on the rim of the pit, eight units
 counting MOLE-2, a second copy of MOLE-1. Each one still runs on its own round-1 model, imported unchanged, and one clock
-drives them all, Episode 2's running time. **Side by side, the models disagreed in 30 places that no single build could
-have shown.** The same session also turned HAB 3's console into a small game about getting HAB 3 to sunrise, and you can
+drives them all, Episode 2's running time. **Side by side, they turned up 30 disagreements with each other, with canon or with the plan, most of
+which no single build could have shown.** The same session also turned HAB 3's console into a small game about getting HAB 3 to sunrise, and you can
 lose it.
 
 The eight are MOLE-1, MOLE-2, DRAY, LOOM with the gate it printed, PAWN, FINCH, HAB 3 and Resupply 6, which lies tipped
@@ -2088,7 +2088,7 @@ are byte for byte the same as on their own branches. About 500 lines of adapters
 own input and recolour round 1's two blues and four oranges to one amber. HAB 3 needed a new outside, because round 1
 built it as a half section inside a block of soil.
 
-**The film is the canon minute after Rev B,** 27:58 to 29:01 of Episode 2 in 56 seconds. Rev B, the new drawing that
+**The film is the canon minute around Rev B,** 27:58 to 29:01 of Episode 2 in 56 seconds. Rev B, the new drawing that
 stops the base's software taking HAB 3 apart, is stamped on Earth at 28:13.44 and flies 1.28 seconds to the Moon, and
 the score is digital silence for exactly that flight. When it lands the robots' lights go out one by one, LOOM's first,
 and HAB 3's battery climbs to 130 hours against 128 to sunrise. MOLE-1, the one robot Rev B keeps working, rolls alone to
@@ -2106,12 +2106,12 @@ cents.*
 demonstration". This page is the answer. The labels and leader lines live in the 3D world and move with it, placed fresh
 every frame so none covers another machine. Tracks exist only where MOLE-1 has driven, and the cut and spoil heap grow
 with its model. Around it sits a service console in the style of the base app from the episode, with all but one number
-redrawn from the models, down to a ledger that turns the printed gate into 17.2 MOLE-1 loads. Nothing on the page says
+redrawn from the models, down to a ledger that turns the printed gate into 17.2 MOLE-1 loads. Apart from a small grey not-canon line in a corner, nothing on the page says
 model or lab, and her name is never printed.
 
-<img src="/media/teardown-lab/r2-homestead/hero.webp" alt="The Homestead at night from the pit rim: the printed gate E-07 in the foreground framing HAB 3's curved shell and DRAY's crane, MOLE-1 small at its portal with a NOTE 2 AT THE PORTAL label, PAWN and MOLE-2 labelled COLD SLEEP and NOT RESPONDING, LOOM by the greenhouse ribs on the right, a green banner reading STEP 8 OF 9 - HALTED - REV B, and console panels showing 130.0 H against 128.0 H, the fleet list, a site plan and Rev B's four notes" style="width:100%;border-radius:8px">
+<img src="/media/teardown-lab/r2-homestead/hero.webp" alt="The Homestead at night from the pit rim: the printed gate E-07 in the left foreground, with HAB 3's round window end and DRAY's crane just right of it, MOLE-1 small at its portal with a NOTE 2 AT THE PORTAL label, PAWN labelled COLD SLEEP, MOLE-2 in the right foreground, LOOM by the greenhouse ribs on the right, a banner with a green tick reading STEP 8 OF 9 - HALTED - REV B, and console panels showing 130.0 H against 128.0 H, the fleet list, a site plan and Rev B's four notes" style="width:100%;border-radius:8px">
 
-*CAM 15 PIT RIM at 28:32.6. The gate frames HAB 3 and DRAY, MOLE-1 has just reached its portal and the halt banner is
+*CAM 15 PIT RIM at 28:32.6. HAB 3's window end and DRAY stand just right of the gate, MOLE-1 has just reached its portal and the halt banner is
 up. The panels carry the battery against sunrise, the fleet, a site plan and Rev B's four notes.*
 
 **One slider breaks it on purpose.** REV B LATE BY holds the sheet back by up to 90 seconds and the same models run.
@@ -2152,7 +2152,7 @@ window end, and MOLE-1 rolling 16 m to a portal on the pit side, where canon say
 
 **The second page is a night you can lose.** HAB 3 until sunrise runs round 1's HAB 3 model unchanged from 28:27, when
 the battery reads 130 hours against 128 to sunrise. You control what a HAB 3 panel could, the heater's three bars and
-the scrubber fan. The light stays on, because Rev B restores it and hers is the one lit window in the episode. **Change
+the scrubber fan. The light stays on, because Rev B restores it and hers is the one lit window in the episode's flyby. **Change
 nothing and HAB 3 reaches sunrise with exactly 2.00 hours to spare,** Teo's "You'd make sunrise. Just."
 
 At 36 hours in, MOLE-1's pack runs low and the console asks the one question where Rev B's notes conflict. Note 1 puts
@@ -2164,7 +2164,7 @@ seven times the margin.
 - **Run two bars to stay warm.** The battery is empty after 80 hours.
 - **Switch the scrubber fan off.** The CO2 reaches the session's limit for unsafe air after about 44 hours.
 
-To win with the charge you leave the heater off for about a day. 24 hours of it reaches sunrise with a low of +1.7 °C,
+One way to win with the charge is to leave the heater off for about a day. 24 hours of it reaches sunrise with a low of +1.7 °C,
 and 32 hours freezes. The page is flat 2D drawing, 216 KB, and ran at 60 frames a second on the lab's box.
 
 <img src="/media/teardown-lab/r2-homestead/hab3-night.webp" alt="The HAB 3 night console at NIGHT HR 286: 70 H to empty against 68 H to sunrise and MARGIN AT SUNRISE +2.2 H at the top left, the heater on 1 bar, the light fixed ON REV B and the scrubber fan on, MOLE-1 digging at 5.2 of 6.1 m, a blue Sheet 3 Rev B section in the middle with the cabin at +1.3 degrees, the crooked stair, HER TUNNEL and MOLE-1's drift angling down to it, Rev B's four notes word for word, a log of the night's events and three charts for the battery, the cabin temperature and CO2 on the right" style="width:100%;border-radius:8px">
