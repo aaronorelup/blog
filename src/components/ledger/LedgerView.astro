@@ -1,6 +1,6 @@
 ---
 // The ledger: the search box, Start here, the chips, then every listed post under its month, newest first, and the
-// feed. On /ledger/ and in the homepage overlay (through panel/LedgerView.astro until T3.1); views/ledger.js is its
+// feed. On /ledger/ and in the homepage overlay (fetched from /ledger/); views/ledger.js is its
 // behaviour. Each row's link carries data-ledger-entry, the overlay's contract; nothing else here does.
 import { START_HERE } from '../../data/picks.js';
 import { listedPosts, slugOf } from '../../lib/content.js';

@@ -169,7 +169,7 @@ fails the build, or only warns in a live notebook.
 | `src/lib/search/chunks.js`, `docs.js` | a listed post or its notes → search chunks (the short version, then each h2 section, at most 1,500 characters) and the manifest; `docs.js` reads the build's posts once |
 | `src/lib/lore*.js` | the lore course's data and drawings |
 | `src/lib/projects.js` | the projects page's data: `SECTIONS`, order, state chips, needs glyphs, pictures or icons, `DERIVED` (the course's live lesson count); a card linking an unlisted post fails the build |
-| `src/pages/index.astro` + `src/layouts/Home.astro` | the homepage: the tea house scene and its overlay |
+| `src/pages/index.astro` + `src/layouts/Home.astro` | the homepage: the tea house scene, and its overlay frame (`PanelChrome` around an empty `[data-panel-host]`) |
 | `src/pages/{ledger,projects,about,courses,stats,404}.astro`, `ledger/[slug].astro`, `ledger/[slug]/notes.astro` | the panel pages |
 | `src/pages/og/[slug].jpg.js` | each listed post's share card (`src/lib/og/`) |
 | `src/pages/courses/**`, `src/pages/research/**` | the course and research pages |
@@ -180,14 +180,13 @@ fails the build, or only warns in a live notebook.
 | `src/components/{about,courses,research}/` | `AboutView`; `CoursesView`, `LessonList`, `Coin`; `ResearchView` |
 | `src/components/projects/` | `ProjectsView` (`/projects`), `JumpRow`, `Highlights` (the reel from `picks.js REEL` and the cards marked `highlight`), `ProjectSection`, `ProjectCard`, `NeedsGlyph` |
 | `src/components/post/` | `PostView` (the article: `data-post-article`, `data-panel-view` `post` or `notes`, `data-slug`), `PostHeader` (icon or glyph, id · date · minutes, topic and project chips, title `data-r=t`, summary `data-r=s`, the byline on `voice: claude` pages, `ReadAloud`), `ShortVersion` (`#short`, the post's card), `NotesLink`, `Contents` (4+ h2 or 900+ words), `Related` (three `ledger/PostCard`s), `PostNav`, `ElementStyles`, `ReadAloud` (a stub until T2.4) |
-| `src/components/panel/*View.astro` | `PanelChrome`, `AboutView`, `CoursesView`, `ProjectsView` and `LedgerView`: stubs for `index.astro` until T3.1 (`LedgerView`'s also mounts `views/ledger.js` in the overlay) |
 | `src/components/lore/` | the lore course |
 
 ### `src/scripts/` and `src/styles/` (the browser)
 
 | Path | What |
 |---|---|
-| `src/scripts/post-components.js` | a shim, `export { enhance }` from `src/elements/enhance.js`, for `home-scene.js` until T3.1 (deleted by T3.2) |
+| `src/scripts/post-components.js` | a shim, `export { enhance }` from `src/elements/enhance.js`, no longer imported (deleted by T3.2) |
 | `src/elements/` | the post components (`src/elements/CLAUDE.md`), one folder per tag (`ao-x/element.js`, `ao-x/style.css`): `enhance.js` (viewer hook, frames, `upgrade`), `registry.js` (a tag's `element.js` loads when a post has it), `_core/` (one player at a time, the now-playing bar, the viewer hook; the viewer and its zoom load on the first open), `_lib/` (times, tables, `h()`) |
 | `src/scripts/lazy.js` | `lazy(load, fallbackUrl)`: every dynamic import; a lost chunk (a deploy since the page loaded) navigates to `fallbackUrl` or reloads once |
 | `src/styles/elements.css` | the viewer, the now-playing bar, `.visually-hidden`: linked from `PostView` (post and notes pages) and `index.astro` (into `site.css` by T3.2); an element's own CSS is inlined into its articles by `components/post/ElementStyles.astro` |
@@ -196,9 +195,10 @@ fails the build, or only warns in a live notebook.
 | `src/scripts/ledger/` | `filter.js` (the chips: one topic or project, `?topic=` read on load and kept with `replaceState`), `feed.js` (`bindFeedCopy`) |
 | `src/scripts/search/` + `src/styles/search.css` | `box.js` (the box, `/`, the switch), `keyword.js` (Pagefind, on first focus), `semantic.js` (`/api/search`, 400 ms after typing, at most 40 a page), `merge.js` (reciprocal rank), `results.js` (rows, `pagePath(slug, kind)` and deep links `?hl=&hs=#heading`), `terms.js`, `ask.js` (Ask Goobie: `/api/session`, Turnstile only when Ask is on, the session in `sessionStorage`, `/api/ask`) |
 | `src/scripts/post/` | `target.js` (`targetOf(root, hash)`: the element a `#fragment` names, from the address, never `:target`), `highlight.js` (marks a deep link's sentence or words in its section, opens its `<details>`, centres it in `#panel-scroll`; loaded only for a `?hl=`/`?hs=` link), `contents.js` (the contents list: open beside the text from 1180 px, the heading read marked by an IntersectionObserver on `#panel-scroll`), `details.js` (opens the `<details>` holding the `#target`) |
-| `src/scripts/views/index.js` | `mountView(root, fallbackUrl)`: imports `./<data-panel-view>.js` (through `lazy`) and runs its `mount(root)`; no module, no-op. `PanelPage` calls it, and the overlay will |
+| `src/scripts/views/index.js` | `mountView(root, fallbackUrl)`: imports `./<data-panel-view>.js` (through `lazy`) and runs its `mount(root)`; no module, no-op. `PanelPage` calls it, and the homepage overlay on each view it mounts, with the real page as `fallbackUrl` |
 | `src/scripts/views/post.js`, `notes.js` | the post view: `enhance()`, the contents list, folded details, where a link lands once the components drew (after Reload or Back the place kept in `history.state`, for a `?hl=`/`?hs=` link the passage `highlight` marks, else the `#heading`; a place is held while the article grows, until the reader moves), the hover card (mouse only), and the Listen hook T2.4 fills; `notes.js` is the same without Listen |
-| `src/scripts/home-scene.js` | the homepage scene and overlay (split into `scripts/home/` by T3.1 and T3.2) |
+| `src/scripts/home/overlay/` | the homepage overlay: `routes.js` (`NAV` entries marked overlay, posts and notes, any query and hash), `load-view.js` (fetch on intent, 12 parsed pages cached, `ao-build` compared, stylesheets adopted before the homepage's, a fresh copy of `[data-panel-view]` each time), `frame.js` (the 560 ms flight), `panel.js` (history, Esc, resize, links, prefetch, `mountView` on each view it shows; `onPanel(fn)` tells the scene `open`, `covered`, `closing`, `closed`) |
+| `src/scripts/home-scene.js` | the homepage scene, its own chunk (split into `scripts/home/` by T3.2); `panelState(s)` is the overlay's hook: no input while the panel is up, no drawing while it covers the window |
 | `src/scripts/stats/**`, `src/styles/stats/**` | the `/stats` page: its own code, kept as is |
 | `src/scripts/mode.js` | the panel pages' day/night toggle: `data-mode`, the stored choice, `aria-pressed` |
 | `src/scripts/views/projects.js` | the projects view's module (`mount(root)` → unmount): the hover card on its post links |
@@ -304,9 +304,9 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   inside `PanelPage` at `/ledger/<slug>/`, its share card at `/og/<slug>.jpg`. The article carries the CSS of the
   `<ao-*>` it uses (`ElementStyles`); `PanelPage` runs `views/post.js`, which calls `enhance()`
   (`src/elements/enhance.js`, importing each of those tags' `src/elements/<tag>/element.js`), then the contents list,
-  the details and where the link lands. The homepage overlay fetches that page and mounts a copy of its
-  `[data-panel-view]` article with the same module (until T3.1 it copies `[data-post-article]` in and calls
-  `enhance()` through the `post-components.js` shim). A notes page is the same view given its note (`data-panel-view="notes"`).
+  the details and where the link lands. The homepage overlay fetches that page and mounts a fresh copy of its
+  `[data-panel-view]` article with the same module, the page's URL as `fallbackUrl` (a lost chunk opens the real
+  page). A notes page is the same view given its note (`data-panel-view="notes"`).
 - **The hover card.** `previews.json` is built from listed posts' `preview:` (or their opening lines). On a device
   that can hover, `scripts/cards/` fetches it once when idle and opens a card on any `/ledger/<slug>/` link. On a
   phone a ledger row's stamp opens the same short version in place, from the page's own HTML.
@@ -329,8 +329,8 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   and capped by `assets.mjs`. Pages ask `src/lib/icons.js iconFor(post)`; null (a live notebook, a new post) means
   draw the topic glyph. New icons come from the agent kit's icon recipe (`docs/MEDIA.md`).
 - **The projects page.** `src/content/projects/*.yaml` → `src/lib/projects.js` → `components/projects/` at
-  `/projects`, and in the homepage overlay through `panel/ProjectsView.astro`. Post links open in the overlay's
-  reader like every `/ledger/` link.
+  `/projects`, and in the homepage overlay, fetched from `/projects/`. Post links open in the overlay like every
+  `/ledger/` link; a card's links to the site's own pages carry `data-no-fly`.
 - **`/stats`.** The cron gathers Cloudflare analytics into D1 one step a minute (token: the `CF_ANALYTICS_TOKEN`
   secret); `/api/stats` serves the stored snapshot, naming only pages in `/stats-pages.txt`. Nothing is keyed on a
   visitor's IP address.
