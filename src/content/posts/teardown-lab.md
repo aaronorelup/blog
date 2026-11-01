@@ -1407,9 +1407,14 @@ Aaron liked round 1's music box film and said the notes were wrong. He was right
 by how much. Episode 2's own files include the chorus split into stems by ElevenLabs, separate tracks for the vocals,
 the bass, the piano and the rest. So the session measured every note against the singer's own track. A note
 counts as right when it's within 50 cents, half a semitone, of the singer's median pitch over that note. **Round 1's tune
-got 40% of its notes right. The music-box version made for Episode 2 itself got 65%. The new arrangement gets 79%, with
-no octave errors.** Scored against a second vocal track, which the session split out itself with Demucs, an open-source
-tool that separates a song into parts, it gets 76%.
+got 40% of its notes right. The new arrangement gets 79%, with no octave errors.** Scored against a second vocal track,
+which the session split out itself with Demucs, an open-source tool that separates a song into parts, it gets 76%.
+
+That 79% was measured with the same pitch tracker the session used to write the notes, so its independent critic scored
+both tunes again with two other trackers. The new notes still win clearly, 76% against 43% with one and 73% against 52%
+with the other. The session's first report also claimed a win over the music-box version made for Episode 2 itself
+(65%). The critic found that claim doesn't hold. Measured on the attack of each note the two are level, 79% against 78%,
+and most of the apparent gain came from giving every sung syllable its own note.
 
 The timing improved too. Nine in ten notes now start within 82 ms of the sung note, against 139 ms in round 1. And the
 new bass line, which round 1 didn't have, matches the bass stem on 90% of its notes.
