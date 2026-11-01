@@ -1,4 +1,16 @@
 ---
-// The Listen button's place in the post header (read-aloud, ARCHITECTURE.md "Read-aloud"). T2.4 fills it in; until
-// then it renders nothing. Props: post, and text, the extraction (a live notebook that failed to render has none).
+// A post's Listen button: karaoke read-aloud (src/scripts/read-aloud/, ARCHITECTURE.md "Read-aloud"), hidden until
+// views/post.js binds it (listen.js). data-read-hash names this version's recording, /read/<slug>/<hash>.json; a post
+// that is never recorded (unlisted, or a live notebook) has none and reads in the browser's own voice only.
+// Props: post, and text, the extraction (a live notebook that failed to render has none).
+import { slugOf } from '../../lib/content.js';
+import { recordable } from '../../lib/read/posts.js';
+import { postHash, sectionsOf } from '../../lib/read/sections.js';
+
+const { post, text } = Astro.props;
+const hash = recordable(post) ? postHash(sectionsOf(post.data, text)) : undefined;
 ---
+<button type="button" class="ra-listen" data-read-aloud data-slug={slugOf(post)} data-read-hash={hash} aria-pressed="false" hidden>
+  <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 6.2h2.6L8 3.4v9.2L4.6 9.8H2z" fill="currentColor"/><path d="M10.6 5.4a3.6 3.6 0 0 1 0 5.2M12.4 3.6a6.1 6.1 0 0 1 0 8.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+  Listen
+</button>

@@ -1,8 +1,8 @@
 // Page-weight budgets (ARCHITECTURE.md section 6), gzipped, without fonts and media, each measured on something
 // content can't grow. `node scripts/tools/budgets.mjs [dist]` prints them and, once ENFORCE is on (W4), fails on
 // any over budget by 20%. verify-dist prints the same rows after every build and never fails on them.
-// Live notebooks are left out; T2.4 adds read-aloud's row. fontMisses() lists display code points the self-hosted
-// fonts miss: the command fails on any, verify-dist warns.
+// Live notebooks are left out. fontMisses() lists display code points the self-hosted fonts miss: the command fails
+// on any, verify-dist warns.
 import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
@@ -116,6 +116,11 @@ export function measure(dist) {
   row('  JS up front', worst.js, 8 * KB);
   const element = elementWeights(dist, pages, upFront).sort((a, b) => b.bytes / b.budget - a.bytes / a.budget)[0];
   if (element) row('an element, JS + CSS', element.bytes, element.budget, `${element.tag}, the nearest its budget`);
+  // What Listen loads: the chunk that marks the word read (the ao-read highlight) and its imports beyond the up-front JS.
+  const marks = (f) => fs.readFileSync(path.join(dist, '_astro', f), 'utf8').includes('highlights.set("ao-read"');
+  const reader = fs.readdirSync(path.join(dist, '_astro')).find((f) => f.endsWith('.js') && marks(f));
+  const listen = [...closure(dist, new Set([`/_astro/${reader}`]))].filter((s) => !upFront.has(s));
+  row('read-aloud on, JS', bytes(dist, listen), 8 * KB);
 
   const ledger = parse(path.join(dist, 'ledger', 'index.html'));
   // A row is the ledger's li.row, which holds its data-ledger-entry link; Start here and the rest are chrome.
