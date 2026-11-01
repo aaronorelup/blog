@@ -1,6 +1,8 @@
 // A long post's contents list (components/post/Contents.astro): open beside the text at 1180 px and wider, a closed
 // <details> above it on narrower screens, and the heading being read marked (aria-current) as the panel scrolls: the
 // last h2 to have crossed the top fifth of #panel-scroll. mount(root) returns unmount.
+import { targetOf } from './target.js';
+
 const WIDE = '(min-width: 1180px)';
 
 export function mount(root) {
@@ -14,7 +16,7 @@ export function mount(root) {
   toc.addEventListener('toggle', stay);
 
   const links = [...toc.querySelectorAll('a')];
-  const heads = links.map((a) => root.querySelector(`[id="${CSS.escape(decodeURIComponent(a.hash.slice(1)))}"]`));
+  const heads = links.map((a) => targetOf(root, a.hash));
   // Any crossing re-reads every heading's place, so a jump that carries some past the band at once still counts them.
   const io = new IntersectionObserver(([{ rootBounds }]) => {
     const at = heads.findLastIndex((h) => h.getBoundingClientRect().top < rootBounds.bottom);

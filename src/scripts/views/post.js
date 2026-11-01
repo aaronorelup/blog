@@ -5,6 +5,7 @@ import { enhance } from '../../elements/enhance.js';
 import { lazy } from '../lazy.js';
 import { mount as contents } from '../post/contents.js';
 import { mount as details } from '../post/details.js';
+import { targetOf } from '../post/target.js';
 
 // The Listen button (components/post/ReadAloud.astro): read-aloud binds it here, bind(root) → unbind (T2.4).
 const listen = () => () => {};
@@ -37,7 +38,7 @@ function land(root, drawn) {
   const arrive = () => {
     if (!moved && saved !== undefined) hold(() => { scroller.scrollTop = saved; });
     else if (/[?&]h[ls]=/.test(location.search)) lazy(() => import('../post/highlight.js')).then((m) => m.highlight(root));
-    else if (!moved && location.hash) hold(() => document.querySelector(':target')?.scrollIntoView());
+    else if (!moved && location.hash) hold(() => targetOf(root)?.scrollIntoView());
   };
   drawn.then(arrive, arrive);
   return () => {
