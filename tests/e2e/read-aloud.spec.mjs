@@ -180,6 +180,20 @@ test('read-2b a click on a word while the first part of the recording is still l
   expect((await state(page)).playing).toBe(true);
 });
 
+test('read-2c a reader closed while its recording loads plays nothing when it arrives', async ({ page, request }) => {
+  const rec = await recorded(page, request, POST);
+  await page.route('**/read/*/*.json', async (r) => { await new Promise((ok) => setTimeout(ok, 1000)); await r.fallback(); });
+  const parts = [];
+  page.on('request', (r) => { if (r.url().endsWith('.mp3')) parts.push(r.url()); });
+  await page.goto(POST);
+  const arrived = page.waitForResponse((r) => r.url().endsWith(`/${rec.hash}.json`));
+  await listen(page).click();
+  await page.locator('.ra-close').click();
+  await arrived;
+  await page.waitForTimeout(500);
+  expect([parts, await page.evaluate(() => navigator.mediaSession.metadata)]).toEqual([[], null]);
+});
+
 // A stand-in for the browser's voice: window.__said lists the utterances and window.__hushed the silent ones, and
 // window.__step() says the next word of the one being said (its boundary event), then ends it, as a real voice would.
 // Each is marked with whether it came inside a tap (a click, until its dispatch is over), as iOS asks of the first one,

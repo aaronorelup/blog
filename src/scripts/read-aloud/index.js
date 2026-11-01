@@ -47,13 +47,14 @@ export function open(root, button, audio, onClose) {
     ends = kind === 'recorded' ? engine.ends() : new Map();
   }
   // A post that is never recorded has no readHash and reads in the browser's voice, which listen.js made sure of.
-  // Null once the recording (or its absence) is in.
+  // Null once the recording (or its absence) is in. A reader closed before then plays nothing.
   let loading = (readHash ? fetch(`/read/${slug}/${readHash}.json`).then((r) => r.json()).catch(() => ({}))
     : Promise.resolve({})).then((r) => {
+    loading = null;
+    if (!el.isConnected) return;
     rec = r.parts ? r : null;
     if (!rec && readHash) note = canSpeak ? COMING : MUTE;
     if (rec || canSpeak) make(rec ? 'recorded' : 'speech');
-    loading = null;
     render();
   });
 
