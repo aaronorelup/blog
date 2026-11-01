@@ -1,8 +1,8 @@
 ---
-// A post's header: the way back, its icon (or its topic's glyph), id · date · minutes, its topic and projects as
-// ledger filters, the title and summary (data-r t and s: read-aloud reads them first), the byline when Claude wrote
-// it as "I" (voice: claude), and the Listen button. A notes page (note given) gets the note's title, summary and
-// byline, and its way back is the short version.
+// A post's header: the way back, its icon (or its topic's glyph; data-no-zoom: it isn't one of the post's pictures),
+// id · date · minutes, its topic and projects as ledger filters, the title and summary (data-r t and s: read-aloud
+// reads them first), the byline when Claude wrote it as "I" (voice: claude), and the Listen button. A notes page
+// (note given) gets the note's title, summary and byline, and its way back is the short version.
 import { PROJECTS, TOPICS } from '../../data/taxonomy.js';
 import { slugOf } from '../../lib/content.js';
 import { isoDay, shortDate } from '../../lib/dates.js';
@@ -22,7 +22,7 @@ const icon = iconFor(post);
     : <a class="post-back" href="/ledger" data-close-reader data-no-fly>← Ledger</a>}
   <div class="post-meta">
     {icon
-      ? <img class="post-icon" src={icon.s96} srcset={`${icon.s96} 96w, ${icon.s256} 256w`} sizes="64px" width="64"
+      ? <img class="post-icon" data-no-zoom src={icon.s96} srcset={`${icon.s96} 96w, ${icon.s256} 256w`} sizes="64px" width="64"
           height="64" decoding="async" alt="" />
       : <span class="post-icon is-glyph"><Glyph name={TOPICS[topic].glyph} /></span>}
     <div class="post-facts">

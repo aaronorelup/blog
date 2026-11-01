@@ -1,6 +1,6 @@
 ---
 // Three listed posts to read next (lib/posts.js related): those sharing a project, then the topic, nearest in date.
-// Icon (or the topic's glyph), title and stamp each, like Start here on the ledger.
+// Icon (or the topic's glyph; data-no-zoom: not a picture for the viewer), title and stamp each, like Start here.
 import { TOPICS } from '../../data/taxonomy.js';
 import { cardOf } from '../../lib/cards.js';
 import { listedPosts, slugOf } from '../../lib/content.js';
@@ -20,7 +20,7 @@ const posts = related(post, await listedPosts());
       return (
         <li class="rel-card">
           {icon
-            ? <img class="rel-icon" src={icon.s96} width="56" height="56" loading="lazy" decoding="async" alt="" />
+            ? <img class="rel-icon" data-no-zoom src={icon.s96} width="56" height="56" loading="lazy" decoding="async" alt="" />
             : <span class="rel-icon is-glyph"><Glyph name={TOPICS[p.data.topic].glyph} /></span>}
           <a class="rel-link" href={`/ledger/${slugOf(p)}/`}>{p.data.title}</a>
           {verdict && <span class="stamp">{verdict}</span>}
