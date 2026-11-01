@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
-import { isLivePath } from '../../src/data/exempt.js';
+import { isLive, isLivePath } from '../../src/data/exempt.js';
 import { isListed } from '../../src/data/listed.js';
 
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
@@ -21,9 +21,10 @@ export function listedSlugs(postsDir = path.join(ROOT, 'src/content/posts')) {
     .map((f) => f.slice(0, -3)));
 }
 
+// A live notebook is left out of both sides: whatever its fleet pushes, it never fails a contract.
 const sameSet = (what, got, want) => {
-  const missing = [...want].filter((s) => !got.has(s));
-  const extra = [...got].filter((s) => !want.has(s));
+  const missing = [...want].filter((s) => !got.has(s) && !isLive(s));
+  const extra = [...got].filter((s) => !want.has(s) && !isLive(s));
   return [...missing.map((s) => `${what}: ${s} is missing`), ...extra.map((s) => `${what}: ${s} should not be there`)];
 };
 
@@ -31,7 +32,7 @@ const sameSet = (what, got, want) => {
 export function previewsProblems(json, listed) {
   const posts = json?.posts;
   if (!posts || typeof posts !== 'object' || Array.isArray(posts)) return ['previews.json: no { posts: { … } } object'];
-  const bad = Object.entries(posts).filter(([, c]) => typeof c?.id !== 'string' || typeof c?.title !== 'string')
+  const bad = Object.entries(posts).filter(([s, c]) => !isLive(s) && (typeof c?.id !== 'string' || typeof c?.title !== 'string'))
     .map(([s]) => `previews.json: the card for ${s} has no id or title`);
   return [...sameSet('previews.json', new Set(Object.keys(posts)), listed), ...bad];
 }
@@ -41,7 +42,7 @@ export function statsPagesProblems(text, listed) {
   const problems = [];
   for (const line of text.split('\n')) {
     const m = line.match(/^\/ledger\/([^/]+)\/(.*)$/);
-    if (!m) continue;
+    if (!m || isLive(m[1])) continue;
     const [, slug, rest] = m;
     if (!listed.has(slug)) problems.push(`stats-pages.txt: ${line} is not a listed post`);
     else if (rest && rest !== 'notes/') problems.push(`stats-pages.txt: ${line} is deeper than a post or its notes`);
@@ -56,6 +57,7 @@ export function rssProblems(xml, listed) {
   const bad = [];
   for (const g of guids) {
     const m = g.match(/^https:\/\/aaronorelup\.com\/ledger\/([^/]+)\/$/);
+    if (isLivePath(g)) continue;
     if (!m) bad.push(`rss.xml: guid ${g} is not ${SITE}/ledger/<slug>/`);
     else if (slugs.has(m[1])) bad.push(`rss.xml: ${m[1]} appears twice`);
     else slugs.add(m[1]);

@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import matter from 'gray-matter';
 import { LIVE_NOTEBOOKS, isLive, isLivePath } from '../../src/data/exempt.js';
-import { baselineProblems, readBaseline } from '../../scripts/build/contracts.mjs';
+import { baselineProblems, previewsProblems, readBaseline, rssProblems, statsPagesProblems } from '../../scripts/build/contracts.mjs';
 import { collections } from './content-schema.mjs';
 
 const { slug, paths } = LIVE_NOTEBOOKS['AO-073'];
@@ -32,6 +32,17 @@ test('the schema takes a 200-character title and a renamed picture', () => {
 test('the schema takes a preview with no takeaway', { todo: 'T0.2: today a preview needs a takeaway; the v2 refinement skips live notebooks' }, () => {
   const { takeaway, ...rest } = post.preview;
   assert.ok(parse({ ...post, preview: rest }).success);
+});
+
+test('the dist contracts take AO-073 missing from, or mangled in, previews.json, rss.xml and stats-pages.txt', () => {
+  const listed = new Set(['earthlight', slug]);
+  const card = { id: 'AO-001', title: 'A' };
+  const guid = (s) => `<guid>https://aaronorelup.com/ledger/${s}/</guid>`;
+  assert.deepEqual(previewsProblems({ posts: { earthlight: card } }, listed), []);
+  assert.deepEqual(previewsProblems({ posts: { earthlight: card, [slug]: { title: 7 } } }, new Set(['earthlight'])), []);
+  assert.deepEqual(rssProblems(guid('earthlight'), listed), []);
+  assert.deepEqual(rssProblems(guid('earthlight') + guid(slug) + guid(slug), listed), []);
+  assert.deepEqual(statsPagesProblems(`/ledger/earthlight/\n/ledger/${slug}/lander/`, new Set(['earthlight'])), []);
 });
 
 test('the URL baseline leaves every live path out, and never misses one', () => {
