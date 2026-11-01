@@ -1,52 +1,62 @@
 ---
 id: "AO-057"
-title: "Who actually visits a new website? I asked Cloudflare"
-summary: "My site is 77 days old and has never been promoted. Claude read its traffic through Cloudflare: who really visits, which pages they read, and what to expect if you start a site of your own."
+title: "Who really visits a brand-new website"
+summary: "My site went 77 days with no promotion, so I had Claude read its traffic through Cloudflare. Who the visitors really are, what they read, and what to expect if you start a site of your own."
 date: 2026-10-17
 status: "shipped"
 tags: ["cloudflare", "analytics", "mcp", "claude-code", "blog"]
 series: ["the-site"]
+topic: "site"
+project: []
 preview:
   verdict: "Mostly machines, and me"
-  takeaway: "Of 11,637 pages my site served in 30 days, about 9,000 went to machines and 1,600 to me. Other people read 290 to 980: 10 to 33 a day."
+  takeaway: "In 30 days my site served 11,637 pages. Bots took about 9,000 and I took 1,600, which left 10 to 33 pages a day for real people."
   points:
-    - "The dashboard said 412 unique visitors a day. It counts any address that asks, bots and me included."
+    - "The dashboard showed 412 unique visitors a day. It counts every address that asks, bots and me included."
     - "AI crawlers, assistants and AI search made 6,671 requests in 30 days, twice the 3,313 from search engines."
-    - "People land on the homepage, then one post: Jefrie in 3D. 550 of 570 visits came with no sign of where from."
+    - "550 of 570 outside visits arrived with no sign of where from, so I can't yet tell which post on X brought anyone."
+  image: "/media/previews/who-visits-a-new-website.webp"
+  alt: "Three round tin robots lined up at the door of a small tea house, one cloaked human visitor at the end of the line"
 ---
 
-aaronorelup.com went up on 2 August. In the 77 days since, I haven't promoted it, installed
-Google Analytics, or looked at a single traffic number. Cloudflare, which hosts it, has been
-counting the whole time. This week I connected Claude to my Cloudflare account and asked the
-question anyone with a new site wants answered: who actually visits?
+My site went up on 2 August, and in 77 days I never promoted it or looked at a single traffic
+number. So I had Claude read what Cloudflare, the company that hosts the site, had been counting
+the whole time. In the last 30 days the site served 11,637 pages. **About 9,000 went to bots,
+about 1,600 went to me and my agents, and 290 to 980 went to other people.** That's 10 to 33
+pages a day read by real people.
 
-**In the last 30 days the site served 11,637 pages. About 9,000 went to machines, about 1,600
-went to me, and between 290 and 980 went to other people: 10 to 33 a day.**
+What I found:
 
-If you've never looked at web analytics, this is also a starting point: the few words you need,
-what a brand-new site really gets, and what I'm doing about mine.
+- **The visitor count flatters you.** The dashboard's 412 "unique visitors" a day in October
+  counted every internet address that asked, bots and me included.
+- **About three pages in four went to bots.** Take my own visits out and it's nine in ten.
+- **AI found the site before people did.** AI bots made twice as many requests as search
+  engines.
+- **I'm one of my own biggest visitors.** Me and my agents made a quarter of all requests.
+- **People come in the front door.** They land on the homepage, and one post pulls readers in on
+  its own.
+- **I mostly can't tell where people came from.** 550 of 570 visits arrived with no sign of it.
 
-*The numbers stop on 17 October. A version refreshed every day is on [the stats page](/stats).*
+*The numbers stop on 17 October. A version that refreshes every day is on [the stats page](/stats).*
 
-## Six words you need
+## Four words you need
 
-- **Request**: anything a browser or program asks the site for. One page is often dozens of
-  requests: the page, then its pictures, video and scripts.
-- **Page view**: a request for a page itself. The closest thing to "someone opened a post".
-- **Unique visitor**: a distinct internet address in one day. Not a person. A bot is one, my
+- **Request.** Anything a browser or a program asks the site for. One page is often dozens of
+  them, the page plus its pictures, video and scripts.
+- **Unique visitor.** A different internet address in one day. Not a person. A bot is one, my
   laptop is one, my phone is another.
-- **Bot**: a program fetching pages. Search engines, AI companies, SEO tools, and scanners
-  looking for weak spots.
-- **Analytics script**: a tiny piece of code that runs in a real browser and reports the visit.
-  Most bots don't run it and ad blockers stop it, so it undercounts, but it's the best sign a
-  visit was a person.
-- **Referrer**: the page a visitor clicked from, when the browser passes it on. It's how you'd
-  know whether someone came from Google, X or an email.
+- **Bot.** A program fetching pages. Search engines and AI companies run them, and so do SEO
+  tools that check how sites rank and scanners looking for weak spots.
+- **Referrer.** The page a visitor clicked from, if the browser passes it on.
 
-Claude got the numbers through Cloudflare's analytics connection (an MCP server: a plug-in that
-lets an AI agent call a service). I asked in plain English, and Claude wrote the queries.
+Claude got the numbers through Cloudflare's analytics MCP server, a plug-in that lets an AI
+agent use a service directly. I asked in plain English and Claude wrote the queries.
 
 ## What the dashboard says
+
+**Cloudflare's chart counts anything that asks, bots and me included, so it looks like a site
+taking off.** Page views, the requests for a page itself, went from about 145 a day in August and
+September to over 500 in October. Unique visitors went from about 115 a day to 412.
 
 <ao-series show="Pages" avg="7">
 <table>
@@ -134,18 +144,14 @@ lets an AI agent call a service). I asked in plain English, and Claude wrote the
 <figcaption><b>Cloudflare's daily totals for aaronorelup.com, 2 Aug to 17 Oct 2026</b><span class="ao-meta">17 Oct is a partial day. Pages = page views, to anyone who asked. Unique visitors = distinct addresses per day. Click a series to switch</span></figcaption>
 </ao-series>
 
-Read the way a dashboard invites you to, this is a site taking off: about 145 page views a day
-in August and September, over 500 in October, and "unique visitors" up from about 115 a day to
-412.
-
-But nothing on that chart is a count of people. Every line counts anything that asked: bots,
-scanners and me. Nearly half of October's jump is me alone. From 26 September the Claude app's
-built-in browser started checking each post while my agents wrote it, and requests from my own
-connection went from about 14 a day to 615.
+Nearly half of October's jump is me. From 26 September the browser built into the Claude app
+started checking each post while my agents wrote it, and requests from my own connection went
+from about 14 a day to 615.
 
 ## Who's actually there
 
-To get to people, Claude took one group away at a time:
+**Taking away one group at a time leaves 290 to 980 pages read by people in 30 days.** Claude
+took me out first, then the bots that say who they are, then the ones that don't.
 
 <ao-funnel unit="pages">
 <ol>
@@ -154,23 +160,31 @@ To get to people, Claude took one group away at a time:
 <li><b>Bots that say so</b> <data value="-3896">−3,896</data> Crawlers Cloudflare has confirmed are who they claim: search engines, AI companies, SEO tools.<ul><li>OpenAI: 2,073 requests across its three bots</li><li>Exa (AI search) 949, Meta 816, Apple 777, Amazon 731</li><li>Googlebot 708, Anthropic's ClaudeBot 480</li></ul></li>
 <li><b>Scanners that missed</b> <data value="-326">−326</data> Error pages sent to programs hunting for files this site doesn't have, like WordPress logins and leaked password files.</li>
 <li><b>Scripts</b> <data value="-1253">−1,253</data> Requests that name a program instead of a browser.</li>
-<li><b>Browsers a year out of date</b> <data value="-3550">~−3,550</data> Things that claim to be browsers, but versions from before October 2025. One "iPhone on iOS 13", from 2019, fetched 1,183 pages. People do run old phones; not this many, this often.</li>
+<li><b>Browsers a year out of date</b> <data value="-3550">~−3,550</data> Things that claim to be browsers, but versions from before October 2025. One "iPhone on iOS 13", from 2019, fetched 1,183 pages. People do run old phones, just not this many, this often.</li>
 <li><b>Ran the analytics script</b> <data value="290">~290</data> The pages where a real browser ran Cloudflare's script. Ad blockers stop it, so the true number of people sits between this and the ~980 left above.</li>
 </ol>
-<figcaption><b>The last 30 days in pages, one group removed at a time</b><span class="ao-meta">Page (HTML) responses, 18 Sep to 17 Oct. Bot request counts are for all files, not just pages</span></figcaption>
+<figcaption><b>The last 30 days in pages, one group removed at a time</b><span class="ao-meta">Pages only, 18 Sep to 17 Oct. The counts under each bot are requests for any file, not just pages</span></figcaption>
 </ao-funnel>
 
-For every page a person read, machines took at least nine.
+The last step is Cloudflare's analytics script, a tiny bit of code that reports a visit from a
+real browser. Most bots don't run it and ad blockers stop it, so the pages people really read sit
+between the 290 that ran it and the 980 left before that.
 
-The surprise is who the machines are. **AI crawlers, AI assistants and AI search made 6,671
-requests in those 30 days, twice the 3,313 from search engines.** One of them, ChatGPT-User,
-fetches a page when someone's question in ChatGPT needs it; it came 558 times. On a site this
-young, more people may be meeting my posts inside an AI's answer than in a search result, and
-no dashboard calls them visitors.
+So for every page a person read, machines took at least nine.
+
+## AI bots outnumber search engines
+
+**AI crawlers, AI assistants and AI search made 6,671 requests in those 30 days, twice the 3,313
+from search engines.** One of them, ChatGPT-User, fetches a page when someone's question in
+ChatGPT needs it. It came 558 times. On a site this young, more people may be meeting my posts
+inside an AI's answer than in a search result, and no dashboard calls them visitors.
 
 ## What people read
 
-The homepage, by a long way, then one post: Jefrie in 3D.
+**The homepage, by a long way, and then one post, [Jefrie in 3D](/ledger/jefrie-in-3d/).**
+Jefrie is one of my original characters, and that post is six days of trying to get her into 3D.
+Next come the list of posts, my course [The Hidden Curriculum](/courses/the-hidden-curriculum/)
+and [Sonnet vs Opus](/ledger/sonnet-vs-opus-gauntlet/), my test of two Claude models.
 
 <ao-bars unit="views">
 <table>
@@ -192,7 +206,8 @@ The homepage, by a long way, then one post: Jefrie in 3D.
 <figcaption><b>Most-viewed pages, 17 Sep to 16 Oct</b><span class="ao-meta">Successful page loads from browsers, with confirmed bots removed. My own browsing and the disguised bots are still in, and scanners land on the homepage too, so trust the order more than the numbers</span></figcaption>
 </ao-bars>
 
-The analytics script gives a cleaner view of where people arrive from outside the site:
+The analytics script also shows which page each visit from outside the site starts on, and it
+tells the same story. Most people come in the front door and look around.
 
 <ao-bars unit="visits">
 <table>
@@ -209,18 +224,18 @@ The analytics script gives a cleaner view of where people arrive from outside th
 <figcaption><b>Where 570 visits started, 2 Aug to 17 Oct</b><span class="ao-meta">A visit is a page someone reached from outside the site. Cloudflare samples these, so they come in steps of 10</span></figcaption>
 </ao-bars>
 
-Both lists agree. Most people come in the front door and look around, and one post pulls readers
-in on its own.
+## Where they are and where they came from
 
-**Where they are:** 470 of the 570 visits came from the US, then about 20 each from Japan,
-China and South Korea. The raw request count shows far more Germany, the Netherlands and
-Singapore, which is where data centres are, so that's scrapers, not readers.
+**Most of the people are in the US.** 470 of the 570 outside visits came from there, then about
+20 each from Japan, China and South Korea. The raw requests show far more Germany, the
+Netherlands and Singapore, where the big server farms are. Those are scrapers, bots that copy
+pages.
 
-**Where they came from:** mostly unknowable. 550 of 570 visits arrived with no referrer, which
-is what a click from X, Discord, email and most apps looks like: the app doesn't pass it on.
-Google sent about 20. So I can't yet tell which post on X brought anyone in.
+**Where they clicked from is mostly unknowable.** 550 of 570 visits had no referrer, which is
+what a click from X, Discord, email and most apps looks like. Google sent about 20. So I can't
+yet tell which post on X brought anyone in.
 
-## You, in this data
+## You're in this data too
 
 Your visit to this page is in the same tables, and Cloudflare will show you your own row:
 
@@ -232,47 +247,40 @@ Ask Cloudflare what it saw of your visit: <a href="/cdn-cgi/trace">/cdn-cgi/trac
 
 What I'd tell anyone starting out, from these 77 days:
 
-- **Most of your traffic will be machines.** Here, about nine pages in ten.
-- **AI companies will find you before people do.** Within weeks, and twice as often as search
-  engines.
+- **Most of your traffic will be machines, and you.** Take yourself out before you read any
+  number.
+- **AI companies will find you before people do.** Within weeks.
 - **Scanners will try doors you don't have.** A quarter of all requests here were "not found"
-  errors, mostly programs looking for WordPress logins and leaked password files. On a simple
-  static site like this one, that's harmless background noise.
-- **You will be one of your biggest visitors.** Me and my agents made a quarter of all requests.
-  Take yourself out before you read any number.
-- **The visitor count will flatter you.** "412 unique visitors a day" was 10 to 33 people.
-- **You won't know where people came from** unless you mark your own links (below).
+  errors, mostly programs hunting for WordPress logins and leaked password files. On a simple
+  site it's harmless.
+- **Mark the links you share,** or you won't know where people came from.
 - **Early numbers are small, and that's normal.** This is 55 posts with no promotion at all.
 
-## What I'm doing about it
+## What I changed
 
-Already done, with this post:
+Four things went in with this post:
 
-1. **A `favicon.ico`.** Browsers ask for it by name, and the site only had an SVG icon: 512 "not
-   found" errors in 30 days.
-2. **A sitemap, and a robots.txt that points to it,** so crawlers stop guessing at pages.
-3. **Logging switched on** for the site's Worker (the small program that serves its video), so
-   errors get kept.
-4. **A reader counter of my own.** It counts a browser that stays on this post for a few seconds,
-   once a day, and keeps only the post, the day and the country:
+- **A favicon.ico,** the little icon in the browser tab. Browsers ask for that exact file and
+  the site only had its icon in another format, which made 512 "not found" errors in 30 days.
+- **A sitemap and a robots.txt that points to it,** so crawlers stop guessing at pages. The
+  sitemap lists every page and robots.txt is the file crawlers read first.
+- **Logging on the site's Worker,** the small program on Cloudflare that serves its video, so
+  errors get kept.
+- **My own reader counter.** It counts a browser that stays on a post a few seconds, once a day,
+  and keeps only the post, the day and the country. Here's this post's count:
 
 <ao-demo name="cf" part="count" data-slug="who-visits-a-new-website">
 The live counter needs JavaScript.
 </ao-demo>
 
-Next:
+Next I want to tag the links I share, like `?ref=x` on a link I post on X, and teach the counter
+to keep the tag. Then I'll promote a post and watch whether those 10 to 33 pages a day move.
 
-1. **Tag every link I share.** `?ref=x`, `?ref=bluesky`, `?ref=devto` on the end of each link,
-   and teach the counter to keep the tag. Then "which post brought people in?" has an answer.
-2. **Take myself out first, every time.** Any number I read starts with my own connection removed.
-3. **Promote something, and watch.** This is the baseline: 10 to 33 people a day. The next post I
-   share, tagged, shows whether that number moves.
-4. **Decide whether I need time on page.** Cloudflare counts page loads, not reading. Knowing
-   whether people scroll or leave needs a small script of my own, or a privacy-friendly tool
-   like Plausible or Umami. Not yet.
+<details><summary>The questions I asked, and the queries Claude wrote</summary>
 
-<details>
-<summary>The questions I asked, if you want to ask your own site</summary>
+Cloudflare's free plan has limits. Request-level detail goes back 31 days, and daily totals go
+back a year. It keeps no referrers on requests. And after about 15 questions in a few minutes the
+connection asks you to wait five.
 
 Copy any of these and swap in your domain. Each shows the query Claude wrote, trimmed.
 
@@ -286,7 +294,7 @@ Copy any of these and swap in your domain. Each shows the query Claude wrote, tr
   count
   dimensions { verifiedBotCategory }
 }</pre><p>One request in five comes from a bot that says so. The other four in five don't say, which is where the work starts.</p></details>
-<details data-via="Analytics" data-tool="graphql_query"><summary>How much of the traffic is me?</summary><pre>httpRequestsAdaptiveGroups(limit: 12, filter: {…, clientIP: "&lt;my address, from /cdn-cgi/trace&gt;"}, orderBy: [count_DESC]) {
+<details data-via="Analytics" data-tool="graphql_query"><summary>How much of the traffic is me?</summary><pre>httpRequestsAdaptiveGroups(limit: 12, filter: {…, clientIP: "my address, from /cdn-cgi/trace"}, orderBy: [count_DESC]) {
   count
   dimensions { userAgentBrowser }
 }</pre><p>14,203 of 56,384 requests: a quarter of everything.</p></details>
@@ -298,13 +306,4 @@ Copy any of these and swap in your domain. Each shows the query Claude wrote, tr
 rumPageloadEventsAdaptiveGroups(… dimensions { refererHost })</pre><p>The first was refused: the free plan doesn't keep referrers on requests. The analytics script does, sampled, and most visits had none.</p></details>
 </ao-ask>
 
-Limits on Cloudflare's free plan: request-level detail goes back 31 days (daily totals a year),
-no referrers on requests, and after about 15 questions in a few minutes the connection asks you
-to wait five.
-
 </details>
-
-The dashboard said 412 visitors a day. Every useful number in this post came from asking "and
-who was that?" one more time, which is tedious by hand and takes an agent a minute. I built the
-site for people, and most of what reads it is machines and me. The people are a small number,
-and now one I can watch.

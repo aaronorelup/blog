@@ -1,52 +1,69 @@
 ---
 id: "AO-024"
-title: "A fighting game with my two characters, and where its 42 hours went"
-summary: "One Claude Code session and 130 agents built Storm Bell Fighter, Jefrie against BloodTailor, in Godot. The code, menus, AI, sound and web build ran on stand-in capsules within an evening. The two fighters took another full day of modelling, animation and review before they reached the game. You can play it below."
+title: "A fighting game of my characters, made by Claude in 42 hours"
+summary: "One Claude Code session and 130 AI agents built a 1v1 fighting game starring my two characters, and you can play it here. Where the 42 hours went, what testing caught, and what it cost."
 date: 2026-09-28
 status: "shipped"
 tags: ["claude-code", "godot", "gamedev", "agents", "blender"]
 series: ["characters", "agent-runs"]
 draft: false
+topic: "games"
+project: ["characters"]
 preview:
   verdict: "The characters took the time"
-  takeaway: "A full fight ran on stand-ins 69 minutes after the first commit. The fighters took a day more, one job at a time through the one Blender on my laptop."
+  takeaway: "The game ran on stand-in shapes 69 minutes after the first commit, but the two fighters took another full day, one job at a time through my laptop's one Blender."
   points:
-    - "Final QA found 75 problems, 3 of them blockers. One drew particle garbage over the fight while all 40 tests passed."
-    - "TRELLIS.2 blurred BloodTailor's grin and welded his cloak to his arms, so an agent scripted him in Blender from scratch."
-    - "130 agents, all Opus 5.5, made 12,590 model requests: about $1,730 at API list prices, mostly cached context read again."
+    - "The final check found 75 problems, 3 of them blockers. One drew junk over the fight while all 40 automated tests passed."
+    - "An AI 3D generator blurred BloodTailor's grin and fused his cloak to his arms, so an agent scripted him in Blender."
+    - "130 agents, all Opus 5.5, about $1,730 at API list prices. Most of the 4.5 billion tokens were context read again."
   image: "/media/previews/storm-bell-fighter.webp"
   loop: "/media/previews/storm-bell-fighter.mp4"
   alt: "Jefrie swinging her scythe at a crouching BloodTailor in the finished game, a cage dome behind them"
 ---
 
-One Claude Code session built a complete 1v1 fighting game of my two characters, Jefrie and
-BloodTailor, in 42 hours. Everything except the characters was working on stand-in capsules by
-the end of the first evening. **The two fighters took the next full day, and they were the only
-thing still missing when I asked if I could play it.**
+One session of Claude Code, Anthropic's AI coding tool, built a whole fighting game of my two
+characters, Jefrie and BloodTailor, in 42 hours. It handed the work out to 130 AI agents.
+**Everything except the characters worked by the end of the first evening, on plain capsule
+shapes. The two fighters took the whole next day**, because every model and animation went
+through the one copy of Blender, the free 3D app, on my laptop, one job at a time.
 
-It's called Storm Bell Fighter, after the place Jefrie lives. It's Godot 4.7, three rounds, a CPU
-at three difficulties, two-player on one keyboard, training mode and a move list. It's playable
-here:
+It's called Storm Bell Fighter, after the place Jefrie lives, and it's made in Godot, a free game
+engine. Three rounds, a computer opponent at three difficulties, two players on one keyboard and
+a training mode.
 
 <ao-game src="/games/storm-bell/" poster="/media/storm-bell-fighter/poster.webp" size="about 22 MB" label="Storm Bell Fighter, playable in the browser" note="Keyboard: A / D move, W jump, S crouch, J light, K heavy, L special, K+L super. A gamepad works too. Needs a desktop browser with WebGL 2, and the first visit spends a while preparing graphics."><a href="/games/storm-bell/">Play Storm Bell Fighter</a></ao-game>
 
+- **The game part took one evening.** A full fight ran on the stand-ins 69 minutes after the
+  first commit, the first saved version of the project.
+- **An AI 3D generator couldn't do BloodTailor.** So an agent built him in Blender with code.
+- **Agent testers caught what the automated tests missed.** 75 problems, 3 of them blockers.
+- **It cost about $1,730 at API list prices.** 130 agents, all on Opus 5.5.
+
 ## What I asked for
 
-I didn't write the build prompt. I asked Claude to write one for an ultracode session, with this
-brief: *"The purposes is to test out what can already be done with my character's and current
-pipeline to build a game that would be easy for you to make."* I said I'd play it for about 20
-minutes and never develop it further, and told it to aim the graphics at something it could
-actually polish. It wrote a 2,600-word prompt: Godot for the game, Blender through the Blender
-MCP for the 3D fighters, ComfyUI for the 2D art, no Higgsfield, and cloud sessions for anything
-that didn't need my machine. Then I told it to follow its own prompt, and to put the finished game
-on this site.
+I had Claude write the build prompt itself, from this brief: *"The purposes is to test out what
+can already be done with my character's and current pipeline to build a game that would be easy
+for you to make."* It wrote 2,600 words of instructions, and I told it to follow them and put
+the game on this site.
+
+<details><summary>What the brief and the prompt set up</summary>
+
+- I said I'd play it for about 20 minutes and never develop it further, and told it to aim the
+  graphics at something it could actually polish.
+- Godot for the game.
+- Blender for the 3D fighters, driven by Claude through the Blender MCP (a connector that lets
+  Claude work inside Blender).
+- ComfyUI, the AI image app on my laptop, for the 2D art.
+- No Higgsfield, a paid AI image and video service.
+- Cloud sessions, Claude running on remote machines, for anything that didn't need my laptop.
+
+</details>
 
 ## The same fight, four times
 
-The fight simulation is deterministic, so one command replays the same match: CPU Hard against CPU
-Hard, seed 7. The session ran it at each stage of the build to record gameplay. The first three
-clips below are those recordings. The fourth is the same command, re-rendered this morning for this
-post from the finished build. The first 20 seconds of each, playing together:
+The game replays a match exactly when it gets the same inputs. So the session recorded
+the same computer-vs-computer fight at each stage of the build, and the last clip is that fight in the
+finished game. The first 20 seconds of each, playing together:
 
 <ao-compare cols="2" aspect="16/9" sync>
   <figure>
@@ -67,11 +84,14 @@ post from the finished build. The first 20 seconds of each, playing together:
   </figure>
 </ao-compare>
 
-In the first two, six seconds in, the counter reads the same 2 hits for 138 damage. Only the art
-changed. By the third, moves had been retuned in between, the same exchange does 165, and the fight starts
-to drift.
+Between the first two clips only the art changes. By the third the moves had been retuned, so
+the fight drifts.
 
-## Where the time went
+## Where the 42 hours went
+
+The code was nearly all done in one evening. Each fighter then went through modeling, three
+critics (agents whose only job is finding problems), fixes, 39 animations, an export and more
+critics with their own fix rounds. All of it went through the one Blender.
 
 <ao-timeline lanes="me:Me|lead:Lead session|code:Code agents|art:Art agents|qa:QA agents">
 <ol>
@@ -81,7 +101,7 @@ to drift.
 <li data-lane="code"><time>26 Sep 16:22</time><p>A full fight playable on capsule stand-ins, 69 minutes after the first commit.</p></li>
 <li data-lane="lead"><time>26 Sep 16:51</time><p>Notices the "cloud" agents had all run on my laptop. Cloud isolation wasn't available on the account.</p></li>
 <li data-lane="me"><time>26 Sep 18:07</time><p><q>game is running slow btw.</q></p></li>
-<li data-lane="code"><time>26 Sep 20:07</time><p>Menus batched from 674 draw calls to 36; graphics tiers and a shader warm-up added.</p></li>
+<li data-lane="code"><time>26 Sep 20:07</time><p>Menus batched from 674 draw calls (jobs sent to the graphics card) to 36. Graphics quality levels added, plus a warm-up that prepares the graphics before play.</p></li>
 <li data-lane="art"><time>26 Sep 21:50</time><p>BloodTailor's third-round model in Blender. Jefrie's animations start 25 minutes later.</p></li>
 <li data-lane="code"><time>26 Sep 22:42</time><p>The real stage replaces the placeholder. Last code commit of the day.</p></li>
 <li data-lane="me"><time>27 Sep 16:39</time><p><q>is it ready for me to play yet?</q> The answer: playable, <q>but the fighters are still stand-ins.</q></p></li>
@@ -92,18 +112,17 @@ to drift.
 </ol>
 </ao-timeline>
 
-The code agents were done with nearly everything in one evening. Their notes also account for why
-the fighters weren't. Each one went through modelling, three critics, fixes, 39 animations, an
-export and then animation critics with their own fix rounds, and all of that ran through the one
-Blender instance on my laptop, one job at a time. Jefrie's first animation review found her tail
-jumping about 2.3 metres on takeoff and her cape rendering black in the game.
+The first animation review found Jefrie's tail jumping about 2.3 metres on takeoff and her cape
+rendering black.
 
 ## The two fighters
 
-BloodTailor had no 3D model before this. The art agent tried TRELLIS.2 on the front of his
-reference sheet first. It got the cloak's volume and his proportions, blurred the grin into the
-texture, made his hair one solid mass and welded the cloak to his arms. The agent kept it only as
-a proportion reference and built him from scratch in Blender with Python.
+BloodTailor had no 3D model before this. The art agent first tried TRELLIS.2, an open-source AI
+model that turns one picture into a 3D model. It got his proportions and the cloak's volume, but
+blurred his grin, made his hair one solid mass and welded the cloak to his arms. So the agent
+kept it as a size guide and built him from scratch in Blender with Python code. Jefrie was
+rebuilt from the models in [my six days of putting her in 3D](/ledger/jefrie-in-3d/), then
+redone so she reads at fight zoom.
 
 <ao-compare cols="1" aspect="auto">
   <figure class="wide">
@@ -120,21 +139,20 @@ a proportion reference and built him from scratch in Blender with Python.
   </figure>
   <figure class="wide">
     <img src="/media/storm-bell-fighter/jefrie-readability.webp" alt="Jefrie in the fight at 1080p before and after the readability pass, as player 1 and player 2, with body close-ups" loading="lazy">
-    <figcaption><b>Jefrie in the fight, before and after the readability pass</b><span class="ao-meta">28 Sep 02:30 · the model in <a href="/ledger/jefrie-in-3d/">AO-018</a> took six days of attempts; this one had a finished game waiting for it</span></figcaption>
+    <figcaption><b>Jefrie in the fight, before and after the readability pass</b><span class="ao-meta">28 Sep 02:30 · the model in <a href="/ledger/jefrie-in-3d/">AO-018</a> took six days of attempts. This one had a finished game waiting for it</span></figcaption>
   </figure>
 </ao-compare>
 
-Two things it left for me: Jefrie's grin (pointed teeth, the hooked mouth line) and how light
-BloodTailor's iron plate should be. Both are canon questions, and it treated them as mine.
+It left two calls to me, since they're about how my characters should look: Jefrie's grin, with
+its pointed teeth and hooked mouth line, and how light BloodTailor's iron plate should be.
 
-## The QA pass
+## The final check
 
-Once the session thought the game was done, it ran one more workflow: five critics looking for
-problems independently, a skeptic checking each finding, one agent fixing the confirmed ones and a
-final regression check. They found 75 problems, 3 of them blockers. Skeptics confirmed all 53 they
-checked, and the other 22 were polish that went straight to the fixer. One blocker was particle
-effects drawing yellow, white and green garbage over the fight before they had emitted anything.
-The automated tests, 40 of them with 317 checks, were all passing with that bug in the build.
+When the session thought the game was done, it ran one more pass. Five critics hunted for
+problems, skeptics checked the findings and one agent fixed the confirmed ones. They found 75
+problems, 3 of them blockers. In one, the sparks and flashes drew yellow, white and green junk
+over the fight before they'd even fired. All 40 automated tests passed with that bug in the
+build.
 
 <ao-compare cols="1" aspect="auto">
   <figure class="wide">
@@ -147,17 +165,34 @@ The automated tests, 40 of them with 317 checks, were all passing with that bug 
   </figure>
 </ao-compare>
 
-At the end: 41 tests and 331 checks passing, and Jefrie winning 51.0% of 400 CPU-Hard matches
-against BloodTailor. The web build is about 22 MB with every file under Cloudflare's 25 MB limit,
-helped by a smaller Godot web template the session compiled from source.
+After the fixes, Jefrie won 51.0% of 400 computer-vs-computer matches against BloodTailor.
+
+<details><summary>The final check and the web build, in numbers</summary>
+
+- The skeptics confirmed all 53 findings they checked. The other 22 were polish that went
+  straight to the fixer.
+- A last check after the fixes made sure nothing else had broken.
+- Before the final check there were 40 automated tests with 317 checks, all passing, with the
+  particle bug in the build. After the fixes, 41 tests and 331 checks passed.
+- The web build is about 22 MB, with every file under Cloudflare's 25 MB limit. It helped that the
+  session compiled a smaller version of Godot's web engine from source.
+- It needs a desktop browser with WebGL 2, the browser's 3D graphics feature.
+
+</details>
 
 ## What it cost
 
-The session made 12,590 model requests across its 130 agents, all Opus 5.5, about $1,730 at API
-list prices by the time it called the game finished. Most of the 4.5 billion tokens were cached context being read again. The three
-workflows split it roughly as $916 for the 54 agents of the main build, $125 for 5 integration
-agents and $288 for the 60 in the QA pass.
+About $1,730 at API list prices, meaning what it would cost at Anthropic's standard pay-per-use
+rates. Tokens are the chunks of text AI models read and write. Most of the 4.5 billion here were
+cached context, text the agents had already read and were reading again. More on bills like this in
+[what drives my Claude Code costs](/ledger/what-drives-claude-code-cost/).
 
-I asked for a game I could learn in one sitting and put down. The agents built the game part of
-that in an evening. **The part that was mine, the two characters, is still what takes the time**,
-even with a finished game waiting for them.
+<details><summary>Where the money went</summary>
+
+- The session made 12,590 model requests by the time it called the game finished.
+- The three workflows, scripted batches of agents, came to roughly $916 for the 54 agents of the
+  main build, $125 for 5 integration agents and $288 for the 60 in the final check.
+- Those three come to about $1,329 and 119 agents. The rest of the session's total, about $400
+  and 11 agents, was outside those three workflows.
+
+</details>

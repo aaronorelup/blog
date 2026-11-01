@@ -1,61 +1,51 @@
 ---
 id: "AO-031"
-title: "Claude made a music video for my song and cast the lovers the wrong way round"
-summary: "From one prompt, Claude built a 2:51 music video for BLACKWATER's love song in Blender and Godot, with no AI video: new models, 41 shots cut on bar lines, the lyrics set inside the scenes. It put the wrong person on the shore. Both cuts are below, playing in lockstep, with the one paragraph of notes that turned the first into the second."
+title: "Two cuts of the music video Claude made for my song"
+summary: "From one prompt, Claude made a music video for a song from my game, in Blender and Godot with no AI video. Both cuts side by side, and how one paragraph of my notes fixed the casting it got backwards."
 date: 2026-10-03
 status: "in-progress"
 tags: ["claude-code", "blender", "godot", "gamedev", "lessons"]
 series: ["blackwater"]
+topic: "video"
+project: ["blackwater"]
 preview:
   verdict: "Cast backwards, then fixed"
-  takeaway: "My prompt never said who sings, so Claude cast the lovers from a lore draft in the game's folder and built five hours on it. Now who's who opens the brief."
+  takeaway: "My prompt never said who was singing, so Claude cast the lovers backwards from a lore draft and built five hours on it. One paragraph of my notes fixed it."
   points:
-    - "My vaguest note became a test: each sung word in frame and readable within 0.4 s. 58 of 148 failed at first, then none."
-    - "v2 took 2 h 54 min from one paragraph of notes: the diver only in close-up, the creature implied, the ending left open."
-    - "Its contact sheets caught cameras inside her body, but not the casting. The previs reached me early and I didn't answer."
+    - "My vaguest note became a test: each sung word in frame and readable within 0.4 s. 58 of 148 words failed, then none."
+    - "Its checks caught cameras inside the woman's body and bare rock, but not the casting. I didn't answer its clay draft."
+    - "The second cut took 2 h 54 min. Without being asked, it left the ending open instead of bringing the diver back."
   image: "/media/previews/moonlight-two-cuts.webp"
   loop: "/media/previews/moonlight-two-cuts.mp4"
   alt: "The same jetty shot from both cuts: v1's woman in a long coat on the left, v2's man in a flat cap on the right, both under the moon"
 ---
 
-Claude made a whole music video for "Moonlight at the Waterline" from one prompt, and cast it
-backwards: a woman waiting on the jetty, a man diving below. In the song it's the other way round.
-**Five hours of careful work built on a casting choice nobody had asked it to make**, and the
-second cut, three hours later, came from one paragraph of my notes.
+Claude made a whole music video for my song "Moonlight at the Waterline" from one prompt, and
+cast it backwards. It put a woman waiting on the jetty and a man diving, when in the song it's the
+other way round. **My prompt never said who was singing**, so it went with a lore draft it found
+in my game's folder and built five careful hours on it. One paragraph of my notes fixed it in
+under three hours.
 
-The song is the slow 1960s ballad on the jukebox in [BLACKWATER](/ledger/blackwater-weekend/),
-the one about waiting at the waterline for a diver who is late. Both cuts below were made in one
-Claude Code session on 27 September. Neither uses AI video or gameplay footage: every model was
-built new in Blender, and every frame was rendered by a script running inside the Godot game at a
-fixed 24 frames a second.
+The song is the 1960s ballad on the jukebox in [BLACKWATER](/ledger/blackwater-weekend/), my
+cave-diving zombie game. It's about waiting on the shore for a diver who's late. Neither cut uses
+AI video or gameplay footage. Claude built new models in Blender, a free 3D program. I'd said to
+render there too, but a script rendered every frame inside my remake of the game in Godot, a free
+game engine. Claude made the video for the game's other song,
+[Still on Shift](/ledger/still-on-shift-music-video/), the same way.
 
-## The prompt
+- **The casting came from a lore draft** about a woman who waits. Claude said so in its summary.
+  Partway through it sent me a rough clay version of every shot, and I didn't answer until it was done.
+- **My vaguest note became a test.** I'd said some lyrics were "slightly out of view". Claude made
+  that a rule: every sung word fully in frame and readable within 0.4 seconds. 58 of 148 words
+  failed at first, then none.
+- **It left the ending open without being asked.** The first cut brings the diver back out of
+  the sea. In the second a light rises and dims under the water, and he steps in.
+- **Its own checks caught a lot, but not the casting.** Cameras inside the woman's body, a glitch
+  in the lighthouse beam, bare cave rock and a creature glowing green all over.
 
-This is what I typed, a little before one in the morning:
+## Both cuts, side by side
 
-> Make a music video for moonlight at the waterline. Create brand new scenes and assets and
-> render them in the blender, no gameplay capture and no AI video. Transcribe the lyrics and build
-> the shot list from them, with every cut on a bar line and include the lyrics in the music video
-> in a professional way so that they feel like part of the video instead of just captions.
-
-It went on to ask for a director script, a clay previs with contact sheets, ElevenLabs sound
-effects under the song, a −14 LUFS master, grade, letterbox and title cards.
-
-Five hours later the session handed back a 2:51 video. It had transcribed the song with two
-Whisper models and fixed the words they disagreed on by context ("coat" not "cold", "and sigh" not
-"inside"). It measured the song at 62.07 BPM in 12/8, so a bar is 3.87 seconds, and built 41 shots
-from bar numbers rather than by hand. It modelled a woman, a diver, a pale 16-metre eel with
-paired green lights down its flanks, a cove with a lighthouse and a flooded cave. It placed 43
-ElevenLabs effects on the frames where the director script logged them.
-
-The lyrics never sit at the bottom of the frame. They get written in wet sand and taken by the
-tide, hang along the guide line, show only where the diver's lamp shines, drift in a breath.
-
-And the woman on the jetty came from a lore draft in the game's folder about a woman who waits.
-The session said so in its summary. The clay previs came to me partway through. I didn't answer
-until the finished cut.
-
-## Both cuts, in lockstep
+The first cut (v1) and the second (v2) share the song's timing. Click a lyric to send both there.
 
 <ao-cues labels="v1 · 27 Sep, 06:05|v2 · 27 Sep, 16:13">
 <video controls muted playsinline preload="metadata" poster="/media/moonlight-two-cuts/v1_poster.webp" src="/media/moonlight-two-cuts/v1.mp4"></video>
@@ -89,22 +79,29 @@ until the finished cut.
 <figcaption><b>Moonlight at the Waterline, v1 and v2</b><span class="ao-meta">Both 2:51 at 24 fps on the same bar grid · Blender models, frames rendered in Godot · song by ElevenLabs Music · web copies: letterbox cropped, 1280×536 (masters are 1080p)</span></figcaption>
 </ao-cues>
 
-Both cuts share the song and the bar grid, so the same second is the same lyric in each. Clicking
-a line sends both there.
+## What I asked for
 
-## The notes
+I typed this just before 1 a.m.:
 
-My reply, at 13:41 the same day, started with "Incredible!" and then listed what was wrong. The
-line that mattered most was in the middle:
+> Make a music video for moonlight at the waterline. Create brand new scenes and assets and
+> render them in the blender, no gameplay capture and no AI video. Transcribe the lyrics and build
+> the shot list from them, with every cut on a bar line and include the lyrics in the music video
+> in a professional way so that they feel like part of the video instead of just captions.
+
+Five hours later I had a 2:51 video in 41 shots, every cut on the start of a bar of music. No
+lyric sits at the bottom like a subtitle. They're written in wet sand, hang along the rope the
+diver follows, or show only where the lamp shines.
+
+## My notes, and what they changed
+
+My notes that afternoon flipped the casting. This was in the middle:
 
 > BTW the lover on the surface is the guy, the diver is the girl. Also, whenever you depict the
 > diver, I want it to be close up shots of her and her gear, never a full body shot to give the
 > feeling of mystery because the lover is unsure.
 
-The rest asked for the lyrics that "appear slightly out of view or do not appear when the singer
-sings them" to be fixed, for "I see your oxygen bubbles rise" to be the peak of the song, starting
-on her mask and climbing with the bubbles without ever showing the surface, and for the creature
-to be "implied not shown", "more ominous than scary".
+I also wanted the lyrics fixed, "I see your oxygen bubbles rise" as the peak and the creature
+"implied not shown". Four moments from each cut:
 
 <ao-compare cols="2" aspect="2.39/1">
 <figure><img src="/media/moonlight-two-cuts/v1_21.webp" alt="v1 at 0:21: a woman in a long coat stands on the jetty, seen from behind, the moon ahead and the words of the lyric floating over the sea." loading="lazy"><figcaption><b>v1 · 0:21</b><span class="ao-meta">"chilling on my hand": the woman waiting</span></figcaption></figure>
@@ -117,56 +114,66 @@ to be "implied not shown", "more ominous than scary".
 <figure><img src="/media/moonlight-two-cuts/v2_160.webp" alt="v2 at 2:40: the man alone at the end of the jetty with his lantern at his feet." loading="lazy"><figcaption><b>v2 · 2:40</b><span class="ao-meta">unresolved: a light rises, dims, and he steps into the sea</span></figcaption></figure>
 </ao-compare>
 
-One change I hadn't asked for: v1's ending brought the diver back out of the sea, and v2's leaves
-it open. In v2 a light rises under the water, maybe her lamp, comes closer, and
-dims. He sets his lantern down and steps in. The last shot is his lantern, her coat, and one ring
-on still water.
-
 ## "Out of view" became a test
 
-**The note I expected to be the vaguest was the one that got fixed most completely, because the
-session turned it into a number.** It added a check to the director script: when each word is
-sung, it has to be fully inside the 2.39:1 frame and readable within 0.4 seconds. The script logs
-every word it draws, frame by frame, and `lyric_audit.py` compares that against the word timings
-from the transcription.
+**The session turned my vaguest note into a number.** Its script logs every word it draws, frame
+by frame, and checks it against when the word is sung. Its fixes took the failures from 58 to 8,
+then 6, then none.
 
-The first render of the revision failed 58 of the 148 sung words. The fixes were a faster fade-in,
-a higher minimum brightness for words lit only by the lamp or the lighthouse, words that ride with
-the camera in moving shots, and lines that carry across a cut when a word lands right on it. The
-next renders failed 8, then 6, then none.
-
-The bubble line got the most work. In v2 it's one continuous take: her mask, gold bubbles bursting
-as she breathes out, the camera climbing with the column out of the dark as they turn silver-blue,
-and the last bubble dissolving into the moon before the camera comes down to him on the jetty.
+In v2 the "oxygen bubbles" line became one long take, from her mask up the column of bubbles
+until the last one turns into the moon.
 
 <ao-compare cols="3" aspect="2.39/1">
-<figure><img src="/media/moonlight-two-cuts/previs_106.webp" alt="Clay previs at 1:46: a clay diver seen from below, the lyric word see beside it, and a burned-in label reading S27 His bubbles rise, bar 27." loading="lazy"><figcaption><b>Clay previs · 1:46</b><span class="ao-meta">v1's animatic; its burned-in label still reads "His bubbles rise"</span></figcaption></figure>
+<figure><img src="/media/moonlight-two-cuts/previs_106.webp" alt="Clay previs at 1:46: a clay diver seen from below, the lyric word see beside it, and a burned-in label reading S27 His bubbles rise, bar 27." loading="lazy"><figcaption><b>Clay previs · 1:46</b><span class="ao-meta">v1's rough clay version, with its label still reading "His bubbles rise"</span></figcaption></figure>
 <figure><img src="/media/moonlight-two-cuts/v1_106.webp" alt="v1 at 1:46: the diver from below in green haze, rendered with brass gear." loading="lazy"><figcaption><b>v1 · 1:46</b><span class="ao-meta">"I see your oxygen bubbles rise"</span></figcaption></figure>
 <figure><img src="/media/moonlight-two-cuts/v2_106.webp" alt="v2 at 1:46: close on the diver's mask from below, gold bubbles rising past her helmet lamp." loading="lazy"><figcaption><b>v2 · 1:46</b><span class="ao-meta">the same bar, rebuilt as one take</span></figcaption></figure>
 <figure class="wide"><img src="/media/moonlight-two-cuts/dissolve_check.webp" alt="Five frames across one bar line: bubbles and the lyric rise in the dark; the last bubble sits where the moon appears and becomes it." loading="lazy"><figcaption><b>The session's own dissolve check</b><span class="ao-meta">five frames across the bar line at 1:52.1: her last bubble dissolves into the moon at the same spot · v2, 27 Sep</span></figcaption></figure>
 </ao-compare>
 
-It caught other things on its own contact sheets before I saw either cut: cameras sitting inside
-the woman's body, a ring artifact from the lighthouse beam, untextured cave rock, the creature
-glowing green all over. Some it left and named: the faces are crude up close, which is why v1
-keeps her in silhouette and profile, and the lyric engraved inside the pocket watch at 0:56 is
-barely legible in both.
+## The versions after this one
 
-## What it cost, and what came after
+The same session also tried 30 seconds of the song through MiniMax-H3, an AI video model, and
+later I asked for the whole song that way. That cut is in
+[five music videos for one song](/ledger/moonlight-five-times/), along with a version
+[eight agents drew in code](/ledger/moonlight-in-code/) and a painted one. The brief for the next
+one opened with who waits and who dives.
 
-The first cut took 5 hours 6 minutes. The revision took 2 hours 54 minutes, and partway through
-it the laptop's C: drive filled to zero and the assembly died. The session deleted about 12 GB of
-its own superseded renders, all regenerable from its scripts, and made the assembler clean up
-after itself.
+<details><summary>Time, disk space and the technical bits</summary>
 
-The same turn also ran a 30-second test of the song through MiniMax-H3, a local video model, using
-the Godot frames as a motion reference; I asked for the whole song that way afterwards. None of
-that is shown here: H3's licence excludes the United States, for the model and its output.
+- The first cut took 5 hours 6 minutes. The revision took 2 hours 54 minutes.
+- Partway through the revision my laptop's main drive filled up completely, and the step that
+  joins the shots into one video died. The session deleted about 12 GB of its own old renders,
+  all of which its scripts can make again, and made that step clean up after itself.
+- The lyrics were transcribed with two Whisper models (speech-to-text AI). Where they disagreed it
+  picked by context: "coat" not "cold", "and sigh" not "inside".
+- It measured the song at 62.07 beats a minute in 12/8 time, so one bar is 3.87 seconds, and built
+  the 41 shots from bar numbers rather than by hand.
+- The rest of the prompt asked for a director script (the code that stages and films each shot), a
+  clay previs with contact sheets, sound effects from ElevenLabs (an AI audio service) under the
+  song, a master at −14 LUFS (a loudness level), a color grade, letterbox (black bars) and title
+  cards.
+- It modelled a woman, a diver, a pale 16-metre eel with paired green lights down its flanks, and
+  a cove with a lighthouse and a flooded cave.
+- 43 ElevenLabs sound effects sit on the frames where the director script logged each event.
+- More lyrics in the scenes: some are taken by the tide after they're written in the sand, and
+  some drift past in a breath.
+- My other notes asked for the bubbles line to start on her mask and climb with the bubbles
+  without ever showing the surface, and the creature "more ominous than scary".
+- The lyric check is a script called `lyric_audit.py`. It compares the log of drawn words with the
+  word timings from the transcription, against the wide 2.39:1 cinema frame. The fixes were a
+  faster fade-in, a higher minimum brightness for words lit only by the lamp or the lighthouse,
+  words that ride with the camera in moving shots, and lines that carry across a cut when a word
+  lands right on it.
+- The bubble take in full: her mask, gold bubbles bursting as she breathes out, the camera
+  climbing with them out of the dark as they turn silver-blue, and the last bubble dissolving into
+  the moon before the camera comes down to him on the jetty.
+- The H3 test used the Godot frames as a guide for the motion.
+- v2's ending in full: a light rises under the water, maybe her lamp, comes closer and dims. He
+  sets his lantern down and steps in. The last shot is his lantern, her coat and one ring on still
+  water.
+- Its own checks went through contact sheets (grids of stills from every shot) before I saw
+  either cut. The lighthouse glitch was a ring in the beam. Some things it left and named. The
+  faces are crude up close, which is why v1 keeps the woman in silhouette and profile. The lyric
+  engraved inside the pocket watch at 0:56 is barely readable in both cuts.
 
-Early this morning I started a fourth version. The brief I pasted calls v2 and the H3 cut "the
-bar to beat, not the ceiling", and its story section opens: "He waits on the shore; she is the
-diver. The singer is the man waiting."
-
-**The first prompt asked for every cut on a bar line and every lyric inside the world, and left
-out who was singing.** The session filled that gap from the nearest note it could find, and
-built five careful hours on it. Now it's the first line of the brief.
+</details>

@@ -1,35 +1,36 @@
 ---
 id: "AO-050"
-title: "The first lesson on my rebuilt course map took 71 agents, and the one reading as a beginner caught what it had backwards"
-summary: "On 14 October the daily job made 01.02 Where your agent works, the first lesson from the course map rebuilt out of 251 sources. Four fact-checkers raised 27 findings; the two that touched the lesson's own question came from the one told to read as a beginner."
+title: "Fact-checking a video lesson made by 71 AI agents"
+summary: "71 Claude agents made one 11-minute lesson for my beginner AI course. What its four fact-checkers caught before it shipped, and why the one reading as a beginner found the worst mistakes."
 date: 2026-10-16
 status: "shipped"
 tags: ["claude-code", "agents", "lessons", "workflow"]
 series: ["hidden-curriculum", "agent-runs"]
+topic: "learning"
+project: ["hidden-curriculum"]
 preview:
-  verdict: "17 fixes before release"
-  takeaway: "The checker reading as a beginner caught the script teaching that Claude Code on Local keeps your files at home, in a lesson about where your files go."
+  verdict: "Beginner check mattered most"
+  takeaway: "The checker reading as a beginner caught the script implying Claude Code on your computer keeps your files at home. What it reads still goes to Anthropic."
   points:
-    - "71 Opus 5.5 agents, 2 h 40 min, $122 at API list prices, for one 11:18 lesson."
-    - "Four checkers, 27 findings, 17 marked misleading. The fixer applied all 17."
-    - "The first review render ran 12.2 min against an 11.5 ceiling; two rounds got it to 11:18."
+    - "Four fact-checkers raised 27 findings and marked 17 as misleading. The fixer applied all 17."
+    - "The words got fixed first. The drawing still put the AI inside your computer until a reviewer caught it."
+    - "It took 2 hours 40 minutes and $122 at pay-per-use prices. Review cut it from 12.2 minutes to 11:18, under its limit."
   image: "/media/previews/first-lesson-on-the-new-map.webp"
   alt: "A frame from the lesson: a house labelled Your computer, a dotted line from its Code room to Anthropic's servers, and the words what it reads still goes to the model"
 ---
 
-On 14 October at 05:37, the daily course job built the first lesson from the map I had rebuilt
-two days earlier out of 251 outside sources. It is 01.02, Where your agent works: chat, Cowork,
-desktop apps and terminal agents, which computer does the work, and where your files and chats
-end up. Seventy-one Opus 5.5 agents made it in 2 hours 40 minutes, $122 at API list prices, and
-it went live at 08:17 as an 11-minute video.
+My course, [The Hidden Curriculum](/courses/the-hidden-curriculum/), teaches the small stuff
+nobody tells you when you start building with AI. A crew of Claude agents makes its lessons on a
+daily schedule. On 14 October it took 71 agents to make an 11-minute lesson on where your AI
+agent actually does its work, and where your files end up.
 
-**The two corrections that mattered most came from the fact-checker told to read the script as
-a beginner. The draft taught that Claude Code on Local keeps your files on your own machine,
-which is the wrong answer to the question the lesson exists to answer.**
+**The fixes that mattered most came from the fact-checker told to read the script as a
+beginner.** The draft taught that Claude Code, Anthropic's coding agent, keeps your files at
+home when it runs on your own computer. It doesn't, because whatever it reads still goes to
+Anthropic's servers.
 
-This follows [the night the course was rebuilt](/ledger/curriculum-from-sources/). That post
-ended with a draft map and a paused job. The same session installed the map that afternoon, and
-the job's first lesson on it is here, whole.
+It was the first lesson made from the course's new plan, which I'd
+[rebuilt two days earlier from 251 outside sources](/ledger/curriculum-from-sources/).
 
 <ao-shots>
 <video controls playsinline preload="metadata" poster="/media/first-lesson-on-the-new-map/poster.webp" src="/courses/the-hidden-curriculum/lessons/where-your-agent-works/lesson.mp4"></video>
@@ -50,19 +51,135 @@ the job's first lesson on it is here, whole.
 <li data-t="9:45.3"><img src="/media/first-lesson-on-the-new-map/s14.webp" alt="Two columns: what the agent does, what you do" loading="lazy">You and the agent</li>
 <li data-t="10:43"><img src="/media/first-lesson-on-the-new-map/s15.webp" alt="The Keep this card: pick the room by the output" loading="lazy">Keep this</li>
 </ol>
-<figcaption><b>01.02 Where your agent works, as published</b><span class="ao-meta">14 Oct 2026 · 11:18, 15 sections · the course's own 720p copy, unchanged · ElevenLabs narration · Blender shot in section 10 · thumbnails taken from the video for this post</span></figcaption>
+<figcaption><b>Lesson 01.02, Where your agent works, as published</b><span class="ao-meta">14 Oct 2026 · 11:18 in 15 sections · the course's own 720p copy, unchanged · AI narration by ElevenLabs · section 10 is a 3D shot made in Blender</span></figcaption>
 </ao-shots>
 
-## How 71 agents split one lesson
+What came out of it:
 
-The job runs one workflow in ten phases. Five agents read the five sources the narration may
-name, four more pulled out the points the lesson's spec asks for, and one went looking for what
-had changed since the map was written. A planner turned the spec into sections. Three writers
-drafted the script from three angles at once, and a judge scored them (metaphor-first 85,
-evidence-first 84, story-first 83, out of 100) and merged the winner with pieces of the other
-two. Then four fact-checkers and a fixer, a narrator beside a screen-capture agent, a designer,
-one animator per section, two reviewers for two rounds with a fixer per flagged section, and one
-agent to render and ship.
+- **Four fact-checkers raised 27 findings.** They marked 17 as misleading, and the fixer agent
+  applied all 17.
+- **The beginner checker caught the two that mattered.** One was the files-at-home line. The
+  other was the lesson's main picture, which put the AI inside your computer.
+- **The words got fixed before the drawing did.** The animation still showed the AI inside your
+  computer until a reviewer caught it.
+- **Two review rounds got it under the time limit.** The first cut ran 12.2 minutes against an
+  11.5-minute limit. The finished lesson is 11:18.
+- **It took 2 hours 40 minutes and $122** at Anthropic's pay-per-use prices.
+
+## The line about where your files go
+
+The lesson covers chat, Cowork (the part of Claude that does tasks on your files), desktop apps,
+and terminal agents you run by typing commands. Section 06 said that with Cowork
+moved to the cloud, Anthropic points you to Claude Code for local work. Next to section 07's
+"Local: your machine, full access", a beginner hears that Claude Code keeps his files at home.
+The commands do run on your machine, but what it reads goes to Anthropic's servers.
+
+<ao-diff labels="Judge's script|Beginner checker's fix|Shipped">
+<blockquote>For local-only work, Anthropic points you to Claude Code.</blockquote>
+<blockquote>For work that runs on your own machine, Anthropic points you to Claude Code. Running locally isn't the same as staying local, though: whatever it reads still goes to the model on Anthropic's servers.</blockquote>
+<blockquote>For local work, Anthropic points you to Claude Code. Running locally isn't staying local, though: what it reads still goes to Anthropic's servers.</blockquote>
+<figcaption><b>Section 06, spoken text</b><span class="ao-meta">the judge's script is the draft a judge agent merged from three writers' versions · then the beginner checker's fix · then what the narrator says in the finished lesson</span></figcaption>
+</ao-diff>
+
+## The picture with the AI in the wrong place
+
+The draft's main picture was one worker, the model, who "can stand in any room" of a house that
+is your computer. That puts the model inside your computer. But in every app the lesson covers,
+the model runs on the AI company's servers, so the picture taught the wrong machine in the first
+minute.
+
+<ao-diff labels="Judge's script|Shipped">
+<blockquote>Picture one worker: the model. And your computer as a house of rooms. The worker can stand in any room. What changes is which of your shelves it reaches.</blockquote>
+<blockquote>Picture one worker: the model. It always thinks in the vendor's building. And your computer is a house of rooms. The worker can reach any room. What changes is which shelves it can touch.</blockquote>
+<figcaption><b>Section 03, spoken text</b><span class="ao-meta">the draft against what shipped, word for word</span></figcaption>
+</ao-diff>
+
+The words were fixed in minutes, but the drawing lagged. At the first review the teaching
+reviewer saw section 03 still drawing the model inside the Chat and Cowork rooms, while the
+narrator says it "always thinks in the vendor's building". That round's fixers brought the two
+together.
+
+## What each fact-checker caught
+
+Each checker gets the script and one job. One checks claims against the sources they cite, one
+checks the facts, one (the currency checker) looks for anything already out of date, and one
+reads it as the beginner the course is for. The beginner checker was in the crew for
+[the course's first lesson](/ledger/the-missing-map/) too.
+
+<ao-bars max="11" unit="findings">
+<table>
+<thead><tr><th>Checker</th><th>Misleading</th><th>Nitpick</th></tr></thead>
+<tbody>
+<tr><td>Facts</td><td>6</td><td>5</td></tr>
+<tr><td>Beginner</td><td>6</td><td>1</td></tr>
+<tr><td>Sources</td><td>4</td><td>3</td></tr>
+<tr><td>Currency</td><td>1</td><td>1</td></tr>
+</tbody>
+</table>
+<figcaption><b>Fact-check findings by checker</b><span class="ao-meta">from the run's log · each finding was marked misleading or nitpick · the fixer applied all 17 misleading ones</span></figcaption>
+</ao-bars>
+
+The others caught real stuff too:
+
+- **The sources checker caught a misquote.** Ethan Mollick, a professor who writes a lot about
+  AI, advises "at least High" thinking. Thinking is the setting for how hard the model works before
+  it answers. The script said "a high thinking level", which turns his floor into a ceiling.
+- **The currency checker caught a billing gap.** The script said there are two ways to pay and
+  left out the part that catches people. If you approve a saved API key (the key to Anthropic's
+  pay-per-use account), your use gets billed to that key instead of your plan.
+
+## The real screens in the lesson
+
+The new plan asks each lesson to show the real thing where it can, so a capture agent recorded
+real screens before anything got animated. Every product fact on screen carries its date and
+"moves monthly".
+
+<details><summary>The screens it recorded, and a date to watch</summary>
+
+The capture agent recorded Anthropic's help page on the 6 October change that moved Cowork to
+the cloud, the list of
+environments to run in on the desktop quick-start page, and one command run in two Windows
+terminals.
+
+<figure>
+<img src="/media/first-lesson-on-the-new-map/shells.webp" alt="Command Prompt prints first and second for echo first && echo second; Windows PowerShell 5.1 rejects the same line: the token && is not a valid statement separator" loading="lazy">
+<figcaption>Section 08 at 5:10. Both terminals are real runs in a demo folder, replayed in the
+lesson. The && means "if that worked, run the next one". Command Prompt runs the line. Windows
+PowerShell 5.1, the one that comes with Windows, refuses it.</figcaption>
+</figure>
+
+That 6 October change opens the lesson. Pro and Max users (Claude's paid plans) who had kept
+Cowork on their own computer found new tasks running in the cloud, with no way back. It was
+eight days old when the lesson was made.
+
+That morning the research agent checked what had changed since the plan was written and filed
+seven findings for other lessons. One of them carries a date. As of 14 October, a beta entry in
+Anthropic's Cowork changelog says the three-tab desktop app ends on 10 November for
+organisations that haven't set one admin setting. So this lesson may need re-recording around
+then.
+
+</details>
+
+## How the lesson got made
+
+One workflow ran 71 Claude agents in ten phases, from reading sources to shipping the video.
+
+<details><summary>All 71 agents, phase by phase, and both review rounds</summary>
+
+The job is one workflow, a script that starts the agents in order. It has ten phases:
+
+- **Sources.** Five agents read the five sources the narration may name. Four more pulled out
+  the points the lesson's spec asks for. One went looking for what had changed since the plan
+  was written.
+- **Plan.** A planner turned the spec into sections.
+- **Script and judge.** Three writers drafted the script at once from three angles. A judge
+  agent scored them out of 100: metaphor-first 85, evidence-first 84, story-first 83. Then it
+  merged the winner with pieces of the other two.
+- **Fact-check.** Four fact-checkers and a fixer.
+- **Narrate.** A narrator, next to a capture agent recording real screens.
+- **Design and animate.** A designer, then one animator per section.
+- **Review.** Two reviewers for two rounds, with a fixer for each flagged section.
+- **Ship.** One agent to render and publish it.
 
 <ao-runs>
 <table>
@@ -141,74 +258,17 @@ agent to render and ship.
 <tr><td>ship</td><td>Ship</td><td>07:45:15</td><td>08:17:38</td></tr>
 </tbody>
 </table>
-<figcaption><b>Workflow wf_43993e8a, 14 Oct, Central time</b><span class="ao-meta">start and end = first and last event in each agent's own transcript · labels and phases from the run's journal · every agent Opus 5.5</span></figcaption>
+<figcaption><b>When each of the 71 agents started and stopped, 14 Oct</b><span class="ao-meta">Central time · start and end are the first and last event in each agent's own transcript · phases from the run's log · every agent was Claude Opus 5.5</span></figcaption>
 </ao-runs>
 
-The tall blocks are the fan-outs: fourteen animators at 06:35, fifteen fixers from 06:55. The
-long line at the end is the ship agent, 32 minutes, most of it rendering. It rendered twice,
-because the publish script refused the first copy: the curriculum had been synced after the
-render, which changed how section 02 draws the map, so the lesson was rendered again with no
-new narration.
+The tall blocks are the moments many agents started at once: fourteen animators at 06:35 and
+fifteen fixers from 06:55. The long line at the end is the ship agent, 32 minutes, most of it
+rendering. It rendered twice. The publish script refused the first copy because the course's
+lesson plan had been updated after the render, which changed how section 02 draws the map. So
+the lesson was rendered again with no new narration.
 
-## What the fact-checkers found
-
-Each fact-checker gets the script and one lens. One checks every claim against the source it
-cites, one checks the facts themselves, one checks whether anything is already out of date, and
-one reads it as the beginner the course is for. Between them they raised 27 findings, each
-marked misleading or nitpick. The 17 marked misleading went to a fixer, which applied all of
-them and "didn't judge any of them wrong".
-
-<ao-bars max="11" unit="findings">
-<table>
-<thead><tr><th>Checker</th><th>Misleading</th><th>Nitpick</th></tr></thead>
-<tbody>
-<tr><td>Facts</td><td>6</td><td>5</td></tr>
-<tr><td>Beginner</td><td>6</td><td>1</td></tr>
-<tr><td>Sources</td><td>4</td><td>3</td></tr>
-<tr><td>Currency</td><td>1</td><td>1</td></tr>
-</tbody>
-</table>
-<figcaption><b>Fact-check findings by checker</b><span class="ao-meta">the four checkers' results in the run journal, 06:03–06:05 · fixer 06:05–06:09</span></figcaption>
-</ao-bars>
-
-The sources checker caught the script quoting Ethan Mollick's advice to use "at least High"
-thinking as "a high thinking level", which turns his floor into a ceiling. The currency checker
-found the billing line saying two ways to pay exist, without the part that catches people: a
-saved API key, once approved, is billed instead of the plan.
-
-The beginner checker found the two that sit on the lesson's own question. Section 06 told the
-viewer that, with Cowork moved to the cloud, Anthropic points local work to Claude Code. Next to
-section 07's "Local: your machine, full access", a beginner hears that Claude Code keeps their
-files at home. It doesn't: the commands run on your machine, and whatever it reads goes to the
-model on Anthropic's servers.
-
-<ao-diff labels="Judge's script|Beginner checker's fix|Shipped">
-<blockquote>For local-only work, Anthropic points you to Claude Code.</blockquote>
-<blockquote>For work that runs on your own machine, Anthropic points you to Claude Code. Running locally isn't the same as staying local, though: whatever it reads still goes to the model on Anthropic's servers.</blockquote>
-<blockquote>For local work, Anthropic points you to Claude Code. Running locally isn't staying local, though: what it reads still goes to Anthropic's servers.</blockquote>
-<figcaption><b>Section 06, spoken text</b><span class="ao-meta">factcheck:beginner quote and fix, 14 Oct 06:05 · shipped script.md · cue markers removed</span></figcaption>
-</ao-diff>
-
-The other was the lesson's central picture. The script put the model inside your computer, a
-worker who "can stand in any room". On every surface in the lesson the model runs in the
-vendor's building, so the picture taught the wrong machine in the first minute.
-
-<ao-diff labels="Judge's script|Shipped">
-<blockquote>Picture one worker: the model. And your computer as a house of rooms. The worker can stand in any room; what changes is which of your shelves it reaches.</blockquote>
-<blockquote>Picture one worker: the model. It always thinks in the vendor's building. And your computer is a house of rooms. The worker can reach any room; what changes is which shelves it can touch.</blockquote>
-<figcaption><b>Section 03, spoken text</b><span class="ao-meta">factcheck:beginner quote, 14 Oct 06:05 · shipped script.md · cue markers removed</span></figcaption>
-</ao-diff>
-
-The words were fixed by 06:09. The drawing wasn't. At the first review, 06:55, the teaching
-reviewer reported that section 03 still drew the model inside the Chat and Cowork rooms while
-the narrator says it always thinks in the vendor's building. **The fix reached the script before
-it reached the picture.** It took the review round's fixers to bring the two together.
-
-## What the reviewers found
-
-Two reviewers look at the rendered lesson, one for craft (layout, crops, timing) and one for
-teaching. The first round's render ran 733.5 seconds, 12.2 minutes, over the course's
-11.5-minute ceiling.
+Two reviewers watch the rendered lesson, one for craft and one for teaching. The first round's
+render ran 733.5 seconds, 12.2 minutes, over the course's 11.5-minute limit.
 
 <ao-bars max="24" unit="findings">
 <table>
@@ -220,36 +280,14 @@ teaching. The first round's render ran 733.5 seconds, 12.2 minutes, over the cou
 <tr><td>Teaching, round 2</td><td>1</td><td>8</td><td>9</td></tr>
 </tbody>
 </table>
-<figcaption><b>Review findings by round</b><span class="ao-meta">review:craft and review:teaching results · round 1 06:48–06:55, round 2 07:16–07:23</span></figcaption>
+<figcaption><b>Review findings by round</b><span class="ao-meta">craft looks at layout, crops and timing · teaching looks at what the lesson teaches · round 2 ran after the round 1 fixes</span></figcaption>
 </ao-bars>
 
-The second round found more problems than the first, 42 against 32, but fewer major ones, 4
-against 9. They were the things you only see once the big ones are gone: a capture zoomed until
-its text ran off the frame, folder icons sitting on their own labels for about four minutes, a
+Round 2 found more problems than round 1, 42 against 32, but fewer major ones, 4 against 9.
+They were the kind you only see once the big ones are gone: a screen recording zoomed until its
+text ran off the frame, folder icons sitting on their own labels for about four minutes, a
 five-row card on screen for two seconds. The script went from 1,608 spoken words to 1,516 and
 the lesson came in at 11:18. A last agent looked at a still every three seconds, 227 of them,
 and wrote "ship it".
 
-## What the new map put on screen
-
-The rebuilt map asks each lesson to show the real thing where it can, so a capture agent
-recorded screens before anyone animated them: Anthropic's help page on the 6 October change,
-the desktop quickstart's list of environments, and one command run in two shells. Every product
-fact on screen carries its date and "moves monthly".
-
-<figure>
-<img src="/media/first-lesson-on-the-new-map/shells.webp" alt="Command Prompt prints first and second for echo first && echo second; Windows PowerShell 5.1 rejects the same line: the token && is not a valid statement separator" loading="lazy">
-<figcaption>Section 08 at 5:10. Both terminals are real runs in a demo folder, replayed by the
-lesson engine: CMD runs the line, Windows PowerShell 5.1 refuses it.</figcaption>
-</figure>
-
-That 6 October change opens the lesson: Pro and Max users who had kept Cowork on their own
-computer found new tasks running in the cloud, with no way back. It was eight days old when the
-lesson was made. That morning the research agent checked what had changed since the map was
-written and filed seven findings for other lessons. One of them carries a date: Anthropic's
-Cowork changelog, in a beta entry, says the three-tab desktop app ends on 10 November for
-organisations that haven't set one admin setting, so this lesson may need re-recording around
-then.
-
-A lesson about which computer does the work had to be stopped from naming the wrong computer,
-and the agent that stopped it was the one asked to know nothing.
+</details>
