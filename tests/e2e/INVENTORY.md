@@ -417,6 +417,7 @@ every 200 ms), so nothing waits for the Worker's key.
 | With no recording of this version the browser voice reads, block by block: its word boundaries mark the word, the speed sets `rate`, a click starts the next utterance at that word | `speechSynthesis` (a stand-in voice in Chromium) | read-3 |
 | The real browser voice reads and pauses | `speechSynthesis` (WebKit) | read-3b (phone) |
 | A video starting pauses the reading, the reading starting pauses the video, and `ao-stop` stops it | claim, the bar's `aoPause`, `ao-stop` | read-4 |
+| The lock screen names the reading; its play resumes it and pauses a playing video, as the bar's does; closing the reader clears it | `navigator.mediaSession` (`recorded.js`), claim | read-4b |
 | In the homepage's reader (the panel mounts `views/post.js`) Listen works, and closing the panel stops it | `ao-stop`, the view's unmount | read-5 |
 | `/read/index.json` and `/read/<slug>.json` are the recorded posts', never the live notebook's or an unlisted post's, with the page's `data-read-hash`; a version not recorded answers `200 { ready: false }` | the build, `worker/media/serve.js` | read-6 |
 | A post never recorded (unlisted, a live notebook) has no `data-read-hash`: Listen reads in the browser's voice, with no choice of voice, no word of a recording and no `/read/` request | `listen.js`, `bar.js` | read-7 |

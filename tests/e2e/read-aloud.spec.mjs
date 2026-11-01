@@ -258,6 +258,31 @@ test('read-4 a video starting pauses the reading, the reading starting pauses th
   expect((await state(page)).playing).toBe(false);
 });
 
+test('read-4b the lock screen names the reading, its play pauses a playing video as the bar does, and closing clears it', async ({ page, request }) => {
+  // The lock screen's buttons, as the page set them.
+  await page.addInitScript(() => {
+    const handlers = (window.__lock = {});
+    const set = MediaSession.prototype.setActionHandler;
+    MediaSession.prototype.setActionHandler = function (action, fn) { handlers[action] = fn; set.call(this, action, fn); };
+  });
+  await recorded(page, request, VIDEO_POST);
+  await page.goto(VIDEO_POST);
+  await listen(page).click();
+  await expect.poll(async () => (await state(page)).playing).toBe(true);
+  expect(await page.evaluate(() => navigator.mediaSession.metadata?.title)).toBe(await page.locator('[data-r="t"]').innerText());
+  // With its sound on, so scrolling it away doesn't pause it: only the one-player rule can.
+  const v = loneMedia(page).first();
+  await play(v, { muted: false });
+  await expectPlaying(v);
+  await expect.poll(async () => (await state(page)).paused).toBe(true);
+  await page.evaluate(() => window.__lock.play());
+  await expect.poll(async () => (await state(page)).paused).toBe(false);
+  await expectPlaying(v, false);
+  await page.locator('.ra-close').click();
+  expect(await page.evaluate(() => [navigator.mediaSession.metadata, window.__lock.play, window.__lock.pause]))
+    .toEqual([null, null, null]);
+});
+
 test('read-5 in the homepage reader Listen works, and closing the panel (ao-stop) stops it', async ({ page, request }) => {
   await recorded(page, request, POST);
   await page.goto('/?tier=low');

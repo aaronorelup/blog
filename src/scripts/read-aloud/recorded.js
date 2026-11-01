@@ -67,19 +67,21 @@ export function recorded({ parts }, order, on, title) {
     return [0, 0];
   }
 
-  if ('mediaSession' in navigator) {
-    navigator.mediaSession.metadata = new MediaMetadata({ title, artist: 'Aaron Orelup', album: 'aaronorelup.com' });
-  }
+  // The lock screen names the reading while it is open; its play goes through on.play (index.js), which first pauses
+  // the page's other players, as the bar's does.
+  const session = navigator.mediaSession;
+  if (session) session.metadata = new MediaMetadata({ title, artist: 'Aaron Orelup', album: 'aaronorelup.com' });
+  function pause() { want = false; audio.pause(); on.state(); }
   return {
     audio,
     play(from) {
       if (from) load(...locate(from));
       else if (part < 0) load(0, 0);
       run();
-      navigator.mediaSession?.setActionHandler('play', () => this.play());
-      navigator.mediaSession?.setActionHandler('pause', () => this.pause());
+      session?.setActionHandler('play', () => on.play());
+      session?.setActionHandler('pause', pause);
     },
-    pause() { want = false; audio.pause(); on.state(); },
+    pause,
     playing: () => want,
     rate(x) { audio.defaultPlaybackRate = audio.playbackRate = x; }, // the default survives a new part's load
     // The words each block has in the recording, for the check that the page shows the text the voice read.
@@ -93,7 +95,9 @@ export function recorded({ parts }, order, on, title) {
       audio.pause();
       audio.removeAttribute('src');
       audio.load();
-      for (const action of ['play', 'pause']) navigator.mediaSession?.setActionHandler(action, null);
+      if (!session) return;
+      session.metadata = null;
+      for (const action of ['play', 'pause']) session.setActionHandler(action, null);
     },
   };
 }

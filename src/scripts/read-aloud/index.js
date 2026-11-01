@@ -30,6 +30,7 @@ export function open(root, button, onClose) {
     block: (r) => mark(r),
     state: render,
     end: () => mark(null),
+    play: () => play(), // the lock screen's play button
   };
   const ui = bar({ play: toggle, speed: faster, voice: use, close });
   const { el } = ui;
