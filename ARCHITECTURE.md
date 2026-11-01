@@ -322,7 +322,7 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   `post/highlight.js` marks. Ask Goobie loads `search/ask.js` only when opened: `GET /api/session` first, and only
   when that says `ask: true`, Turnstile and a 30-minute token; answers are text, `[n]` linked to their passages
   (a cite's `kind` puts a notes passage on `/ledger/<slug>/notes/`, through the same `pagePath` as search results).
-  The page numbers the cites by post (1, 2, 3 in order of first mention, a run on one post shown once) and each
+  The page numbers the cites by post (1, 2, 3 in order of first mention, a run showing each post once) and each
   link's hover card is its post's, with a line naming the passage (`PREVIEWS.md`); the Worker's `{ answer, cites }`
   keeps the excerpt numbers the model wrote.
 - **Search and Ask.** The build writes each listed post and notes page as chunks (`/search/docs/`) and a manifest

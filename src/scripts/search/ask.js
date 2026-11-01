@@ -126,31 +126,33 @@ function passage({ kind, anchor, heading }) {
 }
 
 // Goobie's [n] number excerpts; a reader counts posts. Each [n] shows its post's place among the posts cited, in order
-// of first mention (1, 2, 3, no gaps), and a run of them on one post (only spaces between) shows once, as its first
-// passage. Every link still goes to its own passage, on the post or its notes page, with the question's words marked.
+// of first mention (1, 2, 3, no gaps), and a run of them (only spaces between) shows each post once, as its first
+// passage there. Every link still goes to its own passage, on the post or its notes page, with the question's words
+// marked.
 function cited(text, cites, q, cards) {
   const byN = new Map(cites.map((c) => [`[${c.n}]`, c]));
   const posts = [];       // slugs in order of first mention
   const out = [];
-  let open = null;        // the slug of the last link, while only spaces have followed it
+  let run = new Set();    // the posts linked since the last words
   text.split(/(\[\d+\])/).forEach((part, i) => {
     const c = i % 2 ? byN.get(part) : null;
     if (!c) {
-      if (part.trim()) open = null;
+      if (part.trim()) run = new Set();
       out.push(part);
       return;
     }
-    if (c.slug === open) {
-      while (typeof out.at(-1) === 'string') out.pop();   // the spaces since that link
+    if (run.has(c.slug)) {
+      while (typeof out.at(-1) === 'string') out.pop();   // the spaces since the last link
       return;
     }
     if (!posts.includes(c.slug)) posts.push(c.slug);
     const n = posts.indexOf(c.slug) + 1;
     const where = passage(c);
-    open = c.slug;
+    run.add(c.slug);
     out.push(h('a', {
       class: 'ask-cite', href: deepLink(pagePath(c.slug, c.kind), c.anchor, q),
-      'aria-label': `Source ${n}: ${cards[c.slug]?.title ?? c.title}, ${where}`, 'data-card-line': `Goobie cites: ${where}`,
+      'aria-label': `Source ${n}: ${cards[c.slug]?.title ?? c.title}, ${where}`,
+      'data-card-line': `Goobie cites: ${where}`,
     }, `[${n}]`));
   });
   return out;
