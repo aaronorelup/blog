@@ -63,7 +63,7 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
    plugins in `scripts/build/markdown.mjs`, in order: `rehype-post-images` (raw HTML parsed; every picture gets its
    width, height and its `data-full` copy), `rehype-heading-ids` (github-slugger ids, pinned; an id the page uses
    gets `-1`) and `rehype-post-text`, the one extraction every feature reads (below). A Markdown file that fails to
-   render fails its page (`renderEntry`), since Astro itself only logs it.
+   render fails its page (`renderEntry`), since Astro itself only logs it; a live notebook's page builds blank.
 4. **Integrations** (`astro.config.mjs`), in order: `statsPages`, `loreThumbs`, `media` (no file over 25 MiB,
    no video or audio in `public/` outside `STAYS_IN_GIT`), `verifyDist` (the frozen contracts over `dist/`, then
    the budgets, printed). The config also defines `__PUBLIC_DIR__` (read by `src/lib/paths.js`) and, for

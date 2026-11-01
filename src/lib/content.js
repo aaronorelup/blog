@@ -1,15 +1,20 @@
 // The only importer of astro:content (with content.config.ts and src/schemas/). Collections come back
 // sorted by slug, because Astro 5 returns them in no fixed order. entry.id is the file name: the URL slug.
 import { getCollection, render } from 'astro:content';
+import { isLive } from '../data/exempt.js';
 import { isListed } from './posts.js';
 
 const bySlug = (a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 const sorted = async (name) => (await getCollection(name)).sort(bySlug);
 
 export const slugOf = (entry) => entry.id;
-// Astro only logs a Markdown file that fails to render (an unknown <ao-*> tag, say) and builds its page blank.
+// Astro only logs a Markdown file that fails to render (an unknown <ao-*> tag, say) and builds its page blank. That
+// fails the build, except in a live notebook, whose page builds blank on Astro's logged error alone.
 export const renderEntry = (entry) => {
-  if (!entry.rendered) throw new Error(`${entry.filePath} did not render: its error is logged above`);
+  if (!entry.rendered && !isLive(entry.id)) {
+    throw new Error(`${entry.filePath} did not render. Astro logged why when it read the file; a cached build `
+      + 'skips that log, so rm -rf node_modules/.astro to see it again');
+  }
   return render(entry);
 };
 
