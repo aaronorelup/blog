@@ -2,7 +2,7 @@
 // cap (PREVIEWS.md), icons and project pictures are within theirs (src/data/limits.js), and every video or audio
 // file a post, note or project names is in R2 (src/data/media-manifest.json) or on disk in a STAYS_IN_GIT folder.
 import { ICON, PREVIEW_MEDIA, PROJECT_IMAGE } from '../../src/data/limits.js';
-import { STAYS_IN_GIT, TYPES } from '../media/files.mjs';
+import { belongsInR2, TYPES } from '../media/files.mjs';
 import { keyLine, liner, withoutCode } from './text.mjs';
 
 const EXTS = Object.keys(TYPES).filter((e) => e !== 'ts').join('|');
@@ -33,7 +33,7 @@ export default function assets(repo, report) {
     const line = liner(raw);
     for (const m of withoutCode(raw).matchAll(MEDIA_PATH)) {
       const url = m[1];
-      const inGit = STAYS_IN_GIT.some((dir) => url.startsWith('/' + dir)) && repo.exists('public' + url);
+      const inGit = !belongsInR2(url) && repo.exists('public' + url);
       if (!r2[url] && !inGit) report(file, line(m.index), `${url} is not in R2: npm run media:push (docs/MEDIA.md)`, 'deploy');
     }
   }
