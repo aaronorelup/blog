@@ -1,8 +1,8 @@
 // Every post component (with its attributes and media), media block and standalone page the built site uses, read
-// as HTML trees (prose that merely mentions `<ao-cues>` doesn't count). `node scripts/tools/element-usage.mjs [dist]` scans posts, notes
-// and every page from public/, writes tests/e2e/targets.json (the e2e specs read it) and fails on a defined tag
-// with no instance. `--diff <old> <new...>` (all .md, or all built .html) fails on any ao-*, video, audio or
-// iframe block of the old post that the new files don't carry byte for byte, and shows where an edited one parts.
+// as HTML trees (prose that merely mentions `<ao-cues>` doesn't count). `node scripts/tools/element-usage.mjs [dist]`
+// scans posts, notes and every page from public/, writes tests/e2e/targets.json (the e2e specs read it) and fails on
+// a defined tag with no instance outside a live notebook. `--diff <old> <new...>` (all .md, or all built .html) fails
+// on any ao-*, video, audio or iframe block of the old post that the new files don't carry byte for byte.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -137,14 +137,15 @@ function runScan(dist) {
   const empty = [];
   for (const [tag, uses] of Object.entries(targets.tags)) {
     const pages = new Set(uses.map((u) => u.page));
-    if (!uses.length) empty.push(tag);
+    // The specs never pick a live notebook, so a tag only AO-073 uses has nothing left to test.
+    if (!uses.some((u) => !u.live)) empty.push(tag);
     console.log(`${tag.padEnd(14)} ${String(uses.length).padStart(3)} on ${pages.size} page(s)`);
   }
   console.log(`${targets.multiMedia.length} pages with several videos or audio, ${targets.iframes.length} with iframes, ` +
     `${targets.dataFull.length} with data-full pictures, ${Object.keys(targets.standalone).length} standalone pages linked`);
   console.log(`wrote ${path.relative(ROOT, TARGETS)}`);
   if (empty.length) {
-    console.error(`no instance of: ${empty.join(', ')}`);
+    console.error(`no instance outside a live notebook of: ${empty.join(', ')}`);
     process.exitCode = 1;
   }
 }
