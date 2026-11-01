@@ -17,7 +17,7 @@
 // of that video. courseCounts in data/courses.js does the counting. Data from before the rebuild has no legacy
 // rows, so `rebuilt` is false there and the lines that describe the rebuild stay out (the page may deploy first).
 import PanelPage from '../../layouts/PanelPage.astro';
-import Coin from '../../components/Coin.astro';
+import Coin from '../../components/courses/Coin.astro';
 import LessonList from '../../components/courses/LessonList.astro';
 import '../../styles/courses.css';
 import { COURSES, fmtDuration, fmtMinutes, courseCounts, isLegacyRow } from '../../data/courses.js';
@@ -310,7 +310,7 @@ const faq = [
     </section>
 
     <section class="hc-section hc-maker">
-      <Coin src="/aaron.webp" label="Aaron Orelup: flip the coin" size={112} />
+      <Coin src="/aaron.webp" label="Aaron Orelup: flip the coin" />
       <div>
         <p class="cs-eyebrow">Who's making this</p>
         <h2>Aaron Orelup</h2>

@@ -1,7 +1,7 @@
 ---
 import { research, slugOf } from '../../lib/content.js';
 import PanelPage from '../../layouts/PanelPage.astro';
-import ResearchView from '../../components/panel/ResearchView.astro';
+import ResearchView from '../../components/research/ResearchView.astro';
 
 export async function getStaticPaths() {
   return (await research()).map((doc) => ({ params: { slug: slugOf(doc) }, props: { doc } }));

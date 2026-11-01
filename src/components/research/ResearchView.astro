@@ -1,0 +1,31 @@
+---
+// One research document: a ledger entry's header (PostView) with a provenance line and a raw-markdown link for
+// agents (research.css), and its text as prose.
+import { renderEntry } from '../../lib/content.js';
+import { shortDate } from '../../lib/dates.js';
+
+const { doc } = Astro.props;
+const { Content } = await renderEntry(doc);
+---
+
+<article data-post-article class="rv">
+  <a href="/research" data-no-fly class="rv-back pc-link-accent">← RESEARCH</a>
+
+  <div class="rv-id">
+    {doc.data.id} <span class="rv-quiet">/ {shortDate(doc.data.date)}</span>
+  </div>
+  <h1 class="rv-title">{doc.data.title}</h1>
+  <p class="rv-sum">{doc.data.summary}</p>
+  {doc.data.provenance && <p class="rv-prov">{doc.data.provenance}</p>}
+  {doc.data.raw && (
+    <p class="rv-raw">
+      <a href={doc.data.raw} class="rv-raw-link pc-link-accent">raw markdown ↗</a>
+      <span class="rv-quiet"> — hand this link to your agent</span>
+    </p>
+  )}
+  <div class="rv-rule"></div>
+
+  <div class="pc-prose">
+    <Content />
+  </div>
+</article>
