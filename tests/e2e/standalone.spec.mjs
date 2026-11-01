@@ -1,6 +1,6 @@
 // Every same-origin page a post links, iframes or plays in <ao-game> (targets.json "standalone"): it loads with a clean
-// console and its ?v= variants switch. The HLS player pages stream from R2, seek and show captions; the BAD. VERY BAD.
-// making-of page keeps its own lightbox. INVENTORY rows standalone-*, hls-*, making-*.
+// console, its media answer byte ranges and its ?v= variants switch. The HLS player pages stream from R2, seek and
+// show their captions; the BAD. VERY BAD. making-of page keeps its own lightbox. INVENTORY standalone-*, hls-*, making-*.
 import fs from 'node:fs';
 import { test, expect } from './fixtures.mjs';
 import { targets, play, expectPlaying } from './helpers.mjs';
@@ -25,6 +25,24 @@ for (const [path, s] of pages) {
       expect(status).toBe(200);
       expect(errors).toEqual([]);
     });
+  }
+  if (targets.pages[path]?.video || targets.pages[path]?.audio) {
+    for (const href of s.hrefs) {
+      test(`standalone-3 ${href} sets up its media, and each answers a byte range`, async ({ page }) => {
+        await page.goto(href);
+        await page.waitForTimeout(800);
+        // An HLS stream that hls.js feeds through a blob: is hls-1's; every other source is a file on R2.
+        const { files, streams } = await page.evaluate(() => {
+          const srcs = [...document.querySelectorAll('video, audio')].flatMap((m) =>
+            [m.currentSrc || m.src, ...[...m.querySelectorAll('source')].map((s) => s.src)]).filter(Boolean);
+          return { files: [...new Set(srcs.filter((u) => !u.startsWith('blob:')))], streams: srcs.filter((u) => u.startsWith('blob:')).length };
+        });
+        expect(files.length + streams).toBeGreaterThan(0);
+        const statuses = await page.evaluate((files) => Promise.all(files.map((u) =>
+          fetch(u, { headers: { Range: 'bytes=0-1' } }).then((r) => `${r.status} ${new URL(u).pathname}`))), files);
+        expect(statuses.filter((s) => !s.startsWith('206 '))).toEqual([]);
+      });
+    }
   }
   const variants = s.hrefs.filter((h) => /[?&]v=/.test(h));
   if (variants.length) {
@@ -59,8 +77,8 @@ for (const path of hls) {
     expect([200, 206]).toContain(res.status());
     expect(res.headers()['x-media-source']).toBe('r2');
     await expect.poll(() => v.evaluate((m) => m.currentTime), { timeout: 30_000 }).toBeGreaterThan(1);
-    const tracks = await v.evaluate((m) => m.textTracks.length);
-    if (tracks) {
+    // The players with a captions track in their page (the Still on Shift ones have none).
+    if (fs.readFileSync(publicFile(path), 'utf8').includes('<track')) {
       await v.evaluate((m) => { m.textTracks[0].mode = 'showing'; });
       await expect.poll(() => v.evaluate((m) => m.textTracks[0].cues?.length || 0)).toBeGreaterThan(0);
     }
