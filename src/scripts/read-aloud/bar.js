@@ -24,7 +24,8 @@ export function bar(on) {
   for (const b of el.querySelectorAll('[data-voice]')) b.addEventListener('click', () => on.voice(b.dataset.voice));
 
   let shown = {};
-  // state: { playing, speed, voice, recorded (a recording of this version exists), speech (the browser has a voice), note }
+  // state: { playing, speed, voice, recorded (a recording of this version exists), speech (the browser has a voice),
+  // note }
   function show(state) {
     if (state.playing !== shown.playing) {
       $('.ra-play').innerHTML = state.playing ? PAUSE : PLAY;

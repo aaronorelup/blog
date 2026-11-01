@@ -4,6 +4,7 @@
 import { nested, skipped } from '../../lib/text/rules.js';
 
 const SPACE = /\s/;
+const attrOf = (el) => (name) => el.getAttribute(name);
 
 // One block: el, its display text (whitespace collapsed, trimmed, as the build makes it), nodes [[textNode, rawStart]]
 // and at[i], the raw offset of display character i in the nodes' text run together.
@@ -13,7 +14,7 @@ function blockOf(el) {
   (function walk(n) {
     for (const c of n.childNodes) {
       if (c.nodeType === Node.TEXT_NODE) { nodes.push([c, raw.length]); raw += c.data; }
-      else if (c.nodeType === Node.ELEMENT_NODE && !nested(c.localName) && !skipped(c.localName, (a) => c.getAttribute(a))) walk(c);
+      else if (c.nodeType === Node.ELEMENT_NODE && !nested(c.localName) && !skipped(c.localName, attrOf(c))) walk(c);
     }
   })(el);
   let text = '';
@@ -30,7 +31,8 @@ function blockOf(el) {
 }
 
 // Every block of root, by its data-r ('t', 's', '0', ...), in reading order.
-export const blocksOf = (root) => new Map([...root.querySelectorAll('[data-r]')].map((el) => [el.dataset.r, blockOf(el)]));
+export const blocksOf = (root) => new Map([...root.querySelectorAll('[data-r]')]
+  .map((el) => [el.dataset.r, blockOf(el)]));
 
 // The text node and offset of raw offset `raw` in block b.
 function point(b, raw) {

@@ -340,6 +340,21 @@ its static rung mid-test.
 | A card's post link opens its hover card | projects-5 (desktop) |
 | In the homepage overlay the projects view has the same cards in the same sections, and a post link opens in the reader with no document load | projects-6 |
 
+## Read-aloud (`read-aloud.spec.mjs`)
+
+Recordings are fixtures the spec makes from the build's `/read/<slug>.json` (silent audio in byte ranges, a word
+every 200 ms), so nothing waits for the Worker's key.
+
+| Behaviour | Listener or attribute | Spec |
+|---|---|---|
+| Listen opens karaoke mode and plays this version's recording; the word read is marked at 1x and 2x; the speed button steps 1x, 1.25x, 1.5x, 2x, each setting `playbackRate`; pause and close | `[data-read-aloud]` click (`listen.js`), `.ra-bar` buttons, `CSS.highlights` `ao-read` | read-1 |
+| A click on a word mid-paragraph starts there within a second, within 0.3 s of the word, in its part | article `click` → `caretPositionFromPoint` / `caretRangeFromPoint` | read-2 |
+| With no recording of this version the browser voice reads, block by block: its word boundaries mark the word, the speed sets `rate`, a click starts the next utterance at that word | `speechSynthesis` (a stand-in voice in Chromium) | read-3 |
+| The real browser voice reads and pauses | `speechSynthesis` (WebKit) | read-3b (phone) |
+| A video starting pauses the reading, and the reading starting pauses the video | claim, the bar's `aoPause` | read-4 |
+| In the homepage's reader Listen works, and closing the panel stops it | `ao-stop` | read-5 |
+| `/read/index.json` lists the listed posts, never the live notebook, with the page's `data-read-hash`; a version not recorded answers `200 { ready: false }` | the build, `worker/media/serve.js` | read-6 |
+
 ## The live site (`live.spec.mjs`, `npm run e2e:live`)
 
 GET and HEAD only: `/version.json` is a main build (live-1), every baseline path answers (live-2), media come from

@@ -10,7 +10,8 @@ const UNITS = { '%': 'percent', x: 'times', ms: 'millisecond', s: 'second', min:
   MB: 'megabyte', GB: 'gigabyte', TB: 'terabyte', Hz: 'hertz', kHz: 'kilohertz', MHz: 'megahertz', GHz: 'gigahertz',
   px: 'pixel', fps: 'frames per second' };
 const BIG = { K: 'thousand', M: 'million', B: 'billion' };
-const ORDINAL = { one: 'first', two: 'second', three: 'third', five: 'fifth', eight: 'eighth', nine: 'ninth', twelve: 'twelfth' };
+const ORDINAL = { one: 'first', two: 'second', three: 'third', five: 'fifth', eight: 'eighth', nine: 'ninth',
+  twelve: 'twelfth' };
 
 export function words(n) {
   if (n < 20) return ONES[n];
@@ -26,7 +27,8 @@ const ordinal = (w) => w.replace(/[a-z]+$/, (x) => ORDINAL[x] || x.replace(/y$/,
 const plural = (w) => w.replace(/[a-z]+$/, (x) => x.replace(/y$/, 'ie') + 's');
 const unit = (u, n) => (n === '1' || !/^\w*(second|minute|byte|pixel)$/.test(UNITS[u]) ? UNITS[u] : UNITS[u] + 's');
 
-// A written number: 1,308 in full, a bare four-digit one in pairs (years, model numbers), a leading zero digit by digit.
+// A written number: 1,308 in full, a bare four-digit one in pairs (years, model numbers), a leading zero digit by
+// digit.
 function number(s) {
   const [int, frac] = s.replace(/,/g, '').split('.');
   const whole = /^0\d/.test(int) || int.length > 12 ? digits(int)
@@ -51,7 +53,8 @@ const RULES = [
     (g) => `${MONTHS[g.Mo - 1]} ${ordinal(words(Number(g.D)))}, ${pairs(Number(g.Y))}`],
   [String.raw`${FREE}(?<dm>[1-9]|[12]\d|3[01]) (?<mon>${MONTHS.join('|')})\b`,
     (g) => `the ${ordinal(words(Number(g.dm)))} of ${g.mon}`],
-  [String.raw`\b(?<mon2>${MONTHS.join('|')}) (?<md>[1-9]|[12]\d|3[01])${END}`, (g) => `${g.mon2} ${ordinal(words(Number(g.md)))}`],
+  [String.raw`\b(?<mon2>${MONTHS.join('|')}) (?<md>[1-9]|[12]\d|3[01])${END}`,
+    (g) => `${g.mon2} ${ordinal(words(Number(g.md)))}`],
   [String.raw`\bAO-(?<ao>\d{1,4})\b`, (g) => `A O ${words(Number(g.ao))}`],
   [String.raw`\$(?<cash>${NUM})(?<big>[KMB](?!\w))?(?<dash>-(?=[A-Za-z]))?`, money],
   [String.raw`${FREE}(?<a>${NUM})[-–](?<b>${NUM})(?:\s?(?<ru>${UNIT}))?${END}`,
@@ -82,7 +85,8 @@ export function say(display) {
 }
 
 // A section's blocks [[r, kind, text]] → the text sent, blocks apart by a blank line, a heading or list item without
-// its own closing punctuation ended with a full stop. map: [spokenStart, spokenLength, block, displayStart, displayLength].
+// its own closing punctuation ended with a full stop.
+// map: [spokenStart, spokenLength, block, displayStart, displayLength].
 export function spoken(blocks) {
   let text = '';
   const map = [];

@@ -24,7 +24,7 @@ needs a secret or state. Only the paths `run_worker_first` names reach it: video
 | `worker/search/` | `serve.js` (`GET /api/search`), `retrieve.js` (embed a query, ask Vectorize; Ask uses it too), `sync.js` (`search.sync`, and `indexVersion()`), `counts.js` (the anonymous counts), `search.sql` |
 | `worker/ask/` | `serve.js` (`POST /api/ask`), `prompt.js` (Goobie's prompt, the numbered excerpts, `cite()`), `deepseek.js` (the one call), `ask.sql` |
 | `worker/cleanup.js` | `cleanup.daily`, the sweep of old counts, answers and totals |
-| `worker/read/` | a stub step until T2.4 records read-aloud |
+| `worker/read/` | `step.js` (`read.step`, the read-aloud recorder), `voice.js` (the ElevenLabs calls), `read.sql` |
 
 ## Routes
 
@@ -46,7 +46,7 @@ R2 objects under `read/` go out `immutable`: their names are hashes of their tex
 | Schedule | Jobs |
 |---|---|
 | `* * * * *` | `stats.runStep`, `search.sync`, `cleanup.daily` (acts once a day, at 03:07 UTC) |
-| `*/10 * * * *` | `read.step` (stub until T2.4) |
+| `*/10 * * * *` | `read.step` |
 
 Each job gets `(env, scheduledTime)`, does one bounded step and returns a word, which Workers Logs show as
 `stats.runStep idle`. A job that throws is logged as `stats.runStep <message>` and the others carry on.
@@ -80,13 +80,36 @@ about 1,000 chunks in 9 runs (10 minutes on 2026-11-01); an AO-073 push re-embed
 **The daily sweep** (`cleanup.js`, 03:07 UTC): `searches` rows past 180 days, `ask_cache` past 7 days, `usage_day`
 past 60 days. A missed run waits for the next day's.
 
+**Read-aloud** (`read/step.js`, every 10 minutes). The build writes `/read/index.json`, `{ voice, model, format,
+settings, posts: { slug: { hash, chars, rank } } }` for the listed posts (never a live notebook; rank 0 first: Start
+here, then newest), and one `/read/<slug>.json`, `{ slug, hash, voice, model, sections: [{ hash, chars, blocks:
+[[r, kind, text]] }] }`, per built post (`src/lib/read/sections.js`: the title, summary and opening, then one section
+per h2, split above 2,500 spoken characters; a section's hash covers the voice, model, settings and its text). A run:
+1. Stops (`off`) unless the `tts` flag is on and `ELEVENLABS_API_KEY` is set.
+2. Takes the first post by rank whose `read_state` isn't `done` at its hash and has failed fewer than 3 times there
+   (`idle` when none). Its sections already in R2 (`read/<slug>/<section hash>.json`) are kept.
+3. Before voicing: `GET /v1/user/subscription` must answer (else it stops and counts no try) and leave at least
+   `tts_credit_floor` of the account's credit after this run's estimate (half a credit a character); the estimate
+   must fit under `tts_daily_credits` (`spend`), and is settled to what the answers said they cost (`character-cost`).
+4. Voices the missing sections in order, up to 10,000 spoken characters a run (`voice.js`: with-timestamps, the
+   neighbours' text as `previous_text`/`next_text`, 120 s timeout, no retry). The copy sent is
+   `src/lib/read/speak.js`'s (numbers, money, units, dates spelled out); `align.js` turns the character times into
+   words `[j, c0, c1, t0, t1]` on the display text. Each section goes to R2 as `read/<slug>/<hash>.mp3` and
+   `.json` (`{ dur, words }`). A failed call or an answer without a usable alignment counts one try.
+5. With every section in R2 it writes `read/<slug>/<post hash>.json`, `{ v: 1, hash, parts: [{ src, dur, words:
+   [[r, c0, c1, t0, t1]] }] }`, whose existence means the recording is whole, and marks the post `done`.
+
+Each run logs what it did (`read.step what-drives-claude-code-cost: 3 sections, 4210 characters, 1050 credits, 5 sections
+to go`, or
+why it stopped). Old hashes are never deleted, so a rolled-back deploy still finds its audio.
+
 ## Bindings
 
 | Binding | What | Used by |
 |---|---|---|
-| `ASSETS` | the build (`dist/`) | media, reads (`/ledger/previews.json`), stats (`/stats-pages.txt`), search and ask (`/search/manifest.json`'s model, the docs), later read |
-| `MEDIA` | R2 bucket `aaronorelup-site-media` (video, audio, `read/`) | media, later read |
-| `DB` | D1 `blog-reads` | reads, stats, flags, session (flags), search, ask, cleanup, later read |
+| `ASSETS` | the build (`dist/`) | media, reads (`/ledger/previews.json`), stats (`/stats-pages.txt`), search and ask (`/search/manifest.json`'s model, the docs), read (`/read/index.json`, `/read/<slug>.json`) |
+| `MEDIA` | R2 bucket `aaronorelup-site-media` (video, audio, `read/`) | media, read (writes `read/` only) |
+| `DB` | D1 `blog-reads` | reads, stats, flags, session (flags), search, ask, cleanup, read |
 | `AI` | Workers AI (`@cf/baai/bge-m3`) | search (queries and the sync), ask (queries) |
 | `SEARCH_INDEX` | Vectorize `blog-search`, 1024 dimensions, cosine | search, ask |
 | `READS_LIMIT`, `STATS_LIMIT` | 30 and 60 a minute, per post | reads |
@@ -105,7 +128,7 @@ Every limiter is `simple`, counted per Cloudflare location and approximate. None
 | `SESSION_KEY` | `put-secret.mjs SESSION_KEY` makes 32 random bytes; rotating it ends every Ask session |
 | `TURNSTILE_SECRET` | `put-secret.mjs TURNSTILE_SECRET` reads it from the widget |
 | `DEEPSEEK_API_KEY` | Ask's DeepSeek key, from Infisical (`put-secret.mjs DEEPSEEK_API_KEY`; set). Without it Ask is `off` |
-| `ELEVENLABS_API_KEY` | T2.4: the Worker's own restricted key (Text to Speech and User read, a monthly credit quota), never Aaron's main key, so `put-secret.mjs ELEVENLABS_API_KEY <its Infisical name>` |
+| `ELEVENLABS_API_KEY` | read-aloud: the Worker's own restricted key (Text to Speech and User read, a monthly credit quota), never Aaron's main key, so `put-secret.mjs ELEVENLABS_API_KEY <its Infisical name>`. Without it `read.step` is `off` |
 
 ## D1 tables
 
@@ -117,10 +140,10 @@ step, so tables are only ever added, never changed or dropped.
 |---|---|
 | `worker/reads/reads.sql` | `reads (slug, day, country, n)` |
 | `worker/stats/stats.sql` | `stats_state`, `stats_day`, `stats_part` |
-| `worker/lib/flags.sql` | `flags (k, v)`, `usage_day (day, what, n)`: `what` is `search` (embeddings) or `ask` (DeepSeek calls) |
+| `worker/lib/flags.sql` | `flags (k, v)`, `usage_day (day, what, n)`: `what` is `search` (embeddings), `ask` (DeepSeek calls) or `tts_credits` (ElevenLabs credits) |
 | `worker/search/search.sql` | `search_state (k, v)`, `search_docs (doc, id, hash, n)` (each embedded doc, its vector id prefix and chunk count), `searches (day, mode, q, n)` (no address, token, session, country or browser; `q` normalised, scrubbed, at most 80 characters) |
 | `worker/ask/ask.sql` | `ask_cache (key, body, at)`: `key` is the SHA-256 of the model and the exact messages (prompt, excerpts, question); `body` is `{ answer, cites }` (`related` comes from each request's own retrieval) |
-| T2.4 `worker/read/read.sql` | `read_state` |
+| `worker/read/read.sql` | `read_state (slug, hash, state, tries, at)`: each post's recording at the hash `/read/index.json` names; `state` `partial`, `failed` (`tries` failed runs at that hash; 3 and it waits for new text) or `done` |
 
 ## Switches and caps
 
@@ -131,7 +154,8 @@ search: on   ask: on   tts: on   search_daily: 20000   ask_daily: 1000
 ask_min_score: 0.45   tts_daily_credits: 15000   tts_credit_floor: 0.4
 ```
 
-Rows set today: `ask_min_score` `0.5`, tuned on 2026-11-01 over 30 questions written from the posts (the best
+Rows set today: `tts` `off` (2026-11-01, until the Worker has its own ElevenLabs key; then `DELETE FROM flags WHERE
+k = 'tts'` turns read-aloud's recording on), `ask_min_score` `0.5`, tuned on 2026-11-01 over 30 questions written from the posts (the best
 chunk scored 0.51 to 0.74, median 0.65) and 10 off-topic ones (0.38 to 0.49; a prompt-injection try 0.52, which
 Goobie answers within its rules). A row overrides one, takes effect within 30 seconds and survives deploys:
 

@@ -15,6 +15,15 @@
   `public/media/teardown-lab/` and `public/labs/teardown/`) stay in git, because a fleet of other sessions is still
   writing them, video included. Move them with `npm run media:push` once the post is finished.
 
+## Read-aloud recordings (`read/`)
+
+The bucket's `read/` prefix belongs to the read-aloud cron (`worker/read/`, `docs/WORKER.md` "Read-aloud"), never to
+`media:push` or a person: `read/<slug>/<section hash>.mp3` and `.json` (that section's word timings), and
+`read/<slug>/<post hash>.json`, the recording of one version of a post. Names are hashes of the text, so they are
+served `immutable`, never overwritten and never deleted (a rolled-back deploy still finds its audio). They are not in
+`media-manifest.json`, and `media:verify` doesn't check them. Writers do nothing: a post's text changing is what
+records it again, one section at a time.
+
 ## Adding a video or a song to a post
 
 1. Put the file where it would go anyway: `public/media/<slug>/clip.mp4`.

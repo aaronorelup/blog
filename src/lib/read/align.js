@@ -8,7 +8,8 @@ import { toDisplay } from './speak.js';
 export function alignWords(blocks, said, alignment) {
   const { characters: ch, character_start_times_seconds: t0, character_end_times_seconds: t1 } = alignment ?? {};
   if (!ch || ch.join('') !== said.text) return null;
-  const words = blocks.map(([, , text]) => [...text.matchAll(/\S+/g)].map((m) => [m.index, m.index + m[0].length, Infinity, -1]));
+  const words = blocks.map(([, , text]) => [...text.matchAll(/\S+/g)]
+    .map((m) => [m.index, m.index + m[0].length, Infinity, -1])); // [c0, c1, t0, t1]
   const next = blocks.map(() => 0);
   for (let k = 0; k < ch.length; k++) {
     const at = !/\s/.test(ch[k]) && toDisplay(said.map, k);
