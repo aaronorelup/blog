@@ -5,7 +5,8 @@ import * as media from './media/serve.js';   import * as reads from './reads/ser
 import * as stats from './stats/index.js';   import * as session from './session/serve.js';
 import * as search from './search/serve.js'; import * as sync from './search/sync.js';
 import * as ask from './ask/serve.js';       import * as read from './read/step.js';
-import * as cleanup from './cleanup.js';     import { status } from './lib/http.js';
+import * as cleanup from './cleanup.js';     import * as lantern from './lantern.js';
+import { status } from './lib/http.js';
 
 const ROUTES = {
   '/api/reads':   { GET: reads.counts, POST: reads.count },
@@ -13,6 +14,7 @@ const ROUTES = {
   '/api/session': { GET: session.flags, POST: session.mint },
   '/api/search':  { GET: search.serve },
   '/api/ask':     { POST: ask.serve },
+  '/api/lantern': { GET: lantern.serve },
 };
 // Job names are what Workers Logs show, with the word each step returns ("stats.runStep idle").
 const CRONS = {
