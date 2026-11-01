@@ -5,7 +5,6 @@
 // page and openPost() imports it on the homepage, and the browser upgrades the tags either way.
 // The stylesheet is imported by this module, so it reaches both surfaces with it.
 //
-//   <ao-slider aspect="16/9" labels="Before|After"> <img …> <img …> <figcaption>…</figcaption>
 //   <ao-frames fps="24" marks="46:Impact|47:Red frame"> <video …></video> <figcaption>…
 //   <ao-diff labels="Draft|Final"> <blockquote>…</blockquote> <blockquote>…</blockquote> <figcaption>…
 //   <ao-listen ref="a"> <figure data-id="a"><audio …></audio><img …><figcaption>…</figure> …
@@ -30,75 +29,6 @@ import { enhance } from '../elements/enhance.js';
 export { enhance };
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => enhance());
 else enhance();
-
-// ---------------------------------------------------------------------------------------
-// <ao-slider>: two images of the same frame, one over the other, with a divider the reader
-// drags (or moves with the arrow keys) to wipe between them. For before/after pairs where the
-// difference is in the detail: a mask, a fill, a fix.
-//   aspect="w/h"      the frame both images are fitted into (default 16/9)
-//   labels="A|B"      tags for the left and right image (default: each image's alt)
-//   start="50"        where the divider starts, in percent
-// The first <img> is the left side, the second the right; an optional <figcaption> sits under
-// the frame. Without JS the two images and the caption just stack.
-class AoSlider extends HTMLElement {
-  connectedCallback() {
-    if (this._ready) return;
-    const imgs = [...this.querySelectorAll(':scope > img')];
-    if (imgs.length < 2) return;
-    this._ready = true;
-    const [a, b] = imgs;
-    const aspect = this.getAttribute('aspect');
-    if (aspect) this.style.setProperty('--ao-aspect', aspect);
-    const labels = (this.getAttribute('labels') || '').split('|');
-    const la = labels[0] || a.alt || 'Before';
-    const lb = labels[1] || b.alt || 'After';
-
-    const stage = document.createElement('div');
-    stage.className = 'ao-slider-stage';
-    a.classList.add('ao-slider-a');
-    b.classList.add('ao-slider-b');
-    // Both are in view the moment the frame is, so neither should wait on lazy loading.
-    a.loading = 'eager';
-    b.loading = 'eager';
-    stage.append(a, b);
-
-    const line = document.createElement('div');
-    line.className = 'ao-slider-line';
-    line.setAttribute('aria-hidden', 'true');
-    const tagA = document.createElement('span');
-    tagA.className = 'ao-slider-tag ao-slider-tag-a';
-    tagA.textContent = la;
-    const tagB = document.createElement('span');
-    tagB.className = 'ao-slider-tag ao-slider-tag-b';
-    tagB.textContent = lb;
-
-    const range = document.createElement('input');
-    range.type = 'range';
-    range.min = '0';
-    range.max = '100';
-    range.step = '0.5';
-    range.value = String(Math.min(100, Math.max(0, parseFloat(this.getAttribute('start') || '50'))));
-    range.className = 'ao-slider-range';
-    range.setAttribute('aria-label', 'Divider between ' + la + ' and ' + lb);
-    const set = () => this.style.setProperty('--ao-pos', range.value + '%');
-    range.addEventListener('input', set);
-    set();
-
-    // The frame is all slider, so a click can't open the picture: this button does, both sides.
-    a.dataset.label = la;
-    b.dataset.label = lb;
-    const zoom = document.createElement('button');
-    zoom.type = 'button';
-    zoom.className = 'ao-slider-zoom';
-    zoom.textContent = 'Full size';
-    zoom.title = 'Open both pictures full size, to zoom in';
-    zoom.addEventListener('click', () => openViewer(parseFloat(range.value) < 50 ? b : a, [a, b]));
-
-    stage.append(line, tagA, tagB, range, zoom);
-    this.prepend(stage);
-    this.classList.add('ao-slider-ready');
-  }
-}
 
 // ---------------------------------------------------------------------------------------
 // <ao-frames>: a video the reader can step through one frame at a time, for animation where
@@ -2718,7 +2648,6 @@ class AoDemo extends HTMLElement {
 
 if (!customElements.get('ao-demo')) customElements.define('ao-demo', AoDemo);
 if (!customElements.get('ao-transcript')) customElements.define('ao-transcript', AoTranscript);
-if (!customElements.get('ao-slider')) customElements.define('ao-slider', AoSlider);
 if (!customElements.get('ao-frames')) customElements.define('ao-frames', AoFrames);
 if (!customElements.get('ao-diff')) customElements.define('ao-diff', AoDiff);
 if (!customElements.get('ao-listen')) customElements.define('ao-listen', AoListen);

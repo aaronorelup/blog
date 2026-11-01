@@ -112,6 +112,28 @@ Behaviours: model-1, model-2, overlay-3. Used by `jefrie-in-3d` (the best exampl
 
 ## <ao-slider>
 
+Two images of the same frame, one over the other, with a divider the reader drags (or moves with the arrow keys)
+to wipe between them: before and after, where the difference is in the detail. A Full size button opens both in the
+image viewer, since the frame itself is all slider.
+
+| Attribute | |
+|---|---|
+| `aspect="w/h"` | the frame both images are fitted into (default `16/9`) |
+| `labels="A\|B"` | the tags of the left and right image (default: each image's `alt`, else Before and After) |
+| `start="50"` | where the divider starts, in percent |
+
+Children: the first `<img>` is the left side, the second the right; an optional `<figcaption>` sits under the frame.
+Without JS the two images and the caption stack.
+
+```html
+<ao-slider aspect="16/9" labels="Before|After">
+<img src="/media/x/before.webp" alt="…"><img src="/media/x/after.webp" alt="…">
+<figcaption><b>The fix</b><span class="ao-meta">what changed</span></figcaption>
+</ao-slider>
+```
+
+Behaviours: slider-1 to slider-4, viewer-10. Used by 8 posts (`INVENTORY.md`); best shown by `crimson-coil`.
+
 ## <ao-timeline>
 
 Events from several sources at once (sessions, agents, people) in one time order, each on its own rail, so what
