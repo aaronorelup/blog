@@ -65,6 +65,13 @@
   vertical-align: 1px; padding: 0 1px;
 }
 .ask-cite:hover { color: var(--pc-head); text-decoration: underline; }
+/* On a touch screen each [n] is a 44 px target, drawn by an invisible box out of the flow, so the answer's lines don't
+   move. A later cite is drawn over an earlier one, so the box reaches less up and left (toward earlier cites: a run
+   like [1][2], the line above) than down and right, and never over another cite's number. */
+@media (pointer: coarse) {
+  .ask-cite { position: relative; }
+  .ask-cite::before { content: ''; position: absolute; inset: -14px -19px -16px -2px; }
+}
 .ask-fine { margin: var(--space-3) 0 var(--space-4); font-size: var(--text-xs); letter-spacing: 0.02em; color: var(--pc-quiet); }
 .ask .ask-note { padding-top: 0; }
 

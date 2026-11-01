@@ -390,6 +390,7 @@ notebook); Turnstile is a stub that solves at once with the test response.
 | A cite of a notes passage (`kind: 'notes'`) links to `/ledger/<slug>/notes/#<anchor>` and opens it with the words marked; a post passage links to the post | search-13 |
 | Opening Ask keeps the box's words, focused and selected: Enter asks them, typing replaces them | search-14 |
 | Aaron's two answers of 2026-11-01 (`fixtures/answers.mjs`): cites numbered by post with no gaps (1, 2, 3), a run of cites (spaces between too) showing each post once; no `title` tooltip, an `aria-label` "Source n: post, passage"; on a desktop each cite's card is its post's with a line naming its passage (heading, the opening, the full making-of for a notes cite, which gets a card), moving between two cites of one post leaves its loop playing, and a related row's card has no line | search-15 |
+| On a phone each `[n]` is a 44 px tap target (an invisible absolute box under `pointer: coarse`) that never covers another cite's number; cites closer than that (a run, one above another) share the room between them; the answer's lines and its cites don't move; a tap under a number opens its passage. On a desktop the target is the cite's own box | search-16 |
 
 Ask against the real Worker is checked by hand under `npx wrangler dev` (docs/WORKER.md, "Locally"): the real
 Turnstile widget with the test site key, a real mint and a real DeepSeek answer.

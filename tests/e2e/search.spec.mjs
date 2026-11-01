@@ -3,8 +3,9 @@
 // listed posts and their notes and nothing else; the meaning half (/api/search) joins without a session and fails
 // silently; a result opens its post with the passage marked; Ask keeps the box's words, selected, loads Turnstile only
 // once opened and switched on, asks once at a time, links its [n] (a notes passage on the notes page), numbered by post
-// with each link's card naming its passage, and shows related posts; { ask: false } hides the switch. /api/* answers
-// come from fixtures/api.json and fixtures/answers.mjs; Turnstile is a stub. search-*.
+// with each link's card naming its passage and, on a phone, each a 44 px tap target, and shows related posts;
+// { ask: false } hides the switch. /api/* answers come from fixtures/api.json and fixtures/answers.mjs; Turnstile is a
+// stub. search-*.
 import fs from 'node:fs';
 import matter from 'gray-matter';
 import { isLive } from '../../src/data/exempt.js';
@@ -334,6 +335,61 @@ test.describe('Ask Goobie', () => {
       await page.mouse.move(5, 5);
       await expect(card).not.toHaveClass(/lp-on/);
     }
+  });
+
+  test('search-16 on a phone each cite is a 44 px target that covers no other cite, and the answer\'s lines stay put', async ({ page, context, isMobile }) => {
+    await watch(page, context);
+    // Aaron's first answer, which has a run with a space ([1] [2]) and two cites one above the other, and a run of two
+    // posts with nothing between ([7][9] reads [2][3]).
+    const reply = { ...ANSWERS[0], answer: `${ANSWERS[0].answer} Paper or film [7][9].` };
+    await page.route('**/api/ask', (route) => route.fulfill({ json: reply }));
+    await page.goto('/ledger/');
+    await page.locator('[data-mode="ask"]').click();
+    await expect(page.locator('[data-mode="ask"]')).toHaveAttribute('aria-pressed', 'true');
+    await input(page).fill('What did Aaron find?');
+    await input(page).press('Enter');
+    await expect(page.locator('.ask-text')).toContainText('Paper or film [2][3].');
+    await page.locator('.ask-text').evaluate((p) => p.scrollIntoView({ block: 'center' }));
+    // Each cite's box; how far a tap on it reaches from its middle (h, w); whether a tap anywhere on its number is its
+    // own; and whether another cite sits within 22 px of it (a run, or one on the line below).
+    const where = () => page.locator('.ask-text').evaluate((p) => [...p.querySelectorAll('.ask-cite')].map((a, i, all) => {
+      const r = a.getBoundingClientRect();
+      const x = r.left + r.width / 2, y = r.top + r.height / 2;
+      const hits = (px, py) => document.elementFromPoint(px, py)?.closest('.ask-cite') === a;
+      const reach = (step) => { let k = 0; while (k < 40 && hits(...step(k + 0.5))) k++; return k; };
+      const near = all.some((o) => {
+        const q = o.getBoundingClientRect();
+        return o !== a && q.left < r.right + 22 && q.right > r.left - 22 && q.top < r.bottom + 22 && q.bottom > r.top - 22;
+      });
+      return { box: [r.left, r.top, r.width, r.height], p: p.getBoundingClientRect().height, near,
+        h: r.height + reach((k) => [x, r.top - k]) + reach((k) => [x, r.bottom + k]),
+        w: r.width + reach((k) => [r.left - k, y]) + reach((k) => [r.right + k, y]),
+        own: [[x, y], [r.left + 3, y], [r.right - 3, y], [x, r.top + 2], [x, r.bottom - 2]].every(([px, py]) => hits(px, py)) };
+    }));
+    const cites = await where();
+    if (isMobile) expect(cites.filter((c) => !c.near).length).toBeGreaterThan(3);
+    for (const [i, c] of cites.entries()) {
+      expect(c.own, `cite ${i}`).toBe(true);
+      // A desktop's cite is its own box (give or take the pixel the scan starts on), as it always was.
+      if (!isMobile) {
+        expect(c.h, `cite ${i}`).toBeLessThanOrEqual(c.box[3] + 2);
+        expect(c.w, `cite ${i}`).toBeLessThanOrEqual(c.box[2] + 2);
+      } else if (!c.near) {
+        // Cites closer together than that share the room between them.
+        expect(c.h, `cite ${i}`).toBeGreaterThanOrEqual(44);
+        expect(c.w, `cite ${i}`).toBeGreaterThanOrEqual(44);
+      }
+    }
+    // The bigger target moves nothing: every cite and the answer's height are where they are without it.
+    const off = await page.addStyleTag({ content: '.ask-cite { position: static !important } .ask-cite::before { content: none !important }' });
+    expect((await where()).map((c) => [c.box, c.p])).toEqual(cites.map((c) => [c.box, c.p]));
+    if (!isMobile) return;
+    // A tap under a cite's number, off its box, opens its passage.
+    await off.evaluate((s) => s.remove());
+    const href = await page.locator('.ask-cite').first().evaluate((a) => a.href);
+    const [left, top, width, height] = cites[0].box;
+    await page.touchscreen.tap(left + width / 2, top + height + 12);
+    await page.waitForURL(href);
   });
 
   test.describe('switched off', () => {
