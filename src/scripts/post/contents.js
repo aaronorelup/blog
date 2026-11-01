@@ -8,8 +8,10 @@ export function mount(root) {
   if (!toc) return () => {};
   const wide = matchMedia(WIDE);
   const fit = () => { toc.open = wide.matches; };
+  const stay = () => { if (wide.matches) toc.open = true; };   // beside the text it never folds, Enter or not
   fit();
   wide.addEventListener('change', fit);
+  toc.addEventListener('toggle', stay);
 
   const links = [...toc.querySelectorAll('a')];
   const heads = links.map((a) => root.querySelector(`[id="${CSS.escape(decodeURIComponent(a.hash.slice(1)))}"]`));
@@ -19,5 +21,5 @@ export function mount(root) {
     links.forEach((a, i) => (i === at ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current')));
   }, { root: root.closest('#panel-scroll'), rootMargin: '0px 0px -80% 0px' });
   heads.forEach((h) => io.observe(h));
-  return () => { io.disconnect(); wide.removeEventListener('change', fit); };
+  return () => { io.disconnect(); wide.removeEventListener('change', fit); toc.removeEventListener('toggle', stay); };
 }
