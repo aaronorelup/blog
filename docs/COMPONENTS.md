@@ -255,4 +255,28 @@ Behaviours: timeline-1, timeline-2. Used by 8 posts (`INVENTORY.md`); `views` is
 
 ## <ao-transcript>
 
+Narrated videos with their captions laid out as a transcript the reader can read, search and click, so two versions
+of one lesson are compared by what they actually say. A click (or Enter) on a line plays that video from there; the
+line being spoken is lit; the search box and the preset chips mark and count a term in every transcript at once.
+
+| Attribute | |
+|---|---|
+| `find="cache\|security"` | preset search terms, one button each; pressing one again clears it |
+
+Children: one or more `<figure>`, each a `<video>` carrying `<track kind="captions" src="….vtt">` and a
+`<figcaption>`; then an optional `<figcaption>` for the set. Without JS: the videos, with the captions as native
+subtitles.
+
+```html
+<ao-transcript find="cache|security">
+<figure><video src="/media/x/v1.mp4" preload="none" controls><track kind="captions" src="/media/x/v1.vtt"
+  srclang="en" label="English"></video><figcaption><b>Version 1</b></figcaption></figure>
+<figure><video src="/media/x/v2.mp4" preload="none" controls><track kind="captions" src="/media/x/v2.vtt"
+  srclang="en" label="English"></video><figcaption><b>Version 2</b></figcaption></figure>
+</ao-transcript>
+```
+
+Behaviours: transcript-1 to transcript-5. Used by `every-video-can-seek`, `lessons-sent-back` (the best example)
+and `loom-and-information-flow`.
+
 ## <ao-treemap>
