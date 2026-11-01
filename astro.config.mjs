@@ -38,7 +38,7 @@ export default defineConfig({
   integrations: [statsPages(), loreThumbs(), media(), pagefind(), verifyDist()],
   markdown: {
     // Both themes, emitted as CSS custom properties rather than a baked-in
-    // background — panel.css picks one based on the day/night mode. A single
+    // background — prose.css picks one based on the day/night mode. A single
     // theme here hardcodes `background-color` inline on <pre>, which beat the
     // palette and left every code block white in night mode.
     shikiConfig: {
