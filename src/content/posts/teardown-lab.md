@@ -43,7 +43,7 @@ a Max 20x subscription, which he puts at 20 to 30 times cheaper.*
 <tr><td>HAB 3: the nine steps</td><td>Cloud session</td><td>Done 23:16</td><td>Every canon number from one clock. The critic caught four canon slips. $30.82 of tokens, 58 s GPU film for $0.047</td></tr>
 <tr><td>A music box build-along of "Never Rises, Never Sets"</td><td>Cloud session</td><td>Done 00:46</td><td>A 5:35 narrated film at 1080p60. 854 ElevenLabs credits, $36.52 of tokens, about $0.33 of GPU</td></tr>
 <tr><td>Paint the machine, and a film as a video model's motion guide</td><td>Nobody</td><td>Not run</td><td>These were the two minimal ideas, and they didn't get done in this round</td></tr>
-<tr><td>Round 2: six more experiments</td><td>6 cloud sessions</td><td>Running since 18:12 on 1 November</td><td>Two have first results. See <a href="#round-2">Round 2</a></td></tr>
+<tr><td>Round 2: six more experiments</td><td>6 cloud sessions</td><td>Started 18:12 on 1 November. Five of the six sessions are done</td><td>Finished: MOLE-1 with no skill, music box 2.0, paint and the motion guide, and the Homestead with its game. The bounds session is still running. See <a href="#round-2">Round 2</a></td></tr>
 </tbody>
 </table>
 
@@ -1301,16 +1301,17 @@ machines together in one world with a game, and hidden pages for them. Six cloud
 November, and each section below fills in as its session finishes.
 
 - **MOLE-1 four ways.** Two new builds with no skill, one from the picture and one from words only, judged blind against
-  round 1's two. First result below.
+  round 1's two. Finished.
 - **Music box 2.0.** The notes measured against the singer's own track, and a new box with a bass comb, picture cards and
-  a spinning animation. First result below, film in progress.
-- **Paint the machine, and the machine as a motion guide.** A machine painted on the oil-paint easel from Aaron's first
-  episode, guided by the part masks and depth the code can render, and a short clip used to steer a video model. Running.
+  a spinning animation. Finished, film included.
+- **Paint the machine, and the machine as a motion guide.** Round 1's brass clock painted with the part masks and depth
+  the code can render, by a stand-in painter because the session couldn't build the oil-paint easel from Aaron's first
+  episode, and a short clip of it used to steer video models. Finished.
 - **The bounds.** Harder subjects, among them a mechanical watch movement, Claude Code drawn as an engine from this lab's own
   transcript, and an orrery, a moving model of the Earth and Moon, of why the Earth never rises or sets for Noor.
-  Running.
-- **The Moon base in one world, and a game.** The machines on one clock, each still run by its own model, plus a small
-  game about keeping HAB 3 alive until sunrise. Running.
+  Still running.
+- **The Homestead, every machine in one world, and a game.** The machines on one clock, each still run by its own model,
+  plus a small game about keeping HAB 3 alive until sunrise. Finished.
 - **Hidden pages.** In-world pages for the fleet's machines, which I'm making. By design they aren't linked from here.
 
 <!-- section:r2-noskill -->
@@ -1396,25 +1397,255 @@ the picture build did.
 
 </details>
 
-The finished no-skill builds, with their consoles, films and live pages, are still running. I'll compare them with round
-1's when they're done.
+**The finished builds.** Both no-skill sessions then went on to the end, through a console, a critic, a fix pass, a live
+page and a scored film, and were judged blind against round 1's finished skill + picture build. Skill + words stopped at
+Step 3, so here there are three. **Three of four judges preferred the no-skill picture build overall, for the more
+believable machine and the clearer film. All four ranked the skill build first for finish, and three ranked its console
+first. The words-only build came last overall for all four. All three met the core technical contract, so the skill
+wasn't what made that possible.** It's one finished build of each, a case study, not a measurement.
+
+<ao-compare cols="3" aspect="16/9">
+<figure><img src="/media/teardown-lab/mole1/hero-3m.webp" alt="Round 1's skill + picture MOLE-1 at the end of its job in the side view: an orange box body with a streaky texture, an orange hopper, four wire-mesh wheels and one split drum at the front, in a pale sloped tunnel, with 3.00 M of cover in large blue type and eight numbered console panels, among them a section through HAB 3, Noor's stair and the drift" loading="lazy"><figcaption><b>Skill + picture</b><span class="ao-meta">round 1 · first on finish for all four judges</span></figcaption></figure>
+<figure><img src="/media/teardown-lab/r2-noskill/hero-picture.webp" alt="The no-skill picture build's console 14.6 seconds into its film: a weathered rust-orange MOLE-1 with a tapered hopper, a two-camera sensor bar on a post with a whip antenna, four wire-mesh wheels and two toothed drums on arms, the front drum lifted over the hopper and pouring into it, silver tape on the arm, 0.00 m in large type at the top left over panels for Rev B, HAB 3's power and the status, and force, regolith and section charts on the right" loading="lazy"><figcaption><b>No skill + picture</b><span class="ao-meta">first overall for three judges · first on engineering and film for all four</span></figcaption></figure>
+<figure><img src="/media/teardown-lab/r2-noskill/hero-words.webp" alt="The no-skill words-only build's console 14.1 seconds into its film: a white MOLE-1 with two big black drums on arms, the rear one lifted over a clear hopper tinted salmon as the working part, a black sensor bar with two cameras above it, four grey mesh wheels, 0.05 m in large type at the top left over isolate, cut and alone buttons for each subsystem and the Rev B card, and force, regolith and section charts on the right" loading="lazy"><figcaption><b>No skill + words only</b><span class="ao-meta">last overall for all four judges</span></figcaption></figure>
+</ao-compare>
+
+*One still of each finished build. Round 1's is from the end of its film, the other two from their sessions' own stills,
+with a drum pouring into the hopper. On the words-only build the salmon tint marks the part that's working right now.
+Its hopper is white and clear.*
+
+Four fresh Opus judges at extra high effort saw the three builds in different orders, with the footer masked this time.
+Each had a hero still, a cutaway, a console panel and 12 frames from each film, plus the concept art. An auditor tested
+the live pages, and a skeptic checked the judges and the auditor against the pictures and the code.
+
+<table>
+<thead><tr><th>Mean rank, 1 is best</th><th>Engineering</th><th>Like the concept art</th><th>Console</th><th>Film as explainer</th><th>Finish</th><th>Overall</th></tr></thead>
+<tbody>
+<tr><td>Skill + picture</td><td>3.00</td><td>1.75</td><td>1.25</td><td>2.50</td><td>1.00</td><td>1.75</td></tr>
+<tr><td>No skill + picture</td><td>1.00</td><td>1.25</td><td>3.00</td><td>1.00</td><td>2.25</td><td>1.25</td></tr>
+<tr><td>No skill + words only</td><td>2.00</td><td>3.00</td><td>1.75</td><td>2.50</td><td>2.75</td><td>3.00</td></tr>
+</tbody>
+</table>
+
+Engineering here means how believable the machine looks in the stills, not how sound the model under it is.
+
+**What the judges agreed on.**
+
+- **The no-skill picture build looks most like a working machine and tells the story best.** It was first on engineering
+  and on the film for every judge. It has the concept's weathered rust-orange and nearly all its parts, with a drum
+  pouring into the hopper, and its film captions every beat. Its console came last for every judge, plain and sparse.
+- **The skill build has the best finish and the weakest machine.** First on finish and last on engineering for every
+  judge, and first on console for three, with eight numbered panels and the clearest section. The judges found the body
+  blocky, with an orange texture that reads as wood grain.
+- **The words-only build came last overall for every judge.** It's a clean white and black lookalike of NASA's RASSOR,
+  convincing as it digs down the drift, with one of the clearest consoles. But it ignores the concept's orange, and its
+  film plays like a screen recording with a cursor.
+
+If the judges had ranked at random, all four putting one particular build last would happen about 1 time in 81. The top
+of the table is weaker. Overall, no skill + picture against skill + picture is 3 to 1, and one judge changing their mind
+would make it a tie.
+
+<video controls preload="none" poster="/media/teardown-lab/r2-noskill/poster-picture.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/r2-noskill/film-picture.mp4"></video>
+
+*No skill + picture, the 32.4-second film. It names each beat on screen, from MOLE-1 dark at the berm and Rev B landing at
+28:14.72 to the first bite with the two drum forces cancelling, the pour into the hopper, the tip on the spoil heap and a
+time-lapse of the trench deepening, until the floor reaches 3.00 m to a two-note chime. Its orchestrating session
+rendered it on a rented NVIDIA L4 in 8.4 minutes of pod time, score included. Shown here at 720p.*
+
+<ao-game src="/labs/teardown/r2-noskill-ref/" poster="/media/teardown-lab/r2-noskill/poster-picture.webp" size="about 0.7 MB" label="MOLE-1 with no skill, from the picture" note="Drag to orbit, scroll to zoom. Camera buttons switch views, each PARTS button cycles isolate, cut, alone and off, the slider scrubs the dig, and the bonus buttons turn both drums the same way (key D). H hides the panels. Needs WebGL. It tours itself until you touch it and comes back after 25 seconds."><a href="/labs/teardown/r2-noskill-ref/">Open the no-skill picture build</a></ao-game>
+
+<video controls preload="none" poster="/media/teardown-lab/r2-noskill/poster-words.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/r2-noskill/film-words.mp4"></video>
+
+*No skill + words only, the 29.5-second film. MOLE-1 wakes when Rev B lands at 28:14.72, rolls to the drift mouth beside
+HAB 3 and digs its first load at real speed. Then a time-lapse shows one frame per load until the floor reaches 3.00 m to
+a two-note chime, and a card checks the 7.3 kPa from the model. A cursor clicks through the views and parts as it goes.
+Rendered on a rented NVIDIA L4 with four browser pages capturing at once, score included. Shown here at 720p.*
+
+<ao-game src="/labs/teardown/r2-noskill-noref/" poster="/media/teardown-lab/r2-noskill/poster-words.webp" size="about 0.8 MB" label="MOLE-1 with no skill, from words only" note="Drag to orbit, scroll to zoom. Each part has isolate, cut and alone buttons, five buttons switch views, the slider scrubs the dig, and the drum-direction pair turns both drums the same way. Space plays, H hides the panels. Needs WebGL. It warms up every shader first, which took about 20 seconds in software rendering, then tours itself until you touch it."><a href="/labs/teardown/r2-noskill-noref/">Open the no-skill words-only build</a></ao-game>
+
+**The code audit found the same core in all three.** One model drives everything, the film function draws the same
+frame for the same t whatever came before, and each is one offline page with no errors and no network requests. So Opus
+5.5 wrote the plumbing the skill hands you, the one-file bundle, frame-exact capture and shader warm-up, on its own. The
+rest are details. Only the skill build has real ambient occlusion, the soft contact shading, as a quality step. But its
+25-second hand-back to the tour counts simulated time, so on a slow machine it can take minutes, and its big number
+shows cover over the roof, not the floor depth the article asks for, a deliberate fix from round 1's critic.
+
+**What it can't say.**
+
+- One build per condition, so ordinary variation from one build to the next could explain any of it. The two no-skill
+  builds differ on console about as much as the skill build differs from either.
+- The rankings moved a lot between stages. At Step 3 the no-skill picture build was last on design and canon. Now it's
+  first on engineering. And skill + words, best overall at Step 3, was never finished.
+- The builds differ in more than the skill. The skill build is from round 1, on a box shared with another builder. The
+  no-skill builds got a different brief header, which framed the run as a fair comparison and pointed them to NASA's
+  RASSOR papers, and that led straight to their two-drum layouts.
+- The exhibits weren't equal. Each builder picked its own stills, and the skill build's console panel shows only the
+  section where the others show the whole column.
+- The blinding leaked again. One judge guessed which build never saw the art.
+- It doesn't show that the picture helps engineering or storytelling. The film captions were a builder's choice. And the
+  data can't support a time or cost comparison with round 1's build, which ran in a different setup and wasn't counted
+  the same way.
+
+**What working without the skill cost.** Each session ran a builder, a critic with a fresh context and a fixer, all at
+extra high effort, plus an orchestrating session that rendered the film on a rented GPU. With no skill there was no
+bundler, capture script or sound kit, so each wrote its own.
+
+<table>
+<thead><tr><th>Session</th><th>Wall time</th><th>Agents</th><th>Tokens at API prices</th><th>GPU</th></tr></thead>
+<tbody>
+<tr><td>No skill + picture</td><td>about 2 h 42 min</td><td>3, plus the orchestrator</td><td>$47.08</td><td>$0.128</td></tr>
+<tr><td>No skill + words only</td><td>about 3 h 32 min</td><td>3, plus the orchestrator</td><td>$53.64</td><td>$0.171</td></tr>
+</tbody>
+</table>
+
+The hard parts were that plumbing, the capture, packing everything into one file, the score and framing the camera
+underground. Both sessions also hit a problem only the rented GPU showed. The picture build lost its paint on the first
+GPU test, and the words-only build's capture was too slow for the pod.
+
+**What the critics caught.**
+
+- **The picture build's critic found eight blocking problems** the builder's review had missed, though it agreed with
+  every number. The worst was the dig, a 0.43 m drum at the foot of a 3 m vertical face, with the rear drum's load coming
+  from nowhere. The fixer rebuilt it as RASSOR's own layer-by-layer trench, now 15.2 tonnes in 191 loads and 6.5 hours.
+  The arm also ran through the spinning drum with the canon's silver tape buried inside it.
+- **The words-only build's critic found four blocking problems and 17 smaller ones.** Two pairs of parts passed about 1 cm
+  through each other, which the builder's collision checker missed with the wrong scoop radius. And the dig rate came
+  from NASA's drum tests, not RASSOR's published figures as the prompt asked, 5.3 times too fast. At the published rate
+  the drift would have finished after sunrise, so the fixer made it smaller, 20.6 tonnes in 258 loads, done 27 hours
+  before sunrise. A strict reading of RASSOR's 2.7 tonnes a day still wouldn't finish in time, and that's left to a
+  person.
+- **The skeptic corrected the judges and the auditor.** The auditor said the skill build had no GPU film. It has one,
+  shown in round 1's section, which I rendered rather than its builder. Three judges called the words-only hopper pink,
+  when it's white and only tinted while it's the working part. Two marked the skill build down for its single drum, which
+  is what the concept shows.
+
+<details><summary>What the judges said about each finished build, and where they were wrong</summary>
+
+- The judges saw the films only as 12 frames each, and ranked the builds 1 to 3 on six things: engineering, likeness to
+  the concept art, console, film as explainer, finish and overall.
+- Skill + picture: the "best console of the three", with eight numbered panels, the clearest section through HAB 3, her
+  stair and the gallery, live force and hopper charts and good callouts. The machine is "a blocky box" whose orange
+  texture reads as wood grain, a toy to one judge. In the film most frames come before the number moves, and the beats are
+  named only in small panel text.
+- No skill + picture: "clearly the closest to the concept art" and "a real working machine", with a drum pouring into the
+  hopper that "sells the machine". Its film is "the clearest story", a caption per beat. The weak spots are the console
+  and the cutaway, with plain type, the 3D model showing through a panel, a sparse section and ghosted labels in the last
+  frame.
+- No skill + words only: "a clean NASA-RASSOR lookalike" with "a very convincing side view digging on the drift slope" and
+  the most readable console. It ignores the concept's orange and grey, the model is "plain untextured CAD" with "huge
+  black barrel drums" to one judge, and the film "reads more like a cursor demo than a film".
+- The skeptic's corrections. The no-skill picture build's second drum comes from the canon's "counter-rotating drums" and
+  RASSOR, not from the picture, which shows one. Only the skill film was marked down for leaving the depth to the end,
+  and all three do. The skill film reads 0.00 in 9 of 12 frames, not 8, and that number is cover over the roof. Its job
+  panel already says cutting, dumping and driving from frame 4, with 441 kg moved by frame 9. The no-skill picture film
+  didn't rise "steadily". It reads 0.00 m in 7 of 12 frames, and the words-only film 0.05 m or less in 8. Three
+  judges called the words-only hopper pink. It turns salmon only while it's the working part, Step 5's accent colour. The
+  words-only film has no title cards, but every frame names its beat in the left panel, as the skill build's job panel
+  does. The no-skill picture build's plain type is DejaVu fonts it embedded on purpose, not a fallback. And one judge said
+  the skill build's big number "correctly" shows cover, when Step 4 asks for floor depth.
+
+</details>
+
+<details><summary>The code audit, page by page</summary>
+
+- Skill + picture: 850 KB, ready after 19.3 s in software rendering. The model drives everything, and the bonus runs live
+  from the model's own force and grip. The gaps are the big number and the tour's return on simulated time, which in
+  the audit's software-rendering test hadn't come back after 152 seconds. Its robot fills about a quarter of the width
+  between the panels, short of the article's 60 to 70%, and the bonus barely shoves the robot back, because its same-way
+  force of about 45.8 N sits just under the 46.7 N grip. The bonus isn't in the tour. It has GTAO, the soft contact shadows, and smoothing (MSAA) as quality steps, a warm-up that includes the
+  post-processing, and playback at 1, 60 and 3,600 times. On the big number the brief pulls both ways, "down to 3 m of
+  cover" against "depth of the drift's floor", and round 1's critic made cover a blocking fix. That choice is also why its
+  film reads 0.00 for so long.
+- The no-skill builds keep the tour's 25-second return in real seconds, wrote their own tests of the film function and
+  made the drum-direction bonus visibly shove the robot back. Only the words-only build plays the bonus in its tour.
+- No skill + picture: 726 KB, ready after 7.9 s. The model drives everything except the wake, the arm rise, the test spin
+  and the 400 m roll, which are hand-eased outside it. The stair in the section is typed-in coordinates, and "at 3.0 m"
+  uses a literal 3. Its tour cursor only presses camera buttons. The bonus shoves the robot back up to 0.9 m, but not in
+  the tour. Its "AO" step only removes a contact-shadow decal. Its clipping planes are always attached, so cutting a part
+  never needs a new shader. The robot fills about 70% of its view.
+- No skill + words only: 765 KB, ready after 23.8 s, because its warm-up runs before the page finishes loading. One model,
+  with no clocks or random numbers. Its tour presses camera, part and both direction buttons, and its warm-up compiles
+  every isolate and cut variant, the most complete of the three. Clicking a panel's background doesn't hand over control.
+  No real ambient occlusion either, and the robot fills 40 to 50% of its view.
+- All three made one request, for the file itself, with no errors, and drew the same frame at t = 12 s after different
+  histories. The exhibits differed in size too, 1920×1080 for the words-only stills and 1600×900 for the others.
+
+</details>
+
+<details><summary>What took the time without the skill</summary>
+
+- Capture. The picture session wrote its own, calling the film function for each frame, screenshotting it and piping the
+  frames into ffmpeg. That took about 30 minutes, including making the function pure, which failed its first test three
+  ways, with drawing settings leaking from one frame to the next, a hidden part keeping an old scale and a rebuild
+  threshold. The words-only session's capture saved PNG screenshots, 1.1 seconds a frame on the GPU, slow enough that the
+  full film would have run out of pod time. Its fix pass switched to JPEG frames from four browser pages at once, 57 ms a
+  frame.
+- Packing. Both bundled three.js into one HTML file under 1 MB with no network. The picture session subset its fonts to
+  inline them, and the words-only session had no room left for post-processing.
+- Audio. Both synthesised their scores in code, with their own filters and limiters, and mastered them to about -14 LUFS
+  with ffmpeg's loudness tools.
+- Camera. Framing underground took the picture session the most iterations, because from the front the hero view looks
+  through solid soil once MOLE-1 is in the drift. Both ended up swinging the camera round to look in through the open cut.
+- The GPU. On the picture session's first 1-second GPU test the machine came out unpainted and the console lost its
+  scaling. The browser had dropped its WebGL context right after the first frame, which never showed in software
+  rendering. The fix rebuilds every texture when the context comes back. The loss itself still happens on the pod's
+  browser and wasn't traced to its root. The words-only session's final pod spent more than 8 of its 11 minutes pulling
+  its container image.
+
+</details>
+
+<details><summary>Each session's numbers, the critics' other finds, and what's left for a person</summary>
+
+- No skill + picture: the builder 80 minutes and $23.45, the critic 24 minutes and $9.15, the fix pass 40 minutes and
+  $11.49, the orchestrator about $2.99. Five GPU runs came to $0.128, a 1-second test, three short tests in the fix pass
+  ($0.032), one of them diagnosing the lost context, and the final 1,944 frames, 8.4 minutes on an L4 for $0.082. The
+  screenshots were the slow part, not the GPU, 206 ms of each 218 ms frame.
+- No skill + words only: the builder 1 hour 46 minutes and $27.85, the critic 30 minutes and $9.02, the fix pass 48
+  minutes and $13.85, the orchestrator $2.92. Three GPU runs on L4s came to $0.171, a 1-second test ($0.045), a 2-second
+  test of the faster capture ($0.017) and the final 1,772 frames ($0.109). The final capture itself took 153 seconds.
+- The dollar figures are API list prices from Playback Lens, estimates and not a bill.
+- Both sessions say a person still has to judge the machine against the show's art, listen to the score, try the live
+  page on a real GPU and settle the lore readings the builders had to choose, among them what "3 m of cover" measures and,
+  for the words-only build, which reading of RASSOR's dig rate to use. The picture build is still a study model of
+  primitives, with procedural weathering, sparse machinery under the hopper and two drums that make it longer and lower
+  than the concept. The words-only build's hopper still half reads as a glass cab, and MOLE-1 is a few pixels tall in its
+  section shots for about 4 seconds.
+- After the fixes the picture build's trench is 0.82 m wide and 8.24 m long, with a 20° ramp down to the floor. The
+  words-only drift is an open cut 0.80 m wide on a 20° ramp, done 101 hours after Rev B with four 8-hour charges.
+- The picture critic also found a bonus panel that said "holds" while the robot slid back, a camera that whipped about 94
+  degrees in 0.15 s, a typed-in distance to the gallery, leaders on hidden parts and a machine spilling behind the side
+  panels. All eight blocking finds were fixed and checked again.
+- The words-only critic also found a camera inside the ground, a label sitting on the drum it named, another pointing at
+  the radiator because the tape it named was hidden, and the soil in the drums drawn at twice its mass.
+
+</details>
 <!-- /section:r2-noskill -->
 
 <!-- section:r2-musicbox -->
 ### Music box 2.0
 
 Aaron liked round 1's music box film and said the notes were wrong. He was right, and the music box session can now say
-by how much. Episode 2's own files include the chorus split into stems by ElevenLabs, separate tracks for the vocals,
-the bass, the piano and the rest. So the session measured every note against the singer's own track. A note
-counts as right when it's within 50 cents, half a semitone, of the singer's median pitch over that note. **Round 1's tune
-got 40% of its notes right. The new arrangement gets 79%, with no octave errors.** Scored against a second vocal track,
-which the session split out itself with Demucs, an open-source tool that separates a song into parts, it gets 76%.
+by how much. **Round 1's tune got 40% of its notes right. The new arrangement gets 79%, with no octave errors.** The
+session also built a bigger box for the corrected tune, with a bass comb, a wheel of picture cards and an eight-frame
+animation of the Earth's phases, and made a 4:36 film in which the host keeps fitting those parts while the music plays.
+The cards turn because pins push them, and the host's tea ripples on every bass pluck. Nobody has listened to any of it
+yet.
+
+Episode 2's own files include the chorus split into stems by ElevenLabs, separate tracks for the vocals, the bass, the
+piano and the rest. So the session measured every note against the singer's own track. A note counts as right when it's
+within 50 cents, half a semitone, of the singer's median pitch over that note. Scored against a second vocal track,
+which the session split out itself with Demucs, an open-source tool that separates a song into parts, the new tune gets
+76%.
 
 That 79% was measured with the same pitch tracker the session used to write the notes, so its independent critic scored
-both tunes again with two other trackers. The new notes still win clearly, 76% against 43% with one and 73% against 52%
-with the other. The session's first report also claimed a win over the music-box version made for Episode 2 itself
-(65%). The critic found that claim doesn't hold. Measured on the attack of each note the two are level, 79% against 78%,
-and most of the apparent gain came from giving every sung syllable its own note.
+both tunes again with its own run of that tracker and with a second tracker that played no part in choosing the notes.
+The new notes still win clearly, 76% against 43% with the first and 73% against 52% with the second. The tool now prints
+the same kind of check for every song, 13 variants with both trackers, different windows over each note and both vocal
+tracks, and the new tune beats round 1's in every one, by at least 17 points. The session's first report also claimed a
+win over the music-box version made for Episode 2 itself (65%). The critic found that claim doesn't hold. Measured on
+the attack of each note the two are level, 79% against 78%, and most of the apparent gain came from giving every sung
+syllable its own note. With the second tracker on the same measure the episode's version even comes out a little ahead,
+55% against 50%.
 
 The timing improved too. Nine in ten notes now start within 82 ms of the sung note, against 139 ms in round 1. And the
 new bass line, which round 1 didn't have, matches the bass stem on 90% of its notes.
@@ -1436,8 +1667,8 @@ vocal stem, the red dotted boxes round 1's notes and the orange dashed ones the 
 - It made up an echo instead of using the song's own two-part echoes. None of its echo notes matched the song's.
 
 **The method is now a tool,** `tools/song2box/` in the lab's private repo. A song and its stems go in. Out come a
-music-box arrangement, the comb's tuning, the pin plan, a score report and the piano roll, so any later song gets the
-same checks. It also arranged Aaron's Episode 1 song, "Red Is the Thing That's Leaving", from
+music-box arrangement, the comb's tuning, the pin plan, a score report with those robustness checks and the piano roll,
+so any later song gets the same tests. It also arranged Aaron's Episode 1 song, "Red Is the Thing That's Leaving", from
 [Crimson Coil](/ledger/crimson-coil/). That one is weaker evidence, because there's no score or lyric file to check it
 against. The notes work took about an hour and a quarter on the box's 4 CPU cores, with no GPU and no ElevenLabs credits.
 
@@ -1463,10 +1694,69 @@ Earth's phases run at 10 frames a second at 75 bpm. The Earth never rises or set
 it all eight.
 The Earth sits in the same spot in every frame and on every card, and only its phase and the Sun move.*
 
-**Still open, and nobody has listened yet.** In bars 17 and 21 the pins follow the lower lead line, but a harmony a
-fourth above it is nearly as loud, and in bar 21 just as loud, so the ear might hear that as the tune. The echo in bar 18 is faint, so its notes
-have low confidence. The live page is built, one offline file of 819 KB, and hasn't been tried on a real GPU. The film,
-where the host builds the box while it plays and fits each new part as the music runs, is being made.
+**The film builds the box while it plays.** The host fits the melody comb, winds the spring and starts the chorus 50
+seconds in, and it plays without a stop until 4:31. Meanwhile he adds the bass comb, then the card wheel, then the
+praxinoscope drum. Each one goes in during a window the model works out, a stretch of the turn when no pin can touch it
+on the way in, and joins the tune on the first pin that reaches it. The bass comb slides its last 30 mm in at the end of
+the tune, with the nearest bass pin 1.3 mm from its teeth, and plays its first note five seconds later, in time, because
+its pins were on the cylinder all along. All of it has to fit in one winding of the spring. The first layout ran 6:12
+and needed about a third more spring than the box has, so the session's timeline generator searched 506,250 ways of
+spacing the pauses for the shortest film that fits. It uses 2.3 of the spring's 2.5 turns.
+
+<video controls preload="none" poster="/media/teardown-lab/r2-musicbox/poster.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/r2-musicbox/film.mp4"></video>
+
+*The 4:36 film. The chorus starts at 0:50 on the melody comb alone. The bass comb goes in at 2:22, the card wheel at 3:09
+and the praxinoscope drum at 3:52, all while it plays, and the last turn has all 87 pins at work. Rendered on a rented
+RTX 2000 Ada at 1080p and 60 frames a second, shown here at 720p and 30.*
+
+**Aaron asked whether the demonstration could change its own world, not just the machine.** In this film a demitasse of
+tea ripples on every bass pluck, and dust in the lamp's beam flares on the same plucks. The lamp dims for the
+praxinoscope, hand-drawn arrows bend with the camera, and labels ride on the parts as tweezers carry them in. The tea and
+the dust read the same list of 518 pin events as the picture and the sound, so nobody timed a ripple. The cards turn
+because a trip pin pushed the lever. The lamp and the arrows follow the film's clock.
+
+<img src="/media/teardown-lab/r2-musicbox/tea-ripple.webp" alt="The film at 2:30, LAYER 2 OF 4 · THE BASS COMB: a white demitasse of dark tea in the foreground with rings spreading across its surface, the movement on its dark bedplate behind it, the blue praxinoscope drum still waiting on the bench at the left, BASS · LAST PLUCK 174.6 HZ in large type at the top left over F3 · L 40.00 MM · LEAD 109 MG, and a BASS COMB · BEHIND panel on the right with the tooth drawn to scale, the tip-mass formula and bars for the five bass teeth, the F3 bar in orange" style="width:100%;border-radius:8px">
+
+*The bass comb's first notes, 2:30 in. The rings in the tea come from the same pin events as the plucks you hear. The
+panel shows the F tooth, 40 mm long with 109 mg of lead near its tip, ringing at 174.6 Hz.*
+
+<img src="/media/teardown-lab/r2-musicbox/card-never-rises.webp" alt="The film at 3:13, LAYER 3 OF 4 · THE CARD WHEEL: a close view of the card wheel on its brass frame, a pale pastel card reading NEVER RISES, TRANQUILITY HOMESTEAD · PHASE 1 with a small blue Earth standing upright, a navy card below it lettered TRANQUILITY HOMESTEAD, PHASE 1 · NOW BOARDING and FAMILIES WELCOME around a gold ring, CARD UP 4 / 7 in large type at the top left over NEXT TRIP IN 13.1° · NEVER SETS, and a CARD WHEEL · TRIPS panel on the right listing all seven cards with their beats, card 4, NEVER RISES, highlighted" style="width:100%;border-radius:8px">
+
+*3:13 in. A trip pin has pressed the lever, and the wheel has turned to card 4, NEVER RISES, as the tune reaches that
+line. The panel lists all seven cards with the beat each one trips on.*
+
+**The host is 22 lines and 622 words,** voiced again by Brian, a stock ElevenLabs voice, on Flash. That came to 752
+credits, 41 of them for one line re-voiced after the critic. It had said the echo "is now the backing singers' own", when
+only a third of its notes match them, and now says it "is now taken from the backing singers". Two of his lines:
+
+> Right. The bass. All this time, the cylinder has been carrying twenty bass pins round and round, with nothing for them to play.
+
+> No timer anywhere. The card turned because a pin on the cylinder pushed it, right on the line.
+
+<ao-game src="/labs/teardown/r2-musicbox/" poster="/media/teardown-lab/r2-musicbox/poster.webp" size="about 0.8 MB" label="Music Box 2.0, fit each layer while it plays" note="Drag to orbit, scroll to zoom. The buttons wind it, start and stop it, fit or take off each layer while it plays, switch views and swap the cylinder, and the slider sets the size of the fly's vanes, and with them the tempo and the animation's frame rate. Sound comes on with your first button press. Needs WebGL. It tours itself until you touch it."><a href="/labs/teardown/r2-musicbox/">Open the Music Box 2.0 simulator</a></ao-game>
+
+The live page carries two cylinders, the chorus and Aaron's Episode 1 song, so its combs hold what both need, 15 teeth
+each. That song has no lyric file, so its cards carry only its title, with a red sun that moves along the horizon from
+card to card. The film's box carries only the chorus.
+
+**The critic found one blocking error in the film.** The big readout said 79% while the bars in the panel beside it
+still read 0%. It found ten smaller problems too, among them readouts for parts still on the bench, the praxinoscope drum
+dropped in from above the frame, small type on the notes panel and the two overstated claims above. A fix-pass agent
+fixed all of them. Frames pulled from the final GPU render at 15 points matched the review stills made before it.
+
+**Nobody has listened to any of it yet.** In bars 17 and 21 the pins follow the lower lead line, but a harmony a fourth
+above it is nearly as loud, and in bar 21 just as loud, so the ear might hear that as the tune. The echo in bar 18 is
+faint, so its notes have low confidence. The mix, the plucks and the tool sounds were judged by measurement only. The
+narration's "eight in ten" is the first tracker's number. The second tracker reads about five in ten for the new tune
+and three for round 1's in the tool, and seven and five in the critic's run. The gain holds every time, but the figure
+itself moves, and the session left it to Aaron whether that line stays. The film's camera moves were checked in stills
+every 0.2 s, not watched in motion, and the live page has only run in software rendering, at 13.5 to 15 frames a second.
+
+**Cost.** Round 2 took the session about 4 hours and 15 minutes and $102.81 at API prices. Five agents did the work, all
+at extra high effort (xhigh). The notes ($20.88) and the machine ($18.17) ran side by side, then the film ($18.94), the
+critic ($8.49) and the fix pass ($20.50). The main thread that coordinated them ran at the default effort and came to
+about $15.83. The film took 38.5 minutes of an RTX 2000 Ada on RunPod, $0.154, and the narration 752 ElevenLabs
+credits.
 
 <details><summary>How the notes were measured, and the machine's numbers</summary>
 
@@ -1476,15 +1766,19 @@ where the host builds the box while it plays and fits each new part as the music
 - Two independent pitch methods, torchcrepe on the vocal stem and Spotify's basic-pitch note events, are reconciled
   syllable by syllable on the song's own bar grid. Onsets are the sung vowels, quantised to sixteenths. The same scoring
   code ran on round 1, the episode's version and the new arrangement.
+- The headline tracker is torchcrepe, which also produced the notes, so its score is partly circular. The second tracker
+  is pYIN. The tool's pYIN keeps fewer voiced frames than the critic's and reads lower for every line, in the same order.
 - Four pitch calls were made by hand, mostly where the harmony is as loud as the lead, to keep the hook the same in
   both places it's sung. Without them the lead scores the same.
 - Of the six new lead notes that miss, three are syllables where the louder harmony pulls the median, and the rest
   sit on glides.
 - The arrangement is 80 notes: 30 for the lead, 27 for the echo, 20 for the bass and a three-note closing chord, which is
   the session's own. The melody comb has 11 teeth from E-flat 5 to C6, the bass comb 5 from F3 to D-flat 4.
+- The echo is the song's own two-part group echo. It scores 33%, or 50% if either part counts, against round 1's 0%.
+  It scores low partly by construction, two parts against a pitch track that follows one voice.
 - Episode 1's song had no stems saved, so Demucs split it, and a new lyric-free mode plucks once per stable sung note.
   Its lead scores 97% and its bass 95%. Those are high because the vocal is synthetic and holds flat pitches. They say
-  the tool follows the stem, not that the arrangement has been heard.
+  the tool follows the stem, not that the arrangement has been heard. Its report wasn't re-run with the new checks.
 - The cylinder is 16 mm across and 41.6 mm long, 40 beats a turn, 9° a beat. Every pin lets go exactly on its beat, 0 of
   87 off in a one-turn check.
 - Each bass tooth is cut to 85% of a plain tooth's length, never over 40 mm, and a lead lump makes up the rest. The F3
@@ -1493,7 +1787,88 @@ where the host builds the box while it plays and fits each new part as the music
   With seven cards and seven trip pins it's back on the same card every turn.
 - The fly turns 480 times per cylinder turn, and an 8 to 96 gear gives the drum 40 turns per cylinder turn, one per
   beat. A friction washer lets the drum drop onto the running spindle without jolting the train. It spins up in 0.39 s.
-- The cards' art, the eight frames and the whole Music Box 2.0 design are the session's inventions, listed as not canon.
+
+Every way the lead was scored, the share of notes within 50 cents. "To the next note" is the tool's window, from 30 ms
+after the pluck to the next one, a beat at most. The first three rows are the ones in the paragraphs above.
+
+<table>
+<thead><tr><th>Tracker, window, vocal track</th><th>New</th><th>Round 1</th><th>Episode's version</th></tr></thead>
+<tbody>
+<tr><td>torchcrepe, to the next note, ElevenLabs stem (the headline)</td><td>79%</td><td>40%</td><td>65%</td></tr>
+<tr><td>torchcrepe, first eighth note after the pluck, ElevenLabs stem</td><td>79%</td><td>40%</td><td>78%</td></tr>
+<tr><td>pYIN, first eighth note, ElevenLabs stem</td><td>50%</td><td>28%</td><td>55%</td></tr>
+<tr><td>pYIN, to the next note, ElevenLabs stem</td><td>48%</td><td>27%</td><td>41%</td></tr>
+<tr><td>torchcrepe, 30 to 190 ms after the pluck, ElevenLabs stem</td><td>77%</td><td>40%</td><td>74%</td></tr>
+<tr><td>pYIN, 30 to 190 ms, ElevenLabs stem</td><td>46%</td><td>24%</td><td>53%</td></tr>
+<tr><td>torchcrepe, to the next note, without the 25 ms correction</td><td>79%</td><td>40%</td><td>74%</td></tr>
+<tr><td>torchcrepe, to the next note, Demucs vocal</td><td>76%</td><td>37%</td><td>65%</td></tr>
+<tr><td>pYIN, to the next note, Demucs vocal</td><td>48%</td><td>31%</td><td>50%</td></tr>
+<tr><td>torchcrepe, first eighth note, Demucs vocal</td><td>79%</td><td>40%</td><td>78%</td></tr>
+<tr><td>pYIN, first eighth note, Demucs vocal</td><td>52%</td><td>31%</td><td>55%</td></tr>
+<tr><td>torchcrepe, 30 to 190 ms, Demucs vocal</td><td>80%</td><td>40%</td><td>74%</td></tr>
+<tr><td>pYIN, 30 to 190 ms, Demucs vocal</td><td>50%</td><td>28%</td><td>47%</td></tr>
+</tbody>
+</table>
+
+The critic's own runs, not kept: torchcrepe 76%, 43% and 65% (new, round 1, episode), pYIN 73%, 52% and 61%, and a 30
+to 190 ms window, 70% for the new tune against 87% for the episode's.
+
+</details>
+
+<details><summary>How the film was made</summary>
+
+- The film is 4:35.8, 16,548 frames at 60 fps. The music runs from 0:50.5 to 4:31.0 without a stop.
+- Every line is placed on the clock from its take's real length. Three things must wait for the cylinder: the bass comb's
+  last slide, the card wheel's drop and the stop after the closing chord. With the music running, each wait can last up
+  to a 32-second turn. The generator tried 506,250 spacings of the free pauses in 2.7 s and kept the shortest film that
+  fits one winding, 2.30 of the spring's 2.5 turns, with no stretch of music alone over 16 s before the last turn.
+- The layers' last moves, each inside a window with no pin in reach. The melody comb slides its last 4 mm in at
+  cylinder beat 2.5, before the music starts, inside beats 0 to 3.3. The bass comb slides its last 30 mm in over beats
+  36.4 to 37.5, inside 36.25 to 40. The card wheel is lowered its last 44 mm over beats 14.6 to 16.4. It comes down from
+  above, so its window is stricter, 10.3 to 16.9, with no trip pin within 15° of the lever's tip. The closest pins to a
+  moving tooth or lever tip are 1.43, 1.32 and 0.52 mm. The drum can drop at any time, onto its friction washer. The
+  generator stops with an error if any check fails.
+- The card wheel waits on the bench one card short. The pick presses its lever by hand to show how it works, which
+  moves it on one card, so it lands exactly where the model wants it for the cylinder at 3:09.7.
+- The film has 518 pin events, 420 melody, 80 bass and 18 trips. Every one lands on its pin's angle, the worst 0.000028
+  of a beat off.
+- The tea's rings run in from the cup's wall at 4.5 mm wavelength and 38 mm a second and fade in 0.75 s. The dust is 90
+  motes in a 30 mm column along the lamp's beam, flaring on each bass pluck and fading in about a third of a second. It
+  shows only once the lamp is down. The lamp goes to 42% for the praxinoscope and back to 62% for the last turn.
+- A counter on the console, PINS AT WORK, goes 0, 60, 80, 87 of 87 as the layers join.
+- The score is one pluck per pin event, with three ringing modes per tooth and the lead-shifted overtones on the bass
+  teeth. Each card flip gets a paper swish, a tap and a click. Under the voice the box is ducked 7 dB. The mix measures
+  -14.0 LUFS with its true peak at -3.1 dB, and the web copy here -14.1 LUFS.
+- Five frames, each rendered twice after different frames, came out 0 pixels apart, so every frame depends only on its
+  time.
+- The GPU render did 16,548 frames in 2,105 s, 0.127 s a frame, 38.5 minutes of pod time with a 166-second boot, for
+  $0.154. The first mux was 106.6 MB, over the studio library's upload limit, so the filed original is a re-encode at
+  81.5 MB.
+- The narration's first takes were 3,219 characters for 711 credits, one take per line, and the re-voiced line 41 more.
+- The web copy here is 30 fps. At 30 the fly's two vanes turn exactly half a turn a frame, so in this copy the fly looks
+  still. The 1080p original runs at 60.
+- The film's box has only the chorus cylinder, 11 melody and 5 bass teeth. The live page carries both cylinders, which
+  takes the combs to 15 and 15 teeth and the cylinder to 74 mm. It's 824 KB in one file, with no console errors and no
+  network requests.
+
+</details>
+
+<details><summary>What the session made up, what's still rough, and the kit's snags</summary>
+
+- Its inventions, listed as not canon: the whole Music Box 2.0 design and its sizes, the cards' art after the Episode 2
+  ad (the captions are chorus lines and the ad's own words), the eight frames, the closing chord, the host and his lines,
+  the bench, the tea, the dust, the lamp, the tools and every path a part takes, the order the layers join, and the
+  console's "LAYER n OF 4" and "PINS AT WORK". The Earth stands in the same place on every card and in every frame.
+- Still rough: the tools float with no hand, by choice. In the close shot over the drum's rim the back of a card shows
+  behind the title panel, and the card wheel on the bench slides out of the top of the frame as the camera moves in at
+  0:17. The narration is dense, with only 0.6 to 4.5 s of music alone between most lines.
+- On the notes panel the singer's pitch line follows whichever voice is louder, so in bars 17 and 21 it jumps a fourth
+  above the pins, and the panel doesn't explain why.
+- The extra load of the bass comb, the trip lever and the drum on the fly is left out, so the tempo stays exactly 75 bpm.
+- Nothing in the kit helps with parts that join a running machine or with keeping them in frame. The session wrote its
+  own clearance, safe-window and sweep checks, and a small script that measures how much of a part each shot shows.
+- The kit's tour code isn't reusable, so the live page copies round 1's and extends it. Its page probe times out at
+  large sizes in software rendering, so the session drove the pages with Playwright instead.
 
 </details>
 <!-- /section:r2-musicbox -->
@@ -1501,7 +1876,195 @@ where the host builds the box while it plays and fits each new part as the music
 <!-- section:r2-paint -->
 ### Paint the machine, and the machine as a motion guide
 
-*Running.*
+Both experiments use the fact that a teardown machine is code, so it knows where every part is in every frame. **Paint
+the machine** gives that to a painter, so each brush stroke knows which part it's on and can move with it. **The machine
+as a motion guide** gives a clip of the machine to AI video models, which redo a video's motion in a new look, then
+uses the machine's own numbers to check in code what they kept. The paint session ran both on round 1's brass chess
+clock from [Touch Move](/ledger/touch-move/). **Painting the clock once and carrying the paint on its moving parts made
+a painted film with no flicker on anything that stands still, for a twentieth of the painting work of repainting every
+frame. The video models all kept the clock's timing, but only 4 of 8 clips tipped the flag that a moving hand has to
+lift.**
+
+**The painter is a stand-in.** The brief asked for [Claude Paint](/ledger/claude-paints-in-oil/), the oil-paint
+simulator Episode 1, [Crimson Coil](/ledger/crimson-coil/), was painted in. Claude Code's permission check refused to
+let the session compile it, twice. So the session wrote a small stroke painter of its own, with five brushes, eleven
+tube colours that mix roughly like pigment, paint that runs out along a stroke and raised brush marks. It looks like a
+good painterly filter, not like Episode 1. The real easel needs Aaron to allow its build.
+
+**It all starts from "passes".** The session's copy of the clock draws each frame several extra times, each showing one
+thing: which of its 63 parts a pixel belongs to, how far away it is, which way the surface faces, where the outlines are.
+A list of every hand, flag and wheel angle comes with them. The session rendered the 7 seconds where White's flag falls,
+the plungers swap and Black's minute hand sweeps to 12 and lifts Black's flag, in 6 minutes on the CPU. The hand angles
+read back out of the pictures match the model to half a degree on average, under a degree everywhere.
+
+**One frame, painted twice** with about 42,500 strokes each, once from the picture alone, the way most "make it look
+painted" filters work, and once with the passes. With them every stroke stays on its part and runs along its shape,
+each outline is drawn once instead of twice, and the pale studio could become the Prussian-blue drafting film of
+[Earthlight](/ledger/earthlight/), Episode 2. Only 0.3% of the strokes land on the background, the floor shadow's glazes,
+plus the white outline along the clock's edge, against 14.8% without the passes. Against the render it's only 3 to 6%
+closer on part edges and 11% inside parts. The passes buy control much more than accuracy.
+
+<img src="/media/teardown-lab/r2-paint/a1-side-by-side.webp" alt="Three versions of the same frame of the brass chess clock, side by side. Left, the plain render: a smooth brass case with two cream dials, black hands and red T-shaped flags, the left dial's flag tipped up, on a pale studio. Middle, labelled naive paint: the clock in thick brushed brass and cream on a white canvas covered in horizontal brush marks, outlines heavy and doubled. Right, labelled guided paint: the same clock in thick paint on a dark Prussian-blue ground with a thin white outline round the case, a dark glazed shadow under it and pale streaks at the right edge of the blue" style="width:100%;border-radius:8px">
+
+*The plain render, painted from the picture alone (42,291 strokes) and painted with the passes (42,524). The pale streaks
+at the right edge of the blue are a glitch, ground strokes that stop short of the canvas edge. Both paintings are the
+stand-in's, not the easel's.*
+
+**Painted parts.** The session also painted the clock's materials once, brass, steel, black, red, cream and the dial
+face, as small square oil paintings, in about 35 seconds of CPU. Wrapped round the 3D model and fixed to each part, they
+make a painted clock whose hands, flags and plungers still move exactly as the model says. It reads as a model with
+relief-painted surfaces more than as a painting, and oddly in places. The steel arbors look like threaded screws, and in
+the live page's dial close-up the critic saw brown wood-grain rings and a dial plate like cork.
+
+<img src="/media/teardown-lab/r2-paint/a2-side-by-side.webp" alt="Two views of the brass chess clock at the same frame and angle. Left, labelled plain render: a smooth brass case, cream dials with black numerals and hands, red T flags, on a pale studio. Right, labelled painted materials: the same clock with a rough, hammered-looking relief of brush marks all over the brass case and knobs, the dial plates in streaky cream paint and the dials painted in faint concentric strokes, every hand and flag in the same place" style="width:100%;border-radius:8px">
+
+*The plain render and the painted materials on the same frame. The paint changes the surfaces. The shapes, the lighting
+and the motion are still the 3D model's.*
+
+<ao-game src="/labs/teardown/r2-paint/" poster="/media/teardown-lab/r2-paint/painted-materials.webp" size="about 1.5 MB" label="The painted brass clock, take it apart" note="Round 1's clock page with painted materials. Drag to orbit, scroll to zoom. The buttons isolate, cut open or show each part alone and switch views, the film-time bar scrubs the game, the plungers (or Z and M) start your own game, and the slider sets the running balance's beat rate. Needs WebGL. It tours itself until you touch it."><a href="/labs/teardown/r2-paint/">Open the painted brass clock</a></ao-game>
+
+**A painted film that holds still.** Flicker here is how much the parts that don't move change from one frame to the
+next, on average, out of 255. Painting every frame from scratch gives 18.9, and the whole clock boils. Reusing the same
+random choices only gets it to 7.5, because a hand crossing a dial changes where the painter puts paint, and every later
+choice with it. Painting once and carrying each stroke on its part, moved by the model's exact motion, gives 0.00 on
+the still parts and 0.49 on the moving ones, for 0.9 seconds of CPU a frame against 18, plus 37 seconds once. The
+painted materials don't flicker either, but they're a 3D render in painted textures, while the carried film is a
+painting.
+
+<video controls preload="none" poster="/media/teardown-lab/r2-paint/poster.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/r2-paint/film.mp4"></video>
+
+*The 7-second stretch five ways, with the measured flicker on screen. Top row: the plain render, repainted every frame,
+repainted with fixed random choices. Bottom row: painted once and carried, and the painted materials. Stand-in painter,
+not the easel.*
+
+**Cost per second of film,** with CPU time at $0.05 per core-hour and the render passes included: $0.0062 repainting
+every frame, $0.0025 for the painted materials and $0.0025 for the carried painting as built. Rendering its still parts
+once instead of every frame would bring that to about $0.0003.
+
+**The machine as a motion guide.** Some video models take a guide video and make a new clip with its shapes and motion
+and a look from a prompt. Aaron's [previs post](/ledger/a-bad-previs/) showed they copy a guide's motion faithfully, bad
+motion included. A teardown machine's motion is exact, so code can check what a model kept. There were eight clips of
+the same 5 seconds, each in one of two looks, Earthlight's blue drafting film or a photoreal brass clock under an amber
+lamp.
+
+- **Four Wan VACE clips,** an open video model on a rented GPU. It saw only the depth pass, or depth with the outlines
+  drawn in.
+- **Four Higgsfield clips** I ran from the lead session, FLUX 3 Video Edit and Seedance 2.5, given the render itself, for
+  66 credits.
+
+The session measured every clip in code against the model, each hand's angle in every frame, Black's flag, and when
+White's flag falls and the plungers swap.
+
+<video controls preload="none" poster="/media/teardown-lab/r2-paint/b-poster.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/r2-paint/b-film.mp4"></video>
+
+*The guide, top left, and the eight clips, 5 seconds at 16 frames a second. White's flag falls about a second in, then
+Black's minute hand on the right-hand dial sweeps to 12 and should lift Black's flag.*
+
+- **The timing survived.** White's flag falls and the plungers swap within one frame, a sixteenth of a second, of the
+  machine in every clip that shows them, and every dial sits within about a pixel of where it should.
+- **Black's flag split them.** Black's minute hand has to lift it. Both Seedance clips, FLUX's drafting clip and VACE's
+  photoreal clip with outlines tip it on time. FLUX's photoreal clip melts it into a blob that spreads the right way at
+  the right time while the hand never moves, the event without its cause. The other three VACE clips never tip it.
+- **Only Black's minute hand moves enough to test motion,** 60°. Seedance's drafting clip kept it within 2.8°, and its
+  photoreal clip ran up to 21° ahead before meeting the machine at 12. VACE with outlines kept it within 2.5 to 5°. With
+  depth alone VACE drew the hands faint or not at all, but a pale ghost hand still swept on time. FLUX added a third
+  hand to one dial in one clip and froze Black's dial in the other.
+- **VACE ignored the drafting look on the clock** and made a brass clock with a cross-hatched case on wood. FLUX and
+  Seedance gave white linework on blue.
+
+<img src="/media/teardown-lab/r2-paint/b-stills.webp" alt="A grid of nine rows and four columns, frames 0, 17, 56 and 76. Top row, the guide: a pale brass chess clock render on a light studio. Two VACE drafting rows: a bright gold clock with a cross-hatched case, white dials and red knobs on a wooden backdrop. Two VACE photoreal rows: an amber-lit brass clock on black, its hands pale and faint in the depth-only row. FLUX 3 drafting: the clock as white linework on deep blue. FLUX 3 photoreal: a brass clock on a dark wooden desk in warm light. Seedance 2.5 drafting: white linework on a blue ground with red flags. Seedance 2.5 photoreal: a brass clock on a desk beside a lamp. In the guide's last frame the right-hand dial's flag is tipped up with the hand at 12" style="width:100%;border-radius:8px">
+
+*All nine at the start, White's flag falling, Black's hand mid-sweep and Black's flag up. In the last column the flag
+at 12 on the right-hand dial is the one to watch.*
+
+**The independent critic caught the grader.** The first measurement said every clip lifted Black's flag on time. The
+critic froze the flag in a copy of the guide and it still read "on time", because the grader was timing Black's hand
+arriving in the same patch of picture. The grader also couldn't see a pale hand. The fix pass rebuilt it and tested it
+on doctored copies of the guide. It still can't tell a flag that tips from paint smearing the same way, so that call is
+made by eye.
+
+**The kit has a seam problem.** Kit films that use ambient occlusion, the soft shading in corners, among them the V8 and
+the clock, draw slightly different grain on every page load, because three.js builds that effect's noise from
+`Math.random`. A film rendered in pieces, on two GPUs or as a re-render of a stretch, changes grain at the seam. The
+paint session's copy seeds it.
+
+**Cost.** About 3.5 hours with six agents, three builders, a critic, a fix pass and the session itself. $84.31 at API
+prices, $0.78 of rented GPU time (each VACE clip about 12 minutes and $0.13 on an L4) and 66 Higgsfield credits.
+
+A person still has to allow the easel's build and run the passes through it, judge the painted looks, which no number
+here can do, pick a model and a look (Seedance kept the motion best here) and try the painted page on a real GPU.
+
+<details><summary>Every clip's numbers</summary>
+
+<table>
+<thead><tr><th>Clip</th><th>Black's minute hand, mean / worst error</th><th>Black's flag</th><th>White's flag, lag in frames</th><th>By eye</th></tr></thead>
+<tbody>
+<tr><td>The guide, read by the same code</td><td>0.2° / 1.5°</td><td>on time</td><td>+0.1</td><td>The method on its own input</td></tr>
+<tr><td>VACE drafting, depth</td><td>1.4° / 6.5°</td><td>doesn't turn</td><td>+0.6</td><td>Black's hour hand not drawn. The flag, a black "I", never tips</td></tr>
+<tr><td>VACE drafting, depth and outlines</td><td>0.8° / 5.1°</td><td>doesn't turn</td><td>-0.1</td><td>All hands there. The red flag smears sideways into a bow shape</td></tr>
+<tr><td>VACE photoreal, depth</td><td>2.5° / 4.6°</td><td>14° of smear</td><td>+1.0</td><td>Every hand a pale ghost, but Black's minute hand sweeps from 10 to 12 on time. The flag's stem dissolves into the arriving hand</td></tr>
+<tr><td>VACE photoreal, depth and outlines</td><td>1.5° / 2.5°</td><td>tips, +0.9 frame</td><td>+0.5</td><td>All four hands follow the machine</td></tr>
+<tr><td>FLUX 3 edit, drafting</td><td>2.9° / 4.8°</td><td>tips, -0.5 frame</td><td>-0.4</td><td>A third hand on White's dial. White's flag moves again later. No plunger move</td></tr>
+<tr><td>FLUX 3 edit, photoreal</td><td>no sweep</td><td>melts on time</td><td>0.0</td><td>Hands re-posed and Black's dial frozen at about 10:00. The flag melts with no hand to lift it</td></tr>
+<tr><td>Seedance 2.5 edit, drafting</td><td>0.3° / 2.8°</td><td>tips, +0.1 frame</td><td>+0.6</td><td>As good as the guide</td></tr>
+<tr><td>Seedance 2.5 edit, photoreal</td><td>5.0° / 20.8°</td><td>tips, -0.3 frame</td><td>0.0</td><td>Black's minute hand starts early and is up to 21° ahead, then meets the machine at 12</td></tr>
+</tbody>
+</table>
+
+- White's hands don't move in these 5 seconds and Black's hour hand turns 5°, so the other three hands only check the
+  pose.
+- One clip per setting, so "outlines beat depth alone" for VACE rests on two pairs of clips.
+- Higgsfield's clips came back at 24 frames a second and were cut to 16 to match the guide. That makes their lags read
+  about a sixth of a frame late on average. It's stated, not corrected.
+- Before the clock, VACE was tested on a made-up guide, a 12-tooth wheel turning once and a dial whose hand ticks. The
+  painted wheel turned with the guide to within about a degree in every frame, and exactly 12 teeth went past. The ticks
+  arrived on time but lost their in-between frame and snapped through.
+- VACE is Wan 2.1 VACE, the 1.3-billion-parameter version, run on Runpod. Only an L4 was in stock, the slowest card on
+  the list, at about 22 seconds a step and 12 minutes a clip. The first pod, an RTX 4090, had a broken GPU and cost
+  $0.012. The four pods came to 80.7 minutes and $0.78, of a $4.00 budget.
+- A FLUX edit cost 15 credits and a Seedance edit 18.
+- The critic's other catches here, all fixed: the Seedance photoreal hand was first said to lag when it runs ahead, and
+  a missing hand read as a small error. The grader now says when a hand is missing instead of giving an angle.
+
+</details>
+
+<details><summary>How the painting and the passes work, the costs, and the kit's snags</summary>
+
+- The stand-in painter is Python. Its colours mix by a simplified pigment model in three colour bands, not the easel's
+  physics. Paint never dries, there are no real bristles, and the height of the paint is a sum, not paint that flows.
+  It lays about 1,400 to 1,730 strokes a second on one core. Every stroke is recorded as data, and replaying the record
+  gives the same picture to the bit.
+- The guided painting gives each of the frame's 25 visible parts its own passage, its own colour piles and its own
+  stroke direction: round the axle for wheels, along the length for hands and rods, along the edges elsewhere. It
+  paints coarse to fine and far parts first, then the outlines, in lead white against the blue ground.
+- The Earthlight treatment is a look chosen for the experiment. The clock is from Touch Move, Episode 4, not from
+  Earthlight.
+- The passes are 112 frames at 832 by 480 pixels and 16 a second. Drawing any frame again gives the same bytes.
+- The painted materials are six textures, laid on each part in its own millimetres so the paint is fixed to the part.
+  They add 0.61 MB to the page, 1.46 MB against round 1's 0.85. In the checks the page made no network requests and had
+  no console errors. In software it drew 3.5 to 5 frames a second.
+- The carried painting puts each stroke back in 3D from the depth stored with it, moves it with its part's motion rebuilt
+  from the model, and lays it again, clipped to the part. That motion lands within 0.012 pixels of the passes' own key
+  points. Where a moving part shows new surface, new strokes are added. Here that happened in 2 frames, 18 strokes, on
+  the plunger rods as they rise.
+- The carried painting's limits as built: it's painted for one fixed camera, the hands keep the light they were painted
+  in, and a part that turns to show its other side would need new paint.
+- In a thin ring round the moving parts, which the flicker figure leaves out, the critic measured the carried painting
+  about 0.6 above the plain render.
+- All in, per second of film: repainting 446 CPU seconds, fixed seeds 426, the carried painting 21 with a still-parts
+  render (177 as built), the painted materials 180. On a GPU the renders and passes would shrink to a small part of that.
+  The painting itself is CPU work and would stay the same unless the painter were ported.
+- The critic's other catches in Part A, all fixed: costs that mixed CPU seconds with wall-clock seconds, which made the
+  painted materials look about 3.5 times cheaper, the 0.3% figure first written as "none", and small wrong numbers.
+- The seam problem: the V8, the Cessna, the Strandbeest and the clock all use ambient occlusion. Within one page load a
+  frame always comes out the same. Across loads, on the clock, 46,000 of 400,000 pixels changed, by up to 34 levels.
+- The kit's capture tool can't write exact pass frames. It rounds every time to a hundredth of a second, burns a time
+  label into each frame, and its video path sends frames through JPEG, which ruins flat part colours and fine depth. So
+  the session read the passes straight off the canvas instead. The clock's stage was fixed at 1600 by 900, and the lab's
+  page probe still times out in software before it prints its report.
+- The session ran from 18:12 to about 21:40.
+
+</details>
 <!-- /section:r2-paint -->
 
 <!-- section:r2-bounds -->
@@ -1511,9 +2074,215 @@ where the host builds the box while it plays and fits each new part as the music
 <!-- /section:r2-bounds -->
 
 <!-- section:r2-homestead -->
-### The Moon base in one world, and a game
+### The Homestead: every machine in one world, and a game
 
-*Running.*
+The Homestead session put all seven of round 1's Moon machines into one scene on the rim of the pit, eight units
+counting MOLE-2, a second copy of MOLE-1. Each one still runs on its own round-1 model, imported unchanged, and one clock
+drives them all, Episode 2's running time. **Side by side, the models disagreed in 30 places that no single build could
+have shown.** The same session also turned HAB 3's console into a small game about getting HAB 3 to sunrise, and you can
+lose it.
+
+The eight are MOLE-1, MOLE-2, DRAY, LOOM with the gate it printed, PAWN, FINCH, HAB 3 and Resupply 6, which lies tipped
+62 km away in canon and shows as a marker on the horizon. An independent critic checked that all seven round-1 folders
+are byte for byte the same as on their own branches. About 500 lines of adapters turn the one clock into each machine's
+own input and recolour round 1's two blues and four oranges to one amber. HAB 3 needed a new outside, because round 1
+built it as a half section inside a block of soil.
+
+**The film is the canon minute after Rev B,** 27:58 to 29:01 of Episode 2 in 56 seconds. Rev B, the new drawing that
+stops the base's software taking HAB 3 apart, is stamped on Earth at 28:13.44 and flies 1.28 seconds to the Moon, and
+the score is digital silence for exactly that flight. When it lands the robots' lights go out one by one, LOOM's first,
+and HAB 3's battery climbs to 130 hours against 128 to sunrise. MOLE-1, the one robot Rev B keeps working, rolls alone to
+its dig and cuts toward Noor's tunnel. The night is lit by the Earth, fixed 56 degrees up in the west-southwest and 99%
+lit.
+
+<video controls preload="none" poster="/media/teardown-lab/r2-homestead/poster.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/r2-homestead/film.mp4"></video>
+
+*The 56-second film at 720p. The pulses between the Earth and the comms mast, the lights going out, DRAY folding its lamp
+out of her window, HAB 3 opened at 130 hours, MOLE-1's drums cutting, the X-ray of her stair and gallery, one red blink
+on Resupply 6's marker and her window with the Earth in it. It rendered on a rented RTX 2000 Ada in 8 minutes, for four
+cents.*
+
+**Aaron asked whether the lab could change the world around the machines,** "things that happen in universe of the
+demonstration". This page is the answer. The labels and leader lines live in the 3D world and move with it, placed fresh
+every frame so none covers another machine. Tracks exist only where MOLE-1 has driven, and the cut and spoil heap grow
+with its model. Around it sits a service console in the style of the base app from the episode, with all but one number
+redrawn from the models, down to a ledger that turns the printed gate into 17.2 MOLE-1 loads. Nothing on the page says
+model or lab, and her name is never printed.
+
+<img src="/media/teardown-lab/r2-homestead/hero.webp" alt="The Homestead at night from the pit rim: the printed gate E-07 in the foreground framing HAB 3's curved shell and DRAY's crane, MOLE-1 small at its portal with a NOTE 2 AT THE PORTAL label, PAWN and MOLE-2 labelled COLD SLEEP and NOT RESPONDING, LOOM by the greenhouse ribs on the right, a green banner reading STEP 8 OF 9 - HALTED - REV B, and console panels showing 130.0 H against 128.0 H, the fleet list, a site plan and Rev B's four notes" style="width:100%;border-radius:8px">
+
+*CAM 15 PIT RIM at 28:32.6. The gate frames HAB 3 and DRAY, MOLE-1 has just reached its portal and the halt banner is
+up. The panels carry the battery against sunrise, the fleet, a site plan and Rev B's four notes.*
+
+**One slider breaks it on purpose.** REV B LATE BY holds the sheet back by up to 90 seconds and the same models run.
+Past 75.28 seconds the vent's three minutes run out first, step 9 runs at 29:30 and HAB 3's air falls by round 1's own
+vent model, to 14.4 kPa 50 seconds in. The delay itself costs the battery only 0.04 kWh.
+
+**The take-apart still works.** Click any machine and it opens with its own round-1 parts to isolate, cut open or show
+alone. A sleeping machine can replay what it did, LOOM printing the gate or PAWN its galley routine.
+
+<img src="/media/teardown-lab/r2-homestead/isolate.webp" alt="MOLE-1 opened on the base: its rusty bucket drums solid and isolated, the rest of the rover ghosted, labels reading DRUMS 11.1 RPM, 0.48 KG/S, BITES 4, HOPPER 0.6 / 80 KG and THE FACE COVER 0.00 M, LOAD 1/140, and a UNIT MOLE-1 panel on the right with ISOLATE, CUT and ALONE buttons and its subsystems" style="width:100%;border-radius:8px">
+
+*MOLE-1 opened at 28:37 with its drums isolated, four bites into the first of 140 loads. The parts list on the right is
+round 1's.*
+
+<img src="/media/teardown-lab/r2-homestead/xray.webp" alt="The X-RAY view under HAB 3: a ghosted stair shaft below the module labelled DOOR IN THE FLOOR, STAIR 3.2 M and 3 M SAFE FROM THE SUN, a ghosted gallery labelled HER TUNNEL 6 M with FINCH lit inside it, an orange drift coming from the left labelled REV B NOTE 2, 3 M COVER, DRIFT 0.14 / 11.17 M, 0.474 M SHORT, and TO THE PIT 17 degrees below it" style="width:100%;border-radius:8px">
+
+*The X-ray at 28:43. Her stair under the door in the floor, her 6 m gallery with FINCH lit inside it, and MOLE-1's drift
+in orange, planned to stop 0.474 m short of the gallery at 3 m of cover. The numbers come from the round-1 models.*
+
+<ao-game src="/labs/teardown/r2-homestead/" poster="/media/teardown-lab/r2-homestead/hero.webp" size="about 1.2 MB" label="The Homestead, every machine in one world" note="Drag to orbit, scroll to zoom. Click a machine or its fleet row to take it apart, and Esc returns to the base. The camera buttons or keys 1 to 7 and X switch views, H hides the panels, and the slider holds Rev B back. Needs WebGL. It tours itself until you touch it."><a href="/labs/teardown/r2-homestead/">Open the Homestead</a></ao-game>
+
+**Putting the machines side by side found 30 disagreements,** each written down with what the world adopted and why.
+The biggest is which way the pit is. MOLE-1's model puts it east of the base, and HAB 3's runs her tunnel and window west
+toward it. The world puts it 85 m to the west-southwest, which keeps HAB 3 unchanged and makes MOLE-1's drift the
+extension of her tunnel. One lore line puts the base on the pit's west rim, which would put the pit east, so that call
+is Aaron's.
+
+- **MOLE-1's power.** Its own model says the drift takes 44.6 kWh. HAB 3's battery holds 52.0 kWh after Rev B. If MOLE-1
+  drew from it, HAB 3 would last 18.5 hours, not 130. The world gives MOLE-1 an invented power yard.
+- **When the battery reads 130 hours.** MOLE-1's console counts down from 130 the moment Rev B lands. HAB 3's energy
+  model reads 30.9 hours then and climbs to 130 as the fleet sleeps, inside the canon window, so the world uses
+  HAB 3's.
+- **HAB 3's window.** DRAY has it on the long side, HAB 3 in the west end. The world uses the end at DRAY's height, so
+  DRAY's crane reach and lamp still work.
+
+**For Aaron to confirm,** besides the pit: the comms mast and power yard 30 m out at bearing 300°, PAWN beside HAB 3's
+window end, and MOLE-1 rolling 16 m to a portal on the pit side, where canon says it "rolls to the ground beside HAB 3".
+
+**The second page is a night you can lose.** HAB 3 until sunrise runs round 1's HAB 3 model unchanged from 28:27, when
+the battery reads 130 hours against 128 to sunrise. You control what a HAB 3 panel could, the heater's three bars and
+the scrubber fan. The light stays on, because Rev B restores it and hers is the one lit window in the episode. **Change
+nothing and HAB 3 reaches sunrise with exactly 2.00 hours to spare,** Teo's "You'd make sunrise. Just."
+
+At 36 hours in, MOLE-1's pack runs low and the console asks the one question where Rev B's notes conflict. Note 1 puts
+all plant idle and note 2 keeps MOLE-1 digging. HOLD leaves its drift unfinished. CHARGE takes 5.4 kWh from HAB 3, nearly
+seven times the margin.
+
+- **Charge MOLE-1 and do nothing else.** The battery runs out 11.5 hours before sunrise.
+- **Switch the heater off and forget it.** The cabin reaches 0 °C, where her water freezes, after about 31 hours.
+- **Run two bars to stay warm.** The battery is empty after 80 hours.
+- **Switch the scrubber fan off.** The CO2 reaches the session's limit for unsafe air after about 44 hours.
+
+To win with the charge you leave the heater off for about a day. 24 hours of it reaches sunrise with a low of +1.7 °C,
+and 32 hours freezes. The page is flat 2D drawing, 216 KB, and ran at 60 frames a second on the lab's box.
+
+<img src="/media/teardown-lab/r2-homestead/hab3-night.webp" alt="The HAB 3 night console at NIGHT HR 286: 70 H to empty against 68 H to sunrise and MARGIN AT SUNRISE +2.2 H at the top left, the heater on 1 bar, the light fixed ON REV B and the scrubber fan on, MOLE-1 digging at 5.2 of 6.1 m, a blue Sheet 3 Rev B section in the middle with the cabin at +1.3 degrees, the crooked stair, HER TUNNEL and MOLE-1's drift angling down to it, Rev B's four notes word for word, a log of the night's events and three charts for the battery, the cabin temperature and CO2 on the right" style="width:100%;border-radius:8px">
+
+*NIGHT HR 286, after a CHARGE and 22 hours with the heater off. The cabin is down to +1.3 °C, MOLE-1's drift is at 5.2 of
+6.1 m and the projection says sunrise with 0.90 kWh. In the middle is Teo's Sheet 3 Rev B, redrawn from the state.*
+
+<ao-game src="/labs/teardown/r2-hab3-night/" poster="/media/teardown-lab/r2-homestead/hab3-night.webp" size="about 0.2 MB" label="HAB 3 until sunrise, a game" note="Click the buttons or use the keys. Space runs or holds the night, X changes speed, 0 to 3 set the heater bars and S the scrubber fan. H or C answers MOLE-1, and R or N replays or restarts at the report. No WebGL needed. It fits a phone, but the text is tiny there."><a href="/labs/teardown/r2-hab3-night/">Play HAB 3 until sunrise</a></ao-game>
+
+**The critics caught what the builders had shipped as done.** The world's critic found five blocking problems. The page
+froze when a visitor clicked a building that wasn't a machine. HAB 3's window lit DRAY after DRAY's lamp had gone out.
+The last shot hid the Earth behind the window well. Labels covered MOLE-1 at its two key moments, and the camera flew
+through the gate nobody has walked through. The game's critic found that switching the light off was a free win, which
+made MOLE-1's question pointless. It also found a margin that said -52 hours while the projection said sunrise, and no
+way to answer MOLE-1 without a mouse. The fix passes fixed every blocking finding.
+
+**Still weak.** The machines are 0.4 to 4.5 m long on a base about 100 m across, so they're small in the wide shots.
+There's no ambient occlusion, and the shot of the Earth over the base is mostly black sky, so the console carries a lot
+of the story. The game is two switches and one question in 128 hours. The two pages don't even agree on MOLE-1's night.
+In the world it digs 11.2 m in about 9 hours, from its round-1 model, and in the game 6.1 m in 60, from numbers the game
+made up. Neither page has been tried on a real GPU or a real phone.
+
+**Performance was the hard part.** Put together as built, the seven machines cost 1,751 draw calls a frame, the batches
+of drawing a browser hands the graphics card. Baking each posed machine into merged meshes brought the widest live view
+down to 508.
+
+**Numbers.** About 4 hours 20 minutes and five agents at extra high effort (xhigh): the design, the world and game builds
+with their fix passes, and a critic for each. $104.01 at API prices by Playback Lens and $0.11 of GPU time. The world page
+is 1.2 MB, about 750 KB of it three.js.
+
+<details><summary>Performance: how 1,751 draw calls became 508</summary>
+
+- All seven builders in one scene as built: 968 meshes, 394 k triangles and 276 materials, 1,751 draw calls a frame with
+  one shadowed light and no effects, 46 ms a frame in software at 800 × 450. Baking each posed machine into one merged
+  mesh per material made it 288 calls and 4 ms.
+- The finished world draws its 861 meshes as 236 objects. The parts that move stay live, MOLE-1's wheels, arms and
+  hopper, LOOM's turning top and DRAY's folding mast.
+- The widest live view draws 508 calls and 1.21 M triangles at full quality (the Earth's shadow, two spotlight shadows,
+  glow and smoothing), and 383 at the lowest quality. The design aimed for 600 and 350.
+- The page starts at the lowest quality on touch screens and small windows, and steps down when 90 frames average over
+  22 ms.
+- The lab's box only renders in software. There it drew 5.8 frames a second at 1600 × 900. What a real graphics card
+  does with it isn't measured.
+- The film is 3,360 frames at 1920 × 1080 and 60 fps, 0.143 s a frame on the RTX 2000 Ada. The pod was up 10.8 minutes,
+  for $0.043. The score is mastered to -14.0 LUFS, the skill's loudness target.
+- The world page is 1,196,626 bytes: three.js about 750 KB, fonts about 150 KB, the seven round-1 machines 117 KB, the
+  world's own code 111 KB and the Earth's picture 28 KB. The game is 216,445 bytes. Both are one offline file with no
+  network requests and no console errors.
+
+</details>
+
+<details><summary>More of the 30 disagreements, and the world's other choices</summary>
+
+- Twenty-five were found while the design was drawn up and five more during the build.
+- HAB 3's window: DRAY puts it on the long side 1.66 m up, HAB 3 in the west end 2.38 m up. The world uses the end at
+  1.66 m.
+- The battery: MOLE-1's console starts its countdown from 130 h at 28:14.72. HAB 3's energy model reads 30.9 h then and
+  130.00 h at 28:27.
+- MOLE-1's light: its model kept it dark until Rev B. Canon has every robot's work light on her module from 20:02, so in
+  the world it's on until 28:16.20.
+- Her gallery: MOLE-1 drew it 4.2 m long, HAB 3 6 m. HAB 3's matches the X-ray in the episode.
+- The soil: MOLE-1, DRAY and HAB 3 use 1,500 kg/m³, LOOM's print 2,000. The world reads them as loose and packed soil,
+  so the 1,379 kg gate is 17.2 MOLE-1 loads or 10.2 DRAY bags.
+- Canon has DRAY lower its mast, which DRAY's model doesn't do. The world folds it 80° across the deck, out of her
+  window.
+- MOLE-1's own model rolls it from 28:16.72 to 28:32.5 to its portal 16 m from HAB 3. Canon has it roll "to the ground
+  beside HAB 3" between 28:16 and 28:20. The world kept the model's timing and place.
+- DRAY's bag on HAB 3's rings gives 162 bags kept and 171 stripped. The design had guessed about 150.
+- The exact times the lights go out are the session's, inside the canon windows: LOOM's beacon at 28:15.50, MOLE-1 at
+  28:16.20, PAWN at 28:16.90 and DRAY's eye at 28:17.40.
+- The Earth is computed from the base's position, 8.3 N 33.2 E: 55.9° up at bearing 257.6°, 1.9° wide, about 10 lux (an
+  estimate). Canon says 56° in the west-southwest.
+- The base clock is Episode 2's time plus 17:37:00, and three frames in the episode agree to the second.
+
+</details>
+
+<details><summary>Everything the critics caught</summary>
+
+- The world's live page froze when a visitor clicked HAB 1, HAB 2, the NODE, the greenhouse ribs, the comms mast or the
+  power yard. It threw 156 errors in 4 seconds and drew nothing until Esc. A new click test now hits every kind of
+  object with real mouse clicks, with 0 errors.
+- The light from HAB 3's window lit DRAY after DRAY's lamp and eye had gone out, which canon says they do. It's now a
+  spotlight inside the well aimed at the ground past DRAY.
+- As built, the window well could never show the Earth in the upper right of her window, where canon puts it. It now
+  tilts up 25°, not 10°.
+- A label covered MOLE-1 as its light went out, and at the pit rim it stood behind the gate's post. The
+  camera then flew through the gate.
+- LOOM's light, canon's first to go out, went out off screen. The console knew about Rev B while the sheet was still in
+  flight. Pings filled the round trip's gaps, which canon says are "always digital silence, never filled".
+- The game: switching the light off cost nothing and contradicted the one lit window. The light is now held on and
+  MOLE-1's charge went from 5 to 9 hours, so no single trick pays for it. The margin also read +218.7 hours in green
+  while the cabin froze, MOLE-1's question had no keyboard answer, the page was blank on a phone held upright, and Rev
+  B's notes were reworded. All fixed.
+- Fixed only in part: the opening wide shot still leaves HAB 3 under a panel, the Earth shot is still mostly sky, and
+  HAB 3's end glows white from DRAY's lamp until it goes out, which is that lamp's number from DRAY's own model.
+
+</details>
+
+<details><summary>The game's model, its inventions and its open questions</summary>
+
+- Round 1's model is a function of film time, worked out only to 31:00, so the game restates its three equations for the
+  battery, the heat and the CO2 per night hour, solved exactly between decisions. The same decisions always give the
+  same night, and a replay ends on the same number.
+- Its starting values come from round 1 at 28:27: 52.0 kWh, 9.0 °C and a CO2 pressure of 4.14 mmHg. On the canon line
+  the cabin goes from 9.0 to 5.8 °C over the whole night, and the battery ends with 0.80 kWh.
+- At normal speed the 128 hours take 4 minutes 16 seconds. The heater bars are 250 W each.
+- Invented: bars 2 and 3, the fan as a switch, MOLE-1's pack, its request at NIGHT HR 262, its 9-hour charge at 0.60 kW,
+  60 hours of digging, a 6.10 m drift at 35°, and the CO2 ending at 10 mmHg, from the session's memory of NASA's limit
+  and not checked against the table.
+- Round 1's model doesn't count the heat from the light and the scrubber. Counting it would change round 1's +5 °C
+  settle, so it was flagged, not changed.
+- Still weak: one scripted event in 128 hours, no sound, and on a phone turned sideways the text is about 4 px. Holding
+  the light on treats light differently from the air and heat the same note restores.
+- For Aaron: whether the light and scrubber should heat the cabin, whether the light should stay held on, the 10 mmHg
+  line, MOLE-1's numbers and reading note 1 as covering its charger. Also whether a night that can end with an empty
+  battery belongs among the hidden pages, since canon leaves whether Rev B is enough open on purpose.
+
+</details>
 <!-- /section:r2-homestead -->
 
 ## How the lab is run
