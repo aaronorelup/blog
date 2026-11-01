@@ -117,21 +117,49 @@ export async function ask(ui, q) {
 
 const say = (text) => h('p', { class: 'ask-note' }, text);
 
-// "[2]" becomes a link to the cited passage, on the post or its notes page, with the question's words marked there.
-function cited(text, cites, q) {
-  const byN = new Map(cites.map((c) => [String(c.n), c]));
-  return text.split(/(\[\d+\])/).map((part) => {
-    const c = byN.get(part.slice(1, -1));
-    if (!c) return part;
-    const label = [c.title, c.heading].filter(Boolean).join(' / ');
-    return h('a', { class: 'ask-cite', href: deepLink(pagePath(c.slug, c.kind), c.anchor, q), title: label }, part);
+// Where a cite lands, in words: its heading, the post's opening or its short version, and on a notes page, that it is
+// the full making-of. The hover card shows it after "Goobie cites:", a screen reader after the post's title.
+function passage({ kind, anchor, heading }) {
+  const where = anchor === 'short' ? 'the short version' : heading || 'the opening';
+  if (kind !== 'notes') return where;
+  return where === 'the opening' ? 'the opening of the full making-of' : `${where}, in the full making-of`;
+}
+
+// Goobie's [n] number excerpts; a reader counts posts. Each [n] shows its post's place among the posts cited, in order
+// of first mention (1, 2, 3, no gaps), and a run of them on one post (only spaces between) shows once, as its first
+// passage. Every link still goes to its own passage, on the post or its notes page, with the question's words marked.
+function cited(text, cites, q, cards) {
+  const byN = new Map(cites.map((c) => [`[${c.n}]`, c]));
+  const posts = [];       // slugs in order of first mention
+  const out = [];
+  let open = null;        // the slug of the last link, while only spaces have followed it
+  text.split(/(\[\d+\])/).forEach((part, i) => {
+    const c = i % 2 ? byN.get(part) : null;
+    if (!c) {
+      if (part.trim()) open = null;
+      out.push(part);
+      return;
+    }
+    if (c.slug === open) {
+      while (typeof out.at(-1) === 'string') out.pop();   // the spaces since that link
+      return;
+    }
+    if (!posts.includes(c.slug)) posts.push(c.slug);
+    const n = posts.indexOf(c.slug) + 1;
+    const where = passage(c);
+    open = c.slug;
+    out.push(h('a', {
+      class: 'ask-cite', href: deepLink(pagePath(c.slug, c.kind), c.anchor, q),
+      'aria-label': `Source ${n}: ${cards[c.slug]?.title ?? c.title}, ${where}`, 'data-card-line': `Goobie cites: ${where}`,
+    }, `[${n}]`));
   });
+  return out;
 }
 
 async function answer({ answer: text, cites, related, reason }, q) {
   const cards = (await load()) ?? {};
   const head = text
-    ? [h('p', { class: 'ask-text' }, ...cited(text, cites, q)), h('p', { class: 'ask-fine' }, SAY.fine)]
+    ? [h('p', { class: 'ask-text' }, ...cited(text, cites, q, cards)), h('p', { class: 'ask-fine' }, SAY.fine)]
     : [say(reason === 'not-found' ? SAY['not-found'] : SAY.resting)];
   const rows = related.filter((slug) => cards[slug]).map((slug) => relatedRow(slug, cards[slug]));
   return h('div', { class: 'ask' }, ...head,
