@@ -7,6 +7,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "postinstall": "patch-package",
     "test": "node --test \"tests/unit/*.test.mjs\" \"src/scripts/stats/core/*.test.mjs\"",
     "new-post": "node scripts/new-post.mjs",
     "media:push": "node scripts/media/push.mjs",
@@ -16,13 +17,14 @@
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
-    "astro": "^5.18.2",
+    "astro": "5.18.2",
     "gray-matter": "^4.0.3",
     "rehype-raw": "^7.0.0",
     "sharp": "^0.34.5",
     "three": "^0.160.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.64.1"
+    "@playwright/test": "^1.64.1",
+    "patch-package": "^8.0.1"
   }
 }
