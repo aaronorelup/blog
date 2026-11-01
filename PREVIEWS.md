@@ -161,6 +161,9 @@ anyone on a phone.
   shrinks to a thumbnail the text wraps around, then the picture goes, then the points go and
   only the verdict and takeaway stay. On a 1440×900 screen, 105 of 120 placements (every row at
   the top, middle and bottom of the screen) were full size. At 1280×720, 79.
+- On a short window it steps down the same way, so it is never cut off, by the window or by its own box: at
+  1366×657 and 1024×600 a card of three long findings opens with the thumbnail (`cards.spec.mjs`). The card's
+  `max-height` is only a backstop for a window too small for any size.
 - **On Goobie's citations** (Ask Goobie's `[1]`, `[2]` on `/ledger/`) the card is the cited post's,
   with one more line under the title naming the passage the link lands on: "Goobie cites: How the
   chaining works", "the opening", "the short version", or for a passage of the notes page, "...,

@@ -4,11 +4,12 @@
 // silently; a result opens its post with the passage marked; Ask keeps the box's words, selected, loads Turnstile only
 // once opened and switched on, asks once at a time, links its [n] (a notes passage on the notes page), numbered by post
 // with each link's card naming its passage, and shows related posts; { ask: false } hides the switch. /api/* answers
-// come from fixtures/api.json; Turnstile is a stub. search-*.
+// come from fixtures/api.json and fixtures/answers.mjs; Turnstile is a stub. search-*.
 import fs from 'node:fs';
 import matter from 'gray-matter';
 import { isLive } from '../../src/data/exempt.js';
 import { test, expect } from './fixtures.mjs';
+import { ANSWERS } from './fixtures/answers.mjs';
 
 const SHAPES = JSON.parse(fs.readFileSync(new URL('./fixtures/api.json', import.meta.url), 'utf8'));
 const POSTS = new URL('../../src/content/posts/', import.meta.url);
@@ -285,47 +286,6 @@ test.describe('Ask Goobie', () => {
       await expect(page.locator('mark.hl').first()).toBeVisible();
     });
   });
-
-  // Aaron's two answers of 2026-11-01 (D1 ask_cache), word for word, the first with a cite of another post (a run with a
-  // space in it), a run that goes back to the first post and one cite of a notes page added: [4][5], [4], [5] and [1]
-  // are all passages of one post.
-  const ANSWERS = [{
-    answer: "Aaron's post on long AI films is closest. MiniMax-H3 makes six seconds a go [4][5]. Saved latents chain clips [4]. " +
-      'Films ran 13 minutes [5]. Free memory before every clip [1]. A script folded the paper puppet [7] [2]. ' +
-      'Both lean on code [4] [2][1]. Only a screenshot caught the black cards [9].',
-    cites: [
-      { n: 1, slug: 'every-ai-film-so-far', kind: 'post', anchor: 'what-held-across-all-of-it', heading: 'What held across all of it', title: 'Making long AI films' },
-      { n: 2, slug: 'paper-jefrie', kind: 'post', anchor: '', heading: '', title: 'Paper' },
-      { n: 4, slug: 'every-ai-film-so-far', kind: 'post', anchor: 'how-the-chaining-works', heading: 'How the chaining works', title: 'Making long AI films' },
-      { n: 5, slug: 'every-ai-film-so-far', kind: 'post', anchor: '', heading: '', title: 'Making long AI films' },
-      { n: 7, slug: 'paper-jefrie', kind: 'post', anchor: 'where-the-idea-came-from', heading: 'Where the idea came from', title: 'Paper' },
-      { n: 9, slug: 'characters-in-inscryption', kind: 'notes', anchor: 'how-to-play-it', heading: 'How to play it', title: 'My characters in Inscryption: the making-of notes' }],
-    related: ['every-ai-film-so-far', 'paper-jefrie', 'ai-rigging-vs-a-script'], cached: true,
-    reads: "Aaron's post on long AI films is closest. MiniMax-H3 makes six seconds a go [1]. Saved latents chain clips [1]. " +
-      'Films ran 13 minutes [1]. Free memory before every clip [1]. A script folded the paper puppet [2]. ' +
-      'Both lean on code [1] [2]. Only a screenshot caught the black cards [3].',
-    links: [
-      ['[1]', 'every-ai-film-so-far', '', 'how-the-chaining-works', 'How the chaining works'],
-      ['[1]', 'every-ai-film-so-far', '', 'how-the-chaining-works', 'How the chaining works'],
-      ['[1]', 'every-ai-film-so-far', '', '', 'the opening'],
-      ['[1]', 'every-ai-film-so-far', '', 'what-held-across-all-of-it', 'What held across all of it'],
-      ['[2]', 'paper-jefrie', '', 'where-the-idea-came-from', 'Where the idea came from'],
-      ['[1]', 'every-ai-film-so-far', '', 'how-the-chaining-works', 'How the chaining works'],
-      ['[2]', 'paper-jefrie', '', '', 'the opening'],
-      ['[3]', 'characters-in-inscryption', 'notes/', 'how-to-play-it', 'How to play it, in the full making-of']],
-  }, {
-    answer: 'Closest is the paper Jefrie post [4]. Rigging tools lost to a script [5]. Start with [4] then [5].',
-    cites: [
-      { n: 4, slug: 'paper-jefrie', kind: 'post', anchor: 'where-the-idea-came-from', heading: 'Where the idea came from', title: 'Paper' },
-      { n: 5, slug: 'ai-rigging-vs-a-script', kind: 'post', anchor: '', heading: '', title: 'Rigging' }],
-    related: ['paper-jefrie', 'ai-rigging-vs-a-script', 'every-ai-film-so-far'], cached: true,
-    reads: 'Closest is the paper Jefrie post [1]. Rigging tools lost to a script [2]. Start with [1] then [2].',
-    links: [
-      ['[1]', 'paper-jefrie', '', 'where-the-idea-came-from', 'Where the idea came from'],
-      ['[2]', 'ai-rigging-vs-a-script', '', '', 'the opening'],
-      ['[1]', 'paper-jefrie', '', 'where-the-idea-came-from', 'Where the idea came from'],
-      ['[2]', 'ai-rigging-vs-a-script', '', '', 'the opening']],
-  }];
 
   test('search-15 cites are numbered by post with no gaps, and each one\'s card names its post and passage', async ({ page, context, request, isMobile }) => {
     await watch(page, context);

@@ -90,10 +90,12 @@ export function place(card, els, a) {
   const panel = a.closest('#panel-card');
   const b = panel ? panel.getBoundingClientRect() : { left: 0, top: 0, right: innerWidth, bottom: innerHeight };
   const r = anchorBox(a);
+  // The height of everything in the card at a size, not of its box: max-height (cards.css) caps the box on a short
+  // window, and a capped box would pass for a fit with its last lines cut off.
   const size = (cls) => {
     card.classList.remove('lp-thumb', 'lp-compact', 'lp-tight');
     if (cls) card.classList.add(...cls.split(' '));
-    return card.offsetHeight;
+    return card.scrollHeight + card.offsetHeight - card.clientHeight;
   };
   const sizes = els.media.hidden ? ['', 'lp-compact lp-tight'] : SIZES;
   let h = size('');
