@@ -16,16 +16,18 @@ if (matchMedia('(hover: hover) and (pointer: fine)').matches) lazy(() => import(
 
 // Where the reader lands once the components have drawn: each loads its own chunk and often draws after the load
 // event, when the browser has already scrolled to the #heading, and a chart is rarely as tall as the table it replaces.
-// Unless the reader has scrolled since: where they were before a Reload or a Back that missed the page cache (only
-// #panel-scroll scrolls, and browsers keep its place only in that cache, so it is kept in history.state as they
-// scroll), else the #heading. Then a search result's or a citation's passage is marked (highlight.js, loaded only for
-// a ?hl= or ?hs= link).
+// After a Reload or a Back that missed the page cache, where they were (only #panel-scroll scrolls, and browsers keep
+// its place only in that cache, so it is kept in history.state as they scroll); for a ?hl= or ?hs= link, the passage
+// marked (highlight.js); else the #heading. A place is held while the article still grows above it (a video learning
+// its size), until the reader scrolls, taps or types.
 function land(root, drawn) {
   const scroller = root.closest('#panel-scroll');
   const saved = history.state?.scroll;
   let moved = false;
-  const stop = () => { moved = true; };
+  let held = null;
+  const stop = () => { moved = true; held?.disconnect(); };
   for (const type of MOVES) addEventListener(type, stop, { capture: true, once: true, passive: true });
+  const hold = (place) => { held = new ResizeObserver(place); held.observe(root); };
   let timer = 0;
   const keep = () => {
     clearTimeout(timer);
@@ -33,13 +35,17 @@ function land(root, drawn) {
   };
   scroller.addEventListener('scroll', keep, { passive: true });
   const arrive = () => {
-    for (const type of MOVES) removeEventListener(type, stop, { capture: true });
-    if (!moved && saved !== undefined) scroller.scrollTop = saved;
-    else if (!moved) document.querySelector(':target')?.scrollIntoView();
-    if (/[?&]h[ls]=/.test(location.search)) lazy(() => import('../post/highlight.js')).then((m) => m.highlight(root));
+    if (!moved && saved !== undefined) hold(() => { scroller.scrollTop = saved; });
+    else if (/[?&]h[ls]=/.test(location.search)) lazy(() => import('../post/highlight.js')).then((m) => m.highlight(root));
+    else if (!moved && location.hash) hold(() => document.querySelector(':target')?.scrollIntoView());
   };
   drawn.then(arrive, arrive);
-  return () => { clearTimeout(timer); scroller.removeEventListener('scroll', keep); };
+  return () => {
+    stop();
+    for (const type of MOVES) removeEventListener(type, stop, { capture: true });
+    clearTimeout(timer);
+    scroller.removeEventListener('scroll', keep);
+  };
 }
 
 export function article(root) {
