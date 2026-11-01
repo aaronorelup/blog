@@ -106,7 +106,7 @@ test('game-7 Fullscreen puts the game’s frame full screen', async ({ page, isM
   await page.evaluate(() => document.exitFullscreen());
 });
 
-test('game-8 a key or a click inside the game counts as pressing play', async ({ page }) => {
+test('game-8 a key or a pointer pressed inside the game counts as pressing play', async ({ page }) => {
   const g = await start(page);
   await page.evaluate((src) => {
     const v = document.createElement('video');
@@ -115,16 +115,12 @@ test('game-8 a key or a click inside the game counts as pressing play', async ({
     document.body.append(v);
   }, smallVideo);
   const other = page.locator('#other');
-  await other.evaluate((m) => m.play());
-  await expect(veil(g)).toBeVisible();
-  await veil(g).click();
-  await expectPlaying(other, false);
-  await other.evaluate((m) => m.play());
-  await expect(veil(g)).toBeVisible();
-  await veil(g).click();
-  await other.evaluate((m) => m.play());
-  await expect(veil(g)).toBeVisible();
-  // Resume through the veil is one way; a key pressed inside the frame is the other.
-  await g.locator('iframe').evaluate((f) => f.contentWindow.dispatchEvent(new KeyboardEvent('keydown', { key: 'x' })));
-  await expectPlaying(other, false);
+  // Each time another player has paused the game; the element listens on the game's own window, capturing.
+  for (const type of ['keydown', 'pointerdown']) {
+    await other.evaluate((m) => m.play());
+    await expect(veil(g)).toBeVisible();
+    await g.locator('iframe').evaluate((f, type) =>
+      f.contentWindow.dispatchEvent(new (type === 'keydown' ? KeyboardEvent : PointerEvent)(type, { key: 'x' })), type);
+    await expectPlaying(other, false);
+  }
 });
