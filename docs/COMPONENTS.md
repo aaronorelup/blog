@@ -125,6 +125,31 @@ Behaviours: game-1 to game-8, core-3. Used by `storm-bell-fighter` (`/games/stor
 
 ## <ao-listen>
 
+Several renders of the same audio, compared by ear at the same moment. One player for the whole set: picking
+another clip keeps the playhead where it was, so the reader hears the same word under each treatment, and A/B flips
+to the reference clip and back. Each clip's spectrogram spans its length; the playhead runs across it and a click
+seeks. With the list focused, up and down pick a clip, space plays, C flips A/B. It is one player on the page.
+
+| Attribute | |
+|---|---|
+| `ref="id"` | the clip A/B compares against (default: the first) |
+
+Children: one `<figure data-id="…">` per clip, holding an `<audio>`, an optional spectrogram `<img>` and a
+`<figcaption>` (its `<b>` names the clip, its `.ao-meta` describes it); a direct child `<figcaption>` captions the
+set. At least two clips. Without JS the figures stack with native controls.
+
+```html
+<ao-listen ref="raw">
+<figure data-id="raw"><audio src="/media/x/raw.mp3" controls></audio><img src="/media/x/raw.webp" alt="">
+<figcaption><b>Raw</b><span class="ao-meta">as recorded</span></figcaption></figure>
+<figure data-id="fixed"><audio src="/media/x/fixed.mp3" controls></audio><img src="/media/x/fixed.webp" alt="">
+<figcaption><b>Fixed</b><span class="ao-meta">after the pass</span></figcaption></figure>
+</ao-listen>
+```
+
+Behaviours: listen-1 to listen-4, core-3. Used by `bad-very-bad` (and its notes), `remora-voice-lab` (the best
+example) and `showreel-rebuilt`.
+
 ## <ao-matrix>
 
 ## <ao-model>
