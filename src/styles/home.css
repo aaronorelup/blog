@@ -29,15 +29,15 @@
 .home-card-hero { max-width: 620px; border-radius: 26px; padding: clamp(26px, 4vw, 44px); text-align: center; }
 .home-card-narrow { max-width: 460px; }
 .home-card-gate { max-width: 560px; width: 100%; text-align: center; }
-.home-card ::selection { background: #f7c9d4; }
+.home-card ::selection { background: var(--home-blush); }
 
 .home-hero-row { display: flex; align-items: center; justify-content: center; gap: clamp(16px, 2.6vw, 30px); flex-wrap: wrap; }
 .home-h1 {
-  margin: 0; font-family: 'Zen Maru Gothic', serif; font-weight: 700; font-size: clamp(40px, 7vw, 76px);
+  margin: 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 7vw, 76px);
   line-height: 1.02; color: var(--home-head); letter-spacing: -0.01em;
 }
 .home-h2 {
-  margin: 0; font-family: 'Zen Maru Gothic', serif; font-weight: 700; font-size: clamp(28px, 3.4vw, 40px);
+  margin: 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(28px, 3.4vw, 40px);
   color: var(--home-head); line-height: 1.1;
 }
 .home-h2-spaced { margin-bottom: 20px; }
