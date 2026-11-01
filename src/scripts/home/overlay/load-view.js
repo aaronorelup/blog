@@ -1,9 +1,9 @@
 // A route's view for the overlay, from its real page: load(route) → { node, title }, node a fresh copy of the page's
-// view (VIEW) with its scripts left out (mount.js runs the view's module instead). Parsed pages are cached by path
+// view (VIEW) with its scripts left out (panel.js runs the view's module instead). Parsed pages are cached by path
 // (KEEP), never live nodes: a component that has disconnected was never written to come back. A page from another
 // build (ao-build), or one that can't be fetched or has no view, is opened as the real page and load never settles.
 // The page's stylesheets the homepage lacks are adopted first, before the homepage's own, which keep winning.
-const VIEW = '[data-panel-view], [data-post-article]';   // the one place the overlay names a page's view
+const VIEW = '[data-panel-view]';   // the one place the overlay names a page's view
 const KEEP = 12;
 const BUILD = document.querySelector('meta[name="ao-build"]').content;
 const FIRST = document.head.querySelector('link[rel="stylesheet"], style');

@@ -101,7 +101,7 @@ test('overlay-2 a row opens its post in the panel, with no document load, its pi
   await home(page);
   await openLedger(page);
   await openRow(page, modelPost);
-  // The overlay runs enhance(root) on the post it mounted: its pictures are buttons that open the viewer.
+  // The post's view module runs enhance(root) on the copy the overlay mounted: its pictures open the viewer.
   await reader(page).locator('img[role=button]').first().click();
   await expect(page.locator('dialog.ao-lb')).toBeVisible();
   // Esc is the viewer's: it closes, and the panel stays.
@@ -146,12 +146,16 @@ test('overlay-3 post A, post B, back to A and on to C: every component works on 
 });
 
 test('overlay-4 a lost component chunk still ends on a working post', async ({ page }) => {
-  // A deploy since the homepage loaded: the post's enhance() chunk is gone, so lazy() opens the real page, which
-  // comes from the new build and names new chunks. Here those are the same files under ?deploy=2 (WebKit would
-  // otherwise hand the real page the failure it keeps for the old name).
+  // A deploy since the homepage loaded: the first chunk the post's view module asks for is gone, so mountView's lazy()
+  // opens the real page, which comes from the new build and names new chunks. Here those are the same files under
+  // ?deploy=2 (WebKit would otherwise hand the real page the failure it keeps for the old name).
   await home(page);
   await openLedger(page);
-  await page.route('**/_astro/enhance.*.js', (r) => r.fulfill({ status: 404, body: '' }), { times: 1 });
+  let lost = null;
+  await page.route(/\/_astro\/[^/?]+\.js$/, (r) => {
+    lost = new URL(r.request().url()).pathname;
+    return r.fulfill({ status: 404, body: '' });
+  }, { times: 1 });
   const renamed = (text) => text.replace(/((?:src=|from|import\()\s*["'](?:\/_astro\/|\.\/)[^"']+\.js)(["'])/g, '$1?deploy=2$2');
   await page.route(`**${modelPost}`, async (r) => {
     if (r.request().resourceType() !== 'document') return r.fallback();
@@ -164,6 +168,7 @@ test('overlay-4 a lost component chunk still ends on a working post', async ({ p
   });
   await row(page, modelPost).click();
   await expect.poll(() => sameDocument(page)).toBe(false);
+  expect(lost).toMatch(/^\/_astro\//);
   await expect(page).toHaveURL(new RegExp(modelPost + '$'));
   await expect.poll(() => page.evaluate(() => !!customElements.get('ao-model')), { timeout: 10_000 }).toBe(true);
 });

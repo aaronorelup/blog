@@ -1,12 +1,13 @@
 // The homepage overlay: a scene card's link grows the panel (PanelChrome around an empty [data-panel-host]), which
-// shows the route's view (routes.js), fetched from its real page (load-view.js) and mounted fresh every time
-// (mount.js). It owns the panel's history (pushState, popstate), Esc, resize, the links that open in it and prefetch
-// on intent. The scene follows it with onPanel(fn): 'open' (growing, or open: no input), 'covered' (it fills the
-// window: nothing to draw), 'closing', 'closed'; and leaves through closePanel() when it flies out to a link.
+// shows the route's view (routes.js), fetched from its real page (load-view.js), a fresh copy each time run by its
+// module as on its page (views/index.js mountView). It owns the panel's history, Esc, resize, the links that open in
+// it and prefetch on intent. The scene follows it with onPanel(fn): 'open' (growing, or open: no input), 'covered'
+// (it fills the window: nothing to draw), 'closing', 'closed'; and leaves through closePanel() when it flies out.
 import { appear, fit, grow, shrink } from './frame.js';
 import { load, prefetch } from './load-view.js';
-import { land, mount } from './mount.js';
 import { routeOf } from './routes.js';
+import { targetOf } from '../../post/target.js';
+import { mountView } from '../../views/index.js';
 
 const host = document.querySelector('[data-panel-host]');
 const inner = document.getElementById('panel-inner');
@@ -49,7 +50,7 @@ async function show(route, pushed) {
   wanted = route.key;
   if (shown?.route.key === route.key) {
     shown.route = route;
-    if (route.url.hash) land(shown.node, route.url);
+    if (route.url.hash) targetOf(shown.node, route.url.hash)?.scrollIntoView();
     else if (pushed) scroller.scrollTop = 0;
     return;
   }
@@ -59,11 +60,12 @@ async function show(route, pushed) {
   host.append(node);
   inner.dataset.activeView = route.nav;
   document.title = title;
-  const { ready, unmount } = mount(node, route.url);
-  shown = { route, node, unmount };
+  // The real page is the fallback: a chunk lost to a deploy opens it.
+  const mounted = mountView(node, route.url.href);
+  shown = { route, node, unmount: () => mounted.then((unmount) => unmount()) };
   const scroll = history.state?.scroll ?? 0;
   scroller.scrollTop = scroll;
-  if (scroll) ready.then(() => { scroller.scrollTop = scroll; });
+  if (scroll) mounted.then(() => { scroller.scrollTop = scroll; });
 }
 
 // from: the card it grows out of. Back, Forward and a deep link open it at once.

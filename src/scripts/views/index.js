@@ -10,5 +10,5 @@ export async function mountView(root, fallbackUrl) {
   const load = VIEWS[`./${root.dataset.panelView}.js`];
   if (!load) return () => {};
   const { mount } = await lazy(load, fallbackUrl);
-  return mount(root);
+  return root.isConnected ? mount(root) : () => {};   // the overlay left this view while its module loaded
 }
