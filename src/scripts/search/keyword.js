@@ -1,6 +1,8 @@
 // The words half of search: Pagefind, in the browser (scripts/build/pagefind.mjs writes its index). load(), on the
 // box's first focus, imports /pagefind/pagefind.js and readies it; a build without an index leaves this half
 // silent. search(q): the best pages, each with its best heading-anchored passage, or null once a newer search won.
+import { termsOf } from './terms.js';
+
 const BUNDLE = '/pagefind/pagefind.js';
 const DEBOUNCE = 120;     // ms
 const TOP = 8;
@@ -26,8 +28,10 @@ export async function search(q) {
   const m = await load();
   if (!m) return [];
   if (n !== latest) return null;
+  // Without the small words, which Pagefind would match as the start of every word ("a" marks "agents").
+  const words = termsOf(q).join(' ') || q;
   // Typed before the index was in: searched the moment it is, with no debounce.
-  const found = typedEarly ? await m.search(q) : await m.debouncedSearch(q, {}, DEBOUNCE);
+  const found = typedEarly ? await m.search(words) : await m.debouncedSearch(words, {}, DEBOUNCE);
   if (!found) return null;
   return Promise.all(found.results.slice(0, TOP).map(async (r) => passage(await r.data())));
 }
