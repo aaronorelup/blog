@@ -20,7 +20,7 @@ function seed() {
   put('_astro/dep.js', 'export const d = 1;\n');
   const head = '<link rel="stylesheet" href="/_astro/site.css"><script type="module" src="/_astro/entry.js"></script>';
   put('index.html', page('<main>home</main>', head));
-  put('ledger/index.html', page(`<ul>${'<li data-ledger-entry>row</li>'.repeat(3)}</ul>`, head));
+  put('ledger/index.html', page(`<ol>${'<li class="row"><a data-ledger-entry>row</a></li>'.repeat(3)}</ol>`, head));
   put('ledger/light/index.html', page('<nav>chrome</nav><article class="pc-prose">words</article>', head));
   // Chrome no prose rule removes, made of random bytes so gzip can't shrink it: the heaviest post, over budget.
   const noise = Array.from({ length: 30000 }, (_, i) => ((i * 2654435761) >>> 0).toString(36)).join(' ');

@@ -1,14 +1,8 @@
-// The hover card for a post. Hover (or keyboard-focus) any link to /ledger/<slug>/ with a mouse and a card opens
-// beside it: verdict, takeaway, findings, and a small still or a three-second silent loop. PREVIEWS.md is the spec;
-// render.js builds and places the card, data.js loads the text. Importing this module is the whole mount.
-//
-// It has to cost nothing on a slow laptop and nothing at all on a phone:
-// - Phones and tablets (no hover, coarse pointer) never get past the first line of setup.
-// - The text for every card is one file, fetched once while the browser is idle. Opening a card never waits.
-// - A still starts loading when the pointer reaches the row (and its neighbours), before the card opens. A loop is
-//   fetched only once a card has stayed open a moment, never on Save-Data, 2G or reduced motion, and plays muted
-//   from a blob in memory.
-// - One card element, reused, placed once per open. Nothing listens to mousemove.
+// The hover card for a post: hover (or keyboard-focus) any /ledger/<slug>/ link with a mouse and a card opens beside
+// it. PREVIEWS.md is the spec; render.js builds and places the card, data.js loads the text; importing this is the
+// mount. It costs nothing on a phone (no hover: no setup) and little on a laptop: the text is one file fetched when
+// idle, a still loads as the pointer nears its row, a loop only once a card has stayed open (never on Save-Data, 2G or
+// reduced motion) and plays from a blob; one card element, placed once per open, and nothing listens to mousemove.
 import { load, loaded } from './data.js';
 import { build, fill, place } from './render.js';
 
