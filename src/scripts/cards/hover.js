@@ -4,9 +4,10 @@
 // idle, a still loads as the pointer nears its row, a loop only once a card has stayed open (never on Save-Data, 2G or
 // reduced motion) and plays from a blob; one card element, placed once per open, and nothing listens to mousemove.
 import { load, loaded } from './data.js';
-import { build, fill, place } from './render.js';
+import { build, fill, line, place } from './render.js';
 
 const POST_PATH = /^\/ledger\/([^/?#]+)\/?$/;
+const NOTES_PATH = /^\/ledger\/([^/?#]+)\/notes\/?$/;
 const OPEN_DELAY = 90;    // ms the pointer rests on a link before the first card opens
 const CLOSE_DELAY = 70;   // bridges the hairline between two ledger rows without a flicker
 const WARM_MS = 450;      // after a card closes, the next one opens with no delay for this long
@@ -54,13 +55,14 @@ function init() {
 
 // ---------- which links get a card ----------
 
+// A post link, or a notes link that says in its own line (data-card-line, Goobie's cites) that the card is its post's.
 function postLink(target) {
   const a = target && target.closest ? target.closest('a[href]') : null;
   if (!a || (card && card.contains(a))) return null;
   let url;
   try { url = new URL(a.getAttribute('href'), location.href); } catch (_) { return null; }
   if (url.origin !== location.origin) return null;
-  const m = url.pathname.match(POST_PATH);
+  const m = url.pathname.match(POST_PATH) || (a.hasAttribute('data-card-line') && url.pathname.match(NOTES_PATH));
   if (!m) return null;
   const slug = decodeURIComponent(m[1]);
   // A post doesn't preview itself (the homepage reader rewrites the address to the open post).
@@ -123,6 +125,7 @@ function show(hit) {
     renderedSlug = hit.slug;
     fill(els, p, row);
   }
+  line(els, hit.a.getAttribute('data-card-line'));
   shown = hit;
   place(card, els, hit.a);
   card.classList.add('lp-on');

@@ -18,6 +18,7 @@ export function build() {
     '<img class="lp-icon" alt="" width="48" height="48" decoding="async">' +
     '<div class="lp-meta"></div>' +
     '<div class="lp-title"></div>' +
+    '<p class="lp-line"></p>' +
     '<div class="lp-verdict"></div>' +
     '<p class="lp-takeaway"></p>' +
     '<ul class="lp-points"></ul>' +
@@ -26,7 +27,7 @@ export function build() {
   const q = (s) => card.querySelector(s);
   const els = {
     media: q('.lp-media'), img: q('.lp-img'), video: q('.lp-video'), icon: q('.lp-icon'), meta: q('.lp-meta'),
-    title: q('.lp-title'), verdict: q('.lp-verdict'), takeaway: q('.lp-takeaway'),
+    title: q('.lp-title'), line: q('.lp-line'), verdict: q('.lp-verdict'), takeaway: q('.lp-takeaway'),
     points: q('.lp-points'), excerpt: q('.lp-excerpt'), excerptText: q('.lp-excerpt-text'),
   };
   els.video.muted = true;
@@ -68,6 +69,13 @@ export function fill(els, p, row) {
   }
   els.icon.hidden = !!p.image || !p.icon;
   if (!els.icon.hidden && els.icon.getAttribute('src') !== p.icon) els.icon.src = p.icon;
+}
+
+// The link's own line (data-card-line: which passage a Goobie cite lands on), or none. Set on every open, apart from
+// fill(), so moving between two cites of one post changes only this line and leaves its loop playing.
+export function line(els, text) {
+  els.line.hidden = !text;
+  els.line.textContent = text || '';
 }
 
 // Beside the text if there's room (flush with the row's right edge, beside the text, or to its

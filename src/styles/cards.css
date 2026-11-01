@@ -102,6 +102,18 @@
   text-wrap: pretty;
 }
 
+/* The link's own line (a Goobie cite: which passage of the post it lands on), ruled in the gold that marks that
+   passage on the page (mark.hl). Kept at every size: it is what tells two cites of one post apart. */
+.lp-line {
+  margin: 0 0 10px;
+  padding: 1px 0 1px 9px;
+  border-left: 2px solid var(--pc-gold);
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--pc-body);
+  text-wrap: pretty;
+}
+
 /* The outcome, stamped: the one thing to read if you read nothing else. */
 .lp-verdict,
 .stamp {
