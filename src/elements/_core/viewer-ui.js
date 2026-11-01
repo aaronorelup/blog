@@ -1,6 +1,7 @@
 // The image viewer's dialog: it opens on a picture, pages through the post's others with their captions, swaps in
 // the larger file when it arrives, and closes on Esc, Back or ao-stop. Zoom and gestures are zoom.js, mixed into the
 // same object. Loaded by viewer.js on the first open.
+import { h } from '../_lib/dom.js';
 import { AO_STOP } from './player.js';
 import { viewable } from './viewer.js';
 import { zoom } from './zoom.js';
@@ -29,10 +30,7 @@ export const viewer = {
   fit: { w: 0, h: 0 },
   nat: { w: 0, h: 0 },
   build() {
-    const d = document.createElement('dialog');
-    d.className = 'ao-lb';
-    d.setAttribute('aria-label', 'Image viewer');
-    d.tabIndex = -1;
+    const d = h('dialog', { class: 'ao-lb', 'aria-label': 'Image viewer', tabindex: '-1' });
     d.innerHTML =
       '<div class="ao-lb-stage"><img class="ao-lb-img" alt="" draggable="false"><span class="ao-lb-wait" hidden>loading full size…</span></div>' +
       '<div class="ao-lb-top"><span class="ao-lb-count"></span><span class="ao-lb-tools">' +
