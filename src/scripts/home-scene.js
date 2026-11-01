@@ -747,6 +747,9 @@ export class HomeScene {
       // Scripts in the copied HTML never run, so the post's custom elements come from here,
       // and so do the behaviours every post gets (the image viewer, one player at a time).
       import('./post-components.js').then((m) => { if (host.dataset.slug === slug) m.enhance(host); });
+      // The contents list ships closed and opens beside the text on wide screens (post/contents.js). T3.1 mounts the
+      // whole post view here instead.
+      import('./post/contents.js').then((m) => { if (host.dataset.slug === slug) m.mount(host); });
       this.scrollPanelTop();
     } catch (_) {
       location.href = '/ledger/' + slug + '/';       // the real page always works
