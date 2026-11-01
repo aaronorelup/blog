@@ -11,7 +11,6 @@ export const UNTIL = {
   'src/styles/post-components.css': 'T1.2',
   'src/scripts/demos/**': 'T1.2',
   'src/scripts/home-scene.js': 'T3.2',
-  'src/scripts/ledger-preview.js': 'T2.2',
   'src/components/panel/**': 'T3.1',
   'src/pages/index.astro': 'T3.2',
 };
