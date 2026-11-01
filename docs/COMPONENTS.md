@@ -332,6 +332,34 @@ Behaviours: runs-1 to runs-3. Used by 2 posts (`INVENTORY.md`); best shown by `t
 
 ## <ao-series>
 
+Numbers per day (or per any ordered label) drawn as one column each, from a plain `<table>`, so the figures are
+written once and the table stays for screen readers and readers without JS. Pointing at a day, or focusing the chart
+and using the arrow keys (PageUp and PageDown move a week, Home and End to the ends), reads out every series and any
+marks for that day.
+
+| Attribute | |
+|---|---|
+| `show="Name"` | the series drawn first (default: the first); a button per series switches |
+| `avg="7"` | also draws the trailing N-day average as a line over the columns |
+| `stack` | every series stacked in one column per day instead; the legend's buttons hide and show a layer, and the scale follows what is shown |
+
+Children: one `<table>`: the first column is the day (`YYYY-MM-DD`, read out as "Tue 30 Sep", in UTC) or any label,
+every other column a series named by its `<th>`; `<th data-unit="MB">` prints its unit. Then an optional `<ol>` of
+`<li data-d="YYYY-MM-DD">…</li>` that marks days under the axis (a post going up, a deploy), and an optional
+`<figcaption>`.
+
+```html
+<ao-series show="Visits" avg="7">
+<table><thead><tr><th>Day</th><th>Visits</th><th data-unit="MB">Sent</th></tr></thead>
+<tbody><tr><td>2026-09-30</td><td>120</td><td>48</td></tr><tr><td>2026-10-01</td><td>95</td><td>31</td></tr></tbody></table>
+<ol><li data-d="2026-10-01">The post went up</li></ol>
+<figcaption><b>A month of visits</b></figcaption>
+</ao-series>
+```
+
+Behaviours: series-1 to series-3 (`stack` and `th[data-unit]` are used by no page today). Used by 2 posts
+(`INVENTORY.md`); best shown by `who-visits-a-new-website`.
+
 ## <ao-shots>
 
 A video with its shots laid out as a strip of thumbnails under it, so a reader sees the whole edit at a glance and
