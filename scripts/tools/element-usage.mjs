@@ -16,6 +16,7 @@ import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import { unified } from 'unified';
 import { SKIP, visit } from 'unist-util-visit';
+import { visitParents } from 'unist-util-visit-parents';
 import { isLivePath } from '../../src/data/exempt.js';
 
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
@@ -77,15 +78,16 @@ function scan(dist) {
     const tree = fromHtml(fs.readFileSync(file, 'utf8'));
     const root = page.kind === 'public' ? tree : findArticle(tree) || tree;
     const live = isLivePath(page.url);
-    const info = { kind: page.kind, live, ao: {}, video: 0, audio: 0, iframe: 0, dataFull: 0 };
+    const info = { kind: page.kind, live, ao: {}, video: 0, audio: 0, lone: 0, iframe: 0, dataFull: 0 };
     const link = (href, via) => {
       const target = page.kind !== 'public' && href && publicPageOf(href, page.url);
       if (!target) return;
       const s = (standalone[target.path] ||= { live: isLivePath(target.path), hrefs: new Set(), from: new Set(), via: new Set() });
       s.hrefs.add(target.href); s.from.add(page.url); s.via.add(via);
     };
-    visit(root, 'element', (el) => {
+    visitParents(root, 'element', (el, parents) => {
       const name = el.tagName;
+      if ((name === 'video' || name === 'audio') && !parents.some((p) => p.tagName?.startsWith('ao-'))) info.lone++;
       if (name.startsWith('ao-')) {
         info.ao[name] = (info.ao[name] || 0) + 1;
         (tags[name] ||= []).push({ page: page.url, live, attrs: attrsOf(el) });

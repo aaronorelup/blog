@@ -1,0 +1,70 @@
+{
+  "reads-200": {
+    "status": 200,
+    "json": {
+      "slug": "who-visits-a-new-website",
+      "total": 5,
+      "first": "2026-10-17",
+      "today": 0,
+      "days": [
+        {
+          "day": "2026-10-17",
+          "n": 2
+        },
+        {
+          "day": "2026-10-18",
+          "n": 1
+        },
+        {
+          "day": "2026-10-24",
+          "n": 1
+        },
+        {
+          "day": "2026-10-31",
+          "n": 1
+        }
+      ],
+      "countries": [
+        {
+          "country": "US",
+          "n": 4
+        },
+        {
+          "country": "SG",
+          "n": 1
+        }
+      ],
+      "asOf": "2026-11-01T00:16:59.614Z"
+    }
+  },
+  "reads-204": {
+    "status": 204
+  },
+  "reads-429": {
+    "status": 429,
+    "json": {
+      "error": "Too many requests; try again in a minute."
+    }
+  },
+  "reads-503": {
+    "status": 503,
+    "json": {
+      "error": "The counter could not reach its database."
+    }
+  },
+  "stats-200": {
+    "status": 200,
+    "file": "stats-200.json"
+  },
+  "stats-503": {
+    "status": 503,
+    "json": {
+      "error": "The traffic numbers aren’t connected right now.",
+      "state": "not-connected"
+    }
+  },
+  "trace": {
+    "status": 200,
+    "text": "fl=1292f106\nh=aaronorelup.com\nip=203.0.113.7\nts=1793492231.000\nvisit_scheme=https\nuag=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36\ncolo=IAD\nsliver=050-tier1\nhttp=http/2\nloc=US\ntls=TLSv1.3\nsni=plaintext\nwarp=off\ngateway=off\nrbi=off\nkex=X25519\n"
+  }
+}

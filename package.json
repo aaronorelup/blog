@@ -9,12 +9,17 @@
     "preview": "astro preview",
     "new-post": "node scripts/new-post.mjs",
     "media:push": "node scripts/media/push.mjs",
-    "media:verify": "node scripts/media/verify.mjs"
+    "media:verify": "node scripts/media/verify.mjs",
+    "e2e": "playwright test -c tests/e2e/playwright.config.mjs",
+    "e2e:live": "playwright test -c tests/e2e/live.config.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.9",
     "astro": "^4.15.0",
     "gray-matter": "^4.0.3",
     "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
   }
 }
