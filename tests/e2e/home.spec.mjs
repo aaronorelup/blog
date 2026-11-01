@@ -98,6 +98,12 @@ test('home-5 the day/night toggle tweens the world over a couple of seconds', as
   expect(await page.evaluate(() => document.documentElement.hasAttribute('data-tweening'))).toBe(false);
   expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--pc-bg').trim()))
     .toMatch(before === 'true' ? /^rgba\(251, 243, 232, 0?\.97\)$/ : /^rgba\(21, 23, 38, 0?\.96\)$/);
+  // And it ends on the other mode itself, every material repainted: the screen a fresh load in that mode draws.
+  const fine = async () => (await sharp(await page.screenshot()).resize(96, 60, { fit: 'fill' }).raw().toBuffer());
+  const end = await fine();
+  await scene(page);
+  await page.waitForTimeout(500);
+  expect(dist(end, await fine())).toBeLessThan(1);
 });
 
 test('home-6 the avatar flips like a coin and lands on a face', async ({ page }) => {

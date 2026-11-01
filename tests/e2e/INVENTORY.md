@@ -288,7 +288,7 @@ streams the same two films.
 | A swipe walks them | window `touchstart` `touchend` | home-2 |
 | Arrows, Page keys, space, Home and End walk them | window `keydown` | home-3 |
 | A rail dot flies to its waypoint (the cards' page lets clicks through to the rail; only the shown card takes them) | rail `click` | home-4 |
-| The day/night toggle tweens the world (the page colour passes through between, the 3D changes with it even with the camera still, and once it ends `--pc-bg` is the plain per-mode string again) | toggle `click` → `ao-mode` → theme.js | home-5 |
+| The day/night toggle tweens the world (the page colour passes through between, the 3D changes with it even with the camera still, once it ends `--pc-bg` is the plain per-mode string again, and the screen is the one a fresh load of that mode draws) | toggle `click` → `ao-mode` → theme.js | home-5 |
 | The avatar flips like a coin and lands on a face | avatar `click`, `pointerenter` `pointerleave` | home-6 |
 | Without WebGL the scene bails to the flat page | hasWebGL → bail | home-7 (Chromium: `--disable-webgl` is its flag) |
 | An outside link flies the camera out through the gate (the white at full), then opens; a new-tab link leaves the scene where it stood | document `click` → onOutboundClick, flyToLink | home-8 |

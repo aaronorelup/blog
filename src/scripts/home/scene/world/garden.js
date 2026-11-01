@@ -2,8 +2,7 @@
 // the walled court on the west (what the ledger window looks out on), the neighbours' roofs beyond it, and the hills.
 // One bucket per material, merged, so the whole garden is a handful of draw calls.
 import {
-  BoxGeometry, CircleGeometry, ConeGeometry, CylinderGeometry, Group, MeshBasicMaterial, MeshLambertMaterial,
-  SphereGeometry,
+  BoxGeometry, CircleGeometry, ConeGeometry, CylinderGeometry, Group, MeshBasicMaterial, SphereGeometry,
 } from 'three';
 import { P } from '../palette.js';
 
@@ -92,7 +91,7 @@ export function buildGarden({ M, reg, merge }) {
   g.add(merge(stone, M.stone));
   g.add(merge(grassDark, M.grassDark));
   g.add(merge(trunk, M.trunk));
-  g.add(merge(petal, new MeshLambertMaterial({ color: P.petal })));
+  g.add(merge(petal, M.petal));
   g.add(merge(leaf, M.leaf));
   g.add(merge(verm, M.verm));
   g.add(merge(cream, M.cream));

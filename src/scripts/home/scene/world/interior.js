@@ -1,10 +1,9 @@
 // Inside the tea house: the low tea table and its cushions, the tokonoma cut into the right-hand wall with its
 // hanging painting and a single bloom, the writing desk (the ledger) and the bonsai.
 import {
-  BoxGeometry, CircleGeometry, ConeGeometry, CylinderGeometry, ExtrudeGeometry, Group, MeshLambertMaterial, Shape,
+  BoxGeometry, CircleGeometry, ConeGeometry, CylinderGeometry, ExtrudeGeometry, Group, Shape,
   SphereGeometry, TorusGeometry,
 } from 'three';
-import { P } from '../palette.js';
 
 export function buildInterior({ M, part, merge }) {
   const g = new Group();
@@ -86,7 +85,7 @@ export function buildInterior({ M, part, merge }) {
   // vase and single bloom on the alcove floor
   al.add(part(new CylinderGeometry(0.16, 0.22, 0.5, 10), M.clay, [6.85, 0.79, -1.0 * kz]));
   al.add(part(new CylinderGeometry(0.02, 0.02, 0.5, 5), M.leafDark, [6.85, 1.04, -1.0 * kz], null, 0));
-  al.add(part(new SphereGeometry(0.13, 8, 6), new MeshLambertMaterial({ color: P.petal }), [6.85, 1.16, -1.0 * kz]));
+  al.add(part(new SphereGeometry(0.13, 8, 6), M.petal, [6.85, 1.16, -1.0 * kz]));
   g.add(al);
 
   // writing desk: the ledger

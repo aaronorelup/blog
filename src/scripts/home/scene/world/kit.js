@@ -32,7 +32,7 @@ export function makeKit() {
     shojiLit: R(L('shojiLit', { side: DoubleSide, emissive: P.shojiLitEmis }), 'shojiLitEmis', 'emissive'),
     tatami: L('tatami'),
     lampPaper: B('lampPaper'), lampGlow: B('lampGlow'), flame: B('flame'),
-    clay: L('clay'), tea: B('tea'), verm: L('vermilion'), paper: L('paper'), cream: L('cream'),
+    clay: L('clay'), tea: B('tea'), verm: L('vermilion'), paper: L('paper'), cream: L('cream'), petal: L('petal'),
     roof: L('roof'), roofRidge: L('roofRidge'),
     cushion: L('cushion'), tataki: L('tataki'), mtnNear: L('mtnNear'), mtnFar: L('mtnFar'),
   };
