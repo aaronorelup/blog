@@ -1308,7 +1308,7 @@ UTC on 1 November, and all six have reported.
   the code can render, by a stand-in painter because the session couldn't build the oil-paint easel from Aaron's first
   episode, and a short clip of it used to steer video models. Finished.
 - **The bounds.** Four harder subjects, a mechanical watch movement, Claude Code drawn as an engine from this lab's own
-  transcript, an orrery, a moving model of the Earth and Moon, of why the Earth never rises or sets for Noor, and HAB 3's
+  transcript, an orrery (a moving model of the Earth and Moon) showing why the Earth never rises or sets for Noor, and HAB 3's
   life support over the night. Finished.
 - **The Homestead, every machine in one world, and a game.** The machines on one clock, each still run by its own model,
   plus a small game about keeping HAB 3 alive until sunrise. Finished.
@@ -1321,19 +1321,20 @@ UTC on 1 November, and all six have reported.
   that passed a flag that never moved.
 - **The picture changed the look and the skill changed the completeness, and neither clearly made a better build.** At
   Step 3 the picture made MOLE-1 look more like its concept and less convincing as a machine, with the skill or
-  without it, and the skill made it more complete against the canon's words. Finished, three of four judges preferred
+  without it, and the skill made it more complete against the canon's words. Among the finished builds, three of four judges preferred
   the no-skill picture build overall, and all three builds met the core technical contract, so the skill wasn't what
   made that possible. It's one build of each.
 - **The music box's notes are now measurably closer to the singer.** Round 1's tune got 40% of its notes within half a
   semitone of the vocal track, the new one 79%, and it beats round 1's in all 13 ways of measuring it, by at least 17
   points. It doesn't clearly beat the music-box version made for Episode 2.
-- **The model can carry paint, and video models keep a teardown guide's timing.** Painting the clock once and carrying
+- **The machine's own model can carry paint, and video models keep a teardown guide's timing only in part.**
+  Painting the clock once and carrying
   each stroke on its part gave a painted film with no flicker on the still parts, for a twentieth of the painting work
   of repainting every frame, with a stand-in painter. The video models all dropped White's flag on time, but only 4 of
   8 clips tipped the flag a moving hand has to lift.
 - **Putting the finished machines in one world exposed 30 disagreements,** most of which no single build could have
   shown, from which way the pit lies to MOLE-1's dig, which would leave HAB 3 18.5 hours of battery instead of 130 if
-  it drew from it.
+  MOLE-1 drew on that battery.
 - **How far it goes.** Mechanisms with a known model, and astronomy checked against a reference, illustrate well, at 102
   parts, at a third of a millisecond and at a month. Stocks and flows, and data dressed up as a machine, work only as
   honest dashboards.
@@ -2168,7 +2169,7 @@ seconds a light signal takes to cross to the Earth and back.
 
 *Her window at NIGHT HR 226, which falls on 10 October 2026 at 09:17 UTC in this sky. The Earth sits 61.6° up and 99.8%
 lit, with its path over the month drawn in orange. The series says 56° up in the west-southwest, which is the month's
-average place, and the page shows both. The window's shape and the gate don't match Episode 2's frame yet.*
+average place. The page shows the real 61.6°. The window's shape and the gate don't match Episode 2's frame yet.*
 
 <video controls preload="none" poster="/media/teardown-lab/r2-bounds/orrery-poster.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/r2-bounds/orrery-film.mp4"></video>
 
@@ -2220,7 +2221,7 @@ were. The watch had two different rules for when it stops. And the orrery's Eart
 times in 12 seconds, which no contact sheet showed and only a frame-by-frame scan of the film found.
 
 **What isn't done.** Nobody has watched the four films or listened to their scores. The agents judged motion from frames
-and sound from meters. No page has run on a real GPU or a phone. In software three of them drew about a third of a
+and sound from meters. No live page has been opened on a real GPU or a phone. In software three of them drew about a third of a
 frame a second or less, and the orrery 4 to 5.5. The watch's wind slider doesn't turn the barrel drum, only the mainspring's
 drawing. After the watch stops, a pallet stone sits up to 0.039 mm inside a tooth, because nudging a free wheel would
 need contact dynamics, where this approach stops being a formula. And the orrery's window doesn't match Episode 2's
@@ -2278,7 +2279,8 @@ console errors. All four scores were synthesised in code, so no ElevenLabs or Hi
   the fog of SHOW ALONE covered the key moment and the pick still. The builder had listed the fog and shipped it anyway.
 - The orrery, 3 blocking and 17 smaller. The Earth's label flickering 359 times in 12 seconds, the light delay
   measured centre to centre under a label that says "EARTH TO HER", which made "no night matches" false, and a label
-  over the new Earth for 6 seconds. The fixer's own scan of all 4,916 frames then found three more overlaps.
+  over the new Earth for 6 seconds.
+  The fixer's own scan of all 4,916 frames then found two more overlaps the critic hadn't listed.
 - Life support, 5 blocking and 14 smaller. Two candles burning while the screen said one, the cabin-cools claim the
   wrong way round, the canon's roll from 74 to 31 hours coming out as a jump, "EPISODE 2" on every frame of an
   in-world page, and the pick still and the card cut from the film before the fix.
