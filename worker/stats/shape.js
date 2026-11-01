@@ -1,23 +1,8 @@
-// The thinking half of /api/stats: who a request came from, what a bot is called, which paths
-// are safe to show, and how Cloudflare's GraphQL answers become one day of the snapshot. Pure
-// functions only, with no Cloudflare APIs, so the tests run them in Node (stats/index.js is the
-// half that talks to D1 and the GraphQL API).
-//
-// Every request lands in exactly one class, tested in this order:
-//
-//   bot      Cloudflare has verified it is who it says (verifiedBotCategory is set)
-//   scanner  answered 400 or worse: mostly scanners hunting /wp-admin and /.env, plus the odd
-//            person on a dead link
-//   agent    a program, not a browser: curl, Python, Go, headless Chrome, the Claude desktop
-//            app's built-in browser, self-declared crawlers nobody verified, no user agent at all
-//   stale    looks like a browser, but one over a year out of date (AO-057: "people do run old
-//            browsers; not this many, this often"), so most likely a bot in a costume
-//   person   everything else, Aaron included
-//
-// Nothing here keeps a person's user agent: it is read, turned into "Chrome" / "Windows" or a
-// class, and dropped. Named bots and programs ("GPTBot", "curl") are kept by name.
+// The thinking half of /api/stats: who a request came from (classify), what a bot is called, which paths are safe
+// to show, and how Cloudflare's GraphQL answers become one day of the snapshot. Pure functions, no Cloudflare APIs
+// (index.js is the half that talks to D1 and the GraphQL API). Nothing here keeps a person's user agent: it is
+// read, turned into "Chrome" / "Windows" or a class, and dropped. Named bots and programs ("GPTBot", "curl") are kept.
 
-export const CLASSES = ['person', 'stale', 'agent', 'bot', 'scanner'];
 export const SITE = 'aaronorelup.com';
 export const LAUNCH = '2026-08-02'; // the site's first day; the long-run totals start here
 
@@ -199,7 +184,6 @@ function describe(userAgent) {
 }
 
 export const agentName = (userAgent) => describe(userAgent).agent;
-export const forgetUserAgents = () => described.clear(); // for timing tests
 
 function nameProgram(ua) {
   if (!ua) return 'No user agent';
@@ -374,6 +358,17 @@ export function staleLabel(b) {
 
 // ---------------------------------------------------------------------------------------------
 // The class of one request. ref is the day's staleRef(); without one, the calendar's.
+//
+// Every request lands in exactly one class, tested in this order:
+//
+//   bot      Cloudflare has verified it is who it says (verifiedBotCategory is set)
+//   scanner  answered 400 or worse: mostly scanners hunting /wp-admin and /.env, plus the odd
+//            person on a dead link
+//   agent    a program, not a browser: curl, Python, Go, headless Chrome, the Claude desktop
+//            app's built-in browser, self-declared crawlers nobody verified, no user agent at all
+//   stale    looks like a browser, but one over a year out of date (AO-057: "people do run old
+//            browsers; not this many, this often"), so most likely a bot in a costume
+//   person   everything else, Aaron included
 
 export function classify(userAgent, botCategory, status, ref) {
   if (botCategory) return 'bot';
