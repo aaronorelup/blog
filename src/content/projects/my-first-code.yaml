@@ -1,0 +1,15 @@
+name: "My first code"
+line: "The first code I ever wrote, in May 2025: a server that runs an AI model on my own PC, and an Android app to chat with it from my phone."
+section: download
+state: finished
+since: "2025-06"
+needs: "Windows with an NVIDIA GPU, and an Android phone on your home network"
+main:
+  label: "The server on GitHub"
+  href: "https://github.com/aaronorelup/MyLLMServer"
+more:
+  - label: "The Android app"
+    href: "https://github.com/aaronorelup/my-llm-android-app"
+posts: [no-vs-code-no-terminal]
+project: origin
+order: 60

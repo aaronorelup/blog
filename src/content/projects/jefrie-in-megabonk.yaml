@@ -1,0 +1,13 @@
+name: "Jefrie in Megabonk"
+line: "My character added to the game Megabonk with her own model, animations and a jump the game doesn’t have. A how-to, no download."
+section: read
+state: building
+since: "2026-10"
+image:
+  src: /media/projects/jefrie-in-megabonk.webp
+  alt: "Jefrie running through a Megabonk level"
+main:
+  href: "/ledger/modding-megabonk/"
+posts: [modding-megabonk]
+project: characters
+order: 50

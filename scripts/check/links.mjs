@@ -1,9 +1,10 @@
-// Links in posts, notes and project files (code examples left out): every /ledger/<slug>/ link goes to a listed
-// post (and /notes/ to its notes page), nothing links a page under public/ledger/ (the hidden easter eggs, found by
-// looking, so no list names them), and no link matches banned-phrases.js's LINKS. A link through a redirect warns.
+// Links in posts, notes and project files (code examples left out): every /ledger/<slug>/ link, and every slug in a
+// project's posts:, goes to a listed post (and /notes/ to its notes page), nothing links a page under public/ledger/
+// (the hidden easter eggs, found by looking, so no list names them), and no link matches banned-phrases.js's LINKS.
+// A link through a redirect warns.
 import { LINKS } from '../../src/data/banned-phrases.js';
 import { isListed } from '../../src/data/listed.js';
-import { liner, withoutCode } from './text.mjs';
+import { keyLine, liner, withoutCode } from './text.mjs';
 
 const LEDGER = /(?<=^|[\s"'(=>[]|aaronorelup\.com)\/ledger\/([\w-]+)(?=[/#?\s"'<>)\]]|[.,;:!](?!\w)|$)(\/[^\s"'<>()[\]#?]*)?/g;
 
@@ -16,7 +17,7 @@ export default function links(repo, report) {
   const notes = new Set(repo.notes.map((n) => n.slug));
   const moved = redirects(repo);
 
-  for (const { file, raw } of [...repo.posts, ...repo.notes, ...repo.projects]) {
+  for (const { file, raw, data } of [...repo.posts, ...repo.notes, ...repo.projects]) {
     const line = liner(raw);
     const text = withoutCode(raw);
     for (const m of text.matchAll(LEDGER)) {
@@ -35,6 +36,10 @@ export default function links(repo, report) {
       } else if (deeper.length && !(deeper.length === 1 && deeper[0] === 'notes' && notes.has(slug))) {
         report(file, at, `${href}: no such page (a post has only /ledger/<slug>/ and, with notes, /notes/)`, 'deploy');
       }
+    }
+    for (const slug of file.startsWith('src/content/projects/') ? [data.posts ?? []].flat() : []) {
+      const post = posts.get(slug);
+      if (!post || !isListed(post.data)) report(file, keyLine(raw, 'posts'), `posts: "${slug}" is ${post ? 'not listed' : 'no post'}: a card links only listed posts`, 'deploy');
     }
     for (const { pattern, why } of LINKS) {
       for (const m of raw.matchAll(pattern)) {

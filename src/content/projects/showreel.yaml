@@ -1,0 +1,13 @@
+name: "Showreel"
+line: "Thirty seconds of what I’m building, as a 3D scene rendered in Blender, with music from ElevenLabs."
+section: watch
+state: finished
+since: "2026-10"
+image:
+  src: /media/projects/showreel.webp
+  alt: "The showreel’s first station, a course for building with AI"
+main:
+  label: "Watch the reel"
+  href: "#proj-reel"
+posts: [showreel-rebuilt]
+order: 90

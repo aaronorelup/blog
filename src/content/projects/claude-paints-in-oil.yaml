@@ -1,0 +1,16 @@
+name: "Claude paints in oil"
+line: "Claude painting in oil one stroke at a time on a wet-paint simulator with no undo, including a 30-minute paint-along that goes off the rails at minute 20."
+section: watch
+state: building
+since: "2026-10"
+image:
+  src: /media/projects/claude-paints-in-oil.webp
+  alt: "An oil portrait of Jefrie in reds and oranges, painted by Claude"
+main:
+  label: "Watch it paint"
+  href: "/ledger/claude-paints-in-oil/"
+posts: [claude-paints-in-oil, nine-claudes-one-painting, crimson-coil]
+project: oil-paint
+highlight: 4
+order: 20
+credit: "The simulator is alice’s Claude Paint (stillwet.art)."

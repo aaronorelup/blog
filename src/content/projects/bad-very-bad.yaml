@@ -1,0 +1,16 @@
+name: "Bad. Very Bad."
+line: "A 30-second anime clip: a haggler talks a legendary sword down to 60 gold, then runs home cackling because he lied."
+section: watch
+state: finished
+since: "2026-10"
+image:
+  src: /media/projects/bad-very-bad.webp
+  alt: "The market stall where the haggling happens"
+main:
+  href: "/ledger/bad-very-bad/"
+more:
+  - label: "How it was made"
+    href: "/media/bad-very-bad/making-of/"
+posts: [bad-very-bad]
+project: characters
+order: 40

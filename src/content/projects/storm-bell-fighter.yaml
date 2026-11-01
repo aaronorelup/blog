@@ -1,0 +1,15 @@
+name: "Storm Bell Fighter"
+line: "A fighting game starring my two characters, Jefrie and BloodTailor. One Claude session and 130 agents built it in 42 hours."
+section: play
+state: finished
+since: "2026-09"
+needs: "Desktop browser with a keyboard or gamepad, about 22 MB to load"
+image:
+  src: /media/projects/storm-bell-fighter.webp
+  alt: "Jefrie and BloodTailor mid-fight, a red slash across the arena"
+main:
+  href: "/games/storm-bell/"
+posts: [storm-bell-fighter]
+project: characters
+highlight: 1
+order: 10

@@ -1,0 +1,13 @@
+name: "My characters in Inscryption"
+line: "Claude took apart Inscryption, a game I own, added six of my characters as playable cards, then wrote a second mod that plays the battle and films it."
+section: read
+state: finished
+since: "2026-10"
+image:
+  src: /media/projects/characters-in-inscryption.webp
+  alt: "The game table in the cabin, with my characters’ cards laid out"
+main:
+  href: "/ledger/characters-in-inscryption/"
+posts: [characters-in-inscryption, opus-55-on-x-alone]
+project: characters
+order: 40

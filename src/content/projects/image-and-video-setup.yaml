@@ -1,0 +1,13 @@
+name: "My image and video setup"
+line: "How I run image and video models on an 8 GB laptop and on cloud GPUs rented by the hour, with real timings and costs."
+section: read
+state: building
+since: "2026-10"
+image:
+  src: /media/projects/image-and-video-setup.webp
+  alt: "A grid of characters one image model drew on the 8 GB laptop"
+main:
+  href: "/ledger/moss-image-on-8gb/"
+posts: [moss-image-on-8gb, renting-a-gpu, every-ai-film-so-far]
+private: true
+order: 80

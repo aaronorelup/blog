@@ -1,0 +1,20 @@
+name: "LLM Monster Hunter"
+line: "A monster-catching game where no monster exists until you meet it. The AI writes, paints and referees every one as you play, and they remember you."
+section: download
+state: paused
+since: "2026-08"
+needs: "Windows 10 or 11 and a DeepSeek key. The launcher installs the rest"
+image:
+  src: /media/projects/llm-monster-hunter.webp
+  alt: "Two monster cards the game painted while it was being played"
+main:
+  label: "Get it (the plain-English guide)"
+  href: "https://github.com/aaronorelup/LlmMonsterHunter/tree/main/LLM-Monster-Hunter-For-Friends"
+more:
+  - label: "The local edition"
+    href: "https://github.com/aaronorelup/LlmMonsterHunter-Local"
+  - label: "Watch Claude play it"
+    href: "/presentations/keeper-and-the-beacon/"
+posts: [monster-hunter-was-my-degree, everything-sonnet-got-wrong, the-wall-that-stopped-me, keeper-and-the-beacon]
+project: llm-monster-hunter
+order: 20

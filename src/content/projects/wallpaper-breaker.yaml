@@ -1,0 +1,13 @@
+name: "Wallpaper Breaker"
+line: "My own animated-wallpaper app for Windows, built so Claude can see and fix every wallpaper it makes. Not released yet."
+section: read
+state: not-out
+since: "2026-10"
+image:
+  src: /media/projects/wallpaper-breaker.webp
+  alt: "The pilot wallpaper: Jefrie cooking over a fire in the rain"
+main:
+  label: "Read how it started"
+  href: "/ledger/wallpapers-nobody-saw/"
+posts: [wallpapers-nobody-saw]
+order: 10

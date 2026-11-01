@@ -1,0 +1,7 @@
+name: "BLACKWATER in Unity"
+line: "A rebuild of BLACKWATER to test AI connectors for Unity and Blender. It passed its checks and still felt glitchy, so I parked it."
+section: stopped
+state: stopped
+since: "2026-09"
+project: blackwater
+order: 20

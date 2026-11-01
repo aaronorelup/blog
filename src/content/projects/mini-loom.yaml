@@ -1,0 +1,18 @@
+name: "Mini Loom and the Information Flow Explorer"
+line: "A 40-minute lesson on how language models work, with two toys: one shows the many ways a model could finish your sentence, one how information moves inside it."
+section: play
+state: finished
+since: "2026-10"
+needs: "Any browser. The optional live model downloads 125 to 395 MB"
+image:
+  src: /media/projects/mini-loom.webp
+  alt: "Mini Loom: one story branching into four possible next lines"
+main:
+  label: "Play with Mini Loom"
+  href: "/labs/mini-loom/"
+more:
+  - label: "Information Flow Explorer"
+    href: "/labs/info-flow/"
+posts: [loom-and-information-flow]
+order: 70
+credit: "After the writing of janus (@repligate), whose ideas these are."

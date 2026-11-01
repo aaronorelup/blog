@@ -1,0 +1,13 @@
+name: "Episode 5 and THE SMALL ONE"
+line: "The next two films in the series, written up from inside the crew while it worked, including one writer secretly told to lie."
+section: read
+state: building
+since: "2026-10"
+image:
+  src: /media/projects/episode-5-and-the-small-one.webp
+  alt: "The title card of THE SMALL ONE, with a row of small lit objects"
+main:
+  href: "/ledger/the-planted-lie/"
+posts: [the-planted-lie, the-small-one-harness, the-thought-it-denied, the-clock-nobody-checked]
+project: evening-television
+order: 20

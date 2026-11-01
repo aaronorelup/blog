@@ -1,0 +1,13 @@
+name: "Films of my characters"
+line: "Films of my characters made on my 8 GB laptop: a continuous 13-minute Jefrie take, Echo’s films and a BloodTailor fight."
+section: watch
+state: building
+since: "2026-10"
+image:
+  src: /media/projects/films-of-my-characters.webp
+  alt: "Jefrie with her scythe in a rainy prison yard, from one of the films"
+main:
+  href: "/ledger/every-ai-film-so-far/"
+posts: [every-ai-film-so-far, echo-the-borrowed-voice, a-bad-previs]
+project: characters
+order: 30

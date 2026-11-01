@@ -1,0 +1,16 @@
+name: "Grind & Grimoire"
+line: "You’re a skateboarding wizard on Venice Beach with a 2 a.m. open-mic slot and no poem. Made from one prompt in one evening."
+section: play
+state: finished
+since: "2026-08"
+needs: "Desktop browser and a keyboard"
+image:
+  src: /media/projects/grind-and-grimoire.webp
+  alt: "The wizard on a skateboard on the boardwalk"
+main:
+  href: "/games/grind-and-grimoire/"
+more:
+  - label: "Source on GitHub"
+    href: "https://github.com/aaronorelup/Grind-Grimoire"
+posts: [grind-and-grimoire]
+order: 50

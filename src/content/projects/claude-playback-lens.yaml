@@ -1,0 +1,14 @@
+name: "Claude Playback Lens"
+line: "For people who use Claude Code: ask in plain English what your past sessions did and what they cost. It reads the records Claude Code already keeps."
+section: download
+state: building
+since: "2026-09"
+needs: "Claude Code, and Node 20 or later"
+main:
+  label: "Get it on GitHub"
+  href: "https://github.com/aaronorelup/claude-playback-lens"
+more:
+  - label: "On npm"
+    href: "https://www.npmjs.com/package/claude-playback-lens-mcp"
+posts: [reading-my-own-agents, what-drives-claude-code-cost]
+order: 50

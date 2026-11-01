@@ -1,0 +1,14 @@
+name: "Claude’s invisible watermark"
+line: "Claude’s writing carries a hidden watermark. An animated explainer and five demos you can try show how it works and what breaks it."
+section: play
+state: finished
+since: "2026-10"
+needs: "Any browser"
+image:
+  src: /media/projects/claude-text-watermark.webp
+  alt: "The explainer’s title card: how a watermark hides in an AI’s word choices"
+main:
+  label: "Try the demos"
+  href: "/ledger/claude-text-watermark/"
+posts: [claude-text-watermark]
+order: 80

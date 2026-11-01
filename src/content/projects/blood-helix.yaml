@@ -1,0 +1,15 @@
+name: "Blood Helix for Minecraft"
+line: "A red spiral effect from an old Minecraft server, rebuilt as a datapack you drop into your own world. The same run found my old Minecraft skin."
+section: download
+state: finished
+since: "2026-08"
+needs: "Minecraft Java Edition, a recent version. Unzip it into datapacks"
+image:
+  src: /media/projects/blood-helix.webp
+  alt: "BloodTailor’s blocky skin inside a red particle spiral"
+main:
+  label: "Download the datapack"
+  href: "/media/blood-helix/BloodHelix-datapack-final.zip"
+posts: [blood-helix-and-the-lost-skin]
+project: characters
+order: 10

@@ -1,0 +1,15 @@
+name: "The previs film flow"
+line: "My written-down recipe for making a short film of my characters on a laptop: character sheets, a rough grey 3D blocking pass, then the video model."
+section: play
+state: finished
+since: "2026-10"
+needs: "Any browser"
+image:
+  src: /media/projects/previs-film-flow.webp
+  alt: "A storyboard frame: the grey blocking pass drawn over the finished shot"
+main:
+  label: "Read the recipe"
+  href: "/tools/previs-film-flow/"
+posts: [previs-film-flow, a-bad-previs]
+project: characters
+order: 120

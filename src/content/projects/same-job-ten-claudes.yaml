@@ -1,0 +1,14 @@
+name: "Same job, ten Claudes"
+line: "Two Claude models, five effort levels each, three identical jobs. Open every result: 10 studios for a made-up language, 10 canal planners and 10 music videos."
+section: play
+state: finished
+since: "2026-09"
+needs: "Best in a desktop browser"
+image:
+  src: /media/projects/same-job-ten-claudes.webp
+  alt: "A frame from one of the music videos: a knight facing a giant snail"
+main:
+  label: "Open all 30"
+  href: "/ledger/sonnet-vs-opus-gauntlet/"
+posts: [sonnet-vs-opus-gauntlet]
+order: 90

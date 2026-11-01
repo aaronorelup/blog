@@ -1,0 +1,15 @@
+name: "BLACKWATER in Godot"
+line: "BLACKWATER rebuilt in the Godot engine. Its music videos were filmed inside it, and its robot voice lab of 223 clips is a post you can listen to."
+section: read
+state: building
+since: "2026-10"
+image:
+  src: /media/projects/blackwater-in-godot.webp
+  alt: "The crew standing in the dark inside the Godot remake"
+main:
+  label: "Listen to the voice lab"
+  href: "/ledger/remora-voice-lab/"
+posts: [remora-voice-lab, still-on-shift-music-video, moonlight-two-cuts]
+project: blackwater
+private: true
+order: 60

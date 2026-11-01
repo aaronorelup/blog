@@ -1,0 +1,13 @@
+name: "The second brain"
+line: "The notebook my agents read before they do anything for me, with every fact in one place. Rebuilt after the first try went badly."
+section: read
+state: building
+since: "2026-08"
+main:
+  href: "/ledger/second-brain-v2/"
+more:
+  - label: "What other builders do"
+    href: "/research/second-brain-builders/"
+posts: [second-brain-v2, the-confession-that-spread]
+private: true
+order: 90

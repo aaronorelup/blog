@@ -1,0 +1,15 @@
+name: "Reading Pacer"
+line: "A desktop app that trains you to read faster: an arrow sets the pace, then a short AI quiz checks whether it sank in."
+section: download
+state: building
+since: "2026-09"
+needs: "Windows. Mac and Linux run from source. Quizzes need an AI key or a local model"
+image:
+  src: /media/projects/reading-pacer.webp
+  alt: "Reading Pacer pacing a passage at 300 words a minute"
+main:
+  href: "https://github.com/aaronorelup/reading-pacer/releases"
+more:
+  - label: "Source on GitHub"
+    href: "https://github.com/aaronorelup/reading-pacer"
+order: 40

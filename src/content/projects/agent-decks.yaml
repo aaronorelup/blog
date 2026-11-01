@@ -1,0 +1,18 @@
+name: "Claude plays my game, and other agent decks"
+line: "Narrated slide decks agents made of their own work, like Claude playing my monster game start to finish and showing what it saw."
+section: watch
+state: finished
+since: "2026-08"
+image:
+  src: /media/projects/agent-decks.webp
+  alt: "A screen from Claude’s run through LLM Monster Hunter: a monster has just evolved"
+main:
+  label: "Watch Claude play"
+  href: "/presentations/keeper-and-the-beacon/"
+more:
+  - label: "Armies of Gielinor, part 1"
+    href: "/presentations/armies-of-gielinor-session-1/"
+  - label: "Part 2"
+    href: "/presentations/armies-of-gielinor-session-2/"
+posts: [keeper-and-the-beacon, armies-of-gielinor-gauntlet]
+order: 80

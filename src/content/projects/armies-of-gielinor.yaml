@@ -1,0 +1,19 @@
+name: "Armies of Gielinor"
+line: "A strategy game that was shut down in 2018, rebuilt by AI agents in about a day from old screenshots and wiki pages. Click anything mid-match to edit it."
+section: play
+state: finished
+since: "2026-08"
+needs: "Desktop browser and a mouse"
+image:
+  src: /media/projects/armies-of-gielinor.webp
+  alt: "A match in progress: small armies on a green map"
+main:
+  href: "/games/armies-of-gielinor/"
+more:
+  - label: "Source on GitHub"
+    href: "https://github.com/aaronorelup/armies-of-gielinor"
+  - label: "How it was made"
+    href: "/presentations/armies-of-gielinor-session-1/"
+posts: [armies-of-gielinor-gauntlet]
+order: 30
+credit: "A fan tribute. The original game and its name are Jagex’s."

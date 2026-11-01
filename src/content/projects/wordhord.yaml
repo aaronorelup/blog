@@ -1,0 +1,13 @@
+name: "Wordhord"
+line: "A language-learning app that tracks every word you know and makes fresh reading, listening and chat practice about what you care about. Japanese is done."
+section: download
+state: paused
+since: "2026-08"
+needs: "Windows, about 15 minutes to set up, a DeepSeek key (about $1 to $2 a month)"
+image:
+  src: /media/projects/wordhord.webp
+  alt: "A chat lesson in Japanese, with a rewrite card under the message"
+main:
+  label: "Get it on GitHub"
+  href: "https://github.com/aaronorelup/wordhord"
+order: 30

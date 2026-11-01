@@ -1,0 +1,15 @@
+name: "Jefrie and props in 3D"
+line: "My character built in 3D three different ways, side by side, plus a crate, a barrel and a lantern. Spin the models around right in the page."
+section: play
+state: building
+since: "2026-10"
+needs: "Any browser. Each model is 0.4 to 2.1 MB"
+image:
+  src: /media/projects/jefrie-in-3d.webp
+  alt: "Jefrie as a 3D model, from the front and the side"
+main:
+  label: "Spin the models"
+  href: "/ledger/jefrie-in-3d/"
+posts: [jefrie-in-3d, props-three-budgets, ai-rigging-vs-a-script]
+project: characters
+order: 100

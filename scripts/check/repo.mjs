@@ -24,12 +24,21 @@ export function loadRepo(root) {
       return { file, slug, raw, data: {}, yamlError: error };
     }
   };
+  // A project card's YAML, parsed like frontmatter (src/schemas/project.ts holds its rules).
+  const project = (file) => {
+    const raw = read(file);
+    try {
+      return { file, raw, data: matter.engines.yaml.parse(raw) ?? {} };
+    } catch (error) {
+      return { file, raw, data: {}, yamlError: error };
+    }
+  };
   const md = (dir) => list(dir, (f) => f.endsWith('.md') && !f.slice(dir.length + 1).includes('/')).map(entry);
 
   return {
     root, abs, exists, read, size, list,
     posts: md('src/content/posts'),
     notes: md('src/content/notes'),
-    projects: list('src/content/projects', (f) => f.endsWith('.yaml')).map((file) => ({ file, raw: read(file) })),
+    projects: list('src/content/projects', (f) => f.endsWith('.yaml')).map(project),
   };
 }

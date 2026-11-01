@@ -1,0 +1,10 @@
+name: "BLACKWATER 2"
+line: "A sequel built twice by swarms of agents while I stayed out of it. Both builds passed their own tests, and I stopped on day seven."
+section: stopped
+state: stopped
+since: "2026-09"
+main:
+  href: "/ledger/blackwater-2-postmortem/"
+posts: [blackwater-2-postmortem]
+project: blackwater
+order: 10

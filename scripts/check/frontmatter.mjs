@@ -10,6 +10,9 @@ export default function frontmatter(repo, report) {
   for (const e of [...repo.posts, ...repo.notes]) {
     if (e.yamlError) report(e.file, e.yamlError.mark.line + 2, `the frontmatter isn't valid YAML: ${e.yamlError.reason}`, 'deploy');
   }
+  for (const e of repo.projects) {
+    if (e.yamlError) report(e.file, e.yamlError.mark.line + 1, `this isn't valid YAML: ${e.yamlError.reason}`, 'deploy');
+  }
 
   const built = new Set(repo.posts.filter((p) => !p.data.draft).map((p) => p.slug));
   for (const n of repo.notes) {

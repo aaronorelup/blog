@@ -1,0 +1,15 @@
+name: "The lore of I Love My Evening Television"
+line: "The world of my TV series in one place: who’s who, the timeline, every hidden detail, and nine short narrated lessons."
+section: play
+state: finished
+since: "2026-10"
+needs: "Any browser, phone included. Full of spoilers"
+image:
+  src: /media/projects/the-lore-course.webp
+  alt: "The lore course’s front page beside stills of the four episodes"
+main:
+  label: "Open the lore"
+  href: "/courses/i-love-my-evening-television/"
+posts: [the-lore-course]
+project: evening-television
+order: 60

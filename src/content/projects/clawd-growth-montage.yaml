@@ -1,0 +1,13 @@
+name: "Clawd, one skill at a time"
+line: "A 30-second training montage of Claude Code’s little mascot learning new skills. Every frame and every note of music is code."
+section: watch
+state: finished
+since: "2026-09"
+image:
+  src: /media/projects/clawd-growth-montage.webp
+  alt: "Clawd on a hilltop in front of a rising sun"
+main:
+  href: "/games/clawd-growth-montage/"
+posts: [clawd-growth-montage]
+order: 70
+credit: "Clawd is Anthropic’s mascot. This is a fan piece."

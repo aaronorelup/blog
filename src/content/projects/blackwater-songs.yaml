@@ -1,0 +1,13 @@
+name: "BLACKWATER’s songs, eight music videos"
+line: "Two AI-made songs from my game and eight music videos made eight ways: inside the game, in Blender, drawn in code and painted by a video model."
+section: watch
+state: building
+since: "2026-10"
+image:
+  src: /media/projects/blackwater-songs.webp
+  alt: "A red crystal heart from the Still On Shift video"
+main:
+  href: "/ledger/still-on-shift-music-video/"
+posts: [still-on-shift-music-video, moonlight-two-cuts, moonlight-in-code, moonlight-five-times]
+project: blackwater
+order: 60

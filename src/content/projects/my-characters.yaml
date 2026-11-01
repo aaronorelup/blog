@@ -1,0 +1,13 @@
+name: "My characters"
+line: "The cast I keep coming back to, Jefrie, BloodTailor, Echo, Ichigo, Yusef and Siloam: drawn, painted, animated and put into games."
+section: read
+state: building
+since: "2026-10"
+image:
+  src: /media/projects/my-characters.webp
+  alt: "Jefrie in her iron mask and red cloak, holding her scythe"
+main:
+  href: "/ledger/jefrie-lora/"
+posts: [jefrie-lora, echo-the-borrowed-voice, paper-jefrie, storm-bell-fighter]
+project: characters
+order: 30

@@ -1,0 +1,19 @@
+name: "The Hidden Curriculum"
+line: "A free video course on the small things nobody teaches you when you start building with AI. Crews of agents write, check, narrate and animate each lesson."
+section: play
+state: building
+since: "2026-10"
+needs: "Any browser, phone included. Every lesson has captions and a transcript"
+image:
+  src: /media/projects/the-hidden-curriculum.webp
+  alt: "The course backdrop: a painted tea house at night, its lanterns lit"
+main:
+  label: "Start the course"
+  href: "/courses/the-hidden-curriculum/"
+more:
+  - label: "The course on GitHub"
+    href: "https://github.com/aaronorelup/The-Hidden-Curriculum"
+posts: [the-missing-map, curriculum-from-sources, first-lesson-on-the-new-map, lessons-sent-back]
+project: hidden-curriculum
+highlight: 2
+order: 20

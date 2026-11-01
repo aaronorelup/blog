@@ -1,0 +1,17 @@
+name: "BLACKWATER"
+line: "Zombies, but you’re cave diving in a flooded 1968 navy site. Built in a weekend, and every sound, voice and song came from ElevenLabs."
+section: play
+state: finished
+since: "2026-08"
+needs: "Desktop browser, mouse and keyboard. Phones get a notice instead"
+image:
+  src: /media/projects/blackwater.webp
+  alt: "Diving down a flooded cave shaft with a torch"
+main:
+  href: "https://play.aaronorelup.com"
+more:
+  - label: "Source on GitHub"
+    href: "https://github.com/aaronorelup/blackwater"
+posts: [blackwater-weekend]
+project: blackwater
+order: 40

@@ -1,0 +1,13 @@
+name: "Paper Jefrie"
+line: "A six-second loop of my character as a folded-paper puppet on a desk, animated with code and rendered in Blender."
+section: watch
+state: finished
+since: "2026-10"
+image:
+  src: /media/projects/paper-jefrie.webp
+  alt: "Jefrie as a folded-paper puppet with her scythe, on a white desk"
+main:
+  href: "/ledger/paper-jefrie/"
+posts: [paper-jefrie]
+project: characters
+order: 50

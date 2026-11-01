@@ -13,7 +13,7 @@ export const project = z.object({
   since: z.string().regex(/^\d{4}-\d{2}$/),                    // shown as "Finished · Sep 2026"
   needs: z.string().max(90).optional(),                        // "Desktop browser and a keyboard"
   image: z.object({ src: z.string().regex(/^\/media\/projects\/[a-z0-9-]+\.webp$/), alt: z.string() }).optional(),
-  main: link.optional(),                                       // the one button
+  main: link.partial({ label: true }).optional(),              // the one button; label: its section's (lib/projects.js)
   more: z.array(link).max(2).default([]),                      // "How it was made", "Source on GitHub"
   posts: z.array(reference('posts')).max(4).default([]),
   project: z.enum(PROJECT_KEYS as [string, ...string[]]).optional(),   // its ledger chip

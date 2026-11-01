@@ -1,0 +1,10 @@
+name: "Daily candy"
+line: "Every morning at 4 a.m. a scheduled Claude job draws one idea with three image models on my laptop. The post lets you pick the best one blind."
+section: read
+state: building
+since: "2026-10"
+main:
+  href: "/ledger/daily-candy/"
+posts: [daily-candy]
+private: true
+order: 70

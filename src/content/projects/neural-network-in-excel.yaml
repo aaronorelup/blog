@@ -1,0 +1,11 @@
+name: "A neural network in Excel"
+line: "My first AI project, in January 2025: a small network that reads handwritten digits, built entirely in spreadsheet cells."
+section: stopped
+state: finished
+since: "2025-01"
+main:
+  label: "Read about it"
+  href: "/ledger/no-vs-code-no-terminal/"
+posts: [no-vs-code-no-terminal]
+project: origin
+order: 30

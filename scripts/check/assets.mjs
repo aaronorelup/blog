@@ -1,6 +1,7 @@
 // Media before a reader meets a broken player or a slow card: each preview still and loop exists and is within its
-// cap (PREVIEWS.md), icons and project pictures are within theirs (src/data/limits.js), and every video or audio
-// file a post, note or project names is in R2 (src/data/media-manifest.json) or on disk in a STAYS_IN_GIT folder.
+// cap (PREVIEWS.md), each project picture exists, icons and project pictures are within their caps
+// (src/data/limits.js), and every video or audio file a post, note or project names is in R2
+// (src/data/media-manifest.json) or on disk in a STAYS_IN_GIT folder.
 import { ICON, PREVIEW_MEDIA, PROJECT_IMAGE } from '../../src/data/limits.js';
 import { belongsInR2, TYPES } from '../media/files.mjs';
 import { keyLine, liner, withoutCode } from './text.mjs';
@@ -21,6 +22,11 @@ export default function assets(repo, report) {
       if (bytes === undefined) report(file, keyLine(raw, key), `preview ${key} ${url} is neither under public/ nor in R2`, 'deploy');
       else if (bytes > cap) report(file, keyLine(raw, key), `preview ${key} ${url} is ${kb(bytes)}, over the ${kb(cap)} cap: remake it with scripts/tools/preview-media.mjs (PREVIEWS.md)`, 'deploy');
     }
+  }
+
+  for (const { file, raw, data } of repo.projects) {
+    const src = data.image?.src;
+    if (src && !repo.exists('public' + src)) report(file, keyLine(raw, 'src'), `image ${src} is not under public/: make it with scripts/tools/preview-media.mjs (docs/MEDIA.md)`, 'deploy');
   }
 
   const capped = [

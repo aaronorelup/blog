@@ -1,0 +1,14 @@
+name: "This website and its stats page"
+line: "This site: a tea house you scroll through, a public notebook of 70-odd posts, and a page that shows in plain words who visits."
+section: play
+state: building
+since: "2026-11"
+needs: "Any browser"
+main:
+  label: "See who visits"
+  href: "/stats"
+more:
+  - label: "Source on GitHub"
+    href: "https://github.com/aaronorelup/blog"
+posts: [who-visits-a-new-website, why-im-starting-this, every-video-can-seek, d1-free-tier-cutoff]
+order: 110
