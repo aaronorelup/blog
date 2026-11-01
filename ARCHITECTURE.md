@@ -212,7 +212,7 @@ warns in a live notebook.
 | `scripts/build/verify-dist.mjs` | at `astro:build:done`: `contracts.mjs` over `dist/`, then the budgets |
 | `scripts/build/contracts.mjs` | pure checks of the frozen contracts over `dist/` |
 | `scripts/build/stats-pages.mjs`, `dev-stats-fixture.mjs` | `/stats-pages.txt`; `/api/stats` for `astro dev` |
-| `scripts/build/pagefind.mjs` | at `astro:build:done`: Pagefind's index of `dist/ledger/**/*.html` into `dist/pagefind/` (`SOFT` until a main build has written it) |
+| `scripts/build/pagefind.mjs` | at `astro:build:done`: Pagefind's index of `dist/ledger/**/*.html` into `dist/pagefind/`; a failure fails the build |
 | `scripts/build/markdown.mjs` + `rehype-{post-images,heading-ids,post-text}.mjs` | the Markdown plugins (step 3 of "A build"); `markdown.mjs` lists the post components until T1.2 and hashes the plugins' code into the config, so Astro's content cache re-renders when they change |
 | `scripts/lore-thumbs.mjs` | the lore thumbnails (moves to `build/` in W4) |
 | `scripts/media/` | `files.mjs` (what is media, `STAYS_IN_GIT`), `push.mjs`, `verify.mjs`, `integration.mjs` (the guard) |

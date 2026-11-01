@@ -1,13 +1,12 @@
 // Pagefind's index of the ledger, written into dist/pagefind/ once the pages are (astro:build:done). Only what carries
 // data-pagefind-body is indexed: a listed post's or listed notes page's text (PostView, notes.astro), so unlisted
 // posts, the ledger page and the easter-egg pages under public/ledger/ are out by construction, and every result URL
-// is a /ledger/ page. src/scripts/search/keyword.js loads it. Lenient (SOFT) until one green main build has written
-// it: until then a failure logs, the build goes on without an index, and the search box goes without its words half.
+// is a /ledger/ page. src/scripts/search/keyword.js loads it. A failure fails the build (it landed lenient until the
+// first main build, eb3705c, had written the index in Workers Builds).
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const SOFT = true;
 const GLOB = 'ledger/**/*.html';
 
 async function writeIndex(dist) {
@@ -33,12 +32,7 @@ export default function pagefind() {
     name: 'pagefind',
     hooks: {
       'astro:build:done': async ({ dir, logger }) => {
-        try {
-          logger.info(`pagefind: ${await writeIndex(fileURLToPath(dir))} pages in the index, written to /pagefind/`);
-        } catch (e) {
-          if (!SOFT) throw e;
-          logger.warn(`pagefind: no index written (${e.message}); search runs on meaning alone`);
-        }
+        logger.info(`pagefind: ${await writeIndex(fileURLToPath(dir))} pages in the index, written to /pagefind/`);
       },
     },
   };
