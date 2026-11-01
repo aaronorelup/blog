@@ -213,7 +213,7 @@ fails the build, or only warns in a live notebook.
 | `src/scripts/views/ledger.js` | the ledger view's module: chips, search box, feed copy, hover card |
 | `src/styles/tokens.css` | every colour as a day/night pair, the `--pc-*` and `--home-*` tokens per mode (plain strings: the `/stats` canvas parses them), the homepage tween (`:root[data-tweening]` mixes by `--mix`), fonts, type scale, space, radii, z |
 | `src/styles/site.css` | the one stylesheet of every panel page and the homepage: tokens, base, chrome, prose, post, read-aloud, cards, ledger, search, projects, about, research, elements (later tasks add theirs), so the overlay adopts no second copy of them |
-| `src/styles/home.css` | the homepage only (linked by `Home` after `site.css`): the scene's frame, cards, rail, coin, flash, the overlay's frame, the switch's homepage look |
+| `src/styles/home.css` | the homepage only (linked by `Home` after `site.css`): the scene's frame, cards, rail, coin, flash, the overlay's frame, the switch's homepage look and its place in the panel's header while the panel is up (`:root[data-panel-up]`) |
 | `src/styles/post.css` | the post page (`.post-*`, `.short-*`, `.toc*`, `.notes-link`, `.rel-*`); each part carries its own width, so a copy of the article's insides lays out the same |
 | `src/styles/read-aloud.css` | the Listen button, karaoke mode's bar, `::highlight(ao-read)` |
 | `src/styles/{base,chrome,prose,about,research}.css` | page-wide rules; the frame, the view header, shared hover states; long-form text (`.pc-prose`, folded `<details>`); the text pages (`.page-*`: About, 404); a research document |

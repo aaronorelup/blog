@@ -129,7 +129,11 @@
 .ov-host { display: contents; }
 
 /* The day/night switch answers at once on the homepage (its look follows aria-pressed, the mode asked for), while
-   the room follows over the tween. */
+   the room follows over the tween. While the panel is up it sits in the panel's header, where a standalone page
+   has it: the frame's margin (frame.js full()) in from the window's corner. */
+.home-wrap .mode-toggle {
+  transition: background 300ms ease, border-color 300ms ease, top 560ms var(--ease-panel), right 560ms var(--ease-panel);
+}
 .home-wrap .mode-toggle[aria-pressed='true'] { background: var(--night-home-toggle); border-color: var(--night-home-toggle-line); }
 .home-wrap .mode-toggle[aria-pressed='false'] { background: var(--day-home-toggle); border-color: var(--day-home-toggle-line); }
 .home-wrap .mode-toggle .mode-knob { transition: transform 380ms var(--ease-panel), background 300ms ease, box-shadow 300ms ease; }
@@ -141,6 +145,9 @@
 .home-wrap .mode-toggle[aria-pressed='false'] .mode-sun { display: block; }
 .home-wrap .mode-toggle[aria-pressed='true'] .mode-sun,
 .home-wrap .mode-toggle[aria-pressed='false'] .mode-moon { display: none; }
+:root[data-panel-up] .home-wrap .mode-toggle {
+  top: calc(20px + clamp(14px, 3vh, 34px)); right: calc(22px + clamp(14px, 2.5vw, 48px));
+}
 
 /* The tween moves the page colour every frame: no transition to lag behind it. */
 :root[data-tweening] body { transition: none; }
