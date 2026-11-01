@@ -1,0 +1,40 @@
+---
+// Every page's head: title and share tags, the build's commit (ao-build, which the overlay compares before mounting
+// a fetched page), the self-hosted body font preloaded, and the mode set before first paint so a night visitor
+// never sees a cream flash. Both layouts use it.
+import FONTS from '../../data/fonts.json';
+import { COMMIT } from '../../lib/build.js';
+
+interface Props {
+  title: string;
+  description: string;
+  // Unlisted (soft-private) pages: keep search engines off a page that's only reachable by URL.
+  noindex?: boolean;
+  // A share image (site-relative path; JPG/PNG, ideally 1200x630) for link previews.
+  image?: string;
+}
+const { title, description, noindex = false, image } = Astro.props;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content="website" />
+{image && <meta property="og:image" content={new URL(image, Astro.site).href} />}
+{image && <meta name="twitter:card" content="summary_large_image" />}
+<meta name="ao-build" content={COMMIT} />
+<link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+<link rel="alternate" type="application/rss+xml" title="Aaron Orelup — the ledger" href="/rss.xml" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="preload" href={FONTS.preload} as="font" type="font/woff2" crossorigin />
+<script is:inline>
+  (function () {
+    try {
+      if (localStorage.getItem('scene-mode') === 'day') document.documentElement.dataset.mode = 'day';
+    } catch (e) {}
+  })();
+</script>
