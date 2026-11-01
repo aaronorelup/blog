@@ -1,13 +1,7 @@
-// Writes dist/stats-pages.txt after every build: every public page of the site, one path per
-// line, as the address it answers at. worker/stats.js reads it to decide which paths /api/stats
-// may show, so a page that people read appears by its own address and nothing else does: not a
-// path someone typed or forged into a Web Analytics beacon, and never an unlisted post.
-//
-// Unlisted posts (isListed in src/data/listed.js) still build at /ledger/<slug>/, so they are left
-// out here, along with any page whose path carries an unlisted slug (a media page named after
-// it). The listed posts are the /ledger/<slug>/ lines, taken from the build's own
-// /ledger/previews.json, which lists exactly those. The same pages are in the sitemap and the
-// public repository already; this file only puts them in one place for the Worker.
+// Writes dist/stats-pages.txt after every build: every public page of the site, one path per line, as the
+// address it answers at. worker/stats.js shows only these paths in /api/stats: never an unlisted post, nor a
+// page whose path carries an unlisted slug, nor anything deeper than a listed post's /ledger/<slug>/ and its
+// /ledger/<slug>/notes/. The listed posts are the ones the build's own /ledger/previews.json lists.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -39,7 +33,7 @@ export function listPages(dist) {
   };
   return pages
     .filter((p) => !/^\/ledger\/[^/]+\//.test(p) || listed.has(p.split('/')[2]))
-    .filter((p) => !/^\/ledger\/[^/]+\/./.test(p)) // nothing deeper than a post's own page
+    .filter((p) => !/^\/ledger\/[^/]+\/./.test(p) || /^\/ledger\/[^/]+\/notes\/$/.test(p)) // a post's page and its notes, nothing deeper
     .filter((p) => !named(p))
     .filter((p) => /^\/[\x21-\x7e]*$/.test(p) && p.length <= 160)
     .sort();
@@ -53,7 +47,7 @@ export default function statsPages() {
         const dist = fileURLToPath(dir);
         const pages = listPages(dist);
         fs.writeFileSync(path.join(dist, 'stats-pages.txt'),
-          '# The public pages of aaronorelup.com, for /api/stats (scripts/stats-pages.mjs).\n' + pages.join('\n') + '\n');
+          '# The public pages of aaronorelup.com, for /api/stats (scripts/build/stats-pages.mjs).\n' + pages.join('\n') + '\n');
         logger.info(`stats-pages.txt: ${pages.length} pages`);
       },
     },
