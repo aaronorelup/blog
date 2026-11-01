@@ -1,0 +1,24 @@
+/* One research document (components/research/ResearchView.astro): a ledger entry's header with a provenance line
+   and a raw-markdown link for agents. Its body is .pc-prose (prose.css). */
+.rv { width: 100%; max-width: 720px; padding-bottom: var(--space-8); }
+.rv-back {
+  display: inline-block; margin: 0 0 30px; font-size: var(--text-sm); letter-spacing: 0.08em; color: var(--pc-accent);
+  text-decoration: none;
+}
+.rv-id { font-family: var(--font-mono); font-size: 12px; line-height: 1.7; color: var(--pc-accent); margin-bottom: 10px; }
+.rv-quiet { color: var(--pc-quiet); }
+.rv-title {
+  margin: 0 0 14px; font-family: var(--font-display); font-size: 33px; line-height: 1.2; font-weight: 700;
+  color: var(--pc-head); letter-spacing: -0.015em; text-wrap: pretty;
+}
+.rv-sum {
+  margin: 0 0 18px; font-family: var(--font-serif); font-size: var(--text-lg); line-height: 1.55; color: var(--pc-soft);
+  text-wrap: pretty;
+}
+.rv-prov {
+  margin: 0 0 12px; font-family: var(--font-mono); font-size: var(--text-xs); line-height: 1.7; color: var(--pc-quiet);
+  text-wrap: pretty;
+}
+.rv-raw { margin: 0 0 34px; font-family: var(--font-mono); font-size: var(--text-xs); line-height: 1.7; }
+.rv-raw-link { color: var(--pc-accent); text-decoration: none; }
+.rv-rule { height: 1px; background: var(--pc-line); margin: 0 0 34px; }
