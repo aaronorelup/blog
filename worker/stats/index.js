@@ -1,45 +1,16 @@
-// /api/stats: the site's traffic, as one daily snapshot that every visitor of /stats gets.
-//
-//   GET /api/stats   the stored snapshot (contract v1, described on the page and in the brief),
-//                    returned as the text it was stored as; 503 with { error, state } until the
-//                    first one exists. Cloudflare's own error text stays in D1 and the logs.
-//
-// The numbers come from Cloudflare's GraphQL Analytics API (token: the CF_ANALYTICS_TOKEN secret)
-// and are gathered by a cron trigger that runs every minute (wrangler.jsonc). That sounds like a
-// lot for a snapshot that changes once a day, but the free plan gives a Worker 10 ms of CPU per
-// run, and parsing one big analytics answer would use all of it: two runs were already stopped for
-// CPU on 17 Oct. So each run does at most ONE small step of the job below, keeps its place in D1
-// (database blog-reads, tables in worker/stats.sql) and stops. Once everything is in, a run is
-// one small D1 read that finds nothing to do.
-//
-//   1. totals    once per UTC day: daily totals since launch, and 30 days of Core Web Vitals
-//   2. core      per day: bots by name, scanners, everyone else by user agent, Web Analytics
-//   3. window    per day, one or more: the people's page views by page, country, device and hour
-//   4. assemble  the day is put together from its parts (and the reader counter's table)
-//   5. rebuild   the snapshot: the stored days' text joined, so no run ever parses thirty days
-//
-// No run both reads an analytics answer and rebuilds the snapshot. Newest missing complete day
-// first, then back to 30 days (the free plan's detailed datasets keep 31). A day counts as complete
-// 20 minutes after it ends. On a first backfill the snapshot appears within a few minutes and
-// fills in over about two hours (three or four steps a day, one step a minute, republished every
-// ten minutes); after that it changes once a day, shortly after 00:20 UTC.
-//
-// A step that keeps failing (an error, an answer too big to read, a run stopped for CPU) is rested
-// for longer each time and the others carry on without it, so one bad day never blocks the rest.
-//
-// Nothing keyed on a visitor's IP address is queried or kept, and no person's user agent is
-// stored: stats-shape.js turns them into classes and browser names before anything is written.
-// (Cloudflare's daily `uniques` is one number per day that Cloudflare counts on its side; see
-// totalsQuery.) Unlisted posts never appear: the build's list of public pages
-// (/stats-pages.txt) decides what may be shown, and when a post is unlisted later, every stored
-// day is cleaned again before the next snapshot goes out.
-
+// /api/stats: the site's traffic as one daily snapshot, stored as text and served as text (503 { error, state }
+// until the first exists). A cron step every minute gathers it from Cloudflare's GraphQL Analytics API
+// (CF_ANALYTICS_TOKEN), one small step a run, its place kept in D1 (stats.sql); the step machine stays on Paid
+// because it works. Nothing keyed on an IP address is queried or kept; shape.js classifies before anything is
+// stored, and only the build's /stats-pages.txt decides which pages may be named. docs/WORKER.md has the steps.
 import {
-  CLASSES, SITE, LAUNCH, LIMITS, LITE, WINDOWS,
+  SITE, LAUNCH, LIMITS, LITE, WINDOWS,
   coreQuery, windowQuery, totalsQuery,
   buildCore, buildWindow, assembleDay, buildTotals,
   makeSite, mentionsUnlisted, scrubDay,
 } from './shape.js';
+import { ensure } from '../lib/sql.js';
+import SCHEMA from './stats.sql';
 
 const GRAPHQL = 'https://api.cloudflare.com/client/v4/graphql';
 const MIN = 60e3;
@@ -63,17 +34,9 @@ const HARD_MAX = 300e3;     // past every smaller piece, an answer this big is a
 // How long a step that keeps failing is left alone, by how many times in a row it has failed.
 const rest = (n) => (n < 2 ? 0 : n === 2 ? 30 * MIN : n === 3 ? 2 * HOUR : 6 * HOUR);
 
-// The same statements as worker/stats.sql, so a fresh database sets itself up on the first run.
-export const SCHEMA = [
-  'CREATE TABLE IF NOT EXISTS stats_state (k TEXT PRIMARY KEY, v TEXT)',
-  'CREATE TABLE IF NOT EXISTS stats_day (d TEXT PRIMARY KEY, body TEXT NOT NULL, at TEXT NOT NULL)',
-  'CREATE TABLE IF NOT EXISTS stats_part (d TEXT NOT NULL, step TEXT NOT NULL, body TEXT NOT NULL, PRIMARY KEY (d, step))',
-];
-
 const iso = (t) => new Date(t).toISOString().replace(/\.\d{3}Z$/, 'Z');
 const isoDay = (t) => new Date(t).toISOString().slice(0, 10);
 const errText = (e) => String((e && e.message) || e || 'unknown error');
-const missingTable = (e) => /no such table/i.test(errText(e));
 const readJSON = (s, fallback) => { try { return s ? JSON.parse(s) : fallback; } catch (e) { return fallback; } };
 const json = (body, status, cache = 'no-store') => new Response(JSON.stringify(body), {
   status,
@@ -85,32 +48,24 @@ const AUTH = /authenticat|unauthori[sz]ed|not authori[sz]ed|forbidden|permission
 // ---------------------------------------------------------------------------------------------
 // The endpoint. It never parses the snapshot: the cron stored it as text, it goes out as text.
 
-export async function serveStats(request, env) {
-  if (request.method !== 'GET' && request.method !== 'HEAD') {
-    return new Response(null, { status: 405, headers: { Allow: 'GET, HEAD' } });
-  }
+export async function serve(request, env) {
   const url = new URL(request.url);
   // One cache entry per location whatever the query string, so ?x=1, ?x=2 … can't reach D1.
   const key = new Request(url.origin + url.pathname, { method: 'GET' });
-  const cache = typeof caches !== 'undefined' ? caches.default : null;
-  if (cache) {
-    const hit = await cache.match(key);
-    if (hit) return hit;
-  }
+  const cache = caches.default;
+  const hit = await cache.match(key);
+  if (hit) return hit;
   let body = null, lastError = null;
-  if (env.DB) {
-    try {
-      const { results } = await env.DB.prepare("SELECT k, v FROM stats_state WHERE k IN ('snapshot', 'lastError')").all();
-      for (const r of results || []) {
-        if (r.k === 'snapshot') body = r.v || null;
-        else lastError = readJSON(r.v, null);
-      }
-    } catch (e) {
-      if (!missingTable(e)) {
-        console.error('stats: ' + errText(e));
-        return json({ error: 'The traffic numbers could not be read just now.' }, 500);
-      }
+  try {
+    await ensure(env.DB, SCHEMA);
+    const { results } = await env.DB.prepare("SELECT k, v FROM stats_state WHERE k IN ('snapshot', 'lastError')").all();
+    for (const r of results) {
+      if (r.k === 'snapshot') body = r.v || null;
+      else lastError = readJSON(r.v, null);
     }
+  } catch (e) {
+    console.error('stats: ' + errText(e));
+    return json({ error: 'The traffic numbers could not be read just now.' }, 500);
   }
   if (!body) {
     // Still no snapshot: say why, so a refused token doesn't read as "still gathering" for ever.
@@ -122,12 +77,12 @@ export async function serveStats(request, env) {
   const res = new Response(body, {
     headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=300' },
   });
-  if (cache) await cache.put(key, res.clone());
+  await cache.put(key, res.clone());
   return res;
 }
 
 // ---------------------------------------------------------------------------------------------
-// The cron. Returns a word saying what it did, for logs and tests.
+// The cron. Returns a word saying what it did, which index.js logs.
 
 // Once per isolate, an idle run checks whether a post has been unlisted since the last snapshot.
 // A deploy always starts new isolates, so this catches the deploy that unlisted it, at the cost of
@@ -135,20 +90,12 @@ export async function serveStats(request, env) {
 let siteChecked = false;
 
 export async function runStep(env, now = Date.now()) {
-  if (!env.DB) return 'no-database';
   if (!env.CF_ANALYTICS_TOKEN) return 'not-connected';
-  let st;
-  try {
-    st = await readStatus(env);
-  } catch (e) {
-    if (!missingTable(e)) throw e;
-    // A new database, or one where someone dropped a table: make the tables and carry on.
-    await env.DB.batch(SCHEMA.map((s) => env.DB.prepare(s)));
-    st = await readStatus(env);
-  }
+  await ensure(env.DB, SCHEMA);
+  const st = await readStatus(env);
   const days = wantedDays(now);
-  // A lock nobody released means the last run was stopped mid-step, which on this plan means the
-  // CPU limit. Remember which step it was, so plan() asks for that step in smaller pieces, and
+  // A lock nobody released means the last run was stopped mid-step, by a CPU or time limit.
+  // Remember which step it was, so plan() asks for that step in smaller pieces, and
   // count it against that step like any other failure.
   const died = st.busy && st.busy <= now && st.busyJob ? st.busyJob : '';
   if (died) {
@@ -490,10 +437,8 @@ async function fail(ctx, job, e) {
 // every error is about the accounts half (Web Analytics), keep the zone half and drop that one.
 async function graphql(ctx, query, maxParse, opts) {
   const { env } = ctx;
-  // A local mock server stands in for the API in tests; the token never goes anywhere else.
-  const local = env.CF_GRAPHQL_URL && /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//.test(env.CF_GRAPHQL_URL);
   ctx.queried = true;
-  const res = await fetch(local ? env.CF_GRAPHQL_URL : GRAPHQL, {
+  const res = await fetch(GRAPHQL, {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + env.CF_ANALYTICS_TOKEN, 'Content-Type': 'application/json' },
     body: JSON.stringify({ query }),
@@ -540,8 +485,3 @@ function siteInfo(env) {
   })().catch((e) => { sitePromise = null; throw e; }); // try again next run
   return sitePromise;
 }
-
-export const _test = {
-  wantedDays, plan, readStatus, CLASSES,
-  newIsolate: () => { siteChecked = false; sitePromise = null; },
-};

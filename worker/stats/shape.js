@@ -1,6 +1,6 @@
 // The thinking half of /api/stats: who a request came from, what a bot is called, which paths
 // are safe to show, and how Cloudflare's GraphQL answers become one day of the snapshot. Pure
-// functions only, with no Cloudflare APIs, so the tests run them in Node (worker/stats.js is the
+// functions only, with no Cloudflare APIs, so the tests run them in Node (stats/index.js is the
 // half that talks to D1 and the GraphQL API).
 //
 // Every request lands in exactly one class, tested in this order:
@@ -547,7 +547,7 @@ const safeCountry = (c) => (/^[A-Z]{2}$/.test(c || '') ? c : 'XX');
 const safeDevice = (d) => (['desktop', 'mobile', 'tablet'].includes(d) ? d : 'other');
 
 // ---------------------------------------------------------------------------------------------
-// Queries. One GraphQL query per cron run (the Worker has 10 ms of CPU), each answer kept small.
+// Queries. One GraphQL query per cron run, each answer kept small.
 
 const isDay = (d) => /^\d{4}-\d{2}-\d{2}$/.test(d);
 const isTag = (t) => /^[0-9a-f]{32}$/.test(t);
@@ -916,7 +916,7 @@ export function buildTotals(data, vitalsFrom, to) {
 // ---------------------------------------------------------------------------------------------
 // Belt and braces when the snapshot is put together: does a stored day mention a post that isn't
 // listed (any more)? Cheap enough to run over every day's text on every rebuild. (A post that is
-// unlisted after its days were stored is found another way: stats.js compares the listed posts
+// unlisted after its days were stored is found another way: index.js compares the listed posts
 // with the ones it saw last time and cleans every stored day.)
 
 const POST_REF = /\/(?:ledger|posts|media)(?:\/|%2f)(?:previews(?:\/|%2f))?([^"\/?#\s%]+)/gi;
