@@ -1,0 +1,6 @@
+# Copy to .dev.vars (git-ignored) for `npx wrangler dev`. Cloudflare's always-pass Turnstile test secret: with the
+# test site key in src/data/public-keys.js, the dummy response XXXX.DUMMY.TOKEN.XXXX verifies, so Ask runs end to
+# end locally. SESSION_KEY here signs local Ask tokens only. Real secrets: scripts/tools/put-secret.mjs.
+TURNSTILE_SECRET=1x0000000000000000000000000000000AA
+TURNSTILE_HOSTNAMES=localhost
+SESSION_KEY=local-only-signing-key

@@ -6,3 +6,4 @@ dist/
 captures/
 .wrangler/
 .stats-fixture.json
+.dev.vars
