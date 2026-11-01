@@ -7,16 +7,20 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "postinstall": "patch-package",
     "new-post": "node scripts/new-post.mjs",
     "media:push": "node scripts/media/push.mjs",
     "media:verify": "node scripts/media/verify.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
-    "astro": "^5.18.2",
+    "astro": "5.18.2",
     "gray-matter": "^4.0.3",
     "rehype-raw": "^7.0.0",
     "sharp": "^0.34.5",
     "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "patch-package": "^8.0.1"
   }
 }
