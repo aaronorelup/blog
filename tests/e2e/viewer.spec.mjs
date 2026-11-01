@@ -92,6 +92,7 @@ test('viewer-11 the toolbar zooms in, out and back to fit, links the file and cl
 
 test('viewer-12 ao-stop closes it (the homepage closing its reader)', async ({ page }) => {
   await pics(page).first().click();
+  await expect(dlg(page)).toBeVisible();
   await page.evaluate(() => document.dispatchEvent(new CustomEvent('ao-stop')));
   await expect(dlg(page)).toBeHidden();
 });
