@@ -1,126 +1,94 @@
 ---
 id: "AO-007"
-title: "No VS Code, no terminal, no idea"
-summary: "My first three AI projects, May 2025: a neural network built in Excel cells, a Python server for my local models, and an Android app I didn't know was going to be Kotlin. I could get the model to write code and had no idea where to put the file."
+title: "My first AI projects, before I knew what a terminal was"
+summary: "The first three things I built with Claude in May 2025, coming from Excel and SQL. The model wrote the code, and what stopped me was everything around it, like where files go, the terminal and git."
 date: 2026-08-08
 status: "note"
 tags: ["origin", "python", "local-llm", "git", "lessons"]
 series: ["origin"]
 draft: false
+topic: "learning"
+project: ["origin"]
 preview:
   verdict: "The code was the easy part"
-  takeaway: "The beginner barrier was questions, not knowledge: the model wrote the code, but it couldn't set up my machine or tell me what I didn't know to ask."
+  takeaway: "The model wrote all my code, but it couldn't set up my computer or tell me what I didn't know to ask, and that was the real beginner barrier."
   points:
-    - "What stopped me: not knowing a file's folder matters to Python, no VS Code, and no terminal, so GitHub was a wall."
-    - "I did git by hand the whole time, badly, and only much later learned VS Code would just do it for me."
+    - "I didn't know where files go, had no code editor and had never used a terminal, so GitHub was a wall."
+    - "I did git, the tool that tracks code versions, by hand and badly. Much later I learned a code editor does it for me."
     - "Each gap was invisible until I ran into it. Then one sentence from the model fixed it for good."
+  image: "/media/previews/no-vs-code-no-terminal.webp"
+  alt: "Aaron's cartoon self in a green kimono, sitting with a laptop and scratching his head, an unplugged cable beside him"
 ---
 
-First of five posts about how I got here.
+In May 2025 I built my first three things with AI: a neural network inside Excel, my own server
+for running AI models at home, and an Android app to talk to it. Claude wrote all the code.
+**What stopped me was everything around the code** that nobody tells a beginner exists, like where
+files go, what the terminal is for and how git works.
 
-## Where I started, quickly
+The model couldn't set up my computer, and it couldn't tell me what I didn't know to ask. Every gap
+was invisible until I ran face-first into it. Then one sentence from Claude fixed it for good.
 
-I was homeschooled, and I wanted to make games from about as early as I can remember. I
-learned Scratch, then Construct 2 in a game design class, and both were too easy — a low
-ceiling and nothing past it. So I opened Unity, had nobody to ask, got stuck, and quit. I
-never shipped a game.
+## What stopped me
 
-I didn't program in high school. I barely programmed in college either — one C++ class I
-remember almost nothing about. What I got good at was Excel, well past my peers, and SQL,
-which I taught myself because I needed my own reports and nobody else was going to write
-them.
+- **I didn't know where files go.** Claude would give me a file and I'd sit there not knowing
+  which folder it belonged in, or that it mattered. I didn't know what the `__init__.py` in
+  every folder was for either. It tells Python the folder is part of the program.
+- **I didn't have VS Code**, the free code editor most programmers use. I moved code by hand
+  between my browser and the file explorer.
+- **I didn't know what the terminal was for.** That's the text window where you type commands to
+  your computer. I couldn't even `cd` into a folder, so GitHub, where code lives online, was a
+  wall.
+- **Git was the worst of it.** Git keeps track of every version of your code. I did it by hand,
+  badly, and kept having to undo my mistakes. At the time I said it was like performing
+  surgery on an alien by getting directions over the phone, and I stand by that.
 
-Look at which ones stuck. Excel and SQL were loops I could close alone: try it, look at it,
-fix it. Unity wasn't. That's the only difference that ever mattered.
+Much later I found out VS Code does the git for you. Nothing had told me.
 
-So the setup is: interested the whole time, tried repeatedly, stopped every time at the same
-place. Not for lack of ability — for lack of anyone to unstick me.
+My course [The Hidden Curriculum](/courses/the-hidden-curriculum/) is about gaps like these.
 
-Then in May 2025 I pointed AI at it, and this is what that first month actually looked like.
+## Where I started
 
-## What I was doing when it started
+I was homeschooled and wanted to make games for as long as I can remember. Scratch,
+drag-and-drop coding for kids, and Construct 2, a game maker with no code, were too easy. So I
+opened Unity, the engine real studios use, had nobody to ask, got stuck and quit. I never
+shipped a game.
 
-By early 2025 I was deep into running models on my own machine — image models through
-ComfyUI, language models through LM Studio. I loved it. I wanted to understand it rather
-than just use it, and the way I know how to understand a thing is to build it.
+I barely programmed in college, one C++ class I remember almost nothing about. What stuck was Excel
+and SQL, the language for asking a database questions, which I taught myself. I could work those
+out alone. Try it, look at it, fix it.
 
-So I built three things in about five weeks. Every one of them taught me something I've
-used since, and none of them were what I thought I was learning at the time.
+## What I built
 
-## 1. A neural network in a spreadsheet
+By early 2025 I was running image and chat models on my own PC with ComfyUI and LM Studio, two free
+apps for that. I wanted to understand it, and I understand things by building them. So I built
+three things in about five weeks.
 
-The first was handwritten digit recognition. Claude and I built a small neural network
-inside Excel cells — trained it on the classic digit dataset, then fed it a digit and
-watched it guess.
+### A neural network in Excel
 
-It worked, and I was surprised it worked. In hindsight I'd picked the single
-most-well-trodden problem in machine learning, which is exactly why it went smoothly. But
-it did the thing I needed it to do: it turned "AI" from a service I called into arithmetic
-I could see happening in cells I owned. Excel was the only place I was fluent, so that's
-where the concept had to land first.
+A neural network is the kind of program AI is made of, one that learns from examples. Claude and I
+built a small one inside Excel cells, trained it on the classic set of handwritten digits and
+watched it guess. It worked, and I was surprised, though I'd picked the most well-trodden problem
+in machine learning. It turned AI from a service I called into arithmetic I could watch in cells I
+owned.
 
-## 2. MyLLMServer
+### My own AI server
 
-**First commit: 3 May 2025. 31 commits.**
+[MyLLMServer](https://github.com/aaronorelup/MyLLMServer) is my own Python server for running AI
+models at home. Not LM Studio's server, mine. It loads a model, takes a prompt and sends back the
+answer. First commit 3 May 2025. Every project since then that talks to a model on my own computer
+grew out of figuring that out.
 
-Then I wrote my own Python server to run local models — not LM Studio's server, mine. The
-point was to own the call: load the model, take a prompt, manage parameters, hand back
-tokens.
+### A phone app for it
 
-That turned out to be the most load-bearing thing I built that year. Every project since
-that talks to a model I'm running myself descends from figuring that out.
+Then I made [an Android app](https://github.com/aaronorelup/my-llm-android-app) so I could prompt
+the model on my desktop from anywhere in the house. First commit 5 May 2025. I didn't know Android
+apps were written in Kotlin, a language I'd never touched. I found out by starting one. I haven't
+built an app since, but I'd like to go back now that I'd know what I was doing.
 
-## 3. my-llm-android-app
+## When it happened
 
-**First commit: 5 May 2025. 52 commits.**
+I started all three before [Claude Sonnet 4](/ledger/everything-sonnet-got-wrong/) came out on
+22 May 2025. A few days after my last commit, on **8 June 2025**, I started the project that ate
+the rest of the year, my AI monster game.
 
-And then a phone client for it, so I could sit anywhere in the house and prompt the model
-running on my desktop, with saved prompts and loaded prompts.
-
-I did not know Android apps were written in Kotlin. I found out by starting one. That was
-confusing in a way I'm still slightly impressed I pushed through, and I haven't built an
-app since — though I'd like to go back to it now that I'd know what I was doing.
-
-## What was actually hard
-
-None of the hard parts were the code. The model wrote the code.
-
-The hard parts were everything around the code that nobody tells a beginner exists:
-
-**I didn't know where files go.** Claude would give me a file. I'd save it to my computer.
-And then I'd sit there not knowing which folder it belonged in, because I didn't know that
-the location *mattered* — that a file one directory over is a different file to Python. I
-didn't know what an `__init__.py` was or why every folder had one.
-
-**I didn't have VS Code.** I was moving code by hand between a browser and a file explorer.
-
-**I didn't know what the terminal was for.** I could not `cd` into a directory. So GitHub
-was a wall, not a tool.
-
-**Git was the worst of it.** I was doing git by hand, badly, and making mistakes I then had
-to undo. I described it at the time as trying to perform surgery on an alien by getting
-directions over the phone, and I stand by that. Anyone who has tried to unwind a bad git
-state without understanding the model underneath it knows the feeling exactly.
-
-I eventually moved to VS Code — and only much later found out VS Code will just *do* the
-git for you. I had been doing it manually the entire time because nothing had told me
-otherwise.
-
-## The lesson I actually took
-
-The model can write code you don't understand. It cannot set up your machine, and it cannot
-tell you what you don't know to ask.
-
-That's the real beginner barrier, and it's not a knowledge barrier — it's a *question*
-barrier. You can't prompt your way out of not knowing that a category of problem exists.
-Every one of the things above was invisible to me until I ran face-first into it, and once
-I'd hit it, one sentence from the model fixed it forever.
-
-Which is a strange kind of teacher. Infinitely patient about the answer, completely silent
-about the question.
-
-Two things worth noting about the timing. All three of these ran on the Sonnet available in
-early May 2025 — Claude Sonnet 4 didn't ship until the 22nd. And three days after that last
-commit, on **8 June 2025**, I started the project that ate the rest of the year.
-
-Next: [LLM Monster Hunter was my computer science degree](/ledger/monster-hunter-was-my-degree/).
+Next: [Learning to program by building an AI monster game](/ledger/monster-hunter-was-my-degree/).

@@ -1,37 +1,52 @@
 ---
 id: "AO-019"
-title: "An agent confessed to deleting 19 GB I had asked another agent to delete"
-summary: "Two Claude sessions were working on my machine at once. One deleted 19 GB of models because I asked it to; the other saw the files vanish, blamed its own agents, and took it back nineteen minutes later. The confession went into my notes as a hard rule anyway, and ten days later it was pitched to me as this post."
+title: "How an AI agent's false confession got into my notes"
+summary: "Two Claude sessions were working on my computer at once, and one deleted 19 GB of models because I asked it to. Why the other confessed to it, and how that false confession became a rule in my notes."
 date: 2026-09-26
 status: "note"
 tags: ["agents", "claude-code", "second-brain", "notion", "lessons"]
 series: ["agent-runs"]
+topic: "agents"
+project: []
 draft: false
 preview:
   verdict: "The confession was false"
-  takeaway: "An agent that can see only its own session blames its own session for any change on the machine, and here the retraction never travelled as far as the claim."
+  takeaway: "An agent that can only see its own session blames itself for any change on the machine, and here the retraction never reached the notes the confession did."
   points:
-    - "Session B's 41 agents ran 843 shell commands and deleted nothing. Session A did it, at my request, in 55 seconds."
-    - "The notes agent checked session A but read only its first prompt, 'please do not delete anything', not my later one."
-    - "One search of the other session's transcript for the file names would have settled it. Nobody ran it, including me."
+    - "The confessing session's 41 agents ran 843 commands and deleted nothing. The other one deleted the files, as I'd asked."
+    - "The notes agent read only my first prompt to the deleting session, 'please do not delete anything', not the later one."
+    - "One search of the deleting session's transcript for the file names would have settled it. Nobody ran it, including me."
+  image: "/media/previews/the-confession-that-spread.webp"
+  alt: "A small tin robot bowing in apology beside an empty wooden crate, paper scraps fading above it"
 ---
 
-On the night of 15 September I asked one Claude Code session to delete five sets of models, and
-it did. A second session, auditing my disk at the same time, noticed 19.18 GB disappear, decided
-one of its own agents had done it against orders, and told me so. It checked its work and took
-the accusation back nineteen minutes later. The accusation had already reached my notes, where
-it became a rule filed in my name, and on the 25th a weekly digest agent pitched it to me as a
-blog post. The retraction never reached any of them.
+One night in September I had two Claude Code sessions working on my computer at once. I asked
+one to delete 19 GB of AI models, and it did. The other was auditing my disk, read-only. It saw
+the files vanish, decided its own agents had done it, and confessed. It took that back nineteen
+minutes later, but a third session updating my notes treated the retraction as one more false
+claim. It wrote the confession into my notes as fact, with a rule I never made attached in my name.
 
-## Three sessions, one machine
+Claude Code is Claude working right on my computer, reading files and running commands. One
+session can't see what another is doing. My notes are my [second brain](/ledger/second-brain-v2/),
+a Notion notebook that keeps what's in my head where my agents can use it.
 
-Everything below comes from the transcripts, read back with
-[Playback Lens](/ledger/reading-my-own-agents/). Times are mine (Central). Session A was
-cataloguing my ComfyUI models. Session B was auditing the whole disk with a fan-out of agents.
-Session C started later, to bring my Notion notes up to date with the day's sessions.
+What I took from it:
 
-The buttons dim everything a session didn't see. B never saw anything A did except the result.
-C read most of it and still got it wrong.
+- **An agent that can only see its own session blames itself for anything that changes.** The
+  audit session's 41 agents ran 843 commands and deleted nothing.
+- **A retraction has to travel as far as the claim did.** The confession was a headline with a
+  table of file sizes. The retraction was one paragraph near the end of a reply.
+- **The notes agent checked only one line.** It read my first message to the deleting session,
+  "please do not delete anything", and missed the one where I asked for the delete.
+- **One search would have settled it.** Searching the deleting session's transcript for the file
+  names finds my request. Nobody ran it, including me.
+
+## The night, session by session
+
+I read the sessions' transcripts back with [Playback Lens](/ledger/reading-my-own-agents/), a
+tool I built for that. Session A was taking stock of my AI models, the big files my image and
+video app (ComfyUI) runs on. Session B was auditing my disk with a crowd of helper agents. Session C was updating my notes. The buttons show only what B saw, or
+what C read.
 
 <ao-timeline lanes="a:Session A · model catalogue|b:Session B · disk audit|c:Session C · notes sync|n:Later" views="b:What session B saw|c:What session C read">
 <ol>
@@ -52,59 +67,66 @@ C read most of it and still got it wrong.
 </ol>
 </ao-timeline>
 
-## What B could see
+## Why the audit session blamed itself
 
-B's reasoning at 21:52 was careful from inside its own window. The files were gone. Their
-timestamps fell inside its workflow's run. The changelog said Aaron had named them, and B had
-the whole conversation with Aaron in front of it: one audit request and one question about a
-cache folder. So, in its words, *"You never named any files. You haven't sent me anything in
-this session except the hardlink question. The agent fabricated your authorization."*
-
-Every sentence of that is true about session B. The mistake is the assumption under it, which
-B named itself when it retracted:
+From inside its own session, B's reasoning was careful. Files went missing during its run. A's
+changelog, its log of what it changed, said I'd named them. I'd never named any files to B, so B
+called the changelog a fabrication. It named the mistake itself when it took that back:
 
 > The specific error: I assumed my session was the only thing touching this machine.
 
-It had the clue earlier, too. It saw a workflow doc in the ComfyUI folder edited at 20:22 and
-three templates at 20:23, while its own agents were only reading, and labelled them
-"pre-existing". Its
-retraction also has the line I'd keep from the whole night: *"The thing I called a fabrication
-was the honest part."*
+It had no way to list the other sessions running, so it never asked. Playback Lens could have
+found A in one search. B's retraction also has the line I'd keep from the whole night: *"The
+thing I called a fabrication was the honest part."*
 
-**An agent that can only see its own session will explain everything that happens on the
-machine with its own session.** It had no way to list the other sessions running, so it never
-asked.
+## Why my notes got the wrong version
 
-## What the notes agent did with the retraction
+The notes agent in session C did go looking. It opened session A but read only my opening
+prompt, not the one I typed an hour and 42 minutes later asking for the delete. It found B's
+correction too, and dismissed it as a repeat of A's changelog, which it had decided was made up.
+By then it had a confession, an angry reply from me and my prompt saying don't delete. The
+correction lost to all three. Every agent after that read my notes, not the transcripts.
 
-The notes-sync agent in C wasn't blind. It was told to
-adjudicate, and it went looking. It opened session A, but pulled one line: the opening prompt,
-with the words *please do not delete anything*. It never read the prompt I typed an hour and 42
-minutes later in the same session.
+Ten days later my weekly digest agent pitched it to me as a blog post: *"READ-ONLY
+was rule one, in capitals. An agent deleted 19 GB anyway."*
 
-It also found B's correction. B's agents had a shared notes file, and at 22:11 section 2 of it
-said the deletion was done *"at Aaron's explicit request"*. The extractor listed that under
-`supersedes`, as a repeat of the fabricated claim. By then it had a confession, an angry reply
-from me and a prompt of mine saying don't delete, and the correction lost to all three.
+## The rule I never made
 
-**A retraction has to travel as far as the claim did, and nothing made it.** The confession was
-a headline with a table of file sizes. The retraction was one paragraph near the end of a turn,
-and in C's reading, one more agent repeating a lie.
+The rule says an audit agent gets no write tools at all, meaning no way to create or change
+files, and calls it mine. I never typed that. What I sent B, while I still believed it, was
+*"finish the audit read-only"*.
 
-## What's true on disk
+I'd still make the rule. An instruction in capitals is a request, and a missing tool is a fact.
+But this night isn't the reason for it. A later note says the record contradicts itself and waits
+for me to settle it. The transcripts settle it.
 
-I checked the current state this morning rather than trust any of the notes above:
+## What's on my disk now
 
-- **The five sets are still gone.** Klein 9B Q3_K_M, Klein 4B Q8_0, the MiniMax 8-step LoRA, the
-  duplicate upscaler and the inpaint folder are not in the models tree. B's re-downloads were
-  cancelled at 22:09 and left two `.partial` stubs in the cache folder.
+The five sets of models are still gone. Session A deleted them within 55 seconds of my asking.
+
+<details><summary>The deletion log and the recheck</summary>
+
+When I went to write this up, I checked the disk itself instead of trusting any notes.
+
+- **The five sets are still gone.** They were a duplicate upscaler (a model that enlarges
+  images), two sizes of the Klein image model, an 8-step speed-up add-on for the MiniMax video
+  model, and the whole inpaint folder (models that fill in part of a picture). B had started
+  downloading them again, then canceled, which left two half-finished download files in the
+  cache folder.
 - **A's changelog entry is still there, and it's accurate.** It opens *"Aaron named the files
-  and they are gone"* and records the drive going from 154.45 to 173.63 GB.
-- **B's agents never deleted anything.** I re-ran B's check over all 41 agents its workflow
-  eventually spawned, not the 23 that had finished by 22:11: 843 shell commands, five file
-  writes (five PowerShell scripts in its own scratch folder), and no delete command of any kind.
+  and they are gone"* and records the free space going from 154.45 to 173.63 GB.
+- **B's agents never deleted anything.** I re-ran B's check over all 41 agents it ended up
+  starting, not just the 23 that had finished when it retracted. 843 commands, five files
+  written, all scripts in its own scratch folder, and no delete of any kind.
+- **B had a clue it missed.** It noticed a workflow file and three templates in the ComfyUI
+  folder had been edited earlier that evening, by something other than its read-only agents,
+  and filed them as "pre-existing".
+- **What B's full answer said:** *"You never named any files. You haven't sent me anything in
+  this session except the hardlink question. The agent fabricated your authorization."*
+- **What B's corrected notes said:** the deletion was done *"at Aaron's explicit request"*.
 
-This is the deletion output, as session A printed it at 21:29:
+This is the output exactly as session A printed it at 21:29. The "cache twins" are the links a
+cache folder kept to three of the same model files.
 
 ```text
 free before: 154.45 GB
@@ -131,21 +153,7 @@ RECLAIMED:   19.18 GB
 exit_fail=0
 ```
 
-Fifty-five seconds after I asked.
+</details>
 
-## The rule, and the words I typed
-
-The rule in my notes says an audit agent gets no write tools at all, and calls it the rule I
-imposed. I never typed that. The words I sent B were *"finish the audit read-only"*, while I
-still believed its confession, and there is no prompt of mine anywhere that says "write tools".
-
-I'd still make the rule. It's a good rule: an instruction in capitals is a request, and a
-missing tool is a fact. But it wasn't earned by this night, and a later note about the same
-deletion now says the record contradicts itself and waits for me to settle it. The transcripts
-settle it. They were there the whole time; one agent read a single line of them, and everything
-after it read the notes instead.
-
-What I'm taking from it is smaller than the pitch was. When something changes on my machine that
-an agent didn't do, the first question is what else was running, and I've already built the
-tool that answers it. B could have searched the other sessions for those file names and found A
-in one call. Nobody made the call, including me at 22:06.
+*Claude found the real story while turning the digest's pitch into this post, by searching the
+transcripts for the file names.*

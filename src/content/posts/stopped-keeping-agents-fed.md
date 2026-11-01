@@ -1,137 +1,106 @@
 ---
 id: "AO-012"
-title: "I stopped keeping my agents fed"
-summary: "Twenty prompts over two days, checking in every hour, and I never once understood the architecture I was building — it kept moving while I tried to read it. So now I burst: one long run, then a full day where nothing changes and I can actually learn what I have."
+title: "Why I stopped checking on my AI agents every hour"
+summary: "I used to keep AI agents busy all day and check on them every hour. What that really cost me on a two-day project, and the rhythm I switched to: one big run, then a day to review it."
 date: 2026-08-08
 status: "in-progress"
 tags: ["agents", "claude-code", "workflow", "prompting", "lessons"]
 series: ["origin"]
+topic: "agents"
+project: ["origin"]
 preview:
   verdict: "Agent time was never scarce"
-  takeaway: "Keeping agents busy was the wrong goal. The scarce thing was a version of the project that held still long enough for me to understand it."
+  takeaway: "Keeping agents busy was the wrong goal, because checking in every hour meant reloading the project in my head twenty times and never understanding it."
   points:
-    - "The reviews added up to three or four hours. The real cost was reloading the project in my head twenty times."
-    - "Having reports read aloud through ElevenLabs fixed the reading fatigue and did nothing about the switching."
-    - "Still unproven: I don't know the right size for a burst. The biggest so far ran 8 hours and spawned 76 agents."
+    - "The reviews added up to only 3 or 4 hours. The real cost was loading the project back into my head twenty times."
+    - "Now I burst: one big run with lots of agents, then a review day of about four hours while nothing changes."
+    - "Still unproven: I don't know the right size for a burst. The biggest so far ran 8 hours with 80 agents."
+  image: "/media/previews/stopped-keeping-agents-fed.webp"
+  alt: "A strategy game map: knights and an owl in blue rings face goblins and a skeleton in red rings, near a river and small villages"
 ---
 
-At the end of [I don't learn programming anymore](/ledger/i-dont-learn-programming-anymore/)
-I said continuous versus bursting was its own post. This is that post.
+I used to keep my AI agents busy all day and check in on them every hour. On a two-day rework
+of my code that meant about twenty check-ins, and I never understood the system I was building,
+because it kept changing while I read it. So now I send off one big run, then spend a day
+reviewing it while nothing changes.
 
-## The continuous method
+By agents I mean AI like Claude Code that works on my projects by itself, then reports back. For
+months I made sure no agent was ever idle, and that was the wrong goal. Agent time is cheap. What
+I need is a version of the project that holds still long enough for me to understand it.
 
-When I first heard "vibe coding," this is the picture I had of it.
+- **Reviewing only took 3 or 4 hours** over the two days.
+- **Loading the project back into my head cost the most.** I did that twenty times.
+- **Now I burst.** One big run every other day, then a review day of about four hours, then a plan.
+- **The right size for a burst is still open.** As of 8 August, the biggest so far ran 8 hours with 80 agents.
 
-Send an agent out for somewhere between fifteen minutes and an hour of work. Review what comes
-back. Always have at least one running whenever I'm at the desk, and if I can get several going
-in parallel, better. Sit there taking work in as it lands and try never to under-utilize them —
-keep them fed.
+## The two-day project that changed my mind
 
-The unstated goal in all of that is agent utilization. An idle agent is waste. So you organize
-your day around not having one.
+I used to send an agent out for fifteen minutes to an hour, review what came back and hand it the
+next thing. An idle agent felt like waste.
 
-## What it actually cost
+Then I did a ten-step refactor, which means reorganizing how the code fits together without
+changing what it does. Two days, about twenty prompts, a check-in roughly every hour.
 
-The run that changed my mind was a ten-step system-wide refactor. I drafted `plan.md` with
-Fable 5, handed it to Opus 5 in a fresh session with instructions to execute the next step,
-split steps into smaller ones where it needed to, and edit `plan.md` as it went. New session
-whenever the context window got high.
+Every check-in I dropped what I was doing and loaded the project back into my head to work out
+what had changed. Five to fifteen minutes is enough to approve a step and nowhere near enough to
+understand how the whole thing fits together. And the pressure was to get the next prompt out, so
+I'd skim and hand it more work. After two days I couldn't have drawn you the system I'd just
+built.
 
-Two days. About twenty prompts. Checking in roughly every hour, five to fifteen minutes per
-review-and-guidance cycle.
+I had ElevenLabs, an AI voice service, read the reports to me. That helped with the reading
+fatigue, but I still had to switch back in every hour. And three projects like that at once
+would've been exhausting.
 
-Add the review time up and it isn't much — three or four hours across two days. That is not
-what it cost.
+<details><summary>The exact setup of the refactor</summary>
 
-What it cost was context switching. Twenty times over two days I dropped whatever else I was
-doing, loaded the project back into my head, worked out what had changed since last time, made
-a call, and put it back down. The tax is on the loading, not the reviewing.
+- I drafted the plan, a file called `plan.md`, with Fable 5. Fable 5 and Opus 5 are both Claude
+  models.
+- Opus 5 got it in a fresh session (a new conversation that starts with no memory) with orders
+  to do the next step, split a step into smaller ones when it needed to, and update `plan.md` as
+  it went.
+- Whenever its context window got close to full, I started a new session. The context window is
+  how much of the conversation the model can hold at once.
+- About twenty prompts over two days, a check-in roughly every hour, five to fifteen minutes each.
+- The reviews themselves only added up to three or four hours.
 
-And I never got to the bottom of it. Every one of those check-ins was five to fifteen minutes
-against a codebase that had moved since the last one. That is enough time to approve a step. It
-is nowhere near enough time to understand an architecture. I was always mid-read of something
-that was already being rewritten underneath me, and the pressure the whole time was to get the
-next prompt out — because a stalled agent was the thing I had decided to avoid. So I'd skim,
-approve, and hand it more work.
+</details>
 
-Two days of that, and I could not have drawn you the system I had just built.
+## How bursting works
 
-I tried to fix it with tooling first. I piped the reports through the ElevenLabs API and had
-them read to me, so I could take them in without the reading fatigue. That worked on the
-fatigue and did nothing at all about the switching, because the switching was the real problem
-and I had aimed at the symptom.
+Every other day I build one big workflow, a manager agent handing pieces to a team of agents
+under it, and fire several off back to back. They make the actual things, plus the reports and
+presentations. Then it's burst day, review day, plan, repeat. It's the "work in bursts" lesson
+from [what I learn now that AI writes my code](/ledger/i-dont-learn-programming-anymore/).
 
-I could also see where it went. Running three projects that way at once would have been
-miserable — not difficult, exhausting. So the method didn't scale to how I actually want to
-work.
+Review day is one sitting of about four hours. Nothing changes while I read, so I can follow a
+decision through the code and it's still true at the end. It helps to
+[ask for the presentation at the start of the run](/ledger/keeper-and-the-beacon/), so the burst
+hands me a narrated recap instead of a pile of code changes.
 
-## The burst method
+My biggest burst so far happened by accident. It was a test of the
+[gauntlet loop](/ledger/armies-of-gielinor-gauntlet/), a builder agent paired with a fresh critic
+that judges its work blind. It ran 8 hours and spawned 80 agents off a single prompt
+while I slept.
 
-So: batch it instead.
+<figure class="wide">
+  <img src="/media/armies-of-gielinor/card.webp" alt="A strategy game map in the browser: knights and an owl in blue rings face goblins and a skeleton in red rings, near a river and small villages" loading="lazy">
+  <figcaption><b>The biggest burst so far</b><span class="ao-meta">Armies of Gielinor, a strategy game that shut down in 2018, rebuilt overnight by 80 agents from one prompt. <a href="/games/armies-of-gielinor/">Play it here</a></span></figcaption>
+</figure>
 
-Every other day, build one large workflow — a manager session with a table of agents underneath
-it handling the smaller pieces. Fire several off in sequence, so the whole thing is one push
-with a lot of agents running at once or back to back. They produce the deliverables:
-presentations, reports, the actual artifacts.
+## What I give up
 
-I know the ceiling is high because I've already hit it once by accident. The
-[gauntlet loop](/ledger/armies-of-gielinor-gauntlet/) ran for eight hours and spawned
-seventy-six agents off a single prompt while I slept. That's the upper bound I'm working
-against now, not the hour-long errands I used to hand out.
-
-Then the rhythm is burst day, review day, plan. Repeat.
-
-Review day is one long sitting, four hours or so, with full attention on the whole project at
-once. The important part isn't the length — it's that nothing is being written while I read.
-The architecture holds still. I can follow a decision through the codebase and have it still be
-true by the time I get to the end of it, which never happened when I was checking in hourly on
-something a model was actively rewriting.
-
-## Why this isn't a downgrade
-
-The obvious objection is that I'm trading away control. Fewer course corrections, each one much
-bigger, so more mistakes and more scope creep survive longer before anyone catches them.
-
-I don't think that's what happens, and the reason is the understanding.
-
-By the end of a review day I actually know the architecture — not the summary of it, the thing
-itself. That changes what I'm able to ask for. Instructions written by someone who understands
-the system are enormously better than instructions written by someone who has been skimming
-diffs for two days and is mostly trying to keep the queue full. Better direction going in means
-less wasted work coming out.
-
-So it isn't less work in exchange for worse output. What I'm trading is frequency for amplitude:
-fewer decisions, each one made with far more of the picture in my head. The decisions get better
-because I paused long enough to earn them.
-
-What I want it to feel like is a deliberate strategy session every couple of days where I look
-at the whole thing and decide direction. Not a constant low-effort fever dream of reactive
-micro-decisions.
-
-The trick that makes review day survivable is
-[asking for the presentation up front](/ledger/keeper-and-the-beacon/) — then the burst hands me
-a narrated artifact instead of a diff.
+I make fewer course corrections, and each one is bigger, so mistakes could last longer before I
+catch them. I don't think they do. Instructions I write after a review day are a lot better than
+the ones I wrote while skimming to keep the queue full.
 
 ## What I don't know yet
 
-This is a plan I've started running, not a method I've proven, and the open questions are real
-ones.
+I've only started running this. It isn't proven yet.
 
-I don't know the right size for a burst. Eight hours and seventy-six agents is the biggest one
-I've done, but that was a self-contained project. Too big and review day stops being digestible,
-which just moves the problem. I already found with
-[the one-shot games](/ledger/grind-and-grimoire/) that making a single run bigger degraded parts
-of it I hadn't touched, and I don't know yet whether a burst behaves the same way.
-
-I don't know how many agents a manager should be holding, or how it should split work between
-them — the gauntlet loop found seventy-six on its own, and I didn't design that.
-
-I don't know how to structure the planning step at the end of review day so the next burst is
-aimed properly. Right now that's me and a notes file.
-
-And I don't have a name for it. "Burst method" is a working title.
-
-What I keep noticing is that the mistake underneath the old way was optimizing the wrong
-quantity. I spent months making sure no agent was ever idle. Agent time was never the scarce
-resource, and it was never even expensive. The scarce resource was a version of the project
-that held still long enough for me to understand it.
+- **How big a burst should be.** Too big and review day stops being digestible. The 8-hour run
+  was a whole project on its own. When I [built a game from one prompt](/ledger/grind-and-grimoire/),
+  asking for more made parts I hadn't touched worse, and I don't know yet if a burst does the same.
+- **How many agents a manager should run.** The gauntlet run found 80 on its own. I didn't
+  design that.
+- **How to plan the next burst.** Right now that's me and a notes file.
+- **What to call it.** "Burst method" is a working title.

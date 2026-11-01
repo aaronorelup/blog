@@ -1,142 +1,136 @@
 ---
 id: "AO-014"
-title: "I had 801 agent transcripts and no way to read them"
-summary: "Claude Code records everything its agents do and then gives you no way to read it. I built a reader, pointed it at an 80-agent overnight run, and found a $22 agent that died four hours in without anyone noticing. It's an MCP server now."
+title: "I built a reader for Claude Code's agent transcripts"
+summary: "Claude Code saves a record of everything its agents do with no way to read it, so I built a reader and ran it on an 80-agent overnight run. What it found, how to install it, and how it works."
 date: 2026-09-01
 status: "shipped"
 tags: ["claude-code", "agents", "tools", "mcp", "gauntlet-loop"]
 series: ["agent-runs"]
 draft: false
+topic: "agents"
+project: []
 preview:
-  verdict: "It reads, it doesn't guess"
-  takeaway: "Claude Code keeps what each agent was for in one file and what it did in another, and no viewer joined them. Joined, 80 anonymous rows got names."
+  verdict: "Found a silent $22 failure"
+  takeaway: "Reading the transcripts of an 80-agent overnight run showed an agent that died four hours in after about $22 of usage, and I never noticed."
   points:
-    - "The gauntlet loop did converge: critics raised 380 findings in round one, 126 in round two and 0 in round three."
-    - "One agent wrote 90,189 characters of reasoning against 479 of prose. It thought enormously hard and then fell over."
-    - "Unknowns show as a dash with the reason, never 0, so a missing price is never a quiet $0. Stdio only, no upload."
+    - "It showed the review loop ran out of problems: 380 raised in round one, 126 in round two, 0 in round three."
+    - "The trick was joining two files Claude Code writes: one says what each agent was for, the other what it did."
+    - "It runs only on your computer and uploads nothing, and unknown numbers show as a dash with the reason, never as $0."
+  image: "/media/previews/reading-my-own-agents.webp"
+  alt: "A brass magnifying glass over a stack of rolled paper scrolls, the one inside the lens torn off short"
 ---
 
-Every time you run Claude Code it writes a transcript. Every subagent it spawns writes its
-own. They pile up in `~/.claude/projects` as JSONL, one JSON object per line, and nobody ever
-looks at them.
+Claude Code, the AI coding agent I use, writes a transcript of everything each of its agents
+does, and gives you no way to read them. I had 801 of them across 26 projects, so I built a
+reader called Playback Lens. I pointed it at an 80-agent overnight run and **it found an
+agent that died four hours in after about $22 of usage.** I'd never noticed.
 
-I checked mine: **801 agent transcripts across 26 projects.** The
-[Armies of Gielinor gauntlet run](/ledger/armies-of-gielinor-gauntlet/) alone left 114 of them
-across five sessions, 295 MB. I had spent an entire night orchestrating those agents and I had
-no idea what most of them actually did.
+It's an MCP server, a small add-on that gives Claude new tools, so you can ask Claude about your
+own usage in plain English and it answers out of those transcripts.
 
-So I built something to read them. It's an MCP server now — you install it and ask Claude
-about your own usage in plain language, and it answers out of your own transcripts.
+## What it found
+
+The run was session two of my
+[Armies of Gielinor gauntlet](/ledger/armies-of-gielinor-gauntlet/), the night my agents rebuilt
+a dead online game while critic agents judged their work against old screenshots. It ran 8 hours
+39 minutes, with 80 agents and 17 workflows (scripts that send out agents in phases).
+[Here are the slides from that night.](/presentations/armies-of-gielinor-session-2/)
+
+- **An agent died four hours in and nobody noticed.** It was called `maps` and ran on Opus,
+  Claude's workhorse model. It worked for 38 minutes, hit an error and returned nothing. That
+  was about $22 worth, the fourth most expensive agent in the run. The run's log said 80
+  started and 79 came back, and nothing I had would show me that gap.
+- **One agent wrote 90,189 characters of thinking and 479 of actual answer.** It thought really
+  hard and then fell over.
+- **The review loop ran out of problems.** The critics raised 380 in round one, 126 in round two
+  and 0 in round three. I most wanted to know that, and in the gauntlet post I couldn't prove it.
+
+<details><summary>The dead agent in numbers</summary>
+
+- State `error` after 38 minutes on Opus, with no result.
+- 147,264 output tokens (the text it wrote) and 11.3 million cache reads (the conversation so
+  far, read again from memory on each step).
+- About $22, the fourth most expensive agent of the 80.
+
+</details>
 
 ## Install it
+
+It's for people who already use Claude Code. In Claude Code, type:
 
 ```sh
 /plugin marketplace add aaronorelup/claude-playback-lens
 /plugin install playback-lens@claude-playback-lens
 ```
 
-Or skip the plugin and add the MCP server on its own:
+Or add just the MCP server with one line:
 
 ```sh
 claude mcp add --scope user lens -- npx -y claude-playback-lens-mcp
 ```
 
-Node 20 or newer. Five tools — `lens_status`, `lens_sessions`, `lens_usage`, `lens_search`,
-`lens_session` — all read-only. The source is at
+You need Node 20 or newer. It gives Claude five tools and all of them only read. The code is at
 [github.com/aaronorelup/claude-playback-lens](https://github.com/aaronorelup/claude-playback-lens),
-MIT.
+free to use under the MIT license.
 
-**It speaks stdio, and that one is deliberate rather than a default.** The payload is my
-entire private history — every prompt I've typed, every file I've had open, every
-screenshot an agent took of my screen. It has no business crossing a network, so there
-isn't one to cross. No account, no upload, no telemetry.
+**It never leaves your computer.** Those transcripts are my whole private history, down to the
+screenshots agents took of my screen. So it has no account, and it uploads and tracks nothing.
 
-## What it found
+## The trick is two files
 
-I pointed it at session two of the gauntlet: 80 agents, 17 workflows, 8 hours 39 minutes.
+Joining two files is what makes it work. Each agent's transcript is the only place that says
+what it did. When Claude Code runs a workflow, it also writes a separate file that never shows up
+in the conversation. That file is the only place that says what each agent was for, which phase
+it was in and whether it finished.
 
-**An agent died four hours in and I never noticed.** `maps`, on Opus, state `error`. It ran 38
-minutes, burned 147,264 output tokens and 11.3 million cache reads, and produced no result —
-about $22, the fourth most expensive agent in the whole run. The journal recorded 80 agents
-started and 79 results returned. That one-line gap was sitting there the entire time and I had
-nothing that would surface it.
+Six people had already built transcript viewers, so I looked at those first. None of them read
+that second file. A viewer that opens only the transcripts shows 80 rows with names like
+`agent-a771062a38caac9c6`. Joining the two files gives every row a name and a job. That's about
+forty lines of code. You just have to know the second file is there.
 
-**One agent wrote 90,189 characters of reasoning against 479 characters of prose.** It thought
-enormously hard and then fell over.
+## It doesn't guess
 
-**The loop actually converged.** Findings raised by the critics went 380 in round one, 126 in
-round two, 0 in round three. That is the thing I most wanted to know when I wrote the
-[gauntlet post](/ledger/armies-of-gielinor-gauntlet/), and at the time I could only assert it.
+Every number is something the transcript recorded, or plain arithmetic on those. No AI
+summarizes or scores anything. If it doesn't know a number it shows a dash and says why, and a
+real zero shows as 0. So a missing price never turns into a quiet $0.
 
-## The part that isn't in the transcript
+That holds for each row, but a total can still come up short. On
+[BLACKWATER 2](/ledger/blackwater-2-postmortem/), a game I had agents build, the Lens had no price
+for Fable 5.1, one of the models they used. It listed those requests as unpriced, but the
+headline total said $569 against about $1,287 at API list prices. An agent quoted the $569 back
+to me as the cost. The unpriced line was where the rest of the bill was. The Lens prices Fable 5.1
+now.
 
-I looked before I built, because a transcript viewer is exactly the kind of thing six people
-have already done. Six people have, and the good ones are genuinely good. None of them worked
-for what I wanted, and the reason is specific enough to be worth writing down.
+I've since used it to check
+[seven things I believed about my Claude Code costs](/ledger/what-drives-claude-code-cost/).
 
-When you run a `Workflow`, the harness writes the orchestration to a file the conversation
-never touches:
+## The viewer
 
-```
-<session>/workflows/wf_<id>.json
-```
-
-Inside it is a `workflowProgress` array, and that array is **the only place on disk where an
-agent's phase, state and attempt count survive**. Meanwhile the agent's own JSONL is the only
-place its tool sequence, screenshots and reasoning live.
-
-Neither file is useful without the other. A viewer that opens only the session finds 80
-anonymous sidechains and shows you 80 rows called `agent-a771062a38caac9c6`. Joining them is
-the entire trick, and it's about forty lines of code — it just requires knowing the second
-file is there.
-
-## No inference, ever
-
-**Every number is a recorded fact from the transcript, or arithmetic over recorded facts.**
-Nothing is clustered, scored, guessed at, or summarized by a model.
-
-The part of that I'd defend hardest is the smallest one: an unknown renders `—`, with the
-reason, and a real zero renders `0`. They are never the same glyph, and a missing rate is
-never quietly $0. It is very easy to write a cost dashboard that turns "I don't know" into a
-number, and the moment it does, you have lost the ability to tell which of its figures you are
-allowed to trust.
-
-## Two things out of one repo
-
-The MCP server is the product. The same repo also carries a viewer — `git clone`, then:
+The same repo has a viewer you open in your browser. Clone it, then run:
 
 ```sh
 node lens.mjs --serve
 ```
 
-**The viewer is in dev mode, and that's a real caveat.** It is a six-level drill-down that
-exposes everything the index records, censuses and reconciliation pages included. That is the
-right shape for debugging the index and the wrong shape for a casual look at last week's
-spend. I built it first and I still use it, and it is not what I hoped it would be as a
-finished thing. A friendlier one is separate work I haven't started.
+It's still a tool for developers. It drills down six levels into everything the Lens records,
+which is right for finding bugs and wrong for a quick look at last week's spend. A friendlier one
+is work I haven't started.
 
-## The decision I'd keep
+<details><summary>How the add-on and the viewer give the same numbers</summary>
 
-The MCP doesn't reimplement any of the analysis. It also doesn't call the viewer's HTTP API
-over the network, which was the obvious shortcut.
+The MCP server doesn't redo any of the analysis. It also doesn't call the viewer over the
+network, which was the obvious shortcut.
 
-It builds the same router the server builds, registers the same handlers against the same
-context, and dispatches synthetic requests through it with a capturing fake response object —
-about fifty lines of it. So the MCP and the browser get byte-identical JSON out of the same
-handler. There is no second implementation that can drift.
+It builds the same router the viewer's server builds. That's the part that hands each request to
+the code that answers it. It registers the same handlers and sends made-up requests through it,
+with a fake response object that catches the answer. That's about fifty lines. So the add-on and the browser get exactly the same JSON from the same code, and
+there's no second copy that can drift.
 
-That wasn't for elegance. The payload builders are closures inside the API's body, and they
-close over the memo objects that de-duplicate a single message id across forked and resumed
-sessions. You can't export them without hoisting them out of that closure — and a fork is
-precisely where a second implementation would start quietly disagreeing with the first. The
-parity check asserts exact integer totals against a store that contains a forked session.
+I did it that way because I had to. The code that builds each answer lives inside closures in
+the API. Those closures share the memo objects that make sure one message is counted once when a
+session is resumed or forked (copied into a new branch). You can't pull that code out without
+restructuring it. And a forked session is exactly where a second copy would start quietly
+disagreeing with the first. The parity check, a test that both give the same answer, compares
+exact totals on test data that has a forked session in it.
 
-## The part I keep coming back to
-
-None of this is analysis, and I think that's the piece worth taking away from it. Every number
-in it was already sitting on my disk, written down by the tool while it worked, in a folder I
-had never opened. I didn't build something that figures anything out. I built something that
-reads.
-
-801 isn't an unusual number, either. If you have been running agents for a few months you have
-your own pile, and you haven't read yours either.
+</details>

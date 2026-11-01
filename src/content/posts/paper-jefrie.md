@@ -1,74 +1,78 @@
 ---
 id: "AO-058"
-title: "Paper Jefrie: a six-second loop Claude animated in Python and rendered in Blender"
-summary: "Claude built my character out of folded paper, animated her with springs and a chain instead of keyframes, and rendered a six-second loop in Blender in about two hours. The first review failed it on four counts; here are all six passes, and the 6 cm float a second reviewer caught that the builder couldn't see."
+title: "A papercraft animation of my character, made with code"
+summary: "I had Claude make a six-second loop of Jefrie, my scythe-carrying character, as a folded-paper puppet, with no hand animation at all. How it works, and what six rounds of review caught."
 date: 2026-10-18
 status: "shipped"
 tags: ["claude-code", "opus-5-5", "blender", "animation", "agents", "characters"]
 series: ["characters"]
+topic: "3d"
+project: ["characters"]
 preview:
-  verdict: "Physics did the acting"
-  takeaway: "Springs and a chain made the weight. Most of the craft was in reviewing: a second agent caught a 6 cm float the builder's eye had missed."
+  verdict: "Worked on the sixth pass"
+  takeaway: "A spring on the scythe and a weighted chain on the tail make her look light, with nothing animated by hand. The fixes that mattered came from measuring, not looking."
   points:
-    - "One 1,869-line Python file builds and animates everything; 250 s of GPU rendering for 144 frames."
-    - "Reviewer 1 failed pass 1 on weight, spin and cut, skid, and readability. Pass 6 got every line PASS."
-    - "A check run on every solve found the scythe's haft passing through her head. She now slides her grip."
+    - "A second reviewer agent caught the tail tip floating about 6 cm off the paper. The agent that built the loop missed it."
+    - "An automated check found the scythe handle passing through her head. Now her hand slides down it when she hangs."
+    - "The whole build took about two hours on my laptop, reviews included. The final render of 144 frames took 250 seconds."
   image: "/media/previews/paper-jefrie.webp"
   loop: "/media/previews/paper-jefrie.mp4"
   alt: "Papercraft Jefrie standing on a sheet of paper with her spiked tail and red scythe, just before the tail lifts her"
 ---
 
-Claude made a six-second loop of Jefrie, my scythe-carrying character, as a folded-paper figure
-on a desk. Every piece of her was built by a Python script, every move came from a small physics
-simulation, and Blender rendered it on my laptop in about two hours of wall clock, start to finish.
-
-**Nothing in it is keyframed by hand: a spring swings the scythe and a weighted chain moves the
-tail, and those two make her look light.** What took the time was review. The first critic failed
-it on four lines, and the fixes that mattered most came from a second reviewer and from checks
-that measured instead of looked.
+I had Claude make a six-second loop of Jefrie, my scythe-carrying character, as a folded-paper
+puppet on a desk. One Python script builds her and works out every move, and Blender, the free 3D
+program, renders it. Nothing is animated by hand. **A spring swings the scythe and a weighted chain
+moves the tail, and that's what makes her look light.** It took about two hours, most of it
+review, and **the fixes that mattered came from agents measuring things, not looking at them.**
 
 <ao-frames fps="24" marks="24:Hang|54:Yank|66:Cut|84:Skid|131:Thump">
 <video controls muted loop playsinline preload="metadata" poster="/media/paper-jefrie/paper_jefrie.webp" src="/media/paper-jefrie/paper_jefrie.mp4"></video>
 <figcaption><b>Paper Jefrie, final (v3)</b><span class="ao-meta">16 Oct · Opus 5.5 in Claude Code, Blender 5.2 Cycles · 72 poses on twos, 144 frames at 24 fps · 720p web copy of the 1080² render</span></figcaption>
 </ao-frames>
 
-The tail lifts her off the paper like a marionette, she hangs limp, the tail flings her, the
-scythe drags her through a full turn and cuts a paper crane, she lands and skids until the tail
-plants, and then she settles and the tail tip thumps once before the loop starts again. That
-order is her movement canon almost word for word: she's light, and the heavy tail and the heavy
-scythe move her, not the other way round.
+The tail lifts her like a puppet on strings and flings her. The scythe drags her through a full
+turn to cut a paper crane, then she skids and settles. The way I describe her, she's light, and
+her heavy tail and scythe move her. I'd tried her in 3D before with
+[six days of models](/ledger/jefrie-in-3d/) and
+[AI rigging tools that lost to a script](/ledger/ai-rigging-vs-a-script/). This is the first time
+she moved like that.
 
-## Where it came from
+## What came out of it
 
-On 26 September I saw [Kevin Ngo's post](https://x.com/kevin_t_ngo/status/2102761406315839798):
-a GIF of simple paper characters on a desk, captioned as "animated in Python and rendered in
-Blender" by Opus 5.5. He hasn't said what he prompted or how many tries it took. I asked Claude
-to research whether others were doing the same and then write a prompt for trying it on Jefrie.
+- **The first review failed it on four counts.** Weight, the spin and cut, the skid, and how clear
+  it is as a small GIF.
+- **A second reviewer caught the tail tip floating about 6 cm off the paper.** The builder agent had
+  missed it by eye.
+- **An automated check caught the scythe handle going through her head.**
+- **The sixth review passed it on every count.** Then the method became a skill, a short how-to
+  page an agent loads before a job.
 
-The prompt planned a cloud session that installs Blender from scratch. On 16 October I told it
-to "follow the prompt" and do it here instead, so it ran on my laptop, where Blender 5.2 was
-already installed and the GPU could render.
+## Where the idea came from
 
-One thing changed straight away. The prompt said flat cut-paper pieces seen from above. Before
-building, the agent went through Kevin's clip frame by frame and found something else: 3D
-folded-paper box figures, filmed from a low three-quarter angle, in a 3.44-second loop. So Jefrie
-became boxes and folded card, and her world, the iron-bar dome she lives at, became a pencil
-sketch on the sheet behind her.
+It started with [Kevin Ngo's post](https://x.com/kevin_t_ngo/status/2102761406315839798) on X.
+It's a GIF of paper characters on a desk, "animated in Python and rendered in Blender" by Opus 5.5,
+a Claude model. The prompt I had Claude write asked for flat cut-paper pieces. Then Claude studied
+his clip frame by frame and saw folded paper boxes, so Jefrie became boxes and folded card.
 
-## One file, two places
+## One script, two jobs
 
-`paper_jefrie.py` is 1,869 lines and does everything. Run under plain Python, it solves the
-motion and draws a stick-figure sheet in about 10 seconds, so the choreography could be fixed
-without opening Blender. Run inside Blender, it builds every mesh, material, light and key from
-nothing and renders.
+`paper_jefrie.py` is one file of 1,869 lines. Run on its own, it works out the motion and draws
+stick figures in about 10 seconds, so Claude could fix the moves without opening Blender. Inside
+Blender it builds everything from nothing and renders.
 
 <ao-compare cols="2" aspect="3/2">
 <figure><img src="/media/paper-jefrie/motion-01.webp" alt="A grid of 24 stick-figure poses of Jefrie, her scythe and tail, every quarter second" loading="lazy"><figcaption><b>Motion sheet 1</b><span class="ao-meta">16 Oct · plain Python, no Blender · framing too tight, the scythe flails in the hang</span></figcaption></figure>
 <figure><img src="/media/paper-jefrie/motion-10.webp" alt="The same grid of 24 stick-figure poses later in the build: the tail arches over her and plants behind her" loading="lazy"><figcaption><b>Motion sheet 10</b><span class="ao-meta">16 Oct · 11 sheets in all · the tail now rises out of her back and plants</span></figcaption></figure>
 </ao-compare>
 
-The scythe is a damped spring chasing the pose her hands give it, so it lags, overshoots and
-keeps swinging after she stops. This is the heart of it, from the script:
+The scythe follows her hands on a spring, so it lags, overshoots and keeps swinging after she
+stops. The tail is a chain of 14 weighted points. Gravity is turned way down, because a 9 cm figure
+falling at real gravity looks like a toy.
+
+<details><summary>The spring code, the tail and the crane</summary>
+
+This is the heart of the scythe, from the script:
 
 ```python
 w0 = 2 * math.pi * freq; k = w0 * w0; c = 2 * zeta * w0
@@ -79,22 +83,21 @@ self.W += (k * e - c * self.W) * dt
 self.R = rotvec_mat(self.W * dt) @ self.R
 ```
 
-The tail is a 14-point chain with gravity, collision with the paper and a target shape for each
-phase of the move (rest, arch, coil, fling, drag, plant). Gravity is turned down to 55 cm/s²,
-which the script calls "puppet gravity": a 9 cm figure falling at real gravity looks like a toy,
-so it falls the way a person would. The crane's flight is solved backwards from the cut: the
-script finds the pose where the blade is furthest to her front-right and flies the crane in to
-arrive exactly there.
+- The tail's 14 points can't pass through the paper, and it has a target shape for each part of
+  the move: rest, arch, coil, fling, drag, plant.
+- Gravity is 55 cm/s², which the script calls "puppet gravity", so she falls the way a person
+  would.
+- The crane's flight is worked out backwards from the cut. The script finds the pose where the
+  blade is furthest to her front right and flies the crane in to arrive exactly there.
+- Her home, an iron-bar dome, is a pencil sketch on the sheet behind her.
 
-## Six passes
+</details>
 
-Each review pass was 24 stills, one every quarter second. The first went to a reviewer agent
-told to act as an animation director, with Jefrie's canon to check against. In 12.5 minutes it
-passed three things (the marionette hoist, the loop seam, her being fully covered), called four
-weak and failed four: weight, the spin and cut, the skid and plant, and readability at GIF size.
-The rest tail floated, the smear looked like a boat, the tail tip looked like a dragon's head,
-and an ear dot read as a third eye. It called the marionette arch the best image and said to
-protect it.
+## Six rounds of review
+
+There were six review passes, each a sheet of 24 stills, one every quarter second. The first
+reviewer agent played an animation director and checked the loop against how I describe Jefrie.
+It passed three things, called four weak and failed four.
 
 <ao-slider aspect="3/2" labels="Pass 1|Pass 6">
 <img src="/media/paper-jefrie/pass-01.webp" alt="Contact sheet of pass 1: 24 frames of the loop, with the camera drifting and a grey tail floating off the paper">
@@ -102,20 +105,34 @@ protect it.
 <figcaption><b>Pass 1 against pass 6, same 24 moments</b><span class="ao-meta">16 Oct · 540 px, 48 samples, about 1 s a frame on the laptop GPU · pass 1 went to reviewer 1, pass 6 got reviewer 2's go</span></figcaption>
 </ao-slider>
 
-The second reviewer took 20 minutes on pass 3 and measured spacing from its own copy of the
-solver. It said the tail tip that was supposed to be planted on the paper during the hang
-floated about 5 cm above it. The builder measured it at **5.7 to 6.2 cm**, more than half her
-height, and wrote in the build log that perspective had fooled it. The fix was to make the last few points of the chain stop
-moving while the tail is planted, fading the pin in and out, so the tip now sits at 0.35 to 0.44
-cm.
+<details><summary>What the first reviewer said</summary>
 
-<figure><img src="/media/paper-jefrie/same-frame-every-pass.webp" alt="Six crops of the same hang frame across six passes; in the first five the tail tip hangs in the air, in the last it touches the paper" loading="lazy"><figcaption><b>Frame 25 at every pass</b><span class="ao-meta">the same moment of the hang, pass 1 to the final render</span></figcaption></figure>
+- It took 12.5 minutes.
+- Passed three things, among them the puppet-on-strings lift and the seam where the loop starts
+  again.
+- Failed: weight, the spin and cut, the skid and plant, and reading it at GIF size.
+- The tail floated when it should have rested. The smear (the stretched shape that shows a fast
+  swing) looked like a boat. The tail tip looked like a dragon's head, and a dot for her ear read
+  as a third eye.
+- It called the arch of the lift the best image in the loop and said to protect it.
 
-An automated check added in the same pass found another problem nobody had flagged: in the hang
-and the settle, the scythe's haft went through her head. The fix was a grip slide. When she
-hangs limp, her hand slides down the haft to the ring at the end. After that, the checks ran on
-every solve and reported 0 clips in 72 poses and her hand on the haft in every one. The second
-reviewer's last round, 7 minutes on pass 6, passed every line.
+</details>
+
+### The tail tip was floating
+
+The second reviewer ran its own copy of the motion math on pass 3. The tail tip, which should sit
+on the paper during the hang, floated about 5 cm up. The builder measured **5.7 to 6.2 cm**, more
+than half her height, and wrote that the camera angle had fooled it. Pinning the end of the chain
+brought the tip down to under half a centimetre.
+
+<figure><img src="/media/paper-jefrie/same-frame-every-pass.webp" alt="Six crops of the same hang frame across six passes; in the first five the tail tip hangs in the air, in the last it touches the paper" loading="lazy"><figcaption><b>Frame 25 at every pass</b><span class="ao-meta">the same moment of the hang, pass 1 to the final render · the tail tip is in the air until the last one</span></figcaption></figure>
+
+### The scythe went through her head
+
+An automated check added in the same round found something nobody had flagged. In the hang and
+the settle, the scythe's handle went through her head. Now when she hangs limp, her hand slides
+down the handle to its end. After that the check found nothing passing through her in any of the
+72 poses, and the second reviewer passed round 6 on every count.
 
 <ao-slider aspect="1/1" labels="Clay and ink|Final">
 <img src="/media/paper-jefrie/clay-f025.webp" alt="The hang frame in plain white clay with black ink outlines: the tail arches over her and the pencil-sketched dome sits behind">
@@ -123,33 +140,34 @@ reviewer's last round, 7 minutes on pass 6, passed every line.
 <figcaption><b>The hang, frame 25</b><span class="ao-meta">clay pass with Freestyle ink lines, 3.3 s to render · final, 1080², 128 samples</span></figcaption>
 </ao-slider>
 
-## What it cost in time
+## A second loop on the same puppet
 
-| | Main loop | Grease Basket |
+With time left, Claude reused the script for a second loop. Jefrie's at her day job as a fast-food
+cashier, head on one hand. She breathes, sighs, blinks and slams her tail once. The polo and visor
+are the agent's design, not mine.
+
+<video controls muted loop playsinline preload="metadata" poster="/media/paper-jefrie/grease_basket.webp" src="/media/paper-jefrie/grease_basket.mp4" style="width:100%;max-width:540px;border-radius:8px"></video>
+
+<details><summary>Render times and file sizes</summary>
+
+The whole build ran on the evening of 16 October, from 21:44 to 23:41, two reviewer agents
+included.
+
+| | Main loop | Fast-food loop |
 |---|---|---|
-| Poses | 72, on twos (144 frames) | 60 (120 frames) |
+| Poses | 72, each held two frames (144 frames) | 60 (120 frames) |
 | Final render | 250.0 s, 3.47 s a frame | 174.7 s, 2.91 s a frame |
 | GIF at 720 px | 8.39 MB | 5.39 MB |
 | MP4 1080p / 720p | 1.69 MB / 0.51 MB | 0.69 MB / 0.16 MB |
 
-The whole build ran on the evening of 16 October, from 21:44 to 23:41, two reviewer agents included. The laptop's GPU is shared
-between sessions through a queue, so rendering went in 25 short reservations, about 26 minutes of
-GPU time. The first one waited 19 minutes behind another session's render.
+My laptop's graphics card is shared between sessions through a queue, so rendering went in 25
+short reservations, about 26 minutes of GPU time. The first one waited 19 minutes behind another
+session's render.
 
-With time left, it made a second loop on the same rig: Jefrie at her day job as a fast-food
-cashier, head propped on one hand, with two breaths, a sigh, a slow blink and one tail slam. The
-script reuses the first one wholesale. The polo and visor are the agent's design, not mine.
+</details>
 
-<video controls muted loop playsinline preload="metadata" poster="/media/paper-jefrie/grease_basket.webp" src="/media/paper-jefrie/grease_basket.mp4" style="width:100%;max-width:540px;border-radius:8px"></video>
+## It's a skill now
 
-## After
-
-I said "This is good" the next day, and asked for the method to become a skill: very thin,
-only what it needed to know to make another one. It's now a short page with the template
-script, the commands and render times, the review loop, and the lessons that cost extra passes.
-
-I've tried putting Jefrie in 3D before, with [six days of models](/ledger/jefrie-in-3d/) and
-[AI rigging that lost to a script](/ledger/ai-rigging-vs-a-script/). This is the first time she
-moved the way I describe her, and it came from the plainest tools in the set: springs, a chain
-and numbers someone bothered to measure. **The fixes that mattered most came from measuring,
-not looking.**
+I said "This is good" the next day and asked for a skill with only what an agent needs to make
+another one. It has the template script, the commands, the review loop and the lessons that cost
+extra passes.
