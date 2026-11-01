@@ -8,7 +8,6 @@ export const KEEP = [
 
 export const UNTIL = {
   'src/scripts/home-scene.js': 'T3.2',
-  'src/components/panel/**': 'T3.1',
   'src/pages/index.astro': 'T3.2',
 };
 

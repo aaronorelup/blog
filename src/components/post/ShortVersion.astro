@@ -1,0 +1,17 @@
+---
+// The short version, under the header: the post's card (lib/cards.js cardOf, the same text as its hover card in
+// /ledger/previews.json): the verdict stamped, the takeaway, the points. id="short" is where Goobie's and search's
+// "short version" citations land. A post with no preview has none.
+import { cardOf } from '../../lib/cards.js';
+
+const { post } = Astro.props;
+const { verdict, takeaway, points } = cardOf(post);
+---
+{takeaway && (
+  <aside id="short" class="short" aria-label="The short version">
+    <p class="eyebrow short-label">The short version</p>
+    {verdict && <p class="stamp short-verdict">{verdict}</p>}
+    <p class="short-takeaway">{takeaway}</p>
+    {points && <ul class="short-points">{points.map((p) => <li>{p}</li>)}</ul>}
+  </aside>
+)}

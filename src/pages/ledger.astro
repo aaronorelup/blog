@@ -9,9 +9,4 @@ import LedgerView from '../components/ledger/LedgerView.astro';
   view="ledger"
 >
   <LedgerView />
-  <script>
-    // PanelPage runs every view's module once T2.1's mountView lands; until then this page mounts its own.
-    import { mount } from '../scripts/views/ledger.js';
-    mount(document.querySelector('[data-panel-view="ledger"]'));
-  </script>
 </PanelPage>

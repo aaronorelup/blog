@@ -1,0 +1,37 @@
+---
+// One post, or its notes page (note given), as the article both the standalone page and the homepage overlay show:
+// the overlay mounts a fresh copy of this element and runs its view module (data-panel-view: views/post.js or
+// views/notes.js) on it, as the page does. ARCHITECTURE.md "Post page". The notes page has no short version, notes
+// link, read-aloud, related posts or older/newer. Only a listed post's or listed notes page's text is in search.
+import { isListed } from '../../lib/posts.js';
+import { notesBySlug, renderEntry, slugOf } from '../../lib/content.js';
+import Contents from './Contents.astro';
+import ElementStyles from './ElementStyles.astro';
+import NotesLink from './NotesLink.astro';
+import PostHeader from './PostHeader.astro';
+import PostNav from './PostNav.astro';
+import Related from './Related.astro';
+import ShortVersion from './ShortVersion.astro';
+import '../../styles/elements.css';
+
+const { post, note } = Astro.props;
+const { Content, remarkPluginFrontmatter: { text } } = await renderEntry(note ?? post);
+const notes = !note && (await notesBySlug()).get(slugOf(post));
+---
+<article class="post" data-post-article data-panel-view={note ? 'notes' : 'post'} data-slug={slugOf(post)}>
+  <ElementStyles tags={text?.elements} />
+  <PostHeader post={post} note={note} text={text} />
+  {!note && <ShortVersion post={post} />}
+  {notes && <NotesLink post={post} note={notes} />}
+  <div class="post-body">
+    <Contents text={text} />
+    <div class="pc-prose" data-pagefind-body={isListed(post.data) ? '' : undefined}><Content /></div>
+  </div>
+  {!note && (
+    <footer class="post-foot">
+      {notes && <NotesLink post={post} note={notes} />}
+      <Related post={post} />
+      <PostNav post={post} />
+    </footer>
+  )}
+</article>

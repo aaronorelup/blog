@@ -1,11 +1,9 @@
 ---
-// /ledger/<slug>/notes/: the full making-of of a split post (src/content/notes/<slug>.md). Listed exactly
-// when its post is. For now the panel chrome, the note and a link back to the short version.
-import ElementStyles from '../../../components/post/ElementStyles.astro';
+// /ledger/<slug>/notes/: the full making-of of a split post (src/content/notes/<slug>.md), listed exactly when its
+// post is: the post view with variant notes (components/post/PostView.astro).
 import PanelPage from '../../../layouts/PanelPage.astro';
-import { allPosts, notesBySlug, renderEntry, slugOf } from '../../../lib/content.js';
-import { shortDate } from '../../../lib/dates.js';
-import '../../../styles/elements.css';
+import PostView from '../../../components/post/PostView.astro';
+import { allPosts, notesBySlug, slugOf } from '../../../lib/content.js';
 
 export async function getStaticPaths() {
   const notes = await notesBySlug();
@@ -14,35 +12,8 @@ export async function getStaticPaths() {
 }
 
 const { post, note } = Astro.props;
-const { Content, remarkPluginFrontmatter } = await renderEntry(note);
 ---
-<PanelPage title={`${note.data.title} — Aaron Orelup`} description={note.data.summary} active="ledger" noindex={post.data.unlisted}>
-  <article data-post-article data-panel-view="notes">
-    <ElementStyles tags={remarkPluginFrontmatter.text?.elements} />
-    <a href={`/ledger/${slugOf(post)}/`} class="pc-link-accent back">← THE SHORT VERSION</a>
-    <div class="meta">{post.data.id} <span>/ {shortDate(post.data.date)}</span></div>
-    <div class="pc-prose" data-pagefind-body={post.data.unlisted ? undefined : ''}>
-      <h1>{note.data.title}</h1>
-      <p class="summary">{note.data.summary}</p>
-      <Content />
-    </div>
-  </article>
+<PanelPage title={`${note.data.title} — Aaron Orelup`} description={note.data.summary} active="ledger"
+  noindex={post.data.unlisted}>
+  <PostView post={post} note={note} />
 </PanelPage>
-
-<style>
-  article { width: 100%; max-width: 720px; padding-bottom: 60px; }
-  .back { display: inline-block; margin: 0 0 30px; font-size: 12.5px; letter-spacing: 0.08em; color: var(--pc-accent); text-decoration: none; }
-  .meta { margin-bottom: 10px; font: 12px/1.7 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--pc-accent); }
-  .meta span { color: var(--pc-quiet); }
-  .summary { padding-bottom: 34px; border-bottom: 1px solid var(--pc-line); }
-</style>
-
-<script>
-  // The note carries post components too, and its links to posts open their hover cards. A search result lands
-  // here with ?hs= or ?hl= and its passage is marked once the components have drawn (T2.1 moves this into
-  // views/notes.js).
-  import { enhance } from '../../../elements/enhance.js';
-  import { arrive } from '../../../scripts/post/arrive.js';
-  arrive(document.querySelector('[data-post-article]'), enhance());
-  import '../../../scripts/ledger-preview.js';
-</script>

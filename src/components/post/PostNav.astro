@@ -1,0 +1,23 @@
+---
+// Older and newer: the posts either side of this one in ledger order (lib/posts.js olderNewer), so no post is a dead
+// end. Listed posts only; an unlisted post gets its place among them.
+import { listedPosts, slugOf } from '../../lib/content.js';
+import { olderNewer } from '../../lib/posts.js';
+
+const { post } = Astro.props;
+const { older, newer } = olderNewer(post, await listedPosts());
+---
+<nav class="post-nav" aria-label="Older and newer posts">
+  {older ? (
+    <a class="post-nav-link" href={`/ledger/${slugOf(older)}/`}>
+      <span class="post-nav-id">← {older.data.id}</span>
+      <span class="post-nav-title">{older.data.title}</span>
+    </a>
+  ) : <span />}
+  {newer && (
+    <a class="post-nav-link is-newer" href={`/ledger/${slugOf(newer)}/`}>
+      <span class="post-nav-id">{newer.data.id} →</span>
+      <span class="post-nav-title">{newer.data.title}</span>
+    </a>
+  )}
+</nav>

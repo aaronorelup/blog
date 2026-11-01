@@ -78,3 +78,15 @@
 .pc-prose th,
 .pc-prose td { border: 1px solid var(--pc-line); padding: 8px 12px; text-align: left; color: var(--pc-body); }
 .pc-prose th { color: var(--pc-strong); }
+/* Folded details: an aside a writer folds away (<details><summary>), between hairlines; search reads it, read-aloud
+   skips it, and a link to its passage opens it (scripts/post/details.js, highlight.js). */
+.pc-prose details { margin: 0 0 20px; border-block: 1px solid var(--pc-line); }
+.pc-prose details + details { margin-top: -21px; }
+.pc-prose summary {
+  padding: 12px 0; cursor: pointer; list-style: none; font-family: var(--font-display); font-size: 16px;
+  line-height: 1.4; font-weight: 700; color: var(--pc-strong); transition: color 180ms ease;
+}
+.pc-prose summary::-webkit-details-marker { display: none; }
+.pc-prose summary::before { content: '+'; display: inline-block; width: 1.3em; font-family: var(--font-mono); color: var(--pc-accent); }
+.pc-prose details[open] > summary::before { content: '\2212'; }
+.pc-prose summary:hover { color: var(--pc-head); }

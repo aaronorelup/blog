@@ -10,9 +10,4 @@ import ProjectsView from '../components/projects/ProjectsView.astro';
   view="projects"
 >
   <ProjectsView />
-  <script>
-    // PanelPage runs every view's module once T2.1's mountView lands; until then this page mounts its own.
-    import { mount } from '../scripts/views/projects.js';
-    mount(document.querySelector('[data-panel-view="projects"]'));
-  </script>
 </PanelPage>

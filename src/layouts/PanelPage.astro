@@ -1,6 +1,6 @@
 ---
 // A standalone panel page: /stats, /ledger, /courses, /projects, /about, each course and lore page, each post and
-// research document. Real pages: they render without JavaScript, search engines and RSS readers see them, and the
+// research document. Its view's module (views/<data-panel-view>.js) runs once the page has parsed. Real pages: they render without JavaScript, search engines and RSS readers see them, and the
 // homepage overlay fetches its post bodies from them. The same panel that grows out of a homepage card, already open.
 import '../styles/site.css';
 import Head from '../components/chrome/Head.astro';
@@ -16,6 +16,8 @@ interface Props {
   view?: string;
   noindex?: boolean;
   image?: string;
+  // A post's date (Head: og:type article).
+  published?: Date;
   // The footer's line after the copyright (PanelChrome's own line when left out).
   tagline?: string;
 }
@@ -26,6 +28,7 @@ const {
   view,
   noindex = false,
   image,
+  published,
   tagline,
 } = Astro.props;
 ---
@@ -33,7 +36,7 @@ const {
 <!doctype html>
 <html lang="en">
   <head>
-    <Head title={title} description={description} noindex={noindex} image={image} />
+    <Head title={title} description={description} noindex={noindex} image={image} published={published} />
     <slot name="head" />
   </head>
   <body>
@@ -46,5 +49,10 @@ const {
         </PanelChrome>
       </div>
     </div>
+    <script>
+      import { mountView } from '../scripts/views/index.js';
+      const root = document.querySelector('[data-panel-view]');
+      if (root) mountView(root);
+    </script>
   </body>
 </html>

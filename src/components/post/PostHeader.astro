@@ -1,0 +1,43 @@
+---
+// A post's header: the way back, its icon (or its topic's glyph), id · date · minutes, its topic and projects as
+// ledger filters, the title and summary (data-r t and s: read-aloud reads them first), the byline when Claude wrote
+// it as "I" (voice: claude), and the Listen button. A notes page (note given) gets the note's title, summary and
+// byline, and its way back is the short version.
+import { PROJECTS, TOPICS } from '../../data/taxonomy.js';
+import { slugOf } from '../../lib/content.js';
+import { isoDay, shortDate } from '../../lib/dates.js';
+import { iconFor } from '../../lib/icons.js';
+import { readingMinutes } from '../../lib/text/plain.js';
+import Glyph from '../chrome/Glyph.astro';
+import ReadAloud from './ReadAloud.astro';
+
+const { post, note, text } = Astro.props;
+const { id, date, topic, project } = post.data;
+const { title, summary, voice } = (note ?? post).data;
+const icon = iconFor(post);
+---
+<header class="post-head">
+  {note
+    ? <a class="post-back" href={`/ledger/${slugOf(post)}/`}>← The short version</a>
+    : <a class="post-back" href="/ledger" data-close-reader data-no-fly>← Ledger</a>}
+  <div class="post-meta">
+    {icon
+      ? <img class="post-icon" src={icon.s96} srcset={`${icon.s96} 96w, ${icon.s256} 256w`} sizes="64px" width="64"
+          height="64" decoding="async" alt="" />
+      : <span class="post-icon is-glyph"><Glyph name={TOPICS[topic].glyph} /></span>}
+    <div class="post-facts">
+      <p class="post-line">
+        <span class="post-id">{id}</span> · <time datetime={isoDay(date)}>{shortDate(date)}</time> ·
+        {readingMinutes(text?.words)} min
+      </p>
+      <p class="post-tags">
+        <a class="chip" href={`/ledger/?topic=${topic}`}>{TOPICS[topic].label}</a>
+        {project.map((k) => <a class="chip" href={`/ledger/?project=${k}`}>{PROJECTS[k].label}</a>)}
+      </p>
+    </div>
+  </div>
+  <h1 class="post-title" data-r={note ? undefined : 't'}>{title}</h1>
+  <p class="post-summary" data-r={note ? undefined : 's'}>{summary}</p>
+  {voice === 'claude' && <p class="post-by">Written by Claude. Every “I” here is Claude.</p>}
+  {!note && <ReadAloud post={post} text={text} />}
+</header>

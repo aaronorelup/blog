@@ -1,0 +1,10 @@
+---
+// The way into a split post's full making-of (/ledger/<slug>/notes/), under the short version and again at the end.
+import { slugOf } from '../../lib/content.js';
+
+const { post, note } = Astro.props;
+---
+<a class="notes-link" href={`/ledger/${slugOf(post)}/notes/`}>
+  <span class="eyebrow">The full making-of</span>
+  <span class="notes-link-title">{note.data.title} →</span>
+</a>

@@ -1,0 +1,17 @@
+---
+// The contents list of a long post (4 or more h2 headings, or a main read of 900 words or more): a closed <details>
+// above the text, which scripts/post/contents.js opens at 1180 px and wider, where post.css makes it a sticky column
+// beside the text and the script marks the heading being read. text: the extraction (text.headings and
+// text.words), absent for a live notebook that failed to render.
+const { text } = Astro.props;
+const h2 = text?.headings.filter((h) => h.depth === 2) ?? [];
+const long = h2.length >= 4 || (h2.length >= 2 && text.words >= 900);
+---
+{long && (
+<details class="toc">
+  <summary class="toc-label">Contents</summary>
+  <ol class="toc-list">
+    {h2.map((h) => <li><a href={`#${h.id}`}>{h.text}</a></li>)}
+  </ol>
+</details>
+)}
