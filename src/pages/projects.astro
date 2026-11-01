@@ -1,11 +1,18 @@
 ---
 import PanelPage from '../layouts/PanelPage.astro';
-import ProjectsView from '../components/panel/ProjectsView.astro';
+import ProjectsView from '../components/projects/ProjectsView.astro';
 ---
+
 <PanelPage
   title="Projects — Aaron Orelup"
-  description="Things I've built and am building: a Windows live-wallpaper app, a course on what nobody teaches people who build with AI, a local-first language-learning platform, an LLM-refereed monster hunter, and weekend games you can play in a browser."
+  description="Everything I’ve made or am making, sorted by what you can do with it: games to play in the browser, apps to download, films to watch, and the private tools behind them."
   active="projects"
+  view="projects"
 >
   <ProjectsView />
+  <script>
+    // PanelPage runs every view's module once T2.1's mountView lands; until then this page mounts its own.
+    import { mount } from '../scripts/views/projects.js';
+    mount(document.querySelector('[data-panel-view="projects"]'));
+  </script>
 </PanelPage>

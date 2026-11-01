@@ -1,6 +1,7 @@
 /* Moved: the palette to tokens.css, the frame to chrome.css, the post body to prose.css. index.astro imports this
-   until T3.2 links site.css on the homepage; about.css comes too, for the overlay's About view. */
+   until T3.2 links site.css on the homepage; about.css and projects.css come too, for the overlay's views. */
 @import './tokens.css';
 @import './chrome.css';
 @import './prose.css';
+@import './projects.css';
 @import './about.css';

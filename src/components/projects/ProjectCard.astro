@@ -1,0 +1,53 @@
+---
+// One project (a card from lib/projects.js): its picture or its first post's icon, badge and state chip, name, line,
+// what you need, the main button, up to two small links and its posts. A private card links only to this site.
+// size: large (the first two of a section), compact, or mini (Highlights: picture, name, line and the button).
+import { PROJECTS } from '../../data/taxonomy.js';
+import NeedsGlyph from './NeedsGlyph.astro';
+
+interface Props { card: any; size?: 'large' | 'compact' | 'mini' }
+const { card, size = 'compact' } = Astro.props;
+const out = (l) => (l.external ? { target: '_blank', rel: 'noreferrer noopener' } : {});
+const arrow = (l) => (l.external ? ' ↗' : ' →');
+const full = size !== 'mini';
+---
+
+<article class:list={['proj-card', `is-${size}`, { 'is-private': card.private }]}>
+  <div class:list={['proj-pic', { 'is-icon': card.picture?.icon, 'is-empty': !card.picture }]}>
+    {card.picture ? (
+      <img
+        src={card.picture.src}
+        alt={card.picture.alt}
+        width={card.picture.icon ? 256 : 640}
+        height={card.picture.icon ? 256 : 360}
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <NeedsGlyph name={card.glyph} />
+    )}
+    {card.private && <span class="proj-ribbon">Behind the scenes</span>}
+  </div>
+  <div class="proj-body">
+    <p class="proj-meta"><span class="proj-badge">{card.badge}</span><span class="proj-chip">{card.chip}</span></p>
+    <h3 class="proj-name">{card.name}</h3>
+    <p class="proj-text">{card.line}</p>
+    {full && card.needs && <p class="proj-needs"><NeedsGlyph name={card.glyph} />{card.needs}</p>}
+    {full && card.note && <p class="proj-note">{card.note}</p>}
+    {full && card.credit && <p class="proj-credit">{card.credit}</p>}
+    {(card.main || (full && card.more.length > 0)) && (
+      <div class="proj-actions">
+        {card.main && <a class="proj-btn" href={card.main.href} {...out(card.main)}>{card.main.label}{arrow(card.main)}</a>}
+        {full && card.more.map((l) => <a class="proj-link" href={l.href} {...out(l)}>{l.label}{arrow(l)}</a>)}
+      </div>
+    )}
+    {full && card.posts.length > 0 && (
+      <ul class="proj-posts" aria-label="Write-ups">
+        {card.posts.map((p) => <li><a class="proj-post" href={`/ledger/${p.slug}/`}>{p.title}</a></li>)}
+      </ul>
+    )}
+    {full && card.postCount > 1 && (
+      <a class="proj-count" href={`/ledger/?project=${card.project}`}>{card.postCount} posts on {PROJECTS[card.project].label} →</a>
+    )}
+  </div>
+</article>

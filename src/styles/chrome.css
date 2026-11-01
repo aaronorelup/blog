@@ -98,19 +98,8 @@
 .pc-foot:hover,
 .pc-quiet-btn:hover { color: var(--pc-accent) !important; }
 .pc-link-accent:hover { color: var(--pc-strong) !important; }
-.pc-source-btn:hover {
-  background: var(--pc-accent);
-  color: var(--pc-bg) !important;
-}
 
-/* Narrow screens: the projects view's two-column layouts stack, the screenshot tile first, and ledger rows go to
-   one column. */
-@media (max-width: 860px) {
-  .pc-flagship,
-  .pc-shelf { grid-template-columns: minmax(0, 1fr) !important; gap: 24px 0 !important; }
-  .pc-flagship > div:last-child,
-  .pc-shelf > div:last-child { order: -1; }
-}
+/* Narrow screens: ledger rows go to one column. */
 @media (max-width: 560px) {
   .pc-row { grid-template-columns: minmax(0, 1fr) !important; gap: 10px 0 !important; }
 }

@@ -1,0 +1,28 @@
+---
+// The top of the projects page: the showreel (src/data/picks.js REEL), plus the cards marked highlight 1 to 4, in
+// order. The reel loads nothing until it is played, and plays inline on a phone.
+import { REEL } from '../../data/picks.js';
+import ProjectCard from './ProjectCard.astro';
+
+interface Props { cards: object[] }
+const { cards } = Astro.props;
+---
+
+<section class="proj-highlights" id="proj-highlights" aria-labelledby="proj-highlights-title">
+  <h2 class="proj-eyebrow" id="proj-highlights-title">Highlights</h2>
+  <figure class="proj-reel" id="proj-reel">
+    <div class="proj-reel-frame">
+      <video src={REEL.src} poster={REEL.poster} width="1280" height="720" controls playsinline preload="none"></video>
+    </div>
+    <figcaption class="proj-reel-caption">
+      <span class="proj-reel-meta">Showreel · 2026 · 30 seconds, with sound</span>
+      What I’m building, in thirty seconds: The Hidden Curriculum, Claude painting in oil, Wallpaper Breaker, the
+      explainers, the tools my agents run on and my two characters. Every number in it is real and dated. It’s one 3D
+      scene rendered in Blender, a station per project, with music from ElevenLabs. There’s also a
+      <a class="proj-link proj-nowrap" href={REEL.short}>15-second cut</a>.
+    </figcaption>
+  </figure>
+  <div class="proj-highlight-cards">
+    {cards.map((card) => <ProjectCard card={card} size="mini" />)}
+  </div>
+</section>

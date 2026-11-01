@@ -1,0 +1,147 @@
+/* The projects page (components/projects/), on /projects and in the homepage overlay. Colours are the --pc-* tokens
+   only, so the overlay's day/night tween carries them. Pictures sit in square 16:9 wells sized before they load. */
+
+.proj { padding-bottom: var(--space-8); }
+.proj .view-intro { margin-bottom: var(--space-5); }
+
+/* The jump row: a link per section with its count. */
+.proj-jump {
+  display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); margin: 0 0 var(--space-7);
+  padding: var(--space-3) 0; border-top: 1px solid var(--pc-line); border-bottom: 1px solid var(--pc-line);
+  font-size: var(--text-sm); letter-spacing: 0.08em; text-transform: uppercase;
+}
+.proj-jump-link { color: var(--pc-strong); text-decoration: none; transition: color 180ms ease; }
+.proj-jump-link:hover { color: var(--pc-head); }
+.proj-jump-count { color: var(--pc-gold); margin-left: 2px; }
+
+.proj-eyebrow {
+  margin: 0 0 var(--space-3); font-family: var(--font-body); font-size: var(--text-sm); font-weight: 400;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--pc-gold);
+}
+
+/* Highlights: the reel and its caption side by side, then four small cards. */
+.proj-highlights { margin: 0 0 var(--space-8); }
+.proj-reel {
+  margin: 0 0 var(--space-6); display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(220px, 1fr);
+  gap: var(--space-3) var(--space-6); align-items: end;
+}
+.proj-reel-frame {
+  position: relative; aspect-ratio: 16 / 9; border: 1px solid var(--pc-line); background: var(--pc-tile); overflow: hidden;
+}
+.proj-reel-frame video { position: absolute; inset: 0; width: 100%; height: 100%; display: block; background: var(--pc-page); }
+.proj-reel-caption {
+  font-family: var(--font-serif); font-size: 15px; line-height: 1.6; color: var(--pc-soft); text-wrap: pretty;
+}
+.proj-reel-meta {
+  display: block; margin-bottom: var(--space-2); font-family: var(--font-body); font-size: var(--text-xs);
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--pc-quiet);
+}
+.proj-highlight-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-5); }
+
+/* A section: hairline on top, gold title, quiet intro, then its grids. */
+.proj-section { border-top: 1px solid var(--pc-line2); padding: var(--space-6) 0 var(--space-7); scroll-margin-top: var(--space-3); }
+.proj-section-head { margin-bottom: var(--space-5); }
+.proj-section-title {
+  margin: 0 0 6px; font-family: var(--font-display); font-size: clamp(24px, 2.6vw, 30px); line-height: 1.15;
+  font-weight: 700; letter-spacing: -0.015em; color: var(--pc-head);
+}
+.proj-section-intro { margin: 0; max-width: 620px; font-size: var(--text-md); line-height: 1.7; color: var(--pc-quiet); }
+
+.proj-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: var(--space-6) var(--space-5);
+}
+.proj-grid.is-large { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); margin-bottom: var(--space-6); }
+
+/* A card: a picture well, then the words. No box: whitespace and the well carry it. */
+.proj-card { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
+.proj-pic {
+  position: relative; aspect-ratio: 16 / 9; border: 1px solid var(--pc-line); background: var(--pc-tile); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.proj-pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+/* A post icon carries its own indigo ground: shown whole, centred, the well's tile either side. */
+.proj-pic.is-icon img { position: static; width: auto; height: 100%; aspect-ratio: 1; }
+.proj-pic.is-empty .proj-glyph { width: 40px; height: 40px; color: var(--pc-line2); }
+.proj-ribbon {
+  position: absolute; top: 0; left: 0; padding: 5px 10px; background: var(--pc-bg); color: var(--pc-head);
+  border-right: 1px solid var(--pc-line); border-bottom: 1px solid var(--pc-line);
+  font-size: var(--text-xs); letter-spacing: 0.12em; text-transform: uppercase;
+}
+
+.proj-body { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+.proj-meta { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px var(--space-3); }
+.proj-badge { font-size: var(--text-xs); letter-spacing: 0.14em; text-transform: uppercase; color: var(--pc-gold); }
+.proj-chip {
+  font-size: var(--text-xs); letter-spacing: 0.04em; color: var(--pc-soft); white-space: nowrap;
+  border: 1px solid var(--pc-line2); border-radius: var(--radius-pill); padding: 2px 9px;
+}
+.proj-name {
+  margin: 2px 0 0; font-family: var(--font-display); font-size: 21px; line-height: 1.2; font-weight: 700;
+  letter-spacing: -0.015em; color: var(--pc-strong);
+}
+.proj-text { margin: 0; font-family: var(--font-serif); font-size: 15px; line-height: 1.6; color: var(--pc-body); text-wrap: pretty; }
+.proj-needs, .proj-note, .proj-credit { margin: 0; font-size: var(--text-sm); line-height: 1.55; color: var(--pc-quiet); }
+.proj-needs { display: flex; gap: 7px; align-items: baseline; }
+.proj-glyph {
+  flex: none; position: relative; top: 2px; fill: none; stroke: currentColor; stroke-width: 1.3;
+  stroke-linecap: round; stroke-linejoin: round; color: var(--pc-gold);
+}
+.proj-note { color: var(--pc-soft); }
+.proj-credit { font-style: italic; }
+
+.proj-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); margin-top: 6px; }
+.proj-btn {
+  display: inline-block; padding: 9px 18px; border: 1px solid var(--pc-accent); border-radius: var(--radius-pill);
+  color: var(--pc-strong); font-size: 13px; letter-spacing: 0.04em; text-decoration: none;
+  transition: background 180ms ease, color 180ms ease;
+}
+.proj-btn:hover { background: var(--pc-accent); color: var(--pc-bg); }
+.proj-link, .proj-count {
+  color: var(--pc-accent); font-size: 13px; letter-spacing: 0.02em; text-decoration: none; transition: color 180ms ease;
+}
+.proj-link:hover, .proj-count:hover, .proj-post:hover { color: var(--pc-head); }
+.proj-reel-caption .proj-link { font-size: inherit; letter-spacing: 0; }
+.proj-nowrap { white-space: nowrap; }
+
+.proj-posts { margin: 6px 0 0; padding: var(--space-2) 0 0; list-style: none; border-top: 1px solid var(--pc-line); }
+.proj-posts li { padding: 3px 0; font-size: var(--text-sm); line-height: 1.45; }
+.proj-post { color: var(--pc-soft); text-decoration: none; transition: color 180ms ease; }
+.proj-count { align-self: flex-start; }
+
+/* The first two cards of a section: a bigger picture and name. */
+.proj-card.is-large .proj-name { font-size: clamp(24px, 2.4vw, 30px); letter-spacing: -0.02em; }
+.proj-card.is-large .proj-text { font-size: 16.5px; max-width: 600px; }
+/* Highlights: picture, name, line and the button only. */
+.proj-card.is-mini { gap: var(--space-2); }
+.proj-card.is-mini .proj-name { font-size: 18px; }
+.proj-card.is-mini .proj-text { font-size: 14px; line-height: 1.55; color: var(--pc-soft); }
+
+/* Stopped: one line each. */
+.proj-lines { margin: 0; padding: 0; list-style: none; }
+.proj-line-item {
+  display: grid; grid-template-columns: minmax(150px, 220px) minmax(0, 1fr) auto auto; gap: var(--space-2) var(--space-5);
+  align-items: baseline; padding: var(--space-3) 0; border-bottom: 1px solid var(--pc-line);
+}
+.proj-line-name { font-family: var(--font-display); font-weight: 700; font-size: 16px; color: var(--pc-strong); }
+.proj-line-text { font-family: var(--font-serif); font-size: 14.5px; line-height: 1.55; color: var(--pc-body); }
+
+@media (max-width: 1000px) {
+  .proj-highlight-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .proj-reel { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 720px) {
+  .proj-grid.is-large { grid-template-columns: minmax(0, 1fr); }
+  .proj-line-item { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .proj-line-item .proj-chip { justify-self: start; }
+}
+/* A phone: Highlights' small cards become rows, the picture beside the words, so four fit on a screen or two. */
+@media (max-width: 560px) {
+  .proj-highlight-cards { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+  .proj-card.is-mini { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: var(--space-3); align-items: start; }
+  .proj-card.is-mini .proj-actions { margin-top: 2px; }
+  .proj-card.is-mini .proj-btn { padding: 6px 14px; font-size: 12.5px; }
+  .proj-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .proj-btn, .proj-link, .proj-count, .proj-post, .proj-jump-link { transition: none; }
+}

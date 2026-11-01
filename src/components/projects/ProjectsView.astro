@@ -1,0 +1,22 @@
+---
+// The projects view, on /projects and in the homepage overlay (through panel/ProjectsView.astro until T3.1): the
+// jump row, Highlights with the reel, then the five sections. Data: src/content/projects/*.yaml via lib/projects.js.
+import { listedPosts, projects } from '../../lib/content.js';
+import { projectsPage } from '../../lib/projects.js';
+import Highlights from './Highlights.astro';
+import JumpRow from './JumpRow.astro';
+import ProjectSection from './ProjectSection.astro';
+
+const { sections, highlights } = projectsPage(await projects(), await listedPosts());
+---
+
+<div class="view proj">
+  <h1 class="view-title">Projects</h1>
+  <p class="view-intro">
+    Everything I’ve made or am making, sorted by what you can do with it. Most of it was built with Claude Code, and
+    most of it has a write-up in the ledger.
+  </p>
+  <JumpRow sections={sections} />
+  <Highlights cards={highlights} />
+  {sections.map((section) => <ProjectSection section={section} />)}
+</div>

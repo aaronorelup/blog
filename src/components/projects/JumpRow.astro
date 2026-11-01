@@ -1,0 +1,11 @@
+---
+// The row under the projects page's intro: one link per section, with how many cards it holds.
+interface Props { sections: { key: string; title: string; cards: unknown[] }[] }
+const { sections } = Astro.props;
+---
+
+<nav class="proj-jump" aria-label="Sections of this page">
+  {sections.map((s) => (
+    <a class="proj-jump-link" href={`#proj-${s.key}`}>{s.title} <span class="proj-jump-count">{s.cards.length}</span></a>
+  ))}
+</nav>

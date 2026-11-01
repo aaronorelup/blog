@@ -1,0 +1,32 @@
+---
+// One section of the projects page: its title and intro, the first two cards large and the rest compact. The
+// stopped section is one line a card, with no picture.
+import ProjectCard from './ProjectCard.astro';
+
+interface Props { section: { key: string; title: string; intro: string; cards: any[] } }
+const { key, title, intro, cards } = Astro.props.section;
+---
+
+<section class="proj-section" id={`proj-${key}`} aria-labelledby={`proj-${key}-title`}>
+  <header class="proj-section-head">
+    <h2 class="proj-section-title" id={`proj-${key}-title`}>{title}</h2>
+    <p class="proj-section-intro">{intro}</p>
+  </header>
+  {key === 'stopped' ? (
+    <ul class="proj-lines">
+      {cards.map((c) => (
+        <li class="proj-line-item">
+          <span class="proj-line-name">{c.name}</span>
+          <span class="proj-line-text">{c.line}</span>
+          <span class="proj-chip">{c.chip}</span>
+          {c.main && <a class="proj-link" href={c.main.href}>{c.main.label} →</a>}
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <>
+      <div class="proj-grid is-large">{cards.slice(0, 2).map((card) => <ProjectCard card={card} size="large" />)}</div>
+      {cards.length > 2 && <div class="proj-grid">{cards.slice(2).map((card) => <ProjectCard card={card} />)}</div>}
+    </>
+  )}
+</section>
