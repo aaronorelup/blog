@@ -173,7 +173,8 @@ anyone on a phone.
   that line the card would pass the post off as the notes. The numbers count posts, not passages
   (1, 2, 3 in order of first mention, every passage of one post under one number, a run of
   citations showing each post once), and a citation has no native tooltip, which would double the
-  card.
+  card. A phone has no card, and there each number is a 44 px tap target (an invisible box around it, so the
+  answer's lines don't move) that never reaches over another citation's number.
 - Not on phones or tablets, and not in print.
 
 ## How it works (for whoever changes it)
