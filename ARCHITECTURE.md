@@ -109,8 +109,8 @@ type Text = {
 What is read is `src/lib/text/rules.js`, which the browser uses too: `p`, `li` (its own text), `h2`-`h4`,
 `blockquote > p`, `dt`, `dd`; never `pre`, `table`, `figure`, media, `<details>`, `sup`, `<ao-*>`, `.ao-meta`,
 `[aria-hidden]`, `[data-noread]`, inline code that isn't a plain word (stamped `data-noread`), or a list whose items
-are mostly numbers. Every `<ao-*>` is stamped `data-pagefind-ignore`. A tag not in `TAGS` fails the build, or only
-warns in a live notebook.
+are mostly numbers. Every `<ao-*>` is stamped `data-pagefind-ignore`. A tag with no `src/elements/<tag>/` folder
+fails the build, or only warns in a live notebook.
 
 ## The tree
 
@@ -332,9 +332,9 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
 
 ## Recipes
 
-- **A post component.** A folder `src/elements/ao-<name>/` with `element.js` and `style.css`, its tag in `TAGS`
-  in `scripts/build/markdown.mjs` (a post using a tag not there fails the build), and a `## <ao-<name>>` section
-  in `docs/COMPONENTS.md` (`npm run check` asks for it). Its CSS is inlined in the article, after the page's
+- **A post component.** A folder `src/elements/ao-<name>/` with `element.js` and `style.css`: the folder is the tag
+  (`scripts/build/markdown.mjs` reads the folder list; a post using a tag with no folder fails the build). Add a
+  `## <ao-<name>>` section in `docs/COMPONENTS.md` (`npm run check` asks for it). Its CSS is inlined in the article, after the page's
   stylesheets, so a rule as specific as one in `prose.css` (`.pc-prose p`, `li`, `img`: one class, one tag) wins
   over it. Add its behaviours to `tests/e2e/INVENTORY.md` with a spec.
 - **A page type.** A file in `src/pages/` inside `PanelPage`, its view in `src/components/`, classes only (no

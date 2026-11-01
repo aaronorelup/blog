@@ -7,10 +7,8 @@ import rehypeHeadingIds from './rehype-heading-ids.mjs';
 import rehypePostImages from './rehype-post-images.mjs';
 import rehypePostText from './rehype-post-text.mjs';
 
-// The post components (T1.2: the src/elements/ folders).
-const TAGS = ['ao-ask', 'ao-bars', 'ao-blind', 'ao-calc', 'ao-compare', 'ao-cues', 'ao-demo', 'ao-diff', 'ao-fetch',
-  'ao-frames', 'ao-funnel', 'ao-game', 'ao-listen', 'ao-matrix', 'ao-model', 'ao-pan', 'ao-runs', 'ao-series',
-  'ao-shots', 'ao-slider', 'ao-timeline', 'ao-transcript', 'ao-treemap'];
+// The post components: a folder src/elements/<tag>/ is a tag (src/elements/CLAUDE.md).
+const TAGS = fs.readdirSync(new URL('../../src/elements/', import.meta.url)).filter((d) => d.startsWith('ao-')).sort();
 
 const CODE = ['rehype-heading-ids.mjs', 'rehype-post-images.mjs', 'rehype-post-text.mjs', '../../src/lib/text/rules.js',
   '../../src/data/exempt.js'];
