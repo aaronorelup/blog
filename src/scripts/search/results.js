@@ -22,7 +22,8 @@ export function deepLink(path, anchor, q, passage = '') {
   const terms = termsOf(q).join(' ');
   if (terms) params.set('hl', terms);
   if (passage) params.set('hs', passage.split(/\s+/).filter(Boolean).slice(0, 8).join(' '));
-  return `${path}${params.size ? `?${params}` : ''}${anchor ? `#${anchor}` : ''}`;
+  const query = String(params);   // not params.size: Safari before 17 has none, and every link would lose its query
+  return `${path}${query ? `?${query}` : ''}${anchor ? `#${anchor}` : ''}`;
 }
 
 function icon(card) {
