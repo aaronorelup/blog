@@ -1306,7 +1306,8 @@ November, and each section below fills in as its session finishes.
 - **Paint the machine, and the machine as a motion guide.** A machine painted on the oil-paint easel from Aaron's first
   episode, guided by the part masks and depth the code can render, and a short clip used to steer a video model. Running.
 - **The bounds.** Harder subjects, among them a mechanical watch movement, Claude Code drawn as an engine from this lab's own
-  transcript, and an orrery of why the Earth never rises or sets for Noor. Running.
+  transcript, and an orrery, a moving model of the Earth and Moon, of why the Earth never rises or sets for Noor.
+  Running.
 - **The Moon base in one world, and a game.** The machines on one clock, each still run by its own model, plus a small
   game about keeping HAB 3 alive until sunrise. Running.
 - **Hidden pages.** In-world pages for the fleet's machines, which I'm making. By design they aren't linked from here.
@@ -1315,11 +1316,11 @@ November, and each section below fills in as its session finishes.
 ### MOLE-1 four ways: skill or not, picture or words
 
 Round 1 built MOLE-1 twice with the skill, once from its concept picture and once from words only. In round 2 two new
-sessions got the same brief and the article's same prompts with no skill at all, one with the picture and one without.
+sessions ran the article's same prompts with no skill at all, one with the picture and one without.
 They wrote their own three.js code from scratch and were told not to look at the skill, its article or the lab's other
 builds. **With the skill and without it, the picture made MOLE-1 look more like its concept and less convincing as a
-machine, and the skill made it more complete against the canon's words. Neither the skill nor the picture won
-overall.** It's one build of each, so it's a pattern seen once, not a measured effect.
+machine, and the skill made it more complete against the canon's words. Neither the skill nor the picture clearly made
+a better build overall.** It's one build of each, so it's a pattern seen once, not a measured effect.
 
 The comparison is at the end of Step 3, the bare machine, before any console, look pass or critic. Four fresh Opus agents
 at extra high effort (xhigh) each saw the four stills as A to D in a different order, with the concept art and the canon
@@ -1341,7 +1342,7 @@ skill + words still has labels and a readout on.*
 </tbody>
 </table>
 
-**What held in both pairs.**
+**What all four judges agreed on.**
 
 - **The picture changed the look the same way.** Both picture builds looked more like the concept art, the no-skill one
   first and the skill one second for every judge. Both ranked lower as machines, third and fourth on design for every
@@ -1350,14 +1351,16 @@ skill + words still has labels and a readout on.*
   digger" to one judge. Round 1's two judges said much the same about the skill pair.
 - **The skill made the build more complete against the canon words.** All four judges gave the same order: skill + words,
   skill + picture, no skill + words, no skill + picture. They also rated the skill builds better engineered and worse to
-  look at, all four judges with the picture and three of four without.
+  look at, all four judges with the picture and three of four without. Skill + picture's last place on render comes
+  mostly from its camera, jammed into the trench, not from the model.
 - **No skill + words only came last overall for every judge.** It's a clean, plausible RASSOR-style rover in white and
   black, with a glass hopper and no tape visible.
 
-**What didn't hold.** The skill didn't win overall. With the picture the two builds tied at 2.25. The big gap is between
-the two words-only builds, and that's one comparison. Skill + words had the best overall mean, 1.5, but it was first for
-only two of the four judges, and their picks to develop further split three ways. The picture didn't help or hurt
-overall either. With the skill the words-only build did better, and without it the picture build did.
+**What it can't say.** Whether the skill makes a better build overall. With the picture the two builds tied at 2.25. The
+big gap is between the two words-only builds, and that's one comparison. Skill + words had the best overall mean, 1.5,
+but it was first for only two of the four judges, and the judges' picks to develop further split three ways. It can't
+say whether the picture helps or hurts overall either. With the skill the words-only build did better, and without it
+the picture build did.
 
 **The caveats are big.**
 
@@ -1365,8 +1368,8 @@ overall either. With the skill the words-only build did better, and without it t
   difference. The judges agreeing shows the stills differ, not why.
 - The blinding leaked. The footer on both skill builds reads "teardown-lab experiment · not canon" and on both no-skill
   builds "lab experiment · not canon", so the judges could tell the pairs apart.
-- The words-only briefs never named a colour, so both words-only builds came out white and lost points on looking like
-  the concept for something they were never told.
+- The words-only briefs never said MOLE-1 is orange. Both words-only builds came out white and lost points on looking
+  like the concept for something they were never told.
 - Four judges of the same model are closer to one noisy rater than to four independent ones.
 - Skill + words leads on canon partly through its labels. Its battery, radiator and tape exist only as callouts. Skill +
   picture has no labels and still came second on canon, so the pattern doesn't rest on labels alone.
@@ -1385,7 +1388,8 @@ overall either. With the skill the words-only build did better, and without it t
   fins. Off-model in white and black with a see-through hopper, and no tape visible.
 - The skeptic's corrections: one judge put the no-skill picture build's drums on "one common axle" when they sit front
   and rear on their own stub tubes. Two judges said the skill + words build had "every canon part", when its battery,
-  radiator and tape are only labels. One said a radiator was missing that the other three saw.
+  radiator and tape are only labels. One said the no-skill words-only build had no radiator, though its fins are visible
+  and the other three judges saw them.
 - The picks to develop: no skill + picture for one judge, for its character design, skill + words for two, and skill +
   picture for one.
 
@@ -1403,24 +1407,25 @@ by how much. Episode 2's own files include the chorus split into stems by Eleven
 the bass, the piano and the rest. So the session measured every note against the singer's own track. A note
 counts as right when it's within 50 cents, half a semitone, of the singer's median pitch over that note. **Round 1's tune
 got 40% of its notes right. The music-box version made for Episode 2 itself got 65%. The new arrangement gets 79%, with
-no octave errors.** Against a second vocal track the session split out itself with Demucs, an open-source tool that
-separates a song into parts, it gets 76%.
+no octave errors.** Scored against a second vocal track, which the session split out itself with Demucs, an open-source
+tool that separates a song into parts, it gets 76%.
 
 The timing improved too. Nine in ten notes now start within 82 ms of the sung note, against 139 ms in round 1. And the
 new bass line, which round 1 didn't have, matches the bass stem on 90% of its notes.
 
-<img src="/media/teardown-lab/r2-musicbox/pianoroll.webp" alt="Two rows of a piano roll for bars 17 to 21 of the chorus over a grey spectrogram of the vocal stem: blue bars for the new notes labelled with their syllables, Ne, ver, ri, ses, sets, Earth, is, al, ways, where, you, left, it, sitting on a trail of small red dots that is the singer's measured pitch, red dotted boxes for round 1's notes sitting higher on Never rises, and orange dashed boxes for the episode's own music-box notes" style="width:100%;border-radius:8px">
+<img src="/media/teardown-lab/r2-musicbox/pianoroll.webp" alt="Two rows of a piano roll for bars 17 to 21 of the chorus over a grey spectrogram of the vocal stem: blue bars for the new notes labelled with their syllables, Ne, ver, ri, ses, sets, Earth, is, al, ways, where, you, left, it, sitting on a trail of small red dots that is the singer's measured pitch, red dotted boxes for round 1's notes sitting higher on Never rises, orange dashed boxes for the episode's own music-box notes, and the group echoes in bars 18 and 20 drawn as two parts" style="width:100%;border-radius:8px">
 
 *The first two lines of chorus 1. The blue bars are the new notes, the small red dots the singer's pitch measured on the
 vocal stem, the red dotted boxes round 1's notes and the orange dashed ones the episode's own music-box version. On
 "Never rises" round 1 sits a fourth to a fifth above what's sung.*
 
-**Round 1 went wrong in five ways,** each now written down note by note.
+**Round 1 went wrong in six ways,** each now written down note by note.
 
 - Where chorus 1 was unclear, it borrowed notes from the last chorus, which sings a different, higher tune to the same
   words.
 - It took its pitches from a pitch track of the full mix, which is right on only 14 of the chorus's 33 words.
 - It had one pitch per word and split it across syllables by guesswork.
+- It changed two notes by taste, to make the line sound right, away from what's sung.
 - It timed notes from the lyric timestamps, which mark the start of a word's consonant, not the sung vowel.
 - It made up an echo instead of using the song's own two-part echoes. None of its echo notes matched the song's.
 
@@ -1442,17 +1447,18 @@ a line of the chorus and the last reads FAMILIES WELCOME.
 *The new machine in a review still. One cylinder carries 87 pins, 60 for the melody comb in front, 20 for the bass comb
 behind and 7 trip pins for the card wheel. The pin roll on the right reads the same cylinder angle that poses the parts.*
 
-A small praxinoscope, a 19th-century animation toy with pictures on the inside of a drum seen in a ring of mirrors, is
-geared to the fly, the two-vane fan that governs the tempo. It turns once per beat, so its eight frames of the Earth's
-phases run at 10 frames a second at 75 bpm. The Earth never rises or sets up there, but its phase does change.
+A small praxinoscope, a 19th-century animation toy with pictures on the inside of a drum seen in a ring of mirrors at its
+centre, is geared to the fly, the two-vane fan that governs the tempo. It turns once per beat, so its eight frames of the
+Earth's phases run at 10 frames a second at 75 bpm. The Earth never rises or sets up there, but its phase does change.
 
-<img src="/media/teardown-lab/r2-musicbox/praxinoscope.webp" alt="A close view of the praxinoscope: a blue drum lettered PHASES OF THE EARTH with small pictures of the Earth on its inner wall and an eight-sided mirror prism in the middle, a card reading COME AND LIVE WHERE YOU CAN SEE IT on the wheel behind it, 10.0 FPS in large type at the top left over DRUM 75.0 RPM, and a viewer panel on the right showing the frame the mirrors show, a dark Earth with city lights over the lunar horizon, above a strip of eight Earth phases" style="width:100%;border-radius:8px">
+<img src="/media/teardown-lab/r2-musicbox/praxinoscope.webp" alt="A close view of the praxinoscope: a blue drum lettered PHASES OF THE EARTH with small pictures of the Earth on its inner wall and an eight-sided mirror prism in the middle, a card reading COME AND LIVE WHERE YOU CAN SEE IT on the wheel behind it, 10.0 FPS in large type at the top left over DRUM 75.0 RPM, and a viewer panel on the right showing the frame in the mirror facing the camera, a dark Earth with city lights over the lunar horizon, above a strip of eight Earth phases" style="width:100%;border-radius:8px">
 
-*The praxinoscope at 75 bpm. The viewer on the right shows the frame the mirrors face, and the strip under it all eight.
+*The praxinoscope at 75 bpm. The viewer on the right shows the frame in the mirror facing the camera, and the strip under
+it all eight.
 The Earth sits in the same spot in every frame and on every card, and only its phase and the Sun move.*
 
 **Still open, and nobody has listened yet.** In bars 17 and 21 the pins follow the lower lead line, but a harmony a
-fourth above it is just as loud there, so the ear might hear that as the tune. The echo in bar 18 is faint, so its notes
+fourth above it is nearly as loud, and in bar 21 just as loud, so the ear might hear that as the tune. The echo in bar 18 is faint, so its notes
 have low confidence. The live page is built, one offline file of 819 KB, and hasn't been tried on a real GPU. The film,
 where the host builds the box while it plays and fits each new part as the music runs, is being made.
 
@@ -1465,7 +1471,7 @@ where the host builds the box while it plays and fits each new part as the music
   syllable by syllable on the song's own bar grid. Onsets are the sung vowels, quantised to sixteenths. The same scoring
   code ran on round 1, the episode's version and the new arrangement.
 - Four pitch calls were made by hand, mostly where the harmony is as loud as the lead, to keep the hook the same in
-  both statements. Without them the lead scores the same.
+  both places it's sung. Without them the lead scores the same.
 - Of the six new lead notes that miss, three are syllables where the louder harmony pulls the median, and the rest
   sit on glides.
 - The arrangement is 80 notes: 30 for the lead, 27 for the echo, 20 for the bass and a three-note closing chord, which is
