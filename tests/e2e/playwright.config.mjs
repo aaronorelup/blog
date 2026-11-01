@@ -1,7 +1,9 @@
 // The behaviour suite (tests/e2e/INVENTORY.md lists every row). `npm run e2e` builds nothing: it serves the last
-// `npm run build` with `astro preview`, or runs against E2E_BASE. targets.json is rewritten from dist/ before the
-// specs are listed (they make one test per target). desktop is Chromium at 1440x900, phone WebKit as an iPhone 13.
+// `npm run build` with `astro preview` on a port of this checkout's own, or runs against E2E_BASE. targets.json is
+// rewritten from dist/ before the specs are listed (they make one test per target). desktop is Chromium at
+// 1440x900, phone WebKit as an iPhone 13.
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, devices } from '@playwright/test';
 
@@ -11,7 +13,9 @@ if (!process.env.TEST_WORKER_INDEX) {
 }
 
 const base = process.env.E2E_BASE;
-const PORT = 4321;
+// Worktrees share a box, so each serves its own dist on a port taken from its path, never another's server.
+const ROOT = fileURLToPath(new URL('../../', import.meta.url));
+const PORT = 4400 + (createHash('sha1').update(ROOT).digest().readUInt16BE(0) % 1000);
 
 export default defineConfig({
   testDir: '.',
@@ -36,6 +40,6 @@ export default defineConfig({
     command: `npx astro preview --port ${PORT}`,
     cwd: '../..',
     url: `http://localhost:${PORT}/version.json`,
-    reuseExistingServer: true,
+    reuseExistingServer: false,
   },
 });
