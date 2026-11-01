@@ -1,72 +1,56 @@
 ---
-// The homepage: a scroll-driven tea house scene with an overlay panel that grows out of
-// whichever card you click. The scene markup is carried over from the Claude Design
-// artifact; the panel shows the real pages' views, fetched when opened (scripts/home/overlay/),
-// so the two can never drift apart.
+// The homepage: a scroll-driven tea house scene (scripts/home/) with an overlay panel that grows out of whichever
+// card you click. The panel shows the real pages' views, fetched when opened (scripts/home/overlay/), so the two
+// can never drift apart. Its look is home.css on the tokens of tokens.css, right from first paint in either mode.
+import ModeToggle from '../components/chrome/ModeToggle.astro';
 import PanelChrome from '../components/chrome/PanelChrome.astro';
 import Home from '../layouts/Home.astro';
 ---
 
 <Home title="Aaron Orelup — the tea house">
-<div id="scene-wrap" style="position:relative;z-index:1;background:transparent">
-  <div id="scene-viewport" style="position:sticky;top:0;height:100vh;width:100%;z-index:0;pointer-events:none;overflow:hidden">
-    <canvas id="home-scene-canvas" aria-hidden="true" role="presentation" style="position:absolute;inset:0;width:100%;height:100%;display:block"></canvas>
-    <div id="scene-stats" aria-hidden="true" style="position:absolute;left:14px;bottom:14px;display:none;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:1.5;color:#4A4A50;background:rgba(251,243,232,0.92);border:1px solid #D8CBB8;border-radius:10px;padding:8px 12px;white-space:pre"></div>
-    <nav id="stop-rail" aria-label="Sections" style="display:none;position:absolute;right:clamp(14px,2vw,28px);top:50%;transform:translateY(-50%);flex-direction:column;gap:14px;pointer-events:auto;z-index:3">
-      <button type="button" data-goto="0" aria-label="Garden" style="width:11px;height:11px;padding:0;border-radius:999px;border:2px solid #3A3A42;background:#3A3A42;cursor:pointer" data-hv="hv-dot"></button>
-      <button type="button" data-goto="1" aria-label="Projects" style="width:11px;height:11px;padding:0;border-radius:999px;border:2px solid #3A3A42;background:transparent;cursor:pointer" data-hv="hv-dot"></button>
-      <button type="button" data-goto="2" aria-label="The ledger and courses" style="width:11px;height:11px;padding:0;border-radius:999px;border:2px solid #3A3A42;background:transparent;cursor:pointer" data-hv="hv-dot"></button>
-      <button type="button" data-goto="3" aria-label="Who I am" style="width:11px;height:11px;padding:0;border-radius:999px;border:2px solid #3A3A42;background:transparent;cursor:pointer" data-hv="hv-dot"></button>
-      <button type="button" data-goto="4" aria-label="On your way out" style="width:11px;height:11px;padding:0;border-radius:999px;border:2px solid #3A3A42;background:transparent;cursor:pointer" data-hv="hv-dot"></button>
+<div id="scene-wrap" class="home-wrap">
+  <div id="scene-viewport" class="home-viewport">
+    <canvas id="home-scene-canvas" class="home-canvas" aria-hidden="true" role="presentation"></canvas>
+    <nav id="stop-rail" class="home-rail" aria-label="Sections">
+      <button type="button" class="home-dot" data-goto="0" aria-label="Garden"></button>
+      <button type="button" class="home-dot" data-goto="1" aria-label="Projects"></button>
+      <button type="button" class="home-dot" data-goto="2" aria-label="The ledger and courses"></button>
+      <button type="button" class="home-dot" data-goto="3" aria-label="Who I am"></button>
+      <button type="button" class="home-dot" data-goto="4" aria-label="On your way out"></button>
     </nav>
   </div>
-  <button type="button" id="mode-toggle" aria-label="Switch between day and night" style="position:fixed;top:20px;right:22px;z-index:41;box-sizing:border-box;width:72px;height:36px;flex:none;padding:0;border:2px solid #3A3A42;border-radius:999px;background:rgba(251,243,232,0.92);cursor:pointer;backdrop-filter:blur(6px);transition:background 300ms ease,border-color 300ms ease">
-    <span id="mode-knob" style="position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:999px;background:#BE7A10;display:flex;align-items:center;justify-content:center;transition:transform 380ms cubic-bezier(.4,0,.2,1),background 300ms ease,box-shadow 300ms ease"></span>
-  </button>
-  <div id="scene-flash" aria-hidden="true" style="position:fixed;inset:0;z-index:30;background:#FFFFFF;opacity:0;pointer-events:none"></div>
+  <ModeToggle />
+  <div id="scene-flash" class="home-flash" aria-hidden="true"></div>
 
   <!-- The overlay. Hidden until a card grows into it. Its host starts empty: each view is fetched from its real
        page when opened and mounted fresh (scripts/home/overlay/). The card's colour sits on the page colour, as a
        standalone page's does, so nothing of the scene shows through; overflow clips, so a #heading moves only
        #panel-scroll. -->
-  <div id="panel-screen" aria-hidden="true" style="position:fixed;inset:0;z-index:34;pointer-events:none;visibility:hidden;font-family:Karla,system-ui,sans-serif">
-    <div id="panel-scrim" style="position:absolute;inset:0;background:var(--pc-scrim);opacity:0;transition:opacity 460ms ease"></div>
-    <div id="panel-card" style="position:absolute;left:50%;top:50%;width:0;height:0;opacity:0;box-sizing:border-box;background:linear-gradient(var(--pc-bg),var(--pc-bg)),var(--pc-page);border-radius:24px;box-shadow:var(--pc-shadow);overflow:hidden;overflow:clip;display:flex;flex-direction:column">
+  <div id="panel-screen" class="ov-screen" aria-hidden="true">
+    <div id="panel-scrim" class="ov-scrim"></div>
+    <div id="panel-card" class="ov-card">
       <PanelChrome overlay={true}>
-        <div data-panel-host style="display:contents"></div>
+        <div class="ov-host" data-panel-host></div>
       </PanelChrome>
     </div>
   </div>
 
-  <div id="staging-panel" style="display:none;position:fixed;left:16px;top:16px;z-index:40;width:290px;background:rgba(251,243,232,0.96);border:2px solid #3A3A42;border-radius:14px;padding:14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:1.6;color:#3A3A42;box-shadow:0 10px 30px rgba(58,58,66,0.2)">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px">
-      <strong style="font-size:12px;letter-spacing:0.06em">STAGING</strong>
-      <span id="staging-target" style="padding:2px 8px;border-radius:999px;background:#3A3A42;color:#FBF3E8;font-size:10px">CAMERA</span>
-    </div>
-    <div style="display:flex;gap:8px;margin-bottom:10px">
-      <button type="button" data-stage="cam" style="flex:1;padding:6px 0;border:2px solid #3A3A42;border-radius:8px;background:#FBF3E8;font:inherit;cursor:pointer">Camera (1)</button>
-      <button type="button" data-stage="lamp" style="flex:1;padding:6px 0;border:2px solid #3A3A42;border-radius:8px;background:#FBF3E8;font:inherit;cursor:pointer">Lamp (2)</button>
-    </div>
-    <div style="color:#6B5E52;margin-bottom:10px">WASD move · Q/E down/up · ←→ turn · ↑↓ pitch · [ ] fov · drag to look · Shift = fast<br>Press 2 for the lamp: WASD slides it, Q/E raises it, ←→ or drag spins it</div>
-    <pre id="staging-readout" style="margin:0 0 10px;white-space:pre-wrap;word-break:break-all;background:#F3E7D2;border-radius:8px;padding:8px"></pre>
-    <button type="button" id="staging-copy" style="width:100%;padding:8px 0;border:2px solid #3A3A42;border-radius:8px;background:#F7C9D4;font:inherit;font-weight:700;cursor:pointer">Copy values</button>
-  </div>
-  <main id="content" style="display:block;margin-top:-100vh;position:relative;z-index:1">
+  <main id="content" class="home-main">
 
-    <section data-wp="0" data-screen-label="0 garden" style="min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:16vh clamp(20px,6vw,96px) 0;box-sizing:border-box;opacity:1;will-change:opacity,transform">
-      <div style="max-width:620px;background:rgba(251,243,232,0.9);backdrop-filter:blur(7px);border-radius:26px;padding:clamp(26px,4vw,44px);box-shadow:0 14px 40px rgba(58,58,66,0.12);text-align:center">
-        <div style="display:flex;align-items:center;justify-content:center;gap:clamp(16px,2.6vw,30px);flex-wrap:wrap">
-          <h1 style="margin:0;font-family:'Zen Maru Gothic',serif;font-weight:700;font-size:clamp(40px,7vw,76px);line-height:1.02;color:#BE7A10;letter-spacing:-0.01em">Aaron Orelup</h1>
-          <button type="button" id="avatar" aria-label="Aaron — give him a spin" style="flex:none;display:block;width:clamp(96px,11vw,124px);height:clamp(96px,11vw,124px);padding:0;border:0;background:transparent;cursor:pointer;perspective:800px;transition:transform 260ms cubic-bezier(.34,1.8,.64,1)" data-hv="hv-tilt">
-            <span id="avatar-toss" style="position:relative;display:block;width:100%;height:100%;transform-style:preserve-3d">
-              <span id="avatar-spin" style="position:absolute;inset:0;transform-style:preserve-3d">
-                <span id="coin-rim" style="position:absolute;inset:0;transform-style:preserve-3d"></span>
-                <span style="position:absolute;inset:0;box-sizing:border-box;border:3px solid #3A3A42;border-radius:50%;overflow:hidden;background:#F7C9D4;transform:translateZ(7px)">
-                  <img src="/aaron.webp" alt="" width="512" height="512" style="display:block;width:118%;height:118%;margin:-6% 0 0 -9%;object-fit:cover;pointer-events:none">
+    <section class="home-stop home-stop-top" data-wp="0" data-screen-label="0 garden">
+      <div class="home-card home-card-hero">
+        <div class="home-hero-row">
+          <h1 class="home-h1">Aaron Orelup</h1>
+          <button type="button" id="avatar" class="coin" aria-label="Aaron — give him a spin">
+            <span id="avatar-toss" class="coin-toss">
+              <span id="avatar-spin" class="coin-spin">
+                <span id="coin-rim" class="coin-spin"></span>
+                <span class="coin-face">
+                  <img class="coin-img" src="/aaron.webp" alt="" width="512" height="512">
                 </span>
-                <span id="coin-back" style="position:absolute;inset:0;box-sizing:border-box;border:3px solid #3A3A42;border-radius:50%;overflow:hidden;background:#F6DFA8;opacity:0;transform:rotateY(180deg) translateZ(7px)">
-                  <span id="coin-back-night" style="position:absolute;inset:0;opacity:0">
-                    <svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true" focusable="false" style="display:block">
+                <span id="coin-back" class="coin-face coin-back">
+                  <span id="coin-back-night" class="coin-night">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true" focusable="false" class="coin-svg">
                       <circle cx="50" cy="50" r="50" fill="#211F33"></circle>
                       <circle cx="50" cy="50" r="41" fill="none" stroke="#3A3550" stroke-width="2"></circle>
                       <circle cx="50" cy="47" r="26" fill="#3A3050" opacity="0.55"></circle>
@@ -79,7 +63,7 @@ import Home from '../layouts/Home.astro';
                       <path d="M37 34 V64 M63 34 V64 M50 34 V64" stroke="#8A5E28" stroke-width="1.5" opacity="0.55"></path>
                     </svg>
                   </span>
-                  <svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true" focusable="false" style="display:block">
+                  <svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true" focusable="false" class="coin-svg">
                     <circle cx="50" cy="50" r="50" fill="#F6DFA8"></circle>
                     <circle cx="50" cy="50" r="41" fill="none" stroke="#E0C489" stroke-width="2"></circle>
                     <path d="M50 76 V54" stroke="#9A5F36" stroke-width="5.5" stroke-linecap="round" fill="none"></path>
@@ -96,62 +80,63 @@ import Home from '../layouts/Home.astro';
               </span>
             </span>
           </button>
-        </div><p style="margin:18px 0 0;font-size:clamp(17px,2vw,21px);line-height:1.55;color:#4A4A50;text-wrap:pretty">Welcome to my tea house. Pull up a chair. Everything I learn about AI, I leave here for you, free.</p><p style="margin:18px 0 0;font-size:clamp(17px,2vw,21px);line-height:1.55;color:#4A4A50;text-wrap:pretty">And don't worry about being behind. In AI the leaves change every month. Most of what I learned in six years is already gone, and what's in the pot this week is all you need. You're never more than a month behind.</p>
-        
-        <div style="display:flex;align-items:center;justify-content:center;gap:clamp(14px,2vw,22px);flex-wrap:wrap;margin-top:22px">
-          <p style="margin:0;font-size:14px;letter-spacing:0.14em;text-transform:uppercase;color:#6B5E52;font-weight:600">Scroll or press ↓</p>
+        </div>
+        <p class="home-lede">Welcome to my tea house. Pull up a chair. Everything I learn about AI, I leave here for you, free.</p>
+        <p class="home-lede">And don't worry about being behind. In AI the leaves change every month. Most of what I learned in six years is already gone, and what's in the pot this week is all you need. You're never more than a month behind.</p>
+        <div class="home-hint-row">
+          <p class="home-hint">Scroll or press ↓</p>
         </div>
       </div>
     </section>
 
-    <section data-wp="1" data-screen-label="1 threshold" aria-hidden="true" style="min-height:100vh"></section>
+    <section class="home-spacer" data-wp="1" data-screen-label="1 threshold" aria-hidden="true"></section>
 
-    <section data-wp="2" data-screen-label="2 alcove" style="min-height:100vh;display:flex;align-items:center;justify-content:flex-start;padding:0 clamp(20px,6vw,96px);box-sizing:border-box;opacity:1;will-change:opacity,transform">
-      <div style="max-width:480px;background:rgba(251,243,232,0.9);backdrop-filter:blur(7px);border-radius:24px;padding:clamp(24px,3.4vw,38px);box-shadow:0 14px 40px rgba(58,58,66,0.12)">
-        <h2 style="margin:0 0 20px;font-family:'Zen Maru Gothic',serif;font-weight:700;font-size:clamp(28px,3.4vw,40px);color:#BE7A10;line-height:1.1">Projects</h2>
-        <div style="display:flex;flex-direction:column;gap:18px">
-          
-          <p style="margin:0;font-size:17px;line-height:1.6;color:#4A4A50;text-wrap:pretty">Learning is best done when you dive in head first and enjoy the process. In doing so, I have developed everything from an experiment into a new coding paradigm to a full AI-assisted learning platform.</p><p style="margin: 0; font-size: 17px; line-height: 1.6; color: #4A4A50; text-wrap: pretty">Some are hosted for you to run in the browser, and the bigger ones you can run yourself from the repo. Have a look around.</p>
-          <a href="/projects" style="align-self:flex-start;margin-top:4px;padding:12px 22px;border:2px solid #3A3A42;border-radius:999px;text-decoration:none;font-weight:600;font-size:16px;color:#3A3A42;background:#FBF3E8" data-hv="hv-pink">See the projects →</a>
+    <section class="home-stop home-stop-left" data-wp="2" data-screen-label="2 alcove">
+      <div class="home-card">
+        <h2 class="home-h2 home-h2-spaced">Projects</h2>
+        <div class="home-col">
+          <p class="home-p">Learning is best done when you dive in head first and enjoy the process. In doing so, I have developed everything from an experiment into a new coding paradigm to a full AI-assisted learning platform.</p>
+          <p class="home-p">Some are hosted for you to run in the browser, and the bigger ones you can run yourself from the repo. Have a look around.</p>
+          <a class="home-btn home-btn-start" href="/projects">See the projects →</a>
         </div>
       </div>
     </section>
 
-    <section data-wp="3" data-screen-label="3 desk" style="min-height:100vh;display:flex;align-items:center;justify-content:flex-end;padding:0 clamp(20px,6vw,96px);box-sizing:border-box;opacity:1;will-change:opacity,transform">
-      <div style="max-width:460px;background:rgba(251,243,232,0.9);backdrop-filter:blur(7px);border-radius:24px;padding:clamp(24px,3.4vw,38px);box-shadow:0 14px 40px rgba(58,58,66,0.12)">
-        <h2 style="margin:0;font-family:'Zen Maru Gothic',serif;font-weight:700;font-size:clamp(28px,3.4vw,40px);color:#BE7A10;line-height:1.1">The Ledger &amp; Courses</h2>
-        <p style="margin:16px 0 0;font-size:17px;line-height:1.65;color:#4A4A50;text-wrap:pretty">My contribution to the painful learning curve of AI that we are all facing. The Ledger logs everything from mistakes to funny moments to aspirational ideas. The courses are the lessons I wish I'd had: short, narrated, and filed one at a time.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:20px">
-          <a href="/ledger" style="display:inline-block;padding:12px 22px;border:2px solid #3A3A42;border-radius:999px;text-decoration:none;font-weight:600;font-size:16px;color:#3A3A42;background:#FBF3E8" data-hv="hv-pink">Read the Ledger →</a>
-          <a href="/courses" style="display:inline-block;padding:12px 22px;border:2px solid #3A3A42;border-radius:999px;text-decoration:none;font-weight:600;font-size:16px;color:#3A3A42;background:#FBF3E8" data-hv="hv-pink">Browse the courses →</a>
+    <section class="home-stop home-stop-right" data-wp="3" data-screen-label="3 desk">
+      <div class="home-card home-card-narrow">
+        <h2 class="home-h2">The Ledger &amp; Courses</h2>
+        <p class="home-p">My contribution to the painful learning curve of AI that we are all facing. The Ledger logs everything from mistakes to funny moments to aspirational ideas. The courses are the lessons I wish I'd had: short, narrated, and filed one at a time.</p>
+        <div class="home-actions">
+          <a class="home-btn" href="/ledger">Read the Ledger →</a>
+          <a class="home-btn" href="/courses">Browse the courses →</a>
         </div>
       </div>
     </section>
 
-    <section data-wp="4" data-screen-label="4 tea room" style="min-height:100vh;display:flex;align-items:center;justify-content:flex-end;padding:0 clamp(20px,6vw,96px);box-sizing:border-box;opacity:1;will-change:opacity,transform">
-      <div style="max-width:480px;background:rgba(251,243,232,0.9);backdrop-filter:blur(7px);border-radius:24px;padding:clamp(24px,3.4vw,38px);box-shadow:0 14px 40px rgba(58,58,66,0.12)">
-        <h2 style="margin:0;font-family:'Zen Maru Gothic',serif;font-weight:700;font-size:clamp(28px,3.4vw,40px);color:#BE7A10;line-height:1.1">Right now</h2>
-        <p style="margin:16px 0 0;font-size:17px;line-height:1.65;color:#4A4A50;text-wrap:pretty">Building two things. <b>Wallpaper Breaker</b> is my own Windows 11 live-wallpaper app, built so Claude can see every wallpaper it makes. <b>The Hidden Curriculum</b> is a course on what nobody teaches people who build with AI, and a new lesson goes up most mornings.</p>
-        <p style="margin:14px 0 0;font-size:17px;line-height:1.65;color:#4A4A50;text-wrap:pretty">Sit down a minute. This corner changes the most, so it's the best snapshot of what I'm thinking about this month.</p>
-        <a href="/about" style="display:inline-block;margin-top:20px;padding:12px 22px;border:2px solid #3A3A42;border-radius:999px;text-decoration:none;font-weight:600;font-size:16px;color:#3A3A42;background:#FBF3E8" data-hv="hv-pink">More about me →</a>
+    <section class="home-stop home-stop-right" data-wp="4" data-screen-label="4 tea room">
+      <div class="home-card">
+        <h2 class="home-h2">Right now</h2>
+        <p class="home-p">Building two things. <b>Wallpaper Breaker</b> is my own Windows 11 live-wallpaper app, built so Claude can see every wallpaper it makes. <b>The Hidden Curriculum</b> is a course on what nobody teaches people who build with AI, and a new lesson goes up most mornings.</p>
+        <p class="home-p">Sit down a minute. This corner changes the most, so it's the best snapshot of what I'm thinking about this month.</p>
+        <a class="home-btn home-btn-more" href="/about">More about me →</a>
       </div>
     </section>
 
-    <section data-wp="5" data-screen-label="5 gate" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:0 clamp(20px,6vw,96px);box-sizing:border-box;opacity:1;will-change:opacity,transform">
-      <div style="max-width:560px;width:100%;background:rgba(251,243,232,0.9);backdrop-filter:blur(7px);border-radius:24px;padding:clamp(24px,3.4vw,38px);box-shadow:0 14px 40px rgba(58,58,66,0.12);text-align:center">
-        <h2 style="margin:0;font-family:'Zen Maru Gothic',serif;font-weight:700;font-size:clamp(28px,3.4vw,40px);color:#BE7A10;line-height:1.1">On your way out</h2>
-        <p style="margin:16px 0 0;font-size:17px;line-height:1.6;color:#4A4A50;text-wrap:pretty">Feel free to text or email me if you are interested in what I do or want to collaborate.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:center;margin-top:12px;font-size:17px;font-weight:600">
-          <a href="tel:+15106951134" style="color:#3A3A42">(510) 695-1134</a>
-          <a href="mailto:Aaronjorelup@gmail.com" style="color:#3A3A42">Aaronjorelup@gmail.com</a>
+    <section class="home-stop" data-wp="5" data-screen-label="5 gate">
+      <div class="home-card home-card-gate">
+        <h2 class="home-h2">On your way out</h2>
+        <p class="home-p">Feel free to text or email me if you are interested in what I do or want to collaborate.</p>
+        <div class="home-contact">
+          <a class="home-link" href="tel:+15106951134">(510) 695-1134</a>
+          <a class="home-link" href="mailto:Aaronjorelup@gmail.com">Aaronjorelup@gmail.com</a>
         </div>
-        <nav aria-label="Elsewhere" style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:22px">
-          <a href="https://github.com/aaronorelup" target="_blank" rel="noreferrer noopener" style="padding:12px 20px;border:2px solid #3A3A42;border-radius:999px;text-decoration:none;font-weight:600;font-size:16px;color:#3A3A42;background:#FBF3E8" data-hv="hv-blush">GitHub</a>
-          <a href="https://dev.to/aaron_orelup" target="_blank" rel="noreferrer noopener" style="padding:12px 20px;border:2px solid #3A3A42;border-radius:999px;text-decoration:none;font-weight:600;font-size:16px;color:#3A3A42;background:#FBF3E8" data-hv="hv-blush">DEV</a>
-          <a href="https://x.com/AaronOrelup" target="_blank" rel="noreferrer noopener" style="padding:12px 20px;border:2px solid #3A3A42;border-radius:999px;text-decoration:none;font-weight:600;font-size:16px;color:#3A3A42;background:#FBF3E8" data-hv="hv-blush">X</a>
-          <a href="https://www.linkedin.com/in/aaron-orelup/" target="_blank" rel="noreferrer noopener" style="padding:12px 20px;border:2px solid #3A3A42;border-radius:999px;text-decoration:none;font-weight:600;font-size:16px;color:#3A3A42;background:#FBF3E8" data-hv="hv-blush">LinkedIn</a>
+        <nav class="home-social" aria-label="Elsewhere">
+          <a class="home-btn home-btn-social" href="https://github.com/aaronorelup" target="_blank" rel="noreferrer noopener">GitHub</a>
+          <a class="home-btn home-btn-social" href="https://dev.to/aaron_orelup" target="_blank" rel="noreferrer noopener">DEV</a>
+          <a class="home-btn home-btn-social" href="https://x.com/AaronOrelup" target="_blank" rel="noreferrer noopener">X</a>
+          <a class="home-btn home-btn-social" href="https://www.linkedin.com/in/aaron-orelup/" target="_blank" rel="noreferrer noopener">LinkedIn</a>
         </nav>
-        <p style="margin:26px 0 0;font-size:15px;color:#6B5E52">Thanks for coming through. Mind the step.</p>
+        <p class="home-sign">Thanks for coming through. Mind the step.</p>
       </div>
     </section>
 
@@ -159,36 +144,6 @@ import Home from '../layouts/Home.astro';
 </div>
 </Home>
 
-<style is:global>
-  /* The design carried hover states in style-hover attributes that its runtime
-     expanded; these are the same states as plain CSS. They need !important because
-     the scene writes the day/night colours straight onto the elements' style
-     attributes as the mode cross-fades. */
-  [data-hv='hv-dot']:hover { background: #be7a10 !important; border-color: #be7a10 !important; }
-  [data-hv='hv-pink']:hover { background: #f0a6b8 !important; }
-  [data-hv='hv-blush']:hover { background: #f7c9d4 !important; }
-  [data-hv='hv-tilt']:hover { transform: rotate(-4deg); }
-
-  /* Without JavaScript the sticky canvas never moves, so the six full-height panels
-     would be six screens of empty space. Collapse them into a plain stacked page. */
-  .no-js #scene-viewport,
-  .no-js #stop-rail { display: none !important; }
-  .no-js #content { margin-top: 0 !important; }
-  .no-js #content section[data-wp] { min-height: 0 !important; padding: 40px clamp(20px, 6vw, 96px) !important; }
-  .no-js #content section[aria-hidden='true'] { display: none !important; }
-</style>
-
 <script>
-  // The overlay first, so a card's link works at once; the scene is a chunk of its own, which keeps the entry small.
-  import { mountOverlay } from '../scripts/home/overlay/panel.js';
-  import { lazy } from '../scripts/lazy.js';
-
-  document.documentElement.classList.remove('no-js');
-  mountOverlay();
-  lazy(() => import('../scripts/home-scene.js')).then(({ HomeScene }) => {
-    const scene = new HomeScene({ nightMode: true });
-    scene.mount();
-    // handy from the console when tuning waypoints (backtick opens the staging panel)
-    window.__homeScene = scene;
-  });
+  import '../scripts/home/index.js';
 </script>
