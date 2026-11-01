@@ -42,6 +42,7 @@ a Max 20x subscription, which he puts at 20 to 30 times cheaper.*
 <tr><td>HAB 3: the nine steps</td><td>Cloud session</td><td>Done 23:16</td><td>Every canon number from one clock. The critic caught four canon slips. $30.82 of tokens, 58 s GPU film for $0.047</td></tr>
 <tr><td>A music box build-along of "Never Rises, Never Sets"</td><td>Cloud session</td><td>Done 00:46</td><td>A 5:35 narrated film at 1080p60. 854 ElevenLabs credits, $36.52 of tokens, about $0.33 of GPU</td></tr>
 <tr><td>Paint the machine, and a film as a video model's motion guide</td><td>Nobody</td><td>Not run</td><td>These were the two minimal ideas, and they didn't get done in this round</td></tr>
+<tr><td>Round 2: six more experiments</td><td>6 cloud sessions</td><td>Running since 18:12 on 1 November</td><td>Two have first results. See <a href="#round-2">Round 2</a></td></tr>
 </tbody>
 </table>
 
@@ -1289,6 +1290,219 @@ against the recording. The live page has only run in software rendering, at 6 to
 
 </details>
 <!-- /section:musicbox -->
+
+## Round 2
+
+Aaron watched round 1's music box film and asked for more experiments. He wanted MOLE-1 built again with no skill at
+all, with and without its picture, and the music box taken further with the right notes. He also asked for a machine
+painted, a machine used as a motion guide for video models, a test of how complicated a thing this can explain, the Moon
+machines together in one world with a game, and hidden pages for them. Six cloud sessions started at 18:12 UTC on 1
+November, and each section below fills in as its session finishes.
+
+- **MOLE-1 four ways.** Two new builds with no skill, one from the picture and one from words only, judged blind against
+  round 1's two. First result below.
+- **Music box 2.0.** The notes measured against the singer's own track, and a new box with a bass comb, picture cards and
+  a spinning animation. First result below, film in progress.
+- **Paint the machine, and the machine as a motion guide.** A machine painted on the oil-paint easel from Aaron's first
+  episode, guided by the part masks and depth the code can render, and a short clip used to steer a video model. Running.
+- **The bounds.** Harder subjects, among them a mechanical watch movement, Claude Code drawn as an engine from this lab's own
+  transcript, and an orrery of why the Earth never rises or sets for Noor. Running.
+- **The Moon base in one world, and a game.** The machines on one clock, each still run by its own model, plus a small
+  game about keeping HAB 3 alive until sunrise. Running.
+- **Hidden pages.** In-world pages for the fleet's machines, which I'm making. By design they aren't linked from here.
+
+<!-- section:r2-noskill -->
+### MOLE-1 four ways: skill or not, picture or words
+
+Round 1 built MOLE-1 twice with the skill, once from its concept picture and once from words only. In round 2 two new
+sessions got the same brief and the article's same prompts with no skill at all, one with the picture and one without.
+They wrote their own three.js code from scratch and were told not to look at the skill, its article or the lab's other
+builds. **With the skill and without it, the picture made MOLE-1 look more like its concept and less convincing as a
+machine, and the skill made it more complete against the canon's words. Neither the skill nor the picture won
+overall.** It's one build of each, so it's a pattern seen once, not a measured effect.
+
+The comparison is at the end of Step 3, the bare machine, before any console, look pass or critic. Four fresh Opus agents
+at extra high effort (xhigh) each saw the four stills as A to D in a different order, with the concept art and the canon
+words, and ranked them 1 to 4 on five things. A fifth agent, a skeptic, then checked their notes against the pictures and
+wrote down what the result can and can't support.
+
+<img src="/media/teardown-lab/r2-noskill/four-ways.webp" alt="Four stills of MOLE-1 in a 2 by 2 grid, each labelled. Skill + picture: an orange, rust-textured digger seen steeply from above inside a pale cut, the wall cropping it, with pegged disc drums on arms and a taped arm. Skill + words only: a white and grey rover on a ramp with ribbed bucket drums at both ends, four mesh wheels, a grey hopper, part labels and a readout panel. No skill + picture: a rusty orange digger on a pale studio floor with a tall funnel hopper, a two-camera box on a post, and two huge drums in wire cages fixed to the body over small mesh wheels. No skill + words only: a white rover with a glass-walled hopper, a black sensor gantry with two cameras and an antenna, black bucket drums at both ends and large spoked mesh wheels, at the edge of a cut" style="width:100%;border-radius:8px">
+
+*The four stills the judges saw, all at the end of Step 3. Round 1's two are on top, the no-skill builds below. Only the
+skill + words still has labels and a readout on.*
+
+<table>
+<thead><tr><th>Mean rank, 1 is best</th><th>Designed</th><th>Like the concept art</th><th>Matches the canon words</th><th>Render</th><th>Overall</th></tr></thead>
+<tbody>
+<tr><td>Skill + picture</td><td>3.00</td><td>2.00</td><td>2.00</td><td>4.00</td><td>2.25</td></tr>
+<tr><td>Skill + words only</td><td>1.25</td><td>3.50</td><td>1.00</td><td>2.75</td><td>1.50</td></tr>
+<tr><td>No skill + picture</td><td>4.00</td><td>1.00</td><td>4.00</td><td>1.00</td><td>2.25</td></tr>
+<tr><td>No skill + words only</td><td>1.75</td><td>3.50</td><td>3.00</td><td>2.25</td><td>4.00</td></tr>
+</tbody>
+</table>
+
+**What held in both pairs.**
+
+- **The picture changed the look the same way.** Both picture builds looked more like the concept art, the no-skill one
+  first and the skill one second for every judge. Both ranked lower as machines, third and fourth on design for every
+  judge, and both matched the canon words less well. The no-skill picture build has the rusty orange, the tall hopper and
+  the camera box, but its drums are huge mesh cages fixed straight to the body with no arms, "a prop more than a working
+  digger" to one judge. Round 1's two judges said much the same about the skill pair.
+- **The skill made the build more complete against the canon words.** All four judges gave the same order: skill + words,
+  skill + picture, no skill + words, no skill + picture. They also rated the skill builds better engineered and worse to
+  look at, all four judges with the picture and three of four without.
+- **No skill + words only came last overall for every judge.** It's a clean, plausible RASSOR-style rover in white and
+  black, with a glass hopper and no tape visible.
+
+**What didn't hold.** The skill didn't win overall. With the picture the two builds tied at 2.25. The big gap is between
+the two words-only builds, and that's one comparison. Skill + words had the best overall mean, 1.5, but it was first for
+only two of the four judges, and their picks to develop further split three ways. The picture didn't help or hurt
+overall either. With the skill the words-only build did better, and without it the picture build did.
+
+**The caveats are big.**
+
+- One build per condition and one still each. Ordinary variation from one build to the next could explain every
+  difference. The judges agreeing shows the stills differ, not why.
+- The blinding leaked. The footer on both skill builds reads "teardown-lab experiment · not canon" and on both no-skill
+  builds "lab experiment · not canon", so the judges could tell the pairs apart.
+- The words-only briefs never named a colour, so both words-only builds came out white and lost points on looking like
+  the concept for something they were never told.
+- Four judges of the same model are closer to one noisy rater than to four independent ones.
+- Skill + words leads on canon partly through its labels. Its battery, radiator and tape exist only as callouts. Skill +
+  picture has no labels and still came second on canon, so the pattern doesn't rest on labels alone.
+
+<details><summary>What the judges said about each build, and where they were wrong</summary>
+
+- Skill + picture: the concept's weathered orange and nearly every canon part, the taped arm included, but "the poorest
+  hero view". The camera is jammed into the trench and the walls hide half the machine. The drums read as flat pegged
+  discs, not bucket drums.
+- Skill + words only: "the most engineered and complete to canon", with bucket drums on arms at both ends, mesh wheels
+  and counter-rotating drums in a working drift. The white and grey ignores the concept, and the labels make it read "as
+  a diagram more than a clean model study".
+- No skill + picture: closest to the concept and the cleanest render, on a neutral floor with a soft shadow. As a machine
+  the weakest, with caged drums and no arms, sitting as low as the tiny wheels, and floating gears.
+- No skill + words only: a believable RASSOR layout with split bucket drums on pivoting arms, a sensor gantry and radiator
+  fins. Off-model in white and black with a see-through hopper, and no tape visible.
+- The skeptic's corrections: one judge put the no-skill picture build's drums on "one common axle" when they sit front
+  and rear on their own stub tubes. Two judges said the skill + words build had "every canon part", when its battery,
+  radiator and tape are only labels. One said a radiator was missing that the other three saw.
+- The picks to develop: no skill + picture for one judge, for its character design, skill + words for two, and skill +
+  picture for one.
+
+</details>
+
+The finished no-skill builds, with their consoles, films and live pages, are still running. I'll compare them with round
+1's when they're done.
+<!-- /section:r2-noskill -->
+
+<!-- section:r2-musicbox -->
+### Music box 2.0
+
+Aaron liked round 1's music box film and said the notes were wrong. He was right, and the music box session can now say
+by how much. Episode 2's own files include the chorus split into stems by ElevenLabs, separate tracks for the vocals,
+the bass, the piano and the rest. So the session measured every note against the singer's own track. A note
+counts as right when it's within 50 cents, half a semitone, of the singer's median pitch over that note. **Round 1's tune
+got 40% of its notes right. The music-box version made for Episode 2 itself got 65%. The new arrangement gets 79%, with
+no octave errors.** Against a second vocal track the session split out itself with Demucs, an open-source tool that
+separates a song into parts, it gets 76%.
+
+The timing improved too. Nine in ten notes now start within 82 ms of the sung note, against 139 ms in round 1. And the
+new bass line, which round 1 didn't have, matches the bass stem on 90% of its notes.
+
+<img src="/media/teardown-lab/r2-musicbox/pianoroll.webp" alt="Two rows of a piano roll for bars 17 to 21 of the chorus over a grey spectrogram of the vocal stem: blue bars for the new notes labelled with their syllables, Ne, ver, ri, ses, sets, Earth, is, al, ways, where, you, left, it, sitting on a trail of small red dots that is the singer's measured pitch, red dotted boxes for round 1's notes sitting higher on Never rises, and orange dashed boxes for the episode's own music-box notes" style="width:100%;border-radius:8px">
+
+*The first two lines of chorus 1. The blue bars are the new notes, the small red dots the singer's pitch measured on the
+vocal stem, the red dotted boxes round 1's notes and the orange dashed ones the episode's own music-box version. On
+"Never rises" round 1 sits a fourth to a fifth above what's sung.*
+
+**Round 1 went wrong in five ways,** each now written down note by note.
+
+- Where chorus 1 was unclear, it borrowed notes from the last chorus, which sings a different, higher tune to the same
+  words.
+- It took its pitches from a pitch track of the full mix, which is right on only 14 of the chorus's 33 words.
+- It had one pitch per word and split it across syllables by guesswork.
+- It timed notes from the lyric timestamps, which mark the start of a word's consonant, not the sung vowel.
+- It made up an echo instead of using the song's own two-part echoes. None of its echo notes matched the song's.
+
+**The method is now a tool,** `tools/song2box/` in the lab's private repo. A song and its stems go in. Out come a
+music-box arrangement, the comb's tuning, the pin plan, a score report and the piano roll, so any later song gets the
+same checks. It also arranged Aaron's Episode 1 song, "Red Is the Thing That's Leaving", from
+[Crimson Coil](/ledger/crimson-coil/). That one is weaker evidence, because there's no score or lyric file to check it
+against. The notes work took about an hour and a quarter on the box's 4 CPU cores, with no GPU and no ElevenLabs credits.
+
+**The new box plays the corrected tune on one cylinder with three kinds of track.** The melody comb sits in front, as in
+round 1. A bass comb of five teeth, cut short and weighted with lead the way real music boxes tune their low notes, stands
+behind the cylinder, where the pins come over the top and press its teeth down. Its pins go round silently until the comb
+is fitted, so the bass joins in time with nothing to sync. Seven stout trip pins, one per sung phrase and one for the
+closing chord, push a lever that flips a wheel of seven picture cards styled after the base's ad in Episode 2. Six carry
+a line of the chorus and the last reads FAMILIES WELCOME.
+
+<img src="/media/teardown-lab/r2-musicbox/hero.webp" alt="Music Box 2.0 from the front left on a dark bedplate: a brass pinned cylinder with the steel melody comb in front of it, the bass comb behind, a wheel of picture cards on a stand at the back showing a navy card reading TRANQUILITY HOMESTEAD and 5/7, and a blue praxinoscope drum beside it, with labels for the card wheel, bass comb, praxinoscope and melody comb, a build list of parts on the left, CYLINDER 10.3° in large type at the top left, and a pin roll on the right with three track groups and 87 pins" style="width:100%;border-radius:8px">
+
+*The new machine in a review still. One cylinder carries 87 pins, 60 for the melody comb in front, 20 for the bass comb
+behind and 7 trip pins for the card wheel. The pin roll on the right reads the same cylinder angle that poses the parts.*
+
+A small praxinoscope, a 19th-century animation toy with pictures on the inside of a drum seen in a ring of mirrors, is
+geared to the fly, the two-vane fan that governs the tempo. It turns once per beat, so its eight frames of the Earth's
+phases run at 10 frames a second at 75 bpm. The Earth never rises or sets up there, but its phase does change.
+
+<img src="/media/teardown-lab/r2-musicbox/praxinoscope.webp" alt="A close view of the praxinoscope: a blue drum lettered PHASES OF THE EARTH with small pictures of the Earth on its inner wall and an eight-sided mirror prism in the middle, a card reading COME AND LIVE WHERE YOU CAN SEE IT on the wheel behind it, 10.0 FPS in large type at the top left over DRUM 75.0 RPM, and a viewer panel on the right showing the frame the mirrors show, a dark Earth with city lights over the lunar horizon, above a strip of eight Earth phases" style="width:100%;border-radius:8px">
+
+*The praxinoscope at 75 bpm. The viewer on the right shows the frame the mirrors face, and the strip under it all eight.
+The Earth sits in the same spot in every frame and on every card, and only its phase and the Sun move.*
+
+**Still open, and nobody has listened yet.** In bars 17 and 21 the pins follow the lower lead line, but a harmony a
+fourth above it is just as loud there, so the ear might hear that as the tune. The echo in bar 18 is faint, so its notes
+have low confidence. The live page is built, one offline file of 819 KB, and hasn't been tried on a real GPU. The film,
+where the host builds the box while it plays and fits each new part as the music runs, is being made.
+
+<details><summary>How the notes were measured, and the machine's numbers</summary>
+
+- The ElevenLabs stems were 25.0 ms late against the master, measured by cross-correlation, and the tool corrects for
+  it. The vocal stem isn't one voice. It holds the lead, a harmony that joins on held notes, mostly a fourth above, and a
+  two-part group echo in parallel fourths.
+- Two independent pitch methods, torchcrepe on the vocal stem and Spotify's basic-pitch note events, are reconciled
+  syllable by syllable on the song's own bar grid. Onsets are the sung vowels, quantised to sixteenths. The same scoring
+  code ran on round 1, the episode's version and the new arrangement.
+- Four pitch calls were made by hand, mostly where the harmony is as loud as the lead, to keep the hook the same in
+  both statements. Without them the lead scores the same.
+- Of the six new lead notes that miss, three are syllables where the louder harmony pulls the median, and the rest
+  sit on glides.
+- The arrangement is 80 notes: 30 for the lead, 27 for the echo, 20 for the bass and a three-note closing chord, which is
+  the session's own. The melody comb has 11 teeth from E-flat 5 to C6, the bass comb 5 from F3 to D-flat 4.
+- Episode 1's song had no stems saved, so Demucs split it, and a new lyric-free mode plucks once per stable sung note.
+  Its lead scores 97% and its bass 95%. Those are high because the vocal is synthetic and holds flat pitches. They say
+  the tool follows the stem, not that the arrangement has been heard.
+- The cylinder is 16 mm across and 41.6 mm long, 40 beats a turn, 9° a beat. Every pin lets go exactly on its beat, 0 of
+  87 off in a one-turn check.
+- Each bass tooth is cut to 85% of a plain tooth's length, never over 40 mm, and a lead lump makes up the rest. The F3
+  tooth checks by a second method at 175.2 Hz against 174.61 from the exact formula.
+- The trip lever multiplies a pin's 0.6 mm push 20.55 times, and a pawl moves the card wheel on one card per trip pin.
+  With seven cards and seven trip pins it's back on the same card every turn.
+- The fly turns 480 times per cylinder turn, and an 8 to 96 gear gives the drum 40 turns per cylinder turn, one per
+  beat. A friction washer lets the drum drop onto the running spindle without jolting the train. It spins up in 0.39 s.
+- The cards' art, the eight frames and the whole Music Box 2.0 design are the session's inventions, listed as not canon.
+
+</details>
+<!-- /section:r2-musicbox -->
+
+<!-- section:r2-paint -->
+### Paint the machine, and the machine as a motion guide
+
+*Running.*
+<!-- /section:r2-paint -->
+
+<!-- section:r2-bounds -->
+### The bounds: how complicated a thing can it explain
+
+*Running.*
+<!-- /section:r2-bounds -->
+
+<!-- section:r2-homestead -->
+### The Moon base in one world, and a game
+
+*Running.*
+<!-- /section:r2-homestead -->
 
 ## How the lab is run
 
