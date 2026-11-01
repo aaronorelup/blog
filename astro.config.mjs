@@ -48,7 +48,7 @@ export default defineConfig({
       },
       defaultColor: false,
     },
-    // Pictures sized, headings' ids, then the one text extraction every feature reads (scripts/build/markdown.mjs).
+    // Pictures sized, the hidden pages' list, headings' ids, then the one text extraction every feature reads (scripts/build/markdown.mjs).
     rehypePlugins: rehypePlugins({ publicDir }),
   },
   vite: {

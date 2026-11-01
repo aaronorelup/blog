@@ -26,7 +26,7 @@ modules and custom elements.
 | `scripts/` | Node: build plugins (`build/`), checks (`check/`), media (`media/`), tools (`tools/`) |
 | `worker/` | the edge (Cloudflare Worker `blog`) |
 | `tests/` | `unit/` (node:test) and `e2e/` (Playwright) |
-| `public/` | copied into `dist/` as is. Other people write much of it: never scanned by the checks |
+| `public/` | copied into `dist/` as is. Other people write much of it: never scanned by the checks, except for media caps (`assets.mjs`) and the `ao:hidden` marker of the lore hidden pages (`hidden.mjs`) |
 
 Files under `src/`, `worker/` and `scripts/` stay under 400 lines and open with at most 5 lines of header (what it
 does, who reads it, its contract). `npm run check` enforces the ceiling (`scripts/check/code.mjs`), with a
@@ -66,7 +66,8 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
    are lenient until W4; live notebooks (`src/data/exempt.js`) stay lenient for good.
 3. **Markdown** (posts, notes, research) goes through Shiki with both themes as CSS variables, then the rehype
    plugins in `scripts/build/markdown.mjs`, in order: `rehype-post-images` (raw HTML parsed; every picture gets its
-   width, height and its `data-full` copy), `rehype-heading-ids` (github-slugger ids, pinned; an id the page uses
+   width, height and its `data-full` copy), `rehype-hidden-pages` (a `<div data-hidden-pages>` filled from
+   `src/data/hidden-pages.json`), `rehype-heading-ids` (github-slugger ids, pinned; an id the page uses
    gets `-1`) and `rehype-post-text`, the one extraction every feature reads (below). A Markdown file that fails to
    render fails its page (`renderEntry`), since Astro itself only logs it; a live notebook's page builds blank.
 4. **Integrations** (`astro.config.mjs`), in order: `statsPages`, `loreThumbs`, `media` (no file over 25 MiB,
@@ -130,7 +131,7 @@ fails the build, or only warns in a live notebook.
 | `wrangler.jsonc` | the Worker `blog`, every binding, `run_worker_first`, both crons, the vars (secrets by name only) |
 | `.dev.vars.example` | the local test keys for `wrangler dev` (copy to the git-ignored `.dev.vars`) |
 | `.node-version` | 22.23.4, the Node Workers Builds uses |
-| `public/_headers` | noindex for two hidden pages; a year, `immutable`, for the content-hashed `/_astro/*` and `/fonts/*`; a day for `/media/icons/*` |
+| `public/_headers` | noindex for the hidden pages under `/ledger/`; a year, `immutable`, for the content-hashed `/_astro/*` and `/fonts/*`; a day for `/media/icons/*` |
 | `archive/2026-10-29-before-rework/` | every post as it was before the rework (read only) |
 
 ### `src/content/` and `src/data/`
@@ -153,6 +154,7 @@ fails the build, or only warns in a live notebook.
 | `src/data/public-keys.js` | keys meant to be public: Ask's Turnstile site key |
 | `src/data/voice.js` | the read-aloud voice, model, format and settings, `EXTRACT_V`, `SPEAK_V`: every recording's hash covers them |
 | `src/data/media-manifest.json` | every file in the R2 bucket, its size and MD5 (`npm run media:push`) |
+| `src/data/hidden-pages.json` | the lore hidden pages (in-world pages an episode points to for five frames, marked `<meta name="ao:hidden" content="lore">`): address, episode, status, where the episode shows it, what is on it, how it ties in, its model; rendered by AO-075, kept true by `scripts/check/hidden.mjs` |
 | `src/data/listed.js`, `preview-budget.js` | one-line re-exports until W4 (`isListed` lives in `src/lib/posts.js`) |
 | `src/data/series.js`, `courses.js` | v1 threads, read by nothing since T2.1 (W4 deletes it); the courses |
 | `src/data/courses/*.json`, `src/data/lore/*.json` | written by the course publishers in other repos: never by hand |
@@ -228,11 +230,12 @@ fails the build, or only warns in a live notebook.
 | `scripts/build/contracts.mjs` | pure checks of the frozen contracts over `dist/` |
 | `scripts/build/stats-pages.mjs`, `dev-stats-fixture.mjs` | `/stats-pages.txt`; `/api/stats` for `astro dev` |
 | `scripts/build/pagefind.mjs` | at `astro:build:done`: Pagefind's index of `dist/ledger/**/*.html` into `dist/pagefind/`; a failure fails the build |
-| `scripts/build/markdown.mjs` + `rehype-{post-images,heading-ids,post-text}.mjs` | the Markdown plugins (step 3 of "A build"); `markdown.mjs` lists the post components until T1.2 and hashes the plugins' code into the config, so Astro's content cache re-renders when they change |
+| `scripts/build/markdown.mjs` + `rehype-{post-images,hidden-pages,heading-ids,post-text}.mjs` | the Markdown plugins (step 3 of "A build"); `markdown.mjs` lists the post components until T1.2 and hashes the plugins' code into the config, so Astro's content cache re-renders when they change |
 | `scripts/lore-thumbs.mjs` | the lore thumbnails (moves to `build/` in W4) |
 | `scripts/media/` | `files.mjs` (what is media, `STAYS_IN_GIT`), `push.mjs`, `verify.mjs`, `integration.mjs` (the guard) |
 | `scripts/tools/new-post.mjs` | `npm run new-post`: the next `AO-###`, the v2 frontmatter |
 | `scripts/tools/never-publish-hash.mjs` | `npm run never-publish:hash`: the private list → `never-publish.json` |
+| `scripts/tools/hidden-models.mjs` | copies each lore hidden page's model from `/labs/teardown/` to `<address>model/` (robots line added, the lab's "not canon" line emptied); run again when the lab fixes one |
 | `scripts/tools/budgets.mjs` | the page-weight budgets (section "Budgets") and the font check |
 | `scripts/tools/fonts.mjs` | `node scripts/tools/fonts.mjs` after a build: fetches Google's slices for the code points the pages show, rewrites `public/fonts/`, `fonts.css`, `fonts.json`; `misses(dist)` |
 | `scripts/tools/searches.mjs` | `npm run searches [-- days]`: the top search and Ask queries, for Aaron only (D1 through the API) |
@@ -255,7 +258,7 @@ fails the build, or only warns in a live notebook.
 | `worker/ask/` | `serve.js` (`POST /api/ask`), `prompt.js` (Goobie, who speaks as itself and of Aaron by name; the excerpts; citations with their `kind`), `deepseek.js` (the one call), `ask.sql` |
 | `worker/cleanup.js` | the daily sweep of old counts, answers and totals |
 | `worker/read/` | `step.js` (`read.step`: one post's missing sections a run, then its post file; capped by credit), `voice.js` (the ElevenLabs calls), `read.sql` |
-| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (Ask's guards, citations, excerpt headers and DeepSeek answers), `schema.test.mjs` (the posts schema's `voice`), `read.test.mjs` (the spoken copy and its map, alignment, section hashes, the read-aloud cron); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1 |
+| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (Ask's guards, citations, excerpt headers and DeepSeek answers), `schema.test.mjs` (the posts schema's `voice`), `read.test.mjs` (the spoken copy and its map, alignment, section hashes, the read-aloud cron), `hidden.test.mjs` (the hidden pages and their list); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1 |
 | `tests/e2e/` | the behaviour suite: `INVENTORY.md`, `targets.json` (from `element-usage`), specs, fixtures |
 | `tests/baseline/urls.txt` | every page and contract file a build must still produce |
 | `src/scripts/stats/core/{agg,fmt}.test.mjs` | the two kept `/stats` tests |
@@ -273,6 +276,7 @@ about a second; run it before every landing, and with paths to see one post (`np
 | `links.mjs` | `/ledger/<slug>/` goes to a listed post, `/notes/` to its notes; nothing under `public/ledger/`; no banned link | deploy |
 | `elements.mjs` | each `src/elements/ao-*/` has its section in `docs/COMPONENTS.md` | check |
 | `assets.mjs` | preview stills and loops exist and are under their caps, icon and project picture caps, every named video or audio is in R2 or in a `STAYS_IN_GIT` folder | deploy |
+| `hidden.mjs` | every page under `public/` marked `ao:hidden` is in `src/data/hidden-pages.json` and every entry is a marked page with noindex (and its model copy has noindex and no "not canon"); the entries' text gets the voice rules (check); a page under `public/ledger/` with no marker warns | deploy |
 | `code.mjs` | 400 lines, no CSS imported by browser JS, no `style=` in components, layouts or pages, `astro:content` only in `lib/content.js` and the schemas, no IP under `worker/` | check |
 
 Anything in a live notebook's paths is at most a warning, at either level. The never-publish terms themselves live in

@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import { sha256hex, short } from '../../src/lib/text/hash.js';
 import rehypeHeadingIds from './rehype-heading-ids.mjs';
+import rehypeHiddenPages from './rehype-hidden-pages.mjs';
 import rehypePostImages from './rehype-post-images.mjs';
 import rehypePostText from './rehype-post-text.mjs';
 
@@ -11,11 +12,12 @@ import rehypePostText from './rehype-post-text.mjs';
 const TAGS = fs.readdirSync(new URL('../../src/elements/', import.meta.url)).filter((d) => d.startsWith('ao-')).sort();
 
 const CODE = ['rehype-heading-ids.mjs', 'rehype-post-images.mjs', 'rehype-post-text.mjs', '../../src/lib/text/rules.js',
-  '../../src/data/exempt.js'];
+  '../../src/data/exempt.js', 'rehype-hidden-pages.mjs', '../../src/data/hidden-pages.json'];
 const v = short(sha256hex(CODE.map((f) => fs.readFileSync(new URL(f, import.meta.url), 'utf8')).join('\0')));
 
 export const rehypePlugins = ({ publicDir }) => [
   [rehypePostImages, { publicDir }],
+  rehypeHiddenPages,
   rehypeHeadingIds,
   [rehypePostText, { tags: TAGS, v }],
 ];
