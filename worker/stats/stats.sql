@@ -1,10 +1,5 @@
--- The traffic snapshot behind /api/stats (worker/stats.js), in the D1 database blog-reads (binding
--- DB), beside the reader counter's table (worker/reads.sql). For a local `wrangler dev`, run
---   npx wrangler d1 execute blog-reads --local --file worker/stats.sql
--- In production nothing needs running: the cron's first run finds the tables missing and creates
--- them (the same statements are SCHEMA in worker/stats.js; keep the two alike). Running this file
--- once with `--remote` instead does the same and is harmless.
---
+-- The traffic snapshot behind /api/stats (stats/index.js), in the D1 database blog-reads (binding DB), beside the
+-- reader counter's table. lib/sql.js's ensure() makes these on first use.
 -- What is kept: counts per day and class, bot and program names, browser and system names,
 -- countries, public page paths. Nothing keyed on an IP address, and no person's user agent.
 
