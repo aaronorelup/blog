@@ -9,8 +9,8 @@
 - **Never import CSS from JS** here (`scripts/check/code.mjs` fails it). What every element shares (the viewer, the
   now-playing bar, `.visually-hidden`) is `src/styles/elements.css`.
 - **The cascade:** a `style.css` is inlined in the article, after the page's stylesheets, so a rule exactly as
-  specific as one in `prose.css` (`.ao-x-list li` against `.pc-prose li`) wins over it. Moving a rule from
-  `post-components.css` (linked before `prose.css`), drop the declarations prose always overrode, or the look changes.
+  specific as one in `prose.css` (`.ao-x-list li` against `.pc-prose li`) wins over it: leave out what the prose
+  should set (the old `post-components.css` was linked before `prose.css`, so the ports dropped what prose overrode).
 - **Shared code:** `_lib/` (pure helpers: `time.js` parseTime/fmtTime, `table.js` readTable/cellNumber, `dom.js` h())
   and `_core/` (`player.js` claim/current/`AO_LISTEN_PLAY`/`AO_STOP`, `media.js`, `now-playing.js`, `viewer.js`
   openViewer, and the lazy `viewer-ui.js` + `zoom.js`). Dynamic imports go through `src/scripts/lazy.js`.

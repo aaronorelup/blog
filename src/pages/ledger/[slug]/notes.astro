@@ -39,7 +39,8 @@ const { Content, remarkPluginFrontmatter } = await renderEntry(note);
 
 <script>
   // The note carries post components too, and its links to posts open their hover cards.
-  import '../../../scripts/post-components.js';
+  import { enhance } from '../../../elements/enhance.js';
+  enhance();
   import '../../../scripts/ledger-preview.js';
 </script>
 
