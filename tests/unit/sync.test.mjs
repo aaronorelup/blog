@@ -1,6 +1,6 @@
 // worker/search/sync.js on an in-memory D1 and a fake index: the first sync embeds 10 docs a run and stores v only
 // once nothing is left; a removed doc (an unlisted post) loses its vectors and its row, a shorter doc its last ids,
-// in deletes of at most 100 ids; then each run is idle until a live notebook's hash moves, which re-embeds that doc.
+// in deletes of at most 100 ids; a live notebook goes last; then each run is idle until its hash moves.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { d1, loadWorker } from './worker-env.mjs';
@@ -9,7 +9,7 @@ const { step } = await loadWorker('search/sync.js');
 const MODEL = '@cf/baai/bge-m3';
 const doc = (i, chunks) => ({ id: `AO-${100 + i}`, kind: 'post', slug: `p${i}`, title: `T${i}`,
   chunks: Array.from({ length: chunks }, (_, n) => ({ n, anchor: 'a', heading: n ? 'H' : '', text: `text ${n}` })) });
-const docs = [...Array.from({ length: 11 }, (_, i) => doc(i, 2)), { ...doc(11, 1), slug: 'teardown-lab' }];
+const docs = [{ ...doc(11, 1), slug: 'teardown-lab' }, ...Array.from({ length: 11 }, (_, i) => doc(i, 2))];
 const manifest = { v: 'v2', model: MODEL, live: ['post:teardown-lab'],
   docs: Object.fromEntries(docs.map((d) => [`post:${d.slug}`, `h${d.id}`])) };
 const files = new Map([['/search/manifest.json', manifest], ...docs.map((d) => [`/search/docs/post-${d.slug}.json`, d])]);
@@ -25,7 +25,7 @@ test('a full sync, a removed and a shortened doc, then idle until the live noteb
       return { data: text.map(() => [0.5]) };
     } },
     SEARCH_INDEX: {
-      upsert: async (list) => list.forEach((v) => vectors.set(v.id, v)),
+      upsert: async (list) => { assert.ok(list.length <= 50); list.forEach((v) => vectors.set(v.id, v)); },
       deleteByIds: async (ids) => { assert.ok(ids.length <= 100); ids.forEach((id) => vectors.delete(id)); },
     },
   };
@@ -33,6 +33,7 @@ test('a full sync, a removed and a shortened doc, then idle until the live noteb
   const v = () => DB.prepare("SELECT v FROM search_state WHERE k = 'v'").first('v');
   assert.equal(await step(env), '10 embedded, 0 removed, 2 left'); // nothing indexed yet: 10 docs a run
   assert.equal(await v(), null);
+  assert.ok(!vectors.has('AO-111:0'), 'the live notebook waits for the other docs');
   // As a previous deploy left them: a post since unlisted (150 chunks), and p0 when it had 5 chunks.
   for (let n = 0; n < 150; n++) vectors.set(`AO-099:${n}`, {});
   for (const n of [2, 3, 4]) vectors.set(`AO-100:${n}`, {});

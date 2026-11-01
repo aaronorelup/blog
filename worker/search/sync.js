@@ -34,27 +34,27 @@ export async function step(env) {
     await remove(env, gone.flatMap((r) => ids(r.id, 0, r.n)));
     await env.DB.prepare(`DELETE FROM search_docs WHERE doc IN (${inList})`).bind(JSON.stringify(gone.map((r) => r.doc))).run();
   }
-  const changed = Object.keys(m.docs).filter((d) => had.get(d)?.hash !== m.docs[d]);
+  // A live notebook last, so whatever its fleet pushes never holds up another doc.
+  const changed = Object.keys(m.docs).filter((d) => had.get(d)?.hash !== m.docs[d])
+    .sort((a, b) => m.live.includes(a) - m.live.includes(b));
   for (const doc of changed.slice(0, PER_RUN)) await embedDoc(env, m, doc, had.get(doc));
   if (changed.length <= PER_RUN) await env.DB.prepare("INSERT OR REPLACE INTO search_state VALUES ('v', ?1)").bind(m.v).run();
   return `${Math.min(changed.length, PER_RUN)} embedded, ${gone.length} removed, ${Math.max(0, changed.length - PER_RUN)} left`;
 }
 
-// One doc's chunks embedded as "<title>. <heading>\n<text>" and upserted as <prefix>:<n>, with the metadata
-// retrieve.js reads ({ s slug, k kind, a anchor, h heading, t text, T title }); its old vectors past the new count go.
+// One doc's chunks embedded as "<title>. <heading>\n<text>" and upserted as <prefix>:<n>, 50 a call, with the
+// metadata retrieve.js reads ({ s slug, k kind, a anchor, h heading, t text, T title }); old ids past the count go.
 async function embedDoc(env, m, doc, old) {
   const d = await buildJson(env, `/search/docs/${doc.replace(':', '-')}.json`);
-  const vectors = [];
   for (let i = 0; i < d.chunks.length; i += PER_CALL) {
     const batch = d.chunks.slice(i, i + PER_CALL);
     const values = await embed(env, batch.map((c) => `${[d.title, c.heading].filter(Boolean).join('. ')}\n${c.text}`));
-    batch.forEach((c, j) => vectors.push({
+    await env.SEARCH_INDEX.upsert(batch.map((c, j) => ({
       id: `${d.id}:${c.n}`,
       values: values[j],
       metadata: { s: d.slug, k: d.kind, a: c.anchor, h: c.heading, t: c.text, T: d.title },
-    }));
+    })));
   }
-  await env.SEARCH_INDEX.upsert(vectors);
   const stale = !old ? [] : old.id === d.id ? ids(old.id, d.chunks.length, old.n) : ids(old.id, 0, old.n);
   await remove(env, stale);
   await env.DB.prepare('INSERT OR REPLACE INTO search_docs (doc, id, hash, n) VALUES (?1, ?2, ?3, ?4)')
