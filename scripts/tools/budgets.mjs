@@ -68,9 +68,10 @@ export function measure(dist) {
   row('  JS up front', worst.js, 8 * KB);
 
   const ledger = parse(path.join(dist, 'ledger', 'index.html'));
-  const isRow = (el) => el.properties.dataLedgerEntry !== undefined;
+  // A row is the ledger's li.row (its link carries data-ledger-entry), the start-here cards and the rest chrome.
+  const isRow = (el) => (el.properties.className ?? []).includes('row') || el.properties.dataLedgerEntry !== undefined;
   let count = 0;
-  visit(ledger, 'element', (el) => { count += isRow(el); });
+  visit(ledger, 'element', (el) => (isRow(el) ? (count += 1, SKIP) : undefined));
   const full = gz(toHtml(ledger));
   const chrome = gz(toHtml(without(ledger, isRow)));
   row('/ledger/ chrome HTML', chrome, 6 * KB);

@@ -1,0 +1,135 @@
+/* The ledger (components/ledger/), on /ledger/ and in the homepage overlay: Start here, the chips, the months and
+   their rows, and the feed. Colours are the --pc-* tokens only, so the overlay's day/night tween carries them. Search
+   results and Goobie's related posts reuse the rows (search.css adds their parts). */
+
+.ledger { padding-bottom: var(--space-8); }
+.ledger .view-intro { margin-bottom: var(--space-5); }
+
+/* A line drawing (chrome/Glyph.astro): a topic's glyph where a post has no icon. */
+.glyph { display: block; fill: none; stroke: currentColor; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+
+.eyebrow {
+  margin: 0 0 var(--space-3); font-family: var(--font-body); font-size: var(--text-sm); font-weight: 400;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--pc-gold);
+}
+
+/* Start here: five cards, no box. Icon, title, stamp. A row you can scroll on a phone. */
+.start { margin: 0 0 var(--space-7); }
+.start-cards {
+  list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+.start-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2); min-width: 0; }
+.start-icon {
+  width: 72px; height: 72px; border-radius: var(--radius-m); background: var(--pc-tile); color: var(--pc-gold);
+  display: flex; align-items: center; justify-content: center;
+}
+.start-icon .glyph { width: 32px; height: 32px; }
+.start-link {
+  font-family: var(--font-display); font-size: 15px; line-height: 1.35; font-weight: 700; letter-spacing: -0.01em;
+  color: var(--pc-strong); text-decoration: none; text-wrap: pretty;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden;
+  transition: color 180ms ease;
+}
+.start-link::after { content: ''; position: absolute; inset: -8px; border-radius: var(--radius-m); }
+.start-card:hover .start-link { color: var(--pc-head); }
+.start-card .stamp { margin: 2px 0 0; font-size: 10.5px; }
+
+/* The chips: a row of topics, a row of projects, each with its count. The lit one is aria-current. */
+.chips { display: flex; flex-direction: column; gap: var(--space-2); margin: 0 0 var(--space-6); }
+.chip-row { display: grid; grid-template-columns: 86px minmax(0, 1fr); align-items: baseline; gap: var(--space-2); }
+.chip-label { font-size: var(--text-xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--pc-quiet); }
+.chip-list { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.chip {
+  display: inline-flex; align-items: baseline; gap: 6px; padding: 5px 12px; border: 1px solid var(--pc-line2);
+  border-radius: var(--radius-pill); font-size: 13px; line-height: 1.4; color: var(--pc-body); text-decoration: none;
+  transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
+}
+.chip:hover { border-color: var(--pc-accent); color: var(--pc-strong); }
+.chip[aria-current] { border-color: var(--pc-head); background: var(--pc-hover); color: var(--pc-head); }
+.chip-n { font-family: var(--font-mono); font-size: 11px; color: var(--pc-gold); }
+
+/* A month: its name as an eyebrow over a hairline, then its rows. */
+.month {
+  margin: var(--space-6) 0 0; padding: 0 0 var(--space-2); border-bottom: 1px solid var(--pc-line2);
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 400; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--pc-gold);
+}
+.rows { list-style: none; margin: 0; padding: 0; }
+
+/* A row: the link's ::after stretches over the whole row; the stamp's <details> sits above it, so it opens in place. */
+.row {
+  position: relative; display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: var(--space-4);
+  padding: var(--space-4) 14px; margin: 0 -14px; border-bottom: 1px solid var(--pc-line); border-radius: var(--radius-m);
+  transition: background 180ms ease;
+}
+.row:hover { background: var(--pc-hover); }
+.row > :not(.row-icon) { grid-column: 2; }
+.row-icon {
+  grid-column: 1; grid-row: 1 / span 4; width: 40px; height: 40px; border-radius: var(--radius-s);
+  background: var(--pc-tile); color: var(--pc-gold); display: flex; align-items: center; justify-content: center;
+}
+.row-icon .glyph { width: 22px; height: 22px; }
+.row-link {
+  display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  font-family: var(--font-display); font-size: 18px; line-height: 1.4; font-weight: 700; letter-spacing: -0.01em;
+  color: var(--pc-strong); text-decoration: none;
+}
+.row-link::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius-m); }
+.row:hover .row-link { color: var(--pc-head); }
+.row-summary {
+  margin: 4px 0 0; max-width: 640px; font-family: var(--font-serif); font-size: var(--text-body); line-height: 1.6;
+  color: var(--pc-body); text-wrap: pretty;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+}
+.row-meta { margin: 6px 0 0; font-size: var(--text-sm); letter-spacing: 0.02em; color: var(--pc-quiet); }
+
+.row-card { position: relative; z-index: 1; justify-self: start; margin: var(--space-2) 0 0; max-width: 640px; }
+.row-card > .stamp { margin: 0; cursor: pointer; list-style: none; font-size: 10.5px; user-select: none; }
+.row-card > .stamp::-webkit-details-marker { display: none; }
+.row-card > .stamp::after { content: ' +'; }
+.row-card[open] > .stamp::after { content: ' −'; }
+.row-card > .stamp:hover { color: var(--pc-strong); border-color: var(--pc-strong); }
+.row-takeaway {
+  margin: var(--space-3) 0 0; font-family: var(--font-serif); font-size: 15.5px; line-height: 1.55;
+  color: var(--pc-strong); text-wrap: pretty;
+}
+.row-points { list-style: none; margin: var(--space-2) 0 var(--space-1); padding: 0; }
+.row-points li {
+  position: relative; margin: 0 0 6px; padding-left: 15px; font-size: 13.5px; line-height: 1.5; color: var(--pc-body);
+  text-wrap: pretty;
+}
+.row-points li::before {
+  content: ''; position: absolute; left: 2px; top: 0.62em; width: 5px; height: 5px; border-radius: 50%;
+  background: var(--pc-accent); opacity: 0.8;
+}
+
+/* The feed, under the last month. */
+.ledger-feed { margin: var(--space-7) 0 0; padding-top: 22px; border-top: 1px solid var(--pc-line); max-width: 560px; }
+.ledger-feed-text { margin: 0 0 10px; font-size: 13px; line-height: 1.7; color: var(--pc-quiet); text-wrap: pretty; }
+.ledger-feed-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.ledger-feed-url {
+  font-family: var(--font-mono); font-size: var(--text-sm); color: var(--pc-body); background: var(--pc-code);
+  border: 1px solid var(--pc-line); padding: 6px 10px;
+}
+.ledger-copy {
+  font: inherit; font-size: 12px; letter-spacing: 0.06em; color: var(--pc-accent); background: none; border: 0;
+  padding: 6px 0; cursor: pointer;
+}
+.ledger-copy:hover { color: var(--pc-strong); }
+
+@media (max-width: 900px) {
+  .start-cards {
+    grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 140px; overflow-x: auto;
+    scroll-snap-type: x mandatory; scroll-padding-inline: 8px; padding: 8px; margin: -8px; scrollbar-width: none;
+  }
+  .start-card { scroll-snap-align: start; }
+}
+@media (max-width: 560px) {
+  .start-icon { width: 56px; height: 56px; }
+  .start-link { font-size: 14px; }
+  .chip-row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .row { column-gap: var(--space-3); padding: var(--space-3) 10px; margin: 0 -10px; }
+  .row-link { font-size: 16.5px; }
+  .row-summary { font-size: 15px; }
+}

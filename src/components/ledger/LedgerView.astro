@@ -1,0 +1,39 @@
+---
+// The ledger: the search box, Start here, the chips, then every listed post under its month, newest first, and the
+// feed. On /ledger/ and in the homepage overlay (through panel/LedgerView.astro until T3.1); views/ledger.js is its
+// behaviour. Each row's link carries data-ledger-entry, the overlay's contract; nothing else here does.
+import { START_HERE } from '../../data/picks.js';
+import { listedPosts, slugOf } from '../../lib/content.js';
+import { byMonth, countBy } from '../../lib/posts.js';
+import Chips from './Chips.astro';
+import LedgerRow from './LedgerRow.astro';
+import SearchBox from './SearchBox.astro';
+import StartHere from './StartHere.astro';
+
+const posts = await listedPosts();
+const picks = START_HERE.map((slug) => posts.find((p) => slugOf(p) === slug));
+---
+
+<div class="view ledger">
+  <h1 class="view-title">The Ledger</h1>
+  <p class="view-intro">A running ledger of what I'm learning about AI — agents, automation, and whatever breaks along the way.</p>
+
+  <SearchBox />
+  {picks.length > 0 && <StartHere posts={picks} />}
+  <Chips total={posts.length} topics={countBy(posts, 'topic')} projects={countBy(posts, 'project')} />
+
+  {byMonth(posts).map(({ month, posts: list }) => (
+    <section class="ledger-month" data-month>
+      <h2 class="month">{month}</h2>
+      <ol class="rows">{list.map((post) => <LedgerRow post={post} />)}</ol>
+    </section>
+  ))}
+
+  <div class="ledger-feed">
+    <p class="ledger-feed-text">New entries show up in any reader app — no account, no algorithm, nothing recommended to you. Paste this into one:</p>
+    <div class="ledger-feed-row">
+      <code class="ledger-feed-url">aaronorelup.com/rss.xml</code>
+      <button type="button" id="feed-copy" class="ledger-copy">copy</button>
+    </div>
+  </div>
+</div>

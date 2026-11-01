@@ -1,0 +1,29 @@
+---
+// Five posts to read first (src/data/picks.js START_HERE): icon, title and stamp each.
+import { TOPICS } from '../../data/taxonomy.js';
+import { cardOf } from '../../lib/cards.js';
+import { slugOf } from '../../lib/content.js';
+import { iconFor } from '../../lib/icons.js';
+import Glyph from '../chrome/Glyph.astro';
+
+const { posts } = Astro.props;
+---
+
+<section class="start" aria-labelledby="start-title">
+  <h2 class="eyebrow" id="start-title">Start here</h2>
+  <ol class="start-cards">
+    {posts.map((post) => {
+      const icon = iconFor(post);
+      const { verdict } = cardOf(post);
+      return (
+        <li class="start-card">
+          {icon
+            ? <img class="start-icon" src={icon.s256} width="72" height="72" loading="lazy" decoding="async" alt="" />
+            : <span class="start-icon is-glyph"><Glyph name={TOPICS[post.data.topic].glyph} /></span>}
+          <a class="start-link" href={`/ledger/${slugOf(post)}/`}>{post.data.title}</a>
+          {verdict && <span class="stamp">{verdict}</span>}
+        </li>
+      );
+    })}
+  </ol>
+</section>

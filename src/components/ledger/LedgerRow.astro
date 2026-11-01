@@ -1,0 +1,34 @@
+---
+// One listed post: its icon (or its topic's glyph), the title as the row's link (stretched over the row), the
+// summary, topic · day · minutes, and the stamp, a <details> that opens the short version in place with no script
+// and no fetch (the phone's card). The chips filter on data-topic and data-project.
+import { TOPICS } from '../../data/taxonomy.js';
+import { cardOf } from '../../lib/cards.js';
+import { slugOf } from '../../lib/content.js';
+import { dayOf } from '../../lib/dates.js';
+import { iconFor } from '../../lib/icons.js';
+import { readingMinutes } from '../../lib/text/plain.js';
+import Glyph from '../chrome/Glyph.astro';
+
+const { post } = Astro.props;
+const slug = slugOf(post);
+const { title, summary, date, topic, project } = post.data;
+const icon = iconFor(post);
+const { verdict, takeaway, points } = cardOf(post);
+---
+
+<li class="row" data-topic={topic} data-project={project.join(' ')}>
+  {icon
+    ? <img class="row-icon" src={icon.s96} width="40" height="40" loading="lazy" decoding="async" alt="" />
+    : <span class="row-icon is-glyph"><Glyph name={TOPICS[topic].glyph} /></span>}
+  <a class="row-link" href={`/ledger/${slug}/`} data-ledger-entry={slug}>{title}</a>
+  <p class="row-summary">{summary}</p>
+  <p class="row-meta">{TOPICS[topic].label} · {dayOf(date)} · {readingMinutes(post.body)} min</p>
+  {takeaway && (
+    <details class="row-card">
+      <summary class="stamp">{verdict ?? 'The short version'}</summary>
+      <p class="row-takeaway">{takeaway}</p>
+      {points && <ul class="row-points">{points.map((p) => <li>{p}</li>)}</ul>}
+    </details>
+  )}
+</li>

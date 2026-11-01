@@ -1,11 +1,17 @@
 ---
 import PanelPage from '../layouts/PanelPage.astro';
-import LedgerView from '../components/panel/LedgerView.astro';
+import LedgerView from '../components/ledger/LedgerView.astro';
 ---
 <PanelPage
   title="The Ledger — Aaron Orelup"
   description="A running ledger of what I'm learning about AI — agents, automation, and whatever breaks along the way."
   active="ledger"
+  view="ledger"
 >
   <LedgerView />
+  <script>
+    // PanelPage runs every view's module once T2.1's mountView lands; until then this page mounts its own.
+    import { mount } from '../scripts/views/ledger.js';
+    mount(document.querySelector('[data-panel-view="ledger"]'));
+  </script>
 </PanelPage>
