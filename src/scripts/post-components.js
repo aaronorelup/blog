@@ -27,81 +27,6 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 else enhance();
 
 // ---------------------------------------------------------------------------------------
-// <ao-bars>: a bar chart drawn from a plain <table>, so the numbers are written once and a reader
-// without JS (or with a screen reader) still gets the table. The first column labels the rows;
-// every other column is a series, named by its <th>. One shared scale per chart.
-//   max="N"     the value a full-width bar stands for (default: the largest value). Give two
-//               charts the same max to put them on the same scale.
-//   unit="…"    printed after each value ("lessons", "%")
-// A direct child <figcaption> captions the chart. Cells that aren't numbers draw no bar.
-
-class AoBars extends HTMLElement {
-  connectedCallback() {
-    if (this._ready) return;
-    const table = this.querySelector(':scope > table');
-    if (!table) return;
-    const head = [...table.querySelectorAll('thead th')].map((th) => th.textContent.trim());
-    const rows = [...table.querySelectorAll('tbody tr')].map((tr) => {
-      const cells = [...tr.children];
-      return {
-        label: cells[0]?.textContent.trim() || '',
-        values: cells.slice(1).map((c) => {
-          const n = parseFloat(c.textContent.replace(/[^0-9.\-]/g, ''));
-          return Number.isFinite(n) ? n : null;
-        }),
-      };
-    });
-    if (!rows.length) return;
-    this._ready = true;
-    const series = Math.max(...rows.map((r) => r.values.length));
-    const all = rows.flatMap((r) => r.values).filter((v) => v !== null);
-    const max = parseFloat(this.getAttribute('max')) || Math.max(...all, 0) || 1;
-    const unit = this.getAttribute('unit') || '';
-
-    const chart = document.createElement('div');
-    chart.className = 'ao-bars-chart';
-    chart.setAttribute('aria-hidden', 'true');
-    if (series > 1) {
-      const legend = document.createElement('div');
-      legend.className = 'ao-bars-legend';
-      for (let k = 0; k < series; k++) {
-        const item = document.createElement('span');
-        item.className = 'ao-bars-key ao-bars-s' + (k % 4);
-        item.textContent = head[k + 1] || 'Series ' + (k + 1);
-        legend.append(item);
-      }
-      chart.append(legend);
-    }
-    for (const r of rows) {
-      const row = document.createElement('div');
-      row.className = 'ao-bars-row';
-      const label = document.createElement('span');
-      label.className = 'ao-bars-label';
-      label.textContent = r.label;
-      const track = document.createElement('div');
-      track.className = 'ao-bars-track';
-      r.values.forEach((v, k) => {
-        const line = document.createElement('div');
-        line.className = 'ao-bars-line';
-        const bar = document.createElement('span');
-        bar.className = 'ao-bars-bar ao-bars-s' + (k % 4);
-        bar.style.setProperty('--w', v === null ? '0' : String(Math.max(0, Math.min(1, v / max))));
-        const val = document.createElement('span');
-        val.className = 'ao-bars-val';
-        val.textContent = v === null ? '' : v.toLocaleString('en-US') + (unit ? ' ' + unit : '');
-        line.append(bar, val);
-        track.append(line);
-      });
-      row.append(label, track);
-      chart.append(row);
-    }
-    table.classList.add('ao-bars-table');
-    table.before(chart);
-    this.classList.add('ao-bars-ready');
-  }
-}
-
-// ---------------------------------------------------------------------------------------
 // <ao-shots>: a video with its shots laid out as a strip of thumbnails underneath, so a reader
 // can see the whole edit at a glance and jump to any shot. For reels, trailers, films, cuts.
 // Children: one <video>, then an <ol> whose <li data-t="m:ss.xx"> each hold an <img> (the shot's
@@ -1719,7 +1644,6 @@ class AoDemo extends HTMLElement {
 }
 
 if (!customElements.get('ao-demo')) customElements.define('ao-demo', AoDemo);
-if (!customElements.get('ao-bars')) customElements.define('ao-bars', AoBars);
 if (!customElements.get('ao-shots')) customElements.define('ao-shots', AoShots);
 if (!customElements.get('ao-blind')) customElements.define('ao-blind', AoBlind);
 if (!customElements.get('ao-runs')) customElements.define('ao-runs', AoRuns);
