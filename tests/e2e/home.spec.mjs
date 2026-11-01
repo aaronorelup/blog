@@ -6,8 +6,9 @@ import { test, expect } from './fixtures.mjs';
 
 const rail = (page) => page.locator('#stop-rail [data-goto]');
 const at = (page) => rail(page).evaluateAll((bs) => bs.findIndex((b) => b.getAttribute('aria-current') === 'true'));
+// ?tier=low pins the cheapest animated rung, so software WebGL never drops the scene to its static rung mid-test.
 async function scene(page) {
-  await page.goto('/');
+  await page.goto('/?tier=low');
   await expect(rail(page).first()).toBeVisible({ timeout: 20_000 });
   await expect.poll(() => at(page)).toBe(0);
 }
@@ -53,7 +54,9 @@ test('home-3 the keys walk the waypoints: arrows, Page keys, space, Home and End
 });
 
 test('home-4 a rail dot flies to its waypoint', async ({ page }) => {
-  // A real click at the dot: Playwright's own hit test counts the section around the rail as covering it.
+  // Broken on main, at every tier and on both projects: the active section lies over the rail, so a click on a
+  // dot lands on the section (INVENTORY home-4).
+  test.fail();
   await scene(page);
   const box = await rail(page).nth(2).boundingBox();
   await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);

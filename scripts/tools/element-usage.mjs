@@ -68,6 +68,14 @@ function publicPageOf(href, base) {
   return { path: p.endsWith('.html') || p.endsWith('/') ? p : p + '/', href: u.pathname + u.search };
 }
 
+// The post a same-origin href opens (/ledger/<slug>/), or null.
+function postOf(href, base) {
+  if (!href) return null;
+  const u = new URL(href, SITE + base);
+  const m = u.origin === SITE && u.pathname.match(/^\/ledger\/([^/]+)\/?$/);
+  return m && fs.existsSync(at('src/content/posts', m[1] + '.md')) ? `/ledger/${m[1]}/` : null;
+}
+
 function scan(dist) {
   const tags = Object.fromEntries(definedTags().map((t) => [t, []]));
   const pages = {};
@@ -78,7 +86,7 @@ function scan(dist) {
     const tree = fromHtml(fs.readFileSync(file, 'utf8'));
     const root = page.kind === 'public' ? tree : findArticle(tree) || tree;
     const live = isLivePath(page.url);
-    const info = { kind: page.kind, live, ao: {}, video: 0, audio: 0, lone: 0, iframe: 0, dataFull: 0 };
+    const info = { kind: page.kind, live, ao: {}, video: 0, audio: 0, lone: 0, iframe: 0, dataFull: 0, posts: [] };
     const link = (href, via) => {
       const target = page.kind !== 'public' && href && publicPageOf(href, page.url);
       if (!target) return;
@@ -96,9 +104,15 @@ function scan(dist) {
       if (BLOCKS.has(name)) info[name]++;
       if (name === 'iframe') link(el.properties.src, 'iframe');
       if (name === 'img' && el.properties.dataFull !== undefined) info.dataFull++;
-      if (name === 'a') link(el.properties.href, 'a');
+      if (name === 'a') {
+        link(el.properties.href, 'a');
+        const other = page.kind !== 'public' && postOf(el.properties.href, page.url);
+        if (other && other !== page.url && !info.posts.includes(other)) info.posts.push(other);
+      }
     });
-    if (Object.keys(info.ao).length || info.video || info.audio || info.iframe || info.dataFull) pages[page.url] = info;
+    if (Object.keys(info.ao).length || info.video || info.audio || info.iframe || info.dataFull || info.posts.length) {
+      pages[page.url] = info;
+    }
   }
   const sets = (o) => Object.fromEntries(Object.entries(o).sort().map(([k, v]) =>
     [k, { live: v.live, hrefs: [...v.hrefs].sort(), from: [...v.from].sort(), via: [...v.via].sort() }]));
