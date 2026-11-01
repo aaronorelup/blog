@@ -382,12 +382,13 @@ notebook); Turnstile is a stub that solves at once with the test response.
 | A result opens its post with the sentence marked, open inside its `<details>`, in view in `#panel-scroll` (the frame unscrolled); a click clears it | search-5 |
 | The meaning half joins once typing stops (one call), with no `/api/session` request and no Turnstile | search-6 |
 | A failed meaning call leaves the words half and says nothing | search-7 |
-| Ask: no Turnstile before Ask opens; `GET /api/session`, then Turnstile, then one mint; the button is disabled and Goobie thinks while a question is out, and a second Enter sends nothing; the answer is text; each `[n]` links to its passage and works; related rows; one session for the next question | search-8 |
+| Ask: no Turnstile before Ask opens; `GET /api/session`, then Turnstile, then one mint; the button is disabled and Goobie thinks while a question is out, and a second Enter sends nothing; the answer is text; its `[n]` count posts (every cite of one post reads `[1]`, a run of them shows once), each link goes to its own passage and works; related rows; one session for the next question | search-8 |
 | `{ ask: false }` hides the switch and says Goobie is resting, with no Turnstile | search-9 |
 | `resting` and `not-found` show their line over the closest posts | search-10 |
 | A search still answering when Ask opens draws nothing in Ask, and the meaning half is never asked | search-11 |
 | A Turnstile challenge left unsolved (`timeout-callback`) says so and frees the button | search-12 |
 | A cite of a notes passage (`kind: 'notes'`) links to `/ledger/<slug>/notes/#<anchor>` and opens it with the words marked; a post passage links to the post | search-13 |
+| Aaron's two answers of 2026-11-01: cites numbered by post with no gaps (1, 2, 3), a run on one post (spaces between too) shown once; no `title` tooltip, an `aria-label` "Source n: post, passage"; on a desktop each cite's card is its post's with a line naming its passage (heading, the opening, the full making-of for a notes cite, which gets a card), and a related row's card has no line | search-15 |
 | Opening Ask keeps the box's words, focused and selected: Enter asks them, typing replaces them | search-14 |
 
 Ask against the real Worker is checked by hand under `npx wrangler dev` (docs/WORKER.md, "Locally"): the real

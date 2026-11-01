@@ -2,8 +2,9 @@
 // nothing loads before it is focused; Pagefind's words come fast, with heading-anchored excerpts; its index holds the
 // listed posts and their notes and nothing else; the meaning half (/api/search) joins without a session and fails
 // silently; a result opens its post with the passage marked; Ask keeps the box's words, selected, loads Turnstile only
-// once opened and switched on, asks once at a time, links its [n] (a notes passage on the notes page) and shows related
-// posts; { ask: false } hides the switch. /api/* answers come from fixtures/api.json; Turnstile is a stub. search-*.
+// once opened and switched on, asks once at a time, links its [n] (a notes passage on the notes page), numbered by post
+// with each link's card naming its passage, and shows related posts; { ask: false } hides the switch. /api/* answers
+// come from fixtures/api.json; Turnstile is a stub. search-*.
 import fs from 'node:fs';
 import matter from 'gray-matter';
 import { isLive } from '../../src/data/exempt.js';
@@ -25,6 +26,11 @@ const TURNSTILE = `(() => {
 const input = (page) => page.locator('.search-input');
 const results = (page) => page.locator('.results .row');
 const words = (s) => s.toLowerCase().match(/[\p{L}\p{N}]+/gu).join(' ');
+// Goobie's links as they read: [label, page path, anchor] each.
+const citeLinks = (page) => page.locator('.ask-cite').evaluateAll((as) => as.map((a) => {
+  const u = new URL(a.getAttribute('href'), location.href);
+  return [a.textContent, u.pathname, u.hash.slice(1)];
+}));
 
 // A challenge nobody solves: Turnstile gives up on it (timeout-callback), each time it is rendered or reset.
 const UNSOLVED = `(() => {
@@ -216,21 +222,20 @@ test.describe('Ask Goobie', () => {
     await expect(page.locator('.search-go')).toBeDisabled();
     await expect(page.locator('.search')).toHaveClass(/is-thinking/);
     await input(page).press('Enter');   // a second Enter while one is out sends nothing
-    await expect(page.locator('.ask-text')).toHaveText(reply.answer);
+    // Every cite is a passage of one post, so each reads [1], and a run of them ([1][2], [1][3]) shows once.
+    await expect(page.locator('.ask-text')).toHaveText(reply.answer.replace(/(\[\d+\])+/g, '[1]'));
     await expect(page.locator('.search-go')).toBeEnabled();
     expect(seen.api.filter((a) => a === 'POST /api/ask')).toHaveLength(1);
     await expect(page.locator('.ask-fine')).toHaveText("Goobie answers from Aaron's posts only and can be wrong.");
     expect(await page.locator('.ask-related .row-link').evaluateAll((as) => as.map((a) => a.getAttribute('href'))))
       .toEqual(reply.related.map((s) => `/ledger/${s}/`));
 
-    const cites = page.locator('.ask-cite');
-    await expect(cites).toHaveCount(reply.answer.match(/\[\d+\]/g).length);
-    for (const c of await cites.all()) {
-      const label = await c.textContent();
-      const cite = reply.cites.find((x) => `[${x.n}]` === label);
-      const href = await c.getAttribute('href');
-      expect(href.startsWith(`/ledger/${cite.slug}/${cite.kind === 'notes' ? 'notes/' : ''}?hl=`)).toBe(true);
-      expect(href.endsWith(cite.anchor ? `#${cite.anchor}` : '')).toBe(true);
+    // Each link goes to its own passage: a run, to its first.
+    const post = '/ledger/renting-a-gpu/';
+    expect(await citeLinks(page)).toEqual([['[1]', post, 'short'], ['[1]', post, ''], ['[1]', post, 'short'],
+      ['[1]', post, 'the-first-night-it-was-barely-faster']]);
+    for (const href of await page.locator('.ask-cite').evaluateAll((as) => as.map((a) => a.getAttribute('href')))) {
+      expect(href).toMatch(/^\/ledger\/renting-a-gpu\/\?hl=[^#]+(#.+)?$/);
     }
     // A second question uses the same session; no second solve.
     await input(page).fill('What did the first night cost?');
@@ -241,8 +246,7 @@ test.describe('Ask Goobie', () => {
 
     // A citation opens its passage with the question's words marked.
     await expect(page.locator('.search-go')).toBeEnabled();
-    const cited = cites.filter({ hasText: '[3]' }).first();
-    await cited.click();
+    await page.locator('.ask-cite[href$="#the-first-night-it-was-barely-faster"]').click();
     await page.waitForURL(/#the-first-night-it-was-barely-faster$/);
     await expect(page.locator('mark.hl').first()).toBeVisible();
   });
@@ -270,18 +274,91 @@ test.describe('Ask Goobie', () => {
       await expect(page.locator('[data-mode="ask"]')).toHaveAttribute('aria-pressed', 'true');
       await input(page).fill('What went wrong making the Inscryption cards?');
       await input(page).press('Enter');
-      await expect(page.locator('.ask-text')).toHaveText(reply.answer);
-      for (const c of reply.cites) {
-        const href = await page.locator('.ask-cite', { hasText: `[${c.n}]` }).first().getAttribute('href');
-        const path = c.kind === 'notes' ? `/ledger/${c.slug}/notes/` : `/ledger/${c.slug}/`;
-        expect(new URL(href, 'https://x').pathname).toBe(path);
-        expect(href.endsWith(c.anchor ? `#${c.anchor}` : '')).toBe(true);
-      }
-      await page.locator('.ask-cite', { hasText: `[${notes.n}]` }).first().click();
+      // One post, its notes included: every run reads [1] and goes to its first passage, [5] to the notes page.
+      await expect(page.locator('.ask-text')).toHaveText(reply.answer.replace(/(\[\d+\])+/g, '[1]'));
+      const post = `/ledger/${notes.slug}/`;
+      expect(await citeLinks(page)).toEqual([['[1]', post, 'short'], ['[1]', post, 'short'], ['[1]', post, 'short'],
+        ['[1]', post, 'short'], ['[1]', `${post}notes/`, notes.anchor]]);
+      await page.locator(`.ask-cite[href*="/notes/"][href$="#${notes.anchor}"]`).click();
       await page.waitForURL(new RegExp(`/ledger/${notes.slug}/notes/\\?hl=[^#]+#${notes.anchor}$`));
       await expect(page.locator(`[data-post-article] [id="${notes.anchor}"]`)).toHaveCount(1);
       await expect(page.locator('mark.hl').first()).toBeVisible();
     });
+  });
+
+  // Aaron's two answers of 2026-11-01 (D1 ask_cache), word for word, the first with a cite of another post (a run with a
+  // space in it) and one of a notes page added: [4][5], [4], [5] and [1] are all passages of one post.
+  const ANSWERS = [{
+    answer: "Aaron's post on long AI films is closest. MiniMax-H3 makes six seconds a go [4][5]. Saved latents chain clips [4]. " +
+      'Films ran 13 minutes [5]. Free memory before every clip [1]. A script folded the paper puppet [7] [2]. ' +
+      'Only a screenshot caught the black cards [9].',
+    cites: [
+      { n: 1, slug: 'every-ai-film-so-far', kind: 'post', anchor: 'what-held-across-all-of-it', heading: 'What held across all of it', title: 'Making long AI films' },
+      { n: 2, slug: 'paper-jefrie', kind: 'post', anchor: '', heading: '', title: 'Paper' },
+      { n: 4, slug: 'every-ai-film-so-far', kind: 'post', anchor: 'how-the-chaining-works', heading: 'How the chaining works', title: 'Making long AI films' },
+      { n: 5, slug: 'every-ai-film-so-far', kind: 'post', anchor: '', heading: '', title: 'Making long AI films' },
+      { n: 7, slug: 'paper-jefrie', kind: 'post', anchor: 'where-the-idea-came-from', heading: 'Where the idea came from', title: 'Paper' },
+      { n: 9, slug: 'characters-in-inscryption', kind: 'notes', anchor: 'how-to-play-it', heading: 'How to play it', title: 'My characters in Inscryption: the making-of notes' }],
+    related: ['every-ai-film-so-far', 'paper-jefrie', 'ai-rigging-vs-a-script'], cached: true,
+    reads: "Aaron's post on long AI films is closest. MiniMax-H3 makes six seconds a go [1]. Saved latents chain clips [1]. " +
+      'Films ran 13 minutes [1]. Free memory before every clip [1]. A script folded the paper puppet [2]. ' +
+      'Only a screenshot caught the black cards [3].',
+    links: [
+      ['[1]', 'every-ai-film-so-far', '', 'how-the-chaining-works', 'How the chaining works'],
+      ['[1]', 'every-ai-film-so-far', '', 'how-the-chaining-works', 'How the chaining works'],
+      ['[1]', 'every-ai-film-so-far', '', '', 'the opening'],
+      ['[1]', 'every-ai-film-so-far', '', 'what-held-across-all-of-it', 'What held across all of it'],
+      ['[2]', 'paper-jefrie', '', 'where-the-idea-came-from', 'Where the idea came from'],
+      ['[3]', 'characters-in-inscryption', 'notes/', 'how-to-play-it', 'How to play it, in the full making-of']],
+  }, {
+    answer: 'Closest is the paper Jefrie post [4]. Rigging tools lost to a script [5]. Start with [4] then [5].',
+    cites: [
+      { n: 4, slug: 'paper-jefrie', kind: 'post', anchor: 'where-the-idea-came-from', heading: 'Where the idea came from', title: 'Paper' },
+      { n: 5, slug: 'ai-rigging-vs-a-script', kind: 'post', anchor: '', heading: '', title: 'Rigging' }],
+    related: ['paper-jefrie', 'ai-rigging-vs-a-script', 'every-ai-film-so-far'], cached: true,
+    reads: 'Closest is the paper Jefrie post [1]. Rigging tools lost to a script [2]. Start with [1] then [2].',
+    links: [
+      ['[1]', 'paper-jefrie', '', 'where-the-idea-came-from', 'Where the idea came from'],
+      ['[2]', 'ai-rigging-vs-a-script', '', '', 'the opening'],
+      ['[1]', 'paper-jefrie', '', 'where-the-idea-came-from', 'Where the idea came from'],
+      ['[2]', 'ai-rigging-vs-a-script', '', '', 'the opening']],
+  }];
+
+  test('search-15 cites are numbered by post with no gaps, and each one\'s card names its post and passage', async ({ page, context, request, isMobile }) => {
+    await watch(page, context);
+    const { posts } = await (await request.get('/ledger/previews.json')).json();
+    const replies = [...ANSWERS];
+    await page.route('**/api/ask', (route) => route.fulfill({ json: replies.shift() }));
+    await page.goto('/ledger/');
+    await page.locator('[data-mode="ask"]').click();
+    await expect(page.locator('[data-mode="ask"]')).toHaveAttribute('aria-pressed', 'true');
+    for (const [i, reply] of ANSWERS.entries()) {
+      await input(page).fill(`What did Aaron find, question ${i}?`);
+      await input(page).press('Enter');
+      await expect(page.locator('.ask-text')).toHaveText(reply.reads);
+      expect(await citeLinks(page)).toEqual(reply.links.map(([n, slug, notes, anchor]) => [n, `/ledger/${slug}/${notes}`, anchor]));
+      const cites = page.locator('.ask-cite');
+      // No native tooltip doubling the card; a screen reader hears the source, its post and its passage.
+      expect(await cites.evaluateAll((as) => as.filter((a) => a.hasAttribute('title')).length)).toBe(0);
+      for (const [j, [n, slug, , , where]] of reply.links.entries()) {
+        await expect(cites.nth(j)).toHaveAttribute('aria-label', `Source ${n.slice(1, -1)}: ${posts[slug].title}, ${where}`);
+      }
+      if (isMobile) continue;   // phones never get a card (ledger-4)
+      const card = page.locator('.lp-card');
+      for (const [j, [, slug, , , where]] of reply.links.entries()) {
+        await cites.nth(j).hover();
+        await expect(card).toHaveClass(/lp-on/);
+        await expect(card.locator('.lp-title')).toHaveText(posts[slug].title);
+        await expect(card.locator('.lp-line')).toHaveText(`Goobie cites: ${where}`);
+        await expect(card.locator('.lp-meta')).toContainText(posts[slug].id);
+      }
+      // Any other link's card is as it was: no line.
+      await page.locator('.ask-related .row-link').first().hover();
+      await expect(card.locator('.lp-title')).toHaveText(posts[reply.related[0]].title);
+      await expect(card.locator('.lp-line')).toBeHidden();
+      await page.mouse.move(5, 5);
+      await expect(card).not.toHaveClass(/lp-on/);
+    }
   });
 
   test.describe('switched off', () => {
