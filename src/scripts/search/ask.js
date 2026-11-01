@@ -24,7 +24,8 @@ const SAY = {
 
 let turnstile = null;     // a promise of window.turnstile
 let widget = null;        // the rendered widget's id
-let solving = null;       // { promise, resolve } of the token a solve under way will mint
+let host = null;          // the box it was rendered into (the homepage overlay mounts a fresh box every time)
+let solving = null;       // { promise, resolve, box } of the token a solve under way will mint
 let asking = false;
 
 const kept = () => JSON.parse(sessionStorage.getItem(KEPT) || 'null');
@@ -57,13 +58,16 @@ function finish(token) {
 
 // A promise of an Ask token from a new solve: the widget's first, or a reset once a session has run out.
 function solve(ui) {
-  if (solving) return solving.promise;
+  if (solving?.box === ui.turnstile) return solving.promise;
+  finish(null);           // a solve left under way in a box that has since gone
   let resolve;
   const promise = new Promise((r) => { resolve = r; });
-  solving = { promise, resolve };
+  solving = { promise, resolve, box: ui.turnstile };
   loadTurnstile().then((ts) => {
-    if (widget !== null) return ts.reset(widget);
-    widget = ts.render(ui.turnstile, {
+    if (widget !== null && host === ui.turnstile) return ts.reset(widget);
+    if (widget !== null) ts.remove(widget);
+    host = ui.turnstile;
+    widget = ts.render(host, {
       sitekey: SITE_KEY, action: 'ask', appearance: 'interaction-only', 'refresh-expired': 'manual',
       callback: (t) => mint(t).then(finish),
       'error-callback': () => finish(null),
