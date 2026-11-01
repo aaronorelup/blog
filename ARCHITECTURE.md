@@ -9,7 +9,7 @@ will add appears only as a row marked `(planned, T#.#)`. Each task updates its o
 An Astro static site. Markdown posts become pages at build time. Cloudflare serves `dist/` as Workers static
 assets, and one small Worker (`worker/`) runs only for what needs a secret or state: video and audio from R2, the
 reads counter and the `/stats` snapshot in D1, the meaning half of search and Ask Goobie (Workers AI, Vectorize,
-DeepSeek; read-aloud is a stub until T2.4). Every push to
+DeepSeek), and the read-aloud recordings (ElevenLabs, into R2). Every push to
 `main` is built by Workers Builds with `npm run build` and deployed; any other branch fails its build on purpose
 (`astro.config.mjs`). There is no framework in the browser: pages are server-rendered HTML, and behaviour is plain
 modules and custom elements.
@@ -53,7 +53,7 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 3. The crons (`CRONS` in `worker/index.js`): every minute one small step of the stats gatherer
    (`worker/stats/index.js`, its pure half `worker/stats/shape.js`), of the search index sync
    (`worker/search/sync.js`) and of the daily sweep (`worker/cleanup.js`, at 03:07 UTC); every ten minutes one
-   read-aloud step (a stub until T2.4).
+   read-aloud recording step (`worker/read/step.js`).
 
 ## A build
 
@@ -89,6 +89,7 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 | `/rss.xml`, `/sitemap.xml` | `src/pages/rss.xml.js`, `sitemap.xml.js` | feed readers, search engines |
 | `/courses/i-love-my-evening-television/**/thumbs/` | `scripts/lore-thumbs.mjs` | the lore course's index cards |
 | `/search/manifest.json`, `/search/docs/<kind>-<slug>.json` | `src/pages/search/`, from `src/lib/search/` | `worker/search/sync.js`, which embeds the docs whose hash moved |
+| `/read/index.json`, `/read/<slug>.json` | `src/pages/read/`, from `src/lib/read/`, for the posts it records (listed, never a live notebook) | `worker/read/step.js`, which records the sections whose hash isn't in R2 yet |
 
 ### The extraction: `text`
 
@@ -150,6 +151,7 @@ fails the build, or only warns in a live notebook.
 | `src/data/banned-phrases.js` | the phrases and dead links WRITING.md bans (plain: nothing private) |
 | `src/data/never-publish.json` | salted SHA-256 of the private never-publish terms (`npm run never-publish:hash`) |
 | `src/data/public-keys.js` | keys meant to be public: Ask's Turnstile site key |
+| `src/data/voice.js` | the read-aloud voice, model, format and settings, `EXTRACT_V`, `SPEAK_V`: every recording's hash covers them |
 | `src/data/media-manifest.json` | every file in the R2 bucket, its size and MD5 (`npm run media:push`) |
 | `src/data/listed.js`, `preview-budget.js` | one-line re-exports until W4 (`isListed` lives in `src/lib/posts.js`) |
 | `src/data/series.js`, `courses.js` | v1 threads, read by nothing since T2.1 (W4 deletes it); the courses |
@@ -166,6 +168,7 @@ fails the build, or only warns in a live notebook.
 | `src/lib/text/plain.js` | a post's Markdown as plain words (the fallback card), and reading minutes from `text.words` (the post header's, the card's and the ledger row's) |
 | `src/lib/og/` | `card.js` draws a share card with sharp (1200×630 JPEG: icon or glyph, id and topic, the title in Zen Maru Gothic from `src/assets/fonts/`, the verdict); `image.js` names it by hash, keeps it in `node_modules/.astro/og/`, and fails the build on a card that can't be drawn, except a live notebook's, which falls back to `public/og/default.jpg` |
 | `src/lib/build.js` | `COMMIT`, the commit a build is made from (the `ao-build` meta) |
+| `src/lib/read/` | `posts.js` (`recordable`: the posts recorded, listed and never a live notebook; `ranked`, the cron's order), `sections.js` (a post → sections and their hashes), `speak.js` (the copy the voice reads: numbers, money, units, dates, clock times and lengths spelled out, with its map back to the screen), `align.js` (the voice's character times → words). `speak.js` and `align.js` run in the Worker too |
 | `src/lib/search/chunks.js`, `docs.js` | a listed post or its notes → search chunks (the short version, then each h2 section, at most 1,500 characters) and the manifest; `docs.js` reads the build's posts once |
 | `src/lib/lore*.js` | the lore course's data and drawings |
 | `src/lib/projects.js` | the projects page's data: `SECTIONS`, order, state chips, needs glyphs, pictures or icons, `DERIVED` (the course's live lesson count); a card linking an unlisted post fails the build |
@@ -174,12 +177,13 @@ fails the build, or only warns in a live notebook.
 | `src/pages/og/[slug].jpg.js` | each listed post's share card (`src/lib/og/`) |
 | `src/pages/courses/**`, `src/pages/research/**` | the course and research pages |
 | `src/pages/search/` | `manifest.json.js`, `docs/[doc].json.js`: search's build files |
+| `src/pages/read/` | `index.json.js`, `[slug].json.js`: read-aloud's build files |
 | `src/layouts/PanelPage.astro` | every panel page: `site.css`, `chrome/Head` (`published`: shared as an article), `ModeToggle`, `PanelChrome` (`active` lights the nav, `view` names the view), and `mountView` on its `[data-panel-view]` |
 | `src/components/chrome/` | `Head` (share tags, `ao-build` meta, font preload, the pre-paint mode script; both layouts), `PanelChrome` (header, nav, scroller, footer; `data-active-view`, and `data-panel-view` on a standalone page's view wrapper), `ModeToggle`, `Glyph` |
 | `src/components/ledger/` | `LedgerView` (`/ledger/`), `SearchBox` (the box and its Search \| Ask Goobie switch), `StartHere`, `PostCard` (icon or glyph, title, stamp: Start here's and a post's Read next), `Chips` (topic and project counts, real links `?topic=`), `LedgerRow` (icon or glyph, title link with `data-ledger-entry`, summary, meta, the stamp's `<details>` short version) |
 | `src/components/{about,courses,research}/` | `AboutView`; `CoursesView`, `LessonList`, `Coin`; `ResearchView` |
 | `src/components/projects/` | `ProjectsView` (`/projects`), `JumpRow`, `Highlights` (the reel from `picks.js REEL` and the cards marked `highlight`), `ProjectSection`, `ProjectCard`, `NeedsGlyph` |
-| `src/components/post/` | `PostView` (the article: `data-post-article`, `data-panel-view` `post` or `notes`, `data-slug`), `PostHeader` (icon or glyph, id · date · minutes, topic and project chips, title `data-r=t`, summary `data-r=s`, the byline on `voice: claude` pages, `ReadAloud`), `ShortVersion` (`#short`, the post's card), `NotesLink`, `Contents` (4+ h2 or 900+ words), `Related` (three `ledger/PostCard`s), `PostNav`, `ElementStyles`, `ReadAloud` (a stub until T2.4) |
+| `src/components/post/` | `PostView` (the article: `data-post-article`, `data-panel-view` `post` or `notes`, `data-slug`), `PostHeader` (icon or glyph, id · date · minutes, topic and project chips, title `data-r=t`, summary `data-r=s`, the byline on `voice: claude` pages, `ReadAloud`), `ShortVersion` (`#short`, the post's card), `NotesLink`, `Contents` (4+ h2 or 900+ words), `Related` (three `ledger/PostCard`s), `PostNav`, `ElementStyles`, `ReadAloud` (the Listen button; `data-read-hash` names this version's recording, absent on a post never recorded) |
 | `src/components/panel/*View.astro` | `PanelChrome`, `AboutView`, `CoursesView`, `ProjectsView` and `LedgerView`: stubs for `index.astro` until T3.1 (`LedgerView`'s also mounts `views/ledger.js` in the overlay) |
 | `src/components/lore/` | the lore course |
 
@@ -197,20 +201,22 @@ fails the build, or only warns in a live notebook.
 | `src/scripts/search/` + `src/styles/search.css` | `box.js` (the box, `/`, the switch), `keyword.js` (Pagefind, on first focus), `semantic.js` (`/api/search`, 400 ms after typing, at most 40 a page), `merge.js` (reciprocal rank), `results.js` (rows, `pagePath(slug, kind)` and deep links `?hl=&hs=#heading`), `terms.js`, `ask.js` (Ask Goobie: `/api/session`, Turnstile only when Ask is on, the session in `sessionStorage`, `/api/ask`) |
 | `src/scripts/post/` | `target.js` (`targetOf(root, hash)`: the element a `#fragment` names, from the address, never `:target`), `highlight.js` (marks a deep link's sentence or words in its section, opens its `<details>`, centres it in `#panel-scroll`; loaded only for a `?hl=`/`?hs=` link), `contents.js` (the contents list: open beside the text from 1180 px, the heading read marked by an IntersectionObserver on `#panel-scroll`), `details.js` (opens the `<details>` holding the `#target`) |
 | `src/scripts/views/index.js` | `mountView(root, fallbackUrl)`: imports `./<data-panel-view>.js` (through `lazy`) and runs its `mount(root)`; no module, no-op. `PanelPage` calls it, and the overlay will |
-| `src/scripts/views/post.js`, `notes.js` | the post view: `enhance()`, the contents list, folded details, where a link lands once the components drew (after Reload or Back the place kept in `history.state`, for a `?hl=`/`?hs=` link the passage `highlight` marks, else the `#heading`; a place is held while the article grows, until the reader moves), the hover card (mouse only), and the Listen hook T2.4 fills; `notes.js` is the same without Listen |
+| `src/scripts/views/post.js`, `notes.js` | the post view: `enhance()`, the contents list, folded details, where a link lands once the components drew (after Reload or Back the place kept in `history.state`, for a `?hl=`/`?hs=` link the passage `highlight` marks, else the `#heading`; a place is held while the article grows, until the reader moves), the hover card (mouse only), and the Listen button (`read-aloud/listen.js`); `notes.js` is the same without Listen |
+| `src/scripts/read-aloud/` | `listen.js` (`bind(root)`: the Listen button, loads the rest on first press), `index.js` (karaoke mode: open, play, marks, click a word, follow; one of the page's players through `elements/_core/player.js`), `dom.js` (read blocks on screen, by the shared rules), `recorded.js` (the recording's parts on one `<audio>`), `speech.js` (the browser's voice), `bar.js` |
 | `src/scripts/home-scene.js` | the homepage scene and overlay (split into `scripts/home/` by T3.1 and T3.2) |
 | `src/scripts/stats/**`, `src/styles/stats/**` | the `/stats` page: its own code, kept as is |
 | `src/scripts/mode.js` | the panel pages' day/night toggle: `data-mode`, the stored choice, `aria-pressed` |
 | `src/scripts/views/projects.js` | the projects view's module (`mount(root)` → unmount): the hover card on its post links |
 | `src/scripts/views/ledger.js` | the ledger view's module: chips, search box, feed copy, hover card |
 | `src/styles/tokens.css` | every colour as a day/night pair, the `--pc-*` and `--home-*` tokens per mode (plain strings: the `/stats` canvas parses them), the homepage tween (`:root[data-tweening]` mixes by `--mix`), fonts, type scale, space, radii, z |
-| `src/styles/site.css` | the one stylesheet of every panel page: tokens, base, chrome, prose, post, cards, ledger, search, projects, about, research (later tasks add theirs) |
+| `src/styles/site.css` | the one stylesheet of every panel page: tokens, base, chrome, prose, post, read-aloud, cards, ledger, search, projects, about, research (later tasks add theirs) |
 | `src/styles/post.css` | the post page (`.post-*`, `.short-*`, `.toc*`, `.notes-link`, `.rel-*`); each part carries its own width, so a copy of the article's insides lays out the same |
+| `src/styles/read-aloud.css` | the Listen button, karaoke mode's bar, `::highlight(ao-read)` |
 | `src/styles/{base,chrome,prose,about,research}.css` | page-wide rules; the frame, the view header, shared hover states; long-form text (`.pc-prose`, folded `<details>`); the text pages (`.page-*`: About, 404); a research document |
 | `src/styles/projects.css` | the projects page (`.proj-*`), on `--pc-*` tokens only so the overlay's tween carries it |
 | `src/styles/ledger.css` | the ledger (`.row-*`, `.chip*`, `.post-card*`, `.start-*`, `.month`, `.ledger-feed*`), on `--pc-*` tokens only |
 | `src/styles/fonts.css`, `public/fonts/` | written by `scripts/tools/fonts.mjs`: Google's own woff2 slices, self-hosted under content-hashed names |
-| `src/styles/panel.css` | an `@import` stub (tokens, chrome, prose, post, cards, ledger, search, projects, about) for `index.astro` until T3.2 |
+| `src/styles/panel.css` | an `@import` stub (tokens, chrome, prose, post, read-aloud, cards, ledger, search, projects, about) for `index.astro` until T3.2 |
 | `src/styles/lore.css`, `courses.css` | the course looks |
 
 ### `scripts/` (Node)
@@ -248,8 +254,8 @@ fails the build, or only warns in a live notebook.
 | `worker/search/` | `serve.js` (`GET /api/search`), `retrieve.js` (embed and query, shared with Ask), `sync.js` (the index cron), `counts.js` (anonymous counts), `search.sql` |
 | `worker/ask/` | `serve.js` (`POST /api/ask`), `prompt.js` (Goobie, who speaks as itself and of Aaron by name; the excerpts; citations with their `kind`), `deepseek.js` (the one call), `ask.sql` |
 | `worker/cleanup.js` | the daily sweep of old counts, answers and totals |
-| `worker/read/` | a stub until T2.4 |
-| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (Ask's guards, citations, excerpt headers and DeepSeek answers), `schema.test.mjs` (the posts schema's `voice`); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1 |
+| `worker/read/` | `step.js` (`read.step`: one post's missing sections a run, then its post file; capped by credit), `voice.js` (the ElevenLabs calls), `read.sql` |
+| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (Ask's guards, citations, excerpt headers and DeepSeek answers), `schema.test.mjs` (the posts schema's `voice`), `read.test.mjs` (the spoken copy and its map, alignment, section hashes, the read-aloud cron); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1 |
 | `tests/e2e/` | the behaviour suite: `INVENTORY.md`, `targets.json` (from `element-usage`), specs, fixtures |
 | `tests/baseline/urls.txt` | every page and contract file a build must still produce |
 | `src/scripts/stats/core/{agg,fmt}.test.mjs` | the two kept `/stats` tests |
@@ -322,6 +328,13 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   chunks of the best posts; `/api/ask` takes the chunks scoring at least `ask_min_score` (a D1 flag) as numbered
   excerpts for one DeepSeek call, cached in D1 on its exact messages. Switches and caps are D1 `flags` rows
   (`docs/WORKER.md`); the only thing stored about a query is its day, mode, normalised text and a count.
+- **Read-aloud.** The build cuts each recorded post's read blocks (listed posts, never a live notebook) into sections
+  (title, summary and opening, then one per h2) named by hashes, and writes `/read/<slug>.json` and
+  `/read/index.json`. Every ten minutes `read.step` records the first post by rank whose sections aren't all in R2,
+  with the Worker's own ElevenLabs key, and writes `read/<slug>/<post hash>.json` when the last one is in. On the page,
+  Listen (`ReadAloud.astro`, bound by `views/post.js`) loads `src/scripts/read-aloud/`: it plays that recording when it
+  exists, else the browser's own voice (the only voice of a post never recorded), marks each word on screen from the
+  shared read rules, and starts wherever the reader clicks. Writers do nothing.
 - **Media.** Video and audio are uploaded by `npm run media:push` and listed in `media-manifest.json`; the Worker
   serves them from R2 at their normal URLs. Pictures and captions stay in `public/` (`docs/MEDIA.md`).
 - **Icons and project pictures.** `public/media/icons/<AO-###>.webp` (256 px) and `-96.webp`, keyed by post id, and
