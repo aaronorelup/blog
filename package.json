@@ -14,6 +14,7 @@
     "never-publish:hash": "node scripts/tools/never-publish-hash.mjs",
     "media:push": "node scripts/media/push.mjs",
     "media:verify": "node scripts/media/verify.mjs",
+    "searches": "node scripts/tools/searches.mjs",
     "e2e": "playwright test -c tests/e2e/playwright.config.mjs",
     "e2e:live": "playwright test -c tests/e2e/live.config.mjs"
   },
