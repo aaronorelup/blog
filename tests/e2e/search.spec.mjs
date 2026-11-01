@@ -287,11 +287,12 @@ test.describe('Ask Goobie', () => {
   });
 
   // Aaron's two answers of 2026-11-01 (D1 ask_cache), word for word, the first with a cite of another post (a run with a
-  // space in it) and one of a notes page added: [4][5], [4], [5] and [1] are all passages of one post.
+  // space in it), a run that goes back to the first post and one cite of a notes page added: [4][5], [4], [5] and [1]
+  // are all passages of one post.
   const ANSWERS = [{
     answer: "Aaron's post on long AI films is closest. MiniMax-H3 makes six seconds a go [4][5]. Saved latents chain clips [4]. " +
       'Films ran 13 minutes [5]. Free memory before every clip [1]. A script folded the paper puppet [7] [2]. ' +
-      'Only a screenshot caught the black cards [9].',
+      'Both lean on code [4] [2][1]. Only a screenshot caught the black cards [9].',
     cites: [
       { n: 1, slug: 'every-ai-film-so-far', kind: 'post', anchor: 'what-held-across-all-of-it', heading: 'What held across all of it', title: 'Making long AI films' },
       { n: 2, slug: 'paper-jefrie', kind: 'post', anchor: '', heading: '', title: 'Paper' },
@@ -302,13 +303,15 @@ test.describe('Ask Goobie', () => {
     related: ['every-ai-film-so-far', 'paper-jefrie', 'ai-rigging-vs-a-script'], cached: true,
     reads: "Aaron's post on long AI films is closest. MiniMax-H3 makes six seconds a go [1]. Saved latents chain clips [1]. " +
       'Films ran 13 minutes [1]. Free memory before every clip [1]. A script folded the paper puppet [2]. ' +
-      'Only a screenshot caught the black cards [3].',
+      'Both lean on code [1] [2]. Only a screenshot caught the black cards [3].',
     links: [
       ['[1]', 'every-ai-film-so-far', '', 'how-the-chaining-works', 'How the chaining works'],
       ['[1]', 'every-ai-film-so-far', '', 'how-the-chaining-works', 'How the chaining works'],
       ['[1]', 'every-ai-film-so-far', '', '', 'the opening'],
       ['[1]', 'every-ai-film-so-far', '', 'what-held-across-all-of-it', 'What held across all of it'],
       ['[2]', 'paper-jefrie', '', 'where-the-idea-came-from', 'Where the idea came from'],
+      ['[1]', 'every-ai-film-so-far', '', 'how-the-chaining-works', 'How the chaining works'],
+      ['[2]', 'paper-jefrie', '', '', 'the opening'],
       ['[3]', 'characters-in-inscryption', 'notes/', 'how-to-play-it', 'How to play it, in the full making-of']],
   }, {
     answer: 'Closest is the paper Jefrie post [4]. Rigging tools lost to a script [5]. Start with [4] then [5].',
@@ -351,6 +354,18 @@ test.describe('Ask Goobie', () => {
         await expect(card.locator('.lp-title')).toHaveText(posts[slug].title);
         await expect(card.locator('.lp-line')).toHaveText(`Goobie cites: ${where}`);
         await expect(card.locator('.lp-meta')).toContainText(posts[slug].id);
+      }
+      if (i === 0) {
+        // From one cite of a post straight to another only the line changes: its loop plays on, never from the start.
+        expect(posts['every-ai-film-so-far'].loop).toBeTruthy();
+        const video = card.locator('.lp-video');
+        await cites.nth(0).hover();
+        await expect(video).toHaveClass(/lp-ready/);
+        await expect.poll(() => video.evaluate((v) => v.currentTime > 0.5 && v.currentTime < v.duration / 2)).toBe(true);
+        const at = await video.evaluate((v) => v.currentTime);
+        await cites.nth(2).hover();
+        await expect(card.locator('.lp-line')).toHaveText('Goobie cites: the opening');
+        expect(await video.evaluate((v) => v.currentTime)).toBeGreaterThan(at);
       }
       // Any other link's card is as it was: no line.
       await page.locator('.ask-related .row-link').first().hover();

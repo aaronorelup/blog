@@ -161,13 +161,16 @@ anyone on a phone.
   shrinks to a thumbnail the text wraps around, then the picture goes, then the points go and
   only the verdict and takeaway stay. On a 1440×900 screen, 105 of 120 placements (every row at
   the top, middle and bottom of the screen) were full size. At 1280×720, 79.
-- **On Goobie's citations** (Ask Goobie's `[1]`, `[2]` on `/ledger/`) the card is the cited post's, with one more line
-  under the title naming the passage the link lands on: "Goobie cites: How the chaining works", "the opening", "the
-  short version", or for a passage of the notes page, "..., in the full making-of". Two citations of one post show the
-  same card with different lines. A citation of a notes page gets its post's card this way; any other link to a notes
-  page gets none, since without that line the card would pass the post off as the notes. The numbers count posts, not
-  passages (1, 2, 3 in order of first mention, every passage of one post under one number), and a citation has no
-  native tooltip, which would double the card.
+- **On Goobie's citations** (Ask Goobie's `[1]`, `[2]` on `/ledger/`) the card is the cited post's,
+  with one more line under the title naming the passage the link lands on: "Goobie cites: How the
+  chaining works", "the opening", "the short version", or for a passage of the notes page, "...,
+  in the full making-of". Two citations of one post show the same card with different lines, and
+  moving straight from one to the other changes only the line: its loop plays on. A citation of a
+  notes page gets its post's card this way; any other link to a notes page gets none, since without
+  that line the card would pass the post off as the notes. The numbers count posts, not passages
+  (1, 2, 3 in order of first mention, every passage of one post under one number, a run of
+  citations showing each post once), and a citation has no native tooltip, which would double the
+  card.
 - Not on phones or tablets, and not in print.
 
 ## How it works (for whoever changes it)
