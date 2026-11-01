@@ -1,5 +1,5 @@
 // Every size limit in one place; PREVIEWS.md and WRITING.md say why each number is what it is.
-// Caps fail the build (src/schemas/), targets are what writers and scripts/preview-media.mjs aim under.
+// Caps fail the build (src/schemas/), targets are what writers and scripts/tools/preview-media.mjs aim under.
 export const TEXT = { titleCap: 90, titleTarget: 70, summaryCap: 260, summaryTarget: 240,
                       verdict: 36, takeaway: 200, point: 150, maxPoints: 3 };
 // Every preview still and loop is exactly this frame, so a card's height is known before anything loads.

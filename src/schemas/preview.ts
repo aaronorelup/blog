@@ -8,7 +8,7 @@ export const preview = z.object({
   verdict: text.optional(),
   takeaway: text.optional(),
   points: z.array(text).default([]),
-  image: z.string().optional(),     // 640×360 stills and loops made by scripts/preview-media.mjs
+  image: z.string().optional(),     // 640×360 stills and loops made by scripts/tools/preview-media.mjs
   loop: z.string().optional(),
   alt: z.string().optional(),
 });
@@ -25,6 +25,6 @@ export function checkPreview(p: Preview, issue: Issue) {
   p.points.forEach((x, i) => cap(`points.${i}`, x, TEXT.point));
   if (p.points.length > TEXT.maxPoints) issue('preview.points', `at most ${TEXT.maxPoints} points`);
   for (const k of ['image', 'loop'] as const)
-    if (p[k] && !p[k].startsWith('/media/previews/')) issue(`preview.${k}`, 'make it with scripts/preview-media.mjs (PREVIEWS.md)');
+    if (p[k] && !p[k].startsWith('/media/previews/')) issue(`preview.${k}`, 'make it with scripts/tools/preview-media.mjs (PREVIEWS.md)');
   if (p.loop && !p.image) issue('preview.loop', 'a preview loop needs its still');
 }

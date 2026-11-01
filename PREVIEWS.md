@@ -106,11 +106,11 @@ file is under its target:
 
 ```bash
 cd blog
-node scripts/preview-media.mjs <slug> /media/<folder>/<file>.webp                       # a still
-node scripts/preview-media.mjs <slug> /media/<folder>/<clip>.mp4 --at 41.5 --dur 3      # still + loop
-node scripts/preview-media.mjs <slug> /media/<folder>/<sheet>.webp --fit blur           # portrait or odd shape
-node scripts/preview-media.mjs <slug> /media/<folder>/<img>.webp --focus top            # keep the head in a crop
-node scripts/preview-media.mjs <slug> /media/<folder>/<clip>.mp4 --at 12 --still        # only a still, from a video
+node scripts/tools/preview-media.mjs <slug> /media/<folder>/<file>.webp                       # a still
+node scripts/tools/preview-media.mjs <slug> /media/<folder>/<clip>.mp4 --at 41.5 --dur 3      # still + loop
+node scripts/tools/preview-media.mjs <slug> /media/<folder>/<sheet>.webp --fit blur           # portrait or odd shape
+node scripts/tools/preview-media.mjs <slug> /media/<folder>/<img>.webp --focus top            # keep the head in a crop
+node scripts/tools/preview-media.mjs <slug> /media/<folder>/<clip>.mp4 --at 12 --still        # only a still, from a video
 ```
 
 Other options: `--crop w:h:x:y` cuts a region out of the source first, `--focus x,y` takes two
@@ -179,5 +179,5 @@ anyone on a phone.
   `LedgerView.astro` and `PostView.astro`, so it runs on `/ledger`, every post page and the
   homepage (whose panel renders `LedgerView`, and whose reader injects post bodies, so their links
   get cards too). It lives inside `#panel-screen` so it picks up the day/night palette.
-- `scripts/preview-media.mjs`: makes the media. It needs ffmpeg on PATH. The build doesn't (it
+- `scripts/tools/preview-media.mjs`: makes the media. It needs ffmpeg on PATH. The build doesn't (it
   only checks the files that are committed).

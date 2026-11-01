@@ -19,7 +19,7 @@ export default function assets(repo, report) {
       if (!url) continue;
       const bytes = bytesOf(url);
       if (bytes === undefined) report(file, keyLine(raw, key), `preview ${key} ${url} is neither under public/ nor in R2`, 'deploy');
-      else if (bytes > cap) report(file, keyLine(raw, key), `preview ${key} ${url} is ${kb(bytes)}, over the ${kb(cap)} cap: remake it with scripts/preview-media.mjs (PREVIEWS.md)`, 'deploy');
+      else if (bytes > cap) report(file, keyLine(raw, key), `preview ${key} ${url} is ${kb(bytes)}, over the ${kb(cap)} cap: remake it with scripts/tools/preview-media.mjs (PREVIEWS.md)`, 'deploy');
     }
   }
 

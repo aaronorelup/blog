@@ -40,4 +40,28 @@ only what the site plays.
 ## Working locally
 
 `npm run dev` sends any media file that is in the manifest but not on disk to the live site, so videos play in
-local previews too. `scripts/preview-media.mjs` downloads an R2 source from the live site the same way.
+local previews too. `scripts/tools/preview-media.mjs` downloads an R2 source from the live site the same way.
+
+## Pictures made to a size: icons and project pictures
+
+One tool does every resize-to-a-cap job, `scripts/tools/preview-media.mjs` (it needs ffmpeg). Its post form makes a
+hover card's still and loop (`PREVIEWS.md`); its `--out` form makes one WebP still at a size and under a byte cap, and
+fails if it can't fit. The caps are in `src/data/limits.js`, and `npm run check` and the build refuse a file over one.
+
+- **Post icons** are keyed by post id, because slugs get renamed: `public/media/icons/<AO-###>.webp` (256 px, at most
+  24 KB) and `<AO-###>-96.webp` (at most 6 KB). Pages find them through `src/lib/icons.js iconFor(post)`, which
+  returns null when there is no file, and then they draw the topic glyph. A live notebook never gets one. The 1024 px
+  originals are in Aaron's studio library (style "lantern gouache"); the agent kit's icon recipe makes new ones.
+
+  ```bash
+  node scripts/tools/preview-media.mjs <original or 512 px copy> --out public/media/icons/AO-075.webp --size 256 --cap 24k
+  node scripts/tools/preview-media.mjs <original or 512 px copy> --out public/media/icons/AO-075-96.webp --size 96 --cap 6k
+  ```
+- **Project pictures** (`src/content/projects/*.yaml`, `image.src`) are 640×360, at most 60 KB: a still or a frame
+  from the project's own post media or hosted page, never anything made for the card.
+
+  ```bash
+  node scripts/tools/preview-media.mjs /media/<folder>/<file>.webp --out public/media/projects/<name>.webp --size 640x360 --cap 60k
+  node scripts/tools/preview-media.mjs /media/<folder>/<clip>.mp4 --at 12 --out public/media/projects/<name>.webp --size 640x360 --cap 60k
+  ```
+  `--fit blur`, `--focus` and `--crop` work as in `PREVIEWS.md`. Look at the result before committing it.

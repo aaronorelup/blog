@@ -37,7 +37,7 @@ draft: true        # until Aaron says it's good, in his own words
 #   takeaway: "The main conclusion in one or two short sentences, with its number."
 #   points:
 #     - "A finding the takeaway doesn't say. 120 characters at most."
-#   image: "/media/previews/${slug}.webp"   # node scripts/preview-media.mjs ${slug} <source>
+#   image: "/media/previews/${slug}.webp"   # node scripts/tools/preview-media.mjs ${slug} <source>
 #   alt: "What the picture shows"
 ---
 

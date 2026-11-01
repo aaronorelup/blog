@@ -206,7 +206,7 @@ warns in a live notebook.
 | `scripts/tools/searches.mjs` | `npm run searches [-- days]`: the top search and Ask queries, for Aaron only (D1 through the API) |
 | `scripts/tools/element-usage.mjs`, `dist-diff.mjs` | every `<ao-*>`, video and iframe per built page (`--diff` for rewrites); two builds compared |
 | `scripts/lib/{secrets,cfapi}.mjs`, `scripts/tools/put-secret.mjs` | `secret(NAME)` from the environment or Infisical; the Cloudflare API client that finds or makes the Worker's resources; `put-secret` sets one Worker secret, never printing it |
-| `scripts/preview-media.mjs` | a post's card still and loop (`PREVIEWS.md`) |
+| `scripts/tools/preview-media.mjs` | every resize-to-a-cap job: a post's card still and loop (`PREVIEWS.md`), and with `--out --size --cap` one still (post icons, project pictures; `docs/MEDIA.md`) |
 | `scripts/clawd-growth-montage/`, `scripts/presentations/` | one-off generators for two posts (W4 deletes them) |
 
 ### `worker/` and `tests/`
