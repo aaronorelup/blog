@@ -68,3 +68,14 @@ test.describe('the hover card', () => {
     await expect(card(page).locator('.lp-title')).not.toBeEmpty();
   });
 });
+
+test('ledger-6 the copy button on the ledger page puts the feed’s address on the clipboard', async ({ page, context, browserName }) => {
+  test.skip(browserName !== 'chromium', 'clipboard permissions are Chromium-only in Playwright');
+  // Broken on main: only the homepage's scene binds #feed-copy, so on /ledger the button does nothing (INVENTORY
+  // ledger-6). overlay-11 holds the homepage's.
+  test.fail();
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto('/ledger/');
+  await page.locator('#feed-copy').click();
+  await expect(page.locator('#feed-copy')).toHaveText('copied', { timeout: 3000 });
+});

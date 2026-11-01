@@ -73,10 +73,13 @@ test('overlay-1 a card grows into the ledger, with no document load', async ({ p
   expect(await sameDocument(page)).toBe(true);
 });
 
-test('overlay-2 a row opens its post in the panel, with no document load', async ({ page }) => {
+test('overlay-2 a row opens its post in the panel, with no document load, its pictures enhanced', async ({ page }) => {
   await home(page);
   await openLedger(page);
   await openRow(page, modelPost);
+  // The overlay runs enhance(root) on the post it swapped in: its pictures are buttons that open the viewer.
+  await reader(page).locator('img[role=button]').first().click();
+  await expect(page.locator('dialog.ao-lb')).toBeVisible();
   expect(await sameDocument(page)).toBe(true);
 });
 
@@ -190,4 +193,16 @@ test('overlay-10 a deep link to a post is its real page, components working', as
   await page.goto(modelPost);
   await expect(page.locator('[data-post-article]')).toBeVisible();
   await expect.poll(() => page.evaluate(() => document.querySelectorAll('[data-post-article] :not(:defined)').length)).toBe(0);
+});
+
+test('overlay-11 the ledger’s copy button puts the feed’s address on the clipboard', async ({ page, context, browserName }) => {
+  test.skip(browserName !== 'chromium', 'clipboard permissions are Chromium-only in Playwright');
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await home(page);
+  await openLedger(page);
+  const copy = panel(page).locator('#feed-copy');
+  await copy.click();
+  await expect(copy).toHaveText('copied');
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(new URL('/rss.xml', page.url()).href);
+  await expect(copy).toHaveText('copy', { timeout: 5000 });
 });

@@ -1,5 +1,6 @@
 // The homepage scene (src/scripts/home-scene.js): waypoints by wheel, swipe, keys and the rail; the day/night toggle
-// tweens the world rather than cutting; no WebGL falls back to the flat page; the avatar flips like a coin.
+// tweens the world rather than cutting; no WebGL (or a lost context) falls back to the flat page; the avatar flips
+// like a coin; an outside link flies the camera out first; the backtick opens the staging tool.
 import sharp from 'sharp';
 import { chromium } from '@playwright/test';
 import { test, expect } from './fixtures.mjs';
@@ -107,4 +108,77 @@ test('home-7 without WebGL the scene bails to the flat page', async ({ browserNa
   expect(shown).toBe(true);
   await expect(page.locator('section[data-wp] a[href="/ledger"]').first()).toBeVisible();
   await browser.close();
+});
+
+const flash = (page) => page.locator('#scene-flash').evaluate((f) => parseFloat(getComputedStyle(f).opacity));
+
+test('home-8 an outside link flies the camera out through the gate, then opens; the scene comes back', async ({ page, context }) => {
+  await context.route('https://github.com/**', (r) => r.fulfill({ contentType: 'text/html', body: '<title>away</title>' }));
+  await scene(page);
+  const n = await rail(page).count();
+  await page.keyboard.press('End');
+  await expect.poll(() => at(page)).toBe(n - 1);
+  await settle(page);
+  // The white rises while the camera leaves (1.5 s) and is at full when the link opens, then fades: the page keeps
+  // the highest it saw, frame by frame.
+  await page.evaluate(() => {
+    window.__sameDocument = true;
+    window.__flashMax = 0;
+    const f = document.getElementById('scene-flash');
+    const tick = () => { window.__flashMax = Math.max(window.__flashMax, parseFloat(getComputedStyle(f).opacity)); requestAnimationFrame(tick); };
+    tick();
+  });
+  const link = page.locator('section[data-wp] a[href^="https://github.com/"][target="_blank"]').first();
+  const tab = context.waitForEvent('page');
+  const t0 = Date.now();
+  await link.click();
+  const away = await tab;
+  expect(Date.now() - t0).toBeGreaterThan(1000);
+  expect(await page.evaluate(() => window.__flashMax)).toBeGreaterThan(0.9);
+  expect(away.url()).toBe(await link.getAttribute('href'));
+  await away.close();
+  await expect.poll(() => flash(page)).toBe(0);
+  expect(await at(page)).toBe(n - 1);
+  expect(await page.evaluate(() => window.__sameDocument)).toBe(true);
+});
+
+test('home-9 a data-no-fly link leaves at once, without closing the panel or flying', async ({ page }) => {
+  await scene(page);
+  // The courses card's own link grows the Courses view; its rows are data-no-fly links to the course pages.
+  const card = page.locator('section[data-wp] a[href="/courses"]').first();
+  for (let k = 0; k < 6 && await card.evaluate((a) => a.closest('section').inert); k++) {
+    await page.keyboard.press('ArrowDown');
+    await settle(page);
+  }
+  const box = await card.boundingBox();
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+  await expect(page.locator('#panel-screen')).toHaveAttribute('aria-hidden', 'false');
+  const row = page.locator('#panel-screen a[data-no-fly][href^="/courses/"]').first();
+  const href = await row.getAttribute('href');
+  // A flight closes the panel first; a session note survives the navigation to tell.
+  await page.evaluate(() => new MutationObserver(() => {
+    if (document.getElementById('panel-screen').getAttribute('aria-hidden') === 'true') sessionStorage.setItem('flew', '1');
+  }).observe(document.getElementById('panel-screen'), { attributes: true }));
+  await row.click();
+  await expect(page).toHaveURL(new RegExp(href + '$'));
+  expect(await page.evaluate(() => sessionStorage.getItem('flew'))).toBe(null);
+});
+
+test('home-10 a lost WebGL context bails to the flat page', async ({ page }) => {
+  await scene(page);
+  const warn = page.waitForEvent('console', (m) => m.text().includes('static fallback: context lost'));
+  await page.locator('#home-scene-canvas').evaluate((c) => (c.getContext('webgl2') || c.getContext('webgl')).getExtension('WEBGL_lose_context').loseContext());
+  await warn;
+  await expect(page.locator('#stop-rail')).toBeHidden();
+  await expect(page.locator('section[data-wp] a[href="/ledger"]').first()).toBeVisible();
+});
+
+test('home-11 the backtick opens and closes the staging tool', async ({ page }) => {
+  await scene(page);
+  const tool = page.locator('#staging-panel');
+  await expect(tool).toBeHidden();
+  await page.keyboard.press('`');
+  await expect(tool).toBeVisible();
+  await page.keyboard.press('`');
+  await expect(tool).toBeHidden();
 });

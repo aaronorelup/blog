@@ -184,6 +184,24 @@ test('viewer-8 Esc closes it, and so does Back without leaving the post', async 
   expect(page.url()).toBe(here);
 });
 
+test('viewer-14 a resize keeps the picture the size it was on screen, and fit then fits the new window', async ({ page }) => {
+  await pics(page).first().click();
+  const img = dlg(page).locator('.ao-lb-img');
+  const box = async (l) => (await l.boundingBox()) || { width: 0, height: 0 };
+  await expect.poll(async () => (await box(img)).width).toBeGreaterThan(0);
+  const before = await box(img);
+  const size = page.viewportSize();
+  await page.setViewportSize({ width: Math.round(size.width * 0.6), height: Math.round(size.height * 0.6) });
+  await expect.poll(async () => (await box(dlg(page).locator('.ao-lb-stage'))).width).toBeLessThanOrEqual(size.width * 0.6 + 1);
+  await expect.poll(async () => Math.abs((await box(img)).width - before.width)).toBeLessThan(2);
+  await page.keyboard.press('0');
+  const stage = await box(dlg(page).locator('.ao-lb-stage'));
+  await expect.poll(async () => {
+    const b = await box(img);
+    return b.width <= stage.width + 1 && b.height <= stage.height + 1;
+  }).toBe(true);
+});
+
 test('viewer-9 a picture with data-full shows that file', async ({ page }) => {
   const pic = page.locator('[data-post-article] img[data-full][role=button]').first();
   const full = await pic.getAttribute('data-full');

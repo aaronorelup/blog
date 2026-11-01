@@ -51,6 +51,7 @@ Pages: every post with pictures; the spec uses the first page with `data-full` p
 | The toolbar zooms in, out, fits, links the file, closes | dialog `click` (`in`, `out`, `fit`, `close`) | viewer-11 (a phone hides + and −, by design) |
 | `ao-stop` closes it | document `ao-stop` | viewer-12 |
 | A swipe sideways pages, a swipe down closes | stage pointer events, one touch | viewer-13 (desktop project through the DevTools protocol, as viewer-7) |
+| A resize keeps the picture the size it was on screen; fit then fits the new window | window `resize` → layout(keep) | viewer-14 |
 
 ## Components (`elements/*.spec.mjs`)
 
@@ -157,8 +158,9 @@ streams the same two films.
 
 | Behaviour | Listener or attribute | Spec |
 |---|---|---|
-| A row sends its request and prints the live status and headers; a `data-range` row gets 206 | `data-url`, `data-range`, `data-show`, Send `click` | fetch-1 |
+| A row sends its request and prints the live status and headers; a `data-range` row gets 206 | `data-url`, `data-range`, Send `click` | fetch-1 |
 | Send all runs every row | Send all `click` | fetch-2 |
+| A `data-show="body"` row prints the start of the body | `data-show` | fetch-3 |
 | `cap`, `data-method` | `cap`, `data-method` | not used by any page today (every row is a GET under the cap) |
 
 ### `ao-bars`: context-window, curriculum-from-sources, daily-candy, earthlight, first-lesson-on-the-new-map, renting-a-gpu, touch-move, who-visits-a-new-website
@@ -269,8 +271,9 @@ streams the same two films.
 | Behaviour | Pages | Spec |
 |---|---|---|
 | Loads with a clean console | every same-origin page a post links, iframes or plays (`targets.json` `standalone`: the games, labs, gauntlet pages, presentations, the previs tool, the course's first lesson, the HLS players, the making-of page) | standalone-1 |
+| Sets up its media, and every file it plays answers a byte range (206) from R2 | each of those pages with video or audio, every `?v=` variant too (`/media/still-on-shift/?v=previs&embed` plays an mp4) | standalone-3 |
 | Its `?v=` variants switch | `/media/still-on-shift/` (`?v=previs`) | standalone-2 |
-| HLS streams through hls.js, a seek to the middle is answered from R2, captions show | `/media/still-on-shift/`, `-v2`, `-v3`, `crimson-coil/highlight`, `crimson-coil/film`, `earthlight/highlight` | hls-1 |
+| HLS streams through hls.js, a seek to the middle is answered from R2 (whole `.ts` segments, so 200 or 206), captions show where the page has a `<track>` | `/media/still-on-shift/`, `-v2`, `-v3` (no captions), `crimson-coil/highlight`, `crimson-coil/film`, `earthlight/highlight` | hls-1 |
 | The making-of lightbox: a thumbnail opens its group, arrows page, Esc closes | `/media/bad-very-bad/making-of/` | making-1 |
 | Its side buttons page; its close button and backdrop close | same | making-2 |
 | Its clips play, in byte ranges | same | making-3 |
@@ -287,6 +290,10 @@ streams the same two films.
 | The day/night toggle tweens the world (the page colour passes through between) | toggle `click` → tweenMix | home-5 |
 | The avatar flips like a coin and lands on a face | avatar `click`, `pointerenter` `pointerleave` | home-6 |
 | Without WebGL the scene bails to the flat page | hasWebGL → bail | home-7 (Chromium: `--disable-webgl` is its flag) |
+| An outside link flies the camera out through the gate (the white at full), then opens; a new-tab link leaves the scene where it stood | document `click` → onOutboundClick, flyToLink | home-8 |
+| A `data-no-fly` link leaves at once, the panel left as it was | `data-no-fly` | home-9 |
+| A lost WebGL context bails to the flat page | canvas `webglcontextlost` | home-10 |
+| The backtick opens and closes the staging tool | window `keydown` → onStageHotkey | home-11 (its own keys, drag and copy are a tool for Aaron, not checked) |
 
 The scene specs pin `?tier=low`, which the scene supports for slow machines, so software WebGL never drops it to
 its static rung mid-test.
@@ -296,7 +303,7 @@ its static rung mid-test.
 | Behaviour | Spec |
 |---|---|
 | A card grows into the ledger, with no document load | overlay-1 |
-| A row opens its post in the panel, with no document load | overlay-2 |
+| A row opens its post in the panel, with no document load; `enhance(root)` makes its pictures open the viewer | overlay-2 |
 | Post A, post B, back to A, on to C: every `ao-*` is defined each time; the model renders, the game reloads, the demo responds | overlay-3 |
 | A lost component chunk still ends on a working post | overlay-4: broken on main |
 | A link to another post inside a post stays in the panel | overlay-5 |
@@ -305,6 +312,7 @@ its static rung mid-test.
 | Closing the panel stops what plays in it (`ao-stop`) | overlay-8 |
 | A post the panel can't fetch opens as its real page | overlay-9 |
 | A deep link to a post is its real page, components working | overlay-10 |
+| The ledger's copy button puts the feed's address on the clipboard | overlay-11 (desktop: clipboard permissions are Chromium's in Playwright) |
 
 ## Pages (`ledger.spec.mjs`, `pages.spec.mjs`)
 
@@ -315,6 +323,7 @@ its static rung mid-test.
 | Keyboard focus opens it; its picture loads | ledger-3 (desktop) |
 | A phone never gets one | ledger-4 (phone) |
 | A post link inside a post opens it, with the title | ledger-5 (desktop) |
+| The copy button on `/ledger` puts the feed's address on the clipboard | ledger-6: broken on main (desktop) |
 | RSS: one item per listed post, guid = the post URL | pages-1 |
 | `/version.json`'s shape | pages-2 |
 | `/stats` draws the snapshot (`/api/stats` 200) | pages-3 |
@@ -333,8 +342,10 @@ load without a script error (live-5).
 - **cues-3b, space in `ao-cues`.** The keydown handler wants the element or one of its videos focused, but neither
   can take focus (no tabindex, and the element removes the videos' controls), so the key never reaches it. The
   cues' own Enter and the Play button work.
+- **ledger-6, the feed's copy button on `/ledger`.** Only the homepage's scene binds `#feed-copy`, so on the
+  standalone ledger page the button does nothing. In the homepage's panel it works (overlay-11).
 - **overlay-4, a lost chunk.** `openPost` imports `post-components.js` with no fallback: when a deploy has replaced
   the chunk, the post shows un-upgraded. T1.2's `lazy()` navigates to the real page instead.
 
-Smaller quirk, asserted as it is: after `ao-stop` a running game's veil reads "Paused while something else plays."
-(the page-wide stop reaches the game through its `aoPause` first), where "Paused." was meant (game-4).
+Smaller quirk: after `ao-stop` a running game's veil reads "Paused while something else plays." (the page-wide stop
+reaches the game through its `aoPause` first), where "Paused." was meant. game-4 asserts only that it is paused.
