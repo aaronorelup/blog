@@ -13,6 +13,29 @@ section here.
 
 ## <ao-bars>
 
+A bar chart drawn from a plain `<table>`, so the numbers are written once; the table stays for screen readers
+(visually hidden once the chart is drawn) and is what a reader without JS gets.
+
+| Attribute | |
+|---|---|
+| `max="N"` | the value a full-width bar stands for (default: the largest value); give two charts the same `max` to put them on one scale |
+| `unit="…"` | printed after each value (`lessons`, `%`) |
+
+Children: one `<table>`; its first column labels the rows, every other column is a series named by its `<th>`, on
+one shared scale (several series get a legend). A cell that isn't a number draws no bar. An optional direct
+`<figcaption>` captions the chart.
+
+```html
+<ao-bars unit="lessons" max="17">
+<table><thead><tr><th>Source</th><th>Lessons</th></tr></thead>
+<tbody><tr><td>Docs</td><td>12</td></tr><tr><td>Videos</td><td>5</td></tr></tbody></table>
+<figcaption><b>Where the lessons came from</b></figcaption>
+</ao-bars>
+```
+
+Behaviours: bars-1, bars-2. Used by 10 posts (`INVENTORY.md`); best shown by `curriculum-from-sources` (`max`,
+`unit`, up to four series).
+
 ## <ao-blind>
 
 ## <ao-calc>
