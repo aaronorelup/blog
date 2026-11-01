@@ -55,9 +55,6 @@ test('home-3 the keys walk the waypoints: arrows, Page keys, space, Home and End
 });
 
 test('home-4 a rail dot flies to its waypoint', async ({ page }) => {
-  // Broken on main, at every tier and on both projects: the active section lies over the rail, so a click on a
-  // dot lands on the section (INVENTORY home-4).
-  test.fail();
   await scene(page);
   const box = await rail(page).nth(2).boundingBox();
   await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
