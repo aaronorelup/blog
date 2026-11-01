@@ -39,13 +39,13 @@ function drop() {
 
 // The same page again only moves to its anchor (or, from a link with none, its top); a pop leaves it be.
 async function show(route, pushed) {
+  wanted = route.key;
   if (shown?.route.key === route.key) {
     shown.route = route;
     if (route.url.hash) land(shown.node, route.url);
     else if (pushed) scroller.scrollTop = 0;
     return;
   }
-  wanted = route.key;
   const { node, title } = await load(route);
   if (wanted !== route.key || !isOpen()) return;
   if (shown) { stop(); drop(); }
@@ -63,7 +63,6 @@ async function show(route, pushed) {
 function open(route, from, pushed) {
   if (!isOpen()) {
     set('open');
-    scroller.scrollTop = 0;
     const covered = () => set('covered');
     if (pushed) grow(from, covered); else appear(covered);
   }
