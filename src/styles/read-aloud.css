@@ -45,7 +45,7 @@
   padding: 7px 8px;
   border: 1px solid var(--pc-line);
   border-radius: 22px;
-  background: var(--pc-bg);
+  background: var(--pc-page); /* opaque, like the now-playing bar: the text scrolls under it */
   box-shadow: var(--pc-shadow);
   color: var(--pc-body);
   font: 13px/1.3 var(--font-body);
@@ -73,7 +73,10 @@
 .ra-note { min-width: 0; flex: 1 1 160px; padding: 0 6px; color: var(--pc-quiet); font-size: 12.5px; }
 
 @media (max-width: 560px) {
+  /* Three rows: play, speed and close; the two voices; the note. */
   .ra-bar { width: 100%; border-radius: 18px; }
+  .ra-close { margin-left: auto; }
+  .ra-voice { order: 2; }
   .ra-note { flex-basis: 100%; order: 9; padding: 2px 4px 0; }
 }
 @media (prefers-reduced-motion: reduce) {

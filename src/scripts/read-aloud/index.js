@@ -71,7 +71,7 @@ export function open(root, button, onClose) {
     if (kind === voice) return;
     const was = engine?.playing();
     make(kind);
-    if (was) play(at ?? undefined);
+    if (was) play(at);
     render();
   }
 
