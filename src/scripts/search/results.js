@@ -50,7 +50,7 @@ function excerpt(html) {
 
 // One related post, as a ledger row: icon, title, topic and minutes.
 export function relatedRow(slug, card) {
-  return h('li', { class: 'row' }, icon(card), h('a', { class: 'row-link', href: `/ledger/${slug}/` }, card.title),
+  return h('li', { class: 'row' }, icon(card), h('a', { class: 'row-link', href: pagePath(slug) }, card.title),
     h('p', { class: 'row-meta' }, `${TOPICS[card.topic].label} · ${card.mins} min`));
 }
 
