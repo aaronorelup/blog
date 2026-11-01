@@ -1,0 +1,80 @@
+/* Long-form text: a post's rendered Markdown, a research document, and the About and 404 pages' text. Astro renders
+   the Markdown; this styles what it emits. */
+
+.pc-prose > :first-child { margin-top: 0; }
+.pc-prose p,
+.pc-prose li {
+  font-family: var(--font-serif);
+  font-size: var(--text-lg);
+  line-height: 1.68;
+  color: var(--pc-body);
+  text-wrap: pretty;
+}
+.pc-prose p { margin: 0 0 20px; }
+.pc-prose ul,
+.pc-prose ol { margin: 0 0 20px; padding-left: 22px; }
+.pc-prose li { margin: 0 0 8px; }
+.pc-prose h1,
+.pc-prose h2,
+.pc-prose h3,
+.pc-prose h4 {
+  margin: 38px 0 14px;
+  font-family: var(--font-display);
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--pc-head);
+  letter-spacing: -0.01em;
+}
+.pc-prose h1 { font-size: 30px; }
+.pc-prose h2 { font-size: 22px; }
+.pc-prose h3 { font-size: 18px; }
+.pc-prose h4 { font-size: 16px; }
+.pc-prose strong { color: var(--pc-strong); }
+.pc-prose a {
+  color: var(--pc-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.pc-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--pc-code);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--pc-body);
+}
+.pc-prose pre {
+  background: var(--pc-code);
+  border: 1px solid var(--pc-line);
+  border-radius: var(--radius-s);
+  padding: 16px 18px;
+  overflow-x: auto;
+  margin: 0 0 20px;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.pc-prose pre code { background: none; padding: 0; font-size: inherit; }
+/* Shiki ships both themes as custom properties (astro.config.mjs sets defaultColor: false), so a block keeps the
+   panel's --pc-code background and only the token colours swap: night by default, day under data-mode. A single
+   theme would bake a background into <pre> that outranks the palette. */
+.pc-prose pre.astro-code,
+.pc-prose pre.astro-code span { color: var(--shiki-dark); }
+:root[data-mode='day'] .pc-prose pre.astro-code,
+:root[data-mode='day'] .pc-prose pre.astro-code span { color: var(--shiki-light); }
+/* By day a code block is plain white, the ground github-light's token colours were picked against. */
+:root[data-mode='day'] .pc-prose pre { background: #fff; }
+.pc-prose blockquote {
+  margin: 0 0 20px;
+  padding-left: 18px;
+  border-left: 3px solid var(--pc-line2);
+  color: var(--pc-soft);
+}
+.pc-prose img,
+.pc-prose video { max-width: 100%; height: auto; display: block; border-radius: var(--radius-s); }
+.pc-prose hr { border: 0; border-top: 1px solid var(--pc-line); margin: 34px 0; }
+.pc-prose table { width: 100%; border-collapse: collapse; margin: 0 0 20px; font-size: 15px; }
+/* A table wider than a phone scrolls inside itself instead of being clipped by the page. */
+@media (max-width: 640px) { .pc-prose table { display: block; overflow-x: auto; } }
+.pc-prose th,
+.pc-prose td { border: 1px solid var(--pc-line); padding: 8px 12px; text-align: left; color: var(--pc-body); }
+.pc-prose th { color: var(--pc-strong); }

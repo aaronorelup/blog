@@ -1,0 +1,116 @@
+/* The panel's frame (components/chrome/): the standalone page's screen and card, the header and its nav, the scroller,
+   the footer and the day/night switch; the header every view opens with; and the hover states views still put on
+   inline-styled markup (their !important beats those inline colours until each view moves to classes). The homepage
+   gets this file through panel.css until T3.2. */
+
+/* A standalone page is the panel already open (layouts/PanelPage.astro). */
+.pc-screen { position: fixed; inset: 0; display: flex; flex-direction: column; background: var(--pc-page); }
+.pc-card {
+  position: absolute; inset: 0; box-sizing: border-box; background: var(--pc-bg); overflow: hidden;
+  display: flex; flex-direction: column;
+}
+
+.pc-inner { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.pc-inner.is-overlay { opacity: 0; transition: opacity 320ms ease; }
+
+.pc-bar { flex: none; display: flex; justify-content: center; padding: 18px clamp(18px, 4vw, 44px); }
+.pc-bar-top { border-bottom: 1px solid var(--pc-line); }
+.pc-bar-foot { border-top: 1px solid var(--pc-line); }
+.pc-bar-row {
+  width: 100%; max-width: 1140px; display: flex; align-items: center; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap;
+}
+
+.pc-home {
+  display: flex; align-items: center; gap: 9px; font: inherit; font-size: 13.5px; letter-spacing: 0.04em;
+  white-space: nowrap; color: var(--pc-strong); text-decoration: none; padding: 6px 0; cursor: pointer;
+}
+.pc-navs, .pc-navs-o { display: flex; gap: 22px; font-size: 13.5px; }
+/* The fixed day/night switch sits over the nav's right end: the overlay always pads for it, a standalone page only
+   while the 1140px row is wider than the window. On a phone the nav wraps under "Back to the tea house", clear of
+   the switch. */
+.pc-navs-o { padding-right: 88px; }
+@media (max-width: 1380px) { .pc-navs { padding-right: 88px; } }
+@media (max-width: 480px) { .pc-navs, .pc-navs-o { padding-right: 0; gap: 16px; } }
+.pc-nav { color: var(--pc-quiet); text-decoration: none; }
+/* The lit item is the panel's data-active-view (src/data/site.js NAV keys). */
+[data-active-view='stats'] .pc-nav[data-nav='stats'],
+[data-active-view='ledger'] .pc-nav[data-nav='ledger'],
+[data-active-view='courses'] .pc-nav[data-nav='courses'],
+[data-active-view='projects'] .pc-nav[data-nav='projects'],
+[data-active-view='about'] .pc-nav[data-nav='about'] { color: var(--pc-head); }
+
+.pc-scroll {
+  flex: 1; min-height: 0; display: flex; justify-content: center; padding: 34px clamp(18px, 4vw, 44px) 0;
+  box-sizing: border-box; overflow-y: auto; overscroll-behavior: contain;
+  scrollbar-width: thin; scrollbar-color: var(--pc-line2) transparent;
+}
+/* A standalone page's view wrapper adds no box: its view lays out as the scroller's own child. */
+.pc-view { display: contents; }
+/* Every overlay view starts at the header's left edge, whatever its content width. */
+#panel-scroll > [data-view] { width: 100%; max-width: 1140px; }
+
+#panel-scroll::-webkit-scrollbar { width: 11px; height: 11px; }
+#panel-scroll::-webkit-scrollbar-track { background: transparent; }
+#panel-scroll::-webkit-scrollbar-corner { background: transparent; }
+#panel-scroll::-webkit-scrollbar-thumb {
+  background: var(--pc-line2);
+  background-clip: content-box;
+  border: 3px solid transparent;
+  border-radius: 999px;
+}
+#panel-scroll::-webkit-scrollbar-thumb:hover { background: var(--pc-quiet); background-clip: content-box; }
+
+.pc-copy { margin: 0; font-size: var(--text-sm); color: var(--pc-quiet); }
+.pc-foots { display: flex; gap: 20px; font-size: var(--text-sm); }
+.pc-foot { color: var(--pc-quiet); text-decoration: none; }
+
+/* The day/night switch (chrome/ModeToggle.astro): the knob and its icon follow data-mode. */
+.mode-toggle {
+  position: fixed; top: 20px; right: 22px; z-index: var(--z-toggle); box-sizing: border-box; width: 72px;
+  height: 36px; flex: none; padding: 0; border: 2px solid var(--pc-line2); border-radius: var(--radius-pill);
+  background: var(--pc-bg); cursor: pointer; backdrop-filter: blur(6px);
+  transition: background 300ms ease, border-color 300ms ease;
+}
+.mode-knob {
+  position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; border-radius: var(--radius-pill);
+  background: var(--pc-head); display: flex; align-items: center; justify-content: center;
+  transform: translateX(36px); transition: transform 380ms var(--ease-panel), background 300ms ease;
+}
+:root[data-mode='day'] .mode-knob { transform: translateX(0); }
+:root:not([data-mode='day']) .mode-sun,
+:root[data-mode='day'] .mode-moon { display: none; }
+
+/* The header the ledger, courses and projects views open with. */
+.view { width: 100%; max-width: 1140px; }
+.view-title {
+  margin: 0 0 10px; font-family: var(--font-display); font-size: var(--text-h1); line-height: 1.1; font-weight: 700;
+  color: var(--pc-head); letter-spacing: -0.015em;
+}
+.view-intro { margin: 0 0 40px; font-size: var(--text-md); line-height: 1.75; color: var(--pc-quiet); max-width: 680px; }
+.view-list { display: flex; flex-direction: column; }
+
+/* Hover states of rows, links and buttons in the views. */
+.pc-row:hover { background: var(--pc-hover); }
+.pc-nav:hover,
+.pc-home:hover,
+.pc-link:hover { color: var(--pc-head) !important; }
+.pc-foot:hover,
+.pc-quiet-btn:hover { color: var(--pc-accent) !important; }
+.pc-link-accent:hover { color: var(--pc-strong) !important; }
+.pc-source-btn:hover {
+  background: var(--pc-accent);
+  color: var(--pc-bg) !important;
+}
+
+/* Narrow screens: the projects view's two-column layouts stack, the screenshot tile first, and ledger rows go to
+   one column. */
+@media (max-width: 860px) {
+  .pc-flagship,
+  .pc-shelf { grid-template-columns: minmax(0, 1fr) !important; gap: 24px 0 !important; }
+  .pc-flagship > div:last-child,
+  .pc-shelf > div:last-child { order: -1; }
+}
+@media (max-width: 560px) {
+  .pc-row { grid-template-columns: minmax(0, 1fr) !important; gap: 10px 0 !important; }
+}
