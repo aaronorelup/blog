@@ -117,10 +117,11 @@ test('home-6 the avatar flips like a coin and lands on a face', async ({ page })
   expect(deg % 180).toBe(0);
 });
 
-test('home-7 without WebGL the scene bails to the flat page', async ({ browserName, baseURL }) => {
+test('home-7 without WebGL the scene bails to the flat page, in the stored mode’s colours', async ({ browserName, baseURL }) => {
   test.skip(browserName !== 'chromium', 'the switch is a Chromium flag');
   const browser = await chromium.launch({ args: ['--disable-webgl', '--disable-webgl2'] });
   const page = await browser.newPage({ baseURL, viewport: { width: 1440, height: 900 } });
+  await page.addInitScript(() => localStorage.setItem('scene-mode', 'night'));
   const warn = page.waitForEvent('console', (m) => m.text().includes('static fallback'));
   await page.goto('/');
   await warn;
@@ -129,6 +130,8 @@ test('home-7 without WebGL the scene bails to the flat page', async ({ browserNa
   const shown = await page.locator('section[data-wp]').evaluateAll((ss) => ss.every((s) => s.style.opacity === '1' && !s.inert));
   expect(shown).toBe(true);
   await expect(page.locator('section[data-wp] a[href="/ledger"]').first()).toBeVisible();
+  expect(await page.evaluate(() => [document.body, document.querySelector('section[data-wp] > div')]
+    .map((el) => getComputedStyle(el).backgroundColor))).toEqual(['rgb(16, 18, 32)', 'rgba(21, 23, 38, 0.86)']);
   await browser.close();
 });
 

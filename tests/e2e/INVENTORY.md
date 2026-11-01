@@ -290,8 +290,8 @@ streams the same two films.
 | A rail dot flies to its waypoint (the cards' page lets clicks through to the rail; only the shown card takes them) | rail `click` | home-4 |
 | The day/night toggle tweens the world (the page colour passes through between, the 3D changes with it even with the camera still, once it ends `--pc-bg` is the plain per-mode string again, and the screen is the one a fresh load of that mode draws) | toggle `click` → `ao-mode` → theme.js | home-5 |
 | The avatar flips like a coin and lands on a face | avatar `click`, `pointerenter` `pointerleave` | home-6 |
-| Without WebGL the scene bails to the flat page | hasWebGL → bail | home-7 (Chromium: `--disable-webgl` is its flag) |
-| An outside link flies the camera out through the gate (the white at full), then opens; a new-tab link leaves the scene where it stood | document `click` → onOutboundClick, flyToLink | home-8 |
+| Without WebGL the scene bails to the flat page, in the stored mode's colours | `home/index.js` `webgl()` → `flat()` | home-7 (Chromium: `--disable-webgl` is its flag) |
+| An outside link flies the camera out through the gate (the white at full), then opens; a new-tab link leaves the scene where it stood | window `click` → `bindOutbound`, `flyToLink` (`scene/exit.js`) | home-8 |
 | A `data-no-fly` link leaves at once, the panel left as it was | `data-no-fly` | home-9 |
 | A lost WebGL context bails to the flat page | canvas `webglcontextlost` | home-10 |
 | The backtick opens and closes the staging tool | window `keydown` → onStageHotkey | home-11 (its own keys, drag and copy are a tool for Aaron, not checked) |
