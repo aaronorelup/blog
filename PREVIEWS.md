@@ -161,6 +161,13 @@ anyone on a phone.
   shrinks to a thumbnail the text wraps around, then the picture goes, then the points go and
   only the verdict and takeaway stay. On a 1440×900 screen, 105 of 120 placements (every row at
   the top, middle and bottom of the screen) were full size. At 1280×720, 79.
+- **On Goobie's citations** (Ask Goobie's `[1]`, `[2]` on `/ledger/`) the card is the cited post's, with one more line
+  under the title naming the passage the link lands on: "Goobie cites: How the chaining works", "the opening", "the
+  short version", or for a passage of the notes page, "..., in the full making-of". Two citations of one post show the
+  same card with different lines. A citation of a notes page gets its post's card this way; any other link to a notes
+  page gets none, since without that line the card would pass the post off as the notes. The numbers count posts, not
+  passages (1, 2, 3 in order of first mention, every passage of one post under one number), and a citation has no
+  native tooltip, which would double the card.
 - Not on phones or tablets, and not in print.
 
 ## How it works (for whoever changes it)
@@ -175,9 +182,14 @@ anyone on a phone.
 - The Worker reads `/ledger/previews.json` too, as its list of real posts (`worker/reads/serve.js`,
   and `worker/stats/index.js` when `/stats-pages.txt` is missing), so keep its shape
   (`{ "posts": { "<slug>": card } }`).
-- `src/scripts/ledger-preview.js` and `src/styles/ledger-preview.css`: the card. Loaded by
-  `LedgerView.astro` and `PostView.astro`, so it runs on `/ledger`, every post page and the
-  homepage (whose panel renders `LedgerView`, and whose reader injects post bodies, so their links
-  get cards too). It lives inside `#panel-screen` so it picks up the day/night palette.
+- `src/scripts/cards/` and `src/styles/cards.css`: the card. `data.js` fetches `previews.json` once
+  (shared with search and Ask), `render.js` builds, fills and places the one card element, `hover.js`
+  decides when it opens. It runs on `/ledger`, every post page, `/projects`, `/stats` and the
+  homepage's overlay, and lives inside `#panel-screen` so it picks up the day/night palette.
+- A link can give its card one line of its own with `data-card-line` (`render.js` `line()`, the
+  `.lp-line` rule): only Goobie's citations do, written by `src/scripts/search/ask.js`, which also
+  numbers them by post and gives each an `aria-label` ("Source 1: <post title>, <passage>"). Every
+  other card has no line, so it is unchanged. The line is on the link, not in `previews.json`, so it
+  costs the card file nothing.
 - `scripts/tools/preview-media.mjs`: makes the media. It needs ffmpeg on PATH. The build doesn't (it
   only checks the files that are committed).
