@@ -1,73 +1,48 @@
 # aaronorelup.com
 
-A ledger of what I'm learning about AI. Astro static site, hosted on Cloudflare Pages.
-The homepage is a scroll-driven Three.js tea house; every other page is the same panel
-that grows out of the cards in that scene.
+Aaron Orelup's ledger of what he's learning about AI: posts, films, games, courses and the projects behind them.
+The homepage is a scroll-driven Three.js tea house, and every other page is the panel that grows out of its cards.
 
-## Writing a post
+## Stack
 
-```bash
-npm run new-post "Title of the post"
-```
+- **Astro**, static output. Posts are Markdown in `src/content/posts/`. Behaviour in the browser is plain modules
+  and custom elements (`<ao-compare>`, `<ao-slider>` and the rest), no framework.
+- **Cloudflare Workers static assets** serve `dist/`.
+- **One Worker** (`worker/`) for what needs state or a secret: video and audio from R2 with byte ranges, the
+  reads counter and the `/stats` snapshot in D1.
+- **Workers Builds** builds and deploys every push to `main` with `npm run build`. Builds of other branches fail on
+  purpose.
 
-This creates `src/content/posts/<slug>.md` with the next sequential ID (`AO-002`, etc.)
-and today's date pre-filled. Open it, write, then:
+`ARCHITECTURE.md` is the map of the code. `CLAUDE.md` has the rules for agents working here.
 
-```bash
-git add .
-git commit -m "AO-002: title of the post"
-git push
-```
-
-That's the entire publish step. Pushing to `main` triggers a Cloudflare Pages build, and
-the post goes live at `/ledger/<slug>/`. **This repo publishes nothing to any social
-account.**
-
-## Frontmatter fields
-
-| Field     | Meaning                                                               |
-|-----------|-----------------------------------------------------------------------|
-| `id`      | Ledger reference, e.g. `AO-003`. Auto-assigned by `new-post`.         |
-| `title`   | Post title.                                                           |
-| `summary` | One-liner — shown in the ledger list.                                 |
-| `date`    | Publish date.                                                         |
-| `status`  | `note`, `in-progress`, or `shipped`.                                  |
-| `tags`    | Array of tags. Shown as RSS categories.                               |
-| `draft`   | Set `true` to keep a post off the site.                               |
-
-## Local development
+## Commands
 
 ```bash
 npm install
-npm run dev
+npm run dev                      # local server (video and audio come from the live site)
+npm run new-post "Title"         # a new post with the next AO-### id
+npm run check                    # the post and code checker
+npm run build                    # deploy-level checks, then the build into dist/
+npm test                         # unit tests
+npm run e2e                      # the Playwright behaviour suite
+npm run media:push               # new video and audio to R2 (docs/MEDIA.md)
 ```
 
-## How the site is put together
+Writing a post: `WRITING.md` (how it's written) and `PREVIEWS.md` (its hover card). Every post stays a draft until
+Aaron says it can go out.
 
-- `src/pages/index.astro` — the tea house. Six camera waypoints, a day/night toggle, and
-  an overlay panel. All of the panel's content is server-rendered into the page.
-- `src/scripts/home-scene.js` — the scene itself, ported from the Claude Design artifact.
-  Plain ES module, no framework; `three` is a local dependency loaded by dynamic import so
-  it code-splits out of the initial bundle.
-- `src/components/panel/*` — the Ledger, Projects, About and post views. The homepage and
-  the standalone pages render the *same* components, so the two can't drift apart.
-- `src/layouts/PanelPage.astro` — chrome for `/ledger`, `/projects`, `/about` and each
-  post. These are real pages: they work with JavaScript off, they're what search engines
-  and RSS readers see, and the homepage overlay fetches post bodies from them.
-- `src/data/projects.js` — the projects list. Add an object to add a project.
+## Deploying
 
-Backtick (`` ` ``) on the homepage opens the staging tool for re-tuning camera waypoints;
-`WASD` moves, `[`/`]` change FOV, and **Copy values** gives you numbers to paste into
-`WAYPOINTS` at the top of `home-scene.js`.
+Push to `main`. A few minutes later this shows the commit and `"branch": "main"`:
 
-## Cloudflare Pages setup (one-time)
+```bash
+curl -s https://aaronorelup.com/version.json
+```
 
-1. Cloudflare dashboard → Workers & Pages → Create → Connect to Git → this repo.
-2. Framework preset: **Astro**. Build command `npm run build`, output directory `dist`.
-3. Deploy. Attach `aaronorelup.com` as a custom domain in the project's Domains tab.
+If it shows another branch or an older commit, the deploy went wrong. After a change to the Worker or to media,
+`npm run media:verify` checks that every file in R2 is served whole and seekable.
 
 ## Post URLs
 
-Posts live at `/ledger/<slug>/`. They used to live at `/posts/<slug>/`; `public/_redirects`
-301s the old paths and should stay there permanently, since AO-004 and AO-005 were shared
-under the old URLs.
+Posts live at `/ledger/<slug>/`. They used to live at `/posts/<slug>/`; `public/_redirects` sends the old paths on
+for good, because AO-004 and AO-005 were shared under them.
