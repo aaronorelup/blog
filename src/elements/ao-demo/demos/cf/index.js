@@ -1,26 +1,9 @@
-// Two small demos for AO-057 (who-visits-a-new-website.md), mounted by <ao-demo name="cf" part="…">:
-//
-//   you    asks Cloudflare's edge what it saw of this visit (/cdn-cgi/trace, which every site
-//          Cloudflare serves answers), lays it beside the post's own numbers, and walks the
-//          reader through the funnel above to see where their visit lands
-//   count  the post's live reader counter: one read per browser per day, sent after the page has
-//          been visible for a few seconds, kept in D1 by the site's Worker (worker/reads/serve.js);
-//          the post's slug comes from the element's data-slug
-//
-// The numbers quoted here are the post's own: Cloudflare's analytics for aaronorelup.com, 18 Sep
-// to 17 Oct 2026, read through the GraphQL connection on 17 Oct.
-import '../../styles/demos/cf.css';
+// Two demos for AO-057 (who-visits-a-new-website), mounted by <ao-demo name="cf" part="…">: "you" asks Cloudflare's
+// edge what it saw of this visit (/cdn-cgi/trace) and walks it through the post's funnel; "count" is the post's live
+// reader counter (one read per browser per day, kept in D1 by worker/reads; the slug from data-slug). The numbers
+// quoted are the post's own: Cloudflare's analytics for aaronorelup.com, 18 Sep to 17 Oct 2026.
+import { h } from '../../../_lib/dom.js';
 
-const h = (tag, attrs = {}, ...kids) => {
-  const el = document.createElement(tag);
-  for (const [k, v] of Object.entries(attrs)) {
-    if (k === 'class') el.className = v;
-    else if (k === 'text') el.textContent = v;
-    else el.setAttribute(k, v);
-  }
-  for (const kid of kids) if (kid !== null && kid !== undefined && kid !== false) el.append(kid);
-  return el;
-};
 const fmt = (n) => Number(n).toLocaleString('en-US');
 const regionName = (() => {
   let dn = null;

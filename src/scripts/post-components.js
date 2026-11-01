@@ -26,33 +26,3 @@ export { enhance };
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => enhance());
 else enhance();
 
-// ---------------------------------------------------------------------------------------
-// <ao-demo name="x" part="y">: an interactive demo written for one post. Its code lives in
-// src/scripts/demos/<name>.js and is a separate chunk, fetched only when a post uses it, so
-// one post's demo never weighs on the others. The module exports mount(host, part), which
-// returns { destroy } or null; whatever the element held before is the no-JS fallback.
-
-const DEMOS = {
-  synthid: () => import('./demos/synthid.js'),
-  cf: () => import('./demos/cf.js'),
-};
-class AoDemo extends HTMLElement {
-  connectedCallback() {
-    if (this._ready) return;
-    const load = DEMOS[this.getAttribute('name')];
-    if (!load) return;
-    this._ready = true;
-    load()
-      .then((mod) => {
-        if (this.isConnected) this._demo = mod.mount(this, this.getAttribute('part'));
-      })
-      .catch(() => { this._ready = false; });
-  }
-
-  disconnectedCallback() {
-    // The homepage swaps posts in and out of one host; stop timers when this one leaves.
-    this._demo?.destroy?.();
-  }
-}
-
-if (!customElements.get('ao-demo')) customElements.define('ao-demo', AoDemo);
