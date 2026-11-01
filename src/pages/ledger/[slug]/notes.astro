@@ -1,9 +1,11 @@
 ---
 // /ledger/<slug>/notes/: the full making-of of a split post (src/content/notes/<slug>.md). Listed exactly
 // when its post is. For now the panel chrome, the note and a link back to the short version.
+import ElementStyles from '../../../components/post/ElementStyles.astro';
 import PanelPage from '../../../layouts/PanelPage.astro';
 import { allPosts, notesBySlug, renderEntry, slugOf } from '../../../lib/content.js';
 import { shortDate } from '../../../lib/dates.js';
+import '../../../styles/elements.css';
 
 export async function getStaticPaths() {
   const notes = await notesBySlug();
@@ -12,10 +14,11 @@ export async function getStaticPaths() {
 }
 
 const { post, note } = Astro.props;
-const { Content } = await renderEntry(note);
+const { Content, remarkPluginFrontmatter } = await renderEntry(note);
 ---
 <PanelPage title={`${note.data.title} — Aaron Orelup`} description={note.data.summary} active="ledger" noindex={post.data.unlisted}>
   <article data-post-article data-panel-view="notes">
+    <ElementStyles tags={remarkPluginFrontmatter.text?.elements} />
     <a href={`/ledger/${slugOf(post)}/`} class="pc-link-accent back">← THE SHORT VERSION</a>
     <div class="meta">{post.data.id} <span>/ {shortDate(post.data.date)}</span></div>
     <div class="pc-prose" data-pagefind-body={post.data.unlisted ? undefined : ''}>
