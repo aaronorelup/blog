@@ -13,7 +13,7 @@ const BIG = { K: 'thousand', M: 'million', B: 'billion' };
 const ORDINAL = { one: 'first', two: 'second', three: 'third', five: 'fifth', eight: 'eighth', nine: 'ninth',
   twelve: 'twelfth' };
 
-export function words(n) {
+function words(n) {
   if (n < 20) return ONES[n];
   if (n < 100) return TENS[Math.floor(n / 10)] + (n % 10 ? '-' + ONES[n % 10] : '');
   const [v, name] = SCALES.find(([v]) => n >= v);

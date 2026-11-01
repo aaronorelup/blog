@@ -17,8 +17,8 @@ const NOT_TEXT = 'a, button, input, select, textarea, summary, label, img, pictu
 export function open(root, button, onClose) {
   const { slug, readHash } = button.dataset;
   const blocks = blocksOf(root);
-  const title = blocks.get('t')?.text ?? document.title;
-  const scroller = root.closest('#panel-scroll') ?? document.scrollingElement;
+  const title = blocks.get('t').text;
+  const scroller = root.closest('#panel-scroll'); // the panel's scroller, on the post page and in the homepage's reader
   const hl = 'highlights' in CSS ? new Highlight() : null;
   if (hl) CSS.highlights.set('ao-read', hl);
   const canSpeak = 'speechSynthesis' in window;
@@ -95,7 +95,7 @@ export function open(root, button, onClose) {
   // Keep the reading in view, unless the reader has scrolled away themselves in the last few seconds.
   function follow(box) {
     if (performance.now() - lastUser < QUIET) return;
-    const view = scroller === document.scrollingElement ? { top: 0, bottom: innerHeight } : scroller.getBoundingClientRect();
+    const view = scroller.getBoundingClientRect();
     const band = (view.bottom - view.top) / 6;
     if (box.top >= view.top + band && box.bottom <= view.bottom - 1.5 * band) return;
     scroller.scrollBy({ top: box.top - view.top - 2 * band, behavior: 'smooth' });
