@@ -1,8 +1,8 @@
 // Page-weight budgets (ARCHITECTURE.md section 6), gzipped, without fonts and media, each measured on something
 // content can't grow. `node scripts/tools/budgets.mjs [dist]` prints them and, once ENFORCE is on (W4), fails on
 // any over budget by 20%. verify-dist prints the same rows after every build and never fails on them.
-// Live notebooks are left out. T1.2 adds the per-element rows, T2.4 read-aloud's. fontMisses() lists display code
-// points the self-hosted fonts miss: the command fails on any, verify-dist warns.
+// Live notebooks are left out; T2.4 adds read-aloud's row. fontMisses() lists display code points the self-hosted
+// fonts miss: the command fails on any, verify-dist warns.
 import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
@@ -30,6 +30,19 @@ function without(tree, test) {
   return tree;
 }
 
+const bytes = (dist, set) => [...set].reduce((n, f) => n + gz(fs.readFileSync(path.join(dist, f))), 0);
+
+// The scripts a load of `js` (a set of /_astro/ paths) runs: them and their static imports, all the way down.
+function closure(dist, js) {
+  for (const src of js) {
+    const text = fs.readFileSync(path.join(dist, src), 'utf8');
+    for (const m of text.matchAll(/(?:^|[;}\n])\s*(?:import|export)\s*(?:[\w*{}\s,$]*from\s*)?["'](\.\.?\/[^"']+)["']/g)) {
+      js.add(path.posix.join(path.posix.dirname(src), m[1]));
+    }
+  }
+  return js;
+}
+
 // The bytes a page loads up front: its local stylesheets, and its module scripts with their static imports.
 function assets(dist, tree) {
   const css = new Set();
@@ -39,14 +52,35 @@ function assets(dist, tree) {
     if (el.tagName === 'link' && rel.includes('stylesheet') && href?.startsWith('/_astro/')) css.add(href);
     if (el.tagName === 'script' && src?.startsWith('/_astro/')) js.add(src);
   });
-  for (const src of js) {
-    const text = fs.readFileSync(path.join(dist, src), 'utf8');
-    for (const m of text.matchAll(/(?:^|[;}\n])\s*(?:import|export)\s*(?:[\w*{}\s,$]*from\s*)?["'](\.\.?\/[^"']+)["']/g)) {
-      js.add(path.posix.join(path.posix.dirname(src), m[1]));
+  closure(dist, js);
+  return { css: bytes(dist, css), js: bytes(dist, js), scripts: js };
+}
+
+// What each post component adds on the posts that use it: the chunk the registry imports for its tag, with the
+// chunks that one imports beyond the post's up-front JS, plus its CSS as ElementStyles inlines it (one minified
+// sheet a line, in the post's sorted tag order; ao-demo's are its demos', which aren't measured here).
+const ELEMENT_KB = { 'ao-series': 10, 'ao-game': 10 };   // every other element: 6
+function elementWeights(dist, pages, upFront) {
+  const js = {};
+  for (const f of fs.readdirSync(path.join(dist, '_astro')).filter((n) => n.endsWith('.js'))) {
+    const text = fs.readFileSync(path.join(dist, '_astro', f), 'utf8');
+    for (const [, tag, chunk] of text.matchAll(/"\.\/(ao-[a-z0-9-]+)\/element\.js":\(\)=>[^"]*?import\("\.\/([^"]+)"\)/g)) {
+      const own = [...closure(dist, new Set([`/_astro/${chunk}`]))].filter((s) => !upFront.has(s));
+      js[tag] = bytes(dist, own);
     }
   }
-  const bytes = (set) => [...set].reduce((n, f) => n + gz(fs.readFileSync(path.join(dist, f))), 0);
-  return { css: bytes(css), js: bytes(js) };
+  const css = {};
+  for (const tree of pages) {
+    const keys = new Set();
+    let sheets = null;
+    visit(tree, 'element', (el) => {
+      if (el.tagName.startsWith('ao-')) keys.add(el.tagName === 'ao-demo' ? `ao-demo/${el.properties.name}` : el.tagName);
+      if (el.tagName === 'style' && el.properties.dataAo !== undefined) sheets = el.children[0].value.split('\n');
+    });
+    const tags = [...keys].sort();
+    if (sheets?.length === tags.length) tags.forEach((t, i) => { css[t] = gz(sheets[i]); });
+  }
+  return Object.keys(js).map((tag) => ({ tag, bytes: js[tag] + (css[tag] ?? 0), budget: (ELEMENT_KB[tag] ?? 6) * KB }));
 }
 
 export function measure(dist) {
@@ -56,9 +90,13 @@ export function measure(dist) {
   const posts = fs.readdirSync(path.join(dist, 'ledger'), { withFileTypes: true })
     .filter((e) => e.isDirectory() && !isLivePath(`dist/ledger/${e.name}/`) && fs.existsSync(path.join(dist, 'ledger', e.name, 'index.html')))
     .map((e) => e.name);
+  const pages = [];
+  const upFront = new Set();
   const worst = posts.map((slug) => {
     const tree = parse(path.join(dist, 'ledger', slug, 'index.html'));
-    const { css, js } = assets(dist, tree);
+    pages.push(structuredClone(tree));
+    const { css, js, scripts } = assets(dist, tree);
+    for (const s of scripts) upFront.add(s);
     const html = gz(toHtml(without(tree, (el) => (el.properties.className ?? []).some((c) => PROSE.includes(c)))));
     return { slug, html, css, js, total: html + css + js };
   }).sort((a, b) => b.total - a.total)[0];
@@ -66,6 +104,8 @@ export function measure(dist) {
   row('  chrome HTML', worst.html, 4 * KB);
   row('  CSS', worst.css, 15 * KB);
   row('  JS up front', worst.js, 8 * KB);
+  const element = elementWeights(dist, pages, upFront).sort((a, b) => b.bytes / b.budget - a.bytes / a.budget)[0];
+  if (element) row('an element, JS + CSS', element.bytes, element.budget, `${element.tag}, the nearest its budget`);
 
   const ledger = parse(path.join(dist, 'ledger', 'index.html'));
   // A row is the ledger's li.row, which holds its data-ledger-entry link; Start here and the rest are chrome.
