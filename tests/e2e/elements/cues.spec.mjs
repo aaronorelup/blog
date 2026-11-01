@@ -1,6 +1,6 @@
 // <ao-cues>: cuts of one timeline in lockstep beside timed cues; a cue sends every cut there, one cut is heard.
 import { test, expect } from '../fixtures.mjs';
-import { open, pageWith, expectPlaying, clock } from '../helpers.mjs';
+import { open, pageWith, expectPlaying, clock, smallVideo } from '../helpers.mjs';
 
 const cues = (page) => page.locator('ao-cues').first();
 const vids = (page) => cues(page).locator('video');
@@ -60,4 +60,51 @@ test('cues-5 the scrubber seeks every cut', async ({ page }) => {
     r.dispatchEvent(new Event('input', { bubbles: true }));
   });
   for (let i = 0; i < await vids(page).count(); i++) await expect.poll(() => clock(vids(page).nth(i))).toBeGreaterThan(1);
+});
+
+test('cues-6 a cut that runs out of video holds the others until it has caught up', async ({ page }) => {
+  await button(page, 'Play').click();
+  const [lead, follower] = [vids(page).first(), vids(page).last()];
+  await expectPlaying(lead);
+  // The follower really has data, so the stall is the only one: the element resumes once it reports ready.
+  await expect.poll(() => follower.evaluate((v) => v.readyState >= 3 && !v.seeking), { timeout: 30_000 }).toBe(true);
+  await follower.evaluate((v) => v.dispatchEvent(new Event('waiting')));
+  await expect(cues(page).locator('.ao-cues-clock')).toHaveText('loading…');
+  await expectPlaying(lead, false);
+  await follower.evaluate((v) => v.dispatchEvent(new Event('playing')));
+  await expectPlaying(lead);
+});
+
+test('cues-7 a click on a video plays or pauses every cut', async ({ page }) => {
+  await vids(page).first().click();
+  await expectPlaying(vids(page).first());
+  await expectPlaying(vids(page).last());
+  await vids(page).last().click();
+  await expectPlaying(vids(page).first(), false);
+});
+
+test('cues-8 a cut paused from outside stops them all; the end of the lead stops them', async ({ page }) => {
+  await button(page, 'Play').click();
+  await expectPlaying(vids(page).last());
+  await vids(page).last().evaluate((v) => v.pause());
+  await expectPlaying(vids(page).first(), false);
+  await expect(button(page, 'Play')).toBeVisible();
+  await vids(page).first().evaluate((v) => { v.currentTime = v.duration - 0.4; });
+  await button(page, 'Play').click();
+  await expect(button(page, 'Play')).toBeVisible({ timeout: 20_000 });
+  await expectPlaying(vids(page).last(), false);
+});
+
+test('cues-9 another player starting stops the cuts', async ({ page }) => {
+  await button(page, 'Play').click();
+  await expectPlaying(vids(page).first());
+  await page.evaluate((src) => {
+    const v = document.createElement('video');
+    v.id = 'other'; v.muted = true; v.loop = true; v.playsInline = true; v.src = src;
+    v.style.cssText = 'position:fixed;right:0;bottom:0;width:120px;z-index:9';
+    document.body.append(v);
+    return v.play();
+  }, smallVideo);
+  await expectPlaying(vids(page).first(), false);
+  await expectPlaying(vids(page).last(), false);
 });

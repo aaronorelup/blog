@@ -21,11 +21,15 @@ test('viewer-1 a click opens the picture, counted among the post’s pictures', 
   expect(await total(page)).toBe(await pics(page).count());
 });
 
-test('viewer-2 Enter on a focused picture opens it', async ({ page }) => {
+test('viewer-2 Enter or Space on a focused picture opens it', async ({ page }) => {
   await pics(page).first().focus();
   await page.keyboard.press('Enter');
   await expect(dlg(page)).toBeVisible();
   await expect(count(page)).toHaveText(/^1 \//);
+  await page.keyboard.press('Escape');
+  await pics(page).nth(1).focus();
+  await page.keyboard.press(' ');
+  await expect(count(page)).toHaveText(/^2 \//);
 });
 
 test('viewer-3 arrows, Home, End and the side buttons page through the pictures', async ({ page }) => {
@@ -46,12 +50,49 @@ test('viewer-3 arrows, Home, End and the side buttons page through the pictures'
   await expect(count(page)).toHaveText(`1 / ${n}`);
 });
 
-test('viewer-4 + and 0 zoom and fit', async ({ page }) => {
+test('viewer-4 the keys zoom (+, -, 1, 0) and page (PageDown, PageUp)', async ({ page }) => {
   await pics(page).first().click();
+  const n = await total(page);
   await page.keyboard.press('+');
+  await zoomed(page);
+  await page.keyboard.press('-');
+  await fitted(page);
+  await page.keyboard.press('=');
   await zoomed(page);
   await page.keyboard.press('0');
   await fitted(page);
+  await page.keyboard.press('1');
+  await expect(dlg(page).locator('.ao-lb-zoom')).not.toHaveText('fit');
+  await page.keyboard.press('0');
+  await page.keyboard.press('PageDown');
+  await expect(count(page)).toHaveText(`2 / ${n}`);
+  await page.keyboard.press('PageUp');
+  await expect(count(page)).toHaveText(`1 / ${n}`);
+});
+
+test('viewer-11 the toolbar zooms in, out and back to fit, links the file and closes', async ({ page, isMobile }) => {
+  await pics(page).first().click();
+  const bar = dlg(page).locator('.ao-lb-tools');
+  // A phone hides + and − (it pinches); fit, the file link and close stay.
+  if (!isMobile) {
+    await bar.locator('[data-act="in"]').click();
+    await zoomed(page);
+    await bar.locator('[data-act="out"]').click();
+    await fitted(page);
+  }
+  await bar.locator('[data-act="fit"]').click();
+  await zoomed(page);
+  await bar.locator('[data-act="fit"]').click();
+  await fitted(page);
+  await expect(bar.locator('.ao-lb-orig')).toHaveAttribute('href', /\S/);
+  await bar.locator('[data-act="close"]').click();
+  await expect(dlg(page)).toBeHidden();
+});
+
+test('viewer-12 ao-stop closes it (the homepage closing its reader)', async ({ page }) => {
+  await pics(page).first().click();
+  await page.evaluate(() => document.dispatchEvent(new CustomEvent('ao-stop')));
+  await expect(dlg(page)).toBeHidden();
 });
 
 test('viewer-4b the wheel zooms', async ({ page, isMobile }) => {
@@ -63,13 +104,48 @@ test('viewer-4b the wheel zooms', async ({ page, isMobile }) => {
   await zoomed(page);
 });
 
-test('viewer-5 a click on the picture zooms there and a second fits it (mouse)', async ({ page, isMobile }) => {
-  test.skip(isMobile, 'touch uses the double tap (viewer-6)');
+test('viewer-5 a click on the picture zooms there, a drag pans, a second click fits, a click beside it closes', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'touch uses the double tap (viewer-6) and swipes (viewer-13)');
   await pics(page).first().click();
-  await dlg(page).locator('.ao-lb-img').click();
+  const img = dlg(page).locator('.ao-lb-img');
+  await img.click();
   await zoomed(page);
-  await dlg(page).locator('.ao-lb-img').click();
+  const before = await img.evaluate((i) => i.style.transform);
+  const box = await dlg(page).locator('.ao-lb-stage').boundingBox();
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2 + 120, box.y + box.height / 2 + 60, { steps: 6 });
+  await page.mouse.up();
+  await expect.poll(() => img.evaluate((i) => i.style.transform)).not.toBe(before);
+  await img.click();
   await fitted(page);
+  // The dark around the picture: beside it if it is letterboxed sideways, else above it.
+  await expect.poll(async () => (await img.boundingBox()).width).toBeLessThanOrEqual(box.width + 1);
+  const pic = await img.boundingBox();
+  const beside = pic.x - box.x > pic.y - box.y;
+  const at = beside ? [box.x + (pic.x - box.x) / 2, box.y + box.height / 2] : [box.x + box.width / 2, box.y + (pic.y - box.y) / 2];
+  await page.mouse.click(...at);
+  await expect(dlg(page)).toBeHidden();
+});
+
+test('viewer-13 a swipe sideways pages, a swipe down closes (touch)', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'touch gestures are sent through the Chromium DevTools protocol');
+  await pics(page).first().click();
+  const n = await total(page);
+  const box = await dlg(page).locator('.ao-lb-stage').boundingBox();
+  const [cx, cy] = [box.x + box.width / 2, box.y + box.height / 2];
+  const cdp = await page.context().newCDPSession(page);
+  const swipe = async (dx, dy) => {
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: cx, y: cy, id: 1 }] });
+    for (let k = 1; k <= 5; k++) await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: cx + (dx * k) / 5, y: cy + (dy * k) / 5, id: 1 }] });
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  };
+  await swipe(-160, 0);
+  await expect(count(page)).toHaveText(`2 / ${n}`);
+  await swipe(160, 0);
+  await expect(count(page)).toHaveText(`1 / ${n}`);
+  await swipe(0, 200);
+  await expect(dlg(page)).toBeHidden();
 });
 
 test('viewer-6 a double tap zooms (touch)', async ({ page, isMobile }) => {

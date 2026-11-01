@@ -60,3 +60,15 @@ test('transcript-4 one pane playing pauses the other', async ({ page }) => {
   await expectPlaying(vs.nth(1));
   await expectPlaying(vs.nth(0), false);
 });
+
+test('transcript-5 Enter on a line seeks there; hiding the element pauses its video', async ({ page }) => {
+  const v = el(page).locator('figure video').first();
+  await v.evaluate((m) => { m.muted = true; });
+  const line = el(page).locator('.ao-tr-text').first().locator('span[role=button]').nth(3);
+  await line.focus();
+  await page.keyboard.press('Enter');
+  await expect(line).toHaveAttribute('aria-current', 'true');
+  await expectPlaying(v);
+  await el(page).evaluate((n) => { n.style.display = 'none'; });
+  await expectPlaying(v, false);
+});

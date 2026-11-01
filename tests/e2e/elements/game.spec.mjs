@@ -97,3 +97,34 @@ for (const [src, url] of games) {
     expect(errors).toEqual([]);
   });
 }
+
+test('game-7 Fullscreen puts the game’s frame full screen', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'iPhone Safari has no fullscreen for frames; desktop only');
+  const g = await start(page);
+  await g.locator('.ao-game-full').click();
+  await expect.poll(() => page.evaluate(() => document.fullscreenElement?.tagName)).toBe('IFRAME');
+  await page.evaluate(() => document.exitFullscreen());
+});
+
+test('game-8 a key or a click inside the game counts as pressing play', async ({ page }) => {
+  const g = await start(page);
+  await page.evaluate((src) => {
+    const v = document.createElement('video');
+    v.id = 'other'; v.muted = true; v.loop = true; v.playsInline = true; v.src = src;
+    v.style.cssText = 'position:fixed;right:0;bottom:0;width:120px;z-index:9';
+    document.body.append(v);
+  }, smallVideo);
+  const other = page.locator('#other');
+  await other.evaluate((m) => m.play());
+  await expect(veil(g)).toBeVisible();
+  await veil(g).click();
+  await expectPlaying(other, false);
+  await other.evaluate((m) => m.play());
+  await expect(veil(g)).toBeVisible();
+  await veil(g).click();
+  await other.evaluate((m) => m.play());
+  await expect(veil(g)).toBeVisible();
+  // Resume through the veil is one way; a key pressed inside the frame is the other.
+  await g.locator('iframe').evaluate((f) => f.contentWindow.dispatchEvent(new KeyboardEvent('keydown', { key: 'x' })));
+  await expectPlaying(other, false);
+});

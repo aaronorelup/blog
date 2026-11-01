@@ -148,3 +148,14 @@ test('core-10 an embedded player and a player in the post pause each other', asy
   await expectPlaying(outer);
   await expectPlaying(inner, false);
 });
+
+test('core-11 an embedded player with sound scrolled away keeps playing and the bar shows it', async ({ page }) => {
+  await open(page, framePage);
+  const f = page.locator('[data-post-article] iframe').first();
+  const v = await frameVideo(page, 0);
+  await play(v, { muted: false });
+  await expectPlaying(v);
+  await scrollAway(f);
+  await expect(page.locator('.ao-np')).toBeVisible();
+  expect(await playing(v)).toBe(true);
+});

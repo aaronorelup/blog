@@ -32,8 +32,11 @@ test('listen-1 a clip row selects that clip and plays it', async ({ page }) => {
   const title = await current(page).textContent();
   await expect(listen(page).locator('.ao-listen-now b')).toHaveText(title);
   await expectPlaying(audioOf(page, title));
+  await expect(listen(page).locator('.ao-listen-bar button').first()).toHaveText('Pause');
+  await expect.poll(() => listen(page).locator('.ao-listen-clock').textContent()).toMatch(/^0:0[1-9] \/ \d+:\d\d$/);
   await listen(page).locator('.ao-listen-bar button').first().click();
   await expectPlaying(audioOf(page, title), false);
+  await expect(listen(page).locator('.ao-listen-bar button').first()).toHaveText('Play');
 });
 
 test('listen-2 A/B switches to the reference at the same moment, and back', async ({ page }) => {
