@@ -354,6 +354,7 @@ is a stub that solves at once with the test response.
 | Ask: no Turnstile before Ask opens; `GET /api/session`, then Turnstile, then one mint; the button is disabled and Goobie thinks while a question is out, and a second Enter sends nothing; the answer is text; each `[n]` links to its passage and works; related rows; one session for the next question | search-8 |
 | `{ ask: false }` hides the switch and says Goobie is resting, with no Turnstile | search-9 |
 | `resting` and `not-found` show their line over the closest posts | search-10 |
+| A search still answering when Ask opens draws nothing in Ask, and the meaning half is never asked | search-11 |
 
 Ask against the real Worker is checked by hand under `npx wrangler dev` (docs/WORKER.md, "Locally"): the real
 Turnstile widget with the test site key, a real mint and a real DeepSeek answer.

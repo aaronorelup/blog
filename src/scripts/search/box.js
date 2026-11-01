@@ -29,8 +29,9 @@ export function mount(root) {
   let ask = null;
 
   // Drawn once the words half has answered, or the meaning half has found something: an empty meaning answer that
-  // comes first would say "nothing matches" before the words are in.
+  // comes first would say "nothing matches" before the words are in. A half that answers after Ask opened draws nothing.
   const render = () => {
+    if (mode !== 'search') return;
     const found = words.q === q ? words.hits : null;
     const meant = meaning.q === q ? meaning.hits : [];
     if (found || meant.length) showResults(ui.out, merge(found ?? [], meant), q);
@@ -53,11 +54,14 @@ export function mount(root) {
   const onSubmit = (e) => {
     e.preventDefault();
     const text = ui.input.value.trim();
-    if (mode === 'ask') { if (text.length >= MIN) ask.ask(ui, text); } else askMeaning(text);
+    if (mode !== 'ask') return askMeaning(text);
+    // The reply is drawn only if Ask is still open when it comes.
+    if (text.length >= MIN) ask.ask(ui, text).then((reply) => { if (reply && mode === 'ask') ui.out.replaceChildren(reply); });
   };
 
   const setMode = (next) => {
     mode = next;
+    clearTimeout(quietT);
     for (const b of ui.modes.querySelectorAll('[data-mode]')) b.setAttribute('aria-pressed', String(b.dataset.mode === mode));
     ui.lens.classList.toggle('is-off', mode === 'ask');
     ui.goobie.hidden = mode !== 'ask';

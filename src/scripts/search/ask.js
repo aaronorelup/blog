@@ -1,7 +1,8 @@
 // Ask Goobie, loaded only once the box's switch opens it. GET /api/session says first whether Ask is on; when it is
 // off, Turnstile never loads. When it is on, Turnstile (explicit, interaction-only, action ask) solves once, and POST
 // /api/session turns the solve into a 30-minute Ask token, kept in sessionStorage. Asking sends POST /api/ask { q }
-// with the token in X-AO-Session: one question at a time, no retry. The answer is set as text, never as HTML.
+// with the token in X-AO-Session: one question at a time, no retry. ask() returns the reply for box.js to draw: the
+// answer as text, never as HTML.
 import { TURNSTILE_SITE_KEY, TURNSTILE_TEST_SITE_KEY } from '../../data/public-keys.js';
 import { load } from '../cards/data.js';
 import { deepLink, h, relatedRow } from './results.js';
@@ -81,25 +82,26 @@ async function mint(turnstileToken) {
   return session.token;
 }
 
+// The reply to q, or null while an earlier question is still out.
 export async function ask(ui, q) {
-  if (asking) return;
+  if (asking) return null;
   asking = true;
   ui.go.disabled = true;
   ui.form.classList.add('is-thinking');
   try {
     const s = kept();
     const token = fresh(s) ? s.token : await solve(ui);
-    if (!token) return say(ui, SAY.unsolved);
+    if (!token) return say(SAY.unsolved);
     const r = await fetch('/api/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-AO-Session': token },
       body: JSON.stringify({ q }),
     });
     if (r.status === 401) sessionStorage.removeItem(KEPT);
-    if (!r.ok) return say(ui, r.status === 401 ? SAY.expired : r.status === 429 ? SAY.busy : SAY.down);
-    await answer(ui, await r.json(), q);
+    if (!r.ok) return say(r.status === 401 ? SAY.expired : r.status === 429 ? SAY.busy : SAY.down);
+    return await answer(await r.json(), q);
   } catch {
-    say(ui, SAY.down);
+    return say(SAY.down);
   } finally {
     asking = false;
     ui.go.disabled = false;
@@ -107,7 +109,7 @@ export async function ask(ui, q) {
   }
 }
 
-const say = (ui, text) => ui.out.replaceChildren(h('p', { class: 'ask-note' }, text));
+const say = (text) => h('p', { class: 'ask-note' }, text);
 
 // "[2]" becomes a link to the cited passage, with the question's words marked there.
 function cited(text, cites, q) {
@@ -120,12 +122,12 @@ function cited(text, cites, q) {
   });
 }
 
-async function answer(ui, { answer: text, cites, related, reason }, q) {
+async function answer({ answer: text, cites, related, reason }, q) {
   const cards = (await load()) ?? {};
   const head = text
     ? [h('p', { class: 'ask-text' }, ...cited(text, cites, q)), h('p', { class: 'ask-fine' }, SAY.fine)]
-    : [h('p', { class: 'ask-note' }, reason === 'not-found' ? SAY['not-found'] : SAY.resting)];
+    : [say(reason === 'not-found' ? SAY['not-found'] : SAY.resting)];
   const rows = related.filter((slug) => cards[slug]).map((slug) => relatedRow(slug, cards[slug]));
-  ui.out.replaceChildren(h('div', { class: 'ask' }, ...head,
-    ...(rows.length ? [h('ol', { class: 'rows ask-related', 'aria-label': 'Posts on this' }, ...rows)] : [])));
+  return h('div', { class: 'ask' }, ...head,
+    ...(rows.length ? [h('ol', { class: 'rows ask-related', 'aria-label': 'Posts on this' }, ...rows)] : []));
 }

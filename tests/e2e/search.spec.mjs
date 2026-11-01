@@ -151,6 +151,19 @@ test('search-6 the meaning half joins the list once typing stops, with no sessio
   expect(seen.turnstile).toEqual([]);
 });
 
+test('search-11 a search still answering when Ask opens draws nothing there and asks no meaning', async ({ page, context }) => {
+  const seen = await watch(page, context);
+  await page.goto('/ledger/');
+  await input(page).fill('gpu');
+  await page.locator('[data-mode="ask"]').click();   // inside the 400 ms the meaning half waits for
+  await expect(page.locator('[data-mode="ask"]')).toHaveAttribute('aria-pressed', 'true');
+  // The words half's answer comes in, and the meaning half's 400 ms pass.
+  await expect.poll(() => page.evaluate(() => performance.getEntriesByName('search:index').length)).toBe(1);
+  await page.waitForTimeout(800);
+  await expect(page.locator('[data-search-out] .results')).toHaveCount(0);
+  expect(seen.api.filter((a) => a === 'GET /api/search')).toEqual([]);
+});
+
 test.describe('without the meaning half', () => {
   test.use({ api: { '/api/search': 'search-503' } });
   test('search-7 a failed meaning call leaves the words half and says nothing', async ({ page }) => {
