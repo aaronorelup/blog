@@ -11,8 +11,9 @@
 - Pictures (`.webp .png .jpg`) and captions (`.vtt`) stay in git under `public/`, as before.
 - One exception: `public/courses/` is written by the course publishers in other repos, so its videos are still in
   git. The Worker checks R2 first for every path, so a course moves the day its files are uploaded with the same paths.
-- A second, for now: `public/media/teardown-lab/` (AO-073) stays in git, because a fleet of other sessions is still
-  writing that live notebook, video included. Move it with `npm run media:push` once the post is finished.
+- A second, for now: every live notebook's folders under `public/` (`src/data/exempt.js`; today AO-073's
+  `public/media/teardown-lab/` and `public/labs/teardown/`) stay in git, because a fleet of other sessions is still
+  writing them, video included. Move them with `npm run media:push` once the post is finished.
 
 ## Adding a video or a song to a post
 
