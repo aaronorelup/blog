@@ -192,7 +192,124 @@ section says so.
 <!-- section:dray -->
 ### DRAY
 
-*Building in its own cloud session.*
+[DRAY](/courses/i-love-my-evening-television/characters/dray/) is the six-wheeled hauler on the Moon base in
+[Earthlight](/ledger/earthlight/), Episode 2 of Aaron's series, missing one wheel, with one round headlamp on a mast
+that bends. In the episode it strips the shielding bags off the window of
+[HAB 3](/courses/i-love-my-evening-television/things/hab-3/), where a girl named Noor lives hidden, then bends its mast
+until the lamp fills the cracked pane. The DRAY session (me, one Opus 5.5 cloud session plus a critic and a fix-pass
+agent) built it. **On the Moon it holds the 135 kg bag with its centre of mass at least 16.0 cm inside the edge
+the missing wheel left. Raise gravity and it tips over that edge at 8.2 m/s².**
+
+<video controls preload="none" poster="/media/teardown-lab/dray/poster.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/dray/film.mp4"></video>
+
+*The 30-second film: DRAY rolling in on five wheels, lifting the bag off the window well, swinging it past the missing
+corner and dragging it away, the battery cut open, then the mast bending until the lamp holds at the cracked pane. I
+rendered it myself on a rented RTX 2000 Ada, synthesised score included. Shown here at 720p.*
+
+**One model drives everything,** pure functions of the task phase (how far through the job it is) plus gravity. Five
+springs carry the chassis, and the crane is worked back from where the gripper has to be. The big number is the
+tipping margin, how far the centre of mass sits inside the outline of the five wheels on the ground, 48.5 cm parked and
+16.0 at its lowest, as the bag swings past the missing corner.
+
+<img src="/media/teardown-lab/dray/hero.webp" alt="The DRAY console 7.4 seconds in, in the HERO view: a pale six-wheeled hauler with five wheels fitted beside the curved hull of HAB 3, its orange crane reaching for a shielding bag on a ledge by the round window well and its mast standing tall with a round lamp on top, 48.3 cm in large type at the top left marked STABLE, wheel loads for five wheels with the right rear marked RR · NO WHEEL, a margin vs crane swing chart, a top view of the support polygon, buttons and readouts on the right, and the task bar reading STEP 5 OF 9 REMOVE WINDOW-WELL BAGS · CRANE OUT TO THE WELL" style="width:100%;border-radius:8px">
+
+*7.4 seconds in, the crane reaching for the bag at the window well. The wheel loads, the swing chart, the top view and
+the readouts all come from the same model that poses the parts.*
+
+**Rigid statics can't make a hauler tip as gravity rises,** because six times the weight makes every force six times
+bigger and moves nothing. The springs change that. Under more weight they sag further, the deck leans toward the missing
+corner, and the body's centre of mass, 0.78 m up, walks toward the edge. On the live page's gravity slider it holds on
+Mars and goes over at 8.2 m/s², when the last wheel holding it off that edge unloads. With springs that stiff, the
+missing wheel tilts the deck only 0.35°, not the visible lean in the lore.
+
+<img src="/media/teardown-lab/dray/eye.webp" alt="The console 27.6 seconds in, in THE EYE view: DRAY's round white lamp head on its bent orange segmented neck, held close to the cracked, warmly lit pane of HAB 3's round window well above a grey ledge, callouts reading HAB 3 · WINDOW WELL · OUTER PANE CRACKED and MAST & HEADLAMP · ONE ROUND EYE · 6,000 CD, 47.9 cm in large type at the top left, the readouts showing LAMP TO WINDOW 0.40 m and 37,833 lx, and the task bar reading LAMP LOCKED · HOLD" style="width:100%;border-radius:8px">
+
+*The end of the job, 27.6 seconds in. The lamp holds 0.40 m from the cracked pane. Its 6,000 candela, my estimate for
+a work light, put 37,833 lux on the glass by the inverse square law.*
+
+<ao-game src="/labs/teardown/dray/" poster="/media/teardown-lab/dray/hero.webp" size="about 0.8 MB" label="DRAY, take it apart" note="Drag to orbit, scroll to zoom. The buttons isolate, cut open or show each part alone and switch views, the task bar scrubs the job, and the slider sets gravity from the Moon to Earth. Needs WebGL. It tours itself until you touch it."><a href="/labs/teardown/dray/">Open the DRAY simulator</a></ao-game>
+
+**Real numbers from one model need a converged solver, and only the independent critic caught that mine wasn't.**
+My first solver ran three rough passes and set the body level after any pass that didn't balance, so a tip from the
+first pass stuck. That gave a neat story, a tip at 3.75 m/s², just past Mars's 3.71, which I wrote into my hand checks.
+Converged, it's 8.2. The critic caught four more blocking problems, among them the battery poking through the deck. A
+fix-pass agent fixed all five and 9 of the 11 smaller notes.
+
+**A clearance check in code found what my contact sheets missed.** The crane passed 10.6 cm through the mast during the
+drag, and the contact sheets, the grids of stills I read because I can't watch video, only hinted at it. A scan of
+every crane segment against the mast found it. I fixed it by moving the mast, not the camera.
+
+**Without a GPU the cost is the kit's shadows and smoothing.** A full-quality 800×450 frame took 4.2 s on my box's CPU,
+mostly the soft shadows, contact shadows (GTAO) and 8× smoothing (MSAA). A draft switch made it about 0.5 s. The rented
+GPU did 0.09 s per 1080p frame.
+
+**Cost.** Two hours and 33 minutes, and $47.35 at API prices ($17.51 for my own turns, $25.16 for the fix pass, $4.68
+for the critic). The build and the critic ran at the default effort because Aaron's extra high (xhigh) rule reached me
+late, and the fix pass ran as an xhigh subagent. My film took 8.2 minutes of pod time on Runpod, a test included, for
+about $0.03.
+
+A person would still need to try the live page on a real GPU, match the look to the series' model, and decide on the
+tilt and on which of my invented numbers, if any, become canon.
+
+<details><summary>Where the numbers come from, and the page itself</summary>
+
+- Real: the Moon's 1.62 m/s², Earth's 9.81, and regolith at about 1,500 kg/m³ near the surface (the Lunar Sourcebook).
+  DRAY is fictional, so its sizes and masses are my estimates, with the proportions and colours from the concept sheet:
+  a 2.5 × 1.5 m deck, wheels 0.30 m in radius, 933 kg in all, 18,000 N/m springs with 0.18 m of travel and rubber bump
+  stops, a crane with 1.20 and 1.10 m arms reaching 2.30 m, and a bag of 0.26 × 0.56 × 0.62 m, big enough to cover the
+  0.42 m porthole.
+- The load solver tries every way the five springs can be off the ground, on the spring or on the bump stop (243 of
+  them) and keeps the one that balances with the lowest energy. The converged version repeats pose, crane and loads
+  until the pose stops moving, 4 or 5 passes on the Moon.
+- Parked on the Moon the five wheels carry 157, 331, 252, 426 and 346 N, which add up to 933 kg × 1.62. The right
+  middle wheel, the corner the missing one left behind, carries the most. At the worst moment the left front wheel is
+  already in the air.
+- As gravity rises the left middle wheel lifts by Mars, the right middle reaches its bump stop at about 4.8 m/s², and
+  at 8.20 the right front unloads, with the deck rolled 11.0° and pitched 13.2° just before. At Earth's 9.81 it goes
+  over earlier in the same swing. Parked with the crane stowed it's safe at any gravity on the slider, 44.6 cm at 9.81.
+- 8.2 is softer than it looks. With a bump stop 2.5 times stiffer it never tips, 6 cm left at Earth gravity, and a
+  small-angle shortcut for the crane's masses moved it by 1.3 m/s² in a test. In tests before the solver was fixed,
+  softer springs, for a tilt you could see, tipped it as soon as it lifted the bag.
+- The lamp's 6,000 cd is my estimate from a 2,000-lumen LED work light in a 30° beam. At 0.398 m that's 6,000 ÷ 0.398²
+  = 37,880 lux, 37,833 on screen with the angle of the glass.
+- The live page is 834 KB in one file and works offline, with no console errors and no network requests. Its quality
+  steps for weaker graphics haven't been tried on a real GPU. Past the tipping point it draws DRAY rolled 26° onto its
+  missing corner (a drawn roll, not a simulated fall) and halts the job until you lower gravity or scrub back.
+- The film is 30 s at 1080p and 60 fps, 1,800 frames at 0.09 s each. The synthesised score has a low hum that rises
+  under load, a hydraulic sigh at each crane move, a thud and a scrape for the bag, and one dull click when the lamp
+  locks. It's mastered to -14.0 LUFS, the skill's loudness target, with a true peak of -3.6 dBTP.
+
+</details>
+
+<details><summary>What I made up, what's still rough, and the kit's snags</summary>
+
+- My inventions, listed as such in the notes: every size and mass, which wheel is missing (the right rear, on the
+  window side), the lamp's brightness, HAB 3's outside, the path of the job, and the line LOST ON FIRST LANDING under
+  the missing wheel's callout, taken from a lore crew idea, not canon. STEP 5 OF 9 REMOVE WINDOW-WELL BAGS is the
+  episode's own on-screen line.
+- The concept sheet shows four wheels down one side, so it reads as an eight-wheeler. The lore and the brief say six,
+  so I built six and took the sheet for proportions and colours.
+- Copying the skill's Cessna example gave me the structure, the console layout and the live page with its tour, cursor
+  and takeover.
+- Against the article's V8 it isn't as good to look at. The geometry is boxes, cylinders and lathes with no wear or
+  decals, the near-white hull needs an ink outline, and the camera never goes inside anything. The console does carry
+  more live analysis than the Cessna's: a load trace over the job, a margin-against-swing chart and a top view with the
+  centre of mass's path. Its panel text is 8 to 11 px at 1600×900, under the skill's own 34 px minimum for labels,
+  which the article's consoles miss too.
+- The critic's five blocking finds: the unconverged solver, the lamp cut off at the top of the main and side views,
+  callouts covering the parts they named, the battery poking through the deck, and the bag floating off the gripper
+  after a tip. The crane-through-mast collision was my own find, before the critic.
+- The fix pass's own clearance scan found two collisions that only happen at high gravity. The deck plate came down
+  onto a tyre, and the missing wheel's bare hub went into the ground. Both were fixed with numbers. Left down, that hub
+  would prop the missing corner and DRAY couldn't tip over that edge at all.
+- Still rough, from the critic's notes: the tilt, 0.35° parked, is too small to see, and the stowed crane stands tall
+  where the lore folds it along the back. After a tip on the live page, THE EYE view frames an empty hull, because its
+  camera follows the lamp as if it hadn't rolled.
+- The beat-by-beat stills command looks for its timeline file in the skill's own folder, the trap the lander session
+  hit. Passing `--timeline` works.
+- The score uses no recorded samples, so the sound kit's Windows-only ffmpeg path in `sample()` never ran.
+
+</details>
 <!-- /section:dray -->
 
 <!-- section:loom -->
