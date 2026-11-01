@@ -3,6 +3,7 @@
 // hash.mjs from the private list in the agent kit. Words match case-sensitively as whole tokens, alone or in runs of
 // 2 or 3; anything shaped like a host or URL also offers its host, parent domains and host + path prefixes.
 import crypto from 'node:crypto';
+import { liner } from './text.mjs';
 
 export const SALT = 'aaronorelup.com never-publish v1\n';
 export const hash = (key) => crypto.hash('sha256', SALT + key);
@@ -56,11 +57,12 @@ export default function neverPublish(repo, report) {
   const known = new Map();
   for (const { file, raw } of scope(repo)) {
     const seen = new Set();
+    const line = liner(raw);
     for (const [key, index] of keys(raw)) {
       if (!known.has(key)) known.set(key, hashes.has(hash(key)));
       if (!known.get(key) || seen.has(key)) continue;
       seen.add(key);
-      report(file, raw.slice(0, index).split('\n').length, `"${key}" is on the never-publish list (WRITING.md, "Never publish")`, 'deploy');
+      report(file, line(index), `"${key}" is on the never-publish list (WRITING.md, "Never publish")`, 'deploy');
     }
   }
 }
