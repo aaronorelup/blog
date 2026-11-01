@@ -1,6 +1,7 @@
 // <ao-model>: a GLB the reader can turn around. Nothing heavy loads until they ask: the poster and a button show
 // first, and three.js plus the model arrive on the click. Drag to orbit, scroll or pinch to zoom; it turns slowly on
 // its own until touched. Attributes src, poster, size, label, ratio: docs/COMPONENTS.md.
+import { lazy } from '../../scripts/lazy.js';
 import { h } from '../_lib/dom.js';
 
 class AoModel extends HTMLElement {
@@ -23,10 +24,10 @@ class AoModel extends HTMLElement {
     btn.disabled = true;
     btn.textContent = 'Loading…';
     try {
-      const THREE = await import('three');
-      const { GLTFLoader } = await import('three/examples/jsm/loaders/GLTFLoader.js');
-      const { OrbitControls } = await import('three/examples/jsm/controls/OrbitControls.js');
-      const { RoomEnvironment } = await import('three/examples/jsm/environments/RoomEnvironment.js');
+      const THREE = await lazy(() => import('three'));
+      const { GLTFLoader } = await lazy(() => import('three/examples/jsm/loaders/GLTFLoader.js'));
+      const { OrbitControls } = await lazy(() => import('three/examples/jsm/controls/OrbitControls.js'));
+      const { RoomEnvironment } = await lazy(() => import('three/examples/jsm/environments/RoomEnvironment.js'));
       const gltf = await new GLTFLoader().loadAsync(this.getAttribute('src'));
       if (!this.isConnected) return;
       this.mount(THREE, OrbitControls, RoomEnvironment, gltf);
