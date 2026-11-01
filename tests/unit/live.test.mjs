@@ -4,13 +4,17 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { createMarkdownProcessor } from '@astrojs/markdown-remark';
 import matter from 'gray-matter';
 import { LIVE_NOTEBOOKS, isLive, isLivePath } from '../../src/data/exempt.js';
+import { rehypePlugins } from '../../scripts/build/markdown.mjs';
 import { baselineProblems, previewsProblems, readBaseline, rssProblems, statsPagesProblems } from '../../scripts/build/contracts.mjs';
 import { collections } from './content-schema.mjs';
 
 const { slug, paths } = LIVE_NOTEBOOKS['AO-073'];
-const post = matter(fs.readFileSync(new URL(`../../src/content/posts/${slug}.md`, import.meta.url), 'utf8')).data;
+const file = new URL(`../../src/content/posts/${slug}.md`, import.meta.url);
+const { data: post, content: body } = matter(fs.readFileSync(file, 'utf8'));
 const parse = (data) => collections.posts.schema.safeParse(data);
 
 test('the exempt list names AO-073 by id, slug and every path its fleet writes', () => {
@@ -51,4 +55,16 @@ test('the URL baseline leaves every live path out, and never misses one', () => 
   const gone = ['/ledger/teardown-lab/', '/labs/teardown/lander/', '/labs/teardown/x/'];
   assert.deepEqual(baselineProblems(gone, () => false, new Set()), []);
   assert.equal(baselineProblems(['/ledger/earthlight/'], () => false, new Set()).length, 1);
+});
+
+test('an unknown <ao-*> tag only warns in AO-073, and fails the render of any other post', async (t) => {
+  const publicDir = fileURLToPath(new URL('../../public/', import.meta.url));
+  const md = await createMarkdownProcessor({ rehypePlugins: rehypePlugins({ publicDir }), syntaxHighlight: false });
+  const typo = `${body}\n\n<ao-sliderr></ao-sliderr>\n`;
+  const warn = t.mock.method(console, 'warn', () => {});
+  const { code } = await md.render(typo, { fileURL: file, frontmatter: {} });
+  assert.match(code, /<ao-sliderr><\/ao-sliderr>/);
+  assert.ok(warn.mock.calls.some((c) => /<ao-sliderr> is not a post component/.test(c.arguments[0])));
+  const other = new URL('../../src/content/posts/earthlight.md', import.meta.url);
+  await assert.rejects(md.render(typo, { fileURL: other, frontmatter: {} }), /<ao-sliderr> is not a post component/);
 });
