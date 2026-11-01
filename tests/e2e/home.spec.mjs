@@ -214,15 +214,17 @@ test('home-12 five night tosses in a row open the lantern door: the lamp flares 
   await context.route('**/api/lantern', (r) => r.fulfill({ contentType: 'text/html', body: '<title>door</title>' }));
   await scene(page);
   // Each toss the moment the last one lands, in the page: "in a row" is within 3 s, which a busy box's round trips
-  // could miss.
-  await page.locator('#avatar').evaluate((coin) => new Promise((done) => {
+  // could miss. The lamp is read the moment it flares, also in the page: 900 ms later the page has gone.
+  const lamp = await page.locator('#avatar').evaluate((coin) => new Promise((done) => {
+    const back = document.getElementById('coin-back');
     let n = 0;
-    const toss = () => { coin.click(); if (++n === 5) done(); };
+    new MutationObserver(() => { if (back.style.boxShadow) done([n, back.style.opacity]); })
+      .observe(back, { attributes: true, attributeFilter: ['style'] });
+    const toss = () => { coin.click(); n++; };
     new MutationObserver(() => { if (!coin.dataset.busy && n < 5) toss(); }).observe(coin, { attributes: true, attributeFilter: ['data-busy'] });
     toss();
   }));
-  await expect.poll(() => page.locator('#coin-back').evaluate((b) => b.style.boxShadow)).not.toBe('');
-  expect(await page.locator('#coin-back').evaluate((b) => b.style.opacity)).toBe('1');   // it landed lamp-up
+  expect(lamp).toEqual([5, '1']);   // it flared on the fifth toss, which landed lamp-up
   await expect(page).toHaveURL(/\/api\/lantern$/);
 });
 
