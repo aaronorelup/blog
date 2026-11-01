@@ -38,6 +38,7 @@ class AoCues extends HTMLElement {
       v.removeAttribute('controls');
       v.removeAttribute('loop');
       v.playsInline = true;
+      v.tabIndex = 0; // without its controls a video takes no focus, and space on a focused cut plays them all
       v.addEventListener('click', () => toggle());
       cell.append(v, tag);
       grid.append(cell);
