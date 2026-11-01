@@ -6,6 +6,8 @@ const cues = (page) => page.locator('ao-cues').first();
 const vids = (page) => cues(page).locator('video');
 const button = (page, name) => cues(page).locator('.ao-cues-bar button', { hasText: name });
 
+// Every test streams the same two films; one at a time, so they don't share the line with each other.
+test.describe.configure({ mode: 'default' });
 test.beforeEach(async ({ page }) => {
   await open(page, lightestWith('ao-cues', (a) => a.labels));
   await cues(page).scrollIntoViewIfNeeded();
@@ -34,13 +36,21 @@ test('cues-2 a cue sends every cut to its time and lights it', async ({ page }) 
   await expectPlaying(vids(page).first());
 });
 
-test('cues-3 the keyboard: Enter on a cue seeks, space on the element toggles', async ({ page }) => {
+test('cues-3 Enter on a cue seeks there and plays', async ({ page }) => {
   const li = cues(page).locator('ol > li[data-t]').nth(1);
   await li.focus();
   await page.keyboard.press('Enter');
   await expect(li).toHaveAttribute('aria-current', 'true');
   await expectPlaying(vids(page).first());
+});
+
+test('cues-3b space on a focused cut plays and pauses them all', async ({ page }) => {
+  // Broken on main: the handler wants the element or a video focused, and neither can take focus (no tabindex, the
+  // controls are removed), so space never reaches it (INVENTORY cues-3b).
+  test.fail();
   await vids(page).first().focus();
+  await page.keyboard.press(' ');
+  await expectPlaying(vids(page).first());
   await page.keyboard.press(' ');
   await expectPlaying(vids(page).first(), false);
 });

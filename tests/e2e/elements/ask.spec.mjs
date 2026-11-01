@@ -4,11 +4,7 @@ import { test, expect } from '../fixtures.mjs';
 import { open, pageWith } from '../helpers.mjs';
 
 const el = (page) => page.locator('ao-ask').first();
-// The element may sit inside a closed <details> of the post; open those first.
-test.beforeEach(async ({ page }) => {
-  await open(page, pageWith('ao-ask'));
-  await el(page).evaluate((n) => { for (let d = n.closest('details'); d; d = d.parentElement.closest('details')) d.open = true; });
-});
+test.beforeEach(async ({ page }) => open(page, pageWith('ao-ask')));
 
 test('ask-1 a question expands, and opening another closes it', async ({ page }) => {
   const items = el(page).locator('details');

@@ -134,7 +134,8 @@ before it plays.
 |---|---|---|
 | Play runs every cut together, Pause stops them | Play `click`, the follow loop (`timeupdate`, rate nudges) | cues-1 |
 | A cue sends every cut to its time, plays, and lights the cue | cue `click`, `data-t` | cues-2 |
-| Enter on a cue seeks; space toggles | cue `keydown`, element `keydown` | cues-3 |
+| Enter on a cue seeks there and plays | cue `keydown` | cues-3 |
+| Space on a focused cut plays and pauses them all | element `keydown` | cues-3b: broken on main |
 | One Sound button per cut picks the one heard | `labels`, Sound `click` | cues-4 |
 | The scrubber seeks every cut | scrubber `input` | cues-5 |
 | A cut out of video holds the rest until it has caught up | video `waiting`, `canplay` `canplaythrough` `seeked` `playing` | cues-6 |
@@ -329,6 +330,9 @@ load without a script error (live-5).
 
 - **home-4, the rail dots.** The active section lies over the rail at every tier and on both projects, so a click on
   a dot lands on the section and the scene doesn't move. The keys, the wheel and a swipe work.
+- **cues-3b, space in `ao-cues`.** The keydown handler wants the element or one of its videos focused, but neither
+  can take focus (no tabindex, and the element removes the videos' controls), so the key never reaches it. The
+  cues' own Enter and the Play button work.
 - **overlay-4, a lost chunk.** `openPost` imports `post-components.js` with no fallback: when a deploy has replaced
   the chunk, the post shows un-upgraded. T1.2's `lazy()` navigates to the real page instead.
 

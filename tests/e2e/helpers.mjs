@@ -20,10 +20,18 @@ export const lightestWith = (tag, match = () => true) => targets.tags[tag].filte
   .map((u) => [u.page, u.media.reduce((n, src) => n + bytesOf(src), 0)]).sort((a, b) => a[1] - b[1])[0][0];
 export const pagesWhere = (test) => Object.entries(targets.pages).filter(([, p]) => !p.live && test(p)).map(([u]) => u);
 
-// Open a page and wait until the post components module has defined its tags.
+// Open a page and wait until the post components module has defined its tags. A post may fold a component into a
+// closed <details> (its working, its questions); those are opened so it can be tested, unless they hold media:
+// opening those would start every film in them loading, and WebKit queues a page's media behind its few connections.
 export async function open(page, url) {
   await page.goto(url);
   await page.waitForFunction(() => !!customElements.get('ao-compare'));
+  await page.evaluate(() => {
+    for (const d of document.querySelectorAll('[data-post-article] details')) {
+      const parts = [...d.querySelectorAll('*')];
+      if (parts.some((n) => n.localName.startsWith('ao-')) && !d.querySelector('video, audio, iframe')) d.open = true;
+    }
+  });
 }
 
 // Open each page in turn until pick(page) finds what a test needs (anything but null, false or -1), and return it.
