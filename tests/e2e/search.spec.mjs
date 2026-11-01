@@ -26,12 +26,18 @@ const input = (page) => page.locator('.search-input');
 const results = (page) => page.locator('.results .row');
 const words = (s) => s.toLowerCase().match(/[\p{L}\p{N}]+/gu).join(' ');
 
+// A challenge nobody solves: Turnstile gives up on it (timeout-callback).
+const UNSOLVED = `(() => {
+  window.turnstile = { render(el, o) { setTimeout(() => o['timeout-callback'](), 30); return 'w1'; }, reset() {} };
+  window[new URL(document.currentScript.src).searchParams.get('onload')]();
+})();`;
+
 // Every request to Turnstile and to /api/, as "GET /api/session" or the Turnstile URL.
-async function watch(page, context) {
+async function watch(page, context, stub = TURNSTILE) {
   const seen = { turnstile: [], api: [] };
   await context.route('https://challenges.cloudflare.com/**', (route) => {
     seen.turnstile.push(route.request().url());
-    return route.fulfill({ contentType: 'text/javascript', body: TURNSTILE });
+    return route.fulfill({ contentType: 'text/javascript', body: stub });
   });
   page.on('request', (r) => {
     const u = new URL(r.url());
@@ -246,6 +252,19 @@ test.describe('Ask Goobie', () => {
       expect(seen.api).toEqual(['GET /api/session']);
       expect(seen.turnstile).toEqual([]);
     });
+  });
+
+  test('search-12 a Turnstile challenge left unsolved says so and frees the button', async ({ page, context }) => {
+    const seen = await watch(page, context, UNSOLVED);
+    await page.goto('/ledger/');
+    await page.locator('[data-mode="ask"]').click();
+    await expect(page.locator('[data-mode="ask"]')).toHaveAttribute('aria-pressed', 'true');
+    await input(page).fill('How much faster is a rented GPU than my laptop?');
+    await input(page).press('Enter');
+    await expect(page.locator('.ask-note')).toHaveText('The check that this is a person didn’t finish. Try again in a minute.');
+    await expect(page.locator('.search-go')).toBeEnabled();
+    await expect(page.locator('.search')).not.toHaveClass(/is-thinking/);
+    expect(seen.api).toEqual(['GET /api/session']);
   });
 
   for (const [shape, line] of [['ask-resting', 'Goobie is resting. These posts are closest.'],

@@ -355,6 +355,7 @@ is a stub that solves at once with the test response.
 | `{ ask: false }` hides the switch and says Goobie is resting, with no Turnstile | search-9 |
 | `resting` and `not-found` show their line over the closest posts | search-10 |
 | A search still answering when Ask opens draws nothing in Ask, and the meaning half is never asked | search-11 |
+| A Turnstile challenge left unsolved (`timeout-callback`) says so and frees the button | search-12 |
 
 Ask against the real Worker is checked by hand under `npx wrangler dev` (docs/WORKER.md, "Locally"): the real
 Turnstile widget with the test site key, a real mint and a real DeepSeek answer.

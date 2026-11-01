@@ -67,6 +67,8 @@ function solve(ui) {
       sitekey: SITE_KEY, action: 'ask', appearance: 'interaction-only', 'refresh-expired': 'manual',
       callback: (t) => mint(t).then(finish),
       'error-callback': () => finish(null),
+      // An interactive challenge left unsolved: the question waiting on it is told so, and the next one resets it.
+      'timeout-callback': () => finish(null),
     });
   }, () => finish(null));
   return promise;
