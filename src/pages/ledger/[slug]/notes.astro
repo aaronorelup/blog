@@ -39,3 +39,9 @@ const { Content } = await renderEntry(note);
   import '../../../scripts/post-components.js';
   import '../../../scripts/ledger-preview.js';
 </script>
+
+<script>
+  // A search result lands here with ?hs= or ?hl=: mark the passage (T2.1 moves this call into views/notes.js).
+  import { highlight } from '../../../scripts/post/highlight.js';
+  highlight(document.querySelector('[data-post-article]'));
+</script>

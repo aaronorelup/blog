@@ -13,3 +13,10 @@ const { post } = Astro.props;
 <PanelPage title={`${post.data.title} — Aaron Orelup`} description={post.data.summary} active="ledger" noindex={post.data.unlisted}>
   <PostView post={post} />
 </PanelPage>
+
+<script>
+  // A search result or one of Goobie's citations lands here with ?hs= or ?hl=: mark the passage (T2.1 moves this
+  // call into views/post.js).
+  import { highlight } from '../../scripts/post/highlight.js';
+  highlight(document.querySelector('[data-post-article]'));
+</script>
