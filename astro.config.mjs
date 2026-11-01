@@ -4,6 +4,7 @@ import statsPages from './scripts/build/stats-pages.mjs';
 import devStatsFixture from './scripts/build/dev-stats-fixture.mjs';
 import loreThumbs from './scripts/lore-thumbs.mjs';
 import media from './scripts/media/integration.mjs';
+import verifyDist from './scripts/build/verify-dist.mjs';
 import { fileURLToPath } from 'node:url';
 
 // public/, found from this file rather than the working directory (the dev server is often started from
@@ -31,7 +32,8 @@ export default defineConfig({
   // statsPages: dist/stats-pages.txt, the public pages /api/stats may name (worker/stats.js).
   // loreThumbs: small copies of the lore course's pictures for its index cards (scripts/lore-thumbs.mjs).
   // media: no video or audio in public/ outside courses/, nothing over 25 MiB (docs/MEDIA.md).
-  integrations: [statsPages(), loreThumbs(), media()],
+  // verifyDist: the frozen contracts over dist/, last so every file is written (scripts/build/verify-dist.mjs).
+  integrations: [statsPages(), loreThumbs(), media(), verifyDist()],
   markdown: {
     // Both themes, emitted as CSS custom properties rather than a baked-in
     // background — panel.css picks one based on the day/night mode. A single
