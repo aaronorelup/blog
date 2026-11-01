@@ -6,7 +6,7 @@ since: "2026-11"
 needs: "Any browser"
 main:
   label: "See who visits"
-  href: "/stats"
+  href: "/stats/"
 more:
   - label: "Source on GitHub"
     href: "https://github.com/aaronorelup/blog"
