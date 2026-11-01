@@ -1,6 +1,7 @@
 ---
 // /ledger/<slug>/: every post that isn't a draft. An unlisted one is built with noindex and no share card.
 import { allPosts, slugOf } from '../../lib/content.js';
+import { ogImage } from '../../lib/og/image.js';
 import PanelPage from '../../layouts/PanelPage.astro';
 import PostView from '../../components/post/PostView.astro';
 
@@ -11,7 +12,9 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { title, summary, date, unlisted } = post.data;
+const image = unlisted ? undefined : (await ogImage(post)).path;
 ---
-<PanelPage title={`${title} — Aaron Orelup`} description={summary} active="ledger" noindex={unlisted} published={date}>
+<PanelPage title={`${title} — Aaron Orelup`} description={summary} active="ledger" noindex={unlisted} image={image}
+  published={date}>
   <PostView post={post} />
 </PanelPage>
