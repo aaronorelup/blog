@@ -1,6 +1,6 @@
 // scripts/tools/budgets.mjs over a made-up dist/: every row is measured, the heaviest post is named, the ledger's
-// rows are counted, an element's chunk and inlined CSS are weighed, a live notebook is never measured, and an
-// over-budget row is reported as over.
+// rows are counted, an element's chunk and inlined CSS are weighed (and left out of the post's chrome), a live notebook
+// is never measured, and an over-budget row is reported as over.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -32,6 +32,9 @@ function seed() {
   // Chrome no prose rule removes, made of random bytes so gzip can't shrink it: the heaviest post, over budget.
   const noise = Array.from({ length: 30000 }, (_, i) => ((i * 2654435761) >>> 0).toString(36)).join(' ');
   put('ledger/heavy/index.html', page(`<nav>${noise}</nav><article class="prose">words</article>`, head));
+  // Inlined element CSS heavier still: the element's weight, not the page's chrome, so never the heaviest post.
+  put('ledger/styled/index.html', page(`<article><style data-ao>${noise}${noise}</style><nav>chrome</nav>` +
+    '<div class="pc-prose"><ao-z>z</ao-z></div></article>', head));
   // A live notebook heavier still: never measured.
   put('ledger/teardown-lab/index.html', page(`<nav>${noise}${noise}</nav>`, head));
   return dist;

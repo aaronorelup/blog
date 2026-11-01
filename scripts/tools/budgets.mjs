@@ -97,7 +97,9 @@ export function measure(dist) {
     pages.push(structuredClone(tree));
     const { css, js, scripts } = assets(dist, tree);
     for (const s of scripts) upFront.add(s);
-    const html = gz(toHtml(without(tree, (el) => (el.properties.className ?? []).some((c) => PROSE.includes(c)))));
+    // The post's components' CSS, inlined in the article, is theirs (the element row), not the page's chrome.
+    const html = gz(toHtml(without(tree, (el) => (el.properties.className ?? []).some((c) => PROSE.includes(c))
+      || (el.tagName === 'style' && el.properties.dataAo !== undefined))));
     return { slug, html, css, js, total: html + css + js };
   }).sort((a, b) => b.total - a.total)[0];
   row('post page minus its prose', worst.total, 20 * KB, worst.slug);
