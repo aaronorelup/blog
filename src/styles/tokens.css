@@ -1,6 +1,6 @@
 /* The only source of colour and type. Each mode's --pc-* token is a plain value with today's exact string: the /stats
    canvas reads them with getPropertyValue and a comma regex, and lore.css re-themes the chrome by overriding them.
-   Only the homepage's day/night tween (html[data-tweening], --mix from 0 day to 1 night) mixes the pairs.
+   Only the homepage's day/night tween (:root[data-tweening], --mix from 0 day to 1 night) mixes the pairs.
    fonts.css is written by scripts/tools/fonts.mjs. */
 @import './fonts.css';
 
