@@ -66,6 +66,35 @@ Behaviours: blind-1, blind-2. Used by 2 posts (`INVENTORY.md`); best shown by `p
 
 ## <ao-calc>
 
+A calculator the reader can turn, for a post whose numbers depend on choices (how many minutes, how many takes per
+keeper, which size). No attributes of its own: everything is on its list items.
+
+Children: a `<ul>` of inputs, an `<ol>` of results, an optional `<figcaption>`.
+
+| On an input `<li>` | |
+|---|---|
+| `data-var="name"` | the variable it sets; the item's text is its label |
+| `data-min` `data-max` `data-step` `data-value` | a slider (default 0 to 100, any step, starting at `data-min`); `data-unit` is printed after its value |
+| `data-options="736×416:7\|1344×768:19"` | one button per option instead; the variable takes the number after the colon; `data-value` names the option that starts pressed (default the first) |
+
+| On a result `<li>` | |
+|---|---|
+| `data-f="mins / 60 * size * 1.09"` | the formula: `+ - * / ^`, parentheses, `min max round ceil floor abs`, and the variables above; one that doesn't parse shows `–` (and a console warning) |
+| `data-prefix` `data-unit` `data-digits` | printed before and after the number, and its decimals (default 0) |
+
+Without JS the labels stay as two plain lists, so the caption should carry one worked example.
+
+```html
+<ao-calc>
+<ul><li data-var="mins" data-min="1" data-max="60" data-step="1" data-value="10" data-unit="min">Finished video</li>
+<li data-var="size" data-options="736×416:7|1344×768:19" data-value="1344×768">Clip size</li></ul>
+<ol><li data-f="mins / 60 * size * 1.09" data-prefix="$" data-digits="2">Cost</li></ol>
+<figcaption><b>What a video costs</b> Ten minutes at 1344×768: $3.45.</figcaption>
+</ao-calc>
+```
+
+Behaviours: calc-1 to calc-4. Used by 1 post (`INVENTORY.md`): `renting-a-gpu`.
+
 ## <ao-compare>
 
 A grid of same-sized frames, pictures or videos, so outputs are judged side by side.
