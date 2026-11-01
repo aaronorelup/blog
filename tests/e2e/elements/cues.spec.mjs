@@ -57,7 +57,7 @@ test('cues-3b space on a focused cut plays and pauses them all', async ({ page }
 
 test('cues-4 one Sound button per cut picks the one heard', async ({ page }) => {
   const sound = cues(page).locator('.ao-cues-bar button', { hasText: 'Sound:' });
-  test.skip(await sound.count() < 2, 'one cut only');
+  await expect(sound).toHaveCount(await vids(page).count());
   await sound.nth(1).click();
   await expect(sound.nth(1)).toHaveAttribute('aria-pressed', 'true');
   expect(await vids(page).evaluateAll((vs) => vs.map((v) => v.muted))).toEqual([true, false, ...Array(Math.max(0, (await vids(page).count()) - 2)).fill(true)]);

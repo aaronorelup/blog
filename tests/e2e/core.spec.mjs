@@ -1,5 +1,5 @@
 // The players every post shares (post-components.js, "One player at a time"): one player at a time, sync groups,
-// pausing off screen, the now-playing bar, ao-stop and same-origin iframes. INVENTORY.md rows core-1 to core-9.
+// pausing off screen, the now-playing bar, ao-stop and same-origin iframes. INVENTORY.md rows core-1 to core-11.
 import { test, expect } from './fixtures.mjs';
 import {
   targets, pagesWhere, pageWith, pagesWith, open, play, playing, expectPlaying, scrollAway, scrollBack, inView, loneMedia,
@@ -9,6 +9,14 @@ import {
 const twoLone = pagesWhere((p) => p.kind === 'post' && p.lone >= 2)[0];
 const syncPage = pageWith('ao-compare', (a) => 'sync' in a);
 const twoListens = pagesWith('ao-listen').find((p) => targets.pages[p].ao['ao-listen'] >= 2);
+// A plain video of the test's own, in the article but in no component, pinned in view: a lone player on any post
+// that never scrolls the others away.
+const addLone = (page, id) => page.locator('[data-post-article]').evaluate((art, [src, id]) => {
+  const v = document.createElement('video');
+  v.id = id; v.playsInline = true; v.muted = true; v.loop = true; v.src = src;
+  v.style.cssText = 'position:fixed;right:0;bottom:0;width:120px;z-index:9';
+  art.append(v);
+}, [smallVideo, id]);
 
 test('core-1 starting a lone player pauses the one playing', async ({ page }) => {
   await open(page, twoLone);
@@ -27,11 +35,11 @@ test('core-2 a sync group plays together, and a lone player pauses it', async ({
   expect(await vids.count()).toBeGreaterThan(1);
   await play(vids.first());
   for (let i = 0; i < await vids.count(); i++) await expectPlaying(vids.nth(i));
-  const lone = loneMedia(page).first();
-  if (await lone.count()) {
-    await play(lone);
-    for (let i = 0; i < await vids.count(); i++) await expectPlaying(vids.nth(i), false);
-  }
+  await addLone(page, 'lone');
+  const lone = page.locator('#lone');
+  await play(lone);
+  await expectPlaying(lone);
+  for (let i = 0; i < await vids.count(); i++) await expectPlaying(vids.nth(i), false);
 });
 
 test('core-3 a second group pauses the first', async ({ page }) => {
@@ -109,8 +117,7 @@ test('core-8 ao-stop stops everything', async ({ page }) => {
   for (let i = 0; i < await vids.count(); i++) await expectPlaying(vids.nth(i), false);
 });
 
-// Posts embed the HLS player pages; no post has a player of its own beside one, so core-10 adds a plain video to the
-// article to stand for it.
+// Posts embed the HLS player pages; no post has a player of its own beside one, so core-10 adds one.
 const framePage = targets.iframes.find((p) => targets.pages[p].iframe >= 2 &&
   Object.values(targets.standalone).filter((s) => s.via.includes('iframe') && s.from.includes(p)).length >= 2);
 const frameVideo = async (page, i) => {
@@ -135,11 +142,7 @@ test('core-9 playing in one embedded player pauses another', async ({ page }) =>
 test('core-10 an embedded player and a player in the post pause each other', async ({ page }) => {
   await open(page, framePage);
   const inner = await frameVideo(page, 0);
-  await page.locator('[data-post-article]').evaluate((art, src) => {
-    const v = document.createElement('video');
-    v.id = 'outer'; v.playsInline = true; v.muted = true; v.loop = true; v.src = src;
-    art.querySelector('iframe').before(v);
-  }, smallVideo);
+  await addLone(page, 'outer');
   const outer = page.locator('#outer');
   await play(outer);
   await expectPlaying(outer);
