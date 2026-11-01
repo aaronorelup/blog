@@ -14,6 +14,41 @@
 /ledger/touch-move/board-14/*
   X-Robots-Tag: noindex, nofollow
 #
+# Episode 2's hidden page (AO-048), and the seven Moon machine pages built for Earthlight's world (src/data/hidden-pages.json,
+# not attached to an episode yet): the same two rules each, for the page and everything under it (the machines' models).
+/ledger/earthlight/hideaway/
+  X-Robots-Tag: noindex, nofollow
+/ledger/earthlight/hideaway/*
+  X-Robots-Tag: noindex, nofollow
+/ledger/earthlight/mole-1/
+  X-Robots-Tag: noindex, nofollow
+/ledger/earthlight/mole-1/*
+  X-Robots-Tag: noindex, nofollow
+/ledger/earthlight/dray/
+  X-Robots-Tag: noindex, nofollow
+/ledger/earthlight/dray/*
+  X-Robots-Tag: noindex, nofollow
+/ledger/earthlight/loom/
+  X-Robots-Tag: noindex, nofollow
+/ledger/earthlight/loom/*
+  X-Robots-Tag: noindex, nofollow
+/ledger/earthlight/pawn/
+  X-Robots-Tag: noindex, nofollow
+/ledger/earthlight/pawn/*
+  X-Robots-Tag: noindex, nofollow
+/ledger/earthlight/finch/
+  X-Robots-Tag: noindex, nofollow
+/ledger/earthlight/finch/*
+  X-Robots-Tag: noindex, nofollow
+/ledger/earthlight/resupply-6/
+  X-Robots-Tag: noindex, nofollow
+/ledger/earthlight/resupply-6/*
+  X-Robots-Tag: noindex, nofollow
+/ledger/earthlight/hab-3/
+  X-Robots-Tag: noindex, nofollow
+/ledger/earthlight/hab-3/*
+  X-Robots-Tag: noindex, nofollow
+#
 # Caching. /_astro/ and /fonts/ files carry a content hash in their names, so a changed file is a new URL: keep them
 # for a year without asking again. Pagefind's index is rebuilt with every deploy; icons are remade rarely.
 /_astro/*

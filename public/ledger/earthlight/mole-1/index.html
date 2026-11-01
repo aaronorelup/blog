@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="dark">
+<meta name="ao:hidden" content="lore">
+<title>MOLE-1</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ground: #0b1a2c;        /* Prussian-blue drafting film */
+  --ground-2: #07111d;
+  --line: rgba(125, 180, 230, .07);
+  --panel: #121a25;
+  --panel-2: #18212e;
+  --ink: #e6e9ee;
+  --soft: #8d97a6;
+  --faint: #566273;
+  --edge: #c9ced6;
+  --amber: #ffb238;
+  --red: #ef5b4f;
+  --ok: #43c47a;
+}
+* { box-sizing: border-box; }
+html { background: var(--ground-2); }
+body {
+  margin: 0; min-height: 100vh; color: var(--ink); overflow-x: hidden;
+  font: 500 15px/1.45 "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  background:
+    linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 40px 40px,
+    linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 40px 40px,
+    radial-gradient(120% 80% at 50% 0%, #11273f 0%, var(--ground) 50%, var(--ground-2) 100%) fixed;
+  -webkit-font-smoothing: antialiased;
+}
+p { margin: 0; }
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+.app { max-width: 1120px; margin: 0 auto; padding: clamp(20px, 4vw, 46px) clamp(14px, 3vw, 32px) 64px; }
+.top {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 24px;
+  padding-bottom: 14px; border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+.brand { font: 700 clamp(17px, 2.3vw, 22px)/1 Inter, system-ui, sans-serif; letter-spacing: .16em; }
+.brand .tag { font: 700 12px/1 "JetBrains Mono", monospace; letter-spacing: .04em; color: var(--amber); margin-left: .9em; }
+.svc { font-size: 11px; letter-spacing: .08em; color: var(--soft); }
+.banner {
+  display: flex; gap: 14px; align-items: center; margin-top: 22px; padding: 14px 18px; max-width: 620px;
+  background: rgba(24, 30, 38, .92); border-radius: 12px; box-shadow: 0 18px 50px rgba(0, 0, 0, .45);
+  font-family: Inter, system-ui, sans-serif;
+}
+.banner svg { width: 40px; height: 40px; flex: none; }
+.banner .b1 { font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--soft); }
+.banner .b2 { font-size: clamp(16px, 2.4vw, 21px); font-weight: 700; color: #f2f4f7; margin-top: 2px; }
+.banner .b3 { font-size: clamp(14px, 2vw, 17px); font-weight: 700; color: var(--ok); margin-top: 1px; }
+.grid {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px 36px; margin-top: 28px;
+  align-items: start;
+}
+.unit { margin: 0 0 20px; }
+.unit h1 { margin: 0; font: 700 clamp(40px, 7vw, 74px)/.95 "JetBrains Mono", monospace; letter-spacing: -.01em; }
+.unit p { margin-top: 10px; font-size: 12px; letter-spacing: .14em; color: var(--soft); }
+.row {
+  margin-top: 8px; padding: 10px 14px 12px; border-left: 3px solid var(--edge); border-radius: 2px;
+  background: linear-gradient(90deg, var(--panel-2), var(--panel));
+}
+.row .k { font-size: 10.5px; letter-spacing: .12em; color: var(--soft); }
+.row .v { margin-top: 4px; font-size: clamp(15px, 1.9vw, 19px); letter-spacing: .02em; overflow-wrap: anywhere; }
+.row.amber { border-left-color: var(--amber); } .row.amber .v { color: var(--amber); }
+.row.red { border-left-color: var(--red); } .row.red .v { color: var(--red); }
+.row.dim { border-left-color: #4a5463; } .row.dim .v { color: #a7afba; }
+.steps ol { list-style: none; margin: 8px 0 0; padding: 0; font-size: clamp(13px, 1.6vw, 15px); }
+.steps li { display: flex; gap: 12px; padding: 5px 0; border-top: 1px solid rgba(255, 255, 255, .05); color: #b9c0ca; }
+.steps li:first-child { border-top: 0; }
+.steps .n { width: 1.4em; flex: none; color: var(--faint); }
+.steps .halt { color: var(--ok); font-weight: 700; }
+.steps .halt .n { color: var(--ok); }
+.steps .s { margin-left: auto; text-align: right; }
+.model { margin: 0; padding: 10px; background: var(--panel); border: 1px solid rgba(255, 255, 255, .07); border-radius: 4px; }
+.cap { display: flex; justify-content: space-between; gap: 12px; padding: 2px 2px 9px; font-size: 10.5px; letter-spacing: .12em; color: var(--soft); }
+.shot { position: relative; display: block; }
+.shot img { display: block; width: 100%; height: auto; border-radius: 2px; }
+.blink {
+  position: absolute; left: 89%; top: 74%; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%;
+  background: #ff3b30; box-shadow: 0 0 10px 4px rgba(255, 59, 48, .55); opacity: 0;
+  animation: once .42s steps(1, end) 3.4s 1;
+}
+@keyframes once { 0% { opacity: 1; } 100% { opacity: 0; } }
+.open {
+  display: flex; justify-content: center; align-items: center; gap: .7em; margin-top: 10px; padding: 14px 16px;
+  border: 1px solid rgba(255, 178, 56, .55); border-radius: 3px; color: var(--amber); text-decoration: none;
+  font: 700 13px/1 "JetBrains Mono", monospace; letter-spacing: .14em; transition: background-color .18s;
+}
+.open:hover { background: rgba(255, 178, 56, .1); }
+.sync { margin-top: 30px; font-size: 11px; letter-spacing: .08em; color: var(--faint); }
+@media (max-width: 820px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .blink { animation: none; }
+  .open { transition: none; }
+}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="top">
+    <p class="brand">HOMESTEAD<span class="tag">BASE_STATUS</span></p>
+    <p class="svc">HOMESTEAD OPS - AUTOMATED SERVICE</p>
+  </header>
+  <div class="grid">
+    <section class="status" aria-label="MOLE-1">
+      <div class="unit"><h1>MOLE-1</h1><p>FLEET · DRUM DIGGER</p></div>
+      <div class="row"><p class="k">LATEST ISSUE</p><p class="v">SHEET 3 REV B - ISSUED FOR CONSTRUCTION</p></div>
+      <div class="row amber"><p class="k">ORDER</p><p class="v">EXCEPT MOLE-1: EXTEND HAB 3 TUNNEL TO 3 M COVER.</p></div>
+      <div class="row"><p class="k">DRUMS</p><p class="v">RUNNING</p></div>
+      <div class="row dim"><p class="k">LIGHT</p><p class="v">OUT</p></div>
+      <div class="row dim"><p class="k">TWIN</p><p class="v">MOLE-2 - FROZEN</p></div>
+    </section>
+    <figure class="model">
+      <figcaption class="cap"><span>SERVICE MODEL</span><span>MOLE-1</span></figcaption>
+      <a class="shot" href="model/" tabindex="-1"><img src="img/unit.webp" width="900" height="544" alt="MOLE-1 seen from above in a sloped cut in pale grey soil: an orange digger with an open hopper on top, four wire-mesh wheels and a round drum at the front, its hopper, radiator, wheel and drum labelled."></a>
+      <a class="open" href="model/">OPEN SERVICE MODEL <span aria-hidden="true">&rarr;</span></a>
+    </figure>
+  </div>
+  <p class="sync">LAST SYNC: NONE</p>
+</main>
+</body>
+</html>
