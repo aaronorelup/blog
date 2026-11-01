@@ -92,10 +92,12 @@ const newer = byId.find((p) => cmp(p.data.id, post.data.id) > 0);
 </article>
 
 <script>
-  // The post's pictures, frames and components (src/elements/enhance.js). The homepage overlay calls the same
-  // enhance() on its copy of this article, since scripts in copied HTML never run.
+  // The post's pictures, frames and components (src/elements/enhance.js), then where a link into it lands: its
+  // #heading, or a search result's passage (scripts/post/arrive.js). The homepage overlay calls the same enhance() on
+  // its copy of this article, since scripts in copied HTML never run.
   import { enhance } from '../../elements/enhance.js';
-  enhance();
+  import { arrive } from '../../scripts/post/arrive.js';
+  arrive(document.querySelector('[data-post-article]'), enhance());
   // Links to other posts (the threads, older/newer, cross-links in the text) open their preview
   // card on hover, the same card as a ledger row (PREVIEWS.md).
   import '../../scripts/ledger-preview.js';

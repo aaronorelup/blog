@@ -38,14 +38,11 @@ const { Content, remarkPluginFrontmatter } = await renderEntry(note);
 </style>
 
 <script>
-  // The note carries post components too, and its links to posts open their hover cards.
+  // The note carries post components too, and its links to posts open their hover cards. A search result lands
+  // here with ?hs= or ?hl= and its passage is marked once the components have drawn (T2.1 moves this into
+  // views/notes.js).
   import { enhance } from '../../../elements/enhance.js';
-  enhance();
+  import { arrive } from '../../../scripts/post/arrive.js';
+  arrive(document.querySelector('[data-post-article]'), enhance());
   import '../../../scripts/ledger-preview.js';
-</script>
-
-<script>
-  // A search result lands here with ?hs= or ?hl=: mark the passage (T2.1 moves this call into views/notes.js).
-  import { highlight } from '../../../scripts/post/highlight.js';
-  highlight(document.querySelector('[data-post-article]'));
 </script>

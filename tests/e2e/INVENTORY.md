@@ -337,6 +337,7 @@ its static rung mid-test.
 | `/version.json`'s shape | pages-2 |
 | `/stats` draws the snapshot (`/api/stats` 200) | pages-3 |
 | `/stats` says the numbers aren't connected (503) | pages-4 |
+| A link to a heading lands on it, and a search result's passage is in view, though the components above it draw after the load event (`scripts/post/arrive.js`) | pages-5 |
 
 ## Search and Ask Goobie (`search.spec.mjs`)
 

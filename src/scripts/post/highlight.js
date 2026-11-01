@@ -2,7 +2,7 @@
 // passage's first words>#<heading>. Within the heading's section (to the next h2; no heading: the opening) it
 // marks the sentence that holds hs, or else every word of hl, as <mark class="hl">; opens any <details> around a mark,
 // brings the first into view (inside #panel-scroll on a panel page) and clears them all on the next click. Text in
-// post components (data-pagefind-ignore) is never marked. Called on the post and notes pages; T2.1 moves the call.
+// post components (data-pagefind-ignore) is never marked. Called by arrive.js once the post's components have drawn.
 const BLOCK = 'p, li, dd, dt, h2, h3, h4, blockquote, figcaption, td, th, summary';
 const WORD = /[\p{L}\p{N}]+/gu;
 const GAP = '[^\\p{L}\\p{N}]+';
