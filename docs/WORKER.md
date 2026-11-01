@@ -68,7 +68,8 @@ is unlisted later every stored day is cleaned again before the next snapshot goe
 '<kind>:<slug>': hash } }`, and one `/search/docs/<kind>-<slug>.json` per listed post and notes page
 (`src/lib/search/chunks.js`). A run reads the manifest and stops (`idle`) when `search_state`'s `v` is the manifest's
 and each live notebook (`live`, left out of `v`) has its hash in `search_docs`. Otherwise it drops the vectors and rows
-of removed docs (an unlisted post), then embeds up to 10 changed docs, 50 chunks an AI call, as
+of removed docs (an unlisted post; deletes go 100 ids at a time, Vectorize's most), then embeds up to 10 changed
+docs, a live notebook last, 50 chunks an AI call and an upsert, as
 `"<title>. <heading>\n<text>"`, upserting ids `<AO-id>:<n>` (`<AO-id>n:<n>` for notes) with metadata `{ s: slug, k:
 kind, a: anchor, h: heading, t: text, T: title }`, and deletes the doc's ids past its new count. Once nothing is left
 it stores `v`, which keys `/api/search`'s cache, so cached results turn over when the index is whole again. The first
