@@ -4,9 +4,9 @@
 // (stats.js, D1). Every other request on the site is a static asset served without running any
 // code. The snapshot is gathered by the cron trigger in wrangler.jsonc, which calls scheduled()
 // once a minute for one small step at a time (stats.js says why).
-import { serveMedia } from './media.js';
-import { serveReads } from './reads.js';
-import { serveStats, runStep } from './stats.js';
+import { serveMedia } from './media/serve.js';
+import { serveReads } from './reads/serve.js';
+import { serveStats, runStep } from './stats/index.js';
 
 export default {
   fetch(request, env) {
