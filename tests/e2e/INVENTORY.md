@@ -3,7 +3,7 @@
 Every bespoke behaviour of the site, the pages that use it and the check that holds it. Rows come from the code:
 each `addEventListener` and each documented attribute of a component has one (`src/elements/**`,
 `src/scripts/home-scene.js`, `src/scripts/cards/`, `src/scripts/ledger/`, `src/scripts/search/`,
-`src/scripts/post/highlight.js`, the inline scripts of the standalone pages). A spec id is the start of a test title
+`src/scripts/post/`, `src/scripts/views/`, the inline scripts of the standalone pages). A spec id is the start of a test title
 (`npm run e2e -- -g core-4`). Unless a row says otherwise it passes on both projects, `desktop` (Chromium 1440×900)
 and `phone` (WebKit, iPhone 13).
 
@@ -337,7 +337,23 @@ its static rung mid-test.
 | `/version.json`'s shape | pages-2 |
 | `/stats` draws the snapshot (`/api/stats` 200) | pages-3 |
 | `/stats` says the numbers aren't connected (503) | pages-4 |
-| A link to a heading lands on it, and a search result's passage is in view, though the components above it draw after the load event (`scripts/post/arrive.js`) | pages-5 |
+| A link to a heading lands on it, and a search result's passage is in view, though the components above it draw after the load event (`scripts/views/post.js`) | pages-5 |
+
+## The post page (`post.spec.mjs`)
+
+| Behaviour | Spec |
+|---|---|
+| The short version is the post's card in `previews.json` (verdict, takeaway, points), at `#short`; no preview, no box | post-1 (desktop: built files) |
+| Read next: three listed posts, never the post itself; older and newer follow the ledger's order; no series threads | post-2 (desktop: built files) |
+| A long post's contents list is open and sticky beside the text at 1440 px, marking the heading read; a closed `<details>` above the text on a phone; a short post has none | post-3 |
+| `?hl=` opens the folded `<details>` holding the term and marks it; a `#target` inside a closed `<details>` opens it (`scripts/post/details.js`) | post-4 |
+| The header: the 96/256 icon, `AO-### · date · N min`, topic and project chips linking to the ledger's filters; the byline on Claude's pages (`voice: claude`) only | post-5 (desktop: built files) |
+| An unlisted post: noindex, no share card, no short version, its topic glyph, only listed posts in Read next | post-6 |
+| Every listed post shares an absolute `/og/<slug>.jpg?v=` card, 1200×630 JPEG under 150 KB, as `og:type article` | post-7 (desktop: built files) |
+| RSS categories are the topic label, then the project labels | post-8 (desktop: built files) |
+| A wide picture in `<ao-compare>` holds its ratio before it loads, so the page doesn't jump | post-9 |
+| Reload, and Back with and without the page cache, put `#panel-scroll` back where the reader was, on a long post with components | post-10 |
+| The notes page is the post view without the short version, Read next or older/newer; its way back is the short version | post-11 |
 
 ## Search and Ask Goobie (`search.spec.mjs`)
 
