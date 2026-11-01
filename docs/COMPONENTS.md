@@ -54,6 +54,30 @@ shown by `moonlight-two-cuts` (stills) and `storm-bell-fighter` (`sync`).
 
 ## <ao-game>
 
+A game from `public/games/` (or `public/labs/`) played inside the post. Nothing downloads until the reader asks: a
+poster and a Play button first, then the game's own page in a frame, with Fullscreen, Stop and an "own tab" link
+under it. A running game is a player: scrolled away, with the tab hidden, when anything else plays or when the
+homepage closes the reader, it pauses (its frames held, its AudioContexts suspended) behind a veil that resumes it.
+
+| Attribute | |
+|---|---|
+| `src` | the game's page, e.g. `/games/storm-bell/` (same origin) |
+| `poster` | the still shown before it loads |
+| `size` | printed on the button, so the reader knows what the click costs |
+| `label` | what it is, for the frame and for screen readers (default `Game`) |
+| `aspect="w/h"` | the frame (default `16/9`) |
+| `note` | one line under the frame: controls, what it needs |
+
+The inner markup, a link to the game, is the no-JS fallback.
+
+```html
+<ao-game src="/games/x/" poster="/media/x/poster.webp" size="about 20 MB" label="X, playable in the browser"
+  note="Keyboard: A / D move, J hit."><a href="/games/x/">Play X</a></ao-game>
+```
+
+Behaviours: game-1 to game-8, core-3. Used by `storm-bell-fighter` (`/games/storm-bell/`, the best example) and
+`loom-and-information-flow` (`/labs/mini-loom/`, `/labs/info-flow/`).
+
 ## <ao-listen>
 
 ## <ao-matrix>
