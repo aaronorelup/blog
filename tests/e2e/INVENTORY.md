@@ -395,10 +395,19 @@ notebook); Turnstile is a stub that solves at once with the test response.
 | A Turnstile challenge left unsolved (`timeout-callback`) says so and frees the button | search-12 |
 | A cite of a notes passage (`kind: 'notes'`) links to `/ledger/<slug>/notes/#<anchor>` and opens it with the words marked; a post passage links to the post | search-13 |
 | Opening Ask keeps the box's words, focused and selected: Enter asks them, typing replaces them | search-14 |
-| Aaron's two answers of 2026-11-01: cites numbered by post with no gaps (1, 2, 3), a run of cites (spaces between too) showing each post once; no `title` tooltip, an `aria-label` "Source n: post, passage"; on a desktop each cite's card is its post's with a line naming its passage (heading, the opening, the full making-of for a notes cite, which gets a card), moving between two cites of one post leaves its loop playing, and a related row's card has no line | search-15 |
+| Aaron's two answers of 2026-11-01 (`fixtures/answers.mjs`): cites numbered by post with no gaps (1, 2, 3), a run of cites (spaces between too) showing each post once; no `title` tooltip, an `aria-label` "Source n: post, passage"; on a desktop each cite's card is its post's with a line naming its passage (heading, the opening, the full making-of for a notes cite, which gets a card), moving between two cites of one post leaves its loop playing, and a related row's card has no line | search-15 |
 
 Ask against the real Worker is checked by hand under `npx wrangler dev` (docs/WORKER.md, "Locally"): the real
 Turnstile widget with the test site key, a real mint and a real DeepSeek answer.
+
+## The hover card's size (`cards.spec.mjs`)
+
+Ask answers with Aaron's two answers (`fixtures/answers.mjs`) on a kept session, so no Turnstile loads.
+
+| Behaviour | Spec |
+|---|---|
+| At 1366×657 and 1024×600, by day and by night, every card opened from a Goobie cite (with its "Goobie cites:" line), a related row under the answer and the ledger's rows at the top, middle and foot of the window is inside the window whole, shows all of its words (`scrollHeight <= clientHeight`: `place()` measures the content, not the box `max-height` caps) and keeps clear of the link's words, stepping down a size only where it has to | cards-1 (desktop) |
+| At 1440×900 the cites' and related rows' cards are full size, and every card shows whole | cards-2 (desktop) |
 
 ## The projects page (`projects.spec.mjs`)
 
@@ -443,3 +452,4 @@ load without a script error (live-5), `/api/lantern` answers `302` to an https a
 Nothing in the suite is broken on main (home-4, the rail dots, was fixed by T3.2). A smaller quirk: after `ao-stop`
 a running game's veil reads "Paused while something else plays." (the page-wide stop reaches the game through its
 `aoPause` first), where "Paused." was meant. game-4 asserts only that it is paused.
+
