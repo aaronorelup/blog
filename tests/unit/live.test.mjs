@@ -29,7 +29,7 @@ test('the schema takes a 200-character title and a renamed picture', () => {
   assert.ok(r.success, r.error?.message);
 });
 
-test('the schema takes a preview with no takeaway', { todo: 'T0.2: today a preview needs a takeaway; the v2 refinement skips live notebooks' }, () => {
+test('the schema takes a preview with no takeaway (the v2 refinement skips live notebooks)', () => {
   const { takeaway, ...rest } = post.preview;
   assert.ok(parse({ ...post, preview: rest }).success);
 });
