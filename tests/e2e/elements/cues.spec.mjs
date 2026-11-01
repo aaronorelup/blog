@@ -1,13 +1,13 @@
 // <ao-cues>: cuts of one timeline in lockstep beside timed cues; a cue sends every cut there, one cut is heard.
 import { test, expect } from '../fixtures.mjs';
-import { open, pageWith, expectPlaying, clock, smallVideo } from '../helpers.mjs';
+import { open, lightestWith, expectPlaying, clock, smallVideo } from '../helpers.mjs';
 
 const cues = (page) => page.locator('ao-cues').first();
 const vids = (page) => cues(page).locator('video');
 const button = (page, name) => cues(page).locator('.ao-cues-bar button', { hasText: name });
 
 test.beforeEach(async ({ page }) => {
-  await open(page, pageWith('ao-cues', (a) => a.labels));
+  await open(page, lightestWith('ao-cues', (a) => a.labels));
   await cues(page).scrollIntoViewIfNeeded();
 });
 

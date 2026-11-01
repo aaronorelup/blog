@@ -13,6 +13,11 @@ export const smallVideo = Object.entries(manifest).filter(([p]) => p.endsWith('.
 export const pagesWith = (tag, match = () => true) =>
   [...new Set(targets.tags[tag].filter((u) => !u.live && match(u.attrs)).map((u) => u.page))];
 export const pageWith = (tag, match) => pagesWith(tag, match)[0];
+// The page whose instance of a tag carries the fewest media bytes: big films make slow tests, on WebKit above all,
+// which fetches a file whole before it plays.
+const bytesOf = (src) => manifest[src]?.bytes ?? (fs.statSync(new URL('../../public' + src, import.meta.url), { throwIfNoEntry: false })?.size || 0);
+export const lightestWith = (tag, match = () => true) => targets.tags[tag].filter((u) => !u.live && match(u.attrs))
+  .map((u) => [u.page, u.media.reduce((n, src) => n + bytesOf(src), 0)]).sort((a, b) => a[1] - b[1])[0][0];
 export const pagesWhere = (test) => Object.entries(targets.pages).filter(([, p]) => !p.live && test(p)).map(([u]) => u);
 
 // Open a page and wait until the post components module has defined its tags.

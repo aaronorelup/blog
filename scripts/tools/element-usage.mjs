@@ -1,5 +1,5 @@
-// Every post component, media block and standalone page the built site uses, read as HTML trees (prose that
-// merely mentions `<ao-cues>` doesn't count). `node scripts/tools/element-usage.mjs [dist]` scans posts, notes
+// Every post component (with its attributes and media), media block and standalone page the built site uses, read
+// as HTML trees (prose that merely mentions `<ao-cues>` doesn't count). `node scripts/tools/element-usage.mjs [dist]` scans posts, notes
 // and every page from public/, writes tests/e2e/targets.json (the e2e specs read it) and fails on a defined tag
 // with no instance. `--diff <old> <new...>` (all .md, or all built .html) fails on any ao-*, video, audio or
 // iframe block of the old post that the new files don't carry byte for byte, and shows where an edited one parts.
@@ -24,6 +24,7 @@ const at = (...p) => path.join(ROOT, ...p);
 const TARGETS = at('tests/e2e/targets.json');
 const SITE = 'https://aaronorelup.com';
 const BLOCKS = new Set(['video', 'audio', 'iframe']);
+const MEDIA_SRC = new Set(['video', 'audio', 'source']);
 
 const filesUnder = (dir, test) => fs.readdirSync(dir, { recursive: true }).map(String)
   .filter((f) => test(f)).map((f) => path.join(dir, f)).sort();
@@ -98,7 +99,9 @@ function scan(dist) {
       if ((name === 'video' || name === 'audio') && !parents.some((p) => p.tagName?.startsWith('ao-'))) info.lone++;
       if (name.startsWith('ao-')) {
         info.ao[name] = (info.ao[name] || 0) + 1;
-        (tags[name] ||= []).push({ page: page.url, live, attrs: attrsOf(el) });
+        const media = [];
+        visit(el, 'element', (m) => { if (MEDIA_SRC.has(m.tagName) && m.properties.src) media.push(String(m.properties.src)); });
+        (tags[name] ||= []).push({ page: page.url, live, attrs: attrsOf(el), media });
         if (name === 'ao-game') link(el.properties.src, 'ao-game');
       }
       if (BLOCKS.has(name)) info[name]++;

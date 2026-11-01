@@ -91,6 +91,8 @@ test.describe('the now-playing bar', () => {
     const a = await audible(page);
     await page.locator('.ao-np-back').click();
     await expect.poll(() => inView(page.locator('ao-listen').first())).toBe(true);
+    // Back to it re-checks after 800 ms and jumps if the smooth scroll fell short; let that pass first.
+    await page.waitForTimeout(1000);
     await scrollAway(page.locator('ao-listen').first());
     await page.locator('.ao-np-close').click();
     await expectPlaying(a, false);

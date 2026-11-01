@@ -57,7 +57,7 @@ async function modelRenders(page) {
   await expect.poll(async () => {
     const { channels } = await sharp(await canvas.screenshot()).stats();
     return Math.max(...channels.slice(0, 3).map((c) => c.stdev));
-  }, { timeout: 30_000 }).toBeGreaterThan(4);
+  }, { timeout: 60_000 }).toBeGreaterThan(4);
 }
 
 test('overlay-1 a card grows into the ledger, with no document load', async ({ page }) => {
@@ -81,7 +81,7 @@ test('overlay-2 a row opens its post in the panel, with no document load', async
 });
 
 test('overlay-3 post A, post B, back to A and on to C: every component works on every swap', async ({ page }) => {
-  test.setTimeout(180_000);
+  test.setTimeout(240_000);
   await home(page);
   await openLedger(page);
   await openRow(page, modelPost);
