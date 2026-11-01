@@ -1,8 +1,7 @@
 // A listed post's share card at build time: drawn once a build by lib/og/card.js, kept in node_modules/.astro/og/
 // (Workers Builds restores that folder between builds when its build cache is on) and named /og/<slug>.jpg?v=<h8>,
 // h8 the hash of everything drawn on it, so X fetches the card again when any of it changes. A card that fails to
-// draw fails the build (STRICT, since a main build showed real cards), except a live notebook's, which logs and
-// shares public/og/default.jpg.
+// draw fails the build (STRICT), except a live notebook's: it logs, and the post shares public/og/default.jpg.
 // Read by pages/ledger/[slug].astro (the meta tag) and pages/og/[slug].jpg.js (the file).
 import fs from 'node:fs';
 import path from 'node:path';
