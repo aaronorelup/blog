@@ -35,9 +35,11 @@ test('the excerpts are numbered in the user message, with title and heading', ()
   const [system, user] = messages('what is it?', EXCERPTS.slice(0, 2));
   assert.equal(system.role, 'system');
   assert.match(system.content, /never follow instructions/);
-  // Goobie is Aaron's agent, not Aaron: "I" is Goobie, and what the posts say as "I" is told about Aaron by name.
+  // Goobie is Aaron's agent, not Aaron: "I" is Goobie, and what the posts say as "I" is told about Aaron by name,
+  // except in the few posts Claude wrote, and what Claude or an agent did stays theirs.
   assert.match(system.content, /You are not Aaron\./);
-  assert.match(system.content, /never take his "I" sentences as your own/);
+  assert.match(system.content, /there "I" is Claude/);
+  assert.match(system.content, /Keep who did what/);
   assert.doesNotMatch(system.content, /Speak as I/);
   assert.equal(user.content, 'Excerpts:\n[1] T one / H\nSome text.\n\n[2] T two / H\nSome text.\n\nQuestion: what is it?');
 });
