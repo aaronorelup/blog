@@ -1,12 +1,12 @@
 // Text helpers the rules share. Masking blanks a match but keeps every newline, so an index into the masked text
 // is still an index into the file and line numbers stay true.
 const blank = (m) => m.replace(/[^\n]/g, ' ');
-export const mask = (text, ...patterns) => patterns.reduce((t, re) => t.replace(re, blank), text);
+const mask = (text, ...patterns) => patterns.reduce((t, re) => t.replace(re, blank), text);
 
-export const FRONTMATTER = /^---\r?\n[\s\S]*?\r?\n---(?=\r?\n|$)/;
-export const FENCED = /^[ \t]*(```|~~~)[^\n]*\n[\s\S]*?^[ \t]*\1[^\n]*$/gm;
-export const INLINE_CODE = /`[^`\n]+`/g;
-export const COMMENT = /<!--[\s\S]*?-->/g;
+const FRONTMATTER = /^---\r?\n[\s\S]*?\r?\n---(?=\r?\n|$)/;
+const FENCED = /^[ \t]*(```|~~~)[^\n]*\n[\s\S]*?^[ \t]*\1[^\n]*$/gm;
+const INLINE_CODE = /`[^`\n]+`/g;
+const COMMENT = /<!--[\s\S]*?-->/g;
 const SCRIPT_STYLE = /<(script|style)\b[\s\S]*?<\/\1>/gi;
 const TAG = /<\/?[A-Za-z][^>]*>/g;
 const LINK_TARGET = /\]\([^)]*\)/g;

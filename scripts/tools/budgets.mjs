@@ -11,7 +11,7 @@ import { toHtml } from 'hast-util-to-html';
 import { visit, SKIP } from 'unist-util-visit';
 import { isLivePath } from '../../src/data/exempt.js';
 
-export const ENFORCE = false;   // W4 sets true
+const ENFORCE = false;   // W4 sets true
 const KB = 1024;
 const PROSE = ['pc-prose', 'prose'];   // the post body's class: pc-prose until T2.1 names it prose
 
