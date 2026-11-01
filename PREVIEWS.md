@@ -44,7 +44,7 @@ had been told to doubt, who caught what).
 | `loop` | no, and only with `image` | 640×360 H.264, 3 s (4 at most), ≤ 150 KB | 240 KB, or a file that isn't there |
 | `alt` | with `image` | what the picture shows | |
 
-The caps live in `src/data/limits.js`. The schema (`src/schemas/preview.ts`) refuses text
+The caps live in `src/data/preview-budget.js`. The schema (`src/content/config.ts`) refuses text
 over them, and the previews endpoint (`src/pages/ledger/previews.json.js`) refuses missing or
 oversized media, so `npm run build` fails before either can ship. The tighter "aim for" numbers
 are the writing rules, checked by the post checker in the build.
@@ -165,8 +165,8 @@ anyone on a phone.
 
 ## How it works (for whoever changes it)
 
-- `src/schemas/preview.ts`: the `preview` schema.
-- `src/data/limits.js`: the numbers, in one place. Change one there and the schema, the
+- `src/content/config.ts`: the `preview` schema.
+- `src/data/preview-budget.js`: the numbers, in one place. Change one there and the schema, the
   endpoint and the media script move together.
 - `src/pages/ledger/previews.json.js`: builds `/ledger/previews.json` from listed posts only
   (`isListed`, so unlisted and draft posts never surface in a card), with reading time, and for a
