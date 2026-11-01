@@ -44,6 +44,7 @@ for (let i = 0; i < args.length; i++) {
   else pos.push(a);
 }
 if (!['cover', 'blur'].includes(opts.fit)) die('--fit is cover or blur');
+if (!opts.out && (opts.size || opts.cap)) die(`--size and --cap go with --out: a post's preview is always ${PREVIEW_MEDIA.width}x${PREVIEW_MEDIA.height}, under the targets in PREVIEWS.md`);
 
 const [W, H] = parseSize(opts.size);
 if (opts.out) await onePicture(pos[0]);
