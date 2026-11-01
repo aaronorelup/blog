@@ -454,3 +454,11 @@ Nothing in the suite is broken on main (home-4, the rail dots, was fixed by T3.2
 a running game's veil reads "Paused while something else plays." (the page-wide stop reaches the game through its
 `aoPause` first), where "Paused." was meant. game-4 asserts only that it is paused.
 
+## The test browsers' own quirks
+
+- **Playwright's Linux WebKit never loops a video.** At the loop point a `loop` video goes back to 0 and stalls there
+  (`readyState` 2, the clock stopped, `seeked` over and over), whatever the file: both 2x2 clips of
+  `ai-rigging-vs-a-script`, served live or from a local server with byte ranges, on a bare page with none of the
+  site's code, and a `testsrc` clip from ffmpeg (checked 2026-11-01). Chromium loops them, and so does WebKit when a
+  script seeks back to 0 after `ended`. It is the engine's GStreamer backend, not the site (Safari plays through
+  AVFoundation): on `phone`, a check that needs a clip running must not wait past its first pass.
