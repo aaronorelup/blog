@@ -1,0 +1,25 @@
+---
+// The search box at the top of the ledger, with its Search | Ask Goobie switch. scripts/search/box.js runs it: words
+// from Pagefind and meaning from /api/search, merged; Ask loads search/ask.js only once it is opened. Results and
+// answers are written into [data-search-out]. Turnstile, when Ask needs it, draws into [data-turnstile].
+import Glyph from '../chrome/Glyph.astro';
+---
+
+<form class="search" role="search" action="/ledger/" data-search>
+  <div class="search-bar">
+    <span class="search-icon">
+      <Glyph name="lens" class="search-lens" />
+      <img class="search-goobie" src="/media/goobie/goobie-96.webp" width="34" height="34" alt="" hidden />
+    </span>
+    <input class="search-input" name="q" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search"
+      aria-label="Search the ledger" placeholder="Search the ledger" />
+    <button class="search-go" type="submit" hidden>Ask</button>
+  </div>
+  <div class="search-modes" role="group" aria-label="What the box does">
+    <button type="button" class="search-mode" data-mode="search" aria-pressed="true">Search</button>
+    <button type="button" class="search-mode" data-mode="ask" aria-pressed="false">Ask Goobie</button>
+  </div>
+  <p class="search-note" data-search-note hidden></p>
+  <div class="search-turnstile" data-turnstile></div>
+  <div class="search-out" data-search-out aria-live="polite"></div>
+</form>

@@ -1,0 +1,28 @@
+---
+// The ledger's filters: every topic and project with a post, and how many it has (counted here, at build time).
+// Real links, /ledger/?topic=video, so a filtered ledger has an address; scripts/ledger/filter.js does the rest.
+import { PROJECTS, TOPICS } from '../../data/taxonomy.js';
+
+interface Props { total: number; topics: Record<string, number>; projects: Record<string, number> }
+const { total, topics, projects } = Astro.props;
+const chips = (key, names, counts) => Object.entries(names).filter(([k]) => counts[k])
+  .map(([k, v]) => ({ key, value: k, label: v.label, n: counts[k] }));
+const rows = [
+  { label: 'Topics', chips: [{ key: '', value: '', label: 'All', n: total }, ...chips('topic', TOPICS, topics)] },
+  { label: 'Projects', chips: chips('project', PROJECTS, projects) },
+];
+---
+
+<nav class="chips" aria-label="Filter the ledger">
+  {rows.map((row) => (
+    <div class="chip-row">
+      <span class="chip-label">{row.label}</span>
+      <div class="chip-list">
+        {row.chips.map((c) => (
+          <a class="chip" href={c.key ? `/ledger/?${c.key}=${c.value}` : '/ledger/'} data-chip={c.key} data-value={c.value}
+            aria-current={c.key ? undefined : 'true'}>{c.label} <span class="chip-n">{c.n}</span></a>
+        ))}
+      </div>
+    </div>
+  ))}
+</nav>

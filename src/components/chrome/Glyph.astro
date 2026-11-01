@@ -1,0 +1,9 @@
+---
+// One line drawing from src/lib/glyphs.js: a topic's glyph where a post has no icon, or the search box's lens.
+import { GLYPHS } from '../../lib/glyphs.js';
+
+interface Props { name: keyof typeof GLYPHS; class?: string }
+const { name, class: cls } = Astro.props;
+---
+
+<svg class:list={['glyph', cls]} viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d={GLYPHS[name]} /></svg>
