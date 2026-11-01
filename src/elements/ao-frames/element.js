@@ -2,6 +2,7 @@
 // two (an impact frame, a hit-stop, a smear) that playback hides: previous/next frame, play/pause, quarter speed, a
 // frame counter and optional jumps to labelled frames; with the video focused, the arrow keys step too. Without JS
 // it is the plain <video>. Attributes fps, marks: docs/COMPONENTS.md.
+import { h } from '../_lib/dom.js';
 
 class AoFrames extends HTMLElement {
   connectedCallback() {
@@ -19,14 +20,9 @@ class AoFrames extends HTMLElement {
       video.currentTime = (f + 0.5) / fps;
     };
 
-    const bar = document.createElement('div');
-    bar.className = 'ao-frames-bar';
+    const bar = h('div', { class: 'ao-frames-bar' });
     const btn = (label, title, fn) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = label;
-      b.title = title;
-      b.addEventListener('click', fn);
+      const b = h('button', { type: 'button', text: label, title, onclick: fn });
       bar.append(b);
       return b;
     };
@@ -48,9 +44,7 @@ class AoFrames extends HTMLElement {
       b.className = 'ao-frames-mark';
     }
 
-    const count = document.createElement('span');
-    count.className = 'ao-frames-count';
-    count.setAttribute('aria-live', 'off');
+    const count = h('span', { class: 'ao-frames-count', 'aria-live': 'off' });
     bar.append(count);
     const show = () => {
       const t = total();
