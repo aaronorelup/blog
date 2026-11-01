@@ -4,7 +4,7 @@
 import { test, expect } from '@playwright/test';
 import { readBaseline } from '../../scripts/build/contracts.mjs';
 import { isLivePath } from '../../src/data/exempt.js';
-import { targets, smallVideo } from './helpers.mjs';
+import { allDefined, targets, smallVideo } from './helpers.mjs';
 
 test('live-1 /version.json is a main build', async ({ request }) => {
   const v = await (await request.get('/version.json')).json();
@@ -46,6 +46,6 @@ test('live-5 the homepage and a post load without a script error', async ({ page
   await page.goto('/');
   await page.waitForTimeout(2000);
   await page.goto(Object.keys(targets.pages).find((p) => targets.pages[p].kind === 'post' && !targets.pages[p].live));
-  await page.waitForFunction(() => !!customElements.get('ao-compare'));
+  await allDefined(page);
   expect(errors).toEqual([]);
 });
