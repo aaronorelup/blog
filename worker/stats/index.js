@@ -9,6 +9,7 @@ import {
   buildCore, buildWindow, assembleDay, buildTotals,
   makeSite, mentionsUnlisted, scrubDay,
 } from './shape.js';
+import { json } from '../lib/http.js';
 import { ensure } from '../lib/sql.js';
 import SCHEMA from './stats.sql';
 
@@ -38,10 +39,6 @@ const iso = (t) => new Date(t).toISOString().replace(/\.\d{3}Z$/, 'Z');
 const isoDay = (t) => new Date(t).toISOString().slice(0, 10);
 const errText = (e) => String((e && e.message) || e || 'unknown error');
 const readJSON = (s, fallback) => { try { return s ? JSON.parse(s) : fallback; } catch (e) { return fallback; } };
-const json = (body, status, cache = 'no-store') => new Response(JSON.stringify(body), {
-  status,
-  headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': cache },
-});
 // An error that means the token is missing, wrong or not allowed to read the analytics.
 const AUTH = /authenticat|unauthori[sz]ed|not authori[sz]ed|forbidden|permission|\b40[13]\b/i;
 
