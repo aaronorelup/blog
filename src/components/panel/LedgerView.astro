@@ -1,22 +1,11 @@
 ---
 // The ledger index, as it appears both inside the homepage's overlay panel and on
 // the standalone /ledger page. Markup and inline styles come straight from the design.
-import { getCollection } from 'astro:content';
-import { isListed } from '../../data/listed.js';
+import { listedPosts, slugOf } from '../../lib/content.js';
+import { ledgerOrder } from '../../lib/posts.js';
+import { shortDate } from '../../lib/dates.js';
 
-const all = await getCollection('posts', ({ data }) => isListed(data));
-const posts = all.sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf() || b.data.id.localeCompare(a.data.id),
-);
-
-const dateFmt = new Intl.DateTimeFormat('en-US', {
-  month: 'short',
-  day: '2-digit',
-  year: 'numeric',
-  // Frontmatter dates are bare YYYY-MM-DD, which coerce to UTC midnight. Without
-  // pinning the zone, a build west of UTC formats them a day early.
-  timeZone: 'UTC',
-});
+const posts = ledgerOrder(await listedPosts());
 const feedUrl = 'aaronorelup.com/rss.xml';
 ---
 
@@ -27,13 +16,13 @@ const feedUrl = 'aaronorelup.com/rss.xml';
   <div style="display:flex;flex-direction:column">
     {posts.map((post) => (
       <a
-        href={`/ledger/${post.slug}/`}
-        data-ledger-entry={post.slug}
+        href={`/ledger/${slugOf(post)}/`}
+        data-ledger-entry={slugOf(post)}
         class="pc-row"
         style="display:grid;grid-template-columns:120px 1fr;gap:0 26px;padding:24px 14px;margin:0 -14px;border-top:1px solid var(--pc-line);border-radius:10px;text-decoration:none;cursor:pointer"
       >
         <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.7;color:var(--pc-accent)">
-          {post.data.id}<br /><span style="color:var(--pc-quiet)">{dateFmt.format(post.data.date)}</span>
+          {post.data.id}<br /><span style="color:var(--pc-quiet)">{shortDate(post.data.date)}</span>
         </div>
         <div>
           <h2 style="margin:0 0 8px;font-family:'Zen Maru Gothic',sans-serif;font-size:20px;font-weight:700;color:var(--pc-strong);letter-spacing:-0.01em">{post.data.title}</h2>

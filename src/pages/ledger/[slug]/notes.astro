@@ -1,0 +1,41 @@
+---
+// /ledger/<slug>/notes/: the full making-of of a split post (src/content/notes/<slug>.md). Listed exactly
+// when its post is. For now the panel chrome, the note and a link back to the short version.
+import PanelPage from '../../../layouts/PanelPage.astro';
+import { allPosts, notesBySlug, renderEntry, slugOf } from '../../../lib/content.js';
+import { shortDate } from '../../../lib/dates.js';
+
+export async function getStaticPaths() {
+  const notes = await notesBySlug();
+  return (await allPosts()).filter((post) => notes.has(slugOf(post)))
+    .map((post) => ({ params: { slug: slugOf(post) }, props: { post, note: notes.get(slugOf(post)) } }));
+}
+
+const { post, note } = Astro.props;
+const { Content } = await renderEntry(note);
+---
+<PanelPage title={`${note.data.title} — Aaron Orelup`} description={note.data.summary} active="ledger" noindex={post.data.unlisted}>
+  <article data-post-article data-panel-view="notes">
+    <a href={`/ledger/${slugOf(post)}/`} class="pc-link-accent back">← THE SHORT VERSION</a>
+    <div class="meta">{post.data.id} <span>/ {shortDate(post.data.date)}</span></div>
+    <div class="pc-prose">
+      <h1>{note.data.title}</h1>
+      <p class="summary">{note.data.summary}</p>
+      <Content />
+    </div>
+  </article>
+</PanelPage>
+
+<style>
+  article { width: 100%; max-width: 720px; padding-bottom: 60px; }
+  .back { display: inline-block; margin: 0 0 30px; font-size: 12.5px; letter-spacing: 0.08em; color: var(--pc-accent); text-decoration: none; }
+  .meta { margin-bottom: 10px; font: 12px/1.7 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--pc-accent); }
+  .meta span { color: var(--pc-quiet); }
+  .summary { padding-bottom: 34px; border-bottom: 1px solid var(--pc-line); }
+</style>
+
+<script>
+  // The note carries post components too, and its links to posts open their hover cards.
+  import '../../../scripts/post-components.js';
+  import '../../../scripts/ledger-preview.js';
+</script>

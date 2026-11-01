@@ -1,11 +1,10 @@
 ---
-import { getCollection } from 'astro:content';
+import { research, slugOf } from '../../lib/content.js';
 import PanelPage from '../../layouts/PanelPage.astro';
 import ResearchView from '../../components/panel/ResearchView.astro';
 
 export async function getStaticPaths() {
-  const docs = await getCollection('research');
-  return docs.map((doc) => ({ params: { slug: doc.slug }, props: { doc } }));
+  return (await research()).map((doc) => ({ params: { slug: slugOf(doc) }, props: { doc } }));
 }
 
 const { doc } = Astro.props;

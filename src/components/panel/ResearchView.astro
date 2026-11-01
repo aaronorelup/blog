@@ -1,22 +1,11 @@
 ---
 // One research document. Same chrome as a ledger entry (PostView), with two
 // research-specific additions: a provenance line and a raw-markdown link for agents.
-import type { CollectionEntry } from 'astro:content';
+import { renderEntry } from '../../lib/content.js';
+import { shortDate } from '../../lib/dates.js';
 
-interface Props {
-  doc: CollectionEntry<'research'>;
-}
 const { doc } = Astro.props;
-const { Content } = await doc.render();
-
-const dateFmt = new Intl.DateTimeFormat('en-US', {
-  month: 'short',
-  day: '2-digit',
-  year: 'numeric',
-  // Frontmatter dates are bare YYYY-MM-DD, which coerce to UTC midnight. Without
-  // pinning the zone, a build west of UTC formats them a day early.
-  timeZone: 'UTC',
-});
+const { Content } = await renderEntry(doc);
 ---
 
 <article data-post-article style="width:100%;max-width:720px;padding-bottom:60px">
@@ -28,7 +17,7 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
   >← RESEARCH</a>
 
   <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.7;color:var(--pc-accent);margin-bottom:10px">
-    {doc.data.id} <span style="color:var(--pc-quiet)">/ {dateFmt.format(doc.data.date)}</span>
+    {doc.data.id} <span style="color:var(--pc-quiet)">/ {shortDate(doc.data.date)}</span>
   </div>
   <h1 style="margin:0 0 14px;font-family:'Zen Maru Gothic',sans-serif;font-size:33px;line-height:1.2;font-weight:700;color:var(--pc-head);letter-spacing:-0.015em;text-wrap:pretty">{doc.data.title}</h1>
   <p style="margin:0 0 18px;font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.55;color:var(--pc-soft);text-wrap:pretty">{doc.data.summary}</p>
