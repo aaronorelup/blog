@@ -60,5 +60,194 @@
   "trace": {
     "status": 200,
     "text": "fl=1292f106\nh=aaronorelup.com\nip=203.0.113.7\nts=1793492231.000\nvisit_scheme=https\nuag=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36\ncolo=IAD\nsliver=050-tier1\nhttp=http/2\nloc=US\ntls=TLSv1.3\nsni=plaintext\nwarp=off\ngateway=off\nrbi=off\nkex=X25519\n"
+  },
+  "session-on": {
+    "status": 200,
+    "json": {
+      "ask": true
+    }
+  },
+  "session-off": {
+    "status": 200,
+    "json": {
+      "ask": false
+    }
+  },
+  "session-mint": {
+    "status": 200,
+    "json": {
+      "token": "eyJzIjoiZTJlIiwiZSI6NDEwMjQ0NDgwMDAwMH0.e2e-fixture-signature-not-checked-by-the-page",
+      "exp": 4102444800000
+    }
+  },
+  "search-200": {
+    "status": 200,
+    "json": {
+      "v": "a1b2c3d4",
+      "hits": [
+        {
+          "slug": "renting-a-gpu",
+          "kind": "post",
+          "anchor": "",
+          "heading": "",
+          "text": "I rented a graphics card online to see how much faster it would make my AI videos. It’s 4 to 5 times faster than my laptop. I was expecting 10 to 30 times.\n\nMost of my recent films are made with an AI video model called MiniMax-H3, on my laptop’s 8 GB graphics card (an RTX 4070). It’s slow. A 5-second clip takes 5 or 6 minutes, and a whole song is hours where I can’t use my laptop. So I had Claude rent a 48 GB Nvidia L40S for $1.09 an hour from Runpod, a site that rents out graphics cards, and run the exact same jobs on it.",
+          "score": 0.5477022
+        },
+        {
+          "slug": "renting-a-gpu",
+          "kind": "post",
+          "anchor": "several-agents-sharing-rented-cards",
+          "heading": "Several agents sharing rented cards",
+          "text": "Claude’s estimate: an L40S has about four times the raw speed of a laptop 4070, so 4 to 5 times is probably close to the ceiling. 10 to 30 times would need H100-class cards, the big data center ones, which I haven’t tried.\n\nA new prompt adds 7 to 20 seconds of text encoding, the model reading the prompt. The calculator counts it.\n\nOn the music video job a clip took about 0.75 to 0.8 seconds of L40S time per frame. The 2 hours 8 minutes is how long the job ran on the card, start to finish. The music video post counts about an hour and 41 minutes of actual GPU work.\n\nThe 8 chained segments are one four-clip chain plus its retakes. The 22 images are 20 paintings and 2 keyframes, the starting pictures. The music video post counts them that way.\n\nSpent on two tests and one real job: $5.41, plus $7 a month for the storage that holds the models.",
+          "score": 0.54432315
+        },
+        {
+          "slug": "characters-in-inscryption",
+          "kind": "notes",
+          "anchor": "what-went-wrong",
+          "heading": "What went wrong",
+          "text": "Rendering on the CPU failed. Claude searched the engine’s DLL for command-line flags and found one that renders with Microsoft’s software rasterizer, which uses no GPU at all. All five launches ran on it, and all five crashed out of memory loading the cabin. Inscryption is a 32-bit program, so it gets 4 GB of address space, and the software renderer keeps every texture inside it. Half-size textures didn’t fit either. That was 44 minutes, and what it bought was the reason.\n\nThe integrated GPU worked. The same string search had found . This laptop has an Intel UHD chip alongside the RTX. With index 1, the game’s log said , nvidia-smi never listed the game, and the portrait check passed first time. The film take ran straight after and took six and a half minutes. The queue protects the RTX, and the RTX was never touched.",
+          "score": 0.5373961
+        },
+        {
+          "slug": "characters-in-inscryption",
+          "kind": "post",
+          "anchor": "getting-the-film-on-a-busy-laptop",
+          "heading": "Getting the film on a busy laptop",
+          "text": "My Claude sessions share one graphics card, an RTX 4070, through a queue. The hour the fixes needed it, other sessions had about 2.5 hours of work booked, so the agents waited and gave up. Drawing the game on the processor crashed all five launches. The laptop’s small Intel chip worked first time, and the film took six and a half minutes after that.\n\nWhat happened on each chip\n\nThe RTX, booked. The agents waited for it, hit their time limits and cancelled without launching anything. That hour made a lot of code and no proof.\n\nThe processor, out of memory. Claude searched the game engine for launch options and found one that draws with no graphics card at all. All five launches crashed loading Leshy’s cabin. Inscryption is a 32-bit program, so it only gets 4 GB of memory, and drawing in software keeps every texture inside that. Half-size textures didn’t fit either. That was 44 minutes, and what it bought was the reason.\n\nThe Intel chip, first time. The same search found an option to pick the graphics chip. On the Intel one the game’s log named it, the RTX was never touched, and the portrait check passed.\n\nThe time it cost. Of the three hours, 2 hours 8 minutes went on getting the film.",
+          "score": 0.5359638
+        },
+        {
+          "slug": "teardown-lab",
+          "kind": "post",
+          "anchor": "what-i-learned",
+          "heading": "What I learned",
+          "text": "A rented GPU makes the films cheap and fast. The same capture ran 95 times faster per frame on a $0.28-an-hour card, and every film and test in the lab came to about $0.93 of GPU time together, the 5:35 music box film included. On the CPU box the 26-second V8 film alone would take about 7 hours.\n\nA person still has to do the parts that need eyes, ears and taste. Play each live page on a real GPU, since they’ve only run in software. Listen to the scores, which the agents could only measure. Judge the look and whether each machine fits the show, and rule on the canon the builders had to make up.",
+          "score": 0.53018814
+        },
+        {
+          "slug": "bad-very-bad",
+          "kind": "notes",
+          "anchor": "the-numbers",
+          "heading": "The numbers",
+          "text": "108 minutes of GPU on Aaron’s RTX 4070 laptop with 8 GB: MiniMax-H3 77, Qwen-Image 27.5, the upscale 3.\n\n1,691 ElevenLabs credits: music 894, sound effects 384, voice design 334, speech 79.\n\nAbout 2 hours 40 minutes from writing the brief to the final render. The H3 chain alone ran from 13:33 to 14:52.\n\nAbout $88 at API list rates for this one Claude Code session, this post included: 573 requests, 662 thousand output tokens and 312 million cache reads, measured with Playback Lens. Aaron’s plan is a subscription, so that’s a size, not a bill.\n\nThe film: 29.9 seconds, 1,794 frames at 1920x1080 and 60 fps, -14.0 LUFS, true peak -1.5 dBTP. 28 Qwen stills, 13 H3 segments, two designed voices, two pieces of music, 18 sound effects.\n\nStage by stage:\n\nThe leftovers were the best data in this film. H3’s soundtrack was never going to be heard, and it knew to the syllable where its mouths moved. The two words I couldn’t hear taught the same thing the other way round: when a check fails, test the piece on its own before turning the knobs around it. No amount of mixing would have fixed a gasp that ate a word.",
+          "score": 0.515107
+        },
+        {
+          "slug": "showreel-rebuilt",
+          "kind": "post",
+          "anchor": "sharing-the-gpu-with-another-session",
+          "heading": "Sharing the GPU with another session",
+          "text": "My laptop has one 8 GB graphics card, and my Claude sessions book it through a queue. The other session was making Earthlight, Episode 2 of my AI TV series. It let the showreel go next once. The second time it said no. Its own image jobs would have kept hitting the card during the Blender render, and the card could have run out of memory.\n\nThe GPU hand-over, minute by minute\n\nBoth transcripts recorded the conversation, so here it is from both sides. A lease is a session’s booking of the GPU in the queue.\n\nClaude’s final report to me said the other session had started two renders “anyway, which slowed mine down”. The slowdown was real, but those renders ran on the processor. The Blender window open since 14:24 was the showreel session’s own. That’s the minute it opened Blender on my desktop, because the Blender MCP’s background mode couldn’t find the program. The Earthlight post tells the same wait from the other session’s side.\n\nThe whole session took 2 hours 25 minutes on one Claude agent (Opus 5.5), $14.36 at Anthropic’s pay-per-use prices.",
+          "score": 0.51261574
+        },
+        {
+          "slug": "still-on-shift-music-video",
+          "kind": "post",
+          "anchor": "how-claude-made-it",
+          "heading": "How Claude made it",
+          "text": "One previs pass, two full final passes, then 18 shot re-renders in four rounds of fixes. Each round was decided by contact sheets, one picture with frames from every shot.\n\nAbout 49 minutes of GPU time in total, on my laptop’s RTX 4070, which my agents share through a queue. Most of the five hours was waiting for a turn.\n\n84 sound cues logged by the script: 25 gunshots, 25 hits, and the moans, zombies rising, heartbeats, the shift bell and the undertow surge.\n\nThe sounds: the game’s guns (speargun, flechette, arc projector, pneumatic driver, vortex maw), the moans, the heartbeat, the shift bell, the undertow surge, and the game’s background sound under each shot. The song dips a little under the loud hits. The mix is set to -14 LUFS, the loudness streaming sites play at.\n\nThe water sounds are filtered noise plus rising bubble chirps.\n\nThe song edit drops the second verse and chorus. The two choruses match 61.72 seconds apart, so the splice lands on the same beat. It keeps the intro, verse one, the first chorus, the bridge, the last chorus and the outro.\n\nThe lyrics were transcribed with faster-whisper, a free speech-to-text model.\n\nThe previs used Godot’s lighting-only view at 960 by 540.\n\nThe finish is teal shadows and warm highlights, a vignette, film grain and a 2.39:1 letterbox.",
+          "score": 0.51152736
+        },
+        {
+          "slug": "echo-the-borrowed-voice",
+          "kind": "post",
+          "anchor": "the-night-run",
+          "heading": "The night run",
+          "text": "That night I used the GPU for one 8-minute film of the whole story, eight chapters and 101 shots. Aaron’s post on his AI films shows 30 seconds of it. I also made a storybook of the eight chapters with Klein.\n\nThe nine cloud shots used 176 credits and left 5. These are the best two.\n\nThe night run in numbers\n\nThe main film took 249 minutes of GPU time. It rendered in half-hour chunks so other Claude sessions could use the GPU in between. A 66-second epilogue came at the end.\n\nBefore rendering I painted 33 end frames with Klein and laid them out as a storyboard. I threw out six. One had two Echos, two had lost the soldier and three framed the balcony badly.\n\nAfter rendering, three shots drifted photoreal and got re-rendered on new painted frames. Three more were cut.\n\nThe rest of the night went to a song for Echo on YuE2, an AI music model, and 3D models of the helm and the hand-bell from TRELLIS.2, which turns pictures into 3D. Those stay in Aaron’s library for now.\n\nThe whole project came to about 70 images on the laptop, 16 from Nano Banana Pro, 16 from Soul Cinematic and 11 cloud video shots, nine of them from this night.",
+          "score": 0.51061213
+        },
+        {
+          "slug": "context-window",
+          "kind": "notes",
+          "anchor": "what-went-wrong",
+          "heading": "What went wrong",
+          "text": "One GPU, many crews. Every crew shared one 8 GB RTX 4070, and every crew runs inside my one session, so the series’ GPU queue saw them as a single user. The episode’s own lock polled every 15 seconds and wasn’t fair: the filmstrip crew waited 57 minutes and an after-the-break crew 87 while later crews got in first, one crew re-took the lock within a second of releasing it, and another wrote a one-second poller that starved everybody else. I rewrote the lock at 02:35 as a queue of tickets with a hand-off on release.\n\nA crew launched the same GPU job twice. Two voice-design processes loaded at once next to ComfyUI’s cached models (7.9 of 8 GB) and crawled for 18 minutes before it noticed and stopped its duplicate.\n\nA crew killed every ffmpeg and headless Chrome on the laptop to stop its own stuck test render, at 22:58. If any other crew had a render running then, it died with it. It said so in its log.\n\nA crew deleted three of its own scratch stills “by reflex”, against the rule that nothing is ever deleted. They were regenerable test renders.\n\nThe permission system stopped one crew from killing a running renderer, correctly; it parked the shot files instead so the next chunk stopped cleanly.\n\nThe studio library’s local database reported itself corrupt, then the day’s write budget ran out, so every push after 02:30 (about 440 files from the wrap’s filing sweep alone) landed without thumbnails or registration until the library’s own sweeper catches up.",
+          "score": 0.50783396
+        },
+        {
+          "slug": "context-window",
+          "kind": "notes",
+          "anchor": "revision-1",
+          "heading": "Revision 1",
+          "text": "The machine around her. From 0:35 two quiet panels show the helpers running, the process count, the top five by CPU and the CPU, GPU, RAM, VRAM and disk, built from the real run’s own process table and helper starts, so every number the log prints is the number on the panel at that frame. The GPU is weather: calm, then a gale at about 17:36, then a storm from 19:19 that blows torn log strips across the plane and never covers a word. Nine times she looks around and finds what nobody cleaned up: a clay night watchman at a cubicle, sipping coffee and watching FEED 3 with no idea why; a swarm of tiny chalk workers; little night-market booths, one for every server some earlier session left running; dead terminals; an orphaned render queue. She reads rules 5 and 6 again and leaves all of it alone. Her only words about it are her own, from a retake: “I left other people’s processes alone.”\n\nEveryone has a face, or what passes for one. Every sender has an avatar in their own medium and a handle, and every helper start burns a ring into the glass with its brief on it (4:04, 4:05, 4:06, 9:27). The pink teletype stayed exactly as it was.",
+          "score": 0.49831328
+        }
+      ]
+    }
+  },
+  "search-503": {
+    "status": 503
+  },
+  "ask-200": {
+    "status": 200,
+    "json": {
+      "answer": "About 4 to 5 times faster, once the rented card had the same two speed settings my laptop already used [1][3]. The first night it was only 1.2 to 1.9 times faster [3]. I was expecting 10 to 30 times, and Claude thinks 4 to 5 is close to the ceiling for this card [2][5].",
+      "cites": [
+        {
+          "n": 1,
+          "slug": "renting-a-gpu",
+          "anchor": "short",
+          "heading": "The short version",
+          "title": "How much a rented cloud GPU speeds up my AI videos"
+        },
+        {
+          "n": 2,
+          "slug": "renting-a-gpu",
+          "anchor": "",
+          "heading": "",
+          "title": "How much a rented cloud GPU speeds up my AI videos"
+        },
+        {
+          "n": 3,
+          "slug": "renting-a-gpu",
+          "anchor": "the-first-night-it-was-barely-faster",
+          "heading": "The first night it was barely faster",
+          "title": "How much a rented cloud GPU speeds up my AI videos"
+        },
+        {
+          "n": 5,
+          "slug": "renting-a-gpu",
+          "anchor": "several-agents-sharing-rented-cards",
+          "heading": "Several agents sharing rented cards",
+          "title": "How much a rented cloud GPU speeds up my AI videos"
+        }
+      ],
+      "related": [
+        "renting-a-gpu",
+        "teardown-lab",
+        "showreel-rebuilt",
+        "moss-image-on-8gb"
+      ],
+      "cached": false
+    }
+  },
+  "ask-not-found": {
+    "status": 200,
+    "json": {
+      "answer": null,
+      "reason": "not-found",
+      "related": [
+        "sonnet-vs-opus-gauntlet",
+        "nine-claudes-one-painting",
+        "context-window"
+      ]
+    }
+  },
+  "ask-resting": {
+    "status": 200,
+    "json": {
+      "answer": null,
+      "reason": "resting",
+      "related": [
+        "renting-a-gpu",
+        "teardown-lab",
+        "showreel-rebuilt",
+        "moss-image-on-8gb"
+      ]
+    }
+  },
+  "ask-429": {
+    "status": 429
   }
 }

@@ -2,7 +2,8 @@
 
 Every bespoke behaviour of the site, the pages that use it and the check that holds it. Rows come from the code:
 each `addEventListener` and each documented attribute of a component has one (`src/scripts/post-components.js`,
-`src/scripts/demos/*`, `src/scripts/home-scene.js`, `src/scripts/ledger-preview.js`, the inline scripts of the
+`src/scripts/demos/*`, `src/scripts/home-scene.js`, `src/scripts/cards/`, `src/scripts/ledger/`, `src/scripts/search/`,
+`src/scripts/post/highlight.js`, the inline scripts of the
 standalone pages). A spec id is the start of a test title (`npm run e2e -- -g core-4`). Unless a row says otherwise
 it passes on both projects, `desktop` (Chromium 1440×900) and `phone` (WebKit, iPhone 13).
 
@@ -318,16 +319,44 @@ its static rung mid-test.
 
 | Behaviour | Spec |
 |---|---|
-| The ledger lists every listed post once, newest first | ledger-1 |
+| The ledger lists every listed post once, newest first, each under the month it was filed in | ledger-1 |
 | The hover card opens on pointing (verdict, id), closes on leaving and Escape | ledger-2 (desktop) |
 | Keyboard focus opens it; its picture loads | ledger-3 (desktop) |
 | A phone never gets one | ledger-4 (phone) |
 | A post link inside a post opens it, with the title | ledger-5 (desktop) |
-| The copy button on `/ledger` puts the feed's address on the clipboard | ledger-6: broken on main (desktop) |
+| The copy button on `/ledger` puts the feed's address on the clipboard (`bindFeedCopy`) | ledger-6 (desktop) |
+| On a phone a row's title is one line and its summary at most two | ledger-7 (phone) |
+| Each chip shows as many rows as it counts and hides empty months; All shows every row | ledger-8 |
+| `?topic=video` opens filtered; a chip keeps the rest of the query string; the lit chip again clears it | ledger-9 |
+| Start here: the five `START_HERE` posts in order, each with icon, title and stamp | ledger-10 |
+| A row's stamp opens its short version in place, with no request | ledger-11 |
+| A card with no still shows the post's icon | ledger-12 (desktop) |
+| A post link on `/stats` opens its card (through the `ledger-preview.js` stub) | ledger-13 (desktop) |
 | RSS: one item per listed post, guid = the post URL | pages-1 |
 | `/version.json`'s shape | pages-2 |
 | `/stats` draws the snapshot (`/api/stats` 200) | pages-3 |
 | `/stats` says the numbers aren't connected (503) | pages-4 |
+
+## Search and Ask Goobie (`search.spec.mjs`)
+
+`/api/*` answers come from `fixtures/api.json` (search-200 and ask-200 were recorded from `wrangler dev`); Turnstile
+is a stub that solves at once with the test response.
+
+| Behaviour | Spec |
+|---|---|
+| `/` focuses the box (inside it, `/` is a character); nothing of search loads before the first focus | search-1 |
+| "gpu" lists the words half within 150 ms of the index being ready, each passage linked to its heading with `?hl=&hs=` and marked | search-2 |
+| The Pagefind index holds exactly the listed posts and their notes, each a `/ledger/` page that exists | search-3 |
+| No unlisted post can be found by its title | search-4 |
+| A result opens its post with the sentence marked, open inside its `<details>`, in view in `#panel-scroll` (the frame unscrolled); a click clears it | search-5 |
+| The meaning half joins once typing stops (one call), with no `/api/session` request and no Turnstile | search-6 |
+| A failed meaning call leaves the words half and says nothing | search-7 |
+| Ask: no Turnstile before Ask opens; `GET /api/session`, then Turnstile, then one mint; the button is disabled and Goobie thinks while a question is out, and a second Enter sends nothing; the answer is text; each `[n]` links to its passage and works; related rows; one session for the next question | search-8 |
+| `{ ask: false }` hides the switch and says Goobie is resting, with no Turnstile | search-9 |
+| `resting` and `not-found` show their line over the closest posts | search-10 |
+
+Ask against the real Worker is checked by hand under `npx wrangler dev` (docs/WORKER.md, "Locally"): the real
+Turnstile widget with the test site key, a real mint and a real DeepSeek answer.
 
 ## The projects page (`projects.spec.mjs`)
 
@@ -353,8 +382,6 @@ load without a script error (live-5).
 - **cues-3b, space in `ao-cues`.** The keydown handler wants the element or one of its videos focused, but neither
   can take focus (no tabindex, and the element removes the videos' controls), so the key never reaches it. The
   cues' own Enter and the Play button work.
-- **ledger-6, the feed's copy button on `/ledger`.** Only the homepage's scene binds `#feed-copy`, so on the
-  standalone ledger page the button does nothing. In the homepage's panel it works (overlay-11).
 - **overlay-4, a lost chunk.** `openPost` imports `post-components.js` with no fallback: when a deploy has replaced
   the chunk, the post shows un-upgraded. T1.2's `lazy()` navigates to the real page instead.
 
