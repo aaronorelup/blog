@@ -69,7 +69,11 @@ test.describe('the hover card', () => {
     await page.goto('/ledger/');
     const slug = await rows(page).first().getAttribute('data-ledger-entry');
     await page.goto(`/ledger/${slug}/`);
-    const link = page.locator('[data-post-article] a[href^="/ledger/"]:not([data-close-reader])').filter({ visible: true }).first();
+    // A link to a post, /ledger/<slug>/: not the header's ledger filters (?topic=) or a notes page.
+    const links = page.locator('[data-post-article] a[href^="/ledger/"]');
+    const i = await links.evaluateAll((as) => as.findIndex((a) => /^\/ledger\/[^/?#]+\/$/.test(a.getAttribute('href'))
+      && a.checkVisibility()));
+    const link = links.nth(i);
     await link.scrollIntoViewIfNeeded();
     await link.hover();
     await expect(card(page)).toHaveClass(/lp-on/);
