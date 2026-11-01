@@ -325,6 +325,7 @@ its static rung mid-test.
 | The scene draws nothing while the panel covers it, and draws again once it closes | overlay-20 |
 | A project's own page ("Start the course", `data-no-fly`) leaves at once from the panel, with no flight | overlay-21 |
 | Ask works again in a ledger mounted afresh: its Turnstile widget goes into the box on screen | overlay-22 |
+| A view opened just after scrolling a post opens at its top: the post keeps its place only in its own history entry | overlay-23 |
 
 ## Pages (`ledger.spec.mjs`, `pages.spec.mjs`)
 

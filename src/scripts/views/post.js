@@ -30,9 +30,13 @@ function land(root, drawn) {
   for (const type of MOVES) addEventListener(type, stop, { capture: true, once: true, passive: true });
   const hold = (place) => { held = new ResizeObserver(place); held.observe(root); };
   let timer = 0;
+  // Only into the post's own entry: in the homepage overlay the address moves on while the post is still shown.
+  const page = location.pathname;
   const keep = () => {
     clearTimeout(timer);
-    timer = setTimeout(() => history.replaceState({ ...history.state, scroll: scroller.scrollTop }, ''), 200);
+    timer = setTimeout(() => {
+      if (location.pathname === page) history.replaceState({ ...history.state, scroll: scroller.scrollTop }, '');
+    }, 200);
   };
   scroller.addEventListener('scroll', keep, { passive: true });
   const arrive = () => {

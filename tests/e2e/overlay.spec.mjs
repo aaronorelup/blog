@@ -456,3 +456,21 @@ test('overlay-22 Ask works again in a ledger mounted afresh', async ({ page, con
   // The second widget went into the box on screen, not the one that left with the old ledger.
   expect(await page.evaluate(() => window.__boxes.map((b) => b.isConnected))).toEqual([false, true]);
 });
+
+test('overlay-23 a view opened just after scrolling a post opens at its top, not at the post’s place', async ({ page }) => {
+  await home(page);
+  await openLedger(page);
+  await openRow(page, modelPost);
+  await allDefined(page);
+  // Scrolled, and About asked for at once: the post keeps its place in history 200 ms after a scroll, About arrives
+  // later than that.
+  await page.route('**/about/', async (r) => { await new Promise((done) => setTimeout(done, 1000)); return r.fallback(); });
+  expect(await page.locator('#panel-scroll').evaluate((s) => {
+    s.scrollTop = 1500;
+    document.querySelector('#panel-screen a[data-nav="about"]').click();
+    return s.scrollTop;
+  })).toBeGreaterThan(0);
+  await expect(view(page, 'about')).toBeVisible();
+  expect(await page.locator('#panel-scroll').evaluate((s) => s.scrollTop)).toBe(0);
+  expect(await page.evaluate(() => history.state?.scroll)).toBeUndefined();
+});
