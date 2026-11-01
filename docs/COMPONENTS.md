@@ -167,6 +167,35 @@ example) and `moonlight-five-times`.
 
 ## <ao-demo>
 
+An interactive demo written for one post. Its code is `src/elements/ao-demo/demos/<name>/index.js`, its own chunk,
+fetched only when a post uses it, and its CSS is `demos/<name>/style.css`, inlined into that post's article only. The
+module exports `mount(host, part)`, which returns `{ destroy }` (called when the element leaves the page, as the
+homepage's reader swaps posts) or `null`. Whatever the element held before is the no-JS fallback. A name with no
+folder leaves the fallback; a chunk that fails to load leaves it too, and the next connect tries again.
+
+| Attribute | |
+|---|---|
+| `name="synthid"` | the demo: the folder under `demos/` |
+| `part="tournament"` | which part of it to mount; an unknown part leaves the fallback |
+| `data-slug="…"` | `cf`'s `count` only: the post whose reads it counts (default: the page's own slug) |
+
+```html
+<ao-demo name="synthid" part="tournament">The tournament needs JavaScript: each word is picked by a knockout of + and − rounds.</ao-demo>
+```
+
+The demos:
+- **`synthid`** (`claude-text-watermark`): SynthID-Text small enough to watch. `model.js` is the published watermark
+  (the paper's g-values, tournament update, masking and mean score, with our own hash) over a toy model, a letter
+  of weighted word choices; `ui.js` the shared pieces. Parts: `tournament` (how one token is picked), `certain` (why
+  a token with one right answer comes out the same), `detect` (the checker counts the +), `edit` (what edits and
+  tricks do to the count), `book` (expected detection for a long text after editing).
+- **`cf`** (`who-visits-a-new-website`): `you` asks Cloudflare's edge what it saw of this visit (`/cdn-cgi/trace`,
+  only on aaronorelup.com), masks the address until shown, and walks the visit through the post's funnel; `count` is
+  the post's live reader counter from `/api/reads` (`worker/reads/`), one read per browser per day after a few
+  seconds in view, never from an automated browser.
+
+Behaviours: demo-synthid-1 to demo-synthid-5, demo-cf-1, demo-cf-2. Used by 2 posts (`INVENTORY.md`).
+
 ## <ao-diff>
 
 Versions of the same text with the changed words marked, so a reader sees what an edit, a fact-check or a judge did

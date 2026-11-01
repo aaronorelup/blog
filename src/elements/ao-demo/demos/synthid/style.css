@@ -1,5 +1,5 @@
-/* The SynthID demo (src/scripts/demos/synthid.js). Imported by that module, so it only loads
-   with a post that uses it. Panel tokens throughout, so day and night both work. */
+/* The SynthID demo (index.js beside it). Inlined into the article of the post that uses it (ElementStyles).
+   Panel tokens throughout, so day and night both work. */
 
 ao-demo { display: block; margin: 30px 0 34px; }
 
