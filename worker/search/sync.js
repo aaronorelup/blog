@@ -28,17 +28,21 @@ export async function step(env) {
 
   const { results: rows } = await env.DB.prepare('SELECT doc, id, hash, n FROM search_docs').all();
   const had = new Map(rows.map((r) => [r.doc, r]));
-  // Removed docs first: a renamed post's new doc re-uses its vector ids.
   const gone = rows.filter((r) => !Object.hasOwn(m.docs, r.doc));
+  // A live notebook last, so whatever its fleet pushes never holds up another doc.
+  const changed = Object.keys(m.docs).filter((d) => had.get(d)?.hash !== m.docs[d])
+    .sort((a, b) => m.live.includes(a) - m.live.includes(b));
+  // Nothing left: v is stored a run after the last upserts, which gives Vectorize that minute to apply them.
+  if (!gone.length && !changed.length) {
+    await env.DB.prepare("INSERT OR REPLACE INTO search_state VALUES ('v', ?1)").bind(m.v).run();
+    return `whole at ${m.v}`;
+  }
+  // Removed docs first: a renamed post's new doc re-uses its vector ids.
   if (gone.length) {
     await remove(env, gone.flatMap((r) => ids(r.id, 0, r.n)));
     await env.DB.prepare(`DELETE FROM search_docs WHERE doc IN (${inList})`).bind(JSON.stringify(gone.map((r) => r.doc))).run();
   }
-  // A live notebook last, so whatever its fleet pushes never holds up another doc.
-  const changed = Object.keys(m.docs).filter((d) => had.get(d)?.hash !== m.docs[d])
-    .sort((a, b) => m.live.includes(a) - m.live.includes(b));
   for (const doc of changed.slice(0, PER_RUN)) await embedDoc(env, m, doc, had.get(doc));
-  if (changed.length <= PER_RUN) await env.DB.prepare("INSERT OR REPLACE INTO search_state VALUES ('v', ?1)").bind(m.v).run();
   return `${Math.min(changed.length, PER_RUN)} embedded, ${gone.length} removed, ${Math.max(0, changed.length - PER_RUN)} left`;
 }
 

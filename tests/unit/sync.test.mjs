@@ -1,5 +1,5 @@
 // worker/search/sync.js on an in-memory D1 and a fake index: the first sync embeds 10 docs a run and stores v only
-// once nothing is left; a removed doc (an unlisted post) loses its vectors and its row, a shorter doc its last ids,
+// on the run that finds nothing left; a removed doc (an unlisted post) loses its vectors and its row, a shorter doc its last ids,
 // in deletes of at most 100 ids; a live notebook goes last; then each run is idle until its hash moves.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -41,6 +41,8 @@ test('a full sync, a removed and a shortened doc, then idle until the live noteb
   await DB.prepare("UPDATE search_docs SET hash = 'old', n = 5 WHERE doc = 'post:p0'").run();
 
   assert.equal(await step(env), '3 embedded, 1 removed, 0 left');
+  assert.equal(await v(), null);
+  assert.equal(await step(env), 'whole at v2'); // a minute later
   const rows = (await DB.prepare('SELECT doc, id, hash, n FROM search_docs ORDER BY doc').all()).results;
   assert.deepEqual(rows.map((r) => r.doc), Object.keys(manifest.docs).sort());
   assert.equal(vectors.size, docs.reduce((n, d) => n + d.chunks.length, 0));

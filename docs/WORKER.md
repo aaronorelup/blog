@@ -71,9 +71,10 @@ and each live notebook (`live`, left out of `v`) has its hash in `search_docs`. 
 of removed docs (an unlisted post; deletes go 100 ids at a time, Vectorize's most), then embeds up to 10 changed
 docs, a live notebook last, 50 chunks an AI call and an upsert, as
 `"<title>. <heading>\n<text>"`, upserting ids `<AO-id>:<n>` (`<AO-id>n:<n>` for notes) with metadata `{ s: slug, k:
-kind, a: anchor, h: heading, t: text, T: title }`, and deletes the doc's ids past its new count. Once nothing is left
-it stores `v`, which keys `/api/search`'s cache, so cached results turn over when the index is whole again. The first
-full sync is about 1,000 chunks in 9 runs; an AO-073 push re-embeds that one doc and touches no cache.
+kind, a: anchor, h: heading, t: text, T: title }`, and deletes the doc's ids past its new count. The run that
+finds nothing left stores `v`, a minute after the last upserts, which gives Vectorize that minute to apply them. `v`
+keys `/api/search`'s cache, so cached results turn over once the index is whole again. The first full sync is
+about 1,000 chunks in 9 runs (10 minutes on 2026-11-01); an AO-073 push re-embeds that one doc and touches no cache.
 
 **The daily sweep** (`cleanup.js`, 03:07 UTC): `searches` rows past 180 days, `ask_cache` past 7 days, `usage_day`
 past 60 days. A missed run waits for the next day's.
