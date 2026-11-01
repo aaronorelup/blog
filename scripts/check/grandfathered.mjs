@@ -13,10 +13,6 @@ export const UNTIL = {
   'src/scripts/home-scene.js': 'T3.2',
   'src/scripts/ledger-preview.js': 'T2.2',
   'src/components/panel/**': 'T3.1',
-  'src/components/Coin.astro': 'T1.4',
-  'src/layouts/PanelPage.astro': 'T1.4',
-  'src/pages/404.astro': 'T1.4',
-  'src/layouts/Home.astro': 'T3.2',
   'src/pages/index.astro': 'T3.2',
   'worker/reads.js': 'T1.3',
 };
