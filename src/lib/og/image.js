@@ -1,7 +1,7 @@
 // A listed post's share card at build time: drawn once a build by lib/og/card.js, kept in node_modules/.astro/og/
 // (Workers Builds restores that folder between builds when its build cache is on) and named /og/<slug>.jpg?v=<h8>,
 // h8 the hash of everything drawn on it, so X fetches the card again when any of it changes. A card that fails to
-// draw fails the build (STRICT), except a live notebook's: it logs, and the post shares public/og/default.jpg.
+// draw fails the build, except a live notebook's: it logs, and the post shares public/og/default.jpg.
 // Read by pages/ledger/[slug].astro (the meta tag) and pages/og/[slug].jpg.js (the file).
 import fs from 'node:fs';
 import path from 'node:path';
@@ -15,7 +15,6 @@ import { PUBLIC_DIR, publicFile } from '../paths.js';
 import { sha256hex, short } from '../text/hash.js';
 import { renderCard } from './card.js';
 
-const STRICT = true;
 const V = 1;   // the card's design: bump it to redraw every card
 const ROOT = path.dirname(path.resolve(PUBLIC_DIR));
 const FONT = path.join(ROOT, 'src/assets/fonts/zen-maru-gothic-700-latin.ttf');
@@ -45,7 +44,7 @@ async function draw(post) {
     fs.writeFileSync(file, jpg);
     return named(jpg);
   } catch (e) {
-    if (STRICT && !isLive(id)) throw new Error(`the og image of ${id}: ${e.message}`);
+    if (!isLive(id)) throw new Error(`the og image of ${id}: ${e.message}`);
     console.warn(`[og] ${id}: no card (${e.message}), so it shares ${DEFAULT}`);
     return { path: DEFAULT, jpg: null };
   }
