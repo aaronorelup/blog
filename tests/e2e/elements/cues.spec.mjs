@@ -1,6 +1,6 @@
 // <ao-cues>: cuts of one timeline in lockstep beside timed cues; a cue sends every cut there, one cut is heard.
 import { test, expect } from '../fixtures.mjs';
-import { open, lightestWith, expectPlaying, clock, smallVideo } from '../helpers.mjs';
+import { open, lightestWith, expectPlaying, playing, clock, smallVideo } from '../helpers.mjs';
 
 const cues = (page) => page.locator('ao-cues').first();
 const vids = (page) => cues(page).locator('video');
@@ -50,7 +50,7 @@ test('cues-3b space on a focused cut plays and pauses them all', async ({ page }
   test.fail();
   await vids(page).first().focus();
   await page.keyboard.press(' ');
-  await expectPlaying(vids(page).first());
+  await expect.poll(() => playing(vids(page).first()), { timeout: 8000 }).toBe(true);
   await page.keyboard.press(' ');
   await expectPlaying(vids(page).first(), false);
 });

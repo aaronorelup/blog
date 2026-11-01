@@ -125,8 +125,8 @@ Pages: every post with pictures; the spec uses the first page with `data-full` p
 | Only one clip on the page plays | document `ao-listen-play` | core-3 |
 
 The specs use the first set whose clips all run 4 s or more; many are one-line sound bites that end under a test.
-The `ao-cues` specs take the instance with the fewest media bytes (`lightestWith`), since WebKit fetches a film whole
-before it plays.
+The `ao-cues` specs take the instance with the fewest media bytes (`lightestWith`) and run one at a time: every test
+streams the same two films.
 
 ### `ao-cues`: moonlight-five-times, moonlight-two-cuts
 

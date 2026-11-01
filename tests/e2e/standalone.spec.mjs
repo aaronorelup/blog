@@ -102,7 +102,7 @@ test.describe('the making-of page', () => {
 
   test('making-3 its clips play, served in byte ranges', async ({ page }) => {
     const a = page.locator('audio').first();
-    const media = page.waitForResponse((r) => /\.(mp3|m4a|mp4)$/.test(new URL(r.url()).pathname));
+    const media = page.waitForResponse((r) => /\.(mp3|m4a|mp4)$/.test(new URL(r.url()).pathname) && r.status() < 300);
     await play(a);
     expect([200, 206]).toContain((await media).status());
     await expectPlaying(a);

@@ -17,7 +17,7 @@ export default defineConfig({
   testDir: '.',
   testMatch: '**/*.spec.mjs',
   testIgnore: base ? [] : ['live.spec.mjs'],
-  timeout: 60_000,
+  timeout: 90_000,
   expect: { timeout: 10_000 },
   fullyParallel: true,
   workers: 4,

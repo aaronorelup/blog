@@ -12,16 +12,14 @@ const SHAPES = JSON.parse(fs.readFileSync(here('fixtures/api.json'), 'utf8'));
 const DEFAULTS = { 'GET /api/reads': 'reads-200', 'POST /api/reads': 'reads-204', 'GET /api/stats': 'stats-200',
                    'GET /cdn-cgi/trace': 'trace' };
 
-// An open-ended range (`bytes=N-`, how Chromium asks for a video) is asked of the live site as 4 MiB at a time, as a
-// streaming server would answer: the test's fetch waits for its whole body, so a 20 MB film would stall every play.
-// A test that ends mid-download disposes of the fetch; that is the only way this fails, so it is let go.
-const CHUNK = 4 * 1024 * 1024;
+// A media element is sent to the live file itself (a redirect), so it streams and seeks there in byte ranges as it
+// would on the site; scripts' requests (hls.js segments, ao-fetch) are fetched for them, the response passed through
+// whole. A test that ends mid-download disposes of that fetch; that is the only way this fails, so it is let go.
 async function forward(route) {
   const u = new URL(route.request().url());
-  const headers = route.request().headers();
-  const open = /^bytes=(\d+)-$/.exec(headers.range || '');
-  if (open) headers.range = `bytes=${open[1]}-${+open[1] + CHUNK - 1}`;
-  await route.fetch({ url: LIVE + u.pathname + u.search, headers, timeout: 60_000 })
+  const live = LIVE + u.pathname + u.search;
+  if (route.request().resourceType() === 'media') return route.fulfill({ status: 302, headers: { location: live } });
+  await route.fetch({ url: live, timeout: 60_000 })
     .then((response) => route.fulfill({ response }))
     .catch(() => {});
 }
