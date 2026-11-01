@@ -1,14 +1,12 @@
 // The post view, on /ledger/<slug>/ and in the homepage overlay. article(root) is what a post and its notes page share:
 // the post components (enhance), the contents list, folded details opened for the #target, where a link lands and the
-// hover card on post links; mount(root) adds the Listen button. Each returns unmount.
+// hover card on post links; mount(root) adds the Listen button (read-aloud/listen.js). Each returns unmount.
 import { enhance } from '../../elements/enhance.js';
 import { lazy } from '../lazy.js';
 import { mount as contents } from '../post/contents.js';
 import { mount as details } from '../post/details.js';
 import { targetOf } from '../post/target.js';
-
-// The Listen button (components/post/ReadAloud.astro): read-aloud binds it here, bind(root) → unbind (T2.4).
-const listen = () => () => {};
+import { bind as listen } from '../read-aloud/listen.js';
 
 const MOVES = ['wheel', 'touchstart', 'keydown', 'pointerdown'];
 

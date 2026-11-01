@@ -1,0 +1,86 @@
+/* Read-aloud (src/scripts/read-aloud/): the Listen button at the foot of a post's header (its place kept while it waits
+   for views/post.js, so nothing below it moves), karaoke mode's bar sticky at the foot of the panel, the block being
+   read and the word being read (::highlight(ao-read); a class on the block before Safari 17.2). Tokens only, so the
+   homepage's day/night tween carries it. */
+.ra-listen {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: var(--space-4) 0 0;
+  padding: 7px 14px 7px 11px;
+  border: 1px solid var(--pc-line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--pc-strong);
+  font: 600 13px/1 var(--font-body);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
+}
+.ra-listen[hidden] { visibility: hidden; }
+.ra-listen:hover, .ra-listen[aria-pressed='true'] { border-color: var(--pc-accent); color: var(--pc-accent); }
+.ra-listen:focus-visible, .ra-bar button:focus-visible { outline: 3px solid var(--pc-accent); outline-offset: 2px; }
+.ra-listen svg { flex: none; }
+
+.karaoke [data-r] { cursor: pointer; }
+.karaoke .ra-on {
+  border-radius: 6px;
+  background: var(--pc-hover);
+  box-shadow: 0 0 0 6px var(--pc-hover);
+  transition: background 200ms ease, box-shadow 200ms ease;
+}
+::highlight(ao-read) { background-color: color-mix(in srgb, var(--pc-gold) 42%, transparent); color: var(--pc-strong); }
+
+.ra-bar {
+  position: sticky;
+  bottom: 14px;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 28px auto 0;
+  padding: 7px 8px;
+  border: 1px solid var(--pc-line);
+  border-radius: 22px;
+  background: var(--pc-page); /* opaque, like the now-playing bar: the text scrolls under it */
+  box-shadow: var(--pc-shadow);
+  color: var(--pc-body);
+  font: 13px/1.3 var(--font-body);
+}
+.ra-bar button {
+  flex: none;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--pc-line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--pc-strong);
+  font: 600 12.5px/1 var(--font-body);
+  cursor: pointer;
+}
+.ra-bar button:hover:not(:disabled) { border-color: var(--pc-accent); color: var(--pc-accent); }
+.ra-bar button:disabled { opacity: 0.45; cursor: default; }
+.ra-bar .ra-play, .ra-bar .ra-close { width: 34px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+.ra-bar .ra-play { border-color: var(--pc-accent); color: var(--pc-accent); }
+.ra-bar .ra-speed { min-width: 52px; font-variant-numeric: tabular-nums; }
+.ra-bar .ra-close { border-color: transparent; font-size: 18px; }
+.ra-voice { display: inline-flex; gap: 4px; }
+.ra-voice[hidden] { display: none; }
+.ra-voice [aria-pressed='true'] { background: var(--pc-hover); border-color: var(--pc-accent); }
+.ra-voice small { font-weight: 400; color: var(--pc-quiet); }
+.ra-note { min-width: 0; flex: 1 1 160px; padding: 0 6px; color: var(--pc-quiet); font-size: 12.5px; }
+
+@media (max-width: 560px) {
+  /* Three rows: play, speed and close; the two voices; the note. */
+  .ra-bar { width: 100%; border-radius: 18px; }
+  .ra-close { margin-left: auto; }
+  .ra-voice { order: 2; }
+  .ra-note { flex-basis: 100%; order: 9; padding: 2px 4px 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .karaoke .ra-on, .ra-listen { transition: none; }
+}
