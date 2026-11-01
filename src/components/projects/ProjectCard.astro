@@ -7,7 +7,9 @@ import NeedsGlyph from './NeedsGlyph.astro';
 
 interface Props { card: any; size?: 'large' | 'compact' | 'mini' }
 const { card, size = 'compact' } = Astro.props;
-const out = (l) => (l.external ? { target: '_blank', rel: 'noreferrer noopener' } : {});
+// A link elsewhere opens a new tab; one of this site's own pages (a course, a game) opens at once, without the
+// homepage overlay's flight out through the gate (data-no-fly).
+const out = (l) => (l.external ? { target: '_blank', rel: 'noreferrer noopener' } : { 'data-no-fly': '' });
 const arrow = (l) => (l.external ? ' ↗' : ' →');
 const full = size !== 'mini';
 ---
