@@ -416,8 +416,8 @@ every 200 ms), so nothing waits for the Worker's key.
 | A click on a word while the recording's first part is still loading reads and marks from there, and the bar says it plays | `recorded.js` `play()` superseded by a later one | read-2b |
 | With no recording of this version the browser voice reads, block by block: its word boundaries mark the word, the speed sets `rate`, a click starts the next utterance at that word | `speechSynthesis` (a stand-in voice in Chromium) | read-3 |
 | The real browser voice reads and pauses | `speechSynthesis` (WebKit) | read-3b (phone) |
-| A video starting pauses the reading, and the reading starting pauses the video | claim, the bar's `aoPause` | read-4 |
-| In the homepage's reader Listen works, and closing the panel stops it (skipped until T3.1's panel mounts `views/post.js`) | `ao-stop` | read-5 |
+| A video starting pauses the reading, the reading starting pauses the video, and `ao-stop` stops it | claim, the bar's `aoPause`, `ao-stop` | read-4 |
+| In the homepage's reader Listen works, and closing the panel stops it (skipped until T3.1's panel mounts `views/post.js`; passed on T3.1's rebase, 5a9249b) | `ao-stop`, the view's unmount | read-5 |
 | `/read/index.json` and `/read/<slug>.json` are the recorded posts', never the live notebook's or an unlisted post's, with the page's `data-read-hash`; a version not recorded answers `200 { ready: false }` | the build, `worker/media/serve.js` | read-6 |
 | A post never recorded (unlisted, a live notebook) has no `data-read-hash`: Listen reads in the browser's voice, with no choice of voice, no word of a recording and no `/read/` request | `listen.js`, `bar.js` | read-7 |
 
