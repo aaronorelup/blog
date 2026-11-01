@@ -50,19 +50,20 @@ export async function serve(request, env, ctx) {
     console.log('ask not-found', chunks[0]?.score ?? 0);
     return reply('not-found', relatedOf(chunks, [], 3));
   }
+  // { answer, cites } is cached; related comes from this retrieval, so it never names a post since unlisted.
+  const answered = (a, cached) => json({ ...a, related: relatedOf(chunks, a.cites.map((c) => c.slug)), cached });
   const prompt = messages(q, used);
   const key = await sha256(MODEL + JSON.stringify(prompt)); // moves with the question, its excerpts, or the prompt
   await ensure(env.DB, SCHEMA);
   const hit = await env.DB.prepare('SELECT body FROM ask_cache WHERE key = ?1 AND at > ?2')
     .bind(key, new Date(Date.now() - KEEP_FOR).toISOString()).first('body');
-  if (hit) return json({ ...JSON.parse(hit), cached: true });
+  if (hit) return answered(JSON.parse(hit), true);
   if (!(await spend(env, 'ask', 1, f.ask_daily))) return reply('resting', relatedOf(chunks));
 
   const text = await complete(env, prompt);
   if (!text) return reply('busy', relatedOf(chunks));
-  const { answer, cites } = cite(text, used);
-  const out = { answer, cites, related: relatedOf(chunks, cites.map((c) => c.slug)) };
+  const a = cite(text, used);
   ctx.waitUntil(env.DB.prepare('INSERT OR REPLACE INTO ask_cache (key, body, at) VALUES (?1, ?2, ?3)')
-    .bind(key, JSON.stringify(out), new Date().toISOString()).run());
-  return json({ ...out, cached: false });
+    .bind(key, JSON.stringify(a), new Date().toISOString()).run());
+  return answered(a, false);
 }

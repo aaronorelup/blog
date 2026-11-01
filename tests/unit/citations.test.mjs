@@ -1,6 +1,6 @@
 // Ask Goobie's Worker half with stub bindings: [n] citations kept only when they name an excerpt, a DeepSeek
-// answer that was cut short or failed is no answer, and the order of the guards (a token, the switch, the limiters
-// with a stub that says no, the score floor) before any paid call. No request leaves the process.
+// answer that was cut short or failed is no answer, the order of the guards (a token, the switch, the limiters
+// with a stub that says no, the score floor) before any paid call, and the answer cache. No request leaves the process.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { cite, messages } from '../../worker/ask/prompt.js';
@@ -53,13 +53,17 @@ test('a DeepSeek answer cut short, empty or failed is null; a whole one is its t
 // Bindings that answer like the real ones, counting what each was asked.
 function stubs({ limit = true, scores = [0.8] } = {}) {
   const asked = { ai: 0, spend: 0 };
+  const answers = new Map(); // ask_cache: key -> body
   const db = {
     batch: async () => [],
-    prepare: (sql) => ({
-      bind: () => db.prepare(sql),
+    prepare: (sql, args = []) => ({
+      bind: (...values) => db.prepare(sql, values),
       all: async () => ({ results: sql.startsWith('SELECT k, v FROM flags') ? [{ k: 'ask', v: 'on' }] : [] }),
-      first: async () => { if (sql.startsWith('INSERT INTO usage_day')) asked.spend++; return sql.includes('ask_cache') ? null : { n: 1 }; },
-      run: async () => ({}),
+      first: async () => {
+        if (sql.startsWith('INSERT INTO usage_day')) asked.spend++;
+        return sql.includes('FROM ask_cache') ? answers.get(args[0]) ?? null : { n: 1 };
+      },
+      run: async () => { if (sql.includes('INTO ask_cache')) answers.set(args[0], args[1]); return {}; },
     }),
   };
   const env = {
@@ -72,7 +76,8 @@ function stubs({ limit = true, scores = [0.8] } = {}) {
   };
   return { env, asked };
 }
-const ctx = { waitUntil: () => {} };
+const waits = [];
+const ctx = { waitUntil: (p) => waits.push(p) };
 const ask = async (env, q, token) => serve(new Request('https://aaronorelup.com/api/ask', {
   method: 'POST', body: JSON.stringify({ q }), headers: token ? { 'X-AO-Session': token } : {},
 }), env, ctx);
@@ -97,4 +102,19 @@ test('a question nothing scores high enough for is not-found, with no DeepSeek c
   assert.deepEqual(await res.json(), { answer: null, reason: 'not-found', related: ['p0', 'p1', 'p2'] });
   assert.equal(fetch.mock.callCount(), 0);
   assert.equal(asked.spend, 0);
+});
+
+test('the same question again is the cached answer: one DeepSeek call, one spend', async (t) => {
+  t.mock.method(console, 'log', () => {});
+  const body = { choices: [{ finish_reason: 'stop', message: { content: 'It costs little [2].' } }], usage: {} };
+  const fetch = t.mock.method(globalThis, 'fetch', async () => Response.json(body));
+  const { env, asked } = stubs({ scores: [0.8, 0.7, 0.2] });
+  const { token } = await mint(env);
+  const first = await (await ask(env, 'what does an hour of video cost', token)).json();
+  await Promise.all(waits);
+  const again = await (await ask(env, 'what does an hour of video cost', token)).json();
+  assert.deepEqual(first.related, ['p1', 'p0', 'p2']);
+  assert.deepEqual(again, { ...first, cached: true });
+  assert.equal(fetch.mock.callCount(), 1);
+  assert.equal(asked.spend, 1);
 });

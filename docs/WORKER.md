@@ -119,7 +119,7 @@ step, so tables are only ever added, never changed or dropped.
 | `worker/stats/stats.sql` | `stats_state`, `stats_day`, `stats_part` |
 | `worker/lib/flags.sql` | `flags (k, v)`, `usage_day (day, what, n)`: `what` is `search` (embeddings) or `ask` (DeepSeek calls) |
 | `worker/search/search.sql` | `search_state (k, v)`, `search_docs (doc, id, hash, n)` (each embedded doc, its vector id prefix and chunk count), `searches (day, mode, q, n)` (no address, token, session, country or browser; `q` normalised, scrubbed, at most 80 characters) |
-| `worker/ask/ask.sql` | `ask_cache (key, body, at)`: `key` is the SHA-256 of the model and the exact messages (prompt, excerpts, question) |
+| `worker/ask/ask.sql` | `ask_cache (key, body, at)`: `key` is the SHA-256 of the model and the exact messages (prompt, excerpts, question); `body` is `{ answer, cites }` (`related` comes from each request's own retrieval) |
 | T2.4 `worker/read/read.sql` | `read_state` |
 
 ## Switches and caps
