@@ -2,7 +2,8 @@
 // appears at once (Back, a deep link), fills the window less a margin, follows resizes, and shrinks back into its
 // card, 560 ms each way. Each call cancels the steps still pending from the one before.
 const MOVE = 'cubic-bezier(.4,0,.2,1)';
-const TRANSITION = ['left', 'top', 'width', 'height'].map((p) => `${p} 560ms ${MOVE}`).join(',') + ',opacity 380ms ease';
+const SIDES = ['left', 'top', 'width', 'height'];
+const TRANSITION = SIDES.map((p) => `${p} 560ms ${MOVE}`).join(',') + ',opacity 380ms ease';
 const screen = document.getElementById('panel-screen');
 const card = document.getElementById('panel-card');
 const inner = document.getElementById('panel-inner');
@@ -11,7 +12,6 @@ let from = null;       // the card it grew out of, and shrinks back into
 let timers = [];
 
 const later = (ms, fn) => timers.push(setTimeout(fn, ms));
-const boxOf = (el) => { const { left, top, width, height } = el.getBoundingClientRect(); return { left, top, width, height }; };
 
 // Nearly the whole window, with a consistent margin on every side.
 function full() {
@@ -22,7 +22,7 @@ function full() {
 
 function place(box, opacity, moving) {
   card.style.transition = moving ? TRANSITION : 'none';
-  for (const k of ['left', 'top', 'width', 'height']) card.style[k] = box[k] + 'px';
+  for (const k of SIDES) card.style[k] = box[k] + 'px';
   card.style.opacity = opacity;
 }
 
@@ -38,7 +38,7 @@ function shown(on) {
 export function grow(src, covered) {
   shown(true);
   from = src;
-  if (src) place(boxOf(src), '0.55', false); else place(full(), '0', false);
+  if (src) place(src.getBoundingClientRect(), '0.55', false); else place(full(), '0', false);
   inner.style.opacity = '0';
   scrim.style.opacity = '1';
   later(40, () => place(full(), '1', true));
@@ -60,7 +60,7 @@ export function shrink(done) {
   shown(true);
   inner.style.opacity = '0';
   scrim.style.opacity = '0';
-  place(from?.isConnected ? boxOf(from) : full(), '0', true);
+  place(from?.isConnected ? from.getBoundingClientRect() : full(), '0', true);
   later(540, () => { shown(false); done(); });
 }
 
