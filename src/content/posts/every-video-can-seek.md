@@ -36,7 +36,7 @@ that hands out the site's files).
 
 <ao-fetch>
 <ol>
-<li data-url="/courses/the-hidden-curriculum/lessons/00-05-how-llms-work-just-enough/lesson.mp4" data-range="bytes=24000000-24000999">1,000 bytes from 24 MB into a 25.1 MB lesson video</li>
+<li data-url="/media/lessons-sent-back/v2-0005.mp4" data-range="bytes=24000000-24000999">1,000 bytes from 24 MB into a 25.1 MB lesson video</li>
 <li data-url="/media/every-ai-film-so-far/bw-v2.webp" data-range="bytes=1000-1999">1,000 bytes of a 123 KB picture from another post</li>
 </ol>
 <figcaption><b>Sent from your browser when you press the button</b><span class="ao-meta">206 means you got the piece you asked for. 200 means the whole file came back and the range was ignored. The same two with curl on 8 Oct gave 206 with 1,000 bytes, and 200 with 123,380 bytes</span></figcaption>
@@ -97,7 +97,7 @@ Try it on a lesson from my course, [The Hidden Curriculum](/courses/the-hidden-c
 Click a line near the end and the video should start there within a second or so.
 
 <ao-transcript find="agent|cloud|cache">
-<figure><video controls playsinline preload="none" poster="/media/lessons-sent-back/v2-0005.webp" src="/courses/the-hidden-curriculum/lessons/00-05-how-llms-work-just-enough/lesson.mp4"><track kind="captions" srclang="en" label="English" src="/courses/the-hidden-curriculum/lessons/00-05-how-llms-work-just-enough/captions.vtt"></video><figcaption><b>Lesson 00.05 · How AI models work today</b><span class="ao-meta">19:54 · 25.1 MB · the same file as in my lessons post and on the course page</span></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/lessons-sent-back/v2-0005.webp" src="/media/lessons-sent-back/v2-0005.mp4"><track kind="captions" srclang="en" label="English" src="/media/lessons-sent-back/v2-0005.vtt"></video><figcaption><b>Lesson 00.05 · How AI models work today</b><span class="ao-meta">19:54 · 25.1 MB · the same file as in my lessons post and on the course page</span></figcaption></figure>
 </ao-transcript>
 
 ## What else the audit found

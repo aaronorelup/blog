@@ -73,7 +73,7 @@ I listed what was missing and ended with:
 
 <ao-transcript find="cache|memory|diffusion|Claude|token">
 <figure><video controls playsinline preload="none" poster="/media/lessons-sent-back/v1-0005.webp" src="/media/lessons-sent-back/v1-0005.mp4"><track kind="captions" srclang="en" label="English" src="/media/lessons-sent-back/v1-0005.vtt"></video><figcaption><b>v1 · How LLMs work (just enough)</b><span class="ao-meta">5:30 · 762 words · 42 agents · built 2 Oct · sent back the same day</span></figcaption></figure>
-<figure><video controls playsinline preload="none" poster="/media/lessons-sent-back/v2-0005.webp" src="/courses/the-hidden-curriculum/lessons/00-05-how-llms-work-just-enough/lesson.mp4"><track kind="captions" srclang="en" label="English" src="/courses/the-hidden-curriculum/lessons/00-05-how-llms-work-just-enough/captions.vtt"></video><figcaption><b>v2 · How AI models work today</b><span class="ao-meta">19:54 · 2,683 words · 63 agents · built 2 Oct · the live lesson</span></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/lessons-sent-back/v2-0005.webp" src="/media/lessons-sent-back/v2-0005.mp4"><track kind="captions" srclang="en" label="English" src="/media/lessons-sent-back/v2-0005.vtt"></video><figcaption><b>v2 · How AI models work today</b><span class="ao-meta">19:54 · 2,683 words · 63 agents · built 2 Oct · the live lesson</span></figcaption></figure>
 <figcaption><b>Lesson 00.05, both versions</b><span class="ao-meta">v1 is restored from the site's history, with its audio squeezed into a smaller file. v2 is the lesson on the course page. Word counts are of the captions.</span></figcaption>
 </ao-transcript>
 
@@ -140,7 +140,7 @@ agent would do all of that for me now.
 
 <ao-transcript find="debug|error|security|Stack Overflow|verif">
 <figure><video controls playsinline preload="none" poster="/media/lessons-sent-back/v1-0006.webp" src="/media/lessons-sent-back/v1-0006.mp4"><track kind="captions" srclang="en" label="English" src="/media/lessons-sent-back/v1-0006.vtt"></video><figcaption><b>v1 · How to learn anything technical</b><span class="ao-meta">5:17 · 761 words · 43 agents · built 3 Oct · sent back the same day</span></figcaption></figure>
-<figure><video controls playsinline preload="none" poster="/media/lessons-sent-back/v2-0006.webp" src="/courses/the-hidden-curriculum/lessons/00-06-how-to-learn-anything-technical/lesson.mp4"><track kind="captions" srclang="en" label="English" src="/courses/the-hidden-curriculum/lessons/00-06-how-to-learn-anything-technical/captions.vtt"></video><figcaption><b>v2 · Trust what you can verify</b><span class="ao-meta">11:07 · 1,671 words · 60 agents · built 3 Oct · the live lesson</span></figcaption></figure>
+<figure><video controls playsinline preload="none" poster="/media/lessons-sent-back/v2-0006.webp" src="/media/lessons-sent-back/v2-0006.mp4"><track kind="captions" srclang="en" label="English" src="/media/lessons-sent-back/v2-0006.vtt"></video><figcaption><b>v2 · Trust what you can verify</b><span class="ao-meta">11:07 · 1,671 words · 60 agents · built 3 Oct · the live lesson</span></figcaption></figure>
 <figcaption><b>Lesson 00.06, both versions</b><span class="ao-meta">v1 is restored from the site's history, with its audio squeezed into a smaller file. v2 is the lesson on the course page. v1 went live late, after a Cloudflare build outage that morning.</span></figcaption>
 </ao-transcript>
 
