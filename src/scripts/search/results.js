@@ -1,4 +1,4 @@
-// What the box writes into [data-search-out]: search results, and the ledger-style rows of Goobie's related posts,
+// What the box draws into [data-search-out]: search results, and the ledger-style rows of Goobie's related posts,
 // drawn from the card data (cards/data.js: title, icon, topic, minutes). A result links to its passage,
 // /ledger/<slug>/?hl=<the query's words>&hs=<the passage's first 8 words>#<heading>, which post/highlight.js marks.
 import { TOPICS } from '../../data/taxonomy.js';
@@ -51,9 +51,10 @@ export function relatedRow(slug, card) {
     h('p', { class: 'row-meta' }, `${TOPICS[card.topic].label} · ${card.mins} min`));
 }
 
-export async function showResults(out, hits, q) {
+// The list for q, or null when the card data can't be had.
+export async function resultsList(hits, q) {
   const cards = await load();
-  if (!cards) return;
+  if (!cards) return null;
   const rows = hits.filter((hit) => cards[hit.path.match(SLUG)[1]]).map((hit) => {
     const [, slug, notes] = hit.path.match(SLUG);
     const card = cards[slug];
@@ -64,8 +65,7 @@ export async function showResults(out, hits, q) {
       where ? h('p', { class: 'row-meta' }, where) : '',
       h('p', { class: 'result-text' }, ...parts));
   });
-  out.replaceChildren(rows.length
+  return rows.length
     ? h('ol', { class: 'rows results', 'aria-label': `Results for ${q}` }, ...rows)
-    : h('p', { class: 'search-none' }, 'Nothing in the ledger matches that yet.'));
-  performance.mark('search:results');
+    : h('p', { class: 'search-none' }, 'Nothing in the ledger matches that yet.');
 }

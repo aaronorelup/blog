@@ -6,7 +6,7 @@ import { load as loadCards } from '../cards/data.js';
 import { lazy } from '../lazy.js';
 import * as keyword from './keyword.js';
 import { merge } from './merge.js';
-import { showResults } from './results.js';
+import { resultsList } from './results.js';
 import * as semantic from './semantic.js';
 
 const QUIET = 400;        // ms without typing before the meaning half is asked
@@ -29,12 +29,18 @@ export function mount(root) {
   let ask = null;
 
   // Drawn once the words half has answered, or the meaning half has found something: an empty meaning answer that
-  // comes first would say "nothing matches" before the words are in. A half that answers after Ask opened draws nothing.
-  const render = () => {
+  // comes first would say "nothing matches" before the words are in. A list whose query has gone (the box was
+  // cleared or changed, or Ask opened) is never drawn.
+  const render = async () => {
     if (mode !== 'search') return;
     const found = words.q === q ? words.hits : null;
     const meant = meaning.q === q ? meaning.hits : [];
-    if (found || meant.length) showResults(ui.out, merge(found ?? [], meant), q);
+    if (!found && !meant.length) return;
+    const shown = q;
+    const list = await resultsList(merge(found ?? [], meant), shown);
+    if (!list || mode !== 'search' || q !== shown) return;
+    ui.out.replaceChildren(list);
+    performance.mark('search:results');
   };
   const askMeaning = async (text) => {
     clearTimeout(quietT);
