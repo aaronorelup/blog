@@ -8,7 +8,8 @@ will add appears only as a row marked `(planned, T#.#)`. Each task updates its o
 
 An Astro static site. Markdown posts become pages at build time. Cloudflare serves `dist/` as Workers static
 assets, and one small Worker (`worker/`) runs only for what needs a secret or state: video and audio from R2, the
-reads counter and the `/stats` snapshot in D1 (search, Ask and read-aloud are stubs until W2). Every push to
+reads counter and the `/stats` snapshot in D1, the meaning half of search and Ask Goobie (Workers AI, Vectorize,
+DeepSeek; read-aloud is a stub until T2.4). Every push to
 `main` is built by Workers Builds with `npm run build` and deployed; any other branch fails its build on purpose
 (`astro.config.mjs`). There is no framework in the browser: pages are server-rendered HTML, and behaviour is plain
 modules and custom elements.
@@ -41,14 +42,18 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
      AO-057's demo uses.
    - `/api/stats` → `worker/stats/index.js` (D1 `DB`, limiter `STATS_LIMIT`). One stored snapshot; 503 until it
      exists.
-   - `/api/session`, `/api/search`, `/api/ask` → stubs in `worker/session/`, `search/`, `ask/` that answer 503
-     until T2.3. Any other `/api/` path is 404, a wrong method 405.
+   - `/api/session` → `worker/session/serve.js`: whether Ask is on; a Turnstile solve becomes a 30-minute Ask token.
+   - `/api/search` → `worker/search/serve.js` (`AI`, `SEARCH_INDEX`, limiters `SEARCH_ALL` and `SEARCH_Q`, the Cache
+     API, D1): no token; the nearest chunks of the query.
+   - `/api/ask` → `worker/ask/serve.js` (the same retrieval, limiters `ASK_LIMIT` keyed on the session and
+     `ASK_ALL`, D1's answer cache, one DeepSeek call at most). Any other `/api/` path is 404, a wrong method 405.
    - anything else → `worker/media/serve.js`: R2 `MEDIA` (bucket `aaronorelup-site-media`) first, with byte ranges
      and ETags, then the asset (`ASSETS`) for the media still in git, sized from `/media-sizes.json`. A
      `/read/<slug>/<hash>.json` not recorded yet is `200 { ready: false }`.
 3. The crons (`CRONS` in `worker/index.js`): every minute one small step of the stats gatherer
-   (`worker/stats/index.js`, its pure half `worker/stats/shape.js`), of the search sync and of the daily cleanup
-   (stubs until T2.3); every ten minutes one read-aloud step (a stub until T2.4).
+   (`worker/stats/index.js`, its pure half `worker/stats/shape.js`), of the search index sync
+   (`worker/search/sync.js`) and of the daily sweep (`worker/cleanup.js`, at 03:07 UTC); every ten minutes one
+   read-aloud step (a stub until T2.4).
 
 ## A build
 
@@ -80,6 +85,7 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 | `/media-sizes.json` | `src/pages/media-sizes.json.js` | `worker/media/serve.js`, for media still in git |
 | `/rss.xml`, `/sitemap.xml` | `src/pages/rss.xml.js`, `sitemap.xml.js` | feed readers, search engines |
 | `/courses/i-love-my-evening-television/**/thumbs/` | `scripts/lore-thumbs.mjs` | the lore course's index cards |
+| `/search/manifest.json`, `/search/docs/<kind>-<slug>.json` | `src/pages/search/`, from `src/lib/search/` | `worker/search/sync.js`, which embeds the docs whose hash moved |
 
 ### The extraction: `text`
 
@@ -153,10 +159,12 @@ warns in a live notebook.
 | `src/lib/{posts,cards,icons,dates,paths}.js` | listing and order, the card shape, icons by id, UTC dates, `PUBLIC_DIR` |
 | `src/lib/text/rules.js`, `hash.js` | what a reader reads (shared with the browser's read-aloud), content hashes |
 | `src/lib/build.js` | `COMMIT`, the commit a build is made from (the `ao-build` meta) |
+| `src/lib/search/chunks.js`, `docs.js` | a listed post or its notes → search chunks (the short version, then each h2 section, at most 1,500 characters) and the manifest; `docs.js` reads the build's posts once |
 | `src/lib/lore*.js` | the lore course's data and drawings |
 | `src/pages/index.astro` + `src/layouts/Home.astro` | the homepage: the tea house scene and its overlay |
 | `src/pages/{ledger,projects,about,courses,stats,404}.astro`, `ledger/[slug].astro` | the panel pages |
 | `src/pages/courses/**`, `src/pages/research/**` | the course and research pages |
+| `src/pages/search/` | `manifest.json.js`, `docs/[doc].json.js`: search's build files |
 | `src/layouts/PanelPage.astro` | every panel page: `site.css`, `chrome/Head`, `ModeToggle`, `PanelChrome` (`active` lights the nav, `view` names the view) |
 | `src/components/chrome/` | `Head` (share tags, `ao-build` meta, font preload, the pre-paint mode script; both layouts), `PanelChrome` (header, nav, scroller, footer; `data-active-view`, and `data-panel-view` on a standalone page's view wrapper), `ModeToggle` |
 | `src/components/{about,courses,research}/` | `AboutView`; `CoursesView`, `LessonList`, `Coin`; `ResearchView` |
@@ -195,6 +203,7 @@ warns in a live notebook.
 | `scripts/tools/never-publish-hash.mjs` | `npm run never-publish:hash`: the private list → `never-publish.json` |
 | `scripts/tools/budgets.mjs` | the page-weight budgets (section "Budgets") and the font check |
 | `scripts/tools/fonts.mjs` | `node scripts/tools/fonts.mjs` after a build: fetches Google's slices for the code points the pages show, rewrites `public/fonts/`, `fonts.css`, `fonts.json`; `misses(dist)` |
+| `scripts/tools/searches.mjs` | `npm run searches [-- days]`: the top search and Ask queries, for Aaron only (D1 through the API) |
 | `scripts/tools/element-usage.mjs`, `dist-diff.mjs` | every `<ao-*>`, video and iframe per built page (`--diff` for rewrites); two builds compared |
 | `scripts/lib/{secrets,cfapi}.mjs`, `scripts/tools/put-secret.mjs` | `secret(NAME)` from the environment or Infisical; the Cloudflare API client that finds or makes the Worker's resources; `put-secret` sets one Worker secret, never printing it |
 | `scripts/preview-media.mjs` | a post's card still and loop (`PREVIEWS.md`) |
@@ -205,12 +214,16 @@ warns in a live notebook.
 | Path | What |
 |---|---|
 | `worker/index.js` | `ROUTES` and `CRONS`: the routes and jobs above |
-| `worker/lib/` | `http.js` (json, status, sameOrigin), `sql.js` (ensure), `flags.js` + `flags.sql` (switches, daily caps), `session.js` (Ask tokens), `text.js`, `build-files.js` |
+| `worker/lib/` | `http.js` (json, status, sameOrigin, readJson), `sql.js` (ensure), `flags.js` + `flags.sql` (switches, daily caps), `session.js` (Ask tokens), `text.js` (normalize, scrub, sha256), `build-files.js` |
 | `worker/media/serve.js` | video, audio, HLS and `/read/*`: R2 first, then the asset, with byte ranges |
 | `worker/reads/` | `serve.js` + `reads.sql`: the reader counter |
 | `worker/stats/` | `index.js` (serve and `runStep`), `shape.js` (pure), `stats.sql`: the traffic snapshot |
-| `worker/session/`, `search/`, `ask/`, `read/`, `cleanup.js` | stubs until T2.3 and T2.4 |
-| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts) |
+| `worker/session/serve.js` | `GET`, `POST /api/session` |
+| `worker/search/` | `serve.js` (`GET /api/search`), `retrieve.js` (embed and query, shared with Ask), `sync.js` (the index cron), `counts.js` (anonymous counts), `search.sql` |
+| `worker/ask/` | `serve.js` (`POST /api/ask`), `prompt.js` (Goobie, the excerpts, citations), `deepseek.js` (the one call), `ask.sql` |
+| `worker/cleanup.js` | the daily sweep of old counts, answers and totals |
+| `worker/read/` | a stub until T2.4 |
+| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `citations.test.mjs` (Ask's guards, citations and DeepSeek answers, with stub bindings) |
 | `tests/e2e/` | the behaviour suite: `INVENTORY.md`, `targets.json` (from `element-usage`), specs, fixtures |
 | `tests/baseline/urls.txt` | every page and contract file a build must still produce |
 | `src/scripts/stats/core/{agg,fmt}.test.mjs` | the two kept `/stats` tests |
@@ -266,6 +279,12 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   tags upgrade the same way. Notes pages render the same chrome with the note's content.
 - **The hover card.** `previews.json` is built from listed posts' `preview:` (or their opening lines). On a device
   that can hover, `ledger-preview.js` fetches it once when idle and opens a card on any `/ledger/<slug>/` link.
+- **Search and Ask.** The build writes each listed post and notes page as chunks (`/search/docs/`) and a manifest
+  of their hashes. Every minute `search.sync` embeds the changed docs with `@cf/baai/bge-m3` into the Vectorize
+  index `blog-search` (ids `AO-045:3`, `AO-045n:3` for notes). `/api/search` embeds the query and returns the best
+  chunks of the best posts; `/api/ask` takes the chunks scoring at least `ask_min_score` (a D1 flag) as numbered
+  excerpts for one DeepSeek call, cached in D1 on its exact messages. Switches and caps are D1 `flags` rows
+  (`docs/WORKER.md`); the only thing stored about a query is its day, mode, normalised text and a count.
 - **Media.** Video and audio are uploaded by `npm run media:push` and listed in `media-manifest.json`; the Worker
   serves them from R2 at their normal URLs. Pictures and captions stay in `public/` (`docs/MEDIA.md`).
 - **`/stats`.** The cron gathers Cloudflare analytics into D1 one step a minute (token: the `CF_ANALYTICS_TOKEN`
