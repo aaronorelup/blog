@@ -32,10 +32,22 @@ function withoutLive(f, s) {
 const filesOf = (dir) => new Set(fs.readdirSync(dir, { recursive: true }).map(String)
   .filter((f) => fs.statSync(path.join(dir, f)).isFile()).map((f) => f.split(path.sep).join('/')).filter((f) => !SKIPPED(f)));
 
+// Whitespace runs collapse to one space, and a lone space between blocks goes; inside <pre> and <textarea>
+// (code blocks included) every space is kept, since a reader sees it.
+const INLINE = new Set(['p', 'span', 'a', 'li', 'b', 'i', 'em', 'strong']);
+const squash = (node) => {
+  node.children = node.children.filter((c) => {
+    if (c.type !== 'text') return true;
+    c.value = c.value.replace(/\s+/g, ' ');
+    return !(c.value === ' ' && node.type === 'element' && !INLINE.has(node.tagName));
+  });
+};
+
 // A page as three comparable parts: its words, its element tree, and its script and link tags as a sorted list.
 function pageOf(html) {
   const tree = fromHtml(unhash(html));
   const assets = [];
+  squash(tree);
   visit(tree, 'element', (el, i, parent) => {
     if (el.tagName === 'script' || el.tagName === 'link') {
       assets.push(toHtml(el));
@@ -47,14 +59,7 @@ function pageOf(html) {
       el.properties.className = el.properties.className.filter((c) => !/^astro-[a-z0-9]{8}$/i.test(c));
     }
     if (el.tagName === 'pre' || el.tagName === 'textarea') return SKIP;
-  });
-  visit(tree, 'text', (t, i, parent) => {
-    if (parent.tagName === 'pre' || parent.tagName === 'textarea') return;
-    t.value = t.value.replace(/\s+/g, ' ');
-    if (t.value === ' ' && parent.type === 'element' && !['p', 'span', 'a', 'li', 'b', 'i', 'em', 'strong'].includes(parent.tagName)) {
-      parent.children.splice(i, 1);
-      return [SKIP, i];
-    }
+    squash(el);
   });
   return {
     text: toText(tree).replace(/\s+/g, ' ').trim(),
