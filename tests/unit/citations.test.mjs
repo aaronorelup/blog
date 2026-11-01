@@ -3,20 +3,12 @@
 // with a stub that says no, the score floor) before any paid call. No request leaves the process.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { register } from 'node:module';
 import { cite, messages } from '../../worker/ask/prompt.js';
 import { complete } from '../../worker/ask/deepseek.js';
 import { mint } from '../../worker/lib/session.js';
+import { loadWorker } from './worker-env.mjs';
 
-// The Worker imports its .sql files as text (wrangler's rule); Node gets the same through this hook.
-register('data:text/javascript,' + encodeURIComponent(`
-  import { readFile } from 'node:fs/promises';
-  export async function load(url, context, next) {
-    if (!url.endsWith('.sql')) return next(url, context);
-    const text = await readFile(new URL(url), 'utf8');
-    return { format: 'module', shortCircuit: true, source: 'export default ' + JSON.stringify(text) };
-  }`));
-const { serve } = await import('../../worker/ask/serve.js');
+const { serve } = await loadWorker('ask/serve.js');
 
 const chunk = (slug, score, text = 'Some text.') => ({ slug, kind: 'post', anchor: 'a', heading: 'H', title: `T ${slug}`, text, score });
 const EXCERPTS = [chunk('one', 0.8), chunk('two', 0.7), chunk('three', 0.6)];

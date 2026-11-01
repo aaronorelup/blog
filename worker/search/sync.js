@@ -9,8 +9,12 @@ import SCHEMA from './search.sql';
 
 const PER_RUN = 10;   // docs
 const PER_CALL = 50;  // chunks embedded in one AI call
+const PER_DELETE = 100; // Vectorize's most ids in one delete
 const ids = (prefix, from, to) => Array.from({ length: Math.max(0, to - from) }, (_, i) => `${prefix}:${from + i}`);
 const inList = 'SELECT value FROM json_each(?1)';
+async function remove(env, list) {
+  for (let i = 0; i < list.length; i += PER_DELETE) await env.SEARCH_INDEX.deleteByIds(list.slice(i, i + PER_DELETE));
+}
 
 export async function step(env) {
   const m = await buildJson(env, MANIFEST);
@@ -27,7 +31,7 @@ export async function step(env) {
   // Removed docs first: a renamed post's new doc re-uses its vector ids.
   const gone = rows.filter((r) => !Object.hasOwn(m.docs, r.doc));
   if (gone.length) {
-    await env.SEARCH_INDEX.deleteByIds(gone.flatMap((r) => ids(r.id, 0, r.n)));
+    await remove(env, gone.flatMap((r) => ids(r.id, 0, r.n)));
     await env.DB.prepare(`DELETE FROM search_docs WHERE doc IN (${inList})`).bind(JSON.stringify(gone.map((r) => r.doc))).run();
   }
   const changed = Object.keys(m.docs).filter((d) => had.get(d)?.hash !== m.docs[d]);
@@ -52,7 +56,7 @@ async function embedDoc(env, m, doc, old) {
   }
   await env.SEARCH_INDEX.upsert(vectors);
   const stale = !old ? [] : old.id === d.id ? ids(old.id, d.chunks.length, old.n) : ids(old.id, 0, old.n);
-  if (stale.length) await env.SEARCH_INDEX.deleteByIds(stale);
+  await remove(env, stale);
   await env.DB.prepare('INSERT OR REPLACE INTO search_docs (doc, id, hash, n) VALUES (?1, ?2, ?3, ?4)')
     .bind(doc, d.id, m.docs[doc], d.chunks.length).run();
 }
