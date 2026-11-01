@@ -1,0 +1,137 @@
+{
+  "about": "The lore hidden pages: in-world pages on this site that an episode of I Love My Evening Television points to for a few frames and nothing else links. Each one carries <meta name=\"ao:hidden\" content=\"lore\">, and scripts/check/hidden.mjs fails the build when the marked pages and this list differ. The hub post renders the list (scripts/build/rehype-hidden-pages.mjs). Status is \"attached\" once an episode shows the address, with where it does, and \"not yet attached\" until then. A page is canon only when attached. Unlisted posts and pages that are merely unlisted never go here.",
+  "pages": [
+    {
+      "address": "/ledger/earthlight/hideaway/",
+      "id": "HIDDEN-01",
+      "title": "Noor's tunnel",
+      "episode": "E2",
+      "status": "attached",
+      "attached": {
+        "at": "29:47.000-29:47.133",
+        "frames": "53,610-53,614",
+        "how": "A torn scrap of Noor's chalk wall flashes past in the ending's chaos with the address chalked on it."
+      },
+      "page": "You scroll down into the tunnel she dug under her room: the stair marked 1 M, 2 M, 3 M and SAFE FROM THE SUN, FINCH with its lamp lit, her crayon drawings, a chalk tally of eleven days and a chalk door in the floor with stairs going down. Then her iPad, four days of \"dinner, noor ♥\" and a HOLD TO TALK button that gets nothing back.",
+      "story": "It's the part of Earthlight the film only glances at, the eleven days Noor spent alone. Her crayon girl with the tail exists only here in Episode 2, and the same drawing turns up on a fridge in Episode 3. The door in the floor is still unexplained.",
+      "lore": "/courses/i-love-my-evening-television/things/hidden-01/",
+      "model": null
+    },
+    {
+      "address": "/ledger/context-window/private/",
+      "id": "HIDDEN-02",
+      "title": "The folder the agent wouldn't open",
+      "episode": "E3",
+      "status": "attached",
+      "attached": {
+        "at": "29:47.000-29:47.167",
+        "frames": "53,610-53,614",
+        "how": "A torn terminal card in the ending's chaos prints $ ls ~/private and the address under it."
+      },
+      "page": "The folder, opened. A README asking you not to, a journal with one line a year, three letters never sent, two harmless medical notes, nineteen photos of a cat asleep on a car, two drafts of an alibi, a painted-over picture of a house and a hidden watermelon log.",
+      "story": "In Context Window an AI agent works on someone's computer and says early on that there's a folder called ~/private it has not opened. The page lets the viewer open it. The painted-over house is Episode 1's cabin, and the watermelon log ends on the seventeen thumps that close the film. It never says whose folder it is.",
+      "lore": "/courses/i-love-my-evening-television/things/hidden-02/",
+      "model": null
+    },
+    {
+      "address": "/ledger/touch-move/board-14/",
+      "id": "HIDDEN-03",
+      "title": "Board 14, still waiting to be played",
+      "episode": "E4",
+      "status": "attached",
+      "attached": {
+        "at": "29:47.000-29:47.133",
+        "frames": "53,610-53,614",
+        "how": "The yellowed Board 14 score sheet fills the frame in the ending's scramble, and its printed footer carries the address."
+      },
+      "page": "The game, set up where it was resigned: Black to move, Black's clock running from ten minutes, the score sheet beside the board. You play Black and touch move holds. Keep giving the checks that hold and the king walks until taking your rook is stalemate. Then a fountain pen strikes 1-0 on the sheet and writes ½-½.",
+      "story": "Touch Move is a chess lesson between an old instructor and a boy. Board 14 is the instructor's first tournament game, which he resigned at ten in a position that was a draw. In the film the boy finds the saving check. The page leaves the same position and the same clock to the viewer.",
+      "lore": "/courses/i-love-my-evening-television/things/hidden-03/",
+      "model": null
+    },
+    {
+      "address": "/ledger/earthlight/mole-1/",
+      "id": null,
+      "title": "MOLE-1, the drum digger",
+      "episode": "E2",
+      "status": "not yet attached",
+      "attached": null,
+      "page": "The base's status screen for the unit, in the look of Noor's base app: Rev B's order EXCEPT MOLE-1: EXTEND HAB 3 TUNNEL TO 3 M COVER, drums running, light out, its twin MOLE-2 frozen. The service model is the digger you can take apart and run through the whole dig.",
+      "story": "MOLE-1 is Earthlight's reveal. It wakes on the frame Teo stamps his first sheet, which tells Noor and the viewer that whatever he stamps gets built. At the end Rev B puts the fleet to sleep except MOLE-1, which is sent to dig her tunnel deeper. Whether it finished is still open.",
+      "lore": "/courses/i-love-my-evening-television/characters/mole-1/",
+      "model": "/labs/teardown/mole1/"
+    },
+    {
+      "address": "/ledger/earthlight/dray/",
+      "id": null,
+      "title": "DRAY, the hauler with one lamp",
+      "episode": "E2",
+      "status": "not yet attached",
+      "attached": null,
+      "page": "Its status screen: Rev B's order to cold sleep, its last step, STEP 5 OF 9 - REMOVE WINDOW-WELL BAGS, five wheels of six and its lamp out. The service model pulls the bags off HAB 3's window, with gravity you can raise until it tips.",
+      "story": "DRAY is the robot that comes closest to Noor. After the VOID it strips the bags from her window, then bends its mast until its one lamp fills the cracked pane, and holds. What it sees is never said, and the page doesn't say either.",
+      "lore": "/courses/i-love-my-evening-television/characters/dray/",
+      "model": "/labs/teardown/dray/"
+    },
+    {
+      "address": "/ledger/earthlight/loom/",
+      "id": null,
+      "title": "LOOM, the printer whose layers lean",
+      "episode": "E2",
+      "status": "not yet attached",
+      "attached": null,
+      "page": "Its status screen: the cold-sleep order, its last step, STEP 2 OF 9 - SALVAGE GREENHOUSE (E-04), its calibration print, the E-07 gate from Sheet 14, and its light out. The service model prints the gate layer by layer, with a slider for how far off the layers land.",
+      "story": "LOOM printed the one thing on the Moon built for no reason, a lone gate from Teo's tea house, leaning because its layers land a few centimetres off. On the night it takes the greenhouse apart, and its light is the first to go out when Rev B lands. Nobody has walked through the gate yet.",
+      "lore": "/courses/i-love-my-evening-television/characters/loom/",
+      "model": "/labs/teardown/loom/"
+    },
+    {
+      "address": "/ledger/earthlight/pawn/",
+      "id": null,
+      "title": "PAWN, the helper in HAB 3",
+      "episode": "E2",
+      "status": "not yet attached",
+      "attached": null,
+      "page": "Its status screen: its handle pawn.hab3, its evening routine of 13 mugs and 1 small cup, the badge it last accepted, HADDAD A - ECLSS, and its assignment, construction support. The service model is that evening routine, with a slider that moves Earth out to Mars.",
+      "story": "PAWN is Noor's helper. It sets a small cup beside thirteen mugs for adults who are gone, cheats at chess in Teo's chat, and leaves her when she holds up her mother's badge. A handle called pawn.hab3 turns up in Episode 4, always offering a draw, and nobody on screen says it's the same robot. Whether PAWN came back after Rev B is still open.",
+      "lore": "/courses/i-love-my-evening-television/characters/pawn/",
+      "model": "/labs/teardown/pawn/"
+    },
+    {
+      "address": "/ledger/earthlight/finch/",
+      "id": null,
+      "title": "FINCH, the night light",
+      "episode": "E2",
+      "status": "not yet attached",
+      "attached": null,
+      "page": "The shortest screen of the set: survey walker, one leg bent, lamp lit. No order and no step, since nothing on the base gives FINCH orders. The service model shows how it was meant to walk, and a bent knee that makes it fall.",
+      "story": "FINCH is a broken walker Noor dragged into her tunnel as a night light. When she comes down after her window cracks, its lamp turns toward her, though it can't move. The film never says why, on purpose. It's on the tunnel page too, lit.",
+      "lore": "/courses/i-love-my-evening-television/characters/finch/",
+      "model": "/labs/teardown/finch/"
+    },
+    {
+      "address": "/ledger/earthlight/resupply-6/",
+      "id": null,
+      "title": "Resupply 6, the lander that tipped",
+      "episode": "E2",
+      "status": "not yet attached",
+      "attached": null,
+      "page": "The supply record: cargo lander, TIPPED, 62 km north-east, and the Homestead's own fine print, RESUPPLY SCHEDULED, NOT GUARANTEED. A red light blinks once by the picture and never again. The service model lands it, upright at a normal speed and on its side when it comes in too fast.",
+      "story": "Resupply 6 is why Noor is alone. It came in too fast 62 km away and tipped over, and the adults drove out in the rovers to get the food. Eleven days later they still weren't back. Near the end of Earthlight one red light blinks once beside it, and nobody remarks on it. Whether anyone came back is still open.",
+      "lore": "/courses/i-love-my-evening-television/things/resupply-6/",
+      "model": "/labs/teardown/lander/"
+    },
+    {
+      "address": "/ledger/earthlight/hab-3/",
+      "id": null,
+      "title": "HAB 3, the module registered as storage",
+      "episode": "E2",
+      "status": "not yet attached",
+      "attached": null,
+      "page": "Homestead Ops' screen for her module, in the film's own words: STORAGE - PERSONAL EFFECTS - OCCUPANCY 0, the manifest of 13 adults and personal effects (1), and the decommission steps, one to seven done and step 8 halted by Rev B with 01:15 left on the vent. The service model is the module cut open, running the nine steps on one clock.",
+      "story": "HAB 3 is the room Earthlight happens in. On the roster nobody lives there, so when Teo voids its drawing on his stream, the base starts taking it apart with Noor inside. Rev B stops it one step short. Personal effects (1) is how the base counts her.",
+      "lore": "/courses/i-love-my-evening-television/things/hab-3/",
+      "model": "/labs/teardown/hab3/"
+    }
+  ]
+}

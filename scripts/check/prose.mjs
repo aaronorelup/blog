@@ -16,7 +16,7 @@ const RULES = [
 ];
 
 // Every rule hit in a text, as Map(what -> [indexes]).
-function hits(text) {
+export function hits(text) {
   const found = new Map();
   const plain = text.replace(/\u2019/g, "'");
   for (const [re, what] of RULES) {

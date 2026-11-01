@@ -48,7 +48,7 @@ export function termKey(line) {
 const scope = (repo) => [
   ...repo.posts, ...repo.notes, ...repo.projects,
   ...repo.list('src/components/about'),
-  ...repo.list('src/data', (f) => /^src\/data\/[^/]+\.js$/.test(f)),
+  ...repo.list('src/data', (f) => /^src\/data\/([^/]+\.js|hidden-pages\.json)$/.test(f)),
 ].map((e) => (typeof e === 'string' ? { file: e, raw: repo.read(e) } : e));
 
 export default function neverPublish(repo, report) {
