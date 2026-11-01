@@ -11,6 +11,26 @@ section here.
 
 ## <ao-ask>
 
+Questions put to an AI agent, each with the tool call it became and what came back, so a reader sees what a
+connection can answer and can take the question for their own. With JS: a filter per connection (when there is more
+than one), a Copy button on each question, and one question open at a time. Without JS: the details, which already
+open and close. No attributes of its own.
+
+Children: one `<details data-via="Connection" data-tool="tool_name">` per question, holding a `<summary>` (the
+question as asked), then whatever shows the call (`<pre>`) and the answer (`<p>`, `<ul>`); then an optional
+`<figcaption>`. `data-via` and `data-tool` are shown as a tag on the question.
+
+```html
+<ao-ask>
+<details data-via="Cloudflare" data-tool="query_worker_observability"><summary>How many visits did the post get?</summary>
+<pre>query_worker_observability(view: "events", filter: path = "/ledger/x/")</pre><p>312 requests, 41 from people.</p></details>
+<figcaption><b>Asking the analytics</b></figcaption>
+</ao-ask>
+```
+
+Behaviours: ask-1, ask-3 (ask-2, the filter, is skipped: the one page has one connection). Used by 1 post
+(`INVENTORY.md`): `who-visits-a-new-website`.
+
 ## <ao-bars>
 
 A bar chart drawn from a plain `<table>`, so the numbers are written once; the table stays for screen readers
