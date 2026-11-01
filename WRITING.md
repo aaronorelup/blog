@@ -41,7 +41,7 @@ Someone who reads only the card leaves knowing what the post found.
 - Only what the post says. Failures stay failures. The card is never more sure than the post.
 - A picture from the post (`image`, 640×360 WebP, aim 30 KB) and, if the subject moves, a
   3-second silent `loop` (640×360 H.264, aim 150 KB, 4 seconds at most).
-- The build's hard caps, in `src/data/preview-budget.js`, are the outer limit: verdict 36,
+- The build's hard caps, in `src/data/limits.js`, are the outer limit: verdict 36,
   takeaway 200, point 150 characters, 3 points, still 48 KB, loop 240 KB. The targets here are
   the rule, and the post checker in the build holds you to them.
 
@@ -135,8 +135,8 @@ cost table) and that's far more than the deep dive tier, split it:
 - The short post stays at its URL (`src/content/posts/<slug>.md`). It says what the thing is,
   where to watch or play it, what was interesting about making it, and the conclusions.
 - The full making-of moves, intact, to `src/content/notes/<slug>.md`. It shows at
-  `/ledger/<slug>/notes/` (that page is being built). Its fields are whatever the notes
-  collection in `src/content/config.ts` asks for.
+  `/ledger/<slug>/notes/`. Its frontmatter is `post` (the slug), `title` and `summary`
+  (`src/schemas/note.ts`).
 - The short post links to it in plain words: "The whole making-of is on
   [its notes page](/ledger/<slug>/notes/)."
 - The never-publish rules apply to the notes page too.
