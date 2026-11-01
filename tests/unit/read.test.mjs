@@ -45,6 +45,9 @@ const TIMES = Object.fromEntries([
   ['at 01:08 on the 23rd', 'at one oh eight on the twenty-third'], // touch-move notes
   ['a 10:00 call', "a ten o'clock call"],
   ['from 19:00 to midnight UTC', 'from nineteen hundred to midnight UTC'], // d1-free-tier-cutoff
+  ['At 20:00 its context window, everything', 'At twenty minutes its context window, everything'], // context-window
+  ['Until 19:00 about 80% showed the same', 'Until nineteen minutes about eighty percent showed the same'], // touch-move
+  ['The build took 8h39m overnight.', 'The build took eight hours and thirty-nine minutes overnight.'], // armies-of-gielinor-gauntlet
   ['at about 21:00 UTC on 21 October', 'at about twenty-one hundred UTC on the twenty-first of October'], // d1-free-tier-cutoff
   ['7 Oct 00:06 I ask', 'the seventh of October twelve oh six I ask'], // every-video-can-seek
   ['Scan of 20 Oct 2026, 23:36 to 00:10.', // counting-the-code

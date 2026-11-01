@@ -72,10 +72,13 @@ function duration(h, m, s, f = '') {
   return parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}` : parts[0];
 }
 // A written time with nothing around it to say which it is goes by its shape. A fraction of a second, a first field
-// no clock has (30:20, 79:32), a one-digit hour before minutes and seconds (1:02:03) or a zero hour (00:05, 0:59) make
-// it a length or a place in a recording; the rest reads as a clock, which is also how a person says a song is 2:45.
+// no clock has (30:20, 79:32), a one-digit hour before minutes and seconds (1:02:03), a zero hour (00:05, 0:59) or an
+// afternoon hour on the hour (20:00: in the posts a clock on the hour carries its zone, a film's twentieth minute
+// doesn't) make it a length or a place in a recording; the rest reads as a clock, which is also how a person says a
+// song is 2:45.
 function timeOf(a, b, c, f) {
-  const length = f !== undefined || Number(a) >= 24 || (c === undefined ? Number(a) === 0 : a.length === 1);
+  const length = f !== undefined || Number(a) >= 24
+    || (c === undefined ? Number(a) === 0 || (Number(a) > 12 && b === '00') : a.length === 1);
   if (!length) return clock(a, b, c);
   return c === undefined ? duration(undefined, a, b, f) : duration(a, b, c, f);
 }
@@ -85,9 +88,11 @@ const UNIT = String.raw`%|ms|min|s|h|[KMGT]B|[kMG]?Hz|px|fps|x`;
 const FREE = String.raw`(?<![\w.,:$])`; // not the tail of a word, a decimal, a time or a price
 const END = String.raw`(?!\w|[.,]\d)`; // nor the head of one (a version number like 4.1.2 is left as written)
 const TIME_END = String.raw`(?!\w|[.,:]\d)`;
-// A time is a clock's after a date (26 Sep 18:11; 20 Oct 2026, 23:36 to 00:10) or before a time zone (00:30 UTC).
+// A time is a clock's after a date (26 Sep 18:11; 20 Oct 2026, 23:36 to 00:10) or before a time zone, its own or its
+// range's (00:30 UTC; 19:00 to midnight UTC).
 const AFTER_DATE = String.raw`(?<=\b\d{1,2} (?:${MONTH})(?: \d{4})?,? (?:\d{1,2}:\d\d(?: to |[-–]))?)`;
-const CLOCK_SIGN = String.raw`(?:${AFTER_DATE}|(?=\d{1,2}:\d\d(?::\d\d)? ?(?:UTC|GMT)\b))`;
+const ZONE = String.raw`(?=\d{1,2}:\d\d(?::\d\d)?(?:(?: to |[-–])(?:\d{1,2}:\d\d|midnight|noon))? ?(?:UTC|GMT)\b)`;
+const CLOCK_SIGN = String.raw`(?:${AFTER_DATE}|${ZONE})`;
 const RULES = [
   [String.raw`${FREE}(?<Y>\d{4})-(?<Mo>0[1-9]|1[0-2])-(?<D>0[1-9]|[12]\d|3[01])${END}`,
     (g) => `${MONTHS[g.Mo - 1]} ${ordinal(words(Number(g.D)))}, ${pairs(Number(g.Y))}`],
@@ -106,6 +111,7 @@ const RULES = [
     (g) => clock(g.ch, g.cm, g.cs)],
   [String.raw`${FREE}(?<th>\d{1,3}):(?<tm>[0-5]\d)(?::(?<ts>[0-5]\d))?(?:\.(?<tf>\d+))?${TIME_END}`,
     (g) => timeOf(g.th, g.tm, g.ts, g.tf)],
+  [String.raw`${FREE}(?<dh>\d+)h(?<dn>[0-5]?\d)m${END}`, (g) => duration(g.dh, g.dn, '0')], // 8h39m
   [String.raw`${FREE}(?<ra>\d+(?:\.\d+)?):(?<rb>\d)${TIME_END}`, (g) => `${number(g.ra)} to ${words(Number(g.rb))}`],
   [String.raw`${FREE}(?<n>${NUM})\s?(?<u>${UNIT})${END}`, (g) => measure(g.n, g.u)],
   [String.raw`${FREE}(?<plain>${NUM})${END}`, (g) => number(g.plain)],
