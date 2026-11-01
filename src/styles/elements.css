@@ -1,6 +1,6 @@
 /* What every post component shares, on every post page and in the homepage's reader: the image viewer, the
-   now-playing bar and text kept for screen readers. Linked from PostView, the notes page and index.astro (site.css
-   takes it in T3.2); each element's own CSS is its style.css, inlined into the article by ElementStyles. */
+   now-playing bar and text kept for screen readers. Part of site.css; each element's own CSS is its style.css,
+   inlined into the article by ElementStyles. */
 
 /* Every picture in a post opens in the viewer (src/elements/_core/viewer.js). */
 .pc-prose img[role='button'] { cursor: zoom-in; }

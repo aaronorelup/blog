@@ -12,7 +12,6 @@ import PostHeader from './PostHeader.astro';
 import PostNav from './PostNav.astro';
 import Related from './Related.astro';
 import ShortVersion from './ShortVersion.astro';
-import '../../styles/elements.css';
 
 const { post, note } = Astro.props;
 const { Content, remarkPluginFrontmatter: { text } } = await renderEntry(note ?? post);

@@ -1,5 +1,5 @@
-/* The one stylesheet of every panel page (layouts/PanelPage.astro), in cascade order. Later tasks add their own
-   view's file here (post, cards, ledger, search, read-aloud, projects, home, and elements.css in T3.2). */
+/* The one stylesheet of every panel page (layouts/PanelPage.astro) and the homepage (layouts/Home.astro), in cascade
+   order, so a view looks the same standalone and in the homepage's overlay, which then adopts no second copy of it. */
 @import './tokens.css';
 @import './base.css';
 @import './chrome.css';
@@ -11,3 +11,5 @@
 @import './projects.css';
 @import './about.css';
 @import './research.css';
+@import './elements.css';
+@import './home.css';
