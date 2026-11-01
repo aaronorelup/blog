@@ -6,6 +6,7 @@
 import sharp from 'sharp';
 import { test, expect } from './fixtures.mjs';
 import { pageWith, pagesWhere, play, expectPlaying } from './helpers.mjs';
+import { SOCIAL } from '../../src/data/site.js';
 
 const PANEL = '#panel-screen';
 const READER = '[data-panel-host] [data-post-article]';
@@ -545,4 +546,15 @@ test('overlay-26 while the panel is up the day/night switch sits in its header, 
   await page.keyboard.press('Escape');
   await isClosed(page);
   await expect.poll(() => box('#mode-toggle')).toEqual(closed);
+});
+
+test('overlay-27 on a phone the panel’s footer is two short lines, every link kept', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'the footer is one line on a wide window');
+  await home(page);
+  await openLedger(page);
+  const foot = panel(page).locator('.pc-bar-foot');
+  const { height } = await foot.boundingBox();
+  expect(height / page.viewportSize().height).toBeLessThan(0.1);
+  for (const a of await foot.locator('a').all()) await expect(a).toBeInViewport();
+  expect(await foot.locator('a').count()).toBe(SOCIAL.length + 1);   // the feed and every elsewhere
 });
