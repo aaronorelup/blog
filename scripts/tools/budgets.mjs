@@ -43,16 +43,24 @@ function closure(dist, js) {
   return js;
 }
 
-// The bytes a page loads up front: its local stylesheets, and its module scripts with their static imports.
+// The bytes a page loads up front: its local stylesheets, and its module scripts with their static imports, and its
+// view's module (views/<data-panel-view>.js), which mountView imports as soon as the page has parsed.
 function assets(dist, tree) {
   const css = new Set();
   const js = new Set();
+  let view = null;
   visit(tree, 'element', (el) => {
-    const { href, src, rel = [] } = el.properties;
+    const { href, src, rel = [], dataPanelView } = el.properties;
     if (el.tagName === 'link' && rel.includes('stylesheet') && href?.startsWith('/_astro/')) css.add(href);
     if (el.tagName === 'script' && src?.startsWith('/_astro/')) js.add(src);
+    view ??= dataPanelView ?? null;
   });
   closure(dist, js);
+  const viewChunk = new RegExp(`"\\./${view}\\.js":\\(\\)=>[^"]*?import\\("\\./([^"]+)"\\)`);
+  for (const src of view ? [...js] : []) {
+    const m = fs.readFileSync(path.join(dist, src), 'utf8').match(viewChunk);
+    if (m) closure(dist, js.add(path.posix.join(path.posix.dirname(src), m[1])));
+  }
   return { css: bytes(dist, css), js: bytes(dist, js), scripts: js };
 }
 
