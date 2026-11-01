@@ -114,6 +114,28 @@ Behaviours: model-1, model-2, overlay-3. Used by `jefrie-in-3d` (the best exampl
 
 ## <ao-timeline>
 
+Events from several sources at once (sessions, agents, people) in one time order, each on its own rail, so what
+overlapped shows at a glance. View buttons dim every event one party couldn't see.
+
+| Attribute | |
+|---|---|
+| `lanes="a:Session A\|b:Session B"` | each rail's key and label, left to right |
+| `views="b:What B could see"` | optional: one button per key, dimming every event whose `data-in` lacks it; Everything restores |
+
+Children: one `<ol>`; each event is an `<li data-lane="a" data-in="b c">` with a `<time>` first. Without JS it is
+an ordered list with times, which is the whole content.
+
+```html
+<ao-timeline lanes="a:Session A|b:Session B" views="b:What B saw">
+<ol>
+<li data-lane="a" data-in="a b"><time>13:05</time> A pushes the branch.</li>
+<li data-lane="b" data-in="b"><time>13:07</time> B reads it.</li>
+</ol>
+</ao-timeline>
+```
+
+Behaviours: timeline-1, timeline-2. Used by 8 posts (`INVENTORY.md`); `views` is best shown by `the-planted-lie`.
+
 ## <ao-transcript>
 
 ## <ao-treemap>
