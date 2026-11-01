@@ -31,9 +31,10 @@ export function onPanel(fn) {
 }
 
 function drop() {
-  if (shown.node.dataset.panelView === 'ledger') ledger = { search: shown.route.url.search, scroll: scroller.scrollTop };
+  const { node, route } = shown;
+  if (node.dataset.panelView === 'ledger') ledger = { search: route.url.search, scroll: scroller.scrollTop };
   shown.unmount();
-  shown.node.remove();
+  node.remove();
   shown = null;
 }
 
@@ -71,8 +72,10 @@ function open(route, from, pushed) {
 
 export function closePanel(push = true) {
   if (!isOpen()) return;
-  keepScroll();
-  if (push) history.pushState(null, '', '/');
+  if (push) {
+    keepScroll();
+    history.pushState(null, '', '/');
+  }
   stop();
   wanted = null;
   set('closing');
