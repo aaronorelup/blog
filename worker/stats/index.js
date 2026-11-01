@@ -39,7 +39,7 @@ import {
   coreQuery, windowQuery, totalsQuery,
   buildCore, buildWindow, assembleDay, buildTotals,
   makeSite, mentionsUnlisted, scrubDay,
-} from './stats-shape.js';
+} from './shape.js';
 
 const GRAPHQL = 'https://api.cloudflare.com/client/v4/graphql';
 const MIN = 60e3;
