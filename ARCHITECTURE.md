@@ -126,7 +126,7 @@ warns in a live notebook.
 | `wrangler.jsonc` | the Worker `blog`, every binding, `run_worker_first`, both crons, the vars (secrets by name only) |
 | `.dev.vars.example` | the local test keys for `wrangler dev` (copy to the git-ignored `.dev.vars`) |
 | `.node-version` | 22.23.4, the Node Workers Builds uses |
-| `public/_headers` | noindex for two hidden pages; a year, `immutable`, for the content-hashed `/_astro/*` and `/fonts/*` |
+| `public/_headers` | noindex for two hidden pages; a year, `immutable`, for the content-hashed `/_astro/*` and `/fonts/*`; a day for `/media/icons/*` |
 | `archive/2026-10-29-before-rework/` | every post as it was before the rework (read only) |
 
 ### `src/content/` and `src/data/`
@@ -137,6 +137,7 @@ warns in a live notebook.
 | `src/content/posts/<slug>.md` | one post. The file name is the URL slug. `id` is `AO-###` from `npm run new-post` |
 | `src/content/notes/<slug>.md` | the full making-of of a split post (`post`, `title`, `summary`) |
 | `src/content/research/` | the research collection (`/research/`) |
+| `src/content/projects/<name>.yaml` | one card of `/projects` (`src/schemas/project.ts`): section, state, needs, picture, links, posts; private cards link only to this site |
 | `src/data/taxonomy.js` | `TOPICS`, `PROJECTS`: the only place their names live. `SERIES_TO_PROJECT` until W4 |
 | `src/data/picks.js` | `START_HERE` (T2.2 fills it with 5 listed slugs) and `REEL` |
 | `src/data/limits.js` | every text cap and target, preview media, icon, project picture and og sizes |
@@ -148,7 +149,7 @@ warns in a live notebook.
 | `src/data/public-keys.js` | keys meant to be public: Ask's Turnstile site key |
 | `src/data/media-manifest.json` | every file in the R2 bucket, its size and MD5 (`npm run media:push`) |
 | `src/data/listed.js`, `preview-budget.js` | one-line re-exports until W4 (`isListed` lives in `src/lib/posts.js`) |
-| `src/data/series.js`, `projects.js`, `courses.js` | v1 threads (until T2.1), the projects list (until T2.5), the courses |
+| `src/data/series.js`, `courses.js` | v1 threads (until T2.1), the courses |
 | `src/data/courses/*.json`, `src/data/lore/*.json` | written by the course publishers in other repos: never by hand |
 
 ### `src/lib/`, `src/pages/`, `src/layouts/`, `src/components/`
@@ -161,6 +162,7 @@ warns in a live notebook.
 | `src/lib/build.js` | `COMMIT`, the commit a build is made from (the `ao-build` meta) |
 | `src/lib/search/chunks.js`, `docs.js` | a listed post or its notes → search chunks (the short version, then each h2 section, at most 1,500 characters) and the manifest; `docs.js` reads the build's posts once |
 | `src/lib/lore*.js` | the lore course's data and drawings |
+| `src/lib/projects.js` | the projects page's data: `SECTIONS`, order, state chips, needs glyphs, pictures or icons, `DERIVED` (the course's live lesson count); a card linking an unlisted post fails the build |
 | `src/pages/index.astro` + `src/layouts/Home.astro` | the homepage: the tea house scene and its overlay |
 | `src/pages/{ledger,projects,about,courses,stats,404}.astro`, `ledger/[slug].astro` | the panel pages |
 | `src/pages/courses/**`, `src/pages/research/**` | the course and research pages |
@@ -168,7 +170,8 @@ warns in a live notebook.
 | `src/layouts/PanelPage.astro` | every panel page: `site.css`, `chrome/Head`, `ModeToggle`, `PanelChrome` (`active` lights the nav, `view` names the view) |
 | `src/components/chrome/` | `Head` (share tags, `ao-build` meta, font preload, the pre-paint mode script; both layouts), `PanelChrome` (header, nav, scroller, footer; `data-active-view`, and `data-panel-view` on a standalone page's view wrapper), `ModeToggle` |
 | `src/components/{about,courses,research}/` | `AboutView`; `CoursesView`, `LessonList`, `Coin`; `ResearchView` |
-| `src/components/panel/*View.astro` | the ledger, projects and post views (into feature folders by T2.1, T2.2, T2.5); `PanelChrome`, `AboutView`, `CoursesView` are stubs for `index.astro` until T3.1 |
+| `src/components/projects/` | `ProjectsView` (`/projects`), `JumpRow`, `Highlights` (the reel from `picks.js REEL` and the cards marked `highlight`), `ProjectSection`, `ProjectCard`, `NeedsGlyph` |
+| `src/components/panel/*View.astro` | the ledger and post views (into feature folders by T2.1, T2.2); `PanelChrome`, `AboutView`, `CoursesView`, `ProjectsView` are stubs for `index.astro` until T3.1 |
 | `src/components/lore/` | the lore course |
 
 ### `src/scripts/` and `src/styles/` (the browser)
@@ -181,11 +184,13 @@ warns in a live notebook.
 | `src/scripts/home-scene.js` | the homepage scene and overlay (split into `scripts/home/` by T3.1 and T3.2) |
 | `src/scripts/stats/**`, `src/styles/stats/**` | the `/stats` page: its own code, kept as is |
 | `src/scripts/mode.js` | the panel pages' day/night toggle: `data-mode`, the stored choice, `aria-pressed` |
+| `src/scripts/views/projects.js` | the projects view's module (`mount(root)` → unmount): the hover card on its post links |
 | `src/styles/tokens.css` | every colour as a day/night pair, the `--pc-*` and `--home-*` tokens per mode (plain strings: the `/stats` canvas parses them), the homepage tween (`:root[data-tweening]` mixes by `--mix`), fonts, type scale, space, radii, z |
-| `src/styles/site.css` | the one stylesheet of every panel page: tokens, base, chrome, prose, about, research (later tasks add theirs) |
+| `src/styles/site.css` | the one stylesheet of every panel page: tokens, base, chrome, prose, projects, about, research (later tasks add theirs) |
 | `src/styles/{base,chrome,prose,about,research}.css` | page-wide rules; the frame, the view header, shared hover states; long-form text (`.pc-prose`); the text pages (`.page-*`: About, 404); a research document |
+| `src/styles/projects.css` | the projects page (`.proj-*`), on `--pc-*` tokens only so the overlay's tween carries it |
 | `src/styles/fonts.css`, `public/fonts/` | written by `scripts/tools/fonts.mjs`: Google's own woff2 slices, self-hosted under content-hashed names |
-| `src/styles/panel.css` | an `@import` stub (tokens, chrome, prose, about) for `index.astro` until T3.2 |
+| `src/styles/panel.css` | an `@import` stub (tokens, chrome, prose, projects, about) for `index.astro` until T3.2 |
 | `src/styles/lore.css`, `courses.css` | the course looks |
 
 ### `scripts/` (Node)
@@ -287,6 +292,13 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   (`docs/WORKER.md`); the only thing stored about a query is its day, mode, normalised text and a count.
 - **Media.** Video and audio are uploaded by `npm run media:push` and listed in `media-manifest.json`; the Worker
   serves them from R2 at their normal URLs. Pictures and captions stay in `public/` (`docs/MEDIA.md`).
+- **Icons and project pictures.** `public/media/icons/<AO-###>.webp` (256 px) and `-96.webp`, keyed by post id, and
+  `public/media/projects/<name>.webp` (640×360), all made by `scripts/tools/preview-media.mjs --out --size --cap`
+  and capped by `assets.mjs`. Pages ask `src/lib/icons.js iconFor(post)`; null (a live notebook, a new post) means
+  draw the topic glyph. New icons come from the agent kit's icon recipe (`docs/MEDIA.md`).
+- **The projects page.** `src/content/projects/*.yaml` → `src/lib/projects.js` → `components/projects/` at
+  `/projects`, and in the homepage overlay through `panel/ProjectsView.astro`. Post links open in the overlay's
+  reader like every `/ledger/` link.
 - **`/stats`.** The cron gathers Cloudflare analytics into D1 one step a minute (token: the `CF_ANALYTICS_TOKEN`
   secret); `/api/stats` serves the stored snapshot, naming only pages in `/stats-pages.txt`. Nothing is keyed on a
   visitor's IP address.

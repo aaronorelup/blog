@@ -329,6 +329,17 @@ its static rung mid-test.
 | `/stats` draws the snapshot (`/api/stats` 200) | pages-3 |
 | `/stats` says the numbers aren't connected (503) | pages-4 |
 
+## The projects page (`projects.spec.mjs`)
+
+| Behaviour | Spec |
+|---|---|
+| Every card (`src/content/projects/*.yaml`) is in its section once, the jump row's counts are the section sizes, a jump link scrolls to its section, stopped entries are lines with no picture | projects-1 |
+| Highlights: the reel is `preload="none"` and loads nothing until played, then plays inline (WebKit on a phone too); four highlighted cards; the 15-second cut is linked | projects-2 |
+| Every Play and Download card has a needs line; every private card has its ribbon and links only to this site | projects-3 |
+| Every card picture and icon loads, and none moves the page when it arrives late | projects-4 |
+| A card's post link opens its hover card | projects-5 (desktop) |
+| In the homepage overlay the projects view has the same cards in the same sections, and a post link opens in the reader with no document load | projects-6 |
+
 ## The live site (`live.spec.mjs`, `npm run e2e:live`)
 
 GET and HEAD only: `/version.json` is a main build (live-1), every baseline path answers (live-2), media come from
