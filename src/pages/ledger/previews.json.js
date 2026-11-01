@@ -20,7 +20,8 @@ export async function GET() {
   for (const post of await listedPosts()) {
     const { id, title, ...face } = cardOf(post);
     const icon = iconFor(post)?.s96;
-    const card = { id, title, topic: post.data.topic, mins: readingMinutes((await textOf(post))?.words), ...(icon && { icon }), ...face };
+    const mins = readingMinutes((await textOf(post))?.words);
+    const card = { id, title, topic: post.data.topic, mins, ...(icon && { icon }), ...face };
     if (!post.data.preview) {
       card.excerpt = excerpt(post.body);
       missing.push(id);
