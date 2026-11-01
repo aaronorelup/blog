@@ -239,7 +239,7 @@ test('read-3b the real browser voice reads a post with no recording (WebKit)', a
   await expect.poll(() => page.evaluate(() => speechSynthesis.speaking)).toBe(false);
 });
 
-test('read-4 a video starting pauses the reading, and the reading starting pauses the video', async ({ page, request }) => {
+test('read-4 a video starting pauses the reading, the reading starting pauses the video, and ao-stop stops it', async ({ page, request }) => {
   await recorded(page, request, VIDEO_POST);
   await page.goto(VIDEO_POST);
   await listen(page).click();
@@ -252,11 +252,16 @@ test('read-4 a video starting pauses the reading, and the reading starting pause
   await page.locator('.ra-play').click();
   await expect.poll(async () => (await state(page)).paused).toBe(false);
   await expectPlaying(v, false);
+  // ao-stop (the homepage closing its panel) stops the reading too.
+  await page.evaluate(() => document.dispatchEvent(new Event('ao-stop')));
+  await expect.poll(async () => (await state(page)).paused).toBe(true);
+  expect((await state(page)).playing).toBe(false);
 });
 
 test('read-5 in the homepage reader Listen works, and closing the panel (ao-stop) stops it', async ({ page, request }) => {
   test.skip(true, 'Needs T3.1 (overlay on demand), whose panel mounts views/post.js and so binds Listen; the interim '
-    + 'overlay copies the article without it. Delete this line once T2.4 is rebased onto T3.1.');
+    + 'overlay copies the article without it. Passed on T3.1\'s rebase onto main (5a9249b), 2026-11-01. Delete this '
+    + 'line once T2.4 is rebased onto T3.1.');
   await recorded(page, request, POST);
   await page.goto('/?tier=low');
   await expect(page.locator('#stop-rail [data-goto]').first()).toBeVisible({ timeout: 20_000 });
@@ -275,9 +280,11 @@ test('read-5 in the homepage reader Listen works, and closing the panel (ao-stop
   await reader.locator('[data-read-aloud]').click();
   await expect(reader.locator('.ra-bar')).toBeVisible();
   await expect.poll(async () => (await state(page)).t, { timeout: 5000 }).toBeGreaterThan(0.3);
+  // Closing the panel stops the reading: ao-stop pauses it, and unmounting the view closes the reader and its bar.
+  const audio = await page.evaluateHandle(() => document.querySelector('.ra-bar').aoClock());
   await page.keyboard.press('Escape');
   await expect(page.locator('#panel-screen')).toHaveAttribute('aria-hidden', 'true');
-  await expect.poll(async () => (await state(page)).paused).toBe(true);
+  await expect.poll(() => audio.evaluate((a) => a.paused)).toBe(true);
 });
 
 test('read-6 the build lists the posts it records, never the live notebook or an unlisted post; a version not recorded answers 200 ready: false', async ({ page, request }) => {
