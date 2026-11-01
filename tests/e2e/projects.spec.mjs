@@ -47,7 +47,7 @@ test('projects-3 play and download cards say what you need; private cards link o
   const priv = page.locator('.proj-card.is-private');
   expect(await priv.count()).toBeGreaterThan(0);
   await expect(priv.locator('.proj-ribbon')).toHaveCount(await priv.count());
-  expect(await priv.locator('a').evaluateAll((as) => as.map((a) => a.getAttribute('href')).filter((h) => !h.startsWith('/')))).toEqual([]);
+  expect(await priv.locator('a').evaluateAll((as) => as.map((a) => a.getAttribute('href')).filter((h) => !/^\/(?!\/)/.test(h)))).toEqual([]);
 });
 
 test('projects-4 every picture loads, and none moves the page as it does', async ({ page }) => {

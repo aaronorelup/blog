@@ -22,6 +22,6 @@ export const project = z.object({
   order: z.number().int().default(100),
   credit: z.string().max(120).optional(),
 })
-.refine((p) => !p.private || [p.main, ...p.more].every((l) => !l || l.href.startsWith('/')),
+.refine((p) => !p.private || [p.main, ...p.more].every((l) => !l || /^\/(?!\/)/.test(l.href)),
   'a private project links only to pages of this site')
 .refine((p) => !['play', 'download'].includes(p.section) || !!p.needs, 'play and download cards say what you need');

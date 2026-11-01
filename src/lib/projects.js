@@ -38,7 +38,7 @@ export const DERIVED = {
   },
 };
 
-const external = (href) => /^https?:/.test(href);
+const external = (href) => /^(https?:)?\/\//.test(href);
 const link = (l) => ({ ...l, external: external(l.href) });
 
 function cardOf(entry, listed, counts) {
