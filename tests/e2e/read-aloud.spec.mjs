@@ -259,9 +259,6 @@ test('read-4 a video starting pauses the reading, the reading starting pauses th
 });
 
 test('read-5 in the homepage reader Listen works, and closing the panel (ao-stop) stops it', async ({ page, request }) => {
-  test.skip(true, 'Needs T3.1 (overlay on demand), whose panel mounts views/post.js and so binds Listen; the interim '
-    + 'overlay copies the article without it. Passed on T3.1\'s rebase onto main (5a9249b), 2026-11-01. Delete this '
-    + 'line once T2.4 is rebased onto T3.1.');
   await recorded(page, request, POST);
   await page.goto('/?tier=low');
   await expect(page.locator('#stop-rail [data-goto]').first()).toBeVisible({ timeout: 20_000 });
