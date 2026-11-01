@@ -59,8 +59,11 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
    publishers. See "Checks" below.
 2. **Content** (`src/content.config.ts`, `src/schemas/*`): the schemas hold types and caps. v1 posts (no `topic`)
    are lenient until W4; live notebooks (`src/data/exempt.js`) stay lenient for good.
-3. **Markdown** goes through `scripts/rehype-post-images.mjs` (every picture gets its width, height and its
-   `data-full` copy) and Shiki with both themes as CSS variables.
+3. **Markdown** (posts, notes, research) goes through Shiki with both themes as CSS variables, then the rehype
+   plugins in `scripts/build/markdown.mjs`, in order: `rehype-post-images` (raw HTML parsed; every picture gets its
+   width, height and its `data-full` copy), `rehype-heading-ids` (github-slugger ids, pinned; an id the page uses
+   gets `-1`) and `rehype-post-text`, the one extraction every feature reads (below). A Markdown file that fails to
+   render fails its page (`renderEntry`), since Astro itself only logs it.
 4. **Integrations** (`astro.config.mjs`), in order: `statsPages`, `loreThumbs`, `media` (no file over 25 MiB,
    no video or audio in `public/` outside `STAYS_IN_GIT`), `verifyDist` (the frozen contracts over `dist/`, then
    the budgets, printed). The config also defines `__PUBLIC_DIR__` (read by `src/lib/paths.js`) and, for
@@ -77,6 +80,29 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 | `/media-sizes.json` | `src/pages/media-sizes.json.js` | `worker/media/serve.js`, for media still in git |
 | `/rss.xml`, `/sitemap.xml` | `src/pages/rss.xml.js`, `sitemap.xml.js` | feed readers, search engines |
 | `/courses/i-love-my-evening-television/**/thumbs/` | `scripts/lore-thumbs.mjs` | the lore course's index cards |
+
+### The extraction: `text`
+
+`rehype-post-text` walks each rendered post, note and research page once. A page reads the result as
+`(await renderEntry(entry)).remarkPluginFrontmatter.text`; nothing re-parses Markdown with regexes.
+
+```ts
+type Text = {
+  words: number;                                  // the main read: what read.blocks hold
+  headings: { depth: 2 | 3; id: string; text: string }[];
+  sections: { anchor: string; heading: string; text: string; folded: boolean }[];
+    // the opening (anchor '') then one per h2; blocks joined by "\n\n"; <details> text kept, and the section folded
+  read: { blocks: ['h' | 'p' | 'li' | 'q', string][] };   // block i is the element stamped data-r="i"
+  elements: string[];                             // the post components used: ['ao-compare', 'ao-demo/synthid']
+  links: string[];                                // same-site hrefs of <a>, as written
+};
+```
+
+What is read is `src/lib/text/rules.js`, which the browser uses too: `p`, `li` (its own text), `h2`-`h4`,
+`blockquote > p`, `dt`, `dd`; never `pre`, `table`, `figure`, media, `<details>`, `sup`, `<ao-*>`, `.ao-meta`,
+`[aria-hidden]`, `[data-noread]`, inline code that isn't a plain word (stamped `data-noread`), or a list whose items
+are mostly numbers. Every `<ao-*>` is stamped `data-pagefind-ignore`. A tag not in `TAGS` fails the build, or only
+warns in a live notebook.
 
 ## The tree
 
@@ -122,6 +148,7 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 |---|---|
 | `src/lib/content.js` | the only importer of `astro:content`: `allPosts`, `listedPosts`, `notesBySlug`, `research`, `projects`, `renderEntry`, `slugOf` |
 | `src/lib/{posts,cards,icons,dates,paths}.js` | listing and order, the card shape, icons by id, UTC dates, `PUBLIC_DIR` |
+| `src/lib/text/rules.js`, `hash.js` | what a reader reads (shared with the browser's read-aloud), content hashes |
 | `src/lib/lore*.js` | the lore course's data and drawings |
 | `src/pages/index.astro` + `src/layouts/Home.astro` | the homepage: the tea house scene and its overlay |
 | `src/pages/{ledger,projects,about,courses,stats,404}.astro`, `ledger/[slug].astro` | the panel pages |
@@ -150,7 +177,8 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 | `scripts/build/verify-dist.mjs` | at `astro:build:done`: `contracts.mjs` over `dist/`, then the budgets |
 | `scripts/build/contracts.mjs` | pure checks of the frozen contracts over `dist/` |
 | `scripts/build/stats-pages.mjs`, `dev-stats-fixture.mjs` | `/stats-pages.txt`; `/api/stats` for `astro dev` |
-| `scripts/rehype-post-images.mjs`, `lore-thumbs.mjs` | the picture plugin, the lore thumbnails (move to `build/` in T1.1 and W4) |
+| `scripts/build/markdown.mjs` + `rehype-{post-images,heading-ids,post-text}.mjs` | the Markdown plugins (step 3 of "A build"); `markdown.mjs` lists the post components until T1.2 and hashes the plugins' code into the config, so Astro's content cache re-renders when they change |
+| `scripts/lore-thumbs.mjs` | the lore thumbnails (moves to `build/` in W4) |
 | `scripts/media/` | `files.mjs` (what is media, `STAYS_IN_GIT`), `push.mjs`, `verify.mjs`, `integration.mjs` (the guard) |
 | `scripts/tools/new-post.mjs` | `npm run new-post`: the next `AO-###`, the v2 frontmatter |
 | `scripts/tools/never-publish-hash.mjs` | `npm run never-publish:hash`: the private list → `never-publish.json` |
@@ -170,7 +198,7 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 | `worker/reads/` | `serve.js` + `reads.sql`: the reader counter |
 | `worker/stats/` | `index.js` (serve and `runStep`), `shape.js` (pure), `stats.sql`: the traffic snapshot |
 | `worker/session/`, `search/`, `ask/`, `read/`, `cleanup.js` | stubs until T2.3 and T2.4 |
-| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list) |
+| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts) |
 | `tests/e2e/` | the behaviour suite: `INVENTORY.md`, `targets.json` (from `element-usage`), specs, fixtures |
 | `tests/baseline/urls.txt` | every page and contract file a build must still produce |
 | `src/scripts/stats/core/{agg,fmt}.test.mjs` | the two kept `/stats` tests |
@@ -207,7 +235,7 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
 | Contract | Checked by |
 |---|---|
 | `/ledger/<slug>/` for every post, `public/_redirects`, RSS guid = `https://aaronorelup.com/ledger/<slug>/` | `verify-dist` against `tests/baseline/urls.txt` |
-| the `<ao-*>` tag names and attributes (72 posts use them) | the e2e suite; from T1.1 an unknown tag fails the build |
+| the `<ao-*>` tag names and attributes (72 posts use them) | the e2e suite; an unknown tag fails the build (`rehype-post-text`) |
 | `/ledger/previews.json` = `{ posts: { slug: card } }`, keys = listed slugs | `verify-dist` |
 | `/stats-pages.txt`: no unlisted slug, nothing deeper than `/ledger/<slug>/` except `/ledger/<listed>/notes/` | `verify-dist`, `agg.test.mjs` |
 | `/version.json` and the main-only guard in `astro.config.mjs` | unchanged |
@@ -217,7 +245,7 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
 
 ## Data flows
 
-- **A post.** `src/content/posts/<slug>.md` → schema → Markdown with the picture plugin → `PostView.astro` inside
+- **A post.** `src/content/posts/<slug>.md` → schema → Markdown and its plugins → `PostView.astro` inside
   `PanelPage` at `/ledger/<slug>/`. The page loads `post-components.js`, which defines every `<ao-*>`. On the
   homepage the overlay fetches that page, copies `[data-post-article]` in and imports the same module, so the
   tags upgrade the same way. Notes pages render the same chrome with the note's content.
@@ -238,7 +266,8 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
 ## Recipes
 
 - **A post component.** Today: a class in `src/scripts/post-components.js` with its CSS in
-  `post-components.css`, and its markup in the file's header. From T1.2: a folder `src/elements/ao-<name>/` with
+  `post-components.css`, its markup in the file's header, and its tag in `TAGS` in `scripts/build/markdown.mjs`
+  (a post using a tag not there fails the build). From T1.2: a folder `src/elements/ao-<name>/` with
   `element.js` and `style.css`, and a `## <ao-<name>>` section in `docs/COMPONENTS.md` (`npm run check` asks for
   it). Add its behaviours to `tests/e2e/INVENTORY.md` with a spec.
 - **A page type.** A file in `src/pages/` inside `PanelPage`, its view in `src/components/`, classes only (no
