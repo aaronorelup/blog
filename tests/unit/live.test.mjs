@@ -1,6 +1,7 @@
 // AO-073 is written by a fleet of other sessions (src/data/exempt.js), so whatever they push must build. This breaks
 // a copy of it the way the fleet might and runs it through every rule that could fail a build. A task that adds a
-// rule adds its case here (T0.3 the checker and the media guard, T1.1 an unknown tag, T2.1 a post with no icon).
+// rule adds its case here (T0.3 the checker and the media guard, T1.1 an unknown tag, T2.1 a post with no icon,
+// T2.3 search's chunks and manifest).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -11,6 +12,7 @@ import { LIVE_NOTEBOOKS, isLive, isLivePath } from '../../src/data/exempt.js';
 import { rehypePlugins } from '../../scripts/build/markdown.mjs';
 import { baselineProblems, previewsProblems, readBaseline, rssProblems, statsPagesProblems } from '../../scripts/build/contracts.mjs';
 import { collections } from './content-schema.mjs';
+import { docOf, manifestOf, shortVersion } from '../../src/lib/search/chunks.js';
 
 const { slug, paths } = LIVE_NOTEBOOKS['AO-073'];
 const file = new URL(`../../src/content/posts/${slug}.md`, import.meta.url);
@@ -67,4 +69,17 @@ test('an unknown <ao-*> tag only warns in AO-073, and fails the render of any ot
   assert.ok(warn.mock.calls.some((c) => /<ao-sliderr> is not a post component/.test(c.arguments[0])));
   const other = new URL('../../src/content/posts/earthlight.md', import.meta.url);
   await assert.rejects(md.render(typo, { fileURL: other, frontmatter: {} }), /<ao-sliderr> is not a post component/);
+});
+
+test('AO-073 rendered blank is still a search doc, and its pushes leave the search manifest v alone', () => {
+  const lead = shortVersion(post.summary, post.preview ?? {});
+  const doc = (s, text) => docOf({ kind: 'post', id: s === slug ? 'AO-073' : 'AO-048', slug: s, title: 'T', lead, text });
+  const sections = [{ anchor: 'a', heading: 'A', text: 'The fleet wrote this.', folded: false }];
+  const blank = doc(slug, undefined);
+  assert.deepEqual(blank.chunks.map((c) => c.anchor), ['short']);
+  const before = manifestOf([doc('earthlight', { sections }), blank]);
+  const after = manifestOf([doc('earthlight', { sections }), doc(slug, { sections })]);
+  assert.deepEqual(before.live, [`post:${slug}`]);
+  assert.equal(after.v, before.v);
+  assert.notEqual(after.docs[`post:${slug}`], before.docs[`post:${slug}`]);
 });
