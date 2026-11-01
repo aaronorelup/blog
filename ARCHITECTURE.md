@@ -267,7 +267,8 @@ the private agent kit (`skills/blog-post/never-publish.txt`); the repo holds onl
 names from a reader of the repo, not from someone set on guessing them.
 
 **Budgets** (`scripts/tools/budgets.mjs`, gzipped, without fonts and media): a post page minus its prose ≤ 20 KB
-(chrome HTML 4, CSS 15, JS up front 8), the ledger's chrome ≤ 6 KB and ≤ 220 B a row, the homepage before the
+(chrome HTML 4, CSS 15, JS up front 8), each element's own chunks and inlined CSS ≤ 6 KB (`ao-series`, `ao-game`
+10; one row names the element nearest its budget), the ledger's chrome ≤ 6 KB and ≤ 220 B a row, the homepage before the
 scene chunk ≤ 30 KB (HTML 12, entry JS 12). Printed by every build, never failing it. A display code point the
 self-hosted fonts miss is a warning in the build and a failure of `node scripts/tools/budgets.mjs` and of
 `tests/unit/fonts.test.mjs`; `node scripts/tools/fonts.mjs` fixes it.
