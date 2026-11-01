@@ -1,0 +1,24 @@
+// The files code.mjs skips, by exact path or folder (/**). KEEP is for good: pages and data other people write, and
+// the /stats internals. UNTIL lists files a planned task splits or deletes; that task deletes its line, and
+// code.mjs flags a line whose files are gone or clean. Nothing is ever added to UNTIL.
+export const KEEP = [
+  'src/pages/courses/**', 'src/pages/research/**', 'src/components/lore/**', 'src/styles/lore.css',
+  'src/pages/stats.astro', 'src/scripts/stats/**', 'src/styles/stats/**', 'worker/stats.js', 'worker/stats-shape.js',
+];
+
+export const UNTIL = {
+  'src/scripts/post-components.js': 'T3.2',
+  'src/styles/post-components.css': 'T1.2',
+  'src/scripts/demos/**': 'T1.2',
+  'src/scripts/home-scene.js': 'T3.2',
+  'src/scripts/ledger-preview.js': 'T2.2',
+  'src/components/panel/**': 'T3.1',
+  'src/components/Coin.astro': 'T1.4',
+  'src/layouts/PanelPage.astro': 'T1.4',
+  'src/pages/404.astro': 'T1.4',
+  'src/layouts/Home.astro': 'T3.2',
+  'src/pages/index.astro': 'T3.2',
+  'worker/reads.js': 'T1.3',
+};
+
+export const covers = (pattern, file) => (pattern.endsWith('/**') ? file.startsWith(pattern.slice(0, -2)) : file === pattern);
