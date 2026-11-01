@@ -162,6 +162,34 @@ Behaviours: funnel-1 to funnel-4. Used by 2 posts (`INVENTORY.md`); best shown b
 
 ## <ao-matrix>
 
+One subject run through a grid of settings (a method per row, a target per column), every cell shown the same size,
+with buttons that switch every cell between views of the same output at once (textured / clay, before / after,
+front / back). Switching views on one matrix switches every matrix on the page that has the same views, so a reader
+comparing two subjects keeps one look. Only the pictures in view open in the image viewer, and they page through in
+order. Without JS: the rows, every picture showing.
+
+| Attribute | |
+|---|---|
+| `cols="A\|B\|C"` | column headings, left to right (on a phone each cell carries its own) |
+| `views="X\|Y"` | one button per view; a cell's nth `<img>` is its nth view (default: one view) |
+| `aspect="w/h"` | the frame every picture is fitted into (default `1/1`) |
+
+Children: one `<div data-row="Label|note">` per row, holding a `<figure>` per cell (its `<img>`s, one per view, and
+an optional `<figcaption>`); `<figure class="none">text</figure>` is an empty cell, and a short row is filled with
+empty cells. Then an optional `<figcaption>` for the set. A view only fetches its pictures once someone asks for it.
+
+```html
+<ao-matrix cols="Front|Side" views="Textured|Clay" aspect="1/1">
+<div data-row="Method A|30 s">
+<figure><img src="/media/x/a-front.webp" alt="…"><img src="/media/x/a-front-clay.webp" alt="…" loading="lazy"></figure>
+<figure class="none">Failed</figure>
+</div>
+<figcaption><b>Two methods, two angles</b></figcaption>
+</ao-matrix>
+```
+
+Behaviours: matrix-1 to matrix-3. Used by 2 posts (`INVENTORY.md`); best shown by `props-three-budgets`.
+
 ## <ao-model>
 
 ## <ao-pan>
