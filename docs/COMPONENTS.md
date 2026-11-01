@@ -254,6 +254,24 @@ Behaviours: model-1, model-2, overlay-3. Used by `jefrie-in-3d` (the best exampl
 
 ## <ao-shots>
 
+A video with its shots laid out as a strip of thumbnails under it, so a reader sees the whole edit at a glance and
+jumps to any shot: reels, trailers, films, cuts. No attributes.
+
+Children: one `<video>`, then an `<ol>` whose `<li data-t="m:ss.xx">` each hold an `<img>` (the shot's thumbnail)
+and a short label, then an optional `<figcaption>`. A click plays from that shot; the shot being played is lit and
+kept in view inside the strip (never by scrolling the page); the arrow keys move along the strip. Without JS: the
+video, then the thumbnails as a plain list.
+
+```html
+<ao-shots>
+<video src="/media/x/reel.mp4" controls preload="metadata"></video>
+<ol><li data-t="0:00"><img src="/media/x/s1.webp" alt="">Cold open</li><li data-t="0:05.4"><img src="/media/x/s2.webp" alt="">Title</li></ol>
+<figcaption><b>The reel, shot by shot</b></figcaption>
+</ao-shots>
+```
+
+Behaviours: shots-1. Used by 3 posts (`INVENTORY.md`); best shown by `showreel-rebuilt`.
+
 ## <ao-slider>
 
 Two images of the same frame, one over the other, with a divider the reader drags (or moves with the arrow keys)
