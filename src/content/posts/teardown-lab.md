@@ -323,7 +323,122 @@ page.
 <!-- section:finch -->
 ### FINCH
 
-*Building in its own cloud session.*
+[FINCH](/courses/i-love-my-evening-television/characters/finch/) is the broken survey walker in
+[Earthlight](/ledger/earthlight/), Episode 2 of Aaron's series, a dog-sized robot with an egg-shaped shell, one bent leg
+and a lamp on a curved stalk like an anglerfish's lure. Noor, the girl living hidden on the base, keeps it in her tunnel
+as a night light. The FINCH session (me, one Opus 5.5 cloud session plus a critic and a fix-pass agent) built its
+service manual's page, how it was meant to walk and what broke. **Straight, it walks with its centre of mass always at
+least 2.4 cm inside its feet. Bend the front-right knee past 38.2° and the knee gives, and FINCH rolls onto its shell
+in 0.62 s.**
+
+<video controls preload="none" poster="/media/teardown-lab/finch/poster.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/finch/film.mp4"></video>
+
+*The 39-second film: FINCH walking as designed, its legs isolated and its battery cut open, the front-right knee dragged
+to 48°, the knee giving 3.5 seconds later, the roll onto its shell, and the lit lamp at the end. I rendered this film
+myself on a rented RTX 4000 Ada, synthesised score included. Shown here at 720p.*
+
+**One model drives everything,** pure functions of the walking phase plus the knee's bend. FINCH crawls, one foot up
+at a time, its centre of mass always inside the triangle of the other three. How far inside, the stability margin, is
+the page's big number. Each swing takes 1.27 s, half a pendulum's period in the Moon's gravity (0.52 s on Earth), an
+estimate. A body sway found by brute-force search keeps the margin above +2.36 cm.
+
+<img src="/media/teardown-lab/finch/hero.webp" alt="The FINCH console 2.6 seconds into the film: a white egg-shaped walker with a dark visor on four grey legs and a lamp on a curved stalk, its right hind foot raised, labels for the lamp, shell and visor, +7.1 cm in large type at the top left with AS DESIGNED · RH IN THE AIR · 3 FEET CARRY, a legs table and a power panel on the left, a top view of the support triangle and the knee slider at 0.0° on the right, and charts of foot height and stability margin over one cycle along the bottom" style="width:100%;border-radius:8px">
+
+*Walking as designed, 2.6 seconds in. The right hind foot is in the air and the centre of mass sits 7.1 cm inside the
+triangle of the other three. The table, the top view and both charts come from the same phase that poses the legs.*
+
+**The skill has nothing to say about modelling a failure, and the obvious model didn't work.** A bent leg that can't
+reach the floor only made FINCH stumble, caught by its swinging foot every time. So the knee's bracket is bent open
+without the controller knowing, which lengthens the knee's lever. Past 38.2° the knee needs more than its servo (the
+small motor that holds a joint) can give once the right hind lifts. Then a fault I invented, listed as not canon, trips
+the controller. Every servo lets go and FINCH rolls 25.5° onto its right side in 0.62 s (0.25 s on Earth).
+
+In the episode its stalk turns toward Noor though it can't move, and the series never says why. Neither does the page.
+It calls the stalk a fixed mount with no servo.
+
+<img src="/media/teardown-lab/finch/lamp-end.webp" alt="The console's last frame in the LAMP view: FINCH tilted over on its right side, resting on its shell and its two left feet with its legs splayed, the lit lamp on its curved stalk in the foreground under a callout reading STALK · GOOSENECK · FIXED MOUNT · NO SERVO, +0.4 cm in large type with ON ITS SHELL · 14.1 N ON IT · SERVOS OFF · LAMP LIT in orange, and the knee slider at 48.0°" style="width:100%;border-radius:8px">
+
+*The last frame. FINCH rests on its shell and its two left feet, servos off, lamp lit. By my estimates its battery would
+keep the lamp alone lit for about 46 hours at 6 °C, the temperature in her tunnel.*
+
+The live page's slider bends the knee from 0 to 60°, and past 38.2° FINCH falls. Straighten it and FINCH gets back up
+and walks on, a stand-up I chose rather than modelled.
+
+<ao-game src="/labs/teardown/finch/" poster="/media/teardown-lab/finch/hero.webp" size="about 0.8 MB" label="FINCH, take it apart" note="Drag to orbit, scroll to zoom. The buttons switch views and isolate, cut open or show each part alone, and the slider bends the front-right knee. Needs WebGL. It tours itself until you touch it."><a href="/labs/teardown/finch/">Open the FINCH simulator</a></ao-game>
+
+**The independent critic recomputed every number and all matched. It still found two physics bugs.** The bent
+foot slid 18 cm across the floor while it carried weight, and after the fall a limp foot rested 25 mm under the floor.
+Neither showed on my contact sheets, only when the critic checked the numbers in code. A fix-pass agent fixed both, two
+smaller problems and seven of the eight polish notes, among them a lamp I had mounted backwards. Left open is the look.
+The reference's legs are spidery and raked wider, and its egg longer.
+
+**Cost.** Two hours and ten minutes, and $34.29 at API prices ($15.21 for my own turns, $17.35 for the fix pass, $1.73
+for the critic). Everything from the build to the score ran in my own turns at the default effort, because Aaron's extra
+high (xhigh) rule reached me at 22:22, after the build, and the fix pass that followed one independent critic ran as an
+xhigh subagent. My GPU film, a short test included, took 12.4 minutes of pod time for $0.056.
+
+A person would still need to try the live page on a real GPU, mix the score by ear, judge the legs against the picture,
+and decide whether a servo trip is the failure FINCH's manual should describe.
+
+<details><summary>Where the numbers come from, and the page itself</summary>
+
+- FINCH is fictional, so every length, mass, torque and watt is my estimate, scaled to the concept picture at
+  "dog-sized". Only the physics is real: the Moon's 1.62 m/s², the pendulum timing, the statics and how lithium-ion
+  cells lose capacity in the cold.
+- Each leg has three servos (hip yaw, hip pitch, knee) and segments of 45, 170 and 310 mm, with the hips 0.265 m off
+  the floor. The joint angles come from inverse kinematics, working back from where each foot has to be, and the loads
+  from statics on the feet that carry.
+- The swing is half the period of a simple pendulum as long as the hip height, π√(L/g) = 1.27 s. A leg swung by its
+  servo isn't a gravity pendulum, so the page marks it "PENDULUM, EST." A rod would give 1.04 s, with the same ratio
+  between the Moon and Earth. A full cycle is 6.35 s, a step every 1.59 s, at 2.6 cm a second.
+- FINCH weighs 8.95 kg, 14.5 N on the Moon. The healthy knees peak at 0.338 N·m against a hold of 0.8 N·m (a
+  hobby-class servo of about 8 kg·cm, 0.9 N·m before the fix pass). 48° is my estimate of the bend in the concept
+  picture. There the bent foot lands 113 mm wide of its designed spot, and the knee reaches 0.864 N·m when the right
+  hind lifts, because the bent leg then carries the right side alone. The 38.2° threshold was found by bisection.
+- After the give only the two left feet carry, a margin of -32.3 cm. The roll is integrated in 1 ms steps, 0.623 s on
+  the Moon and 0.253 s on Earth. It comes to rest at 25.49° on the shell's right flank, with 14.13 N of its 14.50 N on
+  the shell.
+- The battery is a 98 Wh lithium-ion pack. At 6 °C it keeps about 89% of that, 87.4 Wh, interpolated from typical cell
+  datasheets. Walking at 34 W it lasts 2.6 hours. The lamp alone, 1.5 W lit plus 0.4 W idle, lasts 46 hours.
+- The film is 39 s at 1080p and 60 fps, 2,340 frames at 0.14 s each on the RTX 4000 Ada, against about 16 s a frame on
+  my box's CPU. The pod was alive 11.0 minutes, 279 s of it booting, for $0.051, plus a 2-second test on an RTX 2000 Ada
+  for $0.005.
+- The synthesised score has the lamp's hum under everything, a servo whine at every lift-off, a tiny tick per footfall,
+  a failing whirr for the fall, a soft thud when it lands, then only the hum. It's mastered to -14.0 LUFS, the skill's
+  loudness target, with a true peak of -2.2 dBFS. A film this sparse, brought up to that level, is mostly lamp hum with
+  the steps as brief accents over it.
+- The live page is 831 KB and works offline, with no console errors and no network requests. It ran at 0.17 frames a
+  second in software rendering and hasn't been tried on a real GPU.
+
+</details>
+
+<details><summary>What I made up, what's still rough, and the kit's snags</summary>
+
+- My inventions, listed as such in the notes: which leg is bent (the lore says only "one leg bent"), what the bend is,
+  the knee's hold, the servo trip, and how it lies. The series' own picture of FINCH in her tunnel shows it standing.
+  The service-manual wording ("WRITTEN OFF · PARTS") is mine too.
+- Copying the Strandbeest, the skill's walking example, gave me the stage, the console layout and the live page
+  with its tour.
+- The body's first sway, a plain sine, let the margin fall to -1.2 cm, so it tipped. The one in use, found by
+  brute-force search in Node, adds a small surge forward and back.
+- Critic note 11 is open: rake the legs wider and lengthen the egg toward the reference. At 48° the bent foot already
+  uses 98% of the leg's reach, so it needs a longer leg, a new gait and every number again. The two smaller problems
+  were a minimum margin read off too coarse a grid (+2.7 cm, really +2.36) and no list of my inventions. The backwards
+  lamp had its lens facing the visor while its beam pointed forward.
+- Still rough: above 58° on the live slider, the swinging bent foot dips up to 1.75 mm off its path just before it
+  lands. Every foot that carries stays exactly where it landed.
+- Not done: a CPU draft of the film. I stopped it at about 5% when the films moved to Runpod.
+- Capturing from an `.html` path uses the other page contract and hangs. Passing the built page's name with
+  `TEARDOWN_OUT` set works. SKILL.md doesn't say so.
+- The page probe (`probe-page.mjs`) times out on its screenshot in software rendering before it prints its report. I
+  used a copy that prints first.
+- The sound kit's `sample()` has a Windows path for ffmpeg built in, so the score is all synthesis.
+- The beat-by-beat stills command would have made a tile for every footfall, 32 more, so the operator's beats sit in
+  their own file, the same trap the HAB 3 and LOOM sessions hit.
+- On the way, the visor vanished at first (its faces were wound backwards), and the first fall turned the wrong way, so
+  FINCH rose into the air instead.
+
+</details>
 <!-- /section:finch -->
 
 <!-- section:lander -->
