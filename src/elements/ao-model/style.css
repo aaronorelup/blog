@@ -1,0 +1,59 @@
+/* <ao-model>: the frame, its poster and load button before the click, then the canvas and its hint. ao-game's Play
+   button wears .ao-model-load too, and ao-game/style.css carries a copy of those rules. */
+
+ao-model {
+  display: block;
+  position: relative;
+  margin: 8px 0 28px;
+  border: 1px solid var(--pc-line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 40%, #2a2838 0%, #15141f 75%);
+  min-height: 120px;
+}
+ao-model > img.ao-model-poster,
+ao-model > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+}
+ao-model > canvas.ao-model-canvas {
+  display: block;
+  width: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+ao-model > canvas.ao-model-canvas:active { cursor: grabbing; }
+.ao-model-load {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1px solid var(--pc-head);
+  background: rgba(16, 18, 32, 0.88);
+  color: #f0c06a;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 180ms cubic-bezier(.4, 0, .2, 1);
+}
+.ao-model-load:hover { background: rgba(32, 31, 44, 0.95); }
+.ao-model-load:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+.ao-model-load:disabled { cursor: progress; opacity: 0.8; }
+.ao-model-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  text-align: center;
+  font-family: Karla, system-ui, sans-serif;
+  font-size: 12px;
+  color: #9c917f;
+  pointer-events: none;
+}

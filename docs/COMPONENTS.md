@@ -84,6 +84,24 @@ Behaviours: game-1 to game-8, core-3. Used by `storm-bell-fighter` (`/games/stor
 
 ## <ao-model>
 
+A GLB the reader can turn around. Nothing heavy loads until they ask: the poster and a button first, then three.js
+and the model on the click. Drag to orbit, scroll or pinch to zoom; it turns slowly on its own until touched (not
+with reduced motion), draws only while on screen, and frees the GPU when the post leaves the page.
+
+| Attribute | |
+|---|---|
+| `src` | the `.glb` (keep it a few MB: 1K textures, about 30k triangles is plenty) |
+| `poster` | the still shown before it loads |
+| `size` | printed on the button, so the reader knows what the click costs |
+| `label` | what it is, for the button and for screen readers (default `3D model`) |
+| `ratio="wide"` | a 0.56 frame instead of 0.8 (no post uses it today) |
+
+```html
+<ao-model src="/media/x/model.glb" poster="/media/x/model.webp" size="2.1 MB" label="X, in 3D"></ao-model>
+```
+
+Behaviours: model-1, model-2, overlay-3. Used by `jefrie-in-3d` (the best example) and `props-three-budgets`.
+
 ## <ao-pan>
 
 ## <ao-runs>
