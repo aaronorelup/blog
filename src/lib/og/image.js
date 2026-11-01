@@ -1,7 +1,8 @@
 // A listed post's share card at build time: drawn once a build by lib/og/card.js, kept in node_modules/.astro/og/
 // (Workers Builds restores that folder between builds when its build cache is on) and named /og/<slug>.jpg?v=<h8>,
-// h8 the hash of everything drawn on it, so X fetches the card again when any of it changes. Until og lands hard
-// (STRICT), a card that fails to draw logs and its post shares public/og/default.jpg; a live notebook's always does.
+// h8 the hash of everything drawn on it, so X fetches the card again when any of it changes. A card that fails to
+// draw fails the build (STRICT, since a main build showed real cards), except a live notebook's, which logs and
+// shares public/og/default.jpg.
 // Read by pages/ledger/[slug].astro (the meta tag) and pages/og/[slug].jpg.js (the file).
 import fs from 'node:fs';
 import path from 'node:path';
@@ -15,7 +16,7 @@ import { PUBLIC_DIR, publicFile } from '../paths.js';
 import { sha256hex, short } from '../text/hash.js';
 import { renderCard } from './card.js';
 
-const STRICT = false;
+const STRICT = true;
 const V = 1;   // the card's design: bump it to redraw every card
 const ROOT = path.dirname(path.resolve(PUBLIC_DIR));
 const FONT = path.join(ROOT, 'src/assets/fonts/zen-maru-gothic-700-latin.ttf');
