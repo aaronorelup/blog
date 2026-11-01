@@ -8,6 +8,6 @@ export const PHRASES = [
 ];
 
 export const LINKS = [
-  { pattern: /ao2nOnefkps/, why: 'the deleted Episode 1 video (the live one is 7TusXDOgV4Y)' },
-  { pattern: /github\.com\/bloodtailor\b/i, why: 'the old GitHub user name (it is github.com/aaronorelup now)' },
+  { pattern: /ao2nOnefkps/g, why: 'the deleted Episode 1 video (the live one is 7TusXDOgV4Y)' },
+  { pattern: /github\.com\/bloodtailor\b/gi, why: 'the old GitHub user name (it is github.com/aaronorelup now)' },
 ];

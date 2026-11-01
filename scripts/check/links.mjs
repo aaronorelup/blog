@@ -37,7 +37,7 @@ export default function links(repo, report) {
       }
     }
     for (const { pattern, why } of LINKS) {
-      for (const m of raw.matchAll(new RegExp(pattern.source, pattern.flags.replace('g', '') + 'g'))) {
+      for (const m of raw.matchAll(pattern)) {
         report(file, line(m.index), `"${m[0]}" is ${why}`, 'deploy');
       }
     }
