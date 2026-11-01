@@ -3,6 +3,7 @@
 // term in every transcript at once; clicking a line plays that video from there; the line being spoken is lit.
 // Without JS: the videos, with the captions as native subtitles. Attribute find and markup: docs/COMPONENTS.md.
 import { AO_LISTEN_PLAY } from '../_core/player.js';
+import { h } from '../_lib/dom.js';
 import { fmtTime, parseTime } from '../_lib/time.js';
 
 // A WebVTT file's cues in time order: start and end in seconds, and the words with their tags stripped.
@@ -26,26 +27,18 @@ class AoTranscript extends HTMLElement {
     if (!figs.length) return;
     this._ready = true;
     this.style.setProperty('--ao-tr-n', String(Math.min(figs.length, 2)));
-    const grid = document.createElement('div');
-    grid.className = 'ao-tr-grid';
+    const grid = h('div', { class: 'ao-tr-grid' });
     figs[0].before(grid);
 
-    const bar = document.createElement('div');
-    bar.className = 'ao-tr-bar';
-    const input = document.createElement('input');
-    input.type = 'search';
-    input.placeholder = 'Search every transcript';
-    input.setAttribute('aria-label', 'Search every transcript');
-    bar.append(input);
+    const input = h('input', { type: 'search', placeholder: 'Search every transcript',
+      'aria-label': 'Search every transcript' });
+    const bar = h('div', { class: 'ao-tr-bar' }, input);
     const presets = (this.getAttribute('find') || '').split('|').map((s) => s.trim()).filter(Boolean);
     const chips = presets.map((word) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = word;
-      b.addEventListener('click', () => {
+      const b = h('button', { type: 'button', text: word, onclick: () => {
         input.value = input.value === word ? '' : word;
         mark();
-      });
+      } });
       bar.append(b);
       return b;
     });
@@ -56,12 +49,9 @@ class AoTranscript extends HTMLElement {
       const v = fig.querySelector('video');
       const track = v.querySelector('track[src]');
       v.removeAttribute('loop');
-      const box = document.createElement('div');
-      box.className = 'ao-tr-text';
-      box.setAttribute('aria-label', 'Transcript: choose a line to play from there');
-      box.textContent = 'loading the transcript…';
-      const count = document.createElement('span');
-      count.className = 'ao-tr-count';
+      const box = h('div', { class: 'ao-tr-text', 'aria-label': 'Transcript: choose a line to play from there',
+        text: 'loading the transcript…' });
+      const count = h('span', { class: 'ao-tr-count' });
       const cap = fig.querySelector('figcaption');
       if (cap) cap.append(count);
       v.after(box);
@@ -77,21 +67,14 @@ class AoTranscript extends HTMLElement {
           const ended = prev && /[.?!]["'”’)]?$/.test(prev.text);
           if (!para || (prev && cue.start - prev.end >= 1) || (ended && words >= 40)) {
             words = 0;
-            para = document.createElement('p');
-            const time = document.createElement('time');
-            time.textContent = fmtTime(cue.start);
-            para.append(time);
+            para = h('p', null, h('time', { text: fmtTime(cue.start) }));
             box.append(para);
           }
-          const span = document.createElement('span');
-          span.textContent = cue.text + ' ';
-          span.tabIndex = 0;
-          span.setAttribute('role', 'button');
-          span.title = fmtTime(cue.start);
-          span.addEventListener('click', () => seek(pane, cue.start));
-          span.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); seek(pane, cue.start); }
-          });
+          const span = h('span', { text: cue.text + ' ', tabindex: '0', role: 'button', title: fmtTime(cue.start),
+            onclick: () => seek(pane, cue.start),
+            onkeydown: (e) => {
+              if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); seek(pane, cue.start); }
+            } });
           para.append(span);
           words += cue.text.split(/\s+/).length;
           pane.lines.push({ ...cue, span });
@@ -162,9 +145,7 @@ class AoTranscript extends HTMLElement {
           let i = 0;
           l.text.replace(re, (m, at) => {
             l.span.append(l.text.slice(i, at));
-            const mk = document.createElement('mark');
-            mk.textContent = m;
-            l.span.append(mk);
+            l.span.append(h('mark', { text: m }));
             i = at + m.length;
             return m;
           });
