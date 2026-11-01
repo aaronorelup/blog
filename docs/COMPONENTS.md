@@ -162,8 +162,8 @@ Children: one or more `<video>`, then an `<ol>` whose `<li data-t="m:ss.xx">` ar
 </ao-cues>
 ```
 
-Behaviours: cues-1 to cues-9 (cues-3b, space on a cut, is broken on main). Used by `moonlight-two-cuts` (the best
-example) and `moonlight-five-times`.
+Behaviours: cues-1 to cues-9. Keys: Enter or space on a cue jumps there and plays; space on a focused cut (Tab, or
+a click) plays or pauses every cut. Used by `moonlight-two-cuts` (the best example) and `moonlight-five-times`.
 
 ## <ao-demo>
 

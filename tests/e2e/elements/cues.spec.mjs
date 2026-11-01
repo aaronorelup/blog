@@ -45,9 +45,6 @@ test('cues-3 Enter on a cue seeks there and plays', async ({ page }) => {
 });
 
 test('cues-3b space on a focused cut plays and pauses them all', async ({ page }) => {
-  // Broken on main: the handler wants the element or a video focused, and neither can take focus (no tabindex, the
-  // controls are removed), so space never reaches it (INVENTORY cues-3b).
-  test.fail();
   await vids(page).first().focus();
   await page.keyboard.press(' ');
   await expect.poll(() => playing(vids(page).first()), { timeout: 8000 }).toBe(true);
