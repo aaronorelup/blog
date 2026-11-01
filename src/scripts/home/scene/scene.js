@@ -1,9 +1,8 @@
-// The tea house: a three.js scene behind the homepage's cards, its own chunk (home/index.js loads it after first
-// paint, on WebGL only). mount() builds the world at the time of day the page is in, stages the page (one stop per
-// gesture, cards.js and camera.js) and runs the frame loop, which draws only when something moved or petals fall.
-// It follows the theme (home/theme.js, palette.js) and the overlay's panel (panelState: no input while it is up, no
-// drawing while it covers the window). bail(why) gives the page back as the flat document. Backtick opens the
-// staging tool, ?stats and ?diag the diagnostics (dev/, loaded only then). mount() returns the state, the e2e hook.
+// The tea house behind the homepage's cards, its own chunk (home/index.js loads it after first paint, on WebGL only).
+// mount() builds the world at the page's time of day, stages the page (cards.js, camera.js) and runs the frame loop,
+// which draws only when something moved or petals fall; it returns the state (the e2e hook). It follows the theme
+// (palette.js) and the overlay (panelState: no input while the panel is up, no drawing while it covers the window).
+// bail(why) gives the page back flat. Backtick loads the staging tool, ?stats and ?diag the diagnostics (dev/).
 import { flat } from '../flat.js';
 import { lazy } from '../../lazy.js';
 import { onPanel } from '../overlay/panel.js';
