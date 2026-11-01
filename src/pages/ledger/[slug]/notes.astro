@@ -18,7 +18,7 @@ const { Content } = await renderEntry(note);
   <article data-post-article data-panel-view="notes">
     <a href={`/ledger/${slugOf(post)}/`} class="pc-link-accent back">← THE SHORT VERSION</a>
     <div class="meta">{post.data.id} <span>/ {shortDate(post.data.date)}</span></div>
-    <div class="pc-prose">
+    <div class="pc-prose" data-pagefind-body={post.data.unlisted ? undefined : ''}>
       <h1>{note.data.title}</h1>
       <p class="summary">{note.data.summary}</p>
       <Content />
