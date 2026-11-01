@@ -167,7 +167,10 @@ warns in a live notebook.
 
 | Path | What |
 |---|---|
-| `src/scripts/post-components.js` + `src/styles/post-components.css` | every `<ao-*>` post component, the player, the now-playing bar and the image viewer (split into `src/elements/` by T1.2) |
+| `src/scripts/post-components.js` + `src/styles/post-components.css` | the `<ao-*>` classes and their CSS not yet in `src/elements/` (T1.2 moves them one by one; the file becomes a shim, deleted by T3.2) |
+| `src/elements/` | the post components (`src/elements/CLAUDE.md`): `enhance.js` (viewer hook, frames, `upgrade`), `registry.js` (a tag's `element.js` loads when a post has it), `_core/` (one player at a time, the now-playing bar, the viewer hook; the viewer and its zoom load on the first open), `_lib/` (times, tables, `h()`) |
+| `src/scripts/lazy.js` | `lazy(load, fallbackUrl)`: every dynamic import; a lost chunk (a deploy since the page loaded) navigates to `fallbackUrl` or reloads once |
+| `src/styles/elements.css` | the viewer, the now-playing bar, `.visually-hidden`: linked from `PostView`, the notes page and `index.astro` (into `site.css` by T3.2); an element's own CSS is inlined into its articles by `components/post/ElementStyles.astro` |
 | `src/scripts/demos/{synthid,cf}.js` + `src/styles/demos/` | the two `<ao-demo>` demos |
 | `src/scripts/ledger-preview.js` + `.css` | the hover card (split into `scripts/cards/` by T2.2) |
 | `src/scripts/home-scene.js` | the homepage scene and overlay (split into `scripts/home/` by T3.1 and T3.2) |

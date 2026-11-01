@@ -5,9 +5,11 @@
 import { SERIES } from '../../data/series.js';
 import { listedPosts, renderEntry, slugOf } from '../../lib/content.js';
 import { shortDate } from '../../lib/dates.js';
+import ElementStyles from '../post/ElementStyles.astro';
+import '../../styles/elements.css';
 
 const { post } = Astro.props;
-const { Content } = await renderEntry(post);
+const { Content, remarkPluginFrontmatter } = await renderEntry(post);
 
 // Every post, in ledger-number order. The threads below list their members in this order, and
 // the older/newer links step through it, so no post ends in a dead end.
@@ -27,6 +29,7 @@ const newer = byId.find((p) => cmp(p.data.id, post.data.id) > 0);
 ---
 
 <article data-post-article style="width:100%;max-width:720px;padding-bottom:60px">
+  <ElementStyles tags={remarkPluginFrontmatter.text?.elements} />
   <a
     href="/ledger"
     data-close-reader

@@ -1,0 +1,12 @@
+---
+// The CSS of the post components an article uses, inside the article: no extra request, no unstyled flash, and it
+// travels into the homepage's reader with the article's HTML. tags: the post's text.elements (rehype-post-text), with
+// ao-demo as ao-demo/<name>; a live notebook that didn't render has none.
+const CSS = import.meta.glob(['/src/elements/ao-*/style.css', '/src/elements/ao-demo/demos/*/style.css'],
+  { query: '?inline', import: 'default', eager: true });
+const keyOf = (p: string) => (p.includes('/demos/') ? 'ao-demo/' + p.split('/').at(-2) : p.split('/').at(-2));
+const BY_TAG = Object.fromEntries(Object.entries(CSS).map(([p, css]) => [keyOf(p), css]));
+const { tags = [] } = Astro.props;
+const css = tags.map((t: string) => BY_TAG[t]).filter(Boolean).join('\n');
+---
+{css && <style is:inline data-ao set:html={css} />}
