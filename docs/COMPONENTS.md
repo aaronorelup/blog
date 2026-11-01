@@ -38,6 +38,32 @@ Behaviours: bars-1, bars-2. Used by 10 posts (`INVENTORY.md`); best shown by `cu
 
 ## <ao-blind>
 
+Rows of outputs made from the same brief (one row per prompt, one figure per model, agent or setting), shown
+labelled, with a "Judge blind" button. Blind, each row is shuffled, every caption is hidden and the pictures stop
+opening the viewer (its caption would give the answer away); the reader picks one per row, then Reveal puts the
+labels back, marks the picks and counts them. A figure with `data-verdict="…"` carries someone else's pick (a judge
+agent, a reviewer), shown on reveal and compared with the reader's.
+
+| Attribute | |
+|---|---|
+| `aspect="w/h"` | the frame every picture is fitted into (default `4/3`) |
+
+Children: `<div data-row="Row title">` each holding two or more `<figure>`s (an `<img>` and a `<figcaption>` whose
+`<b>` is the label), then an optional `<figcaption>` for the set. Without JS the rows are plain figures with their
+captions.
+
+```html
+<ao-blind aspect="1/1">
+<div data-row="A lighthouse at dusk">
+<figure><img src="/media/x/a.webp" alt="…"><figcaption><b>Model A</b></figcaption></figure>
+<figure data-verdict="Judge's pick"><img src="/media/x/b.webp" alt="…"><figcaption><b>Model B</b></figcaption></figure>
+</div>
+<figcaption><b>Same prompt, two models</b></figcaption>
+</ao-blind>
+```
+
+Behaviours: blind-1, blind-2. Used by 2 posts (`INVENTORY.md`); best shown by `props-three-budgets`.
+
 ## <ao-calc>
 
 ## <ao-compare>
