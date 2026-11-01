@@ -96,6 +96,32 @@ best example).
 
 ## <ao-fetch>
 
+HTTP requests the reader sends from their own browser, each with its answer as it arrives: the status, the headers
+that matter, the bytes received and the time taken. For posts whose claim is what a server does, so the reader
+checks it live instead of trusting a pasted curl. Same origin only (the site's own files); nothing is sent until a
+click. A body is counted, not kept, and reading stops at `cap`; Send all runs every row in turn.
+
+| Attribute | |
+|---|---|
+| `cap="2000000"` | the most bytes of a body read before it stops (default 2 MB; no post sets it today) |
+| `data-url` (on a row) | the request's path |
+| `data-range="bytes=a-b"` (on a row) | optional: sent as a Range header; a 200 answer then says the range was ignored |
+| `data-method="HEAD"` (on a row) | optional (default GET; no post uses it today) |
+| `data-show="body"` (on a row) | also prints the body's first 4 KB, JSON indented, for small text answers |
+
+Children: an `<ol>` of `<li data-url="…">` whose text is the label, then an optional `<figcaption>`.
+
+```html
+<ao-fetch>
+<ol>
+<li data-url="/media/x/clip.mp4" data-range="bytes=0-1023">The first KB of the clip</li>
+<li data-url="/version.json" data-show="body">What the site is running</li>
+</ol>
+</ao-fetch>
+```
+
+Behaviours: fetch-1 to fetch-3. Used by `every-video-can-seek` (the best example) and `the-branch-that-went-live`.
+
 ## <ao-frames>
 
 A video the reader steps through one frame at a time, for animation where the point is a frame or two (an impact
