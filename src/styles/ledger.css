@@ -13,27 +13,30 @@
   letter-spacing: 0.14em; text-transform: uppercase; color: var(--pc-gold);
 }
 
-/* Start here: five cards, no box. Icon, title, stamp. A row you can scroll on a phone. */
+/* A post card (PostCard.astro), in Start here and a post's Read next: icon, title, stamp, no box; the link's ::after
+   covers the card. Its list sets --card-icon and --card-glyph. */
+.post-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2); min-width: 0; }
+.post-card-icon {
+  flex: none; width: var(--card-icon); height: var(--card-icon); border-radius: var(--radius-m); background: var(--pc-tile);
+  color: var(--pc-gold); display: flex; align-items: center; justify-content: center;
+}
+.post-card-icon .glyph { width: var(--card-glyph); height: var(--card-glyph); }
+.post-card-link {
+  font-family: var(--font-display); font-size: 15px; line-height: 1.35; font-weight: 700; letter-spacing: -0.01em;
+  color: var(--pc-strong); text-decoration: none; text-wrap: pretty; transition: color 180ms ease;
+}
+.post-card-link::after { content: ''; position: absolute; inset: -8px; border-radius: var(--radius-m); }
+.post-card:hover .post-card-link { color: var(--pc-head); }
+.post-card .stamp { margin: 2px 0 0; font-size: 10.5px; }
+
+/* Start here: five cards. A row you can scroll on a phone. */
 .start { margin: 0 0 var(--space-7); }
 .start-cards {
+  --card-icon: 72px; --card-glyph: 32px;
   list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--space-5);
 }
-.start-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2); min-width: 0; }
-.start-icon {
-  width: 72px; height: 72px; border-radius: var(--radius-m); background: var(--pc-tile); color: var(--pc-gold);
-  display: flex; align-items: center; justify-content: center;
-}
-.start-icon .glyph { width: 32px; height: 32px; }
-.start-link {
-  font-family: var(--font-display); font-size: 15px; line-height: 1.35; font-weight: 700; letter-spacing: -0.01em;
-  color: var(--pc-strong); text-decoration: none; text-wrap: pretty;
-  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden;
-  transition: color 180ms ease;
-}
-.start-link::after { content: ''; position: absolute; inset: -8px; border-radius: var(--radius-m); }
-.start-card:hover .start-link { color: var(--pc-head); }
-.start-card .stamp { margin: 2px 0 0; font-size: 10.5px; }
+.start-cards .post-card-link { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
 
 /* The chips: a row of topics, a row of projects, each under its label with its count. The lit one is aria-current.
    The chips flow as inline boxes so a row that wraps balances its lines and never leaves one chip alone on the last. */
@@ -127,11 +130,11 @@
     grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 140px; overflow-x: auto;
     scroll-snap-type: x mandatory; scroll-padding-inline: 8px; padding: 8px; margin: -8px; scrollbar-width: none;
   }
-  .start-card { scroll-snap-align: start; }
+  .start-cards > .post-card { scroll-snap-align: start; }
 }
 @media (max-width: 560px) {
-  .start-icon { width: 56px; height: 56px; }
-  .start-link { font-size: 14px; }
+  .start-cards { --card-icon: 56px; }
+  .start-cards .post-card-link { font-size: 14px; }
   .row { column-gap: var(--space-3); padding: var(--space-3) 10px; margin: 0 -10px; }
   .row-link { font-size: 16.5px; }
   .row-summary { font-size: 15px; }

@@ -53,7 +53,7 @@ test('post-2 Read next: three listed posts, never the post itself; older and new
   const feet = await read(page, request, open.map((s) => `/ledger/${s}/`), (html) => {
     const doc = new DOMParser().parseFromString(html, 'text/html');
     const hrefs = (sel) => [...doc.querySelectorAll(sel)].map((a) => a.getAttribute('href').split('/')[2]);
-    return { related: hrefs('.rel-link'), older: hrefs('.post-nav-link:not(.is-newer)')[0] ?? null,
+    return { related: hrefs('.rel .post-card-link'), older: hrefs('.post-nav-link:not(.is-newer)')[0] ?? null,
       newer: hrefs('.post-nav-link.is-newer')[0] ?? null, threads: doc.querySelectorAll('[data-series]').length };
   });
   for (const slug of open) {
@@ -149,7 +149,7 @@ test('post-6 an unlisted post: noindex, no share card, no short version, its top
   await expect(page.locator('meta[property="og:image"]')).toHaveCount(0);
   await expect(page.locator('#short')).toHaveCount(0);
   await expect(page.locator('.post-icon.is-glyph svg')).toBeVisible();
-  for (const a of await page.locator('.rel-link').all()) expect(posts[(await a.getAttribute('href')).split('/')[2]]).toBeTruthy();
+  for (const a of await page.locator('.rel .post-card-link').all()) expect(posts[(await a.getAttribute('href')).split('/')[2]]).toBeTruthy();
 });
 
 test('post-7 every listed post shares an absolute 1200x630 JPEG card under 150 KB, as an article', async ({ page, request }, info) => {

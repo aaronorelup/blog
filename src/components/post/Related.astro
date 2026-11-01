@@ -1,12 +1,9 @@
 ---
 // Three listed posts to read next (lib/posts.js related): those sharing a project, then the topic, nearest in date.
-// Icon (or the topic's glyph; data-no-zoom: not a picture for the viewer), title and stamp each, like Start here.
-import { TOPICS } from '../../data/taxonomy.js';
-import { cardOf } from '../../lib/cards.js';
-import { listedPosts, slugOf } from '../../lib/content.js';
-import { iconFor } from '../../lib/icons.js';
+// Icon, title and stamp each, as in Start here (ledger/PostCard).
+import { listedPosts } from '../../lib/content.js';
 import { related } from '../../lib/posts.js';
-import Glyph from '../chrome/Glyph.astro';
+import PostCard from '../ledger/PostCard.astro';
 
 const { post } = Astro.props;
 const posts = related(post, await listedPosts());
@@ -14,18 +11,6 @@ const posts = related(post, await listedPosts());
 <nav class="rel" aria-labelledby="rel-title">
   <p class="eyebrow" id="rel-title">Read next</p>
   <ol class="rel-cards">
-    {posts.map((p) => {
-      const icon = iconFor(p);
-      const { verdict } = cardOf(p);
-      return (
-        <li class="rel-card">
-          {icon
-            ? <img class="rel-icon" data-no-zoom src={icon.s96} width="56" height="56" loading="lazy" decoding="async" alt="" />
-            : <span class="rel-icon is-glyph"><Glyph name={TOPICS[p.data.topic].glyph} /></span>}
-          <a class="rel-link" href={`/ledger/${slugOf(p)}/`}>{p.data.title}</a>
-          {verdict && <span class="stamp">{verdict}</span>}
-        </li>
-      );
-    })}
+    {posts.map((p) => <PostCard post={p} size={56} />)}
   </ol>
 </nav>

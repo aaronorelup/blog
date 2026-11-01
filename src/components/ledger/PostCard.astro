@@ -1,0 +1,22 @@
+---
+// A post as a small card, no box: its icon (or its topic's glyph), its title as the link, its verdict stamped. Start
+// here (StartHere) and a post's Read next (post/Related) list them; the list sets the icon's size (ledger.css
+// --card-icon, size here). data-no-zoom: the icon isn't one of a post's pictures, so the viewer never pages to it.
+import { TOPICS } from '../../data/taxonomy.js';
+import { cardOf } from '../../lib/cards.js';
+import { slugOf } from '../../lib/content.js';
+import { iconFor } from '../../lib/icons.js';
+import Glyph from '../chrome/Glyph.astro';
+
+const { post, size } = Astro.props;
+const icon = iconFor(post);
+const { verdict } = cardOf(post);
+---
+<li class="post-card">
+  {icon
+    ? <img class="post-card-icon" data-no-zoom src={icon.s96} srcset={`${icon.s96} 96w, ${icon.s256} 256w`} sizes={`${size}px`}
+        width={size} height={size} loading="lazy" decoding="async" alt="" />
+    : <span class="post-card-icon is-glyph"><Glyph name={TOPICS[post.data.topic].glyph} /></span>}
+  <a class="post-card-link" href={`/ledger/${slugOf(post)}/`}>{post.data.title}</a>
+  {verdict && <span class="stamp">{verdict}</span>}
+</li>

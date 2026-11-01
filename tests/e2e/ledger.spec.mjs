@@ -155,12 +155,12 @@ test('ledger-14 a chip row that wraps balances its lines: never one chip alone o
 
 test('ledger-10 Start here shows its five posts, each with icon, title and stamp', async ({ page }) => {
   await page.goto('/ledger/');
-  const cards = page.locator('.start-card');
+  const cards = page.locator('.start-cards > .post-card');
   await expect(cards).toHaveCount(5);
-  expect(await cards.locator('.start-link').evaluateAll((as) => as.map((a) => a.getAttribute('href'))))
+  expect(await cards.locator('.post-card-link').evaluateAll((as) => as.map((a) => a.getAttribute('href'))))
     .toEqual(START_HERE.map((s) => `/ledger/${s}/`));
   for (const card of await cards.all()) {
-    await expect(card.locator('.start-icon')).toBeVisible();
+    await expect(card.locator('.post-card-icon')).toBeVisible();
     await expect(card.locator('.stamp')).not.toBeEmpty();
   }
 });

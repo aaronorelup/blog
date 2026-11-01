@@ -1,7 +1,7 @@
 /* The post page (components/post/): on /ledger/<slug>/, its notes page and in the homepage overlay. The header, the
    short version, the making-of link, the contents list (above the text, or a sticky column beside it from 1180 px),
-   Read next and older/newer. The text itself is prose.css. Each part carries its own width, so a copy of the
-   article's insides lays out the same. */
+   Read next (its cards are ledger.css's .post-card) and older/newer. The text itself is prose.css. Each part carries
+   its own width, so a copy of the article's insides lays out the same. */
 
 .post { width: 100%; max-width: 720px; padding-bottom: var(--space-8); }
 .post-head, .short, .notes-link, .post-body, .post-foot { max-width: 720px; }
@@ -14,11 +14,10 @@
 }
 .post-back:hover { color: var(--pc-strong); }
 .post-meta { display: flex; align-items: center; gap: var(--space-4); margin: 0 0 var(--space-5); }
-.post-icon, .rel-icon {
-  flex: none; border-radius: var(--radius-m); background: var(--pc-tile); color: var(--pc-gold);
+.post-icon {
+  flex: none; width: 64px; height: 64px; border-radius: var(--radius-m); background: var(--pc-tile); color: var(--pc-gold);
   display: flex; align-items: center; justify-content: center;
 }
-.post-icon { width: 64px; height: 64px; }
 .post-icon .glyph { width: 30px; height: 30px; }
 .post-line { margin: 0 0 6px; font: 12px/1.6 var(--font-mono); color: var(--pc-quiet); }
 .post-id { color: var(--pc-accent); }
@@ -102,22 +101,17 @@
 /* The end: the making-of again, Read next, older and newer. */
 .post-foot { margin-top: var(--space-8); }
 .rel { margin: 0 0 var(--space-7); padding-top: var(--space-5); border-top: 1px solid var(--pc-line); }
-.rel-cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
-.rel-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2); min-width: 0; }
-.rel-icon { width: 56px; height: 56px; }
-.rel-icon .glyph { width: 26px; height: 26px; }
-.rel-link {
-  font-family: var(--font-display); font-size: 15px; line-height: 1.35; font-weight: 700; letter-spacing: -0.01em;
-  color: var(--pc-strong); text-decoration: none; text-wrap: pretty; transition: color 180ms ease;
+.rel-cards {
+  --card-icon: 56px; --card-glyph: 26px;
+  list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5);
 }
-.rel-link::after { content: ''; position: absolute; inset: -8px; border-radius: var(--radius-m); }
-.rel-card:hover .rel-link { color: var(--pc-head); }
-.rel-card .stamp { margin: 2px 0 0; font-size: 10.5px; }
 @media (max-width: 640px) {
   .rel-cards { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
-  .rel-card { display: grid; grid-template-columns: 56px minmax(0, 1fr); column-gap: var(--space-3); align-items: center; }
-  .rel-icon { grid-row: span 2; }
-  .rel-card .stamp { justify-self: start; }
+  .rel-cards > .post-card {
+    display: grid; grid-template-columns: var(--card-icon) minmax(0, 1fr); column-gap: var(--space-3); align-items: center;
+  }
+  .rel-cards .post-card-icon { grid-row: span 2; }
+  .rel-cards .stamp { justify-self: start; }
 }
 
 .post-nav {
