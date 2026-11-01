@@ -15,7 +15,7 @@ const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, 
 // One run of text as an RGBA PNG; height given: the size that fits it.
 async function text(fontfile, markup, size, height) {
   const { data, info } = await sharp({
-    text: { text: markup, fontfile, font: `Zen Maru Gothic ${size}`, width: TEXT_W, wrap: 'word', rgba: true,
+    text: { text: markup, fontfile, font: `Zen Maru Gothic ${size}`, width: TEXT_W, wrap: 'word-char', rgba: true,
       ...(height ? { height } : { dpi: 72 }) },
   }).png().toBuffer({ resolveWithObject: true });
   return { input: data, w: info.width, h: info.height };

@@ -13,6 +13,10 @@ import { rehypePlugins } from '../../scripts/build/markdown.mjs';
 import { baselineProblems, previewsProblems, readBaseline, rssProblems, statsPagesProblems } from '../../scripts/build/contracts.mjs';
 import { collections } from './content-schema.mjs';
 import { docOf, manifestOf, shortVersion } from '../../src/lib/search/chunks.js';
+import sharp from 'sharp';
+import { renderCard } from '../../src/lib/og/card.js';
+import { OG } from '../../src/data/limits.js';
+import { TOPICS } from '../../src/data/taxonomy.js';
 
 const { slug, paths } = LIVE_NOTEBOOKS['AO-073'];
 const file = new URL(`../../src/content/posts/${slug}.md`, import.meta.url);
@@ -83,4 +87,16 @@ test('AO-073 rendered blank is still a search doc; its pushes leave the search m
   assert.equal(after.v, before.v);
   assert.notEqual(after.docs[`post:${slug}`], before.docs[`post:${slug}`]);
   assert.notEqual(manifestOf([doc('earthlight', { sections })]).v, before.v, 'AO-073 unlisted moves v, so the sync drops it');
+});
+
+test('AO-073 has no icon, and its share card draws the topic glyph, even with a 200-character title and no topic', async () => {
+  assert.ok(!fs.existsSync(new URL('../../public/media/icons/AO-073.webp', import.meta.url)));
+  const topic = TOPICS[post.topic] ?? TOPICS.agents;   // what the schema's transform gives a post with no topic
+  const fontfile = fileURLToPath(new URL('../../src/assets/fonts/zen-maru-gothic-700-latin.ttf', import.meta.url));
+  for (const title of [post.title, 'T'.repeat(200)]) {
+    const jpg = await renderCard({ fontfile, eyebrow: `AO-073 · ${topic.label}`, title, verdict: post.preview?.verdict, glyph: topic.glyph });
+    const { format, width, height } = await sharp(jpg).metadata();
+    assert.deepEqual([format, width, height], ['jpeg', OG.width, OG.height]);
+    assert.ok(jpg.length <= OG.cap, `${jpg.length} bytes`);
+  }
 });
