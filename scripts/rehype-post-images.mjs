@@ -14,34 +14,26 @@
 // first (rehype-raw, the same parser Astro uses; its own pass later finds nothing left to do).
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import rehypeRaw from 'rehype-raw';
+import sharp from 'sharp';
 
 const FULL_EXTS = ['.webp', '.png', '.jpg', '.jpeg', '.avif'];
 
-export default function rehypePostImages() {
+// `publicDir` is astro.config.mjs's own public/ path.
+export default function rehypePostImages({ publicDir: pub }) {
   const parse = rehypeRaw();
   const sizes = new Map();
-  let sharp;
-  const sizeOf = async (file) => {
+  const sizeOf = (file) => {
     if (!sizes.has(file)) {
-      sizes.set(file, (async () => {
-        try {
-          sharp = sharp || (await import('sharp')).default;
-          const m = await sharp(file).metadata();
-          return m.width && m.height ? { w: m.width, h: m.height } : null;
-        } catch (e) {
-          return null; // no sharp, or not an image it can read: leave the tag as written
-        }
-      })());
+      sizes.set(file, sharp(file).metadata()
+        .then((m) => (m.width && m.height ? { w: m.width, h: m.height } : null))
+        .catch(() => null)); // no such file, or not an image sharp reads: leave the tag as written
     }
     return sizes.get(file);
   };
 
   return async (tree, file) => {
     const root = parse(tree, file) || tree;
-    const pub = publicDir(file);
-    if (!pub) return root;
     const imgs = [];
     (function walk(node) {
       if (node.type === 'element' && node.tagName === 'img') imgs.push(node);
@@ -71,23 +63,4 @@ export default function rehypePostImages() {
     }));
     return root;
   };
-}
-
-// public/ for the project the Markdown file belongs to: walk up from the file to the folder
-// that holds both src/ and public/. The dev server is often started from the folder above
-// (--root blog), so the working directory can't be trusted.
-const roots = new Map();
-function publicDir(file) {
-  let dir = file?.path ? path.dirname(typeof file.path === 'string' ? file.path : fileURLToPath(file.path)) : process.cwd();
-  if (roots.has(dir)) return roots.get(dir);
-  const start = dir;
-  let found = null;
-  for (let i = 0; i < 8 && dir; i++) {
-    if (fs.existsSync(path.join(dir, 'public')) && fs.existsSync(path.join(dir, 'src'))) { found = path.join(dir, 'public'); break; }
-    const up = path.dirname(dir);
-    if (up === dir) break;
-    dir = up;
-  }
-  roots.set(start, found);
-  return found;
 }
