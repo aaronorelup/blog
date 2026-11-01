@@ -1,4 +1,7 @@
+// /rss.xml: every listed post, newest first. guid = the post's URL (a frozen contract); categories are its topic's and
+// projects' labels (src/data/taxonomy.js).
 import rss from '@astrojs/rss';
+import { PROJECTS, TOPICS } from '../data/taxonomy.js';
 import { listedPosts, slugOf } from '../lib/content.js';
 import { ledgerOrder } from '../lib/posts.js';
 
@@ -15,7 +18,7 @@ export async function GET(context) {
       title: post.data.title,
       pubDate: post.data.date,
       description: post.data.summary,
-      categories: post.data.tags,
+      categories: [TOPICS[post.data.topic].label, ...post.data.project.map((k) => PROJECTS[k].label)],
       link: `/ledger/${slugOf(post)}/`,
     })),
   });
