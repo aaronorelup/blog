@@ -12,6 +12,8 @@ const attrOf = (el) => (name) => {
   return v === undefined || v === null || v === false ? null : Array.isArray(v) ? v.join(' ') : String(v);
 };
 const elementsOf = (el) => el.children.filter((c) => c.type === 'element');
+const numbers = (el) => (el.tagName === 'ul' || el.tagName === 'ol')
+  && numberList(elementsOf(el).map((li) => normalize(ownText(li))));
 
 // An element's own text: nested blocks, nested lists and skipped subtrees left out. Inline code that isn't read goes
 // into `noread`, for the caller to stamp.
@@ -64,22 +66,18 @@ export default function rehypePostText({ tags }) {
       words += countWords(text);
     };
 
-    // Reading skips <details>; search keeps its text as folded. A skipped subtree is still walked for its
+    // Reading skips <details>; search keeps its text, as folded. A skipped subtree is still walked for its
     // components and links.
     (function walk(node, skip, folded) {
       for (const el of elementsOf(node)) {
         const tag = el.tagName;
-        let [s, f] = [skip, folded];
         if (tag.startsWith('ao-')) component(el);
         if (tag === 'a' && /^\/(?!\/)/.test(el.properties.href)) links.add(el.properties.href);
-        if (!s && tag === 'details') f = true;
-        else if (!s && (skipped(tag, attrOf(el))
-          || ((tag === 'ul' || tag === 'ol') && numberList(elementsOf(el).map((li) => normalize(ownText(li))))))) s = true;
-        else if (!s) {
-          const kind = blockOf(tag, node.tagName);
-          if (kind) block(el, kind, f);
-        }
-        walk(el, s, f);
+        const fold = folded || tag === 'details';
+        const off = skip || (tag !== 'details' && (skipped(tag, attrOf(el)) || numbers(el)));
+        const kind = !off && blockOf(tag, node.tagName);
+        if (kind) block(el, kind, fold);
+        walk(el, off, fold);
       }
     })(tree, false, false);
 
