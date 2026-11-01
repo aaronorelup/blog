@@ -1,5 +1,5 @@
 /* The projects page (components/projects/), on /projects and in the homepage overlay. Colours are the --pc-* tokens
-   only, so the overlay's day/night tween carries them. Pictures sit in square 16:9 wells sized before they load. */
+   only, so the overlay's day/night tween carries them. Pictures sit in 16:9 wells sized before they load. */
 
 .proj { padding-bottom: var(--space-8); }
 .proj .view-intro { margin-bottom: var(--space-5); }
