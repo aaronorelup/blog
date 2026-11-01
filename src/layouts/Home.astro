@@ -1,5 +1,7 @@
 ---
-// Shell for the homepage only: the scene owns its own chrome and background. Panel pages use PanelPage.astro.
+// Shell for the homepage only: the scene owns its own chrome. It links site.css, as every panel page does
+// (PanelPage.astro), so the overlay's views find every rule they need already here.
+import '../styles/site.css';
 import Head from '../components/chrome/Head.astro';
 
 interface Props {
@@ -16,37 +18,6 @@ const {
 <html lang="en" class="no-js">
   <head>
     <Head title={title} description={description} />
-    <style is:global>
-      html { scroll-behavior: auto; }
-      body {
-        margin: 0;
-        background: #fbf3e8;
-        color: #4a4a50;
-        font-family: Karla, system-ui, sans-serif;
-      }
-      a { color: #a85e2b; text-decoration-thickness: 1px; text-underline-offset: 3px; }
-      a:hover { color: #be7a10; }
-      :focus-visible { outline: 3px solid #be7a10; outline-offset: 3px; border-radius: 4px; }
-      ::selection { background: #f7c9d4; }
-      a.skip {
-        position: absolute; left: 16px; top: -64px; z-index: 50;
-        background: #fbf3e8; color: #4a4a50;
-        padding: 12px 18px; border-radius: 12px; border: 2px solid #3a3a42;
-        font-weight: 600; font-family: Karla, sans-serif; text-decoration: none;
-      }
-      a.skip:focus { top: 16px; }
-      @keyframes avatar-bob {
-        0%, 100% { transform: translateY(0) rotate(-2deg); }
-        50%      { transform: translateY(-7px) rotate(2deg); }
-      }
-      @keyframes avatar-hop {
-        0%   { transform: translate3d(0, 0, 0); }
-        30%  { transform: translate3d(0, -26px, 130px); }
-        52%  { transform: translate3d(0, -34px, 152px); }
-        78%  { transform: translate3d(0, -12px, 62px); }
-        100% { transform: translate3d(0, 0, 0); }
-      }
-    </style>
   </head>
   <body>
     <a class="skip" href="#content">Skip to content</a>

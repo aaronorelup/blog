@@ -1,0 +1,14 @@
+/* The homepage (pages/index.astro): the tea house scene's cards, its rail and the coin. */
+
+/* The coin breathes on hover and hops when tossed (scripts/home/coin.js). */
+@keyframes avatar-bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-7px) rotate(2deg); }
+}
+@keyframes avatar-hop {
+  0%   { transform: translate3d(0, 0, 0); }
+  30%  { transform: translate3d(0, -26px, 130px); }
+  52%  { transform: translate3d(0, -34px, 152px); }
+  78%  { transform: translate3d(0, -12px, 62px); }
+  100% { transform: translate3d(0, 0, 0); }
+}
