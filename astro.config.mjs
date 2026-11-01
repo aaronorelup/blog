@@ -1,5 +1,5 @@
 import { defineConfig } from 'astro/config';
-import rehypePostImages from './scripts/rehype-post-images.mjs';
+import { rehypePlugins } from './scripts/build/markdown.mjs';
 import statsPages from './scripts/build/stats-pages.mjs';
 import devStatsFixture from './scripts/build/dev-stats-fixture.mjs';
 import loreThumbs from './scripts/lore-thumbs.mjs';
@@ -46,9 +46,8 @@ export default defineConfig({
       },
       defaultColor: false,
     },
-    // Every post picture gets its file's width and height (no jumping text as they load), and
-    // a data-full link to a larger copy when one sits beside it. See the plugin.
-    rehypePlugins: [[rehypePostImages, { publicDir }]],
+    // Pictures sized, headings' ids, then the one text extraction every feature reads (scripts/build/markdown.mjs).
+    rehypePlugins: rehypePlugins({ publicDir }),
   },
   vite: {
     define: { __PUBLIC_DIR__: JSON.stringify(publicDir) },

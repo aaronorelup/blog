@@ -1,17 +1,7 @@
-// Build-time pass over every post's HTML, for the pictures in it.
-//
-// - Each <img> that points at a file in public/ gets that file's width and height, so the
-//   browser keeps its space before the (lazy) file arrives. Without them the text below every
-//   picture jumped down as you scrolled into it, and a jump back to a playing video ("Back to
-//   it") or to a heading landed somewhere else by the time the pictures above had loaded.
-// - If a larger copy sits beside the file as <name>.full.<ext>, the image gets
-//   data-full="…": the post shows the light copy and the image viewer loads the large one when
-//   the picture is opened (post-components.js, "The image viewer").
-// Attributes already written in the post win.
-//
-// Most pictures in posts are raw HTML (<figure>, <ao-compare>), which Markdown hands to rehype
-// as unparsed text, and Astro parses it only after every user plugin has run. So this parses it
-// first (rehype-raw, the same parser Astro uses; its own pass later finds nothing left to do).
+// Every post picture that points into public/ gets its file's width and height (no text jumping as pictures load)
+// and data-full="<name>.full.<ext>" when a larger copy sits beside it (the image viewer opens that one). Attributes
+// written in the post win. It first parses the raw HTML (rehype-raw, the parser Astro uses), because Markdown hands
+// <figure> and <ao-*> markup over as unparsed text, so this plugin and the ones after it see every element.
 import fs from 'node:fs';
 import path from 'node:path';
 import rehypeRaw from 'rehype-raw';
