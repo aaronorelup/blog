@@ -1,9 +1,12 @@
 // <ao-game>: a poster until Play, then the game's page in a frame; a player that pauses off screen, when the tab
 // hides, when anything else plays and on ao-stop, and resumes from its veil. Stop and the own-tab link unload it.
 import { test, expect } from '../fixtures.mjs';
-import { open, pageWith, scrollAway, scrollBack, expectPlaying, smallVideo } from '../helpers.mjs';
+import { targets, open, pageWith, scrollAway, scrollBack, expectPlaying, smallVideo } from '../helpers.mjs';
 
 const url = pageWith('ao-game');
+// The element reaches into the game's window once the frame has loaded; its requestAnimationFrame is then ours.
+const hooked = (frame) => expect.poll(() => frame.evaluate((f) =>
+  !!f.contentWindow && !/\[native code\]/.test(String(f.contentWindow.requestAnimationFrame)))).toBe(true);
 const game = (page) => page.locator('ao-game').first();
 async function start(page) {
   await open(page, url);
@@ -14,7 +17,7 @@ async function start(page) {
   await expect(frame).toHaveAttribute('src', await g.getAttribute('src'));
   await expect(g.locator('.ao-game-full')).toBeVisible();
   await expect(g.locator('.ao-game-stop')).toBeVisible();
-  await expect.poll(() => frame.evaluate((f) => f.contentDocument?.readyState)).toBe('complete');
+  await hooked(frame);
   return g;
 }
 const veil = (g) => g.locator('.ao-game-veil');
@@ -26,8 +29,8 @@ test('game-1 Play loads the game in a frame', async ({ page }) => {
 test('game-2 scrolled away it pauses behind a veil, and the veil resumes it', async ({ page }) => {
   const g = await start(page);
   await scrollAway(g);
-  await scrollBack(g);
   await expect(veil(g)).toBeVisible();
+  await scrollBack(g);
   await expect(veil(g)).toContainText('Paused when you scrolled away.');
   await veil(g).click();
   await expect(veil(g)).toBeHidden();
@@ -76,3 +79,21 @@ test('game-5 Stop unloads it, and so does opening it in its own tab', async ({ p
   await expect(g.locator('iframe')).toHaveCount(0);
   await expect(g.locator('.ao-game-msg')).toHaveText('Opened in its own tab.');
 });
+
+// Every game a post embeds, under public/games/ and public/labs/: it loads in its frame and pauses off screen.
+const games = [...new Map(targets.tags['ao-game'].filter((u) => !u.live).map((u) => [u.attrs.src, u.page]))];
+for (const [src, url] of games) {
+  test(`game-6 ${src} loads in ${url} and pauses off screen`, async ({ page }) => {
+    const errors = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await open(page, url);
+    const g = page.locator(`ao-game[src="${src}"]`).first();
+    await g.locator('.ao-game-load').click();
+    await hooked(g.locator('iframe'));
+    await scrollAway(g);
+    await expect(veil(g)).toBeVisible();
+    await scrollBack(g);
+    await expect(veil(g)).toContainText('Paused when you scrolled away.');
+    expect(errors).toEqual([]);
+  });
+}

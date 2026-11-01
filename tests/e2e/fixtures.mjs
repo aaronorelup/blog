@@ -12,11 +12,12 @@ const SHAPES = JSON.parse(fs.readFileSync(here('fixtures/api.json'), 'utf8'));
 const DEFAULTS = { 'GET /api/reads': 'reads-200', 'POST /api/reads': 'reads-204', 'GET /api/stats': 'stats-200',
                    'GET /cdn-cgi/trace': 'trace' };
 
-// A test that ends mid-download cancels the fetch; that is the only way this fails, so it is let go.
+// A test that ends mid-download disposes of the fetch; that is the only way this fails, so it is let go.
 async function forward(route) {
   const u = new URL(route.request().url());
   await route.fetch({ url: LIVE + u.pathname + u.search, timeout: 60_000 })
-    .then((response) => route.fulfill({ response }), () => {});
+    .then((response) => route.fulfill({ response }))
+    .catch(() => {});
 }
 
 function answer(route, picks) {
