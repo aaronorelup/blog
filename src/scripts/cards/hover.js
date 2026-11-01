@@ -121,7 +121,11 @@ function show(hit) {
   // decoding underneath a picture nobody can see.
   if (renderedSlug !== hit.slug) stopLoop();
   const row = hit.a.hasAttribute('data-ledger-entry');
-  if (renderedSlug !== hit.slug || els.title.hidden !== row) {
+  const refill = renderedSlug !== hit.slug || els.title.hidden !== row;
+  // Straight from another link to this same card (two of Goobie's cites of one post): only the line and the place
+  // change, and its loop plays on rather than from the start.
+  const playing = shown && !refill;
+  if (refill) {
     renderedSlug = hit.slug;
     fill(els, p, row);
   }
@@ -129,7 +133,7 @@ function show(hit) {
   shown = hit;
   place(card, els, hit.a);
   card.classList.add('lp-on');
-  startLoop(hit.slug, p);
+  if (!playing) startLoop(hit.slug, p);
 }
 
 function hide() {
