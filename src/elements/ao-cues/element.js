@@ -3,6 +3,7 @@
 // sends every video there. The first video sets the clock and the others follow it; a Sound button per video picks
 // the one heard. Without JS: the videos with their own controls, and the cues as a plain list. docs/COMPONENTS.md.
 import { AO_LISTEN_PLAY, claim } from '../_core/player.js';
+import { h } from '../_lib/dom.js';
 import { fmtTime, parseTime } from '../_lib/time.js';
 
 // Keeping two videos together: a follower that drifts a little is sped up or slowed down by a
@@ -26,15 +27,11 @@ class AoCues extends HTMLElement {
       .sort((a, b) => a.t - b.t);
 
     this.style.setProperty('--ao-cues-n', String(Math.min(vids.length, 2)));
-    const grid = document.createElement('div');
-    grid.className = 'ao-cues-grid';
+    const grid = h('div', { class: 'ao-cues-grid' });
     vids[0].before(grid);
     vids.forEach((v, k) => {
-      const cell = document.createElement('div');
-      cell.className = 'ao-cues-cell';
-      const tag = document.createElement('span');
-      tag.className = 'ao-cues-tag';
-      tag.textContent = name(k);
+      const cell = h('div', { class: 'ao-cues-cell' });
+      const tag = h('span', { class: 'ao-cues-tag', text: name(k) });
       v.removeAttribute('controls');
       v.removeAttribute('loop');
       v.playsInline = true;
@@ -44,14 +41,9 @@ class AoCues extends HTMLElement {
       grid.append(cell);
     });
 
-    const bar = document.createElement('div');
-    bar.className = 'ao-cues-bar';
+    const bar = h('div', { class: 'ao-cues-bar' });
     const btn = (label, title, fn) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = label;
-      b.title = title;
-      b.addEventListener('click', fn);
+      const b = h('button', { type: 'button', text: label, title, onclick: fn });
       bar.append(b);
       return b;
     };
@@ -59,24 +51,16 @@ class AoCues extends HTMLElement {
     const sound = vids.length > 1
       ? vids.map((v, k) => btn('Sound: ' + name(k), 'Hear this cut', () => hear(k)))
       : [];
-    const scrub = document.createElement('input');
-    scrub.type = 'range';
-    scrub.min = '0';
-    scrub.max = '1';
-    scrub.step = '0.01';
+    const scrub = h('input', { type: 'range', min: '0', max: '1', step: '0.01', 'aria-label': 'Position' });
     scrub.value = '0';
-    scrub.setAttribute('aria-label', 'Position');
-    const clock = document.createElement('span');
-    clock.className = 'ao-cues-clock';
+    const clock = h('span', { class: 'ao-cues-clock' });
     bar.append(scrub, clock);
     grid.after(bar);
 
     ol.classList.add('ao-cues-list');
     ol.setAttribute('aria-label', 'Cues: choose one to jump there');
     for (const c of cues) {
-      const time = document.createElement('time');
-      time.textContent = fmtTime(c.t);
-      c.li.prepend(time);
+      c.li.prepend(h('time', { text: fmtTime(c.t) }));
       c.li.tabIndex = 0;
       c.li.setAttribute('role', 'button');
       c.li.addEventListener('click', () => seek(c.t, true));
