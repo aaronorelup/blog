@@ -5,7 +5,8 @@
 - **One folder per tag, found by name:** `ao-x/element.js` defines the class and ends with
   `customElements.define('ao-x', AoX)` (a module runs once: no `get()` guard). `ao-x/style.css` beside it holds that
   element's CSS and only its CSS. `registry.js` loads a folder's module when its tag is in a post; `ElementStyles.astro`
-  inlines its CSS into the articles that use it. `ao-demo` loads `ao-demo/demos/<name>/index.js` (`mount`).
+  inlines its CSS into the articles that use it; the build knows the tag by its folder (`scripts/build/markdown.mjs`).
+  `ao-demo` loads `ao-demo/demos/<name>/index.js` (`mount`).
 - **Never import CSS from JS** here (`scripts/check/code.mjs` fails it). What every element shares (the viewer, the
   now-playing bar, `.visually-hidden`) is `src/styles/elements.css`.
 - **The cascade:** a `style.css` is inlined in the article, after the page's stylesheets, so a rule exactly as

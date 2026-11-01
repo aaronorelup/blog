@@ -1,4 +1,4 @@
-// The image viewer every post picture opens in (post-components.js "The image viewer"): click and Enter open it,
+// The image viewer every post picture opens in (src/elements/_core/viewer.js): click and Enter open it,
 // the arrows, Home/End and the side buttons page, wheel, keys, a click, a double tap and a pinch zoom, Esc and Back
 // close it, data-full is fetched, and pictures in links and components keep their own click.
 import { test, expect } from './fixtures.mjs';
