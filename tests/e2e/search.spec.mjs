@@ -201,8 +201,14 @@ test.describe('without the meaning half', () => {
 test.describe('Ask Goobie', () => {
   test('search-8 Ask loads Turnstile only once opened, asks once at a time, and links its sources', async ({ page, context }) => {
     const seen = await watch(page, context);
-    await page.route('**/api/ask', async (route) => {   // slow enough to see the pending state
-      await new Promise((r) => setTimeout(r, 700));
+    // The first question is held until the test lets it go, so its pending state and a second Enter during it are
+    // seen however slow the box is. A fixed delay (it was 700 ms) let the answer come back first on a loaded box,
+    // and that second Enter then rightly asked again.
+    let letGo;
+    const held = new Promise((r) => { letGo = r; });
+    let asked = 0;
+    await page.route('**/api/ask', async (route) => {
+      if (++asked === 1) await held;
       await route.fallback();
     });
     await page.goto('/ledger/');
@@ -224,6 +230,8 @@ test.describe('Ask Goobie', () => {
     await expect(page.locator('.search-go')).toBeDisabled();
     await expect(page.locator('.search')).toHaveClass(/is-thinking/);
     await input(page).press('Enter');   // a second Enter while one is out sends nothing
+    await expect(page.locator('.search')).toHaveClass(/is-thinking/);
+    letGo();
     // Every cite is a passage of one post, so each reads [1], and a run of them ([1][2], [1][3]) shows once.
     await expect(page.locator('.ask-text')).toHaveText(reply.answer.replace(/(\[\d+\])+/g, '[1]'));
     await expect(page.locator('.search-go')).toBeEnabled();
