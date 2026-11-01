@@ -46,7 +46,7 @@ Pages: every post with pictures; the spec uses the first page with `data-full` p
 | A double tap zooms | stage pointer events, touch | viewer-6 (phone) |
 | A pinch zooms | stage pointer events, two touches | viewer-7 (desktop project, touch sent through the Chromium DevTools protocol; real devices: Aaron's list) |
 | Esc closes; Back closes without leaving the post | dialog `cancel` `close`, window `popstate`, history entry | viewer-8 |
-| `data-full` is the file fetched and linked | `data-full` | viewer-9 |
+| `data-full` is the file fetched and linked (on the first of those pages where such a picture opens in the viewer) | `data-full` | viewer-9 |
 | Pictures in links, buttons, `ao-slider`, `ao-pan`, `ao-model`, `ao-game`, `ao-listen`, `[data-no-zoom]` keep their own click | `NO_VIEWER` | viewer-10 |
 | The toolbar zooms in, out, fits, links the file, closes | dialog `click` (`in`, `out`, `fit`, `close`) | viewer-11 (a phone hides + and −, by design) |
 | `ao-stop` closes it | document `ao-stop` | viewer-12 |

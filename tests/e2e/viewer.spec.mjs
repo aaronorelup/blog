@@ -2,9 +2,10 @@
 // the arrows, Home/End and the side buttons page, wheel, keys, a click, a double tap and a pinch zoom, Esc and Back
 // close it, data-full is fetched, and pictures in links and components keep their own click.
 import { test, expect } from './fixtures.mjs';
-import { open, targets } from './helpers.mjs';
+import { open, openFirst, targets } from './helpers.mjs';
 
-const url = targets.dataFull.find((p) => !targets.pages[p].live);
+const fullPages = targets.dataFull.filter((p) => !targets.pages[p].live);
+const url = fullPages[0];
 const dlg = (page) => page.locator('dialog.ao-lb');
 const count = (page) => dlg(page).locator('.ao-lb-count');
 const pics = (page) => page.locator('[data-post-article] img[role=button]');
@@ -203,7 +204,9 @@ test('viewer-14 a resize keeps the picture the size it was on screen, and fit th
 });
 
 test('viewer-9 a picture with data-full shows that file', async ({ page }) => {
-  const pic = page.locator('[data-post-article] img[data-full][role=button]').first();
+  // A page's only data-full pictures may sit in a component with its own click (an ao-slider): take the next page.
+  const opens = (p) => p.locator('[data-post-article] img[data-full][role=button]');
+  const pic = await openFirst(page, fullPages, async (p) => (await opens(p).count()) > 0 && opens(p).first());
   const full = await pic.getAttribute('data-full');
   await pic.click();
   await expect(dlg(page).locator('.ao-lb-orig')).toHaveAttribute('href', full);
