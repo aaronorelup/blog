@@ -2,6 +2,7 @@
 // the headers that matter, bytes received and time taken. For posts whose claim is what a server does, so the reader
 // checks it live instead of trusting a pasted curl. Same-origin only; nothing is sent until a click. A body is
 // counted, not kept, and reading stops at cap bytes. Attributes and markup: docs/COMPONENTS.md.
+import { h } from '../_lib/dom.js';
 
 const FETCH_HEADERS = ['content-range', 'content-length', 'accept-ranges', 'content-type'];
 // HTTP/2 carries no reason phrase, so res.statusText is empty there; these are the usual ones.
@@ -24,23 +25,11 @@ class AoFetch extends HTMLElement {
       const showBody = li.dataset.show === 'body';
       const label = li.textContent.trim();
       li.replaceChildren();
-      const head = document.createElement('div');
-      head.className = 'ao-fetch-head';
-      const name = document.createElement('span');
-      name.className = 'ao-fetch-label';
-      name.textContent = label;
-      const go = document.createElement('button');
-      go.type = 'button';
-      go.textContent = 'Send it';
-      go.disabled = !same;
-      head.append(name, go);
-      const req = document.createElement('pre');
-      req.className = 'ao-fetch-req';
-      req.textContent = method + ' ' + url + (range ? '\nRange: ' + range : '');
-      const out = document.createElement('pre');
-      out.className = 'ao-fetch-out';
-      out.setAttribute('aria-live', 'polite');
-      out.textContent = same ? 'Not sent yet.' : "Only this site's own files can be requested.";
+      const go = h('button', { type: 'button', text: 'Send it', disabled: !same });
+      const head = h('div', { class: 'ao-fetch-head' }, h('span', { class: 'ao-fetch-label', text: label }), go);
+      const req = h('pre', { class: 'ao-fetch-req', text: method + ' ' + url + (range ? '\nRange: ' + range : '') });
+      const out = h('pre', { class: 'ao-fetch-out', 'aria-live': 'polite',
+        text: same ? 'Not sent yet.' : "Only this site's own files can be requested." });
       li.append(head, req, out);
       let busy = false;
       const run = async () => {
@@ -56,9 +45,9 @@ class AoFetch extends HTMLElement {
           const headers = range ? { Range: range } : {};
           const res = await fetch(url, { method, headers, cache: 'no-store', signal: ctl.signal });
           const lines = ['HTTP ' + res.status + ' ' + (res.statusText || STATUS_TEXT[res.status] || '')];
-          for (const h of FETCH_HEADERS) {
-            const v = res.headers.get(h);
-            if (v) lines.push(h.replace(/(^|-)\w/g, (m) => m.toUpperCase()) + ': ' + v);
+          for (const k of FETCH_HEADERS) {
+            const v = res.headers.get(k);
+            if (v) lines.push(k.replace(/(^|-)\w/g, (m) => m.toUpperCase()) + ': ' + v);
           }
           let got = 0;
           let stopped = false;
@@ -98,11 +87,8 @@ class AoFetch extends HTMLElement {
       return run;
     });
     if (rows.length > 1) {
-      const all = document.createElement('button');
-      all.type = 'button';
-      all.className = 'ao-fetch-all';
-      all.textContent = 'Send all ' + rows.length;
-      all.addEventListener('click', async () => { for (const run of rows) await run(); });
+      const all = h('button', { type: 'button', class: 'ao-fetch-all', text: 'Send all ' + rows.length,
+        onclick: async () => { for (const run of rows) await run(); } });
       this.querySelector(':scope > ol').before(all);
     }
     this.classList.add('ao-fetch-ready');
