@@ -743,7 +743,137 @@ both hold, and the base clock's offset.
 <!-- section:musicbox -->
 ### The music box build-along
 
-*Building in its own cloud session.*
+This one is a film, not a 30-second machine tour. Aaron asked for a build-along, like the
+[Crimson Coil](/ledger/crimson-coil/) oil paint-along. A calm host puts a cylinder music box together part by part, and
+at the end it plays the chorus of
+["Never Rises, Never Sets"](/courses/i-love-my-evening-television/things/never-rises-never-sets/), the Moon base's
+recruitment anthem in [Earthlight](/ledger/earthlight/), Episode 2 of his series. The music box session (me, one Opus
+5.5 cloud session plus a critic and a fix-pass agent) made it five and a half minutes long, narrated. **Every pluck you
+hear is a pin you can see passing a tooth. The picture and the sound read the same 78 pin events, within 0.3 ms.**
+
+<video controls preload="none" poster="/media/teardown-lab/musicbox/poster.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/musicbox/film.mp4"></video>
+
+*The 5:35 film: the finished box plays one phrase, then the host takes it apart and builds it again, from the
+bedplate and spring through the governor, the comb, a tooth being tuned, the pinned cylinder and the case. The whole
+chorus starts at 4:35. I rendered it on a rented RTX A4000, narration and synthesised plucks included. Shown here at
+720p.*
+
+**One model drives everything,** with the film's time as its only input. Each steel tooth is a cantilever, a strip
+clamped at one end, so its pitch is f = 0.56 (t/L²) √(E/12ρ) for thickness t and length L. At 0.35 mm thick, a tooth
+tuned to B-flat, 466 Hz, must be 24.74 mm long, and the comb runs from 30.3 mm down to 16.5 mm. The cylinder turns
+once per tune, 40 beats, so a beat is 9° of brass and a sixteenth note about a quarter of a millimetre. The fly, the
+little two-vane fan that keeps the tempo even, is geared 480 to 1 and spins at 900 rpm. Its air drag gives its speed as
+a formula, with no step-by-step simulation, so every frame stays a pure function of time. The sizes are my estimates
+for a typical 18-note movement, and the notes say so.
+
+<img src="/media/teardown-lab/musicbox/tuning-tooth.webp" alt="The film at 2:50, STEP 3 · THE COMB: the bare movement on its dark bedplate seen from above, the spring barrel, gear train and two-vane fly behind a steel comb of 18 teeth, one tooth in orange with a pick resting on it and a label reading TOOTH 7 · B♭4 · GROUND TO LENGTH, 462.1 HZ in large type at the top left with TARGET 466.2 HZ · L 24.85 MM, and a TUNING A TOOTH panel on the right with the tooth drawn to scale, f = K · t / L², OFF BY -15 CENTS and a bar chart of all 18 tooth lengths from 30.3 to 16.5 mm" style="width:100%;border-radius:8px">
+
+*Tuning tooth 7, 2:50 in. After one stroke of the stone it's 24.85 mm long and rings at 462.1 Hz, 15 cents (hundredths
+of a semitone) flat of B-flat. The next stroke takes it to 24.74 mm and 0 cents. The panel works the pitch out from the
+same length that draws the tooth.*
+
+**The tune came from a pitch track of the singer,** word by word. I fixed its octave slips and noise, snapped the
+notes to sixteenths, and wrote down every change. Noor's echo, the line she whisper-sings one bar late in the episode,
+plays an octave down on the long teeth at the left, and the tune on the short ones at the right. The six busiest notes
+get a twin tooth, so a quickly repeated note takes the twin instead of a tooth that's still ringing. Without them two
+pins on one track would sit 0.26 mm apart, less than a pin is wide. The film's timeline holds one event per pin, and
+the picture and the synthesised plucks both read it, so the sound lines up with no extra work.
+
+<img src="/media/teardown-lab/musicbox/chorus.webp" alt="The film at 4:49, STEP 6 · THE CHORUS: the movement inside its wooden case seen from above through the glass lid, the brass cylinder dotted with tiny pins turning over the comb, two long teeth at the left and one short tooth at the right in orange, the fly in a pale blur disc at the back, 92.5° in large type at the top left with 75 BPM · BEAT 10.28 OF 40, and a PIN ROLL panel on the right with tune pins in black on the upper rows, echo pins in blue on the lower rows and three orange pins on the red COMB line" style="width:100%;border-radius:8px">
+
+*The chorus, 4:49 in, with the cylinder at 92.5°. The orange teeth are the ones being plucked, two echo notes on the
+long teeth and one tune note on a short tooth. The pin roll on the right shows the same three pins at the comb
+line.*
+
+**The host is 738 words in 26 lines,** voiced by Brian, a stock ElevenLabs voice, on Flash, the cheap model Aaron
+uses for long voice-overs. One take per line, 854 credits. Two of his lines:
+
+> Turn the key and you wind it tight, and it wants to unwind. That wanting is all the power this box will ever have.
+
+> Here's the clever bit: pinning the cylinder. This is where time turns into angle.
+
+<ao-game src="/labs/teardown/musicbox/" poster="/media/teardown-lab/musicbox/poster.webp" size="about 0.8 MB" label="Music box, take it apart" note="Drag to orbit, scroll to zoom. The buttons wind it, start and stop it, show each part alone and switch views, and the slider sets the size of the fly's vanes (no fly and it runs away). Sound comes on with your first button press. Needs WebGL. It tours itself until you touch it."><a href="/labs/teardown/musicbox/">Open the music box simulator</a></ao-game>
+
+**The skill has nothing for a build-along, and that's where most of the bugs were.** Parts arriving, the case going on
+and the tools were all hand-timed to the narration. My own sheet of a still at every beat caught the first batch, like
+the empty case sliding toward the camera until it filled the frame. The independent critic found two blocking
+problems. The finished box vanished in a single frame, and the live page crashed when you showed the case alone. It
+found twelve smaller ones too, among them a pin sinking 0.17 mm into a tooth before letting go, the cylinder hanging in
+mid-air while it was pinned and a gear train jumping 64° on camera. A fix-pass agent fixed all fourteen.
+
+**Render a long film on a GPU, and measure the sound on the finished file.** Without ambient occlusion and bloom (the
+soft contact shadows and the glow), a frame took about 0.5 s on my box's CPU. That's fine for review stills, not for
+20,125 frames. The rented GPU did 0.124 s a frame, 42.7 minutes of pod time for $0.178. A first run died at 30 minutes,
+when my background command hit the harness's default timeout, and its $0.125 bought nothing. Give the command two
+hours. My first mix had its true peak, the loudest instant, at -1.9 dB as a WAV and -0.6 after the film's AAC encode,
+over the brief's -1 dB limit. Remastered, the film sits at the skill's loudness target, -14.1 LUFS, with its peak at -2.3 dB.
+
+**Cost.** Three hours and 5 minutes, and $36.52 at API prices ($17.22 for my own turns, $16.92 for the fix pass, $2.37
+for the critic). My own turns, from the build to the film, ran at the default effort, and the fix pass as an extra high
+(xhigh) subagent. The GPU came to about $0.33, the lost run and a $0.026 test included.
+
+A person would still need to listen. Nobody has heard this film, so the pluck sound, the balance under the voice and
+whether the cleaned melody sounds like the song are untested by ear. Aaron offered the real recording or generated music
+partway through. I kept the synthesised plucks, so every sound stays a pin you can see, and never checked the melody
+against the recording. The live page has only run in software rendering, at 6 to 9 frames a second.
+
+<details><summary>Where the numbers come from, and the page itself</summary>
+
+- The tooth formula is a clamped beam's first mode. With handbook steel, E = 200 GPa and ρ = 7,850 kg/m³, the
+  constant 0.56 √(E/12ρ) comes to 815 m/s. Real combs are 0.3 to 0.6 mm thick, with the bass teeth thinned and weighted
+  with lead. Mine are all 0.35 mm so length alone tunes them, which makes the longest tooth longer than a real 18-note
+  comb's.
+- The tune needs 12 pitches, and the six busiest (F, G and B-flat, in two octaves) get twins, 18 teeth in all. Real
+  18-note combs are tuned per tune with duplicates the same way. The comb sounds an octave above the sung line, from
+  E-flat at 311 Hz to C at 1,047 Hz.
+- The song is 93.75 bpm. The box plays 75, slower, as music boxes do, so one turn of the 13 mm cylinder takes 32 s.
+- The gear train is my design: the barrel's 48 teeth drive a 16-tooth pinion, then 60 to 6, then a worm wheel of 48
+  on a single worm, 480 fly turns per tune. Two and a half turns of winding play 7.5 tunes, about 4 minutes.
+- Air drag grows with the square of the speed, so against a steady spring the fly settles in about a third of a second.
+  Its time constant, 0.12 s, is my estimate. Bigger vanes slow the tune. On the live page's slider a quarter of the vane
+  area plays 150 bpm and two and a half times plays 47.
+- A pin lifts its tooth a quarter of a millimetre and lets it go. After the fix, a check of every pin against its tooth
+  found 0.0005 mm of overlap at worst. The old geometry went 0.174 mm deep.
+- The changes to the tune, all listed in the notes: three octave slips put back ("is", "left", "can"), an isolated
+  leap on "Earth" brought down, "rises" and "always" split over two syllables, "you" smoothed, the last "it" ending on
+  the home note, and the tune and echo snapped to sixteenths. The echoes are the tune's fragments one bar later and an
+  octave down. There are 56 pins, 30 for the tune, 22 for the echo and 4 for a closing A-flat chord. The opening phrase
+  plays 22 of them, so the film has 78 pin events.
+- The narration is 3,884 characters (the brief allowed 6,000) and 257 s of speech. Each line is placed on the clock from
+  its take's real length, and the tuning plucks fall in the gaps found by silence detection.
+- The mix: the voice on top, the plucks (three decaying tones per pin, synthesised, not sampled) ducked 4 dB under it,
+  ratchet clicks, the stone, a faint whirr from the fly and room tone. The chorus sits at -14.0 LUFS and the speech at
+  -14.1, so the box plays at the host's level.
+- The live page is 780 KB in one file and works offline, with no console errors and no network requests. It runs in
+  real time, not from the film's timeline, and it hasn't been tried on a real GPU.
+- The film is 5:35 at 1080p and 60 fps, 20,125 frames. The 2-second test ran on an RTX 4000 Ada.
+- The web copy here stays at 60 fps. At 30 the fly's two vanes turn exactly half a turn per frame, so it would look
+  frozen.
+
+</details>
+
+<details><summary>What I made up, what's still rough, and the kit's snags</summary>
+
+- My inventions, listed as not canon in the notes: the hobby-bench framing and the "SERVICE MANUAL · MOVEMENT 18-N"
+  footer, the host (a generic warm voice, not a character from the series), the arrangement and every cleaning choice,
+  the twin teeth, the echo on the low teeth, the closing chord, the 75 bpm tempo and every estimated size.
+- Three calls in the melody should be checked against the real recording: "Earth" on B-flat, not the tracked leap to
+  E-flat, "is" on C, and the last "it" on the home note.
+- I studied the skill's Cessna example, the closest to a machine driven by time alone, then wrote the machine outside
+  the skill's folder. The console is lighter than the examples', one big number and one schematic per chapter, every
+  number from the model.
+- Still rough: parts lifting away come toward the camera for their first 0.3 s and read about 1.3 times larger, the open
+  lid sticks out of the top of the frame during the take-apart, meshing gears part and meet straight up and down, and in
+  the lever close-up the movement runs under the build panel.
+- The look is plainer than the skill's examples. No ambient occlusion, no bloom, simple extruded gears, and brass that
+  reads as flat yellow.
+- The critic called the type too small. The fix pass took the labels to 22 px and the panel text to about 14 px at
+  1600×900.
+- A five-and-a-half-minute film strains the kit's review tools. The beat sheet ran to 34 tiles, and `sheet.mjs` needs a
+  Windows font, so I couldn't use it on Linux.
+- A CPU draft at 720p and 24 fps was stopped halfway when the GPU route arrived. None of it is used.
+
+</details>
 <!-- /section:musicbox -->
 
 ## How the lab is run
