@@ -5,21 +5,26 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { runChecks, ROOT } from '../../scripts/check/run.mjs';
+import { runChecks } from '../../scripts/check/run.mjs';
 import { hash } from '../../scripts/check/never-publish.mjs';
 import { belongsInR2 } from '../../scripts/media/files.mjs';
 
 // What the fleet might push: a 200-character title, prose the voice rules refuse, a made-up never-publish term,
-// links to a missing and an unlisted post, a renamed preview picture and a video that never went to R2.
-const BREAKAGE = `
+// links to a missing and an unlisted post, a renamed preview picture and a video that never went to R2. Made up
+// here, not copied from teardown-lab.md, so the fleet's own edits to that file can never break this test.
+const broken = ({ id, topic }) => `---
+id: "${id}"
+title: "${'T'.repeat(200)}"
+summary: "What the fleet wrote."
+date: 2026-10-31${topic ? `\ntopic: "${topic}"` : ''}
+preview:
+  takeaway: "Running."
+  image: "/media/previews/renamed-by-the-fleet.webp"
+---
+
 The lab — it turns out; Zorblax rules here. See [it](/ledger/no-such-post/) and [this](/ledger/hidden/).
 <video src="/media/teardown-lab/never-pushed.mp4"></video>
 `;
-const breakFrontmatter = (raw, { id, topic }) => raw
-  .replace(/^id: .*$/m, `id: "${id}"`)
-  .replace(/^title: .*$/m, `title: "${'T'.repeat(200)}"`)
-  .replace(/^ {2}image: .*$/m, '  image: "/media/previews/renamed-by-the-fleet.webp"')
-  .replace(/^date: /m, topic ? `topic: "${topic}"\ndate: ` : 'date: ');
 
 function seed() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'checker-'));
@@ -27,9 +32,8 @@ function seed() {
     fs.mkdirSync(path.dirname(path.join(root, rel)), { recursive: true });
     fs.writeFileSync(path.join(root, rel), text);
   };
-  const live = fs.readFileSync(path.join(ROOT, 'src/content/posts/teardown-lab.md'), 'utf8');
-  put('src/content/posts/teardown-lab.md', breakFrontmatter(live, { id: 'AO-073' }) + BREAKAGE);
-  put('src/content/posts/control.md', breakFrontmatter(live, { id: 'AO-999', topic: 'agents' }) + BREAKAGE);
+  put('src/content/posts/teardown-lab.md', broken({ id: 'AO-073' }));
+  put('src/content/posts/control.md', broken({ id: 'AO-999', topic: 'agents' }));
   put('src/content/posts/hidden.md', '---\nid: "AO-998"\ntitle: "Hidden"\nsummary: "s"\ndate: 2026-11-01\nunlisted: true\n---\n');
   put('src/content/notes/control.md', '---\npost: "someone-else"\ntitle: "t"\nsummary: "s"\n---\n');
   put('src/components/Seeded.astro', '<div style="color:red"></div>\n');
