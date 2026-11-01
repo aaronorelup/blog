@@ -50,6 +50,14 @@ async function openFrom(page, href) {
   await expect(view(page, href.slice(1))).toBeVisible();
 }
 const openLedger = (page) => openFrom(page, '/ledger');
+// The ledger's module has run on the copy in the panel (views/ledger.js): "/" then focuses its search box.
+async function ledgerMounted(page) {
+  const input = panel(page).locator('.search-input');
+  await expect.poll(async () => {
+    await page.keyboard.press('/');
+    return input.evaluate((i) => i === document.activeElement);
+  }).toBe(true);
+}
 
 // A page's title, as the overlay shows it while that page is in the panel.
 const titles = new Map();
@@ -243,6 +251,7 @@ test('overlay-11 the ledger’s copy button puts the feed’s address on the cli
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await home(page);
   await openLedger(page);
+  await ledgerMounted(page);
   const copy = panel(page).locator('#feed-copy');
   await copy.click();
   await expect(copy).toHaveText('copied');
@@ -439,7 +448,9 @@ test('overlay-22 Ask works again in a ledger mounted afresh', async ({ page, con
     window[new URL(document.currentScript.src).searchParams.get('onload')]();
   })();` }));
   const ask = async () => {
+    await ledgerMounted(page);
     await panel(page).locator('[data-mode="ask"]').click();
+    await expect(panel(page).locator('[data-mode="ask"]')).toHaveAttribute('aria-pressed', 'true');
     await panel(page).locator('.search-input').fill('What did renting a GPU cost?');
     await panel(page).locator('.search-input').press('Enter');
     await expect(panel(page).locator('.ask-text, .ask-note').first()).toBeVisible();
@@ -473,4 +484,46 @@ test('overlay-23 a view opened just after scrolling a post opens at its top, not
   await expect(view(page, 'about')).toBeVisible();
   expect(await page.locator('#panel-scroll').evaluate((s) => s.scrollTop)).toBe(0);
   expect(await page.evaluate(() => history.state?.scroll)).toBeUndefined();
+});
+
+test('overlay-24 no view brings a second copy of the site’s rules: the homepage already links them', async ({ page }) => {
+  await home(page);
+  const adopted = [];
+  page.on('request', (r) => r.resourceType() === 'stylesheet' && adopted.push(new URL(r.url()).pathname));
+  // Linked sheets: a post's article carries its components' own CSS in a <style> of its own (ElementStyles).
+  const sheets = () => page.evaluate(() => [...document.styleSheets].filter((s) => s.href).length);
+  const before = await sheets();
+  await openLedger(page);
+  for (const key of ['projects', 'about', 'ledger']) {
+    await panel(page).locator(`a[data-nav="${key}"]`).click();
+    await expect(view(page, key)).toBeVisible();
+  }
+  await openRow(page, modelPost);
+  await allDefined(page);
+  expect(adopted).toEqual([]);
+  expect(await sheets()).toBe(before);
+});
+
+test('overlay-25 a view in the panel has the colours it has on its own page, by day and by night', async ({ page }) => {
+  const SEL = ['[data-panel-view]', '.view-title', '.view-intro', '.row', '.row [data-ledger-entry]', '.search-input',
+    '#panel-inner', '.pc-nav', '.pc-copy', '.pc-foot'];
+  const colours = (pre) => page.evaluate(([pre, sel]) => sel.map((s) => {
+    const c = getComputedStyle(document.querySelector(pre + s));
+    return `${s} ${c.color} ${c.borderTopColor}`;
+  }), [pre, SEL]);
+  // The search box, focused: the bar lights up, the input draws no box of its own.
+  const focused = async (pre) => {
+    await page.locator(pre + '.search-input').focus();
+    await page.waitForTimeout(400);   // the bar's colour eases in over 180 ms
+    return page.locator(pre + '.search-input').evaluate((i) => [getComputedStyle(i).outlineStyle, getComputedStyle(i.closest('.search-bar')).borderTopColor]);
+  };
+  for (const mode of ['day', 'night']) {
+    await page.goto('/ledger/');
+    await page.evaluate((m) => localStorage.setItem('scene-mode', m), mode);
+    await page.reload();
+    const own = [await colours(''), await focused('')];
+    await home(page);
+    await openLedger(page);
+    expect([await colours('#panel-screen '), await focused('#panel-screen ')]).toEqual(own);
+  }
 });
