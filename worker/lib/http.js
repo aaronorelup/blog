@@ -15,3 +15,11 @@ export function sameOrigin(request) {
   const origin = request.headers.get('Origin');
   return !!origin && URL.canParse(origin) && new URL(origin).host === new URL(request.url).host;
 }
+
+// The request's JSON body, or null when it is over max bytes. A body that isn't JSON reads as {}.
+export async function readJson(request, max) {
+  if (Number(request.headers.get('Content-Length')) > max) return null;
+  const text = await request.text();
+  if (new TextEncoder().encode(text).length > max) return null;
+  try { return JSON.parse(text) ?? {}; } catch { return {}; }
+}
