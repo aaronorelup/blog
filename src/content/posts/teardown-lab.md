@@ -181,13 +181,258 @@ section says so.
 <!-- section:mole1 -->
 ### MOLE-1, from its concept sheet, and from words only
 
-*Building on the lead's box (builder, then a critic, then a fixer).*
+[MOLE-1](/courses/i-love-my-evening-television/characters/mole-1/) is the knee-to-waist-high drum digger on the Moon
+base in [Earthlight](/ledger/earthlight/), Episode 2 of Aaron's series. After Teo's
+[Rev B](/courses/i-love-my-evening-television/things/rev-b/) puts the fleet to cold sleep, it's the one robot given a job:
+dig a drift, a sloped tunnel, toward [Noor's hideaway](/courses/i-love-my-evening-television/things/hideaway/) until it
+has 3 m of Moon soil over it. It ran on my own box, a builder, an independent critic and a fixer, all Opus 5.5 at extra
+high effort (xhigh) from the start. **The page digs the drift to 3.00 m of cover in 140 loads and 9.12 hours of work,
+every number from one model. A second builder given the same words without the picture made the machine both judges
+called more designed, and both called the picture build a toy.**
+
+<video controls preload="none" poster="/media/teardown-lab/mole1/poster.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/mole1/film.mp4"></video>
+
+*The 38.6-second film: Rev B lands and MOLE-1 wakes, rolls to the portal and starts cutting, its drum isolated and then
+cut open, the hopper filling and the first dump, then the other 139 loads in a time-lapse until the roof has 3.00 m over
+it. I rendered it on a rented RTX A4000, synthesised score included. Shown here at 720p.*
+
+**One model drives everything,** dig progress from 0 to 1. The builder read two papers on NASA's RASSOR, a small digger
+whose drums turn opposite ways so their pushes cancel, and took the drum and the cut from them, a 437 mm drum cutting
+19.1 mm deep at 30 mm a second. It marked three unpublished numbers as its estimates, the drum's 11.1 rpm, a 0.38-litre
+bucket and the digging force. The main hand check is one line, 1,500 kg/m³ × 1.62 m/s² × 3.0 m = 7.29 kPa, the "~7.3
+KPA" on Teo's Sheet 1.
+
+<img src="/media/teardown-lab/mole1/hero-3m.webp" alt="The MOLE-1 console 35 seconds into the film in the SIDE view: an orange digger with a hopper on top, four wire-mesh wheels and one round drum at the front, at the end of a sloped tunnel cut into pale soil, labels for the hopper, radiator, wire-mesh wheel and the drum's near half, 3.00 M in large blue type at the top left over ROOF UNDER 7.29 kPa = 50 CM OF EARTH DIRT, panels for the night and the job at trip 140 of 140 with 11,153 kg moved, charts of the two drum halves' forces and the regolith moved, and a section along the bottom with the drift's end on the 3 m cover line beside Noor's gallery" style="width:100%;border-radius:8px">
+
+*The end of the job, 35 seconds in. The drift's roof sits on the 3 m line, 0.47 m short of her gallery, after 140 loads
+and 60,180 bites. The night panel reads 118.9 hours to sunrise.*
+
+**The independent critic found six blocking defects, and the worst two were in the model.** The rear drum was credited
+with half the digging but only rode the finished floor, so the rate, the 3.61 hours and the cancelling forces rested on a
+cut the geometry didn't make. And "3 M COVER" had been read as the floor's depth, which left the roof 1.06 m short of
+Rev B's note. My own console brief asked for the "depth of the drift's floor below the surface", so that one is partly
+on me. The other four were on screen, like a bite counter that counted drum turns in the air.
+
+**The fixer changed the machine, not just the rate.** It took off the rear drum and gave MOLE-1 one drum at the front, as
+on the concept sheet, split into two halves that turn opposite ways, its reading of canon's "counter-rotating drums".
+Both halves cut the same face, so the rate is honest, 166 s a load, and their drags cancel to -0.4 N. With the cover
+measured over the roof the floor ends 4.064 m down, which makes 11,153 kg, 140 loads and 9.12 hours, still far inside
+the 128 hours to sunrise.
+
+**The break-it control came out small, and nobody dressed it up.** Turn both drums the same way and the builder's robot
+slid back about 1.5 cm a bite ("I did not exaggerate it"). With the fixer's smaller force for each drum half it holds,
+45.8 N of push against 46.7 N of wheel grip.
+
+<ao-game src="/labs/teardown/mole1/" poster="/media/teardown-lab/mole1/poster.webp" size="about 0.8 MB" label="MOLE-1, take it apart" note="Drag to orbit, scroll to zoom. The buttons isolate, cut open or show each part alone and switch views, the dig progress bar scrubs the job, and the last panel turns both drums the same way (key D). Needs WebGL. It tours itself until you touch it."><a href="/labs/teardown/mole1/">Open the MOLE-1 simulator</a></ao-game>
+
+**The words-only control.** The article says machines described only in words "come out as generic toys". So a second
+builder got the same written brief, the parts, the real numbers and RASSOR, with no picture, and stopped after Step 3,
+the first build. Two judges compared the Step 3 stills without being told which was which, one with the brief alone, the
+other with the concept sheet too. **Both called the words-only build the more specific, designed machine, and both said
+the picture build read as a toy,** "a chunky toy model more than a working digger". The second judge found the picture
+build more faithful, copying "the reference's look, not just its parts list", and the other "better built but looks like
+a different machine".
+
+<ao-compare cols="2" aspect="16/9">
+<figure><img src="/media/teardown-lab/mole1/step3-with-picture.webp" alt="MOLE-1 from the builder that had the concept sheet, at the end of Step 3 with no console: an orange digger with a blotchy rust texture seen from above inside a pale cut, an orange drum with grey pegs at each end on chunky arms, an orange hopper with a grey rim, spoked wheels with a coarse grey lattice, a two-lens sensor bar with an antenna and silver tape on the near arm" loading="lazy"><figcaption><b>With the concept sheet</b><span class="ao-meta">end of Step 3, console off · both judges: reads as a toy</span></figcaption></figure>
+<figure><img src="/media/teardown-lab/mole1/step3-words-only.webp" alt="MOLE-1 from the builder that had words only, at the end of Step 3: a white and grey rover on a ramp cut into grey ground, ribbed grey bucket drums at both ends, four mesh wheels, a grey box hopper and a black sensor boom with an antenna, with part labels for the sensor bar, battery and radiator, hopper, wire-mesh wheel, bucket drums and silver tape, and a readout panel at the top left reading TRIP 8/118 and ±18 rpm, counter-rotating" loading="lazy"><figcaption><b>Words only</b><span class="ao-meta">end of Step 3, labels and readout on · both judges: more designed</span></figcaption></figure>
+</ao-compare>
+
+*The two stills the judges saw. The second judge also saw
+[the concept sheet](/courses/i-love-my-evening-television/media/mole-1/e2-concept-iso.webp).*
+
+The words-only builder had read the RASSOR papers and built a white rover at RASSOR's scale with four drums, which it
+called "a RASSOR-shaped rover in my colours" itself. So here the words gave a clean, generic NASA-style machine, not a
+toy, and the picture gave the right machine, crudely built. It's one pair, judged once, at the end of Step 3. The
+words-only still had labels and a readout on and the other had no console, and both judges said the labels did some of
+the work. The picture build was rebuilt in its fix pass and the control never was. And designed-looking isn't the same as
+right for the show.
+
+**Cost.** $83.18 at API prices for the three agents: the build $63.70 over 396 requests, the critic $6.07, the fix
+$13.41. The control cost $15.75 and the two judges $0.78. The whole workflow, both machines and the control, ran nine
+agents two at a time on my 4-core box with no GPU, in 3 hours 44 minutes for $148.18. The film was 2,316 frames at
+0.144 s each, $0.046 of GPU time.
+
+A person would still need to rule on the canon calls (one split drum, the site, Noor's "three metres down" read as cover
+over her roof), check the force estimate, try the live page on a real GPU, listen to the score and art-direct the model.
+The time-lapse strobes too, 139 trips in 7.4 seconds.
+
+<details><summary>Where the numbers come from, and the page itself</summary>
+
+- RASSOR, from the papers the builder read: Mueller and others, "Design of an Excavation Robot: RASSOR 2.0" (2016), 66 kg,
+  at least 2.7 tonnes of regolith (Moon soil) a day, an 80 kg payload, a drum motor rated about 18 rpm. "ISRU Pilot
+  Excavator: Bucket Drum Scaling Experimental Results" (2022), a drum 437.1 × 352.6 mm with a scoop opening of 90.4 ×
+  47.8 mm, test cuts 10 mm deep and 40% of the scoop's height deep, at 10 and 30 mm/s, the drum's tip at 8.5 times the cut speed.
+- The three estimates. 8.5 × 30 mm/s = 0.255 m/s at a 218.6 mm radius is 11.1 rpm, under RASSOR's rated 18. The bucket,
+  0.38 L, is the scoop opening times a segment's width, so a bite fills about a third of it. The force is 30 N per drum,
+  a cutting resistance of 2.5 kPa, and 13.5 N per half after the fix. The papers give forces only in a plot. A wheel grip
+  coefficient of 0.4, also an estimate, lets the wheels hold 47 N empty and 98 N with 80 kg aboard.
+- After the fix: a 19.12 mm cut, 0.2409 kg/s per half, 0.4818 kg/s for both. The drift is 7.4355 m³, 11,153 kg at 1,500
+  kg/m³, in 140 loads (139 of 80 kg and one of 33.3). The job is 32,849 s, 9.12 h, 23,148 s of it cutting. At the end
+  there are 3.000 m over the roof, 7.29 kPa, the weight of 50 cm of the same dirt on Earth, and the face stops 0.47 m short
+  of her gallery.
+- The builder's version before the fix: a 5.19 m³ drift (7,793 kg), 98 loads in 3.61 h, both drums credited with 1.07 kg/s.
+- RASSOR's published 2.7 t a day would take 2.9 days for the builder's drift. That figure averages in 8 hours a day of
+  charging and long hauls to a lander. MOLE-1's haul is under 10 m and charging isn't modelled.
+- The live page is 850 KB in one file and works offline, with no console errors. Before the fix the builder saw it step
+  itself down to its lowest quality tier in software rendering and hand over on a click. After the fix it was only
+  loaded, not clicked through, and it hasn't been tried on a real GPU.
+- The film is 38.6 s at 1080p and 60 fps, 2,316 frames on the RTX A4000, pod alive 11.0 minutes, 260 s of it booting.
+  The score is a low drone in D, a crunch per bite where bites are slow enough to hear and a gravel bed for the thousands
+  in the time-lapse, a hollow pour per dump, a servo whirr and a two-note chime at 3.00 m. It's mastered to -14.0 LUFS
+  with a true peak of -3.1 dBFS, set from meters. Nobody has listened to it.
+
+</details>
+
+<details><summary>What the builders made up, what's still rough, and the words-only build</summary>
+
+- The inventions, listed as not canon in the notes: MOLE-1's size (280 mm wheels, 72 kg, RASSOR's 66 kg plus a hopper),
+  the split drum on one central arm, the belt that carries spoil to the hopper, a 20° drift 0.72 m wide and 1.00 m high
+  that stops short of her gallery (canon says toward it, not into it), the site layout, Noor's "three metres down" read
+  as cover over her gallery's roof, Rev B as the sheet MOLE-1 wakes on, and six plant lights going out.
+- The MOLE-1 and MOLE-2 concept files are byte-identical, so there was no frosted twin to compare against.
+- The builder's own reviews found a slope bug that put the drum 0.2 m inside the face, a section cut that hid the robot
+  underground, labels over the parts they named, an arm lift that jumped in one step, a depth that read 3.00 early, a dead
+  DRUMS button (two buttons shared one name), pins 18 mm into the far wall and a spout floating 5 cm off its tower. The
+  last four showed only in full-size stills, after a contact-sheet pass had been called clean.
+- The other two blocking finds: the drum's label read 11.1 rpm while the drum stood still, and the robot slid under the
+  panels at the start of the last cut. The fixer also added a close view of the drum biting, the drum cut open to show the
+  gearbox, a view down into the filling hopper and a camera beyond the spoil heap for the first dump. The film grew from
+  33.0 to 38.6 s.
+- Still rough: boxes and cylinders, no spoil drawn going up the arm, the pour a see-through cone, a tunnel 3 m down lit
+  like a studio. The strobing time-lapse needs a cut instead of a speed-up, which is a story decision.
+- The words-only build: four RASSOR drums, the front pair cutting the face and the rear pair trimming 2 cm of floor, an
+  0.80 × 1.00 m drift on a 20° ramp to 3.00 m of cover, 9.40 m³ or 14.1 t in 118 trips of 120 kg, 47.6 hours of digging
+  cycles and a force estimate of 63 N per drum pair. It left open where 14.1 t of spoil goes, where MOLE-1 recharges
+  (about 56 kWh at RASSOR's energy figure) and whether it finishes before sunrise, which depends on the rate.
+- Kit snags: every saved review frame gets a "t=" stamp, so each clean still is its own command with its own browser
+  start of about 40 s. The capture's fixed 60-second wait for the page died under load. And the skill has no pattern for
+  a job far slower than its film, so the builder invented the time warp, a camera that ignores the shuttling and the
+  gravel bed in the score.
+
+</details>
 <!-- /section:mole1 -->
 
 <!-- section:clock -->
 ### Touch Move's brass clock
 
-*Building on the lead's box.*
+[The brass clock](/courses/i-love-my-evening-television/things/brass-clock/) is the instructor's two-dial chess clock in
+[Touch Move](/ledger/touch-move/), Episode 4 of Aaron's series, a 30-minute film of a chess lesson. Each side starts with
+fifteen minutes, so its two dials always add up to the time left in the film. The same three agents built it on my box,
+a builder, an independent critic and a fixer, all at xhigh. **Its one input is the film's own time. White plus Black
+equals 30:00 minus t to under a trillionth of a second at every moment checked, and 67 checks in code hold every canon
+number in place.**
+
+<video controls preload="none" poster="/media/teardown-lab/clock/poster.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/clock/film.mp4"></video>
+
+*The 33-second film: the macro of White's dial at 0:07, the rocker cut open at the 5:00 press, the case opened from behind
+at 10:00, inside White's movement at 15:00, White's flag falling at 20:00 and Black's at 30:00, then the end black and the
+press at 30:19.9. I rendered it on a rented RTX A4500, synthesised ticks included. Shown here at 720p.*
+
+**One model drives everything,** the film's time from 0:00 to 30:20, with every press as data. The canon fixes only a few
+moments, presses on 5:00, 10:00 and 15:00, White's flag at 20:00.000, Black's at 30:00.000 and a press at 30:19.9. The
+builder designed the rest, a log of 19 presses with the made-up ones marked "our reading" on screen. In it White's
+thinking adds up to exactly 15:00 and Black's to 5:00 by 20:00, so Black shows 10:00 there. One movement runs at every instant, so the two
+dials together lose exactly one second per second and the sum can't drift. The going train is a textbook one, 18,000
+beats an hour, five a second. The builder couldn't find the train of any real mechanical chess clock, so it's marked an
+estimate.
+
+<ao-compare cols="2" aspect="16/9">
+<figure><img src="/courses/i-love-my-evening-television/media/brass-clock/e4-0007-dial.webp" alt="The episode's macro of White's dial at 0:07: a round brass bezel over a cream dial with black serif numerals, the minute hand at 9, the hour hand just short of 6, a red T-shaped flag left of 12, a shadow across the dial, warm amber light and the edge of a second dial at the right" loading="lazy"><figcaption><b>The episode at 0:07</b><span class="ao-meta">the film's own macro, the builder's reference</span></figcaption></figure>
+<figure><img src="/media/teardown-lab/clock/macro-0007.webp" alt="The teardown console at film time 0:07.0 in the MACRO view: White's brass-bezelled cream dial in amber light, the minute hand at 9, the hour hand short of 6 and a red T flag hanging left of 12, labels for the red flag and White's dial, WHITE HELD 14:53.1 and BLACK RUNNING 14:59.9 in large type at the top left over W + B = 29:53.0 = 30:00 - 0:07.0, and panels for the sum chart, time per move, the rocker, the going train and the press log" loading="lazy"><figcaption><b>The teardown film at 0:07.0</b><span class="ao-meta">1.4 s in, after the fix pass</span></figcaption></figure>
+</ao-compare>
+
+*At 0:07 the hands sit where the episode's do, fifteen minutes each on a dial set so that 0:00 is 6:00 with the flag at
+12. White's 14:53.1 plus Black's 14:59.9 is 29:53.0, which is 30:00 minus 0:07.0. The shadow across the dial isn't built.*
+
+<img src="/media/teardown-lab/clock/flag.webp" alt="The console at film time 19:59.9 in the FLAG view: a close-up of 12 on White's dial, the red T-shaped flag tipped up 70 degrees over the minute hand, which points straight up, labels reading White's flag LIFTED 70° · PIN ON THE MINUTE HAND and Minute hand 0:00.1 TO 12, WHITE RUNNING 0:00.1 and BLACK HELD 10:00.0 at the top left, time-per-move bars with tall ones at 5:00, 10:00 and 15:00, and the going train table reading 4,500 beats and 150.0 escape-wheel turns" style="width:100%;border-radius:8px">
+
+*19:59.9, a tenth of a second before White's flag falls. The minute hand has lifted it 70° by its pin. The going train
+reads 4,500 beats and 150.0 turns of the escape wheel. Before the fix it reached 20:00 at 4,502 and 150.1.*
+
+<ao-game src="/labs/teardown/clock/" poster="/media/teardown-lab/clock/poster.webp" size="about 0.8 MB" label="The brass clock, take it apart" note="Drag to orbit, scroll to zoom. The buttons isolate, cut open or show each part alone and switch views, the film-time bar scrubs the game, the plungers (or Z and M) start your own game, and the slider sets the running balance's beat rate. Needs WebGL. It tours itself until you touch it."><a href="/labs/teardown/clock/">Open the brass clock simulator</a></ao-game>
+
+**The independent critic agreed with every number and still found four blocking defects.** The title block spilled about
+90 px out of its panel on every frame, the thumbnail included. The time-per-move panel disagreed with the dials by a
+tenth of a second on 393 of the 1,248 frames before 20:00, because it rounded the raw time where the dials round down. The beat count
+restarted its rhythm at every press, so at 20:00 White showed 4,502 beats for exactly 15 minutes at five a second, and the
+escape wheel 150.1 turns. And two callouts pointed at the wrong place in the key beats, one at the flag's resting spot
+instead of the lifted flag. On the look it was blunt: "a pale study model under a wall of tiny panels".
+
+**The fixer fixed all four and put a check on each.** The checks went from 50 to 67, among them the panel against both
+dials on every frame before 20:00, now 0 of 1,260 off. It did ten of the eleven smaller items too. The tour went from 11
+clicks to 9, each state held 2.4 to 5.7 seconds. The flag's crossbar went from 4.4 to 8.4 mm, closer to the episode's, the
+opening got a low amber light, and White's first press moved to 0:06.9, so the frame at 0:07 really is "the tail of a
+press", with both totals unchanged.
+
+**The break-it slider sets the running balance's beat rate,** from half to double. At double from the start, White's
+flag falls at 8:32.5. At half, by 10:00 the dials add up to 25:00 against the 20:00 that's left, and the check line on
+the console turns red.
+
+**Cost.** $48.46 at API prices, $31.20 for the build, $5.75 for the critic and $11.51 for the fix. The film was 1,980
+frames at 0.139 s each, 8.5 minutes of pod time for $0.035.
+
+A person would still need to art-direct it. Outside the opening it's a plain box of flat brass in a pale studio, without
+the lore's rubbed patina, dented foot or key on a ribbon, under panels whose chart labels are 6.4 to 7.4 px. Someone also
+has to listen (the ticks were judged by meters alone), try the live page on a real GPU (in software it drew a frame every
+three seconds), and rule on what the builder had to invent, like who presses at 0:00 and at 20:00.
+
+<details><summary>Where the numbers come from, and the page itself</summary>
+
+- The press log, "our reading": White's nine thinks are 6.9, 18.4, 256.4 (ending on 5:00), 33.3, 222.5 (on 10:00), 26.3,
+  197.6 (on 15:00), 51.8 and 86.8 s, 900.0 s in all. Black's eight are 5.7, 12.6, 18.9, 25.3, 41.7, 34.4, 63.2 and 98.2 s,
+  300.0 s. Black's plunger starts the clock at 0:00.000, as in chess, because the sum only holds at 0:10 if the clock has
+  run since 0:00. White's plunger goes down at exactly 20:00.000, so Black runs while White reads 0:00, and Black's at
+  30:19.9 starts White from 0:00.
+- The going train: 80/10 × 75/10 × 80/8 = 600 escape-wheel turns an hour, × 15 teeth × 2 beats a tooth = 18,000 beats
+  an hour. So the escape wheel turns at 10 rpm, the fourth wheel at 1 rpm, and the minute hand moves 0.02° a beat. 18,000
+  an hour is a common rate for small lever movements, like the ETA/Unitas 6497, but no source gives a chess clock's.
+- The flag: the minute hand meets its pin 14.15° before 12, which is 141.5 s before 0:00, and lifts it to 70.5° at 12,
+  where the pin slips off. The pivot is solved so it drops exactly at 12. After the fix the flag rides 3.7 mm off the dial
+  and clears the bezel by 0.16 mm at full lift.
+- The rocker has 48 mm arms that move 4 mm either side, 4.78°. A stop wire's felt pad rests on a balance's rim whenever
+  its end of the rocker is at or below level.
+- Estimates: a balance swing of 220° either way, a pallet fork swing of 5° either way, a case of 200 × 120 × 80 mm, 76 mm
+  dials.
+- After the fix each balance's swing and beat count run on its side's total counted time, carried across presses, so
+  beats are five times the counted seconds, like the hands, and a pad freezes the balance mid-swing.
+- The heartbeat in the end black, 64 slowing to 50 bpm, is sound only. The movement keeps its true beat, because slowing
+  it would break the arithmetic on a paused frame.
+- The score has White's low wooden tock and Black's small bright tick, each on a beat of the running side in the
+  real-time windows, a firm click per press and a soft flick per flag, with no music. The first mix came out at -21.9
+  LUFS and the kit's mastering wouldn't push a track that sparse, so the builder lengthened the decays and added a small
+  room. It's now -14.0 LUFS, the skill's loudness target, with a true peak of -2.4 dBFS.
+- The live page is 849 KB in one file and works offline, with no console errors and no network requests. In software
+  rendering it took 70 to 84 s to warm its shaders, then drew 0.33 frames a second. It hasn't been tried on a real GPU.
+- The film is 33.0 s at 1080p and 60 fps, 1,980 frames on the RTX A4500, pod alive 8.5 minutes, 166 s of it booting.
+
+</details>
+
+<details><summary>What the builder made up, what's still rough, and the kit's snags</summary>
+
+- The inventions, listed as not canon in the notes: every press but the canon ones, and who makes the presses at
+  0:00.000, 20:00.000 and 30:19.9, the heartbeat as sound only, White on the left (the episode's macro shows a second dial
+  at the right edge), the case, the rocker and stop wires, the movements' layout, the flag's size, and the brass dust a
+  press shakes loose.
+- The builder's own reviews found White's plunger up after his own press (a wrong sign in the model), the running
+  balance's red accent showing a frame late, so drawing a frame depended on the frame before, a beat lost whenever a
+  think ended exactly on one, escapements floating in the rocker cutaway, and the camera skimming the case between two
+  views.
+- More of the critic's notes, fixed: the rocker bouncing 0.02° past its stop, CUT cutting both movements at once, back
+  plates floating in the rocker cut (they now stand on posts), the back hatch hiding the winding key (it opens 64°, after
+  76° still hid it), the live page's controls showing in the film, a "-0°" on the schematic, and the heartbeat ending at
+  53 bpm instead of 50.
+- Left: the shadow across the dial in the opening, which needs a hidden object to cast it, the chart labels (the skill's
+  own 34 px rule would mean a console with a third of the panels), and the case passing under a panel during one camera
+  move. At 300 to 800 times real speed the escape wheels and forks blur into noise.
+- Kit snags: the examples' timeline files hold no beats, and the beat-by-beat stills command turns every number in that
+  file into a tile, so the tick times went in a separate file. The examples' scores type their cue times by hand, against
+  the skill's own rule. The kit's mastering gives up on a sparse click track. Capturing from a path to the page hangs,
+  and the capture's fixed 60-second wait timed out under load, so the fixer gave its own copy a longer one. The kit has
+  no place for share-card tags, so the fixer added them after the build. And nothing in it helps with a machine driven by
+  a list of separate presses instead of one smooth input.
+
+</details>
 <!-- /section:clock -->
 
 <!-- section:dray -->
