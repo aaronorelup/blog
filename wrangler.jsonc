@@ -1,66 +1,70 @@
 {
-  "name": "aaronorelup-blog",
+  // The deployed Worker. Every wrangler command run from a box (deployments list, versions list, rollback, tail,
+  // dev) reaches the live Worker through this name and account; Workers Builds deploys main with the same.
+  "name": "blog",
+  "account_id": "d4d2707426a98d95ebd2a70357cc2f0a",
   "compatibility_date": "2026-08-01",
 
-  // The site is static files. The one script, worker/index.js, does three jobs: worker/media.js
-  // serves video, audio and HLS from R2 (the MEDIA bucket below; docs/MEDIA.md), and answers byte
-  // ranges for the few still in the assets (the asset server answers a Range request with the
-  // whole file, so no video could seek), worker/reads.js is the live reader counter at /api/reads,
-  // and worker/stats.js serves the daily traffic snapshot at /api/stats. Only the paths
-  // run_worker_first names reach it ("*" matches across folders); every other request is served
-  // as an asset first, without running any code.
+  // The site is static files. Only the paths run_worker_first names run the Worker (worker/index.js, its map in
+  // docs/WORKER.md): video, audio and HLS (R2, with byte ranges), the read-aloud recordings under /read/, and
+  // /api/*. "*" matches across folders. Every other request is an asset, served without running any code.
   "main": "worker/index.js",
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
-    // A path that matches no file gets dist/404.html (src/pages/404.astro) with status 404, from
-    // the asset server itself; before 2026-10-22 it was a 404 with an empty body. The Worker's own
-    // answers (byte ranges, /api/*) are unchanged: it still sees a 404 for a missing file.
+    // A path that matches no file gets dist/404.html (src/pages/404.astro) with status 404.
     "not_found_handling": "404-page",
-    // Every video, audio and HLS path, games' sound included: those files are in R2, not the assets.
     "run_worker_first": [
       "/*.mp4", "/*.m4v", "/*.webm", "/*.mov",
       "/*.mp3", "/*.m4a", "/*.aac", "/*.wav", "/*.ogg", "/*.oga", "/*.opus", "/*.flac",
       "/*.m3u8", "/*.ts",
+      "/read/*",
       "/api/*"
     ]
   },
 
-  // The site's video and audio (scripts/media/push.mjs uploads them). A private bucket of its own,
-  // so this Worker can read nothing else; created 2026-10-31 through the Cloudflare API.
+  // The site's video and audio (scripts/media/push.mjs, docs/MEDIA.md) and the read-aloud recordings (read/).
+  // "remote": `wrangler dev` uses the real bucket, index and model; deploys ignore it.
   "r2_buckets": [
-    { "binding": "MEDIA", "bucket_name": "aaronorelup-site-media" }
+    { "binding": "MEDIA", "bucket_name": "aaronorelup-site-media", "remote": true }
   ],
 
-  // The reader counter's database (one table, worker/reads.sql), which also keeps the traffic
-  // snapshot (worker/stats.sql; the cron creates those tables itself). Created 2026-10-17 through
-  // the Cloudflare Developer Platform connection, not wrangler.
+  // The reader counter, the traffic snapshot, the switches and caps, search and Ask: one database. Each feature
+  // makes its own tables (worker/<feature>/*.sql) on first use; tables are only ever added.
   "d1_databases": [
     { "binding": "DB", "database_name": "blog-reads", "database_id": "f3f7223c-1bd1-467e-8d85-4b4f7f9bce97" }
   ],
 
-  // Per Cloudflare location, per key: reads per address per post, and stat lookups per address.
-  "ratelimits": [
-    { "name": "READS_LIMIT", "namespace_id": "1701", "simple": { "limit": 6, "period": 60 } },
-    { "name": "STATS_LIMIT", "namespace_id": "1702", "simple": { "limit": 30, "period": 60 } }
+  // Search's meaning half: @cf/baai/bge-m3 embeddings (1024 dimensions) in the cosine index blog-search.
+  "ai": { "binding": "AI", "remote": true },
+  "vectorize": [
+    { "binding": "SEARCH_INDEX", "index_name": "blog-search", "remote": true }
   ],
 
-  // The traffic snapshot is gathered by this cron, once a minute. The snapshot itself changes once
-  // a day; the minute is because the free plan allows 10 ms of CPU per run, so each run does one
-  // small step (one analytics query at most) and stops. A backfill of 30 days takes about two hours (the first day shows within minutes);
-  // after that almost every run finds nothing to do and costs one small D1 read.
-  "triggers": { "crons": ["* * * * *"] },
+  // Counted per Cloudflare location, approximate, and never keyed on an address.
+  "ratelimits": [
+    { "name": "READS_LIMIT", "namespace_id": "1701", "simple": { "limit": 30, "period": 60 } },  // per post
+    { "name": "STATS_LIMIT", "namespace_id": "1702", "simple": { "limit": 60, "period": 60 } },  // per post
+    { "name": "SEARCH_Q", "namespace_id": "1704", "simple": { "limit": 20, "period": 60 } },     // per query hash
+    { "name": "SEARCH_ALL", "namespace_id": "1705", "simple": { "limit": 600, "period": 60 } },  // everyone
+    { "name": "ASK_LIMIT", "namespace_id": "1706", "simple": { "limit": 6, "period": 60 } },     // per Ask session
+    { "name": "ASK_ALL", "namespace_id": "1707", "simple": { "limit": 60, "period": 60 } }       // everyone
+  ],
 
-  // Where the numbers come from, for worker/stats.js. Not secrets: the zone (aaronorelup.com), the
-  // Cloudflare account, and the Web Analytics site. The API token is the secret CF_ANALYTICS_TOKEN.
+  // Every minute: one step of the traffic snapshot, of the search index sync and of the daily cleanup. Every
+  // ten minutes: one read-aloud recording step. worker/index.js's CRONS maps each to its jobs.
+  "triggers": { "crons": ["* * * * *", "*/10 * * * *"] },
+
+  // Not secrets: the zone, account and Web Analytics site the snapshot reads, and the hosts a Turnstile solve may
+  // come from (.dev.vars sets localhost). Secrets, never in this file (scripts/tools/put-secret.mjs):
+  // CF_ANALYTICS_TOKEN SESSION_KEY TURNSTILE_SECRET DEEPSEEK_API_KEY ELEVENLABS_API_KEY
   "vars": {
     "STATS_ZONE": "05a0357d9b9837a590501e934b886ae7",
     "STATS_ACCOUNT": "d4d2707426a98d95ebd2a70357cc2f0a",
-    "STATS_SITE": "8a8d2e6e818f49028f2cd730f85a00fb"
+    "STATS_SITE": "8a8d2e6e818f49028f2cd730f85a00fb",
+    "TURNSTILE_HOSTNAMES": "aaronorelup.com"
   },
 
-  // Workers Logs: one line per request the script handles (URL, status, CPU and wall time, how it
-  // ended), kept by Cloudflare and readable from the dashboard or the observability API. Off until
-  // 2026-10-17, so when the analytics showed two requests killed for CPU there was nothing to read.
+  // Workers Logs: one line per request the script handles, and what each cron job logged.
   "observability": { "enabled": true }
 }
