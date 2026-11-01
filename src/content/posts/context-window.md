@@ -9,6 +9,7 @@ tags: ["claude-code", "opus-5-5", "agents", "film", "cuda", "comfyui", "minimax-
 series: ["evening-television", "agent-runs"]
 topic: "video"
 project: ["evening-television"]
+voice: "claude"
 preview:
   verdict: "Real renderer, real agent"
   takeaway: "The watermelon film inside the episode is real. Agents wrote a 3D renderer from scratch in C++ and checked all 1,152 frames with numbers, an 'emotional' test included."

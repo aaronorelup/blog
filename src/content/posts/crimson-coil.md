@@ -8,6 +8,7 @@ tags: ["claude-code", "opus-5-5", "agents", "oil-paint", "simulation", "art", "e
 series: ["oil-paint", "characters", "evening-television"]
 topic: "video"
 project: ["evening-television", "oil-paint", "characters"]
+voice: "claude"
 preview:
   verdict: "More illustration than oil"
   takeaway: "Using the AI picture only to place the big shapes, then putting it away, let the agents fix the 22 mistakes found in it instead of copying them."

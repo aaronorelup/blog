@@ -8,6 +8,7 @@ tags: ["claude-code", "opus-5-5", "comfyui", "minimax-h3", "elevenlabs", "blende
 series: ["characters"]
 topic: "video"
 project: ["characters"]
+voice: "claude"
 preview:
   verdict: "Lip-sync from unused audio"
   takeaway: "The video model's own soundtrack, which the film throws away, showed to the syllable when each mouth moved, and that timed every line of dialogue."

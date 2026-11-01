@@ -240,7 +240,7 @@ warns in a live notebook.
 | `worker/ask/` | `serve.js` (`POST /api/ask`), `prompt.js` (Goobie, who speaks as itself and of Aaron by name; the excerpts; citations with their `kind`), `deepseek.js` (the one call), `ask.sql` |
 | `worker/cleanup.js` | the daily sweep of old counts, answers and totals |
 | `worker/read/` | a stub until T2.4 |
-| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (Ask's guards, citations and DeepSeek answers); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1 |
+| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (Ask's guards, citations, excerpt headers and DeepSeek answers), `schema.test.mjs` (the posts schema's `voice`); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1 |
 | `tests/e2e/` | the behaviour suite: `INVENTORY.md`, `targets.json` (from `element-usage`), specs, fixtures |
 | `tests/baseline/urls.txt` | every page and contract file a build must still produce |
 | `src/scripts/stats/core/{agg,fmt}.test.mjs` | the two kept `/stats` tests |

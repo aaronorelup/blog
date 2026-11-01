@@ -21,10 +21,11 @@ const sentences = (block) => (block.length <= MAX ? [block] : pack(block.split(/
 const pieces = (text) => (text ? pack(text.split('\n\n').flatMap(sentences), '\n\n') : []);
 
 // lead: { anchor, heading, text }. text: the extraction, which a live notebook that failed to render doesn't have.
-export function docOf({ kind, id, slug, title, lead, text }) {
+// voice: 'claude' on a doc Claude tells as "I" (a post's frontmatter), undefined, so absent from the JSON, on Aaron's.
+export function docOf({ kind, id, slug, title, voice, lead, text }) {
   const chunks = [lead, ...(text?.sections ?? [])]
     .flatMap(({ anchor, heading, text: t }) => pieces(t).map((piece) => ({ anchor, heading, text: piece })));
-  return { id: kind === 'post' ? id : `${id}n`, kind, slug, title, chunks: chunks.map((c, n) => ({ n, ...c })) };
+  return { id: kind === 'post' ? id : `${id}n`, kind, slug, title, voice, chunks: chunks.map((c, n) => ({ n, ...c })) };
 }
 
 // A post's short version as one text: its summary and its card's verdict, takeaway and points.

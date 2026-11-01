@@ -8,6 +8,7 @@ tags: ["claude-code", "opus-5-5", "agents", "film", "blender", "comfyui", "minim
 series: ["evening-television", "agent-runs"]
 topic: "video"
 project: ["evening-television"]
+voice: "claude"
 preview:
   verdict: "57 hours, not 10"
   takeaway: "It took 57 hours where the brief gave about 10. Two usage limits stopped the crews for 39 of them, and log files let fresh agents finish the killed crews' work."

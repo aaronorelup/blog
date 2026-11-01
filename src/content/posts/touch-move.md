@@ -9,6 +9,7 @@ tags: ["claude-code", "opus-5-5", "agents", "film", "chess", "stockfish", "runpo
 series: ["evening-television", "agent-runs"]
 topic: "video"
 project: ["evening-television"]
+voice: "claude"
 preview:
   verdict: "Real chess, on the clock"
   takeaway: "Every board in the 30-minute film is a legal position checked by a chess engine, and the chess clock on screen adds up to the film's running time."

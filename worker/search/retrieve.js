@@ -9,12 +9,13 @@ export async function embed(env, texts) {
   return (await env.AI.run(model, { text: texts })).data;
 }
 
-// The topK nearest chunks, best first: [{ slug, kind, anchor, heading, text, title, score }].
+// The topK nearest chunks, best first: [{ slug, kind, anchor, heading, text, title, voice, score }], voice 'claude' on
+// a post or notes page Claude tells as "I" and undefined on Aaron's.
 export async function retrieve(env, q, topK) {
   const [vector] = await embed(env, [q]);
   const { matches } = await env.SEARCH_INDEX.query(vector, { topK, returnMetadata: 'all' });
   return matches.map(({ score, metadata: m }) => (
-    { slug: m.s, kind: m.k, anchor: m.a, heading: m.h, text: m.t, title: m.T, score }));
+    { slug: m.s, kind: m.k, anchor: m.a, heading: m.h, text: m.t, title: m.T, voice: m.v, score }));
 }
 
 // The best `per` chunks of each of the best `posts` posts, in score order (a post's notes count as the post).

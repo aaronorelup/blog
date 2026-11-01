@@ -1,6 +1,7 @@
 // worker/search/sync.js on an in-memory D1 and a fake index: the first sync embeds 10 docs a run and stores v only
 // on the run that finds nothing left; a removed doc (an unlisted post) loses its vectors and its row, a shorter doc its last ids,
-// in deletes of at most 100 ids; a live notebook goes last; then each run is idle until its hash moves.
+// in deletes of at most 100 ids; a live notebook goes last; then each run is idle until its hash moves. Every chunk
+// of a doc Claude tells as "I" carries v: 'claude', and only those.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { d1, loadWorker } from './worker-env.mjs';
@@ -10,6 +11,7 @@ const MODEL = '@cf/baai/bge-m3';
 const doc = (i, chunks) => ({ id: `AO-${100 + i}`, kind: 'post', slug: `p${i}`, title: `T${i}`,
   chunks: Array.from({ length: chunks }, (_, n) => ({ n, anchor: 'a', heading: n ? 'H' : '', text: `text ${n}` })) });
 const docs = [{ ...doc(11, 1), slug: 'teardown-lab' }, ...Array.from({ length: 11 }, (_, i) => doc(i, 2))];
+docs[2].voice = 'claude';
 const manifest = { v: 'v2', model: MODEL, live: ['post:teardown-lab'],
   docs: Object.fromEntries(docs.map((d) => [`post:${d.slug}`, `h${d.id}`])) };
 const files = new Map([['/search/manifest.json', manifest], ...docs.map((d) => [`/search/docs/post-${d.slug}.json`, d])]);
@@ -47,6 +49,7 @@ test('a full sync, a removed and a shortened doc, then idle until the live noteb
   assert.deepEqual(rows.map((r) => r.doc), Object.keys(manifest.docs).sort());
   assert.equal(vectors.size, docs.reduce((n, d) => n + d.chunks.length, 0));
   assert.deepEqual(vectors.get('AO-111:0').metadata, { s: 'teardown-lab', k: 'post', a: 'a', h: '', t: 'text 0', T: 'T11' });
+  assert.deepEqual([0, 1].map((n) => vectors.get(`AO-101:${n}`).metadata.v), ['claude', 'claude']);
   assert.equal(await v(), 'v2');
   assert.equal(await step(env), 'idle');
 

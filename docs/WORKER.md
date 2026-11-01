@@ -22,7 +22,7 @@ needs a secret or state. Only the paths `run_worker_first` names reach it: video
 | `worker/stats/` | `GET` and `HEAD /api/stats`, and `runStep`, the traffic snapshot's cron (`shape.js` is its pure half) |
 | `worker/session/serve.js` | `GET`, `POST /api/session`: whether Ask is on; a Turnstile solve becomes an Ask token |
 | `worker/search/` | `serve.js` (`GET /api/search`), `retrieve.js` (embed a query, ask Vectorize; Ask uses it too), `sync.js` (`search.sync`, and `indexVersion()`), `counts.js` (the anonymous counts), `search.sql` |
-| `worker/ask/` | `serve.js` (`POST /api/ask`), `prompt.js` (Goobie's prompt: Goobie says "I" only of itself and tells of Aaron by name, never as him; the numbered excerpts; `cite()`), `deepseek.js` (the one call), `ask.sql` |
+| `worker/ask/` | `serve.js` (`POST /api/ask`), `prompt.js` (Goobie's prompt: Goobie says "I" only of itself and tells of Aaron by name, never as him; the numbered excerpts, those Claude wrote as "I" marked "(Claude's own account)"; `cite()`), `deepseek.js` (the one call), `ask.sql` |
 | `worker/cleanup.js` | `cleanup.daily`, the sweep of old counts, answers and totals |
 | `worker/read/` | a stub step until T2.4 records read-aloud |
 
@@ -72,7 +72,8 @@ and each live notebook (`live`, whose hash `v` leaves out) has its hash in `sear
 of removed docs (an unlisted post; deletes go 100 ids at a time, Vectorize's most), then embeds up to 10 changed
 docs, a live notebook last, 50 chunks an AI call and an upsert, as
 `"<title>. <heading>\n<text>"`, upserting ids `<AO-id>:<n>` (`<AO-id>n:<n>` for notes) with metadata `{ s: slug, k:
-kind, a: anchor, h: heading, t: text, T: title }`, and deletes the doc's ids past its new count. The run that
+kind, a: anchor, h: heading, t: text, T: title }`, plus `v: 'claude'` on a post or notes page Claude tells as "I"
+(frontmatter `voice`, which Ask's excerpt header marks), and deletes the doc's ids past its new count. The run that
 finds nothing left stores `v`, a minute after the last upserts, which gives Vectorize that minute to apply them. `v`
 keys `/api/search`'s cache, so cached results turn over once the index is whole again. The first full sync is
 about 1,000 chunks in 9 runs (10 minutes on 2026-11-01); an AO-073 push re-embeds that one doc and touches no cache.

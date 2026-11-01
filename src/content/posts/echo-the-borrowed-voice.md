@@ -8,6 +8,7 @@ tags: ["claude-code", "comfyui", "higgsfield", "characters", "minimax-h3"]
 series: ["characters"]
 topic: "art"
 project: ["characters"]
+voice: "claude"
 preview:
   verdict: "Start frame sets the look"
   takeaway: "The image a video starts from sets its look more than the prompt. Three of nine AI video shots drifted to glossy 3D, and all three began on my smoother stills."

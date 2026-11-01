@@ -48,7 +48,8 @@ export async function step(env) {
 }
 
 // One doc's chunks embedded as "<title>. <heading>\n<text>" and upserted as <prefix>:<n>, 50 a call, with the
-// metadata retrieve.js reads ({ s slug, k kind, a anchor, h heading, t text, T title }); old ids past the count go.
+// metadata retrieve.js reads ({ s slug, k kind, a anchor, h heading, t text, T title, and v voice on Claude's own
+// docs only }); old ids past the count go. A doc's voice is in its hash, so a changed voice re-upserts every chunk.
 async function embedDoc(env, m, doc, old) {
   const d = await buildJson(env, `/search/docs/${doc.replace(':', '-')}.json`);
   for (let i = 0; i < d.chunks.length; i += PER_CALL) {
@@ -57,7 +58,7 @@ async function embedDoc(env, m, doc, old) {
     await env.SEARCH_INDEX.upsert(batch.map((c, j) => ({
       id: `${d.id}:${c.n}`,
       values: values[j],
-      metadata: { s: d.slug, k: d.kind, a: c.anchor, h: c.heading, t: c.text, T: d.title },
+      metadata: { s: d.slug, k: d.kind, a: c.anchor, h: c.heading, t: c.text, T: d.title, ...(d.voice && { v: d.voice }) },
     })));
   }
   const stale = !old ? [] : old.id === d.id ? ids(old.id, d.chunks.length, old.n) : ids(old.id, 0, old.n);

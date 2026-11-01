@@ -1,7 +1,8 @@
 // Ask Goobie's Worker half with stub bindings: [n] citations kept only when they name an excerpt, each with its
-// excerpt's kind, Goobie speaking as itself and of Aaron by name, a DeepSeek answer that was cut short or failed is no
-// answer, the order of the guards (a token, the switch, the limiters with a stub that says no, the score floor) before
-// any paid call, and the answer cache. No request leaves the process.
+// excerpt's kind, Goobie speaking as itself and of Aaron by name, an excerpt Claude wrote as "I" marked as such, a
+// DeepSeek answer that was cut short or failed is no answer, the order of the guards (a token, the switch, the
+// limiters with a stub that says no, the score floor) before any paid call, and the answer cache. No request leaves
+// the process.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { cite, messages } from '../../worker/ask/prompt.js';
@@ -38,10 +39,17 @@ test('the excerpts are numbered in the user message, with title and heading', ()
   // Goobie is Aaron's agent, not Aaron: "I" is Goobie, and what the posts say as "I" is told about Aaron by name,
   // except in the few posts Claude wrote, and what Claude or an agent did stays theirs.
   assert.match(system.content, /You are not Aaron\./);
-  assert.match(system.content, /there "I" is Claude/);
+  assert.match(system.content, /Excerpts marked \(Claude's own account\) are Claude's first person/);
   assert.match(system.content, /Keep who did what/);
   assert.doesNotMatch(system.content, /Speak as I/);
   assert.equal(user.content, 'Excerpts:\n[1] T one / H\nSome text.\n\n[2] T two / H\nSome text.\n\nQuestion: what is it?');
+});
+
+test("an excerpt of a post Claude wrote as \"I\" is marked as Claude's own account; Aaron's carry no mark", () => {
+  const claude = { ...chunk('bad-very-bad', 0.8), title: 'Bad. Very Bad.', heading: 'Timing the voices', voice: 'claude' };
+  const [, user] = messages('who timed the lip-sync?', [claude, { ...EXCERPTS[0], heading: '' }]);
+  assert.equal(user.content, "Excerpts:\n[1] Bad. Very Bad. / Timing the voices (Claude's own account)\nSome text.\n\n" +
+    '[2] T one\nSome text.\n\nQuestion: who timed the lip-sync?');
 });
 
 test('a DeepSeek answer cut short, empty or failed is null; a whole one is its text, asked with thinking off', async (t) => {

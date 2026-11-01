@@ -18,6 +18,7 @@ export const post = z.object({
   project: z.preprocess((v) => (typeof v === 'string' ? [v] : v), z.array(z.string())).optional(),
   preview: preview.optional(),
   icon: z.string().optional(),                     // overrides /media/icons/<id>.webp
+  voice: z.string().optional(),                    // 'claude' where Claude tells its own story; absent means Aaron's
   draft: z.boolean().default(false),               // not built at all
   unlisted: z.boolean().default(false),            // built at its URL with noindex, and in no list (lib/posts.js)
   // v1 fields: PostView's threads and RSS categories read them until T2.1; W4 strips them.
@@ -35,6 +36,7 @@ export const post = z.object({
   for (const k of p.project ?? []) if (!PROJECT_KEYS.includes(k)) issue('project', `"${k}" is not a project key`);
   if (p.project && new Set(p.project).size !== p.project.length) issue('project', 'a project is listed twice');
   if (p.icon && !/^\/media\/icons\/[A-Za-z0-9-]+\.webp$/.test(p.icon)) issue('icon', 'icons live in /media/icons/');
+  if (p.voice !== undefined && p.voice !== 'claude') issue('voice', "only 'claude'; leave it out for Aaron's voice");
   // v2 rules: errors on posts that have a topic now, on every post once STRICT. v1 posts only get warnings.
   if (!STRICT && p.topic === undefined) return;
   if (p.title.length > TEXT.titleCap) issue('title', `over the ${TEXT.titleCap}-character cap (WRITING.md)`);

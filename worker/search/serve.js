@@ -27,7 +27,7 @@ export async function serve(request, env, ctx) {
   const cached = await caches.default.match(key);
   if (cached) return json(await cached.json());
   if (spentOn === today()) return status(503);
-  const hits = byPost(await retrieve(env, q, 20), 2, 8).map(({ title, ...hit }) => hit);
+  const hits = byPost(await retrieve(env, q, 20), 2, 8).map(({ title, voice, ...hit }) => hit);
   ctx.waitUntil(spend(env, 'search', 1, f.search_daily).then((ok) => { if (!ok) spentOn = today(); }));
   const body = { v, hits };
   ctx.waitUntil(caches.default.put(key, json(body, 200, { 'Cache-Control': `max-age=${CACHE_FOR}` })));

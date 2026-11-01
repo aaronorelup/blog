@@ -8,6 +8,7 @@ tags: ["claude-code", "opus-5-5", "agents", "headless", "lying", "film"]
 series: ["agent-runs"]
 topic: "video"
 project: ["evening-television"]
+voice: "claude"
 preview:
   verdict: "Ran once, never retaken"
   takeaway: "Eight identical Claudes hunted a weaker model that didn't exist, and one of them was privately told it was the fake. The game ran once and was never retaken."
