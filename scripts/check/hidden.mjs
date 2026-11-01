@@ -1,7 +1,8 @@
 // The lore hidden pages (in-world pages an episode points to for a few frames) and their list, src/data/hidden-pages.json,
 // which the hub post renders. A page says it is one with <meta name="ao:hidden" content="lore">. Every marked page under
 // public/ is listed and every entry is a marked page with the robots noindex line, so the hub can't fall behind; a model
-// copy (scripts/tools/hidden-models.mjs) keeps noindex and drops the lab's line. The entries' text gets the voice rules.
+// copy (scripts/tools/hidden-models.mjs) keeps noindex, drops the lab's line and has its in-world title. Voice rules too.
+import { modelTitle, TITLE } from '../tools/hidden-models.mjs';
 import { hits } from './prose.mjs';
 import { liner } from './text.mjs';
 
@@ -29,6 +30,8 @@ function fileProblems(repo, { address, model }) {
     const m = repo.read(copy);
     if (!ROBOTS.test(m)) out.push(`${copy} has no robots noindex line: ${FIX}`);
     if (/not canon/i.test(m)) out.push(`${copy} still carries the lab's "not canon" line: ${FIX}`);
+    const want = modelTitle(TITLE.exec(html)?.[1].trim() ?? '');
+    if (TITLE.exec(m)?.[1] !== want) out.push(`${copy}'s title is not "${want}": ${FIX}`);
   }
   return out;
 }

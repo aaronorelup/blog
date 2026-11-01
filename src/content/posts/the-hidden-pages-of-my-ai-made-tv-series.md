@@ -72,10 +72,11 @@ chess engine in advance, so the page plays real chess without running one.
 
 The Moon machine pages came later. My teardown lab had Opus 5.5 build a take-apart model of each machine from its
 concept sheet, and each model carried a small "not canon" line. For these pages Claude put a copy of each model behind
-its machine's page with only that line taken off, and drew the status screens in the look of Noor's base app from the
-film, using lines the lore already has: Rev B's orders, the decommission steps, the roster's words. What it made up is
-small. It chose the screens' labels, like LATEST ISSUE and LAST STEP, and the addresses, and it gave the lander's page
-one red light that blinks once, borrowed from the one red blink near the end of Earthlight.
+its machine's page with that line taken off and an in-world name in the browser tab, and drew the status screens in
+the look of Noor's base app from the film, using lines the lore already has: Rev B's orders, the decommission steps,
+the roster's words. What it made up is small. It chose the screens' labels, like LATEST ISSUE and LAST STEP, the tab
+names and the addresses, and it gave the lander's page one red light that blinks once, borrowed from the one red blink
+near the end of Earthlight.
 
 <details><summary>How the list works</summary>
 
@@ -88,7 +89,8 @@ one red light that blinks once, borrowed from the one red blink near the end of 
 - This post doesn't name the pages itself. The two lists above are filled in from the data file when the site builds,
   so a new entry shows up here with no edit to the post.
 - Only lore pages go in it, the ones an episode points to or will. Posts I just didn't want listed never do.
-- When the lab fixes a model, `node scripts/tools/hidden-models.mjs` copies it behind its page again.
+- When the lab fixes a model, `node scripts/tools/hidden-models.mjs` copies it behind its page again, with the same
+  three changes: the line for search engines, no "not canon" line, and a tab title like MOLE-1 · SERVICE MODEL.
 
 </details>
 

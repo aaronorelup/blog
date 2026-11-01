@@ -235,7 +235,7 @@ fails the build, or only warns in a live notebook.
 | `scripts/media/` | `files.mjs` (what is media, `STAYS_IN_GIT`), `push.mjs`, `verify.mjs`, `integration.mjs` (the guard) |
 | `scripts/tools/new-post.mjs` | `npm run new-post`: the next `AO-###`, the v2 frontmatter |
 | `scripts/tools/never-publish-hash.mjs` | `npm run never-publish:hash`: the private list → `never-publish.json` |
-| `scripts/tools/hidden-models.mjs` | copies each lore hidden page's model from `/labs/teardown/` to `<address>model/` (robots line added, the lab's "not canon" line emptied); run again when the lab fixes one |
+| `scripts/tools/hidden-models.mjs` | copies each lore hidden page's model from `/labs/teardown/` to `<address>model/` (robots line added, the lab's "not canon" line emptied, an in-world title `<NAME> · SERVICE MODEL`); run again when the lab fixes one |
 | `scripts/tools/budgets.mjs` | the page-weight budgets (section "Budgets") and the font check |
 | `scripts/tools/fonts.mjs` | `node scripts/tools/fonts.mjs` after a build: fetches Google's slices for the code points the pages show, rewrites `public/fonts/`, `fonts.css`, `fonts.json`; `misses(dist)` |
 | `scripts/tools/searches.mjs` | `npm run searches [-- days]`: the top search and Ask queries, for Aaron only (D1 through the API) |
@@ -276,7 +276,7 @@ about a second; run it before every landing, and with paths to see one post (`np
 | `links.mjs` | `/ledger/<slug>/` goes to a listed post, `/notes/` to its notes; nothing under `public/ledger/`; no banned link | deploy |
 | `elements.mjs` | each `src/elements/ao-*/` has its section in `docs/COMPONENTS.md` | check |
 | `assets.mjs` | preview stills and loops exist and are under their caps, icon and project picture caps, every named video or audio is in R2 or in a `STAYS_IN_GIT` folder | deploy |
-| `hidden.mjs` | every page under `public/` marked `ao:hidden` is in `src/data/hidden-pages.json` and every entry is a marked page with noindex (and its model copy has noindex and no "not canon"); the entries' text gets the voice rules (check); a page under `public/ledger/` with no marker warns | deploy |
+| `hidden.mjs` | every page under `public/` marked `ao:hidden` is in `src/data/hidden-pages.json` and every entry is a marked page with noindex (and its model copy has noindex, no "not canon" and its in-world title); the entries' text gets the voice rules (check); a page under `public/ledger/` with no marker warns | deploy |
 | `code.mjs` | 400 lines, no CSS imported by browser JS, no `style=` in components, layouts or pages, `astro:content` only in `lib/content.js` and the schemas, no IP under `worker/` | check |
 
 Anything in a live notebook's paths is at most a warning, at either level. The never-publish terms themselves live in

@@ -65,11 +65,13 @@ test('the real hidden pages and their list agree', () => {
   assert.deepEqual(errors(undefined), []);
 });
 
-test("a model copy gets the robots line and loses only the lab's line", () => {
-  const html = '<html><head><meta charset="utf-8"><title>x</title></head><body><script>s(\'<div class="notcanon">teardown-lab experiment \\xB7 not canon</div>\')</script></body></html>';
-  const out = adapt(html);
+test("a model copy gets the robots line and its in-world title, and loses only the lab's line", () => {
+  const html = '<html><head><meta charset="utf-8"><title>x-live</title></head><body><script>s(\'<div class="notcanon">teardown-lab experiment \\xB7 not canon</div>\')</script></body></html>';
+  const out = adapt(html, 'MOLE-1');
   assert.match(out, /<meta charset="utf-8">\n<meta name="robots" content="noindex/);
+  assert.match(out, /<title>MOLE-1 · SERVICE MODEL<\/title>/);
   assert.ok(!out.includes('not canon'));
-  assert.equal(out.replace(/\n<meta name="robots"[^>]*>/, '').replace('<div hidden></div>', '<div class="notcanon">teardown-lab experiment \\xB7 not canon</div>'), html);
-  assert.throws(() => adapt('<meta charset="utf-8">'), /found it 0 times/);
+  assert.equal(out.replace(/\n<meta name="robots"[^>]*>/, '').replace('<div hidden></div>', '<div class="notcanon">teardown-lab experiment \\xB7 not canon</div>')
+    .replace('MOLE-1 · SERVICE MODEL', 'x-live'), html);
+  assert.throws(() => adapt('<meta charset="utf-8"><title>t</title>', 'X'), /found it 0 times/);
 });
