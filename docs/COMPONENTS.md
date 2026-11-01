@@ -92,6 +92,31 @@ Behaviours: blind-1, blind-2. Used by 2 posts (`INVENTORY.md`); best shown by `p
 
 ## <ao-runs>
 
+When each agent of a run (a workflow, a fleet, a night of scheduled jobs) started and stopped, drawn on one clock.
+One lane per phase, in the order phases first appear; agents that overlap inside a phase stack, so a fan-out reads
+as a tall block and a lone agent as a thin line. Pointing at a bar, or moving along them with the arrow keys (Home
+and End jump to the ends), names the agent and its length.
+
+| Attribute | |
+|---|---|
+| `start="HH:MM"` | where the axis starts (default: the first start); it also puts two-part times on a clock |
+| `end="HH:MM"` | where the axis ends (default: the last end) |
+
+Children: one `<table>` whose body rows are label, phase, start, end, then an optional `<figcaption>`. A time is a
+clock time (`HH:MM:SS`, same day) or `m:ss` / plain seconds from the start of the run; the table is on a clock when
+any start has three parts or the element has `start`. A row whose times don't read, or that ends before it starts,
+is left out. The table stays for screen readers (visually hidden once drawn); without JS it is the table.
+
+```html
+<ao-runs>
+<table><thead><tr><th>Agent</th><th>Phase</th><th>Start</th><th>End</th></tr></thead>
+<tbody><tr><td>planner</td><td>Plan</td><td>0:00</td><td>1:40</td></tr><tr><td>writer 1</td><td>Write</td><td>1:40</td><td>9:05</td></tr></tbody></table>
+<figcaption><b>One run, agent by agent</b></figcaption>
+</ao-runs>
+```
+
+Behaviours: runs-1 to runs-3. Used by 2 posts (`INVENTORY.md`); best shown by `the-clock-nobody-checked`.
+
 ## <ao-series>
 
 ## <ao-shots>
