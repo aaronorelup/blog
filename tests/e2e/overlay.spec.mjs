@@ -47,6 +47,7 @@ async function openFrom(page, href) {
   await page.mouse.click(x, y);
   await isOpen(page);
   await expect(page).toHaveURL(new RegExp(href + '$'));
+  await expect(view(page, href.slice(1))).toBeVisible();
 }
 const openLedger = (page) => openFrom(page, '/ledger');
 
@@ -326,13 +327,14 @@ test('overlay-16 a page from another build opens as the real page', async ({ pag
   await expect(page.locator('[data-post-article] ao-model').first()).toBeVisible();
 });
 
-test('overlay-17 Back from a post finds the ledger filtered and scrolled as it was left', async ({ page }) => {
+test('overlay-17 Back, or ← LEDGER, from a post finds the ledger filtered and scrolled as it was left', async ({ page }) => {
   await home(page);
   await openLedger(page);
   // The topic with the most posts, so its list scrolls.
   const value = await panel(page).locator('[data-chip="topic"]').evaluateAll((cs) => cs
     .map((c) => [c.dataset.value, Number(c.textContent.match(/\d+(?=\s*$)/)[0])]).sort((a, b) => b[1] - a[1])[0][0]);
-  await panel(page).locator(`[data-chip="topic"][data-value="${value}"]`).click();
+  const chip = panel(page).locator(`[data-chip="topic"][data-value="${value}"]`);
+  await chip.click();
   await expect(page).toHaveURL(new RegExp(`/ledger/?\\?topic=${value}$`));
   const rows = panel(page).locator('[data-panel-view="ledger"] .row:not([hidden])');
   const count = await rows.count();
@@ -341,13 +343,21 @@ test('overlay-17 Back from a post finds the ledger filtered and scrolled as it w
   const scroll = await page.locator('#panel-scroll').evaluate((s) => s.scrollTop);
   expect(scroll).toBeGreaterThan(100);
   const href = await last.getAttribute('href');
+  const asLeft = async () => {
+    await expect(page).toHaveURL(new RegExp(`\\?topic=${value}$`));
+    await expect(chip).toHaveAttribute('aria-current', 'true');
+    await expect(rows).toHaveCount(count);
+    await expect.poll(() => page.locator('#panel-scroll').evaluate((s) => s.scrollTop)).toBe(scroll);
+  };
+  // The filter was set after this ledger was mounted: "← LEDGER" (data-close-reader) finds it all the same.
+  await last.click();
+  await reading(page, href);
+  await reader(page).locator('[data-close-reader]').first().click();
+  await asLeft();
   await last.click();
   await reading(page, href);
   await page.goBack();
-  await expect(page).toHaveURL(new RegExp(`\\?topic=${value}$`));
-  await expect(panel(page).locator(`[data-chip="topic"][data-value="${value}"]`)).toHaveAttribute('aria-current', 'true');
-  await expect(rows).toHaveCount(count);
-  await expect.poll(() => page.locator('#panel-scroll').evaluate((s) => s.scrollTop)).toBe(scroll);
+  await asLeft();
   expect(await sameDocument(page)).toBe(true);
 });
 

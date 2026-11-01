@@ -21,8 +21,14 @@ let ledger = { search: '', scroll: 0 };    // where the ledger was left, for "‚Ü
 const set = (next) => { state = next; listeners.forEach((fn) => fn(next)); };
 const isOpen = () => state === 'open' || state === 'covered';
 const stop = () => document.dispatchEvent(new CustomEvent('ao-stop'));
-// The view being left keeps its scroll in its history entry, so Back finds it where it was.
-const keepScroll = () => shown && history.replaceState({ ...history.state, scroll: scroller.scrollTop }, '');
+// The view being left keeps its scroll in its history entry, so Back finds it where it was, and takes the address it
+// has moved to since it was mounted (the ledger's chips replaceState their filter), so "‚Üê LEDGER" finds it the same.
+function leave() {
+  if (!shown) return;
+  history.replaceState({ ...history.state, scroll: scroller.scrollTop }, '');
+  const here = routeOf(location.href);
+  if (here?.page === shown.route.page) shown.route = here;
+}
 
 export function onPanel(fn) {
   listeners.add(fn);
@@ -73,7 +79,7 @@ function open(route, from, pushed) {
 export function closePanel(push = true) {
   if (!isOpen()) return;
   if (push) {
-    keepScroll();
+    leave();
     history.pushState(null, '', '/');
   }
   stop();
@@ -99,7 +105,7 @@ function onClick(e) {
   const route = routeOf(back ? '/ledger' + ledger.search : a.href);
   if (!route) return;
   e.preventDefault();
-  keepScroll();
+  leave();
   const same = shown?.route.key === route.key;
   history[same ? 'replaceState' : 'pushState'](back ? { scroll: ledger.scroll } : null, '', route.url.href);
   open(route, a.closest('section[data-wp]')?.firstElementChild, true);

@@ -319,7 +319,7 @@ its static rung mid-test.
 | Courses brings its own stylesheets, put before the homepage's, and they apply | overlay-14 |
 | Opening and closing every view (and a post) leaves the homepage's body and card colours as they were | overlay-15 |
 | A page from another build (`ao-build`) opens as the real page | overlay-16 |
-| Back from a post finds the ledger filtered (`?topic=`) and scrolled as it was left | overlay-17 |
+| Back, or "← LEDGER", from a post finds the ledger filtered (`?topic=`, even one set after it was mounted) and scrolled as it was left | overlay-17 |
 | A search result (`?hl=&hs=#heading`) opens in the panel with its passage marked, in view | overlay-18 |
 | A post's notes open in the panel | overlay-19 |
 | The scene draws nothing while the panel covers it, and draws again once it closes | overlay-20 |
