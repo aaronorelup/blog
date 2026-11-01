@@ -48,7 +48,8 @@ async function openRow(page, url) {
   await expect(reader(page)).toHaveAttribute('data-slug', slugOf(url));
   await expect(reader(page).locator('h1, h2').first()).toBeVisible();
 }
-const allDefined = (page) => reader(page).evaluate((r) => r.querySelectorAll(':not(:defined)').length);
+// Each component is its own chunk, loaded once the post is in the reader: give them a moment.
+const allDefined = (page) => expect.poll(() => reader(page).evaluate((r) => r.querySelectorAll(':not(:defined)').length)).toBe(0);
 async function modelRenders(page) {
   const m = reader(page).locator('ao-model').first();
   await m.locator('.ao-model-load').click();
@@ -88,18 +89,18 @@ test('overlay-3 post A, post B, back to A and on to C: every component works on 
   await home(page);
   await openLedger(page);
   await openRow(page, modelPost);
-  expect(await allDefined(page)).toBe(0);
+  await allDefined(page);
   await modelRenders(page);
   await reader(page).locator('[data-close-reader]').first().click();
   await openRow(page, gamePost);
-  expect(await allDefined(page)).toBe(0);
+  await allDefined(page);
   await reader(page).locator('ao-game .ao-game-load').first().click();
   await expect(reader(page).locator('ao-game iframe')).toHaveCount(1);
   await page.goBack();
   await expect(page).toHaveURL(/\/ledger$/);
   await page.goBack();
   await expect(reader(page)).toHaveAttribute('data-slug', slugOf(modelPost));
-  expect(await allDefined(page)).toBe(0);
+  await allDefined(page);
   await modelRenders(page);
   await page.goForward();
   await page.goForward();
