@@ -60,7 +60,7 @@ export function shrink(done) {
   shown(true);
   inner.style.opacity = '0';
   scrim.style.opacity = '0';
-  place(from?.isConnected ? from.getBoundingClientRect() : full(), '0', true);
+  place(from ? from.getBoundingClientRect() : full(), '0', true);
   later(540, () => { shown(false); done(); });
 }
 
