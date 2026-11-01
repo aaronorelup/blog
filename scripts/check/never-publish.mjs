@@ -48,7 +48,6 @@ export function termKey(line) {
 const scope = (repo) => [
   ...repo.posts, ...repo.notes, ...repo.projects,
   ...repo.list('src/components/about'),
-  ...repo.list('src/components/panel', (f) => f.endsWith('/AboutView.astro')),   // until T1.4 moves it to about/
   ...repo.list('src/data', (f) => /^src\/data\/[^/]+\.js$/.test(f)),
 ].map((e) => (typeof e === 'string' ? { file: e, raw: repo.read(e) } : e));
 
