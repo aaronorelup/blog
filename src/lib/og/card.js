@@ -2,9 +2,11 @@
 // id and topic, the title (Zen Maru Gothic 700 through sharp's Pango text input, word-wrapped) and the verdict stamped
 // on the right. Build time only; lib/og/image.js decides when to draw one. The colours are tokens.css's night values.
 import sharp from 'sharp';
+import { OG } from '../../data/limits.js';
 import { GLYPHS } from '../glyphs.js';
 
-const W = 1200, H = 630, PAD = 80, ICON = 256, GAP = 56;
+const { width: W, height: H } = OG;
+const PAD = 80, ICON = 256, GAP = 56;
 const COL = PAD + ICON + GAP;                 // the text column's left edge
 const TEXT_W = W - COL - PAD + 16;            // 760 px
 const C = { bg: '#151726', tile: '#201F2C', head: '#F0C06A', gold: '#C9A227', accent: '#E2795C', quiet: '#8E8375' };

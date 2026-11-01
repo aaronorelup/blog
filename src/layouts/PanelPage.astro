@@ -1,7 +1,8 @@
 ---
 // A standalone panel page: /stats, /ledger, /courses, /projects, /about, each course and lore page, each post and
-// research document. Its view's module (views/<data-panel-view>.js) runs once the page has parsed. Real pages: they render without JavaScript, search engines and RSS readers see them, and the
-// homepage overlay fetches its post bodies from them. The same panel that grows out of a homepage card, already open.
+// research document. Real pages: they render without JavaScript, search engines and RSS readers see them, and the
+// homepage overlay fetches its views from them. The same panel that grows out of a homepage card, already open. Its
+// view's module (views/<data-panel-view>.js, through mountView) runs once the page has parsed.
 import '../styles/site.css';
 import Head from '../components/chrome/Head.astro';
 import ModeToggle from '../components/chrome/ModeToggle.astro';
