@@ -2,6 +2,7 @@
 // asks: a poster and a Play button first, then an iframe of the game's own page, with Fullscreen, Stop and an "own
 // tab" link under it. The inner markup (a link to the game) is the no-JS fallback. Attributes: docs/COMPONENTS.md.
 import { AO_LISTEN_PLAY, AO_STOP, claim, current } from '../_core/player.js';
+import { h } from '../_lib/dom.js';
 
 // A running game is a player like a video (_core/player.js). It pauses, sound and
 // drawing both, when it is scrolled off screen, when the tab is hidden, when anything else on
@@ -24,25 +25,12 @@ class AoGame extends HTMLElement {
     this.setAttribute('aria-label', this._label);
     this.innerHTML = '';
 
-    this._stage = document.createElement('div');
-    this._stage.className = 'ao-game-stage';
+    this._stage = h('div', { class: 'ao-game-stage' });
     this.appendChild(this._stage);
 
-    const bar = document.createElement('div');
-    bar.className = 'ao-game-bar';
-    if (note) {
-      const n = document.createElement('span');
-      n.className = 'ao-game-note';
-      n.textContent = note;
-      bar.appendChild(n);
-    }
+    const bar = h('div', { class: 'ao-game-bar' }, note ? h('span', { class: 'ao-game-note', text: note }) : null);
     const mk = (text, cls, fn) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'ao-game-btn ' + cls;
-      b.textContent = text;
-      b.hidden = true;
-      b.addEventListener('click', fn);
+      const b = h('button', { type: 'button', class: 'ao-game-btn ' + cls, text, hidden: true, onclick: fn });
       bar.appendChild(b);
       return b;
     };
@@ -55,13 +43,8 @@ class AoGame extends HTMLElement {
     });
     this._stopBtn = mk('Stop game', 'ao-game-stop', () => this.unload('Stopped. Play it again to start over.'));
     this._stopBtn.title = 'Unload the game: frees its memory and stops everything it was doing';
-    const tab = document.createElement('a');
-    tab.href = this._src;
-    tab.target = '_blank';
-    tab.rel = 'noopener';
-    tab.textContent = 'Open in its own tab ↗';
-    tab.addEventListener('click', () => this.unload('Opened in its own tab.'));
-    bar.appendChild(tab);
+    bar.appendChild(h('a', { href: this._src, target: '_blank', rel: 'noopener', text: 'Open in its own tab ↗',
+      onclick: () => this.unload('Opened in its own tab.') }));
     this.appendChild(bar);
     this._sizeText = size;
     this.poster();
@@ -89,38 +72,20 @@ class AoGame extends HTMLElement {
     stage.replaceChildren();
     const poster = this.getAttribute('poster');
     if (poster) {
-      const img = document.createElement('img');
-      img.src = poster; img.alt = this._label; img.loading = 'lazy'; img.className = 'ao-game-poster';
-      stage.appendChild(img);
+      stage.appendChild(h('img', { src: poster, alt: this._label, loading: 'lazy', class: 'ao-game-poster' }));
     }
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'ao-model-load ao-game-load';
-    btn.textContent = (message ? 'Play again' : 'Play it here') + (this._sizeText ? ' (' + this._sizeText + ')' : '');
-    btn.addEventListener('click', () => this.load());
-    stage.appendChild(btn);
-    if (message) {
-      const m = document.createElement('p');
-      m.className = 'ao-game-msg';
-      m.textContent = message;
-      stage.appendChild(m);
-    }
+    stage.appendChild(h('button', { type: 'button', class: 'ao-model-load ao-game-load',
+      text: (message ? 'Play again' : 'Play it here') + (this._sizeText ? ' (' + this._sizeText + ')' : ''),
+      onclick: () => this.load() }));
+    if (message) stage.appendChild(h('p', { class: 'ao-game-msg', text: message }));
     this._full.hidden = true;
     this._stopBtn.hidden = true;
   }
 
   load() {
-    const frame = document.createElement('iframe');
-    frame.src = this._src;
-    frame.title = this._label;
-    frame.allow = 'fullscreen; gamepad; autoplay';
-    frame.allowFullscreen = true;
-    const veil = document.createElement('button');
-    veil.type = 'button';
-    veil.className = 'ao-game-veil';
-    veil.hidden = true;
+    const frame = h('iframe', { src: this._src, title: this._label, allow: 'fullscreen; gamepad; autoplay', allowfullscreen: true });
+    const veil = h('button', { type: 'button', class: 'ao-game-veil', hidden: true, onclick: () => this.resume() });
     veil.innerHTML = '<span class="ao-game-veil-msg"></span><span class="ao-game-veil-go">Resume</span>';
-    veil.addEventListener('click', () => this.resume());
     this._stage.replaceChildren(frame, veil);
     this._frame = frame;
     this._veil = veil;
