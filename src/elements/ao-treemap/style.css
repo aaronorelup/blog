@@ -61,7 +61,6 @@ ao-treemap {
   aspect-ratio: var(--ao-aspect, 16 / 10);
   overflow: hidden;
   border-radius: 6px;
-  outline: none;
   touch-action: pan-y;
 }
 .ao-tm-stage:focus-visible { box-shadow: 0 0 0 3px var(--pc-head); }
