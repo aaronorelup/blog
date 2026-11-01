@@ -1,7 +1,7 @@
 // <ao-listen>: a set of clips with one player: a clip row picks and plays, A/B switches to the reference at the same
 // moment and back, the spectrogram seeks (click and arrows), and keys drive the list.
 import { test, expect } from '../fixtures.mjs';
-import { openFirst, pagesWith, expectPlaying, clock } from '../helpers.mjs';
+import { openFirst, pagesWith, expectPlaying, clock, seekTo } from '../helpers.mjs';
 
 // The first set whose every clip runs 4 s or more, so none ends under a test (many are one-line sound bites).
 let at = null;
@@ -10,7 +10,7 @@ const current = (page) => listen(page).locator('.ao-listen-list button[aria-curr
 // The audio of the clip the element shows, found by its title.
 const audioOf = (page, title) => listen(page).locator('figure').filter({ has: page.locator('figcaption b', { hasText: title }) }).locator('audio').first();
 const ready = (page) => listen(page).evaluate((el) => Promise.all([...el.querySelectorAll('audio')].map((a) => {
-  a.muted = true; a.preload = 'auto';
+  a.muted = true; a.preload = 'metadata';
   return a.readyState ? 0 : new Promise((r) => { a.addEventListener('loadedmetadata', r, { once: true }); a.load(); });
 })));
 
@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
   const urls = at ? [at.url] : pagesWith('ao-listen');
   const i = await openFirst(page, urls, (p) => p.locator('ao-listen').evaluateAll((els) => Promise.all(els.map((el) =>
     Promise.all([...el.querySelectorAll('audio')].map((a) => (a.readyState ? a.duration : new Promise((r) => {
-      a.addEventListener('loadedmetadata', () => r(a.duration), { once: true }); a.preload = 'auto'; a.load();
+      a.addEventListener('loadedmetadata', () => r(a.duration), { once: true }); a.preload = 'metadata'; a.load();
     })))).then((d) => Math.min(...d)))).then((mins) => mins.findIndex((d) => d >= 4))));
   at = { url: page.url(), i };
   await listen(page).scrollIntoViewIfNeeded();
@@ -33,7 +33,8 @@ test('listen-1 a clip row selects that clip and plays it', async ({ page }) => {
   await expect(listen(page).locator('.ao-listen-now b')).toHaveText(title);
   await expectPlaying(audioOf(page, title));
   await expect(listen(page).locator('.ao-listen-bar button').first()).toHaveText('Pause');
-  await expect.poll(() => listen(page).locator('.ao-listen-clock').textContent()).toMatch(/^0:0[1-9] \/ \d+:\d\d$/);
+  await seekTo(audioOf(page, title), 2);
+  await expect(listen(page).locator('.ao-listen-clock')).toHaveText(/^0:0[2-9] \/ \d+:\d\d$/);
   await listen(page).locator('.ao-listen-bar button').first().click();
   await expectPlaying(audioOf(page, title), false);
   await expect(listen(page).locator('.ao-listen-bar button').first()).toHaveText('Play');
@@ -50,7 +51,9 @@ test('listen-2 A/B switches to the reference at the same moment, and back', asyn
   const first = await current(page).textContent();
   const a = audioOf(page, first);
   await expectPlaying(a);
-  await expect.poll(() => clock(a)).toBeGreaterThan(0.6);
+  // A moment well into the clip, set rather than waited for: WebKit on Linux can hold a playing clip's clock still.
+  await seekTo(a, 2);
+  await expect.poll(() => clock(a)).toBeGreaterThan(1.9);
   await ab.click();
   await expect(ab).toHaveAttribute('aria-pressed', 'true');
   const refTitle = await current(page).textContent();
