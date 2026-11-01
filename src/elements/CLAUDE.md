@@ -7,6 +7,9 @@
   element's CSS and only its CSS. `registry.js` loads a folder's module when its tag is in a post; `ElementStyles.astro`
   inlines its CSS into the articles that use it; the build knows the tag by its folder (`scripts/build/markdown.mjs`).
   `ao-demo` loads `ao-demo/demos/<name>/index.js` (`mount`).
+- **Adding one:** the folder with `element.js` (its markup built with `h()`) and `style.css`, a `## <ao-x>` section
+  in `docs/COMPONENTS.md`, and its behaviours as `tests/e2e/INVENTORY.md` rows with a spec in `tests/e2e/elements/`.
+  Nothing to register: the folder is the tag.
 - **Never import CSS from JS** here (`scripts/check/code.mjs` fails it). What every element shares (the viewer, the
   now-playing bar, `.visually-hidden`) is `src/styles/elements.css`.
 - **The cascade:** a `style.css` is inlined in the article, after the page's stylesheets, so a rule exactly as
