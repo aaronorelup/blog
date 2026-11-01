@@ -1,409 +1,52 @@
 /* Written by scripts/tools/fonts.mjs: Google's slices of the site's fonts, self-hosted. */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/jetbrains-mono-greek.0a557721.woff2') format('woff2');
-  unicode-range: U+03B8, U+03C0-03C1;
-}
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/jetbrains-mono-latin-ext.db5ff4db.woff2') format('woff2');
-  unicode-range: U+0142, U+014D, U+017C;
-}
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/jetbrains-mono-latin.83c005d4.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/jetbrains-mono-greek.0a557721.woff2') format('woff2');
-  unicode-range: U+03B8, U+03C0-03C1;
-}
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/jetbrains-mono-latin-ext.db5ff4db.woff2') format('woff2');
-  unicode-range: U+0142, U+014D, U+017C;
-}
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/jetbrains-mono-latin.83c005d4.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/jetbrains-mono-greek.0a557721.woff2') format('woff2');
-  unicode-range: U+03B8, U+03C0-03C1;
-}
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/jetbrains-mono-latin-ext.db5ff4db.woff2') format('woff2');
-  unicode-range: U+0142, U+014D, U+017C;
-}
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/jetbrains-mono-latin.83c005d4.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'Karla';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/karla-latin-ext.86844b3e.woff2') format('woff2');
-  unicode-range: U+0142, U+014D, U+017C;
-}
-@font-face {
-  font-family: 'Karla';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/karla-latin.3b1eb09a.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'Karla';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('/fonts/karla-latin-ext.86844b3e.woff2') format('woff2');
-  unicode-range: U+0142, U+014D, U+017C;
-}
-@font-face {
-  font-family: 'Karla';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('/fonts/karla-latin.3b1eb09a.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-56.dc9f6b6d.woff2') format('woff2');
-  unicode-range: U+266D, U+2702;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-58.8a12a3a8.woff2') format('woff2');
-  unicode-range: U+2197, U+221A, U+2248;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-60.48a0cdcc.woff2') format('woff2');
-  unicode-range: U+2713;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-73.4ffd0156.woff2') format('woff2');
-  unicode-range: U+221E;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-82.35d20a88.woff2') format('woff2');
-  unicode-range: U+6C88;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-83.eb306a9f.woff2') format('woff2');
-  unicode-range: U+2500;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-86.f5cfff2d.woff2') format('woff2');
-  unicode-range: U+2665;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-94.a41d7bd2.woff2') format('woff2');
-  unicode-range: U+2190;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-98.03b3966e.woff2') format('woff2');
-  unicode-range: U+7A93;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-102.ed29999c.woff2') format('woff2');
-  unicode-range: U+25CF;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-104.28594d56.woff2') format('woff2');
-  unicode-range: U+7403;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-107.85877a83.woff2') format('woff2');
-  unicode-range: U+2192;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-116.a5cb638b.woff2') format('woff2');
-  unicode-range: U+5730;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-117.689f6775.woff2') format('woff2');
-  unicode-range: U+898B;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-118.6970d865.woff2') format('woff2');
-  unicode-range: U+6708;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-119.42da4f4e.woff2') format('woff2');
-  unicode-range: U+3044, U+304A-304B, U+3053, U+3059, U+306A, U+306E-3070, U+307E-307F, U+3084, U+3093;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-greek.f7f8dc41.woff2') format('woff2');
-  unicode-range: U+03B8, U+03C0-03C1;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-latin-ext.b46fac14.woff2') format('woff2');
-  unicode-range: U+0142, U+014D, U+017C;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-500-latin.2c5953da.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-56.180a7bff.woff2') format('woff2');
-  unicode-range: U+266D, U+2702;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-58.27b834a4.woff2') format('woff2');
-  unicode-range: U+2197, U+221A, U+2248;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-60.a983b86b.woff2') format('woff2');
-  unicode-range: U+2713;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-73.5b27df55.woff2') format('woff2');
-  unicode-range: U+221E;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-82.82a71b3d.woff2') format('woff2');
-  unicode-range: U+6C88;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-83.a7fe752a.woff2') format('woff2');
-  unicode-range: U+2500;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-86.f072a138.woff2') format('woff2');
-  unicode-range: U+2665;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-94.8fa65903.woff2') format('woff2');
-  unicode-range: U+2190;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-98.0b02f27e.woff2') format('woff2');
-  unicode-range: U+7A93;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-102.efb87e00.woff2') format('woff2');
-  unicode-range: U+25CF;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-104.a3eec593.woff2') format('woff2');
-  unicode-range: U+7403;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-107.98d97f38.woff2') format('woff2');
-  unicode-range: U+2192;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-116.8faef881.woff2') format('woff2');
-  unicode-range: U+5730;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-117.de9b6bdf.woff2') format('woff2');
-  unicode-range: U+898B;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-118.9997d6ea.woff2') format('woff2');
-  unicode-range: U+6708;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-119.25661a23.woff2') format('woff2');
-  unicode-range: U+3044, U+304A-304B, U+3053, U+3059, U+306A, U+306E-3070, U+307E-307F, U+3084, U+3093;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-greek.81c1d9ce.woff2') format('woff2');
-  unicode-range: U+03B8, U+03C0-03C1;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-latin-ext.0c436225.woff2') format('woff2');
-  unicode-range: U+0142, U+014D, U+017C;
-}
-@font-face {
-  font-family: 'Zen Maru Gothic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/zen-maru-gothic-700-latin.9d65f92a.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/jetbrains-mono-greek.0a557721.woff2') format('woff2'); unicode-range: U+03B8, U+03C0-03C1; }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/jetbrains-mono-latin-ext.db5ff4db.woff2') format('woff2'); unicode-range: U+0142, U+014D, U+017C; }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/jetbrains-mono-latin.83c005d4.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/jetbrains-mono-greek.0a557721.woff2') format('woff2'); unicode-range: U+03B8, U+03C0-03C1; }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/jetbrains-mono-latin-ext.db5ff4db.woff2') format('woff2'); unicode-range: U+0142, U+014D, U+017C; }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/jetbrains-mono-latin.83c005d4.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/jetbrains-mono-greek.0a557721.woff2') format('woff2'); unicode-range: U+03B8, U+03C0-03C1; }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/jetbrains-mono-latin-ext.db5ff4db.woff2') format('woff2'); unicode-range: U+0142, U+014D, U+017C; }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/jetbrains-mono-latin.83c005d4.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Karla'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/karla-latin-ext.86844b3e.woff2') format('woff2'); unicode-range: U+0142, U+014D, U+017C; }
+@font-face { font-family: 'Karla'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/karla-latin.3b1eb09a.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Karla'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/karla-latin-ext.86844b3e.woff2') format('woff2'); unicode-range: U+0142, U+014D, U+017C; }
+@font-face { font-family: 'Karla'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/karla-latin.3b1eb09a.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-56.dc9f6b6d.woff2') format('woff2'); unicode-range: U+266D, U+2702; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-58.8a12a3a8.woff2') format('woff2'); unicode-range: U+2197, U+221A, U+2248; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-60.48a0cdcc.woff2') format('woff2'); unicode-range: U+2713; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-73.4ffd0156.woff2') format('woff2'); unicode-range: U+221E; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-82.35d20a88.woff2') format('woff2'); unicode-range: U+6C88; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-83.eb306a9f.woff2') format('woff2'); unicode-range: U+2500; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-86.f5cfff2d.woff2') format('woff2'); unicode-range: U+2665; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-94.a41d7bd2.woff2') format('woff2'); unicode-range: U+2190; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-98.03b3966e.woff2') format('woff2'); unicode-range: U+7A93; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-102.ed29999c.woff2') format('woff2'); unicode-range: U+25CF; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-104.28594d56.woff2') format('woff2'); unicode-range: U+7403; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-107.85877a83.woff2') format('woff2'); unicode-range: U+2192; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-116.a5cb638b.woff2') format('woff2'); unicode-range: U+5730; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-117.689f6775.woff2') format('woff2'); unicode-range: U+898B; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-118.6970d865.woff2') format('woff2'); unicode-range: U+6708; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-119.42da4f4e.woff2') format('woff2'); unicode-range: U+3044, U+304A-304B, U+3053, U+3059, U+306A, U+306E-3070, U+307E-307F, U+3084, U+3093; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-greek.f7f8dc41.woff2') format('woff2'); unicode-range: U+03B8, U+03C0-03C1; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-latin-ext.b46fac14.woff2') format('woff2'); unicode-range: U+0142, U+014D, U+017C; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-latin.2c5953da.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-56.180a7bff.woff2') format('woff2'); unicode-range: U+266D, U+2702; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-58.27b834a4.woff2') format('woff2'); unicode-range: U+2197, U+221A, U+2248; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-60.a983b86b.woff2') format('woff2'); unicode-range: U+2713; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-73.5b27df55.woff2') format('woff2'); unicode-range: U+221E; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-82.82a71b3d.woff2') format('woff2'); unicode-range: U+6C88; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-83.a7fe752a.woff2') format('woff2'); unicode-range: U+2500; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-86.f072a138.woff2') format('woff2'); unicode-range: U+2665; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-94.8fa65903.woff2') format('woff2'); unicode-range: U+2190; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-98.0b02f27e.woff2') format('woff2'); unicode-range: U+7A93; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-102.efb87e00.woff2') format('woff2'); unicode-range: U+25CF; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-104.a3eec593.woff2') format('woff2'); unicode-range: U+7403; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-107.98d97f38.woff2') format('woff2'); unicode-range: U+2192; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-116.8faef881.woff2') format('woff2'); unicode-range: U+5730; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-117.de9b6bdf.woff2') format('woff2'); unicode-range: U+898B; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-118.9997d6ea.woff2') format('woff2'); unicode-range: U+6708; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-119.25661a23.woff2') format('woff2'); unicode-range: U+3044, U+304A-304B, U+3053, U+3059, U+306A, U+306E-3070, U+307E-307F, U+3084, U+3093; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-greek.81c1d9ce.woff2') format('woff2'); unicode-range: U+03B8, U+03C0-03C1; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-latin-ext.0c436225.woff2') format('woff2'); unicode-range: U+0142, U+014D, U+017C; }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-latin.9d65f92a.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }

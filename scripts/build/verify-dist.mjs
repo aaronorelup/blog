@@ -2,7 +2,7 @@
 // deploy when one breaks, and the page-weight budgets (scripts/tools/budgets.mjs) are printed, never failing it.
 import { fileURLToPath } from 'node:url';
 import { check as checkContracts } from './contracts.mjs';
-import { format, measure } from '../tools/budgets.mjs';
+import { fontMisses, format, measure } from '../tools/budgets.mjs';
 
 export default function verifyDist() {
   return {
@@ -13,6 +13,8 @@ export default function verifyDist() {
         const broken = checkContracts(dist);
         if (broken.length) throw new Error(`A frozen contract broke (ARCHITECTURE.md, "Contracts"):\n- ${broken.join('\n- ')}`);
         logger.info(`budgets, gzipped (npm test fails on them from W4):\n${format(measure(dist))}`);
+        const fonts = fontMisses(dist);
+        if (fonts) logger.warn(fonts);
       },
     },
   };
