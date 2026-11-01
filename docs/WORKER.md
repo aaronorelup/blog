@@ -99,9 +99,8 @@ per h2, split above 2,500 spoken characters; a section's hash covers the voice, 
 5. With every section in R2 it writes `read/<slug>/<post hash>.json`, `{ v: 1, hash, parts: [{ src, dur, words:
    [[r, c0, c1, t0, t1]] }] }`, whose existence means the recording is whole, and marks the post `done`.
 
-Each run logs what it did (`read.step what-drives-claude-code-cost: 3 sections, 4210 characters, 1050 credits, 5 sections
-to go`, or
-why it stopped). Old hashes are never deleted, so a rolled-back deploy still finds its audio.
+Each run logs what it did (`read.step what-drives-claude-code-cost: 3 sections, 4210 characters, 1050 credits, 5
+sections to go`) or why it stopped. Old hashes are never deleted, so a rolled-back deploy still finds its audio.
 
 ## Bindings
 

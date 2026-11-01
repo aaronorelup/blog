@@ -191,12 +191,12 @@ warns in a live notebook.
 | `src/scripts/read-aloud/` | `listen.js` (`bind(root)`: the Listen button, loads the rest on first press), `index.js` (karaoke mode: open, play, marks, click a word, follow), `dom.js` (read blocks on screen, by the shared rules), `recorded.js` (the recording's parts on one `<audio>`), `speech.js` (the browser's voice), `bar.js` |
 | `src/scripts/views/projects.js` | the projects view's module (`mount(root)` → unmount): the hover card on its post links |
 | `src/styles/tokens.css` | every colour as a day/night pair, the `--pc-*` and `--home-*` tokens per mode (plain strings: the `/stats` canvas parses them), the homepage tween (`:root[data-tweening]` mixes by `--mix`), fonts, type scale, space, radii, z |
-| `src/styles/site.css` | the one stylesheet of every panel page: tokens, base, chrome, prose, projects, about, research (later tasks add theirs) |
+| `src/styles/site.css` | the one stylesheet of every panel page: tokens, base, chrome, prose, projects, about, research, read-aloud (later tasks add theirs) |
 | `src/styles/{base,chrome,prose,about,research}.css` | page-wide rules; the frame, the view header, shared hover states; long-form text (`.pc-prose`); the text pages (`.page-*`: About, 404); a research document |
 | `src/styles/read-aloud.css` | the Listen button, karaoke mode's bar, `::highlight(ao-read)` |
 | `src/styles/projects.css` | the projects page (`.proj-*`), on `--pc-*` tokens only so the overlay's tween carries it |
 | `src/styles/fonts.css`, `public/fonts/` | written by `scripts/tools/fonts.mjs`: Google's own woff2 slices, self-hosted under content-hashed names |
-| `src/styles/panel.css` | an `@import` stub (tokens, chrome, prose, projects, about) for `index.astro` until T3.2 |
+| `src/styles/panel.css` | an `@import` stub (tokens, chrome, prose, projects, about, read-aloud) for `index.astro` until T3.2 |
 | `src/styles/lore.css`, `courses.css` | the course looks |
 
 ### `scripts/` (Node)
