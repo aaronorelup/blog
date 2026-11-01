@@ -1,5 +1,5 @@
 // The words half of search: Pagefind, in the browser (scripts/build/pagefind.mjs writes its index). load(), on the
-// box's first focus, imports /pagefind/pagefind.js and calls init(); a build without an index leaves this half
+// box's first focus, imports /pagefind/pagefind.js and readies it; a build without an index leaves this half
 // silent. search(q): the best pages, each with its best heading-anchored passage, or null once a newer search won.
 const BUNDLE = '/pagefind/pagefind.js';
 const DEBOUNCE = 120;     // ms
@@ -12,6 +12,7 @@ let latest = 0;           // the newest search's number: an older one still wait
 export function load() {
   pagefind ??= import(/* @vite-ignore */ BUNDLE).then(async (m) => {
     await m.init();
+    await m.preload('');  // its worker, metadata and wasm: init() leaves them to the first search
     ready = true;
     performance.mark('search:index');
     return m;

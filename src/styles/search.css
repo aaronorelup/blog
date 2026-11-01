@@ -34,6 +34,7 @@
   font: inherit; font-size: var(--text-sm); letter-spacing: 0.04em; color: var(--pc-quiet); cursor: pointer;
   transition: color 180ms ease, border-color 180ms ease;
 }
+.search-modes[hidden] { display: none; }
 .search-mode:hover { color: var(--pc-strong); }
 .search-mode[aria-pressed='true'] { border-color: var(--pc-line2); color: var(--pc-head); }
 .search-note { margin: var(--space-3) 0 0 6px; font-size: var(--text-sm); color: var(--pc-quiet); }

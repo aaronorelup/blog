@@ -1,5 +1,5 @@
 // Marks the passage a search result or one of Goobie's citations points at: /ledger/<slug>/?hl=<words>&hs=<the
-// passage's first words>#<heading>. Within the heading's section (to the next h2; the whole post without one) it
+// passage's first words>#<heading>. Within the heading's section (to the next h2; no heading: the opening) it
 // marks the sentence that holds hs, or else every word of hl, as <mark class="hl">; opens any <details> around a mark,
 // brings the first into view (inside #panel-scroll on a panel page) and clears them all on the next click. Text in
 // post components (data-pagefind-ignore) is never marked. Called on the post and notes pages; T2.1 moves the call.
@@ -32,12 +32,14 @@ function centre(el, scroller) {
   scroller.scrollTop += r.top - box.top - (box.height - r.height) / 2;
 }
 
-// The anchor's heading and what follows it up to the next h2, or the whole article.
+// The anchor's heading and what follows it up to the next h2; with no anchor, the opening before the first h2; the
+// whole article when the anchor isn't on the page.
 function section(article, id) {
-  const start = id && article.querySelector(`[id="${CSS.escape(id)}"]`);
-  if (!start || !/^H[2-4]$/.test(start.tagName)) return [start || article];
-  const parts = [start];
-  for (let n = start.nextElementSibling; n && n.tagName !== 'H2'; n = n.nextElementSibling) parts.push(n);
+  const start = id ? article.querySelector(`[id="${CSS.escape(id)}"]`) : article.querySelector('h2');
+  if (!start || (id && !/^H[2-4]$/.test(start.tagName))) return [start || article];
+  const parts = id ? [start] : [];
+  const from = id ? start.nextElementSibling : start.parentElement.firstElementChild;
+  for (let n = from; n && n.tagName !== 'H2'; n = n.nextElementSibling) parts.push(n);
   return parts;
 }
 
