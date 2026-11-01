@@ -1,6 +1,7 @@
 // <ao-model>: a GLB the reader can turn around. Nothing heavy loads until they ask: the poster and a button show
 // first, and three.js plus the model arrive on the click. Drag to orbit, scroll or pinch to zoom; it turns slowly on
 // its own until touched. Attributes src, poster, size, label, ratio: docs/COMPONENTS.md.
+import { h } from '../_lib/dom.js';
 
 class AoModel extends HTMLElement {
   connectedCallback() {
@@ -12,16 +13,9 @@ class AoModel extends HTMLElement {
     this.setAttribute('role', 'group');
     this.setAttribute('aria-label', label);
     this.innerHTML = '';
-    if (poster) {
-      const img = document.createElement('img');
-      img.src = poster; img.alt = label; img.loading = 'lazy'; img.className = 'ao-model-poster';
-      this.appendChild(img);
-    }
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'ao-model-load';
-    btn.textContent = 'Turn it around in 3D' + (size ? ' (' + size + ')' : '');
-    btn.addEventListener('click', () => this.load(btn));
+    if (poster) this.appendChild(h('img', { src: poster, alt: label, loading: 'lazy', class: 'ao-model-poster' }));
+    const btn = h('button', { type: 'button', class: 'ao-model-load',
+      text: 'Turn it around in 3D' + (size ? ' (' + size + ')' : ''), onclick: () => this.load(btn) });
     this.appendChild(btn);
   }
 
@@ -46,12 +40,9 @@ class AoModel extends HTMLElement {
   mount(THREE, OrbitControls, RoomEnvironment, gltf) {
     this.querySelector('.ao-model-poster')?.remove();
     this.querySelector('.ao-model-load')?.remove();
-    const canvas = document.createElement('canvas');
-    canvas.className = 'ao-model-canvas';
+    const canvas = h('canvas', { class: 'ao-model-canvas' });
     this.appendChild(canvas);
-    const hint = document.createElement('div');
-    hint.className = 'ao-model-hint';
-    hint.textContent = 'drag to turn · scroll or pinch to zoom';
+    const hint = h('div', { class: 'ao-model-hint', text: 'drag to turn · scroll or pinch to zoom' });
     this.appendChild(hint);
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
