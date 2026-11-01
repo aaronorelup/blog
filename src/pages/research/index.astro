@@ -1,20 +1,13 @@
 ---
 // The research shelf: agent-era research documents, sequential RE-### ids.
 // Same list chrome as the ledger; different root, different id prefix.
-import { getCollection } from 'astro:content';
 import PanelPage from '../../layouts/PanelPage.astro';
+import { research, slugOf } from '../../lib/content.js';
+import { shortDate } from '../../lib/dates.js';
 
-const all = await getCollection('research');
-const docs = all.sort(
+const docs = (await research()).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf() || b.data.id.localeCompare(a.data.id),
 );
-
-const dateFmt = new Intl.DateTimeFormat('en-US', {
-  month: 'short',
-  day: '2-digit',
-  year: 'numeric',
-  timeZone: 'UTC',
-});
 ---
 <PanelPage
   title="Research — Aaron Orelup"
@@ -28,12 +21,12 @@ const dateFmt = new Intl.DateTimeFormat('en-US', {
     <div style="display:flex;flex-direction:column">
       {docs.map((doc) => (
         <a
-          href={`/research/${doc.slug}/`}
+          href={`/research/${slugOf(doc)}/`}
           class="pc-row"
           style="display:grid;grid-template-columns:120px 1fr;gap:0 26px;padding:24px 14px;margin:0 -14px;border-top:1px solid var(--pc-line);border-radius:10px;text-decoration:none;cursor:pointer"
         >
           <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.7;color:var(--pc-accent)">
-            {doc.data.id}<br /><span style="color:var(--pc-quiet)">{dateFmt.format(doc.data.date)}</span>
+            {doc.data.id}<br /><span style="color:var(--pc-quiet)">{shortDate(doc.data.date)}</span>
           </div>
           <div>
             <h2 style="margin:0 0 8px;font-family:'Zen Maru Gothic',sans-serif;font-size:20px;font-weight:700;color:var(--pc-strong);letter-spacing:-0.01em">{doc.data.title}</h2>

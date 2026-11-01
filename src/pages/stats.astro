@@ -12,13 +12,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import PanelPage from '../layouts/PanelPage.astro';
-import { getCollection } from 'astro:content';
-import { isListed } from '../data/listed.js';
+import { allPosts, listedPosts, research, slugOf } from '../lib/content.js';
+import { isListed } from '../lib/posts.js';
+import { PUBLIC_DIR } from '../lib/paths.js';
 import { COURSES } from '../data/courses.js';
 import '../styles/stats/base.css';
 
-const posts = (await getCollection('posts', ({ data }) => isListed(data)))
-  .map((p) => ({ id: p.data.id, slug: p.slug, title: p.data.title, date: p.data.date.toISOString().slice(0, 10) }))
+const posts = (await listedPosts())
+  .map((p) => ({ id: p.data.id, slug: slugOf(p), title: p.data.title, date: p.data.date.toISOString().slice(0, 10) }))
   .sort((a, b) => a.id.localeCompare(b.id));
 
 // The slug-shaped words the site's own non-post pages use (/games/grind-and-grimoire/, a course's
@@ -26,8 +27,7 @@ const posts = (await getCollection('posts', ({ data }) => isListed(data)))
 // post slug: the page's second line of defence after the Worker's, against an unlisted post's
 // slug turning up in a path. Unlisted slugs themselves are never put in this list.
 const SLUGGY = /^[a-z0-9]+(?:-[a-z0-9]+){2,}$/;
-const unlisted = new Set((await getCollection('posts', ({ data }) => !isListed(data))).map((p) => p.slug.toLowerCase()));
-const PUBLIC_DIR = typeof __PUBLIC_DIR__ === 'string' ? __PUBLIC_DIR__ : path.join(process.cwd(), 'public');
+const unlisted = new Set((await allPosts()).filter((p) => !isListed(p.data)).map((p) => slugOf(p).toLowerCase()));
 const siteWords = new Set();
 const addWords = (s) => String(s).toLowerCase().split(/[^a-z0-9-]+/).forEach((w) => { if (SLUGGY.test(w)) siteWords.add(w); });
 const dirs = (...rel) => {
@@ -36,7 +36,7 @@ const dirs = (...rel) => {
 };
 for (const sec of ['games', 'labs', 'presentations', 'research', 'tools', 'gauntlet']) dirs(sec).forEach(addWords);
 for (const c of dirs('courses')) { addWords(c); dirs('courses', c, 'lessons').forEach(addWords); }
-try { (await getCollection('research')).forEach((d) => addWords(d.slug)); } catch (e) { /* no research collection */ }
+(await research()).forEach((d) => addWords(slugOf(d)));
 COURSES.forEach((c) => addWords(c.href));
 const words = [...siteWords].filter((w) => ![...unlisted].some((u) => w.includes(u))).sort();
 const build = {

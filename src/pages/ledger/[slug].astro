@@ -1,11 +1,11 @@
 ---
-import { getCollection } from 'astro:content';
+import { allPosts, slugOf } from '../../lib/content.js';
 import PanelPage from '../../layouts/PanelPage.astro';
 import PostView from '../../components/panel/PostView.astro';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts', ({ data }) => !data.draft);
-  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+  return (await allPosts()).filter((post) => !post.data.draft)
+    .map((post) => ({ params: { slug: slugOf(post) }, props: { post } }));
 }
 
 const { post } = Astro.props;

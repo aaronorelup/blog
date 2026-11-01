@@ -5,44 +5,30 @@
 // Listed posts only (isListed): an unlisted post must not surface in a card any more than in
 // a list. A post without a `preview:` gets its opening lines instead, and the build says so.
 import fs from 'node:fs';
-import path from 'node:path';
-import { getCollection } from 'astro:content';
-import { isListed } from '../../data/listed.js';
-import { PREVIEW_MEDIA } from '../../data/preview-budget.js';
+import { listedPosts, slugOf } from '../../lib/content.js';
+import { cardOf } from '../../lib/cards.js';
+import { publicFile } from '../../lib/paths.js';
+import { PREVIEW_MEDIA } from '../../data/limits.js';
 import R2_MEDIA from '../../data/media-manifest.json';
 
-// Set by the integration in astro.config.mjs: the cwd is often the folder above the project.
-const PUBLIC_DIR = typeof __PUBLIC_DIR__ === 'string' ? __PUBLIC_DIR__ : path.join(process.cwd(), 'public');
 const WORDS_PER_MINUTE = 230;
 const EXCERPT_CHARS = 280;
 let warned = false;
 
 export async function GET() {
-  const posts = await getCollection('posts', ({ data }) => isListed(data));
   const out = {};
   const missing = [];
 
-  for (const post of posts) {
-    const { id, title, preview } = post.data;
-    const card = { id, title, mins: readingMinutes(post.body) };
-    if (preview) {
-      if (preview.verdict) card.verdict = preview.verdict;
-      card.takeaway = preview.takeaway;
-      if (preview.points.length) card.points = preview.points;
-      if (preview.image) {
-        checkMedia(id, preview.image, PREVIEW_MEDIA.stillCap);
-        card.image = preview.image;
-        card.alt = preview.alt || '';
-      }
-      if (preview.loop) {
-        checkMedia(id, preview.loop, PREVIEW_MEDIA.loopCap);
-        card.loop = preview.loop;
-      }
-    } else {
+  for (const post of await listedPosts()) {
+    const { id, title, ...face } = cardOf(post);
+    const card = { id, title, mins: readingMinutes(post.body), ...face };
+    if (card.image) checkMedia(id, card.image, PREVIEW_MEDIA.stillCap);
+    if (card.loop) checkMedia(id, card.loop, PREVIEW_MEDIA.loopCap);
+    if (!post.data.preview) {
       card.excerpt = excerpt(post.body);
       missing.push(id);
     }
-    out[post.slug] = card;
+    out[slugOf(post)] = card;
   }
 
   if (missing.length && !warned) {
@@ -60,7 +46,7 @@ export async function GET() {
 // hover this budget exists to prevent. Both stop the build, like an undefined series key does.
 // A loop is video, so it is in R2 and its size is in the manifest (docs/MEDIA.md).
 function checkMedia(id, src, cap) {
-  const file = path.join(PUBLIC_DIR, src);
+  const file = publicFile(src);
   const bytes = fs.existsSync(file) ? fs.statSync(file).size : R2_MEDIA[src]?.bytes;
   if (bytes === undefined) throw new Error(`${id}: preview media ${src} is neither under public/ nor in R2 (src/data/media-manifest.json)`);
   if (bytes > cap) {
