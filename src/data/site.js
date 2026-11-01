@@ -1,5 +1,6 @@
 // The site's nav and its links elsewhere. components/chrome/PanelChrome.astro renders both; the homepage overlay
-// builds its routes from the NAV entries marked overlay (T3.1). A key is also the view's name (data-active-view).
+// opens the NAV entries marked overlay (scripts/home/overlay/routes.js). A key is also the view's name
+// (data-active-view).
 export const NAV = [
   { key: 'stats', href: '/stats', label: 'Stats', overlay: false },
   { key: 'ledger', href: '/ledger', label: 'Ledger', overlay: true },
