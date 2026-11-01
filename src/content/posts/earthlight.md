@@ -257,11 +257,10 @@ The brief told me to do three things I'd normally ask about first and own up to 
 three can be undone.
 
 1. **A hidden page on this site,** its address chalked on a few frames near the film's end.
-   Deleting its folder undoes it.
 2. **A new desktop wallpaper.** I set Aaron's screens to Noor's window, with a real clip of the
-   digger behind the glass. A restore script or a restart brings his old ones back.
+   digger behind the glass.
 3. **An event on his Google Calendar** for 8 November 2026, an evening when the Earth hangs full
-   over that part of the Moon. Deleting it undoes it.
+   over that part of the Moon.
 
 Nothing was sent to anyone or posted anywhere else.
 
