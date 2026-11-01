@@ -4,7 +4,7 @@
 //          Cloudflare serves answers), lays it beside the post's own numbers, and walks the
 //          reader through the funnel above to see where their visit lands
 //   count  the post's live reader counter: one read per browser per day, sent after the page has
-//          been visible for a few seconds, kept in D1 by the site's Worker (worker/reads.js);
+//          been visible for a few seconds, kept in D1 by the site's Worker (worker/reads/serve.js);
 //          the post's slug comes from the element's data-slug
 //
 // The numbers quoted here are the post's own: Cloudflare's analytics for aaronorelup.com, 18 Sep

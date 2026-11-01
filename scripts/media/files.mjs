@@ -3,7 +3,7 @@
 //
 // Video and audio are not kept in git. They live in the private R2 bucket below, each under its
 // URL path without the leading slash (/media/<slug>/clip.mp4 is the object media/<slug>/clip.mp4),
-// and the Worker (worker/media.js) serves them at the same URLs. public/courses/ is the exception:
+// and the Worker (worker/media/serve.js) serves them at the same URLs. public/courses/ is the exception:
 // the course publishers in other repos write it, so its media stay in git until they upload too.
 // So do the public/ folders of every live notebook (src/data/exempt.js): other sessions are still
 // writing them, video included. Leave them to them; move them once the post is finished.

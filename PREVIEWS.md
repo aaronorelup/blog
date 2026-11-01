@@ -172,8 +172,8 @@ anyone on a phone.
 - `src/pages/ledger/previews.json.js`: builds `/ledger/previews.json` from listed posts only
   (`isListed`, so unlisted and draft posts never surface in a card), with reading time, and for a
   post without a preview, its opening lines. It prints which posts have no preview.
-- The Worker reads `/ledger/previews.json` too, as its list of real posts (`worker/reads.js`,
-  and `worker/stats.js` when `/stats-pages.txt` is missing), so keep its shape
+- The Worker reads `/ledger/previews.json` too, as its list of real posts (`worker/reads/serve.js`,
+  and `worker/stats/index.js` when `/stats-pages.txt` is missing), so keep its shape
   (`{ "posts": { "<slug>": card } }`).
 - `src/scripts/ledger-preview.js` and `src/styles/ledger-preview.css`: the card. Loaded by
   `LedgerView.astro` and `PostView.astro`, so it runs on `/ledger`, every post page and the

@@ -3,7 +3,7 @@
 // code.mjs flags a line whose files are gone or clean. Nothing is ever added to UNTIL.
 export const KEEP = [
   'src/pages/courses/**', 'src/pages/research/**', 'src/components/lore/**', 'src/styles/lore.css',
-  'src/pages/stats.astro', 'src/scripts/stats/**', 'src/styles/stats/**', 'worker/stats.js', 'worker/stats-shape.js',
+  'src/pages/stats.astro', 'src/scripts/stats/**', 'src/styles/stats/**', 'worker/stats/**',
 ];
 
 export const UNTIL = {
@@ -18,7 +18,6 @@ export const UNTIL = {
   'src/pages/404.astro': 'T1.4',
   'src/layouts/Home.astro': 'T3.2',
   'src/pages/index.astro': 'T3.2',
-  'worker/reads.js': 'T1.3',
 };
 
 export const covers = (pattern, file) => (pattern.endsWith('/**') ? file.startsWith(pattern.slice(0, -2)) : file === pattern);

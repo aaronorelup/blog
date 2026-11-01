@@ -45,7 +45,7 @@ export function readYou(nav = typeof navigator !== 'undefined' ? navigator : {})
   return { browser, major, os, mobile, automated: !!nav.webdriver, headless: /Headless/i.test(ua) };
 }
 
-// Safari's version by the year it shipped, the same rule as the Worker (worker/stats-shape.js).
+// Safari's version by the year it shipped, the same rule as the Worker (worker/stats/shape.js).
 // Apple went from 18 (2024) to 26 (2025), so counting versions put Safari 18 nine behind 27 and
 // told every iPhone that can't leave iOS 18 it was a bot in costume. Years don't jump.
 const safariYear = (major) => (major <= 18 ? 2006 + major : 1999 + major);

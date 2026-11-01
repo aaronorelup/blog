@@ -5,7 +5,7 @@
 - Every video, song, sound and HLS stream (`.mp4 .webm .mov .mp3 .m4a .wav .ogg .opus .flac .m3u8 .ts` and the rest)
   lives in the private Cloudflare R2 bucket `aaronorelup-site-media`, not in git.
 - Each file keeps its normal URL. `/media/<slug>/clip.mp4` on the site is the object `media/<slug>/clip.mp4` in
-  the bucket, and the site's Worker (`worker/media.js`) serves it from there, with seeking (byte ranges) and
+  the bucket, and the site's Worker (`worker/media/serve.js`) serves it from there, with seeking (byte ranges) and
   caching (ETag, 304) working.
 - `src/data/media-manifest.json` lists every file in the bucket, with its size and its MD5. Commit it.
 - Pictures (`.webp .png .jpg`) and captions (`.vtt`) stay in git under `public/`, as before.

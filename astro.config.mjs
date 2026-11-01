@@ -29,7 +29,7 @@ export default defineConfig({
   publicDir,
   // Every stylesheet is a <link>, never inlined: a file the homepage overlay can adopt from a fetched page.
   build: { inlineStylesheets: 'never' },
-  // statsPages: dist/stats-pages.txt, the public pages /api/stats may name (worker/stats.js).
+  // statsPages: dist/stats-pages.txt, the public pages /api/stats may name (worker/stats/index.js).
   // loreThumbs: small copies of the lore course's pictures for its index cards (scripts/lore-thumbs.mjs).
   // media: no video or audio in public/ outside courses/, nothing over 25 MiB (docs/MEDIA.md).
   // verifyDist: the frozen contracts over dist/, last so every file is written (scripts/build/verify-dist.mjs).

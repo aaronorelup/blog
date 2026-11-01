@@ -8,8 +8,9 @@ The homepage is a scroll-driven Three.js tea house, and every other page is the 
 - **Astro**, static output. Posts are Markdown in `src/content/posts/`. Behaviour in the browser is plain modules
   and custom elements (`<ao-compare>`, `<ao-slider>` and the rest), no framework.
 - **Cloudflare Workers static assets** serve `dist/`.
-- **One Worker** (`worker/`) for what needs state or a secret: video and audio from R2 with byte ranges, the
-  reads counter and the `/stats` snapshot in D1.
+- **One Worker** (`worker/`, named `blog`) for what needs state or a secret: video and audio from R2 with byte
+  ranges, the reads counter and the `/stats` snapshot in D1. A route table in `worker/index.js`, shared helpers in
+  `worker/lib/`, one folder per feature; `docs/WORKER.md` is its map.
 - **Workers Builds** builds and deploys every push to `main` with `npm run build`. Builds of other branches fail on
   purpose.
 

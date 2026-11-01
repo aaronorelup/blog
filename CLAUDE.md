@@ -63,5 +63,6 @@ anything. `ARCHITECTURE.md` is the map of the code.
 | `WRITING.md`, `PREVIEWS.md` | writing or editing any post or its hover card |
 | `src/content/CLAUDE.md` | touching anything under `src/content/` |
 | `ARCHITECTURE.md` | changing code: the tree, the request and build flow, the checks, the contracts, recipes |
-| `docs/MEDIA.md` | adding a video or a song, or touching `worker/media.js` |
+| `docs/MEDIA.md` | adding a video or a song, or touching `worker/media/serve.js` |
+| `docs/WORKER.md`, `worker/CLAUDE.md` | touching `worker/` or `wrangler.jsonc`: routes, crons, bindings, secrets, tables, flags |
 | `README.md` | the short version for people |

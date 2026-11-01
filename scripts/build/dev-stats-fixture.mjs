@@ -1,4 +1,4 @@
-// Dev only. /api/stats is answered by the Worker (worker/stats.js) in production; `astro dev` has no Worker,
+// Dev only. /api/stats is answered by the Worker (worker/stats/index.js) in production; `astro dev` has no Worker,
 // so this answers it from .stats-fixture.json at the project root (gitignored), or as "not connected" when
 // that file isn't there. The e2e tests mock the page's other answers with routes.
 import fs from 'node:fs';

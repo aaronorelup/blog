@@ -41,16 +41,10 @@
     "status": 204
   },
   "reads-429": {
-    "status": 429,
-    "json": {
-      "error": "Too many requests; try again in a minute."
-    }
+    "status": 429
   },
   "reads-503": {
-    "status": 503,
-    "json": {
-      "error": "The counter could not reach its database."
-    }
+    "status": 503
   },
   "stats-200": {
     "status": 200,

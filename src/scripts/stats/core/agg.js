@@ -277,7 +277,7 @@ export function displayable(kind, row, days) {
 // /%6Cedger/x/ all name the same post. Then every word shaped like a post slug (three or more
 // hyphenated words) must be a listed post or a word the site's own pages use (build.words, made
 // at build time from the games, labs, courses and research folders), as the Worker's wordsOk in
-// worker/stats-shape.js does. This is the second defence; the Worker's is the first.
+// worker/stats/shape.js does. This is the second defence; the Worker's is the first.
 const FIXED_PUBLIC = new Set(['/ledger/', '/ledger/previews.json']);
 const SLUGGY = /^[a-z0-9]+(?:-[a-z0-9]+){2,}$/;
 const wordSets = new WeakMap();

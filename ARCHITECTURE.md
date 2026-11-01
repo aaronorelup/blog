@@ -8,9 +8,10 @@ will add appears only as a row marked `(planned, T#.#)`. Each task updates its o
 
 An Astro static site. Markdown posts become pages at build time. Cloudflare serves `dist/` as Workers static
 assets, and one small Worker (`worker/`) runs only for what needs a secret or state: video and audio from R2, the
-reads counter and the `/stats` snapshot in D1. Every push to `main` is built by Workers Builds with
-`npm run build` and deployed; any other branch fails its build on purpose (`astro.config.mjs`). There is no
-framework in the browser: pages are server-rendered HTML, and behaviour is plain modules and custom elements.
+reads counter and the `/stats` snapshot in D1 (search, Ask and read-aloud are stubs until W2). Every push to
+`main` is built by Workers Builds with `npm run build` and deployed; any other branch fails its build on purpose
+(`astro.config.mjs`). There is no framework in the browser: pages are server-rendered HTML, and behaviour is plain
+modules and custom elements.
 
 ## Where code runs (the folder tells you)
 
@@ -32,15 +33,22 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 
 ## A request
 
-1. Cloudflare matches the path against `run_worker_first` in `wrangler.jsonc`: video and audio extensions and
-   `/api/*`. Everything else is a static file from `dist/`, served without running code. A miss gets
+1. Cloudflare matches the path against `run_worker_first` in `wrangler.jsonc`: video, audio and HLS extensions,
+   `/read/*` and `/api/*`. Everything else is a static file from `dist/`, served without running code. A miss gets
    `dist/404.html` with a 404.
-2. The Worker (`worker/index.js`) routes:
-   - `/api/reads` → `worker/reads.js` (D1 `DB`, limiter `READS_LIMIT`). The counter AO-057's demo uses.
-   - `/api/stats` → `worker/stats.js` (D1 `DB`, limiter `STATS_LIMIT`). One stored snapshot; 503 until it exists.
-   - anything else → `worker/media.js`: R2 `MEDIA` (bucket `aaronorelup-site-media`) first, with byte ranges
-     and ETags, then the asset (`ASSETS`) for the media still in git, sized from `/media-sizes.json`.
-3. The cron (every minute) runs one small step of the stats gatherer (`stats.js`, `worker/stats-shape.js`).
+2. The Worker (`worker/index.js`, map and answers in `docs/WORKER.md`) looks the path up in `ROUTES`:
+   - `/api/reads` → `worker/reads/serve.js` (D1 `DB`, limiter `READS_LIMIT` keyed on the post). The counter
+     AO-057's demo uses.
+   - `/api/stats` → `worker/stats/index.js` (D1 `DB`, limiter `STATS_LIMIT`). One stored snapshot; 503 until it
+     exists.
+   - `/api/session`, `/api/search`, `/api/ask` → stubs in `worker/session/`, `search/`, `ask/` that answer 503
+     until T2.3. Any other `/api/` path is 404, a wrong method 405.
+   - anything else → `worker/media/serve.js`: R2 `MEDIA` (bucket `aaronorelup-site-media`) first, with byte ranges
+     and ETags, then the asset (`ASSETS`) for the media still in git, sized from `/media-sizes.json`. A
+     `/read/<slug>/<hash>.json` not recorded yet is `200 { ready: false }`.
+3. The crons (`CRONS` in `worker/index.js`): every minute one small step of the stats gatherer
+   (`worker/stats/index.js`, its pure half `worker/stats/shape.js`), of the search sync and of the daily cleanup
+   (stubs until T2.3); every ten minutes one read-aloud step (a stub until T2.4).
 
 ## A build
 
@@ -63,10 +71,10 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 | File | Made by | Read by |
 |---|---|---|
 | `/ledger/<slug>/`, `/ledger/<slug>/notes/` | `src/pages/ledger/[slug].astro`, `[slug]/notes.astro` | readers, the homepage overlay (it fetches the page and lifts `[data-post-article]`) |
-| `/ledger/previews.json` | `src/pages/ledger/previews.json.js` | the hover card (`src/scripts/ledger-preview.js`), `worker/reads.js`, `worker/stats.js` |
-| `/stats-pages.txt` | `scripts/build/stats-pages.mjs` | `worker/stats.js`: the only pages `/stats` may name |
+| `/ledger/previews.json` | `src/pages/ledger/previews.json.js` | the hover card (`src/scripts/ledger-preview.js`), `worker/reads/serve.js`, `worker/stats/index.js` |
+| `/stats-pages.txt` | `scripts/build/stats-pages.mjs` | `worker/stats/index.js`: the only pages `/stats` may name |
 | `/version.json` | `src/pages/version.json.js` | the live check after every push |
-| `/media-sizes.json` | `src/pages/media-sizes.json.js` | `worker/media.js`, for media still in git |
+| `/media-sizes.json` | `src/pages/media-sizes.json.js` | `worker/media/serve.js`, for media still in git |
 | `/rss.xml`, `/sitemap.xml` | `src/pages/rss.xml.js`, `sitemap.xml.js` | feed readers, search engines |
 | `/courses/i-love-my-evening-television/**/thumbs/` | `scripts/lore-thumbs.mjs` | the lore course's index cards |
 
@@ -80,9 +88,11 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 | `README.md` | what the site is and the commands |
 | `WRITING.md`, `PREVIEWS.md` | how a post and its hover card are written |
 | `docs/MEDIA.md` | video and audio in R2: `media:push`, `media:verify` |
-| `docs/COMPONENTS.md`, `docs/WORKER.md` | (planned, T1.2 and T1.3) |
+| `docs/WORKER.md`, `worker/CLAUDE.md` | the Worker: routes and their answers, crons, bindings, secrets, tables, flags; its rules |
+| `docs/COMPONENTS.md` | (planned, T1.2) |
 | `astro.config.mjs` | site, integrations, Markdown plugins, the main-only guard |
-| `wrangler.jsonc` | the Worker, its bindings, `run_worker_first`, the cron. Its `name` becomes `blog` in T1.3 |
+| `wrangler.jsonc` | the Worker `blog`, every binding, `run_worker_first`, both crons, the vars (secrets by name only) |
+| `.dev.vars.example` | the local test keys for `wrangler dev` (copy to the git-ignored `.dev.vars`) |
 | `.node-version` | 22.23.4, the Node Workers Builds uses |
 | `archive/2026-10-29-before-rework/` | every post as it was before the rework (read only) |
 
@@ -100,6 +110,7 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 | `src/data/exempt.js` | `LIVE_NOTEBOOKS`, `isLive()`, `isLivePath()`: what no rule may fail or touch |
 | `src/data/banned-phrases.js` | the phrases and dead links WRITING.md bans (plain: nothing private) |
 | `src/data/never-publish.json` | salted SHA-256 of the private never-publish terms (`npm run never-publish:hash`) |
+| `src/data/public-keys.js` | keys meant to be public: Ask's Turnstile site key |
 | `src/data/media-manifest.json` | every file in the R2 bucket, its size and MD5 (`npm run media:push`) |
 | `src/data/listed.js`, `preview-budget.js` | one-line re-exports until W4 (`isListed` lives in `src/lib/posts.js`) |
 | `src/data/series.js`, `projects.js`, `courses.js` | v1 threads (until T2.1), the projects list (until T2.5), the courses |
@@ -145,6 +156,7 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 | `scripts/tools/never-publish-hash.mjs` | `npm run never-publish:hash`: the private list → `never-publish.json` |
 | `scripts/tools/budgets.mjs` | the page-weight budgets (section "Budgets") |
 | `scripts/tools/element-usage.mjs`, `dist-diff.mjs` | every `<ao-*>`, video and iframe per built page (`--diff` for rewrites); two builds compared |
+| `scripts/lib/{secrets,cfapi}.mjs`, `scripts/tools/put-secret.mjs` | `secret(NAME)` from the environment or Infisical; the Cloudflare API client that finds or makes the Worker's resources; `put-secret` sets one Worker secret, never printing it |
 | `scripts/preview-media.mjs` | a post's card still and loop (`PREVIEWS.md`) |
 | `scripts/clawd-growth-montage/`, `scripts/presentations/` | one-off generators for two posts (W4 deletes them) |
 
@@ -152,9 +164,13 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 
 | Path | What |
 |---|---|
-| `worker/index.js` | the routes above, and the cron |
-| `worker/media.js`, `reads.js` + `reads.sql`, `stats.js` + `stats-shape.js` + `stats.sql` | the three jobs (moved into feature folders with `worker/lib/` by T1.3) |
-| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs` |
+| `worker/index.js` | `ROUTES` and `CRONS`: the routes and jobs above |
+| `worker/lib/` | `http.js` (json, status, sameOrigin), `sql.js` (ensure), `flags.js` + `flags.sql` (switches, daily caps), `session.js` (Ask tokens), `text.js`, `build-files.js` |
+| `worker/media/serve.js` | video, audio, HLS and `/read/*`: R2 first, then the asset, with byte ranges |
+| `worker/reads/` | `serve.js` + `reads.sql`: the reader counter |
+| `worker/stats/` | `index.js` (serve and `runStep`), `shape.js` (pure), `stats.sql`: the traffic snapshot |
+| `worker/session/`, `search/`, `ask/`, `read/`, `cleanup.js` | stubs until T2.3 and T2.4 |
+| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list) |
 | `tests/e2e/` | the behaviour suite: `INVENTORY.md`, `targets.json` (from `element-usage`), specs, fixtures |
 | `tests/baseline/urls.txt` | every page and contract file a build must still produce |
 | `src/scripts/stats/core/{agg,fmt}.test.mjs` | the two kept `/stats` tests |
@@ -230,8 +246,7 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   `stats-pages.txt` automatically if it is a public page.
 - **A content kind.** A collection in `src/content.config.ts` with a schema in `src/schemas/`, read only through
   `src/lib/content.js`, and its files added to the checker's scopes (`never-publish.mjs`, `links.mjs`).
-- **A Worker route.** A path in `worker/index.js`, its module beside it, the path in `run_worker_first` if it
-  isn't under `/api/`. Errors are status codes; nothing reads a visitor's IP; every paid call has a cap, a timeout,
+- **A Worker route.** A line in `ROUTES` (`worker/index.js`), its handler in its feature folder, the path in
+  `run_worker_first` if it isn't under `/api/` (`worker/CLAUDE.md`). Errors are status codes; nothing reads a visitor's IP; every paid call has a cap, a timeout,
   no retry and a switch.
-- **A cron job.** `scheduled()` in `worker/index.js` runs one bounded step per minute; give a new job its own step
-  and keep each run small.
+- **A cron job.** A named entry in `CRONS` (`worker/index.js`): one bounded step a run, returning a word to log.

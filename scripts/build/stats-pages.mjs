@@ -1,5 +1,5 @@
 // Writes dist/stats-pages.txt after every build: every public page of the site, one path per line, as the
-// address it answers at. worker/stats.js shows only these paths in /api/stats: never an unlisted post, nor a
+// address it answers at. worker/stats/index.js shows only these paths in /api/stats: never an unlisted post, nor a
 // page whose path carries an unlisted slug, nor anything deeper than a listed post's /ledger/<slug>/ and its
 // /ledger/<slug>/notes/. The listed posts are the ones the build's own /ledger/previews.json lists.
 import fs from 'node:fs';
