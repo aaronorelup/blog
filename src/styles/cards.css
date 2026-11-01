@@ -1,4 +1,5 @@
-/* The hover card for a post (src/scripts/ledger-preview.js, spec in PREVIEWS.md).
+/* The hover card for a post (src/scripts/cards/, spec in PREVIEWS.md), and the stamp: a post's verdict, on the card,
+   a ledger row and a Start here card.
 
    It takes the hovered row's own colour (--pc-hover), so it reads as that row opened out
    rather than as something laid on top of the page. All colours are the panel's variables,
@@ -22,7 +23,7 @@
   border-radius: 14px;
   background: var(--pc-hover);
   box-shadow: 0 16px 44px rgba(12, 10, 24, 0.3);
-  font-family: Karla, system-ui, sans-serif;
+  font-family: var(--font-body);
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
@@ -65,6 +66,8 @@
 }
 .lp-points,
 .lp-excerpt { clear: both; }
+/* No still: the post's icon, beside the id. */
+.lp-icon { float: right; width: 48px; height: 48px; margin: 0 0 8px 14px; border-radius: var(--radius-s); }
 .lp-img,
 .lp-video {
   position: absolute;
@@ -82,7 +85,7 @@
 .lp-body { padding: 14px 18px 16px; }
 
 .lp-meta {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.04em;
   color: var(--pc-quiet);
@@ -90,7 +93,7 @@
 }
 
 .lp-title {
-  font-family: 'Zen Maru Gothic', sans-serif;
+  font-family: var(--font-display);
   font-size: 15px;
   line-height: 1.35;
   font-weight: 700;
@@ -100,7 +103,8 @@
 }
 
 /* The outcome, stamped: the one thing to read if you read nothing else. */
-.lp-verdict {
+.lp-verdict,
+.stamp {
   display: inline-block;
   margin: 0 0 10px;
   padding: 3px 9px 2px;
@@ -115,7 +119,7 @@
 
 .lp-takeaway {
   margin: 0;
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: var(--font-serif);
   font-size: 16px;
   line-height: 1.5;
   color: var(--pc-strong);
@@ -153,7 +157,7 @@
 /* A post with no preview yet: its opening lines, labelled as such. */
 .lp-excerpt {
   margin: 0;
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: var(--font-serif);
   font-size: 14.5px;
   line-height: 1.55;
   color: var(--pc-body);
@@ -162,7 +166,7 @@
 .lp-label {
   display: block;
   margin: 0 0 4px;
-  font-family: Karla, system-ui, sans-serif;
+  font-family: var(--font-body);
   font-size: 10.5px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
