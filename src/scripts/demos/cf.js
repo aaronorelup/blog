@@ -247,7 +247,7 @@ function count(root, slug) {
         me.textContent = 'You were counted just now: you’re in the number above.';
         load();
       } else if (r.status === 429) {
-        me.textContent = 'Not counted: too many reads from your address in the last minute.';
+        me.textContent = 'Not counted: this post got too many reads in the last minute.';
       } else {
         me.textContent = 'Not counted: the counter said ' + r.status + '.';
       }
