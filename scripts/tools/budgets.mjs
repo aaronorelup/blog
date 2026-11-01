@@ -1,7 +1,8 @@
 // Page-weight budgets (ARCHITECTURE.md section 6), gzipped, without fonts and media, each measured on something
 // content can't grow. `node scripts/tools/budgets.mjs [dist]` prints them and, once ENFORCE is on (W4), fails on
 // any over budget by 20%. verify-dist prints the same rows after every build and never fails on them.
-// Live notebooks are left out. T1.2 adds the per-element rows, T2.4 read-aloud's.
+// Live notebooks are left out. T1.2 adds the per-element rows, T2.4 read-aloud's. fontMisses() lists display code
+// points the self-hosted fonts miss: the command fails on any, verify-dist warns.
 import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
@@ -10,6 +11,7 @@ import { fromHtml } from 'hast-util-from-html';
 import { toHtml } from 'hast-util-to-html';
 import { visit, SKIP } from 'unist-util-visit';
 import { isLivePath } from '../../src/data/exempt.js';
+import { misses } from './fonts.mjs';
 
 const ENFORCE = false;   // W4 sets true
 const KB = 1024;
@@ -83,13 +85,22 @@ export function measure(dist) {
   return rows;
 }
 
+// One line naming the code points the fonts miss, or '' when there are none.
+export function fontMisses(dist) {
+  const cps = misses(dist);
+  return cps.length ? `${cps.length} display code points the self-hosted fonts miss: ` +
+    `${cps.map((c) => `U+${c.toString(16).toUpperCase().padStart(4, '0')}`).join(' ')} (run node scripts/tools/fonts.mjs)` : '';
+}
+
 const size = (b) => (b < KB ? `${b} B` : `${(b / KB).toFixed(1)} KB`).padStart(8);
 export const format = (rows) => rows.map(({ name, bytes, budget, where }) =>
   `${name.padEnd(28)} ${size(bytes)}  budget ${size(budget)}` +
   `${bytes > budget ? `  ${Math.round((bytes / budget - 1) * 100)}% over` : ''}${where ? `  (${where})` : ''}`).join('\n');
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const rows = measure(path.resolve(process.argv[2] ?? 'dist'));
-  console.log(format(rows));
-  if (ENFORCE && rows.some((r) => r.bytes > r.budget * 1.2)) process.exit(1);
+  const dist = path.resolve(process.argv[2] ?? 'dist');
+  const rows = measure(dist);
+  const fonts = fontMisses(dist);
+  console.log(format(rows) + (fonts ? `\n${fonts}` : ''));
+  if (fonts || (ENFORCE && rows.some((r) => r.bytes > r.budget * 1.2))) process.exit(1);
 }

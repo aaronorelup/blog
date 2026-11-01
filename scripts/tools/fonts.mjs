@@ -57,8 +57,7 @@ const toRange = (cps) => cps.reduce((runs, c) => {
 
 // Display code points that no self-hosted face covers and that the tool has not recorded as missing from every
 // family: a new character on a page. Live notebooks never count.
-export function misses(dist) {
-  const { faces, lacking } = JSON.parse(fs.readFileSync(JSON_FILE, 'utf8'));
+export function misses(dist, { faces, lacking } = JSON.parse(fs.readFileSync(JSON_FILE, 'utf8'))) {
   const ranges = faces.flatMap((f) => parseRange(f.range));
   return [...codePoints(dist, { live: false })].filter((c) => !within(ranges, c) && !lacking.includes(c)).sort((a, b) => a - b);
 }
@@ -110,9 +109,8 @@ async function main(dist) {
     files.set(f.url, `/fonts/${name}`);
   }
 
-  const rules = faces.map((f) => `@font-face {\n  font-family: '${f.family}';\n  font-style: normal;\n` +
-    `  font-weight: ${f.weight};\n  font-display: swap;\n  src: url('${files.get(f.url)}') format('woff2');\n` +
-    `  unicode-range: ${f.range};\n}`);
+  const rules = faces.map((f) => `@font-face { font-family: '${f.family}'; font-style: normal; font-weight: ${f.weight}; ` +
+    `font-display: swap; src: url('${files.get(f.url)}') format('woff2'); unicode-range: ${f.range}; }`);
   fs.writeFileSync(CSS, '/* Written by scripts/tools/fonts.mjs: Google\'s slices of the site\'s fonts, self-hosted. */\n' +
     rules.join('\n') + '\n');
   const preload = files.get(faces.find((f) => f.family === PRELOAD.family && f.slice === PRELOAD.slice).url);
