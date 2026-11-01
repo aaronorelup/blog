@@ -5,7 +5,6 @@
 // page and openPost() imports it on the homepage, and the browser upgrades the tags either way.
 // The stylesheet is imported by this module, so it reaches both surfaces with it.
 //
-//   <ao-frames fps="24" marks="46:Impact|47:Red frame"> <video …></video> <figcaption>…
 //   <ao-diff labels="Draft|Final"> <blockquote>…</blockquote> <blockquote>…</blockquote> <figcaption>…
 //   <ao-listen ref="a"> <figure data-id="a"><audio …></audio><img …><figcaption>…</figure> …
 //   <ao-cues labels="v1|v2"> <video …></video> <video …></video> <ol><li data-t="1:44.97">…</li></ol> <figcaption>…
@@ -29,86 +28,6 @@ import { enhance } from '../elements/enhance.js';
 export { enhance };
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => enhance());
 else enhance();
-
-// ---------------------------------------------------------------------------------------
-// <ao-frames>: a video the reader can step through one frame at a time, for animation where
-// the point is a frame or two (an impact frame, a hit-stop, a smear) that playback hides.
-//   fps="24"             the clip's frame rate (default 24); frame n is shown at (n + 0.5)/fps
-//   marks="46:Impact|…"  optional buttons that jump straight to a labelled frame
-// Adds: previous/next frame, play/pause, a quarter-speed toggle and a frame counter. With the
-// video focused, the left and right arrow keys step too. Without JS it is the plain <video>.
-class AoFrames extends HTMLElement {
-  connectedCallback() {
-    if (this._ready) return;
-    const video = this.querySelector(':scope > video');
-    if (!video) return;
-    this._ready = true;
-    const fps = Math.max(1, parseFloat(this.getAttribute('fps') || '24'));
-    const frameOf = () => Math.floor(video.currentTime * fps + 1e-3);
-    const total = () => (isFinite(video.duration) ? Math.round(video.duration * fps) : 0);
-    const seekFrame = (n) => {
-      video.pause();
-      const last = Math.max(0, total() - 1);
-      const f = Math.min(Math.max(0, n), last || n);
-      video.currentTime = (f + 0.5) / fps;
-    };
-
-    const bar = document.createElement('div');
-    bar.className = 'ao-frames-bar';
-    const btn = (label, title, fn) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = label;
-      b.title = title;
-      b.addEventListener('click', fn);
-      bar.append(b);
-      return b;
-    };
-    btn('\u2039 frame', 'Previous frame', () => seekFrame(frameOf() - 1));
-    const play = btn('Play', 'Play or pause', () => (video.paused ? video.play().catch(() => {}) : video.pause()));
-    btn('frame \u203a', 'Next frame', () => seekFrame(frameOf() + 1));
-    const slow = btn('\u00bc speed', 'Toggle quarter speed', () => {
-      video.playbackRate = video.playbackRate === 1 ? 0.25 : 1;
-      slow.setAttribute('aria-pressed', String(video.playbackRate !== 1));
-    });
-    slow.setAttribute('aria-pressed', 'false');
-
-    for (const part of (this.getAttribute('marks') || '').split('|')) {
-      const i = part.indexOf(':');
-      const n = parseInt(i < 0 ? part : part.slice(0, i), 10);
-      if (!isFinite(n)) continue;
-      const label = i < 0 ? 'Frame ' + n : part.slice(i + 1).trim();
-      const b = btn(label, 'Jump to frame ' + n, () => seekFrame(n));
-      b.className = 'ao-frames-mark';
-    }
-
-    const count = document.createElement('span');
-    count.className = 'ao-frames-count';
-    count.setAttribute('aria-live', 'off');
-    bar.append(count);
-    const show = () => {
-      const t = total();
-      count.textContent = 'frame ' + frameOf() + (t ? ' / ' + (t - 1) : '');
-      play.textContent = video.paused ? 'Play' : 'Pause';
-    };
-    for (const ev of ['timeupdate', 'seeked', 'play', 'pause', 'loadedmetadata']) video.addEventListener(ev, show);
-    // During playback timeupdate fires only ~4 times a second; follow every frame where we can.
-    if ('requestVideoFrameCallback' in video) {
-      const tick = () => { show(); video.requestVideoFrameCallback(tick); };
-      video.requestVideoFrameCallback(tick);
-    }
-    video.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-        e.preventDefault();
-        seekFrame(frameOf() + (e.key === 'ArrowLeft' ? -1 : 1));
-      }
-    });
-    if (!video.hasAttribute('tabindex')) video.tabIndex = 0;
-    video.after(bar);
-    show();
-    this.classList.add('ao-frames-ready');
-  }
-}
 
 // ---------------------------------------------------------------------------------------
 // <ao-diff>: versions of the same text, with the words that changed marked, so a reader can
@@ -2648,7 +2567,6 @@ class AoDemo extends HTMLElement {
 
 if (!customElements.get('ao-demo')) customElements.define('ao-demo', AoDemo);
 if (!customElements.get('ao-transcript')) customElements.define('ao-transcript', AoTranscript);
-if (!customElements.get('ao-frames')) customElements.define('ao-frames', AoFrames);
 if (!customElements.get('ao-diff')) customElements.define('ao-diff', AoDiff);
 if (!customElements.get('ao-listen')) customElements.define('ao-listen', AoListen);
 if (!customElements.get('ao-cues')) customElements.define('ao-cues', AoCues);

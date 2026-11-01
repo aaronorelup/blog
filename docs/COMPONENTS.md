@@ -50,6 +50,28 @@ shown by `moonlight-two-cuts` (stills) and `storm-bell-fighter` (`sync`).
 
 ## <ao-frames>
 
+A video the reader steps through one frame at a time, for animation where the point is a frame or two (an impact
+frame, a hit-stop, a smear) that playback hides. It adds previous and next frame, play and pause, a quarter-speed
+toggle, a frame counter and, optionally, buttons that jump to labelled frames; with the video focused, the left and
+right arrows step too.
+
+| Attribute | |
+|---|---|
+| `fps="24"` | the clip's frame rate (default 24); frame n is shown at (n + 0.5) / fps |
+| `marks="46:Impact\|47:Red frame"` | optional: one button per frame, with its label (`46` alone reads Frame 46) |
+
+Children: one `<video>` and an optional `<figcaption>`. Without JS it is the plain video.
+
+```html
+<ao-frames fps="24" marks="46:Impact|47:Red frame">
+<video src="/media/x/hit.mp4" preload="metadata" muted playsinline></video>
+<figcaption><b>The hit</b><span class="ao-meta">frames 46 and 47</span></figcaption>
+</ao-frames>
+```
+
+Behaviours: frames-1 to frames-3. Used by `ai-rigging-vs-a-script` (and its notes), `paper-jefrie` and
+`storm-bell-pop-up` (the best example).
+
 ## <ao-funnel>
 
 ## <ao-game>
