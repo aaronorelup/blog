@@ -10,7 +10,7 @@ project: ["llm-monster-hunter"]
 draft: false
 preview:
   verdict: "Keep the deciding yourself"
-  takeaway: "Before I hand work to AI, I ask if I need to be the one who did it. Tedium I already understand goes to the agent. Deciding what to build stays with me."
+  takeaway: "Before I hand work to AI, I ask if I need to be the one who did it. Tedium I already understand goes to the agent, and deciding what to build stays with me."
   points:
     - "One prompt cleared game work I'd burned out on for ten months. Then I handed over every goal and stopped recognizing it."
     - "I had AI build a viewer for my agents' logs before I knew what I needed, then spent hours of review working that out."

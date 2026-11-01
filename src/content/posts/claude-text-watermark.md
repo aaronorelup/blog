@@ -9,7 +9,7 @@ topic: "agents"
 project: []
 preview:
   verdict: "Long text keeps the mark"
-  takeaway: "The mark is a slight lean in Claude's free word choices. Long text keeps it through heavy edits, and a Claude rephrase just marks it again. Another AI model's rewrite removes it."
+  takeaway: "The mark is a slight lean in Claude's free word choices. Long text keeps it through heavy edits and Claude rephrases, but another AI model's rewrite removes it."
   points:
     - "Facts and exact answers carry no mark. Paris as France's capital is unchanged, but Paris as a food city can carry it."
     - "Short text is fragile. One synonym swap every ten words nearly always got the demo's 163-word letter past the checker."

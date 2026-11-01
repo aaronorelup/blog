@@ -41,15 +41,15 @@ tools a script could drive.
 <ao-compare cols="3" aspect="16/9">
   <figure>
     <img src="/media/still-on-shift/still-03_t33.0.webp" alt="Six drowned crewmen standing in a line in the dark Cathedral" loading="lazy">
-    <figcaption><b>The crew, still on shift</b><span class="ao-meta">S09 · six named crew models from the game, posed and rim-lit</span></figcaption>
+    <figcaption><b>The crew, still on shift</b><span class="ao-meta">Shot 9 · six of the game's crew models, posed and lit from behind</span></figcaption>
   </figure>
   <figure>
     <img src="/media/still-on-shift/still-15_t107.5.webp" alt="The red Heart glowing in its apse" loading="lazy">
-    <figcaption><b>The Heart</b><span class="ao-meta">S25 · the game's Heart in its real apse, 171 m down</span></figcaption>
+    <figcaption><b>The Heart</b><span class="ao-meta">Shot 25 · the Heart where it really sits in the game, 171 m down</span></figcaption>
   </figure>
   <figure>
     <img src="/media/still-on-shift/still-18_t125.0.webp" alt="A red-lit tunnel with Drowned chasing up it" loading="lazy">
-    <figcaption><b>The chase</b><span class="ao-meta">S30 · the stranger's lamp and the Heart's red light, the watch behind</span></figcaption>
+    <figcaption><b>The chase</b><span class="ao-meta">Shot 30 · the diver's lamp and the Heart's red light, the crew coming up behind</span></figcaption>
   </figure>
 </ao-compare>
 

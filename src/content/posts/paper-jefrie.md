@@ -28,7 +28,7 @@ review, and **the fixes that mattered came from agents measuring things, not loo
 
 <ao-frames fps="24" marks="24:Hang|54:Yank|66:Cut|84:Skid|131:Thump">
 <video controls muted loop playsinline preload="metadata" poster="/media/paper-jefrie/paper_jefrie.webp" src="/media/paper-jefrie/paper_jefrie.mp4"></video>
-<figcaption><b>Paper Jefrie, final (v3)</b><span class="ao-meta">16 Oct · Opus 5.5 in Claude Code, Blender 5.2 Cycles · 72 poses on twos, 144 frames at 24 fps · 720p web copy of the 1080² render</span></figcaption>
+<figcaption><b>Paper Jefrie, the final loop</b><span class="ao-meta">16 Oct · Claude Code with Opus 5.5, rendered in Blender 5.2 · 144 frames at 24 a second, a new pose every second frame · a 720p web copy of the square full-size render</span></figcaption>
 </ao-frames>
 
 The tail lifts her like a puppet on strings and flings her. The scythe drags her through a full
@@ -62,8 +62,8 @@ stick figures in about 10 seconds, so Claude could fix the moves without opening
 Blender it builds everything from nothing and renders.
 
 <ao-compare cols="2" aspect="3/2">
-<figure><img src="/media/paper-jefrie/motion-01.webp" alt="A grid of 24 stick-figure poses of Jefrie, her scythe and tail, every quarter second" loading="lazy"><figcaption><b>Motion sheet 1</b><span class="ao-meta">16 Oct · plain Python, no Blender · framing too tight, the scythe flails in the hang</span></figcaption></figure>
-<figure><img src="/media/paper-jefrie/motion-10.webp" alt="The same grid of 24 stick-figure poses later in the build: the tail arches over her and plants behind her" loading="lazy"><figcaption><b>Motion sheet 10</b><span class="ao-meta">16 Oct · 11 sheets in all · the tail now rises out of her back and plants</span></figcaption></figure>
+<figure><img src="/media/paper-jefrie/motion-01.webp" alt="A grid of 24 stick-figure poses of Jefrie, her scythe and tail, every quarter second" loading="lazy"><figcaption><b>Stick-figure sheet 1</b><span class="ao-meta">16 Oct · plain Python, no Blender · framed too tight, and the scythe flails in the hang</span></figcaption></figure>
+<figure><img src="/media/paper-jefrie/motion-10.webp" alt="The same grid of 24 stick-figure poses later in the build: the tail arches over her and plants behind her" loading="lazy"><figcaption><b>Stick-figure sheet 10</b><span class="ao-meta">16 Oct · 11 sheets in all · the tail now rises out of her back and plants</span></figcaption></figure>
 </ao-compare>
 
 The scythe follows her hands on a spring, so it lags, overshoots and keeps swinging after she
@@ -102,7 +102,7 @@ It passed three things, called four weak and failed four.
 <ao-slider aspect="3/2" labels="Pass 1|Pass 6">
 <img src="/media/paper-jefrie/pass-01.webp" alt="Contact sheet of pass 1: 24 frames of the loop, with the camera drifting and a grey tail floating off the paper">
 <img src="/media/paper-jefrie/pass-06.webp" alt="Contact sheet of pass 6: the same 24 moments, a locked camera, the tail on the paper and red speed streaks on the swing">
-<figcaption><b>Pass 1 against pass 6, same 24 moments</b><span class="ao-meta">16 Oct · 540 px, 48 samples, about 1 s a frame on the laptop GPU · pass 1 went to reviewer 1, pass 6 got reviewer 2's go</span></figcaption>
+<figcaption><b>Pass 1 against pass 6, the same 24 moments</b><span class="ao-meta">16 Oct · quick low-quality stills, about 1 second each on my laptop · pass 1 went to the first reviewer, pass 6 got the second reviewer's go</span></figcaption>
 </ao-slider>
 
 <details><summary>What the first reviewer said</summary>
@@ -137,7 +137,7 @@ down the handle to its end. After that the check found nothing passing through h
 <ao-slider aspect="1/1" labels="Clay and ink|Final">
 <img src="/media/paper-jefrie/clay-f025.webp" alt="The hang frame in plain white clay with black ink outlines: the tail arches over her and the pencil-sketched dome sits behind">
 <img src="/media/paper-jefrie/final-f025.webp" alt="The same hang frame in the final colour render: grey card, red blade and red tail underside">
-<figcaption><b>The hang, frame 25</b><span class="ao-meta">clay pass with Freestyle ink lines, 3.3 s to render · final, 1080², 128 samples</span></figcaption>
+<figcaption><b>The hang, frame 25</b><span class="ao-meta">a plain white clay version with ink outlines, 3.3 seconds to render · the final color render at full size</span></figcaption>
 </ao-slider>
 
 ## A second loop on the same puppet

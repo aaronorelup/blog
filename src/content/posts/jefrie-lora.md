@@ -64,7 +64,7 @@ came out on 8 September.
 <ao-compare cols="1">
   <figure class="wide">
     <img src="/media/jefrie-lora/origin-01231.webp" alt="The original Jefrie render: a small masked girl with a huge coiled tail and a blood scythe on a stormy battlefield" loading="lazy">
-    <figcaption><b>The render that became Jefrie</b><span class="ao-meta">oneObsession · 8 Sep · ComfyUI_01231 · 75-tag prompt, 30 steps, cfg 5</span></figcaption>
+    <figcaption><b>The render that became Jefrie</b><span class="ao-meta">oneObsession · 8 Sep · ComfyUI_01231 · a 75-tag prompt</span></figcaption>
   </figure>
 </ao-compare>
 
@@ -103,7 +103,7 @@ reference sheet from it. Everything since, like [putting her in 3D](/ledger/jefr
   </figure>
   <figure>
     <img src="/media/jefrie-lora/nbp-refsheet.webp" alt="Jefrie reference sheet: front, side and close-up" loading="lazy">
-    <figcaption><b>Her reference sheet</b><span class="ao-meta">Seedream 5 on Higgsfield</span></figcaption>
+    <figcaption><b>Her reference sheet</b><span class="ao-meta">Seedream 5 on Higgsfield, from the canon image</span></figcaption>
   </figure>
 </ao-compare>
 

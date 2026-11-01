@@ -32,7 +32,7 @@ the prompt does.**
 <ao-compare cols="1">
   <figure class="wide">
     <img src="/media/echo/letter.webp" alt="Echo, a figure with a white porcelain church-bell helm, a ruffled collar and a grey greatcoat, sits in a ruined post office holding a red-sealed letter to its helm" loading="lazy">
-    <figcaption><b>Echo in the Dead-Letter Office, listening to a letter</b><span class="ao-meta">Nano Banana Pro on Higgsfield · the best still of the project</span></figcaption>
+    <figcaption><b>Echo in the Dead-Letter Office, listening to a letter</b><span class="ao-meta">Nano Banana Pro, Google's image model, on Higgsfield · the best still of the project</span></figcaption>
   </figure>
 </ao-compare>
 
@@ -60,7 +60,7 @@ the prompt does.**
 <ao-compare cols="1">
   <figure class="wide">
     <img src="/media/echo/delivery.webp" alt="Echo in the rain at a brick doorway, holding up a letter to an old woman who covers her mouth with her hand" loading="lazy">
-    <figcaption><b>The Delivery: the story scene I picked in cycle 2</b><span class="ao-meta">Flux.2 Klein 9B multi-reference on Aaron's laptop · Soul Cinematic set, Echo composited in</span></figcaption>
+    <figcaption><b>The Delivery, the story scene chosen in cycle 2</b><span class="ao-meta">An empty Soul Cinematic set, with Echo added by Flux.2 Klein 9B on Aaron's laptop</span></figcaption>
   </figure>
 </ao-compare>
 
@@ -90,11 +90,11 @@ and its beads became a countdown.
 <ao-compare cols="2" aspect="2/3">
   <figure>
     <img src="/media/echo/cycle1-studio.webp" alt="Cycle 1 Echo in a torn grey choir robe and red sash, arms open, holding a small iron hand-bell" loading="lazy">
-    <figcaption><b>Cycle 1: the choir relic</b><span class="ao-meta">Nano Banana Pro · canon plate P1</span></figcaption>
+    <figcaption><b>Cycle 1: the choir relic</b><span class="ao-meta">Nano Banana Pro · the first official design picture</span></figcaption>
   </figure>
   <figure>
     <img src="/media/echo/canon-plate.webp" alt="Cycle 2 Echo walking in a long grey greatcoat over the choir robe, with a satchel and the hand-bell" loading="lazy">
-    <figcaption><b>Cycle 2: the courier</b><span class="ao-meta">Nano Banana Pro · canon plate Q2, the identity anchor</span></figcaption>
+    <figcaption><b>Cycle 2: the courier</b><span class="ao-meta">Nano Banana Pro · the official design later images are matched to</span></figcaption>
   </figure>
 </ao-compare>
 
@@ -150,7 +150,7 @@ The nine cloud shots used 176 credits and left 5. These are the best two.
 <ao-compare cols="2" aspect="3/4">
   <figure>
     <video controls muted loop playsinline preload="metadata" poster="/media/echo/v-deadletter.webp" src="/media/echo/v-deadletter.mp4"></video>
-    <figcaption><b>Dead-Letter Office</b><span class="ao-meta">Higgsfield MiniMax H3 · 10 s, 2K, shown at 720p · from the still above</span></figcaption>
+    <figcaption><b>Dead-Letter Office</b><span class="ao-meta">Higgsfield MiniMax H3 · 10 s, 2K, shown at 720p · made from the still at the top</span></figcaption>
   </figure>
   <figure>
     <video controls muted loop playsinline preload="metadata" poster="/media/echo/v-crater.webp" src="/media/echo/v-crater.mp4"></video>

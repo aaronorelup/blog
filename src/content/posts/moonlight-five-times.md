@@ -71,7 +71,7 @@ to the same song, so they play in sync. Click a lyric line and both jump to it.
 <li data-t="2:27.89">But you will return</li>
 <li data-t="2:32.11">Won't you, my love?</li>
 </ol>
-<figcaption><b>Moonlight at the Waterline, v4 and the code-drawn cut</b><span class="ao-meta">Both 2:45 on the same song · web copies 1280×720</span></figcaption>
+<figcaption><b>Moonlight at the Waterline, the new one (v4) and the code version</b><span class="ao-meta">Both 2:45, timed to the same song · click a line to send both there</span></figcaption>
 </ao-cues>
 
 The code version never loses its one idea, his lantern above the water and her lamp below. Every
@@ -249,7 +249,7 @@ them twice.
 
 <ao-compare cols="3" aspect="16/9">
 <figure><img src="/media/moonlight-v4/rej_S07_cut.webp" alt="Frames from a clip that jumps from one camera angle to another in its first second, with a wave breaking over the jetty" loading="lazy"><figcaption><b>A hard cut, not a move</b><span class="ao-meta">its last frame was painted from another angle</span></figcaption></figure>
-<figure><img src="/media/moonlight-v4/rej_S02_sponge.webp" alt="The headland across the bay riddled with dark holes like a sponge" loading="lazy"><figcaption><b>A sponge headland</b><span class="ao-meta">the noise in my 3D model, painted in</span></figcaption></figure>
+<figure><img src="/media/moonlight-v4/rej_S02_sponge.webp" alt="The headland across the bay riddled with dark holes like a sponge" loading="lazy"><figcaption><b>A sponge headland</b><span class="ao-meta">noise in the 3D set, painted in</span></figcaption></figure>
 <figure><img src="/media/moonlight-v4/rej_S06_candles.webp" alt="The float line lit like a row of candles leading to a glowing cave mouth" loading="lazy"><figcaption><b>Candles on the water</b><span class="ao-meta">the floats are dark corks everywhere else</span></figcaption></figure>
 <figure><img src="/media/moonlight-v4/rej_S09_hand.webp" alt="A gloved hand holding the dive lamp sliding into the edge of the frame" loading="lazy"><figcaption><b>A hand at the edge</b><span class="ao-meta">nobody is ever seen below</span></figcaption></figure>
 <figure><img src="/media/moonlight-v4/rej_S31_surface.webp" alt="A falling lamp in the cave with a reflective water surface appearing" loading="lazy"><figcaption><b>A surface in the cave</b><span class="ao-meta">the cave is entirely under water</span></figcaption></figure>

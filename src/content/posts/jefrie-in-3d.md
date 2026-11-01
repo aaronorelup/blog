@@ -33,7 +33,7 @@ she is, and a tail that weighs more than the rest of her. The agents worked in B
 <ao-compare cols="1">
   <figure class="wide">
     <img src="/media/jefrie-3d/target-refsheet.webp" alt="Jefrie character reference sheet: front, side and back views, with the scythe" loading="lazy">
-    <figcaption><b>The target: her character reference sheet</b><span class="ao-meta">Seedream 5 on Higgsfield · the reference for every attempt from 23 Sep on</span></figcaption>
+    <figcaption><b>The target: her character reference sheet</b><span class="ao-meta">Front, side and back, with the scythe · made with Seedream 5, an image model on Higgsfield · the reference for every version from 23 September on</span></figcaption>
   </figure>
 </ao-compare>
 
@@ -72,15 +72,15 @@ upsidedown."*
 <ao-compare cols="3" aspect="4/3" sync>
   <figure>
     <video controls muted loop playsinline preload="metadata" poster="/media/jefrie-3d/v-walk1.webp" src="/media/jefrie-3d/v-walk1.mp4"></video>
-    <figcaption><b>Walk v1</b><span class="ao-meta">20 Sep 10:42 · Opus 5 · 8 min</span></figcaption>
+    <figcaption><b>First walk</b><span class="ao-meta">Opus 5</span></figcaption>
   </figure>
   <figure>
     <video controls muted loop playsinline preload="metadata" poster="/media/jefrie-3d/v-walk2.webp" src="/media/jefrie-3d/v-walk2.mp4"></video>
-    <figcaption><b>Walk v2: knees, heavier tail</b><span class="ao-meta">20 Sep 11:05 · Opus 5 · 11 min</span></figcaption>
+    <figcaption><b>Second walk: knees fixed, heavier tail</b><span class="ao-meta">Opus 5</span></figcaption>
   </figure>
   <figure>
     <video controls muted loop playsinline preload="metadata" poster="/media/jefrie-3d/v-walk3.webp" src="/media/jefrie-3d/v-walk3.mp4"></video>
-    <figcaption><b>Walk v3: face and hair</b><span class="ao-meta">20 Sep 11:24 · Opus 5 · 10 min</span></figcaption>
+    <figcaption><b>Third walk: new face and hair</b><span class="ao-meta">Opus 5</span></figcaption>
   </figure>
 </ao-compare>
 
@@ -101,7 +101,7 @@ will compare who is best."*
 <ao-compare cols="1" sync>
   <figure class="wide">
     <video controls muted loop playsinline preload="metadata" poster="/media/jefrie-3d/v-walk-compare.webp" src="/media/jefrie-3d/v-walk-compare.mp4"></video>
-    <figcaption><b>Claude on the left, Astra on the right</b><span class="ao-meta">23 Sep · same prompt, same files · Blender MCP, rigged, 4-second loop</span></figcaption>
+    <figcaption><b>Claude on the left, Astra on the right</b><span class="ao-meta">Same prompt, same files · built and rigged in Blender · 4-second loop</span></figcaption>
   </figure>
   <figure class="wide">
     <video controls muted loop playsinline preload="metadata" poster="/media/jefrie-3d/v-walk-compare-side.webp" src="/media/jefrie-3d/v-walk-compare-side.mp4"></video>
@@ -117,7 +117,7 @@ gravity and friction.
 <ao-compare cols="1">
   <figure class="wide">
     <video controls muted loop playsinline preload="metadata" poster="/media/jefrie-3d/v-actions.webp" src="/media/jefrie-3d/v-actions.mp4"></video>
-    <figcaption><b>Run, tail jump, skid stop, spin attack, marionette attack</b><span class="ao-meta">23 Sep 18:39 · Opus 5.5 · 26 min</span></figcaption>
+    <figcaption><b>Run, tail jump, skid stop, spin attack, marionette attack</b><span class="ao-meta">Opus 5.5 · the tail and the scythe move by physics</span></figcaption>
   </figure>
 </ao-compare>
 
@@ -134,15 +134,15 @@ triangles melted together. It couldn't be rigged as it was.
 <ao-compare cols="1">
   <figure class="wide">
     <img src="/media/jefrie-3d/12-trellis2.webp" alt="TRELLIS.2 output from four angles" loading="lazy">
-    <figcaption><b>10. TRELLIS.2, one image in</b><span class="ao-meta">24 Sep 20:51 · 321 s on an RTX 4070 laptop · 685k triangles</span></figcaption>
+    <figcaption><b>TRELLIS.2, from one picture</b><span class="ao-meta">321 s on my RTX 4070 laptop · 685,000 triangles</span></figcaption>
   </figure>
   <figure class="wide">
     <img src="/media/jefrie-3d/13-pixal3d.webp" alt="Pixal3D output from four angles" loading="lazy">
-    <figcaption><b>11. Pixal3D, same image</b><span class="ao-meta">24 Sep 20:45 · 258 s · 696k triangles</span></figcaption>
+    <figcaption><b>Pixal3D, same picture</b><span class="ao-meta">258 s · 696,000 triangles</span></figcaption>
   </figure>
   <figure class="wide">
     <img src="/media/jefrie-3d/14-trellis2-wire.webp" alt="Wireframe close-ups of the TRELLIS.2 mesh" loading="lazy">
-    <figcaption><b>What that looks like underneath</b><span class="ao-meta">TRELLIS.2 wireframe · all triangles, one fused mesh, 9.4k UV islands</span></figcaption>
+    <figcaption><b>What the TRELLIS.2 model looks like underneath</b><span class="ao-meta">All triangles, one fused shell</span></figcaption>
   </figure>
 </ao-compare>
 
@@ -159,19 +159,19 @@ for the cape, both kinds of ears and a tail with a natural resting shape, and go
 <ao-compare cols="1">
   <figure class="wide">
     <img src="/media/jefrie-3d/15-retopo-wire.webp" alt="Retopologised low-poly mesh in wireframe" loading="lazy">
-    <figcaption><b>12. The rescue: 20.6k quads</b><span class="ao-meta">24 Sep 23:10 · Opus 5.5 · 1 h 46 min</span></figcaption>
+    <figcaption><b>The rebuild: 20,600 quads</b><span class="ao-meta">Opus 5.5 · 1 h 46 min</span></figcaption>
   </figure>
   <figure class="wide">
     <img src="/media/jefrie-3d/16-headmerge.webp" alt="Low-poly body with the detailed head merged on" loading="lazy">
-    <figcaption><b>13. Head merged on</b><span class="ao-meta">24 Sep 23:29 · head: TRELLIS.2, 426 s · 28,486 tris</span></figcaption>
+    <figcaption><b>The detailed head merged on</b><span class="ao-meta">A second TRELLIS.2 run, from a close-up of her head</span></figcaption>
   </figure>
   <figure class="wide">
     <img src="/media/jefrie-3d/17-v2.webp" alt="v2 with a straight tapering tail, repaired cape and ears" loading="lazy">
-    <figcaption><b>14. v2: new tail, cape and ears</b><span class="ao-meta">25 Sep 00:29 · Opus 5.5 · 50 min · about 28k tris</span></figcaption>
+    <figcaption><b>Second version: new tail, cape and ears</b><span class="ao-meta">Opus 5.5 · about 28,000 triangles</span></figcaption>
   </figure>
   <figure class="wide">
     <img src="/media/jefrie-3d/18-v2-rig.webp" alt="v2 rig pose test" loading="lazy">
-    <figcaption><b>v2 rig pose test</b><span class="ao-meta">25 Sep 00:29 · automatic 29-bone rig</span></figcaption>
+    <figcaption><b>The second version's skeleton, posed</b><span class="ao-meta">An automatic 29-bone rig</span></figcaption>
   </figure>
 </ao-compare>
 
@@ -196,38 +196,38 @@ from eight camera angles.
 <ao-compare cols="3" aspect="16/10">
   <figure>
     <img src="/media/jefrie-3d/01-blockout.webp" alt="First blockout of Jefrie in Blender" loading="lazy">
-    <figcaption><b>1. Blockout</b><span class="ao-meta">19 Sep 19:23 · Opus 5 · two turns, 9 and 14 min</span></figcaption>
+    <figcaption><b>1. First blockout</b><span class="ao-meta">Opus 5 · 19 September</span></figcaption>
   </figure>
   <figure>
     <img src="/media/jefrie-3d/02-poses.webp" alt="Four poses of the blockout" loading="lazy">
-    <figcaption><b>2. Four poses</b><span class="ao-meta">20 Sep 00:52 · Opus 5 · "also her tail is upside down"</span></figcaption>
+    <figcaption><b>2. Four poses</b><span class="ao-meta">Opus 5 · "also her tail is upside down"</span></figcaption>
   </figure>
   <figure>
     <img src="/media/jefrie-3d/03-measured.webp" alt="Measured rebuild matched to the original image's camera" loading="lazy">
-    <figcaption><b>3. Measured rebuild</b><span class="ao-meta">20 Sep 01:40 · Opus 5 subagent, 47 min · 1,180 objects</span></figcaption>
+    <figcaption><b>3. The measured rebuild</b><span class="ao-meta">A helper agent on Opus 5 · placed from measurements of the picture</span></figcaption>
   </figure>
   <figure>
     <img src="/media/jefrie-3d/04-lowpoly.webp" alt="Low-poly version" loading="lazy">
-    <figcaption><b>4. Low-poly</b><span class="ao-meta">20 Sep 10:33 · Opus 5 · 7 min</span></figcaption>
+    <figcaption><b>4. Low-poly</b><span class="ao-meta">Opus 5</span></figcaption>
   </figure>
   <figure>
     <img src="/media/jefrie-3d/05-v3-head.webp" alt="Close-up of the reworked head with the grin" loading="lazy">
-    <figcaption><b>5. Face rework</b><span class="ao-meta">20 Sep 11:24 · Opus 5 · 10 min</span></figcaption>
+    <figcaption><b>5. Face rework</b><span class="ao-meta">Opus 5</span></figcaption>
   </figure>
   <figure>
     <img src="/media/jefrie-3d/06-v4.webp" alt="Version 4 hero render" loading="lazy">
-    <figcaption><b>6. v4 hero shot</b><span class="ao-meta">20 Sep 11:40 · Fable 5.1 · 15 min · 932 objects</span></figcaption>
+    <figcaption><b>6. Version 4</b><span class="ao-meta">Fable 5.1 · 20 September</span></figcaption>
   </figure>
 </ao-compare>
 
 <ao-compare cols="1">
   <figure class="wide">
     <img src="/media/jefrie-3d/07-astra.webp" alt="GPT-6 Astra's Jefrie from the matched camera" loading="lazy">
-    <figcaption><b>7. Astra v1, from the matched camera</b><span class="ao-meta">21 Sep 17:50 · GPT-6 Astra (Codex, high reasoning) · about 15 min</span></figcaption>
+    <figcaption><b>7. Astra's first pass, from the camera it matched</b><span class="ao-meta">GPT-6 Astra in Codex, high reasoning · about 15 minutes · 21 September</span></figcaption>
   </figure>
   <figure class="wide">
     <img src="/media/jefrie-3d/08-astra-orbit.webp" alt="Eight-angle orbit of Astra v1 above and v2 below" loading="lazy">
-    <figcaption><b>8. The same model from eight angles, v1 above, v2 below</b><span class="ao-meta">21 Sep 18:33 and 18:47 · GPT-6 Astra</span></figcaption>
+    <figcaption><b>8. The same model from eight angles, first pass above, second below</b><span class="ao-meta">GPT-6 Astra</span></figcaption>
   </figure>
 </ao-compare>
 
@@ -238,11 +238,11 @@ where the blade stamping came from. This is its model from before the stamping s
 <ao-compare cols="2" aspect="3/5">
   <figure>
     <video controls muted loop playsinline preload="metadata" poster="/media/jefrie-3d/v-turntable.webp" src="/media/jefrie-3d/v-turntable.mp4"></video>
-    <figcaption><b>9. Modelled from a turntable</b><span class="ao-meta">23 Sep 19:13 · Opus 5.5 · 32 min for this pass</span></figcaption>
+    <figcaption><b>9. Modeled from a turntable video</b><span class="ao-meta">Opus 5.5 · 23 September · before the blade stamping started</span></figcaption>
   </figure>
   <figure>
     <img src="/media/jefrie-3d/11-walk-claude-front.webp" alt="Claude's walk-off model from the front" loading="lazy">
-    <figcaption><b>For comparison: the walk-off model, front</b><span class="ao-meta">23 Sep 17:42 · Opus 5.5</span></figcaption>
+    <figcaption><b>For comparison: the walk-off model, front</b><span class="ao-meta">Opus 5.5 · 23 September</span></figcaption>
   </figure>
 </ao-compare>
 

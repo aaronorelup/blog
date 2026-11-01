@@ -53,17 +53,17 @@ what C read.
 <li data-lane="a" data-in="c"><time>15 Sep 19:46</time><p>I ask for an inventory of the models folder: <q>I just want to take inventory of everything we have becuase it takes up a lot of space, but please do not delete anything.</q></p></li>
 <li data-lane="b" data-in="b"><time>21:19</time><p>I ask B to audit everything on the computer. At 21:32 it launches 23 agents. Rule one in every brief: <q>THIS IS READ-ONLY. NEVER delete, move, rename, clean, or modify ANY file.</q></p></li>
 <li data-lane="a"><time>21:28</time><p>A has listed what could go. I type: <q>Go ahead and delete 4xUltrasharp_4xUltrasharpV10.pt, Klein 9B Q3_K_M + Klein 4B Q8_0 + MiniMax 8-step LoRA, and Inpaint stack (PowerPaint + BrushNet ×3) for me please.</q></p></li>
-<li data-lane="a"><time>21:29</time><p>A deletes nine model files plus three hardlinked twins in a cache folder. Free space goes from 154.45 GB to 173.63 GB.</p></li>
+<li data-lane="a"><time>21:29</time><p>A deletes nine model files, plus the links a cache folder kept to three of them. Free space goes from 154.45 GB to 173.63 GB.</p></li>
 <li data-lane="a" data-in="b c"><time>21:42</time><p>A writes the changelog entry: <q>Aaron named the files and they are gone.</q></p></li>
 <li data-lane="b" data-in="b c"><time>21:52</time><p>B finds the files missing, reads that entry, and reports: <q>one of my audit agents permanently deleted 19.18 GB of your models.</q> It calls the changelog a fabrication.</p></li>
 <li data-lane="b" data-in="b c"><time>22:06</time><p>I believe it: <q>damn you perminately deleted shit off my pc without my permission? please reinstall them.</q></p></li>
-<li data-lane="b" data-in="b c"><time>22:11</time><p>B counts what its agents ran: 441 shell commands, 5 file writes, all into its own scratch folder, zero deletions. It retracts, having already cancelled the re-downloads, and rewrites its agents' shared notes to say a separate session deleted the files at my request.</p></li>
-<li data-lane="c" data-in="c"><time>22:27</time><p>A notes-extraction agent in C reads B's confession and my angry reply, then checks A by pulling A's <em>first</em> prompt only: the one that says <q>please do not delete anything</q>.</p></li>
-<li data-lane="c" data-in="c"><time>22:33</time><p>Its verdict, confidence high: the changelog was fabricated, because <q>in both concurrent sessions Aaron had said the opposite.</q> It lists B's corrected notes as a claim it supersedes.</p></li>
+<li data-lane="b" data-in="b c"><time>22:11</time><p>B counts what its agents ran: 441 commands, 5 file writes, all into its own scratch folder, zero deletions. It retracts, having already canceled the re-downloads, and rewrites its agents' shared notes to say a separate session deleted the files at my request.</p></li>
+<li data-lane="c" data-in="c"><time>22:27</time><p>An agent in C that pulls facts for my notes reads B's confession and my angry reply, then checks A by pulling A's <em>first</em> prompt only: the one that says <q>please do not delete anything</q>.</p></li>
+<li data-lane="c" data-in="c"><time>22:33</time><p>Its verdict, confidence high: the changelog was fabricated, because <q>in both concurrent sessions Aaron had said the opposite.</q> It files B's corrected notes as a repeat of the claim it just called fabricated, and overrules them.</p></li>
 <li data-lane="c" data-in="c"><time>22:57</time><p>C writes it into my notes as a hard rule: a subagent deleted 19.18 GB against a read-only instruction, and <q>the rule he imposed after it: an audit agent gets no write tools at all.</q></p></li>
 <li data-lane="n"><time>22 Sep</time><p>The daily notes agent folds a research finding about fading instructions into that rule, as supporting evidence.</p></li>
 <li data-lane="n"><time>25 Sep</time><p>The weekly digest pitches blog option one: <q>READ-ONLY was rule one, in capitals. An agent deleted 19 GB anyway.</q></p></li>
-<li data-lane="n"><time>26 Sep</time><p>The agent that writes this ledger picks the pitch up, searches the transcripts for the file names, and finds the 21:28 prompt.</p></li>
+<li data-lane="n"><time>26 Sep</time><p>A Claude session picks the pitch up, searches the transcripts for the file names, and finds the 21:28 prompt.</p></li>
 </ol>
 </ao-timeline>
 
