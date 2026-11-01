@@ -49,10 +49,12 @@ const TIMES = Object.fromEntries([
   ['Until 19:00 about 80% showed the same', 'Until nineteen minutes about eighty percent showed the same'], // touch-move
   ['The build took 8h39m overnight.', 'The build took eight hours and thirty-nine minutes overnight.'], // armies-of-gielinor-gauntlet
   ['at about 21:00 UTC on 21 October', 'at about twenty-one hundred UTC on the twenty-first of October'], // d1-free-tier-cutoff
-  ['7 Oct 00:06 I ask', 'the seventh of October twelve oh six I ask'], // every-video-can-seek
+  ['7 Oct 00:06 I ask', 'the seventh of October twelve oh six a.m. I ask'], // every-video-can-seek
   ['Scan of 20 Oct 2026, 23:36 to 00:10.', // counting-the-code
-    'Scan of the twentieth of October twenty twenty-six, twenty-three thirty-six to twelve ten.'],
-  ['back at 00:47:58', 'back at twelve forty-seven and fifty-eight seconds'], // the-branch-that-went-live
+    'Scan of the twentieth of October twenty twenty-six, twenty-three thirty-six to twelve ten a.m.'],
+  ['back at 00:47:58', 'back at twelve forty-seven a.m. and fifty-eight seconds'], // the-branch-that-went-live
+  ['At 00:42 I asked a session', 'At twelve forty-two a.m. I asked a session'], // the-branch-that-went-live
+  ['his facecam, every frame from 00:16', 'his facecam, every frame from sixteen seconds'], // earthlight
   ['Sources 05:37:28 05:39:01', 'Sources five thirty-seven and twenty-eight seconds five thirty-nine and one second'], // first-lesson-on-the-new-map
   ['its verify at 13:09, 13 h 22 min in', 'its verify at thirteen oh nine, thirteen hours twenty-two minutes in'], // touch-move notes
   ['hold up at 8:1', 'hold up at eight to one'], // moss-image-on-8gb

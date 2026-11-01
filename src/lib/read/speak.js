@@ -54,10 +54,11 @@ function measure(written, u) {
   return `${number(n)} ${unit(u, n)}`;
 }
 // A clock time: 9:30 "nine thirty", 9:05 "nine oh five", 10:00 "ten o'clock", 20:00 "twenty hundred", 00:42 "twelve
-// forty-two", 00:00 "midnight", 05:37:28 "five thirty-seven and twenty-eight seconds".
+// forty-two a.m.", 00:00 "midnight", 05:37:28 "five thirty-seven and twenty-eight seconds".
 function clock(h, m, s) {
   const n = Number(h);
-  const said = m !== '00' ? `${words(n || 12)} ${m[0] === '0' ? 'oh ' + ONES[m[1]] : words(Number(m))}`
+  const minutes = m[0] === '0' ? 'oh ' + ONES[m[1]] : words(Number(m));
+  const said = m !== '00' ? `${words(n || 12)} ${minutes}${n ? '' : ' a.m.'}`
     : n === 0 ? 'midnight' : `${words(n)} ${n <= 12 ? "o'clock" : 'hundred'}`;
   return s === undefined || s === '00' ? said : `${said} and ${count(Number(s), 'second')}`;
 }
@@ -88,11 +89,14 @@ const UNIT = String.raw`%|ms|min|s|h|[KMGT]B|[kMG]?Hz|px|fps|x`;
 const FREE = String.raw`(?<![\w.,:$])`; // not the tail of a word, a decimal, a time or a price
 const END = String.raw`(?!\w|[.,]\d)`; // nor the head of one (a version number like 4.1.2 is left as written)
 const TIME_END = String.raw`(?!\w|[.,:]\d)`;
-// A time is a clock's after a date (26 Sep 18:11; 20 Oct 2026, 23:36 to 00:10) or before a time zone, its own or its
-// range's (00:30 UTC; 19:00 to midnight UTC).
+// A time is a clock's after a date (26 Sep 18:11; 20 Oct 2026, 23:36 to 00:10), before a time zone, its own or its
+// range's (00:30 UTC; 19:00 to midnight UTC), or with a zero hour after a word that says when (At 00:42 I asked). A
+// film's place has a zero hour bare or after "from" (00:35 The palette; from 00:16 to 20:01), and "at" before any
+// other hour is as often a film's (At 20:00 the flag falls), so only the zero hour takes the word's sign.
 const AFTER_DATE = String.raw`(?<=\b\d{1,2} (?:${MONTH})(?: \d{4})?,? (?:\d{1,2}:\d\d(?: to |[-–]))?)`;
 const ZONE = String.raw`(?=\d{1,2}:\d\d(?::\d\d)?(?:(?: to |[-–])(?:\d{1,2}:\d\d|midnight|noon))? ?(?:UTC|GMT)\b)`;
-const CLOCK_SIGN = String.raw`(?:${AFTER_DATE}|${ZONE})`;
+const WHEN = String.raw`(?<=\b(?:[Aa]t|[Aa]round|[Bb]y|[Uu]ntil) )(?=00:)`;
+const CLOCK_SIGN = String.raw`(?:${AFTER_DATE}|${ZONE}|${WHEN})`;
 const RULES = [
   [String.raw`${FREE}(?<Y>\d{4})-(?<Mo>0[1-9]|1[0-2])-(?<D>0[1-9]|[12]\d|3[01])${END}`,
     (g) => `${MONTHS[g.Mo - 1]} ${ordinal(words(Number(g.D)))}, ${pairs(Number(g.Y))}`],
@@ -125,9 +129,10 @@ export function say(display) {
   const put = (spoken, d, dl) => { map.push([text.length, spoken.length, d, dl]); text += spoken; };
   for (const m of display.matchAll(RE)) {
     if (m.index > at) put(display.slice(at, m.index), at, m.index - at);
-    const rule = RULES.find((_, i) => m.groups['r' + i] !== undefined)[1];
-    put(rule(m.groups), m.index, m[0].length);
-    at = m.index + m[0].length;
+    const said = RULES.find((_, i) => m.groups['r' + i] !== undefined)[1](m.groups);
+    const stop = +(said.endsWith('.') && display[m.index + m[0].length] === '.'); // "a.m." takes the sentence's stop
+    put(said, m.index, m[0].length + stop);
+    at = m.index + m[0].length + stop;
   }
   if (display.length > at) put(display.slice(at), at, display.length - at);
   return { text, map };
