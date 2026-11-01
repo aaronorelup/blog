@@ -32,8 +32,8 @@ HLS player pages in `still-on-shift-concept`, `still-on-shift-music-video`, `cri
 
 ## The image viewer (`viewer.spec.mjs`)
 
-Pages: every post with pictures; the spec uses the first page with `data-full` pictures (`crimson-coil`,
-`earthlight`, `moss-image-on-8gb` today).
+Pages: every post with pictures; the spec uses the first page with `data-full` pictures (`crimson-coil` and its
+notes, `earthlight`'s notes, `nine-claudes-one-painting` today).
 
 | Behaviour | Listener or attribute | Spec |
 |---|---|---|
