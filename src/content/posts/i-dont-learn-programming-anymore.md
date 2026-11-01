@@ -1,161 +1,82 @@
 ---
 id: "AO-011"
-title: "I don't learn programming anymore"
-summary: "In 2025 every prompt taught me architecture. Now I don't know what's in my own codebase and I haven't learned a new programming idea in a month. I traded it for something else, on purpose, and this is the honest accounting of both sides."
+title: "What I learn now that AI writes my code"
+summary: "In 2025, building my game with AI taught me to program, and in 2026 the agents write the code and I've stopped learning it. What I learn now instead, and whether that trade is worth it."
 date: 2026-08-08
 status: "note"
 tags: ["claude-code", "claude-cowork", "openclaw", "agents", "prompting", "lessons"]
 series: ["origin"]
 draft: false
+topic: "agents"
+project: ["origin"]
 preview:
   verdict: "You get what you aim it at"
-  takeaway: "AI didn't decide whether I learned. Aimed at learning, I learned a full stack; aimed at building, I built more, faster, and lost track of my own code."
+  takeaway: "When I aimed AI at learning it taught me to program, and when I aimed it at building I built more and lost track of my code."
   points:
-    - "What I learn now is operating, not programming: which tool, which model at which thinking level, what runs unattended."
-    - "Give the model fewer rules than you think, but state the known knowns, or every agent re-derives them every time."
-    - "Still open: if I never build another foundation by hand, will I know when the model is wrecking one?"
+    - "What I learn now is operating: which tool, which model, how hard to let it think, and what can run without me."
+    - "Give agents fewer rules than you think, but state what you both take for granted, or every agent works it out again."
+    - "Still open: if I never build another foundation by hand, will I notice when the model is wrecking one?"
+  image: "/media/previews/i-dont-learn-programming-anymore.webp"
+  alt: "Aaron's cartoon self in a green robe, drawing a bow and aiming one glowing golden arrow upward"
 ---
 
-Last of five — if you landed here first, the whole series is indexed at the bottom.
-Previously: [The wall that stopped me for ten months, and the week that cleared it](/ledger/the-wall-that-stopped-me/).
+In 2025 I used AI to learn to program, and I learned Python, React and how to design a whole
+system. In 2026 I use it to build, and in a month I haven't learned one new thing about
+programming. I don't even know what's in my own code anymore.
 
-Here's the part of the arc I'm still turning over.
+Both years were the same project, [LLM Monster Hunter](/ledger/monster-hunter-was-my-degree/),
+my game where an AI makes up every monster as you play. In 2025 I built it with
+[Claude Sonnet 4](/ledger/everything-sonnet-got-wrong/) in a chat window. In 2026 agents write
+it. I use Claude's Fable 5 model inside Claude Code, Anthropic's agent that works on your
+computer by itself.
 
-Working on LLM Monster Hunter with Sonnet in 2025, I was learning constantly. Every prompt
-made me reason about system architecture. Every implementation taught me Python, or React,
-or some quirk I'd have to route around forever. I had to hold the entire codebase in my head
-because nothing else was holding it. It was hard and slow and I could feel my brain working.
+So whether AI made me learn came down to what I aimed it at. What I learn now is how to run the
+tools, and I'd make that trade again. I'm just not sure I'd still notice if the model were
+wrecking something.
 
-Working on the same project with Fable 5 and Claude Code in 2026, I do not know what is in
-my codebase. And in a month of building, I have not learned one new thing about programming
-or architecture.
+## What I learn now instead
 
-That's a real trade, and I want to be honest that both halves of it are real.
+- **Which tool for which job.** Claude Code, Cowork (Claude's desktop agent for work that isn't
+  code) or the plain chat. They connect to different things.
+- **Which model, at which thinking level** (how long it thinks before it answers), and what that
+  combination will really produce.
+- **What can run without me**, and which parts still need me to make the call.
+- **Techniques.** Skills (saved instructions an agent loads for one kind of job), workflows that
+  run a team of agents, and lately the [gauntlet loop](/ledger/armies-of-gielinor-gauntlet/),
+  where a fresh critic agent judges each piece blind.
+- **Orchestration.** OpenClaw, an always-on personal agent, runs on a schedule and does web
+  crawling and standing tasks for me.
 
-## What I learn instead
+## Lessons from the last month
 
-The work didn't stop being hard. It moved.
+- **Point the model at your docs instead of pasting everything in.** Keep each thing in the right
+  file and tell it where to look, so you don't pay for all of it on every message.
+- **Use far fewer rules than you think.** It already knows most of what I used to spell
+  out, and a rule written in advance makes it worse at the case you didn't see coming.
+- **But say what you both take for granted.** Otherwise every agent on a long run spends real
+  thinking working it out again.
+- **Be clear about what you expect.** That only works if you know what the model can do.
+- **On a long job, ask for the presentation at the start.** Then it takes screenshots and notes as
+  it goes. That's how my agent [handed me a narrated recap of my game](/ledger/keeper-and-the-beacon/).
+- **Work in bursts.** Send off hours of work, walk away, and review it the next day. More on that
+  in [why I stopped checking on my agents every hour](/ledger/stopped-keeping-agents-fed/).
 
-**Which tool, for which job.** Claude Code, Cowork, or the chat interface — they connect to
-different things, they're good at different shapes of work, and knowing which one to reach
-for is now a skill with actual leverage.
+## Aimed at learning, AI taught me to program
 
-**Which model, at which thinking level.** And what results that combination will actually
-produce, because you can't set good expectations for a thing you can't predict.
+People say AI makes you dumber or a worse programmer, and that's not what happened to me. I
+couldn't program. I'd wanted to since I was a kid and failed at it for fifteen years. Then I
+[used AI to learn](/ledger/no-vs-code-no-terminal/), and I did. I learned a full stack (every
+layer of an app, front to back) and designed an architecture I can still defend. For a summer I
+read every line that went into my game, and I held the whole thing in my head because nothing
+else was holding it. It was hard and slow and I could feel my brain working. Later I aimed it at
+building more, faster, and got exactly that.
 
-**What runs unattended, and what doesn't.** Which parts of a project an agent can genuinely
-own end to end, and which parts still need a human making the call. Getting this wrong is
-expensive in both directions.
+## Why I'd make the trade again
 
-**Techniques.** Skills, workflows, when a workflow is worth starting at all. The
-[gauntlet loop](/ledger/armies-of-gielinor-gauntlet/) was the most recent one, and testing
-it properly was its own project.
+What I learned in 2025 is why 2026 worked. A model can only run far ahead of you on a foundation
+that's already clean and documented, and I'm the one who made mine clean. I think that's why
+[the $200 week that restarted my game](/ledger/the-wall-that-stopped-me/) worked.
 
-**Orchestration.** I picked up OpenClaw, set it up on cron jobs, and it does web crawling
-and standing tasks for me now. This site's publish step ends by emailing new posts to it,
-and the agent decides what happens next.
-
-None of that is programming. All of it is operating.
-
-## The operating lessons worth writing down
-
-A handful of things I've learned the hard way in the last month, in the same spirit as
-[the Sonnet catalog](/ledger/everything-sonnet-got-wrong/):
-
-**Put information where it belongs and point at it.** The instinct from 2025 was to stuff
-everything relevant into every context window. The better move is a docs system — the
-information lives in the right file, and the model is told where to look when it needs it.
-You stop paying for everything on every turn.
-
-**You need far fewer restrictions than you think.** I used to fence the model in with rules.
-Now I tell it it has creative freedom and can make changes, because it already knows most of
-what I was spelling out — and a rule you wrote in advance makes it worse at the case you
-didn't anticipate.
-
-**But state the known knowns anyway.** This sounds like the opposite of the last one and
-isn't. Anything you'd both take for granted, say out loud — especially on a long run with
-several agents. If it's not stated, every agent re-derives it independently, every time,
-spending real thinking on a conclusion you already had. Say it once and it's free.
-
-**Be explicit about expectations**, which is only possible if you know what the model can
-do — which is the whole reason the "which model, what level" learning above matters.
-
-**On long tasks, ask for the presentation up front.** If you tell it at the start that the
-run ends in a presentation, it takes screenshots and keeps notes *while the work is
-happening* instead of reconstructing the story afterward from memory it doesn't have. That
-one trick is why [the agent handed me a documentary](/ledger/keeper-and-the-beacon/)
-and why the [Armies of Gielinor](/ledger/armies-of-gielinor-gauntlet/) run has receipts.
-
-**How I work changed shape, too.** I used to sit there prompting continuously, watching
-every step, going back and forth. Now I burst: fire off hours of work, walk away, and spend
-the next day reviewing what came back and planning the next burst.
-[Continuous versus bursting](/ledger/stopped-keeping-agents-fed/) is its own post.
-
-## Is the trade worth it?
-
-Yes, and I'd make it again, but not without noticing what I gave up.
-
-The knowledge I built in 2025 is exactly why 2026 worked. A model can only run that far
-ahead of you on a foundation that's already clean, documented, and specified — and I'm the
-one who made it clean. That's the argument
-[from the $200 week](/ledger/the-wall-that-stopped-me/) and I believe it.
-
-What I don't know is whether that keeps being true. If I never build another foundation by
-hand, do I still know enough to tell when the model is wrecking one? I'm not going to
-pretend I have that answer a month in.
-
-What I'm choosing for now is to be a power user. To know exactly what tools exist, how they
-connect, and how to wire them into a meta-workflow that makes real progress with less
-babysitting from me. Everything the model can do for me, I want it to be free to do.
-
-## The effect isn't predetermined
-
-There's a common line that AI makes you dumber, or makes you a worse programmer. I'm a
-living counterexample, and I want to be precise about why, because "it didn't happen to me"
-is not an argument.
-
-I couldn't program. I'd wanted to since I was a kid and had failed at it repeatedly for
-fifteen years. Then I used AI to learn, and I learned — a full stack I'd never touched, an
-architecture I designed and can still defend, and a summer of reading every line that went
-into my own repo. That happened because *learning was the goal I pointed it at.*
-
-Later I used it to build more, faster, and that's what I got: more built, faster, and a
-codebase I couldn't recite from memory.
-
-Those are two different skills with two different goals, and they lead down two different
-paths. The tool didn't decide which one I went down. **I did.** And I don't regret either
-one — the first is the reason the second worked at all, and I got exactly what I asked for
-both times.
-
-That's the thing I'd want someone to take from this whole series. The effect this has on you
-isn't a property of the technology. It's a property of what you're trying to do with it. I
-care about that a lot more than I care about being right on the internet, because the
-version of this I actually want to build is one where the learning path is *available* —
-fun, effective, and open to whoever wants it. Same tool. Very different outcome, depending
-entirely on what you ask of it.
-
-## Why this is on a website and not in a notes app
-
-One last thing, and it's the reason these five posts exist at all.
-
-Every finding in this series was learned once, painfully, and then lived in my head or in a
-scratch file. The context-window lesson. The component-scope lesson. The one about not
-delegating decisions you can't evaluate. I had to reconstruct most of them from memory to
-write this, and I got the order wrong twice before the git log corrected me.
-
-I wish I'd had this ledger in June 2025. I didn't, so this series is the retroactive
-version — a year and a half of findings, entered late.
-
-But it's here now, which means the next one gets logged the day it happens instead of a year
-later. That's the whole point of [starting this](/ledger/why-im-starting-this/): the hub
-exists, so nothing else has to die with me or get lost to the void.
-
----
-
-**The full series:**
-
-1. [No VS Code, no terminal, no idea](/ledger/no-vs-code-no-terminal/)
-2. [LLM Monster Hunter was my computer science degree](/ledger/monster-hunter-was-my-degree/)
-3. [Everything Sonnet 4 got wrong, and what each one taught me](/ledger/everything-sonnet-got-wrong/)
-4. [The wall that stopped me for ten months, and the week that cleared it](/ledger/the-wall-that-stopped-me/)
-5. I don't learn programming anymore
+What I don't know is whether that stays true. If I never build another foundation by hand, will I
+still know enough to tell when the model is wrecking one? A month in, I don't have that answer.
+For now I'm choosing to know the tools inside out and let the model do everything it can do for me.

@@ -1,180 +1,136 @@
 ---
 id: "AO-002"
-title: "I built a cave-diving zombies game in a weekend"
-summary: "Fable 5 wouldn't do the creative work and couldn't fix its own 3D mistakes — but it built me the tools to fix them myself. Plus what two AI-generated songs taught me about who should write the lyrics."
+title: "I built a cave-diving zombie game with AI in four days"
+summary: "I had Claude build a zombie game where you're cave diving. What it would and wouldn't do on its own, why I had it build me a level editor, and who should write a game's song lyrics."
 date: 2026-08-02
 status: "shipped"
 tags: ["claude-code", "three-js", "gamedev", "elevenlabs", "lessons"]
 series: ["blackwater"]
+topic: "games"
+project: ["blackwater"]
 preview:
   verdict: "Ask for tools, not fixes"
-  takeaway: "A model that can't see its own 3D bugs will still build you an editor to fix them, so on any 3D project my first ask is now tests and developer tools."
+  takeaway: "Claude couldn't fix its own 3D bugs even with screenshots, but it built me an editor to fix them myself, so on 3D projects I now ask for tools and tests first."
   points:
-    - "Even given screenshots and coordinates, it couldn't fix a tunnel clipping through a cave node. Its level editor let me."
-    - "Lyrics that must match the lore come from the lore bible; lyrics that only carry a feeling, from the music model."
-    - "Sound before visuals: ElevenLabs voice lines made programmer art feel alive. 58 commits in four days, and it's playable."
+    - "It worked hard on code but rationed effort on the story, so I had to push every beat of the lore by hand."
+    - "AI voice lines and music from ElevenLabs made the rough graphics feel alive. On a small game, do sound first."
+    - "Lyrics that must match the game's lore should come from the lore document. For a feeling, let the music AI write them."
+  image: "/media/previews/blackwater-weekend.webp"
+  alt: "A blocky green-faced zombie in a dark flooded cave, a pistol in the foreground"
 ---
 
-I had a pile of Claude Code credits about to reset and no plan for them. So I spent them
-on an idea I'd been carrying around for a while: Black Ops zombies, except you're cave
-diving.
+I had Claude build BLACKWATER, a zombie game where you're cave diving, in 58 commits (saved
+versions of the code) over four days. You can play it at
+[play.aaronorelup.com](https://play.aaronorelup.com) with a keyboard and mouse. It's rough, but
+it's playable and it's fun.
 
-Both halves of that are personal. I watch cave diving videos constantly — the real ones,
-the ones that are genuinely terrifying. And Black Ops was the game of my childhood, though
-the newer entries have lost me completely; they feel repetitive in a way the originals
-never did, and worse in most of the ways I care about.
+Claude couldn't see or fix its own 3D bugs, even with screenshots. But it built me a level editor,
+a tool for moving the pieces of the cave by hand, and with it I fixed them in seconds. So on any
+3D project my first ask is now tools and tests that check its work.
 
-I'd also seen YouTubers one-shot entire Three.js games from a single prompt, and always
-found it a little incredible. I'd never tried it. It felt like a waste of time to build a
-throwaway game. Then I flipped it around: if it's genuinely that easy, it'll be that easy
-for me too. And if it's hard, that means there's something in there worth learning.
+<figure class="wide">
+  <img src="/media/blackwater/card.webp" alt="A blocky green-faced zombie in a dark flooded cave, a pistol in the foreground" loading="lazy">
+  <figcaption><b>BLACKWATER</b><span class="ao-meta">A zombie coming at you in the flooded caves · the graphics are placeholder quality, the sound isn't</span></figcaption>
+</figure>
 
-It was hard. Here's what was in there.
+What I took from it:
 
-[Play it here](https://play.aaronorelup.com). Keyboard and mouse only. The level editor I
-spend half this post talking about ships with it, behind the DEVELOPER TOOLS door on the
-title screen — if you're a developer, that's probably the more interesting half.
+- **Ask for tools, not fixes.** It couldn't fix a tunnel cutting through another part of the cave.
+  The editor it built let me fix it myself.
+- **It works hard on code and coasts on the story.** I had to push every beat of the lore by hand.
+- **Do sound before visuals.** AI voice lines and music made the bad graphics feel alive.
+- **Who writes the lyrics depends on the song.** If it has to match the game's story, the words
+  come from the lore document. If it only has to carry a feeling, let the music AI write them.
 
-## Fable 5 does not want to do creative work
+My Claude credits were about to reset, so I spent them on an idea I'd carried around for a
+while. Black Ops zombies, the zombies mode from Call of Duty, except you're cave diving. I watch
+real cave diving videos constantly, and Black Ops was the game of my childhood.
 
-I front-loaded the whole thing with planning. Design doc, then a full lore bible, before a
-single line of gameplay code. I assumed — based on everything I'd watched this model do —
-that it would be excellent at the lore.
+## Claude couldn't see its own 3D bug
 
-It wasn't. Not because it can't write, but because it wouldn't *stay*. Give it a
-long-horizon creative task and it does about five minutes of work and calls it finished.
-I turned on ultrathink expecting it to write lore, analyze how the lore constrained the
-gameplay, then revise the lore against that analysis. Even at full reasoning budget it was
-lazy in a way I found genuinely surprising, given how far it'll go unprompted on a hard
-code problem.
+Even with screenshots and the exact coordinates, it couldn't fix it. The cave is built from
+nodes, stretched spheres placed in 3D, with tunnels running between them. A tunnel would cut
+straight through a third node sitting in its way. I could see it right away, and the model never
+could. I think the bug was in how several fine-looking decisions added up, and it couldn't hold
+all of that at once.
 
-So I drove every beat by hand. *Analyze this — does it actually serve the gameplay? Is this
-actually creepy, given it's supposed to be horror? Is this complete?* Left alone it wanted
-the most basic possible story, with every piece of the world explained on screen. Which is
-exactly wrong for horror. The whole engine of the genre is unanswered questions, and for a
-Black Ops-flavored story specifically, what's shown in one game should be a thin slice of
-something much larger sitting underneath it.
+## So I had it build me a level editor
 
-It got there. It took constant massaging to get there.
+I stopped asking for fixes and asked for a level editor instead. It built a good one right
+away. Now I can move nodes and tunnels and fix anything in seconds without describing the
+problem to anyone. Every setting in the game is in a panel too, so I can retune
+while playing.
 
-**The pattern:** this model volunteers effort for code and rations it for everything else.
-Budget your own attention accordingly.
+It's much better at building the tool that covers its weakness than at covering the weakness. The
+editor ships with the game, behind the DEVELOPER TOOLS door on the title screen.
 
-## It can't see what it built
+## It worked hard on code and coasted on the story
 
-The cave is a graph — nodes at points in 3D space, each one a sphere scaled and stretched
-in some direction, with connections running between them.
+On a hard code problem it'll go a long way on its own. On long creative work it does about five
+minutes and calls it finished. Left alone it wanted the most basic story, with every piece of the
+world explained on screen, which is wrong for horror. It got there, but only because I pushed
+every beat.
 
-The failure mode: a connection between two nodes would clip straight through a third node
-sitting between them. Obvious to a human, instantly. Invisible to the model, permanently.
+<details><summary>How I pushed it</summary>
 
-And this wasn't a case of it lacking information. I gave it screenshots. I gave it exact
-coordinates of the bad spot. It still couldn't fix it, because the bug isn't in any one
-decision — it's in the *interaction* between several correct-looking decisions, spread
-across the code and the geometry. Holding all of that at once and reasoning about the
-composite result was past what it could do, so it never did.
+- I planned first. A design doc, then a lore bible (one document with the whole story of the
+  world), before a single line of gameplay code. I assumed it would be great at the lore.
+- I turned on ultrathink, its longest thinking setting, and asked it to write the lore, check how
+  the lore shaped the gameplay, then revise. Even then it was lazy, which surprised me given how
+  far it goes unprompted on hard code.
+- So I asked every question myself. Does this actually serve the gameplay? Is this actually
+  creepy, given it's supposed to be horror? Is this complete?
+- Horror runs on unanswered questions. In a Black Ops-style story, what one game shows should be
+  a thin slice of something much bigger underneath it. It took constant massaging to get there.
 
-## The actual lesson: it builds better tools than fixes
+</details>
 
-Here's the part I'll carry into every project after this one.
+## Sound did more than the graphics
 
-I stopped asking it to fix the geometry and asked it to build me a level editor instead.
+The graphics are programmer art, the placeholder stuff a coder makes. That mattered less than I
+expected. I pointed Claude at ElevenLabs, an AI audio service, and it handled the sound effects,
+voice lines and music without much supervision. Hearing the characters speak makes the world
+feel alive, even when a line isn't what I'd have written.
 
-It did that immediately, and it did it well. I now have a full editing system — I can see
-everything it generated, move nodes around, adjust connections, and correct anything wrong
-in seconds without describing the problem to anyone. Same for the tuning: every knob in the
-game is exposed in-panel, so I can retune while playing instead of round-tripping a number
-through a conversation.
+## Who should write a song's lyrics
 
-Everything got easier the moment those existed.
+It depends on what the song has to carry. I love two of the game's songs, and they were made in
+opposite ways.
 
-So the rule now: **on any 3D project, the first ask is tests and developer tools.** Not the
-game. Tools to inspect what it built, tools to verify its work, and tools to fix the things
-it can't fix itself. It is much stronger at building the instrument that covers its
-weakness than it is at covering the weakness.
+**Still on Shift**, the game's anthem, carries facts. Claude wrote its lyrics into the game's lore
+document, and they go to ElevenLabs word for word. Its verses point to audio tapes hidden around
+the game, things a music AI couldn't know.
 
-That inverts how I'd been thinking about AI limitations. The limitation isn't the ceiling.
-The limitation is the *spec* for the tool you should ask it to build.
+<figure class="wide">
+  <iframe src="/media/still-on-shift/?embed" title="BLACKWATER, Still on Shift" style="width:100%;aspect-ratio:16/9;border:0" allow="fullscreen" loading="lazy"></iframe>
+  <figcaption><b>Still on Shift</b><span class="ao-meta">The song with the music video Claude later made <a href="/ledger/still-on-shift-music-video/">inside a rebuilt version of the game</a> · sound on</span></figcaption>
+</figure>
 
-## Audio does more work than graphics
+**Moonlight at the Waterline**, a 1960s ballad on the jukebox about waiting for a diver who's
+running late, only carries a feeling. Claude wrote a brief and ElevenLabs wrote every word,
+including "you're a little late, my love", the line I love. Claude later made it a
+[music video](/ledger/moonlight-two-cuts/) too.
 
-The graphics in this thing are bad. Programmer-art bad.
+<details><summary>What went into each song</summary>
 
-It doesn't matter nearly as much as I expected, because the audio is good. I pointed it at
-the ElevenLabs API and it handled sound design, voice lines, and music — all three, well,
-without much supervision.
+- **Still on Shift.** The script that makes the song copies the lyrics straight out of the lore
+  bible and passes them to ElevenLabs. The verses have the crew count that's off by one, the two
+  instruments that disagree about the depth of the bore, the doctor who timed the crew's
+  synchronized pulses in their sleep and caught his own wrist doing it, and the toys nobody
+  remembers ordering. Each one is a callback to a tape hidden elsewhere in the game.
+- **Moonlight at the Waterline.** It's an easter egg, a period-correct slow dance sitting in a
+  horror game about a drowned dive site. Claude's brief had the era, the instruments, the mood and
+  one request, a faintly eerie line about water keeping what it likes. A songwriting model is
+  better than Claude at rhythm and at making a line sit right in a bar, so letting it write the
+  words got me something more singable than spelling them out would have. I'd listen to it outside
+  the game.
+- **"Always let the music AI write the words" is wrong.** I believed it for about an hour.
+- **The lore paid off even half-done.** I half-assed it, honestly, and Claude did an okay job.
+  Because the lore bible existed, Claude kept reaching back into it and the game feels like one
+  thing instead of a pile of features.
+- **Claude's part in Still on Shift was continuity work.** Threading a dozen details from the lore
+  bible through a lyric is a lot closer to the work Claude is eager to do.
 
-Voice lines especially. Hearing the character speak makes the world feel alive in a way no
-amount of shader work would have bought me at this budget. Even when a line isn't quite
-congruent, even when it's not exactly what I'd have written, it still lands. If you're
-building something small and rough, put the effort into sound before you put it into
-visuals. It's the cheapest believability you can buy.
+</details>
 
-## The lore paid off somewhere I didn't expect
-
-I half-assed the lore, honestly. I tried to get the model to do all of it and it did an
-okay job. If I'd put in more of my own work I think the result would have been outstanding.
-
-But because a lore bible *existed*, everything downstream came out coherent. The model kept
-reaching back into it, and the game feels like one thing instead of a pile of features.
-
-The clearest example is the jukebox. There's an easter-egg track called **Moonlight at the
-Waterline** — a 1960s slow-dance ballad, period-correct for the setting, sitting in a horror
-game about a drowned dive site. It's a love song about waiting at the waterline for a diver
-who's running late. There's a line in it — *you're a little late, my love* — that is a
-genuinely wonderful moment, and the whole song alludes to the game's themes so gracefully
-that it startled me when it surfaced. I'd listen to it outside the game.
-
-Which brings me to the thing I got wrong about my own project.
-
-## Who should write the lyrics
-
-There are two songs in this game I actually love, and I made them in opposite ways. Working
-out *why* both worked is the most useful thing I took out of the whole project.
-
-**Moonlight at the Waterline** was a brief, not a script. Fable 5 wrote the era, the
-instrumentation, the emotional surface, and one instruction about a faintly eerie line
-concerning water keeping what it likes. ElevenLabs wrote every word. Including the one I
-love.
-
-**Still on Shift** — the game's anthem, and the other track I'd defend — went the other
-way. Fable 5 wrote the complete lyrics into the lore bible, and the generation script
-literally scrapes them out of the markdown and passes them to ElevenLabs verbatim.
-
-So "always let the music model write the words" is wrong. I believed it for about an hour.
-The real split is about **who owns the constraint.**
-
-Still on Shift had to carry canon. Its verses are load-bearing: the crew count that's off by
-one, the two instruments that disagree about the depth of the bore, the doctor who timed the
-crew's synchronized pulses in their sleep and caught his own wrist doing it, the toys nobody
-remembers ordering. Every one of those is a callback to a specific audio tape hidden
-somewhere else in the game. A music model cannot invent that, because it has never read my
-lore bible. Only the thing holding the canon can write those lines.
-
-Moonlight had to carry a feeling. Period, warmth, a little ache, one cold note underneath.
-No facts required. And a model built for songwriting is simply better at rhythm, phrasing,
-and making a line sit right in a bar than a language model is — that's the whole job it was
-trained for. Handing it the words got me something more singable than I'd have gotten by
-specifying them.
-
-**The rule:** write the lyrics yourself when the song has to be *true* to something. Write a
-brief and get out of the way when the song only has to *feel* like something.
-
-And there's a quieter thing underneath this that ties back to the top of the post. Fable 5's
-real contribution to Still on Shift wasn't creative writing — it was continuity. Cross-
-referencing a world bible and threading a dozen established details through a lyric is much
-closer to the work it's actually eager to do. That's not an exception to it being bad at
-creative work. It's the same finding from a different angle.
-
-## Where it landed
-
-It's playable. It's fun. It needs an enormous amount of work to be a real experience, and
-I'm not pretending otherwise.
-
-But it's a proof of concept I built in a weekend — 58 commits across four days — it brings
-an idea I'd been carrying for years into something I can actually load and play, and I
-learned more from it than from anything else I've built this month. It's up at
-[play.aaronorelup.com](https://play.aaronorelup.com) if you want to go down there.
-
-I'm proud of it. I'll come back and play it every so often, for no reason other than that
-I like it.
+I'll come back and play it every so often, for no reason other than that I like it.

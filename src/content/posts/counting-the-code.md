@@ -1,40 +1,54 @@
 ---
 id: "AO-062"
-title: "My projects folder holds 1.03 million lines of code. The first count said 3.1 million"
-summary: "I asked Claude to count the code in every project I've built with it. 29 folders hold about a million lines, and two million more on the same disk turned out to be copies, generated reports and other people's code."
+title: "Counting every line of code in my AI projects"
+summary: "I had Claude count the code in the 29 projects in my current projects folder. How much there is, which projects are biggest, and why the first count was three times too high."
 date: 2026-10-21
 status: "note"
 tags: ["claude-code", "opus-5-5", "agents", "lessons"]
+topic: "agents"
+project: []
 preview:
-  verdict: "1.03 million, not 3.1"
-  takeaway: "Two of every three lines the first count found were copies, generated reports or other people's code. The biggest pile: agents' checkouts of this blog."
+  verdict: "About a million lines"
+  takeaway: "My 29 projects hold about 1.03 million lines of code. The first count said 3.1 million because two thirds of it was copies, auto-generated files and other people's code."
   points:
-    - "Six worktree copies of the blog, with the games it hosts: 875,824 lines. The blog's own source is about 10,500."
-    - "A Godot game's test framework wrote 941 HTML reports: 768,489 lines, nearly ten times the game's own 79,105."
-    - "The code left is about 15 million tokens. My sessions have produced 218.5 million output tokens since July."
+    - "Copies of this blog, mostly ones my agents make to work in, came to 875,824 lines. The site's own code is about 10,500."
+    - "A game's testing tool wrote 941 HTML reports, 768,489 lines, nearly ten times the 79,105 lines of the game."
+    - "My AI TV series is a fifth of what's left, 205,234 lines across three episodes, most of it Python."
+  image: "/media/previews/counting-the-code.webp"
+  alt: "A short stack of paper tied with string in front of a faded stack three times taller, a wooden abacus leaning on it"
 ---
 
-My projects folder holds about **1.03 million lines of code in 29 projects**, not counting
-blank lines, comments or tests. The first count came to 3.1 million. Two of every three lines
-it found were copies of something, files a program had generated, or code somebody else wrote,
-and the single biggest pile was the checkouts my own agents make of this blog.
+I asked Claude to count all the code in my projects folder. It came to about **1.03 million
+lines across 29 projects**, not counting blank lines, comments or tests.
 
-Last night I asked Claude:
+The first count actually said 3.1 million. Two out of every three lines it found weren't real work:
+
+- **Copies of this blog: 875,824 lines.** My agents make a full copy of the site so they can work
+  on a post without touching mine. Six were still on disk. Each one carries the games and decks
+  the site hosts, and so does mine. The site's own code is only about 10,500 lines.
+- **941 test reports from one game: 768,489 lines.** Its test tool saves a web page after every
+  run. That's almost ten times the size of the game itself.
+- **Other people's code: 244,250 lines.** Libraries and tools I'd copied in to build on.
+- **Backups and built files: 185,991 lines.**
+
+So if you ever count your code, look at what's actually in the folders first. A plain count was
+off by 3x for me.
+
+## How Claude counted
+
+This is what I typed:
 
 > Could you list all of the projects I have in [my projects folder] that are code based, and
 > list them by how many files of code and how many lines of code, not counting comments or
 > tests.
 
-One Opus 5.5 session wrote a 290-line Python counter, ran it over the folder, looked at what came
-back, and ran it again with the junk taken out. The whole thing took 42 minutes; the first scan
-alone took 30 of them, most of it spent parsing folders that turned out not to count.
+One Claude session wrote a 290-line Python script to do the counting. It ran it over the folder,
+looked at what came back, and ran it again with the junk taken out. The whole thing took 42
+minutes. The first pass alone took 30 of them, mostly reading folders that didn't count.
 
-## What the first count picked up
-
-The counter was strict from the start. It read only code files (Python, JavaScript, C#,
-GDScript, HTML, CSS and a dozen more), skipped `node_modules`, virtual environments, build
-folders and minified bundles, and left out blank lines, comments, docstrings and anything that
-looked like a test. That still came to 3,104,925 lines in 14,250 files.
+The script was strict from the start. It only read code files, and it already skipped the usual
+folders of downloaded libraries and built files. That still came to 3,104,925 lines in 14,250
+files. Here's how it got from there to the real number, one layer at a time:
 
 <ao-funnel unit="lines">
 <ol>
@@ -47,20 +61,22 @@ looked like a test. That still came to 3,104,925 lines in 14,250 files.
 <figcaption><b>From 3.1 million lines to 1.03 million</b><span class="ao-meta">Scan of 20 Oct 2026, 23:36 to 00:10. Each layer is the difference between the first and second pass, folder by folder. What's left: 1,030,371 lines in 6,645 files.</span></figcaption>
 </ao-funnel>
 
-**The biggest thing on my disk that looked like code was this blog, seven times over.** Its
-own source, the part I'd call the site, is about 10,500 lines. Every worktree is a whole copy,
-and every copy carries `public/`, where the site keeps playable games and decks from other
-projects. Six of them were still on disk. The one this post was written in is the
-seventh, made this morning, and it is removed when the post is live.
+In the chart, a worktree is one of those agent copies of the blog. Blackwater Godot is my
+cave-diving game [BLACKWATER](/ledger/blackwater-weekend/) rebuilt in the Godot game engine, and
+gdUnit4 is the test tool that writes its reports. The other people's code includes alice's Claude
+Paint, the oil paint simulator [Claude paints with](/ledger/claude-paints-in-oil/), and the game
+Megabonk's own code, copied into [my mod for it](/ledger/modding-megabonk/).
 
-The second biggest was a game writing about itself. Blackwater Godot runs its test suite through
-gdUnit4, which leaves an HTML page, stylesheets and an XML file per run. 941 of them add up to
-768,489 lines, nearly ten times the 79,105 lines of the game.
+## The biggest projects
 
-Neither is a problem in itself. Both mean that a count of "my code" which doesn't look inside
-the folders it counts is wrong by a factor of three.
+The biggest real project is my AI-made TV series,
+[I Love My Evening Television](/courses/i-love-my-evening-television/), at 205,234 lines. That's
+about a fifth of everything, because every episode builds its own tools. Each episode is a
+30-minute film Claude makes, and the count has three of them.
+[Crimson Coil](/ledger/crimson-coil/) is 56,167 lines, [Earthlight](/ledger/earthlight/) 72,596
+and [Context Window](/ledger/context-window/) 73,442. Most of it is Python.
 
-## Where the million lives
+Here's all of it, by project or by language:
 
 <ao-treemap unit="lines" top="7" views="By project|By language">
 <table>
@@ -100,50 +116,44 @@ the folders it counts is wrong by a factor of three.
 <figcaption><b>1,030,371 lines of code in 29 project folders</b><span class="ao-meta">Second pass, 21 Oct 2026, 00:10. Lua, C/C++, Kotlin, shell, PowerShell, shaders, Astro, batch and SQL are under Other. HTML and CSS count as code.</span></figcaption>
 </ao-treemap>
 
-- **I Love My Evening Television is a fifth of everything: 205,234 lines.** That is three
-  episodes of a series where Claude makes a 30-minute film, and each episode builds its own
-  tools: [Crimson Coil](/ledger/crimson-coil/) 56,167, [Earthlight](/ledger/earthlight/)
-  72,596, [Context Window](/ledger/context-window/) 73,442. Most of it is Python.
-- **Gauntlet Test, second at 116,146, is one brief run ten times.** Opus 5.5 and Sonnet 5.5
-  each built the same thing at five effort settings, in ten folders. Counted as one project, it
-  overstates how much I've built; counted as ten, it's ten small ones.
-- **Python is 40% of the total (408,769 lines), JavaScript 22%, HTML 10%.** The game folders
-  bring GDScript (68,437) and C# (64,474); the wallpaper app brings most of the TypeScript.
-- **Sandbox and Sandbox 2 are grab-bags,** 130,003 lines between them across dozens of
-  experiments.
-- **Two folders overlap.** Storm Bell Fighter and Storm Bell Fighter Game point at the same
-  repository and share about 26,000 lines of Blender tools, so those are counted twice.
+- **Second is Gauntlet Test at 116,146 lines, and it's one job built ten times.** Two Claude
+  models, Opus 5.5 and Sonnet 5.5, each built the same brief at five effort levels. Effort is a
+  setting for how much work the model puts into a job. The test is in
+  [my post comparing the two models](/ledger/sonnet-vs-opus-gauntlet/).
+- **Python is 40% of it all, 408,769 lines.** JavaScript is 22% and HTML 10%. The games bring
+  GDScript, the Godot engine's own language, and C#.
 
-Tests were left out from the start: 148,282 lines in 1,101 files. A third of them belong to
-Blackwater Godot (47,338), the same project that wrote the 941 reports. The two go together.
+## In AI tokens
 
-## In tokens
+In AI terms that's roughly 15 million tokens, the chunks AI models read and write. My Claude
+sessions have written about 218 million tokens since July, so about one in every 12 to 17 of them
+is still standing as code.
 
-My follow-up was "How many tokens is is that as an estimate?" The session measured characters
-rather than guessing from lines: the counted lines hold 53.8 million characters with their
-indentation. At the usual three to four characters per token for code, that is **about 15
-million tokens, somewhere between 13 and 18 million.** Nobody ran a tokenizer over the files, so
-it stays a range.
+<details><summary>How the token estimate works</summary>
 
-For scale: Playback Lens, which reads every Claude Code session on this laptop, has recorded
-218.5 million output tokens across 498 sessions since 7 July. That isn't a like-for-like
-comparison. Output tokens include thinking, every reply, files written and rewritten and
-deleted, and work in folders this scan never looked at. But it puts the code still standing at
-roughly **one token for every 12 to 17 my sessions have produced.**
+- When I asked how many tokens that is, Claude measured characters instead of guessing from
+  lines. The counted lines hold 53.8 million characters with their indentation.
+- Code runs about three to four characters per token, so that's somewhere between 13 and 18
+  million tokens. Nobody ran the files through a token counter, so it stays a range.
+- The 218.5 million comes from [Playback Lens](/ledger/reading-my-own-agents/), my tool that
+  reads every Claude Code session on my laptop. It covers 498 sessions since 7 July.
+- It isn't a fair comparison. Those tokens include thinking, every reply, files written and
+  rewritten and deleted, and work in folders this scan never looked at.
+- What my sessions cost is in [my post on Claude Code costs](/ledger/what-drives-claude-code-cost/).
 
-## What isn't in it
+</details>
 
-- **23 older projects** moved to OneDrive on 16 October and are online-only. Scanning them
-  would have downloaded about 2 GB, so they weren't counted. The total is the code in my current
-  folder, not everything I've made.
-- **The count moves.** I re-ran the same counter with the same exclusions this morning:
-  1,038,996 lines, 8,625 more than the night before, while a film session kept working, and
-  54.3 million characters.
-- **The rules are judgement calls.** HTML and CSS count. A Python string holding a long prompt
-  counts. A test helper that isn't named like a test counts. Change any of those and the
-  million moves by tens of thousands.
+<details><summary>What the count left out</summary>
 
-The number I asked for turned out to be the smallest one the scan produced. Most of what agents
-leave on a disk is the scaffolding around the work: checkouts to work in, records of runs,
-libraries to build on. The code is what's left when those come out, and it took a second pass
-to see it.
+- 23 older projects I'd moved to OneDrive weren't counted. They're online-only, and scanning them
+  would have downloaded about 2 GB.
+- Tests were left out on purpose: 148,282 lines in 1,101 files. A third of them, 47,338 lines,
+  belong to Blackwater Godot, the same game that wrote the 941 reports.
+- The count moves. Running it again the next morning gave 1,038,996, while a film session kept
+  working.
+- The rules are judgment calls. HTML and CSS count, and a long prompt inside a Python file
+  counts. Change those and the total moves by tens of thousands.
+- Two folders point at the same game, [Storm Bell Fighter](/ledger/storm-bell-fighter/), so
+  about 26,000 lines are counted twice.
+
+</details>

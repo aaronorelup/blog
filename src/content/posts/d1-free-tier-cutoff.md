@@ -1,27 +1,37 @@
 ---
 id: "AO-072"
-title: "My 68,000-file library hit Cloudflare D1's free limit in four days. A few queries read every row, on timers"
-summary: "When my digiKam library moved into Cloudflare D1, my account went from reading about 46,000 database rows a day to an average of 4.1 million. The free plan allows 5 million for the whole account, and on 27 October D1 refused every query for five hours. What to expect, and what to do first."
+title: "My media library hit Cloudflare's free database limit in four days"
+summary: "My agents moved my 68,000-file media library into a Cloudflare D1 database, and on the fourth day Cloudflare cut off every database on my account. Why it happened, and what to set up first."
 date: 2026-10-28
 status: "note"
 tags: ["cloudflare", "d1", "sqlite", "lessons", "claude-code"]
 series: ["the-site"]
+topic: "site"
+project: []
 preview:
   verdict: "Cut off on day four"
-  takeaway: "D1 bills every row a query scans, not the rows it returns. One page's summary read all 68,000 rows on each load and was half the worst day."
+  takeaway: "Cloudflare's database counts every row a query looks through, not just the ones it returns, and one page looked through all 68,000 on every load."
   points:
-    - "The summary's query had an index made for it, and SQLite ignored it. INDEXED BY took a load from 68,687 rows to 1,062."
-    - "Run EXPLAIN QUERY PLAN on every query that runs often. SCAN means every row, even when it says USING INDEX."
-    - "Take Workers Paid ($5 a month) first: no daily cutoff, and 4.1 million rows a day is 0.5% of what it includes."
+    - "The library page was half the reads on the worst cutoff day. Making it use its index cut 68,687 rows a load to 1,062."
+    - "D1 reports how many rows each query read. Check that number for every query that runs often."
+    - "Pay for the $5 a month plan first. It has no daily cutoff, and my 4.1 million rows a day is 0.5% of what it includes."
+  image: "/media/previews/d1-free-tier-cutoff.webp"
+  alt: "An empty tea caddy tipped on its side, its lid beside it and three golden tea leaves spilled out"
 ---
 
-In the first half of October my Cloudflare account read 40,000 to 56,000 database rows a day,
-about 1% of what the free plan allows. On 18 October my agents moved my digiKam library, 68,000
-files, into my command centre: a Cloudflare Worker with a D1 database (Cloudflare's hosted
-SQLite) behind it. From that day the account read 2.4 to 5.3 million rows a day, and on the
-fourth day it went over the free limit of 5 million. **D1 counts every row a query scans, not
-the rows it returns, and a few of the library's queries read the whole table every time they
-ran, some of them on timers.**
+My agents moved my media library into a Cloudflare database on 18 October, and on the fourth
+day it went over the free plan's daily limit. Cloudflare then refused every database query on
+my account until midnight. **The database counts every row a query (a question to the database)
+looks through, not just the rows it hands back, and a few of the library's queries looked
+through the whole table every time.** Some ran on timers. One page read all 68,000 rows on
+every load.
+
+The library is where everything my agents make gets filed for me to review, about 68,000 files.
+It moved off my laptop into my command center, the private dashboard my agents post to. That runs
+on Cloudflare with a D1 database behind it. D1 is Cloudflare's hosted SQLite, a small and very
+common database. Each file is a row, and the free plan lets a whole account read 5 million rows a
+day. In early October mine read about 46,000 a day. From the day the library moved in, it read
+2.4 to 5.3 million.
 
 <ao-series>
 <table>
@@ -65,46 +75,66 @@ ran, some of them on timers.**
 <figcaption><b>Rows read per day by my Cloudflare account, 1 to 27 October 2026</b><span class="ao-meta">Every D1 database on the account, from Cloudflare's own analytics. The free plan allows 5,000,000 a day in total</span></figcaption>
 </ao-series>
 
-On 27 October the account read 5.17 million rows, about the whole library 75 times over, and
-passed 5 million at about 18:47 UTC. Since 1 September, going over means D1 refuses every query
-on the account until midnight UTC. From 19:00, it did. The limit is per account, so my blog's
-small database was refused too. The site's pages stayed up, because they are static files; only
-`/api/stats`, behind its stats page, broke.
+It went over three times. On the 27th the account read 5.17 million rows, about the whole
+library 75 times over, and every query was refused for the last five hours of Cloudflare's day.
+The limit covers the whole account, so this blog's small database got refused too. The pages
+stayed up because they're plain files. Only the numbers behind the [stats page](/stats/) broke.
 
-## How to do it instead
+## What I'd do instead
 
-- **Take the $5 plan before you move anything big in.** Workers Paid has no daily cutoff and
-  includes 25 billion rows read a month. Even my wasteful 4.1 million a day is 0.5% of that. I
-  took it after the third day over.
-- **Run `EXPLAIN QUERY PLAN` on every query that runs often, on a copy as big as the real
-  thing.** `SCAN` means every row, even when it says `USING INDEX`. SQLite picks its own plan,
-  whatever indexes you made; `INDEXED BY` overrules it. D1 returns `meta.rows_read` with every
-  result, so each query's cost is there to read.
-- **Never put a whole-table query on a timer.** Keep running counts in a table, and have
-  background jobs ask only about what changed since they last looked.
+- **Take the $5 plan before you move anything big in.** Cloudflare's Workers Paid plan has no
+  daily cutoff and includes 25 billion rows read a month. My wasteful average of 4.1 million a
+  day is 0.5% of that. I took it after the third day over.
+- **On a full-size copy, ask the database how it plans to answer every query that runs often.**
+  `EXPLAIN QUERY PLAN` shows the plan without running the query. `SCAN` means every row, even
+  when it also says `USING INDEX`. An index is a sorted lookup list, like the one at the back of
+  a book. SQLite picks its own plan, and `INDEXED BY` makes it use the index you name. D1 also returns how many
+  rows each query read (`meta.rows_read`).
+- **Never put a whole-table query on a timer.** Keep running counts in their own table, and have
+  background jobs ask only about what changed.
 - **Count reads like you count writes.** The library budgeted every write and never counted a
   read, so ten days at an average of 82% of the limit went by unnoticed.
 
 ## Where the 5 million went
 
-Claude audited 27 October from the Worker's logs and D1's analytics, then fixed every query.
-Rows read per call, before and after, on the live database:
+Claude went through the 27th from the logs and D1's own analytics, then fixed every query. Here's
+what used the most that day, and what one call read before and after:
 
 - **The library page's summary: 2.6 million, half the day.** It counted the 531 files agents had
-  picked, trusting a partial index to skip the rest. SQLite ignored the index and scanned all
-  68,000, on every load, every two minutes while the page was open, and from two hourly laptop
-  jobs. With `INDEXED BY`: 68,687 → 1,062.
-- **The sweeper and other background jobs: 1 million.** Every 15 minutes the sweeper looked up
-  every recent upload again, even files it had filed days before. Asking only about new ones:
-  about 11,600 rows a tick → under 200 on a quiet one (on a full-size copy).
-- **My agents' `studio find --run`: 0.7 million.** Nothing indexed the run column. With an index,
-  a one-file run: 68,156 → 2.
-- **A laptop job's list of my loves: 0.4 million.** Only 108 files are loved, so a page of 200
-  never filled and the scan ran to the end of the table. Sorted by the loved index: 68,156 → 108.
+  picked, with an index made just for those. SQLite ignored it and read all 68,000 rows every
+  time. The page ran it on every load and every two minutes while it was open, and two laptop
+  jobs ran it every hour. `INDEXED BY` took it from 68,687 rows to 1,062.
+- **The sweeper and other background jobs: 1 million.** The sweeper files new uploads. Every 15
+  minutes it looked up every recent one again, even ones it had filed days before. Asking
+  only about new ones took a run from about 11,600 rows to under 200.
+- **My agents' search for one job's files: 0.7 million.** Nothing indexed the column it searches.
+  With an index, a one-file job went from 68,156 rows to 2.
+- **A laptop job listing the files I've loved: 0.4 million.** It asked for 200 at a time and
+  only 108 are loved, so it never got its 200 and searched to the end of the table. Sorted by an
+  index of loved files, it went from 68,156 rows to 108.
 
-The indexes went live at 02:37 UTC on 28 October, and `find --run` has read 2 rows a call since.
-The rest of the code went live at 05:40 UTC the same morning: the library's summary now reads
-1,831 rows instead of about 70,000, and every response says how many rows it read. The account
-should settle near 0.6 to 0.7 million rows a day, about a sixth of what it was.
+## After the fixes
 
-68,000 rows is a small table for SQLite. Reading all of it 75 times a day is not.
+Everything went live early on 28 October. The live library summary now reads 1,831 rows instead
+of about 70,000. The account should settle near 0.6 to 0.7 million rows a day, about a sixth of
+what it was.
+
+<details><summary>The exact times and how each number was measured</summary>
+
+- The account went over the limit at about 21:00 UTC on 21 October, at 23:54 UTC on 24 October
+  and at about 18:47 UTC on 27 October. On the 27th every query was refused from 19:00 to
+  midnight UTC.
+- Since 1 September, going over the free limit means D1 refuses every query on the account
+  until midnight UTC.
+- The rows-per-day numbers are for every D1 database on the account, from Cloudflare's own
+  analytics.
+- The new indexes went live at 02:37 UTC on 28 October. The rest of the code went live at 05:40
+  UTC the same morning.
+- The sweeper's before and after (about 11,600 rows a run down to under 200, on a quiet run) was
+  measured on a full-size copy of the database. The other before and after numbers are from the
+  live one.
+- My agents' search for one job's files is the command `studio find --run`. It has read 2 rows a
+  call since the indexes went live.
+- Every response from the library now also says how many rows it read.
+
+</details>

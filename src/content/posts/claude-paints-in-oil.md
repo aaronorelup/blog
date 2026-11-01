@@ -1,176 +1,177 @@
 ---
 id: "AO-038"
-title: "Claude painted three oil paintings, one brushstroke at a time, with no undo"
-summary: "Not image generation, not SVG: Opus 5.5 drove a physics simulator of wet oil paint, mixed its colours from historical tubes, made mistakes it couldn't undo, and painted over them. Two master studies of my favourite paintings and an oil version of my own 2018 drawing."
+title: "Claude paints in oil on a simulator, one stroke at a time"
+summary: "Claude painted on alice's oil paint simulator, where every mark is a brush stroke and there's no undo. Copies of two paintings I love, one of mine in oil, and a harder test that came out much worse."
 date: 2026-10-05
 status: "shipped"
 tags: ["claude-code", "opus-5-5", "oil-paint", "simulation", "art"]
 series: ["oil-paint"]
+topic: "art"
+project: ["oil-paint", "characters"]
 preview:
   verdict: "Worked, mistakes and all"
-  takeaway: "Driving a simulated brush instead of predicting pixels, Claude had to work like a painter: chart its colours, block in, paint over what it couldn't undo."
+  takeaway: "Driving a simulated brush instead of making pixels, Claude worked like a painter, charting its colors first and painting over mistakes it couldn't undo."
   points:
-    - "Before painting, it mixed 287 tube colours and about 1,200 more for ones it couldn't hit, measuring each off the canvas."
-    - "No undo: a mask left a navy block on a wall, and a grey fix it hadn't checked chalked over faces. Both were painted out."
-    - "About 25 CPU-minutes and about 2% of my weekly usage for all three. Without phthalo, it couldn't match my turquoise."
+    - "Before painting it mixed 287 tube colors and about 1,200 more, measuring each one off the canvas."
+    - "Three paintings stacked on one canvas came out much worse. In mostly red and orange pictures, the figures dissolved."
+    - "The first three paintings together took about 25 minutes of CPU and about 2% of my weekly Claude usage."
   image: "/media/previews/claude-paints-in-oil.webp"
   alt: "Claude's oil painting of a pink-haired girl with red strawberry spots in her hair, an orange sun and a small red crab behind her"
 ---
 
 <img src="/media/oil-paintings/strawberry-girl.webp" alt="An oil painting of a pink-haired girl with red strawberry spots in her hair, lying back on a pastel beach with an orange sun, yellow sand, turquoise water and a small red crab" style="width:100%;border-radius:8px">
 
-That's an oil painting. Nobody generated it. Claude painted it: every mark on it was made by a
-simulated brush carrying simulated wet paint across simulated linen, and the paint was mixed
-on a palette from fourteen named tubes of historical pigment. It's my own digital painting
-from 2018, which I asked it to redo in oil "with a little more detail than what it is now."
+I had Claude paint three oil paintings on Claude Paint, alice's simulator of wet oil paint.
+Every mark is a simulated brush stroke, the paint comes from fourteen tubes of historical
+pigment, and there's no undo. Two are copies of paintings I saw at the Museum of Russian Art.
+The third, up top, is my own 2018 digital painting redone in oil.
 
-## What this actually is
+**It worked, mistakes and all.** Claude went about it like a painter, and when it got something
+wrong it painted over it, since there's no other fix. A harder test, three paintings stacked on
+one canvas, came out much worse.
 
-When I ran [Opus 5.5 on X alone](/ledger/opus-55-on-x-alone/), the runner-up was
-**[Claude Paint](https://github.com/aliceisjustplaying/claude-paint)** by alice
-([stillwet.art](https://stillwet.art)): a Rust physics simulator of oil paint. Bristles
-carry paint. Wet paint levels out and dries on a clock (lead white is touch-dry in about two
-days, vermilion is still wet much later). Layers combine optically, so a thin glaze over a
-dark passage looks like a thin glaze over a dark passage. You only get paint from piles you
-knife together out of tubes. **There is no undo.** The painter works through a live session:
-send a chunk of Lua that paints a passage, step back, look at the canvas, then decide the
-next passage. The whole painting is a replayable log of those decisions.
+- **It painted a color chart first.** 287 tube mixes and about 1,200 more, each measured off the
+  canvas.
+- **It couldn't match my turquoise.** Its historical tubes have no phthalo, the modern pigment
+  painters use for that blue-green.
+- **The first three took about 2% of my weekly Claude usage.** They ran about 25 minutes on my
+  laptop's processor.
 
-That's why it's different from the other ways a model makes a picture:
+## What Claude Paint is
 
-- **Image generation** predicts pixels. There's no brush and no process, and nothing
-  underneath the surface. You can't ask a diffusion model how it got there.
-- **SVG or math art** places perfect shapes. A circle is a circle. Nothing is ever wet,
-  nothing smears into the colour beside it, and a mistake costs nothing.
-- **Here the picture is the result of actions on a material that pushes back.** Colour is
-  limited to what those pigments can actually mix. Paint laid into wet paint mixes with it.
-  A mistake stays on the canvas until you paint over it, and the layer underneath is still
-  there.
+[Claude Paint](https://github.com/aliceisjustplaying/claude-paint) is alice's physics simulator of
+oil paint ([stillwet.art](https://stillwet.art)). Bristles carry paint, wet paint smears and
+dries, and you only get the colors you can mix from the tubes. Claude sends a chunk of code that
+paints one area, looks at the canvas, then decides what's next, so every painting is a log you
+can replay. It came second when I had
+[Claude pick something impressive from X](/ledger/opus-55-on-x-alone/) to try.
 
-## How Claude painted
+That makes it different from an image generator, which predicts pixels with no brush behind
+them, and from drawing with code, where shapes come out perfect and a mistake costs nothing.
 
-I ran this on my Max plan with Claude Code as the painter, not through the repo's own agent
-harness. alice's simulator was written on macOS, so the first job was porting the easel to
-Windows. Unix sockets became a localhost port, the server spawn was rewritten, and Lua had to
-be built with a fixed hash seed so a replay comes out identical. That took about 20 minutes.
-
-Then it did something I wouldn't have thought of: it **painted a colour chart before
-painting anything else**. That was 287 tube mixes, plus about 1,200 more aimed at the colours
-it couldn't hit, each one measured off the canvas. That's how it knew a pastel pink was
-vermilion and lead white with a touch of pale smalt.
-
-<img src="/media/oil-paintings/calibration-chart.webp" alt="A grid of a few hundred oil paint swatches: every tube alone, mixed with white, and mixed in pairs" style="width:100%;border-radius:8px">
-
-For the copies it **squared up** each reference into colour zones, the way copyists rule a
-grid over a print. It blocked in all three paintings first, then refined them one at a time:
-finer passes, dark accents (twigs, the crane, cactus ribs), light accents, glazes. It
-painted the faces, eyes and hair strands by hand.
-
-<img src="/media/oil-paintings/blockins.webp" alt="The three block-ins side by side: the beach girl, the boy at the window, the courtroom" style="width:100%;border-radius:8px">
+The painter was Opus 5.5, Anthropic's biggest Claude model. Getting alice's Mac simulator running
+on my Windows laptop took it about 20 minutes. I've used it since for
+[nine Claudes painting one picture](/ledger/nine-claudes-one-painting/) and for
+[Crimson Coil](/ledger/crimson-coil/), Episode 1 of
+[my AI TV series](/courses/i-love-my-evening-television/).
 
 ## The three paintings
 
-Two of my favourite paintings are ones I saw in person at the Museum of Russian Art. One is
-a boy reading at a spring window, the other a Soviet courtroom scene. I asked for master
-studies of both: faithful copies, the way painters learn. These are Claude's studies, not
-the originals.
+Two of my favorite paintings are ones I saw at the Museum of Russian Art, a boy reading at a
+spring window and a Soviet courtroom. I asked for master studies, faithful copies the way painters
+learn. These are Claude's, not the originals.
 
 <img src="/media/oil-paintings/spring-study.webp" alt="Oil study: a boy in dark navy kneels on a red stool reading at a table by a bright window, with budding branches in a jar, a tall cactus and patterned curtains, and a hazy city with a TV tower outside" style="width:100%;border-radius:8px">
 
 <img src="/media/oil-paintings/court-study.webp" alt="Oil study: a courtroom waiting room, a man in a dark suit on a wooden bench looking aside, a woman in a dark coat leading a small child, onlookers behind" style="width:100%;border-radius:8px">
 
-And mine. Left is my 2018 original, right is the oil:
+And mine, which I asked it to redo in oil "with a little more detail than what it is now."
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-<img src="/media/oil-paintings/strawberry-2018-original.webp" alt="My 2018 digital painting" style="width:100%;border-radius:6px">
-<img src="/media/oil-paintings/strawberry-girl.webp" alt="Claude's oil version" style="width:100%;border-radius:6px">
-</div>
+<ao-compare cols="2" aspect="4/3">
+<figure><img src="/media/oil-paintings/strawberry-2018-original.webp" alt="My 2018 digital painting" style="width:100%;border-radius:6px"><figcaption><b>My 2018 original</b><span class="ao-meta">digital painting</span></figcaption></figure>
+<figure><img src="/media/oil-paintings/strawberry-girl.webp" alt="Claude's oil version" style="width:100%;border-radius:6px"><figcaption><b>Claude's oil version</b><span class="ao-meta">simulated oil on simulated linen</span></figcaption></figure>
+</ao-compare>
 
-She kept her face: the heavy-lidded, completely unimpressed look is the whole character. The
-one thing it couldn't match is my turquoise. There's no phthalo in a historical tube box, so
-the water is the nearest green-blue those pigments can make.
+She kept her face. That heavy-lidded, completely unimpressed look is the whole character.
 
-<img src="/media/oil-paintings/strawberry-face-crop.webp" alt="Close-up of the face at full resolution: brush marks, lid lines, blue irises" style="width:100%;border-radius:8px">
+<details><summary>How it painted, step by step</summary>
 
-## What went wrong, which was the useful part
+**The color chart.** Before anything else it painted 287 tube mixes, plus about 1,200 more aimed
+at the colors it couldn't hit, and measured each one off the canvas. That's how it knew a pastel
+pink was vermilion, an old red, and lead white with a touch of pale smalt, an old blue.
 
-The first block-in of my painting was scribbles on bare canvas: strokes with gaps, as a
-real hand leaves them. It went over everything again with fuller brushes. Its first eyelids
-and eyebrows were hairlines too faint to see, painted with a pointed brush at light pressure,
-so it restated them blunt and fully loaded.
+<img src="/media/oil-paintings/calibration-chart.webp" alt="A grid of a few hundred oil paint swatches: every tube alone, mixed with white, and mixed in pairs" style="width:100%;border-radius:8px">
+
+**Squaring up and the block-ins.** For the copies it squared up each reference into color zones,
+the way copyists rule a grid over a print. It blocked in all three paintings first, meaning it
+laid down the big shapes and colors roughly, then refined them one at a time. Finer passes, then
+dark accents like the twigs, the crane and the cactus ribs, then light accents and glazes, the
+thin see-through coats painters build up. It painted the faces, eyes and hair strands by hand.
+
+<img src="/media/oil-paintings/blockins.webp" alt="The three block-ins side by side: the beach girl, the boy at the window, the courtroom" style="width:100%;border-radius:8px">
+
+**My painting, pass by pass.** Its first block-in was scribbles on bare canvas, strokes with gaps
+the way a real hand leaves them. It went over everything again with fuller brushes. Its first
+eyelids and eyebrows were hairlines too faint to see, painted with a pointed brush at light
+pressure, so it painted them again blunt and fully loaded.
 
 <img src="/media/oil-paintings/strawberry-passages.webp" alt="Three stages: sparse scribbled block-in, covered masses, then the face and crab restated" style="width:100%;border-radius:8px">
 
-In the spring painting it went looking for the boy's legs by darkness, and the mask caught
-the dark green wall too. The result was a navy rectangle in the middle of the picture. No undo. It let the
-paint set, then repainted that whole region from the reference, inside a clip:
+**The face up close.** At full resolution you can see the brush marks and the lid lines. The
+water behind her is the nearest green-blue those old pigments can make.
+
+<img src="/media/oil-paintings/strawberry-face-crop.webp" alt="Close-up of the face at full resolution: brush marks, lid lines, blue irises" style="width:100%;border-radius:8px">
+
+</details>
+
+## The mistakes it painted over
+
+No undo means every fix is more paint.
+
+In the spring painting it looked for the boy's legs by picking out the dark areas, and caught the
+dark green wall too. That left a navy rectangle in the middle. It let the paint set and repainted
+the whole region from the reference.
 
 <img src="/media/oil-paintings/spring-mistake-repair.webp" alt="Left: a navy block painted over the wall by mistake. Right: the same area repainted, the kneeling boy back against the green wall" style="width:100%;border-radius:8px">
 
-In the courtroom it decided the wall was "too yellow" and scumbled cool grey over it. The
-original wall really is warm; it hadn't checked the numbers before correcting. The scumble
-also chalked over the lit faces, so that came back off the same way, by painting.
-
-## What this could be used for
-
-The log is the part I keep thinking about. Every painting here is a list of physical
-actions, so:
-
-- **Time-lapses for free.** Replay the log and save a frame every few seconds of painting
-  time. (Coming below.)
-- **Paintings under paintings.** Paint one picture, let it dry, paint another over it. The
-  first survives as ridges in the surface and shows through wherever the new paint is thin,
-  like a pentimento in an X-ray. I had it do exactly this with three paintings of my
-  characters; it's at the bottom of this post.
-- **A stroke plan a real robot arm could follow.** Positions, pressures, loads, which pile.
-- **Teaching.** You can watch a passage go wrong and see exactly which decision did it.
-
-It ran about 25 minutes of CPU for all three paintings and moved my weekly usage by about
-two percent. The simulator is all CPU, so my GPU sat this one out.
+In the courtroom it decided the wall was "too yellow" without checking the numbers, and dragged a
+thin cool gray over it. The original wall really is warm. The gray also chalked over the lit
+faces, so it painted that back out too.
 
 ## The time-lapses
 
-Each one is the painting's log replayed from the first chunk, with a frame saved every 45
-seconds of painting time. Nothing here was recorded; it's re-painted from the log.
+Replaying the log repaints the picture, so time-lapses come free, a frame every 45 seconds of
+painting time. The same log could steer a robot arm.
 
 <video controls muted playsinline preload="metadata" poster="/media/oil-paintings/strawberry-girl.webp" src="/media/oil-paintings/strawberry-timelapse.mp4" style="width:100%;border-radius:8px"></video>
+
+<details><summary>The spring window and courtroom time-lapses</summary>
+
+You can see the mistakes go in and get painted out: the navy block in the spring study, the
+chalky wall in the courtroom.
 
 <video controls muted playsinline preload="metadata" poster="/media/oil-paintings/spring-study.webp" src="/media/oil-paintings/spring-timelapse.mp4" style="width:100%;border-radius:8px"></video>
 
 <video controls muted playsinline preload="metadata" poster="/media/oil-paintings/court-study.webp" src="/media/oil-paintings/court-timelapse.mp4" style="width:100%;border-radius:8px"></video>
 
-You can see the mistakes go in and get painted out: the navy block in the spring study, the
-chalky wall in the courtroom.
+</details>
 
 ## Three paintings on one canvas
 
-Then I gave it a harder job: three ChatGPT images of my characters Jefrie and BloodTailor,
-painted one on top of the other on a single canvas, with each painting saved on its own before
-the next one buried it. The ChatGPT images had problems. They were crunchy, Jefrie's scythe was
-wrong, and her tail floated behind her instead of growing out of her. So I told it to fix those
-rather than copy them. It read both characters' canon first, gave her a single scythe blade
-with the red eye at its base and a bare haft, and joined her tail at her lower back.
+The harder test came out much worse. Claude painted three pictures of my characters Jefrie and
+BloodTailor, each from an image ChatGPT made, one over the other on the same canvas. It saved each
+painting before the next one buried it. Only in the top one, a campfire scene, can you make out
+the figures.
 
 <video controls muted playsinline preload="metadata" poster="/media/oil-paintings/stack-3-twilight-feast.webp" src="/media/oil-paintings/stack-timelapse.mp4" style="width:100%;border-radius:8px"></video>
 
-That's all 54 chunks replayed from one log: the first painting, buried by the second, buried
-by the third.
+That's all 54 chunks replayed from one log. Here's each painting as it was saved.
 
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
-<img src="/media/oil-paintings/stack-1-crimson-scythe.webp" alt="Layer one: Jefrie lunging with her scythe in front of BloodTailor's blood vortex, muddy and hard to read" style="width:100%;border-radius:6px">
-<img src="/media/oil-paintings/stack-2-crimson-warden.webp" alt="Layer two: a low-angle BloodTailor in a cathedral of chains, Jefrie's tail arcing over him" style="width:100%;border-radius:6px">
-<img src="/media/oil-paintings/stack-3-twilight-feast.webp" alt="Layer three: BloodTailor and Jefrie at a campfire under the iron dome at dusk" style="width:100%;border-radius:6px">
-</div>
+<ao-compare cols="3" aspect="16/9">
+<figure><img src="/media/oil-paintings/stack-1-crimson-scythe.webp" alt="Layer one: Jefrie lunging with her scythe in front of BloodTailor's blood vortex, muddy and hard to read" style="width:100%;border-radius:6px"><figcaption><b>Layer one</b><span class="ao-meta">Jefrie and her scythe, muddy</span></figcaption></figure>
+<figure><img src="/media/oil-paintings/stack-2-crimson-warden.webp" alt="Layer two: a low-angle BloodTailor in a cathedral of chains, Jefrie's tail arcing over him" style="width:100%;border-radius:6px"><figcaption><b>Layer two</b><span class="ao-meta">BloodTailor among chains</span></figcaption></figure>
+<figure><img src="/media/oil-paintings/stack-3-twilight-feast.webp" alt="Layer three: BloodTailor and Jefrie at a campfire under the iron dome at dusk" style="width:100%;border-radius:6px"><figcaption><b>Layer three</b><span class="ao-meta">the campfire, the only clear one</span></figcaption></figure>
+</ao-compare>
 
-These are much worse than the first three, and the reason is worth knowing. Squaring up
-works by grouping a picture into colour zones. On the museum paintings, the zones followed the
-forms: a navy boy against a green wall. On these images almost everything is red, orange or
-near-black, so the zones cut straight across the figures and the figures dissolved. Its first
-pass also copied the ChatGPT crunch faithfully, as noise. Smoothing the reference first made it
-worse: the figures turned into blobs. Only the campfire, the top layer, reads properly.
+They came out worse because of how Claude plans a copy. It splits each picture into zones of
+color before painting. On the museum paintings the zones followed the forms, a navy boy against a
+green wall. These images are almost all red, orange or near-black, so the zones cut across the figures and
+they dissolved.
 
-The fix isn't more passes, it's a different plan. Decide the values first, draw the figures
-as shapes by hand, then colour inside them. That's what a painter would do with a busy
-picture, and the simulator would let it. This run ran out of my weekly usage before it got
-the chance.
+The next try would be a painter's plan for a busy picture. Decide how light or dark each area is,
+draw the figures as shapes by hand, then color inside them. I hit my weekly Claude usage limit
+before it got to try that.
 
+<details><summary>What I asked for, and what else went wrong</summary>
+
+- **Buried layers can show through.** In the simulator a buried painting survives as ridges in
+  the surface and shows through wherever the new paint is thin, like an old painting turning up
+  under a new one in an X-ray.
+- **I asked it to fix the ChatGPT images' mistakes.** They had a crunchy, noisy texture, Jefrie's
+  scythe was wrong, and her tail floated behind her instead of growing out of her. It read my
+  notes on both characters first, gave her a single scythe blade with the red eye at its base and a bare
+  handle, and joined her tail at her lower back.
+- **It copied the crunch.** Its first pass reproduced that ChatGPT texture faithfully, as noise.
+- **Smoothing the reference made it worse.** The figures turned into blobs.
+
+</details>

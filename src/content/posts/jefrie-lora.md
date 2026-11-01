@@ -1,35 +1,43 @@
 ---
 id: "AO-025"
-title: "The model that invented Jefrie couldn't draw her again, until I trained a LoRA"
-summary: "Jefrie came out of oneObsession by accident while I was trying to draw BloodTailor. Nearly a thousand tuned prompts later it still couldn't draw her twice. One hour of LoRA training on my laptop fixed it: 27 of 30 test images are her."
+title: "Training a LoRA so my AI image model can draw my character"
+summary: "An image model invented my character Jefrie by accident and could never draw her again. Why prompting didn't fix it, how I trained a LoRA on my laptop, and where it still misses."
 date: 2026-09-28
 status: "shipped"
 tags: ["comfyui", "lora", "stable-diffusion", "characters", "claude-code"]
 series: ["characters"]
+topic: "art"
+project: ["characters"]
 preview:
   verdict: "Worked: 27 of 30"
-  takeaway: "Caption the training pictures with only what changes, and the LoRA soaks the rest into one trigger word: her huge tail shows up without being asked for."
+  takeaway: "After under an hour of training on my 8 GB laptop, the model drew Jefrie in 27 of 30 test prompts, where 998 renders of prompt tuning never got her once."
   points:
-    - "65 images (48 I picked, plus sheet views and nine turntable frames), 1,480 steps, 56.6 minutes on an 8 GB laptop GPU."
-    - "The first run did four images in 19 hours: a config from a broken install had it on the CPU. A guard now stops that."
-    - "Misses: her day job (one training image showed it), sleeping, a close crouch. Next run: more day-job and relaxed poses."
+    - "Caption only what changes (pose, angle, setting) and her mask, grin, tail and cape soak into one trigger word."
+    - "The first run did four images in 19 hours because a leftover settings file put it on the CPU. A guard now kills that."
+    - "Misses: her day job (one training picture showed it), sleeping and a close crouch. It won't work on my other model."
   image: "/media/previews/jefrie-lora.webp"
   alt: "A LoRA render of Jefrie standing on a path through a sunny flower field: half mask, red cape, grey armour and a scaly tail"
 ---
 
-Jefrie was born in a model that could never draw her again. She came out of oneObsession, an
-Illustrious anime checkpoint I run locally, on 8 September. For three weeks after that, the
-only way to get a new picture of her was to hand that one render to Nano Banana Pro as a
-reference. Today I trained a LoRA on my laptop, and oneObsession draws her on demand: 27 of
-30 test prompts came back as her, including angles and scenes she has never been drawn in.
+My character Jefrie was born by accident in oneObsession, an anime image model I run on my
+laptop, and it could never draw her again. Nearly a thousand renders of prompting didn't fix it,
+so I trained a LoRA, a small add-on file that teaches a model one new thing. After under an hour
+of training on my 8 GB laptop, **27 of 30 test prompts come back as her**.
 
-Here's how she got lost, and how she came back.
+She's a small masked girl with a scythe and a tail that's supposed to weigh more than she does.
+
+- **Prompting got pieces of her, never all of her.** 998 renders got her mask and colors right,
+  never her ears, eyes or tail.
+- **Caption only what changes.** Her fixed features soak into the made-up word that calls her up,
+  so her huge tail shows up unasked.
+- **Check the trainer is on the graphics card.** My first run sat on the CPU for 19 hours.
+- **Three of 30 missed.** Her day job, sleeping and a close crouch.
 
 ## She was supposed to be BloodTailor
 
-I was trying to generate BloodTailor, my gamertag
-character since I was fourteen: a smooth iron mask, an impossibly wide grin, a red cloak and
-barbed wire around his forearms. oneObsession kept drawing him as a girl.
+I was trying to draw BloodTailor, my gamertag character since I was fourteen, a man in an iron
+mask with a huge grin and barbed wire around his forearms. oneObsession kept drawing him as a
+girl.
 
 <ao-compare cols="4" aspect="1/1">
   <figure>
@@ -50,9 +58,8 @@ barbed wire around his forearms. oneObsession kept drawing him as a girl.
   </figure>
 </ao-compare>
 
-One of those accidents was a girl I really liked, so I stopped fighting it and started chasing
-her. I generated hundreds of images, tuning the prompt toward what I was seeing in my head,
-until this one came out:
+I liked one of those girls so much I chased her through hundreds of images until this one
+came out on 8 September.
 
 <ao-compare cols="1">
   <figure class="wide">
@@ -61,28 +68,33 @@ until this one came out:
   </figure>
 </ao-compare>
 
-That's Jefrie. And I couldn't make another one.
+That's Jefrie, and I couldn't make another one. Her prompt was mostly BloodTailor's with a few
+tags for a little girl with a snake tail, so every run was a gamble.
 
-The prompt that made her is still BloodTailor's prompt: 75 tags, most of it describing *him*
-("iron mask covering his entire upper face", "plain white button-down shirt"). She only exists
-because of a few tags stapled onto the end: `1girl`, `(little girl:1.45)`, `snake tail`. Every
-run was a gamble.
+No size word ever made her tail bigger. The only phrase that worked was "coiled densely
+around". Her original prompt used it for BloodTailor's barbed-wire forearms, and the model
+gave it to her tail.
 
-The tail was the worst of it, and the tail was what I cared about most. It's supposed to weigh
-more than she does. No size adjective ever made it bigger. "Huge", "giant", "massive", stacked
-weights: nothing. The only thing that worked was the phrase **"coiled densely around"**, and it
-dragged other things into the picture that I didn't want. Reading the metadata back for this
-post, I noticed the phrase in her original prompt isn't even about her tail. It's left over
-from BloodTailor's forearms: `(thick rusted barbed wire coiled densely around forearms:1.5)`.
-The model heard "coiled densely" and gave it to the tail.
+<details><summary>The prompt that made her</summary>
 
-## So she moved to Nano Banana
+- 75 tags, 30 steps, cfg 5 (how closely the model sticks to the prompt), on 8 September.
+- Most of the tags describe BloodTailor, like "iron mask covering his entire upper face" and
+  "plain white button-down shirt".
+- The three that made her are on the end: `1girl`, `(little girl:1.45)` and `snake tail`. The
+  number makes a tag count for more.
+- The tail phrase came from `(thick rusted barbed wire coiled densely around forearms:1.5)`.
+- Size words did nothing for the tail. "Huge", "giant", "massive" and stacked weights all failed.
+- The overnight test later counted the real tokens (the chunks a model reads) in every prompt,
+  because SDXL, the family oneObsession belongs to, stops listening after 75.
 
-From then on she lived in Nano Banana Pro, with that render as the reference image. That's
-where her design got finished: the half mask, the torn leather ear points, the scythe with the
-eye in it, the reference sheets. Everything since, including [putting her in
-3D](/ledger/jefrie-in-3d/) and [a fighting game](/ledger/storm-bell-fighter/), was built on
-those references, not on the model she was born in.
+</details>
+
+## Where she lived instead
+
+For three weeks she lived in Nano Banana Pro, Google's image model, with that render as the
+reference. Her design got finished there, and Seedream 5, another image model, made her
+reference sheet from it. Everything since, like [putting her in 3D](/ledger/jefrie-in-3d/) and
+[a fighting game](/ledger/storm-bell-fighter/), was built on those pictures, and so was the LoRA.
 
 <ao-compare cols="2" aspect="16/10">
   <figure>
@@ -95,17 +107,13 @@ those references, not on the model she was born in.
   </figure>
 </ao-compare>
 
-## A thousand prompts without a LoRA
+## 998 renders of prompting, no LoRA
 
-I did try to get her back into oneObsession the hard way. On the night of 10 September Claude
-ran an overnight experiment for me: 14 rounds, 998 renders, testing one feature at a time
-(mask, ears, eyes, palette, weapon, background) and scoring against the original. It measured
-real token counts, because SDXL quietly stops listening after 75.
-
-It found real things. The half mask, the grey world with red as the only colour, and a
-two-handed grip on the scythe all became reliable. But the ears were always catgirl ears,
-devil horns or bows. The eyes were ordinary anime eyes. The tail was a thin devil's tail or
-missing. And the features that worked alone fought each other when they were combined.
+Claude ran an overnight test for me on 10 September. It made 998 renders, changing one feature
+at a time and scoring each against the original. The half mask, the gray world with red as the
+only color and a two-handed grip all became reliable. But the ears came out as cat ears, devil
+horns or bows, the eyes were ordinary anime eyes and the tail was thin or missing. Features that
+worked alone fought each other when combined.
 
 <ao-compare cols="4" aspect="3/2">
   <figure><img src="/media/jefrie-lora/nolora-horns.webp" alt="No-LoRA attempt: devil horns instead of ear points" loading="lazy"><figcaption><b>Devil horns for ears</b><span class="ao-meta">round 2</span></figcaption></figure>
@@ -118,26 +126,33 @@ missing. And the features that worked alone fought each other when they were com
   <figure><img src="/media/jefrie-lora/nolora-amusement.webp" alt="No-LoRA attempt: amusement park poster style" loading="lazy"><figcaption><b>Nice, not her</b><span class="ao-meta">round 13</span></figcaption></figure>
 </ao-compare>
 
-Nearly a thousand renders, and none of them is her.
+None of the 998 is her.
 
-## The LoRA
+## Training the LoRA on my laptop
 
-A LoRA is a small add-on file, 85 MB here, that teaches a model one new thing. You show it
-captioned pictures over and over until a made-up trigger word (mine is `jefr1e`) means *her*.
+You train a LoRA by showing a model captioned pictures over and over until a made-up trigger
+word, `jefr1e` for me, means her.
 
-I went through my library in digiKam and colour-labelled every picture I felt looked like
-her: 48 of them. Claude cut the reference sheets into single views, pulled nine angles out of a
-turntable video, and captioned all 65 images. The captions describe only what changes (the
-pose, the angle, the setting), so the mask, grin, tail and cape get soaked into the trigger
-word. Then kohya's trainer ran on my laptop's RTX 4070 with 8 GB: 1,480 steps, **56.6
-minutes**.
+I marked the 48 pictures in my library that looked like her. Claude added single views from her
+reference sheets and nine frames from a turntable video (a clip circling around her), then
+captioned all 65. The captions describe only what changes, like the pose, the angle and the
+setting, so the mask, grin, tail and cape soak into the trigger word.
 
-The first attempt sat for 19 hours and got through four images. The trainer had been quietly
-running on the CPU the whole time, because of a config file written during a broken first
-install. Claude found the line in the log that said so, fixed it, and added a guard that
-kills any run that lands on the CPU.
+My first run sat on the CPU, the laptop's slow main chip, for 19 hours and got through four
+images. A leftover settings file from a broken install put it there. Claude fixed it and added a
+guard that kills any CPU run. The real run took **56.6 minutes** on my 8 GB graphics card.
 
-Then I gave it 30 prompts, most of them things she'd never been drawn doing:
+<details><summary>The training run, in numbers</summary>
+
+- 65 images: the 48 I picked, single views cut from her reference sheets, and nine turntable frames.
+- The trainer was kohya's, a popular free one, on the laptop's RTX 4070 with 8 GB.
+- 1,480 steps in 56.6 minutes. The file is 85 MB and the trigger word is `jefr1e`.
+
+</details>
+
+## What it draws now
+
+I tested it on 30 prompts, mostly things she'd never been drawn doing.
 
 <ao-compare cols="3" aspect="1/1">
   <figure><img src="/media/jefrie-lora/lora-back.webp" alt="LoRA: Jefrie from behind, cape and tail" loading="lazy"><figcaption><b>From behind</b><span class="ao-meta">jefr1e · 27.5 s</span></figcaption></figure>
@@ -151,12 +166,14 @@ Then I gave it 30 prompts, most of them things she'd never been drawn doing:
   <figure><img src="/media/jefrie-lora/lora-flower-field.webp" alt="LoRA: Jefrie standing in a sunny flower field" loading="lazy"><figcaption><b>A flower field</b><span class="ao-meta">nothing like her training</span></figcaption></figure>
 </ao-compare>
 
-The tail is huge in every one of them, and the prompt never mentions a tail.
+The tail is huge in every one, and the prompt never mentions a tail.
 
-Three of the 30 missed. My Grease Basket day job came out as a generic red-haired cashier,
-because only one training image showed it. Sleeping lost the mask and grew a fluffy tail. One
-close crouch let the mask slip. It also doesn't carry over to Pony, the other model I use;
-that would take its own run.
+## The three misses
+
+Her day job at a fast-food counter came out as a generic red-haired cashier, because only one
+training picture showed it. Sleeping lost the mask and grew a fluffy tail, and one close crouch
+let the mask slip. It also doesn't carry over to Pony, another anime model I use. That needs
+its own run.
 
 <ao-compare cols="1">
   <figure class="wide">
@@ -165,9 +182,4 @@ that would take its own run.
   </figure>
 </ao-compare>
 
-Those misses are a shopping list, not a wall: five or six day-job pictures, a few relaxed
-poses, then train again.
-
-What gets me is how backwards the whole thing was. oneObsession invented her by accident, and
-a thousand careful prompts couldn't get her back. What finally worked was Nano Banana and the
-reference images drawn from that one lucky render, fed back into the model she came from.
+The fix is five or six pictures of her at work and a few relaxed poses, then another run.
