@@ -4,12 +4,9 @@
 //
 // Listed posts only (isListed): an unlisted post must not surface in a card any more than in
 // a list. A post without a `preview:` gets its opening lines instead, and the build says so.
-import fs from 'node:fs';
+// Its media files are checked before the build, by scripts/check/assets.mjs.
 import { listedPosts, slugOf } from '../../lib/content.js';
 import { cardOf } from '../../lib/cards.js';
-import { publicFile } from '../../lib/paths.js';
-import { PREVIEW_MEDIA } from '../../data/limits.js';
-import R2_MEDIA from '../../data/media-manifest.json';
 
 const WORDS_PER_MINUTE = 230;
 const EXCERPT_CHARS = 280;
@@ -22,8 +19,6 @@ export async function GET() {
   for (const post of await listedPosts()) {
     const { id, title, ...face } = cardOf(post);
     const card = { id, title, mins: readingMinutes(post.body), ...face };
-    if (card.image) checkMedia(id, card.image, PREVIEW_MEDIA.stillCap);
-    if (card.loop) checkMedia(id, card.loop, PREVIEW_MEDIA.loopCap);
     if (!post.data.preview) {
       card.excerpt = excerpt(post.body);
       missing.push(id);
@@ -40,19 +35,6 @@ export async function GET() {
   return new Response(JSON.stringify({ posts: out }), {
     headers: { 'Content-Type': 'application/json; charset=utf-8' },
   });
-}
-
-// A missing file would be a broken picture in the card, and an oversized one is exactly the slow
-// hover this budget exists to prevent. Both stop the build, like an undefined series key does.
-// A loop is video, so it is in R2 and its size is in the manifest (docs/MEDIA.md).
-function checkMedia(id, src, cap) {
-  const file = publicFile(src);
-  const bytes = fs.existsSync(file) ? fs.statSync(file).size : R2_MEDIA[src]?.bytes;
-  if (bytes === undefined) throw new Error(`${id}: preview media ${src} is neither under public/ nor in R2 (src/data/media-manifest.json)`);
-  if (bytes > cap) {
-    throw new Error(`${id}: preview media ${src} is ${(bytes / 1024).toFixed(1)} KB, over the ` +
-      `${cap / 1024} KB cap. Remake it with scripts/preview-media.mjs (PREVIEWS.md).`);
-  }
 }
 
 // Markdown and HTML down to the words a reader reads. Component markup carries a lot of
