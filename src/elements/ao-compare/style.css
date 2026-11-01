@@ -19,7 +19,6 @@ ao-compare > figure {
 ao-compare > figure > img,
 ao-compare > figure > video {
   width: 100%;
-  aspect-ratio: var(--ao-aspect);
   object-fit: contain;
   background: #15141f;
   border: 1px solid var(--pc-line);
@@ -28,8 +27,9 @@ ao-compare > figure > video {
   max-width: 100%;
   height: auto;
 }
-ao-compare > figure.wide > img,
-ao-compare > figure.wide > video { aspect-ratio: auto; }
+/* A wide figure keeps its picture's own ratio, from its width and height, so it holds its place before it loads. */
+ao-compare > figure:not(.wide) > img,
+ao-compare > figure:not(.wide) > video { aspect-ratio: var(--ao-aspect); }
 ao-compare figcaption {
   margin-top: 8px;
   font-family: Karla, system-ui, sans-serif;
