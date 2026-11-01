@@ -350,6 +350,31 @@ Behaviours: model-1, model-2, overlay-3. Used by `jefrie-in-3d` (the best exampl
 
 ## <ao-pan>
 
+A picture far wider than the page (a panorama, a long strip, a storyboard), shown at a readable height and panned
+across instead of shrunk to a sliver. Drag it, swipe it, use a trackpad, or focus it and use the arrow keys (Shift
+for bigger steps, Home and End jump to the ends); a minimap under it shows the whole picture and where the frame
+is, and a click or drag on it jumps there. Glide pans slowly to the end (any touch, a wheel or `ao-stop` stops it);
+Full size opens the picture in the image viewer.
+
+| Attribute | |
+|---|---|
+| `views="A\|B"` | two or more `<img>`s become views of one place, one button each; the frame keeps its place as a fraction of the width, so pictures of different lengths (an 8:1 and a 12:1 strip) are compared at the same point of their story |
+| `stops="0.3:Bridge\|0.8:Gate"` | buttons that glide the frame's centre to a fraction of the width (a bare number is labelled as a percentage) |
+| `height="360"` | the frame's height in px on wide screens (phones get less) |
+
+Children: one or more `<img>`, then an optional `<figcaption>`. Without JS: the images and caption stack, at the
+page's width.
+
+```html
+<ao-pan height="360" views="Day|Night" stops="0.3:Bridge|0.8:Gate">
+<img src="/media/x/day.webp" alt="The town by day, end to end">
+<img src="/media/x/night.webp" alt="The same town at night">
+<figcaption><b>One street, 12:1</b></figcaption>
+</ao-pan>
+```
+
+Behaviours: pan-1 to pan-6. Used by 1 post (`INVENTORY.md`): `moss-image-on-8gb`.
+
 ## <ao-runs>
 
 When each agent of a run (a workflow, a fleet, a night of scheduled jobs) started and stopped, drawn on one clock.
