@@ -345,7 +345,7 @@ is a stub that solves at once with the test response.
 | Behaviour | Spec |
 |---|---|
 | `/` focuses the box (inside it, `/` is a character); nothing of search loads before the first focus | search-1 |
-| "gpu" lists the words half within 150 ms of the index being ready, each passage linked to its heading with `?hl=&hs=` and marked | search-2 |
+| "gpu" lists the words half within 150 ms of the index being ready (the best of three loads; timed, so run it alone when the box is busy), each passage linked to its heading with `?hl=&hs=` and marked | search-2 |
 | The Pagefind index holds exactly the listed posts and their notes, each a `/ledger/` page that exists | search-3 |
 | No unlisted post can be found by its title | search-4 |
 | A result opens its post with the sentence marked, open inside its `<details>`, in view in `#panel-scroll` (the frame unscrolled); a click clears it | search-5 |

@@ -17,7 +17,9 @@ export function highlight(article, url = new URL(location.href)) {
   const marks = ranges.reverse().flatMap(([s, e]) => wrap(nodes, s, e)).reverse();
   if (!marks.length) return;
   for (const m of marks) for (let d = m.closest('details'); d; d = d.parentElement.closest('details')) d.open = true;
-  requestAnimationFrame(() => centre(marks[0], article.closest('#panel-scroll')));
+  // After load: WebKit scrolls to the #heading then, and that must not come after this.
+  const show = () => requestAnimationFrame(() => centre(marks[0], article.closest('#panel-scroll')));
+  if (document.readyState === 'complete') show(); else addEventListener('load', show, { once: true });
   document.addEventListener('click', () => marks.forEach((m) => {
     const parent = m.parentNode;
     m.replaceWith(...m.childNodes);

@@ -5,7 +5,7 @@ import { termsOf } from './terms.js';
 
 const BUNDLE = '/pagefind/pagefind.js';
 const DEBOUNCE = 120;     // ms
-const TOP = 8;
+const TOP = 6;          // pages the words half brings; the meaning half adds its own
 
 let pagefind = null;      // a promise of the module, or of null when there is no index
 let ready = false;

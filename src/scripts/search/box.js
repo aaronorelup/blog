@@ -28,9 +28,12 @@ export function mount(root) {
   let quietT = 0;
   let ask = null;
 
+  // Drawn once the words half has answered, or the meaning half has found something: an empty meaning answer that
+  // comes first would say "nothing matches" before the words are in.
   const render = () => {
-    if (words.q !== q && meaning.q !== q) return;   // nothing for this query yet: the last list stays
-    showResults(ui.out, merge(words.q === q ? words.hits : [], meaning.q === q ? meaning.hits : []), q);
+    const found = words.q === q ? words.hits : null;
+    const meant = meaning.q === q ? meaning.hits : [];
+    if (found || meant.length) showResults(ui.out, merge(found ?? [], meant), q);
   };
   const askMeaning = async (text) => {
     clearTimeout(quietT);
