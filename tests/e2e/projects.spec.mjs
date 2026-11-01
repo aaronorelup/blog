@@ -105,6 +105,9 @@ test.describe('in the homepage overlay', () => {
     const href = await post.getAttribute('href');
     await post.click();
     await expect(page).toHaveURL(new RegExp(href + '$'));
+    // The reader shows that post: the panel takes its page's title.
+    const html = await (await page.request.get(href)).text();
+    await expect(page).toHaveTitle(await page.evaluate((h) => new DOMParser().parseFromString(h, 'text/html').title, html));
     await expect(page.locator('#panel-screen [data-panel-host] [data-post-article] h1').first()).toBeVisible();
     expect(await page.evaluate(() => window.__sameDocument === true)).toBe(true);
   });
