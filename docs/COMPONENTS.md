@@ -109,6 +109,33 @@ Behaviours: calc-1 to calc-4. Used by 1 post (`INVENTORY.md`): `renting-a-gpu`.
 
 ## <ao-funnel>
 
+A total, then what each layer takes out of it, down to what is left: requests down to the ones that were people,
+renders down to the keepers. One bar at the top shows the whole split; each row shows what it took and what was
+left, and a row and its segment light together. Without JS: the list, with the numbers as written.
+
+| Attribute | |
+|---|---|
+| `unit="pages"` | printed after the total |
+
+Children: an `<ol>` whose `<li>` each hold a `<b>` label, a `<data value="…">` and a short note, optionally followed
+by a nested `<ul>` of examples that opens on request ("What's in it"); then an optional `<figcaption>`. It needs at
+least two items with a `<data>`.
+- The first value is the total; a negative value is what that layer removes.
+- A positive value after the first is a count measured another way ("of these, about 290 ran the script"): what it
+  leaves out is shown as unconfirmed (striped), not as removed, so the end of the bar reads as a range.
+- A value written `~290` is an estimate, and every figure after an estimate is rounded to tens.
+
+```html
+<ao-funnel unit="requests">
+<ol><li><b>Every request</b> <data value="2000">2,000</data> in the logs</li>
+<li><b>Bots</b> <data value="-1634">−1,634</data> said so in their user agent<ul><li>Googlebot</li></ul></li>
+<li><b>Ran the script</b> <data value="290">~290</data> counted by the page itself</li></ol>
+<figcaption><b>Who visited</b></figcaption>
+</ao-funnel>
+```
+
+Behaviours: funnel-1 to funnel-4. Used by 2 posts (`INVENTORY.md`); best shown by `who-visits-a-new-website`.
+
 ## <ao-game>
 
 ## <ao-listen>
