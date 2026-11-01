@@ -18,7 +18,7 @@ test('transcript-1 a line seeks its video there, plays it and lights the line', 
   await expect(line).toHaveAttribute('aria-current', 'true');
   await expectPlaying(v);
   const [m, s] = (await line.getAttribute('title')).split(':').map(Number);
-  expect(await clock(v)).toBeGreaterThanOrEqual(m * 60 + s - 0.1);
+  await expect.poll(() => clock(v)).toBeGreaterThanOrEqual(m * 60 + s - 0.1);
 });
 
 test('transcript-2 the lit line follows the video', async ({ page }) => {
@@ -53,7 +53,7 @@ test('transcript-4 one pane playing pauses the other', async ({ page }) => {
   const vs = tr.locator('figure video');
   const lines = tr.locator('.ao-tr-text');
   await expect(lines.nth(1).locator('span[role=button]').first()).toBeVisible();
-  await vs.evaluateAll((all) => all.forEach((m) => { m.muted = true; }));
+  // Not muted: WebKit leaves a muted video of this pair unloaded when its line is clicked (seen on WebKit 27.2).
   await lines.nth(0).locator('span[role=button]').nth(2).click();
   await expectPlaying(vs.nth(0));
   await lines.nth(1).locator('span[role=button]').nth(2).click();
