@@ -17,7 +17,7 @@ export default function links(repo, report) {
   const notes = new Set(repo.notes.map((n) => n.slug));
   const moved = redirects(repo);
 
-  for (const { file, raw, data } of [...repo.posts, ...repo.notes, ...repo.projects]) {
+  for (const { file, raw } of [...repo.posts, ...repo.notes, ...repo.projects]) {
     const line = liner(raw);
     const text = withoutCode(raw);
     for (const m of text.matchAll(LEDGER)) {
@@ -37,14 +37,17 @@ export default function links(repo, report) {
         report(file, at, `${href}: no such page (a post has only /ledger/<slug>/ and, with notes, /notes/)`, 'deploy');
       }
     }
-    for (const slug of file.startsWith('src/content/projects/') ? [data.posts ?? []].flat() : []) {
-      const post = posts.get(slug);
-      if (!post || !isListed(post.data)) report(file, keyLine(raw, 'posts'), `posts: "${slug}" is ${post ? 'not listed' : 'no post'}: a card links only listed posts`, 'deploy');
-    }
     for (const { pattern, why } of LINKS) {
       for (const m of raw.matchAll(pattern)) {
         report(file, line(m.index), `"${m[0]}" is ${why}`, 'deploy');
       }
+    }
+  }
+
+  for (const { file, raw, data } of repo.projects) {
+    for (const slug of data.posts ?? []) {
+      const post = posts.get(slug);
+      if (!post || !isListed(post.data)) report(file, keyLine(raw, 'posts'), `posts: "${slug}" is ${post ? 'not listed' : 'no post'}: a card links only listed posts`, 'deploy');
     }
   }
 }
