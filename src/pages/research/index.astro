@@ -3,11 +3,10 @@
 // Same list chrome as the ledger; different root, different id prefix.
 import PanelPage from '../../layouts/PanelPage.astro';
 import { research, slugOf } from '../../lib/content.js';
+import { ledgerOrder } from '../../lib/posts.js';
 import { shortDate } from '../../lib/dates.js';
 
-const docs = (await research()).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf() || b.data.id.localeCompare(a.data.id),
-);
+const docs = ledgerOrder(await research());
 ---
 <PanelPage
   title="Research — Aaron Orelup"
