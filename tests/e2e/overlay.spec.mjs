@@ -512,11 +512,15 @@ test('overlay-25 a view in the panel has the colours it has on its own page, by 
     const c = getComputedStyle(document.querySelector(pre + s));
     return `${s} ${c.color} ${c.borderTopColor}`;
   }), [pre, SEL]);
-  // The search box, focused: the bar lights up, the input draws no box of its own.
+  // The search box, focused: the bar lights up, the input draws no box of its own. The bar's colour eases in, so it
+  // is read once its transition has ended (getAnimations() starts it if it hasn't yet).
   const focused = async (pre) => {
     await page.locator(pre + '.search-input').focus();
-    await page.waitForTimeout(400);   // the bar's colour eases in over 180 ms
-    return page.locator(pre + '.search-input').evaluate((i) => [getComputedStyle(i).outlineStyle, getComputedStyle(i.closest('.search-bar')).borderTopColor]);
+    return page.locator(pre + '.search-input').evaluate(async (i) => {
+      const bar = i.closest('.search-bar');
+      await Promise.all(bar.getAnimations().map((a) => a.finished));
+      return [getComputedStyle(i).outlineStyle, getComputedStyle(bar).borderTopColor];
+    });
   };
   for (const mode of ['day', 'night']) {
     await page.goto('/ledger/');
