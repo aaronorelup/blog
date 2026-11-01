@@ -4,15 +4,10 @@
 //
 // Listed posts only (isListed): an unlisted post must not surface in a card any more than in
 // a list. A post without a `preview:` gets its opening lines instead, and the build says so.
-import fs from 'node:fs';
-import path from 'node:path';
+// Its media files are checked before the build, by scripts/check/assets.mjs.
 import { getCollection } from 'astro:content';
 import { isListed } from '../../data/listed.js';
-import { PREVIEW_MEDIA } from '../../data/preview-budget.js';
-import R2_MEDIA from '../../data/media-manifest.json';
 
-// Set by the integration in astro.config.mjs: the cwd is often the folder above the project.
-const PUBLIC_DIR = typeof __PUBLIC_DIR__ === 'string' ? __PUBLIC_DIR__ : path.join(process.cwd(), 'public');
 const WORDS_PER_MINUTE = 230;
 const EXCERPT_CHARS = 280;
 let warned = false;
@@ -30,14 +25,10 @@ export async function GET() {
       card.takeaway = preview.takeaway;
       if (preview.points.length) card.points = preview.points;
       if (preview.image) {
-        checkMedia(id, preview.image, PREVIEW_MEDIA.stillCap);
         card.image = preview.image;
         card.alt = preview.alt || '';
       }
-      if (preview.loop) {
-        checkMedia(id, preview.loop, PREVIEW_MEDIA.loopCap);
-        card.loop = preview.loop;
-      }
+      if (preview.loop) card.loop = preview.loop;
     } else {
       card.excerpt = excerpt(post.body);
       missing.push(id);
@@ -54,19 +45,6 @@ export async function GET() {
   return new Response(JSON.stringify({ posts: out }), {
     headers: { 'Content-Type': 'application/json; charset=utf-8' },
   });
-}
-
-// A missing file would be a broken picture in the card, and an oversized one is exactly the slow
-// hover this budget exists to prevent. Both stop the build, like an undefined series key does.
-// A loop is video, so it is in R2 and its size is in the manifest (docs/MEDIA.md).
-function checkMedia(id, src, cap) {
-  const file = path.join(PUBLIC_DIR, src);
-  const bytes = fs.existsSync(file) ? fs.statSync(file).size : R2_MEDIA[src]?.bytes;
-  if (bytes === undefined) throw new Error(`${id}: preview media ${src} is neither under public/ nor in R2 (src/data/media-manifest.json)`);
-  if (bytes > cap) {
-    throw new Error(`${id}: preview media ${src} is ${(bytes / 1024).toFixed(1)} KB, over the ` +
-      `${cap / 1024} KB cap. Remake it with scripts/preview-media.mjs (PREVIEWS.md).`);
-  }
 }
 
 // Markdown and HTML down to the words a reader reads. Component markup carries a lot of
