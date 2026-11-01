@@ -1,0 +1,52 @@
+// scripts/tools/budgets.mjs over a made-up dist/: every row is measured, the heaviest post is named, the ledger's
+// rows are counted, a live notebook is never measured, and an over-budget row is reported as over.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import test from 'node:test';
+import { format, measure } from '../../scripts/tools/budgets.mjs';
+
+const page = (body, head = '') => `<!doctype html><html><head>${head}</head><body>${body}</body></html>`;
+
+function seed() {
+  const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'budgets-'));
+  const put = (rel, text) => {
+    fs.mkdirSync(path.dirname(path.join(dist, rel)), { recursive: true });
+    fs.writeFileSync(path.join(dist, rel), text);
+  };
+  put('_astro/site.css', 'body{margin:0}\n');
+  put('_astro/entry.js', "import './dep.js';\nconsole.log(1);\n");
+  put('_astro/dep.js', 'export const d = 1;\n');
+  const head = '<link rel="stylesheet" href="/_astro/site.css"><script type="module" src="/_astro/entry.js"></script>';
+  put('index.html', page('<main>home</main>', head));
+  put('ledger/index.html', page(`<ul>${'<li data-ledger-entry>row</li>'.repeat(3)}</ul>`, head));
+  put('ledger/light/index.html', page('<nav>chrome</nav><article class="pc-prose">words</article>', head));
+  // Chrome no prose rule removes, made of random bytes so gzip can't shrink it: the heaviest post, over budget.
+  const noise = Array.from({ length: 30000 }, (_, i) => ((i * 2654435761) >>> 0).toString(36)).join(' ');
+  put('ledger/heavy/index.html', page(`<nav>${noise}</nav><article class="prose">words</article>`, head));
+  // A live notebook heavier still: never measured.
+  put('ledger/teardown-lab/index.html', page(`<nav>${noise}${noise}</nav>`, head));
+  return dist;
+}
+
+test('budgets measure every row, skip the live notebook and flag what is over', () => {
+  const dist = seed();
+  try {
+    const rows = measure(dist);
+    const by = Object.fromEntries(rows.map((r) => [r.name.trim(), r]));
+    for (const name of ['post page minus its prose', 'chrome HTML', 'CSS', 'JS up front', '/ledger/ chrome HTML',
+      '/ledger/ per row', 'homepage before the scene', 'HTML', 'entry JS']) {
+      assert.ok(by[name], `row ${name}`);
+      assert.ok(Number.isInteger(by[name].bytes) && by[name].bytes > 0, `${name} has a size`);
+    }
+    assert.equal(by['post page minus its prose'].where, 'heavy');
+    assert.equal(by['/ledger/ per row'].where, '3 rows');
+    assert.ok(by['JS up front'].bytes > 0);
+    const text = format(rows);
+    assert.match(text, /post page minus its prose.*% over.*\(heavy\)/);
+    assert.doesNotMatch(text, /teardown-lab/);
+  } finally {
+    fs.rmSync(dist, { recursive: true, force: true });
+  }
+});

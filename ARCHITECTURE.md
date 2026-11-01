@@ -180,8 +180,9 @@ names from a reader of the repo, not from someone set on guessing them.
 
 **Budgets** (`scripts/tools/budgets.mjs`, gzipped, without fonts and media): a post page minus its prose ≤ 20 KB
 (chrome HTML 4, CSS 15, JS up front 8), the ledger's chrome ≤ 6 KB and ≤ 220 B a row, the homepage before the
-scene chunk ≤ 30 KB (HTML 12, entry JS 12). Printed by every build, never failing it. From W4 `npm test` fails at
-20% over. On 2026-11-01 the worst post page was 53.4 KB and the homepage 71.7 KB.
+scene chunk ≤ 30 KB (HTML 12, entry JS 12). Printed by every build, never failing it.
+`tests/unit/budgets.test.mjs` (in `npm test`) checks the measuring on a made-up `dist/`; from W4 it fails at 20%
+over. On 2026-11-01 the worst post page was 53.4 KB and the homepage 71.7 KB.
 
 ## Contracts (frozen)
 
