@@ -25,6 +25,8 @@ const TARGETS = at('tests/e2e/targets.json');
 const SITE = 'https://aaronorelup.com';
 const BLOCKS = new Set(['video', 'audio', 'iframe']);
 const MEDIA_SRC = new Set(['video', 'audio', 'source']);
+// What the build's text pass stamps into blocks (scripts/build/rehype-post-text.mjs): not written by the post.
+const STAMPS = ['dataR', 'dataNoread', 'dataPagefindIgnore'];
 
 const filesUnder = (dir, test) => fs.readdirSync(dir, { recursive: true }).map(String)
   .filter((f) => test(f)).map((f) => path.join(dir, f)).sort();
@@ -150,7 +152,8 @@ function runScan(dist) {
   }
 }
 
-// Every ao-*, video, audio and iframe block of a file, outermost only, serialised as written.
+// Every ao-*, video, audio and iframe block of a file, outermost only, serialised as written (the build's stamps
+// left out, so built HTML compares with built HTML from before them, and with the Markdown).
 function blocksOf(file) {
   const src = fs.readFileSync(file, 'utf8');
   let tree;
@@ -164,6 +167,7 @@ function blocksOf(file) {
   const out = [];
   visit(tree, 'element', (el) => {
     if (!el.tagName.startsWith('ao-') && !BLOCKS.has(el.tagName)) return;
+    visit(el, 'element', (n) => { for (const k of STAMPS) delete n.properties[k]; });
     out.push(toHtml(el));
     return SKIP;
   });
