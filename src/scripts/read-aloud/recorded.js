@@ -6,15 +6,15 @@ export function recorded({ parts }, order, on, title) {
   const rank = new Map(order.map((r, i) => [r, i]));
   const audio = new Audio();
   audio.preload = 'auto';
-  let part = -1, word = -1, want = false, raf = 0, ahead = -1;
+  let part = -1, word = -1, want = false, raf = 0, ahead = -1, seek = 0, plays = 0;
 
-  // A new part's time is set once its metadata is in: a seek before that is dropped by some browsers.
+  // A part's time is set once its metadata is in: a seek before that is dropped by some browsers. The latest
+  // target wins, so a second click while a part loads isn't undone by the first one's.
+  audio.addEventListener('loadedmetadata', () => { audio.currentTime = seek; });
   function load(i, t) {
-    if (i === part) { audio.currentTime = t; return; }
-    part = i;
-    word = -1;
-    audio.src = parts[i].src;
-    if (t) audio.addEventListener('loadedmetadata', () => { audio.currentTime = t; }, { once: true });
+    seek = t;
+    if (i !== part) { part = i; word = -1; audio.src = parts[i].src; }
+    else if (audio.readyState >= 1) audio.currentTime = t;
   }
   // The last word that has started by time ms in the current part.
   function find(ms) {
@@ -38,9 +38,13 @@ export function recorded({ parts }, order, on, title) {
       fetch(parts[ahead].src).catch(() => {});
     }
   }
+  // A play() that a later one replaced (a click on a word while a part still loads) is rejected: only the latest
+  // one's refusal (autoplay, a file that won't play) stops the reading.
   function run() {
     want = true;
-    audio.play().then(() => { if (!raf) raf = requestAnimationFrame(tick); }, () => { want = false; on.state(); });
+    const n = ++plays;
+    audio.play().then(() => { if (!raf) raf = requestAnimationFrame(tick); },
+      () => { if (n === plays) { want = false; on.state(); } });
     on.state();
   }
   audio.addEventListener('ended', () => {
@@ -84,6 +88,12 @@ export function recorded({ parts }, order, on, title) {
       for (const p of parts) for (const [r, , c1] of p.words) out.set(String(r), Math.max(out.get(String(r)) ?? 0, c1));
       return out;
     },
-    close() { want = false; audio.pause(); audio.removeAttribute('src'); audio.load(); },
+    close() {
+      want = false;
+      audio.pause();
+      audio.removeAttribute('src');
+      audio.load();
+      for (const action of ['play', 'pause']) navigator.mediaSession?.setActionHandler(action, null);
+    },
   };
 }

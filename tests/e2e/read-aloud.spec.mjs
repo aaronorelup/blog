@@ -94,6 +94,14 @@ const pointOf = (page, r, c) => page.locator(`[data-r="${r}"]`).first().evaluate
   return null;
 }, c);
 
+// The fifth word of a paragraph in the recording's fourth part, its paragraph's words and its part.
+function midParagraph(rec) {
+  const part = rec.parts[3];
+  const paragraph = Object.values(Object.groupBy(part.words, (w) => w[0]))
+    .find((ws) => typeof ws[0][0] === 'number' && ws.length > 8);
+  return { part, paragraph, target: paragraph[4] };
+}
+
 test('read-1 Listen plays the recording; the word read is marked at 1x and 2x; the four speeds set playbackRate', async ({ page, request }) => {
   const rec = await recorded(page, request, POST);
   await page.goto(POST);
@@ -127,14 +135,11 @@ test('read-2 a click on a word mid-paragraph starts there within a second, withi
   await page.goto(POST);
   await listen(page).click();
   await expect.poll(async () => (await state(page)).playing).toBe(true);
-  // The fifth word of a paragraph in the fourth part.
-  const part = rec.parts[3];
-  const paragraph = Object.values(Object.groupBy(part.words, (w) => w[0]))
-    .find((ws) => typeof ws[0][0] === 'number' && ws.length > 8);
-  const target = paragraph[4];
+  const { part, paragraph, target } = midParagraph(rec);
   const box = await pointOf(page, target[0], target[1] + 1);
-  // Timed in the page: the click, and the first moment the reading plays in the word's part.
-  await page.evaluate((src) => {
+  // Timed in the page: the click, the first moment the reading plays in the word's part, and the first word marked
+  // in the word's block (read on every frame, so a slow runner can't let the reading move on before it is seen).
+  await page.evaluate(([src, r]) => {
     const a = document.querySelector('.ra-bar').aoClock();
     addEventListener('click', () => { window.__clicked = performance.now(); }, { capture: true, once: true });
     const seen = () => {
@@ -142,14 +147,35 @@ test('read-2 a click on a word mid-paragraph starts there within a second, withi
       window.__start = { t: a.currentTime, after: performance.now() - window.__clicked };
     };
     for (const type of ['playing', 'seeked', 'timeupdate']) a.addEventListener(type, seen);
-  }, part.src);
+    (function first() {
+      const [range] = CSS.highlights.get('ao-read') ?? [];
+      if (window.__clicked && range?.startContainer.parentElement.closest('[data-r]').dataset.r === r) {
+        window.__first = range.toString();
+      } else requestAnimationFrame(first);
+    })();
+  }, [part.src, String(target[0])]);
   await page.mouse.click(box.x, box.y);
   const start = await expect.poll(() => page.evaluate(() => window.__start), { timeout: 5000 }).toBeTruthy()
     .then(() => page.evaluate(() => window.__start));
   expect(start.after).toBeLessThan(1000);
   expect(Math.abs(start.t - target[3] / 1000)).toBeLessThan(0.3);
   await expect.poll(async () => (await state(page)).block).toBe(String(target[0]));
-  expect([await textOf(page, target), await textOf(page, paragraph[5])]).toContain((await state(page)).word);
+  expect([await textOf(page, target), await textOf(page, paragraph[5])]).toContain(await page.evaluate(() => window.__first));
+});
+
+test('read-2b a click on a word while the first part of the recording is still loading reads and marks from there', async ({ page, request }) => {
+  const rec = await recorded(page, request, POST);
+  // The first part comes late, so the click lands while the reading's first play() is still waiting on it.
+  await page.route(`**${rec.parts[0].src}`, async (r) => { await new Promise((ok) => setTimeout(ok, 2000)); await r.fallback(); });
+  await page.goto(POST);
+  const { target } = midParagraph(rec);
+  await listen(page).click();
+  await expect(page.locator('.ra-bar')).toBeVisible();
+  const box = await pointOf(page, target[0], target[1] + 1);
+  await page.mouse.click(box.x, box.y);
+  await expect.poll(async () => (await state(page)).block).toBe(String(target[0]));
+  await expect(page.locator('.ra-play')).toHaveAttribute('aria-label', 'Pause');
+  expect((await state(page)).playing).toBe(true);
 });
 
 test('read-3 with no recording of this version, the browser voice reads, marks the word, takes the speed and a click', async ({ page, browserName }) => {

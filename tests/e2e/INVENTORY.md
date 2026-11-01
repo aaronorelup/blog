@@ -349,6 +349,7 @@ every 200 ms), so nothing waits for the Worker's key.
 |---|---|---|
 | Listen opens karaoke mode and plays this version's recording; the word read is marked at 1x and 2x; the speed button steps 1x, 1.25x, 1.5x, 2x, each setting `playbackRate`; pause and close | `[data-read-aloud]` click (`listen.js`), `.ra-bar` buttons, `CSS.highlights` `ao-read` | read-1 |
 | A click on a word mid-paragraph starts there within a second, within 0.3 s of the word, in its part | article `click` → `caretPositionFromPoint` / `caretRangeFromPoint` | read-2 |
+| A click on a word while the recording's first part is still loading reads and marks from there, and the bar says it plays | `recorded.js` `play()` superseded by a later one | read-2b |
 | With no recording of this version the browser voice reads, block by block: its word boundaries mark the word, the speed sets `rate`, a click starts the next utterance at that word | `speechSynthesis` (a stand-in voice in Chromium) | read-3 |
 | The real browser voice reads and pauses | `speechSynthesis` (WebKit) | read-3b (phone) |
 | A video starting pauses the reading, and the reading starting pauses the video | claim, the bar's `aoPause` | read-4 |
