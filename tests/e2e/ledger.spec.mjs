@@ -1,8 +1,8 @@
 // The ledger page (src/components/ledger/) and the hover card (src/scripts/cards/): every listed post once under its
-// month, newest first; rows that hold one line of title and two of summary on a phone; the chips and their counts;
-// Start here; the stamp that opens a short version with no request; on a desktop, pointing at or focusing a post link
-// opens its card from /ledger/previews.json (the icon where a card has no still), on /stats too; a phone never gets
-// one; the feed's copy button. INVENTORY rows ledger-*.
+// month, newest first; rows that hold one line of title and two of summary on a phone; the chips, their counts and
+// their balanced lines; Start here; the stamp that opens a short version with no request; on a desktop, pointing at or
+// focusing a post link opens its card from /ledger/previews.json (the icon where a card has no still), on /stats too;
+// a phone never gets one; the feed's copy button. INVENTORY rows ledger-*.
 import { START_HERE } from '../../src/data/picks.js';
 import { test, expect } from './fixtures.mjs';
 
@@ -133,6 +133,20 @@ test.describe('the chips', () => {
     expect(new URL(page.url()).search).toBe('?from=x');
     await expect(page.locator('.chip[data-chip=""]')).toHaveAttribute('aria-current', 'true');
   });
+});
+
+test('ledger-14 a chip row that wraps balances its lines: never one chip alone on the last', async ({ page }) => {
+  await page.goto('/ledger/');
+  const lines = await page.locator('.chip-list').evaluateAll((lists) => lists.map((l) => {
+    const perLine = new Map();
+    for (const c of l.querySelectorAll('.chip')) {
+      const top = Math.round(c.getBoundingClientRect().top);
+      perLine.set(top, (perLine.get(top) ?? 0) + 1);
+    }
+    return [...perLine.values()];
+  }));
+  expect(lines).toHaveLength(2);
+  for (const counts of lines) expect(counts.length === 1 || counts.at(-1) > 1, counts.join('/')).toBe(true);
 });
 
 test('ledger-10 Start here shows its five posts, each with icon, title and stamp', async ({ page }) => {

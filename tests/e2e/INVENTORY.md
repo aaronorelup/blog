@@ -328,6 +328,7 @@ its static rung mid-test.
 | On a phone a row's title is one line and its summary at most two | ledger-7 (phone) |
 | Each chip shows as many rows as it counts and hides empty months; All shows every row | ledger-8 |
 | `?topic=video` opens filtered; a chip keeps the rest of the query string; the lit chip again clears it | ledger-9 |
+| A chip row that wraps balances its lines, never one chip alone on the last (`text-wrap: balance`) | ledger-14 |
 | Start here: the five `START_HERE` posts in order, each with icon, title and stamp | ledger-10 |
 | A row's stamp opens its short version in place, with no request | ledger-11 |
 | A card with no still shows the post's icon | ledger-12 (desktop) |
@@ -358,6 +359,7 @@ notebook); Turnstile is a stub that solves at once with the test response.
 | A search still answering when Ask opens draws nothing in Ask, and the meaning half is never asked | search-11 |
 | A Turnstile challenge left unsolved (`timeout-callback`) says so and frees the button | search-12 |
 | A cite of a notes passage (`kind: 'notes'`) links to `/ledger/<slug>/notes/#<anchor>` and opens it with the words marked; a post passage links to the post | search-13 |
+| Opening Ask keeps the box's words, focused and selected: Enter asks them, typing replaces them | search-14 |
 
 Ask against the real Worker is checked by hand under `npx wrangler dev` (docs/WORKER.md, "Locally"): the real
 Turnstile widget with the test site key, a real mint and a real DeepSeek answer.

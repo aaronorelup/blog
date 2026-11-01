@@ -1,6 +1,7 @@
 // The ledger's search box (components/ledger/SearchBox.astro). Search: the words half (Pagefind) as the reader
 // types and the meaning half (/api/search) after 400 ms of quiet or on Enter, merged into one list. Nothing loads
-// before the box is first focused, and search needs no session. Ask Goobie loads ask.js only once it is opened.
+// before the box is first focused, and search needs no session. Ask Goobie loads ask.js only once it is opened, and
+// keeps the box's text, selected.
 // "/" focuses the box unless something else takes typing. mount(root) returns unmount.
 import { load as loadCards } from '../cards/data.js';
 import { lazy } from '../lazy.js';
@@ -78,7 +79,9 @@ export function mount(root) {
     ui.out.replaceChildren();
     words = meaning = { q: null, hits: [] };
     ui.input.focus();
+    // Ask keeps what was typed, selected: Enter asks it as it stands, typing replaces it with a question.
     if (mode === 'search') onInput();
+    else ui.input.select();
   };
   const onMode = async (e) => {
     const b = e.target.closest('[data-mode]');

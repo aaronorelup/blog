@@ -15,8 +15,8 @@ const rows = [
 
 <nav class="chips" aria-label="Filter the ledger">
   {rows.map((row) => (
-    <div class="chip-row">
-      <span class="chip-label">{row.label}</span>
+    <div>
+      <div class="chip-label">{row.label}</div>
       <div class="chip-list">
         {row.chips.map((c) => (
           <a class="chip" href={c.key ? `/ledger/?${c.key}=${c.value}` : '/ledger/'} data-chip={c.key} data-value={c.value}

@@ -16,7 +16,7 @@ const picks = START_HERE.map((slug) => posts.find((p) => slugOf(p) === slug));
 
 <div class="view ledger">
   <h1 class="view-title">The Ledger</h1>
-  <p class="view-intro">A running ledger of what I'm learning about AI — agents, automation, and whatever breaks along the way.</p>
+  <p class="view-intro">A running ledger of what I'm learning about AI: agents, automation and whatever breaks along the way.</p>
 
   <SearchBox />
   {picks.length > 0 && <StartHere posts={picks} />}
@@ -30,7 +30,7 @@ const picks = START_HERE.map((slug) => posts.find((p) => slugOf(p) === slug));
   ))}
 
   <div class="ledger-feed">
-    <p class="ledger-feed-text">New entries show up in any reader app — no account, no algorithm, nothing recommended to you. Paste this into one:</p>
+    <p class="ledger-feed-text">New entries show up in any reader app. No account, no algorithm, nothing recommended to you. Paste this into one:</p>
     <div class="ledger-feed-row">
       <code class="ledger-feed-url">aaronorelup.com/rss.xml</code>
       <button type="button" id="feed-copy" class="ledger-copy">copy</button>

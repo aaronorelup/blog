@@ -1,10 +1,9 @@
 // The ledger's search box and Ask Goobie (src/scripts/search/, src/scripts/post/highlight.js): "/" focuses it and
 // nothing loads before it is focused; Pagefind's words come fast, with heading-anchored excerpts; its index holds the
 // listed posts and their notes and nothing else; the meaning half (/api/search) joins without a session and fails
-// silently; a result opens its post with the passage marked; Ask loads Turnstile only once opened and switched on,
-// asks once at a time, links its [n] (a notes passage on the notes page) and shows related posts; { ask: false } hides
-// the switch. /api/* answers come from fixtures/api.json, and Turnstile is a stub that solves at once. INVENTORY rows
-// search-*.
+// silently; a result opens its post with the passage marked; Ask keeps the box's words, selected, loads Turnstile only
+// once opened and switched on, asks once at a time, links its [n] (a notes passage on the notes page) and shows related
+// posts; { ask: false } hides the switch. /api/* answers come from fixtures/api.json; Turnstile is a stub. search-*.
 import fs from 'node:fs';
 import matter from 'gray-matter';
 import { isLive } from '../../src/data/exempt.js';
@@ -246,6 +245,18 @@ test.describe('Ask Goobie', () => {
     await cited.click();
     await page.waitForURL(/#the-first-night-it-was-barely-faster$/);
     await expect(page.locator('mark.hl').first()).toBeVisible();
+  });
+
+  test('search-14 opening Ask keeps the typed words, selected, so typing replaces them', async ({ page, context }) => {
+    await watch(page, context);
+    await page.goto('/ledger/');
+    await input(page).fill('rented gpu');
+    await page.locator('[data-mode="ask"]').click();
+    await expect(page.locator('[data-mode="ask"]')).toHaveAttribute('aria-pressed', 'true');
+    await expect(input(page)).toBeFocused();
+    expect(await input(page).evaluate((el) => [el.value, el.selectionStart, el.selectionEnd])).toEqual(['rented gpu', 0, 10]);
+    await page.keyboard.type('What does a rented GPU cost?');
+    await expect(input(page)).toHaveValue('What does a rented GPU cost?');
   });
 
   test.describe('citing a notes passage', () => {
