@@ -1,15 +1,11 @@
 ---
 // The homepage: a scroll-driven tea house scene with an overlay panel that grows out of
 // whichever card you click. The scene markup is carried over from the Claude Design
-// artifact; the panel's contents are the same Astro components the standalone /ledger,
-// /courses, /projects and /about pages use, so the two can never drift apart.
+// artifact; the panel shows the real pages' views, fetched when opened (scripts/home/overlay/),
+// so the two can never drift apart.
 import '../styles/panel.css';
 import '../styles/elements.css';
-import PanelChrome from '../components/panel/PanelChrome.astro';
-import LedgerView from '../components/panel/LedgerView.astro';
-import CoursesView from '../components/panel/CoursesView.astro';
-import ProjectsView from '../components/panel/ProjectsView.astro';
-import AboutView from '../components/panel/AboutView.astro';
+import PanelChrome from '../components/chrome/PanelChrome.astro';
 import Home from '../layouts/Home.astro';
 ---
 
@@ -31,18 +27,15 @@ import Home from '../layouts/Home.astro';
   </button>
   <div id="scene-flash" aria-hidden="true" style="position:fixed;inset:0;z-index:30;background:#FFFFFF;opacity:0;pointer-events:none"></div>
 
-  <!-- The overlay. Hidden until a card grows into it; all three views are rendered
-       server-side and the scene just swaps which one is displayed. Post bodies are
-       fetched from their real pages on demand. -->
+  <!-- The overlay. Hidden until a card grows into it. Its host starts empty: each view is fetched from its real
+       page when opened and mounted fresh (scripts/home/overlay/). The card's colour sits on the page colour, as a
+       standalone page's does, so nothing of the scene shows through; overflow clips, so a #heading moves only
+       #panel-scroll. -->
   <div id="panel-screen" aria-hidden="true" style="position:fixed;inset:0;z-index:34;pointer-events:none;visibility:hidden;font-family:Karla,system-ui,sans-serif">
     <div id="panel-scrim" style="position:absolute;inset:0;background:var(--pc-scrim);opacity:0;transition:opacity 460ms ease"></div>
-    <div id="panel-card" style="position:absolute;left:50%;top:50%;width:0;height:0;opacity:0;box-sizing:border-box;background:var(--pc-bg);border-radius:24px;box-shadow:var(--pc-shadow);overflow:hidden;display:flex;flex-direction:column;transition:left 560ms cubic-bezier(.4,0,.2,1),top 560ms cubic-bezier(.4,0,.2,1),width 560ms cubic-bezier(.4,0,.2,1),height 560ms cubic-bezier(.4,0,.2,1),opacity 380ms ease">
+    <div id="panel-card" style="position:absolute;left:50%;top:50%;width:0;height:0;opacity:0;box-sizing:border-box;background:linear-gradient(var(--pc-bg),var(--pc-bg)),var(--pc-page);border-radius:24px;box-shadow:var(--pc-shadow);overflow:hidden;overflow:clip;display:flex;flex-direction:column">
       <PanelChrome overlay={true}>
-        <div data-view="ledger"><LedgerView /></div>
-        <div data-view="courses" style="display:none"><CoursesView /></div>
-        <div data-view="projects" style="display:none"><ProjectsView /></div>
-        <div data-view="about" style="display:none"><AboutView /></div>
-        <div data-view="reader" style="display:none"></div>
+        <div data-panel-host style="display:contents"></div>
       </PanelChrome>
     </div>
   </div>
@@ -188,11 +181,16 @@ import Home from '../layouts/Home.astro';
 </style>
 
 <script>
-  import { HomeScene } from '../scripts/home-scene.js';
+  // The overlay first, so a card's link works at once; the scene is a chunk of its own, which keeps the entry small.
+  import { mountOverlay } from '../scripts/home/overlay/panel.js';
+  import { lazy } from '../scripts/lazy.js';
 
   document.documentElement.classList.remove('no-js');
-  const scene = new HomeScene({ nightMode: true });
-  scene.mount();
-  // handy from the console when tuning waypoints (backtick opens the staging panel)
-  window.__homeScene = scene;
+  mountOverlay();
+  lazy(() => import('../scripts/home-scene.js')).then(({ HomeScene }) => {
+    const scene = new HomeScene({ nightMode: true });
+    scene.mount();
+    // handy from the console when tuning waypoints (backtick opens the staging panel)
+    window.__homeScene = scene;
+  });
 </script>

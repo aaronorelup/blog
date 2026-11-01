@@ -1,3 +1,6 @@
+import { closePanel, onPanel } from './home/overlay/panel.js';
+import { routeOf } from './home/overlay/routes.js';
+
 const WAYPOINTS = [
   { name: 'garden',    pos: [0, 3.1, 19],    target: [0, 2.3, 3],     fov: 46, range: [0.00, 0.15],
     portrait: { pos: [0, 3.4, 21], target: [0, 2.8, 3], fov: 60 } },
@@ -88,11 +91,8 @@ const PANELUI = {
            code: [34,33,48], scrim: [8,9,18,0.44] }
 };
 
-const PANEL_TRANS = 'left 560ms cubic-bezier(.4,0,.2,1),top 560ms cubic-bezier(.4,0,.2,1),width 560ms cubic-bezier(.4,0,.2,1),height 560ms cubic-bezier(.4,0,.2,1),opacity 380ms ease';
-
-// The scene and the overlay panel it opens. Ported from the Claude Design artifact:
-// the design ran this as a React component, but nothing here needs React — the panel's
-// content is server-rendered by Astro, so the class only ever shows and hides it.
+// The scene. Ported from the Claude Design artifact: the design ran this as a React
+// component, but nothing here needs React. The overlay panel is home/overlay/ (panelState).
 // The scene is cheap in draw calls (25) and triangles (37k) but pays per pixel,
 // per light, and per frame. Those are the three dials, in the order it is worth
 // giving them up: petals decide whether we redraw *at all* when the visitor is
@@ -119,24 +119,12 @@ const RIG = {
   dir:  { day: { c: 0xFFF4E4, i: 0.35, p: [6, 12, 9] }, night: { c: 0xD8E2FF, i: 0.3, p: [-7, 14, 8] } },
 };
 
-// Panel routes: /ledger (and its posts), /projects, /about and /courses open as views of the
-// overlay panel. Only /courses itself is a view; a course page (/courses/<course>/) and its
-// lessons are real pages, so they navigate normally.
-const PANEL_ROUTE = /^\/(?:(?:ledger|projects|about)(?:\/|$)|courses\/?$)/;
-const viewForPath = (p) => (/^\/projects\/?$/.test(p) ? 'projects' : /^\/about\/?$/.test(p) ? 'about' : /^\/courses\/?$/.test(p) ? 'courses' : 'ledger');
-const pathForView = (v) => (v === 'projects' ? '/projects' : v === 'about' ? '/about' : v === 'courses' ? '/courses' : '/ledger');
-
 export class HomeScene {
   constructor(opts) {
     this.opts = Object.assign(
       { nightMode: true, stagingMode: false, showStats: false, forceReducedMotion: false },
       opts,
     );
-    // What the panel is showing. `view` is one of ledger/courses/projects/about; `reader` is a
-    // post slug when an entry is open on top of the ledger.
-    this.view = 'ledger';
-    this.reader = null;
-    this.panelOpen = false;
   }
 
   // visitor's own choice beats the default, and it survives reloads
@@ -220,11 +208,9 @@ export class HomeScene {
     if (this.canvas) this.canvas.style.display = 'block';
     await this.boot();
     // teardown() strips the document-level bindings too — put them back
-    this.bindLedger();
+    this.bindOutbound();
     this.bindAvatar();
     this.bindModeToggle();
-    this.onPop = () => this.syncRoute(false);
-    window.addEventListener('popstate', this.onPop);
     if (!this.alive) return;
     this.t = this.tTarget = t; this.stopIdx = idx; this.lastRendered = -1;
     this.syncRail();
@@ -537,160 +523,14 @@ export class HomeScene {
     else delete document.documentElement.dataset.mode;
   }
 
-  // nearly full screen, with a consistent margin on every side
-  panelRect() {
-    const mx = Math.max(14, Math.min(48, window.innerWidth * 0.025));
-    const my = Math.max(14, Math.min(34, window.innerHeight * 0.03));
-    return { left: mx + 'px', top: my + 'px',
-             width: (window.innerWidth - mx * 2) + 'px', height: (window.innerHeight - my * 2) + 'px' };
-  }
-
-  // Astro server-renders all three views into the panel; showing one is a display swap.
-  // The reader sits on top of the ledger, so an open post hides the list but keeps
-  // "Ledger" lit in the nav.
-  applyView() {
-    const r = this.reader;
-    const shown = r ? 'reader' : this.view;
-    ['ledger', 'courses', 'projects', 'about', 'reader'].forEach((name) => {
-      const el = document.querySelector('[data-view="' + name + '"]');
-      if (el) el.style.display = name === shown ? '' : 'none';
-    });
-    const lit = r ? 'ledger' : this.view;
-    document.querySelectorAll('[data-nav]').forEach((a) => {
-      a.style.color = a.dataset.nav === lit ? 'var(--pc-head)' : 'var(--pc-quiet)';
-    });
-  }
-
-  // The panel's geometry lives in this.panelGeom so open/close/resize all drive it
-  // through one place.
-  applyPanelVisibility() {
-   try {
-    const wrap = document.getElementById('panel-screen'), c = document.getElementById('panel-card');
-    if (!wrap) return;
-    const on = this.panelOpen;
-    wrap.style.pointerEvents = on ? 'auto' : 'none';
-    wrap.style.visibility = (on || this._panelClosing) ? 'visible' : 'hidden';
-    wrap.setAttribute('aria-hidden', on ? 'false' : 'true');
-    if (c && this.panelGeom) {
-      const g = this.panelGeom;
-      c.style.transition = g.transition;
-      c.style.left = g.left; c.style.top = g.top;
-      c.style.width = g.width; c.style.height = g.height; c.style.opacity = g.opacity;
-    }
-    const inner = document.getElementById('panel-inner');
-    if (inner) inner.style.opacity = this.panelInner || '0';
-    const scrim = document.getElementById('panel-scrim');
-    if (scrim) scrim.style.opacity = (on && !this._panelClosing) ? '1' : '0';
-    if (this.rail) {
-      this.rail.style.transition = 'opacity 260ms ease';
-      this.rail.style.opacity = on ? '0' : '1';
-      this.rail.style.pointerEvents = on ? 'none' : 'auto';
-    }
-    this.applyPanelTheme();
-   } catch (err) { console.error('[panel]', err); }
-  }
-
-  // the card the visitor clicked grows into the page; the scene keeps running behind it
-  openPanel(view, srcEl) {
-    const path = pathForView(view);
-    if (this.panelOpen) { this.navTo(path, { view, reader: null }); return; }
-    this.panelSrcEl = srcEl || null;
-    const r = srcEl ? srcEl.getBoundingClientRect() : null;
-    this.unbindInput();                       // scrolling no longer walks the scene
-    this.locked = true;
-    history.pushState({}, '', path);
-    this.panelGeom = r
-      ? { transition: 'none', left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px', opacity: '0.55' }
-      : Object.assign({ transition: 'none' }, this.panelRect(), { opacity: '0' });
-    this.panelInner = '0';
-    this.view = view; this.reader = null; this.panelOpen = true;
-    this.applyView();
-    this.applyPanelVisibility();
-    const sc0 = document.getElementById('panel-scroll');
-    if (sc0) sc0.scrollTop = 0;
-    clearTimeout(this._panelOpenT); clearTimeout(this._panelInnerT);
-    this._panelOpenT = setTimeout(() => {
-      this.panelGeom = Object.assign({ transition: PANEL_TRANS }, this.panelRect(), { opacity: '1' });
-      this.applyPanelVisibility();
-    }, 40);
-    this._panelInnerT = setTimeout(() => {
-      this.panelInner = '1';
-      const inner = document.getElementById('panel-inner');
-      if (inner) inner.style.opacity = '1';
-    }, 300);
-  }
-
-  closePanel(push) {
-    if (!this.panelOpen) return;
-    if (push !== false) history.pushState({}, '', '/');
-    // The reader is hidden, not removed, so a video or game in the post would play on unseen.
-    document.dispatchEvent(new CustomEvent('ao-stop'));
-    const el = this.panelSrcEl, r = el ? el.getBoundingClientRect() : null;
-    this.panelInner = '0';
-    this._panelClosing = true;
-    this.panelGeom = r
-      ? { transition: PANEL_TRANS, left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px', opacity: '0' }
-      : Object.assign({}, this.panelGeom, { transition: PANEL_TRANS, opacity: '0' });
-    this.applyPanelVisibility();
-    clearTimeout(this._panelCloseT);
-    this._panelCloseT = setTimeout(() => {
-      this._panelClosing = false;
-      this.locked = false;
-      if (!this.reduced) { this.unbindInput(); this.bindInput(); }
-      this.panelOpen = false; this.reader = null;
-      this.applyView();
-      setTimeout(() => this.applyPanelVisibility(), 16);
-    }, 540);
-  }
-
   mount() {
-    this.boot(); this.bindAvatar(); this.bindLedger(); this.bindModeToggle(); this.bindFeedCopy();
-    this.applyView();
-    this.warmPanelImages();
-    this.onPanelKey = (e) => {
-      if (e.key === 'Escape' && this.panelOpen) { e.preventDefault(); this.closePanel(); }
-    };
-    window.addEventListener('keydown', this.onPanelKey);
-    this.onPanelResize = () => {
-      if (!this.panelOpen || this._panelClosing) return;
-      this.panelGeom = Object.assign({ transition: 'none' }, this.panelRect(), { opacity: '1' });
-      this.applyPanelVisibility();
-    };
-    window.addEventListener('resize', this.onPanelResize);
-    this.onPop = () => this.syncRoute();
-    window.addEventListener('popstate', this.onPop);
-    // deep link: /ledger, /courses, /projects, /about or /ledger/<slug>/ opens straight into the
-    // panel, no flight. Astro serves each of those as a real page too, so this only
-    // runs when the visitor is already on the homepage document.
-    if (PANEL_ROUTE.test(location.pathname)) {
-      this.syncRoute();
-      setTimeout(() => this.openLedgerInstant(), 0);
-    }
+    this.boot(); this.bindAvatar(); this.bindOutbound(); this.bindModeToggle(); this.bindFeedCopy();
+    this.offPanel = onPanel((s) => this.panelState(s));
   }
 
   destroy() {
-    window.removeEventListener('keydown', this.onPanelKey);
-    window.removeEventListener('resize', this.onPanelResize);
-    window.removeEventListener('popstate', this.onPop);
-    clearTimeout(this._panelOpenT); clearTimeout(this._panelInnerT); clearTimeout(this._panelCloseT);
+    this.offPanel();
     this.teardown();
-  }
-
-  // The project screenshots ship with loading="lazy", which is right on the standalone
-  // /projects page but never resolves here: the panel's views start display:none, so the
-  // images never enter the viewport, and showing the view later does not re-trigger the
-  // fetch — the tiles stay empty for the whole visit. Flipping loading to eager does
-  // start the fetch even while hidden, so warm them once the browser is idle. That keeps
-  // them off the scene's critical path and still has them cached before anyone can
-  // scroll to a card and click it.
-  warmPanelImages() {
-    const warm = () => {
-      document.querySelectorAll('#panel-screen img[loading="lazy"]').forEach((img) => {
-        img.loading = 'eager';
-      });
-    };
-    if (typeof requestIdleCallback === 'function') requestIdleCallback(warm, { timeout: 3000 });
-    else setTimeout(warm, 1200);
   }
 
   // the feed URL is a build-time constant, but the copy button needs a live handler
@@ -707,148 +547,42 @@ export class HomeScene {
     });
   }
 
-  openLedgerInstant() {
-    this.unbindInput();
-    this.locked = true;
-    this.panelSrcEl = null;
-    this.panelGeom = Object.assign({ transition: 'none' }, this.panelRect(), { opacity: '1' });
-    this.panelInner = '1';
-    this.panelOpen = true;
-    this.applyView();
-    setTimeout(() => {
-      this.applyPanelVisibility();
-      setTimeout(() => { if (this.panelGeom) this.panelGeom.transition = PANEL_TRANS; }, 32);
-    }, 16);
-  }
-
-  // Post bodies aren't inlined into the homepage — there's one real page per post and
-  // this pulls the article out of it, so the markdown has exactly one renderer.
-  async openPost(slug, push) {
-    if (push !== false) history.pushState({ slug }, '', '/ledger/' + slug + '/');
-    this.reader = slug;
-    this.applyView();
-    this.scrollPanelTop();
-    const host = document.querySelector('[data-view="reader"]');
-    if (!host) return;
-    if (host.dataset.slug === slug) return;          // already loaded
-    this.postCache = this.postCache || {};
-    try {
-      if (!this.postCache[slug]) {
-        const res = await fetch('/ledger/' + slug + '/', { headers: { Accept: 'text/html' } });
-        if (!res.ok) throw new Error(res.status);
-        const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
-        const art = doc.querySelector('[data-post-article]');
-        if (!art) throw new Error('no article');
-        this.postCache[slug] = art.innerHTML;
+  // The overlay's panel (home/overlay/panel.js) over the scene: from 'open' until 'closed' nothing walks the scene
+  // and the rail fades, and while it is 'covered' (the whole window) nothing is drawn; 'closing' draws again.
+  panelState(s) {
+    const up = s !== 'closed';
+    if (up !== !!this.panelUp) {
+      this.panelUp = up;
+      this.locked = up;
+      if (up) this.unbindInput();
+      else if (!this.reduced && this.renderer) this.bindInput();   // no renderer yet: boot() binds it
+      if (this.rail) {
+        this.rail.style.transition = 'opacity 260ms ease';
+        this.rail.style.opacity = up ? '0' : '1';
+        this.rail.style.pointerEvents = up ? 'none' : 'auto';
       }
-      if (this.reader !== slug) return;              // visitor moved on while it loaded
-      host.innerHTML = this.postCache[slug];
-      host.dataset.slug = slug;
-      // Scripts in the copied HTML never run, so the post's custom elements come from here,
-      // and so do the behaviours every post gets (the image viewer, one player at a time).
-      import('./post-components.js').then((m) => { if (host.dataset.slug === slug) m.enhance(host); });
-      // The contents list ships closed and opens beside the text on wide screens (post/contents.js). T3.1 mounts the
-      // whole post view here instead.
-      import('./post/contents.js').then((m) => { if (host.dataset.slug === slug) m.mount(host); });
-      this.scrollPanelTop();
-    } catch (_) {
-      location.href = '/ledger/' + slug + '/';       // the real page always works
+    }
+    this.paused = s === 'covered';
+    if (!this.paused && this.alive && this.renderer && !this.raf) {
+      this.lastProgress = -9;
+      this.raf = requestAnimationFrame(this.loop);
     }
   }
 
-  scrollPanelTop() {
-    setTimeout(() => {
-      const sc = document.getElementById('panel-scroll');
-      if (sc) sc.scrollTop = 0;
-    }, 16);
-  }
-
-  returnToScene() { this.closePanel(); }
-
-  syncRoute() {
-    const path = location.pathname;
-    if (!PANEL_ROUTE.test(path)) {
-      if (this.panelOpen) this.closePanel(false);
-      return;
-    }
-    const m = path.match(/^\/ledger\/([^/]+)\/?$/);
-    const slug = m ? decodeURIComponent(m[1]) : null;
-    this.view = viewForPath(path);
-    if (slug) { this.openPost(slug, false); }
-    else { this.reader = null; this.applyView(); }
-    // Going forward into a panel route after backing out of it has to bring the panel
-    // with it, or the address bar says /projects while the visitor is looking at the garden.
-    if (!this.panelOpen) this.openLedgerInstant();
-  }
-
-  navTo(path, patch) {
-    history.pushState({}, '', path);
-    if (patch && patch.view) this.view = patch.view;
-    if (patch && 'reader' in patch) this.reader = patch.reader;
-    this.applyView();
-    this.scrollPanelTop();
-  }
-
-  // any ledger/courses/projects/about link grows its card into the full page
-  bindLedger() {
-    this.onLedgerClick = (e) => {
-      if (e.defaultPrevented || e.button > 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
-      const t = e.target.closest ? e.target : null;
-      if (!t) return;
-
-      // "Back to the tea house" — collapse the panel instead of navigating
-      if (t.closest('[data-panel-home]')) { e.preventDefault(); this.closePanel(); return; }
-
-      // a ledger row inside the panel: swap in the post without leaving the page
-      const entry = t.closest('[data-ledger-entry]');
-      if (entry && this.panelOpen) {
-        e.preventDefault();
-        this.openPost(entry.getAttribute('data-ledger-entry'));
-        return;
-      }
-
-      // "← LEDGER" out of an open post
-      if (t.closest('[data-close-reader]')) {
-        e.preventDefault();
-        this.navTo('/ledger', { view: 'ledger', reader: null });
-        return;
-      }
-
-      // a post linking to another post from inside its own body: stay in the reader
-      const cross = t.closest('a[href^="/ledger/"]');
-      if (cross && this.panelOpen) {
-        const m = (cross.getAttribute('href') || '').match(/^\/ledger\/([^/?#]+)\/?$/);
-        if (m) {
-          e.preventDefault();
-          this.openPost(decodeURIComponent(m[1]));
-          return;
-        }
-      }
-
-      const a = t.closest('a[href="/ledger"], a[href="/courses"], a[href="/projects"], a[href="/about"], [data-ledger-link]');
-      if (!a) return;
-      e.preventDefault();
-      const href = a.getAttribute('href') || '/ledger';
-      const view = viewForPath(href);
-      // already open: this is the panel's own nav, so cross-fade rather than re-grow
-      if (this.panelOpen) { this.navTo(href, { view, reader: null }); return; }
-      const sec = a.closest('section[data-wp]');
-      this.openPanel(view, sec ? sec.firstElementChild : null);
-    };
+  // a link out of the site (or to a page outside the panel) flies out through the gate first
+  bindOutbound() {
     this.onOutboundClick = (e) => {
       if (e.defaultPrevented || e.button > 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
       const a = e.target.closest && e.target.closest('a[href]');
       if (!a || !this.renderer || this.reduced) return;
       const href = a.getAttribute('href');
       if (!href || href.charAt(0) === '#' || /^(mailto:|tel:|javascript:)/i.test(href)) return;
-      if (a.hasAttribute('data-ledger-entry') || a.hasAttribute('data-no-fly')) return;
-      if (PANEL_ROUTE.test(href)) return;   // these open a card instead
+      if (a.hasAttribute('data-no-fly') || routeOf(a.href)) return;   // the panel's routes open there instead
       if (this.mode === 'exit') { e.preventDefault(); return; }
       e.preventDefault();
       this.flyToLink(a.href, a.target === '_blank');
     };
     document.addEventListener('click', this.onOutboundClick);
-    document.addEventListener('click', this.onLedgerClick);
   }
 
   // hover breathes, click tosses it up and spins it like a flipped coin
@@ -1049,11 +783,7 @@ export class HomeScene {
     if (this.onResize) window.removeEventListener('resize', this.onResize);
     this.unbindInput();
     if (this.onStageHotkey) window.removeEventListener('keydown', this.onStageHotkey);
-    if (this.onLedgerClick) document.removeEventListener('click', this.onLedgerClick);
     if (this.onOutboundClick) document.removeEventListener('click', this.onOutboundClick);
-    if (this.onPanelKey) window.removeEventListener('keydown', this.onPanelKey);
-    if (this.onPanelResize) window.removeEventListener('resize', this.onPanelResize);
-    if (this.onPop) window.removeEventListener('popstate', this.onPop);
     if (this.staging) {
       window.removeEventListener('keydown', this.sKey, true);
       window.removeEventListener('keyup', this.sKey, true);
@@ -1877,6 +1607,7 @@ export class HomeScene {
   }
 
   bindInput() {
+    if (this.panelUp || this.onWheel) return;   // the overlay's panel is over the scene (panelState), or bound
     const gate = (dir) => {
       const now = performance.now();
       const streaming = now - (this.lastInputAt || 0) < 170;
@@ -1953,8 +1684,8 @@ export class HomeScene {
   // leaving for somewhere else: fly out through the torii, then hand over to the link
   flyToLink(url, newTab) {
     this.linkOut = { url, newTab };
-    if (this.panelOpen) {
-      this.closePanel();
+    if (this.panelUp) {
+      closePanel();
       clearTimeout(this._flyT);
       this._flyT = setTimeout(() => this.startExit('link'), 560);
       return;
@@ -2213,7 +1944,7 @@ export class HomeScene {
 
   frame(ts) {
     if (!this.alive || !this.renderer) return;
-    if (this.mode === 'landed') { this.raf = null; return; }
+    if (this.mode === 'landed' || this.paused) { this.raf = null; return; }
     this.raf = requestAnimationFrame(this.loop);
     const dt = Math.min(0.05, (ts - (this.lastTs || ts)) / 1000);
     this.lastTs = ts;

@@ -83,8 +83,8 @@ export const viewer = {
       this.dlg.focus();
       window.addEventListener('resize', this.onResize);
       // Back closes the viewer rather than leaving the post (what a phone user reaches for). The
-      // homepage's router owns its history, so there the viewer only closes when the route moves.
-      if (!document.querySelector('[data-view="reader"]')) {
+      // homepage overlay's router owns its history, so there the viewer only closes when the route moves.
+      if (!document.querySelector('[data-panel-host]')) {
         history.pushState(Object.assign({}, history.state, { aoViewer: true }), '');
         this.pushed = true;
       }
