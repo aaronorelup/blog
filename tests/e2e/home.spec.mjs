@@ -204,12 +204,14 @@ test('home-12 five night tosses in a row open the lantern door: the lamp flares 
   // The Worker sends the door on to its address (worker/lantern.js); here it opens on a stub.
   await context.route('**/api/lantern', (r) => r.fulfill({ contentType: 'text/html', body: '<title>door</title>' }));
   await scene(page);
-  const coin = page.locator('#avatar');
-  for (let n = 0; n < 4; n++) {
-    await coin.click();
-    await expect(coin).not.toHaveAttribute('data-busy', '1', { timeout: 5000 });
-  }
-  await coin.click();
+  // Each toss the moment the last one lands, in the page: "in a row" is within 3 s, which a busy box's round trips
+  // could miss.
+  await page.locator('#avatar').evaluate((coin) => new Promise((done) => {
+    let n = 0;
+    const toss = () => { coin.click(); if (++n === 5) done(); };
+    new MutationObserver(() => { if (!coin.dataset.busy && n < 5) toss(); }).observe(coin, { attributes: true, attributeFilter: ['data-busy'] });
+    toss();
+  }));
   await expect.poll(() => page.locator('#coin-back').evaluate((b) => b.style.boxShadow)).not.toBe('');
   expect(await page.locator('#coin-back').evaluate((b) => b.style.opacity)).toBe('1');   // it landed lamp-up
   await expect(page).toHaveURL(/\/api\/lantern$/);
