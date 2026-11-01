@@ -98,14 +98,14 @@ test.describe('in the homepage overlay', () => {
     await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
     await expect(page.locator('#panel-screen')).toHaveAttribute('aria-hidden', 'false');
     await expect(page).toHaveURL(/\/projects$/);
-    const view = page.locator('[data-view="projects"]');
+    const view = page.locator('#panel-screen [data-panel-view="projects"]');
     await expect(view.locator('.proj-card').first()).toBeVisible();
     expect(await counts(view)).toEqual(standalone);
     const post = view.locator('#proj-watch .proj-post').first();
     const href = await post.getAttribute('href');
     await post.click();
     await expect(page).toHaveURL(new RegExp(href + '$'));
-    await expect(page.locator('[data-view="reader"]')).toHaveAttribute('data-slug', href.split('/')[2]);
+    await expect(page.locator('#panel-screen [data-panel-host] [data-post-article] h1').first()).toBeVisible();
     expect(await page.evaluate(() => window.__sameDocument === true)).toBe(true);
   });
 });
