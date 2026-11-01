@@ -1017,148 +1017,6 @@ ao-fetch figcaption .ao-meta {
   color: var(--pc-quiet);
 }
 
-/* <ao-series>: one column per day over a plain table (visually hidden once drawn, kept for screen
-   readers). Columns stretch with the card; lines keep their width (non-scaling stroke). */
-ao-series {
-  display: block;
-  margin: 28px 0;
-  min-width: 0;
-}
-.ao-series-chart {
-  display: grid;
-  gap: 8px;
-  padding: 14px 18px 12px;
-  border: 1px solid var(--pc-line2);
-  border-radius: 12px;
-  background: var(--pc-code);
-  font-family: Karla, system-ui, sans-serif;
-}
-.ao-series-top { display: flex; flex-wrap: wrap; gap: 6px; }
-.ao-series-top button {
-  padding: 5px 11px;
-  border: 1px solid var(--pc-line2);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--pc-body);
-  font: 600 12.5px/1.2 Karla, system-ui, sans-serif;
-  cursor: pointer;
-}
-.ao-series-top button:hover { color: var(--pc-strong); border-color: var(--pc-quiet); }
-.ao-series-top button:not(.ao-series-key)[aria-pressed='true'] {
-  background: var(--pc-head);
-  border-color: var(--pc-head);
-  color: var(--pc-page);
-}
-.ao-series-top .ao-series-key { color: var(--pc-strong); }
-.ao-series-top .ao-series-key::before {
-  content: '';
-  display: inline-block;
-  width: 9px;
-  height: 9px;
-  margin-right: 6px;
-  border-radius: 2px;
-  background: var(--bar);
-}
-.ao-series-top .ao-series-key[aria-pressed='false'] { color: var(--pc-quiet); text-decoration: line-through; opacity: 0.75; }
-.ao-series-top .ao-series-key[aria-pressed='false']::before { background: transparent; box-shadow: inset 0 0 0 1.5px var(--bar); }
-.ao-series-top button:focus-visible { outline: 2px solid var(--pc-accent); outline-offset: 2px; }
-.ao-series-body { display: grid; touch-action: pan-y; }
-.ao-series-plot {
-  position: relative;
-  height: 210px;
-  margin-top: 6px;
-  cursor: crosshair;
-  border-radius: 4px;
-}
-.ao-series-plot:focus-visible { outline: 2px solid var(--pc-accent); outline-offset: 4px; }
-.ao-series-plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.ao-series-plot rect { fill: var(--bar); }
-.ao-series-chart .ao-series-plot rect.ao-series-muted { fill: var(--pc-quiet); opacity: 0.5; }
-.ao-series-avg {
-  fill: none;
-  stroke: var(--pc-head);
-  stroke-width: 2.2px;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-}
-.ao-series-s0 { --bar: var(--pc-head); }
-.ao-series-s1 { --bar: var(--pc-accent); }
-.ao-series-s2 { --bar: var(--pc-quiet); }
-.ao-series-s3 { --bar: var(--pc-body); }
-.ao-series-grids { position: absolute; inset: 0; pointer-events: none; }
-.ao-series-grid { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--pc-line2); }
-.ao-series-grid span {
-  position: absolute;
-  left: 0;
-  top: 2px;
-  font: 10.5px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  color: var(--pc-quiet);
-}
-.ao-series-hl {
-  position: absolute;
-  top: -4px;
-  bottom: 0;
-  border-radius: 2px;
-  background: var(--pc-strong);
-  opacity: 0.1;
-  pointer-events: none;
-}
-.ao-series-hl[hidden] { display: none; }
-.ao-series-x { position: relative; height: 18px; border-top: 1px solid var(--pc-line2); }
-.ao-series-x span {
-  position: absolute;
-  top: 4px;
-  transform: translateX(-50%);
-  font: 10.5px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  color: var(--pc-quiet);
-  white-space: nowrap;
-}
-.ao-series-x span.is-first { transform: none; margin-left: -4px; }
-.ao-series-x span.is-last { transform: translateX(-100%); margin-left: 4px; }
-.ao-series-marks { position: relative; height: 12px; }
-.ao-series-mark {
-  position: absolute;
-  top: 3px;
-  width: 6px;
-  height: 6px;
-  margin-left: -3px;
-  border-radius: 50%;
-  background: var(--pc-accent);
-  opacity: 0.75;
-}
-.ao-series-mark.is-many { box-shadow: 0 0 0 1.5px var(--pc-accent); }
-.ao-series-mark.is-on { opacity: 1; box-shadow: 0 0 0 2px var(--pc-strong); }
-.ao-series-chart p.ao-series-read {
-  min-height: 2.9em;
-  margin: 2px 0 0;
-  font: 400 13px/1.5 Karla, system-ui, sans-serif;
-  color: var(--pc-soft);
-}
-.ao-series-read b { font-weight: 600; color: var(--pc-strong); }
-.ao-series-read .is-shown { color: var(--pc-head); font-weight: 600; }
-.ao-series-read .ao-series-val[class*='ao-series-s']::before {
-  content: '';
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  margin-right: 5px;
-  border-radius: 2px;
-  background: var(--bar);
-}
-.ao-series-read .ao-series-note,
-.ao-series-read .ao-series-hint { display: block; color: var(--pc-quiet); }
-.ao-series-read .ao-series-note { color: var(--pc-accent); }
-.ao-series-ready > .ao-series-table {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-.ao-series-ready > ol { display: none; }
-ao-series > figcaption,
 ao-funnel > figcaption,
 ao-ask > figcaption {
   margin-top: 8px;
@@ -1167,10 +1025,8 @@ ao-ask > figcaption {
   line-height: 1.45;
   color: var(--pc-soft);
 }
-ao-series > figcaption b,
 ao-funnel > figcaption b,
 ao-ask > figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
-ao-series > figcaption .ao-meta,
 ao-funnel > figcaption .ao-meta,
 ao-ask > figcaption .ao-meta {
   display: block;
@@ -1179,11 +1035,6 @@ ao-ask > figcaption .ao-meta {
   font-size: 11.5px;
   color: var(--pc-quiet);
 }
-@media (max-width: 640px) {
-  .ao-series-chart { padding: 12px; }
-  .ao-series-plot { height: 170px; }
-}
-
 /* <ao-funnel>: one bar for the whole split, then a row per layer with what it took and what was
    left. Layer colours cycle through six quiet tones; what is left at the end is gold. */
 ao-funnel {
