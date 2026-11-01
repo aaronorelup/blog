@@ -3,6 +3,7 @@
 // A/B flips to the reference clip and back. It stops when the homepage swaps posts or closes the reader. Without JS
 // the figures stack with native controls. Attribute ref, markup and keys: docs/COMPONENTS.md.
 import { AO_LISTEN_PLAY, claim } from '../_core/player.js';
+import { h } from '../_lib/dom.js';
 import { fmtTime } from '../_lib/time.js';
 
 class AoListen extends HTMLElement {
@@ -22,65 +23,32 @@ class AoListen extends HTMLElement {
     let cur = clips[0];
     let back = null; // the clip A/B will return to while the reference is playing
 
-    const stage = document.createElement('div');
-    stage.className = 'ao-listen-stage';
-    const now = document.createElement('p');
-    now.className = 'ao-listen-now';
-    const nowTitle = document.createElement('b');
-    const nowMeta = document.createElement('span');
-    nowMeta.className = 'ao-meta';
-    now.append(nowTitle, nowMeta);
-    const spec = document.createElement('div');
-    spec.className = 'ao-listen-spec';
-    spec.setAttribute('role', 'slider');
-    spec.setAttribute('aria-label', 'Playback position');
-    spec.tabIndex = 0;
-    const specImg = document.createElement('img');
-    specImg.alt = '';
-    specImg.decoding = 'async';
-    const head = document.createElement('i');
-    head.className = 'ao-listen-head';
-    spec.append(specImg, head);
+    const nowTitle = h('b');
+    const nowMeta = h('span', { class: 'ao-meta' });
+    const now = h('p', { class: 'ao-listen-now' }, nowTitle, nowMeta);
+    const specImg = h('img', { alt: '', decoding: 'async' });
+    const head = h('i', { class: 'ao-listen-head' });
+    const spec = h('div', { class: 'ao-listen-spec', role: 'slider', 'aria-label': 'Playback position', tabindex: '0' },
+      specImg, head);
 
-    const bar = document.createElement('div');
-    bar.className = 'ao-listen-bar';
+    const bar = h('div', { class: 'ao-listen-bar' });
     const mk = (label, title, fn) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = label;
-      b.title = title;
-      b.addEventListener('click', fn);
+      const b = h('button', { type: 'button', text: label, title, onclick: fn });
       bar.append(b);
       return b;
     };
     const play = mk('Play', 'Play or pause (space)', () => toggle());
     const ab = mk('A/B with ' + ref.title.split(/\s[··]\s/)[0], 'Switch to the reference at the same moment, and back (C)', () => flip());
     ab.setAttribute('aria-pressed', 'false');
-    const clock = document.createElement('span');
-    clock.className = 'ao-listen-clock';
+    const clock = h('span', { class: 'ao-listen-clock' });
     bar.append(clock);
-    stage.append(now, spec, bar);
+    const stage = h('div', { class: 'ao-listen-stage' }, now, spec, bar);
 
-    const list = document.createElement('ol');
-    list.className = 'ao-listen-list';
-    list.tabIndex = 0;
-    list.setAttribute('aria-label', 'Clips');
+    const list = h('ol', { class: 'ao-listen-list', tabindex: '0', 'aria-label': 'Clips' });
     const rows = clips.map((c) => {
-      const li = document.createElement('li');
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.tabIndex = -1;
-      const t = document.createElement('b');
-      t.textContent = c.title;
-      b.append(t);
-      if (c.meta) {
-        const m = document.createElement('span');
-        m.textContent = c.meta;
-        b.append(m);
-      }
-      b.addEventListener('click', () => { back = null; select(c, true); });
-      li.append(b);
-      list.append(li);
+      const b = h('button', { type: 'button', tabindex: '-1', onclick: () => { back = null; select(c, true); } },
+        h('b', { text: c.title }), c.meta ? h('span', { text: c.meta }) : null);
+      list.append(h('li', null, b));
       return b;
     });
 
