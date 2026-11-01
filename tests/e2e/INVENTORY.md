@@ -287,7 +287,7 @@ streams the same two films.
 | The wheel walks the waypoints | window `wheel` | home-1 (desktop) |
 | A swipe walks them | window `touchstart` `touchend` | home-2 |
 | Arrows, Page keys, space, Home and End walk them | window `keydown` | home-3 |
-| A rail dot flies to its waypoint | rail `click` | home-4: broken on main |
+| A rail dot flies to its waypoint (the cards' page lets clicks through to the rail; only the shown card takes them) | rail `click` | home-4 |
 | The day/night toggle tweens the world (the page colour passes through between, the 3D changes with it even with the camera still, and once it ends `--pc-bg` is the plain per-mode string again) | toggle `click` → `ao-mode` → theme.js | home-5 |
 | The avatar flips like a coin and lands on a face | avatar `click`, `pointerenter` `pointerleave` | home-6 |
 | Without WebGL the scene bails to the flat page | hasWebGL → bail | home-7 (Chromium: `--disable-webgl` is its flag) |
@@ -414,8 +414,6 @@ load without a script error (live-5).
 
 ## Broken on main (reported to Aaron)
 
-- **home-4, the rail dots.** The active section lies over the rail at every tier and on both projects, so a click on
-  a dot lands on the section and the scene doesn't move. The keys, the wheel and a swipe work.
-
-Smaller quirk: after `ao-stop` a running game's veil reads "Paused while something else plays." (the page-wide stop
-reaches the game through its `aoPause` first), where "Paused." was meant. game-4 asserts only that it is paused.
+Nothing in the suite is broken on main (home-4, the rail dots, was fixed by T3.2). A smaller quirk: after `ao-stop`
+a running game's veil reads "Paused while something else plays." (the page-wide stop reaches the game through its
+`aoPause` first), where "Paused." was meant. game-4 asserts only that it is paused.
