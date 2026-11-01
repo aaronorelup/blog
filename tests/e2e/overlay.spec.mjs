@@ -527,3 +527,22 @@ test('overlay-25 a view in the panel has the colours it has on its own page, by 
     expect([await colours('#panel-screen '), await focused('#panel-screen ')]).toEqual(own);
   }
 });
+
+test('overlay-26 while the panel is up the day/night switch sits in its header, clear of the card’s corner', async ({ page }) => {
+  const box = (sel) => page.locator(sel).first().boundingBox();
+  const inside = (a, b) => a.x >= b.x && a.y >= b.y && a.x + a.width <= b.x + b.width && a.y + a.height <= b.y + b.height;
+  const apart = (a, b) => a.x + a.width <= b.x || b.x + b.width <= a.x || a.y + a.height <= b.y || b.y + b.height <= a.y;
+  await home(page);
+  const closed = await box('#mode-toggle');
+  await openLedger(page);
+  await expect.poll(async () => inside(await box('#mode-toggle'), await box('#panel-screen .pc-bar-top'))).toBe(true);
+  expect(apart(await box('#mode-toggle'), await box('#panel-screen .pc-home'))).toBe(true);
+  expect(apart(await box('#mode-toggle'), await box('#panel-screen .pc-navs-o'))).toBe(true);
+  // It still switches, over the panel.
+  const pressed = await page.locator('#mode-toggle').getAttribute('aria-pressed');
+  await page.locator('#mode-toggle').click();
+  await expect(page.locator('#mode-toggle')).not.toHaveAttribute('aria-pressed', pressed);
+  await page.keyboard.press('Escape');
+  await isClosed(page);
+  await expect.poll(() => box('#mode-toggle')).toEqual(closed);
+});
