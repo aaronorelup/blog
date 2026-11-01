@@ -166,7 +166,7 @@ about a second; run it before every landing, and with paths to see one post (`np
 | Rule | Checks | Fails |
 |---|---|---|
 | `frontmatter.mjs` | YAML parses; a notes file's `post` is its own name and a built post; `START_HERE` empty or 5 unique listed slugs; v1 title and summary over the caps (warning) | deploy |
-| `prose.mjs` | on what a reader reads: no em dash, no spaced en dash, no `;`, no banned phrase, takeaway at most 2 sentences, v2 caps. Targets, nested parentheses and `style=` only warn | check (v2 posts), warning (v1 until W4) |
+| `prose.mjs` | on what a reader reads: no em dash, no spaced en dash, no `;`, no banned phrase, takeaway at most 2 sentences. Targets, nested parentheses and `style=` only warn (the caps are the schema's) | check (v2 posts), warning (v1 until W4) |
 | `never-publish.mjs` | whole words (case-sensitive), runs of 2 or 3, hosts and URL prefixes, hashed and compared; reports the words with `file:line` | deploy |
 | `links.mjs` | `/ledger/<slug>/` goes to a listed post, `/notes/` to its notes; nothing under `public/ledger/`; no banned link | deploy |
 | `elements.mjs` | each `src/elements/ao-*/` has its section in `docs/COMPONENTS.md` | check |

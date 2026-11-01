@@ -1,8 +1,8 @@
 // WRITING.md's voice rules that a script can see, on what a reader reads of a post (its body without code, tags,
 // attributes or URLs, plus the title, summary and card): no em dash, no spaced en dash, no semicolon, no banned
-// phrase, a takeaway of at most two sentences, title and summary within their caps. Errors for posts with a topic
-// (v2), warnings for older posts until W4 (frontmatter.mjs warns about their caps). Always warnings: title or summary
-// past its target, nested parentheses, inline style= in a post.
+// phrase, a takeaway of at most two sentences. Errors for posts with a topic (v2), warnings for older posts until W4.
+// Always warnings: title or summary past its target, nested parentheses, inline style= in a post. The caps beyond
+// the targets are the schema's (v2) and frontmatter.mjs's warnings (v1).
 import { TEXT } from '../../src/data/limits.js';
 import { PHRASES } from '../../src/data/banned-phrases.js';
 import { keyLine, liner, readerText, withoutCode } from './text.mjs';
@@ -53,8 +53,7 @@ export default function prose(repo, report) {
     }
     for (const [key, target, cap] of [['title', TEXT.titleTarget, TEXT.titleCap], ['summary', TEXT.summaryTarget, TEXT.summaryCap]]) {
       const n = String(data[key] ?? '').trim().length;
-      if (n > cap && level === 'check') report(file, keyLine(raw, key), `${key} is ${n} characters, over the ${cap} cap the build refuses`, level);
-      else if (n > target && n <= cap) report(file, keyLine(raw, key), `${key} is ${n} characters, past the ${target} target (WRITING.md)`, 'warn');
+      if (n > target && n <= cap) report(file, keyLine(raw, key), `${key} is ${n} characters, past the ${target} target (WRITING.md)`, 'warn');
     }
     if (card.takeaway && sentences(card.takeaway) > 2) {
       report(file, keyLine(raw, 'takeaway'), 'takeaway: one or two short sentences (PREVIEWS.md)', level);
