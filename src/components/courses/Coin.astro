@@ -6,12 +6,11 @@
 interface Props {
   src: string;
   label: string;
-  size?: number;
 }
-const { src, label, size = 112 } = Astro.props;
+const { src, label } = Astro.props;
 ---
 
-<button type="button" class="coin" aria-label={label} style={`--coin-size:${size}px`}>
+<button type="button" class="coin" aria-label={label}>
   <span class="coin-toss">
     <span class="coin-spin">
       <span class="coin-rim" aria-hidden="true"></span>
@@ -48,6 +47,7 @@ const { src, label, size = 112 } = Astro.props;
 
 <style is:global>
   .coin {
+    --coin-size: 112px;
     --coin-face: rgb(59, 46, 68); --coin-edge: rgb(90, 84, 112); --coin-rim-a: rgb(90, 84, 112); --coin-rim-b: rgb(70, 66, 90);
     flex: none; display: block; width: var(--coin-size); height: var(--coin-size); padding: 0; border: 0; background: transparent;
     cursor: pointer; perspective: 800px; border-radius: 50%;
