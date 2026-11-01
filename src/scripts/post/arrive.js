@@ -1,7 +1,7 @@
 // Where a link into a post lands: the URL's #heading at the top, or a search result's passage marked and centred
 // (highlight.js). Each post component loads its own chunk and often draws after the load event, when the browser has
-// already scrolled to the heading, and a drawn chart is rarely as tall as the table it replaces. So both wait for drawn
-// (enhance()'s promise), and the heading is put back unless the reader has scrolled since. The post and notes pages call it.
+// already scrolled to the heading, and a drawn chart is rarely as tall as the table it replaces. So both wait for
+// drawn (enhance()'s promise), and the heading is put back unless the reader has scrolled since. Post and notes pages.
 import { highlight } from './highlight.js';
 
 let moved = false;

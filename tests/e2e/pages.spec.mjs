@@ -46,7 +46,7 @@ test.describe('/stats without the numbers', () => {
 
 // Each post component loads its own chunk; on a slow line it draws after the load event, when the browser has already
 // scrolled to the link's heading, and a chart is shorter than the table it replaces. The chunks are held back here.
-test('pages-5 a link into a post lands on its heading, or its passage, once the components above have drawn', async ({ page }) => {
+test('pages-5 a link lands on its heading, or its passage, once the components above have drawn', async ({ page }) => {
   const url = pagesWhere((p) => p.ao['ao-series'] && p.ao['ao-bars'])[0];
   await page.goto(url);
   const [id, hs] = await page.evaluate(() => {
@@ -56,7 +56,10 @@ test('pages-5 a link into a post lands on its heading, or its passage, once the 
     return [h.id, p.textContent.trim().split(/\s+/).slice(0, 5).join(' ')];
   });
   await page.goto('about:blank');
-  await page.route('**/_astro/element.*.js', async (r) => { await new Promise((ok) => setTimeout(ok, 1000)); await r.continue(); });
+  await page.route('**/_astro/element.*.js', async (r) => {
+    await new Promise((ok) => setTimeout(ok, 1000));
+    await r.continue();
+  });
   const heading = page.locator(`[id="${id}"]`);
   const top = () => heading.evaluate((h) => Math.round(h.getBoundingClientRect().top));
   await page.goto(`${url}#${id}`);
