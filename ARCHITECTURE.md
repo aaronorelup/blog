@@ -70,8 +70,9 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
    gets `-1`) and `rehype-post-text`, the one extraction every feature reads (below). A Markdown file that fails to
    render fails its page (`renderEntry`), since Astro itself only logs it; a live notebook's page builds blank.
 4. **Integrations** (`astro.config.mjs`), in order: `statsPages`, `loreThumbs`, `media` (no file over 25 MiB,
-   no video or audio in `public/` outside `STAYS_IN_GIT`), `verifyDist` (the frozen contracts over `dist/`, then
-   the budgets, printed). The config also defines `__PUBLIC_DIR__` (read by `src/lib/paths.js`) and, for
+   no video or audio in `public/` outside `STAYS_IN_GIT`), `pagefind` (the words index of the listed posts and
+   notes, `dist/pagefind/`; lenient until a main build has written it), `verifyDist` (the frozen contracts over
+   `dist/`, then the budgets, printed). The config also defines `__PUBLIC_DIR__` (read by `src/lib/paths.js`) and, for
    `astro dev` only, the `/api/stats` fixture.
 
 ### What the build writes, and who reads it
@@ -79,7 +80,8 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 | File | Made by | Read by |
 |---|---|---|
 | `/ledger/<slug>/`, `/ledger/<slug>/notes/` | `src/pages/ledger/[slug].astro`, `[slug]/notes.astro` | readers, the homepage overlay (it fetches the page and lifts `[data-post-article]`) |
-| `/ledger/previews.json` | `src/pages/ledger/previews.json.js` | the hover card (`src/scripts/ledger-preview.js`), `worker/reads/serve.js`, `worker/stats/index.js` |
+| `/ledger/previews.json` | `src/pages/ledger/previews.json.js` | `src/scripts/cards/data.js` (the hover card, search results, Goobie's related posts), `worker/reads/serve.js`, `worker/stats/index.js` |
+| `/pagefind/` | `scripts/build/pagefind.mjs` (Pagefind's Node API over `dist/ledger/**/*.html`) | `src/scripts/search/keyword.js`: only what carries `data-pagefind-body` (a listed post's or notes page's text) is in it |
 | `/stats-pages.txt` | `scripts/build/stats-pages.mjs` | `worker/stats/index.js`: the only pages `/stats` may name |
 | `/version.json` | `src/pages/version.json.js` | the live check after every push |
 | `/media-sizes.json` | `src/pages/media-sizes.json.js` | `worker/media/serve.js`, for media still in git |
@@ -139,7 +141,7 @@ warns in a live notebook.
 | `src/content/research/` | the research collection (`/research/`) |
 | `src/content/projects/<name>.yaml` | one card of `/projects` (`src/schemas/project.ts`): section, state, needs, picture, links, posts; private cards link only to this site |
 | `src/data/taxonomy.js` | `TOPICS`, `PROJECTS`: the only place their names live. `SERIES_TO_PROJECT` until W4 |
-| `src/data/picks.js` | `START_HERE` (T2.2 fills it with 5 listed slugs) and `REEL` |
+| `src/data/picks.js` | `START_HERE` (the ledger's five Start here posts) and `REEL` |
 | `src/data/limits.js` | every text cap and target, preview media, icon, project picture and og sizes |
 | `src/data/exempt.js` | `LIVE_NOTEBOOKS`, `isLive()`, `isLivePath()`: what no rule may fail or touch |
 | `src/data/site.js` | `NAV` (key, href, label, overlay) and `SOCIAL`: the chrome's links; a NAV key is also a view's name |
@@ -158,7 +160,9 @@ warns in a live notebook.
 |---|---|
 | `src/lib/content.js` | the only importer of `astro:content`: `allPosts`, `listedPosts`, `notesBySlug`, `research`, `projects`, `renderEntry`, `slugOf` |
 | `src/lib/{posts,cards,icons,dates,paths}.js` | listing and order, the card shape, icons by id, UTC dates, `PUBLIC_DIR` |
+| `src/lib/glyphs.js` | the line drawings: a topic's glyph (where a post has no icon) and the search lens; Astro and the browser read it |
 | `src/lib/text/rules.js`, `hash.js` | what a reader reads (shared with the browser's read-aloud), content hashes |
+| `src/lib/text/plain.js` | a post's Markdown as plain words, and its reading minutes (the card's and the ledger row's) |
 | `src/lib/build.js` | `COMMIT`, the commit a build is made from (the `ao-build` meta) |
 | `src/lib/search/chunks.js`, `docs.js` | a listed post or its notes → search chunks (the short version, then each h2 section, at most 1,500 characters) and the manifest; `docs.js` reads the build's posts once |
 | `src/lib/lore*.js` | the lore course's data and drawings |
@@ -168,10 +172,11 @@ warns in a live notebook.
 | `src/pages/courses/**`, `src/pages/research/**` | the course and research pages |
 | `src/pages/search/` | `manifest.json.js`, `docs/[doc].json.js`: search's build files |
 | `src/layouts/PanelPage.astro` | every panel page: `site.css`, `chrome/Head`, `ModeToggle`, `PanelChrome` (`active` lights the nav, `view` names the view) |
-| `src/components/chrome/` | `Head` (share tags, `ao-build` meta, font preload, the pre-paint mode script; both layouts), `PanelChrome` (header, nav, scroller, footer; `data-active-view`, and `data-panel-view` on a standalone page's view wrapper), `ModeToggle` |
+| `src/components/chrome/` | `Head` (share tags, `ao-build` meta, font preload, the pre-paint mode script; both layouts), `PanelChrome` (header, nav, scroller, footer; `data-active-view`, and `data-panel-view` on a standalone page's view wrapper), `ModeToggle`, `Glyph` |
+| `src/components/ledger/` | `LedgerView` (`/ledger/`), `SearchBox` (the box and its Search \| Ask Goobie switch), `StartHere`, `Chips` (topic and project counts, real links `?topic=`), `LedgerRow` (icon or glyph, title link with `data-ledger-entry`, summary, meta, the stamp's `<details>` short version) |
 | `src/components/{about,courses,research}/` | `AboutView`; `CoursesView`, `LessonList`, `Coin`; `ResearchView` |
 | `src/components/projects/` | `ProjectsView` (`/projects`), `JumpRow`, `Highlights` (the reel from `picks.js REEL` and the cards marked `highlight`), `ProjectSection`, `ProjectCard`, `NeedsGlyph` |
-| `src/components/panel/*View.astro` | the ledger and post views (into feature folders by T2.1, T2.2); `PanelChrome`, `AboutView`, `CoursesView`, `ProjectsView` are stubs for `index.astro` until T3.1 |
+| `src/components/panel/*View.astro` | the post view (into `post/` by T2.1); `PanelChrome`, `AboutView`, `CoursesView`, `ProjectsView` and `LedgerView` are stubs for `index.astro` until T3.1 (`LedgerView`'s also mounts `views/ledger.js` in the overlay) |
 | `src/components/lore/` | the lore course |
 
 ### `src/scripts/` and `src/styles/` (the browser)
@@ -180,17 +185,23 @@ warns in a live notebook.
 |---|---|
 | `src/scripts/post-components.js` + `src/styles/post-components.css` | every `<ao-*>` post component, the player, the now-playing bar and the image viewer (split into `src/elements/` by T1.2) |
 | `src/scripts/demos/{synthid,cf}.js` + `src/styles/demos/` | the two `<ao-demo>` demos |
-| `src/scripts/ledger-preview.js` + `.css` | the hover card (split into `scripts/cards/` by T2.2) |
+| `src/scripts/cards/` + `src/styles/cards.css` | the hover card: `data.js` (`previews.json`, fetched once and shared), `render.js` (the element and where it goes; the icon when a card has no still), `hover.js` (when: listeners, timings, media). `ledger-preview.js` is a one-line stub that `stats.astro`, `PostView`, `notes.astro` and `views/projects.js` import until W4 |
+| `src/scripts/ledger/` | `filter.js` (the chips: one topic or project, `?topic=` read on load and kept with `replaceState`), `feed.js` (`bindFeedCopy`) |
+| `src/scripts/search/` + `src/styles/search.css` | `box.js` (the box, `/`, the switch), `keyword.js` (Pagefind, on first focus), `semantic.js` (`/api/search`, 400 ms after typing, at most 40 a page), `merge.js` (reciprocal rank), `results.js` (rows and deep links `?hl=&hs=#heading`), `terms.js`, `ask.js` (Ask Goobie: `/api/session`, Turnstile only when Ask is on, the session in `sessionStorage`, `/api/ask`) |
+| `src/scripts/post/highlight.js` | marks a deep link's sentence (or words) in its section, opens its `<details>`, centres it in `#panel-scroll`; the post and notes pages call it (T2.1 moves the call into `views/post.js`) |
+| `src/scripts/lazy.js` | `lazy(load, fallbackUrl)`: every dynamic import; a chunk lost to a deploy navigates or reloads once |
 | `src/scripts/home-scene.js` | the homepage scene and overlay (split into `scripts/home/` by T3.1 and T3.2) |
 | `src/scripts/stats/**`, `src/styles/stats/**` | the `/stats` page: its own code, kept as is |
 | `src/scripts/mode.js` | the panel pages' day/night toggle: `data-mode`, the stored choice, `aria-pressed` |
 | `src/scripts/views/projects.js` | the projects view's module (`mount(root)` → unmount): the hover card on its post links |
+| `src/scripts/views/ledger.js` | the ledger view's module: chips, search box, feed copy, hover card |
 | `src/styles/tokens.css` | every colour as a day/night pair, the `--pc-*` and `--home-*` tokens per mode (plain strings: the `/stats` canvas parses them), the homepage tween (`:root[data-tweening]` mixes by `--mix`), fonts, type scale, space, radii, z |
-| `src/styles/site.css` | the one stylesheet of every panel page: tokens, base, chrome, prose, projects, about, research (later tasks add theirs) |
+| `src/styles/site.css` | the one stylesheet of every panel page: tokens, base, chrome, prose, cards, ledger, search, projects, about, research (later tasks add theirs) |
 | `src/styles/{base,chrome,prose,about,research}.css` | page-wide rules; the frame, the view header, shared hover states; long-form text (`.pc-prose`); the text pages (`.page-*`: About, 404); a research document |
 | `src/styles/projects.css` | the projects page (`.proj-*`), on `--pc-*` tokens only so the overlay's tween carries it |
+| `src/styles/ledger.css` | the ledger (`.row-*`, `.chip*`, `.start-*`, `.month`, `.ledger-feed*`), on `--pc-*` tokens only |
 | `src/styles/fonts.css`, `public/fonts/` | written by `scripts/tools/fonts.mjs`: Google's own woff2 slices, self-hosted under content-hashed names |
-| `src/styles/panel.css` | an `@import` stub (tokens, chrome, prose, projects, about) for `index.astro` until T3.2 |
+| `src/styles/panel.css` | an `@import` stub (tokens, chrome, prose, cards, ledger, search, projects, about) for `index.astro` until T3.2 |
 | `src/styles/lore.css`, `courses.css` | the course looks |
 
 ### `scripts/` (Node)
@@ -201,6 +212,7 @@ warns in a live notebook.
 | `scripts/build/verify-dist.mjs` | at `astro:build:done`: `contracts.mjs` over `dist/`, then the budgets |
 | `scripts/build/contracts.mjs` | pure checks of the frozen contracts over `dist/` |
 | `scripts/build/stats-pages.mjs`, `dev-stats-fixture.mjs` | `/stats-pages.txt`; `/api/stats` for `astro dev` |
+| `scripts/build/pagefind.mjs` | at `astro:build:done`: Pagefind's index of `dist/ledger/**/*.html` into `dist/pagefind/` (`SOFT` until a main build has written it) |
 | `scripts/build/markdown.mjs` + `rehype-{post-images,heading-ids,post-text}.mjs` | the Markdown plugins (step 3 of "A build"); `markdown.mjs` lists the post components until T1.2 and hashes the plugins' code into the config, so Astro's content cache re-renders when they change |
 | `scripts/lore-thumbs.mjs` | the lore thumbnails (moves to `build/` in W4) |
 | `scripts/media/` | `files.mjs` (what is media, `STAYS_IN_GIT`), `push.mjs`, `verify.mjs`, `integration.mjs` (the guard) |
@@ -283,7 +295,13 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   homepage the overlay fetches that page, copies `[data-post-article]` in and imports the same module, so the
   tags upgrade the same way. Notes pages render the same chrome with the note's content.
 - **The hover card.** `previews.json` is built from listed posts' `preview:` (or their opening lines). On a device
-  that can hover, `ledger-preview.js` fetches it once when idle and opens a card on any `/ledger/<slug>/` link.
+  that can hover, `scripts/cards/` fetches it once when idle and opens a card on any `/ledger/<slug>/` link. On a
+  phone a ledger row's stamp opens the same short version in place, from the page's own HTML.
+- **The ledger.** `LedgerView` renders every listed post under its month, the chips with counts made at build, and
+  `START_HERE`. Its search box asks Pagefind in the browser (loaded on first focus) and `/api/search` (no token) and
+  merges the two by reciprocal rank; a result links `/ledger/<slug>/?hl=<words>&hs=<passage>#<heading>`, which
+  `post/highlight.js` marks. Ask Goobie loads `search/ask.js` only when opened: `GET /api/session` first, and only
+  when that says `ask: true`, Turnstile and a 30-minute token; answers are text, `[n]` linked to their passages.
 - **Search and Ask.** The build writes each listed post and notes page as chunks (`/search/docs/`) and a manifest
   of their hashes. Every minute `search.sync` embeds the changed docs with `@cf/baai/bge-m3` into the Vectorize
   index `blog-search` (ids `AO-045:3`, `AO-045n:3` for notes). `/api/search` embeds the query and returns the best
