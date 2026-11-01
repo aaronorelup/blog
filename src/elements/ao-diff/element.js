@@ -2,6 +2,7 @@
 // a judge did to a line. One button per version: an earlier one shows its cut words struck through and the last
 // version's new words underlined; the last shows as it stands. Without JS the blockquotes and the caption stack.
 // Attribute labels: docs/COMPONENTS.md.
+import { h } from '../_lib/dom.js';
 
 const diffWords = (a, b) => {
   // Word-level LCS. Tokens keep their trailing space, so joining them rebuilds the text.
@@ -43,13 +44,9 @@ class AoDiff extends HTMLElement {
     const name = (k) => (labels[k] || '').trim() || 'Version ' + (k + 1);
     const last = quotes.length - 1;
 
-    const bar = document.createElement('div');
-    bar.className = 'ao-diff-bar';
-    const view = document.createElement('div');
-    view.className = 'ao-diff-view';
-    view.setAttribute('aria-live', 'polite');
-    const legend = document.createElement('p');
-    legend.className = 'ao-diff-legend';
+    const bar = h('div', { class: 'ao-diff-bar' });
+    const view = h('div', { class: 'ao-diff-view', 'aria-live': 'polite' });
+    const legend = h('p', { class: 'ao-diff-legend' });
 
     const buttons = [];
     const show = (k) => {
@@ -62,17 +59,13 @@ class AoDiff extends HTMLElement {
       }
       for (const part of diffWords(texts[k], texts[last])) {
         if (part.type === 'same') { view.append(part.text); continue; }
-        const el = document.createElement(part.type);
-        el.textContent = part.text.trimEnd();
-        view.append(el, part.text.endsWith(' ') ? ' ' : '');
+        view.append(h(part.type, { text: part.text.trimEnd() }), part.text.endsWith(' ') ? ' ' : '');
       }
       legend.textContent = 'Struck through: only in ' + name(k) + '. Underlined: only in ' + name(last) + '.';
     };
     quotes.forEach((q, k) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = k === last ? name(k) : name(k) + ' \u2192 ' + name(last);
-      b.addEventListener('click', () => show(k));
+      const b = h('button', { type: 'button', text: k === last ? name(k) : name(k) + ' \u2192 ' + name(last),
+        onclick: () => show(k) });
       bar.append(b);
       buttons.push(b);
       q.hidden = true;
