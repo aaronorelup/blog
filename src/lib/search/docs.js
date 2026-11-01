@@ -1,6 +1,5 @@
 // The search docs of this build, once per build: every listed post, then its notes page if it has one, chunked by
-// chunks.js from the one text extraction. A notes page is told in its post's voice. Read by src/pages/search/ (the
-// manifest and one file per doc).
+// chunks.js from the one text extraction. Read by src/pages/search/ (the manifest and one file per doc).
 import { cardOf } from '../cards.js';
 import { listedPosts, notesBySlug, renderEntry, slugOf } from '../content.js';
 import { docOf, shortVersion } from './chunks.js';
@@ -20,7 +19,9 @@ export function searchDocs() {
       const note = notes.get(slug);
       if (note) {
         const top = { anchor: '', heading: '', text: note.data.summary };
-        out.push(docOf({ kind: 'notes', id, slug, title: note.data.title, voice, lead: top, text: await textOf(note) }));
+        out.push(docOf({
+          kind: 'notes', id, slug, title: note.data.title, voice: note.data.voice, lead: top, text: await textOf(note),
+        }));
       }
     }
     return out;

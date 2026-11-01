@@ -6,4 +6,5 @@ export const note = z.object({
   post: z.string(),
   title: z.string().trim().min(1),
   summary: z.string().trim().min(1),
+  voice: z.literal('claude').optional(),           // as on a post: Claude wrote this page as "I"; absent means Aaron's
 });

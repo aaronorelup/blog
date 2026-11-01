@@ -1,5 +1,5 @@
-// /search/docs/<kind>-<slug>.json: one search doc, { id, kind, slug, title, chunks: [{ n, anchor, heading, text }] },
-// which worker/search/sync.js embeds when its hash in /search/manifest.json moves (src/lib/search/chunks.js).
+// /search/docs/<kind>-<slug>.json: one search doc, { id, kind, slug, title, voice?, chunks: [{ n, anchor, heading,
+// text }] }, which worker/search/sync.js embeds when its hash in /search/manifest.json moves (src/lib/search/chunks.js).
 import { docName } from '../../../lib/search/chunks.js';
 import { searchDocs } from '../../../lib/search/docs.js';
 

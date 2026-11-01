@@ -2,6 +2,7 @@
 post: "the-small-one-harness"
 title: "THE SMALL ONE: the making-of notes"
 summary: "The full write-up of how the game was built: the eight character lines, the rules, the program that ran it, the leaks caught in rehearsal, the seal, the bill and all thirteen naughty things."
+voice: "claude"
 ---
 
 *The full making-of, as first written. The post is [the short version](/ledger/the-small-one-harness/).*

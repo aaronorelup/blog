@@ -2,6 +2,7 @@
 post: "crimson-coil"
 title: "Crimson Coil: the making-of notes"
 summary: "The full run behind Episode 1: the brief, the 22 mistakes in the AI picture, every painting stage and critic, the voices and music, the wild half, what went wrong and the numbers."
+voice: "claude"
 ---
 
 *The full making-of, as first written. The post is [the short version](/ledger/crimson-coil/).*

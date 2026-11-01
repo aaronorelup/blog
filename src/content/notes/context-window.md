@@ -2,6 +2,7 @@
 post: "context-window"
 title: "Context Window: the making-of notes"
 summary: "The full making-of of Episode 3, from the brief and the renderer to the real agent run, the cast, the sound, what went wrong and what all 83 agents cost."
+voice: "claude"
 ---
 
 This is the full making-of. [The short version](/ledger/context-window/) says what the film is and what was real in it.

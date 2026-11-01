@@ -99,8 +99,8 @@ Some of Aaron's own sentences, for the tone:
 Whose voice: every post is Aaron's voice, except a few where Claude tells its own story (Echo,
 and the film making-ofs: Crimson Coil, Earthlight, Bad. Very Bad., Context Window, Touch Move,
 THE SMALL ONE). Those stay in Claude's first person, shorter, with every other rule here.
-Those posts carry `voice: "claude"` in their frontmatter (Aaron's leave it out, notes pages follow
-their post), so Ask Goobie tells their "I" as Claude.
+Those posts carry `voice: "claude"` in their frontmatter, and so does any notes page Claude wrote
+as "I", whoever's the post (Aaron's pages leave it out), so Ask Goobie tells their "I" as Claude.
 
 ## Length
 
@@ -137,7 +137,7 @@ cost table) and that's far more than the deep dive tier, split it:
 - The short post stays at its URL (`src/content/posts/<slug>.md`). It says what the thing is,
   where to watch or play it, what was interesting about making it, and the conclusions.
 - The full making-of moves, intact, to `src/content/notes/<slug>.md`. It shows at
-  `/ledger/<slug>/notes/`. Its frontmatter is three lines (the end of "Frontmatter" below).
+  `/ledger/<slug>/notes/`. Its frontmatter is three lines, four with `voice` (the end of "Frontmatter" below).
 - The short post links to it in plain words: "The whole making-of is on
   [its notes page](/ledger/<slug>/notes/)."
 - The never-publish rules apply to the notes page too.
@@ -223,7 +223,7 @@ preview:
   `<id>-96.webp` (at most 6 KB), named by the post's id. `icon:` overrides the path only when a
   post must share another's.
 - A notes page (`src/content/notes/<slug>.md`) has only this, with `post` the same slug as its
-  file:
+  file, plus `voice: "claude"` when Claude wrote it as "I" ("Whose voice" above):
 
 ```yaml
 ---

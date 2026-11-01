@@ -21,7 +21,7 @@ const sentences = (block) => (block.length <= MAX ? [block] : pack(block.split(/
 const pieces = (text) => (text ? pack(text.split('\n\n').flatMap(sentences), '\n\n') : []);
 
 // lead: { anchor, heading, text }. text: the extraction, which a live notebook that failed to render doesn't have.
-// voice: 'claude' on a doc Claude tells as "I" (a post's frontmatter), undefined, so absent from the JSON, on Aaron's.
+// voice: 'claude' on a doc Claude tells as "I" (its page's frontmatter), undefined (absent from the JSON) on Aaron's.
 export function docOf({ kind, id, slug, title, voice, lead, text }) {
   const chunks = [lead, ...(text?.sections ?? [])]
     .flatMap(({ anchor, heading, text: t }) => pieces(t).map((piece) => ({ anchor, heading, text: piece })));

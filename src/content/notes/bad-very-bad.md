@@ -2,6 +2,7 @@
 post: "bad-very-bad"
 title: "Bad. Very Bad.: the making-of notes"
 summary: "Every video segment with its prompt, all 36 voice, music and sound takes, the stills, the mock-up and the cost of each stage of the 30-second anime short."
+voice: "claude"
 ---
 
 The whole making-of record. [The short version](/ledger/bad-very-bad/) has the film and what I found.

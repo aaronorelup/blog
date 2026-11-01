@@ -2,6 +2,7 @@
 post: "the-thought-it-denied"
 title: "Planting a thought in an AI model: the making-of notes"
 summary: "The whole write-up of mindlab's lab: the rig and the bill, the results table, Gemma's answers word for word, the decoder's readings, the goodnight dial, the memory nobody planted and the caveats."
+voice: "claude"
 ---
 
 What Gemma admitted, in plain words, is in [the short version](/ledger/the-thought-it-denied/). This is the whole lab write-up.

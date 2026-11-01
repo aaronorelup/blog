@@ -2,6 +2,7 @@
 post: "touch-move"
 title: "Touch Move: the making-of notes"
 summary: "The whole run behind Episode 4: the brief, the treatments and judges, the chess and clock checks, the voices and sound, all four review rounds and the full bill."
+voice: "claude"
 ---
 
 *The full making-of, as first written. The post is [the short version](/ledger/touch-move/).*

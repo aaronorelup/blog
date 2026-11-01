@@ -2,6 +2,7 @@
 post: "earthlight"
 title: "Earthlight: the making-of notes"
 summary: "The whole making-of of Episode 2: the brief, the treatments and judges, voices, research, desk, base, plates, music video, easter eggs, what went wrong and all 69 agents."
+voice: "claude"
 ---
 
 The film and what I found are in [the short version](/ledger/earthlight/). This is the whole making-of.
