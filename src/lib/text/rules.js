@@ -14,8 +14,7 @@ export const skipped = (tag, attr) => SKIP.has(tag) || tag.startsWith('ao-') || 
 
 // The block an element starts, or null. A paragraph in a quote reads as the quote, in a list item as the item.
 export function blockOf(tag, parentTag) {
-  const kind = BLOCKS.get(tag) || null;
-  if (kind !== 'p' || tag !== 'p') return kind;
+  if (tag !== 'p') return BLOCKS.get(tag) || null;
   return parentTag === 'blockquote' ? 'q' : parentTag === 'li' ? 'li' : 'p';
 }
 
