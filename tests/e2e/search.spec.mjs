@@ -26,9 +26,11 @@ const input = (page) => page.locator('.search-input');
 const results = (page) => page.locator('.results .row');
 const words = (s) => s.toLowerCase().match(/[\p{L}\p{N}]+/gu).join(' ');
 
-// A challenge nobody solves: Turnstile gives up on it (timeout-callback).
+// A challenge nobody solves: Turnstile gives up on it (timeout-callback), each time it is rendered or reset.
 const UNSOLVED = `(() => {
-  window.turnstile = { render(el, o) { setTimeout(() => o['timeout-callback'](), 30); return 'w1'; }, reset() {} };
+  let opts = null;
+  const giveUp = () => setTimeout(() => opts['timeout-callback'](), 30);
+  window.turnstile = { render(el, o) { opts = o; giveUp(); return 'w1'; }, reset() { giveUp(); } };
   window[new URL(document.currentScript.src).searchParams.get('onload')]();
 })();`;
 
