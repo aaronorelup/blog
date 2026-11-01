@@ -46,7 +46,7 @@ const fmtTime = (s) => (isFinite(s) ? Math.floor(s / 60) + ':' + String(Math.flo
 // Components can give their element aoPlay()/aoPause() (and aoTitle()/aoClock() for the bar);
 // anything else is driven through the media elements inside it.
 const AO_LISTEN_PLAY = 'ao-listen-play'; // detail: the player that just started
-const AO_STOP = 'ao-stop'; // the homepage closing the reader: stop everything
+export const AO_STOP = 'ao-stop'; // the homepage closing the reader: stop everything
 const GROUPS = 'ao-cues, ao-compare[sync], ao-listen, ao-game';
 const isMediaEl = (el) => !!el && (el.tagName === 'VIDEO' || el.tagName === 'AUDIO');
 const playerOf = (el) => (el.closest && el.closest(GROUPS)) || frameOf.get(el.ownerDocument) || el;
@@ -72,7 +72,7 @@ const isSilent = (p) => {
 };
 const pausePlayer = (p) => (p.aoPause ? p.aoPause() : mediaOf(p).forEach((m) => { if (!m.paused) m.pause(); }));
 
-function claim(p) {
+export function claim(p) { // exported for read-aloud until T1.2's _core/player.js
   const changed = current !== p;
   if (changed && current) {
     current._aoResume = null;

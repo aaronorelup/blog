@@ -742,8 +742,12 @@ export class HomeScene {
         this.postCache[slug] = art.innerHTML;
       }
       if (this.reader !== slug) return;              // visitor moved on while it loaded
+      this.unbindRead?.();
       host.innerHTML = this.postCache[slug];
       host.dataset.slug = slug;
+      // Its Listen button (read-aloud), until T3.1 mounts the post's view module here.
+      this.unbindRead = null;
+      import('./read-aloud/listen.js').then((m) => { if (host.dataset.slug === slug) this.unbindRead = m.bind(host); });
       // Scripts in the copied HTML never run, so the post's custom elements come from here,
       // and so do the behaviours every post gets (the image viewer, one player at a time).
       import('./post-components.js').then((m) => { if (host.dataset.slug === slug) m.enhance(host); });

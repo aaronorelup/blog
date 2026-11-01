@@ -5,9 +5,10 @@
 import { SERIES } from '../../data/series.js';
 import { listedPosts, renderEntry, slugOf } from '../../lib/content.js';
 import { shortDate } from '../../lib/dates.js';
+import ReadAloud from '../post/ReadAloud.astro';
 
 const { post } = Astro.props;
-const { Content } = await renderEntry(post);
+const { Content, remarkPluginFrontmatter } = await renderEntry(post);
 
 // Every post, in ledger-number order. The threads below list their members in this order, and
 // the older/newer links step through it, so no post ends in a dead end.
@@ -38,8 +39,9 @@ const newer = byId.find((p) => cmp(p.data.id, post.data.id) > 0);
   <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.7;color:var(--pc-accent);margin-bottom:10px">
     {post.data.id} <span style="color:var(--pc-quiet)">/ {shortDate(post.data.date)}</span>
   </div>
-  <h1 style="margin:0 0 14px;font-family:'Zen Maru Gothic',sans-serif;font-size:33px;line-height:1.2;font-weight:700;color:var(--pc-head);letter-spacing:-0.015em;text-wrap:pretty">{post.data.title}</h1>
-  <p style="margin:0 0 34px;font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.55;color:var(--pc-soft);text-wrap:pretty">{post.data.summary}</p>
+  <h1 data-r="t" style="margin:0 0 14px;font-family:'Zen Maru Gothic',sans-serif;font-size:33px;line-height:1.2;font-weight:700;color:var(--pc-head);letter-spacing:-0.015em;text-wrap:pretty">{post.data.title}</h1>
+  <p data-r="s" style="margin:0 0 34px;font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.55;color:var(--pc-soft);text-wrap:pretty">{post.data.summary}</p>
+  <ReadAloud post={post} text={remarkPluginFrontmatter.text} />
   <div style="height:1px;background:var(--pc-line);margin:0 0 34px"></div>
 
   <div class="pc-prose">
@@ -95,4 +97,7 @@ const newer = byId.find((p) => cmp(p.data.id, post.data.id) > 0);
   // Links to other posts (the threads, older/newer, cross-links in the text) open their preview
   // card on hover, the same card as a ledger row (PREVIEWS.md).
   import '../../scripts/ledger-preview.js';
+  // The Listen button: read-aloud karaoke (T2.1's views/post.js takes this over).
+  import { bind } from '../../scripts/read-aloud/listen.js';
+  bind(document.querySelector('[data-post-article]'));
 </script>
