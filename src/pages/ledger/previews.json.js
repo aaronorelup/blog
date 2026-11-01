@@ -5,7 +5,7 @@
 // Listed posts only (isListed): an unlisted post must not surface in a card any more than in
 // a list. A post without a `preview:` gets its opening lines instead, and the build says so.
 // Its media files are checked before the build, by scripts/check/assets.mjs.
-import { listedPosts, slugOf } from '../../lib/content.js';
+import { listedPosts, slugOf, textOf } from '../../lib/content.js';
 import { cardOf } from '../../lib/cards.js';
 import { iconFor } from '../../lib/icons.js';
 import { plain, readingMinutes } from '../../lib/text/plain.js';
@@ -20,7 +20,7 @@ export async function GET() {
   for (const post of await listedPosts()) {
     const { id, title, ...face } = cardOf(post);
     const icon = iconFor(post)?.s96;
-    const card = { id, title, topic: post.data.topic, mins: readingMinutes(post.body), ...(icon && { icon }), ...face };
+    const card = { id, title, topic: post.data.topic, mins: readingMinutes((await textOf(post))?.words), ...(icon && { icon }), ...face };
     if (!post.data.preview) {
       card.excerpt = excerpt(post.body);
       missing.push(id);

@@ -17,6 +17,9 @@ export const renderEntry = (entry) => {
   }
   return render(entry);
 };
+// The one extraction's output for an entry (scripts/build/rehype-post-text.mjs): words, headings, sections, read
+// blocks, elements, links. Undefined only for a live notebook that failed to render.
+export const textOf = async (entry) => (await renderEntry(entry)).remarkPluginFrontmatter.text;
 
 export const allPosts = () => sorted('posts');                    // drafts included
 export const listedPosts = async () => (await allPosts()).filter((p) => isListed(p.data));

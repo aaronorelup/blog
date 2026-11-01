@@ -4,7 +4,7 @@
 // and no fetch (the phone's card). The chips filter on data-topic and data-project.
 import { TOPICS } from '../../data/taxonomy.js';
 import { cardOf } from '../../lib/cards.js';
-import { slugOf } from '../../lib/content.js';
+import { slugOf, textOf } from '../../lib/content.js';
 import { dayOf } from '../../lib/dates.js';
 import { iconFor } from '../../lib/icons.js';
 import { readingMinutes } from '../../lib/text/plain.js';
@@ -14,6 +14,7 @@ const { post } = Astro.props;
 const slug = slugOf(post);
 const { title, summary, date, topic, project } = post.data;
 const icon = iconFor(post);
+const mins = readingMinutes((await textOf(post))?.words);
 const { verdict, takeaway, points } = cardOf(post);
 ---
 
@@ -23,7 +24,7 @@ const { verdict, takeaway, points } = cardOf(post);
     : <span class="row-icon is-glyph"><Glyph name={TOPICS[topic].glyph} /></span>}
   <a class="row-link" href={`/ledger/${slug}/`} data-ledger-entry={slug}>{title}</a>
   <p class="row-summary">{summary}</p>
-  <p class="row-meta">{TOPICS[topic].label} · {dayOf(date)} · {readingMinutes(post.body)} min</p>
+  <p class="row-meta">{TOPICS[topic].label} · {dayOf(date)} · {mins} min</p>
   {takeaway && (
     <details class="row-card">
       <summary class="stamp">{verdict ?? 'The short version'}</summary>

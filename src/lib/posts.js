@@ -36,3 +36,13 @@ export function olderNewer(post, posts) {
   const at = i < 0 ? order.length : i;
   return { newer: order[at - 1], older: order[at] };
 }
+
+// Three posts to read next, never `post` itself and only from `posts` (pass the listed ones): those sharing a project
+// first, then those sharing the topic, then any, each group nearest in date.
+export function related(post, posts, n = 3) {
+  const near = (a, b) => Math.abs(a.data.date - post.data.date) - Math.abs(b.data.date - post.data.date)
+    || byId(b.data.id, a.data.id);
+  const rank = (p) => (p.data.project.some((k) => post.data.project.includes(k)) ? 0
+    : p.data.topic === post.data.topic ? 1 : 2);
+  return posts.filter((p) => p.id !== post.id).sort((a, b) => rank(a) - rank(b) || near(a, b)).slice(0, n);
+}
