@@ -55,7 +55,7 @@ React, the code library that draws the screen, re-draw all of it. So it flickere
 the model was writing.
 
 <figure class="wide">
-  <img src="/presentations/keeper-and-the-beacon/shots/24_evolution_streaming.png" alt="LLM Monster Hunter's evolution screen: a painted golden moth monster called Luminel, with a paragraph of story text below it still being written, and a counter at the top right reading Generating text: 82 tokens" loading="lazy">
+  <img src="/media/the-wall-that-stopped-me/evolution-streaming.webp" alt="LLM Monster Hunter's evolution screen: a painted golden moth monster called Luminel, with a paragraph of story text below it still being written, and a counter at the top right reading Generating text: 82 tokens" loading="lazy">
   <figcaption><b>The AI writing a scene, live</b><span class="ao-meta">This kind of stream used to re-draw the whole screen with every token · from <a href="/ledger/keeper-and-the-beacon/">Claude's playthrough of the game</a> a month after the fix</span></figcaption>
 </figure>
 
@@ -99,7 +99,7 @@ memory, chat, evolution, a code cleanup and the loop around a whole run. A month
 reviewing it all.
 
 <figure class="wide">
-  <img src="/presentations/keeper-and-the-beacon/shots/23_campfire.png" alt="The Campfire Chat screen in LLM Monster Hunter: a list of companions on the left and a conversation on the right between the player, Maren Holt, and her moth monster Luminel" loading="lazy">
+  <img src="/media/the-wall-that-stopped-me/campfire.webp" alt="The Campfire Chat screen in LLM Monster Hunter: a list of companions on the left and a conversation on the right between the player, Maren Holt, and her moth monster Luminel" loading="lazy">
   <figcaption><b>The campfire chat screen</b><span class="ao-meta">One of the things that week built: you talk to your monsters between runs, and they remember it</span></figcaption>
 </figure>
 

@@ -141,7 +141,7 @@ has already seen. That line was blown from the first hour. Output was the line t
 Fifteen hours later every check passed, and the autopilot won through the real controls on five
 different seeds, the random numbers a run starts from.
 
-![A flooded cave passage from BLACKWATER 2's autopilot run, a drowned figure drifting ahead, with the build, seed and tick stamped in the corner](/media/blackwater-2/proof-man-seed-7.png)
+![A flooded cave passage from BLACKWATER 2's autopilot run, a drowned figure drifting ahead, with the build, seed and tick stamped in the corner](/media/blackwater-2/proof-man-seed-7.webp)
 
 One of its proof frames. It saved one at every big moment, and any blank frame failed the checks.
 
