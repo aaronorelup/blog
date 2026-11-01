@@ -24,7 +24,7 @@
   --day-scrim: rgba(251, 243, 232, 0.34); --night-scrim: rgba(8, 9, 18, 0.44);
   --day-shadow: 0 30px 90px rgba(58, 58, 66, 0.22); --night-shadow: 0 34px 100px rgba(0, 0, 0, 0.6);
 
-  /* The homepage's cards, buttons and coin (home-scene.js paints them until T3.2 moves them onto these). */
+  /* The homepage's cards, buttons, rail, flash and coin (home.css). */
   --day-home-card: rgba(251, 243, 232, 0.9);    --night-home-card: rgba(21, 23, 38, 0.86);
   --day-home-shadow: 0 14px 40px rgba(58, 58, 66, 0.12); --night-home-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
   --day-home-head: rgb(190, 122, 16);           --night-home-head: rgb(240, 192, 106);
@@ -37,6 +37,11 @@
   --day-home-flash: rgb(255, 255, 255);         --night-home-flash: rgb(12, 14, 24);
   --day-home-coin: rgb(247, 201, 212);          --night-home-coin: rgb(59, 46, 68);
   --day-home-coin-rim: rgb(58, 58, 66);         --night-home-coin-rim: rgb(90, 84, 112);
+  --day-home-coin-back: rgb(246, 223, 168);     --night-home-coin-back: rgb(33, 31, 51);
+  /* The homepage's day/night switch, which follows the mode asked for (aria-pressed), not data-mode. */
+  --day-home-toggle: rgba(251, 243, 232, 0.92); --night-home-toggle: rgba(21, 23, 38, 0.86);
+  --day-home-toggle-line: rgb(58, 58, 66);      --night-home-toggle-line: rgb(74, 69, 96);
+  --home-pink: rgb(240, 166, 184);              --home-blush: rgb(247, 201, 212);   /* button hovers, both modes */
 
   --mix: 1;
   --pc-page: var(--night-page); --pc-bg: var(--night-bg); --pc-head: var(--night-head);
@@ -49,7 +54,7 @@
   --home-body: var(--night-home-body); --home-quiet: var(--night-home-quiet); --home-btn-bg: var(--night-home-btn-bg);
   --home-btn-line: var(--night-home-btn-line); --home-btn-text: var(--night-home-btn-text);
   --home-dot: var(--night-home-dot); --home-flash: var(--night-home-flash); --home-coin: var(--night-home-coin);
-  --home-coin-rim: var(--night-home-coin-rim);
+  --home-coin-rim: var(--night-home-coin-rim); --home-coin-back: var(--night-home-coin-back);
 
   --font-display: 'Zen Maru Gothic', sans-serif;
   --font-body: Karla, system-ui, sans-serif;
@@ -76,7 +81,7 @@
   --home-body: var(--day-home-body); --home-quiet: var(--day-home-quiet); --home-btn-bg: var(--day-home-btn-bg);
   --home-btn-line: var(--day-home-btn-line); --home-btn-text: var(--day-home-btn-text);
   --home-dot: var(--day-home-dot); --home-flash: var(--day-home-flash); --home-coin: var(--day-home-coin);
-  --home-coin-rim: var(--day-home-coin-rim);
+  --home-coin-rim: var(--day-home-coin-rim); --home-coin-back: var(--day-home-coin-back);
 }
 
 /* During the homepage's tween only, the colours follow --mix; the shadows follow data-mode, which flips at 0.5.
@@ -109,5 +114,6 @@
     --home-flash: color-mix(in srgb, var(--day-home-flash), var(--night-home-flash) calc(var(--mix) * 100%));
     --home-coin: color-mix(in srgb, var(--day-home-coin), var(--night-home-coin) calc(var(--mix) * 100%));
     --home-coin-rim: color-mix(in srgb, var(--day-home-coin-rim), var(--night-home-coin-rim) calc(var(--mix) * 100%));
+    --home-coin-back: color-mix(in srgb, var(--day-home-coin-back), var(--night-home-coin-back) calc(var(--mix) * 100%));
   }
 }

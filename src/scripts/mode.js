@@ -1,17 +1,21 @@
-// Day and night on the panel pages. Head.astro's inline script has set data-mode before first paint; this binds the
-// one toggle (chrome/ModeToggle.astro), stores the choice where the homepage reads it too, and keeps aria-pressed
-// true at night. The homepage's toggle is still home-scene.js's until T3.2.
+// Day and night, on every page. Head.astro's inline script has set data-mode before first paint; this binds the one
+// switch (chrome/ModeToggle.astro), stores the choice where every page reads it, and keeps aria-pressed true while
+// night is the mode asked for. A click dispatches ao-mode ('day' or 'night'): a page that takes it over (the
+// homepage, home/theme.js, tweens the room to it) cancels it; otherwise data-mode flips at once.
 const KEY = 'scene-mode';
 const root = document.documentElement;
 const toggle = document.getElementById('mode-toggle');
-const night = () => root.dataset.mode !== 'day';
-const paint = () => toggle.setAttribute('aria-pressed', String(night()));
+let night = root.dataset.mode !== 'day';
+const paint = () => toggle.setAttribute('aria-pressed', String(night));
 
 toggle.addEventListener('click', () => {
-  if (night()) root.dataset.mode = 'day';
-  else delete root.dataset.mode;
+  night = !night;
+  const mode = night ? 'night' : 'day';
   // Blocked storage throws; the switch still works for this page.
-  try { localStorage.setItem(KEY, night() ? 'night' : 'day'); } catch {}
+  try { localStorage.setItem(KEY, mode); } catch {}
   paint();
+  if (!dispatchEvent(new CustomEvent('ao-mode', { detail: mode, cancelable: true }))) return;
+  if (night) delete root.dataset.mode;
+  else root.dataset.mode = 'day';
 });
 paint();

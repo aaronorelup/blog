@@ -1,7 +1,8 @@
 ---
 // Shell for the homepage only: the scene owns its own chrome. It links site.css, as every panel page does
-// (PanelPage.astro), so the overlay's views find every rule they need already here.
+// (PanelPage.astro), so the overlay's views find every rule they need already here, and then its own home.css.
 import '../styles/site.css';
+import '../styles/home.css';
 import Head from '../components/chrome/Head.astro';
 
 interface Props {

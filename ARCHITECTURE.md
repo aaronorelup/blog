@@ -47,6 +47,8 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
      API, D1): no token; the nearest chunks of the query.
    - `/api/ask` → `worker/ask/serve.js` (the same retrieval, limiters `ASK_LIMIT` keyed on the session and
      `ASK_ALL`, D1's answer cache, one DeepSeek call at most). Any other `/api/` path is 404, a wrong method 405.
+   - `/api/lantern` → `worker/lantern.js`: a 302 to the `LANTERN_URL` secret, the homepage's lantern door (the
+     address is in no file of this public repo).
    - anything else → `worker/media/serve.js`: R2 `MEDIA` (bucket `aaronorelup-site-media`) first, with byte ranges
      and ETags, then the asset (`ASSETS`) for the media still in git, sized from `/media-sizes.json`. A
      `/read/<slug>/<hash>.json` not recorded yet is `200 { ready: false }`.
@@ -172,7 +174,7 @@ fails the build, or only warns in a live notebook.
 | `src/lib/search/chunks.js`, `docs.js` | a listed post or its notes → search chunks (the short version, then each h2 section, at most 1,500 characters) and the manifest; `docs.js` reads the build's posts once |
 | `src/lib/lore*.js` | the lore course's data and drawings |
 | `src/lib/projects.js` | the projects page's data: `SECTIONS`, order, state chips, needs glyphs, pictures or icons, `DERIVED` (the course's live lesson count); a card linking an unlisted post fails the build |
-| `src/pages/index.astro` + `src/layouts/Home.astro` | the homepage: the tea house scene, and its overlay frame (`PanelChrome` around an empty `[data-panel-host]`) |
+| `src/pages/index.astro` + `src/layouts/Home.astro` | the homepage: the tea house scene's markup (classes from `home.css`, no inline style), `ModeToggle`, and its overlay frame (`PanelChrome` around an empty `[data-panel-host]`); `Home` links `site.css`, then `home.css` |
 | `src/pages/{ledger,projects,about,courses,stats,404}.astro`, `ledger/[slug].astro`, `ledger/[slug]/notes.astro` | the panel pages |
 | `src/pages/og/[slug].jpg.js` | each listed post's share card (`src/lib/og/`) |
 | `src/pages/courses/**`, `src/pages/research/**` | the course and research pages |
@@ -190,10 +192,9 @@ fails the build, or only warns in a live notebook.
 
 | Path | What |
 |---|---|
-| `src/scripts/post-components.js` | a shim, `export { enhance }` from `src/elements/enhance.js`, no longer imported (deleted by T3.2) |
 | `src/elements/` | the post components (`src/elements/CLAUDE.md`), one folder per tag (`ao-x/element.js`, `ao-x/style.css`): `enhance.js` (viewer hook, frames, `upgrade`), `registry.js` (a tag's `element.js` loads when a post has it), `_core/` (one player at a time, the now-playing bar, the viewer hook; the viewer and its zoom load on the first open), `_lib/` (times, tables, `h()`) |
 | `src/scripts/lazy.js` | `lazy(load, fallbackUrl)`: every dynamic import; a lost chunk (a deploy since the page loaded) navigates to `fallbackUrl` or reloads once |
-| `src/styles/elements.css` | the viewer, the now-playing bar, `.visually-hidden`: linked from `PostView` (post and notes pages) and `index.astro` (into `site.css` by T3.2); an element's own CSS is inlined into its articles by `components/post/ElementStyles.astro` |
+| `src/styles/elements.css` | the viewer, the now-playing bar, `.visually-hidden`: part of `site.css`; an element's own CSS is inlined into its articles by `components/post/ElementStyles.astro` |
 | `src/elements/ao-demo/demos/<name>/` | the two `<ao-demo>` demos, `synthid` (AO-040: `model.js` the watermark maths, `ui.js`, a file per part, `index.js` mounts) and `cf` (AO-057), each an `index.js` exporting `mount(host, part)` and a `style.css` |
 | `src/scripts/cards/` + `src/styles/cards.css` | the hover card: `data.js` (`previews.json`, fetched once and shared), `render.js` (the element and where it goes; the icon when a card has no still; a link's own `data-card-line`), `hover.js` (when: listeners, timings, media). `ledger-preview.js` is a one-line stub that `stats.astro` and `views/projects.js` import until W4 |
 | `src/scripts/ledger/` | `filter.js` (the chips: one topic or project, `?topic=` read on load and kept with `replaceState`), `feed.js` (`bindFeedCopy`) |
@@ -203,20 +204,22 @@ fails the build, or only warns in a live notebook.
 | `src/scripts/views/post.js`, `notes.js` | the post view: `enhance()`, the contents list, folded details, where a link lands once the components drew (after Reload or Back the place kept in `history.state`, for a `?hl=`/`?hs=` link the passage `highlight` marks, else the `#heading`; a place is held while the article grows, until the reader moves), the hover card (mouse only), and the Listen button (`read-aloud/listen.js`); `notes.js` is the same without Listen |
 | `src/scripts/read-aloud/` | `listen.js` (`bind(root)`: the Listen button, loads the rest on first press, and first unlocks the voice and the one `<audio>` inside that tap, as iOS needs), `index.js` (karaoke mode: open, play, marks, click a word, follow; one of the page's players through `elements/_core/player.js`), `dom.js` (read blocks on screen, by the shared rules), `recorded.js` (the recording's parts on the `<audio>` Listen unlocked; once it is in, every tap plays synchronously), `speech.js` (the browser's voice), `bar.js` |
 | `src/scripts/home/overlay/` | the homepage overlay: `routes.js` (`NAV` entries marked overlay, posts and notes, any query and hash), `load-view.js` (fetch on intent, 12 parsed pages cached, `ao-build` compared, stylesheets adopted before the homepage's, a fresh copy of `[data-panel-view]` each time), `frame.js` (the 560 ms flight), `panel.js` (history, Esc, resize, links, prefetch, `mountView` on each view it shows; `onPanel(fn)` tells the scene `open`, `covered`, `closing`, `closed`) |
-| `src/scripts/home-scene.js` | the homepage scene, its own chunk (split into `scripts/home/` by T3.2); `panelState(s)` is the overlay's hook: no input while the panel is up, no drawing while it covers the window |
+| `src/scripts/home/` | the homepage. `index.js` (the entry: theme, overlay, coin; after first paint, on WebGL only, the scene chunk, else `flat.js`), `theme.js` (the day/night tween: takes the switch's `ao-mode`, runs `--mix` on `:root` with `data-tweening`, flips `data-mode` halfway; `onMix(fn)`), `coin.js` + `lantern.js` (the coin; five night tosses open the door at `/api/lantern`), `flat.js` (the page without the scene) |
+| `src/scripts/home/scene/` | the tea house, its own chunk; `mount()` returns its state (`window.__homeScene`, the e2e hook). `scene.js` (boot, the frame loop, `panelState`: no input while the overlay's panel is up, no drawing while it covers the window; `bail`), `renderer.js`, `quality.js` (`QUALITY` rungs, `?tier=`, stepping down when slow), `palette.js` (the world's day and night colours and light rig, `paint(s, mix)` each tween frame), `camera.js` (`WAYPOINTS`, curves, one gesture per stop, input), `cards.js` (the staged page, `cardState`), `rail.js`, `exit.js` (flying out through the torii, outbound links); `world/` (`kit.js` materials and outlines, `sky`, `lamps`, `garden`, `house`, `interior`, `petals`, `statics`, `index.js` assembles). Named imports from `three` |
+| `src/scripts/home/dev/` | loaded only when asked: `staging.js` (backtick: fly the camera, place the lamp, copy the numbers), `diagnostics.js` (`?stats` readout, `?diag` frame pacing per rung) |
 | `src/scripts/stats/**`, `src/styles/stats/**` | the `/stats` page: its own code, kept as is |
-| `src/scripts/mode.js` | the panel pages' day/night toggle: `data-mode`, the stored choice, `aria-pressed` |
+| `src/scripts/mode.js` | every page's day/night switch: the stored choice, `aria-pressed` (the mode asked for), and `ao-mode`, which the homepage takes over to tween (`home/theme.js`); elsewhere `data-mode` flips at once |
 | `src/scripts/views/projects.js` | the projects view's module (`mount(root)` → unmount): the hover card on its post links |
 | `src/scripts/views/ledger.js` | the ledger view's module: chips, search box, feed copy, hover card |
 | `src/styles/tokens.css` | every colour as a day/night pair, the `--pc-*` and `--home-*` tokens per mode (plain strings: the `/stats` canvas parses them), the homepage tween (`:root[data-tweening]` mixes by `--mix`), fonts, type scale, space, radii, z |
-| `src/styles/site.css` | the one stylesheet of every panel page: tokens, base, chrome, prose, post, read-aloud, cards, ledger, search, projects, about, research (later tasks add theirs) |
+| `src/styles/site.css` | the one stylesheet of every panel page and the homepage: tokens, base, chrome, prose, post, read-aloud, cards, ledger, search, projects, about, research, elements (later tasks add theirs), so the overlay adopts no second copy of them |
+| `src/styles/home.css` | the homepage only (linked by `Home` after `site.css`): the scene's frame, cards, rail, coin, flash, the overlay's frame, the switch's homepage look |
 | `src/styles/post.css` | the post page (`.post-*`, `.short-*`, `.toc*`, `.notes-link`, `.rel-*`); each part carries its own width, so a copy of the article's insides lays out the same |
 | `src/styles/read-aloud.css` | the Listen button, karaoke mode's bar, `::highlight(ao-read)` |
 | `src/styles/{base,chrome,prose,about,research}.css` | page-wide rules; the frame, the view header, shared hover states; long-form text (`.pc-prose`, folded `<details>`); the text pages (`.page-*`: About, 404); a research document |
 | `src/styles/projects.css` | the projects page (`.proj-*`), on `--pc-*` tokens only so the overlay's tween carries it |
 | `src/styles/ledger.css` | the ledger (`.row-*`, `.chip*`, `.post-card*`, `.start-*`, `.month`, `.ledger-feed*`), on `--pc-*` tokens only |
 | `src/styles/fonts.css`, `public/fonts/` | written by `scripts/tools/fonts.mjs`: Google's own woff2 slices, self-hosted under content-hashed names |
-| `src/styles/panel.css` | an `@import` stub (tokens, chrome, prose, post, read-aloud, cards, ledger, search, projects, about) for `index.astro` until T3.2 |
 | `src/styles/lore.css`, `courses.css` | the course looks |
 
 ### `scripts/` (Node)
@@ -254,6 +257,7 @@ fails the build, or only warns in a live notebook.
 | `worker/search/` | `serve.js` (`GET /api/search`), `retrieve.js` (embed and query, shared with Ask), `sync.js` (the index cron), `counts.js` (anonymous counts), `search.sql` |
 | `worker/ask/` | `serve.js` (`POST /api/ask`), `prompt.js` (Goobie, who speaks as itself and of Aaron by name; the excerpts; citations with their `kind`), `deepseek.js` (the one call), `ask.sql` |
 | `worker/cleanup.js` | the daily sweep of old counts, answers and totals |
+| `worker/lantern.js` | `GET /api/lantern`: the lantern door's redirect to `LANTERN_URL` |
 | `worker/read/` | `step.js` (`read.step`: one post's missing sections a run, then its post file; capped by credit), `voice.js` (the ElevenLabs calls), `read.sql` |
 | `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (Ask's guards, citations, excerpt headers and DeepSeek answers), `schema.test.mjs` (the posts schema's `voice`), `read.test.mjs` (the spoken copy and its map, alignment, section hashes, the read-aloud cron); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1 |
 | `tests/e2e/` | the behaviour suite: `INVENTORY.md`, `targets.json` (from `element-usage`), specs, fixtures |

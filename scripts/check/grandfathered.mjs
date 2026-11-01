@@ -6,9 +6,6 @@ export const KEEP = [
   'src/pages/stats.astro', 'src/scripts/stats/**', 'src/styles/stats/**', 'worker/stats/**',
 ];
 
-export const UNTIL = {
-  'src/scripts/home-scene.js': 'T3.2',
-  'src/pages/index.astro': 'T3.2',
-};
+export const UNTIL = {};
 
 export const covers = (pattern, file) => (pattern.endsWith('/**') ? file.startsWith(pattern.slice(0, -2)) : file === pattern);
