@@ -42,6 +42,31 @@ shown by `moonlight-two-cuts` (stills) and `storm-bell-fighter` (`sync`).
 
 ## <ao-cues>
 
+One or more cuts of the same timeline (a music video and its re-edit, a film and its previs) played in lockstep
+beside a list of timed cues: lyric lines, shots, chapters. The cue being played is lit, and a click on one sends
+every cut there, so two cuts of a song are compared at the same bar instead of from memory. The first video sets the
+clock and the others follow it (a small drift is closed with the playback rate, only a big gap with a seek); if one
+cut runs out of buffer, all wait for it. Only one cut is heard at a time: a Sound button per cut picks it.
+
+| Attribute | |
+|---|---|
+| `labels="A\|B"` | one tag per video (default: each video's `title`, else Cut 1, Cut 2) |
+
+Children: one or more `<video>`, then an `<ol>` whose `<li data-t="m:ss.xx">` are the cues, then an optional
+`<figcaption>`. Without JS: the videos with their own controls, and the cues as a plain list.
+
+```html
+<ao-cues labels="v1|v2">
+<video src="/media/x/v1.mp4" preload="metadata"></video>
+<video src="/media/x/v2.mp4" preload="metadata"></video>
+<ol><li data-t="0:21">The first verse</li><li data-t="1:44.97">The drop</li></ol>
+<figcaption><b>Two cuts of one song</b></figcaption>
+</ao-cues>
+```
+
+Behaviours: cues-1 to cues-9 (cues-3b, space on a cut, is broken on main). Used by `moonlight-two-cuts` (the best
+example) and `moonlight-five-times`.
+
 ## <ao-demo>
 
 ## <ao-diff>
