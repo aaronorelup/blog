@@ -9,13 +9,14 @@ export const MODEL = '@cf/baai/bge-m3';
 export const MAX = 1500;
 const EMBED = `${MODEL} 1`; // bump the 1 when sync.js changes how a chunk is embedded: every doc re-embeds
 
-// Parts joined by sep into runs of at most MAX characters (a single part longer than that stays whole).
+// Parts joined by sep into runs of at most MAX characters. A word longer than that is cut every MAX characters.
 const pack = (parts, sep) => parts.reduce((out, p) => {
   if (out.length && out.at(-1).length + sep.length + p.length <= MAX) out[out.length - 1] += sep + p;
   else out.push(p);
   return out;
 }, []);
-const words = (s) => (s.length <= MAX ? [s] : pack(s.split(' '), ' '));
+const cut = (w) => Array.from({ length: Math.ceil(w.length / MAX) }, (_, i) => w.slice(i * MAX, (i + 1) * MAX));
+const words = (s) => (s.length <= MAX ? [s] : pack(s.split(' ').flatMap(cut), ' '));
 const sentences = (block) => (block.length <= MAX ? [block] : pack(block.split(/(?<=[.!?])\s+/).flatMap(words), ' '));
 const pieces = (text) => (text ? pack(text.split('\n\n').flatMap(sentences), '\n\n') : []);
 
