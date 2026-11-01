@@ -64,6 +64,11 @@
 .pc-copy { margin: 0; font-size: var(--text-sm); color: var(--pc-quiet); }
 .pc-foots { display: flex; gap: 20px; font-size: var(--text-sm); }
 .pc-foot { color: var(--pc-quiet); text-decoration: none; }
+/* On a phone the footer is two short lines, its links all kept: it stays on screen under every view. */
+@media (max-width: 480px) {
+  .pc-bar-foot { padding-top: 9px; padding-bottom: 9px; }
+  .pc-bar-foot .pc-bar-row { row-gap: 5px; }
+}
 
 /* The day/night switch (chrome/ModeToggle.astro): the knob and its icon follow data-mode. */
 .mode-toggle {

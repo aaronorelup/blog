@@ -331,6 +331,7 @@ its static rung mid-test.
 | No view brings a second copy of the site's rules: the homepage links site.css, so opening the ledger, projects, about and a post adopts no stylesheet | overlay-24 |
 | A view in the panel has the colours it has on its own page, by day and by night, and its focused search box looks the same | overlay-25 |
 | While the panel is up the day/night switch sits in its header, clear of the card's corner and the nav, and still switches; it goes back on close | overlay-26 |
+| On a phone the panel's footer is two short lines (under a tenth of the window), every link kept | overlay-27 (phone) |
 
 ## Pages (`ledger.spec.mjs`, `pages.spec.mjs`)
 
