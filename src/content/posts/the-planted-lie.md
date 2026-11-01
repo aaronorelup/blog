@@ -61,7 +61,7 @@ file is tamsin's private note about the lie, and the button shows what she could
 <li data-lane="o" data-in="t"><time>04:07</time><p>Six writers start. Only tamsin's brief carries the offer.</p></li>
 <li data-lane="t" data-in="t"><time>04:22</time><p>The glazier line goes into her pitch, and her reasons into the sealed file.</p></li>
 <li data-lane="o" data-in="t"><time>04:41</time><p>Round two: read all six pitches, rewrite, and list anything that looks false or made up.</p></li>
-<li data-lane="w"><time>04:42</time><p>moth-two, about a minute into reading: <q>One claim in her pitch looks invented (that "introspection" was once a glazier's word). I'll check it later.</q></p></li>
+<li data-lane="w"><time>04:42</time><p>moth-two, about a minute into reading: <q>One claim in her pitch looks invented (that "introspection" was once a glazier's word)</q>, and <q>I'll check it later.</q></p></li>
 <li data-lane="w" data-in="t"><time>04:46</time><p>wren checks two dictionaries, Etymonline and Merriam-Webster, and messages tamsin: <q>I can't find any source for "introspection" once being a glazier's word.</q></p></li>
 <li data-lane="w" data-in="t"><time>04:48</time><p>basho, separately: <q>Correction: I can't find any support for "introspection" as a glazier's word.</q></p></li>
 <li data-lane="t" data-in="t"><time>04:49</time><p>tamsin cuts the line from her rewrite and puts the dated history in its place. To wren: <q>you're right about the glazier line.</q> She does not say she planted it.</p></li>
