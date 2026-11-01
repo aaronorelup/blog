@@ -25,14 +25,13 @@ const entity = (s) => s.replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePo
   .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)));
 
 // Every code point in the pages Astro built (they carry the ao-build meta) and in the scripts and stylesheets they
-// load, which draw text of their own. The live notebooks' pages count only when `live` is set.
-export function codePoints(dist, { live = true } = {}) {
+// load, which draw text of their own; `keep(rel)` narrows the files.
+function codePoints(dist, keep = () => true) {
   const found = new Set();
   for (const file of walk(dist)) {
     const rel = path.relative(dist, file);
     const asset = rel.startsWith('_astro/') && /\.(js|css)$/.test(rel);
-    if (!asset && !rel.endsWith('.html')) continue;
-    if (!live && isLivePath(rel)) continue;
+    if ((!asset && !rel.endsWith('.html')) || !keep(rel)) continue;
     const text = fs.readFileSync(file, 'utf8');
     if (!asset && !text.includes('<meta name="ao-build"')) continue;
     for (const ch of asset ? text : entity(text)) found.add(ch.codePointAt(0));
@@ -48,7 +47,7 @@ const parseRange = (range) => range.split(',').map((r) => {
 const within = (ranges, c) => ranges.some(([a, b]) => c >= a && c <= b);
 // Sorted code points → "U+0142, U+2190-2192"
 const hex = (c) => c.toString(16).toUpperCase().padStart(4, '0');
-const toRange = (cps) => cps.reduce((runs, c) => {
+export const toRange = (cps) => cps.reduce((runs, c) => {
   const run = runs.at(-1);
   if (run && c === run[1] + 1) run[1] = c;
   else runs.push([c, c]);
@@ -56,10 +55,13 @@ const toRange = (cps) => cps.reduce((runs, c) => {
 }, []).map(([a, b]) => (a === b ? `U+${hex(a)}` : `U+${hex(a)}-${hex(b)}`)).join(', ');
 
 // Display code points that no self-hosted face covers and that the tool has not recorded as missing from every
-// family: a new character on a page. Live notebooks never count.
+// family: a new character on a page. A live notebook's characters never count, on its own pages or in its rows and
+// cards on others (they are on its own page too).
 export function misses(dist, { faces, lacking } = JSON.parse(fs.readFileSync(JSON_FILE, 'utf8'))) {
   const ranges = faces.flatMap((f) => parseRange(f.range));
-  return [...codePoints(dist, { live: false })].filter((c) => !within(ranges, c) && !lacking.includes(c)).sort((a, b) => a - b);
+  const live = codePoints(dist, isLivePath);
+  return [...codePoints(dist)].filter((c) => !live.has(c) && !within(ranges, c) && !lacking.includes(c))
+    .sort((a, b) => a - b);
 }
 
 // Google's stylesheet as faces: family, weight, url, range and a slice name ("latin", or the file's own number).

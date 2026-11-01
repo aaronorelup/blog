@@ -11,7 +11,7 @@ import { fromHtml } from 'hast-util-from-html';
 import { toHtml } from 'hast-util-to-html';
 import { visit, SKIP } from 'unist-util-visit';
 import { isLivePath } from '../../src/data/exempt.js';
-import { misses } from './fonts.mjs';
+import { misses, toRange } from './fonts.mjs';
 
 const ENFORCE = false;   // W4 sets true
 const KB = 1024;
@@ -88,8 +88,8 @@ export function measure(dist) {
 // One line naming the code points the fonts miss, or '' when there are none.
 export function fontMisses(dist) {
   const cps = misses(dist);
-  return cps.length ? `${cps.length} display code points the self-hosted fonts miss: ` +
-    `${cps.map((c) => `U+${c.toString(16).toUpperCase().padStart(4, '0')}`).join(' ')} (run node scripts/tools/fonts.mjs)` : '';
+  return cps.length ? `${cps.length} display code points the self-hosted fonts miss: ${toRange(cps)} ` +
+    '(run node scripts/tools/fonts.mjs)' : '';
 }
 
 const size = (b) => (b < KB ? `${b} B` : `${(b / KB).toFixed(1)} KB`).padStart(8);

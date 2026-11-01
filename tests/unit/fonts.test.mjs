@@ -1,6 +1,7 @@
 // scripts/tools/fonts.mjs misses(): over a made-up dist/, a display code point no self-hosted face covers is missed,
-// one no family has (recorded as lacking) is not, scripts count, and a live notebook never does. Then the real build,
-// when there is one: every code point its pages show has a self-hosted face, or no family has it.
+// one no family has (recorded as lacking) is not, scripts count, and a live notebook's never do, on its own page or
+// in its row on another. Then the real build, when there is one: every code point its pages show has a face, or no
+// family has it.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -19,8 +20,9 @@ test('misses names what no face covers, never what no family has or what a live 
   try {
     put('about/index.html', page('Plain text, ł, and 🙂, and &#x416;'));          // Ж as an entity
     put('_astro/view.js', 'el.textContent = "→";');
-    put('ledger/teardown-lab/index.html', page('θ only in the live notebook'));
-    put('labs/other/index.html', '<p>ψ in a page Astro did not build</p>');
+    put('ledger/teardown-lab/index.html', page('θ and ψ, the live notebook'));
+    put('ledger/index.html', page('its row: ψ'));
+    put('labs/other/index.html', '<p>ω in a page Astro did not build</p>');
     const fonts = { faces: [{ range: 'U+0000-00FF' }, { range: 'U+0142' }], lacking: ['🙂'.codePointAt(0)] };
     assert.deepEqual(misses(dist, fonts), [0x416, 0x2192]);
   } finally {
