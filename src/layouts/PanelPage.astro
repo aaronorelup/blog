@@ -1,18 +1,20 @@
 ---
-// Standalone chrome for /stats, /ledger, /courses, /projects, /about, each course and each post. These are real pages:
-// they render without JavaScript, they're what search engines and RSS readers see, and
-// the homepage overlay fetches its post bodies from them. Visually they're the same
-// panel that grows out of a card on the homepage, just already open.
-import '../styles/panel.css';
-import PanelChrome from '../components/panel/PanelChrome.astro';
+// A standalone panel page: /stats, /ledger, /courses, /projects, /about, each course and lore page, each post and
+// research document. Real pages: they render without JavaScript, search engines and RSS readers see them, and the
+// homepage overlay fetches its post bodies from them. The same panel that grows out of a homepage card, already open.
+import '../styles/site.css';
+import Head from '../components/chrome/Head.astro';
+import ModeToggle from '../components/chrome/ModeToggle.astro';
+import PanelChrome from '../components/chrome/PanelChrome.astro';
 
 interface Props {
   title: string;
   description?: string;
-  active?: 'stats' | 'ledger' | 'courses' | 'projects' | 'about' | 'none';
-  // Unlisted (soft-private) posts: keep search engines off a page that's only reachable by URL.
+  // The lit nav item, a NAV key (src/data/site.js), or 'none'.
+  active?: string;
+  // The page's view, for its module (data-panel-view).
+  view?: string;
   noindex?: boolean;
-  // A share image (site-relative path; JPG/PNG, ideally 1200x630) for link previews.
   image?: string;
   // The footer's line after the copyright (PanelChrome's own line when left out).
   tagline?: string;
@@ -21,6 +23,7 @@ const {
   title,
   description = "Aaron Orelup's notes on learning AI, filed as I go.",
   active = 'ledger',
+  view,
   noindex = false,
   image,
   tagline,
@@ -30,112 +33,18 @@ const {
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    {image && <meta property="og:image" content={new URL(image, Astro.site).href} />}
-    {image && <meta name="twitter:card" content="summary_large_image" />}
-    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
-    <link rel="alternate" type="application/rss+xml" title="Aaron Orelup — the ledger" href="/rss.xml" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Karla:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
+    <Head title={title} description={description} noindex={noindex} image={image} />
     <slot name="head" />
-    <!-- Set the mode before first paint so a night visitor never sees a cream flash. -->
-    <script is:inline>
-      (function () {
-        try {
-          var s = localStorage.getItem('scene-mode');
-          if (s === 'day') document.documentElement.dataset.mode = 'day';
-        } catch (e) {}
-      })();
-    </script>
-    <style is:global>
-      html { scroll-behavior: auto; }
-      body {
-        margin: 0;
-        background: var(--pc-page);
-        color: var(--pc-body);
-        font-family: Karla, system-ui, sans-serif;
-        transition: background 300ms ease;
-      }
-      :focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; border-radius: 4px; }
-      ::selection { background: var(--pc-line2); }
-      .skip {
-        position: absolute; left: 16px; top: -64px; z-index: 50;
-        background: var(--pc-bg); color: var(--pc-strong);
-        padding: 12px 18px; border-radius: 12px; border: 2px solid var(--pc-line2);
-        font-weight: 600; text-decoration: none;
-      }
-      .skip:focus { top: 16px; }
-    </style>
   </head>
   <body>
     <a class="skip" href="#panel-scroll">Skip to content</a>
-
-    <button
-      type="button"
-      id="mode-toggle"
-      aria-label="Switch between day and night"
-      style="position:fixed;top:20px;right:22px;z-index:41;box-sizing:border-box;width:72px;height:36px;flex:none;padding:0;border:2px solid var(--pc-line2);border-radius:999px;background:var(--pc-bg);cursor:pointer;backdrop-filter:blur(6px);transition:background 300ms ease,border-color 300ms ease"
-    >
-      <span
-        id="mode-knob"
-        style="position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:999px;background:var(--pc-head);display:flex;align-items:center;justify-content:center;transition:transform 380ms cubic-bezier(.4,0,.2,1),background 300ms ease"
-      ></span>
-    </button>
-
-    <div id="panel-screen" style="position:fixed;inset:0;display:flex;flex-direction:column;background:var(--pc-page)">
-      <div id="panel-card" style="position:absolute;inset:0;box-sizing:border-box;background:var(--pc-bg);overflow:hidden;display:flex;flex-direction:column">
-        <PanelChrome active={active} tagline={tagline}>
+    <ModeToggle />
+    <div id="panel-screen" class="pc-screen">
+      <div id="panel-card" class="pc-card">
+        <PanelChrome active={active} view={view} tagline={tagline}>
           <slot />
         </PanelChrome>
       </div>
     </div>
-
-    <script>
-      // The toggle on a standalone page only has CSS variables to move — the scene, and
-      // its two-and-a-half-second cross-fade, only exist on the homepage.
-      const SUN =
-        '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FBF3E8" stroke-width="2.1" stroke-linecap="round" aria-hidden="true">' +
-        '<circle cx="12" cy="12" r="4.4" fill="#FBF3E8" stroke="none"></circle>' +
-        '<path d="M12 2v2.4M12 19.6V22M2 12h2.4M19.6 12H22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M19.1 4.9l-1.7 1.7M6.6 17.4l-1.7 1.7"></path></svg>';
-      const MOON =
-        '<svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true">' +
-        '<path d="M20.2 14.6A8.6 8.6 0 1 1 9.4 3.8a6.9 6.9 0 0 0 10.8 10.8Z" fill="#151726"></path></svg>';
-
-      const btn = document.getElementById('mode-toggle');
-      const knob = document.getElementById('mode-knob');
-
-      function paint() {
-        const night = document.documentElement.dataset.mode !== 'day';
-        if (btn) btn.setAttribute('aria-pressed', night ? 'true' : 'false');
-        if (knob) {
-          knob.style.transform = night ? 'translateX(36px)' : 'translateX(0)';
-          knob.innerHTML = night ? MOON : SUN;
-        }
-      }
-
-      btn?.addEventListener('click', () => {
-        const night = document.documentElement.dataset.mode !== 'day';
-        if (night) document.documentElement.dataset.mode = 'day';
-        else delete document.documentElement.dataset.mode;
-        try {
-          localStorage.setItem('scene-mode', night ? 'day' : 'night');
-        } catch (e) {}
-        paint();
-      });
-
-      paint();
-    </script>
   </body>
 </html>

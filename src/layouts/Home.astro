@@ -1,6 +1,7 @@
 ---
-// Shell for the homepage only. Interior pages use PanelPage.astro — the homepage
-// carries the scene, so it owns its own chrome and its own background.
+// Shell for the homepage only: the scene owns its own chrome and background. Panel pages use PanelPage.astro.
+import Head from '../components/chrome/Head.astro';
+
 interface Props {
   title: string;
   description?: string;
@@ -14,31 +15,7 @@ const {
 <!doctype html>
 <html lang="en" class="no-js">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <link rel="canonical" href={new URL('/', Astro.site)} />
-    <link rel="alternate" type="application/rss+xml" title="Aaron Orelup — the ledger" href="/rss.xml" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Karla:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
-    <!-- Match the panel's mode before first paint, same as the interior pages. -->
-    <script is:inline>
-      (function () {
-        try {
-          var s = localStorage.getItem('scene-mode');
-          if (s === 'day') document.documentElement.dataset.mode = 'day';
-        } catch (e) {}
-      })();
-    </script>
+    <Head title={title} description={description} />
     <style is:global>
       html { scroll-behavior: auto; }
       body {
@@ -51,6 +28,13 @@ const {
       a:hover { color: #be7a10; }
       :focus-visible { outline: 3px solid #be7a10; outline-offset: 3px; border-radius: 4px; }
       ::selection { background: #f7c9d4; }
+      a.skip {
+        position: absolute; left: 16px; top: -64px; z-index: 50;
+        background: #fbf3e8; color: #4a4a50;
+        padding: 12px 18px; border-radius: 12px; border: 2px solid #3a3a42;
+        font-weight: 600; font-family: Karla, sans-serif; text-decoration: none;
+      }
+      a.skip:focus { top: 16px; }
       @keyframes avatar-bob {
         0%, 100% { transform: translateY(0) rotate(-2deg); }
         50%      { transform: translateY(-7px) rotate(2deg); }
@@ -65,13 +49,7 @@ const {
     </style>
   </head>
   <body>
-    <a
-      class="skip"
-      href="#content"
-      style="position:absolute;left:16px;top:-64px;z-index:50;background:#FBF3E8;color:#4A4A50;padding:12px 18px;border-radius:12px;border:2px solid #3A3A42;font-weight:600;font-family:Karla,sans-serif;text-decoration:none"
-      >Skip to content</a
-    >
-    <style>.skip:focus { top: 16px !important; }</style>
+    <a class="skip" href="#content">Skip to content</a>
     <slot />
   </body>
 </html>
