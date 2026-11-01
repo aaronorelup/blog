@@ -1,6 +1,108 @@
-/* The homepage (pages/index.astro): the tea house scene's cards, its rail and the coin. */
+/* The homepage (pages/index.astro): the scene's frame, its cards, the stop rail, the coin, the white flash, the
+   overlay's frame and the day/night switch's homepage look. Every colour is a --home-* or --pc-* token, so the page
+   is right from first paint in either mode, and the day/night tween (scripts/home/theme.js) moves them all at once.
+   scripts/home/scene/ stages the page over these: it pins the sections over the window and shows one at a time. */
 
-/* The coin breathes on hover and hops when tossed (scripts/home/coin.js). */
+/* The scene: a sticky window-sized canvas, the cards over it. */
+.home-wrap { position: relative; z-index: 1; background: transparent; }
+.home-viewport {
+  position: sticky; top: 0; height: 100vh; width: 100%; z-index: 0; pointer-events: none; overflow: hidden;
+}
+.home-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.home-main { display: block; margin-top: -100vh; position: relative; z-index: 1; }
+.home-stop {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 0 clamp(20px, 6vw, 96px); box-sizing: border-box; will-change: opacity, transform;
+}
+.home-stop-top { align-items: flex-start; padding-top: 16vh; }
+.home-stop-left { justify-content: flex-start; }
+.home-stop-right { justify-content: flex-end; }
+.home-spacer { min-height: 100vh; }
+
+.home-card {
+  max-width: 480px; background: var(--home-card); backdrop-filter: blur(7px); border-radius: 24px;
+  padding: clamp(24px, 3.4vw, 38px); box-shadow: var(--home-shadow);
+}
+.home-card-hero { max-width: 620px; border-radius: 26px; padding: clamp(26px, 4vw, 44px); text-align: center; }
+.home-card-narrow { max-width: 460px; }
+.home-card-gate { max-width: 560px; width: 100%; text-align: center; }
+.home-card ::selection { background: #f7c9d4; }
+
+.home-hero-row { display: flex; align-items: center; justify-content: center; gap: clamp(16px, 2.6vw, 30px); flex-wrap: wrap; }
+.home-h1 {
+  margin: 0; font-family: 'Zen Maru Gothic', serif; font-weight: 700; font-size: clamp(40px, 7vw, 76px);
+  line-height: 1.02; color: var(--home-head); letter-spacing: -0.01em;
+}
+.home-h2 {
+  margin: 0; font-family: 'Zen Maru Gothic', serif; font-weight: 700; font-size: clamp(28px, 3.4vw, 40px);
+  color: var(--home-head); line-height: 1.1;
+}
+.home-h2-spaced { margin-bottom: 20px; }
+.home-lede { margin: 18px 0 0; font-size: clamp(17px, 2vw, 21px); line-height: 1.55; color: var(--home-body); text-wrap: pretty; }
+.home-hint-row {
+  display: flex; align-items: center; justify-content: center; gap: clamp(14px, 2vw, 22px); flex-wrap: wrap; margin-top: 22px;
+}
+.home-hint {
+  margin: 0; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--home-quiet); font-weight: 600;
+}
+.home-p { margin: 16px 0 0; font-size: 17px; line-height: 1.65; color: var(--home-body); text-wrap: pretty; }
+.home-p + .home-p { margin-top: 14px; }
+.home-card-gate .home-p { line-height: 1.6; }
+.home-col { display: flex; flex-direction: column; gap: 18px; }
+.home-col > .home-p { margin: 0; line-height: 1.6; }
+.home-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+.home-contact {
+  display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: center; margin-top: 12px; font-size: 17px; font-weight: 600;
+}
+.home-link { color: var(--home-head); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.home-social { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 22px; }
+.home-sign { margin: 26px 0 0; font-size: 15px; color: var(--home-body); }
+
+.home-btn {
+  display: inline-block; padding: 12px 22px; border: 2px solid var(--home-btn-line); border-radius: 999px;
+  text-decoration: none; font-weight: 600; font-size: 16px; color: var(--home-btn-text); background: var(--home-btn-bg);
+}
+.home-btn:hover { background: var(--home-pink); }
+.home-btn-start { align-self: flex-start; margin-top: 4px; }
+.home-btn-more { margin-top: 20px; }
+.home-btn-social { padding: 12px 20px; }
+.home-btn-social:hover { background: var(--home-blush); }
+
+/* The stop rail (scene/rail.js): shown only while the scene stages the page. */
+.home-rail {
+  display: none; position: absolute; right: clamp(14px, 2vw, 28px); top: 50%; transform: translateY(-50%);
+  flex-direction: column; gap: 14px; pointer-events: auto; z-index: 3;
+}
+.home-dot {
+  width: 11px; height: 11px; padding: 0; border-radius: 999px; border: 2px solid var(--home-dot);
+  background: transparent; cursor: pointer;
+}
+.home-dot[aria-current='true'] { background: var(--home-dot); }
+.home-dot:hover { background: var(--day-head); border-color: var(--day-head); }
+
+/* The white (or, at night, the dark) the camera flies into on its way out (scene/exit.js). */
+.home-flash { position: fixed; inset: 0; z-index: 30; background: var(--home-flash); opacity: 0; pointer-events: none; }
+
+/* The coin (scripts/home/coin.js): two faces turned by hand, a milled rim between them. */
+.coin {
+  flex: none; display: block; width: clamp(96px, 11vw, 124px); height: clamp(96px, 11vw, 124px); padding: 0;
+  border: 0; background: transparent; cursor: pointer; perspective: 800px;
+  transition: transform 260ms cubic-bezier(.34, 1.8, .64, 1);
+}
+.coin:hover { transform: rotate(-4deg); }
+.coin-toss { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; }
+.coin-spin { position: absolute; inset: 0; transform-style: preserve-3d; }
+.coin-face {
+  position: absolute; inset: 0; box-sizing: border-box; border: 3px solid var(--home-coin-rim); border-radius: 50%;
+  overflow: hidden; background: var(--home-coin); transform: translateZ(7px);
+}
+.coin-img { display: block; width: 118%; height: 118%; margin: -6% 0 0 -9%; object-fit: cover; pointer-events: none; }
+.coin-back { background: var(--home-coin-back); opacity: 0; transform: rotateY(180deg) translateZ(7px); }
+/* The reverse: a bonsai by day, the lit andon after dark, crossing over with the tween. */
+.coin-night { position: absolute; inset: 0; opacity: var(--mix); }
+.coin-svg { display: block; }
+
+/* The coin breathes on hover and hops when tossed. */
 @keyframes avatar-bob {
   0%, 100% { transform: translateY(0) rotate(-2deg); }
   50%      { transform: translateY(-7px) rotate(2deg); }
@@ -12,3 +114,37 @@
   78%  { transform: translate3d(0, -12px, 62px); }
   100% { transform: translate3d(0, 0, 0); }
 }
+
+/* The overlay's frame (scripts/home/overlay/frame.js moves and sizes it). */
+.ov-screen { position: fixed; inset: 0; z-index: var(--z-panel); pointer-events: none; visibility: hidden; }
+.ov-scrim { position: absolute; inset: 0; background: var(--pc-scrim); opacity: 0; transition: opacity 460ms ease; }
+.ov-card {
+  position: absolute; left: 50%; top: 50%; width: 0; height: 0; opacity: 0; box-sizing: border-box;
+  background: linear-gradient(var(--pc-bg), var(--pc-bg)), var(--pc-page); border-radius: var(--radius-l);
+  box-shadow: var(--pc-shadow); overflow: hidden; overflow: clip; display: flex; flex-direction: column;
+}
+.ov-host { display: contents; }
+
+/* The day/night switch answers at once on the homepage (its look follows aria-pressed, the mode asked for), while
+   the room follows over the tween. */
+.home-wrap .mode-toggle[aria-pressed='true'] { background: var(--night-home-toggle); border-color: var(--night-home-toggle-line); }
+.home-wrap .mode-toggle[aria-pressed='false'] { background: var(--day-home-toggle); border-color: var(--day-home-toggle-line); }
+.home-wrap .mode-toggle .mode-knob { transition: transform 380ms var(--ease-panel), background 300ms ease, box-shadow 300ms ease; }
+.home-wrap .mode-toggle[aria-pressed='true'] .mode-knob {
+  transform: translateX(36px); background: var(--night-head); box-shadow: 0 0 12px rgba(240, 192, 106, 0.7);
+}
+.home-wrap .mode-toggle[aria-pressed='false'] .mode-knob { transform: translateX(0); background: var(--day-head); box-shadow: none; }
+.home-wrap .mode-toggle[aria-pressed='true'] .mode-moon,
+.home-wrap .mode-toggle[aria-pressed='false'] .mode-sun { display: block; }
+.home-wrap .mode-toggle[aria-pressed='true'] .mode-sun,
+.home-wrap .mode-toggle[aria-pressed='false'] .mode-moon { display: none; }
+
+/* The tween moves the page colour every frame: no transition to lag behind it. */
+:root[data-tweening] body { transition: none; }
+
+/* Without JavaScript the sticky canvas never moves, so the six full-height panels
+   would be six screens of empty space. Collapse them into a plain stacked page. */
+.no-js .home-viewport { display: none; }
+.no-js .home-main { margin-top: 0; }
+.no-js .home-stop { min-height: 0; padding: 40px clamp(20px, 6vw, 96px); }
+.no-js .home-spacer { display: none; }

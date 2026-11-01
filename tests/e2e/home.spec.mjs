@@ -1,4 +1,4 @@
-// The homepage scene (src/scripts/home-scene.js): waypoints by wheel, swipe, keys and the rail; the day/night toggle
+// The homepage scene (src/scripts/home/): waypoints by wheel, swipe, keys and the rail; the day/night toggle
 // tweens the world rather than cutting; no WebGL (or a lost context) falls back to the flat page; the avatar flips
 // like a coin; an outside link flies the camera out first; the backtick opens the staging tool.
 import sharp from 'sharp';
@@ -71,17 +71,36 @@ test('home-5 the day/night toggle tweens the world over a couple of seconds', as
   const shot = async () => (await sharp(await page.screenshot()).resize(32, 20, { fit: 'fill' }).raw().toBuffer());
   const dist = (a, b) => a.reduce((s, v, i) => s + Math.abs(v - b[i]), 0) / a.length;
   const page0 = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  const sky = async () => (await sharp(await page.screenshot({ clip: { x: 0, y: 0, width: 100, height: 50 } })).resize(4, 2, { fit: 'fill' }).raw().toBuffer());
   const start = await shot();
+  const sky0 = await sky();
   const bg0 = await page0();
+  // The page colour of every frame from here, read in the page: a test's own reads can wait behind a busy renderer.
+  await page.evaluate(() => {
+    const t0 = performance.now();
+    window.__bgs = [];
+    const tick = (now) => {
+      window.__bgs.push([now, getComputedStyle(document.body).backgroundColor]);
+      if (now - t0 < 4500) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
   await toggle.click();
   await expect(toggle).not.toHaveAttribute('aria-pressed', before);
-  await page.waitForTimeout(1000);
-  const bgMid = await page0();
-  await page.waitForTimeout(2600);
+  await page.waitForTimeout(3600);
   const bg1 = await page0();
   expect(dist(start, await shot())).toBeGreaterThan(4);
-  // Halfway through, the page colour is neither the old one nor the new one.
-  expect(new Set([bg0, bgMid, bg1]).size).toBe(3);
+  // On the way the page colour is neither the old one nor the new one, frame after frame for over a second.
+  expect(bg1).not.toBe(bg0);
+  const between = (await page.evaluate(() => window.__bgs)).filter(([, c]) => c !== bg0 && c !== bg1);
+  expect(between.length).toBeGreaterThan(2);
+  expect(between.at(-1)[0] - between[0][0]).toBeGreaterThan(1000);
+  // The 3D went with it, even with the camera still: the sky in the top corner, where no card is, changed too.
+  expect(dist(sky0, await sky())).toBeGreaterThan(30);
+  // Once it ends the tokens are the plain per-mode strings again (the /stats canvas reads them so), not a mix.
+  expect(await page.evaluate(() => document.documentElement.hasAttribute('data-tweening'))).toBe(false);
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--pc-bg').trim()))
+    .toMatch(before === 'true' ? /^rgba\(251, 243, 232, 0?\.97\)$/ : /^rgba\(21, 23, 38, 0?\.96\)$/);
 });
 
 test('home-6 the avatar flips like a coin and lands on a face', async ({ page }) => {
@@ -181,4 +200,30 @@ test('home-11 the backtick opens and closes the staging tool', async ({ page }) 
   await expect(tool).toBeVisible();
   await page.keyboard.press('`');
   await expect(tool).toBeHidden();
+});
+
+test('home-12 five night tosses in a row open the lantern door: the lamp flares and the page goes to /api/lantern', async ({ page, context }) => {
+  await context.addInitScript(() => localStorage.setItem('scene-mode', 'night'));
+  // The Worker sends the door on to its address (worker/lantern.js); here it opens on a stub.
+  await context.route('**/api/lantern', (r) => r.fulfill({ contentType: 'text/html', body: '<title>door</title>' }));
+  await scene(page);
+  const coin = page.locator('#avatar');
+  for (let n = 0; n < 4; n++) {
+    await coin.click();
+    await expect(coin).not.toHaveAttribute('data-busy', '1', { timeout: 5000 });
+  }
+  await coin.click();
+  await expect.poll(() => page.locator('#coin-back').evaluate((b) => b.style.boxShadow)).not.toBe('');
+  expect(await page.locator('#coin-back').evaluate((b) => b.style.opacity)).toBe('1');   // it landed lamp-up
+  await expect(page).toHaveURL(/\/api\/lantern$/);
+});
+
+test('home-13 with night stored, the first paint is already night: no cream flash', async ({ page, context }) => {
+  await context.addInitScript(() => localStorage.setItem('scene-mode', 'night'));
+  // The page as first painted: its HTML, its CSS and the head's inline script, before any module has run.
+  await page.route(/\/_astro\/.*\.js$/, (r) => r.abort());
+  await page.goto('/');
+  expect(await page.evaluate(() => [document.body, document.querySelector('section[data-wp] > div'), document.querySelector('h1')]
+    .map((el) => { const s = getComputedStyle(el); return `${s.backgroundColor} ${s.color}`; })))
+    .toEqual(['rgb(16, 18, 32) rgb(201, 188, 169)', 'rgba(21, 23, 38, 0.86) rgb(201, 188, 169)', 'rgba(0, 0, 0, 0) rgb(240, 192, 106)']);
 });

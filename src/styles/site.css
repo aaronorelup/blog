@@ -1,5 +1,6 @@
 /* The one stylesheet of every panel page (layouts/PanelPage.astro) and the homepage (layouts/Home.astro), in cascade
-   order, so a view looks the same standalone and in the homepage's overlay, which then adopts no second copy of it. */
+   order, so a view looks the same standalone and in the homepage's overlay, which then adopts no second copy of it.
+   The homepage's own rules are home.css, which only Home links: no panel page pays for them. */
 @import './tokens.css';
 @import './base.css';
 @import './chrome.css';
@@ -12,4 +13,3 @@
 @import './about.css';
 @import './research.css';
 @import './elements.css';
-@import './home.css';

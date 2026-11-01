@@ -2,7 +2,7 @@
 
 Every bespoke behaviour of the site, the pages that use it and the check that holds it. Rows come from the code:
 each `addEventListener` and each documented attribute of a component has one (`src/elements/**`,
-`src/scripts/home-scene.js`, `src/scripts/home/overlay/`, `src/scripts/cards/`, `src/scripts/ledger/`,
+`src/scripts/home/`, `src/scripts/home/overlay/`, `src/scripts/cards/`, `src/scripts/ledger/`,
 `src/scripts/search/`, `src/scripts/post/`, `src/scripts/views/`, the inline scripts of the standalone pages). A spec
 id is the start of a test title (`npm run e2e -- -g core-4`). Unless a row says otherwise it passes on both projects,
 `desktop` (Chromium 1440×900) and `phone` (WebKit, iPhone 13).
@@ -288,13 +288,15 @@ streams the same two films.
 | A swipe walks them | window `touchstart` `touchend` | home-2 |
 | Arrows, Page keys, space, Home and End walk them | window `keydown` | home-3 |
 | A rail dot flies to its waypoint | rail `click` | home-4: broken on main |
-| The day/night toggle tweens the world (the page colour passes through between) | toggle `click` → tweenMix | home-5 |
+| The day/night toggle tweens the world (the page colour passes through between, the 3D changes with it even with the camera still, and once it ends `--pc-bg` is the plain per-mode string again) | toggle `click` → `ao-mode` → theme.js | home-5 |
 | The avatar flips like a coin and lands on a face | avatar `click`, `pointerenter` `pointerleave` | home-6 |
 | Without WebGL the scene bails to the flat page | hasWebGL → bail | home-7 (Chromium: `--disable-webgl` is its flag) |
 | An outside link flies the camera out through the gate (the white at full), then opens; a new-tab link leaves the scene where it stood | document `click` → onOutboundClick, flyToLink | home-8 |
 | A `data-no-fly` link leaves at once, the panel left as it was | `data-no-fly` | home-9 |
 | A lost WebGL context bails to the flat page | canvas `webglcontextlost` | home-10 |
 | The backtick opens and closes the staging tool | window `keydown` → onStageHotkey | home-11 (its own keys, drag and copy are a tool for Aaron, not checked) |
+| Five night tosses in a row open the lantern door: the last lands lamp-up, the lamp flares, the page goes to `/api/lantern` | avatar `click` → lantern.js | home-12 |
+| With night stored the first paint is already night: page, card and heading colours before any module runs | Head's inline script, tokens.css | home-13 |
 
 The scene specs pin `?tier=low`, which the scene supports for slow machines, so software WebGL never drops it to
 its static rung mid-test.
