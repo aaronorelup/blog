@@ -28,7 +28,7 @@ tools a script could drive.
 
 [Watch it full screen](/media/still-on-shift/). Sound on.
 
-<iframe src="/media/still-on-shift/?embed" title="BLACKWATER — Still on Shift" style="width:100%;aspect-ratio:16/9;border:0" allow="fullscreen" loading="lazy"></iframe>
+<iframe src="/media/still-on-shift/?embed" title="BLACKWATER, Still on Shift" style="width:100%;aspect-ratio:16/9;border:0" allow="fullscreen" loading="lazy"></iframe>
 
 - **The lyrics became the shot list.** They already tell the game's story.
 - **Free-fly mode broke the look.** It turned off the fog, and dropping it showed nine cameras
