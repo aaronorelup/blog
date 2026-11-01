@@ -1,6 +1,7 @@
 // The meaning half of search: GET /api/search?q= (worker/search/serve.js; no token). One request at a time, the
 // stale one aborted, no retry, at most 40 a page view. Each hit keeps the sentence of its chunk that shares the most
 // words with the query. A failure, a cap or the switch being off answers [], and the list stays words only.
+import { pagePath } from './results.js';
 import { termsOf } from './terms.js';
 
 const CAP = 40;
@@ -18,7 +19,7 @@ export async function search(q) {
     if (!r.ok) return [];
     const terms = termsOf(q);
     return (await r.json()).hits.map((h) => ({
-      path: `/ledger/${h.slug}/${h.kind === 'notes' ? 'notes/' : ''}`,
+      path: pagePath(h.slug, h.kind),
       anchor: h.anchor,
       heading: h.heading,
       text: sentence(h.text, terms),

@@ -6,8 +6,11 @@ import { GLYPHS } from '../../lib/glyphs.js';
 import { load } from '../cards/data.js';
 import { termsOf } from './terms.js';
 
-const SLUG = /^\/ledger\/([^/]+)\/(notes\/)?/;
+const SLUG = /^\/ledger\/([^/]+)\/(notes\/)?/;   // pagePath's inverse
 const SVG = 'http://www.w3.org/2000/svg';
+
+// The page a chunk of kind 'post' or 'notes' sits on (the search hits' and Goobie's cites' kind).
+export const pagePath = (slug, kind) => `/ledger/${slug}/${kind === 'notes' ? 'notes/' : ''}`;
 
 export function h(tag, attrs = {}, ...kids) {
   const el = document.createElement(tag);

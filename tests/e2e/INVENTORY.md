@@ -339,9 +339,9 @@ its static rung mid-test.
 
 ## Search and Ask Goobie (`search.spec.mjs`)
 
-`/api/*` answers come from `fixtures/api.json` (search-200 and ask-200 were recorded from `wrangler dev`; no
-`related` list names AO-073, so no check waits on the live notebook); Turnstile is a stub that solves at once with the
-test response.
+`/api/*` answers come from `fixtures/api.json` (search-200 was recorded from `wrangler dev`, the answers of ask-200 and
+ask-notes from Goobie's prompt against DeepSeek; no `related` list names AO-073, so no check waits on the live
+notebook); Turnstile is a stub that solves at once with the test response.
 
 | Behaviour | Spec |
 |---|---|
@@ -357,6 +357,7 @@ test response.
 | `resting` and `not-found` show their line over the closest posts | search-10 |
 | A search still answering when Ask opens draws nothing in Ask, and the meaning half is never asked | search-11 |
 | A Turnstile challenge left unsolved (`timeout-callback`) says so and frees the button | search-12 |
+| A cite of a notes passage (`kind: 'notes'`) links to `/ledger/<slug>/notes/#<anchor>` and opens it with the words marked; a post passage links to the post | search-13 |
 
 Ask against the real Worker is checked by hand under `npx wrangler dev` (docs/WORKER.md, "Locally"): the real
 Turnstile widget with the test site key, a real mint and a real DeepSeek answer.

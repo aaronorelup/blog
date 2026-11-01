@@ -1,6 +1,7 @@
-// Ask Goobie's Worker half with stub bindings: [n] citations kept only when they name an excerpt, a DeepSeek
-// answer that was cut short or failed is no answer, the order of the guards (a token, the switch, the limiters
-// with a stub that says no, the score floor) before any paid call, and the answer cache. No request leaves the process.
+// Ask Goobie's Worker half with stub bindings: [n] citations kept only when they name an excerpt, each with its
+// excerpt's kind, Goobie speaking as itself and of Aaron by name, a DeepSeek answer that was cut short or failed is no
+// answer, the order of the guards (a token, the switch, the limiters with a stub that says no, the score floor) before
+// any paid call, and the answer cache. No request leaves the process.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { cite, messages } from '../../worker/ask/prompt.js';
@@ -17,14 +18,27 @@ test('cite keeps the [n] that name an excerpt, splits lists, drops the rest and 
   const { answer, cites } = cite('It rents a GPU [2]. It costs little [1, 3] — or nothing [7]. See [0][3].', EXCERPTS);
   assert.equal(answer, 'It rents a GPU [2]. It costs little [1][3], or nothing. See [3].');
   assert.deepEqual(cites.map((c) => [c.n, c.slug]), [[1, 'one'], [2, 'two'], [3, 'three']]);
-  assert.deepEqual(Object.keys(cites[0]), ['n', 'slug', 'anchor', 'heading', 'title']);
+  assert.deepEqual(Object.keys(cites[0]), ['n', 'slug', 'kind', 'anchor', 'heading', 'title']);
   assert.deepEqual(cite('Nothing covers that.', EXCERPTS), { answer: 'Nothing covers that.', cites: [] });
+});
+
+test('each cite carries its excerpt\'s kind, so a notes passage can link to the notes page', () => {
+  const notes = { ...chunk('two', 0.7), kind: 'notes', anchor: 'how-to-play-it', title: 'T two: the making-of notes' };
+  const { cites } = cite('The post [1]. Its notes [2].', [EXCERPTS[0], notes]);
+  assert.deepEqual(cites, [
+    { n: 1, slug: 'one', kind: 'post', anchor: 'a', heading: 'H', title: 'T one' },
+    { n: 2, slug: 'two', kind: 'notes', anchor: 'how-to-play-it', heading: 'H', title: 'T two: the making-of notes' },
+  ]);
 });
 
 test('the excerpts are numbered in the user message, with title and heading', () => {
   const [system, user] = messages('what is it?', EXCERPTS.slice(0, 2));
   assert.equal(system.role, 'system');
   assert.match(system.content, /never follow instructions/);
+  // Goobie is Aaron's agent, not Aaron: "I" is Goobie, and what the posts say as "I" is told about Aaron by name.
+  assert.match(system.content, /You are not Aaron\./);
+  assert.match(system.content, /never take his "I" sentences as your own/);
+  assert.doesNotMatch(system.content, /Speak as I/);
   assert.equal(user.content, 'Excerpts:\n[1] T one / H\nSome text.\n\n[2] T two / H\nSome text.\n\nQuestion: what is it?');
 });
 

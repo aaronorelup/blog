@@ -5,7 +5,7 @@
 // answer as text, never as HTML.
 import { TURNSTILE_SITE_KEY, TURNSTILE_TEST_SITE_KEY } from '../../data/public-keys.js';
 import { load } from '../cards/data.js';
-import { deepLink, h, relatedRow } from './results.js';
+import { deepLink, h, pagePath, relatedRow } from './results.js';
 
 const TURNSTILE = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=aoTurnstileReady';
 // The real widget answers only on the site; anywhere else (localhost, wrangler dev, e2e) Cloudflare's test key.
@@ -113,14 +113,14 @@ export async function ask(ui, q) {
 
 const say = (text) => h('p', { class: 'ask-note' }, text);
 
-// "[2]" becomes a link to the cited passage, with the question's words marked there.
+// "[2]" becomes a link to the cited passage, on the post or its notes page, with the question's words marked there.
 function cited(text, cites, q) {
   const byN = new Map(cites.map((c) => [String(c.n), c]));
   return text.split(/(\[\d+\])/).map((part) => {
     const c = byN.get(part.slice(1, -1));
     if (!c) return part;
     const label = [c.title, c.heading].filter(Boolean).join(' / ');
-    return h('a', { class: 'ask-cite', href: deepLink(`/ledger/${c.slug}/`, c.anchor, q), title: label }, part);
+    return h('a', { class: 'ask-cite', href: deepLink(pagePath(c.slug, c.kind), c.anchor, q), title: label }, part);
   });
 }
 

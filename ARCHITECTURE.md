@@ -187,7 +187,7 @@ warns in a live notebook.
 | `src/scripts/demos/{synthid,cf}.js` + `src/styles/demos/` | the two `<ao-demo>` demos |
 | `src/scripts/cards/` + `src/styles/cards.css` | the hover card: `data.js` (`previews.json`, fetched once and shared), `render.js` (the element and where it goes; the icon when a card has no still), `hover.js` (when: listeners, timings, media). `ledger-preview.js` is a one-line stub that `stats.astro`, `PostView`, `notes.astro` and `views/projects.js` import until W4 |
 | `src/scripts/ledger/` | `filter.js` (the chips: one topic or project, `?topic=` read on load and kept with `replaceState`), `feed.js` (`bindFeedCopy`) |
-| `src/scripts/search/` + `src/styles/search.css` | `box.js` (the box, `/`, the switch), `keyword.js` (Pagefind, on first focus), `semantic.js` (`/api/search`, 400 ms after typing, at most 40 a page), `merge.js` (reciprocal rank), `results.js` (rows and deep links `?hl=&hs=#heading`), `terms.js`, `ask.js` (Ask Goobie: `/api/session`, Turnstile only when Ask is on, the session in `sessionStorage`, `/api/ask`) |
+| `src/scripts/search/` + `src/styles/search.css` | `box.js` (the box, `/`, the switch), `keyword.js` (Pagefind, on first focus), `semantic.js` (`/api/search`, 400 ms after typing, at most 40 a page), `merge.js` (reciprocal rank), `results.js` (rows, `pagePath(slug, kind)` and deep links `?hl=&hs=#heading`), `terms.js`, `ask.js` (Ask Goobie: `/api/session`, Turnstile only when Ask is on, the session in `sessionStorage`, `/api/ask`) |
 | `src/scripts/post/highlight.js` | marks a deep link's sentence (or words) in its section, opens its `<details>`, centres it in `#panel-scroll`; the post and notes pages call it (T2.1 moves the call into `views/post.js`) |
 | `src/scripts/lazy.js` | `lazy(load, fallbackUrl)`: every dynamic import; a chunk lost to a deploy navigates or reloads once |
 | `src/scripts/home-scene.js` | the homepage scene and overlay (split into `scripts/home/` by T3.1 and T3.2) |
@@ -237,7 +237,7 @@ warns in a live notebook.
 | `worker/stats/` | `index.js` (serve and `runStep`), `shape.js` (pure), `stats.sql`: the traffic snapshot |
 | `worker/session/serve.js` | `GET`, `POST /api/session` |
 | `worker/search/` | `serve.js` (`GET /api/search`), `retrieve.js` (embed and query, shared with Ask), `sync.js` (the index cron), `counts.js` (anonymous counts), `search.sql` |
-| `worker/ask/` | `serve.js` (`POST /api/ask`), `prompt.js` (Goobie, the excerpts, citations), `deepseek.js` (the one call), `ask.sql` |
+| `worker/ask/` | `serve.js` (`POST /api/ask`), `prompt.js` (Goobie, who speaks as itself and of Aaron by name; the excerpts; citations with their `kind`), `deepseek.js` (the one call), `ask.sql` |
 | `worker/cleanup.js` | the daily sweep of old counts, answers and totals |
 | `worker/read/` | a stub until T2.4 |
 | `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (Ask's guards, citations and DeepSeek answers); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1 |
@@ -301,7 +301,8 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   `START_HERE`. Its search box asks Pagefind in the browser (loaded on first focus) and `/api/search` (no token) and
   merges the two by reciprocal rank; a result links `/ledger/<slug>/?hl=<words>&hs=<passage>#<heading>`, which
   `post/highlight.js` marks. Ask Goobie loads `search/ask.js` only when opened: `GET /api/session` first, and only
-  when that says `ask: true`, Turnstile and a 30-minute token; answers are text, `[n]` linked to their passages.
+  when that says `ask: true`, Turnstile and a 30-minute token; answers are text, `[n]` linked to their passages
+  (a cite's `kind` puts a notes passage on `/ledger/<slug>/notes/`, through the same `pagePath` as search results).
 - **Search and Ask.** The build writes each listed post and notes page as chunks (`/search/docs/`) and a manifest
   of their hashes. Every minute `search.sync` embeds the changed docs with `@cf/baai/bge-m3` into the Vectorize
   index `blog-search` (ids `AO-045:3`, `AO-045n:3` for notes). `/api/search` embeds the query and returns the best

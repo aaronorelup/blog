@@ -22,7 +22,7 @@ needs a secret or state. Only the paths `run_worker_first` names reach it: video
 | `worker/stats/` | `GET` and `HEAD /api/stats`, and `runStep`, the traffic snapshot's cron (`shape.js` is its pure half) |
 | `worker/session/serve.js` | `GET`, `POST /api/session`: whether Ask is on; a Turnstile solve becomes an Ask token |
 | `worker/search/` | `serve.js` (`GET /api/search`), `retrieve.js` (embed a query, ask Vectorize; Ask uses it too), `sync.js` (`search.sync`, and `indexVersion()`), `counts.js` (the anonymous counts), `search.sql` |
-| `worker/ask/` | `serve.js` (`POST /api/ask`), `prompt.js` (Goobie's prompt, the numbered excerpts, `cite()`), `deepseek.js` (the one call), `ask.sql` |
+| `worker/ask/` | `serve.js` (`POST /api/ask`), `prompt.js` (Goobie's prompt: Goobie says "I" only of itself and tells of Aaron by name, never as him; the numbered excerpts; `cite()`), `deepseek.js` (the one call), `ask.sql` |
 | `worker/cleanup.js` | `cleanup.daily`, the sweep of old counts, answers and totals |
 | `worker/read/` | a stub step until T2.4 records read-aloud |
 
@@ -36,7 +36,7 @@ needs a secret or state. Only the paths `run_worker_first` names reach it: video
 | `GET /api/session` | `200 { ask }`, cached 30 s: `true` when the `ask` flag is on and `DEEPSEEK_API_KEY` is set |
 | `POST /api/session {turnstile}` | `200 { token, exp }`, an Ask token for 30 minutes; `403` not from one of the site's pages; `413` a body over 3 KB (a Turnstile response can be 2,048 characters); `401` siteverify says no, or the solve's hostname isn't in `TURNSTILE_HOSTNAMES`, or its action isn't `ask` |
 | `GET /api/search?q=` | `200 { v, hits: [{ slug, kind, anchor, heading, text, score }] }`, the best 2 chunks of each of the best 8 posts (`kind` is `post` or `notes`; `anchor` `''` is the top of the page, `short` the short version); `400` `q` under 3 or over 200 characters once normalised; `429` past 600 a minute here, or 20 a minute for that query; `503` the `search` flag is off, or `search_daily` is spent (until 00:00 UTC). No token |
-| `POST /api/ask {q}`, header `X-AO-Session` | `200 { answer, cites: [{ n, slug, anchor, heading, title }], related: [slug], cached }`, or `200 { answer: null, reason, related }` with `reason` `off` (the flag, or no key), `not-found` (no chunk scores `ask_min_score`; no DeepSeek call; the 3 closest posts), `resting` (`ask_daily` spent) or `busy` (DeepSeek failed, timed out or was cut short; nothing cached); `413` a body over 2 KB; `401` no valid token; `400` `q` under 3 or over 300 characters; `429` past 6 a minute in that session, or 60 a minute here |
+| `POST /api/ask {q}`, header `X-AO-Session` | `200 { answer, cites: [{ n, slug, kind, anchor, heading, title }], related: [slug], cached }` (`kind` is `post` or `notes`: a notes cite links to `/ledger/<slug>/notes/#<anchor>`), or `200 { answer: null, reason, related }` with `reason` `off` (the flag, or no key), `not-found` (no chunk scores `ask_min_score`; no DeepSeek call; the 3 closest posts), `resting` (`ask_daily` spent) or `busy` (DeepSeek failed, timed out or was cut short; nothing cached); `413` a body over 2 KB; `401` no valid token; `400` `q` under 3 or over 300 characters; `429` past 6 a minute in that session, or 60 a minute here |
 | any media path, `/read/*` | R2 (`MEDIA`) when it has the object, cutting ranges and checking `If-*` itself; else the asset, with ranges cut from `/media-sizes.json` (a length it can't learn means the whole file, `200`, `Accept-Ranges: bytes`); a `/read/<slug>/<hash>.json` that isn't recorded yet is `200 { ready: false }`, `no-store` |
 
 R2 objects under `read/` go out `immutable`: their names are hashes of their text.
@@ -119,7 +119,7 @@ step, so tables are only ever added, never changed or dropped.
 | `worker/stats/stats.sql` | `stats_state`, `stats_day`, `stats_part` |
 | `worker/lib/flags.sql` | `flags (k, v)`, `usage_day (day, what, n)`: `what` is `search` (embeddings) or `ask` (DeepSeek calls) |
 | `worker/search/search.sql` | `search_state (k, v)`, `search_docs (doc, id, hash, n)` (each embedded doc, its vector id prefix and chunk count), `searches (day, mode, q, n)` (no address, token, session, country or browser; `q` normalised, scrubbed, at most 80 characters) |
-| `worker/ask/ask.sql` | `ask_cache (key, body, at)`: `key` is the SHA-256 of the model and the exact messages (prompt, excerpts, question); `body` is `{ answer, cites }` (`related` comes from each request's own retrieval) |
+| `worker/ask/ask.sql` | `ask_cache (key, body, at)`: `key` is the SHA-256 of the model and the exact messages (prompt, excerpts, question); `body` is `{ answer, cites }` (`related` comes from each request's own retrieval). A change to the prompt moves every key, so answers cached under the old one are never served again and age out after 7 days |
 | T2.4 `worker/read/read.sql` | `read_state` |
 
 ## Switches and caps

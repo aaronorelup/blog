@@ -182,11 +182,12 @@
   "ask-200": {
     "status": 200,
     "json": {
-      "answer": "About 4 to 5 times faster, once the rented card had the same two speed settings my laptop already used [1][3]. The first night it was only 1.2 to 1.9 times faster [3]. I was expecting 10 to 30 times, and Claude thinks 4 to 5 is close to the ceiling for this card [2][5].",
+      "answer": "Aaron measured a rented 48 GB card at 4 to 5 times faster than his 8 GB laptop, once it had the two speed settings his laptop already used [1][2]. He had expected 10 to 30 times [2]. The first night it was only 1.2 to 1.9 times faster, because the card was running his laptop's 8 GB workarounds without SageAttention and the ComfyUI switch [1][3]. After Claude fixed that, it went from about 1.5x to 4.5x [3].",
       "cites": [
         {
           "n": 1,
           "slug": "renting-a-gpu",
+          "kind": "post",
           "anchor": "short",
           "heading": "The short version",
           "title": "How much a rented cloud GPU speeds up my AI videos"
@@ -194,6 +195,7 @@
         {
           "n": 2,
           "slug": "renting-a-gpu",
+          "kind": "post",
           "anchor": "",
           "heading": "",
           "title": "How much a rented cloud GPU speeds up my AI videos"
@@ -201,15 +203,9 @@
         {
           "n": 3,
           "slug": "renting-a-gpu",
+          "kind": "post",
           "anchor": "the-first-night-it-was-barely-faster",
           "heading": "The first night it was barely faster",
-          "title": "How much a rented cloud GPU speeds up my AI videos"
-        },
-        {
-          "n": 5,
-          "slug": "renting-a-gpu",
-          "anchor": "several-agents-sharing-rented-cards",
-          "heading": "Several agents sharing rented cards",
           "title": "How much a rented cloud GPU speeds up my AI videos"
         }
       ],
@@ -218,6 +214,52 @@
         "characters-in-inscryption",
         "showreel-rebuilt",
         "moss-image-on-8gb"
+      ],
+      "cached": false
+    }
+  },
+  "ask-notes": {
+    "status": 200,
+    "json": {
+      "answer": "The big one was the art. Five of six portraits came out as black silhouettes, and every automated check passed anyway, because the game draws any solid pixel as ink [2][4]. Only a screenshot caught it [2][6]. Aaron calls the art the weak part of the whole run [2][6].\n\nTwo smaller things went wrong too. Rendering on the CPU crashed all five launches while his main GPU was booked, and the laptop's Intel graphics worked first time [2]. And once he asked how to actually play it, the deck screen never opened and the previews were blank, which took more fixes [5].",
+      "cites": [
+        {
+          "n": 2,
+          "slug": "characters-in-inscryption",
+          "kind": "post",
+          "anchor": "short",
+          "heading": "The short version",
+          "title": "Claude modded my characters into the card game Inscryption"
+        },
+        {
+          "n": 4,
+          "slug": "characters-in-inscryption",
+          "kind": "post",
+          "anchor": "",
+          "heading": "",
+          "title": "Claude modded my characters into the card game Inscryption"
+        },
+        {
+          "n": 5,
+          "slug": "characters-in-inscryption",
+          "kind": "notes",
+          "anchor": "how-to-play-it",
+          "heading": "How to play it",
+          "title": "My characters in Inscryption: the making-of notes"
+        },
+        {
+          "n": 6,
+          "slug": "characters-in-inscryption",
+          "kind": "notes",
+          "anchor": "doing-this-with-another-game",
+          "heading": "Doing this with another game",
+          "title": "My characters in Inscryption: the making-of notes"
+        }
+      ],
+      "related": [
+        "characters-in-inscryption",
+        "modding-megabonk",
+        "jefrie-lora"
       ],
       "cached": false
     }

@@ -2,8 +2,9 @@
 // nothing loads before it is focused; Pagefind's words come fast, with heading-anchored excerpts; its index holds the
 // listed posts and their notes and nothing else; the meaning half (/api/search) joins without a session and fails
 // silently; a result opens its post with the passage marked; Ask loads Turnstile only once opened and switched on,
-// asks once at a time, links its [n] and shows related posts; { ask: false } hides the switch. /api/* answers come
-// from fixtures/api.json, and Turnstile is a stub that solves at once. INVENTORY rows search-*.
+// asks once at a time, links its [n] (a notes passage on the notes page) and shows related posts; { ask: false } hides
+// the switch. /api/* answers come from fixtures/api.json, and Turnstile is a stub that solves at once. INVENTORY rows
+// search-*.
 import fs from 'node:fs';
 import matter from 'gray-matter';
 import { isLive } from '../../src/data/exempt.js';
@@ -229,7 +230,7 @@ test.describe('Ask Goobie', () => {
       const label = await c.textContent();
       const cite = reply.cites.find((x) => `[${x.n}]` === label);
       const href = await c.getAttribute('href');
-      expect(href.startsWith(`/ledger/${cite.slug}/?hl=`)).toBe(true);
+      expect(href.startsWith(`/ledger/${cite.slug}/${cite.kind === 'notes' ? 'notes/' : ''}?hl=`)).toBe(true);
       expect(href.endsWith(cite.anchor ? `#${cite.anchor}` : '')).toBe(true);
     }
     // A second question uses the same session; no second solve.
@@ -245,6 +246,31 @@ test.describe('Ask Goobie', () => {
     await cited.click();
     await page.waitForURL(/#the-first-night-it-was-barely-faster$/);
     await expect(page.locator('mark.hl').first()).toBeVisible();
+  });
+
+  test.describe('citing a notes passage', () => {
+    test.use({ api: { '/api/ask': 'ask-notes' } });
+    test('search-13 a cite of a notes passage opens the notes page at it; a post passage, the post', async ({ page, context }) => {
+      await watch(page, context);
+      const reply = SHAPES['ask-notes'].json;
+      const notes = reply.cites.find((c) => c.kind === 'notes' && c.anchor);
+      await page.goto('/ledger/');
+      await page.locator('[data-mode="ask"]').click();
+      await expect(page.locator('[data-mode="ask"]')).toHaveAttribute('aria-pressed', 'true');
+      await input(page).fill('What went wrong making the Inscryption cards?');
+      await input(page).press('Enter');
+      await expect(page.locator('.ask-text')).toHaveText(reply.answer);
+      for (const c of reply.cites) {
+        const href = await page.locator('.ask-cite', { hasText: `[${c.n}]` }).first().getAttribute('href');
+        const path = c.kind === 'notes' ? `/ledger/${c.slug}/notes/` : `/ledger/${c.slug}/`;
+        expect(new URL(href, 'https://x').pathname).toBe(path);
+        expect(href.endsWith(c.anchor ? `#${c.anchor}` : '')).toBe(true);
+      }
+      await page.locator('.ask-cite', { hasText: `[${notes.n}]` }).first().click();
+      await page.waitForURL(new RegExp(`/ledger/${notes.slug}/notes/\\?hl=[^#]+#${notes.anchor}$`));
+      await expect(page.locator(`[data-post-article] [id="${notes.anchor}"]`)).toHaveCount(1);
+      await expect(page.locator('mark.hl').first()).toBeVisible();
+    });
   });
 
   test.describe('switched off', () => {
