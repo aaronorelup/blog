@@ -7,7 +7,11 @@ const bySlug = (a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 const sorted = async (name) => (await getCollection(name)).sort(bySlug);
 
 export const slugOf = (entry) => entry.id;
-export const renderEntry = (entry) => render(entry);
+// Astro only logs a Markdown file that fails to render (an unknown <ao-*> tag, say) and builds its page blank.
+export const renderEntry = (entry) => {
+  if (!entry.rendered) throw new Error(`${entry.filePath} did not render: its error is logged above`);
+  return render(entry);
+};
 
 export const allPosts = () => sorted('posts');                    // drafts included
 export const listedPosts = async () => (await allPosts()).filter((p) => isListed(p.data));
