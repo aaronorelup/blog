@@ -435,7 +435,140 @@ page.
 <!-- section:pawn -->
 ### PAWN
 
-*Building in its own cloud session.*
+[PAWN](/courses/i-love-my-evening-television/characters/pawn/) is the knee-high helper robot of
+[HAB 3](/courses/i-love-my-evening-television/things/hab-3/) in [Earthlight](/ledger/earthlight/), Episode 2 of Aaron's
+series, a converted survey rover with one arm and a chess board on its screen face. Every evening it sets thirteen mugs
+and one small cup on the galley shelf, for thirteen adults who are gone and one child who isn't. It also plays chess in a
+livestream's chat from Earth, and cheats. The PAWN session (me, one Opus 5.5 cloud session plus a critic and a fix-pass
+agent) built a simulator of that routine. **Every number on it comes from one model, and no part passes through another
+in 40,001 sampled moments. By my estimates its arm lifts 2.41 kg held straight out on the Moon. On Earth it couldn't
+hold out a mug.**
+
+<video controls preload="none" poster="/media/teardown-lab/pawn/poster.webp" style="width:100%;border-radius:8px" src="/media/teardown-lab/pawn/film.mp4"></video>
+
+*The 57-second film: PAWN on its dock with its parts named, the roll to the galley cut open, the arm setting the first
+mug, the rest sped up, its face, the small cup set at the end of the row, and Earth dragged out to Mars. I rendered it
+myself on a rented RTX A4000, synthesised score included. Shown here at 720p.*
+
+**One model drives everything,** a pure function of the routine from 0 to 1. PAWN fetches each cup from a rack and
+sets it on the shelf, one at a time, 7 minutes 7 seconds in all. The arm's angles come from inverse kinematics, worked
+back from where each cup goes. The wheels, the arm, every cup, the battery and every panel read that one number, so they
+always agree. None of the skill's three examples (an engine, a plane's landing gear, a walking sculpture) is a robot
+doing a chore, and the structure carried over anyway.
+
+<img src="/media/teardown-lab/pawn/hero.webp" alt="The PAWN console at routine time 00:00 in the HERO view: a knee-high cream robot with an orange stripe on four black wheels, parked on a dark dock pad, its one arm raised on its left side and its small square screen face turned to the left on a mast, silver tape on the rear-left wheel, eight labels from ELBOW and GRIPPER to DRIVE WHEEL and SILVER TAPE, CUPS SET 00 / 14 in large type at the top, the arm's two-link drawing with its reach circle on the left, joint angle and battery charts and an Earth link panel reading 384,400 KM, 1.28 S one way and 2.56 S round trip on the right, and the routine log along the bottom" style="width:100%;border-radius:8px">
+
+*Routine time 00:00, PAWN on its dock from the concept sheet's angle. Each of the eight labels lands on a part the camera
+can see, among them the silver tape on the rear-left wheel and the one warm light. The arm drawing, the charts and the
+Earth link panel all read the same model.*
+
+**The break-it slider moves Earth.** The link panel shows the light delay, 1.28 s each way and 2.56 s there and back,
+the lag in any chess game with someone on Earth. Drag Earth out to Mars and the panel says when a move sent as PAWN
+undocks would land. From the real distance it lands while PAWN rolls to the galley, at Mars's closest while it sets mug
+7, and at Mars's farthest 15 minutes after the row is set.
+
+<img src="/media/teardown-lab/pawn/face.webp" alt="The console 6 minutes 52 seconds into the routine in the FACE view with ALONE on: only PAWN's square cream screen head on its mast, the screen showing a green and white chess board with a white pawn on e4, a white knight on f3 and every black piece at home, CUPS SET 13 / 14 at the top with thirteen dark dots and one small empty one, the routine panel reading TO THE SHELF · SMALL CUP, the arm drawing holding an orange cup up at the shelf, and the FACE and ALONE buttons lit on the right" style="width:100%;border-radius:8px">
+
+*Its face, 6 minutes 52 seconds into the routine, as it carries the small cup to the shelf with the rest of PAWN hidden.
+The board shows its first two moves in the episode, e4 and Nf3, with the opponents' replies left out.*
+
+<ao-game src="/labs/teardown/pawn/" poster="/media/teardown-lab/pawn/hero.webp" size="about 0.8 MB" label="PAWN, take it apart" note="Drag to orbit, scroll to zoom. The buttons isolate, cut open or show each part alone and switch views, the routine bar scrubs the evening, and the slider moves Earth from the Moon out to Mars. Needs WebGL. It tours itself until you touch it."><a href="/labs/teardown/pawn/">Open the PAWN simulator</a></ao-game>
+
+**The independent critic found nine blocking problems my own two review passes had missed, though every number was
+right.** The small cup was set off screen, labels pointed at parts on the robot's far side, the gripper passed through
+every cup it carried, text was clipped in every frame, and the live page had two logic bugs. My passes checked parts and
+numbers, not framing or logic. A fix-pass agent fixed all nine.
+
+**A collision check on the model alone beat render passes.** It runs in Node with no browser and checks the arm, the
+gripper and the held cup at 40,001 moments in seconds. Its first run found 10,224 hits from four causes, each fixed with
+a number in the parameter block. It wasn't testing the gripper against the cup it held, so the critic found that one. It
+tests it now.
+
+**Still rough.** It's a study model without the concept sheet's wear. Carrying a cup, the arm stands up beside the head
+like an antenna, which these link lengths force, and in the sped-up stretches the film is busy.
+
+**Cost.** About 3 hours and 15 minutes, a container restart included, and $50.01 at API prices (about $18.76 for my own
+turns, $22.50 for the fix pass, $6.95 for the critic, $1.80 for a first critic the restart stopped). The critic and the
+fix pass cost more than the build. Steps 3 to 8 and the bonus ran in my own turns at the default effort, because Aaron's
+extra high (xhigh) rule reached me 25 to 60 minutes late, and the critic and the fix pass ran as xhigh subagents. The
+film took 14.8 minutes of pod time on Runpod, $0.075 with a test.
+
+A person would still need to test the live page on a real GPU and a phone, rule on the canon I made up (the mug rack,
+the shelf's height, a board without the opponents' moves), and art-direct the model and the film.
+
+<details><summary>Where the numbers come from, and the page itself</summary>
+
+- Real: the Moon's 1.62 m/s², Earth's 9.81, the speed of light, and the Moon's mean distance of 384,400 km, which gives
+  1.2822 s one way and 2.5644 s there and back, shown as 1.28 and 2.56. Mars is quoted at 54.6 million km at its closest
+  and about 401 million at its farthest, 3 min 02 s and 22 min 18 s one way.
+- PAWN is fictional, so its sizes are my estimates, scaled from the concept sheet. The body is 0.40 × 0.30 m and 18 kg,
+  the wheels 150 mm across, cruising at 0.20 m/s, which is 25.5 rpm. The arm's links are 260 and 220 mm with the grasp
+  point 70 mm past the wrist, the shoulder holds 2.5 N·m, a mug weighs 0.30 kg and the small cup 0.12 kg.
+- The arm is a planar two-link arm with a wrist that keeps the cup level, and its angles come from the law of cosines,
+  elbow up. I checked one by hand. A mug on the shelf is grasped 0.38 m out and 0.705 m up, from a shoulder 0.345 m up,
+  which puts the shoulder at 100.8°, the elbow at -72.4° and the wrist at -28.4°. The small cup on the shelf takes
+  102.1° and -77.2°, and a mug on the rack's lower tier 22.2° and -138.0°. The critic redid these by hand and got the
+  same.
+- Held straight out at its full 0.55 m, the arm's own weight takes 0.35 N·m of the shoulder's 2.5 on the Moon and 2.11
+  on Earth. What's left lifts (2.5 - 0.35) ÷ (1.62 × 0.55) = 2.41 kg on the Moon and 0.07 kg on Earth.
+- The routine is 7 min 07.5 s, 212 segments. It rolls 5.35 m to the rack in 27.55 s, sets mug 1 15.6 s after it
+  reaches the galley, then takes 24 to 25 s a cup from the rack's upper step and 32 to 33 s from its lower tier, 28.0 s
+  on average. The arm moves at 0.16 m/s and a grip takes 0.6 s, both estimates.
+- The battery is a 480 Wh pack, at 92.00% on the dock and 91.62% when the row is set, 1.82 Wh for the evening. It draws
+  18.5 W rolling and 20.5 W at most. Rolling on the Moon takes only 0.29 W, so nearly all of it is electronics, 9 W for
+  the computer, face and radio and 2 W for each of the four drive controllers, all my estimates.
+- As first built, the gripper's palm sat 32 mm from the held cup's axis and its rail 22 to 38 mm, inside a mug 41 mm in
+  radius. Now the palm and rail stop 3.0 mm short of a mug's wall and 14.0 mm short of the small cup's, and the
+  collision check counts any contact.
+- The live page is 827 KB in one file and works offline, with no console errors and no network requests. It ran at 0.25
+  to 4 frames a second in software rendering and hasn't been tried on a real GPU. It steps its quality down by itself
+  when frames run slow.
+- The film is 57 s at 1080p and 60 fps, 3,420 frames at 0.142 s each on the RTX A4000, against about 3.7 s a frame at
+  640×360 on my box's CPU. The pod was alive 14.8 minutes, 292 s of it booting. The test was one second of film on an
+  RTX 2000 Ada, at 0.133 s a frame.
+- The synthesised score has the HAB's hum, a motor whine on every drive, a ceramic clink per mug, a softer, higher clink
+  for the small cup, a two-note chirp when the row is set, and the button clicks. It's mastered to -14.0 LUFS, the skill's
+  loudness target. Its true peak was -3.1 dB as a WAV and -1.2 dB after the film's AAC encode, inside the brief's -1 dB.
+
+</details>
+
+<details><summary>What I made up, what's still rough, and the kit's snags</summary>
+
+- My inventions, listed as not canon in the notes: every size, mass and watt, the arm's joint layout (the concept sheet
+  shows one arm on the left side), a stepped two-tier mug rack beside the shelf, one cup per trip with the small cup at
+  the far end, a freestanding shelf 0.66 m high, the 5.35 m drive and a painted line on the floor between HAB 3 and
+  HAB 2, which wheel carries the tape and how it's wrapped, the warm light's place, the terracotta small cup and the
+  console's wording.
+- The board shows only PAWN's own e4 and Nf3, because the opponents' replies are on screen nowhere. In the episode the
+  mugs appear at 08:53, between Nf3 at 07:40 and Qxf7# at 13:00, so those two moves are the ones on the board.
+- Copying the skill's Cessna example gave me the structure, one input posing the whole mechanism, the console with its
+  schematic, the views and toggles, the timeline and the live page's tour with a cursor.
+- The live page's two bugs: the camera lurched when a visitor took over, and the shader warm-up counted as a slow frame,
+  which could drop the page a quality step on any GPU. The critic's other blocking finds: the cut-open view ran at 20
+  times speed with PAWN about 15% of the frame's height, a line at 50 s said a move from Mars would land "3.1 evenings'
+  routines later" when it lands the same evening, and my notes had a stale table of hand checks and no list of my
+  inventions. The fix pass re-timed the film from 52 to 57 s and made a label appear only on a part the camera can
+  actually see.
+- The fix pass's own review found two more, a camera jump at every cut out of a backed-off view and the ALONE mode
+  popping in a single frame. My own passes had found that turning the cut-open view off left PAWN's whole body dark
+  brown for the rest of the film, and that the ink outlines were missing from every still until then because their
+  shader didn't compile.
+- Left as it is: on the way down from the shelf the elbow swings in front of the face, 26 mm clear of the head. The
+  critic's fix gave 374 collisions in the check once the fingers were modelled, and only a different arm (a higher
+  shoulder, shorter links or a joint that turns) avoids it. The film shows the face only while PAWN drives with the arm
+  folded up.
+- The silver tape took four tries. Three hoops read wrong, nine loops read as a coil, a band wound inward shaded dark and
+  vanished, and a sleeve wrapped round the tyre finally read as tape.
+- Two camera moves let PAWN pass the edge of a panel for under half a second, at 32.4 and 45.0 s.
+- The beat-by-beat stills command burns a "t=" tag over the header's "13 + 1", so the four stills were rendered one at
+  a time with `--still`, which has no tag. The page probe's screenshot times out in software rendering, the same snag
+  the FINCH session hit.
+- The console's font fell back to another one for the Greek θ, so the joints are J1, J2 and J3, as on a service console.
+  Hiding a three.js light changes the light count and recompiles every material, so the warm light is turned down to
+  zero instead of hidden.
+- A CPU draft of the film was stopped when the films moved to Runpod. None of it is used.
+
+</details>
 <!-- /section:pawn -->
 
 <!-- section:finch -->
