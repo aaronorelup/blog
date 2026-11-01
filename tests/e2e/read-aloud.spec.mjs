@@ -180,14 +180,22 @@ test('read-2b a click on a word while the first part of the recording is still l
   expect((await state(page)).playing).toBe(true);
 });
 
-// A stand-in for Chromium's voice: window.__said lists the utterances, and window.__step() says the next word of the
-// one being said (its boundary event), then ends it, as a real voice would.
+// A stand-in for the browser's voice: window.__said lists the utterances and window.__hushed the silent ones, and
+// window.__step() says the next word of the one being said (its boundary event), then ends it, as a real voice would.
+// Each is marked with whether it came inside a tap (a click, until its dispatch is over), as iOS asks of the first one,
+// and so is every play() of a media element in window.__plays.
 const standInVoice = (page) => page.addInitScript(() => {
-  const said = (window.__said = []);
+  let tap = false;
+  addEventListener('click', () => { tap = true; setTimeout(() => { tap = false; }); }, true);
+  const plays = (window.__plays = []);
+  const play = HTMLMediaElement.prototype.play;
+  HTMLMediaElement.prototype.play = function () { plays.push({ tap, el: this }); return play.call(this); };
+  const said = (window.__said = []), hushed = (window.__hushed = []);
   let now = null;
-  window.speechSynthesis.cancel = () => { now = null; };
-  window.speechSynthesis.speak = (u) => {
-    said.push({ text: u.text, rate: u.rate });
+  // On the prototype: WebKit can drop a property set on the speechSynthesis object itself when it collects garbage.
+  SpeechSynthesis.prototype.cancel = () => { now = null; };
+  SpeechSynthesis.prototype.speak = (u) => {
+    (u.volume ? said : hushed).push({ text: u.text, rate: u.rate, tap });
     now = { u, words: [...u.text.matchAll(/\S+/g)], i: 0 };
     u.onstart?.({});
   };
@@ -237,6 +245,58 @@ test('read-3b the real browser voice reads a post with no recording (WebKit)', a
   await expect(page.locator('.ra-bar .ra-play')).toHaveAttribute('aria-label', 'Pause');
   await page.locator('.ra-play').click();
   await expect.poll(() => page.evaluate(() => speechSynthesis.speaking)).toBe(false);
+});
+
+test('read-8 every tap that reads starts the audio or the voice inside itself, through the one <audio> Listen unlocked', async ({ page, request }) => {
+  await standInVoice(page);
+  const rec = await recorded(page, request, POST);
+  await page.goto(POST);
+  // The reader's own plays (its <audio> is kept out of the page), and the last one or the last utterance.
+  const reads = () => page.evaluate(() => {
+    const audio = document.querySelector('.ra-bar')?.aoClock();
+    const mine = window.__plays.filter((p) => !p.el.isConnected);
+    return { taps: mine.map((p) => p.tap), one: mine.every((p) => p.el === (audio ?? mine[0].el)),
+             hushed: window.__hushed.map((u) => u.tap), said: window.__said.at(-1)?.tap };
+  });
+  // Listen, before its import and fetch: a silent utterance and a play() of the element that then reads the recording.
+  await listen(page).click();
+  await expect.poll(async () => (await state(page)).t, { timeout: 5000 }).toBeGreaterThan(0.3);
+  let r = await reads();
+  expect(r.hushed).toEqual([true]);
+  expect(r.taps[0]).toBe(true);
+  expect(r.one).toBe(true);
+  // A word, the bar's play, and a change of voice each play inside the tap.
+  const { target } = midParagraph(rec);
+  const box = await pointOf(page, target[0], target[1] + 1);
+  let n = r.taps.length;
+  await page.mouse.click(box.x, box.y);
+  await expect.poll(async () => (await state(page)).block).toBe(String(target[0]));
+  r = await reads();
+  expect(r.taps.slice(n)).toEqual([true]);
+  await page.locator('.ra-play').click();
+  await expect.poll(async () => (await state(page)).paused).toBe(true);
+  n = r.taps.length;
+  await page.locator('.ra-play').click();
+  await expect.poll(async () => (await state(page)).paused).toBe(false);
+  expect((await reads()).taps.slice(n)).toEqual([true]);
+  await page.locator('.ra-voice [data-voice="speech"]').click();
+  expect((await reads()).said).toBe(true);
+  // The browser's voice: a word and the speed restart it inside the tap.
+  await page.mouse.click(box.x, box.y);
+  await expect.poll(() => page.evaluate(() => window.__said.length)).toBeGreaterThan(1);
+  expect((await reads()).said).toBe(true);
+  const count = await page.evaluate(() => window.__said.length);
+  await page.locator('.ra-speed').click();
+  expect(await page.evaluate(() => window.__said.length)).toBe(count + 1);
+  expect((await reads()).said).toBe(true);
+  // Back to the recording: the same element plays it, inside the tap.
+  n = (await reads()).taps.length;
+  await page.locator('.ra-voice [data-voice="recorded"]').click();
+  await expect.poll(async () => (await state(page)).paused).toBe(false);
+  r = await reads();
+  expect(r.taps.slice(n)).toEqual([true]);
+  expect(r.one).toBe(true);
+  expect(r.hushed).toEqual([true]);
 });
 
 test('read-4 a video starting pauses the reading, the reading starting pauses the video, and ao-stop stops it', async ({ page, request }) => {

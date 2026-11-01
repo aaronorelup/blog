@@ -1,16 +1,16 @@
 // The recording: { parts: [{ src, dur, words: [[r, c0, c1, t0, t1]] }] }, one part per section, played in turn by one
 // <audio> (kept out of the page, so the page's players never pause it as one of theirs), the next part fetched at 80%,
 // speed by playbackRate, the word found by binary search on every animation frame, the lock screen told what plays.
-// recorded(rec, order, on, title) → the engine index.js drives; order: the block refs in reading order.
-export function recorded({ parts }, order, on, title) {
+// recorded(audio, rec, order, on, title) → the engine index.js drives; audio: the one element Listen's press unlocked
+// (its handlers are properties, so the next engine's replace these); order: the block refs in reading order.
+export function recorded(audio, { parts }, order, on, title) {
   const rank = new Map(order.map((r, i) => [r, i]));
-  const audio = new Audio();
   audio.preload = 'auto';
   let part = -1, word = -1, want = false, raf = 0, ahead = -1, seek = 0, plays = 0;
 
   // A part's time is set once its metadata is in: a seek before that is dropped by some browsers. The latest
   // target wins, so a second click while a part loads isn't undone by the first one's.
-  audio.addEventListener('loadedmetadata', () => { audio.currentTime = seek; });
+  audio.onloadedmetadata = () => { audio.currentTime = seek; };
   function load(i, t) {
     seek = t;
     if (i !== part) { part = i; word = -1; audio.src = parts[i].src; }
@@ -47,13 +47,13 @@ export function recorded({ parts }, order, on, title) {
       () => { if (n === plays) { want = false; on.state(); } });
     on.state();
   }
-  audio.addEventListener('ended', () => {
+  audio.onended = () => {
     if (part + 1 < parts.length) { load(part + 1, 0); run(); return; }
     want = false;
     part = -1;
     on.state();
     on.end();
-  });
+  };
 
   // The part and time of the word at or after block r, offset c (the first word of a later block when r has none).
   function locate({ r, c }) {

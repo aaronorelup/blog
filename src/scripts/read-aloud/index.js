@@ -1,6 +1,7 @@
 // Karaoke mode for one post (ARCHITECTURE.md "Read-aloud"): the bar, the recording of this version or the browser's
 // own voice, the word marked as it is read, a click on any word to start there, the reading followed down the page,
-// and one player at a time with the post's videos. open(root, button, onClose) → { toggle, close } (listen.js).
+// and one player at a time with the post's videos. open(root, button, audio, onClose) → { toggle, close } (listen.js;
+// audio: the <audio> its press unlocked, the only one the recording may play through).
 import { AO_STOP, claim } from '../../elements/_core/player.js';
 import { bar } from './bar.js';
 import { blocksOf, hit, rangeOf, wordAt } from './dom.js';
@@ -14,7 +15,7 @@ const MUTE = 'No recording of this version yet, and this browser has no voice of
 const QUIET = 3000; // after the reader scrolls themselves, the page waits this long before following the reading again
 const NOT_TEXT = 'a, button, input, select, textarea, summary, label, img, picture, video, audio, iframe';
 
-export function open(root, button, onClose) {
+export function open(root, button, audio, onClose) {
   const { slug, readHash } = button.dataset;
   const blocks = blocksOf(root);
   const title = blocks.get('t').text;
@@ -41,16 +42,18 @@ export function open(root, button, onClose) {
   function make(kind) {
     engine?.close();
     voice = kind;
-    engine = kind === 'recorded' ? recorded(rec, [...blocks.keys()], events, title) : speech(blocks, events);
+    engine = kind === 'recorded' ? recorded(audio, rec, [...blocks.keys()], events, title) : speech(blocks, events);
     engine.rate(speed);
     ends = kind === 'recorded' ? engine.ends() : new Map();
   }
   // A post that is never recorded has no readHash and reads in the browser's voice, which listen.js made sure of.
-  const ready = (readHash ? fetch(`/read/${slug}/${readHash}.json`).then((r) => r.json()).catch(() => ({}))
+  // Null once the recording (or its absence) is in.
+  let loading = (readHash ? fetch(`/read/${slug}/${readHash}.json`).then((r) => r.json()).catch(() => ({}))
     : Promise.resolve({})).then((r) => {
     rec = r.parts ? r : null;
     if (!rec && readHash) note = canSpeak ? COMING : MUTE;
     if (rec || canSpeak) make(rec ? 'recorded' : 'speech');
+    loading = null;
     render();
   });
 
@@ -58,8 +61,10 @@ export function open(root, button, onClose) {
     ui.show({ playing: !!engine?.playing(), speed, voice, offered: !!readHash, recorded: !!rec, speech: canSpeak,
               note });
   }
-  async function play(from) {
-    await ready;
+  // Synchronous once the recording is in, so a tap (a word, the bar's play, a voice) starts the audio or the voice
+  // inside itself, as iOS asks; before that, Listen's press has unlocked both and the reading starts when it arrives.
+  function play(from) {
+    if (loading) { loading.then(() => play(from)); return; }
     if (!engine) return;
     claim(el);
     engine.play(from);
