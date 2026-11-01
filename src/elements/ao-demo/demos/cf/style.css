@@ -1,6 +1,6 @@
-/* AO-057's two demos (src/scripts/demos/cf.js): "you, in this data" and the live reader
-   counter. Imported by that module, so it only loads with the post. Panel tokens throughout, so
-   day and night both work; text rules are scoped under .cfd to beat .pc-prose p. */
+/* AO-057's two demos (index.js beside it): "you, in this data" and the live reader counter. Inlined into the
+   article of the post that uses it (ElementStyles). Panel tokens throughout, so day and night both work; text
+   rules are scoped under .cfd to beat .pc-prose p. */
 
 ao-demo { display: block; margin: 30px 0 34px; }
 
