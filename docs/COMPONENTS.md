@@ -527,3 +527,28 @@ Behaviours: transcript-1 to transcript-5. Used by `every-video-can-seek`, `lesso
 and `loom-and-information-flow`.
 
 ## <ao-treemap>
+
+Parts of a whole whose parts have parts, drawn as nested rectangles with areas in proportion. Written once as a
+plain `<table>`: the first column is the groups (projects), every other column a kind of part (languages), the cells
+amounts. Each group is a block, its parts tiles coloured by column. Pointing at a tile, or focusing the chart and
+using the arrow keys (Home and End to the ends), reads it out. The table stays for screen readers (visually hidden
+once drawn); without JS it is the table.
+
+| Attribute | |
+|---|---|
+| `views="By project\|By language"` | a second view turns it inside out: one block per column, the groups as its tiles (one button per view, the first two only) |
+| `top="6"` | keeps the six largest columns and folds the rest into "Other" |
+| `unit="lines"` | printed after each amount in the read-out |
+| `aspect="w/h"` | the chart's frame on wide screens (default `16/10`; a phone gets `4/5`) |
+
+Children: one `<table>`, then an optional `<figcaption>`. Rows with no amount above zero are left out.
+
+```html
+<ao-treemap views="By project|By language" top="6" unit="lines">
+<table><thead><tr><th>Project</th><th>JavaScript</th><th>CSS</th></tr></thead>
+<tbody><tr><td>blog</td><td>18,200</td><td>6,100</td></tr><tr><td>games</td><td>9,400</td><td>800</td></tr></tbody></table>
+<figcaption><b>Where the code is</b></figcaption>
+</ao-treemap>
+```
+
+Behaviours: treemap-1 to treemap-3. Used by 1 post (`INVENTORY.md`): `counting-the-code`.
