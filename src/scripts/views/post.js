@@ -17,23 +17,29 @@ if (matchMedia('(hover: hover) and (pointer: fine)').matches) lazy(() => import(
 // Where the reader lands once the components have drawn: each loads its own chunk and often draws after the load
 // event, when the browser has already scrolled to the #heading, and a chart is rarely as tall as the table it replaces.
 // Unless the reader has scrolled since: where they were before a Reload or a Back that missed the page cache (only
-// #panel-scroll scrolls, and browsers keep its place only in that cache), else the #heading. Then a search result's
-// or a citation's passage is marked (highlight.js, loaded only for a ?hl= or ?hs= link).
+// #panel-scroll scrolls, and browsers keep its place only in that cache, so it is kept in history.state as they
+// scroll), else the #heading. Then a search result's or a citation's passage is marked (highlight.js, loaded only for
+// a ?hl= or ?hs= link).
 function land(root, drawn) {
   const scroller = root.closest('#panel-scroll');
+  const saved = history.state?.scroll;
   let moved = false;
   const stop = () => { moved = true; };
   for (const type of MOVES) addEventListener(type, stop, { capture: true, once: true, passive: true });
-  const save = () => history.replaceState({ ...history.state, scroll: scroller.scrollTop }, '');
-  addEventListener('pagehide', save);
+  let timer = 0;
+  const keep = () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => history.replaceState({ ...history.state, scroll: scroller.scrollTop }, ''), 200);
+  };
+  scroller.addEventListener('scroll', keep, { passive: true });
   const arrive = () => {
     for (const type of MOVES) removeEventListener(type, stop, { capture: true });
-    if (!moved && history.state?.scroll !== undefined) scroller.scrollTop = history.state.scroll;
+    if (!moved && saved !== undefined) scroller.scrollTop = saved;
     else if (!moved) document.querySelector(':target')?.scrollIntoView();
     if (/[?&]h[ls]=/.test(location.search)) lazy(() => import('../post/highlight.js')).then((m) => m.highlight(root));
   };
   drawn.then(arrive, arrive);
-  return () => removeEventListener('pagehide', save);
+  return () => { clearTimeout(timer); scroller.removeEventListener('scroll', keep); };
 }
 
 export function article(root) {
