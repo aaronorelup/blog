@@ -5,7 +5,6 @@
 // page and openPost() imports it on the homepage, and the browser upgrades the tags either way.
 // The stylesheet is imported by this module, so it reaches both surfaces with it.
 //
-//   <ao-compare cols="3" aspect="4/3" sync> <figure>…</figure> … </ao-compare>
 //   <ao-model src="/media/x/model.glb" poster="/media/x/model.webp" size="2.1 MB" label="…">
 //   <ao-timeline lanes="a:Session A|b:Session B" views="b:What B saw"> <ol><li data-lane="a">…
 //   <ao-game src="/games/x/" poster="/media/x/poster.jpg" size="12 MB" label="…" note="…">
@@ -34,49 +33,6 @@ import { enhance } from '../elements/enhance.js';
 export { enhance };
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => enhance());
 else enhance();
-
-// ---------------------------------------------------------------------------------------
-// <ao-compare>: a grid of same-sized frames, so outputs can be judged side by side.
-//   cols="N"      columns on wide screens (default 2; phones always get 1, tablets 2)
-//   aspect="w/h"  the frame every item is fitted into, letterboxed on one background
-//   sync          videos inside play, pause and seek together
-// Its stills open in the image viewer like every other picture in a post.
-class AoCompare extends HTMLElement {
-  connectedCallback() {
-    if (this._ready) return;
-    this._ready = true;
-    const cols = parseInt(this.getAttribute('cols') || '2', 10);
-    this.style.setProperty('--ao-cols', String(Math.max(1, cols)));
-    const aspect = this.getAttribute('aspect');
-    if (aspect) this.style.setProperty('--ao-aspect', aspect);
-    if (this.hasAttribute('sync')) this.syncVideos();
-  }
-
-  syncVideos() {
-    const vids = () => [...this.querySelectorAll('video')];
-    // Driving the followers makes them fire play/pause/seeked of their own, a tick later.
-    // Answering those echoes drives the leader back, and the videos ping-pong forever. So the
-    // video the reader touched leads, and followers' events are ignored for a short window.
-    let leader = null;
-    let quietUntil = 0;
-    const lead = (e, fn) => {
-      const now = performance.now();
-      if (e.target !== leader && now < quietUntil) return;
-      leader = e.target;
-      quietUntil = now + 400;
-      for (const v of vids()) if (v !== leader) fn(v, leader);
-    };
-    const near = (v, t) => Math.abs(v.currentTime - t) < 0.08;
-    this.addEventListener('play', (e) => lead(e, (v, l) => {
-      if (!near(v, l.currentTime)) v.currentTime = l.currentTime;
-      if (v.paused) v.play().catch(() => {});
-    }), true);
-    this.addEventListener('pause', (e) => lead(e, (v) => { if (!v.paused) v.pause(); }), true);
-    this.addEventListener('seeked', (e) => lead(e, (v, l) => {
-      if (!near(v, l.currentTime)) v.currentTime = l.currentTime;
-    }), true);
-  }
-}
 
 // ---------------------------------------------------------------------------------------
 // <ao-model>: a GLB the reader can turn around. Nothing heavy loads until they ask: the
@@ -3201,7 +3157,6 @@ class AoDemo extends HTMLElement {
   }
 }
 
-if (!customElements.get('ao-compare')) customElements.define('ao-compare', AoCompare);
 if (!customElements.get('ao-demo')) customElements.define('ao-demo', AoDemo);
 if (!customElements.get('ao-transcript')) customElements.define('ao-transcript', AoTranscript);
 if (!customElements.get('ao-game')) customElements.define('ao-game', AoGame);
