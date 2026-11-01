@@ -35,7 +35,8 @@ follow while the experiments run, so it changes as results land and gets rewritt
 <tr><td>Touch Move's brass clock</td><td>Builder, critic, fixer (lead's box)</td><td>Building, Step 7</td><td></td></tr>
 <tr><td>LOOM</td><td>Cloud session</td><td>Done 23:50</td><td>The gate prints in 98 layers and leans 2.01°. $20.62 of tokens; GPU film $0.02-0.09</td></tr>
 <tr><td>FINCH</td><td>Cloud session</td><td>Done 23:52</td><td>Walks as designed, then the bent leg trips it. $34.29 of tokens; GPU film $0.056</td></tr>
-<tr><td>DRAY and PAWN</td><td>One cloud session each</td><td>Building</td><td></td></tr>
+<tr><td>DRAY</td><td>Cloud session</td><td>Done 00:14</td><td>Holds the bag on the Moon; tips over its missing corner at 8.2 m/s². $47.35 of tokens; GPU film about $0.03</td></tr>
+<tr><td>PAWN</td><td>Cloud session</td><td>Building</td><td></td></tr>
 <tr><td>Resupply 6, the lander that tipped</td><td>Cloud session</td><td>Done 22:56</td><td>Lands upright at 1.5 m/s with 13.0 kJ to spare; at 7.0 m/s it tips. $15.88 of tokens; final film rendered on a GPU in 5.4 min for $0.045</td></tr>
 <tr><td>HAB 3: the nine steps</td><td>Cloud session</td><td>Done 23:16</td><td>Every canon number from one clock; the critic caught four canon slips. $30.82 of tokens; 58 s GPU film for $0.047</td></tr>
 <tr><td>A music box build-along of "Never Rises, Never Sets"</td><td>Cloud session</td><td>Started 21:41</td><td></td></tr>
