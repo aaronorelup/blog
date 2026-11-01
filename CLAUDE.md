@@ -22,6 +22,7 @@ anything. `ARCHITECTURE.md` is the map of the code.
 3. `git push origin HEAD:main`. Rejected: repeat from 2. Never force-push.
 4. Within 10 minutes `curl -s https://aaronorelup.com/version.json` must show `"branch": "main"` and your commit or
    a newer one. If it shows another branch or an older commit, the deploy went wrong: say so, don't carry on.
+   After a change to the Worker or to media, also `npm run media:verify`.
 5. A live check that fails because of your change: push `git revert` of it at once, then report.
 
 ## Hard rules

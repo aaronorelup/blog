@@ -53,9 +53,10 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
    are lenient until W4; live notebooks (`src/data/exempt.js`) stay lenient for good.
 3. **Markdown** goes through `scripts/rehype-post-images.mjs` (every picture gets its width, height and its
    `data-full` copy) and Shiki with both themes as CSS variables.
-4. **Integrations** (`astro.config.mjs`), in order: `publicDirConstant` (the `__PUBLIC_DIR__` define),
-   `statsPages`, `loreThumbs`, `media` (no file over 25 MiB, no video or audio in `public/` outside
-   `STAYS_IN_GIT`), `verifyDist` (the frozen contracts over `dist/`, then the budgets, printed).
+4. **Integrations** (`astro.config.mjs`), in order: `statsPages`, `loreThumbs`, `media` (no file over 25 MiB,
+   no video or audio in `public/` outside `STAYS_IN_GIT`), `verifyDist` (the frozen contracts over `dist/`, then
+   the budgets, printed). The config also defines `__PUBLIC_DIR__` (read by `src/lib/paths.js`) and, for
+   `astro dev` only, the `/api/stats` fixture.
 
 ### What the build writes, and who reads it
 
@@ -108,7 +109,7 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 
 | Path | What |
 |---|---|
-| `src/lib/content.js` | the only importer of `astro:content`: `allPosts`, `listedPosts`, `renderEntry`, `notesBySlug`, `slugOf` |
+| `src/lib/content.js` | the only importer of `astro:content`: `allPosts`, `listedPosts`, `notesBySlug`, `research`, `projects`, `renderEntry`, `slugOf` |
 | `src/lib/{posts,cards,icons,dates,paths}.js` | listing and order, the card shape, icons by id, UTC dates, `PUBLIC_DIR` |
 | `src/lib/lore*.js` | the lore course's data and drawings |
 | `src/pages/index.astro` + `src/layouts/Home.astro` | the homepage: the tea house scene and its overlay |
@@ -211,8 +212,11 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   secret); `/api/stats` serves the stored snapshot, naming only pages in `/stats-pages.txt`. Nothing is keyed on a
   visitor's IP address.
 - **The lore course.** Every page under `/courses/i-love-my-evening-television/` is drawn from
-  `src/data/lore/lore.json` and its pictures, which `lore.py publish` in the series repo writes. Change the series
-  repo and publish again, never the files here.
+  `src/data/lore/lore.json` and its pictures in `public/courses/i-love-my-evening-television/media/`, which the
+  series repo `aaronorelup/i-love-my-evening-television` writes (`python3 Series/lore/tools/lore.py publish --blog
+  <this repo>`). Its lessons (`public/courses/i-love-my-evening-television/lessons/`) and their data
+  (`src/data/courses/i-love-my-evening-television.json`) come from that repo's `lessons.py`. Change the line in its
+  `Series/lore/` and publish again, never the files here.
 
 ## Recipes
 
