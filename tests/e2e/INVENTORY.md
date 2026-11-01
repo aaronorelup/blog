@@ -2,7 +2,7 @@
 
 Every bespoke behaviour of the site, the pages that use it and the check that holds it. Rows come from the code:
 each `addEventListener` and each documented attribute of a component has one (`src/elements/**`,
-`src/scripts/home-scene.js`, `src/scripts/cards/`, `src/scripts/ledger/`, `src/scripts/search/`,
+`src/scripts/home-scene.js`, `src/scripts/home/overlay/`, `src/scripts/cards/`, `src/scripts/ledger/`, `src/scripts/search/`,
 `src/scripts/post/highlight.js`, the inline scripts of the standalone pages). A spec id is the start of a test title
 (`npm run e2e -- -g core-4`). Unless a row says otherwise it passes on both projects, `desktop` (Chromium 1440×900)
 and `phone` (WebKit, iPhone 13).
@@ -304,9 +304,9 @@ its static rung mid-test.
 | Behaviour | Spec |
 |---|---|
 | A card grows into the ledger, with no document load | overlay-1 |
-| A row opens its post in the panel, with no document load; `enhance(root)` makes its pictures open the viewer | overlay-2 |
+| A row opens its post in the panel, with no document load; `enhance(root)` makes its pictures open the viewer; Esc closes the viewer and leaves the panel open | overlay-2 |
 | Post A, post B, back to A, on to C: every `ao-*` is defined each time; the model renders, the game reloads, the demo responds | overlay-3 |
-| A lost component chunk still ends on a working post | overlay-4: broken on main |
+| A lost component chunk (the post's `enhance` chunk) still ends on a working post: `lazy()` opens the real page | overlay-4 |
 | A link to another post inside a post stays in the panel | overlay-5 |
 | Esc closes to the scene, Back reopens the post, Forward closes it | overlay-6 |
 | Back to the ledger (`data-close-reader`) and back to the tea house (`data-panel-home`) | overlay-7 |
@@ -314,6 +314,17 @@ its static rung mid-test.
 | A post the panel can't fetch opens as its real page | overlay-9 |
 | A deep link to a post is its real page, components working | overlay-10 |
 | The ledger's copy button puts the feed's address on the clipboard | overlay-11 (desktop: clipboard permissions are Chromium's in Playwright) |
+| A view is fetched on intent only: nothing on idle, the page on the pointer going down, once | overlay-12 |
+| The homepage asks for no picture of a view it isn't showing | overlay-13 |
+| Courses brings its own stylesheets, put before the homepage's, and they apply | overlay-14 |
+| Opening and closing every view (and a post) leaves the homepage's body and card colours as they were | overlay-15 |
+| A page from another build (`ao-build`) opens as the real page | overlay-16 |
+| Back from a post finds the ledger filtered (`?topic=`) and scrolled as it was left | overlay-17 |
+| A search result (`?hl=&hs=#heading`) opens in the panel with its passage marked, in view | overlay-18 |
+| A post's notes open in the panel | overlay-19 |
+| The scene draws nothing while the panel covers it, and draws again once it closes | overlay-20 |
+| A project's own page ("Start the course", `data-no-fly`) leaves at once from the panel, with no flight | overlay-21 |
+| Ask works again in a ledger mounted afresh: its Turnstile widget goes into the box on screen | overlay-22 |
 
 ## Pages (`ledger.spec.mjs`, `pages.spec.mjs`)
 
@@ -386,9 +397,6 @@ load without a script error (live-5).
 
 - **home-4, the rail dots.** The active section lies over the rail at every tier and on both projects, so a click on
   a dot lands on the section and the scene doesn't move. The keys, the wheel and a swipe work.
-- **overlay-4, a lost chunk.** `openPost` imports `post-components.js` (the shim, whose chunk carries `enhance()`) with
-  no fallback: when a deploy has replaced the chunk, the post shows un-upgraded. T1.2's `lazy(load, fallbackUrl)`
-  navigates to the real page instead, once T3.1's `openPost` imports through it.
 
 Smaller quirk: after `ao-stop` a running game's veil reads "Paused while something else plays." (the page-wide stop
 reaches the game through its `aoPause` first), where "Paused." was meant. game-4 asserts only that it is paused.

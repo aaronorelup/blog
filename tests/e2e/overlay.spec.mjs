@@ -1,52 +1,74 @@
-// The homepage overlay: a card grows into the ledger, rows and cross-links swap posts in with no document load, the
-// components work again on every swap, history and Esc drive it, it stops players on close, and anything it can't
-// do in place (a failed fetch, a lost chunk) ends on the real page. The selectors the overlay contract names (0.3)
-// are the ones below; INVENTORY rows overlay-*.
+// The homepage overlay (src/scripts/home/overlay/): a card grows into the panel, which fetches each view from its real
+// page on intent and mounts a fresh copy; rows, cross-links, notes and search results open in it with no document
+// load, the components work again on every swap, history and Esc drive it, it stops players on close, the scene stops
+// drawing under it, and anything it can't do in place (a failed fetch, a lost chunk, another build) ends on the real
+// page. The selectors the overlay contract names (0.3) are the ones below; INVENTORY rows overlay-*.
 import sharp from 'sharp';
 import { test, expect } from './fixtures.mjs';
 import { pageWith, pagesWhere, play, expectPlaying } from './helpers.mjs';
 
 const PANEL = '#panel-screen';
-const READER = '[data-view="reader"]';
+const READER = '[data-panel-host] [data-post-article]';
 const panel = (page) => page.locator(PANEL);
 const reader = (page) => page.locator(READER);
+const view = (page, key) => panel(page).locator(`[data-panel-view="${key}"] h1`).first();
 const isOpen = (page) => expect(panel(page)).toHaveAttribute('aria-hidden', 'false');
 const isClosed = (page) => expect(panel(page)).toHaveAttribute('aria-hidden', 'true');
 const modelPost = pageWith('ao-model');
 const gamePost = pageWith('ao-game');
 const demoPost = pageWith('ao-demo', (a) => a.name === 'synthid');
 const slugOf = (url) => url.split('/')[2];
+const exactly = (url) => new RegExp(url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$');
 test.describe.configure({ mode: 'default' });
 
 // The homepage, with a marker on its window: if the marker survives, no document was loaded.
 // ?tier=low pins the scene's cheapest animated rung: the overlay is the same, and software WebGL keeps up.
-async function home(page) {
-  await page.goto('/?tier=low');
+async function home(page, tier = 'low') {
+  await page.goto(`/?tier=${tier}`);
   await expect(page.locator('#stop-rail [data-goto]').first()).toBeVisible({ timeout: 20_000 });
   await page.evaluate(() => { window.__sameDocument = true; });
 }
 // A navigation under way destroys the old document's context: that, too, means another document.
 const sameDocument = (page) => page.evaluate(() => window.__sameDocument === true).catch(() => false);
 
-// Walk the scene to the card that links to the ledger, then click its link: the card grows into the panel.
-async function openLedger(page) {
-  const card = page.locator('section[data-wp]').filter({ has: page.locator('a[href="/ledger"]') }).first();
+// Walk the scene to the card that links to href and give back its link's centre.
+async function cardLink(page, href) {
+  const card = page.locator('section[data-wp]').filter({ has: page.locator(`a[href="${href}"]`) }).first();
   for (let k = 0; k < 6 && await card.evaluate((s) => s.inert); k++) {
     await page.keyboard.press('ArrowDown');
     await page.waitForTimeout(3000);
   }
-  const link = card.locator('a[href="/ledger"]').first();
-  const box = await link.boundingBox();
-  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-  await isOpen(page);
-  await expect(page).toHaveURL(/\/ledger$/);
+  const box = await card.locator(`a[href="${href}"]`).first().boundingBox();
+  return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
 }
-const row = (page, url) => panel(page).locator(`[data-view="ledger"] [data-ledger-entry="${slugOf(url)}"]`).first();
+// Click the card's link: the card grows into the panel.
+async function openFrom(page, href) {
+  const { x, y } = await cardLink(page, href);
+  await page.mouse.click(x, y);
+  await isOpen(page);
+  await expect(page).toHaveURL(new RegExp(href + '$'));
+}
+const openLedger = (page) => openFrom(page, '/ledger');
+
+// A page's title, as the overlay shows it while that page is in the panel.
+const titles = new Map();
+async function titleOf(page, url) {
+  if (!titles.has(url)) {
+    const html = await (await page.request.get(url)).text();
+    titles.set(url, await page.evaluate((h) => new DOMParser().parseFromString(h, 'text/html').title, html));
+  }
+  return titles.get(url);
+}
+// The reader shows the post at url: the address and the title are that post's, its heading is in view.
+async function reading(page, url) {
+  await expect(page).toHaveURL(exactly(url));
+  await expect(page).toHaveTitle(await titleOf(page, url));
+  await expect(reader(page).locator('h1').first()).toBeVisible();
+}
+const row = (page, url) => panel(page).locator(`[data-panel-view="ledger"] [data-ledger-entry="${slugOf(url)}"]`).first();
 async function openRow(page, url) {
   await row(page, url).click();
-  await expect(page).toHaveURL(new RegExp(url + '$'));
-  await expect(reader(page)).toHaveAttribute('data-slug', slugOf(url));
-  await expect(reader(page).locator('h1, h2').first()).toBeVisible();
+  await reading(page, url);
 }
 // Each component is its own chunk, loaded once the post is in the reader: give them a moment.
 const allDefined = (page) => expect.poll(() => reader(page).evaluate((r) => r.querySelectorAll(':not(:defined)').length)).toBe(0);
@@ -64,7 +86,7 @@ async function modelRenders(page) {
 test('overlay-1 a card grows into the ledger, with no document load', async ({ page }) => {
   await home(page);
   await openLedger(page);
-  await expect(panel(page).locator('[data-view="ledger"]')).toBeVisible();
+  await expect(view(page, 'ledger')).toBeVisible();
   const from = await page.locator('section[data-wp]').filter({ has: page.locator('a[href="/ledger"]') }).first()
     .locator(':scope > *').first().boundingBox();
   await expect.poll(async () => {
@@ -78,9 +100,13 @@ test('overlay-2 a row opens its post in the panel, with no document load, its pi
   await home(page);
   await openLedger(page);
   await openRow(page, modelPost);
-  // The overlay runs enhance(root) on the post it swapped in: its pictures are buttons that open the viewer.
+  // The overlay runs enhance(root) on the post it mounted: its pictures are buttons that open the viewer.
   await reader(page).locator('img[role=button]').first().click();
   await expect(page.locator('dialog.ao-lb')).toBeVisible();
+  // Esc is the viewer's: it closes, and the panel stays.
+  await page.keyboard.press('Escape');
+  await expect(page.locator('dialog.ao-lb')).toBeHidden();
+  await isOpen(page);
   expect(await sameDocument(page)).toBe(true);
 });
 
@@ -99,12 +125,12 @@ test('overlay-3 post A, post B, back to A and on to C: every component works on 
   await page.goBack();
   await expect(page).toHaveURL(/\/ledger$/);
   await page.goBack();
-  await expect(reader(page)).toHaveAttribute('data-slug', slugOf(modelPost));
+  await reading(page, modelPost);
   await allDefined(page);
   await modelRenders(page);
   await page.goForward();
   await page.goForward();
-  await expect(reader(page)).toHaveAttribute('data-slug', slugOf(gamePost));
+  await reading(page, gamePost);
   await expect(reader(page).locator('ao-game iframe')).toHaveCount(0);
   await reader(page).locator('ao-game .ao-game-load').first().click();
   await expect(reader(page).locator('ao-game iframe')).toHaveCount(1);
@@ -119,13 +145,24 @@ test('overlay-3 post A, post B, back to A and on to C: every component works on 
 });
 
 test('overlay-4 a lost component chunk still ends on a working post', async ({ page }) => {
-  // Broken on main: openPost's import('./post-components.js') has no fallback, so the post stays un-upgraded.
-  // T1.2's lazy() navigates to the real page instead (INVENTORY overlay-4).
-  test.fail();
-  await page.route('**/_astro/post-components.*.js', (r) => r.abort(), { times: 1 });
+  // A deploy since the homepage loaded: the post's enhance() chunk is gone, so lazy() opens the real page, which
+  // comes from the new build and names new chunks. Here those are the same files under ?deploy=2 (WebKit would
+  // otherwise hand the real page the failure it keeps for the old name).
   await home(page);
   await openLedger(page);
+  await page.route('**/_astro/enhance.*.js', (r) => r.fulfill({ status: 404, body: '' }), { times: 1 });
+  const renamed = (text) => text.replace(/((?:src=|from|import\()\s*["'](?:\/_astro\/|\.\/)[^"']+\.js)(["'])/g, '$1?deploy=2$2');
+  await page.route(`**${modelPost}`, async (r) => {
+    if (r.request().resourceType() !== 'document') return r.fallback();
+    const response = await r.fetch();
+    return r.fulfill({ response, body: renamed(await response.text()) });
+  });
+  await page.route(/\/_astro\/[^/]+\.js\?deploy=2$/, async (r) => {
+    const response = await r.fetch({ url: r.request().url().replace('?deploy=2', '') });
+    return r.fulfill({ response, body: renamed(await response.text()) });
+  });
   await row(page, modelPost).click();
+  await expect.poll(() => sameDocument(page)).toBe(false);
   await expect(page).toHaveURL(new RegExp(modelPost + '$'));
   await expect.poll(() => page.evaluate(() => !!customElements.get('ao-model')), { timeout: 10_000 }).toBe(true);
 });
@@ -135,11 +172,10 @@ test('overlay-5 a link to another post inside a post stays in the panel', async 
   await openLedger(page);
   const from = pagesWhere((p) => p.kind === 'post' && p.posts.length > 0)[0];
   await openRow(page, from);
-  // The reader holds the article's insides, so the links are the reader's own.
   const href = await reader(page).locator('a[href^="/ledger/"]').filter({ visible: true }).evaluateAll((as) =>
     as.map((a) => a.getAttribute('href')).find((h) => /^\/ledger\/[^/?#]+\/?$/.test(h)));
   await reader(page).locator(`a[href="${href}"]`).filter({ visible: true }).first().click();
-  await expect(reader(page)).toHaveAttribute('data-slug', href.split('/')[2]);
+  await reading(page, href);
   expect(await sameDocument(page)).toBe(true);
 });
 
@@ -152,7 +188,7 @@ test('overlay-6 Esc closes to the scene, Back reopens the post, Forward closes i
   await expect(page).toHaveURL(/\/$/);
   await page.goBack();
   await isOpen(page);
-  await expect(reader(page)).toHaveAttribute('data-slug', slugOf(modelPost));
+  await reading(page, modelPost);
   await page.goForward();
   await isClosed(page);
   expect(await sameDocument(page)).toBe(true);
@@ -164,7 +200,7 @@ test('overlay-7 Back to the ledger and Back to the tea house', async ({ page }) 
   await openRow(page, modelPost);
   await reader(page).locator('[data-close-reader]').first().click();
   await expect(page).toHaveURL(/\/ledger$/);
-  await expect(panel(page).locator('[data-view="ledger"]')).toBeVisible();
+  await expect(view(page, 'ledger')).toBeVisible();
   await panel(page).locator('[data-panel-home]').first().click();
   await isClosed(page);
 });
@@ -206,4 +242,202 @@ test('overlay-11 the ledger’s copy button puts the feed’s address on the cli
   await expect(copy).toHaveText('copied');
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(new URL('/rss.xml', page.url()).href);
   await expect(copy).toHaveText('copy', { timeout: 5000 });
+});
+
+test('overlay-12 a view is fetched on intent only: never on idle, and on the pointer going down', async ({ page }) => {
+  const fetched = [];
+  page.on('request', (r) => {
+    const { pathname } = new URL(r.url());
+    if (r.resourceType() === 'fetch' && /^\/(ledger|courses|projects|about)\/?$/.test(pathname)) fetched.push(pathname);
+  });
+  await home(page);
+  await page.waitForTimeout(4000);
+  expect(fetched).toEqual([]);
+  const { x, y } = await cardLink(page, '/ledger');
+  expect(fetched).toEqual([]);
+  await page.mouse.move(x, y);
+  await page.mouse.down();
+  await expect.poll(() => fetched).toEqual(['/ledger/']);
+  await page.mouse.up();
+  await isOpen(page);
+  await expect(view(page, 'ledger')).toBeVisible();
+  expect(fetched).toEqual(['/ledger/']);
+});
+
+test('overlay-13 the homepage asks for no picture of a view it isn’t showing', async ({ page }) => {
+  const asked = [];
+  page.on('request', (r) => r.resourceType() === 'image' && asked.push(new URL(r.url()).pathname));
+  await home(page);
+  await page.waitForTimeout(5000);
+  const shown = await page.evaluate(() => [...document.querySelectorAll('img, link[rel="icon"]')]
+    .map((el) => new URL(el.currentSrc || el.src || el.href).pathname));
+  expect(asked.filter((p) => !shown.includes(p))).toEqual([]);
+});
+
+test('overlay-14 Courses brings its own stylesheet, put before the homepage’s', async ({ page }) => {
+  const sheetsOf = async (url) => [...(await (await page.request.get(url)).text())
+    .matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map((m) => m[1]);
+  const own = await sheetsOf('/');
+  const brought = (await sheetsOf('/courses/')).filter((h) => !own.includes(h));
+  expect(brought.length).toBeGreaterThan(0);
+  const linked = () => page.evaluate(() => [...document.querySelectorAll('link[rel="stylesheet"]')].map((l) => new URL(l.href).pathname));
+  await home(page);
+  expect((await linked()).filter((h) => brought.includes(h))).toEqual([]);
+  await openFrom(page, '/courses');
+  await expect(view(page, 'courses')).toBeVisible();
+  const now = await linked();
+  for (const h of brought) {
+    expect(now.indexOf(h)).toBeGreaterThan(-1);
+    expect(now.indexOf(h)).toBeLessThan(now.indexOf(own[0]));
+  }
+  // Its rules apply: a course row is laid out by courses.css, as on /courses/.
+  await expect(panel(page).locator('.cv-row').first()).toHaveCSS('display', 'grid');
+});
+
+test('overlay-15 opening and closing every view leaves the homepage’s colours as they were', async ({ page }) => {
+  await home(page);
+  const colours = async () => (await page.mouse.move(1, 1), page.evaluate(() => [document.body, ...document.querySelectorAll(
+    'section[data-wp] > div, section[data-wp] h1, section[data-wp] h2, section[data-wp] p, section[data-wp] a')]
+    .map((el) => { const s = getComputedStyle(el); return `${s.color} ${s.backgroundColor} ${s.borderTopColor}`; })));
+  const before = await colours();
+  await openLedger(page);
+  for (const key of ['projects', 'courses', 'about', 'ledger']) {
+    await panel(page).locator(`a[data-nav="${key}"]`).click();
+    await expect(view(page, key)).toBeVisible();
+  }
+  await openRow(page, modelPost);
+  await page.keyboard.press('Escape');
+  await isClosed(page);
+  await expect.poll(colours).toEqual(before);
+});
+
+test('overlay-16 a page from another build opens as the real page', async ({ page }) => {
+  await home(page);
+  await openLedger(page);
+  await page.route(`**${modelPost}`, async (r) => {
+    if (r.request().resourceType() !== 'fetch') return r.fallback();
+    const response = await r.fetch();
+    const body = (await response.text()).replace(/(<meta name="ao-build" content=")[^"]*/, '$1another-build');
+    return r.fulfill({ response, body });
+  });
+  await row(page, modelPost).click();
+  await expect.poll(() => sameDocument(page)).toBe(false);
+  await expect(page).toHaveURL(new RegExp(modelPost + '$'));
+  await expect(page.locator('[data-post-article] ao-model').first()).toBeVisible();
+});
+
+test('overlay-17 Back from a post finds the ledger filtered and scrolled as it was left', async ({ page }) => {
+  await home(page);
+  await openLedger(page);
+  // The topic with the most posts, so its list scrolls.
+  const value = await panel(page).locator('[data-chip="topic"]').evaluateAll((cs) => cs
+    .map((c) => [c.dataset.value, Number(c.textContent.match(/\d+(?=\s*$)/)[0])]).sort((a, b) => b[1] - a[1])[0][0]);
+  await panel(page).locator(`[data-chip="topic"][data-value="${value}"]`).click();
+  await expect(page).toHaveURL(new RegExp(`/ledger/?\\?topic=${value}$`));
+  const rows = panel(page).locator('[data-panel-view="ledger"] .row:not([hidden])');
+  const count = await rows.count();
+  const last = rows.nth(count - 1).locator('[data-ledger-entry]');
+  await last.scrollIntoViewIfNeeded();
+  const scroll = await page.locator('#panel-scroll').evaluate((s) => s.scrollTop);
+  expect(scroll).toBeGreaterThan(100);
+  const href = await last.getAttribute('href');
+  await last.click();
+  await reading(page, href);
+  await page.goBack();
+  await expect(page).toHaveURL(new RegExp(`\\?topic=${value}$`));
+  await expect(panel(page).locator(`[data-chip="topic"][data-value="${value}"]`)).toHaveAttribute('aria-current', 'true');
+  await expect(rows).toHaveCount(count);
+  await expect.poll(() => page.locator('#panel-scroll').evaluate((s) => s.scrollTop)).toBe(scroll);
+  expect(await sameDocument(page)).toBe(true);
+});
+
+test('overlay-18 a search result opens in the panel with its passage marked', async ({ page }) => {
+  await home(page);
+  await openLedger(page);
+  const input = panel(page).locator('.search-input');
+  await input.click();
+  await input.fill('gpu');
+  const hit = panel(page).locator('[data-search-out] a[href*="?hl="]').first();
+  const href = await hit.getAttribute('href');
+  await hit.click();
+  await expect(page).toHaveURL(exactly(href));
+  await expect(reader(page).locator('mark.hl').first()).toBeInViewport();
+  expect(await sameDocument(page)).toBe(true);
+});
+
+test('overlay-19 a post’s notes open in the panel', async ({ page }) => {
+  const notes = pagesWhere((p) => p.kind === 'notes');
+  await home(page);
+  await openLedger(page);
+  // The first listed post whose text links to its notes.
+  let url = null;
+  for (const n of notes) {
+    const post = n.replace(/notes\/$/, '');
+    if (await row(page, post).count() && (await (await page.request.get(post)).text()).includes(`href="${n}"`)) { url = n; break; }
+  }
+  await openRow(page, url.replace(/notes\/$/, ''));
+  await reader(page).locator(`a[href="${url}"]`).first().click();
+  await reading(page, url);
+  await expect(panel(page).locator('[data-panel-view="notes"]')).toBeVisible();
+  expect(await sameDocument(page)).toBe(true);
+});
+
+test('overlay-20 the scene draws nothing while the panel covers it, and again once it closes', async ({ page }) => {
+  // The high rung keeps petals falling, so an uncovered scene draws every frame.
+  await home(page, 'high');
+  const drawn = () => page.evaluate(() => new Promise((done) => {
+    const info = window.__homeScene.renderer.info.render;
+    const from = info.frame;
+    setTimeout(() => done(info.frame - from), 1000);
+  }));
+  expect(await drawn()).toBeGreaterThan(0);
+  await openFrom(page, '/projects');
+  await page.waitForTimeout(800);
+  expect(await drawn()).toBe(0);
+  await page.keyboard.press('Escape');
+  await isClosed(page);
+  expect(await drawn()).toBeGreaterThan(0);
+});
+
+test('overlay-21 a project’s own page leaves at once from the panel, with no flight', async ({ page }) => {
+  await home(page);
+  await openFrom(page, '/projects');
+  const start = panel(page).locator('.proj-card a.proj-btn[href^="/courses/"]').first();
+  await expect(start).toHaveAttribute('data-no-fly');
+  const href = await start.getAttribute('href');
+  // A flight closes the panel first; a session note survives the navigation to tell.
+  await page.evaluate(() => new MutationObserver(() => {
+    if (document.getElementById('panel-screen').getAttribute('aria-hidden') === 'true') sessionStorage.setItem('flew', '1');
+  }).observe(document.getElementById('panel-screen'), { attributes: true }));
+  await start.click();
+  await expect(page).toHaveURL(new RegExp(href + '$'));
+  expect(await page.evaluate(() => sessionStorage.getItem('flew'))).toBe(null);
+});
+
+test('overlay-22 Ask works again in a ledger mounted afresh', async ({ page, context }) => {
+  // Turnstile as a stub that solves at once, and counts where it was drawn.
+  await context.route('https://challenges.cloudflare.com/**', (route) => route.fulfill({ contentType: 'text/javascript', body: `(() => {
+    let opts = null;
+    window.__boxes = [];
+    window.turnstile = { render(el, o) { opts = o; window.__boxes.push(el); setTimeout(() => opts.callback('XXXX.DUMMY.TOKEN.XXXX'), 30); return 'w' + window.__boxes.length; },
+      reset() { setTimeout(() => opts.callback('XXXX.DUMMY.TOKEN.XXXX'), 30); }, remove() {} };
+    window[new URL(document.currentScript.src).searchParams.get('onload')]();
+  })();` }));
+  const ask = async () => {
+    await panel(page).locator('[data-mode="ask"]').click();
+    await panel(page).locator('.search-input').fill('What did renting a GPU cost?');
+    await panel(page).locator('.search-input').press('Enter');
+    await expect(panel(page).locator('.ask-text, .ask-note').first()).toBeVisible();
+  };
+  await home(page);
+  await openLedger(page);
+  await ask();
+  await page.evaluate(() => sessionStorage.removeItem('ao-ask'));   // the next question needs a new solve
+  await page.keyboard.press('Escape');
+  await isClosed(page);
+  await page.goBack();
+  await expect(view(page, 'ledger')).toBeVisible();
+  await ask();
+  // The second widget went into the box on screen, not the one that left with the old ledger.
+  expect(await page.evaluate(() => window.__boxes.map((b) => b.isConnected))).toEqual([false, true]);
 });
