@@ -295,7 +295,7 @@ streams the same two films.
 | A `data-no-fly` link leaves at once, the panel left as it was | `data-no-fly` | home-9 |
 | A lost WebGL context bails to the flat page | canvas `webglcontextlost` | home-10 |
 | The backtick opens and closes the staging tool | window `keydown` → onStageHotkey | home-11 (its own keys, drag and copy are a tool for Aaron, not checked) |
-| Five night tosses in a row open the lantern door: the last lands lamp-up, the lamp flares, the page goes to `/api/lantern` | avatar `click` → lantern.js | home-12 |
+| Five night tosses in a row open the lantern door: the last lands lamp-up, the lamp flares, the page goes to `/api/lantern` | avatar `click` → lantern.js | home-12 (the Worker's redirect: live-6) |
 | With night stored the first paint is already night: page, card and heading colours before any module runs | Head's inline script, tokens.css | home-13 |
 
 The scene specs pin `?tier=low`, which the scene supports for slow machines, so software WebGL never drops it to
@@ -414,7 +414,8 @@ Turnstile widget with the test site key, a real mint and a real DeepSeek answer.
 
 GET and HEAD only: `/version.json` is a main build (live-1), every baseline path answers (live-2), media come from
 R2 in byte ranges (live-3), `/api/stats` and `/api/reads` answer in their shapes (live-4), the homepage and a post
-load without a script error (live-5).
+load without a script error (live-5), `/api/lantern` answers `302` to an https address that isn't this site,
+`no-store`, compared and never printed (live-6).
 
 ## Broken on main (reported to Aaron)
 
