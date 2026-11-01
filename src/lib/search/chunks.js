@@ -5,7 +5,7 @@
 import { isLive } from '../../data/exempt.js';
 import { sha256hex, short } from '../text/hash.js';
 
-export const MODEL = '@cf/baai/bge-m3';
+const MODEL = '@cf/baai/bge-m3';
 export const MAX = 1500;
 const EMBED = `${MODEL} 1`; // bump the 1 when sync.js changes how a chunk is embedded: every doc re-embeds
 
@@ -33,7 +33,7 @@ export function shortVersion(summary, card) {
   return { anchor: 'short', heading: 'The short version', text };
 }
 
-export const docKey = (doc) => `${doc.kind}:${doc.slug}`;           // its key in the manifest
+const docKey = (doc) => `${doc.kind}:${doc.slug}`;                 // its key in the manifest
 export const docName = (doc) => `${doc.kind}-${doc.slug}`;          // its file: /search/docs/<name>.json
 const hashOf = (doc) => short(sha256hex(EMBED + JSON.stringify(doc)));
 
