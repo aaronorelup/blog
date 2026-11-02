@@ -82,7 +82,8 @@ test('search-1 "/" focuses the box, and nothing of search loads before it is foc
 
 test.describe('the words half alone', () => {
   test.use({ api: { '/api/search': 'search-503' } });
-  test('search-2 "gpu" lists the words half within 150 ms of the index, each passage under its heading', async ({ page }) => {
+  // A wall-clock check: its own Playwright project runs it after the parallel ones, on a quiet box (playwright.config.mjs).
+  test('search-2 "gpu" lists the words half within 150 ms of the index, each passage under its heading', { tag: '@timing' }, async ({ page }) => {
     // It times the code: Pagefind's search, the passages and the drawing of the first ones. Pagefind's files come from
     // memory after the first load, so no request's trip is in it (~125 ms each from this box to the live site, through
     // its proxy). The best of three fresh loads: on a box running other suites, one alone measures the box.
@@ -217,6 +218,48 @@ test('search-11 a search still answering when Ask opens draws nothing there and 
   await expect(page.locator('[data-search-out] .results')).toHaveCount(0);
   expect(seen.api.filter((a) => a === 'GET /api/search')).toEqual([]);
 });
+
+// The words half asks Pagefind for its pages' fragments in rank order, so the nth fragment asked for is the nth page.
+for (const [when, slow] of [['as they come', 0], ['with the 2nd page slow', 2], ['with the 1st page slow, so the meaning half draws first', 1]]) {
+  test(`search-26 rows on screen never move or change while the rest arrive (${when}), and a click lands on the row read`, async ({ page, isMobile }) => {
+    let asked = 0;
+    await page.route('**/pagefind/fragment/**', async (route) => {
+      if (++asked === slow) await new Promise((r) => setTimeout(r, 1500));
+      await route.fallback();
+    });
+    await page.goto('/ledger/');
+    await ready(page);
+    // Every change to the list: no row is ever taken out, and each draw's links begin with the last draw's.
+    await page.evaluate(() => {
+      const out = document.querySelector('[data-search-out]');
+      Object.assign(window, { draws: [], removed: 0 });
+      new MutationObserver((ms) => {
+        for (const m of ms) for (const n of m.removedNodes) if (n.nodeType === 1 && (n.matches('.row') || n.querySelector('.row'))) window.removed++;
+        window.draws.push([...out.querySelectorAll('.results .row-link')].map((a) => a.getAttribute('href')));
+      }).observe(out, { childList: true, subtree: true });
+    });
+    await input(page).fill('gpu');
+    // The third row, read as a reader reaches it, the pointer on its link.
+    await expect.poll(() => results(page).count()).toBeGreaterThanOrEqual(3);
+    const link = results(page).nth(2).locator('.row-link');
+    if (isMobile) await link.scrollIntoViewIfNeeded();
+    const href = await link.getAttribute('href');
+    const box = await link.boundingBox();
+    const [x, y] = [box.x + box.width / 2, box.y + box.height / 2];
+    if (!isMobile) await page.mouse.move(x, y);
+    // Everything in: the words half's passages (the list no longer busy) and the meaning half's own page.
+    await expect(page.locator('.results:not([aria-busy]) .row-link[href^="/ledger/characters-in-inscryption/notes/"]')).toBeAttached();
+    expect(await link.boundingBox()).toEqual(box);
+    expect(await page.evaluate(([px, py]) => document.elementFromPoint(px, py)?.closest('.row-link')?.getAttribute('href'), [x, y])).toBe(href);
+    const { draws, removed } = await page.evaluate(() => ({ draws: window.draws.filter((d) => d.length), removed: window.removed }));
+    expect(removed).toBe(0);
+    for (let i = 1; i < draws.length; i++) expect(draws[i].slice(0, draws[i - 1].length)).toEqual(draws[i - 1]);
+    if (slow) expect(new Set(draws.map((d) => d.length)).size).toBeGreaterThan(1);   // the rows did come in turn
+    if (slow === 1) expect(draws[0].some((h) => h.startsWith('/ledger/characters-in-inscryption/notes/'))).toBe(true);
+    await (isMobile ? page.touchscreen.tap(x, y) : page.mouse.click(x, y));
+    await expect(page).toHaveURL((u) => u.pathname + u.search + u.hash === href);
+  });
+}
 
 test.describe('without the meaning half', () => {
   test.use({ api: { '/api/search': 'search-503' } });

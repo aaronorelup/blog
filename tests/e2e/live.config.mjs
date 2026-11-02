@@ -7,5 +7,6 @@ export default {
   testIgnore: [],
   webServer: undefined,
   use: { ...base.use, baseURL: 'https://aaronorelup.com' },
-  projects: base.projects.filter((p) => p.name === 'desktop'),
+  // live.spec.mjs holds no timing check: the desktop project alone, without its timing teardown.
+  projects: base.projects.filter((p) => p.name === 'desktop').map(({ teardown, ...p }) => p),
 };
