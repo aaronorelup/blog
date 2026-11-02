@@ -37,7 +37,7 @@ export async function serve(request, env, ctx) {
     return once('answer', { ...answer, cached: true, took: Date.now() - start });
   }
   const day = today();
-  if (!(await spend(env, 'ask', 1, f.ask_daily))) return resting(env, f, ix, q);
+  if (!(await spend(env, 'ask', 1, f.ask_daily, day))) return resting(env, f, ix, q);
   if (!(await spend(env, 'ask_usd', ix.m.reserve.plan + ix.m.reserve.answer, Math.round(f.ask_daily_usd * 1e6), day))) {
     ctx.waitUntil(spend(env, 'ask', -1, NO_CAP, day));
     return resting(env, f, ix, q);
