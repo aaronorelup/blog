@@ -382,6 +382,9 @@ test('overlay-18 a search result opens in the panel with its passage marked', as
   const input = panel(page).locator('.search-input');
   await input.click();
   await input.fill('gpu');
+  // Both halves in (the words half's passages all drawn, so the list is no longer busy, and the meaning half's own hit
+  // there), so the link read is the link clicked.
+  await expect(panel(page).locator('.results:not([aria-busy]) .row-link[href^="/ledger/characters-in-inscryption/notes/"]')).toBeVisible();
   const hit = panel(page).locator('[data-search-out] a[href*="?hl="]').first();
   const href = await hit.getAttribute('href');
   await hit.click();
