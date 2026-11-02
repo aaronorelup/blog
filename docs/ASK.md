@@ -103,8 +103,8 @@ first use and turns em dashes into commas. The streaming citer holds back only w
 | Worker CPU a question | p99 <= 50 ms in production (auditor) | | 4-12 ms in node, the manifest's parse 5.7 ms once an isolate |
 
 The build fails on the caps' sums, never on content: `WHOLE_CAP` + rules + 10k of catalog + `LIVE_CAP` + 2k <=
-`BUDGET` (673.1k), and split mode's room >= `LIVE_CAP` + 5 x `DOC_CAP` (241.4k >= 240k). The rules count as
-`RULES_TOKENS`, 1,100 est. (they are 1,038 in split mode, 1,013 in whole mode; a unit test keeps both under it).
+`BUDGET` (673.2k), and split mode's room >= `LIVE_CAP` + 5 x `DOC_CAP` (241.35k >= 240k). The rules count as
+`RULES_TOKENS`, 1,150 est. (they are 1,121 in split mode, 1,096 in whole mode; a unit test keeps both under it).
 
 ## Cost (peak prices; off-peak is half; the planner included)
 
