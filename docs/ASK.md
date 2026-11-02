@@ -204,6 +204,17 @@ is the set's denser must lists, not the layout); score 7.22; not covered + injec
 section cited 26/27; nothing hidden named. Its weakest answer (h08) said Aaron hadn't written who wrote a song's
 lyrics, with the post that says it ranked 7th, just outside the hint.
 
+**The hold-out overrun was waived** (an independent check, then two reviewers agreed). v1, graded by the same judge,
+scored 0.631 on the 50 and 0.565 on the 30, so F' is about 0.17 ahead of today's Ask on both sets. The 0.054 gap is
+the hold-out's harder questions, not overfitting: the 30 carry 4.0 must-have facts a question against 3.5, 88
+characters a fact against 61 and 1.63 numbers a fact against 0.97, and the 50's own slope of coverage against must
+count predicts 0.743 for the 30 (measured 0.741). 5 of the 30's 120 must-haves are only in post components' captions
+(`<ao-*>` figcaptions), which `text.full` leaves out today; without those 5, F' scores 0.782 against 0.795, 0.013
+apart. A permutation test gives p = 0.15, and every controlled comparison stays inside the ±0.03 noise (reweighting by
+kind 0.743; the first 3 must-haves only 0.803 against 0.781; both layouts drop by the same amount, and their
+per-question coverage on the 30 correlates 0.77). Putting those captions into `text.full` is the next fix, with a G2
+re-run.
+
 **G8 examples**: of the 12 candidates (two rephrased to fit 44 characters), 7 answered on the shipped layout with a
 score of 8 or more, must-haves 0.8 or more, their gold post cited and no attribution slip; those 7 are `EXAMPLES`.
 
