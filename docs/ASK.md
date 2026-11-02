@@ -150,7 +150,7 @@ read-only, DeepSeek with the key read inside the shell (docs/WORKER.md "Running 
 `npx wrangler d1 execute blog-reads --local --command "INSERT OR REPLACE INTO flags VALUES ('ask_daily_usd','3')"`.
 Every DeepSeek call the scripts make (the judge, the probe) and every Worker answer the runner gets is reserved at its
 worst case on the ledger `scripts/eval/spend.mjs` (`$ASK_EVAL_LEDGER`, capped at `$ASK_EVAL_USD`, default $3) and
-settled to its price; a call that could pass the cap is refused. Outputs stay private (`.rework/rag/`), as does the
+settled to its price; a call that could pass the cap is refused. Outputs stay private, outside the repo, as does the
 blind hold-out set: readers' questions are never committed.
 
 ```bash
