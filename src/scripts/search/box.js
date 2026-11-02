@@ -54,14 +54,13 @@ export function mount(root) {
     const hits = await semantic.search(text);
     if (hits && text === q) { meaning = { q: text, hits }; render(); }
   };
-  const onInput = async () => {
+  const onInput = () => {
     if (mode !== 'search') return;
     const text = (q = ui.input.value.trim());
     clearTimeout(quietT);
     if (!text) { ui.out.replaceChildren(); return; }
     quietT = setTimeout(() => askMeaning(text), QUIET);
-    const hits = await keyword.search(text);
-    if (hits && text === q) { words = { q: text, hits }; render(); }
+    keyword.search(text, (hits) => { if (text === q) { words = { q: text, hits }; render(); } });
   };
   const onSubmit = (e) => {
     e.preventDefault();

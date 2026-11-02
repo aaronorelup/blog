@@ -384,7 +384,7 @@ clicks Ask waits for `[data-search][data-ready]` first (the box's module has mou
 | Behaviour | Spec |
 |---|---|
 | `/` focuses the box (inside it, `/` is a character); nothing of search loads before the first focus | search-1 |
-| "gpu" lists the words half within 150 ms of the index being ready (the best of three loads; timed, so run it alone when the box is busy), each passage linked to its heading with `?hl=&hs=` and marked | search-2 |
+| "gpu" draws the words half's first results within 150 ms of the index being ready (the best of three loads, Pagefind's files served from memory so the time is the code's, not the network's), the rest as their passages come, each linked to its heading with `?hl=&hs=` and marked | search-2 |
 | The Pagefind index holds exactly the listed posts and their notes, each a `/ledger/` page that exists | search-3 |
 | No unlisted post can be found by its title | search-4 |
 | A result opens its post with the sentence marked, open inside its `<details>`, in view in `#panel-scroll` (the frame unscrolled); a click clears it | search-5 |
@@ -419,7 +419,7 @@ Ask streams Aaron's two answers (`fixtures/answers.mjs`) on a kept session, so n
 | Behaviour | Spec |
 |---|---|
 | At 1366×657 and 1024×600, by day and by night, every card opened from a RAG Goobie cite (with its "RAG Goobie cites:" line), a related row under the answer and the ledger's rows at the top, middle and foot of the window is inside the window whole, shows all of its words (`scrollHeight <= clientHeight`: `place()` measures the content, not the box `max-height` caps) and keeps clear of the link's words, stepping down a size only where it has to | cards-1 (desktop) |
-| At 1440×900 the cites' and related rows' cards are full size, and every card shows whole | cards-2 (desktop) |
+| At 1440×900 the cites' and related rows' cards are full size, and every card shows whole, a row reached as a scroll begins included | cards-2 (desktop) |
 
 ## The projects page (`projects.spec.mjs`)
 
