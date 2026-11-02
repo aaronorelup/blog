@@ -340,7 +340,9 @@ to the build before it):
 - Search: the words half draws each passage as it comes instead of waiting on its slowest page, the results list is
   `aria-busy` until the words half is in, and a row on screen never moves or changes once drawn: a later draw for the
   same query only adds the pages not yet shown, at the end, so a pointer on a row stays on it (search-26).
-- The hover card comes back after a scroll on the link the pointer reached just as the scroll began (cards-2).
+- The hover card comes back after a scroll on the link the pointer reached just as the scroll began (cards-2), and
+  a card whose link leaves the page (the next answer replacing the one it was in) closes at the pointer's next move
+  (cards-3).
 - `<ao-listen>`: a Pause pressed while a seek is still running holds until the play after the seek (listen-1b).
 - The two wall-clock checks (search-2, read-2) run in their own Playwright projects, the main projects' teardowns:
   on a 4-worker run Pagefind's worker waited 90-144 ms for a core, so a budget in ms measured the box, not the code.
