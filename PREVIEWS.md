@@ -152,7 +152,8 @@ anyone on a phone.
 
 - It opens about 90 ms after the pointer settles on a link, and instantly when moving from one
   link to the next while a card is open. Tabbing to a link with the keyboard opens it too.
-  Escape, a click or a scroll closes it (a scroll brings it back if the pointer is still there).
+  Escape, a click or a scroll closes it. Once the scroll settles the card comes back if the
+  pointer or focus is still on its link, or on the link it reached just as the scroll began.
 - On a ledger row it sits flush with the row's right edge, level with the summary and below the
   title, taking the hovered row's colour, so it reads as that row opened out. Inside a post it
   goes in the margin beside the column when there's room, otherwise above or below the link.

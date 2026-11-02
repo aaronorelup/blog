@@ -153,17 +153,19 @@ function hideNow() {
   hide();
 }
 
+// The link the reader is on when a scroll starts: the open card's, or the one a card is about to open for (the pointer
+// reached it, or focus scrolled it into view, in the same frame), which the hide would otherwise forget.
 let scrolledFrom = null;
 function onScroll(e) {
   if (card && e.target === card) return;
-  if (shown) scrolledFrom = shown;
+  if (shown || pending) scrolledFrom = pending || shown;
   if (!scrolledFrom) return;
   hide();
   clearTimeout(scrollT);
   scrollT = setTimeout(() => {
     const was = scrolledFrom;
     scrolledFrom = null;
-    if (was.a.isConnected && (was.a.matches(':hover') || was.a.matches(':focus-visible'))) show(was);
+    if (was.a.isConnected && (was.a.matches(':hover') || was.a.matches(':focus-visible'))) intend(was, true);
   }, 140);
 }
 
