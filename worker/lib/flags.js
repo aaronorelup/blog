@@ -1,13 +1,14 @@
 // Switches and caps: the D1 table flags (flags.sql) over the defaults below, re-read at most every 30 s per
 // isolate, so a flip takes effect within 30 s and survives deploys. spend() is the atomic daily cap.
+import { EXTRA_TOKENS } from '../../src/lib/ask/caps.js';
 import { memo } from './memo.js';
 import { ensure } from './sql.js';
 import SCHEMA from './flags.sql';
 
 // ask_daily_usd is dollars a UTC day for Ask's DeepSeek calls (usage_day 'ask_usd' counts micro-dollars);
-// ask_extra_tokens is split mode's uncached docs per question (docs/ASK.md).
+// ask_extra_tokens is split mode's uncached docs per question, by default caps.js's (docs/ASK.md).
 const DEFAULTS = {
-  search: 'on', ask: 'on', tts: 'on', search_daily: 20000, ask_daily: 1000, ask_daily_usd: 2, ask_extra_tokens: 40000,
+  search: 'on', ask: 'on', tts: 'on', search_daily: 20000, ask_daily: 1000, ask_daily_usd: 2, ask_extra_tokens: EXTRA_TOKENS,
   tts_daily_credits: 15000, tts_credit_floor: 0.4,
 };
 export const NO_CAP = Number.MAX_SAFE_INTEGER;   // a settle, which may only ever lower a total

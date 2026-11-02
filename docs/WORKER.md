@@ -16,7 +16,7 @@ needs a secret or state. Only the paths `run_worker_first` names reach it: video
 | `worker/lib/memo.js` | `memo(ms, read)`: a D1 read shared for `ms` per isolate (the switches, the search index's `v`) |
 | `worker/lib/session.js` | `mint(env)` and `verify(env, token)`: Ask tokens, HMAC-signed with `SESSION_KEY`, valid 30 minutes |
 | `worker/lib/text.js` | `normalize(q)`, `scrub(q)` and `sha256(s)` for search and Ask queries |
-| `worker/lib/build-files.js` | `buildJson(env, path)`: a build file through `ASSETS`, parsed once per isolate |
+| `worker/lib/build-files.js` | `buildJson(env, path)`: a build file through `ASSETS`, parsed once per isolate; `asset(env, path)`: one read of a build file (Ask keeps its prompt files' bytes itself) |
 | `worker/media/serve.js` | everything that isn't `/api/`: R2 first, then the asset, with byte ranges |
 | `worker/lantern.js` | `GET /api/lantern`, the homepage's lantern door: a redirect to `LANTERN_URL` |
 | `worker/reads/` | `GET` and `POST /api/reads`, the reader counter (AO-057's demo) |
