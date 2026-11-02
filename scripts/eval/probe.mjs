@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import http from 'node:http';
 import { parseArgs } from 'node:util';
 import { worst } from '../../src/lib/ask/price.js';
-import { RULES } from '../../src/lib/ask/words.js';
+import { WHOLE_RULES } from '../../src/lib/ask/words.js';
 import { chat } from './spend.mjs';
 
 const { values: o, positionals: [mode] } = parseArgs({ allowPositionals: true, options: {
@@ -21,7 +21,8 @@ const log = (line) => (o.log ? fs.appendFileSync(o.log, `${JSON.stringify({ at: 
 if (mode === 'idle') {
   const m = JSON.parse(fs.readFileSync(new URL('manifest.json', DIST), 'utf8'));
   const live = Object.keys(m.live).map((n) => text(m.docs[n].file));
-  const system = [RULES, text(m.packs[0].file), text(m.catalog.file), ...(live.length ? [`<documents>\n${live.join('\n\n')}\n</documents>`] : [])].join('\n\n');
+  const system = [WHOLE_RULES, text(m.packs[0].file), ...(live.length ? [`<documents>\n${live.join('\n\n')}\n</documents>`] : []),
+    text(m.overview.file)].join('\n\n');
   const body = { model: 'deepseek-flash', stream: false, max_tokens: 1, temperature: 0.2, thinking: { type: 'disabled' },
     messages: [{ role: 'system', content: system }, { role: 'user', content: 'Question: what is this blog about?' }] };
   const tokens = Math.ceil(system.length / 3.5) + 50;

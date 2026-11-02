@@ -34,7 +34,7 @@ export function askCheck(dist, listed, prev = null) {
   }
   for (const slug of listed) if (!Object.values(m.docs).some((d) => d.slug === slug)) flag(slug, `${slug} is listed but not in the manifest`);
 
-  const files = [m.catalog.file, ...m.packs.map((p) => p.file), ...Object.values(m.docs).map((d) => d.file)];
+  const files = [m.catalog.file, m.overview.file, ...m.packs.map((p) => p.file), ...Object.values(m.docs).map((d) => d.file)];
   for (const file of files) {
     const at = path.join(dir, file);
     if (!fs.existsSync(at)) { problems.push(`ask: ${file} is in the manifest but not built`); continue; }
@@ -59,7 +59,7 @@ export function askCheck(dist, listed, prev = null) {
 function linesOf(m, prev) {
   const live = Object.keys(m.live).reduce((t, n) => t + m.docs[n].tokens, 0);
   const pack = Math.max(...m.packs.map((p) => p.tokens));
-  const prompt = RULES_TOKENS + pack + m.catalog.tokens + (m.mode === 'whole' ? live : 0) + USER_TOKENS;
+  const prompt = RULES_TOKENS + pack + (m.mode === 'whole' ? live + m.overview.tokens : m.catalog.tokens) + USER_TOKENS;
   const reserve = m.reserve.plan + m.reserve.answer;
   const unpinned = m.starts.filter((s, i) => s !== m.pins[i]).length + Math.abs(m.starts.length - m.pins.length);
   const lines = [`ask: ${m.mode}, ${m.packs.length} pack${m.packs.length > 1 ? 's' : ''}, ${m.counts.posts} posts + `

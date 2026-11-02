@@ -26,7 +26,7 @@ test('a call costs its hit, miss and output tokens at that time\'s prices, in mi
 
 test('the reservation is the planner\'s and the largest answer prompt\'s worst cases, all missed at peak', () => {
   const { manifest: m } = built();
-  const answer = 1000 + m.packs[0].tokens + m.catalog.tokens + m.docs[7].tokens + 500;
+  const answer = 1000 + m.packs[0].tokens + m.docs[7].tokens + m.overview.tokens + 500;
   assert.deepEqual(m.reserve, { plan: worst(m.catalog.tokens + 500, 300), answer: worst(answer, 600) });
   assert.equal(m.reserve_usd, (m.reserve.plan + m.reserve.answer) / 1e6);
   assert.ok(cost({ prompt_tokens: answer, completion_tokens: 600 }, at('07:00')) <= m.reserve.answer);

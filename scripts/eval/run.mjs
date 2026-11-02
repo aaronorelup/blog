@@ -28,7 +28,8 @@ for (const x of questions) {
   asked++;
   const tag = `${o.tag}:${x.id}`;
   const id = reserve(tag, worst);
-  const r = await ask(o.base, token, x.q);
+  // A dropped connection (wrangler dev reloading) stops the run, the question counted at its worst.
+  const r = await ask(o.base, token, x.q).catch((e) => { settle(id, tag, worst, worst); throw e; });
   const last = r.events.at(-1) ?? {};
   const actual = last.t === 'answer' ? (last.cached ? 0 : Math.ceil(last.usage.usd * 1e6))
     : last.t === 'end' && last.reason !== 'busy' ? 0 : worst;

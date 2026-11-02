@@ -4,7 +4,7 @@
 import { answerHead, CLOSE, OPEN, plannerHead, plannerUser, SEP, tail } from './prompt.js';
 
 const ORIGIN = 'https://aaronorelup.com'; // any host: the binding answers with this deploy's files
-const kept = { pack: lru(2), doc: lru(64), catalog: lru(1) };
+const kept = { pack: lru(2), doc: lru(64), catalog: lru(1), overview: lru(1) };
 
 function lru(max) {
   const map = new Map();
@@ -26,12 +26,15 @@ function lru(max) {
 const piece = (env, file) => kept[file.slice(0, file.indexOf('-'))](file, () => env.ASSETS.fetch(new Request(`${ORIGIN}/ask/${file}`))
   .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(`/ask/${file} answered ${r.status}`)))));
 
-// ix: corpus.js's index; pack: its index; extras: doc numbers, in order; user: the user message.
+// ix: corpus.js's index; pack: its index; extras: doc numbers, in order; user: the user message. Whole mode: the pack,
+// the live notebook, the overview. Split mode: the pack, the catalog, the extras.
 export async function answerBody(env, ix, { pack, extras, user }) {
-  const files = [ix.m.packs[pack].file, ix.m.catalog.file, ...extras.map((n) => ix.doc(n).file)];
-  const [packBytes, catalogBytes, ...docs] = await Promise.all(files.map((f) => piece(env, f)));
-  const after = docs.length ? [SEP, OPEN, ...docs.flatMap((d, i) => (i ? [SEP, d] : [d])), CLOSE] : [];
-  return new Blob([answerHead, packBytes, SEP, catalogBytes, ...after, tail(user)]);
+  const { m } = ix;
+  const files = [m.packs[pack].file, m.mode === 'whole' ? m.overview.file : m.catalog.file, ...extras.map((n) => ix.doc(n).file)];
+  const [packBytes, closing, ...docs] = await Promise.all(files.map((f) => piece(env, f)));
+  const extra = docs.length ? [SEP, OPEN, ...docs.flatMap((d, i) => (i ? [SEP, d] : [d])), CLOSE] : [];
+  const middle = m.mode === 'whole' ? [...extra, SEP, closing] : [SEP, closing, ...extra];
+  return new Blob([answerHead(m.mode), packBytes, ...middle, tail(user)]);
 }
 
 export async function plannerBody(env, ix, q) {

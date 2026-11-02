@@ -5,6 +5,7 @@
 import { TOPICS, TOPIC_KEYS } from '../../data/taxonomy.js';
 import { sha256hex, short } from '../text/hash.js';
 import { catalogText, docBlock, documents, fragment } from './blocks.js';
+import { overview } from './words.js';
 import * as CAPS from './caps.js';
 import { numbered, sized } from './corpus.js';
 import { packsOf } from './packs.js';
@@ -28,7 +29,8 @@ export function assemble(docs, { pins, caps = {} }) {
   const all = docs.map(numbered);
   const given = all.map((d) => sized(d, liveCap));
   const counts = countsOf(docs);
-  const catalog = catalogText(docs, { ...counts, topics: Object.entries(counts.topics).map(([k, n]) => [k, TOPICS[k].label, n]) });
+  const labelled = { ...counts, topics: Object.entries(counts.topics).map(([k, n]) => [k, TOPICS[k].label, n]) };
+  const catalog = catalogText(docs, labelled);
   const layout = packsOf(given.filter((d) => !d.live), { pins, whole: c.WHOLE_CAP, pack: c.PACK_CAP,
     catalogTokens: CAPS.est(catalog.length) });
 
@@ -44,9 +46,10 @@ export function assemble(docs, { pins, caps = {} }) {
   const docFiles = new Map(given.map((d) => [d.n, put(`doc-${d.n}`, docBlock(d))]));
   const packs = layout.packs.map((ns, i) => ({ ...put(`pack-${i}`, documents(ns.map((n) => docBlock(byN.get(n))))), docs: ns }));
   const cat = put('catalog', catalog);
+  const over = put('overview', overview(labelled));   // whole mode's, in the catalog's place (layout F')
   const packOf = new Map(packs.flatMap((p, i) => p.docs.map((n) => [n, i])));
   const live = Object.fromEntries(given.filter((d) => d.live).map((d) => [d.n, docFiles.get(d.n).hash]));
-  const v = short(sha256hex(JSON.stringify([packs.map((p) => p.hash), cat.hash,
+  const v = short(sha256hex(JSON.stringify([packs.map((p) => p.hash), cat.hash, over.hash,
     given.filter((d) => !d.live).map((d) => [d.n, docFiles.get(d.n).hash]), given.filter((d) => d.live).map((d) => [d.n, d.slug]),
     docs.map((d) => d.slug)])));
 
@@ -54,9 +57,9 @@ export function assemble(docs, { pins, caps = {} }) {
     v, mode: layout.mode,
     caps: { budget: CAPS.BUDGET, whole: c.WHOLE_CAP, pack: c.PACK_CAP, doc: CAPS.DOC_CAP, live: CAPS.LIVE_CAP,
       catalog: CAPS.CATALOG_CAP },
-    reserve: reserveOf(layout.mode, packs, cat, given.filter((d) => d.live).map((d) => docFiles.get(d.n))),
+    reserve: reserveOf(layout.mode, packs, cat, over, given.filter((d) => d.live).map((d) => docFiles.get(d.n))),
     counts, pins, starts: layout.starts,
-    catalog: strip(cat), packs: packs.map(({ hash, ...p }) => p), live,
+    catalog: strip(cat), overview: strip(over), packs: packs.map(({ hash, ...p }) => p), live,
     docs: Object.fromEntries(all.map((d) => [d.n, {
       slug: d.slug, title: d.title, ...(d.notes && { notesTitle: d.notes.title }), by: d.by, topic: d.topic,
       ...strip(docFiles.get(d.n)), pack: packOf.get(d.n) ?? null, ...(d.live && { live: true }),
@@ -71,9 +74,9 @@ const strip = ({ hash, ...f }) => f;
 
 // The worst case of a question, in micro-dollars, held before any call and settled to the reported usage: the planner
 // (rules, catalog, question) and the largest answer prompt this layout can send (whole: everything; split: the budget).
-function reserveOf(mode, packs, cat, live) {
+function reserveOf(mode, packs, cat, over, live) {
   const answer = mode === 'whole'
-    ? CAPS.RULES_TOKENS + packs[0].tokens + cat.tokens + live.reduce((t, f) => t + f.tokens, 0) + CAPS.USER_TOKENS
+    ? CAPS.RULES_TOKENS + packs[0].tokens + live.reduce((t, f) => t + f.tokens, 0) + over.tokens + CAPS.USER_TOKENS
     : CAPS.BUDGET;
   return { plan: worst(cat.tokens + CAPS.USER_TOKENS, PLAN_OUT), answer: worst(answer, ANSWER_OUT) };
 }
