@@ -26,6 +26,12 @@ async function forward(route) {
     .catch(() => {});
 }
 
+// E2E_MEDIA_DELAY=150-400 (off by default) holds every request for a media file on the live site (where a media
+// element is sent) that many ms, picked at random in the range: a slow phone network, under which a clip's seeks and
+// waits for data run long (WebKit's replay of a paused clip came out of it, listen-2).
+const [lo, hi = lo] = (process.env.E2E_MEDIA_DELAY || '').split('-').map(Number);
+const late = () => (lo > 0 ? new Promise((r) => setTimeout(r, lo + Math.random() * (hi - lo))) : null);
+
 // POST /api/ask's answer as route.fulfill() takes it: its events as server-sent events.
 export const sse = (events) => ({ status: 200, contentType: 'text/event-stream; charset=utf-8',
   body: events.map((e) => `data: ${JSON.stringify(e)}\n\n`).join('') });
@@ -65,6 +71,7 @@ export const test = base.extend({
   context: async ({ context, baseURL, api }, use) => {
     const origin = new URL(baseURL).origin;
     const ours = (u) => u.origin === origin;
+    if (lo > 0) await context.route((u) => u.origin === LIVE && MEDIA.test(u.pathname), async (r) => { await late(); await r.fallback(); });
     if (origin !== LIVE) await context.route((u) => ours(u) && (MEDIA.test(u.pathname) || u.pathname.startsWith('/read/')), forward);
     await context.route((u) => ours(u) && (u.pathname.startsWith('/api/') || u.pathname === '/cdn-cgi/trace'), (r) => answer(r, api));
     await use(context);
