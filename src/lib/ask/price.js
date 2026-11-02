@@ -21,5 +21,3 @@ export function cost(usage, t) {
 
 // The most a call can cost: every prompt token missed, every output token used, at peak.
 export const worst = (prompt, out) => Math.ceil(prompt * PRICES.peak.miss + out * PRICES.peak.out);
-
-export const usd = (micro) => micro / 1e6;

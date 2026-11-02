@@ -7,7 +7,7 @@ import { listedPosts, notesBySlug, slugOf, textOf } from '../content.js';
 import { shortVersion } from '../search/chunks.js';
 
 const byOf = (voice) => (voice === 'claude' ? 'Claude' : 'Aaron');
-export const aoNumber = (id) => Number(id.slice(3));
+const aoNumber = (id) => Number(id.slice(3));
 
 export async function askDocs() {
   const notes = await notesBySlug();
