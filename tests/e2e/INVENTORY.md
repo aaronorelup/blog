@@ -125,6 +125,7 @@ notes, `earthlight`'s notes, `nine-claudes-one-painting` today).
 | Behaviour | Listener or attribute | Spec |
 |---|---|---|
 | A clip row picks and plays it; Play/Pause and the clock follow the audio | row `click`, Play `click`, audio `play` `pause` `loadedmetadata` `ended` | listen-1 |
+| A Pause pressed while a seek is still running holds once the seek is done (WebKit's player otherwise plays the clip again) | Play `click` mid-seek, audio `play` | listen-1b |
 | A/B switches to the reference (`ref`) at the same moment, and back | `ref`, A/B `click` | listen-2 |
 | The spectrogram seeks on click and with the arrows | spectrogram `pointerdown` `keydown` | listen-3 |
 | List focused: arrows pick and keep playing, space toggles, C flips A/B | element `keydown` | listen-4 |

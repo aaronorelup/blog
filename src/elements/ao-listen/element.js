@@ -53,6 +53,11 @@ class AoListen extends HTMLElement {
     });
 
     const pos = () => cur.audio.currentTime || 0;
+    // WebKit's GStreamer player plays a clip again once a seek that began while it played is done, even after
+    // pause() (the phone project caught it: a Pause mid-seek, and the clip went on). A pause asked for while a seek
+    // is still going holds: that play is paused at once, unless the clip was started again since.
+    const held = new Set();
+    const halt = (a) => { a.pause(); if (a.seeking) held.add(a); };
     const draw = () => {
       const a = cur.audio;
       const d = a.duration;
@@ -64,7 +69,7 @@ class AoListen extends HTMLElement {
     };
     const loop = () => {
       // The homepage hides the reader rather than removing it when it closes; stop with it.
-      if (!this.getClientRects().length) { cur.audio.pause(); return; }
+      if (!this.getClientRects().length) { halt(cur.audio); return; }
       draw();
       if (!cur.audio.paused) this._raf = requestAnimationFrame(loop);
     };
@@ -83,7 +88,7 @@ class AoListen extends HTMLElement {
       if (c === cur) { if (cur.audio.paused) start(); return; }
       const t = keepTime ? pos() : 0;
       const wasPlaying = !cur.audio.paused || keepTime;
-      cur.audio.pause();
+      halt(cur.audio);
       cur = c;
       const a = c.audio;
       a.preload = 'auto';
@@ -94,9 +99,10 @@ class AoListen extends HTMLElement {
     };
     const start = () => {
       claim(this);
+      held.delete(cur.audio);
       cur.audio.play().catch(() => {});
     };
-    const toggle = () => (cur.audio.paused ? start() : cur.audio.pause());
+    const toggle = () => (cur.audio.paused ? start() : halt(cur.audio));
     const flip = () => {
       if (back) { const b = back; back = null; select(b, true); }
       else if (cur !== ref) { back = cur; select(ref, true); }
@@ -112,7 +118,10 @@ class AoListen extends HTMLElement {
       const a = c.audio;
       a.removeAttribute('controls');
       a.preload = 'metadata';
-      a.addEventListener('play', () => { if (c === cur) loop(); });
+      a.addEventListener('play', () => {
+        if (held.delete(a)) a.pause();
+        else if (c === cur) loop();
+      });
       a.addEventListener('pause', () => c === cur && draw());
       a.addEventListener('loadedmetadata', () => c === cur && draw());
       a.addEventListener('ended', () => { if (c === cur) draw(); });
@@ -143,11 +152,11 @@ class AoListen extends HTMLElement {
         flip();
       }
     });
-    this._onOther = (e) => { if (e.detail !== this) cur.audio.pause(); };
+    this._onOther = (e) => { if (e.detail !== this) halt(cur.audio); };
     document.addEventListener(AO_LISTEN_PLAY, this._onOther);
-    this._stop = () => clips.forEach((c) => c.audio.pause());
+    this._stop = () => clips.forEach((c) => halt(c.audio));
     this.aoPlay = start;
-    this.aoPause = () => cur.audio.pause();
+    this.aoPause = () => halt(cur.audio);
     this.aoClock = () => cur.audio;
     this.aoTitle = () => cur.title;
 
