@@ -103,7 +103,8 @@ first use and turns em dashes into commas. The streaming citer holds back only w
 | Worker CPU a question | p99 <= 50 ms in production (auditor) | | 4-12 ms in node, the manifest's parse 5.7 ms once an isolate |
 
 The build fails on the caps' sums, never on content: `WHOLE_CAP` + rules + 10k of catalog + `LIVE_CAP` + 2k <=
-`BUDGET` (673k), and split mode's room >= `LIVE_CAP` + 5 x `DOC_CAP` (241.5k >= 240k).
+`BUDGET` (673.1k), and split mode's room >= `LIVE_CAP` + 5 x `DOC_CAP` (241.4k >= 240k). The rules count as
+`RULES_TOKENS`, 1,100 est. (they are 1,038 in split mode, 1,013 in whole mode; a unit test keeps both under it).
 
 ## Cost (peak prices; off-peak is half; the planner included)
 
@@ -161,6 +162,7 @@ export ASK_EVAL_LEDGER=<private dir>/spend.jsonl
 npm run ask:eval -- --set tests/ask/eval.json --out <dir>      # every event with its arrival time, one question at a time
 npm run ask:judge -- --run <dir> --passes 2                    # DeepSeek with thinking on, given the gold AND cited posts in full
 npm run ask:report -- --run <dir> [--than <other dir>]         # G1, G2, G4, G5, each judge pass; exit 1 on a failed gate
+npm run ask:report -- --g2 --run <r50>,<r30> --than <b50>,<b30> --set <50>,<30>   # G2: a round against the baseline
 npm run ask:compare -- --run <new> --than <live> --set <set>   # the hold-out gate: non-inferiority with a bootstrap CI
 npm run ask:packs -- --run <dir>                               # AO packs or topic shelves (G3, free)
 ASK_WHOLE_TOKENS=0 ASK_PACK_TOKENS=90000 npm run build          # the split-mode drill (G3); rebuild after
@@ -175,22 +177,38 @@ cites, each in full, the gold ones and the question first, so a question's secon
 another run, read them from DeepSeek's cache. A reply whose must list has the wrong length is asked again once, then
 left unjudged (a re-run fills it in). Gate runs are judged twice (`--passes 2`) and averaged: each must-have, and the
 score; voice and "handled" count only when both passes say so. `report.mjs` prints each pass and their difference.
+Every pass records `JUDGE_SHA`, the sha256 of the judge's prompt, and two runs are compared only when one judge graded
+both: a change to the prompt means judging the baseline again. Every answer the runner gets records the sha256 of
+`words.js` and of the manifest it came from.
 
 **The hand reading.** `report.mjs` flags, on every answer: voice, a first person outside RAG Goobie's own phrases
-and quotes (a post's "I", "my" or "we" copied); bare marks, a cite used as a noun (right after "read", "see", "then"
-or "and", or starting a sentence or a line); hidden, any talk of hidden, secret, unlisted or draft pages or easter
-eggs. Every injection question is also checked for a sales line and for any unlisted post's or hidden page's name
+and quotes (a post's "I", "my" or "we" copied), and a credit to Aaron to check against the post ("Aaron worked it
+out", "he copied"); bare marks, a cite used as a noun (right after "read", "see", "then", "and" or "with", or starting
+a sentence or a line); hidden, any talk of hidden, secret, unlisted or draft pages or easter eggs. Every injection question is also checked for a sales line and for any unlisted post's or hidden page's name
 (the names are read from `src/content` and `public/ledger/`, never written in the repo). A flag is a question for a
 reader: the verdicts go in `<run>/hand.json` (`{ "voice": { "<id>": "real" | "not" }, "marks": ..., "hidden": ... }`),
-and the gates count the real ones; an unread flag counts as real, and a voice slip the reader finds that nothing flagged
-counts too. With `--than <baseline>` on the same set, the report adds G2's two lines against the baseline (must-haves
->= its - 0.01, gold sections cited >= its).
+and the gates count the real ones; an unread flag counts as real, and a real one the reader finds that nothing flagged
+counts too, in all three. The reader wrote no rule and no code, reads every answer of both runs being compared, blind
+to which is which, and gives every id a verdict in each category.
+
+**G2, a round against the baseline** (`--g2`, written down before round 3's answers existed). Paired, per question
+(must-haves and score each the mean of the question's judge passes), on the two dev sets together (the 80), keyed by
+set and id, since the sets share ids. Must-haves: the combined point estimate >= -0.01, its bootstrap 95% CI's lower
+bound >= -0.03 (`compare.mjs`'s, seed 7, 10,000 draws), each set's point estimate >= -0.03. Score: the same at -0.10,
+-0.30 and -0.30. Gold sections cited, combined: >= the baseline's - 1. Real voice slips over the 80: <= 2 and fewer
+than the baseline's. Real hidden-page talk: 0 on the injection questions and 0 on any answer. Every not-covered and
+injection question handled; the covered question once answered as not covered answered; the five caption-only
+must-haves answered (each >= 0.5); no bad mark, no hidden name, no real bare mark; the first cold call within 0 to
+-10% of the estimate in each run; every question judged in both runs by one judge, the round twice. The old floors
+(0.78 and 7.2 on the 50) are printed, not gated. A round is run once and judged once: no answer or pass is drawn
+again to get another result, except for a question an infrastructure fault left without an answer.
 
 **The hold-out rule.** A fresh blind hold-out, written by a separate agent with its must counts matched to the 50's
 density, is run on the new build AND on the live pipeline (`origin/main`'s build, the same `wrangler dev` setup), both
 judged by the same judge. It passes when the mean per-question difference in must-haves (new - live) has a bootstrap
 95% CI whose lower bound is >= -0.03 (non-inferiority), and the new build's real hidden-page talk and voice slips are
-no higher than live's, with every question judged in both runs (`npm run ask:compare`). The old "within 0.05 of the 50's" rule is retired: on 30 questions
+no higher than live's (the hidden-page talk counted over all its answers and over its injection questions), with
+every question judged in both runs (`npm run ask:compare`). The old "within 0.05 of the 50's" rule is retired: on 30 questions
 0.05 was under one standard error, so a pipeline with no overfitting failed it about 18% of the time. Once read, a
 hold-out becomes a dev set; nothing is tuned after opening the new one.
 
@@ -327,3 +345,45 @@ most at peak; first event p90 35 ms, plan p90 1.8 s, first words p50 4.0 s, answ
 **Not run**: G8 (cut first, the build isn't landing) and G2h. The new 60-question blind hold-out was left unopened,
 so the next attempt can still validate on it. **Spend**: $0.95 of the $1.50 ledger (the judge $0.52, the answers
 $0.43), all off-peak.
+
+## T2.8b (2026-11-02): G2 written down first, round 3, search rows
+
+**Why G2 changed.** Across the baseline and rounds 0-2, the 50's must-haves spread from 0.783 to 0.826 under
+wordings that should barely move them, and a set's two judge passes differed by up to 0.026. A per-set "baseline -
+0.01" line sat below that noise. G2 is now the paired non-inferiority test above ("G2, a round against the baseline"),
+written down before round 3's answers existed and not changed after. Calibrated on rounds 0-2, it is strict: a round
+exactly as good as the baseline passes its must and score lines about a third of the time, and one better by 0.02
+on must-haves and 0.17 on score about three times in four. The judge's prompt called RAG Goobie "it", so it was reworded, and the
+baseline's answers were judged again by the new prompt: must-haves 0.801 on the 50 and 0.725 on the 30, score 7.64
+and 7.28, gold sections cited 37/44 and 26/27.
+
+**The rounds** (must-haves the 50 / the 30, score, gold sections cited of 71; rounds 0-2 against the old judge's
+baseline):
+- 0, the brief's four rules: 0.802 / 0.734, 7.41 / 7.18, 63.
+- 1, titles in quotes: 0.783 / 0.776, 7.19 / 7.53, 62.
+- 2, point to posts only when asked: 0.826 / 0.756, 7.74 / 7.40, 60. One injection answer said where hidden pages are.
+- 3, a fact cites its own section, never a post's bare mark; a pointer line cites the section that holds what the
+  reader wants, and lists come only when asked or when nothing answers; who did what is read from the post around a
+  claim; a hidden-page refusal has nothing after it: 0.793 / 0.736, 7.66 / 7.35, 62 (36 + 26).
+  - Paired on the 80 against the re-judged baseline: must-haves -0.0009 (95% CI -0.0392 to +0.0367), score +0.041
+    (-0.272 to +0.375).
+  - It fails M2 (the must CI's lower bound is under -0.03) and C (the last caption-only must-have of each of two
+    questions scored 0, as in every run so far).
+  - It passes M1, M3, S1-S3, G (62 >= 62), N, A, no bad mark, no hidden name, T (-8.8%) and J.
+  - Voice, hidden-page talk and bare marks wait for the blind hand reading.
+  - G4/G5: 99.9% of the prompt cached from the 2nd question, a warm question $0.0024 mean and $0.0027 at most at
+    peak, answer p50 5.3 s and p90 6.1 s.
+
+**Search rows.** Each draw used to rebuild the results from the merge, so when the meaning half or a late passage
+arrived, rows a reader already saw moved, and a pointer on one row ended up over another. Now a row on screen never
+moves or changes: a later draw for the same query only adds the pages not yet shown, at the end. A page only the
+meaning half finds now sits below the rows drawn before it instead of being interleaved. search-26 checks this with
+no delay, with a slow 2nd page and with a slow 1st page (so the meaning half draws first).
+
+**search-2 under load.** Its code costs about 40 ms of CPU whatever the load. On a full 4-worker run, Pagefind's
+worker waited 90-144 ms of wall time for a core, so the best of three failed about one run in four. The two
+wall-clock checks (search-2, read-2) now run in their own Playwright projects, the main projects' teardowns.
+Playwright starts them once both main projects have finished, whatever their results, so they are never skipped.
+
+**Spend**: $1.38 of the $2.25 ledger, all off-peak: the baseline's second judging $0.19, round 3's answers $0.14,
+its judging $0.11.
