@@ -54,8 +54,8 @@ export function relatedRow(slug, card) {
     h('p', { class: 'row-meta' }, `${TOPICS[card.topic].label} · ${card.mins} min`));
 }
 
-// The list for q, or null when the card data can't be had.
-export async function resultsList(hits, q) {
+// The list for q, aria-busy while the words half is still bringing passages, or null when the card data can't be had.
+export async function resultsList(hits, q, busy) {
   const cards = await load();
   if (!cards) return null;
   const rows = hits.filter((hit) => cards[hit.path.match(SLUG)[1]]).map((hit) => {
@@ -69,6 +69,6 @@ export async function resultsList(hits, q) {
       h('p', { class: 'result-text' }, ...parts));
   });
   return rows.length
-    ? h('ol', { class: 'rows results', 'aria-label': `Results for ${q}` }, ...rows)
+    ? h('ol', { class: 'rows results', 'aria-label': `Results for ${q}`, 'aria-busy': busy ? 'true' : null }, ...rows)
     : h('p', { class: 'search-none' }, 'Nothing in the ledger matches that yet.');
 }

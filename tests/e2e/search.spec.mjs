@@ -114,6 +114,7 @@ test.describe('the words half alone', () => {
     }
     expect(Math.min(...times)).toBeLessThan(150);
     await expect(results(page)).toHaveCount(6);   // every passage in: the words half brings 6 pages
+    await expect(page.locator('.results')).not.toHaveAttribute('aria-busy');
     const rows = await results(page).evaluateAll((rs) => rs.map((r) => ({
       href: r.querySelector('.row-link').getAttribute('href'),
       where: r.querySelector('.row-meta')?.textContent ?? '',
@@ -155,7 +156,7 @@ test('search-4 no unlisted post can be found by its title', async ({ page }) => 
   await page.goto('/ledger/');
   for (const { slug, title } of UNLISTED) {
     await input(page).fill(title);
-    await expect(results(page).first()).toBeVisible();
+    await expect(page.locator('.results:not([aria-busy]) .row').first()).toBeVisible();   // the words half whole
     expect(await page.locator('.results .row-link').evaluateAll((as, s) =>
       as.filter((a) => a.getAttribute('href').startsWith(`/ledger/${s}/`)).length, slug)).toBe(0);
   }
@@ -164,8 +165,9 @@ test('search-4 no unlisted post can be found by its title', async ({ page }) => 
 test('search-5 a result opens its post with the passage marked and in view; a click clears it', async ({ page }) => {
   await page.goto('/ledger/');
   await input(page).fill('gpu');
-  // Both halves in (each draws the list once), so the link read is the link clicked.
-  await expect.poll(() => page.evaluate(() => performance.getEntriesByName('search:results').length)).toBe(2);
+  // Both halves in (the words half's passages all drawn, so the list is no longer busy, and the meaning half's own hit
+  // there), so the link read is the link clicked.
+  await expect(page.locator('.results:not([aria-busy]) .row-link[href^="/ledger/characters-in-inscryption/notes/"]')).toBeVisible();
   const first = page.locator('.results .row-link').first();
   const hs = new URL(await first.getAttribute('href'), 'https://x').searchParams.get('hs');
   await first.click();
@@ -223,7 +225,8 @@ test.describe('without the meaning half', () => {
     const answered = page.waitForResponse('**/api/search?**');
     await input(page).fill('gpu');
     await answered;
-    await expect(results(page).first()).toBeVisible();
+    // The words half whole: every passage drawn, so the list is no longer busy.
+    await expect(page.locator('.results:not([aria-busy]) .row').first()).toBeVisible();
     expect(await results(page).count()).toBeGreaterThan(3);
     await expect(page.locator('.search-none')).toHaveCount(0);
   });
