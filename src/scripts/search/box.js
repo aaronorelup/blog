@@ -43,7 +43,7 @@ export function mount(root) {
     const meant = meaning.q === q ? meaning.hits : [];
     if (!found && !meant.length) return;
     const shown = q;
-    const list = await resultsList(merge(found ?? [], meant), shown);
+    const list = await resultsList(merge(found ?? [], meant), shown, !(found && words.done));
     if (!list || mode !== 'search' || q !== shown) return;
     ui.out.replaceChildren(list);
     performance.mark('search:results');
@@ -60,7 +60,7 @@ export function mount(root) {
     clearTimeout(quietT);
     if (!text) { ui.out.replaceChildren(); return; }
     quietT = setTimeout(() => askMeaning(text), QUIET);
-    keyword.search(text, (hits) => { if (text === q) { words = { q: text, hits }; render(); } });
+    keyword.search(text, (hits, done) => { if (text === q) { words = { q: text, hits, done }; render(); } });
   };
   const onSubmit = (e) => {
     e.preventDefault();

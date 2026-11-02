@@ -1,6 +1,7 @@
 // The words half of search: Pagefind, in the browser (scripts/build/pagefind.mjs writes its index). load(), on the
 // box's first focus, imports /pagefind/pagefind.js and readies it; a build without an index leaves this half
-// silent. search(q, draw): draw(hits) with the best pages, each its best heading-anchored passage, in rank order.
+// silent. search(q, draw): draw(hits, done) with the best pages, each its best heading-anchored passage, in rank
+// order; done once every passage is in.
 import { termsOf } from './terms.js';
 
 const BUNDLE = '/pagefind/pagefind.js';
@@ -26,7 +27,7 @@ export async function search(q, draw) {
   const typedEarly = !ready;
   const n = ++latest;
   const m = await load();
-  if (!m) return draw([]);
+  if (!m) return draw([], true);
   if (n !== latest) return;
   // Without the small words, which Pagefind would match as the start of every word ("a" marks "agents").
   const words = termsOf(q).join(' ') || q;
@@ -34,7 +35,7 @@ export async function search(q, draw) {
   const found = typedEarly ? await m.search(words) : await m.debouncedSearch(words, {}, DEBOUNCE);
   if (!found) return;
   const top = found.results.slice(0, TOP);
-  if (!top.length) return draw([]);
+  if (!top.length) return draw([], true);
   // Drawn as the passages come, each time the run of them from the best grows: a page's passage waits on its whole
   // text (the live notebook's is by far the largest), so a slow page never holds back the ones ranked above it.
   const got = [];
@@ -43,7 +44,7 @@ export async function search(q, draw) {
     got[i] = passage(page);
     let k = shown;
     while (got[k]) k++;
-    if (k > shown) draw(got.slice(0, (shown = k)));
+    if (k > shown) draw(got.slice(0, (shown = k)), shown === top.length);
   }));
 }
 
