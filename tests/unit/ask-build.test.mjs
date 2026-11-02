@@ -1,6 +1,7 @@
 // RAG Goobie's build (src/lib/ask/, scripts/build/ask-dist.mjs): text.full (everything a reader sees, split at the
 // same h2s as text.sections, which with the rest of `text` stays as it was), section numbering, the DOC_CAP and
-// LIVE_CAP cuts, fragments, whole and split mode with pinned ranges, the manifest's v, the dist checks, the caps' sums.
+// LIVE_CAP cuts, fragments, whole and split mode with pinned ranges, the manifest's v, the dist checks, the caps' sums
+// and the rules' share of them.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -11,7 +12,8 @@ import matter from 'gray-matter';
 import { rehypePlugins } from '../../scripts/build/markdown.mjs';
 import { askCheck } from '../../scripts/build/ask-dist.mjs';
 import { sha256hex, short } from '../../src/lib/text/hash.js';
-import { BUDGET, sums } from '../../src/lib/ask/caps.js';
+import { BUDGET, RULES_TOKENS, est, sums } from '../../src/lib/ask/caps.js';
+import { RULES, WHOLE_RULES } from '../../src/lib/ask/words.js';
 import { numbered, sized } from '../../src/lib/ask/corpus.js';
 import { docBlock } from '../../src/lib/ask/blocks.js';
 import { packsOf } from '../../src/lib/ask/packs.js';
@@ -172,4 +174,8 @@ test('the caps\' sums hold: whole mode under the budget, and split mode leaves r
   const s = sums();
   assert.ok(s.whole <= BUDGET, `${s.whole}`);
   assert.ok(s.room >= s.focus, `${s.room} < ${s.focus}`);
+});
+
+test('the rules fit RULES_TOKENS, the share the sums and the manifest\'s estimate give them, in both modes', () => {
+  for (const rules of [RULES, WHOLE_RULES]) assert.ok(est(rules.length) <= RULES_TOKENS, `${est(rules.length)} > ${RULES_TOKENS}`);
 });
