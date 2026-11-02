@@ -42,9 +42,10 @@ export function line(e, start, cards) {
 export function summary(a, read) {
   const took = `${(a.took / 1000).toFixed(1)} s`;
   if (a.cached) return h('p', { class: 'ask-summary' }, `Answered before, from the answer cache · ${took}`);
-  const all = !read || read.given === read.of ? `Read all ${posts(read?.of ?? 0)} in full` : `Read ${num(read.given)} of the ${posts(read.of)} in full`;
-  const cache = a.usage.tokens ? `${k(a.usage.tokens)} tokens, ${((100 * a.usage.hit) / a.usage.tokens).toFixed(1)}% from cache` : '';
-  return h('p', { class: 'ask-summary' }, [all, cache, took, `$${a.usage.usd.toFixed(4)}`].filter(Boolean).join(' · '));
+  // A fresh answer always follows its 'read' event (worker/ask/run.js).
+  const all = read.given === read.of ? `Read all ${posts(read.of)} in full` : `Read ${num(read.given)} of the ${posts(read.of)} in full`;
+  const cache = `${k(a.usage.tokens)} tokens, ${((100 * a.usage.hit) / a.usage.tokens).toFixed(1)}% from cache`;
+  return h('p', { class: 'ask-summary' }, [all, cache, took, `$${a.usage.usd.toFixed(4)}`].join(' · '));
 }
 
 // The step list. on(e) takes every event before the answer; read is the last 'read' event, for the summary.
