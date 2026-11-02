@@ -1,9 +1,9 @@
 // The two requests' bodies as Blobs: prompt.js's escaped pieces around the build's fragments, which are fetched
 // from ASSETS once and kept as bytes (the 2 packs, 64 docs and the catalog last used), never parsed or re-encoded.
 // A Blob gives fetch its Content-Length and costs no CPU however big the prompt (docs/ASK.md "The request").
+import { asset } from '../lib/build-files.js';
 import { answerHead, CLOSE, OPEN, plannerHead, plannerUser, SEP, tail } from './prompt.js';
 
-const ORIGIN = 'https://aaronorelup.com'; // any host: the binding answers with this deploy's files
 const kept = { pack: lru(2), doc: lru(64), catalog: lru(1), overview: lru(1) };
 
 function lru(max) {
@@ -23,8 +23,7 @@ function lru(max) {
   };
 }
 
-const piece = (env, file) => kept[file.slice(0, file.indexOf('-'))](file, () => env.ASSETS.fetch(new Request(`${ORIGIN}/ask/${file}`))
-  .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(`/ask/${file} answered ${r.status}`)))));
+const piece = (env, file) => kept[file.slice(0, file.indexOf('-'))](file, () => asset(env, `/ask/${file}`).then((r) => r.arrayBuffer()));
 
 // ix: corpus.js's index; pack: its index; extras: doc numbers, in order; user: the user message. Whole mode: the pack,
 // the live notebook, the overview. Split mode: the pack, the catalog, the extras.
