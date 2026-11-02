@@ -33,6 +33,30 @@ test('text.full holds what a reader sees: table rows, code (cut at 2,000), capti
   assert.ok(!JSON.stringify(text.full).includes('a picture') && !JSON.stringify(text.full).includes('Hidden.'));
 });
 
+test('text.full keeps the words a post component shows: captions, .ao-meta lines, calc, matrix, pan and timeline labels', async () => {
+  const text = await render(['## Calc', ['<ao-calc>',
+    '<ul><li data-var="mins" data-min="1" data-max="60" data-value="10" data-unit="min">Finished video</li></ul>',
+    '<ol><li data-f="mins / 60 * 7" data-unit="GPU-hours" data-digits="1">Tuned L40S</li></ol>',
+    '<figcaption><b>Plain clips</b><span class="ao-meta">Example: 10 minutes is 1.2 GPU-hours.</span></figcaption>',
+    '</ao-calc>'].join('\n'),
+  '## Matrix', ['<ao-matrix cols="Front|Side" views="Textured|Clay">',
+    '<div data-row="Method A|30 s"><figure><img src="/x.webp" alt="a picture"><figcaption><b>673 tris</b><span class="ao-meta">410 s GPU</span></figcaption></figure><figure class="none">Failed</figure></div>',
+    '<figcaption><b>Two methods</b><span class="ao-meta">25 Sep</span></figcaption>', '</ao-matrix>'].join('\n'),
+  '## More', ['<ao-pan views="Day|Night" stops="0.3:Bridge|0.8">', '<img src="/x.webp" alt="a picture">',
+    '<figcaption><b>One street</b><span class="ao-meta">peak memory 7.9 GB</span></figcaption></ao-pan>'].join('\n'),
+  ['<ao-timeline lanes="a:Session A|b:Session B">', '<ol>', '<li data-lane="b" data-in="b"><time>13:07</time><p>B says <q>done</q>.</p></li>',
+    '</ol>', '</ao-timeline>'].join('\n'),
+  '<ao-compare cols="2">\n<figure><video src="/x.mp4"></video><figcaption>76.2 s</figcaption></figure>\n</ao-compare>',
+  ].join('\n\n'));
+  assert.deepEqual(text.full.map((s) => s.text), [
+    '- Finished video\n\n1. Tuned L40S\n\nPlain clips\nExample: 10 minutes is 1.2 GPU-hours.',
+    'Textured | Clay\n\n| Front | Side\nMethod A (30 s) | 673 tris · 410 s GPU | Failed\n\nTwo methods\n25 Sep',
+    'Day | Night\n\nBridge | 80%\n\nOne street\npeak memory 7.9 GB\n\n13:07 Session B: B says "done".\n\n76.2 s',
+  ]);
+  assert.ok(!/mins|GPU-hours\b(?! ?\.)|picture|data-|x\.mp4/.test(JSON.stringify(text.full.map((s) => s.text.replace('1.2 GPU-hours.', '')))));
+  assert.deepEqual(text.sections.map((s) => s.text), ['', '', ''], 'search reads none of it, as before');
+});
+
 // `text` without full, as origin/main's extraction made it before T2.7 (hashes taken from that plugin).
 const BEFORE = { 'blackwater-weekend': 'a8b255e8', 'claude-text-watermark': '759f3b5c', 'the-naughty-list': 'f2006023',
   'the-thought-it-denied': 'acd9eae7', 'touch-move': '26d5db54' };

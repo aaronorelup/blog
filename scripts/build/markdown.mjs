@@ -10,7 +10,7 @@ import rehypePostText from './rehype-post-text.mjs';
 // The post components: a folder src/elements/<tag>/ is a tag (src/elements/CLAUDE.md).
 const TAGS = fs.readdirSync(new URL('../../src/elements/', import.meta.url)).filter((d) => d.startsWith('ao-')).sort();
 
-const CODE = ['rehype-heading-ids.mjs', 'rehype-post-images.mjs', 'rehype-post-text.mjs', '../../src/lib/text/rules.js',
+const CODE = ['rehype-heading-ids.mjs', 'rehype-post-images.mjs', 'rehype-post-text.mjs', 'full-text.mjs', '../../src/lib/text/rules.js',
   '../../src/data/exempt.js'];
 const v = short(sha256hex(CODE.map((f) => fs.readFileSync(new URL(f, import.meta.url), 'utf8')).join('\0')));
 
