@@ -633,7 +633,7 @@ test.describe('Ask RAG Goobie at work', () => {
     const line = page.locator('[data-ask-line]');
     await expect(line).toBeHidden();
     await openAsk(page);
-    await expect(line).toHaveText(`RAG Goobie reads all ${Object.keys(posts).length} of Aaron's posts before it answers.`);
+    await expect(line).toHaveText(`RAG Goobie reads all ${Object.keys(posts).length} of Aaron's posts before answering.`);
     await page.locator('[data-mode="search"]').click();
     await expect(line).toBeHidden();
   });

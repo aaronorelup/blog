@@ -13,8 +13,8 @@ const { manifest: m } = await askBuild();
 const all = m.counts.posts.toLocaleString('en-US');
 const tokens = Object.values(m.docs).map((d) => d.tokens).sort((a, b) => a - b);
 const most = Math.max(...m.packs.map((p) => p.docs.length)) + Math.round(EXTRA_TOKENS / tokens[tokens.length >> 1]);
-const line = m.mode === 'whole' ? `RAG Goobie reads all ${all} of Aaron's posts before it answers.`
-  : `RAG Goobie reads the catalog of all ${all} of Aaron's posts and up to ${most} of them in full before it answers.`;
+const line = m.mode === 'whole' ? `RAG Goobie reads all ${all} of Aaron's posts before answering.`
+  : `RAG Goobie reads the catalog of all ${all} of Aaron's posts and up to ${most} of them in full before answering.`;
 ---
 
 <form class="search" role="search" action="/ledger/" data-search>
