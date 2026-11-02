@@ -11,7 +11,7 @@ export const WHOLE_CATALOG = 10_000; // the catalog's share in whole mode (about
 export const RULES_TOKENS = 1_000;   // the rules, as the budget sums count them
 export const USER_TOKENS = 500;      // the counts, the hint and a 300-character question
 export const SLACK = 2_000;          // separators and the request's own bytes
-export const EXTRA_TOKENS = 80_000;  // split mode's uncached docs per question (the flag ask_extra_tokens)
+export const EXTRA_TOKENS = 40_000;  // split mode's uncached docs a question (flag ask_extra_tokens; G3: 40k as good as 80k)
 export const RE_GATE = 450_000;      // a pack this big re-runs G2: answer quality is measured only up to ~304k
 export const est = (chars) => Math.ceil(chars / 3.5);
 

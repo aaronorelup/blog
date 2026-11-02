@@ -86,11 +86,12 @@ function editCost(prev, m) {
   m.packs.forEach((p, i) => {
     const old = prev.packs[i];
     if (!old || old.file === p.file) return;
-    const at = p.docs.findIndex((n) => prev.docs[n]?.file !== m.docs[n].file);
-    const from = at < 0 ? p.docs.length : at;
+    const same = old.docs.join() === p.docs.slice(0, old.docs.length).join();   // the same docs, maybe more after
+    const at = same ? p.docs.findIndex((n) => prev.docs[n]?.file !== m.docs[n].file) : 0;
+    const from = at < 0 ? old.docs.length : at;
     const tokens = p.docs.slice(from).reduce((t, n) => t + m.docs[n].tokens, 0) + m.catalog.tokens;
-    out.push(`ask: pack ${i} changed at doc ${p.docs[from] ?? 'its end'}: ~${k(tokens)} tokens re-read once `
-      + `(${dollars(Math.ceil(tokens * PRICES.peak.miss))} peak)`);
+    out.push(`ask: pack ${i} changed${from < p.docs.length ? ` at doc ${p.docs[from]}` : ''}: ~${k(tokens)} tokens `
+      + `re-read once (${dollars(Math.ceil(tokens * PRICES.peak.miss))} peak)`);
   });
   return out;
 }

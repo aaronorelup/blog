@@ -86,18 +86,18 @@ first use and turns em dashes into commas. The streaming citer holds back only w
 
 | cap | value | today (71 posts) | at 1,000 posts (`npm run ask:scale`) |
 |---|---|---|---|
-| `BUDGET`, the answer call's input | 700,000 est. | 314k est., 283k real | 510k est. at most |
+| `BUDGET`, the answer call's input | 700,000 est. | 314k est., 283k real | 493k est. at most |
 | `WHOLE_CAP`, whole mode | 600,000 est. of non-live docs | 264k est. | split mode |
 | `PACK_CAP`, split mode | 375,000 est. | 1 pack | 11 packs, the largest 374k |
 | `DOC_CAP`, a post with its notes | 36,000 est., top kept | largest 16.2k (context-window) | |
 | `LIVE_CAP`, the live notebooks | 60,000 est., head and tail kept | AO-073 48.4k | |
 | `CATALOG_CAP` | 80,000 est.; the oldest lines lose their takeaway past it | 5.0k | 55k |
 | room for the extras in split mode | `BUDGET` - rules - pack - catalog - user - 2k | | 267k, over the 240k 6 focus docs at their caps need |
-| extras a question (flag `ask_extra_tokens`) | 80,000 est. (focus outside the pack always fits) | none (whole) | |
+| extras a question (flag `ask_extra_tokens`) | 40,000 est. (focus outside the pack always fits; G3) | none (whole) | |
 | planner | 1 call, 300 tokens out, 8 s, JSON, temperature 0 | | |
 | answer | 1 call, 600 tokens out, temperature 0.2, first token 30 s, total 60 s | | |
 | embeddings | 2 Workers AI calls a question (1 resting), counted in `search_daily` | | |
-| Worker CPU a question | p99 <= 50 ms in production (auditor) | | 12 ms in node, the manifest's parse 5.3 ms once an isolate |
+| Worker CPU a question | p99 <= 50 ms in production (auditor) | | 4-12 ms in node, the manifest's parse 5.7 ms once an isolate |
 
 The build fails on the caps' sums, never on content: `WHOLE_CAP` + rules + 10k of catalog + `LIVE_CAP` + 2k <=
 `BUDGET` (673k), and split mode's room >= `LIVE_CAP` + 5 x `DOC_CAP` (241.5k >= 240k).
@@ -215,17 +215,30 @@ parallel questions from 6 sessions through; `search_daily` rises by 2 a question
 words p50 4.4 s; the answer p50 5.5 s, p90 6.2 s; cold 8.9 s.
 
 **G6 and G10 at 1,000 posts** (`npm run ask:scale`): 11 packs, the largest 374k est.; catalog 55k est.; the largest
-question 510k est.; room 267k; reservation $0.228 (suggested cap $2.28); manifest 0.77 MB, parsed in 5.3 ms; a
-question's rank, context, cites and body 12 ms in node on a warm isolate. A unit test holds a question to 45 binding
+question 493k est. (510k with 80k of extras); room 267k; reservation $0.228 (suggested cap $2.28); manifest 0.77 MB,
+parsed in 5.7 ms; a question's rank, context, cites and body 4 to 12 ms in node on a warm isolate. A unit test holds a question to 45 binding
 calls on a cold isolate. Production CPU p99 is the auditor's, the day after landing.
 
 **G11a stall** (a stub DeepSeek): 25 s to the first token, then an answer past 30 s: the stream stayed open with 2
 waits and the answer came, settled and cached; 35 s: `end busy` at 31 s, its reservation kept, the stream closed; a
 reader gone at 5 s: the run still answered, settled and cached ("detached").
 
+**G3 split mode** (`npm run ask:packs`, then the drill: `ASK_WHOLE_TOKENS=0 ASK_PACK_TOKENS=90000`, 4 packs of
+today's posts). Topic shelves against AO packs on the shipped run's ranked lists, at packs of 60k, 90k and 150k: at
+90k both put a median 5 focus posts in the chosen pack with about 78k uncached after it, and AO packs kept every gold
+post in the prompt (topic shelves 0.98), so AO packs it is (topic shelves would have needed 2 more posts in the pack
+and a quarter less uncached). The drill, 50 questions: must-have facts 0.807, score 7.52, not covered + injection 6/6,
+every gold post in the prompt (1.0), the focus always in it, attribution 46/50; a question read 148k tokens (42 posts
+in full), 52% from cache, $0.011 off-peak ($0.022 peak). `ask_extra_tokens` 40k against 80k on 20 of them (6
+multi-post, 6 vague, 8 fact): must 0.825 against 0.831, within 0.02, at 113k tokens, 82% cached and $0.0035 a
+question, so **40k is split mode's default**.
+
 **G11b eviction probe** (the shipped whole-mode prefix, 282.7k tokens, one call then idle gaps of 1, 2, 4 and 8
-hours, each gap after the call before it; started 00:58 UTC): now 99.93% from cache; after 1 h idle 99.93%; after
-2 h, 4 h and 8 h: PROBE_2H, filled in by the auditor (`.rework/rag/t27/probe/probe.jsonl`). Keep-warm stays unbuilt
+hours, each gap after the call before it; started 00:58 UTC): now 99.93% from cache; after 1 h idle 99.93%; after a further 2 h idle 99.93%. The 4 h and 8 h
+gaps (due about 08:00 and 16:00 UTC on 2 November): filled in by the auditor. Keep-warm stays unbuilt
 unless a gap empties the cache (D3).
 
-**Eval spend**: see the ledger line at the end of this section.
+**Eval spend**: $1.73 of the $3 ledger by the end of the drill: the answers $1.33 (two of them counted at their
+whole $0.10 reservation, after a dropped connection), the judge $0.40 with thinking on, the probe so far $0.005;
+most of it off-peak. The
+probe's later calls add at most $0.20.
