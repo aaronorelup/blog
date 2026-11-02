@@ -168,8 +168,12 @@ test('ledger-10 Start here shows its five posts, each with icon, title and stamp
   }
 });
 
-test('ledger-11 the stamp opens a row’s short version in place, with no request', async ({ page }) => {
+test('ledger-11 the stamp opens a row’s short version in place, with no request', async ({ page, isMobile }) => {
+  // On a laptop the hover card fetches its text once the page is idle (cards/hover.js), which a busy box can put
+  // after networkidle: that fetch is the card's, not the stamp's, so it is waited for first.
+  const cards = isMobile ? null : page.waitForResponse('**/ledger/previews.json');
   await page.goto('/ledger/');
+  await cards;
   await page.waitForLoadState('networkidle');
   const requests = [];   // fetches and page loads (row icons load as rows scroll into view)
   page.on('request', (r) => ['fetch', 'xhr', 'document'].includes(r.resourceType()) && requests.push(r.url()));
