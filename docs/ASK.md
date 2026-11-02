@@ -321,7 +321,7 @@ gold sections cited 63 (37 + 26).
 - 2, point to posts only when asked: 0.826 / 0.756, 7.74 / 7.40, 60; 3, and one answer said where hidden pages are.
 - 3, section marks in pointer lines, lists only when asked, who did what, a refusal with nothing after it: 0.793 /
   0.736, 7.66 / 7.35, 62; 4 (the baseline 8 under the same reading). Must-haves paired -0.0009 (95% CI -0.0392 to
-  +0.0367): fails the CI line and the caption-only must-haves.
+  +0.0367): fails the CI line, the voice cap and the caption-only must-haves.
 - 4, an answer's words go to its post's facts, each with the doer the post names: 0.834 / 0.770, 7.74 / 7.33, 60; 7
   (the baseline 9 under the same reading). Must-haves paired +0.0379 (+0.0071 to +0.0706), score +0.081 (-0.222 to
   +0.409).
