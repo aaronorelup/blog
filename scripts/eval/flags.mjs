@@ -1,7 +1,8 @@
 // The report's flags for the hand reading (docs/ASK.md "The eval"), each a list of snippets of one answer: voice, a
-// first person outside RAG Goobie's own phrases, quotes and the posts' titles ("my laptop's", "we rendered"); marks, a cite mark
-// used as a noun (after "read", "see", "then" or "and", or starting a sentence or a line); hidden, any talk of hidden,
-// secret, unlisted or draft pages or of easter eggs. A flag is a question for a reader, not a verdict.
+// first person outside RAG Goobie's own phrases, quotes and the posts' titles ("my laptop's", "we rendered"), and a
+// credit to Aaron to check against the post ("Aaron worked it out"); marks, a cite mark used as a noun (after "read",
+// "see", "then", "and" or "with", or starting a sentence or a line); hidden, any talk of hidden, secret, unlisted or
+// draft pages or of easter eggs. A flag is a question for a reader, not a verdict.
 const near = (s, i, n) => s.slice(Math.max(0, i - 30), i + n + 30).replace(/\s+/g, ' ');
 const all = (s, re) => [...s.matchAll(re)].map((m) => near(s, m.index, m[0].length));
 
@@ -21,7 +22,10 @@ export function voice(answer, titles = []) {
     .map((m) => near(answer, m.index, m[0].length));
 }
 
-export const marks = (answer) => all(answer, /\b(?:read|see|then|and)\s+\[\d+\]|(?:^|[.!?]\s+|\n\s*(?:[-*•]|\d+\.)?\s*)\[\d+\]/gi);
+export const marks = (answer) => all(answer, /\b(?:read|see|then|and|with)\s+\[\d+\]|(?:^|[.!?]\s+|\n\s*(?:[-*•]|\d+\.)?\s*)\[\d+\]/gi);
+
+// Aaron, or "he", doing what a post often says he had Claude or an agent do: a credit to check against the post.
+export const credit = (answer) => all(answer, /\b(?:Aaron|[Hh]e)\s+(?:has\s+)?(?:worked|built|copied|fixed|tuned|computed|designed|made)\b/g);
 
 export const hidden = (answer) => all(answer,
   /\b(?:hidden|secret|unlisted|draft|unpublished)\s+(?:[\w-]+\s+){0,2}?(?:pages?|posts?|links?|urls?|addresses|frames?)\b|\beaster[- ]?eggs?\b/gi);
