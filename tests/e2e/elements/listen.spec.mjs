@@ -136,6 +136,8 @@ test('listen-2 A/B switches to the reference at the same moment, and back', asyn
   expect(refTitle).not.toBe(first);
   const ref = audioOf(page, refTitle);
   await expectPlaying(ref);
+  // The clip left stays paused, past the 80-150 ms in which WebKit plays a clip paused before it was under way.
+  expect(await a.evaluate((m) => new Promise((r) => setTimeout(() => r(!m.paused && !m.ended), 500)))).toBe(false);
   // The reference picks up where the clip was (it would be near 0 from the start).
   const [ta, tr, end] = [await clock(a), await clock(ref), await ref.evaluate((m) => m.duration)];
   expect(tr).toBeGreaterThan(Math.min(ta, end) - 0.2);
