@@ -333,11 +333,11 @@ Behaviours: game-1 to game-8, core-3. Used by `storm-bell-fighter` (`/games/stor
 Several renders of the same audio, compared by ear at the same moment. One player for the whole set: picking
 another clip keeps the playhead where it was, so the reader hears the same word under each treatment, and A/B flips
 to the reference clip and back. Each clip's spectrogram spans its length; the playhead runs across it and a click
-seeks. With the list focused, up and down pick a clip, space plays, C flips A/B. It is one player on the page. A
-pause asked for before a clip is under way (still seeking, waiting for data, or its clock not yet moving since it
-last played, seeked or waited) holds once it is (WebKit's player would otherwise play on). The hold lasts 400 ms
-(from the end of the seek, for one asked for mid-seek): a play after that, from a media key, the lock screen or
-headphones, plays.
+seeks. With the list focused, up and down pick a clip, space plays, C flips A/B. It is one player on the page, and
+only the clip picked plays: a play of any other (WebKit's player plays the clip A/B or a row left again when it was
+paused before it was under way) is paused at once. A Pause pressed while a seek runs holds until 400 ms after the
+seek ends (WebKit would play on as it ends): a play after that, from a media key, the lock screen or headphones,
+plays.
 
 | Attribute | |
 |---|---|

@@ -54,18 +54,17 @@ class AoListen extends HTMLElement {
 
     const pos = () => cur.audio.currentTime || 0;
     // WebKit's GStreamer player plays a clip again, even after pause(), when the pause came before the clip was under
-    // way: while it seeks, while it waits for data, or while its clock still stands where it last played, seeked or
-    // waited (the phone project caught a Pause mid-seek, and A/B at a clip that had just seeked, the clip going on
-    // beside the reference). That play comes 80-150 ms after the pause, or as a seek running across it ends. A pause
-    // asked for then holds: a play of that clip in that time is paused at once. The hold ends at the first such play
-    // once the clip neither seeks nor waits, at start(), or HOLD ms after the pause (after its seek, for one asked for
-    // mid-seek): a play after that is the reader's own, from a media key, the lock screen or headphones, and plays.
+    // way: mid-seek (that play comes as the seek ends, 0-160 ms after 'seeked', which can be a second after the
+    // pause) or, for a clip that had only just seeked, at once. Two rules stop it. Only the current clip plays: every
+    // play the element makes is start(), of cur, so a play of another clip (the one A/B or a row left) is never the
+    // element's and is paused at once. And a Pause of cur pressed mid-seek holds: a play of it is paused until HOLD ms
+    // after that seek ends, or start(). A play after that is the reader's own (a media key, the lock screen,
+    // headphones) and plays.
     const HOLD = 400;
-    const held = new Map(); // each held clip and when its hold ends (Infinity while the seek it was asked in runs)
-    const mark = new Map(); // each clip's clock at its last play, seek or wait
-    const settled = (a) => !a.seeking && a.readyState >= a.HAVE_FUTURE_DATA;
+    const held = new Map(); // a held clip and when its hold ends (Infinity while its seek runs)
+    const holding = (a) => performance.now() < (held.get(a) ?? 0);
     const halt = (a) => {
-      if (!a.paused && (!settled(a) || a.currentTime === mark.get(a))) held.set(a, a.seeking ? Infinity : performance.now() + HOLD);
+      if (!a.paused && a.seeking) held.set(a, Infinity);
       a.pause();
     };
     const draw = () => {
@@ -128,17 +127,10 @@ class AoListen extends HTMLElement {
       const a = c.audio;
       a.removeAttribute('controls');
       a.preload = 'metadata';
-      for (const t of ['seeking', 'seeked', 'waiting', 'playing']) a.addEventListener(t, () => mark.set(a, a.currentTime));
-      a.addEventListener('seeked', () => { if (held.get(a) === Infinity) held.set(a, performance.now() + HOLD); });
+      a.addEventListener('seeked', () => { if (holding(a)) held.set(a, performance.now() + HOLD); });
       a.addEventListener('play', () => {
-        if (performance.now() < (held.get(a) ?? 0)) {
-          a.pause();
-          if (settled(a)) held.delete(a);
-        } else {
-          held.delete(a);
-          mark.set(a, a.currentTime);
-          if (c === cur) loop();
-        }
+        if (c !== cur || holding(a)) a.pause();
+        else loop();
       });
       a.addEventListener('pause', () => c === cur && draw());
       a.addEventListener('loadedmetadata', () => c === cur && draw());
