@@ -108,8 +108,10 @@ type Text = {
     // the opening (anchor '') then one per h2; blocks joined by "\n\n"; <details> text kept, and the section folded
   read: { blocks: ['h' | 'p' | 'li' | 'q', string][] };   // block i is the element stamped data-r="i"
   full: { anchor: string; heading: string; text: string }[];
-    // RAG Goobie's text: split at sections' h2s, everything a reader sees: paragraphs, lists, h3/h4, table rows
-    // "a | b", code (cut at 2,000), captions, folded text; never pictures, players, svg, <ao-*> insides, aria-hidden
+    // RAG Goobie's text (scripts/build/full-text.mjs): split at sections' h2s, everything a reader sees: paragraphs,
+    // lists, h3/h4, table rows "a | b", code (cut at 2,000), captions (an .ao-meta a line of its own), folded text,
+    // and what a post component shows as words: its captions, ao-calc's and ao-bars' lists and table, ao-matrix's
+    // grid, ao-pan's and ao-timeline's labels; never pictures, players, svg, aria-hidden, the components' data-*
   elements: string[];                             // the post components used: ['ao-compare', 'ao-demo/synthid']
   links: string[];                                // same-site hrefs of <a>, as written
 };
@@ -237,12 +239,13 @@ fails the build, or only warns in a live notebook.
 | `scripts/check/` | the checker: `index.mjs` (CLI), `run.mjs` (levels), `repo.mjs`, `text.mjs`, one file per rule, `grandfathered.mjs` |
 | `scripts/build/verify-dist.mjs` | at `astro:build:done`: `contracts.mjs` and `ask-dist.mjs` over `dist/`, then the budgets |
 | `scripts/build/ask-dist.mjs` | RAG Goobie's files: listed docs only, sections that resolve, files that round-trip, the caps' sums; prints the mode, sizes, reservation and suggested cap, the pins and the re-gate line |
-| `scripts/eval/` | RAG Goobie's eval (`docs/ASK.md`): `spend.mjs` (the $3 ledger, the only DeepSeek client), `run.mjs` + `client.mjs` (`npm run ask:eval`), `judge.mjs`, `report.mjs` (the gates), `packs-compare.mjs`, `scale.mjs` (1,000 posts), `probe.mjs` (eviction, stall), `sections.mjs` |
+| `scripts/eval/` | RAG Goobie's eval (`docs/ASK.md`): `spend.mjs` (the ledger, the only DeepSeek client), `run.mjs` + `client.mjs` (`npm run ask:eval`), `judge.mjs` (full posts, `--passes`) + `judged.mjs` (its file, the passes merged), `report.mjs` (the gates) + `flags.mjs` (the hand reading's flags), `compare.mjs` (the hold-out's non-inferiority CI), `packs-compare.mjs`, `scale.mjs` (1,000 posts), `probe.mjs` (eviction, stall), `sections.mjs` |
 | `scripts/tools/ask-pin.mjs` | `npm run ask:pin`: the build's pack starts into `src/data/ask-packs.json` |
 | `scripts/build/contracts.mjs` | pure checks of the frozen contracts over `dist/` |
 | `scripts/build/stats-pages.mjs`, `dev-stats-fixture.mjs` | `/stats-pages.txt`; `/api/stats` for `astro dev` |
 | `scripts/build/pagefind.mjs` | at `astro:build:done`: Pagefind's index of `dist/ledger/**/*.html` into `dist/pagefind/`; a failure fails the build |
 | `scripts/build/markdown.mjs` + `rehype-{post-images,heading-ids,post-text}.mjs` | the Markdown plugins (step 3 of "A build"); `markdown.mjs` lists the post components until T1.2 and hashes the plugins' code into the config, so Astro's content cache re-renders when they change |
+| `scripts/build/full-text.mjs` | `text.full`, RAG Goobie's text, for `rehype-post-text`: every section's words as a reader sees them, post components' captions and labels included |
 | `scripts/lore-thumbs.mjs` | the lore thumbnails (moves to `build/` in W4) |
 | `scripts/media/` | `files.mjs` (what is media, `STAYS_IN_GIT`), `push.mjs`, `verify.mjs`, `integration.mjs` (the guard) |
 | `scripts/tools/new-post.mjs` | `npm run new-post`: the next `AO-###`, the v2 frontmatter |
@@ -270,7 +273,7 @@ fails the build, or only warns in a live notebook.
 | `worker/cleanup.js` | the daily sweep of old counts, answers and totals |
 | `worker/lantern.js` | `GET /api/lantern`: the lantern door's redirect to `LANTERN_URL` |
 | `worker/read/` | `step.js` (`read.step`: one post's missing sections a run, then its post file; capped by credit), `voice.js` (the ElevenLabs calls), `read.sql` |
-| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (RAG Goobie's marks to cites, streamed too), `ask-serve.test.mjs` (`/api/ask` end to end: guards, stream, cache, caps, settle), `ask-build.test.mjs`, `ask-context.test.mjs`, `ask-price.test.mjs`, `ask-stream.test.mjs`, `ask-scale.test.mjs` (1,000 posts), `ask-fixture.mjs` (a small built blog), `schema.test.mjs` (the posts schema's `voice`), `read.test.mjs` (the spoken copy and its map, alignment, section hashes, the read-aloud cron); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1 |
+| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (RAG Goobie's marks to cites, streamed too), `ask-serve.test.mjs` (`/api/ask` end to end: guards, stream, cache, caps, settle), `ask-build.test.mjs` (text.full with post components), `ask-context.test.mjs`, `ask-eval.test.mjs` (the eval's flags, passes, judge message, bootstrap), `ask-price.test.mjs`, `ask-stream.test.mjs`, `ask-scale.test.mjs` (1,000 posts), `ask-fixture.mjs` (a small built blog), `schema.test.mjs` (the posts schema's `voice`), `read.test.mjs` (the spoken copy and its map, alignment, section hashes, the read-aloud cron); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1 |
 | `tests/e2e/` | the behaviour suite: `INVENTORY.md`, `targets.json` (from `element-usage`), specs, fixtures |
 | `tests/baseline/urls.txt` | every page and contract file a build must still produce |
 | `tests/ask/` | RAG Goobie's eval set (`eval.json`, 50 questions with gold posts, sections and must-haves) and the example candidates (`examples.json`); the blind hold-out is private |

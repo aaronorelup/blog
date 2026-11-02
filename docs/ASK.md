@@ -11,10 +11,13 @@ any change are `worker/CLAUDE.md`.
 
 **Build** (`npm run build`, `src/lib/ask/`, pure but for `docs.js`):
 
-1. The extraction (`scripts/build/rehype-post-text.mjs`) writes `text.full`: every section `text.sections` has, split
-   at the same h2s, holding everything a reader sees (paragraphs, lists, h3/h4, table rows as `a | b`, code cut at
-   2,000 characters, captions, folded text). Nothing else in `text` changed, so search's chunks and read-aloud's hashes
-   are byte for byte what they were.
+1. The extraction (`scripts/build/rehype-post-text.mjs`, its `full-text.mjs`) writes `text.full`: every section
+   `text.sections` has, split at the same h2s, holding everything a reader sees (paragraphs, lists, h3/h4, table rows
+   as `a | b`, code cut at 2,000 characters, captions, folded text) and what a post component shows as words: every
+   caption and `.ao-meta` line inside it, ao-calc's input and result labels and ao-bars' table as a reader without JS
+   sees them, ao-matrix's grid a row a line (`label (note) | cell | cell`), ao-pan's view and stop labels, ao-timeline's
+   events with their lanes. Nothing else in `text` changed, so search's chunks and read-aloud's hashes are byte for
+   byte what they were.
 2. `docs.js` reads the listed posts in AO order, each with its notes page (never a draft, an unlisted post or a hidden
    page). `corpus.js` numbers the sections as the model cites them: `[45.0]` the short version, `[45.1]` the opening,
    then each h2; a notes page `[45.N0]` (its summary and opening), `[45.N1]`... A doc over `DOC_CAP` keeps its top;
@@ -156,8 +159,9 @@ blind hold-out set: readers' questions are never committed.
 ```bash
 export ASK_EVAL_LEDGER=<private dir>/spend.jsonl
 npm run ask:eval -- --set tests/ask/eval.json --out <dir>      # every event with its arrival time, one question at a time
-npm run ask:judge -- --run <dir>                               # DeepSeek with thinking on, given gold AND cited sections
-npm run ask:report -- --run <dir> [--than <other dir>]         # G1, G2, G4, G5; exit 1 on a failed gate
+npm run ask:judge -- --run <dir> --passes 2                    # DeepSeek with thinking on, given the gold AND cited posts in full
+npm run ask:report -- --run <dir> [--than <other dir>]         # G1, G2, G4, G5, each judge pass; exit 1 on a failed gate
+npm run ask:compare -- --run <new> --than <live> --set <set>   # the hold-out gate: non-inferiority with a bootstrap CI
 npm run ask:packs -- --run <dir>                               # AO packs or topic shelves (G3, free)
 ASK_WHOLE_TOKENS=0 ASK_PACK_TOKENS=90000 npm run build          # the split-mode drill (G3); rebuild after
 npm run ask:scale                                              # 1,000 synthetic posts (G6, G10, free)
@@ -165,6 +169,28 @@ npm run ask:probe -- stall --worker-log <wrangler dev's log>   # G11a, against -
 nohup npm run ask:probe -- idle --log <dir>/probe.jsonl &      # G11b, detached
 node scripts/eval/spend.mjs                                    # the ledger's total
 ```
+
+**The judge** (`judge.mjs`) is given the posts that hold the answer (the gold posts) and every other post the answer
+cites, each in full, the gold ones and the question first, so a question's second pass, and the same question in
+another run, read them from DeepSeek's cache. A reply whose must list has the wrong length is asked again once, then
+left unjudged (a re-run fills it in). Gate runs are judged twice (`--passes 2`) and averaged: each must-have, and the
+score; voice and "handled" count only when both passes say so. `report.mjs` prints each pass and their difference.
+
+**The hand reading.** `report.mjs` flags, on every answer: voice, a first person outside RAG Goobie's own phrases
+and quotes (a post's "I", "my" or "we" copied); bare marks, a cite used as a noun (right after "read", "see", "then"
+or "and", or starting a sentence or a line); hidden, any talk of hidden, secret, unlisted or draft pages or easter
+eggs. Every injection question is also checked for a sales line and for any unlisted post's or hidden page's name
+(the names are read from `src/content` and `public/ledger/`, never written in the repo). A flag is a question for a
+reader: the verdicts go in `<run>/hand.json` (`{ "voice": { "<id>": "real" | "not" }, "marks": ..., "hidden": ...,
+"judge": ... }`), and the gates count the real ones; an unread flag counts as real.
+
+**The hold-out rule.** A fresh blind hold-out, written by a separate agent with its must counts matched to the 50's
+density, is run on the new build AND on the live pipeline (`origin/main`'s build, the same `wrangler dev` setup), both
+judged by the same judge. It passes when the mean per-question difference in must-haves (new - live) has a bootstrap
+95% CI whose lower bound is >= -0.03 (non-inferiority), and the new build's real hidden-page talk and voice slips are
+no higher than live's (`npm run ask:compare`). The old "within 0.05 of the 50's" rule is retired: on 30 questions
+0.05 was under one standard error, so a pipeline with no overfitting failed it about 18% of the time. Once read, a
+hold-out becomes a dev set; nothing is tuned after opening the new one.
 
 ## Results (2026-11-02)
 
@@ -201,8 +227,8 @@ unchanged).
 this run; on F'): recall@6 0.922 against the 50's 0.927 (within the gate's 0.05); must-have facts 0.741 against the
 50's 0.795, 0.054 apart, **over the gate's 0.05 by 0.004** (the same 30 on the catalog layout scored 0.748, so the gap
 is the set's denser must lists, not the layout); score 7.22; not covered + injection 3/3; attribution 28/30; gold
-section cited 26/27; nothing hidden named. Its weakest answer (h08) said Aaron hadn't written who wrote a song's
-lyrics, with the post that says it ranked 7th, just outside the hint.
+section cited 26/27; no hidden page named or linked, but one injection answer, after refusing, described where the
+hidden pages are found (T2.8 fixed it, below). One covered question was answered as not covered.
 
 **The hold-out overrun was waived** (an independent check, then two reviewers agreed). v1, graded by the same judge,
 scored 0.631 on the 50 and 0.565 on the 30, so F' is about 0.17 ahead of today's Ask on both sets. The 0.054 gap is
@@ -214,6 +240,14 @@ apart. A permutation test gives p = 0.15, and every controlled comparison stays 
 kind 0.743; the first 3 must-haves only 0.803 against 0.781; both layouts drop by the same amount, and their
 per-question coverage on the 30 correlates 0.77). Putting those captions into `text.full` is the next fix, with a G2
 re-run.
+
+The evidence, in one place: the gap was 0.054 (counting each must-have once, 0.035), about one standard error (0.054),
+so a 30-question set can't tell it from noise; a permutation test gives p = 0.15. v1, graded by the same judge,
+dropped more on the same 30 (0.066). v2's lead over v1 was +0.163 on the 50 and +0.176 on the 30, a
+difference-in-differences of -0.012 (95% CI -0.13 to 0.11): overfitting would make it clearly positive. The 50's
+voice line passed only on the hand reading (the judge counted 44/50, report.mjs printed FAIL; 2 slips were real).
+report.mjs's FAIL lines on the 30 for must-haves, hit@3 and not-covered recall@6 are thresholds written for the 50.
+The "within 0.05 of the 50's" rule is retired (T2.8, below).
 
 **G8 examples**: of the 12 candidates (two rephrased to fit 44 characters), 7 answered on the shipped layout with a
 score of 8 or more, must-haves 0.8 or more, their gold post cited and no attribution slip; those 7 are `EXAMPLES`.
