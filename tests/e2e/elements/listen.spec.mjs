@@ -40,6 +40,33 @@ test('listen-1 a clip row selects that clip and plays it', async ({ page }) => {
   await expect(listen(page).locator('.ao-listen-bar button').first()).toHaveText('Play');
 });
 
+// WebKit's player plays a clip again once a seek that began while it played is done, even after pause(): listen-1
+// on the phone caught it on a loaded box, a Pause pressed mid-seek and the clip going on. Here the seek is certain
+// to be running when Pause is pressed, and the play that WebKit makes when it ends is a script's play().
+test('listen-1b a Pause pressed while a seek is still running holds once the seek is done', async ({ page }) => {
+  const rows = listen(page).locator('.ao-listen-list button');
+  await rows.nth(1).click();
+  const title = (await current(page).textContent()).trim();
+  await expectPlaying(audioOf(page, title));
+  // In one task: the seek, Pause while it is still seeking, then the play.
+  const seeking = await listen(page).evaluate((el, t) => {
+    const a = [...el.querySelectorAll('figure')].find((f) => f.querySelector('figcaption b')?.textContent.trim() === t).querySelector('audio');
+    a.currentTime = 2;
+    const was = a.seeking;
+    el.querySelector('.ao-listen-bar button').click();
+    a.play().catch(() => {});
+    return was;
+  }, title);
+  expect(seeking).toBe(true);
+  // Read the frame after the seek is done (a clip left playing would still be playing then, 18 s from its end).
+  const paused = await audioOf(page, title).evaluate((a) => new Promise((r) => {
+    const read = () => requestAnimationFrame(() => r(a.paused));
+    if (a.seeking) a.addEventListener('seeked', read, { once: true }); else read();
+  }));
+  expect(paused).toBe(true);
+  await expect(listen(page).locator('.ao-listen-bar button').first()).toHaveText('Play');
+});
+
 test('listen-2 A/B switches to the reference at the same moment, and back', async ({ page }) => {
   const rows = listen(page).locator('.ao-listen-list button');
   const ab = listen(page).locator('.ao-listen-bar button').nth(1);
