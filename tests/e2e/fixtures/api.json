@@ -616,7 +616,8 @@
         "t": "write"
       },
       {
-        "t": "write"
+        "t": "text",
+        "d": "Aaron rented a 48 GB card and"
       },
       {
         "t": "end",
