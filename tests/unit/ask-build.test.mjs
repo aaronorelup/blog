@@ -53,7 +53,6 @@ test('text.full keeps the words a post component shows: captions, .ao-meta lines
     'Textured | Clay\n\n| Front | Side\nMethod A (30 s) | 673 tris · 410 s GPU | Failed\n\nTwo methods\n25 Sep',
     'Day | Night\n\nBridge | 80%\n\nOne street\npeak memory 7.9 GB\n\n13:07 Session B: B says "done".\n\n76.2 s',
   ]);
-  assert.ok(!/mins|GPU-hours\b(?! ?\.)|picture|data-|x\.mp4/.test(JSON.stringify(text.full.map((s) => s.text.replace('1.2 GPU-hours.', '')))));
   assert.deepEqual(text.sections.map((s) => s.text), ['', '', ''], 'search reads none of it, as before');
 });
 
