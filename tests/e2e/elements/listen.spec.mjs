@@ -3,7 +3,8 @@
 import { test, expect } from '../fixtures.mjs';
 import { openFirst, pagesWith, expectPlaying, clock, seekTo } from '../helpers.mjs';
 
-// The first set whose every clip runs 4 s or more, so none ends under a test (many are one-line sound bites).
+// The first set whose every clip runs 4 s or more, so none ends under a test (many are one-line sound bites), among
+// the sets the element has built (a single clip stays a plain figure, with no list).
 let at = null;
 const listen = (page) => page.locator('ao-listen').nth(at.i);
 const current = (page) => listen(page).locator('.ao-listen-list button[aria-current="true"] b');
@@ -16,10 +17,19 @@ const ready = (page) => listen(page).evaluate((el) => Promise.all([...el.querySe
 
 test.beforeEach(async ({ page }) => {
   const urls = at ? [at.url] : pagesWith('ao-listen');
-  const i = await openFirst(page, urls, (p) => p.locator('ao-listen').evaluateAll((els) => Promise.all(els.map((el) =>
-    Promise.all([...el.querySelectorAll('audio')].map((a) => (a.readyState ? a.duration : new Promise((r) => {
+  const i = await openFirst(page, urls, (p) => p.locator('ao-listen').evaluateAll((els) => {
+    // WebKit on Linux reports a duration of 0 for some 10-30 s clips when a page loads many at once (on a busy box,
+    // a long set in about one page load in two, origin/main's build too), and a reload doesn't mend it: such a clip
+    // is measured from its decoded bytes.
+    const ctx = new AudioContext();
+    const decoded = (a) => fetch(a.currentSrc).then((r) => r.arrayBuffer()).then((b) => ctx.decodeAudioData(b)).then((d) => d.duration);
+    const length = (a) => (a.readyState ? Promise.resolve(a.duration) : new Promise((r) => {
       a.addEventListener('loadedmetadata', () => r(a.duration), { once: true }); a.preload = 'metadata'; a.load();
-    })))).then((d) => Math.min(...d)))).then((mins) => mins.findIndex((d) => d >= 4))));
+    })).then((d) => (d > 0 ? d : decoded(a)));
+    const shortest = (el) => (el.querySelector('.ao-listen-list')
+      ? Promise.all([...el.querySelectorAll('audio')].map(length)).then((d) => Math.min(...d)) : 0);
+    return Promise.all(els.map(shortest)).then((mins) => mins.findIndex((d) => d >= 4));
+  }));
   at = { url: page.url(), i };
   await listen(page).scrollIntoViewIfNeeded();
   await ready(page);
