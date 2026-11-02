@@ -7,7 +7,7 @@ import SCHEMA from './flags.sql';
 // ask_daily_usd is dollars a UTC day for Ask's DeepSeek calls (usage_day 'ask_usd' counts micro-dollars);
 // ask_extra_tokens is split mode's uncached docs per question (docs/ASK.md).
 const DEFAULTS = {
-  search: 'on', ask: 'on', tts: 'on', search_daily: 20000, ask_daily: 1000, ask_daily_usd: 2, ask_extra_tokens: 80000,
+  search: 'on', ask: 'on', tts: 'on', search_daily: 20000, ask_daily: 1000, ask_daily_usd: 2, ask_extra_tokens: 40000,
   tts_daily_credits: 15000, tts_credit_floor: 0.4,
 };
 export const NO_CAP = Number.MAX_SAFE_INTEGER;   // a settle, which may only ever lower a total

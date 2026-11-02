@@ -7,6 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
 import { TOPIC_KEYS } from '../../src/data/taxonomy.js';
+import { EXTRA_TOKENS } from '../../src/lib/ask/caps.js';
 import { packsOf } from '../../src/lib/ask/packs.js';
 import { contextOf } from '../../worker/ask/context.js';
 import { indexOf } from '../../worker/ask/corpus.js';
@@ -38,7 +39,7 @@ function measure(packs) {
     const focus = read.focus.map(ix.n);
     const ranked = [...new Set([...focus, ...(found.ranked ?? []).map(ix.n)])];
     const R = [...new Set([...ranked, ...[...ix.order].reverse().filter((n) => !ix.live.includes(n))])];
-    const c = contextOf(ix, { R, focus, hint: R.slice(0, 6), matched: [], chunks: [] }, { q: r.q, extraTokens: 80000 });
+    const c = contextOf(ix, { R, focus, hint: R.slice(0, 6), matched: [], chunks: [] }, { q: r.q, extraTokens: EXTRA_TOKENS });
     const inPrompt = new Set([...fake.packs[c.pack].docs, ...c.extras]);
     return { inPack: focus.filter((n) => at.get(n) === c.pack).length, extras: c.extras.reduce((t, n) => t + m.docs[n].tokens, 0),
       gold: qs.get(r.qid).gold.every((g) => inPrompt.has(ix.n(g))) };

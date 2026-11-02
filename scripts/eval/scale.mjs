@@ -5,7 +5,7 @@
 import fs from 'node:fs';
 import { register } from 'node:module';
 import { assemble } from '../../src/lib/ask/manifest.js';
-import { BUDGET, CATALOG_CAP, DOC_CAP, LIVE_CAP, PACK_CAP, RULES_TOKENS, SLACK, USER_TOKENS } from '../../src/lib/ask/caps.js';
+import { BUDGET, CATALOG_CAP, DOC_CAP, EXTRA_TOKENS, LIVE_CAP, PACK_CAP, RULES_TOKENS, SLACK, USER_TOKENS } from '../../src/lib/ask/caps.js';
 import { sectionsOf } from './sections.mjs';
 
 // The Worker's modules import their .sql files as text, as wrangler bundles them.
@@ -71,7 +71,7 @@ export async function simulate({ posts = 1000, seed = 7, base = todaysDocs() } =
     const lists = Array.from({ length: 5 }, ids);
     const picks = Array.from({ length: 8 }, () => `post-${1 + Math.floor(r() * (posts - 1))}`);
     const rank = ranking(ix, { picks, lists });
-    const c = contextOf(ix, rank, { q: 'how did it go?', extraTokens: 80000 });
+    const c = contextOf(ix, rank, { q: 'how did it go?', extraTokens: EXTRA_TOKENS });
     const marks = rank.focus.slice(0, 6).map((n) => `[${n}.1]`).join(' then ');
     cite(`Aaron measured it ${marks}, and ${'more words '.repeat(60)}[${rank.focus[0]}.2].`, (x) => ix.resolve(x, c.inPrompt));
     await answerBody(env, ix, c);
