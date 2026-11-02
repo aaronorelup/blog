@@ -125,8 +125,8 @@ notes, `earthlight`'s notes, `nine-claudes-one-painting` today).
 | Behaviour | Listener or attribute | Spec |
 |---|---|---|
 | A clip row picks and plays it; Play/Pause and the clock follow the audio | row `click`, Play `click`, audio `play` `pause` `loadedmetadata` `ended` | listen-1 |
-| A Pause pressed while a seek is still running holds once the seek is done (WebKit's player otherwise plays the clip again) | Play `click` mid-seek, audio `play` | listen-1b |
-| The hold ends: a play from outside the page (a media key, the lock screen) a second after the clip settles plays, after a Pause as the clip starts, mid-seek, and before it is under way | Play `click`, audio `play` `seeked` | listen-1c |
+| A Pause pressed while a seek is still running holds once the seek is done, and one pressed as a spectrogram seek made while playing ends with no data yet to play (WebKit's player otherwise plays the clip again) | Play `click` mid-seek and at `seeked`, spectrogram `click`, audio `play` | listen-1b |
+| The hold ends: a play from outside the page (a media key, the lock screen) a second after the clip settles plays, after a Pause as the clip starts, mid-seek, before it is under way, and as a seek ends with no data yet to play | Play `click`, spectrogram `click`, audio `play` `seeked` | listen-1c |
 | A/B switches to the reference (`ref`) at the same moment, and back; the clip left stays paused, past its own seek's end (WebKit's player otherwise plays it again) | `ref`, A/B `click`, audio `play` | listen-2 |
 | Only the clip picked plays: a play of the clip A/B or a row left, 100 ms and 700 ms after the click, is paused at once while the clip picked plays on | A/B and row `click`, audio `play` | listen-2b |
 | The spectrogram seeks on click and with the arrows | spectrogram `pointerdown` `keydown` | listen-3 |
@@ -481,7 +481,9 @@ a running game's veil reads "Paused while something else plays." (the page-wide 
   phone. Under it, on `phone`, WebKit's player plays a clip paused mid-seek again as the seek ends: 318 such plays
   in 1,500 tries on 2026-11-02, nearly all within 10 ms of `seeked` (the latest 237 ms after it, 1.1 s after the
   pause), and none of 199 clips paused just after Play with no seek running. listen-2's flake was one of those,
-  of the clip A/B left. Not on by default: it slows every media spec.
+  of the clip A/B left. It also plays a clip paused as a seek made while playing ends with no data yet to play
+  (`readyState` 2): 3-5 ms after the pause, 5 of 30 Pauses pressed at a spectrogram seek's `seeked` (listen-1b
+  makes that state certain). Not on by default: it slows every media spec.
 
 - **Playwright's Linux WebKit never loops a video.** At the loop point a `loop` video goes back to 0 and stalls there
   (`readyState` 2, the clock stopped, `seeked` over and over), whatever the file: both 2x2 clips of

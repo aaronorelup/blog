@@ -55,16 +55,18 @@ class AoListen extends HTMLElement {
     const pos = () => cur.audio.currentTime || 0;
     // WebKit's GStreamer player plays a clip again, even after pause(), when the pause came before the clip was under
     // way: mid-seek (that play comes as the seek ends, nearly always within 10 ms of 'seeked', at worst 237 ms after
-    // it, which can be a second after the pause) or, for a clip that had only just seeked, at once. Two rules stop
-    // it. Only the current clip plays: every play the element makes is start(), of cur, so a play of another clip
-    // (the one A/B or a row left) is never the element's and is paused at once. And a Pause of cur pressed mid-seek
-    // holds: a play of it is paused until HOLD ms after that seek ends, or start(). A play after that is the reader's
-    // own (a media key, the lock screen, headphones) and plays.
+    // it, which can be a second after the pause), or as a seek ends with no data yet to play (readyState 2; that play
+    // comes 3-5 ms after the pause). Two rules stop it. Only the current clip plays: every play the element makes is
+    // start(), of cur, so a play of another clip (the one A/B or a row left) is never the element's and is paused at
+    // once. And a Pause of cur pressed mid-seek, or while it has no data ahead, holds: a play of it is paused until
+    // HOLD ms after that seek ends (after the Pause, with no seek running), or start(). A play after that is the
+    // reader's own (a media key, the lock screen, headphones) and plays.
     const HOLD = 400;
     const held = new Map(); // a held clip and when its hold ends (Infinity while its seek runs)
     const holding = (a) => performance.now() < (held.get(a) ?? 0);
     const halt = (a) => {
       if (!a.paused && a.seeking) held.set(a, Infinity);
+      else if (!a.paused && a.readyState < a.HAVE_FUTURE_DATA) held.set(a, performance.now() + HOLD);
       a.pause();
     };
     const draw = () => {

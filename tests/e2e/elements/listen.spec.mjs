@@ -15,6 +15,29 @@ const ready = (page) => listen(page).evaluate((el) => Promise.all([...el.querySe
   return a.readyState ? 0 : new Promise((r) => { a.addEventListener('loadedmetadata', r, { once: true }); a.load(); });
 })));
 
+// Click the spectrogram of the playing clip a and, in the 'seeked' handler of that seek, press Pause with the clip
+// reporting no data ahead (readyState 2, HAVE_CURRENT_DATA), as WebKit's does when a seek on a slow network ends
+// before the data after it has come (a phone with media delayed 150-400 ms, about one seek in six); with replay, a
+// play() right after it, as WebKit's comes 3-5 ms later. Resolves whether the clip was playing, done seeking, as
+// Pause was pressed.
+const pauseAtSeekedWithoutData = async (page, a, replay) => {
+  await a.evaluate((m, replay) => {
+    m._pausedAtSeeked = new Promise((r) => m.addEventListener('seeked', () => {
+      const real = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'readyState').get;
+      Object.defineProperty(m, 'readyState', { configurable: true, get: () => Math.min(real.call(m), m.HAVE_CURRENT_DATA) });
+      const was = !m.paused && !m.seeking;
+      m.closest('ao-listen').querySelector('.ao-listen-bar button').click();
+      delete m.readyState;
+      if (replay) m.play().catch(() => {});
+      r(was);
+    }, { once: true }));
+  }, replay);
+  const spec = listen(page).locator('.ao-listen-spec');
+  const box = await spec.boundingBox();
+  await spec.click({ position: { x: box.width * 0.15, y: box.height / 2 } });
+  return a.evaluate((m) => m._pausedAtSeeked);
+};
+
 test.beforeEach(async ({ page }) => {
   const urls = at ? [at.url] : pagesWith('ao-listen');
   const i = await openFirst(page, urls, (p) => p.locator('ao-listen').evaluateAll((els) => {
@@ -75,11 +98,19 @@ test('listen-1b a Pause pressed while a seek is still running holds once the see
   }));
   expect(paused).toBe(true);
   await expect(listen(page).locator('.ao-listen-bar button').first()).toHaveText('Play');
+  // And a Pause pressed as a spectrogram seek made while playing ends, before the clip has data to play, with WebKit's
+  // play of it just after.
+  await listen(page).locator('.ao-listen-bar button').first().click();
+  await expectPlaying(audioOf(page, title));
+  expect(await pauseAtSeekedWithoutData(page, audioOf(page, title), true)).toBe(true);
+  expect(await audioOf(page, title).evaluate((a) => new Promise((r) => requestAnimationFrame(() => r(a.paused))))).toBe(true);
+  await expect(listen(page).locator('.ao-listen-bar button').first()).toHaveText('Play');
 });
 
 // The hold ends: a play the element didn't make, once WebKit's own would have come, is the reader's (a media key,
 // the lock screen, headphones) and plays. Three Pauses of the clip picked before it is under way: as its 'playing'
-// is fired, mid-seek (the one that holds), and after a seek while paused, Play and Pause in one task.
+// is fired, mid-seek (the one that holds), after a seek while paused, Play and Pause in one task, and as a seek made
+// while playing ends with no data yet to play (held too).
 test('listen-1c a play from outside the page after a held Pause plays', async ({ page }) => {
   const rows = listen(page).locator('.ao-listen-list button');
   const title = (await rows.nth(1).locator('b').textContent()).trim();
@@ -128,6 +159,9 @@ test('listen-1c a play from outside the page after a held Pause plays', async ({
     }, { once: true });
   }));
   expect(waiting).toBe(true);
+  await playsAfter();
+  // And one pressed as a spectrogram seek made while playing ends, before the clip has data to play.
+  expect(await pauseAtSeekedWithoutData(page, a, false)).toBe(true);
   await playsAfter();
 });
 

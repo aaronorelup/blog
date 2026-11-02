@@ -336,8 +336,8 @@ to the reference clip and back. Each clip's spectrogram spans its length; the pl
 seeks. With the list focused, up and down pick a clip, space plays, C flips A/B. It is one player on the page, and
 only the clip picked plays: a play of any other (WebKit's player plays the clip A/B or a row left again when it was
 paused before it was under way) is paused at once. A Pause pressed while a seek runs holds until 400 ms after the
-seek ends (WebKit would play on as it ends): a play after that, from a media key, the lock screen or headphones,
-plays.
+seek ends, and one pressed while the clip has no data ahead (as a seek on a slow network ends) 400 ms after the
+Pause (WebKit would play on): a play after that, from a media key, the lock screen or headphones, plays.
 
 | Attribute | |
 |---|---|
