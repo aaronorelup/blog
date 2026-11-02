@@ -1,7 +1,7 @@
 // RAG Goobie's answer stream (POST /api/ask, worker/ask/events.js): server-sent events, "data: <json>\n\n" each,
 // read with fetch because the request is a POST. events(body) yields them as they come, whatever the chunk
 // boundaries (a frame or a UTF-8 character split across reads); 40 s without any event ends it with an error.
-export const GIVE_UP = 40e3;
+const GIVE_UP = 40e3;
 
 export async function* events(body, idle = GIVE_UP) {
   const reader = body.pipeThrough(new TextDecoderStream()).getReader();

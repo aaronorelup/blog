@@ -14,7 +14,7 @@ import { worst } from './price.js';
 const PLAN_OUT = 300;
 const ANSWER_OUT = 600;
 
-export function countsOf(docs) {
+function countsOf(docs) {
   const topics = {};
   for (const d of docs) topics[d.topic] = (topics[d.topic] ?? 0) + 1;
   return { posts: docs.length, notes: docs.filter((d) => d.notes).length, claude: docs.filter((d) => d.by === 'Claude').length,

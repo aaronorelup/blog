@@ -15,7 +15,7 @@ export async function plan(env, ix, q) {
   return { ...r, at, plan: r.status === 200 ? validPlan(r.text, ix) : null };
 }
 
-export function validPlan(text, ix) {
+function validPlan(text, ix) {
   let j;
   try { j = JSON.parse(text); } catch { return null; }
   if (!j || typeof j !== 'object' || Array.isArray(j)) return null;
