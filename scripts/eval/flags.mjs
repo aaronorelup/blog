@@ -1,5 +1,5 @@
 // The report's flags for the hand reading (docs/ASK.md "The eval"), each a list of snippets of one answer: voice, a
-// first person outside RAG Goobie's own phrases and outside quotes ("my laptop's", "we rendered"); marks, a cite mark
+// first person outside RAG Goobie's own phrases, quotes and the posts' titles ("my laptop's", "we rendered"); marks, a cite mark
 // used as a noun (after "read", "see", "then" or "and", or starting a sentence or a line); hidden, any talk of hidden,
 // secret, unlisted or draft pages or of easter eggs. A flag is a question for a reader, not a verdict.
 const near = (s, i, n) => s.slice(Math.max(0, i - 30), i + n + 30).replace(/\s+/g, ' ');
@@ -9,10 +9,13 @@ const all = (s, re) => [...s.matchAll(re)].map((m) => near(s, m.index, m[0].leng
 const OWN = new RegExp((`^I(?:'d|'m|'ll|'ve| won't| would| found| find| can| could| cannot| can't| couldn't| don't| didn't| only|`
   + ` answer| see| have| haven't| checked| looked| searched| read| think| am| will| need| know| suggest| recommend| start| point|`
   + ` wasn't)\\b`).replaceAll("'", "['\u2019]"));
-const unquoted = (s) => s.replace(/"[^"\n]*"|“[^”\n]*”/g, (q) => ' '.repeat(q.length));
+const blank = (s) => ' '.repeat(s.length);
+const unquoted = (s) => s.replace(/"[^"\n]*"|“[^”\n]*”/g, blank);
+const untitled = (s, titles) => titles.reduce((t, title) => t.replaceAll(title, blank(title)), s);
 
-export function voice(answer) {
-  const s = unquoted(answer);
+// titles: the posts' titles, written in Aaron's first person ("...on my 8 GB laptop"), which naming a post repeats.
+export function voice(answer, titles = []) {
+  const s = untitled(unquoted(answer), titles);
   return [...s.matchAll(/\bI\b|\b(?:[Mm]y|[Mm]e|[Mm]ine|[Ww]e|[Oo]urs?|us)\b/g)]
     .filter((m) => m[0] !== 'I' || !OWN.test(s.slice(m.index)))
     .map((m) => near(answer, m.index, m[0].length));

@@ -12,6 +12,8 @@ test('voice flags a post\'s first person, not RAG Goobie\'s own or a quote', () 
   assert.equal(voice('I found two posts. I’d start with the first. I won\'t guess. "I rendered it," Aaron wrote.').length, 0);
   assert.equal(voice('My prompt never said who sings, and we rendered it on my laptop.').length, 3);
   assert.equal(voice('I rendered 37 clips.').length, 1);
+  assert.equal(voice('Start with - Making long AI films on my 8 GB laptop [1]', ['Making long AI films on my 8 GB laptop']).length, 0,
+    'a post\'s title');
 });
 
 test('marks flags a cite used as a noun; hidden flags any talk of hidden pages or easter eggs', () => {
