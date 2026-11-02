@@ -134,6 +134,7 @@ test('cards-3 a card whose link leaves the page closes at the pointer\'s next mo
   await openLedger(page, 'night');
   await expect(page.locator('[data-search][data-ready]')).toHaveCount(1);
   await page.locator('[data-mode="ask"]').click();
+  await expect(page.locator('[data-mode="ask"]')).toHaveAttribute('aria-pressed', 'true');
   await input(page).fill('What did Aaron find?');
   await input(page).press('Enter');
   await expect(page.locator('.ask-text')).toHaveText(ANSWERS[0].reads);
