@@ -4,6 +4,7 @@
 // tests/unit/ask-scale.test.mjs asserts on (no timing there). Prints the gates and exits 1 on a failed one.
 import fs from 'node:fs';
 import { register } from 'node:module';
+import { suggestedCap } from '../build/ask-dist.mjs';
 import { assemble } from '../../src/lib/ask/manifest.js';
 import { BUDGET, CATALOG_CAP, DOC_CAP, EXTRA_TOKENS, LIVE_CAP, PACK_CAP, RULES_TOKENS, SLACK, USER_TOKENS } from '../../src/lib/ask/caps.js';
 import { sectionsOf } from './sections.mjs';
@@ -95,7 +96,7 @@ if (process.argv[1] === new URL(import.meta.url).pathname) {
     [`catalog: ${m.catalog.tokens} est. (<= ${CATALOG_CAP})`, m.catalog.tokens <= CATALOG_CAP],
     [`every question's prompt <= ${BUDGET}: the largest ${Math.max(...s.prompts)}`, Math.max(...s.prompts) <= BUDGET],
     [`6 docs at the caps fit the room: ${s.room} >= ${LIVE_CAP + 5 * DOC_CAP}`, s.room >= LIVE_CAP + 5 * DOC_CAP],
-    [`reservation $${m.reserve_usd.toFixed(4)} (<= $0.25); ask_daily_usd should be >= $${(Math.ceil(m.reserve_usd * 1000) / 100).toFixed(2)}`, m.reserve_usd <= 0.25],
+    [`reservation $${m.reserve_usd.toFixed(4)} (<= $0.25); ask_daily_usd should be >= $${suggestedCap(m.reserve.plan + m.reserve.answer).toFixed(2)}`, m.reserve_usd <= 0.25],
     [`manifest ${(s.manifestBytes / 1e6).toFixed(2)} MB on disk (<= 2 MB)`, s.manifestBytes <= 2e6],
     [`manifest parse ${s.parseMs.toFixed(1)} ms (<= 30)`, s.parseMs <= 30],
     [`per question (rank, context, cites, body) ${s.questionMs.toFixed(2)} ms (<= 20)`, s.questionMs <= 20],

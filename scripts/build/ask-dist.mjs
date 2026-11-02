@@ -10,6 +10,8 @@ import { PRICES } from '../../src/lib/ask/price.js';
 
 const MAX_FILE = 25 * 1024 * 1024;
 const IN_FLIGHT = 10;   // reservations the suggested ask_daily_usd leaves room for
+// The ask_daily_usd a reservation of `micro` micro-dollars calls for, in dollars to the cent (rounded up).
+export const suggestedCap = (micro) => Math.ceil((IN_FLIGHT * micro) / 1e4) / 100;
 const k = (t) => `${Math.round(t / 1000)}k`;
 const dollars = (micro) => `$${(micro / 1e6).toFixed(micro < 1e4 ? 4 : 2)}`;
 
@@ -73,7 +75,7 @@ function linesOf(m, prev) {
   const lines = [`ask: ${m.mode}, ${m.packs.length} pack${m.packs.length > 1 ? 's' : ''}, ${m.counts.posts} posts + `
     + `${m.counts.notes} notes, ${size}, `
     + `live ${k(live)}/${k(m.caps.live)} est., worst-case reservation ${dollars(reserve)}, ask_daily_usd should be >= `
-    + `$${(Math.ceil((IN_FLIGHT * reserve) / 1e4) / 100).toFixed(2)} (${IN_FLIGHT} reservations in flight); pins: `
+    + `$${suggestedCap(reserve).toFixed(2)} (${IN_FLIGHT} reservations in flight); pins: `
     + (unpinned ? 'not pinned' : 'ok')];
   if (unpinned) lines.push(`ask: ${unpinned} unpinned pack boundaries: run npm run ask:pin and commit src/data/ask-packs.json`);
   if (pack >= RE_GATE) {
