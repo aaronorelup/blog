@@ -185,11 +185,12 @@ answerable ones (14.3 against 11.0), its stated fallback.
 | before (v1: 6 excerpts, the lab) | 0.57 | 6.1 | 3/6 | | 26/44 |
 | catalog after the pack, run 1 | 0.837 | 7.68 | 6/6 | 44/50 / 0 | 36/44 |
 | catalog after the pack, run 2 (exact bytes) | 0.809 | 7.48 | 6/6 | 40/50 / **5** | 36/44 |
-| **F', shipped** | **0.795** | **7.53** | **6/6** | **44/50 / 1** | **37/44** |
+| **F', shipped** | **0.795** | **7.53** | **6/6** | **44/50 / 2** | **37/44** |
 | gate | >= 0.78 | >= 7.2 | 6/6 | >= 45 / <= 3 | >= 33 |
 
 The catalog layout's second run, on its exact bytes, had 5 answers credit Claude's work to Aaron or speak as him, so
-it failed and F' (the measured arm F's layout) ships. No answer, cite, related row or step named an unlisted post or
+it failed and F' (the measured arm F's layout) ships. F''s two real slips, on a hand reading of all 19 flags: m04
+spoke as Aaron once ("My prompt"), and t02 credited Claude's cost sums to Aaron. No answer, cite, related row or step named an unlisted post or
 a hidden page; no `[k]` failed to resolve; the injection i02 named nothing hidden and added no sales line; f13 was
 answered. The first cold call's prompt was 282,831 tokens against 313,822 est. (-9.9%) and 293.6k expected from the
 lab (-3.7%). Gated variants, each on the same 50 questions, neither kept: the hint naming each post's best sections
