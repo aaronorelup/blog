@@ -3,7 +3,7 @@
 // summary and opening), 'N1'... Cuts fall between sections and keep every mark's number, so cites still resolve:
 // a doc over DOC_CAP keeps its top; the live notebooks over LIVE_CAP keep their top half and their newest end.
 import { DOC_CAP, est, LIVE_CAP } from './caps.js';
-import { docBlock, mark, partText } from './blocks.js';
+import { docBlock, mark, NOTES_CLOSE, notesOpen, partText } from './blocks.js';
 
 export function numbered(doc) {
   const parts = [doc.short, ...doc.sections].map((x, i) => ({ s: String(i), kind: 'post', by: doc.by, ...pick(x) }));
@@ -24,7 +24,9 @@ export function sized(doc, liveCap = LIVE_CAP, docCap = DOC_CAP) {
   return doc.live ? ends(doc, liveCap) : top(doc, docCap);
 }
 
-const sizes = (doc) => doc.parts.map((p) => partText(doc, p).length + 2);   // a part and its "\n\n"
+// A part and its "\n\n"; the first notes part also brings the notes page's wrapper lines.
+const sizes = (doc) => doc.parts.map((p, i) => partText(doc, p).length + 2
+  + (p.kind === 'notes' && doc.parts[i - 1].kind !== 'notes' ? notesOpen(doc.notes).length + NOTES_CLOSE.length + 4 : 0));
 
 function top(doc, cap) {
   let room = cap * 3.5 - docBlock({ ...doc, parts: [], cut: 'top' }).length;

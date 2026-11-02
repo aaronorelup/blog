@@ -15,6 +15,10 @@ export function partText(doc, p) {
   return p.text ? `${head}\n${p.text}` : head;
 }
 
+// A notes page's wrapper inside its post's doc: the lines before its first section and after its last.
+export const notesOpen = (notes) => `<notes title="${attr(notes.title)}" url="${notes.url}" by="${notes.by}">`;
+export const NOTES_CLOSE = '</notes>';
+
 // doc: { n, url, title, topic, by, live, cut?, gap?: { at, from, to }, notes, parts } (corpus.js).
 export function docBlock(doc) {
   const out = [`<doc n="${doc.n}" url="${doc.url}" title="${attr(doc.title)}" topic="${doc.topic}" by="${doc.by}"`
@@ -24,11 +28,11 @@ export function docBlock(doc) {
     if (doc.gap?.at === i) out.push(gapLine(doc.gap.from, doc.gap.to));
     if (p.kind === 'notes' && !inNotes) {
       inNotes = true;
-      out.push(`<notes title="${attr(doc.notes.title)}" url="${doc.notes.url}" by="${doc.notes.by}">`);
+      out.push(notesOpen(doc.notes));
     }
     out.push(partText(doc, p));
   });
-  if (inNotes) out.push('</notes>');
+  if (inNotes) out.push(NOTES_CLOSE);
   out.push('</doc>');
   return out.join('\n\n');
 }

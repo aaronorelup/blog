@@ -67,6 +67,13 @@ test('a doc over DOC_CAP keeps its top; the live notebooks over LIVE_CAP keep th
   assert.ok(top.tokens <= 5000);
   assert.deepEqual(top.parts.map((p) => p.s), top.parts.map((_, i) => String(i)));
   assert.match(docBlock(top), / cut="the rest is on its page">/);
+  // A cut that keeps some of a notes page counts its <notes> lines too (over DOC_CAP, verify-dist fails the deploy).
+  for (let len = 200; len < 5400; len += 13) {
+    const notes = { title: 'N'.repeat(80), url: '/ledger/post-3/notes/', by: 'Aaron', summary: 'The run.',
+      sections: Array.from({ length: 40 }, (_, i) => ({ anchor: `n${i}`, heading: `N${i}`, text: 'w'.repeat(len) })) };
+    const cut = sized(numbered(doc(3, { sections: [], notes })), 60000, 2000);
+    assert.ok(cut.parts.some((p) => p.kind === 'notes') && cut.tokens <= 2000, `${len}: ${cut.tokens}`);
+  }
   const live = sized(long(7, 40, { live: true }), 8000);
   assert.ok(live.tokens <= 8000);
   assert.equal(live.cut, 'ends');
