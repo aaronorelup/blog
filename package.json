@@ -18,6 +18,7 @@
     "ask:eval": "node scripts/eval/run.mjs",
     "ask:judge": "node scripts/eval/judge.mjs",
     "ask:report": "node scripts/eval/report.mjs",
+    "ask:compare": "node scripts/eval/compare.mjs",
     "ask:packs": "node scripts/eval/packs-compare.mjs",
     "ask:scale": "node scripts/eval/scale.mjs",
     "ask:probe": "node scripts/eval/probe.mjs",
