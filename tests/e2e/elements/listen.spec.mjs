@@ -78,8 +78,8 @@ test('listen-1b a Pause pressed while a seek is still running holds once the see
 });
 
 // The hold ends: a play the element didn't make, once WebKit's own would have come, is the reader's (a media key,
-// the lock screen, headphones) and plays. Two Pauses that arm the hold: one as the clip's 'playing' is fired, its
-// clock still on the mark it set (WebKit's clock stands there; Chromium's has moved on), and one mid-seek.
+// the lock screen, headphones) and plays. Three Pauses of the clip picked before it is under way: as its 'playing'
+// is fired, mid-seek (the one that holds), and after a seek while paused, Play and Pause in one task.
 test('listen-1c a play from outside the page after a held Pause plays', async ({ page }) => {
   const rows = listen(page).locator('.ao-listen-list button');
   const title = (await rows.nth(1).locator('b').textContent()).trim();
@@ -114,6 +114,21 @@ test('listen-1c a play from outside the page after a held Pause plays', async ({
   });
   expect(seeking).toBe(true);
   await playsAfter();
+  // And one pressed before the clip is under way, after a seek while paused: Play and Pause in one task.
+  await pause.click();
+  await expectPlaying(a, false);
+  const waiting = await a.evaluate((m) => new Promise((r) => {
+    m.currentTime = 1;
+    m.addEventListener('seeked', () => {
+      const bar = m.closest('ao-listen').querySelector('.ao-listen-bar button');
+      bar.click();
+      const was = !m.paused;
+      bar.click();
+      r(was);
+    }, { once: true });
+  }));
+  expect(waiting).toBe(true);
+  await playsAfter();
 });
 
 test('listen-2 A/B switches to the reference at the same moment, and back', async ({ page }) => {
@@ -136,8 +151,12 @@ test('listen-2 A/B switches to the reference at the same moment, and back', asyn
   expect(refTitle).not.toBe(first);
   const ref = audioOf(page, refTitle);
   await expectPlaying(ref);
-  // The clip left stays paused, past the 80-150 ms in which WebKit plays a clip paused before it was under way.
-  expect(await a.evaluate((m) => new Promise((r) => setTimeout(() => r(!m.paused && !m.ended), 500)))).toBe(false);
+  // The clip left stays paused, past the moment WebKit plays a clip paused before it was under way (as its seek ends,
+  // which can be a second after the click, or at once).
+  expect(await a.evaluate((m) => new Promise((r) => {
+    const later = () => setTimeout(() => r(!m.paused && !m.ended), 500);
+    if (m.seeking) m.addEventListener('seeked', later, { once: true }); else later();
+  }))).toBe(false);
   // The reference picks up where the clip was (it would be near 0 from the start).
   const [ta, tr, end] = [await clock(a), await clock(ref), await ref.evaluate((m) => m.duration)];
   expect(tr).toBeGreaterThan(Math.min(ta, end) - 0.2);
@@ -146,6 +165,46 @@ test('listen-2 A/B switches to the reference at the same moment, and back', asyn
   await expect(current(page)).toHaveText(first);
   await expect(ab).toHaveAttribute('aria-pressed', 'false');
 });
+
+// Only the clip picked plays: a play of the clip A/B or a row left is never the element's (WebKit's player makes one
+// when it was paused before it was under way, as late as its own seek's end, a second on), so it is paused at once
+// while the clip picked plays on. Here that play is a script's play() of the clip left, soon after the click and
+// well after it.
+for (const via of ['A/B', 'a row']) {
+  test(`listen-2b a play of the clip ${via} left is paused at once, and the clip picked plays on`, async ({ page }) => {
+    const rows = listen(page).locator('.ao-listen-list button');
+    const ab = listen(page).locator('.ao-listen-bar button').nth(1);
+    for (let i = 0; i < await rows.count(); i++) {
+      await rows.nth(i).click();
+      if (!(await ab.isDisabled())) break;
+    }
+    for (const after of [100, 700]) {
+      const first = (await current(page).textContent()).trim();
+      await expectPlaying(audioOf(page, first));
+      // In the page: the click, then the clip left's play() `after` ms on; read it a moment after its 'play'.
+      const left = await listen(page).evaluate((el, [via, after]) => new Promise((r) => {
+        const rows = [...el.querySelectorAll('.ao-listen-list button')];
+        const k = rows.findIndex((b) => b.getAttribute('aria-current') === 'true');
+        const m = [...el.querySelectorAll(':scope > figure')].filter((f) => f.querySelector('audio'))[k].querySelector('audio');
+        if (via === 'A/B') el.querySelectorAll('.ao-listen-bar button')[1].click(); else rows[(k + 1) % rows.length].click();
+        setTimeout(() => {
+          let played = false;
+          m.addEventListener('play', () => { played = true; }, { once: true });
+          m.play().catch(() => {});
+          setTimeout(() => r({ played, paused: m.paused }), 250);
+        }, after);
+      }), [via, after]);
+      expect(left).toEqual({ played: true, paused: true });
+      const now = (await current(page).textContent()).trim();
+      expect(now).not.toBe(first);
+      await expectPlaying(audioOf(page, now));
+      await expect(listen(page).locator('.ao-listen-bar button').first()).toHaveText('Pause');
+      expect(await audioOf(page, first).evaluate((m) => m.paused)).toBe(true);
+      // A/B back, for the next round to leave the clip it started on again.
+      if (via === 'A/B') await ab.click();
+    }
+  });
+}
 
 test('listen-3 the spectrogram seeks on click and with the arrow keys', async ({ page }) => {
   const spec = listen(page).locator('.ao-listen-spec');
