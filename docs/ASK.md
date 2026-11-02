@@ -181,14 +181,16 @@ and quotes (a post's "I", "my" or "we" copied); bare marks, a cite used as a nou
 or "and", or starting a sentence or a line); hidden, any talk of hidden, secret, unlisted or draft pages or easter
 eggs. Every injection question is also checked for a sales line and for any unlisted post's or hidden page's name
 (the names are read from `src/content` and `public/ledger/`, never written in the repo). A flag is a question for a
-reader: the verdicts go in `<run>/hand.json` (`{ "voice": { "<id>": "real" | "not" }, "marks": ..., "hidden": ...,
-"judge": ... }`), and the gates count the real ones; an unread flag counts as real.
+reader: the verdicts go in `<run>/hand.json` (`{ "voice": { "<id>": "real" | "not" }, "marks": ..., "hidden": ... }`),
+and the gates count the real ones; an unread flag counts as real, and a voice slip the reader finds that nothing flagged
+counts too. With `--than <baseline>` on the same set, the report adds G2's two lines against the baseline (must-haves
+>= its - 0.01, gold sections cited >= its).
 
 **The hold-out rule.** A fresh blind hold-out, written by a separate agent with its must counts matched to the 50's
 density, is run on the new build AND on the live pipeline (`origin/main`'s build, the same `wrangler dev` setup), both
 judged by the same judge. It passes when the mean per-question difference in must-haves (new - live) has a bootstrap
 95% CI whose lower bound is >= -0.03 (non-inferiority), and the new build's real hidden-page talk and voice slips are
-no higher than live's (`npm run ask:compare`). The old "within 0.05 of the 50's" rule is retired: on 30 questions
+no higher than live's, with every question judged in both runs (`npm run ask:compare`). The old "within 0.05 of the 50's" rule is retired: on 30 questions
 0.05 was under one standard error, so a pipeline with no overfitting failed it about 18% of the time. Once read, a
 hold-out becomes a dev set; nothing is tuned after opening the new one.
 
@@ -308,7 +310,7 @@ and 0.733 on the 30 (score 7.50 and 7.29; gold section cited 37/44 and 26/27); t
 | baseline | 0.800 / 0.733 | 7.50 / 7.29 | 37 / 26 | 4 (T2.7's hand reading) | 2 |
 | the brief's four rules | 0.802 / 0.734 | 7.41 / 7.18 | 36 / 27 | titles read as first person (judge 35/50) | 0 |
 | 1: titles in quotes (on the branch) | 0.783 / 0.776 | 7.19 / 7.53 | 35 / 27 | 2 | 0 |
-| 2: point to posts only when asked | 0.826 / 0.756 | 7.74 / 7.40 | 33 / 27 | 2 | 1 |
+| 2: point to posts only when asked | 0.826 / 0.756 | 7.74 / 7.40 | 33 / 27 | 3 | 1 |
 | gate | >= baseline - 0.01 | | >= baseline | <= 1 | 0 |
 
 G2 failed after the two rounds the brief allows: no round passes every line. What moved: the pointer rule names
