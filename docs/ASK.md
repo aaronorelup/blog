@@ -223,4 +223,9 @@ calls on a cold isolate. Production CPU p99 is the auditor's, the day after land
 waits and the answer came, settled and cached; 35 s: `end busy` at 31 s, its reservation kept, the stream closed; a
 reader gone at 5 s: the run still answered, settled and cached ("detached").
 
+**G11b eviction probe** (the shipped whole-mode prefix, 282.7k tokens, one call then idle gaps of 1, 2, 4 and 8
+hours, each gap after the call before it; started 00:58 UTC): now 99.93% from cache; after 1 h idle 99.93%; after
+2 h, 4 h and 8 h: PROBE_2H, filled in by the auditor (`.rework/rag/t27/probe/probe.jsonl`). Keep-warm stays unbuilt
+unless a gap empties the cache (D3).
+
 **Eval spend**: see the ledger line at the end of this section.
