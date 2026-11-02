@@ -1,5 +1,6 @@
 // The text of every section RAG Goobie was given, read back from the build's /ask/ files: { mark: { slug, kind,
-// anchor, heading, text } } and a lookup by (slug, kind, anchor). The judge's reference and the report's checks.
+// anchor, heading, text } }, a lookup by (slug, kind, anchor) and a whole page (a post, or its notes) in order. The
+// judge's reference and the report's checks.
 import fs from 'node:fs';
 
 const DIST = new URL('../../dist/ask/', import.meta.url);
@@ -23,5 +24,7 @@ export function sectionsOf() {
   }
   for (const s of out.values()) s.text = s.lines.join('\n').trim();
   const at = new Map([...out.values()].map((s) => [`${s.slug}|${s.kind}|${s.anchor}`, s]));
-  return { manifest: m, byMark: out, find: (slug, kind, anchor) => at.get(`${slug}|${kind}|${anchor}`) };
+  const pages = Map.groupBy(out.values(), (s) => `${s.slug}|${s.kind}`);
+  return { manifest: m, byMark: out, find: (slug, kind, anchor) => at.get(`${slug}|${kind}|${anchor}`),
+    page: (slug, kind) => pages.get(`${slug}|${kind}`) ?? [] };
 }
