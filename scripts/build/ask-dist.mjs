@@ -18,7 +18,8 @@ export function askCheck(dist, listed, prev = null) {
   const warnings = [];
   const dir = path.join(dist, 'ask');
   const m = JSON.parse(fs.readFileSync(path.join(dir, 'manifest.json'), 'utf8'));
-  const flag = (slug, msg) => (isLive(slug) ? warnings : problems).push(`ask: ${msg}`);
+  const live = (slug) => isLive(slug) || Object.values(m.docs).some((d) => d.slug === slug && d.live);
+  const flag = (slug, msg) => (live(slug) ? warnings : problems).push(`ask: ${msg}`);
 
   for (const [n, d] of Object.entries(m.docs)) {
     if (!listed.has(d.slug)) flag(d.slug, `doc ${n} (${d.slug}) is not a listed post`);

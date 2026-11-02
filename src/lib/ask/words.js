@@ -2,7 +2,8 @@
 // marks, the catalog's header and the user message templates. The build (blocks.js) and the Worker (worker/ask/) both
 // import it; a change here moves PROMPT_V, so every cached answer goes stale. RAG Goobie is never he, she or it.
 export const CLAUDE_MARK = " (Claude's own account)";   // on every section line of a doc Claude wrote as "I"
-export const LIVE_NOTE = 'a notebook other agents update all day';
+export const LIVE_NOTE = 'a notebook other agents update all day';   // a live doc's header
+export const LIVE_LINE = 'a live notebook other agents update all day';   // its catalog line
 export const CUT = { top: 'the rest is on its page', ends: 'the middle is on its page' };
 export const gapLine = (from, to) => `(Sections ${from} to ${to} are on its page.)`;
 
