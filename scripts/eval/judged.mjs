@@ -11,8 +11,8 @@ export function merged(j) {
   const ps = passesOf(j);
   const all = (k) => (ps.every((p) => p[k] === null || p[k] === undefined) ? null : ps.every((p) => p[k] === true));
   return { qid: j.qid, answer: j.answer, passes: ps, must: (ps[0].must ?? [0]).map((_, i) => mean(ps.map((p) => p.must?.[i] ?? 0))),
-    score: mean(ps.map((p) => p.score ?? 0)), voice_ok: ps.some((p) => p.voice_ok === false) ? false : ps[0].voice_ok,
-    handled: all('handled'), wrong: [...new Set(ps.flatMap((p) => p.wrong ?? []))], why: ps.map((p) => p.why).join(' / ') };
+    score: mean(ps.map((p) => p.score ?? 0)), voice_ok: all('voice_ok'), handled: all('handled'),
+    wrong: [...new Set(ps.flatMap((p) => p.wrong ?? []))], why: ps.map((p) => p.why).join(' / ') };
 }
 
 export function judgedOf(dir) {
