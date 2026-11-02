@@ -308,11 +308,12 @@ post the hint lists before saying Aaron hasn't written about it), who did what (
 (refuse, and say nothing about where they are).
 
 **How it was measured.** Each round answered the two dev sets (the 50 and the 30, 80 questions) through `wrangler
-dev`, judged twice by the full-post judge, with a blind hand reading of every answer for voice, bare marks and
-hidden-page talk, and was compared with the live answers (the baseline, judged again by the same judge) by `--g2`:
-paired bootstraps on the 80, rules written down before round 3 and not changed after (above). Rounds 0-2 ran before
-G2 was written and are scored against the old judge's baseline (0.800 / 0.733); rounds 3 and 4 against the re-judged
-one: must-haves 0.801 on the 50 and 0.725 on the 30, score 7.64 and 7.28, gold sections cited 63 (37 + 26).
+dev` and was judged twice by the full-post judge. Rounds 0-2 had a hand reading of the flags only and are scored
+against the old judge's baseline (0.800 / 0.733). Rounds 3 and 4 had a blind hand reading of every answer for voice,
+bare marks and hidden-page talk, and were compared with the live answers (the baseline, judged again by the same
+judge, read by the same reader) by `--g2`: paired bootstraps on the 80, rules written down before round 3 and not
+changed after (above). The re-judged baseline: must-haves 0.801 on the 50 and 0.725 on the 30, score 7.64 and 7.28,
+gold sections cited 63 (37 + 26).
 
 **The rounds** (must-haves the 50 / the 30, score, gold sections cited, real voice slips over the 80):
 - 0, the four rules: 0.802 / 0.734, 7.41 / 7.18, 63; voice not read (bare titles in Aaron's first person read as him).
