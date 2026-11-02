@@ -21,13 +21,18 @@ export function askCheck(dist, listed, prev = null) {
   const live = (slug) => isLive(slug) || Object.values(m.docs).some((d) => d.slug === slug && d.live);
   const flag = (slug, msg) => (live(slug) ? warnings : problems).push(`ask: ${msg}`);
 
+  const pages = new Map();   // a built page's HTML, read once ('' when it isn't built)
+  const html = (file) => {
+    if (!pages.has(file)) pages.set(file, fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '');
+    return pages.get(file);
+  };
   for (const [n, d] of Object.entries(m.docs)) {
     if (!listed.has(d.slug)) flag(d.slug, `doc ${n} (${d.slug}) is not a listed post`);
     if (!d.live && d.tokens > DOC_CAP) problems.push(`ask: doc ${n} is ${d.tokens} est. tokens, over DOC_CAP`);
     for (const [s, kind, anchor] of d.sections) {
       if (!anchor) continue;
       const page = path.join(dist, 'ledger', d.slug, kind === 'notes' ? 'notes' : '', 'index.html');
-      if (!fs.existsSync(page) || !fs.readFileSync(page, 'utf8').includes(`id="${anchor}"`)) {
+      if (!html(page).includes(`id="${anchor}"`)) {
         flag(d.slug, `${n}.${s} links to #${anchor}, which /ledger/${d.slug}/ doesn't have`);
       }
     }
