@@ -15,6 +15,13 @@
     "media:push": "node scripts/media/push.mjs",
     "media:verify": "node scripts/media/verify.mjs",
     "searches": "node scripts/tools/searches.mjs",
+    "ask:eval": "node scripts/eval/run.mjs",
+    "ask:judge": "node scripts/eval/judge.mjs",
+    "ask:report": "node scripts/eval/report.mjs",
+    "ask:packs": "node scripts/eval/packs-compare.mjs",
+    "ask:scale": "node scripts/eval/scale.mjs",
+    "ask:probe": "node scripts/eval/probe.mjs",
+    "ask:pin": "node scripts/tools/ask-pin.mjs",
     "e2e": "playwright test -c tests/e2e/playwright.config.mjs",
     "e2e:live": "playwright test -c tests/e2e/live.config.mjs"
   },

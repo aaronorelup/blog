@@ -25,7 +25,7 @@ export function contextOf(ix, rank, { q, extraTokens, blind = false }) {
   const head = blind ? [USER[`${m.mode}Blind`]]
     : rank.matched.length ? [USER[m.mode], fill(USER.hint, { hint })] : [USER[`${m.mode}None`], fill(USER.hintNone, { hint })];
   const user = `${head.map((t) => fill(t, slots)).join('\n')}\n\n${fill(USER.question, slots)}`;
-  const tokens = RULES_TOKENS + m.packs[pack].tokens + m.catalog.tokens
+  const tokens = RULES_TOKENS + m.packs[pack].tokens + (m.mode === 'whole' ? m.overview : m.catalog).tokens
     + extras.reduce((t, n) => t + ix.doc(n).tokens, 0) + est(user.length);
   const inPrompt = m.mode === 'whole' ? null : new Set([...m.packs[pack].docs, ...extras]);
   return { pack, extras, user, given, of: total, tokens, inPrompt };

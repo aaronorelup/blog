@@ -8,7 +8,7 @@ will add appears only as a row marked `(planned, T#.#)`. Each task updates its o
 
 An Astro static site. Markdown posts become pages at build time. Cloudflare serves `dist/` as Workers static
 assets, and one small Worker (`worker/`) runs only for what needs a secret or state: video and audio from R2, the
-reads counter and the `/stats` snapshot in D1, the meaning half of search and Ask Goobie (Workers AI, Vectorize,
+reads counter and the `/stats` snapshot in D1, the meaning half of search and Ask RAG Goobie (Workers AI, Vectorize,
 DeepSeek), and the read-aloud recordings (ElevenLabs, into R2). Every push to
 `main` is built by Workers Builds with `npm run build` and deployed; any other branch fails its build on purpose
 (`astro.config.mjs`). There is no framework in the browser: pages are server-rendered HTML, and behaviour is plain
@@ -45,8 +45,9 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
    - `/api/session` → `worker/session/serve.js`: whether Ask is on; a Turnstile solve becomes a 30-minute Ask token.
    - `/api/search` → `worker/search/serve.js` (`AI`, `SEARCH_INDEX`, limiters `SEARCH_ALL` and `SEARCH_Q`, the Cache
      API, D1): no token; the nearest chunks of the query.
-   - `/api/ask` → `worker/ask/serve.js` (the same retrieval, limiters `ASK_LIMIT` keyed on the session and
-     `ASK_ALL`, D1's answer cache, one DeepSeek call at most). Any other `/api/` path is 404, a wrong method 405.
+   - `/api/ask` → `worker/ask/serve.js` (RAG Goobie, `docs/ASK.md`: limiters `ASK_LIMIT` keyed on the session and
+     `ASK_ALL`, D1's answer cache and caps, a planner call and an answer call to DeepSeek at most, the build's
+     `/ask/*` through `ASSETS`, an event stream). Any other `/api/` path is 404, a wrong method 405.
    - `/api/lantern` → `worker/lantern.js`: a 302 to the `LANTERN_URL` secret, the homepage's lantern door (the
      address is in no file of this public repo).
    - anything else → `worker/media/serve.js`: R2 `MEDIA` (bucket `aaronorelup-site-media`) first, with byte ranges
@@ -91,6 +92,7 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 | `/rss.xml`, `/sitemap.xml` | `src/pages/rss.xml.js`, `sitemap.xml.js` | feed readers, search engines |
 | `/courses/i-love-my-evening-television/**/thumbs/` | `scripts/lore-thumbs.mjs` | the lore course's index cards |
 | `/search/manifest.json`, `/search/docs/<kind>-<slug>.json` | `src/pages/search/`, from `src/lib/search/` | `worker/search/sync.js`, which embeds the docs whose hash moved |
+| `/ask/manifest.json`, `/ask/{pack,doc,catalog,overview}-<h8>.txt` | `src/pages/ask/`, from `src/lib/ask/` (checked by `scripts/build/ask-dist.mjs`) | `worker/ask/`: RAG Goobie's prompt, pre-escaped fragments the Worker sends as they are (`docs/ASK.md`) |
 | `/read/index.json`, `/read/<slug>.json` | `src/pages/read/`, from `src/lib/read/`, for the posts it records (listed, never a live notebook) | `worker/read/step.js`, which records the sections whose hash isn't in R2 yet |
 
 ### The extraction: `text`
@@ -105,6 +107,9 @@ type Text = {
   sections: { anchor: string; heading: string; text: string; folded: boolean }[];
     // the opening (anchor '') then one per h2; blocks joined by "\n\n"; <details> text kept, and the section folded
   read: { blocks: ['h' | 'p' | 'li' | 'q', string][] };   // block i is the element stamped data-r="i"
+  full: { anchor: string; heading: string; text: string }[];
+    // RAG Goobie's text: split at sections' h2s, everything a reader sees: paragraphs, lists, h3/h4, table rows
+    // "a | b", code (cut at 2,000), captions, folded text; never pictures, players, svg, <ao-*> insides, aria-hidden
   elements: string[];                             // the post components used: ['ao-compare', 'ao-demo/synthid']
   links: string[];                                // same-site hrefs of <a>, as written
 };
@@ -153,6 +158,7 @@ fails the build, or only warns in a live notebook.
 | `src/data/banned-phrases.js` | the phrases and dead links WRITING.md bans (plain: nothing private) |
 | `src/data/never-publish.json` | salted SHA-256 of the private never-publish terms (`npm run never-publish:hash`) |
 | `src/data/public-keys.js` | keys meant to be public: Ask's Turnstile site key |
+| `src/data/ask.js`, `ask-packs.json` | RAG Goobie's example questions (checked, G8), `CYCLE_MS`, `ABOUT_POST` (the button's card); the pinned pack starts |
 | `src/data/voice.js` | the read-aloud voice, model, format and settings, `EXTRACT_V`, `SPEAK_V`: every recording's hash covers them |
 | `src/data/media-manifest.json` | every file in the R2 bucket, its size and MD5 (`npm run media:push`) |
 | `src/data/listed.js`, `preview-budget.js` | one-line re-exports until W4 (`isListed` lives in `src/lib/posts.js`) |
@@ -172,6 +178,7 @@ fails the build, or only warns in a live notebook.
 | `src/lib/build.js` | `COMMIT`, the commit a build is made from (the `ao-build` meta) |
 | `src/lib/read/` | `posts.js` (`recordable`: the posts recorded, listed and never a live notebook; `ranked`, the cron's order), `sections.js` (a post → sections and their hashes), `speak.js` (the copy the voice reads: numbers, money, units, dates, clock times and lengths spelled out, with its map back to the screen), `align.js` (the voice's character times → words). `speak.js` and `align.js` run in the Worker too |
 | `src/lib/search/chunks.js`, `docs.js` | a listed post or its notes → search chunks (the short version, then each h2 section, at most 1,500 characters) and the manifest; `docs.js` reads the build's posts once |
+| `src/lib/ask/` | RAG Goobie's build: `caps.js` (every cap, `est()`), `words.js` (every prompt word), `price.js` (DeepSeek's prices, peak, cost, worst), `docs.js` (listed posts and notes, the one astro:content reader here), `corpus.js` (numbering, cuts), `blocks.js` (doc blocks, the catalog, fragments), `packs.js` (whole or split, pinned ranges), `manifest.js` (`assemble()`: files and manifest), `build.js` (`askBuild()`, once a build) |
 | `src/lib/lore*.js` | the lore course's data and drawings |
 | `src/lib/projects.js` | the projects page's data: `SECTIONS`, order, state chips, needs glyphs, pictures or icons, `DERIVED` (the course's live lesson count); a card linking an unlisted post fails the build |
 | `src/pages/index.astro` + `src/layouts/Home.astro` | the homepage: the tea house scene's markup (classes from `home.css`, no inline style), `ModeToggle`, and its overlay frame (`PanelChrome` around an empty `[data-panel-host]`); `Home` links `site.css`, then `home.css` |
@@ -179,10 +186,11 @@ fails the build, or only warns in a live notebook.
 | `src/pages/og/[slug].jpg.js` | each listed post's share card (`src/lib/og/`) |
 | `src/pages/courses/**`, `src/pages/research/**` | the course and research pages |
 | `src/pages/search/` | `manifest.json.js`, `docs/[doc].json.js`: search's build files |
+| `src/pages/ask/` | `manifest.json.js`, `[file].txt.js`: RAG Goobie's build files |
 | `src/pages/read/` | `index.json.js`, `[slug].json.js`: read-aloud's build files |
 | `src/layouts/PanelPage.astro` | every panel page: `site.css`, `chrome/Head` (`published`: shared as an article), `ModeToggle`, `PanelChrome` (`active` lights the nav, `view` names the view), and `mountView` on its `[data-panel-view]` |
 | `src/components/chrome/` | `Head` (share tags, `ao-build` meta, font preload, the pre-paint mode script; both layouts), `PanelChrome` (header, nav, scroller, footer; `data-active-view`, and `data-panel-view` on a standalone page's view wrapper), `ModeToggle`, `Glyph` |
-| `src/components/ledger/` | `LedgerView` (`/ledger/`), `SearchBox` (the box and its Search \| Ask Goobie switch), `StartHere`, `PostCard` (icon or glyph, title, stamp: Start here's and a post's Read next), `Chips` (topic and project counts, real links `?topic=`), `LedgerRow` (icon or glyph, title link with `data-ledger-entry`, summary, meta, the stamp's `<details>` short version) |
+| `src/components/ledger/` | `LedgerView` (`/ledger/`), `SearchBox` (the box and its Search \| Ask RAG Goobie switch, the line under it), `StartHere`, `PostCard` (icon or glyph, title, stamp: Start here's and a post's Read next), `Chips` (topic and project counts, real links `?topic=`), `LedgerRow` (icon or glyph, title link with `data-ledger-entry`, summary, meta, the stamp's `<details>` short version) |
 | `src/components/{about,courses,research}/` | `AboutView`; `CoursesView`, `LessonList`, `Coin`; `ResearchView` |
 | `src/components/projects/` | `ProjectsView` (`/projects`), `JumpRow`, `Highlights` (the reel from `picks.js REEL` and the cards marked `highlight`), `ProjectSection`, `ProjectCard`, `NeedsGlyph` |
 | `src/components/post/` | `PostView` (the article: `data-post-article`, `data-panel-view` `post` or `notes`, `data-slug`), `PostHeader` (icon or glyph, id · date · minutes, topic and project chips, title `data-r=t`, summary `data-r=s`, the byline on `voice: claude` pages, `ReadAloud`), `ShortVersion` (`#short`, the post's card), `NotesLink`, `Contents` (4+ h2 or 900+ words), `Related` (three `ledger/PostCard`s), `PostNav`, `ElementStyles`, `ReadAloud` (the Listen button; `data-read-hash` names this version's recording, absent on a post never recorded) |
@@ -198,7 +206,7 @@ fails the build, or only warns in a live notebook.
 | `src/elements/ao-demo/demos/<name>/` | the two `<ao-demo>` demos, `synthid` (AO-040: `model.js` the watermark maths, `ui.js`, a file per part, `index.js` mounts) and `cf` (AO-057), each an `index.js` exporting `mount(host, part)` and a `style.css` |
 | `src/scripts/cards/` + `src/styles/cards.css` | the hover card: `data.js` (`previews.json`, fetched once and shared), `render.js` (the element and where it goes; the icon when a card has no still; a link's own `data-card-line`), `hover.js` (when: listeners, timings, media). `ledger-preview.js` is a one-line stub that `stats.astro` and `views/projects.js` import until W4 |
 | `src/scripts/ledger/` | `filter.js` (the chips: one topic or project, `?topic=` read on load and kept with `replaceState`), `feed.js` (`bindFeedCopy`) |
-| `src/scripts/search/` + `src/styles/search.css` | `box.js` (the box, `/`, the switch), `keyword.js` (Pagefind, on first focus), `semantic.js` (`/api/search`, 400 ms after typing, at most 40 a page), `merge.js` (reciprocal rank), `results.js` (rows, `pagePath(slug, kind)` and deep links `?hl=&hs=#heading`), `terms.js`, `ask.js` (Ask Goobie: `/api/session`, Turnstile only when Ask is on, the session in `sessionStorage`, `/api/ask`; its `[n]` numbered by post, each link's `data-card-line` naming its passage for the card) |
+| `src/scripts/search/` + `src/styles/search.css` | `box.js` (the box, `/`, the switch), `keyword.js` (Pagefind, on first focus), `semantic.js` (`/api/search`, 400 ms after typing, at most 40 a page), `merge.js` (reciprocal rank), `results.js` (rows, `pagePath(slug, kind)` and deep links `?hl=&hs=#heading`), `terms.js`, `ask.js` (Ask RAG Goobie: `/api/session`, Turnstile only when Ask is on, the session in `sessionStorage`, `/api/ask`'s stream), `ask-stream.js` (the stream's events), `ask-trace.js` (the steps and the summary line), `ask-answer.js` (the words typing in, the answer; its `[n]` numbered by post, each link's `data-card-line` naming its passage for the card), `examples.js` (the cycling placeholder) |
 | `src/scripts/post/` | `target.js` (`targetOf(root, hash)`: the element a `#fragment` names, from the address, never `:target`), `highlight.js` (marks a deep link's sentence or words in its section, opens its `<details>`, centres it in `#panel-scroll`; loaded only for a `?hl=`/`?hs=` link), `contents.js` (the contents list: open beside the text from 1180 px, the heading read marked by an IntersectionObserver on `#panel-scroll`), `details.js` (opens the `<details>` holding the `#target`) |
 | `src/scripts/views/index.js` | `mountView(root, fallbackUrl)`: imports `./<data-panel-view>.js` (through `lazy`) and runs its `mount(root)`; no module, no-op. `PanelPage` calls it, and the homepage overlay on each view it mounts, with the real page as `fallbackUrl` |
 | `src/scripts/views/post.js`, `notes.js` | the post view: `enhance()`, the contents list, folded details, where a link lands once the components drew (after Reload or Back the place kept in `history.state`, for a `?hl=`/`?hs=` link the passage `highlight` marks, else the `#heading`; a place is held while the article grows, until the reader moves), the hover card (mouse only), and the Listen button (`read-aloud/listen.js`); `notes.js` is the same without Listen |
@@ -227,7 +235,10 @@ fails the build, or only warns in a live notebook.
 | Path | What |
 |---|---|
 | `scripts/check/` | the checker: `index.mjs` (CLI), `run.mjs` (levels), `repo.mjs`, `text.mjs`, one file per rule, `grandfathered.mjs` |
-| `scripts/build/verify-dist.mjs` | at `astro:build:done`: `contracts.mjs` over `dist/`, then the budgets |
+| `scripts/build/verify-dist.mjs` | at `astro:build:done`: `contracts.mjs` and `ask-dist.mjs` over `dist/`, then the budgets |
+| `scripts/build/ask-dist.mjs` | RAG Goobie's files: listed docs only, sections that resolve, files that round-trip, the caps' sums; prints the mode, sizes, reservation and suggested cap, the pins and the re-gate line |
+| `scripts/eval/` | RAG Goobie's eval (`docs/ASK.md`): `spend.mjs` (the $3 ledger, the only DeepSeek client), `run.mjs` + `client.mjs` (`npm run ask:eval`), `judge.mjs`, `report.mjs` (the gates), `packs-compare.mjs`, `scale.mjs` (1,000 posts), `probe.mjs` (eviction, stall), `sections.mjs` |
+| `scripts/tools/ask-pin.mjs` | `npm run ask:pin`: the build's pack starts into `src/data/ask-packs.json` |
 | `scripts/build/contracts.mjs` | pure checks of the frozen contracts over `dist/` |
 | `scripts/build/stats-pages.mjs`, `dev-stats-fixture.mjs` | `/stats-pages.txt`; `/api/stats` for `astro dev` |
 | `scripts/build/pagefind.mjs` | at `astro:build:done`: Pagefind's index of `dist/ledger/**/*.html` into `dist/pagefind/`; a failure fails the build |
@@ -254,14 +265,15 @@ fails the build, or only warns in a live notebook.
 | `worker/reads/` | `serve.js` + `reads.sql`: the reader counter |
 | `worker/stats/` | `index.js` (serve and `runStep`), `shape.js` (pure), `stats.sql`: the traffic snapshot |
 | `worker/session/serve.js` | `GET`, `POST /api/session` |
-| `worker/search/` | `serve.js` (`GET /api/search`), `retrieve.js` (embed and query, shared with Ask), `sync.js` (the index cron), `counts.js` (anonymous counts), `search.sql` |
-| `worker/ask/` | `serve.js` (`POST /api/ask`), `prompt.js` (Goobie, who speaks as itself and of Aaron by name; the excerpts; citations with their `kind`), `deepseek.js` (the one call), `ask.sql` |
+| `worker/search/` | `serve.js` (`GET /api/search`), `retrieve.js` (embed and query; `nearest()`, ids only, for Ask), `sync.js` (the index cron), `counts.js` (anonymous counts), `search.sql` |
+| `worker/ask/` | RAG Goobie (`docs/WORKER.md` has each file): `serve.js` (the guards, cache, caps, stream), `run.js` (one question's steps and settle), `plan.js`, `rank.js`, `context.js`, `body.js`, `prompt.js`, `deepseek.js`, `cite.js`, `corpus.js`, `events.js`, `cache.js`, `ask.sql` |
 | `worker/cleanup.js` | the daily sweep of old counts, answers and totals |
 | `worker/lantern.js` | `GET /api/lantern`: the lantern door's redirect to `LANTERN_URL` |
 | `worker/read/` | `step.js` (`read.step`: one post's missing sections a run, then its post file; capped by credit), `voice.js` (the ElevenLabs calls), `read.sql` |
-| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (Ask's guards, citations, excerpt headers and DeepSeek answers), `schema.test.mjs` (the posts schema's `voice`), `read.test.mjs` (the spoken copy and its map, alignment, section hashes, the read-aloud cron); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1 |
+| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (RAG Goobie's marks to cites, streamed too), `ask-serve.test.mjs` (`/api/ask` end to end: guards, stream, cache, caps, settle), `ask-build.test.mjs`, `ask-context.test.mjs`, `ask-price.test.mjs`, `ask-stream.test.mjs`, `ask-scale.test.mjs` (1,000 posts), `ask-fixture.mjs` (a small built blog), `schema.test.mjs` (the posts schema's `voice`), `read.test.mjs` (the spoken copy and its map, alignment, section hashes, the read-aloud cron); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1 |
 | `tests/e2e/` | the behaviour suite: `INVENTORY.md`, `targets.json` (from `element-usage`), specs, fixtures |
 | `tests/baseline/urls.txt` | every page and contract file a build must still produce |
+| `tests/ask/` | RAG Goobie's eval set (`eval.json`, 50 questions with gold posts, sections and must-haves) and the example candidates (`examples.json`); the blind hold-out is private |
 | `src/scripts/stats/core/{agg,fmt}.test.mjs` | the two kept `/stats` tests |
 
 ## Checks
@@ -323,18 +335,22 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
 - **The ledger.** `LedgerView` renders every listed post under its month, the chips with counts made at build, and
   `START_HERE`. Its search box asks Pagefind in the browser (loaded on first focus) and `/api/search` (no token) and
   merges the two by reciprocal rank; a result links `/ledger/<slug>/?hl=<words>&hs=<passage>#<heading>`, which
-  `post/highlight.js` marks. Ask Goobie loads `search/ask.js` only when opened: `GET /api/session` first, and only
-  when that says `ask: true`, Turnstile and a 30-minute token; answers are text, `[n]` linked to their passages
+  `post/highlight.js` marks. Ask RAG Goobie loads `search/ask.js` only when opened: `GET /api/session` first, and only
+  when that says `ask: true`, Turnstile and a 30-minute token; the answer streams in after its steps, as text, `[n]` linked to their passages
   (a cite's `kind` puts a notes passage on `/ledger/<slug>/notes/`, through the same `pagePath` as search results).
   The page numbers the cites by post (1, 2, 3 in order of first mention, a run showing each post once) and each
-  link's hover card is its post's, with a line naming the passage (`PREVIEWS.md`); the Worker's `{ answer, cites }`
-  keeps the excerpt numbers the model wrote.
+  link's hover card is its post's, with a line naming the passage (`PREVIEWS.md`); the Worker's cites are numbered
+  by section in order of first use.
 - **Search and Ask.** The build writes each listed post and notes page as chunks (`/search/docs/`) and a manifest
   of their hashes. Every minute `search.sync` embeds the changed docs with `@cf/baai/bge-m3` into the Vectorize
   index `blog-search` (ids `AO-045:3`, `AO-045n:3` for notes). `/api/search` embeds the query and returns the best
-  chunks of the best posts; `/api/ask` takes the chunks scoring at least `ask_min_score` (a D1 flag) as numbered
-  excerpts for one DeepSeek call, cached in D1 on its exact messages. Switches and caps are D1 `flags` rows
-  (`docs/WORKER.md`); the only thing stored about a query is its day, mode, normalised text and a count.
+  chunks of the best posts. RAG Goobie (`docs/ASK.md`) reads every listed post in full: the build writes them, each
+  section marked `[n.s]`, as one cached pack (`/ask/`), the catalog of all posts and the manifest; `/api/ask` has a
+  planner call read the catalog and write queries and picks, searches the question and the queries, fuses them, and
+  streams one DeepSeek answer from the rules, the pack, the live notebook and an overview, with the 6 most related
+  named last; a worst-case reservation against `ask_daily_usd` comes first, settled to the reported usage. Switches
+  and caps are D1 `flags` rows (`docs/WORKER.md`); the only thing stored about a query is its day, mode, normalised
+  text and a count.
 - **Read-aloud.** The build cuts each recorded post's read blocks (listed posts, never a live notebook) into sections
   (title, summary and opening, then one per h2) named by hashes, and writes `/read/<slug>.json` and
   `/read/index.json`. Every ten minutes `read.step` records the first post by rank whose sections aren't all in R2,

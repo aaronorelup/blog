@@ -164,8 +164,8 @@ anyone on a phone.
 - On a short window it steps down the same way, so it is never cut off, by the window or by its own box: at
   1366×657 and 1024×600 a card of three long findings opens with the thumbnail (`cards.spec.mjs`). The card's
   `max-height` is only a backstop for a window too small for any size.
-- **On Goobie's citations** (Ask Goobie's `[1]`, `[2]` on `/ledger/`) the card is the cited post's,
-  with one more line under the title naming the passage the link lands on: "Goobie cites: How the
+- **On RAG Goobie's citations** (Ask RAG Goobie's `[1]`, `[2]` on `/ledger/`) the card is the cited post's,
+  with one more line under the title naming the passage the link lands on: "RAG Goobie cites: How the
   chaining works", "the opening", "the short version", or for a passage of the notes page, "...,
   in the full making-of". Two citations of one post show the same card with different lines, and
   moving straight from one to the other changes only the line: its loop plays on. A citation of a
@@ -175,6 +175,9 @@ anyone on a phone.
   citations showing each post once), and a citation has no native tooltip, which would double the
   card. A phone has no card, and there each number is a 44 px tap target (an invisible box around it, so the
   answer's lines don't move) that never reaches over another citation's number.
+- **On the "Ask RAG Goobie" button** the card is the post about how RAG Goobie works, with the line "How RAG Goobie
+  works", once that post is listed. Until then `previews.json` has no card for it, so nothing opens and nothing
+  breaks. It opens on hover and on keyboard focus, closes when the pointer leaves, and never on touch.
 - Not on phones or tablets, and not in print.
 
 ## How it works (for whoever changes it)
@@ -193,10 +196,13 @@ anyone on a phone.
   (shared with search and Ask), `render.js` builds, fills and places the one card element, `hover.js`
   decides when it opens. It runs on `/ledger`, every post page, `/projects`, `/stats` and the
   homepage's overlay, and lives inside `#panel-screen` so it picks up the day/night palette.
+- An element that isn't a link gets a card by naming its post in `data-card`: the "Ask RAG Goobie" button
+  (`components/ledger/SearchBox.astro`) names `ABOUT_POST` from `src/data/ask.js`. `hover.js` reads the slug
+  from the attribute, with no URL parsing and no "a post doesn't preview itself" check.
 - A link can give its card one line of its own with `data-card-line` (`render.js` `line()`, the
-  `.lp-line` rule): only Goobie's citations do, written by `src/scripts/search/ask.js`, which also
-  numbers them by post and gives each an `aria-label` ("Source 1: <post title>, <passage>"). Every
-  other card has no line, so it is unchanged. The line is on the link, not in `previews.json`, so it
+  `.lp-line` rule): RAG Goobie's citations do, written by `src/scripts/search/ask-answer.js`, which also
+  numbers them by post and gives each an `aria-label` ("Source 1: <post title>, <passage>"), and so does the Ask
+  button ("How RAG Goobie works"). Every other card has no line, so it is unchanged. The line is on the link, not in `previews.json`, so it
   costs the card file nothing.
 - `scripts/tools/preview-media.mjs`: makes the media. It needs ffmpeg on PATH. The build doesn't (it
   only checks the files that are committed).
