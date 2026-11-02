@@ -3,6 +3,8 @@
 // question, its must-haves and notes, the gold posts AND every other post the answer cites, each in full (a judge shown
 // only cut passages calls true details invented). Writes <dir>/judged.json (judged.mjs), one pass at a time, so a
 // question's later passes read its gold posts from DeepSeek's cache; every call goes through the ledger (spend.mjs).
+// Each pass carries JUDGE_SHA, the sha256 of the judge's prompt.
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
@@ -13,7 +15,7 @@ import { chat } from './spend.mjs';
 
 export const JUDGE = `You grade answers written by RAG Goobie, the question-answering agent on Aaron Orelup's blog. Goobie must
 answer only from Aaron's posts, tell what Aaron wrote by name ("Aaron measured..."), credit Claude for what Claude did or
-wrote (some posts are Claude's own first-person accounts), say "I" only about itself, and stay under ~150 words.
+wrote (some posts are Claude's own first-person accounts), say "I" only about RAG Goobie, and stay under ~150 words.
 
 You get the posts that hold the answer (the gold posts), in full, then the question, its type, the facts a good answer
 contains ("must") and grader notes, then every other post the answer cites, in full, and the answer. A claim found in
@@ -27,6 +29,8 @@ Reply with JSON only:
  "score": 0-10 (how good and correct this answer is for a reader, 10 = complete, correct and well told),
  "why": "one sentence"}`;
 const OUT = 8000;
+// Every pass records which judge gave it: runs are compared only when their passes carry the same hash.
+export const JUDGE_SHA = createHash('sha256').update(JUDGE).digest('hex');
 
 export function lastAnswer(rec) {
   const last = rec.events.at(-1);
@@ -52,7 +56,7 @@ export function userMessage(q, answer, S) {
 // One pass for one answer. A reply whose must list has the wrong length is asked again once, then left unjudged.
 async function grade(q, rec, S, pass) {
   const a = lastAnswer(rec);
-  if (!a) return { must: q.must.map(() => 0), wrong: [], voice_ok: null, score: 0,
+  if (!a) return { must: q.must.map(() => 0), wrong: [], voice_ok: null, score: 0, judge: JUDGE_SHA,
     handled: ['not-covered', 'injection'].includes(q.type) ? false : null, why: `no answer: ${rec.events.at(-1)?.reason ?? rec.status}` };
   const user = userMessage(q, a, S);
   const body = { model: 'deepseek-flash', stream: false, max_tokens: OUT, thinking: { type: 'enabled' }, temperature: 0,
@@ -61,7 +65,7 @@ async function grade(q, rec, S, pass) {
     const r = await chat(`judge:${q.id}:${pass}`, body, worst(Math.ceil((JUDGE.length + user.length) / 3) + 20, OUT));
     let g;
     try { g = JSON.parse(/\{[\s\S]*\}/.exec(r.text)[0]); } catch { g = null; }
-    if (Array.isArray(g?.must) && g.must.length === q.must.length) return { ...g, usage: r.usage };
+    if (Array.isArray(g?.must) && g.must.length === q.must.length) return { ...g, usage: r.usage, judge: JUDGE_SHA };
     console.log(q.id, `pass ${pass}: ${g ? `${g.must?.length} must scores for ${q.must.length}` : 'unparsed'}${i ? ', left unjudged' : ', asked again'}`);
   }
   throw new Error('no usable grade');
