@@ -202,7 +202,7 @@ anyone on a phone.
 - A link can give its card one line of its own with `data-card-line` (`render.js` `line()`, the
   `.lp-line` rule): RAG Goobie's citations do, written by `src/scripts/search/ask-answer.js`, which also
   numbers them by post and gives each an `aria-label` ("Source 1: <post title>, <passage>"), and so does the Ask
-  button ("How RAG Goobie works"). Every other card has no line, so it is unchanged. The line is on the link, not in `previews.json`, so it
-  costs the card file nothing.
+  button ("How RAG Goobie works"). Every other card has no line, so it is unchanged. The line is on the link, not
+  in `previews.json`, so it costs the card file nothing.
 - `scripts/tools/preview-media.mjs`: makes the media. It needs ffmpeg on PATH. The build doesn't (it
   only checks the files that are committed).

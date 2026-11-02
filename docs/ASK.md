@@ -196,6 +196,16 @@ lab (-3.7%). Gated variants, each on the same 50 questions, neither kept: the hi
 (must 0.816 against 0.837, gold cited unchanged) and "you are not Claude" in the rules (must 0.822, attribution
 unchanged).
 
+**The blind hold-out** (30 questions written by a separate agent from readers' real questions, never seen before
+this run; on F'): recall@6 0.922 against the 50's 0.927 (within the gate's 0.05); must-have facts 0.741 against the
+50's 0.795, 0.054 apart, **over the gate's 0.05 by 0.004** (the same 30 on the catalog layout scored 0.748, so the gap
+is the set's denser must lists, not the layout); score 7.22; not covered + injection 3/3; attribution 28/30; gold
+section cited 26/27; nothing hidden named. Its weakest answer (h08) said Aaron hadn't written who wrote a song's
+lyrics, with the post that says it ranked 7th, just outside the hint.
+
+**G8 examples**: of the 12 candidates (two rephrased to fit 44 characters), 7 answered on the shipped layout with a
+score of 8 or more, must-haves 0.8 or more, their gold post cited and no attribution slip; those 7 are `EXAMPLES`.
+
 **G4 cost, cache, ledger** (local D1): from the 2nd question 99.9% of the prompt is a cache hit; a warm question
 $0.0024 at peak at most; `usage_day` `ask_usd` equals the settled costs exactly; a cap under one reservation rests
 the first question with no DeepSeek call and gives its count back; a cap of two reservations lets exactly 2 of 6

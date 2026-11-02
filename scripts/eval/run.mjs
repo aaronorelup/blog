@@ -1,9 +1,8 @@
-// npm run ask:eval -- --set <questions.json> --out <dir> [--base http://127.0.0.1:8787] [--ids f01,m04] [--again]
-// Asks a question set of a running `wrangler dev` (docs/ASK.md "The eval"), one question at a time so the prompt
-// cache stays warm and the limiters quiet, minting a session with Turnstile's test response every 5 questions. Every
-// event goes to <out>/events.jsonl with its arrival time (ms from the request); each question is reserved on the
-// ledger (spend.mjs) at the manifest's worst case and settled to its answer's usage.usd. A question already in the
-// file is skipped unless --again.
+// npm run ask:eval -- --set <questions.json> --out <dir> [--base http://127.0.0.1:8787] [--ids f01,m04] [--again]:
+// a question set against a running `wrangler dev` (docs/ASK.md "The eval"), one at a time (the cache stays warm, the
+// limiters quiet), a new session every 5. Every event goes to <out>/events.jsonl with its arrival time; each question
+// is reserved on the ledger (spend.mjs) at the manifest's worst case and settled to its usage.usd. Questions already
+// in the file are skipped unless --again.
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
