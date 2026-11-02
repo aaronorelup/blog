@@ -334,7 +334,8 @@ Several renders of the same audio, compared by ear at the same moment. One playe
 another clip keeps the playhead where it was, so the reader hears the same word under each treatment, and A/B flips
 to the reference clip and back. Each clip's spectrogram spans its length; the playhead runs across it and a click
 seeks. With the list focused, up and down pick a clip, space plays, C flips A/B. It is one player on the page. A
-pause asked for while a seek is still running holds once the seek is done (WebKit's player would otherwise play on).
+pause asked for before a clip is under way (still seeking, waiting for data, or its clock not yet moving since it
+seeked) holds once it is (WebKit's player would otherwise play on).
 
 | Attribute | |
 |---|---|

@@ -126,7 +126,7 @@ notes, `earthlight`'s notes, `nine-claudes-one-painting` today).
 |---|---|---|
 | A clip row picks and plays it; Play/Pause and the clock follow the audio | row `click`, Play `click`, audio `play` `pause` `loadedmetadata` `ended` | listen-1 |
 | A Pause pressed while a seek is still running holds once the seek is done (WebKit's player otherwise plays the clip again) | Play `click` mid-seek, audio `play` | listen-1b |
-| A/B switches to the reference (`ref`) at the same moment, and back | `ref`, A/B `click` | listen-2 |
+| A/B switches to the reference (`ref`) at the same moment, and back; the clip left stays paused, even one that had only just seeked (WebKit's player otherwise plays it again) | `ref`, A/B `click`, audio `seeking` `seeked` `waiting` `playing` `play` | listen-2 |
 | The spectrogram seeks on click and with the arrows | spectrogram `pointerdown` `keydown` | listen-3 |
 | List focused: arrows pick and keep playing, space toggles, C flips A/B | element `keydown` | listen-4 |
 | Only one clip on the page plays | document `ao-listen-play` | core-3 |

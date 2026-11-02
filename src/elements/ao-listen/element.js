@@ -53,12 +53,15 @@ class AoListen extends HTMLElement {
     });
 
     const pos = () => cur.audio.currentTime || 0;
-    // WebKit's GStreamer player plays a clip again once a seek that began while it played is done, even after
-    // pause() (the phone project caught it: a Pause mid-seek, and the clip went on). A pause asked for while a seek
-    // is still going holds: any play of that clip is paused at once, until a play comes once the seek is done (the
-    // one WebKit makes) or the element starts the clip again.
+    // WebKit's GStreamer player plays a clip again, even after pause(), when the pause came before the clip was under
+    // way: while it seeks, while it waits for data, or while its clock still stands where it last played, seeked or
+    // waited (the phone project caught a Pause mid-seek, and A/B at a clip that had just seeked, the clip going on
+    // beside the reference). A pause asked for then holds: any play of that clip is paused at once, until a play
+    // comes once it neither seeks nor waits (the one WebKit makes) or the element starts the clip again.
     const held = new Set();
-    const halt = (a) => { a.pause(); if (a.seeking) held.add(a); };
+    const mark = new Map(); // each clip's clock at its last play, seek or wait
+    const settled = (a) => !a.seeking && a.readyState >= a.HAVE_FUTURE_DATA;
+    const halt = (a) => { if (!a.paused && (!settled(a) || a.currentTime === mark.get(a))) held.add(a); a.pause(); };
     const draw = () => {
       const a = cur.audio;
       const d = a.duration;
@@ -119,11 +122,15 @@ class AoListen extends HTMLElement {
       const a = c.audio;
       a.removeAttribute('controls');
       a.preload = 'metadata';
+      for (const t of ['seeking', 'seeked', 'waiting', 'playing']) a.addEventListener(t, () => mark.set(a, a.currentTime));
       a.addEventListener('play', () => {
         if (held.has(a)) {
           a.pause();
-          if (!a.seeking) held.delete(a);
-        } else if (c === cur) loop();
+          if (settled(a)) held.delete(a);
+        } else {
+          mark.set(a, a.currentTime);
+          if (c === cur) loop();
+        }
       });
       a.addEventListener('pause', () => c === cur && draw());
       a.addEventListener('loadedmetadata', () => c === cur && draw());
