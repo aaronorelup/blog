@@ -73,11 +73,15 @@ test('cues-6 a cut that runs out of video holds the others until it has caught u
   await button(page, 'Play').click();
   const [lead, follower] = [vids(page).first(), vids(page).last()];
   await expectPlaying(lead);
-  // The follower really has data, so the stall is the only one: the element resumes once it reports ready.
+  // The follower really has data, so the stall is the only one: the element resumes once it reports ready, and a real
+  // event of its own (canplaythrough, a catch-up seek's seeked) can bring that within a few ms, so the hold is read in
+  // the same task as the stall.
   await expect.poll(() => follower.evaluate((v) => v.readyState >= 3 && !v.seeking), { timeout: 30_000 }).toBe(true);
-  await follower.evaluate((v) => v.dispatchEvent(new Event('waiting')));
-  await expect(cues(page).locator('.ao-cues-clock')).toHaveText('loading…');
-  await expectPlaying(lead, false);
+  expect(await cues(page).evaluate((el) => {
+    const vs = el.querySelectorAll('video');
+    vs[vs.length - 1].dispatchEvent(new Event('waiting'));
+    return { clock: el.querySelector('.ao-cues-clock').textContent, leadPaused: vs[0].paused };
+  })).toEqual({ clock: 'loading…', leadPaused: true });
   await follower.evaluate((v) => v.dispatchEvent(new Event('playing')));
   await expectPlaying(lead);
 });
