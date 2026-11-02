@@ -55,10 +55,12 @@ function init() {
 
 // ---------- which links get a card ----------
 
-// A post link, or a notes link that says in its own line (data-card-line, Goobie's cites) that the card is its post's.
+// A post link, or a notes link that says in its own line (data-card-line, RAG Goobie's cites) that the card is its
+// post's, or any element that names its post in data-card (the "Ask RAG Goobie" button).
 function postLink(target) {
-  const a = target && target.closest ? target.closest('a[href]') : null;
+  const a = target && target.closest ? target.closest('a[href], [data-card]') : null;
   if (!a || (card && card.contains(a))) return null;
+  if (a.hasAttribute('data-card')) return { a, slug: a.getAttribute('data-card') };
   let url;
   try { url = new URL(a.getAttribute('href'), location.href); } catch (_) { return null; }
   if (url.origin !== location.origin) return null;
@@ -88,7 +90,7 @@ function onFocus(e) {
 function onOut(e) {
   const cur = shown || pending;
   if (!cur) return;
-  const a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+  const a = e.target && e.target.closest ? e.target.closest('a[href], [data-card]') : null;
   if (a !== cur.a) return;
   if (e.relatedTarget && cur.a.contains(e.relatedTarget)) return;   // moving within the link
   clearTimeout(openT);

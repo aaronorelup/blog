@@ -1,26 +1,20 @@
-// Ask Goobie, loaded only once the box's switch opens it. GET /api/session says first whether Ask is on; when it is
+// RAG Goobie, loaded only once the box's switch opens it. GET /api/session says first whether Ask is on; when it is
 // off, Turnstile never loads. When it is on, Turnstile (explicit, interaction-only, action ask) solves once, and POST
 // /api/session turns the solve into a 30-minute Ask token, kept in sessionStorage. Asking sends POST /api/ask { q }
-// with the token in X-AO-Session: one question at a time, no retry. ask() returns the reply for box.js to draw: the
-// answer as text, never as HTML.
+// with the token in X-AO-Session, one question at a time, no retry, and draws the answer's stream as it comes: the
+// steps (ask-trace.js), then the words typing in and the final answer (ask-answer.js), always as text.
 import { TURNSTILE_SITE_KEY, TURNSTILE_TEST_SITE_KEY } from '../../data/public-keys.js';
 import { load } from '../cards/data.js';
-import { deepLink, h, pagePath, relatedRow } from './results.js';
+import { answer, SAY, say } from './ask-answer.js';
+import { events } from './ask-stream.js';
+import { summary, trace } from './ask-trace.js';
+import { h } from './results.js';
 
 const TURNSTILE = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=aoTurnstileReady';
 // The real widget answers only on the site; anywhere else (localhost, wrangler dev, e2e) Cloudflare's test key.
 const SITE_KEY = location.hostname === 'aaronorelup.com' ? TURNSTILE_SITE_KEY : TURNSTILE_TEST_SITE_KEY;
 const KEPT = 'ao-ask';
 const MARGIN = 60e3;      // ms: a token this close to its end is replaced before asking
-const SAY = {
-  resting: 'Goobie is resting. These posts are closest.',
-  'not-found': "Nothing Aaron has written covers that yet. These posts come closest.",
-  fine: "Goobie answers from Aaron's posts only and can be wrong.",
-  unsolved: 'The check that this is a person didn’t finish. Try again in a minute.',
-  expired: 'That session ran out. Ask again.',
-  busy: 'Goobie has had a lot of questions this minute. Try again shortly.',
-  down: 'Goobie can’t answer right now. Try again in a minute.',
-};
 
 let turnstile = null;     // a promise of window.turnstile
 let widget = null;        // the rendered widget's id
@@ -88,26 +82,26 @@ async function mint(turnstileToken) {
   return session.token;
 }
 
-// The reply to q, or null while an earlier question is still out.
-export async function ask(ui, q) {
-  if (asking) return null;
+// Asks q and draws its answer through draw(node) as it streams; nothing while an earlier question is still out.
+export async function ask(ui, q, draw) {
+  if (asking) return;
   asking = true;
   ui.go.disabled = true;
   ui.form.classList.add('is-thinking');
   try {
     const s = kept();
     const token = fresh(s) ? s.token : await solve(ui);
-    if (!token) return say(SAY.unsolved);
+    if (!token) return draw(say(SAY.unsolved));
     const r = await fetch('/api/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-AO-Session': token },
       body: JSON.stringify({ q }),
     });
     if (r.status === 401) sessionStorage.removeItem(KEPT);
-    if (!r.ok) return say(r.status === 401 ? SAY.expired : r.status === 429 ? SAY.busy : SAY.down);
-    return await answer(await r.json(), q);
+    if (!r.ok) return draw(say(r.status === 401 ? SAY.expired : r.status === 429 ? SAY.busy : SAY.down));
+    await streamed(r.body, q, draw);
   } catch {
-    return say(SAY.down);
+    draw(say(SAY.down));
   } finally {
     asking = false;
     ui.go.disabled = false;
@@ -115,55 +109,24 @@ export async function ask(ui, q) {
   }
 }
 
-const say = (text) => h('p', { class: 'ask-note' }, text);
-
-// Where a cite lands, in words: its heading, the post's opening or its short version, and on a notes page, that it is
-// the full making-of. The hover card shows it after "Goobie cites:", a screen reader after the post's title.
-function passage({ kind, anchor, heading }) {
-  const where = anchor === 'short' ? 'the short version' : heading || 'the opening';
-  if (kind !== 'notes') return where;
-  return where === 'the opening' ? 'the opening of the full making-of' : `${where}, in the full making-of`;
-}
-
-// Goobie's [n] number excerpts; a reader counts posts. Each [n] shows its post's place among the posts cited, in order
-// of first mention (1, 2, 3, no gaps), and a run of them (only spaces between) shows each post once, as its first
-// passage there. Every link still goes to its own passage, on the post or its notes page, with the question's words
-// marked.
-function cited(text, cites, q, cards) {
-  const byN = new Map(cites.map((c) => [`[${c.n}]`, c]));
-  const posts = [];       // slugs in order of first mention
-  const out = [];
-  let run = new Set();    // the posts linked since the last words
-  text.split(/(\[\d+\])/).forEach((part, i) => {
-    const c = i % 2 ? byN.get(part) : null;
-    if (!c) {
-      if (part.trim()) run = new Set();
-      out.push(part);
-      return;
-    }
-    if (run.has(c.slug)) {
-      while (typeof out.at(-1) === 'string') out.pop();   // the spaces since the last link
-      return;
-    }
-    if (!posts.includes(c.slug)) posts.push(c.slug);
-    const n = posts.indexOf(c.slug) + 1;
-    const where = passage(c);
-    run.add(c.slug);
-    out.push(h('a', {
-      class: 'ask-cite', href: deepLink(pagePath(c.slug, c.kind), c.anchor, q),
-      'aria-label': `Source ${n}: ${cards[c.slug]?.title ?? c.title}, ${where}`,
-      'data-card-line': `Goobie cites: ${where}`,
-    }, `[${n}]`));
-  });
-  return out;
-}
-
-async function answer({ answer: text, cites, related, reason }, q) {
+// The steps, then the words, then the answer or a note. A stream that ends with neither reads as down.
+async function streamed(body, q, draw) {
   const cards = (await load()) ?? {};
-  const head = text
-    ? [h('p', { class: 'ask-text' }, ...cited(text, cites, q, cards)), h('p', { class: 'ask-fine' }, SAY.fine)]
-    : [say(reason === 'not-found' ? SAY['not-found'] : SAY.resting)];
-  const rows = related.filter((slug) => cards[slug]).map((slug) => relatedRow(slug, cards[slug]));
-  return h('div', { class: 'ask' }, ...head,
-    ...(rows.length ? [h('ol', { class: 'rows ask-related', 'aria-label': 'Posts on this' }, ...rows)] : []));
+  const steps = trace(cards);
+  const words = answer(q, cards);
+  const view = h('div', { class: 'ask', 'aria-busy': 'true' }, steps.el, words.el);
+  draw(view);
+  for await (const e of events(body)) {
+    if (e.t === 'cite') words.cite(e);
+    else if (e.t === 'text') words.text(e.d);
+    else if (e.t === 'answer') return show(view, words.done(e, summary(e, steps.read)));
+    else if (e.t === 'end') return show(view, words.ended(e));
+    else steps.on(e);
+  }
+  throw new Error('the stream ended without an answer');
+}
+
+function show(view, parts) {
+  view.replaceChildren(...parts);
+  view.removeAttribute('aria-busy');
 }

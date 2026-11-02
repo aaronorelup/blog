@@ -1,6 +1,6 @@
-/* The ledger's search box (components/ledger/SearchBox.astro, scripts/search/): the bar, the Search | Ask Goobie
-   switch, results (ledger rows with a passage) and Goobie's answer; and mark.hl, the passage a result or a citation
-   lands on in a post (scripts/post/highlight.js). */
+/* The ledger's search box (components/ledger/SearchBox.astro, scripts/search/): the bar, the Search | Ask RAG Goobie
+   switch, results (ledger rows with a passage), RAG Goobie's steps and answer; and mark.hl, the passage a result or a
+   citation lands on in a post (scripts/post/highlight.js). */
 
 .search { margin: 0 0 var(--space-7); max-width: 820px; }
 .search-bar {
@@ -17,7 +17,9 @@
   flex: 1; min-width: 0; height: 40px; padding: 0; border: 0; background: none; outline: none;
   font-family: var(--font-body); font-size: 16px; color: var(--pc-strong);
 }
-.search-input::placeholder { color: var(--pc-quiet); opacity: 1; }
+.search-input::placeholder { color: var(--pc-quiet); opacity: 1; transition: opacity 300ms ease; }
+/* The example questions' fade (scripts/search/examples.js); where ::placeholder doesn't animate, a plain swap. */
+.search-input.is-swapping::placeholder { opacity: 0; }
 .search-input::-webkit-search-cancel-button { margin-inline-start: var(--space-3); filter: grayscale(1); opacity: 0.6; }
 .search-go {
   flex: none; height: 40px; padding: 0 20px; border: 1.5px solid var(--pc-accent); border-radius: var(--radius-pill);
@@ -38,6 +40,8 @@
 .search-mode:hover { color: var(--pc-strong); }
 .search-mode[aria-pressed='true'] { border-color: var(--pc-line2); color: var(--pc-head); }
 .search-note { margin: var(--space-3) 0 0 6px; font-size: var(--text-sm); color: var(--pc-quiet); }
+.search-line { margin: var(--space-2) 0 0 6px; font-size: var(--text-xs); letter-spacing: 0.02em; color: var(--pc-quiet); }
+.search-line[hidden] { display: none; }
 .search-turnstile:empty { display: none; }
 .search-turnstile { margin: var(--space-3) 0 0; }
 
@@ -54,7 +58,19 @@
 }
 .search-none, .ask-note { margin: 0; padding: var(--space-3) 0; font-size: var(--text-md); color: var(--pc-quiet); }
 
-/* Goobie's answer: plain text with [n] links to its sources, the fine print, then the posts it drew on. */
+/* RAG Goobie at work: one line a step, each ticked when the next comes, the newest one pulsing. */
+.ask-steps { margin: 0 0 var(--space-3); padding: 0; list-style: none; font-size: var(--text-sm); color: var(--pc-quiet); }
+.ask-step { position: relative; padding: 2px 0 2px 20px; }
+.ask-step::before {
+  content: ''; position: absolute; left: 4px; top: 0.72em; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--pc-gold); animation: ask-pulse 900ms ease-in-out infinite alternate;
+}
+.ask-step.is-done::before { content: '✓'; top: 2px; width: auto; height: auto; background: none; color: var(--pc-gold); animation: none; }
+@keyframes ask-pulse { from { opacity: 0.35; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .ask-step::before { animation: none; } }
+
+/* RAG Goobie's answer: plain text with [n] links to its sources, the fine print, the summary, then the posts it
+   drew on. */
 .ask { padding: var(--space-4) 0 0; }
 .ask-text {
   margin: 0; max-width: 680px; font-family: var(--font-serif); font-size: var(--text-lg); line-height: 1.68;
@@ -71,8 +87,12 @@
 @media (pointer: coarse) {
   .ask-cite { position: relative; }
   .ask-cite::before { content: ''; position: absolute; inset: -14px -19px -16px -2px; }
+  /* A cite ending a line flush keeps its 19 px of reach inside the panel's 18 px padding: no sideways scroll. */
+  .ask-text { padding-right: 1px; }
 }
-.ask-fine { margin: var(--space-3) 0 var(--space-4); font-size: var(--text-xs); letter-spacing: 0.02em; color: var(--pc-quiet); }
+.ask-fine { margin: var(--space-3) 0 var(--space-2); font-size: var(--text-xs); letter-spacing: 0.02em; color: var(--pc-quiet); }
+.ask-about { color: var(--pc-accent); }
+.ask-summary { margin: 0 0 var(--space-4); font-size: var(--text-xs); letter-spacing: 0.02em; color: var(--pc-quiet); }
 .ask .ask-note { padding-top: 0; }
 
 /* Goobie thinking: a small tilt while a question is out. */

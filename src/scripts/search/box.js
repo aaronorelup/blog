@@ -1,10 +1,13 @@
 // The ledger's search box (components/ledger/SearchBox.astro). Search: the words half (Pagefind) as the reader
 // types and the meaning half (/api/search) after 400 ms of quiet or on Enter, merged into one list. Nothing loads
-// before the box is first focused, and search needs no session. Ask Goobie loads ask.js only once it is opened, and
-// keeps the box's text, selected.
-// "/" focuses the box unless something else takes typing. mount(root) returns unmount.
+// before the box is first focused, and search needs no session. Ask RAG Goobie loads ask.js only once it is opened,
+// keeps the box's text, selected, and cycles example questions in the empty box. Text typed before this module ran
+// is searched when it mounts; data-ready on the form says it has. "/" focuses the box unless something else takes
+// typing. mount(root) returns unmount.
+import { CYCLE_MS } from '../../data/ask.js';
 import { load as loadCards } from '../cards/data.js';
 import { lazy } from '../lazy.js';
+import { examples } from './examples.js';
 import * as keyword from './keyword.js';
 import { merge } from './merge.js';
 import { resultsList } from './results.js';
@@ -13,7 +16,7 @@ import * as semantic from './semantic.js';
 const QUIET = 400;        // ms without typing before the meaning half is asked
 const MIN = 3;            // characters the meaning half and Ask need
 const MAX = { search: 200, ask: 300 };
-const PLACEHOLDER = { search: 'Search the ledger', ask: 'Ask Goobie about anything Aaron has written' };
+const PLACEHOLDER = { search: 'Search the ledger', ask: 'Ask RAG Goobie about anything Aaron has written' };
 
 const typing = (el) => el.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"])');
 
@@ -21,7 +24,9 @@ export function mount(root) {
   const form = root.querySelector('[data-search]');
   const q$ = (s) => form.querySelector(s);
   const ui = { form, input: q$('.search-input'), go: q$('.search-go'), lens: q$('.search-lens'), goobie: q$('.search-goobie'),
-    modes: q$('.search-modes'), note: q$('[data-search-note]'), turnstile: q$('[data-turnstile]'), out: q$('[data-search-out]') };
+    modes: q$('.search-modes'), note: q$('[data-search-note]'), turnstile: q$('[data-turnstile]'), out: q$('[data-search-out]'),
+    line: q$('[data-ask-line]') };
+  const cycle = examples(ui.input, PLACEHOLDER.ask, CYCLE_MS);
   let mode = 'search';
   let q = '';
   let words = { q: null, hits: [] };
@@ -62,8 +67,8 @@ export function mount(root) {
     e.preventDefault();
     const text = ui.input.value.trim();
     if (mode !== 'ask') return askMeaning(text);
-    // The reply is drawn only if Ask is still open when it comes.
-    if (text.length >= MIN) ask.ask(ui, text).then((reply) => { if (reply && mode === 'ask') ui.out.replaceChildren(reply); });
+    // The answer is drawn only while Ask is still open.
+    if (text.length >= MIN) ask.ask(ui, text, (node) => { if (mode === 'ask') ui.out.replaceChildren(node); });
   };
 
   const setMode = (next) => {
@@ -73,8 +78,11 @@ export function mount(root) {
     ui.lens.classList.toggle('is-off', mode === 'ask');
     ui.goobie.hidden = mode !== 'ask';
     ui.go.hidden = mode !== 'ask';
+    ui.line.hidden = mode !== 'ask';
+    cycle.stop();
     ui.input.placeholder = PLACEHOLDER[mode];
     ui.input.setAttribute('aria-label', PLACEHOLDER[mode]);
+    if (mode === 'ask') cycle.start();
     ui.input.maxLength = MAX[mode];
     ui.out.replaceChildren();
     words = meaning = { q: null, hits: [] };
@@ -90,7 +98,7 @@ export function mount(root) {
     ask ??= await lazy(() => import('./ask.js'));
     if (await ask.open(ui)) return setMode('ask');
     ui.modes.hidden = true;
-    ui.note.textContent = 'Goobie is resting.';
+    ui.note.textContent = 'RAG Goobie is resting.';
     ui.note.hidden = false;
   };
   // The index and the card data (titles, icons) a result needs, both on the first focus.
@@ -108,7 +116,13 @@ export function mount(root) {
   form.addEventListener('submit', onSubmit);
   ui.modes.addEventListener('click', onMode);
   document.addEventListener('keydown', onSlash);
+  // What was typed (or focused) before this module ran is acted on now.
+  if (document.activeElement === ui.input) onFocus();
+  if (ui.input.value.trim()) onInput();
+  form.dataset.ready = '';
   return () => {
+    cycle.stop();
+    delete form.dataset.ready;
     ui.input.removeEventListener('input', onInput);
     ui.input.removeEventListener('focus', onFocus);
     form.removeEventListener('submit', onSubmit);

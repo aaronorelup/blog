@@ -1,6 +1,7 @@
 // Every spec imports `test` and `expect` from here. Each browser context answers /api/* and /cdn-cgi/trace from
-// recorded shapes (fixtures/api.json; `test.use({ api: { '/api/stats': 'stats-503' } })` picks another) and, off
-// the live site, fetches media and /read/* GETs from https://aaronorelup.com. No run posts to the live API.
+// recorded shapes (fixtures/api.json; `test.use({ api: { '/api/stats': 'stats-503' } })` picks another; a shape with
+// `sse` is RAG Goobie's event stream) and, off the live site, fetches media and /read/* GETs from
+// https://aaronorelup.com. No run posts to the live API.
 import fs from 'node:fs';
 import { test as base, expect } from '@playwright/test';
 
@@ -25,12 +26,35 @@ async function forward(route) {
     .catch(() => {});
 }
 
+// POST /api/ask's answer as route.fulfill() takes it: its events as server-sent events.
+export const sse = (events) => ({ status: 200, contentType: 'text/event-stream; charset=utf-8',
+  body: events.map((e) => `data: ${JSON.stringify(e)}\n\n`).join('') });
+// An answer ({ answer, cites, related }) as RAG Goobie streams it: the steps, its words with each cite just before
+// the words that first use it, then the answer.
+export function streamOf(a, focus = a.related) {
+  const typed = [];
+  const sent = new Set();
+  for (const piece of a.answer.match(/[^.]+\.?\s*/g)) {
+    for (const [, k] of piece.matchAll(/\[(\d+)\]/g)) {
+      const c = a.cites.find((x) => String(x.n) === k);
+      if (c && !sent.has(k)) typed.push({ t: 'cite', ...c });
+      sent.add(k);
+    }
+    typed.push({ t: 'text', d: piece });
+  }
+  return [{ t: 'start', posts: 71, notes: 11, mode: 'whole', packs: 1 }, { t: 'plan', topics: ['video'], picks: 2 },
+    { t: 'found', searches: 5, passages: 312, posts: 41, matched: 9, ranked: focus },
+    { t: 'read', given: 71, of: 71, tokens: 318754, focus }, { t: 'write' }, ...typed,
+    { t: 'answer', cached: false, took: 5210, usage: { tokens: 309012, hit: 308700, out: 230, usd: 0.0025 }, ...a }];
+}
+
 function answer(route, picks) {
   const req = route.request();
   const path = new URL(req.url()).pathname;
   const name = picks[path] || DEFAULTS[`${req.method()} ${path}`];
   if (!name) return route.fulfill({ status: 404, body: '' });
   const shape = SHAPES[name];
+  if (shape.sse) return route.fulfill(sse(shape.sse));
   const body = shape.file ? fs.readFileSync(here('fixtures/' + shape.file), 'utf8')
     : shape.text ?? (shape.json ? JSON.stringify(shape.json) : '');
   return route.fulfill({ status: shape.status, contentType: shape.text ? 'text/plain' : 'application/json', body });

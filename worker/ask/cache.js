@@ -9,7 +9,7 @@ import SCHEMA from './ask.sql';
 
 const KEEP_FOR = 7 * 864e5;
 
-export const keyOf = async (m, f, q, variant) => sha256([MODEL, await promptV(variant), m.v, f.ask_extra_tokens, q].join('|'));
+export const keyOf = async (m, f, q) => sha256([MODEL, await promptV(), m.v, f.ask_extra_tokens, q].join('|'));
 
 export async function cached(env, key, m) {
   await ensure(env.DB, SCHEMA);

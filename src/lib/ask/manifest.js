@@ -20,9 +20,9 @@ export function countsOf(docs) {
     topics: Object.fromEntries(TOPIC_KEYS.filter((k) => topics[k]).sort((a, b) => topics[b] - topics[a]).map((k) => [k, topics[k]])) };
 }
 
-// docs: askDocs()'s, in AO order. pins: src/data/ask-packs.json's starts. search: searchDocs(), for the chunk maps.
-// caps: { WHOLE_CAP, PACK_CAP } to override (the split-mode drill's knobs).
-export function assemble(docs, { pins, search = [], caps = {} }) {
+// docs: askDocs()'s, in AO order. pins: src/data/ask-packs.json's starts. caps: { WHOLE_CAP, PACK_CAP } to override
+// (the split-mode drill's knobs).
+export function assemble(docs, { pins, caps = {} }) {
   const c = { WHOLE_CAP: CAPS.WHOLE_CAP, PACK_CAP: CAPS.PACK_CAP, ...caps };
   const liveCap = CAPS.LIVE_CAP / Math.max(1, docs.filter((d) => d.live).length);
   const all = docs.map(numbered);
@@ -50,7 +50,6 @@ export function assemble(docs, { pins, search = [], caps = {} }) {
     given.filter((d) => !d.live).map((d) => [d.n, docFiles.get(d.n).hash]), given.filter((d) => d.live).map((d) => [d.n, d.slug]),
     docs.map((d) => d.slug)])));
 
-  const chunkMaps = chunksOf(all, search);
   const manifest = {
     v, mode: layout.mode,
     caps: { budget: CAPS.BUDGET, whole: c.WHOLE_CAP, pack: c.PACK_CAP, doc: CAPS.DOC_CAP, live: CAPS.LIVE_CAP,
@@ -63,7 +62,6 @@ export function assemble(docs, { pins, search = [], caps = {} }) {
       ...strip(docFiles.get(d.n)), pack: packOf.get(d.n) ?? null, ...(d.live && { live: true }),
       ...(byN.get(d.n).cut && { cut: byN.get(d.n).cut }),
       sections: d.parts.map((p) => [p.s, p.kind, p.anchor, p.heading]),
-      ...(chunkMaps.has(d.n) && { chunks: chunkMaps.get(d.n) }),
     }])),
   };
   manifest.reserve_usd = (manifest.reserve.plan + manifest.reserve.answer) / 1e6;
@@ -80,16 +78,3 @@ function reserveOf(mode, packs, cat, live) {
   return { plan: worst(cat.tokens + CAPS.USER_TOKENS, PLAN_OUT), answer: worst(answer, ANSWER_OUT) };
 }
 
-// Search's chunk i of a doc (AO-0nn:i, AO-0nnn:i) -> the Ask section it lies in, by page and anchor.
-function chunksOf(all, search) {
-  const out = new Map();
-  for (const d of all) {
-    const at = new Map(d.parts.map((p) => [`${p.kind}|${p.anchor}`, p.s]));
-    const maps = {};
-    for (const s of search.filter((x) => x.slug === d.slug)) {
-      maps[s.kind] = s.chunks.map((ch) => at.get(`${s.kind}|${ch.anchor}`) ?? (s.kind === 'notes' ? 'N0' : '0'));
-    }
-    if (Object.keys(maps).length) out.set(d.n, maps);
-  }
-  return out;
-}

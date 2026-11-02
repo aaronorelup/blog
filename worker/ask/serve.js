@@ -29,9 +29,8 @@ export async function serve(request, env, ctx) {
   ctx.waitUntil(count(env, 'ask', q));
 
   const start = Date.now();
-  const variant = env.ASK_VARIANT;   // the eval's gated variants only (docs/ASK.md); never set on the site
   const ix = await corpus(env);
-  const key = await keyOf(ix.m, f, q, variant);
+  const key = await keyOf(ix.m, f, q);
   const hit = await cached(env, key, ix.m);
   if (hit) {
     const { live, ...answer } = hit;
@@ -44,7 +43,7 @@ export async function serve(request, env, ctx) {
     return resting(env, f, ix, q);
   }
   const out = sse();
-  ctx.waitUntil(run(env, { q, f, ix, out, key, day, start, variant }));
+  ctx.waitUntil(run(env, { q, f, ix, out, key, day, start }));
   return out.response;
 }
 

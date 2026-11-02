@@ -1,7 +1,8 @@
 // Aaron's two answers of 2026-11-01 (D1 ask_cache), word for word, as POST /api/ask returns them, the first with a
 // cite of another post (a run with a space in it), a run that goes back to the first post and one cite of a notes page
 // added: [4][5], [4], [5] and [1] are all passages of one post. `reads` is the answer as the page shows it, `links` each
-// cite as [label, slug, notes/, anchor, passage]. Read by search-15 and cards.spec.mjs.
+// cite as [label, slug, notes/, anchor, passage]. Specs stream them as RAG Goobie does (fixtures.mjs streamOf()). Read
+// by search-15, -16, -19, -25 and cards.spec.mjs.
 export const ANSWERS = [{
   answer: "Aaron's post on long AI films is closest. MiniMax-H3 makes six seconds a go [4][5]. Saved latents chain clips [4]. " +
     'Films ran 13 minutes [5]. Free memory before every clip [1]. A script folded the paper puppet [7] [2]. ' +
