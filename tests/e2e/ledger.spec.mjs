@@ -69,6 +69,9 @@ test.describe('the hover card', () => {
     await page.goto('/ledger/');
     const slug = await rows(page).first().getAttribute('data-ledger-entry');
     await page.goto(`/ledger/${slug}/`);
+    // The hover card's module is a dynamic import the load event doesn't wait for, and a pointer that comes to rest on
+    // the link before the module listens gets no card until it moves.
+    await page.waitForLoadState('networkidle');
     // A link to a post, /ledger/<slug>/: not the header's ledger filters (?topic=) or a notes page.
     const links = page.locator('[data-post-article] a[href^="/ledger/"]');
     const i = await links.evaluateAll((as) => as.findIndex((a) => /^\/ledger\/[^/?#]+\/$/.test(a.getAttribute('href'))
