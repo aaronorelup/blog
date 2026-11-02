@@ -1,5 +1,5 @@
 // npm run ask:judge -- --run <dir> [--set tests/ask/eval.json] [--ids f01,m04]: grades every answer in
-// <dir>/events.jsonl with the lab's rubric (.rework/rag/lab/judge2.py, ported): DeepSeek with thinking on, given the
+// <dir>/events.jsonl with the design lab's rubric (its judge2.py, ported): DeepSeek with thinking on, given the
 // question, its must-haves and notes, the gold sections AND every section the answer cites (a judge shown only the gold
 // calls true details invented). Writes <dir>/judged.json; every call goes through the ledger (spend.mjs).
 import fs from 'node:fs';
