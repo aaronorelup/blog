@@ -55,7 +55,8 @@ class AoListen extends HTMLElement {
     const pos = () => cur.audio.currentTime || 0;
     // WebKit's GStreamer player plays a clip again once a seek that began while it played is done, even after
     // pause() (the phone project caught it: a Pause mid-seek, and the clip went on). A pause asked for while a seek
-    // is still going holds: that play is paused at once, unless the clip was started again since.
+    // is still going holds: any play of that clip is paused at once, until a play comes once the seek is done (the
+    // one WebKit makes) or the element starts the clip again.
     const held = new Set();
     const halt = (a) => { a.pause(); if (a.seeking) held.add(a); };
     const draw = () => {
@@ -119,8 +120,10 @@ class AoListen extends HTMLElement {
       a.removeAttribute('controls');
       a.preload = 'metadata';
       a.addEventListener('play', () => {
-        if (held.delete(a)) a.pause();
-        else if (c === cur) loop();
+        if (held.has(a)) {
+          a.pause();
+          if (!a.seeking) held.delete(a);
+        } else if (c === cur) loop();
       });
       a.addEventListener('pause', () => c === cur && draw());
       a.addEventListener('loadedmetadata', () => c === cur && draw());
