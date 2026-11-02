@@ -335,7 +335,8 @@ another clip keeps the playhead where it was, so the reader hears the same word 
 to the reference clip and back. Each clip's spectrogram spans its length; the playhead runs across it and a click
 seeks. With the list focused, up and down pick a clip, space plays, C flips A/B. It is one player on the page. A
 pause asked for before a clip is under way (still seeking, waiting for data, or its clock not yet moving since it
-seeked) holds once it is (WebKit's player would otherwise play on).
+seeked) holds once it is (WebKit's player would otherwise play on). The hold lasts 400 ms (from the end of the seek,
+for one asked for mid-seek): a play after that, from a media key, the lock screen or headphones, plays.
 
 | Attribute | |
 |---|---|

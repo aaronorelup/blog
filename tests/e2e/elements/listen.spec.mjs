@@ -77,6 +77,45 @@ test('listen-1b a Pause pressed while a seek is still running holds once the see
   await expect(listen(page).locator('.ao-listen-bar button').first()).toHaveText('Play');
 });
 
+// The hold ends: a play the element didn't make, once WebKit's own would have come, is the reader's (a media key,
+// the lock screen, headphones) and plays. Two Pauses that arm the hold: one as the clip's 'playing' is fired, its
+// clock still on the mark it set (WebKit's clock stands there; Chromium's has moved on), and one mid-seek.
+test('listen-1c a play from outside the page after a held Pause plays', async ({ page }) => {
+  const rows = listen(page).locator('.ao-listen-list button');
+  const title = (await rows.nth(1).locator('b').textContent()).trim();
+  const a = audioOf(page, title);
+  const pause = listen(page).locator('.ao-listen-bar button').first();
+  const playsAfter = async () => {
+    // A second after any seek is done, WebKit's play (if it came) has been held, and the clip is still paused.
+    expect(await a.evaluate((m) => new Promise((r) => {
+      const later = () => setTimeout(() => r(m.paused), 1000);
+      if (m.seeking) m.addEventListener('seeked', later, { once: true }); else later();
+    }))).toBe(true);
+    await a.evaluate((m) => { m.play().catch(() => {}); });
+    await expectPlaying(a);
+    await expect(pause).toHaveText('Pause');
+  };
+  const started = await listen(page).evaluate((el, t) => new Promise((r) => {
+    const m = [...el.querySelectorAll('figure')].find((f) => f.querySelector('figcaption b')?.textContent.trim() === t).querySelector('audio');
+    m.addEventListener('playing', () => {
+      const paused = m.paused;
+      el.querySelector('.ao-listen-bar button').click();
+      r(paused);
+    }, { once: true });
+    [...el.querySelectorAll('.ao-listen-list button')][1].click();
+  }), title);
+  expect(started).toBe(false);
+  await playsAfter();
+  const seeking = await a.evaluate((m) => {
+    m.currentTime = 2;
+    const was = m.seeking;
+    m.closest('ao-listen').querySelector('.ao-listen-bar button').click();
+    return was;
+  });
+  expect(seeking).toBe(true);
+  await playsAfter();
+});
+
 test('listen-2 A/B switches to the reference at the same moment, and back', async ({ page }) => {
   const rows = listen(page).locator('.ao-listen-list button');
   const ab = listen(page).locator('.ao-listen-bar button').nth(1);

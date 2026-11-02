@@ -56,12 +56,18 @@ class AoListen extends HTMLElement {
     // WebKit's GStreamer player plays a clip again, even after pause(), when the pause came before the clip was under
     // way: while it seeks, while it waits for data, or while its clock still stands where it last played, seeked or
     // waited (the phone project caught a Pause mid-seek, and A/B at a clip that had just seeked, the clip going on
-    // beside the reference). A pause asked for then holds: any play of that clip is paused at once, until a play
-    // comes once it neither seeks nor waits (the one WebKit makes) or the element starts the clip again.
-    const held = new Set();
+    // beside the reference). That play comes 80-150 ms after the pause, or as a seek running across it ends. A pause
+    // asked for then holds: a play of that clip in that time is paused at once. The hold ends at the first such play
+    // once the clip neither seeks nor waits, at start(), or HOLD ms after the pause (after its seek, for one asked for
+    // mid-seek): a play after that is the reader's own, from a media key, the lock screen or headphones, and plays.
+    const HOLD = 400;
+    const held = new Map(); // each held clip and when its hold ends (Infinity while the seek it was asked in runs)
     const mark = new Map(); // each clip's clock at its last play, seek or wait
     const settled = (a) => !a.seeking && a.readyState >= a.HAVE_FUTURE_DATA;
-    const halt = (a) => { if (!a.paused && (!settled(a) || a.currentTime === mark.get(a))) held.add(a); a.pause(); };
+    const halt = (a) => {
+      if (!a.paused && (!settled(a) || a.currentTime === mark.get(a))) held.set(a, a.seeking ? Infinity : performance.now() + HOLD);
+      a.pause();
+    };
     const draw = () => {
       const a = cur.audio;
       const d = a.duration;
@@ -123,11 +129,13 @@ class AoListen extends HTMLElement {
       a.removeAttribute('controls');
       a.preload = 'metadata';
       for (const t of ['seeking', 'seeked', 'waiting', 'playing']) a.addEventListener(t, () => mark.set(a, a.currentTime));
+      a.addEventListener('seeked', () => { if (held.get(a) === Infinity) held.set(a, performance.now() + HOLD); });
       a.addEventListener('play', () => {
-        if (held.has(a)) {
+        if (performance.now() < (held.get(a) ?? 0)) {
           a.pause();
           if (settled(a)) held.delete(a);
         } else {
+          held.delete(a);
           mark.set(a, a.currentTime);
           if (c === cur) loop();
         }
