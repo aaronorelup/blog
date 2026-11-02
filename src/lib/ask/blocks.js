@@ -2,7 +2,7 @@
 // page inside it as [n.Ns]), the catalog (one line a post) and fragment(), the body of a JSON string without its
 // quotes, which is how /ask/*.txt hold them so the Worker sends their bytes without parsing them (docs/ASK.md).
 import { CATALOG_CAP, est } from './caps.js';
-import { catalogHeader, CLAUDE_MARK, CUT, gapLine, LIVE_NOTE } from './words.js';
+import { catalogHeader, CLAUDE_MARK, CUT, gapLine, LIVE_LINE, LIVE_NOTE } from './words.js';
 
 export const fragment = (s) => JSON.stringify(s).slice(1, -1);
 const attr = (s) => String(s).replace(/"/g, '&quot;');
@@ -39,7 +39,7 @@ export const documents = (blocks) => `<documents>\n${blocks.join('\n\n')}\n</doc
 // Claude" on Claude's. A live notebook's line holds nothing its fleet writes but its topic. Over CATALOG_CAP the
 // oldest lines lose their takeaway first.
 export function catalogText(docs, counts) {
-  const lines = docs.map((d) => (d.live ? [`[${d.n}] ${d.slug} | ${d.topic} | a live ${LIVE_NOTE}`]
+  const lines = docs.map((d) => (d.live ? [`[${d.n}] ${d.slug} | ${d.topic} | ${LIVE_LINE}`]
     : [`[${d.n}] ${d.slug} | ${d.topic} | ${d.title}`, d.takeaway ? ` | ${d.takeaway}` : '', d.by === 'Claude' ? ' | by Claude' : '']));
   const text = () => `<catalog>\n${catalogHeader(counts)}\n${lines.map((l) => l.join('')).join('\n')}\n</catalog>`;
   let chars = text().length;

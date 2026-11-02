@@ -373,11 +373,13 @@ its static rung mid-test.
 | Reload, and Back with and without the page cache, put `#panel-scroll` back where the reader was, on a long post with components | post-10 |
 | The notes page is the post view without the short version, Read next or older/newer; its way back is the short version | post-11 |
 
-## Search and Ask Goobie (`search.spec.mjs`)
+## Search and Ask RAG Goobie (`search.spec.mjs`)
 
 `/api/*` answers come from `fixtures/api.json` (search-200 was recorded from `wrangler dev`, the answers of ask-200 and
 ask-notes from Goobie's prompt against DeepSeek; no `related` list names AO-073, so no check waits on the live
-notebook); Turnstile is a stub that solves at once with the test response.
+notebook); Ask's answers are event streams (`sse`, `fixtures.mjs` `streamOf()`), and search-17 and -19 hold the stream
+in the page to see it step by step. Turnstile is a stub that solves at once with the test response. Every spec that
+clicks Ask waits for `[data-search][data-ready]` first (the box's module has mounted).
 
 | Behaviour | Spec |
 |---|---|
@@ -388,26 +390,35 @@ notebook); Turnstile is a stub that solves at once with the test response.
 | A result opens its post with the sentence marked, open inside its `<details>`, in view in `#panel-scroll` (the frame unscrolled); a click clears it | search-5 |
 | The meaning half joins once typing stops (one call), with no `/api/session` request and no Turnstile | search-6 |
 | A failed meaning call leaves the words half and says nothing | search-7 |
-| Ask: no Turnstile before Ask opens; `GET /api/session`, then Turnstile, then one mint; the button is disabled and Goobie thinks while a question is out, and a second Enter sends nothing; the answer is text; its `[n]` count posts (every cite of one post reads `[1]`, a run of them shows once), each link goes to its own passage and works; related rows; one session for the next question | search-8 |
-| `{ ask: false }` hides the switch and says Goobie is resting, with no Turnstile | search-9 |
-| `resting` and `not-found` show their line over the closest posts | search-10 |
+| Ask RAG Goobie: no Turnstile before Ask opens; `GET /api/session`, then Turnstile, then one mint; the button is disabled and Goobie thinks while a question is out (the first is held until the test lets it go), and a second Enter sends nothing; the answer is text; its `[n]` count posts (every cite of one post reads `[1]`, a run of them shows once), each link goes to its own passage and works; related rows; one session for the next question | search-8 |
+| `{ ask: false }` hides the switch and says RAG Goobie is resting, with no Turnstile | search-9 |
+| `resting` and `busy` show their line over the closest posts, in place of the steps | search-10 |
 | A search still answering when Ask opens draws nothing in Ask, and the meaning half is never asked | search-11 |
 | A Turnstile challenge left unsolved (`timeout-callback`) says so and frees the button | search-12 |
 | A cite of a notes passage (`kind: 'notes'`) links to `/ledger/<slug>/notes/#<anchor>` and opens it with the words marked; a post passage links to the post | search-13 |
 | Opening Ask keeps the box's words, focused and selected: Enter asks them, typing replaces them | search-14 |
 | Aaron's two answers of 2026-11-01 (`fixtures/answers.mjs`): cites numbered by post with no gaps (1, 2, 3), a run of cites (spaces between too) showing each post once; no `title` tooltip, an `aria-label` "Source n: post, passage"; on a desktop each cite's card is its post's with a line naming its passage (heading, the opening, the full making-of for a notes cite, which gets a card), moving between two cites of one post leaves its loop playing, and a related row's card has no line | search-15 |
 | On a phone each `[n]` is a 44 px tap target (an invisible absolute box under `pointer: coarse`) that never covers another cite's number; cites closer than that (a run, one above another) share the room between them; the answer's lines and its cites don't move; a tap under a number opens its passage. On a desktop the target is the cite's own box | search-16 |
+| The steps show as the stream comes, in order, each ticked when the next arrives (start, plan with topic labels, found, read with titles from previews.json, write), with a status line; then the answer (cites as in search-15), the fine print (no "How RAG Goobie works" link before that post is listed) and the summary line; `aria-busy` clears | search-17 |
+| A cached answer is one event: the answer and "Answered before, from the answer cache · 0.1 s" | search-18 |
+| Words typing in are cited as they come (no raw `[n.s]` ever), and the final paragraph is the answer event's render | search-19 |
+| The empty Ask box's placeholder steps through the default line and the example questions every 4 s (`page.clock`); typing stops it, emptying the box starts it again, Search brings back "Search the ledger"; the `aria-label` never changes | search-20 |
+| Under reduced motion the Ask box shows the first example and never changes it | search-21 |
+| The "Ask RAG Goobie" button shows no card while the how-it-works post isn't in `previews.json`; once it is, hovering shows its card with the line "How RAG Goobie works", leaving closes it and keyboard focus opens it; a phone gets none | search-22 |
+| Words typed before the box's module has run (its chunk held) are searched once it mounts | search-23 |
+| The line under the box says how many posts RAG Goobie reads, in Ask only | search-24 |
+| On a 360 px Android phone (Chromium) a cite that ends a line flush makes no sideways scroll (its 44 px box stays inside the panel's padding) | search-25 (desktop project, Android profile) |
 
-Ask against the real Worker is checked by hand under `npx wrangler dev` (docs/WORKER.md, "Locally"): the real
-Turnstile widget with the test site key, a real mint and a real DeepSeek answer.
+Ask against the real Worker runs under `npx wrangler dev` in the eval (docs/ASK.md, "The eval"): the real Worker,
+a real mint with the test secret and real DeepSeek answers, never from the e2e suite.
 
 ## The hover card's size (`cards.spec.mjs`)
 
-Ask answers with Aaron's two answers (`fixtures/answers.mjs`) on a kept session, so no Turnstile loads.
+Ask streams Aaron's two answers (`fixtures/answers.mjs`) on a kept session, so no Turnstile loads.
 
 | Behaviour | Spec |
 |---|---|
-| At 1366×657 and 1024×600, by day and by night, every card opened from a Goobie cite (with its "Goobie cites:" line), a related row under the answer and the ledger's rows at the top, middle and foot of the window is inside the window whole, shows all of its words (`scrollHeight <= clientHeight`: `place()` measures the content, not the box `max-height` caps) and keeps clear of the link's words, stepping down a size only where it has to | cards-1 (desktop) |
+| At 1366×657 and 1024×600, by day and by night, every card opened from a RAG Goobie cite (with its "RAG Goobie cites:" line), a related row under the answer and the ledger's rows at the top, middle and foot of the window is inside the window whole, shows all of its words (`scrollHeight <= clientHeight`: `place()` measures the content, not the box `max-height` caps) and keeps clear of the link's words, stepping down a size only where it has to | cards-1 (desktop) |
 | At 1440×900 the cites' and related rows' cards are full size, and every card shows whole | cards-2 (desktop) |
 
 ## The projects page (`projects.spec.mjs`)

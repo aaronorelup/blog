@@ -528,7 +528,7 @@ test.describe('Ask RAG Goobie at work', () => {
     await input(page).fill('What did Aaron find?');
     await input(page).press('Enter');
     const before = events.findIndex((e) => e.t === 'text');
-    await step(page, before + 3);
+    await step(page, before + 4);   // the first words, two cites and the words that use them
     await expect(page.locator('.ask-text a.ask-cite').first()).toBeVisible();
     expect(await page.locator('.ask-text').textContent()).not.toMatch(/\[\d+\.\w+\]/);
     const partial = await page.locator('.ask-text').textContent();
@@ -651,15 +651,19 @@ test.describe('on a 360 px Android phone', () => {
     await input(page).fill('What did Aaron find?');
     await input(page).press('Enter');
     await expect(page.locator('.ask-text')).toHaveText(reply.reads);
-    // The answer's paragraph made as narrow as its first cite's end, at the panel's right edge: that cite ends a line flush.
+    // The answer's paragraph narrowed a pixel at a time, its right side kept at the panel's, until a cite ends a line
+    // flush with it.
     const flush = await page.locator('.ask-text').evaluate((p) => {
-      const a = p.querySelector('.ask-cite');
-      const width = Math.ceil(a.getBoundingClientRect().right - p.getBoundingClientRect().left);
-      Object.assign(p.style, { boxSizing: 'content-box', textWrap: 'wrap', width: `${width}px`,
-        marginLeft: `calc(100% - ${width}px - ${getComputedStyle(p).paddingRight})` });
-      return Math.abs(a.getBoundingClientRect().right - p.getBoundingClientRect().left - width) <= 1;
+      const pr = getComputedStyle(p).paddingRight;
+      const full = p.clientWidth - parseFloat(pr);
+      for (let w = full; w > full - 160; w--) {
+        Object.assign(p.style, { boxSizing: 'content-box', width: `${w}px`, marginLeft: `calc(100% - ${w}px - ${pr})` });
+        const edge = p.getBoundingClientRect().left + w;
+        if ([...p.querySelectorAll('.ask-cite')].some((a) => edge - a.getBoundingClientRect().right < 0.5)) return w;
+      }
+      return 0;
     });
-    expect(flush).toBe(true);
+    expect(flush).toBeGreaterThan(0);
     const over = await page.evaluate(() => [document.scrollingElement, document.getElementById('panel-scroll')]
       .filter(Boolean).map((el) => el.scrollWidth - el.clientWidth));
     expect(over.every((x) => x <= 0)).toBe(true);

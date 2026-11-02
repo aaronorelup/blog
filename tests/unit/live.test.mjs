@@ -1,7 +1,7 @@
 // AO-073 is written by a fleet of other sessions (src/data/exempt.js), so whatever they push must build. This breaks
 // a copy of it the way the fleet might and runs it through every rule that could fail a build. A task that adds a
 // rule adds its case here (T0.3 the checker and the media guard, T1.1 an unknown tag, T2.1 a post with no icon,
-// T2.3 search's chunks and manifest).
+// T2.3 search's chunks and manifest, T2.7 the Ask build).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -98,5 +98,34 @@ test('AO-073 has no icon, and its share card draws the topic glyph, even with a 
     const { format, width, height } = await sharp(jpg).metadata();
     assert.deepEqual([format, width, height], ['jpeg', OG.width, OG.height]);
     assert.ok(jpg.length <= OG.cap, `${jpg.length} bytes`);
+  }
+});
+
+test('the Ask build takes AO-073 oversized, unrendered or with anchors its page lacks: it cuts, and only warns', async () => {
+  const { assemble } = await import('../../src/lib/ask/manifest.js');
+  const { askCheck } = await import('../../scripts/build/ask-dist.mjs');
+  const { LIVE_CAP } = await import('../../src/lib/ask/caps.js');
+  const os = await import('node:os');
+  const path = await import('node:path');
+  const short = { anchor: 'short', heading: 'The short version', text: post.summary };
+  const base = { n: 48, slug: 'earthlight', url: '/ledger/earthlight/', title: 'E', topic: 'video', by: 'Aaron', takeaway: 'T',
+    short, live: false, notes: null, sections: [{ anchor: '', heading: '', text: 'Opening.' }] };
+  const live = (sections) => ({ n: 73, slug, url: `/ledger/${slug}/`, title: 'T'.repeat(200), topic: post.topic ?? 'agents',
+    by: 'Aaron', takeaway: '', short, live: true, notes: null, sections });
+  const huge = Array.from({ length: 300 }, (_, i) => ({ anchor: `round-${i}`, heading: `Round ${i}`, text: 'The fleet wrote this. '.repeat(200) }));
+  for (const sections of [huge, []]) {
+    const { manifest: m, files } = assemble([base, live(sections)], { pins: [1] });
+    assert.ok(m.docs[73].tokens <= LIVE_CAP);
+    if (sections.length) assert.equal(m.docs[73].cut, 'ends');
+    else assert.deepEqual(m.docs[73].sections.map((s) => s[0]), ['0']);
+    const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'ask-live-'));
+    fs.mkdirSync(path.join(dist, 'ask'));
+    fs.writeFileSync(path.join(dist, 'ask/manifest.json'), JSON.stringify(m));
+    for (const [f, body] of files) fs.writeFileSync(path.join(dist, 'ask', f), body);
+    fs.mkdirSync(path.join(dist, 'ledger/earthlight'), { recursive: true });
+    fs.writeFileSync(path.join(dist, 'ledger/earthlight/index.html'), '<aside id="short"></aside>');
+    const { problems, warnings } = askCheck(dist, new Set(['earthlight']));   // AO-073's page not even built
+    assert.deepEqual(problems, []);
+    assert.ok(warnings.length > 0);
   }
 });
