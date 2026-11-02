@@ -1,0 +1,94 @@
+{
+ "version": 1,
+ "note": "Candidates for the R7 placeholder; each must be re-checked against the real RAG Goobie answer before shipping.",
+ "examples": [
+  {
+   "q": "How did Aaron train a LoRA of his character?",
+   "gold": [
+    "jefrie-lora"
+   ],
+   "chars": 44
+  },
+  {
+   "q": "Is renting a cloud GPU worth it?",
+   "gold": [
+    "renting-a-gpu"
+   ],
+   "chars": 32
+  },
+  {
+   "q": "What does a $200 Claude plan really cover?",
+   "gold": [
+    "what-drives-claude-code-cost"
+   ],
+   "chars": 42
+  },
+  {
+   "q": "How does the hidden watermark in Claude's text work?",
+   "gold": [
+    "claude-text-watermark"
+   ],
+   "chars": 52
+  },
+  {
+   "q": "Can Claude mod a game I own?",
+   "gold": [
+    "characters-in-inscryption",
+    "modding-megabonk"
+   ],
+   "chars": 28
+  },
+  {
+   "q": "How do you make long AI films on an 8 GB laptop?",
+   "gold": [
+    "every-ai-film-so-far"
+   ],
+   "chars": 48
+  },
+  {
+   "q": "Who actually visits a brand-new website?",
+   "gold": [
+    "who-visits-a-new-website"
+   ],
+   "chars": 40
+  },
+  {
+   "q": "Did the AI writers catch the planted lie?",
+   "gold": [
+    "the-planted-lie"
+   ],
+   "chars": 41
+  },
+  {
+   "q": "What is I Love My Evening Television?",
+   "gold": [
+    "crimson-coil",
+    "earthlight",
+    "context-window",
+    "touch-move"
+   ],
+   "chars": 37
+  },
+  {
+   "q": "Can AI rig a 3D character with a tail?",
+   "gold": [
+    "ai-rigging-vs-a-script"
+   ],
+   "chars": 38
+  },
+  {
+   "q": "How big a game can one prompt build?",
+   "gold": [
+    "grind-and-grimoire"
+   ],
+   "chars": 36
+  },
+  {
+   "q": "What stopped Aaron when he started coding?",
+   "gold": [
+    "no-vs-code-no-terminal"
+   ],
+   "chars": 42
+  }
+ ]
+}

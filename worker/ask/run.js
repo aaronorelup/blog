@@ -17,7 +17,7 @@ import { ranking, relatedOf, search } from './rank.js';
 const billed = (r, at, share) => (r.usage ? cost(r.usage, at) : r.status && r.status !== 200 ? 0 : share);
 const k = (t) => `${Math.round(t / 1000)}k`;
 
-export async function run(env, { q, f, ix, out, key, day, start, variant }) {
+export async function run(env, { q, f, ix, out, key, day, start }) {
   const { m } = ix;
   const { send } = out;
   const slug = (n) => ix.doc(n).slug;
@@ -31,7 +31,7 @@ export async function run(env, { q, f, ix, out, key, day, start, variant }) {
     const rank = ranking(ix, { picks: p?.picks ?? [], lists });
     send('found', lists.length ? { searches: lists.length, passages: rank.chunks.length, posts: rank.fused.length,
       matched: rank.matched.length, ranked: rank.R.slice(0, 20).map(slug) } : { skipped: true });
-    const c = contextOf(ix, rank, { q, extraTokens: f.ask_extra_tokens, blind: !lists.length && !p?.picks.length, variant });
+    const c = contextOf(ix, rank, { q, extraTokens: f.ask_extra_tokens, blind: !lists.length && !p?.picks.length });
     send('read', { given: c.given, of: c.of, tokens: c.tokens, focus: rank.focus.map(slug) });
 
     const resolve = (mark) => ix.resolve(mark, c.inPrompt);
@@ -42,7 +42,7 @@ export async function run(env, { q, f, ix, out, key, day, start, variant }) {
     };
     const at = Date.now();
     let wrote = false;
-    const r = await call(env, await answerBody(env, ix, { ...c, variant }), {
+    const r = await call(env, await answerBody(env, ix, c), {
       stream: true, first: PARAMS.answer.first, total: PARAMS.answer.total,
       onText: (d) => {
         if (!wrote) send('write');

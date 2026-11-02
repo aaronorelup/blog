@@ -181,113 +181,464 @@
   },
   "ask-200": {
     "status": 200,
-    "json": {
-      "answer": "Aaron measured a rented 48 GB card at 4 to 5 times faster than his 8 GB laptop, once it had the two speed settings his laptop already used [1][2]. He had expected 10 to 30 times [2]. The first night it was only 1.2 to 1.9 times faster, because the card was running his laptop's 8 GB workarounds without SageAttention and the ComfyUI switch [1][3]. After Claude fixed that, it went from about 1.5x to 4.5x [3].",
-      "cites": [
-        {
-          "n": 1,
-          "slug": "renting-a-gpu",
-          "kind": "post",
-          "anchor": "short",
-          "heading": "The short version",
-          "title": "How much a rented cloud GPU speeds up my AI videos"
-        },
-        {
-          "n": 2,
-          "slug": "renting-a-gpu",
-          "kind": "post",
-          "anchor": "",
-          "heading": "",
-          "title": "How much a rented cloud GPU speeds up my AI videos"
-        },
-        {
-          "n": 3,
-          "slug": "renting-a-gpu",
-          "kind": "post",
-          "anchor": "the-first-night-it-was-barely-faster",
-          "heading": "The first night it was barely faster",
-          "title": "How much a rented cloud GPU speeds up my AI videos"
+    "sse": [
+      {
+        "t": "start",
+        "posts": 71,
+        "notes": 11,
+        "mode": "whole",
+        "packs": 1
+      },
+      {
+        "t": "plan",
+        "topics": [
+          "video",
+          "3d"
+        ],
+        "picks": 3
+      },
+      {
+        "t": "found",
+        "searches": 5,
+        "passages": 312,
+        "posts": 41,
+        "matched": 9,
+        "ranked": [
+          "renting-a-gpu",
+          "every-ai-film-so-far",
+          "characters-in-inscryption",
+          "showreel-rebuilt",
+          "moss-image-on-8gb",
+          "jefrie-lora"
+        ]
+      },
+      {
+        "t": "read",
+        "given": 71,
+        "of": 71,
+        "tokens": 318754,
+        "focus": [
+          "renting-a-gpu",
+          "every-ai-film-so-far",
+          "characters-in-inscryption",
+          "showreel-rebuilt",
+          "moss-image-on-8gb",
+          "jefrie-lora"
+        ]
+      },
+      {
+        "t": "write"
+      },
+      {
+        "t": "cite",
+        "n": 1,
+        "slug": "renting-a-gpu",
+        "kind": "post",
+        "anchor": "short",
+        "heading": "The short version",
+        "title": "How much a rented cloud GPU speeds up my AI videos"
+      },
+      {
+        "t": "cite",
+        "n": 2,
+        "slug": "renting-a-gpu",
+        "kind": "post",
+        "anchor": "",
+        "heading": "",
+        "title": "How much a rented cloud GPU speeds up my AI videos"
+      },
+      {
+        "t": "text",
+        "d": "Aaron measured a rented 48 GB card at 4 to 5 times faster than his 8 GB laptop, once it had the two speed settings his laptop already used [1][2]. "
+      },
+      {
+        "t": "text",
+        "d": "He had expected 10 to 30 times [2]. "
+      },
+      {
+        "t": "text",
+        "d": "The first night it was only 1."
+      },
+      {
+        "t": "text",
+        "d": "2 to 1."
+      },
+      {
+        "t": "cite",
+        "n": 3,
+        "slug": "renting-a-gpu",
+        "kind": "post",
+        "anchor": "the-first-night-it-was-barely-faster",
+        "heading": "The first night it was barely faster",
+        "title": "How much a rented cloud GPU speeds up my AI videos"
+      },
+      {
+        "t": "text",
+        "d": "9 times faster, because the card was running his laptop's 8 GB workarounds without SageAttention and the ComfyUI switch [1][3]. "
+      },
+      {
+        "t": "text",
+        "d": "After Claude fixed that, it went from about 1."
+      },
+      {
+        "t": "text",
+        "d": "5x to 4."
+      },
+      {
+        "t": "text",
+        "d": "5x [3]."
+      },
+      {
+        "t": "answer",
+        "answer": "Aaron measured a rented 48 GB card at 4 to 5 times faster than his 8 GB laptop, once it had the two speed settings his laptop already used [1][2]. He had expected 10 to 30 times [2]. The first night it was only 1.2 to 1.9 times faster, because the card was running his laptop's 8 GB workarounds without SageAttention and the ComfyUI switch [1][3]. After Claude fixed that, it went from about 1.5x to 4.5x [3].",
+        "cites": [
+          {
+            "n": 1,
+            "slug": "renting-a-gpu",
+            "kind": "post",
+            "anchor": "short",
+            "heading": "The short version",
+            "title": "How much a rented cloud GPU speeds up my AI videos"
+          },
+          {
+            "n": 2,
+            "slug": "renting-a-gpu",
+            "kind": "post",
+            "anchor": "",
+            "heading": "",
+            "title": "How much a rented cloud GPU speeds up my AI videos"
+          },
+          {
+            "n": 3,
+            "slug": "renting-a-gpu",
+            "kind": "post",
+            "anchor": "the-first-night-it-was-barely-faster",
+            "heading": "The first night it was barely faster",
+            "title": "How much a rented cloud GPU speeds up my AI videos"
+          }
+        ],
+        "related": [
+          "renting-a-gpu",
+          "characters-in-inscryption",
+          "showreel-rebuilt",
+          "moss-image-on-8gb"
+        ],
+        "cached": false,
+        "took": 5210,
+        "usage": {
+          "tokens": 309012,
+          "hit": 308700,
+          "out": 230,
+          "usd": 0.0025
         }
-      ],
-      "related": [
-        "renting-a-gpu",
-        "characters-in-inscryption",
-        "showreel-rebuilt",
-        "moss-image-on-8gb"
-      ],
-      "cached": false
-    }
+      }
+    ]
   },
   "ask-notes": {
     "status": 200,
-    "json": {
-      "answer": "The big one was the art. Five of six portraits came out as black silhouettes, and every automated check passed anyway, because the game draws any solid pixel as ink [2][4]. Only a screenshot caught it [2][6]. Aaron calls the art the weak part of the whole run [2][6].\n\nTwo smaller things went wrong too. Rendering on the CPU crashed all five launches while his main GPU was booked, and the laptop's Intel graphics worked first time [2]. And once he asked how to actually play it, the deck screen never opened and the previews were blank, which took more fixes [5].",
-      "cites": [
-        {
-          "n": 2,
-          "slug": "characters-in-inscryption",
-          "kind": "post",
-          "anchor": "short",
-          "heading": "The short version",
-          "title": "Claude modded my characters into the card game Inscryption"
-        },
-        {
-          "n": 4,
-          "slug": "characters-in-inscryption",
-          "kind": "post",
-          "anchor": "",
-          "heading": "",
-          "title": "Claude modded my characters into the card game Inscryption"
-        },
-        {
-          "n": 5,
-          "slug": "characters-in-inscryption",
-          "kind": "notes",
-          "anchor": "how-to-play-it",
-          "heading": "How to play it",
-          "title": "My characters in Inscryption: the making-of notes"
-        },
-        {
-          "n": 6,
-          "slug": "characters-in-inscryption",
-          "kind": "notes",
-          "anchor": "doing-this-with-another-game",
-          "heading": "Doing this with another game",
-          "title": "My characters in Inscryption: the making-of notes"
+    "sse": [
+      {
+        "t": "start",
+        "posts": 71,
+        "notes": 11,
+        "mode": "whole",
+        "packs": 1
+      },
+      {
+        "t": "plan",
+        "topics": [
+          "video",
+          "3d"
+        ],
+        "picks": 3
+      },
+      {
+        "t": "found",
+        "searches": 5,
+        "passages": 312,
+        "posts": 41,
+        "matched": 9,
+        "ranked": [
+          "characters-in-inscryption",
+          "modding-megabonk",
+          "jefrie-lora",
+          "renting-a-gpu",
+          "showreel-rebuilt",
+          "moss-image-on-8gb"
+        ]
+      },
+      {
+        "t": "read",
+        "given": 71,
+        "of": 71,
+        "tokens": 318754,
+        "focus": [
+          "characters-in-inscryption",
+          "modding-megabonk",
+          "jefrie-lora",
+          "renting-a-gpu",
+          "showreel-rebuilt",
+          "moss-image-on-8gb"
+        ]
+      },
+      {
+        "t": "write"
+      },
+      {
+        "t": "text",
+        "d": "The big one was the art. "
+      },
+      {
+        "t": "cite",
+        "n": 2,
+        "slug": "characters-in-inscryption",
+        "kind": "post",
+        "anchor": "short",
+        "heading": "The short version",
+        "title": "Claude modded my characters into the card game Inscryption"
+      },
+      {
+        "t": "cite",
+        "n": 4,
+        "slug": "characters-in-inscryption",
+        "kind": "post",
+        "anchor": "",
+        "heading": "",
+        "title": "Claude modded my characters into the card game Inscryption"
+      },
+      {
+        "t": "text",
+        "d": "Five of six portraits came out as black silhouettes, and every automated check passed anyway, because the game draws any solid pixel as ink [2][4]. "
+      },
+      {
+        "t": "cite",
+        "n": 6,
+        "slug": "characters-in-inscryption",
+        "kind": "notes",
+        "anchor": "doing-this-with-another-game",
+        "heading": "Doing this with another game",
+        "title": "My characters in Inscryption: the making-of notes"
+      },
+      {
+        "t": "text",
+        "d": "Only a screenshot caught it [2][6]. "
+      },
+      {
+        "t": "text",
+        "d": "Aaron calls the art the weak part of the whole run [2][6].\n\n"
+      },
+      {
+        "t": "text",
+        "d": "Two smaller things went wrong too. "
+      },
+      {
+        "t": "text",
+        "d": "Rendering on the CPU crashed all five launches while his main GPU was booked, and the laptop's Intel graphics worked first time [2]. "
+      },
+      {
+        "t": "cite",
+        "n": 5,
+        "slug": "characters-in-inscryption",
+        "kind": "notes",
+        "anchor": "how-to-play-it",
+        "heading": "How to play it",
+        "title": "My characters in Inscryption: the making-of notes"
+      },
+      {
+        "t": "text",
+        "d": "And once he asked how to actually play it, the deck screen never opened and the previews were blank, which took more fixes [5]."
+      },
+      {
+        "t": "answer",
+        "answer": "The big one was the art. Five of six portraits came out as black silhouettes, and every automated check passed anyway, because the game draws any solid pixel as ink [2][4]. Only a screenshot caught it [2][6]. Aaron calls the art the weak part of the whole run [2][6].\n\nTwo smaller things went wrong too. Rendering on the CPU crashed all five launches while his main GPU was booked, and the laptop's Intel graphics worked first time [2]. And once he asked how to actually play it, the deck screen never opened and the previews were blank, which took more fixes [5].",
+        "cites": [
+          {
+            "n": 2,
+            "slug": "characters-in-inscryption",
+            "kind": "post",
+            "anchor": "short",
+            "heading": "The short version",
+            "title": "Claude modded my characters into the card game Inscryption"
+          },
+          {
+            "n": 4,
+            "slug": "characters-in-inscryption",
+            "kind": "post",
+            "anchor": "",
+            "heading": "",
+            "title": "Claude modded my characters into the card game Inscryption"
+          },
+          {
+            "n": 5,
+            "slug": "characters-in-inscryption",
+            "kind": "notes",
+            "anchor": "how-to-play-it",
+            "heading": "How to play it",
+            "title": "My characters in Inscryption: the making-of notes"
+          },
+          {
+            "n": 6,
+            "slug": "characters-in-inscryption",
+            "kind": "notes",
+            "anchor": "doing-this-with-another-game",
+            "heading": "Doing this with another game",
+            "title": "My characters in Inscryption: the making-of notes"
+          }
+        ],
+        "related": [
+          "characters-in-inscryption",
+          "modding-megabonk",
+          "jefrie-lora"
+        ],
+        "cached": false,
+        "took": 5210,
+        "usage": {
+          "tokens": 309012,
+          "hit": 308700,
+          "out": 230,
+          "usd": 0.0025
         }
-      ],
-      "related": [
-        "characters-in-inscryption",
-        "modding-megabonk",
-        "jefrie-lora"
-      ],
-      "cached": false
-    }
+      }
+    ]
   },
-  "ask-not-found": {
+  "ask-cached": {
     "status": 200,
-    "json": {
-      "answer": null,
-      "reason": "not-found",
-      "related": [
-        "sonnet-vs-opus-gauntlet",
-        "nine-claudes-one-painting",
-        "context-window"
-      ]
-    }
+    "sse": [
+      {
+        "t": "answer",
+        "answer": "Aaron measured a rented 48 GB card at 4 to 5 times faster than his 8 GB laptop, once it had the two speed settings his laptop already used [1][2]. He had expected 10 to 30 times [2]. The first night it was only 1.2 to 1.9 times faster, because the card was running his laptop's 8 GB workarounds without SageAttention and the ComfyUI switch [1][3]. After Claude fixed that, it went from about 1.5x to 4.5x [3].",
+        "cites": [
+          {
+            "n": 1,
+            "slug": "renting-a-gpu",
+            "kind": "post",
+            "anchor": "short",
+            "heading": "The short version",
+            "title": "How much a rented cloud GPU speeds up my AI videos"
+          },
+          {
+            "n": 2,
+            "slug": "renting-a-gpu",
+            "kind": "post",
+            "anchor": "",
+            "heading": "",
+            "title": "How much a rented cloud GPU speeds up my AI videos"
+          },
+          {
+            "n": 3,
+            "slug": "renting-a-gpu",
+            "kind": "post",
+            "anchor": "the-first-night-it-was-barely-faster",
+            "heading": "The first night it was barely faster",
+            "title": "How much a rented cloud GPU speeds up my AI videos"
+          }
+        ],
+        "related": [
+          "renting-a-gpu",
+          "characters-in-inscryption",
+          "showreel-rebuilt",
+          "moss-image-on-8gb"
+        ],
+        "cached": true,
+        "took": 96,
+        "usage": {
+          "tokens": 309012,
+          "hit": 308700,
+          "out": 230,
+          "usd": 0.0025
+        }
+      }
+    ]
   },
   "ask-resting": {
     "status": 200,
-    "json": {
-      "answer": null,
-      "reason": "resting",
-      "related": [
-        "renting-a-gpu",
-        "characters-in-inscryption",
-        "showreel-rebuilt",
-        "moss-image-on-8gb"
-      ]
-    }
+    "sse": [
+      {
+        "t": "end",
+        "reason": "resting",
+        "related": [
+          "renting-a-gpu",
+          "characters-in-inscryption",
+          "showreel-rebuilt",
+          "moss-image-on-8gb"
+        ]
+      }
+    ]
+  },
+  "ask-busy": {
+    "status": 200,
+    "sse": [
+      {
+        "t": "start",
+        "posts": 71,
+        "notes": 11,
+        "mode": "whole",
+        "packs": 1
+      },
+      {
+        "t": "plan",
+        "topics": [
+          "video",
+          "3d"
+        ],
+        "picks": 3
+      },
+      {
+        "t": "found",
+        "searches": 5,
+        "passages": 312,
+        "posts": 41,
+        "matched": 9,
+        "ranked": [
+          "renting-a-gpu",
+          "every-ai-film-so-far",
+          "characters-in-inscryption",
+          "showreel-rebuilt",
+          "moss-image-on-8gb",
+          "jefrie-lora"
+        ]
+      },
+      {
+        "t": "read",
+        "given": 71,
+        "of": 71,
+        "tokens": 318754,
+        "focus": [
+          "renting-a-gpu",
+          "every-ai-film-so-far",
+          "characters-in-inscryption",
+          "showreel-rebuilt",
+          "moss-image-on-8gb",
+          "jefrie-lora"
+        ]
+      },
+      {
+        "t": "write"
+      },
+      {
+        "t": "write"
+      },
+      {
+        "t": "end",
+        "reason": "busy",
+        "related": [
+          "renting-a-gpu",
+          "every-ai-film-so-far",
+          "characters-in-inscryption",
+          "showreel-rebuilt"
+        ]
+      }
+    ]
+  },
+  "ask-off": {
+    "status": 200,
+    "sse": [
+      {
+        "t": "end",
+        "reason": "off",
+        "related": []
+      }
+    ]
   },
   "ask-429": {
     "status": 429

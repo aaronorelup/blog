@@ -4,7 +4,7 @@
 import { buildJson } from '../lib/build-files.js';
 
 export const MANIFEST = '/ask/manifest.json';
-const ID = /^AO-0*(\d+)(n?):(\d+)$/;   // a search chunk's vector id: AO-063:4, AO-063n:4 (its notes page)
+const ID = /^AO-0*(\d+)n?:\d+$/;   // a search chunk's vector id: AO-063:4, AO-063n:4 (its notes page)
 const indexes = new WeakMap();
 
 export async function corpus(env) {
@@ -27,12 +27,6 @@ export function indexOf(m) {
     n: (slug) => bySlug.get(slug),
     doc: (n) => m.docs[n],
     ofId,
-    // '55.3' for a chunk id, from the build's chunk maps (the gated hint marks).
-    sectionOfChunk: (id) => {
-      const [, n, notes, i] = ID.exec(id);
-      const s = m.docs[Number(n)].chunks?.[notes ? 'notes' : 'post']?.[Number(i)];
-      return s ? `${Number(n)}.${s}` : null;
-    },
     // '45.2', '45.N3' or '45' -> { slug, kind, anchor, heading, title }, or null for a mark no listed section has.
     // within: the docs in this prompt (split mode), which a section mark must name; a bare [n] may name any post.
     resolve: (mark, within = null) => {

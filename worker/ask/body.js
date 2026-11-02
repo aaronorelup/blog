@@ -27,11 +27,11 @@ const piece = (env, file) => kept[file.slice(0, file.indexOf('-'))](file, () => 
   .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(`/ask/${file} answered ${r.status}`)))));
 
 // ix: corpus.js's index; pack: its index; extras: doc numbers, in order; user: the user message.
-export async function answerBody(env, ix, { pack, extras, user, variant }) {
+export async function answerBody(env, ix, { pack, extras, user }) {
   const files = [ix.m.packs[pack].file, ix.m.catalog.file, ...extras.map((n) => ix.doc(n).file)];
   const [packBytes, catalogBytes, ...docs] = await Promise.all(files.map((f) => piece(env, f)));
   const after = docs.length ? [SEP, OPEN, ...docs.flatMap((d, i) => (i ? [SEP, d] : [d])), CLOSE] : [];
-  return new Blob([answerHead(variant), packBytes, SEP, catalogBytes, ...after, tail(user)]);
+  return new Blob([answerHead, packBytes, SEP, catalogBytes, ...after, tail(user)]);
 }
 
 export async function plannerBody(env, ix, q) {

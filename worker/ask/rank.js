@@ -5,7 +5,7 @@
 import { spend } from '../lib/flags.js';
 import { embed, nearest } from '../search/retrieve.js';
 
-export const RANK = { k: 60, topK: 100, timeout: 5e3, focusMore: 6, hint: 6, ranked: 20, close: 20, closeOne: 5, related: 4 };
+export const RANK = { k: 60, topK: 100, timeout: 5e3, focusMore: 6, hint: 6, ranked: 20, matched: 6, matchedMax: 12, related: 4 };
 
 const within = (ms, p) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(new Error(`${ms} ms`)), ms))]);
 const unique = (xs) => [...new Set(xs)];
@@ -31,11 +31,9 @@ export function ranking(ix, { picks = [], lists = [] }) {
   const picked = picks.map(ix.n);
   const live = new Set(ix.live.filter((n) => !picked.includes(n)));
   const R = unique([...picked, ...fused, ...[...ix.order].reverse()]).filter((n) => !live.has(n));
-  // Posts with a chunk near the top of at least two lists (of one list, its top 5), and the picks.
-  const [top, need] = lists.length > 1 ? [RANK.close, 2] : [RANK.closeOne, 1];
-  const near = new Map();
-  for (const list of lists) for (const n of unique(list.slice(0, top).map(ix.ofId))) near.set(n, (near.get(n) ?? 0) + 1);
-  const matched = unique([...picked, ...[...near].filter(([n, c]) => n !== null && c >= need && !live.has(n)).map(([n]) => n)]);
+  // "Matched closely": the picks and the fused top 6, 12 at most. (D9's stricter count, a chunk in the top 20 of two
+  // lists, matched more posts for off-topic questions than for answerable ones on the eval: docs/ASK.md.)
+  const matched = unique([...picked, ...fused.filter((n) => !live.has(n)).slice(0, RANK.matched)]).slice(0, RANK.matchedMax);
   return { R, chunks, fused, picked, matched, focus: R.slice(0, picked.length + RANK.focusMore), hint: R.slice(0, RANK.hint) };
 }
 

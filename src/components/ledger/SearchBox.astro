@@ -1,8 +1,20 @@
 ---
-// The search box at the top of the ledger, with its Search | Ask Goobie switch. scripts/search/box.js runs it: words
-// from Pagefind and meaning from /api/search, merged; Ask loads search/ask.js only once it is opened. Results and
-// answers are written into [data-search-out]. Turnstile, when Ask needs it, draws into [data-turnstile].
+// The search box at the top of the ledger, with its Search | Ask RAG Goobie switch. scripts/search/box.js runs it:
+// words from Pagefind and meaning from /api/search, merged; Ask loads search/ask.js only once it is opened, cycles the
+// example questions of src/data/ask.js in the empty box, and shows the line under it. Results and answers are written
+// into [data-search-out]; Turnstile, when Ask needs it, draws into [data-turnstile]. The Ask button shows the
+// how-it-works post's card once that post is listed (PREVIEWS.md).
 import Glyph from '../chrome/Glyph.astro';
+import { ABOUT_POST, EXAMPLES } from '../../data/ask.js';
+import { askBuild } from '../../lib/ask/build.js';
+import { EXTRA_TOKENS } from '../../lib/ask/caps.js';
+
+const { manifest: m } = await askBuild();
+const all = m.counts.posts.toLocaleString('en-US');
+const tokens = Object.values(m.docs).map((d) => d.tokens).sort((a, b) => a - b);
+const most = Math.max(...m.packs.map((p) => p.docs.length)) + Math.round(EXTRA_TOKENS / tokens[tokens.length >> 1]);
+const line = m.mode === 'whole' ? `RAG Goobie reads all ${all} of Aaron's posts before it answers.`
+  : `RAG Goobie reads the catalog of all ${all} of Aaron's posts and up to ${most} of them in full before it answers.`;
 ---
 
 <form class="search" role="search" action="/ledger/" data-search>
@@ -12,14 +24,16 @@ import Glyph from '../chrome/Glyph.astro';
       <img class="search-goobie" src="/media/goobie/goobie-96.webp" width="34" height="34" alt="" loading="lazy" hidden />
     </span>
     <input class="search-input" name="q" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search"
-      aria-label="Search the ledger" placeholder="Search the ledger" />
+      aria-label="Search the ledger" placeholder="Search the ledger" data-examples={JSON.stringify(EXAMPLES)} />
     <button class="search-go" type="submit" hidden>Ask</button>
   </div>
   <div class="search-modes" role="group" aria-label="What the box does">
     <button type="button" class="search-mode" data-mode="search" aria-pressed="true">Search</button>
-    <button type="button" class="search-mode" data-mode="ask" aria-pressed="false">Ask Goobie</button>
+    <button type="button" class="search-mode" data-mode="ask" aria-pressed="false" data-card={ABOUT_POST}
+      data-card-line="How RAG Goobie works">Ask RAG Goobie</button>
   </div>
   <p class="search-note" data-search-note hidden></p>
+  <p class="search-line" data-ask-line hidden>{line}</p>
   <div class="search-turnstile" data-turnstile></div>
   <div class="search-out" data-search-out aria-live="polite"></div>
 </form>

@@ -11,9 +11,8 @@ export const PARAMS = {
 };
 const fill = (template, slots) => template.replace(/\{(\w+)\}/g, (_, k) => String(slots[k]));
 
-// rank: rank.js ranking(). blind: neither the planner nor the search gave anything. variant 'a': the hint names
-// each post's best sections.
-export function contextOf(ix, rank, { q, extraTokens, blind = false, variant }) {
+// rank: rank.js ranking(). blind: neither the planner nor the search gave anything.
+export function contextOf(ix, rank, { q, extraTokens, blind = false }) {
   const { m } = ix;
   const total = m.counts.posts;
   let pack = 0;
@@ -22,7 +21,7 @@ export function contextOf(ix, rank, { q, extraTokens, blind = false, variant }) 
   const inPack = m.packs[pack].docs.length;
   const given = m.mode === 'whole' ? total : inPack + extras.length;
   const slots = { total, given, inPack, extra: extras.length, matched: rank.matched.length, q };
-  const hint = rank.hint.map((n) => `[${n}] ${ix.doc(n).title}${variant === 'a' ? marksOf(ix, rank.chunks, n) : ''}`).join('; ');
+  const hint = rank.hint.map((n) => `[${n}] ${ix.doc(n).title}`).join('; ');
   const head = blind ? [USER[`${m.mode}Blind`]]
     : rank.matched.length ? [USER[m.mode], fill(USER.hint, { hint })] : [USER[`${m.mode}None`], fill(USER.hintNone, { hint })];
   const user = `${head.map((t) => fill(t, slots)).join('\n')}\n\n${fill(USER.question, slots)}`;
@@ -59,14 +58,3 @@ function splitOf(ix, rank, extraTokens) {
   return { pack, extras: [...extras.filter((n) => !live.has(n)), ...extras.filter((n) => live.has(n))] };
 }
 
-// " (55.3, 55.N2)": the sections of a hint post's best fused chunks, up to 3 (variant 'a').
-function marksOf(ix, chunks, n) {
-  const marks = [];
-  for (const id of chunks) {
-    if (ix.ofId(id) !== n) continue;
-    const s = ix.sectionOfChunk(id);
-    if (s && !marks.includes(s)) marks.push(s);
-    if (marks.length === 3) break;
-  }
-  return marks.length ? ` (${marks.join(', ')})` : '';
-}

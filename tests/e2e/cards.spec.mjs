@@ -1,10 +1,10 @@
 // The hover card fits the window it opens in (src/scripts/cards/render.js place(), PREVIEWS.md): on a short window it
 // steps down a size rather than run off the screen or cut off its own last lines, keeping clear of the link's words,
-// for a Goobie cite (with its "Goobie cites:" line), a related row under the answer and a ledger row alike, by day and
+// for a RAG Goobie cite (with its "RAG Goobie cites:" line), a related row under the answer and a ledger row alike, by day and
 // by night; at 1440x900 the cites' and related rows' cards stay full size. Ask gives Aaron's two answers of 2026-11-01
 // (fixtures/answers.mjs) on a kept session, so no Turnstile loads. Desktop only: a phone gets no card (ledger-4). cards-*.
 import { ANSWERS } from './fixtures/answers.mjs';
-import { test, expect } from './fixtures.mjs';
+import { test, expect, sse, streamOf } from './fixtures.mjs';
 
 test.skip(({ isMobile }) => isMobile, 'phones never get a card (ledger-4)');
 
@@ -49,7 +49,8 @@ async function hover(page, link) {
 // the line naming its passage; a related row's has its post's title and no line.
 async function askedCards(page, posts) {
   const replies = [...ANSWERS];
-  await page.route('**/api/ask', (route) => route.fulfill({ json: replies.shift() }));
+  await page.route('**/api/ask', (route) => route.fulfill(sse(streamOf(replies.shift()))));
+  await expect(page.locator('[data-search][data-ready]')).toHaveCount(1);
   await page.locator('[data-mode="ask"]').click();
   await expect(page.locator('[data-mode="ask"]')).toHaveAttribute('aria-pressed', 'true');
   const seen = [];
@@ -60,7 +61,7 @@ async function askedCards(page, posts) {
     for (const [j, [n, slug, , , where]] of reply.links.entries()) {
       const link = page.locator('.ask-cite').nth(j);
       await hover(page, link);
-      await expect(card(page).locator('.lp-line')).toHaveText(`Goobie cites: ${where}`);
+      await expect(card(page).locator('.lp-line')).toHaveText(`RAG Goobie cites: ${where}`);
       await expect(card(page).locator('.lp-line')).toBeVisible();
       await expect(card(page).locator('.lp-title')).toHaveText(posts[slug].title);
       seen.push([`answer ${i} cite ${j} ${n}`, await fit(page, link)]);
