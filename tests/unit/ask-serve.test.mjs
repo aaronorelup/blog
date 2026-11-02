@@ -1,7 +1,8 @@
 // POST /api/ask end to end through serve.js and run.js, with stub bindings over a small built blog (ask-fixture.mjs)
 // and DeepSeek mocked: the guards before any paid call, the event stream and its order, the answer cache and the
 // live-hash rule, the reservation, its settle and release, the caps (spend() fixed), search_daily counting Ask's
-// embeddings, nothing about the visitor or the planner's queries in any request or event, the binding-call budget.
+// embeddings, nothing about the visitor or the planner's queries in any request or event, the binding-call budget of a
+// cold isolate's first question.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -89,8 +90,10 @@ test('an answer streams start, plan, found, read, write, cites and text, then on
   t.mock.method(console, 'log', () => {});
   const { bodies } = deepseek(t);
   await clear();
-  const ai = asked.ai;
+  const before = { ...asked };   // the isolate's first question: no manifest, prompt file or answer-cache table yet
   const { events } = await ask('How long did post three take?');
+  const used = Object.keys(asked).reduce((n, k) => n + asked[k] - before[k], 0);
+  assert.ok(used <= 45, `${used} binding calls on a cold isolate`);
   const types = events.map((e) => e.t);
   assert.deepEqual(types.slice(0, 5), ['start', 'plan', 'found', 'read', 'write']);
   assert.equal(types.at(-1), 'answer');
@@ -113,7 +116,7 @@ test('an answer streams start, plan, found, read, write, cites and text, then on
   assert.equal(await total('ask_usd'), cost(USAGE, Date.now()) * 2, 'settled to the reported usage');
   assert.equal(await total('ask'), 1);
   assert.equal(await total('search'), 2, 'two embedding calls a question, counted');
-  assert.equal(asked.ai - ai, 2);
+  assert.equal(asked.ai - before.ai, 2);
   // Nothing about the visitor, no user_id, and the planner's queries go nowhere but the embedding.
   for (const b of bodies) {
     assert.ok(!('user_id' in b.body) && !b.text.includes('user_id'));
@@ -209,16 +212,6 @@ test('both the planner and the search failing still answers, from every post, wi
   assert.deepEqual([r.events[1], r.events[2]], [{ t: 'plan', skipped: true }, { t: 'found', skipped: true }]);
   assert.equal(r.events.at(-1).t, 'answer');
   assert.equal(bodies.find((b) => b.body.stream).body.messages[1].content, 'You have all 7 in full above.\n\nQuestion: anything at all here');
-});
-
-test('a question makes at most 45 binding calls on a cold isolate', async (t) => {
-  t.mock.method(console, 'log', () => {});
-  deepseek(t);
-  await clear();
-  const before = { ...asked };
-  await ask('one more question for the count');
-  const used = Object.keys(asked).reduce((n, k) => n + asked[k] - before[k], 0);
-  assert.ok(used <= 45, `${used} binding calls`);
 });
 
 test('the stream sends a wait after 10 s without an event, and writes after a disconnect are no-ops', async (t) => {
