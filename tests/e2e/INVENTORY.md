@@ -5,7 +5,11 @@ each `addEventListener` and each documented attribute of a component has one (`s
 `src/scripts/home/`, `src/scripts/home/overlay/`, `src/scripts/cards/`, `src/scripts/ledger/`,
 `src/scripts/search/`, `src/scripts/post/`, `src/scripts/views/`, the inline scripts of the standalone pages). A spec
 id is the start of a test title (`npm run e2e -- -g core-4`). Unless a row says otherwise it passes on both projects,
-`desktop` (Chromium 1440×900) and `phone` (WebKit, iPhone 13).
+`desktop` (Chromium 1440×900) and `phone` (WebKit, iPhone 13). The two wall-clock checks, search-2 and read-2 (tagged
+`@timing`), run in `desktop-timing` and `phone-timing`, the two projects' teardowns: Playwright starts them once both
+have finished, whatever their results, one test at a time a project, so their budgets in ms time the code and not a
+box whose 4 cores the parallel tests saturate. A teardown project always runs whole: every `npm run e2e`, filtered or
+not, ends with these 4 tests.
 
 The pages listed are those of the build this was written from; the specs don't read this list. They take their
 pages from `tests/e2e/targets.json`, which `scripts/tools/element-usage.mjs` rewrites from `dist/` before every run,
@@ -384,7 +388,8 @@ clicks Ask waits for `[data-search][data-ready]` first (the box's module has mou
 | Behaviour | Spec |
 |---|---|
 | `/` focuses the box (inside it, `/` is a character); nothing of search loads before the first focus | search-1 |
-| "gpu" draws the words half's first results within 150 ms of the index being ready (the best of three loads, Pagefind's files served from memory so the time is the code's, not the network's), the rest as their passages come, each linked to its heading with `?hl=&hs=` and marked | search-2 |
+| "gpu" draws the words half's first results within 150 ms of the index being ready (the best of three loads, Pagefind's files served from memory so the time is the code's, not the network's), the rest as their passages come, each linked to its heading with `?hl=&hs=` and marked | search-2 (`@timing`) |
+| A row on screen never moves or changes once drawn: the words half's late passages and the meaning half only add rows at the end, as they come, with the 2nd page's passage slow, and with the 1st page's slow so the meaning half draws first. The third row's link, read with the pointer on it, keeps its box and is the element under the pointer once everything is in, and a click (a tap on the phone) opens it | search-26 |
 | The Pagefind index holds exactly the listed posts and their notes, each a `/ledger/` page that exists | search-3 |
 | No unlisted post can be found by its title | search-4 |
 | A result opens its post with the sentence marked, open inside its `<details>`, in view in `#panel-scroll` (the frame unscrolled); a click clears it | search-5 |
@@ -440,7 +445,7 @@ every 200 ms), so nothing waits for the Worker's key.
 | Behaviour | Listener or attribute | Spec |
 |---|---|---|
 | Listen opens karaoke mode and plays this version's recording; the word read is marked at 1x and 2x; the speed button steps 1x, 1.25x, 1.5x, 2x, each setting `playbackRate`; pause and close | `[data-read-aloud]` click (`listen.js`), `.ra-bar` buttons, `CSS.highlights` `ao-read` | read-1 |
-| A click on a word mid-paragraph starts there within a second, within 0.3 s of the word, in its part | article `click` → `caretPositionFromPoint` / `caretRangeFromPoint` | read-2 |
+| A click on a word mid-paragraph starts there within a second, within 0.3 s of the word, in its part | article `click` → `caretPositionFromPoint` / `caretRangeFromPoint` | read-2 (`@timing`) |
 | A click on a word while the recording's first part is still loading reads and marks from there, and the bar says it plays | `recorded.js` `play()` superseded by a later one | read-2b |
 | A reader closed while its recording loads plays nothing when it arrives: no part fetched, nothing on the lock screen | `index.js` `loading` | read-2c |
 | With no recording of this version the browser voice reads, block by block: its word boundaries mark the word, the speed sets `rate`, a click starts the next utterance at that word | `speechSynthesis` (a stand-in voice in Chromium) | read-3 |

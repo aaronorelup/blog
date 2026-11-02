@@ -132,7 +132,8 @@ test('read-1 Listen plays the recording; the word read is marked at 1x and 2x; t
   await expect(page.locator('[data-post-article]')).not.toHaveClass(/karaoke/);
 });
 
-test('read-2 a click on a word mid-paragraph starts there within a second, within 0.3 s of the word', async ({ page, request }) => {
+// A wall-clock check: its own Playwright project runs it after the parallel ones, on a quiet box (playwright.config.mjs).
+test('read-2 a click on a word mid-paragraph starts there within a second, within 0.3 s of the word', { tag: '@timing' }, async ({ page, request }) => {
   const rec = await recorded(page, request, POST);
   await page.goto(POST);
   await listen(page).click();

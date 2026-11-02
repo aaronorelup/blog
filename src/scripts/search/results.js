@@ -54,21 +54,30 @@ export function relatedRow(slug, card) {
     h('p', { class: 'row-meta' }, `${TOPICS[card.topic].label} · ${card.mins} min`));
 }
 
-// The list for q, aria-busy while the words half is still bringing passages, or null when the card data can't be had.
-export async function resultsList(hits, q, busy) {
+// The result rows for q's hits, [{ path, row }] in order (one a page: a post, or its notes), or null when the card
+// data can't be had.
+export async function resultRows(hits, q) {
   const cards = await load();
   if (!cards) return null;
-  const rows = hits.filter((hit) => cards[hit.path.match(SLUG)[1]]).map((hit) => {
+  return hits.filter((hit) => cards[hit.path.match(SLUG)[1]]).map((hit) => {
     const [, slug, notes] = hit.path.match(SLUG);
     const card = cards[slug];
     const { parts, text } = hit.html ? excerpt(hit.html) : { parts: [hit.text], text: hit.text };
     const where = [hit.heading && `in: ${hit.heading}`, notes && 'the full making-of'].filter(Boolean).join(' · ');
-    return h('li', { class: 'row result' }, icon(card),
+    return { path: hit.path, row: h('li', { class: 'row result' }, icon(card),
       h('a', { class: 'row-link', href: deepLink(hit.path, hit.anchor, q, text) }, card.title),
       where ? h('p', { class: 'row-meta' }, where) : '',
-      h('p', { class: 'result-text' }, ...parts));
+      h('p', { class: 'result-text' }, ...parts)) };
   });
-  return rows.length
-    ? h('ol', { class: 'rows results', 'aria-label': `Results for ${q}`, 'aria-busy': busy ? 'true' : null }, ...rows)
-    : h('p', { class: 'search-none' }, 'Nothing in the ledger matches that yet.');
+}
+
+// aria-busy while the words half is still bringing passages.
+export const setBusy = (list, busy) => (busy ? list.setAttribute('aria-busy', 'true') : list.removeAttribute('aria-busy'));
+
+// The list of rows for q, or the line that says nothing matches.
+export function resultsList(rows, q, busy) {
+  if (!rows.length) return h('p', { class: 'search-none' }, 'Nothing in the ledger matches that yet.');
+  const list = h('ol', { class: 'rows results', 'aria-label': `Results for ${q}` }, ...rows.map((r) => r.row));
+  setBusy(list, busy);
+  return list;
 }

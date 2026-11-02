@@ -10,7 +10,7 @@ import { lazy } from '../lazy.js';
 import { examples } from './examples.js';
 import * as keyword from './keyword.js';
 import { merge } from './merge.js';
-import { resultsList } from './results.js';
+import { resultRows, resultsList, setBusy } from './results.js';
 import * as semantic from './semantic.js';
 
 const QUIET = 400;        // ms without typing before the meaning half is asked
@@ -33,19 +33,33 @@ export function mount(root) {
   let meaning = { q: null, hits: [] };
   let quietT = 0;
   let ask = null;
+  // The list on screen: its query, its <ol> and the pages in it.
+  let shown = { q: null, list: null, paths: new Set() };
 
   // Drawn once the words half has answered, or the meaning half has found something: an empty meaning answer that
   // comes first would say "nothing matches" before the words are in. A list whose query has gone (the box was
-  // cleared or changed, or Ask opened) is never drawn.
+  // cleared or changed, or Ask opened) is never drawn. A row on screen never moves or changes: a later draw for the
+  // same query (more of the words half's passages, or the other half) only adds the pages not yet in the list, at
+  // its end, so a reader's pointer stays on the row it reached. A new query draws a new list.
   const render = async () => {
     if (mode !== 'search') return;
     const found = words.q === q ? words.hits : null;
     const meant = meaning.q === q ? meaning.hits : [];
     if (!found && !meant.length) return;
-    const shown = q;
-    const list = await resultsList(merge(found ?? [], meant), shown, !(found && words.done));
-    if (!list || mode !== 'search' || q !== shown) return;
-    ui.out.replaceChildren(list);
+    const at = q;
+    const rows = await resultRows(merge(found ?? [], meant), at);
+    if (!rows || mode !== 'search' || q !== at) return;
+    const busy = !(words.q === at && words.done);
+    if (shown.q === at && shown.list?.parentNode === ui.out) {
+      const fresh = rows.filter((r) => !shown.paths.has(r.path));
+      for (const r of fresh) shown.paths.add(r.path);
+      shown.list.append(...fresh.map((r) => r.row));
+      setBusy(shown.list, busy);
+    } else {
+      const list = resultsList(rows, at, busy);
+      ui.out.replaceChildren(list);
+      shown = rows.length ? { q: at, list, paths: new Set(rows.map((r) => r.path)) } : { q: null, list: null, paths: new Set() };
+    }
     performance.mark('search:results');
   };
   const askMeaning = async (text) => {
