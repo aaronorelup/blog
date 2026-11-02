@@ -125,3 +125,25 @@ test('cards-2 at 1440x900 a cite\'s and a related row\'s card are full size, and
   for (const [what, got] of asked) expect(got, what).toEqual({ inside: true, whole: true, clear: true, size: '' });
   for (const [what, got] of await rowCards(page, posts)) expect(got, what).toEqual({ inside: true, whole: true, clear: true, size: got.size });
 });
+
+// A link taken out of the page while its card is open (the next answer replacing the one it was in) gets no
+// pointerout. cards-2 caught it: the next answer put no link under the pointer, and the card stayed open after the
+// pointer left. Here the related row gives way to a blank row of its height, then the pointer moves off.
+test('cards-3 a card whose link leaves the page closes at the pointer\'s next move', async ({ page }) => {
+  await page.route('**/api/ask', (route) => route.fulfill(sse(streamOf(ANSWERS[0]))));
+  await openLedger(page, 'night');
+  await expect(page.locator('[data-search][data-ready]')).toHaveCount(1);
+  await page.locator('[data-mode="ask"]').click();
+  await input(page).fill('What did Aaron find?');
+  await input(page).press('Enter');
+  await expect(page.locator('.ask-text')).toHaveText(ANSWERS[0].reads);
+  const link = page.locator('.ask-related .row-link').last();
+  await hover(page, link);
+  await expect(card(page)).toHaveClass(/lp-on/);
+  await link.evaluate((a) => {
+    const row = a.closest('li');
+    row.replaceWith(Object.assign(document.createElement('li'), { style: `height: ${row.offsetHeight}px` }));
+  });
+  await page.mouse.move(5, 5);
+  await expect(card(page)).not.toHaveClass(/lp-on/);
+});

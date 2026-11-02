@@ -154,6 +154,8 @@ anyone on a phone.
   link to the next while a card is open. Tabbing to a link with the keyboard opens it too.
   Escape, a click or a scroll closes it. Once the scroll settles the card comes back if the
   pointer or focus is still on its link, or on the link it reached just as the scroll began.
+  A card whose link leaves the page (the next answer replaces the one it was in) closes at the
+  pointer's next move.
 - On a ledger row it sits flush with the row's right edge, level with the summary and below the
   title, taking the hovered row's colour, so it reads as that row opened out. Inside a post it
   goes in the margin beside the column when there's room, otherwise above or below the link.

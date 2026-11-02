@@ -426,6 +426,7 @@ Ask streams Aaron's two answers (`fixtures/answers.mjs`) on a kept session, so n
 |---|---|
 | At 1366×657 and 1024×600, by day and by night, every card opened from a RAG Goobie cite (with its "RAG Goobie cites:" line), a related row under the answer and the ledger's rows at the top, middle and foot of the window is inside the window whole, shows all of its words (`scrollHeight <= clientHeight`: `place()` measures the content, not the box `max-height` caps) and keeps clear of the link's words, stepping down a size only where it has to | cards-1 (desktop) |
 | At 1440×900 the cites' and related rows' cards are full size, and every card shows whole, a row reached as a scroll begins included | cards-2 (desktop) |
+| A card whose link leaves the page while it is open (the next answer replacing the one it was in) closes at the pointer's next move | cards-3 (desktop) |
 
 ## The projects page (`projects.spec.mjs`)
 

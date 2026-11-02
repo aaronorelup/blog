@@ -75,6 +75,9 @@ function postLink(target) {
 
 function onOver(e) {
   if (e.pointerType === 'touch') return;
+  // A link taken out of the page (the next answer replaces the one it was in) gets no pointerout: its card closes at
+  // the pointer's next move.
+  if (shown && !shown.a.isConnected) hide();
   const hit = postLink(e.target);
   if (!hit) return;
   if ((shown && shown.a === hit.a) || (pending && pending.a === hit.a)) { clearTimeout(closeT); return; }
