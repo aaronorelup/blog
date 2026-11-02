@@ -8,10 +8,8 @@ export const EXAMPLES = [
   'Is renting a cloud GPU worth it?',
   'How did Aaron train a LoRA of his character?',
   'Can Claude mod a game I own?',
-  'How are long AI films made on 8 GB?',
   'Who actually visits a brand-new website?',
   'Did the AI writers catch the planted lie?',
-  'Can AI rig a 3D character with a tail?',
   'How big a game can one prompt build?',
   'What stopped Aaron when he started coding?',
 ];

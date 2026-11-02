@@ -1,9 +1,8 @@
-// npm run ask:probe -- idle | stall (docs/ASK.md "The eval", G11).
-// idle: the eviction probe. The exact whole-mode prefix the Worker sends (rules, the pack, the catalog, the live
-// notebook, from dist/ask) with a fixed question and max_tokens 1, now and then after 1, 2, 4 and 8 h of idle,
-// each call's cache-hit share logged as JSONL to --log. Run it detached (nohup); every call goes through the ledger.
-// stall: a stub DeepSeek on 127.0.0.1:8799 for `wrangler dev --var DEEPSEEK_URL:http://127.0.0.1:8799/chat/completions`,
-// then the three stall checks against --base: a 25 s wait for the first token, a 35 s one, and a reader who leaves.
+// npm run ask:probe -- idle | stall (docs/ASK.md "The eval", G11). idle, the eviction probe: the exact whole-mode
+// prefix (dist/ask) with a fixed question, max_tokens 1, now and after 1, 2, 4 and 8 h of idle, each call's cache-hit
+// share as JSONL in --log; run it detached, every call on the ledger. stall: a stub DeepSeek on 127.0.0.1:8799 (wrangler
+// dev --var DEEPSEEK_URL:http://127.0.0.1:8799/chat/completions), then 25 s and 35 s to the first token and a reader who
+// leaves, against --base.
 import fs from 'node:fs';
 import http from 'node:http';
 import { parseArgs } from 'node:util';
