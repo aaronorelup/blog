@@ -402,7 +402,7 @@ clicks Ask waits for `[data-search][data-ready]` first (the box's module has mou
 | The steps show as the stream comes, in order, each ticked when the next arrives (start, plan with topic labels, found, read with titles from previews.json, write), with a status line; then the answer (cites as in search-15), the fine print (no "How RAG Goobie works" link before that post is listed) and the summary line; `aria-busy` clears | search-17 |
 | A cached answer is one event: the answer and "Answered before, from the answer cache · 0.1 s" | search-18 |
 | Words typing in are cited as they come (no raw `[n.s]` ever), and the final paragraph is the answer event's render | search-19 |
-| The empty Ask box's placeholder steps through the default line and the example questions every 4 s (`page.clock`); typing stops it, emptying the box starts it again, Search brings back "Search the ledger"; the `aria-label` never changes | search-20 |
+| The empty Ask box's placeholder steps every 4 s (`page.clock`) from a random example through the list in order, the default line included, and loops; typing stops it, emptying the box starts it again, Search brings back "Search the ledger"; the `aria-label` never changes | search-20 |
 | Under reduced motion the Ask box shows the first example and never changes it | search-21 |
 | The "Ask RAG Goobie" button shows no card while the how-it-works post isn't in `previews.json`; once it is, hovering shows its card with the line "How RAG Goobie works", leaving closes it and keyboard focus opens it; a phone gets none | search-22 |
 | Words typed before the box's module has run (its chunk held) are searched once it mounts | search-23 |

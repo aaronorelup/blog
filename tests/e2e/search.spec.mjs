@@ -540,6 +540,7 @@ test.describe('Ask RAG Goobie at work', () => {
 
   test('search-20 the empty Ask box cycles example questions every 4 s; typing stops it, Search restores its own', async ({ page, context }) => {
     await watch(page, context);
+    await page.addInitScript(() => { Math.random = () => 0.99; });   // the random first example is the last one
     await page.clock.install();
     await page.goto('/ledger/');
     await openAsk(page);
@@ -551,8 +552,8 @@ test.describe('Ask RAG Goobie at work', () => {
       seen.push(await box.getAttribute('placeholder'));
       await expect(box).toHaveAttribute('aria-label', ASK_LABEL);
     }
-    for (const p of seen) expect([ASK_LABEL, ...EXAMPLES]).toContain(p);
-    expect(new Set(seen).size).toBe(3);
+    // From the random example the list loops in order: past the last example, the default line, then the first.
+    expect(seen).toEqual([EXAMPLES.at(-1), ASK_LABEL, EXAMPLES[0]]);
     await box.fill('my own question');
     const held = await box.getAttribute('placeholder');
     await page.clock.runFor(12000);
