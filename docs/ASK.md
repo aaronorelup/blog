@@ -289,14 +289,15 @@ multi-post, 6 vague, 8 fact): must 0.825 against 0.831, within 0.02, at 113k tok
 question, so **40k is split mode's default**.
 
 **G11b eviction probe** (the shipped whole-mode prefix, 282.7k tokens, one call then idle gaps of 1, 2, 4 and 8
-hours, each gap after the call before it; started 00:58 UTC): now 99.93% from cache; after 1 h idle 99.93%; after a further 2 h idle 99.93%. The 4 h and 8 h
-gaps (due about 08:00 and 16:00 UTC on 2 November): filled in by the auditor. Keep-warm stays unbuilt
-unless a gap empties the cache (D3).
+hours, each gap after the call before it; started 00:58 UTC on 2 November): 99.93% from cache on the first call and
+after every gap, the last at 15:58 UTC after 8 idle hours. Nothing else read that prefix in between: the Worker
+answered no question after 05:41 UTC (one request, refused at Turnstile), and every eval run that day had other rules,
+which come first. So DeepSeek kept the prefix at least 8 idle hours; past that is unmeasured. Keep-warm stays unbuilt
+(D3). The probe's five calls cost $0.008.
 
 **Eval spend**: $1.73 of the $3 ledger by the end of the drill: the answers $1.33 (two of them counted at their
-whole $0.10 reservation, after a dropped connection), the judge $0.40 with thinking on, the probe so far $0.005;
-most of it off-peak. The
-probe's later calls add at most $0.20.
+whole $0.10 reservation, after a dropped connection), the judge $0.40 with thinking on, the probe $0.008
+(all five calls); most of it off-peak.
 
 ## T2.8 tune-up (2026-11-02, not live)
 
