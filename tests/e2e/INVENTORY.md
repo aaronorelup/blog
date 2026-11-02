@@ -392,7 +392,7 @@ clicks Ask waits for `[data-search][data-ready]` first (the box's module has mou
 | A failed meaning call leaves the words half and says nothing | search-7 |
 | Ask RAG Goobie: no Turnstile before Ask opens; `GET /api/session`, then Turnstile, then one mint; the button is disabled and Goobie thinks while a question is out (the first is held until the test lets it go), and a second Enter sends nothing; the answer is text; its `[n]` count posts (every cite of one post reads `[1]`, a run of them shows once), each link goes to its own passage and works; related rows; one session for the next question | search-8 |
 | `{ ask: false }` hides the switch and says RAG Goobie is resting, with no Turnstile | search-9 |
-| `resting` and `busy` show their line over the closest posts, in place of the steps | search-10 |
+| `resting` and `busy` show their line over the closest posts, in place of the steps and of any words already streamed (busy's fixture streams some first) | search-10 |
 | A search still answering when Ask opens draws nothing in Ask, and the meaning half is never asked | search-11 |
 | A Turnstile challenge left unsolved (`timeout-callback`) says so and frees the button | search-12 |
 | A cite of a notes passage (`kind: 'notes'`) links to `/ledger/<slug>/notes/#<anchor>` and opens it with the words marked; a post passage links to the post | search-13 |
