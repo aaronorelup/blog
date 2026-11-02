@@ -237,7 +237,7 @@ fails the build, or only warns in a live notebook.
 | `scripts/check/` | the checker: `index.mjs` (CLI), `run.mjs` (levels), `repo.mjs`, `text.mjs`, one file per rule, `grandfathered.mjs` |
 | `scripts/build/verify-dist.mjs` | at `astro:build:done`: `contracts.mjs` and `ask-dist.mjs` over `dist/`, then the budgets |
 | `scripts/build/ask-dist.mjs` | RAG Goobie's files: listed docs only, sections that resolve, files that round-trip, the caps' sums; prints the mode, sizes, reservation and suggested cap, the pins and the re-gate line |
-| `scripts/eval/` | RAG Goobie's eval (`docs/ASK.md`): `spend.mjs` (the $3 ledger, the only DeepSeek client), `run.mjs` + `client.mjs` (`npm run ask:eval`), `judge.mjs`, `report.mjs` (the gates), `packs-compare.mjs`, `scale.mjs` (1,000 posts), `probe.mjs` (eviction, stall), `sections.mjs` |
+| `scripts/eval/` | RAG Goobie's eval (`docs/ASK.md`): `spend.mjs` (the ledger, the only DeepSeek client), `run.mjs` + `client.mjs` (`npm run ask:eval`), `judge.mjs` (full posts, `--passes`) + `judged.mjs` (its file, the passes merged), `report.mjs` (the gates; `--g2`, a round against the baseline on both dev sets) + `flags.mjs` (the hand reading's flags), `compare.mjs` (the hold-out's non-inferiority CI), `packs-compare.mjs`, `scale.mjs` (1,000 posts), `probe.mjs` (eviction, stall), `sections.mjs` |
 | `scripts/tools/ask-pin.mjs` | `npm run ask:pin`: the build's pack starts into `src/data/ask-packs.json` |
 | `scripts/build/contracts.mjs` | pure checks of the frozen contracts over `dist/` |
 | `scripts/build/stats-pages.mjs`, `dev-stats-fixture.mjs` | `/stats-pages.txt`; `/api/stats` for `astro dev` |
@@ -270,8 +270,8 @@ fails the build, or only warns in a live notebook.
 | `worker/cleanup.js` | the daily sweep of old counts, answers and totals |
 | `worker/lantern.js` | `GET /api/lantern`: the lantern door's redirect to `LANTERN_URL` |
 | `worker/read/` | `step.js` (`read.step`: one post's missing sections a run, then its post file; capped by credit), `voice.js` (the ElevenLabs calls), `read.sql` |
-| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (RAG Goobie's marks to cites, streamed too), `ask-serve.test.mjs` (`/api/ask` end to end: guards, stream, cache, caps, settle), `ask-build.test.mjs`, `ask-context.test.mjs`, `ask-price.test.mjs`, `ask-stream.test.mjs`, `ask-scale.test.mjs` (1,000 posts), `ask-fixture.mjs` (a small built blog), `schema.test.mjs` (the posts schema's `voice`), `read.test.mjs` (the spoken copy and its map, alignment, section hashes, the read-aloud cron); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1 |
-| `tests/e2e/` | the behaviour suite: `INVENTORY.md`, `targets.json` (from `element-usage`), specs, fixtures |
+| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (RAG Goobie's marks to cites, streamed too), `ask-serve.test.mjs` (`/api/ask` end to end: guards, stream, cache, caps, settle), `ask-build.test.mjs`, `ask-context.test.mjs`, `ask-eval.test.mjs` (the eval's flags, passes, judge message, bootstrap), `ask-price.test.mjs`, `ask-stream.test.mjs`, `ask-scale.test.mjs` (1,000 posts), `ask-fixture.mjs` (a small built blog), `schema.test.mjs` (the posts schema's `voice`), `read.test.mjs` (the spoken copy and its map, alignment, section hashes, the read-aloud cron); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1 |
+| `tests/e2e/` | the behaviour suite: `INVENTORY.md`, `targets.json` (from `element-usage`), specs, fixtures; the wall-clock checks (`@timing`) run in the `*-timing` projects, after the parallel ones |
 | `tests/baseline/urls.txt` | every page and contract file a build must still produce |
 | `tests/ask/` | RAG Goobie's eval set (`eval.json`, 50 questions with gold posts, sections and must-haves) and the example candidates (`examples.json`); the blind hold-out is private |
 | `src/scripts/stats/core/{agg,fmt}.test.mjs` | the two kept `/stats` tests |
@@ -334,7 +334,8 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   phone a ledger row's stamp opens the same short version in place, from the page's own HTML.
 - **The ledger.** `LedgerView` renders every listed post under its month, the chips with counts made at build, and
   `START_HERE`. Its search box asks Pagefind in the browser (loaded on first focus) and `/api/search` (no token) and
-  merges the two by reciprocal rank; a result links `/ledger/<slug>/?hl=<words>&hs=<passage>#<heading>`, which
+  merges the two by reciprocal rank, drawing as they come: a row on screen never moves or changes, so a later draw
+  for the same query only adds rows at the end; a result links `/ledger/<slug>/?hl=<words>&hs=<passage>#<heading>`, which
   `post/highlight.js` marks. Ask RAG Goobie loads `search/ask.js` only when opened: `GET /api/session` first, and only
   when that says `ask: true`, Turnstile and a 30-minute token; the answer streams in after its steps, as text, `[n]` linked to their passages
   (a cite's `kind` puts a notes passage on `/ledger/<slug>/notes/`, through the same `pagePath` as search results).

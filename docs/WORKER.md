@@ -203,7 +203,9 @@ env -i PATH="$PATH" HOME="$HOME" HTTPS_PROXY="$HTTPS_PROXY" NODE_EXTRA_CA_CERTS=
 ```
 
 Wrangler lists each of those as `(hidden)`. RAG Goobie's eval runs this way, without `--test-scheduled`, its local D1
-capped at `ask_daily_usd` 3 (docs/ASK.md, "The eval"). The index is the live one (`"remote": true`) but D1 is local, so a local
+capped at `ask_daily_usd` 3 (docs/ASK.md, "The eval": the judge reads whole posts and runs `--passes 2` on a gate,
+`report.mjs` flags voice slips, bare cite marks and hidden-page talk for a hand reading, `report.mjs --g2` is a
+round's gate against the baseline on both dev sets, `ask:compare` is the hold-out's non-inferiority gate). The index is the live one (`"remote": true`) but D1 is local, so a local
 `search.sync` writes the live index without the live `search_docs` knowing. Run crons locally only on a build of the
 deployed `origin/main`, whose chunks are the ones the live index already holds; a sync of any other build leaves
 its text in live search until that doc next changes on `main`.
