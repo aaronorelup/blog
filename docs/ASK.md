@@ -346,7 +346,7 @@ most at peak; first event p90 35 ms, plan p90 1.8 s, first words p50 4.0 s, answ
 so the next attempt can still validate on it. **Spend**: $0.95 of the $1.50 ledger (the judge $0.52, the answers
 $0.43), all off-peak.
 
-## T2.8b (2026-11-02): G2 written down first, round 3, search rows
+## T2.8b (2026-11-02): G2 written down first, rounds 3 and 4, search rows
 
 **Why G2 changed.** Across the baseline and rounds 0-2, the 50's must-haves spread from 0.783 to 0.826 under
 wordings that should barely move them, and a set's two judge passes differed by up to 0.026. A per-set "baseline -
@@ -370,9 +370,26 @@ baseline):
   - It fails M2 (the must CI's lower bound is under -0.03) and C (the last caption-only must-have of each of two
     questions scored 0, as in every run so far).
   - It passes M1, M3, S1-S3, G (62 >= 62), N, A, no bad mark, no hidden name, T (-8.8%) and J.
-  - Voice, hidden-page talk and bare marks wait for the blind hand reading.
+  - The blind hand reading found 4 real voice slips against the baseline's 8 (the cap is 2), and no hidden-page talk
+    or bare mark used as a noun (the baseline had 2 and 4).
   - G4/G5: 99.9% of the prompt cached from the 2nd question, a warm question $0.0024 mean and $0.0027 at most at
     peak, answer p50 5.3 s and p90 6.1 s.
+- 4, an answer's words go to its post's facts, each with the doer the post names: the answer first, then what the
+  posts put with it (what it took, what it cost or left out, what went wrong, what was learned); a list of posts only
+  when the reader asks which to read or where to start, or nothing answers; Aaron does a thing only where the post
+  says he did it himself, and when it can't be told who, no one is named: 0.834 / 0.770, 7.74 / 7.33, 60 (34 + 26).
+  - Paired on the 80 against the re-judged baseline: must-haves +0.0379 (95% CI +0.0071 to +0.0706), score +0.081
+    (-0.222 to +0.409).
+  - It passes M1-M3, S1-S3, N, A, C (both caption-only must-haves at 0.5, the first round to answer them), no bad
+    mark, no hidden name, T (-8.8%) and J. Answers ending in a list of posts fell from 53 of the 80 to 27.
+  - It fails G (60 < 62). Its fact cites moved from a post's short version to its opening, which hold the same facts,
+    and G counts only the section a question names. Counting the opening wherever the short version is named gives
+    69 against the baseline's 70: printed here, not gated, since G was fixed before round 3.
+  - Voice, hidden-page talk and bare marks wait for the blind hand reading.
+  - G4/G5: 99.9% of the prompt cached from the 2nd question, a warm question $0.0024 mean and $0.0027 at most at
+    peak, answer p50 5.5 s and p90 6.9 s.
+  - Round 4 is the last round G2's rules allow, and a failed round 4 stops the tune-up: NOT READY. G8 and the new
+    hold-out don't run.
 
 **Search rows.** Each draw used to rebuild the results from the merge, so when the meaning half or a late passage
 arrived, rows a reader already saw moved, and a pointer on one row ended up over another. Now a row on screen never
@@ -385,5 +402,5 @@ worker waited 90-144 ms of wall time for a core, so the best of three failed abo
 wall-clock checks (search-2, read-2) now run in their own Playwright projects, the main projects' teardowns.
 Playwright starts them once both main projects have finished, whatever their results, so they are never skipped.
 
-**Spend**: $1.38 of the $2.25 ledger, all off-peak: the baseline's second judging $0.19, round 3's answers $0.14,
-its judging $0.11.
+**Spend**: $1.64 of the $2.25 ledger, all off-peak: the baseline's second judging $0.19, round 3's answers $0.14
+and its judging $0.11, round 4's answers $0.14 and its judging $0.12.
