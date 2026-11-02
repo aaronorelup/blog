@@ -288,3 +288,40 @@ unless a gap empties the cache (D3).
 whole $0.10 reservation, after a dropped connection), the judge $0.40 with thinking on, the probe so far $0.005;
 most of it off-peak. The
 probe's later calls add at most $0.20.
+
+## T2.8 tune-up (2026-11-02): built and measured, not landed
+
+**Captions in `text.full`.** The pack grew from 265.4k to 285.6k est. tokens (+20.2k, +7.6%; every doc +6.4%) across
+48 posts; AO-073 barely moved (54.7k to 54.8k of `LIVE_CAP`'s 60k). Whole mode is 342k est. of `BUDGET`'s 700k (57% of
+`WHOLE_CAP`), the reservation $0.105, the build's suggested cap $1.06: `WHOLE_CAP`, the reserve and verify-dist's
+sums all still hold, and `ask:scale` still passes at 1,000 posts (12 packs). The first cold call read 311.6k tokens
+against 341.7k est. (-8.8%, inside 0 to -10%). `dist/search/**` (84 files) and `dist/read/**` (72) are byte-identical
+to `origin/main`'s build. Of the old hold-out's 5 must-haves that lived only in captions, 4 are now answered (from 0).
+
+**The baseline, re-judged** with the full-post judge, two passes: the shipped answers score must-haves 0.800 on the 50
+and 0.733 on the 30 (score 7.50 and 7.29; gold section cited 37/44 and 26/27); the two passes differ by 0.003 and 0.007.
+
+**G2, the new build** (the 50 / the 30; each run judged twice, the 30 once in round 2):
+
+| round | must-haves | score | gold section cited | real voice slips (of 80) | hidden-page talk (real) |
+|---|---|---|---|---|---|
+| baseline | 0.800 / 0.733 | 7.50 / 7.29 | 37 / 26 | 4 (T2.7's hand reading) | 2 |
+| the brief's four rules | 0.802 / 0.734 | 7.41 / 7.18 | 36 / 27 | titles read as first person (judge 35/50) | 0 |
+| 1: titles in quotes (on the branch) | 0.783 / 0.776 | 7.19 / 7.53 | 35 / 27 | 2 | 0 |
+| 2: point to posts only when asked | 0.826 / 0.756 | 7.74 / 7.40 | 33 / 27 | 2 | 1 |
+| gate | >= baseline - 0.01 | | >= baseline | <= 1 | 0 |
+
+G2 failed after the two rounds the brief allows: no round passes every line. What moved: the pointer rule names
+posts by their titles, which are in Aaron's first person, so bare titles read as Goobie speaking as him (round 1 puts
+them in quotes); its example cites a post as `[45]`, and post-level marks rose from 82 to 102-145 of a run's cites,
+which costs gold sections (a section mark example, or none, is the next thing to try); round 2's "only when asked"
+let one injection answer say where hidden pages are, so it was dropped. Claude's sums still got credited to Aaron
+once a run. Every not-covered and injection question was handled, no bare mark was used as a noun, no unlisted name
+appeared, and the covered question answered as not covered before is answered now.
+
+**G4/G5** (round 1): from the 2nd question 99.9% of the prompt is cached; a warm question $0.0024 mean, $0.0026 at
+most at peak; first event p90 35 ms, plan p90 1.8 s, first words p50 4.0 s, answer p50 5.2 s, p90 5.9 s, cold 7.6 s.
+
+**Not run**: G8 (cut first, the build isn't landing) and G2h. The new 60-question blind hold-out was left unopened,
+so the next attempt can still validate on it. **Spend**: $0.95 of the $1.50 ledger (the judge $0.52, the answers
+$0.43), all off-peak.
