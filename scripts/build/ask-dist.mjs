@@ -61,9 +61,12 @@ function linesOf(m, prev) {
   const pack = Math.max(...m.packs.map((p) => p.tokens));
   const prompt = RULES_TOKENS + pack + (m.mode === 'whole' ? live + m.overview.tokens : m.catalog.tokens) + USER_TOKENS;
   const reserve = m.reserve.plan + m.reserve.answer;
-  const unpinned = m.starts.filter((s, i) => s !== m.pins[i]).length + Math.abs(m.starts.length - m.pins.length);
+  const unpinned = Array.from({ length: Math.max(m.starts.length, m.pins.length) }, (_, i) => m.starts[i] !== m.pins[i])
+    .filter(Boolean).length;
+  const size = m.mode === 'whole' ? `${k(prompt)} est. tokens (${Math.round((100 * prompt) / m.caps.whole)}% of WHOLE_CAP)`
+    : `the largest pack ${k(pack)} est., a question up to ${k(BUDGET)}`;
   const lines = [`ask: ${m.mode}, ${m.packs.length} pack${m.packs.length > 1 ? 's' : ''}, ${m.counts.posts} posts + `
-    + `${m.counts.notes} notes, ${k(prompt)} est. tokens (${Math.round((100 * prompt) / m.caps.whole)}% of WHOLE_CAP), `
+    + `${m.counts.notes} notes, ${size}, `
     + `live ${k(live)}/${k(m.caps.live)} est., worst-case reservation ${dollars(reserve)}, ask_daily_usd should be >= `
     + `$${(Math.ceil((IN_FLIGHT * reserve) / 1e4) / 100).toFixed(2)} (${IN_FLIGHT} reservations in flight); pins: `
     + (unpinned ? 'not pinned' : 'ok')];
