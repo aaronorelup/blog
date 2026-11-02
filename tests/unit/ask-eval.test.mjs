@@ -5,7 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { hidden, marks, voice } from '../../scripts/eval/flags.mjs';
 import { merged } from '../../scripts/eval/judged.mjs';
-import { userMessage } from '../../scripts/eval/judge.mjs';
+import { JUDGE, JUDGE_SHA, userMessage } from '../../scripts/eval/judge.mjs';
 import { bootstrap } from '../../scripts/eval/compare.mjs';
 
 test('voice flags a post\'s first person, not RAG Goobie\'s own or a quote', () => {
@@ -43,4 +43,10 @@ test('the bootstrap is seeded, and its interval holds the mean', () => {
   const a = bootstrap(d);
   assert.deepEqual(bootstrap(d), a);
   assert.ok(a.lo < a.mean && a.mean < a.hi && a.lo >= -0.5 && a.hi <= 0.75);
+});
+
+test('the judge never calls RAG Goobie he, she or it, and its passes carry the prompt\'s sha256', () => {
+  assert.doesNotMatch(JUDGE, /\b(?:itself|himself|herself)\b/);
+  assert.match(JUDGE, /say "I" only about RAG Goobie/);
+  assert.match(JUDGE_SHA, /^[0-9a-f]{64}$/);
 });
