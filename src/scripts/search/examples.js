@@ -8,6 +8,7 @@ export function examples(input, first, ms) {
   const list = [first, ...JSON.parse(input.dataset.examples)];
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let at = 0;
+  let fresh = true;   // the first step after start() jumps to a random example; then the list loops in order
   let stepT = 0;
   let fadeT = 0;
   let on = false;
@@ -15,7 +16,8 @@ export function examples(input, first, ms) {
   const step = () => {
     input.classList.add('is-swapping');
     fadeT = setTimeout(() => {
-      show(at ? (at + 1) % list.length : 1 + Math.floor(Math.random() * (list.length - 1)));
+      show(fresh ? 1 + Math.floor(Math.random() * (list.length - 1)) : (at + 1) % list.length);
+      fresh = false;
       input.classList.remove('is-swapping');
       arm();
     }, FADE);
@@ -35,6 +37,7 @@ export function examples(input, first, ms) {
     start() {
       if (still) return show(1);
       on = true;
+      fresh = true;
       show(0);
       input.addEventListener('input', onInput);
       document.addEventListener('visibilitychange', onVisible);
