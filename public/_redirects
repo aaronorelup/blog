@@ -1,5 +1,5 @@
-# The first rule that matches a path wins, so an exact rule sits above any wildcard that would also match it, and
-# every old URL reaches its page in one hop.
+# The first rule that matches a path wins, so every exact rule sits above the wildcards (Cloudflare asks for that
+# order too), and every old URL reaches its page in one hop.
 
 # AO-051 was renamed on 2026-10-16 to say what it is about.
 /ledger/one-piece-reaction-clips /ledger/arcmira-mcp-test/ 301
@@ -13,18 +13,18 @@
 /posts/a-meter-and-a-mailroom /ledger/the-clock-nobody-checked/ 301
 /posts/a-meter-and-a-mailroom/ /ledger/the-clock-nobody-checked/ 301
 
-# Posts moved from /posts/<slug>/ to /ledger/<slug>/ when the site took on the tea house design. AO-004 and AO-005
-# were syndicated under the old paths, so these stay forever. :slug is one segment with no trailing slash.
-/posts /ledger/ 301
-/posts/:slug /ledger/:slug/ 301
-/posts/* /ledger/:splat 301
-
 # Courses became a section of the site on 2026-10-01: /course/ moved to /courses/<course>/. The old lessons index
-# goes to the course page (the course has no lessons index), each old lesson to its new path. The proof-of-concept
-# lesson's new-path twin is a tiny redirect page (public/courses/the-hidden-curriculum/lessons/poc-00-01-the-hidden-curriculum/).
+# goes to the course page (the course has no lessons index), each old lesson to its new path (the last rule). The
+# proof-of-concept lesson's new-path twin is a tiny redirect page (public/courses/the-hidden-curriculum/lessons/poc-00-01-the-hidden-curriculum/).
 /course /courses/the-hidden-curriculum/ 301
 /course/ /courses/the-hidden-curriculum/ 301
 /course/index.html /courses/the-hidden-curriculum/ 301
 /course/lessons /courses/the-hidden-curriculum/ 301
 /course/lessons/ /courses/the-hidden-curriculum/ 301
+
+# Posts moved from /posts/<slug>/ to /ledger/<slug>/ when the site took on the tea house design. AO-004 and AO-005
+# were syndicated under the old paths, so these stay forever. :slug is one segment with no trailing slash.
+/posts /ledger/ 301
+/posts/:slug /ledger/:slug/ 301
+/posts/* /ledger/:splat 301
 /course/lessons/* /courses/the-hidden-curriculum/lessons/:splat 301
