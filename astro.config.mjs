@@ -1,6 +1,5 @@
 import { defineConfig } from 'astro/config';
-import { unified } from '@astrojs/markdown-remark';
-import { rehypePlugins } from './scripts/build/markdown.mjs';
+import { markdownProcessor } from './scripts/build/markdown.mjs';
 import statsPages from './scripts/build/stats-pages.mjs';
 import devStatsFixture from './scripts/build/dev-stats-fixture.mjs';
 import loreThumbs from './scripts/lore-thumbs.mjs';
@@ -53,7 +52,7 @@ export default defineConfig({
     },
     // The remark/rehype pipeline, not 7's default Sätteri, which runs no rehype plugins. Ours: pictures sized,
     // headings' ids, then the one text extraction every feature reads (scripts/build/markdown.mjs).
-    processor: unified({ rehypePlugins: rehypePlugins({ publicDir }) }),
+    processor: markdownProcessor({ publicDir }),
   },
   vite: {
     define: { __PUBLIC_DIR__: JSON.stringify(publicDir) },

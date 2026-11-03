@@ -1,7 +1,10 @@
-// The Markdown plugins in their order, for astro.config.mjs and the unit tests. `v` hashes the code they run: Astro's
-// content cache keys on the config, where a function counts for nothing, so without it a changed plugin would leave
-// every unchanged post with its cached HTML.
+// The Markdown plugins in their order, for astro.config.mjs and the unit tests, and the pipeline that runs them. `v`
+// hashes the code they run: Astro's content cache keys on the config, where a function counts for nothing, so without
+// it a changed plugin would leave every unchanged post with its cached HTML.
 import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { unified } from '@astrojs/markdown-remark';
+import { isLivePath } from '../../src/data/exempt.js';
 import { sha256hex, short } from '../../src/lib/text/hash.js';
 import rehypeHeadingIds from './rehype-heading-ids.mjs';
 import rehypePostImages from './rehype-post-images.mjs';
@@ -19,3 +22,24 @@ export const rehypePlugins = ({ publicDir }) => [
   rehypeHeadingIds,
   [rehypePostText, { tags: TAGS, v }],
 ];
+
+// astro.config.mjs's markdown.processor: the unified (remark/rehype) pipeline with these plugins. Astro 7 fails the
+// build on a Markdown file that throws as it renders; a live notebook's page builds blank instead (Astro has logged
+// why), as it did under Astro 5, because nothing about a live notebook may fail a build (src/data/exempt.js).
+export function markdownProcessor({ publicDir }) {
+  const base = unified({ rehypePlugins: rehypePlugins({ publicDir }) });
+  return {
+    ...base,
+    async createRenderer(shared) {
+      const { render } = await base.createRenderer(shared);
+      return {
+        render: (content, opts) => render(content, opts).catch((err) => {
+          const file = fileURLToPath(opts.fileURL);
+          if (!isLivePath(file)) throw err;
+          console.warn(`[markdown] ${file} did not render; its page builds blank (live notebook)`);
+          return { code: '', metadata: { headings: [], localImagePaths: [], remoteImagePaths: [], frontmatter: opts.frontmatter } };
+        }),
+      };
+    },
+  };
+}

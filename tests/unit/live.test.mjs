@@ -1,7 +1,7 @@
 // AO-073 is written by a fleet of other sessions (src/data/exempt.js), so whatever they push must build. This breaks
 // a copy of it the way the fleet might and runs it through every rule that could fail a build. A task that adds a
 // rule adds its case here (T0.3 the checker and the media guard, T1.1 an unknown tag, T2.1 a post with no icon,
-// T2.3 search's chunks and manifest, T2.7 the Ask build).
+// T2.3 search's chunks and manifest, T2.7 the Ask build, W5 a render that throws).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { createMarkdownProcessor } from '@astrojs/markdown-remark';
 import matter from 'gray-matter';
 import { LIVE_NOTEBOOKS, isLive, isLivePath } from '../../src/data/exempt.js';
-import { rehypePlugins } from '../../scripts/build/markdown.mjs';
+import { markdownProcessor, rehypePlugins } from '../../scripts/build/markdown.mjs';
 import { baselineProblems, previewsProblems, readBaseline, rssProblems, statsPagesProblems } from '../../scripts/build/contracts.mjs';
 import { collections } from './content-schema.mjs';
 import { docOf, manifestOf, shortVersion } from '../../src/lib/search/chunks.js';
@@ -74,6 +74,21 @@ test('an unknown <ao-*> tag only warns in AO-073, and fails the render of any ot
   assert.ok(warn.mock.calls.some((c) => /<ao-sliderr> is not a post component/.test(c.arguments[0])));
   const other = new URL('../../src/content/posts/earthlight.md', import.meta.url);
   await assert.rejects(md.render(typo, { fileURL: other, frontmatter: {} }), /<ao-sliderr> is not a post component/);
+});
+
+test('a Markdown file that throws as it renders builds AO-073 blank, and fails any other post', async (t) => {
+  const publicDir = fileURLToPath(new URL('../../public/', import.meta.url));
+  const md = await markdownProcessor({ publicDir }).createRenderer({ syntaxHighlight: false });
+  // A picture whose name holds a bare %, which no URI decodes: the kind of typo the fleet's files could carry.
+  const typo = 'The fleet wrote a paragraph.\n\n<img src="/media/teardown-lab/50%.webp" alt="">\n';
+  t.mock.method(console, 'error', () => {});
+  const warn = t.mock.method(console, 'warn', () => {});
+  const { code, metadata } = await md.render(typo, { fileURL: file, frontmatter: { title: 'T' } });
+  assert.equal(code, '');
+  assert.deepEqual(metadata.frontmatter, { title: 'T' });
+  assert.ok(warn.mock.calls.some((c) => /teardown-lab\.md did not render; its page builds blank/.test(c.arguments[0])));
+  const other = new URL('../../src/content/posts/earthlight.md', import.meta.url);
+  await assert.rejects(md.render(typo, { fileURL: other, frontmatter: {} }), /URI malformed/);
 });
 
 test('AO-073 rendered blank is still a search doc; its pushes leave the search manifest v alone, its unlisting does not', () => {

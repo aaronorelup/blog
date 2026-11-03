@@ -69,11 +69,13 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
    (`src/schemas/strict.js`: a topic, the title and summary caps, a listed post's verdict) fail the build once
    `STRICT` is on, and until then only on posts that have a topic (the checker reports the rest). Live notebooks
    (`src/data/exempt.js`) are held to types only, for good.
-3. **Markdown** (posts, notes, research) goes through Shiki with both themes as CSS variables, then the rehype
-   plugins in `scripts/build/markdown.mjs`, in order: `rehype-post-images` (raw HTML parsed; every picture gets its
-   width, height and its `data-full` copy), `rehype-heading-ids` (github-slugger ids, pinned; an id the page uses
-   gets `-1`) and `rehype-post-text`, the one extraction every feature reads (below). A Markdown file that fails to
-   render fails its page (`renderEntry`), since Astro itself only logs it; a live notebook's page builds blank.
+3. **Markdown** (posts, notes, research) goes through the unified (remark/rehype) pipeline, `markdown.processor:
+   unified()` from `@astrojs/markdown-remark` (Astro 7's default, Sätteri, runs no rehype plugins): Shiki with both
+   themes as CSS variables, then the rehype plugins in `scripts/build/markdown.mjs`, in order: `rehype-post-images`
+   (raw HTML parsed; every picture gets its width, height and its `data-full` copy), `rehype-heading-ids`
+   (github-slugger ids, pinned; an id the page uses gets `-1`) and `rehype-post-text`, the one extraction every
+   feature reads (below). A Markdown file that fails to render fails the build as Astro reads it; a live notebook's
+   renders blank instead (`markdownProcessor` in `markdown.mjs`), with Astro's logged error.
 4. **Integrations** (`astro.config.mjs`), in order: `statsPages`, `loreThumbs`, `media` (no file over 25 MiB,
    no video or audio in `public/` outside `STAYS_IN_GIT`), `pagefind` (the words index of the listed posts and
    notes, `dist/pagefind/`; lenient until a main build has written it), `verifyDist` (the frozen contracts over
@@ -137,10 +139,10 @@ fails the build, or only warns in a live notebook.
 | `docs/COMPONENTS.md` | the post components: each `<ao-*>`'s markup, attributes and behaviours |
 | `docs/ASK.md` | RAG Goobie: how an answer is made, its caps and costs, the eval and its gates |
 | `ARCHITECTURE.md` | this map |
-| `astro.config.mjs` | site, integrations, Markdown plugins, the main-only guard |
+| `astro.config.mjs` | site, `compressHTML: true` (Astro 7's default, `'jsx'`, drops the space between inline elements), integrations, the unified Markdown pipeline and its plugins, the main-only guard |
 | `wrangler.jsonc` | the Worker `blog`, every binding, `run_worker_first`, both crons, the vars (secrets by name only) |
 | `.dev.vars.example` | the local test keys for `wrangler dev` (copy to the git-ignored `.dev.vars`) |
-| `.node-version` | 22.23.4, the Node Workers Builds uses |
+| `.node-version` | 22.23.4, the Node Workers Builds uses. `astro` stays pinned at 7.4.1, the last release that runs on agent boxes' 22.22.0 (CLAUDE.md, Commands) |
 | `package.json`, `package-lock.json`, `tsconfig.json`, `src/env.d.ts`, `.gitignore` | the scripts and dependencies, TypeScript for the `.ts` schemas and Astro's types, what git leaves out |
 | `public/_headers` | noindex for two hidden pages; a year, `immutable`, for the content-hashed `/_astro/*` and `/fonts/*`; a day for `/media/icons/*` |
 | `archive/2026-10-29-before-rework/` | every post as it was before the rework (read only) |
