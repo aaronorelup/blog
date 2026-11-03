@@ -3,14 +3,13 @@
 // read/<slug>/<post hash>.json, whose existence means the recording is complete (docs/WORKER.md "Read-aloud").
 // Capped by the flag tts_daily_credits, a floor of the account's credit (tts_credit_floor) and the key's own quota.
 import { buildJson } from '../lib/build-files.js';
-import { flags, spend } from '../lib/flags.js';
+import { flags, NO_CAP, spend } from '../lib/flags.js';
 import { ensure } from '../lib/sql.js';
 import SCHEMA from './read.sql';
 import { context, credits, voice } from './voice.js';
 
 const RUN_CHARS = 10_000; // spoken characters sent in one run at most
 const TRIES = 3;          // failed runs at one hash before a post is skipped until its text changes
-const NO_CAP = Number.MAX_SAFE_INTEGER;
 const JSON_TYPE = { httpMetadata: { contentType: 'application/json' } };
 
 const save = (env, slug, hash, state, tries) => env.DB.prepare(
