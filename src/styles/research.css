@@ -1,5 +1,26 @@
-/* One research document (components/research/ResearchView.astro): a ledger entry's header with a provenance line
-   and a raw-markdown link for agents. Its body is .pc-prose (prose.css). */
+/* The research shelf's rows (pages/research/index.astro, under chrome.css's view header), then one research document
+   (components/research/ResearchView.astro): a ledger entry's header with a provenance line and a raw-markdown link
+   for agents. Its body is .pc-prose (prose.css). */
+.rs-row {
+  display: grid; grid-template-columns: 120px 1fr; gap: 0 26px; padding: 24px 14px; margin: 0 -14px;
+  border-top: 1px solid var(--pc-line); border-radius: 10px; text-decoration: none; cursor: pointer;
+}
+.rs-row:hover { background: var(--pc-hover); }
+@media (max-width: 560px) { .rs-row { grid-template-columns: minmax(0, 1fr); gap: 10px 0; } }
+.rs-id {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; line-height: 1.7; color: var(--pc-accent);
+}
+.rs-date { color: var(--pc-quiet); }
+.rs-name {
+  margin: 0 0 8px; font-family: 'Zen Maru Gothic', sans-serif; font-size: 20px; font-weight: 700; color: var(--pc-strong);
+  letter-spacing: -0.01em;
+}
+.rs-sum {
+  margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: 15.5px; line-height: 1.6; color: var(--pc-body);
+  max-width: 600px; text-wrap: pretty;
+}
+.rs-none { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: 16px; color: var(--pc-quiet); }
+
 .rv { width: 100%; max-width: 720px; padding-bottom: var(--space-8); }
 .rv-back {
   display: inline-block; margin: 0 0 30px; font-size: var(--text-sm); letter-spacing: 0.08em; color: var(--pc-accent);

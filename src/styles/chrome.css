@@ -86,7 +86,7 @@
 :root:not([data-mode='day']) .mode-sun,
 :root[data-mode='day'] .mode-moon { display: none; }
 
-/* The header the ledger, courses and projects views open with. */
+/* The header the ledger, courses, projects and research views open with. */
 .view { width: 100%; max-width: 1140px; }
 .view-title {
   margin: 0 0 10px; font-family: var(--font-display); font-size: var(--text-h1); line-height: 1.1; font-weight: 700;
@@ -96,13 +96,7 @@
 .view-list { display: flex; flex-direction: column; }
 
 /* Hover states of rows, links and buttons in the views. */
-.pc-row:hover { background: var(--pc-hover); }
 .pc-nav:hover,
 .pc-home:hover { color: var(--pc-head) !important; }
 .pc-foot:hover { color: var(--pc-accent) !important; }
 .pc-link-accent:hover { color: var(--pc-strong) !important; }
-
-/* Narrow screens: ledger rows go to one column. */
-@media (max-width: 560px) {
-  .pc-row { grid-template-columns: minmax(0, 1fr) !important; gap: 10px 0 !important; }
-}

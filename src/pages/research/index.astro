@@ -13,28 +13,27 @@ const docs = ledgerOrder(await research());
   description="Standalone research documents. They're deeper and drier than ledger entries, written to be handed to an agent as much as read by a person."
   active="ledger"
 >
-  <div style="width:100%;max-width:1140px">
-    <h1 style="margin:0 0 10px;font-family:'Zen Maru Gothic',sans-serif;font-size:clamp(30px,4vw,44px);line-height:1.1;font-weight:700;color:var(--pc-head);letter-spacing:-0.015em">Research</h1>
-    <p style="margin:0 0 40px;font-size:14px;line-height:1.75;color:var(--pc-quiet);max-width:680px">Standalone research documents. They're deeper and drier than ledger entries, written to be handed to an agent as much as read by a person. Each carries its provenance and a raw-markdown link.</p>
+  <div class="view">
+    <h1 class="view-title">Research</h1>
+    <p class="view-intro">Standalone research documents. They're deeper and drier than ledger entries, written to be handed to an agent as much as read by a person. Each carries its provenance and a raw-markdown link.</p>
 
-    <div style="display:flex;flex-direction:column">
+    <div class="view-list">
       {docs.map((doc) => (
         <a
           href={`/research/${slugOf(doc)}/`}
-          class="pc-row"
-          style="display:grid;grid-template-columns:120px 1fr;gap:0 26px;padding:24px 14px;margin:0 -14px;border-top:1px solid var(--pc-line);border-radius:10px;text-decoration:none;cursor:pointer"
+          class="rs-row"
         >
-          <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.7;color:var(--pc-accent)">
-            {doc.data.id}<br /><span style="color:var(--pc-quiet)">{shortDate(doc.data.date)}</span>
+          <div class="rs-id">
+            {doc.data.id}<br /><span class="rs-date">{shortDate(doc.data.date)}</span>
           </div>
           <div>
-            <h2 style="margin:0 0 8px;font-family:'Zen Maru Gothic',sans-serif;font-size:20px;font-weight:700;color:var(--pc-strong);letter-spacing:-0.01em">{doc.data.title}</h2>
-            <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:15.5px;line-height:1.6;color:var(--pc-body);max-width:600px;text-wrap:pretty">{doc.data.summary}</p>
+            <h2 class="rs-name">{doc.data.title}</h2>
+            <p class="rs-sum">{doc.data.summary}</p>
           </div>
         </a>
       ))}
       {docs.length === 0 && (
-        <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:16px;color:var(--pc-quiet)">No documents filed yet.</p>
+        <p class="rs-none">No documents filed yet.</p>
       )}
     </div>
   </div>
