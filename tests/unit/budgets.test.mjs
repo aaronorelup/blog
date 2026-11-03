@@ -1,13 +1,15 @@
 // scripts/tools/budgets.mjs over a made-up dist/: every row is measured, the heaviest post is named, the ledger's
 // rows are counted, an element's chunk and inlined CSS are weighed (and left out of the post's chrome), so is what
-// Listen loads, a live notebook is never measured, and an over-budget row is reported as over.
+// Listen loads, a live notebook is never measured, and an over-budget row is reported as over. Then the dist/ the
+// last npm run build wrote: no budget more than 20% over (P step 2 builds first).
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import zlib from 'node:zlib';
-import { format, measure } from '../../scripts/tools/budgets.mjs';
+import { fileURLToPath } from 'node:url';
+import { failing, format, measure } from '../../scripts/tools/budgets.mjs';
 
 const page = (body, head = '') => `<!doctype html><html><head>${head}</head><body>${body}</body></html>`;
 
@@ -61,8 +63,14 @@ test('budgets measure every row, skip the live notebook and flag what is over', 
     assert.equal(by['read-aloud on, JS'].bytes, zlib.gzipSync(fs.readFileSync(path.join(dist, '_astro/reader.js'))).length);
     const text = format(rows);
     assert.match(text, /post page minus its prose.*% over.*\(heavy\)/);
+    assert.ok(failing(rows).some((r) => r.where === 'heavy'), 'the heavy post fails at 20% over');
     assert.doesNotMatch(text, /teardown-lab/);
   } finally {
     fs.rmSync(dist, { recursive: true, force: true });
   }
+});
+
+test('the built site is within 20% of every budget', () => {
+  const rows = measure(fileURLToPath(new URL('../../dist', import.meta.url)));
+  assert.deepEqual(failing(rows).map((r) => r.name.trim()), [], format(failing(rows)));
 });

@@ -1,6 +1,6 @@
 // Page-weight budgets (ARCHITECTURE.md section 6), gzipped, without fonts and media, each measured on something
-// content can't grow. `node scripts/tools/budgets.mjs [dist]` prints them and, once ENFORCE is on (W4), fails on
-// any over budget by 20%. verify-dist prints the same rows after every build and never fails on them.
+// content can't grow. `node scripts/tools/budgets.mjs [dist]` prints them and fails on any over budget by 20%, as
+// npm test does (tests/unit/budgets.test.mjs); verify-dist prints the same rows after every build and never fails.
 // Live notebooks are left out. fontMisses() lists display code points the self-hosted fonts miss: the command fails
 // on any, verify-dist warns.
 import fs from 'node:fs';
@@ -13,11 +13,12 @@ import { visit, SKIP } from 'unist-util-visit';
 import { isLivePath } from '../../src/data/exempt.js';
 import { misses, toRange } from './fonts.mjs';
 
-const ENFORCE = false;   // W4 sets true
 const KB = 1024;
 const PROSE = ['pc-prose', 'prose'];   // the post body's class: pc-prose until T2.1 names it prose
 
 const gz = (text) => zlib.gzipSync(text).length;
+// The rows more than 20% over their budget: what fails npm test and this command.
+export const failing = (rows) => rows.filter((r) => r.bytes > r.budget * 1.2);
 const parse = (file) => fromHtml(fs.readFileSync(file, 'utf8'));
 
 // The tree without every element the test picks out.
@@ -158,5 +159,5 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const rows = measure(dist);
   const fonts = fontMisses(dist);
   console.log(format(rows) + (fonts ? `\n${fonts}` : ''));
-  if (fonts || (ENFORCE && rows.some((r) => r.bytes > r.budget * 1.2))) process.exit(1);
+  if (fonts || failing(rows).length) process.exit(1);
 }
