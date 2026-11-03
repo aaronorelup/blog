@@ -99,7 +99,7 @@
 }
 
 /* The end: the making-of again, Read next, older and newer. */
-.post-foot { margin-top: var(--space-8); }
+.post-foot { margin-top: var(--space-8); padding-bottom: var(--space-6); }   /* the scroller has no bottom padding: room above the footer */
 .rel { margin: 0 0 var(--space-7); padding-top: var(--space-5); border-top: 1px solid var(--pc-line); }
 .rel-cards {
   --card-icon: 56px; --card-glyph: 26px;
