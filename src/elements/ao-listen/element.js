@@ -76,7 +76,10 @@ class AoListen extends HTMLElement {
       head.style.left = p * 100 + '%';
       spec.setAttribute('aria-valuenow', String(Math.round(p * 100)));
       clock.textContent = fmtTime(a.currentTime) + ' / ' + fmtTime(d);
-      play.textContent = a.paused ? 'Play' : 'Pause';
+      // Only when it changes: this runs every frame, and on WebKit a tap on a button whose text is replaced between
+      // its press and its release fires no click (11 of 450 Pauses lost on a phone).
+      const label = a.paused ? 'Play' : 'Pause';
+      if (play.textContent !== label) play.textContent = label;
     };
     const loop = () => {
       // The homepage hides the reader rather than removing it when it closes; stop with it.

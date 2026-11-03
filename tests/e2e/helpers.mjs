@@ -83,3 +83,16 @@ export const scrollBack = (el) => el.evaluate((n) => n.scrollIntoView({ block: '
 // The media of a page that sit in no component (a "lone" player).
 export const loneMedia = (page) => page.locator('xpath=//*[@data-post-article]//*[(local-name()="video" or ' +
   'local-name()="audio") and not(ancestor::*[starts-with(local-name(), "ao-")])]');
+
+// What a page does to the content of the controls a locator matches over ms: { nodes, text } MutationObserver records
+// of their children (childList: a node of one replaced, as setting textContent or innerHTML does even to the same
+// words) and of their text changed in place (characterData), over each one's subtree. On WebKit a tap whose press
+// lands on a text node that is replaced before its release fires no click (<ao-listen>'s Pause, rewritten every
+// frame, lost 11 of 450 clicks).
+export const contentChanges = (controls, ms = 1000) => controls.evaluateAll((els, ms) => new Promise((r) => {
+  const n = { nodes: 0, text: 0 };
+  const count = (rs) => rs.forEach((m) => { if (m.type === 'childList') n.nodes++; else n.text++; });
+  const o = new MutationObserver(count);
+  for (const el of els) o.observe(el, { childList: true, characterData: true, subtree: true });
+  setTimeout(() => { count(o.takeRecords()); o.disconnect(); r(n); }, ms);
+}), ms);

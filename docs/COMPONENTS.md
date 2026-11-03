@@ -337,7 +337,9 @@ seeks. With the list focused, up and down pick a clip, space plays, C flips A/B.
 only the clip picked plays: a play of any other (WebKit's player plays the clip A/B or a row left again when it was
 paused before it was under way) is paused at once. A Pause pressed while a seek runs holds until 400 ms after the
 seek ends, and one pressed while the clip has no data ahead (as a seek on a slow network ends) 400 ms after the
-Pause (WebKit would play on): a play after that, from a media key, the lock screen or headphones, plays.
+Pause (WebKit would play on): a play after that, from a media key, the lock screen or headphones, plays. The
+playhead and clock are drawn every frame while a clip plays; the Play/Pause label only when it changes, since WebKit
+fires no click for a tap on a button whose text was replaced between its press and its release.
 
 | Attribute | |
 |---|---|
@@ -356,7 +358,7 @@ set. At least two clips. Without JS the figures stack with native controls.
 </ao-listen>
 ```
 
-Behaviours: listen-1 to listen-4, core-3. Used by `bad-very-bad` (and its notes), `remora-voice-lab` (the best
+Behaviours: listen-1 to listen-5, core-3. Used by `bad-very-bad` (and its notes), `remora-voice-lab` (the best
 example) and `showreel-rebuilt`.
 
 ## <ao-matrix>

@@ -131,6 +131,7 @@ notes, `earthlight`'s notes, `nine-claudes-one-painting` today).
 | Only the clip picked plays: a play of the clip A/B or a row left, 100 ms and 700 ms after the click, is paused at once while the clip picked plays on | A/B and row `click`, audio `play` | listen-2b |
 | The spectrogram seeks on click and with the arrows | spectrogram `pointerdown` `keydown` | listen-3 |
 | List focused: arrows pick and keep playing, space toggles, C flips A/B | element `keydown` | listen-4 |
+| While a clip plays (the playhead and clock drawn every frame) the Play/Pause button's content is never touched; pausing changes it (on WebKit a tap on a button whose text node is replaced between press and release fires no click) | the draw loop (`requestAnimationFrame`), Play `click` | listen-5 |
 | Only one clip on the page plays | document `ao-listen-play` | core-3 |
 
 The specs use the first set whose clips all run 4 s or more; many are one-line sound bites that end under a test.

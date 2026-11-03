@@ -1,7 +1,7 @@
 // <ao-listen>: a set of clips with one player: a clip row picks and plays, A/B switches to the reference at the same
 // moment and back, the spectrogram seeks (click and arrows), and keys drive the list.
 import { test, expect } from '../fixtures.mjs';
-import { openFirst, pagesWith, expectPlaying, clock, seekTo } from '../helpers.mjs';
+import { openFirst, pagesWith, expectPlaying, playing, clock, seekTo, contentChanges } from '../helpers.mjs';
 
 // The first set whose every clip runs 4 s or more, so none ends under a test (many are one-line sound bites), among
 // the sets the element has built (a single clip stays a plain figure, with no list).
@@ -271,4 +271,22 @@ test('listen-4 with the list focused: arrows pick a clip and keep playing, space
   await expect(ab).toHaveAttribute('aria-pressed', 'true');
   await page.keyboard.press('C');
   await expect(ab).toHaveAttribute('aria-pressed', pressed);
+});
+
+// While a clip plays the element redraws its playhead and clock every frame, never the Play/Pause button: on WebKit a
+// tap on a button whose text node is replaced between its press and its release fires no click (the label rewritten
+// each frame lost 11 of 450 Pause clicks on the phone). Pausing still changes it.
+test('listen-5 the Play/Pause button is never rewritten while a clip plays; pausing changes it', async ({ page }) => {
+  const btn = listen(page).locator('.ao-listen-bar button').first();
+  await listen(page).locator('.ao-listen-list button').nth(1).click();
+  const a = audioOf(page, (await current(page).textContent()).trim());
+  await expectPlaying(a);
+  await expect(btn).toHaveText('Pause');
+  expect(await contentChanges(btn, 1000)).toEqual({ nodes: 0, text: 0 });
+  expect(await playing(a)).toBe(true);
+  const changes = contentChanges(btn, 1000);
+  await btn.click();
+  await expect(btn).toHaveText('Play');
+  const { nodes, text } = await changes;
+  expect(nodes + text).toBeGreaterThan(0);
 });
