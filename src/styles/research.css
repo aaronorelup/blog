@@ -7,19 +7,16 @@
 }
 .rs-row:hover { background: var(--pc-hover); }
 @media (max-width: 560px) { .rs-row { grid-template-columns: minmax(0, 1fr); gap: 10px 0; } }
-.rs-id {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; line-height: 1.7; color: var(--pc-accent);
-}
+.rs-id { font-family: var(--font-mono); font-size: 12px; line-height: 1.7; color: var(--pc-accent); }
 .rs-date { color: var(--pc-quiet); }
 .rs-name {
-  margin: 0 0 8px; font-family: 'Zen Maru Gothic', sans-serif; font-size: 20px; font-weight: 700; color: var(--pc-strong);
+  margin: 0 0 8px; font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--pc-strong);
   letter-spacing: -0.01em;
 }
 .rs-sum {
-  margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: 15.5px; line-height: 1.6; color: var(--pc-body);
+  margin: 0; font-family: var(--font-serif); font-size: var(--text-body); line-height: 1.6; color: var(--pc-body);
   max-width: 600px; text-wrap: pretty;
 }
-.rs-none { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: 16px; color: var(--pc-quiet); }
 
 .rv { width: 100%; max-width: 720px; padding-bottom: var(--space-8); }
 .rv-back {

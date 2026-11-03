@@ -24,7 +24,7 @@ export default function verifyDist() {
         if (ask.problems.length) throw new Error(`RAG Goobie's files are wrong (docs/ASK.md):\n- ${ask.problems.join('\n- ')}`);
         for (const line of ask.warnings) logger.warn(line);
         for (const line of ask.lines) logger.info(line);
-        logger.info(`budgets, gzipped (npm test fails on them from W4):\n${format(measure(dist))}`);
+        logger.info(`budgets, gzipped (npm test fails on one 20% over; this build never does):\n${format(measure(dist))}`);
         const fonts = fontMisses(dist);
         if (fonts) logger.warn(fonts);
       },

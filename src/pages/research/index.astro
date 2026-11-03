@@ -19,10 +19,7 @@ const docs = ledgerOrder(await research());
 
     <div class="view-list">
       {docs.map((doc) => (
-        <a
-          href={`/research/${slugOf(doc)}/`}
-          class="rs-row"
-        >
+        <a href={`/research/${slugOf(doc)}/`} class="rs-row">
           <div class="rs-id">
             {doc.data.id}<br /><span class="rs-date">{shortDate(doc.data.date)}</span>
           </div>
@@ -32,9 +29,6 @@ const docs = ledgerOrder(await research());
           </div>
         </a>
       ))}
-      {docs.length === 0 && (
-        <p class="rs-none">No documents filed yet.</p>
-      )}
     </div>
   </div>
 </PanelPage>
