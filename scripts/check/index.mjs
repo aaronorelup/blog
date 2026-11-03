@@ -1,20 +1,21 @@
 // The post and code checker. `npm run check [-- <paths>]` runs every rule at its full level (paths narrow the report).
 // `npm run build` runs it with --deploy first: there only the deploy rules stop the build, and the rest are counted
-// as warnings. --strict fails on warnings too, except a live notebook's. ARCHITECTURE.md ("Build checks") lists the
-// rules; run.mjs holds the levels.
+// as warnings. --strict fails on warnings too, except those a live notebook or a HELD post (src/data/exempt.js) may
+// keep. ARCHITECTURE.md ("Build checks") lists the rules; run.mjs holds the levels.
 import path from 'node:path';
-import { isLivePath } from '../../src/data/exempt.js';
+import { isHeld, isLivePath } from '../../src/data/exempt.js';
 import { ROOT, runChecks } from './run.mjs';
 
 const args = process.argv.slice(2);
 const deploy = args.includes('--deploy');
 const strict = args.includes('--strict');
+const mayWarn = (file) => isLivePath(file) || isHeld(path.basename(file, '.md'));
 const only = args.filter((a) => !a.startsWith('--'))
   .map((a) => path.relative(ROOT, path.resolve(a)).split(path.sep).join('/'));
 
 const started = performance.now();
 const issues = runChecks({ deploy })
-  .map((i) => (strict && i.severity === 'warn' && !isLivePath(i.file) ? { ...i, severity: 'error' } : i))
+  .map((i) => (strict && i.severity === 'warn' && !mayWarn(i.file) ? { ...i, severity: 'error' } : i))
   .filter((i) => !only.length || only.some((p) => i.file === p || i.file.startsWith(p + '/')))
   .sort((a, b) => a.file.localeCompare(b.file) || (a.line ?? 0) - (b.line ?? 0));
 const errors = issues.filter((i) => i.severity === 'error');

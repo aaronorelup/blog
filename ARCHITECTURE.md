@@ -297,7 +297,7 @@ about a second; run it before every landing, and with paths to see one post (`np
 | `code.mjs` | 400 lines, no CSS imported by browser JS, no `style=` in components, layouts or pages, `astro:content` only in `lib/content.js` and the schemas, no IP under `worker/` | check |
 
 Anything in a live notebook's paths is at most a warning, at either level. `npm run check -- --strict` fails on
-warnings too, except a live notebook's.
+warnings too, except those a live notebook or a `HELD` post may keep.
 
 **The rollout switch.** `STRICT` in `src/schemas/strict.js` is the one line that moves the v2 content rules from
 "fail `npm run check` and `npm test`, printed by the deploy build" (false) to "fail the deploy build too" (true):
