@@ -466,7 +466,13 @@ export function createGate(host, opts) {
       const frac = f != null ? f : dots ? landed[k] / dots : 1;
       const txt = lab.fmt(frac >= 1 ? 1 : frac);
       const parts = labelParts[k];
-      if (parts.shown !== txt) { parts.numEl.textContent = txt; parts.shown = txt; }
+      // In its own text node, never a new one: the figure sits in the pile's button, and on WebKit a tap on a button
+      // whose text node is replaced between its press and its release fires no click.
+      if (parts.shown !== txt) {
+        const t = parts.numEl.firstChild;
+        if (t && t === parts.numEl.lastChild && t.nodeType === 3) t.data = txt; else parts.numEl.textContent = txt;
+        parts.shown = txt;
+      }
       parts.shareEl.classList.toggle('st-gate-share-wait', frac < 1);
     }
   }
