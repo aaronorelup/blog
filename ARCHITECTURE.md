@@ -346,8 +346,8 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   phone a ledger row's stamp opens the same short version in place, from the page's own HTML.
 - **The ledger.** `LedgerView` renders every listed post under its month, the chips with counts made at build, and
   `START_HERE`. Its search box asks Pagefind in the browser (loaded on first focus) and `/api/search` (no token) and
-  merges the two by reciprocal rank, drawing as they come: a row on screen never moves or changes, so a later draw
-  for the same query only adds rows at the end; a result links `/ledger/<slug>/?hl=<words>&hs=<passage>#<heading>`, which
+  merges the two by reciprocal rank, the words half's pages first, drawing as they come: a row on screen never moves
+  or changes, so a later draw for the same query only adds rows at the end; a result links `/ledger/<slug>/?hl=<words>&hs=<passage>#<heading>`, which
   `post/highlight.js` marks. Ask RAG Goobie loads `search/ask.js` only when opened: `GET /api/session` first, and only
   when that says `ask: true`, Turnstile and a 30-minute token; the answer streams in after its steps, as text, `[n]` linked to their passages
   (a cite's `kind` puts a notes passage on `/ledger/<slug>/notes/`, through the same `pagePath` as search results).
