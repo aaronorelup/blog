@@ -190,8 +190,8 @@ anyone on a phone.
   and the media script move together.
 - `scripts/check/assets.mjs`: every preview still and loop exists and is under its cap.
 - `src/pages/ledger/previews.json.js`: builds `/ledger/previews.json` from listed posts only
-  (`isListed`, so unlisted and draft posts never surface in a card), with reading time, and for a
-  post without a preview, its opening lines. It prints which posts have no preview.
+  (`isListed`, so unlisted and draft posts never surface in a card), with reading time. Every listed
+  post has a preview (`src/schemas/strict.js` asks for its verdict).
 - The Worker reads `/ledger/previews.json` too, as its list of real posts (`worker/reads/serve.js`,
   and `worker/stats/index.js` when `/stats-pages.txt` is missing), so keep its shape
   (`{ "posts": { "<slug>": card } }`).

@@ -49,9 +49,9 @@ anything. `ARCHITECTURE.md` is the map of the code.
 | Command | Does |
 |---|---|
 | `npm run new-post "Title"` | `src/content/posts/<slug>.md` with the next free `AO-###`. Never pick an id by hand |
-| `npm run check [-- <paths>]` | every post and code rule at its full level, in about a second |
+| `npm run check [-- <paths>]` | every post and code rule at its full level, in about a second; `-- --strict` fails on warnings too |
 | `npm run build` | the deploy-level checks, then `astro build` (the contracts are checked at the end) |
-| `npm test`, `npm run e2e` | unit tests; the Playwright behaviour suite |
+| `npm test`, `npm run e2e` | unit tests, and the contracts and budgets of the last build's `dist/`; the Playwright behaviour suite |
 | `npm run media:push`, `media:verify` | send new video and audio to R2; check the live site serves them |
 | `npm run never-publish:hash -- <list>` | rehash the private list into `src/data/never-publish.json` |
 | `npm run dev`, `npm run preview` | a local server; the built site |

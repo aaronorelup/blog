@@ -6,8 +6,10 @@
   `AO-###` by hand.
 - `notes/<slug>.md` is the full making-of of a split post, at `/ledger/<slug>/notes/`. Its `post:` is the same
   slug, and it is listed exactly when its post is.
-- `topic` (from `src/data/taxonomy.js`) makes a post v2: the caps and voice rules are errors for it. The icon is
-  `public/media/icons/<AO-###>.webp` by convention, no field needed.
+- Every post needs a `topic` (from `src/data/taxonomy.js`), and a listed one a `preview` with a verdict; the caps
+  and voice rules are errors (`src/schemas/strict.js`, `scripts/check/`). AO-028 is `HELD` for Aaron's own rewrite
+  (`src/data/exempt.js`): those rules only warn on it. The icon is `public/media/icons/<AO-###>.webp` by convention,
+  no field needed. A post's HTML takes no `style=`: WRITING.md "Media" lists the classes it may wear.
 - **The `<ao-*>` tags and their attributes are frozen.** 72 posts use them. A rewrite keeps every component,
   video, audio and iframe block byte for byte (`node scripts/tools/element-usage.mjs --diff <old> <new> [notes]`).
 - **`teardown-lab.md` (AO-073) is not yours.** Other sessions write it live. Never edit it or its media.
