@@ -1,9 +1,10 @@
 // WRITING.md's voice rules that a script can see, on what a reader reads of a post (its body without code, tags,
 // attributes or URLs, plus the title, summary and card): no em dash, no spaced en dash, no semicolon, no banned
-// phrase, a takeaway of at most two sentences. Errors for posts with a topic (v2), warnings for older posts until W4.
+// phrase, a takeaway of at most two sentences. Errors on every post but the HELD ones (src/data/exempt.js), which warn.
 // Always warnings: title or summary past its target, nested parentheses, inline style= in a post. The caps beyond
-// the targets are the schema's (v2) and frontmatter.mjs's warnings (v1).
+// the targets are src/schemas/strict.js's (frontmatter.mjs reports them).
 import { TEXT } from '../../src/data/limits.js';
+import { isHeld } from '../../src/data/exempt.js';
 import { PHRASES } from '../../src/data/banned-phrases.js';
 import { keyLine, liner, readerText, withoutCode } from './text.mjs';
 
@@ -31,8 +32,8 @@ function hits(text) {
 const sentences = (s) => (s.match(/[.!?](?=\s|$)/g) ?? []).length || 1;
 
 export default function prose(repo, report) {
-  for (const { file, raw, data } of repo.posts) {
-    const level = data.topic === undefined ? 'warn' : 'check';
+  for (const { file, slug, raw, data } of repo.posts) {
+    const level = isHeld(slug) ? 'warn' : 'check';
     const line = liner(raw);
 
     const body = readerText(raw);

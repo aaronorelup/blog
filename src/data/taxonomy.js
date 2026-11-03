@@ -20,11 +20,3 @@ export const PROJECTS = {
 };
 export const TOPIC_KEYS = Object.keys(TOPICS);
 export const PROJECT_KEYS = Object.keys(PROJECTS);
-
-// v1 series → v2 project, for posts not yet rewritten. W4 deletes this. agent-runs and the-site
-// map to no project on purpose: those posts are found by topic.
-export const SERIES_TO_PROJECT = {
-  origin: 'origin', 'llm-monster-hunter': 'llm-monster-hunter', blackwater: 'blackwater',
-  'hidden-curriculum': 'hidden-curriculum', 'oil-paint': 'oil-paint', characters: 'characters',
-  'evening-television': 'evening-television', introspection: 'evening-television',
-};

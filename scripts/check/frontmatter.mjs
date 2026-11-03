@@ -1,10 +1,14 @@
-// Frontmatter facts the schema can't see from one file: YAML that parses, each notes page named after a built post
-// (and saying so in `post:`), START_HERE empty or 5 different listed slugs. On v1 posts (no `topic`) it warns about
-// the title and summary caps, which the schema enforces only on v2 posts until W4.
+// Frontmatter facts: YAML that parses, each notes page named after a built post (and saying so in `post:`),
+// START_HERE empty or 5 different listed slugs, and on every post the v2 content rules (src/schemas/strict.js) with
+// no leftover v1 field (`series`, `status`, `tags`), which live notebooks keep for good. Those last two fail the
+// deploy build once STRICT is on.
 import { START_HERE } from '../../src/data/picks.js';
-import { TEXT } from '../../src/data/limits.js';
+import { isHeld, isLive } from '../../src/data/exempt.js';
 import { isListed } from '../../src/lib/posts.js';
+import { STRICT, v2Rules } from '../../src/schemas/strict.js';
 import { keyLine } from './text.mjs';
+
+const V1_FIELDS = ['series', 'status', 'tags'];
 
 export default function frontmatter(repo, report) {
   for (const e of [...repo.posts, ...repo.notes]) {
@@ -25,10 +29,12 @@ export default function frontmatter(repo, report) {
     report('src/data/picks.js', null, 'START_HERE is either empty or 5 different slugs of listed posts', 'deploy');
   }
 
-  for (const p of repo.posts.filter((p) => p.data.topic === undefined)) {
-    for (const [key, cap] of [['title', TEXT.titleCap], ['summary', TEXT.summaryCap]]) {
-      const n = String(p.data[key] ?? '').trim().length;
-      if (n > cap) report(p.file, keyLine(p.raw, key), `${key} is ${n} characters, over the ${cap} cap (an error once the post has a topic)`, 'warn');
+  const strict = STRICT ? 'deploy' : 'check';
+  for (const p of repo.posts.filter((p) => !p.yamlError)) {
+    const level = isHeld(p.slug) ? 'warn' : strict;
+    v2Rules(p.data, (key, message) => report(p.file, keyLine(p.raw, key), `${key}: ${message}`, level));
+    for (const key of V1_FIELDS.filter((k) => k in p.data && !isLive(p.slug))) {
+      report(p.file, keyLine(p.raw, key), `${key}: a v1 field; leave it out (WRITING.md lists the frontmatter)`, strict);
     }
   }
 }

@@ -8,6 +8,7 @@ import test from 'node:test';
 import { runChecks } from '../../scripts/check/run.mjs';
 import { hash } from '../../scripts/check/never-publish.mjs';
 import { belongsInR2 } from '../../scripts/media/files.mjs';
+import { STRICT } from '../../src/schemas/strict.js';
 
 // What the fleet might push: a 200-character title, prose the voice rules refuse, a made-up never-publish term,
 // links to a missing and an unlisted post, a renamed preview picture and a video that never went to R2. Made up
@@ -59,8 +60,10 @@ test('a broken live notebook is only ever warned about', () => {
 });
 
 test('the same breakage elsewhere fails each rule at its level', () => {
-  assert.deepEqual(rulesFailing(true, 'src/content/posts/control.md'), new Set(['never-publish', 'links', 'assets']));
-  assert.deepEqual(rulesFailing(false, 'src/content/posts/control.md'), new Set(['never-publish', 'links', 'assets', 'prose']));
+  // The 200-character title breaks a v2 rule (src/schemas/strict.js), which fails the deploy build once STRICT is on.
+  assert.deepEqual(rulesFailing(true, 'src/content/posts/control.md'),
+    new Set(['never-publish', 'links', 'assets', ...(STRICT ? ['frontmatter'] : [])]));
+  assert.deepEqual(rulesFailing(false, 'src/content/posts/control.md'), new Set(['never-publish', 'links', 'assets', 'prose', 'frontmatter']));
   assert.deepEqual(rulesFailing(true, 'src/content/notes/control.md'), new Set(['frontmatter']));
   for (const file of ['src/components/Seeded.astro', 'src/lib/long.js', 'src/elements/ao-seeded']) {
     assert.deepEqual(rulesFailing(true, file), new Set(), file);
