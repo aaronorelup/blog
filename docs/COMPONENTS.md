@@ -136,8 +136,9 @@ Children: one `<figure>` per item, an `<img>` or a `<video>` and an optional `<f
 ```
 
 Behaviours: compare-1 to compare-3; its stills open in the image viewer. In the homepage panel, closing it stops a
-synced set (`ao-stop` pauses every video; the panel then drops its copy), even one still waiting for its first bytes:
-overlay-8 and overlay-8b. Used by 24 posts (`INVENTORY.md`); best shown by `moonlight-two-cuts` (stills) and
+synced set: `ao-stop` pauses every video while the panel still holds the post, before it drops its copy, and nothing
+restarts it, even a set still waiting for its first bytes (overlay-8 and overlay-8b check the pause in `ao-stop`'s own
+dispatch). Used by 24 posts (`INVENTORY.md`); best shown by `moonlight-two-cuts` (stills) and
 `storm-bell-fighter` (`sync`).
 
 ## <ao-cues>

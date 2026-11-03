@@ -323,8 +323,8 @@ its static rung mid-test.
 | A link to another post inside a post stays in the panel | overlay-5 |
 | Esc closes to the scene, Back reopens the post, Forward closes it | overlay-6 |
 | Back to the ledger (`data-close-reader`) and back to the tea house (`data-panel-home`) | overlay-7 |
-| Closing the panel stops what plays in it (`ao-stop`): every video of a synced `<ao-compare>` plays, then each stops, and stays stopped once the panel has dropped its copy of the post (read through handles: 540 ms after Esc a locator into `[data-panel-host]` matches nothing) | overlay-8 |
-| Esc while a synced set is still starting (told to play, its files held until the panel has closed) leaves every video stopped when the bytes arrive, in the dropped copy and in the page | overlay-8b |
+| Closing the panel stops what plays in it (`ao-stop`): every video of a synced `<ao-compare>` plays; Esc's `ao-stop` has paused each one while it is still in the panel (a listener in the same dispatch reads `paused` and `isConnected`: the browser pauses a removed video by itself, so a check after the drop alone would pass without `ao-stop`); each stays stopped once the panel has dropped its copy (read through handles) | overlay-8 |
+| Esc while a synced set is still starting (told to play, its files held until the panel has closed): `ao-stop` pauses every video while still in the panel, and none starts when the bytes arrive, in the dropped copy or in the page | overlay-8b |
 | A post the panel can't fetch opens as its real page | overlay-9 |
 | A deep link to a post is its real page, components working | overlay-10 |
 | The ledger's copy button puts the feed's address on the clipboard | overlay-11 (desktop: clipboard permissions are Chromium's in Playwright) |
