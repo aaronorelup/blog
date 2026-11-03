@@ -22,13 +22,13 @@ function seed() {
   put('_astro/site.css', 'body{margin:0}\n');
   put('_astro/entry.js', "import './dep.js';\nconsole.log(1);\n");
   put('_astro/dep.js', 'export const d = 1;\n');
-  // The registry's map (as Vite writes it) and two element chunks; one shares the up-front dep, which isn't its own.
-  put('_astro/registry.js', 'const L={"./ao-big/element.js":()=>n(()=>import("./big.js"),[]),"./ao-x/element.js":()=>n(()=>import("./x.js"),[])};\n');
+  // The registry's map (as Vite 8 writes it) and two element chunks; one shares the up-front dep, which isn't its own.
+  put('_astro/registry.js', 'const L={"./ao-big/element.js":()=>n(()=>import(`./big.js`),[]),"./ao-x/element.js":()=>n(()=>import(`./x.js`),[])};\n');
   put('_astro/x.js', "import './dep.js';\ncustomElements.define('ao-x', class extends HTMLElement {});\n");
   const bulk = Array.from({ length: 3000 }, (_, i) => ((i * 2654435761) >>> 0).toString(36)).join(' ');
   put('_astro/big.js', `customElements.define('ao-big', class extends HTMLElement {}); // ${bulk}\n`);
   // Read-aloud's chunk, which Listen loads: its own bytes, not the up-front dep it shares.
-  put('_astro/reader.js', "import './dep.js';\nCSS.highlights.set(\"ao-read\",new Highlight);\n");
+  put('_astro/reader.js', "import './dep.js';\nCSS.highlights.set(`ao-read`,new Highlight);\n");
   const head = '<link rel="stylesheet" href="/_astro/site.css"><script type="module" src="/_astro/entry.js"></script>';
   put('index.html', page('<main>home</main>', head));
   put('ledger/index.html', page(`<ol>${'<li class="row"><a data-ledger-entry>row</a></li>'.repeat(3)}</ol>`, head));
