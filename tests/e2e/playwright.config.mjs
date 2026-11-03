@@ -44,7 +44,8 @@ export default defineConfig({
     { name: 'phone-timing', use: PHONE, grep: TIMING, workers: 1 },
   ],
   webServer: base ? undefined : {
-    command: `npx astro preview --port ${PORT}`,
+    // --ignore-lock keeps it in the foreground: Astro 7 sends a preview it sees an agent start to the background.
+    command: `npx astro preview --port ${PORT} --ignore-lock`,
     cwd: '../..',
     url: `http://localhost:${PORT}/version.json`,
     reuseExistingServer: false,
