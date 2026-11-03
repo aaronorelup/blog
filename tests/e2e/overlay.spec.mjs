@@ -256,6 +256,14 @@ const syncedSet = async (page) => {
   await allDefined(page);   // the set plays as one only once <ao-compare> is defined, as it is when a reader sees it
   return reader(page).locator('ao-compare[sync]').first().locator('video').elementHandles();
 };
+// What the set reads the moment the panel's ao-stop has run: a listener added now runs after player.js's, in the same
+// dispatch, while the copy is still in the panel. The browser pauses a removed video by itself, so a check made after
+// the panel drops its copy would pass even if closing it sent no ao-stop at all; this one fails then (null).
+const markStop = (page, set) => page.evaluate((vs) => {
+  window.__atStop = null;
+  document.addEventListener('ao-stop', () => { window.__atStop ??= vs.map((m) => [m.paused, m.isConnected]); });
+}, set);
+const stoppedInPanel = (page, set) => expect.poll(() => page.evaluate(() => window.__atStop)).toEqual(set.map(() => [true, true]));
 
 test('overlay-8 closing the panel stops what plays in it (ao-stop)', async ({ page }) => {
   await home(page);
@@ -264,7 +272,9 @@ test('overlay-8 closing the panel stops what plays in it (ao-stop)', async ({ pa
   const set = await syncedSet(page);
   await play(set[0]);
   for (const v of set) await expectPlaying(v);
+  await markStop(page, set);
   await page.keyboard.press('Escape');
+  await stoppedInPanel(page, set);
   for (const v of set) await expectPlaying(v, false);
   await isClosed(page);
   for (const v of set) expect(await playing(v)).toBe(false);
@@ -292,7 +302,9 @@ test('overlay-8b closing the panel while a synced set is still starting leaves i
     m.play().catch(() => {});
   });
   await expect.poll(() => Promise.all(set.map((v) => v.evaluate((m) => !m.paused && m.readyState < 3)))).toEqual(set.map(() => true));
+  await markStop(page, set);
   await page.keyboard.press('Escape');
+  await stoppedInPanel(page, set);
   await isClosed(page);
   release();
   await expect.poll(() => asked.length > 0 && asked.every((q) => settled.has(last(q))), { timeout: 30_000 }).toBe(true);
