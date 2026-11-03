@@ -203,7 +203,7 @@ test('ledger-12 a card with no still shows the post’s icon instead', async ({ 
   expect(await card(page).locator('.lp-icon').getAttribute('src')).toMatch(/^\/media\/icons\/AO-\d+-96\.webp$/);
 });
 
-test('ledger-13 a post link on /stats opens its card (the old ledger-preview.js path)', async ({ page, isMobile }) => {
+test('ledger-13 a post link on /stats opens its card', async ({ page, isMobile }) => {
   test.skip(isMobile, 'phones never get a card (ledger-4)');
   await page.goto('/stats');
   // The chapter of growing posts draws its links once it comes into view.

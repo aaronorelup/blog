@@ -1,5 +1,5 @@
 // Figure 3a, "What do they read?": the pages people opened, ranked, each title a real link to the
-// post (so a mouse gets the site's hover card from ledger-preview.js), and each row opening in
+// post (so a mouse gets the site's hover card from cards/hover.js), and each row opening in
 // place onto that page's days. Under the list, one sentence on how people found the site.
 //
 // Honesty rules this figure keeps:

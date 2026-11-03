@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
 import { isLive, isLivePath } from '../../src/data/exempt.js';
-import { isListed } from '../../src/data/listed.js';
+import { isListed } from '../../src/lib/posts.js';
 
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 const SITE = 'https://aaronorelup.com';

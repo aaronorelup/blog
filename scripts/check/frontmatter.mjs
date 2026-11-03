@@ -3,7 +3,7 @@
 // the title and summary caps, which the schema enforces only on v2 posts until W4.
 import { START_HERE } from '../../src/data/picks.js';
 import { TEXT } from '../../src/data/limits.js';
-import { isListed } from '../../src/data/listed.js';
+import { isListed } from '../../src/lib/posts.js';
 import { keyLine } from './text.mjs';
 
 export default function frontmatter(repo, report) {

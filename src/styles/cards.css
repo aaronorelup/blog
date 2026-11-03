@@ -64,8 +64,7 @@
   border: 1px solid var(--pc-line);
   border-radius: 7px;
 }
-.lp-points,
-.lp-excerpt { clear: both; }
+.lp-points { clear: both; }
 /* No still: the post's icon, beside the id. */
 .lp-icon { float: right; width: 48px; height: 48px; margin: 0 0 8px 14px; border-radius: var(--radius-s); }
 .lp-img,
@@ -164,25 +163,6 @@
   border-radius: 50%;
   background: var(--pc-accent);
   opacity: 0.8;
-}
-
-/* A post with no preview yet: its opening lines, labelled as such. */
-.lp-excerpt {
-  margin: 0;
-  font-family: var(--font-serif);
-  font-size: 14.5px;
-  line-height: 1.55;
-  color: var(--pc-body);
-  text-wrap: pretty;
-}
-.lp-label {
-  display: block;
-  margin: 0 0 4px;
-  font-family: var(--font-body);
-  font-size: 10.5px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--pc-quiet);
 }
 
 @media (prefers-reduced-motion: reduce) {

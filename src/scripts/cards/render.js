@@ -22,13 +22,12 @@ export function build() {
     '<div class="lp-verdict"></div>' +
     '<p class="lp-takeaway"></p>' +
     '<ul class="lp-points"></ul>' +
-    '<p class="lp-excerpt"><span class="lp-label">From the opening</span><span class="lp-excerpt-text"></span></p>' +
     '</div>';
   const q = (s) => card.querySelector(s);
   const els = {
     media: q('.lp-media'), img: q('.lp-img'), video: q('.lp-video'), icon: q('.lp-icon'), meta: q('.lp-meta'),
     title: q('.lp-title'), line: q('.lp-line'), verdict: q('.lp-verdict'), takeaway: q('.lp-takeaway'),
-    points: q('.lp-points'), excerpt: q('.lp-excerpt'), excerptText: q('.lp-excerpt-text'),
+    points: q('.lp-points'),
   };
   els.video.muted = true;
   els.img.addEventListener('load', () => els.img.classList.add('lp-ready'));
@@ -54,8 +53,6 @@ export function fill(els, p, row) {
     return li;
   }));
   els.points.hidden = !(p.points && p.points.length);
-  els.excerpt.hidden = !p.excerpt;
-  els.excerptText.textContent = p.excerpt || '';
 
   els.media.hidden = !p.image;
   els.img.classList.remove('lp-ready');

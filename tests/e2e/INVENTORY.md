@@ -360,7 +360,7 @@ its static rung mid-test.
 | Start here: the five `START_HERE` posts in order, each with icon, title and stamp | ledger-10 |
 | A row's stamp opens its short version in place, with no request | ledger-11 |
 | A card with no still shows the post's icon | ledger-12 (desktop) |
-| A post link on `/stats` opens its card (through the `ledger-preview.js` stub) | ledger-13 (desktop) |
+| A post link on `/stats` opens its card (`stats.astro` imports `cards/hover.js`) | ledger-13 (desktop) |
 | RSS: one item per listed post, guid = the post URL | pages-1 |
 | `/version.json`'s shape | pages-2 |
 | `/stats` draws the snapshot (`/api/stats` 200) | pages-3 |

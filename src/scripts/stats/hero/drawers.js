@@ -73,7 +73,7 @@ function placeNode(row) {
     // A post is named by its ledger number with its title in quotes, so the title (often a
     // sentence in Aaron's voice) never reads as this page's own narration.
     const a = el('a', 'st-gate-dlink', row.id ? `${row.id}, “${row.label}”` : `“${row.label}”`);
-    a.href = row.href;           // ledger-preview.js gives it the site's hover card on desktop
+    a.href = row.href;           // cards/hover.js gives it the site's hover card on desktop
     return a;
   }
   const word = row.kind === 'site' ? SITE_WORDS[row.href] || SITE_WORDS[row.path] : null;

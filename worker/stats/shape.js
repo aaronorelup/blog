@@ -379,7 +379,7 @@ export function classify(userAgent, botCategory, status, ref) {
 }
 
 // ---------------------------------------------------------------------------------------------
-// What may be shown. An unlisted post (isListed in src/data/listed.js) must never surface by
+// What may be shown. An unlisted post (isListed in src/lib/posts.js) must never surface by
 // slug, and anyone can put any text into a request path, a user agent or a Web Analytics beacon,
 // so every path, name and host that reaches the snapshot goes through the checks below.
 //

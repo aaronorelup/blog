@@ -3,7 +3,7 @@
 // (the hidden easter eggs, found by looking, so no list names them), and no link matches banned-phrases.js's LINKS.
 // A link through a redirect warns.
 import { LINKS } from '../../src/data/banned-phrases.js';
-import { isListed } from '../../src/data/listed.js';
+import { isListed } from '../../src/lib/posts.js';
 import { keyLine, liner, withoutCode } from './text.mjs';
 
 const LEDGER = /(?<=^|[\s"'(=>[]|aaronorelup\.com)\/ledger\/([\w-]+)(?=[/#?\s"'<>)\]]|[.,;:!](?!\w)|$)(\/[^\s"'<>()[\]#?]*)?/g;

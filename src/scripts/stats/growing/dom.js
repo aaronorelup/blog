@@ -44,7 +44,7 @@ export const finePointer = () => typeof matchMedia === 'function' && matchMedia(
 
 /**
  * The post marks under an axis, as real links laid over the SVG. On a mouse they are the site's
- * own hover card (ledger-preview.js claims every /ledger/<slug>/ link), so pointing at a dot
+ * own hover card (cards/hover.js claims every /ledger/<slug>/ link), so pointing at a dot
  * shows the post. They're out of the tab order and hidden from screen readers: the readout above
  * the plot names the same post with a proper link, reached with the arrow keys.
  * Marks that would touch are merged into one ring first (clusterMarks), and [lo, hi] keeps the
