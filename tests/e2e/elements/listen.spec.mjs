@@ -184,17 +184,20 @@ test('listen-2 A/B switches to the reference at the same moment, and back', asyn
   const refTitle = await current(page).textContent();
   expect(refTitle).not.toBe(first);
   const ref = audioOf(page, refTitle);
+  const [ma, mr] = [await a.elementHandle(), await ref.elementHandle()];
   await expectPlaying(ref);
+  // The reference picks up where the clip was (it would be near 0 from the start), read as soon as it plays and in one
+  // go: the clip left is paused, so every moment spent after this (a locator found again takes half a second on a
+  // loaded box) runs the reference on past it.
+  const [ta, tr, end] = await mr.evaluate((r, m) => [m.currentTime, r.currentTime, r.duration], ma);
+  expect(tr).toBeGreaterThan(Math.min(ta, end) - 0.2);
+  expect(tr - ta).toBeLessThan(3);
   // The clip left stays paused, past the moment WebKit plays a clip paused before it was under way (as its seek ends,
   // which can be a second after the click, or at once).
   expect(await a.evaluate((m) => new Promise((r) => {
     const later = () => setTimeout(() => r(!m.paused && !m.ended), 500);
     if (m.seeking) m.addEventListener('seeked', later, { once: true }); else later();
   }))).toBe(false);
-  // The reference picks up where the clip was (it would be near 0 from the start).
-  const [ta, tr, end] = [await clock(a), await clock(ref), await ref.evaluate((m) => m.duration)];
-  expect(tr).toBeGreaterThan(Math.min(ta, end) - 0.2);
-  expect(tr - ta).toBeLessThan(3);
   await ab.click();
   await expect(current(page)).toHaveText(first);
   await expect(ab).toHaveAttribute('aria-pressed', 'false');
