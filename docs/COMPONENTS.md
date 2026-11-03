@@ -135,8 +135,10 @@ Children: one `<figure>` per item, an `<img>` or a `<video>` and an optional `<f
 </ao-compare>
 ```
 
-Behaviours: compare-1 to compare-3; its stills open in the image viewer. Used by 24 posts (`INVENTORY.md`); best
-shown by `moonlight-two-cuts` (stills) and `storm-bell-fighter` (`sync`).
+Behaviours: compare-1 to compare-3; its stills open in the image viewer. In the homepage panel, closing it stops a
+synced set (`ao-stop` pauses every video; the panel then drops its copy), even one still waiting for its first bytes:
+overlay-8 and overlay-8b. Used by 24 posts (`INVENTORY.md`); best shown by `moonlight-two-cuts` (stills) and
+`storm-bell-fighter` (`sync`).
 
 ## <ao-cues>
 

@@ -5,7 +5,7 @@
 // page. The selectors the overlay contract names (0.3) are the ones below; INVENTORY rows overlay-*.
 import sharp from 'sharp';
 import { test, expect } from './fixtures.mjs';
-import { pageWith, pagesWhere, play, expectPlaying } from './helpers.mjs';
+import { pageWith, pagesWhere, play, playing, expectPlaying } from './helpers.mjs';
 import { SOCIAL } from '../../src/data/site.js';
 
 const PANEL = '#panel-screen';
@@ -249,15 +249,57 @@ test('overlay-7 Back to the ledger and Back to the tea house', async ({ page }) 
   await isClosed(page);
 });
 
+// The synced set's videos, held by handle: once the panel has shrunk away (frame.js, 540 ms) it drops its copy of the
+// post, and a locator into [data-panel-host] then matches nothing, so a check made after that would wait for ever on a
+// video that is no longer anywhere to be found. A handle still reads the video the reader started.
+const syncedSet = async (page) => {
+  await allDefined(page);   // the set plays as one only once <ao-compare> is defined, as it is when a reader sees it
+  return reader(page).locator('ao-compare[sync]').first().locator('video').elementHandles();
+};
+
 test('overlay-8 closing the panel stops what plays in it (ao-stop)', async ({ page }) => {
   await home(page);
   await openLedger(page);
   await openRow(page, pageWith('ao-compare', (a) => 'sync' in a));
-  const v = reader(page).locator('ao-compare[sync] video').first();
-  await play(v);
-  await expectPlaying(v);
+  const set = await syncedSet(page);
+  await play(set[0]);
+  for (const v of set) await expectPlaying(v);
   await page.keyboard.press('Escape');
-  await expectPlaying(v, false);
+  for (const v of set) await expectPlaying(v, false);
+  await isClosed(page);
+  for (const v of set) expect(await playing(v)).toBe(false);
+});
+
+// Esc while the set is still starting: its videos have been told to play and none has a byte yet (the files are held
+// until the panel has closed). What the requests bring after the close (their bytes in Chromium; WebKit gives up on a
+// removed, paused video's load) starts nothing, in the copy the panel dropped or anywhere in the page.
+test('overlay-8b closing the panel while a synced set is still starting leaves it stopped', async ({ page }) => {
+  let release;
+  const held = new Promise((r) => { release = r; });
+  const asked = [];
+  const settled = new Set();
+  page.on('requestfinished', (q) => settled.add(q));
+  page.on('requestfailed', (q) => settled.add(q));
+  await page.route((u) => /\.mp4$/.test(u.pathname), async (r) => { asked.push(r.request()); await held; await r.fallback(); });
+  // A request is done once the last of its redirects (local media are sent on to the live site) has finished or failed.
+  const last = (q) => (q.redirectedTo() ? last(q.redirectedTo()) : q);
+  await home(page);
+  await openLedger(page);
+  await openRow(page, pageWith('ao-compare', (a) => 'sync' in a));
+  const set = await syncedSet(page);
+  await set[0].evaluate((m) => {
+    m.scrollIntoView({ block: 'center' });
+    m.play().catch(() => {});
+  });
+  await expect.poll(() => Promise.all(set.map((v) => v.evaluate((m) => !m.paused && m.readyState < 3)))).toEqual(set.map(() => true));
+  await page.keyboard.press('Escape');
+  await isClosed(page);
+  release();
+  await expect.poll(() => asked.length > 0 && asked.every((q) => settled.has(last(q))), { timeout: 30_000 }).toBe(true);
+  // Every held request has come back: a second more for anything it would start to show as playing.
+  await page.waitForTimeout(1000);
+  for (const v of set) expect(await v.evaluate((m) => [m.paused, m.isConnected])).toEqual([true, false]);
+  expect(await page.evaluate(() => [...document.querySelectorAll('video, audio')].filter((m) => !m.paused).length)).toBe(0);
 });
 
 test('overlay-9 a post the panel can’t fetch opens as its real page', async ({ page }) => {
