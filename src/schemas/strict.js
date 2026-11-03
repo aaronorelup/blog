@@ -1,6 +1,7 @@
 // The v2 content rules (WRITING.md): a topic, the title and summary caps, a verdict on every listed post. One
 // function, read by src/schemas/post.ts (the build) and scripts/check/frontmatter.mjs (npm run check), on a post's
-// frontmatter as parsed or as raw YAML. Live notebooks and HELD posts (src/data/exempt.js) never get them.
+// frontmatter as parsed or as raw YAML. They never fail a live notebook or a HELD post (src/data/exempt.js): the
+// schema skips both, and the checker only warns about them.
 import { TEXT } from '../data/limits.js';
 
 // W4's rollout switch, the one line to flip after a day of clean deploys. false: these rules fail npm run check and

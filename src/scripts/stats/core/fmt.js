@@ -241,7 +241,7 @@ export const utcMidnightLocal = (timeZone, at = new Date()) => {
   }
 };
 
-// Round axis ticks from zero, the same step rule as <ao-series> (src/elements/ao-series/element.js).
+// Round axis ticks from zero, the same step rule as <ao-series> (src/elements/ao-series/data.js).
 const niceStep = (v) => {
   if (!(v > 0)) return 1;
   const p = Math.pow(10, Math.floor(Math.log10(v)));
