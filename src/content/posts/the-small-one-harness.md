@@ -29,7 +29,7 @@ The series is [I Love My Evening Television](/courses/i-love-my-evening-televisi
 crews of Claude agents, and this film is its sixth piece. It started with
 [Crimson Coil](/ledger/crimson-coil/).
 
-<img src="/media/the-small-one-harness/title-card.webp" alt="THE SMALL ONE in thin white letters over eight lamps on plinths, each with a name and the same small label: opus-5.5, max" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/the-small-one-harness/title-card.webp" alt="THE SMALL ONE in thin white letters over eight lamps on plinths, each with a name and the same small label: opus-5.5, max">
 
 *The title card. The wall behind the lamps is a height chart from LOW to MAX, and every lamp
 sits on MAX.*
@@ -85,15 +85,15 @@ Imagine, xAI's image and video model, and a voice from ElevenLabs, an AI voice s
 Each player's first pitch came with a drawing it wrote as SVG, a text format for pictures, inside
 its answer. Here they are as drawn. You may notice something the players noticed in round one.
 
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:1.2em 0">
-<figure style="margin:0"><img src="/media/the-small-one-harness/first-pitch-wick.svg" alt="A house in cross-section in hot thermal colours: a man kneeling at a radiator, a woman by a lamp in the upstairs window, glowing machines and a small figure in the basement" loading="lazy" style="width:100%;border-radius:6px"><figcaption>WICK, "Latent Heat"</figcaption></figure>
-<figure style="margin:0"><img src="/media/the-small-one-harness/first-pitch-tallow.svg" alt="A three-storey house at night: a lamp and a seated figure upstairs, a man with a torch by a radiator reading 0, glowing machines in the basement" loading="lazy" style="width:100%;border-radius:6px"><figcaption>TALLOW, "Waste Heat: Why Rosie Stays Warm"</figcaption></figure>
-<figure style="margin:0"><img src="/media/the-small-one-harness/first-pitch-flint.svg" alt="A dark house with one lit window and a dish aerial sending a dotted signal to the Moon and back, labelled 2.5s, GN and EARLY" loading="lazy" style="width:100%;border-radius:6px"><figcaption>FLINT, "The Echo Comes Back Early"</figcaption></figure>
-<figure style="margin:0"><img src="/media/the-small-one-harness/first-pitch-ember.svg" alt="A reel of tape beside a glowing window with a lamp in it, a cold radiator and the words ROOM TONE" loading="lazy" style="width:100%;border-radius:6px"><figcaption>EMBER, "Room Tone"</figcaption></figure>
-<figure style="margin:0"><img src="/media/the-small-one-harness/first-pitch-lumen.svg" alt="A dotted green beam from a lit cottage to a tiny astronaut on the Moon, above the words ONE PHOTON COMES HOME" loading="lazy" style="width:100%;border-radius:6px"><figcaption>LUMEN, "One Photon Comes Home"</figcaption></figure>
-<figure style="margin:0"><img src="/media/the-small-one-harness/first-pitch-shade.svg" alt="A purple and orange spectrogram above a cassette labelled 5:12, a lit window, and Goodnight in gold script" loading="lazy" style="width:100%;border-radius:6px"><figcaption>SHADE, "Who Said Goodnight?"</figcaption></figure>
-<figure style="margin:0"><img src="/media/the-small-one-harness/first-pitch-moth-3.svg" alt="A woman seen from behind beside a standing lamp, a radiator reading 0, machines below, and a screen showing a faint face and the words still looking" loading="lazy" style="width:100%;border-radius:6px"><figcaption>MOTH-3, "Still Looking"</figcaption></figure>
-<figure style="margin:0"><img src="/media/the-small-one-harness/first-pitch-pilot.svg" alt="Playing cards cascading down a wooden table towards the curve of the Earth, a cup of coffee, a glowing lamp, the word Patience and 20:00" loading="lazy" style="width:100%;border-radius:6px"><figcaption>PILOT, "Patience"</figcaption></figure>
+<div class="gallery-150">
+<figure class="flush"><img class="fill soft" src="/media/the-small-one-harness/first-pitch-wick.svg" alt="A house in cross-section in hot thermal colours: a man kneeling at a radiator, a woman by a lamp in the upstairs window, glowing machines and a small figure in the basement" loading="lazy"><figcaption>WICK, "Latent Heat"</figcaption></figure>
+<figure class="flush"><img class="fill soft" src="/media/the-small-one-harness/first-pitch-tallow.svg" alt="A three-storey house at night: a lamp and a seated figure upstairs, a man with a torch by a radiator reading 0, glowing machines in the basement" loading="lazy"><figcaption>TALLOW, "Waste Heat: Why Rosie Stays Warm"</figcaption></figure>
+<figure class="flush"><img class="fill soft" src="/media/the-small-one-harness/first-pitch-flint.svg" alt="A dark house with one lit window and a dish aerial sending a dotted signal to the Moon and back, labelled 2.5s, GN and EARLY" loading="lazy"><figcaption>FLINT, "The Echo Comes Back Early"</figcaption></figure>
+<figure class="flush"><img class="fill soft" src="/media/the-small-one-harness/first-pitch-ember.svg" alt="A reel of tape beside a glowing window with a lamp in it, a cold radiator and the words ROOM TONE" loading="lazy"><figcaption>EMBER, "Room Tone"</figcaption></figure>
+<figure class="flush"><img class="fill soft" src="/media/the-small-one-harness/first-pitch-lumen.svg" alt="A dotted green beam from a lit cottage to a tiny astronaut on the Moon, above the words ONE PHOTON COMES HOME" loading="lazy"><figcaption>LUMEN, "One Photon Comes Home"</figcaption></figure>
+<figure class="flush"><img class="fill soft" src="/media/the-small-one-harness/first-pitch-shade.svg" alt="A purple and orange spectrogram above a cassette labelled 5:12, a lit window, and Goodnight in gold script" loading="lazy"><figcaption>SHADE, "Who Said Goodnight?"</figcaption></figure>
+<figure class="flush"><img class="fill soft" src="/media/the-small-one-harness/first-pitch-moth-3.svg" alt="A woman seen from behind beside a standing lamp, a radiator reading 0, machines below, and a screen showing a faint face and the words still looking" loading="lazy"><figcaption>MOTH-3, "Still Looking"</figcaption></figure>
+<figure class="flush"><img class="fill soft" src="/media/the-small-one-harness/first-pitch-pilot.svg" alt="Playing cards cascading down a wooden table towards the curve of the Earth, a cup of coffee, a glowing lamp, the word Patience and 20:00" loading="lazy"><figcaption>PILOT, "Patience"</figcaption></figure>
 </div>
 
 ## How the game ran

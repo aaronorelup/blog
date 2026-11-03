@@ -16,7 +16,7 @@ preview:
   alt: "Claude's oil painting of a pink-haired girl with red strawberry spots in her hair, an orange sun and a small red crab behind her"
 ---
 
-<img src="/media/oil-paintings/strawberry-girl.webp" alt="An oil painting of a pink-haired girl with red strawberry spots in her hair, lying back on a pastel beach with an orange sun, yellow sand, turquoise water and a small red crab" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/oil-paintings/strawberry-girl.webp" alt="An oil painting of a pink-haired girl with red strawberry spots in her hair, lying back on a pastel beach with an orange sun, yellow sand, turquoise water and a small red crab">
 
 I had Claude paint three oil paintings on Claude Paint, alice's simulator of wet oil paint.
 Every mark is a simulated brush stroke, the paint comes from fourteen tubes of historical
@@ -58,15 +58,15 @@ Two of my favorite paintings are ones I saw at the Museum of Russian Art, a boy 
 spring window and a Soviet courtroom. I asked for master studies, faithful copies the way painters
 learn. These are Claude's, not the originals.
 
-<img src="/media/oil-paintings/spring-study.webp" alt="Oil study: a boy in dark navy kneels on a red stool reading at a table by a bright window, with budding branches in a jar, a tall cactus and patterned curtains, and a hazy city with a TV tower outside" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/oil-paintings/spring-study.webp" alt="Oil study: a boy in dark navy kneels on a red stool reading at a table by a bright window, with budding branches in a jar, a tall cactus and patterned curtains, and a hazy city with a TV tower outside">
 
-<img src="/media/oil-paintings/court-study.webp" alt="Oil study: a courtroom waiting room, a man in a dark suit on a wooden bench looking aside, a woman in a dark coat leading a small child, onlookers behind" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/oil-paintings/court-study.webp" alt="Oil study: a courtroom waiting room, a man in a dark suit on a wooden bench looking aside, a woman in a dark coat leading a small child, onlookers behind">
 
 And mine, which I asked it to redo in oil "with a little more detail than what it is now."
 
 <ao-compare cols="2" aspect="4/3">
-<figure><img src="/media/oil-paintings/strawberry-2018-original.webp" alt="My 2018 digital painting" style="width:100%;border-radius:6px"><figcaption><b>My 2018 original</b><span class="ao-meta">digital painting</span></figcaption></figure>
-<figure><img src="/media/oil-paintings/strawberry-girl.webp" alt="Claude's oil version" style="width:100%;border-radius:6px"><figcaption><b>Claude's oil version</b><span class="ao-meta">simulated oil on simulated linen</span></figcaption></figure>
+<figure><img class="fill soft" src="/media/oil-paintings/strawberry-2018-original.webp" alt="My 2018 digital painting"><figcaption><b>My 2018 original</b><span class="ao-meta">digital painting</span></figcaption></figure>
+<figure><img class="fill soft" src="/media/oil-paintings/strawberry-girl.webp" alt="Claude's oil version"><figcaption><b>Claude's oil version</b><span class="ao-meta">simulated oil on simulated linen</span></figcaption></figure>
 </ao-compare>
 
 She kept her face. That heavy-lidded, completely unimpressed look is the whole character.
@@ -77,7 +77,7 @@ She kept her face. That heavy-lidded, completely unimpressed look is the whole c
 at the colors it couldn't hit, and measured each one off the canvas. That's how it knew a pastel
 pink was vermilion, an old red, and lead white with a touch of pale smalt, an old blue.
 
-<img src="/media/oil-paintings/calibration-chart.webp" alt="A grid of a few hundred oil paint swatches: every tube alone, mixed with white, and mixed in pairs" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/oil-paintings/calibration-chart.webp" alt="A grid of a few hundred oil paint swatches: every tube alone, mixed with white, and mixed in pairs">
 
 **Squaring up and the block-ins.** For the copies it squared up each reference into color zones,
 the way copyists rule a grid over a print. It blocked in all three paintings first, meaning it
@@ -85,19 +85,19 @@ laid down the big shapes and colors roughly, then refined them one at a time. Fi
 dark accents like the twigs, the crane and the cactus ribs, then light accents and glazes, the
 thin see-through coats painters build up. It painted the faces, eyes and hair strands by hand.
 
-<img src="/media/oil-paintings/blockins.webp" alt="The three block-ins side by side: the beach girl, the boy at the window, the courtroom" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/oil-paintings/blockins.webp" alt="The three block-ins side by side: the beach girl, the boy at the window, the courtroom">
 
 **My painting, pass by pass.** Its first block-in was scribbles on bare canvas, strokes with gaps
 the way a real hand leaves them. It went over everything again with fuller brushes. Its first
 eyelids and eyebrows were hairlines too faint to see, painted with a pointed brush at light
 pressure, so it painted them again blunt and fully loaded.
 
-<img src="/media/oil-paintings/strawberry-passages.webp" alt="Three stages: sparse scribbled block-in, covered masses, then the face and crab restated" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/oil-paintings/strawberry-passages.webp" alt="Three stages: sparse scribbled block-in, covered masses, then the face and crab restated">
 
 **The face up close.** At full resolution you can see the brush marks and the lid lines. The
 water behind her is the nearest green-blue those old pigments can make.
 
-<img src="/media/oil-paintings/strawberry-face-crop.webp" alt="Close-up of the face at full resolution: brush marks, lid lines, blue irises" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/oil-paintings/strawberry-face-crop.webp" alt="Close-up of the face at full resolution: brush marks, lid lines, blue irises">
 
 </details>
 
@@ -109,7 +109,7 @@ In the spring painting it looked for the boy's legs by picking out the dark area
 dark green wall too. That left a navy rectangle in the middle. It let the paint set and repainted
 the whole region from the reference.
 
-<img src="/media/oil-paintings/spring-mistake-repair.webp" alt="Left: a navy block painted over the wall by mistake. Right: the same area repainted, the kneeling boy back against the green wall" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/oil-paintings/spring-mistake-repair.webp" alt="Left: a navy block painted over the wall by mistake. Right: the same area repainted, the kneeling boy back against the green wall">
 
 In the courtroom it decided the wall was "too yellow" without checking the numbers, and dragged a
 thin cool gray over it. The original wall really is warm. The gray also chalked over the lit
@@ -120,16 +120,16 @@ faces, so it painted that back out too.
 Replaying the log repaints the picture, so time-lapses come free, a frame every 45 seconds of
 painting time. The same log could steer a robot arm.
 
-<video controls muted playsinline preload="metadata" poster="/media/oil-paintings/strawberry-girl.webp" src="/media/oil-paintings/strawberry-timelapse.mp4" style="width:100%;border-radius:8px"></video>
+<video class="fill" controls muted playsinline preload="metadata" poster="/media/oil-paintings/strawberry-girl.webp" src="/media/oil-paintings/strawberry-timelapse.mp4"></video>
 
 <details><summary>The spring window and courtroom time-lapses</summary>
 
 You can see the mistakes go in and get painted out: the navy block in the spring study, the
 chalky wall in the courtroom.
 
-<video controls muted playsinline preload="metadata" poster="/media/oil-paintings/spring-study.webp" src="/media/oil-paintings/spring-timelapse.mp4" style="width:100%;border-radius:8px"></video>
+<video class="fill" controls muted playsinline preload="metadata" poster="/media/oil-paintings/spring-study.webp" src="/media/oil-paintings/spring-timelapse.mp4"></video>
 
-<video controls muted playsinline preload="metadata" poster="/media/oil-paintings/court-study.webp" src="/media/oil-paintings/court-timelapse.mp4" style="width:100%;border-radius:8px"></video>
+<video class="fill" controls muted playsinline preload="metadata" poster="/media/oil-paintings/court-study.webp" src="/media/oil-paintings/court-timelapse.mp4"></video>
 
 </details>
 
@@ -140,14 +140,14 @@ BloodTailor, each from an image ChatGPT made, one over the other on the same can
 painting before the next one buried it. Only in the top one, a campfire scene, can you make out
 the figures.
 
-<video controls muted playsinline preload="metadata" poster="/media/oil-paintings/stack-3-twilight-feast.webp" src="/media/oil-paintings/stack-timelapse.mp4" style="width:100%;border-radius:8px"></video>
+<video class="fill" controls muted playsinline preload="metadata" poster="/media/oil-paintings/stack-3-twilight-feast.webp" src="/media/oil-paintings/stack-timelapse.mp4"></video>
 
 That's all 54 chunks replayed from one log. Here's each painting as it was saved.
 
 <ao-compare cols="3" aspect="16/9">
-<figure><img src="/media/oil-paintings/stack-1-crimson-scythe.webp" alt="Layer one: Jefrie lunging with her scythe in front of BloodTailor's blood vortex, muddy and hard to read" style="width:100%;border-radius:6px"><figcaption><b>Layer one</b><span class="ao-meta">Jefrie and her scythe, muddy</span></figcaption></figure>
-<figure><img src="/media/oil-paintings/stack-2-crimson-warden.webp" alt="Layer two: a low-angle BloodTailor in a cathedral of chains, Jefrie's tail arcing over him" style="width:100%;border-radius:6px"><figcaption><b>Layer two</b><span class="ao-meta">BloodTailor among chains</span></figcaption></figure>
-<figure><img src="/media/oil-paintings/stack-3-twilight-feast.webp" alt="Layer three: BloodTailor and Jefrie at a campfire under the iron dome at dusk" style="width:100%;border-radius:6px"><figcaption><b>Layer three</b><span class="ao-meta">the campfire, the only clear one</span></figcaption></figure>
+<figure><img class="fill soft" src="/media/oil-paintings/stack-1-crimson-scythe.webp" alt="Layer one: Jefrie lunging with her scythe in front of BloodTailor's blood vortex, muddy and hard to read"><figcaption><b>Layer one</b><span class="ao-meta">Jefrie and her scythe, muddy</span></figcaption></figure>
+<figure><img class="fill soft" src="/media/oil-paintings/stack-2-crimson-warden.webp" alt="Layer two: a low-angle BloodTailor in a cathedral of chains, Jefrie's tail arcing over him"><figcaption><b>Layer two</b><span class="ao-meta">BloodTailor among chains</span></figcaption></figure>
+<figure><img class="fill soft" src="/media/oil-paintings/stack-3-twilight-feast.webp" alt="Layer three: BloodTailor and Jefrie at a campfire under the iron dome at dusk"><figcaption><b>Layer three</b><span class="ao-meta">the campfire, the only clear one</span></figcaption></figure>
 </ao-compare>
 
 They came out worse because of how Claude plans a copy. It splits each picture into zones of

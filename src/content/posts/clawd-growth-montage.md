@@ -25,7 +25,7 @@ is written as code. There are no pictures, samples or recordings in it.
 rounds of fixes came from that. **The music it could only measure, and nobody listened to it
 before it shipped.** Next time I'll give it a way to check the part I care about most.
 
-<video controls playsinline preload="metadata" poster="/games/clawd-growth-montage/poster.jpg" src="/games/clawd-growth-montage/clawd-growth-montage.mp4" style="width:100%;border-radius:0"></video>
+<video class="fill square" controls playsinline preload="metadata" poster="/games/clawd-growth-montage/poster.jpg" src="/games/clawd-growth-montage/clawd-growth-montage.mp4"></video>
 
 Clawd starts in a chat window in 2023 and falls over. Then it learns to search, to code and to
 build in 3D, and climbs a mountain to the sunrise. It's shaped like a Kung Fu Panda training
@@ -118,12 +118,12 @@ seconds of the Blender film for its motion. The look comes from Blender frames t
 model, Qwen, repainted in oil.
 
 <figure>
-  <video controls playsinline preload="metadata" poster="/media/jefrie-montage/blender-poster.jpg" src="/media/jefrie-montage/jefrie-montage-blender.mp4" style="width:100%;border-radius:0"></video>
+  <video class="fill square" controls playsinline preload="metadata" poster="/media/jefrie-montage/blender-poster.jpg" src="/media/jefrie-montage/jefrie-montage-blender.mp4"></video>
   <figcaption><b>Made only in Blender code</b><span class="ao-meta">six shots, oil-paint filter, score in code</span></figcaption>
 </figure>
 
 <figure>
-  <video controls playsinline preload="metadata" poster="/media/jefrie-montage/h3-poster.jpg" src="/media/jefrie-montage/jefrie-montage-h3.mp4" style="width:100%;border-radius:0"></video>
+  <video class="fill square" controls playsinline preload="metadata" poster="/media/jefrie-montage/h3-poster.jpg" src="/media/jefrie-montage/jefrie-montage-h3.mp4"></video>
   <figcaption><b>The same film repainted by the AI video model</b><span class="ao-meta">six chained clips on my laptop</span></figcaption>
 </figure>
 

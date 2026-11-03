@@ -143,7 +143,7 @@ With time left, Claude reused the script for a second loop. Jefrie's at her day 
 cashier, head on one hand. She breathes, sighs, blinks and slams her tail once. The polo and visor
 are the agent's design, not mine.
 
-<video controls muted loop playsinline preload="metadata" poster="/media/paper-jefrie/grease_basket.webp" src="/media/paper-jefrie/grease_basket.mp4" style="width:100%;max-width:540px;border-radius:8px"></video>
+<video class="fill max-540" controls muted loop playsinline preload="metadata" poster="/media/paper-jefrie/grease_basket.webp" src="/media/paper-jefrie/grease_basket.mp4"></video>
 
 <details><summary>Render times and file sizes</summary>
 

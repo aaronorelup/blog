@@ -18,7 +18,7 @@ in the code changed as much as what the reviewers saw.
 
 Here it is. It's violent: on-screen kills and blood, drawn in ink and red.
 
-<video controls muted playsinline preload="metadata" poster="/media/storm-bell-pop-up/film-poster.webp" src="/media/storm-bell-pop-up/film.mp4" style="width:100%;border-radius:8px"></video>
+<video class="fill" controls muted playsinline preload="metadata" poster="/media/storm-bell-pop-up/film-poster.webp" src="/media/storm-bell-pop-up/film.mp4"></video>
 
 ## What I asked for
 

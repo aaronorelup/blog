@@ -25,7 +25,7 @@ nine narrated lessons, about 50 minutes in all.
 how settled it is.** Only 402 of the 8,338 lines are "set in steel", which means I signed off on
 them. Everything else is free to change.
 
-<img src="/media/the-lore-course/hero.webp" alt="The course page on a desktop screen: the title, counts of 4 episodes, 77 characters, 72 things, 8,338 lines of lore and 402 set in steel, and a tile for each of the four episodes" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/the-lore-course/hero.webp" alt="The course page on a desktop screen: the title, counts of 4 episodes, 77 characters, 72 things, 8,338 lines of lore and 402 set in steel, and a tile for each of the four episodes">
 
 The series is made of half-hour episodes, and there were four when the course went up:
 [Crimson Coil](/ledger/crimson-coil/), [Earthlight](/ledger/earthlight/),
@@ -62,7 +62,7 @@ expected to change it when they see something better.
 The [steel page](/courses/i-love-my-evening-television/steel/) is what the agents and I check
 before building anything.
 
-<img src="/media/the-lore-course/phones.webp" alt="Three phone screenshots: the six tiers with their line counts, Rosie's character sheet, and the egg atlas" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/the-lore-course/phones.webp" alt="Three phone screenshots: the six tiers with their line counts, Rosie's character sheet, and the egg atlas">
 
 ## What's on the course
 
@@ -84,7 +84,7 @@ Each lesson is 5 to 6 minutes: the world, one per episode, Rosie's life, the Moo
 and eggs, and what's steel and what's still a guess. Each has captions, chapters and a
 transcript you can tap to jump. This is [the first one](/courses/i-love-my-evening-television/lessons/01-the-world/).
 
-<video controls playsinline preload="metadata" poster="/courses/i-love-my-evening-television/lessons/01-the-world/poster.jpg" src="/courses/i-love-my-evening-television/lessons/01-the-world/lesson.mp4" style="width:100%;border-radius:8px"></video>
+<video class="fill" controls playsinline preload="metadata" poster="/courses/i-love-my-evening-television/lessons/01-the-world/poster.jpg" src="/courses/i-love-my-evening-television/lessons/01-the-world/lesson.mp4"></video>
 
 The narrator is a voice the agents designed in ElevenLabs and picked in a blind audition. Every
 recorded line was transcribed back, and the misheard ones were redone. "It is Aaron's to settle"
@@ -97,7 +97,7 @@ episodes, and 3 are steel, looks I approved. 25 are placeholders, quick referenc
 character nobody has seen yet still has a face to argue about. Those are free to change, and
 nobody should copy one into an episode just because it exists.
 
-<img src="/media/the-lore-course/pictures.webp" alt="Two picture panels from the course: the park from Episode 4 marked USED above a generated location sheet marked PLACEHOLDER, and a placeholder sheet of the hammer fox" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/the-lore-course/pictures.webp" alt="Two picture panels from the course: the park from Episode 4 marked USED above a generated location sheet marked PLACEHOLDER, and a placeholder sheet of the hammer fox">
 
 ## How it updates
 

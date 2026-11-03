@@ -25,7 +25,7 @@ tools a script could drive.
 
 [Watch it full screen](/media/still-on-shift/). Sound on.
 
-<iframe src="/media/still-on-shift/?embed" title="BLACKWATER, Still on Shift" style="width:100%;aspect-ratio:16/9;border:0" allow="fullscreen" loading="lazy"></iframe>
+<iframe class="embed" src="/media/still-on-shift/?embed" title="BLACKWATER, Still on Shift" allow="fullscreen" loading="lazy"></iframe>
 
 - **The lyrics became the shot list.** They already tell the game's story.
 - **Free-fly mode broke the look.** It turned off the fog, and dropping it showed nine cameras
@@ -71,7 +71,7 @@ ever a lamp beam, bubbles and the guide line.
 **A rough draft first.** The same script rendered every shot in a plain clay look, cut to the
 music. That draft, called previs, is where the camera moves and timing got fixed.
 
-<iframe src="/media/still-on-shift/?v=previs&embed" title="Previs animatic" style="width:100%;aspect-ratio:16/9;border:0" allow="fullscreen" loading="lazy"></iframe>
+<iframe class="embed" src="/media/still-on-shift/?v=previs&embed" title="Previs animatic" allow="fullscreen" loading="lazy"></iframe>
 
 **Sound and finish.** The game's own sounds went on the frames the script logged, with three
 water sounds made from scratch because the game has no splash sound. A free video tool called

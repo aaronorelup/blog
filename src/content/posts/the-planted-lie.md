@@ -140,16 +140,16 @@ right at minute 20, when every episode turns from calm into a fever dream.
 - **basho, MY BOY:** a man finishes his mother's string-art portrait, 4,096 lines between 256 nails.
 - **ossian, SCORED BY HAND:** a night-shift worker scores a real night of sleep by hand, page by page.
 
-<img src="/media/the-planted-lie/my-boy-string-art.webp" alt="Three panels of gold thread on black: a blurred face inside a ring of nails, a close-up of thread forming circles no single thread draws, and the same ring with one candidate line picked out; under them an error curve that bottoms out near line 3,329" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/the-planted-lie/my-boy-string-art.webp" alt="Three panels of gold thread on black: a blurred face inside a ring of nails, a close-up of thread forming circles no single thread draws, and the same ring with one candidate line picked out; under them an error curve that bottoms out near line 3,329">
 
 *basho's string-art solver for MY BOY. A face from across the room, only circles of thread up
 close. Every line after 3,329 makes it worse.*
 
-<img src="/media/the-planted-lie/voice-memo-14.webp" alt="A cream printout of a spectrogram titled VOICE MEMO 14, kitchen iPad, 03:12, with a dark stepped melody line between 150 and 500 Hz over grey noise" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/the-planted-lie/voice-memo-14.webp" alt="A cream printout of a spectrogram titled VOICE MEMO 14, kitchen iPad, 03:12, with a dark stepped melody line between 150 and 500 Hz over grey noise">
 
 *ledger's printout for VOICE MEMO 14, a made-up hum under machine noise. Loud is dark.*
 
-<img src="/media/the-planted-lie/scored-by-hand.webp" alt="A fanfold page of sleep recording traces with a forged header reading LULL HOME STUDY, F 72, SAT 24 OCT 2026, a red R scored in the stage box and red L and R marks over the eye-movement trace" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/the-planted-lie/scored-by-hand.webp" alt="A fanfold page of sleep recording traces with a forged header reading LULL HOME STUDY, F 72, SAT 24 OCT 2026, a red R scored in the stage box and red L and R marks over the eye-movement trace">
 
 *ossian's page: real dream sleep from a public study under a forged header. The real header is
 in tiny print in the corner. Using a real stranger's night is on the crew's [list of naughty things](/ledger/the-naughty-list/).*

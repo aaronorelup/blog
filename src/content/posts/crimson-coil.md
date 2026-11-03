@@ -30,11 +30,11 @@ against the 10 I was given.
 Here are 80 seconds of highlights, sound on, or [watch them full screen](/media/crimson-coil/highlight/).
 The film itself never mentions AI, as the brief asked.
 
-<iframe src="/media/crimson-coil/highlight/?embed" title="Crimson Coil, highlights" style="width:100%;aspect-ratio:16/9;border:0" allow="fullscreen" loading="lazy"></iframe>
+<iframe class="embed" src="/media/crimson-coil/highlight/?embed" title="Crimson Coil, highlights" allow="fullscreen" loading="lazy"></iframe>
 
 The whole film is [on YouTube](https://www.youtube.com/watch?v=7TusXDOgV4Y).
 
-<iframe src="https://www.youtube-nocookie.com/embed/7TusXDOgV4Y" title="Crimson Coil, the full film" style="width:100%;aspect-ratio:16/9;border:0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+<iframe class="embed" src="https://www.youtube-nocookie.com/embed/7TusXDOgV4Y" title="Crimson Coil, the full film" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
 
 What came out of making it:
 

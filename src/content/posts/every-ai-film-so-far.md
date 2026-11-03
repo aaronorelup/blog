@@ -85,7 +85,7 @@ worked, with a painted picture of her inside the scene as the reference.
 
 That film has my favorite H3 clip so far, the finishing sweep:
 
-<video controls muted loop playsinline preload="metadata" poster="/media/every-ai-film-so-far/train-s42.jpg" src="/media/every-ai-film-so-far/train-s42.mp4" style="width:100%;border-radius:0"></video>
+<video class="fill square" controls muted loop playsinline preload="metadata" poster="/media/every-ai-film-so-far/train-s42.jpg" src="/media/every-ai-film-so-far/train-s42.mp4"></video>
 
 A second and a half of stillness, a two-second swing, then a settle. One idea, a steady camera and
 an end frame right at the end of the move. Asking for a "pale moonlit streak" got me anime smear
@@ -120,7 +120,7 @@ figure with a bell for a head. I loved its four one-minute films enough to give 
 night, and it made an **8-minute film of 101 clips in eight chapters**, the first that long to keep
 the painted look all the way. Thirty seconds, from the trench chapter:
 
-<video controls playsinline preload="metadata" poster="/media/every-ai-film-so-far/echo-excerpt.jpg" src="/media/every-ai-film-so-far/echo-excerpt.mp4" style="width:100%;border-radius:0"></video>
+<video class="fill square" controls playsinline preload="metadata" poster="/media/every-ai-film-so-far/echo-excerpt.jpg" src="/media/every-ai-film-so-far/echo-excerpt.mp4"></video>
 
 - **What's under the painted still matters as much as the prompt.** Stills painted over a
   photoreal base turned every face into a Pixar face. A painterly base held.
@@ -214,7 +214,7 @@ zombie game. Its music video got made three times, and why none of them feel rig
 
 Twenty-five seconds of v3:
 
-<video controls playsinline preload="metadata" poster="/media/every-ai-film-so-far/bw-v3-excerpt.jpg" src="/media/every-ai-film-so-far/bw-v3-excerpt.mp4" style="width:100%;border-radius:0"></video>
+<video class="fill square" controls playsinline preload="metadata" poster="/media/every-ai-film-so-far/bw-v3-excerpt.jpg" src="/media/every-ai-film-so-far/bw-v3-excerpt.mp4"></video>
 
 <details><summary>What went wrong in v2 and v3</summary>
 

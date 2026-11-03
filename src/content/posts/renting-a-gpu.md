@@ -96,7 +96,7 @@ That was 37 clips (7 of them retakes), 8 chained segments, 22 images and 2 upsca
 minutes of rented time, for $2.44. Each frame took about a quarter of my laptop's time. Here's the
 result:
 
-<video controls playsinline preload="metadata" poster="/media/moonlight-v4/poster.webp" src="/media/moonlight-v4/moonlight_v4_720.mp4" style="width:100%;border-radius:8px"></video>
+<video class="fill" controls playsinline preload="metadata" poster="/media/moonlight-v4/poster.webp" src="/media/moonlight-v4/moonlight_v4_720.mp4"></video>
 
 One mistake cost time. Images and video took turns on the card, the two models didn't fit in its
 memory together, and every switch back to video spent about four minutes reloading. Now a card

@@ -152,6 +152,10 @@ comparison beats twenty pictures.
 - The components (`<ao-compare>`, `<ao-slider>`, `<ao-calc>`, `<ao-bars>` and the rest) are
   listed with their markup in `docs/COMPONENTS.md`. Use one before building something new.
 - Pictures go under `public/media/<slug>/` as WebP, sized for the page, not multi-MB PNGs.
+- No `style=` in a post's HTML: it wears the classes `src/styles/prose.css` keeps for posts. `fill` (full
+  width), `framed`, `soft` (6 px corners), `square`, `centered`, `max-720` / `max-560` / `max-540`, `pixelated`,
+  `embed` (a 16:9 frame), `flush` (a figure with no margin), `tile` (a block link), `small-print`, and the grids
+  `gallery` (260 px tiles), `gallery-280`, `gallery-200`, `gallery-150`.
 - Video and audio live in R2, not in git, at their normal URLs. Put the file in
   `public/media/<slug>/`, run `npm run media:push`, and commit the post with
   `src/data/media-manifest.json`. `docs/MEDIA.md` has the details.
@@ -217,7 +221,7 @@ preview:
 - `project` (optional), any of: `evening-television`, `blackwater`, `hidden-curriculum`,
   `characters`, `oil-paint`, `llm-monster-hunter`, `origin`. Only when the post really is part of
   that project.
-- No `status`, `tags` or `series`: older posts still carry them until they're rewritten.
+- No `status`, `tags` or `series`: the checker reports them.
 - The icon needs no field. It is `public/media/icons/<id>.webp` (256 px, at most 24 KB) and
   `<id>-96.webp` (at most 6 KB), named by the post's id. `icon:` overrides the path only when a
   post must share another's.

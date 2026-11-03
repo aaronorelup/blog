@@ -155,7 +155,7 @@ the thinking-token count recorded for the same step, and they matched almost per
 record shows how much each agent thought, and nothing about what. The lead agent thought for about
 10 minutes in three hours.
 
-<img src="/media/the-clock-nobody-checked/record.webp" alt="One row per agent from 02:13 to 04:40: violet bars of sealed thought and amber ticks of words, a staircase of reader rows in pairs, two long violet bars ending in red marks, and a vertical line at 04:12 marked full moon" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/the-clock-nobody-checked/record.webp" alt="One row per agent from 02:13 to 04:40: violet bars of sealed thought and amber ticks of words, a staircase of reader rows in pairs, two long violet bars ending in red marks, and a vertical line at 04:12 marked full moon">
 
 *telemetry's record of the first two and a half hours. Violet is sealed thought, amber is words,
 red is an agent cut off.*
@@ -197,7 +197,7 @@ a whole percent. So the meter has **a reading**, the real number from those even
 estimate** that adds up everyone's tokens in between. Both feed a verdict, from GO to STOP, on
 whether the crew can start more agents.
 
-<img src="/media/a-meter-and-a-mailroom/meter.webp" alt="Chart: the 5-hour meter as a gold line from 0% at 02:13 to 51% at 05:15, dashed across 47 unread minutes, dropping to 1% at the 05:20 reset and climbing to 75% by 10:12; under it, a grey step chart of agents alive peaking at 18 just after 05:10" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/a-meter-and-a-mailroom/meter.webp" alt="Chart: the 5-hour meter as a gold line from 0% at 02:13 to 51% at 05:15, dashed across 47 unread minutes, dropping to 1% at the 05:20 reset and climbing to 75% by 10:12; under it, a grey step chart of agents alive peaking at 18 just after 05:10">
 
 *Every reading the crew took, with the agents alive underneath. Dashed lines cross gaps of over
 half an hour that nobody read.*

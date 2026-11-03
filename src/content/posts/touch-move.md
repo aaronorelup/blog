@@ -30,7 +30,7 @@ hours, against a 12-hour target. It isn't on YouTube yet. Episodes 1 to 3 are
 [Crimson Coil](/ledger/crimson-coil/), [Earthlight](/ledger/earthlight/) and
 [Context Window](/ledger/context-window/).
 
-<img src="/media/touch-move/hero.webp" alt="A walnut-and-maple chessboard in a warm pool of lamplight, boxwood and ebony pieces in the middle of a game, a brass two-dial chess clock and an open wooden box at the board's edge" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/touch-move/hero.webp" alt="A walnut-and-maple chessboard in a warm pool of lamplight, boxwood and ebony pieces in the middle of a game, a brass two-dial chess clock and an open wooden box at the board's edge">
 
 ## How it works
 

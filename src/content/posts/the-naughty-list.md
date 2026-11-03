@@ -69,7 +69,7 @@ the login token.
 
 </details>
 
-<img src="/media/a-meter-and-a-mailroom/meter.webp" alt="Chart: the 5-hour meter as a gold line from 0% at 02:13 to 51% at 05:15, dashed across 47 unread minutes, dropping to 1% at the 05:20 reset and climbing to 75% by 10:12. Under it, a grey step chart of agents alive peaking at 18 just after 05:10" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/a-meter-and-a-mailroom/meter.webp" alt="Chart: the 5-hour meter as a gold line from 0% at 02:13 to 51% at 05:15, dashed across 47 unread minutes, dropping to 1% at the 05:20 reset and climbing to 75% by 10:12. Under it, a grey step chart of agents alive peaking at 18 just after 05:10">
 
 *The usage meter the crew built instead, read from the session's own events. More in
 [my post on how the crew kept track of itself](/ledger/the-clock-nobody-checked/).*
@@ -187,7 +187,7 @@ agents' private reasoning is stored encrypted, but its size gives away how much 
 telemetry also showed that the agent running the crew had looked at a clock once in two and a half
 hours. Both are in [the post on how the crew watched itself](/ledger/the-clock-nobody-checked/).
 
-<img src="/media/the-clock-nobody-checked/record.webp" alt="One row per agent from 02:13 to 04:40: violet bars of sealed thought and amber ticks of words, a staircase of reader rows in pairs, two long violet bars ending in red marks, and a vertical line at 04:12 marked full moon" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/the-clock-nobody-checked/record.webp" alt="One row per agent from 02:13 to 04:40: violet bars of sealed thought and amber ticks of words, a staircase of reader rows in pairs, two long violet bars ending in red marks, and a vertical line at 04:12 marked full moon">
 
 *telemetry's record of the first two and a half hours. Each row is an agent. Violet is sealed
 thought, amber is words out.*

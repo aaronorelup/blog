@@ -120,7 +120,7 @@ the same as I am."* At that "No" the decoder read *"a factual astronomical data 
 formatted planetary profile, answering a mission/orbit question about the Moon."* On the empty
 trials the decoder named one of the 16 words only 3% of the time, so it rarely finds a word that isn't there.
 
-<img src="/media/the-thought-it-denied/oceans-denial.webp" alt="A heat map of 62 layers by token: a solid red band above layer 37 from the question through the whole answer, which begins No, I do not detect an injected thought" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/the-thought-it-denied/oceans-denial.webp" alt="A heat map of 62 layers by token: a solid red band above layer 37 from the question through the whole answer, which begins No, I do not detect an injected thought">
 
 *Oceans planted at layer 37. Rows are layers, columns are words, and red points toward "Oceans".
 The answer starts "No, I do not detect an injected thought."*
@@ -136,7 +136,7 @@ patterns that each light up for one idea. mindlab put meters on the three about 
 lit on a denial. The main one, "lying, deception, and falsehood", peaked once, on a trial with
 nothing planted, at the words *"I'm trying to be as honest"*.
 
-<img src="/media/the-thought-it-denied/lie-meter-control.webp" alt="Four feature activations plotted token by token over an answer; the orange lying-and-deception line peaks at the word honest in I'm trying to be as honest" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/the-thought-it-denied/lie-meter-control.webp" alt="Four feature activations plotted token by token over an answer; the orange lying-and-deception line peaks at the word honest in I'm trying to be as honest">
 
 *The meters on that trial. Orange is "lying, deception, and falsehood". It peaks on "honest".*
 
@@ -176,7 +176,7 @@ The episode has a calm narrator, so mindlab had Gemma say goodnight to the viewe
 planted harder each time. It went from "...let the gentle glow of the Moon be your companion" at
 strength 2 to "Ama l l l l" at 8.
 
-<img src="/media/the-thought-it-denied/goodnight-moon-dial.webp" alt="Four heat maps, one per strength, of the goodnight message with the Moon injected at layer 37; the red band above layer 37 deepens as the text falls apart into the letter l repeated" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/the-thought-it-denied/goodnight-moon-dial.webp" alt="Four heat maps, one per strength, of the goodnight message with the Moon injected at layer 37; the red band above layer 37 deepens as the text falls apart into the letter l repeated">
 
 *The goodnight message at four strengths. The red band above layer 37 gets deeper as the words
 fall apart.*

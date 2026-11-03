@@ -42,7 +42,7 @@ shot inside my rebuild of the game in Godot, a free game engine. It's 35 shots
 with the game's own caves, crew and sounds, 2:45 long. Zombies swam into the lens, the camera
 shook, and the lyric captions made it feel like an ad.
 
-<iframe src="/media/still-on-shift/?embed" title="BLACKWATER, Still on Shift, v1" style="width:100%;aspect-ratio:16/9;border:0" allow="fullscreen" loading="lazy"></iframe>
+<iframe class="embed" src="/media/still-on-shift/?embed" title="BLACKWATER, Still on Shift, v1" allow="fullscreen" loading="lazy"></iframe>
 
 [Watch it full screen](/media/still-on-shift/).
 
@@ -53,7 +53,7 @@ film. A big step up, but low resolution, the same framing over and over, and a d
 between shots. Its best shot had no game footage under it at all, which told us the
 footage was holding the rest back. More in [my roundup of every AI film so far](/ledger/every-ai-film-so-far/).
 
-<iframe src="/media/still-on-shift-v2/?embed" title="BLACKWATER, Still on Shift, v2" style="width:100%;aspect-ratio:16/9;border:0" allow="fullscreen" loading="lazy"></iframe>
+<iframe class="embed" src="/media/still-on-shift-v2/?embed" title="BLACKWATER, Still on Shift, v2" allow="fullscreen" loading="lazy"></iframe>
 
 [Watch it full screen](/media/still-on-shift-v2/).
 
@@ -72,7 +72,7 @@ AI image model, and had H3 animate them into 73 clips. That took 6.68 hours of g
 There are no captions. The words are written on ledgers, stencils and a diver's wrist slate.
 Claude reviewed every clip and fixed what was wrong.
 
-<iframe src="/media/still-on-shift-v3/?embed" title="BLACKWATER, Still on Shift, v3" style="width:100%;aspect-ratio:16/9;border:0" allow="fullscreen" loading="lazy"></iframe>
+<iframe class="embed" src="/media/still-on-shift-v3/?embed" title="BLACKWATER, Still on Shift, v3" allow="fullscreen" loading="lazy"></iframe>
 
 [Watch it full screen](/media/still-on-shift-v3/). Sound on for all three.
 

@@ -30,19 +30,19 @@ hours where the brief asked for about ten, and two usage limits took 39 of them.
 the price if you paid per use, it came to about $1,106. Most of that, $1,018, went on agents
 storing and re-reading what they'd already seen.
 
-<img src="/media/earthlight/ipad.webp" alt="Small hands with taped fingertips holding an iPad in an orange rubber case with a silver-taped corner, on a grey blanket; on its screen, a blueprint stream with a chat column and a facecam" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/earthlight/ipad.webp" alt="Small hands with taped fingertips holding an iPad in an orange rubber case with a silver-taped corner, on a grey blanket; on its screen, a blueprint stream with a chat column and a facecam">
 
 ## Watch it
 
 Here are 80 seconds of highlights. They spoil the whole film. [Watch them full screen](/media/earthlight/highlight/). Sound on.
 
-<iframe src="/media/earthlight/highlight/?embed" title="Earthlight, highlights" style="width:100%;aspect-ratio:16/9;border:0" allow="fullscreen" loading="lazy"></iframe>
+<iframe class="embed" src="/media/earthlight/highlight/?embed" title="Earthlight, highlights" allow="fullscreen" loading="lazy"></iframe>
 
 The whole film is [on YouTube](https://www.youtube.com/watch?v=URjg8hSlzz8) in 1080p, with
 chapters and captions. Like every episode of the series it turns at minute 20, this time toward
 horror.
 
-<iframe src="https://www.youtube-nocookie.com/embed/URjg8hSlzz8" title="Earthlight, the full film" style="width:100%;aspect-ratio:16/9;border:0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+<iframe class="embed" src="https://www.youtube-nocookie.com/embed/URjg8hSlzz8" title="Earthlight, the full film" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
 
 ## What I found
 
@@ -69,7 +69,7 @@ closely, which is [what happened in September](/ledger/a-bad-previs/). So before
 a crew rendered one shot at three guide strengths, 0.55, 0.70 and 0.85, with the same prompt and
 the same random seed.
 
-<img src="/media/earthlight/adherence-grid.webp" alt="A grid of frames: the grey Blender previs of a bed-level view through a window at the top, then three rows of MiniMax-H3 renders at reference strengths 0.55, 0.70 and 0.85, which look almost identical" style="width:100%;border-radius:8px" loading="lazy">
+<img class="fill" src="/media/earthlight/adherence-grid.webp" alt="A grid of frames: the grey Blender previs of a bed-level view through a window at the top, then three rows of MiniMax-H3 renders at reference strengths 0.55, 0.70 and 0.85, which look almost identical" loading="lazy">
 
 **The three takes were nearly the same clip.** Pixels changed by 1 to 6 levels out of 255. The
 test never tried a take with no guide, so it only shows that the setting barely matters in that
@@ -110,7 +110,7 @@ A child sounds young mostly because of a shorter throat, which raises the voice'
 called formants, by about 8 to 15%. So her lines go through a small tool that raises the
 formants by 10% and leaves the pitch alone. Raising both makes a chipmunk.
 
-<img src="/media/earthlight/how-long.webp" alt="The battery graph sheet on cream graph paper, a line falling from 400 kWh toward EMPTY ~300 H against SUNRISE 354 H in orange; a donation alert reads tps_hab3 tipped $1.00, how long is the night where you are" style="width:100%;border-radius:8px" loading="lazy">
+<img class="fill" src="/media/earthlight/how-long.webp" alt="The battery graph sheet on cream graph paper, a line falling from 400 kWh toward EMPTY ~300 H against SUNRISE 354 H in orange; a donation alert reads tps_hab3 tipped $1.00, how long is the night where you are" loading="lazy">
 
 <details><summary>Noor's voice, and the others</summary>
 
@@ -135,7 +135,7 @@ figure on screen is read from one numbers file, so nothing is typed twice. Her b
 hours with the robots working and 130 in cold sleep, against 128 hours to sunrise. Even the Elon
 Musk posts the stream's co-host shares are real, 13 of 43 that an agent checked against X itself.
 
-<img src="/media/earthlight/battery-31.webp" alt="A small green LCD on a curved white wall: NIGHT HR 226/354, BATT 31%, HEALTH 61%, TO EMPTY 31 h, TO SUNRISE 128 h" style="width:100%;max-width:720px;display:block;margin:0 auto;border-radius:8px" loading="lazy">
+<img class="fill max-720 centered" src="/media/earthlight/battery-31.webp" alt="A small green LCD on a curved white wall: NIGHT HR 226/354, BATT 31%, HEALTH 61%, TO EMPTY 31 h, TO SUNRISE 128 h" loading="lazy">
 
 <details><summary>The battery sums, the light delay and the X posts</summary>
 
@@ -159,7 +159,7 @@ Musk posts the stream's co-host shares are real, 13 of 43 that an agent checked 
 Blender renders Teo's desk once, on the CPU. Everything that moves after that is 2D drawn by
 code, and a minute of desk renders in 99 seconds.
 
-<img src="/media/earthlight/title-block.webp" alt="Top-down view of a drafting desk: a hand with a technical pen lettering EARTHLIGHT in the title block of a Prussian-blue sheet, with a livestream overlay, a facecam of a bearded man behind a microphone, and a chat column on the right" style="width:100%;border-radius:8px" loading="lazy">
+<img class="fill" src="/media/earthlight/title-block.webp" alt="Top-down view of a drafting desk: a hand with a technical pen lettering EARTHLIGHT in the title block of a Prussian-blue sheet, with a livestream overlay, a facecam of a bearded man behind a microphone, and a chat column on the right" loading="lazy">
 
 <details><summary>How the sheets and the lettering work</summary>
 

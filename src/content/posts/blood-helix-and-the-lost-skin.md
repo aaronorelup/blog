@@ -57,7 +57,7 @@ characters, in my game [Storm Bell Fighter](/ledger/storm-bell-fighter/).
 That's rendered from the actual skin file, a 64 by 64 pixel image. It's what Mojang stores and
 what you load into the game.
 
-<img src="/media/blood-helix/bloodtailor-original-skin.png" alt="The raw 64×64 BloodTailor skin texture" width="256" height="256" style="image-rendering:pixelated" />
+<img class="pixelated" src="/media/blood-helix/bloodtailor-original-skin.png" alt="The raw 64×64 BloodTailor skin texture" width="256" height="256" />
 
 ## Why I could never log in
 

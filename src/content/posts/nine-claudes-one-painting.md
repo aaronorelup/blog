@@ -26,7 +26,7 @@ image".
 flaws along with it.** My two favorites are Opus medium's first try, painted by eye, and Opus
 max's final.
 
-<img src="/media/nine-claudes-one-painting/reference.webp" alt="The reference: BloodTailor, masked and grinning in a red cape, and Jefrie in a silver half-mask holding her scythe, both riding a huge dark serpent through a glowing golden ruin full of cages, chains and jewels" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/nine-claudes-one-painting/reference.webp" alt="The reference: BloodTailor, masked and grinning in a red cape, and Jefrie in a silver half-mask holding her scythe, both riding a huge dark serpent through a glowing golden ruin full of cages, chains and jewels">
 
 ChatGPT made the picture, and it has a lot wrong with it. It's really crunchy and noisy all
 over. I picked it anyway for the pose, the proportions and the colors. The two of them also star
@@ -77,7 +77,7 @@ Every first try from the low and medium sessions looked at the picture and paint
 things are. A dark ground, a glow, an oval for a head. Nobody measured anything. This is my
 favorite image of the whole experiment, Opus medium's first try:
 
-<img src="/media/nine-claudes-one-painting/om-1.webp" alt="Opus medium's first try: a naive oil painting of the scene. BloodTailor seen from behind with a big silver head and a white shirt, Jefrie as a round pale face with red ringed eyes and a wide grin, a serpent of round dark scales with a red belly, a red spiral, and gold lumps for treasure" style="width:100%;border-radius:8px">
+<img class="fill" src="/media/nine-claudes-one-painting/om-1.webp" alt="Opus medium's first try: a naive oil painting of the scene. BloodTailor seen from behind with a big silver head and a white shirt, Jefrie as a round pale face with red ringed eyes and a wide grin, a serpent of round dark scales with a red belly, a red spiral, and gold lumps for treasure">
 
 It honestly feels like art to me, like what a student paints in their first month of oil. The
 serpent became rows of round scales because scales are round, the treasure became lumps, and
@@ -143,7 +143,7 @@ Its stages, and the replay it made when I asked:
 <figure><img src="/media/nine-claudes-one-painting/sl-stage-3.webp" alt="Sonnet low, third stage: close to the final, detail in small square dabs" loading="lazy"><figcaption><b>Stage 3</b><span class="ao-meta">Sonnet low</span></figcaption></figure>
 </ao-compare>
 
-<video controls muted playsinline preload="metadata" poster="/media/nine-claudes-one-painting/sl-final.webp" src="/media/nine-claudes-one-painting/sl-timelapse.mp4" style="width:100%;border-radius:8px"></video>
+<video class="fill" controls muted playsinline preload="metadata" poster="/media/nine-claudes-one-painting/sl-final.webp" src="/media/nine-claudes-one-painting/sl-timelapse.mp4"></video>
 
 **Sonnet medium** made the most beautiful middle stage. Its base layer mixed 25 piles of paint
 per brushload into a soft, muddy smear. Once that dried, it laid smaller, mostly single-color
@@ -159,7 +159,7 @@ of tiling it with diamond scales, it covers all of it in flat dark green and sta
 exactly what people do. It's also the only time-lapse with a clock, and I wish they all had one.
 The replay skips the drying, roughly 300 simulated days of it.
 
-<video controls muted playsinline preload="metadata" poster="/media/nine-claudes-one-painting/hmax-final.webp" src="/media/nine-claudes-one-painting/hmax-timelapse.mp4" style="width:100%;border-radius:8px"></video>
+<video class="fill" controls muted playsinline preload="metadata" poster="/media/nine-claudes-one-painting/hmax-final.webp" src="/media/nine-claudes-one-painting/hmax-timelapse.mp4"></video>
 
 <details><summary>More from each session</summary>
 
@@ -176,7 +176,7 @@ had laid about 400,000 strokes over 148 hours of brush time, and its own descrip
 time-lapse is "the fine-detail passes sharpen the picture in bands across the canvas". Whatever it
 meant to do, it ended up measuring like the others.
 
-<video controls muted playsinline preload="metadata" poster="/media/nine-claudes-one-painting/smax-final.webp" src="/media/nine-claudes-one-painting/smax-timelapse.mp4" style="width:100%;border-radius:8px"></video>
+<video class="fill" controls muted playsinline preload="metadata" poster="/media/nine-claudes-one-painting/smax-final.webp" src="/media/nine-claudes-one-painting/smax-timelapse.mp4"></video>
 
 **Opus low and Opus medium** both started their second versions on a fresh canvas. Opus low said
 why: "the crude shapes from version 1 would have shown through anything I put on top." Both hit
@@ -241,7 +241,7 @@ and the blade, gem and hands get another. A thousand thick white touches make th
 glazes deepen the reds. I was really happy to see that. My other favorite, the full two and a
 half minutes:
 
-<video controls muted playsinline preload="metadata" poster="/media/nine-claudes-one-painting/omax-final.webp" src="/media/nine-claudes-one-painting/omax-timelapse.mp4" style="width:100%;border-radius:8px"></video>
+<video class="fill" controls muted playsinline preload="metadata" poster="/media/nine-claudes-one-painting/omax-final.webp" src="/media/nine-claudes-one-painting/omax-timelapse.mp4"></video>
 
 Against the ChatGPT picture, drag the divider:
 

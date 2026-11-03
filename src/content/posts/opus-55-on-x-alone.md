@@ -26,7 +26,7 @@ I wanted to see what's possible before I need it for real work. The rules were O
 agents only (separate Claude workers, each with one job), up to five at a time, a clock check every 30
 minutes, at most 90 minutes on one step, and four to six hours in all.
 
-<a href="/ledger/characters-in-inscryption/"><img src="/media/characters-in-inscryption/hero-cabin.webp" alt="Leshy's cabin in Inscryption with Aaron's character cards in hand and Leshy's line about Echo at the top" loading="lazy" style="width:100%;border-radius:8px"></a>
+<a href="/ledger/characters-in-inscryption/"><img class="fill" src="/media/characters-in-inscryption/hero-cabin.webp" alt="Leshy's cabin in Inscryption with Aaron's character cards in hand and Leshy's line about Echo at the top" loading="lazy"></a>
 
 ## What it decided without me
 

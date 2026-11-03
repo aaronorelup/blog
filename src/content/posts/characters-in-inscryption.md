@@ -25,7 +25,7 @@ In Inscryption you play cards against a dealer named Leshy, across his table. Cl
 copy of the game and read its code. Besides the cards, it wrote a second mod that plays a whole
 battle by itself and films it. Nobody played the battle below.
 
-<video controls playsinline preload="metadata" poster="/media/characters-in-inscryption/film-poster.webp" src="/media/characters-in-inscryption/film.mp4" style="width:100%;border-radius:8px"></video>
+<video class="fill" controls playsinline preload="metadata" poster="/media/characters-in-inscryption/film-poster.webp" src="/media/characters-in-inscryption/film.mp4"></video>
 
 It's 1 minute 41 seconds in one take, with the game's own sound. Leshy introduces each card as
 it's drawn, then every ability fires once.
@@ -192,7 +192,7 @@ When I asked how to actually play it, a second pass added a starter deck called 
 with my three cheapest characters, Ichigo, Jefrie and BloodTailor. It's in Kaycee's Mod, the
 game's replayable run mode.
 
-<figure><img src="/media/characters-in-inscryption/starter-deck.webp" alt="Kaycee's Mod starter deck screen: an iron-plated grinning head icon selected, previews of Ichigo, Jefrie and BloodTailor in pixel style" loading="lazy" style="width:100%;border-radius:8px"><figcaption>The starter-deck screen in the real game, on page 2 after the game's own decks. The game never prints deck names, so look for the grinning iron head.</figcaption></figure>
+<figure><img class="fill" src="/media/characters-in-inscryption/starter-deck.webp" alt="Kaycee's Mod starter deck screen: an iron-plated grinning head icon selected, previews of Ichigo, Jefrie and BloodTailor in pixel style" loading="lazy"><figcaption>The starter-deck screen in the real game, on page 2 after the game's own decks. The game never prints deck names, so look for the grinning iron head.</figcaption></figure>
 
 Claude checked it in the game three times, from the deck screen to the first battle. The mod isn't
 up for download. The install steps are in

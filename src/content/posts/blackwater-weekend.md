@@ -99,7 +99,7 @@ document, and they go to ElevenLabs word for word. Its verses point to audio tap
 the game, things a music AI couldn't know.
 
 <figure class="wide">
-  <iframe src="/media/still-on-shift/?embed" title="BLACKWATER, Still on Shift" style="width:100%;aspect-ratio:16/9;border:0" allow="fullscreen" loading="lazy"></iframe>
+  <iframe class="embed" src="/media/still-on-shift/?embed" title="BLACKWATER, Still on Shift" allow="fullscreen" loading="lazy"></iframe>
   <figcaption><b>Still on Shift</b><span class="ao-meta">The song with the music video Claude later made <a href="/ledger/still-on-shift-music-video/">inside a rebuilt version of the game</a> · sound on</span></figcaption>
 </figure>
 

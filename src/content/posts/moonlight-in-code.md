@@ -27,7 +27,7 @@ the same time, and it was done 80 minutes after I asked.
 **The scenes don't look like three different tools.** Before any agent started, the session wrote
 one style guide and drew the man on the jetty once, and every scene started from those.
 
-<video controls playsinline preload="metadata" poster="/media/moonlight-in-code/poster.webp" src="/media/moonlight-in-code/moonlight_code_mv_720.mp4" style="width:100%;border-radius:8px"></video>
+<video class="fill" controls playsinline preload="metadata" poster="/media/moonlight-in-code/poster.webp" src="/media/moonlight-in-code/moonlight_code_mv_720.mp4"></video>
 
 My [first two versions](/ledger/moonlight-two-cuts/) were made in Blender and Godot (a 3D program
 and a game engine), and the first one cast the lovers the wrong way round. He's meant to wait on

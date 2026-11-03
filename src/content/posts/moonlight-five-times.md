@@ -27,7 +27,7 @@ shown, mistakes included.** So the new one paints every shot of him over a 3D se
 blurred until only the layout is left to copy. I think the one drawn in code might still be the
 better video.
 
-<video controls playsinline preload="metadata" poster="/media/moonlight-v4/poster.webp" src="/media/moonlight-v4/moonlight_v4_720.mp4" style="width:100%;border-radius:8px"></video>
+<video class="fill" controls playsinline preload="metadata" poster="/media/moonlight-v4/poster.webp" src="/media/moonlight-v4/moonlight_v4_720.mp4"></video>
 
 The new one is 34 shots over 2:45, painted to look like a film still from 1968. Most of the
 motion comes from MiniMax-H3 (H3 for short), an AI video model. Three shots of rising bubbles
@@ -110,14 +110,14 @@ In the player above, the new one is labeled v4.
 Claude built [the first two cuts](/ledger/moonlight-two-cuts/) in Blender, a free 3D program,
 and filmed them inside Godot, a free game engine. There was no AI video at all. This is v2.
 
-<video controls muted playsinline preload="metadata" poster="/media/moonlight-two-cuts/v2_poster.webp" src="/media/moonlight-two-cuts/v2.mp4" style="width:100%;border-radius:8px"></video>
+<video class="fill" controls muted playsinline preload="metadata" poster="/media/moonlight-two-cuts/v2_poster.webp" src="/media/moonlight-two-cuts/v2.mp4"></video>
 
 So I asked for the whole song through H3. Claude gave it v2's frames as a guide (a previs, a rough
 version of every shot). It also painted over those frames with Qwen-Image, an AI image model, to
 make the still each clip ends on. That came to 33 six-second clips chained end to end, about 2.9
 hours on my laptop's graphics card.
 
-<video controls playsinline preload="metadata" poster="/media/moonlight-v4/h3_whole_poster.webp" src="/media/moonlight-v4/h3_whole_song_720.mp4" style="width:100%;border-radius:8px"></video>
+<video class="fill" controls playsinline preload="metadata" poster="/media/moonlight-v4/h3_whole_poster.webp" src="/media/moonlight-v4/h3_whole_song_720.mp4"></video>
 
 It looked more like a film and less like a game. I told Claude it was "a lot better, but is still
 extremely subpar". H3 copied the guide's one composition, him from behind with the moon on the
@@ -135,7 +135,7 @@ water, about a dozen times. Every shot lasted exactly one bar, so the edit has n
 
 Here are frames from across the whole cut. It's row after row of the same shot.
 
-<img src="/media/moonlight-v4/h3_whole_sheet.webp" alt="A contact sheet of the H3 cut: row after row of the man from behind on a jetty under the moon, with a few underwater frames between" style="width:100%;border-radius:8px" loading="lazy">
+<img class="fill" src="/media/moonlight-v4/h3_whole_sheet.webp" alt="A contact sheet of the H3 cut: row after row of the man from behind on a jetty under the moon, with a few underwater frames between" loading="lazy">
 
 ## What I cut from the first plan
 
@@ -175,7 +175,7 @@ I suggested painting him once and spinning a camera around him with H3 to get a 
 tested it first. H3 made up the side it couldn't see, a whole town of colored houses included,
 and the props around him moved. Every run would invent a different place.
 
-<img src="/media/moonlight-v4/turntable_test.webp" alt="Frames from an H3 orbit around the painted man: the background changes and invents a town on the cliff" style="width:100%;border-radius:8px" loading="lazy">
+<img class="fill" src="/media/moonlight-v4/turntable_test.webp" alt="Frames from an H3 orbit around the painted man: the background changes and invents a town on the cliff" loading="lazy">
 
 So Claude built the place first, in Blender, from code. A jetty, a headland with a lighthouse, a
 line of cork floats out to the cave, and the moon pinned to one spot. Every shot of him became a
@@ -209,7 +209,7 @@ angle.
 Same shots, three ways. Strictly over the set, loosely with no town, and loosely with the painted
 town.
 
-<img src="/media/moonlight-v4/strict_none_backdrop.webp" alt="The same shots painted three ways: strictly over the set, loosely with no town, and loosely with the painted town backdrop" style="width:100%;border-radius:8px" loading="lazy">
+<img class="fill" src="/media/moonlight-v4/strict_none_backdrop.webp" alt="The same shots painted three ways: strictly over the set, loosely with no town, and loosely with the painted town backdrop" loading="lazy">
 
 H3 gets no guide video this time. Each clip only moves between its painted first and last frames.
 There's a setting that's supposed to make H3 follow a guide less. A test on

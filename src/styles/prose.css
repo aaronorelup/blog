@@ -91,3 +91,22 @@
 .pc-prose summary::before { content: '+'; display: inline-block; width: 1.3em; font-family: var(--font-mono); color: var(--pc-accent); }
 .pc-prose details[open] > summary::before { content: '\2212'; }
 .pc-prose summary:hover { color: var(--pc-head); }
+
+/* What a post's own HTML may wear instead of style= (prose.mjs warns on style=; WRITING.md "Media" lists them). */
+.pc-prose .fill { width: 100%; }
+.pc-prose .framed { border: 1px solid var(--pc-line); }
+.pc-prose .soft { border-radius: 6px; }
+.pc-prose .square { border-radius: 0; }
+.pc-prose .centered { display: block; margin: 0 auto; }
+.pc-prose .max-720 { max-width: 720px; }
+.pc-prose .max-560 { max-width: 560px; }
+.pc-prose .max-540 { max-width: 540px; }
+.pc-prose .pixelated { image-rendering: pixelated; }
+.pc-prose .embed { width: 100%; aspect-ratio: 16 / 9; border: 0; }
+.pc-prose .flush { margin: 0; }
+.pc-prose .tile { display: block; text-decoration: none; }
+.pc-prose .small-print { font-size: 14px; }
+.pc-prose .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.pc-prose .gallery-280 { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin: 1.2em 0; }
+.pc-prose .gallery-200 { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin: 1.2em 0; }
+.pc-prose .gallery-150 { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin: 1.2em 0; }

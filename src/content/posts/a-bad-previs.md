@@ -53,26 +53,26 @@ and it's night against dawn. But the moves are the same, and the difference is h
 
 The tail launch, where her tail throws her into a jump:
 
-<video controls muted loop playsinline preload="metadata" poster="/media/previs-lesson/cmp-jump.jpg" src="/media/previs-lesson/cmp-jump.mp4" style="width:100%;border-radius:0"></video>
+<video class="fill square" controls muted loop playsinline preload="metadata" poster="/media/previs-lesson/cmp-jump.jpg" src="/media/previs-lesson/cmp-jump.mp4"></video>
 
 The marionette attack, where her tail lifts her like a puppet:
 
-<video controls muted loop playsinline preload="metadata" poster="/media/previs-lesson/cmp-marionette.jpg" src="/media/previs-lesson/cmp-marionette.mp4" style="width:100%;border-radius:0"></video>
+<video class="fill square" controls muted loop playsinline preload="metadata" poster="/media/previs-lesson/cmp-marionette.jpg" src="/media/previs-lesson/cmp-marionette.mp4"></video>
 
 The heavy spin attack:
 
-<video controls muted loop playsinline preload="metadata" poster="/media/previs-lesson/cmp-spin.jpg" src="/media/previs-lesson/cmp-spin.mp4" style="width:100%;border-radius:0"></video>
+<video class="fill square" controls muted loop playsinline preload="metadata" poster="/media/previs-lesson/cmp-spin.jpg" src="/media/previs-lesson/cmp-spin.mp4"></video>
 
 Here's a longer stretch of the no-previs film:
 
-<video controls playsinline preload="metadata" poster="/media/previs-lesson/train-excerpt.jpg" src="/media/previs-lesson/train-excerpt.mp4" style="width:100%;border-radius:0"></video>
+<video class="fill square" controls playsinline preload="metadata" poster="/media/previs-lesson/train-excerpt.jpg" src="/media/previs-lesson/train-excerpt.mp4"></video>
 
 ## How closely it follows
 
 On the left is the Blender previs for the marionette shot. On the right is what H3 made from a
 grayscale copy of it, so it would take the movement and not the colors:
 
-<video controls muted loop playsinline preload="metadata" poster="/media/previs-lesson/previs-vs-h3.jpg" src="/media/previs-lesson/previs-vs-h3.mp4" style="width:100%;border-radius:0"></video>
+<video class="fill square" controls muted loop playsinline preload="metadata" poster="/media/previs-lesson/previs-vs-h3.jpg" src="/media/previs-lesson/previs-vs-h3.mp4"></video>
 
 The tail, the dangling legs and the timing of every beat carry straight across. The more detailed
 the previs is, the more the video model follows it.
@@ -87,7 +87,7 @@ Or maybe not even that. An earlier short of Jefrie and my other character BloodT
 pack of monsters had a previs of just gray boxes and spheres. It ran on H3 through Higgsfield, a
 site that runs AI video models in the cloud. Even that made the movement worse:
 
-<video controls muted loop playsinline preload="metadata" poster="/media/previs-lesson/hollows-s04.jpg" src="/media/previs-lesson/hollows-s04.mp4" style="width:100%;border-radius:0"></video>
+<video class="fill square" controls muted loop playsinline preload="metadata" poster="/media/previs-lesson/hollows-s04.jpg" src="/media/previs-lesson/hollows-s04.mp4"></video>
 
 The camera and the blocking (where everyone stands) came through there too, and so did the previs's
 movement. The full [previs workflow](/ledger/previs-film-flow/) has its own post.
