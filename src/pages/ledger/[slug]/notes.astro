@@ -13,7 +13,7 @@ export async function getStaticPaths() {
 
 const { post, note } = Astro.props;
 ---
-<PanelPage title={`${note.data.title} — Aaron Orelup`} description={note.data.summary} active="ledger"
+<PanelPage title={`${note.data.title} · Aaron Orelup`} description={note.data.summary} active="ledger"
   noindex={post.data.unlisted}>
   <PostView post={post} note={note} />
 </PanelPage>

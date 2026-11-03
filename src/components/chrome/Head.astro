@@ -31,7 +31,7 @@ const { title, description, noindex = false, image, published } = Astro.props;
 {image && <meta name="twitter:card" content="summary_large_image" />}
 <meta name="ao-build" content={COMMIT} />
 <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
-<link rel="alternate" type="application/rss+xml" title="Aaron Orelup — the ledger" href="/rss.xml" />
+<link rel="alternate" type="application/rss+xml" title="Aaron Orelup · the ledger" href="/rss.xml" />
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="preload" href={FONTS.preload} as="font" type="font/woff2" crossorigin />
 <script is:inline>

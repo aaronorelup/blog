@@ -7,7 +7,7 @@ import { ledgerOrder } from '../lib/posts.js';
 
 export async function GET(context) {
   return rss({
-    title: 'Aaron Orelup — the ledger',
+    title: 'Aaron Orelup · the ledger',
     description: 'Notes on learning AI: agents, automation and whatever breaks along the way.',
     site: context.site,
     // Posts moved from /posts/<slug>/ to /ledger/<slug>/ with the tea house redesign.

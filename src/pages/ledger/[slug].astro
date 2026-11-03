@@ -14,7 +14,7 @@ const { post } = Astro.props;
 const { title, summary, date, unlisted } = post.data;
 const image = unlisted ? undefined : (await ogImage(post)).path;
 ---
-<PanelPage title={`${title} — Aaron Orelup`} description={summary} active="ledger" noindex={unlisted} image={image}
+<PanelPage title={`${title} · Aaron Orelup`} description={summary} active="ledger" noindex={unlisted} image={image}
   published={date}>
   <PostView post={post} />
 </PanelPage>
