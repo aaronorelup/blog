@@ -18,7 +18,8 @@
   max-width: 600px; text-wrap: pretty;
 }
 
-.rv { width: 100%; max-width: 720px; padding-bottom: var(--space-8); }
+/* overflow-wrap: the sources' bare URLs break where they would push a phone's page sideways, and nowhere else. */
+.rv { width: 100%; max-width: 720px; padding-bottom: var(--space-8); overflow-wrap: break-word; }
 .rv-back {
   display: inline-block; margin: 0 0 30px; font-size: var(--text-sm); letter-spacing: 0.08em; color: var(--pc-accent);
   text-decoration: none;
