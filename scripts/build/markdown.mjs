@@ -23,9 +23,9 @@ export const rehypePlugins = ({ publicDir }) => [
   [rehypePostText, { tags: TAGS, v }],
 ];
 
-// astro.config.mjs's markdown.processor: the unified (remark/rehype) pipeline with these plugins. Astro 7 fails the
+// astro.config.mjs's markdown.processor: the unified (remark/rehype) pipeline with these plugins. Astro fails the
 // build on a Markdown file that throws as it renders; a live notebook's page builds blank instead (Astro has logged
-// why), as it did under Astro 5, because nothing about a live notebook may fail a build (src/data/exempt.js).
+// why), because nothing about a live notebook may fail a build (src/data/exempt.js).
 export function markdownProcessor({ publicDir }) {
   const base = unified({ rehypePlugins: rehypePlugins({ publicDir }) });
   return {

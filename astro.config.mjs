@@ -30,7 +30,7 @@ export default defineConfig({
   publicDir,
   // Every stylesheet is a <link>, never inlined: a file the homepage overlay can adopt from a fetched page.
   build: { inlineStylesheets: 'never' },
-  // Whitespace between inline elements kept as one space, as Astro 5 did (7's default, 'jsx', drops it).
+  // Whitespace between inline elements kept as one space (the default, 'jsx', drops it).
   compressHTML: true,
   // statsPages: dist/stats-pages.txt, the public pages /api/stats may name (worker/stats/index.js).
   // loreThumbs: small copies of the lore course's pictures for its index cards (scripts/lore-thumbs.mjs).
