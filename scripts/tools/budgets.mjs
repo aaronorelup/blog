@@ -33,11 +33,12 @@ function without(tree, test) {
 
 const bytes = (dist, set) => [...set].reduce((n, f) => n + gz(fs.readFileSync(path.join(dist, f))), 0);
 
-// The scripts a load of `js` (a set of /_astro/ paths) runs: them and their static imports, all the way down.
+// The scripts a load of `js` (a set of /_astro/ paths) runs: them and their static imports, all the way down. The
+// minifier quotes a specifier with double quotes or backticks (Vite 8).
 function closure(dist, js) {
   for (const src of js) {
     const text = fs.readFileSync(path.join(dist, src), 'utf8');
-    for (const m of text.matchAll(/(?:^|[;}\n])\s*(?:import|export)\s*(?:[\w*{}\s,$]*from\s*)?["'](\.\.?\/[^"']+)["']/g)) {
+    for (const m of text.matchAll(/(?:^|[;}\n])\s*(?:import|export)\s*(?:[\w*{}\s,$]*from\s*)?["'`](\.\.?\/[^"'`]+)["'`]/g)) {
       js.add(path.posix.join(path.posix.dirname(src), m[1]));
     }
   }
@@ -57,7 +58,7 @@ function assets(dist, tree) {
     view ??= dataPanelView ?? null;
   });
   closure(dist, js);
-  const viewChunk = new RegExp(`"\\./${view}\\.js":\\(\\)=>[^"]*?import\\("\\./([^"]+)"\\)`);
+  const viewChunk = new RegExp(`"\\./${view}\\.js":\\(\\)=>[^"]*?import\\([\`"]\\./([^\`"]+)[\`"]\\)`);
   for (const src of view ? [...js] : []) {
     const m = fs.readFileSync(path.join(dist, src), 'utf8').match(viewChunk);
     if (m) closure(dist, js.add(path.posix.join(path.posix.dirname(src), m[1])));
@@ -73,7 +74,7 @@ function elementWeights(dist, pages, upFront) {
   const js = {};
   for (const f of fs.readdirSync(path.join(dist, '_astro')).filter((n) => n.endsWith('.js'))) {
     const text = fs.readFileSync(path.join(dist, '_astro', f), 'utf8');
-    for (const [, tag, chunk] of text.matchAll(/"\.\/(ao-[a-z0-9-]+)\/element\.js":\(\)=>[^"]*?import\("\.\/([^"]+)"\)/g)) {
+    for (const [, tag, chunk] of text.matchAll(/"\.\/(ao-[a-z0-9-]+)\/element\.js":\(\)=>[^"]*?import\([`"]\.\/([^`"]+)[`"]\)/g)) {
       const own = [...closure(dist, new Set([`/_astro/${chunk}`]))].filter((s) => !upFront.has(s));
       js[tag] = bytes(dist, own);
     }
@@ -118,7 +119,7 @@ export function measure(dist) {
   const element = elementWeights(dist, pages, upFront).sort((a, b) => b.bytes / b.budget - a.bytes / a.budget)[0];
   if (element) row('an element, JS + CSS', element.bytes, element.budget, `${element.tag}, the nearest its budget`);
   // What Listen loads: the chunk that marks the word read (the ao-read highlight) and its imports beyond the up-front JS.
-  const marks = (f) => fs.readFileSync(path.join(dist, '_astro', f), 'utf8').includes('highlights.set("ao-read"');
+  const marks = (f) => /highlights\.set\([`"]ao-read[`"]/.test(fs.readFileSync(path.join(dist, '_astro', f), 'utf8'));
   const reader = fs.readdirSync(path.join(dist, '_astro')).find((f) => f.endsWith('.js') && marks(f));
   const listen = [...closure(dist, new Set([`/_astro/${reader}`]))].filter((s) => !upFront.has(s));
   row('read-aloud on, JS', bytes(dist, listen), 8 * KB);

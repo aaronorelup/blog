@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import { unified } from '@astrojs/markdown-remark';
 import { rehypePlugins } from './scripts/build/markdown.mjs';
 import statsPages from './scripts/build/stats-pages.mjs';
 import devStatsFixture from './scripts/build/dev-stats-fixture.mjs';
@@ -30,6 +31,8 @@ export default defineConfig({
   publicDir,
   // Every stylesheet is a <link>, never inlined: a file the homepage overlay can adopt from a fetched page.
   build: { inlineStylesheets: 'never' },
+  // Whitespace between inline elements kept as one space, as Astro 5 did (7's default, 'jsx', drops it).
+  compressHTML: true,
   // statsPages: dist/stats-pages.txt, the public pages /api/stats may name (worker/stats/index.js).
   // loreThumbs: small copies of the lore course's pictures for its index cards (scripts/lore-thumbs.mjs).
   // media: no video or audio in public/ outside courses/, nothing over 25 MiB (docs/MEDIA.md).
@@ -48,8 +51,9 @@ export default defineConfig({
       },
       defaultColor: false,
     },
-    // Pictures sized, headings' ids, then the one text extraction every feature reads (scripts/build/markdown.mjs).
-    rehypePlugins: rehypePlugins({ publicDir }),
+    // The remark/rehype pipeline, not 7's default Sätteri, which runs no rehype plugins. Ours: pictures sized,
+    // headings' ids, then the one text extraction every feature reads (scripts/build/markdown.mjs).
+    processor: unified({ rehypePlugins: rehypePlugins({ publicDir }) }),
   },
   vite: {
     define: { __PUBLIC_DIR__: JSON.stringify(publicDir) },
