@@ -463,6 +463,7 @@ every 200 ms), so nothing waits for the Worker's key.
 | `/read/index.json` and `/read/<slug>.json` are the recorded posts', never the live notebook's or an unlisted post's, with the page's `data-read-hash`; a version not recorded answers `200 { ready: false }` | the build, `worker/media/serve.js` | read-6 |
 | A post never recorded (unlisted, a live notebook) has no `data-read-hash`: Listen reads in the browser's voice, with no choice of voice, no word of a recording and no `/read/` request | `listen.js`, `bar.js` | read-7 |
 | Every tap that reads plays inside itself, as iOS and strict Android autoplay need: Listen speaks a silent utterance and plays the one `<audio>` before its import and fetch, and that element alone then reads the recording; a word, the bar's play, a change of voice and the speed start the recording or the voice within the tap | `listen.js` `unlock()`, `index.js` `play()`, `HTMLMediaElement.play` / `speechSynthesis.speak` (stand-ins that mark the tap) | read-8 |
+| The bar is drawn again on every play, pause and next part; the speed button only when the speed changes, so its content is never touched as the reading moves to its next part or pauses (listen-5), and its own click still steps it | `bar.js` `show()` | read-9 |
 
 ## The live site (`live.spec.mjs`, `npm run e2e:live`)
 

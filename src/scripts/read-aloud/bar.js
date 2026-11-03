@@ -32,7 +32,9 @@ export function bar(on) {
       $('.ra-play').innerHTML = state.playing ? PAUSE : PLAY;
       $('.ra-play').setAttribute('aria-label', state.playing ? 'Pause' : 'Play');
     }
-    $('.ra-speed').textContent = `${state.speed}x`;
+    // Only when it changes: the bar is drawn again on every play, pause and next part, and on WebKit a tap on a button
+    // whose text is replaced between its press and its release fires no click.
+    if (state.speed !== shown.speed) $('.ra-speed').textContent = `${state.speed}x`;
     for (const b of el.querySelectorAll('[data-voice]')) {
       b.setAttribute('aria-pressed', String(b.dataset.voice === state.voice));
       b.disabled = !(b.dataset.voice === 'recorded' ? state.recorded : state.speech);
