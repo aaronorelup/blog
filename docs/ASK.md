@@ -57,7 +57,8 @@ searched; no search means whole mode still has every post, and split mode the ne
 **Browser** (`src/scripts/search/`): `ask.js` (the Turnstile session, unchanged, and the request), `ask-stream.js`
 (the events), `ask-trace.js` (one line a step, ticked as the next comes, then the summary line "Read all 71 posts in
 full · 283k tokens, 99.9% from cache · 5.2 s · $0.0011"), `ask-answer.js` (the words typing in, cited at most once a
-frame, then the answer, numbered by post as T2.2c made it), `examples.js` (the placeholder's example questions).
+frame and patched in place, so a cite drawn stays the same link under a press, then the answer, numbered by post as
+T2.2c made it), `examples.js` (the placeholder's example questions).
 
 ## The prompt, and why its order
 

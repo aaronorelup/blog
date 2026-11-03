@@ -62,6 +62,22 @@ const rows = (related, cards) => {
   return list.length ? [h('ol', { class: 'rows ask-related', 'aria-label': 'Posts on this' }, ...list)] : [];
 };
 
+// Bring el's children to parts (cited()'s strings and links) without replacing a node that is already right: a run
+// of text that grew changes in place, a cite link drawn before stays the same link. The words are redrawn every frame
+// while they type in, and a link replaced between a press and its release gets no click (on WebKit, neither does a
+// tap on text replaced so).
+function patch(el, parts) {
+  parts.forEach((p, i) => {
+    const have = el.childNodes[i];
+    if (typeof p === 'string') {
+      if (have?.nodeType === Node.TEXT_NODE) { if (have.data !== p) have.data = p; }
+      else if (have) have.replaceWith(p); else el.append(p);
+    } else if (!have) el.append(p);
+    else if (!have.isEqualNode(p)) have.replaceWith(p);
+  });
+  while (el.childNodes.length > parts.length) el.lastChild.remove();
+}
+
 // The answer as it streams: text(d) and cite(c) as the events come, then done() with the 'answer' event, or ended()
 // with an 'end' one. el is the paragraph the words type into; after() the parts that follow the answer.
 export function answer(q, cards) {
@@ -69,14 +85,14 @@ export function answer(q, cards) {
   const cites = [];
   let text = '';
   let frame = 0;
-  const draw = () => { frame = 0; el.replaceChildren(...cited(text, cites, q, cards)); };
+  const draw = () => { frame = 0; patch(el, cited(text, cites, q, cards)); };
   return {
     el,
     cite: (c) => cites.push(c),
     text: (d) => { text += d; frame ||= requestAnimationFrame(draw); },
     done: (a, summary) => {
       cancelAnimationFrame(frame);
-      el.replaceChildren(...cited(a.answer, a.cites, q, cards));
+      patch(el, cited(a.answer, a.cites, q, cards));
       const about = cards[ABOUT_POST] ? [' ', h('a', { class: 'ask-about', href: pagePath(ABOUT_POST) }, 'How RAG Goobie works')] : [];
       return [el, h('p', { class: 'ask-fine' }, SAY.fine, ...about), summary, ...rows(a.related, cards)];
     },

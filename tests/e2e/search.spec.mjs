@@ -604,6 +604,43 @@ test.describe('Ask RAG Goobie at work', () => {
     expect(await citeLinks(page)).toEqual(ANSWERS[0].links.map(([n, slug, notes, anchor]) => [n, `/ledger/${slug}/${notes}`, anchor]));
   });
 
+  // The words typing in are redrawn at most once a frame; a cite already drawn stays the same link through every
+  // redraw and the final render, so a press on it while more words come still clicks it on release (a link replaced
+  // between press and release gets no click; on WebKit neither does a tap on any text replaced so). The release is
+  // made where the cite is then: text-wrap: pretty can move it along its line as words come.
+  test('search-27 a cite pressed while the words still type in keeps its link and clicks on release', async ({ page, context }) => {
+    await watch(page, context);
+    await page.addInitScript(HELD);
+    const events = streamOf(ANSWERS[0], ANSWERS[0].related);
+    await page.goto('/ledger/');
+    await openAsk(page);
+    await page.evaluate((e) => { window.__ask = e; }, events);
+    await input(page).fill('What did Aaron find?');
+    await input(page).press('Enter');
+    await step(page, events.findIndex((e) => e.t === 'text') + 4);
+    const cite = page.locator('.ask-text a.ask-cite').first();
+    await expect(cite).toBeVisible();
+    await cite.evaluate((a) => {
+      window.__cite = a;
+      window.__clicks = 0;
+      a.addEventListener('click', (e) => { e.preventDefault(); window.__clicks++; });
+    });
+    const frames = () => page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+    const centre = async () => { const b = await cite.boundingBox(); return [b.x + b.width / 2, b.y + b.height / 2]; };
+    await page.mouse.move(...await centre());
+    await page.mouse.down();
+    const typed = await page.locator('.ask-text').textContent();
+    await step(page, 3);
+    await frames();
+    expect((await page.locator('.ask-text').textContent()).length).toBeGreaterThan(typed.length);
+    await page.mouse.move(...await centre());
+    await page.mouse.up();
+    expect(await page.evaluate(() => window.__clicks)).toBe(1);
+    await step(page);
+    await expect(page.locator('.ask-text')).toHaveText(ANSWERS[0].reads);
+    expect(await page.evaluate(() => window.__cite === document.querySelector('.ask-text a.ask-cite'))).toBe(true);
+  });
+
   test('search-20 the empty Ask box cycles example questions every 4 s; typing stops it, Search restores its own', async ({ page, context }) => {
     await watch(page, context);
     await page.addInitScript(() => { Math.random = () => 0.99; });   // the random first example is the last one
