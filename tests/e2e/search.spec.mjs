@@ -641,6 +641,49 @@ test.describe('Ask RAG Goobie at work', () => {
     expect(await page.evaluate(() => window.__cite === document.querySelector('.ask-text a.ask-cite'))).toBe(true);
   });
 
+  // The answer's final render keeps the paragraph the words typed into in the page and where it was: a cite pressed
+  // as the 'answer' event comes is never taken out (a link out of the page between press and release gets no click,
+  // even put back), and the step list above it goes only once the press is over, so the release made where the press
+  // was lands on the same cite and clicks it.
+  test('search-28 a cite pressed as the answer comes stays in the page and in place, and clicks on release', async ({ page, context }) => {
+    await watch(page, context);
+    await page.addInitScript(HELD);
+    const events = streamOf(ANSWERS[0], ANSWERS[0].related);
+    await page.goto('/ledger/');
+    await openAsk(page);
+    await page.evaluate((e) => { window.__ask = e; }, events);
+    await input(page).fill('What did Aaron find?');
+    await input(page).press('Enter');
+    expect(events.at(-1).t).toBe('answer');
+    await step(page, events.length - 1);   // every word, not the answer
+    await expect(page.locator('.ask-text')).toHaveText(ANSWERS[0].reads);
+    await expect(page.locator('.ask-steps')).toHaveCount(1);
+    const cite = page.locator('.ask-text a.ask-cite').first();
+    await cite.evaluate((a) => {
+      window.__clicks = 0;
+      window.__out = 0;
+      a.addEventListener('click', (e) => { e.preventDefault(); window.__clicks++; });
+      new MutationObserver((rs) => rs.forEach((m) => m.removedNodes.forEach((n) => { if (n === a || n.contains(a)) window.__out++; })))
+        .observe(document.body, { childList: true, subtree: true });
+    });
+    const frames = () => page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+    const b = await cite.boundingBox();
+    const at = [b.x + b.width / 2, b.y + b.height / 2];
+    await page.mouse.move(...at);
+    await page.mouse.down();
+    await step(page);
+    await expect(page.locator('.ask-summary')).toBeVisible();
+    await expect(page.locator('.ask')).not.toHaveAttribute('aria-busy', /.*/);
+    await frames();
+    expect(await cite.boundingBox()).toEqual(b);
+    await page.mouse.up();
+    expect(await page.evaluate(() => window.__clicks)).toBe(1);
+    expect(await page.evaluate(() => [window.__out, document.querySelector('.ask-text a.ask-cite')?.isConnected])).toEqual([0, true]);
+    // Once the press is over, the steps give way to the answer, as without one (search-17).
+    await expect(page.locator('.ask-steps')).toHaveCount(0);
+    await expect(page.locator('.ask-text')).toHaveText(ANSWERS[0].reads);
+  });
+
   test('search-20 the empty Ask box cycles example questions every 4 s; typing stops it, Search restores its own', async ({ page, context }) => {
     await watch(page, context);
     await page.addInitScript(() => { Math.random = () => 0.99; });   // the random first example is the last one

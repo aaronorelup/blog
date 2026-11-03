@@ -115,11 +115,12 @@ async function streamed(body, q, draw) {
   const steps = trace(cards);
   const words = answer(q, cards);
   const view = h('div', { class: 'ask', 'aria-busy': 'true' }, steps.el, words.el);
+  const free = unpressed(view);
   draw(view);
   for await (const e of events(body)) {
     if (e.t === 'cite') words.cite(e);
     else if (e.t === 'text') words.text(e.d);
-    else if (e.t === 'answer') return show(view, words.done(e, summary(e, steps.read)));
+    else if (e.t === 'answer') return answered(view, steps.el, words.done(e, summary(e, steps.read)), free);
     else if (e.t === 'end') return show(view, words.ended(e));
     else steps.on(e);
   }
@@ -129,4 +130,51 @@ async function streamed(body, q, draw) {
 function show(view, parts) {
   view.replaceChildren(...parts);
   view.removeAttribute('aria-busy');
+}
+
+// The answer in place of the steps. Its paragraph (parts[0], the words typed in) stays where it is, the same node:
+// one taken out and put back, as replaceChildren does even to a node it keeps, takes a cite under a press with it,
+// and that press gets no click (Chromium and WebKit). The rest goes in after it, and the step list above it goes once
+// no press is under way in the view: going, it moves the paragraph up by its height (118 px on a laptop, 160 on a
+// phone), so a release made where the press was would land on something else.
+function answered(view, trace, [el, ...rest], free) {
+  for (const n of [...view.childNodes]) if (n !== el && n !== trace) n.remove();
+  el.after(...rest);
+  view.removeAttribute('aria-busy');
+  free(() => trace.remove());
+}
+
+// unpressed(view)(fn) runs fn now when no press is under way in view, else once it is over: just after its click, or
+// 400 ms after a release that brings none (a press slid off, a scroll). A phone's click comes after the release, so a
+// change made between them still moves what the click lands on.
+function unpressed(view) {
+  const down = new Set();
+  let wait = null;          // fn, until the press is over
+  let after = 0;            // the timer from a release to the click it may bring
+  const over = () => {
+    clearTimeout(after);
+    after = 0;
+    view.removeEventListener('click', clicked, true);
+    if (down.size) return;
+    const fn = wait;
+    wait = null;
+    fn?.();
+  };
+  const clicked = () => setTimeout(over);
+  const up = (e) => {
+    if (!down.delete(e.pointerId) || down.size) return;
+    removeEventListener('pointerup', up, true);
+    removeEventListener('pointercancel', up, true);
+    view.addEventListener('click', clicked, true);
+    clearTimeout(after);
+    after = setTimeout(over, 400);
+  };
+  view.addEventListener('pointerdown', (e) => {
+    if (!down.size) { addEventListener('pointerup', up, true); addEventListener('pointercancel', up, true); }
+    down.add(e.pointerId);
+  });
+  return (fn) => {
+    if (down.size || after) wait = fn;
+    else fn();
+  };
 }

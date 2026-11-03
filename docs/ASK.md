@@ -58,7 +58,8 @@ searched; no search means whole mode still has every post, and split mode the ne
 (the events), `ask-trace.js` (one line a step, ticked as the next comes, then the summary line "Read all 71 posts in
 full · 283k tokens, 99.9% from cache · 5.2 s · $0.0011"), `ask-answer.js` (the words typing in, cited at most once a
 frame and patched in place, so a cite drawn stays the same link under a press, then the answer, numbered by post as
-T2.2c made it), `examples.js` (the placeholder's example questions).
+T2.2c made it; `ask.js` puts the answer in around that same paragraph, never taking it out, and takes the step list
+above it away only once no press is under way, so a cite pressed as the answer comes neither leaves the page nor moves), `examples.js` (the placeholder's example questions).
 
 ## The prompt, and why its order
 
