@@ -128,7 +128,7 @@ notes, `earthlight`'s notes, `nine-claudes-one-painting` today).
 | A clip row picks and plays it; Play/Pause and the clock follow the audio | row `click`, Play `click`, audio `play` `pause` `loadedmetadata` `ended` | listen-1 |
 | A Pause pressed while a seek is still running holds once the seek is done, and one pressed as a spectrogram seek made while playing ends with no data yet to play (WebKit's player otherwise plays the clip again) | Play `click` mid-seek and at `seeked`, spectrogram `click`, audio `play` | listen-1b |
 | The hold ends: a play from outside the page (a media key, the lock screen) a second after the clip settles plays, after a Pause as the clip starts, mid-seek, before it is under way, and as a seek ends with no data yet to play | Play `click`, spectrogram `click`, audio `play` `seeked` | listen-1c |
-| A/B switches to the reference (`ref`) at the same moment, and back; the clip left stays paused, past its own seek's end (WebKit's player otherwise plays it again) | `ref`, A/B `click`, audio `play` | listen-2 |
+| A/B switches to the reference (`ref`) at the same moment (both clocks read in the page as the reference starts playing), and back; the clip left stays paused, past its own seek's end (WebKit's player otherwise plays it again) | `ref`, A/B `click`, audio `play` | listen-2 |
 | Only the clip picked plays: a play of the clip A/B or a row left, 100 ms and 700 ms after the click, is paused at once while the clip picked plays on | A/B and row `click`, audio `play` | listen-2b |
 | The spectrogram seeks on click and with the arrows | spectrogram `pointerdown` `keydown` | listen-3 |
 | List focused: arrows pick and keep playing, space toggles, C flips A/B | element `keydown` | listen-4 |

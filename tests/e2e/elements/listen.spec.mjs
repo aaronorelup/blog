@@ -179,17 +179,28 @@ test('listen-2 A/B switches to the reference at the same moment, and back', asyn
   // A moment well into the clip, set rather than waited for: WebKit on Linux can hold a playing clip's clock still.
   await seekTo(a, 2);
   await expect.poll(() => clock(a)).toBeGreaterThan(1.9);
+  // Both clocks are read in the page the moment the reference starts (its first 'playing' once A/B is pressed: a
+  // clip a row left can still get a late one from WebKit, listen-2b), not by a round trip later: the clip left is
+  // paused, so every moment the test spends after the switch (a locator found again takes half a second on a loaded
+  // box) runs the reference on past it.
+  await listen(page).evaluate((el, m) => {
+    const ab = el.querySelectorAll('.ao-listen-bar button')[1];
+    for (const r of el.querySelectorAll('audio')) {
+      if (r === m) continue;
+      r.addEventListener('playing', () => {
+        if (ab.getAttribute('aria-pressed') === 'true') r._started ??= [m.currentTime, r.currentTime, r.duration];
+      });
+    }
+  }, await a.elementHandle());
   await ab.click();
   await expect(ab).toHaveAttribute('aria-pressed', 'true');
   const refTitle = await current(page).textContent();
   expect(refTitle).not.toBe(first);
   const ref = audioOf(page, refTitle);
-  const [ma, mr] = [await a.elementHandle(), await ref.elementHandle()];
   await expectPlaying(ref);
-  // The reference picks up where the clip was (it would be near 0 from the start), read as soon as it plays and in one
-  // go: the clip left is paused, so every moment spent after this (a locator found again takes half a second on a
-  // loaded box) runs the reference on past it.
-  const [ta, tr, end] = await mr.evaluate((r, m) => [m.currentTime, r.currentTime, r.duration], ma);
+  // The reference picks up where the clip was (it would be near 0 from the start).
+  await expect.poll(() => ref.evaluate((r) => !!r._started)).toBe(true);
+  const [ta, tr, end] = await ref.evaluate((r) => r._started);
   expect(tr).toBeGreaterThan(Math.min(ta, end) - 0.2);
   expect(tr - ta).toBeLessThan(3);
   // The clip left stays paused, past the moment WebKit plays a clip paused before it was under way (as its seek ends,
