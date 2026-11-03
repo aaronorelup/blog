@@ -643,8 +643,8 @@ test.describe('Ask RAG Goobie at work', () => {
 
   // The answer's final render keeps the paragraph the words typed into in the page and where it was: a cite pressed
   // as the 'answer' event comes is never taken out (a link out of the page between press and release gets no click,
-  // even put back), and the step list above it goes only once the press is over, so the release made where the press
-  // was lands on the same cite and clicks it.
+  // even put back). The step list above it goes at once, as without a press, and the cite is still the same link
+  // in the page after the release, so a click on it lands.
   test('search-28 a cite pressed as the answer comes stays in the page, the same link, and clicks after', async ({ page, context }) => {
     await watch(page, context);
     await page.addInitScript(HELD);
