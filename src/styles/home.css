@@ -3,6 +3,81 @@
    is right from first paint in either mode, and the day/night tween (scripts/home/theme.js) moves them all at once.
    scripts/home/scene/ stages the page over these: it pins the sections over the window and shows one at a time. */
 
+/* The homepage's tokens (Home links this after site.css, so tokens.css's day block comes first): its own pairs and
+   --mix, the tween's position from 0 (day) to 1 (night), which scripts/home/theme.js moves. */
+@property --mix { syntax: '<number>'; inherits: true; initial-value: 1; }
+
+:root {
+  /* The cards, buttons, rail, flash and coin. */
+  --day-home-card: rgba(251, 243, 232, 0.9);    --night-home-card: rgba(21, 23, 38, 0.86);
+  --day-home-shadow: 0 14px 40px rgba(58, 58, 66, 0.12); --night-home-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --day-home-head: rgb(190, 122, 16);           --night-home-head: rgb(240, 192, 106);
+  --day-home-body: rgb(74, 74, 80);             --night-home-body: rgb(198, 194, 212);
+  --day-home-quiet: rgb(107, 94, 82);           --night-home-quiet: rgb(143, 138, 163);
+  --day-home-btn-bg: rgb(251, 243, 232);        --night-home-btn-bg: rgba(240, 192, 106, 0.1);
+  --day-home-btn-line: rgb(58, 58, 66);         --night-home-btn-line: rgb(198, 194, 212);
+  --day-home-btn-text: rgb(58, 58, 66);         --night-home-btn-text: rgb(242, 236, 223);
+  --day-home-dot: rgb(58, 58, 66);              --night-home-dot: rgb(198, 194, 212);
+  --day-home-flash: rgb(255, 255, 255);         --night-home-flash: rgb(12, 14, 24);
+  --day-home-coin: rgb(247, 201, 212);          --night-home-coin: rgb(59, 46, 68);
+  --day-home-coin-rim: rgb(58, 58, 66);         --night-home-coin-rim: rgb(90, 84, 112);
+  --day-home-coin-back: rgb(246, 223, 168);     --night-home-coin-back: rgb(33, 31, 51);
+  /* The homepage's day/night switch, which follows the mode asked for (aria-pressed), not data-mode. */
+  --day-home-toggle: rgba(251, 243, 232, 0.92); --night-home-toggle: rgba(21, 23, 38, 0.86);
+  --day-home-toggle-line: rgb(58, 58, 66);      --night-home-toggle-line: rgb(74, 69, 96);
+  --home-pink: rgb(240, 166, 184);              --home-blush: rgb(247, 201, 212);   /* button hovers, both modes */
+
+  --mix: 1;
+  --home-card: var(--night-home-card); --home-shadow: var(--night-home-shadow); --home-head: var(--night-home-head);
+  --home-body: var(--night-home-body); --home-quiet: var(--night-home-quiet); --home-btn-bg: var(--night-home-btn-bg);
+  --home-btn-line: var(--night-home-btn-line); --home-btn-text: var(--night-home-btn-text);
+  --home-dot: var(--night-home-dot); --home-flash: var(--night-home-flash); --home-coin: var(--night-home-coin);
+  --home-coin-rim: var(--night-home-coin-rim); --home-coin-back: var(--night-home-coin-back);
+}
+
+:root[data-mode='day'] {
+  --mix: 0;
+  --home-card: var(--day-home-card); --home-shadow: var(--day-home-shadow); --home-head: var(--day-home-head);
+  --home-body: var(--day-home-body); --home-quiet: var(--day-home-quiet); --home-btn-bg: var(--day-home-btn-bg);
+  --home-btn-line: var(--day-home-btn-line); --home-btn-text: var(--day-home-btn-text);
+  --home-dot: var(--day-home-dot); --home-flash: var(--day-home-flash); --home-coin: var(--day-home-coin);
+  --home-coin-rim: var(--day-home-coin-rim); --home-coin-back: var(--day-home-coin-back);
+}
+
+/* During the tween only, the colours follow --mix; the shadows follow data-mode, which flips at 0.5. As specific as
+   the day blocks and after both (tokens.css's and the one above), so it outranks them. Without color-mix it snaps. */
+@supports (color: color-mix(in srgb, red, blue)) {
+  :root[data-tweening] {
+    --pc-page: color-mix(in srgb, var(--day-page), var(--night-page) calc(var(--mix) * 100%));
+    --pc-bg: color-mix(in srgb, var(--day-bg), var(--night-bg) calc(var(--mix) * 100%));
+    --pc-head: color-mix(in srgb, var(--day-head), var(--night-head) calc(var(--mix) * 100%));
+    --pc-strong: color-mix(in srgb, var(--day-strong), var(--night-strong) calc(var(--mix) * 100%));
+    --pc-body: color-mix(in srgb, var(--day-body), var(--night-body) calc(var(--mix) * 100%));
+    --pc-quiet: color-mix(in srgb, var(--day-quiet), var(--night-quiet) calc(var(--mix) * 100%));
+    --pc-soft: color-mix(in srgb, var(--day-soft), var(--night-soft) calc(var(--mix) * 100%));
+    --pc-line: color-mix(in srgb, var(--day-line), var(--night-line) calc(var(--mix) * 100%));
+    --pc-line2: color-mix(in srgb, var(--day-line2), var(--night-line2) calc(var(--mix) * 100%));
+    --pc-accent: color-mix(in srgb, var(--day-accent), var(--night-accent) calc(var(--mix) * 100%));
+    --pc-gold: color-mix(in srgb, var(--day-gold), var(--night-gold) calc(var(--mix) * 100%));
+    --pc-tile: color-mix(in srgb, var(--day-tile), var(--night-tile) calc(var(--mix) * 100%));
+    --pc-hover: color-mix(in srgb, var(--day-hover), var(--night-hover) calc(var(--mix) * 100%));
+    --pc-code: color-mix(in srgb, var(--day-code), var(--night-code) calc(var(--mix) * 100%));
+    --pc-scrim: color-mix(in srgb, var(--day-scrim), var(--night-scrim) calc(var(--mix) * 100%));
+    --home-card: color-mix(in srgb, var(--day-home-card), var(--night-home-card) calc(var(--mix) * 100%));
+    --home-head: color-mix(in srgb, var(--day-home-head), var(--night-home-head) calc(var(--mix) * 100%));
+    --home-body: color-mix(in srgb, var(--day-home-body), var(--night-home-body) calc(var(--mix) * 100%));
+    --home-quiet: color-mix(in srgb, var(--day-home-quiet), var(--night-home-quiet) calc(var(--mix) * 100%));
+    --home-btn-bg: color-mix(in srgb, var(--day-home-btn-bg), var(--night-home-btn-bg) calc(var(--mix) * 100%));
+    --home-btn-line: color-mix(in srgb, var(--day-home-btn-line), var(--night-home-btn-line) calc(var(--mix) * 100%));
+    --home-btn-text: color-mix(in srgb, var(--day-home-btn-text), var(--night-home-btn-text) calc(var(--mix) * 100%));
+    --home-dot: color-mix(in srgb, var(--day-home-dot), var(--night-home-dot) calc(var(--mix) * 100%));
+    --home-flash: color-mix(in srgb, var(--day-home-flash), var(--night-home-flash) calc(var(--mix) * 100%));
+    --home-coin: color-mix(in srgb, var(--day-home-coin), var(--night-home-coin) calc(var(--mix) * 100%));
+    --home-coin-rim: color-mix(in srgb, var(--day-home-coin-rim), var(--night-home-coin-rim) calc(var(--mix) * 100%));
+    --home-coin-back: color-mix(in srgb, var(--day-home-coin-back), var(--night-home-coin-back) calc(var(--mix) * 100%));
+  }
+}
+
 /* The scene: a sticky window-sized canvas, the cards over it. */
 .home-wrap { position: relative; z-index: 1; background: transparent; }
 .home-viewport {
