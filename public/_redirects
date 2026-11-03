@@ -23,8 +23,12 @@
 /course/lessons/ /courses/the-hidden-curriculum/ 301
 
 # Posts moved from /posts/<slug>/ to /ledger/<slug>/ when the site took on the tea house design. AO-004 and AO-005
-# were syndicated under the old paths, so these stay forever. :slug is one segment with no trailing slash.
+# were syndicated under the old paths, so these stay forever. :slug is one segment, without its slash, so a path two
+# of these rules match goes to the same place by either, and each old URL takes one hop whichever rule Cloudflare
+# tries first (on the live site a /posts/* wildcard beat the /posts/:slug rule above it).
 /posts /ledger/ 301
+/posts/ /ledger/ 301
 /posts/:slug /ledger/:slug/ 301
-/posts/* /ledger/:splat 301
+/posts/:slug/ /ledger/:slug/ 301
+/posts/:slug/* /ledger/:slug/:splat 301
 /course/lessons/* /courses/the-hidden-curriculum/lessons/:splat 301
