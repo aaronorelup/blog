@@ -102,6 +102,13 @@ export function tween({ from = 0, to = 1, dur = 450, ease = EASE.out, delay = 0,
 // line doesn't shimmy.
 const shown = new WeakMap();
 const running = new WeakMap();
+// A figure that moves every frame changes the text of the node it has, never the node: the figures sit in buttons,
+// and on WebKit a tap on one whose text node is replaced between its press and its release fires no click.
+function setText(el, s) {
+  const t = el.firstChild;
+  if (t && t === el.lastChild && t.nodeType === 3) { if (t.data !== s) t.data = s; }
+  else el.textContent = s;
+}
 export function tweenNumber(el, to, { from, dur = 450, fmt = num, ease = EASE.out } = {}) {
   if (!el) return { cancel() {} };
   running.get(el)?.cancel();
@@ -115,8 +122,8 @@ export function tweenNumber(el, to, { from, dur = 450, fmt = num, ease = EASE.ou
   el.classList?.add('st-tab');
   const t = tween({
     from: start, to, dur, ease,
-    onUpdate: (v) => { el.textContent = fmt(v); },
-    onDone: () => { el.textContent = fmt(to); el.classList?.remove('st-tab'); running.delete(el); },
+    onUpdate: (v) => { setText(el, fmt(v)); },
+    onDone: () => { setText(el, fmt(to)); el.classList?.remove('st-tab'); running.delete(el); },
   });
   running.set(el, t);
   return t;

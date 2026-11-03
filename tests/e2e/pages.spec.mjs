@@ -2,7 +2,7 @@
 // (mocked: 200 from fixtures/stats-200.json, 503 not-connected), and where a link into a post lands. INVENTORY rows
 // pages-*.
 import { test, expect } from './fixtures.mjs';
-import { allDefined, pagesWhere } from './helpers.mjs';
+import { allDefined, contentChanges, pagesWhere } from './helpers.mjs';
 
 test('pages-1 the RSS feed has one item per listed post, guid = the post URL', async ({ request }) => {
   const previews = await (await request.get('/ledger/previews.json')).json();
@@ -33,6 +33,23 @@ test.describe('/stats with the numbers', () => {
     await expect(page.locator('.st-state-lede')).toHaveCount(0);
     await expect(page.locator('#st-top')).toContainText(/\d/);
     expect(errors).toEqual([]);
+  });
+});
+
+// A range change rolls the lede's figures: numbers inside buttons, changed in their own text node, never by a node
+// replaced (on WebKit a tap on a button whose text node is replaced between press and release fires no click).
+test.describe('/stats numbers that move', () => {
+  test('pages-7 a range change rolls the lede\'s figures in place: their buttons keep their text nodes', async ({ page }) => {
+    await page.goto('/stats');
+    const prov = page.locator('#st-top .st-prov');
+    await expect(prov.first()).toBeVisible();
+    const before = await prov.allTextContents();
+    const changes = contentChanges(prov, 1000);
+    await page.locator('.st-pill', { hasText: '7 days' }).click();
+    const n = await changes;
+    expect(n.nodes).toBe(0);
+    expect(n.text).toBeGreaterThan(0);
+    expect(await prov.allTextContents()).not.toEqual(before);
   });
 });
 
