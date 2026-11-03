@@ -139,7 +139,7 @@ fails the build, or only warns in a live notebook.
 | `docs/COMPONENTS.md` | the post components: each `<ao-*>`'s markup, attributes and behaviours |
 | `docs/ASK.md` | RAG Goobie: how an answer is made, its caps and costs, the eval and its gates |
 | `ARCHITECTURE.md` | this map |
-| `astro.config.mjs` | site, `compressHTML: true` (Astro 7's default, `'jsx'`, drops the space between inline elements), integrations, the unified Markdown pipeline and its plugins, the main-only guard |
+| `astro.config.mjs` | site, `compressHTML: true` (Astro 7's default, `'jsx'`, drops the space between inline elements), integrations, the unified Markdown pipeline and its plugins, CSS minified by esbuild (Vite 8's Lightning CSS rewrites the tokens' `rgba()` colours, which the `/stats` canvas parses), the main-only guard |
 | `wrangler.jsonc` | the Worker `blog`, every binding, `run_worker_first`, both crons, the vars (secrets by name only) |
 | `.dev.vars.example` | the local test keys for `wrangler dev` (copy to the git-ignored `.dev.vars`) |
 | `.node-version` | 22.23.4, the Node Workers Builds uses. `astro` stays pinned at 7.4.1, the last release that runs on agent boxes' 22.22.0 (CLAUDE.md, Commands) |
