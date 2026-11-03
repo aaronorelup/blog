@@ -3,8 +3,6 @@ id: "AO-051"
 title: "Using Claude to find and clip exact moments on YouTube"
 summary: "I gave Claude four YouTube research jobs, with and without Arcmira, a tool that searches video transcripts, and had it clip every moment it found. What each way can and can't find."
 date: 2026-10-16
-status: "in-progress"
-tags: ["claude-code", "video", "research", "yt-dlp", "mcp", "arcmira"]
 topic: "agents"
 project: []
 preview:

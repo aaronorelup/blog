@@ -3,9 +3,6 @@ id: "AO-056"
 title: "A love song's music video, made five ways with AI"
 summary: "Claude made five music videos for a love song from my game, each a different way. What broke in each, how the newest keeps its setting consistent, and how it compares with the one drawn in code."
 date: 2026-10-17
-status: "shipped"
-tags: ["claude-code", "comfyui", "minimax-h3", "ai-video", "lessons"]
-series: ["blackwater"]
 topic: "video"
 project: ["blackwater"]
 preview:

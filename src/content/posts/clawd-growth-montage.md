@@ -3,8 +3,6 @@ id: "AO-020"
 title: "A 30-second animated short Claude drew and scored in code"
 summary: "From one prompt, Claude made a 30-second animated short of its mascot, every frame and note written as code. What it fixed by looking, the music nobody heard, and a remake with my character Jefrie."
 date: 2026-09-26
-status: "shipped"
-tags: ["claude-code", "animation", "web-audio", "canvas"]
 topic: "3d"
 project: ["characters"]
 preview:

@@ -3,9 +3,6 @@ id: "AO-007"
 title: "My first AI projects, before I knew what a terminal was"
 summary: "The first three things I built with Claude in May 2025, coming from Excel and SQL. The model wrote the code, and what stopped me was everything around it, like where files go, the terminal and git."
 date: 2026-08-08
-status: "note"
-tags: ["origin", "python", "local-llm", "git", "lessons"]
-series: ["origin"]
 draft: false
 topic: "learning"
 project: ["origin"]

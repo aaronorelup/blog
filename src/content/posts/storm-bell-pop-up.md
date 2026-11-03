@@ -3,9 +3,7 @@ id: "AO-028"
 title: "One prompt, six hours, and a 2:50 film of my characters drawn entirely in code"
 summary: "I asked for an animated short of Jefrie, BloodTailor and Yusef with no image or video models. 27 Opus 5.5 agents wrote 24,000 lines of canvas code and came back six hours later with 2 minutes 50 seconds of it. The first passes were rough; review rounds on the rendered frames are what changed them."
 date: 2026-09-30
-status: "shipped"
-tags: ["claude-code", "animation", "canvas", "agents", "characters"]
-series: ["characters", "agent-runs"]
+project: ["characters"]
 unlisted: true
 ---
 

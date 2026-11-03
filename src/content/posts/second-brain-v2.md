@@ -3,8 +3,6 @@ id: "AO-013"
 title: "Rebuilding my second brain for AI agents, research first"
 summary: "An AI built my first second brain in one shot, and agents got 6 of 10 lookups right from it, so I rebuilt it research first. The rules I ended up with, the retest, and what it cost."
 date: 2026-08-15
-status: "shipped"
-tags: ["second-brain", "agents", "notion", "claude-code"]
 topic: "agents"
 project: []
 preview:

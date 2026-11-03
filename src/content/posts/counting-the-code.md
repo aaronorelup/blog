@@ -3,8 +3,6 @@ id: "AO-062"
 title: "Counting every line of code in my AI projects"
 summary: "I had Claude count the code in the 29 projects in my current projects folder. How much there is, which projects are biggest, and why the first count was three times too high."
 date: 2026-10-21
-status: "note"
-tags: ["claude-code", "opus-5-5", "agents", "lessons"]
 topic: "agents"
 project: []
 preview:

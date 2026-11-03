@@ -3,9 +3,6 @@ id: "AO-034"
 title: "Two lessons I sent back from my AI-made video course"
 summary: "My agents make the lessons for my video course on the basics of building with AI. I sent two of the first seven back as out of date. What was wrong, what Claude changed, and both versions to compare."
 date: 2026-10-04
-status: "shipped"
-tags: ["claude-code", "agents", "animation", "elevenlabs", "lessons"]
-series: ["hidden-curriculum", "agent-runs"]
 topic: "learning"
 project: ["hidden-curriculum"]
 preview:

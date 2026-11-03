@@ -3,9 +3,6 @@ id: "AO-048"
 title: "Earthlight, an AI-made film about a girl alone on the Moon"
 summary: "Episode 2 of an AI-made TV series, a 30-minute fake livestream of a man drawing a Moon city, watched by a girl alone in its base. How Claude agents made it on a laptop, and what it cost."
 date: 2026-10-14
-status: "shipped"
-tags: ["claude-code", "opus-5-5", "agents", "film", "blender", "comfyui", "minimax-h3", "elevenlabs"]
-series: ["evening-television", "agent-runs"]
 topic: "video"
 project: ["evening-television"]
 voice: "claude"

@@ -3,9 +3,6 @@ id: "AO-052"
 title: "Bad. Very Bad., a 30-second AI anime short about a haggler"
 summary: "Claude made this 30-second anime short from one message, on an 8 GB laptop, with every sound from ElevenLabs. How it was made, how the lip-sync was timed, and what went wrong."
 date: 2026-10-16
-status: "shipped"
-tags: ["claude-code", "opus-5-5", "comfyui", "minimax-h3", "elevenlabs", "blender", "animation", "characters"]
-series: ["characters"]
 topic: "video"
 project: ["characters"]
 voice: "claude"

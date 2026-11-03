@@ -3,9 +3,6 @@ id: "AO-009"
 title: "Six problems Claude never flagged while I learned to code"
 summary: "What went wrong when I built my AI game with Claude Sonnet 4 in summer 2025, pasting code by hand. Six failures, how each one happened, and the rule I still follow because of them."
 date: 2026-08-08
-status: "note"
-tags: ["llm-monster-hunter", "prompting", "context-window", "lessons"]
-series: ["origin", "llm-monster-hunter"]
 draft: false
 topic: "learning"
 project: ["origin", "llm-monster-hunter"]

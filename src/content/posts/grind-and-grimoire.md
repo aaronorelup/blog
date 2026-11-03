@@ -3,8 +3,6 @@ id: "AO-003"
 title: "How big a game one AI prompt can build"
 summary: "I had Claude build a skateboarding wizard game from one long prompt in an evening, then ran it again asking for six districts instead of two. How big a one-prompt game can get, and what broke."
 date: 2026-08-02
-status: "shipped"
-tags: ["claude-code", "three-js", "gamedev", "elevenlabs", "lessons"]
 topic: "games"
 project: []
 preview:

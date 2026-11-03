@@ -3,9 +3,6 @@ id: "AO-072"
 title: "My media library hit Cloudflare's free database limit in four days"
 summary: "My agents moved my 68,000-file media library into a Cloudflare D1 database, and on the fourth day Cloudflare cut off every database on my account. Why it happened, and what to set up first."
 date: 2026-10-28
-status: "note"
-tags: ["cloudflare", "d1", "sqlite", "lessons", "claude-code"]
-series: ["the-site"]
 topic: "site"
 project: []
 preview:

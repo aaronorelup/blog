@@ -3,9 +3,6 @@ id: "AO-008"
 title: "Learning to program by building an AI monster game"
 summary: "From June to August 2025 I built an AI monster game with Claude in a browser, pasting code by hand. The systems I had to design myself, and why picking files by hand made me learn my own code."
 date: 2026-08-08
-status: "note"
-tags: ["origin", "llm-monster-hunter", "python", "react", "architecture", "lessons"]
-series: ["origin", "llm-monster-hunter"]
 draft: false
 topic: "learning"
 project: ["origin", "llm-monster-hunter"]

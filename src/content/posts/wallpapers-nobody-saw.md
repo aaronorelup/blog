@@ -3,9 +3,6 @@ id: "AO-027"
 title: "The animated wallpapers my agents built without seeing them"
 summary: "My agents built 16 animated desktop wallpapers in one run, 13 of them while the app that plays them sat crashed. What went wrong, and the wallpaper app I started so Claude can see its work."
 date: 2026-09-29
-status: "in-progress"
-tags: ["claude-code", "agents", "comfyui", "wallpaper-engine", "lessons"]
-series: ["agent-runs"]
 topic: "agents"
 project: ["characters"]
 preview:

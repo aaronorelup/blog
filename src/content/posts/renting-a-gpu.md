@@ -3,8 +3,6 @@ id: "AO-055"
 title: "How much a rented cloud GPU speeds up my AI videos"
 summary: "I rented a big graphics card online to render my AI video clips. How much faster it really was than my 8 GB laptop, what made the difference, and what an hour of video costs."
 date: 2026-10-17
-status: "shipped"
-tags: ["claude-code", "comfyui", "minimax-h3", "ai-video", "runpod", "lessons"]
 topic: "video"
 project: []
 preview:

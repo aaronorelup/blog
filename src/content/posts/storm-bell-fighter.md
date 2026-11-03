@@ -3,9 +3,6 @@ id: "AO-024"
 title: "A fighting game of my characters, made by Claude in 42 hours"
 summary: "One Claude Code session and 130 AI agents built a 1v1 fighting game starring my two characters, and you can play it here. Where the 42 hours went, what testing caught, and what it cost."
 date: 2026-09-28
-status: "shipped"
-tags: ["claude-code", "godot", "gamedev", "agents", "blender"]
-series: ["characters", "agent-runs"]
 draft: false
 topic: "games"
 project: ["characters"]

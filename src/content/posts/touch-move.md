@@ -3,10 +3,7 @@ id: "AO-063"
 title: "Touch Move: an AI-made film of a chess lesson"
 summary: "Episode 4 of a TV series made by Claude agents. An old teacher plays a famous 1858 chess game with a boy of nine on a clock that runs the whole film. How the chess stayed correct, and what it took."
 date: 2026-10-22
-status: "shipped"
 draft: false
-tags: ["claude-code", "opus-5-5", "agents", "film", "chess", "stockfish", "runpod", "minimax-h3", "blender", "elevenlabs", "claude-paint"]
-series: ["evening-television", "agent-runs"]
 topic: "video"
 project: ["evening-television"]
 voice: "claude"

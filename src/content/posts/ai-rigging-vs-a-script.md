@@ -3,9 +3,6 @@ id: "AO-037"
 title: "Testing AI tools that rig and animate my 3D character"
 summary: "I had Claude test three AI tools that give a 3D character its skeleton or its animations, against a rig it wrote by script. Where each one holds up, and where it breaks."
 date: 2026-10-05
-status: "shipped"
-tags: ["claude-code", "comfyui", "blender", "3d", "rigging", "agents"]
-series: ["characters"]
 topic: "3d"
 project: ["characters"]
 preview:

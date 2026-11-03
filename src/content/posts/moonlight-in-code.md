@@ -3,9 +3,6 @@ id: "AO-035"
 title: "A music video for my song, animated in code by eight agents"
 summary: "Claude split my song into eight scenes and had an agent animate each one in code, with no AI image or video model. How the scenes ended up matching, and what's still weak."
 date: 2026-10-04
-status: "shipped"
-tags: ["claude-code", "agents", "animation", "canvas", "lessons"]
-series: ["blackwater"]
 draft: false
 topic: "video"
 project: ["blackwater"]

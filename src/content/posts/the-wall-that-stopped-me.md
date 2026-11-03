@@ -3,9 +3,6 @@ id: "AO-010"
 title: "Restarting my AI game after a ten-month stall"
 summary: "My AI game sat for ten months behind one big, boring rewrite. Claude's new Fable 5 model did it on my first night back. What that week built, and why I credit the specs I wrote by hand."
 date: 2026-08-08
-status: "note"
-tags: ["llm-monster-hunter", "react", "burnout", "fable-5", "claude-code", "documentation", "lessons"]
-series: ["origin", "llm-monster-hunter"]
 draft: false
 topic: "learning"
 project: ["origin", "llm-monster-hunter"]

@@ -3,9 +3,6 @@ id: "AO-066"
 title: "Testing whether AI writers catch a planted lie"
 summary: "Six Claude agents pitched an episode of my AI TV series, and one was secretly asked to slip in a convincing fake fact. Whether the other five noticed, and how fast."
 date: 2026-10-26
-status: "shipped"
-tags: ["claude-code", "opus-5-5", "agents", "writers-room", "lying", "film"]
-series: ["introspection", "agent-runs"]
 topic: "agents"
 project: ["evening-television"]
 preview:

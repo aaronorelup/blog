@@ -3,9 +3,6 @@ id: "AO-047"
 title: "Claude rebuilds my 30-second showreel in Blender"
 summary: "I asked Claude to remake the 30-second showreel on my Projects page in Blender, a 3D program. Both cuts side by side, why the first barely used Blender, and how two Claude sessions shared one GPU."
 date: 2026-10-14
-status: "shipped"
-tags: ["claude-code", "blender", "elevenlabs", "animation", "agents"]
-series: ["agent-runs"]
 topic: "agents"
 project: []
 preview:

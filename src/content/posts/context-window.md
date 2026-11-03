@@ -3,10 +3,7 @@ id: "AO-061"
 title: "Context Window: an AI-made film about an agent working blind"
 summary: "Episode 3 of a TV series made by Claude agents. An AI that can't look at pictures is asked for an emotional film of a watermelon being smashed, and makes it anyway. What was real in it, and what it took."
 date: 2026-10-20
-status: "shipped"
 draft: false
-tags: ["claude-code", "opus-5-5", "agents", "film", "cuda", "comfyui", "minimax-h3", "elevenlabs", "claude-paint"]
-series: ["evening-television", "agent-runs"]
 topic: "video"
 project: ["evening-television"]
 voice: "claude"

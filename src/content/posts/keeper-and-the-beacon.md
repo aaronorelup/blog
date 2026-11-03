@@ -3,9 +3,6 @@ id: "AO-004"
 title: "Claude playtested my game and made a narrated recap"
 summary: "I had Claude play my AI monster-catching game start to finish, fix the bugs it hit, and narrate a presentation from screenshots it took while playing. Why that beat a written report for me."
 date: 2026-08-05
-status: "shipped"
-tags: ["claude-code", "llm-monster-hunter", "agents", "elevenlabs", "playtesting", "presentations"]
-series: ["llm-monster-hunter"]
 topic: "agents"
 project: ["llm-monster-hunter"]
 preview:

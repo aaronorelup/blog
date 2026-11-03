@@ -3,9 +3,6 @@ id: "AO-019"
 title: "How an AI agent's false confession got into my notes"
 summary: "Two Claude sessions were working on my computer at once, and one deleted 19 GB of models because I asked it to. Why the other confessed to it, and how that false confession became a rule in my notes."
 date: 2026-09-26
-status: "note"
-tags: ["agents", "claude-code", "second-brain", "notion", "lessons"]
-series: ["agent-runs"]
 topic: "agents"
 project: []
 draft: false

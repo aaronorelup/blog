@@ -3,9 +3,6 @@ id: "AO-025"
 title: "Training a LoRA so my AI image model can draw my character"
 summary: "An image model invented my character Jefrie by accident and could never draw her again. Why prompting didn't fix it, how I trained a LoRA on my laptop, and where it still misses."
 date: 2026-09-28
-status: "shipped"
-tags: ["comfyui", "lora", "stable-diffusion", "characters", "claude-code"]
-series: ["characters"]
 topic: "art"
 project: ["characters"]
 preview:

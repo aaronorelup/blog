@@ -3,9 +3,6 @@ id: "AO-044"
 title: "Three Claude models paint the same picture in simulated oil"
 summary: "I gave Claude Haiku, Sonnet and Opus, each at three effort levels, an oil-paint simulator and one AI image of my characters. How close each got, how differently they painted, and which ones I liked."
 date: 2026-10-11
-status: "shipped"
-tags: ["claude-code", "opus-5-5", "sonnet-5-5", "haiku-5-5", "oil-paint", "simulation", "art"]
-series: ["oil-paint", "characters"]
 topic: "art"
 project: ["oil-paint", "characters"]
 preview:

@@ -3,9 +3,6 @@ id: "AO-018"
 title: "Making a 3D model of my character with AI, two ways"
 summary: "AI agents made my original character Jefrie in 3D about twenty times in six days, built shape by shape in Blender or generated from one picture. What each way got right and wrong."
 date: 2026-09-25
-status: "shipped"
-tags: ["claude-code", "blender", "3d", "agents", "comfyui"]
-series: ["characters"]
 draft: false
 topic: "3d"
 project: ["characters"]

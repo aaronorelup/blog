@@ -3,9 +3,6 @@ id: "AO-057"
 title: "Who really visits a brand-new website"
 summary: "My site went 77 days with no promotion, so I had Claude read its traffic through Cloudflare. Who the visitors really are, what they read, and what to expect if you start a site of your own."
 date: 2026-10-17
-status: "shipped"
-tags: ["cloudflare", "analytics", "mcp", "claude-code", "blog"]
-series: ["the-site"]
 topic: "site"
 project: []
 preview:

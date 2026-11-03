@@ -3,9 +3,6 @@ id: "AO-036"
 title: "Modding my own character into the game Megabonk"
 summary: "My Claude agents put my character Jefrie into Megabonk, a game I play, with no code, then gave her a jump the game doesn't have. What's easy, what needs real code, and how to mod it safely."
 date: 2026-10-05
-status: "in-progress"
-tags: ["claude-code", "modding", "gamedev", "characters", "agents"]
-series: ["characters", "agent-runs"]
 topic: "games"
 project: ["characters"]
 preview:

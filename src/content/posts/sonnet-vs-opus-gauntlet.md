@@ -3,9 +3,6 @@ id: "AO-026"
 title: "Claude Sonnet vs Opus at every effort level, on three long jobs"
 summary: "I gave the same three long jobs to ten Claude Code sessions, Sonnet 5.5 and Opus 5.5 at every effort level. What each one cost, which did better, and what turning up the effort changes."
 date: 2026-09-28
-status: "shipped"
-tags: ["claude-code", "gauntlet-loop", "agents", "cost", "lessons"]
-series: ["agent-runs"]
 topic: "agents"
 project: []
 preview:

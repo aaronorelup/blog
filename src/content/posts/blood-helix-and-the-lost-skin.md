@@ -3,8 +3,6 @@ id: "AO-006"
 title: "Claude found my old Minecraft skin and rebuilt a particle effect"
 summary: "I gave Claude a vague, misspelled message about my first Minecraft account. It found the skin, worked out why I couldn't log in, and rebuilt a server effect I could only describe by its shape."
 date: 2026-08-07
-status: "shipped"
-tags: ["claude-cowork", "minecraft", "agents", "research"]
 topic: "agents"
 project: ["characters"]
 preview:

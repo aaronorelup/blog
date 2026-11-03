@@ -3,8 +3,6 @@ id: "AO-040"
 title: "How the hidden watermark in Claude's writing works"
 summary: "Since August, Anthropic has put a hidden watermark in what Claude writes. I had Claude build an animated explainer and five demos showing how the mark works, what edits do to it, and what removes it."
 date: 2026-10-06
-status: "shipped"
-tags: ["claude", "watermarking", "synthid", "interactive", "agents"]
 topic: "agents"
 project: []
 preview:

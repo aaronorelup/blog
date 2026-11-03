@@ -3,9 +3,6 @@ id: "AO-038"
 title: "Claude paints in oil on a simulator, one stroke at a time"
 summary: "Claude painted on alice's oil paint simulator, where every mark is a brush stroke and there's no undo. Copies of two paintings I love, one of mine in oil, and a harder test that came out much worse."
 date: 2026-10-05
-status: "shipped"
-tags: ["claude-code", "opus-5-5", "oil-paint", "simulation", "art"]
-series: ["oil-paint"]
 topic: "art"
 project: ["oil-paint", "characters"]
 preview:

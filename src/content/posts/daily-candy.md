@@ -3,9 +3,6 @@ id: "AO-049"
 title: "Claude picks the best of three AI image models every morning"
 summary: "A Claude job draws one idea every morning with three AI image models and picks the best. Why it picked the same model all 41 times, and six mornings you can judge blind."
 date: 2026-10-15
-status: "in-progress"
-tags: ["claude-code", "comfyui", "agents", "stable-diffusion", "lessons"]
-series: ["agent-runs"]
 topic: "art"
 project: []
 preview:

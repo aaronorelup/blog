@@ -3,9 +3,6 @@ id: "AO-012"
 title: "Why I stopped checking on my AI agents every hour"
 summary: "I used to keep AI agents busy all day and check on them every hour. What that really cost me on a two-day project, and the rhythm I switched to: one big run, then a day to review it."
 date: 2026-08-08
-status: "in-progress"
-tags: ["agents", "claude-code", "workflow", "prompting", "lessons"]
-series: ["origin"]
 topic: "agents"
 project: ["origin"]
 preview:

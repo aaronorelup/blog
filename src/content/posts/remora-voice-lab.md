@@ -3,9 +3,6 @@ id: "AO-030"
 title: "Designing a robot voice for my game with an AI that can't hear"
 summary: "Claude made 223 clips of the robot voice in my cave-diving game in under three hours without hearing any of them. How we narrowed them down, the one I picked, and every clip to compare."
 date: 2026-10-02
-status: "in-progress"
-tags: ["claude-code", "gamedev", "elevenlabs", "sound-design", "lessons"]
-series: ["blackwater"]
 topic: "games"
 project: ["blackwater"]
 preview:

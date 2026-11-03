@@ -3,8 +3,6 @@ id: "AO-039"
 title: "Making long AI films on my 8 GB laptop, six seconds at a time"
 summary: "For twelve days my laptop made AI films and music videos by chaining six-second clips. What came out, what went wrong in each, and the rules I ended up with."
 date: 2026-10-05
-status: "shipped"
-tags: ["minimax-h3", "ai-video", "comfyui", "previs", "lessons"]
 topic: "video"
 project: ["characters", "blackwater"]
 preview:

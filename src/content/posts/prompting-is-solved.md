@@ -3,8 +3,6 @@ id: "AO-015"
 title: "Prompting is solved, but the bottleneck is still you"
 summary: "My case that reading AI output, not writing prompts, is now the expensive part. Where I think that goes: background agents that test what they find and mostly never talk to you."
 date: 2026-08-18
-status: "note"
-tags: ["agents", "prompting", "workflow"]
 topic: "agents"
 project: []
 preview:

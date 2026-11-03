@@ -3,9 +3,6 @@ id: "AO-045"
 title: "Crimson Coil, a 30-minute oil painting show made by AI agents"
 summary: "Episode 1 of an AI-made TV series. A crew of Claude agents painted two original characters in an oil-paint simulator and built a voiced 30-minute show around it. How it was made and what didn't work."
 date: 2026-10-11
-status: "shipped"
-tags: ["claude-code", "opus-5-5", "agents", "oil-paint", "simulation", "art", "elevenlabs", "characters"]
-series: ["oil-paint", "characters", "evening-television"]
 topic: "video"
 project: ["evening-television", "oil-paint", "characters"]
 voice: "claude"

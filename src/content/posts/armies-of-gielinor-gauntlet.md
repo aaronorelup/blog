@@ -3,9 +3,6 @@ id: "AO-005"
 title: "AI agents rebuilt a strategy game that died in 2018"
 summary: "Overnight, I had Claude rebuild a strategy game that shut down in 2018, with critic agents judging each piece blind against old screenshots. Where to play it, what it cost and why I'd pick the models myself."
 date: 2026-08-07
-status: "shipped"
-tags: ["claude-code", "gauntlet-loop", "gamedev", "agents", "lessons"]
-series: ["agent-runs"]
 draft: false
 topic: "agents"
 project: []

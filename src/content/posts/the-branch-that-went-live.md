@@ -3,9 +3,6 @@ id: "AO-043"
 title: "How an AI agent's post briefly rolled my site back two months"
 summary: "A Claude session in the cloud started from a two-month-old copy of my blog, and Cloudflare published it over the live site. How it got through, how it was undone, and what stops it now."
 date: 2026-10-09
-status: "shipped"
-tags: ["claude-code", "agents", "cloudflare", "git", "blog"]
-series: ["agent-runs", "the-site"]
 topic: "site"
 project: []
 preview:

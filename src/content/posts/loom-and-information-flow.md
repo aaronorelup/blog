@@ -3,9 +3,6 @@ id: "AO-041"
 title: "Claude's 40-minute video lesson on how language models work"
 summary: "Claude made eight short videos and two tools you can try, from one request. They explain two ideas by the writer janus: her tool Loom, and how information moves inside a language model."
 date: 2026-10-07
-status: "shipped"
-tags: ["claude", "agents", "interactive", "transformers", "loom", "lessons"]
-series: ["agent-runs"]
 topic: "learning"
 project: []
 preview:

@@ -3,9 +3,6 @@ id: "AO-032"
 title: "Letting Claude pick a project from X and do it alone"
 summary: "I told Claude to find the most impressive thing people were doing on X with its Opus 5.5 model, then do it without me and blog it. How it chose, what it decided on its own, and which rules it broke."
 date: 2026-10-03
-status: "shipped"
-tags: ["claude-code", "agents", "autonomy", "research"]
-series: ["agent-runs"]
 topic: "agents"
 project: []
 preview:

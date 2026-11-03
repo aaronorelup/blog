@@ -3,9 +3,6 @@ id: "AO-046"
 title: "Rebuilding my beginner AI course from 251 sources"
 summary: "My course's lesson plan came from Claude's own idea of what beginners need, and it was out of date. I had 76 agents rebuild the course from 251 outside sources, most from 2026. What changed and what got cut."
 date: 2026-10-12
-status: "shipped"
-tags: ["claude-code", "agents", "research", "lessons", "workflow"]
-series: ["hidden-curriculum", "agent-runs"]
 topic: "learning"
 project: ["hidden-curriculum"]
 preview:

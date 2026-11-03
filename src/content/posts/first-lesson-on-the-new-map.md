@@ -3,9 +3,6 @@ id: "AO-050"
 title: "Fact-checking a video lesson made by 71 AI agents"
 summary: "71 Claude agents made one 11-minute lesson for my beginner AI course. What its four fact-checkers caught before it shipped, and why the one reading as a beginner found the worst mistakes."
 date: 2026-10-16
-status: "shipped"
-tags: ["claude-code", "agents", "lessons", "workflow"]
-series: ["hidden-curriculum", "agent-runs"]
 topic: "learning"
 project: ["hidden-curriculum"]
 preview:

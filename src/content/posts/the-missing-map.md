@@ -3,9 +3,6 @@ id: "AO-029"
 title: "44 agents made the first lesson of my course for AI builders"
 summary: "I asked Claude where I was supposed to learn terminals, API keys and the rest. How 44 agents then made the first lesson of a course in two hours, and what their checks caught."
 date: 2026-10-01
-status: "shipped"
-tags: ["claude-code", "agents", "animation", "elevenlabs", "lessons"]
-series: ["hidden-curriculum", "agent-runs"]
 topic: "learning"
 project: ["hidden-curriculum"]
 preview:

@@ -3,9 +3,6 @@ id: "AO-021"
 title: "A music video for my game, made by Claude inside the game"
 summary: "Claude made a music video for my cave-diving game's song from the game's own models, caves and sounds, with no AI video. How it worked, what broke, and the prompt I'd use to ask for one."
 date: 2026-09-26
-status: "shipped"
-tags: ["claude-code", "godot", "gamedev", "trailer", "ffmpeg"]
-series: ["blackwater"]
 topic: "video"
 project: ["blackwater"]
 preview:

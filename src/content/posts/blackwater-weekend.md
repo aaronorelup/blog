@@ -3,9 +3,6 @@ id: "AO-002"
 title: "I built a cave-diving zombie game with AI in four days"
 summary: "I had Claude build a zombie game where you're cave diving. What it would and wouldn't do on its own, why I had it build me a level editor, and who should write a game's song lyrics."
 date: 2026-08-02
-status: "shipped"
-tags: ["claude-code", "three-js", "gamedev", "elevenlabs", "lessons"]
-series: ["blackwater"]
 topic: "games"
 project: ["blackwater"]
 preview:

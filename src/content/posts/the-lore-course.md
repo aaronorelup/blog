@@ -3,9 +3,6 @@ id: "AO-064"
 title: "A course on the world of my AI-made TV series"
 summary: "I had agents build a companion course for my AI TV series: character sheets, a timeline, a map of its easter eggs and nine narrated lessons, all from one set of files that tags how settled each fact is."
 date: 2026-10-23
-status: "shipped"
-tags: ["claude-code", "opus-5-5", "agents", "lessons", "elevenlabs", "nano-banana", "lore"]
-series: ["evening-television", "agent-runs"]
 topic: "learning"
 project: ["evening-television"]
 preview:

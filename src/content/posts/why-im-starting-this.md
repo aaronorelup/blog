@@ -3,8 +3,6 @@ id: "AO-001"
 title: "Why I'm starting a blog about learning AI"
 summary: "My first post. Why I'm putting what I learn about AI here as short public notes, instead of in scratch files nobody can find, me included."
 date: 2026-08-02
-status: "note"
-tags: ["meta"]
 topic: "site"
 project: []
 preview:

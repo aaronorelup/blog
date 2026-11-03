@@ -3,9 +3,6 @@ id: "AO-053"
 title: "Three tries at an AI music video for my game's song"
 summary: "Claude made three music videos for \"Still on Shift\", the song from my cave-diving zombie game, each made a better way than the last. What each one fixed, and why all three miss the song's feeling."
 date: 2026-10-16
-status: "in-progress"
-tags: ["claude-code", "ai-video", "music-video", "minimax-h3", "lessons"]
-series: ["blackwater"]
 topic: "video"
 project: ["blackwater"]
 preview:

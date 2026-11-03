@@ -3,9 +3,6 @@ id: "AO-033"
 title: "Claude modded my characters into the card game Inscryption"
 summary: "Claude read the code of a card game I own, added my six characters as playable cards and filmed a battle it played by itself. How it worked, the bug every test missed, and what it takes to mod another game."
 date: 2026-10-03
-status: "shipped"
-tags: ["claude-code", "modding", "gamedev", "characters", "agents"]
-series: ["characters", "agent-runs"]
 topic: "games"
 project: ["characters"]
 preview:

@@ -3,9 +3,6 @@ id: "AO-023"
 title: "Guiding an AI video model with a rough Blender animation"
 summary: "I gave an AI video model a rough Blender animation of my character to follow, and compared it with clips made with no guide. What the guide kept steady and what it made worse."
 date: 2026-09-27
-status: "shipped"
-tags: ["previs", "blender", "minimax-h3", "ai-video", "lessons"]
-series: ["characters"]
 topic: "video"
 project: ["characters"]
 preview:

@@ -3,8 +3,6 @@ id: "AO-060"
 title: "Trying a brand-new AI image model on my 8 GB laptop"
 summary: "A Claude agent installed MOSS-Image, an AI image model released days earlier, beside my other models without breaking them. How fast it is, whether it follows a drawn layout, and how wide a panorama it can make."
 date: 2026-10-20
-status: "shipped"
-tags: ["claude-code", "opus-5-5", "comfyui", "agents", "prompting", "workflow"]
 topic: "art"
 project: []
 preview:

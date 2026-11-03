@@ -3,9 +3,6 @@ id: "AO-058"
 title: "A papercraft animation of my character, made with code"
 summary: "I had Claude make a six-second loop of Jefrie, my scythe-carrying character, as a folded-paper puppet, with no hand animation at all. How it works, and what six rounds of review caught."
 date: 2026-10-18
-status: "shipped"
-tags: ["claude-code", "opus-5-5", "blender", "animation", "agents", "characters"]
-series: ["characters"]
 topic: "3d"
 project: ["characters"]
 preview:

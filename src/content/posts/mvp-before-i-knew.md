@@ -3,8 +3,6 @@ id: "AO-016"
 title: "Deciding what to hand off to AI and what to keep"
 summary: "A developer quit coding with AI after a year because it pulled him away from the work he loved, and I put myself in the same spot twice this year. The test I use now for what to hand off."
 date: 2026-08-24
-status: "note"
-tags: ["agents", "claude-code", "workflow", "lessons", "gamedev"]
 topic: "agents"
 project: ["llm-monster-hunter"]
 draft: false

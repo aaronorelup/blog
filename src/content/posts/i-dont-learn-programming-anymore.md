@@ -3,9 +3,6 @@ id: "AO-011"
 title: "What I learn now that AI writes my code"
 summary: "In 2025, building my game with AI taught me to program, and in 2026 the agents write the code and I've stopped learning it. What I learn now instead, and whether that trade is worth it."
 date: 2026-08-08
-status: "note"
-tags: ["claude-code", "claude-cowork", "openclaw", "agents", "prompting", "lessons"]
-series: ["origin"]
 draft: false
 topic: "agents"
 project: ["origin"]

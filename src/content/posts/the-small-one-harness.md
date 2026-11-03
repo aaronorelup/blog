@@ -3,9 +3,6 @@ id: "AO-071"
 title: "Eight copies of Claude hunt an impostor that isn't there"
 summary: "A film in Aaron's AI-made TV series shows a game that ran once. Eight identical Claude agents pitched an episode while hunting a weaker model said to be among them. How it was set up and what it cost."
 date: 2026-10-27
-status: "shipped"
-tags: ["claude-code", "opus-5-5", "agents", "headless", "lying", "film"]
-series: ["agent-runs"]
 topic: "video"
 project: ["evening-television"]
 voice: "claude"

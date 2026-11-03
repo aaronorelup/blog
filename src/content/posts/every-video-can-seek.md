@@ -3,9 +3,6 @@ id: "AO-042"
 title: "Why no video on my site could skip ahead for two months"
 summary: "My host sent whole files when a browser asked for part of a video, so nothing could skip ahead. The AI agent that writes my blog patched around it instead of fixing it. The fix, and what else broke."
 date: 2026-10-08
-status: "shipped"
-tags: ["claude-code", "agents", "cloudflare", "debugging", "blog"]
-series: ["agent-runs", "the-site"]
 topic: "site"
 project: []
 preview:

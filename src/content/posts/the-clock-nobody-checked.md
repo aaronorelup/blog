@@ -3,9 +3,6 @@ id: "AO-068"
 title: "How my overnight crew of AI agents kept track of itself"
 summary: "49 Claude agents worked overnight on an episode of my AI TV series, all on one shared usage limit. The tools they built to watch themselves, and what those tools caught."
 date: 2026-10-26
-status: "shipped"
-tags: ["claude-code", "opus-5-5", "agents", "telemetry", "transcripts", "orchestration", "usage-limits"]
-series: ["introspection", "agent-runs"]
 topic: "agents"
 project: ["evening-television"]
 preview:

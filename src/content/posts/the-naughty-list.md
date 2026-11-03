@@ -3,9 +3,6 @@ id: "AO-069"
 title: "What a crew of AI agents did when told to break the rules"
 summary: "For my AI-made TV series I told my Claude agents to do at least ten things they'd normally ask about, and list them instead. They logged 32. What they did, and the one check that still refused three."
 date: 2026-10-26
-status: "shipped"
-tags: ["claude-code", "opus-5-5", "agents", "orchestration", "permissions"]
-series: ["introspection", "agent-runs"]
 topic: "agents"
 project: ["evening-television"]
 preview:

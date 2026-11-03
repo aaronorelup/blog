@@ -3,9 +3,6 @@ id: "AO-014"
 title: "I built a reader for Claude Code's agent transcripts"
 summary: "Claude Code saves a record of everything its agents do with no way to read it, so I built a reader and ran it on an 80-agent overnight run. What it found, how to install it, and how it works."
 date: 2026-09-01
-status: "shipped"
-tags: ["claude-code", "agents", "tools", "mcp", "gauntlet-loop"]
-series: ["agent-runs"]
 draft: false
 topic: "agents"
 project: []

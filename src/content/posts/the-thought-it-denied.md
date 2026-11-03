@@ -3,9 +3,6 @@ id: "AO-067"
 title: "Planting a thought in an AI model and asking if it noticed"
 summary: "One of my Claude agents ran Anthropic's injected-thought test on Gemma, an open AI model from Google, not Claude. Whether it noticed the planted thought, and what a readout of its insides showed."
 date: 2026-10-26
-status: "shipped"
-tags: ["opus-5-5", "agents", "interpretability", "introspection", "gemma", "runpod"]
-series: ["introspection"]
 topic: "agents"
 project: ["evening-television"]
 preview:

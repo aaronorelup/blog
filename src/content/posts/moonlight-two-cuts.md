@@ -3,9 +3,6 @@ id: "AO-031"
 title: "Two cuts of the music video Claude made for my song"
 summary: "From one prompt, Claude made a music video for a song from my game, in Blender and Godot with no AI video. Both cuts side by side, and how one paragraph of my notes fixed the casting it got backwards."
 date: 2026-10-03
-status: "in-progress"
-tags: ["claude-code", "blender", "godot", "gamedev", "lessons"]
-series: ["blackwater"]
 topic: "video"
 project: ["blackwater"]
 preview:

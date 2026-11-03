@@ -3,9 +3,6 @@ id: "AO-054"
 title: "My short AI film workflow, built around a rough 3D mock-up"
 summary: "I turned two Higgsfield tutorials into one repeatable way to make short AI films of my characters. The steps, how I check what the video model copied, and what I've changed since September."
 date: 2026-10-16
-status: "shipped"
-tags: ["previs", "blender", "minimax-h3", "ai-video", "workflow", "claude-code"]
-series: ["characters"]
 topic: "video"
 project: ["characters"]
 preview:

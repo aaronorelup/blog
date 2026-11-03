@@ -3,8 +3,6 @@ id: "AO-059"
 title: "Making AI-generated 3D props light enough for a game"
 summary: "Claude made three 3D game props on my laptop and on Higgsfield, an AI service, then cut the laptop ones to 30,000, 3,000 and 300 triangles four ways. Which way kept them intact, and what 300 looks like in a scene."
 date: 2026-10-19
-status: "shipped"
-tags: ["claude-code", "opus-5-5", "3d", "blender", "comfyui", "higgsfield", "gamedev"]
 topic: "3d"
 project: []
 preview:

@@ -3,9 +3,6 @@ id: "AO-017"
 title: "AI agents built my game's sequel twice without me playing it"
 summary: "I had AI agents build the sequel to my cave-diving zombie game twice while I stayed out of the loop, and both passed their own tests. Why I still called both unplayable, and the pacing that worked."
 date: 2026-09-22
-status: "note"
-tags: ["agents", "claude-code", "gamedev", "playtesting", "lessons"]
-series: ["blackwater", "agent-runs"]
 draft: false
 topic: "games"
 project: ["blackwater"]

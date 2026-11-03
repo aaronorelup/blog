@@ -3,9 +3,6 @@ id: "AO-065"
 title: "Seven things I believed about Claude Code costs, checked"
 summary: "I checked seven things I tell people about Claude Code costs against 510 of my own sessions ($31k at API prices) and one fresh test: model vs effort, what cache reads cost, what a $200 plan really buys."
 date: 2026-10-24
-status: "shipped"
-tags: ["claude-code", "cost", "playback-lens", "agents", "lessons"]
-series: ["agent-runs"]
 topic: "agents"
 project: []
 preview:
