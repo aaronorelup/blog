@@ -49,7 +49,10 @@ class AoFrames extends HTMLElement {
     const show = () => {
       const t = total();
       count.textContent = 'frame ' + frameOf() + (t ? ' / ' + (t - 1) : '');
-      play.textContent = video.paused ? 'Play' : 'Pause';
+      // Only when it changes: this runs every frame, and on WebKit a tap on a button whose text is replaced between
+      // its press and its release fires no click.
+      const label = video.paused ? 'Play' : 'Pause';
+      if (play.textContent !== label) play.textContent = label;
     };
     for (const ev of ['timeupdate', 'seeked', 'play', 'pause', 'loadedmetadata']) video.addEventListener(ev, show);
     // During playback timeupdate fires only ~4 times a second; follow every frame where we can.

@@ -256,7 +256,8 @@ Behaviours: fetch-1 to fetch-3. Used by `every-video-can-seek` (the best example
 A video the reader steps through one frame at a time, for animation where the point is a frame or two (an impact
 frame, a hit-stop, a smear) that playback hides. It adds previous and next frame, play and pause, a quarter-speed
 toggle, a frame counter and, optionally, buttons that jump to labelled frames; with the video focused, the left and
-right arrows step too.
+right arrows step too. The counter follows every frame; the Play/Pause label changes only when the video plays or
+pauses (WebKit fires no click for a tap on a button whose text was replaced under it, `<ao-listen>`).
 
 | Attribute | |
 |---|---|
@@ -272,7 +273,7 @@ Children: one `<video>` and an optional `<figcaption>`. Without JS it is the pla
 </ao-frames>
 ```
 
-Behaviours: frames-1 to frames-3. Used by `ai-rigging-vs-a-script` (and its notes), `paper-jefrie` and
+Behaviours: frames-1 to frames-4. Used by `ai-rigging-vs-a-script` (and its notes), `paper-jefrie` and
 `storm-bell-pop-up` (the best example).
 
 ## <ao-funnel>

@@ -1,6 +1,6 @@
 // <ao-frames>: frame-by-frame stepping (buttons and arrow keys), named marks, play and quarter speed.
 import { test, expect } from '../fixtures.mjs';
-import { open, pageWith, expectPlaying } from '../helpers.mjs';
+import { open, pageWith, expectPlaying, playing, contentChanges } from '../helpers.mjs';
 
 test.beforeEach(async ({ page }) => {
   await open(page, pageWith('ao-frames', (a) => a.marks));
@@ -43,4 +43,23 @@ test('frames-3 play toggles, quarter speed sets the rate', async ({ page }) => {
   await expect(slow).toHaveAttribute('aria-pressed', 'true');
   await slow.click();
   expect(await v.evaluate((m) => m.playbackRate)).toBe(1);
+});
+
+// While the video plays the frame count follows every frame, never the Play/Pause button (on WebKit a tap on a button
+// whose text is replaced between press and release fires no click, listen-5). Pausing changes it.
+test('frames-4 the Play/Pause button is never rewritten while the video plays; pausing changes it', async ({ page }) => {
+  const v = el(page).locator('video');
+  const btn = el(page).locator('.ao-frames-bar button').nth(1);
+  await v.evaluate((m) => { m.loop = true; });   // a 2 s clip, which would end (and pause) under the test
+  await expect(btn).toHaveText('Play');
+  await btn.click();
+  await expectPlaying(v);
+  await expect(btn).toHaveText('Pause');
+  expect(await contentChanges(btn, 1000)).toEqual({ nodes: 0, text: 0 });
+  expect(await playing(v)).toBe(true);
+  const changes = contentChanges(btn, 1000);
+  await btn.click();
+  await expect(btn).toHaveText('Play');
+  const { nodes, text } = await changes;
+  expect(nodes + text).toBeGreaterThan(0);
 });

@@ -113,6 +113,7 @@ notes, `earthlight`'s notes, `nine-claudes-one-painting` today).
 | A mark jumps to its frame; ‹ frame and frame › step one | `marks`, `fps`, buttons `click`, video `seeked` `timeupdate` `loadedmetadata` → count | frames-1 |
 | Arrow keys on the video step frames | video `keydown` | frames-2 |
 | Play toggles (its label follows); ¼ speed sets the rate | buttons `click`, video `play` `pause` | frames-3 |
+| While the video plays (the count drawn every frame) the Play/Pause button's content is never touched; pausing changes it (listen-5) | `requestVideoFrameCallback`, video `timeupdate`, Play `click` | frames-4 |
 
 ### `ao-diff`: curriculum-from-sources, first-lesson-on-the-new-map, the-missing-map
 
