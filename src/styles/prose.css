@@ -42,6 +42,7 @@
   padding: 1px 5px;
   border-radius: 4px;
   color: var(--pc-body);
+  overflow-wrap: break-word;   /* a long path breaks where it would push a phone's page sideways, and nowhere else */
 }
 .pc-prose pre {
   background: var(--pc-code);
