@@ -13,15 +13,6 @@ ao-listen > figure > img {
   border-radius: 6px;
   margin-top: 6px;
 }
-ao-listen figcaption {
-  margin-top: 8px;
-  font-family: Karla, system-ui, sans-serif;
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--pc-soft);
-}
-ao-listen figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
-ao-listen figcaption .ao-meta,
 .ao-listen-now .ao-meta {
   display: block;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;

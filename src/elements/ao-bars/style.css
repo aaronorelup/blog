@@ -71,21 +71,6 @@ ao-bars {
 .ao-bars-s1 { --bar: var(--pc-accent); }
 .ao-bars-s2 { --bar: var(--pc-quiet); }
 .ao-bars-s3 { --bar: var(--pc-line2); }
-ao-bars > figcaption {
-  margin-top: 8px;
-  font-family: Karla, system-ui, sans-serif;
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--pc-soft);
-}
-ao-bars > figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
-ao-bars > figcaption .ao-meta {
-  display: block;
-  overflow-wrap: anywhere;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11.5px;
-  color: var(--pc-quiet);
-}
 @media (max-width: 640px) {
   .ao-bars-chart { padding: 12px; }
   .ao-bars-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }

@@ -43,17 +43,3 @@ ao-frames > video:focus-visible { outline: 3px solid var(--pc-head); outline-off
   color: var(--pc-quiet);
   font-variant-numeric: tabular-nums;
 }
-ao-frames figcaption {
-  margin-top: 8px;
-  font-family: Karla, system-ui, sans-serif;
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--pc-soft);
-}
-ao-frames figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
-ao-frames figcaption .ao-meta {
-  display: block;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11.5px;
-  color: var(--pc-quiet);
-}

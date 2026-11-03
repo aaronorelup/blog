@@ -30,24 +30,6 @@ ao-compare > figure > video {
 /* A wide figure keeps its picture's own ratio, from its width and height, so it holds its place before it loads. */
 ao-compare > figure:not(.wide) > img,
 ao-compare > figure:not(.wide) > video { aspect-ratio: var(--ao-aspect); }
-ao-compare figcaption {
-  margin-top: 8px;
-  font-family: Karla, system-ui, sans-serif;
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--pc-soft);
-}
-ao-compare figcaption b {
-  display: block;
-  font-weight: 600;
-  color: var(--pc-strong);
-}
-ao-compare figcaption .ao-meta {
-  display: block;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11.5px;
-  color: var(--pc-quiet);
-}
 @media (max-width: 900px) {
   ao-compare { grid-template-columns: repeat(min(var(--ao-cols), 2), minmax(0, 1fr)); }
 }

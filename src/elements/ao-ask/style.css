@@ -99,18 +99,3 @@ ao-ask button.ao-ask-copy:focus-visible { outline: 2px solid var(--pc-accent); o
   ao-ask > details > summary::before { left: 12px; top: 15px; }
   ao-ask > details > :not(summary) { margin-left: 12px; margin-right: 12px; }
 }
-ao-ask > figcaption {
-  margin-top: 8px;
-  font-family: Karla, system-ui, sans-serif;
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--pc-soft);
-}
-ao-ask > figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
-ao-ask > figcaption .ao-meta {
-  display: block;
-  overflow-wrap: anywhere;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11.5px;
-  color: var(--pc-quiet);
-}

@@ -70,15 +70,6 @@ ao-transcript video { display: block; width: 100%; height: auto; border-radius: 
 .ao-tr-text span:focus-visible { outline: 2px solid var(--pc-head); outline-offset: 1px; }
 .ao-tr-text span[aria-current='true'] { color: var(--pc-head); background: var(--pc-hover); }
 .ao-tr-text mark { background: transparent; color: var(--pc-accent); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
-ao-transcript figcaption {
-  margin-top: 8px;
-  font-family: Karla, system-ui, sans-serif;
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--pc-soft);
-}
-ao-transcript figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
-ao-transcript figcaption .ao-meta,
 .ao-tr-count {
   display: block;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;

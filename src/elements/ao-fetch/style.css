@@ -33,17 +33,4 @@ ao-fetch button:disabled { opacity: 0.5; cursor: default; }
 :root .pc-prose ao-fetch pre.ao-fetch-out { background: var(--pc-code); color: var(--pc-body); border: 0; border-left: 2px solid var(--pc-line2); }
 :root .pc-prose ao-fetch pre.ao-fetch-ok { border-left-color: var(--pc-head); }
 :root .pc-prose ao-fetch pre.ao-fetch-whole { border-left-color: var(--pc-accent); }
-ao-fetch figcaption {
-  margin-top: 10px;
-  font-family: Karla, system-ui, sans-serif;
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--pc-soft);
-}
-ao-fetch figcaption b { display: block; font-weight: 600; color: var(--pc-strong); }
-ao-fetch figcaption .ao-meta {
-  display: block;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11.5px;
-  color: var(--pc-quiet);
-}
+ao-fetch figcaption { margin-top: 10px; }

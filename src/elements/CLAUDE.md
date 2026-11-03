@@ -11,7 +11,7 @@
   in `docs/COMPONENTS.md`, and its behaviours as `tests/e2e/INVENTORY.md` rows with a spec in `tests/e2e/elements/`.
   Nothing to register: the folder is the tag.
 - **Never import CSS from JS** here (`scripts/check/code.mjs` fails it). What every element shares (the viewer, the
-  now-playing bar, `.visually-hidden`) is `src/styles/elements.css`.
+  now-playing bar, `.visually-hidden`, the caption) is `src/styles/elements.css`.
 - **The cascade:** a `style.css` is inlined in the article, after the page's stylesheets, so a rule exactly as
   specific as one in `prose.css` or `base.css` (`.ao-x-list li` against `.pc-prose li`, `.ao-x { outline: none }`
   against `:focus-visible`) wins over it: leave out what the page should set (the old `post-components.css` was
