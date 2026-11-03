@@ -131,7 +131,9 @@ export function measure(dist) {
   const full = gz(toHtml(ledger));
   const chrome = gz(toHtml(without(ledger, isRow)));
   row('/ledger/ chrome HTML', chrome, 6 * KB);
-  row('/ledger/ per row', Math.round((full - chrome) / count), 220, `${count} rows`);
+  // 360 B, not section 6's 220: since T2.2 each row carries its card (verdict, takeaway, points) for phones. Its text
+  // alone gzips to 302 B a row in the page, its markup adds about 50, and a row without the card is 132.
+  row('/ledger/ per row', Math.round((full - chrome) / count), 360, `${count} rows`);
 
   const home = parse(path.join(dist, 'index.html'));
   const { css, js } = assets(dist, home);
