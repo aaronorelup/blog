@@ -55,6 +55,9 @@ export default defineConfig({
     processor: markdownProcessor({ publicDir }),
   },
   vite: {
+    // CSS minified by esbuild, as before Vite 8: its default, Lightning CSS, rewrites custom properties' colours
+    // (rgba(240, 192, 106, .2) to #f0c06a33), and the /stats canvas reads those tokens as rgba() strings.
+    build: { cssMinify: 'esbuild' },
     define: { __PUBLIC_DIR__: JSON.stringify(publicDir) },
     plugins: [devStatsFixture()],
   },
