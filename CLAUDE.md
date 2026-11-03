@@ -56,6 +56,10 @@ anything. `ARCHITECTURE.md` is the map of the code.
 | `npm run never-publish:hash -- <list>` | rehash the private list into `src/data/never-publish.json` |
 | `npm run dev`, `npm run preview` | a local server; the built site |
 
+`astro` is pinned to 7.4.1 with the `@astrojs/*` packages that match it. Every later release needs Node 22.23.4, and
+agent boxes run 22.22.0 until the agent kit's `bin/install/node.sh` reaches them: a bump past 7.4.1 waits for that,
+or every other agent's `npm run build` breaks.
+
 ## Docs
 
 | File | Read it before |
