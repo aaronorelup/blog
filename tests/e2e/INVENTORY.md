@@ -152,6 +152,7 @@ streams the same two films.
 | A click on a video toggles every cut | video `click` | cues-7 |
 | A cut paused from outside stops all; the lead's end stops them | video `pause`, lead `ended` | cues-8 |
 | Another player starting stops the cuts | document `ao-listen-play` | cues-9 |
+| While the cuts play (scrubber, clock and lit cue drawn every frame) the Play/Pause button's content is never touched; pausing changes it (listen-5) | the draw loop (`requestAnimationFrame`), Play `click` | cues-10 |
 
 ### `ao-transcript`: every-video-can-seek, lessons-sent-back, loom-and-information-flow
 

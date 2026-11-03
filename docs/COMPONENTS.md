@@ -144,7 +144,9 @@ One or more cuts of the same timeline (a music video and its re-edit, a film and
 beside a list of timed cues: lyric lines, shots, chapters. The cue being played is lit, and a click on one sends
 every cut there, so two cuts of a song are compared at the same bar instead of from memory. The first video sets the
 clock and the others follow it (a small drift is closed with the playback rate, only a big gap with a seek); if one
-cut runs out of buffer, all wait for it. Only one cut is heard at a time: a Sound button per cut picks it.
+cut runs out of buffer, all wait for it. Only one cut is heard at a time: a Sound button per cut picks it. The
+scrubber, clock and lit cue are drawn every frame; the Play/Pause label only when it changes (WebKit fires no click
+for a tap on a button whose text was replaced under it, `<ao-listen>`).
 
 | Attribute | |
 |---|---|
@@ -162,7 +164,7 @@ Children: one or more `<video>`, then an `<ol>` whose `<li data-t="m:ss.xx">` ar
 </ao-cues>
 ```
 
-Behaviours: cues-1 to cues-9. Keys: Enter or space on a cue jumps there and plays; space on a focused cut (Tab, or
+Behaviours: cues-1 to cues-10. Keys: Enter or space on a cue jumps there and plays; space on a focused cut (Tab, or
 a click) plays or pauses every cut. Used by `moonlight-two-cuts` (the best example) and `moonlight-five-times`.
 
 ## <ao-demo>

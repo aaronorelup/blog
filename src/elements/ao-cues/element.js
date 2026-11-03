@@ -144,7 +144,10 @@ class AoCues extends HTMLElement {
       if (isFinite(lead.duration)) scrub.max = String(lead.duration);
       scrub.value = String(t);
       clock.textContent = want && stalled.size ? 'loading…' : fmtTime(t) + ' / ' + fmtTime(lead.duration);
-      play.textContent = want ? 'Pause' : 'Play';
+      // Only when it changes: this runs every frame, and on WebKit a tap on a button whose text is replaced between
+      // its press and its release fires no click.
+      const label = want ? 'Pause' : 'Play';
+      if (play.textContent !== label) play.textContent = label;
       let cur = null;
       for (const c of cues) if (c.t <= t + 0.05) cur = c; else break;
       if (cur === lit) return;

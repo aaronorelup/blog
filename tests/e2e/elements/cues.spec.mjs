@@ -1,6 +1,6 @@
 // <ao-cues>: cuts of one timeline in lockstep beside timed cues; a cue sends every cut there, one cut is heard.
 import { test, expect } from '../fixtures.mjs';
-import { open, lightestWith, expectPlaying, playing, clock, smallVideo } from '../helpers.mjs';
+import { open, lightestWith, expectPlaying, playing, clock, smallVideo, contentChanges } from '../helpers.mjs';
 
 const cues = (page) => page.locator('ao-cues').first();
 const vids = (page) => cues(page).locator('video');
@@ -118,4 +118,21 @@ test('cues-9 another player starting stops the cuts', async ({ page }) => {
   }, smallVideo);
   await expectPlaying(vids(page).first(), false);
   await expectPlaying(vids(page).last(), false);
+});
+
+// While the cuts play the element redraws its scrubber and clock every frame, never the Play/Pause button (on WebKit
+// a tap on a button whose text is replaced between press and release fires no click, listen-5). Pausing changes it.
+test('cues-10 the Play/Pause button is never rewritten while the cuts play; pausing changes it', async ({ page }) => {
+  const btn = cues(page).locator('.ao-cues-bar button').first();
+  await btn.click();
+  await expectPlaying(vids(page).first());
+  await expect(btn).toHaveText('Pause');
+  expect(await contentChanges(btn, 1000)).toEqual({ nodes: 0, text: 0 });
+  // Still playing as one (a cut that runs dry holds the rest a moment, cues-6, and they still play).
+  expect(await cues(page).evaluate((el) => el.aoPlaying())).toBe(true);
+  const changes = contentChanges(btn, 1000);
+  await btn.click();
+  await expect(btn).toHaveText('Play');
+  const { nodes, text } = await changes;
+  expect(nodes + text).toBeGreaterThan(0);
 });
