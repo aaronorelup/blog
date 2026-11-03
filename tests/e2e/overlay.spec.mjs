@@ -182,6 +182,34 @@ test('overlay-4 a lost component chunk still ends on a working post', async ({ p
   await expect.poll(() => page.evaluate(() => !!customElements.get('ao-model')), { timeout: 10_000 }).toBe(true);
 });
 
+test('overlay-4b a lost post component chunk opens the real page at once, without a reload first', async ({ page }) => {
+  // The view module loads, then a component's own chunk is gone: enhance() gets the post's real page as its fallback
+  // (views/post.js), so lazy() navigates there instead of reloading (a reload sets ao-reloaded, once a session).
+  await home(page);
+  await openLedger(page);
+  let lost = null;
+  await page.route(/\/_astro\/element\.[^/?]+\.js$/, (r) => {
+    lost = new URL(r.request().url()).pathname;
+    return r.fulfill({ status: 404, body: '' });
+  }, { times: 1 });
+  const renamed = (text) => text.replace(/((?:src=|from|import\()\s*["'](?:\/_astro\/|\.\/)[^"']+\.js)(["'])/g, '$1?deploy=2$2');
+  await page.route(`**${modelPost}`, async (r) => {
+    if (r.request().resourceType() !== 'document') return r.fallback();
+    const response = await r.fetch();
+    return r.fulfill({ response, body: renamed(await response.text()) });
+  });
+  await page.route(/\/_astro\/[^/]+\.js\?deploy=2$/, async (r) => {
+    const response = await r.fetch({ url: r.request().url().replace('?deploy=2', '') });
+    return r.fulfill({ response, body: renamed(await response.text()) });
+  });
+  await row(page, modelPost).click();
+  await expect.poll(() => sameDocument(page)).toBe(false);
+  expect(lost).toMatch(/^\/_astro\/element\./);
+  await expect(page).toHaveURL(new RegExp(modelPost + '$'));
+  await expect.poll(() => page.evaluate(() => !!customElements.get('ao-model')), { timeout: 10_000 }).toBe(true);
+  expect(await page.evaluate(() => sessionStorage.getItem('ao-reloaded'))).toBe(null);
+});
+
 test('overlay-5 a link to another post inside a post stays in the panel', async ({ page }) => {
   await home(page);
   await openLedger(page);

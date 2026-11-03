@@ -319,6 +319,7 @@ its static rung mid-test.
 | A row opens its post in the panel, with no document load; `enhance(root)` makes its pictures open the viewer; Esc closes the viewer and leaves the panel open | overlay-2 |
 | Post A, post B, back to A, on to C: every `ao-*` is defined each time; the model renders, the game reloads, the demo responds | overlay-3 |
 | A lost chunk (the first the post's view module asks for) still ends on a working post: `mountView`'s `lazy()` opens the real page | overlay-4 |
+| A lost post component chunk in the panel opens the post's real page at once, with no reload first: `mountView` hands the view its fallback, which `enhance()` passes on | overlay-4b |
 | A link to another post inside a post stays in the panel | overlay-5 |
 | Esc closes to the scene, Back reopens the post, Forward closes it | overlay-6 |
 | Back to the ledger (`data-close-reader`) and back to the tea house (`data-panel-home`) | overlay-7 |

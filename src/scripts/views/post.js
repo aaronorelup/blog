@@ -1,6 +1,7 @@
 // The post view, on /ledger/<slug>/ and in the homepage overlay. article(root) is what a post and its notes page share:
 // the post components (enhance), the contents list, folded details opened for the #target, where a link lands and the
-// hover card on post links; mount(root) adds the Listen button (read-aloud/listen.js). Each returns unmount.
+// hover card on post links; mount(root) adds the Listen button (read-aloud/listen.js). Each returns unmount. In the
+// homepage overlay fallbackUrl is the post's real page, where a component's lost chunk sends the reader (lazy.js).
 import { enhance } from '../../elements/enhance.js';
 import { lazy } from '../lazy.js';
 import { mount as contents } from '../post/contents.js';
@@ -51,12 +52,12 @@ function land(root, drawn) {
   };
 }
 
-export function article(root) {
-  const unmounts = [contents(root), details(root), land(root, enhance(root))];
+export function article(root, fallbackUrl) {
+  const unmounts = [contents(root), details(root), land(root, enhance(root, fallbackUrl))];
   return () => unmounts.forEach((unmount) => unmount());
 }
 
-export function mount(root) {
-  const unmounts = [article(root), listen(root)];
+export function mount(root, fallbackUrl) {
+  const unmounts = [article(root, fallbackUrl), listen(root)];
   return () => unmounts.forEach((unmount) => unmount());
 }
