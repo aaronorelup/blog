@@ -157,7 +157,8 @@ test('overlay-3 post A, post B, back to A and on to C: every component works on 
 test('overlay-4 a lost component chunk still ends on a working post', async ({ page }) => {
   // A deploy since the homepage loaded: the first chunk the post's view module asks for is gone, so mountView's lazy()
   // opens the real page, which comes from the new build and names new chunks. Here those are the same files under
-  // ?deploy=2 (WebKit would otherwise hand the real page the failure it keeps for the old name).
+  // ?deploy=2 (WebKit would otherwise hand the real page the failure it keeps for the old name). Vite 8 quotes a
+  // dynamic import's specifier with backticks, the others with double quotes.
   await home(page);
   await openLedger(page);
   let lost = null;
@@ -165,7 +166,7 @@ test('overlay-4 a lost component chunk still ends on a working post', async ({ p
     lost = new URL(r.request().url()).pathname;
     return r.fulfill({ status: 404, body: '' });
   }, { times: 1 });
-  const renamed = (text) => text.replace(/((?:src=|from|import\()\s*["'](?:\/_astro\/|\.\/)[^"']+\.js)(["'])/g, '$1?deploy=2$2');
+  const renamed = (text) => text.replace(/((?:src=|from|import\()\s*["'`](?:\/_astro\/|\.\/)[^"'`]+\.js)(["'`])/g, '$1?deploy=2$2');
   await page.route(`**${modelPost}`, async (r) => {
     if (r.request().resourceType() !== 'document') return r.fallback();
     const response = await r.fetch();
@@ -192,7 +193,7 @@ test('overlay-4b a lost post component chunk opens the real page at once, withou
     lost = new URL(r.request().url()).pathname;
     return r.fulfill({ status: 404, body: '' });
   }, { times: 1 });
-  const renamed = (text) => text.replace(/((?:src=|from|import\()\s*["'](?:\/_astro\/|\.\/)[^"']+\.js)(["'])/g, '$1?deploy=2$2');
+  const renamed = (text) => text.replace(/((?:src=|from|import\()\s*["'`](?:\/_astro\/|\.\/)[^"'`]+\.js)(["'`])/g, '$1?deploy=2$2');
   await page.route(`**${modelPost}`, async (r) => {
     if (r.request().resourceType() !== 'document') return r.fallback();
     const response = await r.fetch();
