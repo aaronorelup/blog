@@ -365,8 +365,8 @@ its static rung mid-test.
 | `/version.json`'s shape | pages-2 |
 | `/stats` draws the snapshot (`/api/stats` 200) | pages-3 |
 | `/stats` says the numbers aren't connected (503) | pages-4 |
-| The doorway's sort counts each pile up as its dots land, every frame, in its own text node: the pile buttons never have a node replaced while it runs (listen-5), and their figures change | pages-6 |
-| A range change rolls the lede's figures (`tweenNumber`, every frame for 450 ms) in their own text nodes: the provenance buttons around them never have a node replaced (listen-5), and the figures change | pages-7 |
+| The doorway's sort counts each pile up as its dots land, every frame, in its own text node: over the whole sort (watched from the page's first script, since the sort can start as the page loads) the pile buttons never have a node replaced (listen-5), and their figures change | pages-6 |
+| A range change rolls the lede's figures (`tweenNumber`, every frame for 450 ms) in their own text nodes: watched from before the range is picked to the roll's end, the provenance buttons around them never have a node replaced (listen-5), and the figures change | pages-7 |
 | A link to a heading lands on it, and a search result's passage is in view, though the components above it draw after the load event (`scripts/views/post.js`) | pages-5 |
 
 ## The post page (`post.spec.mjs`)

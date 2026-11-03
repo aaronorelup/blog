@@ -4,7 +4,7 @@
 // (unlisted, a live notebook) offers the browser's voice alone. Recordings are fixtures made here from the build's
 // /read/<slug>.json (silent audio, a word every 200 ms); INVENTORY rows read-*.
 import { test, expect } from './fixtures.mjs';
-import { loneMedia, pagesWhere, play, expectPlaying, contentChanges } from './helpers.mjs';
+import { loneMedia, pagesWhere, play, expectPlaying, watchContent } from './helpers.mjs';
 
 const POST = '/ledger/what-drives-claude-code-cost/';
 const SHORT = '/ledger/why-im-starting-this/';
@@ -432,16 +432,19 @@ test('read-9 the speed button is never rewritten as the reading moves to its nex
   await expect(speed).toHaveText('1x');
   await expect.poll(async () => (await state(page)).t, { timeout: 5000 }).toBeGreaterThan(0.2);
   // Half a second before the first part ends, then on into the second.
-  const moving = contentChanges(speed, 2500);
+  const moving = await watchContent(speed);
   await page.evaluate((end) => { document.querySelector('.ra-bar').aoClock().currentTime = end; }, rec.parts[0].dur / 1000 - 0.5);
-  expect(await moving).toEqual({ nodes: 0, text: 0 });
-  expect((await state(page)).src).toBe(rec.parts[1].src);
-  const pausing = contentChanges(speed, 1000);
-  const play = contentChanges(page.locator('.ra-play'), 1000);
+  await expect.poll(async () => (await state(page)).src, { timeout: 2_500 }).toBe(rec.parts[1].src);
+  await expect.poll(async () => (await state(page)).playing).toBe(true);
+  expect(await moving.read()).toEqual({ nodes: 0, text: 0 });
+  // The pause is drawn once, play button and speed button together (bar.js show()).
+  const pausing = await watchContent(speed);
+  const play = await watchContent(page.locator('.ra-play'));
   await page.locator('.ra-play').click();
   await expect.poll(async () => (await state(page)).paused).toBe(true);
-  expect(await pausing).toEqual({ nodes: 0, text: 0 });
-  expect((await play).nodes).toBeGreaterThan(0);
+  await expect(page.locator('.ra-play')).toHaveAttribute('aria-label', 'Play');
+  expect(await pausing.read()).toEqual({ nodes: 0, text: 0 });
+  expect((await play.read()).nodes).toBeGreaterThan(0);
   await speed.click();
   await expect(speed).toHaveText('1.25x');
 });

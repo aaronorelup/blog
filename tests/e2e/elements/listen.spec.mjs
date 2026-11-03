@@ -1,7 +1,7 @@
 // <ao-listen>: a set of clips with one player: a clip row picks and plays, A/B switches to the reference at the same
 // moment and back, the spectrogram seeks (click and arrows), and keys drive the list.
 import { test, expect } from '../fixtures.mjs';
-import { openFirst, pagesWith, expectPlaying, playing, clock, seekTo, contentChanges } from '../helpers.mjs';
+import { openFirst, pagesWith, expectPlaying, playing, clock, seekTo, contentChanges, watchContent } from '../helpers.mjs';
 
 // The first set whose every clip runs 4 s or more, so none ends under a test (many are one-line sound bites), among
 // the sets the element has built (a single clip stays a plain figure, with no list).
@@ -287,9 +287,9 @@ test('listen-5 the Play/Pause button is never rewritten while a clip plays; paus
   await expect(btn).toHaveText('Pause');
   expect(await contentChanges(btn, 1000)).toEqual({ nodes: 0, text: 0 });
   expect(await playing(a)).toBe(true);
-  const changes = contentChanges(btn, 1000);
+  const changes = await watchContent(btn);
   await btn.click();
   await expect(btn).toHaveText('Play');
-  const { nodes, text } = await changes;
+  const { nodes, text } = await changes.read();
   expect(nodes + text).toBeGreaterThan(0);
 });

@@ -1,6 +1,6 @@
 // <ao-cues>: cuts of one timeline in lockstep beside timed cues; a cue sends every cut there, one cut is heard.
 import { test, expect } from '../fixtures.mjs';
-import { open, lightestWith, expectPlaying, playing, clock, smallVideo, contentChanges } from '../helpers.mjs';
+import { open, lightestWith, expectPlaying, playing, clock, smallVideo, contentChanges, watchContent } from '../helpers.mjs';
 
 const cues = (page) => page.locator('ao-cues').first();
 const vids = (page) => cues(page).locator('video');
@@ -130,9 +130,9 @@ test('cues-10 the Play/Pause button is never rewritten while the cuts play; paus
   expect(await contentChanges(btn, 1000)).toEqual({ nodes: 0, text: 0 });
   // Still playing as one (a cut that runs dry holds the rest a moment, cues-6, and they still play).
   expect(await cues(page).evaluate((el) => el.aoPlaying())).toBe(true);
-  const changes = contentChanges(btn, 1000);
+  const changes = await watchContent(btn);
   await btn.click();
   await expect(btn).toHaveText('Play');
-  const { nodes, text } = await changes;
+  const { nodes, text } = await changes.read();
   expect(nodes + text).toBeGreaterThan(0);
 });

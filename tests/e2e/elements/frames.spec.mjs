@@ -1,6 +1,6 @@
 // <ao-frames>: frame-by-frame stepping (buttons and arrow keys), named marks, play and quarter speed.
 import { test, expect } from '../fixtures.mjs';
-import { open, pageWith, expectPlaying, playing, contentChanges } from '../helpers.mjs';
+import { open, pageWith, expectPlaying, playing, contentChanges, watchContent } from '../helpers.mjs';
 
 test.beforeEach(async ({ page }) => {
   await open(page, pageWith('ao-frames', (a) => a.marks));
@@ -57,9 +57,9 @@ test('frames-4 the Play/Pause button is never rewritten while the video plays; p
   await expect(btn).toHaveText('Pause');
   expect(await contentChanges(btn, 1000)).toEqual({ nodes: 0, text: 0 });
   expect(await playing(v)).toBe(true);
-  const changes = contentChanges(btn, 1000);
+  const changes = await watchContent(btn);
   await btn.click();
   await expect(btn).toHaveText('Play');
-  const { nodes, text } = await changes;
+  const { nodes, text } = await changes.read();
   expect(nodes + text).toBeGreaterThan(0);
 });

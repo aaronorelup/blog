@@ -2,7 +2,7 @@
 // (mocked: 200 from fixtures/stats-200.json, 503 not-connected), and where a link into a post lands. INVENTORY rows
 // pages-*.
 import { test, expect } from './fixtures.mjs';
-import { allDefined, contentChanges, pagesWhere } from './helpers.mjs';
+import { allDefined, pagesWhere, watchContent } from './helpers.mjs';
 
 test('pages-1 the RSS feed has one item per listed post, guid = the post URL', async ({ request }) => {
   const previews = await (await request.get('/ledger/previews.json')).json();
@@ -36,15 +36,33 @@ test.describe('/stats with the numbers', () => {
   });
 });
 
+// What the doorway's sort does to the content of its pile buttons, counted from the page's first script on (the sort
+// can start as the page loads, when its piles are on screen at once) and from the moment the sort runs: { nodes,
+// text } as contentChanges() counts them, with a pile button replaced counted as a node.
+const GATE = `(() => {
+  const n = window.__gate = { ran: false, nodes: 0, text: 0 };
+  const inLabel = (x) => (x.nodeType === 1 ? x : x.parentElement)?.closest('.st-gate-label');
+  const label = (x) => x.nodeType === 1 && (x.matches('.st-gate-label') || !!x.querySelector('.st-gate-label'));
+  new MutationObserver((rs) => rs.forEach((m) => {
+    if (m.type === 'attributes') { n.ran ||= m.target.classList.contains('st-gate-running'); return; }
+    if (!n.ran) return;
+    if (m.type === 'characterData') { if (inLabel(m.target)) n.text++; return; }
+    if (inLabel(m.target) || [...m.addedNodes, ...m.removedNodes].some(label)) n.nodes++;
+  })).observe(document, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['class'] });
+})();`;
+
 // The doorway's sort counts each pile up as its dots land, and a range change rolls the lede's figures: numbers inside
 // buttons, changed in their own text node, never by a node replaced (on WebKit a tap on a button whose text node is
 // replaced between press and release fires no click).
 test.describe('/stats numbers that move', () => {
   test('pages-6 the sort counts the piles up in place: their buttons keep their text nodes', async ({ page }) => {
+    await page.addInitScript(GATE);
     await page.goto('/stats');
     await page.locator('.st-gate-label').first().scrollIntoViewIfNeeded();
     await expect(page.locator('.st-gate-running')).toHaveCount(1);
-    const n = await contentChanges(page.locator('.st-gate-label'), 1000);
+    await expect(page.locator('.st-gate-running')).toHaveCount(0, { timeout: 30_000 });   // the whole sort
+    const n = await page.evaluate(() => window.__gate);
+    expect(n.ran).toBe(true);
     expect(n.nodes).toBe(0);
     expect(n.text).toBeGreaterThan(0);
   });
@@ -54,12 +72,13 @@ test.describe('/stats numbers that move', () => {
     const prov = page.locator('#st-top .st-prov');
     await expect(prov.first()).toBeVisible();
     const before = await prov.allTextContents();
-    const changes = contentChanges(prov, 1000);
+    const changes = await watchContent(prov);
     await page.locator('.st-pill', { hasText: '7 days' }).click();
-    const n = await changes;
+    await expect.poll(() => prov.allTextContents()).not.toEqual(before);
+    await expect(page.locator('#st-top .st-prov .st-tab')).toHaveCount(0);   // the roll (450 ms), to its end
+    const n = await changes.read();
     expect(n.nodes).toBe(0);
     expect(n.text).toBeGreaterThan(0);
-    expect(await prov.allTextContents()).not.toEqual(before);
   });
 });
 
