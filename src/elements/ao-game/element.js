@@ -74,7 +74,7 @@ class AoGame extends HTMLElement {
     if (poster) {
       stage.appendChild(h('img', { src: poster, alt: this._label, loading: 'lazy', class: 'ao-game-poster' }));
     }
-    stage.appendChild(h('button', { type: 'button', class: 'ao-model-load ao-game-load',
+    stage.appendChild(h('button', { type: 'button', class: 'ao-game-load',
       text: (message ? 'Play again' : 'Play it here') + (this._sizeText ? ' (' + this._sizeText + ')' : ''),
       onclick: () => this.load() }));
     if (message) stage.appendChild(h('p', { class: 'ao-game-msg', text: message }));

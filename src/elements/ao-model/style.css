@@ -1,5 +1,4 @@
-/* <ao-model>: the frame, its poster and load button before the click, then the canvas and its hint. ao-game's Play
-   button wears .ao-model-load too, and ao-game/style.css carries a copy of those rules. */
+/* <ao-model>: the frame, its poster and load button before the click, then the canvas and its hint. */
 
 ao-model {
   display: block;

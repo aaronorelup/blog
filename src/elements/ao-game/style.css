@@ -26,7 +26,6 @@ ao-game > .ao-game-stage > iframe {
   height: 100%;
   border: 0;
 }
-.ao-game-load { bottom: 50%; transform: translate(-50%, 50%); font-size: 15px; padding: 12px 26px; }
 ao-game > .ao-game-bar {
   display: flex;
   flex-wrap: wrap;
@@ -96,9 +95,8 @@ ao-game .ao-game-btn[hidden] { display: none; }
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
   pointer-events: none;
 }
-/* Its Play button is ao-model's load button too (class="ao-model-load ao-game-load"), so that button's rules are
-   here as well, after .ao-game-load as they always were: they win wherever the two overlap. */
-.ao-model-load {
+/* The Play button: the same pill as ao-model's load button, low on the poster. */
+.ao-game-load {
   position: absolute;
   left: 50%;
   bottom: 18px;
@@ -116,6 +114,6 @@ ao-game .ao-game-btn[hidden] { display: none; }
   white-space: nowrap;
   transition: background 180ms cubic-bezier(.4, 0, .2, 1);
 }
-.ao-model-load:hover { background: rgba(32, 31, 44, 0.95); }
-.ao-model-load:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
-.ao-model-load:disabled { cursor: progress; opacity: 0.8; }
+.ao-game-load:hover { background: rgba(32, 31, 44, 0.95); }
+.ao-game-load:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+.ao-game-load:disabled { cursor: progress; opacity: 0.8; }
