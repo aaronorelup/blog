@@ -3,8 +3,6 @@ id: "AO-074"
 title: "You're never more than a month behind in AI"
 summary: "A friend got into AI a month ago and he's already caught up with my six years. Why most of what you learn about AI goes stale in a month, and the setup that got him there so fast."
 date: 2026-11-01
-status: "note"
-tags: []
 topic: "learning"
 project: ["origin"]
 draft: true
