@@ -1,4 +1,4 @@
-// /api/reads, the reader counter AO-057's demo shows (src/scripts/demos/cf.js). POST {slug} counts one read, GET
+// /api/reads, the reader counter AO-057's demo shows (src/elements/ao-demo/demos/cf/index.js). POST {slug} counts one read, GET
 // ?slug= gives the counts. Stored (reads.sql): post, UTC day, the edge's country, a count; never an address, a
 // browser, a cookie or a time of day. A read counts only from this site's own pages, from something that doesn't
 // call itself a bot, for a listed post. The limiters are keyed on the post, so one script can add at most about
