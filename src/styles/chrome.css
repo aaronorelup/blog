@@ -98,10 +98,8 @@
 /* Hover states of rows, links and buttons in the views. */
 .pc-row:hover { background: var(--pc-hover); }
 .pc-nav:hover,
-.pc-home:hover,
-.pc-link:hover { color: var(--pc-head) !important; }
-.pc-foot:hover,
-.pc-quiet-btn:hover { color: var(--pc-accent) !important; }
+.pc-home:hover { color: var(--pc-head) !important; }
+.pc-foot:hover { color: var(--pc-accent) !important; }
 .pc-link-accent:hover { color: var(--pc-strong) !important; }
 
 /* Narrow screens: ledger rows go to one column. */
