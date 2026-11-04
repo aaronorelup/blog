@@ -4,10 +4,10 @@
 // schema skips both, and the checker only warns about them.
 import { TEXT } from '../data/limits.js';
 
-// W4's rollout switch, the one line to flip after a day of clean deploys. false: these rules fail npm run check and
-// npm test, and the deploy build only prints them for posts without a topic (posts with one have failed the build
-// on the caps since T0.2). true: they fail the deploy build too, for every post.
-export const STRICT = false;
+// On since 2026-11-04, after a day of clean deploys (W4's rollout): these rules fail the deploy build for every post
+// but the exempt ones. false would put them back to failing only npm run check and npm test, and the deploy build
+// only printing them for posts without a topic.
+export const STRICT = true;
 
 const length = (v) => String(v ?? '').trim().length;
 
