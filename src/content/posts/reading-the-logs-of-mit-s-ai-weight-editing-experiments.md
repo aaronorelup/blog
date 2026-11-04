@@ -4,7 +4,6 @@ title: "Reading the logs of MIT's AI weight-editing experiments"
 summary: "An MIT team showed an AI reading and rewriting the weights of other neural networks. I went through their released logs to see what each of the eight experiments did and what's behind the headline numbers."
 date: 2026-11-04
 topic: "learning"
-draft: true        # until Aaron says it's good, in his own words
 preview:
   verdict: "Real, but oversold"
   takeaway: "The experiments are real and fully logged. Most of the edits are hand-wired rules or one bug fix, not an AI reading weights the way the headlines say."
@@ -78,8 +77,7 @@ The two "reading" tests on bigger models were less like reading. In experiment 3
 
 ## What I want to try next
 
-- **Do hand-wired rules survive training?** Neurons pushed to their limits barely change when training updates a network, so my guess is you could wire in a readable rule and train around it. A 1994 method called KBANN did something close.
-- **Editing a small image model's weights toward a color or a texture.** And checking every step, because it's easy to blame the wrong neuron.
+Editing a small image model's weights toward a color or a texture, and checking every step, because it's easy to blame the wrong neuron.
 
 <details><summary>Every experiment's size and setup</summary>
 
