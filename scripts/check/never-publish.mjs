@@ -49,6 +49,7 @@ const scope = (repo) => [
   ...repo.posts, ...repo.notes, ...repo.projects,
   ...repo.list('src/components/about'),
   ...repo.list('src/data', (f) => /^src\/data\/[^/]+\.js$/.test(f)),
+  ...repo.list('src/elements/ao-demo/demos', (f) => f.endsWith('.json')),   // recorded model output a demo replays
 ].map((e) => (typeof e === 'string' ? { file: e, raw: repo.read(e) } : e));
 
 export default function neverPublish(repo, report) {
