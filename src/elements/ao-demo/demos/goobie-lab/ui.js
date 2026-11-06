@@ -25,6 +25,13 @@ export function seenBy(c, into) {
   if (c.name === 'read' && c.args?.slug && !/^No post/.test(c.result)) into.set(c.args.slug, (into.get(c.args.slug) ?? 0) + c.result.length);
   return into;
 }
+// The posts a recorded list_posts call listed, one line each ("AO-014 2026-09-01 agents by Aaron slug ..."): their
+// dates and titles, none of their text. Adds their slugs to `into`, a Set, and returns it.
+const ROW = /^AO-\d+ \d{4}-\d{2}-\d{2} \S+ by \S+ ([a-z0-9-]+)/;
+export function listedBy(c, into) {
+  if (c.name === 'list_posts') for (const l of c.result.split('\n')) { const x = ROW.exec(l); if (x) into.add(x[1]); }
+  return into;
+}
 
 // Buttons for the questions, one pressed. pick(i) is called on a press, and once for the first.
 export function picker(runs, pick, label = 'Pick a question') {
@@ -59,7 +66,8 @@ export function meter(window) {
 }
 
 // Every post of the blog as a block sized by its length; shade(seen) shades each by the share of it the model saw.
-// seen: Map(slug -> characters seen), or 'all'.
+// seen: Map(slug -> characters seen), or 'all'. note replaces the caption; listed (a Set of slugs) marks the posts the
+// model saw only a list line of, and says so after the caption.
 export function blogMap(blog) {
   const total = blog.posts.reduce((t, p) => t + p[6], 0);
   const cells = new Map();
@@ -75,17 +83,19 @@ export function blogMap(blog) {
   const el = h('div', { class: 'gl-mapbox' }, h('p', { class: 'gl-label', text: `What the model saw of the ${blog.posts.length} posts` }), grid, caption);
   return {
     el,
-    shade(seen, note) {
+    shade(seen, { note, listed } = {}) {
       let chars = 0;
       let posts = 0;
       for (const [slug, c] of cells) {
         const s = seen === 'all' ? c.chars : Math.min(c.chars, seen.get(slug) ?? 0);
         c.shade.style.width = `${(s / c.chars) * 100}%`;
         c.cell.classList.toggle('is-seen', s > 0);
+        c.cell.classList.toggle('is-listed', !!listed?.has(slug));
         chars += s;
         posts += s > 0 ? 1 : 0;
       }
-      const words = note ?? `${fmt(chars)} of ${fmt(total)} characters (${pct(chars / total)}), from ${posts} ${posts === 1 ? 'post' : 'posts'}`;
+      const words = (note ?? `${fmt(chars)} of ${fmt(total)} characters (${pct(chars / total)}), from ${posts} ${posts === 1 ? 'post' : 'posts'}`)
+        + (listed?.size ? `. It also read the post list, a line for each of ${listed.size} ${listed.size === 1 ? 'post' : 'posts'}` : '');
       grid.setAttribute('aria-label', words);
       caption.textContent = words;
     },
@@ -105,8 +115,10 @@ const inline = (text, link) => text.split(/(\*\*[^*]+\*\*|\[\d+\])/).filter(Bool
   return /^\[\d+\]$/.test(part) ? link(part) : part;
 });
 
-// The answer as text: paragraphs and "- " lists, **bold**, and each [n] a link to its passage. A reader counts posts,
-// so each [n] shows its post's place among those cited, in order of first mention (RAG Goobie's numbering).
+// The answer as text: paragraphs and "- " lists (a run of "- " lines is a list, the lines around it paragraphs), **bold**,
+// and each [n] a link to its passage. A reader counts posts, so each [n] shows its post's place among those cited, in
+// order of first mention (RAG Goobie's numbering).
+const ITEM = /^\s*[-*] /;
 export function answer({ text, cites }) {
   const byN = new Map(cites.map((c) => [`[${c.n}]`, c]));
   const posts = [];
@@ -121,9 +133,13 @@ export function answer({ text, cites }) {
   const el = h('div', { class: 'gl-answer' });
   for (const block of text.split(/\n{2,}/)) {
     const lines = block.split('\n').filter((l) => l.trim());
-    if (lines.length && lines.every((l) => /^\s*[-*] /.test(l))) {
-      el.append(h('ul', {}, lines.map((l) => h('li', {}, inline(l.replace(/^\s*[-*] /, ''), link)))));
-    } else if (lines.length) el.append(h('p', {}, inline(lines.join(' '), link)));
+    for (let i = 0; i < lines.length;) {
+      const list = ITEM.test(lines[i]);
+      const run = [];
+      while (i < lines.length && ITEM.test(lines[i]) === list) run.push(lines[i++]);
+      el.append(list ? h('ul', {}, run.map((l) => h('li', {}, inline(l.replace(ITEM, ''), link))))
+        : h('p', {}, inline(run.join(' '), link)));
+    }
   }
   return el;
 }
@@ -133,10 +149,10 @@ export function grade(run) {
   const g = run.grade;
   const others = Object.entries(run.others).map(([m, o]) => `${NAMES[m]} ${o.must} of ${o.of} in ${secs(o.ms)}`);
   return h('div', { class: 'gl-grade' },
-    h('p', {}, h('b', { text: `Got ${g.must} of the ${g.of} key facts` }), `, scored ${g.score} out of 10 by a separate grader that read the posts`),
+    h('p', {}, h('b', { text: `Got ${g.must} of the ${g.of} key facts` }), `, scored ${g.score} out of 10 by the same model in a separate grading pass that read the posts`),
     others.length ? h('p', { class: 'gl-others', text: `Same question, the other two ways: ${others.join(', ')}.` }) : null);
 }
 
 export const eyebrow = (method) => h('p', { class: 'gl-eyebrow' }, NAMES[method], h('span', { class: 'gl-rec', text: 'recorded run' }));
 export const foot = (blog) => h('p', { class: 'gl-foot', text: `Recorded on ${blog.recorded} against the ${blog.posts.length} posts `
-  + 'listed then. The model\'s words are replayed from that run, not written in your browser.' });
+  + 'listed then, all but the live notebook other agents write. The model\'s words are replayed from that run, not written in your browser.' });

@@ -1,7 +1,8 @@
-// The Goobie lab's paid calls, each through the eval's DeepSeek ledger (scripts/eval/spend.mjs: reserved at its worst
+// The Goobie lab's model calls, each through the eval's DeepSeek ledger (scripts/eval/spend.mjs: reserved at its worst
 // case, settled to its price) with the live RAG Goobie's model and client (worker/ask/deepseek.js): streamed() times
 // the first words of an answer, step() is one agent turn with its tool calls. embed() is Workers AI's embedding model
-// of the live search index (dist/search/manifest.json names it), its vectors kept in a private cache.
+// of the live search index (dist/search/manifest.json names it), its vectors kept in a private cache. Its calls are not
+// on the ledger: a whole run's embeddings cost well under a cent (EMBED_USD_PER_M).
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';

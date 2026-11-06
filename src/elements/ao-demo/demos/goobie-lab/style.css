@@ -90,7 +90,11 @@ ao-demo[name="goobie-lab"] { display: block; margin: 26px 0 34px; }
   overflow: hidden;
 }
 .gl-seen { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--pc-accent); transition: width 0.3s ease; }
+.gl-post.is-listed { box-shadow: inset 0 -3px 0 var(--pc-quiet); }   /* only its line in a post list */
 .gl-post.is-seen { box-shadow: inset 0 -3px 0 var(--pc-accent); }
+@media (prefers-reduced-motion: reduce) {
+  .gl-fill, .gl-cached, .gl-seen { transition: none; }
+}
 
 /* Figures, answer, grade. */
 .gl dl.gl-stats {
@@ -114,6 +118,15 @@ ao-demo[name="goobie-lab"] { display: block; margin: 26px 0 34px; }
 .gl .gl-answer li + li { margin-top: 4px; }
 .gl a.gl-cite { padding: 0 1px; font-size: 0.82em; font-weight: 700; color: var(--pc-accent); text-decoration: none; vertical-align: 1px; }
 .gl a.gl-cite:hover { text-decoration: underline; }
+/* On a touch screen each [n] is a 44 px target, drawn by an invisible box out of the flow, as RAG Goobie's own cites
+   are (src/styles/search.css): it reaches less up and left, toward the cite before it, than down and right, where a
+   later cite is drawn over it. These numbers are narrower than Goobie's, so the box reaches further right: a cite
+   ending a line keeps its 28 px inside the answer's padding, the demo's and its border, so nothing scrolls sideways. */
+@media (pointer: coarse) {
+  .gl a.gl-cite { position: relative; }
+  .gl a.gl-cite::before { content: ''; position: absolute; inset: -14px -28px -16px -2px; }
+  .gl .gl-answer { padding-right: 15px; }
+}
 .gl-grade { margin: 10px 0 0; font-size: 13.5px; }
 .gl p.gl-others { margin-top: 4px; color: var(--pc-quiet); font-size: 13px; }
 
@@ -166,6 +179,7 @@ ao-demo[name="goobie-lab"] { display: block; margin: 26px 0 34px; }
 }
 .gl button.gl-btn.is-main { border-color: var(--pc-head); background: var(--pc-head); color: var(--pc-page); }
 .gl button.gl-btn:disabled { opacity: 0.45; cursor: default; }
+.gl button.gl-btn[aria-disabled="true"] { opacity: 0.45; cursor: progress; }   /* running: it keeps the focus */
 .gl ol.gl-turns { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .gl li.gl-turn { padding: 10px 12px; border: 1px solid var(--pc-line); border-radius: 8px; }
 .gl li.gl-turn.is-last { border-color: var(--pc-head); }

@@ -1,14 +1,15 @@
 // node scripts/eval/lab/record.mjs --run <dir> --cold <dir> --pick context=c1,c2,c3 --pick rag=r1,r2,r4 --pick agent=a1,a2,a3:
 // the Goobie lab demo's fixtures from a judged run (run.mjs, judge.mjs): runs/blog.json (the corpus as the page's map
 // draws it, and the run's facts) and runs/<method>.json (each picked question's run, its grade, and in one line how
-// the other two methods did on it). Refuses to write a never-publish term, a live notebook or anything like an IP.
+// the other two methods did on it). Refuses to write a never-publish term (in any string, decoded), the live
+// notebook's slug or id, or anything shaped like an IPv4 or IPv6 address. Its content can't get in: the corpus has none.
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
 import { PRICES } from '../../../src/lib/ask/price.js';
 import { isLive, LIVE_NOTEBOOKS } from '../../../src/data/exempt.js';
-import { hash, keys } from '../../check/never-publish.mjs';
-import { loadCorpus } from './load.mjs';
+import { hash, jsonKeys } from '../../check/never-publish.mjs';
+import { loadCorpus, PROJECT_OF } from './load.mjs';
 import { AGENT_TURNS, RAG_K } from './methods.mjs';
 
 const OUT = new URL('../../../src/elements/ao-demo/demos/goobie-lab/runs/', import.meta.url);
@@ -55,6 +56,7 @@ const first = runs.values().next().value;
 const blog = {
   recorded: first.at.slice(0, 10), commit: first.corpus.commit.slice(0, 7), window: WINDOW, ragK: RAG_K, agentTurns: AGENT_TURNS,
   chunks: first.corpus.chunks, packChars: first.corpus.packChars, prices: PRICES,
+  projects: PROJECT_OF,   // the page's live corpus maps /rss.xml's project labels with it, not src/data/taxonomy.js
   posts: corpus.posts.map((p) => [p.n, p.slug, p.title, p.date, p.topic, p.by, p.sections.reduce((t, s) => t + s.text.length, 0)]),
 };
 if (o.cold) {
@@ -64,16 +66,22 @@ if (o.cold) {
 }
 const files = { blog, ...Object.fromEntries(Object.entries(picks).map(([m, ids]) => [m, file(m, ids)])) };
 
-// Nothing private, nothing of a live notebook, nothing shaped like an address: or nothing is written.
+// Nothing private, nothing naming a live notebook, nothing shaped like an address: or nothing is written. Each test reads
+// the strings as they decode (in the raw JSON a word after a line break reads as "nWord").
 const banned = new Set(JSON.parse(fs.readFileSync(new URL('../../../src/data/never-publish.json', import.meta.url), 'utf8')));
 const IPV4 = /\b(?:\d{1,3}\.){3}\d{1,3}\b/;
+// Hex groups and colons with a "::" or at least 5 groups, so a clock time (12:04:31) is never one.
+const IPV6 = /(?<![\w:.])[0-9a-f]{0,4}(?::[0-9a-f]{0,4}){2,7}(?![\w:])/gi;
+const ipv6 = (s) => [...s.matchAll(IPV6)].some(([m]) => m.includes('::') || m.split(':').length >= 5);
+const strings = (v) => (typeof v === 'string' ? [v] : Array.isArray(v) ? v.flatMap(strings)
+  : v && typeof v === 'object' ? Object.entries(v).flatMap(([k, x]) => [k, ...strings(x)]) : []);
 for (const [name, data] of Object.entries(files)) {
-  const text = JSON.stringify(data);
-  const hits = [...keys(text)].filter(([k]) => banned.has(hash(k))).map(([k]) => k);
+  const hits = [...jsonKeys(JSON.stringify(data))].filter(([k]) => banned.has(hash(k))).map(([k]) => k);
   if (hits.length) throw new Error(`${name}: a never-publish term (${hits.length} hits): not written`);
-  const live = Object.entries(LIVE_NOTEBOOKS).find(([id, n]) => text.includes(n.slug) || text.includes(`"${id}"`));
+  const text = strings(data).join('\n');
+  const live = Object.entries(LIVE_NOTEBOOKS).find(([id, n]) => new RegExp(`(?<![\\w-])(${n.slug}|${id})(?![\\w-])`).test(text));
   if (live || corpus.posts.some((p) => isLive(p.slug))) throw new Error(`${name}: names a live notebook: not written`);
-  if (IPV4.test(text)) throw new Error(`${name}: something shaped like an IP address: not written`);
+  if (IPV4.test(text) || ipv6(text)) throw new Error(`${name}: something shaped like an IP address: not written`);
 }
 fs.mkdirSync(OUT, { recursive: true });
 for (const [name, data] of Object.entries(files)) {

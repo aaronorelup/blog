@@ -143,17 +143,21 @@ test.describe('goobie-lab', () => {
     await expect(d.locator('.gl-way-agent .gl-post.is-seen').first()).toBeAttached();
   });
 
-  test('demo-lab-2 context: another question redraws the answer, and a blog past the window no longer fits', async ({ page }) => {
+  test('demo-lab-2 context: another question redraws the figures and the answer, and a blog past the window no longer fits', async ({ page }) => {
     const d = lab(page, 'context');
     const answer = d.locator('.gl-answer');
+    const figures = d.locator('.gl-run .gl-stats');
     const before = await answer.textContent();
+    const figs = await figures.textContent();
     await d.locator('button.gl-q[aria-pressed="false"]').first().click();
     await expect(answer).not.toHaveText(before);
+    await expect(figures).not.toHaveText(figs);
     await expect(d.locator('button.gl-q[aria-pressed="true"]')).toHaveCount(1);
     const out = d.locator('.gl-grow-out');
     await expect(out).toContainText('of the window');
     await slide(d.locator('.gl-grow input[type=range]'), 'max');
     await expect(out).toContainText('no longer fits');
+    await expect(out).toContainText(/: [1-9]\d{2,}% of the window/);   // past it, by how much: 600 posts are 200%
   });
 
   test('demo-lab-3 rag: the k slider moves the cut and the window, and a chunk opens', async ({ page }) => {
@@ -172,23 +176,55 @@ test.describe('goobie-lab', () => {
 
   test('demo-lab-4 agent: Next, Back and Show every turn step through, the answer and grade at the last', async ({ page }) => {
     const d = lab(page, 'agent');
+    const [back, next] = [d.getByRole('button', { name: 'Back' }), d.getByRole('button', { name: 'Next turn' })];
     await expect(d.locator('.gl-turn')).toHaveCount(1);
     await expect(d.locator('.gl-answer')).toHaveCount(0);
-    await d.getByRole('button', { name: 'Next turn' }).click();
+    await next.click();
     await expect(d.locator('.gl-turn')).toHaveCount(2);
-    await d.getByRole('button', { name: 'Back' }).click();
+    await back.click();
     await expect(d.locator('.gl-turn')).toHaveCount(1);
     await d.getByRole('button', { name: 'Show every turn' }).click();
     await expect(d.locator('.gl-answer')).toBeVisible();
     await expect(d.locator('.gl-grade')).toContainText('key facts');
-    await expect(d.getByRole('button', { name: 'Next turn' })).toBeDisabled();
+    await expect(next).toBeDisabled();
+    // By keyboard, a button that turns itself off hands the focus to the other way: Back at the last turn, Next at the first.
+    await back.focus();
+    for (let i = 0; i < 20 && await back.isEnabled(); i++) await page.keyboard.press('Enter');
+    await expect(next).toBeFocused();
+    for (let i = 0; i < 20 && await next.isEnabled(); i++) await page.keyboard.press('Enter');
+    await expect(back).toBeFocused();
+    // The September answer: a line, then its "- " lines as a list.
+    await d.locator('button.gl-q').nth(1).click();
+    await d.getByRole('button', { name: 'Show every turn' }).click();
+    await expect(d.locator('.gl-answer ul li')).toHaveCount(5);
+    await expect(d.locator('.gl-answer p').nth(1)).toHaveText('By topic:');
   });
 
-  test('demo-lab-5 agent: a recorded tool call runs again live on the site and says whether it matches', async ({ page }) => {
-    const call = lab(page, 'agent').locator('.gl-call').first();
+  test('demo-lab-5 agent: a recorded tool call runs again live, the same as recorded on the posts it searched, and stays as you step', async ({ page }) => {
+    const d = lab(page, 'agent');
+    const call = d.locator('.gl-call').first();
     await call.getByRole('button', { name: 'Run this call live' }).click();
-    await expect(call.locator('.gl-live')).toContainText(/(Same as|Different from) the recorded run/);
-    await expect(call.locator('.gl-live')).toContainText('posts');
+    const live = call.locator('.gl-live');
+    await expect(live).toContainText(/^Same as the recorded run/);
+    const [, searched] = /on the (\d+) posts/.exec(await live.textContent());
+    expect(Number(searched)).toBeGreaterThanOrEqual(72);   // every post of the recording is still listed
+    const result = call.locator('details.gl-result').first();
+    await result.locator('summary').click();
+    await d.getByRole('button', { name: 'Next turn' }).click();
+    await expect(d.locator('.gl-turn')).toHaveCount(2);
+    await expect(live).toContainText(/^Same as the recorded run/);
+    await expect(result).toHaveAttribute('open', '');
+  });
+
+  test('demo-lab-7 agent: a live run that can\'t read the site\'s files says so, and the next try works', async ({ page }) => {
+    const call = lab(page, 'agent').locator('.gl-call').first();
+    const go = call.getByRole('button', { name: 'Run this call live' });
+    await page.route('**/ask/manifest.json', (route) => route.fulfill({ status: 500, body: '' }));
+    await go.click();
+    await expect(call.locator('.gl-live')).toContainText('couldn’t be read');
+    await page.unroute('**/ask/manifest.json');
+    await go.click();
+    await expect(call.locator('.gl-live')).toContainText(/^Same as the recorded run/);
   });
 
   test('demo-lab-6 agent: the playground searches the reader\'s words as plain text; cites link to passages', async ({ page }) => {

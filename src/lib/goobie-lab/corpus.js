@@ -1,39 +1,39 @@
 // The Goobie lab's corpus (the three-ways demo, src/elements/ao-demo/demos/goobie-lab/): every listed post but the
 // live notebooks, in full, with its date and projects, built from three files the build already writes for everyone
 // (/ask/manifest.json, its packs, /rss.xml). The recorder (scripts/eval/lab/) reads them from dist/ and the page
-// fetches them from the site, so both build the same corpus from the same bytes. Pure: the caller brings the files.
+// fetches them from the site, so both build the same corpus from the same bytes. Pure: the caller brings the files,
+// and the map from a project's label (as /rss.xml names it) to its key, so src/data/taxonomy.js stays out of the page.
 import { isLive } from '../../data/exempt.js';
-import { PROJECTS } from '../../data/taxonomy.js';
 
 const MARK_LINE = /^\[(\d+)\.(N?\d+)\] (.*)$/;
 const ENDS = /^(<\/?(documents|doc|notes)\b|\(Sections .* are on its page\.\)$)/;
 const ITEM = /<item>([\s\S]*?)<\/item>/g;
 const ENTITY = { amp: '&', apos: "'", quot: '"', lt: '<', gt: '>' };
 const decode = (s) => s.replace(/&(amp|apos|quot|lt|gt);/g, (_, k) => ENTITY[k]);
-const PROJECT_OF = new Map(Object.entries(PROJECTS).map(([key, p]) => [p.label, key]));
 
 export const unfragment = (s) => JSON.parse(`"${s}"`);   // an /ask/*.txt file: the body of a JSON string
 export const idOf = (n) => `AO-${String(n).padStart(3, '0')}`;
 export const packFiles = (manifest) => manifest.packs.map((p) => `/ask/${p.file}`);
 
-// /rss.xml: every listed post's date (YYYY-MM-DD) and project keys, by slug.
-export function datesOf(rss) {
+// /rss.xml: every listed post's date (YYYY-MM-DD) and project keys, by slug. projects: { label: key }.
+export function datesOf(rss, projects = {}) {
   const out = new Map();
   for (const [, item] of rss.matchAll(ITEM)) {
     const slug = /\/ledger\/([^/<]+)\/<\/link>/.exec(item)?.[1];
     const date = /<pubDate>([^<]+)<\/pubDate>/.exec(item)?.[1];
     if (!slug || !date) continue;
     const labels = [...item.matchAll(/<category>([^<]*)<\/category>/g)].map((m) => decode(m[1]));
-    out.set(slug, { date: new Date(date).toISOString().slice(0, 10), projects: labels.map((l) => PROJECT_OF.get(l)).filter(Boolean) });
+    out.set(slug, { date: new Date(date).toISOString().slice(0, 10), projects: labels.map((l) => (Object.hasOwn(projects, l) ? projects[l] : null)).filter(Boolean) });
   }
   return out;
 }
 
-// manifest: /ask/manifest.json. packs: the text of each of its packs (unfragmented). rss: /rss.xml.
+// manifest: /ask/manifest.json. packs: the text of each of its packs (unfragmented). rss: /rss.xml. projects: each
+// project's label and key ({ label: key }).
 // Returns { posts, bySlug, resolve }: posts in AO order, each { n, id, slug, title, date, topic, projects, by, url,
 // tokens, notesTitle, sections: [{ mark, kind, anchor, heading, text }] }; resolve(mark) as the live Ask's cites.
-export function corpusOf({ manifest, packs, rss }) {
-  const meta = datesOf(rss);
+export function corpusOf({ manifest, packs, rss, projects }) {
+  const meta = datesOf(rss, projects);
   const texts = new Map();
   const notesTitles = new Map();
   for (const pack of packs) {
@@ -78,6 +78,13 @@ export function corpusOf({ manifest, packs, rss }) {
     return { slug: p.slug, kind: s.kind, anchor: s.anchor, heading: s.heading, title: s.kind === 'notes' ? p.notesTitle ?? p.title : p.title };
   };
   return { posts, bySlug, resolve };
+}
+
+// The same corpus with only the posts whose slugs are in `slugs` (a Set): what a recorded tool call searched, so a
+// re-run can be told apart from the posts listed since.
+export function within(corpus, slugs) {
+  const posts = corpus.posts.filter((p) => slugs.has(p.slug));
+  return { ...corpus, posts, bySlug: new Map(posts.map((p) => [p.slug, p])) };
 }
 
 // A section's name as a reader sees it: its heading, else the short version or the opening (of the notes page).

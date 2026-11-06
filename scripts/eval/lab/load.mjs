@@ -3,16 +3,19 @@
 // section cut by the site's own search chunker, src/lib/search/chunks.js). Never a draft, an unlisted post or a live
 // notebook: the Ask build lists only listed posts, and corpusOf() drops the live ones.
 import fs from 'node:fs';
+import { PROJECTS } from '../../../src/data/taxonomy.js';
 import { corpusOf, packFiles, sectionName, unfragment } from '../../../src/lib/goobie-lab/corpus.js';
 import { docOf } from '../../../src/lib/search/chunks.js';
 
 const DIST = new URL('../../../dist/', import.meta.url);
 const read = (p) => fs.readFileSync(new URL(p.replace(/^\//, ''), DIST), 'utf8');
+// Each project's key by its label, as /rss.xml names it (record.mjs writes it into runs/blog.json for the page).
+export const PROJECT_OF = Object.fromEntries(Object.entries(PROJECTS).map(([key, p]) => [p.label, key]));
 
 export function loadCorpus() {
   const manifest = JSON.parse(read('/ask/manifest.json'));
   const packs = packFiles(manifest).map((f) => unfragment(read(f)));
-  const corpus = corpusOf({ manifest, packs, rss: read('/rss.xml') });
+  const corpus = corpusOf({ manifest, packs, rss: read('/rss.xml'), projects: PROJECT_OF });
   return { ...corpus, manifest, built: JSON.parse(read('/version.json')) };
 }
 
