@@ -36,6 +36,19 @@ export function* keys(text) {
   for (const m of text.matchAll(URLISH)) for (const key of urlKeys(m[1], m[2])) yield [key, m.index];
 }
 
+// [key, index] for a .json file: each string in it decoded, since its raw text glues an escape to the next word
+// ("\nWord" reads as "nWord", "\u0057ord" as "u0057ord"), at the string's own place in the file; then the raw text's
+// own keys too, so a run of words across two strings still counts.
+const STRING = /"(?:[^"\\\n]|\\.)*"/g;
+export function* jsonKeys(raw) {
+  for (const m of raw.matchAll(STRING)) {
+    let text = m[0];
+    try { text = JSON.parse(m[0]); } catch { /* not valid JSON: read as it stands */ }
+    for (const [key] of keys(text)) yield [key, m.index];
+  }
+  yield* keys(raw);
+}
+
 // The key a line of the private list is stored under: a host or URL as its host (lower case) and path, else its
 // 1 to 3 words joined by single spaces. null for a line that can't be matched.
 export function termKey(line) {
@@ -49,6 +62,7 @@ const scope = (repo) => [
   ...repo.posts, ...repo.notes, ...repo.projects,
   ...repo.list('src/components/about'),
   ...repo.list('src/data', (f) => /^src\/data\/[^/]+\.js$/.test(f)),
+  ...repo.list('src/elements/ao-demo/demos', (f) => f.endsWith('.json')),   // recorded model output a demo replays
 ].map((e) => (typeof e === 'string' ? { file: e, raw: repo.read(e) } : e));
 
 export default function neverPublish(repo, report) {
@@ -57,7 +71,7 @@ export default function neverPublish(repo, report) {
   for (const { file, raw } of scope(repo)) {
     const seen = new Set();
     const line = liner(raw);
-    for (const [key, index] of keys(raw)) {
+    for (const [key, index] of (file.endsWith('.json') ? jsonKeys(raw) : keys(raw))) {
       if (!known.has(key)) known.set(key, hashes.has(hash(key)));
       if (!known.get(key) || seen.has(key)) continue;
       seen.add(key);
