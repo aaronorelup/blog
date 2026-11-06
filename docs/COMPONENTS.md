@@ -180,7 +180,7 @@ folder leaves the fallback; a chunk that fails to load leaves it too, and the ne
 
 | Attribute | |
 |---|---|
-| `name="synthid"` | the demo: the folder under `demos/` |
+| `name="synthid"` | the demo: the folder under `demos/` (`synthid`, `cf`, `goobie-lab`) |
 | `part="tournament"` | which part of it to mount; an unknown part leaves the fallback |
 | `data-slug="…"` | `cf`'s `count` only: the post whose reads it counts (default: the page's own slug) |
 
@@ -198,8 +198,17 @@ The demos:
   only on aaronorelup.com), masks the address until shown, and walks the visit through the post's funnel; `count` is
   the post's live reader counter from `/api/reads` (`worker/reads/`), one read per browser per day after a few
   seconds in view, never from an automated browser.
+- **`goobie-lab`** (`three-ways-to-search-my-blog`, AO-078, a draft): three ways to give an AI model the blog, on
+  recorded runs (`runs/*.json`, written by `scripts/eval/lab/record.mjs`, checked by the never-publish rule). Parts:
+  `windows` (the three side by side: what each run saw of the blog, its tokens, time and cost), `context` (every post
+  in one cached prompt: question picker, window meter, the cold first question, a live growth slider), `rag` (the
+  nearest chunks with their scores and a live k slider) and `agent` (the model's tool calls turn by turn, each one
+  re-runnable live on the site's own `/ask/manifest.json`, packs and `/rss.xml` through `src/lib/goobie-lab/`, and a
+  playground for the reader's own words, searched as plain text). The model's words are only ever replayed: no part
+  calls a model or the Worker.
 
-Behaviours: demo-synthid-1 to demo-synthid-5, demo-cf-1, demo-cf-2. Used by 2 posts (`INVENTORY.md`).
+Behaviours: demo-synthid-1 to demo-synthid-5, demo-cf-1, demo-cf-2, demo-lab-1 to demo-lab-6. Used by 2 posts and
+AO-078's draft (`INVENTORY.md`).
 
 ## <ao-diff>
 

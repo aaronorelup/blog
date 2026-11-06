@@ -1,0 +1,228 @@
+/* The goobie-lab demo (index.js beside it): three ways to give an AI the blog, on recorded runs. Inlined into the
+   article of the post that uses it (ElementStyles). Panel tokens only, so day and night both work; text rules are
+   scoped under .gl to beat .pc-prose p, li, ol, details and pre. */
+
+ao-demo[name="goobie-lab"] { display: block; margin: 26px 0 34px; }
+
+.gl {
+  font: 400 14.5px/1.5 Karla, system-ui, sans-serif;
+  color: var(--pc-body);
+  padding: 16px 18px 14px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 12px;
+  background: var(--pc-code);
+}
+.gl p,
+.gl li { font: inherit; color: inherit; margin: 0; }
+.gl p.gl-eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 0 0 10px;
+  font: 700 11px/1.3 Karla, system-ui, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pc-gold);
+}
+.gl-rec {
+  padding: 1px 7px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+  color: var(--pc-quiet);
+}
+.gl p.gl-label {
+  margin: 0 0 6px;
+  font: 600 11.5px/1.3 Karla, system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pc-quiet);
+}
+.gl p.gl-note { margin: 6px 0 0; font-size: 13px; color: var(--pc-quiet); }
+.gl p.gl-foot { margin: 14px 0 0; font-size: 12.5px; color: var(--pc-quiet); }
+
+/* The question picker: one pressed. */
+.gl-qs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; }
+.gl button.gl-q {
+  max-width: 100%;
+  padding: 6px 12px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--pc-body);
+  font: 500 13.5px/1.35 Karla, system-ui, sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+.gl button.gl-q:hover { border-color: var(--pc-head); }
+.gl button.gl-q[aria-pressed="true"] { border-color: var(--pc-head); background: var(--pc-head); color: var(--pc-page); }
+.gl button:focus-visible,
+.gl input:focus-visible,
+.gl select:focus-visible,
+.gl summary:focus-visible { outline: 2px solid var(--pc-accent); outline-offset: 2px; }
+
+.gl ol.gl-steps { display: grid; gap: 8px; margin: 0 0 14px; padding-left: 20px; }
+.gl ol.gl-steps li { color: var(--pc-soft); }
+.gl ol.gl-steps li::marker { color: var(--pc-quiet); font-weight: 700; }
+.gl-steps b, .gl-turn-head, .gl-grade b { font-weight: 700; color: var(--pc-strong); }
+
+/* The window meter and the blog map. */
+.gl-meter, .gl-mapbox, .gl-cold, .gl-grow, .gl-k, .gl-play { margin: 14px 0 0; }
+.gl-bar {
+  position: relative;
+  height: 14px;
+  border-radius: 7px;
+  background: var(--pc-line);
+  overflow: hidden;
+}
+.gl-fill, .gl-cached { position: absolute; inset: 0 auto 0 0; transition: width 0.3s ease; }
+.gl-fill { background: var(--pc-head); opacity: 0.45; }
+.gl-cached { background: var(--pc-head); }
+.gl p.gl-meter-text, .gl p.gl-map-text { margin: 5px 0 0; font-size: 13px; color: var(--pc-soft); }
+.gl-map { display: flex; gap: 2px; height: 26px; }
+.gl-post {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 2px;
+  border-radius: 2px;
+  background: var(--pc-line);
+  overflow: hidden;
+}
+.gl-seen { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--pc-accent); transition: width 0.3s ease; }
+.gl-post.is-seen { box-shadow: inset 0 -3px 0 var(--pc-accent); }
+
+/* Figures, answer, grade. */
+.gl dl.gl-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px 14px;
+  margin: 14px 0 0;
+}
+.gl-stats dt { font-size: 12px; color: var(--pc-quiet); }
+.gl-stats dd { margin: 0; font-weight: 700; color: var(--pc-strong); font-variant-numeric: tabular-nums; }
+.gl-answer {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--pc-head);
+  border-radius: 0 8px 8px 0;
+  background: var(--pc-hover);
+}
+.gl .gl-answer p, .gl .gl-answer li { font: 400 15px/1.55 Karla, system-ui, sans-serif; color: var(--pc-strong); }
+.gl .gl-answer p + p, .gl .gl-answer p + ul, .gl .gl-answer ul + p { margin-top: 8px; }
+.gl .gl-answer ul { margin: 0; padding-left: 18px; }
+.gl .gl-answer li + li { margin-top: 4px; }
+.gl a.gl-cite { padding: 0 1px; font-size: 0.82em; font-weight: 700; color: var(--pc-accent); text-decoration: none; vertical-align: 1px; }
+.gl a.gl-cite:hover { text-decoration: underline; }
+.gl-grade { margin: 10px 0 0; font-size: 13.5px; }
+.gl p.gl-others { margin-top: 4px; color: var(--pc-quiet); font-size: 13px; }
+
+.gl input.gl-range { width: 100%; margin: 6px 0 0; accent-color: var(--pc-head); }
+.gl-grow-label { font-size: 14px; color: var(--pc-body); }
+.gl p.gl-grow-out { margin: 4px 0 0; font-weight: 600; color: var(--pc-strong); }
+.gl-cold dl.gl-stats { margin-top: 6px; }
+
+/* RAG: the ranked chunks, the top k marked. */
+.gl ol.gl-hits { display: grid; gap: 4px; margin: 8px 0 0; padding: 0; list-style: none; max-height: 340px; overflow-y: auto; }
+.gl ol.gl-hits li.gl-hit {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  color: var(--pc-quiet);
+  opacity: 0.62;
+}
+.gl ol.gl-hits li.gl-hit.is-in { opacity: 1; background: var(--pc-hover); color: var(--pc-body); }
+.gl-score {
+  position: relative;
+  align-self: start;
+  padding: 0 4px 5px 0;
+  font: 600 12px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-align: right;
+}
+.gl-score-bar { position: absolute; left: 0; bottom: 0; height: 3px; border-radius: 2px; background: var(--pc-line2); }
+.gl-hit.is-in .gl-score-bar { background: var(--pc-head); }
+.gl-hit-main { min-width: 0; font-size: 13.5px; }
+.gl a.gl-hit-post { color: var(--pc-strong); font-weight: 600; text-decoration: none; }
+.gl a.gl-hit-post:hover { text-decoration: underline; }
+.gl-hit-where { color: var(--pc-quiet); }
+.gl details.gl-chunk, .gl details.gl-result { margin: 2px 0 0; border: 0; }
+.gl details summary { padding: 0; font: 600 12.5px/1.5 Karla, system-ui, sans-serif; color: var(--pc-accent); cursor: pointer; }
+.gl details summary::before { width: 1.1em; }
+.gl details.gl-chunk p { margin: 4px 0 2px; font-size: 13px; color: var(--pc-soft); white-space: pre-line; }
+
+/* The agent: turns, calls, results, the live re-run and the playground. */
+.gl-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; }
+.gl p.gl-where { margin: 0 4px; font-weight: 700; color: var(--pc-strong); font-variant-numeric: tabular-nums; }
+.gl button.gl-btn {
+  padding: 5px 12px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--pc-body);
+  font: 600 13px/1.3 Karla, system-ui, sans-serif;
+  cursor: pointer;
+}
+.gl button.gl-btn.is-main { border-color: var(--pc-head); background: var(--pc-head); color: var(--pc-page); }
+.gl button.gl-btn:disabled { opacity: 0.45; cursor: default; }
+.gl ol.gl-turns { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.gl li.gl-turn { padding: 10px 12px; border: 1px solid var(--pc-line); border-radius: 8px; }
+.gl li.gl-turn.is-last { border-color: var(--pc-head); }
+.gl p.gl-says { margin: 4px 0 0; font-style: italic; color: var(--pc-soft); }
+.gl-call { margin: 8px 0 0; }
+.gl-call-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+.gl-call-head .gl-sig { flex: 1 1 260px; }
+.gl button.gl-btn.gl-btn-small { padding: 3px 10px; font-size: 12px; }
+.gl-end { margin: 12px 0 0; }
+.gl code.gl-sig {
+  display: block;
+  min-width: 0;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--pc-line);
+  font: 600 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--pc-strong);
+  overflow-wrap: anywhere;
+}
+.gl pre, .gl .gl-play-out {
+  max-height: 260px;
+  margin: 6px 0 0;
+  padding: 8px 10px;
+  overflow: auto;
+  border: 1px solid var(--pc-line);
+  border-radius: 6px;
+  background: var(--pc-page);
+  font: 400 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--pc-soft);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.gl-play-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.gl select.gl-select, .gl input.gl-input {
+  min-width: 0;
+  padding: 5px 8px;
+  border: 1px solid var(--pc-line2);
+  border-radius: 6px;
+  background: var(--pc-page);
+  color: var(--pc-strong);
+  font: 500 13.5px/1.3 Karla, system-ui, sans-serif;
+}
+.gl input.gl-input { flex: 1 1 160px; }
+.gl .gl-play-out:empty { display: none; }
+
+/* The overview: one row a way. */
+.gl-way { margin: 12px 0 0; }
+.gl-way + .gl-way { padding-top: 12px; border-top: 1px solid var(--pc-line); }
+.gl p.gl-way-name { margin: 0 0 6px; color: var(--pc-soft); }
+.gl p.gl-way-name b { color: var(--pc-strong); font-size: 15.5px; }
+.gl p.gl-way-figs { margin: 2px 0 0; font-size: 13px; color: var(--pc-quiet); }
+.gl-windows .gl-mapbox { margin: 0; }
+.gl-windows .gl-mapbox > .gl-label { display: none; }
+.gl-windows .gl-map { height: 34px; }
+
+@media (max-width: 640px) {
+  .gl { padding: 12px; }
+  .gl ol.gl-hits li.gl-hit { grid-template-columns: 60px minmax(0, 1fr); }
+  .gl-map { height: 20px; gap: 1px; }
+}

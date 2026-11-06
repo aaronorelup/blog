@@ -265,7 +265,10 @@ streams the same two films.
 | A view button switches every cell, and every matrix with the same views | `views`, button `click`, document `ao-matrix-view` | matrix-2 |
 | Hidden views never open in the viewer | `.ao-matrix-off` | matrix-3 |
 
-### `ao-demo`: claude-text-watermark (`synthid`), who-visits-a-new-website (`cf`)
+### `ao-demo`: claude-text-watermark (`synthid`), who-visits-a-new-website (`cf`), three-ways-to-search-my-blog (`goobie-lab`)
+
+`goobie-lab`'s post (AO-078) is a draft, so the build has no page of it: until it's out, `demo.spec.mjs` mounts the
+parts into the first built page with an `<ao-demo>`, with the demo's own stylesheet, as the post's article would.
 
 | Behaviour | Listener or attribute | Spec |
 |---|---|---|
@@ -276,6 +279,12 @@ streams the same two films.
 | synthid `book`: pointing at the chart reads it out | svg `pointermove` `pointerleave` | demo-synthid-5 |
 | cf `you`: asks `/cdn-cgi/trace` and lays out the visit; the address is masked until shown | Show `click`, show/hide `click` | demo-cf-1 |
 | cf `count`: shows the live count; an automated browser isn't counted (asserted on the status line only) | `data-slug`, `visibilitychange`, Try again | demo-cf-2 |
+| goobie-lab `windows`: the three ways, each with its map; in-context's shades every post, RAG's a few | `part` | demo-lab-1 |
+| goobie-lab `context`: another question redraws the figures and the answer; past the window the growth slider says it no longer fits | question `click`, range `input` | demo-lab-2 |
+| goobie-lab `rag`: the k slider moves the cut through the chunks and the window's tokens; a chunk opens | range `input`, `details` | demo-lab-3 |
+| goobie-lab `agent`: Next, Back and Show every turn step through the turns; the answer and grade come at the last | button `click` | demo-lab-4 |
+| goobie-lab `agent`: a recorded call runs again live on the site's files and says whether it matches | Run this call live `click` | demo-lab-5 |
+| goobie-lab `agent`: the playground searches the reader's own words live, as plain text; cites link to their passages | form `submit` | demo-lab-6 |
 
 ## Standalone pages (`standalone.spec.mjs`, `elements/game.spec.mjs`)
 
