@@ -36,6 +36,8 @@ function seed() {
   put('src/content/posts/teardown-lab.md', broken({ id: 'AO-073' }));
   put('src/content/posts/control.md', broken({ id: 'AO-999', topic: 'agents' }));
   put('src/content/posts/hidden.md', '---\nid: "AO-998"\ntitle: "Hidden"\nsummary: "s"\ndate: 2026-11-01\nunlisted: true\n---\n');
+  // Two drafts that took the same id on two branches, now in one checkout.
+  for (const twin of ['twin-a', 'twin-b']) put(`src/content/posts/${twin}.md`, `---\nid: "AO-997"\ntitle: "${twin}"\nsummary: "s"\ndate: 2026-11-01\ndraft: true\n---\n`);
   put('src/content/notes/control.md', '---\npost: "someone-else"\ntitle: "t"\nsummary: "s"\n---\n');
   put('src/components/Seeded.astro', '<div style="color:red"></div>\n');
   put('src/lib/long.js', 'export const x = 1;\n'.repeat(401));
@@ -43,6 +45,9 @@ function seed() {
   put('src/data/media-manifest.json', '{}');
   put('src/data/never-publish.json', JSON.stringify([hash('Zorblax')]));
   put('public/_redirects', '');
+  // A demo's recorded runs: a never-publish term at the start of a line of an answer, an unlisted post in its map.
+  put('src/elements/ao-demo/demos/seeded/runs/run.json', `${JSON.stringify({ posts: [[998, 'hidden', 'Hidden']],
+    answer: 'First line.\nZorblax at a line start.' })}\n`);
   return root;
 }
 
@@ -69,6 +74,20 @@ test('the same breakage elsewhere fails each rule at its level', () => {
     assert.deepEqual(rulesFailing(true, file), new Set(), file);
     assert.equal(rulesFailing(false, file).size, 1, file);
   }
+});
+
+test("a demo's recorded runs fail the deploy on a never-publish term, even after a line break, and an unlisted post", () => {
+  const file = 'src/elements/ao-demo/demos/seeded/runs/run.json';
+  assert.deepEqual(rulesFailing(true, file), new Set(['never-publish', 'links']));
+  assert.deepEqual(runChecks({ root, deploy: true }).filter((i) => i.rule === 'links' && i.file === file).map((i) => i.message),
+    ['"hidden" is unlisted: a demo\'s recorded runs never name it (record them again)']);
+});
+
+test('two posts with the same id each fail the deploy, naming the other', () => {
+  const twins = runChecks({ root, deploy: true }).filter((i) => i.rule === 'frontmatter' && i.message.startsWith('id: AO-997 is also'));
+  assert.deepEqual(twins.map((i) => [i.file, i.line, i.severity, i.message.slice(0, 26)]).sort(), [
+    ['src/content/posts/twin-a.md', 2, 'error', "id: AO-997 is also twin-b'"],
+    ['src/content/posts/twin-b.md', 2, 'error', "id: AO-997 is also twin-a'"]]);
 });
 
 test("a fleet page's video under public/labs/teardown/ stays in git", () => {
