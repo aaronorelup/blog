@@ -1,20 +1,21 @@
 ---
-// /ledger/<slug>/: every post that isn't a draft. An unlisted one is built with noindex and no share card.
+// /ledger/<slug>/: every post that isn't a draft. An unlisted one is built with noindex and no share card. Under
+// `astro dev` only, a draft is served at its URL too, for a look before Aaron's OK: noindex, no share card, in no list.
 import { allPosts, slugOf } from '../../lib/content.js';
 import { ogImage } from '../../lib/og/image.js';
 import PanelPage from '../../layouts/PanelPage.astro';
 import PostView from '../../components/post/PostView.astro';
 
 export async function getStaticPaths() {
-  return (await allPosts()).filter((post) => !post.data.draft)
+  return (await allPosts()).filter((post) => !post.data.draft || import.meta.env.DEV)
     .map((post) => ({ params: { slug: slugOf(post) }, props: { post } }));
 }
 
 const { post } = Astro.props;
-const { title, summary, date, unlisted } = post.data;
-const image = unlisted ? undefined : (await ogImage(post)).path;
+const { title, summary, date, unlisted, draft } = post.data;
+const image = unlisted || draft ? undefined : (await ogImage(post)).path;
 ---
-<PanelPage title={`${title} · Aaron Orelup`} description={summary} active="ledger" noindex={unlisted} image={image}
+<PanelPage title={`${title} · Aaron Orelup`} description={summary} active="ledger" noindex={unlisted || draft} image={image}
   published={date}>
   <PostView post={post} />
 </PanelPage>
