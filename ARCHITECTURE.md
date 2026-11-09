@@ -22,7 +22,7 @@ modules and custom elements.
 | `src/scripts/`, `src/elements/` | the browser |
 | `src/lib/` | pure functions at build time: no DOM, no fs except `paths.js` |
 | `src/data/` | hand-kept data files, one decision each; the generated ones say who writes them |
-| `src/content/` | posts, notes and research as Markdown (`src/content/CLAUDE.md`) |
+| `src/content/` | posts, notes, research and the Now page's snapshots as Markdown (`src/content/CLAUDE.md`) |
 | `scripts/` | Node: build plugins (`build/`), checks (`check/`), media (`media/`), tools (`tools/`) |
 | `worker/` | the edge (Cloudflare Worker `blog`) |
 | `tests/` | `unit/` (node:test) and `e2e/` (Playwright) |
@@ -151,11 +151,12 @@ fails the build, or only warns in a live notebook.
 
 | Path | What |
 |---|---|
-| `src/content.config.ts`, `src/schemas/{post,preview,note,project,research}.ts` | collections and their schemas |
+| `src/content.config.ts`, `src/schemas/{post,preview,note,project,research,now}.ts` | collections and their schemas |
 | `src/schemas/strict.js` | `v2Rules()` (a topic, the title and summary caps, a listed post's verdict) and `STRICT`, the rollout switch: false, they fail `npm run check` and `npm test` and the deploy build prints them; true, they fail the deploy build too. The schema and `check/frontmatter.mjs` both read it |
 | `src/content/posts/<slug>.md` | one post. The file name is the URL slug. `id` is `AO-###` from `npm run new-post` |
 | `src/content/notes/<slug>.md` | the full making-of of a split post (`post`, `title`, `summary`) |
 | `src/content/research/` | the research collection (`/research/`) |
+| `src/content/now/<YYYY-MM-DD>.md` | one dated snapshot of the Now page (`summary`, `draft`): the file name is its date. The newest is `/now`, each one stays at `/now/<date>/`, and History lists them all. An update is a new file, never an edit (README.md, "The Now page") |
 | `src/content/projects/<name>.yaml` | one card of `/projects` (`src/schemas/project.ts`): section, state, needs, picture, links, posts; private cards link only to this site |
 | `src/data/taxonomy.js` | `TOPICS`, `PROJECTS`: the only place their names live |
 | `src/data/picks.js` | `START_HERE` (the ledger's five Start here posts) and `REEL` |
@@ -176,7 +177,7 @@ fails the build, or only warns in a live notebook.
 
 | Path | What |
 |---|---|
-| `src/lib/content.js` | the only importer of `astro:content`: `allPosts`, `listedPosts`, `notesBySlug`, `research`, `projects`, `renderEntry`, `textOf` (the extraction), `slugOf` |
+| `src/lib/content.js` | the only importer of `astro:content`: `allPosts`, `listedPosts`, `notesBySlug`, `research`, `projects`, `nowSnapshots` (newest first, drafts left out, names checked), `renderEntry`, `textOf` (the extraction), `slugOf` |
 | `src/lib/{posts,cards,icons,dates,paths}.js` | listing, ledger order, older/newer and `related()` (Read next: project, then topic, then date), the card shape, icons by id, UTC dates, `PUBLIC_DIR` |
 | `src/lib/glyphs.js` | the line drawings: a topic's glyph (where a post has no icon) and the search lens; Astro and the browser read it |
 | `src/lib/text/rules.js`, `hash.js` | what a reader reads (shared with the browser's read-aloud), content hashes |
@@ -189,7 +190,7 @@ fails the build, or only warns in a live notebook.
 | `src/lib/lore*.js` | the lore course's data and drawings |
 | `src/lib/projects.js` | the projects page's data: `SECTIONS`, order, state chips, needs glyphs, pictures or icons, `DERIVED` (the course's live lesson count); a card linking an unlisted post fails the build |
 | `src/pages/index.astro` + `src/layouts/Home.astro` | the homepage: the tea house scene's markup (classes from `home.css`, no inline style), `ModeToggle`, and its overlay frame (`PanelChrome` around an empty `[data-panel-host]`); `Home` links `site.css`, then `home.css` |
-| `src/pages/{ledger,projects,about,courses,stats,404}.astro`, `ledger/[slug].astro`, `ledger/[slug]/notes.astro` | the panel pages |
+| `src/pages/{ledger,projects,about,courses,stats,404}.astro`, `ledger/[slug].astro`, `ledger/[slug]/notes.astro`, `now/index.astro`, `now/[date].astro` | the panel pages |
 | `src/pages/og/[slug].jpg.js` | each listed post's share card (`src/lib/og/`) |
 | `src/pages/courses/**`, `src/pages/research/**` | the course and research pages; `research/[slug].md.js` writes each document's raw Markdown copy for agents |
 | `src/pages/search/` | `manifest.json.js`, `docs/[doc].json.js`: search's build files |
@@ -198,7 +199,7 @@ fails the build, or only warns in a live notebook.
 | `src/layouts/PanelPage.astro` | every panel page: `site.css`, `chrome/Head` (`published`: shared as an article), `ModeToggle`, `PanelChrome` (`active` lights the nav, `view` names the view), and `mountView` on its `[data-panel-view]` |
 | `src/components/chrome/` | `Head` (share tags, `ao-build` meta, font preload, the pre-paint mode script; both layouts), `PanelChrome` (header, nav, scroller, footer; `data-active-view`, and `data-panel-view` on a standalone page's view wrapper), `ModeToggle`, `Glyph` |
 | `src/components/ledger/` | `LedgerView` (`/ledger/`), `SearchBox` (the box and its Search \| Ask RAG Goobie switch, the line under it), `StartHere`, `PostCard` (icon or glyph, title, stamp: Start here's and a post's Read next), `Chips` (topic and project counts, real links `?topic=`), `LedgerRow` (icon or glyph, title link with `data-ledger-entry`, summary, meta, the stamp's `<details>` short version) |
-| `src/components/{about,courses,research}/` | `AboutView`; `CoursesView`, `LessonList`, `Coin`; `ResearchView` |
+| `src/components/{about,courses,research,now}/` | `AboutView`; `CoursesView`, `LessonList`, `Coin`; `ResearchView`; `NowView` (a snapshot, then History) |
 | `src/components/projects/` | `ProjectsView` (`/projects`), `JumpRow`, `Highlights` (the reel from `picks.js REEL` and the cards marked `highlight`), `ProjectSection`, `ProjectCard`, `NeedsGlyph` |
 | `src/components/post/` | `PostView` (the article: `data-post-article`, `data-panel-view` `post` or `notes`, `data-slug`), `PostHeader` (icon or glyph, id · date · minutes, topic and project chips, title `data-r=t`, summary `data-r=s`, the byline on `voice: claude` pages, `ReadAloud`), `ShortVersion` (`#short`, the post's card), `NotesLink`, `Contents` (4+ h2 or 900+ words), `Related` (three `ledger/PostCard`s), `PostNav`, `ElementStyles`, `ReadAloud` (the Listen button; `data-read-hash` names this version's recording, absent on a post never recorded) |
 | `src/components/lore/` | the lore course |
@@ -231,7 +232,7 @@ fails the build, or only warns in a live notebook.
 | `src/styles/home.css` | the homepage only (linked by `Home` after `site.css`): its tokens (`--home-*` pairs, `--mix`) and the day/night tween (`:root[data-tweening]` mixes every pair by `--mix`), the scene's frame, cards, rail, coin, flash, the overlay's frame, the switch's homepage look and its place in the panel's header while the panel is up (`:root[data-panel-up]`) |
 | `src/styles/post.css` | the post page (`.post-*`, `.short-*`, `.toc*`, `.notes-link`, `.rel-*`); each part carries its own width, so a copy of the article's insides lays out the same |
 | `src/styles/read-aloud.css` | the Listen button, karaoke mode's bar, `::highlight(ao-read)` |
-| `src/styles/{base,chrome,prose,about,research}.css` | page-wide rules; the frame, the view header, shared hover states; long-form text (`.pc-prose`, folded `<details>`, and the classes a post's own HTML wears instead of `style=`, WRITING.md "Media"); the text pages (`.page-*`: About, 404); a research document |
+| `src/styles/{base,chrome,prose,about,research}.css` | page-wide rules; the frame, the view header, shared hover states; long-form text (`.pc-prose`, folded `<details>`, and the classes a post's own HTML wears instead of `style=`, WRITING.md "Media"); the text pages (`.page-*`: About, Now, 404); a research document |
 | `src/styles/projects.css` | the projects page (`.proj-*`), on `--pc-*` tokens only so the overlay's tween carries it |
 | `src/styles/ledger.css` | the ledger (`.row-*`, `.chip*`, `.post-card*`, `.start-*`, `.month`, `.ledger-feed*`), on `--pc-*` tokens only |
 | `src/styles/fonts.css`, `public/fonts/` | written by `scripts/tools/fonts.mjs`: Google's own woff2 slices, self-hosted under content-hashed names |
@@ -379,6 +380,9 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   `public/media/projects/<name>.webp` (640×360), all made by `scripts/tools/preview-media.mjs --out --size --cap`
   and capped by `assets.mjs`. Pages ask `src/lib/icons.js iconFor(post)`; null (a live notebook, a new post) means
   draw the topic glyph. New icons come from the agent kit's icon recipe (`docs/MEDIA.md`).
+- **The Now page.** `src/content/now/<date>.md` → `nowSnapshots()` → `components/now/NowView.astro`: the newest at
+  `/now` (NAV `now`, so the homepage overlay opens it too) and every one at `/now/<date>/`, each page ending with
+  History, every snapshot by date. Not a post: in no list, feed, search or Ask, only the sitemap and `/stats`.
 - **The projects page.** `src/content/projects/*.yaml` → `src/lib/projects.js` → `components/projects/` at
   `/projects`, and in the homepage overlay, fetched from `/projects/`. Post links open in the overlay like every
   `/ledger/` link; a card's links to the site's own pages carry `data-no-fly`.

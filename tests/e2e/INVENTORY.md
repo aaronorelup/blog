@@ -340,7 +340,7 @@ its static rung mid-test.
 | A project's own page ("Start the course", `data-no-fly`) leaves at once from the panel, with no flight | overlay-21 |
 | Ask works again in a ledger mounted afresh: its Turnstile widget goes into the box on screen | overlay-22 |
 | A view opened just after scrolling a post opens at its top: the post keeps its place only in its own history entry | overlay-23 |
-| No view brings a second copy of the site's rules: the homepage links site.css, so opening the ledger, projects, about and a post adopts no stylesheet | overlay-24 |
+| No view brings a second copy of the site's rules: the homepage links site.css, so opening the ledger, projects, about, now and a post adopts no stylesheet | overlay-24 |
 | A view in the panel has the colours it has on its own page, by day and by night, and its focused search box looks the same | overlay-25 |
 | While the panel is up the day/night switch sits in its header, clear of the card's corner and the nav, and still switches; it goes back on close | overlay-26 |
 | On a phone the panel's footer is two short lines (under a tenth of the window), every link kept | overlay-27 (phone) |
@@ -370,6 +370,7 @@ its static rung mid-test.
 | The doorway's sort counts each pile up as its dots land, every frame, in its own text node: over the whole sort (watched from the page's first script, since the sort can start as the page loads) the pile buttons never have a node replaced (listen-5), and their figures change | pages-6 |
 | A range change rolls the lede's figures (`tweenNumber`, every frame for 450 ms) in their own text nodes: watched from before the range is picked to the roll's end, the provenance buttons around them never have a node replaced (listen-5), and the figures change | pages-7 |
 | A link to a heading lands on it, and a search result's passage is in view, though the components above it draw after the load event (`scripts/views/post.js`) | pages-5 |
+| `/now` shows the newest snapshot of `src/content/now/`, lit in the nav; its History links every snapshot by date, newest first; each `/now/<date>/` shows that snapshot, marks its own row unlinked and points back to `/now` | pages-8 |
 
 ## The post page (`post.spec.mjs`)
 

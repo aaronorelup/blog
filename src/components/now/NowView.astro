@@ -1,0 +1,32 @@
+---
+// The Now page: one dated snapshot's text as prose (src/content/now/), then History, every snapshot by date, newest
+// first. On /now (the newest, also in the homepage overlay) and on /now/<date>/ (dated: that one). The text page's
+// classes (about.css), so it reads like About. A dated link carries data-no-fly: the overlay doesn't open it.
+import { renderEntry } from '../../lib/content.js';
+import { shortDate } from '../../lib/dates.js';
+
+const { snap, snaps, dated = false } = Astro.props;
+const Content = snap && (await renderEntry(snap)).Content;
+const day = (s) => shortDate(new Date(s.id));
+---
+
+<div class="page">
+  <p class="page-kicker">{snap ? `${dated ? 'Snapshot of' : 'Updated'} ${day(snap)}` : 'Nothing filed yet'}</p>
+  <h1 class="page-title">Now + Setup</h1>
+  <p class="page-lede">
+    {dated
+      ? <>One dated snapshot of this page. The current one is always at <a href="/now">/now</a>.</>
+      : "What I'm working on and the setup I do it with. Every update is dated, and the old ones stay below."}
+  </p>
+  <div class="page-rule"></div>
+
+  <div class="pc-prose">
+    {Content && <Content />}
+    <h2 id="now-history">History</h2>
+    <ul>
+      {snaps.map((s) => (dated && s.id === snap.id
+        ? <li aria-current="page"><strong>{day(s)}</strong>: {s.data.summary}</li>
+        : <li><a href={`/now/${s.id}/`} data-no-fly>{day(s)}</a>: {s.data.summary}</li>))}
+    </ul>
+  </div>
+</div>

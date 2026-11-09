@@ -7,6 +7,7 @@ export const NAV = [
   { key: 'courses', href: '/courses', label: 'Courses', overlay: true },
   { key: 'projects', href: '/projects', label: 'Projects', overlay: true },
   { key: 'about', href: '/about', label: 'About', overlay: true },
+  { key: 'now', href: '/now', label: 'Now', overlay: true },
 ];
 
 export const SOCIAL = [

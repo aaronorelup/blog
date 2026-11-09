@@ -1,6 +1,6 @@
 // Contract files and the pages built from them: RSS guids and /version.json's shape, /stats drawn from /api/stats
-// (mocked: 200 from fixtures/stats-200.json, 503 not-connected), and where a link into a post lands. INVENTORY rows
-// pages-*.
+// (mocked: 200 from fixtures/stats-200.json, 503 not-connected), where a link into a post lands, and the Now page's
+// dated snapshots. INVENTORY rows pages-*.
 import { test, expect } from './fixtures.mjs';
 import { allDefined, pagesWhere, watchContent } from './helpers.mjs';
 
@@ -121,4 +121,43 @@ test('pages-5 a link lands on its heading, or its passage, once the components a
     const s = document.getElementById('panel-scroll').getBoundingClientRect();
     return r.top >= s.top && r.bottom <= s.bottom;
   })).toBe(true);
+});
+
+// The Now page: /now is the newest snapshot of src/content/now/, its History links every snapshot by date, newest
+// first, and each dated page shows that snapshot, marks its own row and points back to /now.
+test('pages-8 /now shows the newest snapshot, and its History opens every dated one', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  // The snapshot's own text: the prose before History.
+  const snapshot = () => page.locator('.pc-prose').evaluate((prose) => {
+    const parts = [];
+    for (const el of prose.children) { if (el.id === 'now-history') break; parts.push(el.textContent.trim()); }
+    return parts.join('\n');
+  });
+  const rows = page.locator('#now-history + ul > li');
+
+  await page.goto('/now');
+  await expect(page.locator('#panel-inner')).toHaveAttribute('data-active-view', 'now');
+  await expect(page.locator('.page-title')).toHaveText('Now + Setup');
+  const current = await snapshot();
+  expect(current.length).toBeGreaterThan(0);
+  const links = rows.locator('a');
+  const hrefs = await links.evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+  expect(hrefs.length).toBeGreaterThan(0);
+  await expect(rows).toHaveCount(hrefs.length);
+  for (const href of hrefs) expect(href).toMatch(/^\/now\/\d{4}-\d\d-\d\d\/$/);
+  expect(hrefs).toEqual([...new Set(hrefs)].sort().reverse());
+  await expect(page.locator('.page-kicker')).toHaveText(`Updated ${await links.first().textContent()}`);
+
+  for (const [i, href] of hrefs.entries()) {
+    await page.goto(href);
+    const own = page.locator('#now-history + ul > li[aria-current="page"]');
+    await expect(own).toHaveCount(1);
+    await expect(own.locator('a')).toHaveCount(0);
+    await expect(rows.locator('a')).toHaveCount(hrefs.length - 1);
+    await expect(page.locator('.page-kicker')).toHaveText(`Snapshot of ${await own.locator('strong').textContent()}`);
+    await expect(page.locator('.page-lede a[href="/now"]')).toBeVisible();
+    if (i === 0) expect(await snapshot()).toBe(current);
+  }
+  expect(errors).toEqual([]);
 });

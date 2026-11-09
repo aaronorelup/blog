@@ -1,5 +1,6 @@
-// The checker never fails on a live notebook, at either level, while the same breakage in any other file fails at
-// the rule's level; and a fleet-style page with an mp4 under public/labs/teardown/ passes the media guard.
+// The checker never fails on a live notebook, at either level, while the same breakage in any other file (a post, a
+// notes page, a Now snapshot, code) fails at the rule's level; and a fleet-style page with an mp4 under
+// public/labs/teardown/ passes the media guard.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -37,6 +38,7 @@ function seed() {
   put('src/content/posts/control.md', broken({ id: 'AO-999', topic: 'agents' }));
   put('src/content/posts/hidden.md', '---\nid: "AO-998"\ntitle: "Hidden"\nsummary: "s"\ndate: 2026-11-01\nunlisted: true\n---\n');
   put('src/content/notes/control.md', '---\npost: "someone-else"\ntitle: "t"\nsummary: "s"\n---\n');
+  put('src/content/now/2026-11-01.md', '---\nsummary: "s"\n---\n\nZorblax, and [this](/ledger/hidden/).\n');
   put('src/components/Seeded.astro', '<div style="color:red"></div>\n');
   put('src/lib/long.js', 'export const x = 1;\n'.repeat(401));
   put('src/elements/ao-seeded/element.js', '');
@@ -65,6 +67,8 @@ test('the same breakage elsewhere fails each rule at its level', () => {
     new Set(['never-publish', 'links', 'assets', ...(STRICT ? ['frontmatter'] : [])]));
   assert.deepEqual(rulesFailing(false, 'src/content/posts/control.md'), new Set(['never-publish', 'links', 'assets', 'prose', 'frontmatter']));
   assert.deepEqual(rulesFailing(true, 'src/content/notes/control.md'), new Set(['frontmatter']));
+  // The Now page is public too: its snapshots are read for never-publish terms and links to unlisted posts.
+  assert.deepEqual(rulesFailing(true, 'src/content/now/2026-11-01.md'), new Set(['never-publish', 'links']));
   for (const file of ['src/components/Seeded.astro', 'src/lib/long.js', 'src/elements/ao-seeded']) {
     assert.deepEqual(rulesFailing(true, file), new Set(), file);
     assert.equal(rulesFailing(false, file).size, 1, file);

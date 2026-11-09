@@ -2,7 +2,7 @@
 // guessing. Before 2026-10-17 there was none and the request 404'd (38 times in 30 days, by the
 // analytics in AO-057). Listed posts and their notes only (isListed): an unlisted post carries noindex
 // and must not be handed to a crawler here any more than it appears in a list.
-import { listedPosts, notesBySlug, research, slugOf } from '../lib/content.js';
+import { listedPosts, notesBySlug, nowSnapshots, research, slugOf } from '../lib/content.js';
 import { ledgerOrder } from '../lib/posts.js';
 import { isoDay } from '../lib/dates.js';
 import lore from '../data/lore/lore.json';
@@ -22,9 +22,12 @@ export async function GET(context) {
   const posts = ledgerOrder(await listedPosts());
   const notes = await notesBySlug();
   const newest = posts.length ? isoDay(posts[0].data.date) : null;
+  const snaps = await nowSnapshots();   // newest first; a snapshot's id is its date
 
   const urls = [
     ...PAGES.map((p) => ({ loc: p, lastmod: p === '/' || p === '/ledger/' ? newest : null })),
+    ...(snaps.length ? [{ loc: '/now/', lastmod: snaps[0].id }] : []),
+    ...snaps.map((s) => ({ loc: `/now/${s.id}/`, lastmod: s.id })),
     ...(await research()).map((doc) => ({ loc: `/research/${slugOf(doc)}/`, lastmod: null })),
     ...posts.flatMap((post) => {
       const page = { loc: `/ledger/${slugOf(post)}/`, lastmod: isoDay(post.data.date) };

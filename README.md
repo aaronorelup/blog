@@ -43,6 +43,13 @@ curl -s https://aaronorelup.com/version.json
 If it shows another branch or an older commit, the deploy went wrong. After a change to the Worker or to media,
 `npm run media:verify` checks that every file in R2 is served whole and seekable.
 
+## The Now page
+
+`/now` ("Now + Setup") shows the newest file in `src/content/now/`. Every file stays readable at `/now/<date>/`,
+and the page's History lists them all by date. To update it, copy the newest file to
+`src/content/now/YYYY-MM-DD.md` (today's date), rewrite it and its one-line `summary`, and push. Leave the old files
+as they are: they are the history. A snapshot an agent writes keeps `draft: true` until Aaron OKs it, as a post does.
+
 ## Post URLs
 
 Posts live at `/ledger/<slug>/`. They used to live at `/posts/<slug>/`; `public/_redirects` sends the old paths on

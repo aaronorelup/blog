@@ -28,17 +28,18 @@
 .pc-navs, .pc-navs-o { display: flex; gap: 22px; font-size: 13.5px; }
 /* The fixed day/night switch sits over the nav's right end: the overlay always pads for it, a standalone page only
    while the 1140px row is wider than the window. On a phone the nav wraps under "Back to the tea house", clear of
-   the switch. */
+   the switch, and on the narrowest (320px) its last links wrap onto a second line rather than off the edge. */
 .pc-navs-o { padding-right: 88px; }
 @media (max-width: 1380px) { .pc-navs { padding-right: 88px; } }
-@media (max-width: 480px) { .pc-navs, .pc-navs-o { padding-right: 0; gap: 16px; } }
+@media (max-width: 480px) { .pc-navs, .pc-navs-o { padding-right: 0; gap: 6px 16px; flex-wrap: wrap; } }
 .pc-nav { color: var(--pc-quiet); text-decoration: none; }
 /* The lit item is the panel's data-active-view (src/data/site.js NAV keys). */
 [data-active-view='stats'] .pc-nav[data-nav='stats'],
 [data-active-view='ledger'] .pc-nav[data-nav='ledger'],
 [data-active-view='courses'] .pc-nav[data-nav='courses'],
 [data-active-view='projects'] .pc-nav[data-nav='projects'],
-[data-active-view='about'] .pc-nav[data-nav='about'] { color: var(--pc-head); }
+[data-active-view='about'] .pc-nav[data-nav='about'],
+[data-active-view='now'] .pc-nav[data-nav='now'] { color: var(--pc-head); }
 
 .pc-scroll {
   flex: 1; min-height: 0; display: flex; justify-content: center; padding: 34px clamp(18px, 4vw, 44px) 0;

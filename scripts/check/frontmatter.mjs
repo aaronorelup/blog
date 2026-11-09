@@ -11,7 +11,7 @@ import { keyLine } from './text.mjs';
 const V1_FIELDS = ['series', 'status', 'tags'];
 
 export default function frontmatter(repo, report) {
-  for (const e of [...repo.posts, ...repo.notes]) {
+  for (const e of [...repo.posts, ...repo.notes, ...repo.now]) {
     if (e.yamlError) report(e.file, e.yamlError.mark.line + 2, `the frontmatter isn't valid YAML: ${e.yamlError.reason}`, 'deploy');
   }
   for (const e of repo.projects) {

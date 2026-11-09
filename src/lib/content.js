@@ -2,6 +2,7 @@
 // sorted by slug, because Astro returns them in no fixed order. entry.id is the file name: the URL slug.
 import { getCollection, render } from 'astro:content';
 import { isListed } from './posts.js';
+import { isoDay } from './dates.js';
 
 const bySlug = (a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 const sorted = async (name) => (await getCollection(name)).sort(bySlug);
@@ -18,6 +19,19 @@ export const allPosts = () => sorted('posts');                    // drafts incl
 export const listedPosts = async () => (await allPosts()).filter((p) => isListed(p.data));
 export const research = () => sorted('research');
 export const projects = () => sorted('projects');
+
+// The Now page's snapshots, newest first, drafts left out. A file is named by its date, YYYY-MM-DD, which is also
+// its address /now/<date>/; the newest is /now itself.
+export async function nowSnapshots() {
+  const snaps = (await sorted('now')).filter((s) => !s.data.draft);
+  for (const s of snaps) {
+    const day = new Date(s.id);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(s.id) || Number.isNaN(day.getTime()) || isoDay(day) !== s.id) {
+      throw new Error(`src/content/now/${s.id}.md: name a snapshot by its date, YYYY-MM-DD`);
+    }
+  }
+  return snaps.reverse();
+}
 
 // Notes by their post's slug. A note's file name is its post's slug, and the post must build.
 export async function notesBySlug() {

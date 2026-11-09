@@ -1,5 +1,5 @@
-/* The plain text pages: About (components/about/AboutView.astro, also in the homepage overlay) and the 404 page.
-   Their header is .page-*; their text is .pc-prose (prose.css). */
+/* The plain text pages: About (components/about/AboutView.astro) and Now (components/now/NowView.astro), both also
+   in the homepage overlay, and the 404 page. Their header is .page-*; their text is .pc-prose (prose.css). */
 .page { width: 100%; max-width: 760px; padding-bottom: var(--space-8); }
 .page-kicker {
   margin: 0 0 10px; font-size: var(--text-sm); letter-spacing: 0.08em; text-transform: uppercase; color: var(--pc-quiet);
@@ -12,6 +12,7 @@
   margin: 0 0 34px; font-family: var(--font-serif); font-size: var(--text-lg); line-height: 1.55; color: var(--pc-soft);
   max-width: 620px; text-wrap: pretty;
 }
+.page-lede a { color: var(--pc-accent); text-decoration: underline; text-underline-offset: 2px; }
 .page-rule { height: 1px; background: var(--pc-line); margin: 0 0 30px; }
 /* In the homepage overlay, Home.astro's own a:hover must not recolour these links (it never has). */
 .page a:hover { color: var(--pc-accent); }
