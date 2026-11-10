@@ -427,6 +427,20 @@ clicks Ask waits for `[data-search][data-ready]` first (the box's module has mou
 | The line under the box says how many posts RAG Goobie reads, in Ask only | search-24 |
 | On a 360 px Android phone (Chromium) a cite that ends a line flush makes no sideways scroll (its 44 px box stays inside the panel's padding) | search-25 (desktop project, Android profile) |
 
+## Ask by voice (`voice.spec.mjs`)
+
+`/api/ask/hear` answers from `fixtures/api.json` (`hear-200`, `hear-empty`, `hear-429`); the desktop project launches
+Chromium with a fake microphone (`--use-fake-ui-for-media-stream --use-fake-device-for-media-stream`), so the
+recording specs run on desktop only (WebKit has no fake device).
+
+| Behaviour | Spec |
+|---|---|
+| The microphone is hidden in Search and shows once Ask opens with `voice: true`; `hear.js` loads only on its first press; recording it is `aria-pressed`, labelled "Stop recording", counts the seconds and shows the line that the audio is thrown away; a second press sends one `POST /api/ask/hear` (`audio/webm`, the Ask token, the recording) and the text heard goes in the box and is asked through one `POST /api/ask` with it as `q`; back in Search the microphone goes | voice-1 (desktop) |
+| A recording stops on its own at 30 s (`page.clock`) and is sent | voice-2 (desktop) |
+| An empty transcript says "RAG Goobie didn’t catch that" and a `429` says it is busy; nothing is asked and the microphone works again | voice-3 (desktop) |
+| No microphone where the browser has no `MediaRecorder` | voice-4 |
+| `{ voice: false }` leaves Ask typed only, with no microphone | voice-5 |
+
 Ask against the real Worker runs under `npx wrangler dev` in the eval (docs/ASK.md, "The eval"): the real Worker,
 a real mint with the test secret and real DeepSeek answers, never from the e2e suite.
 

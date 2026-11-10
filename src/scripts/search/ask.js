@@ -2,7 +2,8 @@
 // off, Turnstile never loads. When it is on, Turnstile (explicit, interaction-only, action ask) solves once, and POST
 // /api/session turns the solve into a 30-minute Ask token, kept in sessionStorage. Asking sends POST /api/ask { q }
 // with the token in X-AO-Session, one question at a time, no retry, and draws the answer's stream as it comes: the
-// steps (ask-trace.js), then the words typing in and the final answer (ask-answer.js), always as text.
+// steps (ask-trace.js), then the words typing in and the final answer (ask-answer.js), always as text. voice() says
+// whether the microphone shows (hear.js records and sends, with token()).
 import { TURNSTILE_SITE_KEY, TURNSTILE_TEST_SITE_KEY } from '../../data/public-keys.js';
 import { load } from '../cards/data.js';
 import { answer, SAY, say } from './ask-answer.js';
@@ -25,13 +26,27 @@ let asking = false;
 const kept = () => JSON.parse(sessionStorage.getItem(KEPT) || 'null');
 const fresh = (s) => !!s && s.exp - MARGIN > Date.now();
 
+let voiced = false;       // GET /api/session's voice: Ask by voice is switched on
+
 // Whether Ask is on. When it is, the widget starts its solve now, so a token is ready by the first question.
 export async function open(ui) {
   const r = await fetch('/api/session').catch(() => null);
-  const on = !!(r?.ok && (await r.json()).ask);
+  const flags = r?.ok ? await r.json() : {};
+  const on = !!flags.ask;
+  voiced = on && !!flags.voice;
   if (on && !fresh(kept())) solve(ui);
   return on;
 }
+// Whether the microphone shows: Ask by voice is on and this browser can record.
+export const voice = () => voiced && !!navigator.mediaDevices?.getUserMedia && typeof MediaRecorder === 'function';
+
+// An Ask token: the one kept while it is fresh, else a new solve's (null when it fails).
+export async function token(ui) {
+  const s = kept();
+  return fresh(s) ? s.token : solve(ui);
+}
+// A token the Worker refused (401) is forgotten, so the next request solves again.
+export const forget = () => sessionStorage.removeItem(KEPT);
 
 function loadTurnstile() {
   turnstile ??= new Promise((resolve, reject) => {
@@ -89,15 +104,14 @@ export async function ask(ui, q, draw) {
   ui.go.disabled = true;
   ui.form.classList.add('is-thinking');
   try {
-    const s = kept();
-    const token = fresh(s) ? s.token : await solve(ui);
-    if (!token) return draw(say(SAY.unsolved));
+    const t = await token(ui);
+    if (!t) return draw(say(SAY.unsolved));
     const r = await fetch('/api/ask', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-AO-Session': token },
+      headers: { 'Content-Type': 'application/json', 'X-AO-Session': t },
       body: JSON.stringify({ q }),
     });
-    if (r.status === 401) sessionStorage.removeItem(KEPT);
+    if (r.status === 401) forget();
     if (!r.ok) return draw(say(r.status === 401 ? SAY.expired : r.status === 429 ? SAY.busy : SAY.down));
     await streamed(r.body, q, draw);
   } catch {

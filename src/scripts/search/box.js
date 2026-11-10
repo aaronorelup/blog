@@ -1,9 +1,9 @@
 // The ledger's search box (components/ledger/SearchBox.astro). Search: the words half (Pagefind) as the reader
 // types and the meaning half (/api/search) after 400 ms of quiet or on Enter, merged into one list. Nothing loads
 // before the box is first focused, and search needs no session. Ask RAG Goobie loads ask.js only once it is opened,
-// keeps the box's text, selected, and cycles example questions in the empty box. Text typed before this module ran
-// is searched when it mounts; data-ready on the form says it has. "/" focuses the box unless something else takes
-// typing. mount(root) returns unmount.
+// keeps the box's text, selected, and cycles example questions in the empty box; its microphone loads hear.js on the
+// first press. Text typed before this module ran is searched when it mounts; data-ready on the form says it has. "/"
+// focuses the box unless something else takes typing. mount(root) returns unmount.
 import { CYCLE_MS } from '../../data/ask.js';
 import { load as loadCards } from '../cards/data.js';
 import { lazy } from '../lazy.js';
@@ -25,7 +25,7 @@ export function mount(root) {
   const q$ = (s) => form.querySelector(s);
   const ui = { form, input: q$('.search-input'), go: q$('.search-go'), lens: q$('.search-lens'), goobie: q$('.search-goobie'),
     modes: q$('.search-modes'), note: q$('[data-search-note]'), turnstile: q$('[data-turnstile]'), out: q$('[data-search-out]'),
-    line: q$('[data-ask-line]') };
+    line: q$('[data-ask-line]'), mic: q$('[data-mic]'), micTime: q$('[data-mic-time]'), voiceLine: q$('[data-voice-line]') };
   const cycle = examples(ui.input, PLACEHOLDER.ask, CYCLE_MS);
   let mode = 'search';
   let q = '';
@@ -33,6 +33,7 @@ export function mount(root) {
   let meaning = { q: null, hits: [] };
   let quietT = 0;
   let ask = null;
+  let hear = null;          // hear.js, loaded on the microphone's first press
   // The list on screen: its query, its <ol> and the pages in it.
   let shown = { q: null, list: null, paths: new Set() };
 
@@ -76,12 +77,20 @@ export function mount(root) {
     quietT = setTimeout(() => askMeaning(text), QUIET);
     keyword.search(text, (hits, done) => { if (text === q) { words = { q: text, hits, done }; render(); } });
   };
+  // The answer is drawn only while Ask is still open.
+  const draw = (node) => { if (mode === 'ask') ui.out.replaceChildren(node); };
   const onSubmit = (e) => {
     e.preventDefault();
     const text = ui.input.value.trim();
     if (mode !== 'ask') return askMeaning(text);
-    // The answer is drawn only while Ask is still open.
-    if (text.length >= MIN) ask.ask(ui, text, (node) => { if (mode === 'ask') ui.out.replaceChildren(node); });
+    if (text.length >= MIN) ask.ask(ui, text, draw);
+  };
+  // Ask by voice: what was heard goes in the box and is asked as if typed.
+  const onMic = async () => {
+    hear ??= await lazy(() => import('./hear.js'));
+    if (mode !== 'ask') return;
+    hear.toggle(ui, { token: () => ask.token(ui), forget: ask.forget, draw,
+      heard: (text) => { if (mode !== 'ask') return; ui.input.value = text; ask.ask(ui, text, draw); } });
   };
 
   const setMode = (next) => {
@@ -92,6 +101,8 @@ export function mount(root) {
     ui.goobie.hidden = mode !== 'ask';
     ui.go.hidden = mode !== 'ask';
     ui.line.hidden = mode !== 'ask';
+    ui.mic.hidden = mode !== 'ask' || !ask?.voice();
+    if (mode !== 'ask') hear?.cancel();
     cycle.stop();
     ui.input.placeholder = PLACEHOLDER[mode];
     ui.input.setAttribute('aria-label', PLACEHOLDER[mode]);
@@ -128,6 +139,7 @@ export function mount(root) {
   ui.input.addEventListener('focus', onFocus, { once: true });
   form.addEventListener('submit', onSubmit);
   ui.modes.addEventListener('click', onMode);
+  ui.mic.addEventListener('click', onMic);
   document.addEventListener('keydown', onSlash);
   // What was typed (or focused) before this module ran is acted on now.
   if (document.activeElement === ui.input) onFocus();
@@ -135,11 +147,13 @@ export function mount(root) {
   form.dataset.ready = '';
   return () => {
     cycle.stop();
+    hear?.cancel();
     delete form.dataset.ready;
     ui.input.removeEventListener('input', onInput);
     ui.input.removeEventListener('focus', onFocus);
     form.removeEventListener('submit', onSubmit);
     ui.modes.removeEventListener('click', onMode);
+    ui.mic.removeEventListener('click', onMic);
     document.removeEventListener('keydown', onSlash);
   };
 }

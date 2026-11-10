@@ -60,7 +60,22 @@ full · 283k tokens, 99.9% from cache · 5.2 s · $0.0011"), `ask-answer.js` (th
 frame and patched in place, so a cite drawn stays the same link under a press, then the answer, numbered by post as
 T2.2c made it; `ask.js` puts the answer in around that same paragraph, never taking it out of the page, so a cite
 pressed as the answer comes stays the same link; the step list above it goes then, moving the paragraph up once),
-`examples.js` (the placeholder's example questions).
+`examples.js` (the placeholder's example questions), `hear.js` (Ask by voice, below).
+
+**Ask by voice** (`POST /api/ask/hear`, `worker/ask/hear.js`; `src/scripts/search/hear.js`). With `GET /api/session`'s
+`voice: true` (the `ask_voice` flag, default on, and Ask itself on) and a browser with `getUserMedia` and
+`MediaRecorder`, a microphone shows beside the Ask box. Its first press loads `hear.js`; a press records (Chrome and
+Firefox give `audio/webm` or `audio/ogg` with opus at 32 kbit/s, Safari `audio/mp4`), showing the seconds and the line
+"Your recording is turned into text, then thrown away. 30 seconds at most."; a second press, or 30 s, stops it and
+sends it once, with the Ask token, to `/api/ask/hear`. The Worker checks origin, type, size (1 MB), token, the
+switches, `HEAR_LIMIT` (6 a minute a session) and `HEAR_ALL` (30 a minute) and the day's cap (`hear_daily`, 1,000
+calls), then calls Workers AI's `@cf/openai/whisper-large-v3-turbo` once (`task: 'transcribe', language: 'en',
+vad_filter: true`, 20 s, no retry) and answers `{ text }`. The page puts the text in the box and asks it through
+`/api/ask` exactly as if it had been typed; the pipeline above never knows. The audio and the text are never stored
+or logged (the question then goes through `/api/ask`'s usual anonymous count, like a typed one); `usage_day` counts
+`hear` calls. Measured 2026-11-10 against the real binding under `wrangler dev`: webm/opus, mp4 (whole and
+fragmented, as Safari writes it) and ogg/opus all transcribe, a 4 s question in 0.8 to 3.2 s; Whisper costs
+$0.000513 an audio minute, so the default cap is at most about $0.26 a day.
 
 ## The prompt, and why its order
 
