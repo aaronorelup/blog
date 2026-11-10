@@ -43,11 +43,11 @@ What ran here (sections below, in this order), with the runs that hold the timin
 
 | tool | version | what it gave | runs |
 |---|---|---|---|
-| aubio | 0.4.9 (Ubuntu) | beats, tempo | r0200 (`--nolock`) |
-| Chordino / NNLS Chroma / NNLS Tuning | chord-extractor 0.1.3 + vamp 1.1.0 | chords, tuning (Hz) | r0198 install, r0215 (`--nolock`) |
+| aubio | 0.4.9 (Ubuntu) | beats, tempo | r0200, R3 clips r0348 (`--nolock`) |
+| Chordino / NNLS Chroma / NNLS Tuning | chord-extractor 0.1.3 + vamp 1.1.0 | chords, tuning (Hz) | r0198 install, r0215, R3 clips r0347 (`--nolock`) |
 | madmom | 0.16.1 (PyPI) on Python 3.9 | beats, downbeats, tempo, chords (2 recognisers), key | r0047 install; r0063 r0072 r0073 r0100 r0102 r0140 r0316 (2 cores) |
-| librosa | 1.0.0 | beats, tempo, tuning; plus a lane-written chroma + Krumhansl-Kessler key baseline | r0069 r0074 r0081 r0091-r0094 r0096 r0104 (2 cores), r0267 (`--nolock`) |
-| Essentia | essentia-tensorflow 2.1b6.dev1389 | beats, tempo (RhythmExtractor2013, TempoCNN), key (5 profiles), tuning, chords | r0088 r0097 r0148 (2 cores), r0267 r0324 (`--nolock`) |
+| librosa | 1.0.0 | beats, tempo, tuning; plus a lane-written chroma + Krumhansl-Kessler key baseline | r0069 r0074 r0081 r0091-r0094 r0096 r0104 (2 cores), r0267, R3 clips r0347 (`--nolock`) |
+| Essentia | essentia-tensorflow 2.1b6.dev1389 | beats, tempo (RhythmExtractor2013, TempoCNN), key (5 profiles), tuning, chords | r0088 r0097 r0148 (2 cores), r0267 r0324, R3 clips r0347 (`--nolock`) |
 | music21 | 10.5.2 | key from MIDI (truth MIDI and the audio-to-notes lane's Basic Pitch MIDI) | r0237 (`--nolock`) |
 | autochord | 0.1.4 | chords | r0337 (2 cores) |
 | CREMA | 0.2.0 | chords (JAMS, with confidence) | r0337 (2 cores) |
@@ -314,6 +314,10 @@ section.
   R2 and R2full 143.555. Tuning (cents): S3 +1, S7flat30 -31, R1a +13, R2 +1, R2full +13. Key baseline: R2 and R2full
   Eb minor (the artist's page, quoted in INPUTS.md, says D# minor). S7flat30 top three correlations: G major 0.831,
   B minor 0.735, E minor 0.722.
+- `pitch_tuning` was not run as a separate step: in librosa 1.0.0, `estimate_tuning` runs `piptrack` and returns
+  `pitch_tuning(pitch[(mag >= threshold) & pitch_mask], resolution, bins_per_octave)`, with the threshold the median
+  magnitude of the bins that have a pitch (`librosa/core/pitch.py` of the 1.0.0 wheel, read in the shared uv cache), so the tuning
+  numbers below are `pitch_tuning` applied to `piptrack` peaks.
 - Constraint inputs: `beat_track(bpm=...)` (fixes the tempo; "If provided, start_bpm will be ignored", per the
   docstring quoted in survey.md), `start_bpm`, `tightness`, `prior`; `chroma_cqt(tuning=...)` takes a tuning offset (the
   baseline left it None, so librosa estimates it); `estimate_tuning(resolution, bins_per_octave)`.
@@ -726,6 +730,27 @@ were equal. Samples: `samples/r3/`.
 | R1c | ismir2017 | 0.746 | 0.746 | 0.645 | 0.746 | 0.788 | 15 / 14 | e1390 |
 
 - Samples: `samples/lv_chordia/` (JSON for S3, S7flat30, S4, S2n, R1a, R1b, R2, R2full; timings; freeze).
+
+## S3 versus S7flat30 (the same notes rendered 30 cents flat): what changed
+
+Collected from the sections above (same eval ids); S3 value / S7flat30 value.
+
+| tool | tuning estimate on S7flat30 (truth -30 cents) | key S3 / S7flat30 | chord root S3 / S7flat30 | beat F S3 / S7flat30 | tempo S3 / S7flat30 |
+|---|---|---|---|---|---|
+| madmom | (none) | G major / G major | CNN 0.856 / 0.877; deep chroma 0.919 / 0.915 | 0.870 / 0.914 | 95.238 / 95.238 |
+| librosa (+ lane-written key baseline) | -31 cents | G major / G major | (none) | 0.820 / 0.787 | 95.703 / 95.703 |
+| Essentia | -31 cents | G major / G major (5 profiles, 440 Hz) | TonalExtractor at 440 Hz 0.782 / 0.000; at 432.45 Hz 0.780 / 0.675 | multifeature 0.870 / 0.899 | 95.557 / 95.571; TempoCNN 96 / 96 |
+| Chordino / NNLS Tuning | 431.863 Hz = -32.316 cents | (none) | 0.878 / 0.876 | (none) | (none) |
+| aubio | (none) | (none) | (none) | 0.889 / 0.812 | 121.24 / 108.76 |
+| autochord | (none) | (none) | 0.923 / 0.921 | (none) | (none) |
+| CREMA | (none) | (none) | 0.931 / 0.931 | (none) | (none) |
+| lv-chordia (submission) | (none) | (none) | 0.965 / 0.878 | (none) | (none) |
+| Beat This! final0 | (none) | (none) | (none) | 0.906 / 0.906 | (none) |
+| BeatNet offline / online | (none) | (none) | (none) | 0.000 / 0.000; 0.161 / 0.164 | (none) |
+| DeepRhythm | (none) | (none) | (none) | (none) | 95 / 95 |
+| music21 on Basic Pitch MIDI (default / krumhansl / simple / bellman / temperley) | (none) | E min / G maj; G / G; G / G; C maj / G maj; G / G | (none) | (none) | (none) |
+
+"(none)": the tool gives no such output. Truth for both clips: G major, 96 BPM.
 
 ## Open-string tuning and capo: what the outputs above show for S5dropd and S5capo2
 

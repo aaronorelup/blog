@@ -5,20 +5,24 @@ product's own website) without programming. Each item says which files to use an
 here are in the blog repo under `docs/guitar-tab-research/` (the `inputs/` folder holds the shared test files; this
 lane's `samples/` folder holds the files the trials made). Nothing here needs the GPU.
 
-Why these were not run here: MuseScore 4 was not downloaded because the shared disk was low (an orchestrator notice
-asked lanes not to start new downloads over 200 MB); muzart could not be installed because this session's permission
-check refused running that repository's install step; Soundslice, Flat.io and Guitar Pro need an account or a paid
-desktop program; the box has no sound card, so nothing could be listened to.
+Why these were not run here: MuseScore 4 was not downloaded: the shared disk was low (an orchestrator notice asked
+lanes not to start downloads or installs over 200 MB), and its Linux AppImage (192.6 MB) would have had to be unpacked
+to run on the box, which has no FUSE tools; muzart could not be installed because this session's permission
+check refused running that repository's install step (the trial agent's report); Soundslice, Flat.io and Guitar Pro
+need an account or a paid desktop program; the box has no sound card, so nothing could be listened to.
 
 ## 1. MuseScore Studio 4 (free desktop program): does it make a TAB staff from Guitar Pro files?
 
-On the box, MuseScore 3.2.3 opened the `.gp5` test files as plain notation without a TAB staff and refused the `.gp`
-(Guitar Pro 7) file that alphaTab wrote; webmscore (a MuseScore 3.6 build for the browser) read the `.gp` but also
-made no TAB staff. This checks the current MuseScore.
+On the box, MuseScore 3.2.3 opened the `.gp5` test files with a main score of plain notation and no TAB staff; a TAB
+staff existed only in a part named "Guitar" inside the saved file, and its MusicXML and PDF exports were of the main
+score. It refused the `.gp` (Guitar Pro 7) file that alphaTab wrote. webmscore (MuseScore 3's engine compiled to
+WebAssembly; its changelog records a merge of MuseScore 3.6.0) read the `.gp` but made no TAB staff and no parts.
+This checks the current MuseScore (musescore.org's download page linked version 4.7.6 on 2026-11-10).
 
 1. Download MuseScore Studio from https://musescore.org/ and install it (free). Note the version shown under
    Help > About.
-2. In MuseScore, File > Open: `inputs/S2n/S2n.gp5`. Take a screenshot of the first page.
+2. In MuseScore, File > Open: `inputs/S2n/S2n.gp5`. Take a screenshot of the first page. If MuseScore shows parts for
+   the score (a part named "Guitar", for example), open each part too and take a screenshot of its first page.
 3. Do the same for `inputs/S5capo2/S5capo2.gp5` (capo on fret 2) and `inputs/S5dropd/S5dropd.gp5` (Drop D tuning).
    Look for the word "Capo" and for the tuning shown at the start.
 4. File > Open: `lanes/web-tab-render/samples/alphatab/S2n.export.gp` (the Guitar Pro 7 file alphaTab wrote). Note
@@ -67,7 +71,8 @@ On the box only TuxGuitar's file converters were used, from a small program; its
 ## 6. Guitar Pro 8 (paid desktop program, only if it is already installed)
 
 1. Open `lanes/web-tab-render/samples/alphatab/S2n.export.gp` (written by alphaTab) and `inputs/S2n/S2n.gp5`.
-2. Note whether each opens, and whether the capo of `inputs/S5capo2/S5capo2.gp5` shows as "Capo 2".
+2. Note whether each opens. Also open `inputs/S5capo2/S5capo2.gp5` and note how its capo on fret 2 is shown (a
+   screenshot of the top of the first page is enough).
 3. Export `S2n.gp5` as MusicXML.
 4. Send back: screenshots, any error text, the exported MusicXML.
 
@@ -76,8 +81,15 @@ On the box only TuxGuitar's file converters were used, from a small program; its
 The box measured when alphaTab's playback events fired, but it has no sound card. This checks the sound itself.
 
 1. Open https://alphatab.net/playground in Chrome (alphaTab's own test page; the box saw this address linked from
-   https://alphatab.net/docs/introduction).
+   https://alphatab.net/docs/introduction). The live page was not opened from the box; the steps below follow the
+   playground's source in the alphaTab repository (commit ec751a23 of 2026-11-08), which has an open-file and a
+   drop-file handler and "Count-in" and "Metronome" buttons in its player controls.
 2. Load `inputs/S2n/S2n.gp5` into it (drag the file onto the page, or use its open button).
-3. Press play with the metronome on, then with the count-in on (the player toolbar has both).
+3. Press play with the metronome on, then with the count-in on (look for the "Metronome" and "Count-in" buttons).
 4. Send back: a short note saying whether the notes, the metronome clicks and the moving cursor stay together by ear,
    and, if you can, a phone video of the screen with sound (about 20 seconds).
+
+---
+
+Checked on 2026-11-10 by `verify-trials-web-tab-render` against the box's files and the alphaTab repository source;
+what changed in this file is listed in `trials.md`, section "Verification log".

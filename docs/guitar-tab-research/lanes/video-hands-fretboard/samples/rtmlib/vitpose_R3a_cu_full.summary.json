@@ -1,0 +1,56 @@
+{
+ "clip": "R3a_cu",
+ "mode": "full",
+ "frames": 60,
+ "all": {
+  "frames": 60,
+  "frac_0_hands": 0.0,
+  "frac_1_hand": 0.95,
+  "frac_2_hands": 0.05,
+  "frac_more_than_2": 0.0,
+  "frac_at_least_1": 1.0,
+  "label_counts": {
+   "person_left": 60,
+   "person_right": 3
+  },
+  "infer_ms_mean": 1721.15,
+  "infer_ms_median": 1722.57,
+  "infer_ms_p90": 2137.89,
+  "fps_from_mean": 0.58,
+  "score_mean": 0.7466,
+  "score_min": 0.3146,
+  "score_max": 0.8637
+ },
+ "per_shot": {
+  "close": {
+   "frames": 60,
+   "frac_0_hands": 0.0,
+   "frac_1_hand": 0.95,
+   "frac_2_hands": 0.05,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 1.0,
+   "label_counts": {
+    "person_left": 60,
+    "person_right": 3
+   },
+   "infer_ms_mean": 1721.15,
+   "infer_ms_median": 1722.57,
+   "infer_ms_p90": 2137.89,
+   "fps_from_mean": 0.58,
+   "score_mean": 0.7466,
+   "score_min": 0.3146,
+   "score_max": 0.8637
+  }
+ },
+ "tool": "rtmlib vitpose",
+ "rtmlib_version": "?",
+ "models": {
+  "det": "https://download.openmmlab.com/mmpose/v1/projects/rtmposev1/onnx_sdk/yolox_m_8xb8-300e_humanart-c2c7a14a.zip",
+  "pose": "https://huggingface.co/JunkyByte/easy_ViTPose/resolve/main/onnx/wholebody/vitpose-s-wholebody.onnx"
+ },
+ "init_s": 0.821,
+ "frame_step": 5,
+ "hand_counted_if_mean_kpt_score_ge": 0.3,
+ "frac_frames_with_det_box": 1.0,
+ "det_boxes_per_frame_max": 1
+}

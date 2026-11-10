@@ -55,15 +55,17 @@ settings if you used the browser version.
 
 What it is: the authors' own command for the guitar models (GAPS and François Leduc checkpoints,
 https://github.com/xavriley/hf_midi_transcription; weights https://huggingface.co/xavriley/midi-transcription-models,
-card license MIT). The box ran the same checkpoints through Kong's PyPI package and a few lines of its own (see
-`trials.md`); running the authors' command lets the two be compared. Notes only: it gives no strings or frets.
+card license MIT). The box ran the François Leduc checkpoint (`guitar-fl.pth`) through Kong's PyPI package and a few
+lines of its own (see `trials.md`); the GAPS checkpoint (`guitar-gaps.pth`, the CLI's default for `guitar`) waited over
+an hour for a CPU slot and did not run, so the GAPS runs below are the only ones there will be. Running the authors'
+command on S2n and R1c also lets the box's FL results be compared. Notes only: it gives no strings or frets.
 
 1. `git clone https://github.com/xavriley/hf_midi_transcription` then `cd hf_midi_transcription`.
 2. `uv venv .venv --python 3.11` then `uv pip install --python .venv\Scripts\python.exe -e .`
 3. Run: `.venv\Scripts\midi_transcription S2n.wav S2n_gaps.mid --instrument guitar --device cuda` and the same for
    `S3.wav`, `R1b.wav`, `R1c.wav`. The CLI accepts only `saxophone`, `bass`, `guitar`, `piano` for `--instrument`
    (`guitar` uses `guitar-gaps.pth`); for the François Leduc model download `guitar-fl.pth` from the Hugging Face page
-   and add `--checkpoint guitar-fl.pth` to the S2n command (output name `S2n_fl.mid`).
+   and add `--checkpoint guitar-fl.pth` to the S2n and R1c commands (output names `S2n_fl.mid`, `R1c_fl.mid`).
 
 Send back: the `.mid` files, and the console text of one run (it prints the checkpoint it used).
 

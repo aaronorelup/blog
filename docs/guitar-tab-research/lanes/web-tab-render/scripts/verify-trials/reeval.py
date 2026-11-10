@@ -1,7 +1,7 @@
 # Re-run every gtr-eval call cited in trials.md with the same arguments (--no-ledger) and compare the result with the
 # result stored in the scoring ledger. Writes reeval.tsv: id, subcommand, est sha256 then/now, identical result yes/no.
 import json, subprocess, sys
-cited = json.load(open('cited.json'))['evals']
+cited = json.load(open('cited_ids_before_verification.json'))['evals']
 led = {}
 for l in open('/home/user/gtr/eval/ledger/evals.jsonl'):
     d = json.loads(l); led[d['id']] = d

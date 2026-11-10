@@ -4,7 +4,7 @@ Written 2026-11-10 by try-chords-beats-key. These are the tools this lane could 
 `trials.md`, section "Not run here"). Each block says which test clips to use, what to do on the Windows 11 laptop
 (RTX 4070, 8 GB), and what to send back. The clips are the shared test inputs (`S3.wav`, `S4.wav`, `R1a.wav`, ...);
 their contents and ground truth are described in `docs/guitar-tab-research/inputs/INPUTS.md`. Every clip id below means
-the stereo file `<id>.wav`.
+the file `<id>.wav` (44.1 kHz; stereo, mono for R1a to R1c).
 
 Anything marked UNVERIFIED was not checked against the product or repository today; the step may need adjusting.
 
@@ -24,7 +24,7 @@ Covers: the QM Vamp plugins (not run here) and a GUI check of Chordino / NNLS Ch
 4. For each result layer, export it (File menu, export annotation layer; UNVERIFIED wording) as CSV.
 5. Repeat for `S4.wav`, `S7flat30.wav`, `R1a.wav`, `R1b.wav`, `R2.wav`.
 6. Send back: the CSV files named `<clip>_<plugin>.csv`, and one screenshot of S3 with all layers visible. Time: about
-   20 minutes. Cost: free (Sonic Visualiser is GPL v2 or later per its download page).
+   20 minutes (estimate). Cost: free (Sonic Visualiser is GPL v2 or later per its download page).
 
 ## 2. BTC (Bi-directional Transformer for chord recognition)
 
@@ -37,13 +37,13 @@ ready: `docs/guitar-tab-research/lanes/chords-beats-key/scripts/btc_run.py`.
    `py -3.11 -m venv btc`
    `btc\Scripts\activate`
    `pip install torch librosa==0.11.0 mir_eval pyyaml pretty_midi pandas soundfile`
-   (this installs the CPU build of PyTorch, which is enough for 30-second clips; the GPU build comes from the selector
-   on pytorch.org).
+   (on Windows the PyPI `torch` wheel is a CPU build, UNVERIFIED; the lane's wrapper runs BTC on the CPU either way;
+   a CUDA build comes from the selector on pytorch.org).
 3. Copy `btc_run.py` from the blog repository into the same folder and the clips into a `clips` folder.
 4. Run, for each of S3, S7flat30, S4, S2n, R1a, R1b, R1c, R2, R2full:
    `python btc_run.py --audio clips\S3.wav --outdir out\S3 --repo BTC-ISMIR19`
 5. Send back: the whole `out` folder (each clip has `chords_btc_majmin.lab`, `chords_btc_largevoca.lab`,
-   `timings_btc.json`), and the text printed in PowerShell. Time: about 15 minutes plus install.
+   `timings_btc.json`), and the text printed in PowerShell. Time: about 15 minutes plus install (estimate).
 6. License note for the record: the repository's LICENSE is MIT (quoted in survey.md); the README says the training
    audio came "from online music service providers".
 
@@ -117,7 +117,7 @@ evaluation code's five classes are DADGAD, Drop D, Open D, Open G and Standard.
    documented in the README (UNVERIFIED).
 3. Send back: the predicted class for each clip, or the error message if it cannot take a new file.
 
-## Not worth Aaron's time
+## Nothing to run (no released model or needs keys)
 
 - Harmony Transformer v1 / v2 and ACR_seq2seq: no released weights (survey.md).
 - ChordMini: needs Firebase and Gemini keys for the full app (survey.md).

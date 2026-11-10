@@ -141,7 +141,8 @@ Conventions used in this file:
   in three systems at 1,200 px width; the bass voice drawn in grey in both staves; tempo mark "Moderate ♩ = 112" (gp5) or
   "♩ = 112" (alphaTex); a dynamic "f" under bar 1 (the first bar after the count-in; alphaTab's printed bar numbers start
   at 1 on the count-in bar). For the three .gp5 files no title and no tuning name were drawn (the
-  S5capo2.gp5 render shows "Capo. fret 2" above bar 1); for the alphaTex files the title, the subtitle, "Guitar Standard
+  S5capo2.gp5 render shows "Capo. fret 2" above the count-in bar at the start of the first system); for the alphaTex
+  files the title, the subtitle, "Guitar Standard
   Tuning" and (S5capo2) "Capo. fret 2" were drawn. In both
   capo renders (from the .gp5 and from the alphaTex) the standard notation shows the sounding pitches (A major, written
   with sharps as accidentals and no key signature) while the TAB shows frets counted from the capo (the same numbers as
@@ -182,7 +183,14 @@ Conventions used in this file:
   (Verifier: recomputed from the raw `out/alphatab-player/S2n_plain.player.json` with a separate script,
   `scripts/verify-trials/player_check.py`: the same n, median, min, max and standard deviation for the note-ons, the
   metronome intervals and the position events; the 90 type-128 ticks equal the 90 truth onsets converted to ticks.)
-  VERIFIER RE-RUN PLACEHOLDER
+  Verifier's re-run of r0128 without a slot, r0406 (--nolock, 45.74 s wall, 13.8 s CPU, peak RSS 952.3 MB, exit 0):
+  the same event counts (90 note-ons, 88 note-offs, 52 metronome, 49 `playedBeatChanged`, 2,409
+  `playerPositionChanged`), note-ons a median +99.6 ms after their nominal time (min +91.0, max +105.4, standard
+  deviation 4.4 ms), position events +95.3 ms (median), metronome spacing median 530.3 ms, `playerFinished` 27,961.5 ms
+  after `play()`, and an offline export byte-identical to r0128's WAV (240.4 ms of page time). So the offset of about
+  +131 ms in r0128 is not a fixed constant of alphaTab on this box; it was about +100 ms in the re-run under different
+  CPU conditions. A pinned re-run was queued for a 2-core slot for 27 minutes without getting one and was cancelled
+  (see the verification log).
 - **Offline export** (`api.exportAudio`, same run): 371.6 ms of page time for 2,457,088 float samples (1,228,544
   stereo frames = 27.858 s at 44.1 kHz, the score's length without the clips' 1.5 s tail). The first sample above
   1e-4 in absolute value is frame 94,464 = 2.14204 s; the truth's first onset is 2.142857 s = frame 94,500 (94,464 =
@@ -222,7 +230,7 @@ Conventions used in this file:
   re-run r0369 wrote three WAVs byte-identical to r0328's; a separate measurement with a Blackman window and a 2^19 FFT
   without interpolation gave 195.73, 195.73 and 219.71 Hz.)
 
-### Run 5: editing hooks (alphaTab ships no editor UI)
+### Run 5: editing hooks (the npm package ships no editor UI)
 
 - Checked: the alphaTab intro page quoted above, whose only "edit" is the documentation site's "Edit this page" footer
   link (verifier, page re-read 2026-11-10; the earlier text said the page contains no "edit"); in `dist/alphaTab.d.ts` the
@@ -714,18 +722,18 @@ formats not in a row were not tested.
 | GP5 -> alphaTab model | 90/90 | yes | yes | yes (Drop D) | yes | e0004, e0008, e0012 |
 | GP5 -> alphaTab -> GP7 `.gp` -> alphaTab | 90/90 | yes | yes | yes | yes | e0005, e0009, e0015 |
 | GP5 -> alphaTab -> alphaTex -> alphaTab | 90/90 | yes | yes | yes | yes | e0006, e0010, e0016 |
-| GP5 -> alphaTab -> MIDI | 90/90 | - (MIDI has none) | yes | - | sounding pitch correct | e0007, e0011, e0017 |
+| GP5 -> alphaTab -> MIDI | 90/90 | - (MIDI has none) | yes | - | sounding pitches equal the truth's | e0007, e0011, e0017 |
 | truth -> alphaTex (my writer) -> alphaTab | 90/90 | yes | yes | yes | yes | e0024, e0026, e0028 |
 | alphaTab `.gp` -> MuseScore 3.2.3 | refused ("unknown file suffix <gp>") | - | - | - | - | r0178 |
 | alphaTab `.gp` -> TuxGuitar 1.5.6 (gpx v7 reader) | 90/90 | yes | yes | yes | (capo 0 file) | e0477 |
 | alphaTab `.gp` -> TuxGuitar -> GP5 / GP4 / GP3 | 90/90 each | yes | yes | yes | - | e0479, e0480, e0481 |
-| GP5 -> MuseScore 3.2.3 -> MusicXML | 90 notes, no TAB staff | no `<string>/<fret>` | - | - | - | e0141 |
+| GP5 -> MuseScore 3.2.3 -> MusicXML | 90 notes, no TAB staff (the exported main score; the `.mscx` also holds a part "Guitar" with a TAB staff, r0125) | no `<string>/<fret>` | - | - | - | e0141 |
 | GP5 -> MuseScore 3.2.3 -> MIDI | 90/90 | - | yes | Drop D yes | capo: pitches 2 semitones low | e0145, e0378, e0374, e0376 |
 | GP5 -> TuxGuitar -> GP5 / GP4 / GP3 | 90/90 | yes | yes | yes | yes | e0457 to e0459, e0464 to e0466, e0471 to e0473 |
 | GP5 -> TuxGuitar -> MusicXML | 90 notes, pitches and staff tuning one octave high | 0 of the 16 pitch matches | - | octave high | dropped | e0460, e0467, e0474 |
 | GP5 -> TuxGuitar -> ASCII tab | 90/90 (by order) | yes | no times in the format | letters only, no octave | no field | e0461, e0468, e0475 |
 | GP5 -> TuxGuitar -> LilyPond -> LilyPond 2.24.3 | compiles only after `convert-ly -e` | not read back | - | - | - | r0230, r0232 |
-| GP5 -> TuxGuitar -> MIDI | 90/90 | - | yes | - | sounding pitch correct | e0462, e0469, e0476 |
+| GP5 -> TuxGuitar -> MIDI | 90/90 | - | yes | - | sounding pitches equal the truth's | e0462, e0469, e0476 |
 | TuxGuitar GP3 / GP4 -> alphaTab | 90/90 | yes | yes | yes | - | e0799, e0802 |
 | TuxGuitar MusicXML -> alphaTab | 90 notes, tuning read [52..76] | 0 of 7 pitch matches | - | octave high | - | e0860 |
 | GP5 -> PyGuitarPro -> GP5 | 90/90 | yes | yes | yes | - | e0574 |
@@ -741,11 +749,11 @@ formats not in a row were not tested.
 | ... -> MuseScore 3.2.3 -> MusicXML | 90 notes, staff tuning written as C-1 x 6 | 4/90 | yes | lost | - | e0369 |
 | ... -> alphaTab | 90 notes on one staff with `showTablature` false and no tuning: no string/fret | lost (0 of 90 with a position) | yes | - | - | r0278, e0908 |
 | truth -> MEI tab (my writer) -> Verovio -> MEI | 90/90 | yes | yes | yes | no MEI capo used | e0361, e0362 |
-| truth -> ABC one octave up -> abcjs tab (strings chosen by abcjs) | 88/90 by order | 88/88 same as truth | - | option | option (`capo`) | e0638, e0655, e0659 |
-| truth notes -> LilyPond TabStaff (strings chosen by LilyPond) | all | S clips 100 %; GuitarSet 47 to 88 % | - | `stringTunings` | no property | e0399, e0413 to e0418 |
+| truth -> ABC one octave up -> abcjs tab (strings chosen by abcjs) | 88/90 by order with the default 50 ms chord window; 90/90 with `--chord-window 0.01` | 88/88; 90/90 same as truth | - | option | option (`capo`) | e0638, e0655, e0659; e1332 to e1334 |
+| truth notes -> LilyPond TabStaff (strings chosen by LilyPond) | all for the S clips; R1a 188/189 (one note left out by LilyPond), R1c 145/148 (3 merged by the `--sequence` input) | S clips 100 %; GuitarSet 47 to 88 % | - | `stringTunings` | no property | e0399, e0413 to e0418 |
 | truth -> VexTab text -> VexTab | drawn | drawn | - | `tuning=` | no option | r0109, r0144 |
 | GP5 / alphaTab `.gp` -> webmscore 1.2.1 -> MusicXML | 90 notes, no TAB staff | no `<string>/<fret>` | - | - | - | e0990, e0995, e1002 |
-| GP5 / alphaTab `.gp` -> webmscore -> MIDI | 90/90 | - | yes | - | sounding pitch correct (S5capo2 too) | e0992, e0999, e1006 |
+| GP5 / alphaTab `.gp` -> webmscore -> MIDI | 90/90 | - | yes | - | sounding pitches equal the truth's (S5capo2 too) | e0992, e0999, e1006 |
 | reference 2-staff MusicXML -> webmscore -> MusicXML | 90/90 by pitch | 0/90 (TAB staff kept, positions changed) | yes | written octave high | - | e1009 |
 | GP5 / TuxGuitar GP3 -> guitarpro-parser 2.0.0 | 90/90 | yes | yes | yes | yes | e1101, e1103, e1105, e1110 |
 | alphaTab `.gp` -> guitarpro-parser | refused ("FretCount property without <Number>") | - | - | - | - | r0298 |
@@ -757,7 +765,7 @@ Readers and writers by format, as run here (r = read, w = write):
 | GP3 / GP4 | r | not tried | not tried | r w | r w (one voice) | r (GP3) | - | - | - | - | - | r |
 | GP5 | r | r | r | r w | r w | r | - | - | - | - | - | r |
 | GP7 `.gp` (alphaTab's export) | r w | refused | r | r (gpx v7 reader) | - | refused | - | - | - | - | - | refused (its README) |
-| MusicXML with TAB | r | r w | r w (positions changed) | w (octave high) | - | - | w (no tuning/capo) | r | r | - | - | r |
+| MusicXML with TAB | r | r w | r w (positions changed) | w (octave high) | - | - | r w (writes no tuning/capo) | r | r | - | - | r |
 | MEI tab | - | - | - | - | - | - | - | r w | - | - | - | - (my reader) |
 | MIDI | w | w | w | w | - | - | - | w | - | w | - | r |
 | alphaTex | r w | - | - | - | - | - | - | - | - | - | - | - |
@@ -779,6 +787,8 @@ Readers and writers by format, as run here (r = read, w = write):
   (r0279 to r0282); defining a writable `globalThis.navigator` before `require` gets past it (`--shim-navigator`);
   (2) then "TypeError: Failed to parse URL from .../webmscore.lib.wasm" from Node's built-in `fetch` (r0283 to r0286);
   deleting `globalThis.fetch` before loading lets it read the file (`--no-fetch`). With both, all four runs worked.
+  (Verifier's re-runs: r0392 without either workaround and r0393 with the navigator shim only exited 1 with the same
+  two errors; r0394 with both wrote MusicXML and MIDI byte-identical to r0288's and files of the same sizes.)
 - **Runs** (all --nolock, exit 0, peak RSS 217 to 243 MB; WASM ready in 1.09 to 1.77 s, load 102 to 274 ms):
   S2n.gp5 r0288 (4.0 s wall: MusicXML 29,601 bytes, MIDI 687, SVG page 1 137,991, PNG page 1 252,255 in 1,632 ms, PDF
   22,048, .mscz 20,373); S5capo2.gp5 r0289; alphaTab's `.gp` export r0290 (read, unlike MuseScore 3.2.3); the
@@ -805,6 +815,7 @@ Readers and writers by format, as run here (r = read, w = write):
   capo read (e1101, e1103, e1105, e1110).
 - **alphaTab's GP7 export** (r0298): refused with "GuitarProError: Cannot read this Guitar Pro 7+ (.gp) file (track
   1): staff 1 of track 0 has a FretCount property without <Number>." (TuxGuitar and webmscore read the same file.)
+  (Verifier's re-runs: r0395, S5capo2.gp5, a byte-identical output JSON; r0396, the same refusal of the `.gp`.)
 - **Output format facts:** track fields `index, name, shortName, program, lyrics, kind, tuning, capo, partialCapo,
   fretCount, bars`; `tuning` lists MIDI numbers highest string first ([64, 59, 55, 50, 45, 40]); a note has `string`
   counted from 0 = highest string (the open G3 of bar 1 has `string` 2), `fret`, `midi` (sounding pitch), `tie`,
@@ -818,9 +829,15 @@ Readers and writers by format, as run here (r = read, w = write):
   `scripts/abcjs_editor_edit.cjs` selects the first melody note `G4` in the textarea and types `A4` with
   Playwright's keyboard, as a user would. r0312 (--nolock, 2.88 s): the score and tab re-rendered; the first tab number
   changed from 0 to 2 (G string, open to fret 2) and no other of the 90 numbers changed; the edited text is the export
-  (`samples/abcjs/S2n.written.edited.abc`, `editor_edit_trial.json`, screenshot `editor_after_edit.webp`). The editing
-  surface is ABC text; there is no click-on-the-tab editing in abcjs.
-- **alphaTab, run (Run 5 above):** no editor UI ships; a mouse click on a rendered note produced a `beatMouseDown`
+  (`samples/abcjs/S2n.written.edited.abc`, `editor_edit_trial.json`, screenshot `editor_after_edit.webp`; in the
+  screenshot the changed "2" is on the third tab line). The editing surface tried was the ABC text. (Verifier: the
+  earlier text added "there is no click-on-the-tab editing in abcjs", which nothing here tested; the typings in
+  `types/index.d.ts` declare the render options `clickListener`, `dragging` and `selectTypes` and a `ClickListenerDrag`
+  with a `step` field. They were not tried, so whether a note can be changed by clicking or dragging it in the
+  notation or the tab is UNVERIFIED. Re-run r0387 gave a byte-identical edited file and the same single changed
+  number.)
+- **alphaTab, run (Run 5 above):** the npm package ships no editor UI (the repository's unpublished
+  `@coderline/alphatab-ui`, used by the alphatab.net playground, was not run); a mouse click on a rendered note produced a `beatMouseDown`
   event (bar, voice, beat) once the player was ready; changing `Note.fret` in the model and calling `render()`
   redrew the tab, and the edit survived a GP7 export (r0132, r0134).
 - **muzart (thegedge/muzart), NOT RUN HERE:** cloned (`git clone --depth 1`, commit 0e61e67300698a182680344cdf82ebf76d3451b1,
@@ -829,19 +846,38 @@ Readers and writers by format, as run here (r = read, w = write):
   next step, `pnpm install --frozen-lockfile` (which runs that repository's dependency install), was denied by this
   session's permission check ("Code from External"), so it was not built or opened. Its README gives a demo URL,
   https://thegedge.github.io/muzart/ (answers HTTP 200 from this box; not opened in the browser here). Steps for Aaron
-  are in for-aaron.md.
-- **Not tried for lack of time:** VexTab's `editor="true"` div mode, `@coderline/alphatab-monaco` (alphaTex editing in
+  are in for-aaron.md. (Verifier: the clone's facts above re-checked: commit, size, packages, 678 entries in the
+  lockfile's `packages:` section, `vite` ^8.0.16 and `react` ^18.3.1 in `packages/editor/package.json`, MIT license; the
+  clone has no `node_modules`. The permission refusal is the trial agent's report; no log of it was saved.)
+- **VexTab 4.0.5 editor mode (run by the verifier):** VexTab's `Div` (in `dist/main.prod.js`) renders every
+  `div.vextab-auto`; with `editor="true"` it adds a textarea holding the VexTab text and re-renders 250 ms after a key
+  is released (`src/div.ts`). Page `scripts/pages/vextab_editor.html` holds the S2n VexTab text
+  (`samples/vextab/S2n.vextab`) in such a div; driver `scripts/verify-trials/vextab_editor_edit.cjs` reads the fret
+  numbers VexFlow drew (text inside `g.vf-tabnote`), selects the first `:q 0/3` in the textarea, types `:q 2/3` with
+  Playwright's keyboard, waits 1.2 s and reads them again. r0407 (--nolock, 2.83 s wall, exit 0): 90 numbers before and
+  after; the first changed from 0 to 2 and no other changed; no editor error shown; the console printed the same
+  "Running VexTab.Div: 4.0.3-5-g3a5e00d ..." line (`samples/vextab/editor_edit_trial_verifier.json`, screenshot
+  `samples/vextab/editor_after_edit_verifier.webp`, where the "2" is on the third tab line and the notation shows A).
+  As with abcjs, the editing surface is the text; clicking on the drawn tab was not tried.
+- **Not tried for lack of time:** `@coderline/alphatab-monaco` (alphaTex editing in
   the Monaco editor), tab-editor (calesce, 2017), It's MyTabs (a viewer/player, needs Deno or Docker), Autostrum and
   Songshed (no license file per the survey), TuxGuitar's desktop GUI, Power Tab Editor (desktop).
 
 ## Not run here
 
-- **MuseScore Studio 4.x (AppImage):** not downloaded. During the trials `df -h /` showed between 9.5 GB and 5.3 GB
-  free on the shared disk, and `gtr-run` printed an orchestrator notice with every call: "start no new download or
-  install over 200 MB unless your lane cannot finish without it"; the Ubuntu package MuseScore 3.2.3 and webmscore
-  (MuseScore 3 engine) were run instead. Steps for Aaron: for-aaron.md item 1.
+- **MuseScore Studio 4.x (AppImage):** not downloaded. The trial agent reports `df -h /` between 9.5 GB and 5.3 GB
+  free on the shared disk during the trials. The shell setup file `/home/user/gtr/env.sh`, sourced before every
+  command (not `gtr-run`, as the earlier text said), prints the orchestrator notice "start no new download or install
+  over 200 MB unless your lane cannot finish without it" whenever less than 9,000 MB is free. The Ubuntu package
+  MuseScore 3.2.3 and webmscore (MuseScore 3 engine) were run instead. Steps for Aaron: for-aaron.md item 1.
+  Facts added by the verifier (2026-11-10): the x86_64 AppImage that musescore.org's download page links is
+  `MuseScore-Studio-4.7.6.261022093-x86_64.AppImage`, 192,616,952 bytes (HTTP Content-Length of
+  https://github.com/musescore/MuseScore/releases/download/v4.7.6/MuseScore-Studio-4.7.6.261022093-x86_64.AppImage,
+  read with a HEAD request, nothing downloaded); this box has `/dev/fuse` but no `fusermount` and no libfuse library, so the
+  AppImage would have to be unpacked (`--appimage-extract`; unpacked size not measured) or FUSE installed before it
+  could run. The verifier did not download it either (4.9 to 5.9 GB free on the shared disk during the verification).
 - **muzart** (browser tab editor): cloned but not installed; this session's permission check refused running the
-  repository's `pnpm install` ("Code from External"). for-aaron.md item 2.
+  repository's `pnpm install` ("Code from External"; the trial agent's report, no saved log). for-aaron.md item 2.
 - **Soundslice, Flat.io:** hosted services that need an account (survey: "service; account needed"). for-aaron.md
   items 3 and 4.
 - **TuxGuitar's desktop window, Guitar Pro 8:** a GUI program and a paid program; only TuxGuitar's file plugins were run.
@@ -859,10 +895,91 @@ Readers and writers by format, as run here (r = read, w = write):
 
 | file | size | duration | what it is |
 |---|---|---|---|
-| `/home/user/gtr/lanes/web-tab-render/out/alphatab-player/S2n_plain.export.wav` | 9,828,396 bytes | 27.858 s | alphaTab 1.9.0 `api.exportAudio()` of `S2n.gp5` with its bundled Sonivox SoundFont: 44.1 kHz, 2 channels, 32-bit float, metronome off (run r0128). Reference playback of the correct tab as alphaTab renders it. |
+| `/home/user/gtr/lanes/web-tab-render/out/alphatab-player/S2n_plain.export.wav` | 9,828,396 bytes | 27.858 s | alphaTab 1.9.0 `api.exportAudio()` of `S2n.gp5` with its bundled Sonivox SoundFont: 44.1 kHz, 2 channels, 32-bit float, metronome off (run r0128). Reference playback of the ground-truth tab as alphaTab renders it. |
 | `/home/user/gtr/lanes/web-tab-render/out/alphatab-transpose/S2n.plain.wav` | 1,413,164 bytes | 4.005 s | first 4 s of the same export (r0328) |
 | `/home/user/gtr/lanes/web-tab-render/out/alphatab-transpose/S2n.changeTrackTranspositionPitch.wav` | 1,413,164 bytes | 4.005 s | same, after `changeTrackTranspositionPitch(tracks, 2)`; measured pitch unchanged (r0328) |
 | `/home/user/gtr/lanes/web-tab-render/out/alphatab-transpose/S2n.exportOption.wav` | 1,413,164 bytes | 4.005 s | same, exported with `trackTranspositionPitches` {0: 2}: two semitones up (r0328) |
 
 No other audio or video was produced by this lane (the MIDI files are listed in the sections above). Screenshots are WebP under `samples/` (all under 300 KB; the full
 PNGs are in `/home/user/gtr/lanes/web-tab-render/out/`).
+
+The verifier's re-runs wrote more audio, also outside git: `/home/user/gtr/lanes/web-tab-render/verify-trials/rerun/alphatab-player-nolock/S2n_plain.export.wav`
+(r0406, byte-identical to r0128's export) and three 4 s WAVs in
+`/home/user/gtr/lanes/web-tab-render/verify-trials/rerun/alphatab-transpose/` (r0369, byte-identical to r0328's).
+
+## Verification log (verify-trials-web-tab-render, 2026-11-10)
+
+Independent check of this file and of `for-aaron.md` against the run ledger, the scoring ledger, the saved outputs
+and re-runs. Every correction above is marked "verifier" in place. Scripts and tables of this check are in
+`scripts/verify-trials/`; re-run outputs are in `/home/user/gtr/lanes/web-tab-render/verify-trials/rerun/`.
+
+**What was checked**
+
+- **Run ledger.** The 98 run ids cited before verification all exist in `/home/user/gtr/ledger/runs.jsonl` under lane
+  `web-tab-render`; the trial agent's runs are 101 rows, r0017 to r0328 (not 93 as its closing summary said). Uncited
+  rows were r0058 (exit 1), r0276 and r0293 (an earlier identical run of r0294); r0058 and r0276 are now cited. Every
+  wall time, CPU time, peak RSS, core count and exit code quoted was compared with the ledger: one CPU figure was
+  wrong (r0197) and the description of the `--nolock` runs ("under 3 s") was wrong; both fixed. Every run with a
+  nonzero exit (r0058, r0178, r0206, r0230, r0279 to r0286, r0298) is described as a failure or refusal.
+- **Scoring ledger.** The 103 eval ids cited all exist and all are gtr-eval 0.11.1 (the text said 0.8.x; fixed).
+  Every number quoted was compared with the stored result. All 103 were re-run with the same arguments and
+  `--no-ledger`: 103 results identical to the stored ones, no exit code changed
+  (`scripts/verify-trials/reeval.py`, `reeval_results.tsv`).
+- **Independent recomputation** without gtr-eval's code (`scripts/verify-trials/independent_metrics.py`, output in
+  `independent_metrics.txt`): 27 comparisons for alphaTab, the reference MusicXML, music21, Verovio, MuseScore 3.2.3,
+  LilyPond, TuxGuitar (its GP files read with PyGuitarPro and timed here), PyGuitarPro, webmscore, guitarpro-parser and
+  abcjs, with `mir_eval.transcription` (onset 50 ms, pitch 50 cents); all agree with the quoted values. The player
+  timing statistics were recomputed from the raw event log (`player_check.py`); the Tonal pitch-class sets from
+  `S3.truth.json`; the transposition peaks with a different window and FFT size.
+- **Files.** Every file named exists. 20 samples were byte-compared with their `out/` copies: all identical. MIDI
+  files were read with mido, WAVs with soundfile, MusicXML/MEI/mscx with ElementTree or grep. Screenshots viewed:
+  alphaTab (S5capo2, S5dropd, S2n alphaTex, S5capo2 alphaTex), VexFlow, VexTab, MuseScore 3.2.3, LilyPond, OSMD
+  (S5capo2, music21), Verovio (MEI, 2-staff), abcjs (sounding pitch, editor), chord diagrams, webmscore.
+- **Re-runs** (all `gtr-run --lane web-tab-render`, labels starting "verify", `--nolock` because about 15 jobs of
+  other lanes were queued for the two slots): r0364 to r0390 and r0392 to r0396 (`scripts/verify-trials/rerun_batch.sh`,
+  its output `rerun_batch_output.txt`), r0403, r0406, r0407; scored e1332 to e1334. Outcome per tool:
+  alphaTab r0364 to r0370 and r0406 (same notes; byte-identical MIDI, `.gp`, alphaTex, edited files and WAVs; render
+  identical except 121 pixels of the "alphaTab.net" text; player event counts the same, note-on offset +99.6 ms
+  against +130.8 ms in r0128), VexFlow r0371, VexTab r0372, music21 r0373, OSMD r0374, Verovio r0375 and r0376,
+  MuseScore 3.2.3 r0377 to r0381 and r0403, LilyPond r0382 and r0383, TuxGuitar r0384, PyGuitarPro r0385, abcjs r0386
+  and r0387, svguitar/vexchords r0388 and r0389, Tonal/ChordSheetJS r0390, webmscore r0392 to r0394,
+  guitarpro-parser r0395 and r0396: the same counts and outputs as the trial runs (byte-identical where the tool writes
+  no ids or dates; the differences are named in each section). Expected failures failed the same way.
+- **NOT RUN reasons.** MuseScore 4: the reason was sharpened with measured facts (AppImage size 192,616,952 bytes, no
+  FUSE tools on the box) and the notice's source corrected (`env.sh`, not `gtr-run`). muzart: the clone facts were
+  re-checked; the permission refusal has no saved log and is marked as the trial agent's report. Soundslice and
+  Flat.io: the survey's table says "service; account needed". Survey tools "not tried for lack of time": all are
+  marked RUNNABLE in the survey's table.
+- **Format statements** were checked in the files themselves (MusicXML elements, MEI staffDefs and courses, mscx
+  staves and parts, MIDI events, ASCII headers, JSON fields).
+- **Judging language:** "correct dots", "sounding pitch correct" and "correct tab" replaced with the plain fact; no
+  other judging words found.
+- **Secrets, personal data, sizes:** no key, token, password or personal detail in the lane folder; no file over
+  300 KB; no audio or video in this lane's folder under `docs/`.
+
+**What was changed (besides the wording fixes above)**
+
+- MuseScore 3.2.3: its `.mscx` holds a part "Guitar" with a TAB staff (the text said only "no TAB staff");
+  for-aaron.md item 1 now asks to open the parts too.
+- LilyPond: the R1a missing note was left out by LilyPond with a warning, not by the `--sequence` input.
+- abcjs: the "2 unmatched notes" UNVERIFIED is settled (read-back time scale with the 50 ms chord window; 90/90 with
+  `--chord-window 0.01`, e1332 to e1334); the unsupported "no click-on-the-tab editing in abcjs" became UNVERIFIED.
+- alphaTab player at speed 2.0: the "why fewer events" UNVERIFIED is replaced by the measured timelines.
+- alphaTab: MIDI control-change count, render timing definition, the "edit" on the intro page, the capo-render
+  reason, the r0058 attempt, the `@coderline/alphatab-ui` facts.
+- TuxGuitar's LilyPond export: error lines and the PNG written despite exit 1.
+- VexTab editor mode run by the verifier (r0407); taken off the "not tried" list.
+- for-aaron.md: the MuseScore 3.2.3 and webmscore facts, the MuseScore 4 reason, item 7's playground steps tied to the
+  playground source.
+
+**Still UNVERIFIED**
+
+- A pinned (2-core slot) re-run of r0128 waited in the slot queue from 22:02 to 22:29 UTC (about 15 jobs of other lanes
+  queued) and was cancelled without having run, so it has no ledger line; whether the +130.8 ms of r0128 repeats under
+  a slot is not settled. The unpinned re-run r0406 is reported above.
+- Whether alphaTab's live sound followed `playbackSpeed` 2.0 and `changeTrackTranspositionPitch` (no audio device).
+- Whether abcjs's `dragging`/`clickListener` options can change a note from the notation or the tab (not tried).
+- The muzart permission refusal (no saved log) and the trial agent's disk readings of 9.5 to 5.3 GB.
+- The 189 MB `node_modules` size after the first npm install (overwritten by later installs).
+- The live alphatab.net playground was not opened; for-aaron.md item 7 rests on the repository source at commit
+  ec751a23.

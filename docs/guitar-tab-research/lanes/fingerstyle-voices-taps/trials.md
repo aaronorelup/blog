@@ -2,8 +2,13 @@
 
 Lane: fingerstyle on one guitar, separating melody, bass and percussive taps. Agent `try-fingerstyle-voices-taps`,
 started 2026-11-10 (UTC). Everything below ran on the shared box (4 vCPU Intel Xeon 2.10 GHz, 15 GiB RAM, no GPU).
-Timed runs went through `gtr-run` (ledger `/home/user/gtr/ledger/runs.jsonl`, ids `r....`) and are on 2 CPU cores
-unless a line says otherwise. Scores come from `gtr-eval` (ledger `/home/user/gtr/eval/ledger/evals.jsonl`, ids
+Timed runs went through `gtr-run` (ledger `/home/user/gtr/ledger/runs.jsonl`, ids `r....`). Only r0031, r0079 and
+r0090 ran in a 2-core slot. Every other run of this lane is marked `--nolock`: gtr-run's usage text says "--nolock
+takes no slot and does no pinning (only for light jobs you still want in the ledger)", so those processes could use
+any of the 4 cores while other lanes' jobs were running (ledger `load1_at_start` 5.4 to 19.6 for them). Where a line
+says "one thread", the ledger's `threads_env` holds `OMP_NUM_THREADS`, `MKL_NUM_THREADS` and `OPENBLAS_NUM_THREADS`
+= 1; where it says `taskset`, the command itself was pinned to one core. (The verifier's re-runs, listed in the
+verification log at the end, carry the same marks in the ledger.) Scores come from `gtr-eval` (ledger `/home/user/gtr/eval/ledger/evals.jsonl`, ids
 `e....`; every result of this lane records `gtr_eval_version` 0.11.1) unless a line says the number was computed by a
 script here, in which case the script is named.
 
@@ -12,17 +17,20 @@ Scripts: `scripts/` in this folder. Small outputs: `samples/<tool>/`. Big output
 
 ## Facts about the inputs that every number below depends on
 
-- S6taps (the only clip with truth taps) has 90 truth notes in 48 note-onset groups (notes starting within 1 ms of
-  each other merged, as `gtr-eval onsets --field notes` does) and 32 truth taps: 24 `slap` (GM side stick) and 8
+- S6taps (the only clip with truth taps) has 90 truth notes in 48 note-onset groups (`gtr-eval onsets --field notes`
+  rounds the truth onsets to the millisecond and drops duplicates, `np.unique(np.round(onsets, 3))` in
+  `gtr_eval.py`; in S6taps the notes of a group start at the same time, so merging notes that start within 1 ms, as
+  `scripts/fvt_common.py` does, gives the same 48) and 32 truth taps: 24 `slap` (GM side stick) and 8
   `thump` (GM acoustic bass drum). 27 taps start at exactly the time of a note-onset group (24 slaps, 3 thumps) and
   5 thumps fall between notes. The union is 53 distinct event times: 27 "tap+note", 21 "note-only", 5 "tap-only"
   (`scripts/fvt_common.py`, `event_classes`, taps merged with a note-onset group when within 1 ms).
 - The taps are General MIDI drum-kit samples mixed into a FluidSynth guitar render, not hands on a guitar body
-  (manifest caveat). No clip in the shared set is a real recording with body taps (INPUTS.md: "A video with a capo or
-  with percussive body taps was not found.").
+  (manifest caveat). No clip in the shared set is a real recording with body taps (INPUTS.md: "A freely licensed video
+  with a capo on the neck or with percussive body taps was not found in the time spent (20:52 to 21:35 UTC)", and
+  for R3a to R3c: "no body taps were seen in the frames looked at").
 - S2n, S2s, S6taps: 42 melody notes with MIDI pitches 55 to 64 and 48 bass notes with pitches 43 to 52 (from the
-  truth JSON). Every truth melody note is higher than every truth bass note, so a fixed pitch threshold between 52
-  and 55 assigns every truth note its truth voice. Of the 48 onset groups, 42 have two notes (one bass, one melody)
+  truth JSON). Every truth melody note is higher than every truth bass note, so the rule "MIDI pitch < T is bass"
+  assigns every truth note its truth voice for T = 53, 54 or 55. Of the 48 onset groups, 42 have two notes (one bass, one melody)
   and 6 have one note (all 6 are bass notes, MIDI 50 or 45; read from the truth JSON; the lower note of every
   two-note group is the bass note). S5dropd: bass 38 to 52, melody 55
   to 64.
@@ -58,7 +66,7 @@ Scripts: `scripts/` in this folder. Small outputs: `samples/<tool>/`. Big output
   hard-linked from the shared uv cache). No model weights. Freeze: `freeze/venv-core.txt` in the lane folder.
 - Signature read from the installed package: `librosa.effects.hpss(y, *, kernel_size=31, power=2.0, mask=False,
   margin=1.0)`; STFT defaults n_fft 2048, hop 512.
-- Run r0031 (2 cores): `scripts/librosa_hpss_sweep.py S6taps <out>`, input `S6taps.mono.wav` (44.1 kHz mono),
+- Run r0031 (2-core slot; it waited 107.4 s for the slot, not included in the wall time): `scripts/librosa_hpss_sweep.py S6taps <out>`, input `S6taps.mono.wav` (44.1 kHz mono),
   margins 1, 2, 4, 8, 16, everything else default; then `librosa.onset.onset_detect(y=..., sr=..., units='time')`
   with defaults on each percussive part and on the unseparated mix. Wall 39.91 s, CPU 37.1 s, peak RSS 651.6 MB, exit
   0 (includes imports and numba compilation; the script's own timer: 6.06 s for the first margin, 2.62 to 2.75 s for
@@ -99,7 +107,7 @@ Onsets (`librosa.onset.onset_detect` defaults) on the percussive part:
 | signal | tap+note (27) | note-only (21) | tap-only (5) | note-only events louder than the quietest tap event |
 |---|---|---|---|---|
 | mix `S6taps.mono.wav` | -6.55 / -3.21 / 0.0 | -4.23 / -3.24 / -2.34 | -3.97 / -3.90 / -3.58 | 21 of 21 |
-| truth `stems/taps.wav` | -6.54 / -6.52 / 0.0 | -46.82 / -46.33 / -35.73 | -0.05 / -0.02 / 0.0 | 0 of 21 |
+| truth `stems/taps.wav` | -6.54 / -6.52 / -0.01 | -46.82 / -46.33 / -35.73 | -0.05 / -0.02 / 0.0 | 0 of 21 |
 | percussive, margin 1 | -8.31 / -7.03 / 0.0 | -12.03 / -10.22 / -8.61 | -2.54 / -1.94 / -1.87 | 0 of 21 |
 | percussive, margin 4 | -10.41 / -9.29 / 0.0 | -18.80 / -16.17 / -13.80 | -5.37 / -3.61 / -3.27 | 0 of 21 |
 | percussive, margin 16 | -13.05 / -11.73 / 0.0 | -23.79 / -20.91 / -16.77 | -10.40 / -10.05 / -8.01 | 0 of 21 |
@@ -221,7 +229,8 @@ Drums stems of S6taps against the truth `stems/taps.wav` (`gtr-eval stems --sdr-
 5.67 dB, SDR 11.72 dB (e0169); htdemucs_6s SI-SDR 6.98 dB, SDR 10.87 dB (e0170). The librosa HPSS percussive
 parts measured -0.64 to 3.68 dB SI-SDR on the same reference (table above).
 
-Onsets on those drums stems (`librosa.onset.onset_detect` defaults, computed here outside gtr-run, not timed):
+Onsets on those drums stems (`librosa.onset.onset_detect` defaults on the stem loaded as mono, computed here outside
+gtr-run, not timed; the verifier's re-run through gtr-run, r0404, wrote the same onset times for all three stems):
 
 | drums stem | n onsets | vs taps P / R / F (eval id) | vs note onsets P / R / F (eval id) | on tap+note (27) | on note-only (21) | on tap-only (5) | on neither |
 |---|---|---|---|---|---|---|---|
@@ -258,8 +267,9 @@ licensed real recording with body taps was in the shared set.
 
 - What they are: `partitura.musicanalysis.estimate_voices` (docstring cites Chew and Wu 2004, "Separating Voices in
   Polyphonic Music: A Contig Mapping Approach"); music21 10.5.2 (MIDI import builds Notes, Chords and, where notes
-  overlap with different lengths, Voice objects; it has no melody/bass labelling function: the Stream methods with
-  "oice" in the name are `flattenUnnecessaryVoices, hasVoices, makeVoices, voices, voicesToParts`). Both from PyPI in
+  overlap with different lengths, Voice objects; it has no melody/bass labelling function: the public Stream methods
+  with "oice" in the name are `flattenUnnecessaryVoices, hasVoices, makeVoices, voices, voicesToParts`, plus the
+  private `_maxVoiceCount`). Both from PyPI in
   `venv-core` (see the librosa section). The baselines are written here and are labelled BASELINE.
 - Input given to every method (`scripts/voice_split.py`): the clip's 90 truth notes with only onset (s), offset (s)
   and MIDI pitch; voice, string, fret, velocity and the MIDI track split were removed. For music21 the notes were
@@ -271,7 +281,10 @@ licensed real recording with body taps was in the shared set.
   - B3 BASELINE skyline: highest note per group is melody, the rest bass; a one-note group is melody.
   - P1 / P2 partitura `estimate_voices(note_array, monophonic_voices=False / True)` on a structured array with
     `onset_sec`, `duration_sec`, `pitch`, `id`. It returns one voice number per note (1..k). Labels without using
-    the truth: the voice with the highest mean pitch is melody, every other voice is bass.
+    the truth: the voice with the highest mean pitch is melody, every other voice is bass. (The argument was passed
+    explicitly in both runs. In partitura 1.9.0 the function signature reads `estimate_voices(note_info,
+    monophonic_voices=True)` while its docstring says "Defaults to False"; read by the verifier from the installed
+    package.)
   - M1 music21 + a labelling rule written here: each Chord's lowest pitch (`Chord.bass()`) is bass and its other
     pitches melody; a single Note inside a Voice is melody when its Voice has the highest mean pitch of the Voices
     in that Measure, else bass; a single Note outside any Voice is bass.
@@ -281,7 +294,10 @@ licensed real recording with body taps was in the shared set.
 - Runs (`--nolock`, light): r0184 S2n (wall 4.49 s, CPU 1.9 s, peak RSS 159.2 MB), r0185 S5dropd (4.59 s). These
   supersede r0113 / r0114 (same numbers, before the T = 55 baseline and the per-voice files were added) and r0111 (an
   earlier S2n run with a different music21 labelling rule, one Voice for the whole piece instead of per Measure,
-  which gave 85 of 90). S2s and S6taps have the same notes as S2n and were not run separately.
+  which gave 85 of 90). UNVERIFIED: r0111, r0113 and r0114 have ledger lines with exit 0, but they wrote to the same
+  output folders as r0184 / r0185, which replaced their files, so their numbers cannot be checked. The verifier's
+  re-run of r0184 (r0354) gave the same counts for every method and byte-identical per-method CSV and MIDI files.
+  S2s and S6taps have the same notes as S2n and were not run separately.
 
 | method | S2n: right voice / matched (90 truth notes) | S5dropd: right voice / matched | what the tool emitted | method time |
 |---|---|---|---|---|
@@ -323,43 +339,72 @@ licensed real recording with body taps was in the shared set.
   copy of the five reviewed `.py` files of `src/adtof_pytorch` (the code was read first: it imports only torch,
   numpy, librosa, pretty_midi, argparse, os, pathlib; `torch.load` at `model.py` line 266 has no `weights_only`
   argument). Both were left alone after the refusal; the copy, the venv and the clone were deleted.
+- Verifier's check: the repository facts above (HEAD and commit date, no LICENSE file in the tree, the weights'
+  size and sha256 `1bc986e596ec47ba0b44916f87cd4a39f0b2bec23596df3fb5d0e87749217320`, `LABELS_5`, the thresholds,
+  `torch.load` at `model.py` line 266, version 0.1.0 in `pyproject.toml`) match the files on GitHub (raw files read
+  2026-11-10). The two refusals are reported by the trial agent; they leave no trace in the run ledger (neither step
+  was a gtr-run), the verifier did not see that session's transcript and did not repeat either action.
+  `freeze/venv-adtof.txt` (written 21:14 UTC) exists and `repos/` is empty.
 - Steps for Aaron: `for-aaron.md`, list 1.
 
 ## Omnizart 0.6.3 drum mode: NOT RUN HERE
 
 - PyPI `omnizart` 0.6.3 (sdist only, uploaded 2026-05-31) lists `tensorflow>=2.5.0; python_version < "3.14"`,
   `tf-keras`, `madmom>=0.16.1`, `sherpa-onnx>=1.10.0`, `vamp>=1.1.0` among its requirements (PyPI JSON, read
-  2026-11-10). No virtual environment on the box contains TensorFlow (searched all lanes' venvs for a `tensorflow`
-  package directory at 21:24 UTC: none; `torch` in eight). The orchestrator's notice printed by `env.sh` from 21:16
+  2026-11-10; re-read by the verifier, same list). When the trial agent searched all lanes' venvs for a `tensorflow`
+  package directory at 21:24 UTC there was none (`torch` in eight). The orchestrator's notice printed by `env.sh` from 21:16
   UTC: "start no new download or install over 200 MB unless your lane cannot finish without it ... never install a
   second torch or tensorflow version if an existing venv can be reused"; free disk was 5.8 to 8 GB shared by all
   lanes. A TensorFlow install was therefore not started. Steps for Aaron: `for-aaron.md`, list 3.
+- Verifier's check at about 22:20 UTC: two other lanes' venvs now hold `tensorflow-cpu` 2.12.1
+  (`source-separation/venv-spleeter`, its `tensorflow` folder written 21:31 UTC; `chords-beats-key/venv-tf`, 21:51
+  UTC), and the shared uv cache holds the `tensorflow-cpu` 2.12.1 wheel (only metadata for `tensorflow` 2.14 and
+  2.15). Omnizart's requirement names the `tensorflow` distribution, which an installed `tensorflow-cpu` does not
+  satisfy, and ADTOF's `setup.py` asks for `tensorflow>=2.13.0`; so either install would still fetch another
+  TensorFlow build. Not attempted by the verifier either.
 
 ## Other candidates not run here (one line each, reason with evidence)
 
 - ADTOF (original, Keras/TensorFlow, https://github.com/MZehren/ADTOF): needs TensorFlow (`tensorflow>=2.13.0` in its
-  `setup.py`, survey.md); same disk reason as Omnizart. `for-aaron.md` list 2 (the README's Colab notebook).
+  `setup.py`, survey.md; confirmed by the verifier in the raw `setup.py`); same disk reason as Omnizart (the
+  TensorFlow on the box since 21:31 UTC is 2.12.1). `for-aaron.md` list 2 (the README's Colab notebook).
 - Cluster and Separate / piano_svsep (https://github.com/CPJKU/piano_svsep, cloned 2026-11-10 at
   `1462e7c28d7adaae033150883a7cb00238ee364a`, 2026-03-09; MIT; `pretrained_models/model.ckpt` 36,495,754 bytes in
   the clone): its `setup.py` pins `torch==2.8.0`, `partitura==1.8.0`, `scikit-learn==1.6.0` and needs
-  `torch-scatter`/`torch_geometric`; the box's torch is 2.15.0+cpu and the disk notice forbids a second torch; the
-  package is not on PyPI, so it also means running a clone, which was refused for ADTOF-pytorch. Not attempted.
-  Its input file for Aaron is ready: `samples/voice-split/S2n_truth_merged_single_track.musicxml` (the S2n notes as
-  one part, written by music21 10.5.2 from the merged single-track MIDI). `for-aaron.md` list 4.
+  `torch-scatter`/`torch_geometric` (and `setup_requires=["torch==2.7.0"]`); the box's torch is 2.15.0+cpu and the
+  disk notice forbids a second torch; the package is not on PyPI (the verifier got HTTP 404 for `piano_svsep` and
+  `piano-svsep` from the PyPI JSON API), so it also means running a clone, which was refused for ADTOF-pytorch. Not
+  attempted. Its input file for Aaron is ready: `samples/voice-split/S2n_truth_merged_single_track.musicxml` (the
+  S2n notes as one part, written by music21 10.5.2 from the merged single-track MIDI; 90 pitches; it does carry
+  music21's own `<voice>` numbers where music21 split overlapping notes, 36 voice-1 and 12 voice-2 elements, made
+  without the truth labels). `for-aaron.md` list 4.
 - McLeod and Steedman voice-splitting (Java, https://github.com/apmcleod/voice-splitting): Java 21 is on the box
   (`openjdk version "21.0.12.1"`), but building it means compiling a cloned repository; not attempted after the
-  refusals above. `for-aaron.md` list 5.
+  refusals above. The verifier tried it (clone at `ea80457878d4dec281c951b81c79b66949df53a9`, 2020-08-26, 38 `.java`
+  files, MIT `License`; build = the repository's `Makefile`, two `javac -d bin -cp src ...` lines, no other
+  dependencies): the session's permission classifier refused the `make` call ("Permission for this action was denied
+  by the Claude Code auto mode classifier. Reason: [Code from External]"), so it did not run here either and the
+  clone was deleted. `for-aaron.md` list 5.
 - ADT_STR (https://github.com/pier-maker92/ADT_STR) and the Inverse Drum Machine
   (https://github.com/bernardo-torres/inverse-drum-machine): code only in cloned repositories (same reason); ADT_STR
-  also brings TorchAudio/TorchCodec/Transformers. `for-aaron.md` lists 6 and 7.
+  also brings TorchAudio/TorchCodec/Transformers. Verifier's additions: ADT_STR's `pyproject.toml` pins
+  `torch==2.8.0` and `torchaudio==2.8.0` (a second torch version, which the disk notice rules out), and its
+  checkpoints are not in the GitHub repository but on Hugging Face (`Pierfrancesco/adt-str`,
+  `setting-tau-0.8/model.safetensors` 289,134,056 bytes, per the Hugging Face API), above the 200 MB limit. The
+  Inverse Drum Machine's pretrained model is in its repository (`pretrained/idm-44-train-kits/`, a 2,544,694-byte
+  checkpoint). `for-aaron.md` lists 6 and 7.
 - LarsNet: weights 562 MB per survey.md, above the 200 MB install limit of the disk notice. Not attempted.
 - drumsep (Demucs-based drum separator): weights from Google Drive per survey.md; not attempted (time and disk).
-- Magenta Onsets and Frames drums (E-GMD checkpoint, 25,658,703 bytes): needs the archived Magenta TensorFlow 1
-  environment (survey.md); not attempted.
+- Magenta Onsets and Frames drums (E-GMD checkpoint, 25,658,703 bytes): needs the Magenta package, whose repository
+  says "This repository is currently inactive (archived, read only)" (survey.md); the last PyPI release, `magenta`
+  2.1.4 (2022-08-01), pins `tensorflow==2.9.1` and `numba==0.49.1` (PyPI JSON, read by the verifier 2026-11-10; the
+  earlier wording here, "TensorFlow 1", was wrong). No venv on the box has TensorFlow 2.9.1; not attempted.
 - Deep Salience (bass, melody salience from audio): its `replicate.yaml` pins Python 2.7.15 and TensorFlow 1.12.0
   (survey.md); the box has Pythons 3.9 to 3.13 (and 3.8 through uv, per the task notes), no 2.7; not attempted.
-- `eguitar_ircam.ts` TorchScript technique classifier (Hugging Face `nbrochec/ipt_models`, CC BY-NC 4.0): its input
-  pipeline lives in Max/MSP `ipt~` or the C library `libipt` (survey.md); not attempted.
+- `eguitar_ircam.ts` TorchScript technique classifier (Hugging Face `nbrochec/ipt_models`, CC BY-NC 4.0; classes for
+  electric guitar techniques such as `palmstrike` and `muted`): it is run by Max/MSP `ipt~`, the C library `libipt`
+  or the IPT Vamp plugin (survey.md, which marks it "RUNNABLE (TorchScript on CPU; not yet confirmed)"); not
+  attempted, and no reason beyond that is recorded.
 - Martelloni, McPherson, Barthet 2023 (percussive guitar classifiers): no code or data published (survey.md: dataset
   "currently not public"). Nothing to run.
 
@@ -371,12 +416,19 @@ The shared set has none (INPUTS.md). Searched 2026-11-10:
   guitar": candidates include sound 674811 "guitar body kick" by leaving.february ("Sound when hitting acoustic
   guitar body with a thumb in 105bpm", 0:18.285, WAV 44.1 kHz 24-bit stereo, license "Creative Commons 0", uploaded
   2023-02-14, per its page). `curl` to freesound.org from the box answered HTTP 403 (not retried); the page shows
-  the download link only behind a login and no preview URL was visible to the web reader. Not obtained.
+  the download link only behind a login and no preview URL was visible to the web reader. Not obtained. (The
+  verifier re-read the page through the web reader on 2026-11-10: title, description, duration, format, license,
+  upload date and the "Login to download" link match; the 403 was not re-tested.)
 - Wikimedia Commons API search: "File:Erik Mongrain-AirTap.ogv" (Erik Mongrain "demonstrating the lap-tapping
   technique with his song AirTap!", 180.2 s, 320x240, 15,937,314 bytes, "CC BY-SA 2.5", Artist "Erik Mongrain's
   management", per the API's extmetadata) and "File:Am7 Percussive Bass Tapping.webm" (a 5-string bass, CC BY 3.0,
   43.7 s). One download attempt of the AirTap file from upload.wikimedia.org answered HTTP 429 (3,513 bytes of HTML;
-  deleted). Not obtained.
+  deleted). Not obtained. Verifier's note: the AirTap description names "the lap-tapping technique" (notes tapped on
+  the fretboard with the guitar flat on the lap) and does not mention hits on the guitar body (file page read
+  2026-11-10); whether the video contains body percussion is UNVERIFIED (the file was not obtained, so its content
+  was not checked). The second
+  file is a bass, not a guitar. The size, duration, resolution, license and artist above match the Commons API
+  answer the verifier got the same day.
 - Steps for Aaron to fetch either file: `for-aaron.md`, list 8.
 
 ## Essentia 2.1-beta6-dev `PredominantPitchMelodia`: the melody voice from audio directly
@@ -404,15 +456,19 @@ The shared set has none (INPUTS.md). Searched 2026-11-10:
   The f0 track follows the melody voice: no frame is within 50 cents of the bass voice on any clip; the chroma
   matches against the bass are octave-related frames.
 - gtr-eval note (scorer 0.11.1): an f0 CSV with empty cells for unvoiced frames made `gtr-eval f0` stop with
-  `IndexError: index 5654 is out of bounds for axis 0 with size 5654` (e0440 to e0447, all eight runs). Writing 0 Hz
+  `IndexError: index 5654 is out of bounds for axis 0 with size 5654` (e0440 to e0447, all eight runs, exit code 3
+  in the eval ledger; the index is each clip's number of voiced frames). Writing 0 Hz
   for unvoiced frames (mir_eval's convention) worked; the numbers above use that file (`<clip>.melodia0.csv`, time
   = frame index x 128 / 44100). mir_eval still warned "Non-uniform timescale passed to resample_melody_series"
   (written into the result's `processing`).
 - Input format facts: any file FFmpeg decodes, resampled by `MonoLoader`; mono. Constraint inputs for a re-run:
   `minFrequency`, `maxFrequency` (a note range), `voicingTolerance`, `guessUnvoiced`, `frameSize`, `hopSize`,
   `magnitudeThreshold`; no tuning, capo or key input.
-- Samples: `samples/essentia-melodia/S2n.melodia.csv` (the 0-Hz version), `S2n_f0_melody.json`,
-  `S2n_f0_bass.json`.
+- Samples: `samples/essentia-melodia/S2n.melodia.csv` (the 0-Hz version, byte-identical to `S2n.melodia0.csv`),
+  `S2n_f0_melody.json`, `S2n_f0_bass.json`.
+- Verifier: re-run r0357 (same command, `--nolock`, one thread, wall 9.34 s) wrote byte-identical `<clip>.melodia.csv`
+  files for all four clips. An independent `mir_eval.melody.evaluate` on `S2s.melodia0.csv` against a 10 ms
+  reference built from the truth melody notes gave voicing recall 0.945 and raw pitch accuracy 0.796, as in e0487.
 
 ## Bass voice from audio: low-pass filter + librosa 0.11.0 `pyin` (monophonic f0), plus a plain f0-to-notes step
 
@@ -431,8 +487,9 @@ The shared set has none (INPUTS.md). Searched 2026-11-10:
   soundfile==0.14.0`; libnmfd got its own `venv-nmfd`. The truth voice-split runs r0184 and r0185 ran while
   `soundfile.py` was missing (they do not need it) and ended with exit 0; every other venv-core result in this file
   was made with the package set in `freeze/venv-core.txt`.
-- Outputs: `f0_<cutoff>.csv` (`time_s,f0_hz,voiced_prob`, 2,936 frames of 10 ms; unvoiced written as 0 Hz for
-  scoring) and `notes_<cutoff>.csv` (`onset,offset,pitch`). S2n: 2,540 / 2,590 / 2,458 voiced frames and 71 notes at
+- Outputs: `f0_<cutoff>.csv` (`time_s,f0_hz,voiced_prob`, 2,936 frames of 10 ms; the f0 cell is empty for unvoiced
+  frames), `f0_<cutoff>_0.csv` (the same with 0 Hz for unvoiced frames: the file that was scored and the one copied
+  to `samples/` as `S2n_f0_150.csv`) and `notes_<cutoff>.csv` (`onset,offset,pitch`). S2n: 2,540 / 2,590 / 2,458 voiced frames and 71 notes at
   150 / 200 / 250 Hz; S5dropd: 2,494 / 2,593 / 2,458 voiced frames and 76 / 71 / 71 notes.
 
 | clip, cutoff | f0 vs truth bass voice: voicing recall / false alarm / raw pitch acc / raw chroma acc (eval id) | notes vs bass voice, onset 50 ms: P / R / F, matched of 48 (eval id) | notes vs all 90 notes: melody notes matched (eval id) |
@@ -499,6 +556,10 @@ The shared set has none (INPUTS.md). Searched 2026-11-10:
   `initialize_drum_specific_nmfd_templates` builds templates from folders of single drum samples, which the PyPI
   wheel does not ship); the percussiveness threshold. No musical constraints.
 - Samples: `samples/libnmfd/` (summary JSON, both stem evals, venv freeze).
+- Verifier: re-run r0415 (same script, `--nolock`, one thread, in a `venv-nmfd` rebuilt offline from
+  `freeze/venv-nmfd.txt`; wall 42.47 s, CPU 36.2 s, peak RSS 1,780.9 MB, script timers KAM 12.47 s and NMFD 25.9 s)
+  wrote the same audio samples in all four files (largest absolute sample difference 0) and the same 30
+  percussiveness values. The wall time of r0238 (186.68 s) was measured under heavier load.
 
 ## madmom 0.17.dev0 (git commit 27f032e8): eight onset programs
 
@@ -518,7 +579,9 @@ The shared set has none (INPUTS.md). Searched 2026-11-10:
   RSS 281.2 MB; per program 2.6 to 5.4 s wall (timing.tsv) on a fully loaded box. An earlier attempt (queued from
   about 21:06 UTC through gtr-run's slots) waited about 30 minutes without getting a slot and was stopped by this session's
   background time limit; it never started and wrote no ledger line.
-- Output: text, one onset time in seconds per line (10 ms resolution, e.g. `2.150`, `2.680`, `3.220`).
+- Output: text, one onset time in seconds per line, in 10 ms steps for six programs (CNNOnsetDetector: `2.150`,
+  `2.680`, `3.220`) and 5 ms steps for ComplexFlux and SuperFlux (SuperFlux: `2.140`, `2.675`, `3.215`) (checked by
+  the verifier on the eight output files).
 
 | program | n onsets | vs taps P / R / F (eval id) | vs note onsets P / R / F (eval id) | on tap+note (27) | on note-only (21) | on tap-only (5) | on neither |
 |---|---|---|---|---|---|---|---|
@@ -533,8 +596,10 @@ The shared set has none (INPUTS.md). Searched 2026-11-10:
 
 - Timing of the 32 matched tap pairs: CNNOnsetDetector median +3.2 ms (largest 9.3 ms, e0681); SuperFlux median
   -2.1 ms (largest 5.0 ms, e0712); for comparison aubio hfc median +2.7 ms (e0081).
-- Like every detector in this lane, the madmom programs report an onset at every event and do not say whether an
-  onset is a tap or a plucked note.
+- The eight madmom programs report an onset at every one of the 53 events, as do librosa, the eight aubio methods and
+  six of the eight Essentia runs on the mix (Essentia `OnsetDetection hfc` misses one tap-only event and
+  `SuperFluxExtractor` with its defaults reaches 18 of the 53). None of these outputs says whether an onset is a tap
+  or a plucked note. (The onsets on the Demucs drums stems, below, reach no note-only event.)
 - Input format facts: WAV read by madmom's own loader (resampled per processor; the programs take 44.1 kHz mono here).
   Constraint inputs for a re-run: `--threshold`, `--smooth`, `--pre_max`/`--post_max`, `--combine`, `--delay`, `--fps`
   (peak picking, per each program's `-h`). No musical constraints.
@@ -567,9 +632,16 @@ methods above.
   90 matched (e0734); S2s 0.448 / 1.000 / 0.619, 201 (e0736); S6taps 0.459 / 1.000 / 0.629, 196 (e0738); S5dropd
   0.692 / 1.000 / 0.818, 130 (e0741). Every truth note of both voices is matched on all four clips; the extra notes
   are what the voice methods have to deal with. Median onset of matched notes 7.5 to 9.2 ms late.
+- Verifier: re-run r0416 (same command in a `venv-basicpitch` rebuilt offline from its freeze, `--nolock`,
+  `taskset -c 1`, one thread; wall 33.63 s for the five clips, CPU 28.9 s, peak RSS 371.0 MB) wrote byte-identical CSV
+  and MIDI files for all five clips. An independent `mir_eval.transcription.precision_recall_f1_overlap` (onset 50
+  ms, 50 cents, offsets ignored) on the S2n CSV gave P 0.657 / R 1.000 / F 0.793, as in e0734.
 
 Voice separation of those notes (`scripts/voice_split.py <clip> <basic-pitch csv>`, runs r0258 S2n, r0260 S2s,
-r0263 S6taps, r0265 S5dropd, `--nolock`, 6.2 to 7.8 s wall each). "Right voice" counts the transcribed notes matched
+r0263 S6taps, r0265 S5dropd, `--nolock`, 6.2 to 7.8 s wall each). As in the truth-note runs, M1 writes the notes into
+a MIDI file at the clip's tempo read from the truth file (112 bpm here), so M1 uses that one piece of truth; the other
+methods use only onset, offset and pitch. The verifier's re-run of r0258 (r0355) gave the same counts for every
+method and byte-identical per-method CSV files. "Right voice" counts the transcribed notes matched
 to a truth note (all 90 here) whose label equals that truth note's voice. The per-voice columns score only the notes
 a method labelled bass (or melody) against the truth bass (or melody) notes with `gtr-eval notes --voice`, so extra
 notes count against precision there.
@@ -626,14 +698,20 @@ notes count against precision there.
   in the constrained output is 43. So a range set for standard tuning removed the notes the Drop D tuning adds; the
   unconstrained run (Basic Pitch's default range) kept them. A run with a Drop D range (a minimum below D2 = 73.4 Hz)
   was not made.
+- Verifier: re-run r0417 of the constrained command on S5dropd alone (`--nolock`, `taskset -c 1`; wall 5.73 s)
+  wrote a byte-identical CSV. Both r0325 and r0417 also wrote a `.mid` file, although their command lines do not
+  contain `--save-midi`.
 
 ## Real fingerstyle clips without truth (R3a, R3b, R3c): counts only
 
 R3a (concert video), R3b (home recording) and R3c (lesson video) are real nylon-string fingerstyle recordings,
-18.0 s each (INPUTS.md; R3b and R3c were added at 21:29 UTC). Their manifest rows do not mention percussion, and none
-has truth, so nothing here is a score.
+18.0 s each (INPUTS.md; "R3b and R3c were added the same day (20:52 to 21:35 UTC)"). Their manifest rows do not
+mention percussion; INPUTS.md says "no body taps were seen in the frames looked at" (a statement about the video
+frames, not about the audio). None has truth, so nothing here is a score.
 
-- Run r0292 (`--nolock`, one thread; wall 14.79 s for the three clips, CPU 8.0 s, peak RSS 368.9 MB):
+- Run r0292 (`--nolock`, one thread; wall 14.79 s for the three clips, CPU 8.0 s, peak RSS 368.9 MB; the energy
+  fractions in the table were printed by the script, not saved to a file; the verifier's re-run r0359 printed the
+  same values and wrote identical onset files):
   `scripts/real_clips_onsets.py`: `librosa.effects.hpss(margin=4)` and `librosa.onset.onset_detect` (defaults) on
   the mono mix and on the percussive part. aubio `aubioonset -O hfc` and madmom `CNNOnsetDetector single` were run on
   the same mono files outside gtr-run (a few seconds each, not timed).
@@ -657,7 +735,7 @@ has truth, so nothing here is a score.
   1,354.1 MB) and r0330 the same with `-n htdemucs` (126.16 s, CPU 92.9 s). Output: one WAV per stem, 44.1 kHz
   stereo, 18.0 s.
 
-| clip | model | stem energy re mix, dB (bass / drums / other / guitar / piano / vocals) | drums stem peak | librosa onsets on the drums stem |
+| clip | model | stem energy re mix, dB (bass / drums / other / guitar / piano / vocals) | drums stem peak, of the (L+R)/2 mono signal | librosa onsets on the drums stem |
 |---|---|---|---|---|
 | R3a | htdemucs_6s | -50.5 / -50.6 / -43.2 / -0.1 / -50.5 / -42.1 | -64.7 dBFS | 226 |
 | R3b | htdemucs_6s | -16.2 / -65.4 / -67.7 / -0.3 / -70.8 / -63.7 | -70.8 dBFS | 183 |
@@ -666,14 +744,31 @@ has truth, so nothing here is a score.
 | R3b | htdemucs | -15.1 / -57.1 / -0.3 / n/a / n/a / -61.9 | -62.7 dBFS | 209 |
 | R3c | htdemucs | -62.7 / -42.5 / -0.0 / n/a / n/a / -56.1 | -23.5 dBFS | 55 |
 
+  The peak column is the peak of the stem's (L+R)/2 mono signal (recomputed by the verifier: it reproduces all six
+  values; the peak over both channels differs for two stems, -50.7 dBFS for R3a htdemucs and -70.3 dBFS for R3b
+  htdemucs_6s). The six onset counts were recomputed by the verifier (r0405: identical onset times).
   For comparison, the S6taps drums stems (with taps) are at -15.0 dB (htdemucs_6s, energy 0.0313) and -15.3 dB
-  (htdemucs, 0.0292) re the mix, peaks -7.7 and -7.9 dBFS, and gave 32 and 34 onsets. On these real tap-free clips
-  the drums stems are 42 to 65 dB below the mix, yet `librosa.onset.onset_detect` still returned 55 to 226 onsets on
+  (htdemucs, 0.0292) re the mix, mono peaks -7.7 and -7.9 dBFS, and gave 32 and 34 onsets. On these real clips (no
+  body taps seen in the video frames, per INPUTS.md) the drums stems are 42 to 65 dB below the mix, yet
+  `librosa.onset.onset_detect` still returned 55 to 226 onsets on
   them (its default `normalize=True`: "normalize the onset envelope to have minimum of 0 and maximum of 1 prior to
   detection", per its docstring); an absolute level gate was not tested. On the real clips
   htdemucs_6s put the guitar into `guitar` (-0.1 to -0.3 dB), unlike the synthesized S2s and S6taps (mostly
   `piano`). On R3b the bass stems hold -16.2 dB (htdemucs_6s) and -15.1 dB (htdemucs) of the mix energy; on R3a
   and R3c they are -50.5 to -71.5 dB.
+- Verifier: re-run r0420 of r0327's command on R3a only (`-n htdemucs_6s -d cpu -j 1`, `--nolock`, `taskset -c 2`,
+  one thread, with the source-separation lane's `venv-demucs`, which has demucs 4.1.0 and torch 2.15.0+cpu like this
+  lane's freeze; wall 30.36 s, CPU 24.3 s, peak RSS 1,256.5 MB). The stems are not bit-identical to r0327's: largest
+  absolute sample difference 2.1e-4 (drums, piano) to 1.1e-2 (guitar, vocals); stem energies re the mix are the
+  same to 0.1 dB for bass, drums, guitar and piano, but `other` is -47.3 dB (r0327: -43.2) and `vocals` -45.2 dB
+  (-42.1); the drums stem's mono peak is -65.0 dBFS (-64.7) and `librosa.onset.onset_detect` returns 180 onsets on
+  it (226 on r0327's). Demucs 4.1.0's `--shifts` defaults to 1, and its `apply_model` docstring says a shift "will
+  shift in time `mix` by a random amount between 0 and 0.5 sec" (read from the installed package), so repeated runs
+  are not expected to be identical. A third run on the same input, the source-separation lane's r0410 (`demucs -n
+  htdemucs_6s -d cpu`, default options, files in `/home/user/gtr/lanes/source-separation/out/htdemucs_6s/R3a/`),
+  gives `other` -38.6 dB and `vocals` -42.4 dB re the mix, a drums mono peak of -65.4 dBFS and 208 librosa onsets on
+  the drums stem (computed by the verifier outside gtr-run, not timed). So on this near-silent drums stem the onset
+  count was 226, 180 and 208 in three runs.
 - Files: `/home/user/gtr/lanes/fingerstyle-voices-taps/out/demucs-real/<model>/<clip>/` (stems and
   `drums_onsets.txt`).
 - Files: `/home/user/gtr/lanes/fingerstyle-voices-taps/out/real-clips/<clip>/` (onset lists).
@@ -684,7 +779,11 @@ R1c has truth notes from the GuitarSet annotation (148 notes, voice `chord` only
 only note onsets can be scored. Run r0334 (`--nolock`, one thread; wall 6.25 s for all seven, CPU 5.8 s, peak RSS
 263.5 MB): `librosa.onset.onset_detect` defaults, `aubioonset -O hfc|complex|specflux`, madmom `CNNOnsetDetector` and
 `SuperFlux` (`single`), Essentia `OnsetRate()`, all on `R1c.mono.wav` with defaults. `gtr-eval onsets --field notes`
-(139 truth onset groups after merging notes that start within 1 ms; window 50 ms):
+(window 50 ms; reference: the 148 truth onsets rounded to the millisecond with duplicates dropped, which leaves 139;
+merging onsets within 1 ms of a group's first onset instead would leave 135: four pairs of annotated onsets less than
+1 ms apart, such as 0.77613 and 0.77658 s, round to different milliseconds). The verifier's re-run r0362 of the same command
+wrote identical onset files, and an independent `mir_eval.onset.f_measure` against the 139 reference times gave
+CNNOnsetDetector P 0.732 / R 0.511 / F 0.602, as in e1281:
 
 | detector | n onsets | matched | P / R / F | median timing of matched (eval id) |
 |---|---|---|---|---|
@@ -704,8 +803,9 @@ Negative timing means the detected onset comes before the annotated one. Files:
 - What it is: plain NMF of the magnitude spectrogram through librosa's wrapper around `sklearn.decomposition.NMF`
   (`venv-core`). NMF itself does not say which component is a tap. To measure what the decomposition can hold,
   components were grouped with the truth (ORACLE: a component goes to "taps" when its audio correlates more with
-  `stems/taps.wav` than with `stems/guitar.wav`), so the numbers below are an upper bound for this setting, not a
-  method that could run on a new recording.
+  `stems/taps.wav` than with `stems/guitar.wav`), so the numbers below use the truth stems and do not describe a
+  method that could run on a new recording. (The correlation rule is one way to group with the truth; it is not
+  shown to give the highest score any grouping of these components could reach.)
 - Run r0296 (`--nolock`, one thread; wall 8.85 s, CPU 6.0 s, peak RSS 515.3 MB): `scripts/librosa_nmf_oracle.py`, S6taps
   mono, STFT 2048 / 512, `decompose(S, n_components=k, sort=True, random_state=0)` for k = 8 and 16 (2.3 s and 3.1 s);
   scikit-learn warned `ConvergenceWarning: Maximum number of iterations 200 reached`. Each component resynthesized
@@ -713,7 +813,9 @@ Negative timing means the detected onset comes before the annotated one. Files:
 - Output facts: k = 8: 1 component went to taps (its correlation with the taps stem 0.764, with the guitar stem
   0.077); k = 16: 3 components (0.672 / 0.024, 0.401 / 0.117, 0.489 / 0.135). Spectral flatness of the basis vectors
   (no truth needed): 0.0 to 0.073; the three taps components at k = 16 have 0.0, 0.0012 and 0.0727; of the 13
-  guitar components, 12 have 0.0 and one 0.0003.
+  guitar components, 12 have 0.0 and one 0.0003. At k = 8 the taps component has 0.0396 and the seven guitar
+  components 0.0 to 0.037. The verifier's re-run r0358 printed the same per-component values and wrote the same
+  audio samples (the WAV files differ only in header bytes).
 - Scores of the ORACLE groups (`gtr-eval stems`, joint): k = 8 taps SI-SDR 1.46 dB, SDR 7.77, SIR 13.53, SAR 9.30;
   guitar SI-SDR 17.34 dB (e1124). k = 16 taps SI-SDR 4.10 dB, SDR 4.63, SIR 8.02, SAR 7.92; guitar SI-SDR 18.64 dB
   (e1138).
@@ -731,7 +833,11 @@ Negative timing means the detected onset comes before the annotated one. Files:
 `venv-nmfd`, `venv-basicpitch`, `venv-demucs`, `venv-adtof`). After their runs, `venv-adtof`, `venv-nmfd`,
 `venv-basicpitch` and `venv-demucs` were deleted to stay inside the lane's disk budget (the orchestrator's disk
 notice); `venv-core`, `venv-essentia` and `venv-madmom` are still under `/home/user/gtr/lanes/fingerstyle-voices-taps/`.
-Clones of ADTOF-pytorch and piano_svsep were deleted after their files were read.
+Clones of ADTOF-pytorch and piano_svsep were deleted after their files were read (`repos/` is empty). Separate
+blob-less clones of 36 repositories, among them `CPJKU__piano_svsep` and `xavriley__ADTOF-pytorch`, made at 20:56 to
+21:14 UTC for the survey, are under `clones/` (110 MB after the verifier's `git ls-tree -l` calls fetched some of
+their blobs). The verifier rebuilt `venv-nmfd` and `venv-basicpitch` offline from the two freeze files (uv's shared
+cache, hard links, no measurable change in free disk) under `verify-trials/` for its re-runs.
 
 ## Inputs added by this lane
 
@@ -752,5 +858,137 @@ kHz) except the R3 Demucs stems (18.0 s). None is in git.
 | `inputs/voice-stems/{S2n,S2s,S5dropd,S6taps}/{melody,bass}.wav` | 5,178,644 bytes each (8 files) | one-voice reference renders, 16-bit stereo (r0135 to r0138) |
 | `inputs/voice-stems/{S2n,S2s,S5dropd,S6taps}/{melody,bass}.mono.wav` | 2,589,344 bytes each (8 files) | the same, mono |
 | `out/basic-pitch/*.mid` | 760 to 1,325 bytes | Basic Pitch MIDI of S2n, S2s, S6taps, S5dropd, R3a (r0252); small, copies of two are in `samples/basic-pitch/` |
-| `out/demucs-real/{htdemucs_6s,htdemucs}/{R3a,R3b,R3c}/*.wav` | 3,175,164 bytes each (30 files: 6 stems x 3 clips for htdemucs_6s, 4 x 3 for htdemucs) | Demucs stems of the real clips, 16-bit stereo 44.1 kHz, 18.0 s (r0327, r0330) |
+| `out/demucs-real/{htdemucs_6s,htdemucs}/{R3a,R3b,R3c}/*.wav` | 3,175,164 bytes each for R3a, 3,175,244 bytes each for R3b and R3c (30 files: 6 stems x 3 clips for htdemucs_6s, 4 x 3 for htdemucs) | Demucs stems of the real clips, 16-bit stereo 44.1 kHz, 18.0 s (r0327, r0330) |
 
+
+## Verification log (verify-trials-fingerstyle-voices-taps, 2026-11-10)
+
+Independent check of this file and of `for-aaron.md` against the run ledger, the eval ledger, the files under
+`/home/user/gtr/lanes/fingerstyle-voices-taps/` and the live sources. The verifier's check scripts are in
+`scripts/verify-trials/`; its re-run outputs are in `/home/user/gtr/lanes/fingerstyle-voices-taps/verify-trials/`.
+
+What was checked, and the result:
+
+- Run ledger: all 29 ledger lines of this lane (r0031 to r0334) against every run id, command, wall time, CPU time,
+  peak memory, core and exit-code figure quoted here: all match. r0219 (exit 1) is described as a failure; no other
+  run of this lane has a nonzero exit code. The cited runs of other lanes (r0053, r0054, r0060, r0099, r0147, r0033)
+  match too; r0033's error text is in the audio-to-notes lane's `out/basic-pitch/cli-tflite-default/S2n/stdout.log`.
+- Eval ledger: all 190 eval ids cited (184 by number, plus e0441 to e0446 inside "e0440 to e0447") exist, record
+  `gtr_eval_version` 0.11.1, and every number taken from them matches the stored result (exit code 0 for 182, exit
+  code 3 for the eight f0 IndexError runs). All 190 scorings were then re-run with `gtr-eval ... --no-ledger` on the
+  saved outputs (run r0434, `scripts/verify-trials/reeval.py`, summary in `samples/verify-trials/reeval_summary.json`):
+  190 of 190 gave the same counts, metrics, error text and exit code.
+- Independent recomputation without gtr-eval (`scripts/verify-trials/`): the tap, note-onset and event-class counts
+  of all 37 S6taps onset files and their P / R / F against taps and note onsets with `mir_eval.onset.f_measure`
+  (`vonsets.py`; all match); the event-energy table for ten signals (`venergy.py`; all match within 0.01 dB of
+  rounding except one cell, fixed below); the tap-kind centroids (`vcentroid.py`; match); the stem energies and peaks
+  (`vstemenergy.py`); and one metric per tool with mir_eval directly (`vmireval.py`): SI-SDR of the HPSS margin-4,
+  libnmfd KAM and NMF k = 16 taps parts, SI-SDR and SDR of the htdemucs_6s drums stem, Basic Pitch S2n note P / R /
+  F, the B1 T = 55 bass-labelled notes of S2n, Essentia Melodia S2s and pyin S2n f0 raw pitch accuracy, and R1c
+  madmom CNN onsets. Every value matches its eval id.
+- Files: every output, sample and freeze file named here exists. The samples are copies of the files in `out/` (the
+  Melodia and pyin samples are the 0-Hz versions); the seven freezes in `samples/freezes/` are byte-identical to
+  `freeze/`. The madmom eval ids scored `out/madmom/S6taps_onsets/`, byte-identical copies of r0247's
+  `out/madmom/S6taps/`. Formats were checked by opening the files: CSV headers and column counts, MIDI note counts,
+  the MusicXML part and voice tags, WAV rate, channels, sample type and length.
+- Lane folder: no audio or video, no file over 300 KB (largest: `samples/essentia-melodia/S2n.melodia.csv`, 222,706
+  bytes), 1.1 MB in all; no key, token or password pattern found; nothing personal about Aaron.
+- Sources re-read on 2026-11-10: PyPI JSON (omnizart, libnmfd, magenta, piano_svsep, tf-keras), raw GitHub files
+  (ADTOF-pytorch README, `post_processing.py`, `model.py`, `pyproject.toml` and weights; ADTOF README and
+  `setup.py`; piano_svsep `setup.py`, LICENSE, README, `launch_scripts/predict.py`; Omnizart README and CLI source;
+  voice-splitting README and Makefile; ADT_STR README and `pyproject.toml`; Inverse Drum Machine README and
+  `idm/inference.py`; LarsNet README, `requirements.txt` and its three `.py` files; drumsep README and
+  `drumsepInstall`; Deep Salience `replicate.yaml`, README and `predict/predict_on_audio.py`; Magenta Onsets and
+  Frames README; libnmfd LICENSE and demo notebook), the Hugging Face API for `Pierfrancesco/adt-str`, the
+  Freesound page of sound 674811 and the Commons page and API of the AirTap file, and the installed packages
+  (madmom models LICENSE and commit, partitura and music21, librosa, Essentia, aubio, demucs 4.1.0).
+
+Re-runs of recorded commands through gtr-run (labels start with "verify"):
+
+| verifier run | re-run of | result |
+|---|---|---|
+| r0352 | r0079 aubio, 8 methods | 8 byte-identical onset files |
+| r0353 | r0090 Essentia onsets | 8 byte-identical onset files |
+| r0354 | r0184 voice split, S2n truth | same counts for every method, byte-identical CSV and MIDI files |
+| r0355 | r0258 voice split, S2n Basic Pitch notes | same counts, byte-identical CSV files |
+| r0357 | r0220 Essentia Melodia, 4 clips | 4 byte-identical CSV files |
+| r0358 | r0296 librosa NMF + ORACLE grouping | same per-component values, same audio samples |
+| r0359 | r0292 R3 HPSS + onsets | byte-identical onset files, same printed energy fractions |
+| r0362 | r0334 R1c, 7 detectors | 7 byte-identical onset files |
+| r0363 | r0137 one-voice stems of S2n | 4 byte-identical WAV files |
+| r0404 | onsets on the htdemucs, htdemucs_6s and umxhq drums stems of S6taps (first computed outside gtr-run) | identical onset times |
+| r0405 | onsets on the six R3 Demucs drums stems (first computed outside gtr-run) | identical onset times |
+| r0415 | r0238 libnmfd demo pipeline | same audio samples, same percussiveness values |
+| r0416 | r0252 Basic Pitch, 5 clips | byte-identical CSV and MIDI files |
+| r0417 | r0325 Basic Pitch with a note range, S5dropd | byte-identical CSV |
+| r0420 | r0327 Demucs htdemucs_6s, R3a only | not identical (random time shift, see the Demucs section); onsets on the drums stem 180 against 226 |
+| r0434 | all 190 cited gtr-eval scorings | 190 of 190 identical |
+| CHAIN1-PENDING | | |
+
+The venvs for r0415 and r0416 were rebuilt offline from `freeze/venv-nmfd.txt` and `freeze/venv-basicpitch.txt`
+(uv's shared cache; free disk did not change measurably); r0420 used the source-separation lane's `venv-demucs`,
+whose demucs, torch and numpy versions are those of `freeze/venv-demucs.txt`.
+
+Tried and refused: compiling McLeod and Steedman's voice-splitting (`make` in a clone of
+`apmcleod/voice-splitting`) was refused by the session's permission classifier ("[Code from External]"); not run, no
+ledger line, clone deleted. ADTOF-pytorch's two refused steps were not repeated.
+
+Changed in this file:
+
+- Header: only r0031, r0079 and r0090 used a 2-core slot; the other runs are `--nolock` (gtr-run's own wording
+  quoted), with the thread and taskset meaning stated.
+- Inputs: the gtr-eval note-onset merge rule stated as coded (rounding to the millisecond); the INPUTS.md sentence
+  about capo and tap videos replaced by its exact wording; the threshold rule stated as T = 53, 54 or 55.
+- HPSS event-energy table: truth `stems/taps.wav`, tap+note maximum -0.01 dB (was 0.0).
+- madmom: output steps are 10 ms for six programs and 5 ms for ComplexFlux and SuperFlux (was "10 ms resolution");
+  the sentence "Like every detector in this lane ... an onset at every event" replaced (Essentia hfc misses one
+  tap-only event, SuperFluxExtractor reaches 18 of 53, the drums-stem onsets reach no note-only event).
+- Voice split: music21's private `_maxVoiceCount` noted; partitura 1.9.0's signature default (`True`) against its
+  docstring ("Defaults to False") noted; r0111 / r0113 / r0114 marked UNVERIFIED (outputs overwritten).
+- ADTOF-pytorch: verifier's check of the repository facts added; the refusals marked as the trial agent's report.
+- Omnizart and ADTOF: TensorFlow now present in two other lanes' venvs (tensorflow-cpu 2.12.1, from 21:31 and 21:51
+  UTC) added, and why that does not meet either requirement.
+- piano_svsep: PyPI 404 checked; the MusicXML handoff file does carry music21's `<voice>` numbers (36 voice 1, 12
+  voice 2), not "no voice information" as `for-aaron.md` said.
+- McLeod: the verifier's refused attempt added. ADT_STR: torch 2.8.0 pin and 289 MB Hugging Face checkpoint added.
+  Magenta: "TensorFlow 1 environment" was wrong; the package pins `tensorflow==2.9.1`.
+- eguitar_ircam: the IPT Vamp plugin and survey.md's "RUNNABLE (... not yet confirmed)" added; no reason beyond "not
+  attempted".
+- Real recording: the AirTap file's description names lap-tapping and does not mention body hits (UNVERIFIED whether
+  it has any); Freesound and Commons facts re-checked.
+- Basic Pitch: M1's use of the truth tempo (112 bpm) stated; re-run results; MIDI written without `--save-midi`.
+- pyin: the scored files are `f0_<cutoff>_0.csv` (the plain `f0_<cutoff>.csv` has empty cells).
+- Melodia: exit code 3 and the voiced-frame index explained; re-run and independent mir_eval check added.
+- NMF ORACLE: "upper bound" removed (the correlation rule is not shown to be the best grouping); k = 8 flatness added.
+- R3: INPUTS.md times and wording quoted; "tap-free" replaced by what INPUTS.md says (no body taps seen in the
+  frames); the peak column is the (L+R)/2 mono peak; the Demucs run-to-run differences (226, 180, 208 onsets) added.
+- R1c: 139 is the count after gtr-eval's rounding to the millisecond (135 if merged within 1 ms).
+- Media table: R3b and R3c Demucs stems are 3,175,244 bytes each (R3a 3,175,164).
+- Environments: the `clones/` folder (36 blob-less clones from the survey) noted.
+
+Changed in `for-aaron.md`: the header no longer describes Aaron's own computer or background; the timing note moved
+to the top; list 2 and 3 reasons updated (TensorFlow 2.12.1 now on the box, still not meeting the requirements);
+list 4: the torch 2.8.0 pin and the MusicXML file's voice tags; list 5: concrete build and run commands from the
+repository's Makefile and README (class `HmmVoiceSplittingModelTester`; the README's other class name,
+`HmmVoiceSplittingTester`, has no source file in the repository); list 6: the checkpoints are on Hugging Face, not in
+the GitHub repository, with a download command and the `--checkpoint` path form the README allows; list 7: a
+ready-to-paste script built from the README's two examples with the S6taps tap times filled in; list 8: the AirTap
+file described by its own description; list 9: install packages taken from the code's imports (the README lists
+none); list 10: the README's Colab route first, its command line marked "With Linux"; list 11: the script must run
+from `predict/` (it loads `weights/<task>.h5` relative to the current folder) and the output folder must exist; list
+12: the reason corrected (TensorFlow 2.9.1, not TensorFlow 1) and the README's Colab notebook named.
+
+Still UNVERIFIED:
+
+- The two ADTOF-pytorch refusals (no ledger trace; the verifier did not see that session's transcript).
+- The numbers of r0111, r0113 and r0114 (their output files were overwritten by r0184 and r0185).
+- Statements about earlier moments: no R3 stems in the source-separation lane's folder at 21:46 UTC, no S2 notes from
+  the audio-to-notes lane at 21:25 UTC, the slot attempts that never started (madmom from about 21:06 UTC, Basic Pitch
+  cancelled after 813 s), `du -sh venv-core` = 617 MB right after its install (669 MB now), and the Basic Pitch
+  `pkg_resources` dead end and the libnmfd mix-up in `venv-core` (consistent with the freezes, not reproduced).
+- The HTTP 403 from freesound.org and the HTTP 429 on the AirTap download (not re-tested; the Commons API also
+  answered the verifier with HTTP 429 once).
+- Whether the AirTap video contains body percussion.
+
+Side effect to know about: the verifier's `git ls-tree -l` calls on the blob-less survey clones fetched blobs, so
+`clones/` grew from 14 MB to 110 MB (mostly `rabitt__ismir2017-deepsalience` and `CPJKU__piano_svsep`).

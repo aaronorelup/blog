@@ -1,0 +1,56 @@
+{
+ "clip": "R3a_cu",
+ "mode": "full",
+ "frames": 60,
+ "all": {
+  "frames": 60,
+  "frac_0_hands": 0.0,
+  "frac_1_hand": 0.0,
+  "frac_2_hands": 1.0,
+  "frac_more_than_2": 0.0,
+  "frac_at_least_1": 1.0,
+  "label_counts": {
+   "person_left": 60,
+   "person_right": 60
+  },
+  "infer_ms_mean": 1465.16,
+  "infer_ms_median": 1511.71,
+  "infer_ms_p90": 1808.48,
+  "fps_from_mean": 0.68,
+  "score_mean": 4.5087,
+  "score_min": 0.9588,
+  "score_max": 8.7582
+ },
+ "per_shot": {
+  "close": {
+   "frames": 60,
+   "frac_0_hands": 0.0,
+   "frac_1_hand": 0.0,
+   "frac_2_hands": 1.0,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 1.0,
+   "label_counts": {
+    "person_left": 60,
+    "person_right": 60
+   },
+   "infer_ms_mean": 1465.16,
+   "infer_ms_median": 1511.71,
+   "infer_ms_p90": 1808.48,
+   "fps_from_mean": 0.68,
+   "score_mean": 4.5087,
+   "score_min": 0.9588,
+   "score_max": 8.7582
+  }
+ },
+ "tool": "rtmlib rtmw",
+ "rtmlib_version": "?",
+ "models": {
+  "det": "https://download.openmmlab.com/mmpose/v1/projects/rtmposev1/onnx_sdk/yolox_m_8xb8-300e_humanart-c2c7a14a.zip",
+  "pose": "https://download.openmmlab.com/mmpose/v1/projects/rtmw/onnx_sdk/rtmw-dw-x-l_simcc-cocktail14_270e-384x288_20231122.zip"
+ },
+ "init_s": 0.861,
+ "frame_step": 5,
+ "hand_counted_if_mean_kpt_score_ge": 0.3,
+ "frac_frames_with_det_box": 1.0,
+ "det_boxes_per_frame_max": 1
+}

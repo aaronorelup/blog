@@ -1,5 +1,6 @@
-// Verifier copy of ../serve.mjs (verify-trials-browser-audio-sync, 2026-11-10). Three lines differ: /nm/ is served from
-// verify/node/node_modules (only the packages the re-runs need, same exact versions) and uploads go to verify/out/.
+// Verifier copy of ../serve.mjs (verify-trials-browser-audio-sync, 2026-11-10). Four lines differ: the pages root is
+// the trial's scripts/ folder (this copy lives one level down), /nm/ is served from verify/node/node_modules (only the
+// packages the re-runs need, same exact versions), uploads go to verify/out/ so the trial's out/ is never overwritten, and /vpages/ serves verify-trials/pages/.
 // Local static server for the browser-audio-sync trials.
 // - Serves fixed roots only (no directory listing), with COOP/COEP/CORP headers so pages are cross-origin isolated
 //   (needed for SharedArrayBuffer, i.e. ONNX Runtime Web threads and ffmpeg.wasm core-mt). ?coi=0 on a page URL
@@ -15,6 +16,7 @@ const LANE = '/home/user/gtr/lanes/browser-audio-sync';
 const SCRIPTS = path.join(path.dirname(url.fileURLToPath(import.meta.url)), '..');   // verifier: the trial's scripts/ folder
 const ROOTS = {
   '/pages/': path.join(SCRIPTS, 'pages'),
+  '/vpages/': path.join(SCRIPTS, 'verify-trials', 'pages'),   // verifier: its own extra page(s)
   '/nm/': path.join(LANE, 'verify', 'node', 'node_modules'),   // verifier: a subset of the same package versions
   '/build/': path.join(LANE, 'work', 'build'),
   '/inputs/': '/home/user/gtr/inputs',

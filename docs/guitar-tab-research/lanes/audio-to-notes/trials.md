@@ -27,6 +27,8 @@ How to read the numbers:
   `/home/user/gtr/lanes/audio-to-notes/out/<tool>/` (MIDI for other lanes: `out/<tool>/.../<clip>.mid`).
 - Clip ids used here beyond the manifest: `S4guitar` = `S4/stems/guitar.wav`, `S4lead` = `S4/stems/lead.wav`
   (scored against the S4 truth, voices `chord` and `melody`).
+- Every venv was deleted after its tool's runs (the shared-disk notice); each one's `uv pip freeze` is saved in the
+  tool's `samples/` folder, so the installs can be rebuilt with the commands given.
 
 ## Summary: what ran here, and what each tool writes
 
@@ -110,8 +112,8 @@ RPA against the truth melody voice (from the tool tables below) and against the 
   `onset_s,offset_s,pitch_midi,fitted_pitch_hz` (pitch_midi = nearest MIDI number). First S1 notes (truth starts
   with F#4 at 1.667 s and F#4 again at 2.083 s): `1.680-2.512 66 (369.994 Hz)`, `2.512-2.944 67 (391.769 Hz)`,
   `2.944-3.776 69`, `3.776-4.176 67`, `4.176-4.608 66`, `4.608-5.024 64`, `5.024-5.856 62`, `5.856-6.272 64`,
-  `6.272-7.312 66`, `7.312-8.352 64`: repeated notes of the same pitch come out as one note (62 truth notes, 48
-  estimated on S1).
+  `6.272-7.312 66`, `7.312-8.352 64`: the two F#4 notes at the start came out as one note (1.680-2.512 s); S1 has 62
+  truth notes and 48 estimated ones.
 - Note counts: S1 48, S2n 55, S2s 28, S4 8, S4lead 35, R1b 60, R2 47, R3a 33.
 
 f0, default range (`--conf-threshold 0.5`):
@@ -168,7 +170,8 @@ Against the melody voice only: S2n F1 0.186 (e0323), S2s F1 0.114 (e0326), S4 F1
   below.)
 - Constraint inputs (signature in `librosa/core/pitch.py` at tag 1.0.0, read 2026-11-10): `fmin`, `fmax`
   (keyword-only, required), `sr`, `frame_length`, `hop_length`, `n_thresholds`, `beta_parameters`,
-  `boltzmann_parameter`, `resolution` (0.1 semitone), `max_transition_rate` (35.92 octaves per second),
+  `boltzmann_parameter`, `resolution` (default 0.1), `max_transition_rate` (default 35.92, "maximum pitch
+  transition rate in octaves per second"),
   `switch_prob`, `no_trough_prob`, `fill_na`, `center`, `pad_mode`, `transition_min_prob`.
 
 | clip | RPA | RCA | voicing recall | voicing false alarm | overall accuracy | eval id |
@@ -245,8 +248,8 @@ Against the melody voice only: S2n F1 0.186 (e0323), S2s F1 0.114 (e0326), S4 F1
   dB). Run **r0130** (`gtr-run --nolock`: unpinned, single-threaded; wall 4.23 s, CPU 2.9 s, peak RSS 35.2 MB for
   8 clips, both tools); per clip 0.14 to 0.30 s for aubiopitch, 0.19 to 0.42 s for aubionotes.
   `scripts/run_aubio.py`.
-- Output (aubiopitch): text lines `time_s pitch_hz`, one per hop of 256 samples (5.805 ms at 44.1 kHz); 0 Hz where
-  the frame is below the silence threshold; no confidence column. 5140 frames for S1.
+- Output (aubiopitch): text lines `time_s pitch_hz`, one per hop of 256 samples (5.805 ms at 44.1 kHz); 0 Hz in
+  silent frames (S1's silent count-in reads `0.000000`); no confidence column. 5140 frames for S1.
 - Output (aubionotes): text lines `midi_pitch onset_s offset_s` (pitch as a float such as `66.000000`), plus lines
   with a single time value (S1: `1.718277` before the first note and `29.837643` at the end; other clips have more
   of them). Only 3-field lines were taken as notes.
@@ -337,8 +340,9 @@ file, pitch bends ignored by gtr-eval.) Pictures:
 
 ## ByteDance piano transcription (`piano_transcription_inference` 0.0.6, piano-trained, run on guitar)
 
-- What: the inference package for ByteDance's high-resolution piano transcription model (notes with onsets, offsets,
-  velocities, plus sustain pedal). **The weights were trained on piano**; here they were run on guitar. PyPI
+- What: the inference package for ByteDance's piano transcription model (repository
+  `qiuqiangkong/piano_transcription_inference`, per the docs lane): notes with onsets, offsets and velocities, plus
+  sustain pedal. **The weights were trained on piano**; here they were run on guitar. PyPI
   `piano-transcription-inference` 0.0.6 (uploaded 2025-01-26, MIT classifier). Weights:
   `CRNN_note_F1=0.9677_pedal_F1=0.9186.pth` from Zenodo record 4034264 (the URL is in the package's
   `inference.py`), 171,966,578 bytes, sha256 c3fa9730...07876141, downloaded with curl (the package itself would call
@@ -464,7 +468,7 @@ Recall by truth voice (defaults): S2n melody 42/42 and bass 48/48 (e0493); S4 me
 26/61 (e0499). S7flat30 (the S3 notes 30 cents flat) gave 112 notes against S3's 197.
 
 With the range limited to 82.4 to 1319 Hz (run 2): S4 bass recall 26/61 -> 11/61 and S4 note count 461 -> 418
-(e0535; the S4 bass part goes below E2); S5dropd bass recall 48/48 -> 44/48 (e0544; the four D2 notes, 73.4 Hz,
+(e0535; 35 of the 61 S4 bass notes lie below E2, lowest MIDI 31); S5dropd bass recall 48/48 -> 44/48 (e0544; the four D2 notes, 73.4 Hz,
 lie below the limit); S1, R1a and R1b gave the same scores (e0524, e0516, e0519). Note counts, default -> limited:
 S2n, S2s, S3, S4lead, S5capo2, S7flat30 and R1c one fewer each, S6taps 196 -> 194, S4guitar 386 -> 390, R2 (no
 truth) 334 -> 268, R3a unchanged at 105 (all scores in `samples/basic-pitch/guitar-range/scores_notes.json`).
@@ -544,7 +548,8 @@ without the taps, F1 0.623 (e0495). Outputs: `/home/user/gtr/lanes/audio-to-note
 
 - Oddity, measured: with the default Viterbi decoder, many truth-voiced frames came out at 1500 Hz or above with
   periodicity 0.0 (median over those frames): R1b `tiny` 890 of 1823 frames, `full` 838; S2n `tiny` 2307 of 2529,
-  `full` 1803; S1 none. A follow-up run **r0287** (`--nolock`, 2 threads, `scripts/run_torchcrepe_decoders.py`) ran
+  `full` 1803; S1 none (`scripts/diag_torchcrepe_high_frames.py`, output `samples/torchcrepe-tiny/diag_high_frames.txt`).
+  A follow-up run **r0287** (`--nolock`, 2 threads, `scripts/run_torchcrepe_decoders.py`) ran
   `tiny` on R1b and S2n with each decoder and nothing else changed; scored without a threshold:
 
 | decoder | R1b RPA | R1b RCA | eval id | S2n RPA | S2n RCA | eval id | frames >= 1500 Hz (R1b / S2n, of 2934 / 2936) |

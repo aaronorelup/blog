@@ -115,7 +115,8 @@ Where the R3a detections landed (`hand_regions.py`, frames with at least one det
   `lm_px_full` (pixels in the 640x480 frame), `world_m`. Files: `out/mediapipe-hands/<clip>_<mode>.jsonl` (R3a full
   1,460,405 bytes; not copied), summaries and 5-frame excerpts in `samples/mediapipe-hand-landmarker/`.
 - Input format facts: an `mp.Image` in SRGB (uint8 HxWx3) per call; VIDEO mode needs a timestamp in ms that increases
-  monotonically. 640x480, 720x720, 840x660 and 1280x960 inputs were all accepted.
+  monotonically. 640x480, 720x720, 840x660, 1280x960 and 1920x1080 inputs were all accepted, and the frame size may
+  change between calls in VIDEO mode (it did at the R3a shot cut in crop mode).
 - Constraint inputs that matter for a re-run: `num_hands`, the three confidence thresholds, `running_mode` (IMAGE,
   VIDEO, LIVE_STREAM). There is no region-of-interest input in the Python options; cropping (as here) is done outside.
 - Oddities: every run logs `landmark_projection_calculator.cc:81] Using NORM_RECT without IMAGE_DIMENSIONS is only
@@ -151,9 +152,10 @@ Where the R3a detections landed (`hand_regions.py`, frames with at least one det
   `detector_small.pt`, `wilor_final.ckpt`; its card metadata says `license: cc-by-nc-4.0`. The repository's
   `license.txt` begins "Attribution-NonCommercial-NoDerivatives 4.0 International"; the README says "WiLoR models fall
   under the [CC-BY-NC--ND License](./license.txt)."
-- NOT RUN HERE (mesh): the README says "It is also required to download MANO model from [MANO website]
-  (https://mano.is.tue.mpg.de). Create an account by clicking Sign Up and download the models (mano_v*_*.zip). Unzip
-  and place the right hand model `MANO_RIGHT.pkl` under the `mano_data/` folder."
+- NOT RUN HERE (mesh): the README says
+  "It is also required to download MANO model from [MANO website](https://mano.is.tue.mpg.de).
+  Create an account by clicking Sign Up and download the models (mano_v*_*.zip). Unzip and place the right hand model
+  `MANO_RIGHT.pkl` under the `mano_data/` folder."
 - A third-party copy of `MANO_RIGHT.pkl` exists: the Hugging Face repo `warmshao/WiLoR-mini` (not gated) lists
   `pretrained_models/MANO_RIGHT.pkl`, and WiLoR-mini's pipeline code downloads it with `hf_hub_download(...,
   filename="MANO_RIGHT.pkl")` when the file is missing. It was not downloaded or used here, because the MANO license
@@ -200,8 +202,9 @@ Read 2026-11-10 at https://mano.is.tue.mpg.de/license.html (page text extracted 
 
 ## Grounding DINO (tiny), OWLv2 (base) and YOLO-World v2: NOT RUN HERE (disk)
 
-- At 21:12 UTC the orchestrator's disk notice (printed by `env.sh`) said: "start no new download or install over 200 MB
-  unless your lane cannot finish without it; pick the smallest checkpoint a model offers". Free disk was 7.9 GB.
+- From about 21:12 UTC the orchestrator's disk notice (printed by `env.sh`; it reported "8027 MB free") said: "start
+  no new download or install over 200 MB unless your lane cannot finish without it; pick the smallest checkpoint a model
+  offers".
 - Sizes read from the Hugging Face API (`?blobs=true`, 2026-11-10): `IDEA-Research/grounding-dino-tiny`
   `model.safetensors` 689,359,096 bytes (card `license: apache-2.0`, not gated); `google/owlv2-base-patch16-ensemble`
   `model.safetensors` 619,918,824 bytes (`license: apache-2.0`, not gated). YOLO-World v2 in Ultralytics
@@ -280,8 +283,8 @@ Read 2026-11-10 at https://mano.is.tue.mpg.de/license.html (page text extracted 
 - Fret-like clusters in the rectified frame 150 (x in px from the nut): LSD 5.7, 98.9, 341.2, 410.6, 476.7, 537.2,
   594.8, 647.9, 698.1, 744.7, 789.7 (11 clusters); HoughLinesP 339.0, 408.5, 478.0, 647.0, 746.2, 793.0 (6). The
   fretting hand covers about x = 100-330 of the rectified image in this frame (by eye), and no cluster falls there.
-  String-like clusters (y in px from the upper edge): LSD 6.4, 27.7, 46.2, 109.9; Hough 5.5, 28.1, 46.1. Six separate
-  strings were not resolved at this size (the rectified fretboard is 116 px tall, from a 58.8 px wide original).
+  String-like clusters (y in px from the upper edge): LSD 6.4, 27.7, 46.2, 109.9; Hough 5.5, 28.1, 46.1, i.e. 4 and 3
+  clusters, not 6 (the rectified fretboard is 116 px tall, from a 58.8 px wide original).
 - Output format facts: `opencv_lines.json` = per frame and quad: `quad` (4 corners), `homography_img_to_rect` (3x3),
   `unrectified` {neck_axis_deg, fretboard_width_px, hough/lsd counts, time_s}, `rectified` {size, hough/lsd counts,
   `fret_x_clusters_px_from_nut`, `string_y_clusters_px_from_upper_edge`, time_s}. The rectified neck image of each frame
@@ -289,7 +292,7 @@ Read 2026-11-10 at https://mano.is.tue.mpg.de/license.html (page text extracted 
 - Constraint inputs: the quad (4 points) and every threshold above are parameters; nothing is learned.
 - Samples: `samples/opencv-lines/` (overlays: unrectified Hough per frame, rectified Hough and LSD per frame; JSON).
 - A second quad taken from the SAM 2.1 neck mask (minimum-area rectangle) is supported by the script
-  (`run_opencv_lines.py <outdir> <mask.png>`); see the SAM 2.1 section for whether it ran.
+  (`run_opencv_lines.py <outdir> <mask.png>`); it ran as r0400, reported in the SAM 2.1 section.
 
 ### Same method on R3b (1920x1080, close view)
 
@@ -322,7 +325,7 @@ Read 2026-11-10 at https://mano.is.tue.mpg.de/license.html (page text extracted 
 A fact about formats, not a product. Frame 150 of R3a_cu, no ground truth. Script
 `scripts/handoff_fingertip_to_cell.py`, first run r0172 (`--nolock`, light: wall 1.2 s, CPU 0.4 s, 86.7 MB), re-run
 r0218 (wall 0.39 s) after the script was generalized for other clips and given the "drop" rule in step 4. Both runs
-gave the same cells; the fit numbers below are from r0218, with r0172's in brackets.
+gave the same cells; the fit numbers below are from r0218, and step 4 also gives r0172's choice.
 
 | step | done by | input | output |
 |---|---|---|---|
@@ -419,7 +422,7 @@ had RMS 7.52 px and k0 = 5 had RMS 20.48 px.
   `numpy<2`), protobuf 4.25.9, opencv-contrib-python 4.11.0.86 (full list: `samples/mediapipe-legacy/uv-pip-freeze.txt`).
   Wheel `mediapipe-0.10.21-cp311-cp311-manylinux_2_28_x86_64.whl`, 35,622,638 bytes.
 - Settings: `Hands(static_image_mode=False, max_num_hands=2, model_complexity=1, min_detection_confidence=0.5,
-  min_tracking_confidence=0.5)` (the signature's defaults except `max_num_hands`, which defaults to 2 as well).
+  min_tracking_confidence=0.5)`; all five equal the defaults in the constructor's signature.
   Script `scripts/run_mediapipe_legacy_hands.py <clip> <full|crop> <outdir>`. Runs: steps of group job C1.
 - Handedness convention, from the docstring of `mediapipe/python/solutions/hands.py` in this wheel: "Note that it
   determines handedness assuming the input image is mirrored, i.e., taken with a front-facing/selfie camera (
@@ -477,6 +480,8 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
 | yolo-pose_yolo26n-pose_R3a_crop | n, R3a crop 3x | 540 | 79.27 s | 82.96 s | 472.4 MiB | 130.96 / 125.16 / 155.17 ms | 7.64 | 122.2 ms | 540 | 0 / 57 / 482 | 2 |
 | yolo-pose_yolo26s-pose_R3a_full | s, R3a full | 540 | 167.16 s | 154.32 s | 538.2 MiB | 292.67 / 293.17 / 359.55 ms | 3.42 | 283.5 ms | 540 | 0 / 1 / 539 | 2 |
 | yolo-pose_yolo26n-pose_R3a_cu_full | n, R3a_cu full | 300 | 48.62 s | 44.62 s | 463.4 MiB | 138.88 / 129.06 / 153.44 ms | 7.20 | 126.3 ms | 300 | 0 / 264 / 36 | 2 |
+| yolo-pose_yolo26n-pose_R3b_full | n, R3b 1920x1080 | 450 | 54.99 s | 57.77 s | 480.1 MiB | 87.94 / 81.45 / 100.65 ms | 11.37 | 80.1 ms | 450 | 0 / 251 / 197 (2 frames with more than 2) | 2 |
+| yolo-pose_yolo26n-pose_R3c_full | n, R3c 1920x1080 | 450 | 52.20 s | 57.91 s | 477.7 MiB | 85.75 / 80.24 / 97.35 ms | 11.66 | 78.7 ms | 450 | 0 / 0 / 450 | 1 |
 
 - The per-frame time is measured around `model.predict` and includes Ultralytics' first-call setup on frame 0
   (4362.8 ms in the first run, 1609-2261 ms in the others); "Ultralytics inference" is the `speed["inference"]` value
@@ -486,7 +491,9 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
   with mean confidence 0.911 (minimum 0.7235) and the left wrist (395, 210) with 0.974. By eye on frame 300 the
   picking hand is behind the music stand in the wide shot.
 - R3a_cu (close shot, picking hand not in frame): the person's left wrist is reported in all 300 frames, the right wrist
-  with confidence >= 0.5 in 36.
+  with confidence >= 0.5 in 36. R3b (picking-hand fingers at the left edge of the picture): left wrist in 450 frames,
+  right wrist in 201. Every input, 1080p included, is resized by Ultralytics to the `imgsz=640` network size before
+  inference.
 - Output format facts: `results[0].keypoints.xy` (N persons x 17 x 2 pixels), `.keypoints.conf` (N x 17),
   `results[0].boxes.xyxy` / `.conf`, `results[0].speed` = {preprocess, inference, postprocess} in ms. The script stores
   per frame the elbows and wrists (x, y, confidence) in full-frame pixels and the person-box confidence.
@@ -519,7 +526,11 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
 | run | clip, boxes from | hands run | wall | CPU | peak RSS | per-hand inference mean / median (min-max) | keypoints found per hand (mean; of 21) | median distance to MediaPipe's same-index landmark (median of per-hand medians) | mean peak heatmap value |
 |---|---|---|---|---|---|---|---|---|---|
 | r0336 (not mirrored) | R3a_cu every 10th frame, MediaPipe r0078 | 30 | 519.06 s | 522.4 s | 1088.1 MB | 17.161 / 11.116 s (7.492-46.669 s) | 13.4 (range 2-20) | 52.52 px | 0.0873 |
+| step `openpose-hand_R3a_cu_every30_mirrorleft` (B1) | R3a_cu every 30th frame, left-hand crops mirrored | 10 | 202.43 s | 188.03 s | 1101.3 MiB | 20.017 / 21.178 s | 19.5 (range 12-21) | 4.68 px | 0.2149 |
 
+- The same 10 frames (every 30th) in r0336 without mirroring: keypoints found 13.3 per hand on average (range 5-19),
+  median of per-hand median distances to MediaPipe 53.97 px, mean peak value 0.086. With mirroring: 19.5 found, 4.68 px
+  (per-hand medians 4.09-10.59 px), 0.2149. All 10 hands were labelled "Left" by MediaPipe and were mirrored.
 - r0336 waited 1800.7 s for a CPU slot before it ran. Box sides were 181-282 px. "Found" = the blurred heatmap
   exceeded 0.05 somewhere; a keypoint that was not found is stored as (box origin, score 0).
 - Output format facts: per hand 21 (x, y, peak value) in full-frame pixels, in the OpenPose hand order (0 wrist, 1-4
@@ -557,7 +568,7 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
   (left_hand in 220 of 221 wide-shot frames, right_hand in none).
 - Where Holistic's R3a hands landed (`hand_regions.py`, frames): medium fretting 301, medium picking 78, medium
   elsewhere 8, wide fretting 220, wide elsewhere 0. (The Hand Landmarker had 215 wide-shot frames with a detection on the
-  hanging sheet music; Holistic, which finds hands from the body pose, has none there.)
+  hanging sheet music; Holistic has none there.)
 - On R3c, Holistic's `left_hand` (mean wrist (1681, 585) px) is the fretting hand and `right_hand` (mean wrist (966, 899))
   the picking hand; the names follow the subject's hands, as with the Hand Landmarker.
 - Holistic, crop mode: it failed when the crop size changed at the shot cut (720x720 to 840x660 at frame 218):
@@ -654,3 +665,78 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
 - Output format facts: `pred_tracks` (B, T, N, 2) pixel coordinates in the input frame size, `pred_visibility` (B, T, N)
   booleans. Queries are (t, x, y) rows; a `grid_size` or a `segm_mask` can be given instead of queries.
   `out/cotracker/R3a_cu_f150_90.json` holds all tracks; `samples/cotracker3/` an excerpt and two frames.
+
+## rtmlib 0.0.16 (ONNX Runtime 1.31.1): RTMPose hand, RTMW and DWPose whole-body, ViTPose-s whole-body
+
+- What it is: `Tau-J/rtmlib`, a small library that runs OpenMMLab's RTMPose family (and ViTPose) as ONNX models
+  through ONNX Runtime, without mmcv/MMPose. Package `rtmlib` 0.0.16 (PyPI); install `uv venv --python 3.11
+  venv-rtmlib && uv pip install --python venv-rtmlib/bin/python rtmlib==0.0.16 onnxruntime==1.31.1` (rtmlib requires
+  both `opencv-python` and `opencv-contrib-python`; 5.0.0.93 of each); `pillow` was added later for the sample writer.
+  First attempt stalled while downloading opencv-python; killed and re-run, it finished in under 5 minutes.
+- Models (ONNX, downloaded by rtmlib into `$TORCH_HOME/hub/checkpoints` on first use, no login; sizes and sha256 of
+  the unpacked files):
+
+| role | file | bytes | sha256 | source |
+|---|---|---|---|---|
+| hand detector (Hand solution) | `rtmdet_nano_8xb32-300e_hand-267f9c8f.onnx` | 4,010,667 | `568d3ea97a5b142488366b67e036b6a5cb0a1fef9087a710cb8e66b6979fbac2` | download.openmmlab.com/mmpose/v1/projects/rtmposev1/onnx_sdk/ (zip) |
+| hand pose, 21 points, 256x256 | `rtmpose-m_simcc-hand5_pt-aic-coco_210e-256x256-74fb594_20230320.onnx` | 55,080,248 | `39e858936bca0f94c09847d4e70b68a51d6c0adac61f36b457fcadb54621cd29` | same |
+| person detector (RTMW, DWPose, ViTPose runs) | `yolox_m_8xb8-300e_humanart-c2c7a14a.onnx` | 101,400,344 | `3dea6513388889f0fff4b77bf7a26013600321b9eb9ceb0e9a400a82572f5f23` | same |
+| RTMW-x-l whole body 133 points, 384x288 (rtmlib `Wholebody(mode="performance")`) | `rtmw-dw-x-l_simcc-cocktail14_270e-384x288_20231122.onnx` | 229,320,930 | `bd033156e5104c4f5d2edfe0453e02661e30a2f3da453ec93c8764d561b83054` | download.openmmlab.com/mmpose/v1/projects/rtmw/onnx_sdk/ (zip) |
+| DWPose-l whole body 133 points, 384x288 | `rtmpose-l_simcc-ucoco_dw-ucoco_270e-384x288-2438fd99_20230728.onnx` | 134,399,323 | `8cfecfc2226d8e14b510c2fd28442226c518b4d60690535753187877411d4005` | download.openmmlab.com/mmpose/v1/projects/rtmposev1/onnx_sdk/ (zip) |
+| ViTPose-s whole body 133 points, 256x192 | `vitpose-s-wholebody.onnx` | 97,427,067 | `ccac893a8ad6da7d43f9655047acf48e482e66922db7f4273a3b615cea989127` | huggingface.co/JunkyByte/easy_ViTPose (repo not gated; its card metadata has no license field) |
+
+  (The RTMW model, 229 MB unpacked, was downloaded at 21:06 UTC by file time, before the 200 MB disk notice.)
+- How the script calls it (`scripts/run_rtmlib.py <clip> <full|crop> <hand|rtmw|dwpose|vitpose> <outdir> [step]`):
+  the detector and the pose model are called separately (`model.det_model(img)`, then
+  `model.pose_model(img, bboxes=...)`), because rtmlib's pose models fall back to the WHOLE image as the box when the
+  detector returns none (`rtmlib/tools/pose_estimation/rtmpose.py`: `if len(bboxes) == 0: bboxes = [[0, 0,
+  image.shape[1], image.shape[0]]]`); such fallback outputs are not counted here. The first R3a Hand runs (full and
+  crop, before this change; their summaries are kept as `*.summary.first-run-counts-fallback.json`) produced exactly one
+  21-point result in all 540 frames for that reason; they were re-run. A hand is counted when the mean of its 21
+  keypoint scores is >= 0.3. Whole-body hands are keypoints 91-111 (the person's left hand) and 112-132 (right hand) of
+  the COCO-WholeBody layout. Hand mode has no left/right label.
+- Runs: steps of group jobs C1 (Hand) and B1/C1 (whole body), 2 cores, GNU time per step. Whole-body runs used every
+  6th frame of R3a (90 frames) because each frame takes over a second.
+
+| step | clip, mode | frames | wall | CPU | peak RSS | per-frame mean / median / p90 | fps from mean | frames with a detector box | frames with 0 / 1 / 2 / >2 hands | hand score mean [min-max] |
+|---|---|---|---|---|---|---|---|---|---|---|
+| rtmlib-hand_R3a_full_rerun_detcount | Hand, R3a full | 540 | 77.00 s | 154.47 s | 237.5 MiB | 127.07 / 113.87 / 184.25 ms | 7.87 | 148 (medium 147, wide 1) | 465 / 75 / 0 / 0 | 0.332 [0.300-0.385] |
+| rtmlib-hand_R3a_crop_rerun_detcount | Hand, R3a crop 3x | 540 | 73.69 s | 170.36 s | 239.7 MiB | 123.15 / 112.64 / 177.97 ms | 8.12 | 536 (medium 315, wide 221) | 350 / 150 / 40 / 0 | 0.356 [0.301-0.554] |
+| rtmlib-hand_R3a_cu_full | Hand, R3a_cu | 300 | 84.48 s | 96.83 s | 238.3 MiB | 252.61 / 188.49 / 481.27 ms | 3.96 | 300 | 32 / 231 / 37 / 0 | 0.424 [0.300-0.557] |
+| rtmlib-hand_R3a_cu_crop | Hand, R3a_cu 2x | 300 | 111.13 s | 108.87 s | 248.9 MiB | 311.52 / 287.62 / 526.93 ms | 3.21 | 300 | 53 / 216 / 31 / 0 | 0.421 [0.301-0.573] |
+| rtmlib-hand_R3b_full_rerun | Hand, R3b | 450 | 74.80 s | 153.61 s | 257.8 MiB | 133.77 / 121.17 / 203.39 ms | 7.48 | 448 | 25 / 413 / 12 / 0 | 0.398 [0.302-0.564] |
+| rtmlib-hand_R3c_full_rerun | Hand, R3c | 450 | 80.83 s | 167.87 s | 256.8 MiB | 149.87 / 137.61 / 218.17 ms | 6.67 | 446 | 22 / 392 / 35 / 1 | 0.389 [0.300-0.497] |
+| rtmlib-rtmw_R3a_full_step6 | RTMW-x-l, R3a full | 90 | 150.89 s | 228.74 s | 800.5 MiB | 1622.84 / 1549.07 / 2042.10 ms | 0.62 | 90 | 0 / 0 / 90 / 0 | 5.001 [2.631-7.827] |
+| rtmlib-rtmw_R3a_crop_step6 | RTMW-x-l, R3a crop | 90 | 141.96 s | 228.09 s | 777.3 MiB | 1539.90 / 1459.92 / 1902.61 ms | 0.65 | 90 (max 2 boxes) | 0 / 0 / 85 / 5 | 5.238 [1.788-8.692] |
+| rtmlib-dwpose_R3a_full_step6 | DWPose-l, R3a full | 90 | 124.90 s | 196.24 s | 577.2 MiB | 1340.44 / 1298.65 / 1601.46 ms | 0.75 | 90 | 0 / 0 / 90 / 0 | 0.767 [0.541-0.976] |
+| rtmlib-dwpose_R3a_crop_step6 | DWPose-l, R3a crop | 90 | 127.58 s | 207.09 s | 577.8 MiB | 1378.10 / 1340.40 / 1826.28 ms | 0.73 | 90 (max 2) | 0 / 0 / 87 / 3 | 0.731 [0.313-0.989] |
+| rtmlib-vitpose_R3a_full_step6 | ViTPose-s, R3a full | 90 | 112.09 s | 183.30 s | 498.6 MiB | 1199.29 / 1173.78 / 1366.94 ms | 0.83 | 90 | 0 / 0 / 90 / 0 | 0.742 [0.436-0.917] |
+| rtmlib-vitpose_R3a_crop_step6 | ViTPose-s, R3a crop | 90 | 114.06 s | 195.84 s | 504.6 MiB | 1219.62 / 1195.95 / 1552.28 ms | 0.82 | 90 (max 2) | 0 / 4 / 85 / 1 | 0.658 [0.335-0.907] |
+| rtmlib-vitpose_R3b_full_step10 | ViTPose-s, R3b | 45 | 51.05 s | 85.20 s | 525.9 MiB | 1062.64 / 893.72 / 1434.21 ms | 0.94 | 45 | 0 / 19 / 26 / 0 | 0.647 [0.323-0.809] |
+| rtmlib-rtmw_R3a_cu_full_step5 | RTMW-x-l, R3a_cu | 60 | 90.68 s | 175.52 s | 790.1 MiB | 1465.16 / 1511.71 / 1808.48 ms | 0.68 | 60 | 0 / 0 / 60 / 0 | 4.509 [0.959-8.758] |
+| rtmlib-dwpose_R3a_cu_full_step5 | DWPose-l, R3a_cu | 60 | 62.18 s | 129.03 s | 575.2 MiB | 993.21 / 984.85 / 1515.23 ms | 1.01 | 60 | 0 / 45 / 15 / 0 | 0.782 [0.303-0.947] |
+| rtmlib-vitpose_R3a_cu_full_step5 | ViTPose-s, R3a_cu | 60 | 106.48 s | 128.82 s | 498.2 MiB | 1721.15 / 1722.57 / 2137.89 ms | 0.58 | 60 | 0 / 57 / 3 / 0 | 0.747 [0.315-0.864] |
+
+- Score scales differ: RTMW's keypoint scores run above 1 (hand means 1.79 to 8.69 here), DWPose's and ViTPose's stay
+  below 1 here; a fixed threshold such as 0.3 therefore means different things per model, and every RTMW hand passed it.
+- On R3a_cu (picking hand out of frame), the person's right hand passed the 0.3 mean-score rule in 60 of 60 RTMW
+  frames, 15 of 60 DWPose frames and 3 of 60 ViTPose frames; the left (fretting) hand in all 60 for all three.
+- Whole-body models output both hands for every detected person whether or not a hand is visible: on R3a full all
+  three report 2 hands in all 90 frames, including the wide shot, where by eye the picking hand is behind the music
+  stand. Where their hands landed on R3a full (`hand_regions.py`, frames): medium fretting 53 of 53, medium picking 53
+  of 53, wide fretting 37 of 37, wide elsewhere 37 (the person's right hand, behind the stand) - identical counts for
+  RTMW, DWPose and ViTPose.
+- Hand detector on R3a: RTMDet-nano returned a box in 148 of 540 full frames (147 of 319 medium, 1 of 221 wide) and in
+  536 of 540 3x crops. Counted hands (mean score >= 0.3) on R3a full: 74 frames in the medium-shot fretting region, 1 in
+  the wide-shot fretting region; on the crops: 166 frames medium fretting, 11 medium elsewhere, 16 wide fretting.
+- The "crop" mode on R3a gives the whole-body detector a crop with the person cut at the hip; YOLOX found two person
+  boxes in some crop frames (5 RTMW frames with 4 hands, 3 DWPose, 1 ViTPose).
+- Output format facts: rtmlib returns `keypoints` (N, K, 2) pixels and `scores` (N, K), K = 21 (hand) or 133
+  (whole body, COCO-WholeBody order: 0-16 body, 17-22 feet, 23-90 face, 91-111 left hand, 112-132 right hand). The
+  hand order inside each 21-block is the same as MediaPipe's (wrist, then thumb to pinky, base to tip). The detectors
+  return (M, 4) xyxy boxes. The script stores per frame `n_det_boxes`, `det_boxes_full`, and per hand `kp_px_full`,
+  `kp_score`, `score` (mean), `label`.
+- Constraint inputs: the model files and input sizes (`det_input_size`, `pose_input_size`), `backend`
+  ("onnxruntime", "opencv", "openvino"), `device`; `mode` ("performance", "balanced", "lightweight") for the solution
+  classes; `to_openpose` for an OpenPose-style keypoint order. No handedness or guitar-specific constraint.
+- Samples: `samples/rtmlib/` (frames, summaries, freeze).

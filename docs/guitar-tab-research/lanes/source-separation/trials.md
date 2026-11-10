@@ -311,3 +311,55 @@ the reader and writer of PyPI `demucs` 4.0.1 were checked against torchaudio 2.1
   `--float32` and `--int24` therefore give 16-bit files. Demucs 4.1.0 writes WAV itself (no torchaudio) and is
   checked with `--float32` in the option runs below.
 
+## Spleeter 2.4.2 (Deezer), 4stems model
+
+- **What:** TensorFlow spectrogram-mask separation with pretrained 2-, 4- and 5-stem models, PyPI `spleeter` 2.4.2
+  (uploaded 2025-04-03, requires Python >=3.8, <3.12), https://github.com/deezer/spleeter. Tried 2026-11-10.
+- **License:** LICENSE "MIT License / Copyright (c) 2019-present, Deezer SA."; README: "The code of **Spleeter** is
+  [MIT-licensed](LICENSE)." and "If you plan to use **Spleeter** on copyrighted material, make sure you get proper
+  authorization from right owners beforehand." (https://raw.githubusercontent.com/deezer/spleeter/master/README.md
+  and `/LICENSE`, read 2026-11-10). The README states no separate license for the pretrained models.
+- **Install (worked):** spleeter 2.4.2 pins `tensorflow==2.12.1` (PyPI metadata), whose Linux wheel is 585.9 MB.
+  To save disk the CPU-only build was used instead: `uv venv --python 3.11 venv-spleeter`, then
+  `uv pip install tensorflow-cpu==2.12.1 "ffmpeg-python>=0.2.0,<0.3.0" "httpx[http2]>=0.19.0,<0.20.0"
+  "typer>=0.3.2,<0.4.0" tensorflow-io-gcs-filesystem==0.32.0 "pandas>=1.3.0,<2.0.0" "norbert>=0.2.1,<0.3.0"
+  "numpy<2.0.0"` (the other declared requirements, copied from the metadata) and `uv pip install --no-deps
+  spleeter==2.4.2`. Result: tensorflow-cpu 2.12.1 (231.8 MB wheel), keras 2.12.0, numpy 1.24.3, pandas 1.5.3. Venv
+  1.7 GB by du. Freeze: `samples/spleeter/uv-pip-freeze.txt`. No error. TensorFlow printed "This TensorFlow binary is
+  optimized to use available CPU instructions in performance-critical operations."
+- **Model:** `4stems.tar.gz` (146,308,147 bytes) from
+  `https://github.com/deezer/spleeter/releases/download/v1.4.0/4stems.tar.gz`, fetched and checksum-validated by
+  spleeter's own `ModelProvider` into `MODEL_PATH` (log: "Downloading model archive ...", "Validating archive
+  checksum", "Extracting downloaded 4stems archive"); extracted `model.data-00000-of-00001` 157,228,152 bytes. (2stems
+  is 73,109,797 bytes and 5stems 182,803,368 bytes; not downloaded.)
+- **Runs** (`MODEL_PATH=models/spleeter spleeter separate -p spleeter:4stems -o out/spleeter-4stems <clip>.wav`,
+  defaults otherwise: codec wav, no `--mwf`, `-d` 600 s maximum duration; script `scripts/spleeter_batch.sh`, run
+  inside batch A, 2 cores):
+
+| run | clip (length) | wall s | CPU s | peak RSS MB | load1 at start |
+|---|---|---|---|---|---|
+| r0419 | S4 (38.7 s) | 21.46 | 15.6 | 1808.9 | 7.41 |
+| r0421 | S6taps (29.4 s) | 14.47 | 13.3 | 1592.9 | 7.31 |
+| r0422 | R2 (36.0 s) | 12.88 | 14.4 | 1701.4 | 7.21 |
+
+- **Output format:** `out/spleeter-4stems/<input stem>/{vocals,drums,bass,other}.wav` (template
+  `{filename}/{instrument}.{codec}`), written through ffmpeg: 44,100 Hz, 2 channels, PCM_16, frame count equal to the
+  input's; each file is 34 bytes larger than the input WAV of the same length (6,834,058 vs 6,834,024 bytes for S4);
+  with equal frame counts the extra bytes are in the header (spleeter writes through ffmpeg). Sum of the stems against the mix: lag 0, residual -30.28 dB (S4), -31.92 dB
+  (S6taps), -29.92 dB (R2).
+- **S4** (e1394; map guitar=other, lead=vocals; SI-SDR / SDR / SIR / SAR dB): drums 3.75 / 4.21 / 15.85 / 4.63; bass
+  2.74 / 4.79 / 10.68 / 6.44; guitar (other) -1.40 / -1.07 / -0.39 / 10.53; lead (vocals) -8.20 / -4.41 / 13.54 /
+  -4.15. Lead projection: other 0.8668, vocals 0.1115; guitar projection: other 0.8571. Stem levels (mix -17.37
+  dBFS): other -19.28, bass -25.85, drums -30.56, vocals -32.24 dBFS.
+- **S6taps** (e1395; map guitar=other, taps=drums): guitar 21.79 / 22.25 / 26.10 / 24.58; taps 7.93 / 9.32 / 23.25 /
+  9.52. Taps projection: drums 0.821, other 0.188. Levels: other -18.23, drums -32.90, vocals -59.84, bass -121.52
+  dBFS. Onsets of `drums.wav` (`scripts/onsets_of_stem.py`) against the 32 taps (e1397, 50 ms window): 75 onsets,
+  F 0.598, precision 0.427, recall 1.000, median timing -0.0140 s.
+- **R2** (e1396; drums + bass + other summed against the artist's instrumental, vocals against `vocals_derived`):
+  instrumental 10.62 / 11.17 / 19.79 / 11.86; vocals 12.54 / 13.03 / 19.61 / 14.16.
+- **Input facts:** reads through ffmpeg (`spleeter.audio.ffmpeg.FFMPEGProcessAudioAdapter`); `-s` offset and `-d`
+  duration (default 600 s, so longer files are cut unless `-d` is raised).
+- **Constraint inputs for a re-run:** `-p spleeter:2stems|4stems|5stems` (5stems adds piano; no guitar stem), `--mwf`
+  (multichannel Wiener filtering), `-s` / `-d`, `-c` codec, `-b` bitrate, `-f` filename template. No pitch or
+  tuning parameters.
+

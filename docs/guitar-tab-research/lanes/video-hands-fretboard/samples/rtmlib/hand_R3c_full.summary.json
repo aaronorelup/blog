@@ -1,0 +1,54 @@
+{
+ "clip": "R3c",
+ "mode": "full",
+ "frames": 450,
+ "all": {
+  "frames": 450,
+  "frac_0_hands": 0.0489,
+  "frac_1_hand": 0.8711,
+  "frac_2_hands": 0.0778,
+  "frac_more_than_2": 0.0022,
+  "frac_at_least_1": 0.9511,
+  "label_counts": {
+   "null": 465
+  },
+  "infer_ms_mean": 149.87,
+  "infer_ms_median": 137.61,
+  "infer_ms_p90": 218.17,
+  "fps_from_mean": 6.67,
+  "score_mean": 0.3889,
+  "score_min": 0.3001,
+  "score_max": 0.4973
+ },
+ "per_shot": {
+  "r3c_medium": {
+   "frames": 450,
+   "frac_0_hands": 0.0489,
+   "frac_1_hand": 0.8711,
+   "frac_2_hands": 0.0778,
+   "frac_more_than_2": 0.0022,
+   "frac_at_least_1": 0.9511,
+   "label_counts": {
+    "null": 465
+   },
+   "infer_ms_mean": 149.87,
+   "infer_ms_median": 137.61,
+   "infer_ms_p90": 218.17,
+   "fps_from_mean": 6.67,
+   "score_mean": 0.3889,
+   "score_min": 0.3001,
+   "score_max": 0.4973
+  }
+ },
+ "tool": "rtmlib hand",
+ "rtmlib_version": "?",
+ "models": {
+  "det": "https://download.openmmlab.com/mmpose/v1/projects/rtmposev1/onnx_sdk/rtmdet_nano_8xb32-300e_hand-267f9c8f.zip",
+  "pose": "https://download.openmmlab.com/mmpose/v1/projects/rtmposev1/onnx_sdk/rtmpose-m_simcc-hand5_pt-aic-coco_210e-256x256-74fb594_20230320.zip"
+ },
+ "init_s": 0.195,
+ "frame_step": 1,
+ "hand_counted_if_mean_kpt_score_ge": 0.3,
+ "frac_frames_with_det_box": 0.9911,
+ "det_boxes_per_frame_max": 3
+}

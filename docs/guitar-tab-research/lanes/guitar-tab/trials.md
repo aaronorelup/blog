@@ -515,8 +515,9 @@ with PyPI code and my own few-line loader, that is said in its section; otherwis
 - **High Resolution Guitar Transcription / GAPS models, as the `hf_midi_transcription` package**
   (https://github.com/xavriley/hf_midi_transcription, HEAD `96f6797881e9497cbfc8f8e5deccea9c1f2f7adc`, 2026-01-27):
   the package is not on PyPI (`pypi.org/pypi/hf-midi-transcription/json` answered "not found" on 2026-11-10, although
-  its README says `pip install hf-midi-transcription`) and installing the clone was refused (above). Its checkpoints
-  were run with PyPI code instead (section "Riley et al. guitar checkpoints" below).
+  its README says `pip install hf-midi-transcription`) and installing the clone was refused (above). Its `guitar-fl.pth`
+  checkpoint was run with PyPI code instead (section "Riley et al. guitar checkpoints" below); `guitar-gaps.pth` waited
+  for a CPU slot and was not run (same section).
 - **Guitab 1.2.0** (https://github.com/DanieleMorotti/guitab, HEAD `b2537dcd1ad68fa2c1cde35496a353b0a33081d6`,
   2026-10-31): audio to Guitar Pro 5 with string and fret, `--capo N`, CPU allowed. Weights published: yes,
   https://huggingface.co/danmor/guitab (`guitab_e25.safetensors` 24,776,472 bytes, `guitab_e24` 11,766,560,
@@ -622,9 +623,11 @@ with PyPI code and my own few-line loader, that is said in its section; otherwis
 - Input format facts: any file librosa reads, resampled to 16 kHz mono; processed in 10 s segments.
 - Constraint inputs: none for tuning, capo or range (88 piano keys from A0); the thresholds (onset 0.3, offset 0.3,
   frame 0.1) are the only settings, exposed as constructor arguments in the fork and fixed in PyPI 0.0.6.
-- `guitar-gaps.pth`: a first `gtr-run` call for S2n, S3, R1b and R1c waited about 30 minutes for a CPU slot without
-  getting one and was cancelled (no ledger line); it was queued again for S2n and R1c only. Outcome: see the next
-  bullet.
+- `guitar-gaps.pth`: NOT RUN HERE. A first `gtr-run` call for S2n, S3, R1b and R1c waited about 30 minutes for a CPU
+  slot without getting one and was cancelled; a second call for S2n and R1c waited 37 minutes (until 22:36 UTC) and was
+  cancelled too, so the lane could finish in its time budget (neither left a ledger line). The checkpoint was
+  downloaded and its pickle inspected (above); it was not run, and the file was deleted afterwards to free disk. Steps for Aaron (the authors' own command on a GPU) are
+  in `for-aaron.md`, section 2.
 
 ## Handoff runs: transcribed notes in (Basic Pitch MIDI from the audio-to-notes lane into the MIDI-to-tab tools)
 
