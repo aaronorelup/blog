@@ -1,0 +1,77 @@
+{
+ "R1a": {
+  "stem": "02_SS2-107-Ab_comp",
+  "excerpt_s": [
+   0.0,
+   29.158889
+  ],
+  "samples": 1285907,
+  "sample_rate": 44100,
+  "source_file_samples": 1582590,
+  "notes": 189,
+  "notes_starting_after_excerpt": 46,
+  "negative_frets": 0,
+  "fret_range": [
+   0,
+   9
+  ],
+  "beats": 53,
+  "downbeats": 14,
+  "chords": 13,
+  "tab_collisions": 0,
+  "tempo": 107.0,
+  "key": "Ab:minor",
+  "peak_dbfs": -0.01,
+  "rms_dbfs": -19.53
+ },
+ "R1b": {
+  "stem": "04_Rock1-90-C#_solo",
+  "excerpt_s": [
+   0.0,
+   29.333333
+  ],
+  "samples": 1293600,
+  "sample_rate": 44100,
+  "source_file_samples": 1411200,
+  "notes": 70,
+  "notes_starting_after_excerpt": 4,
+  "negative_frets": 0,
+  "fret_range": [
+   1,
+   9
+  ],
+  "beats": 44,
+  "downbeats": 11,
+  "chords": 6,
+  "tab_collisions": 4,
+  "tempo": 90.0,
+  "key": "C#:major",
+  "peak_dbfs": -5.21,
+  "rms_dbfs": -26.13
+ },
+ "R1c": {
+  "stem": "00_BN3-119-G_comp",
+  "excerpt_s": [
+   0.0,
+   28.235283
+  ],
+  "samples": 1245176,
+  "sample_rate": 44100,
+  "source_file_samples": 1422807,
+  "notes": 148,
+  "notes_starting_after_excerpt": 21,
+  "negative_frets": 0,
+  "fret_range": [
+   0,
+   7
+  ],
+  "beats": 56,
+  "downbeats": 14,
+  "chords": 14,
+  "tab_collisions": 0,
+  "tempo": 119.0,
+  "key": "G:major",
+  "peak_dbfs": -5.48,
+  "rms_dbfs": -24.04
+ }
+}

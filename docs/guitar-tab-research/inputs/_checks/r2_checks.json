@@ -1,0 +1,22 @@
+{
+ "samples": 10076073,
+ "clipped_samples_in_vocals_derived": 211,
+ "seconds_where_song_minus_instrumental_max_abs_le_2_lsb": 54,
+ "seconds_total": 228,
+ "R2full": {
+  "start_sample": 0,
+  "end_sample": 10076073,
+  "duration_s": 228.482381,
+  "peak_dbfs": -0.1,
+  "samples_at_full_scale": 0,
+  "vocals_derived_rms_dbfs": -15.22
+ },
+ "R2": {
+  "start_sample": 1411200,
+  "end_sample": 2998800,
+  "duration_s": 36.0,
+  "peak_dbfs": -0.1,
+  "samples_at_full_scale": 0,
+  "vocals_derived_rms_dbfs": -12.41
+ }
+}

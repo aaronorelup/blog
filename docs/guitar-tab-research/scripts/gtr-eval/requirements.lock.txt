@@ -1,0 +1,15 @@
+attrs==26.1.0
+cffi==2.1.1
+decorator==5.3.1
+importlib-resources==7.1.0
+mido==1.3.3
+mir-eval==0.8.2
+numpy==2.4.6
+packaging==26.3
+pretty-midi==0.2.11.post0
+pycparser==3.12
+pyguitarpro==0.11
+scipy==1.17.1
+six==1.17.0
+soundfile==0.14.0
+typing-extensions==4.16.0

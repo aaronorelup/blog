@@ -1,0 +1,676 @@
+{
+ "id": "S1",
+ "title": "Ode to Joy (theme), single-note melody, nylon guitar",
+ "what": "Synthesized single-note melody, no chords: the 16-bar 'Ode to Joy' theme in D major on nylon guitar (GM program 24), 144 BPM, after one silent count-in bar.",
+ "audio": "S1.wav",
+ "duration_s": 29.833333,
+ "sample_rate": 44100,
+ "channels": 2,
+ "tempo_bpm": 144.0,
+ "time_signature": "4/4",
+ "key": "D major",
+ "tuning_midi": [
+  40,
+  45,
+  50,
+  55,
+  59,
+  64
+ ],
+ "capo": 0,
+ "tuning_offset_cents": 0,
+ "notes": [
+  {
+   "onset": 1.666667,
+   "offset": 2.073351,
+   "pitch": 66,
+   "velocity": 96,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 2.083333,
+   "offset": 2.490017,
+   "pitch": 66,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 2.5,
+   "offset": 2.906684,
+   "pitch": 67,
+   "velocity": 90,
+   "voice": "melody",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 2.916667,
+   "offset": 3.323351,
+   "pitch": 69,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 5
+  },
+  {
+   "onset": 3.333333,
+   "offset": 3.740017,
+   "pitch": 69,
+   "velocity": 96,
+   "voice": "melody",
+   "string": 1,
+   "fret": 5
+  },
+  {
+   "onset": 3.75,
+   "offset": 4.156684,
+   "pitch": 67,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 4.166667,
+   "offset": 4.573351,
+   "pitch": 66,
+   "velocity": 90,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 4.583333,
+   "offset": 4.990017,
+   "pitch": 64,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 5.0,
+   "offset": 5.406684,
+   "pitch": 62,
+   "velocity": 96,
+   "voice": "melody",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 5.416667,
+   "offset": 5.823351,
+   "pitch": 62,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 5.833333,
+   "offset": 6.240017,
+   "pitch": 64,
+   "velocity": 90,
+   "voice": "melody",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 6.25,
+   "offset": 6.656684,
+   "pitch": 66,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 6.666667,
+   "offset": 7.281684,
+   "pitch": 66,
+   "velocity": 96,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 7.291667,
+   "offset": 7.490017,
+   "pitch": 64,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 7.5,
+   "offset": 8.323351,
+   "pitch": 64,
+   "velocity": 90,
+   "voice": "melody",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 8.333333,
+   "offset": 8.740017,
+   "pitch": 66,
+   "velocity": 96,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 8.75,
+   "offset": 9.156684,
+   "pitch": 66,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 9.166667,
+   "offset": 9.573351,
+   "pitch": 67,
+   "velocity": 90,
+   "voice": "melody",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 9.583333,
+   "offset": 9.990017,
+   "pitch": 69,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 5
+  },
+  {
+   "onset": 10.0,
+   "offset": 10.406684,
+   "pitch": 69,
+   "velocity": 96,
+   "voice": "melody",
+   "string": 1,
+   "fret": 5
+  },
+  {
+   "onset": 10.416667,
+   "offset": 10.823351,
+   "pitch": 67,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 10.833333,
+   "offset": 11.240017,
+   "pitch": 66,
+   "velocity": 90,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 11.25,
+   "offset": 11.656684,
+   "pitch": 64,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 11.666667,
+   "offset": 12.073351,
+   "pitch": 62,
+   "velocity": 96,
+   "voice": "melody",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 12.083333,
+   "offset": 12.490017,
+   "pitch": 62,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 12.5,
+   "offset": 12.906684,
+   "pitch": 64,
+   "velocity": 90,
+   "voice": "melody",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 12.916667,
+   "offset": 13.323351,
+   "pitch": 66,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 13.333333,
+   "offset": 13.948351,
+   "pitch": 64,
+   "velocity": 96,
+   "voice": "melody",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 13.958333,
+   "offset": 14.156684,
+   "pitch": 62,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 14.166667,
+   "offset": 14.990017,
+   "pitch": 62,
+   "velocity": 90,
+   "voice": "melody",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 15.0,
+   "offset": 15.406684,
+   "pitch": 64,
+   "velocity": 96,
+   "voice": "melody",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 15.416667,
+   "offset": 15.823351,
+   "pitch": 64,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 15.833333,
+   "offset": 16.240017,
+   "pitch": 66,
+   "velocity": 90,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 16.25,
+   "offset": 16.656684,
+   "pitch": 62,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 16.666667,
+   "offset": 17.073351,
+   "pitch": 64,
+   "velocity": 96,
+   "voice": "melody",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 17.083333,
+   "offset": 17.281684,
+   "pitch": 66,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 17.291667,
+   "offset": 17.490017,
+   "pitch": 67,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 17.5,
+   "offset": 17.906684,
+   "pitch": 66,
+   "velocity": 90,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 17.916667,
+   "offset": 18.323351,
+   "pitch": 62,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 18.333333,
+   "offset": 18.740017,
+   "pitch": 64,
+   "velocity": 96,
+   "voice": "melody",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 18.75,
+   "offset": 18.948351,
+   "pitch": 66,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 18.958333,
+   "offset": 19.156684,
+   "pitch": 67,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 19.166667,
+   "offset": 19.573351,
+   "pitch": 66,
+   "velocity": 90,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 19.583333,
+   "offset": 19.990017,
+   "pitch": 64,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 20.0,
+   "offset": 20.406684,
+   "pitch": 62,
+   "velocity": 96,
+   "voice": "melody",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 20.416667,
+   "offset": 20.823351,
+   "pitch": 64,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 20.833333,
+   "offset": 21.656684,
+   "pitch": 57,
+   "velocity": 90,
+   "voice": "melody",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 21.666667,
+   "offset": 22.073351,
+   "pitch": 66,
+   "velocity": 96,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 22.083333,
+   "offset": 22.490017,
+   "pitch": 66,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 22.5,
+   "offset": 22.906684,
+   "pitch": 67,
+   "velocity": 90,
+   "voice": "melody",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 22.916667,
+   "offset": 23.323351,
+   "pitch": 69,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 5
+  },
+  {
+   "onset": 23.333333,
+   "offset": 23.740017,
+   "pitch": 69,
+   "velocity": 96,
+   "voice": "melody",
+   "string": 1,
+   "fret": 5
+  },
+  {
+   "onset": 23.75,
+   "offset": 24.156684,
+   "pitch": 67,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 24.166667,
+   "offset": 24.573351,
+   "pitch": 66,
+   "velocity": 90,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 24.583333,
+   "offset": 24.990017,
+   "pitch": 64,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 25.0,
+   "offset": 25.406684,
+   "pitch": 62,
+   "velocity": 96,
+   "voice": "melody",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 25.416667,
+   "offset": 25.823351,
+   "pitch": 62,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 25.833333,
+   "offset": 26.240017,
+   "pitch": 64,
+   "velocity": 90,
+   "voice": "melody",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 26.25,
+   "offset": 26.656684,
+   "pitch": 66,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 26.666667,
+   "offset": 27.281684,
+   "pitch": 64,
+   "velocity": 96,
+   "voice": "melody",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 27.291667,
+   "offset": 27.490017,
+   "pitch": 62,
+   "velocity": 84,
+   "voice": "melody",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 27.5,
+   "offset": 28.323351,
+   "pitch": 62,
+   "velocity": 90,
+   "voice": "melody",
+   "string": 2,
+   "fret": 3
+  }
+ ],
+ "beats": [
+  1.666667,
+  2.083333,
+  2.5,
+  2.916667,
+  3.333333,
+  3.75,
+  4.166667,
+  4.583333,
+  5.0,
+  5.416667,
+  5.833333,
+  6.25,
+  6.666667,
+  7.083333,
+  7.5,
+  7.916667,
+  8.333333,
+  8.75,
+  9.166667,
+  9.583333,
+  10.0,
+  10.416667,
+  10.833333,
+  11.25,
+  11.666667,
+  12.083333,
+  12.5,
+  12.916667,
+  13.333333,
+  13.75,
+  14.166667,
+  14.583333,
+  15.0,
+  15.416667,
+  15.833333,
+  16.25,
+  16.666667,
+  17.083333,
+  17.5,
+  17.916667,
+  18.333333,
+  18.75,
+  19.166667,
+  19.583333,
+  20.0,
+  20.416667,
+  20.833333,
+  21.25,
+  21.666667,
+  22.083333,
+  22.5,
+  22.916667,
+  23.333333,
+  23.75,
+  24.166667,
+  24.583333,
+  25.0,
+  25.416667,
+  25.833333,
+  26.25,
+  26.666667,
+  27.083333,
+  27.5,
+  27.916667
+ ],
+ "downbeats": [
+  1.666667,
+  3.333333,
+  5.0,
+  6.666667,
+  8.333333,
+  10.0,
+  11.666667,
+  13.333333,
+  15.0,
+  16.666667,
+  18.333333,
+  20.0,
+  21.666667,
+  23.333333,
+  25.0,
+  26.666667
+ ],
+ "chords": [],
+ "taps": [],
+ "stems": {},
+ "source": {
+  "kind": "synthesized",
+  "url": null,
+  "license": "Melody: 'Ode to Joy' theme from Ludwig van Beethoven's Symphony No. 9 (1824); Beethoven died in 1827, so the composition is in the public domain. Audio rendered from MIDI for this test set with FluidSynth 2.3.4 and FluidR3_GM.sf2 (MIT license).",
+  "license_quote": "I hereby release Fluid under the MIT license, as described in COPYING.",
+  "attribution": "Rendered with the FluidR3_GM SoundFont by Frank Wen (MIT license)."
+ }
+}
