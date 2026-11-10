@@ -1,0 +1,88 @@
+/* The tea room hero's stage (components/tea/hero/Stage.astro, scripts/tea/hero/). Without the 3D scene the section is
+   one screen with the poster behind the title box; with it (data-3d="on" on .tea-hero) the section is tall and its
+   pin sticks while the scroll plays the scene, the title box first centred, then docked lower left. Read by tea-core:
+   --tea-hero-progress (0..1) and data-hero-phase (open, docked) on .tea-hero. */
+
+.tea-hero { position: relative; }
+.tea-hero-pin { position: relative; }
+
+.tea-hero-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: #101220;
+  pointer-events: none;
+}
+:root[data-mode='day'] .tea-hero-stage { background: #3A2A3F; }
+
+.tea-stage-poster {
+  position: absolute;
+  inset: 0;
+  background: url('/tea/hero/poster-night.webp') center / cover no-repeat;
+}
+:root[data-mode='day'] .tea-stage-poster { background-image: url('/tea/hero/poster-day.webp'); }
+@media (max-aspect-ratio: 1/1) {
+  .tea-stage-poster { background-image: url('/tea/hero/poster-night-tall.webp'); }
+  :root[data-mode='day'] .tea-stage-poster { background-image: url('/tea/hero/poster-day-tall.webp'); }
+}
+
+.tea-stage-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+.tea-hero-stage[data-ready] .tea-stage-canvas { opacity: 1; }
+
+/* Keeps the title box readable over the scene: a soft darkening at the edges, deeper behind the docked box. */
+.tea-stage-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 50%, rgba(11, 16, 48, .28), rgba(11, 16, 48, 0) 70%),
+    linear-gradient(to top, rgba(11, 13, 26, .55), rgba(11, 13, 26, 0) 30%);
+  transition: opacity 600ms ease;
+}
+:root[data-mode='day'] .tea-stage-shade {
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 50%, rgba(58, 30, 40, .22), rgba(58, 30, 40, 0) 70%),
+    linear-gradient(to top, rgba(40, 22, 30, .45), rgba(40, 22, 30, 0) 30%);
+}
+
+/* The pinned hero, only while the 3D scene runs. */
+.tea-hero[data-3d='on'] { height: 300vh; }
+.tea-hero[data-3d='on'] .tea-hero-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+@media (max-width: 700px) {
+  .tea-hero[data-3d='on'] { height: 220vh; }
+}
+
+.tea-hero[data-3d='on'] .tea-hero-box {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  transition: left 900ms cubic-bezier(.2, .7, .2, 1), top 900ms cubic-bezier(.2, .7, .2, 1),
+    translate 900ms cubic-bezier(.2, .7, .2, 1), scale 900ms cubic-bezier(.2, .7, .2, 1);
+}
+.tea-hero[data-3d='on'][data-hero-phase='docked'] .tea-hero-box {
+  left: clamp(16px, 3vw, 44px);
+  top: calc(100% - clamp(16px, 4vh, 44px));
+  translate: 0 -100%;
+  scale: .86;
+  transform-origin: 0 100%;
+}
+@media (max-width: 700px) {
+  .tea-hero[data-3d='on'][data-hero-phase='docked'] .tea-hero-box { scale: .8; }
+}
