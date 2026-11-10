@@ -21,7 +21,7 @@ export function normalise(m, url) {
       id: l.id || 'layer' + i,
       night: abs(l.night || l.src), day: abs(l.day || l.night || l.src),
       z: Number(l.z ?? -10), size: l.size || [20, 12.5], y: Number(l.y ?? 0), x: Number(l.x ?? 0),
-      cutout: !!l.cutout, fog: Number(l.fog ?? 0), portraitScale: Number(l.portraitScale ?? 1.35),
+      cutout: !!l.cutout, fog: Number(l.fog ?? 0), portraitScale: Number(l.portraitScale ?? 1.5),
     })),
     actors: (m.actors || []).map((a) => ({
       id: a.id, src: abs(a.src), scale: Number(a.scale ?? 1),
@@ -61,8 +61,8 @@ export function normalise(m, url) {
     })),
     motes: { count: 140, mobile: 50, size: 0.05, box: [[-6, -0.5, -5], [6, 5, 4]], ...(m.motes || {}) },
     look: {
-      night: { exposure: 1, fog: '#0B1030', ...(m.look && m.look.night) },
-      day: { exposure: 1, fog: '#C98A6B', ...(m.look && m.look.day) },
+      night: { exposure: 1, fog: '#0B1030', clear: '#121A1E', ...(m.look && m.look.night) },
+      day: { exposure: 1, fog: '#C98A6B', clear: '#3E4A2C', ...(m.look && m.look.day) },
     },
   };
 }
