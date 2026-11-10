@@ -20,6 +20,7 @@ for (const [w, h] of sizes) for (const mode of modes) {
   try {
     await page.waitForFunction(() => window.__teaHero && document.querySelector('[data-tea-stage][data-ready]'), null, { timeout: 60000 });
   } catch { console.log('NOT READY', w, h, mode, await page.evaluate(() => document.querySelector('[data-tea-hero]').dataset['3dOff'])); }
+  await page.addStyleTag({ content: 'astro-dev-toolbar{display:none!important}' });
   await page.evaluate((t) => { window.__teaHero && (window.__teaHero.freeze(t), window.__teaHero.pointer([0, 0])); }, t);
   for (const p of ps) {
     await page.evaluate((p) => {

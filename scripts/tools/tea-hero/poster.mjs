@@ -26,7 +26,7 @@ for (const mode of ['night', 'day']) {
     await page.goto(URL_, { waitUntil: 'networkidle' });
     await page.waitForFunction(() => window.__teaHero && document.querySelector('[data-tea-stage][data-ready]'),
       null, { timeout: 90000 });
-    await page.addStyleTag({ content: '.tea-hero-box,.mode-toggle,.tea-stage-shade{visibility:hidden!important}' });
+    await page.addStyleTag({ content: '.tea-hero-box,.mode-toggle,.tea-stage-shade{visibility:hidden!important}astro-dev-toolbar{display:none!important}' });
     await page.evaluate(() => {
       scrollTo(0, 0);
       const h = window.__teaHero;
@@ -35,7 +35,7 @@ for (const mode of ['night', 'day']) {
     });
     await page.waitForTimeout(300);
     const png = await page.locator('[data-tea-stage]').screenshot();
-    let q = 76;
+    let q = 84;
     let webp;
     do {
       webp = await sharp(png).resize(Math.round(s.width * Math.min(s.scale, 1.5)))

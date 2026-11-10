@@ -55,6 +55,10 @@ export async function mount(section, stage, opts = {}) {
     scene.add(s.motes);
     s.fogN = new Color(manifest.look.night.fog);
     s.fogD = new Color(manifest.look.day.fog);
+    // behind everything, should a tall screen see past the picture's edge: the garden's own dark
+    s.clearN = new Color(manifest.look.night.clear);
+    s.clearD = new Color(manifest.look.day.clear);
+    scene.background = s.clearN.clone();
     scene.fog = new Fog(s.fogN.clone(), 9, 40);
     s.input = createInput(section, manifest.camera.parallax);
     s.size = [0, 0];
@@ -103,6 +107,7 @@ function frame(s, section, dt) {
   const L = s.manifest.look;
   s.renderer.toneMappingExposure = L.day.exposure + (L.night.exposure - L.day.exposure) * s.mix;
   s.scene.fog.color.copy(s.fogD).lerp(s.fogN, s.mix);
+  s.scene.background.copy(s.clearD).lerp(s.clearN, s.mix);
   paintBackdrop(s.backdrop, s.mix, s.scene.fog.color);
   paintLights(s.lights, s.mix, time);
   for (const a of s.actors) for (const m of a.shaders) tickCrt(m, time);
@@ -114,7 +119,7 @@ function wire(s, section, stage) {
   const loop = (now) => {
     s.raf = 0;
     if (!s.running) return;
-    const dt = Math.min(0.1, (now - s.clock) / 1000);
+    const dt = Math.min(0.25, (now - s.clock) / 1000);   // the clock restarts on resume, so no jump after a pause
     s.clock = now;
     frame(s, section, dt);
     s.raf = requestAnimationFrame(loop);
