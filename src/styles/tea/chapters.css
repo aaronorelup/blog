@@ -17,7 +17,7 @@
   background: repeating-linear-gradient(90deg, var(--tea-wood-fill) 0 17px, transparent 17px 19px);
   border-radius: 0 0 3px 3px;
 }
-:root[data-mode='day'] .tea-noren { color: var(--tea-ink-fixed); }
+.tea-noren span { padding: 1px 6px; border-radius: 3px; background: var(--tea-card); line-height: 1.4; }
 .tea-word {
   margin: 30px 0 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(64px, 10.6vw, 168px);
   line-height: 0.92; letter-spacing: -0.025em; color: var(--pc-head); overflow-wrap: anywhere;

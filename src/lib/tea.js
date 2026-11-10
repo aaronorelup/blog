@@ -84,7 +84,8 @@ export function loreHub(lore, base, labels) {
 
 // A project card's one link on the tea page: its main link, else its first write-up, else its section on /projects/.
 export function projectHref(card) {
-  if (card.main) return { href: card.main.href, external: card.main.external };
+  // a main link that is an anchor on the projects page (the showreel) points there from here
+  if (card.main) return { href: card.main.href.startsWith('#') ? `/projects/${card.main.href}` : card.main.href, external: card.main.external };
   if (card.posts?.length) return { href: `/ledger/${card.posts[0].slug}/`, external: false };
   return { href: `/projects/#proj-${card.section}`, external: false };
 }

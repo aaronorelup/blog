@@ -1,10 +1,9 @@
 ---
 // The tea room's frame (/tea/): the shared Head, read through the SEO switch (src/data/tea.js teaSeo), its own
-// stylesheet (styles/tea/tea.css on tokens.css, never site.css), the shared day/night switch, and the one small
-// module that marks the current chapter (scripts/tea/rail.js). Everything renders and links without it.
+// stylesheet (styles/tea/tea.css on tokens.css, never site.css) and the one small module that marks the current
+// chapter (scripts/tea/rail.js). The day/night switch lives in the rail. Everything renders and links without script.
 import '../styles/tea/tea.css';
 import Head from '../components/chrome/Head.astro';
-import ModeToggle from '../components/chrome/ModeToggle.astro';
 import { teaSeo } from '../data/tea.js';
 
 interface Props { title: string; description: string }
@@ -19,7 +18,6 @@ const seo = teaSeo();
     <slot name="head" />
   </head>
   <body class="tea">
-    <ModeToggle />
     <slot />
     <script>
       import '../scripts/tea/rail.js';
