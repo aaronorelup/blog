@@ -21,7 +21,7 @@ export function normalise(m, url) {
       id: l.id || 'layer' + i,
       night: abs(l.night || l.src), day: abs(l.day || l.night || l.src),
       z: Number(l.z ?? -10), size: l.size || [20, 12.5], y: Number(l.y ?? 0), x: Number(l.x ?? 0),
-      cutout: !!l.cutout, fog: Number(l.fog ?? 0),
+      cutout: !!l.cutout, fog: Number(l.fog ?? 0), portraitScale: Number(l.portraitScale ?? 1.35),
     })),
     actors: (m.actors || []).map((a) => ({
       id: a.id, src: abs(a.src), scale: Number(a.scale ?? 1),
@@ -49,7 +49,7 @@ export function normalise(m, url) {
         .sort((a, b) => a.t - b.t),
       parallax: { x: 0.3, y: 0.18, ease: 4, drift: 0.5, ...(cam.parallax || {}) },
       portrait: {
-        fov: 46, spread: 0.55, pull: 1.6, ...(cam.portrait || {}),
+        fov: 46, spread: 0.55, pull: 1.6, drop: 0.9, ...(cam.portrait || {}),
       },
     },
     tracks: (m.tracks || []).map(track),

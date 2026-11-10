@@ -85,6 +85,8 @@ function resize(s, stage) {
   s.size = [w, h];
   s.renderer.setSize(w, h, false);
   fitCamera(s.camRig, s.manifest.reference.aspect, w, h);
+  // a tall screen sees more above and below than the picture was painted for: the layers grow to cover it
+  for (const l of s.backdrop.layers) l.mesh.scale.setScalar(s.camRig.portrait ? l.spec.portraitScale : 1);
 }
 
 function frame(s, section, dt) {
