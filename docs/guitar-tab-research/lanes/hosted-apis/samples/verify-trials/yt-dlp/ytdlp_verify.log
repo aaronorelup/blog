@@ -1,0 +1,38 @@
+[archive.org] Extracting URL: https://archive.org/details/scm-422828-crescendo313-drh-meredithconn
+[archive.org] scm-422828-crescendo313-drh-meredithconn: Downloading webpage
+[archive.org] scm-422828-crescendo313-drh-meredithconn: Downloading JSON metadata
+WARNING: "asr" field is not numeric - forcing int conversion, there is an error in extractor
+[info] scm-422828-crescendo313-drh-meredithconn: Downloading 1 format(s): 0
+[info] scm-422828-crescendo313-drh-meredithconn: Downloading 1 time ranges: 400.0-418.0
+[download] Destination: R3a_ytdlp_400-418.mp3
+Incorrect BOM value
+Error reading comment frame, skipped
+Input #0, mp3, from 'https://archive.org/download/scm-422828-crescendo313-drh-meredithconn/crescendo313_2014_09_04_0.mp3':
+  Metadata:
+    title           : tmp
+    comment         : https://archive.org/details/
+  Duration: 00:28:00.05, start: 0.023021, bitrate: 96 kb/s
+  Stream #0:0: Audio: mp3, 48000 Hz, mono, fltp, 96 kb/s
+    Metadata:
+      encoder         : LAME3.99r
+    Side data:
+      replaygain: track gain - 3.100000, track peak - unknown, album gain - unknown, album peak - unknown, 
+Output #0, mp3, to 'file:R3a_ytdlp_400-418.mp3.part':
+  Metadata:
+    TIT2            : tmp
+    comment         : https://archive.org/details/
+    TSSE            : Lavf60.16.100
+  Stream #0:0: Audio: mp3, 48000 Hz, mono, fltp, 96 kb/s
+    Metadata:
+      encoder         : LAME3.99r
+    Side data:
+      replaygain: track gain - 3.100000, track peak - unknown, album gain - unknown, album peak - unknown, 
+Stream mapping:
+  Stream #0:0 -> #0:0 (copy)
+Press [q] to stop, [?] for help
+size=       0kB time=-00:00:00.01 bitrate=  -0.0kbits/s speed=N/A    [out#0/mp3 @ 0x55eaef14a6c0] video:0kB audio:211kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.183089%
+size=     212kB time=00:00:17.98 bitrate=  96.4kbits/s speed= 172x    
+[download] 100% of  211.61KiB in 00:00:15 at 13.66KiB/s
+[ExtractAudio] Destination: R3a_ytdlp_400-418.wav
+Deleting original file R3a_ytdlp_400-418.mp3 (pass -k to keep)
+[gtr-run r0323] hosted-apis/yt-dlp "verify: re-run of r0126 yt-dlp 2026.10.26: audio of 400-418 s from the R3a archive.org item (format 0 mp3), to WAV" wall=18.03s cpu=1.1s rss=64.2MB cores=None exit=0 slot_wait=0.0s

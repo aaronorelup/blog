@@ -1,0 +1,29 @@
+alphaTab | S5capo2.gp5 model notes vs truth (cf. e0008) | truth=90 est=90 matched=90 same string+fret=90 string diffs={0: 90}
+alphaTab | S5dropd GP7 export re-read (cf. e0015) | truth=90 est=90 matched=90 same string+fret=90 string diffs={0: 90}
+alphaTab | S2n.alphatab.mid notes (cf. e0007) | n_est=90 onset P=1.000 R=1.000 F1=1.000; onset+offset F1=1.000
+alphaTab | reference 2-staff MusicXML import, S5capo2 (cf. e0847) | truth=90 est=90 matched=90 same string+fret=90 string diffs={0: 90}
+music21 | S2n.music21.musicxml string/fret vs truth (cf. e0191); staff-tuning read=none | truth=90 est=90 matched=90 same string+fret=90 string diffs={0: 90}
+reference MusicXML | S5capo2.truth.musicxml (cf. e0196); capo=2 tuning=[40, 45, 50, 55, 59, 64] | truth=90 est=90 matched=90 same string+fret=90 string diffs={0: 90}
+/home/user/gtr/eval/venv/lib/python3.11/site-packages/pretty_midi/pretty_midi.py:122: RuntimeWarning: Tempo, Key or Time signature change events found on non-zero tracks.  This is not a valid type 0 or type 1 MIDI file.  Tempo, Key or Time Signature may be wrong.
+  warnings.warn(
+Verovio | S2n_mei.mid (cf. e0307) | n_est=90 onset P=1.000 R=1.000 F1=1.000; onset+offset F1=0.556
+Verovio | S2n_mxl2staff.mid (cf. e0324) | n_est=180 onset P=0.500 R=1.000 F1=0.667; onset+offset F1=0.667
+Verovio | S5capo2 MEI export read with capo 0 (cf. e0365) | truth=90 est=90 matched=0 same string+fret=0 string diffs={}
+Verovio | S5capo2 MEI export read with capo 2 (cf. e0366) | truth=90 est=90 matched=90 same string+fret=90 string diffs={0: 90}
+MuseScore 3.2.3 | S5capo2.mid (cf. e0374) | n_est=90 onset P=0.000 R=0.000 F1=0.000; onset+offset F1=0.000
+MuseScore 3.2.3 | S5capo2.mid +2 semitones (cf. e0376) | n_est=90 onset P=1.000 R=1.000 F1=1.000; onset+offset F1=1.000
+MuseScore 3.2.3 | S5capo2 reference MusicXML round trip (cf. e0368); capo in file=0 | truth=90 est=90 matched=90 same string+fret=0 string diffs={-1: 36, 0: 54}
+LilyPond | S2n auto strings (cf. e0399) | truth=90 est=90 matched=90 same string+fret=90 string diffs={0: 90}
+LilyPond | S5capo2 auto strings, raised tuning (cf. e0415) | truth=90 est=90 matched=90 same string+fret=90 string diffs={0: 90}
+LilyPond | S2n_auto.midi (cf. e0400) | n_est=180 onset P=0.500 R=1.000 F1=0.667; onset+offset F1=0.667
+TuxGuitar 1.5.6 | S2n.tg.gp5 read here with PyGuitarPro (cf. e0457); capo=0 tuning=[64, 59, 55, 50, 45, 40] | truth=90 est=90 matched=90 same string+fret=90 string diffs={0: 90}
+TuxGuitar 1.5.6 | S5capo2.tg.gp4 read here with PyGuitarPro (cf. e0465); capo=2 tuning=[64, 59, 55, 50, 45, 40] | truth=90 est=90 matched=90 same string+fret=90 string diffs={0: 90}
+TuxGuitar 1.5.6 | S5dropd.tg.gp3 read here with PyGuitarPro (cf. e0473); capo=0 tuning=[64, 59, 55, 50, 45, 38] | truth=90 est=90 matched=90 same string+fret=90 string diffs={0: 90}
+TuxGuitar 1.5.6 | alphatabgp7.tg.gp5 read here with PyGuitarPro (cf. e0479); capo=0 tuning=[64, 59, 55, 50, 45, 40] | truth=90 est=90 matched=90 same string+fret=90 string diffs={0: 90}
+TuxGuitar 1.5.6 | S2n.tg.mid (cf. e0462) | n_est=90 onset P=1.000 R=1.000 F1=1.000; onset+offset F1=1.000
+PyGuitarPro 0.11 | S2n.pgp.gp5 (cf. e0574) | truth=90 est=90 matched=90 same string+fret=90 string diffs={0: 90}
+PyGuitarPro 0.11 | S2n.pgp.gp4 (cf. e0578) | truth=90 est=42 matched=42 same string+fret=42 string diffs={0: 42}
+webmscore 1.2.1 | S5capo2_gp5.mid (cf. e0999) | n_est=90 onset P=1.000 R=1.000 F1=1.000; onset+offset F1=1.000
+webmscore 1.2.1 | reference 2-staff MusicXML round trip (cf. e1009); staff-tuning written=[52, 57, 62, 67, 71, 76] | truth=90 est=90 matched=90 same string+fret=0 string diffs={0: 14, 1: 10, 2: 40, 3: 26}
+guitarpro-parser 2.0.0 | S5dropd.gp5 (cf. e1105) | truth=90 est=90 matched=90 same string+fret=90 string diffs={0: 90}
+abcjs 6.7.2 | S2n written-pitch read-back, multiset of (string, fret, pitch) equal to the truth (cf. e0638) | True

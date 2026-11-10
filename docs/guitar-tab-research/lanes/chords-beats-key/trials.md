@@ -2,7 +2,7 @@
 
 Agent: try-chords-beats-key. Date: 2026-11-10 (`date -u +%F`). Box: 4 vCPU Intel Xeon 2.10 GHz, 15 GiB RAM, no GPU,
 shared with about 20 other agents. Inputs: `/home/user/gtr/inputs/` as described in its `INPUTS.md` (clip ids S2n, S2s,
-S3, S4, S5capo2, S5dropd, S6taps, S7flat30, R1a, R1b, R1c, R2, R2full). This file states what went in, what came out,
+S3, S4, S5capo2, S5dropd, S6taps, S7flat30, R1a, R1b, R1c, R2, R2full; R3a, R3b, R3c in one extra section). This file states what went in, what came out,
 how long it took and what the scorer computed. It does not rank tools.
 
 How to read the numbers:
@@ -39,6 +39,38 @@ How to read the numbers:
 Scripts are in `scripts/`; small outputs are in `samples/<tool>/`; full outputs are in
 `/home/user/gtr/lanes/chords-beats-key/out/<tool>/<clip>/` (not in git).
 
+What ran here (sections below, in this order), with the runs that hold the timings:
+
+| tool | version | what it gave | runs |
+|---|---|---|---|
+| aubio | 0.4.9 (Ubuntu) | beats, tempo | r0200 (`--nolock`) |
+| Chordino / NNLS Chroma / NNLS Tuning | chord-extractor 0.1.3 + vamp 1.1.0 | chords, tuning (Hz) | r0198 install, r0215 (`--nolock`) |
+| madmom | 0.16.1 (PyPI) on Python 3.9 | beats, downbeats, tempo, chords (2 recognisers), key | r0047 install; r0063 r0072 r0073 r0100 r0102 r0140 r0316 (2 cores) |
+| librosa | 1.0.0 | beats, tempo, tuning; plus a lane-written chroma + Krumhansl-Kessler key baseline | r0069 r0074 r0081 r0091-r0094 r0096 r0104 (2 cores), r0267 (`--nolock`) |
+| Essentia | essentia-tensorflow 2.1b6.dev1389 | beats, tempo (RhythmExtractor2013, TempoCNN), key (5 profiles), tuning, chords | r0088 r0097 r0148 (2 cores), r0267 r0324 (`--nolock`) |
+| music21 | 10.5.2 | key from MIDI (truth MIDI and the audio-to-notes lane's Basic Pitch MIDI) | r0237 (`--nolock`) |
+| autochord | 0.1.4 | chords | r0337 (2 cores) |
+| CREMA | 0.2.0 | chords (JAMS, with confidence) | r0337 (2 cores) |
+| DeepRhythm | 0.0.13 | tempo with confidence | r0351 (`--nolock`, 1 thread) |
+| BeatNet | 1.1.3 | beats, downbeats (offline DBN, online particle filter) | r0335 install, r0361 (`--nolock`, 1 thread) |
+| Beat This! | beat-this 1.1.0 | beats, downbeats (final0, small0) | r0397 (`--nolock`, 1 thread) |
+| lv-chordia | 1.1.0 | chords (large vocabulary) | r0398 (`--nolock`, 1 thread) |
+
+Not run here, with reasons: BTC, madmom from GitHub, libKeyFinder, S-KEY, All-In-One, tempo-cnn, Omnizart, Beat
+Transformer, Harmony Transformer, ACR_seq2seq, ChordMini, QM Vamp plugins, the Hulme et al. tuning classifier, BEAST,
+and the browser libraries (section "Not run here"; steps for Aaron in `for-aaron.md`). The last four tools in the table
+ran with `--nolock` on one thread because both CPU slots were held by other lanes' jobs that had
+been running for 36 to 60 minutes; their times are single-thread times under load, not 2-core slot times.
+
+Virtual environments: all of this lane's venvs were deleted at the end of its work to free disk space, as the
+orchestrator's disk notice asked; each tool's `uv pip freeze` is kept in `samples/<tool>/`, and the install commands
+in each section recreate them (the wheels stay in the shared uv cache). Model files are kept in
+`/home/user/gtr/lanes/chords-beats-key/models/` (TempoCNN, DeepRhythm, autochord).
+
+Inputs: every audio tool was given the clips' 44.1 kHz 16-bit WAV files by path (stereo for the S, R2 and R3 clips, mono
+for R1), including R2full (228.5 s); no tool rejected a file. Each tool's own loading and resampling is named in its
+section.
+
 ## aubio 0.4.9 (Ubuntu packages aubio-tools / python3-aubio 0.4.9-4.4build1)
 
 - What: C library and command-line tools for onsets, pitch, beats and tempo (https://aubio.org). Already installed on
@@ -47,9 +79,9 @@ Scripts are in `scripts/`; small outputs are in `samples/<tool>/`; full outputs 
   3.13 on this box, and fails with `ModuleNotFoundError: No module named 'aubio._aubio'` (the Debian module is built for
   Python 3.12). Calling it as `/usr/bin/python3.12 /usr/bin/aubio ...` works. The C tool `aubiotrack` works as is.
 - Run: `scripts/aubio_run.py` on 13 clips (S3 S4 S7flat30 S2n S2s S5capo2 S5dropd S6taps R1a R1b R1c R2 R2full), each
-  clip's `<id>.wav` (44.1 kHz stereo 16-bit), default settings (buffer 1024, hop 512, the file's own sample rate):
+  clip's `<id>.wav` (44.1 kHz 16-bit; stereo, mono for R1), default settings (buffer 1024, hop 512, the file's own sample rate):
   `python3.12 /usr/bin/aubio tempo <wav>`, `python3.12 /usr/bin/aubio beat <wav>`, `aubiotrack -i <wav>`. Run r0200,
-  `--nolock` (single-threaded C tools; load average 13.99 at start): 20.8 s wall for all 13 clips and all three
+  `--nolock` (light C tools; load average 13.99 at start): 20.8 s wall for all 13 clips and all three
   commands, 9.2 s CPU, 64.2 MB peak RSS. Per command (from `out/aubio/timings.json`): S3 (24 s of audio) tempo 0.80 s,
   beat 0.58 s, aubiotrack 0.22 s; R2full (228.5 s) tempo 1.56 s, beat 1.60 s, aubiotrack 0.87 s.
 - Output format: `aubio tempo` prints one line, `<bpm> bpm` (e.g. `121.24 bpm`), no confidence. `aubio beat` and
@@ -100,7 +132,7 @@ Scripts are in `scripts/`; small outputs are in `samples/<tool>/`; full outputs 
 - Runs: `scripts/chordino_run.py` (three calls per clip: `Chordino()` with chord-extractor's defaults useNNLS=1,
   rollon=1, tuningmode=0 global, whitening=1, s=0.7, boostn=0.1; the same with tuningmode=1 local; and
   `vamp.collect(data, rate, 'nnls-chroma:tuning')`). Audio is loaded by chord-extractor with `librosa.load(file)`
-  (22050 Hz mono). 13 clips in one call of `scripts/batch_run.py`, run r0215 (`--nolock`, single-threaded plugin; load
+  (22050 Hz mono). 13 clips in one call of `scripts/batch_run.py`, run r0215 (`--nolock`; load
   average 14.29 at start): 97.5 s wall in total, 60.5 s CPU, 389 MB peak RSS. Per clip (all three calls, from
   `samples/chordino/batchC_timings.jsonl`): S3 25.9 s (the first job; its first Chordino call took 14.99 s, the
   local-tuning call on the same file 0.48 s), other 24 to 39 s clips 3.3 to 6.4 s, R2full 16.6 s (Chordino default
@@ -108,8 +140,8 @@ Scripts are in `scripts/`; small outputs are in `samples/<tool>/`; full outputs 
 - Output format: `Chordino.extract()` returns a list of `ChordChange(chord, timestamp)`: a label and a start time in
   seconds, no end times and no confidence. Labels are Chordino's own short names (`G`, `Em`, `Am7`, `D7`, `C#m`,
   `Abmaj7`, `Bbm7b5/Ab`, `F#6`, `Bdim`, `Ebm7b5`, `Bb7/D`, `N`), i.e. majors, minors, sevenths, sixths, diminished,
-  half-diminished and slash chords. Every start time in the 491 segments written for this lane is a multiple of 2048/22050 s (0.0929 s; e.g. 0.372,
-  0.464, 4.923). Every clip's list started with `N` at 0.372 s and ended with an `N` change 0.28 to 0.37 s after the
+  half-diminished and slash chords. Every start time in the 491 segments written for the 13 clips is a multiple of 2048/22050 s (0.0929 s;
+  e.g. 0.372, 0.464, 4.923). Each of the 13 clips' lists started with `N` at 0.372 s and ended with an `N` change 0.28 to 0.37 s after the
   end of the file (S3: 24.335 s for a 24.000 s file). The lane script writes `.lab` files (each change lasts until the
   next one, the last until the end of the file); segments that start at or after the end of the file are dropped
   (`scripts/fix_chordino_labs.py` applied that rule to the r0215 outputs, written before the rule was added). The
@@ -195,8 +227,8 @@ Scripts are in `scripts/`; small outputs are in `samples/<tool>/`; full outputs 
   `RNNBeatProcessor` -> `DBNBeatTrackingProcessor(fps=100)`; the same activations -> `TempoEstimationProcessor(fps=100)`
   (method 'comb'); `RNNDownBeatProcessor` -> `DBNDownBeatTrackingProcessor(beats_per_bar=[3, 4], fps=100)`;
   `CNNChordFeatureProcessor` -> `CRFChordRecognitionProcessor`; `DeepChromaProcessor` ->
-  `DeepChromaChordRecognitionProcessor`; `CNNKeyRecognitionProcessor` -> `key_prediction_to_label`. Input: the stereo
-  44.1 kHz 16-bit `<id>.wav`, passed by path. One `gtr-run` per clip on 2 cores: S3 r0063 (20.9 s wall, 22.5 s CPU,
+  `DeepChromaChordRecognitionProcessor`; `CNNKeyRecognitionProcessor` -> `key_prediction_to_label`. Input: the 44.1 kHz
+  16-bit `<id>.wav` (stereo; mono for R1), passed by path. One `gtr-run` per clip on 2 cores: S3 r0063 (20.9 s wall, 22.5 s CPU,
   212 MB peak RSS), S4 r0072 (35.1 s, 30.8 s, 316 MB), S7flat30 r0073 (19.5 s), S2n r0100 (29.3 s), S2s r0102 (26.5 s),
   S5capo2 r0140 (26.6 s). The other clips ran in batch run r0316 (2 cores, 420.1 s wall in total; per clip from
   `samples/madmom/batchA2_timings.jsonl`): S5dropd 53.5 s, S6taps 39.6 s, R1a 38.2 s, R1b 33.8 s, R1c 33.4 s, R2 31.2 s,
@@ -401,7 +433,7 @@ Scripts are in `scripts/`; small outputs are in `samples/<tool>/`; full outputs 
   model, default settings, that lane's run r0234). Both read with `music21.converter.parse(path)`; parts with a
   percussion instrument or MIDI channel 10 removed (S4's drum part).
 - Run: `scripts/music21_key_run.py` on 11 clips x 2 sources x 5 methods, run r0237 (`--nolock`, load average 17.09):
-  13.2 s wall in total, 4.3 s CPU, 70 MB peak RSS (parse plus five analyses: 0.1 to 1.6 s per MIDI file, in
+  13.2 s wall in total, 4.3 s CPU, 70 MB peak RSS (parse plus five analyses: 0.29 to 1.14 s per MIDI file, import 0.89 s, in
   `samples/music21/timings.json`).
 - Output format: a `music21.key.Key` with tonic, mode, `correlationCoefficient` and `alternateInterpretations` (the
   other 23 keys with their coefficients). The script writes one `key_<source>_<method>.txt` per result and
@@ -448,8 +480,8 @@ Scripts are in `scripts/`; small outputs are in `samples/<tool>/`; full outputs 
   its model from Google Drive into `~/.autochord`. HOME and VAMP_PATH were pointed at
   `/home/user/gtr/lanes/chords-beats-key/models/autochord_home/` so both stay in the lane folder. The first import
   downloaded `chroma-seq-bilstm-crf-v1` (a Keras SavedModel; the folder is 7.2 MB together with the plugin copy) through
-  gdown from `https://drive.google.com/uc?id=1XBn7FyYjF8Ff6EuC7PjwwPzFBLRXGP7n`, which answered (HTTP 303 to
-  drive.usercontent.google.com, then 200). autochord's bundled `nnls-chroma.so` has the same SHA-256 (022f18b7...c7d99)
+  gdown from `https://drive.google.com/uc?id=1XBn7FyYjF8Ff6EuC7PjwwPzFBLRXGP7n` (a curl test of that URL got HTTP 303,
+  and of the same file id on drive.usercontent.google.com HTTP 200; the gdown download completed). autochord's bundled `nnls-chroma.so` has the same SHA-256 (022f18b7...c7d99)
   as the one inside chord-extractor.
 - Runs: `scripts/autochord_run.py` (`autochord.recognize(path, lab_fn=...)`) and `scripts/crema_run.py`
   (`crema.analyze.analyze(filename=path)`), 9 clips each, in batch run r0337 (2 cores; 194.4 s wall in total, 188.8 s
@@ -463,7 +495,7 @@ Scripts are in `scripts/`; small outputs are in `samples/<tool>/`; full outputs 
   package source); no confidence. The last segment can end after the end of the file (R2: 36.037 s for a 36.000 s
   clip). CREMA: a JAMS annotation in namespace `chord` with `time`, `duration`, `value` and `confidence` per segment;
   the lane script writes a `.lab`; labels seen include `A:min7`, `C:maj/3`, `B:maj7`, `A#:7`, `D:dim7`, `G#:dim7`,
-  `D#:min/5`, `N` (sevenths, diminished sevenths and inversions); segment confidences 0.28 to 0.96 in these runs.
+  `D#:min/5`, `N` (sevenths, diminished sevenths and inversions); segment confidences 0.21 to 0.97 over the 9 clips.
 - Output excerpts. S3 (truth N G E:min A:min7 D:7 G E:min C D:7 G): autochord `N 0-2.23, G:maj 2.23-4.97, E:min
   4.97-7.34, ...` (11 segments, labels A:min C:maj D:maj E:min G:maj N); CREMA `N 0-2.32, G:maj, E:min, A:min7, D:maj,
   G:maj, E:min, C:maj/3, G:maj` (9 segments). R2 (no truth): autochord `Gb:maj Eb:min B:maj Gb:maj Bb:maj Eb:min B:maj
@@ -485,6 +517,215 @@ Scripts are in `scripts/`; small outputs are in `samples/<tool>/`; full outputs 
 
 - Samples: `samples/autochord/` and `samples/crema/` (labs for S3, S7flat30, R1a, R2, R2full; S3 JAMS; timings;
   freeze).
+
+## Extra: the light tools on the real fingerstyle video audio R3a, R3b, R3c (no truth)
+
+R3b and R3c were added to the inputs during this lane's work (`READY-VIDEO`, 21:29 UTC). Their audio (`<id>.wav`, 18 s
+each; INPUTS.md: R3a a concert recording, R3b a home recording, R3c a lesson's "Slow play-through" of the traditional
+Manx tune 'Three Little Boats') went through the same scripts as above with default settings: Essentia, librosa and
+Chordino in batch run r0347 (`--nolock`, 2.8 to 4.7 s per tool per clip), aubio in run r0348 (`--nolock`, 1.95 s for
+all three). There is no truth, so nothing is scored; the outputs are listed for the handoff record.
+
+| clip | aubio tempo | librosa beat_track tempo / feature.tempo | Essentia multifeature BPM (confidence) | TempoCNN k16 / k4 | Essentia keys bgate / krumhansl / temperley / edma / shaath | librosa KK baseline key | tuning cents librosa / Essentia; NNLS Hz | Chordino labels |
+|---|---|---|---|---|---|---|---|---|
+| R3a | 133.22 | 129.20 / 129.20 | 129.34 (3.11) | 129 / 129 | C# min / E maj / E maj / C# min / E maj | Ab minor | +6 / +7; 440.7 | Amaj7 E Ab A6 B Abaug A6 Abdim Aaug Fdim F#m E |
+| R3b | 150.84 | 172.27 / 117.45 | 172.27 (2.39) | 170 / 87 | A min / A maj / A min / A min / A min | A major | +9 / +1; 440.9 | Amaj7 Am7 B7/D# Bbmaj7 A |
+| R3c | 125.73 | 129.20 / 129.20 | 137.54 (2.26) | 139 / 139 | A min / A min / C maj / A min / A min | A minor | 0 / +1; 439.5 | A Em A F6 Cmaj7 A G Am Dm C |
+
+On R3b, librosa's `beat_track` tempo (172.27) and `feature.tempo` (117.45) differ; on every other clip of this lane they
+were equal. Samples: `samples/r3/`.
+
+## DeepRhythm 0.0.13 (PyPI): one global tempo with a confidence
+
+- What: "a convolutional neural network designed for rapid, precise tempo prediction for modern music" (README quoted
+  in survey.md). Weights `deeprhythm-0.7.pth`, 5,443,228 bytes, sha256 c7cc8cc0...b3d9c4.
+- Install (venv-deeprhythm, Python 3.11): `uv pip install deeprhythm==0.0.13 "torch==2.15.0" "torchaudio==2.11.1"
+  "librosa==0.11.0" soundfile` (torch and torchaudio are the versions already in the shared cache; nnaudio 0.3.3 came
+  as a dependency). The package downloads its weights on first use from
+  `https://github.com/bleugreen/deeprhythm/raw/main/deeprhythm-0.7.pth` (`model_url` in `deeprhythm/utils.py`), which
+  this box's proxy answered with HTTP 403. The same file was fetched from
+  `https://raw.githubusercontent.com/bleugreen/deeprhythm/main/deeprhythm-0.7.pth` (HTTP 200; the copy under
+  `weights/` in the repository has the same SHA-256) into
+  `/home/user/gtr/lanes/chords-beats-key/models/deeprhythm_home/.local/share/deeprhythm/`, and `scripts/deeprhythm_run.py`
+  points HOME there, because the package looks in `~/.local/share/deeprhythm/`. Freeze:
+  `samples/deeprhythm/venv-deeprhythm.freeze.txt`.
+- Run: `DeepRhythmPredictor(device="cpu", quiet=True).predict(path, include_confidence=True)` on 10 clips, batch run
+  r0351. Both CPU slots were held by other lanes' long jobs at the time (one for over 50 minutes), so this ran with
+  `--nolock` and one thread (`OMP_NUM_THREADS=1`, `MKL_NUM_THREADS=1`, `OPENBLAS_NUM_THREADS=1` in the ledger line;
+  `torch.get_num_threads()` reported 1; load average 11.28 at start): 78.8 s wall in total, 60.8 s CPU, 773 MB peak RSS.
+  Per clip (`samples/deeprhythm/batchE_timings.jsonl`): S3 26.7 s (the first job: import 6.1 s, predict 18.8 s), the
+  other 24 to 39 s clips 4.8 to 6.6 s, R2full 7.8 s (predict 4.3 s).
+- Output format: one BPM value (whole numbers in these runs) and one confidence (the mean softmax probability of the
+  chosen class over the 8-second clips the package cuts the audio into, per `predictor.py`). No beat times.
+- Outputs: S3 95 (confidence 0.648), S7flat30 95 (0.612), S4 116 (0.788), S2n 112 (0.731), S2s 112, R1a 107 (0.967),
+  R1b 89 (0.457), R1c 120 (0.467), R2 143 (0.537), R2full 143 (0.619).
+- Constraint inputs: none in `predict()` besides `include_confidence`; the batch CLI takes a device and a confidence
+  flag (survey.md).
+- Scores (gtr-eval 0.11.1, tempo): every clip within 4 % of the truth: S3 0.990 (e1336), S7flat30 0.990 (e1338), S4
+  1.000 (e1337), S2n 1.000 (e1339), S2s 1.000 (e1340), R1a 1.000 (e1341), R1b 0.989 (e1342), R1c 1.008 (e1343) (ratio
+  estimate / truth).
+- Samples: `samples/deeprhythm/` (JSON per clip, timings, freeze).
+
+## BeatNet 1.1.3 (PyPI sdist of 2023-11-28): beats and downbeats, offline (DBN) and online (particle filter)
+
+- What: "BeatNet: Real-time and Offline Joint Music Beat, Downbeat, Tempo, and Meter Tracking System" (README title,
+  quoted in survey.md): a CRNN gives beat and downbeat activations, then madmom's DBN (offline) or a particle filter
+  (causal, "online") picks the beats. The PyPI sdist contains the weights `models/model_1_weights.pt`,
+  `model_2_weights.pt`, `model_3_weights.pt` (1,612,179 bytes each; the README labels them "Pre-trained weights
+  (GTZAN)", "(Ballroom)", "(Rock Corpus)" per survey.md, and the comments in BeatNet.py say "GTZAN out trained
+  model", "Ballroom out trained model", "Rock_corpus out trained model"; which data each was trained on was not
+  checked further) and `model-1.pt` to `model-3.pt` (1,614,574 bytes each). Model 1 was used.
+- Install (venv-beatnet, Python 3.11): BeatNet imports madmom and pyaudio at module level, and its metadata pins
+  `numba==0.54.1`. Steps that worked: `flock /home/user/gtr/locks/apt.lock apt-get install -y portaudio19-dev` (for
+  the PyAudio build); `uv pip install "torch==2.15.0" "numpy==1.23.5" "scipy<1.12" mido "cython<3" "setuptools<81"
+  wheel "librosa==0.10.2.post1" matplotlib soundfile` (scipy 1.11.4, numba 0.68.1); `uv pip install
+  --no-build-isolation madmom==0.16.1 pyaudio` (run r0335, `--nolock`, 4.2 s; pyaudio 0.2.14); then a one-line edit of
+  the installed madmom so it imports on Python 3.11 (`madmom/processors.py` line 23, `from collections import
+  MutableSequence` changed to `from collections.abc import MutableSequence`; diff in
+  `samples/beatnet/madmom_processors_py_patch.diff`; survey.md records that BeatNet's README lists source fixes for
+  madmom 0.16.1 on Python >= 3.10); then `uv pip install --no-deps BeatNet==1.1.3` (so the numba pin is not applied).
+  With numpy 1.23.5 the `np.float`-style aliases madmom 0.16.1 uses still exist. Freeze:
+  `samples/beatnet/venv-beatnet.freeze.txt`.
+- Run: `scripts/beatnet_run.py`: `BeatNet(1, mode='offline', inference_model='DBN', plot=[], thread=False,
+  device='cpu').process(path)` and `BeatNet(1, mode='online', inference_model='PF', ...).process(path)`, numpy seed 0
+  before each (the particle filter draws random numbers). 11 clips, batch run r0361. Both CPU slots were held by other
+  lanes' long jobs, so this ran with `--nolock` and one thread (`OMP_NUM_THREADS=1` and friends; torch reported 1
+  thread; load average 12.98 at start): 170.7 s wall in total, 128.1 s CPU, 802 MB peak RSS. Per clip
+  (`samples/beatnet/batchI_timings.jsonl`): S3 27.6 s (the first job; offline 19.9 s, online 3.9 s), the other 24 to
+  39 s clips 6.2 to 11.0 s (offline 1.35 to 1.78 s, online 2.2 to 6.8 s), R2full 68.4 s (offline 5.6 s, online 57.4 s).
+- Output format: `process()` returns an array of rows (time in seconds, position). Times are on a 20 ms grid (fps 50).
+  Offline (madmom DBN): position = beat number in the bar, 1 = downbeat; BeatNet constructs
+  `DBNDownBeatTrackingProcessor(beats_per_bar=[2, 3, 4], fps=50)` (BeatNet.py line 69). Online (particle filter):
+  position 1 = downbeat, 2 = other beat (`particle_filtering_cascade.py`, lines 285 and 289). The lane script writes the
+  raw rows and separate beat and downbeat files. No tempo or meter field is returned.
+- Output excerpts: S3 offline `0.340 4, 0.980 1, 1.580 2, 2.220 3, 2.840 4, 3.440 1, ...` (38 rows; the first rows fall
+  in the silent count-in bar); S3 online `2.520 1, 3.460 2, 5.000 1, 5.320 2, 5.640 2, ...` (30 rows). S2n offline: the
+  positions alternate 1, 2, 1, 2 (two beats per bar; 27 downbeats against 12 in the truth). R2 (no truth): offline 43
+  beats (median inter-beat interval = 71.43 BPM), online 46 (75.0 BPM). R2full: offline 308 rows, 77 downbeats, positions
+  1 to 4; online 299 rows, 85 downbeats.
+- Constraint inputs: the constructor takes `model` (1 to 3), `mode` ('stream' from the microphone, 'realtime',
+  'online', 'offline'), `inference_model` ('PF' or 'DBN'), `plot`, `thread`, `device`. No tempo range or meter
+  argument; the meters [2, 3, 4] for the DBN are fixed in the code.
+- Scores (gtr-eval 0.11.1):
+
+| clip | offline beats F / CMLt / AMLt | downbeat F / CMLt | est / truth downbeats | eval | online beats F / CMLt / AMLt | downbeat F / CMLt | est / truth downbeats | eval |
+|---|---|---|---|---|---|---|---|---|
+| S3 | 0.000 / 0.000 / 0.789 | 0.000 / 0.000 | 10 / 8 | e1346 | 0.161 / 0.000 / 0.581 | 0.267 / 0.250 | 7 / 8 | e1347 |
+| S7flat30 | 0.000 / 0.000 / 0.789 | 0.000 / 0.000 | 13 / 8 | e1350 | 0.164 / 0.000 / 0.581 | 0.133 / 0.000 | 7 / 8 | e1351 |
+| S4 | 0.951 / 0.907 / 0.907 | 0.944 / 0.895 | 19 / 17 | e1348 | 0.962 / 0.912 / 0.912 | 0.970 / 0.824 | 16 / 17 | e1349 |
+| S2n | 0.941 / 0.889 / 0.889 | 0.000 / 0.000 | 27 / 12 | e1352 | 0.833 / 0.542 / 0.542 | 0.087 / 0.000 | 11 / 12 | e1353 |
+| S2s | 0.941 / 0.889 / 0.889 | 0.000 / 0.000 | 14 / 12 | e1354 | 0.874 / 0.667 / 0.667 | 0.286 / 0.083 | 9 / 12 | e1355 |
+| S6taps | 0.941 / 0.889 / 0.889 | 0.000 / 0.000 | 13 / 12 | e1356 | 0.860 / 0.625 / 0.625 | 0.105 / 0.000 | 7 / 12 | e1357 |
+| R1a | 0.577 / 0.547 / 0.547 | 0.593 / 0.571 | 13 / 14 | e1358 | 0.374 / 0.132 / 0.231 | 0.462 / 0.286 | 12 / 14 | e1359 |
+| R1b | 0.607 / 0.756 / 0.756 | 0.154 / 0.000 | 15 / 11 | e1360 | 0.253 / 0.091 / 0.114 | 0.000 / 0.000 | 11 / 11 | e1361 |
+| R1c | 0.000 / 0.000 / 0.982 | 0.000 / 1.000 | 14 / 14 | e1362 | 0.098 / 0.036 / 0.582 | 0.071 / 0.429 | 14 / 14 | e1363 |
+
+  Beat counts (estimated / truth): offline S3 38 / 32, S4 75 / 68, S2n 54 / 48, R1a 51 / 53, R1b 45 / 44, R1c 56 / 56;
+  online S3 30 / 32, S4 65 / 68, S2n 36 / 48, R1a 38 / 53, R1b 35 / 44, R1c 46 / 56.
+- Samples: `samples/beatnet/` (raw rows for S3, S4, S2n, R1a, R2; timings; freeze; the madmom diff).
+
+## Beat This! (beat-this 1.1.0 from PyPI): beats and downbeats
+
+- What: the CPJKU beat and downbeat tracker (PyPI `beat-this` 1.1.0, uploaded 2026-04-14). Checkpoints are fetched by
+  name from `https://cloud.cp.jku.at/public.php/dav/files/7ik4RrBKTS273gp/<name>.ckpt` (`CHECKPOINT_URL` in
+  `beat_this/inference.py`) into the torch hub cache: `final0` (81,058,141 bytes, sha256 8c328b45...8331; already in the
+  box's shared torch cache when this lane first loaded it) and `small0` (8,451,101 bytes, sha256 6074be2c...7d47b,
+  downloaded by this lane).
+- Install (venv-beatthis, Python 3.11, 885 MB as a standalone venv): `uv pip install beat-this==1.1.0 soundfile`
+  (torch 2.15.0+cpu, torchaudio 2.11.1+cpu, einops 0.8.2, rotary-embedding-torch 0.9.2, soxr 1.1.0, numpy 2.4.6).
+  No other step. Freeze: `samples/beat_this/venv-beatthis.freeze.txt`.
+- Run: `scripts/beatthis_run.py`: `beat_this.inference.File2Beats(checkpoint_path=<final0|small0>, device="cpu",
+  float16=False, dbn=False)(path)`, i.e. the default "minimal" post-processing (peak picking; the `dbn=True` option
+  needs madmom and was not used). Batch run r0397: final0 on 11 clips, small0 on 7. Both CPU slots were held by other
+  lanes' long jobs, so this ran with `--nolock` and one thread (torch reported 1 thread; load average 14.09 at start):
+  109.8 s wall in total, 103.8 s CPU, 625 MB peak RSS. Per clip (`samples/beat_this/batchB2_timings.jsonl`): final0
+  4.1 to 6.8 s for the 24 to 39 s clips (S3: import 2.1 s, model load 0.36 s, inference 2.25 s), R2full 22.1 s
+  (inference 20.3 s); small0 3.0 to 5.4 s, R2full 15.0 s.
+- Output format: two numpy arrays of times in seconds (beats; downbeats, which were a subset of the beat times in all 18 outputs here), on a
+  20 ms grid (the model's 50 frames per second, Postprocessor `fps=50`); no bar position, tempo or confidence. The
+  lane script writes `<ckpt>_beats.txt`, `<ckpt>_downbeats.txt` and `<ckpt>.json`.
+- Input: the 44.1 kHz WAV by path (stereo; mono for R1); the package loads it with torchaudio (soundfile fallback) and resamples
+  it to 22050 Hz with soxr (`beat_this/preprocessing.py`; `inference.py` line 275). R2full (228.5 s) was accepted.
+- Output excerpts: S3 final0 beats 0.640, 1.280, 1.900, 2.520, 3.160, ... (32 beats; the first three fall in the silent
+  count-in bar), downbeats 0.640, 2.520, 5.020, ... (9). S2n final0 downbeats 2.140, 2.680, 3.760, 4.300, 5.900, 6.440,
+  ... (26 against 12 in the truth). R2 (no truth): 43 beats (median inter-beat interval = 71.43 BPM), 11 downbeats, with
+  both checkpoints; R2full: 266 beats, 71 (final0) and 70 (small0) downbeats.
+- Constraint inputs: `File2Beats(checkpoint_path, device, float16, dbn)`; no tempo range, meter or tempo hint
+  argument.
+- Scores (gtr-eval 0.11.1):
+
+| clip | ckpt | beats F / CMLt / AMLt | est / truth beats | downbeat F / CMLt | est / truth downbeats | eval |
+|---|---|---|---|---|---|---|
+| S3 | final0 | 0.906 / 0.906 / 0.906 | 32 / 32 | 0.941 / 0.889 | 9 / 8 | e1364 |
+| S3 | small0 | 0.954 / 0.939 / 0.939 | 33 / 32 | 0.941 / 0.889 | 9 / 8 | e1365 |
+| S7flat30 | final0 | 0.906 / 0.906 / 0.906 | 32 / 32 | 0.941 / 0.889 | 9 / 8 | e1368 |
+| S4 | final0 | 0.956 / 0.956 / 0.956 | 68 / 68 | 0.971 / 0.944 | 18 / 17 | e1366 |
+| S4 | small0 | 0.971 / 0.944 / 0.944 | 72 / 68 | 0.971 / 0.944 | 18 / 17 | e1367 |
+| S2n | final0 | 0.941 / 0.889 / 0.889 | 54 / 48 | 0.421 / 0.000 | 26 / 12 | e1369 |
+| S2n | small0 | 0.529 / 0.042 / 0.256 | 39 / 48 | 0.529 / 0.091 | 22 / 12 | e1370 |
+| S2s | final0 | 0.950 / 0.906 / 0.906 | 53 / 48 | 0.828 / 0.588 | 17 / 12 | e1371 |
+| S6taps | final0 | 0.941 / 0.889 / 0.889 | 54 / 48 | 0.960 / 0.923 | 13 / 12 | e1372 |
+| R1a | final0 | 0.990 / 0.981 / 0.981 | 52 / 53 | 0.963 / 0.929 | 13 / 14 | e1373 |
+| R1a | small0 | 0.990 / 0.981 / 0.981 | 52 / 53 | 0.963 / 0.929 | 13 / 14 | e1374 |
+| R1b | final0 | 0.644 / 0.705 / 0.705 | 43 / 44 | 0.438 / 0.143 | 21 / 11 | e1375 |
+| R1c | final0 | 1.000 / 1.000 / 1.000 | 56 / 56 | 1.000 / 1.000 | 14 / 14 | e1376 |
+| R1c | small0 | 0.991 / 0.982 / 0.982 | 57 / 56 | 0.903 / 0.706 | 17 / 14 | e1377 |
+
+- Samples: `samples/beat_this/` (final0 JSON for S3, S4, S2n, R1a, R1b, R2; small0 for S3; timings; freeze).
+
+## lv-chordia 1.1.0 (PyPI): the ISMIR 2019 large-vocabulary chord model (Chord-CNN-LSTM)
+
+- What: an inference-only PyPI package (uploaded 2026-07-11) of the music-x-lab model "Large-Vocabulary Chord
+  Transcription via Chord Structure Decomposition" (survey.md): a CQT front end, an ensemble of 5 networks and HMM
+  decoding against a chord dictionary. The weights ship in the wheel and install to
+  `<venv>/share/lv-chordia/cache_data/`: five files `joint_chord_net_ismir_naive_v1.0_reweight(0.0,10.0)_s0.best.sdict`
+  to `_s4` (5,746,175 to 5,746,227 bytes each, 28 MB together). Dictionaries in `lv_chordia/data/`: `submission`
+  (26 entries, e.g. `C:maj`, `C:min7`, `C:maj/3`, `C:sus4(b7)`, `C:13`, `C:min9`, `N`), `ismir2017` (15 entries: maj, min,
+  dim, aug, min6, maj6, min7, minmaj7, maj7, 7, dim7, hdim7, sus2, sus4, N), `extended` (26), `full` (382); each entry
+  is written on root C.
+- Install (venv-lvchordia, Python 3.11): `uv pip install lv-chordia==1.1.0 "torch==2.15.0"` (librosa 0.11.0, h5py
+  3.16.0, pydub 0.25.1, numpy 2.4.6 came with it). The first attempt was cut off by a 300 s shell timeout while
+  downloading the 25.9 MiB wheel over the shared network; the same command then completed in the background. No other
+  step. Freeze: `samples/lv_chordia/venv-lvchordia.freeze.txt`.
+- Run: `scripts/lvchordia_run.py`: `lv_chordia.chord_recognition.chord_recognition(path, chord_dict_name=<dict>)` for
+  `submission` (the package default) and `ismir2017`, 9 clips, batch run r0398. Both CPU slots were held by other lanes'
+  long jobs, so this ran with `--nolock` and one thread (torch reported 1 thread; load average 7.21 at start): 177.9 s
+  wall in total, 156.2 s CPU, 1084 MB peak RSS. Per clip (`samples/lv_chordia/batchD_timings.jsonl`): S3 30.3 s (the
+  first job; `submission` 25.1 s, `ismir2017` 2.1 s on the same file), the other 24 to 39 s clips 9.2 to 13.0 s, R2full
+  68.4 s (`submission` 34.0 s, `ismir2017` 31.9 s).
+- Output format: a list of `{"start_time", "end_time", "chord"}` with times rounded to 0.01 s by the package and Harte
+  labels with flat spellings (`Bb:7`, `Eb:min`, `Ab:min`) and inversions (`B:maj/3`, `Bb:maj/b7`, `D:maj/2`); no
+  confidence. Labels seen across the 9 clips with `submission`: maj, min, 7, maj7, min7, dim, inversions /3, /b7, /2,
+  and `N`.
+- Output excerpts: S3 (both dictionaries) `N 0-2.48, G:maj 2.48-5.02, E:min 5.02-7.52, A:min7 7.52-10.03, D:7
+  10.03-12.54, G:maj, E:min, C:maj, D:7, G:maj 20.04-24.01`, the truth's label sequence. S7flat30: `N, G:maj, E:min,
+  A:min, D:7, G:maj, E:min, C:maj, D:maj, G:maj, N 21.85-24.01`. R1b (a single-note solo take): one segment, `N`
+  from 0 to 29.35 s. R1a: `N C#:maj F#:maj B:maj E:maj Bb:min Eb:maj Ab:min C#:maj F#:maj B:maj E:maj Bb:maj`. R2 (no
+  truth): `N F#:maj Eb:min B:maj F#:maj Bb:7 B:maj Bb:7 Eb:min F:7 F#:maj C#:maj Ab:min Bb:7 B:maj`. R2full: 72
+  segments (`submission`), 70 (`ismir2017`).
+- Constraint inputs: `chord_dict_name` (`submission`, `ismir2017`, `full`; the dictionary files are plain text and
+  restrict what the HMM can output). Audio paths may also be http(s) or ftp URLs (`audio_utils.py`). No key, tuning or
+  capo argument.
+- Scores (gtr-eval 0.11.1, chords):
+
+| clip | dict | root | majmin | sevenths | mirex | seg | est / truth segments | eval |
+|---|---|---|---|---|---|---|---|---|
+| S3 | submission | 0.965 | 0.965 | 0.965 | 0.965 | 0.965 | 10 / 10 | e1379 |
+| S3 | ismir2017 | 0.965 | 0.965 | 0.965 | 0.965 | 0.965 | 10 / 10 | e1378 |
+| S7flat30 | submission | 0.878 | 0.878 | 0.746 | 0.878 | 0.893 | 11 / 10 | e1383 |
+| S7flat30 | ismir2017 | 0.878 | 0.878 | 0.746 | 0.878 | 0.893 | 11 / 10 | e1382 |
+| S4 | submission | 0.990 | 0.990 | 0.990 | 0.990 | 0.990 | 18 / 18 | e1381 |
+| S4 | ismir2017 | 0.990 | 0.990 | 0.990 | 0.990 | 0.990 | 18 / 18 | e1380 |
+| S2n | submission | 0.952 | 0.952 | 0.952 | 0.952 | 0.952 | 23 / 22 | e1385 |
+| S2n | ismir2017 | 0.952 | 0.952 | 0.952 | 0.952 | 0.952 | 23 / 22 | e1384 |
+| R1a | submission | 0.971 | 0.785 | 0.524 | 0.664 | 0.971 | 13 / 13 | e1387 |
+| R1a | ismir2017 | 0.971 | 0.785 | 0.524 | 0.664 | 0.971 | 13 / 13 | e1386 |
+| R1b | submission | 0.000 | 0.000 | 0.000 | 0.000 | 0.364 | 1 / 6 | e1389 |
+| R1b | ismir2017 | 0.000 | 0.000 | 0.000 | 0.000 | 0.364 | 1 / 6 | e1388 |
+| R1c | submission | 0.694 | 0.694 | 0.623 | 0.694 | 0.771 | 15 / 14 | e1391 |
+| R1c | ismir2017 | 0.746 | 0.746 | 0.645 | 0.746 | 0.788 | 15 / 14 | e1390 |
+
+- Samples: `samples/lv_chordia/` (JSON for S3, S7flat30, S4, S2n, R1a, R1b, R2, R2full; timings; freeze).
 
 ## Open-string tuning and capo: what the outputs above show for S5dropd and S5capo2
 
@@ -510,7 +751,7 @@ position or an open-string tuning.
 | BTC (jayg996/BTC-ISMIR19, commit 2682317) | Distributed only as a GitHub repository (no PyPI package; survey.md). The clone (with `test/btc_model.pt` 12,154,754 bytes and `test/btc_model_large_voca.pt` 12,229,576 bytes) and a venv (torch 2.15.0+cpu, librosa 0.11.0, mir_eval 0.8.2, pandas 3.1.1, pyyaml; freeze in `samples/btc/`) were made and `scripts/btc_run.py` was written (the repository's test.py loop with `np.float`/`np.int` aliases and `torch.load(weights_only=False)`), but the `gtr-run` call that would execute it was refused by this session's tool-permission policy ("Code from External"). The clone and venv were deleted. |
 | madmom from GitHub main (0.17.dev0, 27f032e) | Build from the clone refused by the same policy; PyPI 0.16.1 was used instead (madmom section). |
 | libKeyFinder + keyfinder-cli | Not in Ubuntu 24.04 apt (`apt-cache search keyfinder` returned nothing); the build route is a CMake build of cloned repositories, the kind of step this session's policy refused twice (madmom, BTC); not attempted. PyPI `keyfinder` 1.1.0 is a binding that needs libkeyfinder installed (survey.md). |
-| S-KEY (deezer/skey) | Installs from its repository with poetry (survey.md); PyPI `skey` 0.2 is an unrelated project with no files (PyPI JSON read 2026-11-10); not attempted for the same reason. |
+| S-KEY (deezer/skey) | Installs from its repository with poetry (survey.md); PyPI `skey` 0.2 has the home page http://github.com/dleonik/skey and no release files (PyPI JSON read 2026-11-10); not attempted for the same reason. |
 | All-In-One (allin1 1.1.0) | Its README requires NATTEN built on Linux and madmom from GitHub ("pip install git+https://github.com/CPJKU/madmom", quoted in survey.md); the madmom git route was refused here; not attempted. Each run would also include a Demucs htdemucs separation (survey.md). |
 | tempo-cnn (tempocnn 0.0.8) | PyPI metadata requires `tensorflow==2.17.0`; the only TensorFlow wheel in the shared cache was tensorflow-cpu 2.12.1 and the orchestrator's disk notice (4.7 to 7.9 GB free on the shared disk during this run, per the notices and `df -h`) asked lanes not to install a second TensorFlow version. Not installed. Essentia's TempoCNN algorithm with the deeptemp models ran (Essentia section); their metadata cites Schreiber and Müller, SMC 2019. |
 | Omnizart chord (0.6.3) | sdist only; requires tensorflow>=2.5, tf-keras, madmom>=0.16.1, pyfluidsynth, sherpa-onnx, vamp (PyPI metadata). Not attempted within this lane's time. |
@@ -523,3 +764,7 @@ position or an open-string tuning.
 | BEAST | Evaluation script plus a Google Drive model (survey.md); not attempted. |
 | realtime-bpm-analyzer, web-audio-beat-detector, essentia.js | Browser libraries; in-browser analysis belongs to the browser-audio-sync lane; not run here. |
 
+## Media kept outside git
+
+None. No tool run in this lane writes audio or video (allin1's sonification, which would, was not run). All outputs
+are text, JSON, `.lab` and `.jams` files under `/home/user/gtr/lanes/chords-beats-key/out/`.

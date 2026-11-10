@@ -2,7 +2,8 @@
 """verify-docs-browser-audio-sync: check every double-quoted passage of survey.md against freshly fetched sources.
 
 Usage: python3 -I verify_quotes.py SURVEY.md OUT.tsv SRC_DIR [SRC_DIR ...]
-Sources: every file under the SRC_DIRs (raw pages, HTML->text copies, npm package files, repository files).
+Sources: every file under the SRC_DIRs (raw pages, HTML->text copies, npm package files, repository files),
+except fetch logs (names starting with "_" and ending in .tsv or .txt) and files over 30 MB or binary.
 Normalisation applied to both sides: NFKC, curly quotes -> straight, markdown links [t](u) -> t, the characters
 * _ ` \\ removed, whitespace collapsed ("whitespace aside", as the task asks). A passage counts as found when its
 normalised form is a substring of a normalised source; a second pass also ignores all whitespace.
@@ -69,9 +70,6 @@ def main():
                 if hits: best = (st, j, q, hits)
                 elif best is None and j == i + 1: best = ("NOT_FOUND", j, q, [])
             st, j, q, hits = best
-            if st == "NOT_FOUND":
-                # a longer found span may exist starting here only if j>i+1; already tried; report the short span
-                pass
             stats[st] = stats.get(st, 0) + 1
             out.write(f"{start}\t{section}\t{st}\t{' | '.join(hits)}\t{q[:160]}\n")
             i = j + 1

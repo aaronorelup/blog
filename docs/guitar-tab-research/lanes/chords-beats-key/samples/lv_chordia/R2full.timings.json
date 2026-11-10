@@ -1,0 +1,42 @@
+{
+ "torch": "2.15.0+cpu",
+ "torch_threads": 1,
+ "import_s": 1.47,
+ "chord_recognition_submission_s": 34.034,
+ "n_segments_submission": 72,
+ "labels_submission": [
+  "Ab:min",
+  "B:maj",
+  "B:maj/3",
+  "B:maj7",
+  "Bb:7",
+  "Bb:maj",
+  "Bb:maj/3",
+  "Bb:maj/b7",
+  "C#:maj",
+  "D:dim",
+  "Eb:maj",
+  "Eb:min",
+  "F#:maj",
+  "F:maj",
+  "F:min",
+  "N"
+ ],
+ "chord_recognition_ismir2017_s": 31.916,
+ "n_segments_ismir2017": 70,
+ "labels_ismir2017": [
+  "Ab:min",
+  "B:maj",
+  "B:maj7",
+  "Bb:7",
+  "Bb:maj",
+  "C#:maj",
+  "D:dim",
+  "Eb:maj",
+  "Eb:min",
+  "F#:maj",
+  "F:maj",
+  "F:min",
+  "N"
+ ]
+}

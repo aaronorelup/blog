@@ -177,3 +177,16 @@ Not run here: the weights are gated on Hugging Face (sign-in and acceptance), an
 NeuralNote v2 (entry 3) uses MuScriptor models, so entry 3 covers it in an app. The docs lane lists a web demo at
 `muscriptor.kyutai.org` (not opened by this agent): if it is open, upload `S4.wav`, `S2n.wav` and `R1c.wav` and send
 back the MIDI (and MusicXML or tab PDF, if offered) with a screenshot of the settings.
+
+## 12. PENN (FCNF0++ pitch tracker), new in the docs lane's survey
+
+Not run here: it installed, but `import penn` failed because its decoder package torbi 1.4.1 ships compiled files
+only for torch 2.6 to 2.11 and the box's torch is 2.15 ("Could not find any lib files matching version pt215cpu").
+
+1. With Python 3.11 installed: `py -3.11 -m pip install "torch<2.12" "torchaudio<2.12" penn`
+   (keeps torch at a version torbi has files for).
+2. In the folder with `S1.wav`, `R1b.wav` and `S4lead.wav`, run the README's command line:
+   `py -3.11 -m penn --files S1.wav R1b.wav S4lead.wav --gpu 0` (leave out `--gpu 0` to use the CPU). On the box
+   the package fetched its checkpoint (107,245,425 bytes) from Hugging Face on first use.
+3. Send back the pitch and periodicity files it writes next to each WAV (same names without the extension), the
+   output of `py -3.11 -m pip show penn torbi torch`, any error text, and the time each file took.

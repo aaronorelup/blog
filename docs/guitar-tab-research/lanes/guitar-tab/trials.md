@@ -61,7 +61,7 @@ string higher than the truth tab.
 | S2n | default | e0043 | 90 | 90 | 90 | 1.0000 | 1.0000 | 0: 90 |
 | S3 | default | e0044 | 182 | 182 | 182 | 1.0000 | 1.0000 | 0: 182 |
 | S5capo2 | default (capo not told) | e0045 | 90 | 90 | 90 | 0.0000 (same string and same fret from the nut: 0.6000) | 0.6000 | -1: 36, 0: 54 |
-| S5capo2 | capo 2 told the only way tuttut allows: every open string raised 2 semitones (`F#4 C#4 A3 E3 B2 F#2`), nfrets 18 | e0046 | 90 | 90 | 90 | 1.0000 | 1.0000 | 0: 90 |
+| S5capo2 | capo 2 told by raising every open string 2 semitones (`F#4 C#4 A3 E3 B2 F#2`), nfrets 18 (tuttut has no capo parameter) | e0046 | 90 | 90 | 90 | 1.0000 | 1.0000 | 0: 90 |
 | S5dropd | default (Drop D not told) | e0047 | 90 | 90 | 86 | 0.8372 | 1.0000 | 0: 86 |
 | S5dropd | tuning `E4 B3 G3 D3 A2 D2` | e0048 | 90 | 90 | 90 | 0.9778 | 0.9778 | 0: 88, +1: 2 |
 | R1a | default | e0049 | 189 | 189 | 189 | 0.5291 | 0.5291 | -2: 22, -1: 67, 0: 100 |
@@ -613,7 +613,8 @@ with PyPI code and my own few-line loader, that is said in its section; otherwis
 - Handoff to tab (these MIDI files, velocity-0 note-ons rewritten as note-offs and merged to one track, into tuttut
   0.0.7 with default settings; r0326 and r0332, `--nolock`, under 1 s each): S2n e1225: 89 matched, same string+fret /
   matched 1.0000, / truth 0.9889; R1c e1275: 125 matched, same string+fret / matched 0.8320, / truth 0.7027, string
-  differences -1: 18, 0: 104, +1: 3.
+  differences -1: 18, 0: 104, +1: 3. The same MIDI into LilyPond 2.24.3 with defaults (r0356, `--nolock`, wall 9.82 s
+  for both): S2n e1344: 89 matched, 1.0000 / 0.9889; R1c e1345: 125 matched, 0.8720 / 0.7365 (-1: 14, 0: 109, +1: 2).
 - Output format facts: a type-1 MIDI file, 384 ticks per beat, 2 tracks (tempo/time signature, then the notes), notes as
   `note_on` with velocity and `note_on` velocity 0 as note-off, no pedal events from this model class, no pitch bends;
   my glue also writes `<clip>.<ckpt>.notes.csv` (`onset,offset,pitch,velocity`, seconds and MIDI numbers). First rows
@@ -632,7 +633,8 @@ with PyPI code and my own few-line loader, that is said in its section; otherwis
   details), files `/home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default/<clip>.mid`. Copied unchanged to
   `/home/user/gtr/lanes/guitar-tab/inputs/bp-a2n/<clip>.bp.mid` (SHA-256 in
   `samples/handoff-basicpitch/basic-pitch-input-SHA256SUMS.txt`) and merged to one track with `scripts/merge_midi.py`
-  (the files have 220 ticks per beat, Basic Pitch's default 120 BPM, and close notes with velocity-0 note_on messages).
+  (the files are type 1 with 2 tracks, 220 ticks per beat, one tempo of 120 BPM, and close notes with velocity-0
+  note_on messages).
   A Basic Pitch run of this lane's own (`scripts/batch_basicpitch.sh`, ONNX model in a Python 3.10 venv with
   `basic-pitch[onnx]==0.4.0`, `numpy<2` and `setuptools<70`, the last needed because resampy imports `pkg_resources`)
   waited about 19 minutes for a CPU slot and was cancelled once the audio-to-notes lane's files existed; it produced

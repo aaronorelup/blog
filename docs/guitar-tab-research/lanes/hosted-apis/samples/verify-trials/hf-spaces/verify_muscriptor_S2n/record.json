@@ -1,0 +1,36 @@
+{
+ "space": "hugging-apps/muscriptor-music-transcription",
+ "api_name": "/transcribe",
+ "args": [
+  "file:/home/user/gtr/inputs/S2n/S2n.mono.wav",
+  [
+   "acoustic_guitar"
+  ],
+  false,
+  1.0
+ ],
+ "token": null,
+ "runtime_before": {
+  "stage": "RUNNING",
+  "hardware": {
+   "current": "zero-a10g",
+   "requested": "zero-a10g"
+  }
+ },
+ "space_sha": "a00afb21c05a7dbcee7efebfcd5be8b162b69041",
+ "client_connect_s": 1.566,
+ "ok": false,
+ "error": "AppError('You have exceeded your ZeroGPU runs limit. Authenticate with a Hugging Face token for more quota - https://huggingface.co/settings/tokens')",
+ "wall_s": 3.57,
+ "status_changes": [
+  {
+   "t_s": 1.57,
+   "code": "Status.STARTING",
+   "rank": null,
+   "queue_size": null,
+   "eta": null,
+   "progress": null
+  }
+ ],
+ "result": null
+}

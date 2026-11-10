@@ -56,11 +56,20 @@ for n in range(0, C.n_frames(clip), step):
     view, tf = C.make_view(rgb, clip, n, mode)
     bgr = np.ascontiguousarray(view[:, :, ::-1])
     t1 = time.perf_counter()
-    kps, scores = model(bgr)
+    # call the detector and the pose model separately (as the solution classes do) to record how many boxes the
+    # detector returned: rtmlib's RTMPose/ViTPose run on the WHOLE image when the box list is empty
+    bboxes = model.det_model(bgr)
+    if isinstance(bboxes, tuple):  # multiclass detectors return (boxes, classes)
+        bboxes = bboxes[0]
+    bboxes = [list(map(float, b)) for b in bboxes]
+    kps, scores = model.pose_model(bgr, bboxes=bboxes)
     dt = (time.perf_counter() - t1) * 1000
+    n_det = len(bboxes)
     kps = np.asarray(kps).reshape(-1, np.asarray(kps).shape[-2], 2) if len(kps) else np.zeros((0, 0, 2))
     scores = np.asarray(scores).reshape(len(kps), -1) if len(kps) else np.zeros((0, 0))
     hands, persons = [], []
+    if n_det == 0:
+        kps = np.zeros((0, 0, 2))  # whole-image fallback output is not counted (kept out of the hand counts)
     if which == "hand":
         for p in range(len(kps)):
             ms = float(scores[p].mean())
@@ -84,7 +93,9 @@ for n in range(0, C.n_frames(clip), step):
                   "wrist_scores": [float(scores[p][9]), float(scores[p][10])]}
             persons[-1].update({k: (np.round(v, 2).tolist() if isinstance(v, list) else v) for k, v in wr.items()})
     rec = {"n": n, "t_s": round(n / C.fps(clip), 4), "shot": C.shot_of(clip, n)[0], "view_wh": [view.shape[1], view.shape[0]],
-           "view_tf": list(tf), "t_infer_ms": round(dt, 3), "n_instances": int(len(kps)), "hands": hands,
+           "view_tf": list(tf), "t_infer_ms": round(dt, 3), "n_det_boxes": n_det,
+           "det_boxes_full": [[round(v, 1) for v in (C.to_full(b[:2], tf) + C.to_full(b[2:4], tf))] for b in bboxes],
+           "n_instances": int(len(kps)), "hands": hands,
            "persons": persons}
     records.append(rec)
     jl.write(json.dumps(rec) + "\n")
@@ -101,6 +112,8 @@ for n in range(0, C.n_frames(clip), step):
 jl.close()
 summ = C.summarize(records, clip, mode, {"tool": f"rtmlib {which}", "rtmlib_version": getattr(rtmlib, "__version__", "?"),
                                          "models": models, "init_s": round(t_init, 3), "frame_step": step,
-                                         "hand_counted_if_mean_kpt_score_ge": KPT_THR})
+                                         "hand_counted_if_mean_kpt_score_ge": KPT_THR,
+                                         "frac_frames_with_det_box": round(sum(1 for r in records if r["n_det_boxes"]) / len(records), 4),
+                                         "det_boxes_per_frame_max": max(r["n_det_boxes"] for r in records)})
 C.write_json(os.path.join(out, f"{clip}_{mode}.summary.json"), summ)
 print(json.dumps(summ["all"]))

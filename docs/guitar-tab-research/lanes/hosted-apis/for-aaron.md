@@ -1,6 +1,7 @@
 # Lane 10, hosted-apis: what Aaron can run (or unlock) himself
 
-Written 2026-11-10 by try-hosted-apis. Every service below either needs an account or key that does not exist yet,
+Written 2026-11-10 by try-hosted-apis; checked the same day by verify-trials-hosted-apis (its changes are listed in
+the verification log at the end of `trials.md`). Every service below either needs an account or key that does not exist yet,
 or an existing key that is out of credit. Nothing was signed up for. Each section says: how to get the key (store it
 in your key store, the `/save-api-key` way, under the name given, so an agent can run the trial later), the free
 tier or trial, the exact first request (a curl command; the key is read into a shell variable first and never
@@ -25,15 +26,19 @@ The key in the store works (it lists models and counts tokens) but every generat
 "Your prepayment credits are depleted" (`trials.md`, run r0013).
 
 1. Open https://aistudio.google.com/billing in the browser, signed in with the Google account the key belongs to.
-2. Click **Buy credits** and buy the minimum, 5 USD (the billing page: "The minimum purchase is $5."). Do not turn
-   on auto-reload.
-3. Wait a few minutes, then tell an agent: "Gemini credits are topped up; run the hosted-apis Gemini trials."
+2. Click **Buy credits** and buy the minimum, 5 USD (the billing page: "To purchase credits, go to the AI Studio
+   Billing page and select **Buy credits**. The minimum purchase is $5."; its FAQ adds that the purchase dialog
+   shows the minimum "required for your region and tier level"). Do not turn on auto-reload.
+3. When the purchase shows as done on the Billing page, tell an agent: "Gemini credits are topped up; run the
+   hosted-apis Gemini trials." (A free re-check by the verifier at 21:49 UTC on 2026-11-10, r0300, still got HTTP 402.)
    The agent runs `scripts/gemini_trial.py` for `gemini-4-carbon` and `gemini-3.5-flash-lite` on S3 and S4
    (chords, tempo, key), S2n (notes), R3a (capo, frets, tuning) and S5capo2 (capo), 10 calls, capped at 2 USD by
    the script. The input side is small (656 to 1,921 tokens per file before the prompt text, measured with
    `countTokens`); the output side
    (thinking included) decides the cost: at most 24,576 output tokens per call, i.e. at most 0.25 USD per Carbon
-   call and 0.06 USD per Flash-Lite call at today's prices.
+   call and 0.06 USD per Flash-Lite call at the prices read on 2026-11-10. The pricing page lists Carbon at "$2.00
+   through November 30, 2026. $4.00 starting December 1, 2026." (input) and "$10.00 through November 30, 2026.
+   $20.00 starting December 1, 2026." (output), so a Carbon call from December 2026 costs up to about twice that.
 4. Send back: nothing; the agent saves the answers, scores and costs. (For the agent: rebuild the Python environment
    with `uv venv --python 3.11 <dir>` and `uv pip install -r samples/venv-apis.freeze.txt`; the prompts are in
    `scripts/prompts/`, the scoring helper is `scripts/score_answer.sh`.)
@@ -43,23 +48,32 @@ The key in the store works (it lists models and counts tokens) but every generat
 The gateway key is on the free tier, which refused every Google model with HTTP 403 "Free tier users do not have
 access to this model" (`trials.md`, r0022 and r0023).
 
-1. Open your Vercel dashboard, the **AI Gateway** tab, click the button with the credits balance at the top right and
-   add credits (the steps are on https://vercel.com/docs/ai-gateway/pricing , "Top up your AI Gateway Credits").
+1. In your Vercel dashboard, open the **AI Gateway** section in the sidebar, click the button in the upper right
+   corner that shows your AI Gateway Credits balance, pick the amount, then **Continue to Payment** and **Confirm and
+   Pay** (the steps on https://vercel.com/docs/ai-gateway/pricing , "Top up your AI Gateway Credits").
 2. Tell an agent: "Vercel AI Gateway now has paid credits; re-run the hosted-apis gateway trials with
    google/gemini-4-carbon and google/gemini-3.5-flash-lite." The same script (`scripts/gateway_trial.py`) is used,
-   so the results line up with the free-tier models already tried.
+   so the results line up with the free-tier models already tried. UNVERIFIED: the gateway's own model list
+   (`GET https://ai-gateway.vercel.sh/v1/models`, read 2026-11-10) gives both Google models the input modalities
+   `text`, `image`, `pdf`, `video`, without `audio`, so whether the gateway passes a WAV `file` part to them is not
+   known until the first call; the video question would go as frames (MP4 `file` parts were refused for the three
+   free-tier models, `trials.md`). The direct Gemini route (section 1) takes WAV and MP4 (`countTokens` accepted
+   both, r0016).
 3. Note from the pricing page: "Once you purchase credits, your account transitions to the paid tier and the
    monthly free credit no longer applies."
+4. Send back: nothing; the agent re-runs the trials and saves the answers, scores and costs.
 
-## 3. Hugging Face: a free access token (unblocks the GPU demo pages)
+## 3. Hugging Face: a free access token (the GPU demo pages' error message asks for one)
 
 Two public demo pages on Hugging Face that run on shared GPUs ("ZeroGPU") answered "You have exceeded your ZeroGPU
 runs limit. Authenticate with a Hugging Face token for more quota" without a token: the Muscriptor transcription
-page and the SAM Audio separation page (`trials.md`).
+page and the SAM Audio separation page (`trials.md`). In the verifier's re-runs (21:50 UTC) Muscriptor refused
+again and the ZeroGPU YourMT3 page, which had answered once, refused too ("You have exceeded your ZeroGPU quota (90s
+requested vs. 79s left). Try again in 15:33:27. ...").
 
 1. Sign in at https://huggingface.co (free account), open https://huggingface.co/settings/tokens and create a new
-   token named `research-spaces` (which token type the ZeroGPU quota needs is UNVERIFIED; a read token is the
-   smallest).
+   token named `research-spaces` (which token type or account plan the ZeroGPU quota needs is UNVERIFIED; the error
+   text says only "Authenticate with a Hugging Face token for more quota").
 2. Store it as `HF_TOKEN`.
 3. Tell an agent: "HF_TOKEN is stored; run the ZeroGPU Spaces from the hosted-apis lane": 
    `hugging-apps/muscriptor-music-transcription` on S2n with instrument `acoustic_guitar`, `lpeterl/sam-audio-webui`
@@ -69,9 +83,13 @@ page and the SAM Audio separation page (`trials.md`).
 ## 4. Klangio API (guitar transcription to Guitar Pro, MIDI, MusicXML; chords; beats)
 
 - Key: register at https://auth.klang.io/register, then copy the API key from https://api-dashboard.klang.io. Store
-  it as `KLANGIO_API_KEY`.
+  it as `KLANGIO_API_KEY`. The API page says access is by an application form ("Apply now", `survey.md`), so the
+  key may come only after Klangio accepts the application.
 - Free tier (https://klang.io/api/): Basic "$ 0" monthly, "50 requests included", "Max 15s audio duration", "1
-  request per minute". So use the 15-second excerpts.
+  request per minute". So use the 15-second excerpts. The docs also say: "For a testing account a demo
+  transcription is created by default." and "Use as little output formats as possible. Multiple formats may inflict
+  additional quota costs for a transcription job." (`survey.md`), so the first call below, with four formats, may
+  cost more than one request of quota, and on a testing account may return a demo transcription; write down which.
 - First requests (an agent runs these; one per minute):
 
 ```bash
@@ -103,13 +121,18 @@ curl -sS -X POST "https://api.klang.io/chord-recognition-extended?vocabulary=ful
 ## 5. Music.AI (Moises' developer platform: chords, beats, guitar stems)
 
 - Key: create an account at https://music.ai , open the dashboard, create an API key; store it as `MUSICAI_API_KEY`.
+  UNVERIFIED whether an individual account can still get a key: a third-party README quoted in `survey.md` says
+  "MUSIC.ai no longer provide individual API key, only business plan", while the pricing page read the same day
+  lists a pay-as-you-go plan. If the dashboard offers no key, send back a screenshot of what it shows instead.
 - Plan (https://music.ai/pricing/, as quoted in `survey.md`): "Pay as you go $0" with per-module prices, among them
   "Transcription - Chords $0.04 / min", "Transcription - Beats $0.03 / min" and "Stem separation - Guitar stems
   (Acoustic guitar, Electric guitar) $0.1 / min"; for the 38.7-second S4 that is about 0.11 USD for the three modules
   if billed by the exact duration (whether a started minute is rounded up is not in the lines quoted).
   The FAQ: "Pay-as-you-go and Professional members must purchase credits up front".
 - In the dashboard, build one workflow from the modules **Chords**, **Beats** and **Guitar Stems** (input: one audio
-  URL) and note its slug, for example `guitar-research`.
+  URL) and note its slug, for example `guitar-research`, and the name of its input: the API reference says `params`
+  "must match the workflow's input schema"; its job examples use `inputUrl`, the module pages `inputFileUrl`
+  (`survey.md`). Use that name in the job request below.
 - First request (an agent runs it):
 
 ```bash
@@ -128,8 +151,11 @@ curl -sS -H "Authorization: $MUSICAI_API_KEY" https://api.music.ai/v1/job/<job i
 
 ## 6. LALAL.AI (stem separation with guitar stems)
 
-- Key: buy a plan or pack at https://www.lalal.ai/pricing/ , copy the license key from the account page; store it
-  as `LALALAI_LICENSE_KEY`.
+- Key: LALAL.AI's llms.txt (quoted in `survey.md`): "API access is available with the Pro plan or any minute top-up
+  pack - no subscription required" and "API requests consume Fast-queue minutes." So buy the Pro plan or a minute
+  top-up pack at https://www.lalal.ai/pricing/ , then copy the license key that the API reads from the
+  `X-License-Key` header (where the account pages show it was not read here: UNVERIFIED); store it as
+  `LALALAI_LICENSE_KEY`.
 - First request (OpenAPI spec https://www.lalal.ai/api/v1/openapi.json):
 
 ```bash
@@ -150,9 +176,10 @@ curl -sS -X POST https://www.lalal.ai/api/v1/check/ -H "X-License-Key: $LALALAI_
 
 ## 7. AudioShake (stem separation incl. guitar, acoustic and electric guitar)
 
-- Key: sign up at https://developer.audioshake.ai ; the quickstart says "You'll get 10 free credits to start building
-  immediately." Store the key as `AUDIOSHAKE_API_KEY`. Credits are "charged per minute of source audio, per target
-  model" and rounded up to the minute, so S4 (39 s) with one target costs 1 credit (the `guitar` model is listed at
+- Key: sign up at https://dashboard.audioshake.ai/auth/sign-up/ (the sign-up link the quickstart gives); the
+  quickstart says "You'll get 10 free credits to start building immediately." Store the key as
+  `AUDIOSHAKE_API_KEY`. Credits are "charged per minute of source audio, per target model" and "Duration is always
+  rounded up to the nearest minute" (billing page), so S4 (39 s) with one target costs 1 credit (the `guitar` model is listed at
   1.0 credits per minute).
 - First request (quickstart https://developer.audioshake.ai/quickstart.md; a local file is uploaded first and the
   task refers to its `assetId`):
@@ -173,19 +200,21 @@ curl -sS -H "x-api-key: $AUDIOSHAKE_API_KEY" https://api.audioshake.ai/tasks/<ta
 - Key: "Usage of the Fadr API requires a Fadr Plus subscription, which costs $10/mo or $100/yr." Create the key in
   the Fadr account; store it as `FADR_API_KEY`.
 - Flow (https://fadr.com/docs/api, pages dated 2023): `POST https://api.fadr.com/assets/upload2` (presigned upload
-  URL) -> `PUT` the file -> `POST /assets` -> `POST /assets/analyze/stem` -> poll `GET /tasks/<id>` every 5 s ->
+  URL) -> `PUT` the file -> `POST /assets` -> `POST /assets/analyze/stem` -> poll the task until it is done (the
+  endpoint list has `GET /tasks/:_id`; the tutorial waits 5 s between `POST /tasks/query` calls) ->
   `GET /assets/download/<id>/<type>` for each stem and MIDI file. Header: `Authorization: Bearer $FADR_API_KEY`.
-- Easier by hand: the Fadr web app (https://fadr.com), upload `S4.wav`, export all stems and all MIDI, and send them
+- By hand instead: the Fadr web app (https://fadr.com), upload `S4.wav`, export all stems and all MIDI, and send them
   back with the chord list, key and tempo it shows (screenshot).
 
 ## 9. MVSEP (126 separation algorithms; several guitar models)
 
-- Key: register at https://mvsep.com (free accounts have "Limited" API access; paid credit packs from "$3 60
-  credits"), copy the API token; store it as `MVSEP_API_TOKEN`.
+- Key: register at https://mvsep.com (the plans table, quoted in `survey.md`, gives registered free accounts API
+  access "Limited"; the lowest-priced credit pack in that table is $3 for 60 credits), copy the API token; store it as
+  `MVSEP_API_TOKEN`.
 - First request (https://mvsep.com/full_api; `sep_type` is the `render_id` from
   https://mvsep.com/api/app/algorithms, where "MVSep Guitar (guitar, other)" has render_id 31 and its `add_opt1`
-  lists model versions such as "3": "MelRoformer (2024.06, SDR: 7.02)"). Leave `is_demo` off: the docs say it
-  publishes the separation to the demo page.
+  lists model versions such as "3": "MelRoformer (2024.06, SDR: 7.02)", an author-reported figure). Leave `is_demo`
+  out: the docs describe it as "should the separation be published to demo page, defaults to false".
 
 ```bash
 MVSEP_API_TOKEN=$(python3 ~/.claude/bin/getkey.py MVSEP_API_TOKEN)
@@ -199,8 +228,11 @@ curl -sS "https://mvsep.com/api/separation/get?hash=<hash>"                     
 ## 10. Replicate (hosted Demucs, All-In-One structure analysis, chord detection)
 
 - Key: sign in at https://replicate.com , create a token at https://replicate.com/account/api-tokens; store it as
-  `REPLICATE_API_TOKEN`. Billing is per second of hardware time (https://replicate.com/pricing, as quoted in
-  `survey.md`: "Nvidia T4 GPU gpu-t4 $0.000225/sec $0.81/hr"; the model pages name the hardware each model runs on).
+  `REPLICATE_API_TOKEN`. The pricing page lists hardware by the second (https://replicate.com/pricing, as quoted in
+  `survey.md`: "Nvidia T4 GPU gpu-t4 $0.000225/sec $0.81/hr"; the A100 (40GB) that two of these model pages name
+  is not on it), and each model page gives an approximate cost per run: `ryan5453/demucs` "costs approximately
+  $0.0050 to run on Replicate", the all-in-one analyzer "approximately $0.062", the chord model "approximately
+  $0.022" (`survey.md`). The current `ryan5453/demucs` version serves `htdemucs` only, four stems, no guitar stem.
 - First request (HTTP API docs https://replicate.com/docs/reference/http.md: "Files should be passed as HTTP URLs
   or data URLs."; model inputs from https://replicate.com/ryan5453/demucs/llms.txt: `audio` required, `model`
   "(this deployment serves htdemucs)", `format`, `isolate_stem`, `shifts`, ...):
@@ -215,8 +247,10 @@ curl -sS -X POST -H "Prefer: wait" -H "Authorization: Bearer $REPLICATE_API_TOKE
   --data-binary @body.json https://api.replicate.com/v1/models/ryan5453/demucs/predictions
 ```
 
-- The output is an object with `bass`, `drums`, `other`, `vocals` file URLs (they need the same Authorization
-  header to download). Then the same for `sakemin/all-in-one-music-structure-analyzer` on S4 and
+- The output is an object with `bass`, `drums`, `other`, `vocals` file URLs (the model's output schema also lists
+  `no_bass`, `no_drums`, `no_other`, `no_vocals`, for `isolate_stem`); the HTTP API docs say "Output files are served
+  by `replicate.delivery` and its subdomains" (whether a download needs the token is not stated in the lines read).
+  Then the same for `sakemin/all-in-one-music-structure-analyzer` on S4 and
   `triadmusic/chord-detection-cnn-lstm` on S3 (their input fields: read each model's `/llms.txt` first). Send back:
   the outputs and the "predict time" each prediction reports.
 
@@ -241,16 +275,17 @@ curl -sS -X POST https://fal.run/fal-ai/demucs -H "Authorization: Key $FAL_KEY" 
 - **Soundslice data API:** "API keys are only available to paying Soundslice customers — either in the Teacher or
   Licensing plans." Uploading notation through the API is "only available by special permission". By hand: in the
   Soundslice web app, create a slice from `S2n.gp5` (in `docs/guitar-tab-research/inputs/S2n/`), attach the S2n
-  audio, sync it, and send back a screenshot plus the time it took to sync.
+  audio (`S2n.wav`), sync it, and send back a screenshot plus the time it took to sync.
 - **Flat.io API:** auth is "Personal Access Tokens or OAuth2" (the spec's intro); create a personal access token in
   the Flat account and store it as `FLAT_TOKEN`.
   First request: import `S2n.gp5` with `POST https://api.flat.io/v2/scores` (`ScoreCreationFileImport`; the spec
-  lists `.gp5` among the accepted Guitar Pro formats), then export it as MusicXML; send back the MusicXML.
+  lists `.gp5` among the accepted Guitar Pro formats, under "Also supported (converted to MusicXML on import, some
+  notation details may be lost)"), then export it as MusicXML; send back the MusicXML.
 - **Hooktheory Trends API:** an account at hooktheory.com; the token comes from `POST
   https://api.hooktheory.com/v1/users/auth` with the username and password and "expires about an hour after it is
   issued". First request: `GET https://api.hooktheory.com/v1/trends/nodes?cp=1,5` with `Authorization: Bearer
   <activkey>` (the chords that most often follow I-V). Store the username and password as `HOOKTHEORY_USER` and
-  `HOOKTHEORY_PASSWORD` if an agent should call it.
+  `HOOKTHEORY_PASSWORD` if an agent should call it; send back nothing, the agent saves the JSON.
 
 ## 13. Not for this lane
 

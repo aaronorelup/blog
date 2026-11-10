@@ -234,6 +234,11 @@ what counts. Every entry now points to its section.
   thread go through `node.port` (a `MessagePort`). The time-stretch libraries in sections 22 to 26 ship as
   AudioWorklet processors.
 - Browser support (BCD `api.BaseAudioContext.audioWorklet`): Chrome 66, Firefox 76, Safari 14.1.
+- [verify] Observed behaviour next to the documented one: `trials.md` ("How the trials were run") reports that in the
+  box's headless Chromium 153, right after an AudioWorkletNode was created, its `process()` was not called for a few
+  render quanta and `currentFrame` jumped by 384 to 1408 frames (one such jump per run, within the first 30 ms; logged
+  in every result as `capture.gaps`), and that once a recorder's `process()` saw the same `currentFrame` twice (metronome
+  section, run r0199). MDN's sentence above says the method is called "once for each block".
 - Licence: web platform API, nothing to accept.
 
 ## 3. Output latency: baseLatency, outputLatency, getOutputTimestamp()
@@ -542,8 +547,9 @@ what counts. Every entry now points to its section.
   - Output, https://alphatab.net/docs/reference/settings/player/outputmode : "Controls how alphaTab will play the
     audio samples in the browser." default `outputMode: PlayerOutputMode = PlayerOutputMode.WebAudioAudioWorklets;`.
     (The `playeroutputmode` reference URL returned the site's home page on 2026-11-10, so the list of other values
-    was not read.) [verify] The URL tried was https://alphatab.net/docs/reference/types/synth/playeroutputmode/ ,
-    which does return the home page (same 99,172 bytes, re-fetched 2026-11-10). The outputMode page links instead to
+    was not read.) [verify] The URL tried (per the name of the docs agent's saved copy) was
+    https://alphatab.net/docs/reference/types/synth/playeroutputmode/ , which does return the home page (same 99,172
+    bytes, re-fetched 2026-11-10). The outputMode page links instead to
     https://alphatab.net/docs/reference/types/playeroutputmode (read 2026-11-10): "Lists the different modes how
     alphaTab will play the generated audio." with two members, `WebAudioAudioWorklets` (0): "If audio worklets are
     available in the browser, they will be used for playing the audio. It will fallback to the ScriptProcessor output
@@ -729,7 +735,7 @@ what counts. Every entry now points to its section.
 - How a program calls it: `new Input({ source: new BlobSource(file), formats: ALL_FORMATS })`, then track readers
   and sinks (the README example reads `audioTrack.getSampleRate()`); decoding goes through WebCodecs (section 6), so
   decodable codecs are those the browser's WebCodecs supports. [verify] As run in `trials.md`
-  (`browser-analysis-batch`): `Input` + `UrlSource` + `ALL_FORMATS`, `VideoSampleSink.samples()` and
+  (run r0314, `browser-analysis-batch`): `Input` + `UrlSource` + `ALL_FORMATS`, `VideoSampleSink.samples()` and
   `getSample(t)`; output `VideoSample` objects with timestamp and duration in seconds, `format` "I420",
   `toVideoFrame()`, `copyTo()`, `draw()`; all 539 (VP9) and 540 (H.264) decoded luma planes were bit-identical to
   ffmpeg 6.1.1's decode.
@@ -1131,7 +1137,7 @@ what counts. Every entry now points to its section.
   core file (the TF.js models are a separate add-on). [verify] Re-checked 2026-11-10 (same five names present,
   `TempoCNN` absent). `trials.md` loaded `dist/essentia-wasm.web.js` + `dist/essentia.js-core.js` by script tags; the
   page reported `essentia.version` "2.1-beta6-dev" and 199 algorithm names, and results came back as Emscripten
-  vectors converted with `essentia.vectorToArray` (run id listed in `trials.md` under `browser-analysis-batch`).
+  vectors converted with `essentia.vectorToArray` (run r0314, `browser-analysis-batch`).
 - Licence, code: `LICENSE` in the npm package and in both repositories: "GNU AFFERO GENERAL PUBLIC LICENSE Version 3,
   19 November 2007"; it contains section 13's sentence "if you modify the Program, your modified version must
   prominently offer all users interacting with it remotely through a computer network" verbatim.
@@ -1459,9 +1465,11 @@ README "**Important:** As I am no longer working at Meta, **this repository is n
 [verify] Weights and training data, read 2026-11-10 (the code licence above does not settle the weights that every
 build below ships or downloads):
 
-- The archived Meta README says only: "Demucs is released under the MIT license as found in the [LICENSE](LICENSE)
-  file." The README of the author's maintained fork, https://raw.githubusercontent.com/adefossez/demucs/main/README.md ,
-  adds: "The license of the weights is not clear: MusDB contains some data that were only usable for research purpose.
+- The Meta repository's README says only: "Demucs is released under the MIT license as found in the
+  [LICENSE](LICENSE) file." and points to the author's fork ("I've created a fork at
+  [github.com/adefossez/demucs](https://github.com/adefossez/demucs)."), whose README,
+  https://raw.githubusercontent.com/adefossez/demucs/main/README.md , calls itself "the officially maintained Demucs"
+  and adds: "The license of the weights is not clear: MusDB contains some data that were only usable for research purpose.
   I sadly cannot help granting a license, both coming from Meta custom data, or from the original MusDB data. The 6
   source variant of htdemucs was trained only on Meta internal dataset, which likely means CC-NC-BY license is
   applicable, as it was the case for all models released by FAIR." The same README describes `htdemucs_6s` as "6
@@ -1818,11 +1826,12 @@ Tally for the survey as handed over (before the checker's additions):
 | BCD browser-support rows | 20 features | all match; the Firefox WebGPU entry has further notes, now added (section 8) |
 | Unique URLs in the survey | 166 | 61 on github.com (web pages answer 403 through this box's proxy; those repositories were read through raw.githubusercontent.com and clones instead). Of the other 104 (example.com left out): 99 answered 200, two of them the alphaTab URLs that serve the home page (already disclosed by the survey); 2 are path templates (the MDN and BCD raw base URLs used with `<path>`); https://docs.opencv.org/5.0.0/opencv.js 404 (inside a README quote; noted in section 49); https://musical-artifacts.com/artifacts/1517 could not be fetched on 2026-11-10 (HTTP 403); https://waveform.prototyping.bbc.co.uk/ failed with a TLS error (a link inside a README quote; no fact rests on it) |
 
-Quotes corrected: 0 (no quoted passage differed from its source). Quotes added by the checker: 125 passages of 12+
-characters. 107 were found by `scripts/verify_quotes.py` (re-run on the amended file) in the fetched copy named next to
-them; 18 were compared directly with their sources, which are not web copies: `trials.md` (7), the BCD JSON (4), the
-npm registry records (2), `lanes/guitar-tab/survey.md` (3), the model card PDF's metadata (1) and the e-pianos README
-(1, where an HTML link sits inside the quoted sentence).
+Quotes corrected: 0 (no quoted passage differed from its source). Quotes added by the checker: 142 passages of 12+
+characters, counted on the final file. All but 14 were found by `scripts/verify_quotes.py` in the copies named next to
+them (the corpus for this run included copies of `trials.md` and `lanes/guitar-tab/survey.md` taken between 22:00 and
+22:10 UTC); of those 14, 8 were compared directly with the BCD JSON (4), the npm registry records (2), the model card PDF's
+metadata (1) and the e-pianos README (1, where an HTML link sits inside the quoted sentence), and 6 are this log's own
+terms in quote marks, not quotations.
 
 Links fixed or supplied: 3. The alphaTab `PlayerOutputMode` reference is
 https://alphatab.net/docs/reference/types/playeroutputmode (the survey's `/types/synth/playeroutputmode/` returns the
@@ -1844,15 +1853,19 @@ Facts corrected or completed (no number in the survey was found wrong):
   License".
 - Run facts and formats: `generateFileData` is not exported by `@spotify/basic-pitch` and returns a Node.js `Buffer`
   (shipped source; `trials.md` met the same); Signalsmith Stretch's README requires `.start()` or
-  `schedule({active: true})`, which the survey's field list left out. `trials.md` (as read at about 22:10 UTC) shows
+  `schedule({active: true})`, which the survey's field list left out. `trials.md` (as read at about 22:05 UTC) shows
   output formats for Basic Pitch, essentia.js, Mediabunny, MediaPipe, ffmpeg.wasm, demucs-web, smplr,
   soundfont-player, SpessaSynth, js-synthesizer, Tone.js, alphaTab, wavesurfer.js, peaks.js, pitchy, pitchfinder,
   aubiojs, web-audio-beat-detector, realtime-bpm-analyzer, SoundTouchJS, Rubber Band WASM and Signalsmith Stretch
-  that agree with the survey's documented formats; each is cross-referenced in its section with run ids. Where they differ in detail (for example the
+  that agree with the survey's documented formats; each is cross-referenced in its section with run ids. One
+  documented behaviour differed from what the trials observed: MDN says `AudioWorkletProcessor.process()` is called
+  "once for each block", while the trials saw skipped quanta right after a node was created and one repeated
+  `currentFrame` (section 2; both stated there). Where they differ in detail (for example the
   trials' alphaTab page passed `audio.currentTime * 1000` to `updatePosition` while the guide divides by
   `playbackRate`), both are stated with their sources; at playback rate 1 the two are equal.
-- Handoff facts: all 20 kept. Facts 1, 2, 3, 4, 5, 10, 11 and 17 were completed so that both halves carry a link,
-  a lane-survey entry or a run id (fact 17's receiving half, wavesurfer's `setTime(seconds)`, was unsupported before).
+- Handoff facts: all 20 kept. Facts 1, 2, 3, 4, 5, 10 and 17 were completed so that both halves carry a link, a
+  lane-survey entry or a run id (fact 17's receiving half, wavesurfer's `setTime(seconds)`, was unsupported before);
+  fact 11's last sentence was reworded (see judging language).
 - Judging language: three phrases reworded ("fast path", "frame-accurate", "is the in-browser library"); a scan of
   the text outside quotations and code found no other judging words. Author numbers in the survey name their page.
 - Pricing and terms re-read on 2026-11-10: Superpowered pricing and licensing pages (no price; "Superpowered is

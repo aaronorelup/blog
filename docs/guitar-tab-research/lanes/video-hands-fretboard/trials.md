@@ -351,6 +351,33 @@ Result (pixel -> rectified (u, v) -> cell):
   and `handoff_R3a_cu_f0150_rectified.webp` (model frets as numbered ticks, detected frets as lines, fingertips as
   dots).
 
+### The same handoff on R3b frame 225 (1920x1080)
+
+Run r0402 (`--nolock`, wall 0.8 s). Step 1: MediaPipe Hand Landmarker on R3b (group C1), the "Left" hand, score on this
+frame in `samples/handoff/handoff_R3b_f0225.json`. Step 2: the hand-set R3b quad (OpenCV section), 1200x130. Step 3:
+OpenCV LSD (r0214): clusters 4.1 (nut), 389.9, 496.2, 573.1, 645.5, 711.9, 777.1, 830.7, 884.5, 933.6, 979.9, 1022.7,
+1063.0, 1101.2, 1135.7, 1168.0. Step 4: the clusters right of the widest gap are 496.2 ... 1168.0 (14; 389.9 lies
+left of that gap). The lowest RMS came from dropping the first two of them and fitting 645.5 ... 1168.0 (12 clusters)
+as frets 8-19: s = 1754.2 px, RMS 3.52 px, max 7.70 px, which puts 496.2 at fret 6. Without dropping, k0 = 6 for 496.2
+had RMS 7.52 px and k0 = 5 had RMS 20.48 px.
+
+| fingertip | pixel (x, y) | rectified (u, v) | fret cell | string cell |
+|---|---|---|---|---|
+| thumb tip (4) | (1031.74, 140.00) | (265.6, -20.4), outside the fretboard | 3 | 6 |
+| index tip (8) | (1082.59, 200.67) | (255.6, 58.9) | 3 | 4 |
+| middle tip (12) | (992.45, 234.35) | (351.3, 41.4) | 4 | 5 |
+| ring tip (16) | (983.43, 295.62) | (391.1, 88.7) | 5 | 2 |
+| pinky tip (20) | (970.30, 327.14) | (418.4, 108.3) | 5 | 2 |
+
+- A second reading of the same frame gives different fret numbers. By eye on the rectified image
+  (`samples/handoff/handoff_R3b_f0225_rectified.webp`), fret wires are visible at about x = 120 and 228 left of the
+  fingers and at the 14 LSD clusters from 496.2 to 1168.0 right of them; counting wires from the nut that way puts
+  496.2 at fret 5, and the shared manifest describes this frame as showing "frets 5 to 18 by their spacing, with
+  frets 2-4 under the fingers". The 12-TET fit above puts 496.2 at fret 6 and its model fret 1 at x = 102.6 and fret 2
+  at 195.5, not at the visible wires near 120 and 228. So on R3b the fret numbers of the cells depend on the method,
+  by one fret here; which is right is UNVERIFIED (no ground truth; a hand-labelled frame would settle it). The cluster
+  at 389.9 lies on a finger edge by eye.
+
 ## OWLv2 (google/owlv2) through the public Space `merve/owlv2`; Grounding DINO Space failed
 
 - Route: the model weights were over the box's 200 MB download limit (see above), so the public Hugging Face Space
@@ -427,3 +454,203 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
   `results.multi_hand_world_landmarks` (meters). Same 21-point order as the Tasks API. The script stores the same JSON
   fields as the Tasks run.
 - Samples: `samples/mediapipe-legacy/` (frames, summaries).
+
+## Ultralytics YOLO26 pose (yolo26n-pose, yolo26s-pose), ultralytics 8.4.209
+
+- What it is: one-stage person detector with 17 COCO body keypoints per person (no finger keypoints). Package
+  `ultralytics` 8.4.209 (PyPI) with torch 2.15.0+cpu and torchvision 0.29.2+cpu (`samples/ultralytics-torch-venv/
+  uv-pip-freeze.txt`). Weights from the Ultralytics assets release `v8.4.0`
+  (`https://github.com/ultralytics/assets/releases/download/v8.4.0/<name>`, downloaded 2026-11-10, no login):
+  `yolo26n-pose.pt` 7,878,574 bytes (sha256 `eb3bb8268828aeaf515cec23a4bfafd793944a86fe9af94ba7823609c14522a9`),
+  `yolo26s-pose.pt` 24,151,790 bytes (sha256 `a083adb42303728ae14c4bd6bd56d80da46f82fb2564dbd6f31dcc92ea321646`).
+  The Ultralytics asset list in 8.4.209 (`ultralytics.utils.downloads.GITHUB_ASSETS_NAMES`) has pose weights for
+  yolov8, yolo11 and yolo26 and no hand-keypoint weights (no asset name contains "hand").
+- Install: `uv venv --python 3.11 venv-ultra && uv pip install --python venv-ultra/bin/python ultralytics==8.4.209`
+  (UV_TORCH_BACKEND=cpu gave the CPU torch wheels). Runs used `YOLO_OFFLINE=1`.
+- Settings: `model.predict(frame, imgsz=640, conf=0.25, device="cpu")`. A wrist counts as a "hand" when its keypoint
+  confidence is >= 0.5 (COCO 9 = the person's left wrist, 10 = right wrist). Script `scripts/run_yolo_pose.py <clip>
+  <full|crop> <weights> <outdir>`. Runs: steps of group job B1 (2 cores; GNU time per step).
+
+| step | model, clip, mode | frames | wall | CPU | peak RSS | per-frame mean / median / p90 | fps from mean | Ultralytics "inference" mean | frames with a person | frames with 0 / 1 / 2 wrists >= 0.5 | max persons in a frame |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| yolo-pose_yolo26n-pose_R3a_full | n, R3a full | 540 | 70.78 s | 77.97 s | 463.3 MiB | 117.02 / 106.22 / 129.18 ms | 8.55 | 104.0 ms | 540 | 0 / 0 / 540 | 1 |
+| yolo-pose_yolo26n-pose_R3a_crop | n, R3a crop 3x | 540 | 79.27 s | 82.96 s | 472.4 MiB | 130.96 / 125.16 / 155.17 ms | 7.64 | 122.2 ms | 540 | 0 / 57 / 482 | 2 |
+| yolo-pose_yolo26s-pose_R3a_full | s, R3a full | 540 | 167.16 s | 154.32 s | 538.2 MiB | 292.67 / 293.17 / 359.55 ms | 3.42 | 283.5 ms | 540 | 0 / 1 / 539 | 2 |
+| yolo-pose_yolo26n-pose_R3a_cu_full | n, R3a_cu full | 300 | 48.62 s | 44.62 s | 463.4 MiB | 138.88 / 129.06 / 153.44 ms | 7.20 | 126.3 ms | 300 | 0 / 264 / 36 | 2 |
+
+- The per-frame time is measured around `model.predict` and includes Ultralytics' first-call setup on frame 0
+  (4362.8 ms in the first run, 1609-2261 ms in the others); "Ultralytics inference" is the `speed["inference"]` value
+  the library reports per frame, averaged.
+- Arm keypoints on R3a full (yolo26n): in the medium shot the right wrist (person's right) averages (319, 263) px with
+  mean confidence 0.982 and the left wrist (376, 243) with 0.947; in the wide shot the right wrist averages (157, 203)
+  with mean confidence 0.911 (minimum 0.7235) and the left wrist (395, 210) with 0.974. By eye on frame 300 the
+  picking hand is behind the music stand in the wide shot.
+- R3a_cu (close shot, picking hand not in frame): the person's left wrist is reported in all 300 frames, the right wrist
+  with confidence >= 0.5 in 36.
+- Output format facts: `results[0].keypoints.xy` (N persons x 17 x 2 pixels), `.keypoints.conf` (N x 17),
+  `results[0].boxes.xyxy` / `.conf`, `results[0].speed` = {preprocess, inference, postprocess} in ms. The script stores
+  per frame the elbows and wrists (x, y, confidence) in full-frame pixels and the person-box confidence.
+- Constraint inputs: `imgsz`, `conf`, `iou`, `classes`, `max_det`; nothing hand- or guitar-specific.
+- Samples: `samples/ultralytics-yolo-pose/` (annotated frames R3a 100 and 300, R3a_cu 150; summaries; first two JSONL
+  records).
+
+## OpenPose hand model (CMU), PyTorch port `Hzzone/pytorch-openpose` @5ee71dc
+
+- What it is: OpenPose's 21-keypoint hand network, converted from the CMU Caffe model to PyTorch by the
+  `pytorch-openpose` project (`git clone --depth 1 https://github.com/Hzzone/pytorch-openpose`, commit
+  `5ee71dc10020403dc3def2bb68f9b77c40337ae2`, 2021-06-21; README: "the pytorch model is directly converted from
+  [openpose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) caffemodel"). Weights `hand_pose_model.pth`,
+  147,341,049 bytes (sha256 `b76b00d1750901abd07b9f9d8c98cc3385b8fe834a26d4b4f0aad439e75fc600`), from
+  `https://huggingface.co/lllyasviel/Annotators/resolve/main/hand_pose_model.pth` (repo not gated; card metadata
+  `license: other`), loaded with `torch.load(..., weights_only=True)`. The full OpenPose C++ program was not built.
+- Route and what was done by this lane: OpenPose finds hands from its body model; that model
+  (`body_pose_model.pth`, 209,267,595 bytes) was over the disk notice's 200 MB limit and was not downloaded. Hand boxes
+  were taken from MediaPipe Hand Landmarker instead (a handoff): a square around MediaPipe's 21 points, side 1.5 x the
+  longer side of their box. The clone is passed to the script as a path and only `src/model.py` (`handpose_model`) is
+  imported; the inference loop re-implements `src/hand.py` (scales 0.5, 1.0, 1.5, 2.0 of a 368-px box, stride 8, heatmap
+  threshold 0.05 after a Gaussian blur with sigma 3, largest connected component per keypoint) with OpenCV in place of
+  scipy and scikit-image. Script `scripts/run_openpose_hand.py`.
+- Left hands: OpenPose's own C++ hand extractor mirrors the crop of its hand 0 (the left hand):
+  `const bool mirrorImage = (hand == 0);` in `src/openpose/hand/handExtractorCaffe.cpp` (master, read 2026-11-10). The
+  port's `Hand` class does not mirror. The first run below did not mirror; the fretting hand is the player's left hand.
+  Later steps with `--mirror-left` (flip the crop of a hand MediaPipe labels "Left", flip x back) are reported below
+  when they ran.
+
+| run | clip, boxes from | hands run | wall | CPU | peak RSS | per-hand inference mean / median (min-max) | keypoints found per hand (mean; of 21) | median distance to MediaPipe's same-index landmark (median of per-hand medians) | mean peak heatmap value |
+|---|---|---|---|---|---|---|---|---|---|
+| r0336 (not mirrored) | R3a_cu every 10th frame, MediaPipe r0078 | 30 | 519.06 s | 522.4 s | 1088.1 MB | 17.161 / 11.116 s (7.492-46.669 s) | 13.4 (range 2-20) | 52.52 px | 0.0873 |
+
+- r0336 waited 1800.7 s for a CPU slot before it ran. Box sides were 181-282 px. "Found" = the blurred heatmap
+  exceeded 0.05 somewhere; a keypoint that was not found is stored as (box origin, score 0).
+- Output format facts: per hand 21 (x, y, peak value) in full-frame pixels, in the OpenPose hand order (0 wrist, 1-4
+  thumb, 5-8 index, 9-12 middle, 13-16 ring, 17-20 pinky), the same order as MediaPipe's 21 landmarks. Files:
+  `out/openpose-hand/R3a_cu.json` (summary + per hand), samples in `samples/openpose-hand/`. The r0336 sample images
+  were redrawn afterwards from that JSON (no new inference) because the run's own drawing joined not-found keypoints
+  to the box corner; the redraw shows only found keypoints (cyan) over MediaPipe's landmarks (magenta).
+
+## MediaPipe Pose Landmarker (heavy) and Holistic Landmarker (tasks API), mediapipe 1.2.2
+
+- What they are: Pose Landmarker = 33 body landmarks per person (wrists 15/16, pinky 17/18, index 19/20, thumb
+  21/22: three hand points per side, no finger joints). Holistic Landmarker = one person's pose (33) + face (478) +
+  left hand (21) + right hand (21) in one graph. Same venv as the Hand Landmarker. Bundles (2026-11-10, no login):
+  `pose_landmarker_heavy.task` 30,664,242 bytes (sha256 `64437af838a65d18e5ba7a0d39b465540069bc8aae8308de3e318aad31fcbc7b`)
+  from `https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_heavy/float16/latest/`;
+  `holistic_landmarker.task` 13,683,609 bytes (sha256 `e2dab61191e2dcd0a15f943d8e3ed1dce13c82dfa597b9dd39f562975a50c3f8`)
+  from `.../holistic_landmarker/holistic_landmarker/float16/latest/`. (`pose_landmarker_full.task`, 9,398,198 bytes,
+  was downloaded and not run.)
+- Settings: VIDEO mode. Pose: `num_poses=1`, detection, presence and tracking confidence 0.5; a "hand" is counted when
+  the wrist landmark's `visibility` is >= 0.5. Holistic: default options; a hand is counted when its 21-landmark list
+  is non-empty (Holistic returns no handedness score). Script `scripts/run_mediapipe_pose_holistic.py`. Runs: steps of
+  group job C1.
+
+| step | clip, mode | wall | CPU | peak RSS | per-frame mean / median / p90 | fps from mean | pose found | frames with 0 / 1 / 2 hands | counts per side |
+|---|---|---|---|---|---|---|---|---|---|
+| mediapipe-pose_R3a_full | R3a full | 43.65 s | 40.35 s | 316.7 MiB | 69.27 / 65.84 / 82.03 ms | 14.44 | 540 of 540 | 0 / 149 / 391 | wrist vis. >= 0.5: left 532, right 399 |
+| mediapipe-pose_R3a_crop | R3a crop 3x | 44.33 s | 42.43 s | 325.5 MiB | 70.25 / 67.32 / 82.51 ms | 14.23 | 540 of 540 | 0 / 217 / 323 | left 540, right 323 |
+| mediapipe-holistic_R3a_full | R3a full | 31.57 s | 34.52 s | 307.2 MiB | 48.24 / 48.60 / 58.89 ms | 20.73 | 540 of 540 | 13 / 439 / 88 | left_hand 521, right_hand 94 |
+| mediapipe-holistic_R3a_cu_full | R3a_cu full | 18.53 s | 20.84 s | 308.6 MiB | 50.25 / 51.29 / 61.44 ms | 19.90 | 300 of 300 | 0 / 300 / 0 | left_hand 300 |
+| mediapipe-holistic_R3c_full | R3c | 39.31 s | 47.89 s | 405.5 MiB | 62.49 / 58.94 / 78.97 ms | 16.00 | 450 of 450 | 0 / 10 / 440 | left_hand 450, right_hand 440 |
+| mediapipe-holistic_R3a_crop | R3a crop 3x | 15.14 s | 15.12 s | 318.5 MiB | (failed at frame 218) | | | | |
+
+- Per shot on R3a full: Pose, medium shot 0 / 8 / 311 frames with 0 / 1 / 2 wrists visible, wide shot 0 / 141 / 80
+  (right wrist visible in 80 of 221 wide-shot frames); Holistic, medium shot 12 / 219 / 88, wide shot 1 / 220 / 0
+  (left_hand in 220 of 221 wide-shot frames, right_hand in none).
+- Where Holistic's R3a hands landed (`hand_regions.py`, frames): medium fretting 301, medium picking 78, medium
+  elsewhere 8, wide fretting 220, wide elsewhere 0. (The Hand Landmarker had 215 wide-shot frames with a detection on the
+  hanging sheet music; Holistic, which finds hands from the body pose, has none there.)
+- On R3c, Holistic's `left_hand` (mean wrist (1681, 585) px) is the fretting hand and `right_hand` (mean wrist (966, 899))
+  the picking hand; the names follow the subject's hands, as with the Hand Landmarker.
+- Holistic, crop mode: it failed when the crop size changed at the shot cut (720x720 to 840x660 at frame 218):
+  `RuntimeError: CalculatorGraph::Run() failed: Calculator::Process() for node "..._SegmentationSmoothingCalculator"
+  failed: RET_CHECK failure (third_party/mediapipe/calculators/image/segmentation_smoothing_calculator.cc:207)
+  current_mat->rows == previous_mat->rows (660 vs. 720)`. Input fact: in VIDEO mode Holistic needs a constant frame
+  size. Up to the failure (frames 0-217, medium shot) it found the pose in 218 of 218 frames and 0 / 1 / 2 hands in
+  36 / 97 / 85 frames (left_hand 151, right_hand 116), 55.59 ms per frame mean. The Hand and Pose Landmarkers took the
+  same size change without an error.
+- Output format facts: Pose: `pose_landmarks` (per person 33 `NormalizedLandmark` with x, y, z, visibility, presence)
+  and `pose_world_landmarks`; Holistic: `pose_landmarks`, `face_landmarks`, `left_hand_landmarks`,
+  `right_hand_landmarks` (21 normalized landmarks each, empty when not found), plus world landmarks and (optionally)
+  a segmentation mask. The script stores shoulders, elbows, wrists and the three hand points of the pose in full-frame
+  pixels, and Holistic's hand landmarks in the same 21-point format as the Hand Landmarker.
+- Samples: `samples/mediapipe-pose-holistic/`.
+
+## Segment Anything 2.1 tiny (`sam2.1_t.pt`) through ultralytics 8.4.209: image mode and video mode
+
+- What it is: Meta's SAM 2.1 "tiny" checkpoint as packaged by Ultralytics (asset `sam2.1_t.pt`, 78,105,722 bytes,
+  sha256 `3c1e81ca9b037dd39d70a014ddb9a813d6c4c4e12555420db7eaff31689bd4e3`, from the Ultralytics assets release
+  v8.4.0, no login), run with `ultralytics.SAM` (image mode) and `ultralytics.models.sam.SAM2VideoPredictor` (video
+  mode). Note from the docs agent's survey: the PyPI package `sam2` 1.1.0 is uploaded by a third party, so it was not
+  used. Same torch venv as YOLO.
+- Prompts (set BY HAND, foreground points, label 1, 640x480 pixels): R3a_cu frame 150: (260,314), (330,272),
+  (380,243) on the fretboard between the body and the hand; R3a frame 100: (342,248), (350,228); R3a frame 300:
+  (350,222), (372,205). Each image was run with all its points ("all_points") and with the first point only.
+  Video mode: R3a_cu frames 150-179 re-encoded to a 30-frame MP4 (`ffmpeg -framerate 30000/1001 ... -crf 10`), the
+  three R3a_cu points on the first frame, `imgsz=1024`, `conf=0.25`. Script `scripts/run_sam2.py`.
+- Run: step `sam2.1-tiny_image_and_video` of group job B1 (2 cores): wall 668.34 s, CPU 685.01 s, peak RSS 1726.3
+  MiB, for all six image calls and the 30-frame video. Model load 1.83 s.
+
+| image | prompt | time | masks returned | scores | union mask area | union mask bbox (x0,y0,x1,y1) | connected components | min-area rectangle of the largest component (centre, size, angle) |
+|---|---|---|---|---|---|---|---|---|
+| R3a_cu f150 | 3 points | 5.128 s | 3 | 0.8678, 0.8827, 0.8729 | 27,394 px | (0,60,639,416) | 33 | (329.0,294.5), 293.7x70.2, -32.24 deg |
+| R3a_cu f150 | 1 point | 5.105 s | 1 | 0.8678 | 26,612 px | (0,61,639,395) | 23 | (328.1,294.9), 290.6x69.9, -32.24 deg |
+| R3a f100 | 2 points | 5.657 s | 2 | 0.7979, 0.7491 | 4,327 px | (281,128,395,363) | 7 | (362.5,198.6), 148.9x40.5, -71.57 deg |
+| R3a f100 | 1 point | 5.387 s | 1 | 0.7979 | 4,053 px | (281,128,395,352) | 6 | (362.3,198.6), 148.9x39.9, -71.42 deg |
+| R3a f300 | 2 points | 5.848 s | 2 | 0.3479, 0.8135 | 40,503 px | (136,74,428,458) | 51 | (325.0,322.8), 210.6x137.1, -59.24 deg |
+| R3a f300 | 1 point | 6.068 s | 1 | 0.3479 | 40,091 px | (136,74,428,458) | 57 | (325.0,322.8), 210.6x137.1, -59.24 deg |
+
+- What the masks cover, by eye on the overlays (`samples/sam2.1-tiny/`): R3a_cu frame 150: the neck from the body end
+  to the headstock, interrupted by the fretting hand, plus specks on the guitar body at the left edge; the largest
+  component (and its rectangle) is the stretch between the body end and the hand. R3a frame 100 (medium shot): the
+  visible neck. R3a frame 300 (wide shot): the whole player and guitar, not only the neck. Ultralytics returned one
+  mask per point (several points were not merged into one object); the script takes the union.
+- Video mode: 30 frames in 629.95 s including setup; the first frame took 25.017 s and frames 2-30 took 20.86 s each
+  on average (about 0.05 frames per second on 2 cores). Every frame returned 3 masks (one per prompt point); the union
+  area stayed between 25,041 and 26,913 px; the largest component's rectangle moved from centre (327.2,294.2),
+  291.1x68.5 at frame 150 to (346.3,281.3), 335.7x67.4 at frame 179, both at -32.5 degrees.
+- Handoff to OpenCV (run r0400, `--nolock`): the minimum-area rectangle of the largest component of the frame-150
+  mask was used as a second quad for `run_opencv_lines.py`: corners (434.5,186.5), (471.9,245.8), (223.5,402.5),
+  (186.1,343.1), long axis 147.76 degrees, width 70.2 px. Because the largest component stops at the hand, x = 0 of
+  this rectification is at the hand, not at the nut (the JSON key name `fret_x_clusters_px_from_nut` does not hold for
+  this quad). Rectified 800x116: LSD 13 fret-like / 50 string-like segments, fret clusters at x = 117.5, 210.9,
+  304.2, 390.4, 473.3, 620.2, 696.8, 759.1; Hough 9 / 27. Overlays: `samples/opencv-lines/R3a_cu_f0150_samquad_*`.
+- Output format facts: `results[0].masks.data` (N x H x W boolean tensor, one per prompt point), `results[0].boxes`
+  with `conf` (the scores above). The script writes each union mask as a PNG (`out/sam2/masks/`, 0/255, frame size) and
+  `sam2_results.json` (areas, boxes, rectangles, times).
+- Constraint inputs: points with labels (1 foreground, 0 background), boxes (`bboxes=`), and in video mode prompts on
+  the first frame; `imgsz`, `conf`.
+
+## CoTracker3 (offline model), facebookresearch/co-tracker @82e02e8
+
+- What it is: Meta's point tracker. Code: `git clone --depth 1 https://github.com/facebookresearch/co-tracker` (commit
+  `82e02e8029753ad4ef13cf06be7f4fc5facdda4d`, 2025-01-21); checkpoint `scaled_offline.pth` 101,890,938 bytes (sha256
+  `2670d4562ed69326dda775a26e54883925cd11b6fc9b24cb7aa9f8078bce7834`) from
+  `https://huggingface.co/facebook/cotracker3/resolve/main/scaled_offline.pth` (2026-11-10, no login). The README says
+  "for small tasks CoTracker can be run on CPU".
+- Install: `torch.hub.load("facebookresearch/co-tracker", ...)` (the README's route) needs api.github.com, which this
+  box's proxy refuses. `uv pip install -e <clone>` was refused by this session's permission check. What ran: the clone
+  is passed to the script as a path and appended to `sys.path`; `cotracker.predictor.CoTrackerPredictor(checkpoint=...,
+  offline=True, window_len=60)` with the torch venv (torch 2.15.0+cpu).
+- Input: R3a_cu frames 150-239 (90 frames, 3.0 s), 640x480 RGB as a float tensor (1, 90, 3, 480, 640); the model
+  resizes to its `interp_shape` (384, 512). Queries (t = first frame, x, y in pixels), set BY HAND on frame 150: four
+  points on the neck (nut_mid (557,140), neck_a (242,331), neck_b (297,296), neck_c (353,261)) and four on the hand
+  (index_mcp (525,227), wrist (545,323), index_tip (483,186), middle_tip (436,197)). Script `scripts/run_cotracker.py`.
+- Run: step `cotracker3-offline_R3a_cu_f150_90` of group job B1 (2 cores): wall 136.52 s, CPU 134.01 s, peak RSS
+  8,813,832 kB (8.4 GiB). Inside the script: model load 0.49 s, tracking 132.43 s for 90 frames = 1.47 s per frame.
+
+| point | visible frames (of 90) | start (x, y) | end (x, y) at frame 239 | largest distance from start |
+|---|---|---|---|---|
+| nut_mid | 90 | (557.0, 140.0) | (553.79, 137.08) | 4.34 px |
+| neck_a | 90 | (242.0, 331.0) | (239.45, 328.83) | 3.85 px |
+| neck_b | 90 | (297.0, 296.0) | (293.73, 294.12) | 3.77 px |
+| neck_c | 90 | (353.0, 261.0) | (349.01, 260.07) | 4.10 px |
+| index_mcp | 90 | (525.0, 227.0) | (477.55, 247.14) | 66.43 px |
+| wrist | 90 | (545.0, 323.0) | (448.49, 340.96) | 98.17 px |
+| index_tip | 16 | (483.0, 186.0) | (468.31, 186.05) | 55.88 px |
+| middle_tip | 73 | (436.0, 197.0) | (434.20, 197.81) | 5.46 px |
+
+- There is no ground truth for these tracks. By eye on frame 239 (`samples/cotracker3/R3a_cu_track_f0239.webp`) the
+  four neck points are still on the neck, and the wrist and index_mcp points are on the hand, which has moved toward
+  the guitar body.
+- Output format facts: `pred_tracks` (B, T, N, 2) pixel coordinates in the input frame size, `pred_visibility` (B, T, N)
+  booleans. Queries are (t, x, y) rows; a `grid_size` or a `segm_mask` can be given instead of queries.
+  `out/cotracker/R3a_cu_f150_90.json` holds all tracks; `samples/cotracker3/` an excerpt and two frames.

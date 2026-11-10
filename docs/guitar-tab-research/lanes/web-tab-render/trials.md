@@ -8,8 +8,13 @@ Conventions used in this file:
 - **Run ids** (`rNNNN`) are lines in `/home/user/gtr/ledger/runs.jsonl` written by `gtr-run`. Runs marked
   "2 cores" were pinned to one 2-core slot. Runs marked **"--nolock"** were logged by `gtr-run --nolock`: not pinned and
   not given a slot, so they ran while up to two pinned jobs of other lanes used the CPUs; their times are for
-  reference only. Light runs (under 3 s) used `--nolock` because the slot queue was 2 to 8 minutes long at the time.
-- **Eval ids** (`eNNNN`) are lines in `/home/user/gtr/eval/ledger/evals.jsonl` written by `gtr-eval` 0.8.x;
+  reference only. Most `--nolock` runs took under 3 s of wall time; the longer ones are r0317 (49.18 s), r0328
+  (11.78 s), the LilyPond runs (3.41 to 7.22 s), the webmscore runs r0288 to r0291 (2.72 to 4.41 s), r0254 (4.94 s),
+  r0134 (4.62 s) and r0244 (3.98 s). Slot waits the ledger recorded for this lane's pinned runs at the time: r0026
+  118.2 s, r0058 71.7 s, r0128 490.6 s. (Corrected by the verifier, 2026-11-10; the earlier text said the `--nolock`
+  runs were all under 3 s.)
+- **Eval ids** (`eNNNN`) are lines in `/home/user/gtr/eval/ledger/evals.jsonl` written by `gtr-eval` (version 0.11.1 in
+  every result cited here);
   `gtr-eval ledger --id eNNNN --full` prints the whole result with the definitions of every number.
   `tab` numbers: matched = truth and estimate notes with onsets within 50 ms and the same MIDI pitch (mir_eval
   `match_notes`, onset tolerance 0.05 s, pitch tolerance 50 cents); "same string and fret" = matched pairs with the same
@@ -19,10 +24,15 @@ Conventions used in this file:
   highest string. alphaTab's data model counts the other way (see alphaTab below).
 - Test pages are served from `127.0.0.1:8765` by `scripts/serve.cjs`; every page and driver script is in `scripts/`.
   Browser: the box's pre-installed Playwright 1.63.0 with its headless Chromium (`/opt/node-tools/node_modules/playwright`,
-  browsers in `/opt/pw-browsers`, `chromium.launch()` with no options except
-  `--autoplay-policy=no-user-gesture-required` for the player runs). Node 22.23.4.
-- npm packages were installed into `/home/user/gtr/lanes/web-tab-render/web/` with one command (14 s, 76 packages,
-  189 MB of `node_modules` in total): `npm install --no-audit --no-fund @coderline/alphatab@1.9.0 vexflow@5.0.0
+  browsers in `/opt/pw-browsers`; `chromium.launch()` with the single argument
+  `--autoplay-policy=no-user-gesture-required` in `shot.cjs`, the player driver and the transposition export, and with
+  no options in the edit, abcjs-editor and abcjs read-back drivers). Node 22.23.4.
+- **Page timings.** "From the driver's start" (`ms_to_ready` in the page logs written by `scripts/shot.cjs`) runs from
+  before `chromium.launch()` to the page's ready flag, so it includes starting Chromium. "In the page" times are
+  `performance.now()` differences inside the page. (Verifier: the earlier text called the first kind "from page load".)
+- npm packages were installed into `/home/user/gtr/lanes/web-tab-render/web/` with one command (`npm-install.log`:
+  "added 76 packages in 14s"; 189 MB of `node_modules` then, the trial agent's figure, not re-measurable after the later
+  installs): `npm install --no-audit --no-fund @coderline/alphatab@1.9.0 vexflow@5.0.0
   vextab@4.0.5 opensheetmusicdisplay@2.3.0 abcjs@6.7.2 verovio@6.4.1 svguitar@2.10.1 vexchords@1.2.0
   chordsheetjs@18.0.0 tonal@6.5.1` (the versions were the `latest` tags on registry.npmjs.org on 2026-11-10;
   `npm ls` output of that install: `samples/npm-ls.txt`). Later additions: `npm install webmscore@1.2.1
@@ -59,7 +69,9 @@ Conventions used in this file:
   0.22 s); S5dropd.gp5 r0030 (2 cores, wall 0.31 s). Inside the script, for S2n (r0020, the script's own cumulative
   timer): import done at 12.2 ms, MIDI at 24.3 ms, GP7 export and re-import at 103.0 ms, alphaTex export and re-import at
   119.7 ms. Earlier runs r0017 and r0018 on S2n had a bug in my tick-to-seconds code (all onsets came out 0); their
-  outputs were replaced.
+  outputs were replaced. (Verifier: the script as saved is a later version than the one r0020 ran; it adds an
+  `est_staff` field and picks the TAB staff of a 2-staff MusicXML import. Re-running it on S2n.gp5, r0364 (--nolock),
+  gave the same 90 notes and byte-identical MIDI, `.gp` and alphaTex files.)
 - **What a program can read** from the model (S2n.gp5, `samples/alphatab/S2n.model.json`): title, artist, tempo 112
   with tempo label "Moderate", 13 master bars in 4/4 (bar 0 = the silent count-in bar), two tempo automations of 112 on
   bar 0 in the model, one track "Guitar", MIDI program 24, one staff with `showTablature` true and
@@ -85,8 +97,10 @@ Conventions used in this file:
   file: its README says PyGuitarPro cannot read Guitar Pro 6/7/8 files. The .gp column is alphaTab reading its own
   export; other readers of that file are in the format matrix below.)
 - **MIDI written by alphaTab** (`samples/alphatab/S2n.alphatab.mid`, 1,255 bytes): Standard MIDI File format 0, one
-  track, 960 ticks per quarter, tempo 112, program 24, 90 notes, the first notes with velocity 95, 90 pitch-bend events
-  and 9 control changes. gtr-eval `notes` on S2n: onset F1 1.0 and onset+offset F1 1.0, 90/90 matched, median onset
+  track, 960 ticks per quarter, tempo 112, program 24, 90 notes, all with velocity 95, 90 pitch-bend events (all on
+  channel 0), 9 control changes on each of channels 0 and 1 (18 in all), a program change to 24 on each of those two
+  channels and two tempo events, both 112 (counts corrected by the verifier with mido; the earlier text said 9 control
+  changes). gtr-eval `notes` on S2n: onset F1 1.0 and onset+offset F1 1.0, 90/90 matched, median onset
   difference -0.008 ms (e0007); S5capo2 and S5dropd the same (e0011, e0017).
 - **alphaTex exported by alphaTab** (`samples/alphatab/S2n.export.atex`, 2,244 characters): starts with `\artist`,
   `\wordsandmusic`, `\title`, then `\track ("Guitar" "Guitar") { color "#FF0000" volume 13 balance 8 instrument
@@ -104,6 +118,9 @@ Conventions used in this file:
   A first version with a `.` line after the metadata and `\ts 4 4` without parentheses parsed, with two parser
   diagnostics: "The dots separating score metadata, score contents and the sync points can be removed." (severity 0)
   and "Metadata arguments should be wrapped into parenthesis." (severity 1); the final version gives no diagnostics.
+  (The first version's run has no run id or saved log. The verifier rebuilt a file in that style from the final one, a
+  `.` line after the metadata and `\ts 4 4`, and alphaTab 1.9.0 gave exactly these two diagnostics, with codes 400 and
+  301: r0366. Re-running the final file, r0365, gave no diagnostics and the same 90 notes.)
 - gtr-eval `tab` of the parsed result: S2n 90/90 matched, 90/90 same string and fret (e0024); S5capo2 90/90, 90/90,
   capo 2 (e0026); S5dropd 90/90, 90/90 (e0028). gtr-eval `notes` of alphaTab's MIDI from that alphaTex: onset F1 1.0
   for all three (e0025, e0027, e0030).
@@ -112,16 +129,24 @@ Conventions used in this file:
 
 - Page `scripts/pages/alphatab.html` (UMD `alphaTab.js`, `core.fontDirectory` pointing at the bundled Bravura fonts,
   workers on, page layout, scale 1), driver `scripts/shot.cjs` (waits for `postRenderFinished`, full-page PNG).
-- Runs (all --nolock): S2n.gp5 r0059 (703 ms from page load to render finished); S5capo2.gp5 r0066 (1,434 ms);
-  S5dropd.gp5 r0067 (1,140 ms); alphaTex from the S2n truth r0068 (861 ms); alphaTex from the S5capo2 truth r0070
-  (1,111 ms). No console errors in any of them.
+- Runs (all --nolock): S2n.gp5 r0059, S5capo2.gp5 r0066, S5dropd.gp5 r0067, alphaTex from the S2n truth r0068 and
+  alphaTex from the S5capo2 truth r0070: 703, 1,434, 1,140, 861 and 1,111 ms from the driver's start (Chromium launch
+  included) to `postRenderFinished`; alphaTab's own `renderFinished` event came 247.8, 614.6, 411.0, 311.3 and
+  419.6 ms after the page script started. No console errors in any of them. A first attempt, r0058 (2 cores, after
+  71.7 s in the slot queue), exited 1; its log was overwritten by r0059, so its error is not on record. (Verifier: the
+  earlier text called the first numbers "from page load to render finished". Re-run r0367, --nolock: no console errors,
+  `renderFinished` at 268.2 ms, and a screenshot identical to r0059's except 121 pixels of the "alphaTab.net" text at
+  the top right.)
 - What was drawn (screenshots `samples/alphatab/*.webp`): a standard-notation staff above a six-line TAB staff, 13 bars
   in three systems at 1,200 px width; the bass voice drawn in grey in both staves; tempo mark "Moderate ♩ = 112" (gp5) or
-  "♩ = 112" (alphaTex); a dynamic "f" under bar 1. For the three .gp5 files no title and no tuning name were drawn (the
+  "♩ = 112" (alphaTex); a dynamic "f" under bar 1 (the first bar after the count-in; alphaTab's printed bar numbers start
+  at 1 on the count-in bar). For the three .gp5 files no title and no tuning name were drawn (the
   S5capo2.gp5 render shows "Capo. fret 2" above bar 1); for the alphaTex files the title, the subtitle, "Guitar Standard
-  Tuning" and (S5capo2) "Capo. fret 2" were drawn. In the
-  capo render the standard notation shows the sounding pitches (A major, with sharps as accidentals because the
-  alphaTex sets no key signature) while the TAB shows frets counted from the capo (the same numbers as S2n). In the
+  Tuning" and (S5capo2) "Capo. fret 2" were drawn. In both
+  capo renders (from the .gp5 and from the alphaTex) the standard notation shows the sounding pitches (A major, written
+  with sharps as accidentals and no key signature) while the TAB shows frets counted from the capo (the same numbers as
+  S2n). (Verifier: the earlier text gave the alphaTex's missing key signature as the reason; the .gp5 render looks the
+  same, and no reason was established.) In the
   Drop D render the two bass notes moved by the tuning show as 5 and 0 on the lowest line. Every render has a small
   "alphaTab.net" text at the top right.
 
@@ -138,7 +163,8 @@ Conventions used in this file:
   playback ran (no audio device was attached; nothing was listened to).
 - **Events emitted** during one play-through (count): `playerPositionChanged` 2,409; `playedBeatChanged` 49;
   `activeBeatsChanged` 49; `midiEventsPlayed` events of type 128: 90 (one per note: the note-ons), type 144: 88 (note
-  offs; 2 fewer than the notes), type 242 (metronome): 52 = 13 bars x 4 beats, reported although `metronomeVolume`
+  offs; 2 fewer than the notes: the missing two are the note-offs of the last two notes, which fall on the end tick
+  49,920; verifier), type 242 (metronome): 52 = 13 bars x 4 beats, reported although `metronomeVolume`
   was 0; `playerStateChanged` 5; `playerFinished` 1, 27,994 ms after `play()`. alphaTab's `dist/alphaTab.d.ts` declares
   `NoteOn = 128` and `NoteOff = 144` with the comment "Aligned with Midi 1.0" (in the MIDI 1.0 status bytes, 0x80 = 128
   is note off and 0x90 = 144 is note on); the counts above show type 128 arriving once per note.
@@ -153,10 +179,15 @@ Conventions used in this file:
   since `play()` minus the reported `currentTime`: median +126.5 ms, min +120.9, max +176.2, standard deviation 3.6 ms.
   Metronome event spacing (n = 51 intervals, nominal 535.7 ms): median 530.4, min 524.4, max 551.9 ms. These are page
   event times under a 2-core slot on a shared box without an audio device, not measured audio output latency.
+  (Verifier: recomputed from the raw `out/alphatab-player/S2n_plain.player.json` with a separate script,
+  `scripts/verify-trials/player_check.py`: the same n, median, min, max and standard deviation for the note-ons, the
+  metronome intervals and the position events; the 90 type-128 ticks equal the 90 truth onsets converted to ticks.)
+  VERIFIER RE-RUN PLACEHOLDER
 - **Offline export** (`api.exportAudio`, same run): 371.6 ms of page time for 2,457,088 float samples (1,228,544
   stereo frames = 27.858 s at 44.1 kHz, the score's length without the clips' 1.5 s tail). The first sample above
   1e-4 in absolute value is frame 94,464 = 2.14204 s; the truth's first onset is 2.142857 s = frame 94,500 (94,464 =
-  1,476 x 64). Peak 0.371. WAV kept outside git (see "Media kept outside git").
+  1,476 x 64). Peak 0.371. WAV kept outside git (see "Media kept outside git"). (Verifier: frame count, first frame
+  above 1e-4, peak, sample rate, 2 channels and 32-bit float re-read from the WAV with soundfile; all as stated.)
 
 ### Run 4b: metronome, count-in, playback speed and transposition (functional check)
 
@@ -164,29 +195,45 @@ Conventions used in this file:
   each), same driver, results `samples/alphatab/S2n_metro_countin.summary.json` and `S2n_transp2_speed2.summary.json`.
 - **`api.metronomeVolume = 1`, `api.countInVolume = 1`:** 56 metronome events instead of 52: four extra at ticks 0,
   960, 1920, 2880 (120.5, 658.2, 1188.0, 1728.0 ms after `play()`), then the song's own tick 0 again at 2288.0 ms. The
-  first `playerPositionChanged` came 2,287.9 ms after `play()` (142.4 ms without count-in in r0128), and
+  first `playerPositionChanged` that is not a seek event came 2,287.9 ms after `play()` (142.4 ms without count-in in
+  r0128), and
   `playerFinished` at 30,138.5 ms. With one count-in bar (2,142.9 ms at 112 BPM) added to the nominal times: note-ons
   median +135.0 ms (n = 90, min +125.3, max +140.0); metronome spacing median 537.7 ms (nominal 535.7).
 - **`api.playbackSpeed = 2.0` with `api.changeTrackTranspositionPitch(tracks, 2)`:** `playerFinished` came 14,053.7 ms
   after `play()` (27,994.4 ms at speed 1.0). In that run `midiEventsPlayed` reported 44 note-ons (type 128), 42
   note-offs and 27 metronome events, against 90, 88 and 52 at speed 1.0, and the first five metronome events still
   came 530 to 540 ms apart. The note-on `noteKey` values were the untransposed ones (43, 55, 50, 55, 43, 62, the same
-  as at speed 1.0). UNVERIFIED: whether the transposition changed the live sound (the event keys did not change and
-  the live audio cannot be captured here) and why fewer events were reported at speed 2.0.
+  as at speed 1.0). Timing of those events (verifier, from `out/alphatab-player/S2n_transp2_speed2.player.json`): the
+  44 note-ons arrived a median +122.3 ms (min +113.4, max +170.4) after their nominal time at speed 1.0
+  (tick/960 x 60/112 s), that is 1.19 to 7.09 s later than their nominal time at speed 2.0; the highest note-on tick
+  reported was 24,960 of the song's 49,920, and the last event arrived 14,053 ms after `play()`, at `playerFinished`.
+  `playedBeatChanged` (49 events, all the beats) followed the speed-2.0 times (median +152.0 ms against
+  tick/960 x 60/112/2 s), and `playerPositionChanged` reached tick 49,920 at a `currentTime` of 13,928.6 ms. So in this
+  run `midiEventsPlayed` was reported on the speed-1.0 timeline and stopped at `playerFinished`, which accounts for the
+  lower counts. UNVERIFIED: whether the sound followed speed 2.0 and the transposition (the live audio cannot be
+  captured here), and why alphaTab reports `midiEventsPlayed` on the speed-1.0 timeline.
 - **Transposition in the offline export** (`scripts/alphatab_transpose_export.cjs`, r0328, --nolock, 11.78 s): the
   first 4 s of S2n.gp5 exported three ways and the strongest spectral peak between 150 and 260 Hz measured over
   2.16 to 2.60 s (the first melody note, G3 = 196.0 Hz, over the G2 bass) with `scripts/wav_peak_hz.py` (Hann window,
   FFT zero-padded to 2^18, parabolic interpolation): plain export 195.78 Hz (MIDI 54.98); after
   `api.changeTrackTranspositionPitch(tracks, 2)` with default export options 195.78 Hz (MIDI 54.98, unchanged); with
   `AudioExportOptions.trackTranspositionPitches = Map {0 => 2}` 219.75 Hz (MIDI 56.98, two semitones up). So the export
-  applies its own `trackTranspositionPitches` option and did not pick up the player's track transposition.
+  applies its own `trackTranspositionPitches` option and did not pick up the player's track transposition. (Verifier:
+  re-run r0369 wrote three WAVs byte-identical to r0328's; a separate measurement with a Blackman window and a 2^19 FFT
+  without interpolation gave 195.73, 195.73 and 219.71 Hz.)
 
 ### Run 5: editing hooks (alphaTab ships no editor UI)
 
-- Checked: the alphaTab intro page quoted above, which contains neither "edit" nor "editor"; in `dist/alphaTab.d.ts` the
+- Checked: the alphaTab intro page quoted above, whose only "edit" is the documentation site's "Edit this page" footer
+  link (verifier, page re-read 2026-11-10; the earlier text said the page contains no "edit"); in `dist/alphaTab.d.ts` the
   word "editor" appears 5 times, in comments such as "This method can be used in applications when individual notes
   need to be played for lesson or editor style purposes." (`playNote`) and "This property is purely informative for
   external use like in editors." No editor component or editing UI was found in the package.
+- (Verifier, 2026-11-10, read from the alphaTab repository clone at commit ec751a23, 2026-11-08, not run:) the
+  repository has a separate package `packages/ui`, named `@coderline/alphatab-ui`, which the alphatab.net playground
+  imports (`PlayerView`, `TexEditorPane`, `SettingsPanel`, `TrackPanel` in `website/src/components/Playground/index.tsx`);
+  its transport controls have "Count-in" and "Metronome" toggle buttons (`packages/ui/src/player/controls/transport.tsx`).
+  `npm view @coderline/alphatab-ui` answered "404 Not Found" on 2026-11-10.
 - Driver `scripts/alphatab_edit.cjs`: renders S2n.gp5 with `core.includeNoteBounds`, clicks with the mouse at the centre
   of the note-head bounds that `api.boundsLookup.findBeat()` returns for the first melody note of bar 1, then sets that
   note's `fret` from 0 to 2 in the data model, calls `api.render()`, and exports `Gp7Exporter` and `AlphaTexExporter`
@@ -197,16 +244,21 @@ Conventions used in this file:
   `samples/alphatab/S2n_edited_bar1_fret2.webp`.
 - r0133 (--nolock, player on, click before `playerReady`): no mouse event. r0134 (--nolock, player on, click after
   `playerReady`, `beatMouseDown` also logged): one `beatMouseDown` event for bar 1, voice 1 (the bass voice), beat 0;
-  no `noteMouseDown`. Not investigated further.
+  no `noteMouseDown`. Not investigated further. (Verifier's re-run of r0134, r0368: the same single `beatMouseDown`,
+  and the edited `.gp` and alphaTex files byte-identical to r0134's.)
 
 ### Output and input format facts (for handoffs)
 
 - In: the intro page says "Feed it a Guitar Pro, MusicXML, CapXML, or alphaTex file". Tried here: .gp5 (3 files),
-  alphaTex (6 files), alphaTab's own .gp export, GP3/GP4 written by TuxGuitar and PyGuitarPro, and MusicXML. The
+  alphaTex (6 files), alphaTab's own .gp export, GP3/GP4 written by TuxGuitar and PyGuitarPro, and MusicXML. (The
+  imports of the GP3/GP4 files and of MuseScore 3.2.3's MusicXML ran outside gtr-run, so they have no run id; outputs
+  in `out/alphatab-import/`, scored e0799, e0802, e0805 and e0792.) The
   reference 2-staff MusicXML imports as one track with two staves (staff 0 notation without tuning, staff 1 TAB with
   tuning [64, 59, 55, 50, 45, 40] and, for S5capo2, `capo` 2): 90/90 same string and fret for S2n, S5capo2 and S5dropd
-  (r0272, r0273, r0275; e0843, e0847, e0852). A MusicXML part without `<staff-tuning>` (music21's) imports with no
-  string or fret (r0278, e0908). TuxGuitar's MusicXML imports with the tuning one octave high (r0277, e0860).
+  (r0272, r0273, r0275; e0843, e0847, e0852), and for the tab-only reference file (r0276, e0855). A MusicXML part
+  without `<staff-tuning>` (music21's) imports with no string or fret (r0278, e0908); so does MuseScore 3.2.3's
+  MusicXML of S2n.gp5, which has no TAB staff (e0792). TuxGuitar's MusicXML imports with the tuning one octave high
+  (r0277, e0860). (Verifier: re-run of r0273, r0370, gave a byte-identical estimate file.)
 - Out: Guitar Pro 7 `.gp` (`exporter.Gp7Exporter`), alphaTex text (`exporter.AlphaTexExporter`), SMF MIDI
   (`midi.MidiFileGenerator` + `MidiFile.toBinary()`), rendered SVG/canvas in the page, PCM float audio
   (`api.exportAudio`). No MusicXML or MEI exporter in `exporter` (it lists `AlphaTexExporter`, `Gp7Exporter`,
@@ -227,10 +279,11 @@ Conventions used in this file:
 - **Run:** page `scripts/pages/vexflow.html` fetches `S2n.truth.json` and draws one `TabStave` per bar (4 per line),
   two `Voice`s (melody, bass) of `TabNote`s with `positions: [{str, fret}]` (string 1 = highest), `GhostNote`s for rests,
   `Formatter.joinVoices().format()`, SVG backend; `VexFlow.loadFonts('Bravura', 'Academico')` first. r0110 (--nolock):
-  1,062 ms from page load to done, 275 ms inside the drawing code, 13 bars, 90 note positions drawn, SVG 25,408
-  characters, no console errors. Screenshot `samples/vexflow/S2n_tabstave.webp`: six-line TAB staves with the fret
+  1,062 ms from the driver's start to done, 274.7 ms inside the drawing code, 13 bars, 90 note positions drawn, SVG
+  25,408 characters, no console errors. Screenshot `samples/vexflow/S2n_tabstave.webp`: six-line TAB staves with the fret
   numbers of both voices in their columns and a "TAB" clef at the start of each line; no standard notation (not
-  requested), no stems, no title, no tempo.
+  requested), no stems, no title, no tempo. (Verifier's re-run r0371: the same counts and SVG length, and a
+  pixel-identical screenshot.)
 - **Input it needed:** nothing but code: every note's string, fret and duration, and the bar layout, are supplied by
   the program. No importer for Guitar Pro, MusicXML or alphaTex; no playback.
 - **Constraint inputs:** none (it draws what it is given). TabStave takes the number of lines; tuning is not part of
@@ -249,15 +302,17 @@ Conventions used in this file:
   `tabstave notation=true tablature=true tuning=standard|dropd key=G` per 4 bars, a `voice` per truth voice, notes as
   `:q 0/3` (duration, fret/string, string 1 = highest), chords `(3/6.0/3)`, rests `##` (`samples/vextab/S2n.vextab`,
   1,072 bytes). Page `scripts/pages/vextab.html` parses it with `new VexTab(new Artist(10, 10, 1200)).parse()` and draws
-  with `artist.render()` into SVG. S2n r0109 (--nolock): 1,352 ms page load to done, 150 ms inside parse and render,
-  4 staves, SVG 70,499 characters; S5dropd (`tuning=dropd`) r0144: 730 ms, 149 ms. Console line: "Running VexTab.Div:
+  with `artist.render()` into SVG. S2n r0109 (--nolock): 1,352 ms from the driver's start to done, 149.6 ms inside parse
+  and render, 4 staves, SVG 70,499 characters; S5dropd (`tuning=dropd`) r0144: 730 ms, 148.7 ms. (Verifier: the generator
+  re-run on the truth wrote a file byte-identical to `samples/vextab/S2n.vextab`; re-run r0372 gave the same SVG length
+  and a pixel-identical screenshot.) Console line: "Running VexTab.Div:
   4.0.3-5-g3a5e00d master 3a5e00d858ae98934ba545f9bef5eb923e17e402". Screenshots `samples/vextab/*.webp`: standard
   notation with a G-major key signature above each TAB staff, 13 bars on 4 lines, both voices drawn with stems up in
   the notation staff, "vexflow.com" printed at the bottom.
 - **Input it needed:** VexTab text (my generator); no Guitar Pro or MusicXML importer. `tabstave` options include
   `tuning` with values "standard, dropd, eb, E/5,B/4,G/4,D/4,A/3,E/3" (the package's `doc/tutorial.html`); the
   tutorial and source have no capo option (searched for "capo" in `doc/tutorial.html`, `src/vextab.ts`,
-  `src/artist.ts`: no hits).
+  `src/artist.ts`: no hits; the verifier searched all of `src/` too: no hits).
 - **Oddities:** the source has a `player.ts` (an overlay player) but it was not tried.
 
 ## Reference MusicXML with a TAB staff, written from the truth (input made for this lane)
@@ -280,7 +335,8 @@ Conventions used in this file:
 - **What it is:** a Python toolkit for symbolic music (parsers and writers for MusicXML, MIDI, ABC, Humdrum, MEI
   import and others). https://pypi.org/project/music21/ 10.5.2, installed 2026-11-10 into
   `/home/user/gtr/lanes/web-tab-render/venv-py` (Python 3.11) with `uv pip install music21 pyguitarpro` (0.7 s from the
-  shared cache; venv 248 MB, mostly hard links into the shared uv cache; `samples/music21/uv-pip-freeze.txt`).
+  shared cache; the venv was 264 MB by `du -sh` at verification time, mostly hard links into the shared uv cache;
+  `samples/music21/uv-pip-freeze.txt`).
 - **Run:** `scripts/music21_truth_to_musicxml.py` builds a `stream.Score` from `S2n.truth.json`: one Part, a Measure per
   bar, one `stream.Voice` per truth voice, each note with `articulations.StringIndication(string)` and
   `articulations.FretIndication(fret)`, then `score.write('musicxml')` and `converter.parse()` of the result.
@@ -293,9 +349,12 @@ Conventions used in this file:
   `<backup>`. No `<staff-tuning>` and no `<capo>`: the exporter source (`music21/musicxml/m21ToXml.py`, the function
   that writes `<staff-details>`) ends with the comments "# TODO: staff-tuning", "# TODO: capo", "# TODO: staff-size".
 - gtr-eval: `tab` 90/90 matched and 90/90 same string and fret for both files, with the tuning and capo "not stated in
-  the estimate; the truth tuning is assumed" (e0191, e0193); `notes` onset F1 1.0 (e0192, e0194).
-- Not tried here: music21's ABC, MEI or Humdrum paths for tab; music21 has no Guitar Pro reader (not in its
-  converter list; not checked further).
+  the estimate; the truth tuning is assumed" (e0191, e0193); `notes` onset F1 1.0 (e0192, e0194). (Verifier: re-run
+  r0373 wrote the same MusicXML apart from the generated part id and the encoding date.)
+- Not tried here: music21's ABC, MEI or Humdrum paths for tab; music21 has no Guitar Pro reader (verifier:
+  `converter.Converter().subConvertersList()` in 10.5.2 registers abc, braille, capella, clercqTemperley, humdrum,
+  lilypond, mei, midi, musedata, musicxml, noteworthy, romantext, scala, text, tinynotation, vexflow and volpiano, and no
+  Guitar Pro format).
 
 ## OpenSheetMusicDisplay 2.3.0 (npm `opensheetmusicdisplay`)
 
@@ -320,7 +379,8 @@ Conventions used in this file:
   numbers of both voices; the 2-staff files are drawn as a braced notation + TAB system with both voices, stems split
   by voice in the notation staff, measure numbers from 0 (the files number the count-in bar 0). For S5capo2 the
   notation staff shows three sharps (the reference file's key) and no capo text is drawn anywhere. The music21 file
-  shows its title twice (work title and movement title) and "Music21" as the composer line.
+  shows its title twice (work title and movement title) and "Music21" as the composer line. (Verifier's re-run of
+  r0158, r0374: the same counts and SVG length, and a pixel-identical screenshot.)
 - **Input it needed:** MusicXML (also `.mxl`); a TAB staff is drawn when the part's clef is `TAB`; string and fret come
   from `<technical>`. The typings document `load(content)` as: "content is either the url of a file, or the root node
   of a MusicXML document, or the string content of a .xml/.mxl file, or a file blob." (`build/dist/src/
@@ -350,7 +410,9 @@ Conventions used in this file:
   | reference 2-staff MusicXML, S5capo2 | r0174 | 805 / 152 | 1 | MEI with the tab staff and tuning; the word "capo" appears only in the title |
   | MuseScore 3.2.3's MusicXML of S2n.gp5 (no TAB staff) | r0168 | 702 / 128 | 1 | MEI with 1 standard staffDef, no tab |
 
-  Peak RSS 175 to 218 MB per run. `getLog()` was empty in all runs. Screenshots (`samples/verovio/*.webp`, SVG inlined
+  Peak RSS 175 to 218 MB per run. `getLog()` was empty in all runs. (Verifier's re-runs of r0165 and r0174, r0375 and
+  r0376: the same page count, `tabGrp`, `tab.course` and staffDef counts, byte-identical MIDI files, and MEI exports
+  whose length differs by a few bytes because of the generated `xml:id`s.) Screenshots (`samples/verovio/*.webp`, SVG inlined
   in a page and captured in Chromium): the MEI tab renders as a six-line TAB staff with rhythm stems above (layer 1)
   and below (layer 2), a 4/4 sign and no "TAB" clef sign; the 2-staff MusicXML renders as a braced treble-8vb +
   TAB system with "TAB" clef, both voices, tab rhythm stems and the count-in bar's rests.
@@ -376,16 +438,21 @@ Conventions used in this file:
   lilypond tuxguitar` (all three packages and their dependencies: 25 s; about 100 MB of downloads; the three were
   installed together). License: not quoted here (Debian package; see the docs agent's survey).
 - **Run setting:** `QT_QPA_PLATFORM=offscreen` is required; without it: "qt.qpa.xcb: could not connect to display" and
-  "This application failed to start because no Qt platform plugin could be initialized." Command form:
+  "This application failed to start because no Qt platform plugin could be initialized." (no run id in the trial;
+  reproduced by the verifier, r0403, exit -6). Command form:
   `mscore3 -o <out.ext> <in>`, the output format chosen by the extension.
 - **Runs on S2n.gp5** (all --nolock, exit 0, peak RSS about 80 MB, 147 MB for PNG): MusicXML r0120 (0.47 s, 29,404
   bytes), compressed MusicXML .mxl r0121 (0.48 s, 2,360 bytes), MIDI r0122 (0.26 s, 689 bytes), PDF r0123 (0.53 s,
   33,121 bytes), PNG r0124 (0.91 s, `S2n-1.png`, 2480x3508), MuseScore .mscx r0125 (0.47 s). Log lines: "convert
   </home/user/gtr/inputs/S2n/S2n.gp5>...", "measures 13 bars.size 13", "... success!".
-- **What the import produced:** one standard-notation staff in treble clef (no "8" under it), no TAB staff
-  (`samples/musescore3/S2n_gp5_page1.webp`); the two Guitar Pro voices are kept as voices 1 and 2 (43 and 49 `<note>`
-  elements including rests). The .mscx stores `<fret>` and `<string>` on each note (270 `<fret>` lines; string numbers
-  counted from 0 = highest) and the staff's open strings 40 45 50 55 59 64, but the MusicXML export has no
+- **What the import produced:** a main score with one standard-notation staff in treble clef (no "8" under it) and no
+  TAB staff (`samples/musescore3/S2n_gp5_page1.webp`); the `-o` exports (MusicXML, PDF, PNG, MIDI) are of that main
+  score. The two Guitar Pro voices are kept as voices 1 and 2 (43 and 49 `<note>` elements including rests). The saved
+  .mscx (r0125) also holds a part (excerpt) named "Guitar" with a standard staff and a linked six-line TAB staff
+  (`<StaffType group="tablature">`, `tab6StrCommon`), so each of the 90 notes is in the file three times (verifier; the
+  earlier text said only "no TAB staff"; re-run r0378 wrote the same structure). The .mscx stores `<fret>` and
+  `<string>` on each note (270 `<fret>` lines = 90 notes x 3 staves; string numbers counted from 0 = highest) and the
+  staff's open strings 40 45 50 55 59 64, but the MusicXML export has no
   `<technical><string>/<fret>`, no `<staff-tuning>` and no TAB clef: gtr-eval `tab` refuses it with "MusicXML has no
   part with <string>/<fret> technical marks" (e0141). MIDI: 90 notes, 480 ticks per quarter, velocity 80, gtr-eval
   `notes` onset F1 1.0 (e0145).
@@ -396,6 +463,9 @@ Conventions used in this file:
   90/90 (e0378).
 - **Guitar Pro 7 (.gp):** alphaTab's `.gp` export of S2n is refused (r0178, exit 1): "unknown file suffix <gp>" /
   "Cannot read file ... unknown type".
+- (Verifier's re-runs: r0377, S2n.gp5 to MusicXML, the same file apart from the encoding date; r0379, the same `.gp`
+  refusal and exit 1; r0380, S5capo2 MIDI byte-identical to r0190's; r0381, the S5capo2 reference MusicXML round trip,
+  the same file apart from the encoding date.)
 - **MusicXML with a TAB staff in, MusicXML out:** the reference 2-staff file (r0179, 1.12 s): output keeps the TAB
   clef, six `<staff-tuning>` and 90 notes with string and fret: 90/90 same string and fret (e0367). The S5capo2
   reference file (r0180): `<capo>` is not in the output; the pitches are kept (90/90 matched) but string and fret
@@ -425,7 +495,7 @@ Conventions used in this file:
   staff position and fret text of every tab note head to the log; `scripts/lilypond_log_to_json.py` turns those lines
   into gtr-eval JSON (string = (5 - staff position) / 2 + 1).
 - **Runs** (`lilypond --png -dresolution=100 -o <out> <in>.ly`; all --nolock; each also writes a `.midi`):
-  S2n auto r0197 (4.76 s wall, 2.15 s CPU, 82 MB); S1 auto r0201 (5.67 s); S5dropd auto r0202 (4.9 s); S5capo2 auto
+  S2n auto r0197 (4.76 s wall, 2.25 s CPU = 2.15 s user + 0.10 s system, 82 MB); S1 auto r0201 (5.67 s); S5dropd auto r0202 (4.9 s); S5capo2 auto
   with raised tuning r0204 (4.95 s); S2n truth strings r0211 (3.41 s); R1a, R1b, R1c auto sequence r0207 (6.92 s),
   r0208 (4.71 s), r0209 (5.24 s). Log: "Success: compilation successfully completed".
 - **LilyPond's automatic string choice compared with the truth** (gtr-eval `tab`):
@@ -442,8 +512,13 @@ Conventions used in this file:
 
   A negative difference means LilyPond put the note on a higher-pitched string (lower string number) than the
   annotation. The synthesized S arrangements were written in the lowest positions, which is where every
-  LilyPond-chosen note landed too. For R1 the `--sequence` input drops a note when two notes of the same pitch start
-  within 50 ms (1 note in R1a, 3 in R1c). With `--strings truth` (S2n), 90/90 same string and fret (e0412).
+  LilyPond-chosen note landed too. Missing notes (corrected by the verifier; the earlier text put both on the
+  `--sequence` input): in R1c the `--sequence` input merged 3 notes into a note of the same pitch starting within
+  50 ms (B3 annotated on strings 2 and 3 in the same group, three times), so LilyPond got 145 notes; in R1a the input
+  had all 189 notes, and LilyPond left out one A#2 of an F2 + A#2 chord with "warning: No string for pitch #<Pitch ais,
+  > (given frets (4 1))" (r0207; the verifier's re-run r0383 gives the same warning and the same 188 positions). With
+  `--strings truth` (S2n), 90/90 same string and fret (e0412). (Verifier's re-run of r0197, r0382: the same 90 tab
+  positions, a byte-identical `.midi` and a pixel-identical PNG.)
 - **MIDI:** LilyPond's `.midi` holds both staves, so every note twice: S2n 180 notes, onset precision 0.5 and recall
   1.0 (e0400).
 - **Pictures:** `samples/lilypond/S2n_auto.webp` (treble-8 staff above a TAB staff, both voices, common-time sign)
@@ -496,9 +571,15 @@ Conventions used in this file:
   field. gtr-eval e0468 reports the S5capo2 capo as "stated in the estimate file"; its `processing` says "ASCII tab:
   capo 2 read from the line 'Title: S2 with a capo on fret 2'", i.e. gtr-eval's ASCII capo rule matched the song
   title, not a capo field (a gtr-eval behaviour, reported to the orchestrator).
-- **LilyPond export:** written for `\version "2.14.0"`; LilyPond 2.24.3 stops with "wrong type for argument 1.
-  Expecting string, found #<unspecified>" at line 101 (r0230, exit 1); after `convert-ly -e` it compiles (r0232,
+- **LilyPond export:** written for `\version "2.14.0"`; LilyPond 2.24.3 reports "wrong type for argument 1.
+  Expecting string, found #<unspecified>" at lines 86, 89, 96 and 101 of the file (each after "Guile signaled an error"
+  at line 36 or 59), still draws and writes a PNG, and ends with "fatal error: failed files" (r0230, exit 1; corrected by
+  the verifier from "stops with ... at line 101"); after `convert-ly -e` it compiles (r0232,
   7.22 s) into a notation + TAB score of both voices (`samples/tuxguitar/S2n_tuxguitar_ly_after_convert-ly.webp`).
+- (Verifier's re-run of r0222, r0384: all seven files written for S5capo2.gp5 and the model dump are byte-identical to
+  r0222's. Independently of gtr-eval, the verifier read S2n.tg.gp5, S5capo2.tg.gp4, S5dropd.tg.gp3 and
+  alphatabgp7.tg.gp5 with PyGuitarPro and its own tick-to-seconds code and matched them with mir_eval: 90/90 notes on
+  the truth's string and fret in each, capo 2 and Drop D tuning read; `scripts/verify-trials/independent_metrics.txt`.)
 
 ## PyGuitarPro 0.11 (PyPI `pyguitarpro`)
 
@@ -521,6 +602,8 @@ Conventions used in this file:
   and the moved note as string 4, fret 5, sounding pitch 56.
 - **Output format facts:** Guitar Pro binary; capo is `Track.offset`; tuning is `Track.strings[i].value` (MIDI);
   `Note.string` 1 = highest string; `Note.value` = fret.
+- (Verifier's re-run of r0236, r0385: the GP5, GP4, GP3 and edited GP5 files are byte-identical to r0236's; the
+  summary JSON differs only in timings and paths.)
 
 ## abcjs 6.7.2 (npm `abcjs`), guitar tablature
 
@@ -532,23 +615,32 @@ Conventions used in this file:
 - **Input made for it:** ABC has no syntax for string or fret, so abcjs chooses them. `scripts/truth_to_abc.py`
   (stdlib) writes the truth notes as ABC (`L:1/16`, `Q:1/4=112`, `K:` from the truth key, `V:1` melody and `V:2` bass
   joined on one staff with `%%score (1 2)`). The typings (`types/index.d.ts`) give the render option
-  `tablature: [{ instrument: 'guitar' | 'mandolin' | 'fiddle' | 'violin', capo, label, tuning, highestNote }]`; the
+  `tablature: [{ instrument: 'guitar' | 'mandolin' | 'fiddle' | 'violin' | '', capo, label, tuning, highestNote }]`; the
   source `src/tablatures/abc_tablatures.js` sets the guitar `defaultTuning: ['E,', 'A,', 'D', 'G', 'B', 'e']`, which in
   ABC pitch is E3 A3 D4 G4 B4 E5: one octave above the sounding open strings (written guitar pitch).
 - **Runs** (page `scripts/pages/abcjs.html`, `ABCJS.renderAbc(div, abc, {add_classes: true, staffwidth: 1150,
   tablature: [...]})`; read-back `scripts/abcjs_tab_readout.cjs` assigns each `text.abcjs-tab-number` in the SVG to
-  the nearest of the six lines of its tab staff (largest distance found 0.33 px) and orders notes by line and x; all
-  --nolock):
+  the nearest of the six lines of its tab staff (largest distance found 0.33 px) and orders notes by line and x; the
+  pseudo-onset it writes is (line x 100,000 + x in px) / 1,000 s. The page runs are all --nolock; the read-back JSON
+  files were written by separate runs of `abcjs_tab_readout.cjs` outside gtr-run (21:39 UTC, no run id; verifier):
   - ABC at sounding pitch, default tuning, r0239 (render 67 ms in the page): the notation is drawn an octave low
     (ledger lines below the staff) and 42 of the 90 tab positions are drawn as "?" (`samples/abcjs/S2n.webp`).
-  - ABC one octave up (`--written-octave`), default tuning, r0241 (render 141 ms; 850 ms page load to done): 90 fret
+  - ABC one octave up (`--written-octave`), default tuning, r0241 (render 141 ms in the page; 850 ms from the driver's
+    start to done): 90 fret
     numbers on 4 tab staves, no "?"; gtr-eval `tab --ignore-time` (matched by note order, since the read-back has no
     times): 88/90 matched, 88/88 on the same string and fret as the truth (e0638) (`samples/abcjs/S2n_written.webp`).
   - S5capo2 one octave up with `capo: 2`, r0244: 90 numbers; read back with capo 2: 88/90 matched, 88/88 same string
     and fret, capo agreeing (e0655). S5dropd one octave up with `tuning: ['D,', 'A,', 'D', 'G', 'B', 'e']`, same run:
     88/90 matched, 88/88 same string and fret (e0659).
-  - The 2 unmatched notes in each case were not investigated (the order-based matching depends on my pseudo-onsets
-    from x positions); UNVERIFIED whether abcjs or the read-back causes them.
+  - The 2 unmatched notes in each case (settled by the verifier; the earlier text left the cause UNVERIFIED): every
+    read-back holds the same 90 (string, fret, pitch) triples as the truth. On the last tab line the notes are about
+    43 px apart, so with the read-back's pseudo-onsets (x / 1,000 s) gtr-eval's default 50 ms chord window put two
+    successive beats into one group of 4 notes and the next two into a group of 3; ordered by pitch inside the
+    group, two notes fall out of the order-based matching. Scored again with `--chord-window 0.01`: 90/90 matched and
+    90/90 on the truth's string and fret for S2n (e1332), S5capo2 with capo 2 (e1333) and S5dropd (e1334). So the two
+    are an effect of the read-back's time scale with that window, not of abcjs's string choice.
+  - (Verifier's re-run of r0241, r0386, with a new read-back: the same 90 positions, a byte-identical read-back JSON
+    and a pixel-identical screenshot.)
 - **Constraint inputs:** `tablature[].tuning` (any tuning, as ABC pitches), `tablature[].capo`, `highestNote`; per-note
   string choice is not in ABC.
 - **Not tried:** abcjs's synth/playback (`ABCJS.synth`). Its editor helper `ABCJS.Editor` was tried, see "Editable
@@ -561,20 +653,23 @@ Conventions used in this file:
   Voellmy" with the MIT text ("Permission is hereby granted, free of charge, ..."), 2.7 MB. vexchords
   https://www.npmjs.com/package/vexchords 1.2.0 (published to npm 2019-03-31), `package.json` `"license": "MIT"`,
   1.3 MB. Both installed 2026-11-10 with the npm command at the top.
-- **Input:** the two shapes the S3/S4 truth tabs use, G (320003) and Bm (x24432). svguitar:
+- **Input:** two shapes from the truth tabs, G (320003, as in S3) and Bm (x24432, as in S4). svguitar:
   `new svguitar.SVGuitarChord(el).configure({strings: 6, frets: 4, position, tuning}).chord({fingers: [[string,
   fret]...], barres: [{fromString, toString, fret}]}).draw()`, string 1 = highest, fret 0 = open, 'x' = muted, frets
   relative to `position`. vexchords: `draw(el, {chord: [[string, fret]...], position, barres}, {width, height})`,
   string 1 = highest.
-- **Runs** (page `scripts/pages/chords.html`, all --nolock): svguitar r0253: both diagrams drawn (2 SVGs), correct
-  dots, the Bm barre with a "2fr" position label. vexchords from the package's `dist/vexchords.js`: "TypeError: A[e]
+- **Runs** (page `scripts/pages/chords.html`, all --nolock): svguitar r0253: both diagrams drawn (2 SVGs), with the
+  dots on the strings and frets given and the Bm barre with a "2fr" position label. vexchords from the package's `dist/vexchords.js`: "TypeError: A[e]
   is not a constructor" inside svg.js `addTo` (r0253 with svguitar on the page, r0254 with an element instead of a
   selector, r0255 alone on the page). Loading its ES-module source directly fails because `index.js` imports
   `'./chordbox'` without an extension (404, r0256). Bundled from its source with esbuild 0.25.12 (`npm install
   --no-save esbuild@0.25.12`, then `esbuild node_modules/vexchords/index.js --bundle --format=iife
   --global-name=vexchordsESM`, 178,249 bytes; page `scripts/pages/vexchords_esm.html`) it draws both diagrams
   (r0259). Screenshot of both libraries: `samples/chords/svguitar_vexchords_G_Bm.webp` (the bottom row, labelled
-  "ESM", is the esbuild bundle).
+  "ESM", is the esbuild bundle). The two 404s of r0256 are the two extensionless imports of `index.js`, `'./chordbox'`
+  and `'./builder'` (verifier). (Verifier's re-runs r0388 and r0389: the same `A[e] is not a constructor` error from
+  `dist/vexchords.js` with svguitar's 2 SVGs drawn, and the bundle drawing both diagrams with a pixel-identical
+  screenshot.)
 
 ## Tonal 6.5.1 (npm `tonal`)
 
@@ -589,6 +684,8 @@ Conventions used in this file:
   "C69#11" because the C-chord notes still sounding at 18.75 s were included by that selection rule (pitch classes C E G
   F# A D). Other calls recorded: `Chord.get("Bm").notes` ["B", "D", "F#"], `Key.majorKey("G").chords` ["Gmaj7", "Am7",
   "Bm7", "Cmaj7", "D7", "Em7", "F#m7b5"], `Note.transpose("E2", "3M")` "G#2" (`samples/chords/tonal_chordsheetjs_S3.json`).
+  (Verifier: the pitch-class sets recomputed from `S3.truth.json` with that rule match the nine rows; the C-chord notes
+  ring until 19.05 s. Re-run r0390 wrote the same JSON apart from the timings.)
 
 ## ChordSheetJS 18.0.0 (npm `chordsheetjs`)
 

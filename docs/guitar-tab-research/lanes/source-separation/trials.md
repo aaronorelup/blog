@@ -33,7 +33,8 @@ Scripts are in `scripts/`, small text samples in `samples/<tool>/`. Audio stays 
 - **Dead end:** without torchcodec the first run (r0051, exit 1, 2.91 s) stopped in `openunmix/data.py`
   `torchaudio.load(path)`: "ImportError: TorchCodec is required for load_with_torchcodec. Please install torchcodec
   to use this function." (torchaudio 2.11 routes `load` and `save` through torchcodec). Installing torchcodec fixed
-  it; torchcodec used the box's system FFmpeg 6.1.1 libraries. No other change was needed.
+  it (the box has FFmpeg 6.1.1 installed system-wide; which FFmpeg libraries torchcodec loaded was not checked).
+  No other change was needed.
 - **Weights downloaded** (torch hub cache, fetched on first use from Zenodo): `umxhq` = 4 files of 35,637,796 bytes
   (`bass-8d85a5bd.pth`, `drums-9619578f.pth`, `other-b52fbbf7.pth`, `vocals-b62c91ce.pth`) from
   `https://zenodo.org/records/3370489/files/...`; `umxl` = 4 files of 113,101,348 bytes (`bass-2ca1ce51.pth`,

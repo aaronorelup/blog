@@ -18,8 +18,9 @@ Covers: the QM Vamp plugins (not run here) and a GUI check of Chordino / NNLS Ch
    64-bit Windows and are using 64-bit Vamp host applications") and run it; accept the Queen Mary and Matthias Mauch
    plugin libraries.
 3. Open `S3.wav` in Sonic Visualiser. From the Transform menu (menu name from memory, UNVERIFIED), run in turn:
-   "Key Detector" (Queen Mary), "Bar and Beat Tracker" (Queen Mary), "Tempo and Beat Tracker" (Queen Mary), and
-   "Chordino" (Chord Estimate output), each with default settings.
+   the Queen Mary key detector, bar-and-beat tracker and tempo-and-beat tracker, and Chordino (its chord estimate
+   output), each with default settings (the exact plugin names in the menu were not checked, UNVERIFIED; the QM README
+   lists "Beat tracker and tempo estimator" and "Key estimator and tonal change detector", per survey.md).
 4. For each result layer, export it (File menu, export annotation layer; UNVERIFIED wording) as CSV.
 5. Repeat for `S4.wav`, `S7flat30.wav`, `R1a.wav`, `R1b.wav`, `R2.wav`.
 6. Send back: the CSV files named `<clip>_<plugin>.csv`, and one screenshot of S3 with all layers visible. Time: about
@@ -54,8 +55,8 @@ ready: `docs/guitar-tab-research/lanes/chords-beats-key/scripts/btc_run.py`.
    README; if poetry rejects it, `poetry run skey ...` is the usual form, UNVERIFIED). Use the GPU with
    `--device cuda` if PyTorch with CUDA is installed.
 3. Clips: S3, S4, S2n, S5capo2, S5dropd, S7flat30, R1a, R1b, R1c, R2.
-4. Send back: the printed key for each clip (or the `prediction/predictions.csv` the README says it writes for a
-   folder) and how long each run took.
+4. Send back: the printed key for each clip (or the `prediction/predictions.csv` it writes when given a folder, per
+   `skey/key_detection.py` as read in survey.md) and how long each run took.
 5. License note: the README says "You may use the model weights only for non-commercial research purposes" (quoted in
    survey.md).
 

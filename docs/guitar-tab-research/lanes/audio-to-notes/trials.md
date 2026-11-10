@@ -32,20 +32,21 @@ How to read the numbers:
 
 | tool (version) | ran here | runs | output (fields, units) |
 |---|---|---|---|
-| Spotify Basic Pitch (0.4.0) | yes, TFLite and ONNX backends, Python API and CLI | r0234, r0243, r0249, r0264, r0319 | MIDI (one track, pitch bends), note-events CSV `start_time_s,end_time_s,pitch_midi,velocity,pitch_bend...`, `.npz` posteriors |
+| Spotify Basic Pitch (0.4.0) | yes, TFLite and ONNX backends, Python API and CLI | r0234, r0243, r0249, r0264, r0319, r0349 | MIDI (one track, pitch bends), note-events CSV `start_time_s,end_time_s,pitch_midi,velocity,pitch_bend...`, `.npz` posteriors |
 | SwiftF0 (0.3.0) | yes | r0321, r0131 | f0 every 16 ms (Hz, confidence); notes from `segment_notes` (start, end, fitted Hz) |
 | librosa `pyin` (librosa 1.0.0) | yes | r0321 | f0 every 23.2 ms (Hz or NaN), voiced flag, voiced probability; no notes |
 | FCPE (torchfcpe 0.0.4) | yes | r0321 | f0 every 10 ms (Hz, 0 = unvoiced); no confidence, no notes |
 | PESTO (pesto-pitch 2.0.1) | yes | r0321 | f0 every 10 ms (Hz), voicing confidence; no notes |
 | torchcrepe (0.0.24), tiny and full | yes | r0321, r0287 | f0 every 10 ms (Hz), periodicity; no notes |
 | aubio (0.4.9 CLI) | yes | r0130 | `aubiopitch`: time, Hz per 5.8 ms hop; `aubionotes`: MIDI pitch, onset, offset |
-| Essentia (2.1b6.dev1389): Melodia + PitchContourSegmentation, PitchYinProbabilistic, PitchCREPE tiny/full | yes | r0321, r0341 | f0 per 2.9 ms (Melodia) / 5.8 ms / 10 ms; notes (onset, duration, MIDI) from PitchContourSegmentation |
+| Essentia (2.1b6.dev1389): Melodia + PitchContourSegmentation, PitchYinProbabilistic, PitchCREPE tiny/full, MultiPitchKlapuri, MultiPitchMelodia | yes | r0321, r0341, r0345, r0346 | f0 per 2.9 ms (Melodia) / 5.8 ms / 10 ms; notes (onset, duration, MIDI) from PitchContourSegmentation; multi-pitch lists per 2.9 ms frame |
 | Transkun (2.0.1), piano-trained | yes | r0216 | MIDI (program 0, velocities, CC64 pedal) |
+| ByteDance piano transcription (0.0.6), piano-trained | yes, S2n and R1c only | r0401 | MIDI (program 0, velocities, CC64 pedal) |
 
 Not run here (reasons and evidence under "Tools not run here", steps in `for-aaron.md`): CREPE (TensorFlow
 package), RMVPE, MELODIA Vamp plugin, pYIN Vamp plugin, Timbre-Trap, MT3, YourMT3+, MR-MT3, Onsets and Frames,
-hFT-Transformer, Omnizart, NeuralNote, Sheet Sage, MuScriptor, CREPE Notes and the other survey additions listed
-there.
+hFT-Transformer, Omnizart, NeuralNote, Sheet Sage, MuScriptor, PENN, CREPE Notes and the other survey additions
+listed there.
 
 ## The monophonic f0 trackers: shared facts
 
@@ -334,6 +335,38 @@ file, pitch bends ignored by gtr-eval.) Pictures:
 `samples/transkun/S2n-pianoroll.png`, `samples/transkun/R1c-pianoroll.png`. MIDI for other lanes:
 `/home/user/gtr/lanes/audio-to-notes/out/transkun/<clip>.mid`.
 
+## ByteDance piano transcription (`piano_transcription_inference` 0.0.6, piano-trained, run on guitar)
+
+- What: the inference package for ByteDance's high-resolution piano transcription model (notes with onsets, offsets,
+  velocities, plus sustain pedal). **The weights were trained on piano**; here they were run on guitar. PyPI
+  `piano-transcription-inference` 0.0.6 (uploaded 2025-01-26, MIT classifier). Weights:
+  `CRNN_note_F1=0.9677_pedal_F1=0.9186.pth` from Zenodo record 4034264 (the URL is in the package's
+  `inference.py`), 171,966,578 bytes, sha256 c3fa9730...07876141, downloaded with curl (the package itself would call
+  `wget`); the docs lane quotes the weights' license.
+- Install: in the same venv as Transkun (Python 3.11, torch 2.15.0+cpu, librosa 0.11.0, torchlibrosa 0.1.0; freeze
+  `samples/bytedance/uv-pip-freeze-venv-piano-py3.11.txt`). Package directory 148 KB.
+- Dead end: the package's own `load_audio()` fails with librosa 0.11: "AttributeError: No librosa.core attribute
+  audio" (it calls `librosa.core.audio.util.buf_to_float`). That stopped the first attempt (inside run r0216, 34.5
+  s, exit 1). `scripts/run_piano.py` now reads the audio with `librosa.load(path, sr=16000, mono=True)` and passes
+  it to `PianoTranscription(model_type="Note_pedal", device="cpu", checkpoint_path=...).transcribe(audio, out.mid)`.
+- Run: run **r0401**, `--nolock` (both CPU slots had been held by other lanes' long jobs for over 40 minutes, so this
+  ran unpinned with torch set to 2 threads), S2n and R1c only: wall 159.3 s, CPU 151.2 s, peak RSS 998.8 MB; model
+  setup 8.6 s; S2n 75.8 s, R1c 73.7 s.
+- Output: MIDI (384 ticks per quarter, tempo 120), one instrument, program 0, note-on/off with velocity, sustain
+  pedal as CC64 events (18 in S2n.mid; the package also reports 9 pedal events for S2n and 0 for R1c), no pitch
+  bends. First S2n notes (start, end, pitch, velocity): `2.154-2.669 55 96`, `2.154-2.680 67 91`,
+  `2.154-2.703 43 82`, `2.682-3.229 50 94`, `2.682-3.780 55 93`, `2.685-3.228 67 87`, `3.215-3.764 62 93`,
+  `3.216-3.767 43 77`, `3.751-4.296 50 98`, `4.288-4.833 48 93`. 87 notes on each clip.
+- Constraint inputs: `model_type`, `checkpoint_path`, `device`; none for pitch range, tuning or instrument.
+
+| clip | truth notes | est. notes | onset-only P | R | F1 | onset+offset F1 | median onset diff of matched (s) | eval id |
+|---|---|---|---|---|---|---|---|---|
+| S2n | 90 | 87 | 0.908 | 0.878 | 0.893 | 0.836 | 0.002 | e1393 |
+| R1c | 148 | 87 | 0.724 | 0.426 | 0.536 | 0.213 | -0.019 | e1392 |
+
+Recall by voice on S2n: bass 48/48, melody 31/42 (e1393). Picture: `samples/bytedance/S2n-pianoroll.png`. MIDI:
+`/home/user/gtr/lanes/audio-to-notes/out/bytedance/<clip>.mid`.
+
 ## Spotify Basic Pitch 0.4.0
 
 - What: Spotify's small polyphonic note transcriber (model "ICASSP 2022", instrument-agnostic), audio in, MIDI / note
@@ -356,8 +389,8 @@ file, pitch bends ignored by gtr-eval.) Pictures:
   deprecation warning that pkg_resources "is slated for removal as early as 2025-11-30". (2) uv resolved numpy 2.2.6,
   and tflite-runtime 2.14.0 then fails to load the model ("AttributeError: _ARRAY_API not found", then "ValueError:
   File .../nmp.tflite cannot be loaded into either TensorFlow, CoreML, TFLite or ONNX"); `numpy<2` (1.26.4) fixes
-  it. The CLI runs r0032, r0033, r0035, r0037, r0038, r0039, r0040 and r0065 (exit code 1, about 3 s each) are
-  these failures. The TensorFlow backend (Python >= 3.11) was not installed: the `tensorflow` 2.15.0 cp311 Linux
+  it. The CLI runs r0032, r0033, r0035, r0037, r0038, r0039, r0040 and r0065 (exit code 1, about 3 s each, from
+  `scripts/run_basic_pitch_cli.sh`) are these failures. The TensorFlow backend (Python >= 3.11) was not installed: the `tensorflow` 2.15.0 cp311 Linux
   wheel is 475,258,658 bytes (PyPI), over the 200 MB per-install limit of the shared-disk notice. A resolution-only
   check (`uv pip install --dry-run "basic-pitch==0.4.0"` into empty venvs, Linux x86_64, uv 0.11.32): Python 3.11
   "Would install 65 packages" including `tensorflow==2.14.0`; Python 3.12 and 3.13: "No solution found when
@@ -440,6 +473,11 @@ Pictures: `samples/basic-pitch/S2n-pianoroll.png`, `S4-pianoroll.png`, `R1c-pian
 `/home/user/gtr/lanes/audio-to-notes/out/basic-pitch/<clip>.mid` (links to `tflite-default/<clip>.mid`; also
 `tflite-guitar-range/`, `onnx-default/`). R3b and R3c (the real fingerstyle videos added to the inputs at 21:29 UTC,
 no truth) were run the same way in run **r0264** (`--nolock`): 129 and 87 notes, in `tflite-default-R3bc/`.
+
+A constraint re-run for a Drop D guitar: S5dropd with `minimum_frequency=73.4` (D2) and `maximum_frequency=1319.0`,
+run **r0349** (`--nolock`, `scripts/run_basic_pitch_py.py`; the venv was rebuilt from the uv cache for this run, same
+package versions): 129 notes, onset-only P 0.698, R 1.000, F1 0.822, bass 48/48 and melody 42/42 matched (e1335);
+with the 82.4 Hz floor the bass had 44/48 (e0544), with no limits 48/48 (e0510).
 
 ### Tuning-correction re-run test (S7flat30)
 
@@ -613,6 +651,38 @@ CREPE contours were passed with every frame voiced (neither tool marks unvoiced 
 
 Outputs: `/home/user/gtr/lanes/audio-to-notes/out/contour-segmentation/<tool>/<clip>.notes.csv`.
 
+### Essentia multi-pitch: `MultiPitchKlapuri` and `MultiPitchMelodia`, and a frame-level comparison
+
+- Runs: `EqualLoudness` -> `MultiPitchKlapuri()` or `MultiPitchMelodia()` with defaults (frameSize 2048, hopSize 128
+  = 2.9 ms; Klapuri's defaults include minFrequency 80, maxFrequency 1760, numberHarmonics 10), on S2n, S2s, S3,
+  S4guitar, R1a, R1c (`.mono.wav`; the S4 guitar stem read as mono). Run **r0345** for Klapuri (wall 51.38 s, CPU
+  39.4 s, peak RSS 247.5 MB; per clip 6.8 to 12.0 s) and **r0346** for MultiPitchMelodia (wall 11.42 s, CPU 8.9 s,
+  peak RSS 254.7 MB; per clip 1.1 to 2.9 s), both `--nolock` (single-threaded C++; moved out of the queued batch
+  of PENN and ByteDance). `scripts/run_essentia.py`.
+- Output: one list of frequencies (Hz) per 128-sample frame, no confidences, no notes; written here as JSON
+  `{"times": [...], "freqs_hz": [[...], ...]}`. Klapuri returned at most 2 pitches in any frame of these clips and
+  a pitch in every frame, also in the silent count-in (S3 at 0.000 s: 138.592 Hz). MultiPitchMelodia writes `[0.0]`
+  for frames without a pitch and returned up to 4 pitches per frame (S3).
+- Scoring: gtr-eval has no multi-pitch subcommand, so this lane computed `mir_eval.multipitch.evaluate` itself
+  (`scripts/score_multipitch.py`, run with the gtr-eval venv's Python, mir_eval 0.8.2): reference = every truth
+  note except drums (S4guitar: `chord` voice only) as frames on a 10 ms grid; estimate frames taken at the nearest
+  time; mir_eval's default 50-cent tolerance. A self-check with the truth notes CSV as the estimate gives Precision
+  = Recall = Accuracy = 1.0 on S2n. For comparison the note lists of Basic Pitch and Transkun were put on the same
+  grid (a note sounds from onset to offset). Results (`samples/multipitch_scores.json`):
+
+| clip | Klapuri P / R / Acc | MultiPitchMelodia P / R / Acc | Basic Pitch notes P / R / Acc | Transkun notes P / R / Acc |
+|---|---|---|---|---|
+| S2n | 0.722 / 0.803 / 0.613 | 0.942 / 0.481 / 0.467 | 0.688 / 0.969 / 0.673 | 0.908 / 0.838 / 0.773 |
+| S2s | 0.637 / 0.724 / 0.513 | 0.785 / 0.453 / 0.403 | 0.437 / 0.968 / 0.431 | not run |
+| S3 | 0.703 / 0.311 / 0.275 | 0.877 / 0.216 / 0.210 | 0.813 / 0.865 / 0.721 | 0.808 / 0.549 / 0.486 |
+| S4guitar | 0.804 / 0.377 / 0.345 | 0.924 / 0.173 / 0.170 | 0.847 / 0.867 / 0.749 | not run |
+| R1a | 0.590 / 0.406 / 0.317 | 0.593 / 0.176 / 0.157 | 0.817 / 0.803 / 0.681 | 0.886 / 0.481 / 0.453 |
+| R1c | 0.516 / 0.403 / 0.293 | 0.761 / 0.300 / 0.274 | 0.829 / 0.850 / 0.724 | 0.825 / 0.721 / 0.625 |
+
+ByteDance's notes on the same grid (run r0401, two clips only): S2n P 0.806 / R 0.860 / Acc 0.713, R1c P 0.789 /
+R 0.528 / Acc 0.462. (P = mir_eval multipitch Precision, R = Recall, Acc = Accuracy, all over 10 ms frames; these
+numbers have no gtr-eval id because gtr-eval does not compute them.)
+
 ## Tools not run here
 
 Each entry: what it is, why it did not run on this box, with the evidence. Steps for Aaron are in `for-aaron.md`.
@@ -720,7 +790,15 @@ Context for several entries: from about 21:05 UTC the orchestrator's disk notice
 
 ### From the docs lane's survey (`survey.md`, "Tool list"), not run
 
-- PENN 1.0.0: queued, see its section (if present) below.
+- PENN 1.0.0 (FCNF0++, `interactiveaudiolab/penn`) - NOT RUN HERE: installed (`uv pip install torch torchaudio penn
+  soundfile` -> penn 1.0.0, torbi 1.4.1, torchutil 0.1.2, yapecs 0.5.0, torch 2.15.0+cpu; freeze in `samples/penn/`)
+  and its checkpoint downloaded (`fcnf0++.pt`, 107,245,425 bytes, Hugging Face `maxrmorrison/fcnf0-plus-plus`, card
+  license `mit`, sha256 28d89add...53d51d1b960), but `import penn` fails in run **r0399** (exit 1): its Viterbi
+  dependency torbi 1.4.1 ships compiled libraries only for torch 2.6 to 2.11 (`_C.pt26cpu` ... `_C.pt211cpu` in the
+  wheel) and stops with "FileNotFoundError: Could not find any lib files matching version pt215cpu". Running it
+  would need a second torch version (2.11) in its own venv, which the disk notice ruled out. Its run was first
+  queued for a CPU slot in a batch with the ByteDance model; that queued job waited about 48 minutes without
+  getting a slot and was cancelled (no ledger line, as it never started).
 - MuScriptor 0.4.0 (Kyutai and Mirelo): the Hugging Face model `MuScriptor/muscriptor-small` is gated (`gated:
   auto`, license `cc-by-nc-4.0` on its card) and its `model.safetensors` is 411,888,600 bytes; no token here, and
   over the 200 MB limit. (`DamRsn/muscriptor-gguf` is not gated but needs the C++ `muscriptor.cpp`.)

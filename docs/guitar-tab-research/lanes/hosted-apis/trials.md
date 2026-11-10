@@ -1,6 +1,8 @@
 # Lane 10, hosted-apis: trials
 
 Agent: try-hosted-apis. Date: 2026-11-10 (from `date -u +%F`). Box: 4 vCPU Intel Xeon 2.10 GHz, 15 GiB RAM, no GPU.
+Checked, corrected and partly re-run by verify-trials-hosted-apis the same day: the corrections are listed in the
+verification log at the end (C1 to C10), and the verifier's own runs are marked as such where they appear.
 
 What this file is: every hosted service this lane could call from the box, what went in, what came back, how long
 it took, what it cost. Facts only; numbers against ground truth carry their gtr-eval id (scorer gtr-eval 0.11.1,
@@ -15,9 +17,10 @@ Conventions for the whole file:
   including upload and queueing. The ledger's `wall_s` for the same run is longer because it also counts Python
   start-up, reading the key, the gateway model-list fetch and writing the files: by 0.99 to 2.78 s for the gateway,
   xAI and Space calls, and by 7.5 to 45.1 s for the four ElevenLabs runs, whose scripts also read the credit counter
-  before and after the call (r0064 14.45 s, r0108 31.05 s, r0189 37.85 s, r0194 51.83 s in the ledger). Local CPU
-  time of these runs was 0.2 to 1.1 s each (4.3 s for r0141, whose client decoded four WAV files) and says nothing
-  about the service. Four stem-scoring runs went through gtr-run: r0089 in a CPU slot (2 cores), and r0173, r0192
+  before and after the call (r0064 14.45 s, r0108 31.05 s, r0189 37.85 s, r0194 51.83 s in the ledger). The wall
+  figures given in running text for r0013, r0016, r0126, r0323 and the scoring runs (r0089 and the verifier's) are
+  the ledger's own, since those runs have no script-side timing. Local CPU time of these runs was 0.2 to 1.1 s
+  each (4.3 s for r0141, whose client decoded four WAV files) and says nothing about the service. Four stem-scoring runs went through gtr-run: r0089 in a CPU slot (2 cores), and r0173, r0192
   and r0217 with `--nolock` and `OMP_NUM_THREADS=1` (ledger: `locked` false, no core list; 4.6 to 18.6 s of CPU
   each), so those three wall-clock figures are not 2-core figures. (The trial agent wrote that this followed a wait
   for a slot behind other lanes' jobs; a wait that ends in a `--nolock` run leaves no ledger line, so that part is
@@ -28,16 +31,18 @@ Conventions for the whole file:
   these belong to services in this lane: `GEMINI_API_KEY`, `VERCEL_AI_GATEWAY_API_KEY`, `XAI_API_KEY`,
   `DEEPSEEK_API_KEY`, `ELEVENLABS_API_KEY`. No account was created anywhere.
 - **Uploads.** Only synthesized clips (S*) and freely licensed clips were sent to any service: R2 (CC BY 4.0), R3a
-  (CC BY-SA 4.0) and, in the last three calls, R1c (GuitarSet, CC BY 4.0), plus files derived from them.
-- **Money.** Each paid call's cost is computed from the usage the response reports and the published price, and
-  appended to `samples/spend.jsonl` (copy of `/home/user/gtr/lanes/hosted-apis/out/spend.jsonl`). A call is refused
+  (CC BY-SA 4.0) and, in the last three calls, R1c (GuitarSet, CC BY 4.0), plus files derived from them. The
+  verifier also sent 1 fps frames of R3b (CC0 1.0) and R3c (CC BY 3.0), per the inputs manifest.
+- **Money.** Each paid call's cost is computed from the usage the response reports and the published price
+  (ElevenLabs: the credits the account counter measured times an assumed price per credit, UNVERIFIED, see that
+  section), and appended to `samples/spend.jsonl` (copy of `/home/user/gtr/lanes/hosted-apis/out/spend.jsonl`). A call is refused
   by the script when spent + the call's worst case would pass 2 USD for that service or 10 USD in total
   (`scripts/llm_common.py`). Totals are at the end of this file.
 - **Inputs used:** the shared set in `/home/user/gtr/inputs/` (manifest `INPUTS.md`, READY 2026-11-10T20:28:01Z).
   R3b and R3c were not in the shared set when the video trials ran (r0077 to r0129, 21:04 to 21:13 UTC): the
   manifest says the `inputs-video` agent added them between 20:52 and 21:35 UTC, and their files are dated 21:21 to
-  21:27 UTC. The video trials here used R3a only; R3b and R3c (no capo, per the manifest) were not sent to any
-  service.
+  21:27 UTC (marker `READY-VIDEO` 21:29:15 UTC). The trial agent's video trials used R3a only; the verifier later
+  sent frames of R3b and R3c (no capo, per the manifest) to MiMo (trial (c), r0360 and r0391).
 - Scripts are in `scripts/`, small outputs in `samples/<tool>/`. Audio and video outputs are listed at the end.
 
 ## Google Gemini API, direct (generativelanguage.googleapis.com), models `gemini-4-carbon` and `gemini-3.5-flash-lite`
@@ -47,7 +52,8 @@ Conventions for the whole file:
   with header `Api-Revision: 2026-05-20` (the form the docs show on 2026-11-10), and the legacy
   `models/<id>:generateContent` / `:countTokens` endpoints for the probes.
 - Install: `uv venv --python 3.11 /home/user/gtr/lanes/hosted-apis/venv-apis` then
-  `uv pip install requests gradio_client soundfile numpy yt-dlp` (111 MB on disk; freeze in
+  `uv pip install requests gradio_client soundfile numpy yt-dlp` (111 MB on disk per the trial agent, 102 MB when
+  the verifier rebuilt it from the freeze file; freeze in
   `samples/venv-apis.freeze.txt`; the venv was deleted after the trials for disk space and is rebuilt from that file
   with `uv pip install -r`). No model weights are downloaded by anything in this lane.
 - Models listed by the key (`GET v1beta/models`, run 2026-11-10 20:52 UTC): 62 models, saved as
@@ -151,9 +157,9 @@ Opus, ALAW, MULAW and WebM, "Maximum request size is 20 MB total" for inline dat
 | run | model (provider) | clip | wall s | prompt / completion (reasoning) tokens | cost USD (response's `usage.cost`) | answer |
 |---|---|---|---|---|---|---|
 | r0028 | mimo-v2.6-flash (xiaomi) | S3 | 33.0 | 331 / 993 (637) | 0.00032438 | `0.00-2.44 G, 2.44-4.86 Em, 4.86-7.28 C, 7.28-9.70 D`, the same four again to 19.38, then `G` 19.38-21.80 and `G` 21.80-24.00; 99 BPM; G major; 4/4 |
-| r0052 | mimo-v2.6-flash (xiaomi) | S4 | 55.4 | 423 / 2216 (1559) | 0.0006797 | `0.00-4.00 N`, then 2 s chords `D A Bm G D A G A Bm G D A G A D A G A`, `40.00-44.50 D`; 120 BPM; D major; 4/4 |
+| r0052 | mimo-v2.6-flash (xiaomi) | S4 | 55.4 | 423 / 2216 (1559) | 0.0006797 | `0.00-4.00 N`, then 2 s chords `D A Bm G D A G A Bm G D A G A D A G A`, `40.00-44.50 D` (the file is 38.741 s); 120 BPM; D major; 4/4 |
 | r0024 | muse-spark-open (baseten) | S3 | 6.72 | 616 / 951 (885) | 0.00467095 | chords `[0.0-0.0 N]` only; 107 BPM; D minor; 4/4 |
-| r0034 | muse-spark-open (fireworks only) | S3 | 0.85 | none | none | HTTP 400 from the provider: `Extra inputs are not permitted, field: 'messages[0].content.list[...][0].input_audio'` |
+| r0034 | muse-spark-open (fireworks only) | S3 | 0.85 | none | none | HTTP 400 from the provider, the second of "2 request validation errors": `Extra inputs are not permitted, field: 'messages[0].content.list[...][0].input_audio'` |
 | r0036 | muse-spark-open (togetherai only) | S3 | 2.16 | 615 / 539 (0) | 0.0029363 | `0.00-2.10 N`, then `Eb Bb Cm Ab` repeated in 2.1-2.25 s segments up to 37.15 s (the file is 24.0 s); 110 BPM; Eb major |
 | r0041 | muse-spark-open (togetherai only) | S4 | 2.71 | 800 / 61 (0) | 0.00113605 | every field is the string `"TOO_MANY_TOKENS"`; not scored |
 
@@ -229,6 +235,23 @@ to 14.65 s, the medium shot again from 14.65 s; nylon-string classical guitar; n
 set. MiMo's evidence text for "no capo": "The front view (e.g., t=7.0s) clearly shows the nut and upper fretboard with
 no capo clamped on the neck."
 
+Run by the verifier: the same frames question to MiMo for R3b and R3c, the two video clips that joined the shared
+set after the trial ran (frames made with the same `ffmpeg -vf fps=1 -q:v 3` command, 18 per clip at the clips'
+1920x1080, kept under `/home/user/gtr/lanes/hosted-apis/verify/frames/`; outputs in
+`samples/verify-trials/vercel-gateway/verify_R3b_frames_mimo-v2.6-flash/` and `..._R3c_...`; script
+`scripts/verify-trials/batch_frames_r3bc.sh`). Neither clip has a truth file; the manifest's descriptions say "No
+capo." for both, for R3b that the fretting hand is "in the low positions in the frames looked at (one every 3 s)",
+with "frets 2-4 under the fingers" on the frame at 9 s of the excerpt (209 s of the original), and for R3c that "the
+hand is near the nut" on the frame at 10 s of the excerpt (232 s of the original).
+
+| run | clip (frames, bytes) | wall s | tokens prompt / completion (reasoning) | cost USD | capo | tuning | fretting hand spans (lowest-highest fret) |
+|---|---|---|---|---|---|---|---|
+| r0360 | R3b (18, 1,565,337) | 47.5 | 37224 / 8332 (7813) | 0.00754432 | `no` | `cannot_tell` | 0-3 s: 7-10; 4-11 s: 1-3; 12 s: `null` ("in motion (blurred)"); 13-16 s: 7-10; 17 s: 5-7 |
+| r0391 | R3c (18, 1,735,015) | 123.8 | 37224 / 4446 (4010) | 0.00645624 | `no` | `cannot_tell` | 0-7 s: 1-3; 7-10 s: 5-8; 10-14 s: 1-3; 14-17 s: 5-8; 17 s: 2-4 |
+
+Each answer departs from the requested schema in one field although `response_format` carried the schema: R3b gives `visible` as
+the string `"yes"` (the schema says boolean), and R3c puts the tuning under the key `value` instead of `tuning`.
+
 ### Trial (d): S5capo2 audio only, "is a capo used?" (`gtr-eval tuning --est-capo`, `gtr-eval key`)
 
 | run | model (provider) | wall s | tokens | cost USD | answer | capo vs truth 2 | key vs truth A major |
@@ -284,8 +307,8 @@ capo), `tuning_name`, `offset_cents` from A4 = 440 Hz, `capo_fret`; scored with 
   the audio file."
 - Call: `scripts/elevenlabs_call.py stems /home/user/gtr/inputs/S4/S4.wav <out> --variation six_stems_v1
   --format mp3_44100_192` (r0064). Input: `S4.wav`, WAV 16-bit 44.1 kHz stereo, 6,834,024 bytes, 38.741 s.
-- Result: HTTP 200, request round trip 6.98 s (the run's wall of 14.45 s also holds two account reads and a 3 s wait). A ZIP of
-  5,586,876 bytes with six files, `drums.mp3`, `vocals.mp3`, `piano.mp3`, `guitar.mp3`, `bass.mp3`, `other.mp3`,
+- Result: HTTP 200, request round trip 6.98 s (the run's wall of 14.45 s also holds two account reads and a 3 s
+  wait). A ZIP of 5,586,876 bytes with six files, `drums.mp3`, `vocals.mp3`, `piano.mp3`, `guitar.mp3`, `bass.mp3`, `other.mp3`,
   each 931,048 bytes, MP3 192 kb/s, 44.1 kHz, 2 channels, 38.791833 s (`samples/elevenlabs/S4_six_stems/record.json`).
 - Re-run by the verifier (r0315, 21:51 UTC, the r0064 command with new output folders; record in
   `samples/verify-trials/elevenlabs/verify_S4_six_stems/`): HTTP 200, request round trip 6.87 s, 1,065 credits, a ZIP
@@ -322,6 +345,13 @@ capo), `tuning_name`, `offset_cents` from A4 = 440 Hz, `capo_fret`; scored with 
 | guitar | guitar.mp3 | 13.70 | 13.89 | 20.83 | 14.91 |
 | lead | other.mp3 | 15.76 | 16.60 | 27.55 | 16.97 |
 
+Re-scored by the verifier: the delay-trimmed WAVs remade with the recipe at the end of this file have the same
+SHA-256 as the ones scored in e0057, e0391 and e0426, and `gtr-eval stems` on them with the same mappings gave
+identical metrics and counts (e1315, e1316, e1317; scoring runs r0339, r0340, r0342, `--nolock`,
+`OMP_NUM_THREADS=1`). SI-SDR written out separately in numpy (`scripts/verify-trials/si_sdr_check.py`): S4 guitar
+13.6999, S4 lead (other.mp3) 15.7550, S6taps guitar 26.7740, R2 vocals 15.4436 dB, the same as gtr-eval's to the
+second decimal.
+
 ### Two more `six_stems_v1` calls: S6taps (guitar plus percussion taps) and R2 (a real band song)
 
 | run | input | request round trip s | credits (counter difference) | counted USD | ZIP bytes | stems (each MP3 192 kb/s 44.1 kHz stereo) |
@@ -343,8 +373,9 @@ script polled the counter every 5 s until it changed (after the r0064 delay).
   piano -107.44 dBFS (mix -10.42). After the trim, the RMS of (mix - sum of the six stems), mono, over the 36.000 s
   of the input, is -38.69 dBFS (S4: -45.59; S6taps: -47.44). (The trial agent's figure here was -15.40 dBFS; the
   verifier recomputed it from the stems remade with the recipe at the end of this file, byte-identical to the ones
-  scored, with `scripts/verify-trials/check_stem_levels.py`, and got -38.69; before the trim it is -6.86.) gtr-eval `stems` (e0426, run r0217), `vocals_derived`=vocals.mp3 and `instrumental`= the sum of the
-  other five stems (`ffmpeg amix=inputs=5:normalize=0`): vocals SI-SDR 15.44, SDR 15.67, SIR 22.23, SAR 16.77 dB;
+  scored, with `scripts/verify-trials/check_stem_levels.py`, and got -38.69; before the trim it is -6.86.) gtr-eval
+  `stems` (e0426, run r0217), `vocals_derived`=vocals.mp3 and `instrumental`= the sum of the other five stems
+  (`ffmpeg amix=inputs=5:normalize=0`): vocals SI-SDR 15.44, SDR 15.67, SIR 22.23, SAR 16.77 dB;
   instrumental SI-SDR 13.59, SDR 14.05, SIR 25.42, SAR 14.39 dB.
 
 - Output format facts, for handoffs: a ZIP; one MP3 per stem named `<stem>.mp3` (six names fixed by
@@ -372,8 +403,8 @@ script polled the counter every 5 s until it changed (after the r0064 delay).
   no `audio_event` entries), `transcription_id`, `audio_duration_secs` (36.0). Text: "'Cause I've been trying to find
   out if an angel bends or breaks. Or shatters like a stone. I want to destroy something beautiful for you. I want to
   destroy for you." First words: 'Cause 0.82-1.48 s, I've 1.62-1.80, been 1.94-2.16, trying 2.32-2.68.
-- Re-run by the verifier (r0318, 21:51 UTC, same command and settings; `samples/verify-trials/elevenlabs/verify_R2_stt_scribe_v3/`):
-  HTTP 200, request round trip 1.24 s, 11 credits. The transcript differs from r0108's: "I wanna destroy" in both
+- Re-run by the verifier (r0318, 21:51 UTC, same command and settings;
+  `samples/verify-trials/elevenlabs/verify_R2_stt_scribe_v3/`): HTTP 200, request round trip 1.24 s, 11 credits. The transcript differs from r0108's: "I wanna destroy" in both
   places where r0108 has "I want to destroy", so 30 `word` and 29 `spacing` entries; `language_probability` 0.972;
   the first four words have the same times. The OpenAPI spec's `seed` field says: "If specified, our system will make
   a best effort to sample deterministically, such that repeated requests with the same seed and parameters should
@@ -505,7 +536,8 @@ demucs_playground, `python3 -m demucs.separate -n mdx_extra_q -d cpu` (it writes
 Scores:
 
 - YourMT3 (r0112) on S2n, all MIDI tracks pooled (126 notes in three tracks: "Acoustic Piano" program 0, 15 notes;
-  "Electric Piano" program 2, 58; "Guitar (clean)" program 24, 53; no pitch bends; no tempo event in the file, so readers use the MIDI default of 120 BPM): onset-only
+  "Electric Piano" program 2, 58; "Guitar (clean)" program 24, 53; no pitch bends; no tempo event in the file,
+  so readers use the MIDI default of 120 BPM): onset-only
   P 0.627, R 0.878, F1 0.731 (79 of 90 truth notes matched); onset+offset F1 0.657; chroma (octave ignored) onset-only
   F1 0.806; recall by voice: melody 42/42, bass 37/48; matched onsets: median +3.3 ms, 95th percentile 8.8 ms (e0110).
   Guitar track only (`--midi-programs 24-31`, 53 notes): onset-only P 0.981, R 0.578, F1 0.727; onset+offset F1 0.671
@@ -559,8 +591,9 @@ Scores:
 ## Services in this lane NOT RUN HERE (no account or key; nothing was signed up for)
 
 For every row except the two Gemini rows, the key store holds no key (checked with `getkey.py --list`, names
-only); the Gemini rows have a key that was refused for billing reasons. This lane's rules forbid creating accounts. Their request formats, prices and terms are in `survey.md`; the steps for Aaron, with the
-first request to make, are in `for-aaron.md`.
+only); the Gemini rows have a key that was refused for billing reasons. This lane's rules allow paid calls only
+with keys already in the key store, so no account was created. Their request formats, prices and terms are in
+`survey.md`; the steps for Aaron, with the first request to make, are in `for-aaron.md`.
 
 | service | what it would have been tried for | why not run here (evidence) |
 |---|---|---|
@@ -580,6 +613,9 @@ first request to make, are in `for-aaron.md`.
 | Hooktheory Trends API | chord-progression statistics | Bearer token from `POST users/auth` with a hooktheory.com username and password |
 | Songsterr | looking up an existing tab | no documented developer API; robots.txt has `Disallow: /api/` (survey.md); not called |
 | Chordify | chords from a link | no developer API found; the site answered HTTP 403 to this box (survey.md); not called |
+| StemSplit API (row added by the verifier) | guitar stem of S4 (`SIX_STEMS`) | `Authorization: Bearer <API key>` (survey.md); no StemSplit key in the key store (the verifier's `getkey.py --list` check, names only, 2026-11-10) |
+| MusicGPT `POST /v1/audio_to_midi` (row added by the verifier) | notes of S2n as MIDI | API key needed (survey.md); no MusicGPT key in the key store (same check) |
+| Alibaba Qwen-Omni and OpenAI audio models (rows added by the verifier) | the chord, note and capo prompts of trials (a), (b), (d) | no Alibaba Cloud (DashScope) or OpenAI key in the key store (same check); the gateway's free tier refused the Qwen model asked for (`alibaba/qwen3.8-27b`, r0023) |
 
 ## Tested handoff: ElevenLabs guitar stem (MP3) into the YourMT3 Space (MIDI), scored against S4
 
@@ -592,19 +628,23 @@ first request to make, are in `for-aaron.md`.
   `drums`, `bass` and `melody` left out; estimated notes matching those voices count as unmatched). All tracks
   pooled: onset-only P 0.647, R 0.905, F1 0.755 (334 matched); onset+offset F1 0.658; chroma onset-only F1 0.798;
   matched onsets median +23.4 ms late, 95th percentile 34.5 ms (e0522). The same with `--time-shift -0.025057`
-  (the MP3 decoder delay measured above): onset-only F1 0.755, onset+offset F1 0.667, matched onsets median -1.7 ms
-  (e0525).
-- Handoff facts: the stem service's MP3 carries 1,105 samples (25.06 ms) of decoder delay into the next tool, and the
-  transcriber's onsets come out about that much late; the YourMT3 Space returns its MIDI inside HTML, so a program
-  has to cut the `data:audio/midi;base64,` URL out before handing the MIDI on.
+  (the 1,105-sample delay of the ffmpeg-decoded stems measured above): onset-only F1 0.755, onset+offset F1 0.667,
+  matched onsets median -1.7 ms (e0525).
+- Handoff facts: the stem service's MP3, decoded with ffmpeg 6.1.1, starts 1,105 samples (25.06 ms) after the input,
+  and the transcriber's matched onsets come out a median 23.4 ms late (-1.7 ms after the 25.057 ms shift); the
+  YourMT3 Space returns its MIDI inside HTML, so a program has to cut the `data:audio/midi;base64,` URL out before
+  handing the MIDI on.
 
 ## Survey tool list: what else was checked for a run
 
 From `survey.md` "## Tool list" (docs-hosted-apis, read 2026-11-10 21:20 UTC): every entry marked
-CALLABLE-WITH-KEY is in the NOT RUN table above. `teamup-tech/Transkun` (a ZeroGPU Space) was not called after two
-ZeroGPU refusals (r0116, r0162). ChordMini (the survey: its docs URL answered HTTP 402), StemSplit, GetSongBPM and
-Cyanite were not checked for a run here. Spotify's Audio Features / Audio Analysis endpoints are closed to new apps
-(survey, Spotify blog); not called.
+CALLABLE-WITH-KEY at that time is in the NOT RUN table above. The verify-docs agent later added entries (StemSplit,
+ElevenLabs, Vercel AI Gateway, MusicGPT, Qwen-Omni); ElevenLabs and the gateway were called here, and the verifier
+added rows for the others to the NOT RUN table. `teamup-tech/Transkun` (a ZeroGPU Space, RUNNING on `zero-a10g` at
+21:58 UTC) was not called after two ZeroGPU refusals (r0116, r0162); the verifier's ZeroGPU re-runs (r0309, r0311)
+were refused too, so the verifier did not call it either. ChordMini (the survey: its docs URL answered HTTP 402),
+GetSongBPM (HTTP 403 to this box, survey) and Cyanite were not checked for a run here. Spotify's Audio Features /
+Audio Analysis endpoints are closed to new apps (survey, Spotify blog); not called.
 
 ## Money spent (from `samples/spend.jsonl`)
 
@@ -612,11 +652,18 @@ Cyanite were not checked for a run here. Spotify's Audio Features / Audio Analys
 |---|---|---|---|
 | Google Gemini API (direct) | 0 billed (402 and countTokens only) | 0 | nothing was generated |
 | Vercel AI Gateway (free tier) | 22 (3 access probes and 19 trial calls that returned usage; refused calls cost nothing and are not logged) | 0.074782 | per call the larger of (tokens x the gateway's list price) and the response's `usage.cost`; the sum of `usage.cost` alone is 0.073938. The account is on the gateway's free tier (the 403 messages say so) |
-| ElevenLabs | 4 calls (5 lines: one correction line for r0064) | 0.63206 | 2,873 credits measured (1,065 + 807 + 990 stem separation, 11 speech to text) x 0.00022 USD, an estimate; the speech-to-text call at the larger of that and the published per-hour rate |
+| ElevenLabs | 4 calls (5 lines: one correction line for r0064) | 0.63206 | 2,873 credits measured (1,065 + 807 + 990 stem separation, 11 speech to text) x 0.00022 USD, an estimate (the per-credit price is UNVERIFIED, see the stem separation section); the speech-to-text call at the larger of that and the published per-hour rate |
 | xAI | 1 | 0.001 | 36 s x 0.10 USD per hour (published REST rate) |
 | DeepSeek | 0 | 0 | no audio or video input; only the free model list was read |
 | Hugging Face Spaces, yt-dlp | 0 | 0 | free public endpoints |
 | total | | 0.707842 | caps: 2 USD per service, 10 USD in all |
+
+The verifier's calls appended six more lines to the same file (tags starting `verify_`): gateway r0302
+0.000387 USD, r0360 (R3b frames) 0.007544 USD and r0391 (R3c frames) 0.006456 USD, xAI r0306 0.001 USD, ElevenLabs
+r0315 0.2343 USD (1,065 credits) and r0318 0.00242 USD (11 credits), 0.252107 USD in all, counted the same way. The
+file's totals are now gateway 0.089169, ElevenLabs 0.86878, xAI 0.002, all services 0.959949 USD. The verifier's
+refused calls (r0303, r0304: HTTP 400) and free calls (r0300, r0307, the Space re-runs, yt-dlp r0323) cost nothing
+and are not in the file.
 
 ## Media kept outside git
 
@@ -626,7 +673,7 @@ Woodward, "I Want to Destroy Something Beautiful"), R3a CC BY-SA 4.0 (Mark Ander
 
 | file(s) | bytes | duration | what it is |
 |---|---|---|---|
-| `out/elevenlabs/S4_six_stems/stems/{bass,drums,guitar,other,piano,vocals}.mp3` and `stems.zip` (5,586,876) | 931,048 each | 38.791833 s | ElevenLabs `six_stems_v1` of S4, MP3 192 kb/s 44.1 kHz stereo (r0064); 1,105 samples of decoder delay |
+| `out/elevenlabs/S4_six_stems/stems/{bass,drums,guitar,other,piano,vocals}.mp3` and `stems.zip` (5,586,876) | 931,048 each | 38.791833 s | ElevenLabs `six_stems_v1` of S4, MP3 192 kb/s 44.1 kHz stereo (r0064); 1,105 samples late against the input when decoded with ffmpeg 6.1.1 |
 | `out/elevenlabs/S6taps_six_stems/stems/*.mp3` and `stems.zip` (4,232,688) | 705,350 each | 29.387750 s | the same for S6taps (r0189) |
 | `out/elevenlabs/R2_six_stems/stems/*.mp3` and `stems.zip` (5,191,902) | 865,219 each | 36.048958 s | the same for R2 (r0194) |
 | `out/hf-spaces/demucs_S4_old/named/{bass,drums,other,vocals}.wav` | 6,834,024 each | 38.741383 s | HF Space `nakas/demucs_playground` (mdx_extra_q) stems of S4, 16-bit 44.1 kHz stereo (r0141) |
@@ -634,9 +681,130 @@ Woodward, "I Want to Destroy Something Beautiful"), R3a CC BY-SA 4.0 (Mark Ander
 | `out/hf-spaces/beatthis_R1c/files/beat-this_audio-with-beats.wav` | 2,490,396 | 28.235283 s | the same for R1c (r0246; GuitarSet CC BY 4.0) |
 | `out/yt-dlp/R3a_ytdlp_400-418.wav` | 1,729,374 | 18.012979 s | yt-dlp audio of 400-418 s of the R3a archive.org item, 16-bit 48 kHz mono (r0126) |
 | `inputs/S2n_0-15s.wav`, `inputs/S3_0-15s.wav`, `inputs/S4_0-15s.wav` | 2,646,078 each | 15.000 s | first 15 s of S2n, S3, S4 (`ffmpeg -t 15.0`), for 15-second free tiers; documented in `inputs/README.md` there (sha256 ae989edd..., 4ac9b8e8..., 7e9784c8...) |
-| `out/frames/R3a/f_00.jpg` ... `f_17.jpg` | 576 KB in all | stills | the 18 frames (1 per second) sent in trial (c) |
+| `out/frames/R3a/f_01.jpg` ... `f_18.jpg` | 531,261 bytes in all | stills | the 18 frames (1 per second, sent as t = 0 to 17 s) of trial (c) |
+| `verify/hf-spaces/demucs_S4_old/named/{bass,drums,other,vocals}.wav` | 6,834,024 each | 38.741383 s | the verifier's re-run r0322 of the demucs_playground Space on S4 (content differs from r0141's) |
+| `verify/frames/R3b/f_01.jpg` ... `f_18.jpg`, `verify/frames/R3c/f_01.jpg` ... `f_18.jpg` | 1,565,337 and 1,735,015 bytes in all | stills | the frames the verifier sent in r0360 and r0391 (R3b CC0 1.0, R3c CC BY 3.0 Culture Vannin) |
 
 The delay-trimmed float WAVs used for scoring were deleted after scoring (disk); they are remade from the MP3s with
 `ffmpeg -i <stem>.mp3 -ar 44100 -c:a pcm_f32le x.wav` then `ffmpeg -i x.wav -af "atrim=start_sample=1105,asetpts=PTS-STARTPTS" -c:a pcm_f32le <stem>.wav`
 (`scripts/stem_alignment.py` does the first step and measures the lag). Their sha256 are in the `est.files` of each
-`eval_stems.json`.
+`eval_stems.json`. The verifier remade all eight scored files this way (for R2, `sum_non_vocal.wav` with
+`ffmpeg -i bass.wav -i drums.wav -i guitar.wav -i other.wav -i piano.wav -filter_complex "amix=inputs=5:normalize=0"`)
+and got the same SHA-256 for every one.
+
+## Verification log (verify-trials-hosted-apis, 2026-11-10)
+
+Checked by an independent agent against the run ledger, the scoring ledger, the saved outputs and the saved source
+pages; numbers recomputed; representative calls re-run with labels starting "verify". Verifier scripts are in
+`scripts/verify-trials/`, small outputs in `samples/verify-trials/`, larger ones under
+`/home/user/gtr/lanes/hosted-apis/verify/` (outside git).
+
+What was checked, and how:
+
+1. Run ledger. All 49 run ids cited for the trials (r0013 to r0248) have a `hosted-apis` line in
+   `/home/user/gtr/ledger/runs.jsonl`; each line's command, input and label match the call described. Every exit
+   code is 0 except r0013 (1), which the text already described as a failed call. The "wall" figures in the tables
+   matched the scripts' own `wall_s` in `meta.json` / `record.json` for all 34 calls that have one (they are not the
+   ledger's `wall_s`; the Timings convention now says so). r0089: cores [0, 1], 17.36 s, 930.9 MB; r0173, r0192,
+   r0217: `locked` false, 18.64, 4.69, 4.56 CPU s.
+2. Files. Every sample file named exists and was opened: Gemini model list (62 models), the 10 `countTokens`
+   results, every gateway `answer.json` (chord sequences, the 29 MiMo notes and the empty Muse answer, capo and
+   tuning answers, the three frame answers), `meta.json` token counts and costs, the four MIDI files (format,
+   480 ticks per quarter, tracks, programs, notes per track, no tempo event, velocity 100), the Beat-This beat lists
+   (68/18 and 56/14), the ElevenLabs ZIP and MP3 sizes and durations, both speech-to-text JSONs (word counts), the
+   yt-dlp WAV, the spend file (totals recomputed), and the R3a frames (re-extracted with the recorded ffmpeg command:
+   18 byte-identical files).
+3. gtr-eval. All 38 cited non-stem scorings were re-run with their exact arguments: identical metrics and counts
+   (e1236 to e1273; `scripts/verify-trials/rescore_ledger.py`, summary in
+   `samples/verify-trials/rescore/ledger/rescore_summary.json`). The four stem scorings were re-run from WAVs
+   remade with the recipe above, byte-identical to the ones scored: identical (e1315, e1316, e1317, e1328; scoring
+   runs r0339, r0340, r0342, r0343, all `--nolock` with `OMP_NUM_THREADS=1` after a slot-waiting attempt waited
+   15 minutes behind other lanes' jobs). Independent recomputation outside gtr-eval
+   (`scripts/verify-trials/recompute_mir_eval.py` with mir_eval 0.8.2, `si_sdr_check.py`, `check_stem_levels.py`):
+   chord root and sevenths for MiMo on S3, S4, R1c; key and tempo deviation; onset-only P / R / F1 and matched counts
+   for MiMo on S2n, YourMT3 on S2n (all tracks and programs 24-31), YourMT3-cpu on S2n and R1c, and the handoff;
+   beat and downbeat F-measure for Beat-This on S4 and R1c; SI-SDR of six stems; the stem lags, levels and residuals.
+   All equal to the reported figures except the R2 residual (corrected, item C3 below).
+4. Re-runs (each a recorded command with a new output folder, through gtr-run `--nolock`, label "verify: ..."):
+   Gemini probe r0300 (still HTTP 402); gateway r0302 (MiMo on S3: a different answer, root 0.781 instead of 0.193),
+   r0303 and r0304 (MP4 refused again, on all five Muse providers); xAI speech to text r0306 (identical JSON); xAI and
+   DeepSeek model lists r0307 (identical); ElevenLabs stems r0315 (six byte-identical MP3s, 1,065 credits) and speech
+   to text r0318 (11 credits, a different transcript); Spaces r0305 (YourMT3-cpu, byte-identical MIDI), r0308
+   (Beat-This, identical beats and WAV), r0309 and r0311 (ZeroGPU refusals), r0322 (demucs_playground, different
+   sample values, SI-SDR within 0.13 dB of r0141's, e1331, scoring run r0344); yt-dlp r0323 (byte-identical WAV).
+   Not through gtr-run: the two Hugging Face router URLs with curl (HTTP 401, 22:00 UTC) and the runtime stage of
+   every Space named (21:58 UTC). Run by the verifier, not a re-run: MiMo on 1 fps frames of R3b (r0360) and R3c
+   (r0391), clips that joined the shared set after the trial ran.
+5. NOT RUN reasons. The key store's names (`getkey.py --list`, names only) hold no key for any service in that table;
+   the Gemini 402 and the gateway 403s were reproduced (r0300; the 403 bodies are in `probe_models.json` and
+   `S3_chords_gemini-3.5-flash-lite/response.json`); the ZeroGPU refusals were reproduced (r0309, r0311). The quoted
+   reasons were found in `survey.md` or in the saved source pages (Replicate's sentence in its saved `http.md`).
+6. Quotes in `trials.md` (Gemini pricing, billing and audio pages, the Vercel audio and pricing pages, the ElevenLabs
+   reference and OpenAPI spec, the xAI pricing page, the YouTube terms, the yt-dlp wheel's license) were compared
+   with the copies saved under `/home/user/gtr/lanes/hosted-apis/dl/web/` at the time of the trials (not re-fetched
+   live; the verify-docs agent re-fetches live pages): all found, apart from the ElevenLabs "$0.20 per hour", which
+   the page prints as "$0.20" and "Price per hour" (fixed).
+7. Judging language, secrets, personal data, sizes: see C9 and C10 below. No file in this folder is over 300 KB; no
+   audio, video or image file is in it (2.3 MB in all after this check); no key-like string was found.
+
+What was changed in `trials.md`:
+
+- C1. Timings: "wall" defined as the scripts' own round trip, with the ledger differences; the claim that r0173 had
+  waited for a slot marked as not checkable from the ledger.
+- C2. Inputs: "R3b and R3c do not exist in the shared set" was true when the video trials ran but not later the same
+  day; replaced with the times from the manifest and the files.
+- C3. ElevenLabs R2: the residual (mix minus the sum of the six trimmed stems) was given as -15.40 dBFS; recomputed:
+  -38.69 dBFS (-6.86 before the trim).
+- C4. Trial (c): r0083 (Muse, MP4) had been sent with `--only togetherai`, so "refused for all three models" rested
+  on one of Muse's five providers; the verifier's r0304 showed all five refuse. The frame files are `f_01.jpg` to
+  `f_18.jpg` (not `f_00` to `f_17`) and total 531,261 bytes (not 576 KB).
+- C5. YourMT3 output format: the R1c MIDI has 2 tracks, not 4.
+- C6. Gateway output format: `message.reasoning` is also returned for Seed and for Muse via fireworks.
+- C7. ElevenLabs cost: the USD per credit (0.00022) is the trial script's assumption, now marked UNVERIFIED wherever
+  it is used; the account's absolute credit-counter values were removed (also from
+  `samples/elevenlabs/S4_six_stems/record.json`); only differences remain.
+- C8. Speech to text: `diarize=false` added to the settings; the comparison of the transcripts corrected (they also
+  differ in the apostrophe of "'Cause").
+- C9. Wording: "the flagship", "the current small one" and "not usable" replaced with plain facts; "decoder delay"
+  (an interpretation) replaced with the measured offset of the ffmpeg-decoded stems.
+- C10. Added: the verifier's re-run results in each section, the R3b and R3c frame runs (r0360, r0391, in trial
+  (c)), the stages of six Spaces the trial listed without one,
+  four NOT RUN rows (StemSplit, MusicGPT, Qwen-Omni, OpenAI audio), the corrected survey-list paragraph, the
+  verifier's spend (0.252107 USD in all, of which 0.014000 USD for the R3b and R3c frame calls), and the verifier's
+  media rows.
+
+What was changed in `for-aaron.md`:
+
+- Gemini: the billing-page quote extended; the December 2026 price change added; "wait a few minutes" replaced by
+  waiting for the purchase to show; the verifier's r0300 result added.
+- Vercel: the top-up steps as the docs give them; UNVERIFIED note that the gateway lists no audio input for the two
+  Google models.
+- Hugging Face: heading no longer says a token "unblocks" the GPU pages; "a read token is the smallest" removed;
+  the verifier's ZeroGPU refusals added.
+- Klangio: access by application, the demo-transcription and output-format quota sentences added.
+- Music.AI: UNVERIFIED note on individual keys (from `survey.md`); the workflow input name (`inputUrl` vs
+  `inputFileUrl`).
+- LALAL.AI: "buy a plan or pack" corrected to the Pro plan or a top-up pack (llms.txt quote); key location UNVERIFIED.
+- AudioShake: the sign-up URL the quickstart gives; the billing quotes made verbatim.
+- Fadr: the polling call as the docs give it; "Easier by hand" reworded.
+- MVSEP: "$3 60 credits" (not a verbatim quote) and the `is_demo` description replaced with the docs' wording.
+- Replicate: "billing is per second" and "the URLs need the same Authorization header" replaced with what the pages
+  say (hardware prices per second, approximate cost per run, files served by `replicate.delivery`).
+- Soundslice: the audio file named (`S2n.wav`); Flat: the import-conversion sentence added; Vercel and Hooktheory:
+  a "send back" line added; a note at the top that the file was checked.
+
+Still UNVERIFIED after this check:
+
+- The USD price of an ElevenLabs credit (all ElevenLabs USD figures rest on 0.00022 USD per credit).
+- That r0173 waited for a CPU slot before running with `--nolock` (no ledger trace either way).
+- The original `venv-apis` size (111 MB); the verifier's rebuild from the freeze file is 102 MB.
+- Klangio's `outputs` array encoding and `json` contents, whether fal accepts `data:` URLs, Music.AI's
+  "Bearer" prefix and whether individuals still get keys, LALAL.AI's key location, the Hugging Face token type the
+  ZeroGPU quota needs, whether the gateway passes WAV to Google models, whether Replicate downloads need the token:
+  each needs the first real call or the account page.
+- Quotes were checked against the trial-time saved copies, not re-fetched live.
+
+Disk: `venv-apis` and `venv-gc-old` were rebuilt from the saved freeze files for the re-runs (that rebuild itself
+checks the freeze files) and deleted afterwards; the remade float WAVs (433 MB) and the byte-identical re-run copies
+were deleted; the demucs re-run WAVs, the R3b and R3c frames and the re-run records are kept under
+`/home/user/gtr/lanes/hosted-apis/verify/`.

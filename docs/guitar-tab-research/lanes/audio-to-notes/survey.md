@@ -794,12 +794,18 @@ point there by name.
   Weights download on first use after a Hugging Face login: "To use MuScriptor locally, you first need to log into
   HuggingFace and accept the CC BY-NC 4.0 license" (access "is granted automatically"; the Hugging Face API shows
   `gated: auto` for all three repositories).
-  - Python API (model card on the HTML page https://huggingface.co/MuScriptor/muscriptor-small, which an anonymous
-    request can read although the raw card file is gated; read by the verifier 2026-11-10):
-    `model = TranscriptionModel.load_model("small")`, `model.transcribe_to_midi("audio.wav")` (MIDI bytes), or
-    `for event in model.transcribe("audio.wav")` yielding `NoteStartEvent` / `NoteEndEvent` / `ProgressEvent`. In
-    the code at 8a1ef88 (`muscriptor/events.py`) `NoteStartEvent` has `pitch: int`, `start_time: float`,
-    `index: int`, `instrument: str`, and `NoteEndEvent` has `end_time: float` and its `start_event`.
+  - Python API, two sources that differ (verifier, 2026-11-10). The model card on the HTML page
+    https://huggingface.co/MuScriptor/muscriptor-small (readable anonymously although the raw card file is gated)
+    shows `model = TranscriptionModel.load_model("small")`, `model.transcribe_to_midi("audio.wav")` (MIDI bytes)
+    and `model.transcribe("audio.wav")`, with instruments passed as `instrument_group=`. The code at 8a1ef88
+    (`muscriptor/transcription_model.py`) has `load_model`, `transcribe(audio, use_sampling=False,
+    temperature=1.0, cfg_coef=1.0, instruments: list[str] | None = None, batch_size=None, no_eos_is_ok=True,
+    beam_size=1, prelude_forcing=True)` yielding `NoteStartEvent | NoteEndEvent | ProgressEvent`,
+    `transcribe_and_postprocess`, `detect_beat_grid_for` and `events_to_midi_bytes`, and no `transcribe_to_midi`
+    (`git grep` of `muscriptor/*.py` at that commit); its docstring: "``instruments``, when given, is a hard
+    constraint: every program/drum token outside the listed groups is masked out during generation". In
+    `muscriptor/events.py` `NoteStartEvent` has `pitch: int`, `start_time: float`, `index: int`,
+    `instrument: str`, and `NoteEndEvent` has `end_time: float` and its `start_event`.
   - CLI (`muscriptor/main.py` at 8a1ef88, read by the verifier): `transcribe` takes `--format` "midi (default),
     json (single array of events), jsonl (one event per line, streamed as transcription progresses), or sheets",
     `--output/-o`, `--model/-m` ("Model size ('small', 'medium', 'large'; default: medium), a local safetensors path,
@@ -833,8 +839,8 @@ point there by name.
   not in the list is forbidden from being decoded at all. Case-insensitive; unambiguous abbreviations are accepted
   (e.g. 'timp,cello,dist'). Run 'muscriptor list-instruments' to see all available names." The model card's
   example is `muscriptor transcribe --model small --instruments "acoustic_piano,acoustic_guitar,acoustic_bass"
-  audio.wav -o out.mid`; the Python argument is `instrument_group` (space-separated group IDs). No tuning or capo
-  option is in the README or in `main.py`.
+  audio.wav -o out.mid`; the card's Python argument is `instrument_group` (space-separated group IDs), the code's is
+  `instruments` (a list of group names, see above). No tuning or capo option is in the README or in `main.py`.
 - **Access needs:** a free Hugging Face account and acceptance of the gated model terms.
 - **License facts:**
   - a. Code: MIT. https://raw.githubusercontent.com/muscriptor/muscriptor/main/LICENSE, read 2026-11-10: "MIT
@@ -1419,7 +1425,10 @@ Inside this lane:
   [Hz]" together with the audio "signal" and a `hopSize` "of the extracted pitch", returning `onset` [s],
   `duration` [s] and `MIDIpitch` (https://essentia.upf.edu/reference/std_PitchContourSegmentation.html). Run on
   this box with Essentia's own `PredominantPitchMelodia` contour as the input, `hopSize=128`, in batch r0321 (exit 0;
-  `trials.md`); the other trackers' contours were not fed to it there.
+  `trials.md`), and with the 10 ms f0 contours of FCPE, PESTO, torchcrepe `full` and Essentia CREPE `tiny`
+  (`hopSize=441`, `sampleRate=44100`) in run r0341 (exit 0); the first attempt, r0338 (exit 1), stopped on a NaN MIDI
+  pitch the algorithm returned for some segments ("ValueError: cannot convert float NaN to integer"), and the rerun
+  drops and counts those notes (`trials.md`, "Handoff test inside the lane").
 - SwiftF0's `detect` outputs a `PitchResult` (`timestamps`, `pitch_hz`, `confidence`, `loudness_db`), which its own
   `segment_notes(result, pitch_hold_ms=80.0)` accepts and turns into `Note(start, end, pitch_hz)` for
   `export_to_midi` (SwiftF0 README, https://raw.githubusercontent.com/lars76/swift-f0/main/README.md). Run on this
@@ -1515,8 +1524,8 @@ User constraints into the tools that accept them (human-in-the-loop re-runs):
 - A known set of instruments, which the MuScriptor paper describes as optional conditioning ("By optionally
   conditioning on instrument presence") (https://arxiv.org/abs/2607.08168) and which the released CLI accepts as
   `--instruments` ("When given, every instrument not in the list is forbidden from being decoded at all";
-  `muscriptor list-instruments` prints the names; `muscriptor/main.py` at 8a1ef88) or the Python argument
-  `instrument_group` (model card). MR-MT3's `InferenceHandler.inference(..., valid_programs=...)` takes a list of
+  `muscriptor list-instruments` prints the names; `muscriptor/main.py` at 8a1ef88) or, in Python, `transcribe(...,
+  instruments=[...])` (code at 8a1ef88; the model card shows `instrument_group=` instead). MR-MT3's `InferenceHandler.inference(..., valid_programs=...)` takes a list of
   MIDI programs and blocks all others during decoding (`inference.py` at 826ea84). (Verifier, 2026-11-10.)
 - Onset and frame thresholds and a minimum note length, which Basic Pitch accepts as `onset_threshold`,
   `frame_threshold`, `minimum_note_length` (ms); aubio's `aubionotes` as `-t`, `-M` (minimum inter-onset interval in
@@ -1582,7 +1591,9 @@ Tally:
   a tuning input (CREPE Notes' `--tuning-offset`, Essentia `Audio2Midi`'s `tuningFrequency` and
   `transpositionAmount`); MR-MT3 and Aria-AMT marked NOT-CPU-BOX as shipped (their inference code requires CUDA);
   MR-MT3's author-reported numbers now name their table and metric; the newer GuitarSet Zenodo record identified as
-  a single-file upload by a different creator.
+  a single-file upload by a different creator. One doc-versus-code difference is stated with both sources:
+  MuScriptor's model card shows `transcribe_to_midi` and `instrument_group=`, while the code at 8a1ef88 has
+  `transcribe(..., instruments=[...])` and `events_to_midi_bytes` and no `transcribe_to_midi`.
 - UNVERIFIED items settled from code or pages: 16 (RMVPE call signature; YourMT3+ Space output; MR-MT3 inference
   arguments and output; MR-MT3 table column; MuScriptor per-note fields; MuScriptor CLI instrument conditioning;
   Timbre-Trap Space output; Deep Salience arguments and outputs; Onsets and Frames output; ByteDance dict keys;
@@ -1598,11 +1609,12 @@ Tally:
 - Handoff facts: 2 lines lost an unsupported second half (MT3 program numbers that "can be selected ... before a
   string-and-fret step"; beats that "a metronome or tab renderer could read"); 6 lines gained a source URL or a run
   id (Demucs stems into Basic Pitch, r0243; SwiftF0 `segment_notes`, r0131; Essentia Melodia into
-  `PitchContourSegmentation`, r0321; the pitch-range limit, r0234 and r0131; a SoX tuning shift into Basic Pitch,
+  `PitchContourSegmentation`, r0321, and four other trackers' contours into it, r0341; the pitch-range limit, r0234
+  and r0131; a SoX tuning shift into Basic Pitch,
   r0319; the SOME README URL); 2 lines were added (CREPE's `.f0.csv` into CREPE Notes `--f0`; the YourMT3+ Space's
   HTML with embedded MIDI); the FCPE tempo input was limited to the GitHub source; the tuning and instrument lines
-  were corrected. Run ids were checked in `/home/user/gtr/ledger/runs.jsonl` (all exit 0, except the eight failed
-  Basic Pitch CLI runs cited as failures).
+  were corrected. Run ids were checked in `/home/user/gtr/ledger/runs.jsonl` (all exit 0, except the runs cited as
+  failures: eight Basic Pitch CLI runs and r0338).
 - Agreement with `trials.md` (read up to its "Media kept outside git" section): where both files describe an output
   format (Basic Pitch MIDI and CSV, aubio's printed lines, SwiftF0's `PitchResult` and notes, Transkun's MIDI, PESTO,
   FCPE, Essentia, the YourMT3+ Space), they agree; facts observed in `trials.md` were added here with their run ids.

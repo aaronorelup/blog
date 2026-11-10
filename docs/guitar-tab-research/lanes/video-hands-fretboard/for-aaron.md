@@ -107,3 +107,19 @@ the hands from its own body model.
    `bin\OpenPoseDemo.exe --video R3a_cu.mp4 --hand --write_json out\ --write_video out\R3a_cu_openpose.avi`.
 3. Send back: the `out\` folder (one JSON per frame) and the output video, plus the frame rate the program prints.
 4. Licence: OpenPose is for non-commercial research use (the docs agent quotes it in `survey.md`).
+
+## 9. Label two frames by hand (this settles a question the box could not)
+
+The box mapped fingertips to (string, fret) cells on two frames, and on R3b two methods disagree by one fret. You can
+settle it in a few minutes, no software needed beyond a video player.
+
+1. Open R3b (`Brylie Christopher Oxley guitar 2018-10-06` on archive.org, or the R3b file in your studio library) and
+   pause at 3:29 in the full video (9.0 s into the R3b excerpt; it is frame 225 of the excerpt at 25 fps).
+2. For each fretting-hand finger that presses a string, write down: finger (index, middle, ring, pinky), string (1 = the
+   thinnest), fret (1 = the first fret from the nut).
+3. Do the same for R3a_cu at 11:27 in the concert video (`crescendo313_2014_09_04_0.mp4`, 5.0 s into the R3a_cu
+   excerpt, frame 150).
+4. Send back: the two lists, and a screenshot of each paused frame. The box's answers to compare with are in
+   `trials.md` ("Worked handoff" section): R3b index string 4 fret 3, middle string 5 fret 4, ring and pinky string 2
+   fret 5 (12-TET fit), or one fret lower by the wire count; R3a_cu index string 4 fret 2, middle string 6 fret 4, ring
+   string 4 fret 4, pinky string 2 fret 4.
