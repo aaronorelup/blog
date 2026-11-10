@@ -1,0 +1,8 @@
+ok wall=34.2s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/synths/synth_jssynth_S2n.json
+ok wall=33.6s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/synths/synth_smplr_S2n.json
+ok wall=33.8s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/synths/synth_sfplayer_S2n.json
+ok wall=34.6s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/synths/synth_spessa_S2n.json
+ok wall=45.3s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/stretch/st_element_0p75_pp1.json
+ok wall=11.1s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/alphatab/alphatab_live_countin.json
+ok wall=12.5s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/alphatab/alphatab_live_external.json
+[gtr-run r0441] browser-audio-sync/verify-rerun "verify: re-run of S2n reference playback js-synthesizer, smplr, soundfont-player, SpessaSynth (r0225, r0229), S1 audio element 0.75x preservesPitch (r0225), alphaTab live count-in and external media (r0269, r0261); unpinned like the originals" wall=209.6s cpu=15.9s rss=382.4MB cores=None exit=0 slot_wait=0.0s

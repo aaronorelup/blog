@@ -452,7 +452,23 @@ warnings were checked in `samples/environment/node-package-lock.json` and `work/
   Editor in the Playground; the shared set has Guitar Pro 5 files only. [verifier: the installed typings also declare
   `BackingTrack.rawAudioFile` on the data model, and the sync-points-at-runtime guide (survey.md section 15) describes
   `applyFlatSyncPoints(list)` and `api.updateSyncPoints()`, so filling the data model in code may be a third route;
-  it was not tried.]
+  the verifier then ran it, next bullet.]
+- **Backing-track mode with the data model filled in code (run by the verifier)**, r0453 (`gtr-run --nolock`, wall
+  19.2 s for two pages, `load1_at_start` 9.7; page `scripts/verify-trials/pages/alphatab_backing.html`, served by
+  `scripts/verify-trials/serve_verify.mjs`): `importer.ScoreLoader.loadScoreFromBytes(S2n.gp5)`, then
+  `score.backingTrack = new model.BackingTrack()` with `rawAudioFile` = the 5,178,644 bytes of S2n.wav (rendered from
+  the same notes, 112 BPM), 13 flat sync points (one per master bar, `barPosition` 0, `millisecondOffset` = bar index
+  x 2142.857 ms, plus a constant offset of 0 or 1000 ms) through `score.applyFlatSyncPoints()`, then
+  `api.renderScore(score)` with `PlayerMode.EnabledBackingTrack`. Results, offset 0 / offset 1000 ms:
+  `playerReady` fired after 243 / 141 ms; `api.player.output` was an `AudioElementBackingTrackSynthOutput` whose
+  `audioElement` plays a `blob:` URL; `exportFlatSyncPoints()` returned 13 points; 6 s after `api.play()` the element
+  was at 5880.9 / 6903.0 ms and `api.timePosition` at 5880.8 / 5902.8 ms; in the 131 position events checked during
+  play (0.5 to 6 s after `play()`), `playerPositionChanged.currentTime` minus the element's `currentTime` was 0 ms in
+  every event with offset 0 and -1000 ms in every event with offset 1000; `api.timePosition = 20000` moved the element
+  to 21417.6 / 22415.0 ms 1.5 s later (alphaTab 21416.1 / 21411.5 ms); `api.pause()` paused the element. No request
+  left the page. Output: `samples/alphatab-player/alphatab_backing_off0.json`, `alphatab_backing_off1000.json`. Not
+  measured here: audio output timing (the element plays outside the Web Audio graph and there is no sound device),
+  sync points that differ from the score's own tempo, repeats.
 - Output files (kept outside git): `out/alphatab/S2n_alphatab_metronome_only.wav`,
   `S2n_alphatab_guitar_no_metronome.wav` (2 ch, float32, 27.86 s; written by r0329, which overwrote r0195's),
   `S2n_alphatab_live_countin_metronome.wav` (1 ch, 8.4 s). Samples: `samples/alphatab-player/`.
@@ -773,8 +789,9 @@ here, with the reason:
 - Not reached in the time available (installable, no known blocker): @tonejs/midi, worker-timers, WAAClock,
   @ircam/sc-scheduling, waveform-data with the `audiowaveform` CLI, mp4box.js, web-demuxer, `@soundtouchjs/audio-worklet`,
   `rubberband-web` and `@echogarden/rubberband-wasm`, Bungee (`bungee-pitch-shift`), WebAudioFont, MidiPlayerJS,
-  LiteRT.js, Magenta.js, ml5.js, Meyda, OpenCV.js, demucs-wasm, OpenVoicing, alphaTab's backing-track mode (see the
-  alphaTab section for what it needs).
+  LiteRT.js, Magenta.js, ml5.js, Meyda, OpenCV.js, demucs-wasm, OpenVoicing, alphaTab's backing-track mode from a
+  Guitar Pro 8 file with an audio track (none in the shared set; the same mode with the data model filled in code was
+  run by the verifier, see the alphaTab section).
 - Superpowered Web Audio SDK: not tried in this session. Its terms are quoted in survey.md section 26 (the Evaluation
   License "is offered for internal, private experimentation and R&D purposes (eg PoC) only and does not allow for
   public release"; the pricing page says "Superpowered is sunsetting"). [verifier: the trial report gave the reason
@@ -842,3 +859,112 @@ All under `/home/user/gtr/lanes/browser-audio-sync/out/`; WAV, 44.1 kHz unless s
 
 Also outside git and not media: `out/mediapipe/hands_<clip>_<delegate>.json` (all landmarks), `out/essentia/`,
 `out/basicpitch/`, `out/smalljs/` (full CSVs), `out/video/*.yhash.json` (ffmpeg luma hashes of R3a).
+
+## Verification log (verify-trials-browser-audio-sync, 2026-11-10)
+
+Checker: `verify-trials-browser-audio-sync`, working from the ledger, the saved files under
+`/home/user/gtr/lanes/browser-audio-sync/out/` and `samples/`, the page sources in `scripts/pages/`, and its own re-runs.
+Its scripts are in `scripts/verify-trials/` (re-scoring, independent recomputation, the re-run server and comparison,
+the backing-track page); its small outputs are in `samples/verify-trials/` and `samples/alphatab-player/alphatab_backing_*.json`.
+Text it added inside the sections above is marked "[verifier ...]" or "UNVERIFIED".
+
+**What was checked**
+
+- Ledger: all 26 runs of this lane before verification (r0042 to r0333) have lines in `runs.jsonl`; every run id cited
+  above exists, its command matches the page list or script described (`work/*.list`, `scripts/run_*.sh`), every exit
+  code is 0, and the wall times and `load1_at_start` values in the "Run ids" table match the ledger (r0042 and r0050
+  were written 7.5 and 7.6, now 7.53 and 7.55). r0310, described as a failed page test, has exit code 0; its result
+  file was overwritten, so the failure cannot be confirmed. Only r0042, r0050, r0095 and r0103 ran in a slot; all
+  other runs, including the heavy ones, used `--nolock`, as the report says.
+- Files: every output and sample file named above exists and was opened; counts, timings, formats (CSV headers, JSON
+  fields, WAV channels, sample rates and durations, the media table's sizes) were read back and match, except where
+  corrected above.
+- gtr-eval: all 55 eval ids cited (e0427 to e1235) were re-run from their stored arguments with `--no-ledger`
+  (`scripts/verify-trials/rerun_evals.py`); all results are identical to the stored ones (e1223 differs only in the
+  stem paths, same SHA-256), and every gtr-eval number in the text matches its result.
+- Independent recomputation, in separate code (`scripts/verify-trials/check_*.py`): metronome deviations of all 8
+  captures (numpy); S4 sync lag, residual and click-minus-beat of both captures; R3a luma hashes (ffmpeg 6.1.1);
+  reference-playback onsets and F (librosa + `mir_eval.onset`); Basic Pitch note F1 for 3 files
+  (`mir_eval.transcription`); essentia.js beats, CMLt and chord scores (`mir_eval.beat`, `mir_eval.chord`); pitchy,
+  aubio and pitchfinder f0 metrics on S1 (`mir_eval.melody`); demucs-web SI-SDR (numpy); ffmpeg.wasm against a fresh
+  native ffmpeg run; slow-practice lengths, spans, first-note pitch and peaks; MediaPipe handedness counts and the
+  CPU/GPU landmark distance. All agree with the text except the corrections listed below.
+- Package facts read in the installed or packed packages (same versions): basic-pitch model sizes and hashes, README
+  example, windowing constants and `inference.py` output names; alphaTab `exportAudio` (`@since 1.6.0`) and the 64-sample
+  block-size doc comment; MediaPipe handedness note and `worldLandmarks` comment; essentia.js `KeyExtractor` and
+  `PitchMelodia` signatures; demucs-web README, defaults and `sessionOptions`; Rubber Band option constants; SoundTouchJS
+  interleaved output; Signalsmith options; smplr `main`/`module`. Hugging Face API for the demucs-web model revision and
+  LFS hash; storage.googleapis.com headers for the MediaPipe model.
+- NOT RUN reasons: WebGPU (probe: `requestAdapter()` null, console "No available adapters."); Transformers.js (sizes
+  added); Superpowered (reason not supported, rewritten); `webnn/stem-separator` (its card says it falls back to WASM,
+  moved out of "No GPU"); alphaTab backing track (reason refined, then run, below).
+- Language, secrets, size, media: no judging words found ("almost sample for sample" replaced by the numbers); no key,
+  token or personal detail; no file over 300 KB and no audio or video under this lane's docs folder (1.9 MB in all).
+
+**Re-runs by the verifier** (`gtr-run --nolock`, unpinned like the originals: three batches queued for a 2-core slot
+waited from about 22:19 to 22:32 UTC and were cancelled before starting; at 22:31 and 22:32 UTC both slots were held by
+runs of the source-separation and video-hands-fretboard lanes that had started 58 and 79 minutes earlier; the pages
+ran unchanged, served by `scripts/verify-trials/serve_verify.mjs`, a copy of `serve.mjs` that serves `/nm/` from a
+re-installed subset of the same package versions and writes uploads to `verify/out/` so the trial's `out/` was not
+touched). r0433 (wall 223.0 s, `load1_at_start` 10.4), r0441 (209.6 s, 7.3), r0451 (213.8 s, 7.3), r0453 (19.2 s, 9.7).
+Original figures in brackets; full comparison in `samples/verify-trials/compare_reruns_output.txt`.
+
+| page (original run) | verifier re-run |
+|---|---|
+| environment probe (r0042) | r0433: every codec, MSE, WebCodecs, `<video>`, WebGL, WebGPU and Web Audio field the same; `hardwareConcurrency` 4 (2: the original ran in a 2-core slot) |
+| S4 sync, AudioBufferSourceNode (r0143) | r0433: 68 of 68 clicks, click minus beat 0 to 0.023 ms, mean 0.012 ms, S4 at the scheduled frame, 0 scheduled late: the same |
+| R3a.mp4 rVFC and seeks (r0157) | r0433: 539 callbacks, `presentedFrames` +1 at each, 539 of 539 frames identified as the last-pts frame; the 24 seeks showed the same 24 frames; mean callback interval 33.33 ms (33.46) |
+| metronome look-ahead, busy, 61 s (r0199) | r0433: 122 of 122 clicks; 8 off the grid, all scheduled late (11); largest 61.769 ms, the first click (42.132); mean 0.726 ms (0.856) |
+| metronome Tone.js, busy, 61 s (r0199) | r0433: 122 of 122 clicks; 11 off the grid (7), 10 callbacks late (7); largest 10.249 ms (2.268 after correction); mean 0.648 ms (0.077) |
+| js-synthesizer S2n (r0225) | r0441: 46 of 48 onsets, F 0.979; correlation with the truth render 0.99855 (0.99908); load 1.26 s (2.18 s); 44 underruns (47) |
+| smplr S2n (r0229) | r0441: the same 46 of 48 truth onsets matched, median 14.75 ms and max 17.74 ms as before; 48 detected, F 0.958 (46, 0.979): the 2 extra detections, at 23.866 s and 24.403 s, are where the recorder logged 2 repeated `currentFrame` values in this capture; correlation 0.6494 (0.6496) |
+| soundfont-player S2n (r0229) | r0441: 49 detected, 48 matched, F 0.990, correlation 0.6482: the same |
+| SpessaSynth S2n (r0225) | r0441: 46 of 48, F 0.979, correlation -0.229: the same |
+| `<audio>` 0.75x, preservesPitch (r0225) | r0441: audible span 35.8954 s, the same; recording 40.260 s (40.272 s; the length is the recording window) |
+| alphaTab count-in (r0269) | r0441: 15 clicks; intervals the same except the last, 535.51 ms (550.02); first click 11.6 ms after `play()` (8.7 ms); 3 output nodes tapped |
+| alphaTab external media (r0261) | r0441: the same handler calls in the same order; 695 position events, all 562 checked equal to the media time (661, 504) |
+| Basic Pitch ORT Web wasm, 1 thread, S1 (r0270) | r0451: the 64 and 115 notes identical in start, end and pitch; model load 1.23 s, inference 4.40 s (1.93 s, 7.86 s) |
+| Basic Pitch TF.js cpu, S1 (r0270) | r0451: identical notes; inference 72.3 s (103.1 s) |
+| Basic Pitch TF.js wasm, S1 (r0270) | r0451: the same error, "Unknown dtype undefined" |
+| essentia.js S3 and S1 (r0314) | r0451: beats, bpm, key, `.lab` and PitchMelodia CSV files byte-identical; S3 1.92 s in all (2.90 s), S1 6.21 s (10.62 s) |
+| Mediabunny decode, R3a.mp4 (r0314) | r0451: 540 frames, all 540 luma planes identical to ffmpeg's, the same `getSample` frames; decode 809 ms (1,079 ms) |
+| MediaPipe CPU, R3c, 150 frames (r0329) | r0451: 2 hands in 150 of 150 frames, landmarks identical to the 4 saved decimals, same labels; 192.7 ms per frame (148.1); no external request |
+| ffmpeg.wasm single-thread, R3a.mp4 (r0314) | r0451: output WAV byte-identical; exec 516 ms (494 ms) |
+| SoundTouchJS, Rubber Band, Signalsmith at 0.5x (r0314) | r0451: the three WAVs byte-identical; 283, 3,761 and 2,439 ms (195, 2,959, 2,112 ms) |
+| alphaTab audio export (r0329) | r0451: both WAVs byte-identical; 52 clicks, the same statistics |
+| pitchy, web-audio-beat-detector, aubiojs, pitchfinder, realtime-bpm-analyzer (r0329) | r0451: all 14 output files compared (CSV, bpm, grid, beat lists) byte-identical |
+| wavesurfer.js, peaks.js (r0329) | r0451: sample rate 8000, peaks scale 512 and 3,337 points, video follow difference 0: the same |
+| alphaTab backing-track mode, data model filled in code (not run) | r0453, run by the verifier: see the alphaTab section |
+
+The re-runs also logged repeated `currentFrame` values in three captures made with the fixed recorder (look-ahead busy
+once; smplr twice; soundfont-player once, and once 7 times in a row at frame 35072 followed by a jump of 896 frames),
+so the repeats are not limited to the three captures named in "How the trials were run".
+
+**Changed in this file**: the external-requests statement (MediaPipe's aborted request to
+`odml.pa.googleapis.com/v1/log` added, here and in the MediaPipe section); the recorder start-gap description (counted);
+the busy-thread range (58.9, not 59.0, to 59.2 s); load ranges for r0199, r0270 and r0329 (from the ledger); the video
+output description (not all callbacks are saved); SpessaSynth's `sf2_bytes` 0; "almost sample for sample" replaced;
+the TF.js wasm stack description; the Basic Pitch amplitude differences (4 cells, not 1); the PitchMelodia frame counts
+and hop default; the MediaPipe landmark median (0.0026, not 0.0027) and the R3c first-frame maximum; the
+web-audio-beat-detector call range (73, not 74, to 226 ms) and what its gtr-eval tempo scores (`guess()`'s integer
+bpm); the Rubber Band WASM init times (17 and 13 ms); the Transformers.js, Superpowered and `webnn/stem-separator`
+reasons; the alphaTab backing-track reason, with the verifier's run added; the essentia.js eval id range (it included
+other lanes' ids); the "Run ids" walls of r0042 and r0050; the alphaTab export WAVs' run (r0329 overwrote r0195's).
+`for-aaron.md` was changed too (its own log).
+
+**Still UNVERIFIED**: the smoke-run figures of r0170 and r0171 (TF.js cpu 87.8 s, ORT 4.37 s, the silent Signalsmith
+render), whose result files no longer exist; the error texts of the first smplr and soundfont-player attempts (r0225),
+the outcomes of r0257 and r0266, and the failure of r0310, whose result files were overwritten by later runs; the
+bit-identity of the 2- and 4-thread demucs-web stems (no hash of the 4-thread stems was kept); the `node_modules`
+sizes of 696 and 720 MB; the slot-queue length and cancel times of the trial's own queued batches; the contents of
+MediaPipe's log request. Not re-run by the verifier (each was checked from its saved files instead): TF.js webgl
+(160 s per clip), ORT with 2 threads and without isolation, the S2n Basic Pitch pages, essentia.js on S4, the setInterval
+and AudioWorklet metronome runs and all idle runs, the `<audio>`-element S4 sync (r0150), the webm video page (r0156),
+the channel-chromium probe (r0050), MediaPipe on R3a and R3b and its GPU delegate, ffmpeg.wasm multi-thread and webm,
+the 0.75x offline stretches, demucs-web (its 180.5 MB model had been deleted; not downloaded again under the disk
+notice), and the measuring page for Aaron (its CDN cache had been deleted). The pyin column of the slow-practice table
+was not recomputed.
+
+Clean-up after verification: the verifier's re-installed `node_modules` subset (208 MB), the npm tarballs, the two
+soundfont files it cached and its re-run WAVs were deleted; its re-run JSON results stay in
+`/home/user/gtr/lanes/browser-audio-sync/verify/out/`.

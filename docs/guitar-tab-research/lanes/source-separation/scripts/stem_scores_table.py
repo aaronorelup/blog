@@ -24,7 +24,7 @@ print("| eval id | truth | estimated stems | map | stem: SI-SDR / SDR / SIR / SA
 print("|---|---|---|---|---|")
 for r in rows:
     res = r["result"]
-    est = (res.get("est") or {}).get("est_dir", "").replace(LANE_OUT, "")
+    est = ((res.get("est") or {}).get("est_dir") or "").replace(LANE_OUT, "")
     per = (res.get("metrics") or {}).get("per_stem", {})
     cells = []
     for s, m in per.items():

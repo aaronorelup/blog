@@ -12,7 +12,9 @@ and R3c from the shared set once `/home/user/gtr/inputs/READY-VIDEO` appeared (2
 1920x1080, 25 fps, 450 frames (sha256 of R3b.mp4 `95adf1a34c976ad67b6a443fe916a3a0b2755246efcd0a4ca13aee1814c675a6`, of R3c.mp4
 `62467c5738fee276e51fbf3dc355188fddc862231f74d3e483a1e725baf52783`; see the shared manifest). R3a and
 R3a_cu frames were decoded once to PNG (`ffmpeg -i <clip>.mp4 -vsync 0 <dir>/%04d.png`); R3b and R3c to JPEG at
-`-q:v 2` to save disk. There is no ground truth for any of these clips, so the numbers below are counts, rates and
+`-q:v 2` to save disk. The decoded frames were deleted at 22:46 UTC, after the last run, to free shared disk; the
+scripts expect them at `frames/R3a_%04d.png`, `frames/R3a_cu/f_%04d.png`, `frames/R3b/f_%04d.jpg` and
+`frames/R3c/f_%04d.jpg` under the lane folder (see `scripts/vhf_common.py`), so a re-run must decode them again. There is no ground truth for any of these clips, so the numbers below are counts, rates and
 times, not accuracy.
 
 **Box load.** The two CPU slots were contended by about 20-25 queued jobs of other lanes during this lane's work, so
@@ -32,7 +34,9 @@ the wide shot the picking hand is behind the music stand (by eye, frame 300), so
 "elsewhere" means outside these boxes. The shot table: medium = frames 0-217 and 439-539 (319 frames), wide = frames
 218-438 (221 frames), from `ffmpeg select='gt(scene,0.12)'` cuts at frames 218 and 439.
 
-Shared scripts: `scripts/vhf_common.py` (frames, shots, crops, summaries, sample writer), `scripts/hand_regions.py`.
+Shared scripts: `scripts/vhf_common.py` (frames, shots, crops, summaries, sample writer), `scripts/hand_regions.py`
+(where detections landed), `scripts/steps.sh` (grouped jobs), `scripts/make_overlay_video.py` (landmark overlay
+videos). Each tool's script is named in its section.
 
 ## MediaPipe Hand Landmarker (tasks API) 1.2.2
 
@@ -165,7 +169,7 @@ Where the R3a detections landed (`hand_regions.py`, frames with at least one det
   you acknowledge that you have read these terms and conditions, understand them, and agree to be bound by them."
 - The hand detector alone (`detector.pt` from `https://huggingface.co/rolpotamias/WiLoR/resolve/main/detector.pt`,
   53,582,271 bytes, sha256 `5ef3df44e42d2db52d4ffe91f83a22ce9925e2acc9abebf453f2c5d22e380033`, downloaded without a
-  login) was meant to run through Ultralytics as a hand-box detector. Loading it with `YOLO('detector.pt')` stopped with
+  login; deleted unused at the end) was meant to run through Ultralytics as a hand-box detector. Loading it with `YOLO('detector.pt')` stopped with
   `ModuleNotFoundError: No module named 'dill'` (the checkpoint is a pickle that needs `dill` to load). The next step,
   installing `dill` and unpickling this third-party checkpoint, was refused by this session's permission check
   ("[Code from External]"), so the detector was NOT RUN HERE. Its class names were not read.
@@ -208,13 +212,13 @@ Read 2026-11-10 at https://mano.is.tue.mpg.de/license.html (page text extracted 
 - Sizes read from the Hugging Face API (`?blobs=true`, 2026-11-10): `IDEA-Research/grounding-dino-tiny`
   `model.safetensors` 689,359,096 bytes (card `license: apache-2.0`, not gated); `google/owlv2-base-patch16-ensemble`
   `model.safetensors` 619,918,824 bytes (`license: apache-2.0`, not gated). YOLO-World v2 in Ultralytics
-  (`yolov8s-worldv2.pt`, 25,923,032 bytes, downloaded) calls `set_classes` through the OpenAI CLIP "ViT-B/32" text
+  (`yolov8s-worldv2.pt`, 25,923,032 bytes, downloaded, deleted unused at the end) calls `set_classes` through the OpenAI CLIP "ViT-B/32" text
   encoder (`ultralytics/nn/tasks.py` line 1189: `build_text_model("clip:ViT-B/32", ...)`), whose weight file
   `https://openaipublic.azureedge.net/clip/models/40d365715913c9da98579312b702a82c18be219cc2a73407c4526f58eba950af/ViT-B-32.pt` has `content-length: 353976522`. All three
   are over the 200 MB limit, and YOLOE-26 (below) was run as this lane's open-vocabulary detector instead, with its
   MobileCLIP2 text encoder (`mobileclip2_b.ts`, 253,794,476 bytes) downloaded before the notice.
 - The script for all four detectors is `scripts/run_openvocab.py` (`gdino`, `owlv2`, `yoloworld`, `yoloe`); only
-  `yoloe` was run.
+  `yoloe` was run locally (OWLv2 also ran through a public web demo; see its section).
 
 ## MMPose (framework): NOT RUN HERE; the same RTMPose / RTMW / DWPose models ran through rtmlib
 
@@ -527,10 +531,13 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
 |---|---|---|---|---|---|---|---|---|---|
 | r0336 (not mirrored) | R3a_cu every 10th frame, MediaPipe r0078 | 30 | 519.06 s | 522.4 s | 1088.1 MB | 17.161 / 11.116 s (7.492-46.669 s) | 13.4 (range 2-20) | 52.52 px | 0.0873 |
 | step `openpose-hand_R3a_cu_every30_mirrorleft` (B1) | R3a_cu every 30th frame, left-hand crops mirrored | 10 | 202.43 s | 188.03 s | 1101.3 MiB | 20.017 / 21.178 s | 19.5 (range 12-21) | 4.68 px | 0.2149 |
+| step `openpose-hand_R3a_every30_mirrorleft` (B1) | R3a every 30th frame, boxes from MediaPipe crop-mode run r0075, "Left" crops mirrored (20 of 21 hands) | 21 | 311.11 s | 348.49 s | 1072.8 MiB | 14.679 / 12.883 s | 9.29 (range 0-20) | 2.74 px | 0.1143 |
 
 - The same 10 frames (every 30th) in r0336 without mirroring: keypoints found 13.3 per hand on average (range 5-19),
   median of per-hand median distances to MediaPipe 53.97 px, mean peak value 0.086. With mirroring: 19.5 found, 4.68 px
   (per-hand medians 4.09-10.59 px), 0.2149. All 10 hands were labelled "Left" by MediaPipe and were mirrored.
+- On R3a the hand boxes were small: sides 41-93 px in the 640x480 frame (each crop is scaled to the 368-px box and
+  its multiples inside the model); 3 of the 21 hands had no keypoint found.
 - r0336 waited 1800.7 s for a CPU slot before it ran. Box sides were 181-282 px. "Found" = the blurred heatmap
   exceeded 0.05 somewhere; a keypoint that was not found is stored as (box origin, score 0).
 - Output format facts: per hand 21 (x, y, peak value) in full-frame pixels, in the OpenPose hand order (0 wrist, 1-4
@@ -548,7 +555,7 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
   from `https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_heavy/float16/latest/`;
   `holistic_landmarker.task` 13,683,609 bytes (sha256 `e2dab61191e2dcd0a15f943d8e3ed1dce13c82dfa597b9dd39f562975a50c3f8`)
   from `.../holistic_landmarker/holistic_landmarker/float16/latest/`. (`pose_landmarker_full.task`, 9,398,198 bytes,
-  was downloaded and not run.)
+  was downloaded, not run, and deleted at the end.)
 - Settings: VIDEO mode. Pose: `num_poses=1`, detection, presence and tracking confidence 0.5; a "hand" is counted when
   the wrist landmark's `visibility` is >= 0.5. Holistic: default options; a hand is counted when its 21-landmark list
   is non-empty (Holistic returns no handedness score). Script `scripts/run_mediapipe_pose_holistic.py`. Runs: steps of
@@ -717,8 +724,9 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
 | rtmlib-dwpose_R3a_cu_full_step5 | DWPose-l, R3a_cu | 60 | 62.18 s | 129.03 s | 575.2 MiB | 993.21 / 984.85 / 1515.23 ms | 1.01 | 60 | 0 / 45 / 15 / 0 | 0.782 [0.303-0.947] |
 | rtmlib-vitpose_R3a_cu_full_step5 | ViTPose-s, R3a_cu | 60 | 106.48 s | 128.82 s | 498.2 MiB | 1721.15 / 1722.57 / 2137.89 ms | 0.58 | 60 | 0 / 57 / 3 / 0 | 0.747 [0.315-0.864] |
 
-- Score scales differ: RTMW's keypoint scores run above 1 (hand means 1.79 to 8.69 here), DWPose's and ViTPose's stay
-  below 1 here; a fixed threshold such as 0.3 therefore means different things per model, and every RTMW hand passed it.
+- Score scales differ: RTMW's hand scores run above 1 (per-hand means 0.96 to 8.76 across its three runs), DWPose's
+  and ViTPose's stay below 1 here; a fixed threshold such as 0.3 therefore means different things per model, and every
+  RTMW hand passed it.
 - On R3a_cu (picking hand out of frame), the person's right hand passed the 0.3 mean-score rule in 60 of 60 RTMW
   frames, 15 of 60 DWPose frames and 3 of 60 ViTPose frames; the left (fretting) hand in all 60 for all three.
 - Whole-body models output both hands for every detected person whether or not a hand is visible: on R3a full all
@@ -740,3 +748,83 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
   ("onnxruntime", "opencv", "openvino"), `device`; `mode` ("performance", "balanced", "lightweight") for the solution
   classes; `to_openpose` for an OpenPose-style keypoint order. No handedness or guitar-specific constraint.
 - Samples: `samples/rtmlib/` (frames, summaries, freeze).
+
+## YOLOE-26s (open-vocabulary detection and segmentation), ultralytics 8.4.209
+
+- What it is: Ultralytics' YOLOE model (`yoloe-26s-seg.pt`, 31,072,171 bytes, sha256
+  `48f24206bc8680d60cbbfa296b0140da849669b9515058b72f5a945142df0654`, assets release v8.4.0) with text prompts encoded
+  by MobileCLIP2 (`mobileclip2_b.ts`, 253,794,476 bytes, sha256
+  `35d7f213e4d75f38514e4656ad3cb91158bd33e3805d8ac349f23b186f66982f`; the checkpoint's stored config names the text
+  model `mobileclip2:b`). Same torch venv.
+- Install facts: Ultralytics' `nn/text_model.py` runs `import clip` at import time even for MobileCLIP models. With
+  `openai-clip` 1.0.1 installed (it had been installed for YOLO-World), the first run failed with
+  `ModuleNotFoundError: No module named 'pkg_resources'` (raised in `clip/clip.py` line 6, `from pkg_resources import
+  packaging`); installing `setuptools<81` (80.10.2) fixed the import, which then warns `pkg_resources is deprecated as
+  an API`. A separately downloaded `mobileclip_blt.ts` (599,764,649 bytes) was deleted unused after the model's config
+  showed it uses MobileCLIP2.
+- Settings: `model.set_classes(PROMPTS, model.get_text_pe(PROMPTS))` with PROMPTS = guitar, guitar neck, fretboard,
+  headstock, capo, hand; `predict(conf=0.05)`; boxes >= 0.05 kept. Script `scripts/run_openvocab.py yoloe <outdir>
+  <weights dir>`. Images: R3a frames 100, 300, 500 (full), 100 and 300 (3x crop), R3a_cu frames 0, 150, 280.
+- Run: step `yoloe-26s_openvocab_rerun` of group job B1 (2 cores): wall 16.00 s, CPU 11.79 s, peak RSS 733.5 MiB;
+  model and text-encoder setup 7.52 s; 0.33-0.81 s per image.
+
+| image | guitar (count >= 0.25; top score) | guitar neck | fretboard (top score, below 0.25) | headstock | capo | hand (top score, below 0.25) |
+|---|---|---|---|---|---|---|
+| R3a f100 full | 1; 0.877 | none >= 0.05 | none | none | none | none |
+| R3a f300 full | 1; 0.712 | none | none | none | none | none |
+| R3a f500 full | 1; 0.847 | none | none | none | none | none |
+| R3a f100 crop | 1; 0.339 | none | 0.091 | none | none | none |
+| R3a f300 crop | 1; 0.768 | none | 0.097 | none | none | none |
+| R3a_cu f0 | 1; 0.764 | none | none | none | none | 0.071 |
+| R3a_cu f150 | 1; 0.766 | none | none | none | none | 0.096 |
+| R3a_cu f280 | 1; 0.626 | none | none | none | none | none |
+
+- The "guitar" box on R3a frame 100 is (206.7,128.6)-(394.8,422.4) (whole instrument). On R3a_cu frame 150 the "hand"
+  box (score 0.096) is (428.4,175.2)-(572.6,358.5), around the fretting hand.
+- Output format facts: like YOLO detection plus masks: `results[0].boxes` (xyxy, conf, cls index into the prompt list)
+  and `results[0].masks` (one mask per box). `results.json` (`samples/yoloe-26s/`) lists every box >= 0.05 per image
+  and prompt, with counts at >= 0.05, 0.25 and 0.5.
+- Constraint inputs: the text prompt list (`set_classes`), `conf`, `imgsz`; YOLOE also takes visual prompts (not used).
+
+## Grouped jobs (gtr-run ids for the steps above)
+
+The CPU slots were contended (the C1 job waited 1823.2 s for a slot, r0336 1800.7 s), so from 21:12 UTC most model
+runs went through two grouped jobs that each held one 2-core slot and ran their steps one after another
+(`scripts/steps.sh`, GNU `time` per step; `samples/steps/<group>.steps` lists the exact commands and
+`<group>.steps.times.tsv` the per-step exit code, wall, user and system CPU seconds and peak RSS in kB). Steps were
+appended to the two step files while the jobs ran, so each job's ledger label names only the steps it was started
+with. Four other grouped jobs (A1, A2, C2, D1), a separate CoTracker job and a second OpenPose job (R3a) were queued
+as well and cancelled while still waiting for a slot (no ledger entries); their steps were moved into B1 and C1.
+
+| gtr-run id | group | cores | slot wait | started (UTC) | wall | CPU (user+sys) | peak RSS of any step | steps |
+|---|---|---|---|---|---|---|---|---|
+| r0408 | C1 | 0-1 | 1823.2 s | 2026-11-10T22:01:25 | 1596.1 s | 2307.95 s | 777.3 MB | 29 (2 failed and were re-run, 1 failed: see below) |
+| r0448 | B1 | 2-3 | 2941.0 s | 2026-11-10T22:01:24 | 2457.96 s | 2887.20 s | 8607.3 MB (the CoTracker step) | 18 (1 failed and was re-run: see below) |
+
+Failed steps, as they happened: `rtmlib-hand_R3b_full` and `rtmlib-hand_R3c_full` (C1) stopped at the first sample
+image with `ModuleNotFoundError: No module named 'PIL'` (pillow was then installed into the rtmlib venv and both were
+re-run); `mediapipe-holistic_R3a_crop` (C1) failed at the shot cut (Holistic section); `yoloe-26s_openvocab` (B1) failed
+at import with `ModuleNotFoundError: No module named 'pkg_resources'` (from `import clip`, see the YOLOE section) and was
+re-run after `setuptools<81` was installed.
+
+Runs outside the groups: r0071, r0075, r0078, r0087 (MediaPipe Hand Landmarker; r0057 and r0061 failed before
+libgles2 was installed), r0336 (OpenPose hand, unmirrored), and the light `--nolock` runs r0149, r0172, r0193, r0214,
+r0218, r0227, r0350 (smoke test of the edited rtmlib script on 2 frames), r0400, r0402. Two short ffmpeg jobs made the
+lane input and contact sheet (r0012, r0015).
+
+## Media kept outside git
+
+All under `/home/user/gtr/lanes/video-hands-fretboard/`; none is copied into the repo.
+
+| file | bytes | duration | what it is |
+|---|---|---|---|
+| `inputs/R3a_cu/R3a_cu.mp4` | 2,244,809 | 10.01 s | Lane input: 682-692 s of the R3a source concert (CC BY-SA 4.0, attribution in `inputs.md`), H.264 640x480 with AAC audio |
+| `inputs/R3a_cu/R3a_cu.wav` | 1,765,672 | 10.008 s | Its audio, 16-bit 44.1 kHz stereo |
+| `out/videos/R3a_cu_mediapipe_hands.mp4` | 925,707 | 10.01 s | R3a_cu with MediaPipe Hand Landmarker landmarks drawn (r0078 output; drawing run r0227), no audio |
+| `out/videos/R3a_mediapipe_hands_full.mp4` | 927,653 | 18.02 s | R3a full frame with MediaPipe landmarks (r0071 output), no audio; shows the false detection on the sheet music in the wide shot |
+| `out/videos/R3b_mediapipe_hands_960.mp4` | 1,608,746 | 18.00 s | R3b at 960x540 with MediaPipe landmarks (group C1 output), no audio |
+| `out/videos/R3c_mediapipe_hands_960.mp4` | 940,447 | 18.00 s | R3c at 960x540 with MediaPipe landmarks (group C1 output), no audio |
+| `out/sam2/R3a_cu_f150-179.mp4` | 395,005 | 1.00 s | The 30 R3a_cu frames given to SAM 2.1 video mode (H.264 CRF 10), no audio |
+
+The R3b and R3c overlays carry the licenses of those clips (shared manifest); R3a and R3a_cu overlays are CC BY-SA 4.0
+derivatives of the archive.org concert video.

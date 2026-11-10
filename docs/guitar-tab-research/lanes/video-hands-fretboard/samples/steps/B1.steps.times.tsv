@@ -10,3 +10,10 @@ rtmlib-rtmw_R3a_full_step6	0	150.89	227.27	1.47	819728
 rtmlib-dwpose_R3a_full_step6	0	124.90	195.10	1.14	591080
 rtmlib-vitpose_R3a_full_step6	0	112.09	182.65	0.65	510568
 yolo-pose_yolo26n-pose_R3b_full	0	54.99	52.26	5.51	491580
+yolo-pose_yolo26n-pose_R3c_full	0	52.20	52.85	5.06	489160
+rtmlib-rtmw_R3a_cu_full_step5	0	90.68	174.09	1.43	809040
+rtmlib-dwpose_R3a_cu_full_step5	0	62.18	128.18	0.85	589024
+rtmlib-vitpose_R3a_cu_full_step5	0	106.48	127.78	1.04	510108
+openpose-hand_R3a_cu_every30_mirrorleft	0	202.43	176.06	11.97	1127768
+openpose-hand_R3a_every30_mirrorleft	0	311.11	319.49	29.00	1098584
+yoloe-26s_openvocab_rerun	0	16.00	10.83	0.96	751128

@@ -93,7 +93,9 @@ def main():
             c = fftconvolve(mm, s[::-1], mode="full")
             mid = len(s) - 1
             win = c[mid - K: mid + K + 1]
-            lag = int(np.argmax(np.abs(win)) - K)
+            # argmax index - K is negative when the sum is delayed; flip it so that positive = late (checked with
+            # a synthetic 100-sample delay, which gives +100)
+            lag = -int(np.argmax(np.abs(win)) - K)
             resid = 10 * np.log10(np.sum((mm - s) ** 2) / np.sum(mm ** 2))
             res["sum_vs_mix"] = {"common_rate": sr0, "common_frames": n, "best_lag_samples": lag,
                                  "residual_db_at_lag0": round(float(resid), 2),

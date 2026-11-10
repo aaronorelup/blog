@@ -363,3 +363,71 @@ the reader and writer of PyPI `demucs` 4.0.1 were checked against torchaudio 2.1
   (multichannel Wiener filtering), `-s` / `-d`, `-c` codec, `-b` bitrate, `-f` filename template. No pitch or
   tuning parameters.
 
+## Demucs 4.1.0, further runs (batch A): solo-guitar recordings, R2, option checks, whole song
+
+From 21:05 UTC the shared CPU slots were queued 15 to 20 jobs deep, so the remaining runs were grouped into batch
+jobs: each batch is one `gtr-run` job holding one 2-core slot (`scripts/batch_A.sh`, `batch_B.sh`, `batch_C.sh`), and
+inside it every item is started with `gtr-run --nolock`, which gives each item its own ledger line (wall, CPU, peak
+RSS, input hash). The ledger shows `cores: null` for those items because `--nolock` records no pinning; the batch log
+prints the inherited CPU affinity at its start: "batch A start 2026-11-10T22:28:01Z affinity: pid 29424's current
+affinity list: 0,1 nproc=2 OMP_NUM_THREADS=2 TF_NUM_INTRAOP_THREADS=2". Batch A waited from 21:33 to 22:28 for
+its slot.
+
+- **Real solo classical guitar (R3a, R3b, R3c, 18 s each), RMS level of each stem** (no truth stems):
+
+| run | model | clip | wall s | CPU s | stems, RMS dBFS (mix level) | residual of stem sum vs mix |
+|---|---|---|---|---|---|---|
+| r0409 | htdemucs | R3a | 20.47 | 34.0 | other -24.57, vocals -71.24, drums -73.92, bass -75.18 (mix -24.58) | -39.69 dB |
+| r0410 | htdemucs_6s | R3a | 14.13 | 24.3 | guitar -24.64, other -63.19, vocals -67.01, piano -75.07, bass -75.04, drums -75.16 | -29.11 dB |
+| r0412 | htdemucs | R3b | 19.51 | 33.0 | other -31.28, bass -45.98, drums -88.21, vocals -92.57 (mix -30.97) | -38.16 dB |
+| r0413 | htdemucs_6s | R3b | 14.88 | 26.0 | guitar -31.32, bass -46.91, other -94.40, vocals -94.21, drums -94.69, piano -101.36 | -26.32 dB |
+| r0414 | htdemucs | R3c | 44.84 | 44.0 | other -17.84, drums -60.77, vocals -74.46, bass -80.54 (mix -17.83) | -42.77 dB |
+| r0418 | htdemucs_6s | R3c | 46.44 | 45.4 | guitar -17.86, vocals -67.15, drums -71.33, piano -86.15, bass -89.20, other -89.96 | -30.00 dB |
+
+  On these three real nylon-string recordings htdemucs_6s put the guitar in `guitar` (within 0.4 dB of the mix
+  level); on the synthesized steel guitar S2s it put it in `piano` (first-pass table above). Every file: 44,100 Hz,
+  2 channels, PCM_16, same frame count as the input, stem sum at lag 0 (`samples/demucs/stemfacts_<model>_R3?.json`).
+- **R2 (real band excerpt, 36 s):** stems kept in `out/<model>/R2/`. Drums + bass + other (+ guitar + piano for
+  htdemucs_6s) summed into `derived_instrumental_sum.wav` and scored against the artist's instrumental; `vocals.wav`
+  against `vocals_derived` (SI-SDR / SDR / SIR / SAR dB):
+
+| run | eval | model | wall s | CPU s | peak RSS MB | instrumental | vocals | stem levels, RMS dBFS (mix -10.27) |
+|---|---|---|---|---|---|---|---|---|
+| r0424 | e1398 | htdemucs | 82.62 | 78.9 | 1207.1 | 11.41 / 12.08 / 21.44 / 12.65 | 13.42 / 13.73 / 19.43 / 15.14 | vocals -12.95, other -18.69, bass -20.23, drums -22.77 |
+| r0428 | e1399 | htdemucs_6s | 62.02 | 60.5 | 1300.4 | 10.77 / 11.23 / 20.82 / 11.77 | 13.42 / 13.74 / 19.88 / 14.99 | vocals -13.02, guitar -19.36, bass -20.08, drums -23.21, other -34.92, piano -37.30 |
+| r0435 | e1400 | htdemucs_ft | 289.33 | 297.8 | 1795.3 | 10.81 / 11.33 / 21.46 / 11.81 | 13.57 / 13.85 / 19.63 / 15.24 | vocals -12.85, other -18.79, bass -19.93, drums -23.30 |
+| r0447 | e1401 | mdx_extra | 204.85 | 169.4 | 3772.1 | 11.26 / 11.86 / 20.99 / 12.46 | 13.47 / 13.77 / 19.43 / 15.19 | vocals -13.13, other -18.99, bass -19.50, drums -24.30 |
+
+  INPUTS.md lists "That the song has bass and drums is UNVERIFIED"; the measured `bass` and `drums` stems sit 10 to
+  14 dB below the mix in all four models. That is a level of model output, not a listening check.
+- **Option checks** (`scripts/batch_A.sh` section 5): `--two-stems` on the whole S4, everything else on the first
+  10.000 s of S4 (`inputs/S4_0-10s/S4_0-10s.wav`, cut with `sox ... trim 0 441000s`, sha256 `d8f369e6...b1ea`). Scores
+  use `gtr-eval stems --max-seconds 10` against the S4 truth (map guitar=other, lead=vocals; SI-SDR / SDR dB):
+
+| run | option | wall s | CPU s | peak RSS MB | output | eval: drums / bass / guitar / lead SI-SDR, SDR |
+|---|---|---|---|---|---|---|
+| r0454 | none (htdemucs, base) | 32.47 | 27.8 | 1087.7 | 4 x WAV PCM_16, 1,764,044 bytes | e1408: 8.81, 9.10 / 5.22, 7.75 / 4.34, 5.11 / 5.52, 6.37 |
+| r0457 | `--shifts 2` | 37.88 | 42.1 | 1094.6 | same format | e1409: 9.05, 9.36 / 4.95, 7.59 / 4.15, 4.90 / 5.54, 6.37 |
+| r0458 | `--overlap 0.1` | 11.55 | 18.4 | 1083.9 | same format | e1410: 8.99, 9.27 / 5.16, 7.72 / 4.24, 4.98 / 5.58, 6.36 |
+| r0459 | `--segment 4` | 18.90 | 32.2 | 1071.5 | same format | e1411: 7.89, 8.08 / 3.47, 6.03 / 3.55, 4.25 / 5.61, 6.38 |
+| r0460 | `--segment 10` | 2.08 | 2.0 | 490.3 | exit 1: "Cannot use a Transformer model with a longer segment than it was trained for. Maximum segment is: 7.8" | none |
+| r0461 | `-j 2` | 10.27 | 17.5 | 1632.3 | same format | e1412: 8.89, 9.20 / 5.24, 7.79 / 4.27, 5.07 / 5.36, 6.22 |
+| r0462 | `--mp3` | 11.52 | 18.5 | 1096.3 | 4 x MP3, 320 kb/s, 44.1 kHz stereo, 401,240 bytes each | not scored (see below) |
+| r0463 | `--float32` | 12.17 | 18.7 | 1090.1 | 4 x WAV FLOAT, 3,528,056 bytes | e1413: 8.95, 9.24 / 5.34, 7.65 / 4.33, 5.07 / 5.62, 6.47 |
+| r0450 | `-n htdemucs_6s --two-stems guitar` (whole S4) | 109.70 | 71.2 | 1304.8 | `guitar.wav`, `no_guitar.wav`, PCM_16 | e1414 (guitar only, `--sdr-mode single`): SI-SDR 1.61, SDR 3.26 |
+
+  The base run took more CPU time (27.8 s) than the `--mp3`, `--float32` and `-j 2` runs (17.5 to 18.7 s), which do
+  the same separation with a different writer or with 2 parallel jobs; the cause of that spread was not isolated (it
+  ran first, and the box's load average was 6 to 10 during these runs). One run per option: these timings are not
+  averages. **The output is not identical from run to run:** `demucs/apply.py` draws a random
+  time offset when `shifts` > 0 (line 245, `offset = random.randint(0, max_shift)`; the CLI default is `--shifts 1`).
+  Measured with `scripts/compare_runs.py`: `other.wav` of the base run against the `-j 2` run differs by
+  max |diff| 0.0549, difference level -20.74 dB; against the `--float32` run -20.49 dB; the htdemucs_6s `guitar.wav`
+  of the first-pass S4 run (r0021) against the `--two-stems guitar` run (r0450) -13.10 dB, max |diff| 0.0874. The
+  first-pass guitar stem scored alone gives SI-SDR 1.89 / SDR 3.36 (e1415) against 1.61 / 3.26 for the two-stems run.
+  **MP3 output:** read back with soundfile (libsndfile) each MP3 has 442,368 frames, 1,368 more than the input, and
+  the stems' sum lines up with the mix at a lag of +1105 samples (late), so MP3 stems are not sample-aligned with the
+  input as decoded here. **Float output:** `--float32` files read as FLOAT (peak of `other.wav` 0.577).
+- **Whole song (R2full, 228.5 s) on 2 cores:** r0472 htdemucs: wall 255.55 s, CPU 347.1 s, peak RSS 1798.0 MB,
+  load1 at start 5.38.
+

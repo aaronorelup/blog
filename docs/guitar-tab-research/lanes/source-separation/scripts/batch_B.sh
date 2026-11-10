@@ -26,4 +26,26 @@ sep() {  # sep <model file> <clip>
     --custom_output_names "$NAMES" "$wav" && touch "$out/.done"
 }
 for spec in "$@"; do sep "${spec%%:*}" "${spec#*:}"; done
+# demucs.cpp second build attempt (added after batch C's build failed with the Eigen AVX512-FP16 error):
+# same sources, a fresh build dir, compiler = scripts/gxx_no_avx512fp16.sh (g++ ... -mno-avx512fp16)
+S=/home/user/blog/docs/guitar-tab-research/lanes/source-separation/scripts
+SRC=$L/src/demucs.cpp; B=$L/build/demucs.cpp-nofp16
+item() { local tool=$1 label=$2 input=$3; shift 3
+  gtr-run --nolock --lane source-separation --tool "$tool" --label "$label [inside batch B, 2-core slot]" --input "$input" -- "$@"; }
+if [ ! -x "$B/demucs_mt.cpp.main" ]; then
+  mkdir -p "$B"
+  item demucs.cpp-4edae49 "cmake configure demucs.cpp (USE_OPENBLAS=OFF, Release, CXX=g++ wrapper adding -mno-avx512fp16)" "$SRC/CMakeLists.txt" \
+    cmake -S "$SRC" -B "$B" -DUSE_OPENBLAS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=$S/gxx_no_avx512fp16.sh
+  item demucs.cpp-4edae49 "cmake build demucs.cpp.main + demucs_mt.cpp.main (-j2), -mno-avx512fp16" "$SRC/CMakeLists.txt" \
+    cmake --build "$B" --target demucs.cpp.main demucs_mt.cpp.main -j2
+fi
+G6=$L/models/demucs.cpp/ggml-model-htdemucs-6s-f16.bin
+for c in S4_0-10s S4; do
+  case $c in S4_0-10s) wav=$L/inputs/S4_0-10s/S4_0-10s.wav ;; *) wav=$IN/$c/$c.wav ;; esac
+  out=$L/out/demucs.cpp-htdemucs_6s/$c
+  [ -f "$out/.done" ] && continue
+  mkdir -p "$out"
+  [ -x "$B/demucs_mt.cpp.main" ] && item demucs.cpp-4edae49 "demucs_mt.cpp.main htdemucs_6s ggml f16, 2 threads, on $c" "$wav" \
+    "$B/demucs_mt.cpp.main" "$G6" "$wav" "$out" 2 && touch "$out/.done"
+done
 echo "batch B end $(date -u +%FT%TZ)"

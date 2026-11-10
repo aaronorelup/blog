@@ -49,7 +49,8 @@ ideal grid in ms, how many clicks were off the grid and how many were scheduled 
 `outputLatency` and the AudioContext's `playbackStats`; per Basic Pitch run the backend, model load time, inference
 time, notes found and notes matched to the 62 known notes (onset within 50 ms, same pitch); per ONNX run the execution
 provider, session creation time, inference time, the WebAssembly thread count and the same note counts. It also
-records the WebGL renderer string (which names the GPU) and whether WebGPU found an adapter.
+records the WebGL renderer string (on the cloud box: "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero)
+(0x0000C0DE)), SwiftShader driver)") and whether WebGPU found an adapter.
 
 If the page stays blank or the status shows an error about modules or CORS: send a screenshot of the page and of
 the Console (F12, Console tab). This page was tested here only in headless Chromium with the CDN files served from a

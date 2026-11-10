@@ -11,8 +11,8 @@ https://archive.org/details/scm-422828-crescendo313-drh-meredithconn (CC BY-SA 4
 them in your studio library, use those files. Otherwise: open that page, download the MPEG4 file
 `crescendo313_2014_09_04_0.mp4`, and use 6:40-6:58 (R3a) and 11:22-11:32 (R3a_cu). For the image-only tools use
 three stills: a screenshot of R3a_cu at 11:27 (frame 150 of the excerpt), of R3a at 0:03 (6:43 in the full video,
-medium shot) and of R3a at 0:10 (6:50, wide shot). If R3b or R3c appear in the shared manifest (closer views of other
-players), run the same steps on them too.
+medium shot) and of R3a at 0:10 (6:50, wide shot). R3b and R3c (closer views of two other players, in the shared
+manifest since 21:29 UTC) can be used the same way.
 
 **What to send back for every tool** unless the section says otherwise: the output files (images, JSON, video),
 screenshots of the settings you used, the tool's version or the page URL, and how long each step took by your clock.
@@ -98,12 +98,14 @@ Send back the `results.json` and the `frames/` folder it writes.
 
 ## 8. OpenPose (the full CMU program)
 
-The box ran only OpenPose's hand model (a PyTorch port, with hand boxes taken from MediaPipe). The full program finds
-the hands from its own body model.
+The box ran only OpenPose's hand model (a PyTorch port, with hand boxes taken from MediaPipe, left-hand crops mirrored
+as OpenPose itself does). The full program finds the hands from its own body model, which the box did not download.
 
-1. On https://github.com/CMU-Perceptual-Computing-Lab/openpose open "Releases" and download the Windows portable demo
-   for GPU if it is listed (check that it matches an NVIDIA GPU).
-2. Follow the README's "Windows portable demo" steps and run it with hand detection on, for example
+1. Follow "Windows Portable Demo" in OpenPose's installation doc (`doc/installation/0_index.md`, read 2026-11-10):
+   update the NVIDIA driver, "Download the latest OpenPose version from the Releases section", then "Follow the
+   `Instructions.txt` file inside the downloaded zip file to download the models required by OpenPose (about 500 Mb)".
+2. In PowerShell, in the unzipped folder, run it with hand keypoints on (flags from `doc/01_demo.md`:
+   `--video`, `--hand`, `--write_json`, `--write_video`), for example
    `bin\OpenPoseDemo.exe --video R3a_cu.mp4 --hand --write_json out\ --write_video out\R3a_cu_openpose.avi`.
 3. Send back: the `out\` folder (one JSON per frame) and the output video, plus the frame rate the program prints.
 4. Licence: OpenPose is for non-commercial research use (the docs agent quotes it in `survey.md`).

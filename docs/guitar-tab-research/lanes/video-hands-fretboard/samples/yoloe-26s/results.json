@@ -1,0 +1,769 @@
+{
+ "tool": "yoloe",
+ "model": "yoloe-26s-seg.pt",
+ "ultralytics": "8.4.209",
+ "init_s": 7.52,
+ "low_threshold": 0.05,
+ "prompts": [
+  "guitar",
+  "guitar neck",
+  "fretboard",
+  "headstock",
+  "capo",
+  "hand"
+ ],
+ "images": [
+  {
+   "clip": "R3a",
+   "frame": 100,
+   "mode": "full",
+   "view_wh": [
+    640,
+    480
+   ],
+   "infer_s": 0.807,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 1,
+     "n_ge_0.25": 1,
+     "n_ge_0.5": 1,
+     "top": [
+      {
+       "prompt": "guitar",
+       "score": 0.877,
+       "box_full": [
+        206.7,
+        128.6,
+        394.8,
+        422.4
+       ]
+      }
+     ]
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    }
+   },
+   "boxes": [
+    {
+     "prompt": "guitar",
+     "score": 0.877,
+     "box_full": [
+      206.7,
+      128.6,
+      394.8,
+      422.4
+     ]
+    }
+   ]
+  },
+  {
+   "clip": "R3a",
+   "frame": 300,
+   "mode": "full",
+   "view_wh": [
+    640,
+    480
+   ],
+   "infer_s": 0.335,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 1,
+     "n_ge_0.25": 1,
+     "n_ge_0.5": 1,
+     "top": [
+      {
+       "prompt": "guitar",
+       "score": 0.7121,
+       "box_full": [
+        174.1,
+        115.4,
+        481.4,
+        293.9
+       ]
+      }
+     ]
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    }
+   },
+   "boxes": [
+    {
+     "prompt": "guitar",
+     "score": 0.7121,
+     "box_full": [
+      174.1,
+      115.4,
+      481.4,
+      293.9
+     ]
+    }
+   ]
+  },
+  {
+   "clip": "R3a",
+   "frame": 500,
+   "mode": "full",
+   "view_wh": [
+    640,
+    480
+   ],
+   "infer_s": 0.556,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 1,
+     "n_ge_0.25": 1,
+     "n_ge_0.5": 1,
+     "top": [
+      {
+       "prompt": "guitar",
+       "score": 0.8466,
+       "box_full": [
+        206.4,
+        131.1,
+        398.6,
+        421.5
+       ]
+      }
+     ]
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    }
+   },
+   "boxes": [
+    {
+     "prompt": "guitar",
+     "score": 0.8466,
+     "box_full": [
+      206.4,
+      131.1,
+      398.6,
+      421.5
+     ]
+    }
+   ]
+  },
+  {
+   "clip": "R3a",
+   "frame": 100,
+   "mode": "crop",
+   "view_wh": [
+    720,
+    720
+   ],
+   "infer_s": 0.598,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 1,
+     "n_ge_0.25": 1,
+     "n_ge_0.5": 0,
+     "top": [
+      {
+       "prompt": "guitar",
+       "score": 0.3389,
+       "box_full": [
+        222.3,
+        131.0,
+        393.0,
+        349.8
+       ]
+      }
+     ]
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 3,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": [
+      {
+       "prompt": "fretboard",
+       "score": 0.0912,
+       "box_full": [
+        265.3,
+        306.3,
+        368.9,
+        350.0
+       ]
+      },
+      {
+       "prompt": "fretboard",
+       "score": 0.0834,
+       "box_full": [
+        266.7,
+        186.1,
+        371.2,
+        350.0
+       ]
+      },
+      {
+       "prompt": "fretboard",
+       "score": 0.0776,
+       "box_full": [
+        322.8,
+        128.0,
+        396.7,
+        265.5
+       ]
+      }
+     ]
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    }
+   },
+   "boxes": [
+    {
+     "prompt": "guitar",
+     "score": 0.3389,
+     "box_full": [
+      222.3,
+      131.0,
+      393.0,
+      349.8
+     ]
+    },
+    {
+     "prompt": "fretboard",
+     "score": 0.0912,
+     "box_full": [
+      265.3,
+      306.3,
+      368.9,
+      350.0
+     ]
+    },
+    {
+     "prompt": "fretboard",
+     "score": 0.0834,
+     "box_full": [
+      266.7,
+      186.1,
+      371.2,
+      350.0
+     ]
+    },
+    {
+     "prompt": "fretboard",
+     "score": 0.0776,
+     "box_full": [
+      322.8,
+      128.0,
+      396.7,
+      265.5
+     ]
+    }
+   ]
+  },
+  {
+   "clip": "R3a",
+   "frame": 300,
+   "mode": "crop",
+   "view_wh": [
+    840,
+    660
+   ],
+   "infer_s": 0.392,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 1,
+     "n_ge_0.25": 1,
+     "n_ge_0.5": 1,
+     "top": [
+      {
+       "prompt": "guitar",
+       "score": 0.7675,
+       "box_full": [
+        200.0,
+        115.8,
+        477.9,
+        292.1
+       ]
+      }
+     ]
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 1,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": [
+      {
+       "prompt": "fretboard",
+       "score": 0.0972,
+       "box_full": [
+        213.0,
+        254.2,
+        332.9,
+        283.5
+       ]
+      }
+     ]
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    }
+   },
+   "boxes": [
+    {
+     "prompt": "guitar",
+     "score": 0.7675,
+     "box_full": [
+      200.0,
+      115.8,
+      477.9,
+      292.1
+     ]
+    },
+    {
+     "prompt": "fretboard",
+     "score": 0.0972,
+     "box_full": [
+      213.0,
+      254.2,
+      332.9,
+      283.5
+     ]
+    }
+   ]
+  },
+  {
+   "clip": "R3a_cu",
+   "frame": 0,
+   "mode": "full",
+   "view_wh": [
+    640,
+    480
+   ],
+   "infer_s": 0.331,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 2,
+     "n_ge_0.25": 1,
+     "n_ge_0.5": 1,
+     "top": [
+      {
+       "prompt": "guitar",
+       "score": 0.7638,
+       "box_full": [
+        14.4,
+        23.6,
+        637.0,
+        474.9
+       ]
+      },
+      {
+       "prompt": "guitar",
+       "score": 0.1568,
+       "box_full": [
+        1.8,
+        269.6,
+        583.1,
+        479.9
+       ]
+      }
+     ]
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 1,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": [
+      {
+       "prompt": "hand",
+       "score": 0.0713,
+       "box_full": [
+        374.9,
+        171.0,
+        528.5,
+        380.2
+       ]
+      }
+     ]
+    }
+   },
+   "boxes": [
+    {
+     "prompt": "guitar",
+     "score": 0.7638,
+     "box_full": [
+      14.4,
+      23.6,
+      637.0,
+      474.9
+     ]
+    },
+    {
+     "prompt": "guitar",
+     "score": 0.1568,
+     "box_full": [
+      1.8,
+      269.6,
+      583.1,
+      479.9
+     ]
+    },
+    {
+     "prompt": "hand",
+     "score": 0.0713,
+     "box_full": [
+      374.9,
+      171.0,
+      528.5,
+      380.2
+     ]
+    }
+   ]
+  },
+  {
+   "clip": "R3a_cu",
+   "frame": 150,
+   "mode": "full",
+   "view_wh": [
+    640,
+    480
+   ],
+   "infer_s": 0.422,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 2,
+     "n_ge_0.25": 1,
+     "n_ge_0.5": 1,
+     "top": [
+      {
+       "prompt": "guitar",
+       "score": 0.7662,
+       "box_full": [
+        13.2,
+        32.3,
+        639.1,
+        473.1
+       ]
+      },
+      {
+       "prompt": "guitar",
+       "score": 0.1167,
+       "box_full": [
+        0.7,
+        312.1,
+        620.9,
+        480.0
+       ]
+      }
+     ]
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 1,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": [
+      {
+       "prompt": "hand",
+       "score": 0.0959,
+       "box_full": [
+        428.4,
+        175.2,
+        572.6,
+        358.5
+       ]
+      }
+     ]
+    }
+   },
+   "boxes": [
+    {
+     "prompt": "guitar",
+     "score": 0.7662,
+     "box_full": [
+      13.2,
+      32.3,
+      639.1,
+      473.1
+     ]
+    },
+    {
+     "prompt": "guitar",
+     "score": 0.1167,
+     "box_full": [
+      0.7,
+      312.1,
+      620.9,
+      480.0
+     ]
+    },
+    {
+     "prompt": "hand",
+     "score": 0.0959,
+     "box_full": [
+      428.4,
+      175.2,
+      572.6,
+      358.5
+     ]
+    }
+   ]
+  },
+  {
+   "clip": "R3a_cu",
+   "frame": 280,
+   "mode": "full",
+   "view_wh": [
+    640,
+    480
+   ],
+   "infer_s": 0.457,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 2,
+     "n_ge_0.25": 1,
+     "n_ge_0.5": 1,
+     "top": [
+      {
+       "prompt": "guitar",
+       "score": 0.6256,
+       "box_full": [
+        2.5,
+        27.8,
+        638.3,
+        480.0
+       ]
+      },
+      {
+       "prompt": "guitar",
+       "score": 0.0736,
+       "box_full": [
+        0.6,
+        281.9,
+        374.6,
+        479.8
+       ]
+      }
+     ]
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    }
+   },
+   "boxes": [
+    {
+     "prompt": "guitar",
+     "score": 0.6256,
+     "box_full": [
+      2.5,
+      27.8,
+      638.3,
+      480.0
+     ]
+    },
+    {
+     "prompt": "guitar",
+     "score": 0.0736,
+     "box_full": [
+      0.6,
+      281.9,
+      374.6,
+      479.8
+     ]
+    }
+   ]
+  }
+ ]
+}

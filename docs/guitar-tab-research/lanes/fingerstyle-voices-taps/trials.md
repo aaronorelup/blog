@@ -115,6 +115,9 @@ Onsets (`librosa.onset.onset_detect` defaults) on the percussive part:
   In the percussive parts the energy ranges of note-only events and tap events do not overlap on this clip (gap
   between the loudest note-only event and the quietest tap event: 0.30 dB at margin 1, 3.39 dB at margin 4, 3.72 dB
   at margin 16); in the mix they do. This is one synthesized clip with GM drum samples as taps.
+- Verifier: re-run r0440 (same script, `--nolock`, one thread, wall 23.84 s) wrote the same audio samples, the same
+  energy fractions and byte-identical onset files; the 190 gtr-eval scorings cited in this file were re-run with
+  identical results (r0434, see the verification log).
 - Input format facts: any 1-D float array at any sample rate (here 44.1 kHz mono float32). Emits two arrays the
   length of the input (time-domain harmonic and percussive signals); `librosa.decompose.hpss` works on a spectrogram
   and returns two spectrograms (or two masks with `mask=True`).
@@ -154,7 +157,9 @@ Onsets (`librosa.onset.onset_detect` defaults) on the percussive part:
   Columns 5 to 8: `scripts/score_onset_dir.py` (calls `fvt_common.classify_onsets`): each onset matched one-to-one
   to the 53 labelled event times within 50 ms. "vs taps" and "vs note onsets" are `gtr-eval onsets --field taps` /
   `--field notes`, window 50 ms. Every method reached every event; the methods differ only in extra onsets.
-- Failures and oddities: the Python CLI `aubio` fails as above.
+- Failures and oddities: the Python CLI `aubio` fails as above (re-checked by the verifier: same error).
+- Verifier: re-run r0352 wrote 8 byte-identical onset files; the defaults quoted above are those `aubioonset --help`
+  prints, and the Ubuntu package is `aubio-tools 0.4.9-4.4build1` (dpkg).
 
 ## Essentia 2.1-beta6-dev (PyPI `essentia==2.1b6.dev1389`): OnsetDetection, Onsets, OnsetRate, SuperFluxExtractor
 
@@ -194,6 +199,8 @@ Onsets (`librosa.onset.onset_detect` defaults) on the percussive part:
   combine)`. No musical constraints.
 - Failures and oddities: `SuperFluxExtractor` with its defaults returned 19 onsets on this 29.4 s clip; no tuning
   of its threshold was tried.
+- Verifier: re-run r0353 wrote 8 byte-identical onset files; the list of Essentia names above is what
+  `essentia.standard` of this install contains (re-listed).
 
 ## Demucs 4.1.0 stems (run by the source-separation lane) on the solo guitar clips: what the bass and drums stems contain
 
@@ -207,7 +214,8 @@ removes the other part's track from the clip's own MIDI file and renders the res
 FluidSynth command, at the clip's own gain from `_checks/synth_checks.json` (runs r0135 S2s, r0136 S6taps, r0137
 S2n, r0138 S5dropd; `--nolock`, 1.3 to 6.0 s wall each). Check: melody + bass (+ the shared taps stem for S6taps)
 differs from the clip's mix by at most 3.4e-5 of the mix peak (S2s, S2n, S5dropd) and 7.8e-4 (S6taps). Files:
-`/home/user/gtr/lanes/fingerstyle-voices-taps/inputs/voice-stems/<clip>/{melody,bass}.wav` (+ `.mono.wav`).
+`/home/user/gtr/lanes/fingerstyle-voices-taps/inputs/voice-stems/<clip>/{melody,bass}.wav` (+ `.mono.wav`). The
+verifier's re-run of the S2n render (r0363) wrote four byte-identical WAV files.
 
 Energy of each stem (sum of squares over both channels / the same for the clip's mix; computed here):
 
@@ -509,6 +517,9 @@ The shared set has none (INPUTS.md). Searched 2026-11-10:
   low-pass cutoff, `fmin`/`fmax` (the bass register: a known tuning such as Drop D lowers `fmin`; S5dropd's lowest
   bass note is D2 = 73.4 Hz, inside C2 to C4), `frame_length`, `hop_length`.
 - Samples: `samples/bass-lowpass-pyin/S2n_notes_150.csv`, `S2n_f0_150.csv`, `S5dropd_notes_150.csv`.
+- Verifier: re-run r0444 of the S2n run (`--nolock`, one thread, wall 16.26 s against 103.91 s for r0235) wrote
+  byte-identical f0 and note files at all three cutoffs; an independent `mir_eval.melody.evaluate` on
+  `f0_150_0.csv` against a 10 ms reference from the truth bass notes gave raw pitch accuracy 0.800, as in e0564.
 
 ## libnmfd 1.0.0 (AudioLabs Erlangen): KAM harmonic-percussive separation + NMFD with a percussiveness threshold
 
@@ -596,6 +607,8 @@ The shared set has none (INPUTS.md). Searched 2026-11-10:
 
 - Timing of the 32 matched tap pairs: CNNOnsetDetector median +3.2 ms (largest 9.3 ms, e0681); SuperFlux median
   -2.1 ms (largest 5.0 ms, e0712); for comparison aubio hfc median +2.7 ms (e0081).
+- The eval ids above scored `out/madmom/S6taps_onsets/`, byte-identical copies of r0247's `out/madmom/S6taps/`.
+  Verifier: re-run r0443 (`--nolock`, one thread, wall 17.92 s) wrote 8 byte-identical onset files.
 - The eight madmom programs report an onset at every one of the 53 events, as do librosa, the eight aubio methods and
   six of the eight Essentia runs on the mix (Essentia `OnsetDetection hfc` misses one tap-only event and
   `SuperFluxExtractor` with its defaults reaches 18 of the 53). None of these outputs says whether an onset is a tap
@@ -837,7 +850,8 @@ Clones of ADTOF-pytorch and piano_svsep were deleted after their files were read
 blob-less clones of 36 repositories, among them `CPJKU__piano_svsep` and `xavriley__ADTOF-pytorch`, made at 20:56 to
 21:14 UTC for the survey, are under `clones/` (110 MB after the verifier's `git ls-tree -l` calls fetched some of
 their blobs). The verifier rebuilt `venv-nmfd` and `venv-basicpitch` offline from the two freeze files (uv's shared
-cache, hard links, no measurable change in free disk) under `verify-trials/` for its re-runs.
+cache, hard links, no measurable change in free disk) under `verify-trials/` for its re-runs, and deleted both
+after them.
 
 ## Inputs added by this lane
 
@@ -865,7 +879,9 @@ kHz) except the R3 Demucs stems (18.0 s). None is in git.
 
 Independent check of this file and of `for-aaron.md` against the run ledger, the eval ledger, the files under
 `/home/user/gtr/lanes/fingerstyle-voices-taps/` and the live sources. The verifier's check scripts are in
-`scripts/verify-trials/`; its re-run outputs are in `/home/user/gtr/lanes/fingerstyle-voices-taps/verify-trials/`.
+`scripts/verify-trials/`; its re-run outputs and logs are in `/home/user/gtr/lanes/fingerstyle-voices-taps/verify-trials/`
+(21 MB; the WAV files of re-runs that matched the originals were deleted after the comparison, the Demucs R3a stems
+of r0420 are kept).
 
 What was checked, and the result:
 
@@ -882,7 +898,8 @@ What was checked, and the result:
   of all 37 S6taps onset files and their P / R / F against taps and note onsets with `mir_eval.onset.f_measure`
   (`vonsets.py`; all match); the event-energy table for ten signals (`venergy.py`; all match within 0.01 dB of
   rounding except one cell, fixed below); the tap-kind centroids (`vcentroid.py`; match); the stem energies and peaks
-  (`vstemenergy.py`); and one metric per tool with mir_eval directly (`vmireval.py`): SI-SDR of the HPSS margin-4,
+  of every Demucs and Open-Unmix stem quoted (`vstemenergy.py`; energies match; the R3 peak column matches only as
+  the peak of the (L+R)/2 mono signal, now stated); and one metric per tool with mir_eval directly (`vmireval.py`): SI-SDR of the HPSS margin-4,
   libnmfd KAM and NMF k = 16 taps parts, SI-SDR and SDR of the htdemucs_6s drums stem, Basic Pitch S2n note P / R /
   F, the B1 T = 55 bass-labelled notes of S2n, Essentia Melodia S2s and pyin S2n f0 raw pitch accuracy, and R1c
   madmom CNN onsets. Every value matches its eval id.
@@ -923,10 +940,17 @@ Re-runs of recorded commands through gtr-run (labels start with "verify"):
 | r0417 | r0325 Basic Pitch with a note range, S5dropd | byte-identical CSV |
 | r0420 | r0327 Demucs htdemucs_6s, R3a only | not identical (random time shift, see the Demucs section); onsets on the drums stem 180 against 226 |
 | r0434 | all 190 cited gtr-eval scorings | 190 of 190 identical |
-| CHAIN1-PENDING | | |
+| r0440 | r0031 librosa HPSS sweep, margins 1 to 16 | same audio samples in all ten WAV files, same energy fractions, byte-identical onset files (53 at every margin and on the mix) |
+| r0443 | r0247 madmom, 8 programs | 8 byte-identical onset files |
+| r0444 | r0235 low-pass + pyin, S2n | byte-identical f0 and note files at all three cutoffs |
+
+r0440, r0443 and r0444 were first queued for a 2-core slot; after 29 minutes without a slot they were run
+`--nolock` with one thread instead, like most of the original runs. Every verifier run in this table is `--nolock`;
+r0416, r0417 and r0420 are also pinned with `taskset` like their originals. Their wall times (1.1 s to 247.7 s) are
+in the ledger.
 
 The venvs for r0415 and r0416 were rebuilt offline from `freeze/venv-nmfd.txt` and `freeze/venv-basicpitch.txt`
-(uv's shared cache; free disk did not change measurably); r0420 used the source-separation lane's `venv-demucs`,
+(uv's shared cache; free disk did not change measurably) and deleted afterwards; r0420 used the source-separation lane's `venv-demucs`,
 whose demucs, torch and numpy versions are those of `freeze/venv-demucs.txt`.
 
 Tried and refused: compiling McLeod and Steedman's voice-splitting (`make` in a clone of
@@ -959,7 +983,8 @@ Changed in this file:
 - Basic Pitch: M1's use of the truth tempo (112 bpm) stated; re-run results; MIDI written without `--save-midi`.
 - pyin: the scored files are `f0_<cutoff>_0.csv` (the plain `f0_<cutoff>.csv` has empty cells).
 - Melodia: exit code 3 and the voiced-frame index explained; re-run and independent mir_eval check added.
-- NMF ORACLE: "upper bound" removed (the correlation rule is not shown to be the best grouping); k = 8 flatness added.
+- NMF ORACLE: the phrase about a bound removed (the correlation rule is not shown to give the highest score any
+  grouping could reach); k = 8 flatness added.
 - R3: INPUTS.md times and wording quoted; "tap-free" replaced by what INPUTS.md says (no body taps seen in the
   frames); the peak column is the (L+R)/2 mono peak; the Demucs run-to-run differences (226, 180, 208 onsets) added.
 - R1c: 139 is the count after gtr-eval's rounding to the millisecond (135 if merged within 1 ms).
