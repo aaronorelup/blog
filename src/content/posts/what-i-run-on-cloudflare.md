@@ -30,9 +30,9 @@ Storage for my agents' renders and songs adds about $4.75, so the whole bill is 
   this site, inside the free 10 GB, and 325 GB for my agents' library.
 - **Two things here are half-built.** The Listen button's recorded voice and the /stats traffic
   page are both built and wait on one last setup step.
-- **Almost everything I'd add next fits on the same plan.** Voice questions for the chatbot are
-  being built now, and a newsletter signup, live visitors on my 3D homepage and a guestbook could
-  come next. Card payments and the newsletter emails themselves need another company.
+- **Almost everything I'd add next fits on the same plan.** Voice questions for the chatbot went
+  live while I wrote this, and a newsletter signup, live visitors on my 3D homepage and a guestbook
+  could come next. Card payments and the newsletter emails themselves need another company.
 
 ## What runs where
 
@@ -106,7 +106,7 @@ has a daily cap and an off switch, and no draft or unlisted post ever shows up a
 
 - **Voice questions for the chatbot.** Hold a button, ask out loud, and Whisper, OpenAI's
   speech-to-text model, turns it into text on Cloudflare. About 25 cents for 1,000 thirty-second
-  questions. This one is being built now.
+  questions. This one is live now, on the microphone beside the Ask box on [the ledger](/ledger/).
 - **A Cloudflare voice for Listen.** Recording every post would cost about $5 with Deepgram's Aura-1
   voice on Cloudflare, or about $10 with the newer Aura-2. I'd want to hear them next to ElevenLabs
   first.
