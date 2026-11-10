@@ -1,0 +1,102 @@
+{
+ "service": "vercel-ai-gateway",
+ "model": "meta/muse-spark-open",
+ "media": "/home/user/gtr/inputs/S3/S3.mono.wav",
+ "media_bytes": 2116844,
+ "media_sha256": "92f5740a02860ee7e450f1a7da9ee8e3b6fad44b29ee11ddb98f913519265c2a",
+ "media_duration_s": 24.0,
+ "mime": "audio/wav",
+ "http_status": 200,
+ "wall_s": 6.72,
+ "reasoning_effort": null,
+ "max_tokens": 24576,
+ "price_usd_per_token": {
+  "input": 1.25e-06,
+  "output": 4.25e-06
+ },
+ "price_source": "https://ai-gateway.vercel.sh/v1/models entry 'pricing' (read at run time)",
+ "response_headers": {},
+ "usage": {
+  "prompt_tokens": 616,
+  "completion_tokens": 951,
+  "total_tokens": 1567,
+  "cost": 0.00467095,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 128,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": null,
+   "upstream_inference_prompt_cost": 0,
+   "upstream_inference_completions_cost": 0
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 885,
+   "image_tokens": 0
+  },
+  "cache_creation_input_tokens": 0,
+  "market_cost": 0.00467095,
+  "gateway_cost": 0.00467095
+ },
+ "cost_usd_computed": 0.004812,
+ "cost_formula": "prompt_tokens * input price + completion_tokens * output price (completion_tokens includes reasoning tokens in the OpenAI usage format; reasoning_tokens reported separately: 885)",
+ "cost_usd_reported": 0.00467095,
+ "cost_usd": 0.004812,
+ "finish_reason": "stop",
+ "provider_metadata": {
+  "baseten": {
+   "acceptedPredictionTokens": 628,
+   "rejectedPredictionTokens": 1633
+  },
+  "gateway": {
+   "routing": {
+    "originalModelId": "meta/muse-spark-open",
+    "resolvedProvider": "baseten",
+    "fallbacksAvailable": [
+     "fireworks",
+     "modal",
+     "nebius",
+     "togetherai"
+    ],
+    "canonicalSlug": "meta/muse-spark-open",
+    "finalProvider": "baseten",
+    "modelAttemptCount": 1,
+    "modelAttempts": [
+     {
+      "canonicalSlug": "meta/muse-spark-open",
+      "success": true,
+      "providerAttemptCount": 1,
+      "providerAttempts": [
+       {
+        "provider": "baseten",
+        "credentialType": "system",
+        "success": true,
+        "startTime": 1794344276546,
+        "endTime": 1794344282590,
+        "providerRequestId": "54ca701a1c740d2767a6382ee92ffb2755260",
+        "statusCode": 200,
+        "providerResponseId": "chatcmpl-9f647c59eff846c9b01e7032b0399102"
+       }
+      ]
+     }
+    ],
+    "totalProviderAttemptCount": 1,
+    "clientSessionId": "2972f905741de9ea213be301df2b3f88",
+    "clientSessionIdSource": "fingerprint"
+   },
+   "cost": "0.00467095",
+   "marketCost": "0.00467095",
+   "surchargeCost": "0",
+   "gatewayCost": "0.00467095",
+   "inferenceCost": "0.00467095",
+   "inputInferenceCost": "0.0006292",
+   "outputInferenceCost": "0.00404175",
+   "generationId": "gen_01M73M1MAHM0WW1K7HA03EKJYC"
+  }
+ },
+ "output_text_chars": 121,
+ "answer_parsed": true,
+ "spent_service_before_usd": 0.000346
+}

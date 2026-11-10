@@ -1,0 +1,129 @@
+{
+ "mode": "stems",
+ "audio": "/home/user/gtr/inputs/S4/S4.wav",
+ "audio_bytes": 6834024,
+ "audio_sha256": "1aacf23f6f235aac8a9c627f9f6efbdaffd5ceee94f6f5da14af486803705b8a",
+ "audio_duration_s": 38.741383,
+ "http_status": 200,
+ "wall_s": 6.984,
+ "content_type": "application/zip",
+ "response_bytes": 5586876,
+ "credits_used_measured": 0,
+ "headers_kept": {},
+ "stem_variation_id": "six_stems_v1",
+ "output_format": "mp3_44100_192",
+ "cost_usd_counted": 0.2343,
+ "cost_rule": "max(credits_used * 0.00022 USD (estimate), published per-hour rate for STT)",
+ "zip_files": [
+  {
+   "name": "drums.mp3",
+   "bytes": 931048,
+   "ffprobe": {
+    "programs": [],
+    "streams": [
+     {
+      "codec_name": "mp3",
+      "sample_rate": "44100",
+      "channels": 2,
+      "bit_rate": "192000"
+     }
+    ],
+    "format": {
+     "duration": "38.791833"
+    }
+   }
+  },
+  {
+   "name": "vocals.mp3",
+   "bytes": 931048,
+   "ffprobe": {
+    "programs": [],
+    "streams": [
+     {
+      "codec_name": "mp3",
+      "sample_rate": "44100",
+      "channels": 2,
+      "bit_rate": "192000"
+     }
+    ],
+    "format": {
+     "duration": "38.791833"
+    }
+   }
+  },
+  {
+   "name": "piano.mp3",
+   "bytes": 931048,
+   "ffprobe": {
+    "programs": [],
+    "streams": [
+     {
+      "codec_name": "mp3",
+      "sample_rate": "44100",
+      "channels": 2,
+      "bit_rate": "192000"
+     }
+    ],
+    "format": {
+     "duration": "38.791833"
+    }
+   }
+  },
+  {
+   "name": "guitar.mp3",
+   "bytes": 931048,
+   "ffprobe": {
+    "programs": [],
+    "streams": [
+     {
+      "codec_name": "mp3",
+      "sample_rate": "44100",
+      "channels": 2,
+      "bit_rate": "192000"
+     }
+    ],
+    "format": {
+     "duration": "38.791833"
+    }
+   }
+  },
+  {
+   "name": "bass.mp3",
+   "bytes": 931048,
+   "ffprobe": {
+    "programs": [],
+    "streams": [
+     {
+      "codec_name": "mp3",
+      "sample_rate": "44100",
+      "channels": 2,
+      "bit_rate": "192000"
+     }
+    ],
+    "format": {
+     "duration": "38.791833"
+    }
+   }
+  },
+  {
+   "name": "other.mp3",
+   "bytes": 931048,
+   "ffprobe": {
+    "programs": [],
+    "streams": [
+     {
+      "codec_name": "mp3",
+      "sample_rate": "44100",
+      "channels": 2,
+      "bit_rate": "192000"
+     }
+    ],
+    "format": {
+     "duration": "38.791833"
+    }
+   }
+  }
+ ],
+ "credits_used_measured_later": 1065,
+ "credits_note": "character_count read 3 s after the call was unchanged; read again about 2 minutes later it was 1,065 higher (151,005 -> 152,070); no other ElevenLabs call was made from this lane in between"
+}

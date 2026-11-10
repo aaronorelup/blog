@@ -1,0 +1,100 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>slow practice</title>
+<body>
+<script src="/nm/rubberband-wasm/dist/index.umd.min.js"></script>
+<script type="module">
+// Slow S1 down to RATE (0.5 = half speed) with one METHOD and save the result:
+//   element     : <audio> with playbackRate = RATE and preservesPitch = PP, routed into the graph and recorded
+//                 in real time
+//   soundtouch  : SoundTouchJS 0.3.0 SoundTouch + SimpleFilter, tempo = RATE, offline in the page
+//   signalsmith : Signalsmith Stretch 1.3.2 AudioWorklet node in an OfflineAudioContext, rate = RATE
+//   rubberband  : rubberband-wasm 3.3.0 (Rubber Band Library), offline, time ratio 1/RATE, default options
+import { finish, fail, sleep, makeRecorder, encodeWav, upload, fetchArrayBuffer } from './common.js';
+import { SoundTouch, SimpleFilter, WebAudioBufferSource } from '/nm/soundtouchjs/dist/soundtouch.js';
+import SignalsmithStretch from '/nm/signalsmith-stretch/SignalsmithStretch.mjs';
+const q = new URLSearchParams(location.search);
+const METHOD = q.get('method') || 'element', RATE = Number(q.get('rate') || 0.5), PP = q.get('pp') !== '0';
+const FILE = q.get('file') || '/inputs/S1/S1.wav';
+const R = { method: METHOD, rate: RATE, preservesPitch: METHOD === 'element' ? PP : null, file: FILE };
+const tag = `${METHOD}_${String(RATE).replace('.', 'p')}${METHOD === 'element' ? (PP ? '_pp1' : '_pp0') : ''}`;
+try {
+  const ab = await fetchArrayBuffer(FILE);
+  const dctx = new OfflineAudioContext(2, 1, 44100);
+  const inBuf = await dctx.decodeAudioData(ab.slice(0));
+  const sr = inBuf.sampleRate; R.input = { sampleRate: sr, channels: inBuf.numberOfChannels, duration_s: inBuf.duration };
+  let outCh, t0, t1;
+  if (METHOD === 'element') {
+    const ctx = new AudioContext({ latencyHint: 'interactive' }); await ctx.resume();
+    R.ctx_sampleRate = ctx.sampleRate;
+    const audio = new Audio(); audio.src = FILE; audio.preload = 'auto';
+    await new Promise((r, j) => { audio.oncanplaythrough = r; audio.onerror = () => j(new Error('audio error')); });
+    audio.playbackRate = RATE; audio.preservesPitch = PP;
+    const node = ctx.createMediaElementSource(audio);
+    const rec = await makeRecorder(ctx, 2, 1); node.connect(rec.node);
+    await sleep(200);
+    t0 = performance.now(); const c0 = ctx.currentTime;
+    await audio.play();
+    await new Promise((r) => { audio.onended = r; });
+    t1 = performance.now(); R.ctx_seconds_play_to_ended = ctx.currentTime - c0;
+    await sleep(300);
+    const cap = await rec.stop(); outCh = cap.channels; R.capture_gaps = cap.gaps;
+    R.out_sampleRate = ctx.sampleRate; R.play_to_ended_wall_s = (t1 - t0) / 1000;
+    await ctx.close();
+  } else if (METHOD === 'soundtouch') {
+    t0 = performance.now();
+    const st = new SoundTouch(); st.tempo = RATE; st.pitch = 1.0;
+    const src = new WebAudioBufferSource(inBuf);
+    const filter = new SimpleFilter(src, st);
+    const chunks = []; const N = 8192; let total = 0;
+    for (;;) { const buf = new Float32Array(N * 2); const got = filter.extract(buf, N); if (got === 0) break; chunks.push(buf.subarray(0, got * 2)); total += got; }
+    const L = new Float32Array(total), Rr = new Float32Array(total); let o = 0;
+    for (const c of chunks) { for (let i = 0; i < c.length / 2; i++) { L[o + i] = c[2 * i]; Rr[o + i] = c[2 * i + 1]; } o += c.length / 2; }
+    t1 = performance.now(); outCh = [L, Rr]; R.out_sampleRate = sr;
+  } else if (METHOD === 'signalsmith') {
+    const outLen = Math.ceil((inBuf.duration / RATE + 1.0) * sr);
+    const off = new OfflineAudioContext(2, outLen, sr);
+    t0 = performance.now();
+    const stretch = await SignalsmithStretch(off);
+    stretch.connect(off.destination);
+    const chans = [inBuf.getChannelData(0), inBuf.getChannelData(1)];
+    const endP = stretch.addBuffers(chans);
+    stretch.schedule({ active: true, input: 0, rate: RATE, output: 0 });
+    R.signalsmith_latency_s = stretch.latency ? stretch.latency() : null;
+    const rendered = await off.startRendering();
+    t1 = performance.now();
+    R.addBuffers_end = await Promise.race([endP, sleep(1000).then(() => 'not resolved')]);
+    outCh = [rendered.getChannelData(0), rendered.getChannelData(1)]; R.out_sampleRate = sr;
+  } else if (METHOD === 'rubberband') {
+    t0 = performance.now();
+    const wasm = await WebAssembly.compileStreaming(fetch('/nm/rubberband-wasm/dist/rubberband.wasm'));
+    const rb = await rubberband.RubberBandInterface.initialize(wasm);
+    const tInit = performance.now(); R.wasm_init_ms = tInit - t0;
+    const chans = [inBuf.getChannelData(0), inBuf.getChannelData(1)]; const n = chans[0].length;
+    const ratio = 1 / RATE;
+    const st = rb.rubberband_new(sr, 2, 0, ratio, 1.0);
+    const need = rb.rubberband_get_samples_required(st);
+    const blk = 1024;
+    const arr = rb.malloc(2 * 4); const ptrs = [rb.malloc(blk * 4), rb.malloc(blk * 4)];
+    ptrs.forEach((p, i) => rb.memWritePtr(arr + i * 4, p));
+    rb.rubberband_set_expected_input_duration(st, n);
+    for (let r = 0; r < n; r += blk) { const m = Math.min(blk, n - r); chans.forEach((c, i) => rb.memWrite(ptrs[i], c.subarray(r, r + m))); rb.rubberband_study(st, arr, m, r + m >= n ? 1 : 0); }
+    const outs = [[], []]; let tot = 0;
+    const pull = () => { for (;;) { const av = rb.rubberband_available(st); if (av < 1) break; const got = rb.rubberband_retrieve(st, arr, Math.min(blk, av));
+      ptrs.forEach((p, i) => outs[i].push(rb.memReadF32(p, got).slice())); tot += got; } };
+    for (let r = 0; r < n; r += blk) { const m = Math.min(blk, n - r); chans.forEach((c, i) => rb.memWrite(ptrs[i], c.subarray(r, r + m))); rb.rubberband_process(st, arr, m, r + m >= n ? 1 : 0); pull(); }
+    pull();
+    R.rubberband = { samples_required_first: need, start_delay: rb.rubberband_get_start_delay ? rb.rubberband_get_start_delay(st) : null, latency: rb.rubberband_get_latency(st), time_ratio: rb.rubberband_get_time_ratio(st) };
+    rb.rubberband_delete(st);
+    outCh = outs.map((parts) => { const a = new Float32Array(tot); let o = 0; for (const p of parts) { a.set(p, o); o += p.length; } return a; });
+    t1 = performance.now(); R.out_sampleRate = sr;
+  }
+  R.processing_ms = t1 - t0;
+  R.output = { samples: outCh[0].length, seconds: outCh[0].length / R.out_sampleRate, expected_seconds: R.input.duration_s / RATE };
+  let peak = 0; for (const c of outCh) for (let i = 0; i < c.length; i++) peak = Math.max(peak, Math.abs(c[i]));
+  R.output.peak = peak;
+  R.wav = await upload('stretch', `S1_${tag}.wav`, encodeWav(outCh, R.out_sampleRate, { float: true }));
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

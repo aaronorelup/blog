@@ -1,5 +1,5 @@
 // Minimal static file server for the web-tab-render trials (no dependencies).
-// Usage: node serve.js [port]   (default 8765)
+// Usage: node serve.cjs [port]   (default 8765)
 // Routes:  /nm/...     -> /home/user/gtr/lanes/web-tab-render/web/node_modules/...
 //          /pages/...  -> this folder's pages/ (the test pages written for the trials)
 //          /inputs/... -> /home/user/gtr/inputs/... (shared inputs, read only)

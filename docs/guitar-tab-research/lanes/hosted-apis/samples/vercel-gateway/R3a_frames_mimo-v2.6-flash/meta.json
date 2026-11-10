@@ -1,0 +1,33 @@
+{
+ "model": "xiaomi/mimo-v2.6-flash",
+ "provider": "xiaomi",
+ "http_status": 200,
+ "wall_s": 163.602,
+ "n_frames": 18,
+ "usage": {
+  "prompt_tokens": 5904,
+  "completion_tokens": 5745,
+  "total_tokens": 11649,
+  "cost": 0.00243516,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": null,
+   "upstream_inference_prompt_cost": 0,
+   "upstream_inference_completions_cost": 0
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 5387,
+   "image_tokens": 0
+  },
+  "cache_creation_input_tokens": 0,
+  "market_cost": 0.00243516,
+  "gateway_cost": 0.00243516
+ },
+ "cost_usd": 0.0024351600000000004,
+ "finish_reason": "stop"
+}

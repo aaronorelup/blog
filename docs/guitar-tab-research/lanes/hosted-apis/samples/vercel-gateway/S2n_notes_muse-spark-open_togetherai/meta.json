@@ -1,0 +1,96 @@
+{
+ "service": "vercel-ai-gateway",
+ "model": "meta/muse-spark-open",
+ "media": "/home/user/gtr/inputs/S2n/S2n.mono.wav",
+ "media_bytes": 2589344,
+ "media_sha256": "9a8b2ba2c54d00d9c108df14c44bf3761513929ec638debcd3424adc3480618f",
+ "media_duration_s": 29.357143,
+ "mime": "audio/wav",
+ "http_status": 200,
+ "wall_s": 1.77,
+ "reasoning_effort": null,
+ "max_tokens": 24576,
+ "price_usd_per_token": {
+  "input": 1.25e-06,
+  "output": 4.25e-06
+ },
+ "price_source": "https://ai-gateway.vercel.sh/v1/models entry 'pricing' (read at run time)",
+ "response_headers": {},
+ "usage": {
+  "prompt_tokens": 649,
+  "completion_tokens": 28,
+  "total_tokens": 677,
+  "cost": 0.00080705,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 112,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": null,
+   "upstream_inference_prompt_cost": 0,
+   "upstream_inference_completions_cost": 0
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0
+  },
+  "cache_creation_input_tokens": 0,
+  "market_cost": 0.00080705,
+  "gateway_cost": 0.00080705
+ },
+ "cost_usd_computed": 0.00093,
+ "cost_formula": "prompt_tokens * input price + completion_tokens * output price (completion_tokens includes reasoning tokens in the OpenAI usage format; reasoning_tokens reported separately: 0)",
+ "cost_usd_reported": 0.00080705,
+ "cost_usd": 0.00093,
+ "finish_reason": "stop",
+ "reasoning_text_chars": 0,
+ "final_provider": "togetherai",
+ "provider_metadata": {
+  "togetherai": {},
+  "gateway": {
+   "routing": {
+    "originalModelId": "meta/muse-spark-open",
+    "resolvedProvider": "togetherai",
+    "fallbacksAvailable": [],
+    "canonicalSlug": "meta/muse-spark-open",
+    "finalProvider": "togetherai",
+    "modelAttemptCount": 1,
+    "modelAttempts": [
+     {
+      "canonicalSlug": "meta/muse-spark-open",
+      "success": true,
+      "providerAttemptCount": 1,
+      "providerAttempts": [
+       {
+        "provider": "togetherai",
+        "credentialType": "system",
+        "success": true,
+        "startTime": 1794344661130,
+        "endTime": 1794344662121,
+        "providerRequestId": "81250a9f-aws_ue1",
+        "statusCode": 200,
+        "providerResponseId": "81250a9f-aws_ue1"
+       }
+      ]
+     }
+    ],
+    "totalProviderAttemptCount": 1,
+    "clientSessionId": "064ba677e47782a784a69561294bc25a",
+    "clientSessionIdSource": "fingerprint"
+   },
+   "cost": "0.00080705",
+   "marketCost": "0.00080705",
+   "surchargeCost": "0",
+   "gatewayCost": "0.00080705",
+   "inferenceCost": "0.00080705",
+   "inputInferenceCost": "0.00068805",
+   "outputInferenceCost": "0.000119",
+   "generationId": "gen_01M73MDC2AJYXNSWTSCG3N3BT1"
+  }
+ },
+ "output_text_chars": 43,
+ "answer_parsed": true,
+ "spent_service_before_usd": 0.012391
+}
