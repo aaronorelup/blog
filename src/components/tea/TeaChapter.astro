@@ -1,0 +1,24 @@
+---
+// One chapter: a section the rail can land on (id, tabindex -1, scroll margin under the strip), opened by a wood rule
+// with its tenon, the numeral on a short noren, the giant chapter word (h2) and its lede. small: a sub-chapter head
+// for thin chapters (Now, About). The chapter's own content is the slot.
+import { CHAPTERS } from '../../data/tea.js';
+import { roman } from '../../lib/tea.js';
+
+interface Props { id: string; small?: boolean }
+const { id, small = false } = Astro.props;
+const i = CHAPTERS.findIndex((c) => c.id === id);
+const chapter = CHAPTERS[i];
+---
+
+<section class:list={['tea-chapter', `is-${id}`, { 'is-small': small }]} id={id} tabindex="-1" data-tea-chapter={id}
+  aria-labelledby={`${id}-title`}>
+  <header class="tea-open tea-reveal">
+    <div class="tea-joint" aria-hidden="true"></div>
+    <p class="tea-noren" aria-hidden="true"><span>{roman(i + 1)}</span></p>
+    <h2 class="tea-word" id={`${id}-title`}>{chapter.word}</h2>
+    <p class="tea-lede">{chapter.lede}</p>
+    <slot name="nav" />
+  </header>
+  <slot />
+</section>

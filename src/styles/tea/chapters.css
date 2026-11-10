@@ -1,0 +1,200 @@
+/* The tea room's chapters (components/tea/TeaChapter, TeaBreath, TeaPostCard, TeaProjectCard, TeaRow): the opener
+   with its wood joint, noren and giant word; the lattice breath between chapters; the three card sizes and the dense
+   headline + one line index. Cards are flat at rest; on hover the rule turns wood and a lantern bar grows. */
+.tea-chapter { padding-top: var(--tea-gap-chapter); scroll-margin-top: var(--tea-anchor); }
+.tea-group, .tea-main [id] { scroll-margin-top: calc(var(--tea-anchor) + 12px); }
+
+/* ---------------------------------------------------------------- opener */
+.tea-open { position: relative; margin-bottom: var(--tea-gap-group); }
+.tea-joint { position: relative; height: 2px; background: var(--tea-wood); }
+.tea-joint::before {
+  content: ''; position: absolute; left: 0; top: -4px; width: 10px; height: 10px; background: var(--tea-wood);
+}
+.tea-noren {
+  display: flex; align-items: flex-end; justify-content: center; width: 76px; height: 58px; margin: 0 0 0 26px;
+  padding-bottom: 8px; box-sizing: border-box; font-family: var(--tea-mono); font-size: 13px; font-weight: 700;
+  letter-spacing: 0.06em; color: var(--pc-strong);
+  background: repeating-linear-gradient(90deg, var(--tea-wood-fill) 0 17px, transparent 17px 19px);
+  border-radius: 0 0 3px 3px;
+}
+:root[data-mode='day'] .tea-noren { color: var(--tea-ink-fixed); }
+.tea-word {
+  margin: 30px 0 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(64px, 10.6vw, 168px);
+  line-height: 0.92; letter-spacing: -0.025em; color: var(--pc-head); overflow-wrap: anywhere;
+}
+.tea-chapter.is-small .tea-word { font-size: clamp(52px, 7vw, 104px); }
+.tea-lede {
+  margin: 26px 0 0; max-width: 34ch; font-family: var(--font-serif); font-size: clamp(19px, 1.7vw, 24px);
+  line-height: 1.42; color: var(--pc-strong); text-wrap: pretty;
+}
+.tea-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 30px; }
+.tea-pill-s {
+  display: inline-flex; align-items: baseline; gap: 8px; padding: 7px 14px; border: 1px solid var(--pc-line2);
+  border-radius: var(--radius-pill); font-weight: 600; font-size: 13.5px; line-height: 1.3; color: var(--pc-strong);
+  text-decoration: none; transition: border-color 160ms ease, background 160ms ease;
+}
+.tea-pill-s:hover { border-color: var(--tea-wood); background: var(--tea-pink); }
+.tea-pill-n { font-family: var(--tea-mono); font-size: 11.5px; font-weight: 500; color: var(--pc-soft); }
+
+/* ---------------------------------------------------------------- the breath between chapters */
+.tea-breath {
+  display: grid; place-items: center; height: clamp(220px, 34vh, 360px); margin: var(--tea-gap-chapter) calc(-1 * var(--tea-pad)) 0;
+  background-color: var(--pc-tile);
+  background-image:
+    repeating-linear-gradient(0deg, color-mix(in srgb, var(--tea-wood) 16%, transparent) 0 2px, transparent 2px 46px),
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--tea-wood) 16%, transparent) 0 2px, transparent 2px 38px);
+  border-block: 6px solid var(--tea-wood-fill);
+}
+.tea-breath-window {
+  display: grid; place-items: center; width: 116px; height: 116px; border: 2px solid var(--tea-wood);
+  background: radial-gradient(circle, var(--tea-lamp), color-mix(in srgb, var(--tea-lamp) 55%, var(--pc-tile)));
+  box-shadow: 0 0 0 10px var(--pc-tile), 0 0 70px color-mix(in srgb, var(--tea-lamp) 50%, transparent);
+  font-family: var(--tea-mono); font-weight: 700; font-size: 18px; letter-spacing: 0.08em; color: var(--tea-ink-fixed);
+}
+:root[data-mode='day'] .tea-breath-window { box-shadow: 0 0 0 10px var(--pc-tile); }
+
+/* ---------------------------------------------------------------- groups (a topic, a projects section) */
+.tea-group { margin-top: var(--tea-gap-group); }
+.tea-open + .tea-group { margin-top: 0; }
+.tea-group-head {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; column-gap: 14px;
+  padding-top: 18px; margin-bottom: 26px; border-top: 1px solid var(--pc-line2);
+}
+.tea-group-glyph { align-self: center; width: 26px; height: 26px; color: var(--tea-wood); }
+.tea-group-glyph .glyph { width: 26px; height: 26px; stroke-width: 1.2; }
+.tea-group-title {
+  grid-column: 2; margin: 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(26px, 3vw, 36px);
+  line-height: 1.1; color: var(--pc-strong);
+}
+.tea-group-head > .tea-group-title:first-child { grid-column: 1 / 3; }
+.tea-group-count { margin: 0; font-family: var(--tea-mono); font-size: var(--text-sm); color: var(--pc-soft); }
+.tea-group-intro {
+  grid-column: 1 / -1; margin: 10px 0 0; max-width: 64ch; font-family: var(--font-serif); font-size: 16.5px;
+  line-height: 1.5; color: var(--pc-body);
+}
+.tea-head-link { text-decoration: none; }
+.tea-head-link:hover { color: var(--tea-link); }
+
+/* ---------------------------------------------------------------- cards */
+.tea-picks, .tea-halves, .tea-thirds, .tea-rows, .tea-plates { list-style: none; margin: 0; padding: 0; }
+.tea-shoji {
+  padding: clamp(14px, 2vw, 26px); border: 1px solid var(--pc-line); border-radius: var(--radius-l);
+  background-color: var(--tea-shoji); background-image: var(--tea-lattice);
+}
+.tea-picks { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--space-3); }
+.tea-picks > .is-feature { grid-column: span 3; }
+.tea-picks > .is-small { grid-column: span 2; }
+.tea-halves { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+.tea-thirds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); margin-top: var(--space-3); }
+
+.tea-card {
+  position: relative; display: flex; flex-direction: column; overflow: hidden; background: var(--tea-card);
+  border: 1px solid var(--pc-line); border-radius: var(--radius-m); transition: border-color 160ms ease;
+}
+.tea-card::after, .tea-row::after {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--tea-lamp);
+  box-shadow: var(--tea-glow); transform: scaleY(0); transform-origin: top; transition: transform 160ms ease; z-index: 2;
+}
+.tea-card-plate {
+  position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--pc-tile);
+  border-bottom: 1px solid var(--pc-line);
+}
+.tea-card-plate img { width: 100%; height: 100%; object-fit: cover; }
+.tea-card-plate.is-icon { display: grid; place-items: center; background-color: var(--tea-shoji); background-image: var(--tea-lattice); }
+.tea-card-plate.is-icon img { width: 42%; height: auto; aspect-ratio: 1; border-radius: var(--radius-s); object-fit: cover; }
+.tea-card-plate.is-icon .glyph { width: 30%; height: 30%; color: var(--tea-wood); }
+.tea-card-body { display: flex; flex-direction: column; gap: 8px; flex: 1; padding: 18px 20px 20px; }
+.tea-stamp {
+  align-self: flex-start; margin: 0; padding: 3px 10px; border: 1px solid currentColor; border-radius: var(--radius-pill);
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tea-kicker);
+}
+.tea-card-title {
+  margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 20px; line-height: 1.22; color: var(--pc-strong);
+  text-wrap: balance;
+}
+.tea-card.is-feature .tea-card-title { font-size: 23px; }
+.tea-card.is-small .tea-card-title, .tea-card.is-third .tea-card-title {
+  font-family: var(--font-body); font-weight: 600; font-size: 16.5px; line-height: 1.3;
+}
+.tea-card-title a, .tea-row-title a { text-decoration: none; transition: color 160ms ease; }
+.tea-card-line {
+  margin: 0; font-family: var(--font-serif); font-size: 15.5px; line-height: 1.5; color: var(--pc-body);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
+}
+.tea-card.is-half .tea-card-line, .tea-card.is-third .tea-card-line { -webkit-line-clamp: 2; line-clamp: 2; }
+.tea-card.is-third .tea-card-line { font-size: 14.5px; }
+.tea-card-meta, .tea-row-meta {
+  display: flex; flex-wrap: wrap; gap: 0 10px; margin: 0; font-family: var(--tea-mono); font-size: 11.5px;
+  line-height: 1.5; letter-spacing: 0.02em; color: var(--pc-soft);
+}
+.tea-card-body > .tea-card-meta:last-child { margin-top: auto; padding-top: 6px; }
+.tea-card-meta > span + span::before, .tea-row-meta > span + span::before { content: '·'; margin-right: 10px; }
+.tea-card-extra {
+  position: relative; z-index: 3; margin-top: auto; padding-top: 4px; font-size: 13.5px; font-weight: 600;
+  color: var(--tea-link); text-decoration: none;
+}
+.tea-card-extra:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* one link stretched over its card or row; the outline goes round the whole thing */
+.tea-stretch::before { content: ''; position: absolute; inset: 0; z-index: 1; }
+.tea-stretch:focus-visible { outline: none; }
+.tea-card:has(.tea-stretch:focus-visible), .tea-row:has(.tea-stretch:focus-visible),
+.tea-plate:has(.tea-stretch:focus-visible) { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+
+@media (hover: hover) {
+  .tea-card:hover { border-color: var(--tea-wood); }
+  .tea-card:hover::after, .tea-row:hover::after { transform: scaleY(1); }
+  .tea-card:hover .tea-card-title a, .tea-row:hover .tea-row-title a { color: var(--tea-link); }
+  .tea-row:hover { border-top-color: var(--tea-wood); }
+}
+
+/* ---------------------------------------------------------------- the index: headline + one line */
+.tea-rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-7); margin-top: var(--space-6); }
+.tea-halves + .tea-rows, .tea-thirds + .tea-rows { margin-top: var(--space-6); }
+.tea-group-head + .tea-rows { margin-top: 0; }
+.tea-rows.is-single { grid-template-columns: minmax(0, 1fr); }
+.tea-row { position: relative; padding: 14px 0 18px 16px; border-top: 1px solid var(--pc-line); transition: border-color 160ms ease; }
+.tea-row-title { margin: 4px 0 4px; font-size: 16.5px; font-weight: 600; line-height: 1.3; color: var(--pc-strong); }
+.tea-row-line {
+  margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--pc-body);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+}
+.tea-row-notes {
+  position: absolute; top: 12px; right: 0; z-index: 3; padding: 2px 8px; border: 1px solid var(--pc-line2);
+  border-radius: var(--radius-pill); font-family: var(--tea-mono); font-size: 11px; color: var(--tea-link);
+  text-decoration: none; background: var(--pc-page);
+}
+.tea-row-notes:hover { border-color: var(--tea-wood); }
+
+.tea-more { margin: var(--space-7) 0 0; }
+.tea-link { font-weight: 600; color: var(--tea-link); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.tea .tea-link, .tea .tea-row-notes, .tea .tea-card-extra, .tea .tea-rail-back { color: var(--tea-link); }
+.tea-link:hover { text-decoration-thickness: 2px; }
+
+/* projects: Stopped is the quietest */
+.tea-group.is-stopped .tea-row-title { color: var(--pc-soft); font-weight: 600; }
+
+@media (max-width: 1180px) {
+  .tea-picks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tea-picks > .is-feature, .tea-picks > .is-small { grid-column: span 1; }
+  .tea-picks > .is-small:last-child { grid-column: 1 / -1; }
+  .tea-thirds { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tea-rows { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 720px) {
+  .tea-picks, .tea-halves, .tea-thirds { grid-template-columns: minmax(0, 1fr); }
+  .tea-picks > .is-small:last-child { grid-column: auto; }
+  .tea-card.is-small, .tea-card.is-third { flex-direction: row; }
+  .tea-card.is-small .tea-card-plate, .tea-card.is-third .tea-card-plate {
+    flex: none; width: 104px; aspect-ratio: auto; border-bottom: 0; border-right: 1px solid var(--pc-line);
+  }
+  .tea-card.is-small .tea-card-body, .tea-card.is-third .tea-card-body { padding: 14px 16px; gap: 6px; }
+  .tea-card.is-small .tea-card-plate.is-icon img, .tea-card.is-third .tea-card-plate.is-icon img { width: 64%; }
+  .tea-noren { margin-left: 18px; width: 64px; height: 50px; }
+  .tea-word { margin-top: 24px; }
+  .tea-group-head { grid-template-columns: auto 1fr; }
+  .tea-group-count { grid-column: 1 / -1; margin-top: 6px; }
+  .tea-group-head > .tea-group-title:first-child + .tea-group-count { grid-column: 1 / -1; }
+  .tea-row { padding-left: 12px; }
+  .tea-row-notes { position: relative; top: auto; display: inline-block; margin-top: 8px; }
+}

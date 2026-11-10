@@ -1,0 +1,17 @@
+---
+// Chapter I, Start here: the ledger's own picks (data/picks.js START_HERE), in its order, as feature cards on a shoji
+// panel. The first two are large.
+import TeaChapter from './TeaChapter.astro';
+import TeaPostCard from './TeaPostCard.astro';
+
+interface Props { picks: any[] }
+const { picks } = Astro.props;
+---
+
+<TeaChapter id="start">
+  <div class="tea-shoji tea-reveal">
+    <ol class="tea-picks">
+      {picks.map((row, i) => <TeaPostCard row={row} size={i < 2 ? 'feature' : 'small'} heading="h3" />)}
+    </ol>
+  </div>
+</TeaChapter>

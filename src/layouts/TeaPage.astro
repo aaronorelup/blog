@@ -1,0 +1,28 @@
+---
+// The tea room's frame (/tea/): the shared Head, read through the SEO switch (src/data/tea.js teaSeo), its own
+// stylesheet (styles/tea/tea.css on tokens.css, never site.css), the shared day/night switch, and the one small
+// module that marks the current chapter (scripts/tea/rail.js). Everything renders and links without it.
+import '../styles/tea/tea.css';
+import Head from '../components/chrome/Head.astro';
+import ModeToggle from '../components/chrome/ModeToggle.astro';
+import { teaSeo } from '../data/tea.js';
+
+interface Props { title: string; description: string }
+const { title, description } = Astro.props;
+const seo = teaSeo();
+---
+
+<!doctype html>
+<html lang="en" class="tea-root">
+  <head>
+    <Head title={title} description={description} noindex={seo.noindex} canonical={seo.canonical ?? undefined} />
+    <slot name="head" />
+  </head>
+  <body class="tea">
+    <ModeToggle />
+    <slot />
+    <script>
+      import '../scripts/tea/rail.js';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+---
+// The chapter rail: fixed beside the chapters on a wide screen, a sticky strip across the top under 1024 px. Plain
+// anchors in an ordered list, so it works without script; scripts/tea/rail.js marks the chapter being read
+// (aria-current) and keeps it in view on the strip.
+import { CHAPTERS, COPY } from '../../data/tea.js';
+import { roman } from '../../lib/tea.js';
+---
+
+<aside class="tea-rail" data-tea-rail>
+  <div class="tea-rail-head">
+    <a class="tea-rail-title" href="#top">{COPY.railTitle}</a>
+    <a class="tea-rail-back" href="/" data-no-fly><span aria-hidden="true">←</span> {COPY.railBack}</a>
+  </div>
+  <nav class="tea-rail-nav" aria-label={COPY.chaptersLabel}>
+    <ol class="tea-rail-list" data-tea-strip>
+      {CHAPTERS.map((c, i) => (
+        <li>
+          <a class="tea-rail-link" href={`#${c.id}`} data-tea-link={c.id}>
+            <span class="tea-rail-name">{c.label}</span>
+            <span class="tea-rail-lead" aria-hidden="true"></span>
+            <span class="tea-rail-num" aria-hidden="true">{roman(i + 1)}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+  <ul class="tea-rail-utils">
+    {COPY.utilities.map((u) => <li><a href={u.href}>{u.label}</a></li>)}
+  </ul>
+</aside>

@@ -1,0 +1,21 @@
+---
+// Chapter VI, about: the About page's own component (about/AboutView), so its words have one source; the tea room
+// only restyles it (styles/tea/sections.css, scoped to .tea-about). Beside it the portrait and the social links.
+import AboutView from '../about/AboutView.astro';
+import { SOCIAL } from '../../data/site.js';
+import { COPY } from '../../data/tea.js';
+import TeaChapter from './TeaChapter.astro';
+---
+
+<TeaChapter id="about" small>
+  <div class="tea-about tea-reveal">
+    <aside class="tea-about-side">
+      <img class="tea-about-face" src="/aaron.webp" alt="" width="160" height="160" loading="lazy" decoding="async" />
+      <p class="tea-about-label">{COPY.elsewhere}</p>
+      <ul class="tea-social">
+        {SOCIAL.map((s) => <li><a class="tea-pill-s" href={s.href} target="_blank" rel="noreferrer noopener">{s.label} <span aria-hidden="true">↗</span></a></li>)}
+      </ul>
+    </aside>
+    <div class="tea-about-text"><AboutView /></div>
+  </div>
+</TeaChapter>
