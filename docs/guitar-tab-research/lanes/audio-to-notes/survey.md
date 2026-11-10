@@ -35,7 +35,7 @@ number). RUNNABLE / NOT-CPU-BOX are pointers for the try agent, not test results
 
 ### Monophonic pitch (f0) trackers and pitch-to-note wrappers
 
-1. CREPE (`marl/crepe`, Keras/TensorFlow). PyPI `crepe` 0.0.16 (2024-08-19); last commit 2024-08-19; weights branch last changed 2018-05-31. Code MIT; no separate weights license found. RUNNABLE.
+1. CREPE (`marl/crepe`, Keras/TensorFlow). PyPI `crepe` 0.0.16 (2024-08-19); last commit 2024-08-19; weights branch last changed 2018-05-31. Code MIT; no separate weights license found. RUNNABLE. Gap round 1: not run on the box (its source build downloads weights from github.com, which answers 403 here; installing the source with the weights in place was refused by the session's permission system; `trials.md`).
 2. torchcrepe (`maxrmorrison/torchcrepe`, PyTorch port of CREPE). PyPI 0.0.24 (2025-05-16); last commit 2025-05-16. Code MIT; weights converted from CREPE, inside the MIT repo. RUNNABLE.
 3. pYIN: `librosa.pyin` (librosa 1.0.0, 2026-08-11, Python >= 3.12; last commit 2026-11-10; ISC); pYIN Vamp plugin (`c4dm/pyin`, last commit 2020-02-06; GPL-2.0-or-later; has a `notes` output); Tony desktop annotator (`sonic-visualiser/tony`, last commit 2024-07-02; GPL-2.0-or-later). No weights. RUNNABLE (librosa).
 4. PESTO (`SonyCSLParis/pesto`). PyPI `pesto-pitch` 2.0.1 (2025-02-18); last commit 2025-10-15. Code LGPL-3.0; weights in the repo. RUNNABLE.
@@ -52,19 +52,21 @@ number). RUNNABLE / NOT-CPU-BOX are pointers for the try agent, not test results
 
 13. Spotify Basic Pitch (`spotify/basic-pitch`). PyPI 0.4.0 (2024-08-16); last commit 2025-11-13. Code Apache-2.0; model files ship in the package with no separate license file. RUNNABLE.
 14. NeuralNote (`DamRsn/NeuralNote`, VST3/AU/Standalone). Last commit 2026-11-07. v2 uses MuScriptor GGUF weights (CC BY-NC 4.0), v1 used Basic Pitch. Code Apache-2.0. Installers for macOS and Windows; Linux build from source. NOT-CPU-BOX (desktop plugin).
-15. MT3 (`magenta/mt3`, JAX/T5X). No PyPI release from Magenta (the PyPI name `mt3` belongs to an unrelated outlier-detection package); last commit 2026-10-27. Code Apache-2.0; checkpoints at `gs://mt3/checkpoints` with no license statement found (no license or readme file in a listing of the public bucket). Documented route is Colab (the notebook installs `jax[cuda12]`). To check on CPU.
-16. YourMT3+ (GitHub `mimbres/YourMT3` holds README + GPL-3.0 LICENSE, last commit 2024-11-29; code and checkpoints in the Hugging Face Space `mimbres/YourMT3`, card `license: apache-2.0`, last modified 2025-01-31). Callable as a Gradio Space (ZeroGPU hardware; its `/process_audio` returns HTML with the MIDI embedded as a base64 data URL); local run to check.
-17. MR-MT3 (`gudgud96/MR-MT3`). Last commit 2024-07-12. Code MIT; weights `gudgud1014/MR-MT3` (MIT tag). Research environment (TensorFlow 2.11 + torch pins). `inference.py` calls `self.model.cuda()` unconditionally. NOT-CPU-BOX as shipped (a code change would be needed).
-18. mt3-pytorch (`kunato/mt3-pytorch`). Last commit 2022-05-24. No LICENSE file. To check.
+15. MT3 (`magenta/mt3`, JAX/T5X). No PyPI release from Magenta (the PyPI name `mt3` belongs to an unrelated outlier-detection package); last commit 2026-10-27. Code Apache-2.0; checkpoints at `gs://mt3/checkpoints` with no license statement found (no license or readme file in a listing of the public bucket). Documented route is Colab (the notebook installs `jax[cuda12]`). To check on CPU. Gap round 1: the notebook's install of the cloned repository was refused by the session's permission system (`trials.md`).
+16. YourMT3+ (GitHub `mimbres/YourMT3` holds README + GPL-3.0 LICENSE, last commit 2024-11-29; code and checkpoints in the Hugging Face Space `mimbres/YourMT3`, card `license: apache-2.0`, last modified 2025-01-31). Callable as a Gradio Space (ZeroGPU hardware; its `/process_audio` returns HTML with the MIDI embedded as a base64 data URL); local run to check. Gap round 1: no local run (running code from cloned repositories was refused by the session's permission system; `trials.md`).
+17. MR-MT3 (`gudgud96/MR-MT3`). Last commit 2024-07-12. Code MIT; weights `gudgud1014/MR-MT3` (MIT tag). Research environment (TensorFlow 2.11 + torch pins). `inference.py` calls `self.model.cuda()` unconditionally. NOT-CPU-BOX as shipped (a code change would be needed). Gap round 1: not attempted (same permission reason; `trials.md`).
+18. mt3-pytorch (`kunato/mt3-pytorch`). Last commit 2022-05-24. No LICENSE file. To check. Gap round 1: running its clone was refused by the session's permission system (`trials.md`); its 183.7 MB checkpoint is the same file as MR-MT3's `mt3.pth` (section 18).
 19. MuScriptor (`muscriptor/muscriptor`, Kyutai and Mirelo, arXiv 2607.08168). PyPI `muscriptor` 0.4.0 (2026-10-20); last commit 2026-10-20. Code MIT; weights CC BY-NC 4.0 "supplemented by" specific conditions of use, gated on Hugging Face (free login, automatic approval); small 103M / medium 307M / large 1.4B parameters. Outputs MIDI with beats and bars, JSON or JSONL note events, MusicXML and tab PDFs (with MuseScore 4); the CLI takes an instrument list (`--instruments`). RUNNABLE (`small` per README) with a Hugging Face token.
-20. Omnizart (`Music-and-Culture-Technology-Lab/omnizart`: music, vocal, vocal-contour, drum, chord, beat). PyPI 0.6.3 (2026-05-31; 0.6.0 added Python up to 3.14); last commit 2026-05-31. Code MIT; checkpoints release `checkpoints-20211001`, license not stated; the vocal mode downloads Spleeter 2-stem ONNX files from a `k2-fsa/sherpa-onnx` release. PyPI 0.6.3 is a source archive only and requires TensorFlow and madmom. RUNNABLE (to check).
+20. Omnizart (`Music-and-Culture-Technology-Lab/omnizart`: music, vocal, vocal-contour, drum, chord, beat). PyPI 0.6.3 (2026-05-31; 0.6.0 added Python up to 3.14); last commit 2026-05-31. Code MIT; checkpoints release `checkpoints-20211001`, license not stated; the vocal mode downloads Spleeter 2-stem ONNX files from a `k2-fsa/sherpa-onnx` release. PyPI 0.6.3 is a source archive only and requires TensorFlow and madmom. RUNNABLE (to check). Gap round 1: one install attempt (0.5.0, Python 3.8, its pinned tensorflow 2.5.0) stopped building `vamp` 1.1.0 from source (`trials.md`).
 21. Timbre-Trap (`sony/timbre-trap`, multi-pitch). Last commit 2024-05-05. Code MIT; weights in the Space `cwitkowitz/timbre-trap` (no license field). The Space returns audio (a WAV file), not notes, and its runtime stage was `RUNTIME_ERROR` on 2026-11-10. RUNNABLE (to check).
 22. Sheet Sage (`chrisdonahue/sheetsage`, melody + chords lead sheet). Last commit 2025-05-13. Code MIT; models and data CC BY-NC-SA 3.0; the README adds that madmom, Jukebox and Melisma "all have additional licensing terms affecting commercial use". Docker (~4 GB); Jukebox mode needs a GPU with at least 12 GB. RUNNABLE without Jukebox (to check).
 23. Deep Salience (`rabitt/ismir2017-deepsalience`, melody, bass, multi-f0, vocal weights in repo). Last commit 2019-11-22. MIT. CLI writes a salience `.npz` (default) or tab-separated f0 / multi-f0 files. To check (old Keras 2 imports).
+36. mt3-infer (`openmirlab/mt3-infer`, PyPI 0.2.0, 2026-07-11; added in gap round 1): one Python API and CLI over vendored MR-MT3, mt3-pytorch and YourMT3 code, checkpoints downloaded on first use. Code MIT (vendored parts: MIT, "No license declared upstream", Apache-2.0). Not run.
+37. yourmt3 (PyPI 0.1.4, 2025-08-31, third party; added in gap round 1): YourMT3 model types with weights from the Hugging Face repo `shethjenil/Audio2Midi_Models`. No license stated for code or weights. Not run.
 
 ### Piano transcription models
 
-24. Onsets and Frames (`magenta/magenta`, "inactive (archived, read only)", last commit 2026-01-05; PyTorch port `jongwook/onsets-and-frames`, MIT, last commit 2021-07-19). Code Apache-2.0; MAESTRO and E-GMD checkpoints (no license statement found). Writes one `.midi` file per input. To check.
+24. Onsets and Frames (`magenta/magenta`, "inactive (archived, read only)", last commit 2026-01-05; PyTorch port `jongwook/onsets-and-frames`, MIT, last commit 2021-07-19). Code Apache-2.0; MAESTRO and E-GMD checkpoints (no license statement found). Writes one `.midi` file per input. To check. Gap round 1: ran on the box (Magenta's MAESTRO checkpoint with `magenta` 2.1.4's transcribe script; the PyTorch port publishes no checkpoint; `trials.md`).
 25. ByteDance piano transcription (`qiuqiangkong/piano_transcription_inference`). PyPI 0.0.6 (2025-01-26); last commit 2025-01-26. No LICENSE file (setup.py classifier MIT); weights on Zenodo, CC BY 4.0 (trained on MAESTRO v2, CC BY-NC-SA 4.0). RUNNABLE.
 26. Transkun (`Yujia-Yan/Transkun`). PyPI 2.0.1 (2024-09-28); last commit 2024-11-22. MIT; checkpoint shipped in the package. CLI default device CPU. RUNNABLE.
 27. hFT-Transformer (`sony/hFT-Transformer`). Last commit 2026-10-28. Code MIT; checkpoints CC BY-NC-SA 4.0 (LICENSE-CHECKPOINTS.md). README lists "GPU" in requirements. To check.
@@ -208,6 +210,17 @@ point there by name.
   - d. Service: not applicable.
 - **Author-reported measurements (paper, Table 1):** raw pitch accuracy (50-cent threshold) 0.999 ± 0.002 on
   RWC-synth and 0.967 ± 0.091 on MDB-stem-synth.
+- **Added in gap round 1 (PyPI JSON and the source archive, read 2026-11-10): how the package installs.** PyPI holds
+  only the source archive `crepe-0.0.16.tar.gz` (16,519 bytes, sha256 521c80a0...36d29631), so `pip install crepe`
+  builds it. Its `setup.py` begins with `import pkg_resources` (absent from setuptools 81 and later; the build on
+  the box stopped with "ModuleNotFoundError: No module named 'pkg_resources'") and, unless `crepe/model-<capacity>.h5`
+  is already in the source tree, downloads `model-{tiny,small,medium,large,full}.h5.bz2` from `base_url =
+  'https://github.com/marl/crepe/raw/models/'` and decompresses them into the package. Compressed sizes on the
+  `models` branch (head bb29b8d9, via raw.githubusercontent.com): tiny 1,307,310, small 4,320,088, medium 15,376,974,
+  large 33,197,356, full 57,689,301 bytes; decompressed tiny 2,011,144 and full 89,038,936 bytes. `requires_dist`:
+  numpy, scipy, matplotlib, resampy, h5py, `hmmlearn>=0.3.0`, imageio, scikit-learn; TensorFlow is not among them
+  (the README installs it separately). `crepe/core.py` builds the Keras model with `tensorflow.keras` and loads
+  `model-<capacity>.h5` with `model.load_weights`. What happened on the box: `trials.md`, "Tools not run here".
 
 ## 2. torchcrepe
 
@@ -358,7 +371,8 @@ point there by name.
 - **How a program calls it:** Python only, from the repository's `src/` (no CLI, no package). A third-party PyPI
   wrapper exists: `rmvpe-onnx` 0.2.3, "RMVPE pitch estimator — pure ONNX Runtime inference", license MIT, wheel
   14,520 bytes, requiring `huggingface-hub` and `onnxruntime` (PyPI JSON, verifier 2026-11-10); per `trials.md` it
-  downloads `rmvpe.onnx` from `lj1995/VoiceConversionWebUI` (not run). `src/inference.py`
+  downloads `rmvpe.onnx` from `lj1995/VoiceConversionWebUI` (not run; corrected in gap round 1: it ran, see the
+  addition at the end of this section and `trials.md`). `src/inference.py`
   at a6db1cd (read 2026-11-10) defines `class Inference` with `__init__(self, model, seg_len, seg_frames, hop_length,
   batch_size, device)` and `inference(self, audio)`, which pads the audio, cuts it into overlapping segments, runs
   the model in mini-batches and returns `(hidden_vec_segments, out_segments)`, each trimmed to
@@ -762,6 +776,16 @@ point there by name.
 - **Author-reported measurements (paper, Table 2, note onset F1):** GuitarSet (MT3 protocol) 91.65 (noPS) /
   88.87 (PS) for YPTF.MoE+M, against 89.10 for "MT3 (colab)"; Slakh instrument-agnostic onset F1 84.14 / 84.56
   for YPTF.MoE+M.
+- **Added in gap round 1 (Hugging Face API and raw files, read 2026-11-10): the CPU copy of the Space.** The ZeroGPU
+  Space's `app.py` (5e66c1ea) calls `load_model_checkpoint(args=args, device="cpu")`, then `model.to("cuda")`, with
+  `precision = '16'`. `mimbres/YourMT3-cpu` (commit bd69fbac, last modified 2024-08-21, hardware `cpu-basic`, stage
+  RUNNING, card `license: apache-2.0`, `sdk_version: 4.39.0`) sets `precision = '16' if torch.cuda.is_available()
+  else '32'` and holds the same five checkpoints (default `.../mc13_256_g4_all_v7_mt3f_sqr_rms_moe_wf4_n8k2_silu_rope_rp_b36_nops/checkpoints/last.ckpt`,
+  561,544,628 bytes). Both `requirements.txt` list `torch`, `torchaudio` (with `--extra-index-url
+  https://download.pytorch.org/whl/cu113`), `lightning>=2.2.1`, `transformers` (`==4.45.1` and `numpy==1.26.4` in the
+  ZeroGPU Space only), `librosa`, `einops`, `mido`, `git+https://github.com/craffel/mir_eval.git`, `yt-dlp`, a
+  yt-dlp OAuth2 plugin archive from GitHub, `deprecated`, `wandb`, `gradio_log`, `python-dotenv`. The hosted-apis
+  lane called the CPU Space (its runs r0164, r0245).
 
 ## 17. MR-MT3
 
@@ -802,6 +826,21 @@ point there by name.
   2022-05-24 (e203122). Root listing includes `inference.py`, `mt3_net.py`, `pretrained/`.
 - **License facts:** no LICENSE file in the repository root listing at e203122, read 2026-11-10 (no license file
   found at https://github.com/kunato/mt3-pytorch on 2026-11-10). Weights: converted from MT3 (see MT3 b).
+- **Added in gap round 1 (from a `git clone --depth 1` at e203122, read 2026-11-10):** README usage `from inference
+  import InferenceHandler`, `handler = InferenceHandler('./pretrained')`, `handler.inference('music.mp3')`; "training
+  not done yet". `inference.py`: `InferenceHandler(weight_path, device=torch.device('cuda'))` (CUDA by default; a CPU
+  device can be passed), `inference(audio_path, outpath=None, valid_programs=None, num_beams=1)`: `librosa.load` at
+  16 kHz, segments of 256 frames, batches of 5, `generate(max_length=1024, ...)`, MIDI written with
+  `note_seq.sequence_proto_to_midi_file` (default `./out/<audio file stem>.mid`); `valid_programs` turns the other
+  programs into `bad_words_ids`. The codec uses `num_velocity_bins=1` and `NoteEncodingWithTiesSpec`, the settings
+  the MT3 notebook uses for its `mt3` model. `pretrained/config.json`: `T5ForConditionalGeneration`, d_model 512, 8 +
+  8 layers, 6 heads, d_ff 1024, vocab_size 1536. `pretrained/mt3.pth` is a Git LFS pointer (oid sha256
+  b8a3807e...3745398f, size 183,672,643), served at
+  https://media.githubusercontent.com/media/kunato/mt3-pytorch/master/pretrained/mt3.pth; the Hugging Face repo
+  `gudgud1014/MR-MT3` holds a `mt3.pth` with the same size and LFS sha256. `requirements.txt`: `transformers==4.18.0`,
+  `torch`, `librosa==0.9.1`, `ddsp==3.3.4`, `t5==0.9.3`, `note-seq==0.0.3`, `pretty-midi==0.2.9`, `einops==0.4.1`;
+  the inference path imports TensorFlow (`contrib/spectrograms.py`: `from ddsp import spectral_ops`, `import
+  tensorflow as tf`; `contrib/vocabularies.py`: `import t5.data`). What happened when it was tried: `trials.md`.
 
 ## 19. MuScriptor (Kyutai and Mirelo)
 
@@ -945,6 +984,14 @@ point there by name.
     performances (smaller)", "Maestro: Piano solo performances (larger)", "MusicNet: Classical music performances,
     with 11 classes of instruments", "Pop: Pop music, including various instruments, drums, and vocal". Which
     dataset trained each released mode (Piano, Stream, Pop): UNVERIFIED.
+- **Added in gap round 1 (PyPI JSON per release, read 2026-11-10): the pins of the older releases.** Releases 0.1.1
+  (2020-12-01) to 0.5.0 (2021-12-09) declare `requires_python >=3.6.1,<3.9` and ship a wheel; 0.6.0 (2026-05-30)
+  declares `>=3.8` and is the last with a wheel; 0.6.1 to 0.6.3 are source archives only. 0.5.0 requires `tensorflow
+  (==2.5.0)`, `spleeter (>=2.3.0,<3.0.0)`, `madmom (>=0.16.1,<0.17.0)`, `librosa (>=0.8.0,<0.9.0)`, `vamp
+  (>=1.1.0,<2.0.0)`, `urllib3 (==1.26.4)`, `mir_eval (>=0.6,<0.7)` and others; 0.6.3 requires `tensorflow>=2.5.0`
+  (Python < 3.14), `tf-keras` (3.9 <= Python < 3.14), `sherpa-onnx>=1.10.0`, `setuptools<82`, `madmom>=0.16.1`,
+  `vamp>=1.1.0`. `madmom` 0.16.1 and `vamp` 1.1.0 are resolved as source archives (uv on the box, 2026-11-10). The one
+  install attempt on the box: `trials.md`, "Tools not run here".
 
 ## 21. Timbre-Trap
 
@@ -1080,6 +1127,24 @@ point there by name.
     2019 Jong Wook Kim" with the MIT grant text.
   - b. Weights: no license statement for the checkpoint zips was found in the README read. UNVERIFIED.
   - c. Training data: MAESTRO (piano), E-GMD (drums). See the dataset section for MAESTRO.
+- **Added in gap round 1 (read 2026-11-10).** The PyTorch port publishes no checkpoint: its README
+  (https://raw.githubusercontent.com/jongwook/onsets-and-frames/master/README.md) covers downloading MAESTRO,
+  training (`python train.py`) and evaluating a model you trained (`python evaluate.py runs/model/model-100000.pt`),
+  and says "This project is quite resource-intensive; 32 GB or larger system memory and 8 GB or larger GPU memory is
+  recommended"; a `git clone --depth 1` at 783ca08 holds no `.pt`, `.pth`, `.ckpt` or `.bin` file (it holds MAPS
+  FLAC files under `data/`). Magenta's route: PyPI `magenta` 2.1.4 (uploaded 2022-08-01, license field "Apache 2", no
+  `requires_python`) pins `tensorflow (==2.9.1)`, `numba (==0.49.1)`, `numpy (==1.21.6)`, `librosa (==0.7.2)`,
+  `scipy (==1.7.3)`, `note-seq (==0.0.3)`, `tf-slim (==1.1.0)`, `tensorflow-probability (==0.17.0)`, `dm-sonnet
+  (==2.0.0)`, `python-rtmidi (==1.1.2)` and others, and installs the console script
+  `onsets_frames_transcription_transcribe` (flags `--config` default `onsets_frames`, `--model_dir`,
+  `--checkpoint_path`, `--hparams`, `--load_audio_with_librosa`, `--transcribed_file_suffix`, `--log`; it writes
+  `<input path><suffix>.midi`; the installed 2.1.4 file defines them on the same lines, 35 to 53, as the repository's
+  `main`). The checkpoint
+  `maestro_checkpoint.zip` (https://storage.googleapis.com/magentadata/models/onsets_frames_transcription/maestro_checkpoint.zip):
+  263,865,474 bytes, Last-Modified 29 Jan 2019, MD5 d46be12f...980124e0 (equal to the storage `x-goog-hash`), sha256
+  336c6e44...1e61d030; it holds `train/checkpoint`, `train/model.ckpt.index`, `train/model.ckpt.meta` and
+  `train/model.ckpt.data-00000-of-00001` (292,348,336 bytes), and no license or readme file. Run on the box:
+  `trials.md`, "Gap round 1".
 
 ## 25. ByteDance piano transcription (`piano_transcription_inference`)
 
@@ -1345,6 +1410,62 @@ Everything in this section was read by verify-docs-audio-to-notes on 2026-11-10.
     M4Singer's dataset license is CC BY-NC-SA 4.0 (dataset section). GTSinger's license and the SingCrawl
     collection's terms were not read (UNVERIFIED).
 
+## 36. mt3-infer (PyPI; added in gap round 1)
+
+- **What, who, links:** "Production-ready, unified inference toolkit for the MT3 music transcription model family"
+  and "MT3-Infer provides a clean, framework-neutral API for running music transcription inference across multiple
+  MT3 implementations with a single consistent interface." (PyPI description, https://pypi.org/pypi/mt3-infer/json,
+  read 2026-11-10). Author field "MT3-Infer Contributors"; repository https://github.com/openmirlab/mt3-infer (HEAD
+  d8cbd287 by `git ls-remote`, 2026-11-10).
+- **Version:** PyPI 0.2.0, uploaded 2026-07-11 (first release 0.1.0 on 2025-11-14); `requires_python >=3.9`; requires
+  `torch>=2.0.0`, `torchaudio`, `torchvision`, `transformers>=4.35.0`, `librosa>=0.9.1`, `mido`, `pretty-midi`,
+  `soxr` and others; extras `tensorflow` (`tensorflow>=2.13.0`), `torch`, `synthesis` (PyPI JSON).
+- **How a program calls it (description):** `from mt3_infer import transcribe`, `midi = transcribe(audio, sr=16000)`,
+  `midi.save("output.mid")`; `transcribe(audio, model="mr_mt3")`, `model="mt3_pytorch"`, `model="yourmt3"`;
+  `load_model("mt3_pytorch", device="cuda")`; CLI `mt3-infer download --all` ("Download all models at once (874MB
+  total)"), `mt3-infer transcribe input.wav -o output.mid -m mr_mt3`, `--device cuda`. Checkpoints are stored under
+  `.mt3_checkpoints/<model>` or in `MT3_CHECKPOINT_DIR`. Its model table gives sizes MR-MT3 176 MB, MT3-PyTorch
+  176 MB, YourMT3 536 MB, with speeds from "NVIDIA RTX 4090 with PyTorch 2.7.1 + CUDA 12.6", and says "Default
+  `yourmt3` downloads the `YPTF.MoE+Multi (noPS)` checkpoint, matching the original YourMT3 Space output."
+- **Input / output:** an audio array and its sample rate in, a MIDI object with `.save()` out (description).
+- **Constraints a re-run can pass:** model, device, and for MT3-PyTorch `auto_filter` ("automatic filtering to fix
+  instrument leakage in drum tracks"). No tuning, key or note-range input in the description.
+- **License facts:**
+  - a. Code: MIT. https://raw.githubusercontent.com/openmirlab/mt3-infer/master/LICENSE (read 2026-11-10; the same
+    text is the PyPI `license` field): "MIT License Copyright (c) 2025 MT3-Infer Contributors" with the MIT grant,
+    then "This project includes code adapted from the following sources:", "MR-MT3
+    (https://github.com/gudgud96/MR-MT3) License: MIT", "MT3-PyTorch (https://github.com/kunato/mt3-pytorch) License:
+    No license declared upstream. Vendored code is retained unmodified; see mt3_infer/models/mt3_pytorch/.",
+    "YourMT3 (https://huggingface.co/spaces/mimbres/YourMT3) License: Apache-2.0", and "Magenta MT3
+    (https://github.com/magenta/mt3, Apache-2.0, Google Research) is NOT currently vendored anywhere in this
+    repository".
+  - b. Weights: fetched from the upstream projects (sections 16 to 18); which URLs its downloader uses was not read
+    (UNVERIFIED; settled by reading its download module).
+  - c. Training data: as for MR-MT3, mt3-pytorch (MT3) and YourMT3+.
+  - d. Service: not applicable.
+- **Not run here:** in gap round 1 the MT3, mt3-pytorch, MR-MT3 and YourMT3+ code could not be run from their
+  repositories (the session's permission system, `trials.md`); this package, which vendors three of them, was not
+  used in their place.
+
+## 37. yourmt3 (PyPI, third party; added in gap round 1)
+
+- **What, links:** PyPI `yourmt3` 0.1.4, uploaded 2025-08-31 (first release 0.1.0 on 2025-07-25), summary "Music
+  Transcription", author field "dummyjenil"; no project URL (PyPI JSON, read 2026-11-10). Its description lists the
+  model types "YMT3+", "YPTF+Single", "YPTF+Multi", "YPTF+MoE+Multi 1" and "YPTF+MoE+Multi 2", shows `from yourmt3
+  import YMT3`, `model = YMT3(hf_hub_download("shethjenil/Audio2Midi_Models","YMT3+.pt"),"YMT3+")` and
+  `model.predict(path, batch_size, ...)` inside a Gradio interface whose output is `gr.File(label="midi")`, and under
+  "Based On" links the YourMT3+ paper (https://arxiv.org/abs/2407.04822). Requires `einops`, `lightning`, `mido`,
+  `mir-eval`, `scikit-learn`, `torchaudio`, `transformers==4.45.1`.
+- **Weights:** Hugging Face `shethjenil/Audio2Midi_Models` (revision 4300d378, last modified 2025-08-30; Hugging Face
+  API, read 2026-11-10): `YMT3+.pt` 185,123,699 bytes, `YPTF+Single.pt` 121,781,787, `YPTF+Multi.pt` 313,554,331,
+  `YPTF+MoE+Multi 1.pt` 386,049,197, `YPTF+MoE+Multi 2.pt` 188,636,597, `YMT3+MusicFM.pt` 1,484,875,284, `mt3.zip`
+  171,564,470. Whether these are the YourMT3 authors' checkpoints: UNVERIFIED (settled by comparing hashes with the
+  Space's files).
+- **License facts:** a. Code: no license field, no license classifier and no license text in the PyPI metadata (read
+  2026-11-10). b. Weights: no license tag and no card data on `shethjenil/Audio2Midi_Models` (API `cardData`: null).
+  c. Training data: see YourMT3+ (section 16). d. Service: not applicable.
+- **Not run here** (as for section 36).
+
 ## 34. Services and desktop products in this category (pointers)
 
 The apps-survey lane covers desktop and mobile products and the hosted-apis lane covers HTTP APIs. Facts read by
@@ -1565,6 +1686,19 @@ User constraints into the tools that accept them (human-in-the-loop re-runs):
   found none either (the nearest are CREPE Notes' `--tuning-offset` and MuScriptor's `--instruments`, above). Those
   constraints belong to the guitar-tab lane's tools.
 
+
+## Gap round 1 additions (gapfill-audio-to-notes, 2026-11-10)
+
+Facts added in this round, each in its tool's section and marked "Added in gap round 1", all read on 2026-11-10 (dates
+from `date -u +%F`): section 1 CREPE (how the PyPI package installs: source archive only, `pkg_resources`, weights
+downloaded from github.com at build time, file sizes); section 5 RMVPE (the PyPI wrapper `rmvpe-onnx`: calls, input and
+output, its LICENSE quoted, the weights card); section 16 YourMT3+ (the CPU copy of the Space and the two Spaces'
+`app.py` device settings and requirements); section 18 mt3-pytorch (README usage, `inference.py`, checkpoint facts,
+requirements); section 20 Omnizart (the older releases' pins); section 24 Onsets and Frames (the PyTorch port has no
+checkpoint; the `magenta` 2.1.4 pins and console script; the MAESTRO checkpoint archive); new sections 36 `mt3-infer`
+and 37 `yourmt3` (PyPI repackagings, license facts quoted or stated as absent); a gap-round status on the tool-list
+lines 1, 5, 15, 16, 17, 18, 20 and 24. What ran and what was refused is in `trials.md`, "Gap round 1" and "Tools not run
+here". These additions have not been through the verify-docs pass below.
 
 ## Verification log (verify-docs-audio-to-notes, 2026-11-10)
 

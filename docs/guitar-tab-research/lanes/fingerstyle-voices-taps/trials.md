@@ -454,6 +454,10 @@ The shared set has none (INPUTS.md). Searched 2026-11-10:
   file is a bass, not a guitar. The size, duration, resolution, license and artist above match the Commons API
   answer the verifier got the same day.
 - Steps for Aaron to fetch either file: `for-aaron.md`, list 8.
+- (gap round 1: Freesound 674811 was tried again and answered HTTP 403 to the page and to a preview address; a
+  search of archive.org and Wikimedia Commons found one CC BY 3.0 recording whose keywords are "Acoustic, Tapping,
+  Fingerstyle", which this lane added as input RT1 and analysed; whether it contains hits on the guitar body is
+  UNVERIFIED. See "Gap round 1", "A real recording with taps, second search".)
 
 ## Essentia 2.1-beta6-dev `PredominantPitchMelodia`: the melody voice from audio directly
 
@@ -1014,7 +1018,185 @@ report on `S2s` (the same notes without taps).
   classifier. Reason: [Code from External]." No venv created (checked 23:25:27 UTC), no ledger line, not worked
   around. So the S2n and S5dropd truth notes were not voice-separated by it; the partitura and music21 counts above
   (P2 and M1: 90 of 90 on both clips) have no piano_svsep counterpart here.
+- Prepared for a run elsewhere (run r0549, `--nolock`, light, wall 0.87 s): `scripts/gap1_svsep_inputs.py` writes
+  a clip's merged single-track truth MIDI (90 notes, onset, offset and pitch only, from the first round's
+  `voice_split.py`) as MusicXML with music21 10.5.2's writer. For S2n it reproduces the first round's
+  `samples/voice-split/S2n_truth_merged_single_track.musicxml` except for the random `id` attributes of the part and
+  instrument; the new `samples/voice-split/S5dropd_truth_merged_single_track.musicxml` (and its `.mid`) differs from
+  the S2n file only in four `<octave>3</octave>` to `<octave>2</octave>` changes, the four Drop D bass notes (truth
+  onsets 8.571, 13.929, 18.214, 25.714 s, MIDI 50 in S2n, 38 in S5dropd). Each file: 1 part, 90 pitches, 97 `<note>`
+  elements (7 of them rests), 36 `<chord />` tags, `<voice>` tags 36 x "1" and 12 x "2", 6 `<backup>` elements
+  (counted with `grep`; r0549's own printout says `chord_tags` 0 because the script searched for `<chord/>` without
+  the space music21 writes; the script was corrected after the run).
+- Scorer for the returned file (run r0552, `--nolock`, light, wall 8.1 s): `scripts/gap1_score_svsep.py <pred .mei
+  or .musicxml> <clip>` reads the file with partitura 1.9.0 (`pt.load_score`, `note_array(include_staff=True)`),
+  turns `onset_quarter` into seconds at the truth tempo (112 bpm), labels melody and bass without the truth by two
+  rules (staff rule: the (part, staff) group with the highest mean pitch is melody; voice rule: the (part, staff,
+  voice) group with the highest mean pitch is melody, as for partitura's voices above) and counts right voices with
+  `fvt_common.voice_accuracy`, as for partitura and music21. Self-check (`--selftest`): the truth written as a
+  two-part MusicXML (melody part, bass part; pretty_midi then music21) gives 90 of 90 matched and 90 of 90 right
+  voice under both rules for S2n and for S5dropd. The two input files as read: 90 of 90 matched; staff rule 42 of 90
+  right (one staff, so every note is labelled melody); voice rule 54 of 90 right (partitura reads music21's voices as
+  84 notes in voice 1, mean pitch 52.79 (S2n) / 52.21 (S5dropd), and 6 in voice 2, mean pitch 58.0). Results:
+  `samples/voice-split/svsep_scorer_*.json`.
 - Steps for Aaron: `for-aaron.md`, list 4.
+
+### A real recording with taps, second search (Freesound, archive.org, Wikimedia Commons) and input RT1
+
+Every request below was made one at a time with the User-Agent `gtr-research-agent/1.0 (guitar tablature research;
+automated client)` (no personal details).
+
+- Freesound sound 674811 (CC0, "guitar body kick"): the page `https://freesound.org/people/leaving.february/sounds/674811/`
+  at 23:26:10 UTC and, 56 s later, the address `https://cdn.freesound.org/previews/674/674811_14339611-hq.mp3`
+  both answered `HTTP/2 403` with an empty body (`content-length: 0`, no `server` header) after the proxy's CONNECT
+  had succeeded (`HTTP/1.1 200 Connection Established`). The proxy's status page
+  (`$HTTPS_PROXY/__agentproxy/status`) listed no failure for either host, so whether the 403 came from Freesound or
+  from the egress proxy (which re-terminates TLS) is UNVERIFIED. Not retried: the proxy's README says "do not retry
+  policy denials (403/407) — report them instead". The preview address was built from the sound id and the number in
+  the uploader's avatar path on the page (`/data/avatars/14339/14339611_M.jpg`, read through the web fetch tool,
+  which also found "no cdn.freesound.org links, no "previews" paths" on the page); nothing confirmed that address.
+  Freesound's API documentation (https://freesound.org/docs/api/resources_apiv2.html, read 2026-11-10 through the web
+  fetch tool) describes the previews as "(for ~128kbps quality and ~64kbps quality mp3 respectively)" and says of the
+  Download Sound resource "It requires OAuth2 authentication."
+- archive.org: nine queries through `https://archive.org/advancedsearch.php` (`scripts/gap1_archive_search.py`,
+  23:27 to 23:28 UTC, all HTTP 200): `"percussive guitar"` 25 hits, `"percussive fingerstyle"` 4, `"fingerstyle
+  percussion"` 0, `"percussive acoustic guitar"` 3, `"guitar body percussion"` 0, `"body percussion" AND guitar` 10,
+  `"slap guitar" OR "guitar slap"` 17, `fingerstyle AND (percussive OR percussion OR slap OR tapping)` 50, `guitar AND
+  (percussive OR "body tap" OR "body taps" OR "body hit")` 526 (first 200 returned): 292 distinct items, 12 of them
+  with a license URL for CC0, a public-domain mark or CC BY without SA, NC or ND. Three of the 12 describe guitar
+  playing in percussive or tapping terms:
+  - `ChrisSmuckWithANewTuningYouCanFly`, CC BY 3.0, keywords "Acoustic, Tapping, Fingerstyle": taken as input RT1
+    (below).
+  - `RacerSessions-DannyGodinez11082015`, license URL `http://creativecommons.org/publicdomain/mark/1.0/` (Public
+    Domain Mark 1.0, which is neither CC0 nor CC BY, the two licenses this round was asked to use): its description
+    says "He will be playing steel string acoustic and utilizing an array of real-time looping, echo/reverb
+    landscapes to discover a different sonic terrain. imaginative fingerstyle and percussive textures compliment an
+    altogether unique and fresh approach to the acoustic guitar.", followed by seven jams with other players; 11
+    original WAV files, "Danny Godinez 1.wav" to "4.wav" 1315.01, 314.72, 471.41 and 343.27 s long (item metadata
+    read 23:46 UTC). Not downloaded.
+  - `DavidDrewLongey-MusicFromAModernCave2005`, CC BY 3.0: "improvisational acoustic instrumental works on banjo,
+    jawharp, and guitar" and "The music is percussive, and modal, not unlike ragas, or certain Appalachian styles"; 9
+    VBR MP3 tracks; the item does not say which tracks have guitar. Not downloaded.
+  The other 9 are two radio interviews, a 3D-printing file, a folk festival concert, a noise compilation, a flute
+  ensemble with extended techniques, an experimental mix, a score collection and an improvisation trio (their titles
+  and descriptions; not downloaded). Search results: `samples/realtaps/archive_search.json` (identifier, title, media
+  type, license URL, query; descriptions left out).
+- Wikimedia Commons: eight searches through the API (`scripts/gap1_commons_search.py`, File namespace, 23:29 to
+  23:36 UTC). Four answered `HTTP 429` twice, 60 s apart (`percussive fingerstyle`, `fingerstyle percussion`, `slap
+  guitar acoustic`, `guitar body tapping`); the four that answered (`percussive guitar`, `guitar body percussion`,
+  `percussive acoustic guitar`, `fingerstyle guitar`, 50 hits each) held four audio, video or MIDI files: "Am7
+  Percussive Bass Tapping.webm" (a 5-string bass, CC BY 3.0, 43.7 s), "Highlife guitar.mid" and "Zupf- Picking- und
+  Fingerstyle bsp.mid" (MIDI), and "Blue Island.wav" (a band track, CC BY-SA 4.0). The category "Percussive guitar
+  techniques" (read through the web fetch tool) holds 8 files, all JPEG images, and the subcategory "Chitarra
+  battente". Two web searches restricted to commons.wikimedia.org found no audio or video of guitar body percussion
+  (their results: the "Tapping" category with fretboard-tapping clips on electric guitar and bass, a "Clapping"
+  category, guitar-technique `.ogg` samples of bends, palm muting, hammer-ons, harmonics and slides). Search results:
+  `samples/realtaps/commons_search.json`.
+
+Input RT1, documented as INPUTS.md documents its clips (files in `/home/user/gtr/lanes/fingerstyle-voices-taps/inputs/RT1/`;
+`RT1.truth.json` in the inputs schema with no truth, and the read-back `RT1.readback.json`, are copied to
+`samples/realtaps/`):
+
+| id | files | duration | sample rate / channels | what it is | truth | source URL | license (quoted clause) | attribution |
+|---|---|---|---|---|---|---|---|---|
+| RT1 | `RT1.wav`<br>`RT1.mono.wav`<br>`original/With_A_New_Tuning_You_Can_Fly.mp3`<br>`RT1.truth.json`<br>`RT1.readback.json` | 233.509 s | 44100 Hz / 2 ch | Real recording, audio only: Chris Smuck, "With A New Tuning, You Can Fly" (2007), the whole track. Item description: "Michael Hedges Tuning...Written By Me"; item keywords: "Acoustic, Tapping, Fingerstyle". The item does not say whether the tapping is on the fretboard or on the guitar body; whether the recording contains hits on the guitar body is UNVERIFIED (not stated in the metadata, not checked by listening). The two decoded channels are identical (mono stored as stereo). | none (no ground truth) | https://archive.org/details/ChrisSmuckWithANewTuningYouCanFly | CC BY 3.0: item page "Usage Attribution 3.0"; file license field and the MP3's ID3 copyright tag: "2007 Chris Smuck. Licensed to the public under http://creativecommons.org/licenses/by/3.0/ verify at http://www.archive.org/details/ChrisSmuckWithANewTuningYouCanFly" | "With A New Tuning, You Can Fly" by Chris Smuck (2007), archive.org item ChrisSmuckWithANewTuningYouCanFly, CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/); whole track, decoded from MP3 to WAV. |
+
+- Source facts (item metadata `https://archive.org/metadata/ChrisSmuckWithANewTuningYouCanFly` and the details page,
+  read 2026-11-10 23:28 to 23:37 UTC): title "With A New Tuning, You Can Fly", holder "Chris Smuck", year 2007,
+  added 2007-04-13, collections `opensource_audio` and `community`, `licenseurl`
+  `http://creativecommons.org/licenses/by/3.0/`; the item's only original audio file is
+  `With_A_New_Tuning_You_Can_Fly.mp3` (format "192Kbps MP3", 5,607,089 bytes, length 233.62, md5
+  `eba7dc5afa339eb9a091d0f04e80d484`); the other audio files are derivatives, and the file list gives them lengths
+  of about 3 s (`With_A_New_Tuning_You_Can_Fly.ogg` "3.09", `_64kb.mp3` and `_vbr.mp3` "00:03"), so only the original
+  holds the whole track. The item has one review, which says nothing about the instrument or the technique.
+- Download: `https://archive.org/download/ChrisSmuckWithANewTuningYouCanFly/With_A_New_Tuning_You_Can_Fly.mp3` at
+  23:36:58 UTC, HTTP 200, `audio/mpeg`, 5,607,089 bytes; md5 `eba7dc5afa339eb9a091d0f04e80d484` (equal to the
+  item's file list), sha256 `06d70c3fa409ec9532375750655aa4d6adefec7516844f419613761095722d50`. ffprobe: MPEG audio
+  layer 3, 44100 Hz, stereo, 192 kb/s, duration 233.508583 s ("Estimating duration from bitrate").
+- Decode and read-back, run r0534 (`--nolock`, light; wall 2.64 s): `scripts/gap1_make_rt1.sh`: `ffmpeg -i
+  <mp3> -map 0:a:0 -c:a pcm_s16le -ar 44100 -ac 2 RT1.wav` (whole track, no gain change), then `RT1.mono.wav` =
+  (L+R)/2 rounded to 16 bits (numpy). Read-back: 10,297,728 samples (233.509 s), peak -3.62 dBFS, RMS -21.88 dBFS,
+  0 samples at full scale; left-right correlation 1.0 and left minus right exactly 0 (no difference in any sample);
+  RMS of each 5 s window of the mono file -19.4 to -26.0 dBFS, except the last window (the final 3.5 s), -56.5
+  dBFS.
+
+| file | bytes | sha256 |
+|---|---|---|
+| `RT1/RT1.wav` | 41,191,174 | `0b6bd2c9cd11bbca6190aac4fe1fd659ae6fe4e27e964a30626123ba7ea821d3` |
+| `RT1/RT1.mono.wav` | 20,595,500 | `78822dc2c7c33fd9659bbd9a92b4c6a060d94f13b0a4d441d43d531d79f9cca5` |
+| `RT1/original/With_A_New_Tuning_You_Can_Fly.mp3` | 5,607,089 | `06d70c3fa409ec9532375750655aa4d6adefec7516844f419613761095722d50` |
+
+The lane's tap-side methods on RT1 (no truth, so counts and levels only; whole track, 233.509 s):
+
+- Run r0551 (2-core slot, waited 336.1 s; wall 79.7 s, CPU 79.5 s, peak RSS 1,597.9 MB):
+  `scripts/gap1_rt1_hpss_onsets.py RT1.mono.wav <out>`: `librosa.effects.hpss(y, margin=m)` for m = 1, 4, 16 and
+  `librosa.onset.onset_detect` (defaults, `units='time'`) on the mix and on each percussive part, as in r0031 (S6taps)
+  and r0292 (R3). Script timer: 24.98 to 26.8 s per margin.
+- Run r0542 (2-core slot, waited 163.0 s; wall 13.99 s, CPU 14.9 s, peak RSS 983.2 MB): `scripts/gap1_rt1_detectors.sh`:
+  `aubioonset -O hfc|complex|specflux`, madmom `CNNOnsetDetector single` and `SuperFlux single` (venv-madmom), Essentia
+  `OnsetRate()` (venv-essentia), defaults; per detector 0.46 to 7.63 s (`timing.tsv`).
+
+| signal, method | onsets | onsets per second | energy of the part / of the mix |
+|---|---|---|---|
+| mix, librosa `onset_detect` | 931 | 3.99 | |
+| HPSS percussive, margin 1, librosa | 1,231 | 5.27 | percussive 0.0254, harmonic 0.904 |
+| HPSS percussive, margin 4, librosa | 1,192 | 5.10 | percussive 0.0048, harmonic 0.6767 |
+| HPSS percussive, margin 16, librosa | 946 | 4.05 | percussive 0.0009, harmonic 0.3129 |
+| mix, aubio hfc | 1,112 | 4.76 | |
+| mix, aubio complex | 558 | 2.39 | |
+| mix, aubio specflux | 1,349 | 5.78 | |
+| mix, madmom CNNOnsetDetector | 1,124 | 4.81 | |
+| mix, madmom SuperFlux | 1,095 | 4.69 | |
+| mix, Essentia OnsetRate | 981 | 4.20 | |
+
+- Percussive share by 10 s window (margin 4): 0.0009 to 0.0164, median 0.0047 (24 windows); the largest is 90-100 s
+  (0.0164), then 30-40 s (0.0087), 60-70 s and 210-220 s (0.0083 each); the smallest are 230-233.5 s (0.0009), 10-20
+  s (0.0013) and 0-10 s and 150-160 s (0.0015 each). (`summary.json`.)
+- For comparison, same calls on the other clips: the percussive part at margin 4 held 0.022 of S6taps' energy (GM
+  percussion as taps, r0031) and 0.0009, 0.0005, 0.0018 of R3a, R3b, R3c (no body taps seen in their video frames,
+  r0292); at margin 1, 0.065 of S6taps'. On S6taps' 53 events the same detectors returned 53 onsets (librosa on the
+  mix, aubio hfc, madmom CNNOnsetDetector and SuperFlux, Essentia OnsetRate), 54 (aubio complex) and 58 (aubio
+  specflux); on RT1 there is no event list to compare with.
+- Files: `/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap1-RT1/librosa/` (onset lists, `summary.json`) and
+  `.../out/gap1-RT1/detectors/` (onset lists, `timing.tsv`); copies in `samples/realtaps/`:
+  `RT1_librosa_hpss_summary.json`, `RT1_onsets_percussive_m4.txt`, `RT1_onsets_madmom_CNNOnsetDetector.txt`,
+  `RT1_detectors_timing.tsv`.
+
+The drums-stem route on RT1 (Demucs 4.1.0, the same package set as r0327 / r0330, rebuilt from
+`freeze/venv-demucs.txt`; weights `adefossez/HTDemucs-6s` `5c90dfd2.safetensors` and `adefossez/HTDemucs`
+`955717e8.safetensors` from the shared Hugging Face cache; default options, as in the source-separation lane's
+r0410):
+
+- Run r0554 (2-core slot, waited 314.4 s): `demucs -n htdemucs_6s -d cpu -o <out> RT1.wav`; wall 173.64 s, CPU 261.5
+  s, peak RSS 2,142.2 MB. Run r0556 (2-core slot, no wait): the same with `-n htdemucs`; wall 171.41 s, CPU 307.7 s,
+  peak RSS 2,142.2 MB. Output: one WAV per stem, 16-bit stereo 44.1 kHz, 233.509 s (41,190,956 bytes each).
+- Run r0557 (`--nolock`, light; wall 10.05 s): `scripts/gap1_rt1_stems.py`: energy of each stem relative to the mix
+  (sum of squares over both channels), the peak of each stem's (L+R)/2 signal, and `librosa.onset.onset_detect`
+  (defaults) on the drums stem loaded as mono, as for the R3 table above. Run r0558 (`--nolock`, light; wall 2.26 s):
+  `scripts/gap1_rt1_drum_peaks.py`: the 12 highest local maxima of each drums stem's |(L+R)/2|, at least 1 s apart
+  (`scipy.signal.find_peaks`, distance 1 s).
+
+| model | stem energy re mix, dB (bass / drums / other / guitar / piano / vocals) | drums stem peak, of the (L+R)/2 mono signal | librosa onsets on the drums stem | drums stem RMS by 10 s window (mono) |
+|---|---|---|---|---|
+| htdemucs_6s | -13.8 / -40.0 / -2.5 / -8.1 / -24.3 / -41.4 | -23.0 dBFS | 351 | -63.5 to -62.6 dBFS in 21 of 24 windows; -57.1 (30-40 s), -56.0 (60-70 s), -59.4 (200-210 s) |
+| htdemucs | -17.6 / -41.4 / -0.2 / n/a / n/a / -41.5 | -36.3 dBFS | 1,078 | -63.7 to -62.6 dBFS in all 24 windows |
+
+- Loudest moments of the drums stems (r0558; level of |(L+R)/2| at the peak): htdemucs_6s: 5 of its 181 peaks (1 s
+  apart) lie above -40 dBFS, at 0:31.8 (-23.0 dBFS), 1:05.8 (-30.4), 1:08.4 (-28.8), 1:10.4 (-38.9) and 3:25.8
+  (-30.9); 2 more above -50 dBFS, at 0:59.2 (-47.5) and 2:18.8 (-45.3). htdemucs: 1 of its 181 peaks lies above -40
+  dBFS, at 0:49.9 (-36.3 dBFS), and 1 more above -50 dBFS, at 1:54.0 (-49.1). The two models' loudest moments are at
+  different times. What sound is at these times was not checked by listening (`for-aaron.md` list 8, step 3).
+- For comparison (first round): the S6taps drums stems, whose content is the GM percussion standing in for taps, are
+  -15.0 dB (htdemucs_6s) and -15.3 dB (htdemucs) re the mix with mono peaks -7.7 and -7.9 dBFS and gave 32 and 34
+  librosa onsets for 32 truth taps in 29.4 s; the R3 drums stems (no body taps seen in the video frames) are 42 to 65
+  dB below their mixes and gave 55 to 226 onsets in 18 s. On RT1, htdemucs_6s put more of the mix into `other` (-2.5
+  dB) than into `guitar` (-8.1 dB), while on R3a to R3c it put -0.1 to -0.3 dB into `guitar`; on RT1 the `bass` stems
+  hold -13.8 and -17.6 dB.
+- Files: `/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap1-RT1/demucs/{htdemucs_6s,htdemucs}/RT1/` (stems and
+  `drums_onsets.txt`), `stems_summary.json` and `drum_peaks.json` next to them; copies in `samples/realtaps/`:
+  `RT1_demucs_stems_summary.json`, `RT1_demucs_drum_peaks.json`, `RT1_htdemucs6s_drums_onsets.txt`.
+- Not run on RT1: libnmfd (its KAM + NMFD pipeline took 42 to 187 s on the 29.4 s S6taps; not repeated on the
+  233.5 s track) and the scikit-learn NMF ORACLE grouping (it needs truth stems).
 
 ## Environments, kept and deleted
 
@@ -1025,7 +1207,15 @@ notice); `venv-core`, `venv-essentia` and `venv-madmom` are still under `/home/u
 Clones of ADTOF-pytorch and piano_svsep were deleted after their files were read (`repos/` is empty). Separate
 blob-less clones of 36 repositories, among them `CPJKU__piano_svsep` and `xavriley__ADTOF-pytorch`, made at 20:56 to
 21:14 UTC for the survey, are under `clones/` (110 MB after the verifier's `git ls-tree -l` calls fetched some of
-their blobs). The verifier rebuilt `venv-nmfd` and `venv-basicpitch` offline from the two freeze files (uv's shared
+their blobs).
+
+Gap round 1: `venv-adtof-tf` (created empty, install refused) and `venv-larsnet` and `venv-drumsep` (installed,
+running refused) were deleted the same minute; no venv was created for Omnizart, ADT_STR or piano_svsep (their
+commands were refused whole). Freezes: `samples/freezes/venv-larsnet.txt`, `venv-drumsep.txt` (identical to
+`venv-demucs.txt`). `venv-demucs` was rebuilt from `freeze/venv-demucs.txt` at 23:38 UTC for the RT1 Demucs runs
+(its `uv pip freeze` was identical to that file) and deleted at 23:53 UTC. The shallow clones of ADT_STR, LarsNet, drumsep and piano_svsep under
+`gap1/repos/`, the inspected sdists of madmom 0.16.1 and vamp 1.1.0 and the 167 MB drumsep checkpoint were deleted
+after they were read (about 270 MB); `venv-core`, `venv-essentia` and `venv-madmom` were used as they were. The verifier rebuilt `venv-nmfd` and `venv-basicpitch` offline from the two freeze files (uv's shared
 cache, hard links, no measurable change in free disk) under `verify-trials/` for its re-runs, and deleted both
 after them.
 
@@ -1034,6 +1224,7 @@ after them.
 | id | files (in /home/user/gtr/lanes/fingerstyle-voices-taps/inputs/voice-stems/&lt;clip&gt;/) | duration | format | what it is | how it was made | license |
 |---|---|---|---|---|---|---|
 | S2n, S2s, S5dropd, S6taps voice stems | `melody.wav`, `bass.wav`, `melody.mono.wav`, `bass.mono.wav` | 29.357 s | 44.1 kHz, 16-bit, stereo (and mono = (L+R)/2) | each voice of the clip alone (S6taps: without the taps) | `scripts/render_voice_stems.py`: the clip's own MIDI with the other note tracks removed, rendered with the inputs builder's FluidSynth command and the clip's own gain (runs r0135 to r0138); melody + bass differs from the clip mix by at most 3.4e-5 of the mix peak (7.8e-4 for S6taps, with its taps stem added) | same as the source clips: the melody is public domain, the arrangement was written for the test set, rendered with FluidR3_GM ("I hereby release Fluid under the MIT license, as described in COPYING.", per INPUTS.md) |
+| RT1 (gap round 1; files in `/home/user/gtr/lanes/fingerstyle-voices-taps/inputs/RT1/`) | `RT1.wav`, `RT1.mono.wav`, `original/With_A_New_Tuning_You_Can_Fly.mp3`, `RT1.truth.json`, `RT1.readback.json` | 233.509 s | 44.1 kHz, 16-bit, stereo (two identical channels) and mono = (L+R)/2 | real recording, audio only: Chris Smuck, "With A New Tuning, You Can Fly" (2007), whole track; item keywords "Acoustic, Tapping, Fingerstyle"; hits on the guitar body UNVERIFIED; no ground truth | downloaded from archive.org item `ChrisSmuckWithANewTuningYouCanFly` (md5 equal to the item's file list), decoded with ffmpeg and numpy (run r0534, `scripts/gap1_make_rt1.sh`); details in "Gap round 1" | CC BY 3.0: "2007 Chris Smuck. Licensed to the public under http://creativecommons.org/licenses/by/3.0/ verify at http://www.archive.org/details/ChrisSmuckWithANewTuningYouCanFly" (file license field and ID3 tag); attribution "With A New Tuning, You Can Fly" by Chris Smuck (2007), archive.org, CC BY 3.0 |
 
 ## Media kept outside git
 
@@ -1049,6 +1240,8 @@ kHz) except the R3 Demucs stems (18.0 s). None is in git.
 | `inputs/voice-stems/{S2n,S2s,S5dropd,S6taps}/{melody,bass}.mono.wav` | 2,589,344 bytes each (8 files) | the same, mono |
 | `out/basic-pitch/*.mid` | 760 to 1,325 bytes | Basic Pitch MIDI of S2n, S2s, S6taps, S5dropd, R3a (r0252); small, copies of two are in `samples/basic-pitch/` |
 | `out/demucs-real/{htdemucs_6s,htdemucs}/{R3a,R3b,R3c}/*.wav` | 3,175,164 bytes each for R3a, 3,175,244 bytes each for R3b and R3c (30 files: 6 stems x 3 clips for htdemucs_6s, 4 x 3 for htdemucs) | Demucs stems of the real clips, 16-bit stereo 44.1 kHz, 18.0 s (r0327, r0330) |
+| `inputs/RT1/RT1.wav`, `RT1.mono.wav`, `original/With_A_New_Tuning_You_Can_Fly.mp3` | 41,191,174 / 20,595,500 / 5,607,089 bytes | gap round 1: input RT1 (archive.org, CC BY 3.0), 233.509 s; 16-bit 44.1 kHz stereo (identical channels), mono, and the original MP3 (r0534) |
+| `out/gap1-RT1/demucs/htdemucs_6s/RT1/{bass,drums,guitar,other,piano,vocals}.wav`, `out/gap1-RT1/demucs/htdemucs/RT1/{bass,drums,other,vocals}.wav` | 41,190,956 bytes each (10 files) | gap round 1: Demucs stems of RT1, 16-bit stereo 44.1 kHz, 233.509 s (r0554, r0556) |
 
 
 ## Verification log (verify-trials-fingerstyle-voices-taps, 2026-11-10)

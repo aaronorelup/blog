@@ -1,0 +1,46 @@
+{
+ "tab": "/home/user/gtr/lanes/chains/out/tab/tuttut/R2sep6s-guitar.bp.gtreval.json",
+ "beats": "/home/user/gtr/lanes/chords-beats-key/out/madmom/R2/downbeats.txt",
+ "downbeats": null,
+ "beat_numbers": true,
+ "chords": "/home/user/gtr/lanes/chords-beats-key/out/chordino/R2/chords_chordino.lab",
+ "tempo_mode": "perbar",
+ "median_ibi_s": 0.83,
+ "gp5_tempo_bpm": 72,
+ "bar_tempos_bpm": [
+  69,
+  71,
+  72,
+  73
+ ],
+ "gp_time_zero_s": -0.23,
+ "tracked_beats": 43,
+ "downbeats_given": 11,
+ "beats_added_before": 1,
+ "beats_added_after": 0,
+ "bars": 12,
+ "bar_beat_counts": [
+  2,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  1
+ ],
+ "notes_in": 298,
+ "notes_written": 264,
+ "notes_dropped_same_string_same_16th": 34,
+ "chord_segments_in": 16,
+ "chords_written": 15,
+ "chords_replaced_on_same_16th": 0,
+ "gp_minus_grid_time_of_16th_slots_s": {
+  "median": -0.022188,
+  "max_abs": 0.071183
+ }
+}

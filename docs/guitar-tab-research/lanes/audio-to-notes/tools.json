@@ -11,7 +11,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "Needs TensorFlow (the tensorflow 2.15.0 cp311 Linux wheel is 475,258,658 bytes on PyPI), over the 200 MB limit of the shared-disk notice, so it was not installed. The same CREPE weights did run through torchcrepe (PyTorch conversion) and Essentia's crepe-*-1.pb.",
+   "not_run_reason": "(corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the 200 MB disk limit no longer applied.) PyPI has crepe 0.0.16 only as a source archive (16,519 bytes). Building it on the box stopped with \"ModuleNotFoundError: No module named 'pkg_resources'\" (setup.py line 6), and with the build constraint setuptools<81 with \"urllib.error.HTTPError: HTTP Error 403: Forbidden\": setup.py downloads its weights from https://github.com/marl/crepe/raw/models/, which answers 403 to this box (raw.githubusercontent.com serves the same files). Installing the source with the five weight files put in place (from raw.githubusercontent.com) together with tensorflow==2.15.0 was refused by the session's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" Nothing ran. The same CREPE weights ran through torchcrepe and Essentia's crepe-*-1.pb.",
    "for_aaron": true,
    "callable_via": [
     "cli",
@@ -811,21 +811,190 @@
    "what": "the Pytorch implementation of \"RMVPE: A Robust Model for Vocal Pitch Estimation in Polyphonic Music\"",
    "url": "https://github.com/Dream-High/RMVPE",
    "version": "no PyPI package; last commit 2024-01-25 (a6db1cd)",
-   "tried": false,
-   "tried_how": null,
-   "runs": [],
-   "not_run_reason": "The research repo has no PyPI package; the PyPI wrapper rmvpe-onnx 0.2.3 downloads rmvpe.onnx from the Hugging Face repo lj1995/VoiceConversionWebUI, where that file is 361,688,443 bytes (rmvpe.pt is 181,184,272 bytes but needs the RVC project's model code). Over the 200 MB limit; not installed.",
-   "for_aaron": true,
+   "tried": true,
+   "tried_how": "local-cpu (rmvpe-onnx 0.2.3, ONNX Runtime 1.31.1, rmvpe.onnx from lj1995/VoiceConversionWebUI)",
+   "runs": [
+    {
+     "run_id": "r0516",
+     "input_id": "S1,S2n,S2s,S4,S4lead,R1b,R2,R3a",
+     "cores": 2,
+     "wall_s": 34.68,
+     "peak_mb": 1198.7,
+     "exit_code": 0,
+     "output_files": [
+      "/home/user/gtr/lanes/audio-to-notes/out/rmvpe/f0/<clip>.f0.csv"
+     ],
+     "metrics": {
+      "round": "gap round 1 (gapfill-audio-to-notes, 2026-11-10)",
+      "command": "scripts/run_rmvpe.py: soundfile.read(clip); RMVPE(model_path=rmvpe.onnx, device='cpu').predict(audio, sr); raw outputs written as time_s,frequency_hz,confidence (no threshold)",
+      "cpu_s": 54.9,
+      "slot_wait_s": 0.0,
+      "model_setup_s": 1.383,
+      "predict_s_per_clip": {
+       "S1": 16.054,
+       "S2n": 2.295,
+       "S2s": 1.761,
+       "S4": 2.194,
+       "S4lead": 2.444,
+       "R1b": 1.679,
+       "R2": 2.146,
+       "R3a": 1.133
+      },
+      "predict_note": "S1 was the first predict() call in the process",
+      "f0_scores_conf_threshold_0.03_gtr_eval_0.11.1": {
+       "S1": {
+        "RPA": 0.652,
+        "RCA": 0.652,
+        "voicing_recall": 0.18,
+        "voicing_false_alarm": 0.075,
+        "overall_accuracy": 0.232,
+        "eval_id": "e1478"
+       },
+       "S2n": {
+        "RPA": 0.416,
+        "RCA": 0.546,
+        "voicing_recall": 0.347,
+        "voicing_false_alarm": 0.084,
+        "overall_accuracy": 0.315,
+        "eval_id": "e1479"
+       },
+       "S2s": {
+        "RPA": 0.383,
+        "RCA": 0.391,
+        "voicing_recall": 0.2,
+        "voicing_false_alarm": 0.022,
+        "overall_accuracy": 0.247,
+        "eval_id": "e1480"
+       },
+       "S4 (mix, truth = lead line)": {
+        "RPA": 0.129,
+        "RCA": 0.541,
+        "voicing_recall": 0.515,
+        "voicing_false_alarm": 0.186,
+        "overall_accuracy": 0.297,
+        "eval_id": "e1481"
+       },
+       "S4lead": {
+        "RPA": 0.959,
+        "RCA": 0.959,
+        "voicing_recall": 0.992,
+        "voicing_false_alarm": 0.227,
+        "overall_accuracy": 0.905,
+        "eval_id": "e1482"
+       },
+       "R1b (--voice lead)": {
+        "RPA": 0.847,
+        "RCA": 0.847,
+        "voicing_recall": 0.942,
+        "voicing_false_alarm": 0.376,
+        "overall_accuracy": 0.748,
+        "eval_id": "e1483"
+       }
+      },
+      "bass_voice_RPA": {
+       "S2n": {
+        "RPA": 0.196,
+        "eval_id": "e1484"
+       },
+       "S2s": {
+        "RPA": 0.008,
+        "eval_id": "e1485"
+       }
+      },
+      "frames_conf_ge_0.03_and_ge_0.5": {
+       "S1": [
+        499,
+        84,
+        2984
+       ],
+       "S2n": [
+        912,
+        21,
+        2936
+       ],
+       "S2s": [
+        515,
+        0,
+        2936
+       ],
+       "S4": [
+        1637,
+        66,
+        3875
+       ],
+       "S4lead": [
+        3008,
+        2047,
+        3875
+       ],
+       "R1b": [
+        2135,
+        1655,
+        2934
+       ],
+       "R2": [
+        2905,
+        1683,
+        3601
+       ],
+       "R3a": [
+        1475,
+        121,
+        1800
+       ]
+      },
+      "median_confidence_in_truth_notes": {
+       "S1": 0.0074,
+       "S2n": 0.0162,
+       "S2s": 0.0116,
+       "S4": 0.0326,
+       "S4lead": 0.7241,
+       "R1b": 0.8685
+      },
+      "no_truth_outputs_kept": [
+       "R2",
+       "R3a"
+      ]
+     }
+    },
+    {
+     "run_id": "r0517",
+     "input_id": "S1",
+     "cores": null,
+     "wall_s": 7.4,
+     "peak_mb": 1007.6,
+     "exit_code": 0,
+     "output_files": [
+      "/home/user/gtr/lanes/audio-to-notes/out/rmvpe/cli/S1.csv"
+     ],
+     "metrics": {
+      "round": "gap round 1 (gapfill-audio-to-notes, 2026-11-10)",
+      "nolock": true,
+      "command": "rmvpe-onnx predict S1.wav --model rmvpe.onnx --device cpu --csv S1.csv",
+      "cpu_s": 10.5,
+      "printed": "Threshold 0.03; Frames 2984; Voiced 498 (16.7 %); F0 range 216.3 – 392.8 Hz; Time 2902.0 ms"
+     }
+    }
+   ],
+   "not_run_reason": null,
+   "for_aaron": false,
    "callable_via": [
     "python"
    ],
    "inputs": [
-    "audio (src/inference.py: class Inference(model, seg_len, seg_frames, hop_length, batch_size, device), inference(self, audio))"
+    "audio read with soundfile (CLI help: typically WAV); multichannel downmixed with librosa.to_mono, resampled to 16 kHz inside predict()"
    ],
    "outputs": [
-    "frame-level vocal f0; inference() returns (hidden_vec_segments, out_segments) trimmed to len(audio) // hop_length + 1 frames (conversion of out_segments to Hz not traced)"
+    "frame-level vocal f0; inference() returns (hidden_vec_segments, out_segments) trimmed to len(audio) // hop_length + 1 frames (conversion of out_segments to Hz not traced)",
+    "rmvpe-onnx predict(): time (s, hop 160 samples at 16 kHz = 10 ms), frequency (Hz, salience-weighted average of the 9 bins around the peak), confidence (largest of the 360 sigmoid outputs, 0 to 1), activation (frames x 360, 20-cent bins, centres 31.70 to 2005.50 Hz); a frequency in every frame, no voiced flag, no notes",
+    "CLI --csv: header time,frequency,confidence; frames below --confidence-threshold (default 0.03) written as 0 Hz; without --csv it only prints a summary"
    ],
-   "constraints_accepted": [],
+   "constraints_accepted": [
+    "model_path",
+    "device (cpu, cuda, dml, rocm, coreml, tensorrt, openvino)",
+    "CLI --confidence-threshold (default 0.03)",
+    "no frequency-range, hop, tuning or key input"
+   ],
    "license": {
     "code": {
      "spdx": "Apache-2.0",
@@ -898,38 +1067,209 @@
    "what": "RMVPE pitch estimator, pure ONNX Runtime inference (third-party PyPI wrapper)",
    "url": "https://pypi.org/project/rmvpe-onnx/",
    "version": "0.2.3 (14,520-byte wheel)",
-   "tried": false,
-   "tried_how": null,
-   "runs": [],
-   "not_run_reason": "Downloads rmvpe.onnx (361,688,443 bytes) from the Hugging Face repo lj1995/VoiceConversionWebUI, over the box's per-download disk limit (200 MB).",
-   "for_aaron": true,
+   "tried": true,
+   "tried_how": "local-cpu (rmvpe-onnx 0.2.3, ONNX Runtime 1.31.1, rmvpe.onnx from lj1995/VoiceConversionWebUI)",
+   "runs": [
+    {
+     "run_id": "r0516",
+     "input_id": "S1,S2n,S2s,S4,S4lead,R1b,R2,R3a",
+     "cores": 2,
+     "wall_s": 34.68,
+     "peak_mb": 1198.7,
+     "exit_code": 0,
+     "output_files": [
+      "/home/user/gtr/lanes/audio-to-notes/out/rmvpe/f0/<clip>.f0.csv"
+     ],
+     "metrics": {
+      "round": "gap round 1 (gapfill-audio-to-notes, 2026-11-10)",
+      "command": "scripts/run_rmvpe.py: soundfile.read(clip); RMVPE(model_path=rmvpe.onnx, device='cpu').predict(audio, sr); raw outputs written as time_s,frequency_hz,confidence (no threshold)",
+      "cpu_s": 54.9,
+      "slot_wait_s": 0.0,
+      "model_setup_s": 1.383,
+      "predict_s_per_clip": {
+       "S1": 16.054,
+       "S2n": 2.295,
+       "S2s": 1.761,
+       "S4": 2.194,
+       "S4lead": 2.444,
+       "R1b": 1.679,
+       "R2": 2.146,
+       "R3a": 1.133
+      },
+      "predict_note": "S1 was the first predict() call in the process",
+      "f0_scores_conf_threshold_0.03_gtr_eval_0.11.1": {
+       "S1": {
+        "RPA": 0.652,
+        "RCA": 0.652,
+        "voicing_recall": 0.18,
+        "voicing_false_alarm": 0.075,
+        "overall_accuracy": 0.232,
+        "eval_id": "e1478"
+       },
+       "S2n": {
+        "RPA": 0.416,
+        "RCA": 0.546,
+        "voicing_recall": 0.347,
+        "voicing_false_alarm": 0.084,
+        "overall_accuracy": 0.315,
+        "eval_id": "e1479"
+       },
+       "S2s": {
+        "RPA": 0.383,
+        "RCA": 0.391,
+        "voicing_recall": 0.2,
+        "voicing_false_alarm": 0.022,
+        "overall_accuracy": 0.247,
+        "eval_id": "e1480"
+       },
+       "S4 (mix, truth = lead line)": {
+        "RPA": 0.129,
+        "RCA": 0.541,
+        "voicing_recall": 0.515,
+        "voicing_false_alarm": 0.186,
+        "overall_accuracy": 0.297,
+        "eval_id": "e1481"
+       },
+       "S4lead": {
+        "RPA": 0.959,
+        "RCA": 0.959,
+        "voicing_recall": 0.992,
+        "voicing_false_alarm": 0.227,
+        "overall_accuracy": 0.905,
+        "eval_id": "e1482"
+       },
+       "R1b (--voice lead)": {
+        "RPA": 0.847,
+        "RCA": 0.847,
+        "voicing_recall": 0.942,
+        "voicing_false_alarm": 0.376,
+        "overall_accuracy": 0.748,
+        "eval_id": "e1483"
+       }
+      },
+      "bass_voice_RPA": {
+       "S2n": {
+        "RPA": 0.196,
+        "eval_id": "e1484"
+       },
+       "S2s": {
+        "RPA": 0.008,
+        "eval_id": "e1485"
+       }
+      },
+      "frames_conf_ge_0.03_and_ge_0.5": {
+       "S1": [
+        499,
+        84,
+        2984
+       ],
+       "S2n": [
+        912,
+        21,
+        2936
+       ],
+       "S2s": [
+        515,
+        0,
+        2936
+       ],
+       "S4": [
+        1637,
+        66,
+        3875
+       ],
+       "S4lead": [
+        3008,
+        2047,
+        3875
+       ],
+       "R1b": [
+        2135,
+        1655,
+        2934
+       ],
+       "R2": [
+        2905,
+        1683,
+        3601
+       ],
+       "R3a": [
+        1475,
+        121,
+        1800
+       ]
+      },
+      "median_confidence_in_truth_notes": {
+       "S1": 0.0074,
+       "S2n": 0.0162,
+       "S2s": 0.0116,
+       "S4": 0.0326,
+       "S4lead": 0.7241,
+       "R1b": 0.8685
+      },
+      "no_truth_outputs_kept": [
+       "R2",
+       "R3a"
+      ]
+     }
+    },
+    {
+     "run_id": "r0517",
+     "input_id": "S1",
+     "cores": null,
+     "wall_s": 7.4,
+     "peak_mb": 1007.6,
+     "exit_code": 0,
+     "output_files": [
+      "/home/user/gtr/lanes/audio-to-notes/out/rmvpe/cli/S1.csv"
+     ],
+     "metrics": {
+      "round": "gap round 1 (gapfill-audio-to-notes, 2026-11-10)",
+      "nolock": true,
+      "command": "rmvpe-onnx predict S1.wav --model rmvpe.onnx --device cpu --csv S1.csv",
+      "cpu_s": 10.5,
+      "printed": "Threshold 0.03; Frames 2984; Voiced 498 (16.7 %); F0 range 216.3 – 392.8 Hz; Time 2902.0 ms"
+     }
+    }
+   ],
+   "not_run_reason": null,
+   "for_aaron": false,
    "callable_via": [
     "python",
     "cli"
    ],
    "inputs": [
-    "audio file (README: rmvpe-onnx predict S1.wav)"
+    "audio read with soundfile (CLI help: typically WAV); multichannel downmixed with librosa.to_mono, resampled to 16 kHz inside predict()"
    ],
    "outputs": [
-    "the README does not say which files predict writes; the --help text should (for-aaron.md)"
+    "rmvpe-onnx predict(): time (s, hop 160 samples at 16 kHz = 10 ms), frequency (Hz, salience-weighted average of the 9 bins around the peak), confidence (largest of the 360 sigmoid outputs, 0 to 1), activation (frames x 360, 20-cent bins, centres 31.70 to 2005.50 Hz); a frequency in every frame, no voiced flag, no notes",
+    "CLI --csv: header time,frequency,confidence; frames below --confidence-threshold (default 0.03) written as 0 Hz; without --csv it only prints a summary"
    ],
-   "constraints_accepted": [],
+   "constraints_accepted": [
+    "model_path",
+    "device (cpu, cuda, dml, rocm, coreml, tensorrt, openvino)",
+    "CLI --confidence-threshold (default 0.03)",
+    "no frequency-range, hop, tuning or key input"
+   ],
    "license": {
     "code": {
      "spdx": "MIT",
-     "quote": null,
-     "url": "https://pypi.org/project/rmvpe-onnx/",
-     "note": "PyPI license MIT; requires huggingface-hub and onnxruntime"
+     "quote": "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software",
+     "url": "https://raw.githubusercontent.com/NewComer00/rmvpe-onnx/HEAD/LICENSE",
+     "note": "three MIT notices in one file (read 2026-11-10): Copyright (c) 2026 NewComer00; Copyright (c) 2023 liujing04, 源文雨, Ftps; Copyright (c) 2022 lj1995. PyPI license MIT; requires huggingface-hub and onnxruntime"
     },
-    "weights": null,
+    "weights": {
+     "name": "rmvpe.onnx in lj1995/VoiceConversionWebUI (361,688,443 bytes, sha256 5370e71a...fa3660fd)",
+     "quote": "license: mit",
+     "url": "https://huggingface.co/lj1995/VoiceConversionWebUI/raw/main/README.md",
+     "note": "the card is front matter only (21 bytes), read 2026-11-10; the wrapper's README credits the model 'Copyright (c) 2022 lj1995 — MIT License'"
+    },
     "training_data": [],
     "service_terms": []
    },
    "pricing": null,
    "handoffs_out": [],
-   "unverified": [
-    "which files `rmvpe-onnx predict` writes (the README does not say)"
-   ]
+   "unverified": []
   },
   {
    "name": "FCPE / torchfcpe",
@@ -3806,7 +4146,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "JAX/T5X code; the README's route is a Colab notebook whose setup cell copies the checkpoints from Google Cloud Storage (gs://mt3/checkpoints). Installing its stack was over the box's 200 MB disk limit and the community Space akhaliq/MT3 reported RUNTIME_ERROR (Hugging Face API, 2026-11-10).",
+   "not_run_reason": "(corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the disk limit no longer applied.) The Colab notebook's install route (git clone magenta/mt3 at 7ecf19d, then uv pip install \"jax[cpu]\" nest-asyncio pyfluidsynth==1.3.0 -e <clone>) was refused by the session's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" Nothing ran. The fallback mt3-pytorch (kunato) was refused the same way. No model variant ran.",
    "for_aaron": true,
    "callable_via": [
     "python"
@@ -3908,7 +4248,7 @@
      }
     }
    ],
-   "not_run_reason": "The Space refused the box's anonymous call for lack of free GPU quota (\"You have exceeded your ZeroGPU quota (90s requested vs. 79s left). Try again in 6:54:35. Authenticate with a Hugging Face token for more quota\"); no Hugging Face token was available to this session. Locally the Space repo's checkpoints are 361 to 759 MB each (default 561,544,628 bytes), over the 200 MB limit.",
+   "not_run_reason": "This lane's anonymous call to the ZeroGPU Space was refused for lack of quota (\"You have exceeded your ZeroGPU quota (90s requested vs. 79s left)...\"). (corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the disk limit no longer applied, and the default checkpoint, 561,544,628 bytes, fits the round's 4 GB rule.) A local CPU run was not attempted: the code exists only in the Space's git repository, and running code from cloned repositories was refused twice by the session's permission system in that round (\"[Code from External]\"). No local 2-core runtime is on record; the hosted-apis lane's calls to mimbres/YourMT3-cpu (r0164 31.18 s, r0245 31.34 s, cpu-basic) are the CPU timings on record.",
    "for_aaron": true,
    "callable_via": [
     "http",
@@ -4021,9 +4361,11 @@
    "pricing": "the Space runs on ZeroGPU hardware (zero-a10g, Hugging Face API, 2026-11-10); this lane saw no price",
    "handoffs_out": [],
    "unverified": [
-    "whether the Space returns a successful transcription (no successful call is on record)",
     "that YourMT3+'s 'SMT-Bass' training dataset is IDMT-SMT-Bass is the verifier's reading of the name, not a statement from the paper",
     "the Colab notebook the Space links (https://colab.research.google.com/drive/1AgOVEBfZknDkjmSRA7leoa81a2vrnhBG?usp=sharing) was not opened by this lane"
+   ],
+   "corrections": [
+    "corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the entry 'whether the Space returns a successful transcription (no successful call is on record)' was removed: the hosted-apis lane's call r0112 to mimbres/YourMT3 and r0164 / r0245 to mimbres/YourMT3-cpu returned MIDI (its trials.md)"
    ]
   },
   {
@@ -4035,7 +4377,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "Its README installs transformers==4.18.0, t5==0.9.3, note-seq==0.0.3, ddsp, tensorflow==2.11, tensorflow-text==2.11, tensorflow_probability==0.19.0, pytorch_lightning and more: TensorFlow, over the 200 MB limit. inference.py calls self.model.cuda() without a device check.",
+   "not_run_reason": "(corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the disk limit no longer applied.) Not attempted: its inference runs from a clone of the repository, and running code from cloned repositories was refused twice by the session's permission system in that round (\"[Code from External]\": the MT3 install and the mt3-pytorch run). As shipped, inference.py calls self.model.cuda() without a device check. Checkpoints (gudgud1014/MR-MT3): mt3.pth 183,672,643 bytes, slakh_f1_0.65.pth and commu_mt3.pt 183,637,952 bytes each, ten .ckpt files of 582,509,233 to 582,536,411 bytes.",
    "for_aaron": true,
    "callable_via": [
     "python"
@@ -4108,14 +4450,22 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "None attempted, for time and disk; no license file per the survey.",
-   "for_aaron": false,
+   "not_run_reason": "gap round 1 (gapfill-audio-to-notes, 2026-11-10): its requirements.txt does not resolve on the box (ddsp 3.3.4 needs crepe>=0.0.11, whose source build fails: pkg_resources missing, then HTTP 403 from github.com for the weights); the README's usage (InferenceHandler('./pretrained').inference(...)) run from the clone with device cpu was refused by the session's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" Nothing ran.",
+   "for_aaron": true,
    "callable_via": [
     "python"
    ],
-   "inputs": [],
-   "outputs": [],
-   "constraints_accepted": [],
+   "inputs": [
+    "audio file path; librosa.load at 16 kHz (inference.py)"
+   ],
+   "outputs": [
+    "a MIDI file written with note_seq.sequence_proto_to_midi_file (default ./out/<audio file stem>.mid); codec num_velocity_bins=1 and NoteEncodingWithTiesSpec on 256-frame inputs (the MT3 notebook's mt3 settings)"
+   ],
+   "constraints_accepted": [
+    "valid_programs (other General MIDI programs become bad_words_ids)",
+    "num_beams",
+    "device (default cuda)"
+   ],
    "license": {
     "code": {
      "spdx": null,
@@ -4134,7 +4484,8 @@
    },
    "pricing": null,
    "handoffs_out": [],
-   "unverified": []
+   "unverified": [],
+   "weights_facts": "pretrained/mt3.pth is a Git LFS object of 183,672,643 bytes, sha256 b8a3807e...3745398f, at https://media.githubusercontent.com/media/kunato/mt3-pytorch/master/pretrained/mt3.pth; gudgud1014/MR-MT3 holds a mt3.pth with the same size and LFS sha256"
   },
   {
    "name": "MuScriptor (Kyutai and Mirelo)",
@@ -4307,7 +4658,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "Omnizart 0.6.3 requires TensorFlow (tensorflow>=2.5.0 for Python below 3.14, PyPI metadata), over the box's disk limit, so no install attempt was made; it also requires tf-keras, madmom, sherpa-onnx, vamp.",
+   "not_run_reason": "(corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): one install attempt was made.) Omnizart 0.5.0 (the last release pinning TensorFlow: tensorflow==2.5.0, Python >=3.6.1,<3.9) on CPython 3.8.20 fetched by uv: resolved 91 packages (tensorflow 2.5.0, spleeter 2.4.0, librosa 0.8.1, numpy 1.19.5), then stopped after 17.0 s building vamp 1.1.0 from source: \"ModuleNotFoundError: No module named 'numpy'\" (vamp's setup.py imports numpy, not declared as a build dependency). Nothing installed; music and vocal modes did not run. One attempt only, as the round allowed.",
    "for_aaron": true,
    "callable_via": [
     "cli",
@@ -4543,26 +4894,133 @@
    "what": "piano and drum transcription models, including velocity estimation (onsets_frames_transcription in magenta/magenta, TensorFlow)",
    "url": "https://github.com/magenta/magenta",
    "version": "magenta/magenta: inactive (archived, read only); last commit 2026-01-05 (c15687e)",
-   "tried": false,
-   "tried_how": null,
-   "runs": [],
-   "not_run_reason": "Lives in the magenta/magenta repository (archived, per the docs lane) and runs on TensorFlow; not attempted (disk). Two other piano-trained models (Transkun, ByteDance) ran.",
-   "for_aaron": true,
+   "tried": true,
+   "tried_how": "local-cpu (PyPI magenta 2.1.4, onsets_frames_transcription_transcribe, maestro_checkpoint.zip; Python 3.8.20, TensorFlow 2.9.1)",
+   "runs": [
+    {
+     "run_id": "r0545",
+     "input_id": "S1,S2n,R1c,S4guitar",
+     "cores": 2,
+     "wall_s": 39.57,
+     "peak_mb": 1151.0,
+     "exit_code": 0,
+     "output_files": [
+      "/home/user/gtr/lanes/audio-to-notes/out/onsets-frames/<clip>.wav.midi"
+     ],
+     "metrics": {
+      "round": "gap round 1 (gapfill-audio-to-notes, 2026-11-10)",
+      "piano_trained": "the checkpoint was trained on piano recordings (MAESTRO); run here on guitar",
+      "command": "onsets_frames_transcription_transcribe --model_dir=<maestro_checkpoint>/train S1.wav S2n.wav R1c.wav S4guitar.wav (defaults, config onsets_frames), one process, under GNU time",
+      "cpu_s": 42.2,
+      "slot_wait_s": 329.3,
+      "gnu_time_user_s": 40.19,
+      "gnu_time_sys_s": 1.96,
+      "gnu_time_max_rss_kib": 1178656,
+      "per_file_s_from_log": {
+       "S1": 5.298,
+       "S2n": 4.068,
+       "R1c": 4.307,
+       "S4guitar": 4.966
+      },
+      "startup_before_first_file_s": 20.5,
+      "note_counts": {
+       "S1": 65,
+       "S2n": 91,
+       "R1c": 173,
+       "S4guitar": 372
+      },
+      "notes_onset_only_gtr_eval_0.11.1": {
+       "S1": {
+        "truth_notes": 62,
+        "est_notes": 65,
+        "P": 0.954,
+        "R": 1.0,
+        "F1": 0.976,
+        "onset_offset_F1": 0.898,
+        "median_onset_diff_s": -0.014,
+        "eval_id": "e1570"
+       },
+       "S2n": {
+        "truth_notes": 90,
+        "est_notes": 91,
+        "P": 0.967,
+        "R": 0.978,
+        "F1": 0.972,
+        "onset_offset_F1": 0.906,
+        "median_onset_diff_s": -0.015,
+        "eval_id": "e1571",
+        "recall_by_voice": "bass 48/48, melody 40/42"
+       },
+       "R1c": {
+        "truth_notes": 148,
+        "est_notes": 173,
+        "P": 0.607,
+        "R": 0.709,
+        "F1": 0.654,
+        "onset_offset_F1": 0.287,
+        "median_onset_diff_s": -0.034,
+        "eval_id": "e1572"
+       },
+       "R1c_onset_tol_0.1": {
+        "matched": 119,
+        "P": 0.688,
+        "R": 0.804,
+        "F1": 0.741,
+        "onset_offset_F1": 0.349,
+        "eval_id": "e1574"
+       },
+       "S4guitar (truth voice chord)": {
+        "truth_notes": 369,
+        "est_notes": 372,
+        "P": 0.804,
+        "R": 0.81,
+        "F1": 0.807,
+        "onset_offset_F1": 0.607,
+        "median_onset_diff_s": -0.015,
+        "eval_id": "e1573"
+       }
+      },
+      "multipitch_P_R_Acc_notes_on_10ms_grid": {
+       "S2n": [
+        0.86,
+        1.0,
+        0.86
+       ],
+       "R1c": [
+        0.737,
+        0.73,
+        0.579
+       ],
+       "S4guitar": [
+        0.835,
+        0.81,
+        0.698
+       ]
+      },
+      "midi_facts": "type 1, 220 ticks per quarter, 2 tracks, tempo 120, one instrument program 0, no control changes, no pitch bends; velocities 67-76 (S1), 55-74 (S2n), 30-76 (R1c), 54-75 (S4guitar)"
+     }
+    }
+   ],
+   "not_run_reason": null,
+   "for_aaron": false,
    "callable_via": [
     "cli"
    ],
    "inputs": [
-    "piano recordings (WAV): onsets_frames_transcription_transcribe --model_dir=\"${MODEL_DIR}\" <piano_recording1.wav, ...> (--config=\"drums\" for drums); --load_audio_with_librosa required for 24-bit audio"
+    "WAV read with scipy (note_seq.audio_io.wav_data_to_samples: 'Audio will be converted to mono if necessary'), resampled to the model rate; --load_audio_with_librosa is 'required for 24-bit audio'"
    ],
    "outputs": [
-    "for each input file, filename + FLAGS.transcribed_file_suffix + '.midi' written with midi_io.sequence_proto_to_midi_file, next to the input (--transcribed_file_suffix defaults to empty)"
+    "for each input file, filename + FLAGS.transcribed_file_suffix + '.midi' written with midi_io.sequence_proto_to_midi_file, next to the input (--transcribed_file_suffix defaults to empty)",
+    "MIDI type 1, 220 ticks per quarter, tempo 120, one instrument (program 0), velocities, no pedal, no pitch bends (run r0545)"
    ],
    "constraints_accepted": [
+    "--model_dir",
     "--checkpoint_path",
+    "--config (onsets_frames, drums)",
     "--hparams",
     "--load_audio_with_librosa",
-    "--log",
-    "--transcribed_file_suffix"
+    "--transcribed_file_suffix",
+    "no pitch range, tuning, instrument or tempo input"
    ],
    "license": {
     "code": {
@@ -4596,7 +5054,8 @@
    "handoffs_out": [],
    "unverified": [
     "the license of the MAESTRO and E-GMD checkpoints"
-   ]
+   ],
+   "weights_facts": "maestro_checkpoint.zip (storage.googleapis.com/magentadata): 263,865,474 bytes, Last-Modified 29 Jan 2019, MD5 d46be12f...980124e0 = x-goog-hash, sha256 336c6e44...1e61d030; TensorFlow 1 checkpoint under train/, no license or readme file inside"
   },
   {
    "name": "onsets-and-frames (PyTorch port, jongwook)",
@@ -4607,7 +5066,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "None attempted, for time and disk.",
+   "not_run_reason": "gap round 1 (gapfill-audio-to-notes, 2026-11-10): no pretrained checkpoint is published for it (its README covers training and evaluating your own model, runs/model/model-100000.pt; a clone at 783ca08 holds no .pt, .pth, .ckpt or .bin file), so Magenta's own checkpoint and transcribe script were run instead (see 'Onsets and Frames (Magenta)').",
    "for_aaron": false,
    "callable_via": [
     "python"
@@ -6924,6 +7383,107 @@
    "pricing": null,
    "handoffs_out": [],
    "unverified": []
+  },
+  {
+   "name": "mt3-infer",
+   "kind": "library",
+   "what": "Production-ready, unified inference toolkit for the MT3 music transcription model family (PyPI description): one Python API and CLI over vendored MR-MT3, mt3-pytorch and YourMT3 code",
+   "url": "https://github.com/openmirlab/mt3-infer",
+   "version": "PyPI 0.2.0 (uploaded 2026-07-11); repository HEAD d8cbd287 (git ls-remote, 2026-11-10)",
+   "tried": false,
+   "tried_how": null,
+   "runs": [],
+   "not_run_reason": "gap round 1 (gapfill-audio-to-notes, 2026-11-10): added to the survey; not run. The MT3, mt3-pytorch, MR-MT3 and YourMT3+ code could not be run from their repositories (session permission system), and this package, which vendors three of them, was not used in their place.",
+   "for_aaron": false,
+   "callable_via": [
+    "python",
+    "cli"
+   ],
+   "inputs": [
+    "audio array and sample rate (transcribe(audio, sr=16000)); CLI mt3-infer transcribe input.wav -o output.mid"
+   ],
+   "outputs": [
+    "a MIDI object with .save() (description)"
+   ],
+   "constraints_accepted": [
+    "model: mr_mt3, mt3_pytorch, yourmt3",
+    "device",
+    "auto_filter (MT3-PyTorch instrument-leakage filter)",
+    "no tuning, key or note-range input in the description"
+   ],
+   "license": {
+    "code": {
+     "spdx": "MIT",
+     "quote": "MIT License Copyright (c) 2025 MT3-Infer Contributors",
+     "url": "https://raw.githubusercontent.com/openmirlab/mt3-infer/master/LICENSE",
+     "also": [
+      "This project includes code adapted from the following sources:",
+      "MR-MT3 (https://github.com/gudgud96/MR-MT3) License: MIT",
+      "MT3-PyTorch (https://github.com/kunato/mt3-pytorch) License: No license declared upstream. Vendored code is retained unmodified; see mt3_infer/models/mt3_pytorch/.",
+      "YourMT3 (https://huggingface.co/spaces/mimbres/YourMT3) License: Apache-2.0",
+      "Magenta MT3 (https://github.com/magenta/mt3, Apache-2.0, Google Research) is NOT currently vendored anywhere in this repository"
+     ]
+    },
+    "weights": {
+     "name": "downloaded on first use from the upstream projects (MR-MT3 176 MB, MT3-PyTorch 176 MB, YourMT3 536 MB per its model table)",
+     "quote": null,
+     "url": null,
+     "note": "which URLs its downloader uses was not read"
+    },
+    "training_data": [],
+    "service_terms": []
+   },
+   "pricing": null,
+   "handoffs_out": [],
+   "unverified": [
+    "which URLs its checkpoint downloader uses (settled by reading its download module)"
+   ]
+  },
+  {
+   "name": "yourmt3 (PyPI, third party)",
+   "kind": "library",
+   "what": "PyPI package 'yourmt3' (summary 'Music Transcription'): YourMT3 model types (YMT3+, YPTF+Single, YPTF+Multi, YPTF+MoE+Multi 1 and 2) with weights from the Hugging Face repo shethjenil/Audio2Midi_Models",
+   "url": "https://pypi.org/project/yourmt3/",
+   "version": "0.1.4 (uploaded 2025-08-31)",
+   "tried": false,
+   "tried_how": null,
+   "runs": [],
+   "not_run_reason": "gap round 1 (gapfill-audio-to-notes, 2026-11-10): added to the survey; not run (as for mt3-infer).",
+   "for_aaron": false,
+   "callable_via": [
+    "python"
+   ],
+   "inputs": [
+    "audio file path (model.predict(path, batch_size, progress_callback))"
+   ],
+   "outputs": [
+    "a MIDI file (the description's Gradio example returns gr.File(label='midi'))"
+   ],
+   "constraints_accepted": [
+    "model type",
+    "batch size"
+   ],
+   "license": {
+    "code": {
+     "spdx": null,
+     "quote": null,
+     "url": "https://pypi.org/pypi/yourmt3/json",
+     "note": "no license field, no license classifier and no license text in the PyPI metadata (read 2026-11-10)"
+    },
+    "weights": {
+     "name": "shethjenil/Audio2Midi_Models (revision 4300d378): YMT3+.pt 185,123,699 bytes and six other files",
+     "quote": null,
+     "url": "https://huggingface.co/shethjenil/Audio2Midi_Models",
+     "note": "no license tag and no card data (Hugging Face API cardData null, 2026-11-10)"
+    },
+    "training_data": [],
+    "service_terms": []
+   },
+   "pricing": null,
+   "handoffs_out": [],
+   "unverified": [
+    "whether its weights are the YourMT3 authors' checkpoints (settled by comparing hashes with the Space's files)"
+   ]
   }
  ]
 }

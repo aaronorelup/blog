@@ -502,6 +502,18 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
 - How a program calls it: README: "The easiest way to test the trained model is our [Colab Notebook]" or locally
   "with this [Jupyter Notebook](/bin/drumTranscriptor.ipynb)"; `pip3 install .` installs the dependencies. No CLI
   for transcription is documented in the README.
+- (gap round 1, survey clone at `b3968fb`, files read with `git show` on 2026-11-10) The notebook
+  `bin/drumTranscriptor.ipynb` transcribes with two cells: `model, hparams = Model.modelFactory(modelName="Frame_RNN",
+  scenario="adtofAll", fold=0)` and `model.predictFolder(audioFiles, outputLocation, **hparams)`; its third cell plots
+  the output MIDI with `plt.yticks([35, 38, 42, 47, 49], ["BD", "SD", "HH", "TT", "CY + RD"])`.
+  `adtof/model/hyperparameters.py` gives `Frame_RNN` the `peakThreshold` list `[0.22000000000000003,
+  0.24000000000000002, 0.32000000000000006, 0.22000000000000003, 0.30000000000000004]`, and its defaults include
+  `"sampleRate": 100,  # sample rate of the predictions`. `adtof/model/model.py` loads the checkpoint with
+  `self.model.load_weights(load_path)` from `config.CHECKPOINT_DIR`, which `adtof/config.py` sets to the package's
+  own `models` folder; it imports `tensorflow`, `from tensorflow import keras` and `from keras import backend as K`.
+  `setup.py` lists `tapcorrect @ git+https://github.com/MZehren/tapcorrect#subdirectory=python&egg=tapcorrect`,
+  whose own `setup.py` (raw.githubusercontent.com, `master` branch, read 2026-11-10) says
+  `license='Attribution 3.0 Unported (CC BY 3.0)'`.
 - Output: five drum classes; the README's dataset figure caption: "Each sample consists of an input (400 frames, 84
   bins, 1 channel) and a target (400 Frames, 5 classes)." The PyTorch port (next section) maps the five outputs to
   MIDI pitches `LABELS_5 = [35, 38, 47, 42, 49]`.
@@ -589,6 +601,19 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   `https://github.com/Music-and-Culture-Technology-Lab/omnizart/releases/download/checkpoints-20211001/drum_keras@variables.data-00000-of-00001`
   (`omnizart/cli/cli.py` in the clone); the graph files sit in the repository under
   `omnizart/checkpoints/drum/drum_keras/`.
+- (gap round 1, PyPI JSON `https://pypi.org/pypi/omnizart/json` and `https://pypi.org/pypi/omnizart/0.5.0/json`,
+  read 2026-11-10) Versions and pins: 0.6.0 (2026-05-30, wheel and sdist), 0.6.1 and 0.6.2 (2026-05-30, sdist
+  only), 0.6.3 (2026-05-31, sdist only); 0.6.3 names no TensorFlow version (`tensorflow>=2.5.0; python_version <
+  "3.14"`, `tf-nightly; python_version >= "3.14"`, `tf-keras; python_version >= "3.9" and python_version <
+  "3.14"`). The last release with a pin is 0.5.0 (2021-12-09, `requires_python` ">=3.6.1,<3.9"): `tensorflow
+  (==2.5.0)`, `spleeter (>=2.3.0,<3.0.0)`, `madmom (>=0.16.1,<0.17.0)`, `librosa (>=0.8.0,<0.9.0)`, `urllib3
+  (==1.26.4)`. 0.6.3's `omnizart/__init__.py` (clone at `bcd8cb4`) sets `os.environ['TF_USE_LEGACY_KERAS'] = '1'`
+  and, under the comment "# Patch numpy for backward compatibility with old libraries under NumPy 2.0+", puts
+  `float`, `int`, `bool`, `complex` back on NumPy when missing; `omnizart/base.py` loads models with
+  `tf.keras.models.load_model(model_path, custom_objects=custom_objects)`. Two dependencies are source-only on
+  Linux: PyPI madmom 0.16.1 (2018-11-14, `madmom-0.16.1.tar.gz` only) and vamp 1.1.0 (2015-07-08; wheels only for
+  CPython 2.7 on macOS and Windows); their `setup.py` files import `numpy` (madmom also `from Cython.Build import
+  cythonize, build_ext`) and neither archive contains a `pyproject.toml` (archives read 2026-11-10, not built).
 - Input: "Path to the raw audio file (.wav)". Output (api.html): "Currently the model predicts 13 classes of different
   drum sets, and 3 of them will be written to the MIDI file." In `omnizart/drum/inference.py` (clone) the three are
   written as `pretty_midi.Note(velocity=100, pitch=pitch, start=onset, end=onset + 0.05)` with pitch 35 (bass drum
@@ -665,6 +690,16 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   Transformers, SafeTensors, OmegaConf, PrettyMIDI, NumPy, and tqdm."
 - Input: "The default audio configuration uses 24 kHz audio and 2.56-second chunks." Output: MIDI with onsets,
   pitches, velocities; "We consolidate the original 47 percussion notes into 26 distinct instrument classes".
+- (gap round 1, `git clone --depth 1` at `77dbef2`, read 2026-11-10) `pyproject.toml`: `requires-python =
+  ">=3.10,<3.13"`, `license = { text = "CC-BY-SA-4.0" }`, `[tool.uv]` `package = false` (the repository is not
+  installed as a package; the scripts run from the checkout); dependencies include `torch==2.8.0`,
+  `torchaudio==2.8.0`, `torchcodec>=0.7,<0.8`, `transformers[torch]`, `datasets`, `huggingface-hub`, `pedalboard`,
+  `wandb`; optional extra `demucs`. The `inference` file calls `main()` of `inference.py`, which picks the device with
+  `select_inference_device()` (`utils/utils.py` docstring: "Prefer CUDA, then Apple MPS, else CPU."); its
+  `--checkpoint` help reads "Checkpoint name under checkpoints/ or a checkpoint directory path." and `-s` /
+  `--synthetise_transcription` "Resynthesize the drum transcription". `adt_transcriber.py` resamples input to the
+  model's `sample_rate` with `torchaudio.transforms.Resample` and writes the notes to `pretty_midi.Instrument(program=0,
+  is_drum=True)`.
 - Author measurements: "The figure below reports F1 scores on ENST and MDB across the full drum instrument
   vocabulary." with "a 50 ms tolerance window" (numbers are in an image, not transcribed here). Abstract: "We
   evaluate our model on the ENST and MDB test sets, where it achieves new state-of-the-art results" (authors' claim).
@@ -736,6 +771,15 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   https://github.com/polimi-ispl/larsnet on 2026-11-10. Training data: StemGMD, "**StemGMD is freely available on
   [Zenodo](https://zenodo.org/records/7860223) under the CC-BY 4.0 license.**" (README; Zenodo metadata `cc-by-4.0`).
   README: "We are working toward releasing the scripts for fine-tuning and training LarsNet from scratch."
+  (gap round 1, `git clone --depth 1` at `17d631f`, read 2026-11-10) The repository is three Python files and a
+  `config.yaml`, with no package or install script; the files import `yaml`, `torch`, `torchaudio`, `tqdm` and
+  `soundfile`. `config.yaml`: `sr: 44100`; `inference_models` `kick`, `snare`, `toms`, `hihat`, `cymbals` at
+  `pretrained_larsnet_models/<stem>/pretrained_<stem>_unet.pth` (the folder holds only `.gitkeep` in the
+  repository). `larsnet.py` loads each with `torch.load(str(checkpoint_path), map_location=device)` and
+  `model.load_state_dict(checkpoint['model_state_dict'])` and reads audio with `torchaudio.load`, resampling to
+  `sr`; `separate.py` takes every `*.wav` under the input folder (`input_dir.rglob("*.wav")`) and writes
+  `<output_dir>/<stem>/<input name>.wav`. The README's checkpoint link is Google Drive id
+  `1U8-5924B1ii1cjv9p0MTPzayb00P4qoL`.
 - drumsep: "Drum separation based on a [Hybrid Demucs] model." (README of https://github.com/inagoy/drumsep , branch
   `main`, last commit 2025-11-03 `c1cea3f`, clone); from the thesis "Separación de fuentes en grabaciones de batería
   mediante aprendizaje automático" (2022). Input "an audio file (mp3, wav, flac, or ogg)"; output 4 audio files
@@ -743,6 +787,15 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   `bash drumsep "<PATH_IN>" "<PATH_OUT>"`; the install script runs `pip install demucs` and downloads the model with
   `gdown 1-Dm666ScPkg8Gt2-lK3Ua0xOudWHZBGC` (Google Drive id). Code license: LICENSE "MIT License", "Copyright (c)
   2024 Iñaki Goyeneche". Weights license and training data: not stated in the README: UNVERIFIED.
+  (gap round 1, 2026-11-10) The `drumsep` script runs, per file, `demucs --repo "model" -o "$output" -n 49469ca8
+  "$file"` (clone at `c1cea3f`). The file behind the Google Drive id, fetched from
+  `https://drive.usercontent.google.com/download?id=1-Dm666ScPkg8Gt2-lK3Ua0xOudWHZBGC&export=download&confirm=t`,
+  came with `content-disposition: attachment; filename="49469ca8.th"`, 167,400,043 bytes, `last-modified: Wed, 15
+  Jun 2022 23:49:20 GMT`. Read without unpickling (zip listing and `pickletools`), it is a Demucs model package: the
+  pickle references `demucs.hdemucs HDemucs`, `torch._utils _rebuild_tensor_v2`, `torch HalfStorage` and
+  `collections OrderedDict`, and its `sources` are `bombo`, `redoblante`, `platillos`, `toms`. PyPI Demucs 4.1.0 loads
+  such a file with `torch.load(path, 'cpu', weights_only=False)` (`demucs/states.py` of the installed package). The
+  two scripts and the README state no license for this file; it is still UNVERIFIED.
 - Riley and Dixon (arXiv 2509.24853, above) combine ADTOF with "several drum kit *stem* separation models in the open
   source community" to go from five to seven classes and estimate velocities.
 
@@ -1062,6 +1115,16 @@ All read through the Zenodo API (`https://zenodo.org/api/records/<id>`) on 2026-
   abstract: notes "from a quantized symbolic music piece (e.g., a MIDI file)". Input must be quantized; README: "Our
   system is supposed to be run in the final stage of a transcription or generation process, where a musical score is
   *almost* ready".
+- (gap round 1, `git clone --depth 1` at `1462e7c`, read 2026-11-10) The repository's `requirements.txt` points pip
+  at CUDA builds: `--index-url https://download.pytorch.org/whl/cu128`, `--extra-index-url https://pypi.org/simple`,
+  `--find-links https://data.pyg.org/whl/torch-2.8.0+cu128.html`, and adds `verovio==4.2.1` and `gradio` to the
+  `setup.py` list. `launch_scripts/predict.py` reads the input with `pt.load_score(path_to_score,
+  force_note_ids=True)` (its docstring: "Partitura can handle different formats such as musicxml, mei, etc."),
+  merges multiple parts into one, removes beams, rests and grace notes, loads the model with
+  `PLPianoSVSep.load_from_checkpoint(path_to_model, map_location="cpu", strict=False, weights_only=False)`, and saves
+  MEI for a `--save_path` ending in `.mei` or MusicXML for `.musicxml` / `.xml`; any other ending raises
+  "Unsupported file format. Please use .mei or .musicxml/.xml". The repository ships an example input and its
+  output: `artifacts/test_score.musicxml`, `artifacts/test_score_pred.mei`, `artifacts/test_score_pred.json`.
 - License facts: a. LICENSE (clone) "MIT License", "Copyright (c) 2024 Institute of Computational Perception",
   "Permission is hereby granted, free of charge, to any person obtaining a copy of this software [...]".
   b. Weights: in the same repository; no separate statement found in the README.

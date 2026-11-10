@@ -1,0 +1,2715 @@
+{
+ "note": "archive.org advancedsearch results of scripts/gap1_archive_search.py, 2026-11-10 23:27-23:28 UTC; descriptions, subjects and creators left out of this copy (full file outside git).",
+ "log": [
+  {
+   "query": "\"percussive guitar\"",
+   "http": 200,
+   "numFound": 25,
+   "returned": 25,
+   "seconds": 1.59
+  },
+  {
+   "query": "\"percussive fingerstyle\"",
+   "http": 200,
+   "numFound": 4,
+   "returned": 4,
+   "seconds": 0.78
+  },
+  {
+   "query": "\"fingerstyle percussion\"",
+   "http": 200,
+   "numFound": 0,
+   "returned": 0,
+   "seconds": 1.26
+  },
+  {
+   "query": "\"percussive acoustic guitar\"",
+   "http": 200,
+   "numFound": 3,
+   "returned": 3,
+   "seconds": 1.03
+  },
+  {
+   "query": "\"guitar body percussion\"",
+   "http": 200,
+   "numFound": 0,
+   "returned": 0,
+   "seconds": 0.6
+  },
+  {
+   "query": "\"body percussion\" AND guitar",
+   "http": 200,
+   "numFound": 10,
+   "returned": 10,
+   "seconds": 0.73
+  },
+  {
+   "query": "\"slap guitar\" OR \"guitar slap\"",
+   "http": 200,
+   "numFound": 17,
+   "returned": 17,
+   "seconds": 2.12
+  },
+  {
+   "query": "fingerstyle AND (percussive OR percussion OR slap OR tapping)",
+   "http": 200,
+   "numFound": 50,
+   "returned": 50,
+   "seconds": 1.76
+  },
+  {
+   "query": "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")",
+   "http": 200,
+   "numFound": 526,
+   "returned": 200,
+   "seconds": 1.49
+  }
+ ],
+ "hits": [
+  {
+   "identifier": "JonHammondBarryDolinsonHammondCast_ChicagoBluesFestival2007",
+   "title": "Barry Dolins on HammondCast, Chicago Blues Festival 2007",
+   "mediatype": "movies",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/2.5/",
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "kw2001-09-23.shnf",
+   "title": "Keller Williams Live at The Acoustic Cafe on 2001-09-23",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "snmth070",
+   "title": "[070] Senmuth - Pat Hof Neu Rog Ene Sis",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "JonHammondBarryDolinsonHammondCastRadioShow_ChicagoBluesFestival2007",
+   "title": "Barry Dolins on HammondCast Radio Show, Chicago Blues Festival 2007",
+   "mediatype": "movies",
+   "licenseurl": "http://creativecommons.org/licenses/by/2.5/",
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "acidplanet-audio-01114242",
+   "title": "One for Tegan",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive guitar\"",
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "OSMP84",
+   "title": "OSMP Episode 84 - Tunestorm 17 Reveal!",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-sa/3.0/",
+   "queries": [
+    "\"percussive guitar\"",
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "TerrorMusic",
+   "title": "Terror Music",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "\"percussive guitar\"",
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-jimmy_george",
+   "title": "IUMA: Jimmy George",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "JonHammondBarryDolinsonHammondCast_ChicagoBluesFestival2007_0",
+   "title": "Barry Dolins on HammondCast, Chicago Blues Festival 2007",
+   "mediatype": "movies",
+   "licenseurl": "http://creativecommons.org/licenses/by/2.5/",
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "20120720PumpUpThaVolume016",
+   "title": "@PumpUpThaVolume: Episode016 - Speed Of Sound",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/3.0/",
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "BarryDolinsOnHammondcastChicagoBluesFestival2007",
+   "title": "Barry Dolins on HammondCast, Chicago Blues Festival 2007",
+   "mediatype": "movies",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "AndrewHooverLiveAtBarringtonCoffeeHouse2008-04-04",
+   "title": "Andrew Hoover Live at Barrington Coffee House, 2008-04-04",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc/3.0/us/",
+   "queries": [
+    "\"percussive guitar\"",
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "Asteroid-Koronis",
+   "title": "Asteroid - Koronis",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "Zp-1BluerThanBlue",
+   "title": "ZP-1 Bluer Than Blue",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-sa/3.0/",
+   "queries": [
+    "\"percussive guitar\"",
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "UsmanRiaz_2012G",
+   "title": "Usman Riaz and Preston Reed: A young guitarist meets his hero",
+   "mediatype": "movies",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "ElectricGuitarSoloswordlessMeditationsBretHart2003",
+   "title": "Electric Guitar Solos 'Wordless Meditations': bret hart [2003]",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive guitar\"",
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "Hallberg_Presents_-_Songwriters_in_the_Round_38",
+   "title": "Hallberg Presents - Songwriters in the Round #38",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "owen-brennan-molly-bloom-ep-02-the-sun-shines-for-you",
+   "title": "The Sun Shines For You Molly - 02 - Éireál",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "it-is-what-it-is-praise-the-lord-and-pass-the-clorox_celona",
+   "title": "It Is What It Is ( Praise The Lord And Pass The Clorox) (2020)",
+   "mediatype": "movies",
+   "licenseurl": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "cocnh-Senie_Hunt_-_Concord_Multicultural_Festival_2023",
+   "title": "Senie Hunt - Concord Multicultural Festival 2023",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "iuma-j200",
+   "title": "IUMA: J200",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "20141018PumpUpThaVolume131",
+   "title": "@PumpUpThaVolume: Episode131 - Hundreds Of Ways",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "the-consolers-the-soul-of-the-consolers",
+   "title": "The Consolers - The Soul Of The Consolers",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "iuma-mikael_lewis",
+   "title": "IUMA: Mikael Lewis",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "wtf_was_i",
+   "title": "WTF Was I thinking",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive guitar\""
+   ]
+  },
+  {
+   "identifier": "jamendo-101775",
+   "title": "Ruddy Meicher - Guitar Game-Percussive Fingerstyle",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive fingerstyle\"",
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)",
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "keithkenny2018-09-15",
+   "title": "Keith Kenny Live at The Crown Room, Crystal Bay Club on 2018-09-15",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive fingerstyle\"",
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "Radio_Free_Laughing_Goat",
+   "title": "Radio Free Laughing Goat",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive fingerstyle\"",
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)",
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "Radio_Free_Laughing_Goat_Live",
+   "title": "Radio Free Laughing Goat (Live)",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/3.0/us/",
+   "queries": [
+    "\"percussive fingerstyle\"",
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)",
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "the-otl-show-5-i-2026",
+   "title": "The OTL Show 5-i-2026",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive acoustic guitar\""
+   ]
+  },
+  {
+   "identifier": "iuma-creeker",
+   "title": "IUMA: Creeker",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive acoustic guitar\""
+   ]
+  },
+  {
+   "identifier": "iuma-deluge",
+   "title": "IUMA: Deluge",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"percussive acoustic guitar\""
+   ]
+  },
+  {
+   "identifier": "Bon_Debarras_at_JFK_Plaza",
+   "title": "Bon Débarras at JFK Plaza",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "\"body percussion\" AND guitar",
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "jamendo-560141",
+   "title": "Infraction - Great Adventure",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/3.0/",
+   "queries": [
+    "\"body percussion\" AND guitar"
+   ]
+  },
+  {
+   "identifier": "2.-marzo-19",
+   "title": "COMPLETO Gilad Hekselman ::: Far Star",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"body percussion\" AND guitar"
+   ]
+  },
+  {
+   "identifier": "36-track-36_202401",
+   "title": "Gesund Heights: A Suite in 26 Sneezes By Agrimorfee",
+   "mediatype": "audio",
+   "licenseurl": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+   "queries": [
+    "\"body percussion\" AND guitar"
+   ]
+  },
+  {
+   "identifier": "TheyreMakingABunchOfBricksAtLegoHeadquarters",
+   "title": "They're Making A Bunch Of Bricks At Lego Headquarters",
+   "mediatype": "image",
+   "licenseurl": null,
+   "queries": [
+    "\"body percussion\" AND guitar"
+   ]
+  },
+  {
+   "identifier": "mctvvt-Festival_on_the_Green_2024_-_Bon_Debarras",
+   "title": "Festival on the Green 2024: Bon Débarras",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "\"body percussion\" AND guitar"
+   ]
+  },
+  {
+   "identifier": "egberto-gismonti-nana-vasconcelos-danca-das-cabecas-1977",
+   "title": "Egberto Gismonti & Naná Vasconcelos - Dança Das Cabeças (1977)",
+   "mediatype": "image",
+   "licenseurl": null,
+   "queries": [
+    "\"body percussion\" AND guitar"
+   ]
+  },
+  {
+   "identifier": "AbsurdistNightmare",
+   "title": "Absurdist Nightmare",
+   "mediatype": "image",
+   "licenseurl": null,
+   "queries": [
+    "\"body percussion\" AND guitar"
+   ]
+  },
+  {
+   "identifier": "pctvnjv-Cafe_Improv_July_24_2021_Part_2",
+   "title": "Cafe Improv July 24, 2021 Part 2",
+   "mediatype": "movies",
+   "licenseurl": "https://creativecommons.org/licenses/by-nc/3.0/",
+   "queries": [
+    "\"body percussion\" AND guitar"
+   ]
+  },
+  {
+   "identifier": "COTD_200509",
+   "title": "Sherwood Cottage, 20/05/09",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/3.0/",
+   "queries": [
+    "\"body percussion\" AND guitar"
+   ]
+  },
+  {
+   "identifier": "jamendo-086150",
+   "title": "BobBy BuRNs - cosmic creckers 2003 + demo 2004 + demo 2002",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "jamendo-541436",
+   "title": "DHDMusic - Funky Friday Night",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc/3.0/",
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "thingiverse-4296342",
+   "title": "Big Fat Bass Pick (4296342)",
+   "mediatype": "data",
+   "licenseurl": "https://creativecommons.org/licenses/by/4.0/",
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "jamendo-519954",
+   "title": "DHDMusic - Start Pulling",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc/3.0/",
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "AnthonyCorleysCustomBassslap",
+   "title": "Anthony Corley's custom bass (slap)",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "jamendo-488394",
+   "title": "nikproteus - slap",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "ericade-radio-14164-nose-world",
+   "title": "Nose world",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "jamendo-501664",
+   "title": "Jazzaria - Fashionably Absent",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "jamendo-525576",
+   "title": "LEXMusic - Retro Movement",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc/3.0/",
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "DNALOUNGE-2009-11-27",
+   "title": "DNA Lounge Live: Stereo Freakout (2009-11-27)",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "acidplanet-audio-00199294",
+   "title": "Funky Fusion Part II",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "thingiverse-3129705",
+   "title": "Bagusla™ - a guitar / bass pick for amputee (3129705)",
+   "mediatype": "data",
+   "licenseurl": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "fashionably-absent",
+   "title": "Fashionably Absent",
+   "mediatype": "audio",
+   "licenseurl": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "jamendo-556540",
+   "title": "nikproteus - slap 15sec",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "y2mate.comthisbassvideowilldisappearin24hours09hwcka2mng1080p",
+   "title": "This Bass Video Will Disappear In 24 Hours",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "jamendo-579797",
+   "title": "Jackson Frost - Guitar Slap House",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "jamendo-524818",
+   "title": "DHDMusic - Funky Rhythm",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc/3.0/",
+   "queries": [
+    "\"slap guitar\" OR \"guitar slap\""
+   ]
+  },
+  {
+   "identifier": "TheWaybacks2006-04-29fm.flac16",
+   "title": "The Waybacks Live at Merle Fest - Hillside Stage on 2006-04-29",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "thingiverse-3733974",
+   "title": "3D Clap (3733974)",
+   "mediatype": "data",
+   "licenseurl": "https://creativecommons.org/licenses/by-nc/4.0/",
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "waybacks2007-07-21.aud.flac16",
+   "title": "The Waybacks Live at Grey Fox Bluegrass Festival on 2007-07-21",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "jamendo-632713",
+   "title": "B.J.B. Orchestra - Two Crows",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "GuitaristJonGamachePlaysAtLakeDillonColorado",
+   "title": "JON GAMACHE,FINGERSTYLE GUITAR, HYBRID SLAP, ACOUSTIC MUSIC, LAKE DILLON, COLORADO",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "Season16-12072017-LaOtraOrillawww.radiodespi.com",
+   "title": "SEASON #16 - 12/07/2017 - LA OTRA ORILLA (www.radiodespi.com)",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/4.0/",
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)",
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "TK2025-09-28.RODENT5-ZOOMH6-FLAC8",
+   "title": "King Saison Live at Robin's Place on 2025-09-28",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "TheWaybacks2006-04-28fm.flac16",
+   "title": "The Waybacks Live at Merle Fest - Watson Stage on 2006-04-28",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "kw1995-06-01.sbd.flac16",
+   "title": "Keller Williams Live at Phil's Grill on 1995-06-01",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "fcmacfl-Christie_Lenee",
+   "title": "Christie Lenée",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)",
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "ag-309",
+   "title": "Acoustic Guitar Magazine #309",
+   "mediatype": "texts",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "cts2016-02-25.AKG.483.flac24",
+   "title": "Consider the Source Live at 123 Pleasant Street on 2016-02-25",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "jamendo-561169",
+   "title": "Danie Nel - Pie in the sky (Acoustic Version)",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "Season16-12082017-LaOtraOrillawww.radiodespi.com",
+   "title": "SEASON #16 - 12/08/2017 - LA OTRA ORILLA (www.radiodespi.com)",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/4.0/",
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "iuma-wayne_thiel",
+   "title": "IUMA: Wayne Thiel",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "ErinHarpeDeltaSwingers2024-03-17.ZOOMH5-XY-FLAC8",
+   "title": "Erin Harpe & The Delta Swingers Live at The Stomping Grounds on 2024-03-17",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "BretHartfindingGrace2001-2004",
+   "title": "Bret Hart: 'Finding Grace in America' [2001-2004]",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "Live_From_Zero_Point",
+   "title": "Live From Zero Point",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/3.0/us/",
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "MG2011-01-01",
+   "title": "Michael Garfield Live at Geoparadise Gathering on 2011-01-01",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "gareth-evans_202101",
+   "title": "Gareth Evans Youtube Channel",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "t-12.-angel-archer.-19-03-31",
+   "title": "Angel Archer 2019-03-31",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "waybacks2006-04-28.fm.86928.flac16",
+   "title": "The Waybacks Live at Doc & Merle Watson Theatre @ Wilkes Community College on 2006-04-28",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "MG2012-07-12",
+   "title": "Michael Garfield Live at Shine Restaurant & Gathering Place on 2012-07-12",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "MG2012-09-28",
+   "title": "Michael Garfield Live at Noah Yoshino's House on 2012-09-28",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "RacerSessions-DannyGodinez11082015",
+   "title": "Racer Sessions - Danny Godinez",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "MG2012-07-14",
+   "title": "Michael Garfield Live at 3-Sided Whole on 2012-07-14",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "MG2011-02-09.KRFC",
+   "title": "Michael Garfield Live at KRFC Studios on 2011-02-09",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "iuma-troy_miller",
+   "title": "IUMA: TRoy Miller",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "Season16-03132018-LaOtraOrillawww.radiodespi.com",
+   "title": "SEASON #16 - 03/13/2018 - LA OTRA ORILLA (www.radiodespi.com)",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/4.0/",
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "waybacks2007-04-27.flac16",
+   "title": "The Waybacks Live at MerleFest on 2007-04-27",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "MG2012-12-02",
+   "title": "Michael Garfield Live at Wardenclyffe on 2012-12-02",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "Season16-05012018-LaOtraOrillawww.radiodespi.com",
+   "title": "SEASON #16 - 05/01/2018 - LA OTRA ORILLA (www.radiodespi.com)",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/4.0/",
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "Non-Sequiturs-4468",
+   "title": "Non-Sequiturs",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/us/",
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "kakiking2004-11-21",
+   "title": "Kaki King Live at NPR's \"In Performance\" on 2004-11-21",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "BretHartslinkShoalSluicemagicBand-inspiredMusic1987-2002",
+   "title": "Bret Hart: 'Slink Shoal Sluice' [Magic Band-inspired Music 1987-2002]",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "MG2011-11-09",
+   "title": "Michael Garfield Live at Dr. Mre's on 2011-11-09",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "ChrisSmuckWithANewTuningYouCanFly",
+   "title": "With A New Tuning, You Can Fly",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by/3.0/",
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "jamendo-632364",
+   "title": "Stanislav Maksymov - Rainbow Funk",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "waybacks2007-04-28.flac16",
+   "title": "The Waybacks Live at Merlefest on 2007-04-28",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "pctvnjv-Cafe_Improv_March_2018_Pt._1",
+   "title": "Cafe Improv, March 2018 Pt. 1",
+   "mediatype": "movies",
+   "licenseurl": "https://creativecommons.org/licenses/by-sa/3.0/",
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)",
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "jamendo-632706",
+   "title": "B.J.B. Orchestra - Worlds in a Glance",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "classic-banjo-pages-c489667807fd4b65f465779ae4977a023d195f5c",
+   "title": "Classic-Banjo - Player Biography: Frank Lawes",
+   "mediatype": "texts",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "waybacks2005-10-08.flac16",
+   "title": "The Waybacks Live at Sportsmen Club on 2005-10-08",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "waybacks2006-04-29.fm.86929.flac16",
+   "title": "The Waybacks Live at Hillside Stage @ Wilkes Community College on 2006-04-29",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "waybacks2007-04-26.flac16",
+   "title": "The Waybacks Live at MerleFest on 2007-04-26",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "fingerstyle AND (percussive OR percussion OR slap OR tapping)"
+   ]
+  },
+  {
+   "identifier": "gd77-11-04.sbd.unknown.2595.sbeok.shnf",
+   "title": "Grateful Dead Live at Cotterrell Gym, Colgate U on 1977-11-04",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "JimGolenFinal",
+   "title": "Jim Golen interview & music feature",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "gd77-10-16.sbd.lai.3350.sbefail.shnf",
+   "title": "Grateful Dead Live at Assembly Center, Lousiana State U on 1977-10-16",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "rmcnurlin2004-07-30.flac16",
+   "title": "Rob McNurlin Live at Joe Joe's Barge & Grill on 2004-07-30",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "05.Lezetcurds",
+   "title": ". Lezet Curds",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "20140125PumpUpThaVolume095",
+   "title": "@PumpUpThaVolume: Episode095 - Turn It Around",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/4.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "RagazzSlapBassGuitar-JayenVarmaBassist",
+   "title": "RagaZZ Slap Bass Guitar - Jayen Varma BASSIST",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "7_Books-4486",
+   "title": "Inside",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/us/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "ag-339",
+   "title": "Acoustic Guitar Magazine #339",
+   "mediatype": "texts",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "amerikan-teenager-luceberthuis-bergen-2018",
+   "title": "The quality or effect of a non-actor's performance LIVE ( 2018)",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "CoTD_250106",
+   "title": "Oblique House, 25/01/06",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/2.5/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-greycolours",
+   "title": "IUMA: GreyColours",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-ladybug",
+   "title": "IUMA: LadyBug",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-halley",
+   "title": "IUMA: halley",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-unity_of_the_keys",
+   "title": "IUMA: Unity Of The Keys",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "Yes_SoloAlbum_1976-06-18-BostonSteamBath",
+   "title": "Yes - Solo Album - 1976-06-18 - Boston Steam Bath",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "composingforjazz0000russ",
+   "title": "Composing for the jazz orchestra",
+   "mediatype": "texts",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "detuned-cathedral-burning-1",
+   "title": "Detuned Cathedral Burning ( 1)",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "Markalandooley-TornVideo491-4",
+   "title": "Torn",
+   "mediatype": "movies",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "ca015_va_cs",
+   "title": "Various - Clinical Sounds - Vol.1 (ca015)",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-dafni",
+   "title": "IUMA: Dafni",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-quinn_robin",
+   "title": "IUMA: Quinn, Robin",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "jamendo-576879",
+   "title": "Oleksandr Yatsenko - Trailer Sport Rock",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "slagerij-van-kampen-a-long-walk-on-a-short-pier-1989",
+   "title": "Slagerij Van Kampen: A Long Walk On A Short Pier (1989)",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "gd84-04-21.neumann.nawrocki.18253.sbeok.shnf",
+   "title": "Grateful Dead Live at Philadelphia Civic Center on 1984-04-21",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "gd87-08-11.sbd.4951.5247.sbeok.shnf",
+   "title": "Grateful Dead Live at Red Rocks Amphitheatre on 1987-08-11",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "rising-appalachia",
+   "title": "Rising Appalachia Live at Cave Fest; Amphitheatre Stage; The Caverns (Pelham, TN) on 2022-10-09",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "COTD_060509",
+   "title": "St. Mary Arches, 06/05/09",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-big_meany",
+   "title": "IUMA: Big Meany",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "the-otl-show-26-ix-2026",
+   "title": "The OTL Show 26-ix-2026",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "fauntleroys2014-10-02.sbd",
+   "title": "Alejandro Escovedo Live at City Winery; Chicago, IL on 2014-10-02",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "Watermelon_Wednesdays_2013_-_Nic_Gareiss_Maeve_Gilchrist_Cleek_Schrey_Joran_Tice",
+   "title": "Watermelon Wednesdays 2013 - Nic Gareiss, Maeve Gilchrist, Cleek Schrey, & Joran Tice",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "amerikan-teenager-luceberthuis-the-quality-or-affect-of-a-non-actors-performance-2nd-session",
+   "title": "Audition ( 2nd Session) (2018)",
+   "mediatype": "movies",
+   "licenseurl": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "SunnyRainyTuesdaysBirdsong",
+   "title": "Sunny Rainy Tuesday's Birdsong",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "kronik-zero-31-vii-2024",
+   "title": "Kronik Zero 31-vii-2024",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "acoustic-country-scene",
+   "title": "Acoustic Country Scene",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "DuetsSeriesBretHartMikaRintala1aquariumsIHaveBeen",
+   "title": "Duets Series: Bret Hart + Mika Rintala 1 \"Aquariums I Have Been\"",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "VOA_Africa_20180708_200000",
+   "title": "VOA [Voice of America] Africa : July 08, 2018 04:00PM-05:00PM EDT",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "OverDeZachtsteNoiseDieOverOnsNederdaaldetafe-30",
+   "title": "odzndoon - prepared percussive eo smooth boi here how are you i play unisono drone guitar di amore for u tonight if u want - version (TaFe-30)",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/4.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "youtube-cZupqV7yMH8",
+   "title": "The Artful Dodger Project | Help Us Find The Groove (Full Visual Album)",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "the-otl-show-17-x-2026",
+   "title": "The OTL Show 17-x-2026",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "popn-music-15-adventure-ac-cs-popn-music-14-fever",
+   "title": "pop'n music 15 ADVENTURE AC ♥ CS pop'n music 14 FEVER!",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "gd81-03-28.fm.hanno.3306.sbefail.shnf",
+   "title": "Grateful Dead Live at Gruga Halle on 1981-03-28",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "zero126v",
+   "title": "V. - chgt of x(or blue [zero126v]",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nd-nc/1.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "NS028",
+   "title": "Behind the Blind",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "MidnightRadio50",
+   "title": "Midnight Radio Compilation 50",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "pugs-and-gay-men",
+   "title": "Pugs and Game",
+   "mediatype": "software",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-longstoryshort",
+   "title": "IUMA: longstoryshort",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "gd71-12-14.sbd.deibert.12763.sbeok.shnf",
+   "title": "Grateful Dead Live at Hill Auditorium on 1971-12-14",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "DNALOUNGE-VIDEO-2024-07-26d",
+   "title": "DNA Lounge: Octavian Winters + Halou (2024-07-26d)",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "bnb_20241229",
+   "title": "Blue Note Bobby",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "thn086",
+   "title": "[THN086] Gate Zero - Radio overBoard",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/2.5/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-mats_ljare",
+   "title": "IUMA: Mats ljare",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-tommys_magic_arse",
+   "title": "IUMA: Tommys Magic Arse",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-the_cricket_rumor_mill",
+   "title": "IUMA: The Cricket Rumor Mill",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "jamendo-477812",
+   "title": "VidicMusic - Percussive Energetic Upbeat Claps And Guitars Logo",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-skribblewillkillyou",
+   "title": "IUMA: Skribblewillkillyou",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "AEM021_Cuddle_Magic-7650",
+   "title": "AEM021 Cuddle Magic",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "SenyawaLiveStJohn7",
+   "title": "Senyawa - Live from St John at Hackney",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "jamendo-477811",
+   "title": "VidicMusic - Percussive Energetic Upbeat Claps And Guitars Logo (Short Versio",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "hillarybegle",
+   "title": "Hilary Begle",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "VOA_Africa_20180708_090000",
+   "title": "VOA [Voice of America] Africa : July 08, 2018 05:00AM-06:00AM EDT",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "a-creamy-acoustic-guitars-world-loop",
+   "title": "A Creamy Acoustic Guitars World Loop",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "The_Garden_of_My_LimitsMoney_Talks-14965",
+   "title": "The Garden of My Limits/Money Talks",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "acidplanet-audio-01027268",
+   "title": "hyperbad",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "arch039",
+   "title": "[arch039] Ink Spot",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nd/2.5/ca/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "aff51_202604",
+   "title": "51st Alaska Folk Festival Wednesday",
+   "mediatype": "audio",
+   "licenseurl": "https://creativecommons.org/publicdomain/mark/1.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-spoonbeach",
+   "title": "IUMA: spoonbeach",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-alex_peterson",
+   "title": "IUMA: Alex Peterson",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "mctvvt-Festival_on_the_Green_2025_-_Honey_and_Soul",
+   "title": "Festival on the Green 2025: Honey and Soul",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-justin_king",
+   "title": "IUMA: Justin King",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "jamendo-477048",
+   "title": "Covert Acousitcs - Terra Latin - Master",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-bruce_t_campbell",
+   "title": "IUMA: Bruce T. Campbell",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "LARCHMONT_UNITED_METHODIST_CHURCH-Ridge_TGQ_final",
+   "title": "From the Other Side of the Footlights with M.D. Ridge – The Tidewater Guitar Quartet",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "ch2006-05-06.FLAC16",
+   "title": "Charlie Hunter Live at Clark County Gov't Center Amphitheatre on 2006-05-06",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "chop-suey-c60-1998",
+   "title": "Chop Suey C60 1998",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "CLF056A16",
+   "title": "Xiu Xiu Live at Substation on 2025-04-05",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "20140419PumpUpThaVolume107",
+   "title": "@PumpUpThaVolume: Episode107 - Pressure",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/4.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "DeTigreGuitarfishFestivalCiscoGroveCA01-AUG-2015",
+   "title": "Leche De Tigre Guitarfish Festival, Cisco Grove CA, 01-AUG-2015",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "BRITTOListeningGroupSession4",
+   "title": "BRITTO Listening Group Session 4",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "DrumAndBass-JayenVarmaBassistJeanDavoisneDrummer",
+   "title": "DRUM AND BASS - Jayen Varma BASSIST, Jean Davoisne DRUMMER",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "blt-p86vk6",
+   "title": "BLT",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "ecp0212-matthew-grasso",
+   "title": "ECP0212 Matthew Grasso",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "UponFaithILoseSelfInMaking",
+   "title": "upon faith, I lose self in making",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/us/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "TheCombDown121418",
+   "title": "The Comb Down 12/14/2018",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "couch-konzerte-aus-der-pasinger-fabrik",
+   "title": "2021 Couch Konzerte aus der Pasinger Fabrik",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "DuetsSeriesBretHart-donCampau1",
+   "title": "Duets Series Bret Hart-Don Campau 1",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "DNALOUNGE-2026-01-03",
+   "title": "DNA Lounge: Nefarious (2026-01-03)",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "CS-80UserManual",
+   "title": "Yamaha CS-80 User Manual",
+   "mediatype": "image",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "gd78-12-30.sbd.miller.18092.sbeok.shnf",
+   "title": "Grateful Dead Live at Pauley Pavilion, UCLA on 1978-12-30",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "aether",
+   "title": "Aether",
+   "mediatype": "audio",
+   "licenseurl": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "acidplanet-audio-00296958",
+   "title": "Stay right here (what is rock?)",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "MotuekaTreewalk2006",
+   "title": "Motueka Treewalk, 2006",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/2.5/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "Particle2012-08-04.LoHiMusicFestivalMatrix",
+   "title": "Particle Live at LoHi Musis Festival on 2012-08-04",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "DNALOUNGE-2024-07-26d",
+   "title": "DNA Lounge: Octavian Winters + Halou (2024-07-26d)",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "jamendo-593075",
+   "title": "Grumpynora - Nicely",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-mehl_michael",
+   "title": "IUMA: Mehl, Michael",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "Live_at_WFMU_on_Brian_Turners_Show_on_August_9_2011-9828",
+   "title": "Live at WFMU on Brian Turner's Show on August 9, 2011",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/us/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "breakfast2005-04-02.flac16",
+   "title": "The Breakfast Live at Johns Hopkins University on 2005-04-02",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "PeterJosephBurttandTheKingtide-TheCrownRoomCrystalBayClubCrystalBayNV04-FEB-2017",
+   "title": "Peter Joseph Burtt and The Kingtide - The Crown Room, Crystal Bay Club, Crystal Bay NV, 04-FEB-2017",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "PQR1worryme",
+   "title": "Approach",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by/2.5/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "DavidDrewLongey-MusicFromAModernCave2005",
+   "title": "David Drew Longey- Music from a Modern Cave (2005)",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "melbaypresentsst0000baug",
+   "title": "Mel Bay presents Steve Baughman's Celtic guitar method : with transcriptions from A drop of the pure",
+   "mediatype": "texts",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "decorativemusic",
+   "title": "Decorative Music Musical Scores",
+   "mediatype": "audio",
+   "licenseurl": "https://creativecommons.org/licenses/by/4.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "RacerSessions-ExtendedHorizonsProject05242015",
+   "title": "Racer Sessions - Extended Horizons Project",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "dmst2007-05-22.aud.flac16",
+   "title": "Do Make Say Think Live at La Maroquinerie on 2007-05-22",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "GHGR17316",
+   "title": "Destroyed Dimensions GHGR 17316",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "miscellany_one",
+   "title": "Miscellany One",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/2.5/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "o-meu-amor-portuguese-song-farya",
+   "title": "Ó Meu Amor - Portuguese Song",
+   "mediatype": "movies",
+   "licenseurl": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "JunkyardJukebox",
+   "title": "Junkyard Jukebox",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/us/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "BenneventoRussoDuo_11-2-06",
+   "title": "** Benevento Russo Duo ** 11-2-06",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/2.5/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "n8ph4orwnok8qg3xd8xhsidyeoebxewwcdhclsgd",
+   "title": "Hidden Orchestra - Footsteps Promo Mix",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "AllGratefulDeadGuestSit-ins66To95",
+   "title": "All Grateful Dead Guest Sit-Ins '66 to '95",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "rb071",
+   "title": "slow - dual box",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-public_library",
+   "title": "IUMA: Public Library",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "07-hovhaness-symphony-63-op.-411-loon-lake-2.-andante-misterioso-maestoso-presto-allegro",
+   "title": "2. Guitar Concerto No. 2, Symphony No. 63 ‘Loon Lake’, Fanfare for the New Atlantis (CD RIP)",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "Belchsingersonggrinder10vinylbomberhairFeaturingSongsAShinyTruk",
+   "title": "Belchsingersonggrinder 10\"vinylBOMBERHAIR featuring songs: A Shiny TRuk, Bomberhair, THe Right Tools, Birth in a Locker, release 15-022012BK09/2011-02STEMRA 01145182 All RIGHTS BElchsingersonggrinder",
+   "mediatype": "image",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "gd71-08-14.sbd.ladner.21268.sbeok.shnf",
+   "title": "Grateful Dead Live at Berkeley Community Theater on 1971-08-14",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "gd87-04-02.aud.eD.11804.sbeok.shnf",
+   "title": "Grateful Dead Live at The Centrum on 1987-04-02",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "gd87-05-09.sbd.cole.5059.sbeok.shnf",
+   "title": "Grateful Dead Live at Laguna Seca Recreation Area on 1987-05-09",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "gd1968-11-01.sbd.kaplan.17080.sbeok.shnf",
+   "title": "Grateful Dead Live at Silver Dollar Fair on 1968-11-01",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "percussion-my-cushion",
+   "title": "Percussion My Cushion",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "futhur2012-10-05.furthur2012-10-05_mk4_flac24",
+   "title": "Furthur Live at greek theater on 2012-10-05",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "mhrk024",
+   "title": "sevensy - music for blank film [mhrk024]",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/2.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "JamieMcLean2020-04-23.Flac16",
+   "title": "Jamie McLean Band Live at Couch Tour #7 on 2020-04-23",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "planet044",
+   "title": "Luca La Morgia - The Garden of My Limits / Money Talks [PLANET044]",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-chapell_phyllis",
+   "title": "IUMA: Chapell, Phyllis",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "CakeOnCake_TastyWorld_11-20-06",
+   "title": "** Cake On Cake ** 11-20-06",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-three_ways_from_sunday",
+   "title": "IUMA: Three Ways From Sunday",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-enduro",
+   "title": "IUMA: ENDURO",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "gbatvmd-S2E10_Music_from_the_New_Deal_cafe_-_ilyAIMY",
+   "title": "S2E10 Music from the New Deal cafe: ilyAIMY",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-everlasting_earle",
+   "title": "IUMA: Everlasting Earle",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "Welcome_Wilderness-1892",
+   "title": "Welcome Wilderness",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-forty_minutes_of_hell",
+   "title": "IUMA: FORTY MINUTES OF HELL",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-neal_fallon",
+   "title": "IUMA: Neal Fallon",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-meriwether",
+   "title": "IUMA: Meriwether",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-joyslam",
+   "title": "IUMA: Joyslam",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-big_john_shearer",
+   "title": "IUMA: Big John Shearer",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "arriving-at-the-edge-fixed",
+   "title": "Arriving At The Edge (fixed)",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-dean_robin",
+   "title": "IUMA: Dean, Robin",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "jamendo-516175",
+   "title": "Macroform - Making It Through",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "xs-12-Admned.agePhotosphaere",
+   "title": "[XS - 12] - adamned.age: photosphaere",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "the-otl-show-23-iii-2026",
+   "title": "The OTL Show 23-iii-2026",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-ndn",
+   "title": "IUMA: NDN",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-mustafa_sam",
+   "title": "IUMA: Mustafa, Sam",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-blystre",
+   "title": "IUMA: BLYSTRE",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "sme2005-10-17.aud.flac16",
+   "title": "A Silver Mt Zion Live at la Maroquinerie on 2005-10-17",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "in-the-country",
+   "title": "In The Country",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "jamendo-385628",
+   "title": "Jazzaria - Stellar Journey",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "SlapBassByWorldRecordFastestBassist-jayenVarma",
+   "title": "SLAP BASS by World Record Fastest Bassist-Jayen Varma",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-still_warm",
+   "title": "IUMA: Still Warm",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-fight_like_gentlemen",
+   "title": "IUMA: Fight Like Gentlemen",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "soundcloud-581169267",
+   "title": "FREE Anniversray Collection Vol. 5 | 900+ Samples, Sounds & Presets",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "music-of-the-world-istanbul-august-3-2024",
+   "title": "Music Of The World Istanbul August 3 2024",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "jamendo-163045",
+   "title": "3minutetunes - Playing Games",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "jamendo-599669",
+   "title": "ONALDIN - Better Every Day",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "popn-music-5-arcade-originals",
+   "title": "pop'n music 5 arcade originals",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "otis-fodder-music-to-drive-cross-country-by-2004",
+   "title": "Otis Fodder - Music To Drive Cross Country By ( 2004)",
+   "mediatype": "audio",
+   "licenseurl": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "gd66-03-25.sbd.unknown.38.sbeok.shnf",
+   "title": "Grateful Dead Live at Trouper's Hall on 1966-03-25",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "noise",
+   "title": "Walter De Maria",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/1.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "pc0408-01",
+   "title": "pc0408-01 Giorgos Stefanou - Elati",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "JoeChioccaClassicalClassics",
+   "title": "Joe Chiocca - Classical Classics",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "ammasmeetsopemration",
+   "title": "AMMAS meets OPERATION",
+   "mediatype": "audio",
+   "licenseurl": "https://creativecommons.org/licenses/by-nd/4.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "SpecialBusTHINGSWEDIDSAY",
+   "title": "THINGS WE DID SAY",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by/2.5/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "SCM-1504NenTEBRidGe",
+   "title": "SCM-1504 NenTE - BRidGe",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "as1998-02-14.flac16",
+   "title": "Acoustic Syndicate Live at Acoustic Stage at the Arts & Sciences Center on 1998-02-14",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "bfm2006-03-17.flac16",
+   "title": "Barefoot Manner Live at Blind Tiger on 2006-03-17",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "calauem_200201_omvf0000698_ac_202605",
+   "title": "The Dranyen and Other Tibetan Instruments",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "jacob-johnson-guitar-and-singing",
+   "title": "Jacob Johnson ‒ Guitar And Singing",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "jamendo-637890",
+   "title": "B.J.B. Orchestra - How Right She Was",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "youtube-ymtSf0grMMM",
+   "title": "Talking Heads Drugs remix Fear of Music + Some Frank Zappa",
+   "mediatype": "movies",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "cry-on-cue-2025-08-16-earth-rider-fest-grounds-superior-wi-aud",
+   "title": "Cry On Cue-2025-08-16, Earth Rider Fest Grounds, Superior, WI (AUD)",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "VariousArtists-7",
+   "title": "Vk_lobit community presents - \"7\"",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/4.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "MidnightRadio51",
+   "title": "Midnight Radio Compilation 51",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "Live_at_ISSUE_Project_Room_1905-10787",
+   "title": "Live at ISSUE Project Room",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "Live_at_WFMU_on_the_Long_Rally_May_11th_2012-11700",
+   "title": "Live at WFMU on the Long Rally May 11th 2012",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/us/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "cnv28",
+   "title": "Rodrigues, Sehnaoui, Sehnaoui - sable ep [cnv28]",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/2.5/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "brode-scheible-stewart-martin2017-07-07",
+   "title": "brode-scheible-stewart-martin2017-07-07",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "SCM1604MarcelRochaCloudsFormations",
+   "title": "SCM-1604 Marcel Rocha - Clouds Formations",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "eg0_111",
+   "title": "[Eg0_111] Half Evidence : Rain Spirits",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "hydra2005-04-12.flac",
+   "title": "Hydra Live at on 2005-04-12",
+   "mediatype": "etree",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "res-peba-2025",
+   "title": "Rés - peba (2025)",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "A1994.12Seq42Fixed16s_201503",
+   "title": "Microtonal (M)Usic from tENTATIVELY, a cONVENIENCE",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "SteveAstonofUndagroundRecordingsUKundagroundrecordingsukund",
+   "title": "undaground recordings uk_-_undaground edit",
+   "mediatype": "audio",
+   "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/2.5/",
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "SinusoDial-LiveInMelbourne",
+   "title": "Sinuso Dial - Live in Melbourne",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-mini_band",
+   "title": "IUMA: Mini Band",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-wallop",
+   "title": "IUMA: WALLOP",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  },
+  {
+   "identifier": "iuma-crankshaw",
+   "title": "IUMA: CrankShaw",
+   "mediatype": "audio",
+   "licenseurl": null,
+   "queries": [
+    "guitar AND (percussive OR \"body tap\" OR \"body taps\" OR \"body hit\")"
+   ]
+  }
+ ]
+}

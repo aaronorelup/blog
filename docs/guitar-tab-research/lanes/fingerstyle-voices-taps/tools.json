@@ -548,6 +548,49 @@
       "eval": "e1280",
       "verifier_rerun": "r0362: identical onset files"
      }
+    },
+    {
+     "run_id": "r0551",
+     "input_id": "RT1",
+     "cores": 2,
+     "wall_s": 79.7,
+     "peak_mb": 1597.9,
+     "exit_code": 0,
+     "output_files": [
+      "out/gap1-RT1/librosa/onsets_mix.txt",
+      "out/gap1-RT1/librosa/onsets_percussive_m{1,4,16}.txt",
+      "out/gap1-RT1/librosa/summary.json",
+      "samples/realtaps/RT1_librosa_hpss_summary.json"
+     ],
+     "metrics": {
+      "what_ran": "gap round 1: scripts/gap1_rt1_hpss_onsets.py: librosa.effects.hpss(margin=1, 4, 16) and librosa.onset.onset_detect (defaults) on RT1.mono.wav (233.509 s, no truth)",
+      "n_onsets_mix": 931,
+      "margins": {
+       "m1": {
+        "n_onsets_percussive": 1231,
+        "energy_fraction_percussive": 0.0254,
+        "energy_fraction_harmonic": 0.904
+       },
+       "m4": {
+        "n_onsets_percussive": 1192,
+        "energy_fraction_percussive": 0.0048,
+        "energy_fraction_harmonic": 0.6767
+       },
+       "m16": {
+        "n_onsets_percussive": 946,
+        "energy_fraction_percussive": 0.0009,
+        "energy_fraction_harmonic": 0.3129
+       }
+      },
+      "percussive_fraction_per_10s_m4_min_median_max": [
+       0.0009,
+       0.0047,
+       0.0164
+      ],
+      "note": "no ground truth; whether RT1 contains hits on the guitar body is UNVERIFIED",
+      "cpu_s": 79.5,
+      "slot_wait_s": 336.1
+     }
     }
    ],
    "not_run_reason": null,
@@ -886,6 +929,30 @@
        "median_timing_ms": -16.7,
        "eval": "e1278"
       }
+     }
+    },
+    {
+     "run_id": "r0542",
+     "input_id": "RT1",
+     "cores": 2,
+     "wall_s": 13.99,
+     "peak_mb": 983.2,
+     "exit_code": 0,
+     "output_files": [
+      "out/gap1-RT1/detectors/aubio_hfc.txt",
+      "out/gap1-RT1/detectors/aubio_complex.txt",
+      "out/gap1-RT1/detectors/aubio_specflux.txt"
+     ],
+     "metrics": {
+      "what_ran": "gap round 1: scripts/gap1_rt1_detectors.sh on RT1.mono.wav (233.509 s, no truth), defaults; one run for aubio hfc/complex/specflux, madmom CNNOnsetDetector/SuperFlux and Essentia OnsetRate",
+      "n_onsets": {
+       "aubio_hfc": 1112,
+       "aubio_complex": 558,
+       "aubio_specflux": 1349
+      },
+      "note": "no ground truth; counts only",
+      "cpu_s": 14.9,
+      "slot_wait_s": 163.0
      }
     }
    ],
@@ -1258,6 +1325,26 @@
       "median_timing_ms": -18.3,
       "eval": "e1279"
      }
+    },
+    {
+     "run_id": "r0542",
+     "input_id": "RT1",
+     "cores": 2,
+     "wall_s": 13.99,
+     "peak_mb": 983.2,
+     "exit_code": 0,
+     "output_files": [
+      "out/gap1-RT1/detectors/essentia_OnsetRate.txt"
+     ],
+     "metrics": {
+      "what_ran": "gap round 1: scripts/gap1_rt1_detectors.sh on RT1.mono.wav (233.509 s, no truth), defaults; one run for aubio hfc/complex/specflux, madmom CNNOnsetDetector/SuperFlux and Essentia OnsetRate",
+      "n_onsets": {
+       "essentia_OnsetRate": 981
+      },
+      "note": "no ground truth; counts only",
+      "cpu_s": 14.9,
+      "slot_wait_s": 163.0
+     }
     }
    ],
    "not_run_reason": null,
@@ -1565,6 +1652,28 @@
        "median_timing_ms": -14.0,
        "eval": "e1282"
       }
+     }
+    },
+    {
+     "run_id": "r0542",
+     "input_id": "RT1",
+     "cores": 2,
+     "wall_s": 13.99,
+     "peak_mb": 983.2,
+     "exit_code": 0,
+     "output_files": [
+      "out/gap1-RT1/detectors/madmom_CNNOnsetDetector.txt",
+      "out/gap1-RT1/detectors/madmom_SuperFlux.txt"
+     ],
+     "metrics": {
+      "what_ran": "gap round 1: scripts/gap1_rt1_detectors.sh on RT1.mono.wav (233.509 s, no truth), defaults; one run for aubio hfc/complex/specflux, madmom CNNOnsetDetector/SuperFlux and Essentia OnsetRate",
+      "n_onsets": {
+       "madmom_CNNOnsetDetector": 1124,
+       "madmom_SuperFlux": 1095
+      },
+      "note": "no ground truth; counts only",
+      "cpu_s": 14.9,
+      "slot_wait_s": 163.0
      }
     }
    ],
@@ -2869,6 +2978,104 @@
        "R3c": 55
       }
      }
+    },
+    {
+     "run_id": "r0554",
+     "input_id": "RT1",
+     "cores": 2,
+     "wall_s": 173.64,
+     "peak_mb": 2142.2,
+     "exit_code": 0,
+     "output_files": [
+      "out/gap1-RT1/demucs/htdemucs_6s/RT1/<stem>.wav",
+      "out/gap1-RT1/demucs/htdemucs_6s/RT1/drums_onsets.txt"
+     ],
+     "metrics": {
+      "what_ran": "gap round 1: demucs -n htdemucs_6s -d cpu (default options) on RT1.wav (233.509 s, no truth), 2-core slot; venv rebuilt from freeze/venv-demucs.txt",
+      "stem_energy_re_mix_dB": {
+       "bass": -13.8,
+       "drums": -40.0,
+       "guitar": -8.1,
+       "other": -2.5,
+       "piano": -24.3,
+       "vocals": -41.4
+      },
+      "stem_mono_peak_dBFS": {
+       "bass": -12.6,
+       "drums": -23.0,
+       "guitar": -6.6,
+       "other": -3.8,
+       "piano": -17.1,
+       "vocals": -40.1
+      },
+      "librosa_onsets_on_drums_stem": 351,
+      "note": "no ground truth; computed by scripts/gap1_rt1_stems.py",
+      "cpu_s": 261.5,
+      "slot_wait_s": 314.4,
+      "drums_stem_peaks_above_-40_dBFS_mss_dBFS": [
+       [
+        "0:31.8",
+        -23.0
+       ],
+       [
+        "1:05.8",
+        -30.4
+       ],
+       [
+        "1:08.4",
+        -28.8
+       ],
+       [
+        "1:10.4",
+        -38.9
+       ],
+       [
+        "3:25.8",
+        -30.9
+       ]
+      ],
+      "drums_stem_rms_per_10s": "-63.5 to -62.6 dBFS in 21 of 24 windows; -57.1 (30-40 s), -56.0 (60-70 s), -59.4 (200-210 s)",
+      "peaks_run": "r0558 (scripts/gap1_rt1_drum_peaks.py)"
+     }
+    },
+    {
+     "run_id": "r0556",
+     "input_id": "RT1",
+     "cores": 2,
+     "wall_s": 171.41,
+     "peak_mb": 2142.2,
+     "exit_code": 0,
+     "output_files": [
+      "out/gap1-RT1/demucs/htdemucs/RT1/<stem>.wav",
+      "out/gap1-RT1/demucs/htdemucs/RT1/drums_onsets.txt"
+     ],
+     "metrics": {
+      "what_ran": "gap round 1: demucs -n htdemucs -d cpu (default options) on RT1.wav (233.509 s, no truth), 2-core slot; venv rebuilt from freeze/venv-demucs.txt",
+      "stem_energy_re_mix_dB": {
+       "bass": -17.6,
+       "drums": -41.4,
+       "other": -0.2,
+       "vocals": -41.5
+      },
+      "stem_mono_peak_dBFS": {
+       "bass": -15.1,
+       "drums": -36.3,
+       "other": -3.6,
+       "vocals": -48.0
+      },
+      "librosa_onsets_on_drums_stem": 1078,
+      "note": "no ground truth; computed by scripts/gap1_rt1_stems.py",
+      "cpu_s": 307.7,
+      "slot_wait_s": 0.0,
+      "drums_stem_peaks_above_-40_dBFS_mss_dBFS": [
+       [
+        "0:49.9",
+        -36.3
+       ]
+      ],
+      "drums_stem_rms_per_10s": "-63.7 to -62.6 dBFS in all 24 windows",
+      "peaks_run": "r0558 (scripts/gap1_rt1_drum_peaks.py)"
+     }
     }
    ],
    "not_run_reason": null,
@@ -3553,7 +3760,7 @@
     "cli"
    ],
    "inputs": [
-    "a score file read by partitura: pt.load_score(path_to_score, force_note_ids=True) (predict.py docstring: Partitura can handle different formats such as musicxml, mei, etc.); multiple parts are merged; beams, rests and grace notes are removed; must be quantized; prepared file samples/voice-split/S2n_truth_merged_single_track.musicxml"
+    "a score file read by partitura: pt.load_score(path_to_score, force_note_ids=True) (predict.py docstring: Partitura can handle different formats such as musicxml, mei, etc.); multiple parts are merged; beams, rests and grace notes are removed; must be quantized; prepared file samples/voice-split/S2n_truth_merged_single_track.musicxml and samples/voice-split/S5dropd_truth_merged_single_track.musicxml (gap round 1, run r0549)"
    ],
    "outputs": [
     "the same score with newly produced voice and staff information, as MEI when --save_path ends in .mei (pt.save_mei) or MusicXML when it ends in .musicxml or .xml (pt.save_musicxml)"
@@ -3593,7 +3800,8 @@
     "licenses of the three DCML source corpora were not read",
     "the prepared MusicXML carries music21's own <voice> numbers (36 voice-1 and 12 voice-2 elements), made without the truth labels",
     "README: 'Our system is supposed to be run in the final stage of a transcription or generation process, where a musical score is *almost* ready'",
-    "repository requirements.txt targets CUDA 12.8 (--index-url https://download.pytorch.org/whl/cu128, --find-links https://data.pyg.org/whl/torch-2.8.0+cu128.html) and adds verovio==4.2.1 and gradio; predict.py loads the checkpoint with PLPianoSVSep.load_from_checkpoint(path_to_model, map_location=cpu, strict=False, weights_only=False); not run here"
+    "repository requirements.txt targets CUDA 12.8 (--index-url https://download.pytorch.org/whl/cu128, --find-links https://data.pyg.org/whl/torch-2.8.0+cu128.html) and adds verovio==4.2.1 and gradio; predict.py loads the checkpoint with PLPianoSVSep.load_from_checkpoint(path_to_model, map_location=cpu, strict=False, weights_only=False); not run here",
+    "gap round 1: scripts/gap1_score_svsep.py scores a returned .mei or .musicxml against the truth voices (partitura 1.9.0 load_score; staff rule and voice rule, highest mean pitch = melody; fvt_common.voice_accuracy); self-check run r0552: the truth as a two-part MusicXML gives 90 of 90 right voice under both rules for S2n and S5dropd; the input files as read give 42 of 90 (staff rule) and 54 of 90 (voice rule)"
    ]
   },
   {
@@ -5188,7 +5396,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "could not be downloaded from the box: curl to freesound.org answered HTTP 403 (not retried) and the download link needs a login",
+   "not_run_reason": "could not be downloaded from the box: curl to freesound.org answered HTTP 403 (not retried) and the download link needs a login; gap round 1 (2026-11-10): one request each, User-Agent gtr-research-agent/1.0 with no personal details: the page https://freesound.org/people/leaving.february/sounds/674811/ at 23:26:10 UTC and the HQ MP3 preview address https://cdn.freesound.org/previews/674/674811_14339611-hq.mp3 at 23:27:06 UTC both answered HTTP/2 403 with an empty body after the proxy CONNECT succeeded; the proxy status listed no failure for either host, so whether the 403 came from Freesound or from the egress proxy is UNVERIFIED; not retried (the proxy README: do not retry 403). The preview address was built from the sound id and the number 14339611 in the uploader avatar path (/data/avatars/14339/14339611_M.jpg, page read through the web fetch tool); it was not confirmed by any answer.",
    "for_aaron": true,
    "callable_via": [],
    "inputs": [],
@@ -5212,7 +5420,8 @@
    "handoffs_out": [],
    "unverified": [
     "the 403 was not re-tested by the verifier",
-    "no preview URL was visible to the web reader"
+    "no preview URL was visible to the web reader",
+    "Freesound API docs (https://freesound.org/docs/api/resources_apiv2.html, read 2026-11-10 through the web fetch tool): previews are preview-hq-mp3 and preview-lq-mp3 (~128kbps quality and ~64kbps quality mp3 respectively) and preview-hq-ogg / preview-lq-ogg (~192kbps and ~80kbps); the Download Sound resource It requires OAuth2 authentication."
    ]
   },
   {
@@ -5283,6 +5492,125 @@
    "pricing": null,
    "handoffs_out": [],
    "unverified": []
+  },
+  {
+   "name": "archive.org 'With A New Tuning, You Can Fly' (Chris Smuck, 2007): lane input RT1",
+   "kind": "dataset",
+   "what": "Real recording, audio only, whole track (233.509 s as decoded); item description 'Michael Hedges Tuning...Written By Me', keywords 'Acoustic, Tapping, Fingerstyle'; whether it contains hits on the guitar body is UNVERIFIED (not stated in the metadata, not checked by listening); no ground truth. Added in gap round 1 as the lane's input RT1.",
+   "url": "https://archive.org/details/ChrisSmuckWithANewTuningYouCanFly",
+   "version": "original file With_A_New_Tuning_You_Can_Fly.mp3 (192 kb/s MP3, 44.1 kHz, 5,607,089 bytes, md5 eba7dc5afa339eb9a091d0f04e80d484); item metadata read 2026-11-10",
+   "tried": true,
+   "tried_how": "local-cpu",
+   "runs": [
+    {
+     "run_id": "r0534",
+     "input_id": "RT1",
+     "cores": null,
+     "wall_s": 2.64,
+     "peak_mb": 720.9,
+     "exit_code": 0,
+     "output_files": [
+      "inputs/RT1/RT1.wav, RT1.mono.wav, RT1.readback.json"
+     ],
+     "metrics": {
+      "what_ran": "scripts/gap1_make_rt1.sh: ffmpeg decode to 16-bit 44.1 kHz stereo, mono = (L+R)/2, read-back (10,297,728 samples, peak -3.62 dBFS, RMS -21.88 dBFS, identical channels)",
+      "cpu_s": 2.7,
+      "slot_wait_s": 0.0
+     }
+    },
+    {
+     "run_id": "r0551",
+     "input_id": "RT1",
+     "cores": 2,
+     "wall_s": 79.7,
+     "peak_mb": 1597.9,
+     "exit_code": 0,
+     "output_files": [
+      "out/gap1-RT1/librosa/"
+     ],
+     "metrics": {
+      "what_ran": "librosa HPSS and onsets (see the librosa entry)",
+      "cpu_s": 79.5,
+      "slot_wait_s": 336.1
+     }
+    },
+    {
+     "run_id": "r0542",
+     "input_id": "RT1",
+     "cores": 2,
+     "wall_s": 13.99,
+     "peak_mb": 983.2,
+     "exit_code": 0,
+     "output_files": [
+      "out/gap1-RT1/detectors/"
+     ],
+     "metrics": {
+      "what_ran": "aubio, madmom, Essentia onset detectors (see their entries)",
+      "cpu_s": 14.9,
+      "slot_wait_s": 163.0
+     }
+    },
+    {
+     "run_id": "r0554",
+     "input_id": "RT1",
+     "cores": 2,
+     "wall_s": 173.64,
+     "peak_mb": 2142.2,
+     "exit_code": 0,
+     "output_files": [
+      "out/gap1-RT1/demucs/htdemucs_6s/RT1/"
+     ],
+     "metrics": {
+      "what_ran": "Demucs htdemucs_6s (see the Demucs entry)",
+      "cpu_s": 261.5,
+      "slot_wait_s": 314.4
+     }
+    },
+    {
+     "run_id": "r0556",
+     "input_id": "RT1",
+     "cores": 2,
+     "wall_s": 171.41,
+     "peak_mb": 2142.2,
+     "exit_code": 0,
+     "output_files": [
+      "out/gap1-RT1/demucs/htdemucs/RT1/"
+     ],
+     "metrics": {
+      "what_ran": "Demucs htdemucs (see the Demucs entry)",
+      "cpu_s": 307.7,
+      "slot_wait_s": 0.0
+     }
+    }
+   ],
+   "not_run_reason": null,
+   "for_aaron": true,
+   "callable_via": [],
+   "inputs": [],
+   "outputs": [
+    "44.1 kHz WAV (stereo with identical channels, and mono)"
+   ],
+   "constraints_accepted": [],
+   "license": {
+    "code": {
+     "spdx": "CC-BY-3.0",
+     "quote": "2007 Chris Smuck. Licensed to the public under http://creativecommons.org/licenses/by/3.0/ verify at http://www.archive.org/details/ChrisSmuckWithANewTuningYouCanFly",
+     "url": "https://archive.org/details/ChrisSmuckWithANewTuningYouCanFly"
+    },
+    "weights": {
+     "name": null,
+     "quote": null,
+     "url": null
+    },
+    "training_data": [],
+    "service_terms": []
+   },
+   "pricing": "free download from archive.org",
+   "handoffs_out": [],
+   "unverified": [
+    "whether the recording contains hits on the guitar body (for-aaron.md list 8, step 3: listen and note times)",
+    "the item's derivative files are listed as about 3 s long; only the original MP3 holds the whole track"
+   ]
   }
  ]
 }

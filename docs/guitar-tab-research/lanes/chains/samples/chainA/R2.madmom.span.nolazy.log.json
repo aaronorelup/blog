@@ -1,0 +1,45 @@
+{
+ "url": "http://127.0.0.1:8791/cpages/alphatab_chains.html?lazy=0&file=/chains/out/gp5/R2.madmom.span.gp5",
+ "ready": true,
+ "readyExpr": "window.__rendered === true",
+ "ms_to_ready": 568,
+ "info": null,
+ "log": [
+  {
+   "type": "playerStateChanged",
+   "t_ms": 14.2,
+   "state": 0,
+   "stopped": false
+  },
+  {
+   "type": "position",
+   "t_ms": 14.2,
+   "currentTime": 0,
+   "endTime": 0,
+   "currentTick": 0,
+   "isSeek": false
+  },
+  {
+   "type": "scoreLoaded",
+   "t_ms": 54.5,
+   "title": "R2 chain A: htdemucs_6s guitar, Basic Pitch, tuttut, madmom beats, Chordino chords",
+   "tracks": 1,
+   "masterBars": 12
+  },
+  {
+   "type": "renderStarted",
+   "t_ms": 183.4
+  },
+  {
+   "type": "renderFinished",
+   "t_ms": 258.3,
+   "width": 1200,
+   "height": 2134
+  },
+  {
+   "type": "postRenderFinished",
+   "t_ms": 260.2
+  }
+ ],
+ "console": []
+}

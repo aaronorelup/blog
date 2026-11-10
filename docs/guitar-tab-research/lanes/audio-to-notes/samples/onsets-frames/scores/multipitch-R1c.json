@@ -1,0 +1,26 @@
+{
+ "truth": "/home/user/gtr/inputs/R1c/R1c.truth.json",
+ "est": "R1c.mid",
+ "voice": null,
+ "estimate_handling": "MIDI notes put on the 10 ms grid",
+ "n_frames": 2824,
+ "ref_frames_with_notes": 2435,
+ "est_frames_with_pitches": 2440,
+ "mir_eval": "0.8.2",
+ "scores": {
+  "Precision": 0.737196,
+  "Recall": 0.730353,
+  "Accuracy": 0.579477,
+  "Substitution Error": 0.079363,
+  "Miss Error": 0.190285,
+  "False Alarm Error": 0.181002,
+  "Total Error": 0.45065,
+  "Chroma Precision": 0.769988,
+  "Chroma Recall": 0.76284,
+  "Chroma Accuracy": 0.621267,
+  "Chroma Substitution Error": 0.046875,
+  "Chroma Miss Error": 0.190285,
+  "Chroma False Alarm Error": 0.181002,
+  "Chroma Total Error": 0.418162
+ }
+}

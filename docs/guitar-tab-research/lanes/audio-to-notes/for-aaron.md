@@ -51,11 +51,27 @@ with multiple checkpoints."). That notebook was not opened by this lane.
 
 Cost: the Space runs on ZeroGPU hardware (`zero-a10g`, Hugging Face API, 2026-11-10); this lane saw no price.
 
+Added in gap round 1 (2026-11-10). The hosted-apis lane transcribed S2n and R1c through the CPU copy of the Space,
+`mimbres/YourMT3-cpu` (runs r0164 and r0245 in its `trials.md`), so the web steps above are optional. What is still missing is a local
+CPU run: on the box, running the Space's code was not attempted because the session's permission system refused
+running code from cloned repositories twice in that round (MT3, mt3-pytorch; `trials.md`, "Tools not run here"). Its
+default checkpoint is 561,544,628 bytes. If you want that timing on your PC (CPU, no GPU needed): the CPU Space
+(https://huggingface.co/spaces/mimbres/YourMT3-cpu, commit bd69fbac) is a Gradio app (`sdk_version: 4.39.0`,
+`app_file: app.py`) whose `app.py` sets `precision = '16' if torch.cuda.is_available() else '32'`. A coding agent on
+the PC can clone it (`git clone https://huggingface.co/spaces/mimbres/YourMT3-cpu`, with Git LFS for the
+checkpoints), install its `requirements.txt` plus `gradio==4.39.0`, start `python app.py`, transcribe `S2n.wav` and
+`R1c.wav` in the browser page it opens, and note the seconds per clip and the CPU model. Send back the two `.mid`
+files, the times and the CPU name. (That this works on Windows is UNVERIFIED; the ZeroGPU Space's own `app.py`
+calls `model.to("cuda")`, so use the CPU Space.)
+
 ## 2. MT3 (Google Magenta multi-instrument transcription), in its official Colab notebook
 
 Not run here: MT3 runs on JAX/T5X and its notebook copies the checkpoints from Google Cloud Storage
 (`gs://mt3/checkpoints`); installing its stack was over the box's disk limit, and the community Space `akhaliq/MT3`
-was in RUNTIME_ERROR.
+was in RUNTIME_ERROR. (corrected in gap round 1: the disk limit no longer applied. The notebook's install step, `pip
+install ... -e .` of the cloned `magenta/mt3` repository with `jax[cpu]`, was refused by the session's permission
+system ("[Code from External]"), and so was running the PyTorch port `kunato/mt3-pytorch` from its clone;
+`trials.md`, "Tools not run here".) The Colab steps below are unchanged.
 
 1. Open the notebook linked from MT3's README:
    https://colab.research.google.com/github/magenta/mt3/blob/main/mt3/colab/music_transcription_with_transformers.ipynb
@@ -95,18 +111,29 @@ strongly recommended for the `medium` and `large` models".
 ## 4. CREPE (the original TensorFlow package)
 
 Not run here: it needs TensorFlow (the 2.15.0 Linux wheel for Python 3.11 is 475,258,658 bytes), over the box's
-disk limit. The same CREPE weights did run here through torchcrepe and through Essentia's CREPE models.
+disk limit. The same CREPE weights did run here through torchcrepe and through Essentia's CREPE models. (corrected in
+gap round 1: the disk limit no longer applied. PyPI has crepe 0.0.16 only as a source archive, and building it on the
+box stopped first with "ModuleNotFoundError: No module named 'pkg_resources'" and, with `setuptools<81`, with "HTTP
+Error 403: Forbidden" when its `setup.py` downloaded the weights from `https://github.com/marl/crepe/raw/models/`,
+an address the box cannot reach; installing the source with the weights put in place by hand was refused by the
+session's permission system. `trials.md`, "Tools not run here".)
 
 1. Install Python 3.11 from https://www.python.org/downloads/windows/ (tick "Add python.exe to PATH").
-2. Open "Command Prompt" and type: `py -3.11 -m pip install crepe tensorflow`
-3. Put `S1.wav`, `R1b.wav` and `S4lead.wav` in one folder, `cd` into it, and run once per file (the README's form,
-   `python -m crepe audio_file.wav`): `py -3.11 -m crepe S1.wav --viterbi`, then the same for `R1b.wav` and
-   `S4lead.wav`. (`--viterbi`: "Viterbi smoothing"; the README's default step is 10 ms.)
-4. Per the README it writes `S1.f0.csv` (columns `time,frequency,confidence`) next to each file.
+2. Open "Command Prompt" and type: `py -3.11 -m pip install crepe tensorflow`. crepe's `setup.py` downloads its
+   five weight files from github.com during this install, so the PC needs to reach github.com. If the install stops
+   with "No module named 'pkg_resources'" (what happened on the box), run `py -3.11 -m pip install "setuptools<81"
+   wheel` and then `py -3.11 -m pip install --no-build-isolation crepe` (this second route was not tried on the box:
+   UNVERIFIED).
+3. Put `S1.wav` and `R1b.wav` in one folder, `cd` into it, and run each file with both model sizes (the README's
+   form, `python -m crepe audio_file.wav`, and its `--model-capacity {tiny|small|medium|large|full}` option):
+   `py -3.11 -m crepe S1.wav --model-capacity tiny`, rename the `S1.f0.csv` it writes to `S1.crepe-tiny.f0.csv`, then
+   `py -3.11 -m crepe S1.wav --model-capacity full` and rename to `S1.crepe-full.f0.csv`; the same for `R1b.wav`.
+   (The README's default step is 10 ms; `--viterbi` adds "Viterbi smoothing" and can be a third run if time allows.)
+4. Per the README each run writes `<name>.f0.csv` (columns `time,frequency,confidence`) next to the file.
 5. If it stops with a TensorFlow or Keras error, run `py -3.11 -m pip install "tensorflow<2.16"` and try again
    (which TensorFlow versions crepe 0.0.16 works with was not checked here).
-6. Send back the three `.f0.csv` files, the output of `py -3.11 -m pip show crepe tensorflow` (versions), any error
-   text, and the time each file took.
+6. Send back the four `.f0.csv` files, the output of `py -3.11 -m pip show crepe tensorflow` (versions), any error
+   text, and the time each run took.
 
 ## 5. MELODIA (Vamp plugin), with its Linux build under WSL2
 
@@ -152,7 +179,10 @@ page: "a free, open-source application for Windows, Linux, and Mac").
 
 Not run here: Omnizart 0.6.3 requires TensorFlow (`tensorflow>=2.5.0` for Python below 3.14, PyPI metadata), over
 the box's disk limit, so no install attempt was made. Whether it installs on Windows is UNVERIFIED (it also depends
-on madmom, whose only PyPI files are source archives, and on vamp).
+on madmom, whose only PyPI files are source archives, and on vamp). (corrected in gap round 1: one install attempt
+was made on the box, Omnizart 0.5.0 with its pinned `tensorflow==2.5.0` on Python 3.8, and it stopped while building
+`vamp` 1.1.0 from source: "ModuleNotFoundError: No module named 'numpy'"; `trials.md`, "Tools not run here". On the
+PC the same can happen with `vamp` or `madmom`; send the error text if it does.)
 
 Colab route (the README's badge link):
 https://colab.research.google.com/github/Music-and-Culture-Technology-Lab/omnizart/blob/master/colab.ipynb (the README
@@ -193,17 +223,10 @@ with a smaller GPU only the default mode applies. Its models are CC BY-NC-SA 3.0
 
 ## 9. RMVPE (pitch tracker)
 
-Not run here: the pip package `rmvpe-onnx` 0.2.3 downloads `rmvpe.onnx` (361,688,443 bytes) from the Hugging Face
-repo `lj1995/VoiceConversionWebUI`, over the box's per-download disk limit.
-
-1. With Python 3.11 installed (entry 4, step 1): `py -3.11 -m pip install "rmvpe-onnx[cli]"` (the README's install
-   line for "Python API with CLI tool").
-2. Run `rmvpe-onnx predict --help` and keep its text. Then, in the folder with the clips, run
-   `rmvpe-onnx predict S1.wav`, and the same for `R1b.wav` and `S4lead.wav` (the README: the model download "Will be
-   done automatically on first prediction if not done manually"). The README does not say which files `predict`
-   writes; the `--help` text should.
-3. Send back the `--help` text, the files it writes for each clip (or the text it prints, if it writes none), and the
-   time per clip.
+Nothing to do: it ran on the box in gap round 1 (`rmvpe-onnx` 0.2.3 with `rmvpe.onnx`, runs r0516 and r0517;
+`trials.md`, "Gap round 1"). The old reason (the per-download disk limit) no longer applies. The `--help` question is
+answered there: `rmvpe-onnx predict` writes a file only with `--csv <path>` (columns `time,frequency,confidence`)
+and otherwise prints a summary.
 
 ## 10. Timbre-Trap (multi-pitch), MR-MT3, hFT-Transformer, Onsets and Frames: research code
 
@@ -217,6 +240,19 @@ the docs lane reports as archived. One concrete job: have a coding agent on the 
 `model.transcribe()` on `S2n.wav`, `S3.wav` and `R1c.wav` with the README's settings and save the multi-pitch frames
 as JSON in the layout of this lane's Essentia multi-pitch outputs (`{"times": [...], "freqs_hz": [[...], ...]}`);
 send back those files. The others are optional.
+
+Corrected in gap round 1 (2026-11-10): MR-MT3's disk reason no longer applies; it was not attempted because the
+session's permission system refused running code from cloned repositories twice in that round (MT3's install and the
+PyTorch port `kunato/mt3-pytorch`), and its `inference.py` calls `.cuda()` without a device check. Onsets and Frames
+now has its own entry in `trials.md` ("Gap round 1"): Magenta's MAESTRO checkpoint with Magenta's own transcribe
+script, from the PyPI package `magenta` 2.1.4 (the PyTorch port publishes no checkpoint). Two more optional coding-agent
+jobs on the PC, both with a CUDA GPU or with the code changed to run on the CPU: (a) MR-MT3: clone
+https://github.com/gudgud96/MR-MT3, take `mt3.pth` or `slakh_f1_0.65.pth` from the Hugging Face repo
+`gudgud1014/MR-MT3`, run `InferenceHandler(...).inference(...)` from `inference.py` on `S2n.wav`, `S4.wav` and
+`R1c.wav`; (b) mt3-pytorch: clone https://github.com/kunato/mt3-pytorch (its `pretrained/mt3.pth` is a Git LFS file
+of 183,672,643 bytes) and run the README's `InferenceHandler('./pretrained').inference('<clip>.wav')` on the same
+clips; its `requirements.txt` pins `ddsp==3.3.4`, whose dependency `crepe` downloads weights from github.com at
+install time. Send back the `.mid` files, the time per clip and the GPU or CPU used.
 
 ## 11. MuScriptor (Kyutai and Mirelo), new in the docs lane's survey
 

@@ -61,3 +61,13 @@ wave2-spleeter)
     $L/venv-spleeter/bin/spleeter separate -p spleeter:4stems -o "$V/spleeter-4stems" "$IN/S4/S4.wav"
   ;;
 esac
+# SCNet Small (MUSDB18, starrytong) through PyPI msst 0.1.0: not run by the trial agent ("lack of time"); run by the
+# verifier. Checkpoint and config from ZFTurbo's release v.1.0.6 (docs/pretrained_models.md), kept in verify/models/scnet.
+if [ "$1" = "wave3-scnet" ]; then
+  for c in S4 S6taps; do
+    run msst-0.1.0 "run by the verifier: msst-inference scnet (SCNet Small, MUSDB18) --force_cpu on $c" "$IN/$c/$c.wav" \
+      $L/venv-msst/bin/msst-inference --model_type scnet --config_path $L/verify/models/scnet/config_musdb18_scnet.yaml \
+      --start_check_point $L/verify/models/scnet/scnet_checkpoint_musdb18.ckpt --input_folder $L/verify/work/msst-in/$c \
+      --store_dir "$V/msst-scnet-musdb18" --force_cpu --disable_detailed_pbar
+  done
+fi

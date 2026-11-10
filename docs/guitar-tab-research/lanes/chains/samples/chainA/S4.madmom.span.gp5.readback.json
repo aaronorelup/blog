@@ -1,0 +1,49 @@
+{
+ "tab": "/home/user/gtr/lanes/chains/out/tab/tuttut/S4sep6s-guitar.bp.gtreval.json",
+ "beats": "/home/user/gtr/lanes/chords-beats-key/out/madmom/S4/downbeats.txt",
+ "downbeats": null,
+ "beat_numbers": true,
+ "chords": "/home/user/gtr/lanes/chords-beats-key/out/madmom/S4/chords_cnn.lab",
+ "tempo_mode": "span",
+ "median_ibi_s": 0.52,
+ "gp5_tempo_bpm": 116,
+ "bar_tempos_bpm": [
+  116
+ ],
+ "gp_time_zero_s": -0.01,
+ "tracked_beats": 65,
+ "downbeats_given": 17,
+ "beats_added_before": 4,
+ "beats_added_after": 5,
+ "bars": 18,
+ "bar_beat_counts": [
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  5
+ ],
+ "notes_in": 342,
+ "notes_written": 325,
+ "notes_dropped_same_string_same_16th": 17,
+ "chord_segments_in": 18,
+ "chords_written": 17,
+ "chords_replaced_on_same_16th": 0,
+ "gp_minus_grid_time_of_16th_slots_s": {
+  "median": -0.016207,
+  "max_abs": 0.028621
+ }
+}

@@ -83,12 +83,18 @@ was not checked (UNVERIFIED; the Preferences screenshot in step 2 shows it).
 
 ## 5. All-In-One (allin1): beats, downbeats, BPM and song sections
 
+Ran here in gap round 1 on the CPU (trials.md, "Gap round 1"; 2 cores, R2full included), so nothing is needed for the
+record. The steps below are only for a GPU timing to set beside the CPU one. (Changed in gap round 1: the NATTEN facts
+below were read on 2026-11-10; see survey.md, All-In-One.)
+
 1. Python 3.8 or newer (PyPI `allin1` 1.1.0: `requires_python` ">=3.8"); install PyTorch (the README: "Visit PyTorch
    and install the appropriate version for your system"; the CUDA build from pytorch.org's selector uses the GPU).
 2. NATTEN: the allin1 README (read 2026-11-10) says "Install NATTEN (Required for Linux and Windows; macOS will
    auto-install)" and, for Windows, "Build from source": `pip install ninja`, `git clone https://github.com/SHI-Labs/NATTEN`,
-   `cd NATTEN`, `make`. Whether that build works with the installed PyTorch and CUDA on Windows was not checked
-   (UNVERIFIED).
+   `cd NATTEN`, `make`. allin1 1.1.0 imports `natten1dqkrpb`, `natten1dav`, `natten2dqkrpb` and `natten2dav`, which NATTEN
+   dropped in 0.17.5 (NATTEN changelog), so after the clone check out a release that still has them, for example
+   `git checkout v0.17.4` (0.17.3 is what ran here; 0.17.4 did not import on Python 3.9 but should on 3.10 or newer,
+   UNVERIFIED). Whether that build works with the installed PyTorch and CUDA on Windows was not checked (UNVERIFIED).
 3. `pip install git+https://github.com/CPJKU/madmom` then `pip install allin1` (both from the allin1 README).
 4. Run `allin1 clips\S4.wav -o out` and the same for R1a, R1c, R2 and R2full. Each run first separates stems with
    Demucs, so the time includes separation.

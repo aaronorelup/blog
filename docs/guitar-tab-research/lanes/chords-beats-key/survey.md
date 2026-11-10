@@ -317,6 +317,41 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   - c. Training data: Harmonix Set (annotations repository MIT, https://raw.githubusercontent.com/urinieto/harmonixset/main/LICENSE;
     the audio is not distributed there: README lists "YouTube URLs" and mel spectrograms on Dropbox, and "Users must
     agree to the License included before using these data."). Read 2026-11-10.
+- Gap round 1 (2026-11-10, added by gapfill-chords-beats-key): what installing it on a CPU-only Linux box involves, read
+  from the sources (it ran here; trials.md, "Gap round 1").
+  - The README's "NATTEN website" link, https://www.shi-labs.com/natten/: on 2026-11-10 curl refused it ("SSL certificate
+    problem: certificate has expired"); `openssl s_client` showed the site's own certificate, issuer Sectigo,
+    `notAfter=Dec  3 23:59:59 2025 GMT`. Its wheel list was not read (TLS verification was not turned off).
+  - NATTEN's current install page (https://natten.org/install/, read 2026-11-10), section "Older NATTEN builds": "if you
+    need to install older NATTEN versions, you can find their wheels in their corresponding GitHub release, or build them
+    from PyPI distributions."; for "< 0.17.5": "Refer to our release index on GitHub, or build from distribution using
+    PyPI." Its wheel index https://whl.natten.org (read 2026-11-10) lists CPU wheels only for NATTEN 0.17.5
+    (`+torch250cpu` and `+torch260cpu`, cp39 to cp312), each a link to a GitHub release asset. GitHub release assets of
+    v0.17.3 and v0.17.4 named `natten-0.17.x+torch{220,230,240,250}cpu-cp39-cp39-linux_x86_64.whl` answered HTTP 200 to a
+    HEAD request on 2026-11-10 (not downloaded).
+  - Which NATTEN versions allin1 1.1.0 can import: `allin1/models/dinat.py` line 10 of the 1.1.0 wheel is "from
+    natten.functional import natten1dav, natten1dqkrpb, natten2dav, natten2dqkrpb", and the calls pass kernel size and
+    dilation. NATTEN's CHANGELOG (https://raw.githubusercontent.com/SHI-Labs/NATTEN/main/CHANGELOG.md, read 2026-11-10):
+    [0.14.6] "the changed signature in both QK and AV (both 1D and 2D), where we now take in both kernel size and
+    dilation"; [0.17.5] "Dropped deprecated ops (`natten.functional.natten*d{qk,qkrpb,av}`)"; [0.20.0] "Dropped unfused /
+    CPU backends in libnatten." and "CPU implementations were all unfused, and were very limited as well, and are likewise
+    removed." The 0.17.3 and 0.17.4 PyPI sdists still define the four functions (`src/natten/functional.py`, each a
+    wrapper that logs a deprecation warning and calls `na1d_qk` / `na1d_av` / `na2d_qk` / `na2d_av`). The 0.17.4 sdist's
+    `src/natten/flops.py` line 82 annotates `input_shape: torch.Size | Sequence[int]`, which raised "TypeError:
+    unsupported operand type(s) for |: 'type' and '_GenericAlias'" on `import natten` under Python 3.9 here (run r0512);
+    the 0.17.3 sdist has no such annotation.
+  - NATTEN's license: MIT, "Copyright (c) 2022 - 2026 Ali Hassani." (https://raw.githubusercontent.com/SHI-Labs/NATTEN/main/LICENSE,
+    read 2026-11-10), MIT grant sentence as above.
+  - PyPI `allin1` 1.1.0 `requires_dist` (https://pypi.org/pypi/allin1/json, read 2026-11-10): demucs, huggingface-hub,
+    hydra-core, librosa, matplotlib, "natten; platform_system == 'Darwin'", numpy, omegaconf, plus training extras;
+    madmom is not declared, although `allin1/spectrogram.py` and `allin1/postprocessing/metrical.py` import it. The only
+    released file of 1.1.0 besides the sdist is `allin1-1.1.0-py3-none-any.whl` (49,790 bytes, sha256 90edc464...f800e).
+  - The 1.1.0 code (`allin1/models/loaders.py`) maps `harmonix-all` to the eight files `harmonix-fold0-0vra4ys2.pth` ...
+    `harmonix-fold7-qwwskhg6.pth` of `taejunkim/allinone` (revision 379e5fd0, lastModified 2023-10-30 per the Hugging Face
+    API); each is 1,400,571 bytes. `allin1/postprocessing/tempo.py` derives `bpm` from the beats: the most frequent value
+    of 60 / (inter-beat interval), each rounded to an integer. `allin1/postprocessing/metrical.py` runs madmom's
+    `DBNDownBeatTrackingProcessor(beats_per_bar=[3, 4], threshold=..., fps=...)` on the network's beat and downbeat
+    activations.
 
 ## madmom (beats, downbeats, tempo, chords, key, onsets)
 
@@ -677,6 +712,21 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   license found. c. Training data: `omnizart/chord/app.py` imports `McGillBillBoard` and its feature extraction is
   documented as "Extract feature of McGill BillBoard dataset"; the Billboard annotations are CC0 and the audio is not
   distributed (quotes in the autochord section, page read 2026-11-10).
+- Gap round 1 (2026-11-10, added by gapfill-chords-beats-key): which PyPI files install without a build.
+  - Files per release (https://pypi.org/pypi/omnizart/json, read 2026-11-10): 0.1.0 to 0.5.0 and 0.6.0 each have a
+    `py3-none-any` wheel and an sdist; 0.6.1, 0.6.2 and 0.6.3 have only an sdist. `requires_python`: ">=3.6.1,<3.9" for
+    0.1.1 to 0.5.0, ">=3.8" for 0.6.x.
+  - 0.5.0 (wheel uploaded 2021-12-09, sha256 4bc708c6...8d8f) pins, among others, "tensorflow (==2.5.0)", "urllib3
+    (==1.26.4)", "librosa (>=0.8.0,<0.9.0)", "madmom (>=0.16.1,<0.17.0)", "spleeter (>=2.3.0,<3.0.0)", "vamp
+    (>=1.1.0,<2.0.0)", "mir_eval (>=0.6,<0.7)", "pyfluidsynth (>=1.2.5,<2.0.0)" (`requires_dist`). The 0.6.0 wheel
+    (2026-05-30, sha256 f6c9e3f0...cbb3) asks for "tensorflow>=2.5.0; python_version < "3.14"" and "tf-keras;
+    python_version >= "3.9" and python_version < "3.14"" (its METADATA).
+  - Checkpoint files: both wheels contain `omnizart/checkpoints/chord/chord_v1/saved_model.pb`,
+    `variables/variables.index` and `configurations.yaml` but not the variables data file. `omnizart download-checkpoints`
+    (`omnizart/cli/cli.py` in both wheels) fetches it, with nine other models, from the GitHub release
+    `checkpoints-20211001`: `.../releases/download/checkpoints-20211001/chord_v1@variables.data-00000-of-00001`, saved as
+    `checkpoints/chord/chord_v1/variables/variables.data-00000-of-00001`. GitHub release-asset downloads answered (HTTP 302
+    to release-assets.githubusercontent.com, then 200) from this box on 2026-11-10.
 
 ## Harmony Transformer and Harmony Transformer v2
 
@@ -873,6 +923,25 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   LICENSE v3. For details, please see the LICENSE file." LICENSE is the AGPL v3 text
   (https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/LICENSE, read 2026-11-10). PyPI license "AGPL".
   c. Training data: not read today (UNVERIFIED).
+- Gap round 1 (2026-11-10, added by gapfill-chords-beats-key; it ran here, trials.md "Gap round 1"):
+  - PyPI `tempocnn` 0.0.8 `requires_dist` (https://pypi.org/pypi/tempocnn/json, read 2026-11-10): jams>=0.3.1,
+    librosa>=0.9.0, matplotlib>=3.0.0, scipy>=1.10.0, setuptools>=65.5.1, tensorflow==2.17.0; `requires_python`
+    "<3.12,>=3.9".
+  - What the wheel holds: `tempocnn-0.0.8-py3-none-any.whl` (41,305,827 bytes, sha256 73ef63ee...059b5) has the package
+    code and 24 tempo model files in `tempocnn/models/`: cnn, fcn, ismir2018, deepsquare_k1/k2/k4/k8,
+    deeptemp_k2/k4/k8, shallowtemp_k1/k2/k4/k6, dt_maz_m_fold0 to 4 and dt_maz_v_fold0 to 4 (`.h5`). It has no key model
+    and no meter model, and its console scripts are `tempo`, `tempogram`, `meter` and `greekfolk`
+    (`entry_points.txt`); there is no key command (key estimation is the separate key-cnn repository, section below).
+  - Model files not in the wheel are fetched at run time: `tempocnn/classifier.py` (`_extract_from_package`,
+    `_load_model_from_github`) reads `models/<name>.h5` from the package, else downloads
+    `https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/tempocnn/models/<name>.h5` (then the `dev` branch) into
+    `~/.tempocnn/<version>/`. Aliases in `TempoClassifier.__init__`: `mazurka` -> `dt_maz_v_fold0`, `deeptemp` ->
+    `deeptemp_k16`, `shallowtemp` -> `shallowtemp_k6`, `deepsquare` -> `deepsquare_k16`; `fma2018` and the meter model
+    `fma2018-meter` are not in the wheel either. The `tempo` command's `-m` default is `fcn`; the `meter` command's is
+    `fma2018-meter` (`tempocnn/commands.py`).
+  - Features (`tempocnn/feature.py`, docstring): "Resample file to 11025 Hz, then transform using STFT with length 1024
+    and hop size 512. Convert resulting linear spectrum to mel spectrum with 40 bands ranging from 20 to 5000 Hz."
+    (`librosa.load(file, sr=11025)`, `librosa.feature.melspectrogram(..., n_mels=40, fmin=20, fmax=5000)`).
 
 ## DeepRhythm (tempo CNN)
 
@@ -977,6 +1046,26 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   https://raw.githubusercontent.com/mixxxdj/libkeyfinder/main/LICENSE and
   https://raw.githubusercontent.com/EvanPurkhiser/keyfinder-cli/main/LICENSE); GPL-3.0 section 5(c) as above. No
   trained weights (key profiles).
+- Gap round 1 (2026-11-10, added by gapfill-chords-beats-key): packaged routes checked before any source build.
+  - apt: `apt-cache search keyfinder` on the box (Ubuntu 24.04 with main, restricted, universe and multiverse enabled)
+    printed nothing. The package-name searches of all suites at
+    https://packages.ubuntu.com/search?keywords=keyfinder&searchon=names&suite=all&section=all and
+    https://packages.debian.org/search?keywords=keyfinder&searchon=names&suite=all&section=all both answered "Sorry, your
+    search gave no results" (read 2026-11-10).
+  - PyPI (https://pypi.org/pypi/<name>/json, 2026-11-10): `keyfinder` 1.1.0 has one file, the sdist
+    `keyfinder-1.1.0.tar.gz` (a binding that compiles against an installed libkeyfinder); `libkeyfinder`, `pykeyfinder`,
+    `keyfinder-py`, `keyfinder-cli` and `key-finder` answered HTTP 404. conda-forge
+    (https://api.anaconda.org/package/conda-forge/<name>): `libkeyfinder`, `keyfinder-cli` and `keyfinder` answered HTTP
+    404.
+  - Ubuntu's `mixxx` 2.4.0+dfsg-2build4 (universe) lists no keyfinder package among its dependencies. Its binary
+    `/usr/bin/mixxx` (from the .deb fetched with `apt-get download`, sha256 94339a56...cc55, unpacked with `dpkg-deb -x`,
+    not run) contains no "keyfinder" string, and contains the strings "Queen Mary Key Detector", "Queen Mary Tempo and Beat
+    Tracker", "qm-keydetector" and "GetKeyMode".
+  - Release tags on the libkeyfinder repository (`git ls-remote --tags https://github.com/mixxxdj/libkeyfinder`,
+    2026-11-10): v0.11, v2.0, v2.1, v2.2, v2.2.1 to v2.2.6, 2.2.7, 2.2.8; HEAD 941e517.
+  - Related, not the same algorithm: Essentia's Key algorithm (https://essentia.upf.edu/reference/std_Key.html, read
+    2026-11-10) has a profileType "shaath", described as "profiles based on Krumhansl’s specifically tuned to popular and
+    electronic music"; the page does not name libKeyFinder. trials.md has Essentia's `shaath` results.
 
 ## S-KEY (self-supervised key estimation, Deezer)
 
@@ -1009,6 +1098,35 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   "S-KEY (1M)" 73.2 / 74.4 / 72.1 / 90.4 on FMAKv2 / GTZAN / GiantSteps / SWD; the same table lists madmom at
   73.1 / 67.9 / 71.0 / 87.7.
 - A community ONNX conversion exists at https://huggingface.co/aaatmy/skey-onnx (named in a search result; not read).
+  (corrected in gap round 1: read on 2026-11-10, and run here; see the next item and trials.md "Gap round 1".)
+- Gap round 1 (2026-11-10, added by gapfill-chords-beats-key):
+  - PyPI: no Deezer S-KEY package under the names `skey` (the unrelated 0.2, summary "SecureKey test", no files),
+    `s-key`, `deezer-skey` or `skey-deezer` (the last three HTTP 404 at https://pypi.org/pypi/<name>/json).
+  - The ONNX conversion, https://huggingface.co/aaatmy/skey-onnx (revision c04b6a2b, created and last modified
+    2026-09-17 per the Hugging Face API; model card read 2026-11-10): "FP32 ONNX conversion of the pretrained [Deezer
+    S-KEY](https://github.com/deezer/skey) model, used by [Key & Tempo](https://github.com/Hikari-Tsai/music-detection) to
+    estimate a single global major or minor key from audio." "This is a community conversion of the upstream checkpoint,
+    not a newly trained model or an official Deezer release." "Input `audio` is float32 mono PCM at **22,050 Hz**, shape
+    `[1, samples]`. Output `scores` has shape `[1, 24]`. Peak normalization, VQT/dB preprocessing, frequency cropping and
+    ChromaNet are included in the graph. Scores already include the upstream softmax; do not apply softmax again."
+    `manifest.json`: model_bytes 324536, sha256 50bac66d...12b1 (the downloaded `skey.onnx` has it), source_commit
+    918b83d2..., checkpoint_sha256 78dfd0ad...ead4, sample_rate 22050, opset 17, the 24 labels in upstream's `key_map`
+    order ("A Major", "Bb Major", ... "G# Major", "B minor", ... "Bb minor"), and three parity cases with
+    max_score_error 5.4e-07, 9.5e-07 and 3.8e-06. The repository's `skey/models/skey.pt` at main and at commit 918b83d
+    (raw.githubusercontent.com, 2026-11-10) are both 765,465 bytes with SHA-256 78dfd0ad...ead4.
+  - License texts there: `LICENSE` is MIT, "Copyright (c) 2019-present, Deezer SA."; the card: "The [upstream
+    README](...) explicitly describes the S-KEY **code** as MIT-licensed. That paragraph does not separately state a
+    license for pretrained weights; this model card does not assign them a new license." The upstream README at commit
+    918b83d (https://raw.githubusercontent.com/deezer/skey/918b83d273568d5041569bb8068843d19a335726/README.md, read
+    2026-11-10) says under "License" only "The code of **SKEY** is [MIT-licensed](LICENSE)."; the README at main (read the
+    same day) adds "The MIT license **does not** apply to the model weights in skey.pt. You may use the model weights only
+    for non-commercial research purposes." The repository also carries `ConvNeXt-LICENSE` (MIT, "Copyright (c) Meta
+    Platforms, Inc. and affiliates.") and `nnAudio-LICENSE` (MIT text with "Copyright (c) 2018 The Python Packaging
+    Authority").
+  - What the graph leaves to the caller, per upstream `skey/key_detection.py` at main (read 2026-11-10): decoding
+    (`torchaudio.load(song_path, backend="soundfile")`), resampling (`torchaudio.transforms.Resample(orig_freq=waveform_sr,
+    new_freq=sr)`) and the mono mix (`torch.mean(waveform, dim=0, keepdim=True)`); the label is
+    `key_map[int(torch.mean(logits, dim=0).argmax())]`.
 
 ## STONE (Deezer, ISMIR 2024; key signature and mode) (added by the verifier)
 
@@ -1095,6 +1213,31 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   estimate_tuning measure the concert-pitch offset (cents or fractions of a semitone), not open-string tuning or capo;
   the PRIOR.md brief records that the earlier post's "Tabber" tool reported "capo 7 at 0.34 confidence (a coin-flip
   with capo 3 at 0.33)" (PRIOR.md lines 81 and 120). Capo detection from video is in the video-hands-fretboard lane.
+- Gap round 1 search (2026-11-10, gapfill-chords-beats-key), for an open-string tuning or capo detector from audio with
+  published weights or code installable as a package, 2024 to 2026:
+  - Web search queries: "guitar capo position detection from audio deep learning 2025"; "guitar open string tuning
+    estimation from audio recording alternate tuning classifier github 2025 2026"; "arXiv 2026 guitar tablature
+    transcription audio estimate capo and tuning jointly"; ""capo" "tuning" guitar audio estimation ISMIR 2025 paper
+    code"; "github guitar tuning detection from song audio "drop D" classifier model weights"; "huggingface model guitar
+    tuning classification audio OR "capo" detection audio model". Audio tuning classifiers named in the results: Hulme et
+    al. (above) and the two Rochester ECE 477 projects (above). Nothing else.
+  - arXiv API (export.arxiv.org, newest first): `all:capo AND all:guitar` returned one paper, Fretting-Transformer
+    (arXiv 2506.14223, 2025-06-17), a MIDI-to-tablature model whose abstract says "The integration of context-sensitive
+    processing and tuning/capo conditioning further enhances the model’s performance" (section 4.5 "Conditioning on Tuning
+    and Capo"; the capo and tuning are inputs to a symbolic model, not estimated from audio; read at
+    https://arxiv.org/html/2506.14223v1). `all:"guitar tuning"` returned arXiv 2510.10619, "A Machine Learning Approach for
+    MIDI to Guitar Tablature Conversion" (MIDI input). `ti:guitar AND ti:tuning` returned nothing; `abs:capo AND abs:audio`
+    returned one unrelated paper (indoor localization).
+  - Hugging Face Hub API (`/api/models?search=<q>`): "guitar tuning", "guitar-tuning" and "guitar tablature" returned no
+    models; "capo", "drop d" and "open tuning" returned only unrelated models (names containing capo..., dropout, and
+    language-model tuning). `magnjorg/ast-finetuned-guitar` (named in a search result) has the labels overdrive,
+    distortion, chorus, flanger, phaser, tremolo, reverb, feedback delay, slapback delay, low boost, low reduct, high
+    boost, high reduct in its `config.json` (guitar effects, not tuning or capo).
+  - PyPI (https://pypi.org/pypi/<name>/json, 2026-11-10): `guitar-tuning-classification`, `guitar-tuning`,
+    `guitartuning`, `guitar-tuning-classifier`, `tuning-classifier`, `capo-detection` and `guitar-capo` answered HTTP 404.
+    The Hulme et al. classifier stays a repository with models on Google Drive and no license file (above).
+  - Result: no open-string tuning or capo detector from audio with published weights or a package was found, so nothing
+    was run for this item (trials.md, "Gap round 1").
 
 ## Hosted services in this category (short; full terms in the hosted-apis and apps-survey lanes)
 

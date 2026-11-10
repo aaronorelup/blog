@@ -1,0 +1,26 @@
+{
+ "truth": "/home/user/gtr/inputs/S4/S4.truth.json",
+ "est": "S4guitar.mid",
+ "voice": "chord",
+ "estimate_handling": "MIDI notes put on the 10 ms grid",
+ "n_frames": 3875,
+ "ref_frames_with_notes": 3294,
+ "est_frames_with_pitches": 3460,
+ "mir_eval": "0.8.2",
+ "scores": {
+  "Precision": 0.835163,
+  "Recall": 0.80968,
+  "Accuracy": 0.698116,
+  "Substitution Error": 0.078109,
+  "Miss Error": 0.112211,
+  "False Alarm Error": 0.081698,
+  "Total Error": 0.272018,
+  "Chroma Precision": 0.839122,
+  "Chroma Recall": 0.813517,
+  "Chroma Accuracy": 0.703753,
+  "Chroma Substitution Error": 0.074271,
+  "Chroma Miss Error": 0.112211,
+  "Chroma False Alarm Error": 0.081698,
+  "Chroma Total Error": 0.268181
+ }
+}

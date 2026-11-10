@@ -100,13 +100,15 @@ ending in `.musicxml`.
    `torch==2.8.0`, `torch_geometric`, `torch-scatter`, `partitura==1.8.0` and `scikit-learn==1.6.0`, so pip replaces
    any other torch version with 2.8.0; picking 2.8.0 in step 5 (pytorch.org lists older versions under "Previous
    PyTorch Versions") avoids that.
-3. Copy `S2n_truth_merged_single_track.musicxml` from this folder's `samples/voice-split/` into `C:\gtr\piano_svsep`.
-   It holds the S2n notes as one part; it carries music21's own voice numbers (1 and 2) where music21 split
-   overlapping notes, made without the truth labels. The README says the input may have "potentially random voice
-   and staff assignments".
+3. Copy `S2n_truth_merged_single_track.musicxml` and `S5dropd_truth_merged_single_track.musicxml` from this folder's
+   `samples/voice-split/` into `C:\gtr\piano_svsep`. Each holds a clip's 90 notes as one part; they carry music21's
+   own voice numbers (1 and 2) where music21 split overlapping notes, made without the truth labels. The README says
+   the input may have "potentially random voice and staff assignments".
 4. `python launch_scripts/predict.py --model_path pretrained_models/model.ckpt --score_path S2n_truth_merged_single_track.musicxml --save_path S2n_pred.mei`
-   (the README's command with these file names).
-5. Send back: `S2n_pred.mei` and the screenshot. The orchestrator scores which notes went to which voice and staff.
+   (the README's command with these file names), then the same with `S5dropd` in both file names.
+5. Send back: `S2n_pred.mei`, `S5dropd_pred.mei` and the screenshot. The orchestrator scores them with
+   `scripts/gap1_score_svsep.py S2n_pred.mei S2n` (and `S5dropd`), which counts the notes put in the right voice the
+   way partitura and music21 were counted (trials.md, "Gap round 1").
 
 ## 5. McLeod and Steedman voice separation (Java)
 
@@ -197,6 +199,21 @@ whose content is unknown:
    https://commons.wikimedia.org/wiki/File:Erik_Mongrain-AirTap.ogv , use "Download" on the right, send back the file.
 
 With either file back, the orchestrator can run this lane's HPSS, onset and Demucs-drums steps on it.
+
+Gap round 1 (2026-11-10): the Freesound page and a preview address of sound 674811 answered HTTP 403 to the box again,
+so step 1 above still needs you. The box did get one CC BY 3.0 recording from archive.org, now this lane's input RT1:
+Chris Smuck, "With A New Tuning, You Can Fly" (2007), https://archive.org/details/ChrisSmuckWithANewTuningYouCanFly ,
+keywords "Acoustic, Tapping, Fingerstyle". Nobody has listened to it: whether its "tapping" is on the fretboard or on the
+guitar body is not known (trials.md, "Gap round 1").
+
+3. Listen to RT1 (the MP3 on that page, 3:53). Write down whether it has hits on the guitar body and, if it does, the
+   times of a few of them (minutes:seconds) and what kind they are (thumb on the top, palm on the bridge, fingers on the
+   side ...). Send back that list. It would be the first real tap truth for this lane, and the onset and Demucs outputs
+   made here can then be checked against it.
+4. One more candidate was found and not downloaded because its license is the Public Domain Mark 1.0, not CC0 or CC BY:
+   https://archive.org/details/RacerSessions-DannyGodinez11082015 (a steel-string acoustic set whose description says
+   "imaginative fingerstyle and percussive textures", with live looping and echo/reverb). Whether to use it is your
+   call; if yes, say which file and which minutes.
 
 ## 9. LarsNet (5-stem drum separation: kick, snare, toms, hi-hat, cymbals)
 

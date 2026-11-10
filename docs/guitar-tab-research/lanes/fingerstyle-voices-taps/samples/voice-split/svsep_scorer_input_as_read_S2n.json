@@ -1,0 +1,39 @@
+{
+ "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/gap1/svsep/S2n_truth_merged_single_track.musicxml",
+ "clip": "S2n",
+ "tempo_bpm": 112.0,
+ "n_notes_read": 90,
+ "staff_rule": {
+  "groups": {
+   "(0, 1)": {
+    "notes": 90,
+    "mean_pitch": 53.13
+   }
+  },
+  "n_matched": 90,
+  "n_right_voice": 42,
+  "confusion": {
+   "truth_bass->pred_melody": 48,
+   "truth_melody->pred_melody": 42
+  }
+ },
+ "voice_rule": {
+  "groups": {
+   "(0, 1, 1)": {
+    "notes": 84,
+    "mean_pitch": 52.79
+   },
+   "(0, 1, 2)": {
+    "notes": 6,
+    "mean_pitch": 58.0
+   }
+  },
+  "n_matched": 90,
+  "n_right_voice": 54,
+  "confusion": {
+   "truth_bass->pred_bass": 48,
+   "truth_melody->pred_bass": 36,
+   "truth_melody->pred_melody": 6
+  }
+ }
+}

@@ -1,0 +1,345 @@
+{
+ "clip": "S2s",
+ "source": "out/bp/S2s-hpss-harmonic.notes.csv",
+ "n_notes_in": 174,
+ "methods": {
+  "B1_threshold_T55": {
+   "n_pred": 174,
+   "n_truth": 90,
+   "n_matched": 86,
+   "n_voice_agree": 86,
+   "fraction_voice_agree_of_matched": 1.0,
+   "confusion": {
+    "truth_bass->pred_bass": 44,
+    "truth_melody->pred_melody": 42
+   },
+   "onset_tol_s": 0.05,
+   "pitch_tol_semitones": 0.5,
+   "n_labelled_melody": 125,
+   "n_labelled_bass": 49,
+   "threshold_midi": 55
+  },
+  "B2_lowest_per_onset": {
+   "n_pred": 174,
+   "n_truth": 90,
+   "n_matched": 86,
+   "n_voice_agree": 83,
+   "fraction_voice_agree_of_matched": 0.9651162790697675,
+   "confusion": {
+    "truth_bass->pred_bass": 44,
+    "truth_melody->pred_melody": 39,
+    "truth_melody->pred_bass": 3
+   },
+   "onset_tol_s": 0.05,
+   "pitch_tol_semitones": 0.5,
+   "n_labelled_melody": 109,
+   "n_labelled_bass": 65,
+   "n_groups": 65
+  },
+  "B3_skyline": {
+   "n_pred": 174,
+   "n_truth": 90,
+   "n_matched": 86,
+   "n_voice_agree": 57,
+   "fraction_voice_agree_of_matched": 0.6627906976744186,
+   "confusion": {
+    "truth_bass->pred_bass": 42,
+    "truth_melody->pred_bass": 27,
+    "truth_bass->pred_melody": 2,
+    "truth_melody->pred_melody": 15
+   },
+   "onset_tol_s": 0.05,
+   "pitch_tol_semitones": 0.5,
+   "n_labelled_melody": 65,
+   "n_labelled_bass": 109,
+   "n_groups": 65
+  },
+  "P1_partitura_poly": {
+   "n_pred": 174,
+   "n_truth": 90,
+   "n_matched": 86,
+   "n_voice_agree": 44,
+   "fraction_voice_agree_of_matched": 0.5116279069767442,
+   "confusion": {
+    "truth_bass->pred_bass": 44,
+    "truth_melody->pred_bass": 42
+   },
+   "onset_tol_s": 0.05,
+   "pitch_tol_semitones": 0.5,
+   "n_labelled_melody": 1,
+   "n_labelled_bass": 173,
+   "n_voices": 8,
+   "notes_per_voice": {
+    "1": 8,
+    "2": 2,
+    "3": 1,
+    "4": 15,
+    "5": 16,
+    "6": 74,
+    "7": 34,
+    "8": 24
+   },
+   "mean_pitch_per_voice": {
+    "1": 68.0,
+    "2": 69.0,
+    "3": 76.0,
+    "4": 63.4,
+    "5": 63.8125,
+    "6": 57.986486486486484,
+    "7": 48.205882352941174,
+    "8": 57.916666666666664
+   },
+   "partitura": "1.9.0",
+   "seconds": 0.1606
+  },
+  "P2_partitura_mono": {
+   "n_pred": 174,
+   "n_truth": 90,
+   "n_matched": 86,
+   "n_voice_agree": 44,
+   "fraction_voice_agree_of_matched": 0.5116279069767442,
+   "confusion": {
+    "truth_bass->pred_bass": 44,
+    "truth_melody->pred_bass": 42
+   },
+   "onset_tol_s": 0.05,
+   "pitch_tol_semitones": 0.5,
+   "n_labelled_melody": 1,
+   "n_labelled_bass": 173,
+   "n_voices": 8,
+   "notes_per_voice": {
+    "1": 6,
+    "2": 2,
+    "3": 1,
+    "4": 14,
+    "5": 16,
+    "6": 75,
+    "7": 33,
+    "8": 27
+   },
+   "mean_pitch_per_voice": {
+    "1": 70.0,
+    "2": 69.0,
+    "3": 76.0,
+    "4": 63.07142857142857,
+    "5": 62.125,
+    "6": 58.16,
+    "7": 48.15151515151515,
+    "8": 58.81481481481482
+   },
+   "partitura": "1.9.0",
+   "seconds": 0.2065
+  },
+  "M1_music21": {
+   "n_pred": 174,
+   "n_truth": 90,
+   "n_matched": 86,
+   "n_voice_agree": 51,
+   "fraction_voice_agree_of_matched": 0.5930232558139535,
+   "confusion": {
+    "truth_bass->pred_bass": 43,
+    "truth_melody->pred_melody": 8,
+    "truth_melody->pred_bass": 34,
+    "truth_bass->pred_melody": 1
+   },
+   "onset_tol_s": 0.05,
+   "pitch_tol_semitones": 0.5,
+   "n_labelled_melody": 23,
+   "n_labelled_bass": 151,
+   "music21": "10.5.2",
+   "n_parts": 1,
+   "n_chords": 43,
+   "n_single_notes": 88,
+   "n_voices": 48,
+   "n_notes_not_found_back": 122,
+   "seconds": 0.1033
+  }
+ },
+ "B1_threshold_sweep": {
+  "36": {
+   "n_voice_agree": 42,
+   "n_matched": 86,
+   "fraction": 0.4883720930232558
+  },
+  "37": {
+   "n_voice_agree": 42,
+   "n_matched": 86,
+   "fraction": 0.4883720930232558
+  },
+  "38": {
+   "n_voice_agree": 42,
+   "n_matched": 86,
+   "fraction": 0.4883720930232558
+  },
+  "39": {
+   "n_voice_agree": 42,
+   "n_matched": 86,
+   "fraction": 0.4883720930232558
+  },
+  "40": {
+   "n_voice_agree": 42,
+   "n_matched": 86,
+   "fraction": 0.4883720930232558
+  },
+  "41": {
+   "n_voice_agree": 42,
+   "n_matched": 86,
+   "fraction": 0.4883720930232558
+  },
+  "42": {
+   "n_voice_agree": 42,
+   "n_matched": 86,
+   "fraction": 0.4883720930232558
+  },
+  "43": {
+   "n_voice_agree": 42,
+   "n_matched": 86,
+   "fraction": 0.4883720930232558
+  },
+  "44": {
+   "n_voice_agree": 52,
+   "n_matched": 86,
+   "fraction": 0.6046511627906976
+  },
+  "45": {
+   "n_voice_agree": 52,
+   "n_matched": 86,
+   "fraction": 0.6046511627906976
+  },
+  "46": {
+   "n_voice_agree": 56,
+   "n_matched": 86,
+   "fraction": 0.6511627906976745
+  },
+  "47": {
+   "n_voice_agree": 56,
+   "n_matched": 86,
+   "fraction": 0.6511627906976745
+  },
+  "48": {
+   "n_voice_agree": 56,
+   "n_matched": 86,
+   "fraction": 0.6511627906976745
+  },
+  "49": {
+   "n_voice_agree": 62,
+   "n_matched": 86,
+   "fraction": 0.7209302325581395
+  },
+  "50": {
+   "n_voice_agree": 62,
+   "n_matched": 86,
+   "fraction": 0.7209302325581395
+  },
+  "51": {
+   "n_voice_agree": 80,
+   "n_matched": 86,
+   "fraction": 0.9302325581395349
+  },
+  "52": {
+   "n_voice_agree": 80,
+   "n_matched": 86,
+   "fraction": 0.9302325581395349
+  },
+  "53": {
+   "n_voice_agree": 86,
+   "n_matched": 86,
+   "fraction": 1.0
+  },
+  "54": {
+   "n_voice_agree": 86,
+   "n_matched": 86,
+   "fraction": 1.0
+  },
+  "55": {
+   "n_voice_agree": 86,
+   "n_matched": 86,
+   "fraction": 1.0
+  },
+  "56": {
+   "n_voice_agree": 80,
+   "n_matched": 86,
+   "fraction": 0.9302325581395349
+  },
+  "57": {
+   "n_voice_agree": 80,
+   "n_matched": 86,
+   "fraction": 0.9302325581395349
+  },
+  "58": {
+   "n_voice_agree": 74,
+   "n_matched": 86,
+   "fraction": 0.8604651162790697
+  },
+  "59": {
+   "n_voice_agree": 74,
+   "n_matched": 86,
+   "fraction": 0.8604651162790697
+  },
+  "60": {
+   "n_voice_agree": 66,
+   "n_matched": 86,
+   "fraction": 0.7674418604651163
+  },
+  "61": {
+   "n_voice_agree": 58,
+   "n_matched": 86,
+   "fraction": 0.6744186046511628
+  },
+  "62": {
+   "n_voice_agree": 58,
+   "n_matched": 86,
+   "fraction": 0.6744186046511628
+  },
+  "63": {
+   "n_voice_agree": 48,
+   "n_matched": 86,
+   "fraction": 0.5581395348837209
+  },
+  "64": {
+   "n_voice_agree": 48,
+   "n_matched": 86,
+   "fraction": 0.5581395348837209
+  },
+  "65": {
+   "n_voice_agree": 44,
+   "n_matched": 86,
+   "fraction": 0.5116279069767442
+  },
+  "66": {
+   "n_voice_agree": 44,
+   "n_matched": 86,
+   "fraction": 0.5116279069767442
+  },
+  "67": {
+   "n_voice_agree": 44,
+   "n_matched": 86,
+   "fraction": 0.5116279069767442
+  },
+  "68": {
+   "n_voice_agree": 44,
+   "n_matched": 86,
+   "fraction": 0.5116279069767442
+  },
+  "69": {
+   "n_voice_agree": 44,
+   "n_matched": 86,
+   "fraction": 0.5116279069767442
+  },
+  "70": {
+   "n_voice_agree": 44,
+   "n_matched": 86,
+   "fraction": 0.5116279069767442
+  },
+  "71": {
+   "n_voice_agree": 44,
+   "n_matched": 86,
+   "fraction": 0.5116279069767442
+  },
+  "72": {
+   "n_voice_agree": 44,
+   "n_matched": 86,
+   "fraction": 0.5116279069767442
+  }
+ }
+}

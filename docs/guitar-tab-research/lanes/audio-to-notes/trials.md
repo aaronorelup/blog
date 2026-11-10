@@ -44,11 +44,16 @@ How to read the numbers:
 | Essentia (2.1b6.dev1389): Melodia + PitchContourSegmentation, PitchYinProbabilistic, PitchCREPE tiny/full, MultiPitchKlapuri, MultiPitchMelodia | yes | r0321, r0341, r0345, r0346 | f0 per 2.9 ms (Melodia) / 5.8 ms / 10 ms; notes (onset, duration, MIDI) from PitchContourSegmentation; multi-pitch lists per 2.9 ms frame |
 | Transkun (2.0.1), piano-trained | yes | r0216 | MIDI (program 0, velocities, CC64 sustain pedal; CC67 soft pedal in the R1a, R1b, R1c files) |
 | ByteDance piano transcription (0.0.6), piano-trained | yes, S2n and R1c only | r0401 | MIDI (program 0, velocities, CC64 pedal) |
+| RMVPE through `rmvpe-onnx` (0.2.3, ONNX Runtime), gap round 1 | yes | r0516, r0517 | f0 every 10 ms (Hz), confidence 0 to 1, 360-bin activation; no notes |
+| Onsets and Frames, Magenta MAESTRO checkpoint (`magenta` 2.1.4), piano-trained, gap round 1 | yes, S1, S2n, R1c, S4 guitar stem | r0545 | MIDI (program 0, velocities, no pedal, no pitch bends) |
 
 Not run here (reasons and evidence under "Tools not run here", steps in `for-aaron.md`): CREPE (TensorFlow
 package), RMVPE, MELODIA Vamp plugin, pYIN Vamp plugin, Timbre-Trap, MT3, YourMT3+, MR-MT3, Onsets and Frames,
 hFT-Transformer, Omnizart, NeuralNote, Sheet Sage, MuScriptor, PENN, CREPE Notes and the other survey additions
-listed there.
+listed there. (corrected in gap round 1: RMVPE and Onsets and Frames ran, see "Gap round 1"; CREPE, MT3 with its
+PyTorch port mt3-pytorch, MR-MT3, YourMT3+ on the box's CPU and Omnizart still did not run, and their entries now give
+the reason as it is after that round: the session's permission system for code from cloned repositories or local
+folders, github.com answering 403, and a source build that failed.)
 
 ## The monophonic f0 trackers: shared facts
 
@@ -733,8 +738,9 @@ at 22:44 UTC, for about 20 agents).
   graphs inside the Essentia wheel), above. The Basic Pitch TensorFlow backend was skipped for the same reason.
   (corrected in gap round 1: the disk limit no longer applied; the reasons CREPE still did not run are the next item.)
 - Gap round 1 (23:17 to 23:30 UTC; record `samples/crepe/gap1-not-run.txt`). PyPI has only the source archive
-  `crepe-0.0.16.tar.gz` (16,519 bytes), so installing means building it. (1) The PyPI route fails on this box: in uv's
-  build environment `setup.py` line 6, `import pkg_resources`, stops with "ModuleNotFoundError: No module named
+  `crepe-0.0.16.tar.gz` (16,519 bytes), so installing means building it. (1) The PyPI route fails on this box (seen in
+  `uv pip install --dry-run` resolutions on Python 3.9, 3.10 and 3.11, which build it): in uv's build environment
+  `setup.py` line 6, `import pkg_resources`, stops with "ModuleNotFoundError: No module named
   'pkg_resources'" (newest setuptools); with the build constraint `setuptools<81` it prints "Downloading weight file
   model-tiny.h5.bz2 ..." and stops with "urllib.error.HTTPError: HTTP Error 403: Forbidden"
   (`samples/crepe/gap1-crepe-0.0.16-build-setuptools-lt-81-py310.log`). `setup.py` downloads the five weight files
@@ -827,7 +833,7 @@ at 22:44 UTC, for about 20 agents).
 - Not used in place of the refused routes: the PyPI package `mt3-infer` 0.2.0 (2026-07-11), which vendors the
   mt3-pytorch, MR-MT3 and YourMT3 code (survey.md, section 36).
 
-### YourMT3+ - NOT RUN HERE (Space quota) and not run locally (disk)
+### YourMT3+ - NOT RUN HERE (Space quota) and not run locally (disk; in gap round 1: permission system)
 
 - The author's Space `mimbres/YourMT3` (Gradio 4.39.0, hardware `zero-a10g`, stage RUNNING, git sha 5e66c1ea,
   last modified 2025-01-31, card license apache-2.0; read from https://huggingface.co/api/spaces/mimbres/YourMT3 on
@@ -839,7 +845,21 @@ at 22:44 UTC, for about 20 agents).
   Hugging Face token for more quota" (record: `samples/yourmt3-space/space_calls.json`, API listing
   `samples/yourmt3-space/view_api.txt`). No Hugging Face token was available to this session. Locally the Space
   repo's checkpoints are 361 to 759 MB each (the default one 561,544,628 bytes), over the
-  200 MB limit.
+  200 MB limit. (corrected in gap round 1: the disk limit no longer applied, and the default checkpoint fits this
+  round's rule of keeping 4 GB free; the reason a local run did not happen is the next item.)
+- Gap round 1, local CPU run: not attempted. The model code exists only inside the Space's git repository (no
+  package from the authors), and running code from a cloned repository is the action the session's permission
+  system refused twice in this round, minutes earlier ("[Code from External]": installing the MT3 clone, running the
+  mt3-pytorch clone; `samples/mt3/permission-refusal.txt`), so no YourMT3 command was submitted; no local 2-core
+  runtime is on record. Facts read for it (Hugging Face API and raw files, 2026-11-10): the ZeroGPU Space's `app.py`
+  (5e66c1ea) loads the model with `load_model_checkpoint(args=args, device="cpu")` and then calls `model.to("cuda")`
+  with `precision = '16'`; the CPU copy `mimbres/YourMT3-cpu` (bd69fbac, hardware `cpu-basic`, card `license:
+  apache-2.0`) sets `precision = '16' if torch.cuda.is_available() else '32'`; both hold the same five checkpoints
+  (361,050,039 to 758,957,292 bytes; the default `.../mc13_256_g4_all_v7_mt3f_sqr_rms_moe_wf4_n8k2_silu_rope_rp_b36_nops/checkpoints/last.ckpt`
+  561,544,628 bytes) and list `torch`, `torchaudio`, `lightning>=2.2.1`, `transformers` (`==4.45.1` in the ZeroGPU
+  Space), `librosa`, `einops`, `mido`, `mir_eval` from GitHub, `yt-dlp` and `wandb` in `requirements.txt`. The
+  hosted-apis lane's runs of `mimbres/YourMT3-cpu` on S2n and R1c (r0164 31.18 s, r0245 31.34 s, on the Space's
+  `cpu-basic` hardware) are the CPU timings on record. Steps for a local run on Aaron's PC: `for-aaron.md`, section 1.
 
 ### MR-MT3 (`gudgud96/MR-MT3`) - NOT RUN HERE
 
@@ -858,10 +878,12 @@ at 22:44 UTC, for about 20 agents).
   mt3-pytorch checkpoint), `slakh_f1_0.65.pth` and `commu_mt3.pt` 183,637,952 bytes each, and ten `.ckpt` files of
   582,509,233 to 582,536,411 bytes under `scratch/`, `continual/` and `stemmix/`. Steps in `for-aaron.md`.
 
-### Onsets and Frames (Magenta) and hFT-Transformer (Sony) - NOT RUN HERE
+### Onsets and Frames (Magenta) and hFT-Transformer (Sony) - NOT RUN HERE (Onsets and Frames: ran in gap round 1)
 
 - Onsets and Frames lives in `magenta/magenta` (archived, per the docs lane) and runs on TensorFlow; not attempted
-  (disk). hFT-Transformer (`sony/hFT-Transformer`): not attempted. Its README's "Development Environment" lists a GPU
+  (disk). (corrected in gap round 1: Onsets and Frames ran, Magenta's MAESTRO checkpoint with the `magenta` 2.1.4
+  package's own transcribe script, run r0545, on S1, S2n, R1c and the S4 guitar stem; see "Gap round 1". The PyTorch
+  port `jongwook/onsets-and-frames` publishes no checkpoint, so it was not run.) hFT-Transformer (`sony/hFT-Transformer`): not attempted. Its README's "Development Environment" lists a GPU
   (NVIDIA GeForce RTX 2080 Ti) for "corpus generation, evaluation" and an A100 for training, and its MAESTRO
   checkpoint (`checkpoint.zip`, 20,540,269 bytes, GitHub release `ismir2023`) is used through the repository's own
   scripts (`./evaluation/EXE-EVALUATION-MAESTRO.sh model_016_003.pkl test`); running cloned repository code had been
@@ -920,7 +942,8 @@ at 22:44 UTC, for about 20 agents).
   so installing it means compiling it; not attempted.
 - Deep Salience, melodyExtraction_JDC / SSL: Keras/TensorFlow (disk). Aria-AMT, Onsets and Velocities: piano models
   (two piano models ran). SOME / GAME, ROSVOT: singing-voice transcribers; mt3-pytorch, MTANet: no license file per
-  the survey. None attempted, for time and disk.
+  the survey. None attempted, for time and disk. (corrected in gap round 1: mt3-pytorch was attempted as MT3's
+  fallback, and running it from its clone was refused by the session's permission system; see the MT3 entry above.)
 
 ## Gap round 1
 
@@ -928,8 +951,12 @@ Agent: `gapfill-audio-to-notes`, 2026-11-10 from 23:13 UTC. The tools below had 
 of the shared-disk notice (no download over 200 MB); at 23:13 UTC the shared disk had 11 GB free and the notice was
 no longer printed (this round's rule: keep at least 4 GB free). Each tool was installed alone, run through `gtr-run`,
 scored with gtr-eval 0.11.1, its `uv pip freeze` saved in its samples folder, and its venv and weights deleted
-afterwards. Items of the round that did not run are corrected where they stand under "Tools not run here" (MT3 and
-mt3-pytorch, MR-MT3, YourMT3+, Omnizart, Onsets and Frames, CREPE), with the reason as it is now.
+afterwards. Two tools ran (RMVPE, Onsets and Frames: the sections below). The items of the round that did not run are
+corrected where they stand under "Tools not run here" (MT3 with mt3-pytorch, MR-MT3, YourMT3+ on the CPU, Omnizart,
+CREPE), with the reason as it is now. Three of those refusals came from the session's permission system
+("[Code from External]") and are recorded word for word in `samples/mt3/permission-refusal.txt` and
+`samples/crepe/gap1-not-run.txt`; after two of them, no further command of that kind (running code from a cloned
+repository) was submitted for MR-MT3 or YourMT3+.
 
 ### RMVPE through `rmvpe-onnx` 0.2.3 (ONNX Runtime, CPU)
 
@@ -994,6 +1021,84 @@ Against the bass voice (RPA ignores voicing): S2n 0.196 (e1484), S2s 0.008 (e148
 and R3a have no truth: their f0 files are in `out/rmvpe/f0/` (`samples/rmvpe/R2.f0.csv`). Samples: `samples/rmvpe/`
 (f0 of S1, S4 and R2, the CLI's S1 CSV, timings, `scores/`, `conf_stats.txt`).
 
+### Onsets and Frames (Magenta), MAESTRO checkpoint, through `magenta` 2.1.4 (piano-trained, run on guitar)
+
+- What: Google Magenta's Onsets and Frames transcription model (survey.md section 24) with its piano checkpoint.
+  **The checkpoint was trained on piano recordings (MAESTRO)**; here it ran on guitar. The PyTorch port
+  (`jongwook/onsets-and-frames`) publishes no checkpoint (its README covers training your own; a clone at 783ca08
+  holds no weight file), so, as the round asked, Magenta's own checkpoint ran with Magenta's own transcribe script.
+  Checkpoint `maestro_checkpoint.zip` from
+  https://storage.googleapis.com/magentadata/models/onsets_frames_transcription/maestro_checkpoint.zip: 263,865,474
+  bytes, Last-Modified 29 Jan 2019, MD5 equal to the storage `x-goog-hash`; inside, a TensorFlow 1 checkpoint under
+  `train/` (`model.ckpt.data-00000-of-00001` 292,348,336 bytes) and no license or readme file.
+- Install: `magenta` 2.1.4 (PyPI, 2022-08-01) pins tensorflow 2.9.1, numba 0.49.1, numpy 1.21.6 and librosa 0.7.2,
+  whose wheels overlap on Python 3.7 and 3.8, so: `uv venv --python 3.8 venv-oaf && uv pip install --python
+  venv-oaf/bin/python "magenta==2.1.4"`. uv fetched CPython 3.8.20, "Resolved 122 packages", built librosa 0.7.2,
+  python-rtmidi 1.1.2, promise 2.3, mir-eval 0.7 and pretty-midi 0.2.9 from source and finished in 1 min 57.8 s
+  (worked first time) -> magenta 2.1.4, tensorflow 2.9.1, tensorflow-probability 0.17.0, tf-slim 1.1.0, dm-sonnet
+  2.0.0, note-seq 0.0.3, librosa 0.7.2, numba 0.49.1, numpy 1.21.6, scipy 1.7.3 (freeze:
+  `samples/onsets-frames/uv-pip-freeze-venv-oaf-py3.8.txt`). Venv 2.0 GB by `du`. When this install started the
+  shared disk had 8,996 MB free and the disk notice printed again; its exception ("unless your lane cannot finish
+  without it") was taken, and the free space stayed above 6.5 GB. Afterwards the venv, the checkpoint and the CPython
+  3.8.20 were removed, and so were the Python 3.8 wheels this install had put in the shared uv cache (about 2 GB:
+  `uv cache clean` for the 13 packages only it had cached, and for the other packages only their 3.8 entries, which
+  no venv linked any more).
+- Run: the package's console script in the README's form, `onsets_frames_transcription_transcribe
+  --model_dir=<checkpoint>/train S1.wav S2n.wav R1c.wav S4guitar.wav` (defaults: config `onsets_frames`, no
+  `--hparams`), one process for the four files, under GNU time. The script writes `<input path>.midi` next to each
+  input, so the inputs were symlinks in `out/onsets-frames/` to `S1.mono.wav`, `S2n.mono.wav`, `R1c.mono.wav` and
+  `S4/stems/guitar.wav` (the shared inputs folder was not written to). Run **r0545** (2 cores, cores 2-3; wall 39.57
+  s, CPU 42.2 s, peak RSS 1,151.0 MB, exit 0, 329.3 s waiting for a slot); GNU time: user 40.19 s, sys 1.96 s,
+  maximum RSS 1,178,656 KiB. Per file, from the script's log ("Starting transcription for" to "Transcription written
+  to", `scripts/oaf_log_times.py`, `samples/onsets-frames/run_facts.json`): S1 5.30 s, S2n 4.07 s, R1c 4.31 s, S4
+  guitar stem 4.97 s; the log shows "Restoring parameters from .../model.ckpt" once per file. The first file started
+  20.5 s after the run started (TensorFlow import and estimator setup). TensorFlow logged that `libcudart.so.11.0`
+  could not be loaded and ran on the CPU.
+- Output: one MIDI file per input: type 1, 220 ticks per quarter, 2 tracks, tempo 120, one instrument, program 0, no
+  control changes (no pedal), no pitch bends; velocities 67 to 76 (S1), 55 to 74 (S2n), 30 to 76 (R1c), 54 to 75 (S4
+  guitar stem). Note counts: S1 65, S2n 91, R1c 173, S4 guitar stem 372. First S2n notes (start, end, pitch,
+  velocity; ordered by start, then end): `2.143-2.368 62 70`, `2.143-2.657 55 73`, `2.143-2.752 43 69`, `2.657-3.264
+  50 70`, `2.657-3.809 55 72`, `3.200-3.743 62 70`, `3.200-3.809 43 64`, `3.743-4.320 50 69`, `3.743-4.320 62 73`,
+  `4.289-4.864 48 71`.
+- Input facts: the WAV is read with scipy (`note_seq.audio_io.wav_data_to_samples`: "Audio will be converted to mono
+  if necessary") and resampled to the model's sample rate; `--load_audio_with_librosa` is "required for 24-bit
+  audio" (not used: the clips are 16-bit).
+- Constraint inputs: `--model_dir`, `--checkpoint_path`, `--config` (`onsets_frames`, `drums`), `--hparams`,
+  `--load_audio_with_librosa`, `--transcribed_file_suffix`. No pitch range, tuning, instrument or tempo input.
+
+Notes against the truth (S4guitar: the S4 truth's `chord` voice, as for Basic Pitch):
+
+| clip | truth notes | est. notes | onset-only P | R | F1 | onset+offset F1 | median onset diff of matched (s) | eval id |
+|---|---|---|---|---|---|---|---|---|
+| S1 | 62 | 65 | 0.954 | 1.000 | 0.976 | 0.898 | -0.014 | e1570 |
+| S2n | 90 | 91 | 0.967 | 0.978 | 0.972 | 0.906 | -0.015 | e1571 |
+| R1c | 148 | 173 | 0.607 | 0.709 | 0.654 | 0.287 | -0.034 | e1572 |
+| S4guitar | 369 | 372 | 0.804 | 0.810 | 0.807 | 0.607 | -0.015 | e1573 |
+
+Recall by voice on S2n: bass 48/48, melody 40/42 (e1571). On R1c the matched onsets come a median 33.7 ms before the
+truth onsets (95th percentile of the absolute difference 47.1 ms, largest 48.6 ms); with a 100 ms onset tolerance
+(`--onset-tol 0.1`) R1c gives 119 matched, P 0.688, R 0.804, F1 0.741, onset+offset F1 0.349 (e1574).
+
+Frame-level multi-pitch with the lane's `scripts/score_multipitch.py` (as in the Essentia multi-pitch table: mir_eval
+0.8.2 on a 10 ms grid, notes put on the grid; the script reads `.mid`, so it was given `.mid` links to the `.midi`
+files; results in `samples/onsets-frames/scores/multipitch-*.json`, no gtr-eval id): S2n P 0.860 / R 1.000 / Acc
+0.860; S4guitar 0.835 / 0.810 / 0.698; R1c 0.737 / 0.730 / 0.579.
+
+Samples: `samples/onsets-frames/` (the four MIDI files, `scores/`, `run_facts.json`, the GNU time and ledger lines).
+MIDI for other lanes: `/home/user/gtr/lanes/audio-to-notes/out/onsets-frames/<clip>.wav.midi` (and `<clip>.mid`
+links).
+
+### Gap round 1: self-check (not a separate verification)
+
+At 23:50 UTC the agent compared the 13 eval ids cited in this round (e1478 to e1485, e1570 to e1574) with
+`evals.jsonl`: every value in the tables and the text matches its stored result, all are gtr-eval 0.11.1 with exit
+code 0. Run figures (r0516, r0517, r0545: wall, CPU = user + sys, peak RSS, cores, slot wait, input files) match
+`runs.jsonl`. Every `samples/` and `scripts/` path named in this round exists. On the shared disk, 8.6 GB were free at
+the end; the round's venvs, weights and the downloaded CPython 3.8.20 were removed, and so were the uv cache entries
+that only its installs had added (about 2.0 GB from Onsets and Frames, 39 MB from RMVPE), except small ones: three
+source-built archives of 10 MB in all (librosa 0.7.2, mir_eval 0.7, pretty_midi 0.2.9) and a 6 MB setuptools 75.3.4
+archive from the Omnizart build attempt. No separate verifier has checked this round.
+
 ## Outputs for other lanes (on the box, outside git)
 
 All under `/home/user/gtr/lanes/audio-to-notes/out/`:
@@ -1011,10 +1116,15 @@ All under `/home/user/gtr/lanes/audio-to-notes/out/`:
   `aubio/<clip>.f0.csv`.
 - Clips without truth (output kept only): R2, R3a (f0 tools, aubio, Basic Pitch), R3b, R3c (Basic Pitch).
 - Basic Pitch raw model outputs: `basic-pitch/*/<clip>.model_output.npz` (keys `note`, `onset`, `contour`).
+- Gap round 1: RMVPE f0 tracks `rmvpe/f0/<clip>.f0.csv` (`time_s,frequency_hz,confidence`, raw, 10 ms; S1, S2n, S2s,
+  S4, S4lead, R1b, R2, R3a) and the CLI's `rmvpe/cli/S1.csv`; Onsets and Frames MIDI `onsets-frames/<clip>.wav.midi`
+  (S1, S2n, R1c, S4guitar; `<clip>.mid` links to the same files). The `<clip>.wav` entries in `onsets-frames/` are
+  symlinks to the shared inputs, not copies.
 
 ## Media kept outside git
 
-No tool in this lane wrote audio or video (Basic Pitch's `--sonify-midi` was not used). One audio file was made as a
+No tool in this lane wrote audio or video (Basic Pitch's `--sonify-midi` was not used; in gap round 1 neither RMVPE nor
+Onsets and Frames wrote audio, and `out/onsets-frames/<clip>.wav` are symlinks to the shared input files). One audio file was made as a
 lane input: `/home/user/gtr/lanes/audio-to-notes/inputs/S7flat30.plus30c.wav` (4,233,644 bytes, 24.000 s, 44.1 kHz
 stereo 16-bit): the shared clip S7flat30 shifted up 30 cents with `sox ... pitch 30`, for the tuning-correction test
 in the Basic Pitch section. It is derived from the synthesized clip S7flat30 (license and attribution as for

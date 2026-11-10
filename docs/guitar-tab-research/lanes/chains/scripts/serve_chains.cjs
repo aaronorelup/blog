@@ -31,6 +31,16 @@ const types = {
   '.mid': 'audio/midi', '.wav': 'audio/wav', '.map': 'application/json',
 };
 http.createServer((req, res) => {
+  // chains addition: POST /upload/<name> writes the body to /home/user/gtr/lanes/chains/out/chainE/<name>
+  if (req.method === 'POST' && req.url.startsWith('/upload/')) {
+    const name = path.basename(decodeURIComponent(req.url.slice('/upload/'.length)));
+    const dir = '/home/user/gtr/lanes/chains/out/chainE';
+    fs.mkdirSync(dir, { recursive: true });
+    const ws = fs.createWriteStream(path.join(dir, name));
+    req.pipe(ws);
+    ws.on('finish', () => { res.writeHead(200); res.end('ok'); });
+    return;
+  }
   const url = decodeURIComponent(req.url.split('?')[0]);
   const prefix = Object.keys(routes).find((p) => url.startsWith(p));
   if (!prefix) { res.writeHead(404); return res.end('no route'); }
