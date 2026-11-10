@@ -5,7 +5,8 @@ summary: "My Grok bot and Claude Opus 5.5, once blind and once with a tab-making
 date: 2026-11-09
 topic: "agents"
 project: []
-draft: true        # until Aaron says it's good, in his own words
+draft: false
+unlisted: true     # Aaron asked for it at its URL only: noindex, in no list, feed, card or /stats
 preview:
   verdict: "Opus + Tabber came closest"
   takeaway: "Played back, the tabs Opus 5.5 made with the Tabber skill came closest to the right recording in 6 of 9 videos. Blind Opus did it in 3, my Grok bot in 4 of 8."
