@@ -5,8 +5,9 @@ fingerstyle, split into melody, bass and percussive taps (body hits, slaps, tapp
 guitar; drum transcription models that could be pointed at body percussion; symbolic voice separation. Everything
 below was read from the live source on 2026-11-10 unless a line says otherwise. This file records facts and quotes
 only; it does not rank or recommend. Tools in it were not run by this agent (the try agent's results are in
-`trials.md`). Text marked "(verifier)" was added or corrected on 2026-11-10 by the independent checker
-verify-docs-fingerstyle-voices-taps after re-reading the live sources; its tally is in the verification log at the end.
+`trials.md`). Text marked "verifier" (for example "(verifier)" or "added by the verifier") was added or corrected on
+2026-11-10 by the independent checker verify-docs-fingerstyle-voices-taps after re-reading the live sources; its tally
+is in the verification log at the end.
 
 How dates and versions were read: PyPI versions and upload dates from `https://pypi.org/pypi/<package>/json`; the
 last commit of a repository from a blobless `git clone --depth 1` (`git log -1 --format=%cI`), done with
@@ -52,6 +53,9 @@ UTC 2026-04-17). Every short commit hash in this file matched the default-branch
 5. torchnmf (PyTorch NMF). PyPI 0.3.5 2023-07-09. MIT per PyPI classifier. https://github.com/yoyololicon/pytorch-NMF .
 6. nussl (HPSS, REPET and other separation classes). README: "**NUSSL IS DEPRECATED**". PyPI 1.1.9 2021-04-02,
    commit 2024-12-09. MIT. https://github.com/nussl/nussl .
+6b. (added by the verifier) libfmp (Müller, Zalkow; the FMP notebooks' library): `libfmp.c8.c8s1_hps.hps`
+   (median-filter HPS) and `hrps` (harmonic, residual, percussive). PyPI 1.3.0 2026-03-16 (needs Python >= 3.10,
+   `librosa<1.0.0`), commit 2026-05-26. MIT. https://github.com/meinardmueller/libfmp . RUNNABLE.
 
 ### Onset detection (where taps and plucks start)
 
@@ -125,7 +129,10 @@ UTC 2026-04-17). Every short commit hash in this file matched the default-branch
     Commit 2024-10-30. GPL-3.0.
     https://github.com/domenicostefani/ExpressiveGuitar-TechniqueClassifier .
 30. TART (Gupta et al., arXiv 2510.02597 and 2609.11904, ISMIR 2026): audio-to-tab with a 9-class technique
-    classifier that includes "kick drum" and "snare drum" body hits. No code link in either paper. NO-CODE located.
+    classifier that includes "kick drum" and "snare drum" classes (the paper's words: "percussion-style techniques
+    (kick drum, snare drum)"; verifier: "body hits" in the first version was an inference, and one of the training
+    set AG-PT-set's snare classes, Snare-B, is a hit on the muted strings). No code link in either paper. NO-CODE
+    located.
 31. EG-IPT dataset (19 electric guitar techniques, Zenodo 2025-04-13, CC BY 4.0) and the `eguitar_ircam.ts`
     TorchScript model (14 classes incl. `palmstrike`, `muted`, `bend`, `vibrato`; Hugging Face
     `nbrochec/ipt_models`, 2026-09-23, CC BY-NC 4.0), run by `ipt~` (Max/MSP), `libipt` (C) or the IPT Vamp plugin.
@@ -337,7 +344,9 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
     from the source.
 - Input: audio file path or signal; Output: activation function at 100 fps, then onset times in seconds. The CLI
   writes them with `write_onsets = write_events` (`madmom/io/__init__.py`, clone): "Write the events to a file, one
-  event per line." with default `fmt='%.3f'`. No class labels.
+  event per line." with default `fmt='%.3f'`. No class labels. (verifier) trials.md agrees: madmom installed from
+  git (commit `27f032e8`), eight onset programs run as `<Program> single <wav> -o <out>.txt` (run r0247), output
+  "text, one onset time in seconds per line (10 ms resolution, e.g. `2.150`, `2.680`, `3.220`)".
 - Constraints for a re-run: peak-picking threshold, smoothing, `combine`, online/offline mode.
 - Access needs: CPU. Building needs Cython and NumPy (above).
 - License facts:
@@ -431,10 +440,14 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   spectral templates. The second variant, called diagonal NMF, supports the development of sparse diagonal
   structures in the activation matrix." Demo notebooks in the clone include
   `demo_drum_extraction_kam_nmf_perc_threshold.ipynb`, `demo_drum_extraction_kam_nmf_score_informed.ipynb` and
-  `demo_drum_sound_separation_nmf.ipynb`. Call: `pip install libnmfd`, Python import `libnmfd` (subpackages `core`,
+  `demo_drum_sound_separation_nmf.ipynb` (verifier: trials.md ran the first of these step by step on S6taps, run
+  r0238). Call: `pip install libnmfd`, Python import `libnmfd` (subpackages `core`,
   `dsp`, `utils`). License: LICENSE (clone) "MIT License", "Permission is hereby granted, free of charge, to any
   person obtaining a copy of this software [...]"; README: "The code for this toolbox is published under an [MIT
-  licence](LICENCE)." No weights.
+  licence](LICENCE)." No weights. (verifier) That README link points to a file named `LICENCE`, which answered 404 at
+  https://raw.githubusercontent.com/groupmm/libnmfd/HEAD/LICENCE on 2026-11-10; the license file is `LICENSE`.
+  PyPI `requires_dist` pins `numpy<2.0.0,>=1.17.0`, `pandas<2.0.0,>=1.0.0`, `ipython<8.0.0,>=7.10.0` and
+  `pysoundfile<1.0.0,>=0.9.0` (PyPI JSON; trials.md reports installing it into its own venv because of these pins).
 - scikit-learn `sklearn.decomposition.NMF`: the default NMF behind `librosa.decompose.decompose` (librosa docstring
   above). PyPI 1.9.1 uploaded 2026-09-10, `license_expression` "BSD-3-Clause" (PyPI JSON). Class docs not re-read
   today.
@@ -442,7 +455,11 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   https://github.com/yoyololicon/pytorch-NMF ; PyPI 0.3.5 uploaded 2023-07-09, classifier "License :: OSI Approved ::
   MIT License" (PyPI JSON). The Inverse Drum Machine repository lists it as an optional dependency group
   (`poetry install --with nmf # Install nmf dependencies (e.g. TorchNMF)`). Repository and LICENSE not read today:
-  UNVERIFIED beyond the PyPI classifier.
+  UNVERIFIED beyond the PyPI classifier. (verifier, 2026-11-10) Repository branch `master`, HEAD `b911e2e`,
+  2023-07-09; its LICENSE (https://raw.githubusercontent.com/yoyololicon/pytorch-NMF/HEAD/LICENSE, 18 lines) begins
+  "Copyright (c) 2018 The Python Packaging Authority" followed by the MIT grant "Permission is hereby granted, free of
+  charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction"; the copyright line names the Python Packaging Authority, not the author.
 - nussl: object-oriented source separation library (Interactive Audio Lab); its README lists "Primitive Methods:
   Repetition (REPET, 2DFT), Harmonic/Percussive, Vocal melody extraction, Timbre clustering" and the call
   `nussl.separation.primitive.HPSS(...)`. README, clone of https://github.com/nussl/nussl (branch `master`, last
@@ -450,6 +467,27 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   answers for open issues. We're leaving the code here as is for reference and educational purposes." PyPI 1.1.9
   uploaded 2021-04-02. License: LICENSE.md "MIT License" (clone), "Permission is hereby granted, free of charge, to
   any person obtaining a copy of this software [...]".
+
+## libfmp HPS and HRPS (added by the verifier, 2026-11-10)
+
+- What: the Python library of the "Fundamentals of Music Processing" (FMP) notebooks; PyPI summary "Python module for
+  fundamentals of music processing", home page http://audiolabs-erlangen.de/FMP . PyPI 1.3.0 uploaded 2026-03-16,
+  `requires_python` ">=3.10"; `requires_dist` includes `librosa<1.0.0,>=0.10.0` and `music21<10.0.0,>=9.1.0`
+  (PyPI JSON). Repository https://github.com/meinardmueller/libfmp (branch `master`, HEAD `ed057ba`,
+  2026-05-26T19:37:58+02:00, blobless clone).
+- How a program calls it, from `libfmp/c8/c8s1_hps.py` (raw file, read 2026-11-10):
+  `hps(x, Fs, N, H, L_h, L_p, L_unit='physical', mask='binary', eps=0.001, detail=False)`, docstring
+  "Harmonic-percussive separation (HPS) algorithm", returns "x_h (np.ndarray): Harmonic signal" and "x_p
+  (np.ndarray): Percussive signal"; `L_h` is the "Horizontal median filter length given in seconds or frames" and
+  `L_p` the "Percussive median filter length given in Hertz or bins"; `mask` is "Either 'binary' or 'soft'".
+  `hrps(x, Fs, N, H, L_h, L_p, beta=2.0, L_unit='physical', detail=False)`, "Harmonic-residual-percussive separation
+  (HRPS) algorithm", returns harmonic, percussive and "x_r (np.ndarray): Residual signal"; `beta` is the "Separation
+  factor (Default value = 2.0)". The STFT inside `hps` is `librosa.stft(x, n_fft=N, hop_length=H, win_length=N,
+  window='hann', center=True, pad_mode='constant')`.
+- Input: a NumPy signal and its sampling rate; output: time-domain signals. Not run by this agent or in trials.md.
+- License facts: a. Code: LICENSE (raw file) "MIT License", "Copyright (c) 2020 Meinard Müller and Frank Zalkow,
+  International Audio Laboratories Erlangen, Germany."; the module header: "License: The MIT license,
+  https://opensource.org/licenses/MIT"; PyPI license field "MIT". b-d. No weights, no training data, no service.
 
 ## ADTOF (drum transcription, Keras/TensorFlow)
 
@@ -722,7 +760,7 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   playable Clone Hero / YARG charts" with "a two-stage CRNN onset detector and a six-model ensemble classifier for
   drums"; abstract: "Code, model weights, and the full benchmark manifest are released." The arXiv comment field gives
   the code location as the placeholder "https://github.com/<your-github-username>/autocharter", so no repository
-  could be located from the paper record on 2026-11-10. Authors' figures: "drums onset F1 = 0.838 ... at a +/- 100 ms
+  could be located from the paper record on 2026-11-10. Authors' figures (arXiv abstract, verifier: source named): "drums onset F1 = 0.838 ... at a +/- 100 ms
   tolerance with per-song global offset search" on their 30-song benchmark.
 - Separate-and-Detect (Hugging Face `ddman1101/Separate-and-Detect`, created 2026-07-31, modified 2026-08-13): model
   card: "the pretrained **OB+TB** checkpoint of **Separate-and-Detect: Unified Drum Transcription and Stem Generation
@@ -842,6 +880,8 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   new Max/MSP object for real-time classification of instrumental playing techniques", NIME 2025 (README of
   https://github.com/nbrochec/nime2025 , branch `main`, last commit 2025-05-11 `74bafe9`, clone). The notebook
   trains a model and exports "a TorchScript `.ts` model for real-time usage"; README asks for "**Python 3.11.11**".
+  (verifier) The paper itself is on Zenodo, record 15699591 (resource type "Conference paper", published
+  2025-06-19, license metadata `cc-by-4.0`, Zenodo API read 2026-11-10).
 - Dataset: "EG-IPT Dataset (Electric Guitar Instrumental Playing Techniques)", Zenodo
   https://zenodo.org/records/15205644 (published 2025-04-13, version 1, license metadata `cc-by-4.0`, access open):
   "It contains 52,320 monophonic audio files, totaling 28 hours, 22 minutes, and 56 seconds of high-resolution
@@ -855,7 +895,8 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   floor)", "Classes | 14", "Parameters | 3,360,398", "Size | 14.1 MB", "Forward pass | 3.7 ms (Apple Silicon, CPU, 1
   thread)". Classes 0-13: `behind-nut`, `bend`, `bottleneck`, `glissando`, `legato`, `muted`, `palmstrike`,
   `scratch`, `snap-pizz`, `staccato`, `sustained`, `tremolo`, `trill`, `vibrato`. "Training ... Dataset: EG-IPT";
-  "TODO: evaluation metrics" (no metrics on the card).
+  "TODO: evaluation metrics" (no metrics on the card; verifier: that TODO is an HTML comment in the card's source,
+  `<!-- TODO: evaluation metrics (accuracy, macro F1, ...) -->`, not shown when the card is rendered).
 - How a program calls it: in Max/MSP, `ipt~ eguitar_ircam.ts` (card); ipt~ requirements (README of
   https://github.com/nbrochec/ipt_tilde , last commit 2026-11-10 `f72de8e`): "macOS 10.13 or later with an Apple
   Silicon processor ... **or** Windows 10/11 on an x64 CPU with AVX2" and "Max 8.6 or later / Max 9.0.3 or later".
@@ -863,7 +904,8 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   to use it in your own project" (ipt~ README). A Vamp plugin, https://github.com/Ircam-Partiels/ipt-vamp-plugin (last
   commit 2026-10-23), installs from that repository's Releases page "for your operating system". The `.ts` file is a
   TorchScript module, so Python with `torch.jit.load` on Linux is a possible caller: this is an inference from the
-  card's description of the file format, not a documented route (UNVERIFIED until the try agent loads it).
+  card's description of the file format, not a documented route (UNVERIFIED until the try agent loads it;
+  verifier: trials.md lists it as "not attempted", so it stays UNVERIFIED).
 - Training code: https://github.com/nbrochec/ipt_recognition (branch `dev`, last commit 2026-04-18), "train your own
   playing techniques recognition model" (ipt~ README).
 - License facts (all read 2026-11-10):
@@ -1220,6 +1262,24 @@ All read through the Zenodo API (`https://zenodo.org/api/records/<id>`) on 2026-
   "Transcriptions may only be used by you in accordance with applicable laws, in particular copyright laws. They must
   not be used to train music transcription AI systems or similar technologies."
 
+## Not covered (found by the verifier on 2026-11-10; one line each, not read beyond what the line says)
+
+- Noise-to-Notes (N2N), Yeung, Toyama, Teramoto, Takahashi, Kojima, arXiv 2509.21739 (v1 2025-09-26, v2 2026-03-05,
+  comment "Accepted to ICASSP 2026"): drum transcription as conditional diffusion with velocities, trained on E-GMD
+  per the PDF; no code link found in the PDF text (searched "github"). https://arxiv.org/abs/2509.21739
+- EngravingGNN, Karystinaios, Foscarin, Widmer, arXiv 2509.19412 (2025-09-23, comment "Accepted at the International
+  Conference on Technologies for Music Notation and Representation (TENOR) 2025"): one GNN that predicts "voice
+  connections, staff assignments, pitch spelling, key signature, stem direction, octave shifts, and clef signs" for
+  piano from quantized input; no code link found in the PDF text. https://arxiv.org/abs/2509.19412
+- MERTech, arXiv 2310.09853 (2023-10-15, comment "submitted to ICASSP 2024"): a self-supervised music model
+  fine-tuned for instrument playing technique detection; which instruments, code and licenses were not checked.
+  https://arxiv.org/abs/2310.09853
+- "Joint Transcription of Acoustic Guitar Strumming Directions and Chords", arXiv 2508.07973 (2025-08-11, comment
+  "Accepted to the 26th International Society for Music Information Retrieval Conference (ISMIR), 2025"): strumming,
+  not fingerstyle; not checked further. https://arxiv.org/abs/2508.07973
+- SoloLa (TENT, technique-embedded note tracking for guitar solos), https://github.com/srviest/SoloLa (`git ls-remote`
+  HEAD `a86cbeb`, branch `master`); found through a web search, files and license not read.
+
 ## Access needs (what a person would need beyond this CPU box), from the sections above
 
 - Nothing beyond a Linux CPU machine and Python, per the projects' own docs: librosa, Essentia (PyPI wheels),
@@ -1287,11 +1347,21 @@ Inside this lane:
    complete with pitch bends" and can save "note events as a CSV file" (`--save-note-events`), with
    `<minimum-frequency>` and `<maximum-frequency>` limits in Hz (README,
    https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md , read 2026-11-10) (audio-to-notes lane).
+   (verifier) The same README, under "Supported Audio Codecs": "`basic-pitch` accepts all sound files that are
+   compatible with its version of [`librosa`]", listing `.wav` among them, and has a heading "Mono Channel Audio
+   Only". r0031's `harmonic.wav` files are float32 mono WAV (trials.md). Run in trials on the mixes, not on
+   `harmonic.wav`: Basic Pitch 0.4.0 with the ONNX model (run r0252) wrote `<name>_basic_pitch.mid` and
+   `<name>_basic_pitch.csv` with header `start_time_s,end_time_s,pitch_midi,velocity,pitch_bend`, "a variable number
+   of pitch-bend values per row (rows are not in time order)" (trials.md).
 6. A MIDI file (from Basic Pitch or any transcriber) is accepted by partitura's `load_performance_midi` /
    `load_score_midi` / `midi_to_notearray` (exported in `partitura/__init__.py`, clone), whose result is accepted by
    `partitura.musicanalysis.estimate_voices(note_info, monophonic_voices=...)`, which outputs "Voice for each note in
    the notearray" (1-based integers) (MIDI loading not run; verifier: trials.md ran `estimate_voices` on a structured
    array with `onset_sec`, `duration_sec`, `pitch`, `id`, runs r0113 and r0114, and got 1-based voice numbers).
+   (verifier) The transcriber-to-voices handoff was run by the try agent with Basic Pitch's CSV instead of its MIDI:
+   `voice_split.py <clip> <basic-pitch csv>` (runs r0258, r0260, r0263, r0265) fed the r0252 notes to
+   `estimate_voices` and to music21; on those notes partitura "emitted ... 5 to 8 voices instead of 2" (trials.md,
+   section "Basic Pitch 0.4.0 (ONNX model) as the transcriber, then voice separation of its notes").
 7. A MIDI file is accepted by McLeod's `HmmVoiceSplittingModelTester -w voice FILES` (`-l` for unquantized "live
    performance" MIDI, `-M INT` maximum voices), which writes MIDI with "voices divided by both channel and track"
    (README) (not run).
@@ -1321,13 +1391,18 @@ To and from neighbouring lanes:
     (source-separation lane to this lane) (not run here). (verifier) What came out on this lane's solo-guitar clips
     (trials.md, Demucs runs r0054 and r0099 of the source-separation lane): with `htdemucs_6s` the `guitar` stem held
     0.0041 (S2s) and 0.0217 (S6taps) of the mix energy and the `piano` stem 0.826 and 0.623; trials.md: "htdemucs_6s
-    puts most of it into `piano`". On the `drums` stem of S6taps from `htdemucs_6s`, librosa's default onset detector
+    put 0.826 (S2s) and 0.623 (S6taps) into `piano`." On the `drums` stem of S6taps from `htdemucs_6s`, librosa's default onset detector
     returned 32 onsets with precision 1.000 and recall 1.000 against the 32 truth taps (trials.md, e0171; the taps in
     S6taps are General MIDI drum samples, not hands on a guitar body).
-13. A per-voice MIDI file (one voice per file, from step 7 or a split by step 6's voice numbers) matches what tuttut
-    accepts: "Converts MIDI files to guitar tabs." and "The tool works best for single-channel, single-instrument MIDI
-    files" (README, https://raw.githubusercontent.com/natecdr/tuttut/main/README.md , read 2026-11-10); tuttut takes a
-    tuning ("It can handle any tuning for any number of strings") (this lane to guitar-tab lane) (not run).
+13. A per-voice MIDI file (one voice per file) matches what tuttut accepts: "Converts MIDI files to guitar tabs." and
+    "The tool works best for single-channel, single-instrument MIDI files" (README,
+    https://raw.githubusercontent.com/natecdr/tuttut/main/README.md , read 2026-11-10); tuttut takes a tuning ("It can
+    handle any tuning for any number of strings") (this lane to guitar-tab lane) (not run). (verifier: corrected; the
+    first version said step 7 gives one voice per file.) Neither step 6 nor step 7 writes one file per voice:
+    McLeod's tool puts the voices of one input into one MIDI file "divided by both channel and track", and partitura
+    returns voice numbers; a split into per-voice MIDI files is an extra step that neither tool documents. The try
+    agent's `voice_split.py` writes per-voice CSV files (`<method>.bass.csv`, `<method>.melody.csv`, columns
+    `onset,offset,pitch`), not MIDI.
 14. The drum MIDI files are written as drum tracks: ADTOF-pytorch `pretty_midi.Instrument(program=program,
     is_drum=is_drum)` with default `is_drum: bool = True` (`post_processing.py`); Omnizart
     `pretty_midi.Instrument(program=1, is_drum=True, name="drums")` (`omnizart/drum/inference.py`); ADT_STR
@@ -1343,3 +1418,81 @@ To and from neighbouring lanes:
     tuning directly. (verifier: the first version ended with a judgement, "the closest constraints", now removed.)
     trials.md adds librosa `pyin` `fmin`/`fmax` and Essentia `PredominantPitchMelodia` `minFrequency`/`maxFrequency`
     as note-range inputs a known tuning could set.
+
+## Verification log (verify-docs-fingerstyle-voices-taps, 2026-11-10)
+
+How it was checked:
+
+- Every source the file cites was fetched again by the verifier, not taken from the survey agent's copies: 257 URLs,
+  listed in `scripts/verify_docs_sources.tsv` (most fetched with `scripts/verify_fetch.sh`, the rows starting
+  `direct_` one by one) between 21:24 and 21:58 UTC; raw copies outside git in
+  `/home/user/gtr/lanes/fingerstyle-voices-taps/verify-docs/`. Answers other than 200: 404 for Klangio `/pricing/`,
+  `/en/pricing/` and its subscriptions page, `https://pypi.org/pypi/adtof/json`, the libnmfd `LICENCE` link, the
+  Separate-and-Detect page `https://ddman1101.github.io/dssdtm.github.io` (the paper names another demo page, not
+  read), two soundpacks.com guesses (`/license/`, `/terms-of-use/`), the librosa `latest` and 1.0.0 per-function doc
+  pages, guessed file names (QM changelog variants, aubio `parse_args.c`, Omnizart `drum/features.py`, ASAP and DCML
+  `LICENSE`, the empty procedural-data repository's README and LICENSE); 403 from `www.mdpi.com` (not retried after
+  the second request).
+- Every string in double quotes was matched against those copies with `scripts/verify_quotes.py` (whitespace,
+  curly quotes, spaces left by HTML tags, Markdown link syntax and PDF line-break hyphens folded; quotes with "[...]"
+  or " ... " checked part by part). Strings it could not match were read by hand in the source; the numbers of TART
+  Table 2 and the cells of Martelloni et al. Table 3 were checked on rendered page images. Result per quote, for the
+  file after the verifier's edits: `verify-docs-quotes.tsv` (rows marked MISSING there are the file's own labels,
+  quotes of trials.md, INPUTS.md or program output, or text read by hand in its source as counted below).
+- Versions and dates: PyPI JSON of 15 packages; `git ls-remote` of 40 repositories against the short hashes in the
+  file (all matched); commit dates from the commit objects.
+- One local check, light and untimed: `aubioonset -v` on `S6taps.mono.wav` for nine methods (aubio section).
+
+Tally:
+
+| What | Count |
+|---|---|
+| Quoted strings in the file as received | 526 of 4 or more characters (7 of them the file's own labels, not quotes of a source); the shorter ones are PyPI license fields and version strings such as "MIT" and "2.0", checked in the PyPI JSON and `setup.py` |
+| License or terms clauses checked | 114 |
+| ... found verbatim in the cited source (98 exact, 15 after folding whitespace, typography, Markdown or "[...]") | 113 |
+| ... corrected | 1 (ADTOF datasets: the first version joined the heading "Conditions of use" and its sentence with a colon) |
+| ... unverifiable | 0 |
+| Other quotes checked | 405 |
+| ... confirmed (11 of them by hand: PDF table cells and line breaks, a LaTeX `\emph`, an ellipsis character, the QM changelog, which is `CHANGELOG.md`) | 402 |
+| ... corrected | 3 (SpectroFusionNet "Data availability" colon; AG-PT paper title spelled as TART prints it; Deep Salience title `$F_0$`) |
+| ... unverifiable | 0 |
+| "LICENSE begins ..." statements checked against the first line of the file | 14, all confirmed |
+| Strings in double quotes added by the verifier | 141: 133 quotes of a source, trials.md, INPUTS.md or program output, each checked the same way; 8 labels such as "(verifier)" |
+| Links or locations fixed or added | 8: Separate-and-Detect paper (arXiv 2608.01093) and code repository; Sonic Annotator at sonic-visualiser/sonic-annotator; GOAT data at Zenodo 15690894; ADTOF record 10084510 is the concept id of 10084511; libnmfd README link `LICENCE` answers 404; the procedural-fingerpicking code link is an empty repository; Klangio apps section in the apps-survey lane; EG-IPT paper at Zenodo 15699591 |
+| Tools added | 1 with a full entry (libfmp, item 6b and its section); 5 under "Not covered" |
+| Handoff facts checked | 16: both halves of each now tied to a link or a run id; 8 kept as they were (2, 3, 7, 8, 8b, 9, 10, 11), 5 given added evidence (1, 5, 6, 12, 14), 3 corrected (4, 13, 15), 0 deleted |
+| Judging phrases in the file's own voice removed | 1 ("the closest constraints", Handoff 15) |
+
+Changes of fact (besides quotes):
+
+- Missed license facts, now in the file: Omnizart's drum mode runs madmom's RNN beat and downbeat models (madmom model
+  files CC BY-NC-SA 4.0); Separate-and-Detect runs madmom's CNN onset model and trains on IDMT-SMT-Drums (CC BY-NC-ND
+  4.0); piano_svsep's default training corpora repository is CC BY-NC-SA 4.0; MidiBERT-Piano's pre-training corpus
+  ASAP is CC BY-NC-SA 4.0; GOAT is restricted, CC BY-NC 4.0 and "non-commercial only"; the guitar_style_dataset
+  carries three different statements (Zenodo CC BY 4.0, repository MIT, article CC BY-NC-ND); ADT_STR's training MIDI
+  is the Lakh MIDI Dataset (CC BY 4.0) and its twelve sample packs are not named; torchnmf's LICENSE names the Python
+  Packaging Authority as copyright holder; Klangio's Terms of Use restrict commercial use and forbid using
+  transcriptions to train transcription systems (clauses 5.2.1, 12.4, 12.5 quoted).
+- Corrected: ADTOF-pytorch needs no `--device cpu` (its CLI falls back to the CPU); Handoff 13 (neither McLeod's tool
+  nor partitura writes one file per voice); Handoff 4 (Ableton's transient markers are a second user-correction
+  input); TART's "kick drum" and "snare drum" classes are not described as body hits in the paper; three commit dates
+  differ by a day in UTC.
+- Added from the sources: Essentia 2.1b6.dev1438 has Python 3.14 wheels only (trials used 2.1b6.dev1389); Magenta
+  pins TensorFlow 2.9.1 and trains drums on an 8-class map; piano_svsep's `setup.py` pins torch 2.8.0 and partitura
+  1.8.0; libnmfd pins numpy < 2; Omnizart 0.6.3 requires TensorFlow and madmom; aubio's documented onset defaults
+  differ from the ones its 0.4.9 code applies; Ableton's edition comparison and shop prices; the librosa docs pages'
+  status codes on a second reading.
+- Agreement with trials.md (read between 21:20 and 22:00 UTC while it was still being written and revised; quotes of
+  it were re-checked against the 22:00 UTC text): output formats agree
+  for librosa, aubio, Essentia, madmom, partitura, music21, Basic Pitch and ADTOF-pytorch's labels and thresholds.
+  Where they differ the file now gives both with sources: librosa version (trials 0.11.0, survey 1.0.0, same
+  defaults); Essentia version (dev1389 vs dev1438); aubio defaults (trials quotes `--help`; the code and `-v` output
+  show silence -70 dB and a per-method threshold, 0.058 for hfc).
+
+Still UNVERIFIED after this check (each is marked where it occurs): training sets of madmom's onset models; the
+subsets behind the ADTOF checkpoint (https://www.mdpi.com/2624-6120/4/4/42/htm answered 403 to curl);
+the license of Omnizart's "Pop" set; the exact output pitches of Magenta's drum model; the terms of ADT_STR's twelve
+sample packs; the drumsep weights license; whether piano_svsep's checkpoint used `jpop`, and the licenses of the
+three DCML source corpora; Deep Salience's training subsets; vocsep's training corpora; the licenses of Pop1K7 and
+Pianist8 (MidiBERT); whether `eguitar_ircam.ts` loads with `torch.jit.load` on Linux (trials.md: not attempted);
+Klangio Drum2Notes' price; whether Separate-and-Detect runs on a CPU; Sonic Annotator's license.

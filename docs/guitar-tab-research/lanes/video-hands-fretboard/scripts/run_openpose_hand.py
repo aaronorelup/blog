@@ -1,6 +1,9 @@
 """OpenPose hand keypoint model (CMU), PyTorch port (Hzzone/pytorch-openpose), on hand boxes taken from MediaPipe.
 
-usage: python run_openpose_hand.py <pytorch-openpose clone> <hand_pose_model.pth> <mediapipe jsonl> <clip> <frame step> <out dir>
+usage: python run_openpose_hand.py <pytorch-openpose clone> <hand_pose_model.pth> <mediapipe jsonl> <clip> <frame step> <out dir> [--mirror-left]
+--mirror-left: flip the crop of a hand that MediaPipe labels "Left" (the player's left hand) before inference and flip the
+x coordinates back, as OpenPose's own C++ hand extractor does for its hand 0 (`const bool mirrorImage = (hand == 0);` in
+src/openpose/hand/handExtractorCaffe.cpp). The first R3a_cu run (r0336) was made without this flag.
 OpenPose finds hands from its body model (not downloaded here: body_pose_model.pth is 209 MB, over the 200 MB download
 limit set by the orchestrator's disk notice). Instead each box comes from the MediaPipe Hand Landmarker run on the same
 frame: the square around MediaPipe's 21 points, side = 1.5 x the longer side of their bounding box (a handoff, done by
@@ -17,6 +20,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import vhf_common as C  # noqa: E402
 
 repo, weights, mpjsonl, clip, step, out = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], int(sys.argv[5]), sys.argv[6]
+MIRROR = "--mirror-left" in sys.argv[7:]
+TAG = "_mirrorleft" if MIRROR else ""
 sys.path.append(os.path.abspath(repo))
 
 import cv2  # noqa: E402
@@ -87,27 +92,37 @@ for r in recs:
         bs = int(round(side))
         crop = cv2.copyMakeBorder(rgb, bs, bs, bs, bs, cv2.BORDER_CONSTANT, value=(0, 0, 0))[by0 + bs:by0 + 2 * bs,
                                                                                                 bx0 + bs:bx0 + 2 * bs]
+        flip = MIRROR and hd["label"] == "Left"
         t1 = time.perf_counter()
-        pk = openpose_hand(np.ascontiguousarray(crop[:, :, ::-1]))
+        pk = openpose_hand(np.ascontiguousarray((crop[:, ::-1] if flip else crop)[:, :, ::-1]))
         dt = time.perf_counter() - t1
+        if flip:
+            pk = [[(bs - 1 - p[0]) if p[2] > 0 else p[0], p[1], p[2]] for p in pk]
         full = [[round(bx0 + p[0], 2), round(by0 + p[1], 2), round(p[2], 4)] for p in pk]
         found = [p for p in full if p[2] > 0]
         mp_full = hd["lm_px_full"]
         dists = [float(np.hypot(full[i][0] - mp_full[i][0], full[i][1] - mp_full[i][1])) for i in range(21) if full[i][2] > 0]
-        results.append({"n": r["n"], "mp_label": hd["label"], "box_full_xywh": [bx0, by0, bs, bs], "infer_s": round(dt, 3),
+        results.append({"n": r["n"], "mp_label": hd["label"], "mirrored": flip, "box_full_xywh": [bx0, by0, bs, bs], "infer_s": round(dt, 3),
                         "keypoints_full_xy_score": full, "n_found": len(found),
                         "median_px_to_mediapipe_same_index": round(float(np.median(dists)), 2) if dists else None})
         if len(results) <= 3 or r["n"] in (150, 100):
             vis = crop.copy()
             sc = 368 / max(1, bs)
             vis = cv2.resize(vis, (368, 368), interpolation=cv2.INTER_CUBIC)
-            C.draw_hand(vis, [[p[0] * sc, p[1] * sc] for p in pk], (0, 255, 255), "OpenPose", r=3)
+            for a, b in C.HAND_EDGES:  # draw only keypoints that were found (score > 0)
+                if pk[a][2] > 0 and pk[b][2] > 0:
+                    cv2.line(vis, (int(pk[a][0] * sc), int(pk[a][1] * sc)), (int(pk[b][0] * sc), int(pk[b][1] * sc)),
+                             (0, 255, 255), 1, cv2.LINE_AA)
+            for q in pk:
+                if q[2] > 0:
+                    cv2.circle(vis, (int(q[0] * sc), int(q[1] * sc)), 3, (0, 255, 255), -1, cv2.LINE_AA)
             C.draw_hand(vis, [[(x - bx0) * sc, (y - by0) * sc] for x, y in mp_full], (255, 0, 255), None, r=1)
-            cv2.putText(vis, f"{clip} f{r['n']} OpenPose (yellow) / MediaPipe (magenta)", (4, 14), cv2.FONT_HERSHEY_SIMPLEX,
+            cv2.putText(vis, f"{clip} f{r['n']} OpenPose{' (mirrored)' if flip else ''} cyan / MediaPipe magenta", (4, 14), cv2.FONT_HERSHEY_SIMPLEX,
                         0.4, (255, 255, 255), 1, cv2.LINE_AA)
-            C.save_sample(vis, os.path.join(out, "frames", f"{clip}_f{r['n']:04d}_h{hi}.webp"))
+            C.save_sample(vis, os.path.join(out, "frames", f"{clip}{TAG}_f{r['n']:04d}_h{hi}.webp"))
 times = [x["infer_s"] for x in results]
-summ = {"tool": "OpenPose hand model (pytorch-openpose port)", "clip": clip, "frame_step": step, "load_s": round(t_load, 2),
+summ = {"tool": "OpenPose hand model (pytorch-openpose port)", "clip": clip, "frame_step": step, "mirror_left": MIRROR,
+        "load_s": round(t_load, 2),
         "hands_run": len(results), "infer_s_mean": round(float(np.mean(times)), 3) if times else None,
         "infer_s_median": round(float(np.median(times)), 3) if times else None,
         "keypoints_found_mean": round(float(np.mean([x["n_found"] for x in results])), 2) if results else None,
@@ -116,5 +131,5 @@ summ = {"tool": "OpenPose hand model (pytorch-openpose port)", "clip": clip, "fr
         if results else None,
         "peak_score_mean": round(float(np.mean([p[2] for x in results for p in x["keypoints_full_xy_score"]])), 4) if results else None,
         "torch": torch.__version__, "threads": torch.get_num_threads()}
-C.write_json(os.path.join(out, f"{clip}.json"), {"summary": summ, "hands": results})
+C.write_json(os.path.join(out, f"{clip}{TAG}.json"), {"summary": summ, "hands": results})
 print(json.dumps(summ))

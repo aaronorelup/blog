@@ -1,0 +1,57 @@
+{
+ "service": "vercel-ai-gateway",
+ "model": "meta/muse-spark-open",
+ "media": "/home/user/gtr/inputs/R3a/R3a.mp4",
+ "media_bytes": 2368626,
+ "media_sha256": "9badbd52c96536733b8bcfe6ab896f43f765f9b691dc53fcac9d9e00efb0a31d",
+ "media_duration_s": 18.018,
+ "mime": "video/mp4",
+ "http_status": 400,
+ "wall_s": 0.608,
+ "reasoning_effort": null,
+ "max_tokens": 24576,
+ "price_usd_per_token": {
+  "input": 1.25e-06,
+  "output": 4.25e-06
+ },
+ "price_source": "https://ai-gateway.vercel.sh/v1/models entry 'pricing' (read at run time)",
+ "response_headers": {},
+ "finish_reason": null,
+ "reasoning_text_chars": 0,
+ "final_provider": null,
+ "provider_metadata": {
+  "gateway": {
+   "routing": {
+    "originalModelId": "meta/muse-spark-open",
+    "resolvedProvider": "togetherai",
+    "fallbacksAvailable": [],
+    "canonicalSlug": "meta/muse-spark-open",
+    "modelAttemptCount": 1,
+    "modelAttempts": [
+     {
+      "canonicalSlug": "meta/muse-spark-open",
+      "success": false,
+      "providerAttemptCount": 1,
+      "providerAttempts": [
+       {
+        "provider": "togetherai",
+        "credentialType": "system",
+        "success": false,
+        "error": "'file part media type video/mp4' functionality not supported.",
+        "startTime": 1794347412374,
+        "endTime": 1794347412376
+       }
+      ]
+     }
+    ],
+    "totalProviderAttemptCount": 1,
+    "clientSessionId": "a562bae46694f5727eb19bc002b6594a",
+    "clientSessionIdSource": "fingerprint"
+   },
+   "generationId": "gen_01M73Q1AS2ZTDFJR334FV7E72G"
+  }
+ },
+ "output_text_chars": 0,
+ "answer_parsed": false,
+ "spent_service_before_usd": 0.075169
+}

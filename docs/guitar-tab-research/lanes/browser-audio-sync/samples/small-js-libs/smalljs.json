@@ -1,0 +1,68 @@
+{
+ "page": "/pages/smalljs.html?pitch=S1,R1b&beat=S3,S4,R2",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 4.159,
+ "external_requests": [],
+ "result": {
+  "pitchy": {
+   "S1": {
+    "ms": 1094.5200000000186,
+    "frames": 2979,
+    "time_convention": "time of the frame centre",
+    "csv": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/S1_pitchy.csv"
+   },
+   "R1b": {
+    "ms": 684.2000000001863,
+    "frames": 2929,
+    "time_convention": "time of the frame centre",
+    "csv": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/R1b_pitchy.csv"
+   }
+  },
+  "beatdetector": {
+   "S3": {
+    "analyze_tempo": 96.65047302480184,
+    "analyze_ms": 128.84499999973923,
+    "guess": {
+     "bpm": 97,
+     "offset": 0.1438864342988091,
+     "tempo": 96.65047302480184
+    },
+    "guess_ms": 99.87999999988824,
+    "duration_s": 24,
+    "beats_file": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/S3_beatdetector_grid.txt",
+    "bpm_file": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/S3_beatdetector_bpm.txt"
+   },
+   "S4": {
+    "analyze_tempo": 115.96997753793897,
+    "analyze_ms": 226.4199999999255,
+    "guess": {
+     "bpm": 116,
+     "offset": 0.027766048948311584,
+     "tempo": 115.96997753793897
+    },
+    "guess_ms": 204.410000000149,
+    "duration_s": 38.74138321995465,
+    "beats_file": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/S4_beatdetector_grid.txt",
+    "bpm_file": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/S4_beatdetector_bpm.txt"
+   },
+   "R2": {
+    "analyze_tempo": 143.47392892726668,
+    "analyze_ms": 74.47500000009313,
+    "guess": {
+     "bpm": 143,
+     "offset": 0.09676022390306915,
+     "tempo": 143.47392892726668
+    },
+    "guess_ms": 73.47999999998137,
+    "duration_s": 36,
+    "beats_file": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/R2_beatdetector_grid.txt",
+    "bpm_file": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/R2_beatdetector_bpm.txt"
+   }
+  }
+ }
+}

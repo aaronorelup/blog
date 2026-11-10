@@ -2,8 +2,9 @@
 
 These are the tools of this lane that did not run on the research box, with the reason in `trials.md`. Each list is
 written for a Windows 11 laptop with an 8 GB RTX 4070 and no programming background. The clips are the shared test
-clips: ask the orchestrator for the folder `inputs` (the audio files are not in git; they are filed in your studio
-library with this research). Every clip id below (S6taps, S2n ...) is a folder there.
+clips (on the research box in `/home/user/gtr/inputs/`; the audio is not in git, so ask the orchestrator for a copy).
+Every clip id below (S6taps, S2n ...) is a folder there; `<inputs>` below means wherever that folder is on your
+laptop.
 
 Common setup used by several lists (do it once):
 
@@ -35,14 +36,14 @@ Not run here: this session's permission policy refused both installing the clone
 5. To time a run, put `Measure-Command { ... }` around it, for example
    `Measure-Command { adtof --audio <inputs>\S6taps\S6taps.wav --out S6taps_mix.mid --device cuda }` and note
    `TotalSeconds`.
-6. Send back: the four `.mid` files, the screenshot, the seconds. Expected time: under a minute each (not measured).
-   No cost. License note for you: the repository has no license file; the weights are converted from ADTOF, whose
+6. Send back: the four `.mid` files, the screenshot, the seconds. Run time: no figure in its README; not measured
+   here. No cost. License note for you: the repository has no license file; the weights are converted from ADTOF, whose
    repository says CC BY-NC-SA 4.0 (survey.md).
 
 ## 2. ADTOF, original Keras version (same model family)
 
-Not run here: needs TensorFlow, which no venv on the box has, and the box's shared disk was below the orchestrator's
-limit for new installs over 200 MB (trials.md).
+Not run here: needs TensorFlow, which no venv on the box has, and the orchestrator's disk notice forbade new installs
+over 200 MB (trials.md).
 
 1. Open the Colab notebook linked at the top of https://github.com/MZehren/ADTOF ("The easiest way to test the
    trained model is our Colab Notebook", per its README). It needs a Google account.
@@ -55,7 +56,7 @@ limit for new installs over 200 MB (trials.md).
 ## 3. Omnizart drum mode
 
 Not run here: needs TensorFlow (`tensorflow>=2.5.0` in its PyPI requirements); no TensorFlow on the box and the
-shared disk was below the install limit (trials.md).
+orchestrator's disk notice forbade new installs over 200 MB (trials.md).
 
 1. `cd C:\gtr`, `python -m venv omnizart-venv`, `omnizart-venv\Scripts\activate`.
 2. `pip install omnizart` then `omnizart download-checkpoints`.
@@ -97,7 +98,7 @@ Not run here: code is a cloned repository (see list 1) and its install brings it
 2. Follow the README: it uses `uv` (`pip install uv`, then `uv venv .venv --python 3.12` and
    `uv pip install -r pyproject.toml`).
 3. Run the README's command for each of `S6taps.wav`, `stems\taps.wav`, `S2s.wav`, `R3a.wav`:
-   `python inference --checkpoint setting-tau-0.8 --input <file> --output_path outputs`.
+   `python inference --checkpoint setting-tau-0.8 --input <file> --output_path outputs` (written this way in its README).
 4. Send back: the MIDI files from `outputs` and the screenshot. License: CC BY-SA 4.0 per its GitHub README.
 
 ## 7. Inverse Drum Machine (drum separation with a manual onset override)
@@ -125,3 +126,51 @@ Two freely licensed candidates were found but could not be downloaded from the b
    "Download" on the right, send back the file.
 
 With either file back, the orchestrator can run this lane's HPSS, onset and Demucs-drums steps on real taps.
+
+## 9. LarsNet (5-stem drum separation: kick, snare, toms, hi-hat, cymbals)
+
+Not run here: its checkpoint is 562 MB (survey.md), above the 200 MB limit in the orchestrator's disk notice.
+
+1. `cd C:\gtr`, `git clone https://github.com/polimi-ispl/larsnet`, `cd larsnet`, `python -m venv venv`,
+   `venv\Scripts\activate`, install PyTorch (common step 5), then install what its README lists.
+2. Download the checkpoints from the Google Drive link in its README (562 MB, "licensed under CC BY-NC 4.0") and
+   unpack them where the README says.
+3. Make a folder `C:\gtr\larsnet_in` and copy into it: `S6taps\stems\taps.wav` (rename `S6taps_taps.wav`) and, if the
+   orchestrator gives it to you, the Demucs drums stem of S6taps (`htdemucs_6s\S6taps\drums.wav` from the
+   source-separation lane, rename `S6taps_htdemucs6s_drums.wav`).
+4. `python separate.py -i C:\gtr\larsnet_in -o C:\gtr\larsnet_out -d cuda:0`
+5. Send back: the folder `C:\gtr\larsnet_out` (audio goes to your studio library, not git) and the screenshot. The
+   question it answers: does the side-stick "slap" land in Snare and the bass-drum "thump" in Kick Drum.
+
+## 10. drumsep (Demucs-based 4-stem drum separation)
+
+Not run here: weights come from Google Drive through `gdown` (survey.md); not attempted.
+
+1. Install Git for Windows' "Git Bash" (comes with Git), open Git Bash, `cd /c/gtr`,
+   `git clone https://github.com/inagoy/drumsep`, `cd drumsep`, then `bash drumsepInstall` (per its README).
+2. `bash drumsep "<inputs>/S6taps/stems/taps.wav" "/c/gtr/drumsep_out"`
+3. Send back: the four WAVs it writes (Bombo/kick, Redoblante/snare, Platillos/cymbals, Toms) and the screenshot.
+
+## 11. Deep Salience (bass line and melody salience from audio)
+
+Not run here: its `replicate.yaml` pins Python 2.7.15 and TensorFlow 1.12.0; the box has no Python 2.7.
+
+1. Install Docker Desktop for Windows (https://www.docker.com/products/docker-desktop/), start it.
+2. In Terminal: `cd C:\gtr`, `git clone https://github.com/rabitt/ismir2017-deepsalience`, then
+   `docker run -it --rm -v C:\gtr:/work python:2.7 bash`.
+3. Inside that window: `cd /work/ismir2017-deepsalience`, `pip install tensorflow==1.12.0 keras==2.0.3 librosa==0.5.0`
+   (the versions in its `replicate.yaml`), copy `S2n.wav` and `S2s.wav` into `/work`, then
+   `python predict/predict_on_audio.py /work/S2n.wav bass /work/ds_out -f singlef0` and the same with `melody2`
+   instead of `bass`; repeat for `S2s.wav`.
+4. Send back: the CSV files in `C:\gtr\ds_out` and the screenshot. If step 3's install fails, send the error lines.
+
+## 12. Magenta Onsets and Frames, drums checkpoint (E-GMD)
+
+Not run here: needs the archived Magenta TensorFlow 1 environment (survey.md).
+
+1. In Google Colab (free), open a new notebook and follow the "Onsets and Frames" instructions at
+   https://github.com/magenta/magenta/tree/main/magenta/models/onsets_frames_transcription , using the drums
+   checkpoint `e-gmd_checkpoint.zip` linked there and `--config="drums"`.
+2. Run it on `S6taps.wav`, `stems\taps.wav` and `S2s.wav`.
+3. Send back: the MIDI files and a screenshot of the cell output. If the environment setup fails in Colab, send the
+   error; this one is old and may not install any more.

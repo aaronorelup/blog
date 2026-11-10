@@ -125,5 +125,5 @@
   }
  ],
  "credits_used_measured_later": 1065,
- "credits_note": "character_count read 3 s after the call was unchanged; read again about 2 minutes later it was 1,065 higher (151,005 -> 152,070); no other ElevenLabs call was made from this lane in between"
+ "credits_note": "character_count read 3 s after the call was unchanged; read again about 2 minutes later it was 1,065 higher (absolute counter values removed by the verifier); no other ElevenLabs call was made from this lane in between"
 }

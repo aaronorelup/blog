@@ -1,13 +1,13 @@
 // Test the for-aaron measuring page in this box's headless Chromium: click both buttons, wait, save the JSON it
 // prints. CDN requests are answered from the lane cache (scripts/cache_url.sh) or aborted and listed.
-// Usage: node test_foraaron.mjs <out.json> [--metronome] [--model] [--no-cpu]
+// Usage: node test_foraaron.mjs <out.json> [--metronome] [--model] [--no-cpu] [--onnx]
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { chromium } = require('/opt/node-tools/node_modules/playwright');
-const out = process.argv[2]; const doMet = process.argv.includes('--metronome'), doModel = process.argv.includes('--model');
+const out = process.argv[2]; const doMet = process.argv.includes('--metronome'), doModel = process.argv.includes('--model'), doOnnx = process.argv.includes('--onnx');
 const CACHE = '/home/user/gtr/lanes/browser-audio-sync/dl/cache';
 const PAGE = '/home/user/blog/docs/guitar-tab-research/lanes/browser-audio-sync/for-aaron/browser-timing-check.html';
 const browser = await chromium.launch({ headless: true, args: ['--autoplay-policy=no-user-gesture-required'] });
@@ -27,6 +27,7 @@ const t0 = Date.now();
 const waitStatus = async (re, ms) => page.waitForFunction((r) => new RegExp(r).test(document.getElementById('status').textContent), re, { timeout: ms, polling: 1000 });
 if (doMet) { await page.selectOption('#dur', '15'); await page.click('#runMet'); await waitStatus('metronome test done|error', 600000); }
 if (doModel) { if (process.argv.includes('--no-cpu')) await page.uncheck('#cpuToo'); await page.click('#runBP'); await waitStatus('model test done|error', 900000); }
+if (doOnnx) { await page.click('#runORT'); await waitStatus('ONNX test done|error', 600000); }
 const status = await page.textContent('#status');
 const json = await page.inputValue('#out');
 fs.writeFileSync(out, JSON.stringify({ status, wall_s: (Date.now() - t0) / 1000, external, page_output: JSON.parse(json), console: consoleLines.slice(-30) }, null, 1));

@@ -4,8 +4,8 @@ Lane: fingerstyle on one guitar, separating melody, bass and percussive taps. Ag
 started 2026-11-10 (UTC). Everything below ran on the shared box (4 vCPU Intel Xeon 2.10 GHz, 15 GiB RAM, no GPU).
 Timed runs went through `gtr-run` (ledger `/home/user/gtr/ledger/runs.jsonl`, ids `r....`) and are on 2 CPU cores
 unless a line says otherwise. Scores come from `gtr-eval` (ledger `/home/user/gtr/eval/ledger/evals.jsonl`, ids
-`e....`, scorer version 0.9.0) unless a line says the number was computed by a script here, in which case the script
-is named.
+`e....`; every result of this lane records `gtr_eval_version` 0.11.1) unless a line says the number was computed by a
+script here, in which case the script is named.
 
 Scripts: `scripts/` in this folder. Small outputs: `samples/<tool>/`. Big outputs (audio):
 `/home/user/gtr/lanes/fingerstyle-voices-taps/out/<tool>/`, listed under "Media kept outside git" at the end.
@@ -23,8 +23,29 @@ Scripts: `scripts/` in this folder. Small outputs: `samples/<tool>/`. Big output
 - S2n, S2s, S6taps: 42 melody notes with MIDI pitches 55 to 64 and 48 bass notes with pitches 43 to 52 (from the
   truth JSON). Every truth melody note is higher than every truth bass note, so a fixed pitch threshold between 52
   and 55 assigns every truth note its truth voice. Of the 48 onset groups, 42 have two notes (one bass, one melody)
-  and 6 have one note (all 6 are bass notes, checked in the voice section below). S5dropd: bass 38 to 52, melody 55
+  and 6 have one note (all 6 are bass notes, MIDI 50 or 45; read from the truth JSON; the lower note of every
+  two-note group is the bass note). S5dropd: bass 38 to 52, melody 55
   to 64.
+
+## What each method needs and emits (summary of the sections below)
+
+| method | ran here | needs | emits |
+|---|---|---|---|
+| librosa `effects.hpss` | yes (r0031, r0292) | mono audio array | harmonic and percussive audio arrays, same length |
+| libnmfd KAM HPSS + NMFD + percussiveness threshold | yes (r0238) | magnitude spectrogram (+ mixture phase to resynthesize) | percussive and harmonic spectrograms |
+| librosa `decompose.decompose` (scikit-learn NMF) | yes (r0296), with an ORACLE grouping | magnitude spectrogram | basis matrix W (freq x k) and activations H (k x frames); no labels |
+| onset detectors: librosa, aubio (8 methods), Essentia (8), madmom (8 programs) | yes (r0031, r0079, r0090, r0247, r0334) | audio (WAV / array) | onset times in seconds; no tap / note label |
+| Demucs htdemucs, htdemucs_6s; Open-Unmix umxhq (source-separation lane's runs, plus r0327 / r0330 here on R3) | yes | stereo audio | one WAV per stem (drums, bass, other, vocals; + guitar, piano for 6s) |
+| drums stem + onset detector + spectral centroid (measurement) | yes | a drums stem | onset times; centroid in Hz per onset |
+| ADTOF-pytorch, Omnizart drum, ADTOF, ADT_STR, Inverse Drum Machine, LarsNet, drumsep, Magenta OaF drums | no (reasons below) | audio | drum MIDI (onset, GM pitch) or drum stems |
+| partitura `estimate_voices` | yes (r0184, r0185, r0258 to r0265) | note array (onset, duration, pitch) | one voice number per note (1..k) |
+| music21 MIDI import | yes (same runs) | MIDI | Stream with Chords, Notes, Voice objects (no melody/bass labels) |
+| baselines B1 threshold, B2 lowest per onset, B3 skyline | yes (same runs) | notes (onset, pitch) | melody / bass label per note |
+| piano_svsep, McLeod voice-splitting | no | MusicXML / MIDI | voices and staves (MEI) / voice-split MIDI |
+| Basic Pitch 0.4.0 (ONNX) | yes (r0252, r0325) | audio | MIDI and note CSV (onset s, offset s, MIDI pitch, velocity, pitch bends) |
+| Essentia `PredominantPitchMelodia` | yes (r0220) | mono audio | f0 per 2.9 ms frame (Hz, 0 = unvoiced) + confidence |
+| low-pass + librosa `pyin` | yes (r0233, r0235) | mono audio | f0 per 10 ms frame + voiced probability; notes via a plain segmentation written here |
+| Deep Salience | no | audio | bass / melody f0 CSV |
 
 ## librosa 0.11.0: harmonic-percussive separation (`librosa.effects.hpss`) and `librosa.onset.onset_detect`
 
@@ -33,8 +54,8 @@ Scripts: `scripts/` in this folder. Small outputs: `samples/<tool>/`. Big output
   PyPI, `librosa==0.11.0`, installed 2026-11-10.
 - Install: `uv venv --python 3.11 venv-core` then `uv pip install --python venv-core/bin/python librosa soundfile
   mir_eval pretty_midi music21 partitura scikit-learn matplotlib` (one shared venv for librosa, partitura, music21;
-  numpy 2.4.6, scikit-learn 1.9.1). No dead ends. `du -sh venv-core`: 617 MB (files hard-linked from the shared uv
-  cache). No model weights.
+  numpy 2.4.6, scikit-learn 1.9.1). No dead ends. `du -sh venv-core` right after the install: 617 MB (files
+  hard-linked from the shared uv cache). No model weights. Freeze: `freeze/venv-core.txt` in the lane folder.
 - Signature read from the installed package: `librosa.effects.hpss(y, *, kernel_size=31, power=2.0, mask=False,
   margin=1.0)`; STFT defaults n_fft 2048, hop 512.
 - Run r0031 (2 cores): `scripts/librosa_hpss_sweep.py S6taps <out>`, input `S6taps.mono.wav` (44.1 kHz mono),
@@ -103,8 +124,8 @@ Onsets (`librosa.onset.onset_detect` defaults) on the percussive part:
 - Install: none. The Python front end of the same Ubuntu package does not start under the system Python 3.13:
   `aubio --version` ends with `ModuleNotFoundError: No module named 'aubio._aubio'`. The C binary works.
 - Run r0079 (2 cores): `scripts/aubio_onsets.sh S6taps.mono.wav <out>`: `aubioonset -i <wav> -O <method>` for each
-  method, all other settings default (buffer 512, hop 256, threshold 0.3, minimum inter-onset interval 0.012 s,
-  silence -90 dB, per `aubioonset --help`). Wall 0.93 s for all eight, CPU 0.8 s, peak RSS 35.1 MB. Per method
+  method, all other settings default (threshold 0.3, minimum inter-onset interval 0.012 s, silence -90 dB, per
+  `aubioonset --help`, which does not print the default buffer and hop sizes). Wall 0.93 s for all eight, CPU 0.8 s, peak RSS 35.1 MB. Per method
   0.09 to 0.11 s.
 - Output: plain text, one onset time in seconds per line (`-T` switches to samples or ms).
 - Input: WAV read directly; `-r 0` keeps the file's rate (here 44.1 kHz mono 16-bit).
@@ -131,8 +152,8 @@ Onsets (`librosa.onset.onset_detect` defaults) on the percussive part:
 
 - What it is: Essentia's onset detection functions and peak picking (MTG, UPF), from PyPI, installed 2026-11-10.
 - Install: `uv venv --python 3.11 venv-essentia` then `uv pip install --python venv-essentia/bin/python essentia
-  numpy soundfile mir_eval`. Worked first time; `du -sh`: 44 MB. No weights. Freeze: saved by the run
-  (`essentia==2.1b6.dev1389`).
+  numpy soundfile mir_eval`. Worked first time; `du -sh`: 44 MB. No weights. Freeze:
+  `samples/essentia/venv-essentia.freeze.txt` (`essentia==2.1b6.dev1389`).
 - HPSS: Essentia 2.1-beta6-dev has no harmonic-percussive separation algorithm. Checked by listing the names in
   `essentia.standard` that contain onset, hpss, harmon, percuss, superflux, nmf, drum or beat: `AudioOnsetsMarker,
   BeatTrackerDegara, BeatTrackerMultiFeature, Beatogram, BeatsLoudness, ChordsDetectionBeats, HarmonicBpm,
@@ -189,18 +210,18 @@ Energy of each stem (sum of squares over both channels / the same for the clip's
 | S6taps | htdemucs | -60.7 dB | 0.0292 | 0.961 | n/a | n/a | 0.0000 |
 | S6taps | htdemucs_6s | -58.4 dB | 0.0313 | 0.0000 | 0.0217 | 0.623 | 0.0000 |
 
-(0.0000 = below 0.00005 of the mix energy.) So on these solo-guitar clips the bass stems are 58 to 63 dB below the
-mix and do not hold the bass voice: SI-SDR of the bass stem against the bass-voice reference -12.66 dB (S2s
-htdemucs, e0161), -9.63 dB (S2s htdemucs_6s, e0162), -17.03 dB (S6taps htdemucs, e0165), -6.54 dB (S6taps
-htdemucs_6s, e0166); against the melody-voice reference -18.30, -11.95, -26.44, -6.61 dB (e0163, e0164, e0167,
-e0168). htdemucs puts the whole guitar into `other` (other against the melody reference: SI-SDR 0.50 dB, SAR 44.5
-dB on S2s, e0161); htdemucs_6s puts most of it into `piano`.
+(0.0000 = below 0.00005 of the mix energy.) On these solo-guitar clips the bass stems are 58 to 63 dB below the
+mix. SI-SDR of the bass stem against the bass-voice reference: -12.66 dB (S2s htdemucs, e0161), -9.63 dB (S2s
+htdemucs_6s, e0162), -17.03 dB (S6taps htdemucs, e0165), -6.54 dB (S6taps htdemucs_6s, e0166); against the
+melody-voice reference: -18.30, -11.95, -26.44, -6.61 dB (e0163, e0164, e0167, e0168). htdemucs put 0.998 (S2s) and
+0.961 (S6taps) of the mix energy into `other` (S2s `other` against the melody reference: SI-SDR 0.50 dB, SAR 44.5
+dB, e0161); htdemucs_6s put 0.826 (S2s) and 0.623 (S6taps) into `piano`.
 
 Drums stems of S6taps against the truth `stems/taps.wav` (`gtr-eval stems --sdr-mode single`): htdemucs SI-SDR
-5.67 dB, SDR 11.72 dB (e0169); htdemucs_6s SI-SDR 6.98 dB, SDR 10.87 dB (e0170). For comparison, librosa HPSS
-percussive parts reached 0.37 to 3.68 dB SI-SDR (table above).
+5.67 dB, SDR 11.72 dB (e0169); htdemucs_6s SI-SDR 6.98 dB, SDR 10.87 dB (e0170). The librosa HPSS percussive
+parts measured -0.64 to 3.68 dB SI-SDR on the same reference (table above).
 
-Onsets on those drums stems (`librosa.onset.onset_detect` defaults, computed here, no gtr-run: under a second):
+Onsets on those drums stems (`librosa.onset.onset_detect` defaults, computed here outside gtr-run, not timed):
 
 | drums stem | n onsets | vs taps P / R / F (eval id) | vs note onsets P / R / F (eval id) | on tap+note (27) | on note-only (21) | on tap-only (5) | on neither |
 |---|---|---|---|---|---|---|---|
@@ -268,9 +289,9 @@ licensed real recording with body taps was in the shared set.
 | B1 BASELINE threshold, T = 50 / 52 / 56 / 58 / 60 | 66 / 84 / 84 / 78 / 70 of 90 | 70 / 84 / 84 / 78 / 70 of 90 | labels | n/a |
 | B2 BASELINE lowest per onset | 90 / 90 | 90 / 90 | 48 groups | n/a |
 | B3 BASELINE skyline | 84 / 90 (the 6 one-note bass groups labelled melody) | 84 / 90 | 48 groups | n/a |
-| P1 partitura, monophonic_voices=False | 54 / 90 | 54 / 90 | 2 voices: 10 and 80 notes (mean pitch 57.2 and 52.6) | 0.034 s / 0.024 s |
-| P2 partitura, monophonic_voices=True | 90 / 90 | 90 / 90 | 2 voices: 42 and 48 notes (mean pitch 59.5 and 47.5) | 0.028 s / 0.016 s |
-| M1 music21 + rule above | 90 / 90 | 90 / 90 | 1 part, 36 Chords, 18 single Notes, 12 Voice objects | 0.088 s / 0.058 s |
+| P1 partitura, monophonic_voices=False | 54 / 90 | 54 / 90 | 2 voices: 10 and 80 notes (S2n mean pitch 57.2 and 52.6) | 0.033 s / 0.028 s |
+| P2 partitura, monophonic_voices=True | 90 / 90 | 90 / 90 | 2 voices: 42 and 48 notes (S2n mean pitch 59.5 and 47.5) | 0.023 s / 0.022 s |
+| M1 music21 + rule above | 90 / 90 | 90 / 90 | 1 part, 36 Chords, 18 single Notes, 12 Voice objects (S2n) | 0.198 s / 0.265 s (parse + labelling) |
 
 - Why P1 differs: partitura's docstring says that with `monophonic_voices=False` "notes with the same onset and
   duration are treated as a chord and assigned to the same voice"; in S2 every two-note onset has a bass and a
@@ -360,7 +381,8 @@ The shared set has none (INPUTS.md). Searched 2026-11-10:
 
 ## Essentia 2.1-beta6-dev `PredominantPitchMelodia`: the melody voice from audio directly
 
-- What it is: Essentia's implementation of the MELODIA predominant-pitch algorithm (Salamon and Gómez), same
+- What it is: Essentia's predominant-pitch (melody) estimator; its docstring cites J. Salamon and E. Gómez, "Melody
+  extraction from polyphonic music signals using pitch contour characteristics" (IEEE TASLP 2012). Same
   `venv-essentia` as above (`essentia==2.1b6.dev1389`).
 - Run r0220 (`--nolock`, one thread through `OMP_NUM_THREADS=1` and friends, because the two CPU slots had a queue of
   about 30 jobs; wall 10.14 s for all four clips, CPU 6.4 s, peak RSS 177.1 MB): `scripts/essentia_melodia.py`
@@ -381,7 +403,7 @@ The shared set has none (INPUTS.md). Searched 2026-11-10:
 
   The f0 track follows the melody voice: no frame is within 50 cents of the bass voice on any clip; the chroma
   matches against the bass are octave-related frames.
-- gtr-eval note (scorer 0.11.1 by then): an f0 CSV with empty cells for unvoiced frames made `gtr-eval f0` stop with
+- gtr-eval note (scorer 0.11.1): an f0 CSV with empty cells for unvoiced frames made `gtr-eval f0` stop with
   `IndexError: index 5654 is out of bounds for axis 0 with size 5654` (e0440 to e0447, all eight runs). Writing 0 Hz
   for unvoiced frames (mir_eval's convention) worked; the numbers above use that file (`<clip>.melodia0.csv`, time
   = frame index x 128 / 44100). mir_eval still warned "Non-uniform timescale passed to resample_melody_series"
@@ -402,12 +424,13 @@ The shared set has none (INPUTS.md). Searched 2026-11-10:
   fmax=C4 261.6 Hz, frame_length=4096, hop_length=441)`. Wall 103.91 s / 101.22 s, CPU 14.8 s each, peak RSS 605 MB.
   The wall time is far above the CPU time: the box's four cores were fully loaded by other lanes at the time, and the
   first cutoff includes numba compilation (script timer: 54.5 s for 150 Hz, 18.2 s for 200 Hz, 13.6 s for 250 Hz on
-  S2n). Not a clean timing.
+  S2n). The wall time includes waiting for CPU on the loaded box.
 - Earlier attempt r0219 failed (`ModuleNotFoundError: No module named 'soundfile'`): this lane had installed
   `libnmfd` into `venv-core` by mistake, which pulled `pysoundfile`, `numpy<2` and `pandas<2`; `uv pip sync` back to
   the saved freeze then removed the shared file `soundfile.py`. Fixed with `uv pip install --reinstall
-  soundfile==0.14.0`; libnmfd got its own `venv-nmfd`. (Results before that were made with the original venv-core;
-  the freeze in `freeze/venv-core.txt` is the state they used.)
+  soundfile==0.14.0`; libnmfd got its own `venv-nmfd`. The truth voice-split runs r0184 and r0185 ran while
+  `soundfile.py` was missing (they do not need it) and ended with exit 0; every other venv-core result in this file
+  was made with the package set in `freeze/venv-core.txt`.
 - Outputs: `f0_<cutoff>.csv` (`time_s,f0_hz,voiced_prob`, 2,936 frames of 10 ms; unvoiced written as 0 Hz for
   scoring) and `notes_<cutoff>.csv` (`onset,offset,pitch`). S2n: 2,540 / 2,590 / 2,458 voiced frames and 71 notes at
   150 / 200 / 250 Hz; S5dropd: 2,494 / 2,593 / 2,458 voiced frames and 76 / 71 / 71 notes.
@@ -451,8 +474,8 @@ The shared set has none (INPUTS.md). Searched 2026-11-10:
   `percussiveness_estimation` -> components above 0.25 are percussive -> alpha-Wiener filter (alpha 1) -> inverse STFT.
   No truth is used.
 - Run r0238 (`--nolock`, one BLAS thread, slot queue ~30 jobs; S6taps mono): wall 186.68 s, CPU 43.3 s, peak RSS
-  1,778.8 MB (script timers: KAM 88.21 s, NMFD 79.66 s; the box was fully loaded, so wall time is not a clean
-  timing). Outputs: `kam_percussive.wav`, `kam_harmonic.wav`, `nmf_percussive.wav`, `nmf_harmonic.wav` (float32 mono
+  1,778.8 MB (script timers: KAM 88.21 s, NMFD 79.66 s; the box was fully loaded, so the wall time includes
+  waiting for CPU). Outputs: `kam_percussive.wav`, `kam_harmonic.wav`, `nmf_percussive.wav`, `nmf_harmonic.wav` (float32 mono
   44.1 kHz, 1,294,650 samples). Percussiveness of the 30 components, sorted: 0.661, 0.510, 0.370, 0.179, 0.161, then
   0.087 down to 0.002; 3 components above the 0.25 threshold. Energy (sum of squares / mix): KAM percussive 0.0376,
   KAM harmonic 0.8051, NMF percussive 0.0920, NMF harmonic 0.7208.
@@ -493,7 +516,7 @@ The shared set has none (INPUTS.md). Searched 2026-11-10:
 - Run r0247 (`--nolock`, one BLAS thread): `scripts/madmom_onsets.sh <venv> S6taps.mono.wav <out>` runs each
   program as `<Program> single <wav> -o <out>.txt` with its defaults. Wall 30.88 s for all eight, CPU 11.4 s, peak
   RSS 281.2 MB; per program 2.6 to 5.4 s wall (timing.tsv) on a fully loaded box. An earlier attempt (queued from
-  21:03 UTC through gtr-run's slots) waited about 30 minutes without getting a slot and was stopped by this session's
+  about 21:06 UTC through gtr-run's slots) waited about 30 minutes without getting a slot and was stopped by this session's
   background time limit; it never started and wrote no ledger line.
 - Output: text, one onset time in seconds per line (10 ms resolution, e.g. `2.150`, `2.680`, `3.220`).
 
@@ -579,10 +602,9 @@ notes count against precision there.
 | S5dropd | M1 music21 + rule | 81 / 90 | 56 / 74 | 0.608 / 0.938 / 0.738 (e0874) | 0.643 / 0.857 / 0.735 (e0877) |
 
 - What partitura emitted on transcribed notes: 5 to 8 voices instead of 2 (S2n mono: 6 voices with 1, 8, 33, 18,
-  35, 42 notes and mean pitches 59.0, 61.0, 52.0, 55.9, 54.2, 53.5). The labelling rule used here (only the voice
-  with the highest mean pitch is melody) then put almost every note in bass; the low "right voice" counts for P1/P2
-  come from that rule applied to more than two voices, not from partitura alone. A rule that merges partitura's
-  voices into two was not tried.
+  35, 42 notes and mean pitches 59.0, 61.0, 52.0, 55.9, 54.2, 53.5). The labelling rule used here makes only the
+  voice with the highest mean pitch melody, so with six voices it labelled 8 notes melody and 129 bass (35 truth
+  melody notes labelled bass). A rule that merges partitura's voices into two was not tried.
 - What music21 emitted on S2n transcribed notes: 37 Chords, 68 single Notes, 35 Voice objects (from the
   overlapping notes of different lengths); every note was found back in the music21 stream.
 - The fixed threshold T = 55 gives the right voice for all 90 matched notes on every clip because Basic Pitch got
@@ -591,10 +613,24 @@ notes count against precision there.
 - Samples: `samples/basic-pitch/` (S2n CSV and MIDI, S6taps MIDI, venv freeze), `samples/voice-split/<clip>_basicpitch_voice_split.json`,
   `S2n_basicpitch_M1_music21.csv`.
 
+### Basic Pitch with a note-range constraint (the tuning as a re-run input)
+
+- Run r0325 (`--nolock`, `taskset -c 1`; wall 29.81 s for four clips, CPU 11.7 s, peak RSS 289.9 MB): the same CLI
+  with `--minimum-frequency 77.78 --maximum-frequency 1396.91` (D#2 to F6: one semitone below standard tuning's low
+  E2 up to F6) on S2n, S2s, S6taps, S5dropd.
+- `gtr-eval notes` (onset 50 ms, pitch 50 cents): S2n 136 notes, P 0.662 / R 1.000 / F 0.796 (e1219; unconstrained
+  137 notes, e0734); S2s 200, 0.450 / 1.000 / 0.621 (e1220); S6taps 194, 0.464 / 1.000 / 0.634 (e1221); S5dropd 125,
+  P 0.688 / R 0.956 / F 0.800, 86 of 90 matched (e1222), bass recall 44 of 48.
+- The 4 S5dropd notes lost are the four D2 (MIDI 38) bass notes of the Drop D tuning (truth onsets 8.571, 13.929,
+  18.214, 25.714 s); the unconstrained run found all four (onsets 8.597, 13.941, 18.228, 25.732 s). The lowest pitch
+  in the constrained output is 43. So a range set for standard tuning removed the notes the Drop D tuning adds; the
+  unconstrained run (Basic Pitch's default range) kept them. A run with a Drop D range (a minimum below D2 = 73.4 Hz)
+  was not made.
+
 ## Real fingerstyle clips without truth (R3a, R3b, R3c): counts only
 
-R3a (concert video), R3b (home recording, CC0) and R3c (lesson video) are real nylon-string fingerstyle recordings,
-18.0 s each (INPUTS.md; R3b and R3c were added at 21:29 UTC). The manifest describes no percussion in them and none
+R3a (concert video), R3b (home recording) and R3c (lesson video) are real nylon-string fingerstyle recordings,
+18.0 s each (INPUTS.md; R3b and R3c were added at 21:29 UTC). Their manifest rows do not mention percussion, and none
 has truth, so nothing here is a score.
 
 - Run r0292 (`--nolock`, one thread; wall 14.79 s for the three clips, CPU 8.0 s, peak RSS 368.9 MB):
@@ -608,9 +644,113 @@ has truth, so nothing here is a score.
 | R3b | 112 | 138 | 87 | 102 | 0.0005 / 0.525 |
 | R3c | 54 | 71 | 47 | 57 | 0.0018 / 0.588 |
 
-  For comparison, on S6taps the percussive part at margin 4 held 0.022 of the mix energy (taps included) and the same
-  detectors returned 53 onsets for 29.4 s.
-- Basic Pitch on R3a (r0252 above): 106 notes. No Demucs stems of R3 clips existed in the source-separation lane's
-  output folder at 21:46 UTC, so the drums-stem tap test was not repeated on real audio.
+  For comparison, on S6taps the percussive part at margin 4 held 0.022 of the mix energy (taps included), and
+  librosa (mix and percussive part), aubio hfc and madmom CNNOnsetDetector each returned 53 onsets for its 29.4 s.
+- Basic Pitch on R3a (r0252 above): 106 notes.
+- Demucs on the real clips (run here, because no R3 stems existed in the source-separation lane's output folder at
+  21:46 UTC): `uv venv --python 3.11 venv-demucs`, `uv pip install "demucs==4.1.0" torch soundfile` (demucs 4.1.0,
+  torch 2.15.0+cpu from the shared cache, numpy 2.4.6, sphn 0.2.1; freeze in the lane's `freeze/venv-demucs.txt`).
+  The weights came from the shared Hugging Face cache, already downloaded by the source-separation lane:
+  `adefossez/HTDemucs-6s` `5c90dfd2.safetensors` (54,885,744 bytes) and `adefossez/HTDemucs` `955717e8.safetensors`
+  (84,025,440 bytes). Runs (`--nolock`, `taskset -c 2`, one thread, because ~24 jobs waited for the slots):
+  r0327 `demucs -n htdemucs_6s -d cpu -j 1 -o <out> R3a.wav R3b.wav R3c.wav` (wall 139.41 s, CPU 74.2 s, peak RSS
+  1,354.1 MB) and r0330 the same with `-n htdemucs` (126.16 s, CPU 92.9 s). Output: one WAV per stem, 44.1 kHz
+  stereo, 18.0 s.
+
+| clip | model | stem energy re mix, dB (bass / drums / other / guitar / piano / vocals) | drums stem peak | librosa onsets on the drums stem |
+|---|---|---|---|---|
+| R3a | htdemucs_6s | -50.5 / -50.6 / -43.2 / -0.1 / -50.5 / -42.1 | -64.7 dBFS | 226 |
+| R3b | htdemucs_6s | -16.2 / -65.4 / -67.7 / -0.3 / -70.8 / -63.7 | -70.8 dBFS | 183 |
+| R3c | htdemucs_6s | -71.5 / -60.6 / -72.5 / -0.1 / -69.1 / -54.9 | -44.8 dBFS | 158 |
+| R3a | htdemucs | -50.9 / -48.9 / 0.0 / n/a / n/a / -50.0 | -53.2 dBFS | 198 |
+| R3b | htdemucs | -15.1 / -57.1 / -0.3 / n/a / n/a / -61.9 | -62.7 dBFS | 209 |
+| R3c | htdemucs | -62.7 / -42.5 / -0.0 / n/a / n/a / -56.1 | -23.5 dBFS | 55 |
+
+  For comparison, the S6taps drums stems (with taps) are at -15.0 dB (htdemucs_6s, energy 0.0313) and -15.3 dB
+  (htdemucs, 0.0292) re the mix, peaks -7.7 and -7.9 dBFS, and gave 32 and 34 onsets. On these real tap-free clips
+  the drums stems are 42 to 65 dB below the mix, yet `librosa.onset.onset_detect` still returned 55 to 226 onsets on
+  them (its default `normalize=True`: "normalize the onset envelope to have minimum of 0 and maximum of 1 prior to
+  detection", per its docstring); an absolute level gate was not tested. On the real clips
+  htdemucs_6s put the guitar into `guitar` (-0.1 to -0.3 dB), unlike the synthesized S2s and S6taps (mostly
+  `piano`). On R3b the bass stems hold -16.2 dB (htdemucs_6s) and -15.1 dB (htdemucs) of the mix energy; on R3a
+  and R3c they are -50.5 to -71.5 dB.
+- Files: `/home/user/gtr/lanes/fingerstyle-voices-taps/out/demucs-real/<model>/<clip>/` (stems and
+  `drums_onsets.txt`).
 - Files: `/home/user/gtr/lanes/fingerstyle-voices-taps/out/real-clips/<clip>/` (onset lists).
+
+## R1c (GuitarSet, bossa nova comping, the shared clip closest to fingerstyle): onset detectors against note onsets
+
+R1c has truth notes from the GuitarSet annotation (148 notes, voice `chord` only, no voice split and no taps), so
+only note onsets can be scored. Run r0334 (`--nolock`, one thread; wall 6.25 s for all seven, CPU 5.8 s, peak RSS
+263.5 MB): `librosa.onset.onset_detect` defaults, `aubioonset -O hfc|complex|specflux`, madmom `CNNOnsetDetector` and
+`SuperFlux` (`single`), Essentia `OnsetRate()`, all on `R1c.mono.wav` with defaults. `gtr-eval onsets --field notes`
+(139 truth onset groups after merging notes that start within 1 ms; window 50 ms):
+
+| detector | n onsets | matched | P / R / F | median timing of matched (eval id) |
+|---|---|---|---|---|
+| librosa onset_detect | 90 | 64 | 0.711 / 0.460 / 0.559 | +5.1 ms (e1280) |
+| aubio hfc | 101 | 58 | 0.574 / 0.417 / 0.483 | -10.3 ms (e1277) |
+| aubio complex | 104 | 60 | 0.577 / 0.432 / 0.494 | -12.7 ms (e1276) |
+| aubio specflux | 180 | 66 | 0.367 / 0.475 / 0.414 | -16.7 ms (e1278) |
+| madmom CNNOnsetDetector | 97 | 71 | 0.732 / 0.511 / 0.602 | -12.0 ms (e1281) |
+| madmom SuperFlux | 94 | 66 | 0.702 / 0.475 / 0.567 | -14.0 ms (e1282) |
+| Essentia OnsetRate | 86 | 64 | 0.744 / 0.460 / 0.569 | -18.3 ms (e1279) |
+
+Negative timing means the detected onset comes before the annotated one. Files:
+`/home/user/gtr/lanes/fingerstyle-voices-taps/out/R1c-onsets/`.
+
+## librosa 0.11.0 `decompose.decompose` (scikit-learn 1.9.1 NMF) with an ORACLE grouping
+
+- What it is: plain NMF of the magnitude spectrogram through librosa's wrapper around `sklearn.decomposition.NMF`
+  (`venv-core`). NMF itself does not say which component is a tap. To measure what the decomposition can hold,
+  components were grouped with the truth (ORACLE: a component goes to "taps" when its audio correlates more with
+  `stems/taps.wav` than with `stems/guitar.wav`), so the numbers below are an upper bound for this setting, not a
+  method that could run on a new recording.
+- Run r0296 (`--nolock`, one thread; wall 8.85 s, CPU 6.0 s, peak RSS 515.3 MB): `scripts/librosa_nmf_oracle.py`, S6taps
+  mono, STFT 2048 / 512, `decompose(S, n_components=k, sort=True, random_state=0)` for k = 8 and 16 (2.3 s and 3.1 s);
+  scikit-learn warned `ConvergenceWarning: Maximum number of iterations 200 reached`. Each component resynthesized
+  with a soft mask and the mixture phase.
+- Output facts: k = 8: 1 component went to taps (its correlation with the taps stem 0.764, with the guitar stem
+  0.077); k = 16: 3 components (0.672 / 0.024, 0.401 / 0.117, 0.489 / 0.135). Spectral flatness of the basis vectors
+  (no truth needed): 0.0 to 0.073; the three taps components at k = 16 have 0.0, 0.0012 and 0.0727; of the 13
+  guitar components, 12 have 0.0 and one 0.0003.
+- Scores of the ORACLE groups (`gtr-eval stems`, joint): k = 8 taps SI-SDR 1.46 dB, SDR 7.77, SIR 13.53, SAR 9.30;
+  guitar SI-SDR 17.34 dB (e1124). k = 16 taps SI-SDR 4.10 dB, SDR 4.63, SIR 8.02, SAR 7.92; guitar SI-SDR 18.64 dB
+  (e1138).
+- Onsets (`librosa.onset.onset_detect` defaults) on the ORACLE taps group: k = 8: 59 onsets, vs taps P 0.542 / R
+  1.000 (e1147), on all 53 events and 6 on neither; k = 16: 70 onsets, P 0.457 / R 1.000 (e1143), 17 on neither.
+- Constraint inputs for a re-run: `n_components`, the scikit-learn NMF options passed through (`beta_loss`,
+  `max_iter`, `init`); signature read from the installed package: `decompose(S, *, n_components=None,
+  transformer=None, sort=False, fit=True, **kwargs)`, so a transformer fitted beforehand (for example on a user's
+  recorded taps) can be passed with `fit=False`.
+- Samples: `samples/librosa-nmf/S6taps_nmf_components.jsonl` (per-component values), `S6taps_eval_stems_k16.json`.
+
+## Environments, kept and deleted
+
+`uv pip freeze` of every venv this lane made is in `samples/freezes/` (`venv-core`, `venv-essentia`, `venv-madmom`,
+`venv-nmfd`, `venv-basicpitch`, `venv-demucs`, `venv-adtof`). After their runs, `venv-adtof`, `venv-nmfd`,
+`venv-basicpitch` and `venv-demucs` were deleted to stay inside the lane's disk budget (the orchestrator's disk
+notice); `venv-core`, `venv-essentia` and `venv-madmom` are still under `/home/user/gtr/lanes/fingerstyle-voices-taps/`.
+Clones of ADTOF-pytorch and piano_svsep were deleted after their files were read.
+
+## Inputs added by this lane
+
+| id | files (in /home/user/gtr/lanes/fingerstyle-voices-taps/inputs/voice-stems/&lt;clip&gt;/) | duration | format | what it is | how it was made | license |
+|---|---|---|---|---|---|---|
+| S2n, S2s, S5dropd, S6taps voice stems | `melody.wav`, `bass.wav`, `melody.mono.wav`, `bass.mono.wav` | 29.357 s | 44.1 kHz, 16-bit, stereo (and mono = (L+R)/2) | each voice of the clip alone (S6taps: without the taps) | `scripts/render_voice_stems.py`: the clip's own MIDI with the other note tracks removed, rendered with the inputs builder's FluidSynth command and the clip's own gain (runs r0135 to r0138); melody + bass differs from the clip mix by at most 3.4e-5 of the mix peak (7.8e-4 for S6taps, with its taps stem added) | same as the source clips: the melody is public domain, the arrangement was written for the test set, rendered with FluidR3_GM ("I hereby release Fluid under the MIT license, as described in COPYING.", per INPUTS.md) |
+
+## Media kept outside git
+
+All under `/home/user/gtr/lanes/fingerstyle-voices-taps/`. Every audio file is 29.357 s (1,294,650 samples at 44.1
+kHz) except the R3 Demucs stems (18.0 s). None is in git.
+
+| path | size | what it is |
+|---|---|---|
+| `out/librosa-hpss/S6taps/m{1,2,4,8,16}/harmonic.wav`, `percussive.wav` | 5,178,680 bytes each (10 files) | librosa HPSS of S6taps at margins 1, 2, 4, 8, 16, float32 mono (r0031) |
+| `out/libnmfd/S6taps/kam_percussive.wav`, `kam_harmonic.wav`, `nmf_percussive.wav`, `nmf_harmonic.wav` | 5,178,680 bytes each | libnmfd demo pipeline on S6taps: KAM HPSS parts and NMFD-with-threshold parts, float32 mono (r0238) |
+| `out/librosa-nmf/S6taps/nmf_k{8,16}_oracle_{taps,guitar}.wav` | 5,178,680 bytes each (4 files) | scikit-learn NMF components of S6taps summed by the ORACLE grouping, float32 mono (r0296) |
+| `inputs/voice-stems/{S2n,S2s,S5dropd,S6taps}/{melody,bass}.wav` | 5,178,644 bytes each (8 files) | one-voice reference renders, 16-bit stereo (r0135 to r0138) |
+| `inputs/voice-stems/{S2n,S2s,S5dropd,S6taps}/{melody,bass}.mono.wav` | 2,589,344 bytes each (8 files) | the same, mono |
+| `out/basic-pitch/*.mid` | 760 to 1,325 bytes | Basic Pitch MIDI of S2n, S2s, S6taps, S5dropd, R3a (r0252); small, copies of two are in `samples/basic-pitch/` |
+| `out/demucs-real/{htdemucs_6s,htdemucs}/{R3a,R3b,R3c}/*.wav` | 3,175,164 bytes each (30 files: 6 stems x 3 clips for htdemucs_6s, 4 x 3 for htdemucs) | Demucs stems of the real clips, 16-bit stereo 44.1 kHz, 18.0 s (r0327, r0330) |
 

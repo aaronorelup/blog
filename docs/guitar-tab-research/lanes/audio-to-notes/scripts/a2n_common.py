@@ -44,12 +44,14 @@ CLIPS.update({
     "S4bass": f"{INPUTS}/S4/stems/bass.wav",
     "R3b": f"{INPUTS}/R3b/R3b.wav",
     "R3c": f"{INPUTS}/R3c/R3c.wav",
+    # lane-made input: S7flat30 shifted up 30 cents with `sox S7flat30.wav S7flat30.plus30c.wav pitch 30`
+    "S7flat30plus30c": f"{LANE}/inputs/S7flat30.plus30c.wav",
 })
 
 # which truth file a clip is scored against (stems are scored against the S4 truth with --voice)
 TRUTH = {k: k for k in CLIPS}
 TRUTH.update({"S4guitar": "S4", "S4lead": "S4", "S4sep6s-guitar": "S4", "S4sep6s-vocals": "S4", "S4sep6s-bass": "S4",
-              "S6tapssep6s-guitar": "S6taps", "S4bass": "S4"})
+              "S6tapssep6s-guitar": "S6taps", "S4bass": "S4", "S7flat30plus30c": "S7flat30"})
 NO_TRUTH = {"R2", "R3a", "R3b", "R3c"}
 
 

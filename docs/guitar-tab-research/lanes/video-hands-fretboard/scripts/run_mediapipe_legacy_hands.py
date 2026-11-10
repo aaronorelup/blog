@@ -1,4 +1,4 @@
-"""MediaPipe legacy "solutions" Hands API (mediapipe 0.10.21, the last release on PyPI that has mp.solutions).
+"""MediaPipe legacy "solutions" Hands API (mediapipe 0.10.21; mediapipe 1.2.2 has no mp.solutions).
 
 usage: python run_mediapipe_legacy_hands.py <clip> <full|crop> <out dir>
 Settings: static_image_mode=False (tracking between frames), max_num_hands=2, model_complexity=1,

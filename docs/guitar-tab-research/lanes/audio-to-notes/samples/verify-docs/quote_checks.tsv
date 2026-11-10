@@ -43,8 +43,8 @@ tony-o3	O	3	https://raw.githubusercontent.com/sonic-visualiser/tony/default/READ
 tony-o4	O	3	https://raw.githubusercontent.com/sonic-visualiser/tony/default/README.md	200	EXACT	yes	
 librosa-o1	O	3	https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py	200	EXACT	yes	
 librosa-o2	O	3	https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py	200	LOOSE	yes	 0 [scalar] minimum frequency in hertz. the recommended minimum is librosa.notetohz('c2') (~65 hz) though lower values may be feasible. fm
-librosa-o3	O	3	https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py	200	FAIL	yes	 0 [scalar] minimum frequency in hertz. the recommended minimum is librosa.notetohz('c2') (~65 hz) though lower values may be feasible. fmax
-librosa-o4	O	3	https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py	200	FAIL	yes	----- f0: np.ndarray [shape=(..., nframes)] time series of fundamental frequencies in hertz. if multi-channel input is provided, f0
+librosa-o3	O	3	https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py	200	LOOSE	yes	/2 [scalar] maximum frequency in hertz. the recommended maximum is librosa.notetohz('c7') (~2093 hz) though higher values may be feasible. s
+librosa-o4	O	3	https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py	200	FAIL	no	----- f0: np.ndarray [shape=(..., nframes)] time series of fundamental frequencies in hertz. if multi-channel input is provided, f0
 librosa-o5	O	3	https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py	200	EXACT	yes	
 librosa-o6	O	3	https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py	200	EXACT	yes	
 pyin-o1	O	3	https://raw.githubusercontent.com/c4dm/pyin/default/PYinVamp.cpp	200	EXACT	yes	
@@ -144,7 +144,7 @@ melodia-o4	O	11	https://www.upf.edu/web/mtg/melodia	403	FETCH	yes
 melodia-o5	O	11	https://www.upf.edu/web/mtg/melodia	403	FETCH	yes	
 melodia-o6	O	11	https://www.upf.edu/web/mtg/melodia	403	FETCH	yes	
 melodia-o7	O	11	https://raw.githubusercontent.com/justinsalamon/audio_to_midi_melodia/master/README.md	200	EXACT	no	
-melodia-o8	O	11	https://raw.githubusercontent.com/justinsalamon/audio_to_midi_melodia/master/README.md	200	FAIL	yes	hread before posting an issue, thanks! non-python dependencies - melodia melody extraction vamp plugin: http://mtg.upf.edu/technologies/melodi
+melodia-o8	O	11	https://raw.githubusercontent.com/justinsalamon/audio_to_midi_melodia/master/README.md	200	FAIL	no	hread before posting an issue, thanks! non-python dependencies - melodia melody extraction vamp plugin: http://mtg.upf.edu/technologies/melodi
 mt3-o1	O	15	https://raw.githubusercontent.com/magenta/mt3/main/README.md	200	LOOSE	yes	lti-task multitrack music transcription mt3 is a multi-instrument automatic music transcription model that uses the t5x framework. this is not an officially supported google product. transcribe your own audio use our colab
 mt3-o2	O	15	https://raw.githubusercontent.com/magenta/mt3/main/README.md	200	EXACT	yes	
 mt3-o3	O	15	https://raw.githubusercontent.com/magenta/mt3/main/README.md	200	LOOSE	yes	ogle product. transcribe your own audio use our colab notebook to transcribe audio files of your choosing. you can use a pretrained checkpoint fr
@@ -164,7 +164,7 @@ mrmt3-o1	O	17	https://raw.githubusercontent.com/gudgud96/MR-MT3/master/README.md
 mrmt3-o2	O	17	https://raw.githubusercontent.com/gudgud96/MR-MT3/master/README.md	200	EXACT	yes	
 mrmt3-lic	L	17	https://raw.githubusercontent.com/gudgud96/MR-MT3/master/LICENSE	200	EXACT	yes	
 musc-o1	O	19	https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md	200	LOOSE	yes	muscriptor muscriptor is a multi-instrument music transcription model developed by kyutai and mirelo. it turns a recording into midi and into sheet music. it's the most accurate open-source transcription model. you can use 
-musc-lic-1	L	19	https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md	200	LOOSE	yes	ngface --> huggingface login (required) to use muscriptor locally, you first need to log into huggingface and accept the cc by-nc 4.0 license. 1. accept the model license on the mod
+musc-lic-1	L	19	https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md	200	LOOSE	yes	mment: --> huggingface login (required) to use muscriptor locally, you first need to log into huggingface and accept the cc by-nc 4.0 license. 1. accept the model license on the mod
 musc-o2	O	19	https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md	200	EXACT	yes	
 musc-o3	O	19	https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md	200	EXACT	yes	
 musc-o4	O	19	https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md	200	EXACT	yes	
@@ -176,7 +176,7 @@ musc-lic-5	L	19	https://arxiv.org/pdf/2607.08168	200	EXACT	yes
 musc-o6	O	19	https://arxiv.org/pdf/2607.08168	200	FAIL	yes	aining for amt. to this end, we collect a dataset of roughly 1.45 million midi files (both from publicly available sources like lakh midi [19] and from commercial data providers) across different genres (with a fo
 musc-o7	O	19	https://arxiv.org/pdf/2607.08168	200	EXACT	yes	
 musc-o8	O	19	https://arxiv.org/pdf/2607.08168	200	EXACT	yes	
-musc-o9	O	19	https://arxiv.org/pdf/2607.08168	200	FAIL	yes	nts on which the model is evaluated. 4. instrument-conditioned transcription: by optionally conditioning on instrument presence, we stabilize predictions across different segments of a m
+musc-o9	O	19	https://arxiv.org/pdf/2607.08168	200	FAIL	no	nts on which the model is evaluated. 4. instrument-conditioned transcription: by optionally conditioning on instrument presence, we stabilize predictions across different segments of a m
 omni-o1	O	20	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/README.md	200	EXACT	yes	
 omni-lic	L	20	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/LICENSE	200	EXACT	yes	
 omni-o2	O	20	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/CHANGELOG.md	200	EXACT	yes	
@@ -265,7 +265,7 @@ cn-lic	L	12	https://raw.githubusercontent.com/xavriley/crepe_notes/main/LICENSE	
 jdc-o1	O	30	https://raw.githubusercontent.com/keums/melodyExtraction_JDC/master/README.md	200	LOOSE	yes	nt detection and classification network the source code of "joint detection and classification of singing voice melody using convolutional recurrent neural networks", applied sciences (2019) | pdf | abstract we present a joint det
 jdc-lic	L	30	https://raw.githubusercontent.com/keums/melodyExtraction_JDC/master/LICENSE	200	EXACT	yes	
 ssl-lic	L	30	https://raw.githubusercontent.com/keums/melodyExtraction_SSL/master/LICENSE	200	EXACT	yes	
-mta-o1	O	31	https://raw.githubusercontent.com/Annmixiu/MTANet/main/README.md	200	FAIL	yes	mtanet introduction the official implementation of "mtanet: multi-band time-frequency attention network for singing melody extraction from polyphonic music. we propose a more powerful singing melody extractor named m
+mta-o1	O	31	https://raw.githubusercontent.com/Annmixiu/MTANet/main/README.md	200	FAIL	no	mtanet introduction the official implementation of "mtanet: multi-band time-frequency attention network for singing melody extraction from polyphonic music. we propose a more powerful singing melody extractor named m
 some-o1	O	32	https://raw.githubusercontent.com/openvpi/SOME/main/README.md	200	EXACT	yes	
 some-o2	O	32	https://raw.githubusercontent.com/openvpi/SOME/main/README.md	200	LOOSE	yes	oriented midi extractor. [!important] > the next-generation midi extractor is released! see game: generative adaptive midi extractor. overview some is a midi extractor that 
 some-o3	O	32	https://raw.githubusercontent.com/openvpi/SOME/main/README.md	200	EXACT	yes	
@@ -305,7 +305,7 @@ ho-demucs-1	O	HO	https://raw.githubusercontent.com/adefossez/demucs/main/README.
 ho-demucs-2	O	HO	https://raw.githubusercontent.com/adefossez/demucs/main/README.md	200	EXACT	yes	
 ho-m21	O	HO	https://www.music21.org/music21docs/moduleReference/moduleConverter.html	200	EXACT	yes	
 ho-mscore-1	O	HO	https://musescore.org/en/handbook/4/command-line-usage	200	EXACT	yes	
-ho-mscore-2	O	HO	https://musescore.org/en/handbook/4/command-line-usage	200	FAIL	yes	bug start musescore in layout debug mode -m | --midi-operations file specify midi import operations file (see examples below) -m | --no-midi dis
+ho-mscore-2	O	HO	https://musescore.org/en/handbook/4/command-line-usage	200	FAIL	no	bug start musescore in layout debug mode -m | --midi-operations file specify midi import operations file (see examples below) -m | --no-midi dis
 ho-alphatab-1	O	HO	https://alphatab.net/docs/introduction	200	LOOSE	yes	nd 8 (.gp) - zip archive containing xml musicxml (.xml) - open xml standard capxml (.cap) - open xml standard from 
 ho-alphatab-2	O	HO	https://alphatab.net/docs/introduction	200	EXACT	yes	
 ho-alphatab-3	O	HO	https://alphatab.net/docs/introduction	200	EXACT	yes	

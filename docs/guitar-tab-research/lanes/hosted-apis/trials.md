@@ -9,13 +9,20 @@ ledger `/home/user/gtr/eval/ledger/evals.jsonl`) and their definition.
 Conventions for the whole file:
 
 - **Timings.** Every remote call was wrapped in `gtr-run --nolock` (logged in `/home/user/gtr/ledger/runs.jsonl`,
-  run ids below; no CPU slot taken because the work runs on the provider's side). "wall" is the round trip measured
-  on this box, from sending the request to having the whole answer, including upload and queueing. Local CPU time of
-  these runs was 0.2 to 1.1 s each (4.3 s for r0141, whose client decoded four WAV files) and says nothing about the
-  service. Four stem-scoring runs went through gtr-run: r0089 in a CPU slot (2 cores), and r0173, r0192 and r0217
-  with `--nolock` (4.6 to 18.6 s of CPU each) after r0173 had waited for a slot behind other lanes' jobs, so those
-  three wall-clock figures are not 2-core figures. The other gtr-eval scorings (notes, chords, tempo, key, beats,
-  tuning) were run directly; each takes about a second.
+  run ids below; no CPU slot taken because the work runs on the provider's side). "wall" in the tables below is the
+  round trip the call's script measured itself (`time.time()` around the HTTP request or the Space job, saved as
+  `wall_s` in each call's `meta.json` or `record.json`), from sending the request to having the whole answer,
+  including upload and queueing. The ledger's `wall_s` for the same run is longer because it also counts Python
+  start-up, reading the key, the gateway model-list fetch and writing the files: by 0.99 to 2.78 s for the gateway,
+  xAI and Space calls, and by 7.5 to 45.1 s for the four ElevenLabs runs, whose scripts also read the credit counter
+  before and after the call (r0064 14.45 s, r0108 31.05 s, r0189 37.85 s, r0194 51.83 s in the ledger). Local CPU
+  time of these runs was 0.2 to 1.1 s each (4.3 s for r0141, whose client decoded four WAV files) and says nothing
+  about the service. Four stem-scoring runs went through gtr-run: r0089 in a CPU slot (2 cores), and r0173, r0192
+  and r0217 with `--nolock` and `OMP_NUM_THREADS=1` (ledger: `locked` false, no core list; 4.6 to 18.6 s of CPU
+  each), so those three wall-clock figures are not 2-core figures. (The trial agent wrote that this followed a wait
+  for a slot behind other lanes' jobs; a wait that ends in a `--nolock` run leaves no ledger line, so that part is
+  not checkable.) The other gtr-eval scorings (notes, chords, tempo, key, beats, tuning) were run directly; each
+  takes about a second.
 - **Keys.** Read at run time inside the scripts with `getkey.py`, sent only in a request header, never printed or
   written. Of the key names in the key store (`getkey.py --list`, names only, filtered for this lane's services), only
   these belong to services in this lane: `GEMINI_API_KEY`, `VERCEL_AI_GATEWAY_API_KEY`, `XAI_API_KEY`,
@@ -27,7 +34,10 @@ Conventions for the whole file:
   by the script when spent + the call's worst case would pass 2 USD for that service or 10 USD in total
   (`scripts/llm_common.py`). Totals are at the end of this file.
 - **Inputs used:** the shared set in `/home/user/gtr/inputs/` (manifest `INPUTS.md`, READY 2026-11-10T20:28:01Z).
-  R3b and R3c do not exist in the shared set (the manifest says why), so the video trials used R3a only.
+  R3b and R3c were not in the shared set when the video trials ran (r0077 to r0129, 21:04 to 21:13 UTC): the
+  manifest says the `inputs-video` agent added them between 20:52 and 21:35 UTC, and their files are dated 21:21 to
+  21:27 UTC. The video trials here used R3a only; R3b and R3c (no capo, per the manifest) were not sent to any
+  service.
 - Scripts are in `scripts/`, small outputs in `samples/<tool>/`. Audio and video outputs are listed at the end.
 
 ## Google Gemini API, direct (generativelanguage.googleapis.com), models `gemini-4-carbon` and `gemini-3.5-flash-lite`
@@ -41,10 +51,11 @@ Conventions for the whole file:
   `samples/venv-apis.freeze.txt`; the venv was deleted after the trials for disk space and is rebuilt from that file
   with `uv pip install -r`). No model weights are downloaded by anything in this lane.
 - Models listed by the key (`GET v1beta/models`, run 2026-11-10 20:52 UTC): 62 models, saved as
-  `samples/gemini/models_list.json`. Picked: the flagship, `gemini-4-carbon` (the pricing page: "Our most capable
-  reasoning model"; the model page lists "Inputs Text, Image, Video, Audio, and PDF"), and the current small one,
-  `gemini-3.5-flash-lite` (model version string `3.5-flash-lite-07-2026`; its page lists the same inputs; the pricing
-  page: "A cost-efficient model, optimized for high-volume agentic tasks, translation, and simple data processing").
+  `samples/gemini/models_list.json`. Picked: `gemini-4-carbon` (the pricing page: "Our most capable
+  reasoning model"; the model page lists "Inputs Text, Image, Video, Audio, and PDF"; the model list gives it
+  `version` "3.0" and `outputTokenLimit` 32768) and `gemini-3.5-flash-lite` (model version string
+  `3.5-flash-lite-07-2026`; its page lists the same inputs; the pricing page: "A cost-efficient model, optimized for
+  high-volume agentic tasks, translation, and simple data processing").
 - Prices read 2026-11-10 from https://aistudio.google.com/docs/pricing (where https://ai.google.dev/gemini-api/docs/pricing
   redirects): `gemini-4-carbon` Standard paid tier input "$2.00 through November 30, 2026. $4.00 starting December 1,
   2026.", output "(including thinking tokens)" "$10.00 through November 30, 2026. $20.00 starting December 1, 2026."
@@ -67,6 +78,9 @@ Conventions for the whole file:
   Prepay credit balance on the billing account hits $0, all API keys in all projects linked to that billing account
   will stop working simultaneously. Requests then fail with an HTTP 402 Payment Required error until you add credits."
   and "The minimum purchase is $5."
+- Re-run by the verifier (r0300, 21:49 UTC, the r0014 command with a new output folder,
+  `samples/verify-trials/gemini/probe/`): `countTokens` HTTP 200 (TEXT 4 + AUDIO 769 = 773 tokens, as in r0014),
+  `generateContent` HTTP 402 with the same message. The key was still out of credit at that time.
 - Consequence: trials (a) to (d) were not run on Gemini directly. The same prompts were sent to the models the Vercel
   AI Gateway key could reach (next section). The scripts are ready for a re-run once credits are added: see
   `for-aaron.md`.
@@ -159,9 +173,19 @@ tolerance; key is `mir_eval.key.weighted_score`.
 Facts behind the Muse Spark Open rows: the baseten answer's `message.reasoning` text begins "We have audio recording
 but we cannot hear it? The message shows musical notes characters but no actual audio file provided." The togetherai
 answers carry no reasoning text. With the same prompt text through togetherai, S3 (24.0 s) gave 615 prompt tokens and
-S4 (38.741 s) 800: 185 more tokens for 14.741 s more audio (12.55 tokens per second), so the audio was tokenized on
-that route; `usage.prompt_tokens_details.audio_tokens` was 0 in every gateway response, for every model. MiMo's
-prompt tokens grew by 92 from S3 to S4 (6.2 tokens per extra second of audio) with the same prompt text.
+S4 (38.741 s) 800: 185 more tokens for 14.741 s more audio (12.55 tokens per second), so on that route the prompt
+token count grew with the length of the audio; `usage.prompt_tokens_details.audio_tokens` was 0 in every gateway
+response, for every model. MiMo's prompt tokens grew by 92 from S3 to S4 (6.2 tokens per extra second of audio) with
+the same prompt text.
+
+Re-run by the verifier (r0302, 21:49 UTC): the r0028 request again (its `request.json` is byte-identical to
+r0028's), output in `samples/verify-trials/vercel-gateway/verify_S3_chords_mimo-v2.6-flash/`. HTTP 200 from
+`xiaomi`, wall 34.6 s, 331 prompt tokens (320 of them reported as cached) and 1,218 completion tokens (932
+reasoning), `usage.cost` 0.000343476 USD. The answer differs from r0028's: `0.0-2.5 N`, then `G Em Am7 D7 G Em C D7`
+in 2.3 s segments from 2.5 to 20.9 s and `G` 20.9-24.0; 120 BPM; G major; 4/4. Scores: chords root / majmin /
+sevenths 0.781 / 0.781 / 0.781 (e1189), tempo 120 vs 96, +25.0 %, outside 4 % (e1190), key G major, 1.0 (e1191).
+So for the same request MiMo's S3 chord root accuracy was 0.193 in r0028 and 0.781 in r0302, and its tempo 99 and
+120 BPM.
 
 ### Trial (b): notes of S2n (`gtr-eval notes`, onset within 50 ms and pitch within 50 cents)
 
@@ -177,15 +201,21 @@ MiMo's first 10 notes as (onset s, offset s, MIDI pitch): (0.02, 1.52, 43), (0.0
 
 ### Trial (c): R3a video: capo, frets covered by the fretting hand, tuning
 
-- As video, all three models: refused before running. Chat Completions `file` part `video/mp4` (r0077 mimo, r0083
-  muse, r0086 seed): HTTP 400 `"'file part media type video/mp4' functionality not supported."`. Responses endpoint
-  with an `input_video` part, the form the video-input page lists for OpenResponses (r0098 mimo,
+- As video, all three models: refused before running. Chat Completions `file` part `video/mp4` (r0077 mimo, routed
+  to 7 providers in turn, `xiaomi` first; r0083 muse, sent with `--only togetherai`, 1 provider; r0086 seed, 1
+  provider, `bytedance`): HTTP 400 `"'file part media type video/mp4' functionality not supported."`. Responses
+  endpoint with an `input_video` part, the form the video-input page lists for OpenResponses (r0098 mimo,
   `scripts/gateway_video_responses.py`): HTTP 400 `"'file part media type video/*' functionality not supported."`
-  after 7 provider attempts.
+  after 7 provider attempts. Verifier re-runs (outputs in `samples/verify-trials/vercel-gateway/`): r0083 again
+  (r0303) gave the same HTTP 400 from `togetherai`; the same MP4 request to Muse Spark Open with no provider
+  restriction (r0304) was refused with the same message by all five of its providers in turn (`baseten`,
+  `fireworks`, `togetherai`, `nebius`, `modal`).
 - As still frames instead (`scripts/gateway_frames_trial.py`): 18 JPEG frames of `R3a.mp4` taken with
-  `ffmpeg -vf fps=1 -q:v 3` (t = 0 to 17 s, 576 KB in all, kept outside git), each sent as an `image_url` part after a
-  text label "Frame at t = <k>.0 s:", then the video prompt (with one sentence in front saying the images are frames
-  at one per second, labelled with their times); `max_tokens` 16384. No audio goes in this way.
+  `ffmpeg -vf fps=1 -q:v 3` (files `f_01.jpg` to `f_18.jpg`, sent as t = 0 to 17 s, 531,261 bytes in all, kept
+  outside git; the verifier re-extracted them with that command and got 18 byte-identical files), each sent as an
+  `image_url` part after a text label "Frame at t = <k>.0 s:", then the video prompt (with one sentence in front
+  saying the images are frames at one per second, labelled with their times); `max_tokens` 16384. No audio goes in
+  this way.
 
 | run | model (provider) | wall s | tokens prompt / completion (reasoning) | cost USD | capo | tuning | fretting hand spans (lowest-highest fret) |
 |---|---|---|---|---|---|---|---|
@@ -229,13 +259,15 @@ capo), `tuning_name`, `offset_cents` from A4 = 440 Hz, `capo_fret`; scored with 
 | r0213 | S2n (standard, 0 cents; control) | 14.4 | 399 / 1451 (1316) | 0.00046214 | [40,45,50,55,59,64] "standard", 0 cents, capo 0 | tuning equal; offset 0 vs 0; capo equal (e0425) |
 
 - Output format facts: OpenAI chat-completion JSON. `choices[0].message.content` is a string holding the JSON
-  answer; `choices[0].message.reasoning` is the model's reasoning text when the route returns it (MiMo, Muse via
-  baseten); `choices[0].message.provider_metadata.gateway.routing.finalProvider` names the provider that served it;
+  answer; `choices[0].message.reasoning` is the model's reasoning text when the route returns it (present for MiMo,
+  Seed, and Muse via baseten and via fireworks; absent for Muse via togetherai);
+  `choices[0].message.provider_metadata.gateway.routing.finalProvider` names the provider that served it;
   `usage` has `prompt_tokens`, `completion_tokens` (reasoning included), `completion_tokens_details.reasoning_tokens`,
   `prompt_tokens_details` (`cached_tokens`, `audio_tokens`, `video_tokens`), `cost`, `market_cost`, `gateway_cost`
   in USD.
 - Input format facts: WAV 16-bit 44.1 kHz mono up to 3.4 MB (S4) went in as a data URL in a `file` part; MP4 video
-  was refused for all three free-tier models; JPEG frames as `image_url` parts were accepted.
+  as a `file` part was refused for all three free-tier models (for Muse Spark Open on all five providers, r0304);
+  JPEG frames as `image_url` parts were accepted.
 - Constraint inputs for a re-run: only the prompt text (capo, tuning, key or tempo hints), `reasoning.effort`, and
   `providerOptions.gateway.only` / `order` to choose the provider.
 
@@ -255,14 +287,22 @@ capo), `tuning_name`, `offset_cents` from A4 = 440 Hz, `capo_fret`; scored with 
 - Result: HTTP 200, request round trip 6.98 s (the run's wall of 14.45 s also holds two account reads and a 3 s wait). A ZIP of
   5,586,876 bytes with six files, `drums.mp3`, `vocals.mp3`, `piano.mp3`, `guitar.mp3`, `bass.mp3`, `other.mp3`,
   each 931,048 bytes, MP3 192 kb/s, 44.1 kHz, 2 channels, 38.791833 s (`samples/elevenlabs/S4_six_stems/record.json`).
+- Re-run by the verifier (r0315, 21:51 UTC, the r0064 command with new output folders; record in
+  `samples/verify-trials/elevenlabs/verify_S4_six_stems/`): HTTP 200, request round trip 6.87 s, 1,065 credits, a ZIP
+  of 5,586,876 bytes whose six MP3s are byte-identical (same SHA-256) to r0064's; only the ZIP container bytes
+  differ. The scores below therefore hold for the re-run's output too.
 - Cost: the response carried no cost header. The account's used-credit counter (`GET /v1/user/subscription`,
-  `character_count`) read 151,005 at 21:01:33 UTC, before the call (which started at 21:02:44); the script's own
-  read 3 s after the call saw no change; a read at 21:05:00 UTC gave 152,070, i.e. 1,065 more. No other ElevenLabs
-  call was made from this lane between those reads (another agent using the same account in that window would also
-  show up in the difference). The two later stem calls, measured by polling, came to the same rate per second of
-  audio (table below). The API price page (https://elevenlabs.io/pricing/api, read 2026-11-10) lists no stem
-  separation rate; for the spend cap the call is counted at 1,065 x 0.00022 USD = 0.2343 USD, an estimate (22 USD per
-  100,000 credits) and not a published price.
+  `character_count`; only differences are written here, not the account's own figures) was read at 21:01:33 UTC,
+  before the call (which started at 21:02:44); the script's own read 3 s after the call saw no change; a read at
+  21:05:00 UTC was 1,065 higher. No other ElevenLabs call was made from this lane between those reads (another agent
+  using the same account in that window would also show up in the difference). The two later stem calls, measured
+  by polling, came to the same rate per second of audio (table below), and the verifier's re-run of this call on S4
+  (r0315, polling) measured 1,065 credits again. The API price page (https://elevenlabs.io/pricing/api, read
+  2026-11-10) lists no stem separation rate; for the spend cap the call is counted at 1,065 x 0.00022 USD = 0.2343 USD.
+  UNVERIFIED: the 0.00022 USD per credit (22 USD per 100,000 credits) is the trial script's own assumption
+  (`USD_PER_CREDIT_EST` in `scripts/elevenlabs_call.py`); no page read in this lane states a USD price per credit, so
+  every ElevenLabs USD figure in this file is an estimate on that assumption. A published per-credit price, or the
+  account's billing page, would settle it.
 - Timing of the stems: decoded with ffmpeg to 44.1 kHz WAV, the sum of the six stems lies 1,105 samples (25.06 ms)
   after the input mix (cross-correlation of the mono sum with the mono mix over the first 20 s,
   `scripts/stem_alignment.py`). After cutting the first 1,105 samples of every stem (`ffmpeg -af
@@ -300,8 +340,10 @@ script polled the counter every 5 s until it changed (after the r0064 delay).
   SI-SDR 13.23, SDR 14.15, SIR 26.26, SAR 14.43 dB.
 - R2 (truth "stems" are the artist's own instrumental and the song minus it, `vocals_derived`; see the manifest):
   the same 1,105-sample delay; stem levels vocals -12.78, guitar -19.20, bass -19.91, drums -22.62, other -100.47,
-  piano -107.44 dBFS (mix -10.42). After the trim, the RMS of (mix - sum of the six stems) is -15.40 dBFS (S4:
-  -45.59). gtr-eval `stems` (e0426, run r0217), `vocals_derived`=vocals.mp3 and `instrumental`= the sum of the
+  piano -107.44 dBFS (mix -10.42). After the trim, the RMS of (mix - sum of the six stems), mono, over the 36.000 s
+  of the input, is -38.69 dBFS (S4: -45.59; S6taps: -47.44). (The trial agent's figure here was -15.40 dBFS; the
+  verifier recomputed it from the stems remade with the recipe at the end of this file, byte-identical to the ones
+  scored, with `scripts/verify-trials/check_stem_levels.py`, and got -38.69; before the trim it is -6.86.) gtr-eval `stems` (e0426, run r0217), `vocals_derived`=vocals.mp3 and `instrumental`= the sum of the
   other five stems (`ffmpeg amix=inputs=5:normalize=0`): vocals SI-SDR 15.44, SDR 15.67, SIR 22.23, SAR 16.77 dB;
   instrumental SI-SDR 13.59, SDR 14.05, SIR 25.42, SAR 14.39 dB.
 
@@ -319,15 +361,25 @@ script polled the counter every 5 s until it changed (after the r0064 delay).
   TikTok video URLs, and other video hosting services."), `language_code`, `tag_audio_events` (default true),
   `timestamps_granularity` (`none`, `word`, `character`), `diarize`, `keyterms` and more.
 - Call: `scripts/elevenlabs_call.py stt /home/user/gtr/inputs/R2/R2.wav <out> --model scribe_v3` (r0108) with
-  `timestamps_granularity=word`, `tag_audio_events=true`. Input `R2.wav` (36.000 s, CC BY 4.0 song: "I Want to Destroy
-  Something Beautiful" by Josh Woodward, https://www.joshwoodward.com/, CC BY 4.0).
-- Result: HTTP 200, request round trip 0.92 s; response header `character-cost: 11`; the credit counter rose by 11.
-  Counted at max(11 x 0.00022, 36 s x the page's "$0.20 per hour") = 0.00242 USD. Output JSON (5,856 bytes,
+  `timestamps_granularity=word`, `tag_audio_events=true`, `diarize=false`; no `seed` or `temperature` sent. Input
+  `R2.wav` (36.000 s, CC BY 4.0 song: "I Want to Destroy Something Beautiful" by Josh Woodward,
+  https://www.joshwoodward.com/, CC BY 4.0).
+- Result: HTTP 200, request round trip 0.92 s (ledger wall 31.05 s, which includes the credit-counter polling);
+  response header `character-cost: 11`; the credit counter rose by 11. Counted at max(11 x 0.00022, 36 s x the API
+  price page's Scribe v3 rate, "$0.20" "Price per hour") = 0.00242 USD. Output JSON (5,856 bytes,
   `samples/elevenlabs/R2_stt_scribe_v3/stt.json`): keys `language_code` (`eng`), `language_probability` (0.98),
   `text`, `words` (32 entries of type `word` and 31 of type `spacing`, each with `text`, `start`, `end`, `logprob`;
   no `audio_event` entries), `transcription_id`, `audio_duration_secs` (36.0). Text: "'Cause I've been trying to find
   out if an angel bends or breaks. Or shatters like a stone. I want to destroy something beautiful for you. I want to
   destroy for you." First words: 'Cause 0.82-1.48 s, I've 1.62-1.80, been 1.94-2.16, trying 2.32-2.68.
+- Re-run by the verifier (r0318, 21:51 UTC, same command and settings; `samples/verify-trials/elevenlabs/verify_R2_stt_scribe_v3/`):
+  HTTP 200, request round trip 1.24 s, 11 credits. The transcript differs from r0108's: "I wanna destroy" in both
+  places where r0108 has "I want to destroy", so 30 `word` and 29 `spacing` entries; `language_probability` 0.972;
+  the first four words have the same times. The OpenAPI spec's `seed` field says: "If specified, our system will make
+  a best effort to sample deterministically, such that repeated requests with the same seed and parameters should
+  return the same result. Determinism is not guaranteed."; its `temperature` field: "If omitted, we will use a
+  temperature based on the model you selected which is usually 0." (https://api.elevenlabs.io/openapi.json, saved
+  copy read 2026-11-10).
 - There is no lyric truth for R2, so nothing is scored.
 
 ## xAI speech to text, `grok-voice-transcribe-2.0`, on R2
@@ -342,8 +394,12 @@ script polled the counter every 5 s until it changed (after the r0064 delay).
 - Output (`samples/xai/R2_stt/response.json`): `language` `en`, `duration` 36.0, 30 words with times. Text: "Cause I've
   been trying to find out if an angel bends or breaks. All shadows like a stone. I wanna destroy something beautiful
   for you. I wanna destroy for you." First words: Cause 0.84-1.361 s, I've 1.361-1.641, been 1.901-2.121.
-- No lyric truth exists for R2; the two transcripts differ in the second line ("Or shatters like a stone." against
-  "All shadows like a stone.") and in "want to" against "wanna".
+- Re-run by the verifier (r0306, 21:50 UTC, same command; `samples/verify-trials/xai/verify_R2_stt/`): HTTP 200 in
+  1.11 s; the response JSON is identical to r0105's.
+- No lyric truth exists for R2; the ElevenLabs r0108 transcript and this one differ in the second line ("Or shatters
+  like a stone." against "All shadows like a stone."), in "want to" against "wanna" (twice) and in the leading
+  apostrophe of "'Cause"; the ElevenLabs re-run r0318 also has "wanna", so it differs from this one only in the
+  second line and that apostrophe (word-level diff of the `text` fields).
 
 ## xAI chat models and DeepSeek: no audio or video input (no trial)
 
@@ -356,13 +412,15 @@ script polled the counter every 5 s until it changed (after the r0064 delay).
   Because no listed language model takes audio or video, the chord, note, capo and video trials were not sent to xAI.
 - `GET https://api.deepseek.com/models` with the DeepSeek key lists `deepseek-flash` (`input_modalities`
   `["text", "image"]`) and `deepseek-v4-pro` (`["text"]`). No audio or video input, so no DeepSeek trial was run.
+- Re-run by the verifier (r0307, 21:50 UTC, same script; `samples/verify-trials/xai/models_xai_deepseek.json`): the
+  same model ids and input modalities from all three endpoints.
 
 ## Hugging Face Inference Providers: no call possible without a token
 
 - `POST https://router.huggingface.co/v1/chat/completions` and
   `POST https://router.huggingface.co/hf-inference/models/openai/whisper-large-v3`, sent without a token on
-  2026-11-10: both answered HTTP 401 with an HTML page. No Hugging Face token exists in the key store, so nothing was
-  sent to Inference Providers.
+  2026-11-10: both answered HTTP 401 with an HTML page (the verifier sent both again with curl at 22:00 UTC: HTTP 401,
+  `text/html`, both). No Hugging Face token exists in the key store, so nothing was sent to Inference Providers.
 
 ## yt-dlp 2026.10.26 (taking audio from a video link)
 
@@ -377,6 +435,8 @@ script polled the counter every 5 s until it changed (after the r0064 delay).
   wall 10.9 s; it fetched 211.61 KiB (only the section, through ffmpeg) and wrote `R3a_ytdlp_400-418.wav`, PCM
   16-bit, 48,000 Hz, 1 channel, 18.013 s, 1,729,374 bytes (kept outside git). Note: the shared clip `R3a.wav` was
   cut from the item's MP4 (AAC 44.1 kHz stereo); the item's MP3 derivative that yt-dlp picked here is 48 kHz mono.
+- Re-run by the verifier (r0323, 21:53 UTC, same command in a new folder): wall 18.03 s, 211.61 KiB fetched, and a
+  WAV byte-identical (same SHA-256) to r0126's.
 - YouTube was not contacted. The YouTube Terms of Service (https://www.youtube.com/static?template=terms&hl=en&gl=US,
   "Dated: December 15, 2023", read 2026-11-10) say, under the restrictions: "You are not allowed to: access,
   reproduce, download, distribute, transmit, broadcast, display, sell, license, alter, modify or otherwise use any
@@ -398,10 +458,14 @@ script polled the counter every 5 s until it changed (after the r0064 delay).
   `venv-gc-old`, Python 3.10, `uv pip install "gradio_client==0.5.3" "websockets<12" requests`, 13 MB; freeze in
   `samples/venv-gc-old.freeze.txt`; deleted after use). Each call's `record.json` (Space id, Space
   commit sha, hardware, status changes with times, wall-clock, result) is in `samples/hf-spaces/<call>/`.
-- Searched and not usable on 2026-11-10 (stage from the runtime API): `akhaliq/demucs` RUNTIME_ERROR,
+- Searched and not in a running stage on 2026-11-10 (stage from the runtime API): `akhaliq/demucs` RUNTIME_ERROR,
   `ahk-d/Spleeter-HT-Demucs-Stem-Separation-2025` RUNTIME_ERROR ("Memory limit exceeded (16Gi)"),
   `owiedotch/demucs-stem-separation`, `kajise/Demucs_v4-FT_4s`, `Thafx/Demucs_v4_2s_HT`, `Kevin676/Demucs_v4`,
   `sparanoid/demucs-gpu`, `Hmjz100/MT3`, `akhaliq/sam-audio-large` RUNTIME_ERROR, `njolnir/Dia-Beat-This` BUILD_ERROR.
+  (The trial agent gave no stage for six of them; the verifier read all ten at 21:58 UTC: every one RUNTIME_ERROR
+  except `njolnir/Dia-Beat-This` BUILD_ERROR, the six with these error messages: owiedotch and kajise "Scheduling
+  failure: unable to schedule", Thafx a Python traceback in `gr.Interface(`, Kevin676 "Exit code: 128. Reason:
+  failed to create containerd task", sparanoid "Exit code: ?", Hmjz100/MT3 "Exit code: 1" with a numpy traceback.)
   No Space for Basic Pitch with a Gradio API was found (search "basic-pitch": two static pages and two Docker apps);
   no audio chord-recognition Space was found (`ksangk/chord-demo`, the top "chord" result that was running, is an
   image-material demo whose endpoint returns "Basecolor" images). Authors `CPJKU` (Beat This!) and `spotify` have no
@@ -420,6 +484,18 @@ script polled the counter every 5 s until it changed (after the r0064 delay).
 No job reported a queue position (`rank` and `queue_size` stayed empty in every status update). The two ZeroGPU
 refusals came after one successful ZeroGPU call from this box (r0112); whether other agents on the box used ZeroGPU
 quota in the same window is not known.
+
+Re-runs by the verifier (21:49 to 21:53 UTC, the recorded commands with new output folders under
+`/home/user/gtr/lanes/hosted-apis/verify/hf-spaces/`; the Space commits read before each call were the same as in
+the table):
+
+| run | re-run of | wall s | what came back, compared with the trial's output |
+|---|---|---|---|
+| r0305 | r0164, YourMT3-cpu on S2n | 26.46 | MIDI 1,177 bytes, byte-identical (same SHA-256) to r0164's |
+| r0308 | r0118, Beat-This on S4 | 6.89 | the same 68 beat times and 18 downbeat times; the click WAV byte-identical to r0118's |
+| r0309 | r0116, Muscriptor on S2n | 3.57 | the same ZeroGPU "runs limit" AppError |
+| r0311 | r0112, YourMT3 (ZeroGPU) on S2n | 3.42 | refused this time: `AppError("'You have exceeded your ZeroGPU quota (90s requested vs. 79s left). Try again in 15:33:27. Authenticate with a Hugging Face token for more quota - https://huggingface.co/settings/tokens'")` |
+| r0322 | r0141, demucs_playground (gradio_client 0.5.3) on S4 | 155.50 (processing 4.32 to 149.49 s) | four WAVs of the same size, sample rate and length, but all four differ from r0141's in content (different SHA-256); scores below |
 
 Which model each Space runs, from the Space's own `app.py` (read 2026-11-10): YourMT3 and YourMT3-cpu,
 `model_name = 'YPTF.MoE+Multi (noPS)'`, precision `'16'` on the ZeroGPU Space and `'16' if torch.cuda.is_available()
@@ -451,9 +527,16 @@ Scores:
 | guitar | other.wav | 2.94 | 3.10 | 4.27 | 10.75 |
 | lead | vocals.wav | 6.37 | 7.55 | 16.70 | 8.21 |
 
+- The verifier's re-run of this Space (r0322) returned different sample values (above); scored the same way (e1331,
+  scoring run r0344, `--nolock`), SI-SDR / SDR / SIR / SAR in dB: drums 8.46 / 8.90 / 19.16 / 9.38, bass 5.31 /
+  8.10 / 20.69 / 8.39, guitar (other.wav) 3.07 / 3.23 / 4.50 / 10.51, lead (vocals.wav) 6.42 / 7.58 / 16.73 / 8.24.
+  The Space's `app.py` runs `python3 -m demucs.separate -n mdx_extra_q -d cpu test.wav -o out` with no `--shifts`
+  or seed option.
+
 - Output format facts, for handoffs: YourMT3 Spaces return an HTML string, not a file; the MIDI has to be cut out
-  of its `data:audio/midi;base64,` URL; it is a format-1 MIDI file, 480 ticks per quarter note, 4 tracks (an empty
-  first track, then one per predicted instrument with a General MIDI program), every note at velocity 100. Beat-This returns pyharp labels (`t`, `label` in
+  of its `data:audio/midi;base64,` URL; it is a format-1 MIDI file, 480 ticks per quarter note, an empty first track
+  and then one track per predicted instrument with a General MIDI program (4 tracks in all for S2n and for the S4
+  guitar stem, 2 for R1c), no tempo event, every note at velocity 100. Beat-This returns pyharp labels (`t`, `label` in
   {`beat`, `downbeat`}, `amplitude`, `color`) and a click-mixed WAV at the input's sample rate. demucs_playground
   returns four WAV file paths.
 - Input format facts: WAV 44.1 kHz (mono 16-bit for S2n.mono.wav, stereo 16-bit for S4.wav) was accepted by all

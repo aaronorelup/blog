@@ -1,0 +1,125 @@
+{
+ "status": "ONNX test done",
+ "wall_s": 11.236,
+ "external": [
+  {
+   "url": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.31.1/dist/ort.webgpu.min.mjs",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@spotify/basic-pitch@1.0.1/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.19.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tonejs/midi@2.0.28/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@3.19.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@3.19.0/dist/register_all_gradients/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@3.19.0/dist/public/chained_ops/register_all_chained_ops/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-layers@3.19.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter@3.19.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-data@3.19.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-cpu@3.19.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@3.19.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/midi-file@1.2.2/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/array-flatten@3.0.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/long@4.0.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/seedrandom@3.0.5/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@3.19.0/dist/ops/ops_for_converter/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-cpu@3.19.0/dist/shared/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.31.1/dist/ort-wasm-simd-threaded.asyncify.mjs",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.31.1/dist/ort-wasm-simd-threaded.asyncify.wasm",
+   "cached": true
+  },
+  {
+   "url": "https://raw.githubusercontent.com/spotify/basic-pitch/main/basic_pitch/saved_models/icassp_2022/nmp.onnx",
+   "cached": true
+  }
+ ],
+ "page_output": {
+  "page": "browser-timing-check v1 (2026-11-10)",
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
+  "hardwareConcurrency": 4,
+  "started": "2026-11-10T21:50:41.706Z",
+  "metronome": [],
+  "basicPitch": [],
+  "onnx": [
+   {
+    "ep": "webgpu",
+    "skipped": "navigator.gpu.requestAdapter() gave no adapter"
+   },
+   {
+    "ep": "wasm",
+    "session_create_ms": 3704,
+    "inference_ms": 6083,
+    "crossOriginIsolated": false,
+    "wasm_threads": 1,
+    "truth": 62,
+    "found": 62,
+    "matched": 62,
+    "precision": 1,
+    "recall": 1,
+    "onset_error_mean_ms": -3.92
+   }
+  ],
+  "gpu": {
+   "webgl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "webgpu": null
+  }
+ },
+ "console": [
+  "warning: No available adapters.",
+  "warning: No available adapters."
+ ]
+}

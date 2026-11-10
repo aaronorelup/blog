@@ -1,0 +1,199 @@
+{
+ "page": "/pages/smalljs2.html?pitch=S1,R1b&beat=S3,S4,R2",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 18.9,
+ "external_requests": [],
+ "result": {
+  "aubio_pitch": {
+   "S1": {
+    "ms": 515.7449999996461,
+    "frames": 2983,
+    "time_convention": "end of each 441-sample hop (aubio keeps a 2048-sample window)",
+    "csv": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/S1_aubio_yinfft.csv"
+   },
+   "R1b": {
+    "ms": 498.17499999981374,
+    "frames": 2933,
+    "time_convention": "end of each 441-sample hop (aubio keeps a 2048-sample window)",
+    "csv": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/R1b_aubio_yinfft.csv"
+   }
+  },
+  "aubio_tempo": {
+   "S3": {
+    "ms": 341.9550000000745,
+    "bpm": 97.32918548583984,
+    "confidence": 0.16894961893558502,
+    "n_beats": 40,
+    "first10": [
+     2.5193650793650795,
+     2.8792743764172335,
+     3.1463038548752835,
+     3.4481632653061225,
+     3.7500226757369615,
+     4.051882086167801,
+     4.35374149659864,
+     4.713650793650793,
+     5.015510204081632,
+     5.328979591836735
+    ],
+    "beats_file": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/S3_aubio_beats.txt",
+    "bpm_file": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/S3_aubio_bpm.txt"
+   },
+   "S4": {
+    "ms": 468.7349999998696,
+    "bpm": 117.78550720214844,
+    "confidence": 0.17545655369758606,
+    "n_beats": 71,
+    "first10": [
+     2.159455782312925,
+     2.5193650793650795,
+     2.8792743764172335,
+     3.633922902494331,
+     4.144761904761904,
+     4.667210884353741,
+     5.189659863945578,
+     5.7004988662131515,
+     6.222947845804988,
+     6.745396825396825
+    ],
+    "beats_file": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/S4_aubio_beats.txt",
+    "bpm_file": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/S4_aubio_bpm.txt"
+   },
+   "R2": {
+    "ms": 333.7050000000745,
+    "bpm": 147.80172729492188,
+    "confidence": 0.10741365700960159,
+    "n_beats": 84,
+    "first10": [
+     1.6602267573696146,
+     2.0549659863945577,
+     2.449705215419501,
+     2.8444444444444446,
+     3.1346938775510202,
+     3.541043083900227,
+     3.959002267573696,
+     4.3769614512471655,
+     4.794920634920635,
+     5.201269841269841
+    ],
+    "beats_file": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/R2_aubio_beats.txt",
+    "bpm_file": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/R2_aubio_bpm.txt"
+   }
+  },
+  "pitchfinder_yin": {
+   "S1": {
+    "ms": 6965.76500000013,
+    "frames": 2979,
+    "time_convention": "frame centre",
+    "csv": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/S1_pitchfinder_yin.csv"
+   },
+   "R1b": {
+    "ms": 7584.814999999944,
+    "frames": 2929,
+    "time_convention": "frame centre",
+    "csv": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/R1b_pitchfinder_yin.csv"
+   }
+  },
+  "realtime_bpm": {
+   "S3": {
+    "ms": 97.31499999994412,
+    "top5": [
+     {
+      "tempo": 96,
+      "count": 9,
+      "confidence": 0.20634920634920634
+     },
+     {
+      "tempo": 97,
+      "count": 9,
+      "confidence": 0.16666666666666666
+     },
+     {
+      "tempo": 110,
+      "count": 8,
+      "confidence": 0.09523809523809523
+     },
+     {
+      "tempo": 95,
+      "count": 8,
+      "confidence": 0.15873015873015872
+     },
+     {
+      "tempo": 128,
+      "count": 7,
+      "confidence": 0.1349206349206349
+     }
+    ],
+    "bpm_file": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/S3_realtimebpm_bpm.txt"
+   },
+   "S4": {
+    "ms": 178.93999999994412,
+    "top5": [
+     {
+      "tempo": 116,
+      "count": 36,
+      "confidence": 0.2569444444444444
+     },
+     {
+      "tempo": 155,
+      "count": 19,
+      "confidence": 0.1597222222222222
+     },
+     {
+      "tempo": 93,
+      "count": 15,
+      "confidence": 0.1111111111111111
+     },
+     {
+      "tempo": 133,
+      "count": 7,
+      "confidence": 0.0625
+     },
+     {
+      "tempo": 143,
+      "count": 6,
+      "confidence": 0.04861111111111111
+     }
+    ],
+    "bpm_file": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/S4_realtimebpm_bpm.txt"
+   },
+   "R2": {
+    "ms": 77.46499999985099,
+    "top5": [
+     {
+      "tempo": 144,
+      "count": 11,
+      "confidence": 0.1717171717171717
+     },
+     {
+      "tempo": 96,
+      "count": 6,
+      "confidence": 0.09090909090909091
+     },
+     {
+      "tempo": 143,
+      "count": 5,
+      "confidence": 0.18181818181818182
+     },
+     {
+      "tempo": 115,
+      "count": 4,
+      "confidence": 0.06060606060606061
+     },
+     {
+      "tempo": 141,
+      "count": 3,
+      "confidence": 0.06060606060606061
+     }
+    ],
+    "bpm_file": "/home/user/gtr/lanes/browser-audio-sync/out/smalljs/R2_realtimebpm_bpm.txt"
+   }
+  },
+  "aubio_init_ms": 14.129999999888241
+ }
+}

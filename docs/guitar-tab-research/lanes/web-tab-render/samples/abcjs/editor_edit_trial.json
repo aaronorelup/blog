@@ -1,0 +1,30 @@
+{
+ "replaced": "G4",
+ "with": "A4",
+ "at": 126,
+ "tab_numbers_before_first8": [
+  "0",
+  "0",
+  "3",
+  "3",
+  "0",
+  "0",
+  "3",
+  "1"
+ ],
+ "tab_numbers_after_first8": [
+  "2",
+  "0",
+  "3",
+  "3",
+  "0",
+  "0",
+  "3",
+  "1"
+ ],
+ "n_before": 90,
+ "n_after": 90,
+ "changed_positions": [
+  0
+ ]
+}

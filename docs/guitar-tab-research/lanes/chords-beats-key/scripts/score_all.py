@@ -14,7 +14,7 @@ import re
 import subprocess
 
 OUT = "/home/user/gtr/lanes/chords-beats-key/out"
-SC = "/home/user/blog/docs/guitar-tab-research/lanes/chords-beats-key/samples/scores/scores.jsonl"
+SC = "/home/user/gtr/lanes/chords-beats-key/out/scores/scores.jsonl"
 GTR_EVAL = "/home/user/gtr/bin/gtr-eval"
 TRUTH = ["S3", "S4", "S7flat30", "S2n", "S2s", "S5capo2", "S5dropd", "S6taps", "R1a", "R1b", "R1c", "S1"]
 HAS_CHORDS = {"S3", "S4", "S7flat30", "S2n", "S2s", "S5capo2", "S5dropd", "S6taps", "R1a", "R1b", "R1c"}

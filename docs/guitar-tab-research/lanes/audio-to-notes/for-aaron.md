@@ -23,14 +23,14 @@ product's own app or web page, which test clip to use, and what to send back.
 
 The research agents then score the files against the truth with `gtr-eval`, the same way as the box runs.
 
-Two things the box could not do that need a person: anything behind a sign-in or a download form, and anything that
-needs a GPU or a desktop app.
+What the entries have in common: a sign-in or download form, a GPU, a desktop app, a build or code run that this
+session's permissions refused, or a download larger than the shared box's disk allowed.
 
 ---
 
 ## 1. YourMT3+ (multi-instrument transcription), in its web demo
 
-Not run here: the demo's free GPU quota for anonymous use from the box was used up ("You have exceeded your ZeroGPU
+Not run here: the demo refused the box's anonymous call for lack of free GPU quota ("You have exceeded your ZeroGPU
 quota (90s requested vs. 79s left). Try again in 6:54:35. Authenticate with a Hugging Face token for more quota").
 
 1. Make a free Hugging Face account at https://huggingface.co and sign in (signed-in users get more of the free GPU
@@ -42,7 +42,7 @@ quota (90s requested vs. 79s left). Try again in 6:54:35. Authenticate with a Hu
 5. Repeat with `S2n.wav`, `R1c.wav` and `R2.wav` (one at a time; each clip is under 40 s).
 6. Send back the four `.mid` files, a screenshot of the page with the model name, and the time each one took.
 
-Cost: free (Hugging Face ZeroGPU quota). Time: a few minutes in total.
+Cost: no price is shown for the demo; it runs on Hugging Face's shared ZeroGPU quota.
 
 ## 2. MT3 (Google Magenta multi-instrument transcription), in its official Colab notebook
 
@@ -84,10 +84,14 @@ run here through torchcrepe and through Essentia's CREPE models.
 
 1. Install Python 3.11 from https://www.python.org/downloads/windows/ (tick "Add python.exe to PATH").
 2. Open "Command Prompt" and type: `py -3.11 -m pip install crepe tensorflow`
-3. Put `S1.wav`, `R1b.wav` and `S4/stems/lead.wav` (rename it `S4lead.wav`) in one folder, `cd` into it, and run:
-   `py -3.11 -m crepe S1.wav R1b.wav S4lead.wav --viterbi --step-size 10`
-4. It writes `S1.f0.csv` and so on next to each file.
-5. Send back the three `.f0.csv` files, the `pip show crepe tensorflow` output (versions), and the time it took.
+3. Put `S1.wav`, `R1b.wav` and `S4/stems/lead.wav` (rename it `S4lead.wav`) in one folder, `cd` into it, and run
+   once per file (the README's form): `py -3.11 -m crepe S1.wav --viterbi`, then the same for `R1b.wav` and
+   `S4lead.wav`. (`--viterbi` turns on its smoothing; the default step is 10 ms.)
+4. Per the README it writes `S1.f0.csv` (columns `time,frequency,confidence`) next to each file.
+5. If it stops with a TensorFlow or Keras error, run `py -3.11 -m pip install "tensorflow<2.16"` and try again
+   (which TensorFlow versions crepe 0.0.16 works with was not checked here).
+6. Send back the three `.f0.csv` files, the output of `py -3.11 -m pip show crepe tensorflow` (versions), any error
+   text, and the time each file took.
 
 ## 5. MELODIA (Vamp plugin) in Sonic Visualiser
 
@@ -97,7 +101,8 @@ Essentia (`PredominantPitchMelodia`).
 
 1. Install Sonic Visualiser for Windows from https://www.sonicvisualiser.org/download.html .
 2. Download the MELODIA plugin for Windows 64-bit from the MTG page above (fill in the form), unzip it, and copy the
-   `.dll` and `.cat` files into `C:\Program Files\Vamp Plugins` (create the folder if needed).
+   plugin files it contains (the `.dll`, and any `.cat` or `.n3` file next to it) into
+   `C:\Program Files\Vamp Plugins` (create the folder if needed).
 3. Open `S4.wav` in Sonic Visualiser. In the Transform menu find MELODIA (listed by plugin name or by maker, MTG)
    and its melody output. Keep the defaults and click OK.
 4. Menu File > Export Annotation Layer, save as `S4.melodia.csv`.
@@ -120,7 +125,7 @@ Not run here: building the pYIN Vamp plugin from its source was refused by this 
 Not run here: Omnizart 0.6.3 requires TensorFlow (`tensorflow>=2.5.0`), over the box's disk limit, so no install
 attempt was made. Whether it installs on Windows is UNVERIFIED (it also depends on madmom and vamp).
 
-Easiest route: the README links a Colab notebook,
+Route without a local install: the README links a Colab notebook,
 https://colab.research.google.com/github/Music-and-Culture-Technology-Lab/omnizart/blob/master/colab.ipynb (and a
 Replicate page). In Colab: sign in, run the cells in order, upload `S2n.wav`, choose the `music` mode, download the
 MIDI; repeat with `S4.wav`, and with `R2.wav` in the `vocal` mode. Local route (README commands):
@@ -159,10 +164,10 @@ repo `lj1995/VoiceConversionWebUI`, over the box's per-download disk limit.
 These need a programmer's setup (git, Python, the repositories' own scripts). Not run here: Timbre-Trap's code and
 checkpoint (`tt-orig.pt`, 11.35 MB, from the Space `cwitkowitz/timbre-trap`, which was in RUNTIME_ERROR) were
 downloaded, but running the cloned repository and loading its pickled checkpoint was refused by this session's
-permission settings; MR-MT3's README pins TensorFlow 2.11, t5 0.9.3 and ddsp (over the disk limit);
+permission settings; MR-MT3's README installs TensorFlow 2.11, t5 0.9.3 and ddsp (over the disk limit);
 hFT-Transformer is a piano model whose README lists GPU machines and whose checkpoints are CC BY-NC-SA 4.0 (two
-piano models, Transkun and ByteDance, ran here instead); Onsets and Frames lives in the archived `magenta/magenta`
-repository (TensorFlow 1 era). Suggested: ask a coding agent on the laptop to run Timbre-Trap's
+piano models, Transkun and ByteDance, ran here instead); Onsets and Frames lives in the `magenta/magenta` repository,
+which the docs lane reports as archived. Suggested: ask a coding agent on the laptop to run Timbre-Trap's
 `model.transcribe()` on `S2n.wav`, `S3.wav` and `R1c.wav` (README settings) and to save the multi-pitch frames as
 JSON; send back those files. The others are optional.
 

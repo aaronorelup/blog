@@ -7,7 +7,7 @@ is given in the last column (look it up with `gtr-eval ledger --id <id> --full`)
 import argparse
 import json
 
-SC = "/home/user/blog/docs/guitar-tab-research/lanes/chords-beats-key/samples/scores/scores.jsonl"
+SC = "/home/user/gtr/lanes/chords-beats-key/out/scores/scores.jsonl"
 ORDER = ["S3", "S7flat30", "S4", "S2n", "S2s", "S5capo2", "S5dropd", "S6taps", "R1a", "R1b", "R1c", "S1"]
 
 

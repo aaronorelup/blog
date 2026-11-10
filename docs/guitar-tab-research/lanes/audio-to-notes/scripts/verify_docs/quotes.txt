@@ -3,6 +3,10 @@
 # kind: L = license or terms clause (the tally in the verification log), O = other quoted fact.
 # "..." inside a quote marks the survey's own elision: each part must appear, in order.
 # A quote whose survey text carries editorial brackets (export[s]) is checked without them.
+# The records keep the wording the docs agent wrote. The FAIL rows this file produces in
+# samples/verify-docs/quote_checks.tsv are the quotes the verifier then corrected in survey.md (listed in its
+# "Verification log"); the FETCH rows are the MELODIA page (HTTP 403). L records pyin-copying, mt3-lic-4,
+# nn-lic-5 and aria-lic-0 check license-file headers the survey described without quoting.
 
 ### bp-lic-1 L 13 https://raw.githubusercontent.com/spotify/basic-pitch/main/LICENSE
 Copyright 2022 Spotify AB

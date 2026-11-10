@@ -251,7 +251,8 @@ Ultralytics pose, YOLOE-26, CoTracker3, SAM 2.1 or OpenPose, so those formats ar
     perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form." PyPI and npm
     metadata say "Apache 2.0" / "Apache-2.0".
   - b. Weights: the hand model card's header block reads "LICENSED UNDER Apache License, Version 2.0" (PDF above, read
-    2026-11-10); the BlazePose GHUM 3D model card (pose and holistic body part,
+    2026-11-10; verify: the heading and the value sit in the right-hand column of a two-column block, beside
+    "DOCUMENTATION"); the BlazePose GHUM 3D model card (pose and holistic body part,
     https://storage.googleapis.com/mediapipe-assets/Model%20Card%20BlazePose%20GHUM%203D.pdf, read 2026-11-10) has
     the same "LICENSED UNDER Apache License, Version 2.0" block.
   - c. Training data: not named (see above), so no dataset license to quote.
@@ -288,7 +289,8 @@ Ultralytics pose, YOLOE-26, CoTracker3, SAM 2.1 or OpenPose, so those formats ar
     adapted, not on the page). The `device` argument: "If left None, the Inferencer will select the most suitable one."
   - rtmlib Python (README at HEAD, read 2026-11-10): `from rtmlib import Wholebody, draw_skeleton` (and, for video,
     `from rtmlib import Body, Custom, PoseTracker, draw_skeleton`); `wholebody = Wholebody(to_openpose=openpose_skeleton,
-    mode='balanced', backend=backend, device=device)` with `openpose_skeleton = False`; `keypoints, scores = wholebody(img)`.
+    mode='balanced',  # 'performance', 'lightweight', 'balanced'. Default: 'balanced'` / `backend=backend,
+    device=device)` with `openpose_skeleton = False`; `keypoints, scores = wholebody(img)`.
     (verify: the README has no `from rtmlib import Wholebody, Hand, PoseTracker` line; `Hand` is exported by
     `rtmlib/__init__.py` and its own docstring example starts `from rtmlib import Hand, draw_skeleton`.)
     The README lists `device = 'cpu'  # cpu, cuda, mps` and `backend = 'onnxruntime'  # opencv, onnxruntime, openvino`.
@@ -1086,7 +1088,8 @@ Each entry: what the source itself says, and whether code or weights are linked 
   positions, and played notes. Using a Bi-LSTM model, the system estimates optimal fingering sequences." Parts named in
   the text: "we used Google MediaPipe Hand Landmarks Detection", "To detect bass string, we used OpenCV’s houghlines
   function" (the PDF's two-column text interleaves this sentence; quoted as it reads in column order), and CREPE Notes
-  for pitch and note-on times. Data: "We collected a total of 21 YouTube videos". Reported result: "The note
+  for pitch and note-on times. Data: "We collected a total of 21 YouTube videos". Reported result (the poster's
+  section "4.3 Results", authors' own evaluation): "The note
   recognition accuracy was 0.81 on average (SD=0.06), the position recognition accuracy was 0.77 (SD = 0.12), and the
   fingering prediction accuracy was 0.50 (SD = 0.07)". No code or data link was found in the PDF text.
 - **Names that came up in search results but were not read today** (nothing is claimed about them here; years and
@@ -1200,55 +1203,75 @@ Inside this lane (video):
 1. MediaPipe Hand Landmarker outputs, per hand, 21 landmarks with x, y "normalized by image width and height" plus a
    Left / Right `handedness` score (https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker), which
    OpenCV's `perspectiveTransform(src, m[, dst])` ("Performs the perspective matrix transformation of vectors", cv2
-   5.0.0 docstring) accepts as point arrays once multiplied by the frame width and height, with `m` the 3x3 matrix
-   from `findHomography(srcPoints, dstPoints[, method ...])` (OpenCV section).
+   5.0.0 docstring) accepts once multiplied by the frame width and height and shaped (N, 1, 2) (verify: a plain (N, 2)
+   array raises an assertion error in cv2 5.0.0; OpenCV section), with `m` the 3x3 matrix from
+   `findHomography(srcPoints, dstPoints[, method ...])` or `getPerspectiveTransform` (OpenCV section). (verify) Run on
+   this box: trials.md "Worked handoff" (runs r0172, r0218) did exactly this on R3a_cu frame 150 with four hand-set
+   neck corners and `getPerspectiveTransform`, and turned each fingertip into a rectified (u, v) and a (fret cell,
+   string cell) pair.
 2. rtmlib `Hand` outputs `keypoints` (instances x 21 x 2, image pixels) and `scores` (instances x 21)
-   (`rtmlib/tools/pose_estimation/rtmpose.py`, `solution/hand.py`), which the same OpenCV point mapping accepts directly.
+   (`rtmlib/tools/pose_estimation/rtmpose.py`, `solution/hand.py`), which the same OpenCV point mapping accepts after
+   one instance's (21, 2) array is reshaped to (21, 1, 2) (verify: corrected from "accepts directly";
+   `scripts/verify_perspective_shapes.py`). Not yet run through rtmlib on this box when this was checked.
 3. A detector's boxes (Ultralytics `result.boxes.xyxy`, "Return the boxes in xyxy format"; OWLv2
-   `results["boxes"]`, "(xmin, ymin, xmax, ymax)"; Grounding DINO `boxes`, format UNVERIFIED) can be passed to
-   rtmlib's `RTMPose.__call__(image, bboxes=[...])`, which accepts "xyxy-format bounding box" lists (`rtmpose.py`
-   docstring) to force the pose model onto a chosen hand or neck region.
+   `results["boxes"]`, "(xmin, ymin, xmax, ymax)"; Grounding DINO `boxes`, normalized center x, center y, width,
+   height, which first need scaling by the image size and `box_convert(..., in_fmt="cxcywh", out_fmt="xyxy")` as its
+   own `annotate` does: verify, resolved from source) can be passed to rtmlib's `RTMPose.__call__(image, bboxes=[...])`,
+   which accepts "xyxy-format bounding box" lists (`rtmpose.py` docstring) to force the pose model onto a chosen hand
+   or neck region. (verify, added) WiLoR-mini's `predict_with_bboxes(image, bboxes, is_rights)` takes xyxy boxes the
+   same way (its code computes the center as `(bboxes[:, 2:4] + bboxes[:, 0:2]) / 2.0`).
 4. Grounding DINO outputs text-prompted boxes (`predict(..., caption=TEXT_PROMPT, ...)`), which SAM 2's video
    predictor accepts as box prompts (`add_new_points_or_box(state, <your_prompts>)`); the Grounded-SAM-2 repository
    (`IDEA-Research/Grounded-SAM-2`, Apache-2.0) ships scripts for this pairing (root files include
    `grounded_sam2_dinox_demo.py` and `grounded_sam2_florence2_autolabel_pipeline.py`, and `LICENSE_groundingdino`,
-   `LICENSE_sam2`).
+   `LICENSE_sam2`; verify: `grounded_sam2_tracking_demo.py` at HEAD calls `video_predictor.add_new_points_or_box(`
+   with `box=box`).
 5. SAM 3 outputs per-instance `masks`, `boxes`, `scores` for a text prompt (e.g. "guitar neck", "capo") per frame
    (SAM 3 README), and a mask converted to an 8-bit single-channel binary image is the input OpenCV `HoughLinesP`
    documents ("8-bit, single-channel binary source image"), returning fret / string segments as 4-element vectors.
-6. CoTracker3 outputs `pred_tracks` ("B T N 2", unit not stated in the README lines read) and `pred_visibility`
-   (CoTracker README), which `findHomography` accepts frame by frame as point correspondences (a template of the neck's points
-   in frame 0 against their tracked positions in frame t), keeping a fretboard mapping through camera or guitar
-   motion. TAPIR / TAPNext also output per-point tracks (tapnet README).
+6. CoTracker3 outputs `pred_tracks` ("B T N 2"; verify: x, y in pixels of the input video, `cotracker/predictor.py`)
+   and `pred_visibility` (CoTracker README), which `findHomography` accepts frame by frame as point correspondences (a
+   template of the neck's points in frame 0 against their tracked positions in frame t), keeping a fretboard mapping
+   through camera or guitar motion. TAPIR / TAPNext also output per-point tracks (tapnet README).
 7. WiLoR-mini outputs per hand `hand_bbox`, `is_right` and `wilor_preds["pred_keypoints_2d"]` (3D joints projected
    to image pixels) (`wilor_hand_pose3d_estimation_pipeline.py`), which the point mapping in fact 1 accepts the same
-   way as 2D landmarks; HaMeR's `pred_keypoints_2d` likewise (`hamer/models/hamer.py`).
+   way as 2D landmarks. (verify: corrected) HaMeR's `pred_keypoints_2d` is not in image pixels: `hamer/models/hamer.py`
+   projects with `focal_length / self.cfg.MODEL.IMAGE_SIZE` and a zero camera center, so its points are relative to
+   the hand crop and need the crop's box center and size before this mapping (HaMeR section).
 8. A horizontally mirrored (front-camera) video inverts MediaPipe's handedness labels ("Passing a horizontally
    mirrored image will invert these outputs", MediaPipe hand page); PRIOR.md records two of Aaron's earlier videos as
    "Video is mirrored" / "Video is mirrored (front camera)" (`docs/guitar-tab-research/PRIOR.md` lines 24 and 29), so a
    user's "this video is mirrored" correction changes which hand MediaPipe labels Left or Right.
 9. MediaPipe VIDEO mode takes a per-frame `timestamp_ms` and returns one result per frame (hand page), and Basic Pitch
    outputs `note_events` as `(start_time_s, end_time_s, pitch_midi, amplitude, pitch_bends)` "times in seconds"
-   (`lanes/audio-to-notes/survey.md` line 115): the two share a time axis once frame index / fps and audio seconds are
+   (`lanes/audio-to-notes/survey.md`, section "13. Spotify Basic Pitch"; verify: that file has changed since, the line
+   was 120 at 21:37 UTC, not 115): the two share a time axis once frame index / fps and audio seconds are
    put on one clock (an alignment step; no tool in this lane does it for you).
+9a. (verify, added) SAM 2 / SAM 3 output per-object masks (READMEs), and CoTracker's predictor accepts "segm_mask"
+   ("Segmentation mask of shape (B, 1, H, W)") together with `grid_size`, in which case the grid is "computed only for
+   the mask" (`cotracker/predictor.py` comments): a neck mask can restrict which points CoTracker follows.
 
 To neighbouring lanes (constraints from video into string-and-fret assignment):
 
 10. A fret position read from video (the fretting hand's fingertip landmarks mapped through a fretboard homography,
     facts 1-7) is the kind of value gtrsnipe accepts as `--max-fret` or `--capo`
-    (`lanes/guitar-tab/survey.md` lines 455-456, from https://github.com/scottvr/gtrsnipe README), and LilyPond
-    accepts as `minimumFret` / string numbers (`lanes/guitar-tab/survey.md` line 80); FretPath takes "string-number
-    annotations as hard constraints" (`lanes/guitar-tab/survey.md` line 82, github.com/knoguchi/fretpath).
+    (`lanes/guitar-tab/survey.md`, section "gtrsnipe": "User-settable constraints (README)" include `--max-fret`,
+    `--capo`; from https://github.com/scottvr/gtrsnipe README), and LilyPond accepts as `minimumFret` / string numbers
+    (same file, section "LilyPond automatic tablature": "per-note string numbers (`c4\5`), `\set TabStaff.minimumFret =
+    #5`"); FretPath takes "string-number annotations as hard constraints" (same file, section "FretPath (MuseScore
+    plugin)", github.com/knoguchi/fretpath). (verify: the earlier line numbers 455-456, 80 and 82 no longer pointed at
+    these lines; at 21:37 UTC they were 548, 752 and 769.)
 11. The reverse direction is published: GuiFiR trains its video hand / fretboard model with "pseudo-GT tablature
     automatically generated from audio by a customized TabCNN" (GuiFiR page) — audio tab output used as video
     supervision. TabCNN itself is covered in the `guitar-tab` lane.
 12. TapToTab pairs YOLO fret-zone boxes and a hand box with FFT note frequencies (abstract: "YOLO models for real-time
     fretboard detection, and Fourier Transform-based audio analysis for precise note identification"), i.e. the
-    video lane's box output and the audio lane's pitch output meet in one fingering choice; its code is not public
-    (Research section).
+    video lane's box output and the audio lane's pitch output meet in one fingering choice; no code link was found on
+    the arXiv page or in the PDF (Research section; verify: reworded from "its code is not public").
 13. Paleari et al. (2008) fused fretboard tracking, hand position and audio "to extract a tablature" and report "89% of
-    notes" disambiguated deterministically (Research section): the published precedent for video constraining which
-    string and fret an audio pitch is assigned to.
+    notes" disambiguated deterministically (Research section): a published system in which video information is used
+    to choose the string and fret for an audio pitch (verify: reworded). Bae, Kwon and Park (UIST Adjunct 2025) do the
+    same for bass with MediaPipe landmarks, OpenCV Hough lines and CREPE Notes (Research section).
 
 ---
 
@@ -1265,8 +1288,114 @@ Facts from the sections above, collected for `for-aaron.md`; each requirement is
 | WiLoR | "The code has been tested with PyTorch 2.0.0 and CUDA 11.7." (README); MANO_RIGHT.pkl | MANO site registration (WiLoR-mini's HF repo hosts the file itself) | none stated |
 | Hamba | HaMeR-style install "for CUDA 11.7" plus mamba / VMamba `selective_scan` builds (README); MANO_RIGHT.pkl; weights on Google Drive | MANO site registration | none stated |
 | HaWoR | "tested with PyTorch 1.13 and CUDA 11.7"; MANO left and right; DROID-SLAM and Metric3D weights | MANO site registration | none stated |
-| OpenPose | CPU-only build: "Around 8GB of free RAM memory. Highly recommended: a CPU with at least 8 cores." | none for research use; commercial license via CMU FlintBox | commercial price not readable (UNVERIFIED) |
-| TAPIR / TAPNext | Colab notebooks (README); JAX with CUDA for the live demo | Google account for Colab | none stated |
+| OpenPose | CPU-only build: "Around 8GB of free RAM memory."; a separate requirements item: "Highly recommended: a CPU with at least 8 cores." (verify: re-quoted as two items) | none for research use; commercial license via CMU FlintBox | commercial price not readable (UNVERIFIED) |
+| TAPIR / TAPNext | Colab notebooks (README); JAX with CUDA for the live demo | not stated in the README (verify: "Google account for Colab" was removed as unsourced) | none stated |
+| (verify, added) EgoHand v1 | README table: "NVIDIA RTX 6000 Ada, L40, L20, or RTX PRO 6000 Blackwell", "32 GB" memory, "25 GB" storage | none (HF `nvidia/EgoHand-v1` not gated) | none stated |
+| (verify, added) FAH | CPU install stated ("On CPU or Apple silicon, omit the CUDA PyTorch command"); MANO optional | MANO site registration only for the MANO fit | none stated; weights non-commercial |
+| (verify, added) YOLOE-26 text prompts | first `set_classes()` downloads `mobileclip2_b.ts` ("about 254 MB") and installs ultralytics/CLIP from GitHub | none | none stated; upstream MobileCLIP2 license is research-only |
+| (verify, added) Sapiens2 | "requires Python ≥3.12 and PyTorch ≥2.7"; CPU not stated | none read (HF `facebook/sapiens2-pretrain-0.4b` not gated) | none stated |
 | Roboflow Universe projects | a browser (pages blocked to this box) or an API key | Roboflow account | Free Tier $0 with "10 credits included a month"; Core "$39per month" |
 | Ego-Exo4D | signed license | "Sign the Ego-Exo4D Licenses, this will take 2 days to be approved" | none stated |
 | Ultralytics commercial use outside AGPL-3.0 | n/a | Enterprise license request | no price published |
+
+---
+
+## Not covered
+
+Found by the verify pass's searches on 2026-11-10 (WebSearch, standard mode) and not surveyed here. Only what is
+stated after each link was checked; the rest is how the search results described it.
+
+- WeDetect, https://github.com/wechatcv/WeDetect : an open-vocabulary detector (search results: "CVPR2026"). The
+  repository root has no `LICENSE` file (raw.githubusercontent.com answered HTTP 404 for `main/LICENSE`). README not read.
+- OV-DEIM, arXiv 2603.07022 (code link in search results: https://gitee.com/lsreback/OV-DEIM): a real-time
+  DETR-style open-vocabulary detector. Not read.
+- RF-DETR, https://github.com/roboflow/rf-detr (default branch `develop`): Roboflow's detector family, bundled in
+  Roboflow Inference as `rfdetr`. `LICENSE` at `develop` is the Apache License 2.0 text; README, weights and
+  per-model terms not read.
+- TAPIP3D, https://github.com/zbw001/TAPIP3D ("Tracking Any Point in Persistent 3D Geometry"): `LICENSE` at `main` is
+  the Apache License 2.0 text; README not read.
+- AnyHand, https://github.com/chen-si-cs/AnyHand : search results describe synthetic hand data plus fine-tuned HaMeR
+  and WiLoR checkpoints. `LICENSE` at `main` is "CC0 1.0 Universal". README not read.
+- HOPformer, https://huggingface.co/Sid2697/HOPformer : the page title reads "You need to agree to share your contact
+  information to access this model" (gated); search results describe egocentric 3D hand-object pose from video. Not read.
+- "Monocular Biomechanical Tracking of Fingers", arXiv 2605.09258 (https://www.alphaxiv.org/abs/2605.09258). Not read.
+- Asmar, Séoud and Bilodeau (2021), RGB-D reading of guitar fretting, https://publications.polymtl.ca/80726/ : the
+  page did not answer a curl request on 2026-11-10 (no HTTP status). Not read.
+- Canales and Jörg, ACM MIG 2025, hand motion synthesis for virtual guitar playing (named in search results). Not read.
+- TAPNext++ paper, arXiv 2604.10582: its checkpoint is already listed in the tapnet section.
+
+---
+
+## Verification log (verify-docs-video-hands-fretboard, 2026-11-10)
+
+Method. Every URL quoted in this file was fetched again with curl through the session proxy (147 pages and files,
+saved under `/home/user/gtr/lanes/video-hands-fretboard/verify/web/`), plus 29 Hugging Face API records, 19 PyPI JSON
+records, 8 npm records and `git ls-remote` of 44 repositories. Each quote was compared with
+`scripts/verify_quotes.py` (copied from `verify/bin/vq.py`): verbatim after collapsing whitespace; a quote with "..."
+passes only if each part occurs in order; HTML is compared as text with and without tag separators; PDF text is
+compared in layout and reading order. The quote lists are in `/home/user/gtr/lanes/video-hands-fretboard/verify/q/` and
+every result in `verify/checks.log`. Source code statements were checked against the clones (`git show HEAD:<file>`),
+whose HEADs all matched `git ls-remote` on 2026-11-10. No model was run; the only code run was
+`scripts/verify_perspective_shapes.py` (a sub-second shape check, no gtr-run id).
+
+Tally of the quotes the survey agent wrote (377 quoted passages from 99 sources):
+
+| Kind | Checked | Verbatim | Matched after reading the layout (no change) | Corrected | Unverifiable |
+|---|---|---|---|---|---|
+| License and terms clauses (code, weights, data, service, pricing page excluded) | 110 | 107 | 1 (hand model card's two-column "LICENSED UNDER" block) | 2 (MMPose `LICENSES.md` table row; SAM 2 `cc_torch` sentence) | 0 |
+| Docs, papers, commands, prices | 267 | 249 | 7 (PDF line-break hyphens x3, a title set in capitals, a URL split over two lines, line-continued HaMeR command, a git commit subject) | 11 | 0 |
+| Total | 377 | 356 | 8 | 13 | 0 |
+
+The 11 corrected docs quotes: OpenPose `02_output.md` (list marker dropped) and `0_index.md` (two list levels merged,
+which changed which configuration the "8 cores" line belongs to); the Grounding DINO `predict(...)` call (threshold
+constants replaced by values); the Roboflow `InferenceHTTPClient` snippet (comment dropped); the GAPS Zenodo update
+sentence (link markup and the end of the sentence dropped); three MMPose inferencer lines (`'hand'` presented as the
+page's example; the page shows `'human'`); the Goldstein and Moses reference (the paper's "porject" silently
+corrected); the rtmlib `Wholebody(...)` call (variables replaced by values); the TapToTab affiliation (lines joined).
+Three SA-V quotes that were marked "UNVERIFIED verbatim" were confirmed verbatim.
+
+Other facts corrected (not quote mismatches):
+- `opencv.js` 1.2.1 date: published 2017-11-01, not 2022 (npm `time`).
+- ml5.js: its README does not mention handPose; the hand model is `src/HandPose/index.js`, a wrapper of
+  `@tensorflow-models/hand-pose-detection`.
+- rtmlib: the README has no `from rtmlib import Wholebody, Hand, PoseTracker` line.
+- HaMeR `pred_keypoints_2d` is relative to the hand crop, not image pixels (Handoff fact 7 was wrong).
+- Handoff fact 2: an (N, 2) keypoint array is not accepted "directly" by `cv2.perspectiveTransform`; (N, 1, 2) is.
+- Handoff facts 9 and 10: four line references into other lanes' surveys pointed at other lines (those files changed);
+  now cited by section with the line numbers seen at 21:37 UTC.
+- Judging or advice wording removed or reworded: Ultralytics "is the way to add guitar-specific classes"; Handoff 12
+  "its code is not public" (now "no code link was found"); Handoff 13 "the published precedent". Author claims such as
+  TAPNext's "latest, most capable, fastest" and Sapiens2's "state-of-the-art" stay only as attributed quotes.
+- Access table: "Google account for Colab" removed (no source); the OpenPose row re-quoted.
+
+UNVERIFIED marks: the file had 31; 9 were resolved (Grounding DINO box format x2, CoTracker query forms and units,
+AllTracker weights license, Sapiens keypoint counts, SA-V wording, Goldstein code and data pages x2); 3 new ones were
+added (terms of Ultralytics' `mobileclip2_b.ts` export, the OpenAI CLIP text encoder's license, EgoHand's training
+data). 25 remain.
+
+License facts added (weights and data the survey had not separated or had missed):
+- MANO: "The Data & Software may not be reproduced, modified and/or made available in any form to any third party
+  without Max-Planck’s prior written permission."
+- YOLOE-26 prompts load Apple's MobileCLIP2 text encoder; the upstream model's license is research-only (quoted).
+- GAPS: Hugging Face card "license: mit" against Zenodo CC BY-NC-SA 4.0 (both quoted).
+- WiLoR's WHIM training set: "license: cc-by-nc-nd-4.0" (HF card).
+- Sapiens weights `license:cc-by-nc-4.0` (HF); AllTracker weights `license:mit` (HF).
+- PyPI `sam3` 0.1.4: SAM License text in the license field but an "MIT License" classifier.
+- PyPI `groundingdino-py`: homepage github.com/giswqs/GroundingDINO (third-party packaging).
+- HaWoR README license line; MMPose `mminstall.txt` pins `mmdet<3.3.0`.
+
+Tools and research added with the same checks: FAH (2026; code Apache-2.0, weights non-commercial), EgoHand v1 (2026;
+OpenMDW-1.1), Sapiens2 (2026; Sapiens2 License), YOLOE-26 inside Ultralytics (2026 paper), and Bae, Kwon and Park's
+audio-visual bass fingering framework (UIST Adjunct 2025). Ten more items are listed under "Not covered". The 78 new
+quotes written by this pass were run through the same checker: 77 verbatim, 1 quoted in column order from a
+two-column PDF (marked in the text).
+
+Cross-check with trials.md (last modified 21:36 UTC; re-read at 21:52 UTC): MediaPipe output fields, the region-of-interest statement,
+OWLv2 output (Space versus `transformers`), OpenCV `HoughLinesP` shape and the fingertip-to-cell handoff were compared
+and noted in place; they agree with the survey except where both forms are now stated. trials.md had no section yet
+for rtmlib, Ultralytics pose, YOLOE-26, CoTracker3, SAM 2.1 or OpenPose, so those output formats are checked against
+source code only.
+
+Still open: the nine Roboflow Universe pages (HTTP 403 to this box), the OpenPose FlintBox price page (needs
+JavaScript), docs.opencv.org (Cloudflare challenge; source headers and docstrings were used), the Duke and Salgian PDF
+(404, URL not recorded in this file), GuiFiR code and data location, Ego-Exo4D guitar content and license text.

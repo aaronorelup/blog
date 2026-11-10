@@ -1,0 +1,87 @@
+{
+ "page": "/pages/waveform.html",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 12.827,
+ "external_requests": [],
+ "result": {
+  "wavesurfer": {
+   "S4": {
+    "create_to_ready_ms": 703.8849999997765,
+    "duration_s": 38.741383,
+    "decoded_sampleRate": 8000,
+    "exportPeaks_lengths": [
+     1000
+    ],
+    "first_peaks": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "R2full": {
+    "create_to_ready_ms": 1315.380000000354,
+    "duration_s": 228.482381,
+    "decoded_sampleRate": 8000,
+    "exportPeaks_lengths": [
+     1000
+    ],
+    "first_peaks": [
+     0.3052,
+     0.2477,
+     0.2899,
+     0.2523,
+     0.4139,
+     -0.331,
+     0.2961,
+     0.3423
+    ]
+   },
+   "video_media_ready_ms": 215.26000000024214,
+   "video_follow": {
+    "samples": 80,
+    "ws_minus_video_ms": {
+     "n": 80,
+     "mean": 0,
+     "mean_abs": 0,
+     "sd": 0,
+     "max_abs": 0,
+     "p95_abs": 0,
+     "min": 0,
+     "max": 0
+    }
+   }
+  },
+  "peaks": {
+   "S4": {
+    "init_to_ready_ms": 324.6150000002235,
+    "waveform": {
+     "scale": 512,
+     "length": 3337,
+     "duration": 38.74249433106576,
+     "sample_rate": 44100,
+     "channels": 1
+    }
+   },
+   "R2full": {
+    "init_to_ready_ms": 1398.1699999999255,
+    "waveform": {
+     "scale": 512,
+     "length": 19680,
+     "duration": 228.4843537414966,
+     "sample_rate": 44100,
+     "channels": 1
+    }
+   }
+  }
+ }
+}

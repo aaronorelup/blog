@@ -1,0 +1,23 @@
+{
+ "tensorflow": "2.12.1",
+ "import_s": 2.901,
+ "analyze_s": 3.725,
+ "outputs": {
+  "n_segments": 12,
+  "labels": [
+   "A#:maj",
+   "A#:min",
+   "B:maj",
+   "C#:maj",
+   "D#:min",
+   "E:maj",
+   "F#:maj",
+   "G#:min"
+  ],
+  "confidence_min_max": [
+   0.4808412790298462,
+   0.9141031503677368
+  ],
+  "annotation_metadata": "{}"
+ }
+}

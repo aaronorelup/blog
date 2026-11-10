@@ -1,0 +1,114 @@
+{
+ "page": "/pages/mediapipe.html?file=/inputs/R3c/R3c.webm&delegate=CPU&max=150",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 24.627,
+ "external_requests": [],
+ "result": {
+  "file": "/inputs/R3c/R3c.webm",
+  "delegate": "CPU",
+  "step": 1,
+  "create_ms": 816.8199999998324,
+  "frames_processed": 150,
+  "ms_per_frame": {
+   "n": 150,
+   "mean": 148.10566666666108,
+   "mean_abs": 148.10566666666108,
+   "sd": 81.50914099179558,
+   "max_abs": 917.5400000000373,
+   "p95_abs": 243.37999999988824,
+   "min": 89.06000000005588,
+   "max": 917.5400000000373
+  },
+  "ms_first5": [
+   917.5400000000373,
+   252.04000000003725,
+   137.88499999977648,
+   168.78000000026077,
+   219.0449999999255
+  ],
+  "ms_per_frame_excluding_first": {
+   "n": 149,
+   "mean": 142.9416778523431,
+   "mean_abs": 142.9416778523431,
+   "sd": 51.84893300308486,
+   "max_abs": 364.75499999988824,
+   "p95_abs": 238.64000000013039,
+   "min": 89.06000000005588,
+   "max": 364.75499999988824
+  },
+  "hands_per_frame_counts": {
+   "0": 0,
+   "1": 0,
+   "2": 150
+  },
+  "total_ms": 23688.60499999998,
+  "landmarks_file": "/home/user/gtr/lanes/browser-audio-sync/out/mediapipe/hands_R3c_webm_CPU.json",
+  "first3": [
+   {
+    "frame": 0,
+    "hands": 2,
+    "handedness": [
+     "Right:0.998",
+     "Left:0.998"
+    ],
+    "wrist": [
+     [
+      0.502,
+      0.8594,
+      0
+     ],
+     [
+      0.8567,
+      0.5168,
+      0
+     ]
+    ]
+   },
+   {
+    "frame": 1,
+    "hands": 2,
+    "handedness": [
+     "Right:0.997",
+     "Left:0.996"
+    ],
+    "wrist": [
+     [
+      0.5035,
+      0.854,
+      0
+     ],
+     [
+      0.8588,
+      0.537,
+      0
+     ]
+    ]
+   },
+   {
+    "frame": 2,
+    "hands": 2,
+    "handedness": [
+     "Right:0.998",
+     "Left:0.994"
+    ],
+    "wrist": [
+     [
+      0.5062,
+      0.8468,
+      0
+     ],
+     [
+      0.8582,
+      0.5414,
+      0
+     ]
+    ]
+   }
+  ]
+ }
+}

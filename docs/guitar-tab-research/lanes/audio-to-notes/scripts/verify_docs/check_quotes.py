@@ -110,7 +110,7 @@ def norm(s):
 def loose(s):
     s = norm(s)
     s = re.sub(r"!?\[([^\]]*)\]\([^)]*\)", r"\1", s)      # markdown link or image -> its text
-    s = re.sub(r"<[^>]{1,300}>", " ", s)                      # inline HTML inside markdown
+    s = re.sub(r"</?[A-Za-z!][^<>]{0,300}>", " ", s)          # inline HTML tags inside markdown (not "<=" etc.)
     s = re.sub(r"^\s*>\s*|\s>\s(?=\[!)", " ", s)
     s = s.lower()
     for a, b in (("“", '"'), ("”", '"'), ("‘", "'"), ("’", "'"), ("–", "-"),

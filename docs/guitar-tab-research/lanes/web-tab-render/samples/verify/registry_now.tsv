@@ -1,0 +1,41 @@
+registry	package	http	latest	latest_published	license	deprecated	n_versions	first_published	other_tags
+npm	@coderline/alphatab	200	1.9.0	2026-10-31T21:21:39.208Z	MPL-2.0	None	611	2020-05-01T16:42:38.720Z	{'alpha': '1.10.0-alpha.1975'}
+npm	@coderline/alphatab-vite	200	1.9.0	2026-10-31T21:21:58.896Z	MPL-2.0	None	71	2025-09-05T13:48:45.518Z	{'alpha': '1.10.0-alpha.1971'}
+npm	@coderline/alphatab-webpack	200	1.9.0	2026-10-31T21:22:14.460Z	MPL-2.0	None	76	2025-09-05T13:48:47.805Z	{'alpha': '1.10.0-alpha.1971'}
+npm	@coderline/alphatab-monaco	200	1.9.0	2026-10-31T21:22:43.360Z	MPL-2.0	None	50	2025-11-30T21:19:18.756Z	{'alpha': '1.10.0-alpha.1971'}
+npm	@coderline/alphatab-language-server	200	1.9.0	2026-10-31T21:22:31.732Z	MPL-2.0	None	51	2025-11-30T21:19:14.026Z	{'alpha': '1.10.0-alpha.1971'}
+npm	@coderline/alphatab-react	404
+npm	@coderline/alphatab-ui	404
+npm	@coderline/alphaskia	200	4.0.157	2026-11-08T20:16:33.496Z	BSD-3-Clause	None	25	2023-10-29T20:56:41.919Z	{'alpha': '3.5.147-alpha.43'}
+npm	vexflow	200	5.0.0	2025-03-05T17:06:16.222Z	MIT	None	125	2014-11-22T22:17:01.071Z	{'canary': '1.2.6', 'rc': '4.2.0-rc.0', 'alpha': '5.0.0-alpha.4', 'beta': '5.0.0-beta.1'}
+npm	vextab	200	4.0.5	2026-01-18T22:33:37.297Z	LicenseRef-LICENSE	None	21	2014-11-25T18:22:50.344Z	{}
+npm	vexchords	200	1.2.0	2019-03-31T18:57:55.667Z	MIT	None	3	2019-03-31T01:28:47.745Z	{}
+npm	opensheetmusicdisplay	200	2.3.0	2026-11-07T22:56:06.223Z	BSD-3-Clause	None	103	2016-06-28T10:23:18.701Z	{}
+npm	osmd-audio-player	200	0.7.0	2021-12-30T18:51:03.255Z	MIT	None	13	2020-04-09T17:12:08.475Z	{}
+npm	abcjs	200	6.7.2	2026-10-16T16:28:33.696Z	MIT	None	127	2017-04-09T13:22:02.213Z	{'beta': '6.0.0-beta.39'}
+npm	verovio	200	6.4.1	2026-11-03T18:34:16.032Z	LGPL-3.0-only	None	69	2019-01-21T08:57:44.541Z	{}
+npm	webmscore	200	1.2.1	2023-01-24T02:59:46.371Z	GPL	None	60	2020-05-07T07:09:45.358Z	{}
+npm	chordsheetjs	200	18.0.0	2026-09-24T20:04:40.217Z	GPL-2.0-only	None	211	2016-02-21T21:47:19.560Z	{'canary': '17.1.0-canary.0'}
+npm	svguitar	200	2.10.1	2026-10-17T13:05:41.841Z	MIT	None	67	2019-09-20T12:03:20.180Z	{'develop': '1.13.0-develop.1', 'next': '1.15.0-next.1'}
+npm	tonal	200	6.5.1	2026-10-14T06:24:54.781Z	MIT	None	95	2015-08-11T15:36:35.232Z	{'alpha-1': '0.60.0', 'alpha': '3.0.0-alpha2'}
+npm	react-guitar	200	1.1.3	2026-01-04T08:54:56.949Z	MIT	None	73	2019-07-08T08:47:16.478Z	{'alpha': '1.2.0-alpha.0'}
+npm	react-guitar-sound	200	1.1.5	2026-01-06T05:45:55.398Z	MIT	None	13	2020-10-07T07:15:40.238Z	{}
+npm	@moonwave99/fretboard.js	200	0.2.13	2022-11-18T10:19:34.993Z	ISC	None	26	2020-05-18T08:59:26.394Z	{}
+npm	@tombatossals/chords-db	200	0.5.1	2019-11-02T10:28:23.088Z	MIT	None	40	2016-10-02T20:54:42.474Z	{}
+npm	@tombatossals/react-chords	200	0.2.10	2019-10-23T19:37:54.494Z	MIT	None	22	2016-10-02T21:26:52.580Z	{}
+npm	jtab	200	1.3.2	2017-10-30T11:09:50.473Z	MIT	None	2	2017-10-29T02:38:17.785Z	{}
+npm	abc2svg	200	1.22.1	2022-09-13T14:53:54.674Z	LGPL-3.0	Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.	87	2017-07-23T16:53:36.821Z	{}
+npm	flat-embed	200	2.12.1	2026-04-02T15:41:44.499Z	Apache-2.0	None	39	2017-04-20T14:22:14.837Z	{'beta': '2.0.1-beta.1'}
+npm	flat-api	200	1.0.1	2026-09-17T09:10:03.936Z	Apache-2.0	None	9	2017-04-09T18:19:18.242Z	{}
+npm	guitarpro-parser	200	2.0.0	2026-11-08T22:15:00.418Z	Apache-2.0	None	6	2026-02-24T22:44:07.343Z	{}
+npm	@jbfullstack/score-parser	200	1.0.1	2026-03-26T19:16:35.522Z	MIT	None	2	2026-03-26T15:09:50.229Z	{}
+npm	@musicbird/gpx-parser	200	0.1.3	2021-12-10T20:43:58.744Z	AGPL-3.0-or-later	None	4	2021-12-10T18:22:35.256Z	{}
+npm	soundfont-player	200	0.12.0	2020-01-27T15:41:18.053Z	MIT	None	26	2015-05-11T22:37:15.707Z	{}
+pypi	PyGuitarPro	200	0.11	2026-05-03T12:19:57.519844Z	license=None expr='LGPL-3.0-only'	yanked=False	19		requires_python=>=3.10
+pypi	music21	200	10.5.2	2026-10-28T07:00:58.473950Z	license=None expr='BSD-3-Clause'	yanked=False	68		requires_python=>=3.11
+pypi	verovio	200	6.4.1	2026-11-03T18:26:51.556562Z	license=None expr='LGPL-3.0-only'	yanked=False	47		requires_python=>=3.10
+pypi	lilypond	200	2.25.12	2024-02-02T22:30:57.139356Z	license='GPL-3.0-or-later' expr=None	yanked=False	16		requires_python=
+pypi	abjad	200	3.31	2025-10-31T19:40:57.910162Z	license='MIT' expr=None	yanked=False	56		requires_python=>=3.12
+pypi	python-ly	200	0.9.10	2026-04-04T09:32:10.177771Z	license=None expr='GPL-3.0-or-later'	yanked=False	18		requires_python=>=3.8
+pypi	ApolloTab	200	1.6.0	2026-08-06T02:58:20.433878Z	license=None expr='LGPL-2.1'	yanked=False	34		requires_python=>=3.11
+crates	guitarpro	200	0.4.5	2026-11-03T10:07:08.349943Z	MIT	False	8	2022-05-31T07:37:55.911086Z	repo=https://codeberg.org/slundi/scorelib

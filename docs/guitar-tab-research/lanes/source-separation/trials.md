@@ -288,3 +288,25 @@ smallest checkpoint a model offers". Steps for Aaron are in `for-aaron.md`.
 - **demucs-infer, bs-roformer-infer, melband-roformer-infer (OpenMIRLab), PolUVR:** repackagings of models already
   run here through demucs, audio-separator and MSST; not tried, to keep the CPU slots for other tools.
 
+## Demucs 4.0.1 with the current torchaudio (I/O check only, no separation)
+
+Many tools still pin the previous Demucs release (for example MSST's `requirements.txt` lists `demucs==4.0.0`), so
+the reader and writer of PyPI `demucs` 4.0.1 were checked against torchaudio 2.11.1 without loading a model
+(`scripts/demucs401_io_check.py`, light job, not timed; venv deleted afterwards, freeze in
+`samples/demucs/uv-pip-freeze-demucs-4.0.1-iocheck.txt`).
+
+- Install: `uv pip install demucs==4.0.1` pulled torch 2.15.0+cpu, torchaudio 2.11.1+cpu, openunmix 1.3.0,
+  dora-search 0.1.13.
+- `demucs.separate.load_track` (the CLI's reader, ffmpeg first) read `S4.wav`: shape (2, 1708495), float32.
+- `demucs.audio.save_audio` (the CLI's writer) failed: "ImportError TorchCodec is required for
+  save_with_torchcodec. Please install torchcodec to use this function." (raised in demucs `audio.py` line 260 ->
+  torchaudio `__init__.py` line 178 -> `_torchcodec.py` line 248).
+- Fix: `uv pip install torchcodec` (0.17.0+cpu). Saving then works, with two warnings from torchaudio: "The
+  'encoding' parameter is not fully supported by TorchCodec AudioEncoder." and "The 'bits_per_sample' parameter is
+  not directly supported by TorchCodec AudioEncoder."
+- Consequence, measured: `save_audio(..., as_float=True, bits_per_sample=32)` (what `--float32` asks for),
+  `bits_per_sample=24` (`--int24`) and `bits_per_sample=16` all wrote the same 176,478-byte file for one second of
+  stereo audio, and soundfile reads all three as PCM_16. With demucs 4.0.1 + torchaudio 2.11 + torchcodec 0.17,
+  `--float32` and `--int24` therefore give 16-bit files. Demucs 4.1.0 writes WAV itself (no torchaudio) and is
+  checked with `--float32` in the option runs below.
+

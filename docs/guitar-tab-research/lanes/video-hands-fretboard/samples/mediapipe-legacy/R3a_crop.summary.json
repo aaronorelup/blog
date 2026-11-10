@@ -1,0 +1,74 @@
+{
+ "clip": "R3a",
+ "mode": "crop",
+ "frames": 540,
+ "all": {
+  "frames": 540,
+  "frac_0_hands": 0.0019,
+  "frac_1_hand": 0.55,
+  "frac_2_hands": 0.4481,
+  "frac_more_than_2": 0.0,
+  "frac_at_least_1": 0.9981,
+  "label_counts": {
+   "Right": 640,
+   "Left": 141
+  },
+  "infer_ms_mean": 27.07,
+  "infer_ms_median": 24.41,
+  "infer_ms_p90": 38.43,
+  "fps_from_mean": 36.94,
+  "score_mean": 0.926,
+  "score_min": 0.501,
+  "score_max": 1.0
+ },
+ "per_shot": {
+  "medium": {
+   "frames": 319,
+   "frac_0_hands": 0.0,
+   "frac_1_hand": 0.3918,
+   "frac_2_hands": 0.6082,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 1.0,
+   "label_counts": {
+    "Right": 387,
+    "Left": 126
+   },
+   "infer_ms_mean": 28.82,
+   "infer_ms_median": 25.55,
+   "infer_ms_p90": 43.23,
+   "fps_from_mean": 34.7,
+   "score_mean": 0.9317,
+   "score_min": 0.5096,
+   "score_max": 1.0
+  },
+  "wide": {
+   "frames": 221,
+   "frac_0_hands": 0.0045,
+   "frac_1_hand": 0.7783,
+   "frac_2_hands": 0.2172,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 0.9955,
+   "label_counts": {
+    "Right": 253,
+    "Left": 15
+   },
+   "infer_ms_mean": 24.54,
+   "infer_ms_median": 24.16,
+   "infer_ms_p90": 30.18,
+   "fps_from_mean": 40.75,
+   "score_mean": 0.9152,
+   "score_min": 0.501,
+   "score_max": 0.9987
+  }
+ },
+ "tool": "mediapipe legacy solutions.hands",
+ "mediapipe_version": "0.10.21",
+ "init_s": 0.023,
+ "settings": {
+  "static_image_mode": false,
+  "max_num_hands": 2,
+  "model_complexity": 1,
+  "min_detection_confidence": 0.5,
+  "min_tracking_confidence": 0.5
+ }
+}

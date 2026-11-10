@@ -62,6 +62,19 @@ Shared scripts: `scripts/vhf_common.py` (frames, shots, crops, summaries, sample
 
 (Frame counts with 0/1/2 hands are the summary fractions times the frame count: r0071 0.0019/0.4944/0.5037 of 540.)
 
+R3b and R3c (1920x1080, 25 fps, 450 frames each), same settings, run as steps of group job C1 (gtr-run id in the
+"Grouped jobs" table at the end; 2 cores; step times from GNU time):
+
+| step | clip | wall | CPU (user+sys) | peak RSS | per-frame inference mean / median / p90 | fps from mean | frames with 0 / 1 / 2 hands | labels | mean score (min) |
+|---|---|---|---|---|---|---|---|---|---|
+| mediapipe-hands_R3b_full | R3b | 22.43 s | 21.89 s | 254.9 MiB | 26.52 / 24.74 / 32.86 ms | 37.71 | 5 / 445 / 0 | Left 445 | 0.989 (0.971) |
+| mediapipe-hands_R3c_full | R3c | 21.53 s | 20.36 s | 258.3 MiB | 24.25 / 22.92 / 30.04 ms | 41.24 | 0 / 0 / 450 | Left 450, Right 450 | 0.989 (0.596) |
+
+- On R3c the "Left" detections have a mean wrist position of (1679, 591) px, at the neck (the fretting hand, by eye on
+  frames 0, 225, 449), and the "Right" detections (966, 901), at the sound hole (the picking hand). On R3b the one hand
+  found ("Left", mean wrist (1110, 510)) is the fretting hand; the picking-hand fingers at the left edge of the picture
+  were not detected in any frame.
+
 Per shot on R3a (from the `.summary.json` files):
 
 | run | shot | frames | 0 / 1 / 2 hands (fraction) | per-frame inference mean | labels |
@@ -368,3 +381,49 @@ Result (pixel -> rectified (u, v) -> cell):
 - Grounding DINO Space: all three calls failed with `ValueError('Unknown protocol: ws')` from gradio_client (the
   Space uses the older websocket queue). NOT RUN (local: weights over the disk limit; Space: client error). Steps for
   Aaron in `for-aaron.md`.
+
+## MediaPipe legacy "solutions" Hands API, mediapipe 0.10.21
+
+- What it is: the pre-Tasks Python API `mp.solutions.hands.Hands` (hand models bundled in the wheel). 0.10.21 (PyPI
+  upload 2025-02-06) has `mp.solutions`; 1.2.2 does not; the releases in between (0.10.30 to 1.2.0) were not
+  checked.
+- Install (worked, 2026-11-10): `uv venv --python 3.11 venv-mp-legacy && uv pip install --python
+  venv-mp-legacy/bin/python mediapipe==0.10.21`. It pulled jax 0.7.1, jaxlib 0.7.1, numpy 1.26.4 (the wheel requires
+  `numpy<2`), protobuf 4.25.9, opencv-contrib-python 4.11.0.86 (full list: `samples/mediapipe-legacy/uv-pip-freeze.txt`).
+  Wheel `mediapipe-0.10.21-cp311-cp311-manylinux_2_28_x86_64.whl`, 35,622,638 bytes.
+- Settings: `Hands(static_image_mode=False, max_num_hands=2, model_complexity=1, min_detection_confidence=0.5,
+  min_tracking_confidence=0.5)` (the signature's defaults except `max_num_hands`, which defaults to 2 as well).
+  Script `scripts/run_mediapipe_legacy_hands.py <clip> <full|crop> <outdir>`. Runs: steps of group job C1.
+- Handedness convention, from the docstring of `mediapipe/python/solutions/hands.py` in this wheel: "Note that it
+  determines handedness assuming the input image is mirrored, i.e., taken with a front-facing/selfie camera (
+  https://en.wikipedia.org/wiki/Front-facing_camera) with images flipped horizontally. If that is not the case, use, for
+  instance, cv2.flip(image, 1) to flip the image first for a correct handedness output." The frames here were not
+  flipped. Measured: on R3c the hand at the neck (mean wrist (1679, 591)) is "Right" in all 450 frames here and "Left"
+  in all 450 frames with the Tasks API 1.2.2; the hand at the sound hole (mean wrist (966, 900)) is "Left" here and
+  "Right" with the Tasks API. On R3a_cu and R3b the fretting hand is "Right" here (300 of 300, 451 of 451 detections) and
+  "Left" with the Tasks API.
+
+| step | clip, mode | wall | CPU (user+sys) | peak RSS | per-frame inference mean / median / p90 | fps from mean | frames with 0 / 1 / 2 hands | labels | mean score (min) |
+|---|---|---|---|---|---|---|---|---|---|
+| mediapipe-legacy_R3a_full | R3a full | 23.20 s | 20.37 s | 279.9 MiB | 27.68 / 24.49 / 39.03 ms | 36.12 | 1 / 296 / 243 | Right 678, Left 104 | 0.891 (0.500) |
+| mediapipe-legacy_R3a_crop | R3a crop 3x | 20.77 s | 20.60 s | 281.0 MiB | 27.07 / 24.41 / 38.43 ms | 36.94 | 1 / 297 / 242 | Right 640, Left 141 | 0.926 (0.501) |
+| mediapipe-legacy_R3a_cu_full | R3a_cu full | 11.39 s | 10.50 s | 270.0 MiB | 26.56 / 24.36 / 34.90 ms | 37.66 | 0 / 300 / 0 | Right 300 | 0.995 (0.987) |
+| mediapipe-legacy_R3b_full | R3b | 23.43 s | 22.00 s | 299.6 MiB | 28.86 / 26.89 / 36.33 ms | 34.65 | 5 / 439 / 6 | Right 451 | 0.989 (0.973) |
+| mediapipe-legacy_R3c_full | R3c | 21.80 s | 20.90 s | 306.8 MiB | 24.86 / 23.82 / 29.75 ms | 40.22 | 0 / 0 / 450 | Left 450, Right 450 | 0.989 (0.682) |
+
+Where the R3a detections landed (`hand_regions.py`; frames with at least one detection in the region):
+
+| step | medium: fretting | medium: picking | medium: elsewhere | wide: fretting | wide: elsewhere |
+|---|---|---|---|---|---|
+| R3a full | 318 of 319 | 62 of 319 | 1 | 221 of 221 | 135 |
+| R3a crop 3x | 319 of 319 | 158 of 319 | 0 | 220 of 221 | 48 |
+
+- The wide-shot "elsewhere" detections sit in the same 20-px cell as the Tasks API's (centre in (340-360, 260-280),
+  135 of 135 in full mode, 46 of 48 in crop mode), the spot on the hanging sheet music described above.
+- On R3b, 6 frames have two detections, all with wrists at x 949.8-1273.3 px (the fretting-hand area; the picking hand
+  is at x < 300); which of the two is a second detection of the same hand was not checked.
+- Output format: `results.multi_hand_landmarks` (per hand 21 `landmark` with x, y normalized and z),
+  `results.multi_handedness` (per hand `classification[0]` with `label`, `score`, `index`),
+  `results.multi_hand_world_landmarks` (meters). Same 21-point order as the Tasks API. The script stores the same JSON
+  fields as the Tasks run.
+- Samples: `samples/mediapipe-legacy/` (frames, summaries).

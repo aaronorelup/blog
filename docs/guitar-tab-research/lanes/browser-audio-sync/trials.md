@@ -15,24 +15,61 @@ a browser with a sound card or a GPU. Every number is a measurement on that box 
   127.0.0.1 with `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp` (so
   `crossOriginIsolated` is true and SharedArrayBuffer exists), or without them when the URL has `?coi=0`.
   `scripts/drive.mjs` opens one page, waits for it to set `window.__done`, and saves `window.__result` as JSON.
-  Requests from the browser to any other host are answered from a local cache or aborted; every result file lists
-  them under `external_requests` (none of the runs below made any). Libraries come from npm (versions per section),
-  installed with `npm install --save-exact` into `/home/user/gtr/lanes/browser-audio-sync/node/` (696 MB for all of
-  them); packages with bare imports were bundled with esbuild 0.28.2 (`node/entries/*.js`).
+  Requests from the browser to any other host are answered from a local cache (filled with curl by
+  `scripts/cache_url.sh`) or aborted; every result file lists them under `external_requests` (only the smplr and
+  soundfont-player pages made any: their soundfont files at gleitz.github.io). Libraries come from npm (versions per section),
+  installed with `npm install --save-exact` into `/home/user/gtr/lanes/browser-audio-sync/node/` (696 MB for the
+  first set, 720 MB at the end); packages with bare imports were bundled with esbuild 0.28.2 (entries copied to
+  `scripts/esbuild-entries/`). To save shared disk, `node_modules` and the CDN cache were deleted at 22:00 UTC after the
+  last run; `samples/environment/node-package.json` and `node-package-lock.json` restore the same versions with
+  `npm ci` in that folder, and `samples/environment/venv-analysis.freeze.txt` lists the Python analysis environment.
 - **Capturing audio:** an AudioWorklet recorder (`scripts/pages/common.js`, `makeRecorder`) at the end of the graph
   copies every render quantum it receives into memory and maps each sample to the AudioContext frame timeline with
   `currentFrame`. Measured fact found while building it: right after an AudioWorkletNode is created, Chromium skipped
-  its `process()` call for a few render quanta and `currentFrame` jumped by 384 to 1408 frames (one such jump per run,
-  within the first 30 ms; logged in every result as `capture.gaps`); the recorder writes zeros for the skipped
-  frames so that the timeline stays exact. Without that fill the first smoke test (r0095) showed every click 20.3 ms
-  or 31.9 ms "early", which is how it was found (r0103 after the fix). The numbers are therefore positions on the
+  its `process()` call for a few render quanta and `currentFrame` jumped by 384 to 1408 frames (once per run, one or
+  two render quanta after the first call; logged in every result as `capture.gaps`); the recorder writes zeros for
+  the skipped frames so that the timeline stays exact. Without that fill, in the first smoke test (r0095) the idle
+  look-ahead, Tone.js and AudioWorklet runs showed every click a constant 20.3 ms or 31.9 ms "early", which is how it
+  was found (r0103 after the fix). In three captures (r0199 Tone.js busy, r0225 SpessaSynth, r0229 soundfont-player) `currentFrame` repeated a value
+  once instead (see the metronome section). The numbers are therefore positions on the
   AudioContext's render timeline as the graph produced them. Headless Chromium has no sound device: what a speaker
   would add (device latency, glitches) is not in these numbers.
-- **CPU slots:** compute runs went through `gtr-run` in a 2-core slot. Real-time tests (metronome, sync, video
-  playback, real-time capture) were run with `gtr-run --nolock` (logged in the ledger, not pinned, no slot) because
-  about 30 jobs from other lanes were queued for the two slots at 21:16-21:20 UTC and a real-time test cannot be made
-  faster by a slot; the ledger line of each of those runs records `load1_at_start`, and the box was shared with other
-  agents' jobs throughout (load average 6 to 11 at 21:05-21:20 UTC).
+- **CPU slots:** only the environment probe (r0042, r0050) and the two metronome smoke tests (r0095, r0103) ran in a
+  2-core slot. Every other run used `gtr-run --nolock` (logged in the ledger, not pinned, no slot): about 30 jobs from
+  other lanes were queued for the two slots from 21:16 UTC on, and batches of this lane queued for slots were
+  cancelled after waiting (see "Run ids"). The box was shared with other agents' jobs throughout: `load1_at_start` of
+  this lane's runs ranged from 5.0 to 19.8 on 4 cores. Times below are therefore wall-clock on a loaded, shared
+  4-core box, not on 2 reserved cores, and `navigator.hardwareConcurrency` was 4 in unpinned runs (2 in the slot).
+
+## Install (all browser libraries, one folder)
+
+Commands that worked (`/home/user/gtr/lanes/browser-audio-sync/node/`, npm 10.9.9, registry.npmjs.org, 2026-11-10):
+
+```
+npm init -y
+npm install --no-audit --no-fund --save-exact tone@15.1.22 @coderline/alphatab@1.9.0 wavesurfer.js@8.0.5 \
+  peaks.js@4.0.0 waveform-data@4.5.2 mediabunny@1.65.2 soundtouchjs@0.3.0 signalsmith-stretch@1.3.2 \
+  rubberband-wasm@3.3.0 smplr@1.2.0 soundfont-player@0.12.0 spessasynth_lib@4.4.7 js-synthesizer@1.13.0 \
+  @spotify/basic-pitch@1.0.1 essentia.js@0.1.3 onnxruntime-web@1.31.1 @mediapipe/tasks-vision@1.2.2 \
+  @ffmpeg/ffmpeg@0.12.15 @ffmpeg/core@0.12.10 @ffmpeg/core-mt@0.12.10 @ffmpeg/util@0.12.2      # 14.3 s, 126 packages
+npm install --save-exact esbuild@0.28.2
+npm install --save-exact @tensorflow/tfjs-backend-wasm@3.21.0     # to match the tfjs 3.21.0 basic-pitch pulled in
+npm install --save-exact demucs-web@1.0.2 pitchy@4.1.0 web-audio-beat-detector@8.2.39
+npm install --save-exact aubiojs@0.2.1 pitchfinder@2.3.4 realtime-bpm-analyzer@5.6.1
+npx esbuild entries/<name>.js --bundle --format=esm --platform=browser --outfile=../work/build/<name>.js
+  # basicpitch, spessa, small: plus --define:process.env.NODE_ENV='"production"' --define:global=globalThis for basicpitch;
+  # small2 (aubiojs): plus --external:path --external:fs --external:crypto
+```
+
+Warnings: `js-synthesizer@1.13.0` declares `engines: {node: '>=22', npm: '>=11'}` (npm 10.9.9 here: EBADENGINE warning,
+installed anyway); `audio-loader@0.5.0` (a soundfont-player dependency) is marked deprecated. `@spotify/basic-pitch`
+1.0.1 depends on `@tensorflow/tfjs` `^3.2.0`, which npm resolved to 3.21.0 (the current tfjs is 4.22.0). Installed
+sizes measured with `du -sh` before deletion: `@tensorflow` (tfjs 3.21.0 and its backends) 266 MB, `onnxruntime-web`
+145 MB, `@ffmpeg` 125 MB, `@mediapipe` 30 MB, `standardized-audio-context` 16 MB, `core-js` 16 MB, `@coderline`
+(alphaTab) 14 MB, `mediabunny` 12 MB, `essentia.js` 9.8 MB, `tone` 7.2 MB, `js-synthesizer` 7.0 MB, `spessasynth_core`
+4.9 MB, `spessasynth_lib` 4.6 MB, `peaks.js` 4.3 MB, `@spotify` 1.9 MB, `soundtouchjs` 1.9 MB, `wavesurfer.js` 1.9 MB,
+`smplr` 1.2 MB; every other package was smaller than 1.2 MB (`demucs-web` 31,003 bytes). Model files are listed in
+the sections that use them.
 
 ## Environment probe: Chromium 153 (Chrome for Testing 153.0.8010.12)
 
@@ -47,7 +84,7 @@ a browser with a sound card or a GPU. Every number is a measurement on that box 
   `outputLatency` 0.032 s (read after 3 s of running; read right after `resume()` it was 0 in r0143 and r0150),
   latencyHint `interactive` and `balanced` the same, `playback` gives baseLatency 0.02322 s and outputLatency 0.072 s.
   `ctx.currentTime` advanced 3.0128 s while `performance.now()` advanced 3.0008 s (r0042). `AudioContext.playbackStats`
-  exists (underrunEvents 0, averageLatency 0.031183 s, maximumLatency 0.032879 s after 2 s). `setSinkId` exists.
+  exists (underrunEvents 0, averageLatency 0.031183 s, maximumLatency 0.032879 s, totalDuration 2.014 s). `setSinkId` exists.
   `destination.maxChannelCount` 2.
 - **Codecs (`canPlayType`):** "probably" for audio/mpeg, audio/flac, AAC (`mp4a.40.2`), Opus (ogg and webm), Vorbis,
   H.264 Baseline and High (`avc1.42E01E`, `avc1.64001E`), VP8, VP9 (webm and mp4), AV1 (mp4 and webm); "maybe" for
@@ -58,8 +95,9 @@ a browser with a sound card or a GPU. Every number is a measurement on that box 
   HEVC false in all three. `AudioDecoder.isConfigSupported` true for AAC, Opus, MP3, pcm-s16, pcm-f32 (FLAC and Vorbis
   threw "description is required", i.e. they need the codec description from a container). `VideoEncoder` true for
   H.264, VP8, VP9, AV1.
-- **decodeAudioData** worked on S1.wav (44.1 kHz, 2 ch, 29.833 s, 27 ms), R3a.webm (Opus track, returned at 44.1 kHz,
-  17.9995 s, 120 ms), R3a.mp4 (AAC, 44.1 kHz, 17.9995 s, 43 ms) and the R2full FLAC (228.48 s, 558 ms) (times r0042).
+- **decodeAudioData** (in an OfflineAudioContext at 44.1 kHz, which resamples to its own rate) worked on S1.wav
+  (2 ch, 29.833 s, 27 ms), R3a.webm (Opus track, 17.9995 s, 120 ms), R3a.mp4 (AAC, 17.9995 s, 43 ms) and the R2full
+  FLAC (228.48 s, 558 ms) (times r0042).
 - **`<video>`:** R3a.mp4 and R3a.webm both load (640x480, duration 18.018 s). `requestVideoFrameCallback` and
   `preservesPitch` exist.
 - **Graphics:** WebGL 2.0 through ANGLE on "SwiftShader Device (Subzero)" (software). `navigator.gpu` exists but
@@ -74,7 +112,7 @@ a browser with a sound card or a GPU. Every number is a measurement on that box 
   through the clip, finds each click onset (first sample above 0.05 after 100 ms below it) and reports click frame
   minus beat frame (beat frame = S4 sample-0 frame + round(beat time x 44100)). Every 50 ms the page also logged
   `ctx.currentTime` and the media position.
-- **Same clock (AudioBufferSourceNode), r0143** (--nolock, wall 44.2 s, load1 at start in ledger): S4 decoded with
+- **Same clock (AudioBufferSourceNode), r0143** (--nolock, wall 44.2 s, load1 7.0): S4 decoded with
   `decodeAudioData`, started at a frame-exact time; all 68 clicks scheduled up front at start + beat time. S4's sample
   0 was found at exactly the scheduled frame (29602; difference 0 frames); the lag was the same (0) in every 2 s window;
   the captured channel 0 differed from S4's (L+R)/2 by at most 2.6e-5 (rms 2.9e-6). 68 of 68 clicks found; click minus
@@ -102,11 +140,13 @@ a browser with a sound card or a GPU. Every number is a measurement on that box 
   `new VideoFrame(video)` copies the frame on screen; the SHA-1 of its luma plane is looked up in that list.
 - **requestVideoFrameCallback during playback** (muted, rate 1, whole 18 s clip; r0156 webm, r0157 mp4; --nolock):
   - mp4: 539 callbacks for 540 frames; `presentedFrames` went up by 1 at every callback; `mediaTime x 30000/1001` was
-    within 1e-5 of an integer every time; callback interval mean 33.46 ms, min 16.66 ms, max 66.67 ms (60 Hz compositor
-    ticks). With frame identification on (second pass): all 539 frames shown were identified, each was the frame whose
-    pts equals `mediaTime` (539 of 539), pixel format I420, identification cost mean 1.27 ms per frame (max 6.5 ms).
+    within 1e-5 of an integer every time; callback interval mean 33.46 ms, min 16.66 ms, max 66.67 ms. With frame
+    identification on (second pass): all 539 frames shown were identified, and each was the frame whose ffprobe pts is
+    the last at or before `mediaTime` + 0.5 ms (539 of 539), pixel format I420, identification cost mean 1.27 ms per
+    frame (max 6.5 ms).
   - webm: 536 callbacks in the first pass (`presentedFrames` stepped by 2 twice), 537 in the second; the frame shown
-    was in every case (537 of 537) the frame whose pts equals `mediaTime`. In this file the pts are rounded to whole
+    was in every case (537 of 537) the frame whose pts is the last at or before `mediaTime` + 0.5 ms. In this file the
+    pts are rounded to whole
     milliseconds and the first frame has pts 0.033 s (so `mediaTime x fps` is up to 0.015 frame off an integer, and
     "frame index from mediaTime" is 1 more than the decode index). Callback interval mean 33.61 ms, min 16.66, max 83.33.
 - **Seeking** (`currentTime = t`, then the frame shown after `seeked` and the next video frame callback), 12 target
@@ -138,8 +178,9 @@ a browser with a sound card or a GPU. Every number is a measurement on that box 
   detected click + n x 22050 for (b), which has no intended times. The page computed the numbers;
   `scripts/check_metronome.py` recomputed them from the saved WAVs with numpy and got the same values
   (`samples/web-audio-metronome/check_metronome_output.txt`).
-- Run: **r0199** (`gtr-run --nolock`, real time, wall 548.5 s for all 8 pages; load average 9 to 16 on the box from
-  other lanes during the run, 21:20-21:29 UTC). 122 of 122 clicks were found in every one of the 8 captures.
+- Run: **r0199** (`gtr-run --nolock`, real time, wall 548.5 s for all 8 pages, 21:20-21:29 UTC; `load1_at_start`
+  of the runs started on the box in that window was 9 to 16; this lane's own smoke tests r0170, r0171 and r0195 ran at
+  the same time). 122 of 122 clicks were found in every one of the 8 captures.
 
 | method | load | mean deviation (ms) | largest deviation (ms) | clicks off the grid | other facts |
 |---|---|---|---|---|---|
@@ -157,8 +198,9 @@ a browser with a sound card or a GPU. Every number is a measurement on that box 
   appended the repeated quantum and padded the following jump with zeros, which moves every later sample 128 frames
   (2.902 ms) late; the raw page numbers for that run (mean 2.195 ms, largest 5.170 ms; clicks 33 to 121 all show
   +2.902 ms) contain that shift. `check_metronome.py` subtracts the 128 frames after the event and gives the row
-  above. The recorder was changed afterwards (`common.js`) to step back on a repeated frame index; no other capture of
-  this lane before the change had a negative step (each result lists its steps in `capture.gaps`).
+  above. The recorder was changed afterwards (`common.js`) to step back on a repeated frame index. One other capture
+  made with the first version had a negative step (SpessaSynth, r0225, before its first note; corrected the same way in
+  the reference-playback analysis); each result lists its steps in `capture.gaps`.
 - `AudioContext.playbackStats` at the end (fake audio output, no device): underrunEvents 0 in 6 runs, 1 (Tone.js idle)
   and 5 (AudioWorklet idle, underrunDuration 0.05 s) in the others; averageLatency 0.0313 s in all.
 - Output files (kept outside git): `out/metronome/metronome_<method>_busy<0|100>.wav`, mono 32-bit float, 44.1 kHz,
@@ -223,7 +265,9 @@ a browser with a sound card or a GPU. Every number is a measurement on that box 
   package uses for ONNX (`note` = `StatefulPartitionedCall:1`, `onset` = `StatefulPartitionedCall:2`, `contour` =
   `StatefulPartitionedCall:0`, from `basic_pitch/inference.py`). Notes: `outputToNotesPoly` +
   `addPitchBendsToNoteEvents` + `noteFramesToTime` from the npm package, with two parameter sets: "pydefault" =
-  onset 0.5, frame 0.3, minimum length 11 frames (the Python CLI defaults: 127.70 ms at 86 frames/s) and "readme" =
+  onset 0.5, frame 0.3, minimum length 11 frames (the defaults in the Python package's `basic_pitch/inference.py`:
+  `DEFAULT_ONSET_THRESHOLD = 0.5`, `DEFAULT_FRAME_THRESHOLD = 0.3`, `DEFAULT_MINIMUM_NOTE_LENGTH_MS = 127.7`, turned
+  into frames by `int(np.round(minimum_note_length / 1000 * (AUDIO_SAMPLE_RATE / FFT_HOP)))` = 11) and "readme" =
   0.25, 0.25, 5 (the npm README example).
 - Input handling: the WAV is decoded by `decodeAudioData` and resampled to 22,050 Hz mono by an OfflineAudioContext
   (the browser's resampler); the npm `evaluateModel` throws unless the AudioBuffer is 22,050 Hz and mono.
@@ -271,7 +315,7 @@ a browser with a sound card or a GPU. Every number is a measurement on that box 
   `TonalExtractor(signal, 4096, 2048, 440)` (per-frame `chords_progression`, written as a .lab by merging equal
   neighbouring frames, frame i placed at i x 2048 / 44100 s); `PitchMelodia(signal)` (defaults, frame i placed at
   i x 128 / 44100 s; this time convention is the page's assumption, not checked against Essentia's docs).
-- Run: the `browser-analysis-batch` run (`gtr-run --nolock`; its id is listed under "Run ids" at the end); per
+- Run: r0314 (`browser-analysis-batch`, `gtr-run --nolock`, wall 460.7 s for 16 pages); per
   clip in the page: S3 2.90 s total (WASM init 197 ms, rhythm 2.15 s, key 69 ms, tonal 148 ms); S4 4.44 s (rhythm
   3.42 s, key 105 ms, tonal 451 ms); S1 10.62 s (rhythm 3.10 s, key 202 ms, PitchMelodia 6.87 s).
 - Scores (gtr-eval; beats: 70 ms window, continuity 17.5 %; tempo: 4 % tolerance; chords: mir_eval duration-weighted):
@@ -295,7 +339,8 @@ a browser with a sound card or a GPU. Every number is a measurement on that box 
   `S1_pitchmelodia.csv` (time_s, frequency_hz, confidence).
 - Constraint inputs a re-run can use: RhythmExtractor2013 `minTempo`, `maxTempo`, `method`; TonalExtractor
   `tuningFrequency` (a known tuning offset can be passed as a reference frequency), frame and hop size; KeyExtractor
-  has profile and tuning parameters (not varied here). No capo or string inputs.
+  takes `profileType`, `tuningFrequency`, `minFrequency`, `maxFrequency` and more (signature in the package's
+  `dist/core_api.d.ts`, jsDelivr copy read 2026-11-10; not varied here). No capo or string inputs.
 - Samples: `samples/essentia-js/` (beats, bpm, key, .lab files, gtr-eval JSON, page results, the first 2,000 rows of
   the PitchMelodia CSV).
 
@@ -305,7 +350,7 @@ a browser with a sound card or a GPU. Every number is a measurement on that box 
   `VideoSampleSink.samples()` for every frame and `VideoSampleSink.getSample(t)` for 12 random-access times;
   Mediabunny decodes with the browser's WebCodecs `VideoDecoder` (`canDecode()` true for both). Each decoded frame's
   luma plane was hashed and compared with ffmpeg 6.1.1's decode (`scripts/frame_hashes.py`).
-- Run: same batch as essentia.js (`browser-analysis-batch`, --nolock). Results (`out/video/decode_<webm|mp4>.json`):
+- Run: same batch as essentia.js (r0314, --nolock). Results (`out/video/decode_<webm|mp4>.json`):
   - webm: codec "vp9", decoder config `vp09.00.30.08.01.02.02.02.00`, 640x480; 539 frames; all 539 luma planes
     bit-identical to ffmpeg's frame with the same index; every timestamp equal to ffprobe's pts (0.033, 0.067, 0.100 ...
     s, whole milliseconds); pixel format I420; decode of all frames 712.8 ms (1.32 ms per frame), 985.7 ms with the
@@ -314,7 +359,7 @@ a browser with a sound card or a GPU. Every number is a measurement on that box 
     timestamps within 0.00033 ms of ffprobe's 6-decimal pts (Mediabunny gives k x 1001/30000 exactly); decode of all
     frames 1078.7 ms (2.00 ms per frame), 1304.9 ms with hashing. `getSample(k x 1001/30000)` returned frame k in 12 of
     12 cases (the `<video>` element showed frame k-1 for 10 of the same 12 times, see the video section above).
-  - `getSample` took 7 to 337 ms per call (it decodes from the previous key frame).
+  - `getSample` took 7 to 337 ms per call.
 - Output format facts: `VideoSample` objects (timestamp and duration in seconds, `format` "I420", `toVideoFrame()`,
   `copyTo()`, `draw()` onto a canvas). Samples: `samples/mediabunny-webcodecs/`.
 
@@ -323,8 +368,8 @@ a browser with a sound card or a GPU. Every number is a measurement on that box 
 - What: npm `@coderline/alphatab` 1.9.0 (`dist/alphaTab.mjs`, its own worker and AudioWorklet files, SoundFont
   `dist/soundfont/sonivox.sf2`), loading the shared `S2n.gp5` (written with PyGuitarPro by the inputs builder).
   alphaTab read it as: title "Twinkle (Ah! vous dirai-je, maman), fingerstyle, nylon", tempo 112, one track "Guitar",
-  strings [64, 59, 55, 50, 45, 40] (string 1 first), capo 0, 13 master bars in 4/4 (the first is the silent count-in
-  bar of the test set). The web-tab-render lane covers alphaTab's rendering and player in general; this section is
+  strings [64, 59, 55, 50, 45, 40] (string 1 first), capo 0, 13 master bars in 4/4 (S2n is 12 bars of music after
+  one silent count-in bar). The web-tab-render lane covers alphaTab's rendering and player in general; this section is
   only the timing features.
 - **Metronome through the audio export API** (`api.exportAudio(options)`, since 1.6.0; `scripts/pages/alphatab.html`):
   `AudioExportOptions` with `sampleRate` 44100, `metronomeVolume` 1, `useSyncPoints` false and `trackVolume`
@@ -334,14 +379,17 @@ a browser with a sound card or a GPU. Every number is a measurement on that box 
   27857.14 ms, `endTick` 49920. The metronome-only render has 52 clicks (13 bars x 4); onset = first sample above 5 %
   of the peak after 150 ms below it. Click onset minus n x 535.714 ms (the beat at 112 BPM): from -1.429 to 0 ms
   (mean -0.711 ms); successive intervals 535.51 ms or 536.96 ms (interval minus beat -0.204 to +1.247 ms), which is
-  23,616 or 23,680 samples: whole multiples of 64 samples, the synthesizer's block size stated in alphaTab's
-  `IAudioExporter.render` documentation ("the synthesizer internally uses a fixed block size of 64 samples").
+  23,616 or 23,680 samples: whole multiples of 64 samples, the synthesizer's block size stated in the
+  `IAudioExporter.render` doc comment of the installed `dist/alphaTab.d.ts` ("the synthesizer internally uses a fixed
+  block size of 64 samples for synthesizing audio").
+  Repeated in r0329 (`browser-analysis-batch2`): the same 52 click positions; score load 377 ms, exports 196 ms and
+  76 ms.
 - **Count-in and metronome in real-time playback** (`scripts/pages/alphatab_live.html?mode=countin`, r0269, --nolock):
   `countInVolume` 1, `metronomeVolume` 1, guitar muted with `changeTrackMute`. alphaTab's synthesizer output is an
   AudioWorkletNode in its own AudioContext (44.1 kHz), connected to the destination only after the first `play()`
-  (the first attempt, r0257, found no connection before playing and recorded nothing; r0266 tapped the first node,
-  which stayed silent, because alphaTab connected new nodes on the next `play()`; r0269 tapped every node connected
-  to the destination: 3). In the 8 s after `play()`: 15 clicks; the first 8.7 ms after the context frame at which
+  (the first attempt, r0257, found no connection before playing and recorded nothing; r0266 tapped the node connected
+  at the first `play()` and recorded silence; r0269 tapped every node alphaTab connected to the destination, 3 by the
+  end, and recorded the clicks). In the 8 s after `play()`: 15 clicks; the first 8.7 ms after the context frame at which
   `play()` was called; intervals 535.51 ms (11 of 14), 552.93 ms (between clicks 4 and 5, where the one-bar count-in
   meets the song's own metronome, if the count-in is one 4/4 bar: an assumption, the page cannot tell count-in clicks
   from metronome clicks), 536.96 ms and 550.02 ms. Box load average was above 10 during the run.
@@ -350,8 +398,8 @@ a browser with a sound card or a GPU. Every number is a measurement on that box 
   `api.player.output.updatePosition(audio.currentTime * 1000)` on every animation frame. alphaTab called the handler:
   `seekTo(0.558 ms)` then `play()` on `api.play()`; `seekTo(20000)` when `api.timePosition = 20000` was set;
   `seekTo(20892.857)` and `pause()` on `api.pause()`. 661 position events in 10 s; in all 504 checked,
-  `playerPositionChanged.currentTime` equalled the media time passed in (alphaTab takes the media element's time as
-  its clock in this mode, so the cursor can only be as exact as the position the page feeds it). 1.5 s after the seek
+  `playerPositionChanged.currentTime` equalled the media time passed in (in this mode alphaTab's reported position is
+  the media time the page passes to `updatePosition`). 1.5 s after the seek
   the audio was at 21414.5 ms and `api.timePosition` at 21412.7 ms.
 - NOT RUN HERE: the backing-track mode (`PlayerMode.EnabledBackingTrack`) with sync points, which needs a Guitar Pro
   7/8 file that carries an audio track and sync points; the shared set has Guitar Pro 5 files only.
@@ -374,5 +422,320 @@ a browser with a sound card or a GPU. Every number is a measurement on that box 
   Tone.js and AudioWorklet idle 0 ms; setInterval idle largest 9.57 ms; busy: look-ahead 3 late clicks (largest
   9.52 ms), setInterval mean 40.68 ms, largest 102.63 ms, Tone.js 3 late (largest 29.84 ms), AudioWorklet 0 ms. Basic
   Pitch webgl on SwiftShader: model load 130 ms, inference 139.4 s, 62 notes found, 62 of 62 matched, mean onset error
-  -3.92 ms. The page was not tested over the real CDN or from a `file://` address. Saved output:
-  `samples/for-aaron-page/test_in_headless_chromium.json`.
+  -3.92 ms. A third section added afterwards runs the ONNX copy (nmp.onnx from raw.githubusercontent.com, `main`
+  branch) in `onnxruntime-web@1.31.1/dist/ort.webgpu.min.mjs` on the wasm and WebGPU execution providers with the same
+  windowing and post-processing as the lane's Basic Pitch page: r0310 failed because the page (not cross-origin
+  isolated) asked for `ort-wasm-simd-threaded.asyncify.mjs`, which was not yet cached; after caching it, r0313: wasm
+  with 1 thread (`crossOriginIsolated` false), session creation 3.70 s, inference 6.08 s, 62 notes found, 62 of 62
+  matched; WebGPU skipped ("navigator.gpu.requestAdapter() gave no adapter"). The page was not tested over the real
+  CDN or from a `file://` address. Saved output: `samples/for-aaron-page/test_in_headless_chromium.json` and
+  `samples/for-aaron-page/test_onnx_section.json`.
+
+## ffmpeg.wasm 0.12 (`@ffmpeg/ffmpeg` 0.12.15 with `@ffmpeg/core` / `@ffmpeg/core-mt` 0.12.10)
+
+- What: FFmpeg compiled to WebAssembly, driven from the page (`scripts/pages/ffmpegwasm.html`) through
+  `new FFmpeg()`, `load({coreURL, wasmURL[, workerURL]})`, `writeFile`, `exec`, `readFile`. `-version` inside the
+  core printed "ffmpeg version 5.1.4", built with Emscripten 3.1.40, configured with `--enable-gpl --enable-libx264
+  --enable-libx265 --enable-libvpx --enable-libmp3lame --enable-libtheora --enable-libvorbis --enable-libopus ...`.
+  Package sizes on disk: `@ffmpeg` 125 MB in node_modules for both cores.
+- Command: `-hide_banner -i in -vn -map 0:a:0 -c:a pcm_s16le out.wav` (pull the first audio track out as 16-bit WAV,
+  keeping its sample rate).
+- Runs (r0314, --nolock): R3a.mp4 (AAC, 2,368,626 bytes in) single-thread core: load 357 ms,
+  exec 494 ms, 3,178,792 bytes out (44.1 kHz stereo, 794,624 frames); R3a.webm (Opus) single-thread: load 427 ms,
+  exec 426 ms, 3,456,208 bytes out (48 kHz stereo, 863,978 frames); R3a.mp4 with the multi-thread core (page
+  cross-origin isolated): load 1,396 ms, exec 373 ms, same output bytes.
+- Output against native ffmpeg 6.1.1 on the same files and the same arguments (`ffmpeg -v error -y -hide_banner -i
+  <R3a file> -vn -map 0:a:0 -c:a pcm_s16le <out>.wav`, compared with `scripts/compare_wav.py`; the native copies were
+  deleted afterwards to save disk): same frame
+  count; 99.990 % (mp4) and 99.989 % (webm) of the int16 samples identical, the rest differ by 1 (largest difference 1);
+  the single-thread and multi-thread outputs are identical to each other.
+- Input format facts: whatever the core's FFmpeg 5.1.4 build demuxes and decodes (here MP4/AAC and WebM/Opus); files go
+  through ffmpeg.wasm's in-memory file system, so the whole input is held in memory. Output: any format FFmpeg writes
+  (here WAV). Samples: `samples/ffmpeg-wasm/`. Output WAVs kept outside git: `out/ffmpegwasm/R3a_*_st.wav`,
+  `R3a_mp4_mt.wav` (18.0 s each).
+
+## MediaPipe Tasks Vision 1.2.2 HandLandmarker in the page (R3a, R3b, R3c)
+
+- What: npm `@mediapipe/tasks-vision` 1.2.2 (`vision_bundle.mjs`, WASM files from the package's `wasm/` folder),
+  `FilesetResolver.forVisionTasks` + `HandLandmarker.createFromOptions` with `runningMode` "VIDEO", `numHands` 2 and
+  `delegate` "CPU" or "GPU". Model: `hand_landmarker.task` float16, 7,819,105 bytes, from
+  https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task
+  (Last-Modified Wed, 26 Apr 2023; sha256 `fbc2a300...`; downloaded 2026-11-10). Frames: WebCodecs decode through
+  Mediabunny (`VideoSampleSink.samples()`), each `VideoFrame` passed to `detectForVideo(frame, timestampMs)`; every call
+  timed with `performance.now()` (`scripts/pages/mediapipe.html`).
+- Runs (`gtr-run --nolock`; `load1_at_start` 19.5 for r0314 and 9.0 for r0329, so these times are on a heavily
+  shared CPU): R3a CPU (r0314) all 539 frames; R3a GPU delegate (r0314) first 60 frames; R3b and R3c CPU (r0329,
+  `browser-analysis-batch2`) first 150 frames each.
+
+| clip (size) | delegate | frames | ms per frame: mean / min / 95th pct / max | hands found per frame | handedness labels |
+|---|---|---|---|---|---|
+| R3a (640x480 VP9) | CPU | 539 | 293.5 / 94.0 / 492.2 / 930.5 (first frame) | 0: 1, 1: 420, 2: 118 | "Left" alone 420; "Left"+"Left" 62; "Left"+"Right" 56 |
+| R3a | GPU (WebGL on SwiftShader) | 60 | 3480.7 / 1849.9 / 4774.5 / 12985.4 (first frame) | 1: 53, 2: 7 | "Left" 53; "Left"+"Right" 5; "Left"+"Left" 2 |
+| R3b (1920x1080 VP9) | CPU | 150 | 198.7 / 94.2 / 331.9 / 703.1 (first frame) | 0: 5, 1: 145 | "Left" 145 |
+| R3c (1920x1080 VP9) | CPU | 150 | 148.1 / 89.1 / 243.4 / 917.5 | 2: 150 | "Left"+"Right" 150 |
+
+- Model creation took 0.69 to 0.86 s in these four runs. CPU and GPU delegates on the same 60 R3a frames: same number of hands in 52 of
+  60 frames; for frames where both found a hand, the largest distance between corresponding landmarks of the first
+  hand had a median of 0.0027 and a maximum of 0.0196 (in normalized image coordinates).
+- The console showed "Created TensorFlow Lite XNNPACK delegate for CPU" and the warning "Using NORM_RECT without
+  IMAGE_DIMENSIONS is only supported for the square ROI" (all three clips are not square).
+- Output format facts: per frame `landmarks` (per hand 21 points with x, y normalized to the image width and height
+  and z relative depth), `worldLandmarks` ("Hand landmarks in world coordinates", per the package's `vision.d.ts`;
+  not saved here), `handedness` (category name "Left"/"Right" and a score; the labels are reported as the model gave
+  them, not checked against the video; the typings say: "Left and Right handedness correspond to the subject's hands,
+  not the viewer. Passing a horizontally mirrored image will invert these outputs." (`@mediapipe/tasks-vision@1.2.2/
+  vision.d.ts` on jsDelivr, read 2026-11-10)). Saved as JSON
+  (`out/mediapipe/hands_<clip>_<delegate>.json`); samples `samples/mediapipe-hands/` (first 30 or 40 frames per clip,
+  page results).
+- Constraint inputs: `numHands`, `minHandDetectionConfidence`, `minHandPresenceConfidence`, `minTrackingConfidence`
+  (defaults used); no guitar-specific inputs.
+- The video-hands-fretboard lane covers MediaPipe in Python and the meaning of these landmarks for tab; this section
+  is only what runs in the browser and how long it took here.
+
+## Small JavaScript analysis libraries: pitchy 4.1.0, web-audio-beat-detector 8.2.39
+
+- What: npm `pitchy` 4.1.0 (McLeod pitch method; `PitchDetector.forFloat32Array(2048)`, `findPitch(frame, 44100)`
+  returns [frequency, clarity]) on 2048-sample frames every 441 samples (10 ms), time = frame centre; npm
+  `web-audio-beat-detector` 8.2.39 (`analyze(audioBuffer)` returns a tempo, `guess(audioBuffer)` returns
+  `{bpm, offset, tempo}`); both bundled with esbuild (`scripts/esbuild-entries/small.js`), page
+  `scripts/pages/smalljs.html`, input decoded at 44.1 kHz (pitchy: channels averaged).
+- Run: r0329 (`browser-analysis-batch2`, --nolock). pitchy took 1.09 s for S1 (2,979 frames) and 0.68 s for
+  R1b; web-audio-beat-detector took 74 to 226 ms per call.
+- pitchy against the truth melody (gtr-eval `f0`, 10 ms grid, 50 cents; pitchy gives a frequency for every frame, so
+  without a threshold every frame counts as voiced; "clarity >= 0.9" marks lower-clarity frames unvoiced):
+
+| clip | threshold | gtr-eval | voicing recall | voicing false alarm | raw pitch acc. | raw chroma acc. | overall acc. |
+|---|---|---|---|---|---|---|---|
+| S1 | none | e1192 | 1.000 | 0.467 | 0.937 | 0.952 | 0.888 |
+| S1 | clarity >= 0.9 | e1200 | 0.889 | 0.331 | 0.937 | 0.952 | 0.851 |
+| R1b (GuitarSet solo, voice "lead") | none | e1201 | 0.999 | 0.759 | 0.778 | 0.806 | 0.575 |
+| R1b | clarity >= 0.9 | e1202 | 0.753 | 0.158 | 0.778 | 0.806 | 0.736 |
+
+  (The first scoring attempts e1193, e1194, e1195 returned errors: the CSV's column was named `clarity`, which gtr-eval
+  does not read as a confidence column, so it was renamed `confidence` for e1200/e1202; R1b has no "melody" voice and
+  overlapping notes, so `--voice lead` was needed.)
+- web-audio-beat-detector (tempo: gtr-eval `tempo`, 4 % tolerance; beats: a grid built from `guess()` as offset + n x
+  60/bpm, scored with gtr-eval `beats`):
+
+| clip | analyze() tempo | guess() bpm, offset | gtr-eval tempo | gtr-eval beats (grid) |
+|---|---|---|---|---|
+| S3 (96 BPM) | 96.650 | 97, 0.1439 s | e1196: +1.04 % | e1197: F 0.620 (P 0.564, R 0.688), CMLt 0.769 |
+| S4 (116 BPM) | 115.970 | 116, 0.0278 s | e1198: 0.00 % | e1199: F 0.951 (P 0.907, R 1.000), every matched beat +27.8 ms |
+| R2 (no truth) | 143.474 | 143, 0.0968 s | no truth (the artist's page lists 72 bpm, per INPUTS.md, not checked) | |
+
+- Output format facts: pitchy returns one (frequency in Hz, clarity 0 to 1) pair per call; web-audio-beat-detector a
+  tempo (float BPM) and, from `guess()`, an integer bpm and the offset of the first beat in seconds (no beat list).
+  Constraint inputs: pitchy's frame size and the clarity threshold the caller applies; web-audio-beat-detector takes
+  `offset` and `duration` to analyse part of the buffer and `tempoSettings` (`minTempo`, `maxTempo`); its README
+  (installed package, read 2026-11-10): "By default the bpm are expected to be between 90 and 180 bpm. This can be
+  changed by specifying the `tempoSettings`." (defaults used here; 143 for R2 lies inside that 90 to 180 range).
+- Samples: `samples/small-js-libs/`.
+
+## In-browser Demucs: demucs-web 1.0.2 (HTDemucs as ONNX) in ONNX Runtime Web 1.31.1, WebAssembly
+
+- What: npm `demucs-web` 1.0.2 (31,003 bytes installed, du -sb; `src/index.js`, `DemucsProcessor`), whose README
+  says it uses "ONNX Runtime Web" for "WebGPU/WASM" inference of "Meta 的 HTDemucs 模型" (Meta's HTDemucs model) with 4
+  stems (drums, bass, other, vocals). Model: `htdemucs_embedded.onnx`, 180,534,758 bytes, from
+  https://huggingface.co/timcsy/demucs-web-onnx (revision `92e33df6...`, file sha256 `e5e425c1...`, matching the Hub's
+  LFS hash; downloaded 2026-11-10). The package's defaults: 44.1 kHz, segments of 343,980 samples (7.8 s) with 25 %
+  overlap, execution providers `['webgpu', 'wasm']`; the page passed `executionProviders: ['wasm']` (no WebGPU adapter
+  here) and `ort.env.wasm.numThreads` 2 or 4, page cross-origin isolated (`scripts/pages/demucs.html`).
+- Input: `S4_10s`, a 10.000 s cut of S4 starting at the first beat after the count-in (made for this lane with sox,
+  documented in `/home/user/gtr/lanes/browser-audio-sync/inputs/README.md`, copy in `samples/environment/`), stereo
+  44.1 kHz, passed as two Float32Arrays from `decodeAudioData`.
+- Run (r0329, `browser-analysis-batch2`, --nolock, box load average above 10): 2 threads: model load 3.23 s,
+  separation 55.6 s for the 10 s clip (2 segments; the first finished at 30.5 s); 4 threads: model load 3.93 s,
+  separation 117.1 s (first segment at 63.6 s; the box was shared with other lanes' jobs, so 4 threads were not 4 free
+  cores). The stems of the two runs are bit-identical (the 4-thread copies were deleted afterwards to save disk).
+  Output: four stems, each 441,000 samples, stereo.
+- Score against S4's own stems cut the same way (gtr-eval `stems`, e1223; mono, no alignment search, SI-SDR computed by
+  gtr-eval, SDR/SIR/SAR by mir_eval `bss_eval_sources` over the whole 10 s; stems paired drums=drums, bass=bass,
+  guitar=other, lead=vocals):
+
+| truth stem | demucs-web stem | SI-SDR (dB) | SDR (dB) | SIR (dB) | SAR (dB) |
+|---|---|---|---|---|---|
+| drums | drums | 8.92 | 9.51 | 22.28 | 9.77 |
+| bass | bass | 6.25 | 8.57 | 21.03 | 8.86 |
+| guitar (strummed steel guitar) | other | 5.25 | 5.55 | 8.73 | 8.95 |
+| lead (GM "Voice Oohs") | vocals | 6.40 | 7.97 | 13.57 | 9.56 |
+
+- Output format facts: `separate(left, right)` returns `{drums, bass, other, vocals}`, each `{left: Float32Array,
+  right: Float32Array}` at 44.1 kHz, the input's length. Constraint inputs: none for the music (segment length and
+  overlap are constants in `src/constants.js`; ONNX Runtime session options can be passed).
+- Output files (kept outside git): `out/demucs/t2/S4_10s_{drums,bass,other,vocals}.wav` (2 ch, float32, 10 s each).
+
+## Waveform views: wavesurfer.js 8.0.5 and peaks.js 4.0.0
+
+- What: npm `wavesurfer.js` 8.0.5 (`dist/wavesurfer.esm.js`) and `peaks.js` 4.0.0 (`dist/peaks.js`, the build with
+  Konva and waveform-data included), page `scripts/pages/waveform.html`; r0329 (`browser-analysis-batch2`, --nolock).
+- wavesurfer.js: `WaveSurfer.create({container, url, height: 100, width: 1000})` until the `ready` event: S4 (38.7 s
+  WAV) 704 ms, R2full (228.5 s WAV) 1,315 ms. `getDecodedData().sampleRate` was 8000 for both (the page set no
+  sample rate option); `exportPeaks({channels: 1, maxLength: 1000})` returned 1000 values per
+  channel. With a `<video>` (R3a.webm) as its `media` option, `ready` came after 215 ms and `getCurrentTime()` equalled
+  `video.currentTime` in 80 of 80 reads taken every 100 ms during 8 s of playback.
+- peaks.js: `Peaks.init({zoomview, overview, mediaElement, webAudio: {audioContext, scale: 128, multiChannel: false}})`
+  until its callback: S4 325 ms, R2full 1,398 ms; `getWaveformData()` then reported scale 512, 3,337 points for S4
+  and 19,680 for R2full, sample rate 44,100, 1 channel (the page asked for scale 128; the object returned was at 512).
+- Output format facts: wavesurfer gives peaks as arrays of floats (-1 to 1) per channel and emits `timeupdate`,
+  `interaction`, `ready`; peaks.js gives waveform-data objects (min/max pairs per `scale` samples) and needs either Web
+  Audio decoding in the page or a precomputed `dataUri` from the `audiowaveform` program.
+- Samples: `samples/waveform-views/waveform.json`.
+
+## More small libraries: aubiojs 0.2.1, pitchfinder 2.3.4, realtime-bpm-analyzer 5.6.1
+
+- What: npm `aubiojs` 0.2.1 (aubio compiled to WebAssembly; the browser build `build/aubio.esm.js`, which esbuild
+  could bundle only with `path`, `fs`, `crypto` marked external because its Node branch calls `require("path")`):
+  `new Pitch('yinfft', 2048, 441, 44100)` fed 441-sample hops (time = end of the hop) and `new Tempo(1024, 512,
+  44100)` fed 512-sample hops (a beat is logged at the end of each hop for which `do()` returned non-zero; `getBpm()`
+  at the end); npm `pitchfinder` 2.3.4 `YIN({sampleRate: 44100})` on 2048-sample frames every 441 samples (time =
+  frame centre; null counted as 0 Hz); npm `realtime-bpm-analyzer` 5.6.1 `analyzeFullBuffer(audioBuffer)`. Page
+  `scripts/pages/smalljs2.html`, r0329 (--nolock).
+- Times in the page: aubio pitch 516 ms (S1) and 498 ms (R1b); pitchfinder YIN 6.97 s (S1) and 7.58 s (R1b); aubio
+  tempo 334 to 469 ms per clip; realtime-bpm-analyzer 77 to 179 ms per clip.
+
+| tool | clip | gtr-eval | result |
+|---|---|---|---|
+| aubio yinfft | S1 | e1226 | voicing recall 1.000, false alarm 0.167, raw pitch acc. 0.947, raw chroma 0.947, overall 0.933 |
+| aubio yinfft | R1b (voice lead) | e1227 | voicing recall 0.998, false alarm 0.680, raw pitch 0.870, raw chroma 0.884, overall 0.662 |
+| pitchfinder YIN | S1 | e1228 | voicing recall 0.951, false alarm 0.997, raw pitch 0.837, raw chroma 0.856, overall 0.736 |
+| pitchfinder YIN | R1b (voice lead) | e1229 | voicing recall 0.899, false alarm 0.994, raw pitch 0.302, raw chroma 0.592, overall 0.190 |
+| aubio Tempo | S3 (96 BPM) | e1230, e1231 | `getBpm()` 97.33 (+1.38 %); beats F 0.889 (P 0.800, R 1.000; 40 est), CMLt 0.650, matched beats late by median 19.4 ms |
+| aubio Tempo | S4 (116 BPM) | e1233, e1234 | 117.79 (+1.54 %); beats F 0.950 (P 0.930, R 0.971; 71 est), CMLt 0.901, median +8.2 ms |
+| aubio Tempo | R2 (no truth) | | 147.80 BPM, 84 beats |
+| realtime-bpm-analyzer | S3 | e1232 | top candidate 96 (count 9, confidence 0.206); next 97, 110 |
+| realtime-bpm-analyzer | S4 | e1235 | top candidate 116 (count 36, confidence 0.257); next 155, 93 |
+| realtime-bpm-analyzer | R2 (no truth) | | top 144 (count 11), then 96, 143 |
+
+- Output format facts: aubio `Pitch.do()` returns Hz (0 when it finds none) per hop, `Tempo.do()` returns non-zero on a
+  beat, `getBpm()`, `getConfidence()`; pitchfinder's detector returns Hz or null per frame; realtime-bpm-analyzer
+  returns a list of `{tempo, count, confidence}` candidates (integer tempi). Samples: `samples/small-js-libs/`.
+
+## Slow practice: `playbackRate` + `preservesPitch`, SoundTouchJS 0.3.0, Rubber Band WASM 3.3.0, Signalsmith Stretch 1.3.2
+
+- What: S1 (29.833 s, single-note nylon melody, first note F#4 = MIDI 66, nominal 369.994 Hz) slowed to 0.5x and
+  0.75x in the page (`scripts/pages/stretch.html`):
+  - **media element**: `<audio>` with `playbackRate` 0.5 or 0.75 and `preservesPitch` true (and once false at 0.75x),
+    routed into the graph with `createMediaElementSource` and recorded in real time (Chromium's own time-stretch);
+  - **SoundTouchJS** npm `soundtouchjs` 0.3.0 (`dist/soundtouch.js`): `SoundTouch` with `tempo` = rate, `pitch` 1,
+    `WebAudioBufferSource` + `SimpleFilter.extract()` until it returns 0, offline in the page;
+  - **Rubber Band** npm `rubberband-wasm` 3.3.0 (Rubber Band Library compiled to WASM, `dist/rubberband.wasm`):
+    `rubberband_new(44100, 2, 0, 1/rate, 1.0)` (options 0: in the package's `dist/types/index.d.ts`
+    `RubberBandOptionProcessOffline` = 0 and `RubberBandOptionEngineFaster` = 0), `study` pass then `process` /
+    `retrieve` in 1024-sample blocks, offline in the page;
+  - **Signalsmith Stretch** npm `signalsmith-stretch` 1.3.2 (`SignalsmithStretch.mjs`, AudioWorklet + WASM) in an
+    OfflineAudioContext: `addBuffers` and `schedule({active: true, input: 0, rate, output})` sent during
+    `suspend(256 frames)`, then `resume()` (the first attempt, r0170, sent them before `startRendering()` and the
+    whole render came out silent, peak 0; with the same messages sent during a suspend the render had sound, r0171).
+- Runs: media element r0225 (real time, --nolock); offline libraries r0314 (--nolock). Processing time in the page
+  (offline ones; `load1_at_start` of r0314 was 19.5): SoundTouchJS 195 ms (0.5x) and 172 ms (0.75x); Rubber Band
+  2,959 ms and 2,163 ms (+ 17 ms WASM compile); Signalsmith 2,112 ms and 1,357 ms. The media element needs real time:
+  59.629 s and 39.761 s of AudioContext time from `play()` to `ended`.
+- Measurement (`scripts/analyze_stretch.py`, run r0333 with librosa 0.11.0 pyin and numpy): "audible span" = first to
+  last sample above -50 dBFS on the mono mix (original S1: 1.670 to 28.604 s, 26.9332 s); the known note's pitch =
+  strongest peak of a Hann-windowed, zero-padded (2^20) FFT of the middle 60 % of the first note, parabolic
+  interpolation (original S1: 370.562 Hz, +2.65 cents against the nominal 369.994 Hz); every note's pitch = median
+  pyin f0 over the middle 60 % of the note (pyin's grid is 10 cents, so most notes read exactly +0.64 cents).
+
+| method | rate | file length (s) | audible span (s), ratio to original | first note (FFT), change vs original | notes within 50 cents of nominal (pyin) |
+|---|---|---|---|---|---|
+| original S1 | 1 | 29.833 | 26.9332, 1.00000 | 370.562 Hz, 0 | 62 of 62 |
+| `<audio>` playbackRate, preservesPitch true | 0.5 | 60.151 (recording) | 53.8605, 1.99978 | 370.320 Hz, -1.13 cents | 62 of 62 |
+| `<audio>` playbackRate, preservesPitch true | 0.75 | 40.272 (recording) | 35.8954, 1.33276 | 370.313 Hz, -1.16 cents | 62 of 62 |
+| `<audio>` playbackRate, preservesPitch false | 0.75 | 40.310 (recording) | 35.9109, 1.33333 | 277.921 Hz, -498.05 cents | 0 of 62 (median -499.36 cents) |
+| SoundTouchJS | 0.5 | 59.258 | 53.9211, 2.00203 | 370.108 Hz, -2.12 cents | 62 of 62 |
+| SoundTouchJS | 0.75 | 39.486 | 35.9078, 1.33322 | 370.331 Hz, -1.08 cents | 62 of 62 |
+| Rubber Band WASM | 0.5 | 59.667 | 53.8674, 2.00004 | 370.581 Hz, +0.09 cents | 62 of 62 |
+| Rubber Band WASM | 0.75 | 39.778 | 35.9183, 1.33361 | 370.573 Hz, +0.05 cents | 61 of 62 (pyin read one note 1199.36 cents off) |
+| Signalsmith Stretch | 0.5 | 60.667 (render length set by the page) | 53.9963, 2.00483 | 371.265 Hz, +3.28 cents | 62 of 62 |
+| Signalsmith Stretch | 0.75 | 40.778 (render length set by the page) | 35.9277, 1.33396 | 371.136 Hz, +2.68 cents | 62 of 62 |
+
+  The expected ratios are 2 and 1.3333; -498.04 cents is the pitch change of a 0.75x speed change without pitch
+  correction. File lengths: SoundTouchJS returned 0.41 s (0.5x) and 0.29 s (0.75x) less than input length / rate;
+  Rubber Band returned exactly input length / rate; the Signalsmith and media-element lengths are set by the page's
+  render or recording window, not by the library.
+- Peaks: Signalsmith's output peaked at 1.105 (0.5x) and 1.185 (0.75x) in float (above 1.0, the input's peak is
+  0.891); the others stayed at or below the input's peak (Rubber Band 0.855 and 0.886).
+- Output format facts: SoundTouchJS gives interleaved stereo float frames from `extract()`; Rubber Band gives planar
+  float arrays per channel through its C API; Signalsmith Stretch is an AudioNode (here rendered by an
+  OfflineAudioContext); the media element only plays (its output can be recorded from the graph). Constraint inputs:
+  rate / tempo and pitch (semitones or scale) in all four; Signalsmith also takes `tonalityHz`, `formantSemitones`,
+  loop points; Rubber Band's option flags (engine, transients, window, formant) were left at 0.
+- Output files (kept outside git): `out/stretch/S1_<method>_<rate>.wav` (2 ch, float32). Samples:
+  `samples/slow-practice/` (page results and the analysis JSON of every file).
+
+## Survey tools not tried in this session
+
+The docs agent's tool list (`survey.md`, "## Tool list") names more browser tools than this run reached. Not tried
+here, with the reason:
+
+- No GPU on this box (Chromium found no WebGPU adapter, WebGL is SwiftShader): WebGPU and WebNN backends in general,
+  ONNX Runtime Web's WebGPU execution provider (prepared in the measuring page for Aaron, section 3), TF.js `webgpu`,
+  demucs-web on WebGPU, demucs-rs (survey.md section 50 quotes its README: "entirely **in the browser** via
+  WebAssembly + WebGPU"),
+  `monteslu/htdemucs-web-onnx` and `webnn/stem-separator` exports, Beat This! ONNX export `musetric/beat-this-onnx`
+  (survey.md section 51 quotes its card: packaged for "**WebGPU** execution provider" and "The wasm EP also works";
+  the wasm route was not tried for lack of time, since the page would have to supply the model's mel-spectrogram
+  front end).
+- Disk on the shared box (orchestrator notices: below 5 GB free, "No download over 100 MB"): Transformers.js
+  (`@huggingface/transformers` 4.3.2 brings its own ONNX Runtime build plus model files).
+- Not reached in the time available (installable, no known blocker): @tonejs/midi, worker-timers, WAAClock,
+  @ircam/sc-scheduling, waveform-data with the `audiowaveform` CLI, mp4box.js, web-demuxer, `@soundtouchjs/audio-worklet`,
+  `rubberband-web` and `@echogarden/rubberband-wasm`, Bungee (`bungee-pitch-shift`), WebAudioFont, MidiPlayerJS,
+  LiteRT.js, Magenta.js, ml5.js, Meyda, OpenCV.js, demucs-wasm, OpenVoicing, alphaTab's backing-track mode (needs a
+  Guitar Pro 7/8 file with audio and sync points).
+- Needs a licence key for anything beyond evaluation (survey section 26): Superpowered Web Audio SDK.
+
+## Run ids (ledger `/home/user/gtr/ledger/runs.jsonl`, lane browser-audio-sync)
+
+`gtr-run` takes CPU time and peak memory from `getrusage(RUSAGE_CHILDREN)`; for Chromium these do not include every
+renderer and GPU process (for example r0156 reports 0.87 CPU seconds for 39 s of video playback), so the ledger's CPU
+and memory figures for browser runs are lower bounds. Wall-clock is exact. "slot" = 2-core slot; "--nolock" = no
+slot, not pinned, box shared with other lanes.
+
+| run | what | slot | wall (s) | load1 at start |
+|---|---|---|---|---|
+| r0042, r0050 | environment probe (headless shell, channel chromium) | 2 cores | 7.5, 7.6 | 5.0, 7.9 |
+| r0095, r0103 | metronome smoke tests (3 s), recorder gap logging added in r0103 | 2 cores | 43.2, 44.8 | 6.3, 7.4 |
+| r0143, r0150 | S4 sync: AudioBufferSourceNode, `<audio>` element | --nolock | 44.2, 46.5 | 7.0, 7.3 |
+| r0156, r0157 | R3a video: rVFC, seeks (webm, mp4) | --nolock | 39.2, 40.5 | 7.8, 7.2 |
+| r0170, r0171, r0195 | smoke tests (analysis pages, Signalsmith suspend fix, alphaTab export) | --nolock | 139.4, 12.3, 10.7 | 11.9, 16.0, 16.2 |
+| r0199 | metronome timing, 8 runs of 61 s | --nolock | 548.5 | 9.4 |
+| r0225 | real-time captures: smplr and soundfont-player (both failed), SpessaSynth, js-synthesizer, media-element slow-downs | --nolock | 241.1 | 13.1 |
+| r0229 | real-time captures: smplr, soundfont-player | --nolock | 74.8 | 9.3 |
+| r0250, r0333 | stretch analysis (pyin, FFT), not a trial timing | --nolock | 287.2, 428.2 | 16.5, 9.2 |
+| r0257, r0261, r0266, r0269 | alphaTab real-time: count-in (no tap / silent tap / tapped), external media | --nolock | 4.1, 15.6, 13.6, 15.3 | 19.6, 19.8, 18.8, 18.7 |
+| r0270 | Basic Pitch: TF.js webgl/cpu/wasm, ORT Web 1/2 threads, no isolation | --nolock | 510.7 | 13.5 |
+| r0271, r0310, r0313 | measuring page tests (metronome + TF.js; ONNX section failed, then passed) | --nolock | 272.2, 2.3, 12.1 | 15.4, 10.1, 10.8 |
+| r0314 | essentia.js, Mediabunny decode, MediaPipe R3a CPU/GPU, ffmpeg.wasm, offline stretch | --nolock | 460.7 | 19.5 |
+| r0329 | alphaTab export, pitchy, web-audio-beat-detector, MediaPipe R3b/R3c, demucs-web 2/4 threads, wavesurfer/peaks, aubiojs, pitchfinder, realtime-bpm-analyzer | --nolock | 295.4 | 9.0 |
+
+A batch queued for a 2-core slot to give slot timings of the main inference runs (`browser-inference-2core`) waited
+from 21:33 to about 21:51 UTC behind about 30 other jobs and was cancelled before it started; no slot timings exist
+for Basic Pitch, essentia.js, MediaPipe, ffmpeg.wasm or the offline stretchers. The 61 s metronome batch (queued for
+a slot at 21:07, cancelled at 21:20) and two compute batches (queued at about 21:24, cancelled at 21:33) were likewise
+cancelled while waiting and re-run with --nolock.
+
+gtr-eval ids used above: e0427, e0428, e0429, e0533, e0540 (onsets); e0669, e0671, e0673, e0675, e0808, e0812, e0816,
+e0819, e0823, e0825, e0828, e0831, e0834, e0837, e0840, e0844 (notes); e0906 to e0938 (essentia.js); e1192 to e1202
+(pitchy, web-audio-beat-detector); e1223 (stems); e1226 to e1235 (aubiojs, pitchfinder, realtime-bpm-analyzer).
+
+## Media kept outside git
+
+All under `/home/user/gtr/lanes/browser-audio-sync/out/`; WAV, 44.1 kHz unless stated; float = 32-bit float.
+
+| file | size (bytes) | duration | what it is |
+|---|---|---|---|
+| `metronome/metronome_{lookahead,interval,tone,worklet}_busy{0,100}.wav` (8 files) | about 10.93 MB each | 61.9 to 62.0 s | mono float; the recorded click track of each metronome run (r0199) |
+| `sync/sync_s4_buffer_busy0.wav` | 14,030,892 | 39.770 s | 2 ch float; ch 0 = S4 as it arrived in the graph, ch 1 = clicks on S4's beats, same clock (r0143) |
+| `sync/sync_s4_element_busy0.wav` | 13,899,820 | 39.398 s | same, S4 from an `<audio>` element (r0150) |
+| `synths/S2n_{smplr,sfplayer,spessa,jssynth}.wav` | 11.0 to 11.5 MB each | 31.2 to 32.5 s | 2 ch float; S2n truth notes played by each sample player (r0225, r0229) |
+| `stretch/S1_element_0p5_pp1.wav`, `S1_element_0p75_pp1.wav`, `S1_element_0p75_pp0.wav` | 21,221,420; 14,208,044; 14,221,356 | 60.151, 40.272, 40.310 s | 2 ch float; S1 through `<audio>` playbackRate 0.5 / 0.75 with preservesPitch on, and 0.75 off (r0225) |
+| `stretch/S1_{soundtouch,rubberband,signalsmith}_{0p5,0p75}.wav` (6 files) | 13.9 to 21.4 MB | 39.5 to 60.7 s | 2 ch float; S1 slowed by each library (r0314) |
+| `alphatab/S2n_alphatab_metronome_only.wav`, `S2n_alphatab_guitar_no_metronome.wav` | 9,828,396 each | 27.858 s | 2 ch float; alphaTab audio export of S2n.gp5, metronome only / guitar only (r0195, r0329) |
+| `alphatab/S2n_alphatab_live_countin_metronome.wav` | 1,483,820 | 8.411 s | mono float; alphaTab real-time count-in and metronome, guitar muted (r0269) |
+| `demucs/t2/S4_10s_{drums,bass,other,vocals}.wav` | 3,528,044 each | 10.000 s | 2 ch float; demucs-web stems of the 10 s S4 cut (r0329) |
+| `ffmpegwasm/R3a_mp4_st.wav`, `R3a_mp4_mt.wav` | 3,178,792 each | 18.019 s | 2 ch 16-bit; audio pulled from R3a.mp4 by ffmpeg.wasm (single / multi thread) (r0314) |
+| `ffmpegwasm/R3a_webm_st.wav` | 3,456,208 | 18.000 s | 2 ch 16-bit, 48 kHz; audio pulled from R3a.webm (r0314) |
+
+Also outside git and not media: `out/mediapipe/hands_<clip>_<delegate>.json` (all landmarks), `out/essentia/`,
+`out/basicpitch/`, `out/smalljs/` (full CSVs), `out/video/*.yhash.json` (ffmpeg luma hashes of R3a).

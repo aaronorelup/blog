@@ -1,0 +1,150 @@
+{
+ "ms_parse": 21.638959999999997,
+ "ms_total": 27.836533999999986,
+ "format": "gp5",
+ "tracks": 1,
+ "trackKeys": [
+  "index",
+  "name",
+  "shortName",
+  "program",
+  "lyrics",
+  "kind",
+  "tuning",
+  "capo",
+  "partialCapo",
+  "fretCount",
+  "bars"
+ ],
+ "tuning": [
+  64,
+  59,
+  55,
+  50,
+  45,
+  40
+ ],
+ "capo": 0,
+ "scheduled": 90,
+ "sample": [
+  {
+   "keys": [
+    "note",
+    "beat",
+    "playedBar",
+    "masterBar",
+    "voice",
+    "beatIndex",
+    "startMs",
+    "endMs"
+   ],
+   "noteKeys": [
+    "tie",
+    "dynamic",
+    "ghost",
+    "accent",
+    "staccato",
+    "string",
+    "fret",
+    "midi",
+    "dead",
+    "palmMute",
+    "letRing",
+    "tapped",
+    "leftHandTapped",
+    "hopoToNext",
+    "slides",
+    "harmonic",
+    "bend",
+    "vibrato",
+    "trill"
+   ],
+   "note": {
+    "tie": {
+     "fromPrevious": false,
+     "toNext": false
+    },
+    "dynamic": "f",
+    "ghost": false,
+    "accent": null,
+    "staccato": false,
+    "string": 2,
+    "fret": 0,
+    "midi": 55,
+    "dead": false,
+    "palmMute": false,
+    "letRing": false,
+    "tapped": false,
+    "leftHandTapped": false,
+    "hopoToNext": null,
+    "slides": [],
+    "harmonic": null,
+    "bend": null,
+    "vibrato": null,
+    "trill": null
+   },
+   "startMs": 2142.8571428571427,
+   "endMs": 2678.571428571428
+  },
+  {
+   "keys": [
+    "note",
+    "beat",
+    "playedBar",
+    "masterBar",
+    "voice",
+    "beatIndex",
+    "startMs",
+    "endMs"
+   ],
+   "noteKeys": [
+    "tie",
+    "dynamic",
+    "ghost",
+    "accent",
+    "staccato",
+    "string",
+    "fret",
+    "midi",
+    "dead",
+    "palmMute",
+    "letRing",
+    "tapped",
+    "leftHandTapped",
+    "hopoToNext",
+    "slides",
+    "harmonic",
+    "bend",
+    "vibrato",
+    "trill"
+   ],
+   "note": {
+    "tie": {
+     "fromPrevious": false,
+     "toNext": false
+    },
+    "dynamic": "f",
+    "ghost": false,
+    "accent": null,
+    "staccato": false,
+    "string": 5,
+    "fret": 3,
+    "midi": 43,
+    "dead": false,
+    "palmMute": false,
+    "letRing": false,
+    "tapped": false,
+    "leftHandTapped": false,
+    "hopoToNext": null,
+    "slides": [],
+    "harmonic": null,
+    "bend": null,
+    "vibrato": null,
+    "trill": null
+   },
+   "startMs": 2142.8571428571427,
+   "endMs": 2678.571428571428
+  }
+ ]
+}
+[gtr-run r0294] web-tab-render/guitarpro-parser "guitarpro-parser 2.0.0 under Node: parse S2n_gp5, schedule track 1" wall=0.15s cpu=0.1s rss=54.4MB cores=None exit=0 slot_wait=0.0s

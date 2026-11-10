@@ -1,0 +1,45 @@
+{
+ "import_and_model_load_s": 7.131,
+ "recognize_s": 2.588,
+ "outputs": {
+  "n_segments": 14,
+  "labels": [
+   "Ab:min",
+   "B:maj",
+   "Bb:maj",
+   "Bb:min",
+   "Db:maj",
+   "E:maj",
+   "Eb:maj",
+   "Gb:maj",
+   "N"
+  ],
+  "first": [
+   [
+    0.0,
+    2.09,
+    "Db:maj"
+   ],
+   [
+    2.09,
+    4.551,
+    "Gb:maj"
+   ],
+   [
+    4.551,
+    6.548,
+    "B:maj"
+   ],
+   [
+    6.548,
+    8.916,
+    "E:maj"
+   ],
+   [
+    8.916,
+    10.728,
+    "Bb:min"
+   ]
+  ]
+ }
+}

@@ -58,7 +58,7 @@ try {
     const stretch = await SignalsmithStretch(off);
     stretch.connect(off.destination);
     const chans = [inBuf.getChannelData(0), inBuf.getChannelData(1)];
-    // In an OfflineAudioContext the worklet only handles port messages while rendering is suspended, so the
+    // Sent before startRendering(), these messages left the render silent (r0170); sent during a suspend they work, so the
     // buffers and the schedule are sent during a suspend at 256 frames (5.8 ms) and rendering then resumes.
     const SUSP = 256 / sr; R.signalsmith_start_s = SUSP;
     off.suspend(SUSP).then(async () => {

@@ -39,13 +39,13 @@ number). RUNNABLE / NOT-CPU-BOX are pointers for the try agent, not test results
 2. torchcrepe (`maxrmorrison/torchcrepe`, PyTorch port of CREPE). PyPI 0.0.24 (2025-05-16); last commit 2025-05-16. Code MIT; weights converted from CREPE, inside the MIT repo. RUNNABLE.
 3. pYIN: `librosa.pyin` (librosa 1.0.0, 2026-08-11, Python >= 3.12; last commit 2026-11-10; ISC); pYIN Vamp plugin (`c4dm/pyin`, last commit 2020-02-06; GPL-2.0-or-later; has a `notes` output); Tony desktop annotator (`sonic-visualiser/tony`, last commit 2024-07-02; GPL-2.0-or-later). No weights. RUNNABLE (librosa).
 4. PESTO (`SonyCSLParis/pesto`). PyPI `pesto-pitch` 2.0.1 (2025-02-18); last commit 2025-10-15. Code LGPL-3.0; weights in the repo. RUNNABLE.
-5. RMVPE (`Dream-High/RMVPE`). No PyPI; last commit 2024-01-25. Code Apache-2.0; no weights in the repo (an `rmvpe.pt` exists in `lj1995/VoiceConversionWebUI`, MIT tag; link to the paper's model unconfirmed). RUNNABLE only with weights from elsewhere.
+5. RMVPE (`Dream-High/RMVPE`). No PyPI from the authors (a third-party ONNX wrapper `rmvpe-onnx` 0.2.3, MIT, is on PyPI); last commit 2024-01-25. Code Apache-2.0; no weights in the repo (an `rmvpe.pt` exists in `lj1995/VoiceConversionWebUI`, MIT tag; link to the paper's model unconfirmed). RUNNABLE only with weights from elsewhere.
 6. FCPE / torchfcpe (`CNChTu/FCPE`). PyPI `torchfcpe` 0.0.4 (2024-03-06); last commit 2025-10-14. Code MIT; bundled `fcpe_c_v001.pt` in the MIT repo; the paper's DDSP-200K weights on Hugging Face are CC BY-NC-SA 4.0. The README's MIDI export (`extact_midi`) is in the repository's `main` but not in the PyPI 0.0.4 package. RUNNABLE.
 7. SwiftF0 (`lars76/swift-f0`, ONNX). PyPI `swift-f0` 0.3.0 (2026-09-25); last commit 2026-09-25. Code MIT; bundled ONNX in the MIT package; training data `lars1234/pitch-benchmark` is tagged CC BY-NC-SA 4.0. Has note segmentation and MIDI export. RUNNABLE (also in-browser via ONNX Runtime Web).
 8. PENN / FCNF0++ (`interactiveaudiolab/penn`). PyPI `penn` 1.0.0 (2025-04-02); last commit 2025-04-02. Code MIT; weights `maxrmorrison/fcnf0-plus-plus` (MIT tag). RUNNABLE.
 9. aubio (`aubio/aubio`, C + Python, `aubionotes` / `aubiopitch` CLI). PyPI 0.4.9 (2019-02-08); repo `VERSION` 0.5.0-alpha, last commit 2026-04-10. GPL-3.0-or-later. No weights. RUNNABLE (binaries present on the box).
-10. Essentia (`MTG/essentia`: PitchYinProbabilistic, PredominantPitchMelodia, MultiPitchKlapuri, PitchCREPE, PitchContourSegmentation, Audio2Midi). PyPI `essentia` / `essentia-tensorflow` 2.1b6.dev1438 (2026-05-19); last commit 2026-11-05. Code AGPL-3.0 (commercial license on request); models CC BY-NC-SA 4.0 or CC BY-NC-ND 4.0 depending on the page (all quoted). RUNNABLE.
-11. MELODIA Vamp plugin 1.0 (MTG-UPF, Linux 32/64-bit build behind a download form; "free of charge for non-commercial use only") and wrapper `justinsalamon/audio_to_midi_melodia` (last commit 2020-04-03; no LICENSE file). RUNNABLE after the form.
+10. Essentia (`MTG/essentia`: PitchYinProbabilistic, PredominantPitchMelodia, MultiPitchKlapuri, PitchCREPE, PitchContourSegmentation, Audio2Midi). PyPI `essentia` / `essentia-tensorflow` 2.1b6.dev1438 (2026-05-19; CPython 3.14 wheels only; 2.1b6.dev1389 of 2025-07-24 is the last with Linux wheels for CPython 3.9 to 3.13); last commit 2026-11-05. Code AGPL-3.0 (commercial license on request); models CC BY-NC-SA 4.0 or CC BY-NC-ND 4.0 depending on the page (all quoted). RUNNABLE.
+11. MELODIA Vamp plugin 1.0 (MTG-UPF, Linux 32/64-bit build behind a download form; "free of charge for non-commercial use only") and wrapper `justinsalamon/audio_to_midi_melodia` (last commit 2020-04-03; no LICENSE file). RUNNABLE after the form. The MTG page answered HTTP 403 to the verifier, so its quotes are UNVERIFIED here (section 11).
 12. CREPE Notes (`xavriley/crepe_notes`). PyPI `crepe-notes` 0.2.0 (2026-03-13); last commit 2026-03-13. GPL-3.0. Uses CREPE, PESTO, PENN or torchcrepe weights, and madmom's `CNNOnsetProcessor` (madmom model files: CC BY-NC-SA 4.0) unless `--disable-splitting`. Accepts a precomputed f0 CSV (`--f0`) and a tuning offset in cents (`--tuning-offset`). RUNNABLE.
 
 ### Polyphonic and multi-instrument note transcription (audio to MIDI)
@@ -57,8 +57,8 @@ number). RUNNABLE / NOT-CPU-BOX are pointers for the try agent, not test results
 17. MR-MT3 (`gudgud96/MR-MT3`). Last commit 2024-07-12. Code MIT; weights `gudgud1014/MR-MT3` (MIT tag). Research environment (TensorFlow 2.11 + torch pins). `inference.py` calls `self.model.cuda()` unconditionally. NOT-CPU-BOX as shipped (a code change would be needed).
 18. mt3-pytorch (`kunato/mt3-pytorch`). Last commit 2022-05-24. No LICENSE file. To check.
 19. MuScriptor (`muscriptor/muscriptor`, Kyutai and Mirelo, arXiv 2607.08168). PyPI `muscriptor` 0.4.0 (2026-10-20); last commit 2026-10-20. Code MIT; weights CC BY-NC 4.0 "supplemented by" specific conditions of use, gated on Hugging Face (free login, automatic approval); small 103M / medium 307M / large 1.4B parameters. Outputs MIDI with beats and bars, JSON or JSONL note events, MusicXML and tab PDFs (with MuseScore 4); the CLI takes an instrument list (`--instruments`). RUNNABLE (`small` per README) with a Hugging Face token.
-20. Omnizart (`Music-and-Culture-Technology-Lab/omnizart`: music, vocal, vocal-contour, drum, chord, beat). PyPI 0.6.3 (2026-05-31; 0.6.0 added Python up to 3.14); last commit 2026-05-31. Code MIT; checkpoints release `checkpoints-20211001`, license not stated; the vocal mode downloads Spleeter 2-stem ONNX files from a `k2-fsa/sherpa-onnx` release. RUNNABLE (to check).
-21. Timbre-Trap (`sony/timbre-trap`, multi-pitch). Last commit 2024-05-05. Code MIT; weights in the Space `cwitkowitz/timbre-trap` (no license field). The Space returns audio (a WAV file), not notes. RUNNABLE (to check).
+20. Omnizart (`Music-and-Culture-Technology-Lab/omnizart`: music, vocal, vocal-contour, drum, chord, beat). PyPI 0.6.3 (2026-05-31; 0.6.0 added Python up to 3.14); last commit 2026-05-31. Code MIT; checkpoints release `checkpoints-20211001`, license not stated; the vocal mode downloads Spleeter 2-stem ONNX files from a `k2-fsa/sherpa-onnx` release. PyPI 0.6.3 is a source archive only and requires TensorFlow and madmom. RUNNABLE (to check).
+21. Timbre-Trap (`sony/timbre-trap`, multi-pitch). Last commit 2024-05-05. Code MIT; weights in the Space `cwitkowitz/timbre-trap` (no license field). The Space returns audio (a WAV file), not notes, and its runtime stage was `RUNTIME_ERROR` on 2026-11-10. RUNNABLE (to check).
 22. Sheet Sage (`chrisdonahue/sheetsage`, melody + chords lead sheet). Last commit 2025-05-13. Code MIT; models and data CC BY-NC-SA 3.0; the README adds that madmom, Jukebox and Melisma "all have additional licensing terms affecting commercial use". Docker (~4 GB); Jukebox mode needs a GPU with at least 12 GB. RUNNABLE without Jukebox (to check).
 23. Deep Salience (`rabitt/ismir2017-deepsalience`, melody, bass, multi-f0, vocal weights in repo). Last commit 2019-11-22. MIT. CLI writes a salience `.npz` (default) or tab-separated f0 / multi-f0 files. To check (old Keras 2 imports).
 
@@ -313,7 +313,8 @@ point there by name.
 - **Input:** mono audio ("PESTO takes mono audio as input"); loads files with torchaudio, "supporting various
   formats and sampling rates without needing resampling" (README).
 - **Output:** CSV `time,frequency,confidence` per frame (README), or semitones with `-F`. Frame-level only, no
-  note events.
+  note events. In Python, `pesto.predict` returned `timesteps` in milliseconds and a pitch on every frame with no
+  voiced/unvoiced decision (`trials.md`).
 - **Constraints a re-run can pass:** step size, decoding, output unit. No fmin/fmax option is listed in the
   README.
 - **License facts:**
@@ -354,7 +355,10 @@ point there by name.
   `rmvpe.onnx` (361,688,443 bytes), with card license tag `mit` (Hugging Face API, read 2026-11-10). This agent
   did not find a statement in the Dream-High repository naming either source. UNVERIFIED: which checkpoint
   corresponds to the paper; settled by a release note or model card that names the training run.
-- **How a program calls it:** Python only, from the repository's `src/` (no CLI, no package). `src/inference.py`
+- **How a program calls it:** Python only, from the repository's `src/` (no CLI, no package). A third-party PyPI
+  wrapper exists: `rmvpe-onnx` 0.2.3, "RMVPE pitch estimator — pure ONNX Runtime inference", license MIT, wheel
+  14,520 bytes, requiring `huggingface-hub` and `onnxruntime` (PyPI JSON, verifier 2026-11-10); per `trials.md` it
+  downloads `rmvpe.onnx` from `lj1995/VoiceConversionWebUI` (not run). `src/inference.py`
   at a6db1cd (read 2026-11-10) defines `class Inference` with `__init__(self, model, seg_len, seg_frames, hop_length,
   batch_size, device)` and `inference(self, audio)`, which pads the audio, cuts it into overlapping segments, runs
   the model in mini-batches and returns `(hidden_vec_segments, out_segments)`, each trimmed to
@@ -410,8 +414,8 @@ point there by name.
   - b. Weights: two different files. (1) The package bundles `torchfcpe/assets/fcpe_c_v001.pt` (43,363,260 bytes,
     git tree at 6a149c1), called "another model which released earlier" in the README; no separate license for it
     was found, so it sits under the repository's MIT LICENSE. (2) "The model we use in our paper is DDSP-200K, you
-    can get the model from here" (README) links https://huggingface.co/ChiTu/FCPE , whose README is exactly
-    "license: cc-by-nc-sa-4.0" (card front matter, https://huggingface.co/ChiTu/FCPE/raw/main/README.md, read
+    can get the model from here" (README) links https://huggingface.co/ChiTu/FCPE , whose README.md (36 bytes) holds
+    only the front matter "license: cc-by-nc-sa-4.0" between two `---` lines (card front matter, https://huggingface.co/ChiTu/FCPE/raw/main/README.md, read
     2026-11-10); file `DDSP_200k.pt`, 43,362,881 bytes.
   - c. Training data (paper, 2.3, reference marks removed): "we re-synthesize the M4Singer and VCTK datasets using
     the Differentiable Digital Signal Processing (DDSP) method and use them for training all model variants." M4Singer
@@ -531,7 +535,10 @@ point there by name.
   https://raw.githubusercontent.com/MTG/essentia/master/README.md, read 2026-11-10). Music Technology Group,
   Universitat Pompeu Fabra. Repository https://github.com/MTG/essentia ; docs https://essentia.upf.edu .
 - **Version and maintenance:** PyPI `essentia` and `essentia-tensorflow` 2.1b6.dev1438 uploaded 2026-05-19; last
-  commit 2026-11-05 (23ae7ba).
+  commit 2026-11-05 (23ae7ba). Verifier (PyPI JSON, 2026-11-10), confirming `trials.md`: every file of
+  2.1b6.dev1438 is a CPython 3.14 wheel (`cp314`, macOS arm64 and x86_64, manylinux2014 x86_64); the previous
+  version with Linux wheels for CPython 3.9 to 3.13 is 2.1b6.dev1389 (uploaded 2025-07-24), which is what the try
+  agent installed on Python 3.11.
 - **How a program calls it:** Python `essentia.standard` algorithms, for example (models page,
   https://essentia.upf.edu/models.html, read 2026-11-10):
   `audio = MonoLoader(filename="audio.wav", sampleRate=16000, resampleQuality=4)()`,
@@ -560,9 +567,16 @@ point there by name.
     `minDuration` (0.1 s), `pitchDistanceThreshold` (60 cents).
   - `Audio2Midi` (https://essentia.upf.edu/reference/std_Audio2Midi.html): per-frame input; outputs `pitch`,
     `loudness`, `messageType` ("{noteoff, noteon, noteoff-noteon}"), `midiNoteNumber`, `timeCompensation`;
-    parameters `minFrequency` (60), `maxFrequency` (2300), `loudnessThreshold` (-51 dB).
+    parameters `minFrequency` (60), `maxFrequency` (2300), `loudnessThreshold` (-51 dB), and (added by the verifier
+    from the same page) `tuningFrequency` ("integer ∈ {432, 440}, default = 440", "tuning frequency for semitone
+    index") and `transpositionAmount` ("integer ∈ (-69, 50), default = 0", "Apply transposition (in semitones) to
+    the detected MIDI notes.").
 - **Constraints a re-run can pass:** frequency ranges on most pitch algorithms; a tuning reference
-  (`tuningFrequency`) on `PitchContourSegmentation`; `referenceFrequency` on Melodia.
+  (`tuningFrequency`) on `PitchContourSegmentation` (any integer Hz) and on `Audio2Midi` (432 or 440 only); a
+  transposition in semitones (`transpositionAmount`) on `Audio2Midi`; `referenceFrequency` on Melodia.
+- **Observed on this box (`trials.md`, batch r0321):** `PitchYinProbabilistic` with its defaults returned
+  frequencies that did not match the input (for a 110 Hz test sine a median of 103.826 Hz, for 440 Hz 293.665 Hz),
+  while Essentia's `PitchYin` read the same sines correctly; the cause is UNVERIFIED in `trials.md`.
 - **Access needs:** a commercial license for the library and models is "upon request" from UPF (quotes below).
 - **License facts:**
   - a. Code: AGPL-3.0. `COPYING.txt` at master is the "GNU AFFERO GENERAL PUBLIC LICENSE Version 3"; "Essentia
@@ -647,7 +661,9 @@ point there by name.
   `mt3/colab/music_transcription_with_transformers.ipynb` ("Use our colab notebook to transcribe audio files of
   your choosing"), whose cells import `jax`, `t5`, `t5x`, `seqio`, `note_seq` and TensorFlow (`setup.py` installs
   `t5x` from git), load a checkpoint from the Google Cloud Storage path `gs://mt3/checkpoints`, and offer two models: the ISMIR 2021 piano model and
-  the ICLR 2022 multi-instrument model. No CLI and no HTTP API. CPU runs: not documented in the README. The
+  the ICLR 2022 multi-instrument model. No CLI and no HTTP API (a community Space, `akhaliq/MT3`, had the runtime
+  stage `RUNTIME_ERROR` in the Hugging Face API on 2026-11-10, verifier and `trials.md`). CPU runs: not documented
+  in the README. The
   notebook's install cell runs `python3 -m pip install jax[cuda12] nest-asyncio pyfluidsynth==1.3.0 -e .`, copies
   the checkpoints with `gcloud storage -q cp --recursive gs://mt3/checkpoints .`, and picks the model with
   `MODEL = "mt3" #@param["ismir2021", "mt3"]` (its markdown says the `mt3` model transcribes "without velocities").
@@ -686,7 +702,8 @@ point there by name.
   MLSP 2024 paper, Chang et al., https://arxiv.org/abs/2407.04822 (PDF read 2026-11-10). GitHub
   https://github.com/mimbres/YourMT3 holds only `README.md` and `LICENSE` (tree at 8a4fbca, last commit
   2024-11-29); the README links the code as "(pre-release)" via an issue comment, a Colab demo, and "2024.08
-  HuggingFace Spaces Demo (Free GPU) is out!" at https://huggingface.co/spaces/mimbres/YourMT3 . README also:
+  HuggingFace Spaces Demo (Free GPU) is out!" (an emoji before "HuggingFace" left out) at
+  https://huggingface.co/spaces/mimbres/YourMT3 . README also:
   "2024.11 Sorry! YouTube is blocked again...".
 - **Where the code and weights are:** the Space's file list (Hugging Face API, read 2026-11-10; last modified
   2025-01-31) contains `amt/src/...` (the model code) and several checkpoints under `amt/logs/2024/.../checkpoints/`
@@ -700,7 +717,9 @@ point there by name.
   `process_audio(audio_filepath)` transcribes to a MIDI file, turns it into a data URL (`to_data_url`:
   `'data:audio/midi;base64,'+...`) and returns `create_html_from_midi(midifile)`, an HTML page with an embedded
   `html-midi-player`; so a client receives an HTML string and the MIDI bytes are the base64 part of the data URL.
-  The model selected in `app.py` is `model_name = 'YPTF.MoE+Multi (noPS)'`. The Gradio API listing the try agent
+  The model selected in `app.py` is `model_name = 'YPTF.MoE+Multi (noPS)'`, whose checkpoint is
+  `mc13_256_g4_all_v7_mt3f_sqr_rms_moe_wf4_n8k2_silu_rope_rp_b36_nops@last.ckpt` (561,544,628 bytes in the Space's
+  file list). The Gradio API listing the try agent
   saved (`/home/user/gtr/lanes/audio-to-notes/logs/yourmt3-api.txt`) shows `predict(audio_filepath,
   api_name="/process_audio")` returning "[Html] value_27: str". Its one call (S2n,
   `out/yourmt3-space/space_calls.json`) returned an error, not a transcription: "You have exceeded your ZeroGPU quota
@@ -765,7 +784,8 @@ point there by name.
   https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md, read 2026-11-10; the README also makes
   a comparative claim about accuracy, not repeated here). Paper: Rouard, Krause, Roebel, Simon-Gabriel, Défossez,
   "MuScriptor: An Open Model for Multi-Instrument Music Transcription", https://arxiv.org/abs/2607.08168 (PDF read
-  2026-11-10). Hosted UI: https://muscriptor.kyutai.org (not read).
+  2026-11-10). Hosted UI: https://muscriptor.kyutai.org (not read by the docs agent; its static HTML was read by the
+  verifier, section 34).
 - **Version and maintenance:** PyPI `muscriptor` 0.4.0 uploaded 2026-10-20 (first upload 2026-07-10,
   `requires_python='>=3.10'`, `license_expression='MIT'`); last commit 2026-10-20 (8a1ef88).
 - **How a program calls it (README):** CLI `uvx muscriptor transcribe path/to/audio_file.wav` (`--help` for
@@ -847,7 +867,9 @@ point there by name.
     (from a collection of over 250 soundfonts)", and "an internal dataset of 170 000 real music audio recordings
     (totalling over 11 000 hours) with aligned note annotations". The paper PDF carries "Licensed under a Creative
     Commons Attribution 4.0 International License (CC BY 4.0)" for the paper text.
-  - d. Service: the hosted UI's terms were not read (UNVERIFIED).
+  - d. Service: no terms, price or privacy link was found in the hosted UI's static HTML (verifier, 2026-11-10; the
+    page needs JavaScript and the app was not run). UNVERIFIED: whether the running app shows terms; settled by
+    opening the page in a browser.
 
 ## 20. Omnizart (music, vocal, vocal-contour, drum, chord, beat)
 
@@ -863,7 +885,10 @@ point there by name.
   Official Open JOSS reviewed version."
 - **How a program calls it (README):** `pip install omnizart`, `omnizart download-checkpoints`, then
   `omnizart music transcribe <path/to/audio.wav>`, `omnizart drum transcribe ...`, `omnizart chord transcribe ...`
-  (also `vocal`, `vocal-contour`, `beat`); Docker image `mctlab/omnizart:latest`; Colab and Replicate badges. CHANGELOG
+  (also `vocal`, `vocal-contour`, `beat`); Docker image `mctlab/omnizart:latest`; Colab and Replicate badges. PyPI
+  0.6.3 ships only a source archive (`omnizart-0.6.3.tar.gz`, 10,563,808 bytes) and requires `madmom>=0.16.1`,
+  `sherpa-onnx>=1.10.0`, `tensorflow>=2.5.0` (for Python < 3.14) and `vamp>=1.1.0` (PyPI JSON, verifier
+  2026-11-10). CHANGELOG
   0.4.2 (2021-11-16): "Migrate checkpoints from private Google Drive to Github release", linking the release tag
   `checkpoints-20211001`.
 - **Input / output (music CLI page, https://music-and-culture-technology-lab.github.io/omnizart-doc/music/cli.html,
@@ -876,7 +901,14 @@ point there by name.
   - a. Code: MIT. https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/LICENSE, read
     2026-11-10: "MIT License Copyright (c) 2020 MCTLab" with the standard MIT grant.
   - b. Weights: GitHub release `checkpoints-20211001`; no separate license statement for the checkpoints was read
-    (UNVERIFIED).
+    (UNVERIFIED). `omnizart/cli/cli.py` at bcd8cb4 downloads them from
+    `https://github.com/Music-and-Culture-Technology-Lab/omnizart/releases/download/checkpoints-20211001/<name>@variables.data-00000-of-00001`
+    (names include `music_piano`, `music_piano-v2`, `music_pop`, `music_note_stream`, `vocal_semi`, `contour`,
+    `drum_keras`, `chord_v1`, `beat_blstm`). Since 0.6.3 the vocal mode also downloads
+    `https://github.com/k2-fsa/sherpa-onnx/releases/download/source-separation-models/sherpa-onnx-spleeter-2stems-fp16.tar.bz2`
+    (`omnizart/vocal/app.py`, `_ensure_sherpa_spleeter_model`, verifier 2026-11-10; the archive answers HTTP 200 with
+    35,271,738 bytes to a HEAD request); the license of that ONNX
+    conversion of Spleeter was not read here (UNVERIFIED; the source-separation lane covers Spleeter).
   - c. Training data: the music CLI page lists the datasets its feature extraction accepts: "Maps: Piano solo
     performances (smaller)", "Maestro: Piano solo performances (larger)", "MusicNet: Classical music performances,
     with 11 classes of instruments", "Pop: Pop music, including various instruments, drums, and vocal". Which
@@ -894,8 +926,16 @@ point there by name.
   Timbre-Trap": https://huggingface.co/spaces/cwitkowitz/timbre-trap (Gradio, last modified 2026-01-15, holds
   `models/tt-orig.pt`, 11,353,410 bytes).
 - **Output:** multi-pitch estimation (README heading: "Instrument-Agnostic Multi-Pitch Estimation (Timbre-Trap)";
-  it also lists "Transcription, reconstruction, and consistency objectives"). UNVERIFIED: the output format of the
-  Space's `app.py`.
+  it also lists "Transcription, reconstruction, and consistency objectives"). The Space's `app.py`
+  (https://huggingface.co/spaces/cwitkowitz/timbre-trap/raw/main/app.py, read by the verifier 2026-11-10) returns
+  audio, not notes: its inputs are an audio file and a "Remove Timbre" checkbox ("switch between transcription
+  (checked) and reconstruction (unchecked) mode"); `process_fn` resamples to 22050 Hz mono, runs
+  `model.chunked_inference(audio, transcribe)`, inverts the coefficients with `model.sliCQ.decode`, low-pass filters
+  at 8000 Hz, resamples back and saves `_outputs/output.wav`, which is the only output component (`gr.Audio`). The
+  model card in `app.py` reads "De-timbre your audio!". It is built as a HARP endpoint (`pyharp`) and runs on CPU when
+  no CUDA device is present. A pitch list or MIDI would need the repository's own code. The Space's runtime stage
+  was `RUNTIME_ERROR` (Hugging Face API `api/spaces/cwitkowitz/timbre-trap`, verifier 2026-11-10; also reported in
+  `trials.md`).
 - **License facts:**
   - a. Code: MIT. https://raw.githubusercontent.com/sony/timbre-trap/main/LICENSE, read 2026-11-10: "MIT License
     Copyright (c) 2024 Sony" with the standard MIT grant.
@@ -924,7 +964,12 @@ point there by name.
     2026-11-10: "IMPORTANT NOTE: All *code* in this repository is MIT-licensed, but dataset and trained models are
     distributed under CC BY-NC-SA 3.0, as they are derived from user contributions on HookTheory
     (https://forum.hooktheory.com/tos). See README.md for more details."
-  - b. Weights: CC BY-NC-SA 3.0 (the same LICENSE note).
+  - b. Weights: CC BY-NC-SA 3.0 (the same LICENSE note). The README's own "Licensing" paragraph (same README URL,
+    read by the verifier 2026-11-10; missing from this file before): "Because they are trained on user contributions
+    to HookTheory, the transcription models underneath the hood of Sheet Sage (specifically, all of the files
+    referenced in sheetsage.json which are downloaded by the prepare.sh script) are released under CC BY-NC-SA 3.0.
+    Moreover, Sheet Sage makes use of madmom, Jukebox, and Melisma, which all have additional licensing terms
+    affecting commercial use." (Link markup removed.) madmom's own LICENSE is quoted in section 12 (CREPE Notes).
   - c. Training data (README): "Sheet Sage was trained on a new dataset of 50 hours of aligned melody and harmony
     annotations derived from Hooktheory's TheoryTab DB, which we release alongside this system under a CC BY-NC-SA
     3.0" license.
@@ -936,7 +981,14 @@ point there by name.
   read 2026-11-10). Repository https://github.com/rabitt/ismir2017-deepsalience , last commit 2019-11-22 (4b2ff44).
 - **How a program calls it:** "To compute output from these models, run the script predict/predict_on_audio.py"
   (Keras). Weights in the repository: `predict/weights/{bass,melody1,melody2,melody3,multif0,pitch,vocal}.h5`
-  (about 1.67 MB each). UNVERIFIED: the script's arguments and output format.
+  (about 1.67 MB each). Arguments and outputs (verifier, `predict/predict_on_audio.py` at 4b2ff44, read
+  2026-11-10): `python predict/predict_on_audio.py <audio_fpath> <task> <save_dir> [-f singlef0|multif0|salience]
+  [-t THRESHOLD] [-n USE_NEG]`, where task is one of "all, bass, melody1, melody2, melody3, multif0, pitch, vocal";
+  `-f salience` (the default) writes `<name>_<task>_salience.npz` with arrays `salience`, `times`, `freqs`;
+  `singlef0` writes a tab-separated `<name>_<task>_singlef0.csv` of `time<TAB>frequency` rows (unvoiced frames as
+  negative values when `-n` is true, the default); `multif0` writes `<name>_<task>_multif0.csv`, each row a time
+  followed by a variable number of frequencies. `-t` (default 0.3) is the amplitude threshold. The script imports
+  `keras.layers.convolutional` and `keras.layers.normalization` (Keras 2 module paths).
 - **License facts:** a. Code: MIT. https://raw.githubusercontent.com/rabitt/ismir2017-deepsalience/master/LICENSE,
   read 2026-11-10: "MIT License Copyright (c) 2017 Rachel Bittner" with the standard MIT grant. b. Weights: in the
   MIT repository; no separate statement found. c. Training data: not read here (the paper is not on arXiv under a
@@ -955,7 +1007,10 @@ point there by name.
   are coming soon. In the meantime, you can build from source." "The transcription model is not included. Download
   it from within NeuralNote" (GGUF files from `DamRsn/muscriptor-gguf`). No CLI or HTTP API is described in the
   README. The README's third-party list includes `muscriptor.cpp` (https://github.com/DamRsn/muscriptor.cpp, "MIT
-  license"; that repository was not read) and `ggml` ("MIT license").
+  license") and `ggml` ("MIT license"); the README describes muscriptor.cpp as "a C++/ggml port of MuScriptor" that
+  "takes 16 kHz mono float32 audio and returns note events". Verifier, 2026-11-10: `DamRsn/muscriptor.cpp` (last
+  commit 2026-11-07, 8589219) has a LICENSE beginning "MIT License" and "Copyright (c) 2026 Damien Ronssin"
+  (https://raw.githubusercontent.com/DamRsn/muscriptor.cpp/main/LICENSE).
 - **Access needs:** a macOS or Windows desktop with a DAW or the Standalone app (or a Linux source build).
 - **License facts:**
   - a. Code: Apache-2.0. README: "NeuralNote's code is published under the Apache-2.0 license."
@@ -979,8 +1034,13 @@ point there by name.
 - **How a program calls it (README):** download the piano checkpoint
   `https://storage.googleapis.com/magentadata/models/onsets_frames_transcription/maestro_checkpoint.zip` ("trained on
   the MAESTRO dataset") or the drum checkpoint `e-gmd_checkpoint.zip` ("trained on the E-GMD dataset"), then
-  `onsets_frames_transcription_transcribe <piano_recording1.wav, ...>` (with `--config="drums"` for drums). A Colab
-  notebook is linked. Output format: not stated in the README lines read (UNVERIFIED).
+  `onsets_frames_transcription_transcribe --model_dir="${MODEL_DIR}" <piano_recording1.wav, ...>` (with
+  `--config="drums"` for drums). A Colab notebook is linked. Output (verifier, from
+  `magenta/models/onsets_frames_transcription/onsets_frames_transcription_transcribe.py` at c15687e, read
+  2026-11-10): for each input file the script writes `filename + FLAGS.transcribed_file_suffix + '.midi'` with
+  `midi_io.sequence_proto_to_midi_file`, i.e. a MIDI file next to the input (`--transcribed_file_suffix` defaults to
+  empty); other flags are `--checkpoint_path`, `--hparams`, `--load_audio_with_librosa` ("required for 24-bit
+  audio") and `--log`. The script uses TensorFlow 1-style `tf.app.flags`.
 - **License facts:**
   - a. Code: Apache-2.0. https://raw.githubusercontent.com/magenta/magenta/main/LICENSE, read 2026-11-10:
     "Copyright 2016 The Magenta Team. All rights reserved. Apache License Version 2.0, January 2004". The PyTorch
@@ -1007,7 +1067,16 @@ point there by name.
   "This will download the pretrained model from https://zenodo.org/record/4034264." "This repo support Linux and
   Mac." "If users met the problem of "Killed". This is caused by there are not sufficient memory."
 - **Output:** a MIDI file (the `transcribe(audio, 'cut_liszt.mid')` example writes one) and a Python dict
-  (`transcribed_dict`); the paper covers notes and sustain pedals (title). UNVERIFIED: the dict's exact keys.
+  (`transcribed_dict`); the paper covers notes and sustain pedals (title). Keys (verifier,
+  `piano_transcription_inference/inference.py` and `utilities.py` at 0226e74, read 2026-11-10):
+  `transcribed_dict = {'output_dict': ..., 'est_note_events': ..., 'est_pedal_events': ...}`; `output_dict` holds
+  `reg_onset_output`, `reg_offset_output`, `frame_output`, `velocity_output` (per the docstring); a note event is a
+  dict such as `{'midi_note': 51, 'onset_time': 696.63544, 'offset_time': 696.9948, 'velocity': 44}` (docstring
+  example in `write_events_to_midi`), and pedal events are written to the MIDI as control change 64. The class
+  signature is `PianoTranscription(model_type='Note_pedal', checkpoint_path=None, segment_samples=16000*10,
+  device=torch.device('cuda'))`, so CPU use needs `device='cpu'` as in the README comment; with no
+  `checkpoint_path` it downloads the Zenodo file to `~/piano_transcription_inference_data/` by calling `wget`
+  through `os.system`.
 - **License facts:**
   - a. Code: no LICENSE file in the repository root listing at 0226e74 (no license file found at
     https://github.com/qiuqiangkong/piano_transcription_inference on 2026-11-10). `setup.py` (read 2026-11-10)
@@ -1033,13 +1102,16 @@ point there by name.
   `--segmentHopSize`. Colab notebook linked.
 - **Output:** a MIDI file with notes, velocities and sustain pedal ("pedal activation", "pedal onset" columns in the
   model cards). README: "The code/pip package shipped checkpoint is trained without pedal extension of notes, and
-  with data augmentation".
+  with data augmentation". As observed by the try agent on this box (`trials.md`, run r0216, `--device cpu`): one
+  instrument, program 0, 960 ticks per quarter note, tempo 120, sustain pedal as CC64 events, no pitch bends. The
+  CLI in `transkun/transcribe.py` at c5cb837 also takes `--segmentSize` (verifier).
 - **License facts:**
   - a. Code: MIT. https://raw.githubusercontent.com/Yujia-Yan/Transkun/main/LICENSE, read 2026-11-10: "MIT License
     Copyright (c) 2021 Yujia Yan" with the standard MIT grant.
   - b. Weights: the shipped checkpoint is in the MIT-licensed package; the paper checkpoints are Google Drive links
     in the README's model cards. No separate weights license statement was found.
-  - c. Training data: V2 paper, section 5.1 "Dataset": "Maestro v3.0.0. This dataset contains about 200 hours of
+  - c. Training data: V2 paper, section 5.1 "Dataset" (reference mark removed): "Maestro v3.0.0. This dataset
+  contains about 200 hours of
     piano performances ... We use the standard train/validation/test splits." The model cards also report MAPS and
     SMD. See the dataset section for MAESTRO.
 - **Author-reported measurements (README model card, "Transkun V2 No Ext" on "Maestro V3 No Ext"):** note onset
@@ -1053,7 +1125,8 @@ point there by name.
 - **How a program calls it (README):** requirements listed as "GPU", "Python", "Required Python libraries";
   shell scripts for corpus generation, training and evaluation on MAESTRO-V3; pretrained checkpoint
   `wget https://github.com/sony/hFT-Transformer/releases/download/ismir2023/checkpoint.zip` ("model_016_003.pkl is
-  the model for MAESTRO"). No pip package, no single-file transcription CLI in the README lines read.
+  the model for MAESTRO"). No pip package, no single-file transcription CLI in the README lines read. The zip
+  answers HTTP 200 with 20,540,269 bytes (HEAD request by the verifier, 2026-11-10; not downloaded).
 - **License facts:**
   - a. Code: MIT, code only. https://raw.githubusercontent.com/sony/hFT-Transformer/master/LICENSE-CODE, read
     2026-11-10: "MIT License This license applies only to the source code in this repository. It does not apply to
@@ -1077,7 +1150,12 @@ point there by name.
   `https://huggingface.co/datasets/loubb/aria-midi/resolve/main/piano-medium-double-1.0.safetensors` (446,577,344
   bytes per the Hugging Face API and the download's `x-linked-size` header, 2026-11-10). The README also shows
   `yt-dlp` for getting audio from YouTube (the hosted-apis lane covers YouTube terms).
-- **Output:** written to `-save_dir`; the format is not stated in the README lines read (UNVERIFIED).
+- **Output (verifier, `amt/run.py` and `amt/inference/transcribe.py` at a1ab73f, read 2026-11-10):** MIDI files:
+  `-save_dir` is "dir to save midi files"; each input is saved as `<input stem>.mid` (with `_<index>` before `.mid` for
+  each segment when segments are given with `-segments_json_path`; `get_save_path`) from the
+  tokenizer's `mid_dict.to_midi()`. `-load_path` is "path to mp3/wav file". The `transcribe` function begins with
+  `assert cuda_is_available(), "CUDA device not found"`, so the command as shipped stops on a machine without a
+  CUDA GPU.
 - **License facts:**
   - a. Code: Apache-2.0. https://raw.githubusercontent.com/EleutherAI/aria-amt/main/LICENSE (Apache License 2.0
     text), read 2026-11-10.
@@ -1113,10 +1191,31 @@ point there by name.
   `[audio_file_stem].[pitch_tracker].transcription.mid`." Features listed: "outputs midi notes for monophonic
   audio", "include MIDI velocity information", "options to filter notes that are too quiet or too short". The README
   names three parameters to tune: "Min duration, min velocity and sensitivity". It depends on madmom (README notes a
-  Python 3.10+ madmom issue and a git install fix).
+  Python 3.10+ madmom issue and a git install fix). madmom on PyPI is 0.16.1 with a single source archive
+  (`madmom-0.16.1.tar.gz`, 20,040,947 bytes, no wheel) and the license field "BSD, CC BY-NC-SA" (PyPI JSON,
+  verifier 2026-11-10).
+- **CLI options in the code (verifier, `crepe_notes/cli.py` and `crepe_notes/crepe_notes.py` at 5390b17, read
+  2026-11-10):** `--sensitivity` (default 0.001), `--min-duration` (default 0.03, "Minimum duration of a note in
+  seconds"), `--min-velocity` (default 6), `--disable-splitting` ("Disable detection of repeated notes via onset
+  detection"), `--tuning-offset` ("Manually apply a tuning offset in cents. Fractional numbers are allowed. Set to 0
+  for no offset, otherwise it will be calculated automatically."), `--use-smoothing`, `--use-cwd`, `--f0` (a path),
+  `--save-analysis-files`, `--output-label`, `--pitch-tracker crepe|pesto|penn|torchcrepe` (default crepe).
+  `--f0` is read with `np.genfromtxt(f0_path, delimiter=',', names=True)` and only its `frequency` and
+  `confidence` columns are used; the code treats rows as 10 ms steps (`step_size=0.01`). Without `--f0` it looks
+  for `<audio>.<pitch_tracker>.f0.csv`, then `<audio>.f0.csv` (CREPE's CLI output name), before running the
+  tracker. Repeated-note splitting runs `madmom.features.CNNOnsetProcessor` (a trained CNN) unless
+  `--disable-splitting` is given.
 - **License facts:** a. Code: GPL-3.0. https://raw.githubusercontent.com/xavriley/crepe_notes/main/LICENSE ("GNU
   GENERAL PUBLIC LICENSE Version 3, 29 June 2007"), read 2026-11-10; PyPI license field "GNU General Public License
-  v3.0 license". b, c. It runs CREPE (or PESTO, PENN, torchcrepe) weights; see those sections.
+  v3.0 license". b, c. It runs CREPE (or PESTO, PENN, torchcrepe) weights; see those sections. It also runs madmom's
+  CNN onset model (above). madmom's LICENSE (https://raw.githubusercontent.com/CPJKU/madmom/main/LICENSE, read by the
+  verifier 2026-11-10; madmom last commit 2024-08-25, 27f032e): "This software package contains source code files
+  and data/model files. They are distributed under the following licenses." Source code: a BSD-style license
+  ("Redistribution and use in source and binary forms, with or without modification, are permitted provided that
+  the following conditions are met"). Models: "Data and model files usually have .npy, .npz, .h5, .hdf5, .pkl or
+  .mat file extensions." and "All model and data files are distributed under the following license: Creative
+  Commons Attribution-NonCommercial-ShareAlike 4.0". In madmom's repository the `madmom/models` folder is a git
+  submodule (`.gitmodules`), so the model files themselves were not listed here.
 
 ## 30. melodyExtraction_JDC and melodyExtraction_SSL (Sangeun Kum)
 
@@ -1133,7 +1232,7 @@ point there by name.
 ## 31. MTANet
 
 - **What, links:** "The official implementation of "MTANET: Multi-band Time-frequency attention Network for Singing
-  Melody Extraction from Polyphonic Music"" (README, https://raw.githubusercontent.com/Annmixiu/MTANet/main/README.md,
+  Melody Extraction from Polyphonic Music." (the README does not close its inner quotation mark) (README, https://raw.githubusercontent.com/Annmixiu/MTANet/main/README.md,
   read 2026-11-10). Last commit 2024-05-27 (2856a89).
 - **License facts:** no LICENSE file in the repository root listing at 2856a89 (no license file found at
   https://github.com/Annmixiu/MTANet on 2026-11-10).
@@ -1168,7 +1267,8 @@ point there by name.
 
 - **What, who, links:** "ROSVOT: Robust Singing Voice Transcription and MIDI Extraction" (README,
   https://raw.githubusercontent.com/RickyL-2000/ROSVOT/main/README.md, read 2026-11-10; it calls itself "the official PyTorch implementation of ROSVOT (ACL'24)"), paper by Ruiqi Li et
-  al., https://arxiv.org/abs/2405.09940 (PDF downloaded 2026-11-10). Last commit 2024-11-20 (3c8332b).
+  al., "Robust Singing Voice Transcription Serves Synthesis" (title in the arXiv API, verifier 2026-11-10),
+  https://arxiv.org/abs/2405.09940 (PDF downloaded 2026-11-10). Last commit 2024-11-20 (3c8332b).
 - **How a program calls it:** conda environment with Python 3.9 and torch (README install commands use the
   `cu118` index), checkpoint from a Google Drive link ("Download the checkpoints.zip and unzip it under the
   project root"). Output: MIDI ("turn a waveform of singing voice into a sequence of note events, in the form of
@@ -1178,19 +1278,87 @@ point there by name.
   Copyright (c) 2024 Ruiqi Li"), read 2026-11-10. b. Weights: Google Drive zip; no license statement found. c.
   Training data: "Mandarin datasets" (README); names and licenses not read (UNVERIFIED).
 
+## 35. VocalParse (added by the verifier)
+
+Everything in this section was read by verify-docs-audio-to-notes on 2026-11-10.
+
+- **What, who, links:** "VocalParse transcribes singing audio into a **unified autoregressive structured sequence**,
+  jointly modeling lyrics, pitch, note values, and global tempo (BPM) in a single decoder stream" and "The
+  implementation is built on Qwen3-ASR" (README, https://raw.githubusercontent.com/pymaster17/VocalParse/main/README.md;
+  bold as in the README). Paper: "VocalParse: Towards Unified and Scalable Singing Voice Transcription with Large
+  Audio Language Models", https://arxiv.org/abs/2605.04613. Repository https://github.com/pymaster17/VocalParse , last
+  commit 2026-06-16 (e7b3946). No PyPI package (https://pypi.org/pypi/vocalparse/json and `.../vocal-parse/json`
+  return 404); install is `uv pip install -e .` from a clone, or from the git URL per the model card.
+- **How a program calls it (README):** `from vocalparse import transcribe_one` then
+  `transcribe_one(audio=..., checkpoint="./vocalparse-weights")`, or `python -m vocalparse.demo --audio
+  path/to/song.wav --checkpoint ./vocalparse-weights`; batch API `VocalParseTranscriber(checkpoint=...)` with
+  `trx.transcribe([wav_a, wav_b, ...])  # list[np.float32 array] -> list[str]`. The install shown uses
+  `uv venv --python 3.10` and `uv pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu124`;
+  "With the default install, pass `attn_implementation="sdpa"`". CPU inference is not described.
+- **Input / output (model card, https://huggingface.co/pymaster/VocalParse/raw/main/README.md):** input "Mono 16 kHz
+  singing audio"; output "Interleaved lyric + pitch + note sequence with global BPM", a string such as
+  `感 <P_68> <NOTE_4> 受 <P_60> <NOTE_8> 到 <P_65> <NOTE_8> ... <BPM_89>`, where `<P_0>` to `<P_127>` are "MIDI
+  notes", 12 note-value tokens (e.g. `<NOTE_4>`, `<NOTE_DOT_8>`) and `<BPM_0>` to `<BPM_255>`. Limitations listed on
+  the card: "Primarily trained on Mandarin Chinese singing.", "Physical note durations are not predicted by this
+  checkpoint.", "Long audio segments (> 30s) should be pre-segmented before inference." No MIDI writer is named in
+  the card or README lines read.
+- **License facts:**
+  - a. Code: Apache-2.0 (LICENSE, https://raw.githubusercontent.com/pymaster17/VocalParse/main/LICENSE, the
+    "Apache License Version 2.0, January 2004" text).
+  - b. Weights: `pymaster/VocalParse`, card front matter `license: apache-2.0`, `base_model: Qwen/Qwen3-ASR-1.7B`
+    (Hugging Face API: not gated, last modified 2026-06-18, `model.safetensors` 4,076,867,480 bytes). The base
+    model `Qwen/Qwen3-ASR-1.7B` carries the card license `apache-2.0` (Hugging Face API).
+  - c. Training data (paper, "Training Details"): "We train VocalParse on a 2000-hour singing dataset collected
+    through SingCrawl, together with two open-source datasets, GTSinger [45] (Chinese subset) and M4Singer [43]".
+    M4Singer's dataset license is CC BY-NC-SA 4.0 (dataset section). GTSinger's license and the SingCrawl
+    collection's terms were not read (UNVERIFIED).
+
 ## 34. Services and desktop products in this category (pointers)
 
 The apps-survey lane covers desktop and mobile products and the hosted-apis lane covers HTTP APIs. Facts read by
 this agent for this category:
 
-- Basic Pitch's README links a demo site, https://basicpitch.io (not read).
-- MuScriptor has a hosted UI at https://muscriptor.kyutai.org (README; not read). Its weights' license
-  (CC BY-NC 4.0) is in section 19.
+- Basic Pitch's README links a demo site, https://basicpitch.io. Verifier, 2026-11-10: it redirects to
+  https://basicpitch.spotify.com/, which reads "Try Basic Pitch, a free audio-to-MIDI converter with pitch bend
+  detection, built by Spotify."; no price, terms or privacy link was found in that page's HTML.
+- MuScriptor has a hosted UI at https://muscriptor.kyutai.org (README). Its weights' license (CC BY-NC 4.0, with
+  the gate's "specific conditions of use") is in section 19. Verifier, 2026-11-10: the page's HTML reads "Free,
+  open-source music transcription. Upload an mp3/wav/... and MuScriptor turns every instrument into MIDI, sheet music
+  PDFs and guitar tabs you can download." and "Enable JavaScript to use the transcriber."; no price and no terms link
+  were found in the HTML (the app itself is rendered by JavaScript and was not run). The README says
+  `uvx muscriptor serve` "gives you the same UI as hosted on https://muscriptor.kyutai.org/".
+- NeuralNote's site https://neuralnote.co/ (verifier, 2026-11-10), FAQ: "Is it free? Yes." and "Does my audio leave
+  my computer? No. Transcription runs entirely on your machine. NeuralNote only goes online to download models and
+  to check for updates." and "35 instrument groups, from piano, guitars and bass to strings, brass, woodwinds,
+  voice, synths and drums. You can tell it which ones are in the recording, or let it detect them with Automatic".
 - YourMT3+ and Timbre-Trap run as public Hugging Face Spaces (sections 16 and 21); the hosted-apis lane covers
   calling Spaces with `gradio_client`.
-- SwiftF0 runs in the browser with ONNX Runtime Web (README; demo https://swift-f0.github.io/ not read).
+- SwiftF0 runs in the browser with ONNX Runtime Web (README; demo https://swift-f0.github.io/ returns a page that
+  says "SwiftF0 needs JavaScript to analyse audio in your browser", verifier 2026-11-10; the app was not run).
 - Klangio, Music.AI, AnthemScore, Melodyne, Ableton Live's "Convert to MIDI": not read by this agent (see the
   apps-survey and hosted-apis lanes).
+
+## Not covered
+
+Found by the verifier's completeness search on 2026-11-10 (web search, then the linked page or API read the same
+day) and not surveyed in full here:
+
+- Harmonica, https://arxiv.org/abs/2609.04640 (Ou, Martel, Hennessy-Priest, Cho; dated 2026-09-04): "a family of
+  instrument-agnostic music transcription models built around multi-depth harmonic convolution" (abstract). The
+  paper PDF names no code or weights link; it points to "www.oulongshen.xyz/amt" for examples (not read).
+- MIROS, the winning system of the 2025 AMT Challenge, described in https://arxiv.org/abs/2603.27528 , where it "extends the
+  YourMT3+ encoder–decoder framework for automatic music transcription by adopting MusicFM as the encoder backbone".
+  No code or weights link in that paper.
+- VOCANO, https://github.com/B05901022/VOCANO (singing voice to MIDI; last commit 2021-08-09, 669b3fa; LICENSE "MIT
+  License" "Copyright (c) 2021 AustinHsu"; README: default device `-d cpu`, MIDI written under `generated/midi/`).
+  Checkpoint location and license not read.
+- SPICE: Self-supervised Pitch Estimation, https://arxiv.org/abs/1910.11664 (2019): Google's pitch model; where the
+  weights are published and under which terms was not read.
+- DSP pitch trackers outside the music-transcription literature: Praat's pitch analysis through `praat-parselmouth`
+  (PyPI 0.4.7, license field "GPLv3", https://github.com/YannickJadoul/Parselmouth), the WORLD vocoder's DIO and
+  Harvest through `pyworld` (PyPI 0.3.6, https://github.com/JeremyCCHsu/Python-Wrapper-for-World-Vocoder), and the
+  Rust crate `pitch-core` 0.1.1 (crates.io, updated 2026-05-11: "Streaming pitch (f0) tracker — pure-DSP backends
+  (SWIPE', pYIN, Praat-AC). No model files, no GPU.").
 
 ## Training datasets and their license clauses
 
@@ -1198,23 +1366,28 @@ Read 2026-11-10. "Used by" lists the released weights above whose authors name t
 
 | Dataset | Used by (training) | License clause, verbatim, and where it was read |
 |---|---|---|
-| GuitarSet | Basic Pitch, MT3, YourMT3+ | Zenodo record https://zenodo.org/records/3371780 (version 1.1.0, published 2019-08-20): "License Creative Commons Attribution 4.0 International". A newer Zenodo record titled "GuitarSet" (id 18308760, 2026-01-20) also carries `cc-by-4.0` in the Zenodo API. |
+| GuitarSet | Basic Pitch, MT3, YourMT3+ | Zenodo record https://zenodo.org/records/3371780 (version 1.1.0, published 2019-08-20): "License Creative Commons Attribution 4.0 International". A newer Zenodo record titled "GuitarSet" (id 18308760, 2026-01-20) also carries `cc-by-4.0` in the Zenodo API; verifier: that record is a single file, `GuitarSet_Split.rar` (34,166,451 bytes), uploaded by a different creator ("Lojan, Brigith"), not by the GuitarSet authors listed on 3371780 (Qingyang Xi, Rachel M. Bittner, Johan Pauwels, Xuzhou Ye, Juan P. Bello). |
 | MAESTRO (v2, v3) | Basic Pitch, MT3, YourMT3+, Onsets and Frames, ByteDance piano, Transkun, hFT-Transformer, Onsets and Velocities | https://magenta.tensorflow.org/datasets/maestro : "The dataset is made available by Google LLC under a Creative Commons Attribution Non-Commercial Share-Alike 4.0 (CC BY-NC-SA 4.0) license." |
 | Slakh2100 (and Cerberus4, which the MT3 paper says "is derived from the Slakh2100 dataset") | Basic Pitch, MT3, YourMT3+, MR-MT3 | Zenodo record https://zenodo.org/records/4599666 (version "slack2100-redux", 2019-10-20): "License Creative Commons Attribution 4.0 International". |
 | MusicNet | MT3, YourMT3+ (MusicNet-EM) | Zenodo record https://zenodo.org/records/5120004 (version 1.0, 2016-11-30): "License Creative Commons Attribution 4.0 International"; description: "The audio recordings in MusicNet consist of Creative Commons licensed and Public Domain performances, sourced from the Isabella Stewart Gardner Museum, the European Archive Foundation, and Musopen." |
-| URMP | MT3, YourMT3+, Timbre-Trap | https://labsites.rochester.edu/air/projects/URMP.html (page read 2026-11-10): no license statement found on the page. |
+| URMP | MT3, YourMT3+, Timbre-Trap | https://labsites.rochester.edu/air/projects/URMP.html (page read 2026-11-10, re-read by the verifier the same day): no license statement found on the page; the "dataset documentation file" it links was not read (UNVERIFIED). |
 | MedleyDB | Basic Pitch, CREPE | Zenodo record "MedleyDB 2.0 Audio" https://zenodo.org/records/1715175 (restricted files), access conditions: "MedleyDB is offered free of charge for non-commercial research use only under the terms of the Creative Commons Attribution Noncommercial License: http://creativecommons.org/licenses/by-nc-sa/4.0/". |
 | MDB-stem-synth | CREPE, Essentia CREPE, PESTO (one checkpoint in the paper), RMVPE, PENN | Zenodo record https://zenodo.org/records/1481172 (version 1.0.0, 2018-11-08): "MDB-stem-synth is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)." |
 | NSynth | CREPE | https://magenta.tensorflow.org/datasets/nsynth : "The dataset is made available by Google Inc. under a Creative Commons Attribution 4.0 International (CC BY 4.0) license." |
 | MIR-1K | CREPE, PESTO, RMVPE | The Zenodo copy https://zenodo.org/records/3532216 is restricted, with the condition "if you want use mir1k dataset pls directly contact the author of mir1k, here the dataset just a backup of my using." The original distributor's terms were not read (UNVERIFIED). |
 | iKala | Basic Pitch | The Zenodo copy https://zenodo.org/records/3532214 is restricted: "If you need this dataset plz contact the author of ikala, this version is just a backup for myself." Original terms not read (UNVERIFIED). |
-| RWC Music Database (RWC-synth) | CREPE, Essentia CREPE | https://staff.aist.go.jp/m.goto/RWC-MDB/ : the connection was reset on 2026-11-10 (not read, UNVERIFIED). |
+| RWC Music Database (RWC-synth) | CREPE, Essentia CREPE | https://staff.aist.go.jp/m.goto/RWC-MDB/ : the connection was reset on 2026-11-10 (not read, UNVERIFIED; the verifier's retry the same day was also reset). |
 | E-GMD | Onsets and Frames (drum checkpoint), YourMT3+ ("EGMD") | https://magenta.tensorflow.org/datasets/e-gmd : "The dataset is made available by Google LLC under a Creative Commons Attribution 4.0 International (CC BY 4.0) License." |
 | Lakh MIDI | MuScriptor (synthetic pre-training, alongside MIDI "from commercial data providers") | https://colinraffel.com/projects/lmd/ : "The Lakh MIDI Dataset is distributed with a CC-BY 4.0 license" and "attributing each of the MIDI files in the dataset to a particular author is not feasible." |
 | HookTheory (TheoryTab) | Sheet Sage | quoted in section 22 (CC BY-NC-SA 3.0, per the Sheet Sage LICENSE note). |
 | pitch-benchmark (Hugging Face) | SwiftF0 0.3.0 | card license tag `cc-by-nc-sa-4.0` (section 7). |
 | Aria-MIDI (Hugging Face) | hosts the Aria-AMT checkpoint | `license: cc-by-nc-sa-4.0` (section 28). |
-| Not read (UNVERIFIED) | | Bach10, Cmedia, MIR-ST500, PTDB-TUG, M4Singer, VCTK, ENST-Drums, SMT-Bass, MAPS, Molina, Phenicx, ComMU. |
+| PTDB-TUG | PENN (FCNF0++ "pretrained on MDB-stem-synth and PTDB"), SwiftF0 (paper 3.6), RMVPE as retrained in `yxlllc/RMVPE` (README) | Added by the verifier. https://www.spsc.tugraz.at/databases-and-tools/ptdb-tug-pitch-tracking-database-from-graz-university-of-technology.html (read 2026-11-10): "This PTDB-TUG Database is made available under the Open Database License: http://opendatacommons.org/licenses/odbl/1.0/. Any rights in individual contents of the database are licensed under the Database Contents License: http://opendatacommons.org/licenses/dbcl/1.0/" |
+| VCTK (version 0.92) | FCPE (DDSP-200K, re-synthesized) | Added by the verifier. Edinburgh DataShare https://datashare.ed.ac.uk/handle/10283/3443 (read 2026-11-10): the item's `dc.rights` field reads "Creative Commons Attribution 4.0 International Public License" (the page also lists a `license_text.txt` file, not opened). |
+| M4Singer | FCPE (DDSP-200K, re-synthesized), VocalParse, RMVPE as retrained in `yxlllc/RMVPE` (vocoder-resynthesized) | Added by the verifier. README https://raw.githubusercontent.com/M4Singer/M4Singer/master/README.md reads "Please note that, if you are using M4Singer, it means that you have accepted the terms of license." (link markup removed); the license file https://raw.githubusercontent.com/M4Singer/M4Singer/master/dataset_license.md (read 2026-11-10): "We agree to the dataset license: CC BY-NC-SA 4.0 (NonCommercial!)." and "We accept full responsibility for our use of the dataset and shall defend and indemnify the authors of M4Singer, against any and all claims arising from our use of the dataset, including but not limited to our use of any copies of copyrighted audio files that we may create from the dataset." |
+| IDMT-SMT-Bass ("SMT-Bass") | YourMT3+ | Added by the verifier. Zenodo record https://zenodo.org/records/7188892 ("IDMT-SMT-Bass Dataset", created January 17, 2023; read 2026-11-10): "License Creative Commons Attribution Non Commercial No Derivatives 4.0 International". That YourMT3+'s "SMT-Bass" is this dataset is the verifier's reading of the name, not a statement from the paper. |
+| ENST-Drums | YourMT3+ | Added by the verifier. Zenodo record https://zenodo.org/records/21506051 (v2, created July 27, 2026; read 2026-11-10): "A large part of ENST-Drums is publicly available under some conditions. These conditions include: The use and exploitation of the database should be limited to research purposes. No commercial use is possible. The database is distributed under the licence "Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)"" (link markup removed). The older record https://zenodo.org/records/1415902 shows "License Other (Non-Commercial)". |
+| Not read (UNVERIFIED) | | Bach10 (the original Rochester release; the Zenodo records found by title are derived sets), Cmedia, MIR-ST500, GTSinger, MAPS (the Onsets and Velocities README sends users to request a login at https://adasp.telecom-paris.fr/resources/2010-07-08-maps-database/, not read), Molina, Phenicx, ComMU. |
 
 ## Handoff facts
 
@@ -1228,6 +1401,8 @@ Stems into transcribers (source-separation lane to this lane):
   and the 6-source model "adds a `guitar` and `piano` source" (https://raw.githubusercontent.com/adefossez/demucs/main/README.md),
   which Basic Pitch accepts as an input audio path: "Input audio maybe be of any sample rate, however, all audio
   will be resampled to 22050 Hz", stereo "down-mixed to mono" (https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md).
+  Tested on this box (`trials.md`, "Handoff test"): the source-separation lane's `htdemucs_6s` stems from runs r0021
+  (S4) and r0054 (S6taps), 44.1 kHz stereo WAV, were read by Basic Pitch 0.4.0 in run r0243 (exit 0 in the ledger).
 - Demucs stereo 44.1 kHz WAV stems (same Demucs source), which CREPE accepts as a WAV file ("if the input audio has a
   different sample rate, it will be first resampled to 16 kHz", https://raw.githubusercontent.com/marl/crepe/master/README.md)
   and SwiftF0 accepts through `detect_file` ("WAV, FLAC, OGG, MP3, AIFF and others"; "Multichannel audio ... is mixed
@@ -1242,14 +1417,24 @@ Inside this lane:
 - CREPE, torchcrepe, pYIN (`librosa.pyin`), PESTO, PENN and SwiftF0 output one f0 value in Hz per frame (sections
   1 to 8), which Essentia's `PitchContourSegmentation` accepts as "pitch ( vector_real ) - estimated pitch contour
   [Hz]" together with the audio "signal" and a `hopSize` "of the extracted pitch", returning `onset` [s],
-  `duration` [s] and `MIDIpitch` (https://essentia.upf.edu/reference/std_PitchContourSegmentation.html).
+  `duration` [s] and `MIDIpitch` (https://essentia.upf.edu/reference/std_PitchContourSegmentation.html). Run on
+  this box with Essentia's own `PredominantPitchMelodia` contour as the input, `hopSize=128`, in batch r0321 (exit 0;
+  `trials.md`); the other trackers' contours were not fed to it there.
 - SwiftF0's `detect` outputs a `PitchResult` (`timestamps`, `pitch_hz`, `confidence`, `loudness_db`), which its own
   `segment_notes(result, pitch_hold_ms=80.0)` accepts and turns into `Note(start, end, pitch_hz)` for
-  `export_to_midi` (SwiftF0 README).
+  `export_to_midi` (SwiftF0 README, https://raw.githubusercontent.com/lars76/swift-f0/main/README.md). Run on this
+  box: `detect_file` then `segment_notes` in run r0131 (exit 0; `trials.md`).
 - PESTO, PENN and torchcrepe are pitch backends that CREPE Notes accepts with `--pitch-tracker pesto|penn|torchcrepe`,
   writing `[audio_file_stem].[pitch_tracker].transcription.mid` (https://raw.githubusercontent.com/xavriley/crepe_notes/main/README.md).
-- RMVPE pretrained weights (release https://github.com/yxlllc/RMVPE/releases, not read) are what SOME's README
-  asks for "For better pitch extraction results" in its `pretrained/` directory (SOME README).
+- CREPE's CLI writes `<name>.f0.csv` with the header `time,frequency,confidence` and a 10 ms step by default
+  (https://raw.githubusercontent.com/marl/crepe/master/README.md), which CREPE Notes accepts as `--f0 <path>` or picks
+  up by that name next to the audio: it reads the file with `np.genfromtxt(..., delimiter=',', names=True)`, uses
+  the `frequency` and `confidence` columns and treats rows as 10 ms steps (`crepe_notes/cli.py` and
+  `crepe_notes/crepe_notes.py` at 5390b17, https://raw.githubusercontent.com/xavriley/crepe_notes/main/crepe_notes/cli.py).
+  An f0 file from another tracker would need the same column names and step (added by the verifier; not run).
+- RMVPE pretrained weights (release https://github.com/yxlllc/RMVPE/releases; the release page was not read, and an
+  asset `releases/download/230917/rmvpe.zip` answers HTTP 200, section 5) are what SOME's README asks for "For better
+  pitch extraction results" in its `pretrained/` directory (https://raw.githubusercontent.com/openvpi/SOME/main/README.md).
 - Basic Pitch's model file is what NeuralNote v1 used; NeuralNote v2 accepts MuScriptor GGUF files from
   `DamRsn/muscriptor-gguf` (https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md).
 
@@ -1257,23 +1442,32 @@ Notes or MIDI to notation and tab tools (this lane to the guitar-tab and web-tab
 
 - Basic Pitch outputs a MIDI file (program "Electric Piano 1", velocity from amplitude, pitch-bend events) and a
   CSV with header `start_time_s,end_time_s,pitch_midi,velocity,pitch_bend` (`basic_pitch/note_creation.py` and
-  `inference.py`, https://raw.githubusercontent.com/spotify/basic-pitch/main/basic_pitch/), with no string or fret
-  field; music21's converter accepts MIDI through its `ConverterMidi` subconverter, and "quantizePost specifies
+  `inference.py`, https://raw.githubusercontent.com/spotify/basic-pitch/main/basic_pitch/note_creation.py and
+  https://raw.githubusercontent.com/spotify/basic-pitch/main/basic_pitch/inference.py), with no string or fret
+  field (observed in run r0234: program 4 0-based, 220 ticks per quarter note, tempo 120, CSV rows not in time order
+  and carrying a variable number of pitch-bend values, `trials.md`); music21's converter accepts MIDI through its `ConverterMidi` subconverter, and "quantizePost specifies
   whether to quantize a stream resulting from MIDI conversion. By default, MIDI streams are quantized to the
   nearest sixteenth or triplet-eighth" (https://www.music21.org/music21docs/moduleReference/moduleConverter.html).
 - A MIDI file from any transcriber here (Basic Pitch, MT3, YourMT3+, Transkun, ByteDance piano, CREPE Notes,
   SwiftF0, SOME, GAME), which the MuseScore 4 command line accepts for conversion ("-o | --export-to file ... The
-  file type depends on the extension of the filename given"; "-M | --midi-operations file: Specify MIDI import
-  operations file", https://musescore.org/en/handbook/4/command-line-usage).
+  file type depends on the extension of the filename given"; "-M | --midi-operations file" with the description
+  "Specify MIDI import operations file (see examples below)", https://musescore.org/en/handbook/4/command-line-usage).
 - MuScriptor `--format sheets` outputs `score.mid`, `score.musicxml`, `full_score.pdf`, per-instrument PDFs and
   "a tablature PDF for fretted ones" (needs MuseScore 4) (https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md),
   and alphaTab lists among its importers "MusicXML ( .xml ) — open XML standard" next to "Guitar Pro 3–5", "Guitar
   Pro 6", "Guitar Pro 7 and 8" and "CapXML" (https://alphatab.net/docs/introduction). MIDI is not among the
-  importers on that page.
+  importers on that page (re-checked by the verifier: MIDI appears there only in the audio engine's description, which
+  "converts the data model to MIDI"); the importer list also names "alphaTex — a text format for writing music
+  notation by hand".
+- YourMT3+'s Space returns, from `/process_audio`, an HTML string whose MIDI is embedded as
+  `data:audio/midi;base64,...` (`html_helper.py` `to_data_url`, https://huggingface.co/spaces/mimbres/YourMT3/raw/main/app.py),
+  so a client has to decode that base64 part to get a `.mid` file for the tools above (verifier, from the code; no
+  successful call is on record: the try agent's call hit the ZeroGPU quota, `out/yourmt3-space/space_calls.json`).
 - MT3 outputs MIDI whose notes carry an instrument value matching "the original General MIDI specification, which
-  contains 128 "programs"" (MT3 paper, https://arxiv.org/abs/2111.03017), so guitar notes can be selected by
-  program number before a string-and-fret step (the program numbers for guitars are in the GM specification, not
-  read here).
+  contains 128 "programs"" (MT3 paper, https://arxiv.org/abs/2111.03017). Verifier: the earlier second half of
+  this line ("so guitar notes can be selected by program number before a string-and-fret step") named no tool and
+  no source for that step, so it was removed. The only inputs in this lane that take instrument or program values
+  are MuScriptor's `--instruments` and MR-MT3's `valid_programs` (both under "User constraints" below).
 
 Beat and tempo into transcribers (chords-beats-key lane to this lane):
 
@@ -1281,13 +1475,16 @@ Beat and tempo into transcribers (chords-beats-key lane to this lane):
   downbeat times as `-s`/`-e` with `--segment_hints_are_downbeats` (Sheet Sage README); which MuScriptor accepts as
   `--bpm`, `--beats-per-bar`, `--first-downbeat`, `--beat-scale` (MuScriptor README); which `audio_to_midi_melodia.py`
   requires as its `bpm` argument (https://raw.githubusercontent.com/justinsalamon/audio_to_midi_melodia/master/README.md);
-  which FCPE's `extact_midi` accepts as `tempo` (FCPE README); and which Basic Pitch's `predict()` accepts as
+  which FCPE's `extact_midi` accepts as `tempo` (FCPE README; the method is in the repository's `main`, not in the
+  PyPI 0.0.4 package, see section 6); and which Basic Pitch's `predict()` accepts as
   `midi_tempo` (default 120, `basic_pitch/inference.py`). In each case the tempo only sets the MIDI or score grid,
   per the cited text.
-- MuScriptor writes "beats, time signature and bar lines ... detected from the audio" into its MIDI as a tempo map
-  (MuScriptor README), and Sheet Sage "runs beat detection on your input" with madmom (Sheet Sage README): both
-  outputs carry beat information that a metronome or tab renderer could read (the reader side is in the
-  browser-audio-sync and web-tab-render lanes; not read here).
+- Output side only (no reader established in this lane): MuScriptor writes "beats, time signature and bar lines ...
+  detected from the audio" into its MIDI as a tempo map (https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md),
+  and Sheet Sage "runs beat detection on your input" with madmom
+  (https://raw.githubusercontent.com/chrisdonahue/sheetsage/main/README.md). Verifier: the earlier claim that "a
+  metronome or tab renderer could read" these had no source for the reading side, so it was removed; readers belong
+  to the browser-audio-sync and web-tab-render lanes.
 
 User constraints into the tools that accept them (human-in-the-loop re-runs):
 
@@ -1296,22 +1493,128 @@ User constraints into the tools that accept them (human-in-the-loop re-runs):
   outside of this range will be excluded"), `librosa.pyin` as `fmin` / `fmax`, torchcrepe and PENN as `fmin` /
   `fmax`, FCPE as `f0_min` / `f0_max`, SwiftF0 as `fmin` / `fmax` ("A frame whose best pitch lies outside the band
   gets confidence 0"), and Essentia's Melodia, Klapuri and Audio2Midi as `minFrequency` / `maxFrequency` (sources in
-  each tool's section).
+  each tool's section). Run on this box with 82.4 to 1319 Hz: Basic Pitch in run r0234 and SwiftF0 in run r0131
+  (`trials.md`, which records the scores with and without the limit).
+- A tuning correction applied to the audio before transcription, which Basic Pitch then read: `sox S7flat30.wav
+  S7flat30.plus30c.wav pitch 30` (SoX shifts by cents) followed by Basic Pitch 0.4.0 in run r0319 (exit 0;
+  `trials.md`, "Tuning-correction re-run test"). Basic Pitch itself has no tuning input.
 - A tuning reference in Hz (for example from a detuned recording), which Essentia's `PitchContourSegmentation`
   accepts as `tuningFrequency` ("tuning reference frequency [Hz]", default 440) when it quantizes pitch to MIDI
-  notes (Essentia reference page above). No other tool in this lane lists a tuning-reference input in the pages read.
+  notes (Essentia reference page above); Essentia's `Audio2Midi` also has `tuningFrequency`, limited to 432 or 440,
+  and `transpositionAmount` in semitones (https://essentia.upf.edu/reference/std_Audio2Midi.html, verifier
+  2026-11-10). A tuning offset in cents, which CREPE Notes accepts as `--tuning-offset`
+  ("Manually apply a tuning offset in cents. Fractional numbers are allowed. Set to 0 for no offset, otherwise it will
+  be calculated automatically.", `crepe_notes/cli.py` at 5390b17; `crepe_notes.py` divides it by 100 and subtracts
+  it from `hz_to_midi(freqs)` in `freqs_to_midi`; with no value it estimates one with `librosa.pitch_tuning`). The
+  docs agent's statement that no other tool lists a tuning input was based on the
+  pages it read; CREPE Notes' option is in its code, not its README (verifier, 2026-11-10).
 - Note boundaries corrected by the user, which GAME accepts: "Estimate note pitches from note boundaries adjusted by
   user in interactive tuning tools" and "notes and pitches can align and adapt to known boundaries" (GAME README);
   ROSVOT accepts word boundaries ("If word boundaries are given ... the output MIDI notes are aligned with word
   timestamps", ROSVOT README).
 - A known set of instruments, which the MuScriptor paper describes as optional conditioning ("By optionally
-  conditioning on instrument presence") (https://arxiv.org/abs/2607.08168); whether the released CLI accepts it is
-  UNVERIFIED.
+  conditioning on instrument presence") (https://arxiv.org/abs/2607.08168) and which the released CLI accepts as
+  `--instruments` ("When given, every instrument not in the list is forbidden from being decoded at all";
+  `muscriptor list-instruments` prints the names; `muscriptor/main.py` at 8a1ef88) or the Python argument
+  `instrument_group` (model card). MR-MT3's `InferenceHandler.inference(..., valid_programs=...)` takes a list of
+  MIDI programs and blocks all others during decoding (`inference.py` at 826ea84). (Verifier, 2026-11-10.)
 - Onset and frame thresholds and a minimum note length, which Basic Pitch accepts as `onset_threshold`,
   `frame_threshold`, `minimum_note_length` (ms); aubio's `aubionotes` as `-t`, `-M` (minimum inter-onset interval in
-  seconds), `-s` (silence dB), `-l` (pitch tolerance); CREPE Notes as min duration, min velocity and sensitivity.
+  seconds), `-s` (silence dB), `-l` (pitch tolerance); CREPE Notes as `--min-duration` (s), `--min-velocity` and
+  `--sensitivity` (`crepe_notes/cli.py`).
 - No tool in this lane's sources accepts a capo position, an open-string tuning, or a string or fret assignment as
   an input: a text search on 2026-11-10 for "capo", and for "tuning" or "string" next to "guitar" or "fret", over
-  every README, doc page and model card fetched for this file found no such parameter. Those constraints belong to
-  the guitar-tab lane's tools.
+  every README, doc page and model card fetched for this file found no such parameter. The verifier also read the
+  command-line and inference code of Basic Pitch, CREPE, torchcrepe, FCPE, SwiftF0, PENN, CREPE Notes, MuScriptor,
+  MR-MT3, Transkun, ByteDance piano transcription, Aria-AMT, Deep Salience and Onsets and Frames on 2026-11-10 and
+  found none either (the nearest are CREPE Notes' `--tuning-offset` and MuScriptor's `--instruments`, above). Those
+  constraints belong to the guitar-tab lane's tools.
 
+
+## Verification log (verify-docs-audio-to-notes, 2026-11-10)
+
+Method:
+
+- Quotes: each quoted passage was re-fetched from the URL the survey gives (raw GitHub files, Hugging Face files and
+  API, Zenodo pages and API, arXiv PDFs read with `pdftotext`, the Essentia, Magenta, music21, MuseScore and alphaTab
+  pages) and compared after collapsing whitespace. "Markup-only" means identical once markdown link syntax, RST
+  backticks, bold marks or the case of a first word are set aside. Script: `scripts/verify_docs/check_quotes.py`;
+  inputs `scripts/verify_docs/quotes.txt` (the survey's quotes as the docs agent wrote them) and
+  `scripts/verify_docs/quotes_added.txt` (quotes added by the verifier); results
+  `samples/verify-docs/quote_checks.tsv` and `samples/verify-docs/quote_checks_added.tsv`. The fetched copies are
+  outside the repo, in `/home/user/gtr/lanes/audio-to-notes/verify-docs/fetched/`.
+- Versions and dates: PyPI JSON for 29 package names, shallow blobless clones of 49 repositories, the Hugging Face
+  API for 15 repositories, the Zenodo API for 9 records and the arXiv API for 26 IDs
+  (`samples/verify-docs/hub_facts_2026-11-10.txt`, `samples/verify-docs/repo_heads_verify_2026-11-10.tsv`,
+  `scripts/verify_docs/hub_facts.py`, `scripts/verify_docs/git_heads.sh`).
+- Calls and formats: the source files named in each section, at the commits named there.
+- Links: every URL in this file outside github.com was fetched (`samples/verify-docs/url_status_2026-11-10.tsv`);
+  GitHub repository links were checked by cloning, release assets by HEAD requests.
+
+Tally:
+
+- License and terms clauses quoted in the survey: 90 checked. 79 verbatim; 9 verbatim as rendered text (the source
+  has markdown link markup inside the quoted words); 0 corrected; 2 unverifiable: "UNVERIFIED: could not fetch
+  https://www.upf.edu/web/mtg/melodia on 2026-11-10 (HTTP 403)" (both MELODIA clauses; the docs agent's saved copy
+  of the page contains them). In addition, 4 license-file headers the survey described without quoting (pYIN
+  COPYING; the Apache-2.0 texts of MT3, NeuralNote and Aria-AMT) were confirmed.
+- License names taken from metadata (PyPI license fields and classifiers, Hugging Face card tags, Zenodo license
+  ids): all re-read; all matched.
+- Other quoted passages: 216 checked. 157 verbatim (one of them checked without the survey's editorial brackets); 42
+  markup-only; 2 with reference marks removed as the survey said; 9 corrected; 6 unverifiable (the MELODIA page).
+  The 9 corrections: the librosa `f0` return line (a type annotation dropped without a mark); the FCPE, MuScriptor
+  and Transkun papers (reference marks removed without saying so); the MuScriptor paper's contribution 4 (quoted as
+  cut off at a column break, although the full sentence is in the PDF); the audio_to_midi_melodia README (a heading
+  and a list item joined into one quote); the YourMT3 README (an emoji left out); the MTANet README (a closing
+  quotation mark added that the README does not have); the MuseScore handbook (a colon added).
+- Quotes added by the verifier: 79, all re-checked against their URLs: 75 verbatim, 4 markup-only.
+- Links fixed: 1 (`https://raw.githubusercontent.com/spotify/basic-pitch/main/basic_pitch/`, a directory URL that
+  returns 404, replaced by the two file URLs). Every other non-GitHub URL returned 200 or 206 except the four the
+  survey already lists as unreadable (code.soundsoftware.ac.uk gave no answer, librosa's "latest" pyin page 404, the
+  RWC page reset the connection, the MELODIA page 403). All 26 arXiv IDs resolve, and the titles and authors this
+  file gives match the arXiv API; all GitHub repositories named exist.
+- Versions and dates: every PyPI version and upload date, last-commit hash and date, Hugging Face size and date and
+  Zenodo version in the survey matched the re-read values. Added: Essentia's latest version has CPython 3.14 wheels
+  only; the PyPI name `mt3` is an unrelated package; `rmvpe-onnx` exists on PyPI; `omnizart` 0.6.3 and `madmom`
+  0.16.1 are source archives only.
+- Other facts corrected: FCPE's `f0_min` / `f0_max` defaults (`None`; 80 and 880 are the README example's values);
+  FCPE's `extact_midi` is in the GitHub source, not in the PyPI 0.0.4 package; the statement that no other tool takes
+  a tuning input (CREPE Notes' `--tuning-offset`, Essentia `Audio2Midi`'s `tuningFrequency` and
+  `transpositionAmount`); MR-MT3 and Aria-AMT marked NOT-CPU-BOX as shipped (their inference code requires CUDA);
+  MR-MT3's author-reported numbers now name their table and metric; the newer GuitarSet Zenodo record identified as
+  a single-file upload by a different creator.
+- UNVERIFIED items settled from code or pages: 16 (RMVPE call signature; YourMT3+ Space output; MR-MT3 inference
+  arguments and output; MR-MT3 table column; MuScriptor per-note fields; MuScriptor CLI instrument conditioning;
+  Timbre-Trap Space output; Deep Salience arguments and outputs; Onsets and Frames output; ByteDance dict keys;
+  Aria-AMT output; the licenses of PTDB-TUG, M4Singer, VCTK, ENST-Drums and IDMT-SMT-Bass). The file carried 32
+  UNVERIFIED marks when the docs agent finished and carries 24 above this log, some of them new.
+- License clauses the survey had missed, now quoted with links: MuScriptor's gated "specific conditions of use";
+  madmom's model-file license (CC BY-NC-SA 4.0), which reaches CREPE Notes' default onset splitting, Sheet Sage and
+  Omnizart's dependencies; Sheet Sage's README licensing paragraph (madmom, Jukebox, Melisma); muscriptor.cpp (MIT)
+  and the GGUF repository's LICENSE file (CC BY-NC 4.0 text); five dataset licenses (PTDB-TUG ODbL and DbCL, VCTK
+  CC BY 4.0, M4Singer CC BY-NC-SA 4.0 with an indemnity clause, IDMT-SMT-Bass CC BY-NC-ND 4.0, ENST-Drums CC BY-NC-ND
+  4.0 "limited to research purposes"); `yxlllc/RMVPE` has no LICENSE file; the MT3 checkpoint bucket holds no
+  license file.
+- Handoff facts: 2 lines lost an unsupported second half (MT3 program numbers that "can be selected ... before a
+  string-and-fret step"; beats that "a metronome or tab renderer could read"); 6 lines gained a source URL or a run
+  id (Demucs stems into Basic Pitch, r0243; SwiftF0 `segment_notes`, r0131; Essentia Melodia into
+  `PitchContourSegmentation`, r0321; the pitch-range limit, r0234 and r0131; a SoX tuning shift into Basic Pitch,
+  r0319; the SOME README URL); 2 lines were added (CREPE's `.f0.csv` into CREPE Notes `--f0`; the YourMT3+ Space's
+  HTML with embedded MIDI); the FCPE tempo input was limited to the GitHub source; the tuning and instrument lines
+  were corrected. Run ids were checked in `/home/user/gtr/ledger/runs.jsonl` (all exit 0, except the eight failed
+  Basic Pitch CLI runs cited as failures).
+- Agreement with `trials.md` (read up to its "Media kept outside git" section): where both files describe an output
+  format (Basic Pitch MIDI and CSV, aubio's printed lines, SwiftF0's `PitchResult` and notes, Transkun's MIDI, PESTO,
+  FCPE, Essentia, the YourMT3+ Space), they agree; facts observed in `trials.md` were added here with their run ids.
+  One version difference is now stated in section 10: this file names Essentia 2.1b6.dev1438 (latest on PyPI), the
+  try agent ran 2.1b6.dev1389 because the latest has CPython 3.14 wheels only.
+- Judging language: none found outside attributed quotes. The MuScriptor README's accuracy claim stays out; the
+  SwiftF0 README's "highest pitch F1" and SOME's speed figures remain as attributed quotes; RUNNABLE and NOT-CPU-BOX
+  remain pointers for the try agent.
+- Tools added: 1 section (35, VocalParse, May 2026) and 7 entries under "Not covered" (Harmonica, MIROS, VOCANO,
+  SPICE, praat-parselmouth, pyworld, pitch-core).
+- The docs agent's closing summary, checked: its counts hold (34 numbered entries, 32 UNVERIFIED marks, about 20 MB
+  of fetched copies). Of the pages it lists as unreadable, basicpitch.io, the static HTML of muscriptor.kyutai.org,
+  neuralnote.co and the MuScriptor model card (through the HTML model page, although the raw card file answers 401)
+  were readable on 2026-11-10. Its summary of constraint inputs missed CREPE Notes' `--tuning-offset` and Essentia
+  `Audio2Midi`'s `tuningFrequency` and `transpositionAmount`.

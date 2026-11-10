@@ -137,7 +137,9 @@ elif a.tool == "penn":
         pitch, per = penn.from_audio(torch.from_numpy(y)[None], sr, hopsize=0.01, batch_size=2048, gpu=None)
         p = pitch[0].numpy()
         c = per[0].numpy()
-        t = np.arange(len(p)) * 0.01
+        # center='half-window' (the default) adds no padding: frame i covers samples [i*hop, i*hop + WINDOW_SIZE)
+        # at 8 kHz (penn.core.preprocess), so its centre is at i*0.01 s + 1024/8000/2 s = i*0.01 + 0.064 s
+        t = np.arange(len(p)) * 0.01 + penn.WINDOW_SIZE / penn.SAMPLE_RATE / 2
         return t, p, c, None
 elif a.tool == "rmvpe":
     from rmvpe_onnx import RMVPE  # noqa

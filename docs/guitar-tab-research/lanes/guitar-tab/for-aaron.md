@@ -2,7 +2,8 @@
 
 Written 2026-11-10 by `try-guitar-tab`. These are the guitar-tab tools that did not run on the research box (no GPU,
 and the session could not install code straight from GitHub repositories; see `trials.md`, "Tools NOT RUN here").
-Everything below works on a Windows 11 laptop with an 8 GB RTX 4070, or in the tool's own app.
+The steps are written for a Windows 11 laptop with an 8 GB RTX 4070, or for the tool's own app; none of them was
+tried from the research box.
 
 Where the files come from:
 
@@ -85,7 +86,7 @@ card license MIT; code https://github.com/ErenReyhanlioglu/Guitar-Transcription)
 
 What it is: https://github.com/scottvr/gtrsnipe, a MIDI / ASCII tab converter with a Viterbi fretboard mapper and named
 or custom tunings (`--tuning`, `--tuning-pitches`). License, per the docs lane: PolyForm Noncommercial 1.0.0 plus a
-paid commercial licence. Free for this test.
+paid commercial licence.
 
 1. `git clone https://github.com/scottvr/gtrsnipe` then `cd gtrsnipe`, `uv venv .venv --python 3.11`,
    `uv pip install --python .venv\Scripts\python.exe -e .`
@@ -101,7 +102,8 @@ Send back: the `.tab` files and `help.txt`.
 
 What it is: what these programs do when they import a MIDI file onto a guitar tab staff. The MIDI-to-Tab paper
 (arXiv 2408.05024) compares its model with MuseScore, Guitar Pro 8 and TuxGuitar, and the Fretting-Transformer paper
-(arXiv 2506.14223) with TuxGuitar and Guitar Pro (their arXiv HTML pages, read 2026-11-10). TuxGuitar and MuseScore are free; Guitar Pro 8 is paid (only if you already own it).
+(arXiv 2506.14223) with TuxGuitar and Guitar Pro (their arXiv HTML pages, read 2026-11-10). TuxGuitar and
+MuseScore are free; Guitar Pro 8 is paid (only if you already own it).
 
 TuxGuitar (free, tuxguitar.app; the menu names below were not checked against the current version, so if they differ,
 use the program's MIDI import, its track tuning and capo settings, and its Guitar Pro 5 export):
@@ -113,8 +115,8 @@ use the program's MIDI import, its track tuning and capo settings, and its Guita
    Drop D (Track > Properties > Tuning) before export, as `S5dropd_tuxguitar_dropD.gp5`; for `S5capo2`, once with the
    capo set to 2, as `S5capo2_tuxguitar_capo2.gp5`.
 
-MuseScore 4 with the FretPath plugin (https://github.com/knoguchi/fretpath, GPL v3, needs MuseScore Studio 4.4 or
-later): install it as its README describes, import `S2n.merged.mid`, add a linked tablature staff, run the plugin,
+MuseScore 4 with the FretPath plugin (https://github.com/knoguchi/fretpath; per the docs lane's survey GPL v3 and
+MuseScore Studio 4.4 or later): install it as its README describes, import `S2n.merged.mid`, add a linked tablature staff, run the plugin,
 export MusicXML (`.musicxml`). Repeat for the clips above.
 
 Send back: every `.gp5` / `.musicxml` file and the screenshots of the import and plugin settings.
