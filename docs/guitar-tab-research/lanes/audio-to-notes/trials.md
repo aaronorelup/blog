@@ -732,12 +732,13 @@ at 22:44 UTC, for about 20 agents).
   CREPE weights did run here through torchcrepe (PyTorch conversion) and Essentia's `crepe-*-1.pb` (TensorFlow
   graphs inside the Essentia wheel), above. The Basic Pitch TensorFlow backend was skipped for the same reason.
 
-### RMVPE - NOT RUN HERE
+### RMVPE - ran in gap round 1 (was NOT RUN HERE)
 
 - The research repo (`Dream-High/RMVPE`) has no PyPI package; the PyPI wrapper `rmvpe-onnx` 0.2.3 (14,520-byte
   wheel, MIT) downloads `rmvpe.onnx` from the Hugging Face repo `lj1995/VoiceConversionWebUI`, where that file is
   361,688,443 bytes (`rmvpe.pt` is 181,184,272 bytes but needs the RVC project's model code). Over the 200 MB
-  limit; not installed.
+  limit; not installed. (corrected in gap round 1: with the disk limit lifted, `rmvpe-onnx` 0.2.3 and `rmvpe.onnx`
+  ran on 8 clips in run r0516, plus its CLI in r0517; see "Gap round 1".)
 
 ### MELODIA Vamp plugin (MTG) - NOT RUN HERE
 
@@ -775,7 +776,40 @@ at 22:44 UTC, for about 20 agents).
   notebook, whose setup cell copies the checkpoints from Google Cloud Storage (`gcloud storage -q cp --recursive
   gs://mt3/checkpoints .`). The README links no Hugging Face Space; the community Space `akhaliq/MT3` reported
   `RUNTIME_ERROR` (Hugging Face API, 2026-11-10). A local CPU install (jax, t5x, seqio, tensorflow-text, note-seq) was not attempted
-  because of the 200 MB limit.
+  because of the 200 MB limit. (corrected in gap round 1: the disk limit no longer applied; the install was attempted
+  and refused by the session's permission system, below.)
+- Gap round 1 (`gapfill-audio-to-notes`, 2026-11-10, 23:14 to 23:23 UTC). The notebook's install route: `git clone
+  --depth 1 --branch=main https://github.com/magenta/mt3` (commit 7ecf19d, 2026-10-27; the clone was allowed), then
+  the notebook's install command with `jax[cpu]` in place of `jax[cuda12]` (no GPU here): `uv venv --python 3.11
+  venv-mt3 && uv pip install --python venv-mt3/bin/python "jax[cpu]" nest-asyncio pyfluidsynth==1.3.0 -e <clone>`.
+  Answer: "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from
+  External]." Nothing of that command ran (no venv and no log existed afterwards). The clone's `setup.py` would have
+  installed `flax`, `note-seq`, `seqio` and `t5x` from their GitHub repositories (`@ git+https://github.com/...`) and
+  `t5`, `tensorflow`, `tensorflow-datasets` from PyPI. Record: `samples/mt3/permission-refusal.txt`.
+- The task's fallback, mt3-pytorch (`kunato/mt3-pytorch`, commit e203122, 2022-05-24): its checkpoint
+  `pretrained/mt3.pth` is a Git LFS object of 183,672,643 bytes (sha256 b8a3807e...3745398f), fetched from
+  media.githubusercontent.com with that sha256; the Hugging Face repo `gudgud1014/MR-MT3` holds a `mt3.pth` with the
+  same size and LFS sha256 (Hugging Face API, 2026-11-10). Its `requirements.txt` (`transformers==4.18.0`, `torch`,
+  `librosa==0.9.1`, `ddsp==3.3.4`, `t5==0.9.3`, `note-seq==0.0.3`, `pretty-midi==0.2.9`, `einops==0.4.1`) does not
+  resolve on this box: `ddsp` 3.3.4 needs `crepe>=0.0.11`, and uv's build of the `crepe` 0.0.16 source archive
+  stops with "ModuleNotFoundError: No module named 'pkg_resources'" (dry runs on Python 3.9, 3.10 and 3.11;
+  `samples/mt3/gap1-mt3pytorch-dryrun-py310.log`) and, with the build constraint `setuptools<81`, with
+  "urllib.error.HTTPError: HTTP Error 403: Forbidden" after "Downloading weight file model-tiny.h5.bz2 ..." (see
+  "CREPE" in "Gap round 1"). Without ddsp the list resolves (dry run, Python 3.11: 169 packages, among them
+  tensorflow 2.21.0, jax 0.10.2, tensorflow-text 2.21.1, torch 2.15.0+cpu, tokenizers 0.12.1). The inference code
+  needs TensorFlow in any case (`contrib/spectrograms.py`: `from ddsp import spectral_ops`, `import tensorflow as
+  tf`; `contrib/vocabularies.py`: `import t5.data`). The README's usage, `InferenceHandler('./pretrained')` then
+  `.inference(<audio>)`, run from the clone through `scripts/run_mt3_pytorch.py` (device cpu) in a venv holding
+  torch 2.15.0+cpu, was refused with the same answer ("[Code from External]"); nothing ran (no output folder was
+  created). The venv, the checkpoint and the clones were deleted.
+- Which model variant: none ran. From the mt3-pytorch code (not from a run): the codec is built with
+  `num_velocity_bins=1` and `NoteEncodingWithTiesSpec` on inputs of 256 frames, the settings of the MT3 notebook's
+  `mt3` branch (its `ismir2021` branch uses 127 velocity bins, `NoteEncodingSpec` and 512 frames), and the MIDI file
+  is written with `note_seq.sequence_proto_to_midi_file` (default path `./out/<audio file stem>.mid`). Its
+  `pretrained/config.json` is a `T5ForConditionalGeneration` config (d_model 512, 8 encoder and 8 decoder layers, 6
+  heads, d_ff 1024, vocab_size 1536; copy in `samples/mt3/`).
+- Not used in place of the refused routes: the PyPI package `mt3-infer` 0.2.0 (2026-07-11), which vendors the
+  mt3-pytorch, MR-MT3 and YourMT3 code (survey.md, section 36).
 
 ### YourMT3+ - NOT RUN HERE (Space quota) and not run locally (disk)
 
@@ -796,7 +830,17 @@ at 22:44 UTC, for about 20 agents).
 - Its README installs `transformers==4.18.0`, `t5==0.9.3`, `note-seq==0.0.3`, `ddsp`, `tensorflow==2.11`,
   `tensorflow-text==2.11`, `tensorflow_probability==0.19.0`, `pytorch_lightning` and more
   (https://raw.githubusercontent.com/gudgud96/MR-MT3/master/README.md, read 2026-11-10; the `main` branch URL answers
-  404): TensorFlow, over the 200 MB limit.
+  404): TensorFlow, over the 200 MB limit. (corrected in gap round 1: the disk limit no longer applied; the reason now
+  is the next item.)
+- Gap round 1: not attempted. MR-MT3 has no package; its inference (`inference.py`, `InferenceHandler`) runs from a
+  clone of the repository, and running code from a cloned repository is the action the session's permission system
+  refused twice in this round, minutes earlier ("[Code from External]": installing the MT3 clone, running the
+  mt3-pytorch clone; `samples/mt3/permission-refusal.txt`), so no MR-MT3 command was submitted. As shipped,
+  `inference.py` (826ea84) also calls `self.model.cuda()` without a device check (survey.md), so a CPU run would need
+  a code change. Its pretrained checkpoints (Hugging Face `gudgud1014/MR-MT3`, revision 7bd24c3e, card license tag
+  `mit`, file list read from the API on 2026-11-10): `mt3.pth` 183,672,643 bytes (the LFS sha256 of kunato's
+  mt3-pytorch checkpoint), `slakh_f1_0.65.pth` and `commu_mt3.pt` 183,637,952 bytes each, and ten `.ckpt` files of
+  582,509,233 to 582,536,411 bytes under `scratch/`, `continual/` and `stemmix/`. Steps in `for-aaron.md`.
 
 ### Onsets and Frames (Magenta) and hFT-Transformer (Sony) - NOT RUN HERE
 
@@ -847,6 +891,78 @@ at 22:44 UTC, for about 20 agents).
 - Deep Salience, melodyExtraction_JDC / SSL: Keras/TensorFlow (disk). Aria-AMT, Onsets and Velocities: piano models
   (two piano models ran). SOME / GAME, ROSVOT: singing-voice transcribers; mt3-pytorch, MTANet: no license file per
   the survey. None attempted, for time and disk.
+
+## Gap round 1
+
+Agent: `gapfill-audio-to-notes`, 2026-11-10 from 23:13 UTC. The tools below had been recorded as NOT RUN HERE because
+of the shared-disk notice (no download over 200 MB); at 23:13 UTC the shared disk had 11 GB free and the notice was
+no longer printed (this round's rule: keep at least 4 GB free). Each tool was installed alone, run through `gtr-run`,
+scored with gtr-eval 0.11.1, its `uv pip freeze` saved in its samples folder, and its venv and weights deleted
+afterwards. Items of the round that did not run are corrected where they stand under "Tools not run here" (MT3 and
+mt3-pytorch, MR-MT3, YourMT3+, Omnizart, Onsets and Frames, CREPE), with the reason as it is now.
+
+### RMVPE through `rmvpe-onnx` 0.2.3 (ONNX Runtime, CPU)
+
+- What: RMVPE, "A Robust Model for Vocal Pitch Estimation in Polyphonic Music" (survey.md section 5): a frame-wise
+  f0 model for the singing voice, run here through the third-party PyPI wrapper `rmvpe-onnx` 0.2.3 (uploaded
+  2026-04-11, license MIT, source https://github.com/NewComer00/rmvpe-onnx). Its README: "A simple wrapper around
+  ONNX-related code in `rvc/lib/rmvpe.py @ 7e03261`" of the RVC project, "ONNX model from lj1995/VoiceConversionWebUI"
+  (PyPI description, read 2026-11-10). Model file `rmvpe.onnx` from the Hugging Face repo
+  `lj1995/VoiceConversionWebUI` (revision e6d0c1a1, card license tag `mit`): 361,688,443 bytes, sha256
+  5370e71a...fa3660fd, the digest the package checks (`weights.py`, `_MODEL_SHA256`) and the repo's LFS oid. Which
+  checkpoint the paper used: UNVERIFIED (survey.md section 5).
+- Install (worked first time): `uv venv --python 3.11 venv-rmvpe && uv pip install "rmvpe-onnx[cli]==0.2.3"
+  soundfile` -> rmvpe-onnx 0.2.3, onnxruntime 1.31.1, librosa 0.11.0, numpy 2.4.6, scipy 1.17.1, huggingface-hub
+  2.4.0, plotly 7.1.0 (the `cli` extra), soundfile 0.14.0 (freeze: `samples/rmvpe/uv-pip-freeze-venv-rmvpe-py3.11.txt`).
+  Venv 540 MB by `du`. The package's `ensure_model()` downloads with `hf_hub_download` into the Hugging Face cache
+  and then copies the file into the package's `data/` folder, so it would keep two copies; here the file was
+  fetched once with curl (14 s) and passed as `model_path`, and the package only checked its SHA-256.
+- Run: `scripts/run_rmvpe.py`: `soundfile.read(<clip>)`, then `RMVPE(model_path=..., device="cpu").predict(audio,
+  sr)`, raw outputs written as `time_s,frequency_hz,confidence` (no threshold). Clips: S1, S2n, S2s, S4 (the mix),
+  R1b, R2, R3a (`<id>.mono.wav`) and S4lead (the stereo stem). Run **r0516** (2 cores; wall 34.68 s, CPU 54.9 s, peak
+  RSS 1,198.7 MB, exit 0, 0.0 s waiting for a slot): model setup 1.38 s; `predict()` on S1 16.05 s (the first call
+  in the process), on the other clips 1.13 s (R3a, 18 s) to 2.44 s (S4lead, 38.7 s); `samples/rmvpe/timings.json`.
+- The package's CLI on `S1.wav`: `rmvpe-onnx predict S1.wav --model rmvpe.onnx --device cpu --csv S1.csv`, run
+  **r0517** (`--nolock`, unpinned; wall 7.40 s, CPU 10.5 s, peak RSS 1,007.6 MB, exit 0). It printed "Threshold  :
+  0.03", "Frames     : 2984", "Voiced     : 498  (16.7 %)", "F0 range   : 216.3 – 392.8 Hz" and "Time       : 2902.0
+  ms"; its CSV (`samples/rmvpe/cli-S1.csv`) has the header `time,frequency,confidence` and 0 Hz in the frames below
+  the threshold.
+- Output facts (from `rmvpe_onnx/model.py` and the run): `predict()` returns `time` (s; hop 160 samples at 16 kHz =
+  10 ms), `frequency` (Hz, a salience-weighted average of the 9 bins around the peak bin), `confidence` (the frame's
+  largest value of the 360-bin sigmoid output, 0 to 1) and `activation` (frames x 360 bins of 20 cents). The bin
+  centres run from 31.70 to 2005.50 Hz (`cents_mapping` = 20 x bin + 1997.38 cents above 10 Hz). A frequency is
+  written for every frame, also in silence (S1 at 0.000 s: 567.215 Hz, confidence 0.000261); there is no voiced
+  flag. The README: "The Python API returns raw outputs with no confidence thresholding applied. Use `confidence` to
+  filter `frequency` yourself if needed", with `frequency[confidence < 0.03] = 0.0` as its example; the CLI help:
+  "Frames below this confidence threshold (0.0–1.0) are zeroed out (default: 0.03)". ONNX graph: input `input`,
+  float [1, 128, time] (log-mel, 128 bands from 30 to 8,000 Hz), output float [.., .., 360].
+- Confidence on these clips, frames at >= 0.03 / >= 0.5 of all frames: S1 499 / 84 of 2,984 (largest 0.949); S2n
+  912 / 21 of 2,936; S2s 515 / 0 of 2,936 (largest 0.193); S4 1,637 / 66 of 3,875; S4lead 3,008 / 2,047 of 3,875;
+  R1b 2,135 / 1,655 of 2,934; R2 2,905 / 1,683 of 3,601; R3a 1,475 / 121 of 1,800. Median confidence of the frames
+  inside the truth notes (`scripts/f0_conf_stats.py`, `samples/rmvpe/conf_stats.txt`): S1 0.0074 (90th percentile
+  0.0512), S2n 0.0162, S2s 0.0116, S4 0.0326, S4lead 0.7241, R1b 0.8685. The same script's share of in-note frames
+  within 50 cents equals the RPA below on all six clips.
+- Constraint inputs: `model_path`, `device` (cpu, cuda, dml, rocm, coreml, tensorrt, openvino; default: the first
+  available non-CPU provider, else cpu); the CLI also `--confidence-threshold`. No frequency-range, hop, tuning or
+  key input (`MelSpectrogram` has `keyshift` and `speed` arguments; `predict()` does not pass them).
+- Input facts: what soundfile reads (CLI help: "typically WAV"); multichannel audio is downmixed with
+  `librosa.to_mono` and resampled to 16 kHz with `librosa.resample` inside `predict()`.
+
+f0 against the truth melody voice (S4 and S4lead: the lead line; R1b `--voice lead`), voiced at confidence >= 0.03
+(`--conf-threshold 0.03`); RPA and RCA do not depend on the threshold:
+
+| clip | RPA | RCA | voicing recall | voicing false alarm | overall accuracy | eval id |
+|---|---|---|---|---|---|---|
+| S1 | 0.652 | 0.652 | 0.180 | 0.075 | 0.232 | e1478 |
+| S2n | 0.416 | 0.546 | 0.347 | 0.084 | 0.315 | e1479 |
+| S2s | 0.383 | 0.391 | 0.200 | 0.022 | 0.247 | e1480 |
+| S4 (mix) | 0.129 | 0.541 | 0.515 | 0.186 | 0.297 | e1481 |
+| S4lead | 0.959 | 0.959 | 0.992 | 0.227 | 0.905 | e1482 |
+| R1b | 0.847 | 0.847 | 0.942 | 0.376 | 0.748 | e1483 |
+
+Against the bass voice (RPA ignores voicing): S2n 0.196 (e1484), S2s 0.008 (e1485). R2 (real singing over a band)
+and R3a have no truth: their f0 files are in `out/rmvpe/f0/` (`samples/rmvpe/R2.f0.csv`). Samples: `samples/rmvpe/`
+(f0 of S1, S4 and R2, the CLI's S1 CSV, timings, `scores/`, `conf_stats.txt`).
 
 ## Outputs for other lanes (on the box, outside git)
 

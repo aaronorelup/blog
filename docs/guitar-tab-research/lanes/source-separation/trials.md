@@ -2,17 +2,26 @@
 
 Lane `source-separation`, agent `try-source-separation`, started 2026-11-10 20:52 UTC. Everything below was run on the
 shared box (4 vCPU Intel Xeon 2.10 GHz, 15 GiB RAM, no GPU). Timed runs went through `gtr-run`, which pins a job to
-one slot of 2 cores unless the run says 4 cores (`--all-cores`); every run id (r0xxx) is a line in
-`/home/user/gtr/ledger/runs.jsonl`, every scoring id (e0xxx) a line in the gtr-eval ledger. Estimated stems are in
-`/home/user/gtr/lanes/source-separation/out/<model>/<clip>/` for other lanes to use.
+one slot of 2 cores; no 4-core (`--all-cores`) run was made. Every run id (r0xxx) is a line in
+`/home/user/gtr/ledger/runs.jsonl`, every scoring id (e0xxx) a line in the gtr-eval ledger
+(`/home/user/gtr/eval/ledger/evals.jsonl`). The first runs (r0019 to r0147) each took a slot; from 21:05 UTC the
+slots were queued 15 to 20 jobs deep, and the later runs were grouped into three batch jobs (r0478, r0493, r0510),
+each holding one 2-core slot, inside which every item was logged with `gtr-run --nolock` (details under "Demucs
+4.1.0, further runs"). The box was shared with about 20 agents throughout: load averages of 3 to 10 at run start
+are listed, so wall-clock times are single runs on a busy machine, with CPU time beside them. Estimated stems are in
+`/home/user/gtr/lanes/source-separation/out/<model>/<clip>/` for other lanes to use (index near the end).
 
-How stems are scored (where truth exists, S4 and S6taps): `gtr-eval stems` averages every signal to mono, resamples to
-44.1 kHz if needed, trims to the shortest length, then reports SI-SDR (computed by gtr-eval: mean removed,
+How stems are scored: `gtr-eval stems` (gtr-eval 0.11.1) averages every signal to mono, resamples to 44.1 kHz if
+needed, trims to the shortest length, then reports SI-SDR (computed by gtr-eval: mean removed,
 target = (<est,ref>/<ref,ref>) ref, 10 log10(|target|^2/|est-target|^2)) and mir_eval 0.8.2
-`bss_eval_sources` SDR / SIR / SAR (512-tap filter, whole signal, one joint call over all scored stems). No time
-alignment is searched. These are measurements on one synthesized clip, not a ranking.
+`bss_eval_sources` SDR / SIR / SAR (512-tap filter, whole signal, one joint call over all scored stems unless
+`--sdr-mode single` is stated). No time alignment is searched. References: the S4 and S6taps truth stems; for R2, the
+artist's instrumental version and the song-minus-instrumental vocal (`R2/stems/`). These are measurements on single
+clips, not a ranking. "Projection" below means <est, ref> / <ref, ref> on mono signals (`scripts/stem_facts.py`):
+the share, by amplitude projection, of a true stem found in an estimated stem.
 
-Scripts are in `scripts/`, small text samples in `samples/<tool>/`. Audio stays outside git (list at the end).
+Scripts are in `scripts/`, small text samples in `samples/<tool>/`, scoring outputs in `samples/scores/`. Audio stays
+outside git (list at the end).
 
 ## Open-Unmix (openunmix 1.3.0, `umx` CLI)
 
@@ -28,7 +37,7 @@ Scripts are in `scripts/`, small text samples in `samples/<tool>/`. Audio stays 
   `mit-license` for record 3370489 ("Open-Unmix-Pytorch UMX-HQ").
 - **Install (worked):** `uv venv --python 3.11 venv-umx && uv pip install openunmix==1.3.0` (pulled torch
   2.15.0+cpu, torchaudio 2.11.1+cpu, numpy 2.4.6), then `uv pip install torchcodec` (0.17.0+cpu). Venv 895 MB
-  (du; mostly torch, hard-linked from the shared uv cache). Freeze: `samples/openunmix/uv-pip-freeze.txt`. The venv
+  by du (hard-linked from the shared uv cache). Freeze: `samples/openunmix/uv-pip-freeze.txt`. The venv
   was deleted afterwards for disk space.
 - **Dead end:** without torchcodec the first run (r0051, exit 1, 2.91 s) stopped in `openunmix/data.py`
   `torchaudio.load(path)`: "ImportError: TorchCodec is required for load_with_torchcodec. Please install torchcodec
@@ -57,8 +66,8 @@ Scripts are in `scripts/`, small text samples in `samples/<tool>/`. Audio stays 
   run's wall-clock is not a clean single-tenant figure; CPU time is given beside it.
 - **Output format:** one WAV per target, `vocals.wav`, `drums.wav`, `bass.wav`, `other.wav`, in
   `<outdir>/<input file stem>/`; read back with soundfile: 44,100 Hz, 2 channels, PCM_16, frame count equal to the
-  input's (difference 0 on every file of every run); the sum of the four stems against the input mix: best lag 0
-  samples, residual -39.85 dB (umxhq, S4), -22.22 dB (umxl, S4), -42.83 dB (umxhq, S6taps), -35.35 dB (umxhq, R2),
+  input's (difference 0 on every file of every run); the sum of the four stems against the input mix:
+  cross-correlation peak at lag 0 samples, residual -39.85 dB (umxhq, S4), -22.22 dB (umxl, S4), -42.83 dB (umxhq, S6taps), -35.35 dB (umxhq, R2),
   -39.97 dB (umxl, R2) (residual = 10 log10(|mix - sum|^2 / |mix|^2), mono, script `scripts/stem_facts.py`; full
   facts in `samples/openunmix/stemfacts_*.json`).
 - **S4 (synthesized band, truth stems drums / bass / guitar / lead):** `gtr-eval stems` with the map drums=drums,
@@ -111,16 +120,18 @@ Scripts are in `scripts/`, small text samples in `samples/<tool>/`. Audio stays 
   2.15.0+cpu, sphn 0.2.1, huggingface-hub 2.4.0, safetensors 0.8.0, julius 0.2.8, lameenc 1.9.0, einops 0.8.2; no
   torchaudio). **Dead end:** the first `demucs --help` failed with "ModuleNotFoundError: No module named 'numpy'"
   (raised from `demucs/transformer.py` line 14, `import numpy as np`): demucs 4.1.0 does not declare numpy as a
-  dependency and none of its dependencies pulled it in. Fix: `uv pip install numpy` (2.4.6). No torchaudio
-  problem exists in 4.1.0 because it no longer uses torchaudio for inference; the older-version problem is shown
-  under Open-Unmix (same torchaudio 2.11 load/save change). Venv 1.1 GB by du (hard-linked from the shared uv
-  cache; this figure also includes `peft` and `transformers`, added later for the LoRA trial below).
+  dependency and none of its dependencies pulled it in. Fix: `uv pip install numpy` (2.4.6). Demucs 4.1.0 has no
+  torchaudio in its inference path, so the torchaudio 2.11 load/save change does not reach it; what that change does
+  to the previous release (4.0.1) is measured in "Demucs 4.0.1 with the current torchaudio" below. Venv 1.1 GB by du
+  (hard-linked from the shared uv cache; this figure also includes `peft` and `transformers`, added later for the
+  LoRA trial below).
 - **Weights** (downloaded unauthenticated from Hugging Face by `get_model` on first use; script
   `scripts/demucs_fetch_models.py`; the hub printed "Warning: You are sending unauthenticated requests to the HF Hub"):
   `adefossez/HTDemucs` `955717e8.safetensors` 84,025,440 bytes; `adefossez/HTDemucs-6s` `5c90dfd2.safetensors`
   54,885,744 bytes; `adefossez/HTDemucs-ft` 4 x 84,025,440 bytes (`f7e0c4bc`, `d12395a8`, `92cfc3b6`, `04573f0d`);
   `adefossez/Demucs-mdx_extra` `a1d90b5c`, `5d2d6c55` (167,309,720 bytes each), `e51eebcc`, `cfa93e08` (167,317,416
-  bytes each); plus one small `<name>.yaml` per repo. What the loaded models report:
+  bytes each); plus one small `<name>.yaml` per repo. The `htdemucs_ft` and `mdx_extra` files were deleted from the
+  shared cache after the R2 runs (disk). What the loaded models report:
 
 | model | sources | sub-models | segment (s) | parameters | sample rate / channels |
 |---|---|---|---|---|---|
@@ -149,7 +160,7 @@ Scripts are in `scripts/`, small text samples in `samples/<tool>/`. Audio stays 
 
 - **Output format:** `out/<model>/<input file stem>/<source>.wav`, one file per source; read back with soundfile:
   44,100 Hz, 2 channels, PCM_16, frame count equal to the input's on every file of every run (difference 0). Sum of
-  the stems against the input mix (mono, `scripts/stem_facts.py`): best lag 0 samples in every run; residual
+  the stems against the input mix (mono, `scripts/stem_facts.py`): cross-correlation peak at lag 0 in every run; residual
   10 log10(|mix - sum|^2/|mix|^2) = -32.14 dB (htdemucs S4), -12.76 dB (htdemucs_6s S4), -17.55 dB (htdemucs_ft S4),
   -34.73 dB (mdx_extra S4), -39.05 dB (htdemucs S6taps), -12.59 dB (htdemucs_6s S6taps), -44.67 dB (htdemucs S2s),
   -16.18 dB (htdemucs_6s S2s). So the stems do not add back exactly to the mix, least of all with htdemucs_6s.
@@ -279,8 +290,9 @@ smallest checkpoint a model offers". Steps for Aaron are in `for-aaron.md`.
   `guitar_htdemucs_6s.pt` 329,654,071 bytes, not gated. Not run: above the 200 MB notice.
 - **Demucs in the browser.** `free-music-demixer` (sevagh): its README calls it "An archived snapshot ... no longer
   maintained" and "Model weights are not included" (survey.md). `demucs-rs`: its README names Metal, Vulkan and
-  WebGPU back ends; the box has no GPU (survey.md). Not run here. An ONNX build of htdemucs_6s that also loads in
-  onnxruntime-web (`demucs-onnx`, below) was run on the CPU instead.
+  WebGPU back ends; the box has no GPU (survey.md). Not run here. Instead the ONNX export of htdemucs_6s that the
+  `demucs-onnx` package also offers to onnxruntime-web (its `browser.py`; the browser path was not tested) was run
+  with ONNX Runtime on the CPU (section below).
 - **Larger RoFormer checkpoints** (Mel-Band RoFormer "Kim" vocals 913,106,900 bytes; `model_mel_band_roformer_ep_3005`
   1,007,816,988 bytes, sizes from HTTP HEAD on the audio-separator mirror): not downloaded (200 MB notice). The
   Mel-Band RoFormer architecture was run with the 45 MB becruily guitar checkpoint instead (below).
@@ -333,8 +345,8 @@ the reader and writer of PyPI `demucs` 4.0.1 were checked against torchaudio 2.1
   checksum", "Extracting downloaded 4stems archive"); extracted `model.data-00000-of-00001` 157,228,152 bytes. (2stems
   is 73,109,797 bytes and 5stems 182,803,368 bytes; not downloaded.)
 - **Runs** (`MODEL_PATH=models/spleeter spleeter separate -p spleeter:4stems -o out/spleeter-4stems <clip>.wav`,
-  defaults otherwise: codec wav, no `--mwf`, `-d` 600 s maximum duration; script `scripts/spleeter_batch.sh`, run
-  inside batch A, 2 cores):
+  defaults otherwise: codec wav, no `--mwf`, `-d` 600 s maximum duration; `scripts/batch_A.sh` section 3, inside
+  batch A, 2 cores):
 
 | run | clip (length) | wall s | CPU s | peak RSS MB | load1 at start |
 |---|---|---|---|---|---|
@@ -345,8 +357,10 @@ the reader and writer of PyPI `demucs` 4.0.1 were checked against torchaudio 2.1
 - **Output format:** `out/spleeter-4stems/<input stem>/{vocals,drums,bass,other}.wav` (template
   `{filename}/{instrument}.{codec}`), written through ffmpeg: 44,100 Hz, 2 channels, PCM_16, frame count equal to the
   input's; each file is 34 bytes larger than the input WAV of the same length (6,834,058 vs 6,834,024 bytes for S4);
-  with equal frame counts the extra bytes are in the header (spleeter writes through ffmpeg). Sum of the stems against the mix: lag 0, residual -30.28 dB (S4), -31.92 dB
-  (S6taps), -29.92 dB (R2).
+  with equal frame counts the extra bytes are in the header (spleeter writes through ffmpeg). Sum of the stems
+  against the mix: lag 0, residual -30.28 dB (S4), -31.92 dB (S6taps), -29.92 dB (R2). The venv and the model were
+  deleted after the runs (disk); `uv cache clean tensorflow-cpu jaxlib jax tensorboard keras libclang` then freed
+  904.2 MiB of the shared cache.
 - **S4** (e1394; map guitar=other, lead=vocals; SI-SDR / SDR / SIR / SAR dB): drums 3.75 / 4.21 / 15.85 / 4.63; bass
   2.74 / 4.79 / 10.68 / 6.44; guitar (other) -1.40 / -1.07 / -0.39 / 10.53; lead (vocals) -8.20 / -4.41 / 13.54 /
   -4.15. Lead projection: other 0.8668, vocals 0.1115; guitar projection: other 0.8571. Stem levels (mix -17.37
@@ -398,8 +412,9 @@ its slot.
 | r0435 | e1400 | htdemucs_ft | 289.33 | 297.8 | 1795.3 | 10.81 / 11.33 / 21.46 / 11.81 | 13.57 / 13.85 / 19.63 / 15.24 | vocals -12.85, other -18.79, bass -19.93, drums -23.30 |
 | r0447 | e1401 | mdx_extra | 204.85 | 169.4 | 3772.1 | 11.26 / 11.86 / 20.99 / 12.46 | 13.47 / 13.77 / 19.43 / 15.19 | vocals -13.13, other -18.99, bass -19.50, drums -24.30 |
 
-  INPUTS.md lists "That the song has bass and drums is UNVERIFIED"; the measured `bass` and `drums` stems sit 10 to
-  14 dB below the mix in all four models. That is a level of model output, not a listening check.
+  INPUTS.md lists "That the song has bass and drums is UNVERIFIED"; the measured `bass` stems sit 9.2 to 10.0 dB
+  and the `drums` stems 12.5 to 14.0 dB below the mix level in all four models. That is a level of model output, not
+  a listening check.
 - **Option checks** (`scripts/batch_A.sh` section 5): `--two-stems` on the whole S4, everything else on the first
   10.000 s of S4 (`inputs/S4_0-10s/S4_0-10s.wav`, cut with `sox ... trim 0 441000s`, sha256 `d8f369e6...b1ea`). Scores
   use `gtr-eval stems --max-seconds 10` against the S4 truth (map guitar=other, lead=vocals; SI-SDR / SDR dB):
@@ -509,7 +524,8 @@ its slot.
   more); then `uv pip install --no-deps msst==0.1.0`, because the package declares `torch<2.12,>=2.0.1` and the box
   already had torch 2.15.0 in the shared cache (installing 2.11 would have been a second torch). It ran with torch
   2.15.0+cpu; this combination is outside the package's declared range. Venv 95 MB by du (torch hard-linked from the
-  cache). Freeze: `samples/msst/uv-pip-freeze-venv-msst.txt`.
+  cache), deleted after the runs. Freeze (taken after demucs-onnx was added to the same venv):
+  `samples/msst/uv-pip-freeze-venv-msst.txt`.
 - **Checkpoints:** `becruily_guitar.ckpt` 45,142,183 bytes (sha256 `83472bbf...a83c`) and `config_guitar_becruily.yaml`
   from https://huggingface.co/becruily/mel-band-roformer-guitar (not gated; Hub API lists no license tag; the config
   gives `instruments: [Guitar, Other]`, `target_instrument: Guitar`, `num_stems: 1`, `dim 256`, `depth 4`,
@@ -548,4 +564,222 @@ its slot.
 - **Constraint inputs for a re-run:** `--model_type`, `--config_path` (chunk size, overlap and instruments are in the
   YAML), `--extract_instrumental`, `--use_tta`, `--bigshifts`, `--pcm_type`, `--flac_file`, `--lora_checkpoint_peft`
   / `--lora_checkpoint_loralib`, `--filename_template`. No pitch or tuning parameters.
+
+## python-audio-separator 0.48.0 and the UVR model zoo (VR, MDX-Net, Demucs, MDX23C, BS-RoFormer, BS-RoFormer-SW)
+
+- **What:** a CLI and Python package that runs Ultimate Vocal Remover's model families and downloads their
+  checkpoints; PyPI `audio-separator` 0.48.0 (uploaded 2026-10-29), https://github.com/nomadkaraoke/python-audio-separator.
+- **License:** LICENSE "MIT License / Copyright (c) 2023 karaokenerds"; README: "This project is licensed under the MIT
+  [License](LICENSE)." and "**Please Note:** If you choose to integrate this project into some other project using the
+  default model or any other model trained as part of the [UVR] project, please honor the MIT license by providing
+  credit to UVR and its developers!" (raw LICENSE and README.md on `main`, read 2026-11-10). No per-model license is
+  in the catalogue JSON.
+- **Install (worked):** `uv venv --python 3.11 venv-uvr && uv pip install "audio-separator[cpu]==0.48.0"` (torch
+  2.15.0+cpu, torchvision 0.29.2+cpu, onnxruntime 1.31.1, onnx-weekly 1.24.0.dev20261102, onnx2torch-py313 1.6.0,
+  librosa 0.11.0, numpy 2.4.6, diffq 0.2.4, rotary-embedding-torch 0.6.5, pydub 0.25.1, samplerate 0.1.0). Venv 1.4 GB
+  by du (hard-linked from the shared cache). No error. At run time it logged "No hardware acceleration could be
+  configured, running in CPU mode" and found "ffmpeg version 6.1.1-3ubuntu5".
+- **Model catalogue:** `audio-separator -l --list_format json` (`samples/audio-separator/model_catalogue_0.48.0.json`,
+  80,286 bytes): 169 entries: VR 29, MDX 39, Demucs 4, MDXC 97 (MDX23C and the RoFormers). Default model (`--help`):
+  `model_bs_roformer_ep_317_sdr_12.9755.ckpt`. Entries whose stems name a guitar: `htdemucs_6s.yaml`; the entry
+  `BS-Roformer-SW.ckpt` lists no stems in the catalogue, and its YAML says `instruments: ['bass', 'drums', 'other',
+  'vocals', 'guitar', 'piano']` (`samples/audio-separator/BS-Roformer-SW.yaml`). No entry contains "SCNet". Downloads:
+  the code tries `https://github.com/nomadkaraoke/python-audio-separator/releases/download/model-configs/<file>` first
+  and the original UVR release URL second (`separator.py`, `download_model_files`); Demucs `.th` files come from
+  `https://dl.fbaipublicfiles.com/demucs/hybrid_transformer/` (catalogue `download_files`). Files used (bytes):
+  `1_HP-UVR.pth` 126,792,647; `UVR-MDX-NET-Inst_HQ_3.onnx` 66,759,214; `5c90dfd2-34c22ccb.th` (htdemucs_6s)
+  54,996,327; `MDX23C-8KFFT-InstVoc_HQ.ckpt` 448,101,203; `model_bs_roformer_ep_317_sdr_12.9755.ckpt` 639,331,213;
+  `BS-Roformer-SW.ckpt` 699,412,152 (sha256 of each in `samples/audio-separator/model-files-sha256.txt`). The three
+  largest were deleted after the runs for disk space.
+- **Runs** (`scripts/batch_B.sh`: `audio-separator -m <model> --model_file_dir models/uvr --output_dir <out>
+  --output_format WAV --custom_output_names '<lower-case names>' <clip>.wav`, every other option at its default:
+  `--normalization 0.9`, MDX segment 256 / overlap 0.25, VR window 512 / aggression 5, Demucs shifts 2 / overlap 0.25,
+  MDXC overlap from the model config; inside batch B, 2 cores; "separation" is the tool's own "Separation duration"
+  line):
+
+| run | architecture: model | clip | wall s | CPU s | peak RSS MB | separation (tool) | stems written |
+|---|---|---|---|---|---|---|---|
+| r0481 | VR: `1_HP-UVR.pth` | S4 (38.7 s) | 109.83 | 159.4 | 2198.2 | 1:43 | instrumental, vocals |
+| r0487 | MDX-Net: `UVR-MDX-NET-Inst_HQ_3.onnx` | S4 | 86.42 | 153.0 | 3160.8 | 1:15 | instrumental, vocals |
+| r0490 | Demucs: `htdemucs_6s.yaml` | S4 | 68.34 | 96.3 | 1723.9 | 1:02 | bass, drums, other, vocals, guitar, piano |
+| r0489 | MDXC RoFormer: `BS-Roformer-SW.ckpt` | S4_0-10s (10.0 s) | 110.34 | 184.5 | 2354.6 | 1:40 | bass, drums, other, vocals, guitar, piano |
+| r0496 | MDXC MDX23C: `MDX23C-8KFFT-InstVoc_HQ.ckpt` | S4_0-10s | 502.83 | 771.1 | 2230.6 | 8:15 | instrumental, vocals |
+| r0498 | MDXC BS-RoFormer: `model_bs_roformer_ep_317_sdr_12.9755.ckpt` | S4_0-10s | 170.47 | 300.6 | 2227.5 | 2:42 | instrumental, vocals |
+| r0502 | VR: `1_HP-UVR.pth` | R2 (36.0 s) | 88.22 | 137.1 | 2018.5 | 1:22 | instrumental, vocals |
+| r0503 | MDX-Net: `UVR-MDX-NET-Inst_HQ_3.onnx` | R2 | 76.06 | 148.8 | 3165.8 | 1:05 | instrumental, vocals |
+
+  The RoFormer and MDX23C models were run on the first 10 s of S4 only. Extrapolating r0496 linearly to the 228.5 s
+  song (an extrapolation, not a measurement): 502.83 s x 228.5 / 10 = 11,490 s, about 3.2 hours on 2 cores;
+  r0498: 170.47 x 22.85 = 3,895 s; r0489: 110.34 x 22.85 = 2,521 s.
+- **Output format:** one WAV per stem, 44,100 Hz, 2 channels, PCM_16 ("Detected input bit depth: 16-bit" ... "Writing
+  output with 16-bit depth", "Using pydub for writing"), peak-normalised by the default `--normalization 0.9` (R2
+  stems peak at -0.92 dBFS = 0.90). Frame count equal to the input for MDX-Net, Demucs, MDX23C and the RoFormers
+  (files 34 bytes larger than the input WAV); **the VR model's files are shorter: 463 frames short on S4 (1,708,032
+  vs 1,708,495) and 400 short on R2**, still aligned at lag 0. Residual of the stem sum against the mix: VR -37.71 dB
+  (S4), MDX-Net -34.39 dB (S4), Demucs 6s -12.16 dB (S4), BS-RoFormer-SW -36.86 dB, MDX23C -68.24 dB, BS-RoFormer
+  -72.07 dB (first 10 s of S4), VR -14.71 dB and MDX-Net -13.39 dB (R2).
+- **S4, scored.** For the two-stem models a reference `instrumental` = drums + bass + guitar truth stems
+  (`inputs/S4_truth_2stem/instrumental.wav`, made with `scripts/sum_stems.py`, sha256 `a1b467a8...309a`) and `lead`
+  = the truth lead stem; SI-SDR / SDR / SIR / SAR dB:
+
+| eval | model | scope | scores |
+|---|---|---|---|
+| e1421 | VR `1_HP-UVR` | S4 | instrumental 7.54 / 7.64 / 8.69 / 14.88; lead (= vocals) 4.72 / 6.14 / 19.10 / 6.42 |
+| e1422 | MDX-Net `Inst_HQ_3` | S4 | instrumental 3.18 / 3.28 / 3.46 / 18.64; lead -3.16 / -1.92 / 1.68 / 2.82 |
+| e1433 | VR `1_HP-UVR` | first 10 s | instrumental 7.45 / 8.14 / 8.99 / 16.18; lead 4.26 / 6.57 / 16.82 / 7.09 |
+| e1434 | MDX-Net `Inst_HQ_3` | first 10 s | instrumental 3.17 / 3.76 / 3.77 / 37.75; lead -3.42 / -3.04 / -2.96 / 19.43 |
+| e1429 | MDX23C | first 10 s | instrumental 3.17 / 3.77 / 3.77 / 49.98; lead -10.35 / -7.49 / -0.79 / -3.03 |
+| e1431 | BS-RoFormer (viperx 1297) | first 10 s | instrumental SI-SDR 3.16; `vocals.wav` is all zeros, so mir_eval refused the SDR ("All the estimated sources should be non-silent ...") |
+| e1426 | Demucs `htdemucs_6s` | S4 | drums 9.05 / 9.78 / 21.91 / 10.08; bass 7.28 / 9.76 / 21.38 / 10.10; guitar 1.56 / 3.33 / 14.71 / 3.81; lead 7.96 / 8.54 / 15.24 / 9.71 |
+| e1420 | BS-RoFormer-SW | first 10 s, lead mapped to `other` | drums 14.06 / 14.39 / 25.49 / 14.76; bass 14.59 / 15.53 / 24.42 / 16.14; guitar 13.60 / 14.33 / 19.45 / 15.97; lead 14.77 / 16.34 / 24.83 / 17.01 |
+| e1423 | BS-RoFormer-SW | first 10 s, lead mapped to `vocals` | same drums / bass / guitar; lead -45.57 / -33.26 / -17.25 / -15.82 |
+
+  For comparison on the same 10 s, PyTorch Demucs `htdemucs_6s` (first-pass r0021 output, e1424): drums 9.01 / 9.66,
+  bass 5.75 / 8.56, guitar -1.63 / 1.59, lead 6.95 / 8.68 (SI-SDR / SDR).
+  **Where the GM "Voice Oohs" lead went:** VR `vocals` 0.516 of its projection (instrumental 0.470); MDX-Net `vocals`
+  0.169 (instrumental 0.808); MDX23C `vocals` 0.0019 and BS-RoFormer `vocals` 0 (`vocals.wav` -67.52 dBFS and all
+  zeros); BS-RoFormer-SW `other` 0.923, `vocals` 0 (-111.73 dBFS); Demucs 6s `vocals` 0.834. **Where the true
+  guitar went:** BS-RoFormer-SW `guitar` 0.939 (first 10 s); Demucs 6s through audio-separator `guitar` 0.329, `piano`
+  0.228 (S4).
+- **R2** (artist's instrumental and `vocals_derived`): VR (e1435) instrumental 10.96 / 11.52 / 17.90 / 12.73, vocals
+  12.98 / 13.34 / 19.44 / 14.61; MDX-Net (e1439) instrumental 12.58 / 13.00 / 24.54 / 13.33, vocals 14.40 / 14.60 /
+  20.89 / 15.80. The VR files are 400 frames shorter than the reference; gtr-eval trims to the shortest length.
+- **gtr-eval note:** for the all-zero `vocals.wav` (e1431) gtr-eval wrote `"si_sdr_db": "inf"` for the lead. Its
+  formula gives 0/0 when the estimate is all zeros; "inf" there is not a measurement of separation quality.
+- **Constraint inputs for a re-run:** `-m` (model), `--single_stem`, `--extra_models` + `--ensemble_algorithm` /
+  `--ensemble_preset`, `--normalization`, `--amplification`, `--sample_rate`, `--chunk_duration`, and per-family
+  settings (`--mdx_segment_size`, `--mdx_overlap`, `--vr_window_size`, `--vr_aggression`, `--vr_enable_tta`,
+  `--demucs_shifts`, `--demucs_overlap`, `--mdxc_overlap`, `--mdxc_pitch_shift`). No tuning or note-range inputs;
+  `--mdxc_pitch_shift` shifts the audio's pitch during processing.
+
+## demucs.cpp (sevagh, commit 4edae49), htdemucs_6s from ggml f16 weights
+
+- **What:** "C++17 library that implements inference for the Demucs v4 hybrid transformer and Demucs v3 hybrid
+  models", Eigen-based, no PyTorch (README of https://github.com/sevagh/demucs.cpp; clone of 2026-11-10, head
+  `4edae497a114de1ccb17ac9b4a2b8fc0144714d7`, committed 2026-11-06). The clone's LICENSE reads "MIT License /
+  Copyright (c) 2023 Sevag H". README: "Demixing quality is practically identical to PyTorch as shown in the [SDR
+  scores doc]" (the author's claim; not checked here beyond the one S4 run below).
+- **Get and build:** `git clone --depth 1 https://github.com/sevagh/demucs.cpp` and `git submodule update --init
+  --depth 1 vendor/eigen vendor/libnyquist vendor/googletest` (Eigen from gitlab.com; `vendor/demucs`, only needed for
+  converting weights, skipped); `.git` folders deleted afterwards. Source tree 85 MB. Weights: the pre-converted
+  `ggml-model-htdemucs-6s-f16.bin` 54,855,129 bytes (sha256 `09704f4c...e856`) from the Hugging Face dataset
+  `Retrobear/demucs.cpp` (card `license: mit`; it lists the origin URLs as Meta's
+  `dl.fbaipublicfiles.com/demucs/hybrid_transformer/*.th` files).
+- **First build failed** (r0465 configure exit 0; r0466 `cmake --build ... --target demucs.cpp.main
+  demucs_mt.cpp.main -j2`, exit 2 after 22.03 s): GCC 13.3.0 stopped in the vendored Eigen,
+  `Eigen/src/Core/arch/AVX512/PacketMathFP16.h:116:25: error: invalid 'static_cast' from type 'const Eigen::half' to
+  type '_Float16'` (and line 216). The project's CMakeLists.txt hard-codes `-march=native` in
+  `CMAKE_CXX_FLAGS_RELEASE`, and on this box `g++ -march=native` turns on `-mavx512fp16` (checked with `g++
+  -march=native -E -v -`). Flags used: `-DUSE_OPENBLAS=OFF` (Eigen + OpenMP path, OpenBLAS is not installed here).
+- **Second build worked** (inside batch B): a 1-line compiler wrapper `scripts/gxx_no_avx512fp16.sh` (`exec g++ "$@"
+  -mno-avx512fp16`) passed as `-DCMAKE_CXX_COMPILER`, fresh build directory: configure r0504 (1.10 s), build r0507:
+  wall 113.27 s, CPU 192.0 s, peak RSS 989.6 MB, exit 0; binaries `demucs.cpp.main` 3,787,928 bytes and
+  `demucs_mt.cpp.main` 3,821,088 bytes.
+- **Runs** (`demucs_mt.cpp.main <ggml-model-htdemucs-6s-f16.bin> <clip>.wav <out dir> 2`, 2 threads, inside batch B):
+
+| run | clip | wall s | CPU s | peak RSS MB | load1 at start |
+|---|---|---|---|---|---|
+| r0508 | S4_0-10s (10.0 s) | 66.36 | 130.4 | 3470.0 | 2.74 |
+| r0509 | S4 (38.7 s) | 132.69 | 260.5 | 3596.6 | 2.40 |
+
+  (The PyTorch `demucs -n htdemucs_6s` run on S4, r0021: wall 36.37 s, CPU 50.0 s, peak RSS 1349.6 MB.)
+- **Output format:** `<out dir>/target_<index>_<source>.wav`: `target_0_drums`, `target_1_bass`, `target_2_other`,
+  `target_3_vocals`, `target_4_guitar`, `target_5_piano`; float32 WAV (FLOAT), 44,100 Hz, 2 channels, 13,668,016
+  bytes each for S4, frame count equal to the input, stem sum at lag 0 (residual -12.10 dB). The program printed
+  "Input samples: 441000", "Length in seconds: 10", "Number of channels: 2", "demucs_model_load returned true",
+  "Starting Demucs (6-source) inference" and per-thread progress lines.
+- **S4 scored** (e1446; map drums, bass, guitar=target_4_guitar, lead=target_3_vocals; SI-SDR / SDR / SIR / SAR dB):
+  drums 8.91 / 9.66 / 22.04 / 9.94; bass 7.16 / 9.58 / 20.78 / 9.96; guitar 0.02 / 1.51 / 15.08 / 1.84; lead 8.06 /
+  8.61 / 15.06 / 9.86. Projection of the true guitar: guitar 0.286, piano 0.277, vocals 0.093; of the lead: vocals
+  0.832. Its guitar stem against the PyTorch htdemucs_6s guitar stem (r0021): difference level -5.35 dB, max |diff|
+  0.215.
+- **Input facts:** WAV read through the vendored libnyquist; 44.1 kHz stereo used here. Other rates not tried.
+- **Constraint inputs:** model file (4-source, 6-source, fine-tuned or v3 drivers), thread count (`demucs_mt`). None
+  for pitch or tuning.
+
+## Stems available for other lanes (handoffs)
+
+All under `/home/user/gtr/lanes/source-separation/out/`, 44.1 kHz stereo WAV, same length and alignment as the input
+clip unless noted. Guitar-bearing stems for transcription lanes: `htdemucs_6s/<clip>/guitar.wav` (S4, S6taps, S2s,
+R2, R2full, R3a, R3b, R3c), `htdemucs/<clip>/other.wav` (S4, S6taps, S2s, R2, R2full, R3a, R3b, R3c),
+`uvr/BS-Roformer-SW/S4_0-10s/guitar.wav` and `msst-bs-roformer-sw/S4_0-10s/guitar.wav` (first 10 s of S4 only),
+`msst-becruily-guitar/<clip>/Guitar.wav` (float32; S4, S4_0-10s, S2s), `demucs.cpp-htdemucs_6s/S4/target_4_guitar.wav`
+(float32). Bass for bass-line lanes: `<model>/<clip>/bass.wav` from htdemucs, htdemucs_6s, htdemucs_ft, mdx_extra,
+umxhq, umxl, spleeter-4stems. Percussion for tap lanes: `<model>/S6taps/drums.wav` (htdemucs, htdemucs_6s, umxhq,
+spleeter-4stems) and `hpss/S6taps/<setting>/percussive.wav` (float32), with onset lists already scored against the
+taps in `samples/onsets-handoff/`. Caveats per tool: VR (`uvr/1_HP-UVR`) files are 463 (S4) and 400 (R2) frames
+shorter than the input; Demucs `--mp3` files are 1,368 frames longer and 1105 samples late as decoded by
+libsndfile; `derived_instrumental_sum.wav` files are sums made here for scoring, not tool output.
+
+## Media kept outside git
+
+Every audio file this lane produced, in `/home/user/gtr/lanes/source-separation/out/` (listed by
+`scripts/media_list.py` at 2026-11-10 23:20 UTC; durations from the file headers). Inputs are the shared clips
+(INPUTS.md) except `inputs/S4_0-10s` (first 441,000 samples of S4, `sox ... trim 0
+441000s`) and `inputs/S4_truth_2stem/instrumental.wav` (drums + bass + guitar truth stems of S4, float32), all made
+here from the S4 files (synthesized for this research; INPUTS.md gives the license).
+
+| folder under out/ | files | size | duration (s) | format |
+|---|---|---|---|---|
+| `demucs-guitar-lora/S2s` | bass.wav, drums.wav, other.wav, vocals.wav | 20.7 MB | 29.357 | 44100 Hz / 2 ch / PCM_16 |
+| `demucs-guitar-lora/S4` | bass.wav, drums.wav, other.wav, vocals.wav | 27.3 MB | 38.741 | 44100 Hz / 2 ch / PCM_16 |
+| `demucs-onnx-htdemucs_6s-fp16/S4` | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 41.0 MB | 38.741 | 44100 Hz / 2 ch / PCM_16 |
+| `demucs-options/base-10s/htdemucs/S4_0-10s` | bass.wav, drums.wav, other.wav, vocals.wav | 7.1 MB | 10.0 | 44100 Hz / 2 ch / PCM_16 |
+| `demucs-options/float32-10s/htdemucs/S4_0-10s` | bass.wav, drums.wav, other.wav, vocals.wav | 14.1 MB | 10.0 | 44100 Hz / 2 ch / FLOAT |
+| `demucs-options/jobs2-10s/htdemucs/S4_0-10s` | bass.wav, drums.wav, other.wav, vocals.wav | 7.1 MB | 10.0 | 44100 Hz / 2 ch / PCM_16 |
+| `demucs-options/mp3-10s/htdemucs/S4_0-10s` | bass.mp3, drums.mp3, other.mp3, vocals.mp3 | 1.6 MB | 10.04 | 44100 Hz / 2 ch / MPEG_LAYER_III |
+| `demucs-options/overlap0.1-10s/htdemucs/S4_0-10s` | bass.wav, drums.wav, other.wav, vocals.wav | 7.1 MB | 10.0 | 44100 Hz / 2 ch / PCM_16 |
+| `demucs-options/segment4-10s/htdemucs/S4_0-10s` | bass.wav, drums.wav, other.wav, vocals.wav | 7.1 MB | 10.0 | 44100 Hz / 2 ch / PCM_16 |
+| `demucs-options/shifts2-10s/htdemucs/S4_0-10s` | bass.wav, drums.wav, other.wav, vocals.wav | 7.1 MB | 10.0 | 44100 Hz / 2 ch / PCM_16 |
+| `demucs-options/two-stems-guitar/htdemucs_6s/S4` | guitar.wav, no_guitar.wav | 13.7 MB | 38.741 | 44100 Hz / 2 ch / PCM_16 |
+| `demucs.cpp-htdemucs_6s/S4` | target_0_drums.wav, target_1_bass.wav, target_2_other.wav, target_3_vocals.wav, target_4_guitar.wav, target_5_piano.wav | 82.0 MB | 38.741 | 44100 Hz / 2 ch / FLOAT |
+| `demucs.cpp-htdemucs_6s/S4_0-10s` | target_0_drums.wav, target_1_bass.wav, target_2_other.wav, target_3_vocals.wav, target_4_guitar.wav, target_5_piano.wav | 21.2 MB | 10.0 | 44100 Hz / 2 ch / FLOAT |
+| `hpss/S2s/default` | harmonic.wav, percussive.wav | 20.7 MB | 29.357 | 44100 Hz / 2 ch / FLOAT |
+| `hpss/S2s/margin1-5` | harmonic.wav, percussive.wav | 20.7 MB | 29.357 | 44100 Hz / 2 ch / FLOAT |
+| `hpss/S2s/margin3` | harmonic.wav, percussive.wav | 20.7 MB | 29.357 | 44100 Hz / 2 ch / FLOAT |
+| `hpss/S6taps/default` | harmonic.wav, percussive.wav | 20.7 MB | 29.357 | 44100 Hz / 2 ch / FLOAT |
+| `hpss/S6taps/margin1-5` | harmonic.wav, percussive.wav | 20.7 MB | 29.357 | 44100 Hz / 2 ch / FLOAT |
+| `hpss/S6taps/margin3` | harmonic.wav, percussive.wav | 20.7 MB | 29.357 | 44100 Hz / 2 ch / FLOAT |
+| `htdemucs/R2` | bass.wav, derived_instrumental_sum.wav, drums.wav, other.wav, vocals.wav | 38.1 MB | 36.0 | 44100 Hz / 2 ch / FLOAT; 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs/R2full` | bass.wav, drums.wav, other.wav, vocals.wav | 161.2 MB | 228.482 | 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs/R3a` | bass.wav, drums.wav, other.wav, vocals.wav | 12.7 MB | 18.0 | 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs/R3b` | bass.wav, drums.wav, other.wav, vocals.wav | 12.7 MB | 18.0 | 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs/R3c` | bass.wav, drums.wav, other.wav, vocals.wav | 12.7 MB | 18.0 | 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs/S2s` | bass.wav, drums.wav, other.wav, vocals.wav | 20.7 MB | 29.357 | 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs/S4` | bass.wav, drums.wav, other.wav, vocals.wav | 27.3 MB | 38.741 | 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs/S6taps` | bass.wav, drums.wav, other.wav, vocals.wav | 20.7 MB | 29.357 | 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs_6s/R2` | bass.wav, derived_instrumental_sum.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 50.8 MB | 36.0 | 44100 Hz / 2 ch / FLOAT; 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs_6s/R2full` | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 241.8 MB | 228.482 | 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs_6s/R3a` | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 19.1 MB | 18.0 | 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs_6s/R3b` | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 19.1 MB | 18.0 | 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs_6s/R3c` | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 19.1 MB | 18.0 | 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs_6s/S2s` | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 31.1 MB | 29.357 | 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs_6s/S4` | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 41.0 MB | 38.741 | 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs_6s/S6taps` | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 31.1 MB | 29.357 | 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs_ft/R2` | bass.wav, derived_instrumental_sum.wav, drums.wav, other.wav, vocals.wav | 38.1 MB | 36.0 | 44100 Hz / 2 ch / FLOAT; 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs_ft/S4` | bass.wav, drums.wav, other.wav, vocals.wav | 27.3 MB | 38.741 | 44100 Hz / 2 ch / PCM_16 |
+| `mdx_extra/R2` | bass.wav, derived_instrumental_sum.wav, drums.wav, other.wav, vocals.wav | 38.1 MB | 36.0 | 44100 Hz / 2 ch / FLOAT; 44100 Hz / 2 ch / PCM_16 |
+| `mdx_extra/S4` | bass.wav, drums.wav, other.wav, vocals.wav | 27.3 MB | 38.741 | 44100 Hz / 2 ch / PCM_16 |
+| `msst-becruily-guitar/S2s` | Guitar.wav | 10.4 MB | 29.357 | 44100 Hz / 2 ch / FLOAT |
+| `msst-becruily-guitar/S4` | Guitar.wav | 13.7 MB | 38.741 | 44100 Hz / 2 ch / FLOAT |
+| `msst-becruily-guitar/S4_0-10s` | Guitar.wav | 3.5 MB | 10.0 | 44100 Hz / 2 ch / FLOAT |
+| `msst-bs-roformer-sw/S4_0-10s` | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 21.2 MB | 10.0 | 44100 Hz / 2 ch / FLOAT |
+| `spleeter-4stems/R2` | bass.wav, derived_instrumental_sum.wav, drums.wav, other.wav, vocals.wav | 38.1 MB | 36.0 | 44100 Hz / 2 ch / FLOAT; 44100 Hz / 2 ch / PCM_16 |
+| `spleeter-4stems/S4` | bass.wav, drums.wav, other.wav, vocals.wav | 27.3 MB | 38.741 | 44100 Hz / 2 ch / PCM_16 |
+| `spleeter-4stems/S6taps` | bass.wav, drums.wav, other.wav, vocals.wav | 20.7 MB | 29.357 | 44100 Hz / 2 ch / PCM_16 |
+| `umxhq/R2` | bass.wav, derived_instrumental_sum.wav, drums.wav, other.wav, vocals.wav | 38.1 MB | 36.0 | 44100 Hz / 2 ch / FLOAT; 44100 Hz / 2 ch / PCM_16 |
+| `umxhq/S4` | bass.wav, drums.wav, other.wav, vocals.wav | 27.3 MB | 38.741 | 44100 Hz / 2 ch / PCM_16 |
+| `umxhq/S6taps` | bass.wav, drums.wav, other.wav, vocals.wav | 20.7 MB | 29.357 | 44100 Hz / 2 ch / PCM_16 |
+| `umxl/R2` | bass.wav, derived_instrumental_sum.wav, drums.wav, other.wav, vocals.wav | 38.1 MB | 36.0 | 44100 Hz / 2 ch / FLOAT; 44100 Hz / 2 ch / PCM_16 |
+| `umxl/S4` | bass.wav, drums.wav, other.wav, vocals.wav | 27.3 MB | 38.741 | 44100 Hz / 2 ch / PCM_16 |
+| `uvr/1_HP-UVR/R2` | instrumental.wav, vocals.wav | 12.7 MB | 35.991 | 44100 Hz / 2 ch / PCM_16 |
+| `uvr/1_HP-UVR/S4` | instrumental.wav, vocals.wav | 13.7 MB | 38.731 | 44100 Hz / 2 ch / PCM_16 |
+| `uvr/BS-Roformer-SW/S4_0-10s` | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 10.6 MB | 10.0 | 44100 Hz / 2 ch / PCM_16 |
+| `uvr/MDX23C-8KFFT-InstVoc_HQ/S4_0-10s` | instrumental.wav, vocals.wav | 3.5 MB | 10.0 | 44100 Hz / 2 ch / PCM_16 |
+| `uvr/UVR-MDX-NET-Inst_HQ_3/R2` | instrumental.wav, vocals.wav | 12.7 MB | 36.0 | 44100 Hz / 2 ch / PCM_16 |
+| `uvr/UVR-MDX-NET-Inst_HQ_3/S4` | instrumental.wav, vocals.wav | 13.7 MB | 38.741 | 44100 Hz / 2 ch / PCM_16 |
+| `uvr/htdemucs_6s/S4` | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 41.0 MB | 38.741 | 44100 Hz / 2 ch / PCM_16 |
+| `uvr/model_bs_roformer_ep_317_sdr_12.9755/S4_0-10s` | instrumental.wav, vocals.wav | 3.5 MB | 10.0 | 44100 Hz / 2 ch / PCM_16 |
+
+Total: 1669.0 MB in 236 files.
 

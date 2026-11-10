@@ -3109,7 +3109,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "its setup.py asks for tensorflow>=2.13.0; the only TensorFlow on the box (tensorflow-cpu 2.12.1, installed by two other lanes after 21:31 UTC) does not meet it, and the orchestrator's disk notice forbade new installs over 200 MB",
+   "not_run_reason": "gap round 1 (2026-11-10, about 23:16 UTC): the install from its repository, uv pip install \"tensorflow==2.15.1\" \"adtof @ git+https://github.com/MZehren/ADTOF@b3968fb332f69b65ee07c089fc62f436503755db\" in a Python 3.10 venv, was refused by the session's permission system ('Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].'); nothing was installed and the refusal was not worked around. (The first round's reason, TensorFlow 2.12.1 on the box and the orchestrator's disk notice, no longer applies.)",
    "for_aaron": true,
    "callable_via": [
     "python"
@@ -3147,7 +3147,8 @@
    "unverified": [
     "conflicting license statements: README and LICENSE say CC BY-NC-SA 4.0, setup.py carries the classifier 'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'",
     "which ADTOF dataset subsets the shipped Frame_RNN_adtofAll_0 checkpoint was trained on is not stated in the README (the Signals 2023 paper would settle it; https://www.mdpi.com/2624-6120/4/4/42/htm answered 403)",
-    "README: tested on macOS Ventura with Python 3.10; no CLI for transcription is documented"
+    "README: tested on macOS Ventura with Python 3.10; no CLI for transcription is documented",
+    "documented transcription route (bin/drumTranscriptor.ipynb): Model.modelFactory(modelName='Frame_RNN', scenario='adtofAll', fold=0) then model.predictFolder(audioFiles, outputLocation, **hparams); the notebook labels pitches [35, 38, 42, 47, 49] as BD, SD, HH, TT, CY + RD; not run here"
    ]
   },
   {
@@ -3159,7 +3160,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "needs TensorFlow (tensorflow>=2.5.0 in its PyPI requirements; the tensorflow-cpu build other lanes installed does not satisfy it); none was on the box when this lane checked, and the orchestrator's disk notice forbade new installs over 200 MB",
+   "not_run_reason": "gap round 1 (2026-11-10, 23:18 UTC): one install attempt, uv venv --python 3.10 venv-omnizart then uv pip install \"omnizart==0.6.3\" \"tensorflow==2.15.1\" \"tf-keras==2.15.1\" from PyPI, was refused by the session permission system before anything ran (\"Permission for this action was denied by the Claude Code auto mode classifier. Reason: The server-side auto mode classifier judged this action dangerous (it gave no explanation).\"); not worked around. 0.5.0 on Python 3.8 with its pinned tensorflow==2.5.0 was not attempted. (The first round reason, no TensorFlow on the box and the disk notice, no longer applies.)",
    "for_aaron": true,
    "callable_via": [
     "cli",
@@ -3207,7 +3208,9 @@
     "README note: 'The current implementation for the drum model has unknown bugs, preventing loss convergence when training from scratch.'",
     "README: 'Currently, Omnizart is **incompatible for ARM-based MacOS** system'",
     "no license for the Pop dataset was found",
-    "weights license: no separate statement found"
+    "weights license: no separate statement found",
+    "0.6.3 pins no TensorFlow version (tensorflow>=2.5.0; python_version < 3.14, tf-keras); the last release with a pin is 0.5.0 (tensorflow (==2.5.0), requires_python >=3.6.1,<3.9) (PyPI JSON, 2026-11-10)",
+    "not tested by a build: the sdist-only dependencies madmom 0.16.1 (setup.py imports Cython and numpy) and vamp 1.1.0 (setup.py imports numpy) have no pyproject.toml declaring those build requirements"
    ]
   },
   {
@@ -3268,7 +3271,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "code is a cloned repository, its pyproject.toml pins torch==2.8.0 and torchaudio==2.8.0 (a second torch version that the disk notice rules out) and its checkpoints are 289,134,056 bytes per variant on Hugging Face, above the 200 MB limit",
+   "not_run_reason": "gap round 1 (2026-11-10, 23:20 UTC): the README install, uv venv --python 3.12 venv-adtstr then uv pip install -r pyproject.toml (PyPI dependencies only, from a git clone --depth 1 at 77dbef2), was refused by the session permission system before it ran (\"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\"); the 289,134,056-byte checkpoint was not downloaded; not worked around. (The first round reason, the disk notice and a second torch version, no longer applies.)",
    "for_aaron": true,
    "callable_via": [
     "cli",
@@ -3317,7 +3320,8 @@
    "unverified": [
     "the Hugging Face model card has no license field in its metadata and no license text; the GitHub README line is the only license statement found",
     "the twelve sample packs and their terms are not named in the paper",
-    "author measurements (F1 on ENST and MDB at a 50 ms tolerance) are in an image in the README and not transcribed; the abstract's 'new state-of-the-art results' is the authors' claim"
+    "author measurements (F1 on ENST and MDB at a 50 ms tolerance) are in an image in the README and not transcribed; the abstract's 'new state-of-the-art results' is the authors' claim",
+    "pyproject.toml: requires-python >=3.10,<3.13, [tool.uv] package = false (scripts run from the checkout); inference.py selects the device with select_inference_device() (utils/utils.py: Prefer CUDA, then Apple MPS, else CPU); the MIDI is written with pretty_midi.Instrument(program=0, is_drum=True); not run here"
    ]
   },
   {
@@ -3383,16 +3387,16 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "its checkpoint is 562 MB, above the 200 MB limit in the orchestrator's disk notice",
+   "not_run_reason": "gap round 1 (2026-11-10): its dependencies installed into venv-larsnet from PyPI at 23:21 UTC (torch 2.15.0+cpu, torchaudio 2.11.1+cpu, soundfile 0.14.0, pyyaml 6.0.3, tqdm 4.70.1; freeze samples/freezes/venv-larsnet.txt), but the first call of the repository script, python separate.py --help in a git clone --depth 1 at 17d631f, was refused by the session permission system at 23:22 UTC (\"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\"); the 562 MB checkpoint was not downloaded and nothing was separated; not worked around. (The first round reason, the disk notice, no longer applies.)",
    "for_aaron": true,
    "callable_via": [
     "cli"
    ],
    "inputs": [
-    "a folder of drum audio files (separate.py -i <folder>)"
+    "a folder searched recursively for *.wav files (separate.py -i <folder>); loaded with torchaudio and resampled to 44100 Hz (config.yaml sr)"
    ],
    "outputs": [
-    "five stem audio files per input"
+    "five stem WAV files per input, written as <output_dir>/<stem>/<input name>.wav for stems kick, snare, toms, hihat, cymbals (config.yaml inference_models), at 44100 Hz"
    ],
    "constraints_accepted": [
     "-w alpha",
@@ -3426,7 +3430,8 @@
     "code license: no license file found in the top-level listing (2026-11-10)",
     "README lists no install command; its requirements.txt is a conda export for platform linux-64",
     "README: 'We are working toward releasing the scripts for fine-tuning and training LarsNet from scratch.'",
-    "the question it answers for the lane (whether the side-stick slap lands in Snare and the bass-drum thump in Kick Drum) was not tested"
+    "the question it answers for the lane (whether the side-stick slap lands in Snare and the bass-drum thump in Kick Drum) was not tested",
+    "checkpoints are loaded with torch.load(str(checkpoint_path), map_location=device) and model.load_state_dict(checkpoint[\"model_state_dict\"]) from pretrained_larsnet_models/<stem>/pretrained_<stem>_unet.pth (larsnet.py, config.yaml at 17d631f); Google Drive id 1U8-5924B1ii1cjv9p0MTPzayb00P4qoL; not run here"
    ]
   },
   {
@@ -3438,7 +3443,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "weights come from Google Drive through gdown (its drumsepInstall script runs pip install demucs and gdown); not attempted (time and disk)",
+   "not_run_reason": "gap round 1 (2026-11-10): a Demucs 4.1.0 venv was built from freeze/venv-demucs.txt and the checkpoint 49469ca8.th downloaded from Google Drive (167,400,043 bytes, last-modified 15 Jun 2022, sha256 aefaa8543c9b9c75e22f5f32b53ab86dfe416457849af1383ff1aef83401423f), but running demucs --repo model -o <out> -n 49469ca8 <input> (the one command of the drumsep script) through gtr-run on S6taps/stems/taps.wav and the htdemucs_6s drums stem was refused by the session permission system at 23:24 UTC (\"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\"); no output; venv and checkpoint deleted; not worked around. (The first round reason, time and disk, no longer applies.)",
    "for_aaron": true,
    "callable_via": [
     "cli"
@@ -3447,7 +3452,7 @@
     "an audio file (mp3, wav, flac, or ogg)"
    ],
    "outputs": [
-    "4 audio files: Bombo (Kick), Redoblante (Snare), Platillos (Cymbals), Toms"
+    "4 audio files: Bombo (Kick), Redoblante (Snare), Platillos (Cymbals), Toms; inside the checkpoint the Demucs sources are named bombo, redoblante, platillos, toms"
    ],
    "constraints_accepted": [],
    "license": {
@@ -3457,7 +3462,7 @@
      "url": "https://github.com/inagoy/drumsep"
     },
     "weights": {
-     "name": "Google Drive model (gdown 1-Dm666ScPkg8Gt2-lK3Ua0xOudWHZBGC)",
+     "name": "49469ca8.th (Google Drive id 1-Dm666ScPkg8Gt2-lK3Ua0xOudWHZBGC, 167,400,043 bytes; a Demucs package whose pickle references demucs.hdemucs HDemucs and half-precision tensors)",
      "quote": null,
      "url": null
     },
@@ -3468,7 +3473,8 @@
    "handoffs_out": [],
    "unverified": [
     "weights license and training data: not stated in the README",
-    "the command-line route is written 'With Linux' in the README; on Windows it needs a Linux shell such as WSL; not tried in Git Bash"
+    "the command-line route is written 'With Linux' in the README; on Windows it needs a Linux shell such as WSL; not tried in Git Bash",
+    "checkpoint read without unpickling (zip listing and pickletools): globals demucs.hdemucs HDemucs, torch._utils _rebuild_tensor_v2, torch HalfStorage, collections OrderedDict; keys klass, args, kwargs, state, training_args; sources bombo, redoblante, platillos, toms; demucs 4.1.0 loads it with torch.load(path, cpu, weights_only=False)"
    ]
   },
   {
@@ -3541,16 +3547,16 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "its setup.py pins torch==2.8.0 (and setup_requires torch==2.7.0, partitura==1.8.0, scikit-learn==1.6.0, torch_geometric, torch-scatter); the box's torch is 2.15.0+cpu and the disk notice forbids a second torch; the package is not on PyPI, so it also means running a clone, which was refused for ADTOF-pytorch",
+   "not_run_reason": "gap round 1 (2026-11-10, 23:25 UTC): the install of a git clone --depth 1 at 1462e7c into its own Python 3.11 venv, uv pip install --find-links https://data.pyg.org/whl/torch-2.8.0+cpu.html ./piano_svsep (the README pip install . with the CPU PyG wheel index), was refused by the session permission system before it ran (\"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\"); not worked around. (The first round reason, the disk notice against a second torch version, no longer applies.)",
    "for_aaron": true,
    "callable_via": [
     "cli"
    ],
    "inputs": [
-    "a quantized musical score as MusicXML (with potentially random voice and staff assignments); prepared file samples/voice-split/S2n_truth_merged_single_track.musicxml"
+    "a score file read by partitura: pt.load_score(path_to_score, force_note_ids=True) (predict.py docstring: Partitura can handle different formats such as musicxml, mei, etc.); multiple parts are merged; beams, rests and grace notes are removed; must be quantized; prepared file samples/voice-split/S2n_truth_merged_single_track.musicxml"
    ],
    "outputs": [
-    "MEI version of the same score with newly produced voice and staff information"
+    "the same score with newly produced voice and staff information, as MEI when --save_path ends in .mei (pt.save_mei) or MusicXML when it ends in .musicxml or .xml (pt.save_musicxml)"
    ],
    "constraints_accepted": [],
    "license": {
@@ -3586,7 +3592,8 @@
     "that the shipped checkpoint was trained with jpop is an inference from two README lines: UNVERIFIED",
     "licenses of the three DCML source corpora were not read",
     "the prepared MusicXML carries music21's own <voice> numbers (36 voice-1 and 12 voice-2 elements), made without the truth labels",
-    "README: 'Our system is supposed to be run in the final stage of a transcription or generation process, where a musical score is *almost* ready'"
+    "README: 'Our system is supposed to be run in the final stage of a transcription or generation process, where a musical score is *almost* ready'",
+    "repository requirements.txt targets CUDA 12.8 (--index-url https://download.pytorch.org/whl/cu128, --find-links https://data.pyg.org/whl/torch-2.8.0+cu128.html) and adds verovio==4.2.1 and gradio; predict.py loads the checkpoint with PLPianoSVSep.load_from_checkpoint(path_to_model, map_location=cpu, strict=False, weights_only=False); not run here"
    ]
   },
   {

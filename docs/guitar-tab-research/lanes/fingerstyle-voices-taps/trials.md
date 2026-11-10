@@ -370,12 +370,18 @@ licensed real recording with body taps was in the shared set.
   2.15). Omnizart's requirement names the `tensorflow` distribution, which an installed `tensorflow-cpu` does not
   satisfy, and ADTOF's `setup.py` asks for `tensorflow>=2.13.0`; so either install would still fetch another
   TensorFlow build. Not attempted by the verifier either.
+- (corrected in gap round 1: with the disk free again, an install of Omnizart 0.6.3 with TensorFlow 2.15.1 was
+  attempted at 23:18 UTC and refused by the session's permission system before it ran; that refusal, not the disk or
+  a missing TensorFlow, is now the reason; see "Gap round 1". Both TensorFlow venvs named above were gone by then.)
 
 ## Other candidates not run here (one line each, reason with evidence)
 
 - ADTOF (original, Keras/TensorFlow, https://github.com/MZehren/ADTOF): needs TensorFlow (`tensorflow>=2.13.0` in its
   `setup.py`, survey.md; confirmed by the verifier in the raw `setup.py`); same disk reason as Omnizart (the
   TensorFlow on the box since 21:31 UTC is 2.12.1). `for-aaron.md` list 2 (the README's Colab notebook).
+  (corrected in gap round 1: with the disk free again, the install from the repository was attempted at about 23:16
+  UTC and refused by the session's permission system, "[Code from External]"; that refusal, not the disk, is now the
+  reason; see "Gap round 1".)
 - Cluster and Separate / piano_svsep (https://github.com/CPJKU/piano_svsep, cloned 2026-11-10 at
   `1462e7c28d7adaae033150883a7cb00238ee364a`, 2026-03-09; MIT; `pretrained_models/model.ckpt` 36,495,754 bytes in
   the clone): its `setup.py` pins `torch==2.8.0`, `partitura==1.8.0`, `scikit-learn==1.6.0` and needs
@@ -385,7 +391,9 @@ licensed real recording with body taps was in the shared set.
   attempted. Its input file for Aaron is ready: `samples/voice-split/S2n_truth_merged_single_track.musicxml` (the
   S2n notes as one part, written by music21 10.5.2 from the merged single-track MIDI; 90 pitches; it does carry
   music21's own `<voice>` numbers where music21 split overlapping notes, 36 voice-1 and 12 voice-2 elements, made
-  without the truth labels). `for-aaron.md` list 4.
+  without the truth labels). `for-aaron.md` list 4. (corrected in gap round 1: with the disk free again, the install
+  of the clone into its own Python 3.11 venv was attempted at 23:25 UTC and refused by the session's permission
+  system, "[Code from External]"; that refusal is now the reason; see "Gap round 1".)
 - McLeod and Steedman voice-splitting (Java, https://github.com/apmcleod/voice-splitting): Java 21 is on the box
   (`openjdk version "21.0.12.1"`), but building it means compiling a cloned repository; not attempted after the
   refusals above. The verifier tried it (clone at `ea80457878d4dec281c951b81c79b66949df53a9`, 2020-08-26, 38 `.java`
@@ -400,9 +408,17 @@ licensed real recording with body taps was in the shared set.
   checkpoints are not in the GitHub repository but on Hugging Face (`Pierfrancesco/adt-str`,
   `setting-tau-0.8/model.safetensors` 289,134,056 bytes, per the Hugging Face API), above the 200 MB limit. The
   Inverse Drum Machine's pretrained model is in its repository (`pretrained/idm-44-train-kits/`, a 2,544,694-byte
-  checkpoint). `for-aaron.md` lists 6 and 7.
+  checkpoint). `for-aaron.md` lists 6 and 7. (corrected in gap round 1 for ADT_STR: with the disk free again, its
+  README's install, `uv pip install -r pyproject.toml` into a Python 3.12 venv, was attempted at 23:20 UTC and refused
+  by the session's permission system, "[Code from External]"; that refusal is now the reason; see "Gap round 1".)
 - LarsNet: weights 562 MB per survey.md, above the 200 MB install limit of the disk notice. Not attempted.
+  (corrected in gap round 1: with the disk free again, its dependencies installed, but running its `separate.py` was
+  refused by the session's permission system at 23:22 UTC, "[Code from External]"; that refusal is now the reason;
+  see "Gap round 1".)
 - drumsep (Demucs-based drum separator): weights from Google Drive per survey.md; not attempted (time and disk).
+  (corrected in gap round 1: the checkpoint was downloaded (167,400,043 bytes) and a Demucs 4.1.0 venv built, but
+  running `demucs --repo model -n 49469ca8` on it was refused by the session's permission system at 23:24 UTC,
+  "[Code from External]"; that refusal is now the reason; see "Gap round 1".)
 - Magenta Onsets and Frames drums (E-GMD checkpoint, 25,658,703 bytes): needs the Magenta package, whose repository
   says "This repository is currently inactive (archived, read only)" (survey.md); the last PyPI release, `magenta`
   2.1.4 (2022-08-01), pins `tensorflow==2.9.1` and `numba==0.49.1` (PyPI JSON, read by the verifier 2026-11-10; the
@@ -839,6 +855,166 @@ Negative timing means the detected onset comes before the annotated one. Files:
   transformer=None, sort=False, fit=True, **kwargs)`, so a transformer fitted beforehand (for example on a user's
   recorded taps) can be passed with `fit=False`.
 - Samples: `samples/librosa-nmf/S6taps_nmf_components.jsonl` (per-component values), `S6taps_eval_stems_k16.json`.
+
+## Gap round 1
+
+Added on 2026-11-10 from 23:14 UTC by the gap-round agent of this lane (`gapfill-fingerstyle-voices-taps`), for the
+tools that the first round recorded as NOT RUN HERE because of the orchestrator's low-disk notice or a missing
+TensorFlow, and for a real recording with body taps. Free disk at the start: 11 GB (`df -h /`); the disk notice of
+`env.sh` was not printed. Same conventions as above: run ids `r....` from the run ledger, eval ids `e....` from the
+eval ledger (gtr-eval 0.11.1), big files under `/home/user/gtr/lanes/fingerstyle-voices-taps/gap1/`. The question for
+every drum or percussion transcriber is the one of the first round: on `S6taps` (guitar plus General MIDI
+percussion standing in for body taps, 32 truth taps) and on its taps-only stem `S6taps/stems/taps.wav`, which onsets
+does it report and with which drum labels (`gtr-eval onsets --field taps`, 50 ms window), and how many events does it
+report on `S2s` (the same notes without taps).
+
+### ADTOF, original Keras/TensorFlow (https://github.com/MZehren/ADTOF): NOT RUN HERE, install refused
+
+- What was tried, at about 23:16 UTC: `uv venv --python 3.10 venv-adtof-tf` (the README: ":warning: This repository
+  has been tested on macOS Ventura with **Python 3.10**."), then one install command, the README's `pip3 install .`
+  written as a pip requirement on the surveyed commit: `uv pip install --python venv-adtof-tf/bin/python
+  "tensorflow==2.15.1" "adtof @ git+https://github.com/MZehren/ADTOF@b3968fb332f69b65ee07c089fc62f436503755db"`. At
+  that commit `setup.py` asks for `tensorflow>=2.13.0`, `madmom@git+https://github.com/CPJKU/madmom` and `tapcorrect
+  @ git+https://github.com/MZehren/tapcorrect#subdirectory=python&egg=tapcorrect` (read from the survey's clone,
+  `git show HEAD:setup.py`); TensorFlow 2.15.1 is inside that range and was named so that the resolver would not
+  pick the newest release (2.21.0 on PyPI that day); no other TensorFlow version was tried.
+- Result: the session's permission system refused the command before it ran: "Permission for this action was denied
+  by the Claude Code auto mode classifier. Reason: [Code from External]." Nothing was downloaded or installed: the venv
+  held only `_virtualenv.py` and `_virtualenv.pth` and was deleted at 23:16 UTC. No ledger line (the command was not a
+  gtr-run). As this round's rules require, the refusal was not worked around (no other install route, no copy of the
+  repository's code).
+- The documented way to transcribe is two notebook cells (`bin/drumTranscriptor.ipynb` at that commit):
+  `Model.modelFactory(modelName="Frame_RNN", scenario="adtofAll", fold=0)` then
+  `model.predictFolder(audioFiles, outputLocation, **hparams)`; the model's per-class peak thresholds are
+  `[0.22, 0.24, 0.32, 0.22, 0.30]` (`adtof/model/hyperparameters.py`, `Frame_RNN`), and the notebook labels the
+  output pitches `[35, 38, 42, 47, 49]` as `["BD", "SD", "HH", "TT", "CY + RD"]`. Steps for Aaron: `for-aaron.md`,
+  list 2.
+
+### Omnizart drum mode: NOT RUN HERE, install refused
+
+- Which release: PyPI JSON read 2026-11-10 (`https://pypi.org/pypi/omnizart/json` and `.../omnizart/<version>/json`):
+  the current release 0.6.3 (sdist only, uploaded 2026-05-31, `requires_python` ">=3.8") pins no TensorFlow version:
+  `tensorflow>=2.5.0; python_version < "3.14"`, plus `tf-keras; python_version >= "3.9" and python_version <
+  "3.14"`, `madmom>=0.16.1`, `vamp>=1.1.0`, `sherpa-onnx>=1.10.0`, `setuptools<82`. The last release that pins one is
+  0.5.0 (2021-12-09): `tensorflow (==2.5.0)`, `spleeter (>=2.3.0,<3.0.0)`, `madmom (>=0.16.1,<0.17.0)`,
+  `requires_python` ">=3.6.1,<3.9"; Python 3.8 is not installed on the box (`uv python list` offers 3.8.20 as a
+  download). 0.6.3's `omnizart/__init__.py` (survey clone at `bcd8cb4`) sets `os.environ['TF_USE_LEGACY_KERAS'] =
+  '1'` and adds `np.float`, `np.int`, `np.bool`, `np.complex` back when NumPy lacks them, "for backward compatibility
+  with old libraries under NumPy 2.0+"; the drum model is loaded with `tf.keras.models.load_model` (`base.py`) from a
+  SavedModel (`omnizart/checkpoints/drum/drum_keras/saved_model.pb` in the repository, variables from the
+  `checkpoints-20211001` release asset).
+- What was tried, at 23:18 UTC, one command: `uv venv --python 3.10 venv-omnizart` then `uv pip install --python
+  venv-omnizart/bin/python "omnizart==0.6.3" "tensorflow==2.15.1" "tf-keras==2.15.1"` (the README's `pip install
+  omnizart` for the current release, on Python 3.10, with TensorFlow pinned to one version inside its
+  `tensorflow>=2.5.0` range and the matching tf-keras). It was the one attempt; 0.5.0 on Python 3.8 with its pinned
+  `tensorflow==2.5.0` was not attempted after the refusal below.
+- Result: the session's permission system refused the whole command before anything ran: "Permission for this action
+  was denied by the Claude Code auto mode classifier. Reason: The server-side auto mode classifier judged this action
+  dangerous (it gave no explanation)." No venv was created (checked at 23:18:52 UTC), nothing was downloaded, no
+  ledger line. Not worked around.
+- Found while preparing (not tested by a build here): the two sdist-only dependencies import NumPy at build time
+  without declaring it. `madmom-0.16.1/setup.py` (PyPI sdist, 2018-11-14) has `from Cython.Build import cythonize,
+  build_ext` and `import numpy as np`; `vamp-1.1.0/setup.py` (PyPI sdist, 2015-07-08) has `import numpy as np`; neither
+  sdist contains a `pyproject.toml` (file lists of the two archives, downloaded from PyPI and read, not built). Both are
+  the latest releases of those packages on PyPI.
+- Steps for Aaron: `for-aaron.md`, list 3.
+
+### ADT_STR (https://github.com/pier-maker92/ADT_STR): NOT RUN HERE, install refused
+
+- Code: `git clone --depth 1 https://github.com/pier-maker92/ADT_STR` at 23:19 UTC into `gap1/repos/ADT_STR` (HEAD
+  `77dbef225e7029478ebfb916f20c7a00274f0f12`, 2026-09-19, the surveyed commit; 11 MB). Its `pyproject.toml` says
+  `requires-python = ">=3.10,<3.13"`, `[tool.uv] package = false` (the repository is not installed as a package; its
+  scripts run from the checkout), and lists `torch==2.8.0`, `torchaudio==2.8.0`, `torchcodec>=0.7,<0.8`,
+  `transformers[torch]`, `datasets`, `huggingface-hub`, `pedalboard`, `wandb`, `omegaconf`, `safetensors`,
+  `pretty_midi`, `mir_eval` and others. The `inference` file is three lines that call `main()` of `inference.py`;
+  `inference.py` picks the device with `select_inference_device()` (`utils/utils.py`: "Prefer CUDA, then Apple MPS, else
+  CPU."), loads `ADTTranscriber.from_checkpoint(args.checkpoint, ...)` and writes the MIDI with
+  `pretty_midi.Instrument(program=0, is_drum=True)` (`adt_transcriber.py`).
+- What was tried, at 23:20 UTC, one command, the README's two install lines: `uv venv --python 3.12 venv-adtstr` then
+  `uv pip install --python venv-adtstr/bin/python -r gap1/repos/ADT_STR/pyproject.toml` (PyPI dependencies only).
+  The 289,134,056-byte checkpoint was to be fetched only after the install worked; it was not downloaded.
+- Result: refused by the session's permission system before anything ran: "Permission for this action was denied by
+  the Claude Code auto mode classifier. Reason: [Code from External]." No venv was created (checked 23:20:28 UTC), no
+  ledger line, not worked around.
+- Steps for Aaron: `for-aaron.md`, list 6.
+
+### LarsNet (https://github.com/polimi-ispl/larsnet): NOT RUN HERE, running the repository's script refused
+
+- Code: `git clone --depth 1 https://github.com/polimi-ispl/larsnet` at 23:21 UTC into `gap1/repos/larsnet` (HEAD
+  `17d631fd18e77ee2f1d23ee7b3fc0fb46ae629e2`, 2024-09-10, the surveyed commit). Three Python files and a
+  `config.yaml`; no package to install. Imports: `yaml`, `torch`, `torchaudio`, `tqdm`, `soundfile` (and `unet` from
+  the same folder). `config.yaml`: `sr: 44100`, five `inference_models` (`kick`, `snare`, `toms`, `hihat`, `cymbals`)
+  read from `pretrained_larsnet_models/<stem>/pretrained_<stem>_unet.pth`; the folder holds only `.gitkeep` until the
+  checkpoints are unzipped into it. `larsnet.py` loads each with `torch.load(str(checkpoint_path),
+  map_location=device)` and `model.load_state_dict(checkpoint['model_state_dict'])`; `separate.py` reads every `*.wav`
+  under `-i` (recursively), writes `<-o>/<stem>/<input name>.wav` with `sf.write(..., larsnet.sr)`, `-d` default
+  `'cpu'`, `-w` turns on the alpha-Wiener filter.
+- Install (allowed): `uv venv --python 3.11 venv-larsnet`, `uv pip install --python venv-larsnet/bin/python torch
+  torchaudio soundfile pyyaml tqdm` at 23:21:48 UTC (no venv on the box had all five; the README gives no install
+  command): torch 2.15.0+cpu, torchaudio 2.11.1+cpu, numpy 2.4.6, soundfile 0.14.0, pyyaml 6.0.3, tqdm 4.70.1, all
+  hard-linked from the shared uv cache in about 1 s. Freeze: `samples/freezes/venv-larsnet.txt`.
+- Refused: the first call of the repository's script, `venv-larsnet/bin/python separate.py --help` run in the clone at
+  23:22 UTC (made before downloading the 562 MB checkpoint), was refused by the session's permission system:
+  "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]." So
+  the checkpoint (Google Drive id `1U8-5924B1ii1cjv9p0MTPzayb00P4qoL`, from the README's link) was not downloaded and
+  neither the taps stem nor the htdemucs_6s drums stem was separated. Not worked around (no re-implementation or copy
+  of the repository's code). `venv-larsnet` was deleted at 23:22 UTC.
+- Steps for Aaron: `for-aaron.md`, list 9.
+
+### drumsep (https://github.com/inagoy/drumsep): NOT RUN HERE, running Demucs with its checkpoint refused
+
+- Code: `git clone --depth 1 https://github.com/inagoy/drumsep` at 23:22 UTC (HEAD
+  `c1cea3f47bacd410412c7f563109f0a227b0e784`, 2025-11-03, the surveyed commit). The repository holds two bash
+  scripts. `drumsepInstall`: `pip install demucs` if `pip list` shows none, then in a new folder `model` `pip install
+  gdown` and `gdown 1-Dm666ScPkg8Gt2-lK3Ua0xOudWHZBGC`. `drumsep`, per input file: `demucs --repo "model" -o "$output"
+  -n 49469ca8 "$file"` (for a folder, every `*.mp3`, `*.wav`, `*.ogg`, `*.flac` in it). So a run is the PyPI Demucs
+  command with a checkpoint from Google Drive; no other code of the repository is involved.
+- Environment (allowed): `uv venv --python 3.11 venv-drumsep`, `uv pip install -r freeze/venv-demucs.txt` at 23:23
+  UTC, the same package set as the first round's Demucs runs r0327 / r0330 (demucs 4.1.0, torch 2.15.0+cpu, numpy
+  2.4.6; its freeze `samples/freezes/venv-drumsep.txt` is identical to `venv-demucs.txt`). Demucs 4.1.0 loads a
+  `--repo` checkpoint with `torch.load(path, 'cpu', weights_only=False)` (`demucs/states.py` line 59 of the installed
+  package).
+- Checkpoint (allowed): `curl` of `https://drive.usercontent.google.com/download?id=1-Dm666ScPkg8Gt2-lK3Ua0xOudWHZBGC&export=download&confirm=t`
+  at 23:23 UTC (HTTP 206 for a first 1,024-byte range, then the whole file in 6 s): `content-disposition: attachment;
+  filename="49469ca8.th"`, 167,400,043 bytes, `last-modified: Wed, 15 Jun 2022 23:49:20 GMT`, sha256
+  `aefaa8543c9b9c75e22f5f32b53ab86dfe416457849af1383ff1aef83401423f`. Read without unpickling (zip listing and
+  `pickletools.genops` on `archive/data.pkl`, 397 zip entries): the pickle references four globals,
+  `demucs.hdemucs HDemucs`, `torch._utils _rebuild_tensor_v2`, `torch HalfStorage`, `collections OrderedDict`, and
+  carries the keys `klass`, `args`, `kwargs`, `state`, `training_args`; the strings after `sources` are `bombo`,
+  `redoblante`, `platillos`, `toms`. So the model is a Hybrid Demucs (`HDemucs`) with four sources stored as
+  half-precision tensors.
+- Refused: the run, `gtr-run ... -- bash scripts/gap1_drumsep_run.sh venv-drumsep gap1/drumsep/model <out>
+  <input>` on `S6taps/stems/taps.wav` and then on the source-separation lane's
+  `out/htdemucs_6s/S6taps/drums.wav` (the script is the `drumsep` line above with the venv's `demucs`), was refused at
+  23:24 UTC before it started: "Permission for this action was denied by the Claude Code auto mode classifier. Reason:
+  [Code from External]." No ledger line, no output. Not worked around. `venv-drumsep` and `49469ca8.th` were deleted
+  at 23:24 UTC; the response headers are kept in `gap1/drumsep/headers_full.txt`.
+- Steps for Aaron: `for-aaron.md`, list 10.
+
+### Cluster and Separate / piano_svsep (https://github.com/CPJKU/piano_svsep): NOT RUN HERE, install refused
+
+- Code: `git clone --depth 1 https://github.com/CPJKU/piano_svsep` at 23:25 UTC (HEAD
+  `1462e7c28d7adaae033150883a7cb00238ee364a`, 2026-03-09, the surveyed commit; 70 MB with
+  `pretrained_models/model.ckpt`, 36,495,754 bytes). `setup.py`: `setup_requires=["torch==2.7.0"]`,
+  `install_requires` `torch==2.8.0`, `torch_geometric`, `partitura==1.8.0`, `torchmetrics`, `scipy`,
+  `scikit-learn==1.6.0`, `pytorch_lightning`, `verovio`, `torch-scatter`, `joblib`, `gitpython`, `tqdm`. The
+  repository's `requirements.txt` targets CUDA: `--index-url https://download.pytorch.org/whl/cu128` and
+  `--find-links https://data.pyg.org/whl/torch-2.8.0+cu128.html`, plus `verovio==4.2.1` and `gradio`.
+- What `launch_scripts/predict.py` does (read, not run): loads the model with
+  `PLPianoSVSep.load_from_checkpoint(path_to_model, map_location="cpu", strict=False, weights_only=False)`, reads the
+  score with partitura, `pt.load_score(path_to_score, force_note_ids=True)` (its docstring: "Partitura can handle
+  different formats such as musicxml, mei, etc."), merges multiple parts into one, removes beams, rests and grace
+  notes, builds a note graph, predicts voices and staves, and writes MEI when `--save_path` ends in `.mei`
+  (`pt.save_mei`) or MusicXML when it ends in `.musicxml` or `.xml` (`pt.save_musicxml`); any other ending raises
+  "Unsupported file format".
+- What was tried, at 23:25 UTC, one command: `uv venv --python 3.11 venv-svsep` then `uv pip install --python
+  venv-svsep/bin/python --find-links https://data.pyg.org/whl/torch-2.8.0+cpu.html gap1/repos/piano_svsep` (the
+  README's `pip install .`, with the CPU build of the PyG wheel index named in its `requirements.txt` for CUDA).
+- Result: refused before anything ran: "Permission for this action was denied by the Claude Code auto mode
+  classifier. Reason: [Code from External]." No venv created (checked 23:25:27 UTC), no ledger line, not worked
+  around. So the S2n and S5dropd truth notes were not voice-separated by it; the partitura and music21 counts above
+  (P2 and M1: 90 of 90 on both clips) have no piano_svsep counterpart here.
+- Steps for Aaron: `for-aaron.md`, list 4.
 
 ## Environments, kept and deleted
 

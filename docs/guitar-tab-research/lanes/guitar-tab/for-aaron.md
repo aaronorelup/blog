@@ -66,9 +66,9 @@ What it is: the authors' own command for the guitar models (GAPS and François L
 https://github.com/xavriley/hf_midi_transcription; weights https://huggingface.co/xavriley/midi-transcription-models,
 card license MIT). The box ran the François Leduc checkpoint (`guitar-fl.pth`) through Kong's PyPI package and a few
 lines of its own (see `trials.md`) on S2n and R1c; the GAPS checkpoint (`guitar-gaps.pth`, the CLI's default for
-`guitar`) ran on the box on S2n only, in the verifier's run (`trials.md`, Riley section). The runs below give the
-authors' own pipeline on S2n and R1c for comparison with the box's runs, and GAPS results for S3, R1b and R1c. Notes
-only: it gives no strings or frets.
+`guitar`) ran on the box the same way on S2n, S3, R1b and R1c, in the verifier's runs (`trials.md`, Riley section).
+The runs below give the authors' own pipeline (their fork of the inference package, batch size 8) on the same clips,
+for comparison with the box's runs. Notes only: it gives no strings or frets.
 
 1. `git clone https://github.com/xavriley/hf_midi_transcription` then `cd hf_midi_transcription`.
 2. `uv venv .venv --python 3.11` then `uv pip install --python .venv\Scripts\python.exe -e .`

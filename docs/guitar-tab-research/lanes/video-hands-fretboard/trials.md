@@ -20,8 +20,9 @@ inputs, and deleted them afterwards); the scripts expect them at `frames/R3a_%04
 `frames/R3c/f_%04d.jpg` under the lane folder (see `scripts/vhf_common.py`), so a re-run must decode them again. There is no ground truth for any of these clips, so the numbers below are counts, rates and
 times, not accuracy.
 
-**Box load.** The two CPU slots were contended by about 20-25 queued jobs of other lanes during this lane's work, so
-from 21:12 UTC this lane grouped several runs into one gtr-run job (`scripts/steps.sh`): the group's run id is in the
+**Box load.** The two CPU slots were contended by other lanes' queued jobs during this lane's work (the trial agent
+counted about 20-25; r0336, C1 and B1 waited 1800.7 s, 1823.2 s and 2941.0 s for a slot), so from 21:12 UTC this lane
+grouped several runs into one gtr-run job (`scripts/steps.sh`): the group's run id is in the
 ledger, and each step's wall time, CPU time and peak memory come from GNU `time` inside that job
 (`steps/<group>.steps.times.tsv`, copied to `samples/steps/`).
 
@@ -138,9 +139,9 @@ Where the R3a detections landed (`hand_regions.py`, frames with at least one det
   still 0; the landmarker was not closed explicitly before exit).
 - Samples: `samples/mediapipe-hand-landmarker/` (annotated WebP frames R3a full 100 and 300, crop 100 and 300,
   R3a_cu 150, R3b and R3c 225; summaries; 5-frame JSONL excerpts; frame 300 and frame 150 records; uv pip freeze).
-- Verifier re-run (steps of group job r0495, 2 cores, same commands): R3a_cu full and R3a full gave the same number of
-  hands and the same labels in every frame, and every landmark pixel value equal to r0078 and r0071 (6,300 and 17,031
-  landmarks compared). Per-frame inference mean in the re-run: 24.79 ms (R3a_cu) and 27.63 ms (R3a), against 32.56 and
+- Verifier re-run (steps of group job r0495, 2 cores, same commands): R3a_cu full and R3a full gave output records
+  identical to r0078 and r0071 apart from the timing field (same hands and labels in every frame; 6,300 and 17,031
+  landmarks, with their normalized, pixel and world values). Per-frame inference mean in the re-run: 24.79 ms (R3a_cu) and 27.63 ms (R3a), against 32.56 and
   36.94 ms in the trial; step wall 10.74 s and 20.35 s.
 
 ## HaMeR (3D hand mesh), commit not cloned: NOT RUN HERE
@@ -428,8 +429,10 @@ had RMS 7.52 px and k0 = 5 had RMS 20.48 px.
 - Route: the model weights were over the box's 200 MB download limit (see above), so the public Hugging Face Space
   demos were called with `gradio_client` 2.7.2 (PyPI, installed into the torch venv). Both Spaces reported
   `"stage": "RUNNING"` on `cpu-basic` hardware (API `https://huggingface.co/api/spaces/<id>/runtime`, 2026-11-10). The
-  model runs on Hugging Face's machine; times are network plus remote inference, not this box's CPU. Which OWLv2
-  checkpoint the Space loads was not read.
+  model runs on Hugging Face's machine; times are network plus remote inference, not this box's CPU. The trial did not
+  read which OWLv2 checkpoint the Space loads; the verifier read the Space's `app.py` (Space commit `8af0855e`, last
+  modified 2024-03-06): `Owlv2ForObjectDetection.from_pretrained("google/owlv2-base-patch16-ensemble")`, the same
+  checkpoint whose 619,918,824-byte weights were over the box's download limit.
 - Space API (`Client.view_api()`): `merve/owlv2`: `predict(img: filepath, text_queries: str, score_threshold: float,
   api_name="/predict") -> AnnotatedImage = {image: filepath, annotations: [{image: filepath (a mask), label: str}]}`.
   The output has no score field; each box arrives as a mask image, and the script took the mask's bounding box.
@@ -460,8 +463,11 @@ had RMS 7.52 px and k0 = 5 had RMS 20.48 px.
 ## MediaPipe legacy "solutions" Hands API, mediapipe 0.10.21
 
 - What it is: the pre-Tasks Python API `mp.solutions.hands.Hands` (hand models bundled in the wheel). 0.10.21 (PyPI
-  upload 2025-02-06) has `mp.solutions`; 1.2.2 does not; the releases in between (0.10.30 to 1.2.0) were not
-  checked.
+  upload 2025-02-06) has `mp.solutions`; 1.2.2 does not; the trial did not check the releases in between. The
+  verifier listed each Linux x86_64 wheel's zip directory over HTTP range requests (nothing installed;
+  `scripts/verify-trials/wheel_has_solutions.py`): `mediapipe/python/solutions/hands.py` is in 0.10.21 and in none of
+  0.10.30, 0.10.31, 0.10.32, 0.10.33, 0.10.35, 1.0.0, 1.0.1, 1.1.0, 1.1.1, 1.2.0 and 1.2.2 (PyPI lists no release
+  between 0.10.21 and 0.10.30).
 - Install (worked, 2026-11-10): `uv venv --python 3.11 venv-mp-legacy && uv pip install --python
   venv-mp-legacy/bin/python mediapipe==0.10.21`. It pulled jax 0.7.1, jaxlib 0.7.1, numpy 1.26.4 (the wheel requires
   `numpy<2`), protobuf 4.25.9, opencv-contrib-python 4.11.0.86 (full list: `samples/mediapipe-legacy/uv-pip-freeze.txt`).
@@ -513,7 +519,8 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
 
 - What it is: one-stage person detector with 17 COCO body keypoints per person (no finger keypoints). Package
   `ultralytics` 8.4.209 (PyPI) with torch 2.15.0+cpu and torchvision 0.29.2+cpu (`samples/ultralytics-torch-venv/
-  uv-pip-freeze.txt`). Weights from the Ultralytics assets release `v8.4.0`
+  uv-pip-freeze.txt`; the saved freeze listed setuptools 84.2.1, from before the YOLOE fix below, and the verifier
+  replaced it with the venv's current freeze, which differs only by `setuptools==80.10.2`). Weights from the Ultralytics assets release `v8.4.0`
   (`https://github.com/ultralytics/assets/releases/download/v8.4.0/<name>`, downloaded 2026-11-10, no login):
   `yolo26n-pose.pt` 7,878,574 bytes (sha256 `eb3bb8268828aeaf515cec23a4bfafd793944a86fe9af94ba7823609c14522a9`),
   `yolo26s-pose.pt` 24,151,790 bytes (sha256 `a083adb42303728ae14c4bd6bd56d80da46f82fb2564dbd6f31dcc92ea321646`).
@@ -656,7 +663,7 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
 - Verifier re-runs (steps of r0495, 2 cores): Holistic on R3a_cu full gave every hand landmark equal to the trial's;
   Holistic on the R3a crops failed again at the shot cut with the same `RET_CHECK failure ... (660 vs. 720)` (exit 1)
   after 218 frames whose hand landmarks equal the trial's; Pose on R3a full gave the same per-frame hand counts and all
-  6,480 stored arm values (x, y, visibility) equal to the trial's. Step walls 16.12 s, 12.25 s and 43.04 s.
+  6,480 stored arm landmark entries (x, y, visibility each) equal to the trial's. Step walls 16.12 s, 12.25 s and 43.04 s.
 
 ## Segment Anything 2.1 tiny (`sam2.1_t.pt`) through ultralytics 8.4.209: image mode and video mode
 
@@ -685,7 +692,9 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
 - What the masks cover, by eye on the overlays (`samples/sam2.1-tiny/`): R3a_cu frame 150: the neck from the body end
   to the headstock, interrupted by the fretting hand, plus specks on the guitar body at the left edge; the largest
   component (and its rectangle) is the stretch between the body end and the hand. R3a frame 100 (medium shot): the
-  visible neck. R3a frame 300 (wide shot): the whole player and guitar, not only the neck. Ultralytics returned one
+  visible neck. R3a frame 300 (wide shot): the player from head to feet and part of the guitar, not only the neck
+  (the verifier, looking at the same overlay, sees most of the guitar's lower bout left of the music stand outside the
+  mask). Ultralytics returned one
   mask per point (several points were not merged into one object); the script takes the union.
 - Video mode: 30 frames in 629.95 s including setup; the first frame took 25.017 s and frames 2-30 took 20.86 s each
   on average (about 0.05 frames per second on 2 cores). Every frame returned 3 masks (one per prompt point); the union
@@ -702,14 +711,20 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
   `sam2_results.json` (areas, boxes, rectangles, times).
 - Constraint inputs: points with labels (1 foreground, 0 background), boxes (`bboxes=`), and in video mode prompts on
   the first frame; `imgsz`, `conf`.
+- Verifier re-run of the image-mode part only (r0497, 2 cores; `scripts/verify-trials/verify_sam2_image.py`, the same
+  model calls and prompts; the 30-frame video mode, 630 s in the trial, was not re-run): all six union masks are
+  identical to the trial's PNG masks (IoU 1.0, 0 pixels differ), with the same scores and mask counts; 2.58-3.06 s per
+  call against 5.1-6.1 s in the trial; model load 0.45 s.
 
 ## CoTracker3 (offline model), facebookresearch/co-tracker @82e02e8
 
 - What it is: Meta's point tracker. Code: `git clone --depth 1 https://github.com/facebookresearch/co-tracker` (commit
   `82e02e8029753ad4ef13cf06be7f4fc5facdda4d`, 2025-01-21); checkpoint `scaled_offline.pth` 101,890,938 bytes (sha256
   `2670d4562ed69326dda775a26e54883925cd11b6fc9b24cb7aa9f8078bce7834`) from
-  `https://huggingface.co/facebook/cotracker3/resolve/main/scaled_offline.pth` (2026-11-10, no login). The README says
-  "for small tasks CoTracker can be run on CPU".
+  `https://huggingface.co/facebook/cotracker3/resolve/main/scaled_offline.pth` (2026-11-10, no login; the HF repo is not
+  gated and its card metadata has `license: cc-by-nc-4.0`, read by the verifier 2026-11-10). The README says "We
+  strongly recommend installing both PyTorch and TorchVision with CUDA support, although for small tasks CoTracker can
+  be run on CPU."
 - Install: `torch.hub.load("facebookresearch/co-tracker", ...)` (the README's route) needs api.github.com, which this
   box's proxy refuses. `uv pip install -e <clone>` was refused by this session's permission check. What ran: the clone
   is passed to the script as a path and appended to `sys.path`; `cotracker.predictor.CoTrackerPredictor(checkpoint=...,
@@ -738,14 +753,18 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
 - Output format facts: `pred_tracks` (B, T, N, 2) pixel coordinates in the input frame size, `pred_visibility` (B, T, N)
   booleans. Queries are (t, x, y) rows; a `grid_size` or a `segm_mask` can be given instead of queries.
   `out/cotracker/R3a_cu_f150_90.json` holds all tracks; `samples/cotracker3/` an excerpt and two frames.
+- Verifier re-run (r0497, 2 cores, same command; started only when MemAvailable was at least 10 GiB): every track
+  coordinate and visibility flag identical to the trial's (8 points x 90 frames); tracking 66.82 s = 0.74 s per frame
+  against 132.43 s = 1.47 s per frame in the trial; peak RSS 8,823,036 kB.
 
 ## rtmlib 0.0.16 (ONNX Runtime 1.31.1): RTMPose hand, RTMW and DWPose whole-body, ViTPose-s whole-body
 
-- What it is: `Tau-J/rtmlib`, a small library that runs OpenMMLab's RTMPose family (and ViTPose) as ONNX models
+- What it is: `Tau-J/rtmlib`, a library that runs OpenMMLab's RTMPose family (and ViTPose) as ONNX models
   through ONNX Runtime, without mmcv/MMPose. Package `rtmlib` 0.0.16 (PyPI); install `uv venv --python 3.11
   venv-rtmlib && uv pip install --python venv-rtmlib/bin/python rtmlib==0.0.16 onnxruntime==1.31.1` (rtmlib requires
-  both `opencv-python` and `opencv-contrib-python`; 5.0.0.93 of each); `pillow` was added later for the sample writer.
-  First attempt stalled while downloading opencv-python; killed and re-run, it finished in under 5 minutes.
+  both `opencv-python` and `opencv-contrib-python`; 5.0.0.93 of each); `pillow` 13.0.0 was added later for the sample
+  writer (the saved freeze lacked it; the verifier replaced `samples/rtmlib/uv-pip-freeze.txt` with the venv's current
+  freeze, which differs only by that line).
 - Models (ONNX, downloaded by rtmlib into `$TORCH_HOME/hub/checkpoints` on first use, no login; sizes and sha256 of
   the unpacked files):
 
@@ -758,18 +777,33 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
 | DWPose-l whole body 133 points, 384x288 | `rtmpose-l_simcc-ucoco_dw-ucoco_270e-384x288-2438fd99_20230728.onnx` | 134,399,323 | `8cfecfc2226d8e14b510c2fd28442226c518b4d60690535753187877411d4005` | download.openmmlab.com/mmpose/v1/projects/rtmposev1/onnx_sdk/ (zip) |
 | ViTPose-s whole body 133 points, 256x192 | `vitpose-s-wholebody.onnx` | 97,427,067 | `ccac893a8ad6da7d43f9655047acf48e482e66922db7f4273a3b615cea989127` | huggingface.co/JunkyByte/easy_ViTPose (repo not gated; its card metadata has no license field) |
 
-  (The RTMW model, 229 MB unpacked, was downloaded at 21:06 UTC by file time, before the 200 MB disk notice.)
+  (The RTMW model, 229 MB unpacked, has file time 21:06 UTC; the trial agent records the 200 MB disk notice from about
+  21:12 UTC, a time the verifier could not confirm. The run logs show which files each run loaded, for example
+  `out/rtmlib-hand/R3a_full.log`: "load .../rtmdet_nano_8xb32-300e_hand-267f9c8f.onnx with onnxruntime backend".)
 - How the script calls it (`scripts/run_rtmlib.py <clip> <full|crop> <hand|rtmw|dwpose|vitpose> <outdir> [step]`):
   the detector and the pose model are called separately (`model.det_model(img)`, then
   `model.pose_model(img, bboxes=...)`), because rtmlib's pose models fall back to the WHOLE image as the box when the
   detector returns none (`rtmlib/tools/pose_estimation/rtmpose.py`: `if len(bboxes) == 0: bboxes = [[0, 0,
   image.shape[1], image.shape[0]]]`); such fallback outputs are not counted here. The first R3a Hand runs (full and
-  crop, before this change; their summaries are kept as `*.summary.first-run-counts-fallback.json`) produced exactly one
-  21-point result in all 540 frames for that reason; they were re-run. A hand is counted when the mean of its 21
+  crop, before this change; their summaries are kept as `*.summary.first-run-counts-fallback.json`) counted them: the
+  full-frame first run (the detector returns at most one box per frame there, and none in 392 frames) reports 444
+  frames with one hand at the 0.3 rule and 96 with none, against 75 and 465 in its re-run; the crop first run (detector
+  boxes in 536 of 540 crops) reports 349 / 151 / 40 frames with 0 / 1 / 2 hands, against 350 / 150 / 40 in its re-run
+  (verifier, from the kept summaries). Both were re-run. A hand is counted when the mean of its 21
   keypoint scores is >= 0.3. Whole-body hands are keypoints 91-111 (the person's left hand) and 112-132 (right hand) of
   the COCO-WholeBody layout. Hand mode has no left/right label.
-- Runs: steps of group jobs C1 (Hand) and B1/C1 (whole body), 2 cores, GNU time per step. Whole-body runs used every
-  6th frame of R3a (90 frames) because each frame takes over a second.
+- Runs: steps of group jobs C1 (Hand) and B1/C1 (whole body), GNU time per step. Whole-body runs used every 6th
+  frame of R3a (90 frames) because each frame takes over a second.
+- Cores (found by the verifier): these steps were started in a 2-core slot, but ONNX Runtime pins threads itself.
+  rtmlib creates `ort.InferenceSession(...)` without session options (`rtmlib/tools/base.py`), and the ONNX Runtime
+  threading page (https://onnxruntime.ai/docs/performance/tune-performance/threading.html, read 2026-11-10) says: "By
+  default with intra_op_num_threads=0 or not set, each session will start with the main thread on the 1st core (not
+  affinitized). Then extra threads per additional physical core are created, and affinitized to that core (1 or 2
+  logical processors)." During the verifier's DWPose re-run in slot 2-3, the process ran at 250 % CPU with 5 threads
+  allowed on CPUs 2-3 and 2 threads each pinned to CPU 1, CPU 2 and CPU 3 (`/proc/<pid>/task/*/status`). CPU time
+  divided by wall time in the table below reaches 2.31 (`rtmlib-hand_R3a_crop_rerun_detcount`), above the 2.0 that 2
+  cores allow, and 2.53 and 2.51 in the verifier's two rtmlib re-runs. So the rtmlib wall times below are not 2-core
+  times, and these steps could run threads on the other slot's cores (observed: CPU 1 while the slot was 2-3).
 
 | step | clip, mode | frames | wall | CPU | peak RSS | per-frame mean / median / p90 | fps from mean | frames with a detector box | frames with 0 / 1 / 2 / >2 hands | hand score mean [min-max] |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -814,6 +848,10 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
   ("onnxruntime", "opencv", "openvino"), `device`; `mode` ("performance", "balanced", "lightweight") for the solution
   classes; `to_openpose` for an OpenPose-style keypoint order. No handedness or guitar-specific constraint.
 - Samples: `samples/rtmlib/` (frames, summaries, freeze).
+- Verifier re-runs (steps of r0495; see "Cores" above): Hand on R3a full and DWPose-l on R3a_cu (every 5th frame) gave
+  the same detector boxes, keypoints and scores as the trial in every frame (Hand: 148 of 540 frames with a detector
+  box; DWPose: 60 of 60; 1,575 hand keypoints compared in each run). Per-frame mean 141.62 ms and 840.91 ms; step wall 87.01 s (CPU 220.4 s) and
+  52.77 s (CPU 132.6 s).
 
 ## YOLOE-26s (open-vocabulary detection and segmentation), ultralytics 8.4.209
 
@@ -851,6 +889,10 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
   and `results[0].masks` (one mask per box). `results.json` (`samples/yoloe-26s/`) lists every box >= 0.05 per image
   and prompt, with counts at >= 0.05, 0.25 and 0.5.
 - Constraint inputs: the text prompt list (`set_classes`), `conf`, `imgsz`; YOLOE also takes visual prompts (not used).
+- Verifier checks: the checkpoint's pickle (read with `pickletools`, nothing executed) stores `text_model`
+  `mobileclip2:b`; Ultralytics 8.4.209 `nn/text_model.py` has `import clip` in a top-level `try` block (lines 15-19).
+  Re-run (step of r0495, 2 cores): the same boxes, prompts and scores for all eight images as the trial's
+  `results.json`; setup 2.04 s, step wall 6.85 s.
 
 ## Grouped jobs (gtr-run ids for the steps above)
 
@@ -866,6 +908,10 @@ as well and cancelled while still waiting for a slot (no ledger entries); their 
 |---|---|---|---|---|---|---|---|---|
 | r0408 | C1 | 0-1 | 1823.2 s | 2026-11-10T22:01:25 | 1596.1 s | 2307.95 s | 777.3 MB | 29 (2 failed and were re-run, 1 failed: see below) |
 | r0448 | B1 | 2-3 | 2941.0 s | 2026-11-10T22:01:24 | 2457.96 s | 2887.20 s | 8607.3 MB (the CoTracker step) | 18 (1 failed and was re-run: see below) |
+
+CPU (user+sys) above 2 x wall in a step means it used more than its slot's 2 cores: this happened in rtmlib (ONNX
+Runtime) steps only (rtmlib section, "Cores"). r0408's whole-job CPU 2307.95 s in 1596.1 s wall is 1.45 cores on
+average.
 
 Failed steps, as they happened: `rtmlib-hand_R3b_full` and `rtmlib-hand_R3c_full` (C1) stopped at the first sample
 image with `ModuleNotFoundError: No module named 'PIL'` (pillow was then installed into the rtmlib venv and both were
@@ -887,10 +933,89 @@ All under `/home/user/gtr/lanes/video-hands-fretboard/`; none is copied into the
 | `inputs/R3a_cu/R3a_cu.mp4` | 2,244,809 | 10.01 s | Lane input: 682-692 s of the R3a source concert (CC BY-SA 4.0, attribution in `inputs.md`), H.264 640x480 with AAC audio |
 | `inputs/R3a_cu/R3a_cu.wav` | 1,765,672 | 10.008 s | Its audio, 16-bit 44.1 kHz stereo |
 | `out/videos/R3a_cu_mediapipe_hands.mp4` | 925,707 | 10.01 s | R3a_cu with MediaPipe Hand Landmarker landmarks drawn (r0078 output; drawing run r0227), no audio |
-| `out/videos/R3a_mediapipe_hands_full.mp4` | 927,653 | 18.02 s | R3a full frame with MediaPipe landmarks (r0071 output), no audio; shows the false detection on the sheet music in the wide shot |
+| `out/videos/R3a_mediapipe_hands_full.mp4` | 927,653 | 18.02 s | R3a full frame with MediaPipe landmarks (r0071 output; drawing run r0227), no audio; shows the false detection on the sheet music in the wide shot |
 | `out/videos/R3b_mediapipe_hands_960.mp4` | 1,608,746 | 18.00 s | R3b at 960x540 with MediaPipe landmarks (group C1 output), no audio |
 | `out/videos/R3c_mediapipe_hands_960.mp4` | 940,447 | 18.00 s | R3c at 960x540 with MediaPipe landmarks (group C1 output), no audio |
 | `out/sam2/R3a_cu_f150-179.mp4` | 395,005 | 1.00 s | The 30 R3a_cu frames given to SAM 2.1 video mode (H.264 CRF 10), no audio |
 
 The R3b and R3c overlays carry the licenses of those clips (shared manifest); R3a and R3a_cu overlays are CC BY-SA 4.0
 derivatives of the archive.org concert video.
+
+## Verification log (verify-trials-video-hands-fretboard, 2026-11-10)
+
+Checked between 22:45 and about 23:30 UTC. The verifier's working files are under
+`/home/user/gtr/lanes/video-hands-fretboard/verify-trials/` (re-run outputs in `out/`, pages read in `web/`); its
+scripts are in `scripts/verify-trials/` and its step files and per-step times in `samples/verify-trials/`.
+
+What was checked:
+
+- Ledger: all 20 of this lane's trial runs (r0012 to r0448) have a line in `/home/user/gtr/ledger/runs.jsonl`; the
+  ids, commands, cores, wall, CPU, peak memory, slot waits and exit codes quoted above match it. r0057 and r0061
+  (exit 1) are described as failures. gtr-run takes `started_utc` after the slot wait and assigns the id when the
+  run ends.
+- Grouped steps: every per-step wall, CPU and peak-RSS value in the tables was compared with
+  `steps/C1.steps.times.tsv` and `steps/B1.steps.times.tsv` (the copies in `samples/steps/` are identical to the
+  job's files). All match except one unit conversion (yolo26n-pose R3a_cu RSS, fixed).
+- Outputs: every output and sample file named above exists. All counts, labels, score ranges, time statistics,
+  per-shot splits and region tallies were recomputed from the JSONL/JSON outputs with separate scripts
+  (`scripts/verify-trials/recount*.py`, `cells.py`, and the lane's `hand_regions.py`): MediaPipe Hand (6 runs),
+  legacy Hands (5), Pose (2), Holistic (4, one crashed), rtmlib (16 runs plus the 2 kept first-run summaries), YOLO
+  pose (6), YOLOE, SAM 2.1, CoTracker3, OpenPose hand (3), OpenCV (3 JSON files), the two handoffs and the OWLv2
+  results. Wrist means, the sheet-music cell, the OpenPose-to-MediaPipe distances and the fret-fit cells were
+  recomputed as well.
+- Files and formats: sha256 of all 16 weight files still on disk (10 in `dl/`, 6 rtmlib ONNX files) and of R3b, R3c,
+  R3a_cu mp4 and wav; ffprobe of the inputs and of the 7 media files in the table above; the record fields of each
+  JSONL type.
+- Live sources re-read on 2026-11-10: the MediaPipe Hand Landmarker page quotes; PyPI release data for mediapipe; the
+  HaMeR, WiLoR, Hamba, tapnet and co-tracker READMEs; HaMeR's `fetch_demo_data.sh`; the MANO license page (all five
+  quoted passages found verbatim); the HF API records (gated flags, card licenses, file sizes) and the SAM 3 HTTP 401s;
+  MMPose `mminstall.txt` and the mmcv CPU wheel indexes (torch2.15 index: 404); the Roboflow 401/403 answers; the
+  TapToTab arXiv page (no code link); the checkpoint sizes; OpenPose's `handExtractorCaffe.cpp` line 341 and
+  `datum.hpp` ("handKeypoints[0] corresponds to left hands"); Ultralytics 8.4.209 source lines and asset list; the
+  upstream commits of pytorch-openpose and co-tracker (`git ls-remote` and a blob-less fetch: 5ee71dc, 2021-06-21;
+  82e02e8, 2025-01-21); the HF Space runtime states; the utexas TLS failure (reproduced, TLS not disabled).
+- `inputs.md` (referenced above): R3a_cu's sha256, byte counts and durations, the r0012 and r0015 commands, and the
+  scene-cut times (source cuts at 674.57, 681.61, 692.66, 700.37, 703.54 s; R3a cuts at frames 218 and 439; no cut in
+  R3a_cu; re-run with ffmpeg by the verifier) all match; that file was not changed.
+- gtr-eval and mir_eval: this lane has no gtr-eval numbers and no ground truth (the clips have none), and its
+  outputs are keypoints, boxes, masks and tracks, so no mir_eval metric applies; the recounts above are the
+  independent recomputation.
+- Judging language, secrets, sizes: none of the listed judging words remain (a quoted page title "Just a moment..."
+  is the only hit); no keys or tokens; no file over 300 KB and no audio or video in this folder (2.6 MB in total).
+
+Re-runs by the verifier (same commands as recorded; frames decoded again and checked pixel-identical):
+
+| run | what | result |
+|---|---|---|
+| r0482, r0483, r0484 | OpenCV lines R3a_cu, R3b, SAM quad (`--nolock`) | per-frame JSON identical to r0149, r0214, r0400 apart from timings |
+| r0485, r0486 | handoffs R3a_cu f150, R3b f225 (`--nolock`) | JSON identical to r0218, r0402 |
+| r0488 | OWLv2 and Grounding DINO Spaces (`--nolock`) | same OWLv2 boxes for all three images; Grounding DINO failed again (`Unknown protocol: ws`) |
+| r0495 (group V1, 2-core slot, 10 steps, wall 297.27 s, slot wait 425.8 s) | MediaPipe Hand R3a_cu and R3a full; legacy Hands R3a_cu; Holistic R3a_cu and R3a crop; Pose R3a full; rtmlib Hand R3a full; DWPose R3a_cu every 5th; yolo26n-pose R3a_cu; YOLOE-26s | every output record identical to the trial's apart from the timing fields; Holistic crop failed again at frame 218 with the same error (exit 1, as in the trial) |
+| r0497 (group V2, 2-core slot, 3 steps, wall 170.04 s, slot wait 723.3 s) | OpenPose hand R3a_cu every 30th mirrored; SAM 2.1 image mode only; CoTracker3 R3a_cu 90 frames | OpenPose and CoTracker3 JSON identical apart from timing fields; SAM 2.1 masks identical (IoU 1.0) with the same scores; the SAM 2.1 video mode (630 s in the trial) was not re-run |
+
+Times in the re-runs differed from the trial's (for example OpenPose 7.863 s against 20.017 s per hand, CoTracker3
+0.74 s against 1.47 s per frame, MediaPipe Hand R3a 27.63 ms against 36.94 ms per frame) while the outputs were
+identical; the box was shared with other lanes' jobs in both cases.
+
+What was changed in this file: the frame-deletion time (22:46 written before it happened; the folder time is 22:43);
+the 2-core statement for the rtmlib steps (ONNX Runtime pins its own threads, measured CPU/wall up to 2.31 in the
+trial and 2.53 in the re-run; added to the header, the rtmlib section and the grouped-jobs section); the rtmlib
+first-run description ("exactly one 21-point result in all 540 frames" was true only of the full-frame run's raw
+output; the kept summaries' counts are now given); the deleted sentence about a stalled opencv-python download (no
+file supports it); the YOLO table (a frame with more than 2 wrists in the R3a crop run; R3a_cu peak RSS 452.5 MiB, not
+463.4); the YOLO first-call range (1464-2261 ms, not 1609-2261); R3b right wrists (199 frames, 201 detections); the
+crop-mode sheet-music detections (a neighbouring cell, label "Right"); the R3b legacy two-hand frames (their wrists
+span x 1189.8-1273.3 px); the R3b handoff's gap rule wording; the OpenPose component rule (largest heatmap sum, as in
+`src/hand.py`); the CoTracker README quote (full sentence); the SAM 2.1 frame-300 mask description; the TAPIR section
+(the 124 MB TAPIR checkpoint is under the limit; the verifier's attempt to run it was refused by the permission
+check); the disk-notice timing, the `mobileclip2_b.ts` and RTMW file times (UNVERIFIED order) and the box-load job
+count (now attributed to the trial agent); the two stale pip freezes
+(rtmlib: pillow; Ultralytics: setuptools), replaced with the venvs' current freezes; the MediaPipe output fields
+(`index`) and docs quotes for z and world landmarks; and facts added from the verifier's checks (WiLoR detector
+pickle read statically, the mediapipe releases without `solutions/hands.py`, the OWLv2 Space's checkpoint, the
+CoTracker3 card license, the fretting-region label counts, re-run results per section).
+
+Still UNVERIFIED: which R3b fret numbering is right (step 9 of `for-aaron.md` settles it); when the disk notice first
+appeared; the text of the r0057/r0061 import error and the trial session's permission refusals (no log file kept;
+the ledger has exit 1 for r0057/r0061, and `apt-gles.log` shows libgles2 newly installed at 21:02); whether the
+WiLoR detector's `left`/`right` names are its output classes (read from the pickle's strings only).

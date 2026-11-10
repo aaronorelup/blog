@@ -42,8 +42,10 @@ Not run here: this session's permission policy refused both installing the clone
 
 ## 2. ADTOF, original Keras version (same model family)
 
-Not run here: its `setup.py` asks for `tensorflow>=2.13.0`; the only TensorFlow on the box (installed by two other
-lanes after 21:31 UTC) is 2.12.1, and the orchestrator's disk notice forbade new installs over 200 MB (trials.md).
+Not run here: in gap round 1 (23:16 UTC) the install from its repository, `uv pip install "tensorflow==2.15.1"
+"adtof @ git+https://github.com/MZehren/ADTOF@b3968fb..."`, was refused by the session's permission system ("[Code
+from External]") (trials.md, "Gap round 1"). (The first round's reason, TensorFlow 2.12.1 on the box and the disk
+notice, no longer applies.)
 
 1. Open the Colab notebook linked in the README of https://github.com/MZehren/ADTOF ("The easiest way to test the
    trained model is our Colab Notebook", per its README). It needs a Google account.
@@ -52,15 +54,29 @@ lanes after 21:31 UTC) is 2.12.1, and the orchestrator's disk notice forbade new
 3. Follow the notebook's cells, pointing its audio path at each file in turn.
 4. Send back: the MIDI or text file each run writes (download from the folder pane), and a screenshot of the last
    cell's output. No cost (free Colab). License: CC BY-NC-SA 4.0 per the README.
+5. Local alternative (what was refused here): Python 3.10, `git clone https://github.com/MZehren/ADTOF`, `cd ADTOF`,
+   `python -m venv venv`, `venv\Scripts\activate`, `pip install "tensorflow==2.15.1"` then `pip install .` (the
+   README's line; `setup.py` asks for `tensorflow>=2.13.0` and installs madmom and tapcorrect from GitHub). Then in
+   `python`, the two cells of `bin/drumTranscriptor.ipynb`:
+   `from adtof.model.model import Model`,
+   `model, hparams = Model.modelFactory(modelName="Frame_RNN", scenario="adtofAll", fold=0)`,
+   `model.predictFolder(r"<inputs>\S6taps\*.wav", r"C:\gtr\adtof_out", **hparams)`; the same with
+   `<inputs>\S6taps\stems\taps.wav` and `<inputs>\S2s\S2s.wav`. Send back the `.mid` files in `C:\gtr\adtof_out`.
 
 ## 3. Omnizart drum mode
 
-Not run here: needs TensorFlow (`tensorflow>=2.5.0` in its PyPI requirements, a requirement that the `tensorflow-cpu`
-build two other lanes installed does not satisfy); none was on the box when this lane checked, and the orchestrator's
-disk notice forbade new installs over 200 MB (trials.md).
+Not run here: in gap round 1 (23:18 UTC) the install `uv pip install "omnizart==0.6.3" "tensorflow==2.15.1"
+"tf-keras==2.15.1"` (PyPI, Python 3.10) was refused by the session's permission system before it ran (trials.md, "Gap
+round 1"). (The first round's reason, no TensorFlow on the box and the disk notice, no longer applies.)
 
-1. `cd C:\gtr`, `python -m venv omnizart-venv`, `omnizart-venv\Scripts\activate`.
-2. `pip install omnizart` then `omnizart download-checkpoints` (both lines are in its README).
+1. `cd C:\gtr`, `python -m venv omnizart-venv`, `omnizart-venv\Scripts\activate` (Python 3.10 or 3.11; the current
+   release 0.6.3 asks for `tensorflow>=2.5.0` and `tf-keras` on Python below 3.14).
+2. `pip install omnizart` then `omnizart download-checkpoints` (both lines are in its README). Two of its
+   dependencies, madmom 0.16.1 and vamp 1.1.0, are source packages whose `setup.py` imports NumPy (madmom also
+   Cython) without declaring it (read here, not built here). If `pip install omnizart` stops while building one of them
+   with "No module named 'numpy'" or "No module named 'Cython'", run `pip install "numpy<2" "Cython<3" setuptools
+   wheel` and then `pip install --no-build-isolation omnizart`. Building them needs a C/C++ compiler (on Windows,
+   "Microsoft C++ Build Tools"). The README also offers a Docker image, `docker pull mctlab/omnizart:latest`.
 3. `omnizart drum transcribe <inputs>\S6taps\S6taps.wav -o S6taps_omnizart.mid` (`-o` / `--output` is the output
    option of the transcribe command in its source), then the same for `<inputs>\S6taps\stems\taps.wav`
    (`-o S6taps_tapsonly_omnizart.mid`), `<inputs>\S2s\S2s.wav` (`-o S2s_omnizart.mid`) and `<inputs>\R3a\R3a.wav`
@@ -71,9 +87,12 @@ disk notice forbade new installs over 200 MB (trials.md).
 
 ## 4. Cluster and Separate (piano_svsep), GNN voice and staff separation
 
-Not run here: its `setup.py` pins `torch==2.8.0`; the box already has a different torch and the orchestrator's disk
-notice forbids a second torch version; the package is not on PyPI, so it also means running a cloned repository
-(trials.md).
+Not run here: in gap round 1 (23:25 UTC) the install of the clone into its own venv, `uv pip install --find-links
+https://data.pyg.org/whl/torch-2.8.0+cpu.html ./piano_svsep`, was refused by the session's permission system ("[Code
+from External]") (trials.md, "Gap round 1"). (The first round's reason, the disk notice against a second torch
+version, no longer applies.) Its `predict.py` reads the score with partitura (`pt.load_score`; "Partitura can handle
+different formats such as musicxml, mei, etc.") and writes MEI for a `--save_path` ending in `.mei` or MusicXML for one
+ending in `.musicxml`.
 
 1. `cd C:\gtr`, `git clone https://github.com/CPJKU/piano_svsep`, `cd piano_svsep`, `python -m venv venv`,
    `venv\Scripts\activate`.
@@ -107,8 +126,10 @@ tried it (trials.md).
 
 ## 6. ADT_STR (drum transcription, 2026)
 
-Not run here: the code is a cloned repository (see list 1), its weights are 289 MB per variant on Hugging Face, and
-its install brings its own PyTorch stack.
+Not run here: in gap round 1 (23:20 UTC) its README's install, `uv pip install -r pyproject.toml` into a Python 3.12
+venv, was refused by the session's permission system ("[Code from External]") (trials.md, "Gap round 1"). Its weights
+are 289 MB per variant on Hugging Face and its install brings its own PyTorch stack (`torch==2.8.0`). On a machine
+without CUDA it runs on the CPU by itself (`select_inference_device()`: "Prefer CUDA, then Apple MPS, else CPU.").
 
 1. `cd C:\gtr`, `git clone https://github.com/pier-maker92/ADT_STR`, `cd ADT_STR`.
 2. Follow the README: it uses `uv` (`pip install uv`, then `uv venv .venv --python 3.12` and
@@ -179,8 +200,9 @@ With either file back, the orchestrator can run this lane's HPSS, onset and Demu
 
 ## 9. LarsNet (5-stem drum separation: kick, snare, toms, hi-hat, cymbals)
 
-Not run here: its checkpoint is 562 MB (its README and survey.md), above the 200 MB limit in the orchestrator's
-disk notice.
+Not run here: in gap round 1 its dependencies installed, but running its `separate.py` was refused by the session's
+permission system ("[Code from External]", 23:22 UTC), so its 562 MB checkpoint was not downloaded (trials.md, "Gap
+round 1"). (The first round's reason, the disk notice, no longer applies.)
 
 1. `cd C:\gtr`, `git clone https://github.com/polimi-ispl/larsnet`, `cd larsnet`, `python -m venv venv`,
    `venv\Scripts\activate`, install PyTorch with torchaudio (common step 5), then `pip install soundfile pyyaml tqdm`.
@@ -198,15 +220,24 @@ disk notice.
 
 ## 10. drumsep (Demucs-based 4-stem drum separation)
 
-Not run here: weights come from Google Drive through `gdown` (survey.md; its `drumsepInstall` script runs
-`pip install demucs` and `gdown`); not attempted.
+Not run here: in gap round 1 the checkpoint `49469ca8.th` (167,400,043 bytes, Google Drive id
+`1-Dm666ScPkg8Gt2-lK3Ua0xOudWHZBGC`) was downloaded and a Demucs 4.1.0 environment built, but running
+`demucs --repo model -o <out> -n 49469ca8 <file>` (the one command of its `drumsep` script) was refused by the session's
+permission system ("[Code from External]", 23:24 UTC) (trials.md, "Gap round 1"). Its four stems are named `bombo`,
+`redoblante`, `platillos`, `toms` inside the checkpoint.
 
 1. The README's no-install route: its "drumsep Notebook" link (Google Colab, needs a Google account). Upload
-   `S6taps\stems\taps.wav` there, run the cells, download the four WAVs.
+   `S6taps\stems\taps.wav` and, if the orchestrator gives it to you, the source-separation lane's htdemucs_6s drums
+   stem of S6taps (`htdemucs_6s\S6taps\drums.wav`, renamed `S6taps_htdemucs6s_drums.wav`) there, run the cells,
+   download the four WAVs of each.
 2. The README's command-line route is written "With Linux": clone `https://github.com/inagoy/drumsep`, then
    `bash drumsepInstall`, then `bash drumsep "<PATH_IN>" "<PATH_OUT>"`. On Windows that needs a Linux shell such as
-   WSL; it has not been tried in Git Bash.
-3. Send back: the four WAVs it writes (Bombo/kick, Redoblante/snare, Platillos/cymbals, Toms) and the screenshot.
+   WSL; it has not been tried in Git Bash. The scripts only do this, which also works in Terminal: `pip install
+   demucs`, put the file from https://drive.google.com/uc?id=1-Dm666ScPkg8Gt2-lK3Ua0xOudWHZBGC (`49469ca8.th`) into
+   a folder `model`, then `demucs --repo model -o drumsep_out -n 49469ca8 <file>` for each input.
+3. Send back: the four WAVs it writes per input (`bombo` = kick, `redoblante` = snare, `platillos` = cymbals, `toms`)
+   and the screenshot. The orchestrator measures the level of each stem and which stem holds the side-stick "slap" and
+   the bass-drum "thump" times of `S6taps.truth.json`.
 
 ## 11. Deep Salience (bass line and melody salience from audio)
 

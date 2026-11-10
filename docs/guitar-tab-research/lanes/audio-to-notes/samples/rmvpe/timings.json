@@ -1,0 +1,176 @@
+{
+ "rmvpe_onnx_version": "0.2.3",
+ "onnxruntime_version": "1.31.1",
+ "provider": "CPUExecutionProvider",
+ "model_setup_s": 1.383,
+ "model_input": [
+  [
+   "input",
+   [
+    1,
+    128,
+    "time"
+   ],
+   "tensor(float)"
+  ]
+ ],
+ "model_output": [
+  [
+   "output",
+   [
+    "Sigmoidoutput_dim_0",
+    "Sigmoidoutput_dim_1",
+    360
+   ],
+   "tensor(float)"
+  ]
+ ],
+ "lowest_bin_hz": 31.7,
+ "highest_bin_hz": 2005.4972444919554,
+ "clips": {
+  "S1": {
+   "input": "/home/user/gtr/inputs/S1/S1.mono.wav",
+   "sr_in": 44100,
+   "channels_in": 1,
+   "predict_s": 16.054,
+   "frames": 2984,
+   "activation_shape": [
+    2984,
+    360
+   ],
+   "hop_s": 0.01,
+   "f0_min_hz": 116.33081051657514,
+   "f0_max_hz": 567.2148159965088,
+   "confidence_min": 3.4689903259277344e-05,
+   "confidence_max": 0.9486425518989563,
+   "frames_conf_ge_0.03": 499,
+   "frames_conf_ge_0.5": 84
+  },
+  "S2n": {
+   "input": "/home/user/gtr/inputs/S2n/S2n.mono.wav",
+   "sr_in": 44100,
+   "channels_in": 1,
+   "predict_s": 2.295,
+   "frames": 2936,
+   "activation_shape": [
+    2936,
+    360
+   ],
+   "hop_s": 0.01,
+   "f0_min_hz": 97.68677271129171,
+   "f0_max_hz": 769.8641987200747,
+   "confidence_min": 5.2928924560546875e-05,
+   "confidence_max": 0.6050848960876465,
+   "frames_conf_ge_0.03": 912,
+   "frames_conf_ge_0.5": 21
+  },
+  "S2s": {
+   "input": "/home/user/gtr/inputs/S2s/S2s.mono.wav",
+   "sr_in": 44100,
+   "channels_in": 1,
+   "predict_s": 1.761,
+   "frames": 2936,
+   "activation_shape": [
+    2936,
+    360
+   ],
+   "hop_s": 0.01,
+   "f0_min_hz": 98.53736811557349,
+   "f0_max_hz": 574.4257408579198,
+   "confidence_min": 5.760788917541504e-05,
+   "confidence_max": 0.19343525171279907,
+   "frames_conf_ge_0.03": 515,
+   "frames_conf_ge_0.5": 0
+  },
+  "S4": {
+   "input": "/home/user/gtr/inputs/S4/S4.mono.wav",
+   "sr_in": 44100,
+   "channels_in": 1,
+   "predict_s": 2.194,
+   "frames": 3875,
+   "activation_shape": [
+    3875,
+    360
+   ],
+   "hop_s": 0.01,
+   "f0_min_hz": 108.60160705218232,
+   "f0_max_hz": 794.6594008288356,
+   "confidence_min": 3.3229589462280273e-05,
+   "confidence_max": 0.6138573884963989,
+   "frames_conf_ge_0.03": 1637,
+   "frames_conf_ge_0.5": 66
+  },
+  "S4lead": {
+   "input": "/home/user/gtr/inputs/S4/stems/lead.wav",
+   "sr_in": 44100,
+   "channels_in": 2,
+   "predict_s": 2.444,
+   "frames": 3875,
+   "activation_shape": [
+    3875,
+    360
+   ],
+   "hop_s": 0.01,
+   "f0_min_hz": 117.33855268383932,
+   "f0_max_hz": 771.1014502078451,
+   "confidence_min": 2.5510787963867188e-05,
+   "confidence_max": 0.9433445930480957,
+   "frames_conf_ge_0.03": 3008,
+   "frames_conf_ge_0.5": 2047
+  },
+  "R1b": {
+   "input": "/home/user/gtr/inputs/R1b/R1b.mono.wav",
+   "sr_in": 44100,
+   "channels_in": 1,
+   "predict_s": 1.679,
+   "frames": 2934,
+   "activation_shape": [
+    2934,
+    360
+   ],
+   "hop_s": 0.01,
+   "f0_min_hz": 53.72841873192817,
+   "f0_max_hz": 770.1311351551317,
+   "confidence_min": 5.671381950378418e-05,
+   "confidence_max": 0.9738425016403198,
+   "frames_conf_ge_0.03": 2135,
+   "frames_conf_ge_0.5": 1655
+  },
+  "R2": {
+   "input": "/home/user/gtr/inputs/R2/R2.mono.wav",
+   "sr_in": 44100,
+   "channels_in": 1,
+   "predict_s": 2.146,
+   "frames": 3601,
+   "activation_shape": [
+    3601,
+    360
+   ],
+   "hop_s": 0.01,
+   "f0_min_hz": 116.44934498999051,
+   "f0_max_hz": 830.6863217043109,
+   "confidence_min": 9.891390800476074e-05,
+   "confidence_max": 0.9593806266784668,
+   "frames_conf_ge_0.03": 2905,
+   "frames_conf_ge_0.5": 1683
+  },
+  "R3a": {
+   "input": "/home/user/gtr/inputs/R3a/R3a.mono.wav",
+   "sr_in": 44100,
+   "channels_in": 1,
+   "predict_s": 1.133,
+   "frames": 1800,
+   "activation_shape": [
+    1800,
+    360
+   ],
+   "hop_s": 0.01,
+   "f0_min_hz": 106.07541240925138,
+   "f0_max_hz": 447.4292665592091,
+   "confidence_min": 0.005134373903274536,
+   "confidence_max": 0.8129633069038391,
+   "frames_conf_ge_0.03": 1475,
+   "frames_conf_ge_0.5": 121
+  }
+ }
+}

@@ -46,7 +46,7 @@ forbids downloads over 200 MB.
 
 ## 3. Banquet (query-by-example: "give me the stem that sounds like this clip")
 
-Not run here: the smallest checkpoint is 552 MB (the recommended `ev-pre-aug.ckpt` is 645 MB) plus the PaSST query
+Not run here: the smallest checkpoint is 552 MB (`ev-pre-aug.ckpt`, the one the README names for "If you are not sure", is 645 MB) plus the PaSST query
 model, and the README shows a CUDA flag only.
 
 1. Install Git and Miniconda for Windows if they are not installed.
@@ -62,13 +62,15 @@ model, and the README shows a CUDA flag only.
 
 ## 4. Big RoFormer models on a whole song, on the GPU
 
-Run here only on 10 s pieces of `S4` on the CPU (see `trials.md`); the whole song on a GPU gives the time a user
-would wait. The same Python package as on the box, with the GPU build of PyTorch.
+Run here only on 10 s pieces of `S4` on the CPU: on 2 CPU cores the 10 s took 110 s (BS-RoFormer-SW), 170 s
+(BS-RoFormer) and 503 s (MDX23C) (`trials.md`, runs r0489, r0498, r0496). The whole song on a GPU gives the time a
+user would wait. The same Python package as on the box, with a GPU build of PyTorch.
 
 1. Install Python 3.11 from python.org (tick "Add python.exe to PATH").
-2. In "Command Prompt": `py -3.11 -m venv sep` then `sep\Scripts\activate` then
-   `pip install "audio-separator[gpu]"` (this pulls a CUDA PyTorch; if `audio-separator -e` later says CUDA is not
-   available, install PyTorch with the command from https://pytorch.org for "Stable, Windows, Pip, CUDA").
+2. In "Command Prompt": `py -3.11 -m venv sep` then `sep\Scripts\activate`. Install PyTorch first with the command
+   that https://pytorch.org shows for "Stable, Windows, Pip, Python, CUDA" (the plain PyPI wheel may be the CPU-only
+   build). Then `pip install "audio-separator[gpu]"` (its `gpu` extra adds `onnxruntime-gpu`, per the package
+   metadata). Run `audio-separator -e` and check that the printed environment mentions CUDA; screenshot it.
 3. Run, one after another, and time each:
    `audio-separator -m BS-Roformer-SW.ckpt --output_format WAV R2full.wav`
    `audio-separator -m BS-Roformer-SW.ckpt --output_format WAV S4.wav`
