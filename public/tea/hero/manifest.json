@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "reference": { "aspect": 1.6 },
+  "background": { "layers": [
+    { "id": "far", "night": "/media/storm-bell-fighter/poster.webp", "z": -10, "size": [24, 15], "y": 1.5 }
+  ] },
+  "actors": [
+    { "id": "jefrie", "src": "/media/jefrie-3d/jefrie-v2.glb", "scale": 1.6, "position": [-1.8, 0.9, 0.3], "rotation": [0, 60, 0],
+      "deform": { "kind": "bend", "start": -0.15, "y": -0.42, "rest": 0.4 } }
+  ],
+  "lights": [
+    { "id": "hemi", "type": "hemi", "night": { "color": "#8C9FDC", "ground": "#232839", "intensity": 0.8 }, "day": { "color": "#FFD2A8", "ground": "#5A3A4A", "intensity": 1.2 } },
+    { "id": "moon", "type": "dir", "night": { "color": "#C8D6FF", "intensity": 1.6, "position": [-4, 6, -5] }, "day": { "color": "#FFB27A", "intensity": 2.2, "position": [5, 3, -4] } }
+  ],
+  "camera": { "fov": 34, "keys": [
+    { "t": 0, "pos": [0, 1.35, 7.6], "look": [0, 1.05, 0] },
+    { "t": 1, "pos": [0, 1.5, -1.6], "look": [0, 1.6, -10] }
+  ] }
+}
