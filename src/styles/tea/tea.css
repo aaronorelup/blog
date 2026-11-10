@@ -109,6 +109,11 @@ body.tea {
 }
 .tea-rail-utils a { color: var(--pc-soft); text-decoration: none; }
 
+/* Wide screens: the switch sits at the foot of the rail, clear of the chapters scrolling past. */
+@media (min-width: 1024px) {
+  .tea-rail { padding-bottom: 80px; }
+  .tea .mode-toggle { top: auto; bottom: 26px; left: 26px; right: auto; }
+}
 @media (max-width: 1280px) { :root { --tea-rail-w: 208px; } .tea-rail { padding-left: 22px; } }
 
 /* Under 1024: the rail becomes a sticky strip of chapters across the top, every link still in the page. */
