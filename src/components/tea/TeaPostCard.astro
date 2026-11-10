@@ -1,0 +1,26 @@
+---
+// A post as a card with a picture: Start here's features and each topic's two half cards. The preview still (or the
+// post's icon, or its topic glyph), the verdict stamp, title, summary and AO id · date · topic. One link, the title,
+// stretched over the card.
+import Glyph from '../chrome/Glyph.astro';
+
+interface Props { row: any; size?: 'feature' | 'half' | 'small'; heading?: 'h3' | 'h4' }
+const { row, size = 'half', heading = 'h4' } = Astro.props;
+const H = heading;
+---
+
+<li class:list={['tea-card', `is-${size}`]}>
+  <div class:list={['tea-card-plate', { 'is-icon': !row.image }]}>
+    {row.image
+      ? <img src={row.image.src} alt={row.image.alt} width="640" height="360" loading="lazy" decoding="async" />
+      : row.icon
+        ? <img src={row.icon.s256} alt="" width="256" height="256" loading="lazy" decoding="async" />
+        : <Glyph name={row.glyph} />}
+  </div>
+  <div class="tea-card-body">
+    {row.verdict && <p class="tea-stamp">{row.verdict}</p>}
+    <H class="tea-card-title"><a class="tea-stretch" href={row.href}>{row.title}</a></H>
+    <p class="tea-card-line">{row.summary}</p>
+    <p class="tea-card-meta"><span>{row.id}</span><span>{row.date}</span><span>{row.topicLabel}</span></p>
+  </div>
+</li>

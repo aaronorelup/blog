@@ -1,0 +1,11 @@
+---
+// A breath between chapters: a band of shoji lattice with the next chapter's numeral and nothing else. Decorative.
+import { roman } from '../../lib/tea.js';
+
+interface Props { n: number }
+const { n } = Astro.props;
+---
+
+<div class="tea-breath" aria-hidden="true">
+  <div class="tea-breath-window"><span>{roman(n)}</span></div>
+</div>

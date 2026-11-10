@@ -1,0 +1,58 @@
+---
+// Chapter IV, courses: each course in data/courses.js COURSES as a wide plate (its own art, code, title, tagline,
+// counts from its data through courseCounts), the lore hub's sections with what each holds, and the next-course slot.
+import { COURSES, NEXT_COURSE, courseCounts, fmtMinutes } from '../../data/courses.js';
+import { COPY } from '../../data/tea.js';
+import { BASE as LORE_BASE, LORE } from '../../lib/lore.js';
+import { loreHub } from '../../lib/tea.js';
+import TeaChapter from './TeaChapter.astro';
+
+const facts = (c) => {
+  const n = courseCounts(c.data);
+  const lessons = n.out > 0 ? COPY.lessonsOut(n.out, n.lessons) : COPY.lessonsComing(n.lessons);
+  if (c.extra) return [...COPY.loreFacts((LORE.characters || []).length, (LORE.episodes || []).length), lessons];
+  return [COPY.lessonsToWatch(n.watchable), lessons, COPY.runtime(fmtMinutes(n.runtimeSeconds))];
+};
+const hub = loreHub(LORE, LORE_BASE, COPY.hub);
+---
+
+<TeaChapter id="courses">
+  <ol class="tea-plates tea-reveal">
+    {COURSES.map((c) => (
+      <li class:list={['tea-plate', `is-${c.slug}`]}>
+        <div class="tea-plate-art">
+          <img src={c.card} alt="" width="1280" height="720" loading="lazy" decoding="async" />
+          <span class="tea-plate-code">{c.code}</span>
+        </div>
+        <div class="tea-plate-body">
+          <h3 class="tea-plate-title"><a class="tea-stretch" href={c.href} data-no-fly>{c.title}</a></h3>
+          <p class="tea-plate-tag">{c.tagline}</p>
+          <ul class="tea-facts">{facts(c).map((f) => <li>{f}</li>)}</ul>
+          <p class="tea-plate-go" aria-hidden="true">{COPY.openCourse} →</p>
+        </div>
+      </li>
+    ))}
+  </ol>
+
+  <section class="tea-group tea-hub tea-reveal" aria-labelledby="tea-hub-title">
+    <header class="tea-group-head">
+      <h3 class="tea-group-title" id="tea-hub-title">{COPY.hubLabel}</h3>
+      <p class="tea-group-intro">{COURSES.find((c) => c.extra)?.title}</p>
+    </header>
+    <ol class="tea-hub-list">
+      {hub.map((h) => (
+        <li><a href={h.href} data-no-fly><span class="tea-hub-name">{h.label}</span>{h.count !== null && <span class="tea-hub-n">{h.count.toLocaleString('en-US')}</span>}</a></li>
+      ))}
+    </ol>
+  </section>
+
+  <div class="tea-next tea-reveal">
+    <p class="tea-next-code">{NEXT_COURSE.code}</p>
+    <div>
+      <h3 class="tea-next-title">{NEXT_COURSE.title}</h3>
+      <p class="tea-next-line">{NEXT_COURSE.summary}</p>
+    </div>
+    <p class="tea-next-seal">{COPY.nextLocked}</p>
+  </div>
+  <p class="tea-more"><a class="tea-link" href="/courses/">{COPY.coursesPage} <span aria-hidden="true">→</span></a></p>
+</TeaChapter>

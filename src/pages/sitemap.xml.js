@@ -6,6 +6,7 @@ import { listedPosts, notesBySlug, nowSnapshots, research, slugOf } from '../lib
 import { ledgerOrder } from '../lib/posts.js';
 import { isoDay } from '../lib/dates.js';
 import lore from '../data/lore/lore.json';
+import { TEA_BASE, teaSeo } from '../data/tea.js';
 
 const LORE = '/courses/i-love-my-evening-television';
 const PAGES = [
@@ -15,6 +16,8 @@ const PAGES = [
   ...(lore.episodes || []).map((e) => `${LORE}/episodes/${e.id}/`),
   ...(lore.characters || []).map((e) => `${LORE}/characters/${e.id}/`),
   ...(lore.things || []).map((e) => `${LORE}/things/${e.id}/`),
+  // the tea room, only when its SEO switch says index
+  ...(teaSeo().inSitemap ? [`${TEA_BASE}/`] : []),
 ];
 
 export async function GET(context) {
