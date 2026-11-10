@@ -24,8 +24,9 @@ program would combine roughly 24 tools with cross-feedback between them.
   goes into `FOR_AARON.md` with steps and what to send back.
 - **Every license claim carries the exact clause, quoted, with its link** and the date it was read: code
   license, model weights license, training data restrictions, API or service terms.
-- **Every run is logged** through the `gtr-run` wrapper: exact command, input file hash, wall-clock time, CPU
-  time, peak memory, exit code. One timed job runs at a time on the box.
+- **Every run is logged** through the `gtr-run` wrapper: exact command, input file hash, cores used, wall-clock
+  time, CPU time, peak memory, exit code. The box's 4 cores are split into two slots of 2 cores. Each timed job is
+  pinned to one slot, so at most two run at once and each has 2 cores to itself. A whole-box timing takes both.
 - No secrets in files or commits. Nothing changes outside `docs/guitar-tab-research/`, the new draft post and
   that post's own assets. Sub-agents do not commit. The orchestrator commits and pushes.
 
