@@ -1,19 +1,84 @@
 {
   "version": 1,
+  "note": "Stand-ins: jefrie-v2.glb (pose-baked, bend deform), standin-angel.glb (part nodes) for Yusef, standin-tv.glb. Format: docs/TEA_HERO.md",
   "reference": { "aspect": 1.6 },
   "background": { "layers": [
-    { "id": "far", "night": "/media/storm-bell-fighter/poster.webp", "z": -10, "size": [24, 15], "y": 1.5 }
+    { "id": "far", "night": "bg-far-night.webp", "day": "bg-far-day.webp", "z": -10, "size": [24, 15], "y": 0.65 },
+    { "id": "mid", "night": "bg-mid-night.webp", "day": "bg-mid-day.webp", "z": -6, "size": [17, 10.6], "y": 1.0, "cutout": true }
   ] },
   "actors": [
-    { "id": "jefrie", "src": "/media/jefrie-3d/jefrie-v2.glb", "scale": 1.6, "position": [-1.8, 0.9, 0.3], "rotation": [0, 60, 0],
-      "deform": { "kind": "bend", "start": -0.15, "y": -0.42, "rest": 0.4 } }
+    { "id": "jefrie", "src": "/media/jefrie-3d/jefrie-v2.glb", "scale": 1.5, "position": [-1.9, 0.75, 0.4], "rotation": [0, 55, 0],
+      "rig": { "kind": "baked" }, "envIntensity": 0.7,
+      "deform": { "kind": "bend", "start": -0.15, "y": -0.42, "rest": 0.35 } },
+    { "id": "yusef", "src": "standin-angel.glb", "scale": 0.95, "position": [1.85, 0.4, 0], "rotation": [0, -60, 0],
+      "rig": { "kind": "nodes" }, "envIntensity": 0.5,
+      "props": [ { "id": "lantern", "src": "standin-lantern.glb", "parent": "hand.R", "position": [0, -0.03, 0], "scale": 1.3 } ] },
+    { "id": "tv", "src": "standin-tv.glb", "scale": 0.6, "position": [0.1, -0.05, 1.2], "rotation": [0, -14, 0],
+      "rig": { "kind": "nodes" }, "envIntensity": 0.6,
+      "materials": { "screen": { "shader": "crt" } } }
   ],
   "lights": [
-    { "id": "hemi", "type": "hemi", "night": { "color": "#8C9FDC", "ground": "#232839", "intensity": 0.8 }, "day": { "color": "#FFD2A8", "ground": "#5A3A4A", "intensity": 1.2 } },
-    { "id": "moon", "type": "dir", "night": { "color": "#C8D6FF", "intensity": 1.6, "position": [-4, 6, -5] }, "day": { "color": "#FFB27A", "intensity": 2.2, "position": [5, 3, -4] } }
+    { "id": "sky", "type": "hemi",
+      "night": { "color": "#8C9FDC", "ground": "#232839", "intensity": 0.6 },
+      "day": { "color": "#FFC9A0", "ground": "#4A3448", "intensity": 0.95 } },
+    { "id": "key", "type": "dir",
+      "night": { "color": "#C8D6FF", "intensity": 2.0, "position": [-4, 7, -6] },
+      "day": { "color": "#FFB27A", "intensity": 2.8, "position": [6, 3, -5] } },
+    { "id": "fill", "type": "dir",
+      "night": { "color": "#6E7FB8", "intensity": 0.45, "position": [2, 3, 8] },
+      "day": { "color": "#C9A0B8", "intensity": 0.7, "position": [-2, 3, 8] } },
+    { "id": "lantern", "type": "point", "attach": { "actor": "yusef", "node": "lantern" }, "distance": 6, "decay": 1.5,
+      "night": { "color": "#FFB54A", "intensity": 5, "position": [0, -0.22, 0] },
+      "day": { "color": "#FFC27A", "intensity": 1.6, "position": [0, -0.22, 0] } },
+    { "id": "tv", "type": "point", "attach": { "actor": "tv", "node": "screen" }, "distance": 5, "decay": 1.5, "flicker": "crt",
+      "night": { "color": "#B8C8FF", "intensity": 4, "position": [0, 0, 0.35] },
+      "day": { "color": "#FFD2B0", "intensity": 1.2, "position": [0, 0, 0.35] } }
   ],
-  "camera": { "fov": 34, "keys": [
-    { "t": 0, "pos": [0, 1.35, 7.6], "look": [0, 1.05, 0] },
-    { "t": 1, "pos": [0, 1.5, -1.6], "look": [0, 1.6, -10] }
-  ] }
+  "glows": [
+    { "attach": { "actor": "yusef", "node": "lantern" }, "position": [0, -0.215, 0], "size": 0.9, "color": "#FFB54A", "night": 0.95, "day": 0.35 },
+    { "attach": { "actor": "tv", "node": "screen" }, "position": [0, 0, 0.06], "size": 1.7, "color": "#9FB8FF", "night": 0.5, "day": 0.18, "flicker": "crt" }
+  ],
+  "camera": {
+    "fov": 34,
+    "keys": [
+      { "t": 0, "pos": [0, 1.35, 7.6], "look": [0, 1.0, 0] },
+      { "t": 0.3, "pos": [1.6, 1.05, 4.6], "look": [0.1, 0.8, 0.6] },
+      { "t": 0.62, "pos": [-0.8, 1.3, 2.2], "look": [0.1, 1.3, -4] },
+      { "t": 1, "pos": [0, 1.55, -1.4], "look": [0, 1.55, -10] }
+    ],
+    "parallax": { "x": 0.32, "y": 0.18, "ease": 3.5, "drift": 0.45 },
+    "portrait": { "fov": 50, "spread": 0.5, "pull": 1.4 }
+  },
+  "tracks": [
+    { "actor": "jefrie", "channel": "position", "keys": [[0, [0, 0, 0]], [0.12, [0.15, -0.06, 0]], [0.3, [1.2, 1.0, 1.4]], [0.48, [3.2, 0.7, 1.0]], [0.62, [3.9, 0.2, -0.6]], [1, [4.4, 0.6, -2.6]]] },
+    { "actor": "jefrie", "channel": "rotation", "keys": [[0, [0, 0, 0]], [0.12, [0, 0, 0]], [0.3, [-40, 0, -15]], [0.48, [-120, 0, -10]], [0.62, [-180, 0, 0]], [1, [-235, 0, 0]]] },
+    { "actor": "jefrie", "channel": "squash", "keys": [[0, 0], [0.1, 0], [0.13, -0.12], [0.18, 0.12], [0.26, 0], [0.56, 0], [0.6, -0.1], [0.66, 0]] },
+    { "actor": "jefrie", "channel": "bend", "keys": [[0, 0], [0.2, 0.6], [0.45, 1.2], [0.7, 0.3]] },
+    { "actor": "yusef", "channel": "position", "keys": [[0, [0, 0, 0]], [0.35, [0, 0.25, 0]], [0.65, [-0.6, 0.7, -1.4]], [1, [-1.4, 1.4, -4.2]]] },
+    { "actor": "yusef", "channel": "rotation", "keys": [[0, [0, 0, 0]], [0.4, [10, 0, 0]], [0.65, [-60, 8, 0]], [1, [-120, 10, 0]]] },
+    { "actor": "yusef", "node": "wing.L", "channel": "rotation", "keys": [[0, [0, 0, 0]], [0.25, [0, 25, -35]], [0.6, [0, 35, -50]], [1, [0, 30, -40]]] },
+    { "actor": "yusef", "node": "wing.R", "channel": "rotation", "keys": [[0, [0, 0, 0]], [0.25, [0, -25, 35]], [0.6, [0, -35, 50]], [1, [0, -30, 40]]] },
+    { "actor": "yusef", "node": "upperarm.R", "channel": "rotation", "keys": [[0, [0, 0, 0]], [0.4, [-60, 0, -10]], [1, [-80, 0, -20]]] },
+    { "actor": "tv", "channel": "position", "keys": [[0, [0, 0, 0]], [0.5, [0, 0.15, 0]], [1, [0, -0.3, 0.4]]] },
+    { "actor": "tv", "channel": "rotation", "keys": [[0, [0, 0, 0]], [0.35, [0, 35, 0]], [0.7, [0, -20, 0]]] }
+  ],
+  "idle": [
+    { "actor": "jefrie", "channel": "position", "amp": [0, 0.04, 0], "hz": 0.45 },
+    { "actor": "jefrie", "channel": "rotation", "amp": [0, 0, 2.5], "hz": 0.3, "phase": 0.2 },
+    { "actor": "jefrie", "channel": "bend", "amp": 0.25, "hz": 0.35 },
+    { "actor": "jefrie", "channel": "squash", "amp": 0.015, "hz": 0.45, "phase": 0.25 },
+    { "actor": "yusef", "channel": "position", "amp": [0, 0.05, 0], "hz": 0.4 },
+    { "actor": "yusef", "node": "chest", "channel": "rotation", "amp": [2, 0, 0], "hz": 0.25 },
+    { "actor": "yusef", "node": "head", "channel": "rotation", "amp": [0, 8, 0], "hz": 0.12 },
+    { "actor": "yusef", "node": "wing.L", "channel": "rotation", "amp": [0, 6, -10], "hz": 0.55 },
+    { "actor": "yusef", "node": "wing.R", "channel": "rotation", "amp": [0, -6, 10], "hz": 0.55 },
+    { "actor": "yusef", "node": "lantern", "channel": "rotation", "amp": [4, 0, 12], "hz": 0.7, "phase": 0.1 },
+    { "actor": "yusef", "node": "robe", "channel": "rotation", "amp": [0, 0, 2], "hz": 0.5, "phase": 0.4 },
+    { "actor": "tv", "channel": "position", "amp": [0, 0.03, 0], "hz": 0.5, "phase": 0.6 },
+    { "actor": "tv", "channel": "rotation", "amp": [0, 0, 2], "hz": 0.37 },
+    { "actor": "tv", "node": "antenna.L", "channel": "rotation", "amp": [0, 0, 6], "hz": 1.1 },
+    { "actor": "tv", "node": "antenna.R", "channel": "rotation", "amp": [0, 0, -6], "hz": 0.9, "phase": 0.3 }
+  ],
+  "motes": { "count": 160, "mobile": 60, "size": 0.05, "box": [[-7, -1, -6], [7, 5, 5]], "fly": "#FFD892", "petal": "#F7B7C8" },
+  "look": { "night": { "exposure": 1.0, "fog": "#141A38" }, "day": { "exposure": 1.05, "fog": "#8A6A7A" } }
 }
