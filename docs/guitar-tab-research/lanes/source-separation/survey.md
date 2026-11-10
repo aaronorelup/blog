@@ -361,12 +361,15 @@ Not a separation tool despite the name: PyPI `uvr` (Oorteo, 0.2.6) is a runner f
   track titles).
 
 ## Ultimate Vocal Remover GUI (UVR5)
-- Desktop application (Windows installer, macOS builds, Linux by script) around the same model zoo. Repository
+- Desktop application around the same model zoo; README sections "Windows Installation", "MacOS Installation" (v5.6
+  `.dmg` downloads for arm64 and x86_64) and "Linux Installation (Updated Instructions)" ("for Debian & Arch-based Linux
+  systems"). Repository
   https://github.com/Anjok07/ultimatevocalremovergui (branch `master`, last commit 2026-10-06 "Revise README for
   Ultimate Vocal Remover GUI v5.6", head a5f8845). README header: "DEVELOPMENT UPDATE - October 6th, 2026: Please see
   the following issue for the latest UVR development update! - [Issue 2399]" (issue not read: github.com pages
   return 403 here).
-- How a program calls it: desktop only (GUI). Programs use `audio-separator` instead (see above).
+- How a program calls it: no programmatic interface is documented in the README (GUI). `audio-separator` (above)
+  is a Python package that wraps UVR's separation code.
 - LICENSE FACTS: README: "The **Ultimate Vocal Remover GUI** code is [MIT-licensed](LICENSE)." and "**Please
   Note:** For all third-party application developers who wish to use our models, please honor the MIT license by
   providing credit to UVR and its developers." The linked file is missing: the tree at head a5f8845 has no LICENSE
@@ -521,7 +524,8 @@ Not a separation tool despite the name: PyPI `uvr` (Oorteo, 0.2.6) is a runner f
     copy of this software ..." (https://raw.githubusercontent.com/Audio-AGI/AudioSep/main/LICENSE, read 2026-11-10).
   - b. Weights: the Hugging Face Space that hosts the checkpoint has card metadata `license: mit` (Space API
     `https://huggingface.co/api/spaces/Audio-AGI/AudioSep`, read 2026-11-10); the `nielsr/audiosep-demo` copy has card
-    metadata `license: apache-2.0`. No weights license sentence was found in the GitHub README.
+    metadata `license: apache-2.0` and Hub API `gated: False`. No weights license sentence was found in the GitHub
+    README. No access gate was met: the Space file list and the model repo were readable without an account.
   - c. Training data (paper section IV-A "Training datasets"): AudioSet, VGGSound, AudioCaps, Clotho v2, WavCaps.
     WavCaps dataset card: "Only academic uses are allowed for WavCaps dataset. By downloading audio clips through the
     links provided in the json files, you agree that you will use the audios for research purposes only." and "The
@@ -556,7 +560,8 @@ Not a separation tool despite the name: PyPI `uvr` (Oorteo, 0.2.6) is a runner f
   - a. Code: MIT, "Copyright (c) 2024 Karn Watcharasupat" (https://raw.githubusercontent.com/kwatcharasupat/query-bandit/main/LICENSE,
     read 2026-11-10). The README opens with a request: "we strongly urge commercial entities that have gained from this
     software to consider making voluntary contributions to music-related non-profit organizations of your choice."
-  - b. Weights: Zenodo record 13694558 license id `cc-by-nc-sa-4.0` (Zenodo API, read 2026-11-10).
+  - b. Weights: Zenodo record 13694558 license id `cc-by-nc-sa-4.0`, `access_right: open` (no account needed to
+    download) (Zenodo API, read 2026-11-10).
   - c. Training data: "This work utilizes the MoisesDB dataset [25], which consists of 240 songs from 47 artists, in
     stereo format at 44.1 kHz." (paper section 4). MoisesDB clause: see the datasets section (CC BY-NC-SA 4.0). The
     query encoder is "a PaSST model [27] trained on the OpenMIC-2018 dataset" (license of OpenMIC-2018 not read).

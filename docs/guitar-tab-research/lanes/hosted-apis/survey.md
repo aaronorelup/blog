@@ -4,6 +4,11 @@ Agent: docs-hosted-apis. Started 2026-11-10 (date from `date -u +%F`). Everythin
 pages on 2026-11-10 unless a line says otherwise. Raw copies of most pages fetched with curl are kept outside the
 repo in `/home/user/gtr/lanes/hosted-apis/raw/` (not committed). This file records facts and quotes only.
 
+Checked and corrected in place by verify-docs-hosted-apis on 2026-11-10: every page was fetched again (copies in
+`/home/user/gtr/lanes/hosted-apis/verify-docs/raw/`, not committed) and every quoted string was searched for on it
+with `scripts/verify-docs/check_quotes.py`. What changed, and the tally, is in "## Verification log" at the end.
+Sections added by the checker are marked "(added by verify-docs)".
+
 Marks used in the tool list:
 
 - `RUNNABLE`: can be called or run from the CPU-only research box without an account (public endpoint, or a
@@ -34,39 +39,58 @@ The section for each tool is what counts; dates are the dates printed on the pag
 6. MVSEP API: 126 separation algorithms incl. guitar, acoustic, electric and lead/rhythm guitar models.
    https://mvsep.com/full_api , spec version 1.1.1; terms "Effective Date: October 19, 2026". CALLABLE-WITH-KEY
    (registered free accounts: "Limited" API access). Section written.
-7. Replicate hosted models: `sakemin/all-in-one-music-structure-analyzer` (A100), `ryan5453/demucs` (A100),
+7. Replicate hosted models: `sakemin/all-in-one-music-structure-analyzer` (A100), `ryan5453/demucs` (A100; its
+   latest version, created 2026-10-03, serves `htdemucs` only, four stems, no guitar stem),
    `triadmusic/chord-detection-cnn-lstm` (T4). https://replicate.com ; terms "Last Update: April 1, 2026".
-   CALLABLE-WITH-KEY. Section written (input/output schemas UNVERIFIED: JavaScript pages).
+   CALLABLE-WITH-KEY. Section written (input/output schemas read from the JSON embedded in each model page).
 8. fal.ai `fal-ai/demucs` (htdemucs_6s default, guitar stem, "$0.0007 per seconds"). https://fal.ai/models/fal-ai/demucs ;
-   terms "Last Updated: September 8, 2026". CALLABLE-WITH-KEY. Section written.
+   terms "Last Updated: September 8, 2026". CALLABLE-WITH-KEY. Section written. The upstream Demucs README says the
+   license of the weights "is not clear" (quoted in the Replicate section).
 9. Hugging Face Inference Providers (no music task listed) and public Spaces via `gradio_client`. On 2026-11-10
    `taejunkim/all-in-one`, `akhaliq/demucs`, `Hmjz100/MT3` were in RUNTIME_ERROR; `teamup-tech/Transkun` was RUNNING
-   (zero-a10g). RUNNABLE for a public Space that is running (anonymous use is rate limited). Section written.
+   (zero-a10g). RUNNABLE for a public Space that is running (anonymous use is rate limited). Section written; the
+   Spaces the try agent called (YourMT3, Beat-This, demucs_playground) are in `trials.md`.
 10. Soundslice data API: slices, notation upload (MusicXML, Guitar Pro, PowerTab, TuxGuitar; special permission),
     MusicXML export, recordings incl. YouTube, syncpoints. https://www.soundslice.com/help/data-api/ .
     CALLABLE-WITH-KEY (Teacher or Licensing plans). Section written.
 11. Flat.io REST API v2: import MusicXML / MIDI / Guitar Pro / PowerTab and more; export MusicXML, MIDI, MP3, WAV,
     sync points. https://flat.io/developers/docs/openapi.yaml (version 2.26.2). CALLABLE-WITH-KEY (personal token or
-    OAuth2). Section written (API terms page UNVERIFIED: JavaScript page).
+    OAuth2); Flat's help page also lists a remote MCP server. Section written (no API-specific terms or API price
+    page was found; the Embed and Individual terms are quoted).
 12. Songsterr: no documented developer API (`/a/wa/api` "Page not found!", robots.txt `Disallow: /api/`); ai.txt
     "Last updated: 2026-11-09". NO-PUBLIC-API. Section written.
 13. Hooktheory API (Trends: next-chord probabilities and songs per progression). https://www.hooktheory.com/api/trends/docs .
     CALLABLE-WITH-KEY (hooktheory.com account; 10 requests per 10 s). Section written.
 14. Chordify: site answered HTTP 403 to this box; no developer API found by search. NO-PUBLIC-API (UNVERIFIED).
     Section written.
-15. Google Gemini API: audio (32 tokens/s, 9.5 h max) and video (1 fps default, custom `fps`, YouTube URLs) in, text
-    out. https://ai.google.dev/gemini-api/docs ; terms "Effective March 23, 2026". CALLABLE-WITH-KEY. Section written.
+15. Google Gemini API: audio (32 tokens/s on the docs page, 9.5 h max) and video (1 fps default, custom `fps`,
+    YouTube URLs) in, text out. https://ai.google.dev/gemini-api/docs (on 2026-11-10 every `ai.google.dev/gemini-api/`
+    URL cited here redirected to the same path under https://aistudio.google.com/docs/); terms "Effective March 23,
+    2026". CALLABLE-WITH-KEY. Section written.
 16. Other multimodal LLM APIs: OpenAI audio in Chat Completions (`gpt-audio-1.5`, `input_audio`) partly read;
-    Claude, Qwen-Omni, Amazon Nova not read. CALLABLE-WITH-KEY. Section written (mostly UNVERIFIED).
+    Claude Messages API (no audio or video content block in its reference), Alibaba Qwen-Omni (audio and video in),
+    xAI and DeepSeek (text and image only, from the try agent's model listing) read by verify-docs; Amazon Nova not
+    read. CALLABLE-WITH-KEY. Section written.
 17. YouTube Terms of Service ("Dated: December 15, 2023"), YouTube API Services Terms and Developer Policies (pages
     "Last updated 2026-11-06 UTC"). Section written (quotes only).
 18. yt-dlp 2026.10.26 (PyPI upload 2026-10-26), Unlicense; PyInstaller executables GPLv3+. RUNNABLE. Section written.
 19. ChordMini: docs URL answered HTTP 402 on 2026-11-10. UNVERIFIED. Section written.
-20. StemSplit API. https://stemsplit.io . Not researched in this pass.
+20. StemSplit API (`SIX_STEMS` includes guitar; takes YouTube URLs). https://stemsplit.io . CALLABLE-WITH-KEY.
+    Section added by verify-docs.
 21. Moises consumer app: terms "Last Updated: October 7, 2026" do not mention YouTube. Section written.
 22. Spotify Web API Audio Features / Audio Analysis: closed to new apps from 2024-11-27 (Spotify blog). Section written.
-23. GetSongBPM API (tempo and key looked up by title). https://getsongbpm.com/api . Not researched in this pass.
+23. GetSongBPM API (tempo and key looked up by title). https://getsongbpm.com/api (answered HTTP 403 to this box on
+    2026-11-10). Not researched.
 24. Cyanite API (offered inside Music.AI as "Music metadata (By Cyanite)"). Not researched as a separate API.
+25. ElevenLabs Stem Separation API (`two_stems_v1`, `six_stems_v1` with a `guitar` stem) and Speech to Text.
+    https://elevenlabs.io/docs/api-reference/music/separate-stems ; terms "Last Updated: 09 October 2026".
+    CALLABLE-WITH-KEY. Section added by verify-docs (the try agent called it: `trials.md`, r0064).
+26. Vercel AI Gateway: one OpenAI-compatible endpoint in front of many model providers; audio as a `file` part.
+    https://vercel.com/docs/ai-gateway . CALLABLE-WITH-KEY. Section added by verify-docs (the try agent called it).
+27. MusicGPT API `POST /v1/audio_to_midi` (audio file or YouTube URL in; MIDI, optional sonified WAV and note-event
+    CSV out). https://docs.musicgpt.com . CALLABLE-WITH-KEY. Section added by verify-docs (price and terms not read).
+28. Alibaba Cloud Model Studio Qwen-Omni (`qwen3.8-omni-flash` and others): text, image, audio and video in.
+    https://help.aliyun.com/en/model-studio/qwen-omni . CALLABLE-WITH-KEY. Listed in "Other multimodal LLM APIs".
 
 ## Klangio API
 
@@ -79,19 +103,35 @@ The section for each tool is what counts; dates are the dates printed on the pag
   https://auth.klang.io/register, key in the dashboard https://api-dashboard.klang.io. Pattern: `POST` a multipart
   upload (field `file`) to a job endpoint, then poll `GET https://api.klang.io/job/{job_id}/status` or pass
   `webhook_url`, then `GET https://api.klang.io/job/{job_id}/{format}`. Status values in the spec: `IN_QUEUE`,
-  `IN_PROGRESS`, `COMPLETED`, `FAILED`, `CANCELLED`, `TIMED_OUT`. The create response carries `job_id`,
-  `creation_date`, `deletion_date`, `status_endpoint_url` (docs example).
+  `IN_PROGRESS`, `COMPLETED`, `FAILED`, `CANCELLED`, `TIMED_OUT`; the Basic Job Workflow page lists four of them
+  (`IN_QUEUE`, `IN_PROGRESS`, `FAILED`, `COMPLETED`), and the status response can carry an `error` string. The create
+  response carries `job_id`, `creation_date`, `deletion_date`, `status_endpoint_url` (docs example); a transcription
+  job's response also carries `gen_xml`, `gen_midi`, `gen_midi_quant`, `gen_gp5`, `gen_pdf` (spec and the
+  transcription page's example). The docs sitemap names the host `docs-api.klang.io`; the `api-docs.klang.io` URLs
+  cited here answered HTTP 200 directly, and `docs-api.klang.io` could not be reached through this box's proxy (502).
+- Basic Job Workflow page: "Depending on your current subscription billing status, creating a job may inflict quota
+  costs. For a testing account a demo transcription is created by default."
+- Errors page (https://api-docs.klang.io/docs/getting-started/error-descriptions , read by verify-docs 2026-11-10):
+  "Audio file format could not be parsed!", "Audio file must be longer than 5 seconds!", and for beat tracking "this
+  error may occur if the audio is a-rhythmic, has a tempo outside the 40-300 bpm range". Which input audio formats
+  parse is not listed on the docs pages read (the File Formats pages describe outputs only): UNVERIFIED.
 - Endpoints in openapi.json: `/transcription`, `/source-separation`, `/beat-tracking`, `/chord-recognition`,
   `/chord-recognition-extended`, `/strum-recognition`, `/lead-sheet`, and results `/job/{job_id}/{status|xml|gp5|midi|midi_quant|pdf|json|audio}`.
 - Inputs and hints:
   - `/transcription`: query `model` (required; enum in spec: `piano`, `guitar`, `bass`, `vocal`, `universal`, `lead`,
-    `detect`, `drums`, `multi`, `wind`, `string`, `piano_arrangement`), `title`, `composer` (max 120 chars each),
+    `detect`, `drums`, `multi`, `wind`, `string`, `piano_arrangement`; the docs' model-selection table lists eleven of
+    these and not `multi`), `title`, `composer` (max 120 chars each),
     `webhook_url`; form field `outputs` (array; spec enum `mxml`, `midi`, `pdf`, `gp5`, `json`, `midi_quant`).
     No tuning, capo, key, tempo or note-range parameter appears in the spec's `/transcription` parameters or body schema.
   - Docs: "Guitar Pro 5 ... is available only if you choose the guitar or bass model for transcriptions."
     (https://api-docs.klang.io/docs/file-formats/guitar-pro)
-  - `/chord-recognition` and `/chord-recognition-extended`: query `vocabulary` (required), `major-minor` or `full`
-    (the full vocabulary's regex allows maj, min, dim, aug, min6, maj6, min7, maj7, minmaj7, 7, dim7, hdim7, sus2, sus4; N = no chord, X = unknown).
+  - Model selection page (https://api-docs.klang.io/docs/advanced-usage/transcription-model-selection): `guitar`
+    "Optimized for audio consisting mainly of guitar."; `lead` "Will extract the overall melody and chords played in
+    the audio."
+  - `/chord-recognition` and `/chord-recognition-extended`: query `vocabulary` (required). The docs page lists "the
+    following two options", `major-minor` and `full` (the full vocabulary's regex allows maj, min, dim, aug, min6, maj6,
+    min7, maj7, minmaj7, 7, dim7, hdim7, sus2, sus4; N = no chord, X = unknown); the spec's enum has a third value,
+    `root`, which the docs page does not describe.
   - `/source-separation`: `model` `four-stems` (default: vocals, bass, drums, other) or `six-stems` (adds piano and guitar); `output` `wav` (default) or mp3.
   - `/lead-sheet`: body `file` plus optional `lyrics` (plain text); query `infer_lyrics`.
 - Outputs (docs, quoted field shapes):
@@ -99,11 +139,11 @@ The section for each tool is what counts; dates are the dates printed on the pag
     (https://api-docs.klang.io/docs/jobs/chord-recognition-requests)
   - Chords extended: an object with `key` (regex `^[A-G](?:#{1}|b{1})?\s+(?:major|minor)$`, example "A minor"), `chords` (same triplets) and `strums`: "[<time_stamp_in_seconds>, <strum_direction>] with the type [float, string]" where direction is "U" or "D".
   - Beat tracking: "a json array, containing tuples in the format [<beat_timestamp_in_seconds>, <downbeat>] with the type [float, float]" where the second value counts the beat in the bar (1.0 to 4.0 for 4/4).
-  - Transcription: MusicXML (`xml` result path), Guitar Pro 5, MIDI, quantized MIDI, PDF. "Results will be available for 14 days."
+  - Transcription: MusicXML (`xml` result path), Guitar Pro 5, MIDI, quantized MIDI, PDF. "Results will be available for 14 days." (https://api-docs.klang.io/docs/jobs/transcription-requests). The MIDI page (https://api-docs.klang.io/docs/file-formats/midi): MIDI "contains the un-quantized note events detected in your audio"; `midi_quant` is the quantized version. The PDF page (https://api-docs.klang.io/docs/file-formats/pdf) names LilyPond as the renderer of the PDF sheet.
   - Separation audio: WAV "Uncompressed 16-bit PCM audio", stereo, 44.1 kHz, or MP3 128 kbps stereo 44.1 kHz; fetched per stem with `/job/{job_id}/audio?stem_type=<stem>`.
-  - Per-note JSON with string and fret: not documented in the docs pages; the spec lists a `json` value in the transcription output enum without describing its fields (UNVERIFIED what it contains; settled by one paid call).
-- Limits and price (https://klang.io/api/ , read 2026-11-10): Basic "$ 0" monthly: "50 requests included", "No additional requests", "Max 15s audio duration", "1 request per minute". Startup "$ 99" monthly: "500 requests included", "$0.20 each other request", "Max 300s audio duration", "2 request per second". Business "$ 499" monthly: "3000 requests included", "$0.17 each other request", "Max 300s audio duration", "5 request per second". Enterprise "Contact Sales": "10,000 requests included", "$0.10 each other request", "Max 600s audio duration", "10 request per second". Access is by application form ("Apply now"). Docs: "Use as little output formats as possible. Multiple formats may inflict additional quota costs for a transcription job." and "The six-stems model inflicts higher quota costs than four-stems model!"
-- Terms (General Terms of Use, https://klang.io/terms/ , read 2026-11-10). The API itself has separate terms that were not found on a public page:
+  - Per-note JSON with string and fret: not documented in the docs pages; the spec lists a `json` value in the transcription output enum without describing its fields, and the transcription page's list of output formats ("mxml (MusicXML)", "gp5 (Guitar Pro 5)", "midi", "midi_quant (quantized)", "pdf") and the Basic Job Workflow results table (`json` marked only for chord, extended chord, beat and strum jobs) do not list `json` for transcription (UNVERIFIED what it contains; settled by one paid call).
+- Limits and price (https://klang.io/api/ , read 2026-11-10): Basic "$ 0" monthly: "50 requests included", "No additional requests", "Max 15s audio duration", "1 request per minute". Startup "$ 99" monthly: "500 requests included", "$0.20 each other request", "Max 300s audio duration", "2 request per second". Business "$ 499" monthly: "3000 requests included", "$0.17 each other request", "Max 300s audio duration", "5 request per second". Enterprise "Contact Sales": "10,000 requests included", "$0.10 each other request", "Max 600s audio duration", "10 request per second". Access is by application form ("Apply now"). Docs: "Use as little output formats as possible. Multiple formats may inflict additional quota costs for a transcription job." (transcription page) and "The six-stems model inflicts higher quota costs than four-stems model!" (https://api-docs.klang.io/docs/file-formats/audio)
+- Terms (General Terms of Use, https://klang.io/terms/ , read 2026-11-10; no "last updated" date was found on the page; section numbers checked by verify-docs). The API itself has separate terms that were not found on a public page:
   - "API access and Bulk Transcription are not included in the subscription plans; they are offered exclusively as separate business services subject to separate terms and require separate registration." (§ 5.2.3)
   - Training on inputs: "We do not use the content uploaded by you to train our AI models or for any other purposes beyond the provision of the Klangio Services in accordance with these Terms of Use. The uploaded content will not be passed on to third parties. You may request that your uploaded content be deleted after we have provided the Klangio Services." (§ 8.1)
   - Links: "If you submit a link to an external audio source (e.g., a YouTube, Instagram or TikTok video), the audio is retrieved via the respective platform interface (e.g., the YouTube Data API), processed temporarily for the creation of the transcription and deleted upon completion; we do not maintain a permanent copy or cache of such content." (§ 8.1)
@@ -124,17 +164,21 @@ The section for each tool is what counts; dates are the dates printed on the pag
   `uploadUrl` and `downloadUrl` ("URL to upload the file to. This URL is temporary."); `POST /job` with JSON
   `{"name", "workflow" (slug), "params" (must match the workflow's input schema, e.g. "inputUrl"), "metadata"}`
   returns `{"id"}`; `GET /job/:id` returns `status` (`QUEUED`, `STARTED`, `SUCCEEDED`, `FAILED`) and `result`
-  ("Processing results (URLs to output files) when status is SUCCEEDED"); `DELETE /job/:id`; `GET /workflow` lists
-  workflows. A job runs a workflow, which the customer composes from modules (https://music.ai/modules/).
+  ("Processing results (URLs to output files) when status is SUCCEEDED"); `GET /job/:id/status`; `DELETE /job/:id`;
+  `GET /workflow` lists workflows. A job runs a workflow, which the customer composes from modules
+  (https://music.ai/modules/). The module pages name the input `inputFileUrl`, while the API reference's job examples
+  pass `"params": {"inputUrl": ...}`; the reference says params "must match the workflow's input schema".
+  Python SDK on PyPI: `musicai-sdk` 1.0.4 (uploaded 2026-07-17, license MIT; https://pypi.org/pypi/musicai-sdk/json,
+  read by verify-docs).
 - Modules relevant here, with their documented input and outputs (module pages, read 2026-11-10):
   - Chords (https://music.ai/modules/transcription/chords/): input `inputFileUrl`; outputs `key` ("Detected root key of the audio (e.g., C Major, A minor).") and `chordMap` ("Timeline of Chord annotations extracted from the input audio file. Each annotation specifies the chord's start time, end time, and multiple Chord classes."). The page describes classes "Complex Jazz, Simple Jazz, Complex Pop, and Simple Pop" and "bass detection".
   - Beats (https://music.ai/modules/transcription/beats/): outputs `bpm` (number) and `beatMap` ("JSON containing beat annotations extracted from the input audio. Each annotation specifies the beat's start time and beat number.").
   - Guitar Stems (https://music.ai/modules/stem-separation/guitar-stems/): outputs `acoustic_guitar`, `electric_guitar`, `other`.
   - Guitar Parts (https://music.ai/modules/stem-separation/guitar-parts/): outputs `rhythm_guitars`, `solo_guitars`, `other`.
   - Also listed in the sitemap: Sections, Metronome (generator), Instruments detection, Vocal pitch tracker, Musical stems (per-instrument incl. Guitars), Pitch shift, Tempo (effects).
-  - File formats page (https://music.ai/docs/api/file-formats/): audio "Include all audio formats, such as WAV, MP3, OGG, FLAC, etc."; video "Include all video formats, such as AVI, MP4, MKV, etc."; chord JSON shape shown as `{"start": 0, "end": 10, "chord": "C"}`, beats as `{"start": 0, "end": 10, "bpm": 120}`.
+  - File formats page (https://music.ai/docs/api/file-formats/): audio "Include all audio formats, such as WAV, MP3, OGG, FLAC, etc."; video "Include all video formats, such as AVI, MP4, MKV, etc."; chord JSON shape shown as `{"start": 0, "end": 10, "chord": "C"}`, beats as `{"start": 0, "end": 10, "bpm": 120}`. The Beats module page describes each beat annotation as having "the beat's start time and beat number"; the two pages show different beat shapes and no live output was seen (no Music.AI call was made).
   - No note-level transcription module (notes, MIDI, tab) appears in the module sitemap read 2026-11-10. No module page read lists a tuning, capo or key hint among its inputs (inputs shown: the audio URL only).
-- Price (https://music.ai/pricing/, read 2026-11-10): plans "Pay as you go $0" ("48h temporary storage", "2 concurrent processing jobs"), "Professional $25 USD Billed monthly" ("10 concurrent processing jobs", "$25 credit included every month (limited offer)", "100GB permanent storage", "5% discount on all modules"), "Business / Enterprise Contact us". Pay-as-you-go module prices: "Transcription - Chords $0.04 / min", "Transcription - Beats $0.03 / min", "Transcription - Sections $0.04 / min", "Stem separation - Guitar stems (Acoustic guitar, Electric guitar) $0.1 / min", "Stem separation - Guitar parts (Rhythm guitars, Solo guitars) $0.1 / min", "Stem separation - Musical stems (Guitars) $0.07 / min", "Stem separation - Musical stems (Bass) $0.07 / min", "Generators - Metronome $0.002 / min", "Classification - Instruments detection $0.02 / min", "Classification - Music metadata (By Cyanite) $0.15 / min". FAQ: "Pay-as-you-go and Professional members must purchase credits up front and cannot have a negative credit balance."
+- Price (https://music.ai/pricing/, read 2026-11-10): plans "Pay as you go $0" ("48h temporary storage", "2 concurrent processing jobs"), "Professional $25 USD Billed monthly" ("10 concurrent processing jobs", "$25 credit included every month (limited offer)", "100GB permanent storage", "5% discount on all modules"), "Business / Enterprise" ("Contact us"). A third-party README (ChordMini, https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md, read by verify-docs 2026-11-10, undated) says "Music.ai API (deprecated - MUSIC.ai no longer provide individual API key, only business plan)"; the Music.AI pricing page read the same day lists the pay-as-you-go plan. Whether an individual can still get a key: UNVERIFIED (a sign-up attempt would settle it). Pay-as-you-go module prices: "Transcription - Chords $0.04 / min", "Transcription - Beats $0.03 / min", "Transcription - Sections $0.04 / min", "Stem separation - Guitar stems (Acoustic guitar, Electric guitar) $0.1 / min", "Stem separation - Guitar parts (Rhythm guitars, Solo guitars) $0.1 / min", "Stem separation - Musical stems (Guitars) $0.07 / min", "Stem separation - Musical stems (Bass) $0.07 / min", "Generators - Metronome $0.002 / min", "Classification - Instruments detection $0.02 / min", "Classification - Music metadata (By Cyanite) $0.15 / min". FAQ: "Pay-as-you-go and Professional members must purchase credits up front and cannot have a negative credit balance."
 - Terms (https://music.ai/terms/, "Last updated: May 02, 2025", read 2026-11-10):
   - Licence scope: "a non-exclusive, non-transferable, non-sublicensable, revocable, limited license to use the Service ... on a computer or device that you own or control solely for your own internal business or individual purpose." (§ (d) Limited License)
   - Restrictions: "you shall not ... (ii) use any robot, spider, site search/retrieval application, or other manual or automatic device to retrieve, index, “scrape,” “data mine,” or in any way reproduce or circumvent the navigational structure or presentation of our website, the Service or the Music.AI Materials, (iii) use any Output to train artificial intelligence or machine learning models either as sole input or as part of a wider training dataset unless otherwise explicitly authorized by us in writing, or (iv) use the Service, the Music.AI Materials, Output, or any portion thereof as the basis for developing a competitive solution (or contract with a third-party to do so), or allow third-parties to use or exploit the Service separate from your product(s) or services without Music.AI’s express written consent." (§ (e))
@@ -175,10 +219,10 @@ The section for each tool is what counts; dates are the dates printed on the pag
   Enterprise with 5000 minutes for $300"; minutes are "total file length × number of stem separation types".
   llms.txt: "API access is available with the Pro plan or any minute top-up pack - no subscription required" and
   "API requests consume Fast-queue minutes."
-- Terms (https://www.lalal.ai/terms-of-service/, "Last updated: July 30, 2026", read 2026-11-10):
+- Terms (https://www.lalal.ai/terms-and-conditions/ , "Last updated: July 30, 2026", read 2026-11-10; the URL first
+  cited here, https://www.lalal.ai/terms-of-service/, redirected to it on 2026-11-10 and serves the same text):
   - "You agree not to reproduce, duplicate, copy, sell, trade, resell or exploit for any commercial purposes, any portion of the Service, use of the Service, or access to the Service unless you otherwise have an agreement with us which specifically grants you such right(s)."
   - "You are solely responsible for the usage and distribution of uploaded audio files and “end-result” audio files. ... The Service doesn’t store or distribute any copyrighted content."
-  - The page states the current version lives at https://www.lalal.ai/terms-and-conditions/ (not fetched separately).
 - Privacy policy (https://www.lalal.ai/privacy-policy/, read 2026-11-10): "the OmniSale GMBH does not assume the rights to any uploaded audio and video data, does not use user files for artificial intelligence training or other content, does not share copyrighted materials and other uploaded media files with third parties".
 - Training data of the separation models: not stated on the pages read.
 
@@ -224,8 +268,11 @@ The section for each tool is what counts; dates are the dates printed on the pag
 - What it is: the API of Fadr (web stem splitter; footer "Made with 💛 by Pebble", site version "v6.2"). Docs:
   https://fadr.com/docs/api (dated "Aug 19, 2023"), https://fadr.com/docs/api-endpoints,
   https://fadr.com/docs/api-stems-tutorial, https://fadr.com/docs/api-billing ("Aug 22, 2023"). API terms
-  https://fadr.com/api-terms (dated "Sep 5, 2023"). The docs pages carry 2023 dates; whether the API is still
-  operated unchanged is UNVERIFIED (one call with a Plus key would settle it). Read 2026-11-10.
+  https://fadr.com/api-terms (dated "Sep 5, 2023"). The docs pages carry 2023 dates. On 2026-11-10 at 21:18 UTC
+  (verify-docs, no key) `GET https://api.fadr.com/` answered HTTP 200 `{"title":"Welcome to the Fadr API!"}` and
+  `GET https://api.fadr.com/tasks/000000000000000000000000` answered HTTP 401 `{"msg":"Token invalid or expired."}`:
+  the host answers; whether the documented endpoints behave as documented is UNVERIFIED (one call with a Plus key
+  would settle it). Read 2026-11-10.
 - How a program calls it: base `https://api.fadr.com`; "Attach an API key to all of your requests as the
   Authorization header in the following format: `Authorization: "Bearer [API Key]"`" (api-authentication page).
   Flow (endpoints page): `POST /assets/upload2` returns a presigned S3 upload URL; `PUT` the file to it with its
@@ -279,8 +326,12 @@ The section for each tool is what counts; dates are the dates printed on the pag
 - Author-reported numbers (MVSEP's own option labels on https://mvsep.com/full_api for sep_type 31, add_opt1):
   "0 - mdx23c (2023.08, SDR: 4.78)", "2 - mdx23c (2024.06, SDR: 6.34)", "3 - MelRoformer (2024.06, SDR: 7.02)",
   "5 - BSRoformer (viperx, SDR: 7.16)", "6 - Ensemble (BS + Mel, SDR: 7.51)", "7 - BS Roformer SW (SDR: 9.05)
-  (default)"; for 101: "0 - Two-stage model (SDR: 9.21) (default)", "1 - One-stage model (SDR: 9.02)". The page
-  does not name the test set these SDR values were measured on.
+  (default)"; for 101: "0 - Two-stage model (SDR: 9.21) (default)", "1 - One-stage model (SDR: 9.02)". The full_api
+  page does not name the test set. The English description of render id 31 in https://mvsep.com/api/app/algorithms
+  (read by verify-docs 2026-11-10) says "The model was compared with the Demucs4HT model (6 stems) on a guitar
+  validation set." and gives a table in which Demucs4HT (6 stems) has guitar SDR 5.22 and BS Roformer SW 9.05; the
+  Russian description of the same entry adds "30 треков" (30 tracks). The validation set's tracks and source are not
+  named on the pages read.
 - Inputs and hints: audio only; no musical hints. Output: audio files only (no notes, chords or tab).
 - Limits and price (https://mvsep.com/plans, read 2026-11-10): Unregistered and Registered free: "Max File Length
   10 min", "Max File Size 100 MB", "Daily Separations 50", "Concurrent Jobs 1"; "API Access" "—" (unregistered),

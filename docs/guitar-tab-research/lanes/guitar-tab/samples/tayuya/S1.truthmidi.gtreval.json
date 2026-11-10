@@ -1,0 +1,452 @@
+{
+ "tool": "tayuya 0.0.4",
+ "tuning_midi": [
+  40,
+  45,
+  50,
+  55,
+  59,
+  64
+ ],
+ "capo": 0,
+ "key_detected": [
+  "D",
+  "major"
+ ],
+ "notes": [
+  {
+   "onset": 1.666668,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 2.083335,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 2.500002,
+   "pitch": 67,
+   "string": 2,
+   "fret": 8,
+   "tayuya_note_name": "G4"
+  },
+  {
+   "onset": 2.916669,
+   "pitch": 69,
+   "string": 2,
+   "fret": 10,
+   "tayuya_note_name": "A4"
+  },
+  {
+   "onset": 3.333336,
+   "pitch": 69,
+   "string": 2,
+   "fret": 10,
+   "tayuya_note_name": "A4"
+  },
+  {
+   "onset": 3.750003,
+   "pitch": 67,
+   "string": 2,
+   "fret": 8,
+   "tayuya_note_name": "G4"
+  },
+  {
+   "onset": 4.16667,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 4.583337,
+   "pitch": 64,
+   "string": 3,
+   "fret": 9,
+   "tayuya_note_name": "E4"
+  },
+  {
+   "onset": 5.000004,
+   "pitch": 62,
+   "string": 3,
+   "fret": 7,
+   "tayuya_note_name": "D4"
+  },
+  {
+   "onset": 5.416671,
+   "pitch": 62,
+   "string": 3,
+   "fret": 7,
+   "tayuya_note_name": "D4"
+  },
+  {
+   "onset": 5.833338,
+   "pitch": 64,
+   "string": 3,
+   "fret": 9,
+   "tayuya_note_name": "E4"
+  },
+  {
+   "onset": 6.250005,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 6.666672,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 7.291672,
+   "pitch": 64,
+   "string": 3,
+   "fret": 9,
+   "tayuya_note_name": "E4"
+  },
+  {
+   "onset": 7.500006,
+   "pitch": 64,
+   "string": 3,
+   "fret": 9,
+   "tayuya_note_name": "E4"
+  },
+  {
+   "onset": 8.33334,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 8.750007,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 9.166674,
+   "pitch": 67,
+   "string": 2,
+   "fret": 8,
+   "tayuya_note_name": "G4"
+  },
+  {
+   "onset": 9.583341,
+   "pitch": 69,
+   "string": 2,
+   "fret": 10,
+   "tayuya_note_name": "A4"
+  },
+  {
+   "onset": 10.000008,
+   "pitch": 69,
+   "string": 2,
+   "fret": 10,
+   "tayuya_note_name": "A4"
+  },
+  {
+   "onset": 10.416675,
+   "pitch": 67,
+   "string": 2,
+   "fret": 8,
+   "tayuya_note_name": "G4"
+  },
+  {
+   "onset": 10.833342,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 11.250009,
+   "pitch": 64,
+   "string": 3,
+   "fret": 9,
+   "tayuya_note_name": "E4"
+  },
+  {
+   "onset": 11.666676,
+   "pitch": 62,
+   "string": 3,
+   "fret": 7,
+   "tayuya_note_name": "D4"
+  },
+  {
+   "onset": 12.083343,
+   "pitch": 62,
+   "string": 3,
+   "fret": 7,
+   "tayuya_note_name": "D4"
+  },
+  {
+   "onset": 12.50001,
+   "pitch": 64,
+   "string": 3,
+   "fret": 9,
+   "tayuya_note_name": "E4"
+  },
+  {
+   "onset": 12.916677,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 13.333344,
+   "pitch": 64,
+   "string": 3,
+   "fret": 9,
+   "tayuya_note_name": "E4"
+  },
+  {
+   "onset": 13.958345,
+   "pitch": 62,
+   "string": 3,
+   "fret": 7,
+   "tayuya_note_name": "D4"
+  },
+  {
+   "onset": 14.166678,
+   "pitch": 62,
+   "string": 3,
+   "fret": 7,
+   "tayuya_note_name": "D4"
+  },
+  {
+   "onset": 15.000012,
+   "pitch": 64,
+   "string": 3,
+   "fret": 9,
+   "tayuya_note_name": "E4"
+  },
+  {
+   "onset": 15.416679,
+   "pitch": 64,
+   "string": 3,
+   "fret": 9,
+   "tayuya_note_name": "E4"
+  },
+  {
+   "onset": 15.833346,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 16.250013,
+   "pitch": 62,
+   "string": 3,
+   "fret": 7,
+   "tayuya_note_name": "D4"
+  },
+  {
+   "onset": 16.66668,
+   "pitch": 64,
+   "string": 3,
+   "fret": 9,
+   "tayuya_note_name": "E4"
+  },
+  {
+   "onset": 17.083347,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 17.291681,
+   "pitch": 67,
+   "string": 2,
+   "fret": 8,
+   "tayuya_note_name": "G4"
+  },
+  {
+   "onset": 17.500014,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 17.916681,
+   "pitch": 62,
+   "string": 3,
+   "fret": 7,
+   "tayuya_note_name": "D4"
+  },
+  {
+   "onset": 18.333348,
+   "pitch": 64,
+   "string": 3,
+   "fret": 9,
+   "tayuya_note_name": "E4"
+  },
+  {
+   "onset": 18.750015,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 18.958348,
+   "pitch": 67,
+   "string": 2,
+   "fret": 8,
+   "tayuya_note_name": "G4"
+  },
+  {
+   "onset": 19.166682,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 19.583349,
+   "pitch": 64,
+   "string": 3,
+   "fret": 9,
+   "tayuya_note_name": "E4"
+  },
+  {
+   "onset": 20.000016,
+   "pitch": 62,
+   "string": 3,
+   "fret": 7,
+   "tayuya_note_name": "D4"
+  },
+  {
+   "onset": 20.416683,
+   "pitch": 64,
+   "string": 3,
+   "fret": 9,
+   "tayuya_note_name": "E4"
+  },
+  {
+   "onset": 20.83335,
+   "pitch": 57,
+   "string": 4,
+   "fret": 7,
+   "tayuya_note_name": "A3"
+  },
+  {
+   "onset": 21.666684,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 22.083351,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 22.500018,
+   "pitch": 67,
+   "string": 2,
+   "fret": 8,
+   "tayuya_note_name": "G4"
+  },
+  {
+   "onset": 22.916685,
+   "pitch": 69,
+   "string": 2,
+   "fret": 10,
+   "tayuya_note_name": "A4"
+  },
+  {
+   "onset": 23.333352,
+   "pitch": 69,
+   "string": 2,
+   "fret": 10,
+   "tayuya_note_name": "A4"
+  },
+  {
+   "onset": 23.750019,
+   "pitch": 67,
+   "string": 2,
+   "fret": 8,
+   "tayuya_note_name": "G4"
+  },
+  {
+   "onset": 24.166686,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 24.583353,
+   "pitch": 64,
+   "string": 3,
+   "fret": 9,
+   "tayuya_note_name": "E4"
+  },
+  {
+   "onset": 25.00002,
+   "pitch": 62,
+   "string": 3,
+   "fret": 7,
+   "tayuya_note_name": "D4"
+  },
+  {
+   "onset": 25.416687,
+   "pitch": 62,
+   "string": 3,
+   "fret": 7,
+   "tayuya_note_name": "D4"
+  },
+  {
+   "onset": 25.833354,
+   "pitch": 64,
+   "string": 3,
+   "fret": 9,
+   "tayuya_note_name": "E4"
+  },
+  {
+   "onset": 26.250021,
+   "pitch": 66,
+   "string": 2,
+   "fret": 7,
+   "tayuya_note_name": "F#4"
+  },
+  {
+   "onset": 26.666688,
+   "pitch": 64,
+   "string": 3,
+   "fret": 9,
+   "tayuya_note_name": "E4"
+  },
+  {
+   "onset": 27.291688,
+   "pitch": 62,
+   "string": 3,
+   "fret": 7,
+   "tayuya_note_name": "D4"
+  },
+  {
+   "onset": 27.500022,
+   "pitch": 62,
+   "string": 3,
+   "fret": 7,
+   "tayuya_note_name": "D4"
+  }
+ ]
+}

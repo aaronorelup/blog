@@ -9,12 +9,21 @@ needed.
 Box: 4 vCPU Intel Xeon 2.10 GHz, 15 GiB RAM, no GPU, shared with about 20 agents. Big files of this lane are under
 `/home/user/gtr/lanes/apps-survey/` (not in git). Run ids (`r....`) are lines of `/home/user/gtr/ledger/runs.jsonl`.
 
+**Summary.** No product in this lane produced a transcription on the box, so there are no output files and no
+`gtr-eval` scores here. Two products with a Linux build were downloaded and read without being executed (AnthemScore
+6.3.0, Transcribe! 9.70.4); one web app was driven up to its consent step (AnthemScore Web, run r0062, input S2s);
+one open-source camera app was cloned but not installed (Guitar Learning). Three steps were refused by this session's
+permission system (table near the end). Each product that can take one of the shared clips has a test for Aaron in
+`for-aaron.md`; the others are listed there with the reason. The lane's ledger runs are r0055 (failed at start,
+script format) and r0062.
+
 ## AnthemScore 6.3.0 (Linux AppImage of 2026-09-30)
 
 - **What it is:** desktop audio-to-notation program by Lunaverus LLC (https://www.lunaverus.com) for Windows, macOS and
   Linux, with guitar, bass guitar and ukulele tablature among its output options. The download page links "see what's
-  new in 6.3.0"; the version history lists "6.3.0released 2026-09-29" as its newest entry
-  (https://www.lunaverus.com/versionHistory, read 2026-11-10).
+  new in 6.3.0"; the version history's newest entry is 6.3.0, "released 2026-09-29"
+  (https://www.lunaverus.com/versionHistory, read 2026-11-10). The version in this section's title comes from those
+  pages and the AppImage's date; no version string was found in the binary, so it is not confirmed from the file.
 - **Download:** `https://www.lunaverus.com/download/linuxAppimage` answered HTTP 302 to
   `https://sfo2.digitaloceanspaces.com/lunaverus/static/resources/installers/AnthemScore-x86_64.AppImage`
   (`content-length: 216013304`, `last-modified: Wed, 30 Sep 2026 18:51:55 GMT`). Downloaded 2026-11-10 in 10.3 s,
@@ -59,8 +68,8 @@ Box: 4 vCPU Intel Xeon 2.10 GHz, 15 GiB RAM, no GPU, shared with about 20 agents
   "Removed CLI options"**. The current documentation page does not describe a command line. In the 6.3.0 binary the
   only strings next to its Qt command-line parser are `AnthemScore command line`, `source`, `Source file (mp3, wav,
   asdt, etc.)`, `Creating window` and `Command line arguments: filename=`; no export option names were found there.
-  So on 6.x a file can be given on the command line, and from the strings and the 6.0.0 note it then opens a window;
-  an unattended export would need the GUI to be driven (not checked, since nothing was run).
+  These strings and the 6.0.0 note point to a single file argument that is opened in the program's window, with no
+  export switches; that was not checked by running it, so an unattended export on 6.x is UNVERIFIED.
 - **GPU:** the version history has, under 4.2.0 "released 2019-01-31", "Very fast note finding for Cuda capable
   Nvidia GPUs on Windows and Linux (cuda status in 'about' menu)". In the 6.3.0 Linux package,
   `ls lib | grep -iE 'onnx|torch|cuda|tensor|ort'` listed `libonnxruntime.so` and `libonnxruntime.so.1.17.1` and no
@@ -88,8 +97,9 @@ Box: 4 vCPU Intel Xeon 2.10 GHz, 15 GiB RAM, no GPU, shared with about 20 agents
     file, which is included in every download of the software. By using the software you are agreeing to these
     terms."
   - Not read: the `license.txt` itself (not found in the Linux AppImage; the Windows installer was not downloaded).
-- **Disk:** the AppImage (207 MB) is kept; the 500 MB unpacked tree was deleted at the end of the lane (see the
-  last section).
+- **Disk:** the AppImage (216,013,304 bytes) is kept; the 500 MB unpacked tree was deleted once the facts above were
+  written down (the binary's `strings` output and `languages/English.json` are kept next to it in
+  `/home/user/gtr/lanes/apps-survey/anthemscore/`).
 
 ## Transcribe! 9.70.4 (Seventh String Software, Linux x86-64 build)
 
@@ -105,9 +115,10 @@ Box: 4 vCPU Intel Xeon 2.10 GHz, 15 GiB RAM, no GPU, shared with about 20 agents
   Unpacked with `tar -xzf` (11 MB): `transcribe` (ELF x86-64 executable), `xschelp.htb` (the help, a zip of HTML
   pages), `install-linux.sh`, `readme_gtk.html`, two GStreamer plugins, icons. Kept in
   `/home/user/gtr/lanes/apps-survey/dl/transcribe/`.
-- **NOT RUN HERE.** It is a GTK desktop program with no batch mode for analysis; and running a downloaded vendor
-  binary is the step this session's permission system refused for AnthemScore ("[Code from External]", above), so it
-  was not started. Only its files and help pages were read. Steps for Aaron: `for-aaron.md`, Transcribe!.
+- **NOT RUN HERE.** It is a GTK desktop program; its scripting runs its menu commands, and none of those writes note
+  or chord guesses to a file (below). Running a downloaded vendor binary is the step this session's permission system
+  refused for AnthemScore ("[Code from External]", above), so it was not started. Only its files and help pages were
+  read. Steps for Aaron: `for-aaron.md`, Transcribe!.
 - **What it outputs, from its own help** (`xschelp.htb`, unzipped and read 2026-11-10):
   - No notes as data: "Transcribe! does not output MIDI at all." (`midi.htm`)
   - Note and chord guesses are shown on screen only: "Note guesses are displayed as green (in tune) and red (out of
@@ -153,17 +164,19 @@ Box: 4 vCPU Intel Xeon 2.10 GHz, 15 GiB RAM, no GPU, shared with about 20 agents
   because Node treated the file as an ES module). Input: S2s (`S2s.wav`, 5,178,644 bytes). No account, no sign-in.
   What happened, from the script's log and the page's network log (`responses.log`):
   - Choosing the file on https://www.lunaverus.com/transcribe/audio-to-guitar-tab started the upload by itself:
-    `GET /transcribe/getJobCode?size=5178644` (200), the file sent to a signed storage URL, `POST
-    /transcribe/uploaded/<job code>` (200), then the browser was sent to `/transcribe/jobSettings/<job code>`. The
-    file therefore reached Lunaverus's storage.
+    `GET /transcribe/getJobCode?size=5178644` (200), then `POST /transcribe/uploaded/<job code>` (200), then the
+    browser was sent to `/transcribe/jobSettings/<job code>`. Between the first two, the page's own script sends the
+    file with a `PUT` to the signed `upload_url` that `getJobCode` returns (read in the page source; the log kept only
+    lunaverus.com URLs, so the `PUT` itself is not in it). The settings page then showed the clip's waveform and
+    length, so the file reached Lunaverus.
   - The job settings page (screenshot `samples/anthemscore-web/job_settings_S2s.webp`) shows "Transcribing up to 30
     seconds", a title field (filled with "S2S"), a trim control ("Whole song, 0:29", start 0:00.0, end 0:29.3), a
     switch "sheet music / tablature" (tablature selected on this page), "Instruments: Guitar", "Advanced Options",
     a required checkbox "I confirm that I own or have obtained all necessary rights to transcribe this audio.*", the
     line "By continuing, you agree to our Terms of Service and Privacy Policy." and a "Transcribe" button.
   - Form fields on that page (from its HTML): `format` = `sheetMusic` | `tablature`; `autoDetectInstruments`
-    (checkbox); `instruments` (checkboxes: piano, guitar, bass_guitar, soprano_ukulele, harp, violin and other
-    orchestral instruments, percussion); `timeSignature` = auto, 4/4, 3/4, 2/4, 6/8; `keySignature` = auto or -7 to 7
+    (checkbox); `instruments` (29 checkboxes: piano, guitar, bass_guitar, soprano_ukulele, harp, strings, woodwinds,
+    brass and percussion; guitar ticked); `timeSignature` = auto, 4/4, 3/4, 2/4, 6/8; `keySignature` = auto or -7 to 7
     (number of sharps or flats); `smallestNote` = 4, 8, 16, 32 (default), 64; `trimEmpty` (checked); `trimStart`,
     `trimEnd`; `transcription_rights` (required). There is no tuning, capo or string field on the web form.
   - The explore script pressed the first submit control it found 3 s after choosing the file; by then the browser was
@@ -211,9 +224,9 @@ Box: 4 vCPU Intel Xeon 2.10 GHz, 15 GiB RAM, no GPU, shared with about 20 agents
   was not cloned.
 - **NOT RUN HERE.** Its README requires printed markers on the instrument: "Place the markers (IDs as drawn on the
   sheet): **0** and **1** at the nut (top and bottom edge of the neck), **3** and **2** at fret 12 (top and bottom)."
-  No shared clip (R3a) has markers on the guitar. Installing it was not attempted after the refusal above. License,
-  as its README states: "Its README states the MIT license but the repository has no `LICENSE` file." (about the
-  upstream project it forked; the fork's own license file was not checked).
+  No shared clip (R3a) has markers on the guitar. Installing it was not attempted after the refusal above. License:
+  its README says of the upstream project it forked, "Its README states the MIT license but the repository has no
+  `LICENSE` file"; `survey.md` reports no LICENSE file in the fork either (checked by the docs agent 2026-11-10).
 
 ## The other products in this lane: not run here
 
@@ -226,12 +239,12 @@ are quoted in `survey.md`. The test for each is in `for-aaron.md` (number in the
 |---|---|---|---|
 | Klangio Guitar2Tabs, Transcription Studio | web, iOS, Android | web service (free demo without an account, 20 s, PDF only) | 1 |
 | Songsterr AI | web, mobile | web service; full length is Songsterr Plus | 3 |
-| Songscription | web | web service with an account | 4 |
+| Songscription | web | web service | 4 |
 | Tabtify | web | AI conversion is paid ("AI conversion is not included" in Free) | optional |
-| audio2guitar | web | web service with an account; terms: not to "Use automation, scripts, bots, or other tools to submit songs in bulk" | 5 |
-| AAPA AutoTabs (reads hands from video) | web | web service with an account; terms: not to "Use automated tools to scrape or extract data" | 6 |
-| Moises | web, desktop, mobile | web service with an account; terms §14.6 bar use "through the use of any engine, software, tool, agent ..." other than its own | 7 |
-| Chordify | web, mobile | its site answered this box HTTP 403; account | 8 |
+| audio2guitar | web | web service; terms: not to "Use automation, scripts, bots, or other tools to submit songs in bulk" | 5 |
+| AAPA AutoTabs (reads hands from video) | web | web service; terms: not to "Use automated tools to scrape or extract data" | 6 |
+| Moises | web, desktop, mobile | web service; terms §14.6 bar use "through the use of any engine, software, tool, agent ..." other than its own | 7 |
+| Chordify | web, mobile | its site answered this box HTTP 403 | 8 |
 | ChordU | web | terms not read | 8b |
 | AnthemScore 6 desktop | Windows, macOS, Linux | refused to execute ("[Code from External]"); see its section | 9 |
 | Transcribe! | Windows, macOS, Linux | GUI only, no note output; not executed (see its section) | 10 |
@@ -241,8 +254,8 @@ are quoted in `survey.md`. The test for each is in `for-aaron.md` (number in the
 | ScoreCloud | "Download for PC & Mac" | desktop install | 14 |
 | MIDI Guitar 2 / 3 | Windows, Mac, iOS; live audio in | desktop install, real time | 15 |
 | Chord ai | iOS, Android | phone app | 16 |
-| Yamaha Chord Tracker | iOS (App Store listing) | phone app | 17 |
-| Fender Studio | iOS (App Store listing) | phone app | 17b |
+| Yamaha Chord Tracker | phone app (App Store listing read) | phone app | 17 |
+| Fender Studio | phone app (App Store listing read) | phone app | 17b |
 | Capo | macOS, iOS | Apple devices only | 18 |
 | Guitar Learning | browser app with live camera | `npm ci` refused ("[Code from External]"); see its section | 19 |
 | ChordAR | Python, webcam, printed ArUco markers | no shared clip has markers; see its section | none |
@@ -250,10 +263,14 @@ are quoted in `survey.md`. The test for each is in `for-aaron.md` (number in the
 | Soundslice | web | no automatic transcription found; acceptable use policy bars automated use | none |
 | Guitar Pro 8 | Windows, macOS | no automatic audio-to-tab found | none |
 | Yousician, Rocksmith+ | apps that grade live playing | no transcription of a given recording (Rocksmith+ not checked in detail) | none |
-| Positive Grid Spark "Auto Chords" | iOS app | "*Requires Spark Amp*" | none |
-| TabGenius | iOS app | text or voice prompt to tab, not audio | none |
+| Positive Grid Spark "Auto Chords" | phone app (App Store listing read) | "*Requires Spark Amp*" | none |
+| TabGenius | phone app (App Store listing read) | text or voice prompt to tab, not audio | none |
 | GrabTab | announced phone app | "Coming soon to iOS & Android" | none |
 | TapToTab | research paper (arXiv 2409.08618) | no code link found by the docs lane | none |
+| Note2Tabs (https://www.note2tabs.com) | web; found by this agent's web search 2026-11-10, home page only | web service | 20 |
+| Cesure (https://cesure.app) | web; same; "AI transcription (BasicPitch) runs on our servers" | web service with an account | 21 |
+| RiffToTab (https://rifftotab.com) | web; same; MIDI to tab is Pro, audio to MIDI free | web service; tab step paid | 22 |
+| Fretwise (https://fretwise.ai) | web; same; page text is mostly loaded by script | web service with sign-in | 23 |
 
 ## Permission refusals met in this lane (for the orchestrator)
 

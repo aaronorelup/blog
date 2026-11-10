@@ -1,0 +1,141 @@
+{
+ "tool": "swiftf0",
+ "kind": "notes",
+ "dir": "/home/user/gtr/lanes/audio-to-notes/out/swiftf0/f0",
+ "conf_threshold": null,
+ "results": {
+  "S2n": {
+   "eval_id": "e0323",
+   "args": "notes --truth S2n --est /home/user/gtr/lanes/audio-to-notes/out/swiftf0/f0/S2n.notes.csv --pitch-unit midi --voice melody",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.163636,
+     "recall": 0.214286,
+     "f1": 0.185567,
+     "avg_overlap_ratio": 0.625411,
+     "n_matched": 9
+    },
+    "onset_offset": {
+     "precision": 0.090909,
+     "recall": 0.119048,
+     "f1": 0.103093,
+     "avg_overlap_ratio": 0.898583,
+     "n_matched": 5
+    },
+    "recall_by_voice": {
+     "melody": {
+      "n_truth": 42,
+      "onset_only_matched": 9,
+      "onset_only_recall": 0.214286,
+      "onset_offset_matched": 5,
+      "onset_offset_recall": 0.119048
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 9,
+     "median_s": 0.009714,
+     "mean_s": 0.008794,
+     "mean_abs_s": 0.014889,
+     "p95_abs_s": 0.025829,
+     "max_abs_s": 0.027429
+    }
+   },
+   "counts": {
+    "n_truth": 42,
+    "n_est": 55,
+    "n_truth_left_out": {
+     "bass": 48
+    },
+    "n_matched_onset_only": 9,
+    "n_matched_onset_offset": 5
+   }
+  },
+  "S2s": {
+   "eval_id": "e0326",
+   "args": "notes --truth S2s --est /home/user/gtr/lanes/audio-to-notes/out/swiftf0/f0/S2s.notes.csv --pitch-unit midi --voice melody",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.142857,
+     "recall": 0.095238,
+     "f1": 0.114286,
+     "avg_overlap_ratio": 0.150442,
+     "n_matched": 4
+    },
+    "onset_offset": {
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1": 0.0,
+     "avg_overlap_ratio": 0,
+     "n_matched": 0
+    },
+    "recall_by_voice": {
+     "melody": {
+      "n_truth": 42,
+      "onset_only_matched": 4,
+      "onset_only_recall": 0.095238,
+      "onset_offset_matched": 0,
+      "onset_offset_recall": 0.0
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 4,
+     "median_s": 0.006,
+     "mean_s": 0.004857,
+     "mean_abs_s": 0.006,
+     "p95_abs_s": 0.009371,
+     "max_abs_s": 0.009714
+    }
+   },
+   "counts": {
+    "n_truth": 42,
+    "n_est": 28,
+    "n_truth_left_out": {
+     "bass": 48
+    },
+    "n_matched_onset_only": 4,
+    "n_matched_onset_offset": 0
+   }
+  },
+  "S4": {
+   "eval_id": "e0329",
+   "args": "notes --truth S4 --est /home/user/gtr/lanes/audio-to-notes/out/swiftf0/f0/S4.notes.csv --pitch-unit midi --voice melody",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1": 0.0,
+     "avg_overlap_ratio": 0,
+     "n_matched": 0
+    },
+    "onset_offset": {
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1": 0.0,
+     "avg_overlap_ratio": 0,
+     "n_matched": 0
+    },
+    "recall_by_voice": {
+     "melody": {
+      "n_truth": 37,
+      "onset_only_matched": 0,
+      "onset_only_recall": 0.0,
+      "onset_offset_matched": 0,
+      "onset_offset_recall": 0.0
+     }
+    },
+    "onset_timing_of_matched": null
+   },
+   "counts": {
+    "n_truth": 37,
+    "n_est": 8,
+    "n_truth_left_out": {
+     "drums": 194,
+     "bass": 61,
+     "chord": 369
+    },
+    "n_matched_onset_only": 0,
+    "n_matched_onset_offset": 0
+   }
+  }
+ }
+}

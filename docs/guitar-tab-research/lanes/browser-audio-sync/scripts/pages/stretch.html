@@ -58,12 +58,17 @@ try {
     const stretch = await SignalsmithStretch(off);
     stretch.connect(off.destination);
     const chans = [inBuf.getChannelData(0), inBuf.getChannelData(1)];
-    const endP = stretch.addBuffers(chans);
-    stretch.schedule({ active: true, input: 0, rate: RATE, output: 0 });
-    R.signalsmith_latency_s = stretch.latency ? stretch.latency() : null;
+    // In an OfflineAudioContext the worklet only handles port messages while rendering is suspended, so the
+    // buffers and the schedule are sent during a suspend at 256 frames (5.8 ms) and rendering then resumes.
+    const SUSP = 256 / sr; R.signalsmith_start_s = SUSP;
+    off.suspend(SUSP).then(async () => {
+      R.addBuffers_end = await stretch.addBuffers(chans);
+      await stretch.schedule({ active: true, input: 0, rate: RATE, output: SUSP });
+      try { R.signalsmith_latency_s = await stretch.latency(); } catch (e) { R.signalsmith_latency_s = String(e); }
+      off.resume();
+    });
     const rendered = await off.startRendering();
     t1 = performance.now();
-    R.addBuffers_end = await Promise.race([endP, sleep(1000).then(() => 'not resolved')]);
     outCh = [rendered.getChannelData(0), rendered.getChannelData(1)]; R.out_sampleRate = sr;
   } else if (METHOD === 'rubberband') {
     t0 = performance.now();

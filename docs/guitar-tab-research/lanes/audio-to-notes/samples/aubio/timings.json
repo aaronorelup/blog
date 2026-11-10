@@ -1,0 +1,160 @@
+{
+ "tool": "aubio 0.4.9 CLI",
+ "clips": {
+  "S1": {
+   "input": "/home/user/gtr/inputs/S1/S1.mono.wav",
+   "aubiopitch_s": 0.227,
+   "aubionotes_s": 0.256,
+   "n_frames": 5140,
+   "hop_s": 0.005805,
+   "n_frames_hz_gt0": 4621,
+   "n_notes": 62,
+   "aubionotes_lines_not_3_fields": [
+    "1.718277",
+    "29.837643"
+   ],
+   "exit": [
+    0,
+    0
+   ]
+  },
+  "S2n": {
+   "input": "/home/user/gtr/inputs/S2n/S2n.mono.wav",
+   "aubiopitch_s": 0.146,
+   "aubionotes_s": 0.19,
+   "n_frames": 5058,
+   "hop_s": 0.005805,
+   "n_frames_hz_gt0": 4496,
+   "n_notes": 43,
+   "aubionotes_lines_not_3_fields": [
+    "2.205896",
+    "2.739955",
+    "10.240000",
+    "19.882086",
+    "29.361633"
+   ],
+   "exit": [
+    0,
+    0
+   ]
+  },
+  "S2s": {
+   "input": "/home/user/gtr/inputs/S2s/S2s.mono.wav",
+   "aubiopitch_s": 0.139,
+   "aubionotes_s": 0.336,
+   "n_frames": 5058,
+   "hop_s": 0.005805,
+   "n_frames_hz_gt0": 4686,
+   "n_notes": 42,
+   "aubionotes_lines_not_3_fields": [
+    "2.194286",
+    "2.734150",
+    "6.484172",
+    "10.768254",
+    "23.632109"
+   ],
+   "exit": [
+    0,
+    0
+   ]
+  },
+  "S4": {
+   "input": "/home/user/gtr/inputs/S4/S4.mono.wav",
+   "aubiopitch_s": 0.228,
+   "aubionotes_s": 0.276,
+   "n_frames": 6674,
+   "hop_s": 0.005805,
+   "n_frames_hz_gt0": 6013,
+   "n_notes": 80,
+   "aubionotes_lines_not_3_fields": [
+    "2.118821",
+    "4.707846",
+    "5.485714",
+    "5.741134",
+    "6.519002"
+   ],
+   "exit": [
+    0,
+    0
+   ]
+  },
+  "S4lead": {
+   "input": "/home/user/gtr/inputs/S4/stems/lead.wav",
+   "aubiopitch_s": 0.266,
+   "aubionotes_s": 0.419,
+   "n_frames": 6674,
+   "hop_s": 0.005805,
+   "n_frames_hz_gt0": 5374,
+   "n_notes": 36,
+   "aubionotes_lines_not_3_fields": [
+    "4.713651",
+    "7.372335",
+    "38.742493"
+   ],
+   "exit": [
+    0,
+    0
+   ]
+  },
+  "R1b": {
+   "input": "/home/user/gtr/inputs/R1b/R1b.mono.wav",
+   "aubiopitch_s": 0.158,
+   "aubionotes_s": 0.362,
+   "n_frames": 5054,
+   "hop_s": 0.005805,
+   "n_frames_hz_gt0": 4402,
+   "n_notes": 169,
+   "aubionotes_lines_not_3_fields": [
+    "0.029025",
+    "3.239184",
+    "3.506213",
+    "4.597551",
+    "6.106848"
+   ],
+   "exit": [
+    0,
+    0
+   ]
+  },
+  "R2": {
+   "input": "/home/user/gtr/inputs/R2/R2.mono.wav",
+   "aubiopitch_s": 0.298,
+   "aubionotes_s": 0.305,
+   "n_frames": 6202,
+   "hop_s": 0.005805,
+   "n_frames_hz_gt0": 6191,
+   "n_notes": 89,
+   "aubionotes_lines_not_3_fields": [
+    "0.029025",
+    "0.888163",
+    "3.616508",
+    "7.105306",
+    "10.669569"
+   ],
+   "exit": [
+    0,
+    0
+   ]
+  },
+  "R3a": {
+   "input": "/home/user/gtr/inputs/R3a/R3a.mono.wav",
+   "aubiopitch_s": 0.166,
+   "aubionotes_s": 0.294,
+   "n_frames": 3101,
+   "hop_s": 0.005805,
+   "n_frames_hz_gt0": 3100,
+   "n_notes": 57,
+   "aubionotes_lines_not_3_fields": [
+    "0.029025",
+    "1.921451",
+    "2.449705",
+    "2.832834",
+    "10.042630"
+   ],
+   "exit": [
+    0,
+    0
+   ]
+  }
+ }
+}

@@ -9,7 +9,8 @@ Everything a method sees: onset (s), offset (s), MIDI pitch (rounded to an integ
 string, fret, velocity or track information is passed on.
 
 Methods (each emits one label per note, 'melody' or 'bass'):
-  B1 threshold sweep (baseline): pitch < T -> bass, else melody, for every integer T from 36 to 72.
+  B1 threshold sweep (baseline): pitch < T -> bass, else melody, for every integer T from 36 to 72; and
+     B1_threshold_T55, the one threshold written out per note: T = 55 (G3, the open third string).
   B2 lowest-note-per-onset (baseline): notes whose onsets lie within 50 ms of the group's first onset form a group;
      the lowest note of a group is bass, the others melody; a one-note group is bass.
   B3 skyline (baseline): same groups; the highest note is melody, the others bass; a one-note group is melody.
@@ -23,6 +24,8 @@ Methods (each emits one label per note, 'melody' or 'bass'):
      Voices in that Measure, else bass; a single Note outside any Voice is bass.
 Scoring: fvt_common.voice_accuracy (one-to-one match to truth notes, onset within 50 ms and pitch within 0.5
 semitone, then the fraction of matched pairs whose labels agree). For B1 the whole sweep is written.
+Files per method: <method>.csv (onset,offset,pitch,voice) and <method>.melody.csv / <method>.bass.csv (the notes
+given that label), which gtr-eval notes --voice melody / --voice bass can score.
 """
 import csv
 import json
@@ -77,6 +80,12 @@ def score(name, labels, extra=None, seconds=None):
         f.write("onset,offset,pitch,voice\n")
         for p in pred:
             f.write(f"{p['onset']:.6f},{p['offset']:.6f},{p['pitch']},{p['voice']}\n")
+    for v in ("melody", "bass"):  # one file per labelled voice, for gtr-eval notes --voice <v>
+        with open(os.path.join(out, f"{name}.{v}.csv"), "w") as f:
+            f.write("onset,offset,pitch\n")
+            for p in pred:
+                if p["voice"] == v:
+                    f.write(f"{p['onset']:.6f},{p['offset']:.6f},{p['pitch']}\n")
 
 
 def groups(ns, win=0.05):
@@ -102,6 +111,9 @@ for T in range(36, 73):
     sweep[T] = {"n_voice_agree": r.get("n_voice_agree"), "n_matched": r["n_matched"],
                 "fraction": r.get("fraction_voice_agree_of_matched")}
 res["B1_threshold_sweep"] = sweep
+# B1 with one fixed threshold chosen without the truth: 55 = G3, the open third string; in first position strings
+# 6 to 4 reach MIDI 40 to 54, so "below 55" is "what the thumb strings reach in first position".
+score("B1_threshold_T55", ["bass" if n["pitch"] < 55 else "melody" for n in notes], {"threshold_midi": 55})
 # B2 / B3
 gs = groups(notes)
 lab2, lab3 = [None] * len(notes), [None] * len(notes)

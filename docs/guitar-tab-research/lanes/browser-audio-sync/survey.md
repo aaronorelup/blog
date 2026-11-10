@@ -1,8 +1,10 @@
 # Lane 8, browser-audio-sync: survey of browser audio, sync, playback and in-browser analysis
 
 Agent: docs-browser-audio-sync. Started 2026-11-10 (date from `date -u +%F`). Everything below was read from live
-sources on 2026-11-10 unless a line says otherwise. Raw copies of fetched pages, npm registry records and shallow
-clones are kept outside the repo in `/home/user/gtr/lanes/browser-audio-sync/docs-agent/` (not committed). The
+sources on 2026-11-10 unless a line says otherwise. Raw copies of fetched pages, npm registry records, package
+licence and README files are kept outside the repo in `/home/user/gtr/lanes/browser-audio-sync/docs-agent/` (not
+committed); the shallow repository clones were deleted after reading because of the shared-disk notice, and the
+README and licence files read from them are kept in `docs-agent/readmes/` and `docs-agent/repolic/`. The
 script that read the npm registry is `scripts/docs_npm_meta.py` in this folder. This file records facts and
 quotes only. It does not run the tools: the trials are in `trials.md` (written by the try-browser-audio-sync agent).
 
@@ -21,102 +23,109 @@ the LICENSE file itself is quoted in each tool's section.
 ## Tool list
 
 First pass written in the first 15 minutes; each line is re-checked in its own section below, and the section is
-what counts. "pending" means the section has not been written yet.
+what counts. Every entry now points to its section.
 
 ### Web platform APIs (built into browsers, no package)
 
 1. Web Audio API clock: `AudioContext.currentTime` and look-ahead scheduling of `AudioBufferSourceNode.start(when)`
-   (W3C Web Audio API). https://webaudio.github.io/web-audio-api/ . RUNNABLE. pending
-2. AudioWorklet (`AudioWorkletNode`, `AudioWorkletProcessor`, Web Audio API). RUNNABLE. pending
-3. Output latency reporting: `AudioContext.baseLatency`, `outputLatency`, `getOutputTimestamp()`. RUNNABLE. pending
-4. `HTMLVideoElement.requestVideoFrameCallback()` (WICG spec). https://wicg.github.io/video-rvfc/ . RUNNABLE. pending
-5. `HTMLMediaElement.playbackRate` and `preservesPitch` (HTML Standard). RUNNABLE. pending
-6. WebCodecs (`AudioDecoder`, `VideoDecoder`, `VideoFrame`, W3C). https://www.w3.org/TR/webcodecs/ . RUNNABLE. pending
-7. Cross-origin isolation (COOP/COEP headers) as the condition for `SharedArrayBuffer` and WASM threads. pending
-8. WebGPU and WebNN as model-runtime backends (W3C). RUNNABLE? pending
+   (W3C Web Audio API). https://webaudio.github.io/web-audio-api/ . RUNNABLE. Section 1.
+2. AudioWorklet (`AudioWorkletNode`, `AudioWorkletProcessor`, Web Audio API). RUNNABLE. Section 2.
+3. Output latency reporting: `AudioContext.baseLatency`, `outputLatency`, `getOutputTimestamp()`. RUNNABLE. Section 3.
+4. `HTMLVideoElement.requestVideoFrameCallback()` (WICG spec). https://wicg.github.io/video-rvfc/ . RUNNABLE. Section 4.
+5. `HTMLMediaElement.playbackRate` and `preservesPitch` (HTML Standard). RUNNABLE. Section 5.
+6. WebCodecs (`AudioDecoder`, `VideoDecoder`, `VideoFrame`, W3C). https://www.w3.org/TR/webcodecs/ . RUNNABLE. Section 6.
+7. Cross-origin isolation (COOP/COEP headers) as the condition for `SharedArrayBuffer` and WASM threads. Section 7.
+8. WebGPU and WebNN as model-runtime backends (W3C). RUNNABLE? Section 8.
 
 ### Transport, scheduling and timers
 
-9. Tone.js (`Tone.Transport`, `Tone.Player`, `GrainPlayer`, `PitchShift`), Yotam Mann. npm `tone` 15.1.22,
-   2025-04-27, npm license field MIT. https://github.com/Tonejs/Tone.js . RUNNABLE. pending
-10. @tonejs/midi (MIDI file to JSON and back). 2.0.28, 2022-02-04, MIT. https://github.com/Tonejs/Midi . RUNNABLE. pending
-11. worker-timers (setInterval/setTimeout run in a Web Worker), Christoph Guttandin. 8.0.34, 2026-07-21, MIT. RUNNABLE. pending
-12. standardized-audio-context (cross-browser AudioContext). 25.3.77, 2024-08-31, MIT. RUNNABLE. pending
-13. WAAClock (scheduling events on the Web Audio clock), Sébastien Piquemal. 0.5.5, 2024-02-03, MIT. RUNNABLE. pending
-14. @ircam/sc-scheduling (scheduler and transport, IRCAM ISMM). 1.0.0, 2024-07-08, BSD-3-Clause. RUNNABLE. pending
+9. Tone.js (`Tone.getTransport()`, `Tone.Player`, `GrainPlayer`, `PitchShift`), Yotam Mann. npm `tone` 15.1.22,
+   2025-04-27, npm license field MIT. https://github.com/Tonejs/Tone.js . RUNNABLE. Section 9.
+10. @tonejs/midi (MIDI file to JSON and back). 2.0.28, 2022-02-04, MIT. https://github.com/Tonejs/Midi . RUNNABLE. Section 10.
+11. worker-timers (setInterval/setTimeout run in a Web Worker), Christoph Guttandin. 8.0.34, 2026-07-21, MIT. RUNNABLE. Section 11.
+12. standardized-audio-context (cross-browser AudioContext). 25.3.77, 2024-08-31, MIT. RUNNABLE. Section 12.
+13. WAAClock (scheduling events on the Web Audio clock), Sébastien Piquemal. 0.5.5, 2024-02-03, MIT. RUNNABLE. Section 13.
+14. @ircam/sc-scheduling (scheduler and transport, IRCAM ISMM). 1.0.0, 2024-07-08, BSD-3-Clause. RUNNABLE. Section 14.
 
 ### Tab player with sync
 
-15. alphaTab (CoderLine): player with metronome, count-in, backing track, sync points, Media Sync Editor, YouTube
-    sync. npm `@coderline/alphatab` 1.9.0, 2026-10-31, npm license field MPL-2.0. https://alphatab.net . RUNNABLE. pending
+15. alphaTab (CoderLine): player with metronome, count-in, backing track, sync points, Media Sync Editor, and a
+    documented example of YouTube sync through the YouTube iframe API. npm `@coderline/alphatab` 1.9.0, 2026-10-31, npm license field MPL-2.0. https://alphatab.net . RUNNABLE. Section 15.
 
 ### Waveform display and regions
 
 16. wavesurfer.js (waveform, regions, timeline, spectrogram plugins), katspaugh. 8.0.5, 2026-11-02, BSD-3-Clause.
-    https://wavesurfer.xyz . RUNNABLE. pending
-17. peaks.js (BBC R&D origin; npm repository now codeberg.org/chrisn/peaks.js). 4.0.0, 2025-08-30, LGPL-3.0. RUNNABLE. pending
+    https://wavesurfer.xyz . RUNNABLE. Section 16.
+17. peaks.js (BBC R&D origin; npm repository now codeberg.org/chrisn/peaks.js). 4.0.0, 2025-08-30, LGPL-3.0. RUNNABLE. Section 17.
 18. waveform-data.js (BBC) plus the `audiowaveform` C++ CLI that precomputes peaks. waveform-data 4.5.2, 2025-06-07,
-    LGPL-3.0. RUNNABLE. pending
+    LGPL-3.0. RUNNABLE. Section 18.
 
 ### Video decode, demux and sync
 
 19. Mediabunny (read, write and convert media files with WebCodecs), Vanilagy. 1.65.2, 2026-11-04, MPL-2.0.
-    https://mediabunny.dev . RUNNABLE. pending
-20. mp4box.js (GPAC, MP4 demux for WebCodecs). 2.5.0, 2026-10-25, BSD-3-Clause. RUNNABLE. pending
-21. web-demuxer (FFmpeg-based WASM demuxer for WebCodecs), ForeverSc. 4.0.0, 2025-12-20, npm license field empty. RUNNABLE. pending
+    https://mediabunny.dev . RUNNABLE. Section 19.
+20. mp4box.js (GPAC, MP4 demux for WebCodecs). 2.5.0, 2026-10-25, BSD-3-Clause. RUNNABLE. Section 20.
+21. web-demuxer (FFmpeg-based WASM demuxer for WebCodecs), ForeverSc. 4.0.0, 2025-12-20, npm license field empty. RUNNABLE. Section 21.
 
 ### Time-stretch and pitch-shift (slow practice)
 
 22. SoundTouchJS (port of SoundTouch), cutterbl: `soundtouchjs` 0.3.0, 2026-02-04, LGPL-2.1;
-    `@soundtouchjs/audio-worklet` and `@soundtouchjs/core` 2.1.1, 2026-08-03, npm license field MPL-2.0. RUNNABLE. pending
+    `@soundtouchjs/audio-worklet` and `@soundtouchjs/core` 2.1.1, 2026-08-03, npm license field MPL-2.0. RUNNABLE. Section 22.
 23. Signalsmith Stretch (C++ library compiled to WASM with an AudioWorklet wrapper), Signalsmith Audio. npm
-    `signalsmith-stretch` 1.3.2, 2025-06-27, MIT. RUNNABLE. pending
+    `signalsmith-stretch` 1.3.2, 2025-06-27, MIT. RUNNABLE. Section 23.
 24. Rubber Band Library in WASM: `rubberband-wasm` (Daninet) 3.3.0, 2024-12-23, npm "GPLv2"; `rubberband-web`
     (delude88) 0.2.1, 2022-10-18, GPL-2.0-or-later; `@echogarden/rubberband-wasm` 0.2.0, 2024-10-26, GPL-2.0-only.
-    Rubber Band itself is dual-licensed (GPL or commercial). RUNNABLE. pending
-25. Bungee (Parabola Research) WASM build `bungee-pitch-shift` 1.0.8, 2025-10-25, npm license field MIT. RUNNABLE. pending
+    Rubber Band itself is dual-licensed (GPL or commercial). RUNNABLE. Section 24.
+25. Bungee (Parabola Research) WASM build `bungee-pitch-shift` 1.0.8, 2025-10-25, npm license field MIT. RUNNABLE. Section 25.
 26. Superpowered Web Audio SDK (WASM, time-stretch, pitch-shift, effects). `@superpoweredsdk/web` 2.8.2,
-    2026-09-09, npm license field "SEE LICENSE IN /license". RUNNABLE KEY? pending
+    2026-09-09, npm license field "SEE LICENSE IN /license". RUNNABLE under its evaluation licence (internal R&D
+    only); KEY for any public release. Section 26.
 
 ### Sample playback and synthesis (reference playback of the tab)
 
-27. smplr (SoundFont and sampled instruments on Web Audio), danigb. 1.2.0, 2026-11-06, MIT. RUNNABLE. pending
-28. soundfont-player (predecessor of smplr), danigb. 0.12.0, 2020-01-27, MIT. RUNNABLE. pending
+27. smplr (SoundFont and sampled instruments on Web Audio), danigb. 1.2.0, 2026-11-06, MIT. RUNNABLE. Section 27.
+28. soundfont-player (predecessor of smplr), danigb. 0.12.0, 2020-01-27, MIT. RUNNABLE. Section 28.
 29. SpessaSynth (SoundFont2/DLS synth and MIDI player in TypeScript), spessasus. `spessasynth_lib` 4.4.7 and
-    `spessasynth_core` 4.4.9, 2026-11-06, Apache-2.0. RUNNABLE. pending
-30. js-synthesizer (FluidSynth compiled to WASM), jet2jet. 1.13.0, 2026-04-20, BSD-3-Clause (FluidSynth: LGPL-2.1). RUNNABLE. pending
-31. WebAudioFont, surikov. 3.0.4, 2022-06-28, GPL-3.0-or-later. RUNNABLE. pending
-32. MidiPlayerJS (MIDI event player, no synth), grimmdude. 2.0.17, 2026-03-01, MIT. RUNNABLE. pending
+    `spessasynth_core` 4.4.9, 2026-11-06, Apache-2.0. RUNNABLE. Section 29.
+30. js-synthesizer (FluidSynth compiled to WASM), jet2jet. 1.13.0, 2026-04-20, BSD-3-Clause (FluidSynth: LGPL-2.1). RUNNABLE. Section 30.
+31. WebAudioFont, surikov. 3.0.4, 2022-06-28, GPL-3.0-or-later. RUNNABLE. Section 31.
+32. MidiPlayerJS (MIDI event player, no synth), grimmdude. 2.0.17, 2026-03-01, MIT. RUNNABLE. Section 32.
 
 ### In-browser analysis and model runtimes
 
-33. Basic Pitch for the browser, Spotify: `@spotify/basic-pitch` (TensorFlow.js). 1.0.1, 2022-08-05, Apache-2.0. RUNNABLE. pending
-34. essentia.js (Essentia compiled to WASM, plus TF.js models), MTG-UPF. 0.1.3, 2021-06-24, AGPL-3.0. RUNNABLE. pending
-35. ONNX Runtime Web, Microsoft. `onnxruntime-web` 1.31.1, 2026-10-26, MIT. RUNNABLE (WASM); WebGPU RUNNABLE?. pending
-36. MediaPipe Tasks Vision (Hand Landmarker, Pose, etc. in the browser), Google. `@mediapipe/tasks-vision` 1.2.2,
-    2026-11-03, Apache-2.0 (also `@mediapipe/tasks-audio` 1.2.2). RUNNABLE. pending
+33. Basic Pitch for the browser, Spotify: `@spotify/basic-pitch` (TensorFlow.js). 1.0.1, 2022-08-05, Apache-2.0. RUNNABLE. Section 33.
+34. essentia.js (Essentia compiled to WASM, plus TF.js models), MTG-UPF. 0.1.3, 2021-06-24, AGPL-3.0. RUNNABLE. Section 34.
+35. ONNX Runtime Web, Microsoft. `onnxruntime-web` 1.31.1, 2026-10-26, MIT. RUNNABLE (WASM); WebGPU RUNNABLE?. Section 35.
+36. MediaPipe Tasks Vision (Hand Landmarker and other vision tasks in the browser), Google. `@mediapipe/tasks-vision` 1.2.2,
+    2026-11-03, Apache-2.0 (also `@mediapipe/tasks-audio` 1.2.2). RUNNABLE. Section 36.
 37. Transformers.js, Hugging Face. `@huggingface/transformers` 4.3.2, 2026-10-27, Apache-2.0 (older
-    `@xenova/transformers` 2.17.2, 2024-05-29). RUNNABLE. pending
+    `@xenova/transformers` 2.17.2, 2024-05-29). RUNNABLE. Section 37.
 38. ffmpeg.wasm: `@ffmpeg/ffmpeg` 0.12.15, 2025-01-07, MIT; `@ffmpeg/core` 0.12.10, 2025-01-07, and
-    `@ffmpeg/core-mt` 0.12.10, 2025-04-28, npm license field GPL-2.0-or-later. RUNNABLE. pending
-39. TensorFlow.js (backends cpu, webgl, wasm, webgpu), Google. `@tensorflow/tfjs` 4.22.0, 2024-10-21, Apache-2.0. RUNNABLE. pending
-40. LiteRT.js (LiteRT / TFLite models in the browser), Google AI Edge. `@litertjs/core` 2.6.0, 2026-10-22, Apache-2.0. RUNNABLE?. pending
+    `@ffmpeg/core-mt` 0.12.10, 2025-04-28, npm license field GPL-2.0-or-later. RUNNABLE. Section 38.
+39. TensorFlow.js (backends cpu, webgl, wasm, webgpu), Google. `@tensorflow/tfjs` 4.22.0, 2024-10-21, Apache-2.0. RUNNABLE. Section 39.
+40. LiteRT.js (LiteRT / TFLite models in the browser), Google AI Edge. `@litertjs/core` 2.6.0, 2026-10-22, Apache-2.0. RUNNABLE?. Section 40.
 41. Magenta.js (`@magenta/music`, includes Onsets and Frames piano transcription on TF.js). 1.23.1, 2021-11-01,
-    Apache-2.0. RUNNABLE. pending
-42. ml5.js (friendly wrapper over TF.js and MediaPipe models). 1.4.0, 2026-08-07, MIT. RUNNABLE. pending
-43. Meyda (audio feature extraction). 5.6.3, 2024-04-21, MIT. RUNNABLE. pending
-44. pitchy (McLeod pitch method, single pitch). 4.1.0, 2024-01-04, MIT. RUNNABLE. pending
-45. pitchfinder (YIN, AMDF, McLeod, dynamic wavelet). 2.3.4, 2025-12-16, npm license field "GNU v3". RUNNABLE. pending
-46. aubiojs (aubio compiled to WASM: pitch, onset, tempo). 0.2.1, 2022-11-08, npm license field empty. RUNNABLE. pending
-47. web-audio-beat-detector (offline tempo/first-beat estimate). 8.2.39, 2026-08-26, MIT. RUNNABLE. pending
-48. realtime-bpm-analyzer (BPM from live or file audio). 5.6.1, 2026-11-03, Apache-2.0. RUNNABLE. pending
+    Apache-2.0. RUNNABLE. Section 41.
+42. ml5.js (wrapper over TF.js models such as HandPose, BodyPose, SoundClassifier). 1.4.0, 2026-08-07, npm license
+    field MIT, while its LICENSE.md is the separate "ml5.js license". RUNNABLE. Section 42.
+43. Meyda (audio feature extraction). 5.6.3, 2024-04-21, MIT. RUNNABLE. Section 43.
+44. pitchy (McLeod pitch method, single pitch). 4.1.0, 2024-01-04, MIT. RUNNABLE. Section 44.
+45. pitchfinder (YIN, AMDF, McLeod, dynamic wavelet). 2.3.4, 2025-12-16, npm license field "GNU v3". RUNNABLE. Section 45.
+46. aubiojs (aubio compiled to WASM: pitch, tempo). 0.2.1, 2022-11-08, npm license field empty. RUNNABLE. Section 46.
+47. web-audio-beat-detector (offline tempo/first-beat estimate). 8.2.39, 2026-08-26, MIT. RUNNABLE. Section 47.
+48. realtime-bpm-analyzer (BPM from live or file audio). 5.6.1, 2026-11-03, Apache-2.0. RUNNABLE. Section 48.
 49. OpenCV.js builds (`@techstark/opencv-js` 5.0.0-release.1, 2026-06-24, Apache-2.0) for fretboard geometry in
-    the browser. RUNNABLE. pending
+    the browser. RUNNABLE. Section 49.
 50. In-browser Demucs builds: `demucs-web` (timcsy, ONNX Runtime Web) 1.0.2, 2025-12-01, MIT; `demucs-wasm`
     (bengfarrell) 0.1.5, 2025-01-29; demucs-rs (nikhilunni, Rust + Burn wgpu to WASM/WebGPU); sevagh's
     demucs.cpp / demucs.onnx (freemusicdemixer.com); Hugging Face ONNX exports (monteslu/htdemucs-web-onnx,
-    webnn/stem-separator). RUNNABLE (WASM) / RUNNABLE? (WebGPU). pending
-51. Beat This! ONNX export for onnxruntime-web (Hugging Face `musetric/beat-this-onnx`). RUNNABLE?. pending
+    webnn/stem-separator). RUNNABLE (WASM) / RUNNABLE? (WebGPU). Section 50.
+51. Beat This! ONNX export for onnxruntime-web (Hugging Face `musetric/beat-this-onnx`). RUNNABLE?. Section 51.
+
+### Found during the survey
+
+52. OpenVoicing (pjdoland): open-source practice app built on alphaTab and the Signalsmith Stretch AudioWorklet,
+    with recording and YouTube sync; last commit 2026-07-26; MIT. Section 52.
 
 ## Sources used for the web platform sections (1 to 8)
 
@@ -128,8 +137,8 @@ what counts. "pending" means the section has not been written yet.
   `https://raw.githubusercontent.com/mdn/browser-compat-data/main/<area>/<Name>.json` with
   `scripts/docs_bcd.py`. The number is BCD's `version_added` for the first support statement; "mirror" means BCD
   copies the value from the desktop browser it derives from (Chrome for Edge and Chrome Android, Safari for Safari iOS).
-- Web Audio API: the W3C publication read 2026-11-10 is "Web Audio API 1.1, W3C Working Draft, 22 September 2026",
-  https://www.w3.org/TR/webaudio-1.1/ (the text says: "This document is intended to become a W3C Recommendation.").
+- Web Audio API: the W3C publication read 2026-11-10 is Web Audio API 1.1, status "W3C Working Draft, 22 September
+  2026", https://www.w3.org/TR/webaudio-1.1/ (the text says: "This document is intended to become a W3C Recommendation.").
 
 ## 1. Web Audio API clock and look-ahead scheduling
 
@@ -200,10 +209,11 @@ what counts. "pending" means the section has not been written yet.
   {{domxref("BaseAudioContext.audioWorklet")}} property is not, thus custom {{domxref("AudioWorkletProcessor")}}s
   cannot be defined outside them."
 - Block size: MDN `AudioWorkletProcessor.process()` (source `web/api/audioworkletprocessor/process/index.md`, read
-  2026-11-10): "Currently, audio data blocks are always 128 frames long—that is, they contain 128 32-bit
-  floating-point samples for each of the inputs'" (the sentence continues on the next source line).
+  2026-11-10), in a note block: "Currently, audio data blocks are always 128 frames" (the note continues on the next
+  source lines: "long—that is, they contain 128 32-bit floating-point samples for each of the inputs'").
 - How a program calls it: `await ctx.audioWorklet.addModule('proc.js'); new AudioWorkletNode(ctx, 'name')`; the
-  processor's `process(inputs, outputs, parameters)` is called once per render quantum. Messages to and from the main
+  processor's `process(inputs, outputs, parameters)` runs per block (MDN `process()` page: "The method is called
+  synchronously from the audio rendering thread, once for each block" (sentence continues)). Messages to and from the main
   thread go through `node.port` (a `MessagePort`). The time-stretch libraries in sections 22 to 26 ship as
   AudioWorklet processors.
 - Browser support (BCD `api.BaseAudioContext.audioWorklet`): Chrome 66, Firefox 76, Safari 14.1.
@@ -212,8 +222,8 @@ what counts. "pending" means the section has not been written yet.
 ## 3. Output latency: baseLatency, outputLatency, getOutputTimestamp()
 
 - Why it matters here: the time a click is heard is later than its `currentTime` by the output latency, and a
-  `<video>` frame or a cursor drawn on screen lives on the `performance.now()` clock. These three members are the
-  documented bridge between the two clocks.
+  `<video>` frame or a cursor drawn on screen lives on the `performance.now()` clock. `getOutputTimestamp()` is the
+  documented mapping between the two clocks; `baseLatency` and `outputLatency` are the documented latency figures.
 - Spec `baseLatency` (https://www.w3.org/TR/webaudio-1.1/ , read 2026-11-10): "This represents the number of
   seconds of processing latency incurred by the AudioContext passing the audio from the AudioDestinationNode to the
   audio subsystem. It does not include any additional latency that might be caused by any other processing between
@@ -243,6 +253,9 @@ what counts. "pending" means the section has not been written yet.
   102, Firefox 70, Safari 18.4; `getOutputTimestamp` Chrome 57, Firefox 70, Safari 14.1; constructor option
   `latencyHint` Chrome 58, Firefox `false` (BCD's value for not supported), Safari 14.1.
 - What a headless browser reports for these values on the research box is a trial question (see `trials.md`).
+- Glitch statistics: Web Audio 1.1 adds "An AudioPlaybackStats interface, which provides statistics about the audio
+  played from the AudioContext." (https://www.w3.org/TR/webaudio-1.1/ , read 2026-11-10). BCD
+  `api.AudioContext.playbackStats`: experimental, Chrome 146, not in Firefox or Safari (read 2026-11-10).
 - `performance.now()` precision, MDN (source `web/api/performance/now/index.md`, read 2026-11-10): "To offer
   protection against timing attacks and [fingerprinting](/en-US/docs/Glossary/Fingerprinting), `performance.now()` is
   coarsened based on whether or not the document is {{domxref("Window.crossOriginIsolated","cross-origin
@@ -289,15 +302,16 @@ what counts. "pending" means the section has not been written yet.
 - MDN `playbackRate` (source `web/api/htmlmediaelement/playbackrate/index.md`, read 2026-11-10): "The audio is muted
   when the fast forward or slow motion is outside a useful range (for example, Gecko mutes the sound outside the range
   `0.25` to `4.0`)." and "The pitch of the audio is corrected by default."
-- How a program calls it: `video.playbackRate = 0.5; video.preservesPitch = true;`. The video and its own audio
-  stay together; a separate Web Audio metronome must then be scheduled at the stretched tempo.
+- How a program calls it: `video.playbackRate = 0.5; video.preservesPitch = true;`. `playbackRate` is a property of
+  the media element only, so a click track scheduled on an `AudioContext` (section 1) does not change speed with it;
+  its click times have to be computed for the slowed tempo.
 - Browser support (BCD): `preservesPitch` Chrome 86, Firefox 101, Safari 17.2 (Safari 4 with the `webkit` prefix);
   `playbackRate` Chrome 3, Firefox 20, Safari 3.1.
 
 ## 6. WebCodecs
 
-- What it is: frame-level decode and encode of audio and video. Spec: "WebCodecs, W3C Working Draft, 9 November
-  2026", https://www.w3.org/TR/webcodecs/ , read 2026-11-10.
+- What it is: frame-level decode and encode of audio and video. Spec: WebCodecs, status "W3C Working Draft, 9
+  November 2026", https://www.w3.org/TR/webcodecs/ , read 2026-11-10.
 - MDN (source `web/api/webcodecs_api/index.md`, read 2026-11-10): "The **WebCodecs API** enables web developers to
   encode and decode video and audio in the browser efficiently (using hardware acceleration) and with very low-level
   control (processing on a per-frame basis)." and "A `VideoFrame` represents a video frame, and is tied to actual
@@ -309,8 +323,9 @@ what counts. "pending" means the section has not been written yet.
 - Available in windows and dedicated workers (MDN macro `{{AvailableInWorkers("window_and_dedicated")}}`).
 - WebCodecs does not demux containers: the input is `EncodedVideoChunk`/`EncodedAudioChunk`, so an MP4 or WebM file
   needs a demuxer first (Mediabunny, mp4box.js, web-demuxer: sections 19 to 21).
-- Output: `VideoFrame` (timestamp and duration in microseconds), `AudioData` (samples as planar or interleaved
-  floats or ints, `copyTo` into a `Float32Array`).
+- Output: `VideoFrame` (timestamp and duration in microseconds, per the MDN sentence above) and `AudioData`; MDN: "An
+  `AudioData` object represents a number of individual audio samples (1024 is a typical number). Audio sample data can
+  be extracted as a {{jsxref("Float32Array")}} via the `copyTo` method."
 - Browser support (BCD): `VideoDecoder` Chrome 94, Firefox 130, Safari 16.4; `AudioDecoder` Chrome 94, Firefox 130,
   Safari 26; `VideoFrame` Chrome 94, Firefox 130, Safari 16.4.
 - Which codecs the box's Playwright Chromium decodes is a trial question (proprietary codecs such as H.264 and AAC
@@ -318,8 +333,9 @@ what counts. "pending" means the section has not been written yet.
 
 ## 7. Cross-origin isolation for SharedArrayBuffer and WASM threads
 
-- Why it matters: multi-threaded WASM builds (ffmpeg.wasm `core-mt`, ONNX Runtime Web with `numThreads > 1`,
-  essentia/TF.js WASM SIMD-threads, in-browser Demucs builds) need `SharedArrayBuffer`.
+- Why it matters: multi-threaded WASM builds (ffmpeg.wasm `core-mt`, ONNX Runtime Web with `numThreads > 1`, the
+  TF.js `tfjs-backend-wasm-threaded-simd.wasm` build, in-browser Demucs builds such as demucs-web, section 50) need
+  `SharedArrayBuffer`.
 - MDN `SharedArrayBuffer` (source `web/javascript/reference/global_objects/sharedarraybuffer/index.md`, read
   2026-11-10): "To use shared memory your document must be in a [secure context](/en-US/docs/Web/Security/Defenses/Secure_Contexts)
   and {{domxref("Window.crossOriginIsolated","cross-origin isolated","","nocode")}}." and "When cross-origin isolated,
@@ -343,11 +359,11 @@ what counts. "pending" means the section has not been written yet.
 
 ## 8. WebGPU and WebNN (backends for in-browser models)
 
-- WebGPU: "WebGPU, W3C Candidate Recommendation Draft, 15 September 2026", https://www.w3.org/TR/webgpu/ , read
+- WebGPU: status "W3C Candidate Recommendation Draft, 15 September 2026", https://www.w3.org/TR/webgpu/ , read
   2026-11-10. BCD `api.GPU` (read 2026-11-10): Chrome 144 with the note "Supported on ChromeOS, macOS, Windows, and
   Linux (Intel Gen12+ GPUs only)." and an earlier partial entry from Chrome 113 ("Supported on ChromeOS, macOS, and
   Windows."); Firefox 141 partial ("Supports Windows since Firefox 141"); Safari 26; Chrome Android 121.
-- WebNN: "Web Neural Network API, W3C Candidate Recommendation Draft, 21 October 2026", https://www.w3.org/TR/webnn/ ,
+- WebNN: Web Neural Network API, status "W3C Candidate Recommendation Draft, 21 October 2026", https://www.w3.org/TR/webnn/ ,
   read 2026-11-10. BCD `api.ML` (read 2026-11-10): experimental, Chrome 112 behind a flag, not in Firefox or Safari.
   (The MDN page `web/api/webnn_api/index.md` returned HTTP 404 on 2026-11-10.)
 - Whether the box's headless Chromium exposes a WebGPU adapter without a GPU is a trial question (UNVERIFIED here).
@@ -364,6 +380,9 @@ what counts. "pending" means the section has not been written yet.
   a repository file instead. When a package ships no licence file, the repository's file was read from a shallow
   clone (`git clone --depth 1 --filter=blob:none https://github.com/<owner>/<repo>`) made 2026-11-10, and the
   line says so. `scripts/docs_license_scan.py` checked that each quoted standard sentence occurs verbatim in the file.
+- Before hand-off, `scripts/docs_quote_check.py` compared the quoted passages of this file with the saved copies of
+  the pages, packages and repository files (2026-11-10); passages it flagged were corrected or re-checked by hand
+  (its remaining flags are quote-pairing artefacts around embedded quotation marks, MDN macros and markdown links).
 - "Last commit" dates are the committer date of the default branch's HEAD in that shallow clone, 2026-11-10.
 - The standard MIT grant sentence quoted for MIT packages is: "Permission is hereby granted, free of charge, to any
   person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the
@@ -380,8 +399,9 @@ what counts. "pending" means the section has not been written yet.
   https://github.com/Tonejs/Tone.js (last commit 2026-10-31); docs https://tonejs.github.io/docs/ .
 - Version: npm `tone` 15.1.22, published 2025-04-27; unpacked size 5,401,640 bytes.
 - How a program calls it: browser ES module (`import * as Tone from "tone"`); `await Tone.start()` after a user
-  gesture; `Tone.getTransport()` with `bpm`, `start()`, `stop()`, loop points; `Tone.Loop`, `Tone.Part`,
-  `transport.schedule(cb, time)`; `Tone.Player`/`Tone.Players` for samples; `Tone.Sampler` for pitched samples.
+  gesture; `Tone.getTransport()` with `bpm` (the README shows `Tone.getTransport().bpm.rampTo(800, 10)`) and
+  `start()`; `Tone.Loop` for repeating callbacks; `Tone.Player` for samples; `Tone.Sampler` for pitched samples (all
+  four names appear in the README read 2026-11-10).
 - README quotes (read 2026-11-10): "`Tone.getTransport()` returns the main timekeeper. Unlike the AudioContext clock,
   it can be started, stopped, looped and adjusted on the fly." and "Since Javascript callbacks are **not precisely
   timed**, the sample-accurate time of the event is passed into the callback function. **Use this time value to
@@ -398,8 +418,9 @@ what counts. "pending" means the section has not been written yet.
   small chunk of audio is played for and the overlap is the amount of crossfading transition time between successive
   grains." `PitchShift` (`build/esm/effect/PitchShift.js`): "PitchShift does near-realtime pitch shifting to the
   incoming signal. The effect is achieved by speeding up or slowing down the delayTime of a DelayNode using a sawtooth wave."
-- Input: audio URLs or `AudioBuffer`s; note events with times in seconds, Tone time notation ("4n", "1m", "0:2:0")
-  or ticks. Output: Web Audio graph. Constraint hooks for re-runs: `bpm`, time signature, loop start/end, swing.
+- Input: audio URLs or `AudioBuffer`s; event times in seconds or in Tone's musical notation (the README's examples
+  use "8n" and "4n"). Output: a Web Audio graph. Constraint hooks for re-runs: `bpm` and the Transport's start, stop
+  and loop (README: "it can be started, stopped, looped and adjusted on the fly").
 - Licence (file `LICENSE.md` in the npm package): first line "MIT License", "Copyright (c) 2014-2020 Yotam Mann",
   contains the standard MIT grant sentence verbatim.
 
@@ -540,11 +561,12 @@ what counts. "pending" means the section has not been written yet.
   count-in counts one full bar and continues up to the beat where playback starts, also when you start in the middle
   of a bar." (The URL https://alphatab.net/docs/alphatex/sync-points found by web search returned the site's home
   page on 2026-11-10; the alphaTex `\sync` syntax is therefore cited only through the Media Sync Editor page.)
-- Input for sync: a score (Guitar Pro 3-8, MusicXML, Capella, alphaTex) plus either a SoundFont (synth), an embedded
+- Input for sync: a score (Guitar Pro, MusicXML, Capella, alphaTex, per the home page) plus either a SoundFont (synth), an embedded
   or loaded audio file (backing track), or an external player that reports its time in milliseconds. Output: audio,
   cursor position events in ticks and milliseconds, metronome events.
-- Constraint hooks for re-runs: tempo and speed (`playbackSpeed`), playback range and looping, count-in and metronome
-  volume, per-track mute/solo/volume, transposition; sync points can be replaced at runtime (`updateSyncPoints()`).
+- Constraint hooks for re-runs: speed (`playbackSpeed`), playback range and looping, count-in and metronome volume,
+  per-track controls (home page: "Show, hide, solo, mute and re-mix individual tracks at runtime. Per-track volume, pan
+  and transposition."); sync points can be replaced at runtime (`updateSyncPoints()`).
 - Licence, code (file `LICENSE` in `@coderline/alphatab@1.9.0`, read 2026-11-10): first line "alphaTab is licensed
   under MPL-2.0.", then "Copyright © 2025, Daniel Kuschny and Contributors, All rights reserved." and the full
   "Mozilla Public License Version 2.0". Section 3.2 in that file: "If You distribute Covered Software in Executable
@@ -562,17 +584,17 @@ what counts. "pending" means the section has not been written yet.
 ## 16. wavesurfer.js
 
 - What: README of `wavesurfer.js@8.0.5` (read 2026-11-10): "**Wavesurfer.js** is an interactive waveform rendering
-  and audio playback library, perfect for web applications." Official plugins listed in the README include "Regions
-  – visual overlays and markers for regions of audio", "Timeline – displays notches and time labels below the
-  waveform" and "Spectrogram – visualization of an audio frequency spectrum". Site https://wavesurfer.xyz ; repository
+  and audio playback library, perfect for web applications." Official plugins listed in the README include Regions
+  ("– visual overlays and markers for regions of audio"), Timeline ("– displays notches and time labels below the
+  waveform") and Spectrogram ("– visualization of an audio frequency spectrum (written by @akreal)"). Site https://wavesurfer.xyz ; repository
   https://github.com/katspaugh/wavesurfer.js (last commit 2026-11-10).
 - Version 8.0.5, published 2026-11-02; unpacked 1,658,106 bytes. React wrapper `@wavesurfer/react` 1.0.14
   (2026-10-30, BSD-3-Clause per npm).
-- How a program calls it: `WaveSurfer.create({ container, url })` or with a `media` element; plugins via
-  `wavesurfer.registerPlugin(Regions.create())`. Regions give start/end times in seconds for loop selection.
+- How a program calls it: `WaveSurfer.create({ container: '#waveform', url: '/audio.mp3', ... })` (README example);
+  plugins are imported as ES modules, e.g. "`import Regions from 'wavesurfer.js/dist/plugins/regions.esm.js'`".
 - Limits, README FAQ: "Since wavesurfer decodes audio entirely in the browser using Web Audio, large clips may fail to
-  decode due to memory constraints. We recommend using pre-decoded peaks for large files" and "Streaming audio is
-  supported only with pre-decoded peaks and duration." and "If you're using a VBR (variable bit rate) audio file, there
+  decode due to memory constraints. We recommend using pre-decoded peaks for large files" and, for streaming, "Streaming
+  audio is supported only with" pre-decoded peaks and duration (a link in the original README) and "If you're using a VBR (variable bit rate) audio file, there
   might be a mismatch between the audio and the waveform. This can be fixed by converting your file to CBR (constant
   bit rate)." The README also mentions "a `rendering: 'windowed'` option for very long audio files".
 - Licence (`LICENSE` in package): "BSD 3-Clause License", "Copyright (c) 2012-2023, katspaugh and contributors",
@@ -587,8 +609,9 @@ what counts. "pending" means the section has not been written yet.
   and README now point to https://codeberg.org/chrisn/peaks.js .
 - Version 4.0.0, published 2025-08-30; unpacked 4,376,968 bytes. `package.json` peer dependencies:
   `"konva": ">= 8.3.14 < 10"`, `"waveform-data": ">= 4.5.2 < 5"`.
-- How a program calls it: `Peaks.init({ zoomview, overview, mediaElement, dataUri | webAudio }, cb)`; segments and
-  points carry `startTime`/`endTime`/`time` in seconds.
+- How a program calls it: `Peaks.init({ zoomview: { container }, overview: { container }, mediaElement, webAudio: {...} }, cb)`
+  (README example), or with precomputed data: "you can use this from Peaks.js by passing a `dataUri` option to
+  `Peaks.init()`" with `dataUri: { arraybuffer: 'sample.dat' // or json: 'sample.json' }`.
 - Precomputed peaks, README: "Peaks.js uses waveform data files produced by [audiowaveform](https://codeberg.org/chrisn/audiowaveform).
   These can be generated in either binary (.dat) or JSON format." with the example `audiowaveform -i sample.mp3 -o
   sample.dat -b 8`.
@@ -604,7 +627,8 @@ what counts. "pending" means the section has not been written yet.
 
 - What: README of `waveform-data@4.5.2` (read 2026-11-10): "**waveform-data.js** is a JavaScript library for creating
   zoomable representations of audio waveforms to enable visualisation of audio content." and it lists the family:
-  "audiowaveform: C++ program that generates waveform data files from MP3 or WAV format audio." Repository field
+  "[audiowaveform](https://github.com/bbc/audiowaveform): C++ program that generates waveform data files from MP3 or
+  WAV format audio." Repository field
   `git://github.com/bbc/waveform-data.js.git`.
 - Version 4.5.2, published 2025-06-07; unpacked 279,458 bytes.
 - How a program calls it: `WaveformData.create(arrayBuffer)` for `.dat`/JSON from audiowaveform, or
@@ -612,8 +636,8 @@ what counts. "pending" means the section has not been written yet.
 - Licence, waveform-data (`LICENSE` in package): "GNU LESSER GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
   (same section 4 text as peaks.js).
 - Licence, audiowaveform (repository file https://raw.githubusercontent.com/bbc/audiowaveform/master/COPYING ,
-  read 2026-11-10): "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007". audiowaveform runs as a server-side or
-  build-time CLI, not in the browser.
+  read 2026-11-10): "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007". audiowaveform is a "C++ program that
+  generates waveform data files" (waveform-data README above), not a browser library.
 
 ## 19. Mediabunny
 
@@ -677,7 +701,8 @@ what counts. "pending" means the section has not been written yet.
   processor metrics"), `@soundtouchjs/stretch-phase-vocoder`, `@soundtouchjs/phase-vocoder-worklet` ("AudioWorklet
   implementation using the phase vocoder for smoother extreme-ratio time-stretching") and
   `@soundtouchjs/formant-correction-worklet`. JavaScript/TypeScript, not WASM.
-- Versions: `soundtouchjs` 0.3.0 (2026-02-04, npm licence LGPL-2.1, older `PitchShifter` API on ScriptProcessor);
+- Versions: `soundtouchjs` 0.3.0 (2026-02-04, npm licence LGPL-2.1; its README: "It's important to note that the
+  `PitchShifter` is a pseudo-node, and cannot be connected to.");
   `@soundtouchjs/audio-worklet` 2.1.1 and `@soundtouchjs/core` 2.1.1 (2026-08-03, npm licence MPL-2.0); unpacked
   296,114 and 224,481 bytes.
 - How a program calls it (README of `@soundtouchjs/audio-worklet@2.1.1`): "The package ships a pre-bundled processor
@@ -698,7 +723,7 @@ what counts. "pending" means the section has not been written yet.
 ## 23. Signalsmith Stretch
 
 - What: Signalsmith Audio (Geraint Luff). C++ page https://signalsmith-audio.co.uk/code/stretch/ (read 2026-11-10):
-  "This is a C++11 header-only class for pitch-shifting and time-stretching". GitHub mirror
+  "This is a C++11 header-only class for pitch-shifting and time-stretching". GitHub repository
   https://github.com/Signalsmith-Audio/signalsmith-stretch (last commit 2026-10-22); its README says "It can handle a
   wide-range of pitch-shifts (multiple octaves) but time-stretching sounds best for more modest changes (between 0.75x
   and 1.5x)."
@@ -730,8 +755,8 @@ what counts. "pending" means the section has not been written yet.
   - `rubberband-web` 0.2.1 (2022-10-18, delude88), README: "A wasm-powered audio worklet using the [Rubber Band
     library](https://breakfastquay.com/rubberband/) to provide pitch shifting for the Web Audio API." Repository last
     commit 2022-11-14.
-  - `@echogarden/rubberband-wasm` 0.2.0 (2024-10-26), README: "Rubber Band, an audio time-stretching and
-    pitch-shifting library, compiled to WASM." and "Intended for use with [Echogarden](https://github.com/echogarden-project/echogarden)."
+  - `@echogarden/rubberband-wasm` 0.2.0 (2024-10-26), README: "[Rubber Band](https://github.com/breakfastquay/rubberband),
+    an audio time-stretching and pitch-shifting library,  compiled to WASM." and "Intended for use with [Echogarden](https://github.com/echogarden-project/echogarden)."
 - Licence facts (read 2026-11-10):
   - Upstream, https://breakfastquay.com/rubberband/license.html : "When you receive a copy of Rubber Band Library —
     whether by downloading it, pulling it from our repository or official Github mirror, receiving a copy from a
@@ -792,8 +817,9 @@ what counts. "pending" means the section has not been written yet.
   server." and "Samples are stored at https://github.com/smpldsnds and there is no need to download them." Maker
   danigb (Daniel Gómez Blasco). Repository https://github.com/danigb/smplr (last commit 2026-11-07).
 - Version 1.2.0, published 2026-11-06; unpacked 1,173,778 bytes.
-- How a program calls it: `const g = Soundfont(ctx, { instrument: "acoustic_guitar_nylon", kit: "FluidR3_GM" });
-  g.start({ note: 60, velocity: 80, time, duration })`; also `Soundfont2` (reads .sf2 through the `soundfont2`
+- How a program calls it (README examples): `const marimba = Soundfont(context, { instrument: "marimba" });
+  marimba.start({ note: 60, velocity: 80 });` with an optional `kit: "FluidR3_GM"`; "Use `getSoundfontNames` to get
+  all available instrument names". Also `Soundfont2` (reads .sf2 through the `soundfont2`
   package), `SplendidGrandPiano`, `DrumMachine`, and a `Sequencer` that "schedules notes from one or more tracks against
   any smplr instrument with sample-accurate timing." Options include `notesToLoad`, MIDI CC (`setCC(64, 127)` for
   sustain), pan, `humanize: { timingMs, velocity }`.
@@ -804,10 +830,12 @@ what counts. "pending" means the section has not been written yet.
 - Licence, code: the npm package and the repository ship no licence file (repository top-level listing checked
   2026-11-10); `package.json` declares `"license": "MIT"` and the README's "## License" section says "MIT License".
 - Licence, default samples: README of https://github.com/gleitz/midi-js-soundfonts (shallow clone, last commit
-  2021-12-17, read 2026-11-10): for "Fluid Soundfont" "Generated from [FluidR3_GM.sf2](...)" and "Released under
+  2021-12-17, read 2026-11-10): for "Fluid Soundfont" "Generated from
+  [FluidR3_GM.sf2](http://www.synthfont.com/SoundFonts/FluidR3_GM.sfArk) (148 MB uncompressed)" and "Released under
   [Creative Commons Attribution 3.0 license](https://creativecommons.org/licenses/by/3.0/us/)"; for "Musyng Kite
   Soundfont" "Released under [Creative Commons Attribution Share-Alike 3.0 license](https://creativecommons.org/licenses/by-sa/3.0/)";
-  for "FatBoy Soundfont" "Released under [Creative Commons Attribution Share-Alike 3.0 license]". The repository's
+  for "FatBoy Soundfont" "Released under [Creative Commons Attribution Share-Alike 3.0
+  license](https://creativecommons.org/licenses/by-sa/3.0/)". The repository's
   `LICENSE.txt` is an MIT text, "Copyright (C) 2012 Benjamin Gleitzman", covering the repository. The licences of the
   `smpldsnds` sample repositories (used by `SplendidGrandPiano`, `DrumMachine`) were not read (UNVERIFIED).
 
@@ -826,14 +854,16 @@ what counts. "pending" means the section has not been written yet.
   TypeScript/JavaScript library for the browsers, based on spessasynth_core." and "This is a WebAudioAPI wrapper for
   the [spessasynth_core](https://github.com/spessasus/spessasynth_core) library." Features listed: "Play MIDI files
   using SF2/SF3/DLS files!" and "Featuring full Yamaha XG effects". `spessasynth_core` is the same engine without Web
-  Audio ("Looking for a bare JS version that works without WebAudioAPI? Try spessasynth_core"). Docs
+  Audio ("Looking for a bare JS version that works without WebAudioAPI? Try
+  [spessasynth_core](https://github.com/spessasus/spessasynth_core)!"). Docs
   https://spessasus.github.io/spessasynth_lib ; repositories https://github.com/spessasus/spessasynth_lib (last commit
   2026-11-07) and https://github.com/spessasus/spessasynth_core (last commit 2026-11-09).
 - Versions: `spessasynth_lib` 4.4.7 and `spessasynth_core` 4.4.9, both published 2026-11-06; unpacked 4,769,806 and
   5,021,263 bytes.
 - Input: SF2/SF3/DLS SoundFont plus MIDI (also MOD/XM/S3M). Output: audio through Web Audio (lib) or rendered sample
-  arrays (core). No SoundFont is required by the licence of the code; which SoundFont is shipped decides the sample
-  licence (for example FluidR3_GM, section 27, or alphaTab's Sonivox SoundFont, section 15).
+  arrays (core). Neither npm package ships a SoundFont file (no .sf2/.sf3/.dls in their file lists, read 2026-11-10),
+  so the SoundFont an app loads comes with its own licence (for example FluidR3_GM, section 27, or alphaTab's Sonivox
+  SoundFont, section 15).
 - Licence (`LICENSE` in both packages): Apache License 2.0 text; standard Apache-2.0 grant present verbatim.
 
 ## 30. js-synthesizer (FluidSynth in WASM)
@@ -871,6 +901,525 @@ what counts. "pending" means the section has not been written yet.
   handler to the event emitter you can trigger any code you like which could play audio". Repository
   https://github.com/grimmdude/MidiPlayerJS (last commit 2026-03-22).
 - Version 2.0.17, published 2026-03-01; unpacked 191,607 bytes.
-- Note: it fires events from JavaScript timers, not on the Web Audio clock (the README's own description: "emits JSON
-  events in real time"); the precision implications are those described in section 1.
+- Timing mechanism, from the shipped `build/index.js` (https://unpkg.com/midi-player-js@2.0.17/build/index.js , read
+  2026-11-10): `this.sampleRate = 5; // milliseconds` and "Start play loop using drift-correcting setTimeout" with
+  `this.startTime = new Date().getTime()`: events are fired from a JavaScript `setTimeout` loop, not scheduled on the
+  Web Audio clock (the precision implications are those quoted in section 1).
 - Licence (`LICENSE`): "MIT License", "Copyright (c) 2018 Garrett Grimm", standard MIT grant present.
+
+## 33. Basic Pitch for the browser (`@spotify/basic-pitch`, basic-pitch-ts)
+
+- What: README of `@spotify/basic-pitch@1.0.1` (read 2026-11-10): "Basic Pitch is a Typescript and
+  [Python](https://github.com/spotify/basic-pitch) library for Automatic Music Transcription (AMT), using lightweight
+  neural network developed by [Spotify's Audio Intelligence Lab]" and "Provide a compatible audio file and
+  basic-pitch will generate a MIDI file, complete with pitch bends." and "This library is intended to be 100%
+  compatible with feature parity to its Python sibling". Paper: Bittner et al., "A Lightweight Instrument-Agnostic
+  Model for Polyphonic Note Transcription and Multipitch Estimation", ICASSP 2022 (https://arxiv.org/abs/2203.09893 ,
+  link from the README). Repository https://github.com/spotify/basic-pitch-ts (last commit 2023-01-10).
+- Version: npm 1.0.1, published 2022-08-05 (no later release on npm as of 2026-11-10); unpacked 1,761,856 bytes.
+  The package ships a TF.js graph model: `model/model.json` (174,537 bytes) and `model/group1-shard1of1.bin` (742,392
+  bytes) (sizes from `https://unpkg.com/@spotify/basic-pitch@1.0.1/?meta`, read 2026-11-10). `package.json`
+  dependencies: `"@tensorflow/tfjs": "^3.2.0"`, `"@tonejs/midi": "^2.0.28"`.
+- How a program calls it (README): `const basicPitch = new BasicPitch(model); await basicPitch.evaluateModel(audioBuffer,
+  (f, o, c) => {...}, progressCb)`, then `noteFramesToTime(addPitchBendsToNoteEvents(contours, outputToNotesPoly(frames,
+  onsets, 0.25, 0.25, 5)))`.
+- Input, from the shipped `esm/inference.js` (https://unpkg.com/@spotify/basic-pitch@1.0.1/esm/inference.js , read
+  2026-11-10): `const AUDIO_SAMPLE_RATE = 22050;` and the checks "Input audio buffer is not at correct sample rate!"
+  and "Input audio buffer is not mono!" (the caller must resample to 22,050 Hz mono, for example with an
+  `OfflineAudioContext`). Window: `AUDIO_WINDOW_LENGTH_SECONDS = 2`, `FFT_HOP = 256`.
+- Output, from the shipped `esm/toMidi.js`: note events with `pitchMidi` (`freqIdx + MIDI_OFFSET`, `MIDI_OFFSET = 21`),
+  `amplitude`, `pitchBends`, `startTimeSeconds`, `durationSeconds` (after `noteFramesToTime`), plus the raw frame,
+  onset and contour matrices. `generateFileData(notes)` writes a MIDI file through `@tonejs/midi`, mapping
+  `velocity: note.amplitude` and adding pitch bends with `track.addPitchBend`.
+- Thresholds a re-run can change, signature read from the shipped `esm/toMidi.js`: `export function
+  outputToNotesPoly(frames, onsets, onsetThresh = 0.5, frameThresh = 0.3, minNoteLen = 5, inferOnsets = true,
+  maxFreq = null, minFreq = null, melodiaTrick = true, energyTolerance = 11)`. `minFreq`/`maxFreq` can restrict the
+  note range, for example to a guitar's range for a given tuning and capo.
+- Licence, code: `LICENSE` in the npm package: Apache License 2.0 (standard Apache-2.0 grant present). The Python
+  repository README (https://github.com/spotify/basic-pitch , shallow clone, read 2026-11-10) says "This software is
+  licensed under the Apache License, Version 2.0 (the "Apache License")."
+- Licence, weights: the TF.js weights ship inside the Apache-2.0 npm package; no separate weights licence file was
+  found in the package (file list read 2026-11-10).
+- Training data: not stated in either README (searched 2026-11-10). The audio-to-notes lane's survey
+  (`lanes/audio-to-notes/survey.md`, section 13) records the paper's training sets (GuitarSet, MAESTRO, Slakh, iKala,
+  MedleyDB) and their licence clauses; this agent did not re-read the paper.
+
+## 34. essentia.js
+
+- What: https://mtg.github.io/essentia.js/ (read 2026-11-10): "Essentia.js is a JavaScript (JS) library for
+  music/audio signal analysis and processing developed at the Music Technology Group, UPF, Barcelona. The core of
+  library is powered by Essentia C++ library back-end using WebAssembly built via Emscripten" and "The packaged add-on
+  modules includes configurable feature extractors for some selected features, interface for feature extraction and
+  inference of a collection of pre-trained audio ML models using Tensorflow.js". The same page: "NOTE: Essentia.js is
+  currently under rapid development." Repository https://github.com/MTG/essentia.js (last commit 2022-07-19); C++
+  Essentia https://github.com/MTG/essentia (last commit 2026-11-05).
+- Version: npm `essentia.js` 0.1.3, published 2021-06-24; unpacked 10,143,669 bytes; ships
+  `dist/essentia-wasm.web.wasm` (1,987,689 bytes).
+- How a program calls it: `const essentia = new Essentia(EssentiaWASM)`; algorithms such as `PitchYinProbabilistic`,
+  `PredominantPitchMelodia`, `RhythmExtractor2013`, `KeyExtractor`, `ChordsDetection` take `essentia.arrayToVector(float32)`
+  and return vectors. These five names occur in the shipped `dist/essentia.js-core.es.js` of 0.1.3 (grep of
+  https://unpkg.com/essentia.js@0.1.3/dist/essentia.js-core.es.js , 2026-11-10); `TempoCNN` does not occur in that
+  core file (the TF.js models are a separate add-on).
+- Licence, code: `LICENSE` in the npm package and in both repositories: "GNU AFFERO GENERAL PUBLIC LICENSE Version 3,
+  19 November 2007"; it contains section 13's sentence "if you modify the Program, your modified version must
+  prominently offer all users interacting with it remotely through a computer network" verbatim.
+- Licensing page linked from the essentia.js site, https://essentia.upf.edu/licensing_information.html (read
+  2026-11-10): "Essentia is available under an open licence, Affero GPLv3, for non-commercial applications, thus it is
+  possible to test the library before deciding to licence it under a comercial licence. Contact Music Technology Group
+  (UPF) for more information about licensing conditions and for consulting how Essentia can suit your application."
+  and "Some Essentia library algorithms use third-party libraries with licenses such as GPL, LGPL, and others for
+  which UPF is not able to provide full sublicensing rights to third parties. If a third party plans to release a
+  product based on Essentia, it needs to make sure to have cleared the rights over the required libraries for itself."
+- Licence, models (same page): "All the models are available under the CC BY-NC-SA 4.0 license for non-commercial
+  use, and are also available under a proprietary license upon request." The models page https://essentia.upf.edu/models.html
+  (read 2026-11-10): "All the models created by the MTG are licensed under CC BY-NC-SA 4.0 and are also available under
+  proprietary license upon request."
+
+## 35. ONNX Runtime Web
+
+- What: README of `onnxruntime-web@1.31.1` (read 2026-11-10): "ONNX Runtime Web is a Javascript library for running
+  ONNX models on browsers and on Node.js." Microsoft. Docs https://onnxruntime.ai/docs/tutorials/web/ .
+- Version 1.31.1, published 2026-10-26; unpacked 150,622,959 bytes. WASM binaries in the package (sizes from unpkg
+  `?meta`, 2026-11-10): `ort-wasm-simd-threaded.wasm` 14,848,852 bytes, `ort-wasm-simd-threaded.jsep.wasm` 29,520,971
+  bytes (the build with the WebGPU/WebNN execution providers), `.asyncify.wasm` 28,747,738, `.jspi.wasm` 17,920,659.
+- Backends, https://onnxruntime.ai/docs/tutorials/web/ (read 2026-11-10): "With onnxruntime-web, you have the option to
+  use webgl, webgpu or webnn (with deviceType set to gpu) for GPU processing, and WebAssembly (wasm, alias to cpu) or
+  webnn (with deviceType set to cpu) for CPU processing. All ONNX operators are supported by WASM but only a subset
+  are currently supported by WebGL, WebGPU and WebNN."
+- Threads, https://onnxruntime.ai/docs/tutorials/web/env-flags-and-session-options.html : "The env.wasm.numThreads
+  flag is used to set the number of threads that ONNX Runtime Web will use for model inference. This value includes the
+  main thread." and "Only when the browser supports WebAssembly multi-threading and crossOriginIsolated mode is enabled,
+  multi-threading will be enabled." Proxy worker: "When the proxy worker is enabled, ONNX Runtime Web will offload the
+  heavy computation to a separate Web Worker."
+- Size limits, https://onnxruntime.ai/docs/tutorials/web/large-models.html : "For example, the maximum size of an
+  ArrayBuffer in Chrome is 0x7fe00000 bytes (around 2GB)." and "The maximum size of a protobuf file is 2GB. If an ONNX
+  model is larger than 2GB, it’s usually generated with external data." and "WebAssembly has a memory limit of 4GB.
+  This is the maximum amount of memory that a WebAssembly module can access because of the 32-bit addressing.
+  Currently, there is no way for ONNX Runtime Web to run models larger than 4GB."
+- WebGPU, https://onnxruntime.ai/docs/tutorials/web/ep-webgpu.html : "WebGPU is available out-of-box in latest versions
+  of Chrome and Edge on Windows, macOS, Android and ChromeOS. It is also available in Firefox behind a flag and Safari
+  Technology Preview." (compare BCD in section 8, which lists Safari 26).
+- Input / output: ONNX models (`.onnx`; sevagh's demo loads ORT-format files such as `htdemucs.ort.gz`, section 50),
+  tensors as typed arrays with shapes; used by Transformers.js
+  (section 37), the in-browser Demucs builds (section 50) and the Beat This! export (section 51).
+- Licence: the npm package ships no licence file; npm field "MIT". Repository file
+  https://raw.githubusercontent.com/microsoft/onnxruntime/main/LICENSE (read 2026-11-10): "MIT License", "Copyright (c)
+  Microsoft Corporation", standard MIT grant present.
+
+## 36. MediaPipe Tasks Vision (web)
+
+- What: README of `@mediapipe/tasks-vision@1.2.2` (read 2026-11-10): "This package contains the vision tasks for
+  MediaPipe." Google AI Edge. Hand Landmarker web guide https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker/web_js
+  (read 2026-11-10, page "Last updated 2026-11-04 UTC" on the hand landmarker overview): "The MediaPipe Hand Landmarker
+  task lets you detect the landmarks of the hands in an image." and it "outputs hand landmarks in image coordinates,
+  hand landmarks in world coordinates, and handedness (left or right hand) of multiple detected hands." and "Track 21
+  3D hand keypoints and handedness on images, clips, or your webcam."
+- Version 1.2.2, published 2026-11-03; unpacked 31,269,184 bytes; ships `wasm/vision_wasm_internal.wasm` (14,603,354
+  bytes). `@mediapipe/tasks-audio` 1.2.2 (audio classifier) is a sibling package.
+- How a program calls it (guide): `HandLandmarker.createFromOptions(vision, { baseOptions: { modelAssetPath:
+  "hand_landmarker.task", delegate: "GPU" }, runningMode: "VIDEO", numHands: 2 })`, then
+  `handLandmarker.detectForVideo(frame, timestampMs)`. The guide on running modes: "VIDEO" "Synchronous tracking across
+  decoded video frames with monotonic timestamps. Processes every frame in order and never drops frames."; "LIVE_STREAM"
+  "Asynchronous camera pipeline with a result callback. Automatically drops incoming frames when busy". Model file:
+  https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task .
+- Authors' measurement on the guide page: "On-device benchmark · Pixel 6", "HandLandmarker (Full, FP16)", "CPU17.12ms
+  GPU12.27ms" (as rendered, per frame; the page does not say more about the setup).
+- Use here: per-frame timestamps from `requestVideoFrameCallback` (section 4) or WebCodecs frames (section 6) go in as
+  `timestampMs`; 21 landmarks per hand come out in image coordinates and in world coordinates. The hand landmarker
+  overview page (https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker , read 2026-11-10) describes
+  the world landmarks as "21 3D keypoints per hand in real-world meters, with the origin at the hand's geometric center
+  (hand_world_landmarks in Python)." 
+- Licence, code: npm field "Apache-2.0" (the package ships no licence file); repository file
+  https://raw.githubusercontent.com/google-ai-edge/mediapipe/master/LICENSE (read 2026-11-10): Apache License 2.0
+  (standard grant present). Licence, model weights and the model card ("Model Card Hand Tracking (Lite_Full) with
+  Fairness Oct 2021", linked from the guide): quoted in `lanes/video-hands-fretboard/survey.md`, not re-read here.
+
+## 37. Transformers.js
+
+- What: Hugging Face, https://huggingface.co/docs/transformers.js/index (read 2026-11-10): "Transformers.js is
+  designed to be functionally equivalent to Hugging Face’s transformers python library" and lists for audio
+  "automatic speech recognition, audio classification, and text-to-speech" and "Transformers.js uses ONNX Runtime to
+  run models in the browser." README of `@huggingface/transformers@4.3.2`: "By default, when running in the browser, the
+  model will be run on your CPU (via WASM). If you would like to run the model on your GPU (via WebGPU), you can do this
+  by setting `device: 'webgpu'`". Repository https://github.com/huggingface/transformers.js (last commit 2026-11-10).
+- Version 4.3.2, published 2026-10-27; unpacked 9,990,867 bytes; `package.json` pins `"onnxruntime-web":
+  "1.31.0-dev.20260914-8d85527a0"` and `"onnxruntime-node": "1.30.0"`. The older `@xenova/transformers` 2.17.2
+  (2024-05-29) is the previous package name.
+- WebGPU guide, https://huggingface.co/docs/transformers.js/guides/webgpu (read 2026-11-10): "As of March 2026, global
+  WebGPU support is around 85% (according to caniuse.com), meaning some users may not be able to use the API." and
+  "Thanks to our collaboration with ONNX Runtime Web, enabling WebGPU acceleration is as simple as setting device:
+  'webgpu' when loading a model." The navigation lists "Using quantized models (dtypes)".
+- Use here: runs any ONNX export in the Hub with a supported architecture; no guitar transcription pipeline is listed
+  among its tasks on the page read. Model licences are per model card.
+- Licence (`LICENSE` in the npm package): Apache License 2.0, standard grant present.
+
+## 38. ffmpeg.wasm
+
+- What: https://ffmpegwasm.netlify.app/docs/overview (read 2026-11-10): "ffmpeg.wasm is a pure WebAssembly /
+  JavaScript port of FFmpeg" and "Flexible: ffmpeg.wasm comes with single-thread and multi-thread cores" and "Multimedia
+  transcoding is a resource-intensive task that you don't want to execute in main thread, thus in ffmpeg.wasm we
+  offload those task to web worker". Repository https://github.com/ffmpegwasm/ffmpeg.wasm (last commit 2025-09-16).
+- Versions: `@ffmpeg/ffmpeg` 0.12.15 (2025-01-07, unpacked 71,999 bytes), `@ffmpeg/util` 0.12.2, `@ffmpeg/core`
+  0.12.10 (2025-01-07; `dist/esm/ffmpeg-core.wasm` 32,232,419 bytes), `@ffmpeg/core-mt` 0.12.10 (2025-04-28;
+  32,718,323 bytes). `core-mt` needs `SharedArrayBuffer`, so cross-origin isolation (section 7).
+- How a program calls it: `const ffmpeg = new FFmpeg(); await ffmpeg.load({ coreURL, wasmURL });
+  await ffmpeg.writeFile('in.mp4', data); await ffmpeg.exec(['-i','in.mp4','-ac','1','-ar','22050','out.wav']);
+  await ffmpeg.readFile('out.wav')`. Method and option names checked in the shipped type files
+  https://unpkg.com/@ffmpeg/ffmpeg@0.12.15/dist/esm/classes.d.ts (`load`, `exec: (args: string[], timeout?: number,
+  ...)`, `writeFile`, `readFile`, `terminate`) and `types.d.ts` (`coreURL?`, `wasmURL?`, `workerURL?`), 2026-11-10.
+- Limits, FAQ https://ffmpegwasm.netlify.app/docs/faq (read 2026-11-10): "What is the maximum size of input file?"
+  "2 GB, which is a hard limit in WebAssembly. Might become 4 GB in the future." and "Why ffmpeg.wasm is so slow
+  comparing to ffmpeg?" "As of now, WebAssembly is still a lot slower than native".
+- Licence facts (read 2026-11-10):
+  - FAQ: "@ffmpeg/core contains WebAssembly code which is transpiled from original FFmpeg C code with minor
+    modifications, but overall it still following the same licenses as FFmpeg and its external libraries (as each
+    external libraries might have its own license)." and "@ffmpeg/ffmpeg contains kind of a wrapper to handle the
+    complexity of loading core and calling low-level APIs. It is a small code base and under MIT license."
+  - npm licence fields: `@ffmpeg/ffmpeg` "MIT", `@ffmpeg/core` and `@ffmpeg/core-mt` "GPL-2.0-or-later". None of the
+    three packages ships a licence file (file lists read 2026-11-10). Repository `LICENSE`: "MIT License", "Copyright
+    (c) 2019 Jerome Wu".
+  - The repository's `Dockerfile` at HEAD (2025-09-16; not necessarily the exact 0.12.10 build) builds FFmpeg
+    `n5.1.4` with `--enable-gpl`, `--enable-libx264`, `--enable-libx265`, `--enable-libvpx`, `--enable-libmp3lame`,
+    `--enable-libtheora`, `--enable-libvorbis`, `--enable-libopus`, `--enable-libwebp` among others.
+
+## 39. TensorFlow.js
+
+- What: Google. Guide https://www.tensorflow.org/js/guide/platform_environment (page "Last updated 2022-11-01 UTC",
+  read 2026-11-10): "TensorFlow.js support multiple different backends that implement tensor storage and mathematical
+  operations. At any given time, only one backend is active." and "The WebGL backend, 'webgl', is currently the most
+  powerful backend for the browser. This backend is up to 100x faster than the vanilla CPU backend." and
+  "TensorFlow.js provides a WebAssembly backend (wasm), which offers CPU acceleration and can be used as an alternative
+  to the vanilla JavaScript CPU (cpu) and WebGL accelerated (webgl) backends." and "WASM backend leverages the XNNPACK
+  library for optimized implementation of neural" (sentence continues). WebGPU backend package:
+  `@tensorflow/tfjs-backend-webgpu`.
+- Versions: `@tensorflow/tfjs` 4.22.0, published 2024-10-21 (latest on npm on 2026-11-10); same version for
+  `tfjs-backend-wasm` (ships `tfjs-backend-wasm-threaded-simd.wasm` 435,643 bytes), `tfjs-backend-webgl`,
+  `tfjs-backend-webgpu`.
+- Used by: Basic Pitch TS (section 33, which declares `@tensorflow/tfjs ^3.2.0`), essentia.js models, Magenta.js,
+  ml5.js.
+- Licence: the npm packages ship no licence file; npm field "Apache-2.0". Repository file
+  https://raw.githubusercontent.com/tensorflow/tfjs/master/LICENSE (read 2026-11-10): Apache License 2.0, standard
+  grant present.
+
+## 40. LiteRT.js
+
+- What: Google AI Edge, https://ai.google.dev/edge/litert/web (page "Last updated 2026-06-12 UTC", read 2026-11-10):
+  "LiteRT.js is Google's high performance WebAI runtime, targeting production Web applications." (sentence split across
+  lines on the page) and "CPU performance, accelerated by XNNPack mapped to lightweight WebAssembly (Wasm). For GPU and
+  dedicated hardware scaling (such as NPUs), LiteRT.js natively surfaces both the WebGPU API and the emerging WebNN
+  API" and "Out-the-box integration with existing TensorFlow.js architectures by parsing natively supported
+  TensorFlow.js Tensors as direct boundary inputs and outputs." README of `@litertjs/core@2.6.0`: "Core web runtime for
+  [LiteRT](https://ai.google.dev/edge/litert) ([previously TFLite](https://developers.googleblog.com/en/tensorflow-lite-is-now-litert/)),
+  Google's open-source high performance runtime for on-device AI."
+- Version 2.6.0, published 2026-10-22; unpacked 47,436,526 bytes; WASM variants `litert_wasm_internal.wasm`
+  (11,131,135 bytes), `_threaded_`, `_jspi_`, `_compat_`.
+- Input: `.tflite` models. Use here: a path for running a TFLite export (Basic Pitch ships a TFLite variant in its
+  Python package, per that README) in the browser; not tried here.
+- Licence: npm field "Apache-2.0", no licence file in the package; repository https://github.com/google-ai-edge/LiteRT
+  `LICENSE`: Apache License 2.0, standard grant present.
+
+## 41. Magenta.js (`@magenta/music`): Onsets and Frames in the browser
+
+- What: README of `@magenta/music@1.23.1` (read 2026-11-10): "This JavaScript implementation of Magenta's musical
+  note-based models uses [TensorFlow.js](https://js.tensorflow.org) for GPU-accelerated inference." and
+  "[OnsetsAndFrames](https://magenta.github.io/magenta-js/music/classes/_transcription_model_.onsetsandframes.html)
+  implements Magenta's [piano transcription model](g.co/magenta/onsets-frames) for converting
+  raw audio to MIDI in the browser. While it is somewhat flexible, it works best on solo piano recordings. The
+  algorithm takes half the duration of audio to run on most browsers". Repository https://github.com/tensorflow/magenta-js
+  (last commit 2024-03-25).
+- Version 1.23.1, published 2021-11-01; unpacked 11,985,015 bytes.
+- Licence: npm field "Apache-2.0"; package ships no licence file; repository `LICENSE`: "Copyright 2018 The Magenta
+  Team. All rights reserved." and Apache License 2.0 text. The checkpoint's training data and its licence were not
+  read here (UNVERIFIED; the audio-to-notes lane covers Onsets and Frames).
+
+## 42. ml5.js
+
+- What: README of `ml5@1.4.0` (read 2026-11-10): "ml5.js aims to make machine learning approachable for a broad
+  audience of artists, creative coders, and students. The library provides access to machine learning algorithms and
+  models in the browser, building on top of [TensorFlow.js](https://js.tensorflow.org/)." Repository
+  https://github.com/ml5js/ml5-next-gen (last commit 2026-11-09); its `src/` holds `HandPose`, `BodyPose`,
+  `SoundClassifier` and others (no pitch-detection module in the listing read 2026-11-10).
+- Version 1.4.0, published 2026-08-07; unpacked 77,669,274 bytes.
+- Licence: sources conflict. npm `package.json` declares "MIT". The `LICENSE.md` in the package is the "ml5.js
+  LICENSE": "_Version 1.0 of the ml5.js license was adopted and last updated on May 10, 2021. It applies to all
+  contributions to the ml5.js library as of May 20,2021. Contributions prior to that date are licensed under the MIT
+  license._" and "This license gives everyone as much permission to work with this software as possible as long as they
+  comply with the ml5.js [Code of Conduct](https://github.com/ml5js/Code-of-Conduct), while protecting contributors
+  from liability." and "You must use this software in compliance with the ml5.js [Code of
+  Conduct](https://github.com/ml5js/Code-of-Conduct) as it exists at the time of your use." and "Each contribution to this software is licensed under this license for three years from the
+  date it is contributed to the software. After that three year period the contribution is licensed under the [Blue
+  Oak Model License v 1.0.0](https://blueoakcouncil.org/license/1.0.0)."
+
+## 43. Meyda
+
+- What: README of `meyda@5.6.3` (read 2026-11-10): "Meyda is a Javascript audio feature extraction library. Meyda
+  supports both offline feature extraction as well as real-time feature extraction using the [Web Audio API]".
+  Repository https://github.com/meyda/meyda (last commit 2024-04-21).
+- Version 5.6.3, published 2024-04-21; unpacked 556,048 bytes. The package's file list includes extractors such as
+  `dist/esm/extractors/chroma.js`, `mfcc.js` and `rms.js` (file list from unpkg, 2026-11-10).
+- Licence (`LICENSE.md`): "The MIT License (MIT)", "Copyright (c) 2014 Hugh A. Rawlinson, Nevo Segal, Jakub Fiala",
+  standard MIT grant present.
+
+## 44. pitchy
+
+- What: README of `pitchy@4.1.0` (read 2026-11-10): "pitchy is a simple pitch-detection library written entirely in
+  JavaScript that aims to be fast and accurate enough to be used in real-time applications such as tuners. To do this,
+  it uses the McLeod Pitch Method". README: instances are created with `PitchDetector.forFloat32Array(inputLength)`,
+  then "the `findPitch(input, sampleRate)`" method is used, "returning an array consisting of the detected pitch (in
+  Hz) and a "clarity"" value. Repository https://github.com/ianprime0509/pitchy (last commit
+  2026-10-13).
+- Version 4.1.0, published 2024-01-04; unpacked 33,090 bytes.
+- Use here: a tuner or a tuning-offset check (input S7 of the shared inputs is detuned by known cents).
+- Licence (`LICENSE`): "Copyright 2018-2021 Ian Johnson", standard MIT grant present.
+
+## 45. pitchfinder
+
+- What: README of `pitchfinder@2.3.4` (read 2026-11-10): "A compilation of pitch detection algorithms for Javascript.
+  Supports both the browser and node." It lists "**YIN**", "**Mcleod**", "**AMDF**" and others. Repository
+  https://github.com/peterkhayes/pitchfinder (last commit 2025-12-16).
+- Version 2.3.4, published 2025-12-16; unpacked 228,607 bytes.
+- Licence: no licence file in the npm package or at the repository top level (checked 2026-11-10); `package.json`
+  declares `"license": "GNU v3"` (not an SPDX identifier); the README has no licence section (searched 2026-11-10).
+  Recorded as: no license file found at https://github.com/peterkhayes/pitchfinder on 2026-11-10.
+
+## 46. aubiojs
+
+- What: README of `aubiojs@0.2.1` (read 2026-11-10): "aubiojs is a real-time audio processing library based on
+  [aubio](https://github.com/aubio/aubio)" listing "pitch detection" and "tempo detection", and "This project uses
+  [emscripten](https://github.com/kripken/emscripten) to compile aubio". API shape: `aubio().then(({ Tempo }) => { const
+  tempo = new Tempo(bufferSize, hopSize, sampleRate); tempo.do(audioBuffer); tempo.getBpm() })`. Repository
+  https://github.com/qiuxiang/aubiojs (last commit 2023-08-17).
+- Version 0.2.1, published 2022-11-08; unpacked 427,009 bytes; npm licence field empty.
+- Licence: the package's `license` file: "Copyright (c) 2021 7c00", standard MIT grant present. The compiled-in aubio
+  library's licence, https://raw.githubusercontent.com/aubio/aubio/master/COPYING (read 2026-11-10): "GNU GENERAL
+  PUBLIC LICENSE Version 3, 29 June 2007". (aubio's CLI is installed on the box and is covered in other lanes.)
+
+## 47. web-audio-beat-detector
+
+- What: README of `web-audio-beat-detector@8.2.39` (read 2026-11-10): "**A beat detection utility which is using the
+  Web Audio API.**" and "It retrieves the beats as BPM of a given AudioBuffer. The algorithm used is not as complex (and
+  expensive to compute) as many others. But it yields surprisingly good results especially for electronic music." (an
+  author's claim). Repository https://github.com/chrisguttandin/web-audio-beat-detector (last commit 2026-08-30).
+- Version 8.2.39, published 2026-08-26; unpacked 42,283 bytes.
+- API (README): "The `analyze()` function expects an `AudioBuffer` as its first parameter and it returns a `Promise`
+  which eventually resolves with the tempo of that buffer as a number."; "The `guess()` function expects an
+  `AudioBuffer` as well and also returns a `Promise`. The `Promise` will resolve with an object containing the
+  estimated BPM (the rounded tempo) and the offset of the first beat in seconds."; "By default
+  the bpm are expected to be between 90 and 180 bpm. This can be changed by specifying the `tempoSettings`."
+- Output to a metronome: `{ bpm, offset, tempo }` is a constant-tempo grid (first beat time plus BPM), no per-beat list.
+- Licence (`LICENSE`): "MIT License", "Copyright (c) 2026 Christoph Guttandin", standard MIT grant present.
+
+## 48. realtime-bpm-analyzer
+
+- What: README of `realtime-bpm-analyzer@5.6.1` (read 2026-11-10): "A powerful TypeScript library for detecting
+  beats-per-minute (BPM) in real-time." Docs https://www.realtime-bpm-analyzer.com . Repository
+  https://github.com/dlepaux/realtime-bpm-analyzer (last commit 2026-11-10).
+- Version 5.6.1, published 2026-11-03; unpacked 373,408 bytes.
+- Licence (`license.md` in the package): "Apache License Version 2.0, January 2004" (full text; npm field Apache-2.0).
+
+## 49. OpenCV.js (`@techstark/opencv-js`)
+
+- What: README of `@techstark/opencv-js@5.0.0-release.1` (read 2026-11-10): "OpenCV JavaScript version (NPM package)
+  for node.js or browser." and "The file `opencv.js` was downloaded from https://docs.opencv.org/5.0.0/opencv.js".
+  Repository https://github.com/TechStark/opencv-js .
+- Version 5.0.0-release.1, published 2026-06-24; unpacked 14,731,296 bytes.
+- Use here: Hough lines, edges and homography for fret and string geometry in the browser (the methods themselves are
+  covered by the video-hands-fretboard lane).
+- Licence (`LICENSE` in the package): Apache License 2.0, standard grant present.
+
+## 50. In-browser Demucs builds
+
+Demucs itself (https://github.com/facebookresearch/demucs , shallow clone, last commit 2023-11-16, read 2026-11-10):
+README "**Important:** As I am no longer working at Meta, **this repository is not maintained anymore**." and on
+`htdemucs`: "It has been trained on the [MUSDB HQ][musdb] dataset + an extra training dataset of 800 songs." and
+"`htdemucs`: first version of Hybrid Transformer Demucs. Trained on MusDB + 800 songs. Default model." Repository
+`LICENSE`: "MIT License", "Copyright (c) Meta Platforms, Inc. and affiliates." The licence of the training data
+(MUSDB18-HQ and the 800 songs) is covered by the source-separation lane, not re-read here.
+
+- `demucs-web` (npm 1.0.2, 2025-12-01, unpacked 31,003 bytes, repository https://github.com/timcsy/demucs-web , last
+  commit 2025-12-01). README (in Chinese, read 2026-11-10): "在瀏覽器中運行的音樂源分離 AI，使用 ONNX Runtime Web 實現
+  WebGPU/WASM 加速推論。" (music source separation AI that runs in the browser, using ONNX Runtime Web for WebGPU/WASM
+  inference), "支援 4 軌道分離：drums、bass、other、vocals", "基於 Meta 的 HTDemucs 模型", output example
+  `result.drums // { left: Float32Array, right: Float32Array }`, "ONNX Runtime Web 需要 SharedArrayBuffer，必須設定以下
+  HTTP headers：" `Cross-Origin-Opener-Policy: same-origin`, `Cross-Origin-Embedder-Policy: require-corp`, and "ONNX
+  模型（約 172MB）託管於 Hugging Face Hub" with the link https://huggingface.co/timcsy/demucs-web-onnx/resolve/main/htdemucs_embedded.onnx .
+  Licence: `LICENSE` "MIT License", "Copyright (c) 2024", standard MIT grant present.
+- `demucs-wasm` (npm 0.1.5, 2025-01-29, repository https://github.com/bengfarrell/demucs-wasm , last commit
+  2025-01-28; ships `demucs_onnx_simd.wasm`, 1,120,550 bytes). README: "wrapper around demucs wasm" and "See
+  https://github.com/sevagh/demucs.cpp for more details." and "I still reverse engineered MIT licensed code from
+  https://github.com/sevagh/freemusicdemixer.com to get this complicated thing working." Licence: `LICENSE` "MIT
+  License", "Copyright (c) 2024 Ben Farrell". npm licence field empty.
+- sevagh's free-music-demixer (https://github.com/sevagh/free-music-demixer , last commit 2026-11-06). README (read
+  2026-11-10): "An archived snapshot of an early demo of client-side music demixing (music source separation) in the
+  browser, using the Demucs v4 hybrid transformer model compiled to WebAssembly. It is provided as-is and is no longer
+  maintained." and "While the WASM modules and JavaScript in this repo are licensed under MIT, the AI model weights
+  and other website assets are proprietary and not covered by the MIT license." and "Model weights are not included."
+  It also reports: "'Georgia Wonder - Siren' (takes ~41 minutes)" with "vocals ==> SDR: 7.261", "drums ==> SDR:
+  10.629", "bass ==> SDR: 10.593", "other ==> SDR: 6.324", and a run "~9 minutes with 8 workers" (author's figures; the
+  machine is not stated in the lines read). `LICENSE`: "MIT License", "Copyright (c) 2023 Sevag H". sevagh/demucs.onnx
+  (last commit 2026-02-08): `LICENSE` "MIT License", "Copyright (c) 2024 Sevag H".
+- demucs-rs (https://github.com/nikhilunni/demucs-rs , last commit 2026-10-19). README: "A native Rust implementation
+  of [HTDemucs v4](https://arxiv.org/abs/2211.08553)" and "Runs as a **native CLI** (Metal on macOS, Vulkan on
+  Linux/Windows), entirely **in the browser** via WebAssembly + WebGPU, or as a **DAW plugin** (VST3/CLAP, macOS)" and
+  "**Three model variants** — Standard (4-stem), 6-Stem (adds guitar & piano), and Fine-Tuned (best quality)".
+  Browser demo https://nikhilunni.github.io/demucs-rs/ . `LICENSE`: Apache License 2.0 (README badge "license-Apache
+  2.0"). Needs WebGPU in the browser (RUNNABLE? on this box).
+- Hugging Face ONNX exports (model cards read 2026-11-10 via `https://huggingface.co/api/models/<id>` and
+  `https://huggingface.co/<id>/raw/main/README.md`):
+  - `monteslu/htdemucs-web-onnx` (card licence field `mit`, last modified 2026-07-07): "music source separation (drums
+    / bass / other / vocals), exported to ONNX for **onnxruntime-web on WebGPU**"; "**21 chained pieces**
+    (`htdemucs_p00.onnx` ... `htdemucs_p20.onnx`)"; "126MB total instead of 173MB"; author's measurement: "Measured on
+    a Radeon RX 7600 with a WebGPU app actively rendering: 30Hz display holds a steady 30fps through the entire
+    separation" and "Throughput ~22x realtime run back-to-back, ~8x with compositor-friendly" (sentence continues).
+  - `webnn/stem-separator` (licence `mit`, created 2026-09-24): "ONNX export of Meta's pretrained **HTDemucs v4**
+    (`htdemucs.th`, base/non-fine-tuned checkpoint)"; "running entirely client-side via ONNX Runtime Web with WebNN
+    (NPU/GPU) acceleration, cascading to WebGPU/WASM"; files `onnx/htdemucs_fwd.onnx` "~2.3 MB" and
+    `onnx/htdemucs_fwd.onnx.data` "~168 MB"; "No training or fine-tuning was performed. This is a format conversion of
+    an already-trained model."
+  - `Ghilda/htdemucs-onnx` (licence `mit`, created 2026-06-03): "This model was **reconverted from the official
+    MIT-licensed HTDemucs weights**"; "**This ONNX export:** MIT License, © 2026 Ghilda."; "takes the raw waveform
+    **and** a pre-computed complex spectrogram as inputs".
+- Input / output: the Python Demucs README says of its output: "There you will find four stereo wav files sampled
+  at 44.1 kHz: `drums.wav`, `bass.wav`," (sentence continues); the browser builds return the same four stems as float
+  arrays (demucs-web example `result.drums // { left: Float32Array, right: Float32Array }`). The 6-stem variant adds
+  guitar and piano (demucs-rs README). Each browser build's exact input contract is in its own README. A separated
+  guitar stem is the handoff to Basic Pitch (section 33) and to the guitar-tab lane.
+
+## 51. Beat This! ONNX export for the browser (`musetric/beat-this-onnx`)
+
+- What: Hugging Face model card https://huggingface.co/musetric/beat-this-onnx (licence field `mit`, created
+  2026-07-16, last modified 2026-10-08; read 2026-11-10): "ONNX export of **Beat This!**, the JKU beat/downbeat
+  tracker (checkpoint `final0`), packaged for the [`musetric`][musetric] `packages/ai` runtime on `onnxruntime-web`'s
+  **WebGPU** execution provider." Files: `beat_this.onnx`, `config.json`, `mel-filterbank.bin`.
+- Input / output (card): "beat_this.onnx  spect [windows, 1500, 128] → beat, downbeat [windows, 1500]"; "**Feed one
+  1500-frame window per call** — the author's window, 30 s of audio."; "**The host owns feature extraction, and the
+  contract is exact.** 22050 Hz mono; channels downmixed as the **arithmetic mean**" with "STFT with `n_fft` 1024, hop
+  441, a **periodic Hann** window"; frames are converted to seconds "at `fps` 50". Backends: "The wasm EP also works
+  and gives identical results, at roughly 12× the wall clock." The card also states: "Training-data provenance of the
+  upstream checkpoint is not documented here."
+- Upstream: https://github.com/CPJKU/beat_this (last commit 2026-05-28). README licence section (read 2026-11-10):
+  "The code and the published model weights are released under the [MIT license](LICENSE). Note that some of the
+  training files are fully copyrighted or under limited Creative Commons licenses, and it is up to the user to assess
+  whether this may impact their use case." and on checkpoints: "`final0`, `final1`, `final2`: Our main model, trained
+  on all data except the GTZAN dataset, with three different seeds." `LICENSE`: "MIT License", "Copyright (c) 2024
+  Institute of Computational Perception, JKU Linz, Austria". Beat This! itself (Python) is covered by the
+  chords-beats-key lane.
+- Output to a metronome: beat and downbeat times in seconds (after peak picking or DBN on the 50 fps activations),
+  which a Web Audio scheduler (section 1) or alphaTab sync points (section 15) can take as click times or barline times.
+
+## 52. OpenVoicing (an open-source app that already combines alphaTab, time-stretch and recording sync)
+
+- What: repository https://github.com/pjdoland/openvoicing (shallow clone, last commit 2026-07-26; README read
+  2026-11-10 from https://raw.githubusercontent.com/pjdoland/openvoicing/main/README.md): "**Living sheet music:
+  notation that plays, slows down without changing pitch, and syncs to real recordings.**" Status badge: "status-early
+  development". Features listed: "**Practice:** play/pause, loop, tempo control without pitch change, metronome,
+  count-in." and "**Recordings:** open an audio file, see its waveform, sync it to the score, click to seek, drag to
+  loop, slow it down without changing pitch — via the [Signalsmith Stretch](https://signalsmith-audio.co.uk/code/stretch/)
+  AudioWorklet. Or sync a **YouTube video** and follow the notation as it plays (embedded via YouTube's player, never
+  downloaded)." Rendering: "[alphaTab](https://alphatab.net) behind a renderer-agnostic API."
+- Format and CLI: "self-contained bundles (`.ovb`) holding a score, its recordings, and the sync map that aligns them";
+  CLI shape from the README: `node packages/bundle/bin/ovb.mjs create --score song.musicxml --recording take.mp3 --out
+  song.ovb`; embed: `OpenVoicing.create("#slot", { bundle: "https://example.com/tune.ovb" })`. The README marks the
+  "Embed SDK & `.ovb` format" as "Working; **not yet version-stable** — pin what you embed".
+- Licence: `LICENSE` "MIT License", "Copyright (c) 2026 PJ Doland". `LICENSING.md`: "OpenVoicing is released under the
+  **MIT License**." and "OpenVoicing bundles or depends on a few third-party components that keep their own licenses."
+  and "**alphaTab** (notation rendering and synth): **MPL-2.0**, which is file-level copyleft." Not run here.
+
+## Access needs (what cannot be settled on the CPU-only box)
+
+- WebGPU paths (ONNX Runtime Web `webgpu` EP, Transformers.js `device: 'webgpu'`, demucs-rs, the
+  `monteslu/htdemucs-web-onnx` and `musetric/beat-this-onnx` exports, LiteRT.js GPU): need a browser with a WebGPU
+  adapter. BCD `api.GPU` (read 2026-11-10) lists Chrome 144 (with "Linux (Intel Gen12+ GPUs only)"), Safari 26, Firefox
+  141 on Windows. A desktop browser with a supported GPU is needed to try these paths; the CPU/WASM fallbacks of the
+  same tools can run on the box.
+- WebNN (`webnn/stem-separator`, ONNX Runtime Web `webnn` EP): BCD lists Chrome 112 behind a flag only.
+- Real output latency (`outputLatency`, `getOutputTimestamp()`): a headless container has no sound card, so the values
+  measured there do not describe a listener's device; a real browser on a real device is needed.
+- Licensed SDKs: Superpowered ("there is no free license available that allows public release"; licences through
+  licensing@superpowered.com, and the pricing page says "Superpowered is sunsetting"); Bungee Pro (contact through
+  https://bungee.parabolaresearch.com/); Rubber Band commercial licence (https://breakfastquay.com/rubberband/license.html);
+  Essentia/essentia.js proprietary licence and models (contact MTG-UPF, https://essentia.upf.edu/licensing_information.html).
+
+## Handoff facts
+
+One line per fact: "X outputs ..., which Y accepts as ...". Each half cites the page or file it was read from (all
+read 2026-11-10). Where a conversion is needed between the two, the line says so; a conversion step is a fact about
+formats, not a tested pipeline (tested pipelines are in `trials.md`).
+
+1. Basic Pitch TS `generateFileData(notes)` outputs a MIDI file whose notes carry `midi: note.pitchMidi`,
+   `time: note.startTimeSeconds`, `duration: note.durationSeconds`, `velocity: note.amplitude` plus pitch bends
+   (https://unpkg.com/@spotify/basic-pitch@1.0.1/esm/toMidi.js), which @tonejs/midi reads back as notes with `midi`,
+   `time` (seconds), `ticks`, `duration` (seconds), `velocity` (0-1) (https://unpkg.com/@tonejs/midi@2.0.28/README.md).
+2. @tonejs/midi outputs notes with `midi`, `time` and `duration` in seconds (README above), which smplr accepts as
+   `start({ note: "C4", velocity: 80, time: 5, duration: 1 })` with `velocity` "(0–127)"
+   (https://unpkg.com/smplr@1.2.0/README.md); @tonejs/midi's 0-1 velocity has to be scaled to 0-127.
+3. Basic Pitch TS outputs note events with `pitchMidi`, `startTimeSeconds`, `durationSeconds`, `amplitude`,
+   `pitchBends` (toMidi.js above) or a MIDI file (fact 1), which the string-and-fret assigners of the guitar-tab lane take
+   as MIDI or note lists (`lanes/guitar-tab/survey.md`).
+4. A MIDI file (from Basic Pitch or any transcriber) is not among alphaTab's documented input formats: alphaTab "renders
+   interactive guitar tabs and sheet music from Guitar Pro, MusicXML, Capella, and the built-in alphaTex syntax"
+   (https://alphatab.net); the notes must first be written as one of those (for example by the guitar-tab or
+   web-tab-render lanes' tools) before alphaTab can render, play and sync them.
+5. Guitar Pro files (written by tools in the guitar-tab lane, `lanes/guitar-tab/survey.md`) are read by alphaTab
+   (https://alphatab.net), which then plays them with `metronomeVolume`, `countInVolume` and `playbackSpeed`
+   (https://alphatab.net/docs/reference/api/metronomevolume , /countinvolume , /playbackspeed).
+6. Beat This! (ONNX export) outputs beat and downbeat activations at "`fps` 50", turned into times in seconds by the
+   host's peak picking or DBN (https://huggingface.co/musetric/beat-this-onnx), which alphaTab accepts as sync points in
+   the flat form `{ barIndex, barPosition, barOccurence, millisecondOffset }` ("millisecondOffset — the audio timestamp
+   in milliseconds this point maps to", https://alphatab.net/docs/features/play-sync/sync-points-at-runtime): downbeat
+   k at t seconds maps to `{ barIndex: k, barPosition: 0, barOccurence: 0, millisecondOffset: 1000 * t }` when the
+   score's bars match the recording's bars one to one (repeats need `barOccurence`).
+7. web-audio-beat-detector `guess()` outputs "the estimated BPM (the rounded tempo) and the offset of the first beat in
+   seconds" (https://unpkg.com/web-audio-beat-detector@8.2.39/README.md), which a Web Audio metronome accepts as click
+   times `start(t0 + offset + n * 60 / bpm)` on the `currentTime` clock (`start(when)`: "The time, in seconds, at which
+   the sound should begin to play", MDN `AudioScheduledSourceNode.start()`).
+8. Beat This! beat times (seconds of media time, fact 6) feed the same `start(when)` scheduler; at a slowed playback
+   rate r, a beat at media time m plays at context time `t0 + (m - m0) / r`, where Signalsmith Stretch's
+   `schedule({ output, input, rate })` takes `output` as "audio context time for this change" and `input` as "position
+   in input buffer" (https://unpkg.com/signalsmith-stretch@1.3.2/README.md).
+9. `requestVideoFrameCallback` outputs `metadata.mediaTime` ("the media presentation timestamp of the presented frame",
+   in seconds) and `presentedFrames` (MDN `HTMLVideoElement.requestVideoFrameCallback()`), which MediaPipe Hand
+   Landmarker accepts as `detectForVideo(frame, timestampMs)` in `runningMode: "VIDEO"` "with monotonic timestamps"
+   (https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker/web_js): `timestampMs = mediaTime * 1000`.
+10. WebCodecs `VideoFrame` carries its timestamp "in microseconds" (MDN WebCodecs API page), and the MediaPipe web
+    guide's example passes decoded frames with a millisecond timestamp to `detectForVideo(frame, timestampMs)` (guide
+    above): divide by 1000. Whether `detectForVideo` takes a WebCodecs `VideoFrame` object directly is UNVERIFIED here.
+11. MediaPipe Hand Landmarker outputs 21 landmarks per hand in image coordinates, world landmarks as "21 3D keypoints per
+    hand in real-world meters", and handedness (https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker),
+    which the video-hands-fretboard lane maps to fret and string positions (`lanes/video-hands-fretboard/survey.md`);
+    OpenCV.js (section 49) is the in-browser library for the geometry step.
+12. ffmpeg.wasm `exec(args: string[])` with `-ac 1 -ar 22050` writes mono 22,050 Hz audio
+    (https://unpkg.com/@ffmpeg/ffmpeg@0.12.15/dist/esm/classes.d.ts for the API; the flags are FFmpeg's own), which Basic
+    Pitch TS requires: it throws "Input audio buffer is not at correct sample rate!" or "Input audio buffer is not
+    mono!" otherwise (https://unpkg.com/@spotify/basic-pitch@1.0.1/esm/inference.js).
+13. Mediabunny reads MP4/MOV/WebM/MKV/MP3/WAVE/Ogg/FLAC and decodes through WebCodecs
+    (https://unpkg.com/mediabunny@1.65.2/README.md); WebCodecs `AudioData` sample data "can be extracted as a
+    {{jsxref("Float32Array")}} via the `copyTo` method" (MDN WebCodecs API), which must be downmixed and resampled to 22,050 Hz mono before Basic Pitch TS
+    accepts it (fact 12).
+14. The in-browser Demucs builds output four stems; demucs-web returns `result.drums // { left: Float32Array, right:
+    Float32Array }` (https://unpkg.com/demucs-web@1.0.2/README.md) and Demucs writes "four stereo wav files sampled at
+    44.1 kHz" (https://github.com/facebookresearch/demucs README), which Basic Pitch TS accepts only after downmix to
+    mono and resampling to 22,050 Hz (fact 12). The 6-stem model adds a guitar stem (demucs-rs README).
+15. An `<audio>`/`<video>` element with `playbackRate` and `preservesPitch` (HTML Standard) is accepted by alphaTab as an
+    external media source through `IExternalMediaHandler`; the guide's example passes
+    `updatePosition((media.currentTime / media.playbackRate) * 1000)` and seeks with `media.currentTime = (time *
+    media.playbackRate) / 1000` (https://alphatab.net/docs/guides/audio-video-sync).
+16. A YouTube iframe player's `getCurrentTime()` is accepted by alphaTab through the same handler, as in the guide's
+    example `api.player.output.updatePosition(player.getCurrentTime() * 1000)` (same page); YouTube's own terms are
+    covered by the hosted-apis lane.
+17. alphaTab outputs position events with the current time "in milliseconds" and "in midi ticks", plus `isSeek`,
+    `originalTempo`, `modifiedTempo` (https://alphatab.net/docs/reference/types/synth/positionchangedeventargs/), and
+    metronome ticks as `AlphaTabMetronomeEvent` through `midiEventsPlayed`
+    (https://alphatab.net/docs/features/play-sync/count-in-and-metronome), which a page can use to drive a waveform
+    cursor (wavesurfer.js, section 16) or a video seek; the receiving API calls are not checked here.
+18. User constraint "tuning and capo" (lowest sounding open-string pitch) maps onto Basic Pitch TS's `minFreq`/`maxFreq`
+    arguments of `outputToNotesPoly` (toMidi.js above); "tempo range" maps onto web-audio-beat-detector's
+    `tempoSettings` (default "between 90 and 180 bpm", README above) and onto the DBN range in the Beat This! host
+    post-processing ("55–215 BPM", model card above); "this bar starts here" maps onto an alphaTab sync point (fact 6).
+19. pitchy `findPitch(input, sampleRate)` outputs "the detected pitch (in Hz) and a "clarity"" value
+    (https://unpkg.com/pitchy@4.1.0/README.md); a measured open-string frequency compared with its nominal frequency gives
+    the tuning offset in cents (1200 · log2(f / f_nominal)), the "tuning" constraint of fact 18 (shared input S7 is
+    detuned by a known number of cents, `PLAN.md`).
+20. A guitar stem or full mix decoded in the page can be shown with wavesurfer.js (`WaveSurfer.create({ url })`) or with
+    peaks.js from precomputed `audiowaveform` data (`dataUri: { arraybuffer: 'sample.dat' }`), and wavesurfer's Regions
+    plugin gives "visual overlays and markers for regions of audio" for choosing a loop to slow down (sections 16 to 18).

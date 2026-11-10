@@ -4,8 +4,9 @@ Usage: python3 -I verify_quotes.py SURVEY CACHE_DIR OUT_TSV [--refetch]
 Each section ("## " heading) has a list of source URLs (the ones the survey cites, plus source files it cites by
 path). Every URL is fetched once with curl into CACHE_DIR; HTML is reduced to text. A quote is split on "...",
 "[...]" and the ellipsis character, and each piece is searched in every source of the section after collapsing
-whitespace ("ws"), and then after also unifying quote marks and dashes and dropping markdown/RST markup ("loose").
-Output columns: section, status (WS / LOOSE / MISSING / FETCH-FAIL), source where found, the quote.
+whitespace ("ws"), then after also unifying quote marks and dashes and dropping markdown/RST markup ("loose"), and then
+with all whitespace removed ("nows", i.e. "whitespace aside").
+Output columns: section, status (WS / LOOSE / NOWS / MISSING), source where found, the quote.
 A MISSING line is not a verdict: nested quotes in code snippets split badly, so every MISSING line is read by hand."""
 import hashlib, html, html.parser, json, os, re, subprocess, sys
 
@@ -137,7 +138,7 @@ def main():
         t, c = fetch(u, cache, refetch)
         codes[u] = c
         if t is not None:
-            texts[u] = (ws(t), loose(t))
+            texts[u] = (ws(t), loose(t), re.sub(r"\s", "", loose(t)))
     lines = open(survey, encoding="utf-8").read().split("\n")
     sec, blocks, cur = None, [], []
     for ln in lines:
@@ -165,6 +166,9 @@ def main():
                 hit = next((u for u in srcs if u in texts and loose(p) in texts[u][1]), None)
                 if hit:
                     where.append(hit); status = "LOOSE" if status == "WS" else status; continue
+                hit = next((u for u in srcs if u in texts and re.sub(r"\s", "", loose(p)) in texts[u][2]), None)
+                if hit:  # matches once all whitespace is ignored ("whitespace aside")
+                    where.append(hit); status = "NOWS" if status in ("WS", "LOOSE") else status; continue
                 status = "MISSING"; where.append("-"); break
             rows.append((sec[:28], status, ";".join(sorted(set(where)))[:160], q[:300]))
     with open(out, "w") as f:

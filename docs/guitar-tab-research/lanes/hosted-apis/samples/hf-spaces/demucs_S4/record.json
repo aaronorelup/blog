@@ -1,0 +1,65 @@
+{
+ "space": "nakas/demucs_playground",
+ "api_name": "/predict",
+ "input": "/home/user/gtr/inputs/S4/S4.wav",
+ "token": null,
+ "client": "gradio_client 0.5.3",
+ "runtime_before": {
+  "stage": "RUNNING",
+  "hardware": {
+   "current": "cpu-basic",
+   "requested": "cpu-basic"
+  }
+ },
+ "space_sha": "d924a6d388a60dc69d42d061ebbda7a27fab6347",
+ "ok": true,
+ "wall_s": 172.462,
+ "status_changes": [
+  {
+   "t_s": 1.25,
+   "code": "Status.STARTING",
+   "rank": null,
+   "queue_size": null,
+   "eta": null
+  },
+  {
+   "t_s": 2.26,
+   "code": "Status.SENDING_DATA",
+   "rank": null,
+   "queue_size": null,
+   "eta": null
+  },
+  {
+   "t_s": 4.26,
+   "code": "Status.PROCESSING",
+   "rank": null,
+   "queue_size": null,
+   "eta": null
+  },
+  {
+   "t_s": 167.45,
+   "code": "Status.FINISHED",
+   "rank": null,
+   "queue_size": null,
+   "eta": null
+  }
+ ],
+ "result": [
+  {
+   "file": "/home/user/gtr/lanes/hosted-apis/out/hf-spaces/demucs_S4_old/files/63f99a359083f54e094b1b59b14990ae27f47f5a_vocals.wav",
+   "bytes": 6834024
+  },
+  {
+   "file": "/home/user/gtr/lanes/hosted-apis/out/hf-spaces/demucs_S4_old/files/b0b779ceac255cb72530e1f542c8329d0bfa0a2e_bass.wav",
+   "bytes": 6834024
+  },
+  {
+   "file": "/home/user/gtr/lanes/hosted-apis/out/hf-spaces/demucs_S4_old/files/c23e384f2b47eeb8f85238e62c53f2aae9604b5f_drums.wav",
+   "bytes": 6834024
+  },
+  {
+   "file": "/home/user/gtr/lanes/hosted-apis/out/hf-spaces/demucs_S4_old/files/b57f9de8833a20b286b600148322d5e44c01f07e_other.wav",
+   "bytes": 6834024
+  }
+ ]
+}

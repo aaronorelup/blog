@@ -1,0 +1,118 @@
+{
+ "source": "/home/user/gtr/lanes/web-tab-render/out/alphatab-player/S2n_plain.player.json",
+ "truth": "/home/user/gtr/inputs/S2n/S2n.truth.json",
+ "bpm": 112.0,
+ "speed": 1.0,
+ "countin_bars_assumed": 0,
+ "setup": {
+  "playerState": 0,
+  "isReadyForPlayback": true,
+  "endTime": 27857.14285714288,
+  "endTick": 49920,
+  "metronomeVolume": 0,
+  "countInVolume": 0,
+  "playbackSpeed": 1,
+  "actualPlayerMode": 2,
+  "outputMode": 0,
+  "ctxState": null,
+  "AudioContext": "function",
+  "AudioWorkletNode": "function",
+  "playReturned": true
+ },
+ "event_counts": {
+  "playerStateChanged": 5,
+  "position": 2409,
+  "scoreLoaded": 1,
+  "midiLoaded": 2,
+  "renderStarted": 1,
+  "renderFinished": 1,
+  "postRenderFinished": 1,
+  "soundFontLoaded": 1,
+  "playerReady": 1,
+  "play_called": 1,
+  "playedBeat": 49,
+  "activeBeats": 49,
+  "metronome": 52,
+  "type_128": 90,
+  "type_144": 88,
+  "playerFinished": 1
+ },
+ "definition": "latency = (page time when the handler ran - page time of api.play()) - expected song time of the event (tick/960*60/bpm/speed, plus the count-in bars when given). Positive = the event arrived after its nominal time.",
+ "playedBeatChanged_latency": {
+  "n": 49,
+  "median_ms": 154.86,
+  "mean_ms": 152.7,
+  "min_ms": 29.2,
+  "max_ms": 167.33,
+  "p95_abs_ms": 166.63,
+  "stdev_ms": 19.07
+ },
+ "midi_type_128_latency": {
+  "n": 90,
+  "median_ms": 130.77,
+  "mean_ms": 131.14,
+  "min_ms": 121.9,
+  "max_ms": 139.13,
+  "p95_abs_ms": 138.29,
+  "stdev_ms": 4.69
+ },
+ "position_wall_minus_reported_ms": {
+  "n": 2400,
+  "median_ms": 126.47,
+  "mean_ms": 126.6,
+  "min_ms": 120.85,
+  "max_ms": 176.17,
+  "p95_abs_ms": 131.31,
+  "stdev_ms": 3.59
+ },
+ "first_position_event_after_play_ms": 142.39999999999998,
+ "playerFinished_after_play_ms": 27994.4,
+ "metronome_events": 52,
+ "metronome_first5": [
+  [
+   142.5,
+   0,
+   0
+  ],
+  [
+   672.0,
+   960,
+   1
+  ],
+  [
+   1201.9,
+   1920,
+   2
+  ],
+  [
+   1742.1,
+   2880,
+   3
+  ],
+  [
+   2272.2,
+   3840,
+   0
+  ]
+ ],
+ "metronome_interval_ms": {
+  "n": 51,
+  "median_ms": 530.4,
+  "mean_ms": 535.5,
+  "min_ms": 524.4,
+  "max_ms": 551.9,
+  "p95_abs_ms": 550.0,
+  "stdev_ms": 7.63
+ },
+ "audio_export": {
+  "ms": 371.60000000009313,
+  "n_float_samples": 2457088,
+  "last": {
+   "currentTime": 27500,
+   "endTime": 27857.14285714288,
+   "currentTick": 49922,
+   "endTick": 49920
+  },
+  "file": "/home/user/gtr/lanes/web-tab-render/out/alphatab-player/S2n_plain.export.wav"
+ }
+}

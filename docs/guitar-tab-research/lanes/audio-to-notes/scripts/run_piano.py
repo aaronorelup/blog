@@ -2,7 +2,7 @@
 
 usage: python run_piano.py <bytedance|transkun> <outdir> [--clips S1,S2n,...]
 bytedance: piano_transcription_inference 0.0.6, PianoTranscription(model_type='Note_pedal', device='cpu',
-           checkpoint_path=<Zenodo record 4034264 checkpoint>) on load_audio(path, sr=16000, mono=True)
+           checkpoint_path=<Zenodo record 4034264 checkpoint>) on librosa.load(path, sr=16000, mono=True)
 transkun:  transkun 2.0.1 CLI `transkun <in.wav> <out.mid> --device cpu` (bundled pretrained/2.0.pt), run as a
            subprocess per clip
 Per clip: <clip>.mid, <clip>.notes.csv (onset_s,offset_s,pitch_midi,velocity), timings.json (per-clip seconds).
@@ -39,7 +39,10 @@ for clip in a.clips.split(","):
     mid = os.path.join(a.outdir, f"{clip}.mid")
     t1 = time.perf_counter()
     if a.tool == "bytedance":
-        audio, _ = load_audio(path, sr=sample_rate, mono=True)
+        # the package's own load_audio() fails with librosa 0.11 (it calls librosa.core.audio.util.buf_to_float,
+        # which no longer exists), so the audio is read with librosa.load at the package's sample rate instead
+        import librosa
+        audio, _ = librosa.load(path, sr=sample_rate, mono=True)
         d = tr.transcribe(audio, mid)
         extra = {"n_pedal_events": len(d.get("est_pedal_events", []) or [])}
     else:

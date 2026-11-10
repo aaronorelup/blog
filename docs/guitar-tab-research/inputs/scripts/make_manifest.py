@@ -91,7 +91,7 @@ def main():
            "| id | files (in /home/user/gtr/inputs/&lt;id&gt;/) | duration | sample rate / channels | what it is | truth | source URL | license (quoted clause) | attribution |",
            "|---|---|---|---|---|---|---|---|---|"] + rows
     out += ["", f"Clips present: {len(present)} ({', '.join(present)}). Not present: "
-            f"{', '.join(missing) if missing else 'none'} (reasons below).", "", tail.strip(), "",
+            + (f"{', '.join(missing)} (reasons below)." if missing else "none."), "", tail.strip(), "",
             "## sha256 of every audio and video file", "", "| file | bytes | sha256 |", "|---|---|---|"]
     out += [f"| `{f}` | {b} | `{h}` |" for f, b, h in shas]
     text = "\n".join(out) + "\n"

@@ -1,0 +1,70 @@
+{
+ "tool": "pesto",
+ "clips": {
+  "S1": {
+   "input": "/home/user/gtr/inputs/S1/S1.mono.wav",
+   "seconds": 5.868,
+   "n_frames": 2984,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 2984
+  },
+  "S2n": {
+   "input": "/home/user/gtr/inputs/S2n/S2n.mono.wav",
+   "seconds": 6.52,
+   "n_frames": 2936,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 2936
+  },
+  "S2s": {
+   "input": "/home/user/gtr/inputs/S2s/S2s.mono.wav",
+   "seconds": 6.069,
+   "n_frames": 2936,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 2936
+  },
+  "S4": {
+   "input": "/home/user/gtr/inputs/S4/S4.mono.wav",
+   "seconds": 5.89,
+   "n_frames": 3875,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 3875
+  },
+  "S4lead": {
+   "input": "/home/user/gtr/inputs/S4/stems/lead.wav",
+   "seconds": 7.403,
+   "n_frames": 3875,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 3875
+  },
+  "R1b": {
+   "input": "/home/user/gtr/inputs/R1b/R1b.mono.wav",
+   "seconds": 4.409,
+   "n_frames": 2934,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 2934
+  },
+  "R2": {
+   "input": "/home/user/gtr/inputs/R2/R2.mono.wav",
+   "seconds": 5.937,
+   "n_frames": 3601,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 3601
+  },
+  "R3a": {
+   "input": "/home/user/gtr/inputs/R3a/R3a.mono.wav",
+   "seconds": 2.234,
+   "n_frames": 1800,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 1800
+  }
+ },
+ "version": "pesto-pitch 2.0.1",
+ "settings": {
+  "model_name": "mir-1k_g7 (default)",
+  "step_size_ms": 10.0,
+  "reduction": "alwa (default)",
+  "sr": "native 44100 (PESTO computes its own CQT)",
+  "confidence": "PESTO confidence output"
+ },
+ "setup_s": 4.383
+}

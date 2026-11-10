@@ -7,13 +7,15 @@ app below has a test of about 10 minutes for you, on your Windows 11 laptop, in 
 features and terms quoted here come from the vendors' pages as read on 2026-11-10 (`survey.md` has the quotes and
 links); check the price on screen before you pay anything.
 
-Do them in the order given: sitting 1 is web apps that are free, sitting 2 is free Windows trials, sitting 3 is phone
-apps, and the paid ones are last and optional. You do not need to do all of them; each test stands on its own.
+Do them in the order given: sittings 1 and 1b are web apps with a free tier, sitting 2 is free Windows trials,
+sitting 3 is phone apps, and the paid ones are last and optional. You do not need to do all of them; each test
+stands on its own.
 
 ## Before you start (once, 5 minutes)
 
-1. **Get the test clips.** The orchestrator files the shared clips in your studio library with this research. Use
-   these files (the same ids are used in every lane, so results can be scored against the known answers):
+1. **Get the test clips.** They are on the research box (paths below), and the orchestrator files this research's
+   audio and video in your studio library; ask for them if they are not there. Use these files (the same ids are
+   used in every lane, so results can be scored against the known answers):
 
    | Id | File | What it is | Length |
    |---|---|---|---|
@@ -90,7 +92,7 @@ Free plan: "30 second transcriptions"; PDF, MIDI and musicXML download are liste
 
 Send back: screenshots, any downloads, `notes.txt`.
 
-### 3. Songsterr AI (free 20-second preview; you will probably need to sign in, since it emails you when done)
+### 3. Songsterr AI (free 20-second preview; it emails you when the tab is ready, so expect to give an email address)
 
 Songsterr's help: "You can start with a free 20-second preview. Full-length transcription is included in Songsterr
 Plus"; "A tab is usually ready in 5–15 minutes, and we email you when it's done". Its settings page lets you set the
@@ -107,46 +109,46 @@ tuning and a "Capo fret" for each instrument before the run.
 
 Send back: screenshots, downloads, `notes.txt` with the minutes until the email came.
 
-### 4. Songscription (free: "The first 30 seconds of each song"; account)
+### 4. Songscription (free: "The first 30 seconds of each song")
 
 The home page says "At the moment, we only support standard tuning". Its pricing FAQ says "By default, we may use the
 audio and transcriptions you submit to help improve our AI models" (Plus and Pro can opt out).
 
-1. Open https://www.songscription.ai, sign up, upload `S2s.wav`, ask for guitar tab.
+1. Open https://www.songscription.ai, sign up if it asks, upload `S2s.wav`, ask for guitar tab.
 2. Screenshot the result; export Guitar Pro and PDF if the free plan allows.
 3. Repeat with `S5dropd.wav` (to see what it does with a tuning it says it does not support) and `R1a.wav`.
 
 Send back: exports, screenshots, `notes.txt`.
 
-### 5. audio2guitar (free: 3 songs, MP3 only; account)
+### 5. audio2guitar (free: "3 songs", MP3 only)
 
 The vendor states: "Our pipeline achieves 97.8% string assignment accuracy on the GuitarSet benchmark". R1a is a
 GuitarSet recording, so its string and fret output on R1a can be scored against GuitarSet's own annotation.
 
-1. Open https://audio2guitar.com, sign up, upload `R1a.mp3` (the free plan takes MP3 only).
+1. Open https://audio2guitar.com, sign up if it asks, upload `R1a.mp3` (the free plan takes MP3 only).
 2. Screenshot the tab and the header line (the demo shows "Tuning", "Key" and "Tempo"); export MIDI and the PDF if
    the free plan allows.
 3. Use the other two free songs on `S2s.mp3` and `S5dropd.mp3` (note the tuning it reports for S5dropd).
 
 Send back: exports, screenshots, `notes.txt`.
 
-### 6. AAPA AutoTabs (video in; free tier; account) — the only released app found that reads the hands from video
+### 6. AAPA AutoTabs (video in; free tier): the only released app found by this lane and the docs lane that says it reads the hands from video
 
 The vendor: "AutoTabs listens to the audio and uses machine vision to analyze the guitarist's hands and fretboard".
 Its terms §4.2 make sharing your video for training opt-in; leave it off unless you want it.
 
-1. Open https://aapamusic.com, sign up, open AutoTabs and upload `R3a.mp4` (and `R3b.mp4` / `R3c.mp4` if the inputs
+1. Open https://aapamusic.com, sign up if it asks, open AutoTabs and upload `R3a.mp4` (and `R3b.mp4` / `R3c.mp4` if the inputs
    agent added them; they show the hands closer).
 2. Screenshot the draft tab and any video overlay; export PDF and MIDI.
 3. If it has a capo or tuning setting, note it but leave it on default.
 
 Send back: exports, screenshots, `notes.txt` (time, and whether the result mentions what it saw in the video).
 
-### 7. Moises (free tier: "a limited number of uploads each month"; account)
+### 7. Moises (free tier: "a limited number of uploads each month")
 
 Moises shows stems, chords, BPM and key; it does not describe note-level tab with string and fret.
 
-1. Open https://moises.ai (web app), sign in, upload `S4.wav` (synthesized band with known chords, beats and stems).
+1. Open https://moises.ai (web app), sign in if it asks, upload `S4.wav` (synthesized band with known chords, beats and stems).
 2. Ask for the stem split that includes a guitar stem; open the chord view.
 3. Screenshot the chord view and the BPM and key it shows; download the guitar stem and anything else the free tier
    allows (chords as a file if offered).
@@ -154,14 +156,14 @@ Moises shows stems, chords, BPM and key; it does not describe note-level tab wit
 
 Send back: screenshots, stems (audio files go to the studio library, not to git), `notes.txt`.
 
-### 8. Chordify (account; uploading your own file may need Premium)
+### 8. Chordify (uploading your own file may need Premium)
 
 chordify.net answered the research box with HTTP 403 (a Cloudflare check), so its site and terms were not read; its
 App Store listing mentions MIDI and PDF downloads of the chords and a capo display option, and third-party pages say
 uploading your own file is a Premium feature (not checked). If the upload button asks you to pay, write down the
 price shown and skip. While you are on the site, save its terms page as PDF (the research box could not read it).
 
-1. Open https://chordify.net, sign in, upload `S3.wav`.
+1. Open https://chordify.net, sign in if it asks, upload `S3.wav`.
 2. Screenshot the chord timeline; download MIDI or PDF if offered.
 3. Repeat with `S7flat30.wav` and `R2.wav`.
 
@@ -171,6 +173,49 @@ Send back: screenshots, downloads, the terms PDF, `notes.txt`.
 
 ChordU's terms and prices were not read. If it lets you upload without paying: upload `S3.wav` and `R2.wav`,
 screenshot the chords and the BPM it shows, and write down whether it needed an account.
+
+## Sitting 1b: web apps found late on 2026-11-10 (about 40 minutes; not yet in `survey.md`)
+
+These four were found by web search near the end of this lane and only their home pages were read (2026-11-10);
+their terms and full prices were not read, so check them on screen.
+
+### 20. Note2Tabs (https://www.note2tabs.com; "Free $0 / month", paid "$5.99 / month" and "$14.99 / month")
+
+Home page: "Upload an MP3 or WAV, or paste a YouTube link to generate playable guitar tabs online. Edit, practise,
+and export every transcription in your browser."
+
+1. Start free, upload `S2s.wav`; screenshot the tab; export whatever the free plan allows.
+2. Repeat with `R1a.wav` and `S5dropd.wav` (note the tuning it shows).
+
+### 21. Cesure (https://cesure.app; free tier; "€4.99 per month or €39.99 per year")
+
+Home page: "AI transcription (BasicPitch) runs on our servers: 3 free conversions a month, unlimited with Pro. Chord
+detection is a different thing — it is computed entirely on your device, free and offline." An account "is required
+for AI transcription"; free export to "MIDI, MusicXML, AlphaTex and PDF".
+
+1. Sign up, "Drop in an MP3": `S2s.mp3`, then `R1a.mp3` (2 of the 3 free conversions). Export MIDI and MusicXML;
+   screenshot the tab.
+2. Open the chord grid (the free on-device part) on `S3.mp3` and `S7flat30.mp3`; screenshot.
+
+### 22. RiffToTab (https://rifftotab.com; MIDI to tab is Pro, audio to MIDI is free)
+
+Home page: "Drop a .mid file and get tab a hand can play"; "Strings and frets are chosen for the whole phrase. If
+another tuning or a capo measures easier, it is used and named."; "Change tuning, capo or key, then convert again";
+"Opening your file, editing notes and Guitar Pro export are free. Generating the tab is Pro." It also says "One
+button re-arranges the same notes for Drop D, a capo on the 2nd fret, a key a step down", the kind of re-run with a
+user's tuning or capo that the planned web app needs. The tab step is paid (the Pro price was not read).
+
+1. Free part: "Turn audio into MIDI, free" with `S2s.wav`; export the MIDI.
+2. Pro part (only if you choose to pay): drop the answer-key MIDI `S2s.mid` (from the inputs, so only the fingering is
+   tested); export Guitar Pro. Then use "Change tuning, capo or key" for capo 2 and for Drop D and export each; and
+   write down what tuning and capo its strip says it used.
+
+Send back for 20 to 22: exports, screenshots, `notes.txt`.
+
+### 23. Fretwise (https://fretwise.ai; "Audio in. Tabs out.")
+
+Its page text (most of it loads by script) says: "The fastest audio to MIDI + Guitar Pro transcriber in the world."
+and "Sign In". If it has a free tier: upload `S2s.wav`, export MIDI and Guitar Pro, screenshot, note the price shown.
 
 ## Sitting 2: free Windows trials on the laptop (about 70 minutes, cost 0)
 
@@ -192,7 +237,7 @@ Nvidia GPUs; whether 6.3.0 uses your RTX 4070 is not known, so note it if the pr
 4. Open `S5dropd.wav`, and before transcribing set the strings to Drop D in the tablature options. Its documentation
    says "Strings should be set to the instrument's _written_, not _sounded_, pitches" ("With guitar and bass guitar,
    for example, this is an octave above the sounded pitch"), so the low string is written D3. Export as above.
-5. Open `S5capo2.wav` with default settings (there is no capo setting documented) and `R1a.wav` and `R2.wav`; export
+5. Open `S5capo2.wav` with default settings (no capo setting was found in its documentation or FAQ) and `R1a.wav` and `R2.wav`; export
    each.
 
 Send back: `license.txt`, all exports, screenshots, `notes.txt` with the time of each transcription.
@@ -336,7 +381,7 @@ box could not install it.
 Send back: screenshots, `notes.txt` (did the strings and frets it drew line up with your real neck; did it lose the
 neck when you moved).
 
-## Not worth testing with the shared clips (and why)
+## Not tested with the shared clips (and why)
 
 - **Ultimate Guitar "AI chords"**: its help article describes a YouTube link as the input; the shared clips are not
   on YouTube.
@@ -352,6 +397,9 @@ neck when you moved).
 - **Positive Grid Spark "Auto Chords"**: "*Requires Spark Amp*".
 - **TabGenius**: makes a tab from a typed or spoken idea, not from audio.
 - **GrabTab**: "Coming soon to iOS & Android" on 2026-11-10.
+- **ChordAR** (manbr21/Computer-Vision-Guitar-Tutor): needs four printed ArUco markers stuck on your guitar's neck and
+  a live webcam; it scores chord shapes and does not transcribe.
+- **TapToTab** (arXiv 2409.08618): a research paper; no code release was found.
 
 ## For the agent that receives Aaron's zip: how each returned file can be scored
 

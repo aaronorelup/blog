@@ -1,18 +1,25 @@
 # Shared test inputs: manifest
 
-Built 2026-11-10 (UTC) by the `inputs-builder` agent. Audio and video live in `/home/user/gtr/inputs/<id>/`. The
-manifest, the scripts and every small truth file (.json .mid .csv .txt .lab .gp5) are copied to
-`docs/guitar-tab-research/inputs/<id>/` in the blog repo; no audio or video is copied there.
+Built 2026-11-10 (UTC) by the `inputs-builder` agent; R3b and R3c were added the same day (20:52 to 21:35 UTC) by the
+`inputs-video` agent. Audio and video live in `/home/user/gtr/inputs/<id>/`. The manifest, the scripts and every
+small truth file (.json .mid .csv .txt .lab .gp5) are copied to `docs/guitar-tab-research/inputs/<id>/` in the blog
+repo; no audio or video is copied there.
 
 Scripts (in `docs/guitar-tab-research/inputs/scripts/`): `make_synth.py` (S1 to S7), `make_guitarset.py` (R1a to R1c),
-`make_r2.py` (R2, R2full), `make_r3.py` (R3a), `make_manifest.py` (this file), `gtr_common.py` (shared writers),
-`inputs_notes.md` (the hand-written part of this file). Check reports: `_checks/synth_checks.json`,
-`_checks/guitarset_checks.json`, `_checks/r2_checks.json`.
+`make_r2.py` (R2, R2full), `make_r3.py` (R3a), `make_r3bc.py` (R3b, R3c truth files), `encode_r3_excerpt.sh` (the
+R3b and R3c excerpt encodes, R3a's settings), `check_r3bc.py` (R3b, R3c read-back), `make_manifest.py` (this file),
+`gtr_common.py` (shared writers), `inputs_notes.md` (the hand-written part of this file). Check reports:
+`_checks/synth_checks.json`, `_checks/guitarset_checks.json`, `_checks/r2_checks.json`, `_checks/r3bc_checks.json`.
 
 Run ledger (`/home/user/gtr/ledger/runs.jsonl`, lane `inputs`): r0007 first synth render (superseded by r0008, same
 script before three fixes), r0008 final synth render (wall 28.55 s), r0010 R3a encodes (wall 19.3 s), r0011 R3a
-scene-cut scan (wall 32.5 s). The GuitarSet, R2 and R3a-truth scripts are light file conversions and were not run
-through `gtr-run`.
+scene-cut scan (wall 32.5 s), r0056 R3b-source scene-cut scan (wall 87.3 s), r0142, r0146 and r0152 R3c-source
+scene-cut scans over 200-270 s (r0152 used; wall 32.7 s), r0169 R3b encodes (wall 237.7 s, 143.4 CPU s), r0175 R3c
+encodes (wall 183.6 s, 105.4 CPU s), r0183 R3b/R3c read-back (`check_r3bc.py`, wall 10.0 s). The R3c scans,
+the R3b/R3c encodes and the read-back ran with `--nolock` (no CPU slot, not pinned) because about 17 runs of other
+lanes were queued for the two slots at 21:16 UTC; the encodes were limited to 2 threads (`FF_THREADS=2`). Their wall
+times are not comparable with slot runs. The GuitarSet, R2 and R3 truth scripts are light file conversions and were
+not run through `gtr-run`.
 
 ## Clips
 
@@ -33,19 +40,28 @@ through `gtr-run`.
 | R2 | `R2.mono.wav`<br>`R2.wav`<br>`stems/instrumental.wav`<br>`stems/vocals_derived.wav`<br>`R2.truth.json` | 36.000 s | 44100 Hz / 2 ch | Real full-band song with singing: Josh Woodward, 'I Want to Destroy Something Beautiful' (album Dirty Wings), excerpt 32.000-68.000 s of the song (R2full). No ground truth. The artist's song page lists Key D# minor, Tempo 72 bpm, Meter 4/4 Swing (artist's metadata, not checked here). stems/instrumental.wav is the artist's own instrumental version; stems/vocals_derived.wav = song minus instrumental, computed here. | stems: instrumental, vocals_derived | https://www.joshwoodward.com/song/IWantToDestroySomethingBeautiful | CC BY 4.0: "This work is licensed under a Creative Commons Attribution 4.0 License" | "I Want to Destroy Something Beautiful" by Josh Woodward (album Dirty Wings), https://www.joshwoodward.com/, licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). |
 | R2full | `R2full.mono.wav`<br>`R2full.wav`<br>`original/JoshWoodward-DW-01-IWantToDestroySomethingBeautiful.flac`<br>`original/JoshWoodward-DW-NoVox-01-IWantToDestroySomethingBeautiful.flac`<br>`stems/instrumental.wav`<br>`stems/vocals_derived.wav`<br>`R2full.truth.json` | 228.482 s | 44100 Hz / 2 ch | Real full-band song with singing: Josh Woodward, 'I Want to Destroy Something Beautiful' (album Dirty Wings), the whole song. No ground truth. The artist's song page lists Key D# minor, Tempo 72 bpm, Meter 4/4 Swing (artist's metadata, not checked here). stems/instrumental.wav is the artist's own instrumental version; stems/vocals_derived.wav = song minus instrumental, computed here. | stems: instrumental, vocals_derived | https://www.joshwoodward.com/song/IWantToDestroySomethingBeautiful | CC BY 4.0: "This work is licensed under a Creative Commons Attribution 4.0 License" | "I Want to Destroy Something Beautiful" by Josh Woodward (album Dirty Wings), https://www.joshwoodward.com/, licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). |
 | R3a | `R3a.mono.wav`<br>`R3a.mp4`<br>`R3a.wav`<br>`R3a.webm`<br>`original/crescendo313_2014_09_04_0.mp4`<br>`R3a.truth.json` | 18.000 s | 44100 Hz / 2 ch | Real classical guitar performance video (nylon strings, played with the fingers), 18 s excerpt (400-418 s) of a 28-minute concert recording; 640x480, 30000/1001 fps, progressive. Multi-camera edit: medium shot of the seated player from the front at a slight angle (guitar neck and fretting hand at the upper right of the player, picking hand at the sound hole partly behind a microphone stand) from 0 to 7.27 s, a wide shot of the stage (player small in frame, a music stand in front of the lower guitar body) from 7.27 to 14.65 s, and the medium shot again from 14.65 s to the end (cut times from ffmpeg scene score > 0.12). The piece played is not identified in the item's metadata. No ground truth. | none (no ground truth) | https://archive.org/details/scm-422828-crescendo313-drh-meredithconn | CC BY-SA 4.0: "Usage: Attribution-ShareAlike 4.0 International (https://creativecommons.org/licenses/by-sa/4.0/)" | "Crescendo 313 - DRH - Meredith Connie Solo Classical Guitar - Part II", Mark Andersen / Seattle Community Media, archive.org item scm-422828-crescendo313-drh-meredithconn, CC BY-SA 4.0; excerpt 400-418 s, re-encoded. |
+| R3b | `R3b.mono.wav`<br>`R3b.mp4`<br>`R3b.wav`<br>`R3b.webm`<br>`original/BrylieChristopherOxley-guitar-2018-10-06.mp4`<br>`R3b.truth.json` | 18.000 s | 44100 Hz / 2 ch | Real classical guitar video (nylon strings; a Yamaha C-40 per the item description), played with the fingers, 18 s excerpt (200-218 s) of a 580.5 s home recording; 1920x1080, 25 fps, progressive. The picture fills the left 1438x1080 of the frame; the right 482 columns are black, as in the source. One fixed camera facing the player and the guitar top at about chest height; no cut inside the excerpt (the only cut in the whole video, ffmpeg scene score > 0.12, is at 287.08 s, where a second take starts). Close view: the player's face is out of frame; the neck runs diagonally to the upper right, with the nut and part of the headstock at the upper-right edge, and the whole fretboard from the nut to the sound hole is in frame (on the frame at 209 s of the original: the nut, fret 1 and 14 more fret wires, frets 5 to 18 by their spacing, with frets 2-4 under the fingers). The fretting hand (left) is on the neck and fully in frame, in the low positions in the frames looked at (one every 3 s); the picking-hand fingers (right) are at the sound hole at the left edge of the picture, partly cut off by it. No capo. Audio: both channels carry the same signal (left minus right is -117.7 dBFS RMS in R3b.wav), i.e. a mono recording stored as stereo; R3b.wav peaks at -13.1 dBFS. The piece played is not identified in the item's metadata. No ground truth. | none (no ground truth) | https://archive.org/details/BrylieChristopherOxleyGuitar20181006 | CC0 1.0: "Usage: CC0 1.0 Universal (http://creativecommons.org/publicdomain/zero/1.0/)" | "Brylie Christopher Oxley Guitar 2018-10-06" by Brylie Christopher Oxley, archive.org item BrylieChristopherOxleyGuitar20181006, CC0 1.0 (no attribution required); excerpt 200-218 s, re-encoded. |
+| R3c | `R3c.mono.wav`<br>`R3c.mp4`<br>`R3c.wav`<br>`R3c.webm`<br>`original/Manx_Guitar_Lesson-_Three_Little_Boats_2019.webm.1080p.vp9.webm`<br>`R3c.truth.json` | 18.000 s | 44100 Hz / 2 ch | Real classical guitar lesson video (nylon strings, played with the fingers): 'Manx Guitar Lesson: Three Little Boats' (Culture Vannin, 2019), presented by Pete Lumb; the tune is the traditional Manx 'Three Little Boats'. 18 s excerpt (222-240 s) from the section captioned 'Slow play-through'; 1920x1080, 25 fps, progressive. One continuous medium shot, no cut inside the excerpt (the shot runs from 213.97 to 259.45 s of the source; cuts from ffmpeg scene score > 0.12): camera in front of the seated player at about chest height, head to lap in frame; both hands visible: the fretting hand (left) on the neck, which rises to the upper right with the headstock and nut in frame (the hand is near the nut on the frame at 232 s), and the picking hand (right) at the sound hole; the whole fretboard from the nut to the sound hole is in frame (frets not counted). Sheet music on a stand along the bottom edge covers the lower bout; a bright window behind the player (backlit); a second guitar stands at the left edge. No capo. The whole video is a multi-camera edit (wide shot, this medium shot, side close-ups of the fretting hand and of the picking hand, title cards). Audio: the two channels are the same signal apart from a residue at -67.1 dBFS RMS (left minus right in R3c.wav), i.e. effectively mono; R3c.wav peaks at -2.1 dBFS. No ground truth (the file description links a guitar tab for the tune; it was not downloaded or used). | none (no ground truth) | https://commons.wikimedia.org/wiki/File:Manx_Guitar_Lesson-_Three_Little_Boats_2019.webm | CC BY 3.0: "This file is licensed under the Creative Commons Attribution 3.0 Unported license. Attribution: Culture Vannin" | "Manx Guitar Lesson: Three Little Boats" (2019) by Culture Vannin, presented by Pete Lumb, via Wikimedia Commons (File:Manx Guitar Lesson- Three Little Boats 2019.webm), CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/); excerpt 222-240 s of Commons' 1080p VP9 transcode, re-encoded. |
 
-Clips present: 15 (S1, S2n, S2s, S3, S4, S5capo2, S5dropd, S6taps, S7flat30, R1a, R1b, R1c, R2, R2full, R3a). Not present: R3b, R3c (reasons below).
+Clips present: 17 (S1, S2n, S2s, S3, S4, S5capo2, S5dropd, S6taps, S7flat30, R1a, R1b, R1c, R2, R2full, R3a, R3b, R3c). Not present: none.
 
-Missing clips: **R3b and R3c** were not obtained. Wikimedia Commons file searches (API, 2026-11-10) found freely
-licensed guitar videos (for example "Fingerpicking pattern 1 pimami chitarra.webm" and four sibling files by Elenaf,
-CC BY-SA 3.0; "Manx Guitar Lesson- Three Little Boats 2019.webm", Culture Vannin, CC BY 3.0; "Didldu © Schule
-Gitarre - Alle Vögel sind schon da.webm", marked public domain; "20091104 Sharon Isbin - Isaac Albéniz's
-Asturias.ogv", marked public domain), but every download from upload.wikimedia.org between 19:59 and 20:26 UTC was
-answered with HTTP 429 ("Too many requests"), so none of them could be inspected or used. On archive.org the only
-other candidates with an allowed license were an iMovie trailer ("FREE Fingerstyle Guitar Videos!", R Cox Music,
-Public Domain Mark 1.0; its contact sheet shows short cuts and title cards, not one continuous performance; not used)
-and items whose license is NonCommercial or NoDerivatives (not allowed). No non-free video was substituted and
-nothing was downloaded from YouTube. A video with a capo or with percussive body taps was not found.
+Missing clips: none since R3b and R3c were added. The first build had left them out because every download from
+upload.wikimedia.org between 19:59 and 20:26 UTC was answered with HTTP 429 ("Too many requests"). On the second
+attempt the Commons API answered 429 twice between 20:52 and 20:56 UTC (Retry-After 26 s) and then answered again,
+and upload.wikimedia.org answered 429 (Retry-After 600 s) to the uploaded original of "Manx Guitar Lesson- Three
+Little Boats 2019.webm" at 20:56 and again at 21:06 UTC; Commons' own VP9 1080p transcode of that file was served at
+21:08 UTC (HTTP 200) and is the R3c source. R3b comes from archive.org, which answered normally. Looked at and not
+used: the five "Fingerpicking pattern ..." files by Elenaf (Commons, CC BY-SA 3.0) are 480x360, below R3a's 640x480,
+and 15.8 to 24.7 s long (not downloaded); archive.org item RhythmGuitarLesson (CC BY-SA 3.0, 1280x720 WebM) is a
+lesson on keeping "a rhythm with a good steady beat" (its description; not downloaded); two of Larry Heyl's guitar
+videos on archive.org (delta_cotton, major_ninth, CC BY 3.0) have 320x240 originals; archive.org item
+8.3-scales-cham-burstein (CC0, 1920x1080, 101 s, "Guitar Scale Practice Exercise") was not looked at further;
+archive.org items whose license field says CC BY or public domain but which are covers of copyrighted songs, YouTube
+re-uploads by third parties or commercial instructional videos were skipped, because the uploader is unlikely to
+hold the rights. The "Didldu ..." and "Sharon Isbin ..." Commons files named by the first build were not checked. A
+freely licensed video with a capo on the neck or with percussive body taps was not found in the time spent (20:52 to
+21:35 UTC); R3c is the "both hands visible" variant. No NonCommercial or NoDerivatives file was used, no non-free
+video was substituted, and nothing was downloaded from YouTube.
 
 ## Truth schema and conventions
 
@@ -114,7 +130,9 @@ Conventions specific to these files:
   transcription with manual verification". `tempo_bpm`, `key` and the beat grid are the JAMS tempo, key_mode and
   beat_position annotations. In the tab, positions are rounded to the nearest 16th of the annotated beat grid
   (R1b has 4 notes that fell on an occupied string and column and are not drawn; the truth JSON has all of them).
-- **R2, R2full, R3a** have no ground truth: notes, beats, chords are empty and tempo, key and tuning are null.
+- **R2, R2full, R3a, R3b, R3c** have no ground truth: notes, beats, chords are empty and tempo, key, tuning and capo
+  are null. For the R3 videos, `what` says what is in frame and where the camera cuts are (a visible capo or its
+  absence is stated there, not in `capo`).
 
 ## How the synthesized clips were made and checked (`_checks/synth_checks.json`)
 
@@ -233,6 +251,60 @@ MPEG-2 file was not downloaded. Excerpt files: `R3a.mp4` (H.264 yuv420p, 640x480
 for 400-418 s and 800-818 s, and both contain cuts between a medium shot, a wide shot and (at 800 s) a frontal
 close shot of the neck. There is no ground truth for R3a.
 
+**R3b.** archive.org item https://archive.org/details/BrylieChristopherOxleyGuitar20181006, "Brylie Christopher Oxley
+Guitar 2018-10-06", creator field Brylie Christopher Oxley, date 2018-10-06, description "Yamaha C-40 nylon string
+guitar recordings.", topics guitar, classical guitar, music (read 2026-11-10). The item page shows "Usage: CC0 1.0
+Universal" linking to http://creativecommons.org/publicdomain/zero/1.0/. CC0 needs no attribution; the line used anyway:
+"Brylie Christopher Oxley Guitar 2018-10-06" by Brylie Christopher Oxley, archive.org, CC0 1.0, excerpt 200-218 s,
+re-encoded. Kept original: `R3b/original/BrylieChristopherOxley-guitar-2018-10-06.mp4`, the item's original upload
+(archive.org lists it as source "original"; 229,070,359 bytes, and its md5 bce85d67e2c61a40877c112e1db435f6 matches the
+item's file list): H.264 High, 1920x1080, 25 fps progressive, AAC 48 kHz stereo, 580.52 s. ffmpeg cropdetect puts the
+picture in the left 1438 columns; the other 482 are black. The scene scan (score > 0.12, r0056) finds one cut, at 287.08
+s, where a second take starts with the camera re-framed. The audio level shows playing over about 5-275 s and 325-520 s
+(every 5 s mean RMS between -42 and -27 dBFS there, quieter stretches at about 280-325 s and 525-540 s); the whole file
+peaks at -12.4 dBFS. Excerpt 200.000-218.000 s, chosen because the nut stays in frame (in the second take it is cut off
+at the top edge). Excerpt files: `R3b.mp4` (H.264 yuv420p 1920x1080 25 fps, 450 frames, AAC 192 kb/s at 48 kHz, the
+source's rate), `R3b.webm` (VP9 yuv420p 1920x1080 25 fps, Opus 128 kb/s at 48 kHz), `R3b.wav` (16-bit 44.1 kHz stereo),
+`R3b.mono.wav`; the black band is kept, nothing is cropped or scaled. Frames looked at: one every 3 s over 200-218 s and
+440-458 s, one each at 5, 60, 150, 250, 285, 290, 330, 420, 520 and 575 s, and the full frame at 209 s (fret count in
+the table). The first 2 s of `R3b.mp4` match the source at 200.00 s (PSNR 51.6 dB, against 42.6 to 42.7 dB one frame
+earlier or later). Read-back (`_checks/r3bc_checks.json`, r0183): 793,800 samples (18.000 s) in each WAV; `R3b.wav`
+peaks at -13.06 dBFS, RMS -30.97 dBFS, no sample at full scale; its two channels are the same signal (correlation
+1.0000, left minus right -117.7 dBFS RMS), so the recording is mono stored as stereo; `R3b.mono.wav` equals (L+R)/2
+within 0.5 LSB; no cut inside `R3b.mp4` (scene score > 0.12). The pieces played are not named in the item. There is no
+ground truth for R3b.
+
+**R3c.** Wikimedia Commons file https://commons.wikimedia.org/wiki/File:Manx_Guitar_Lesson-_Three_Little_Boats_2019.webm
+(read 2026-11-10). Description: "A guitar tutorial of how to play the traditional Manx tune, 'Three Little Boats'" ...
+"This film is presented by Pete Lumb. It is produced by Culture Vannin, in order to promote and support Manx music. This
+film was produced by Culture Vannin in 2019." Author: Culture Vannin. Source: YouTube video If24Iy2uKRg, imported to
+Commons on 19 October 2026. The Licensing section says: "This file is licensed under the Creative Commons Attribution
+3.0 Unported license. Attribution: Culture Vannin", and its license review says: "This file, which was originally posted
+to https://www.youtube.com/watch?v=If24Iy2uKRg , was reviewed on 19 October 2026 by reviewer Gone Postal , who confirmed
+that it was available there under the stated license on that date. On 19 October 2026 the licence was CC-BY 4.0." (The
+same section notes that YouTube's Creative Commons option was CC BY 3.0 until July 31, 2025 and 4.0 from August 1.) Both
+versions allow reuse and derivatives with attribution. Attribution line: "Manx Guitar Lesson: Three Little Boats" (2019)
+by Culture Vannin, presented by Pete Lumb, via Wikimedia Commons, CC BY 3.0
+(https://creativecommons.org/licenses/by/3.0/), excerpt 222-240 s, re-encoded. Kept original:
+`R3c/original/Manx_Guitar_Lesson-_Three_Little_Boats_2019.webm.1080p.vp9.webm`, Commons' own VP9 1080p transcode
+(upload.wikimedia.org `transcoded/` path, 51,075,480 bytes, Last-Modified 23 Oct 2026): VP9 1920x1080, 25 fps
+progressive, Opus 48 kHz stereo, 292.84 s. The uploaded original (AV1/Opus, 34.09 MB per the file page) could not be
+downloaded (HTTP 429). The video is a multi-camera edit: title card, wide shot of the room, a medium shot from the
+front, side close-ups of the fretting hand and of the picking hand, captions "Lesson", "Slow play-through" and
+"Full-speed performance", end card from about 281 s. Cuts between 200 and 270 s (scene score > 0.12, r0152, decoded from
+0 s; r0146 found the same five within 0.01 s with input seeking; r0142 used -copyts, stopped early and is superseded):
+207.93, 213.97, 259.45, 263.41, 268.65 and 270.69 s; the rest of the video was not scanned (frames one every 10 s show
+the other shots). The excerpt lies in the medium shot from 213.97 to 259.45 s, in the "Slow play-through" section, after
+its caption has gone (the frame is clean from 221.2 s); over 215-255 s the audio level stays above -27 dBFS (0.5 s RMS)
+and the player is playing in every frame looked at. Excerpt files as for R3b: `R3c.mp4`, `R3c.webm` (both 1920x1080 25
+fps), `R3c.wav`, `R3c.mono.wav`. Frames looked at: one every 10 s over the whole video, one every second over 205-284 s,
+and the full frame at 232 s. `R3c.mp4` has AAC at 48 kHz like R3b's. Read-back (r0183): 793,800 samples (18.000 s) in
+each WAV; `R3c.wav` peaks at -2.14 dBFS, RMS -17.83 dBFS, no sample at full scale; its two channels are the same signal
+apart from a residue at -67.1 dBFS RMS (correlation 1.0000), so it is effectively mono; `R3c.mono.wav` equals (L+R)/2
+within 0.5 LSB; no cut inside `R3c.mp4`. The file description says "Tab available here:" and links a PDF on
+culturevannin.im; it was not downloaded, its license was not checked, and whether it matches what is played was not
+checked. There is no ground truth for R3c.
+
 ## Caveats
 
 - SoundFont-rendered guitar is a much cleaner signal than a microphone recording: no room, no fret or finger noise,
@@ -250,7 +322,15 @@ close shot of the neck. There is no ground truth for R3a.
   annotation, not a hand-checked score, and the record lists two known annotation errors.
 - R2's vocal stem is derived by subtraction from two published mixes, not a stem the artist published.
 - R3a is a concert video with camera cuts every few seconds and partial occlusion of the picking hand by a
-  microphone stand and a music stand; it is the only R3 clip.
+  microphone stand and a music stand.
+- R3b is a home recording: the right quarter of its frame is black, the picking hand is partly outside the picture
+  at the left edge, and the audio is quiet (the whole file peaks at -12.4 dBFS).
+- R3c's source is Commons' VP9 transcode of an AV1 file that was itself imported from YouTube, so the R3c excerpt
+  files have been through at least three lossy video encodes. The room is backlit by a window, and sheet music on a
+  stand covers the lower bout of the guitar.
+- R3a, R3b and R3c are all nylon-string guitars played with the fingers. No capo is visible in R3b or R3c, and no
+  body taps were seen in the frames looked at; S5capo2 and S6taps (synthesized audio, no video) remain the only capo
+  and tap clips. Whether anyone speaks during the R3b and R3c excerpts was not checked by listening.
 
 ## sha256 of every audio and video file
 
@@ -301,3 +381,13 @@ close shot of the neck. There is no ground truth for R3a.
 | `R3a/R3a.wav` | 3175416 | `2484f4b799507f52489a543468a286c1fa1c2a47bb7997f0f71480d3fa7aede9` |
 | `R3a/R3a.webm` | 964471 | `9b4123d6fea41f0d001b26e0b5ddd267444374ac82ad2fdbc954dd4ec7545dab` |
 | `R3a/original/crescendo313_2014_09_04_0.mp4` | 175074292 | `54c16427e5e026de6cdc2f840ad9830b99cd63d87e2c7e7bfac28d6fe066b41f` |
+| `R3b/R3b.mono.wav` | 1587678 | `a655fd054421c742d674b203e86406bbd57fb7906734e749685cadda5c6de678` |
+| `R3b/R3b.mp4` | 10441116 | `95adf1a34c976ad67b6a443fe916a3a0b2755246efcd0a4ca13aee1814c675a6` |
+| `R3b/R3b.wav` | 3175278 | `51964ea76c1d907468aa7e679646016771fb53f1a33e16d0de3f0f9a74538a3d` |
+| `R3b/R3b.webm` | 3016924 | `63c6df16cbed9b67f1bd370773db673aa02eaf38763680abe1563e76decde71d` |
+| `R3b/original/BrylieChristopherOxley-guitar-2018-10-06.mp4` | 229070359 | `9f20e23853e0884373d8215a89906f93f3434af72a4c0fec0fa1442081f8f120` |
+| `R3c/R3c.mono.wav` | 1587678 | `286128ad8e9e861f8b4085fe2b8cae4c1245f1c364be8a08f53dc5d5b590fdee` |
+| `R3c/R3c.mp4` | 3946246 | `62467c5738fee276e51fbf3dc355188fddc862231f74d3e483a1e725baf52783` |
+| `R3c/R3c.wav` | 3175278 | `cb3ec9cf8d153678fbe837a2265aeea9ab6ac07d85b57dd1082f91eae2c61eeb` |
+| `R3c/R3c.webm` | 1304149 | `49f693e5ad584f191cf1ab8ddac286dc97801a1978b2ee9ef0af6431620c351a` |
+| `R3c/original/Manx_Guitar_Lesson-_Three_Little_Boats_2019.webm.1080p.vp9.webm` | 51075480 | `80c2bbb27387af3ad2faa2e0df8f3c0e0ddab775003e48ebe430273dc18f732d` |

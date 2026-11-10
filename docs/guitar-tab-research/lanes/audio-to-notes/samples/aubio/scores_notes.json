@@ -1,0 +1,292 @@
+{
+ "tool": "aubio",
+ "kind": "notes",
+ "dir": "/home/user/gtr/lanes/audio-to-notes/out/aubio",
+ "conf_threshold": null,
+ "results": {
+  "R1b": {
+   "eval_id": "e0303",
+   "args": "notes --truth R1b --est /home/user/gtr/lanes/audio-to-notes/out/aubio/R1b.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.307692,
+     "recall": 0.742857,
+     "f1": 0.435146,
+     "avg_overlap_ratio": 0.510573,
+     "n_matched": 52
+    },
+    "onset_offset": {
+     "precision": 0.177515,
+     "recall": 0.428571,
+     "f1": 0.251046,
+     "avg_overlap_ratio": 0.61031,
+     "n_matched": 30
+    },
+    "recall_by_voice": {
+     "lead": {
+      "n_truth": 70,
+      "onset_only_matched": 52,
+      "onset_only_recall": 0.742857,
+      "onset_offset_matched": 30,
+      "onset_offset_recall": 0.428571
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 52,
+     "median_s": 0.041573,
+     "mean_s": 0.035139,
+     "mean_abs_s": 0.036968,
+     "p95_abs_s": 0.048483,
+     "max_abs_s": 0.049976
+    }
+   },
+   "counts": {
+    "n_truth": 70,
+    "n_est": 169,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 52,
+    "n_matched_onset_offset": 30
+   }
+  },
+  "S1": {
+   "eval_id": "e0305",
+   "args": "notes --truth S1 --est /home/user/gtr/lanes/audio-to-notes/out/aubio/S1.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.048387,
+     "recall": 0.048387,
+     "f1": 0.048387,
+     "avg_overlap_ratio": 0.770869,
+     "n_matched": 3
+    },
+    "onset_offset": {
+     "precision": 0.048387,
+     "recall": 0.048387,
+     "f1": 0.048387,
+     "avg_overlap_ratio": 0.770869,
+     "n_matched": 3
+    },
+    "recall_by_voice": {
+     "melody": {
+      "n_truth": 62,
+      "onset_only_matched": 3,
+      "onset_only_recall": 0.048387,
+      "onset_offset_matched": 3,
+      "onset_offset_recall": 0.048387
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 3,
+     "median_s": 0.049167,
+     "mean_s": 0.049067,
+     "mean_abs_s": 0.049067,
+     "p95_abs_s": 0.049586,
+     "max_abs_s": 0.049633
+    }
+   },
+   "counts": {
+    "n_truth": 62,
+    "n_est": 62,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 3,
+    "n_matched_onset_offset": 3
+   }
+  },
+  "S2n": {
+   "eval_id": "e0308",
+   "args": "notes --truth S2n --est /home/user/gtr/lanes/audio-to-notes/out/aubio/S2n.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1": 0.0,
+     "avg_overlap_ratio": 0,
+     "n_matched": 0
+    },
+    "onset_offset": {
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1": 0.0,
+     "avg_overlap_ratio": 0,
+     "n_matched": 0
+    },
+    "recall_by_voice": {
+     "bass": {
+      "n_truth": 48,
+      "onset_only_matched": 0,
+      "onset_only_recall": 0.0,
+      "onset_offset_matched": 0,
+      "onset_offset_recall": 0.0
+     },
+     "melody": {
+      "n_truth": 42,
+      "onset_only_matched": 0,
+      "onset_only_recall": 0.0,
+      "onset_offset_matched": 0,
+      "onset_offset_recall": 0.0
+     }
+    },
+    "onset_timing_of_matched": null
+   },
+   "counts": {
+    "n_truth": 90,
+    "n_est": 43,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 0,
+    "n_matched_onset_offset": 0
+   }
+  },
+  "S2s": {
+   "eval_id": "e0310",
+   "args": "notes --truth S2s --est /home/user/gtr/lanes/audio-to-notes/out/aubio/S2s.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1": 0.0,
+     "avg_overlap_ratio": 0,
+     "n_matched": 0
+    },
+    "onset_offset": {
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1": 0.0,
+     "avg_overlap_ratio": 0,
+     "n_matched": 0
+    },
+    "recall_by_voice": {
+     "bass": {
+      "n_truth": 48,
+      "onset_only_matched": 0,
+      "onset_only_recall": 0.0,
+      "onset_offset_matched": 0,
+      "onset_offset_recall": 0.0
+     },
+     "melody": {
+      "n_truth": 42,
+      "onset_only_matched": 0,
+      "onset_only_recall": 0.0,
+      "onset_offset_matched": 0,
+      "onset_offset_recall": 0.0
+     }
+    },
+    "onset_timing_of_matched": null
+   },
+   "counts": {
+    "n_truth": 90,
+    "n_est": 42,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 0,
+    "n_matched_onset_offset": 0
+   }
+  },
+  "S4": {
+   "eval_id": "e0312",
+   "args": "notes --truth S4 --est /home/user/gtr/lanes/audio-to-notes/out/aubio/S4.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.2875,
+     "recall": 0.049251,
+     "f1": 0.084095,
+     "avg_overlap_ratio": 0.671646,
+     "n_matched": 23
+    },
+    "onset_offset": {
+     "precision": 0.15,
+     "recall": 0.025696,
+     "f1": 0.043876,
+     "avg_overlap_ratio": 0.734324,
+     "n_matched": 12
+    },
+    "recall_by_voice": {
+     "bass": {
+      "n_truth": 61,
+      "onset_only_matched": 0,
+      "onset_only_recall": 0.0,
+      "onset_offset_matched": 0,
+      "onset_offset_recall": 0.0
+     },
+     "chord": {
+      "n_truth": 369,
+      "onset_only_matched": 23,
+      "onset_only_recall": 0.062331,
+      "onset_offset_matched": 12,
+      "onset_offset_recall": 0.03252
+     },
+     "melody": {
+      "n_truth": 37,
+      "onset_only_matched": 0,
+      "onset_only_recall": 0.0,
+      "onset_offset_matched": 0,
+      "onset_offset_recall": 0.0
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 23,
+     "median_s": 0.043228,
+     "mean_s": 0.040242,
+     "mean_abs_s": 0.040242,
+     "p95_abs_s": 0.04662,
+     "max_abs_s": 0.047023
+    }
+   },
+   "counts": {
+    "n_truth": 467,
+    "n_est": 80,
+    "n_truth_left_out": {
+     "drums": 194
+    },
+    "n_matched_onset_only": 23,
+    "n_matched_onset_offset": 12
+   }
+  },
+  "S4lead": {
+   "eval_id": "e0314",
+   "args": "notes --truth S4 --est /home/user/gtr/lanes/audio-to-notes/out/aubio/S4lead.notes.csv --voice melody --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.027778,
+     "recall": 0.027027,
+     "f1": 0.027397,
+     "avg_overlap_ratio": 0.734323,
+     "n_matched": 1
+    },
+    "onset_offset": {
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1": 0.0,
+     "avg_overlap_ratio": 0,
+     "n_matched": 0
+    },
+    "recall_by_voice": {
+     "melody": {
+      "n_truth": 37,
+      "onset_only_matched": 1,
+      "onset_only_recall": 0.027027,
+      "onset_offset_matched": 0,
+      "onset_offset_recall": 0.0
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 1,
+     "median_s": 0.049934,
+     "mean_s": 0.049934,
+     "mean_abs_s": 0.049934,
+     "p95_abs_s": 0.049934,
+     "max_abs_s": 0.049934
+    }
+   },
+   "counts": {
+    "n_truth": 37,
+    "n_est": 36,
+    "n_truth_left_out": {
+     "drums": 194,
+     "bass": 61,
+     "chord": 369
+    },
+    "n_matched_onset_only": 1,
+    "n_matched_onset_offset": 0
+   }
+  }
+ }
+}

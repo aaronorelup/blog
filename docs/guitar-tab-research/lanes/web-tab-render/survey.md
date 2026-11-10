@@ -25,14 +25,14 @@ Version and date = the npm `dist-tags.latest` (or PyPI latest release, or newest
 | osmd-audio-player | JS player for OSMD | 0.7.0 (2021-12-30) | 2021-12-30 | MIT | n/a | yes | no | RUNNABLE |
 | abcjs | JS library, ABC renderer and synth | 6.7.2 (2026-10-16) | 2026-10-16 | MIT | yes (generated from notes) | yes | text only | RUNNABLE |
 | Verovio (`verovio` npm, PyPI, C++ CLI) | engraving library (C++, WASM, Python) | 6.4.1 (2026-11-03) | 2026-11-10 | LGPL-3.0-only | yes (MEI tablature) | MIDI out only | no | RUNNABLE |
-| MuseScore Studio (`mscore` CLI) | desktop notation editor with CLI conversion | v4.7.6 tag (commit 2026-10-22) | 2026-11-10 | see section | yes | yes (desktop) | yes (desktop) | RUNNABLE (Linux AppImage) |
-| webmscore | MuseScore 3 engine compiled to WASM | 1.2.1 (2023-01-24) | 2023-01-23 | npm field `GPL` | yes | yes (with a SoundFont) | no | RUNNABLE |
-| LilyPond (TabStaff) | text-to-engraving compiler | see section | see section | GPL-3.0-or-later (PyPI wheel field) | yes | MIDI out only | text only | RUNNABLE |
-| TuxGuitar (helge17 fork) | desktop tab editor (Java) | 2.1.1 tag (commit 2026-10-21) | 2026-11-03 | see section | yes | yes | yes | RUNNABLE (desktop app; headless use UNVERIFIED) |
+| MuseScore Studio (`mscore` CLI) | desktop notation editor with CLI conversion | v4.7.6 tag (commit 2026-10-22) | 2026-11-10 | GPL-3.0 (LICENSE.txt) | yes | yes (desktop) | yes (desktop) | RUNNABLE (Linux AppImage) |
+| webmscore | MuseScore 3 engine compiled to WASM | 1.2.1 (2023-01-24) | 2023-01-23 | npm field `GPL`; LICENSE.GPL is GPL v3 | yes | yes (with a SoundFont) | no | RUNNABLE |
+| LilyPond (TabStaff) | text-to-engraving compiler | 2.26.0 stable (2026-04-21); 2.27.4 unstable (2026-10-20) | not read (GitLab) | GPL-3.0-or-later (LICENSE) | yes | MIDI out only | text only | RUNNABLE |
+| TuxGuitar (helge17 fork) | desktop tab editor (Java) | 2.1.1 (CHANGES: 2026-10-23; tag commit 2026-10-21) | 2026-11-03 | LGPL-2.1 (docs/LICENSE) | yes | yes | yes | RUNNABLE (desktop app; headless use UNVERIFIED) |
 | PyGuitarPro | Python reader/writer for GP3-GP5 | 0.11 (PyPI 2026-05-03) | 2026-11-10 | LGPL-3.0-only (PyPI) | no | no | data model | RUNNABLE |
 | music21 | Python music toolkit (MusicXML in/out) | 10.5.2 (PyPI 2026-10-28); v11.0.0b14 tag 2026-10-30 | 2026-11-08 | BSD-3-Clause (PyPI) | via MusicXML export | MIDI out | data model | RUNNABLE |
 | ChordSheetJS (`chordsheetjs`) | JS ChordPro / chord-sheet parser and formatter | 18.0.0 (2026-09-24) | 2026-11-10 | GPL-2.0-only | chord sheets, not tab | no | text | RUNNABLE |
-| ChordPro (reference program, Perl) | chord-sheet formatter (PDF etc.) | R6.101.0 tag (2026-04-30) | 2026-04-30 | see section | no (chords and lyrics; tab blocks as text) | no | text | RUNNABLE |
+| ChordPro (reference program, Perl) | chord-sheet formatter (PDF etc.) | R6.101.0 tag (2026-04-30) | 2026-04-30 | Artistic License 2.0 (LICENSE) | no (chords and lyrics; tab blocks as text) | no | text | RUNNABLE |
 | svguitar | JS chord-diagram renderer | 2.10.1 (2026-10-17) | 2026-10-17 | MIT | chord boxes | no | no | RUNNABLE |
 | vexchords | JS chord-diagram renderer | 1.2.0 (2019-03-31) | 2024-12-31 | MIT | chord boxes | no | no | RUNNABLE |
 | Tonal (`tonal`) | JS music-theory functions | 6.5.1 (2026-10-14) | 2026-10-14 | MIT | no | no | n/a | RUNNABLE |
@@ -40,18 +40,37 @@ Version and date = the npm `dist-tags.latest` (or PyPI latest release, or newest
 | fretboard.js (`@moonwave99/fretboard.js`) | JS fretboard diagrams | 0.2.13 (2022-11-18) | 2022-11-17 | ISC | fretboard view | no | no | RUNNABLE |
 | chords-db / react-chords (`@tombatossals/*`) | chord-shape database and React chord diagrams | 0.5.1 (2019-11-02) / 0.2.10 (2019-10-23) | 2025-10-14 (chords-db) | MIT | chord boxes | no | no | RUNNABLE |
 | jTab (`jtab`, telesoho fork) | JS chord and tab drawing from text | 1.3.2 (2017-10-30) | 2022-02-20 | MIT (npm field) | yes | no | no | RUNNABLE |
-| abc2svg | JS ABC renderer | 1.22.1 on npm (2022-09-13, marked deprecated on npm) | see section | LGPL-3.0 (npm field) | ABC tab via modules (UNVERIFIED) | yes | no | RUNNABLE |
+| abc2svg | JS ABC renderer | 1.22.1 on npm (2022-09-13, marked deprecated on npm) | not read (chiselapp) | LGPL-3.0 (npm field) | UNVERIFIED | UNVERIFIED | no | RUNNABLE (npm package) |
 | Flat.io embed and API (`flat-embed`, `flat-api`) | hosted notation editor; JS embed client; REST API | flat-embed 2.12.1 (2026-04-02); flat-api 1.0.1 (2026-09-17) | 2026-10-20 / 2026-09-17 | clients Apache-2.0; service under Flat's terms | yes (service) | yes (service) | yes (service) | service; account needed |
 | Soundslice | hosted tab/notation player and editor | n/a | n/a | service terms | yes (service) | yes (service) | yes (service) | service; account needed |
-| MusicXML 4.0 (format) | W3C Community Group format | v4.0 tag (2021-06-03) | 2026-11-10 (w3c/musicxml) | see section | tab elements | n/a | n/a | n/a |
-| MEI (format) | Music Encoding Initiative schema | v5.1 tag (2025-01-22); v6.0 tags in progress (2026-11-02) | 2026-11-10 | see section | tablature module | n/a | n/a | n/a |
+| MusicXML 4.0 (format) | W3C Community Group format | v4.0 tag (2021-06-03); 4.1 draft | 2026-11-10 (w3c/musicxml) | W3C Community Final Specification Agreement (spec page) | tab elements | n/a | n/a | n/a |
+| MEI (format) | Music Encoding Initiative schema | v5.1 tag (2025-01-22); v6.0 tags in progress (2026-11-02) | 2026-11-10 | ECL-2.0 (repository LICENSE) | tablature module | n/a | n/a | n/a |
 | Guitar Pro formats (.gp3/.gp4/.gp5, .gpx, .gp) | proprietary formats of Arobas Music | n/a | n/a | see section | n/a | n/a | n/a | n/a |
 | alphaTex (format) | alphaTab's text format | n/a | n/a | see section | n/a | n/a | n/a | n/a |
 | ABC (format) | text notation standard | see section | n/a | n/a | n/a | n/a | n/a | n/a |
 | ChordPro (format) | chord-sheet text format | see section | n/a | n/a | n/a | n/a | n/a | n/a |
 | ASCII tab (format) | informal plain-text convention | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
 
-More rows are added below as the survey finds them (search for "Added after the first pass").
+Added after the first pass (sections "Added after the first pass" below):
+
+| Tool | Kind | Latest version (date) | Last commit | License (as declared) | Renders tab | Plays audio | Edits | RUNNABLE |
+|---|---|---|---|---|---|---|---|---|
+| `@coderline/alphatab-monaco` and `@coderline/alphatab-language-server` | alphaTex editor integration and LSP | 1.9.0 (2026-10-31) | 2026-11-08 (alphaTab repo) | MPL-2.0 | via alphaTab | no | text (alphaTex) | RUNNABLE |
+| guitarpro-parser (npm) | TS parser for GP3-GP8 | 2.0.0 (2026-11-08) | 2026-11-08 | Apache-2.0 | no | no (computes timing) | no | RUNNABLE |
+| ApolloTab (PyPI) | Python GP3-GP8 parser, Qt renderer, FluidSynth player | 1.6.0 (2026-08-06) | 2026-08-28 | LGPL-2.1 | yes (QPixmap images) | yes (FluidSynth) | UNVERIFIED | RUNNABLE |
+| score-parser (`@jbfullstack/score-parser`) | MIDI and GP to JSON, uses alphaTab | 1.0.1 (2026-03-26) | 2026-03-26 | MIT | no | no | no | RUNNABLE |
+| guitarpro (Rust crates, slundi) | GP3-GP7, MSCZ, MusicXML read/write; ASCII tab CLI; C FFI | 0.4.5 crates.io (2026-11-03) | 2026-11-03 | MIT | ASCII tab | no | data model | RUNNABLE |
+| @musicbird/gpx-parser (npm) | GPX parser | 0.1.3 (2021-12-10) | not read | AGPL-3.0-or-later (npm field) | no | no | no | RUNNABLE |
+| It's MyTabs (louislam/its-mytabs) | self-hosted web tab viewer/player on alphaTab | n/a (Docker image; version not read) | 2026-11-06 | MIT | yes | yes | no (feature list read) | RUNNABLE (Deno or Docker) |
+| Tab Flow (Obsidian plugin) | alphaTab inside Obsidian | 0.5.7 | 2026-09-23 | MPL-2.0 | yes | yes | alphaTex text | Obsidian desktop |
+| Autostrum (michaelongaro/autostrum) | web tab player and editor | n/a | 2026-11-09 | no license file found | yes | yes (samples) | yes | UNVERIFIED |
+| muzart (thegedge/muzart) | browser tab editor (personal project) | n/a | 2026-06-18 | MIT | yes | yes (Web Audio) | yes | RUNNABLE |
+| Songshed (danjutan/Songshed) | grid-based tab editor, proof of concept | n/a | 2026-02-16 | no license file found | yes | UNVERIFIED | yes | UNVERIFIED |
+| tab-editor (calesce/tab-editor) | browser tab editor | n/a | 2017-11-02 | MIT | yes | yes (soundfont-player) | yes | RUNNABLE |
+| SLiMTAB (tim37021/SLiMTAB) | tab editor (Node.js) | n/a | 2017-06-17 | CC0-1.0 | yes | UNVERIFIED | yes | UNVERIFIED |
+| Guitar (1j01/guitar) | web virtual guitar, pasted-tab player | n/a | 2023-05-02 | MIT | ASCII tab input | yes | records notes | RUNNABLE |
+| Power Tab Editor 2.0 | desktop tab editor (C++/Qt) | n/a (not read) | 2026-11-01 | GPL-3.0 | yes | yes (mixer per README) | yes | desktop |
+| tuitar | terminal tab editor (Go) | n/a | 2025-09-28 | MIT | ASCII in terminal | yes (Karplus-Strong) | yes | RUNNABLE |
 
 Notes on the list, read 2026-11-10:
 
@@ -106,13 +125,14 @@ Notes on the list, read 2026-11-10:
   (https://raw.githubusercontent.com/CoderLine/alphaTab/develop/website/docs/features/render/nodejs-headless-rendering.mdx).
   Backends: "Web — SVG (default) or HTML5 Canvas. Skia is not available in the browser"
   (.../features/render/choosing-a-backend.mdx). No GPU or model weights involved.
-- **Editing.** No visual tab editor is in the published npm package; the docs describe editing as code on the data
-  model: "Iterate `Score → Track → Staff → Bar → Voice → Beat → Note`, change fields, call `api.render()`, and the
+- **Editing.** No point-and-click tab editor is described in the README or in the docs pages read (the
+  `@coderline/alphatab-ui` package that holds the website's "player and alphaTex editor" is private, above); the docs
+  describe editing as code on the data model: "Iterate `Score → Track → Staff → Bar → Voice → Beat → Note`, change fields, call `api.render()`, and the
   render reflects the changes" (.../features/extend/traversing-and-mutating-the-model.mdx), plus "Modify the data
   model in code and export to Guitar Pro, alphaTex, MIDI or rendered audio" (README). Text editing through alphaTex
   with the Monaco package and the language server (above).
-- **Data fields relevant to tab.** Notes carry `fret` and `string` (the traversal example uses `note.fret`).
-  alphaTex: "On a stringed instrument, a note is written as `fret.string`. The number before the dot is the fret. The
+- **Data fields relevant to tab.** Notes carry `fret` (used in the traversal example); the string of each note is
+  read from MusicXML `technical` (MusicXML import doc, below) and written as `fret.string` in alphaTex. alphaTex: "On a stringed instrument, a note is written as `fret.string`. The number before the dot is the fret. The
   number after the dot is the string, counted from the highest-pitched string down. String 1 is the top string when
   you read tab — the thinnest string on a guitar, sounding highest."
   (https://raw.githubusercontent.com/CoderLine/alphaTab/develop/website/docs/alphatex/syntax.mdx).
@@ -179,8 +199,9 @@ Notes on the list, read 2026-11-10:
 - **Versions.** npm `vexflow` 5.0.0 published 2025-03-05 (https://registry.npmjs.org/vexflow); no newer `latest` on
   2026-11-10.
 - **How a program calls it.** Script tag or `npm install vexflow`; high-level `Factory`/`EasyScore` API or the
-  low-level API (`new Renderer(div, Renderer.Backends.SVG)`) (README). Input is JavaScript calls, not a file format:
-  VexFlow reads no MusicXML or Guitar Pro file itself.
+  low-level API (`new Renderer(div, Renderer.Backends.SVG)`) (README). Input is JavaScript calls or the EasyScore
+  string syntax, not a file: the README describes no MusicXML or Guitar Pro import, and no file in the 2026-11-10
+  file list has "musicxml" in its name.
 - **Tab support.** The source holds `src/tabstave.ts`, `src/tabnote.ts`, `src/gracetabnote.ts`, `src/tabslide.ts`,
   `src/tabtie.ts`, `src/bend.ts`, `src/vibrato.ts` (file list of the 2026-11-10 clone). `TabNote` positions are
   "An array of `{ str: X, fret: X }`"; "fret: 'X' indicates an unused/muted string." (comments in `src/tabnote.ts`).
@@ -307,7 +328,7 @@ Notes on the list, read 2026-11-10:
 - **GeneralUser GS** is the alternative SoundFont alphaTab's docs demo ("about 9 MB as compressed SF3"); its license
   was not read (UNVERIFIED; source https://schristiancollins.com/generaluser.php).
 - **FluidR3_GM on this box:** `/usr/share/sounds/sf2/FluidR3_GM.sf2` (used by the shared test inputs). Its Debian
-  copyright file is in the section "FluidR3_GM (the box's copy)" below.
+  copyright file is quoted in the next bullet.
 - **Note on FluidR3_GM licenses (sources conflict):** the MIDI.js README above says the FluidR3_GM set is "Released
   under Creative Commons Attribution 3.0 license". The box's Debian package `fluid-soundfont-gm` 3.1-5.3, file
   `/usr/share/doc/fluid-soundfont-gm/copyright` (read 2026-11-10), says: "Upstream Author: Frank Wen", "Copyright ©
@@ -359,7 +380,8 @@ Notes on the list, read 2026-11-10:
   the W3C Standards Track." (https://www.w3.org/2021/06/musicxml40/, read 2026-11-10). Repository
   https://github.com/w3c/musicxml (tags up to `v4.0`, tag commit 2021-06-03; last commit 2026-11-10 "Update test
   suite"). The repository's version history lists "Version 4.1 (Draft)" (`docs/src/pages/version-history/41.md`,
-  "title: Version 4.1 Draft"); its listed additions do not name tablature elements.
+  "title: Version 4.1 Draft"); its listed changes do not include `<string>`, `<fret>`, `<staff-tuning>` or `<capo>`
+  (one listed change adds a `@number` attribute to `<harmonic>`).
 - **Tab elements** (MusicXML 4.0 reference, read 2026-11-10):
   - `<string>`: "The <string> element is used with tablature notation, regular notation (where it is often
     circled), and chord diagrams. String numbers start with 1 for the highest pitched full-length string." Parent
@@ -490,8 +512,9 @@ Notes on the list, read 2026-11-10:
   possible. This behavior can be changed by setting restrainOpenStrings to #t ." Capo: the page mentions a capo only
   for fret diagrams: "Unique to the \fret-diagram-verbose interface is a capo indication that can be placed on the
   fret diagram."
-- **How a program calls it:** `lilypond file.ly` producing PDF, SVG ("23.3.1 SVG Output" in the manual's table of
-  contents) or PNG, and MIDI with a `\midi` block ("24 Creating MIDI output"). Input is LilyPond text; Python tools
+- **How a program calls it:** the `lilypond` command on a `.ly` text file (the usage page was not re-read today:
+  UNVERIFIED wording), producing PDF, SVG ("23.3.1 SVG Output" in the manual's table of contents), and MIDI with a
+  `\midi` block ("24 Creating MIDI output"). Input is LilyPond text; Python tools
   that write it include abjad (PyPI 3.31, 2025-10-31) and python-ly (PyPI 0.9.10, 2026-04-04). TuxGuitar exports to
   LilyPond (plugin `TuxGuitar-lilypond`, section below).
 - **Plays audio:** MIDI output only. **Edits:** text only.
@@ -739,3 +762,215 @@ Notes on the list, read 2026-11-10:
     in writing."
   - The individual-account terms (https://help.flat.io/en/policies/terms-of-service-individual/) were not read
     (UNVERIFIED).
+
+## Guitar Pro formats (.gp3, .gp4, .gp5, .gpx, .gp)
+
+- **Owner and specification.** Guitar Pro is a product of Arobas Music. No public specification of these formats was
+  found among the pages read on 2026-11-10. alphaTab's docs state: "GP4 has an official partial spec from Arobas;
+  the rest was reverse-engineered from test files." The same page describes GP6 `.gpx` as "the first XML-based
+  generation, wrapped in a custom container that behaves like a compressed filesystem" holding `score.gpif`, and GP7/8
+  `.gp` as "a standard ZIP archive holding `Content/score.gpif`" ("GP8 uses the same envelope as GP7 with additional
+  payloads (embedded audio)") (https://raw.githubusercontent.com/CoderLine/alphaTab/develop/website/docs/features/import-load/guitar-pro.mdx).
+  The Rust `guitarpro` README calls the GPX container "BCFZ/BCFS container" and `.gp` a "ZIP container with GPIF XML"
+  (https://github.com/slundi/guitarpro README, read through the 2026-11-10 clone).
+- **Which open-source libraries read and write which versions** (each cell from the source named; read 2026-11-10):
+
+| Library (license) | GP3-GP5 | GPX (GP6) | GP (GP7/GP8) | Source of the claim |
+|---|---|---|---|---|
+| alphaTab (MPL-2.0) | read | read | read; write (GP7 container) | README "Reads"/"Writes" table |
+| PyGuitarPro (LGPL-3.0-only) | read, write | no | no | README "read, write and manipulate GP3, GP4 and GP5 files" |
+| TuxGuitar (LGPL-2.1) | import, export (GP1-GP5) | import | import (GP7) | plugin `.info` files `TuxGuitar-gtp`, `TuxGuitar-gpx` |
+| MuseScore Studio (GPL-3.0) | import | import | import | `guitarpromodule.cpp` reader registration (`gtp gp3 gp4 gp5 gpx gp ptb`) |
+| webmscore (GPL-3.0) | import | import | import | `web-public/schemas.ts` `InputFileFormat` |
+| Power Tab Editor 2.0 (GPL-3.0) | open | open | open | README "Supported File Types" (.pt2, .ptb, .gp3, .gp4, .gp5, .gpx, .gp) |
+| guitarpro-parser, npm (Apache-2.0) | read | read | read (GP7 and GP8) | README "Reads `.gp` (Guitar Pro 7 and 8), `.gpx` (Guitar Pro 6), `.gp5`, `.gp4` and `.gp3`" |
+| ApolloTab, PyPI (LGPL-2.1) | read | read | read | README "Full support for GP3/GP4/GP5/GPX/GP(GP7/GP8) formats" |
+| guitarpro (Rust crate, MIT) | read, write | read, write | read, write | README "Supported formats" table |
+| Soundslice data API (service) | upload | upload | upload | API docs "MusicXML, Guitar Pro, PowerTab or TuxGuitar" (versions not listed) |
+
+- No byte-level validation of these claims was done in this docs lane (the try lane runs files through some of them).
+
+## alphaTex (format)
+
+- alphaTab's own plain-text format: "alphaTex is a plain-text notation format for alphaTab. You write a score as
+  source code and alphaTab parses it into the same data model any other format produces."
+  (https://raw.githubusercontent.com/CoderLine/alphaTab/develop/website/docs/alphatex/introduction.mdx). Note syntax
+  `fret.string` with string 1 the highest (quoted in the alphaTab section); metadata `\title`, `\tempo`, `\tuning`,
+  `\capo`, `\ts`, `\track`, `\staff {tabs}`; beat durations as `:4`, `:8`, `:16`; note properties in braces, e.g.
+  `11.1{b (0 2)}` (bend), `{h}`, `{v}` (introduction showcase). Written by `AlphaTexExporter` (since 1.7), read by
+  alphaTab's importer, edited with `@coderline/alphatab-monaco` and `@coderline/alphatab-language-server`. Also the
+  file format of the Obsidian plugin Tab Flow ("Write scores in alphaTex (.atex files, or alphatex code blocks in
+  notes)", https://community.obsidian.md/plugins/tab-flow, read 2026-11-10). No separate license for the format was
+  found; the documentation sits in the MPL-2.0 repository.
+
+## ABC (format)
+
+- "This is the home page for the abc standard, the (semi-formal) description of the rules of abc." "The current
+  version of the standard is at: abcnotation.com/wiki/abc:standard:v2.1 - abc standard 2.1 (Dec 2011)"; draft
+  "abcnotation.com/wiki/abc:standard:v2.2" (https://abcnotation.com/wiki/abc:standard, read 2026-11-10). ABC carries
+  pitches and durations, not strings or frets; abcjs derives a tab line from the pitches with its `tablature` option
+  (abcjs section). Verovio reads ABC (README).
+
+## ASCII tab (informal convention)
+
+- "ASCII tab is intended to be a human-readable format rather than machine-readable, and hence is not strictly
+  defined. Though some standards are used by all ASCII tab files, such as hyphens to represent string lines and
+  digits to represent frets, other things such as barlines, rhythms, bends, chord symbols etc. may be present, absent
+  or represented in a variety of way[s]" (Wikipedia "ASCII tab", wikitext read 2026-11-10 through
+  https://en.wikipedia.org/w/index.php?title=ASCII_tab&action=raw; secondary source).
+- A 1990s guide exists: the "Tablature FAQ" by Howard Wright, "Copyright Howard Wright and the olga-grunts", with the
+  notice "This document may be distributed freely as long as NO CHARGE is made and my name and email address are not
+  removed." (https://guitartabs.cc/tabfaq.php, read 2026-11-10). It is a reading and writing guide, not a grammar.
+- Tools that write ASCII tab: TuxGuitar (`TuxGuitar-ascii` "ASCII tab export plugin"), the Rust `guitarpro` CLI
+  `score_tool` ("generate ASCII tablatures", README). ChordPro carries ASCII tab verbatim inside `{start_of_tab}`
+  blocks. Readers: ChordSheetJS `UltimateGuitarParser` reads Ultimate Guitar chord sheets (README); 1j01/guitar "You
+  can copy and paste entire webpages containing guitar tabs and it'll try to load all it can." (README). No parser
+  library for ASCII tab note content with a stated grammar was found among the pages read.
+
+## Added after the first pass: more parsers and converters
+
+- **guitarpro-parser** (npm, TypeScript). "TypeScript parser for Guitar Pro files. Returns a typed model of the score
+  and computes playback order and timing." "Reads `.gp` (Guitar Pro 7 and 8), `.gpx` (Guitar Pro 6), `.gp5`, `.gp4`
+  and `.gp3`." "Detects the format from the file's bytes." Usage `import { parseGuitarPro } from
+  'guitarpro-parser'`; `parseGuitarPro` "accepts a `Uint8Array`, a Node `Buffer` or an `ArrayBuffer`"; note fields
+  include `note.string; // 0-based, 0 is the highest string` (README of https://github.com/emilienbev/guitarpro-parser,
+  last commit 2026-11-08). npm 2.0.0 published 2026-11-08 (6 versions, first 2026-02-24). LICENSE: "Apache License
+  Version 2.0, January 2004". Read only (no writer named in the README lines read). RUNNABLE.
+- **ApolloTab** (PyPI). "`ApolloTab` is a fully-featured Python library for parsing, rendering, and playing Guitar Pro
+  (.gp3/.gp4/.gp5/.gpx/.gp) tablature files."; "Tablature Rendering: Render high-quality tablature images (QPixmap)
+  using QPainter"; "Audio Playback: Real-time MIDI synthesis engine based on FluidSynth with SoundFont support"
+  (README of https://github.com/Zhuwenqian/ApolloTab, last commit 2026-08-28). PyPI 1.6.0 uploaded 2026-08-06,
+  `license` field `LGPL-2.1`; repository LICENSE "GNU LESSER GENERAL PUBLIC LICENSE Version 2.1, February 1999".
+  `pip install ApolloTab`. RUNNABLE (Qt dependency for rendering; not tried here).
+- **score-parser** (npm `@jbfullstack/score-parser`). "Parse MIDI and Guitar Pro files into a clean, format-neutral
+  JSON structure."; peer dependencies `@tonejs/midi` and `@coderline/alphatab` (README of
+  https://github.com/jbfullstack/score-parser, last commit 2026-03-26). npm 1.0.1 (2026-03-26), `MIT`; LICENCE "MIT
+  License Copyright (c) 2026 jbfullstack". RUNNABLE.
+- **@musicbird/gpx-parser** (npm). 0.1.3 published 2021-12-10, `license` `AGPL-3.0-or-later`, no repository field
+  (npm registry). Not read further.
+- **guitarpro (Rust crates, "Guitar Pro Tools")**. "A comprehensive suite of tools for parsing, manipulating, and
+  visualizing Guitar Pro files in Rust." Core library reads and writes "GP3, GP4, GP5, GPX, GP7" and "MuseScore files
+  (MSCZ)"; also MusicXML read and write per its table; CLI `score_tool` "to inspect files, view metadata, and generate
+  ASCII tablatures"; a C ABI `guitarpro-ffi` "so C, C++, Swift, Kotlin or Python `ctypes` can parse and convert
+  scores" (README of https://github.com/slundi/guitarpro, last commit 2026-11-03). crates.io `guitarpro` 0.4.5
+  (2026-11-03, license `MIT`, repository https://codeberg.org/slundi/scorelib) (https://crates.io/api/v1/crates/guitarpro).
+  LICENSE: "The MIT License (MIT)". RUNNABLE (Rust toolchain; not tried here).
+- Also named by the web search but not read: `dart_gp_tab_reader` (pub.dev), `parsegp` (Go,
+  pkg.go.dev/github.com/knasan/parsegp), `PhilPotter/gp_parser` (C++). UNVERIFIED.
+
+## Added after the first pass: open-source tab editors and players
+
+| Project | What its README says | Last commit | License (file read) | Runs in a browser |
+|---|---|---|---|---|
+| It's MyTabs (louislam/its-mytabs) | "Open source, web based, self hostable guitar/bass tab viewer and player, similar to Songsterr."; "Supports .gp, .gpx, .gp3, .gp4, .gp5, .musicxml, .capx formats"; "Sync your tabs with audio files (.mp3, .ogg) or Youtube videos"; frontend depends on `@coderline/alphatab` 1.8.4 | 2026-11-06 | MIT ("Copyright (c) 2025 Louis Lam") | yes (viewer and player, no editor in the feature lines read) |
+| Tab Flow (LIUBINfighter/Obsidian-Tab-Flow) | Obsidian plugin, "Render, play and write guitar tabs in Obsidian", "Powered by alphaTab"; package.json `@coderline/alphatab` ^1.8.4, version 0.5.7 | 2026-09-23 | MPL-2.0 | inside Obsidian |
+| Autostrum (michaelongaro/autostrum) | "an interactive tab player, a fast tab editor, and a collection of practice tools"; "Every tab on Autostrum plays back using sampled acoustic or electric guitar audio" | 2026-11-09 | no LICENSE file at the root and no `license` field in package.json (2026-11-10 clone) | yes (web app) |
+| muzart (thegedge/muzart) | "Singe-page guitar tab editor (eventually scores!) built with: React, SVG / Canvas, Web Audio"; "This is just a fun personal project" | 2026-06-18 | MIT ("Copyright (c) 2018 Jason Gedge") | yes |
+| Songshed (danjutan/Songshed) | "Songshed is a proof-of-concept for a grid-based guitar tab editor." | 2026-02-16 | no LICENSE file at the root (2026-11-10 clone) | yes (UNVERIFIED stack) |
+| tab-editor (calesce/tab-editor) | "Guitar Tab Editor"; "This uses the Web Audio API for playback. Thanks to soundfont-player" | 2017-11-02 | MIT text ("Copyright (c) 2015 Cale Newman") | yes |
+| SLiMTAB (tim37021/SLiMTAB) | "SLiMTAB is a brand new guitar tab editor. And it is open source."; "requires Node.js" | 2017-06-17 | CC0 1.0 Universal | UNVERIFIED |
+| Guitar (1j01/guitar) | "a virtual guitar record-a-synthesize-amatronic web application" | 2023-05-02 | MIT ("Copyright (c) 2018 Isaiah Odhner") | yes |
+| Power Tab Editor 2.0 (powertab/powertabeditor) | "A powerful cross platform guitar tablature viewer and editor"; desktop, "Cross platform - Windows, Mac, & Linux" | 2026-11-01 | GPL-3.0 (COPYING) | no (desktop) |
+| tuitar (cod-e-codes/tuitar) | "A terminal-based guitar tablature editor built with Go and Bubble Tea"; "Karplus-Strong string synthesis" | 2025-09-28 | MIT | no (terminal) |
+
+## Handoff facts
+
+Each line: what one side outputs, what the other side accepts, with the source of each half. "(this file, X)" points
+to the section above where the quote and URL are; other lanes' files are named by path. All read 2026-11-10.
+
+String and fret numbering (needed by any converter between these formats):
+
+- MusicXML `<string>` "String numbers start with 1 for the highest pitched full-length string" and `<fret>` "Fret
+  numbers start with 0 for an open string" (https://www.w3.org/2021/06/musicxml40/musicxml-reference/elements/string/,
+  .../fret/), while `<staff-tuning line="...">` lines are "numbered from bottom to top" (.../staff-tuning/), i.e. tuning
+  line 1 is the lowest string and `<string>1</string>` is the highest.
+- alphaTex `fret.string`: "String 1 is the top string when you read tab — the thinnest string on a guitar, sounding
+  highest." (this file, alphaTab).
+- MEI: `tab.course` with course `n` "counting from the course closest to the player’s feet when the instrument is
+  played"; `tab.fret` "0 ... refers to an unstopped, open course" (this file, MEI).
+- LilyPond: "By default, string 1 is the highest string" (this file, LilyPond).
+- PyGuitarPro: default `Track.strings` `(1, 64) ... (6, 40)`, string 1 = MIDI 64 (this file, PyGuitarPro).
+- guitarpro-parser: `note.string; // 0-based, 0 is the highest string` (this file, "more parsers").
+- abcjs `tuning` array: "starting from the lowest pitch of the instrument" (this file, abcjs).
+- react-guitar `strings` prop: array of frets per string, "`0` means open string and `-1` muted" (this file).
+
+Within this lane:
+
+- alphaTab `Gp7Exporter` outputs a `.gp` ZIP with `Content/score.gpif` (alphaTab docs: "Guitar Pro 7 and Guitar Pro 8
+  both open the resulting file"), which guitarpro-parser ("Reads `.gp` (Guitar Pro 7 and 8)"), TuxGuitar ("open ...
+  7 (GP) files"), MuseScore (`gp` in its reader list), webmscore (`'gp'`) and Soundslice's upload ("Guitar Pro")
+  accept as input (this file, those sections).
+- alphaTab `AlphaTexExporter` outputs alphaTex text, which alphaTab's `tex()` / `{ tex: true }` and the Tab Flow
+  Obsidian plugin (".atex files") accept (this file, alphaTab, alphaTex).
+- PyGuitarPro `guitarpro.write(song, 'x.gp5')` outputs GP5 with per-note `string`/`value` (fret), `Track.offset`
+  (capo) and `Track.strings` (tuning), which alphaTab, TuxGuitar, MuseScore, webmscore, Power Tab Editor,
+  guitarpro-parser, ApolloTab and the Rust `guitarpro` crate read as `.gp5` (parser table above).
+- alphaTab outputs Standard MIDI File 1.0 (`MidiFileGenerator`, "tempo map, time signatures, program changes, note
+  on/off with expression and pitch bend"), which webmscore (`'midi'` input), MuseScore ("MIDI (SMF) import") and
+  Flat's REST API ("Creating and importing new music scores using MusicXML or MIDI files") accept. alphaTab's own
+  "Reads" list has no MIDI entry (README), so MIDI does not go straight into alphaTab.
+- MuseScore `mscore -o out.musicxml` / webmscore "Export as MusicXML" output MusicXML, which alphaTab reads ("string
+  and fret from `technical`"), OSMD renders as tab ("Can display tablature (guitar tabs) from MusicXML"), and Verovio
+  imports ("Preliminary support for tablature MusicXML import").
+- music21 writes `<technical><string>/<fret>` from `articulations.StringIndication` / `FretIndication`
+  (`musicxml/xmlObjects.py`), and its MusicXML writer has `# TODO: staff-tuning` and `# TODO: capo` (`m21ToXml.py`
+  lines 7263-7264), so a capo or non-standard tuning set in music21 is not written as `<capo>` / `<staff-tuning>` by
+  that code path (source read; behaviour not run here).
+- Soundslice API `GET /api/v1/slices/SCOREHASH/musicxml/` outputs MusicXML ("our own MusicXML exporting algorithm"),
+  which alphaTab, OSMD, MuseScore, Verovio accept as MusicXML (this file).
+- Flat REST API exports "MP3, WAV or MIDI" and its OMR outputs "MusicXML or MIDI" (Flat section), which MuseScore,
+  webmscore and alphaTab (MusicXML only) accept.
+- chords-db entries give `frets: '0320xx'` per chord position (README), and react-guitar takes `strings` as an
+  array of frets per string with `-1` for muted (README); svguitar and vexchords draw chord boxes from their own
+  option objects (READMEs). The mapping between the chords-db string order and either renderer's order was not
+  checked (UNVERIFIED).
+- ChordSheetJS `ChordProParser` parses ChordPro including `{start_of_tab}` blocks, which ChordPro's spec defines as
+  "guitar TAB instructions. The lines will not be folded or changed" (this file, ChordPro, ChordSheetJS): ASCII tab
+  inside a ChordPro file travels as opaque text.
+
+To and from neighbouring lanes:
+
+- Tab generators in the guitar-tab lane that output `.gp5` (Guitab "solo steel-string fingerstyle audio to .gp5";
+  Audio2Tab "Whisper-small fine-tuned to .gp5", per `lanes/guitar-tab/survey.md` lines 27 and 48) produce a file that
+  alphaTab, TuxGuitar, MuseScore, webmscore, guitarpro-parser and PyGuitarPro read as GP5 (parser table above).
+- A string-and-fret assigner that outputs per-note (string, fret, onset, duration) can be written as alphaTex
+  (`fret.string` with `:4`/`:8` durations, `\tuning`, `\capo`) or as MusicXML `<technical><string>/<fret>` with
+  `<staff-tuning>` and `<capo>`, both of which alphaTab loads (alphaTex syntax and MusicXML import docs, this file).
+- Notes without strings (MIDI pitches from the audio-to-notes lane, e.g. tools that "export them to MIDI", per
+  `lanes/audio-to-notes/survey.md` line 554) can be given string and fret by LilyPond's TabStaff ("LilyPond
+  automatically calculates the fret for a note based on the string to which the note is assigned"; options
+  `stringTunings`, `minimumFret`, `restrainOpenStrings`, string-number indications) or drawn as tab by abcjs from
+  ABC pitches (`tablature` with `tuning` and `capo`) (this file, LilyPond, abcjs). Neither documents an optimiser for
+  playability beyond those rules (pages read).
+- Downbeat times in seconds (All-In-One's JSON "downbeats" (seconds), `lanes/chords-beats-key/survey.md` line 222)
+  map onto alphaTab's `FlatSyncPoint { barIndex, barPosition, barOccurence, millisecondOffset }`, where
+  `millisecondOffset` is "the audio timestamp in milliseconds this point maps to" and `barPosition` "a `0..1` ratio
+  inside the bar", applied with `score.applyFlatSyncPoints(list)` and `api.updateSyncPoints()`
+  (https://raw.githubusercontent.com/CoderLine/alphaTab/develop/website/docs/features/play-sync/sync-points-at-runtime.mdx),
+  with the player in `PlayerMode.EnabledBackingTrack` for an audio file or an `IExternalMediaHandler` for a video
+  (".../play-sync/video-sync.mdx": it "exposes `backingTrackDuration`, `playbackRate`, `masterVolume`, `seekTo`,
+  `play`, and `pause`"). Soundslice's API has the equivalent "Set recording’s syncpoints" endpoint (Soundslice section).
+- Tempo (BPM) from the chords-beats-key lane maps to alphaTex `\tempo` (example `\tempo 196`, alphaTex introduction)
+  and MusicXML `sound`/`metronome` markers ("Tempo and tempo changes — read from `sound` and `metronome` markers",
+  alphaTab MusicXML import doc).
+- User constraints from the UI (capo fret, tuning) have a field in each format: MusicXML `<capo>` and
+  `<staff-tuning>`; alphaTex `\capo` and `\tuning`; MEI `<tuning>`/`<course>` (no capo element in the v5 tablature
+  chapter); PyGuitarPro `Track.offset` and `Track.strings`; abcjs `capo` and `tuning` options; LilyPond
+  `stringTunings` (capo only in fret diagrams). Sources in the sections above.
+- Count-in and metronome for practice playback: alphaTab "Before the song starts, the count-in taps out one bar ...
+  during playback, the metronome keeps clicking on every beat"
+  (https://raw.githubusercontent.com/CoderLine/alphaTab/develop/website/docs/features/play-sync/count-in-and-metronome.mdx);
+  the browser-audio-sync lane covers the clock side.
+- Rendering positions for cursor sync: MuseScore CLI outputs `mpos` "measure positions (XML)" and `spos` (handbook
+  extension list); webmscore can "Generate position information of measures or segments on the generated sheets";
+  Verovio has `RenderToTimemap` (Verovio section).
+
+## Where the raw sources are
+
+- Registry summaries made by `scripts/npm_summary.py` from https://registry.npmjs.org on 2026-11-10:
+  `samples/docs-registry/npm_summary.tsv`. Newest-commit date and hash of every repository cloned for this survey
+  (`git clone --depth 1 --filter=blob:none`): `samples/docs-registry/last_commits.tsv`.
+- Saved copies of the pages and files quoted above (untrusted downloads, kept out of git):
+  `/home/user/gtr/lanes/web-tab-render/fetched/` (npm and PyPI JSON, READMEs, LICENSE files, docs pages, terms
+  pages) and the blobless clones in `/home/user/gtr/lanes/web-tab-render/repos/`. `scripts/html2text.py` turns a
+  saved page into the text that was searched.

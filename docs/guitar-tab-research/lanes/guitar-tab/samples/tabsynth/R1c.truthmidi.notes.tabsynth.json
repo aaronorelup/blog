@@ -1,0 +1,2518 @@
+[
+  {
+    "index": 0,
+    "start": 0.0094537875,
+    "duration": 0.13392865625,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 1,
+    "start": 0.0094537875,
+    "duration": 0.47584063750000005,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 2,
+    "start": 0.0094537875,
+    "duration": 0.53413899375,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 3,
+    "start": 0.009978997916666668,
+    "duration": 0.3424371916666667,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 4,
+    "start": 0.7699584708333334,
+    "duration": 0.21481106041666664,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 5,
+    "start": 0.7762609958333334,
+    "duration": 0.1391807604166666,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 6,
+    "start": 0.77678620625,
+    "duration": 0.2247900583333332,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 7,
+    "start": 0.7867652041666667,
+    "duration": 0.21481106041666653,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 8,
+    "start": 1.2599797895833333,
+    "duration": 0.48161795208333347,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 9,
+    "start": 1.2636562625,
+    "duration": 0.11817234374999996,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 10,
+    "start": 1.2657571041666666,
+    "duration": 0.11607150208333339,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 11,
+    "start": 1.2720596291666668,
+    "duration": 0.6969542229166665,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 12,
+    "start": 1.7463246354166668,
+    "duration": 0.12605049999999984,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 13,
+    "start": 1.75052631875,
+    "duration": 0.12184881666666669,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 14,
+    "start": 1.7589296854166667,
+    "duration": 0.22058837499999995,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 15,
+    "start": 2.27993841875,
+    "duration": 0.1334034458333333,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 16,
+    "start": 2.2857157333333333,
+    "duration": 0.5630255666666666,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 17,
+    "start": 2.289917416666667,
+    "duration": 0.97531574375,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 18,
+    "start": 2.6570394979166667,
+    "duration": 0.8881308145833335,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 19,
+    "start": 2.8518925625000002,
+    "duration": 0.1917018020833332,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 20,
+    "start": 2.89443460625,
+    "duration": 0.39495823333333346,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 21,
+    "start": 3.321430675,
+    "duration": 0.3135506187499999,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 22,
+    "start": 3.58456109375,
+    "duration": 0.2668068916666666,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 23,
+    "start": 3.5856115145833334,
+    "duration": 0.10451687291666678,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 24,
+    "start": 3.6060947208333336,
+    "duration": 2.1533627083333333,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 25,
+    "start": 3.7857166833333333,
+    "duration": 0.12762613125,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 26,
+    "start": 4.046746260416667,
+    "duration": 0.5168070500000006,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 27,
+    "start": 4.048321891666667,
+    "duration": 0.12184881666666669,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 28,
+    "start": 4.048321891666667,
+    "duration": 0.6733197541666662,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 29,
+    "start": 4.5913894625000005,
+    "duration": 0.48739526666666677,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 30,
+    "start": 4.806725733333334,
+    "duration": 0.22058837500000017,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 31,
+    "start": 4.808826575,
+    "duration": 0.23214300416666678,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 32,
+    "start": 4.808826575,
+    "duration": 0.24369763333333339,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 33,
+    "start": 5.313553785416667,
+    "duration": 0.16229001875000026,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 34,
+    "start": 5.31460420625,
+    "duration": 0.4117649666666665,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 35,
+    "start": 5.3188058895833334,
+    "duration": 0.3135506187499999,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 36,
+    "start": 5.832461677083334,
+    "duration": 0.2032564312499998,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 37,
+    "start": 5.838238991666667,
+    "duration": 0.1334034458333333,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 38,
+    "start": 5.840339833333333,
+    "duration": 0.15073538958333366,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 39,
+    "start": 6.314079629166667,
+    "duration": 0.6969542229166672,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 40,
+    "start": 6.31670568125,
+    "duration": 0.11029418750000008,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 1
+    },
+    "mean_fret": 1.0,
+    "min_fret": 1,
+    "max_fret": 1,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 41,
+    "start": 6.320907364583333,
+    "duration": 0.5168070500000006,
+    "kind": "note",
+    "strings": [
+      5
+    ],
+    "frets": {
+      "5": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 42,
+    "start": 7.081937258333333,
+    "duration": 0.11029418750000008,
+    "kind": "note",
+    "strings": [
+      5
+    ],
+    "frets": {
+      "5": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 43,
+    "start": 7.338239941666667,
+    "duration": 0.44117675000000034,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 44,
+    "start": 7.574584629166667,
+    "duration": 0.5052524208333331,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 45,
+    "start": 7.57721068125,
+    "duration": 0.563550777083333,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 46,
+    "start": 7.58351320625,
+    "duration": 0.17384464791666687,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 47,
+    "start": 7.58981573125,
+    "duration": 0.16229001875000026,
+    "kind": "note",
+    "strings": [
+      5
+    ],
+    "frets": {
+      "5": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 48,
+    "start": 7.807252843750001,
+    "duration": 0.22636568958333303,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 49,
+    "start": 8.0955933625,
+    "duration": 0.3135506187499999,
+    "kind": "note",
+    "strings": [
+      5
+    ],
+    "frets": {
+      "5": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 50,
+    "start": 8.110824464583335,
+    "duration": 0.15651270416666563,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 51,
+    "start": 8.84401820625,
+    "duration": 0.22058837500000017,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 52,
+    "start": 8.844543416666667,
+    "duration": 0.22636568958333392,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 53,
+    "start": 8.849795520833334,
+    "duration": 0.19117659166666634,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 54,
+    "start": 8.850320731250001,
+    "duration": 0.22636568958333214,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 55,
+    "start": 9.355047941666667,
+    "duration": 0.1570379145833325,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 56,
+    "start": 9.358199204166667,
+    "duration": 0.3019959895833342,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 57,
+    "start": 9.3624008875,
+    "duration": 0.14548328541666677,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 58,
+    "start": 9.8413927875,
+    "duration": 0.2032564312500007,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 59,
+    "start": 9.845069260416667,
+    "duration": 0.16281522916666802,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 60,
+    "start": 10.32353595,
+    "duration": 0.9810930583333342,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 61,
+    "start": 10.345069577083335,
+    "duration": 0.44117674999999856,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 62,
+    "start": 10.593494104166668,
+    "duration": 0.9753157437499986,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 63,
+    "start": 10.814607689583333,
+    "duration": 0.4585086937499998,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 64,
+    "start": 11.134460833333334,
+    "duration": 0.5225843645833326,
+    "kind": "note",
+    "strings": [
+      5
+    ],
+    "frets": {
+      "5": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 65,
+    "start": 11.134460833333334,
+    "duration": 0.5283616791666663,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 66,
+    "start": 11.3539987875,
+    "duration": 0.2615547874999997,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 67,
+    "start": 11.835616739583333,
+    "duration": 0.39443302291666704,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 68,
+    "start": 12.1039992625,
+    "duration": 0.2032564312500007,
+    "kind": "note",
+    "strings": [
+      5
+    ],
+    "frets": {
+      "5": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 69,
+    "start": 12.107675735416667,
+    "duration": 0.12762613125000044,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 70,
+    "start": 12.114503470833334,
+    "duration": 0.5399163083333338,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 71,
+    "start": 12.35137336875,
+    "duration": 0.4532565895833329,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 72,
+    "start": 12.897592202083334,
+    "duration": 0.8881308145833327,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 73,
+    "start": 12.89969304375,
+    "duration": 0.8534669270833337,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 74,
+    "start": 12.905470358333334,
+    "duration": 0.7200634812499995,
+    "kind": "note",
+    "strings": [
+      5
+    ],
+    "frets": {
+      "5": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 75,
+    "start": 12.943285508333334,
+    "duration": 0.3834036041666664,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 76,
+    "start": 13.379210154166667,
+    "duration": 0.24422284375000025,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 77,
+    "start": 13.626584260416667,
+    "duration": 0.2032564312500007,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 78,
+    "start": 13.628159891666668,
+    "duration": 0.46428600833333356,
+    "kind": "note",
+    "strings": [
+      5
+    ],
+    "frets": {
+      "5": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 79,
+    "start": 13.873958366666667,
+    "duration": 0.5220591541666675,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 80,
+    "start": 14.140765258333333,
+    "duration": 0.21481106041666642,
+    "kind": "note",
+    "strings": [
+      5
+    ],
+    "frets": {
+      "5": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 81,
+    "start": 14.356101529166667,
+    "duration": 1.6024169812500002,
+    "kind": "note",
+    "strings": [
+      5
+    ],
+    "frets": {
+      "5": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 82,
+    "start": 14.425429304166666,
+    "duration": 0.7027315375000001,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 83,
+    "start": 14.6502193625,
+    "duration": 1.294643677083334,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 84,
+    "start": 15.168076833333334,
+    "duration": 0.7778366270833335,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 1
+    },
+    "mean_fret": 1.0,
+    "min_fret": 1,
+    "max_fret": 1,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 85,
+    "start": 15.1796314625,
+    "duration": 0.42384480625000087,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 86,
+    "start": 15.674379675,
+    "duration": 0.3828783937500013,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 87,
+    "start": 16.155997627083334,
+    "duration": 0.963235904166666,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 88,
+    "start": 16.890767,
+    "duration": 0.2615547874999997,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 89,
+    "start": 16.891817420833334,
+    "duration": 0.2783615208333323,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 90,
+    "start": 16.8939182625,
+    "duration": 0.2725842062499986,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 91,
+    "start": 17.413351364583335,
+    "duration": 0.19747911666666695,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 92,
+    "start": 17.415452206250002,
+    "duration": 0.2321430041666659,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 93,
+    "start": 17.417553047916666,
+    "duration": 0.19747911666666695,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 94,
+    "start": 17.417553047916666,
+    "duration": 0.2032564312500007,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 95,
+    "start": 17.887616370833335,
+    "duration": 0.2205883749999984,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 96,
+    "start": 17.890767633333333,
+    "duration": 0.19747911666666695,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 97,
+    "start": 17.8960197375,
+    "duration": 0.2205883749999984,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 98,
+    "start": 17.8960197375,
+    "duration": 0.22636568958333214,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 99,
+    "start": 18.394969633333336,
+    "duration": 0.7605046833333304,
+    "kind": "note",
+    "strings": [
+      5
+    ],
+    "frets": {
+      "5": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 100,
+    "start": 18.409150314583336,
+    "duration": 0.9175425979166647,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 101,
+    "start": 18.410725945833335,
+    "duration": 0.31932793333333365,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 4
+    },
+    "mean_fret": 4.0,
+    "min_fret": 4,
+    "max_fret": 4,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 102,
+    "start": 18.41597805,
+    "duration": 0.104516872916669,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 103,
+    "start": 18.93331031041667,
+    "duration": 0.3539918208333326,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 104,
+    "start": 19.198016360416666,
+    "duration": 3.1638675500000026,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 105,
+    "start": 19.429108943750002,
+    "duration": 0.20325643124999715,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 106,
+    "start": 19.663878,
+    "duration": 0.3660716604166687,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 107,
+    "start": 19.672806577083335,
+    "duration": 0.32510524791666384,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 108,
+    "start": 19.98688240625,
+    "duration": 0.24369763333333339,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 109,
+    "start": 20.194340520833332,
+    "duration": 0.5110297354166669,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 110,
+    "start": 20.459046570833333,
+    "duration": 0.26733210208333347,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 111,
+    "start": 20.463773464583333,
+    "duration": 0.23792031874999964,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 112,
+    "start": 20.464298675000002,
+    "duration": 0.25525226249999733,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 113,
+    "start": 20.927009052083335,
+    "duration": 0.24369763333333339,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 114,
+    "start": 20.931735945833335,
+    "duration": 0.25577747291666597,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 115,
+    "start": 20.939088891666668,
+    "duration": 0.24947494791666713,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 116,
+    "start": 20.94696704791667,
+    "duration": 0.24947494791666358,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 117,
+    "start": 21.41125305625,
+    "duration": 0.4763658479166679,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 118,
+    "start": 21.42595894791667,
+    "duration": 0.4527313791666643,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 119,
+    "start": 21.428059789583333,
+    "duration": 0.42962212083333284,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 120,
+    "start": 21.441715260416668,
+    "duration": 1.0740553020833339,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 121,
+    "start": 21.92806010625,
+    "duration": 0.6034667687499997,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 122,
+    "start": 21.952219785416666,
+    "duration": 0.47058853333333417,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 123,
+    "start": 22.422283108333335,
+    "duration": 1.5094547375000005,
+    "kind": "note",
+    "strings": [
+      5
+    ],
+    "frets": {
+      "5": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 124,
+    "start": 22.973754045833335,
+    "duration": 0.9579838000000009,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 125,
+    "start": 22.975329677083334,
+    "duration": 0.4758406374999993,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 126,
+    "start": 23.47270394166667,
+    "duration": 0.4532565895833329,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 127,
+    "start": 23.73373351875,
+    "duration": 0.2032564312500007,
+    "kind": "note",
+    "strings": [
+      1
+    ],
+    "frets": {
+      "1": 2
+    },
+    "mean_fret": 2.0,
+    "min_fret": 2,
+    "max_fret": 2,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 128,
+    "start": 23.98163283541667,
+    "duration": 0.31302540833333126,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 129,
+    "start": 24.246338885416666,
+    "duration": 1.42804712291667,
+    "kind": "note",
+    "strings": [
+      5
+    ],
+    "frets": {
+      "5": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 130,
+    "start": 24.47428020625,
+    "duration": 0.1102941874999992,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 131,
+    "start": 24.742137518750003,
+    "duration": 0.2090337458333309,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 132,
+    "start": 24.966927577083336,
+    "duration": 0.9343493312499973,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 133,
+    "start": 24.973230102083335,
+    "duration": 0.4700633229166655,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 134,
+    "start": 25.494764045833335,
+    "duration": 0.38918091875000016,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 135,
+    "start": 25.944344162500002,
+    "duration": 0.377101079166664,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 136,
+    "start": 26.221130052083335,
+    "duration": 0.44695406458333053,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 137,
+    "start": 26.477432735416667,
+    "duration": 0.1917018020833332,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 138,
+    "start": 26.47900836666667,
+    "duration": 0.2090337458333309,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 139,
+    "start": 26.481109208333333,
+    "duration": 0.19747911666666695,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 140,
+    "start": 26.970080106250002,
+    "duration": 0.8707988708333332,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 141,
+    "start": 26.98321036666667,
+    "duration": 0.49894989583333427,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 142,
+    "start": 26.985311208333336,
+    "duration": 0.21481106041666465,
+    "kind": "note",
+    "strings": [
+      4
+    ],
+    "frets": {
+      "4": 5
+    },
+    "mean_fret": 5.0,
+    "min_fret": 5,
+    "max_fret": 5,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 143,
+    "start": 26.991613733333335,
+    "duration": 0.7841391520833341,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 144,
+    "start": 27.524702306250003,
+    "duration": 0.31302540833333126,
+    "kind": "note",
+    "strings": [
+      2
+    ],
+    "frets": {
+      "2": 3
+    },
+    "mean_fret": 3.0,
+    "min_fret": 3,
+    "max_fret": 3,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 145,
+    "start": 27.526803147916667,
+    "duration": 0.29569346458333357,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 146,
+    "start": 27.777328516666667,
+    "duration": 0.38918091875000016,
+    "kind": "note",
+    "strings": [
+      6
+    ],
+    "frets": {
+      "6": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  },
+  {
+    "index": 147,
+    "start": 27.996341260416667,
+    "duration": 0.23897073958333337,
+    "kind": "note",
+    "strings": [
+      3
+    ],
+    "frets": {
+      "3": 0
+    },
+    "mean_fret": 0.0,
+    "min_fret": 0,
+    "max_fret": 0,
+    "requires_barre": false,
+    "chord_id": null
+  }
+]

@@ -1,0 +1,659 @@
+# Quotes from survey.md re-checked by verify-docs-audio-to-notes on 2026-11-10.
+# Record format: "### <id> <kind> <section> <url>" then the quote on the following line(s), whitespace-normalized.
+# kind: L = license or terms clause (the tally in the verification log), O = other quoted fact.
+# "..." inside a quote marks the survey's own elision: each part must appear, in order.
+# A quote whose survey text carries editorial brackets (export[s]) is checked without them.
+
+### bp-lic-1 L 13 https://raw.githubusercontent.com/spotify/basic-pitch/main/LICENSE
+Copyright 2022 Spotify AB
+### bp-lic-2 L 13 https://raw.githubusercontent.com/spotify/basic-pitch/main/LICENSE
+each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form.
+### bp-readme-lic-1 L 13 https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md
+This software is licensed under the Apache License, Version 2.0 (the "Apache License"). You may choose either license to govern your use of this software only upon the condition that you accept all of the terms of either the Apache License.
+### bp-readme-lic-2 L 13 https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md
+Unless required by applicable law or agreed to in writing, software distributed under the Apache License or the GPL License is distributed on an "AS IS" BASIS
+### bp-notice L 13 https://raw.githubusercontent.com/spotify/basic-pitch/main/NOTICE
+The tests for `basic-pitch` include audio files from the Vocadito dataset liscened under Creative Commons Attribution 4.0 International.
+### bp-o1 O 13 https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md
+Automatic Music Transcription (AMT), using lightweight neural network developed by Spotify's Audio Intelligence Lab
+### bp-o2 O 13 https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md
+a `.wav` audio rendering of the MIDI file
+### bp-o3 O 13 https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md
+raw model outputs as an NPZ file
+### bp-o4 O 13 https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md
+the predicted note events as a CSV file
+### bp-o5 O 13 https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md
+Basic Pitch comes with the original TensorFlow model and the TensorFlow model converted to CoreML, TensorFlowLite, and ONNX ... TensorFlowLite will be installed on Linux
+### bp-o6 O 13 https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md
+Python versions 3.7, 3.8, 3.9, 3.10, 3.11
+### bp-o7 O 13 https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md
+Input audio maybe be of any sample rate, however, all audio will be resampled to 22050 Hz before processing.
+### bp-o8 O 13 https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md
+down-mixed to mono
+### bp-o9 O 13 https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md
+This model can process any size or length of audio, but processing of larger/longer audio files could be limited by your machine's available disk space.
+### bp-o10 O 13 https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md
+Pitch events with frequencies outside of this range will be excluded
+### bp-o11 O 13 https://arxiv.org/pdf/2203.09893
+a total of only 16,782 parameters
+### bp-o12 O 13 https://arxiv.org/pdf/2203.09893
+we only use public datasets for training and evaluation in order to foster reproducibility.
+### bp-o13 O 13 https://arxiv.org/pdf/2203.09893
+We use the de-duplicated "redux" version of Slakh
+
+### crepe-o1 O 1 https://raw.githubusercontent.com/marl/crepe/master/README.md
+a monophonic pitch tracker based on a deep convolutional neural network operating directly on the time-domain waveform input
+### crepe-lic-1 L 1 https://raw.githubusercontent.com/marl/crepe/master/LICENSE
+The MIT License (MIT) Copyright (c) 2018 Jong Wook Kim
+### crepe-lic-2 L 1 https://raw.githubusercontent.com/marl/crepe/master/LICENSE
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software
+### crepe-o2 O 1 https://raw.githubusercontent.com/marl/crepe/master/README.md
+if you don't already have tensorflow >= 2.0.0
+### crepe-o3 O 1 https://raw.githubusercontent.com/marl/crepe/master/README.md
+Prediction is significantly faster if Keras (and the corresponding backend) is configured to run on GPU
+### crepe-o4 O 1 https://raw.githubusercontent.com/marl/crepe/master/README.md
+The model is trained on 16 kHz audio, so if the input audio has a different sample rate, it will be first resampled to 16 kHz using resampy
+### crepe-o5 O 1 https://raw.githubusercontent.com/marl/crepe/master/README.md
+timestamps (a 10 ms hop size is used by default)
+### crepe-o6 O 1 https://raw.githubusercontent.com/marl/crepe/master/README.md
+the predicted fundamental frequency in Hz
+### crepe-o7 O 1 https://raw.githubusercontent.com/marl/crepe/master/README.md
+the voicing confidence
+### crepe-o8 O 1 https://raw.githubusercontent.com/marl/crepe/master/README.md
+The provided model is trained using the following datasets, composed of vocal and instrumental audio
+### crepe-o9 O 1 https://arxiv.org/pdf/1802.06182
+6.16 hours of audio synthesized from the RWC Music Database
+
+### tcrepe-o1 O 2 https://raw.githubusercontent.com/maxrmorrison/torchcrepe/master/README.md
+Pytorch implementation of the CREPE [1] pitch tracker ... The provided model weights were obtained by converting the "tiny" and "full" models using MMdnn
+### tcrepe-lic-1 L 2 https://raw.githubusercontent.com/maxrmorrison/torchcrepe/master/LICENSE
+MIT License Copyright (c) 2020 Max Morrison
+### tcrepe-lic-2 L 2 https://raw.githubusercontent.com/maxrmorrison/torchcrepe/master/LICENSE
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software ... to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software
+### tcrepe-o2 O 2 https://raw.githubusercontent.com/maxrmorrison/torchcrepe/master/README.md
+A periodicity metric similar to the Crepe confidence score
+
+### librosa-lic L 3 https://raw.githubusercontent.com/librosa/librosa/main/LICENSE.md
+Copyright (c) 2013--2026, librosa development team. Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+### pyin-lic L 3 https://raw.githubusercontent.com/c4dm/pyin/default/PYinVamp.cpp
+you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+### pyin-copying L 3 https://raw.githubusercontent.com/c4dm/pyin/default/COPYING
+GNU GENERAL PUBLIC LICENSE Version 2
+### tony-lic-1 L 3 https://raw.githubusercontent.com/sonic-visualiser/tony/default/README.md
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.
+### tony-lic-2 L 3 https://raw.githubusercontent.com/sonic-visualiser/tony/default/README.md
+If you make use of this software for any public or commercial purpose, we ask you to kindly mention the authors and Queen Mary, University of London in your user-visible documentation.
+### tony-o1 O 3 https://raw.githubusercontent.com/sonic-visualiser/tony/default/README.md
+a program for computer-aided melody annotation ... uses the pYIN Vamp plugin to extract pitch track and notes from monophonic audio
+### tony-o2 O 3 https://raw.githubusercontent.com/sonic-visualiser/tony/default/README.md
+facility to manually adjust pitch track and note track
+### tony-o3 O 3 https://raw.githubusercontent.com/sonic-visualiser/tony/default/README.md
+note pitch automatically snaps to pitch track
+### tony-o4 O 3 https://raw.githubusercontent.com/sonic-visualiser/tony/default/README.md
+import/export of pitch track and note track
+### librosa-o1 O 3 https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py
+Multi-channel is supported
+### librosa-o2 O 3 https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py
+The recommended minimum is librosa.note_to_hz('C2') (~65 Hz)
+### librosa-o3 O 3 https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py
+The recommended maximum is librosa.note_to_hz('C7') (~2093 Hz)
+### librosa-o4 O 3 https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py
+f0 : time series of fundamental frequencies in Hertz
+### librosa-o5 O 3 https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py
+voiced_flag : ... boolean flags
+### librosa-o6 O 3 https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py
+voiced_prob : ... the probability that a frame is voiced
+### pyin-o1 O 3 https://raw.githubusercontent.com/c4dm/pyin/default/PYinVamp.cpp
+Frame-by-frame pitch estimate after smoothing
+### pyin-o2 O 3 https://raw.githubusercontent.com/c4dm/pyin/default/PYinVamp.cpp
+Derived fixed-pitch note frequencies
+
+### pesto-o1 O 4 https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md
+based on machine learning
+### pesto-o2 O 4 https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md
+minimal code implementation for inference only
+### pesto-o3 O 4 https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md
+The default `--gpu -1` uses the CPU
+### pesto-o4 O 4 https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md
+Timesteps, pitch, confidence, and activations
+### pesto-o5 O 4 https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md
+PESTO takes mono audio as input
+### pesto-o6 O 4 https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md
+supporting various formats and sampling rates without needing resampling
+### pesto-o7 O 4 https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md
+Hardware: Intel i7-1185G7 (11th Gen, 8 cores)
+### pesto-o8 O 4 https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md
+With a 10ms step size, PESTO would perform pitch estimation of the file in 13 seconds
+### pesto-o9 O 4 https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md
+Audio File: wav (2m51s)
+### pesto-lic-1 L 4 https://raw.githubusercontent.com/SonyCSLParis/pesto/master/LICENSE.md
+GNU Lesser General Public License ... Version 3, 29 June 2007
+### pesto-lic-2 L 4 https://raw.githubusercontent.com/SonyCSLParis/pesto/master/LICENSE.md
+This version of the GNU Lesser General Public License incorporates the terms and conditions of version 3 of the GNU General Public License, supplemented by the additional permissions listed below.
+### pesto-o10 O 4 https://arxiv.org/pdf/2309.02265
+An improved version of this paper has been published in TISMIR.
+### pesto-o11 O 4 https://arxiv.org/pdf/2309.02265
+trained only on a small unlabeled dataset
+
+### rmvpe-o1 O 5 https://raw.githubusercontent.com/Dream-High/RMVPE/main/README.md
+the Pytorch implementation of "RMVPE: A Robust Model for Vocal Pitch Estimation in Polyphonic Music"
+### rmvpe-lic L 5 https://raw.githubusercontent.com/Dream-High/RMVPE/main/LICENSE
+each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form.
+### rmvpe-o2 O 5 https://raw.githubusercontent.com/openvpi/SOME/main/README.md
+download the RMVPE pretrained model from here
+### rmvpe-o3 O 5 https://arxiv.org/pdf/2306.15412
+public datasets MDB-stem-synth, MIR-1K, Cmedia and MIR ST500
+### rmvpe-o4 O 5 https://arxiv.org/pdf/2306.15412
+MDB-stem-synth, MIR-1K and Cmedia datasets, we randomly spilt these datasets (at song-level) into training (80%)
+
+### fcpe-o1 O 6 https://raw.githubusercontent.com/CNChTu/FCPE/main/README.md
+TorchFCPE(Fast Context-based Pitch Estimation) is a PyTorch-based library designed for audio pitch extraction and MIDI conversion
+### fcpe-o2 O 6 https://raw.githubusercontent.com/CNChTu/FCPE/main/README.md
+Note: that the MIDI extractor of FCPE is quantized from f0 using non neural network methods
+### fcpe-o3 O 6 https://raw.githubusercontent.com/CNChTu/FCPE/main/README.md
+I won't be updating FCPE (or benchmark) so soon
+### fcpe-o4 O 6 https://raw.githubusercontent.com/CNChTu/FCPE/main/README.md
+If None, BPM is automatically predicted
+### fcpe-o5 O 6 https://raw.githubusercontent.com/CNChTu/FCPE/main/README.md
+another model which released earlier
+### fcpe-o6 O 6 https://raw.githubusercontent.com/CNChTu/FCPE/main/README.md
+The model we use in our paper is DDSP-200K, you can get the model from here
+### fcpe-lic-1 L 6 https://raw.githubusercontent.com/CNChTu/FCPE/main/LICENSE
+MIT License Copyright (c) 2023 CN_ChiTu
+### fcpe-lic-2 L 6 https://raw.githubusercontent.com/CNChTu/FCPE/main/LICENSE
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software ... to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software
+### fcpe-lic-3 L 6 https://huggingface.co/ChiTu/FCPE/raw/main/README.md
+license: cc-by-nc-sa-4.0
+### fcpe-o7 O 6 https://arxiv.org/pdf/2509.15140
+we re-synthesize the M4Singer and VCTK datasets using the Differentiable Digital Signal Processing (DDSP) method and use them for training all model variants.
+### fcpe-o8 O 6 https://arxiv.org/pdf/2509.15140
+96.79% Raw Pitch Accuracy (RPA) on the MIR-1K dataset
+### fcpe-o9 O 6 https://arxiv.org/pdf/2509.15140
+The Real-Time Factor (RTF) is 0.0062 on a single RTX 4090 GPU
+
+### swift-o1 O 7 https://raw.githubusercontent.com/lars76/swift-f0/main/README.md
+pitch detector for monophonic audio (one voice or instrument, not chords). A small neural network with 14 386 parameters reads the pitch from a spectrogram of the audio
+### swift-o2 O 7 https://raw.githubusercontent.com/lars76/swift-f0/main/README.md
+The only hard dependencies are numpy and onnxruntime
+### swift-o3 O 7 https://raw.githubusercontent.com/lars76/swift-f0/main/README.md
+A frame is final once 176 ms of audio after it have arrived
+### swift-o4 O 7 https://raw.githubusercontent.com/lars76/swift-f0/main/README.md
+The demo runs entirely client-side with ONNX Runtime Web
+### swift-o5 O 7 https://raw.githubusercontent.com/lars76/swift-f0/main/README.md
+Multichannel audio (channels last) is mixed to mono and resampled to 16 kHz if needed
+### swift-o6 O 7 https://raw.githubusercontent.com/lars76/swift-f0/main/README.md
+WAV, FLAC, OGG, MP3, AIFF and others
+### swift-o7 O 7 https://raw.githubusercontent.com/lars76/swift-f0/main/README.md
+seconds, one per 16 ms frame
+### swift-o8 O 7 https://raw.githubusercontent.com/lars76/swift-f0/main/README.md
+voicing score, voiced when >= 0.5
+### swift-o9 O 7 https://raw.githubusercontent.com/lars76/swift-f0/main/README.md
+The MIDI export and the plots use the nearest MIDI number.
+### swift-o10 O 7 https://raw.githubusercontent.com/lars76/swift-f0/main/README.md
+A frame whose best pitch lies outside the band gets confidence 0
+### swift-o11 O 7 https://raw.githubusercontent.com/lars76/swift-f0/main/README.md
+In the Pitch Detection Benchmark, SwiftF0 has the highest pitch F1 of the 19 trackers tested, statistically tied with RMVPE. It runs at 180 times real time on a single laptop CPU core.
+### swift-lic-readme L 7 https://raw.githubusercontent.com/lars76/swift-f0/main/README.md
+MIT, see LICENSE
+### swift-lic-1 L 7 https://raw.githubusercontent.com/lars76/swift-f0/main/LICENSE
+MIT License Copyright (c) 2025-2026 Lars Nieradzik
+### swift-lic-2 L 7 https://raw.githubusercontent.com/lars76/swift-f0/main/LICENSE
+to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software
+### swift-lic-3 L 7 https://raw.githubusercontent.com/lars76/swift-f0-training/main/LICENSE
+Copyright (c) 2025-2026 Lars Nieradzik
+### swift-o12 O 7 https://raw.githubusercontent.com/lars76/swift-f0-training/main/README.md
+Training code and ONNX export for SwiftF0 0.3.0
+### swift-o13 O 7 https://raw.githubusercontent.com/lars76/swift-f0-training/main/README.md
+the file the Python package runs
+### swift-o14 O 7 https://arxiv.org/pdf/2508.18440
+contains 95,842 parameters
+
+### penn-o1 O 8 https://raw.githubusercontent.com/interactiveaudiolab/penn/master/README.md
+Training, evaluation, and inference of neural pitch and periodicity estimators in PyTorch. Includes the original code for the paper "Cross-domain Neural Pitch and Periodicity Estimation"
+### penn-o2 O 8 https://raw.githubusercontent.com/interactiveaudiolab/penn/master/README.md
+Set to None to use cpu
+### penn-o3 O 8 https://raw.githubusercontent.com/interactiveaudiolab/penn/master/README.md
+Selecting None will download and use FCNF0++ pretrained on MDB-stem-synth and PTDB
+### penn-lic L 8 https://raw.githubusercontent.com/interactiveaudiolab/penn/master/LICENSE
+MIT License Copyright (c) 2022 Interactive Audio Lab
+### penn-o4 O 8 https://arxiv.org/pdf/2301.12258
+use an 8 kHz sample rate
+
+### aubio-o1 O 9 https://raw.githubusercontent.com/aubio/aubio/master/doc/aubionotes.txt
+Run analysis on this audio file. Most uncompressed and compressed are supported, depending on how aubio was built
+### aubio-o2 O 9 https://raw.githubusercontent.com/aubio/aubio/master/doc/aubionotes.txt
+If 0, the sampling rate of the original source will be used
+### aubio-o3 O 9 https://raw.githubusercontent.com/aubio/aubio/master/doc/aubionotes.txt
+the detected notes are printed on standard output, in seconds and midi note number
+### aubio-o4 O 9 https://raw.githubusercontent.com/aubio/aubio/master/doc/aubiopitch.txt
+printed on the console, prefixed by a timestamp in seconds. If no pitch candidate is found, the output is 0.
+### aubio-o5 O 9 https://raw.githubusercontent.com/aubio/aubio/master/doc/aubiopitch.txt
+midi, bin, cent, and Hz
+### aubio-o6 O 9 https://raw.githubusercontent.com/aubio/aubio/master/doc/aubiopitch.txt
+Currently, the default method is set to yinfft
+### aubio-o7 O 9 https://raw.githubusercontent.com/aubio/aubio/master/doc/aubiopitch.txt
+Save results in this file
+### aubio-lic L 9 https://raw.githubusercontent.com/aubio/aubio/master/COPYING
+GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+### ess-o1 O 10 https://raw.githubusercontent.com/MTG/essentia/master/README.md
+an open-source C++ library for audio analysis and audio-based music information retrieval released under the Affero GPLv3 license
+### ess-lic-1 L 10 https://raw.githubusercontent.com/MTG/essentia/master/Essentia%20Licensing.txt
+Essentia is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+### ess-lic-copying L 10 https://raw.githubusercontent.com/MTG/essentia/master/COPYING.txt
+GNU AFFERO GENERAL PUBLIC LICENSE Version 3
+### ess-lic-2 L 10 https://essentia.upf.edu/licensing_information.html
+Essentia is available under an open licence, Affero GPLv3, for non-commercial applications, thus it is possible to test the library before deciding to licence it under a comercial licence.
+### ess-lic-3 L 10 https://essentia.upf.edu/licensing_information.html
+Some Essentia library algorithms use third-party libraries with licenses such as GPL, LGPL, and others for which UPF is not able to provide full sublicensing rights to third parties.
+### ess-lic-4 L 10 https://essentia.upf.edu/licensing_information.html
+All the models are available under the CC BY-NC-SA 4.0 license for non-commercial use, and are also available under a proprietary license upon request.
+### ess-lic-5 L 10 https://essentia.upf.edu/models.html
+All the models created by the MTG are licensed under CC BY-NC-SA 4.0 and are also available under proprietary license upon request. Check the LICENSE of the models.
+### ess-lic-6 L 10 https://essentia.upf.edu/models/LICENSE
+The model files are copyrighted by Universitat Pompeu Fabra 2019-2021 and distributed under the following license: Creative Commons Attribution-NonCommercial-NoDerivatives 4.0
+### ess-lic-7 L 10 https://essentia.upf.edu/models/LICENSE
+All legal details can be found here: http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+### ess-lic-8 L 10 https://essentia.upf.edu/models/LICENSE
+For a commercial use, the models are also available under proprietary license upon request
+### ess-lic-9 L 10 https://essentia.upf.edu/models/LICENSE
+Models with OpenL3 and CREPE architecture are derived from work licensed under the MIT license terms.
+### ess-lic-10 L 10 https://raw.githubusercontent.com/MTG/essentia-models/master/LICENSE
+This licensing file applies to all model files (*.pb file extension) hosted in this directory. The model files are copyrighted by Universitat Pompeu Fabra 2019-2020 and distributed under the following license: Creative Commons Attribution-NonCommercial-ShareAlike 4.0
+### ess-o2 O 10 https://essentia.upf.edu/reference/std_PitchYinProbabilistic.html
+the input mono audio signal
+### ess-o3 O 10 https://essentia.upf.edu/reference/std_PredominantPitchMelodia.html
+estimates the fundamental frequency of the predominant melody from polyphonic music signals using the MELODIA algorithm
+### ess-o4 O 10 https://essentia.upf.edu/reference/std_PredominantPitchMelodia.html
+The first value corresponds to the beginning of the input signal (time 0)
+### ess-o5 O 10 https://essentia.upf.edu/reference/std_PitchCREPE.html
+the input audio signal sampled at 16000 Hz
+### ess-o6 O 10 https://essentia.upf.edu/reference/std_PitchCREPE.html
+of voice activity, between 0 and 1
+### ess-o7 O 10 https://essentia.upf.edu/reference/std_PitchContourSegmentation.html
+note onset times [s]
+### ess-o8 O 10 https://essentia.upf.edu/reference/std_PitchContourSegmentation.html
+quantized MIDI pitch value
+### ess-o9 O 10 https://essentia.upf.edu/reference/std_PitchContourSegmentation.html
+pitch ( vector_real ) - estimated pitch contour [Hz]
+### ess-o10 O 10 https://essentia.upf.edu/reference/std_PitchContourSegmentation.html
+tuning reference frequency [Hz]
+### ess-o11 O 10 https://essentia.upf.edu/reference/std_Audio2Midi.html
+{noteoff, noteon, noteoff-noteon}
+### ess-o12 O 10 https://essentia.upf.edu/models/pitch/crepe/crepe-full-1.json
+360 dimensions corresponding to pitch values ranging from C1 (32.70Hz) to B7(1975.5Hz) divided with 20-cent steps. This is the full version of the model (85MB).
+### ess-o13 O 10 https://essentia.upf.edu/models.html
+trained on the RWC-synth and the MDB-stem-synth datasets
+### ess-o14 O 10 https://essentia.upf.edu/reference/std_MultiPitchKlapuri.html
+the estimated pitch values [Hz]
+
+### melodia-o1 O 11 https://www.upf.edu/web/mtg/melodia
+The MELODIA plug-in automatically estimates the pitch of a song's main melody
+### melodia-lic-1 L 11 https://www.upf.edu/web/mtg/melodia
+The MELODIA 1.0 Vamp plug-in is offered free of charge for non-commercial use only.
+### melodia-lic-2 L 11 https://www.upf.edu/web/mtg/melodia
+Plug-in authored by Justin Salamon. © Copyright 2012 Music Technology Group, Universitat Pompeu Fabra. All Rights Reserved.
+### melodia-o2 O 11 https://www.upf.edu/web/mtg/melodia
+available for Windows, OSX and Linux
+### melodia-o3 O 11 https://www.upf.edu/web/mtg/melodia
+MTG-MELODIA 1.0 (Linux 32/64-bit).zip
+### melodia-o4 O 11 https://www.upf.edu/web/mtg/melodia
+Sonic Visualiser, Sonic Annotator or Audacity
+### melodia-o5 O 11 https://www.upf.edu/web/mtg/melodia
+Audio file in a format supported by your Vamp host (e.g. wav, mp3, ogg)
+### melodia-o6 O 11 https://www.upf.edu/web/mtg/melodia
+Melody: The pitch of the main melody. Each row of the output contains a timestamp and the corresponding frequency of the melody in Hertz. Non-voiced segments are indicated by zero or negative frequency values
+### melodia-o7 O 11 https://raw.githubusercontent.com/justinsalamon/audio_to_midi_melodia/master/README.md
+Extract the melody notes from an audio file and export them to MIDI and (optionally) JAMS files
+### melodia-o8 O 11 https://raw.githubusercontent.com/justinsalamon/audio_to_midi_melodia/master/README.md
+Non-python dependencies: Melodia melody extraction Vamp plugin
+
+### mt3-o1 O 15 https://raw.githubusercontent.com/magenta/mt3/main/README.md
+MT3 is a multi-instrument automatic music transcription model that uses the T5X framework. This is not an officially supported Google product.
+### mt3-o2 O 15 https://raw.githubusercontent.com/magenta/mt3/main/README.md
+For now, we do not (easily) support training.
+### mt3-o3 O 15 https://raw.githubusercontent.com/magenta/mt3/main/README.md
+Use our colab notebook to transcribe audio files of your choosing
+### mt3-lic-1 L 15 https://raw.githubusercontent.com/magenta/mt3/main/mt3/version.py
+Licensed under the Apache License, Version 2.0
+### mt3-lic-2 L 15 https://raw.githubusercontent.com/magenta/mt3/main/mt3/version.py
+Copyright 2026 The MT3 Authors
+### mt3-lic-3 L 15 https://raw.githubusercontent.com/magenta/mt3/main/mt3/colab/music_transcription_with_transformers.ipynb
+Copyright 2021 Google LLC. All Rights Reserved.
+### mt3-lic-4 L 15 https://raw.githubusercontent.com/magenta/mt3/main/LICENSE
+Apache License Version 2.0
+### mt3-o4 O 15 https://arxiv.org/pdf/2111.03017
+the original General MIDI specification, which contains 128 "programs" used to designate specific instruments.
+### mt3-o5 O 15 https://arxiv.org/pdf/2111.03017
+By training a single model across a mixture of all six datasets
+### mt3-o6 O 15 https://arxiv.org/pdf/2111.03017
+derived from the Slakh2100 dataset
+
+### ymt3-o1 O 16 https://raw.githubusercontent.com/mimbres/YourMT3/main/README.md
+2024.08 HuggingFace Spaces Demo (Free GPU) is out!
+### ymt3-o2 O 16 https://raw.githubusercontent.com/mimbres/YourMT3/main/README.md
+2024.11 Sorry! YouTube is blocked again...
+### ymt3-o3 O 16 https://raw.githubusercontent.com/mimbres/YourMT3/main/README.md
+(pre-release)
+### ymt3-lic-1 L 16 https://raw.githubusercontent.com/mimbres/YourMT3/main/LICENSE
+GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+### ymt3-lic-2 L 16 https://huggingface.co/spaces/mimbres/YourMT3/raw/main/README.md
+license: apache-2.0
+
+### mrmt3-o1 O 17 https://raw.githubusercontent.com/gudgud96/MR-MT3/master/README.md
+Code accompanying paper: MR-MT3: Memory Retaining Multi-Track Music Transcription to Mitigate Instrument Leakage
+### mrmt3-o2 O 17 https://raw.githubusercontent.com/gudgud96/MR-MT3/master/README.md
+Re-sample Slakh `.flac` to 16kHz
+### mrmt3-lic L 17 https://raw.githubusercontent.com/gudgud96/MR-MT3/master/LICENSE
+MIT License Copyright (c) 2024 Hao Hao Tan, Kin Wai Cheuk, Taemin Cho, Wei-Hsiang Liao, Yuki Mitsufuji
+
+### musc-o1 O 19 https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md
+MuScriptor is a multi-instrument music transcription model developed by Kyutai and Mirelo. It turns a recording into MIDI and into sheet music.
+### musc-lic-1 L 19 https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md
+To use MuScriptor locally, you first need to log into HuggingFace and accept the CC BY-NC 4.0 license
+### musc-o2 O 19 https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md
+is granted automatically
+### musc-o3 O 19 https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md
+`small` is the practical choice on CPU-only machines, `medium` is the default speed/accuracy trade-off, and `large` ... really wants a GPU.
+### musc-o4 O 19 https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md
+beats, time signature and bar lines ... detected from the audio and written into the MIDI
+### musc-o5 O 19 https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md
+a tablature PDF for fretted ones
+### musc-lic-2 L 19 https://raw.githubusercontent.com/muscriptor/muscriptor/main/LICENSE
+MIT License Copyright (c) 2026 Kyutai x Mirelo
+### musc-lic-3 L 19 https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md
+The code in this repository is released under the MIT license.
+### musc-lic-4 L 19 https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md
+The model weights, published on HuggingFace, are released under the CC BY-NC 4.0 license (non-commercial use).
+### musc-lic-5 L 19 https://arxiv.org/pdf/2607.08168
+Licensed under a Creative Commons Attribution 4.0 International License (CC BY 4.0)
+### musc-o6 O 19 https://arxiv.org/pdf/2607.08168
+a dataset of roughly 1.45 million MIDI files (both from publicly available sources like Lakh MIDI and from commercial data providers)
+### musc-o7 O 19 https://arxiv.org/pdf/2607.08168
+using a randomly selected soundfont (from a collection of over 250 soundfonts)
+### musc-o8 O 19 https://arxiv.org/pdf/2607.08168
+an internal dataset of 170 000 real music audio recordings (totalling over 11 000 hours) with aligned note annotations
+### musc-o9 O 19 https://arxiv.org/pdf/2607.08168
+Instrument-conditioned Transcription: By optionally conditioning on instrument presence, we stabilize pre-
+
+### omni-o1 O 20 https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/README.md
+Omnizart is a Python library that aims for democratizing automatic music transcription. Given polyphonic music, it is able to transcribe pitched instruments, vocal melody, chords, drum events, and beat.
+### omni-lic L 20 https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/LICENSE
+MIT License Copyright (c) 2020 MCTLab
+### omni-o2 O 20 https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/CHANGELOG.md
+Replaced the heavy PyTorch-based external CLI dependencies on Spleeter/Demucs with a lightweight, in-code `sherpa-onnx` backend
+### omni-o3 O 20 https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/CHANGELOG.md
+Major compatibility upgrade supporting Python versions up to 3.14
+### omni-o4 O 20 https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/CHANGELOG.md
+Official Open JOSS reviewed version.
+### omni-o5 O 20 https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/CHANGELOG.md
+Migrate checkpoints from private Google Drive to Github release
+### omni-o6 O 20 https://music-and-culture-technology-lab.github.io/omnizart-doc/music/cli.html
+Transcribe a single audio and output as a MIDI file
+### omni-o7 O 20 https://music-and-culture-technology-lab.github.io/omnizart-doc/music/cli.html
+Supported modes are: Piano, Stream, Pop
+### omni-o8 O 20 https://music-and-culture-technology-lab.github.io/omnizart-doc/music/cli.html
+Path to output the prediction file (could be MIDI, CSV, …, etc.)
+### omni-o9 O 20 https://music-and-culture-technology-lab.github.io/omnizart-doc/music/cli.html
+note- (onset, duration) or stream-level (onset, duration, instrument)
+### omni-o10 O 20 https://music-and-culture-technology-lab.github.io/omnizart-doc/music/cli.html
+MusicNet: Classical music performances, with 11 classes of instruments
+### omni-o11 O 20 https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/README.md
+Transcribe frame-level vocal melody (F0)
+
+### tt-o1 O 21 https://raw.githubusercontent.com/sony/timbre-trap/main/README.md
+Code for the paper "Timbre-Trap: A Low-Resource Framework for Instrument-Agnostic Music Transcription"
+### tt-o2 O 21 https://raw.githubusercontent.com/sony/timbre-trap/main/README.md
+Clone the repository, install the requirements, then install timbre-trap
+### tt-o3 O 21 https://raw.githubusercontent.com/sony/timbre-trap/main/README.md
+A dedicated Hugging Face Space is available for performing inference with Timbre-Trap
+### tt-o4 O 21 https://raw.githubusercontent.com/sony/timbre-trap/main/README.md
+Instrument-Agnostic Multi-Pitch Estimation (Timbre-Trap)
+### tt-o5 O 21 https://raw.githubusercontent.com/sony/timbre-trap/main/README.md
+Transcription, reconstruction, and consistency objectives
+### tt-lic L 21 https://raw.githubusercontent.com/sony/timbre-trap/main/LICENSE
+MIT License Copyright (c) 2024 Sony
+
+### ss-o1 O 22 https://raw.githubusercontent.com/chrisdonahue/sheetsage/main/README.md
+Sheet Sage transcribes your favorite pop song into a lead sheet containing the melody and chords!
+### ss-o2 O 22 https://raw.githubusercontent.com/chrisdonahue/sheetsage/main/README.md
+a ~4GB Docker container and ~100MB of data
+### ss-o3 O 22 https://raw.githubusercontent.com/chrisdonahue/sheetsage/main/README.md
+you must first ensure you have a GPU w/ at least 12GB memory and CUDA installed
+### ss-o4 O 22 https://raw.githubusercontent.com/chrisdonahue/sheetsage/main/README.md
+a directory output/<UUID> containing a PDF with the lead sheet (along with the corresponding LilyPond file), and a MIDI file containing audio-aligned melody and harmony.
+### ss-o5 O 22 https://raw.githubusercontent.com/chrisdonahue/sheetsage/main/README.md
+runs beat detection on your input
+### ss-lic-1 L 22 https://raw.githubusercontent.com/chrisdonahue/sheetsage/main/LICENSE
+IMPORTANT NOTE: All *code* in this repository is MIT-licensed, but dataset and trained models are distributed under CC BY-NC-SA 3.0, as they are derived from user contributions on HookTheory (https://forum.hooktheory.com/tos). See README.md for more details.
+### ss-lic-2 L 22 https://raw.githubusercontent.com/chrisdonahue/sheetsage/main/README.md
+Sheet Sage was trained on a new dataset of 50 hours of aligned melody and harmony annotations derived from Hooktheory's TheoryTab DB, which we release alongside this system under a CC BY-NC-SA 3.0
+
+### ds-o1 O 23 https://raw.githubusercontent.com/rabitt/ismir2017-deepsalience/master/README.md
+To compute output from these models, run the script predict/predict_on_audio.py
+### ds-lic L 23 https://raw.githubusercontent.com/rabitt/ismir2017-deepsalience/master/LICENSE
+MIT License Copyright (c) 2017 Rachel Bittner
+
+### nn-o1 O 14 https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md
+NeuralNote v2 is out!
+### nn-o2 O 14 https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md
+v2 replaces Spotify's Basic Pitch with MuScriptor, from Kyutai and Mirelo ... It is a transformer with 103M to 1.4B parameters, compared with fewer than 17K for Basic Pitch.
+### nn-o3 O 14 https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md
+Transcription runs on your machine, on the GPU or the CPU
+### nn-o4 O 14 https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md
+drop an audio file on the plugin (.wav, .aiff, .flac, .mp3, .ogg (vorbis) and, on macOS, .m4a are supported)
+### nn-o5 O 14 https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md
+Linux: prebuilt binaries are coming soon. In the meantime, you can build from source.
+### nn-o6 O 14 https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md
+The transcription model is not included. Download it from within NeuralNote
+### nn-o7 O 14 https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md
+audio-to-MIDI transcription
+### nn-o8 O 14 https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md
+Digital Audio Workstation
+### nn-lic-1 L 14 https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md
+NeuralNote's code is published under the Apache-2.0 license.
+### nn-lic-2 L 14 https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md
+The MuScriptor model weights are not open source. They were released by Kyutai and Mirelo under the CC BY-NC 4.0 license, and are redistributed as GGUF files on Hugging Face under that same license. They may only be used non-commercially. The Apache-2.0 license covers NeuralNote's code only, not the weights.
+### nn-lic-3 L 14 https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md
+JUCE (JUCE Starter)
+### nn-lic-4 L 14 https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md
+ASIO SDK headers (Steinberg ASIO license, bundled with JUCE, Windows only)
+### nn-lic-5 L 14 https://raw.githubusercontent.com/DamRsn/NeuralNote/main/LICENSE
+Apache License Version 2.0
+
+### oaf-o1 O 24 https://raw.githubusercontent.com/magenta/magenta/main/magenta/models/onsets_frames_transcription/README.md
+including velocity estimation
+### oaf-o2 O 24 https://raw.githubusercontent.com/magenta/magenta/main/README.md
+This repository is currently inactive (archived, read only) and serves only as a supplement some of our papers.
+### oaf-o3 O 24 https://raw.githubusercontent.com/magenta/magenta/main/magenta/models/onsets_frames_transcription/README.md
+trained on the MAESTRO dataset
+### oaf-o4 O 24 https://raw.githubusercontent.com/magenta/magenta/main/magenta/models/onsets_frames_transcription/README.md
+trained on the E-GMD dataset
+### oaf-lic-1 L 24 https://raw.githubusercontent.com/magenta/magenta/main/LICENSE
+Copyright 2016 The Magenta Team. All rights reserved. Apache License Version 2.0, January 2004
+### oaf-lic-2 L 24 https://raw.githubusercontent.com/jongwook/onsets-and-frames/master/LICENSE
+Copyright 2019 Jong Wook Kim
+
+### bd-o1 O 25 https://raw.githubusercontent.com/qiuqiangkong/piano_transcription_inference/master/README.md
+a piano transcription inference package that can be easily installed. Users can transcribe their favorite piano recordings to MIDI files after installation
+### bd-o2 O 25 https://raw.githubusercontent.com/qiuqiangkong/piano_transcription_inference/master/README.md
+This will download the pretrained model from https://zenodo.org/record/4034264.
+### bd-o3 O 25 https://raw.githubusercontent.com/qiuqiangkong/piano_transcription_inference/master/README.md
+This repo support Linux and Mac.
+### bd-o4 O 25 https://raw.githubusercontent.com/qiuqiangkong/piano_transcription_inference/master/README.md
+If users met the problem of "Killed". This is caused by there are not sufficient memory.
+### bd-lic-1 L 25 https://raw.githubusercontent.com/qiuqiangkong/piano_transcription_inference/master/setup.py
+License :: OSI Approved :: MIT License
+### bd-lic-2 L 25 https://zenodo.org/records/4034264
+Creative Commons Attribution 4.0 International
+### bd-o5 O 25 https://zenodo.org/records/4034264
+CRNN_note_F1=0.9677_pedal_F1=0.9186.pth
+### bd-o6 O 25 https://zenodo.org/records/4034264
+September 17, 2020
+### bd-o7 O 25 https://arxiv.org/pdf/2010.01815
+we use the MAESTRO dataset V2.0.0, a large-scale dataset containing paired audio recording and MIDI files to train and evaluate our proposed piano transcription system
+
+### tk-o1 O 26 https://raw.githubusercontent.com/Yujia-Yan/Transkun/main/README.md
+for transcribing expressive piano performance into MIDI
+### tk-o2 O 26 https://raw.githubusercontent.com/Yujia-Yan/Transkun/main/README.md
+The code/pip package shipped checkpoint is trained without pedal extension of notes, and with data augmentation
+### tk-lic L 26 https://raw.githubusercontent.com/Yujia-Yan/Transkun/main/LICENSE
+MIT License Copyright (c) 2021 Yujia Yan
+### tk-o3 O 26 https://arxiv.org/pdf/2404.09466
+Maestro v3.0.0. This dataset contains about 200 hours of piano performances ... We use the standard train/validation/test splits.
+
+### hft-o1 O 27 https://raw.githubusercontent.com/sony/hFT-Transformer/master/README.md
+the official PyTorch implementation of "Automatic Piano Transcription with Hierarchical Frequency-Time Transformer" presented in ISMIR2023
+### hft-o2 O 27 https://raw.githubusercontent.com/sony/hFT-Transformer/master/README.md
+model_016_003.pkl is the model for MAESTRO
+### hft-lic-1 L 27 https://raw.githubusercontent.com/sony/hFT-Transformer/master/LICENSE-CODE
+MIT License This license applies only to the source code in this repository. It does not apply to checkpoints, model weights, or trained parameters.
+### hft-lic-2 L 27 https://raw.githubusercontent.com/sony/hFT-Transformer/master/LICENSE-CHECKPOINTS.md
+The checkpoints are distributed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+### hft-lic-3 L 27 https://raw.githubusercontent.com/sony/hFT-Transformer/master/LICENSE-CHECKPOINTS.md
+Commercial use is not permitted.
+### hft-lic-4 L 27 https://raw.githubusercontent.com/sony/hFT-Transformer/master/LICENSE-CHECKPOINTS.md
+These checkpoints were trained using the MAESTRO v3.0.0 dataset.
+### hft-lic-5 L 27 https://raw.githubusercontent.com/sony/hFT-Transformer/master/LICENSE-CHECKPOINTS.md
+The MAESTRO v3.0.0 dataset is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+
+### aria-o1 O 28 https://raw.githubusercontent.com/EleutherAI/aria-amt/main/README.md
+implementation of seq-to-seq automatic piano transcription
+### aria-o2 O 28 https://raw.githubusercontent.com/EleutherAI/aria-amt/main/README.md
+Requires Python 3.11
+### aria-o3 O 28 https://raw.githubusercontent.com/EleutherAI/aria-amt/main/README.md
+NOTE: Int8 quantization is only supported on GPUs that support BF16.
+### aria-o4 O 28 https://raw.githubusercontent.com/EleutherAI/aria-amt/main/README.md
+Piano (v1)
+### aria-lic-0 L 28 https://raw.githubusercontent.com/EleutherAI/aria-amt/main/LICENSE
+Apache License Version 2.0
+### aria-lic-1 L 28 https://huggingface.co/datasets/loubb/aria-midi/raw/main/README.md
+license: cc-by-nc-sa-4.0
+### aria-lic-2 L 28 https://huggingface.co/datasets/loubb/aria-midi/raw/main/README.md
+Aria-MIDI is distributed with the CC-BY-NC-SA 4.0 license. By accessing this dataset, you declare that you agree to our disclaimer.
+### aria-lic-3 L 28 https://huggingface.co/datasets/loubb/aria-midi/raw/main/DISCLAIMER.md
+This dataset may contain material that is protected by copyright, trademark, or other intellectual property rights owned by third parties.
+
+### ov-o1 O 29 https://raw.githubusercontent.com/andres-fr/iamusica_training/master/README.md
+to train and evaluate the Deep Learning piano onset+velocity detection model
+### ov-o2 O 29 https://raw.githubusercontent.com/andres-fr/iamusica_training/master/README.md
+Onsets and Velocities: Affordable Real-Time Piano Transcription Using Convolutional Neural Networks
+### ov-o3 O 29 https://raw.githubusercontent.com/andres-fr/iamusica_training/master/README.md
+training and evaluation is done using the MAESTRO dataset. Specifically, we focus on the latest version, MAESTROv3.
+### ov-lic L 29 https://raw.githubusercontent.com/andres-fr/iamusica_training/master/LICENSE
+GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+### cn-o1 O 12 https://raw.githubusercontent.com/xavriley/crepe_notes/main/README.md
+Post-processing for the CREPE pitch tracker to turn f0 pitch estimates into discrete notes (MIDI)
+### cn-o2 O 12 https://raw.githubusercontent.com/xavriley/crepe_notes/main/README.md
+A '.mid' file will be created in the current directory with the name `[audio_file_stem].[pitch_tracker].transcription.mid`.
+### cn-o3 O 12 https://raw.githubusercontent.com/xavriley/crepe_notes/main/README.md
+outputs midi notes for monophonic audio
+### cn-o4 O 12 https://raw.githubusercontent.com/xavriley/crepe_notes/main/README.md
+include MIDI velocity information
+### cn-o5 O 12 https://raw.githubusercontent.com/xavriley/crepe_notes/main/README.md
+options to filter notes that are too quiet or too short
+### cn-o6 O 12 https://raw.githubusercontent.com/xavriley/crepe_notes/main/README.md
+Min duration, min velocity and sensitivity
+### cn-lic L 12 https://raw.githubusercontent.com/xavriley/crepe_notes/main/LICENSE
+GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+### jdc-o1 O 30 https://raw.githubusercontent.com/keums/melodyExtraction_JDC/master/README.md
+The source code of "Joint Detection and Classification of Singing Voice Melody Using Convolutional Recurrent Neural Networks", Applied Sciences (2019)
+### jdc-lic L 30 https://raw.githubusercontent.com/keums/melodyExtraction_JDC/master/LICENSE
+MIT License Copyright (c) 2019 Sangeun Kum
+### ssl-lic L 30 https://raw.githubusercontent.com/keums/melodyExtraction_SSL/master/LICENSE
+MIT License Copyright (c) 2020 Sangeun Kum
+
+### mta-o1 O 31 https://raw.githubusercontent.com/Annmixiu/MTANet/main/README.md
+The official implementation of "MTANET: Multi-band Time-frequency attention Network for Singing Melody Extraction from Polyphonic Music"
+
+### some-o1 O 32 https://raw.githubusercontent.com/openvpi/SOME/main/README.md
+SOME is a MIDI extractor that can convert singing voice to MIDI sequence
+### some-o2 O 32 https://raw.githubusercontent.com/openvpi/SOME/main/README.md
+The next-generation midi extractor is released! See GAME: Generative Adaptive MIDI Extractor.
+### some-o3 O 32 https://raw.githubusercontent.com/openvpi/SOME/main/README.md
+9x faster than real-time on an i5 12400 CPU, and 300x on a 3080Ti GPU
+### some-o4 O 32 https://raw.githubusercontent.com/openvpi/SOME/main/README.md
+SOME can produce non-integer MIDI values
+### some-o5 O 32 https://raw.githubusercontent.com/openvpi/SOME/main/README.md
+For better pitch extraction results
+### game-o1 O 32 https://raw.githubusercontent.com/openvpi/GAME/main/README.md
+the upgraded successor of SOME, designed for transcribing singing voice into music scores
+### game-o2 O 32 https://raw.githubusercontent.com/openvpi/GAME/main/README.md
+By default, MIDI files are saved besides each audio file
+### game-o3 O 32 https://raw.githubusercontent.com/openvpi/GAME/main/README.md
+tested under Python 3.12, PyTorch 2.8.0, CUDA 12.9
+### game-o4 O 32 https://raw.githubusercontent.com/openvpi/GAME/main/README.md
+Produces floating point pitch values, same as what SOME does
+### game-o5 O 32 https://raw.githubusercontent.com/openvpi/GAME/main/README.md
+notes and pitches can align and adapt to known boundaries
+### game-o6 O 32 https://raw.githubusercontent.com/openvpi/GAME/main/README.md
+Thresholds of boundaries and note presence are adjustable
+### game-o7 O 32 https://raw.githubusercontent.com/openvpi/GAME/main/README.md
+Estimate note pitches from note boundaries adjusted by user in interactive tuning tools
+### game-o8 O 32 https://raw.githubusercontent.com/openvpi/GAME/main/README.md
+works on dirty or separated voice mixed with noise, reverb or even accompaniments
+### some-lic L 32 https://raw.githubusercontent.com/openvpi/SOME/main/LICENSE
+MIT License Copyright (c) 2023 Team OpenVPI
+### game-lic L 32 https://raw.githubusercontent.com/openvpi/GAME/main/LICENSE
+MIT License Copyright (c) 2026 Team OpenVPI
+
+### rosvot-o1 O 33 https://raw.githubusercontent.com/RickyL-2000/ROSVOT/main/README.md
+ROSVOT: Robust Singing Voice Transcription and MIDI Extraction
+### rosvot-o2 O 33 https://raw.githubusercontent.com/RickyL-2000/ROSVOT/main/README.md
+the official PyTorch implementation of ROSVOT (ACL'24)
+### rosvot-o3 O 33 https://raw.githubusercontent.com/RickyL-2000/ROSVOT/main/README.md
+Download the checkpoints.zip and unzip it under the project root
+### rosvot-o4 O 33 https://raw.githubusercontent.com/RickyL-2000/ROSVOT/main/README.md
+turn a waveform of singing voice into a sequence of note events, in the form of MIDI
+### rosvot-o5 O 33 https://raw.githubusercontent.com/RickyL-2000/ROSVOT/main/README.md
+If word boundaries are given ... the output MIDI notes are aligned with word timestamps.
+### rosvot-o6 O 33 https://raw.githubusercontent.com/RickyL-2000/ROSVOT/main/README.md
+The checkpoint we provided was trained with Mandarin datasets.
+### rosvot-lic L 33 https://raw.githubusercontent.com/RickyL-2000/ROSVOT/main/LICENSE
+MIT License Copyright (c) 2024 Ruiqi Li
+
+### guitarset-lic L DS https://zenodo.org/records/3371780
+Creative Commons Attribution 4.0 International
+### maestro-lic L DS https://magenta.tensorflow.org/datasets/maestro
+The dataset is made available by Google LLC under a Creative Commons Attribution Non-Commercial Share-Alike 4.0 (CC BY-NC-SA 4.0) license.
+### slakh-lic L DS https://zenodo.org/records/4599666
+Creative Commons Attribution 4.0 International
+### musicnet-lic L DS https://zenodo.org/records/5120004
+Creative Commons Attribution 4.0 International
+### musicnet-o1 O DS https://zenodo.org/records/5120004
+The audio recordings in MusicNet consist of Creative Commons licensed and Public Domain performances, sourced from the Isabella Stewart Gardner Museum, the European Archive Foundation, and Musopen.
+### medleydb-lic L DS https://zenodo.org/records/1715175
+MedleyDB is offered free of charge for non-commercial research use only under the terms of the Creative Commons Attribution Noncommercial License: http://creativecommons.org/licenses/by-nc-sa/4.0/
+### mdbss-lic L DS https://zenodo.org/records/1481172
+MDB-stem-synth is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0).
+### nsynth-lic L DS https://magenta.tensorflow.org/datasets/nsynth
+The dataset is made available by Google Inc. under a Creative Commons Attribution 4.0 International (CC BY 4.0) license.
+### mir1k-lic L DS https://zenodo.org/records/3532216
+if you want use mir1k dataset pls directly contact the author of mir1k, here the dataset just a backup of my using.
+### ikala-lic L DS https://zenodo.org/records/3532214
+If you need this dataset plz contact the author of ikala, this version is just a backup for myself.
+### egmd-lic L DS https://magenta.tensorflow.org/datasets/e-gmd
+The dataset is made available by Google LLC under a Creative Commons Attribution 4.0 International (CC BY 4.0) License.
+### lmd-lic-1 L DS https://colinraffel.com/projects/lmd/
+The Lakh MIDI Dataset is distributed with a CC-BY 4.0 license
+### lmd-lic-2 L DS https://colinraffel.com/projects/lmd/
+attributing each of the MIDI files in the dataset to a particular author is not feasible.
+
+### ho-demucs-1 O HO https://raw.githubusercontent.com/adefossez/demucs/main/README.md
+Separated tracks are stored in the `separated/MODEL_NAME/TRACK_NAME` folder. There you will find four stereo wav files sampled at 44.1 kHz: `drums.wav`, `bass.wav`, `other.wav`, `vocals.wav`
+### ho-demucs-2 O HO https://raw.githubusercontent.com/adefossez/demucs/main/README.md
+adds a `guitar` and `piano` source
+### ho-m21 O HO https://www.music21.org/music21docs/moduleReference/moduleConverter.html
+quantizePost specifies whether to quantize a stream resulting from MIDI conversion. By default, MIDI streams are quantized to the nearest sixteenth or triplet-eighth
+### ho-mscore-1 O HO https://musescore.org/en/handbook/4/command-line-usage
+-o | --export-to file ... The file type depends on the extension of the filename given
+### ho-mscore-2 O HO https://musescore.org/en/handbook/4/command-line-usage
+-M | --midi-operations file: Specify MIDI import operations file
+### ho-alphatab-1 O HO https://alphatab.net/docs/introduction
+MusicXML ( .xml ) — open XML standard
+### ho-alphatab-2 O HO https://alphatab.net/docs/introduction
+Guitar Pro 3–5
+### ho-alphatab-3 O HO https://alphatab.net/docs/introduction
+CapXML

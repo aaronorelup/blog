@@ -1,0 +1,90 @@
+{
+ "space": "teamup-tech/Beat-This",
+ "api_name": "/process",
+ "args": [
+  "file:/home/user/gtr/inputs/S4/S4.wav"
+ ],
+ "token": null,
+ "runtime_before": {
+  "stage": "RUNNING",
+  "hardware": {
+   "current": "cpu-basic",
+   "requested": "cpu-basic"
+  }
+ },
+ "space_sha": "8f2aa339670026b2da94671d842757aacc8ae2c0",
+ "client_connect_s": 1.577,
+ "ok": true,
+ "wall_s": 12.585,
+ "status_changes": [
+  {
+   "t_s": 1.58,
+   "code": "Status.STARTING",
+   "rank": null,
+   "queue_size": null,
+   "eta": null,
+   "progress": null
+  },
+  {
+   "t_s": 3.58,
+   "code": "Status.PROCESSING",
+   "rank": null,
+   "queue_size": null,
+   "eta": null,
+   "progress": null
+  },
+  {
+   "t_s": 11.58,
+   "code": "Status.FINISHED",
+   "rank": null,
+   "queue_size": null,
+   "eta": null,
+   "progress": null
+  }
+ ],
+ "result_summary": {
+  "files": [
+   {
+    "file": "/home/user/gtr/lanes/hosted-apis/out/hf-spaces/beatthis_S4/files/beat-this_audio-with-beats.wav",
+    "bytes": 6834024
+   }
+  ],
+  "n_labels": 68,
+  "label_kinds": [
+   "beat",
+   "downbeat"
+  ],
+  "first_labels": [
+   {
+    "t": 0.52,
+    "label": "downbeat",
+    "duration": 0.0,
+    "description": null,
+    "color": 2164228648,
+    "link": null,
+    "amplitude": null,
+    "label_type": "AudioLabel"
+   },
+   {
+    "t": 1.06,
+    "label": "beat",
+    "duration": 0.0,
+    "description": null,
+    "color": 2155391743,
+    "link": null,
+    "amplitude": 0.9,
+    "label_type": "AudioLabel"
+   },
+   {
+    "t": 1.56,
+    "label": "beat",
+    "duration": 0.0,
+    "description": null,
+    "color": 2155391743,
+    "link": null,
+    "amplitude": 0.9,
+    "label_type": "AudioLabel"
+   }
+  ]
+ }
+}

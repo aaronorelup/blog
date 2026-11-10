@@ -1,0 +1,311 @@
+id	kind	section	url	http	result	quote_in_survey	context_if_not_exact
+bp-lic-1	L	13	https://raw.githubusercontent.com/spotify/basic-pitch/main/LICENSE	200	EXACT	yes	
+bp-lic-2	L	13	https://raw.githubusercontent.com/spotify/basic-pitch/main/LICENSE	200	EXACT	yes	
+bp-readme-lic-1	L	13	https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md	200	EXACT	yes	
+bp-readme-lic-2	L	13	https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md	200	EXACT	yes	
+bp-notice	L	13	https://raw.githubusercontent.com/spotify/basic-pitch/main/NOTICE	200	EXACT	yes	
+bp-o1	O	13	https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md	200	LOOSE	yes	rms basic pitch is a python library for automatic music transcription (amt), using lightweight neural network developed by spotify's audio intelligence lab. it's small, easy-to-use, pip install-a
+bp-o2	O	13	https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md	200	EXACT	yes	
+bp-o3	O	13	https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md	200	EXACT	yes	
+bp-o4	O	13	https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md	200	EXACT	yes	
+bp-o5	O	13	https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md	200	LOOSE	yes	 using a virtual machine. model runtime basic pitch comes with the original tensorflow model and the tensorflow model converted to coreml, tensorflowlite, and onnx. by default, basic pitch will not install tensorflow as a dependency unless you are 
+bp-o6	O	13	https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md	200	EXACT	yes	
+bp-o7	O	13	https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md	200	EXACT	yes	
+bp-o8	O	13	https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md	200	EXACT	yes	
+bp-o9	O	13	https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md	200	EXACT	yes	
+bp-o10	O	13	https://raw.githubusercontent.com/spotify/basic-pitch/main/README.md	200	EXACT	yes	
+bp-o11	O	13	https://arxiv.org/pdf/2203.09893	200	EXACT	yes	
+bp-o12	O	13	https://arxiv.org/pdf/2203.09893	200	EXACT	yes	
+bp-o13	O	13	https://arxiv.org/pdf/2203.09893	200	LOOSE	yes	ditional details for some the datasets: we use the de-duplicated "redux" version of slakh, and test on an instrument-balanced sub
+crepe-o1	O	1	https://raw.githubusercontent.com/marl/crepe/master/README.md	200	EXACT	yes	
+crepe-lic-1	L	1	https://raw.githubusercontent.com/marl/crepe/master/LICENSE	200	EXACT	yes	
+crepe-lic-2	L	1	https://raw.githubusercontent.com/marl/crepe/master/LICENSE	200	EXACT	yes	
+crepe-o2	O	1	https://raw.githubusercontent.com/marl/crepe/master/README.md	200	EXACT	yes	
+crepe-o3	O	1	https://raw.githubusercontent.com/marl/crepe/master/README.md	200	EXACT	yes	
+crepe-o4	O	1	https://raw.githubusercontent.com/marl/crepe/master/README.md	200	LOOSE	yes	ion only supports wav files as input. - the model is trained on 16 khz audio, so if the input audio has a different sample rate, it will be first resampled to 16 khz using resampy. - due to the subtle numerical differen
+crepe-o5	O	1	https://raw.githubusercontent.com/marl/crepe/master/README.md	200	EXACT	yes	
+crepe-o6	O	1	https://raw.githubusercontent.com/marl/crepe/master/README.md	200	EXACT	yes	
+crepe-o7	O	1	https://raw.githubusercontent.com/marl/crepe/master/README.md	200	EXACT	yes	
+crepe-o8	O	1	https://raw.githubusercontent.com/marl/crepe/master/README.md	200	EXACT	yes	
+crepe-o9	O	1	https://arxiv.org/pdf/1802.06182	200	EXACT	yes	
+tcrepe-o1	O	2	https://raw.githubusercontent.com/maxrmorrison/torchcrepe/master/README.md	200	LOOSE	yes	tation of the crepe [1] pitch tracker. the original tensorflow implementation can be found here. the provided model weights were obtained by converting the "tiny" and "full" models using mmdnn, an open-source model management framew
+tcrepe-lic-1	L	2	https://raw.githubusercontent.com/maxrmorrison/torchcrepe/master/LICENSE	200	EXACT	yes	
+tcrepe-lic-2	L	2	https://raw.githubusercontent.com/maxrmorrison/torchcrepe/master/LICENSE	200	EXACT	yes	
+tcrepe-o2	O	2	https://raw.githubusercontent.com/maxrmorrison/torchcrepe/master/README.md	200	EXACT	yes	
+librosa-lic	L	3	https://raw.githubusercontent.com/librosa/librosa/main/LICENSE.md	200	EXACT	yes	
+pyin-lic	L	3	https://raw.githubusercontent.com/c4dm/pyin/default/PYinVamp.cpp	200	EXACT	yes	
+pyin-copying	L	3	https://raw.githubusercontent.com/c4dm/pyin/default/COPYING	200	EXACT	no	
+tony-lic-1	L	3	https://raw.githubusercontent.com/sonic-visualiser/tony/default/README.md	200	EXACT	yes	
+tony-lic-2	L	3	https://raw.githubusercontent.com/sonic-visualiser/tony/default/README.md	200	EXACT	yes	
+tony-o1	O	3	https://raw.githubusercontent.com/sonic-visualiser/tony/default/README.md	200	EXACT	yes	
+tony-o2	O	3	https://raw.githubusercontent.com/sonic-visualiser/tony/default/README.md	200	EXACT	yes	
+tony-o3	O	3	https://raw.githubusercontent.com/sonic-visualiser/tony/default/README.md	200	EXACT	yes	
+tony-o4	O	3	https://raw.githubusercontent.com/sonic-visualiser/tony/default/README.md	200	EXACT	yes	
+librosa-o1	O	3	https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py	200	EXACT	yes	
+librosa-o2	O	3	https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py	200	LOOSE	yes	 0 [scalar] minimum frequency in hertz. the recommended minimum is librosa.notetohz('c2') (~65 hz) though lower values may be feasible. fm
+librosa-o3	O	3	https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py	200	FAIL	yes	 0 [scalar] minimum frequency in hertz. the recommended minimum is librosa.notetohz('c2') (~65 hz) though lower values may be feasible. fmax
+librosa-o4	O	3	https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py	200	FAIL	yes	----- f0: np.ndarray [shape=(..., nframes)] time series of fundamental frequencies in hertz. if multi-channel input is provided, f0
+librosa-o5	O	3	https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py	200	EXACT	yes	
+librosa-o6	O	3	https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py	200	EXACT	yes	
+pyin-o1	O	3	https://raw.githubusercontent.com/c4dm/pyin/default/PYinVamp.cpp	200	EXACT	yes	
+pyin-o2	O	3	https://raw.githubusercontent.com/c4dm/pyin/default/PYinVamp.cpp	200	EXACT	yes	
+pesto-o1	O	4	https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md	200	EXACT	yes	
+pesto-o2	O	4	https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md	200	EXACT	yes	
+pesto-o3	O	4	https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md	200	EXACT	yes	
+pesto-o4	O	4	https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md	200	EXACT	yes	
+pesto-o5	O	4	https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md	200	EXACT	yes	
+pesto-o6	O	4	https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md	200	EXACT	yes	
+pesto-o7	O	4	https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md	200	LOOSE	yes	rk example: - audio file: wav (2m51s) - hardware: intel i7-1185g7 (11th gen, 8 cores) - speed: with a 10ms step size, pesto w
+pesto-o8	O	4	https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md	200	EXACT	yes	
+pesto-o9	O	4	https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md	200	LOOSE	yes	parameters). image benchmark example: - audio file: wav (2m51s) - hardware: intel i7-1185g7 (11th gen, 
+pesto-lic-1	L	4	https://raw.githubusercontent.com/SonyCSLParis/pesto/master/LICENSE.md	200	EXACT	yes	
+pesto-lic-2	L	4	https://raw.githubusercontent.com/SonyCSLParis/pesto/master/LICENSE.md	200	EXACT	yes	
+pesto-o10	O	4	https://arxiv.org/pdf/2309.02265	200	EXACT	yes	
+pesto-o11	O	4	https://arxiv.org/pdf/2309.02265	200	EXACT	yes	
+rmvpe-o1	O	5	https://raw.githubusercontent.com/Dream-High/RMVPE/main/README.md	200	LOOSE	yes	rmvpe this repo is the pytorch implementation of "rmvpe: a robust model for vocal pitch estimation in polyphonic music".
+rmvpe-lic	L	5	https://raw.githubusercontent.com/Dream-High/RMVPE/main/LICENSE	200	EXACT	yes	
+rmvpe-o2	O	5	https://raw.githubusercontent.com/openvpi/SOME/main/README.md	200	LOOSE	yes	better pitch extraction results, please download the rmvpe pretrained model from here and extract it into pretrained/ directo
+rmvpe-o3	O	5	https://arxiv.org/pdf/2306.15412	200	FAIL	yes	ith previous models fairly, we use four public datasets mdb-stem-synth [17], mir-1k [18], cmedia 1 and mir st500 [19]. we use raw pitch accu
+rmvpe-o4	O	5	https://arxiv.org/pdf/2306.15412	200	EXACT	yes	
+fcpe-o1	O	6	https://raw.githubusercontent.com/CNChTu/FCPE/main/README.md	200	EXACT	yes	
+fcpe-o2	O	6	https://raw.githubusercontent.com/CNChTu/FCPE/main/README.md	200	EXACT	yes	
+fcpe-o3	O	6	https://raw.githubusercontent.com/CNChTu/FCPE/main/README.md	200	EXACT	yes	
+fcpe-o4	O	6	https://raw.githubusercontent.com/CNChTu/FCPE/main/README.md	200	EXACT	yes	
+fcpe-o5	O	6	https://raw.githubusercontent.com/CNChTu/FCPE/main/README.md	200	EXACT	yes	
+fcpe-o6	O	6	https://raw.githubusercontent.com/CNChTu/FCPE/main/README.md	200	EXACT	yes	
+fcpe-lic-1	L	6	https://raw.githubusercontent.com/CNChTu/FCPE/main/LICENSE	200	EXACT	yes	
+fcpe-lic-2	L	6	https://raw.githubusercontent.com/CNChTu/FCPE/main/LICENSE	200	EXACT	yes	
+fcpe-lic-3	L	6	https://huggingface.co/ChiTu/FCPE/raw/main/README.md	200	EXACT	yes	
+fcpe-o7	O	6	https://arxiv.org/pdf/2509.15140	200	FAIL	yes	 errors from manual labeling, we re-synthesize the m4singer [11] and vctk [12] datasets using the differentiable digital signal processing (ddsp) [13] method and use them for training all model variants. we then employ several data augmen
+fcpe-o8	O	6	https://arxiv.org/pdf/2509.15140	200	EXACT	yes	
+fcpe-o9	O	6	https://arxiv.org/pdf/2509.15140	200	EXACT	yes	
+swift-o1	O	7	https://raw.githubusercontent.com/lars76/swift-f0/main/README.md	200	EXACT	yes	
+swift-o2	O	7	https://raw.githubusercontent.com/lars76/swift-f0/main/README.md	200	EXACT	yes	
+swift-o3	O	7	https://raw.githubusercontent.com/lars76/swift-f0/main/README.md	200	EXACT	yes	
+swift-o4	O	7	https://raw.githubusercontent.com/lars76/swift-f0/main/README.md	200	EXACT	yes	
+swift-o5	O	7	https://raw.githubusercontent.com/lars76/swift-f0/main/README.md	200	EXACT	yes	
+swift-o6	O	7	https://raw.githubusercontent.com/lars76/swift-f0/main/README.md	200	EXACT	yes	
+swift-o7	O	7	https://raw.githubusercontent.com/lars76/swift-f0/main/README.md	200	EXACT	yes	
+swift-o8	O	7	https://raw.githubusercontent.com/lars76/swift-f0/main/README.md	200	EXACT	yes	
+swift-o9	O	7	https://raw.githubusercontent.com/lars76/swift-f0/main/README.md	200	EXACT	yes	
+swift-o10	O	7	https://raw.githubusercontent.com/lars76/swift-f0/main/README.md	200	EXACT	yes	
+swift-o11	O	7	https://raw.githubusercontent.com/lars76/swift-f0/main/README.md	200	LOOSE	yes	s a confidence that the pitch is right. in the pitch detection benchmark, swiftf0 has the highest pitch f1 of the 19 trackers tested, statistically tied with rmvpe. it runs at 180 times real time on a single laptop cpu core. streaming needs 176 ms of lookahead. it
+swift-lic-readme	L	7	https://raw.githubusercontent.com/lars76/swift-f0/main/README.md	200	LOOSE	yes	://arxiv.org/abs/2508.18440}, } license mit, see license.
+swift-lic-1	L	7	https://raw.githubusercontent.com/lars76/swift-f0/main/LICENSE	200	EXACT	yes	
+swift-lic-2	L	7	https://raw.githubusercontent.com/lars76/swift-f0/main/LICENSE	200	EXACT	yes	
+swift-lic-3	L	7	https://raw.githubusercontent.com/lars76/swift-f0-training/main/LICENSE	200	EXACT	yes	
+swift-o12	O	7	https://raw.githubusercontent.com/lars76/swift-f0-training/main/README.md	200	LOOSE	yes	swiftf0 training training code and onnx export for swiftf0 0.3.0, a pitch detector for monophonic audio. runs/seed1 holds the s
+swift-o13	O	7	https://raw.githubusercontent.com/lars76/swift-f0-training/main/README.md	200	EXACT	yes	
+swift-o14	O	7	https://arxiv.org/pdf/2508.18440	200	EXACT	yes	
+penn-o1	O	8	https://raw.githubusercontent.com/interactiveaudiolab/penn/master/README.md	200	LOOSE	yes	nloads](https://pepy.tech/project/penn) training, evaluation, and inference of neural pitch and periodicity estimators in pytorch. includes the original code for the paper "cross-domain neural pitch and periodicity estimation". table of contents - installation - inf
+penn-o2	O	8	https://raw.githubusercontent.com/interactiveaudiolab/penn/master/README.md	200	EXACT	yes	
+penn-o3	O	8	https://raw.githubusercontent.com/interactiveaudiolab/penn/master/README.md	200	LOOSE	yes	lect a checkpoint to use for inference. selecting none will download and use fcnf0++ pretrained on mdb-stem-synth and ptdb checkpoint = none centers frames at hop
+penn-lic	L	8	https://raw.githubusercontent.com/interactiveaudiolab/penn/master/LICENSE	200	EXACT	yes	
+penn-o4	O	8	https://arxiv.org/pdf/2301.12258	200	EXACT	yes	
+aubio-o1	O	9	https://raw.githubusercontent.com/aubio/aubio/master/doc/aubionotes.txt	200	EXACT	yes	
+aubio-o2	O	9	https://raw.githubusercontent.com/aubio/aubio/master/doc/aubionotes.txt	200	EXACT	yes	
+aubio-o3	O	9	https://raw.githubusercontent.com/aubio/aubio/master/doc/aubionotes.txt	200	EXACT	yes	
+aubio-o4	O	9	https://raw.githubusercontent.com/aubio/aubio/master/doc/aubiopitch.txt	200	EXACT	yes	
+aubio-o5	O	9	https://raw.githubusercontent.com/aubio/aubio/master/doc/aubiopitch.txt	200	EXACT	yes	
+aubio-o6	O	9	https://raw.githubusercontent.com/aubio/aubio/master/doc/aubiopitch.txt	200	EXACT	yes	
+aubio-o7	O	9	https://raw.githubusercontent.com/aubio/aubio/master/doc/aubiopitch.txt	200	EXACT	yes	
+aubio-lic	L	9	https://raw.githubusercontent.com/aubio/aubio/master/COPYING	200	EXACT	yes	
+ess-o1	O	10	https://raw.githubusercontent.com/MTG/essentia/master/README.md	200	EXACT	yes	
+ess-lic-1	L	10	https://raw.githubusercontent.com/MTG/essentia/master/Essentia%20Licensing.txt	200	EXACT	yes	
+ess-lic-copying	L	10	https://raw.githubusercontent.com/MTG/essentia/master/COPYING.txt	200	EXACT	yes	
+ess-lic-2	L	10	https://essentia.upf.edu/licensing_information.html	200	EXACT	yes	
+ess-lic-3	L	10	https://essentia.upf.edu/licensing_information.html	200	EXACT	yes	
+ess-lic-4	L	10	https://essentia.upf.edu/licensing_information.html	200	EXACT	yes	
+ess-lic-5	L	10	https://essentia.upf.edu/models.html	200	EXACT	yes	
+ess-lic-6	L	10	https://essentia.upf.edu/models/LICENSE	200	EXACT	yes	
+ess-lic-7	L	10	https://essentia.upf.edu/models/LICENSE	200	EXACT	yes	
+ess-lic-8	L	10	https://essentia.upf.edu/models/LICENSE	200	EXACT	yes	
+ess-lic-9	L	10	https://essentia.upf.edu/models/LICENSE	200	EXACT	yes	
+ess-lic-10	L	10	https://raw.githubusercontent.com/MTG/essentia-models/master/LICENSE	200	EXACT	yes	
+ess-o2	O	10	https://essentia.upf.edu/reference/std_PitchYinProbabilistic.html	200	EXACT	yes	
+ess-o3	O	10	https://essentia.upf.edu/reference/std_PredominantPitchMelodia.html	200	EXACT	yes	
+ess-o4	O	10	https://essentia.upf.edu/reference/std_PredominantPitchMelodia.html	200	EXACT	yes	
+ess-o5	O	10	https://essentia.upf.edu/reference/std_PitchCREPE.html	200	EXACT	yes	
+ess-o6	O	10	https://essentia.upf.edu/reference/std_PitchCREPE.html	200	EXACT	yes	
+ess-o7	O	10	https://essentia.upf.edu/reference/std_PitchContourSegmentation.html	200	EXACT	yes	
+ess-o8	O	10	https://essentia.upf.edu/reference/std_PitchContourSegmentation.html	200	EXACT	yes	
+ess-o9	O	10	https://essentia.upf.edu/reference/std_PitchContourSegmentation.html	200	LOOSE	yes	 standard mode | pitch category inputs¶ pitch (vectorreal) - estimated pitch contour [hz] signal (vectorreal) - input audio signa
+ess-o10	O	10	https://essentia.upf.edu/reference/std_PitchContourSegmentation.html	200	EXACT	yes	
+ess-o11	O	10	https://essentia.upf.edu/reference/std_Audio2Midi.html	200	EXACT	yes	
+ess-o12	O	10	https://essentia.upf.edu/models/pitch/crepe/crepe-full-1.json	200	EXACT	yes	
+ess-o13	O	10	https://essentia.upf.edu/models.html	200	EXACT	yes	
+ess-o14	O	10	https://essentia.upf.edu/reference/std_MultiPitchKlapuri.html	200	EXACT	yes	
+melodia-o1	O	11	https://www.upf.edu/web/mtg/melodia	403	FETCH	yes	
+melodia-lic-1	L	11	https://www.upf.edu/web/mtg/melodia	403	FETCH	yes	
+melodia-lic-2	L	11	https://www.upf.edu/web/mtg/melodia	403	FETCH	yes	
+melodia-o2	O	11	https://www.upf.edu/web/mtg/melodia	403	FETCH	yes	
+melodia-o3	O	11	https://www.upf.edu/web/mtg/melodia	403	FETCH	yes	
+melodia-o4	O	11	https://www.upf.edu/web/mtg/melodia	403	FETCH	yes	
+melodia-o5	O	11	https://www.upf.edu/web/mtg/melodia	403	FETCH	yes	
+melodia-o6	O	11	https://www.upf.edu/web/mtg/melodia	403	FETCH	yes	
+melodia-o7	O	11	https://raw.githubusercontent.com/justinsalamon/audio_to_midi_melodia/master/README.md	200	EXACT	no	
+melodia-o8	O	11	https://raw.githubusercontent.com/justinsalamon/audio_to_midi_melodia/master/README.md	200	FAIL	yes	hread before posting an issue, thanks! non-python dependencies - melodia melody extraction vamp plugin: http://mtg.upf.edu/technologies/melodi
+mt3-o1	O	15	https://raw.githubusercontent.com/magenta/mt3/main/README.md	200	LOOSE	yes	lti-task multitrack music transcription mt3 is a multi-instrument automatic music transcription model that uses the t5x framework. this is not an officially supported google product. transcribe your own audio use our colab
+mt3-o2	O	15	https://raw.githubusercontent.com/magenta/mt3/main/README.md	200	EXACT	yes	
+mt3-o3	O	15	https://raw.githubusercontent.com/magenta/mt3/main/README.md	200	LOOSE	yes	ogle product. transcribe your own audio use our colab notebook to transcribe audio files of your choosing. you can use a pretrained checkpoint fr
+mt3-lic-1	L	15	https://raw.githubusercontent.com/magenta/mt3/main/mt3/version.py	200	EXACT	yes	
+mt3-lic-2	L	15	https://raw.githubusercontent.com/magenta/mt3/main/mt3/version.py	200	EXACT	yes	
+mt3-lic-3	L	15	https://raw.githubusercontent.com/magenta/mt3/main/mt3/colab/music_transcription_with_transformers.ipynb	200	EXACT	yes	
+mt3-lic-4	L	15	https://raw.githubusercontent.com/magenta/mt3/main/LICENSE	200	EXACT	yes	
+mt3-o4	O	15	https://arxiv.org/pdf/2111.03017	200	LOOSE	yes	28 distinct values is selected to match the original general midi specification, which contains 128 "programs" used to designate specific instruments. we further discuss the challenges of re
+mt3-o5	O	15	https://arxiv.org/pdf/2111.03017	200	EXACT	yes	
+mt3-o6	O	15	https://arxiv.org/pdf/2111.03017	200	EXACT	yes	
+ymt3-o1	O	16	https://raw.githubusercontent.com/mimbres/YourMT3/main/README.md	200	FAIL	yes	822 | colab demo | code(pre-release) - 2024.08 🤗huggingface spaces demo (free gpu) is out! - ⭐️ ~~youtube transcription is working
+ymt3-o2	O	16	https://raw.githubusercontent.com/mimbres/YourMT3/main/README.md	200	EXACT	yes	
+ymt3-o3	O	16	https://raw.githubusercontent.com/mimbres/YourMT3/main/README.md	200	EXACT	yes	
+ymt3-lic-1	L	16	https://raw.githubusercontent.com/mimbres/YourMT3/main/LICENSE	200	EXACT	yes	
+ymt3-lic-2	L	16	https://huggingface.co/spaces/mimbres/YourMT3/raw/main/README.md	200	EXACT	yes	
+mrmt3-o1	O	17	https://raw.githubusercontent.com/gudgud96/MR-MT3/master/README.md	200	LOOSE	yes	mr-mt3 code accompanying paper: mr-mt3: memory retaining multi-track music transcription to mitigate instrument leakage. setup steps conda create --name mrmt3 python==3.10 -y conda activate mr
+mrmt3-o2	O	17	https://raw.githubusercontent.com/gudgud96/MR-MT3/master/README.md	200	EXACT	yes	
+mrmt3-lic	L	17	https://raw.githubusercontent.com/gudgud96/MR-MT3/master/LICENSE	200	EXACT	yes	
+musc-o1	O	19	https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md	200	LOOSE	yes	muscriptor muscriptor is a multi-instrument music transcription model developed by kyutai and mirelo. it turns a recording into midi and into sheet music. it's the most accurate open-source transcription model. you can use 
+musc-lic-1	L	19	https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md	200	LOOSE	yes	ngface --> huggingface login (required) to use muscriptor locally, you first need to log into huggingface and accept the cc by-nc 4.0 license. 1. accept the model license on the mod
+musc-o2	O	19	https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md	200	EXACT	yes	
+musc-o3	O	19	https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md	200	EXACT	yes	
+musc-o4	O	19	https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md	200	EXACT	yes	
+musc-o5	O	19	https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md	200	EXACT	yes	
+musc-lic-2	L	19	https://raw.githubusercontent.com/muscriptor/muscriptor/main/LICENSE	200	EXACT	yes	
+musc-lic-3	L	19	https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md	200	LOOSE	yes	n, see --help for more options. license the code in this repository is released under the mit license. the model weights, published on hugging
+musc-lic-4	L	19	https://raw.githubusercontent.com/muscriptor/muscriptor/main/README.md	200	LOOSE	yes	tory is released under the mit license. the model weights, published on huggingface, are released under the cc by-nc 4.0 license (non-commercial use). the musescore general soundfont downloa
+musc-lic-5	L	19	https://arxiv.org/pdf/2607.08168	200	EXACT	yes	
+musc-o6	O	19	https://arxiv.org/pdf/2607.08168	200	FAIL	yes	aining for amt. to this end, we collect a dataset of roughly 1.45 million midi files (both from publicly available sources like lakh midi [19] and from commercial data providers) across different genres (with a fo
+musc-o7	O	19	https://arxiv.org/pdf/2607.08168	200	EXACT	yes	
+musc-o8	O	19	https://arxiv.org/pdf/2607.08168	200	EXACT	yes	
+musc-o9	O	19	https://arxiv.org/pdf/2607.08168	200	FAIL	yes	nts on which the model is evaluated. 4. instrument-conditioned transcription: by optionally conditioning on instrument presence, we stabilize predictions across different segments of a m
+omni-o1	O	20	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/README.md	200	EXACT	yes	
+omni-lic	L	20	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/LICENSE	200	EXACT	yes	
+omni-o2	O	20	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/CHANGELOG.md	200	EXACT	yes	
+omni-o3	O	20	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/CHANGELOG.md	200	EXACT	yes	
+omni-o4	O	20	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/CHANGELOG.md	200	EXACT	yes	
+omni-o5	O	20	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/CHANGELOG.md	200	EXACT	yes	
+omni-o6	O	20	https://music-and-culture-technology-lab.github.io/omnizart-doc/music/cli.html	200	EXACT	yes	
+omni-o7	O	20	https://music-and-culture-technology-lab.github.io/omnizart-doc/music/cli.html	200	EXACT	yes	
+omni-o8	O	20	https://music-and-culture-technology-lab.github.io/omnizart-doc/music/cli.html	200	EXACT	yes	
+omni-o9	O	20	https://music-and-culture-technology-lab.github.io/omnizart-doc/music/cli.html	200	EXACT	yes	
+omni-o10	O	20	https://music-and-culture-technology-lab.github.io/omnizart-doc/music/cli.html	200	EXACT	yes	
+omni-o11	O	20	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/README.md	200	EXACT	yes	
+tt-o1	O	21	https://raw.githubusercontent.com/sony/timbre-trap/main/README.md	200	LOOSE	yes	ic multi-pitch estimation (timbre-trap) code for the paper "timbre-trap: a low-resource framework for instrument-agnostic music transcription". this repository contains the following
+tt-o2	O	21	https://raw.githubusercontent.com/sony/timbre-trap/main/README.md	200	LOOSE	yes	e paper can be found here. installation clone the repository, install the requirements, then install timbre-trap: git clone https://github.com/sony/timb
+tt-o3	O	21	https://raw.githubusercontent.com/sony/timbre-trap/main/README.md	200	LOOSE	yes	pts sufficient to reproduce experiments a dedicated hugging face space is available for performing inference with timbre-trap. audio samples and visualizations for s
+tt-o4	O	21	https://raw.githubusercontent.com/sony/timbre-trap/main/README.md	200	EXACT	yes	
+tt-o5	O	21	https://raw.githubusercontent.com/sony/timbre-trap/main/README.md	200	EXACT	yes	
+tt-lic	L	21	https://raw.githubusercontent.com/sony/timbre-trap/main/LICENSE	200	EXACT	yes	
+ss-o1	O	22	https://raw.githubusercontent.com/chrisdonahue/sheetsage/main/README.md	200	LOOSE	yes	sheet sage transcribes your favorite pop song into a lead sheet containing the melody and chords! quickstart: transcribe a song first, ensure you are running linux and have dock
+ss-o2	O	22	https://raw.githubusercontent.com/chrisdonahue/sheetsage/main/README.md	200	EXACT	yes	
+ss-o3	O	22	https://raw.githubusercontent.com/chrisdonahue/sheetsage/main/README.md	200	EXACT	yes	
+ss-o4	O	22	https://raw.githubusercontent.com/chrisdonahue/sheetsage/main/README.md	200	LOOSE	yes	om/watch?v=fhi8x4oxluq this will create a directory output/ containing a pdf with the lead sheet (along with the corresponding lilypond file), and a midi file containing audio-aligned melody and harmony. you can also run sheet sage on a local 
+ss-o5	O	22	https://raw.githubusercontent.com/chrisdonahue/sheetsage/main/README.md	200	EXACT	yes	
+ss-lic-1	L	22	https://raw.githubusercontent.com/chrisdonahue/sheetsage/main/LICENSE	200	EXACT	yes	
+ss-lic-2	L	22	https://raw.githubusercontent.com/chrisdonahue/sheetsage/main/README.md	200	LOOSE	yes	 jukebox (see above) hooktheory dataset sheet sage was trained on a new dataset of 50 hours of aligned melody and harmony annotations derived from hooktheory's theorytab db, which we release alongside this system under a cc by-nc-sa 3.0 license. the dataset can be downloaded 
+ds-o1	O	23	https://raw.githubusercontent.com/rabitt/ismir2017-deepsalience/master/README.md	200	EXACT	yes	
+ds-lic	L	23	https://raw.githubusercontent.com/rabitt/ismir2017-deepsalience/master/LICENSE	200	EXACT	yes	
+nn-o1	O	14	https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md	200	EXACT	yes	
+nn-o2	O	14	https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md	200	LOOSE	yes	on model. v2 replaces spotify's basic pitch with muscriptor, from kyutai and mirelo (paper, blog post, checkpoints). it is a transformer with 103m to 1.4b parameters, compared with fewer than 17k for basic pitch. - multi-instrument transcription. trans
+nn-o3	O	14	https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md	200	EXACT	yes	
+nn-o4	O	14	https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md	200	EXACT	yes	
+nn-o5	O	14	https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md	200	LOOSE	yes	before running it for the first time. - linux: prebuilt binaries are coming soon. in the meantime, you can build from source. the transcription model is not included
+nn-o6	O	14	https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md	200	EXACT	yes	
+nn-o7	O	14	https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md	200	EXACT	yes	
+nn-o8	O	14	https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md	200	EXACT	yes	
+nn-lic-1	L	14	https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md	200	LOOSE	yes	elcome. feel free to open a pr! license neuralnote's code is published under the apache-2.0 license. see the license file. the muscriptor mo
+nn-lic-2	L	14	https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md	200	LOOSE	yes	ache-2.0 license. see the license file. the muscriptor model weights are not open source. they were released by kyutai and mirelo under the cc by-nc 4.0 license, and are redistributed as gguf files on hugging face under that same license. they may only be used non-commercially. the apache-2.0 license covers neuralnote's code only, not the weights. third-party libraries and assets their 
+nn-lic-3	L	14	https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md	200	LOOSE	yes	otices are in installers/license.txt. - juce (juce starter) - vst3 sdk (mit license, bundled with j
+nn-lic-4	L	14	https://raw.githubusercontent.com/DamRsn/NeuralNote/main/README.md	200	EXACT	yes	
+nn-lic-5	L	14	https://raw.githubusercontent.com/DamRsn/NeuralNote/main/LICENSE	200	EXACT	yes	
+oaf-o1	O	24	https://raw.githubusercontent.com/magenta/magenta/main/magenta/models/onsets_frames_transcription/README.md	200	EXACT	yes	
+oaf-o2	O	24	https://raw.githubusercontent.com/magenta/magenta/main/README.md	200	EXACT	yes	
+oaf-o3	O	24	https://raw.githubusercontent.com/magenta/magenta/main/magenta/models/onsets_frames_transcription/README.md	200	LOOSE	yes	ad our pre-trained checkpoint, which is trained on the maestro dataset. after unzipping that checkpoint, you c
+oaf-o4	O	24	https://raw.githubusercontent.com/magenta/magenta/main/magenta/models/onsets_frames_transcription/README.md	200	LOOSE	yes	 drum transcription, use the checkpoint trained on the e-gmd dataset and run the following command: bash mod
+oaf-lic-1	L	24	https://raw.githubusercontent.com/magenta/magenta/main/LICENSE	200	EXACT	yes	
+oaf-lic-2	L	24	https://raw.githubusercontent.com/jongwook/onsets-and-frames/master/LICENSE	200	EXACT	yes	
+bd-o1	O	25	https://raw.githubusercontent.com/qiuqiangkong/piano_transcription_inference/master/README.md	200	EXACT	yes	
+bd-o2	O	25	https://raw.githubusercontent.com/qiuqiangkong/piano_transcription_inference/master/README.md	200	EXACT	yes	
+bd-o3	O	25	https://raw.githubusercontent.com/qiuqiangkong/piano_transcription_inference/master/README.md	200	EXACT	yes	
+bd-o4	O	25	https://raw.githubusercontent.com/qiuqiangkong/piano_transcription_inference/master/README.md	200	EXACT	yes	
+bd-lic-1	L	25	https://raw.githubusercontent.com/qiuqiangkong/piano_transcription_inference/master/setup.py	200	EXACT	yes	
+bd-lic-2	L	25	https://zenodo.org/records/4034264	200	EXACT	yes	
+bd-o5	O	25	https://zenodo.org/records/4034264	200	EXACT	yes	
+bd-o6	O	25	https://zenodo.org/records/4034264	200	EXACT	yes	
+bd-o7	O	25	https://arxiv.org/pdf/2010.01815	200	FAIL	yes	vious piano transcription systems, we use the maestro dataset v2.0.0 [26], a large-scale dataset containing paired audio recording and midi files to train and evaluate our proposed piano transcription system. the maestro dataset contains piano rec
+tk-o1	O	26	https://raw.githubusercontent.com/Yujia-Yan/Transkun/main/README.md	200	EXACT	yes	
+tk-o2	O	26	https://raw.githubusercontent.com/Yujia-Yan/Transkun/main/README.md	200	LOOSE	yes	nput.mp3 output.mid --device cuda note: the code/pip package shipped checkpoint is trained without pedal extension of notes, and with data augmentation,which i believe is closer to a real per
+tk-lic	L	26	https://raw.githubusercontent.com/Yujia-Yan/Transkun/main/LICENSE	200	EXACT	yes	
+tk-o3	O	26	https://arxiv.org/pdf/2404.09466	200	FAIL	yes	ibutions. 5 5.1 experiment dataset maestro v3.0.0 [24]. this dataset contains about 200 hours of piano performances, including audio recordings and corresponding midi files captured using yamaha disklavier pi
+hft-o1	O	27	https://raw.githubusercontent.com/sony/hFT-Transformer/master/README.md	200	LOOSE	yes	ft-transformer this repository contains the official pytorch implementation of "automatic piano transcription with hierarchical frequency-time transformer" presented in ismir2023 (arxiv 2307.04305). development environ
+hft-o2	O	27	https://raw.githubusercontent.com/sony/hFT-Transformer/master/README.md	200	LOOSE	yes	er the checkpoint/maestro-v3 directory. model016003.pkl is the model for maestro. $ wget https://github.com/sony/hft-tra
+hft-lic-1	L	27	https://raw.githubusercontent.com/sony/hFT-Transformer/master/LICENSE-CODE	200	EXACT	yes	
+hft-lic-2	L	27	https://raw.githubusercontent.com/sony/hFT-Transformer/master/LICENSE-CHECKPOINTS.md	200	EXACT	yes	
+hft-lic-3	L	27	https://raw.githubusercontent.com/sony/hFT-Transformer/master/LICENSE-CHECKPOINTS.md	200	EXACT	yes	
+hft-lic-4	L	27	https://raw.githubusercontent.com/sony/hFT-Transformer/master/LICENSE-CHECKPOINTS.md	200	EXACT	yes	
+hft-lic-5	L	27	https://raw.githubusercontent.com/sony/hFT-Transformer/master/LICENSE-CHECKPOINTS.md	200	EXACT	yes	
+aria-o1	O	28	https://raw.githubusercontent.com/EleutherAI/aria-amt/main/README.md	200	EXACT	yes	
+aria-o2	O	28	https://raw.githubusercontent.com/EleutherAI/aria-amt/main/README.md	200	EXACT	yes	
+aria-o3	O	28	https://raw.githubusercontent.com/EleutherAI/aria-amt/main/README.md	200	EXACT	yes	
+aria-o4	O	28	https://raw.githubusercontent.com/EleutherAI/aria-amt/main/README.md	200	EXACT	yes	
+aria-lic-0	L	28	https://raw.githubusercontent.com/EleutherAI/aria-amt/main/LICENSE	200	EXACT	yes	
+aria-lic-1	L	28	https://huggingface.co/datasets/loubb/aria-midi/raw/main/README.md	200	EXACT	yes	
+aria-lic-2	L	28	https://huggingface.co/datasets/loubb/aria-midi/raw/main/README.md	200	LOOSE	yes	 solo-piano recording. citation/license aria-midi is distributed with the cc-by-nc-sa 4.0 license. by accessing this dataset, you declare that you agree to our disclaimer. if you use the dataset, or any of the c
+aria-lic-3	L	28	https://huggingface.co/datasets/loubb/aria-midi/raw/main/DISCLAIMER.md	200	EXACT	yes	
+ov-o1	O	29	https://raw.githubusercontent.com/andres-fr/iamusica_training/master/README.md	200	EXACT	yes	
+ov-o2	O	29	https://raw.githubusercontent.com/andres-fr/iamusica_training/master/README.md	200	EXACT	yes	
+ov-o3	O	29	https://raw.githubusercontent.com/andres-fr/iamusica_training/master/README.md	200	LOOSE	yes	 --- data downloading for this project, training and evaluation is done using the maestro dataset. specifically, we focus on the latest version, maestrov3. the full dataset can be readily downloa
+ov-lic	L	29	https://raw.githubusercontent.com/andres-fr/iamusica_training/master/LICENSE	200	EXACT	yes	
+cn-o1	O	12	https://raw.githubusercontent.com/xavriley/crepe_notes/main/README.md	200	EXACT	yes	
+cn-o2	O	12	https://raw.githubusercontent.com/xavriley/crepe_notes/main/README.md	200	EXACT	yes	
+cn-o3	O	12	https://raw.githubusercontent.com/xavriley/crepe_notes/main/README.md	200	EXACT	yes	
+cn-o4	O	12	https://raw.githubusercontent.com/xavriley/crepe_notes/main/README.md	200	EXACT	yes	
+cn-o5	O	12	https://raw.githubusercontent.com/xavriley/crepe_notes/main/README.md	200	EXACT	yes	
+cn-o6	O	12	https://raw.githubusercontent.com/xavriley/crepe_notes/main/README.md	200	EXACT	yes	
+cn-lic	L	12	https://raw.githubusercontent.com/xavriley/crepe_notes/main/LICENSE	200	EXACT	yes	
+jdc-o1	O	30	https://raw.githubusercontent.com/keums/melodyExtraction_JDC/master/README.md	200	LOOSE	yes	nt detection and classification network the source code of "joint detection and classification of singing voice melody using convolutional recurrent neural networks", applied sciences (2019) | pdf | abstract we present a joint det
+jdc-lic	L	30	https://raw.githubusercontent.com/keums/melodyExtraction_JDC/master/LICENSE	200	EXACT	yes	
+ssl-lic	L	30	https://raw.githubusercontent.com/keums/melodyExtraction_SSL/master/LICENSE	200	EXACT	yes	
+mta-o1	O	31	https://raw.githubusercontent.com/Annmixiu/MTANet/main/README.md	200	FAIL	yes	mtanet introduction the official implementation of "mtanet: multi-band time-frequency attention network for singing melody extraction from polyphonic music. we propose a more powerful singing melody extractor named m
+some-o1	O	32	https://raw.githubusercontent.com/openvpi/SOME/main/README.md	200	EXACT	yes	
+some-o2	O	32	https://raw.githubusercontent.com/openvpi/SOME/main/README.md	200	LOOSE	yes	oriented midi extractor. [!important] > the next-generation midi extractor is released! see game: generative adaptive midi extractor. overview some is a midi extractor that 
+some-o3	O	32	https://raw.githubusercontent.com/openvpi/SOME/main/README.md	200	EXACT	yes	
+some-o4	O	32	https://raw.githubusercontent.com/openvpi/SOME/main/README.md	200	EXACT	yes	
+some-o5	O	32	https://raw.githubusercontent.com/openvpi/SOME/main/README.md	200	EXACT	yes	
+game-o1	O	32	https://raw.githubusercontent.com/openvpi/GAME/main/README.md	200	LOOSE	yes	 cachedit acceleration overview game is the upgraded successor of some, designed for transcribing singing voice into music scores. highlights 1. generative boundary extr
+game-o2	O	32	https://raw.githubusercontent.com/openvpi/GAME/main/README.md	200	EXACT	yes	
+game-o3	O	32	https://raw.githubusercontent.com/openvpi/GAME/main/README.md	200	EXACT	yes	
+game-o4	O	32	https://raw.githubusercontent.com/openvpi/GAME/main/README.md	200	EXACT	yes	
+game-o5	O	32	https://raw.githubusercontent.com/openvpi/GAME/main/README.md	200	LOOSE	yes	tate-spaces). 2. adaptive architecture: notes and pitches can align and adapt to known boundaries. 3. robust model: works on dirty or sep
+game-o6	O	32	https://raw.githubusercontent.com/openvpi/GAME/main/README.md	200	EXACT	yes	
+game-o7	O	32	https://raw.githubusercontent.com/openvpi/GAME/main/README.md	200	EXACT	yes	
+game-o8	O	32	https://raw.githubusercontent.com/openvpi/GAME/main/README.md	200	LOOSE	yes	t to known boundaries. 3. robust model: works on dirty or separated voice mixed with noise, reverb or even accompaniments. 4. multilingual support: choose the ri
+some-lic	L	32	https://raw.githubusercontent.com/openvpi/SOME/main/LICENSE	200	EXACT	yes	
+game-lic	L	32	https://raw.githubusercontent.com/openvpi/GAME/main/LICENSE	200	EXACT	yes	
+rosvot-o1	O	33	https://raw.githubusercontent.com/RickyL-2000/ROSVOT/main/README.md	200	EXACT	yes	
+rosvot-o2	O	33	https://raw.githubusercontent.com/RickyL-2000/ROSVOT/main/README.md	200	LOOSE	yes	tps://arxiv.org/abs/2405.09940) this is the official pytorch implementation of rosvot (acl'24), a robust automatic singing voice trans
+rosvot-o3	O	33	https://raw.githubusercontent.com/RickyL-2000/ROSVOT/main/README.md	200	LOOSE	yes	int of necessary model weights in here. download the checkpoints.zip and unzip it under the project root. the zip file contains the following mo
+rosvot-o4	O	33	https://raw.githubusercontent.com/RickyL-2000/ROSVOT/main/README.md	200	EXACT	yes	
+rosvot-o5	O	33	https://raw.githubusercontent.com/RickyL-2000/ROSVOT/main/README.md	200	EXACT	yes	
+rosvot-o6	O	33	https://raw.githubusercontent.com/RickyL-2000/ROSVOT/main/README.md	200	EXACT	yes	
+rosvot-lic	L	33	https://raw.githubusercontent.com/RickyL-2000/ROSVOT/main/LICENSE	200	EXACT	yes	
+guitarset-lic	L	DS	https://zenodo.org/records/3371780	200	EXACT	yes	
+maestro-lic	L	DS	https://magenta.tensorflow.org/datasets/maestro	200	EXACT	yes	
+slakh-lic	L	DS	https://zenodo.org/records/4599666	200	EXACT	yes	
+musicnet-lic	L	DS	https://zenodo.org/records/5120004	200	EXACT	yes	
+musicnet-o1	O	DS	https://zenodo.org/records/5120004	200	EXACT	yes	
+medleydb-lic	L	DS	https://zenodo.org/records/1715175	200	EXACT	yes	
+mdbss-lic	L	DS	https://zenodo.org/records/1481172	200	EXACT	yes	
+nsynth-lic	L	DS	https://magenta.tensorflow.org/datasets/nsynth	200	EXACT	yes	
+mir1k-lic	L	DS	https://zenodo.org/records/3532216	200	EXACT	yes	
+ikala-lic	L	DS	https://zenodo.org/records/3532214	200	EXACT	yes	
+egmd-lic	L	DS	https://magenta.tensorflow.org/datasets/e-gmd	200	EXACT	yes	
+lmd-lic-1	L	DS	https://colinraffel.com/projects/lmd/	200	EXACT	yes	
+lmd-lic-2	L	DS	https://colinraffel.com/projects/lmd/	200	EXACT	yes	
+ho-demucs-1	O	HO	https://raw.githubusercontent.com/adefossez/demucs/main/README.md	200	EXACT	yes	
+ho-demucs-2	O	HO	https://raw.githubusercontent.com/adefossez/demucs/main/README.md	200	EXACT	yes	
+ho-m21	O	HO	https://www.music21.org/music21docs/moduleReference/moduleConverter.html	200	EXACT	yes	
+ho-mscore-1	O	HO	https://musescore.org/en/handbook/4/command-line-usage	200	EXACT	yes	
+ho-mscore-2	O	HO	https://musescore.org/en/handbook/4/command-line-usage	200	FAIL	yes	bug start musescore in layout debug mode -m | --midi-operations file specify midi import operations file (see examples below) -m | --no-midi dis
+ho-alphatab-1	O	HO	https://alphatab.net/docs/introduction	200	LOOSE	yes	nd 8 (.gp) - zip archive containing xml musicxml (.xml) - open xml standard capxml (.cap) - open xml standard from 
+ho-alphatab-2	O	HO	https://alphatab.net/docs/introduction	200	EXACT	yes	
+ho-alphatab-3	O	HO	https://alphatab.net/docs/introduction	200	EXACT	yes	

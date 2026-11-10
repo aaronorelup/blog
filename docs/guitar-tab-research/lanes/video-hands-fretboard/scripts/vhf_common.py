@@ -17,7 +17,16 @@ CLIPS = {
     # clip id: (frame glob prefix, number of frames)
     "R3a": (os.path.join(LANE, "frames", "R3a_{:04d}.png"), 540),
     "R3a_cu": (os.path.join(LANE, "frames", "R3a_cu", "f_{:04d}.png"), 300),
+    # R3b, R3c: 1920x1080, 25 fps, 450 frames, decoded as JPEG (ffmpeg -q:v 2) to save disk
+    "R3b": (os.path.join(LANE, "frames", "R3b", "f_{:04d}.jpg"), 450),
+    "R3c": (os.path.join(LANE, "frames", "R3c", "f_{:04d}.jpg"), 450),
 }
+CLIP_FPS = {"R3a": 30000 / 1001, "R3a_cu": 30000 / 1001, "R3b": 25.0, "R3c": 25.0}
+
+
+def fps(clip):
+    return CLIP_FPS[clip]
+
 
 # Shots and hand crops, set by hand (see inputs.md). (x0, y0, x1, y1) in the 640x480 frame.
 SHOTS = {
@@ -25,8 +34,10 @@ SHOTS = {
             ((218, 438), "wide", (200, 100, 480, 320)),
             ((439, 539), "medium", (200, 110, 440, 350))],
     "R3a_cu": [((0, 299), "close", (0, 0, 640, 480))],
+    "R3b": [((0, 449), "close", (0, 0, 1920, 1080))],
+    "R3c": [((0, 449), "r3c_medium", (0, 0, 1920, 1080))],
 }
-UPSCALE = {"R3a": 3, "R3a_cu": 2}
+UPSCALE = {"R3a": 3, "R3a_cu": 2, "R3b": 1, "R3c": 1}
 
 
 def frame_path(clip, n):

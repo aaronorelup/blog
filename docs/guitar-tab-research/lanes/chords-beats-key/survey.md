@@ -5,6 +5,11 @@ live pages on 2026-11-10 unless a line says otherwise. Raw copies of files fetch
 files, READMEs, PyPI JSON) are kept outside the repo in `/home/user/gtr/lanes/chords-beats-key/raw/` (not
 committed). This file records facts and quotes only; it does not rank or recommend.
 
+Checked and corrected in place on 2026-11-10 by a second agent (verify-docs-chords-beats-key): every quote was
+re-fetched from its URL and compared, versions and dates were re-read, and missing tools and training-data licenses
+were added. What changed and the counts are in "## Verification log" at the end. Its copies of the fetched pages are
+in `/home/user/gtr/lanes/chords-beats-key/verify/` (not committed); its scripts are `scripts/verify_*`.
+
 Marks used in the tool list:
 
 - `RUNNABLE`: looks installable and runnable on the CPU-only Linux research box (pip / apt / npm package or a
@@ -32,16 +37,19 @@ in the sections below. Each line is a pointer; the section is what counts. Dates
 6. CREMA. HEAD 2022-04-19; PyPI 0.2.0 of 2022-04-21. LICENSE.md BSD-2, PyPI ISC. RUNNABLE? (old pins). JAMS output.
 7. lv-chordia / ISMIR 2019 large-vocabulary model (Chord-CNN-LSTM). HEAD 2024-04-09; PyPI lv-chordia 1.1.0 of
    2026-07-11. MIT. RUNNABLE. JSON output, selectable chord dictionaries.
-8. ChordMini (ChordMiniApp). HEAD 2026-07-30. MIT (app). Needs Firebase and Gemini keys for the full app;
-   NEEDS-ACCOUNT. Uses BTC variants, Chord-CNN-LSTM, Beat-Transformer, madmom.
+8. ChordMini (ChordMiniApp). HEAD 2026-07-30. MIT (app; its model repository ptnghia-j/ChordMini is also MIT, but
+   the paper's pseudo-label training audio includes CC BY-NC-SA 4.0 datasets, see section). Needs Firebase and Gemini
+   keys for the full app; NEEDS-ACCOUNT. Uses BTC variants, Chord-CNN-LSTM, Beat-Transformer, madmom.
 9. Essentia ChordsDetection (HPCP template matching). PyPI essentia 2.1b6.dev1438 of 2026-05-19. AGPL-3.0 (commercial
    license from UPF). RUNNABLE. 24 major/minor triads; marked "experimental" by its docs.
-10. Omnizart chord. HEAD 2026-05-31; PyPI 0.6.3 of 2026-05-31. MIT. RUNNABLE? (TensorFlow). MIDI + CSV, 24 maj/min + N.
-11. Harmony Transformer v1 (2019-11-08) and v2 (2021-05-05). No license file found; training scripts only (v2 for
-    symbolic music).
-12. ACR_seq2seq (ICASSP 2026). HEAD 2026-05-31. No license file found; README is a citation only.
+10. Omnizart chord. HEAD 2026-05-31; PyPI 0.6.3 of 2026-05-31. MIT. RUNNABLE? (TensorFlow). MIDI + CSV, 24 maj/min + N
+    (the label map also holds an "X" class).
+11. Harmony Transformer v1 (2019-11-08) and v2 (2021-05-05). No license file found; training scripts only (v1 ships
+    McGill Billboard chroma features and lab files in the repository; v2 is for symbolic music). No weights.
+12. ACR_seq2seq (ICASSP 2026; arXiv 2604.24386). HEAD 2026-05-31. No license file found; README is a citation only;
+    the tree holds training code (`base/`, `pre_train/`, `full_train/`) and no checkpoint files.
 13. ChordFormer (arXiv 2502.11840, 2025). NO-CODE-FOUND.
-14. BMACE (arXiv 2601.02101). NO-CODE-FOUND.
+14. BMACE (arXiv 2601.02101, an ISMIR 2024 late-breaking demo per the arXiv comment). NO-CODE-FOUND.
 15. QM Vamp Plugins (key, beat, bar-beat, chromagram, tonal change). HEAD 2021-06-02. GPL; README says binaries may be
     used "for any purpose commercial or non-commercial". RUNNABLE (binaries or source build).
 16. pyace (2017 to 2021). HEAD 2021-06-01. BSD-3-style. Not examined further.
@@ -54,8 +62,8 @@ in the sections below. Each line is a pointer; the section is what counts. Dates
     RUNNABLE. Beats and global tempo, no downbeats.
 19. Beat This! HEAD 2026-05-28; PyPI beat-this 1.1.0 of 2026-04-14. MIT code and weights. RUNNABLE (CPU allowed).
     Beats and downbeats.
-20. BeatNet. HEAD 2026-04-13; PyPI 1.1.3 of 2023-11-28. CC BY 4.0 (repository LICENSE). RUNNABLE. Beats and downbeats,
-    online and offline.
+20. BeatNet. HEAD 2026-04-13; PyPI 1.1.3 of 2023-11-28 (`setup.py` at HEAD says 1.2.0, not on PyPI). CC BY 4.0
+    (repository LICENSE). RUNNABLE. Beats and downbeats, online and offline. BeatNet+ is item 42.
 21. All-In-One (allin1). HEAD 2023-10-10; PyPI 1.1.0 of 2023-10-10. MIT code, MIT weights on Hugging Face. RUNNABLE?
     (needs NATTEN built on Linux, madmom from GitHub, Demucs). BPM, beats, downbeats, beat positions, sections.
 22. Essentia RhythmExtractor2013 and TempoCNN. AGPL-3.0 code; TempoCNN models CC BY-NC-SA 4.0.
@@ -64,13 +72,14 @@ in the sections below. Each line is a pointer; the section is what counts. Dates
     GPL-3.0-or-later. RUNNABLE (C tools). Beat times.
 24. tempo-cnn. HEAD 2024-10-17; PyPI tempocnn 0.0.8 of 2024-10-17 (Python 3.9 to 3.11). AGPL-3.0 code and models.
     RUNNABLE. Global tempo, tempogram, meter.
-25. DeepRhythm. PyPI deeprhythm 0.0.13 of 2024-12-07. AGPL-3.0. RUNNABLE. Global tempo with confidence. (Added.)
+25. DeepRhythm. HEAD 2026-07-21; PyPI deeprhythm 0.0.13 of 2024-12-07. AGPL-3.0 (weights are files in the same
+    repository). RUNNABLE. Global tempo with confidence. (Added.)
 26. Beat Transformer. HEAD 2024-04-07. MIT. RUNNABLE? (repository targets 8-fold evaluation and Colab; Spleeter
     stems). Beats and downbeats.
 27. BEAST (ICASSP 2024). HEAD 2024-09-11. MIT. Evaluation script and Google Drive model only.
 28. realtime-bpm-analyzer (npm). npm 5.6.1 of 2026-11-03; HEAD 2026-11-10. Apache-2.0. RUNNABLE (browser and Node).
     Tempo candidates.
-29. essentia.js. HEAD 2022-07-19. AGPL-3.0. RUNNABLE (browser and Node).
+29. essentia.js. HEAD 2022-07-19; npm 0.1.3 of 2021-06-24. AGPL-3.0. RUNNABLE (browser and Node).
 
 ### Key and tuning
 
@@ -80,21 +89,36 @@ in the sections below. Each line is a pointer; the section is what counts. Dates
 33. libKeyFinder (HEAD 2024-07-09) and keyfinder-cli (HEAD 2026-11-10). GPL-3.0. RUNNABLE (CMake build; not in Ubuntu
     24.04 apt).
 34. S-KEY (Deezer). HEAD 2026-10-27. MIT code; weights "only for non-commercial research purposes". RUNNABLE (poetry,
-    CPU).
-35. music21 key analysis (symbolic). PyPI 10.5.2 of 2026-10-28; HEAD 2026-11-08. BSD-3-Clause. RUNNABLE.
+    CPU). Trained on songs from the Deezer catalog (paper).
+35. music21 key analysis (symbolic). PyPI 10.5.2 of 2026-10-28 (pre-release 11.0.0b14 uploaded 2026-10-31); HEAD
+    2026-11-08. BSD-3-Clause. RUNNABLE.
 36. NNLS Tuning plugin (concert pitch in Hz, global and local). GPL-2.0-or-later. RUNNABLE.
-37. Guitar open-string tuning classification (Hulme et al., DLfM 2024 per search results). HEAD 2024-04-25. No license file found.
-    RUNNABLE? (TensorFlow; models on Google Drive). Rochester ECE 477 report 2023: no code URL in its text; 2019 project
-    not read.
+37. Guitar open-string tuning classification (Hulme et al., DLfM 2024 per search results). HEAD 2024-04-25. No license
+    file found. RUNNABLE? (TensorFlow; models on Google Drive). Five classes in its evaluation code: DADGAD, Drop D,
+    Open D, Open G, Standard. Rochester ECE 477 report 2023 (seven tunings): no code URL in its text; 2019 project not
+    read.
 38. Capo position from audio: NO-CODE-FOUND (no paper, dataset or code found).
 
 ### Hosted services and products (pointers only; terms in other lanes)
 
 39. Music.AI (Moises), Klangio, Replicate-hosted All-In-One and chord models: hosted-apis lane. NEEDS-ACCOUNT.
-40. Spotify audio-features / audio-analysis: restricted for new apps from 2024-11-27 per forum and press reports
-    (Spotify's announcement not read). NEEDS-ACCOUNT.
-41. GetSongBPM API (lookup by title, not audio analysis), Cyanite, Tunebat, Chordify, Chord ai, Capo app: named in
-    search results only; apps-survey lane.
+40. Spotify audio-features / audio-analysis: closed to new Web API use cases from 2024-11-27 (Spotify's announcement,
+    read 2026-11-10). NEEDS-ACCOUNT.
+41. GetSongBPM API (lookup by title, not audio analysis; page answered HTTP 403 on 2026-11-10), Cyanite, Tunebat,
+    Chordify, Chord ai, Capo app: apps-survey lane.
+
+### Added by the verifier (2026-11-10)
+
+42. BeatNet+ (TISMIR 2024). https://github.com/mjhydri/BeatNet-Plus HEAD 2026-04-13. No license file and no license
+    statement found. Weights in the repository. Beats and downbeats (online, offline, realtime, streaming).
+43. STONE (Deezer, ISMIR 2024; the predecessor of S-KEY). https://github.com/deezer/stone HEAD 2025-10-24. No license
+    file and no license statement found. Two checkpoints in the repository. Key signature and mode.
+44. key-cnn (Hendrik Schreiber). https://github.com/hendriks73/key-cnn HEAD 2020-07-30. AGPL-3.0 ("Source code and
+    models"). Not on PyPI. Global key.
+45. web-audio-beat-detector (npm). npm 8.2.39 of 2026-08-26; HEAD 2026-08-30. MIT. RUNNABLE (browser). Tempo and
+    first-beat offset from an `AudioBuffer`.
+46. Essentia ChordsDetectionBeats (one chord per beat interval), TonalExtractor (key, chords, HPCP in one call) and
+    PercivalBpmEstimator (tempo). Same AGPL-3.0 code license as item 9; no trained weights. RUNNABLE.
 
 ---
 
@@ -135,8 +159,9 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   PyPI `beat-this` 1.1.0, uploaded 2026-04-14 (first PyPI upload 2026-04-13).
 - How to call (README, https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md):
   - CLI: "beat_this path/to/audio.file -o path/to/output.beats"; several files: "beat_this path/to/*.mp3
-    path/to/whole_directory/ -o path/to/output_directory". "With `--gpu=-1` it will force the CPU." "If you want to use
-    the DBN for postprocessing, add `--dbn`" (needs madmom from GitHub). Model choice with `--model`.
+    path/to/whole_directory/ -o path/to/output_directory". "with `--gpu=-1` it will force the CPU" (mid-sentence in the
+    README). "If you want to use the DBN for postprocessing, add `--dbn`" (needs madmom from GitHub). Model choice with
+    `--model`.
   - Python: "from beat_this.inference import File2Beats", "file2beats = File2Beats(checkpoint_path="final0",
     device="cuda", dbn=False)", "beats, downbeats = file2beats(audio_path)".
   - torch.hub: "torch.hub.load('CPJKU/beat_this', 'beat_this', 'final0', device='cuda')".
@@ -161,22 +186,27 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
     licenses, and it is up to the user to assess whether this may impact their use case." Read 2026-11-10.
   - c. Training data: annotations listed at https://raw.githubusercontent.com/CPJKU/beat_this_annotations/main/README.md
     (read 2026-11-10): asap, ballroom, beatles, candombe, filosax, groove_midi, gtzan, guitarset, hainsworth, harmonix,
-    hjdb, jaah, rwc, simac, smc, tapcorrect. Per-dataset license clauses were not read for this file except GuitarSet
-    (Zenodo record 3371780 metadata: license "cc-by-4.0", https://zenodo.org/api/records/3371780, read 2026-11-10) and
-    the Harmonix Set repository (MIT, https://raw.githubusercontent.com/urinieto/harmonixset/main/LICENSE; its README
-    says "Users must agree to the License included before using these data."). The README also warns: "the results
-    may be unfairly good if you run inference on any file from the training datasets" (GuitarSet is one of them, so
-    this applies to the R1 inputs).
+    hjdb, jaah, rwc, simac, smc, tapcorrect. That annotations repository has its own LICENSE, MIT, "Copyright (c)
+    2024 Institute of Computational Perception" (https://raw.githubusercontent.com/CPJKU/beat_this_annotations/main/LICENSE,
+    read 2026-11-10); it holds annotations, not audio. Per-dataset license clauses were not read for this file except
+    GuitarSet (Zenodo record 3371780 metadata: license "cc-by-4.0", https://zenodo.org/api/records/3371780, read
+    2026-11-10) and the Harmonix Set repository (MIT, "Copyright (c) 2019 Oriol Nieto",
+    https://raw.githubusercontent.com/urinieto/harmonixset/main/LICENSE; its README says "Users must agree to the
+    License included before using these data."). RWC: the RWC Music Database page
+    (https://staff.aist.go.jp/m.goto/RWC-MDB/) could not be fetched on 2026-11-10 (curl: connection reset; fetch tool:
+    HTTP 503), so its terms are UNVERIFIED. The README also warns: "the results may be unfairly good if you run
+    inference on any file from the training datasets" (GuitarSet is one of them, so this applies to the R1 inputs).
 - Author measurements: not copied here (paper tables not read today).
 
 ## BeatNet and BeatNet+ (beat, downbeat, tempo, meter; online and offline)
 
 - What: "BeatNet: Real-time and Offline Joint Music Beat, Downbeat, Tempo, and Meter Tracking System" (README title;
-  the README calls it "the original ISMIR-2021 paper", https://arxiv.org/abs/2108.03576). Repository
-  https://github.com/mjhydri/BeatNet (HEAD 2026-04-13, commit 81cedd4). PyPI `BeatNet` 1.1.3 uploaded 2023-11-28; the
-  README says "New in v1.2.0: The official training pipeline is now included" (v1.2.0 is not on PyPI as of 2026-11-10).
-  BeatNet+ (TISMIR, December 2024) is named in search results only; its code location was not confirmed today
-  (UNVERIFIED).
+  the README calls it "the original ISMIR-2021 paper", https://arxiv.org/abs/2108.03576, whose arXiv title is "BeatNet:
+  CRNN and Particle Filtering for Online Joint Beat Downbeat and Meter Tracking", by Mojtaba Heydari, Frank Cwitkowitz
+  and Zhiyao Duan). Repository https://github.com/mjhydri/BeatNet (HEAD 2026-04-13, commit 81cedd4). PyPI `BeatNet`
+  1.1.3 uploaded 2023-11-28; the README says "New in v1.2.0: The official training pipeline is now included", and
+  `setup.py` at HEAD has `version="1.2.0"` (line 65); v1.2.0 is not on PyPI as of 2026-11-10. BeatNet+ has its own
+  repository and section below.
 - How to call (README, https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md): Python only:
   "from BeatNet.BeatNet import BeatNet", "estimator = BeatNet(1, mode='offline', inference_model='DBN', plot=[],
   thread=False)", "Output = estimator.process("audio file directory")". Modes: 'stream' (microphone, needs pyaudio),
@@ -185,7 +215,9 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   NumPy >= 1.24 and the source fixes it lists).
 - Models: three CRNN weight files in the repository: "model_1_weights.pt # Pre-trained weights (GTZAN)",
   "model_2_weights.pt # Pre-trained weights (Ballroom)", "model_3_weights.pt # Pre-trained weights (Rock Corpus)",
-  selected with the first argument (1 to 3).
+  selected with the first argument (1 to 3); `src/BeatNet/BeatNet.py` lines 77-81 load these three files. The tree at
+  HEAD also holds `model-1.pt`, `model-2.pt` and `model-3.pt` in the same folder, which the README listing does not
+  name.
 - Input: "Raw audio waveform object or directory." "By using the audio directory as the system input, the system
   automatically resamples the audio file to 22050 Hz. However, in the case of using an audio object as the input,
   make sure that the audio sample rate is equal to 22050 Hz."
@@ -202,9 +234,46 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   - c. Training data: the README names GTZAN, Ballroom and Rock Corpus for the three weight files; the training
     command lists "--dataset BALLROOM GTZAN BEATLES CMR ROCK_CORPUS". Dataset licenses were not read today (UNVERIFIED).
 
+## BeatNet+ (beat, downbeat, tempo, meter; causal CRNN) (added by the verifier)
+
+- What: Mojtaba Heydari and Zhiyao Duan, "BeatNet+: Real-Time Rhythm Analysis for Diverse Music Audio", Transactions of
+  ISMIR 7(1), pp. 274-287, published 2024-12-06, doi 10.5334/tismir.198
+  (https://transactions.ismir.net/articles/10.5334/tismir.198, read 2026-11-10). Its "Reproducibility" section: "We
+  open‑source the following: codes: https://github.com/mjhydri/BeatNet-Plus ; annotations:
+  https://github.com/mjhydri/BeatNet-Plus/tree/main/annotations ." The repository README's BibTeX gives a different
+  title ("BeatNet+: Advancing Music Beat and Downbeat Tracking for Non-Percussive Music and Singing Voices") and adds
+  Frank Cwitkowitz as an author. Repository https://github.com/mjhydri/BeatNet-Plus (HEAD 2026-04-13, commit bb90eb0;
+  top level: README.md, setup.py, src, test). `setup.py`: `version="1.0.0"`, `python_requires='>=3.8'`. PyPI has no
+  project named BeatNetPlus, beatnet-plus or beatnetplus (HTTP 404 for each, 2026-11-10).
+- How to call (README, https://raw.githubusercontent.com/mjhydri/BeatNet-Plus/main/README.md, read 2026-11-10):
+  "from BeatNetPlus.inference import BeatNetPlusInference", "estimator = BeatNetPlusInference(
+  'src/BeatNetPlus/models/generic_weights.pt', mode='online', inference_model='PF', device='cpu' )" (shown over several
+  lines), "output = estimator.process("path/to/audio.wav")". Modes listed: online (particle filtering), offline (DBN),
+  realtime, streaming (microphone). Install: "git clone https://github.com/mjhydri/BeatNet-Plus.git", "pip install -e ."
+  with "numpy, librosa, madmom, torch, scipy, tensorboard, pyyaml, matplotlib".
+- Input: audio file; the README architecture block starts from "Audio (22050 Hz)".
+- Output (README "Output Format"): "All inference modes return a numpy array of shape `(num_beats, 2)`": column 0
+  "Beat time in seconds", column 1 "Beat type: **1** = downbeat, **2** = regular beat". (BeatNet's README does not
+  spell out the second column this way; Beat This! `.beats` files number every beat in the bar instead.)
+- Models (README "Pre-trained Models"): "Three pre-trained weight files are included in `src/BeatNetPlus/models/`":
+  `generic_weights.pt`, `generic_main_weights.pt`, `af_non_percussive_weights.pt` (the last one listed for
+  "Non-percussive music, ambient, classical").
+- Author measurement (README, "Key improvements over BeatNet" list): "Achieves **80.62** beat F1 and **56.51** downbeat
+  F1 on GTZAN (vs BeatNet's 75.44 / 46.69)".
+- License facts: a. Code: no LICENSE file in the tree at HEAD and no license statement in the README or `setup.py`
+  (read 2026-11-10). b. Weights: in the same repository; no license statement found. c. Training data (README
+  "Datasets" table): Ballroom, Hainsworth, Rock Corpus, MUSDB18, URSing, RWC Pop, RWC Jazz, RWC Royalty-free for
+  training; "GTZAN is used exclusively for testing". MUSDB18 (Zenodo record 1117372, https://zenodo.org/api/records/1117372,
+  read 2026-11-10): license id "other-nc", and its description says "MUSDB18 is provided for educational purposes only
+  and the material contained in them should not be used for any commercial purpose without the express permission of
+  the copyright holders". RWC terms: UNVERIFIED (page not reachable, see Beat This!). Others not read.
+
 ## All-In-One (`allin1`): tempo, beats, downbeats, sections
 
-- What: music structure analyzer `allin1`; copyright holder in LICENSE "Taejun Kim" (paper and venue not read today).
+- What: music structure analyzer `allin1`; copyright holder in LICENSE "Taejun Kim". Paper (linked from the README):
+  Taejun Kim and Juhan Nam, "All-In-One Metrical And Functional Structure Analysis With Neighborhood Attentions on
+  Demixed Audio", https://arxiv.org/abs/2307.16425; arXiv comment: "This paper has been accepted for publication at the
+  IEEE Workshop on Applications of Signal Processing to Audio and Acoustics (WASPAA), 2023" (read 2026-11-10).
   Repository https://github.com/mir-aidj/all-in-one (HEAD 2023-10-10, commit 18e7890). PyPI `allin1` 1.1.0 uploaded
   2023-10-10. Classifiers list Python 3.8 to 3.11 (pyproject.toml at HEAD).
 - How to call (README, https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md):
@@ -221,10 +290,10 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
     threads, 3.30 GHz), the `harmonix-all` model processed 10 songs (33 minutes) in 73 seconds."
 - Output: JSON per file with "bpm", "beats" (seconds), "downbeats" (seconds), "beat_positions" (1, 2, 3, 4, ...) and
   "segments" with start, end and "label" (README example). Optional `--activ` saves frame-level activations
-  'beat', 'downbeat', 'segment', 'label' "at 100 FPS, equivalent to 0.01 seconds per frame"; `--embed` saves
-  embeddings. Labels: 'start', 'end', 'intro', 'outro', 'break', 'bridge', 'inst', 'solo', 'verse', 'chorus'.
+  'beat', 'downbeat', 'segment', 'label' ("These have a resolution of 100 FPS, equivalent to 0.01 seconds per frame.");
+  `--embed` saves embeddings. Labels: 'start', 'end', 'intro', 'outro', 'break', 'bridge', 'inst', 'solo', 'verse', 'chorus'.
   No chord output.
-- Models: "The models are trained on the [Harmonix Set] with 8-fold cross-validation." "`harmonix-all`: (Default) An
+- Models: "The models are trained on the Harmonix Set with 8-fold cross-validation." "`harmonix-all`: (Default) An
   ensemble model averaging the predictions of 8 models trained on each fold." Weights are fetched by
   `hf_hub_download(repo_id='taejunkim/allinone', ...)` (`src/allin1/models/loaders.py` line 53).
 - License facts:
@@ -234,7 +303,8 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
     read 2026-11-10): tags include "license:mit"; its model card README is only the YAML header "license: mit"
     (https://huggingface.co/taejunkim/allinone/raw/main/README.md). The repository also lists `all-fold*` and
     `raveform-fold3` checkpoints besides `harmonix-fold*`; what `all-` and `raveform` were trained on is not stated
-    there.
+    there; `TRAINING.md` in the code repository has a "Prepare Data (Harmonix Set)" section and names no other
+    dataset (searched for dataset names, 2026-11-10).
   - c. Training data: Harmonix Set (annotations repository MIT, https://raw.githubusercontent.com/urinieto/harmonixset/main/LICENSE;
     the audio is not distributed there: README lists "YouTube URLs" and mel spectrograms on Dropbox, and "Users must
     agree to the License included before using these data."). Read 2026-11-10.
@@ -250,8 +320,10 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
     CNNChordRecognition, CNNOnsetDetector, CRFBeatDetector, ComplexFlux, DBNBeatTracker, DBNDownBeatTracker,
     DCChordRecognition, GMMPatternTracker, KeyRecognition, LogFiltSpecFlux, MMBeatTracker, OnsetDetector,
     OnsetDetectorLL, PianoTranscriptor, PickleProcessor, SpectralOnsetDetection, SuperFlux, SuperFluxNN,
-    TCNBeatTracker, TCNTempoDetector, TempoDetector, evaluate. Typical shape: `DBNBeatTracker single in.wav -o out.txt`
-    (the `single`/`batch`/`online` sub-commands are in the program help; UNVERIFIED here, see trials.md).
+    TCNBeatTracker, TCNTempoDetector, TempoDetector, evaluate. Typical shape: `DBNBeatTracker single in.wav -o out.txt`.
+    The sub-commands come from `io_arguments()` in `madmom/processors.py` (HEAD): `add_parser('pickle', ...)` (line
+    955), `'single'` (line 963), `'batch'` (line 979) and `'online'` (line 1000, only for programs that pass
+    `online=True`, as `bin/DBNBeatTracker` does at line 68).
   - Python processors (source at commit 27f032e): `madmom.features.chords.DeepChromaChordRecognitionProcessor`,
     `CNNChordFeatureProcessor` + `CRFChordRecognitionProcessor`; `madmom.features.downbeats.RNNDownBeatProcessor` +
     `DBNDownBeatTrackingProcessor(beats_per_bar=[3, 4], fps=100)`; `madmom.features.key.CNNKeyRecognitionProcessor`;
@@ -286,7 +358,12 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
     (https://raw.githubusercontent.com/CPJKU/madmom_models/master/README.rst, read 2026-11-10) adds: "Please note that
     pickled madmom Processors using any of the files included in this repository inherit the above license."
   - c. Training data of the shipped models: not stated in the code or license files read today (UNVERIFIED; the
-    papers cited in the docstrings would settle it).
+    papers cited in the docstrings would settle it). Second-hand, for the key model only: the S-KEY paper describes
+    madmom's key CNN as "trained on a varied corpus (electronic dance music, pop/rock, and classical music)"
+    (https://arxiv.org/html/2501.12907v2, section III-C, read 2026-11-10).
+- Output format on the box: the try agent's madmom run on S3 (ledger run r0063) wrote chord `.lab` lines such as
+  `2.600<TAB>5.300<TAB>G:maj` (tab-separated) on a 0.1 s grid and the key "G major" (`/home/user/gtr/lanes/chords-beats-key/out/madmom/S3/`,
+  read 2026-11-10), consistent with the docstrings above. trials.md did not exist yet when this was checked.
 
 ## Chordino, NNLS Chroma and the NNLS Tuning plugin (Vamp)
 
@@ -339,11 +416,28 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   estimator", "Key estimator and tonal change detector", "Polyphonic note transcription estimator", "Segmenter",
   "Chromagram, constant-Q spectrogram, and MFCC calculation plugins" and others. Source files at HEAD include
   `BarBeatTrack.cpp`, `BeatTrack.cpp`, `KeyDetect.cpp`, `TonalChangeDetect.cpp`, `ChromagramPlugin.cpp`. Docs:
-  https://vamp-plugins.org/plugin-doc/qm-vamp-plugins.html (not read today).
+  https://vamp-plugins.org/plugin-doc/qm-vamp-plugins.html (read 2026-11-10 by the verifier; the original survey did
+  not read it).
 - How to call: any Vamp host (vamp Python module, Sonic Annotator, Sonic Visualiser). README: "Ready-to-use binary
   builds of these plugins are provided for common platforms"; Linux source build "`./repoint install`" then
   "make -f build/linux/Makefile.linux64".
-- Output fields per plugin: not read today (UNVERIFIED; the plugin-doc page above would settle it).
+- Output fields (plugin-doc page above, read 2026-11-10):
+  - Tempo and Beat Tracker, `vamp:qm-vamp-plugins:qm-tempotracker`: "Beats – The estimated beat locations, returned as
+    a single feature, with timestamp but no value, for each beat, labelled with the corresponding estimated tempo at
+    that beat."; "Tempo – The estimated tempo, returned as a feature each time the estimated tempo changes, with a
+    single value for the tempo in beats per minute."
+  - Bar and Beat Tracker, `vamp:qm-vamp-plugins:qm-barbeattracker`: parameter "Beats per Bar – The number of beats per
+    bar (or measure). The plugin assumes that the number of beats per bar is fixed throughout the music."; outputs
+    "Beats" ("labelled with the number of that beat within the bar"), "Bars", "Beat Count", "Beat Spectral
+    Difference".
+  - Key Detector, `vamp:qm-vamp-plugins:qm-keydetector`: parameter "Tuning Frequency – The frequency of concert A in
+    the music under analysis."; outputs "Tonic Pitch", "Key Mode" ("where major is 0 and minor is 1"), "Key" ("with
+    value counted from 1 to 24 where 1-12 are the major keys and 13-24 are the minor keys") and "Key Strength Plot";
+    "The key profiles are drawn from analysis of Book I of the Well Tempered Klavier by J S Bach, recorded at A=440
+    equal temperament."
+  - Tonal Change, `vamp:qm-vamp-plugins:qm-tonalchange`: "detecting harmonic changes such as chord boundaries";
+    outputs "Transform to 6D Tonal Content Space", "Tonal Change Detection Function" and "Tonal Change Positions – The
+    resulting estimated positions of tonal changes." No chord labels are listed.
 - License facts: a. README "Licence" (https://raw.githubusercontent.com/c4dm/qm-vamp-plugins/master/README.md, read
   2026-11-10): "These plugins are provided under the terms of the GNU General Public License. You may install and use
   the plugin binaries without fee for any purpose commercial or non-commercial. You may also modify and redistribute
@@ -370,7 +464,7 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
 - What: "Python library for extracting chord sequences from sound files of multiple formats with the option of
   leveraging multiprocessing" that "wraps Chordino" (README, https://raw.githubusercontent.com/ohollo/chord-extractor/master/README.md).
   https://github.com/ohollo/chord-extractor (HEAD 2025-08-14, commit e227137). PyPI `chord-extractor` 0.1.3 uploaded
-  2025-08-14; requires Python ">=3.8, <3.12".
+  2025-08-14; PyPI `requires_python` is "<3.12,>=3.8".
 - How to call (README): "from chord_extractor.extractors import Chordino", "chordino = Chordino(roll_on=1)",
   "chords = chordino.extract(conversion_file_path)", bulk `chordino.extract_many(files, callback=..., num_extractors=2,
   num_preprocessors=2, ...)`. Prerequisites: libsndfile1; timidity for MIDI input; ffmpeg for mp3; numpy before
@@ -379,7 +473,10 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
 - Input: audio files readable by librosa; MIDI converted with timidity (`preprocess`). Output: list of
   `ChordChange(chord='C', timestamp=0.743038548)` (chord label and start time in seconds); bulk mode returns
   `LabelledChordSequence(id=..., sequence=[...])`.
-- Constraints: Chordino parameters (the README shows `roll_on`).
+- Constraints: Chordino parameters. The README shows `roll_on`; `Chordino.__init__` in
+  `chord_extractor/extractors/chordino.py` (HEAD) takes `use_nnls=True`, `roll_on=1`, `tuning_mode=TuningMode.GLOBAL`,
+  `spectral_whitening=1`, `spectral_shape=0.7`, `boost_n_likelihood=0.1` and `**kwargs` passed to the plugin, and
+  calls `vamp.collect(data, rate, 'nnls-chroma:chordino', parameters=self._params)` (line 104).
 - License facts: a. Code: LICENSE is the GPL v2 text (https://raw.githubusercontent.com/ohollo/chord-extractor/master/LICENSE,
   read 2026-11-10), clause 2(b) as above; PyPI classifier "License :: OSI Approved :: GNU General Public License v2
   (GPLv2)". It ships the Chordino binary (GPL-2.0-or-later, see Chordino). b, c: no weights.
@@ -395,11 +492,13 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   Bi-LSTM-CRF model in TensorFlow". "Upon import `autochord` takes care of setting up the VAMP plugin and downloading
   the pre-trained chord recognition model." The package contains `src/autochord/res/nnls-chroma.so` and downloads the
   model from `_CHORD_MODEL_URL = 'https://drive.google.com/uc?id=1XBn7FyYjF8Ff6EuC7PjwwPzFBLRXGP7n'`
-  (`src/autochord/__init__.py`, commit dd6033d). Tested "for Python 3 setup in Ubuntu (18.04)"; "Windows is
-  unsupported".
-- Output: "a list of tuples in the format: (chord start, chord end, chord name)", e.g. "(0.0, 5.944308390022676,
-  'D:maj')"; optional `.lab` file that "follows the MIREX chord label format". Vocabulary: "the model can recognize 25
-  chord classes: the 12 major triads, 12 minor triads, and no-chord ('N')."
+  (`src/autochord/__init__.py`, commit dd6033d). The chroma it feeds the model is the plugin's `bothchroma` output:
+  `vamp.collect(samples, _SAMPLE_RATE, 'nnls-chroma:nnls-chroma', output='bothchroma', ...)` (same file, lines 97-98).
+  Tested "for Python 3 setup in Ubuntu (18.04)"; "Windows is unsupported".
+- Output: a code comment in the README reads "This gives out a list of tuples in the format: # (chord start, chord end,
+  chord name)", e.g. "(0.0, 5.944308390022676, 'D:maj')"; optional `.lab` file: "The output file follows the MIREX
+  chord label format." Vocabulary: "the model can recognize 25 chord classes: the 12 major triads, 12 minor triads,
+  and no-chord ('N')."
 - Author measurement: "The measured test accuracy of the TensorFlow model is 67.33%." (README; test set not named
   there).
 - License facts (sources differ):
@@ -409,8 +508,16 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
     GPL-2.0-or-later NNLS Chroma plugin (see Chordino).
   - b. Weights: downloaded from Google Drive; no separate license statement for them was found in the README or code.
   - c. Training data: `model-development/dataloader.py` line 1: "Loader for Billboard data features and labels",
-    `_BASE_DIR = 'data/McGill-Billboard'`. The McGill Billboard dataset license was not read today (its page at
-    ddmal.music.mcgill.ca returned 404 to the fetch tool): UNVERIFIED.
+    `_BASE_DIR = 'data/McGill-Billboard'`. The McGill Billboard page moved: the old ddmal.music.mcgill.ca address
+    returns 404, the page is now https://ddmal.ca/research/The_McGill_Billboard_Project_(Chord_Analysis_Dataset)/
+    (read 2026-11-10): "In order to facilitate the best possible use of these data in the future, we have made them
+    available legally under a CC0 license, but we ask that users follow scholarly norms in any public-facing work based
+    on upon these data by citing the following ISMIR paper" and "To the extent possible under law, the DDMAL has waived
+    all copyright and related or neighbouring rights to the McGill Billboard annotations. This work is published from
+    Canada." The same page: "Although we cannot distribute the original audio due to copyright, we have two feature
+    sets available. Users interested in chord recognition may want the non-negative-least-squares chroma vectors and
+    tuning estimates from the Chordino VAMP plugin". So the CC0 waiver covers the annotations; the audio is not
+    distributed.
 
 ## BTC, Bi-directional Transformer for Chord recognition
 
@@ -428,13 +535,17 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   (test.py lines 24-27). Time resolution: `song_hz: 22050`, `hop_length: 2048` (run_config.yaml), i.e. 2048 / 22050 =
   0.0929 s per frame (computed here from those two values).
 - Output: "The resulting files are lab files ... and midi files"; lab lines are written as
-  `'%.3f %.3f %s\n' % (start_time, end_time, chord)` (test.py line 80).
+  `'%.3f %.3f %s\n' % (start_time, time_unit * (n_timestep * t + i), idx_to_chord[prev_chord])` (test.py line 80;
+  the survey's earlier shorthand was `(start_time, end_time, chord)`), and the MIDI file is written next to it with the
+  `.midi` extension (`midi.write(save_path.replace('.lab', '.midi'))`, test.py line 129).
 - License facts: a. Code: MIT, "Copyright (c) 2019 Jonggwon Park",
   https://raw.githubusercontent.com/jayg996/BTC-ISMIR19/master/LICENSE, read 2026-11-10. b. Weights: in the same
   repository; no separate weights license found. c. Training data (README "Data"): "We used Isophonics[1], Robbie
   Williams[2], UsPop2002[3] dataset which consists of chord label files. Due to copyright issue, these datasets do not
   include audio files. The audio files used in this work were collected from online music service providers."
-  Dataset license clauses not read today (UNVERIFIED).
+  Dataset license clauses: the Isophonics reference-annotations page (https://isophonics.net/content/reference-annotations,
+  read 2026-11-10) carries no license or copyright statement; Robbie Williams and UsPop2002 annotation licenses were
+  not read (UNVERIFIED).
 
 ## CREMA (convolutional and recurrent estimators for music analysis)
 
@@ -443,9 +554,10 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
 - How to call (README, https://raw.githubusercontent.com/bmcfee/crema/main/README.md): CLI "python -m crema.analyze
   file.mp3" (prints JAMS) or "python -m crema.analyze file.mp3 -o file.jams"; Python "from crema.analyze import
   analyze", "jam = analyze(filename='/path/to/file.mp3')" or "jam = analyze(y=y, sr=sr)".
-- Output: a JAMS document (JSON). The exact chord namespace and vocabulary size were not read today (UNVERIFIED; the
-  docs would settle it).
-- License facts (sources differ): a. LICENSE.md is "BSD 2-Clause License, Copyright (c) 2017, Brian McFee"
+- Output: a JAMS document (JSON) whose chord annotation uses `namespace='chord'` (`crema/models/chord.py` line 42 at
+  HEAD). The vocabulary size was not determined (UNVERIFIED; the model resources sit behind the symlink
+  `crema/models/chord`, not read).
+- License facts (sources differ): a. LICENSE.md begins "BSD 2-Clause License" then "Copyright (c) 2017, Brian McFee"
   (https://raw.githubusercontent.com/bmcfee/crema/main/LICENSE.md, read 2026-11-10); the README badge says "license-BSD";
   PyPI 0.2.0 says license "ISC" with classifier "License :: OSI Approved :: ISC License (ISCL)". Both quoted as found.
   b. Weights ship inside the package; no separate weights license found. c. Training data: not read today (UNVERIFIED).
@@ -457,7 +569,10 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   (HEAD 2024-04-09, commit 481f4ce). PyPI `lv-chordia` 1.1.0 uploaded 2026-07-11 (first upload 2025-11-14), an
   "inference-only" repackaging: "This package ships the pre-trained ensemble models and the code path needed to run
   chord recognition on audio" and "All pre-trained model weights (100% original)" (PyPI description, read 2026-11-10).
-  The PyPI project URLs point to the music-x-lab repository. ChordMini credits this model as "Chord-CNN-LSTM".
+  The PyPI project URLs point to the music-x-lab repository (no separate source repository for the package is
+  listed); PyPI author field "Junyan Jiang, Ke Chen, Wei Li, Gus Xia", maintainer "Package Maintainers"; PyPI
+  `requires_python` ">=3.8" while the description's badge says "Python 3.10+". ChordMini credits this model as
+  "Chord-CNN-LSTM".
 - How to call:
   - Original repository: "python3 chord_recognition.py path_to_audio_file path_to_output_file [chord_dict]".
   - lv-chordia CLI: "lv-chordia input_audio.mp3" ("outputs JSON to stdout"), "lv-chordia input_audio.mp3 --chord-dict
@@ -495,31 +610,60 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   come through Git LFS.
 - Outputs: shown in the UI as a beat-synchronised chord grid, guitar diagrams from "@tombatossals/chords-db", MIDI
   export from the piano view. The backend's HTTP response fields were not read today (UNVERIFIED).
+- Models: `.gitmodules` at HEAD pulls the models from three more repositories: `python_backend/models/ChordMini` from
+  https://github.com/ptnghia-j/ChordMini (HEAD 2026-06-11, commit aa6e3a8), `python_backend/models/Chord-CNN-LSTM` from
+  https://github.com/ptnghia-j/chord-cnn-lstm-model (HEAD 2025-05-27) and `python_backend/models/Beat-Transformer` from
+  https://github.com/ptnghia-j/beat-transformer-model (HEAD 2025-05-27). The ChordMini model repository README
+  ("Included Checkpoints") lists "`checkpoints/btc_model_best.pth`: BTC CL (full) checkpoint",
+  "`checkpoints/2e1d_model_best.pth`: ChordNet (2E1D) CL (full) checkpoint" and
+  "`checkpoints/btc_model_large_voca.pt`: original BTC teacher (https://github.com/jayg996/BTC-ISMIR19)". Which of these
+  the app labels BTC-SL and BTC-PL is not stated in the lines read (UNVERIFIED).
+- Paper: arXiv 2602.19778 v5 (last revised 2026-07-03), authors Nghia Phan, Rong Jin, Gang Liu, Xiao Dong; arXiv
+  comment "Accepted to DAFx26" (read 2026-11-10).
 - License facts: a. Code: MIT, "Copyright (c) 2025 ChordMini Project"
-  (https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/LICENSE, read 2026-11-10). b. Weights of BTC-SL /
-  BTC-PL: no separate license statement found in the README. Third-party pieces carry their own licenses (madmom
-  models CC BY-NC-SA 4.0, see madmom; Beat-Transformer, see below). c. Training data: not read today (UNVERIFIED; the
-  arXiv paper would settle it). Services: Gemini, Firebase, YouTube APIs have their own terms (hosted-apis lane).
+  (https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/LICENSE, read 2026-11-10). b. Weights: the model
+  repository's LICENSE is MIT, "Copyright (c) 2026 ChordMini contributors"
+  (https://raw.githubusercontent.com/ptnghia-j/ChordMini/main/LICENSE, read 2026-11-10); no separate weights license
+  found. Third-party pieces carry their own licenses (madmom models CC BY-NC-SA 4.0, see madmom; Beat-Transformer, see
+  below). c. Training data (paper section 4.1, https://arxiv.org/html/2602.19778v5, read 2026-11-10): "We use three
+  large-scale unlabeled datasets for pseudo-label generation, totaling over 1,000 hours of audio": the Free Music
+  Archive, MAESTRO and DALI; "Labeled Datasets. We aggregate annotations from the Isophonics [19], the McGill Billboard
+  corpus [2], the RWC Pop dataset [8], and the USPop annotations distributed with [20], collecting a fixed subset of
+  600 songs." The model repository README links FMA, DALI and MAESTRO. Their licenses, read 2026-11-10:
+  - MAESTRO (https://magenta.tensorflow.org/datasets/maestro): "The dataset is made available by Google LLC under a
+    Creative Commons Attribution Non-Commercial Share-Alike 4.0 (CC BY-NC-SA 4.0) license."
+  - DALI (https://raw.githubusercontent.com/gabolsgabs/DALI/master/README.md): "This work is licensed under a Creative
+    Commons Attribution-NonCommercial-ShareAlike 4.0 International License."
+  - FMA (https://raw.githubusercontent.com/mdeff/fma/master/README.md): "The metadata is released under the [Creative
+    Commons Attribution 4.0 International License (CC BY 4.0)][ccby40]." and "We do not hold the copyright on the audio
+    and distribute it under the license chosen by the artist."
+  - McGill Billboard annotations: CC0 (see autochord). RWC: UNVERIFIED (page unreachable). Isophonics: no license
+    statement on its page (see BTC). USPop: not read.
+  Services: Gemini, Firebase, YouTube APIs have their own terms (hosted-apis lane).
 
 ## Omnizart chord (Harmony Transformer based)
 
 - What: "Omnizart is a Python library that aims for democratizing automatic music transcription" (README), "powered by the
   research outcomes from Music and Culture Technology (MCT) Lab". https://github.com/Music-and-Culture-Technology-Lab/omnizart (HEAD 2026-05-31, commit bcd8cb4).
-  PyPI `omnizart` 0.6.3 uploaded 2026-05-31; pyproject at HEAD: "python = ">=3.8,<3.15"", "tensorflow >=2.5.0".
+  PyPI `omnizart` 0.6.3 uploaded 2026-05-31; pyproject at HEAD: `python = ">=3.8,<3.15"` and
+  `tensorflow = { version = ">=2.5.0", markers = "python_version < '3.14'" }`.
   JOSS paper doi 10.21105/joss.03391.
 - How to call (README): "pip install omnizart", "omnizart download-checkpoints", "omnizart chord transcribe
   <path/to/audio.wav>"; Docker "mctlab/omnizart:latest". Python: `omnizart.chord.app.ChordTranscription.transcribe(
   input_audio, model_path=None, output="./")` ("This function transcribes chord progression in the audio and will
-  outputs MIDI and CSV files", `omnizart/chord/app.py`).
+  outputs MIDI and CSV files", `omnizart/chord/app.py` lines 31-35).
 - Output: a MIDI file and a CSV with fieldnames `["chord", "start", "end"]` (`write_csv` in
-  `omnizart/chord/inference.py`). Label set in that file: "C:maj" ... "B:maj", "C:min" ... "B:min" plus "N" (no
-  chord). Frame length from `omnizart/defaults/chord.yaml`: "Each frame last for 0.046 seconds".
+  `omnizart/chord/inference.py`). Label set: `CHORD_INT_MAPPING` in `omnizart/constants/feature.py` (HEAD) maps
+  'C:maj' ... 'B:maj' (sharps spelled C#, D#, F#, G#, A#) to 0-11, 'C:min' ... 'B:min' to 12-23, 'N' to 24 and 'X' to
+  25; `inference.py` skips both "X" and "N" when it writes MIDI notes (line 50). Frame length from
+  `omnizart/defaults/chord.yaml`: "Each frame last for 0.046 seconds".
 - Omnizart's `beat` application is "beat tracking in MIDI domain" (docstring in `omnizart/beat/app.py`), not audio.
 - License facts: a. Code: MIT, "Copyright (c) 2020 MCTLab"
   (https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/LICENSE, read 2026-11-10); PyPI
   license "MIT". b. Weights: `omnizart/checkpoints/chord/chord_v1/` is in the repository tree; no separate weights
   license found. c. Training data: `omnizart/chord/app.py` imports `McGillBillBoard` and its feature extraction is
-  documented as "Extract feature of McGill BillBoard dataset"; the Billboard license was not read today (UNVERIFIED).
+  documented as "Extract feature of McGill BillBoard dataset"; the Billboard annotations are CC0 and the audio is not
+  distributed (quotes in the autochord section, page read 2026-11-10).
 
 ## Harmony Transformer and Harmony Transformer v2
 
@@ -529,29 +673,50 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   c94f3bb), "evaluated ... in terms of automatic chord recognition for symbolic music" (TISMIR 2021); its files train
   on the BPS-FH dataset with "24 maj-min chord representations" and Roman-numeral representations; requirements
   "tensorflow >= 1.8.0".
-- How to call: training scripts only (`chord_symbol_recognition.py`, `functional_harmony_recognition.py`); no released
-  inference CLI was found in the two READMEs.
+- How to call: training scripts only (v1: `Harmony_Transformer.py`, `Preprocessing_Billboard.py`; v2:
+  `chord_symbol_recognition.py`, `functional_harmony_recognition.py`); no released inference CLI was found in the two
+  READMEs.
+- Data in the v1 repository (tree at HEAD, read 2026-11-10): `McGill-Billboard/McGill-Billboard-Features/<id>/bothchroma.csv`
+  and `tuning.csv` (890 `bothchroma.csv` files), `McGill-Billboard/McGill-Billboard-MIREX/<id>/*.lab` and
+  `McGill-Billboard/readme.txt` (which only names "The McGill Billboard Project" and its old URL). The Billboard
+  annotations are CC0 (see autochord).
 - License facts: no license file found at https://github.com/Tsung-Ping/Harmony-Transformer or
-  https://github.com/Tsung-Ping/Harmony-Transformer-v2 (top-level file list of HEAD, 2026-11-10: only README.md and
-  code). No weights found.
+  https://github.com/Tsung-Ping/Harmony-Transformer-v2 (file list of HEAD, re-checked 2026-11-10: v1 holds
+  Harmony_Transformer.py, Preprocessing_Billboard.py, README.md and the McGill-Billboard folder; v2 holds README.md
+  and four .py files). No weights found.
 
 ## ACR_seq2seq (event-based seq2seq chord recognition, ICASSP 2026)
 
 - What: L. Kim and J. Park, "An Event-Based Sequence Modeling Approach to Recognizing Non-Triad Chords with
   Oversegmentation Minimization", ICASSP 2026, pp. 15277-15281, doi 10.1109/ICASSP55912.2026.11464925 (README,
   https://raw.githubusercontent.com/KimLeekyung/ACR_seq2seq/main/README.md). https://github.com/KimLeekyung/ACR_seq2seq
-  (HEAD 2026-05-31, commit 96f5d8c).
-- How to call, inputs, outputs: the README contains only the citation; not read further today (UNVERIFIED).
+  (HEAD 2026-05-31, commit 96f5d8c). arXiv version: https://arxiv.org/abs/2604.24386, submitted 2026-04-27, comment
+  "accepted to ICASSP 2026" (read 2026-11-10).
+- How to call, inputs, outputs: the README contains only the citation. The tree at HEAD holds `base/` (audio and
+  signal processors, datamodules, metrics, transformer layers), `pre_train/` and `full_train/` (each with `run.py`,
+  `model.py` and `hparams.yaml`) and no checkpoint files (re-checked 2026-11-10). Inference usage: not documented
+  (UNVERIFIED; reading `run.py` would settle it).
 - License facts: no license file found at https://github.com/KimLeekyung/ACR_seq2seq (top-level file list of HEAD,
   2026-11-10).
 
 ## ChordFormer, BMACE and other papers without code found
 
-- ChordFormer (Muhammad Waseem Akram, Stefano Dettori, Valentina Colla, Giorgio Carlo Buttazzo), "A Conformer-Based
-  Architecture for Large-Vocabulary Audio Chord Recognition", arXiv 2502.11840 (submitted 2025-02-17, per a web search
-  result summary; the arXiv page was not opened today). NO-CODE-FOUND (search 2026-11-10).
-- BMACE, bidirectional Mamba chord model (Yuan, Devaney), arXiv 2601.02101 (named in a web search result summary
-  only). NO-CODE-FOUND.
+- ChordFormer (Muhammad Waseem Akram, Stefano Dettori, Valentina Colla, Giorgio Carlo Buttazzo), "ChordFormer: A
+  Conformer-Based Architecture for Large-Vocabulary Audio Chord Recognition", arXiv 2502.11840, submitted 2025-02-17
+  (arXiv page read 2026-11-10 by the verifier). NO-CODE-FOUND (search 2026-11-10; the abstract names no code link).
+- BMACE: Chunyu Yuan and Johanna Devaney, "A Mamba-Based Model for Automatic Chord Recognition", arXiv 2601.02101,
+  submitted 2026-01-05, arXiv comment "International Society of Music Information Retrieval, Late-Breaking Demo 2024";
+  the abstract names the model "BMACE (Bidirectional Mamba-based network, for Automatic Chord Estimation)" (read
+  2026-11-10). NO-CODE-FOUND.
+- ChordCoT: Chih-Cheng Chang, Bo-Yu Chen, Lu-Rong Chen, Li Su, "Enhancing Automatic Chord Recognition through LLM
+  Chain-of-Thought Reasoning", arXiv 2509.18700, submitted 2025-09-23 (read 2026-11-10). Abstract: it converts the
+  outputs of "music source separation, key detection, chord recognition, and beat tracking" into text and uses "a
+  5-stage chain-of-thought framework that allows GPT-4o to systematically analyze, compare, and refine chord
+  recognition results"; it reports "overall accuracy gains of 1-2.77% on the MIREX metric" (authors' abstract, three
+  datasets, table not read). Repository
+  https://github.com/WildHoneyPie/ChordCoT (HEAD 2025-09-21; files README.md and prompts.py; no license file); its
+  README says "Note: The code is currently being organized and cleaned up. Updates will be pushed soon." (read
+  2026-11-10). Added by the verifier.
 - pyace (Junqi Deng), https://github.com/tangkk/pyace (HEAD 2021-06-01, commit 4321145); LICENSE begins "Copyright 2017
   Junqi Deng Redistribution and use in source and binary forms, with or without modification, are permitted provided
   that the following conditions are met:" (https://raw.githubusercontent.com/tangkk/pyace/master/LICENSE, read
@@ -567,6 +732,10 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   `librosa/feature/rhythm.py` with `tempogram`, `fourier_tempogram`, `tempogram_ratio`, `hybrid_tempogram`,
   `metrogram`); `librosa.estimate_tuning(y=y, sr=sr, resolution=..., bins_per_octave=12)` and
   `librosa.pitch_tuning(frequencies, resolution=0.01, bins_per_octave=12)` in `librosa/core/pitch.py`.
+- In 1.0.0 these functions take keyword-only arguments (`def beat_track(*, y=..., sr=22050, onset_envelope=...,
+  hop_length=512, start_bpm=120.0, tightness=100, trim=True, bpm=None, prior=None, units="frames", sparse=True)`,
+  `librosa/beat.py` line 37 onward; `def estimate_tuning(*, y=None, sr=22050, S=None, n_fft=2048, resolution=0.01,
+  bins_per_octave=12, **kwargs)`, `librosa/core/pitch.py` line 27).
 - Outputs (docstrings): `beat_track` returns "tempo : float [scalar, non-negative] or np.ndarray The estimated global
   tempo (in beats per minute)" ("By default, the tempo is returned as an ndarray even for mono input") and "beats :
   np.ndarray The estimated beat event locations" ("in the specified units (default is frame indices)"; `units` can be

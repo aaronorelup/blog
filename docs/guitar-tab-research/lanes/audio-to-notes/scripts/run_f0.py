@@ -1,7 +1,7 @@
 """Monophonic f0 trackers on the shared clips, one tool per call, one gtr-run per call.
 
 usage: python run_f0.py <tool> <outdir> [--clips S1,S2n,...]
-tools: pyin (librosa), swiftf0, torchcrepe-full, torchcrepe-tiny, fcpe (torchfcpe), pesto, rmvpe (rmvpe-onnx)
+tools: pyin (librosa), swiftf0, torchcrepe-full, torchcrepe-tiny, fcpe (torchfcpe), pesto, penn
 Writes per clip <clip>.f0.csv (time_s,frequency_hz,confidence; 0 Hz = no pitch written by the tool) and, where the
 tool has its own note segmenter (swiftf0: swift_f0.segment_notes), <clip>.notes.csv; timings.json holds the model
 load time and the per-clip time (time.perf_counter, audio loading included) measured inside the one gtr-run.
@@ -123,6 +123,22 @@ elif a.tool == "pesto":
         ts, f0, conf, act = pesto.predict(torch.from_numpy(y), sr, step_size=10.0)
         t = ts.numpy() / 1000.0 if float(ts.max()) > 1000 else ts.numpy()
         return t, f0.numpy(), conf.numpy(), None
+elif a.tool == "penn":
+    import torch
+    import penn
+    torch.set_num_threads(2)
+    rec["version"] = "penn 1.0.0 (checkpoint maxrmorrison/fcnf0-plus-plus fcnf0++.pt from the Hugging Face Hub)"
+    rec["settings"] = dict(sample_rate="8000 (penn resamples)", hopsize_s=0.01, fmin=penn.FMIN, fmax=penn.FMAX,
+                           center="half-window (default)", decoder=penn.DECODER, batch_size=2048,
+                           confidence="periodicity (raw)", gpu=None)
+
+    def run(clip):
+        y, sr = load_mono(clip)
+        pitch, per = penn.from_audio(torch.from_numpy(y)[None], sr, hopsize=0.01, batch_size=2048, gpu=None)
+        p = pitch[0].numpy()
+        c = per[0].numpy()
+        t = np.arange(len(p)) * 0.01
+        return t, p, c, None
 elif a.tool == "rmvpe":
     from rmvpe_onnx import RMVPE  # noqa
     raise SystemExit("set up separately")

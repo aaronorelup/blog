@@ -23,6 +23,7 @@ const settings = {
   core: {
     fontDirectory: '/nm/@coderline/alphatab/dist/font/',
     useWorkers: q.get('workers') !== '0',
+    includeNoteBounds: q.get('notebounds') === '1',
   },
   display: { layoutMode: q.get('layout') === 'horizontal' ? 'horizontal' : 'page', scale: parseFloat(q.get('scale') || '1') },
   player: {

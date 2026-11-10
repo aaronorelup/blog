@@ -19,7 +19,7 @@ import rtmlib  # noqa: E402
 
 clip, mode, which, out = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 step = int(sys.argv[5]) if len(sys.argv) > 5 else 1
-SAMPLE_FRAMES = {"R3a": [100, 300, 500], "R3a_cu": [0, 150, 280]}[clip]
+SAMPLE_FRAMES = {"R3a": [100, 300, 500], "R3a_cu": [0, 150, 280], "R3b": [0, 225, 449], "R3c": [0, 225, 449]}[clip]
 os.makedirs(out, exist_ok=True)
 KPT_THR = 0.3  # a hand counts as found when the mean score of its 21 keypoints is at least this
 
@@ -77,7 +77,7 @@ for n in range(0, C.n_frames(clip), step):
             wr = {"left_wrist_body": kps[p][9].tolist(), "right_wrist_body": kps[p][10].tolist(),
                   "wrist_scores": [float(scores[p][9]), float(scores[p][10])]}
             persons[-1].update({k: (np.round(v, 2).tolist() if isinstance(v, list) else v) for k, v in wr.items()})
-    rec = {"n": n, "t_s": round(n / C.FPS, 4), "shot": C.shot_of(clip, n)[0], "view_wh": [view.shape[1], view.shape[0]],
+    rec = {"n": n, "t_s": round(n / C.fps(clip), 4), "shot": C.shot_of(clip, n)[0], "view_wh": [view.shape[1], view.shape[0]],
            "view_tf": list(tf), "t_infer_ms": round(dt, 3), "n_instances": int(len(kps)), "hands": hands,
            "persons": persons}
     records.append(rec)

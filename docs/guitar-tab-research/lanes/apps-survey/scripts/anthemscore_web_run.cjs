@@ -1,3 +1,8 @@
+// NOT RUN. On 2026-11-10 this session's permission system refused to start it ("[Consent Given For The User]"):
+// it ticks AnthemScore Web's box "I confirm that I own or have obtained all necessary rights to transcribe this
+// audio." and so accepts the site's Terms of Service and Privacy Policy. Only Aaron can give that consent; run it
+// only if he decides to. Kept as the record of what was attempted (trials.md, AnthemScore Web).
+//
 // One AnthemScore Web transcription without an account (the free plan's 30-second limit), driven the way a
 // person uses https://www.lunaverus.com/transcribe/audio-to-guitar-tab : choose the file, Submit, keep the
 // default job settings (format "tablature", instrument "guitar", time signature, key and smallest note on

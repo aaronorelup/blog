@@ -17,7 +17,7 @@ from mediapipe.tasks import python as mpt  # noqa: E402
 from mediapipe.tasks.python import vision  # noqa: E402
 
 clip, mode, model, out = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
-SAMPLE_FRAMES = {"R3a": [100, 300, 500], "R3a_cu": [0, 150, 280]}[clip]
+SAMPLE_FRAMES = {"R3a": [100, 300, 500], "R3a_cu": [0, 150, 280], "R3b": [0, 225, 449], "R3c": [0, 225, 449]}[clip]
 os.makedirs(out, exist_ok=True)
 
 t0 = time.perf_counter()
@@ -39,7 +39,7 @@ for n in range(C.n_frames(clip)):
     view, tf = C.make_view(rgb, clip, n, mode)
     h, w = view.shape[:2]
     img = mp.Image(image_format=mp.ImageFormat.SRGB, data=view.copy())
-    ts_ms = int(round(n * 1000 / C.FPS))
+    ts_ms = int(round(n * 1000 / C.fps(clip)))
     t1 = time.perf_counter()
     res = det.detect_for_video(img, ts_ms)
     dt = (time.perf_counter() - t1) * 1000
@@ -54,7 +54,7 @@ for n in range(C.n_frames(clip)):
             "lm_px_full": [[round(x, 2), round(y, 2)] for x, y in full],
             "world_m": [[round(lm.x, 5), round(lm.y, 5), round(lm.z, 5)] for lm in res.hand_world_landmarks[i]],
         })
-    rec = {"n": n, "t_s": round(n / C.FPS, 4), "shot": C.shot_of(clip, n)[0], "view_wh": [w, h],
+    rec = {"n": n, "t_s": round(n / C.fps(clip), 4), "shot": C.shot_of(clip, n)[0], "view_wh": [w, h],
            "view_tf": list(tf), "t_infer_ms": round(dt, 3), "hands": hands}
     records.append(rec)
     jl.write(json.dumps(rec) + "\n")

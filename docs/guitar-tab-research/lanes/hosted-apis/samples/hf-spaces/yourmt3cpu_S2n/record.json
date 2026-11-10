@@ -1,0 +1,38 @@
+{
+ "space": "mimbres/YourMT3-cpu",
+ "api_name": "/process_audio",
+ "args": [
+  "file:/home/user/gtr/inputs/S2n/S2n.mono.wav"
+ ],
+ "token": null,
+ "runtime_before": {
+  "stage": "RUNNING",
+  "hardware": {
+   "current": "cpu-basic",
+   "requested": "cpu-basic"
+  }
+ },
+ "space_sha": "bd69fbac7da881df0dfb67d8f4068a3d473df347",
+ "client_connect_s": 1.169,
+ "ok": true,
+ "wall_s": 31.176,
+ "status_changes": [
+  {
+   "t_s": 1.17,
+   "code": "Status.STARTING",
+   "rank": null,
+   "queue_size": null,
+   "eta": null,
+   "progress": null
+  },
+  {
+   "t_s": 3.17,
+   "code": "Status.PROCESSING",
+   "rank": null,
+   "queue_size": null,
+   "eta": null,
+   "progress": null
+  }
+ ],
+ "result": "<HTML string of 7468 characters with an html-midi-player; the MIDI was taken from its data:audio/midi;base64 URL into yourmt3cpu_S2n.mid>"
+}

@@ -63,7 +63,8 @@ def main():
     mix_path, est_dir, out_json = sys.argv[1:4]
     truth_dir = sys.argv[4] if len(sys.argv) > 4 else None
     mix, msr, minfo = read(mix_path)
-    files = sorted(f for ext in ("wav", "flac", "mp3") for f in glob.glob(os.path.join(est_dir, f"*.{ext}")))
+    files = sorted(f for ext in ("wav", "flac", "mp3") for f in glob.glob(os.path.join(est_dir, f"*.{ext}"))
+                   if not os.path.basename(f).startswith("derived_"))  # derived_*: sums made here, not tool output
     res = {"input": {"path": mix_path, "sample_rate": msr, "channels": mix.shape[1], "frames": mix.shape[0],
                      "subtype": minfo.subtype, "rms_dbfs": db(np.sqrt(np.mean(mix ** 2))),
                      "seconds": round(mix.shape[0] / msr, 4)},

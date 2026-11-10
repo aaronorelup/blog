@@ -1,0 +1,12 @@
+# local_name	URL   (completeness check, second batch; fetched into /home/user/gtr/lanes/source-separation/verify-docs/extra2/)
+hf_gaborformer__LICENSE	https://huggingface.co/sevagh/gaborformer/raw/main/LICENSE
+gh_sevagh_gaborformer__README.md	https://raw.githubusercontent.com/sevagh/gaborformer/main/README.md
+gh_sevagh_gaborformer__LICENSE	https://raw.githubusercontent.com/sevagh/gaborformer/main/LICENSE
+gh_sevagh_gaborformer__usage.md	https://raw.githubusercontent.com/sevagh/gaborformer/main/docs/usage.md
+gh_chenmozhijin_BSRoformer.cpp__README.md	https://raw.githubusercontent.com/chenmozhijin/BSRoformer.cpp/main/README.md
+gh_chenmozhijin_BSRoformer.cpp__LICENSE	https://raw.githubusercontent.com/chenmozhijin/BSRoformer.cpp/main/LICENSE
+hf_Audante_mega53__LICENSE	https://huggingface.co/Audante/mvsep-mega53-bs-roformer-int8/raw/main/LICENSE
+hf_Audante_mega53__NOTICE	https://huggingface.co/Audante/mvsep-mega53-bs-roformer-int8/raw/main/NOTICE
+gh_AviadDahan_SepGen__README.md	https://raw.githubusercontent.com/AviadDahan/SepGen/main/README.md
+arxiv_abs_2610.11361.html	https://arxiv.org/abs/2610.11361
+gh_Lightricks_LTX-2__LICENSE-2_x	https://raw.githubusercontent.com/Lightricks/LTX-2/main/LICENSE-2_x

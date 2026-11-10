@@ -24,7 +24,7 @@ vendor page or store listing that day.
 ### Audio (or a link) in, tab or notation out
 
 1. Klangio Guitar2Tabs (Klangio GmbH, Germany): audio, .mp4, YouTube / Instagram / TikTok link or microphone in; PDF,
-   MIDI (quantized and unquantized), MusicXML, Guitar Pro 5, LilyPond out; user sets tuning and capo before the run;
+   MIDI (quantized and unquantized), MusicXML, Guitar Pro (GP5 per its help article), LilyPond out; user sets tuning and capo before the run;
    "Retranscribe" re-runs with new settings. Web, iOS (App Store 1.8.1, Oct 6), Android, VST3. WEB-ACCOUNT, MOBILE.
 2. Klangio Transcription Studio (same company): several instruments in one pass, same exports. WEB-ACCOUNT, MOBILE.
 3. Klangio sibling apps (Piano2Notes, Sing2Notes, Drum2Notes, Violin2Notes, Wind2Notes, Scan2Notes, Melody Scanner).
@@ -74,8 +74,8 @@ vendor page or store listing that day.
     metronome, count-in, auto-sync, auto stems, PDF / photo scanner, iframe embed with a JavaScript API; transcription is
     manual. WEB-ACCOUNT.
 21. Capo (SuperMegaUltraGroovy, Inc.): beats, chords and key guessed from songs, editable chords and beat grid,
-    slow-down, loop; 4.7.3, Nov 2. MOBILE (iOS), DESKTOP (macOS).
-22. Yousician (Yousician Ltd): lessons with microphone feedback; no transcription of the user's audio. MOBILE, DESKTOP.
+    slow-down, loop; 4.7.3, Nov 2. MOBILE (iOS; macOS not checked).
+22. Yousician (Yousician Ltd): lessons with microphone feedback; no transcription of the user's audio. MOBILE.
 23. Fender Studio (Fender Digital, 1.3, Jul 30): recording app; "drag audio to it for automatic recognition" on its
     Chord Track. MOBILE. Fender Songs and Fender Studio Pro 8: not read (fender.com returned 403).
 24. Yamaha Chord Tracker (2.3.9, May 25): chords from songs in the device library, with "guitar tab display options".
@@ -121,8 +121,10 @@ vendor page or store listing that day.
   seconds" ([file limitations](https://klang.io/help/file-limitations/), "Updated on June 24, 2026", read 2026-11-10).
   Transcription Studio: "Upload an audio or video file, paste a YouTube, Instagram or TikTok link, or record your music directly" ([Studio page](https://klang.io/transcription-studio/), read 2026-11-10).
 - **Output.** "PDF (guitar sheet music or bass tab), MIDI (quantized/unquantized), MusicXML and GuitarPro"
-  ([Guitar2Tabs page](https://klang.io/guitar2tabs/)); the formats article adds LilyPond (".ly file") and says of
-  GP5: "For Guitar2Tabs and our Klangio Transcription Studio, there is an exclusive download format: a Guitar Pro
+  ([Guitar2Tabs page](https://klang.io/guitar2tabs/)); the same page also says "Guitar Pro Tabs (.gp file) for editing
+  in Guitar Pro", while the formats article heads its section "Export GP5" and the App Store listing says "Guitar Pro 5",
+  so which Guitar Pro version the file is remains UNVERIFIED (settled by exporting one). The formats article adds
+  LilyPond (".ly file") and says of GP5: "For Guitar2Tabs and our Klangio Transcription Studio, there is an exclusive download format: a Guitar Pro
   file ... They can be opened with the Guitar Pro Editor or TuxGuitar." It also says "Unquantized MIDI exports
   preserve the original transcription and do not include edits made in the Sheet Viewer; edits are included only in
   quantized MIDI exports" and that the MusicXML file "is not adaptive to changes in tempo of the original audio and
@@ -341,8 +343,8 @@ vendor page or store listing that day.
   and "✓" for Pro. Re-analysis after a correction: not described.
 - **Sync and practice.** "Tabs, chords, and lyrics synced to audio. Slow it down"; "Slow down to 25%" (home);
   pricing table lists "Speed control" and "Guitar tuner" on both plans.
-- **Price** (rendered pricing, 2026-11-10): "ANNUAL $59.99/yr $5.00/mo", "MONTHLY $8.99/mo", "ONE-TIME $9.99 10
-  transcription credits"; Free "3 songs". Terms: "The current limit is 35 new songs in any rolling 7-day period" for Pro
+- **Price** (rendered pricing, 2026-11-10): "ANNUAL", "$59.99/yr", "$5.00/mo"; "MONTHLY", "$8.99/mo"; "ONE-TIME",
+  "$9.99", "10 transcription credits · no subscription"; Free "3 songs". Terms: "The current limit is 35 new songs in any rolling 7-day period" for Pro
   ([terms](https://audio2guitar.com/terms), "Last updated: August 14, 2026").
 - **Published accuracy claim (vendor's own).** "Our pipeline achieves 97.8% string assignment accuracy on the GuitarSet
   benchmark, a standard dataset from the Center for Computer Research in Music and Acoustics (CCRMA) at Stanford" (home
@@ -399,7 +401,7 @@ vendor page or store listing that day.
   correction ... stores that clip's audio together with your corrected tab so we can improve the model later". A
   correction re-running the analysis: not described.
 - **Price as announced** (home): Free "€0", "3 transcriptions per day", "10-second clips", "No video upload"; Pro
-  "€3.99/mo or €29.99/yr". The terms say "a free tier with a limit on how many clips you can transcribe per week"
+  "€3.99/mo", "or €29.99/yr". The terms say "a free tier with a limit on how many clips you can transcribe per week"
   (per-day on the home page, per-week in the terms: sources differ).
 - **Terms clauses** ([terms](https://grabtab.app/terms/)): "You keep ownership of every recording you make. By using the
   service you grant GrabTab a limited licence to process your recording as needed to generate, store, and show
@@ -483,7 +485,8 @@ vendor page or store listing that day.
 
 ## Chord ai (Nomad AI OU): chords, beats, voicings, capo suggestion
 
-- **What it is.** iOS / Android app, "Version 6.3.0 5d ago", developer and seller "Nomad AI OU"
+- **What it is.** iOS app per the App Store listing read (an Android package `com.chordai` appears in search results
+  only, not read), "Version 6.3.0 5d ago", developer and seller "Nomad AI OU"
   ([App Store](https://apps.apple.com/us/app/id1446177109), read 2026-11-10; https://chordai.net/terms returned 404).
 - **Input.** "You can select any song by browsing your audio files, SoundCloud or YouTube ... Or you can use your device
   microphone to get the chords in real-time of any song playing around you or from your own playing" (App Store).
@@ -528,7 +531,8 @@ vendor page or store listing that day.
 
 ## Capo (SuperMegaUltraGroovy, Inc.)
 
-- **What it is.** iOS / macOS app, "Version 4.7.3 Nov 2", "© 2026 SuperMegaUltraGroovy, Inc."
+- **What it is.** iOS app per the App Store listing read (a macOS version: UNVERIFIED), "Version 4.7.3 Nov 2", "© 2026
+  SuperMegaUltraGroovy, Inc."
   ([App Store](https://apps.apple.com/us/app/id887497388), read 2026-11-10).
 - **Function (App Store description).** "Using the songs in your music collection, Capo guesses the beats, chords, and
   key of songs"; "Slow down playback, scrub to hear specific notes, and easily create regions that loop"; "Use Capo’s
@@ -674,7 +678,7 @@ vendor page or store listing that day.
 ## ScoreCloud (Doremir Music Research)
 
 - "ScoreCloud Songwriter takes recordings of voice and instruments and turns it into Lead Sheets, with melody, lyrics and
-  chords"; "ScoreCloud Songwriter has a 10 day free trial. Download for PC & Mac"; "ScoreCloud Studio can be used for free up
+  chords"; "ScoreCloud Songwriter has a 10 day free trial.", "Download for PC & Mac"; "ScoreCloud Studio can be used for free up
   to 10 saved songs"; exports "PDFs, MusicXML, MIDI" ([home](https://scorecloud.com/), read 2026-11-10). Guitar tab output:
   not found on the home page.
 
@@ -734,7 +738,7 @@ documented capabilities, not tested transfers (testing is the try agent's `trial
 
 1. Klangio Guitar2Tabs / Transcription Studio output a Guitar Pro file ("For Guitar2Tabs and our Klangio Transcription
    Studio, there is an exclusive download format: a Guitar Pro file", [download formats](https://klang.io/help/download-formats/)),
-   which Guitar Pro 8 accepts (import list includes ".gp5", [features](https://www.guitar-pro.com/c/14-guitar-pro-features)),
+   which Guitar Pro 8 accepts (import list includes ".gp5" and ".gp", [features](https://www.guitar-pro.com/c/14-guitar-pro-features)),
    which Tabtify opens ("GP3, GP4, GP5, GPX, and GP", [home](https://tabtify.com/)), and which Soundslice imports ("Import
    MusicXML and Guitar Pro files", [plans](https://www.soundslice.com/plans/)); Klangio itself says it "can be opened with
    the Guitar Pro Editor or TuxGuitar".
@@ -818,7 +822,7 @@ documented capabilities, not tested transfers (testing is the try agent's `trial
 22. Soundslice takes an imported Guitar Pro or MusicXML file plus a YouTube video or (Plus) an uploaded MP3 / video and
     syncs them ("Save time with our auto-sync feature", "Attach YouTube videos to your music", [plans](https://www.soundslice.com/plans/)),
     then offers "Loop sections", "Speed training", "Metronome and count-in" ([features](https://www.soundslice.com/features/));
-    it embeds as an iframe "with a JavaScript API" ([licensing](https://www.soundslice.com/licensing/)).
+    it embeds as an iframe ("We also have a JavaScript API for advanced integration", [licensing](https://www.soundslice.com/licensing/)).
 23. Songsterr AI tabs play "along with the recording you used: your audio file, or the YouTube video while it is available"
     ([help](https://www.songsterr.com/help)); Klangio's viewer can "switch between the original audio and the audio of the
     transcription" ([transcription viewer](https://klang.io/help/transcription-viewer/)).

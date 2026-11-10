@@ -1,0 +1,50 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>mediapipe hands</title>
+<body>
+<script type="module">
+// MediaPipe Tasks Vision 1.2.2 HandLandmarker (hand_landmarker.task, float16) in the page, runningMode VIDEO, numHands 2,
+// delegate CPU or GPU (WebGL; here SwiftShader). Frames of R3a decoded with WebCodecs through Mediabunny and passed as
+// VideoFrame objects to detectForVideo(frame, timestampMs). Times every call.
+import { finish, fail, upload, stats } from './common.js';
+import * as MB from '/nm/mediabunny/dist/bundles/mediabunny.mjs';
+import { FilesetResolver, HandLandmarker } from '/nm/@mediapipe/tasks-vision/vision_bundle.mjs';
+const q = new URLSearchParams(location.search);
+const FILE = q.get('file') || '/inputs/R3a/R3a.webm', DELEGATE = q.get('delegate') || 'CPU', MAXF = Number(q.get('max') || 1e9);
+const STEP = Number(q.get('step') || 1);
+const R = { file: FILE, delegate: DELEGATE, step: STEP };
+try {
+  const t0 = performance.now();
+  const fileset = await FilesetResolver.forVisionTasks('/nm/@mediapipe/tasks-vision/wasm');
+  const hl = await HandLandmarker.createFromOptions(fileset, { baseOptions: { modelAssetPath: '/dl/mediapipe/hand_landmarker.task', delegate: DELEGATE },
+    runningMode: 'VIDEO', numHands: 2 });
+  R.create_ms = performance.now() - t0;
+  const input = new MB.Input({ source: new MB.UrlSource(FILE), formats: MB.ALL_FORMATS });
+  const track = await input.getPrimaryVideoTrack();
+  const sink = new MB.VideoSampleSink(track);
+  const per = [], counts = { 0: 0, 1: 0, 2: 0 }; const keep = []; let n = 0, idx = -1;
+  for await (const s of sink.samples()) {
+    idx++;
+    if (idx % STEP !== 0) { s.close(); continue; }
+    if (n >= MAXF) { s.close(); break; }
+    const vf = s.toVideoFrame();
+    const a = performance.now();
+    const res = hl.detectForVideo(vf, Math.round(s.timestamp * 1000));
+    const ms = performance.now() - a;
+    vf.close();
+    per.push(ms); const h = res.landmarks ? res.landmarks.length : 0; counts[h] = (counts[h] || 0) + 1;
+    keep.push({ frame: idx, t: +s.timestamp.toFixed(4), hands: h, handedness: (res.handednesses || res.handedness || []).map((x) => x[0] && `${x[0].categoryName}:${x[0].score.toFixed(3)}`),
+      landmarks: (res.landmarks || []).map((lm) => lm.map((p) => [+p.x.toFixed(4), +p.y.toFixed(4), +p.z.toFixed(4)])) });
+    s.close(); n++;
+  }
+  R.frames_processed = n; R.ms_per_frame = stats(per); R.ms_first5 = per.slice(0, 5);
+  R.ms_per_frame_excluding_first = stats(per.slice(1));
+  R.hands_per_frame_counts = counts;
+  R.total_ms = performance.now() - t0;
+  const name = FILE.split('/').pop().replace(/\W/g, '_');
+  R.landmarks_file = await upload('mediapipe', `hands_${name}_${DELEGATE}.json`, JSON.stringify({ model: 'hand_landmarker.task float16 (2023-04-26)', note: 'x,y normalized to image width/height, z relative depth', frames: keep }));
+  R.first3 = keep.slice(0, 3).map((k) => ({ frame: k.frame, hands: k.hands, handedness: k.handedness, wrist: k.landmarks.map((l) => l[0]) }));
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

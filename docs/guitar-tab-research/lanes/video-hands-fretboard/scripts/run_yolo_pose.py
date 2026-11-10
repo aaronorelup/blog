@@ -18,7 +18,7 @@ import ultralytics  # noqa: E402
 from ultralytics import YOLO  # noqa: E402
 
 clip, mode, weights, out = sys.argv[1:5]
-SAMPLE_FRAMES = {"R3a": [100, 300, 500], "R3a_cu": [0, 150, 280]}[clip]
+SAMPLE_FRAMES = {"R3a": [100, 300, 500], "R3a_cu": [0, 150, 280], "R3b": [0, 225, 449], "R3c": [0, 225, 449]}[clip]
 os.makedirs(out, exist_ok=True)
 t0 = time.perf_counter()
 model = YOLO(weights)
@@ -44,7 +44,7 @@ for n in range(C.n_frames(clip)):
             for side, k in (("person_left", "l_wrist"), ("person_right", "r_wrist")):
                 if pts[k][2] >= 0.5:
                     hands.append({"label": side, "score": pts[k][2], "person": p})
-    rec = {"n": n, "t_s": round(n / C.FPS, 4), "shot": C.shot_of(clip, n)[0], "view_wh": [view.shape[1], view.shape[0]],
+    rec = {"n": n, "t_s": round(n / C.fps(clip), 4), "shot": C.shot_of(clip, n)[0], "view_wh": [view.shape[1], view.shape[0]],
            "view_tf": list(tf), "t_infer_ms": round(dt, 3), "ultra_speed_ms": {k: round(v, 2) for k, v in res.speed.items()},
            "persons": persons, "hands": hands}
     records.append(rec)

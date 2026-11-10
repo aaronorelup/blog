@@ -18,7 +18,7 @@ from mediapipe.tasks import python as mpt  # noqa: E402
 from mediapipe.tasks.python import vision  # noqa: E402
 
 clip, mode, which, model, out = sys.argv[1:6]
-SAMPLE_FRAMES = {"R3a": [100, 300, 500], "R3a_cu": [0, 150, 280]}[clip]
+SAMPLE_FRAMES = {"R3a": [100, 300, 500], "R3a_cu": [0, 150, 280], "R3b": [0, 225, 449], "R3c": [0, 225, 449]}[clip]
 os.makedirs(out, exist_ok=True)
 
 t0 = time.perf_counter()
@@ -48,7 +48,7 @@ for n in range(C.n_frames(clip)):
     h, w = view.shape[:2]
     img = mp.Image(image_format=mp.ImageFormat.SRGB, data=view.copy())
     t1 = time.perf_counter()
-    res = det.detect_for_video(img, int(round(n * 1000 / C.FPS)))
+    res = det.detect_for_video(img, int(round(n * 1000 / C.fps(clip))))
     dt = (time.perf_counter() - t1) * 1000
     hands, pose = [], None
     if which == "pose":
@@ -67,7 +67,7 @@ for n in range(C.n_frames(clip)):
         for side, lms in (("left_hand", res.left_hand_landmarks), ("right_hand", res.right_hand_landmarks)):
             if lms:
                 hands.append({"label": side, "score": None, "lm_px_full": lm_list(lms, w, h, tf)})
-    rec = {"n": n, "t_s": round(n / C.FPS, 4), "shot": C.shot_of(clip, n)[0], "view_wh": [w, h], "view_tf": list(tf),
+    rec = {"n": n, "t_s": round(n / C.fps(clip), 4), "shot": C.shot_of(clip, n)[0], "view_wh": [w, h], "view_tf": list(tf),
            "t_infer_ms": round(dt, 3), "pose_found": pose is not None, "pose_arm": pose, "hands": hands}
     records.append(rec)
     jl.write(json.dumps(rec) + "\n")

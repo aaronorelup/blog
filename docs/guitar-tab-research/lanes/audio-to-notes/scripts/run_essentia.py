@@ -8,6 +8,7 @@ algos:
   klapuri      EqualLoudness -> MultiPitchKlapuri (defaults) -> multi-f0 frames json (polyphonic)
   multimelodia EqualLoudness -> MultiPitchMelodia (defaults) -> multi-f0 frames json (polyphonic)
   crepe-full / crepe-tiny   PitchCREPE(graphFilename=crepe-<size>-1.pb, hopSize=10 ms) on 16 kHz audio -> f0 csv
+               (crepe-full is limited to S1, S4lead and R1b whatever --clips says, to keep the slot time down)
 Audio: MonoLoader(sampleRate=44100) of the clip's .mono.wav (16000 for CREPE, resampled by MonoLoader).
 """
 import argparse
@@ -40,7 +41,10 @@ if a.algo.startswith("crepe"):
     rec["setup_s"] = round(time.perf_counter() - t0, 3)
     rec["settings"] = {"graphFilename": f"crepe-{size}-1.pb", "hopSize_ms": 10, "batchSize": 64, "sampleRate": 16000}
 
-for clip in a.clips.split(","):
+CLIP_LIST = a.clips.split(",")
+if a.algo == "crepe-full":  # CREPE full takes about 2 min per 30 s clip on 2 cores: limited to three clips
+    CLIP_LIST = [c for c in CLIP_LIST if c in ("S1", "S4lead", "R1b")]
+for clip in CLIP_LIST:
     t1 = time.perf_counter()
     audio = es.MonoLoader(filename=mono_path(clip), sampleRate=SR)()
     info = {"input": mono_path(clip), "sample_rate": SR}

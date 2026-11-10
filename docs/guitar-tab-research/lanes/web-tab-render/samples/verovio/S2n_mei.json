@@ -1,0 +1,58 @@
+{
+ "version": "6.4.1-fbe8f46",
+ "input": "/home/user/gtr/lanes/web-tab-render/out/verovio/S2n.truth.mei",
+ "loadOk": 1,
+ "ms_init": 656,
+ "log": "",
+ "pages": 1,
+ "ms_render": 156,
+ "midiBytes": 782,
+ "timemapEntries": 50,
+ "timemapFirst": [
+  {
+   "qstamp": 0,
+   "tstamp": 0
+  },
+  {
+   "on": [
+    "i7gk284",
+    "vvlg3w6"
+   ],
+   "qstamp": 4,
+   "tempo": 112,
+   "tstamp": 2143
+  },
+  {
+   "off": [
+    "i7gk284",
+    "vvlg3w6"
+   ],
+   "on": [
+    "lsmbvvo",
+    "yu84513"
+   ],
+   "qstamp": 5,
+   "tstamp": 2679
+  },
+  {
+   "off": [
+    "lsmbvvo",
+    "yu84513"
+   ],
+   "on": [
+    "o1tz9y33",
+    "bi6eeb7"
+   ],
+   "qstamp": 6,
+   "tstamp": 3214
+  }
+ ],
+ "exportMei": {
+  "bytes": 28453,
+  "tabGrp": 92,
+  "tabCourse": 90,
+  "notationtypeTab": true,
+  "staffDefs": 1
+ },
+ "ms_total": 1234
+}

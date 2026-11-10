@@ -1,0 +1,28 @@
+{
+ "id": "R3b",
+ "title": "Classical guitar close view, 18 s excerpt (archive.org, CC0 1.0)",
+ "what": "Real classical guitar video (nylon strings; a Yamaha C-40 per the item description), played with the fingers, 18 s excerpt (200-218 s) of a 580.5 s home recording; 1920x1080, 25 fps, progressive. The picture fills the left 1438x1080 of the frame; the right 482 columns are black, as in the source. One fixed camera facing the player and the guitar top at about chest height; no cut inside the excerpt (the only cut in the whole video, ffmpeg scene score > 0.12, is at 287.08 s, where a second take starts). Close view: the player's face is out of frame; the neck runs diagonally to the upper right, with the nut and part of the headstock at the upper-right edge, and the whole fretboard from the nut to the sound hole is in frame (on the frame at 209 s of the original: the nut, fret 1 and 14 more fret wires, frets 5 to 18 by their spacing, with frets 2-4 under the fingers). The fretting hand (left) is on the neck and fully in frame, in the low positions in the frames looked at (one every 3 s); the picking-hand fingers (right) are at the sound hole at the left edge of the picture, partly cut off by it. No capo. Audio: both channels carry the same signal (left minus right is -117.7 dBFS RMS in R3b.wav), i.e. a mono recording stored as stereo; R3b.wav peaks at -13.1 dBFS. The piece played is not identified in the item's metadata. No ground truth.",
+ "audio": "R3b.wav",
+ "duration_s": 18.0,
+ "sample_rate": 44100,
+ "channels": 2,
+ "tempo_bpm": null,
+ "time_signature": null,
+ "key": null,
+ "tuning_midi": null,
+ "capo": null,
+ "tuning_offset_cents": null,
+ "notes": [],
+ "beats": [],
+ "downbeats": [],
+ "chords": [],
+ "taps": [],
+ "stems": {},
+ "source": {
+  "kind": "video",
+  "url": "https://archive.org/details/BrylieChristopherOxleyGuitar20181006",
+  "license": "CC0 1.0",
+  "license_quote": "Usage: CC0 1.0 Universal (http://creativecommons.org/publicdomain/zero/1.0/)",
+  "attribution": "\"Brylie Christopher Oxley Guitar 2018-10-06\" by Brylie Christopher Oxley, archive.org item BrylieChristopherOxleyGuitar20181006, CC0 1.0 (no attribution required); excerpt 200-218 s, re-encoded."
+ }
+}
