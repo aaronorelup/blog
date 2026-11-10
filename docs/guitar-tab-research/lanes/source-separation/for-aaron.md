@@ -100,6 +100,8 @@ Not run here: the box has no GPU, and the `demucs-rs` README names Metal, Vulkan
 ## 7. MuS3D and ZeroSep (research systems)
 
 Not run here: MuS3D's checkpoint repository is 19.2 GB and its README says "The DiT needs about 10 GB of free
-memory"; ZeroSep runs diffusion models. Both are optional: only if Aaron wants to see blind stem discovery. Follow
-the README of https://github.com/REMUS-Aalto/Mus3D (`bash inference.sh song.wav --separator bslocoformer`, which
-does not use the 10 GB DiT) on `R2.wav`, and send back the output folder including `trace.txt`.
+memory"; ZeroSep runs diffusion models. Both are optional: only if Aaron wants to see blind stem discovery. MuS3D's
+entry point is a bash script and its README asks for Python 3.13 and uv, so on Windows it needs WSL (Windows
+Subsystem for Linux, Ubuntu). In WSL, follow the README of https://github.com/REMUS-Aalto/Mus3D and run
+`bash inference.sh R2.wav --separator bslocoformer` (the BS-Locoformer separator, not the 10 GB DiT). Send back the
+output folder including `trace.txt`, and the time it took.

@@ -2,13 +2,16 @@
 
 Written 2026-11-10 by `try-guitar-tab`. These are the guitar-tab tools that did not run on the research box (no GPU,
 and the session could not install code straight from GitHub repositories; see `trials.md`, "Tools NOT RUN here").
-The steps are written for a Windows 11 laptop with an 8 GB RTX 4070, or for the tool's own app; none of them was
+The steps are written for a Windows computer with an NVIDIA GPU (CUDA), or for the tool's own app; none of them was
 tried from the research box.
 
 Where the files come from:
 
 - Audio clips (`S2n.wav`, `S5capo2.wav`, `S5dropd.wav`, `R1a.wav` ...): the shared test inputs, described in
-  `docs/guitar-tab-research/inputs/INPUTS.md`. The audio is not in git; the orchestrator files it in your studio library.
+  `docs/guitar-tab-research/inputs/INPUTS.md`. The audio is not in git; per `PLAN.md` the orchestrator files audio in
+  your studio library. The R1 clips can also be cut from GuitarSet (Zenodo record 3371780): R1a is the first 29.159 s
+  of `02_SS2-107-Ab_comp_mic.wav`, R1b the first 29.333 s of `04_Rock1-90-C#_solo_mic.wav`, R1c the first 28.235 s of
+  `00_BN3-119-G_comp_mic.wav` (from `INPUTS.md`).
 - MIDI files for the MIDI-to-tab tools: `docs/guitar-tab-research/lanes/guitar-tab/samples/lane-inputs/<id>.merged.mid`
   (in git, under 2 KB each). These are the exact notes of each clip in one track.
 - The correct answers (string and fret of every note) are in `docs/guitar-tab-research/inputs/<id>/<id>.truth.json`
@@ -21,16 +24,19 @@ Git for Windows (git-scm.com), then in a Command Prompt run `pip install uv`.
 
 What it is: a model that turns a solo steel-string fingerstyle recording into a `.gp5` tab
 (https://github.com/DanieleMorotti/guitab, version 1.2.0; weights CC BY-NC-SA 4.0, non-commercial, per its README and
-model card). The README says a 4-minute song "takes well under a minute and 1–2 GB of GPU memory". Free.
+model card). The README says a 4-minute song "takes well under a minute and 1–2 GB of GPU memory". The code is MIT
+licensed (README).
 
-Option A, no install (browser version): open https://danielemorotti.github.io/guitab/ in Chrome or Edge. (Not opened
-from the research box. The README says it gives "the same .gp5 as the Python pipeline, **byte for byte**" at 22.05 kHz,
-and "Audio at other sample rates is resampled by the browser instead of librosa, so its results are close but not
-identical"; the shared clips are 44.1 kHz.)
+Option A, no install (browser version): open https://danielemorotti.github.io/guitab/ in Chrome or Edge. (The page's
+HTML was fetched from the research box on 2026-11-10 but it was not run there. The README says it gives "the same .gp5
+as the Python pipeline, **byte for byte**" at 22.05 kHz, and "Audio at other sample rates is resampled by the browser
+instead of librosa, so its results are close but not identical"; the shared clips are 44.1 kHz.) The control names
+below are from that page's HTML: an Upload button, a Capo stepper (0 to 12, "Capo 0 = no capo") and a Transcribe
+button ("Upload or record a recording and press Transcribe").
 
-1. Load `S2s.wav` (steel string). Leave every setting at its default. Press Transcribe.
+1. Upload `S2s.wav` (steel string). Leave every setting at its default (Capo 0). Press Transcribe.
 2. Save the `.gp5` it offers. Time how long it took (a phone stopwatch is fine).
-3. Repeat with `S5capo2.wav` twice: once with capo 0 and once with the capo set to 2.
+3. Repeat with `S5capo2.wav` twice: once with Capo 0 and once with the Capo stepper at 2.
 4. Repeat with `R1a.wav`, `R1b.wav`, `R1c.wav` (real recordings) and `S3.wav` (strummed chords), defaults.
 
 Option B, on the laptop (needs the GPU and the steps from the README):
@@ -45,8 +51,9 @@ Option B, on the laptop (needs the GPU and the steps from the README):
    weights by itself).
 6. Capo test: `.venv\Scripts\guitab --audio S5capo2.wav --out_dir out\S5capo2_nocapo` and
    `.venv\Scripts\guitab --audio S5capo2.wav --out_dir out\S5capo2_capo2 --capo 2`.
-7. Other clips: S2n, S3, S5dropd, R1a, R1b, R1c (defaults). Guitab has no tuning option (its code is standard tuning
-   only), so S5dropd shows what happens to the low D notes.
+7. Other clips: S2n, S3, S5dropd, R1a, R1b, R1c (defaults). Guitab has no tuning option (none in the README's option
+   list; `guitab/guitar.py` begins "Guitar constants shared by the whole pipeline (standard tuning)."), so S5dropd
+   shows what happens to the low D notes.
 
 Send back: every `.gp5` and `.tokens.txt` file (keep the folder names), how long each clip took, and a screenshot of the
 settings if you used the browser version.
@@ -73,8 +80,10 @@ Send back: the `.mid` files, and the console text of one run (it prints the chec
 
 What it is: https://github.com/RiccardoVib/Noise2Fret (MIT); checkpoints on Zenodo record 23361924 (CC BY 4.0, two zip
 files of about 111 MB). Its README has no command for one audio file: inference goes through its training scripts with
-`TRAIN_MODEL=False` over a dataset folder that its preprocessing scripts build from GuitarSet or GOAT. Running it on
-the shared clips therefore needs a small new script, which is not a non-programmer task.
+`TRAIN_MODEL=False` over a dataset folder that its preprocessing scripts build from GuitarSet or GOAT ("To run
+inference only on an existing pre-trained model, set the "train_model" flag to False. In this case, ensure you have
+the existing model and dataset (to use for inference) both in their respective directories"). Running it on the
+shared clips therefore needs a new script that the repository does not contain.
 
 What would settle it: an inference script from the authors for a single audio file. If you want to ask them, the
 question is "is there a way to run the published checkpoints on one WAV file and get the tablature out?". Nothing to
@@ -96,7 +105,11 @@ paid commercial licence.
 3. Run: `.venv\Scripts\gtrsnipe -i S2n.merged.mid -o S2n.tab`, the same for `S3`, `R1a`, `R1b`, `R1c`.
 4. Drop D: `.venv\Scripts\gtrsnipe -i S5dropd.merged.mid -o S5dropd_std.tab` and
    `.venv\Scripts\gtrsnipe -i S5dropd.merged.mid -o S5dropd_dropD.tab --tuning-pitches D2,A2,D3,G3,B3,E4`.
-5. Capo: run `.venv\Scripts\gtrsnipe --help > help.txt`; if it lists a capo option, run S5capo2 with and without it.
+5. Capo: `.venv\Scripts\gtrsnipe -i S5capo2.merged.mid -o S5capo2_nocapo.tab` and
+   `.venv\Scripts\gtrsnipe -i S5capo2.merged.mid -o S5capo2_capo2.tab --capo 2` (the option exists at commit
+   `a9be933`, `gtrsnipe/arguments.py`: "Specify a capo position. All fret numbers will be relative to the capo.").
+6. `.venv\Scripts\gtrsnipe --help > help.txt` (the options above were read at commit `a9be933`, dated 2026-11-10,
+   the day these steps were written; the help text shows the version you install).
 
 Send back: the `.tab` files and `help.txt`.
 
@@ -108,7 +121,10 @@ What it is: what these programs do when they import a MIDI file onto a guitar ta
 MuseScore are free; Guitar Pro 8 is paid (only if you already own it).
 
 TuxGuitar (free, tuxguitar.app; the menu names below were not checked against the current version, so if they differ,
-use the program's MIDI import, its track tuning and capo settings, and its Guitar Pro 5 export):
+use the program's MIDI import, its track tuning and capo settings, and its Guitar Pro 5 export. In the TuxGuitar 1.5.6
+installed on the research box, its language file names the menus File > Import > Import MIDI, File > Export and
+Track > Properties, the tuning dialog has Presets, Strings and an Offset field, and its Guitar Pro plugin contains a
+"Guitar Pro 5" writer; the program itself was not opened):
 
 1. File > Import > MIDI, choose `S2n.merged.mid`. Keep the default import settings; take a screenshot of the import
    dialog.
@@ -118,14 +134,23 @@ use the program's MIDI import, its track tuning and capo settings, and its Guita
    capo set to 2, as `S5capo2_tuxguitar_capo2.gp5`.
 
 MuseScore 4 with the FretPath plugin (https://github.com/knoguchi/fretpath; per the docs lane's survey GPL v3 and
-MuseScore Studio 4.4 or later): install it as its README describes, import `S2n.merged.mid`, add a linked tablature staff, run the plugin,
-export MusicXML (`.musicxml`). Repeat for the clips above.
+MuseScore Studio 4.4 or later). The steps below follow its README (commit `5e4fb42`):
+
+1. Download the repository (GitHub's Code > Download ZIP), copy the folder to `Documents\MuseScore4\Plugins` and
+   restart MuseScore; enable the plugin in Home > Plugins.
+2. Open `S2n.merged.mid` in MuseScore.
+3. Open the Instruments panel (I), search "tablature" and add "Classical Guitar (tablature)" (the README: "The plugin
+   treats the last staff as the TAB target").
+4. Plugins > Composing/arranging tools > FretPath, keep "Write to TAB staff" (the default), press Run.
+5. Export MusicXML (`.musicxml`) as `S2n_fretpath.musicxml`. Repeat for the clips above; for `S5dropd`, the README says
+   alternate tunings "are read automatically from the instrument's string data", so set the tab staff's strings to
+   Drop D before Run for a second file `S5dropd_fretpath_dropD.musicxml`.
 
 Send back: every `.gp5` / `.musicxml` file and the screenshots of the import and plugin settings.
 
 ## Nothing to run (no trained model is published)
 
 TabCNN's original code, FretNet, guitar-transcription-with-inhibition, Fretting-Transformer, MIDI-to-Tab, TART,
-Audio2Tab and GuitarTab publish code or papers but no trained model that the research found (sources in `trials.md`).
-Running them means training them first. The research did not find, in the papers read, a statement that training
-them on one 8 GB GPU is practical, so no training steps are listed here.
+Audio2Tab and GuitarTab publish code or papers but no trained model that the research found (sources in `trials.md`;
+Audio2Tab's README says under "Checkpoints": "We will host a checkpoint here soon!"). Running them means training them
+first; no training steps are listed here.

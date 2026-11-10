@@ -352,8 +352,8 @@ file, pitch bends ignored by gtr-eval.) Pictures:
   `samples/bytedance/uv-pip-freeze-venv-piano-py3.11.txt`). Package directory 148 KB by `du` after first use (72 KB
   without the `__pycache__` written on import).
 - Dead end: the package's own `load_audio()` fails with librosa 0.11: "AttributeError: No librosa.core attribute
-  audio" (it calls `librosa.core.audio.util.buf_to_float`). That stopped the first attempt (inside run r0216, 34.5
-  s, exit 1). `scripts/run_piano.py` now reads the audio with `librosa.load(path, sr=16000, mono=True)` and passes
+  audio" (it calls `librosa.core.audio.util.buf_to_float`; reproduced by the verifier in run r0475). That stopped the
+  first attempt (inside run r0216, 34.5 s, exit 1). `scripts/run_piano.py` now reads the audio with `librosa.load(path, sr=16000, mono=True)` and passes
   it to `PianoTranscription(model_type="Note_pedal", device="cpu", checkpoint_path=...).transcribe(audio, out.mid)`.
 - Run: run **r0401**, `--nolock` (unpinned, torch set to 2 threads), S2n and R1c only: wall 159.3 s, CPU 151.2 s,
   peak RSS 998.8 MB; model setup 8.6 s; S2n 75.8 s, R1c 73.7 s. Why `--nolock`: the slot job queued for it
@@ -394,7 +394,8 @@ Recall by voice on S2n: bass 48/48, melody 31/42 (e1393). Picture: `samples/byte
   scipy 1.15.3, resampy, pretty-midi, mir-eval (freeze: `samples/basic-pitch/uv-pip-freeze-venv-basicpitch-py3.10.txt`).
   Venv 603 MB by `du` (onnxruntime 49 MB, tflite_runtime 6.6 MB).
   Dead ends on the way, in order: (1) without setuptools the CLI stops at import: resampy imports `pkg_resources`
-  ("ModuleNotFoundError: No module named 'pkg_resources'"); setuptools 80.10.2 (`<81`) fixes it, with a
+  ("ModuleNotFoundError: No module named 'pkg_resources'"; reproduced by the verifier in run r0476, raised from
+  `resampy/filters.py`); setuptools 80.10.2 (`<81`) fixes it, with a
   deprecation warning that pkg_resources "is slated for removal as early as 2025-11-30". (2) uv resolved numpy 2.2.6,
   and tflite-runtime 2.14.0 then fails to load the model ("AttributeError: _ARRAY_API not found", then "ValueError:
   File .../nmp.tflite cannot be loaded into either TensorFlow, CoreML, TFLite or ONNX"); `numpy<2` (1.26.4) fixes
@@ -660,7 +661,8 @@ input files) reproduced the sine-check numbers exactly but not the clip outputs 
 different frequencies in 31 of 5,133 frames on S1 (for example 1.6951 s: 138.591 Hz in r0321, 146.832 Hz in r0430,
 same confidence 0.9310), 19 of 5,051 on S2n, 4 of 5,047 on R1b, 0 of 6,667 on S4lead. Scored again: S1 RPA 0.494
 (e1402; r0321's output 0.495, e1014), S2n 0.000 (e1403), R1b 0.023 (e1404). Every other Essentia output re-run by
-the verifier (Melodia and its notes on 8 clips, MultiPitchKlapuri and MultiPitchMelodia on S2n) was byte-identical.
+the verifier (Melodia and its notes on 8 clips in r0429, MultiPitchKlapuri and MultiPitchMelodia on S2n in r0431,
+PitchCREPE tiny on S1 in r0464) was byte-identical.
 
 ### Handoff test inside the lane: other trackers' f0 into Essentia's `PitchContourSegmentation`
 
@@ -831,8 +833,9 @@ at 22:44 UTC, for about 20 agents).
   soundfile` -> penn 1.0.0, torbi 1.4.1, torchutil 0.1.2, yapecs 0.5.0, torch 2.15.0+cpu; freeze in `samples/penn/`)
   and its checkpoint downloaded (`fcnf0++.pt`, 107,245,425 bytes, Hugging Face `maxrmorrison/fcnf0-plus-plus`, card
   license `mit`, sha256 28d89add...53d51d1b960), but `import penn` fails in run **r0399** (exit 1): its Viterbi
-  dependency torbi 1.4.1 ships compiled libraries only for torch 2.6 to 2.11 (`_C.pt26cpu` ... `_C.pt211cpu` in the
-  wheel) and stops with "FileNotFoundError: Could not find any lib files matching version pt215cpu". Running it
+  dependency torbi 1.4.1 ships compiled libraries only for torch 2.6 to 2.11 (`_C.pt26cpu` ... `_C.pt211cu130` in the
+  Linux wheel, CPU and CUDA builds; the Windows wheel has the same versions) and stops with "FileNotFoundError: Could
+  not find any lib files matching version pt215cpu" (reproduced by the verifier in run r0423). Running it
   would need a second torch version (2.11) in its own venv, which the disk notice ruled out. Its run was first
   queued for a CPU slot in a batch with the ByteDance model; that queued job waited about 48 minutes without
   getting a slot and was cancelled (no ledger line, as it never started).
@@ -869,5 +872,134 @@ No tool in this lane wrote audio or video (Basic Pitch's `--sonify-midi` was not
 lane input: `/home/user/gtr/lanes/audio-to-notes/inputs/S7flat30.plus30c.wav` (4,233,644 bytes, 24.000 s, 44.1 kHz
 stereo 16-bit): the shared clip S7flat30 shifted up 30 cents with `sox ... pitch 30`, for the tuning-correction test
 in the Basic Pitch section. It is derived from the synthesized clip S7flat30 (license and attribution as for
-S7flat30 in the inputs manifest).
+S7flat30 in the inputs manifest). The verifier re-measured it: 4,233,644 bytes, SHA-256 31f6f3a9...42c42eef, 2
+channels, 44,100 Hz, 16-bit, 24.00 s (`soxi`), SoX v14.4.2.
+
+## Verification log (verify-trials-audio-to-notes, 2026-11-10)
+
+Checked by `verify-trials-audio-to-notes`, 22:24 to 22:56 UTC. Scripts: `scripts/verify_trials/`; small
+outputs: `samples/verify-trials/`; re-run outputs and rebuilt venvs on the box under
+`/home/user/gtr/lanes/audio-to-notes/verify/` (venvs and downloaded weights deleted afterwards).
+
+**What was checked, and the result**
+
+- Ledgers. All 27 run ids and all 181 eval ids cited in this file exist; every cited eval is gtr-eval 0.11.1 with
+  exit code 0. Every table row and every inline number with an eval id (P / R / F1, onset+offset F1, median onset
+  difference, truth and estimate counts; RPA, RCA, voicing recall and false alarm, overall accuracy; recall by voice;
+  timing statistics) was compared with the stored result of that id: all match. Run figures (wall, CPU, peak RSS,
+  cores, slot wait, exit code, input hashes) match `runs.jsonl`; the per-tool GNU time figures match
+  `samples/_timing/` (KiB / 1024 conversions recomputed), and the r0321 and r0234 batch walls equal the sums of their
+  tools' GNU time walls to within 0.2 s.
+- Re-scoring. All 181 cited evals were re-run with gtr-eval `--no-ledger` from their stored arguments: same estimate
+  SHA-256 and a byte-identical result object in 181 of 181 (`samples/verify-trials/rescore_cited_evals.tsv`,
+  `scripts/verify_trials/rescore_cited_evals.py`). The 168 eval references inside `samples/**/scores*.json` match the
+  ledger.
+- Independent recomputation in mir_eval 0.8.2 with the verifier's own code
+  (`scripts/verify_trials/independent_mir_eval.py`, output `samples/verify-trials/independent_mir_eval.txt`), equal to
+  the reported values at 3 decimals: onset-only F1 of Basic Pitch S1 0.968, Transkun S1 0.992, ByteDance S2n 0.893,
+  aubionotes S1 0.048 (50 ms) and 0.984 (100 ms), SwiftF0 notes S1 0.836, Melodia + PitchContourSegmentation S1
+  0.747, FCPE into PitchContourSegmentation S1 0.873, Basic Pitch on the htdemucs_6s bass stem 0.453; S1 RPA of
+  SwiftF0 0.961, pyin 0.958, FCPE 0.990, PESTO 0.987, torchcrepe tiny 0.982 and full 0.986, Melodia 0.693,
+  PitchYinProbabilistic 0.495, Essentia CREPE tiny 0.982 and full 0.990, aubiopitch 0.957; torchcrepe tiny R1b RPA
+  0.442 (viterbi) and 0.848 (weighted_argmax); multi-pitch P / R / Acc of MultiPitchKlapuri S2n 0.722 / 0.803 /
+  0.613 and R1c 0.516 / 0.403 / 0.293, MultiPitchMelodia S2n 0.942 / 0.481 / 0.467. The multi-pitch table matches
+  `samples/multipitch_scores.json`; the lane's self-check (truth notes as the estimate) gives 1.0 on S2n.
+- Output files. Every file and folder named in this file exists. Recounted from the files: note counts of Basic
+  Pitch (16 clips in each of the three configurations, R3b / R3c, the handoff stems, the tuning test, Drop D), SwiftF0,
+  aubio, Transkun and ByteDance; first-note lists; MIDI facts (ticks per quarter, tempo, program, pitch-bend and
+  controller counts); CSV headers and first rows; `.npz` keys and shapes; the ONNX-versus-TFLite differences (13 of
+  16 lists identical; S3 4 notes, S6taps 1, S7flat30 1; largest model-output differences 0.00014 / 0.00026 /
+  0.00056); recall by voice; truth facts (35 of 61 S4 bass notes below E2, lowest MIDI 31; the four D2 notes of
+  S5dropd); per-clip seconds in every `timings.json`; the torchcrepe frames at or above 1500 Hz; the multi-pitch frame
+  facts; the contour-segmentation NaN counts (FCPE R1b 7, torchcrepe full R1b 5); the separation lane's stems still
+  have the SHA-256 recorded in r0243. The 27 sample copies compared are byte-identical to the box outputs.
+  PitchYinProbabilistic's outputs lie on the equal-tempered grid (within 0.012 cents on S1, R1b, S4lead).
+- Re-runs from the recorded commands (venvs rebuilt with `uv pip install --offline` from the saved freezes, same
+  scripts; comparison in `samples/verify-trials/rerun_compare.txt`, timings in `samples/verify-trials/rerun_timings.txt`):
+  - **r0464** (gtr-run slot, cores 2-3; wall 244.24 s, CPU 249.4 s, peak RSS 1,447.9 MB, exit 0, 540.9 s waiting
+    for a slot; `scripts/verify_trials/batch_verify.sh`): Basic Pitch TFLite S1 and S2n, librosa pyin S1, FCPE S1,
+    PESTO S1, Essentia CREPE tiny S1, Transkun S1, ByteDance S2n (weights re-downloaded from Zenodo record 4034264:
+    171,966,578 bytes, SHA-256 c3fa9730...07876141 as recorded): every output byte-identical to the trial's.
+    torchcrepe tiny with its three decoders on R1b: different in every frame (random dither; see the torchcrepe
+    section, e1405 to e1407).
+  - `--nolock` (light, single-threaded or under 10 s): r0426 aubio on 8 clips, r0427 SwiftF0 on 8 clips, r0429
+    Essentia Melodia + PitchContourSegmentation on 8 clips, r0431 MultiPitchKlapuri and MultiPitchMelodia on S2n,
+    r0432 the contour-segmentation handoff: every output byte-identical. r0430 PitchYinProbabilistic on 8 clips: not
+    identical (see the Essentia section, e1402 to e1404); its pure-sine check reproduced exactly.
+  - Failures reproduced: r0423 `import penn` ("Could not find any lib files matching version pt215cpu"); r0475 the
+    ByteDance package's `load_audio()` with librosa 0.11.0 ("AttributeError: No librosa.core attribute audio"); r0476
+    the Basic Pitch CLI in a venv without setuptools ("ModuleNotFoundError: No module named 'pkg_resources'", raised
+    from `resampy/filters.py`).
+  - The same commands took different times under a different box load: Transkun S1 83.7 s in r0216, 40.6 s in
+    r0464; ByteDance S2n 75.8 s in r0401 (unpinned), 27.8 s in r0464 (model setup 8.6 s and 20.1 s); Basic Pitch S1
+    `predict()` 20.36 s and 29.33 s; Essentia CREPE tiny S1 14.38 s and 6.00 s; PESTO S1 5.87 s and 8.94 s; pyin S1
+    13.18 s and 16.42 s; FCPE S1 3.53 s and 3.55 s.
+- Not-run reasons, re-read at the live source on 2026-11-10: PyPI JSON (the `tensorflow` 2.15.0 cp311 Linux wheel
+  475,258,658 bytes; basic-pitch, omnizart, crepe-notes, madmom (source archives only), rmvpe-onnx (14,520-byte
+  wheel), essentia-tensorflow releases, penn, torbi); `uv pip install --dry-run "basic-pitch==0.4.0"` repeated
+  (Python 3.11: "Would install 65 packages" with `tensorflow==2.14.0`; 3.12 and 3.13: "No solution found"); the
+  Hugging Face API (YourMT3 Space facts and its five checkpoints, 361,050,039 to 758,957,292 bytes, the default
+  561,544,628; `akhaliq/MT3` and `cwitkowitz/timbre-trap` in RUNTIME_ERROR; `tt-orig.pt` 11,353,410 bytes;
+  `rmvpe.onnx` 361,688,443 and `rmvpe.pt` 181,184,272 bytes; `MuScriptor/muscriptor-small` gated `auto`,
+  `cc-by-nc-4.0`, `model.safetensors` 411,888,600 bytes; `fcnf0++.pt` 107,245,425 bytes, `mit`); the READMEs of
+  CREPE, MT3 (and its Colab notebook), MR-MT3, hFT-Transformer (and `checkpoint.zip`, Content-Length 20,540,269),
+  Omnizart (and its Colab notebook), NeuralNote, Sheet Sage, PENN, rmvpe-onnx, torchcrepe, PESTO, FCPE and
+  Timbre-Trap (and its `setup.py`); `git ls-remote` HEADs of `c4dm/pyin` (1d68cac9) and `sony/timbre-trap`
+  (7afe7e9); the compiled-file lists of the torbi 1.4.1 Linux and Windows wheels; Tony's and Sonic Visualiser's
+  source and download pages; the Vamp SDK's default Windows plugin path. The MTG MELODIA page was not requested again
+  (a host that answered 403 is not retried); the trial agent's saved response is a Cloudflare "Just a moment..." page.
+
+**What was changed in this file**
+
+1. Transkun: its MIDI also holds CC67 (soft pedal) events in R1a, R1b and R1c (R1b: 2 CC67, no CC64); summary table
+   and output facts.
+2. ByteDance r0401: "both CPU slots had been held by other lanes' long jobs for over 40 minutes" replaced by the
+   ledger timeline (cores 2-3 ran this lane's own r0321 until 21:52:44).
+3. Basic Pitch: the failed CLI runs took 2.96 to 4.47 s (was "about 3 s"), all used `--model-serialization
+   tflite`, and only the logs of r0033 to r0065 survive (dead end 2); the 4.5 MB `.npz` is the CLI's file (the lane's
+   own copy is 3.7 MB); the order of the first-notes list is stated.
+4. Essentia: the PitchCREPE first-frame example is the tiny model's (full added); PitchYinProbabilistic's
+   run-to-run differences added; the other Essentia re-runs noted as byte-identical.
+5. torchcrepe: its random dither and the re-run figures added.
+6. PESTO and ByteDance package sizes: the `__pycache__` share stated.
+7. Tools not run: the disk figures replaced by logged values ("fell below 5 GB later" had no support in the lane's
+   logs); the pYIN and Timbre-Trap refusals marked as the trial agent's report; MT3's "No official Hugging Face Space"
+   replaced by what its README and notebook show; the key-store sentence replaced by "No Hugging Face token was
+   available to this session"; MR-MT3's README URL corrected (`main` answers 404, `master` holds the README quoted);
+   hFT-Transformer: "running cloned repository code was refused" and "the task asked for one or two piano-trained
+   models" removed (hFT was not attempted; the task text is not on file), README facts added; Omnizart: "the one
+   install attempt the task allowed" removed; NeuralNote: "(refused here for pYIN already)" removed (no build was
+   attempted); Sheet Sage's free-disk figure; the time R3b and R3c were added now follows the inputs manifest.
+8. Converted MIDI files: times are rounded to the 1/960 s tick (largest difference 0.52 ms), not "unchanged".
+
+**What was changed in `for-aaron.md`**
+
+- The description of Aaron's laptop hardware removed (the rule on personal data); the steps now say "Aaron's Windows
+  PC".
+- YourMT3+: the Space's tab and button names, its `Download MIDI` link, and the Colab link the Space shows; the cost
+  line limited to what was seen.
+- MT3: steps rewritten from the notebook's own instructions (cell names, `MODEL` values `mt3` and `ismir2021`, GPU
+  runtime, the Google Analytics note, the downloaded file name).
+- NeuralNote: README quotes and the Compute device setting.
+- MELODIA: the old steps put the Windows plugin into `C:\Program Files\Vamp Plugins` for Sonic Visualiser; the MTG
+  page (docs lane's copy) lists an x86 Windows build for `C:\Program Files (x86)\Vamp Plugins\` and Sonic Visualiser
+  5.2.1 is offered for 64-bit Windows only, so the steps now use the Linux build with `vamp-simple-host` under WSL2
+  (command form and default search path checked on this box; plugin key from the MELODIA author's wrapper script).
+- Tony: export menu names taken from Tony's source (was "or the closest item").
+- Omnizart: the Colab's upload cell takes MP3 and its music modes are `music-piano`, `music-piano-v2` and
+  `music-assemble` (the old step uploaded a WAV and chose a `music` mode the notebook does not list).
+- Sheet Sage: the WSL2 route marked UNVERIFIED; the output folder's contents quoted from the README.
+- RMVPE: commands taken from its README.
+- PENN: CPU by default (README), the output file names (`-pitch.pt`, `-periodicity.pt`), the torbi Windows wheel's
+  range.
+
+**Still UNVERIFIED**
+
+- Why Essentia's PitchYinProbabilistic returns grid frequencies and differs between runs.
+- The two permission refusals (pYIN build, Timbre-Trap code) and the failed Wayback Machine fetch: the trial agent's
+  report, with no file on the box recording them.
+- That the queued `batch2.sh` job waited about 48 minutes and was cancelled: only its empty log (created 21:29 UTC)
+  and the 22:18 start of r0399 and r0401 are on file.
+- Every route in `for-aaron.md` that needs Windows, WSL2, Docker, Colab or a web demo: none could be tried here.
+- No runnable tool on the lane's list was found skipped without a recorded reason, so the verifier added no tool run.
 

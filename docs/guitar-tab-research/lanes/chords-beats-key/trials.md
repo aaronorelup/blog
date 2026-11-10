@@ -59,8 +59,12 @@ What ran here (sections below, in this order), with the runs that hold the timin
 Not run here, with reasons: BTC, madmom from GitHub, libKeyFinder, S-KEY, All-In-One, tempo-cnn, Omnizart, Beat
 Transformer, Harmony Transformer, ACR_seq2seq, ChordMini, QM Vamp plugins, the Hulme et al. tuning classifier, BEAST,
 and the browser libraries (section "Not run here"; steps for Aaron in `for-aaron.md`). The last four tools in the table
-ran with `--nolock` on one thread because both CPU slots were held by other lanes' jobs that had
-been running for 36 to 60 minutes; their times are single-thread times under load, not 2-core slot times.
+ran with `--nolock` on one thread because both CPU slots were held by other lanes' jobs: two video-hands-fretboard jobs
+whose commands started at 22:01:23 and 22:01:24 UTC after waiting in the slot queue since 21:12 and 21:31 UTC (start times
+of the jobs' child processes, read with `ps` by the verifier at about 22:27 UTC, when `/proc/locks` showed the two jobs
+holding `cpu1.lock` and `cpu0.lock`; they were still running then and so were not yet in the ledger). At the starts of
+r0351 to r0398 (22:07:23 to 22:14:36 UTC) they had held the slots for 6 to 13 minutes. Times of these four runs are
+single-thread times under load, not 2-core slot times.
 
 Virtual environments: all of this lane's venvs were deleted at the end of its work to free disk space, as the
 orchestrator's disk notice asked; each tool's `uv pip freeze` is kept in `samples/<tool>/`, and the install commands
@@ -112,6 +116,8 @@ section.
 | R1c | 0.038 | 0.041 | 0.036 | 0.000 | 0.745 | 49 / 56 | e0555 | 113.92 | no (0.957) | e0556 |
 
 - Samples: `samples/aubio/` (S3, S4, R1b, R2 beat and tempo files, per-command timings).
+- Verifier re-run: r0425 (the r0200 command on the same 13 clips, `--nolock`, into `verify-trials/reruns/aubio/`): all 39
+  output files byte-identical to the trial's (tempo, `aubio beat`, `aubiotrack`).
 
 ## Chordino and NNLS Chroma / Tuning (Vamp plugins) via chord-extractor 0.1.3 and vamp 1.1.0
 
@@ -140,16 +146,19 @@ section.
 - Output format: `Chordino.extract()` returns a list of `ChordChange(chord, timestamp)`: a label and a start time in
   seconds, no end times and no confidence. Labels are Chordino's own short names (`G`, `Em`, `Am7`, `D7`, `C#m`,
   `Abmaj7`, `Bbm7b5/Ab`, `F#6`, `Bdim`, `Ebm7b5`, `Bb7/D`, `N`), i.e. majors, minors, sevenths, sixths, diminished,
-  half-diminished and slash chords. Every start time in the 491 segments written for the 13 clips is a multiple of 2048/22050 s (0.0929 s;
-  e.g. 0.372, 0.464, 4.923). Each of the 13 clips' lists started with `N` at 0.372 s and ended with an `N` change 0.28 to 0.37 s after the
-  end of the file (S3: 24.335 s for a 24.000 s file). The lane script writes `.lab` files (each change lasts until the
-  next one, the last until the end of the file); segments that start at or after the end of the file are dropped
+  half-diminished and slash chords. Every start time in the 491 segments written for the 13 clips (244 in the default-mode
+  `.lab` files, 247 in the local-tuning ones) is a multiple of 2048/22050 s (0.0929 s; e.g. 0.372, 0.464, 4.923). Each of
+  the 13 clips' lists started with `N` at 0.372 s and ended with an `N` change 0.28 to 0.36 s after the end of the file
+  (S3: 24.335 s for a 24.000 s file; verifier's check of the raw default-mode lists, run r0474: 0.279 to 0.364 s). The
+  lane script writes `.lab` files (each change lasts until the next one, the last until the end of the file); segments
+  that start at or after the end of the file are dropped
   (`scripts/fix_chordino_labs.py` applied that rule to the r0215 outputs, written before the rule was added). The
   tuning plugin returns one item at time 0 with label `<Hz> Hz` (rounded to 0.1 Hz) and the unrounded value in
   `values`, e.g. S7flat30 `431.9 Hz` / 431.8629.
 - Output excerpts. S3 (truth G E:min A:min7 D:7 G E:min C D:7 G): `0.372 N, 0.464 G, 4.923 Em, 7.523 Am7, 9.938 D7,
   12.446 G, 14.954 Em, 17.461 C, 19.226 D7, 19.876 G`. S7flat30 (S3 rendered 30 cents flat), global tuning: the same
-  label sequence and change times except one: Am7 starts at 7.430 s instead of 7.523 s (one frame earlier). R1a (truth key
+  label sequence and change times except one: Am7 starts at 7.430 s instead of 7.523 s (one 2048-sample hop earlier).
+  R1a (truth key
   Ab minor): `C# F# B E Bbm7 Eb Abm7 C# F# B E Bb7`. R2 (no truth): `F# Ebm Bmaj7 F# Bb7 Ebm B Bb7 Eb F7 F#6 C# Ab Bb
   Bdim`. R2full: 73 segments, 20 distinct labels (including `N`).
 - Default (global) versus local tuning mode: identical `.lab` files for S3; for R1b the local-tuning run split the
@@ -203,6 +212,11 @@ section.
   (no truth); R2full: 440.729 Hz.
 - Samples: `samples/chordino/` (labs for S3, S7flat30, S4, S2n, R1a, R1b, R2, R2full; R1b local-tuning lab; tuning
   JSON for S3, S7flat30, R1a; per-clip timings; venv freeze).
+- Verifier re-run: r0436, `chordino_run.py` on S3, S7flat30 and R1b in a venv rebuilt offline from the saved freeze
+  (`--nolock`, one thread): both `.lab` files and `nnls_tuning.json` byte-identical to the trial's for all three clips.
+  The first job (S3) took 19.8 s and the next two 2.9 and 3.0 s. Run r0468 (S3 only): 3.3 s with the numba cache files
+  that the first job had written into the venv (46 `.nbi`/`.nbc` files), 17.9 s after deleting them; so most of the
+  first job's extra time is numba compiling librosa's functions once per venv.
 
 ## madmom 0.16.1 (PyPI sdist of 2018-11-14) on Python 3.9
 
@@ -288,13 +302,17 @@ section.
   Truth segment counts: S3, S7flat30 10; S4 18; S2-family 22; R1a 13, R1b 6, R1c 14. S7flat30 versus S3 (same notes,
   30 cents flat): the same tempo and key; chord scores differ by 0.004 to 0.062 (largest: CNN sevenths 0.640 vs 0.702).
 - Samples: `samples/madmom/` (all outputs for S3, S2n, R1b, R2; R2full timings; batch timings; freezes).
+- Verifier re-run: r0442, `madmom_run.py` on S3 (r0063) and S2n (r0100) in venv-madmom39 rebuilt offline from the saved
+  freeze (`--nolock`, one thread; 21.5 s and 31.1 s): all seven output files of each clip (beats, downbeats, tempo, both
+  chord `.lab` files, key, key probabilities) byte-identical to the trial's. The S2n downbeat offsets against the truth are
+  0.536 to 0.544 s, one beat at 112 BPM (0.536 s), for all 12 bar starts.
 
 ## librosa 1.0.0 (beat_track, feature.tempo, estimate_tuning) and a chroma + Krumhansl-Kessler key baseline written for this lane
 
 - What: librosa 1.0.0 from PyPI (uploaded 2026-08-11, requires Python >= 3.12). librosa has no key estimator; the
   key numbers below come from a baseline written in `scripts/librosa_run.py` (mean of `librosa.feature.chroma_cqt` over
-  the whole file, Pearson correlation with the 24 rotations of the Krumhansl-Kessler major and minor profiles, highest
-  wins). It is labelled "lane-written baseline" wherever it appears.
+  the whole file, Pearson correlation with the 24 rotations of the Krumhansl-Kessler major and minor profiles; the key
+  with the highest correlation is the output). It is labelled "lane-written baseline" wherever it appears.
 - Install: `uv venv --python 3.12 venv-librosa`; `uv pip install librosa==1.0.0 soundfile music21` (music21 10.5.2 for
   the symbolic key section below). 628 MB. Freeze: `samples/librosa/venv-librosa.freeze.txt`.
 - Runs: `scripts/librosa_run.py`: `librosa.load(path, sr=22050, mono=True)`, `librosa.beat.beat_track(y=y, sr=sr,
@@ -302,8 +320,11 @@ section.
   `librosa.estimate_tuning(y=y, sr=sr)` (defaults n_fft 2048, resolution 0.01), and the key baseline. One `gtr-run` per
   clip on 2 cores for S3 r0069 (16.05 s wall, 12.6 s CPU, 343 MB; inside it beat_track took 12.2 s), S4 r0074 (3.78 s),
   S7flat30 r0081 (3.42 s), S2n r0091 (3.12 s), S2s r0092 (3.69 s), S5capo2 r0093 (3.34 s), S5dropd r0094 (3.49 s),
-  S6taps r0096 (3.60 s), R1a r0104 (3.70 s). Whether the extra time of the first run is librosa's numba compilation was
-  not isolated (UNVERIFIED). R1b, R1c, R2 and R2full ran in batch run r0267 (`--nolock`, load average 16.62 at start;
+  S6taps r0096 (3.60 s), R1a r0104 (3.70 s). The trial agent did not isolate the cause of the first run's extra time.
+  The verifier measured it in a venv rebuilt from the same freeze (run r0468, one thread, `--nolock`): `librosa_run.py` on
+  S3 took 3.1 s with the 32 numba cache files (`.nbi`/`.nbc`, all inside librosa) that an earlier run had written into the
+  venv, and 11.5 s after deleting them (the run wrote the 32 files again); so the first run in a fresh venv includes
+  numba compiling librosa's functions. R1b, R1c, R2 and R2full ran in batch run r0267 (`--nolock`, load average 16.62 at start;
   per clip from `samples/librosa/batchF_timings.jsonl`): R1b 11.9 s, R1c 10.4 s, R2 11.0 s, R2full 23.1 s wall (7.6 s
   CPU, 625 MB peak RSS); these include contention with other agents' jobs.
 - Output format: `beat_track(..., units='time')` returns a tempo (numpy array of one value) and beat times in seconds;
@@ -338,6 +359,9 @@ section.
 | R1c | 0.074 / 0.036 / 0.836 | 52 / 56 | e1163 | 117.454 | yes | e1164 | G major | 1.0 | e1165 | +3 (0) | e1166 |
 
 - Samples: `samples/librosa/` (S3, S7flat30, R1b, R2, R2full outputs; batch timings; freeze).
+- Verifier re-run: r0438, `librosa_run.py` on S3 (r0069), S7flat30 (r0081) and R1b (r0267) in venv-librosa rebuilt
+  offline from the saved freeze (`--nolock`, one thread; 16.1 s, 2.7 s, 2.8 s): all five output files of each clip (beats,
+  tempo, tuning, key baseline text and JSON) byte-identical to the trial's.
 
 ## Essentia 2.1-beta6-dev (PyPI essentia-tensorflow 2.1b6.dev1389, Python 3.11 wheel)
 
@@ -352,7 +376,7 @@ section.
   https://essentia.upf.edu/models/tempo/tempocnn/: `deeptemp-k16-3.pb` (1,320,120 bytes, sha256 21c32833...e3b3) and
   `deeptemp-k4-3.pb` (147,561 bytes, sha256 66f36ee5...daa) with their `.json` metadata (the k16 metadata: input
   "sample_rate": 11025, output "a softmax distribution of length 256 where the first index represents the probability
-  of the track being 30 BPM and the last one the probability of being 286 BPM", trained on "Extended Ballroom, LMDTempo
+  of the track being 30 BPM and the last one the probability of being 286 BPM", dataset name "Extended Ballroom, LMDTempo
   and MTGTempo"). Freeze: `samples/essentia/venv-essentia.freeze.txt`.
 - Runs: `scripts/essentia_run.py` (audio from `MonoLoader(filename, sampleRate=44100)`; TempoCNN from
   `MonoLoader(sampleRate=11025)`; chords from `TonalExtractor(frameSize=4096, hopSize=2048, tuningFrequency=440)`).
@@ -377,7 +401,11 @@ section.
   k4 144.0 (its first local tempi 73, 72, 71, 73, 73, 73, 73, 72); keys bgate/krumhansl/edma/shaath Eb minor, temperley
   F# major; 227 chord segments.
 - S7flat30 at tuningFrequency 440 (default): TonalExtractor chords `Am 0-1.58, G 1.58-1.63, F# 1.63-4.88, Ebm, Abm, B,
-  Abm, C#, F#, Ebm, B, F#`, i.e. one semitone below S3's labels; at 432.45 Hz: `Am, G, Em, Am, C, Am, D, G, Em, C, G`.
+  Abm, C#, F#, Ebm, B, F#`; S3's output with the same settings is `Am, G, Em, Am, D, G, Em, C, D, G`. Over the bars
+  where S3's output has G, Em, Am, D, C, the S7flat30 output has F#, Ebm, Abm, C#, B (roots one semitone lower), except
+  a `B` segment from 8.13 to 10.17 s where S3's has Am, and S3's 0.3 s `D` at 19.88 s has no counterpart (S7flat30's
+  last `F#` starts at 19.97 s). Both begin with `Am` over the silent count-in. At 432.45 Hz the S7flat30 output is
+  `Am, G, Em, Am, C, Am, D, G, Em, C, G`.
   KeyExtractor gave G major with all five profiles at both settings (its parameter `averageDetuningCorrection` is True
   by default).
 - Constraint inputs: `RhythmExtractor2013(minTempo=40, maxTempo=208, method)`; `KeyExtractor(profileType,
@@ -424,6 +452,11 @@ section.
   gives TuningFrequency's range as "between -35 to 65 cents" (quoted in survey.md); R1a's +50 is the value the
   extractor's last frame reported.
 - Samples: `samples/essentia/` (S3, S7flat30, R1a, R2, R2full outputs, the 432.45 Hz runs, batch timings, freeze).
+- Verifier re-run: r0437, `essentia_run.py` on S3 (r0088), S7flat30 (r0148 / r0267) and R1a (r0267), and the 432.45 Hz call
+  on S7flat30 (r0324), in venv-essentia rebuilt offline from the saved freeze (`--nolock`, one thread): all 50 output files
+  (rhythm, beats, five key profiles, tuning, TonalExtractor chords, both TempoCNN models, the 432.45 Hz key and chord
+  files) byte-identical to the trial's. The parameter defaults listed under "Constraint inputs" are the ones the rebuilt
+  build prints (`paramValue`).
 
 ## music21 10.5.2: key analysis on symbolic notes (truth MIDI, and Basic Pitch MIDI from the audio-to-notes lane)
 
@@ -466,6 +499,12 @@ section.
 - Constraint inputs: the method name (key profile weighting); a stream can be restricted to a time range or part
   before analysis. No tuning input (symbolic).
 - Samples: `samples/music21/` (results JSON for S3, R1a, R1b from both sources; timings).
+- Verifier re-run: r0439, the r0237 command (11 clips, both sources, five methods) with music21 10.5.2 in the rebuilt
+  venv-librosa, reading the same Basic Pitch files (written 21:34 to 21:36 UTC by the audio-to-notes lane's r0234, before
+  r0237): all 132 output files byte-identical to the trial's. `analysisClassFromMethodName` in that build maps `key` to
+  `AardenEssen`, `key.krumhansl` to `KrumhanslSchmuckler`, `key.simple` to `SimpleWeights`, `key.bellman` to
+  `BellmanBudge`, `key.temperley` to `TemperleyKostkaPayne`. The truth MIDI `S7flat30.mid` has the same 182 note-on
+  events as `S3.mid` plus one pitch-wheel message (value -1229).
 
 ## autochord 0.1.4 (PyPI) and CREMA 0.2.0 (PyPI), sharing one TensorFlow 2.12.1 venv
 
@@ -492,7 +531,10 @@ section.
   CPU, 1068 MB peak RSS; per job in `samples/crema/batchG_timings.jsonl`). autochord: S3 25.9 s (import and model load
   7.8 s, recognize 16.2 s), the other 24 to 39 s clips 10.5 to 11.6 s, R2full 15.7 s (recognize 6.8 s), 951 to 1068 MB peak
   RSS per job. CREMA: S3 14.4 s (analyze 10.4 s), the other clips 7.1 to 8.0 s, R2full 8.5 s (analyze 4.5 s), 696 to
-  760 MB peak RSS. The first job of each tool was the slowest; the cause was not isolated.
+  760 MB peak RSS. The first job of each tool was the slowest; the cause was not isolated for these two tools. Both load
+  audio with librosa 0.10.2.post1 (autochord with `librosa.load`, CREMA through pumpp), and the verifier's re-run (r0452)
+  wrote 56 numba cache files, all inside librosa, into the rebuilt venv-tf: the mechanism measured for librosa and Chordino
+  in run r0468; the share of the first-job time it accounts for here was not measured.
 - Output formats. autochord: a list of `(start, end, label)` tuples and a tab-separated `.lab` file with unrounded
   float times (e.g. `2.2291156462585033	4.96907029478458	G:maj`); labels `<root>:maj`, `<root>:min`, `N`, roots
   spelled with flats (`Gb:maj`, `Eb:min`, `Db:maj`); the chroma step is 2048 samples at 44.1 kHz (`_STEP_SIZE` in the
@@ -521,6 +563,11 @@ section.
 
 - Samples: `samples/autochord/` and `samples/crema/` (labs for S3, S7flat30, R1a, R2, R2full; S3 JAMS; timings;
   freeze).
+- Verifier re-run: r0452, `autochord_run.py` and `crema_run.py` on S3 and S7flat30 in a venv-tf rebuilt offline from the
+  saved freeze except jax 0.4.30 and jaxlib 0.4.30, which were no longer in the shared uv cache (the runs completed
+  without them; `--nolock`, one thread; autochord 52.4 s and 17.0 s, CREMA 21.6 s and 8.3 s): the autochord `.lab`
+  files and the CREMA `.lab` and `.jams` files byte-identical to the trial's. Independent recomputation with mir_eval
+  0.8.2 gives CREMA S3 sevenths 0.8305, as gtr-eval stores it (e1290); the table rounds it to 0.831.
 
 ## Extra: the light tools on the real fingerstyle video audio R3a, R3b, R3c (no truth)
 
@@ -546,15 +593,18 @@ were equal. Samples: `samples/r3/`.
 - Install (venv-deeprhythm, Python 3.11): `uv pip install deeprhythm==0.0.13 "torch==2.15.0" "torchaudio==2.11.1"
   "librosa==0.11.0" soundfile` (torch and torchaudio are the versions already in the shared cache; nnaudio 0.3.3 came
   as a dependency). The package downloads its weights on first use from
-  `https://github.com/bleugreen/deeprhythm/raw/main/deeprhythm-0.7.pth` (`model_url` in `deeprhythm/utils.py`), which
-  this box's proxy answered with HTTP 403. The same file was fetched from
+  `https://github.com/bleugreen/deeprhythm/raw/main/deeprhythm-0.7.pth` (`model_url` plus the file name in
+  `deeprhythm/utils.py`). The trial agent's curl test of the copy under `weights/` on github.com
+  (`.../raw/main/weights/deeprhythm-0.7.pth`) got HTTP 403 through this box's proxy (github.com pages are refused by the
+  proxy); the package's own URL was not requested. The same file was fetched from
   `https://raw.githubusercontent.com/bleugreen/deeprhythm/main/deeprhythm-0.7.pth` (HTTP 200; the copy under
   `weights/` in the repository has the same SHA-256) into
   `/home/user/gtr/lanes/chords-beats-key/models/deeprhythm_home/.local/share/deeprhythm/`, and `scripts/deeprhythm_run.py`
   points HOME there, because the package looks in `~/.local/share/deeprhythm/`. Freeze:
   `samples/deeprhythm/venv-deeprhythm.freeze.txt`.
 - Run: `DeepRhythmPredictor(device="cpu", quiet=True).predict(path, include_confidence=True)` on 10 clips, batch run
-  r0351. Both CPU slots were held by other lanes' long jobs at the time (one for over 50 minutes), so this ran with
+  r0351. Both CPU slots were held by other lanes' jobs at the time (the two video-hands-fretboard jobs described at the
+  top, which had held them since 22:01:23 and 22:01:24 UTC, about 6 minutes before this run started), so this ran with
   `--nolock` and one thread (`OMP_NUM_THREADS=1`, `MKL_NUM_THREADS=1`, `OPENBLAS_NUM_THREADS=1` in the ledger line;
   `torch.get_num_threads()` reported 1; load average 11.28 at start): 78.8 s wall in total, 60.8 s CPU, 773 MB peak RSS.
   Per clip (`samples/deeprhythm/batchE_timings.jsonl`): S3 26.7 s (the first job: import 6.1 s, predict 18.8 s), the
@@ -569,12 +619,17 @@ were equal. Samples: `samples/r3/`.
   1.000 (e1337), S2n 1.000 (e1339), S2s 1.000 (e1340), R1a 1.000 (e1341), R1b 0.989 (e1342), R1c 1.008 (e1343) (ratio
   estimate / truth).
 - Samples: `samples/deeprhythm/` (JSON per clip, timings, freeze).
+- Verifier re-run: r0445, `deeprhythm_run.py` on S3 and R1b in venv-deeprhythm rebuilt offline from the saved freeze,
+  with the same weights file (`--nolock`, one thread; 37.0 s and 6.6 s): `deeprhythm.json` (BPM and confidence) and
+  `tempo_deeprhythm.txt` byte-identical to the trial's for both clips. In the installed `predictor.py` the confidence is
+  the largest value of the per-class softmax probabilities averaged over the 8-second clips.
 
-## BeatNet 1.1.3 (PyPI sdist of 2023-11-28): beats and downbeats, offline (DBN) and online (particle filter)
+## BeatNet 1.1.3 (PyPI, wheel and sdist both uploaded 2023-11-28): beats and downbeats, offline (DBN) and online (particle filter)
 
 - What: "BeatNet: Real-time and Offline Joint Music Beat, Downbeat, Tempo, and Meter Tracking System" (README title,
   quoted in survey.md): a CRNN gives beat and downbeat activations, then madmom's DBN (offline) or a particle filter
-  (causal, "online") picks the beats. The PyPI sdist contains the weights `models/model_1_weights.pt`,
+  (causal, "online") picks the beats. The install used the PyPI wheel (`BeatNet-1.1.3`, `py3-none-any`; the install log
+  shows a download and no build). The installed package contains the weights `models/model_1_weights.pt`,
   `model_2_weights.pt`, `model_3_weights.pt` (1,612,179 bytes each; the README labels them "Pre-trained weights
   (GTZAN)", "(Ballroom)", "(Rock Corpus)" per survey.md, and the comments in BeatNet.py say "GTZAN out trained
   model", "Ballroom out trained model", "Rock_corpus out trained model"; which data each was trained on was not
@@ -627,6 +682,10 @@ were equal. Samples: `samples/r3/`.
   Beat counts (estimated / truth): offline S3 38 / 32, S4 75 / 68, S2n 54 / 48, R1a 51 / 53, R1b 45 / 44, R1c 56 / 56;
   online S3 30 / 32, S4 65 / 68, S2n 36 / 48, R1a 38 / 53, R1b 35 / 44, R1c 46 / 56.
 - Samples: `samples/beatnet/` (raw rows for S3, S4, S2n, R1a, R2; timings; freeze; the madmom diff).
+- Verifier re-run: r0455, `beatnet_run.py --model 1` on S3 and S4 in venv-beatnet rebuilt offline from the saved freeze
+  with the same one-line madmom edit (`--nolock`, one thread; 27.7 s and 8.6 s): all six output files of each clip (raw
+  rows, beats and downbeats, offline and online) byte-identical to the trial's, the online particle filter included
+  (numpy seed 0).
 
 ## Beat This! (beat-this 1.1.0 from PyPI): beats and downbeats
 
@@ -676,6 +735,9 @@ were equal. Samples: `samples/r3/`.
 | R1c | small0 | 0.991 / 0.982 / 0.982 | 57 / 56 | 0.903 / 0.706 | 17 / 14 | e1377 |
 
 - Samples: `samples/beat_this/` (final0 JSON for S3, S4, S2n, R1a, R1b, R2; small0 for S3; timings; freeze).
+- Verifier re-run: r0446, `beatthis_run.py` with final0 on S3 and S2n and small0 on S3 in venv-beatthis rebuilt offline
+  from the saved freeze, same cached checkpoints (sizes and SHA-256 as above; `--nolock`, one thread; 8.5 s, 6.0 s,
+  4.3 s): beats, downbeats and JSON byte-identical to the trial's for all three runs.
 
 ## lv-chordia 1.1.0 (PyPI): the ISMIR 2019 large-vocabulary chord model (Chord-CNN-LSTM)
 
@@ -730,6 +792,9 @@ were equal. Samples: `samples/r3/`.
 | R1c | ismir2017 | 0.746 | 0.746 | 0.645 | 0.746 | 0.788 | 15 / 14 | e1390 |
 
 - Samples: `samples/lv_chordia/` (JSON for S3, S7flat30, S4, S2n, R1a, R1b, R2, R2full; timings; freeze).
+- Verifier re-run: r0449, `lvchordia_run.py` on S3 and S7flat30 in venv-lvchordia rebuilt offline from the saved freeze
+  (`--nolock`, one thread; 44.0 s and 13.8 s): the JSON and `.lab` files for both dictionaries byte-identical to the
+  trial's for both clips.
 
 ## S3 versus S7flat30 (the same notes rendered 30 cents flat): what changed
 
@@ -761,7 +826,9 @@ position or an open-string tuning.
   with `scripts/lowest_pitch_basicpitch.py` (mido, note-on events outside channel 10): S5dropd lowest five pitches 24,
   38, 38, 38, 38, with 4 notes at MIDI 38 (D2); the truth MIDI has exactly 4 notes at 38 and none lower. S2n: 24, then
   43 (G2) upward; S5capo2: 24, then 45 (A2) upward. Each of the three Basic Pitch files contains one note at MIDI 24 (C1)
-  that is not in the truth. Standard tuning's lowest open string is E2 (MIDI 40).
+  that is not in the truth. Standard tuning's lowest open string is E2 (MIDI 40). (Verifier: in the S5dropd Basic Pitch
+  MIDI the four MIDI-38 notes start at 8.595, 13.941, 18.227 and 25.732 s, 12 to 24 ms after the four truth D2 onsets at
+  8.571, 13.929, 18.214 and 25.714 s; its MIDI-24 note starts at 0 s.)
 - Key estimates on S5capo2 (truth A major, capo 2 on a G-major arrangement): A major from the librosa baseline (e0317),
   all five Essentia profiles (e0973 e0976 e0977 e0979 e0981), music21 on both note sources; E major from madmom (weighted 0.5,
   e0311). On S5dropd (truth G major): G major from every key tool run here (madmom e1017, librosa baseline e0325,
@@ -773,18 +840,18 @@ position or an open-string tuning.
 
 | tool | what stopped it (evidence) |
 |---|---|
-| BTC (jayg996/BTC-ISMIR19, commit 2682317) | Distributed only as a GitHub repository (no PyPI package; survey.md). The clone (with `test/btc_model.pt` 12,154,754 bytes and `test/btc_model_large_voca.pt` 12,229,576 bytes) and a venv (torch 2.15.0+cpu, librosa 0.11.0, mir_eval 0.8.2, pandas 3.1.1, pyyaml; freeze in `samples/btc/`) were made and `scripts/btc_run.py` was written (the repository's test.py loop with `np.float`/`np.int` aliases and `torch.load(weights_only=False)`), but the `gtr-run` call that would execute it was refused by this session's tool-permission policy ("Code from External"). The clone and venv were deleted. |
+| BTC (jayg996/BTC-ISMIR19, commit 2682317) | Distributed only as a GitHub repository (no PyPI package; survey.md). The clone (with `test/btc_model.pt` 12,154,754 bytes and `test/btc_model_large_voca.pt` 12,229,576 bytes) and a venv (torch 2.15.0+cpu, librosa 0.11.0, mir_eval 0.8.2, pandas 3.1.1, pyyaml; freeze in `samples/btc/`) were made and `scripts/btc_run.py` was written (the repository's test.py loop with `np.float`/`np.int` aliases and `torch.load(weights_only=False)`), but the `gtr-run` call that would execute it was refused by this session's tool-permission policy (the trial agent's transcript shows "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]"). The clone and venv were deleted. |
 | madmom from GitHub main (0.17.dev0, 27f032e) | Build from the clone refused by the same policy; PyPI 0.16.1 was used instead (madmom section). |
 | libKeyFinder + keyfinder-cli | Not in Ubuntu 24.04 apt (`apt-cache search keyfinder` returned nothing); the build route is a CMake build of cloned repositories, the kind of step this session's policy refused twice (madmom, BTC); not attempted. PyPI `keyfinder` 1.1.0 is a binding that needs libkeyfinder installed (survey.md). |
 | S-KEY (deezer/skey) | Installs from its repository with poetry (survey.md); PyPI `skey` 0.2 has the home page http://github.com/dleonik/skey and no release files (PyPI JSON read 2026-11-10); not attempted for the same reason. |
-| All-In-One (allin1 1.1.0) | Its README requires NATTEN built on Linux and madmom from GitHub ("pip install git+https://github.com/CPJKU/madmom", quoted in survey.md); the madmom git route was refused here; not attempted. Each run would also include a Demucs htdemucs separation (survey.md). |
+| All-In-One (allin1 1.1.0) | Its README (raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md, read 2026-11-10) says "Install NATTEN (Required for Linux and Windows; macOS will auto-install)" (Linux: "Download from NATTEN website"; Windows: "Build from source") and installs madmom from GitHub ("pip install git+https://github.com/CPJKU/madmom  # install the latest madmom directly from GitHub"); the madmom git route was refused here; not attempted. Each run would also include a Demucs htdemucs separation (survey.md). |
 | tempo-cnn (tempocnn 0.0.8) | PyPI metadata requires `tensorflow==2.17.0`; the only TensorFlow wheel in the shared cache was tensorflow-cpu 2.12.1 and the orchestrator's disk notice (4.7 to 7.9 GB free on the shared disk during this run, per the notices and `df -h`) asked lanes not to install a second TensorFlow version. Not installed. Essentia's TempoCNN algorithm with the deeptemp models ran (Essentia section); their metadata cites Schreiber and Müller, SMC 2019. |
-| Omnizart chord (0.6.3) | sdist only; requires tensorflow>=2.5, tf-keras, madmom>=0.16.1, pyfluidsynth, sherpa-onnx, vamp (PyPI metadata). Not attempted within this lane's time. |
+| Omnizart chord (0.6.3) | sdist only; requires tensorflow>=2.5, tf-keras, madmom>=0.16.1, pyfluidsynth, sherpa-onnx, vamp (PyPI metadata). Not attempted by the trial agent (time). The verifier then tried a chord-only install (the sdist with `--no-deps` on the cached tensorflow-cpu 2.12.1, plus only the chord checkpoint file, 44,242,072 bytes, from the GitHub release `checkpoints-20211001` that `omnizart download-checkpoints` reads); the shell command was refused before it ran: "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]". Nothing was installed. The sdist's `setup.py` itself runs `uv pip install` / `pip install` for Cython, numpy, madmom, vamp, pyaudio and pyfluidsynth when they are missing (read in the sdist, sha256 66b96cd3...45c1). |
 | Beat Transformer | Repository code that first separates stems with Spleeter (survey.md); repository-code execution was refused here twice; not attempted. |
 | Harmony Transformer v1 / v2 | Training scripts only, no released weights (survey.md); nothing to run. |
 | ACR_seq2seq | No checkpoints in the repository (survey.md); nothing to run. |
 | ChordMini (ChordMiniApp) | The full app needs Firebase and Gemini keys (survey.md); not run. |
-| QM Vamp plugins (key detector, bar-and-beat tracker) | Binaries come from the Vamp plugin download page or a source build of a cloned repository; neither is a package-manager route; not attempted. |
+| QM Vamp plugins (Key Detector, Bar and Beat Tracker, Tempo and Beat Tracker) | Binaries come from the Vamp plugin download page or a source build of a cloned repository; neither is a package-manager route; not attempted. Not in Ubuntu 24.04 apt (`apt-cache search vamp`, re-checked by the verifier). The download page's link for them, https://code.soundsoftware.ac.uk/projects/qm-vamp-plugins/files, gave "Connection reset by peer" to the verifier's curl on 2026-11-10; after the Omnizart refusal above the verifier did not try a downloaded binary or a source build. |
 | Guitar tuning classifier (Hulme et al., edhulme/guitar-tuning-classification) | Repository code with TensorFlow models on Google Drive (survey.md); not attempted (repository code). |
 | BEAST | Evaluation script plus a Google Drive model (survey.md); not attempted. |
 | realtime-bpm-analyzer, web-audio-beat-detector, essentia.js | Browser libraries; in-browser analysis belongs to the browser-audio-sync lane; not run here. |
@@ -793,3 +860,89 @@ position or an open-string tuning.
 
 None. No tool run in this lane writes audio or video (allin1's sonification, which would, was not run). All outputs
 are text, JSON, `.lab` and `.jams` files under `/home/user/gtr/lanes/chords-beats-key/out/`.
+
+## Verification log (verify-trials-chords-beats-key, 2026-11-10)
+
+Checked by an independent agent against the run ledger, the gtr-eval ledger, the saved outputs, re-runs and the sources.
+The verifier's scripts and re-run plans are in `scripts/verify/` (`omnizart_install.sh` is the install that was refused
+and never ran); its outputs and logs are under `/home/user/gtr/lanes/chords-beats-key/verify-trials/` (not in git). The
+rebuilt venvs were deleted after the re-runs; their freezes are in `verify-trials/freezes/`.
+
+What was checked, and the result:
+
+- Run ledger: all 36 runs of this lane cited above (r0025 to r0398) exist in `/home/user/gtr/ledger/runs.jsonl` with exit
+  code 0. Every wall-clock, CPU, peak-RSS, core and load figure quoted matches its ledger line; the per-clip times quoted
+  from batch runs match `logs/batch*.jsonl` (copied to `samples/<tool>/batch*_timings.jsonl`) and the stage times match the
+  `timings*.json` files. The two "Code from External" refusals (madmom git build, BTC run) and the 580 s / 400 s / 300 s
+  shell timeouts are in the trial agent's session transcript. The time the slot holders had been running when the
+  one-thread runs started was wrong in the text (corrected; see "What was changed").
+- Scores: all 509 gtr-eval 0.11.1 scorings (e0208 to e1391) were re-run in-process with `--no-ledger` from their stored
+  argv and working directory (run r0411, `scripts/verify/rerun_evals.py`): 509 of 509 results identical to the stored
+  ones; every ledger exit code 0; every line of `out/scores/scores.jsonl` equals its ledger result; every estimate file is
+  unchanged since it was scored (SHA-256); the 315 estimates passed as values (BPM, key, cents, A4 Hz) equal the values in
+  the output files they were read from. `scripts/verify/check_columns.py` compared 1131 numbers in the score tables
+  column by column with the eval results: 0 mismatches (a mutation test of the checker flagged every changed cell). Every
+  eval id in a table row belongs to that row's clip and tool. The music21 table (110 results) and the DeepRhythm ratios
+  match their evals. `samples/scores/scores_<tool>.jsonl` hold the newest line for each of the 509 keys.
+- Independent recomputation with mir_eval 0.8.2 (`scripts/verify/independent_mir_eval.py`, own file readers and label
+  conversion, no gtr-eval code): 17 values over the 12 tools (aubio S3 beat F; Chordino S3 root/majmin/sevenths; madmom
+  S3 deep-chroma chords, S3 and S2n downbeat F; librosa S3 beat F and R1b key weight; Essentia S7flat30 TonalExtractor at
+  440 Hz and 432.45 Hz; music21 S3 key weight; autochord and CREMA S3 chords; DeepRhythm R1b ratio; BeatNet S4 offline
+  beat and downbeat F; Beat This! R1c beat and downbeat F; lv-chordia S3 and S7flat30 chords) all equal the stored values.
+- Re-runs (venvs rebuilt offline from the saved freezes and the shared uv cache; `--nolock` and one thread because the
+  CPU slots were queued; outputs in `verify-trials/reruns/`): aubio r0425 (13 clips), Chordino r0436 (S3, S7flat30, R1b),
+  Essentia r0437 (S3, S7flat30, R1a, S7flat30 at 432.45 Hz), librosa r0438 (S3, S7flat30, R1b), music21 r0439 (11 clips),
+  madmom r0442 (S3, S2n), DeepRhythm r0445 (S3, R1b), Beat This! r0446 (final0 S3 and S2n, small0 S3), lv-chordia r0449
+  (S3, S7flat30), autochord and CREMA r0452 (S3, S7flat30), BeatNet r0455 (S3, S4). Every output file of every re-run is
+  byte-identical to the trial's (39 aubio, 9 Chordino, 50 Essentia, 15 librosa, 132 music21, 14 madmom, 4 DeepRhythm,
+  9 Beat This!, 8 lv-chordia, 2 autochord, 4 CREMA, 12 BeatNet files). The rebuilt venvs' freezes equal the saved ones,
+  except venv-tf without jax 0.4.30 and jaxlib 0.4.30, which were no longer in the cache. Extra runs: r0468 (numba
+  first-job test for librosa and Chordino) and r0474 (raw Chordino change lists on the 13 clips).
+- Output and sample files: every file named in the sections exists; counts, label lists, excerpts, tempo and key values,
+  timings and formats were recounted from the files (for example 491 Chordino segments, all starting on the 2048/22050 s
+  grid; madmom R2full 275 beats and 67 bar starts; Beat This! downbeats a subset of the beats in 18 of 18 outputs, all on
+  a 20 ms grid; BeatNet and lv-chordia excerpts; the R3 table). The lane's docs folder holds no file over 300 KB, no audio
+  or video, no key or token; `out/` holds only `.txt`, `.json`, `.lab`, `.jams` and `.jsonl` files.
+- "Not run here" reasons: the BTC and madmom-git refusals are in the transcript; `apt-cache search keyfinder` and
+  `apt-cache search vamp` re-run (no libKeyFinder, no QM plugins, no sonic-annotator); PyPI JSON re-read for skey (0.2,
+  no files), tempocnn (0.0.8, `tensorflow==2.17.0`, `<3.12,>=3.9`), omnizart (0.6.3 sdist only), allin1 (1.1.0); the
+  shared uv cache holds no TensorFlow wheel other than tensorflow-cpu 2.12.1 (only metadata for `tensorflow` 2.14.0 to
+  2.15.0); the allin1 README was re-read and its wording corrected here. Harmony Transformer, ACR_seq2seq, ChordMini,
+  BEAST and the Hulme classifier rows rest on survey.md (checked by verify-docs-chords-beats-key), not re-checked here.
+- Judging language: none found apart from "highest wins" in the librosa key-baseline description (reworded).
+
+What was changed in this file:
+
+- The note on the four one-thread runs (top of the file and DeepRhythm): it said the slot-holding jobs "had been running
+  for 36 to 60 minutes" / "one for over 50 minutes". The two video-hands-fretboard jobs had queued since 21:12 and 21:31
+  UTC but held the slots only from 22:01:23 and 22:01:24 UTC, 6 to 13 minutes before r0351 to r0398 started.
+- Chordino: the end-of-file `N` lag is 0.28 to 0.36 s (was 0.37; r0474 measured 0.279 to 0.364 s); the 491 segments are
+  244 default-mode plus 247 local-tuning ones; "one frame" now says one 2048-sample hop. Re-run note added.
+- librosa: the UNVERIFIED cause of the slow first run replaced by the r0468 measurement (3.1 s with librosa's numba
+  cache, 11.5 s without; Chordino 3.3 s and 17.9 s); key-baseline wording.
+- Essentia: the TempoCNN metadata field is quoted as the dataset name ("trained on" removed); the S7flat30 at 440 Hz
+  chord comparison with S3 is now written segment by segment (one `B` segment and one missing short `D` were hidden by
+  "one semitone below S3's labels").
+- autochord and CREMA: numba observation added to the first-job note; jax note on the rebuilt venv.
+- DeepRhythm: the HTTP 403 was for the github.com URL under `weights/`, not the package's own URL, which was not
+  requested; slot note corrected.
+- BeatNet: the install used the PyPI wheel (no build in the log), so "PyPI sdist" became "PyPI, wheel and sdist both
+  uploaded 2023-11-28" and the weights are described as in the installed package.
+- Open-string section: onset times of Basic Pitch's four MIDI-38 notes against the truth added.
+- "Not run here": allin1 README quoted exactly (it says "Download from NATTEN website" for Linux, not a build); Omnizart
+  row records the verifier's refused install attempt; QM row records the unreachable download site; BTC row quotes
+  the refusal message.
+- A "Verifier re-run" line was added to each tool section.
+
+Still UNVERIFIED after this check:
+
+- The venv sizes quoted (225 MB, 628 MB, 677 MB, 1.9 GB, 885 MB) were measured by the trial agent before it deleted the
+  venvs (a `du` listing in its transcript); the verifier's rebuilt venvs were measured in one combined `du` call, which
+  counts shared hard links once, so they are not comparable.
+- Whether the first Chordino install attempt (`timeout 580 gtr-run ...`, exit 124, no ledger line) was still waiting for
+  a slot when it was stopped; the transcript shows only the timeout.
+- Why the first job of autochord, CREMA, DeepRhythm, BeatNet and lv-chordia was the slowest (numba cache files were
+  written in each rebuilt venv, but the time share was measured only for librosa and Chordino).
+- The UNVERIFIED items in `for-aaron.md` (see its own log).
+
+Verifier's runs: r0411, r0425, r0436, r0437, r0438, r0439, r0442, r0445, r0446, r0449, r0452, r0455, r0468, r0474.

@@ -429,5 +429,123 @@ its slot.
   the stems' sum lines up with the mix at a lag of +1105 samples (late), so MP3 stems are not sample-aligned with the
   input as decoded here. **Float output:** `--float32` files read as FLOAT (peak of `other.wav` 0.577).
 - **Whole song (R2full, 228.5 s) on 2 cores:** r0472 htdemucs: wall 255.55 s, CPU 347.1 s, peak RSS 1798.0 MB,
-  load1 at start 5.38.
+  load1 at start 5.38. r0477 htdemucs_6s: wall 163.00 s, CPU 251.0 s, peak RSS 2163.8 MB, load1 5.98. Outputs: 10,076,073
+  frames per stem (same as the input), PCM_16, stem sum at lag 0, residual -25.54 dB (htdemucs) and -23.04 dB
+  (htdemucs_6s); stem levels (RMS dBFS) htdemucs vocals -15.75, other -18.69, bass -21.23, drums -24.81;
+  htdemucs_6s vocals -15.81, guitar -19.25, bass -20.86, drums -24.52, piano -44.65, other -45.22. The batch that
+  held the slot is r0478 (wall 1514.33 s for all of batch A after waiting 3270.9 s for the slot). A 4-core
+  (`--all-cores`) whole-song timing was not attempted: it needs both slots at once, and with 15 to 20 jobs queued it
+  would have held one slot idle while waiting for the other.
+- **Clipping guard visible in the real-song stems:** on R2 and R2full the `drums` and `vocals` stems of every Demucs
+  model peak at exactly -0.09 dBFS (0.990 of full scale). `demucs/audio.py` `prevent_clip` with the default
+  `--clip-mode rescale` does `wav = wav / max(1.01 * wav.abs().max(), 1)`, which gives that peak whenever a stem
+  would have clipped; such a stem is scaled down as a whole, so its level relative to the other stems changes
+  (the README says the same: "This can however break the relative volume between stems.").
+
+## Demucs guitar LoRA (`barvarvara/demucs-guitar-lora`, PEFT adapter on htdemucs)
+
+- **What:** a LoRA adapter (r=8, alpha=16, target modules `linear1`, `linear2`, `out_proj`, `peft_version` 0.19.1 in
+  `adapter_config.json`) for Demucs `htdemucs`. The model card (https://huggingface.co/barvarvara/demucs-guitar-lora,
+  read 2026-11-10, card metadata `license: mit`) says, in Russian: "Дообученная модель Demucs v4 (htdemucs) для
+  извлечения акустической гитары методом LoRA." ("Demucs v4 (htdemucs) fine-tuned with LoRA to extract acoustic
+  guitar.") It does not say which of the four output sources carries the guitar, nor what it was trained on.
+- **Install:** `uv pip install peft soundfile` into the Demucs 4.1.0 venv (added peft 0.21.2, transformers 5.22.2,
+  accelerate 1.15.0). Files: `adapter_model.safetensors` 1,974,280 bytes (sha256 `b285eda8...c8d7`) and
+  `adapter_config.json` 1,091 bytes from the model repo. No error.
+- **Runs** (`scripts/demucs_lora.py`, which follows the card: `PeftModel.from_pretrained(get_model('htdemucs').models[0],
+  adapter)`, then `merge_and_unload()` and `demucs.apply.apply_model` with the CLI defaults shifts=1, overlap 0.25,
+  and the CLI's normalisation; writes PCM_16 WAVs, clipped to [-1, 1]); inside batch C, 2 cores:
+
+| run | clip | wall s | CPU s | peak RSS MB | sources | stem levels, RMS dBFS |
+|---|---|---|---|---|---|---|
+| r0467 | S4 | 54.93 | 69.3 | 1363.8 | drums, bass, other, vocals | other -20.83, bass -25.04, vocals -25.76, drums -28.68 (mix -17.37) |
+| r0470 | S2s | 71.50 | 71.0 | 1349.0 | drums, bass, other, vocals | other -18.31, drums -48.43, bass -76.03, vocals -81.10 (mix -18.23) |
+
+  The script reported load+merge 0.9 s / separate 43.8 s (S4) and 1.1 s / 65.8 s (S2s).
+- **S4 scored** (e1416, map guitar=other, lead=vocals; SI-SDR / SDR / SIR / SAR dB): drums 7.80 / 8.07 / 16.16 /
+  8.91; bass 7.86 / 9.69 / 22.10 / 9.98; guitar (other) 1.94 / 2.12 / 3.65 / 8.95; lead (vocals) 0.93 / 3.64 /
+  12.52 / 4.48. Projection of the true guitar: other 0.864, vocals 0.052, drums 0.042 (htdemucs without the
+  adapter, r0019: other 0.883, vocals 0.056, drums 0.015). On S2s the `drums` stem is -48.43 dBFS with the adapter
+  and -77.25 dBFS without it (r0060). Output: 44,100 Hz, 2 channels, PCM_16, same length as the input, stem sum lag 0
+  (residual -31.63 dB on S4, -36.87 dB on S2s). Facts: `samples/demucs-guitar-lora/`.
+- **Constraint inputs:** those of Demucs (the adapter changes weights only).
+
+## demucs-onnx 0.3.4 (StemSplit): htdemucs_6s as ONNX, fp16 weights, ONNX Runtime on the CPU
+
+- **What:** the wheel's METADATA summary: "Run and export HT-Demucs / Demucs music source separation as ONNX. Pure
+  numpy + onnxruntime inference (no PyTorch). Supports htdemucs_ft (4-stem bag), htdemucs (single-file 4-stem), and
+  htdemucs_6s (6-stem with guitar + piano). ..."; PyPI `demucs-onnx` 0.3.4 (uploaded 2026-05-22). Its
+  `browser.py` ("Browser-runtime helpers: ``onnxruntime-web`` config snippets ...") points the browser at the same
+  Hugging Face ONNX files (read from the wheel, not run). License: the wheel's LICENSE
+  reads "MIT License / Copyright (c) 2026 StemSplit"; the Hugging Face card of `StemSplitio/htdemucs-6s-onnx` has
+  `license: mit` (Hub API, read 2026-11-10). For the underlying Meta weights see the Demucs license quote above.
+- **Install:** `uv pip install demucs-onnx==0.3.4` into the MSST venv (added onnxruntime 1.31.1, huggingface-hub
+  2.4.0). Model: `htdemucs_6s_fp16weights.onnx` 136,428,532 bytes from `StemSplitio/htdemucs-6s-onnx` (fetched with
+  `hf_hub_download` before the run; the fp32 file is 258,159,781 bytes and was not fetched). No error.
+- **Run:** r0471, `demucs-onnx separate S4.wav out --model htdemucs_6s --small --providers cpu -v` (inside batch C, 2
+  cores): wall 56.27 s, CPU 112.7 s, **peak RSS 6204.5 MB** (the PyTorch htdemucs_6s run on the same clip, r0021,
+  peaked at 1349.6 MB).
+- **Output:** `bass.wav`, `drums.wav`, `guitar.wav`, `other.wav`, `piano.wav`, `vocals.wav`, 44,100 Hz, 2 channels,
+  PCM_16, 6,834,024 bytes each, same length as the input, stem sum lag 0, residual -12.05 dB.
+- **S4 scored** (e1417, map guitar=guitar, lead=vocals): drums 8.91 / 9.61 / 21.95 / 9.90; bass 7.48 / 9.88 / 20.98 /
+  10.27; guitar 1.04 / 2.75 / 15.29 / 3.12; lead 6.87 / 7.66 / 15.03 / 8.68. Projection of the true guitar: guitar
+  0.303, piano 0.273, vocals 0.091 (PyTorch htdemucs_6s, r0021: guitar 0.358, piano 0.232, vocals 0.093). Its
+  `guitar.wav` against the PyTorch run's `guitar.wav`: difference level -12.41 dB, max |diff| 0.115 (both runs
+  draw their own random shift, see the Demucs option checks, so this is not a parity test of the ONNX export).
+- **Constraint inputs:** `--model`, `--stem` / `--stems`, `--precision fp32|fp16weights` (`--small`), `--providers
+  auto|cpu|coreml|cuda|dml|wasm`, `--mix-stems`, `--karaoke`, `--mp3`.
+
+## ZFTurbo Music-Source-Separation-Training (PyPI `msst` 0.1.0): becruily Mel-Band RoFormer guitar, BS-RoFormer-SW
+
+- **What:** MSST, the training and inference framework behind many community RoFormer checkpoints; PyPI `msst` 0.1.0
+  (uploaded 2026-09-09, author "Roman Solovyev (ZFTurbo)", homepage https://github.com/ZFTurbo/Music-Source-Separation-Training),
+  console script `msst-inference`. Code license MIT per survey.md (`license_expression: 'MIT'`).
+- **Install (worked) and one refusal:** a `git clone --depth 1` of the repository (head `1d4b3c4`, 2026-11-10) was
+  made, but running its `inference.py` from inside the clone was refused by this session's permission check
+  ("Code from External"), so the clone was deleted and the PyPI package was used instead: `uv venv --python 3.11
+  venv-msst`; `uv pip install torch==2.15.0 numpy scipy soundfile librosa ml_collections omegaconf beartype
+  rotary_embedding_torch einops "hyper_connections==0.1.11" matplotlib tqdm pyyaml packaging` (the imports of the
+  inference path; the repository's full `requirements.txt` also lists wandb, bitsandbytes, wxpython, transformers and
+  more); then `uv pip install --no-deps msst==0.1.0`, because the package declares `torch<2.12,>=2.0.1` and the box
+  already had torch 2.15.0 in the shared cache (installing 2.11 would have been a second torch). It ran with torch
+  2.15.0+cpu; this combination is outside the package's declared range. Venv 95 MB by du (torch hard-linked from the
+  cache). Freeze: `samples/msst/uv-pip-freeze-venv-msst.txt`.
+- **Checkpoints:** `becruily_guitar.ckpt` 45,142,183 bytes (sha256 `83472bbf...a83c`) and `config_guitar_becruily.yaml`
+  from https://huggingface.co/becruily/mel-band-roformer-guitar (not gated; Hub API lists no license tag; the config
+  gives `instruments: [Guitar, Other]`, `target_instrument: Guitar`, `num_stems: 1`, `dim 256`, `depth 4`,
+  `num_bands 60`, chunk 485,100 samples, inference `num_overlap: 2`). BS-RoFormer-SW: the same
+  `BS-Roformer-SW.ckpt` (699,412,152 bytes) and `BS-Roformer-SW.yaml` that audio-separator downloaded (next section).
+- **Runs** (`msst-inference --model_type <type> --config_path <yaml> --start_check_point <ckpt> --input_folder <dir
+  with one clip> --store_dir <out> --force_cpu --disable_detailed_pbar`; defaults otherwise: `--pcm_type FLOAT`, no
+  TTA, bigshifts 1; inside batch C, 2 cores; "Elapsed time" is what msst printed):
+
+| run | model | clip | wall s | CPU s | peak RSS MB | msst "Elapsed time" s | model load s |
+|---|---|---|---|---|---|---|---|
+| r0473 | becruily Mel-Band RoFormer guitar | S4_0-10s (10.0 s) | 87.16 | 110.1 | 1835.0 | 78.95 | 3.03 |
+| r0480 | becruily Mel-Band RoFormer guitar | S2s (29.4 s) | 211.79 | 343.0 | 1798.3 | 204.40 | 2.83 |
+| r0491 | becruily Mel-Band RoFormer guitar | S4 (38.7 s) | 289.53 | 443.7 | 1818.9 | 281.98 | 2.91 |
+| r0492 | BS-RoFormer-SW (6 stems) | S4_0-10s (10.0 s) | 156.64 | 246.5 | 2734.0 | 146.78 | 5.15 |
+
+  Batch C itself is r0493 (cores 2-3, waited 4080.5 s for its slot, wall 951.71 s).
+- **Output format:** `<store_dir>/<input file stem>/<instrument>.wav`, float32 WAV (FLOAT), 44,100 Hz, 2 channels,
+  same frame count as the input. The guitar model writes only `Guitar.wav` (its `target_instrument`; the "Other"
+  part is written only with `--extract_instrumental`, not used here). BS-RoFormer-SW writes `bass`, `drums`, `other`,
+  `vocals`, `guitar`, `piano`.
+- **becruily guitar, measured:** on S4 `Guitar.wav` is -39.19 dBFS RMS (mix -17.37); projection of the true guitar on
+  it 0.0773 (bass 0.0030, drums 0.0084, lead 0.0087); `gtr-eval stems --map guitar=Guitar.wav --sdr-mode single`
+  (e1425): SI-SDR -2.65 dB, SDR -1.08 dB. First 10 s of S4 (e1418, `--max-seconds 10`): SI-SDR -4.25, SDR -1.67;
+  `Guitar.wav` -51.18 dBFS, true-guitar projection 0.0209. On S2s (one steel guitar, mix -18.23 dBFS) `Guitar.wav` is
+  -49.83 dBFS. So on these FluidR3_GM steel-guitar renders the model returned a small part of the guitar. It was not
+  run on the real recordings R3a to R3c (time).
+- **BS-RoFormer-SW through MSST, first 10 s of S4** (truth trimmed to 10 s, `--max-seconds 10`): the GM "Voice Oohs"
+  lead went to `other` (projection 0.910), `vocals` and `piano` are at -114.45 and -111.17 dBFS; true guitar 0.925 in
+  `guitar`. e1427 with the map drums, bass, guitar=guitar, lead=other: drums 13.63 / 14.06 / 25.30 / 14.41, bass
+  14.17 / 15.06 / 22.81 / 15.88, guitar 12.36 / 13.25 / 18.02 / 15.08, lead (= other) 13.59 / 15.31 / 24.00 / 15.96
+  (SI-SDR / SDR / SIR / SAR dB). Against audio-separator's run of the same checkpoint on the same file (r0489) the
+  stems differ by -22.70 to -23.21 dB (difference level), max |diff| 0.037 to 0.072: the two packages' chunking,
+  overlap and normalisation settings differ (audio-separator normalises to peak 0.9 by default; MSST used the
+  config's `num_overlap: 2`); which setting causes the difference was not isolated.
+- **Constraint inputs for a re-run:** `--model_type`, `--config_path` (chunk size, overlap and instruments are in the
+  YAML), `--extract_instrumental`, `--use_tta`, `--bigshifts`, `--pcm_type`, `--flac_file`, `--lora_checkpoint_peft`
+  / `--lora_checkpoint_loralib`, `--filename_template`. No pitch or tuning parameters.
 

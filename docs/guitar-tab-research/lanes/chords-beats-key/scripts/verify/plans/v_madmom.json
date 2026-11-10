@@ -1,0 +1,13 @@
+[
+ {
+  "tool": "madmom",
+  "python": "/home/user/gtr/lanes/chords-beats-key/verify-trials/venvs/madmom39/bin/python",
+  "script": "/home/user/blog/docs/guitar-tab-research/lanes/chords-beats-key/scripts/madmom_run.py",
+  "clips": [
+   "S3",
+   "S2n"
+  ],
+  "args": [],
+  "tag": "madmom"
+ }
+]

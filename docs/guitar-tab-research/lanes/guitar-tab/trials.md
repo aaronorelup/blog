@@ -41,8 +41,10 @@ string higher than the truth tab.
 - Install: `uv venv --python 3.11 /home/user/gtr/lanes/guitar-tab/venv-sym` then
   `uv pip install --python .../venv-sym/bin/python tuttut==0.0.7 tayuya==0.0.4 pyguitarpro==0.11 mido pretty_midi music21`
   (one venv shared with tayuya and the helpers; no dead ends). Dependencies pulled in by tuttut: numpy 2.4.6,
-  pretty-midi 0.2.11.post0, eel 0.18.2 (for its GUI). Size: the `tuttut` package folder is 504 KB; the whole shared
-  venv is 271 MB, of which music21 is 101 MB. No model weights. Freeze: `samples/tuttut/uv-pip-freeze.txt`.
+  pretty-midi 0.2.11.post0, eel 0.18.2 (for its GUI). Size (du, re-measured by the verifier at 22:50 UTC, without the
+  `__pycache__` folders that later runs wrote; with them in brackets): the `tuttut` package folder 412 KB (504 KB);
+  the whole shared venv 268 MB (285 MB), of which music21 is 101 MB (113 MB); the venv also holds tabsynth, installed
+  later. No model weights. Freeze: `samples/tuttut/uv-pip-freeze.txt`.
 - Entry points: `tuttut` (GUI, eel + a browser window) and `tuttut-cli <song>.mid <output_dir>`. The CLI always uses
   the default tuning and fret count (it calls `Tab(source.stem, Tuning(), midi, output_dir=...)` and writes only the
   ASCII file). To reach the constraint parameters I called the library from `scripts/run_tuttut.py` (my glue: it builds
@@ -50,9 +52,13 @@ string higher than the truth tab.
   note list gtr-eval reads).
 - Runs (all on the merged truth MIDI, "perfect notes in"): one single run r0027 (S2n, wall 0.37 s, CPU 0.37 s, peak
   RSS 40.5 MB, 2 cores) and one batch of 15 runs in one `gtr-run` call, r0048 (`scripts/batch_tuttut.sh`; wall 3.74 s
-  for all 15 runs including 15 Python start-ups, CPU 3.37 s, peak RSS 37.1 MB, 2 cores, exit 0). The time tuttut itself
-  spent building the tab (`Tab(...)`, measured inside the script) was 0.01 to 0.06 s per clip. An earlier batch r0044
-  stopped at the failing span-7 run (exit 1) and was repeated as r0048 with "continue on error".
+  for all 15 runs including 15 Python start-ups, CPU 3.37 s, peak RSS 37.1 MB, 2 cores, exit 0). The time measured
+  inside the glue script (from loading the MIDI file to the end of tuttut's own `to_ascii()` and `to_json()`, so
+  `Tab(...)` plus file reading and writing) was 0.01 to 0.10 s per run in r0048 (0.10 s for S1, the first run of the
+  batch; `/home/user/gtr/lanes/guitar-tab/logs/tuttut_batch.log`). An earlier batch r0044 (same script path) ended
+  with exit 1 and was repeated as r0048 with "continue on error". That r0044 stopped at the failing span-7 run is the
+  trial agent's account: r0044's log was overwritten by r0048's, so the files do not show it (its CPU time, 3.03 s
+  against r0048's 3.37 s, fits one Python run fewer).
 - Results against the truth tab (`gtr-eval tab`, default time-based matching):
 
 | clip | settings given to tuttut | eval id | truth notes | est notes | matched | same string+fret / matched | same string / matched | string diff counts (est - truth) |
@@ -104,7 +110,11 @@ string higher than the truth tab.
   preferred position, no way to pin a note to a string or fret.
 - Failures and oddities: setting `MAX_FRET_SPAN` to 7 (R1c) stops with `AssertionError` at
   `assert 0 <= span <= 1` in `difficulty.get_path_span`, because `SPAN_NORMALIZATION = 5` in `difficulty.py` divides
-  the span; the span can be lowered but not raised past 5 without changing a second constant. With nfrets 3 on S2n
+  the span (largest minus smallest non-zero fret of a fingering), and the filter in `fretboard.is_fingering_possible`
+  keeps fingerings whose span is below `MAX_FRET_SPAN` (strict `<`): with 7, a span of 6 passes the filter and
+  6 / 5 > 1 fails the assertion. The verifier reproduced the span-7 failure and also ran `MAX_FRET_SPAN = 6` on R1c
+  (r0469, `--nolock`): no error, and the note list is identical to the default run (148 notes, same string and fret
+  for all). So the constant runs at 3, 5 and 6 on R1c and failed at 7; values above 7 were not tried. With nfrets 3 on S2n
   the output still had all 90 notes on the truth positions (the S2 arrangement uses frets 0-3 only), so that run does
   not show what happens when notes do not fit.
 
@@ -146,12 +156,13 @@ string higher than the truth tab.
   up an octave up (source: `if int(note[-1]) <= 2: new_note = note[:-1] + '3'`), but the tuple keeps the original name.
   Counted with a short Python check over the outputs: E2 is placed where E3 sounds (string 6 fret 12 or string 5
   fret 7) 7 times in R1c and 6 times in S3; D2 is placed at string 6 fret 10 (D3) 4 times in S5dropd; in the other
-  outputs the named and the sounding pitch agree (the S5capo2 files were not in that check; their lowest truth note is
-  A2, which is in the table). Scored on the pitch the position sounds (pitch field removed, so gtr-eval uses tuning + capo + fret):
+  outputs the named and the sounding pitch agree (the verifier added the two S5capo2 outputs to that check: they
+  agree in all 90 notes each). Scored on the pitch the position sounds (pitch field removed, so gtr-eval uses tuning + capo + fret):
   S3 e0157: 176 of 182 matched, same string+fret / matched 0.1534; S5dropd e0158: 86 of 90 matched, 0.0000 (same string
   0.1628); R1c e0159: 141 of 148 matched, 0.1844.
 - Its position table has no fret 0 entries (for example `'E4': {1: '', 2: 5, ...}`, `'G3': {4: 5, 5: 10, 6: 15}`), so
-  no open string is ever written: 0 of the notes in every output above are on fret 0 (checked in all 10 output files),
+  no open string is ever written: 0 of the notes in every output above are on fret 0 (checked in all 9 output files:
+  the 8 clips and the transposed S5capo2 run),
   while the truth tabs have fret-0 notes as follows: S1 16 of 62, S2n 40 of 90, S3 100 of 182, R1a 1 of 189, R1b 0 of
   70, R1c 49 of 148.
 - Output excerpt, S2n, first 10 entries of `generate_notes()`: `('G3', 5, 10), ('G2', 6, 3), ('G3', 5, 10),
@@ -193,9 +204,9 @@ string higher than the truth tab.
   `lilypond --loglevel=WARNING -dno-print-pages` (`--png -dresolution=70` for two picture runs) and turns the TSV into
   the gtr-eval note file (each logged note gets the onset of its group; pitch = tuning + capo + fret). The rhythm in
   the `.ly` is not the music's rhythm: it only orders the chords.
-- Runs: r0145 (`scripts/batch_lilypond.sh`, 15 runs, `gtr-run --nolock`: no CPU slot, light job; wall 36.04 s for
-  all 15, CPU 32.42 s, peak RSS 78.7 MB; the `lilypond` subprocess itself took 2.05 to 2.88 s per run, timed inside
-  the glue),
+- Runs: r0145 (`scripts/batch_lilypond.sh`, 14 runs: 8 clips and 6 constraint runs, `gtr-run --nolock`: no CPU slot,
+  light job; wall 36.04 s for all 14, CPU 32.42 s, peak RSS 78.7 MB; the `lilypond` subprocess itself took 2.05 to
+  2.88 s per run, timed inside the glue),
   r0151 (2 runs: restrainOpenStrings with minimumFret 1, and minimumFret 3; wall 9.74 s), r0155 (pinned-string run;
   wall 2.78 s). Input: the merged truth MIDI.
 - Results against the truth tab:
@@ -222,7 +233,11 @@ string higher than the truth tab.
 - Notes LilyPond did not place: it writes `warning: No string for pitch ...` and leaves the note out of the tab. S5dropd
   without the tuning: 4 warnings, all `No string for pitch #<Pitch d, > (given frets (2))` (D2 is below standard
   tuning), so 86 of 90 notes are written; unlike tuttut, LilyPond does not move them an octave. R1a: 1 warning, `No
-  string for pitch #<Pitch ais, > (given frets (4 1))` (A#2 grouped with F2 in one 30 ms group). R1c with minimumFret 3:
+  string for pitch #<Pitch ais, > (given frets (4 1))`: the A#2 at 10.668 s, in the 30 ms group A#2 + C#3 + G#3
+  (column 359 of the `.ly` line points at it; checked by the verifier). LilyPond wrote the C#3 at string 5 fret 4 and
+  the G#3 at string 3 fret 1, both the truth positions; the truth has the A#2 at string 6 fret 6, which is 5 frets
+  from the fret 1 already given, more than the default `maximumFretStretch` of 4 (reading of `close-enough` in
+  `translation-functions.scm`). R1c with minimumFret 3:
   2 warnings for B3 (`(given frets (4 7))`). Files: `samples/lilypond/*.lilypond.stderr.txt`.
 - `restrainOpenStrings` alone changed nothing on S2n (40 of 90 notes still on open strings in e0186): in
   `string-qualifies` an open string passes `(>= fret minimum-fret)` when `minimumFret` is 0. With `minimumFret = 1` the
@@ -256,8 +271,11 @@ string higher than the truth tab.
   on their synthesized SynthTab dataset, with versions fine-tuned on GuitarSet, IDMT-SMT-Guitar and EGDB. The repository
   ships the checkpoints in git: https://github.com/yongyizang/SynthTab (cloned 2026-11-10, HEAD
   `6136f79d04d8627f1fec57d31cd5667db9854bbc`), folder `demo_embedding/pretrained_models/`: `SynthTab-Pretrained.pt`,
-  `finetuned/{GuitarSet,IDMT,EGDB}.pt`, `non_finetuned/{GuitarSet,IDMT,EGDB}.pt`, 52.57 MB each (7 files, 352 MB with the
-  rest of the clone). Its README: "`demo_embedding` is where we put our benchmark pre-trained models, with a simple demo
+  `finetuned/{GuitarSet,IDMT,EGDB}.pt`, `non_finetuned/{GuitarSet,IDMT,EGDB}.pt`, 52.57 MB each (7 files; byte counts
+  in `samples/synthtab-tabcnn/checkpoint-files.txt`; the verifier re-downloaded `finetuned/GuitarSet.pt` from
+  raw.githubusercontent.com at that commit: 52,574,019 bytes, the same SHA-256 as recorded there). The clone measured
+  352 MB with the rest of the repository (trial agent's figure; UNVERIFIED: the clone was deleted before verification).
+  Its README: "`demo_embedding` is where we put our benchmark pre-trained models, with a simple demo
   script for training and running evaluation." and `demo_embedding/README.md`: "The code is still being cleaned up. You
   would probably need to change directories paths and datasets in the code to make it work". The README does not say
   what `non_finetuned/` holds; UNVERIFIED (the paper's Table 3 has models trained on one dataset without SynthTab, which
@@ -291,8 +309,9 @@ string higher than the truth tab.
 - Run `finetuned/GuitarSet.pt`: r0139, one `gtr-run` call for 8 clips (`scripts/batch_synthtab.sh`), 2 cores, wall
   185.81 s, CPU 205.69 s, peak RSS 3798.2 MB (the largest single process). Per clip (wall from /usr/bin/time inside the
   batch, including Python start-up): S2n 32.91 s, S2s 25.90 s, S3 18.65 s, S5capo2 20.61 s, S5dropd 25.07 s, R1a 20.56 s,
-  R1b 18.36 s, R1c 23.68 s, for clips of 24 to 29.4 s. (An unlogged smoke test on S2n outside `gtr-run`, while the box
-  was loaded, took 87.94 s for features + inference + decoding; it is not a measurement.)
+  R1b 18.36 s, R1c 23.68 s, for clips of 24 to 29.4 s. (The trial agent also reports an unlogged smoke test on S2n
+  outside `gtr-run`, 87.94 s for features + inference + decoding while the box was loaded; it is not a measurement,
+  and UNVERIFIED: no log of it exists in the lane folder.)
 - Results, `finetuned/GuitarSet.pt` (note level: the decoded notes; frame level: the model's per-frame frets):
 
 | clip | tab eval id | truth notes | est notes | matched (50 ms, same pitch) | same string+fret / matched | same string+fret / truth | string diff counts | notes eval id: onset F1 (P / R) | tab-frames eval id: tab F1, pitch F1 |
@@ -432,7 +451,9 @@ string higher than the truth tab.
   timeSignatures, quantizeGrid?})` and writes `tab.data` (JSON) and `tab.toAscii({maxWidth: 120})`. The glue maps each
   event's `beats` back to the MIDI's seconds for gtr-eval.
 - Runs: r0205 (`scripts/batch_tutts.sh`, 11 runs, `gtr-run --nolock`, light job; wall 7.59 s for all 11 including
-  Python and Node start-ups, CPU 3.2 s, peak RSS 62.1 MB). `generateTab` itself: 51.3 ms on S2n (smoke test print).
+  Python and Node start-ups, CPU 3.2 s, peak RSS 62.1 MB). `generateTab` itself: 51.3 ms on S2n in the trial agent's
+  smoke test (UNVERIFIED: not in any log); in the verifier's re-run r0469 (`--nolock`) the script printed 151.6 ms for
+  R1c with `quantizeGrid: "1/16"` and 43.6 ms for S5dropd with Drop D.
 - Results (time-based tab matching):
 
 | clip | settings | eval id | truth | out | matched | same string+fret / matched | string diff counts |
@@ -452,9 +473,13 @@ string higher than the truth tab.
 - Compared note by note with tuttut 0.0.7 (a short Python check over the two output files): for S1, S2n, S3, S5capo2,
   R1a, R1b, R1c and S5dropd the (onset, pitch, string, fret) lists are identical. In S5dropd without the tuning, tutts
   also writes the 4 D2 notes an octave up (no output pitch below 40), so they do not match the truth pitch.
-- With `quantizeGrid: "1/16"` on R1c, 145 notes come out of 148; how the 3 were lost was not traced (UNVERIFIED; one
-  possibility is two notes snapping onto the same grid point and string). The matched count drops to 139 (e0411); the
-  snapped onsets were not compared with the originals, so how far they moved was not measured.
+- With `quantizeGrid: "1/16"` on R1c, 145 notes come out of 148. Traced by the verifier: tutts 0.1.0 (`dist/index.js`,
+  `buildTimeline`) snaps every onset to the grid (`Math.round(beats / grid) * grid`) and groups notes by the snapped
+  onset, then keeps each pitch once per event (`[...new Set(entry.notes.map((n) => n.midi))]`). In R1c's input three
+  grid points each receive two B3 (MIDI 59) notes (in the truth, B3 on string 2 open and on string 3 fret 4, 3 to
+  10 ms apart, at 0.78, 1.26 and 1.75 s), so 3 notes are dropped; no event came out empty. The snapping moved the 148 onsets by a median 17.9 ms and at most
+  56.2 ms (|round(startBeats / 0.25) x 0.25 - startBeats| x 60 / 119 BPM, computed from
+  `R1c.truthmidi.q16.tutts.in.json`); 6 moved more than the 50 ms matching tolerance. The matched count is 139 (e0411).
 - Output format facts: `TabData` JSON `{tuning: [MIDI, thin->thick], measures: [{events: [{beats, measureTiming,
   seconds?, timeSignatureChange?, notes?: [{string (0 = thinnest), fret, midi, durationBeats, degree, octave}]}]}]}`;
   `seconds` is present only when `tempo` is given; ASCII via `toAscii({maxWidth, timeSignature})`. Unlike tuttut's JSON,
@@ -471,7 +496,7 @@ string higher than the truth tab.
   file with PyGuitarPro 0.11 (LGPL-3.0-only per the docs lane): one 6-string track, `Track.strings` from the list's
   tuning, the capo as `Track.offset`, every onset snapped to a 16th-note grid at a given tempo, one 16th-note beat per
   onset group, 16th rests in between, 4/4 bars. String, fret and order are kept; durations are not the played ones.
-- Converted (2026-11-10, not timed, a fraction of a second each): tuttut S2n (default), tuttut S5capo2 with the capo
+- Converted (2026-11-10, not timed; not run through `gtr-run`): tuttut S2n (default), tuttut S5capo2 with the capo
   workaround, tuttut S5dropd with Drop D, LilyPond S5dropd with Drop D, all at 112 BPM. Files: 3,158 to 3,170 bytes
   each, `samples/pyguitarpro-glue/*.gp5`.
 - Read back with `gtr-eval tab` (PyGuitarPro reader, time from the beat positions and the song tempo): tuttut S2n e0430
@@ -495,6 +520,9 @@ from a GitHub repository (`uv pip install -e <clone of xavriley/hf_midi_transcri
 Code auto mode classifier. Reason: [Code from External]". Packages from PyPI and npm installed normally. After the second
 refusal no other repository-only tool was installed or executed. Where a repository-only tool's model could be loaded
 with PyPI code and my own few-line loader, that is said in its section; otherwise the tool is listed here.
+(Verifier's note: the refusal messages are the trial agent's report and no log of them is in the lane folder; the
+files are consistent with it: the clones are in `/home/user/gtr/lanes/guitar-tab/src/`, and no environment for Guitab
+or `hf_midi_transcription` exists under the lane folder.)
 
 - **TabCNN, original code** (https://github.com/andywiggins/tab-cnn, HEAD `305c1a154b9dd1f13ab9bb157e42d4f8942ed0e3`,
   2019-06-27). Weights published: no. The repository holds `README.md`, `data/`, `demos/` (five demo videos) and
@@ -521,12 +549,18 @@ with PyPI code and my own few-line loader, that is said in its section; otherwis
 - **Guitab 1.2.0** (https://github.com/DanieleMorotti/guitab, HEAD `b2537dcd1ad68fa2c1cde35496a353b0a33081d6`,
   2026-10-31): audio to Guitar Pro 5 with string and fret, `--capo N`, CPU allowed. Weights published: yes,
   https://huggingface.co/danmor/guitab (`guitab_e25.safetensors` 24,776,472 bytes, `guitab_e24` 11,766,560,
-  `guitab_e19` 95,327,424, ONNX copies, Beat This! ONNX 3.8 and 22.1 MB, `tablm.safetensors`, `chord_model`). NOT RUN
-  HERE: installing it (from the clone, with its git dependency `beat-this @ git+https://github.com/CPJKU/beat_this@b95c8ab`)
-  was refused by the permission system as described above (`uv pip install --dry-run` had resolved it to 9 new
-  packages, including onnxruntime 1.31.1 and torchaudio 2.11.1+cpu). Steps for Aaron are in `for-aaron.md`.
+  `guitab_e19` 95,327,424, ONNX copies, Beat This! ONNX 3.8 and 22.1 MB, `tablm.safetensors`, `chord_model`; sizes
+  re-read from the Hugging Face API by the verifier, card `license: cc-by-nc-sa-4.0`). It is not on PyPI under its own
+  name: `pypi.org/pypi/guitab/json` is a different project (bielsnohr/guitab 1.0.0, BSD 3-clause, uploaded
+  2022-01-13; checked by the verifier). NOT RUN HERE: installing it (from the clone, with its git dependency
+  `beat-this @ git+https://github.com/CPJKU/beat_this@b95c8ab`) was refused by the permission system as described
+  above (the trial agent reports that `uv pip install --dry-run` had resolved it to 9 new packages, including
+  onnxruntime 1.31.1 and torchaudio 2.11.1+cpu; UNVERIFIED: no log of the dry run was kept). Steps for Aaron are in
+  `for-aaron.md`.
 - **Noise2Fret** (https://github.com/RiccardoVib/Noise2Fret, HEAD `b65a7ecfb849d49d8ae6a0df6d0a2937c3334cd7`,
-  2026-10-14, MIT): diffusion audio-to-tab (arXiv 2608.30854, ISMIR 2026). Weights published: yes, on Zenodo record
+  2026-10-14, MIT): diffusion audio-to-tab (arXiv 2608.30854; the arXiv record's Comments field reads "Accepted for
+  ISMIR 2026", and the repository README lists the paper as "(ISMIR26)"; both read by the verifier 2026-11-10).
+  Weights published: yes, on Zenodo record
   23361924 ("The repository collects the checkpoints for the pre-trained models"; `CheckpointsGOAT.zip` 111,317,004
   bytes, `CheckpointsGuitarSet.zip` 111,488,115 bytes; record license id `cc-by-4.0`), linked from
   `Noise2Fret_Aux_Losses/README.md`. NOT RUN HERE: the README's only inference route is its training scripts with
@@ -537,7 +571,8 @@ with PyPI code and my own few-line loader, that is said in its section; otherwis
   2026-11-10); its README installs with `pip install -e .`. Not attempted, for the reason above.
 - **Audio2Tab** (https://github.com/JackJamesLoth/Audio2Tab): README (main branch, read 2026-11-10 via
   raw.githubusercontent.com) describes training (`src/train.py`) and evaluating checkpoints the user supplies
-  (`--checkpoint_paths ...`); no checkpoint download was found in it. Not run.
+  (`--checkpoint_paths ...`); no checkpoint download was found in it. Its "Checkpoints" section reads "We will host a
+  checkpoint here soon!" (re-read by the verifier from raw.githubusercontent.com, main branch, 2026-11-10). Not run.
 - **GuitarTab** (https://github.com/MusicGuitarTab/GuitarTab): README describes training on DadaGP and loading
   `outputs/<exp_dir>/best_model.pt` from your own training run; no published checkpoint found in it. Not run.
 - **Guitar-Transcription-CNN-MTL** (found here on the Hugging Face API, not in the survey list at the time):
@@ -547,9 +582,11 @@ with PyPI code and my own few-line loader, that is said in its section; otherwis
   at github.com/ErenReyhanlioglu/Guitar-Transcription; the folder holds "the six-fold leave-one-player-out
   cross-validation run" with one `model_best.pt` per fold ("Model weights only (state_dict)"); the card reports
   "tablature F1 0.776, TDR 0.943" (the authors' figure). Weights published: yes. NOT RUN HERE: the model class lives in
-  the GitHub repository, which would have to be installed or executed (see the permission note above). Because the
-  folds leave one GuitarSet player out each, it is the one published tab model found here that could be scored on an
-  R1 clip by a model that did not train on that player (which fold holds out which player was not checked).
+  the GitHub repository, which would have to be installed or executed (see the permission note above). The card
+  says "Fold i was tested on GuitarSet player i (00 to 05) and validated on player i+1", and its per-fold table lists
+  folds 1 to 6 with test players 00 to 05 (read by the verifier from the card on huggingface.co, 2026-11-10), so the
+  folds whose test player is an R1 clip's player are fold 3 (R1a, player 02), fold 5 (R1b, player 04) and fold 1 (R1c,
+  player 00).
 - **Fretting-Transformer** (arXiv 2506.14223) and **MIDI-to-Tab** (arXiv 2408.05024): the arXiv HTML pages
   (`arxiv.org/html/<id>v1`, fetched 2026-11-10) contain no GitHub, Hugging Face or Zenodo link other than arXiv's own;
   a web search found no code release. Not run.
@@ -584,8 +621,11 @@ with PyPI code and my own few-line loader, that is said in its section; otherwis
   trained only on the GAPS dataset and the second set of models is trained with a combination of GuitarSet and GAPS."
   Neither the card nor `instruments.json` says which of these runs the two files are, so whether they saw GuitarSet
   (and so the R1 takes) is UNVERIFIED. The checkpoints store `iteration` = 100000 (`guitar-fl.pth`, printed by the run)
-  and the folder name inside `guitar-gaps.pth` is `5000_iterations` (pickletools listing); the repository also has a
-  separate `guitar-gaps-paper-version-12200_iterations.pth`, not used here.
+  and the folder name inside `guitar-gaps.pth` is `5000_iterations` (pickletools listing; re-checked by the verifier on
+  a fresh download with the same SHA-256: every one of the 244 archive members is under `5000_iterations/`); the
+  repository also has a separate `guitar-gaps-paper-version-12200_iterations.pth` (99,256,753 bytes), not used here,
+  and a `guitar_kroma.safetensors` (49,360,574 bytes) that neither the card nor `instruments.json` describes (file list
+  from the Hugging Face API, read by the verifier; not looked at further).
 - Install: no code from the GitHub repository was run (its own install was refused, see "Tools NOT RUN here"). Into
   the existing torch venv: `uv pip install --python .../venv-amt/bin/python piano-transcription-inference==0.0.6`
   (adds torchlibrosa 0.1.0; torch 2.15.0+cpu and librosa 0.11.0 reused). Weights downloaded with curl from
@@ -596,7 +636,10 @@ with PyPI code and my own few-line loader, that is said in its section; otherwis
   (files fetched from raw.githubusercontent.com): `models.py` differs only in a dropout `inplace` flag, `utilities.py`
   in librosa API spellings, `config.py` and `pytorch_utils.py` are identical, and `inference.py` adds constructor
   arguments whose defaults equal PyPI's fixed values (onset 0.3, offset 0.3, frame 0.1, pedal offset 0.2) and loads with
-  `weights_only=False`. `scripts/run_hfmt_guitar.py` (my glue) does not use PyPI's `PianoTranscription.__init__`,
+  `weights_only=False`. (The verifier repeated this diff against a clone of the fork at `7568dc7`, 2025-12-09: the same,
+  plus three differences not listed above: the fork drops PyPI's re-download when the checkpoint is under 1.6e8 bytes,
+  accepts `mps` as a device, and passes its `batch_size` to `forward`, where PyPI 0.0.6 passes 1; the
+  `hf_midi_transcription` CLI's default batch size is 8, this lane's glue used PyPI's 1.) `scripts/run_hfmt_guitar.py` (my glue) does not use PyPI's `PianoTranscription.__init__`,
   because that re-downloads the piano model when the checkpoint file is under 160 MB (`os.path.getsize(checkpoint_path)
   < 1.6e8`): it builds the model class, loads `checkpoint['model']` with `torch.load(weights_only=True)` and an
   allow-list (OrderedDict, numpy ndarray reconstruction, dtypes), reports `load_state_dict(strict=False)`'s missing and
@@ -627,7 +670,11 @@ with PyPI code and my own few-line loader, that is said in its section; otherwis
   slot without getting one and was cancelled; a second call for S2n and R1c waited 37 minutes (until 22:36 UTC) and was
   cancelled too, so the lane could finish in its time budget (neither left a ledger line). The checkpoint was
   downloaded and its pickle inspected (above); it was not run, and the file was deleted afterwards to free disk. Steps for Aaron (the authors' own command on a GPU) are
-  in `for-aaron.md`, section 2.
+  in `for-aaron.md`, section 2. (Verifier's note: the files fit this account: `gtr-run` writes its ledger line only
+  after the command has run, and the two log files `logs/hfmt_gaps_cancelled.log` and `logs/hfmt_gaps_cancelled2.log`
+  are empty, created at 21:28 and 21:59 UTC. `gtr-run` waits for a slot by polling every 0.4 s, not in a queue, so a
+  later call can take a freed slot first, as r0331 did at 21:51 after 9.2 s. Between 22:47 and 23:05 UTC the
+  verifier's own slot runs also waited while both slots were held by the source-separation lane's batch jobs.)
 
 ## Handoff runs: transcribed notes in (Basic Pitch MIDI from the audio-to-notes lane into the MIDI-to-tab tools)
 
@@ -637,7 +684,8 @@ with PyPI code and my own few-line loader, that is said in its section; otherwis
   `/home/user/gtr/lanes/guitar-tab/inputs/bp-a2n/<clip>.bp.mid` (SHA-256 in
   `samples/handoff-basicpitch/basic-pitch-input-SHA256SUMS.txt`) and merged to one track with `scripts/merge_midi.py`
   (the files are type 1 with 2 tracks, 220 ticks per beat, one tempo of 120 BPM, and close notes with velocity-0
-  note_on messages).
+  note_on messages; they also carry pitch-bend messages, 12 to 1,385 per file (verifier's count with mido), which none
+  of the glue scripts or tools here read: they take note numbers only).
   A Basic Pitch run of this lane's own (`scripts/batch_basicpitch.sh`, ONNX model in a Python 3.10 venv with
   `basic-pitch[onnx]==0.4.0`, `numpy<2` and `setuptools<70`, the last needed because resampy imports `pkg_resources`)
   waited about 19 minutes for a CPU slot and was cancelled once the audio-to-notes lane's files existed; it produced
@@ -677,6 +725,7 @@ with PyPI code and my own few-line loader, that is said in its section; otherwis
 | S5capo2, same workaround | tayuya as is | e0742 | 90 | 278 | 90 | 0.1556 | 0.1556 |
 | S5dropd, tuning not told | tuttut / tutts / LilyPond | e0695 / e0698 / e0700 | 90 | 130 / 130 / 125 | 86 | 0.8372 each | 0.8000 each |
 | S5dropd, tuning not told | tabsynth notes / groups | e0704 / e0705 | 90 | 122 / 230 | 86 / 47 | 0.6163 / 1.0000 | 0.5889 / 0.5222 |
+| S5dropd | tayuya | (crashed, see below) | 90 | none | | | |
 | S5dropd, Drop D told | tuttut / tutts | e0733 / e0737 | 90 | 130 / 130 | 90 | 0.9556 / 0.9556 | 0.9556 / 0.9556 |
 | S5dropd, Drop D told | LilyPond | e0740 | 90 | 129 | 90 | 1.0000 | 1.0000 |
 | R1a | tuttut / tutts / LilyPond | e0707 / e0709 / e0711 | 189 | 195 / 193 / 195 | 137 / 135 / 137 | 0.5037 / 0.4963 / 0.5037 | 0.3651 / 0.3545 / 0.3651 |
@@ -702,6 +751,12 @@ with PyPI code and my own few-line loader, that is said in its section; otherwis
   - LilyPond printed `No string for pitch` warnings and left those notes out: for the C1 (MIDI 24) that Basic Pitch wrote
     in S2n, S3, S5capo2 and S5dropd, for D2 notes in S5dropd when the tuning was not told, and for some notes in chords
     it could not place (S3: 12 warnings in all, e.g. `No string for pitch #<Pitch g, > (given frets (7 5 5 4 3))`).
+    Warnings per run, counted by the verifier in the `.lilypond.stderr.txt` files: S2n 1, S3 12, S5capo2 1, S5dropd 5
+    (C1 and 4 D2), R1a 1 (F#2), R1c 1 (G2), S1 0, R1b 0; with the capo told 3 (C1 and 2 D4), with Drop D told 1 (C1).
+    Each count equals notes in minus tab notes written in the table above. LilyPond was given no fret limit and wrote
+    frets up to 30: in R1c's first chord the A#6 (MIDI 94) at string 1 fret 30 and the F#4 (MIDI 66) at string 6 fret
+    26; in S2n and S5dropd the D#6 (MIDI 87) at string 1 fret 23. For the same notes tuttut and tutts moved the S2n D#6
+    down an octave (below), and in R1c's first chord tuttut wrote one note, 82, and tutts none.
   - tuttut moved notes outside the instrument's range by octaves (`fix_oob_notes`), so its output contains pitches Basic
     Pitch did not write: in S2n the C1 (24) came out as C3 (48), C#6 (85) as C#5 (73) and D#6 (87) as D#5 (75); tutts
     did the same there. Both left out notes of chords they could not finger. S3 (197 notes in): the 6-note group at 17.518 s
@@ -724,10 +779,10 @@ same effect was reached as described; "no" = neither. Every cell is backed by th
 
 | tool | tuning | capo | number of frets | hand span | preferred position | pin a note to a string/fret | output carries times |
 |---|---|---|---|---|---|---|---|
-| tuttut 0.0.7 | param `Tuning(strings)` (S5dropd e0048) | workaround: raised tuning (e0046) or notes transposed down | param `nfrets` | module constant `MAX_FRET_SPAN` (5; values above 5 fail an assertion) | no | no | yes (JSON `time`, seconds) |
+| tuttut 0.0.7 | param `Tuning(strings)` (S5dropd e0048) | workaround: raised tuning (e0046) or notes transposed down | param `nfrets` | module constant `MAX_FRET_SPAN` (default 5; 3 and 6 ran on R1c, 7 failed an assertion) | no | no | yes (JSON `time`, seconds) |
 | tutts 0.1.0 | param `new Tuning([...], nfrets)` (e0410) | workaround: raised tuning (e0409) | param `nfrets` | no | no | no | beats (seconds only if `tempo` given) |
 | tayuya 0.0.4 | no (standard only) | workaround: notes transposed down (e0131) | no | no | no | no | no (order only) |
-| LilyPond 2.24.3 | param `stringTunings` (e0181) | workaround: raised `stringTunings` (e0179) | no fret-count property used | `maximumFretStretch` (not varied) | param `minimumFret` (e0185, e0187, e0188, e0190); `restrainOpenStrings` (e0189) | param `note\N` string mark (r0155) | no (engraved output; times came from my glue) |
+| LilyPond 2.24.3 | param `stringTunings` (e0181) | workaround: raised `stringTunings` (e0179) | no fret-count property used (frets up to 30 written on Basic Pitch notes) | `maximumFretStretch` (not varied) | param `minimumFret` (e0185, e0187, e0188, e0190); `restrainOpenStrings` (e0189) | param `note\N` string mark (r0155) | no (engraved output; times came from my glue) |
 | tabsynth 1.0.6 | no in `events_to_tablature` (a `fretboard` only at `generate_candidates`) | workaround: notes transposed down (e0392) | param `max_fret` (e0394) | no (stretch is a cost term) | no (position preference is a cost term) | no | yes (`start`, `duration`, seconds) |
 | SynthTab TabCNN checkpoints | no (trained profile, standard) | no | no (19 in the profile) | no | no | no | yes (frames, 23.2 ms hop) |
 
@@ -744,9 +799,23 @@ same effect was reached as described; "no" = neither. Every cell is backed by th
   no warnings). The tuttut list was also written as Guitar Pro 5 with the glue at an assumed 120 BPM
   (`samples/pyguitarpro-glue/bp-tuttut_R3a.bp.gp5`, 102 of 105 notes written: 3 fell on an occupied string in the same
   16th slot). Files: `samples/handoff-basicpitch/R3a.bp.*`.
-- R3b and R3c (closer views of the hands, added to the inputs at 21:29 UTC per `READY-VIDEO`) were not run by this lane:
-  no Basic Pitch MIDI of them existed in the audio-to-notes lane's output folder when this was written, and this lane's
-  audio models were waiting for CPU slots.
+- R3b and R3c (closer views of the hands, added to the inputs at 21:29 UTC per `READY-VIDEO`) were not run by the
+  trial agent, which reports that no Basic Pitch MIDI of them existed in the audio-to-notes lane's output folder when
+  it wrote this, and that this lane's audio models were waiting for CPU slots. Verifier's note: the audio-to-notes
+  lane wrote them at 21:42 UTC (run r0264) into a separate folder, `out/basic-pitch/tflite-default-R3bc/` (129 and 87
+  notes), not into `tflite-default/` where the other clips are; links `out/basic-pitch/R3b.mid` and `R3c.mid` were
+  added at 21:52 UTC.
+- (run by the verifier) R3b and R3c, the same handoff as R3a: those two Basic Pitch files (SHA-256
+  `8dac76232016363c3a59d31ee7ef1d4689f0423994b27845b7f9a7f591b9b446` and
+  `642650358ba8ef68c0782949783e84947bd32ee64199b0eabd58f6b767e62618`) merged with
+  `scripts/merge_midi.py`, then tuttut 0.0.7 and LilyPond 2.24.3 with defaults, run r0479 (`gtr-run --nolock`, light
+  job; wall 6.27 s for the four runs, CPU 4.9 s, peak RSS 77.3 MB; script `scripts/verify-trials/r3bc_handoff.sh`). No
+  truth exists, so nothing is scored. R3b: both tools wrote all 129 notes, 65 on open strings, highest fret 4, notes
+  per string (1 to 6) 21, 36, 21, 26, 25, 0; paired by pitch with onsets within 31 ms (LilyPond's glue gives each note
+  its 30 ms group's onset), all 129 tuttut notes have the same string and fret as LilyPond's. R3c: both wrote all 87
+  notes; tuttut 31 on open strings, highest fret 8, per string 12, 14, 26, 15, 12, 8; LilyPond 30 open, highest fret 8,
+  per string 12, 15, 24, 17, 11, 8; 84 of the 87 paired notes have the same string and fret. LilyPond wrote no
+  warnings (88 and 63 chord groups). Files: `samples/verify-trials/tuttut_R3b.bp.*`, `tuttut_R3c.bp.*`.
 
 ## Media kept outside git
 
