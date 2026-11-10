@@ -731,6 +731,22 @@ at 22:44 UTC, for about 20 agents).
   2.15.0 cp311 Linux wheel is 475,258,658 bytes on PyPI: over the 200 MB limit, so it was not installed. The same
   CREPE weights did run here through torchcrepe (PyTorch conversion) and Essentia's `crepe-*-1.pb` (TensorFlow
   graphs inside the Essentia wheel), above. The Basic Pitch TensorFlow backend was skipped for the same reason.
+  (corrected in gap round 1: the disk limit no longer applied; the reasons CREPE still did not run are the next item.)
+- Gap round 1 (23:17 to 23:30 UTC; record `samples/crepe/gap1-not-run.txt`). PyPI has only the source archive
+  `crepe-0.0.16.tar.gz` (16,519 bytes), so installing means building it. (1) The PyPI route fails on this box: in uv's
+  build environment `setup.py` line 6, `import pkg_resources`, stops with "ModuleNotFoundError: No module named
+  'pkg_resources'" (newest setuptools); with the build constraint `setuptools<81` it prints "Downloading weight file
+  model-tiny.h5.bz2 ..." and stops with "urllib.error.HTTPError: HTTP Error 403: Forbidden"
+  (`samples/crepe/gap1-crepe-0.0.16-build-setuptools-lt-81-py310.log`). `setup.py` downloads the five weight files
+  from `https://github.com/marl/crepe/raw/models/` unless `crepe/model-<capacity>.h5` is already in the source tree;
+  that github.com URL answers HTTP 403 to this box, while the same file at
+  `https://raw.githubusercontent.com/marl/crepe/models/model-tiny.h5.bz2` answers 200 (1,307,310 bytes). (2) The PyPI
+  source with the five weight files put in place (fetched from raw.githubusercontent.com, `models` head bb29b8d9:
+  `model-tiny.h5` 2,011,144 bytes and `model-full.h5` 89,038,936 bytes once decompressed), installed from that local
+  folder together with `tensorflow==2.15.0` and `numpy<2` in a Python 3.11 venv, was refused by the session's
+  permission system: "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code
+  from External]." Nothing of that command ran (no venv afterwards); the source tree and weights were deleted. So
+  neither `tiny` nor `full` of the original package ran on S1 or R1b. Steps in `for-aaron.md` (section 4).
 
 ### RMVPE - ran in gap round 1 (was NOT RUN HERE)
 
@@ -856,7 +872,21 @@ at 22:44 UTC, for about 20 agents).
 
 - PyPI `omnizart` 0.6.3 (uploaded 2026-05-31) requires `tensorflow>=2.5.0` (Python < 3.14), `tf-keras`, `madmom`,
   `sherpa-onnx`, `vamp` and others (PyPI metadata, re-read by the verifier 2026-11-10). The TensorFlow requirement
-  alone is over the 200 MB limit, so no install attempt was made.
+  alone is over the 200 MB limit, so no install attempt was made. (corrected in gap round 1: one install attempt was
+  made, next item.)
+- Gap round 1: one attempt, with Omnizart's own pins. Omnizart 0.5.0 (2021-12-09) is the last release that pins
+  TensorFlow (`tensorflow (==2.5.0)`, `requires_python >=3.6.1,<3.9`; 0.6.x has `tensorflow>=2.5.0` and Python
+  `>=3.8`; PyPI JSON, read 2026-11-10). Command (23:30 UTC): `uv venv --python 3.8 venv-omnizart && uv pip install
+  --python venv-omnizart/bin/python "omnizart==0.5.0"`. uv downloaded CPython 3.8.20 (19.9 MiB) and created the venv,
+  "Resolved 91 packages in 13.00s" (among them tensorflow 2.5.0, spleeter 2.4.0, librosa 0.8.1, numpy 1.19.5,
+  keras-nightly 2.5.0.dev2021032900), then built the three packages that PyPI has only as source archives (madmom
+  0.16.1, vamp 1.1.0, wrapt 1.12.1) and stopped after 17.0 s (exit 1): "Failed to build `vamp==1.1.0`" ... "File
+  "<string>", line 3, in <module> ModuleNotFoundError: No module named 'numpy'", with uv's hint "`vamp` (v1.1.0) was
+  included because `omnizart` (v0.5.0) depends on `vamp`" and "This error likely indicates that `vamp@1.1.0` depends
+  on `numpy`, but doesn't declare it as a build dependency". Nothing was installed, so neither music nor vocal mode
+  ran. Logs: `samples/omnizart/gap1-omnizart-0.5.0-py3.8-install.log` and `...-dryrun.log` (the resolved list). The
+  venv and the CPython 3.8.20 that uv fetched were removed (`uv python uninstall 3.8.20`). No second attempt (for
+  example with numpy preinstalled and `--no-build-isolation`) was made: the round allowed one.
 
 ### NeuralNote - NOT RUN HERE
 

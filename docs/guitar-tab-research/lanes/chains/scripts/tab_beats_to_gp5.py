@@ -110,7 +110,16 @@ if a.chords:
             chord_overwritten += 1
         chords[(j, s)] = name
 
-tempo = int(round(60.0 / ibi))
+if a.tempo == "median":
+    tempo = int(round(60.0 / ibi))
+else:
+    tempo = int(round(60.0 * (len(beats) - 1) / (beats[-1] - beats[0])))
+bar_tempo = []
+for bar in bars:
+    if a.tempo == "perbar":
+        bar_tempo.append(int(round(60.0 * len(bar) / (grid[bar[-1] + 1] - grid[bar[0]]))))
+    else:
+        bar_tempo.append(tempo)
 song = gp.Song(); song.title = a.title; song.tempo = tempo
 track = song.tracks[0]; track.name = "guitar"
 track.strings = [gp.GuitarString(i + 1, tun[5 - i]) for i in range(6)]
@@ -138,37 +147,43 @@ for bi, bar in enumerate(bars):
                     beat.notes.append(gp.Note(beat, value=fret, string=string, type=gp.NoteType.normal)); written += 1
             else:
                 beat.status = gp.BeatStatus.rest
+            if a.tempo == "perbar" and j == bar[0] and s == 0:
+                beat.effect.mixTableChange = gp.MixTableChange(tempo=gp.MixTableItem(value=bar_tempo[bi], duration=0))
             if (j, s) in chords:
                 beat.effect.chord = gp.Chord(length=6, name=chords[(j, s)], firstFret=0, strings=[-1] * 6)
                 chords_written += 1
             voice.beats.append(beat)
 gp.write(song, a.out)
 
-# read-back view: where a player at the GP5 tempo puts each beat and chord change (audio time = GP5 time + t0)
-q = 60.0 / tempo
-gp_beat_times = [t0 + k * q for k in range(len(grid) - 1)]
+# read-back view: where a player at the GP5 tempo(s) puts each beat and chord change (audio time = GP5 time + t0)
+order = [j for bar in bars for j in bar]
+qb = [60.0 / bar_tempo[bi] for bi, bar in enumerate(bars) for _ in bar]      # seconds per beat, per grid beat
+gp_start = [t0]
+for x in qb:
+    gp_start.append(gp_start[-1] + x)
+pos = {j: k for k, j in enumerate(order)}
+gp_time = lambda j, s: gp_start[pos[j]] + s * qb[pos[j]] / 4
+gp_beat_times = gp_start[:-1]
 with open(a.out + ".beats.txt", "w") as f:
     f.writelines(f"{x:.6f}\n" for x in gp_beat_times)
 with open(a.out + ".downbeats.txt", "w") as f:
-    k = 0
     for bar in bars:
-        f.write(f"{t0 + k * q:.6f}\n"); k += len(bar)
-pos = {j: k for k, j in enumerate([j for bar in bars for j in bar])}
-ch_items = sorted((pos[j] * q + s * q / 4 + t0, name) for (j, s), name in chords.items())
+        f.write(f"{gp_time(bar[0], 0):.6f}\n")
+ch_items = sorted((gp_time(j, s), name) for (j, s), name in chords.items())
 with open(a.out + ".chords.lab", "w") as f:
     if ch_items and ch_items[0][0] > 0:
         f.write(f"0.000000\t{ch_items[0][0]:.6f}\tN\n")
-    end_t = t0 + len(gp_beat_times) * q
+    end_t = gp_start[-1]
     for i, (st, name) in enumerate(ch_items):
         en = ch_items[i + 1][0] if i + 1 < len(ch_items) else end_t
         f.write(f"{st:.6f}\t{en:.6f}\t{name}\n")
 note_shift = []
 for (j, s), strs in slots.items():
     t_grid = grid[j] + s * (grid[j + 1] - grid[j]) / 4
-    t_gp = t0 + pos[j] * q + s * q / 4
+    t_gp = gp_time(j, s)
     note_shift.append(t_gp - t_grid)
 rep = {"tab": a.tab, "beats": a.beats, "downbeats": a.downbeats, "beat_numbers": a.beat_numbers, "chords": a.chords,
-       "median_ibi_s": round(ibi, 6), "gp5_tempo_bpm": tempo, "gp_time_zero_s": round(t0, 6),
+       "tempo_mode": a.tempo, "median_ibi_s": round(ibi, 6), "gp5_tempo_bpm": tempo, "bar_tempos_bpm": sorted(set(bar_tempo)), "gp_time_zero_s": round(t0, 6),
        "tracked_beats": len(beats), "downbeats_given": len(downs), "beats_added_before": n_pre,
        "beats_added_after": n_post, "bars": len(bars), "bar_beat_counts": [len(b) for b in bars],
        "notes_in": len(notes), "notes_written": written, "notes_dropped_same_string_same_16th": dropped,

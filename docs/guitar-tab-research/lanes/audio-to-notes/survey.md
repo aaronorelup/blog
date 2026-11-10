@@ -39,7 +39,7 @@ number). RUNNABLE / NOT-CPU-BOX are pointers for the try agent, not test results
 2. torchcrepe (`maxrmorrison/torchcrepe`, PyTorch port of CREPE). PyPI 0.0.24 (2025-05-16); last commit 2025-05-16. Code MIT; weights converted from CREPE, inside the MIT repo. RUNNABLE.
 3. pYIN: `librosa.pyin` (librosa 1.0.0, 2026-08-11, Python >= 3.12; last commit 2026-11-10; ISC); pYIN Vamp plugin (`c4dm/pyin`, last commit 2020-02-06; GPL-2.0-or-later; has a `notes` output); Tony desktop annotator (`sonic-visualiser/tony`, last commit 2024-07-02; GPL-2.0-or-later). No weights. RUNNABLE (librosa).
 4. PESTO (`SonyCSLParis/pesto`). PyPI `pesto-pitch` 2.0.1 (2025-02-18); last commit 2025-10-15. Code LGPL-3.0; weights in the repo. RUNNABLE.
-5. RMVPE (`Dream-High/RMVPE`). No PyPI from the authors (a third-party ONNX wrapper `rmvpe-onnx` 0.2.3, MIT, is on PyPI); last commit 2024-01-25. Code Apache-2.0; no weights in the repo (an `rmvpe.pt` exists in `lj1995/VoiceConversionWebUI`, MIT tag; link to the paper's model unconfirmed). RUNNABLE only with weights from elsewhere.
+5. RMVPE (`Dream-High/RMVPE`). No PyPI from the authors (a third-party ONNX wrapper `rmvpe-onnx` 0.2.3, MIT, is on PyPI); last commit 2024-01-25. Code Apache-2.0; no weights in the repo (an `rmvpe.pt` exists in `lj1995/VoiceConversionWebUI`, MIT tag; link to the paper's model unconfirmed). RUNNABLE only with weights from elsewhere. Gap round 1: ran here through `rmvpe-onnx` 0.2.3 with `rmvpe.onnx` (`trials.md`).
 6. FCPE / torchfcpe (`CNChTu/FCPE`). PyPI `torchfcpe` 0.0.4 (2024-03-06); last commit 2025-10-14. Code MIT; bundled `fcpe_c_v001.pt` in the MIT repo; the paper's DDSP-200K weights on Hugging Face are CC BY-NC-SA 4.0. The README's MIDI export (`extact_midi`) is in the repository's `main` but not in the PyPI 0.0.4 package. RUNNABLE.
 7. SwiftF0 (`lars76/swift-f0`, ONNX). PyPI `swift-f0` 0.3.0 (2026-09-25); last commit 2026-09-25. Code MIT; bundled ONNX in the MIT package; training data `lars1234/pitch-benchmark` is tagged CC BY-NC-SA 4.0. Has note segmentation and MIDI export. RUNNABLE (also in-browser via ONNX Runtime Web).
 8. PENN / FCNF0++ (`interactiveaudiolab/penn`). PyPI `penn` 1.0.0 (2025-04-02); last commit 2025-04-02. Code MIT; weights `maxrmorrison/fcnf0-plus-plus` (MIT tag). RUNNABLE.
@@ -380,6 +380,32 @@ point there by name.
   - d. Service: not applicable.
 - **Author-reported measurements (paper, Table 1, last row, the proposed model):** raw pitch accuracy 95.42 % on
   MIR-1K, 89.32 % on MIR ST500, 83.57 % on Cmedia.
+- **Added in gap round 1 (`gapfill-audio-to-notes`, read 2026-11-10): the PyPI wrapper `rmvpe-onnx`.** Version 0.2.3,
+  uploaded 2026-04-11 (PyPI JSON); source https://github.com/NewComer00/rmvpe-onnx (HEAD a16200fd by `git ls-remote`).
+  Its README (the PyPI description): "A simple wrapper around ONNX-related code in `rvc/lib/rmvpe.py @ 7e03261`" of
+  RVC-Project/Retrieval-based-Voice-Conversion, and "ONNX model from lj1995/VoiceConversionWebUI". Requires Python
+  >= 3.10, `huggingface-hub>=1.9`, `librosa>=0.11`, `onnxruntime>=1.24` (Python >= 3.11), `scipy>=1.15`; the `cli`
+  extra adds plotly and soundfile. Calls: `from rmvpe_onnx import RMVPE`, `time, frequency, confidence, activation =
+  RMVPE().predict(audio=audio, sr=sr)`; CLI `rmvpe-onnx download` and `rmvpe-onnx predict audio.wav [--csv out.csv]
+  [--confidence-threshold 0.03] [--device ...] [--model path] [--plot]`. Input and output, from the package source
+  (`rmvpe_onnx/model.py`): audio is downmixed to mono and resampled to 16 kHz; a 128-band log-mel spectrogram (30 to
+  8,000 Hz, window 1,024, hop 160 samples) goes into the ONNX model; per 10 ms frame it returns a frequency in Hz, a
+  confidence (the largest of the 360 sigmoid outputs) and the 360-bin activation (20-cent bins, centres 31.70 to
+  2,005.50 Hz). README: "The Python API returns raw outputs with no confidence thresholding applied." The CLI's CSV
+  has the header `time,frequency,confidence` and writes 0 Hz in frames below the threshold (default 0.03). Constraint
+  inputs: device, model path, confidence threshold; no pitch range, tuning or key input. Model file: `rmvpe.onnx` in
+  `lj1995/VoiceConversionWebUI` (361,688,443 bytes, sha256 5370e71a...fa3660fd, the digest in the package's
+  `weights.py`). Run in gap round 1: `trials.md`, "Gap round 1".
+  - a2. Wrapper code: MIT. https://raw.githubusercontent.com/NewComer00/rmvpe-onnx/HEAD/LICENSE (read 2026-11-10)
+    holds three MIT notices, "Copyright (c) 2026 NewComer00", "Copyright (c) 2023 liujing04 / Copyright (c) 2023 源文雨 /
+    Copyright (c) 2023 Ftps" and "Copyright (c) 2022 lj1995", each followed by "Permission is hereby granted, free of
+    charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to
+    deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge,
+    publish, distribute, sublicense, and/or sell copies of the Software".
+  - b2. Weights used by the wrapper: the card of `lj1995/VoiceConversionWebUI`
+    (https://huggingface.co/lj1995/VoiceConversionWebUI/raw/main/README.md, read 2026-11-10) is front matter only
+    (21 bytes): "license: mit". The wrapper's README credits the model as "Copyright (c) 2022 lj1995 — MIT License".
+    Which training run produced this file: UNVERIFIED (above).
 
 ## 6. FCPE / torchfcpe
 
