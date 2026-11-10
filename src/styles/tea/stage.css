@@ -84,5 +84,7 @@
   transform-origin: 0 100%;
 }
 @media (max-width: 700px) {
-  .tea-hero[data-3d='on'][data-hero-phase='docked'] .tea-hero-box { scale: .8; }
+  /* on a phone the characters stand in the top half, so the open box waits low, then docks smaller */
+  .tea-hero[data-3d='on'] .tea-hero-box { top: calc(100% - 3vh); translate: -50% -100%; }
+  .tea-hero[data-3d='on'][data-hero-phase='docked'] .tea-hero-box { scale: .74; }
 }

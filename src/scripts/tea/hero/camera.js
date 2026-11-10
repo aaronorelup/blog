@@ -49,6 +49,8 @@ export function placeCamera(rig, p, par) {
     // pulled back along the view on a tall screen, more at the start than once the camera is in close
     _f.subVectors(_p, _l).normalize();
     _p.addScaledVector(_f, rig.spec.portrait.pull * (1 - p * 0.7));
+    // and aimed lower while the title box waits at the bottom, so the characters stand in the top half
+    _l.y -= rig.spec.portrait.drop * (1 - p);
   }
   _f.subVectors(_l, _p).normalize();
   _r.crossVectors(_f, UP).normalize();

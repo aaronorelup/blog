@@ -2,7 +2,7 @@
 // Chromium for the far and mid layers, night and dusk, and writes public/tea/hero/bg-<layer>-<mode>.webp with sharp.
 // A placeholder until the final painted picture and its cut-outs replace these files in the manifest.
 import { readFileSync, writeFileSync } from 'node:fs';
-import { chromium } from 'playwright';
+import { chromium } from '@playwright/test';
 import sharp from 'sharp';
 
 const OUT = new URL('../../../public/tea/hero/', import.meta.url);
