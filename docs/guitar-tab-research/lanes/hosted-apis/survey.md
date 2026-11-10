@@ -178,14 +178,14 @@ The section for each tool is what counts; dates are the dates printed on the pag
   - Also listed in the sitemap: Sections, Metronome (generator), Instruments detection, Vocal pitch tracker, Musical stems (per-instrument incl. Guitars), Pitch shift, Tempo (effects).
   - File formats page (https://music.ai/docs/api/file-formats/): audio "Include all audio formats, such as WAV, MP3, OGG, FLAC, etc."; video "Include all video formats, such as AVI, MP4, MKV, etc."; chord JSON shape shown as `{"start": 0, "end": 10, "chord": "C"}`, beats as `{"start": 0, "end": 10, "bpm": 120}`. The Beats module page describes each beat annotation as having "the beat's start time and beat number"; the two pages show different beat shapes and no live output was seen (no Music.AI call was made).
   - No note-level transcription module (notes, MIDI, tab) appears in the module sitemap read 2026-11-10. No module page read lists a tuning, capo or key hint among its inputs (inputs shown: the audio URL only).
-- Price (https://music.ai/pricing/, read 2026-11-10): plans "Pay as you go $0" ("48h temporary storage", "2 concurrent processing jobs"), "Professional $25 USD Billed monthly" ("10 concurrent processing jobs", "$25 credit included every month (limited offer)", "100GB permanent storage", "5% discount on all modules"), "Business / Enterprise" ("Contact us"). A third-party README (ChordMini, https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md, read by verify-docs 2026-11-10, undated) says "Music.ai API (deprecated - MUSIC.ai no longer provide individual API key, only business plan)"; the Music.AI pricing page read the same day lists the pay-as-you-go plan. Whether an individual can still get a key: UNVERIFIED (a sign-up attempt would settle it). Pay-as-you-go module prices: "Transcription - Chords $0.04 / min", "Transcription - Beats $0.03 / min", "Transcription - Sections $0.04 / min", "Stem separation - Guitar stems (Acoustic guitar, Electric guitar) $0.1 / min", "Stem separation - Guitar parts (Rhythm guitars, Solo guitars) $0.1 / min", "Stem separation - Musical stems (Guitars) $0.07 / min", "Stem separation - Musical stems (Bass) $0.07 / min", "Generators - Metronome $0.002 / min", "Classification - Instruments detection $0.02 / min", "Classification - Music metadata (By Cyanite) $0.15 / min". FAQ: "Pay-as-you-go and Professional members must purchase credits up front and cannot have a negative credit balance."
+- Price (https://music.ai/pricing/, read 2026-11-10): plans "Pay as you go $0" ("48h temporary storage", "2 concurrent processing jobs"), "Professional $25 USD Billed monthly" ("10 concurrent processing jobs", "$25 credit included every month (limited offer)", "100GB permanent storage", "5% discount on all modules"), "Business / Enterprise" ("Contact us"). Pay-as-you-go module prices: "Transcription - Chords $0.04 / min", "Transcription - Beats $0.03 / min", "Transcription - Sections $0.04 / min", "Stem separation - Guitar stems (Acoustic guitar, Electric guitar) $0.1 / min", "Stem separation - Guitar parts (Rhythm guitars, Solo guitars) $0.1 / min", "Stem separation - Musical stems (Guitars) $0.07 / min", "Stem separation - Musical stems (Bass) $0.07 / min", "Generators - Metronome $0.002 / min", "Classification - Instruments detection $0.02 / min", "Classification - Music metadata (By Cyanite) $0.15 / min". FAQ: "Pay-as-you-go and Professional members must purchase credits up front and cannot have a negative credit balance." A third-party README (ChordMini, https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md, read by verify-docs 2026-11-10, undated) says "Music.ai API (deprecated - MUSIC.ai no longer provide individual API key, only business plan)"; the Music.AI pricing page read the same day lists the pay-as-you-go plan. Whether an individual can still get a key: UNVERIFIED (a sign-up attempt would settle it).
 - Terms (https://music.ai/terms/, "Last updated: May 02, 2025", read 2026-11-10):
-  - Licence scope: "a non-exclusive, non-transferable, non-sublicensable, revocable, limited license to use the Service ... on a computer or device that you own or control solely for your own internal business or individual purpose." (§ (d) Limited License)
-  - Restrictions: "you shall not ... (ii) use any robot, spider, site search/retrieval application, or other manual or automatic device to retrieve, index, “scrape,” “data mine,” or in any way reproduce or circumvent the navigational structure or presentation of our website, the Service or the Music.AI Materials, (iii) use any Output to train artificial intelligence or machine learning models either as sole input or as part of a wider training dataset unless otherwise explicitly authorized by us in writing, or (iv) use the Service, the Music.AI Materials, Output, or any portion thereof as the basis for developing a competitive solution (or contract with a third-party to do so), or allow third-parties to use or exploit the Service separate from your product(s) or services without Music.AI’s express written consent." (§ (e))
-  - Outputs: "Subject to these Terms, You may use the Service to generate results and outputs (“Output”), for example data, text, audio, video, and artificial intelligence models. These Terms will apply to your use of the Service as well as your use of any Output you create, generate, or otherwise receive from use of the Service." (§ (b) Output of the Service)
-  - Free use: "If you are accessing or making use of the Service on a no-fee, trial, or evaluation basis (the “Evaluation Access”), you may use the Service and any Output solely for internal testing and evaluation to determine whether to purchase the Service from us." (§ (c))
-  - Training on inputs: "THIS LICENSE IS GRANTED SOLELY FOR THE PURPOSE OF DELIVERING THE SERVICE TO YOU AND DOES NOT INCLUDE ANY RIGHTS FOR US TO USE YOUR CUSTOMER CONTENT TO TRAIN OR FINE-TUNE ARTIFICIAL INTELLIGENCE OR MACHINE LEARNING MODELS UNLESS YOU HAVE EXPRESSLY AUTHORIZED SUCH USE IN WRITING OR VIA AN ELECTRONIC OPT-IN MECHANISM." Clause (a) "Customer Content" of the same terms also says: "We may use the Customer Content to provide the Service to you, to improve or develop our products and services, and, subject to Section 7(f) below (Personal Data Processing), as otherwise described in our Privacy Policy".
-  - Retention: "we are under no obligation to store, maintain, or provide you with copies of any Customer Content you provide or any Outputs you generate using the Service, and we reserve the right to delete any such Customer Content and Outputs at any time without notice to you."
+  - Licence scope: "a non-exclusive, non-transferable, non-sublicensable, revocable, limited license to use the Service ... on a computer or device that you own or control solely for your own internal business or individual purpose." (§ 4(d) "Limited License")
+  - Restrictions: "you shall not ... (ii) use any robot, spider, site search/retrieval application, or other manual or automatic device to retrieve, index, “scrape,” “data mine,” or in any way reproduce or circumvent the navigational structure or presentation of our website, the Service or the Music.AI Materials, (iii) use any Output to train artificial intelligence or machine learning models either as sole input or as part of a wider training dataset unless otherwise explicitly authorized by us in writing, or (iv) use the Service, the Music.AI Materials, Output, or any portion thereof as the basis for developing a competitive solution (or contract with a third-party to do so), or allow third-parties to use or exploit the Service separate from your product(s) or services without Music.AI’s express written consent." (§ 4(e) "Permitted Use; Restrictions")
+  - Outputs: "Subject to these Terms, You may use the Service to generate results and outputs (“Output”), for example data, text, audio, video, and artificial intelligence models. These Terms will apply to your use of the Service as well as your use of any Output you create, generate, or otherwise receive from use of the Service." (§ 4(b) "Output of the Service")
+  - Free use: "If you are accessing or making use of the Service on a no-fee, trial, or evaluation basis (the “Evaluation Access”), you may use the Service and any Output solely for internal testing and evaluation to determine whether to purchase the Service from us." (§ 3(c) "Evaluation Access")
+  - Training on inputs: "THIS LICENSE IS GRANTED SOLELY FOR THE PURPOSE OF DELIVERING THE SERVICE TO YOU AND DOES NOT INCLUDE ANY RIGHTS FOR US TO USE YOUR CUSTOMER CONTENT TO TRAIN OR FINE-TUNE ARTIFICIAL INTELLIGENCE OR MACHINE LEARNING MODELS UNLESS YOU HAVE EXPRESSLY AUTHORIZED SUCH USE IN WRITING OR VIA AN ELECTRONIC OPT-IN MECHANISM." (§ 7(c) "Limited License Grant to Customer Content"; section labels checked by verify-docs.) Clause 7(a) "Customer Content" of the same terms also says: "We may use the Customer Content to provide the Service to you, to improve or develop our products and services, and, subject to Section 7(f) below (Personal Data Processing), as otherwise described in our Privacy Policy".
+  - Retention: "we are under no obligation to store, maintain, or provide you with copies of any Customer Content you provide or any Outputs you generate using the Service, and we reserve the right to delete any such Customer Content and Outputs at any time without notice to you." (§ 7(b) "No Obligation to Provide Storage")
 - Training data, as stated by the vendor (FAQ https://music.ai/docs/faq/): "Music AI only trains on licensed materials."
 
 ## LALAL.AI API
@@ -245,9 +245,13 @@ The section for each tool is what counts; dates are the dates printed on the pag
 - Models relevant here (https://developer.audioshake.ai/models.md): `guitar` "All guitar-family parts together
   (acoustic + electric)." 1.0 credits/min; `guitar_electric` "Electric guitar only (clean or distorted)." 1.0;
   `guitar_acoustic` "Acoustic/plucked guitar-family sources (acoustic guitar, banjo, lute)." 1.0; `bass` 1.0;
-  `other-x-guitar` "Everything except vocals, drums, bass, and guitar." 1.0; `residual` "Everything not covered by
+  `other-x-guitar` "Everything except vocals, drums, bass, and guitar." 1.0 on models.md, while the live
+  `GET https://api.audioshake.ai/models` answer on 2026-11-10 gave `"creditsPerMinute":1.5` for `other-x-guitar`
+  (both read by verify-docs; the two sources differ); `residual` "Everything not covered by
   the task's other targets." 1.0. No note, chord, beat or tab output is listed; outputs are audio (or JSON/SRT/TXT
-  for the lyric and music-detection models).
+  for the lyric and music-detection models). The live `/models` answer lists for every separation model the input
+  formats audio `wav`, `aiff`, `flac`, `mp3`, `aac`, `m4a` and video `mp4`, `mov`, taken from `url` or `assetId`.
+  Python client on PyPI: `audioshake` 0.1.0 (uploaded 2026-10-27, license MIT; read by verify-docs).
 - Formats (https://developer.audioshake.ai/api-reference/formats.md): input WAV, AIFF, FLAC, MP3, AAC/M4A
   ("Supports up to 192kHz sample rate"), video MP4/MOV ("Only the audio stream is processed — video content is
   ignored."); output `wav`, `mp3`, `flac`, `aiff`, `mp4`. "Multi-channel or surround formats (e.g. 5.1) are not supported".
@@ -333,16 +337,21 @@ The section for each tool is what counts; dates are the dates printed on the pag
   Russian description of the same entry adds "30 треков" (30 tracks). The validation set's tracks and source are not
   named on the pages read.
 - Inputs and hints: audio only; no musical hints. Output: audio files only (no notes, chords or tab).
-- Limits and price (https://mvsep.com/plans, read 2026-11-10): Unregistered and Registered free: "Max File Length
-  10 min", "Max File Size 100 MB", "Daily Separations 50", "Concurrent Jobs 1"; "API Access" "—" (unregistered),
-  "Limited" (registered), "Full" (Premium). Premium: "Max File Length 100 min", "Max File Size 1000 MB". "Standard
-  models use 1 credit per minute of audio." Credit packs: "$3 60 credits $0.05 per minute", "$5 200 credits",
-  "$10 600 credits", "$30 2,000 credits", "$50 4,000 credits", "$100 8,500 credits $0.0118 per minute". The
-  algorithm list carries a `price_coefficient` per model (e.g. 6 for "Ensemble All-In", 1 for "MVSep Guitar").
+- Limits and price (https://mvsep.com/plans, which redirected to https://mvsep.com/en/plans on 2026-11-10; read
+  2026-11-10). The page is a table; the values below are its cells (row label, then the cell), not running text.
+  Unregistered and Registered (both "Free"): Max File Length "10 min", Max File Size "100 MB", Daily Separations
+  "50", Concurrent Jobs "1"; Premium ("Pro · Credit-Based", "from $3"): "100 min", "1000 MB", "Unlimited", "No
+  Limit". API Access: "—" (Unregistered), "Limited" (Registered), "Full" (Premium). Audio Quality: "MP3"
+  (Unregistered), "WAV 16-bit / FLAC 16-bit" (Registered), "WAV 32-bit float / FLAC 24-bit" (Premium). "Standard
+  models use 1 credit per minute of audio." Credit packs (price, credits, per-minute price as printed): $3, 60,
+  $0.05; $5, 200, $0.025; $10, 600, $0.0167; $30, 2,000, $0.015; $50, 4,000, $0.0125; $100, 8,500, $0.0118; $200,
+  18,000, $0.0111; $500, 50,000, $0.01; $1,000, 110,000, $0.0091. Footnote: "*A 4-minute song with a standard model
+  costs 4 credits. Ensemble models and some options cost more — see how credits are calculated. Prices in USD, taxes
+  included." The algorithm list carries a `price_coefficient` per model (e.g. 6 for "Ensemble All-In", 1 for "MVSep Guitar").
 - Terms (https://mvsep.com/terms, "Effective Date: October 19, 2026", read 2026-11-10):
   - "The Operator does not claim ownership over uploaded content or generated outputs. You retain ownership of uploaded content and generated outputs, subject to applicable third-party rights."
   - "Processed outputs generated through the Service may be used commercially by You, provided You possess the necessary rights to the original submitted content. This applies to every model on the Service unless the Operator explicitly states otherwise for a specific model."
-  - "Some models are provided under licenses that permit non-commercial use only (for example, CC BY-NC 4.0). Each such model is marked with a notice naming its license on the model's page, in the model selector and on its results. For a model so marked: (a) its outputs may be used for non-commercial purposes only; (b) it is provided free of charge, and no Credits or Premium benefits apply to it; and (c) it is available only through the website, not through the API, the mobile applications, batch pro[cessing] ..." (text continues on the page). In the live algorithm list read 2026-11-10, 0 of 126 entries had a non-null `nc_license` field.
+  - "Some models are provided under licenses that permit non-commercial use only (for example, CC BY-NC 4.0). Each such model is marked with a notice naming its license on the model's page, in the model selector and on its results. For a model so marked: (a) its outputs may be used for non-commercial purposes only; (b) it is provided free of charge, and no Credits or Premium benefits apply to it; and (c) it is available only through the website, not through the API, the mobile applications, batch processing or presets. A model that carries no such notice is not restricted by this paragraph." In the live algorithm list read 2026-11-10, 0 of 126 entries had a non-null `nc_license` field (recounted by verify-docs the same day: 126 entries, 0 non-null).
   - No clause naming retention periods or model training on uploads was found on /terms (privacy page not read).
 
 ## Google Gemini API (audio and video input)
@@ -351,18 +360,24 @@ The section for each tool is what counts; dates are the dates printed on the pag
   out (the audio page points to "Structured output" to "Get transcription results in JSON format"); neither page
   documents a MIDI, MusicXML or tab output, so notes, chords or tab would come back as text the prompt asks for. Docs read 2026-11-10:
   https://ai.google.dev/gemini-api/docs/audio , https://ai.google.dev/gemini-api/docs/video-understanding ,
-  https://ai.google.dev/gemini-api/docs/pricing , terms https://ai.google.dev/gemini-api/terms .
+  https://ai.google.dev/gemini-api/docs/pricing , terms https://ai.google.dev/gemini-api/terms . On 2026-11-10 each
+  of these redirected (one hop) to the same path under https://aistudio.google.com/docs/ (for example
+  https://aistudio.google.com/docs/audio and https://aistudio.google.com/docs/terms); the quotes below are on the
+  pages served there.
 - How a program calls it: the pages carry code tabs for Python, JavaScript, Go, Java and REST; files over the
-  inline size go through the Files API ("Use the [Files API](/docs/files) for files larger than 20 MB." on the
+  inline size go through the Files API ("Use the Files API for files larger than 20 MB." on the
   audio page; the audio page also states "Maximum request size is 20 MB total (including prompts and all files)"
   for inline data). The audio page links an "Interactions API reference" for MIME types; the video page's agentic
-  examples use `interaction.steps`.
+  examples use `interaction.steps`. The try agent called `POST https://generativelanguage.googleapis.com/v1beta/interactions`
+  and the `countTokens` endpoint (`trials.md`, r0013 to r0016).
 - Audio input (audio page, "Technical details about audio"): formats `audio/wav`, `audio/mp3`, `audio/aiff`,
   `audio/aac`, `audio/ogg`, `audio/flac`, `audio/mpeg`, `audio/m4a`, `audio/l16`, `audio/opus`, `audio/alaw`,
   `audio/mulaw`, `audio/webm`. "**Tokens**: 32 tokens per second of audio (1 minute = 1,920 tokens)";
   "**Max length**: 9.5 hours of audio per prompt"; "**Resolution**: Downsampled to 16 Kbps"; "**Channels**:
   Multi-channel audio combined to single channel"; "**Non-speech**: Gemini understands non-speech sounds
-  (birdsong, sirens, etc.)".
+  (birdsong, sirens, etc.)". Measured by the try agent with `countTokens` (r0016, `trials.md`): `gemini-3.5-flash-lite`
+  counted 769 audio tokens for the 24.000 s S3 clip (32.0 per second, the page's rate), `gemini-4-carbon` counted 625
+  (26.0 per second). The page's rate and Carbon's count differ; both are stated with their sources.
 - Video input (video page): input methods "File API ... 20GB (paid) / 2GB (free)", "Cloud Storage Registration
   ... 2GB (per file ...)", "Inline Data ... < 100MB", "YouTube URLs ... Public YouTube videos." Formats
   `video/mp4`, `video/mpeg`, `video/mov`, `video/avi`, `video/x-flv`, `video/mpg`, `video/webm`, `video/wmv`,
@@ -371,8 +386,8 @@ The section for each tool is what counts; dates are the dates printed on the pag
   quick scene changes." A custom rate is set with an `fps` value in the `processing` object (example `"fps": 0.5`);
   "These customization options are only supported when processing the video in `"static"` mode." No maximum fps
   value was stated on the page. Static mode: "Audio is processed at 1Kbps (single channel). Timestamps are added
-  every second." Token calculation (static mode): "If `media_resolution` is set to low, frames are tokenized at
-  66 tokens per frame. Otherwise, frames are tokenized at 258 tokens per frame.", "Audio: 32 tokens per second.",
+  every second." Token calculation (static mode, a bulleted list on the page): "If `media_resolution` is set to low,
+  frames are tokenized at 66 tokens per frame."; "Otherwise, frames are tokenized at 258 tokens per frame."; "Audio: 32 tokens per second.";
   "Total: Approximately 100 tokens per second of video at default (low) media resolution, or approximately 300
   tokens per second of video at high media resolution." Length: "Models with a 1M context window can process
   videos up to 3 hours long by default (at low media resolution), or up to 1 hour long at high media resolution."
@@ -384,9 +399,11 @@ The section for each tool is what counts; dates are the dates printed on the pag
 - Hints for a re-run: only the text prompt (and system instructions); there are no tuning, capo or tempo
   parameters in the API.
 - Price (pricing page, read 2026-11-10; "Paid Tier, per 1M tokens in USD"): Gemini 3.5 Flash-Lite input "$0.30
-  (text / image / video / audio)"; Gemini 3.8 Flash input "$0.75 through December 31, 2026. $1.50 starting January
+  (text / image / video / audio)", output "$2.50"; Gemini 3.8 Flash input "$0.75 through December 31, 2026. $1.50 starting January
   1, 2027.", output "$3.75 through December 31, 2026. $7.50 starting January 1, 2027."; free tier "Free of
-  charge" on both. Arithmetic from those quoted numbers (not a measured bill): one minute of audio = 1,920 tokens
+  charge" on both. Gemini 4 Carbon (added by verify-docs; the model the try agent picked): input "$2.00 through
+  November 30, 2026." / "$4.00 starting December 1, 2026.", output "$10.00 through November 30, 2026." / "$20.00
+  starting December 1, 2026."; "Gemini 4 Carbon is not available on the Free tier." Arithmetic from those quoted numbers (not a measured bill): one minute of audio = 1,920 tokens
   = USD 0.000576 at $0.30/1M; one minute of video at ~100 tokens/s = ~6,000 tokens = ~USD 0.0018 at $0.30/1M,
   before output tokens.
 - Terms (Gemini API Additional Terms of Service, https://ai.google.dev/gemini-api/terms , "Effective March 23, 2026", read 2026-11-10):
@@ -429,7 +446,10 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
   "While all the other dependencies are optional, `ffmpeg`, `ffprobe`, `yt-dlp-ejs` and a supported JavaScript
   runtime/engine are highly recommended"; "yt-dlp-ejs - Required for full YouTube support."; "A JavaScript
   runtime/engine like deno (recommended), node.js, bun, or QuickJS is also required to run yt-dlp-ejs." RUNNABLE
-  on a CPU box (no GPU involved); whether YouTube downloads work from this box was not tested by this agent.
+  on a CPU box (no GPU involved); whether YouTube downloads work from this box was not tested by this agent. The try
+  agent ran yt-dlp 2026.10.26 on an archive.org item, not YouTube (r0126, `trials.md`): `--download-sections
+  "*400-418" -x --audio-format wav` wrote a WAV, PCM 16-bit, 48,000 Hz, 1 channel, 18.013 s. PyPI metadata of the
+  release: license expression "Unlicense" (https://pypi.org/pypi/yt-dlp/json, read by verify-docs).
 - License (LICENSE, https://raw.githubusercontent.com/yt-dlp/yt-dlp/master/LICENSE , read 2026-11-10): SPDX
   Unlicense. "This is free and unencumbered software released into the public domain. Anyone is free to copy,
   modify, publish, use, compile, sell, or distribute this software, either in source code form or as a compiled
@@ -444,7 +464,8 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
 
 ## Songsterr
 
-- What it is (terms, https://www.songsterr.com/a/wa/terms , read 2026-11-10): "Songsterr is an archive of guitar,
+- What it is (terms, https://www.songsterr.com/a/wa/terms , which redirected to https://www.songsterr.com/terms on
+  2026-11-10; read 2026-11-10): "Songsterr is an archive of guitar,
   bass and drum tabs with more than 80,000 songs." Operated by "Guitar Tabs LLC" / "Guitartabs LLC" (both
   spellings appear). Paid plan: "Our paid plan (Songsterr Plus) unlocks advanced features, including Pause-Free
   Sync with Original Audio, Playback Speed, Print, AI Transcription of Full Tabs, Download (Guitar Pro, MIDI, MP3
@@ -459,12 +480,16 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
   automate, or interfere with the Service or its tab player to obtain functionality equivalent to a paid feature
   without an active subscription. Independent tools that do not modify, automate, or interfere with the Service or
   its tab player are not restricted by this section." (terms)
-- https://www.songsterr.com/ai.txt ("Last updated: 2026-11-09"): "AI model training: NOT permitted. Do not use
+- https://www.songsterr.com/ai.txt ("Last updated: 2026-11-09"; every line of the file starts with the comment
+  mark `#`, left out of the quotes): "AI model training: NOT permitted. Do not use
   Songsterr content (tabs, notation, song metadata, lyrics, audio, API responses) to train, fine-tune or evaluate AI
-  models, or to build datasets for that purpose." and "Allowed on a user's behalf, with or without a subscription:
+  models, or to build datasets for that purpose. Songsterr does not offer licenses for these uses. This is a
+  reservation of rights under Art. 4(3) of EU Directive 2019/790 (also expressed via /.well-known/tdmrep.json, the
+  tdm-reservation header, and Content-Signal / Content-Usage in /robots.txt)." and "Allowed on a user's behalf, with or without a subscription:
   - open and view a tab, including its title, artist, tuning and notes - play, pause, and move the playback position
   within a tab - explain how to play the tab - build independent tools that do not modify, automate, or interfere
-  with this site or its tab player".
+  with this site or its tab player". robots.txt also lists AI-training crawlers (`GPTBot`, `ClaudeBot`,
+  `anthropic-ai`, `Google-Extended`, `CCBot` and others) under `Disallow: /`.
 - YouTube: "Some content on the Service may use a video player embedded from YouTube, using YouTube API services.
   When interacting with such content, you agree to be bound by the YouTube Terms of Service and the Google Privacy
   Policy." (terms). Search results (heise.de, app listing; not read) say Songsterr's AI transcription takes a
@@ -498,20 +523,43 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
     depending on your inputs."; "This model runs on Nvidia A100 (40GB) GPU hardware. Predictions typically complete
     within 54 seconds." Links: GitHub https://github.com/mir-aidj/all-in-one , paper https://arxiv.org/abs/2307.16425 ,
     license link to the upstream LICENSE. Forks seen in search results only: `cwalo/all-in-one-music-structure-analysis`,
-    `erickluis00/all-in-one-audio` (not read).
+    `erickluis00/all-in-one-audio` (not read). Schema of the latest version, `001b4137`, created 2023-12-21 (read by
+    verify-docs from the version JSON embedded in the page): inputs `music_input` ("An audio file input to analyze."),
+    `model` (default `harmonix-all`, or `harmonix-fold0` to `harmonix-fold7`), booleans `visualize`, `sonify`,
+    `activ`, `embed`, `include_activations`, `include_embeddings`; output: an array of file URIs.
   - `ryan5453/demucs` (https://replicate.com/ryan5453/demucs): "2.2M runs"; "costs approximately $0.0050 to run on
     Replicate, or 200 runs per $1"; "runs on Nvidia A100 (40GB) GPU hardware. Predictions typically complete within 5
-    seconds."; versions listed include "htdemucs_ft" and "mdx_extra_q"; "Model updated 1 month, 1 week ago". Links:
+    seconds."; "Model updated 1 month, 1 week ago". Links:
     https://github.com/adefossez/demucs , https://github.com/ryan5453/demucs-cog , paper https://arxiv.org/abs/2111.03600 .
+    Corrected by verify-docs from the version JSON embedded in the page: the latest version, `ff5ad47d`, created
+    2026-10-03, has inputs `audio` (required), `model` with the single value `htdemucs` ("Model to use for separation
+    (this deployment serves htdemucs)"), `isolate_stem` (`none`, `drums`, `bass`, `other`, `vocals`), `format`
+    (default `wav`, "Output audio format, anything supported by FFmpeg"), `shifts`, `split_overlap`, `clip_mode`,
+    `seed`; output: URIs `bass`, `drums`, `other`, `vocals`, `no_bass`, `no_drums`, `no_other`, `no_vocals`. No
+    guitar stem. The values the survey first listed ("htdemucs_ft", "mdx_extra_q") belong to an older version shown
+    on the same page, `53191dee`, created 2024-05-01, whose `model` enum is `htdemucs`, `htdemucs_ft`, `htdemucs_6s`,
+    `hdemucs_mmi`, `mdx_q`, `mdx_extra_q` and whose `stem` enum includes `guitar` and `piano`. Replicate's API takes a
+    version id (next bullet), so the older version can be named in a call; whether it still runs was not tested.
   - `triadmusic/chord-detection-cnn-lstm` (https://replicate.com/triadmusic/chord-detection-cnn-lstm): "1.3K runs";
     "costs approximately $0.022 to run on Replicate, or 45 runs per $1"; "runs on Nvidia T4 GPU hardware.
-    Predictions typically complete within 99 seconds." No GitHub or license link was found in the page HTML.
-    Search result snippet (not the page): "Return a downloadable .lab file in addition to JSON output" (UNVERIFIED).
+    Predictions typically complete within 99 seconds." No GitHub or license link was found in the page HTML, and the
+    page says "This model doesn't have a readme." Latest version `be95be03`, created 2026-01-28 (verify-docs, from
+    the embedded JSON): inputs `audio` (required, "Audio file for chord recognition (mp3, wav, flac, etc.)"),
+    `return_lab_file` (default false, "Return a downloadable .lab file in addition to JSON output"),
+    `chord_vocabulary` (`submission` default, `ismir2017`, `full`, `extended`); the output schema is an object with no
+    properties listed, so the JSON fields are UNVERIFIED (one call would settle them).
   - No Basic Pitch model on Replicate turned up in search (UNVERIFIED; Replicate's search was not queried directly).
-- How a program calls it: each model page links "Playground", "API", "Examples", "README" and "Versions"; the
-  per-model `/api` page (call pattern, input and output schema) is rendered by JavaScript and was not readable with
-  curl. Auth scheme, client libraries and field names: UNVERIFIED here (Replicate's API docs were not read; the
-  try agent's calls or the `/api` page in a browser would settle them).
+- How a program calls it (Replicate's OpenAPI spec https://api.replicate.com/openapi.json, "Replicate HTTP API"
+  1.0.0-a1, read by verify-docs 2026-11-10): `POST https://api.replicate.com/v1/predictions` with JSON `version` and
+  `input` (both required; also `webhook`, `webhook_events_filter`, `stream`), header `Authorization: Bearer <token>`.
+  On `version`: "`{owner_name}/{model_name}` - Use this format for official models ... For all other models, the
+  specific version is required." and "`{owner_name}/{model_name}:{version_id}` - The owner and model name, plus the
+  full 64-character version ID." On `input`: "Files should be passed as HTTP URLs or data URLs." The example request
+  sends `Prefer: wait`, and the description says "The request will wait up to 60 seconds for the model to run.";
+  `GET /v1/predictions/{prediction_id}` reads the result. Data retention
+  (https://replicate.com/docs/topics/predictions/data-retention.md): "For predictions created through the API, all
+  input parameters, output values, output files, and logs are automatically removed after an hour, by default."
+  Python client on PyPI: `replicate` 1.0.7 (uploaded 2025-05-27).
 - Hardware prices (https://replicate.com/pricing , read 2026-11-10): "Nvidia T4 GPU gpu-t4 $0.000225/sec $0.81/hr";
   "Nvidia L40S GPU gpu-l40s $0.000975/sec $3.51/hr"; "Nvidia A100 (80GB) GPU gpu-a100-large $0.001400/sec $5.04/hr";
   "CPU cpu $0.000100/sec $0.36/hr". The A100 (40GB) named on the model pages is not listed on the pricing page.
@@ -519,8 +567,29 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
   Taejun Kim" (https://raw.githubusercontent.com/mir-aidj/all-in-one/main/LICENSE); adefossez/demucs "MIT License
   ... Copyright (c) Meta Platforms, Inc. and affiliates." (https://raw.githubusercontent.com/adefossez/demucs/main/LICENSE);
   ryan5453/demucs-cog "MIT License" with copyright lines for Meta Platforms, Phil Wang (2023) and Roman Solovyev
-  (ZFTurbo) (2024) (https://raw.githubusercontent.com/ryan5453/demucs-cog/main/LICENSE). Weights and training data of
-  these models belong to the source-separation and chords-beats lanes.
+  (ZFTurbo) (2024) (https://raw.githubusercontent.com/ryan5453/demucs-cog/main/LICENSE). These are code licenses.
+- Weights and training data (added by verify-docs, read 2026-11-10; the code licenses above do not cover them):
+  - Demucs, the models behind `ryan5453/demucs`, `fal-ai/demucs` and the `nakas/demucs_playground` Space: the README's
+    "License" section (https://raw.githubusercontent.com/adefossez/demucs/main/README.md): "Demucs code is released
+    under the MIT license as found in the LICENSE file. The license of the weights is not clear: MusDB contains some
+    data that were only usable for research purpose. I sadly cannot help granting a license, both coming from Meta
+    custom data, or from the original MusDB data. The 6 source variant of htdemucs was trained only on Meta internal
+    dataset, which likely means CC-NC-BY license is applicable, as it was the case for all models released by FAIR."
+    The same README: `htdemucs` "Trained on MusDB + 800 songs."; `mdx_extra` "trained with extra training data
+    (**including MusDB test set**)"; and the news line "11/07/2026: Released Demucs v4.1.0 with modernized
+    packaging, lighter inference dependencies, numerous fixes, and pretrained models hosted on Hugging Face."
+  - MUSDB18-HQ, named in that README (Zenodo record https://zenodo.org/records/3338373, license id `other-nc` in
+    https://zenodo.org/api/records/3338373): "MUSDBHQ: is provided for educational purposes only and the material
+    contained in them should not be used for any commercial purpose without the express permission of the copyright
+    holders". The sigsep page https://sigsep.github.io/datasets/musdb.html: "the tracks can only be used for academic
+    purposes".
+  - All-In-One (`sakemin/...` on Replicate, `taejunkim/all-in-one` Space): README
+    (https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md): "The models are trained on the Harmonix
+    Set with 8-fold cross-validation." The Harmonix Set repository's LICENSE is "MIT License" ("Copyright (c) 2019
+    Oriol Nieto", https://raw.githubusercontent.com/urinieto/harmonixset/master/LICENSE); its README says of the
+    mel-spectrograms "Users must agree to the License included before using these data." No license statement
+    specific to the All-In-One weights was found in its README.
+  - `triadmusic/chord-detection-cnn-lstm`: no code, weights or data license was found (no readme, no links).
 - Terms (https://replicate.com/terms , "Last Update: April 1, 2026", read 2026-11-10):
   - "As between Customer and Replicate, Customer owns and will continue to own all rights, title, and interest, including all Intellectual Property Rights, in and to its applicable Customer Data" where "“Customer Data” means Customer Inputs and Outputs."
   - "Customer hereby grants Replicate a worldwide, non-exclusive, non-sublicensable (except for the purposes of making the Marketplace Models available to Customer and for purposes of the provision of the Services), royalty-free, license to use, publish, reproduce, copy, store, host, transmit, modify, process, make available, create derivative works of, and display its Customer Data to the extent necessary to provide the Output, train and generate Customer Derivative Models, provide the Services under these Terms, and create and compile Resultant Data."
@@ -535,23 +604,30 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
   "hdemucs_mmi", "mdx", "mdx_extra", "mdx_q", "mdx_extra_q"; `stems` (default all six: vocals, drums, bass, other,
   guitar, piano); `segment_length`; `shifts` (1 to 10); `overlap` (0 to 1, default 0.25); `output_format` "wav" or
   "mp3" (default "mp3"). Output: `File` objects `vocals`, `drums`, `bass`, `other`, `guitar` ("only available for 6s
-  models"), `piano`. The page's "Example Response" is `{}`.
+  models"), `piano`. The page's "Example Response" is `{}`. The default `htdemucs_6s` is the model the Demucs README
+  says "was trained only on Meta internal dataset, which likely means CC-NC-BY license is applicable" (quoted in full
+  in the Replicate section). Python client on PyPI: `fal-client` 1.0.3 (uploaded 2026-09-21).
 - Other music-analysis models: the site-wide index https://fal.ai/llms.txt lists, under "Audio and speech", text to
   speech, voice clone and speech-to-text models; no transcription-to-notes, chord or beat model is listed there
   (the index is a curated subset; a full catalogue search was not done: UNVERIFIED that none exists).
-- Terms (https://fal.ai/terms , "Last Updated: September 8, 2026", read 2026-11-10):
+- Terms (https://fal.ai/terms , which redirected to https://fal.ai/legal/terms-of-service on 2026-11-10; "Last
+  Updated: September 8, 2026", read 2026-11-10):
   - "Company grants you a limited, non-exclusive, non-transferable, revocable right to access and use the Sites and the Services in accordance with these Terms and applicable Documentation for your own personal or internal business use."
   - Customer Solutions clause: "Company hereby grants Customer a limited, non-exclusive, non-transferable, non-sublicensable, license to access and use Company’s API materials as part of the Documentation solely to (A) develop an interface or integration between the Customer Solution and the Services and (B) access the Services using such interface or integration to provide Customer Input and obtain Output Content".
   - "Customer hereby grants Company a non-exclusive, non-sublicensable, royalty-free license to reproduce, use, access, store, display, adapt, translate, modify, create derivative works from, and otherwise process any Customer Input to provide the Services." and "Customer owns and retains all right, title, and interest in and to the Customer Input."
-  - Usage data: "Company may generate, collect, store, use, transfer, and/or disclose to third parties Usage Data and use Usage Data to perform data analytics; to monitor, improve, and support the Services; to design, develop, and offer Company products, services, and AI models; and for any other lawful purpos[e]".
+  - Usage data: "Company may generate, collect, store, use, transfer, and/or disclose to third parties Usage Data and use Usage Data to perform data analytics; to monitor, improve, and support the Services; to design, develop, and offer Company products, services, and AI models; and for any other lawful purposes. Company owns and retains all rights to Usage Data".
 
 ## Hugging Face Inference Providers and public Spaces
 
 - Inference Providers (https://huggingface.co/docs/inference-providers/index , read 2026-11-10): the navigation
-  lists "Inference Tasks: Chat Completion, Feature Extraction, Text to Image, Text to Video" plus "Other Tasks", and
-  providers "Baseten, Cerebras, Cohere, DeepInfra, Fal AI, Featherless AI, Fireworks, Groq, HF Inference, Novita,
-  Nscale, OVHcloud AI Endpoints, Public AI, Replicate, Scaleway, Together, WaveSpeedAI, Z.ai". No music
-  transcription, stem separation, chord or beat task appears in that task list (the "Other Tasks" sub-pages were not opened: UNVERIFIED in detail).
+  (link labels, not a sentence; listed here without quotation marks) has under "Inference Tasks" Chat Completion,
+  Feature Extraction, Text to Image, Text to Video, then "Other Tasks", and under "Providers" Baseten, Cerebras,
+  Cohere, DeepInfra, Fal AI, Featherless AI, Fireworks, Groq, HF Inference, Novita, Nscale, OVHcloud AI Endpoints,
+  Public AI, Replicate, Scaleway, Together, WaveSpeedAI, Z.ai. The tasks index
+  (https://huggingface.co/docs/inference-providers/tasks/index , read by verify-docs 2026-11-10) lists two audio
+  tasks, Audio Classification and Automatic Speech Recognition; no music transcription, stem separation, chord or
+  beat task is listed. Without a token, `POST https://router.huggingface.co/v1/chat/completions` answered HTTP 401
+  (try agent, `trials.md`).
 - Public Spaces as APIs (Gradio Python client guide, https://www.gradio.app/guides/getting-started-with-the-python-client ,
   read 2026-11-10): `from gradio_client import Client; client = Client("owner/space")`; "While you can use any public
   Space as an API, you may get rate limited by Hugging Face if you make too many requests. For unlimited usage of a
@@ -566,18 +642,48 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
   - `Hmjz100/MT3` (lastModified 2025-08-23) and `Hmjz100/YouTube-to-MT3` (2025-03-24): `RUNTIME_ERROR`, `cpu-basic`.
   - `Richhiey/basic_pitch_fastapi` (docker, lastModified 2024-11-21): `SLEEPING`, `cpu-basic`.
   - `teamup-tech/Transkun` (lastModified 2026-11-03): `RUNNING` on `zero-a10g`.
-  - Other names returned by the searches (stage not checked): `SegerEnd/basic-pitch-wasm` (static, 2026-10-14),
+  - Other names returned by the searches: `SegerEnd/basic-pitch-wasm` (static, 2026-10-14),
     `koseimusic/basicpitch` (docker, 2026-06-13), `nakas/demucs_playground`, `kajise/Demucs_v4-FT_4s`,
     `Lollikit/TranskunGUI`, `allensu123/transkun-online`, and several small "guitar tab" Spaces from 2025 to 2026
     (`Haskami/guitar-tab-ai`, `JonathanJH/guitar-tabs-ai`, `JAEJUN99/guitar-tab`, `nutgh/beatpath-guitar-tab`).
+    Stages read by verify-docs at 2026-11-10T21:16Z (same APIs): the seven Spaces in the bullets above unchanged; `SegerEnd/basic-pitch-wasm`
+    RUNNING (static), `koseimusic/basicpitch` RUNTIME_ERROR, `nakas/demucs_playground` RUNNING (cpu-basic),
+    `kajise/Demucs_v4-FT_4s` RUNTIME_ERROR (card license agpl-3.0), `Lollikit/TranskunGUI` RUNNING (cpu-basic),
+    `allensu123/transkun-online` RUNNING (zero-a10g), `Haskami/guitar-tab-ai` SLEEPING, `JonathanJH/guitar-tabs-ai`
+    RUNTIME_ERROR, `JAEJUN99/guitar-tab` SLEEPING, `nutgh/beatpath-guitar-tab` BUILD_ERROR.
+  - Spaces the try agent called (`trials.md`): `mimbres/YourMT3` (r0112, returned HTML with the MIDI inline as a
+    `data:audio/midi;base64,` URL), `mimbres/YourMT3-cpu` (r0164), `teamup-tech/Beat-This` (r0118, beat and downbeat
+    labels in seconds), `nakas/demucs_playground` (r0141 with `gradio_client` 0.5.3, four WAV stems; its `app.py` runs
+    Demucs `mdx_extra_q`); `hugging-apps/muscriptor-music-transcription` and `lpeterl/sam-audio-webui` refused with
+    the ZeroGPU quota error (r0116, r0162).
 - Licenses: each Space carries its own card license (e.g. "mit" on taejunkim/all-in-one) and the models it wraps keep
-  their own licenses; Hugging Face's own Terms of Service were not read in this pass (UNVERIFIED).
+  their own licenses. Weights and training data of the wrapped models (added by verify-docs, read 2026-11-10):
+  Transkun (`teamup-tech/Transkun`): code "MIT License" ("Copyright (c) 2021 Yujia Yan",
+  https://raw.githubusercontent.com/Yujia-Yan/Transkun/main/LICENSE); the README's model table lists its checkpoints
+  as trained on "Maestro V3", and MAESTRO's page (https://magenta.tensorflow.org/datasets/maestro) says "The dataset
+  is made available by Google LLC under a Creative Commons Attribution Non-Commercial Share-Alike 4.0 (CC BY-NC-SA
+  4.0) license." (Which checkpoint the Space loads was not read.) MT3 (magenta/mt3, the project the `Hmjz100/MT3`
+  Space is named after; the Space's code was not read): code Apache License 2.0
+  (https://raw.githubusercontent.com/magenta/mt3/main/LICENSE); its README names no training data or weights
+  license. Basic Pitch (spotify/basic-pitch): Apache License 2.0
+  (https://raw.githubusercontent.com/spotify/basic-pitch/main/LICENSE). Demucs (`nakas/demucs_playground`, whose
+  `app.py` runs `mdx_extra_q` per `trials.md`; `akhaliq/demucs` was not read): see the weights statement quoted in the
+  Replicate section.
+- Hugging Face Terms of Service (https://huggingface.co/terms-of-service , "Effective Date: September 15, 2022",
+  read by verify-docs 2026-11-10): "You hereby grant us a worldwide, royalty-free and non-exclusive license to use,
+  display, publish, reproduce, distribute, and make derivative works of such Content to provide Services and as
+  otherwise permitted under these Terms and our Privacy Policy" and "If you decide to set your Repository public, you
+  grant each User a perpetual, irrevocable, worldwide, royalty-free, non-exclusive license to use, display, publish,
+  reproduce, distribute, and make derivative works of your Content through our Services and functionalities".
 
 ## Soundslice data API
 
 - What it is: Soundslice (synced notation and tab player) offers a REST "data API" for slices (scores), their
   notation, recordings and syncpoints. Docs https://www.soundslice.com/help/data-api/ , read 2026-11-10. A Python
-  client `soundsliceapi` exists on PyPI (seen in search results; not read).
+  client `soundsliceapi` exists on PyPI: version 1.2, uploaded 2026-05-21, project URL
+  https://github.com/soundslice/soundsliceapi/ (https://pypi.org/pypi/soundsliceapi/json, read by verify-docs; the
+  package itself was not read). The docs' changelog has "2026-09-18 — Added support for Mux videos to the create
+  recording endpoint."
 - Access: "API keys are only available to paying Soundslice customers — either in the Teacher or Licensing plans."
   "A Soundslice API key consists of two strings — an application ID and associated password." "For each API call,
   you’ll need to authenticate with your API key, using HTTP Basic Authentication." (https://www.soundslice.com/pricing/
@@ -590,7 +696,8 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
   ("Generates MusicXML for the slice ... uses our own MusicXML exporting algorithm based on the slice’s current
   notation"), `POST /api/v1/slices/SCOREHASH/recordings/`, `GET|POST /api/v1/recordings/RECORDING_ID/syncpoints/`.
 - Recording `source` values: "2 — MP3 uploaded to Soundslice", "4 — Video uploaded to Soundslice", "3 — Video URL",
-  "8 — MP3 URL", "1 — YouTube video" (`source_data`: "The URL or ID of the YouTube video."), 6 Vimeo, 7 Wistia, 9 Mux.
+  "8 — MP3 URL", "1 — YouTube video" (`source_data`: "The URL or ID of the YouTube video."), 6 Vimeo, 7 Wistia, 9 Mux
+  (the last three "only allowed if your Soundslice account has been linked with" that service).
 - Syncpoint format (docs): "syncpoints are stored as a simple JSON array. Example: [[0, 0], [1, 0.57], [1, 0.8, 240], [2, 1.3]]";
   value 1 "The zero-based bar number in the slice, as an integer" (repeats expanded); value 2 "Timecode in the audio,
   in seconds, as a float."; value 3 optional "a number (integer or float) between 0 and 480, where 0 is the start of
@@ -608,7 +715,8 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
 - What it is: REST API of the Flat online notation editor. OpenAPI spec https://flat.io/developers/docs/openapi.yaml
   (`info.version` 2.26.2, title "Flat API"), read 2026-11-10. Auth: "Personal Access Tokens or OAuth2" (spec intro).
   `termsOfService: https://flat.io/legal` in the spec.
-- Import (`POST /v2/scores`, `ScoreCreationFileImport`): "Preferred formats: MusicXML: `.xml`, `.musicxml`, `.mxl`
+- Import (`POST /v2/scores`, `ScoreCreationFileImport`; the spec text is a bulleted list, bullets left out of the
+  quotes): "Preferred formats: MusicXML: `.xml`, `.musicxml`, `.mxl`
   (compressed) ... This is the only format that preserves all notation data ... MIDI: `.mid`, `.midi` ... Only
   preserves pitch, timing, and instrument data; notation details are lost." "Also supported (converted to MusicXML
   on import, some notation details may be lost): Guitar Pro: `.gp`, `.gp3`, `.gp4`, `.gp5`, `.gpx`, `.gtp`; MuseScore
@@ -617,9 +725,27 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
 - Export ("Get a score revision data"): "Flat JSON `json`, MusicXML `mxl`/`xml`, ABC notation `abc`, MP3 `mp3`, WAV
   `wav`, MIDI `midi`, Flat `flat`, a thumbnail of the first page `thumbnail.png` or auto sync points
   `synchronizationPoints`." The spec also documents OMR (PDF/image to MusicXML) jobs.
-- Terms: https://flat.io/legal ("User content and ownership": "We do not claim ownership over your User Content")
-  read 2026-11-10; the developer API and embed terms page (https://flat.io/legal/en/general/developers-api-embed/)
-  is rendered by JavaScript and showed "The app could not be loaded." to curl: API terms and API pricing UNVERIFIED.
+- Terms (corrected by verify-docs, read 2026-11-10): https://flat.io/legal (the spec's `termsOfService`) redirected
+  to https://help.flat.io/en/policies/ ("Legal and privacy information", "Last updated December 7, 2023"); its
+  "User content and ownership" part has "We do not claim ownership over your User Content". The URL first cited for
+  API terms, https://flat.io/legal/en/general/developers-api-embed/, redirected to a sign-in page
+  (`https://flat.io/auth/signin?next=...`), which is why curl saw "The app could not be loaded."; the page the help
+  index links, https://help.flat.io/en/general/developers-api-embed/ ("Flat APIs and Embed", "Last updated October
+  19, 2026"), lists Embed, the REST API, an Import API and "AI assistants (MCP)": "Flat is available as a remote MCP
+  server, so assistants and agents can create, search and read the scores of a Flat account." It names no API terms
+  and no API price. Terms found:
+  - Individual Terms of Service (https://help.flat.io/en/policies/terms-of-service-individual/ , page "Last updated
+    September 4, 2026"; the policies index dates this version "5 January 2016"), § 10.2: "We do not claim ownership in
+    your User Content. However, we need a licence to host your User Content, make sure it is available to you when you
+    want it, make sure it works with Flat and to improve our Service."
+  - Embed Terms of Service (https://help.flat.io/en/policies/terms-of-service-embed/ , "This is the current version of
+    these terms, dated 16 May 2019."; they "apply to individuals and businesses using Flat Embed"), § 8.2: "We do not
+    claim ownership in your User Content. Instead, you grant us a worldwide, non-exclusive, royalty-free and perpetual
+    licence to use, copy, reproduce, distribute, adapt, re-format, modify, publish, translate, licence, sub-licence,
+    and exploit the User Content anywhere and in any form for the purpose of providing our Service (including allowing
+    our users to view your User Content)."
+  - Which of these governs REST API use is not stated on the pages read: UNVERIFIED (Flat's developer contact,
+    developers@flat.io per the help page, would settle it). API pricing: UNVERIFIED.
 
 ## Hooktheory API (Trends)
 
@@ -651,8 +777,27 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
   content part `{"type": "input_audio", "input_audio": {"data": <base64>, "format": "wav"}}` (code examples on the
   page). Token rates per second of audio, the full list of accepted input formats, video input, prices and OpenAI's
   terms were not read in this pass: UNVERIFIED.
-- Anthropic Claude, Alibaba Qwen-Omni, Amazon Nova and other audio- or video-capable LLM APIs: not read in this pass
-  (UNVERIFIED; their official docs pages would settle input formats, sampling and price).
+- Anthropic Claude (added by verify-docs): the Messages API reference https://platform.claude.com/docs/en/api/messages.md
+  (read 2026-11-10) names content block types `text`, `image`, `document` and `search_result`; the string "audio" does
+  not occur in that page, so no audio or video input type is documented there. Vercel's gateway page agrees for its
+  Anthropic-style endpoint: "Messages API | No audio content part"
+  (https://vercel.com/docs/ai-gateway/inputs-and-tools/audio-input.md).
+- Alibaba Cloud Model Studio, Qwen-Omni (added by verify-docs; https://help.aliyun.com/en/model-studio/qwen-omni ,
+  read 2026-11-10): `qwen3.8-omni-flash`, input "Text, images, audio, video", output "Text", APIs "Chat Completions,
+  Responses", "The context length is 1M tokens."; Qwen3.5-Omni "Input limits: Up to 3 hours of audio or 1 hour of
+  video" (text and audio output); Qwen3-Omni-Flash "Input limits: 20 minutes of audio or 150 seconds of video". Audio
+  goes in as an OpenAI-style `{"type": "input_audio", "input_audio": {"data": <URL>}}` part, video as `video_url`.
+  Audio file limits: "Using Base64 encoding: The encoded Base64 string must be smaller than 10 MB"; formats "common
+  formats such as AMR, WAV, 3GP, 3GPP, AAC, and MP3."; video formats "MP4, AVI, MKV, MOV, FLV, WMV, and others."
+  Price and terms: not read (UNVERIFIED).
+- xAI and DeepSeek (from the try agent's authenticated model listings, `trials.md`, 2026-11-10): the eight xAI
+  language models listed have `input_modalities` `["text", "image"]`; xAI's audio offering read is speech to text
+  (`POST https://api.x.ai/v1/stt`, used in r0105). DeepSeek's `deepseek-flash` lists `["text", "image"]` and
+  `deepseek-v4-pro` `["text"]`. The DeepSeek docs home page (https://api-docs.deepseek.com/ , read by verify-docs)
+  does not contain the words "audio" or "video".
+- Mistral (seen by verify-docs, https://docs.mistral.ai/capabilities/audio/ , read 2026-11-10): the audio docs
+  describe Voxtral 3 speech-to-text and text-to-speech models; music understanding is not described there.
+- Amazon Nova: not read (UNVERIFIED).
 
 ## Spotify Web API (audio features and audio analysis)
 
@@ -665,40 +810,242 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
 
 ## ChordMini
 
-- https://chord-mini-app.vercel.app/docs answered HTTP 402 with a 78-byte plain-text body on 2026-11-10; the
-  documented API (seen only in a search-result snippet: a `/api/recognize-chords` endpoint accepting MP3, WAV, FLAC,
-  M4A and OGG, "10-minute processing timeout") could not be read: UNVERIFIED. The project's source repository was not
-  read (belongs to the chords-beats lane).
+- https://chord-mini-app.vercel.app/docs answered HTTP 402 with a 78-byte plain-text body on 2026-11-10 (again to
+  verify-docs the same day); the documented hosted API (seen only in a search-result snippet: a
+  `/api/recognize-chords` endpoint accepting MP3, WAV, FLAC, M4A and OGG, with a processing timeout) could not be read:
+  UNVERIFIED. The project's README (https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md, read by
+  verify-docs 2026-11-10) describes a self-hosted Python backend (`PYTHON_API_URL=http://localhost:5001`) with "Beat
+  Detection: Beat-Transformer and madmom models" and "Chord Recognition: Chord-CNN-LSTM, BTC-SL, BTC-PL models"; the
+  models belong to the chords-beats lane.
 
-## Not researched in this pass
+## StemSplit API (added by verify-docs)
 
-- StemSplit API (https://stemsplit.io), GetSongBPM API (https://getsongbpm.com/api), Cyanite API (https://cyanite.ai,
-  also offered inside Music.AI as "Music metadata (By Cyanite)" at "$0.15 / min", with a Music.AI terms clause that
-  its Output must not be used "to train artificial intelligence or machine learning" models), Beatstorapon API,
-  WaveSpeedAI, Songscription (search results say it is a consumer app). Listed so a gap-filler can pick them up.
+- What it is: a web stem splitter with a REST API. Read 2026-11-10: https://stemsplit.io/llms.txt , the launch post
+  https://stemsplit.io/blog/stemsplit-api-launch.md (front matter `date: "2025-01-05"`, `lastUpdated: "2026-03-12"`),
+  https://stemsplit.io/pricing , https://stemsplit.io/legal/terms . (https://stemsplit.io/docs answered 404; the API
+  reference at https://stemsplit.io/developers/reference was fetched but its endpoint list was not read in detail.)
+- How a program calls it: "Base URL: `https://stemsplit.io/api/v1`" (llms.txt); header
+  `Authorization: Bearer <API key>` (the docs show keys with an `sk_live_` prefix); `POST /api/v1/jobs` for an upload, `POST /api/v1/youtube-jobs` for a YouTube URL
+  ("Pass a YouTube URL and get separated stems back — no need to download first"), then a webhook or polling;
+  "Webhook payloads include HMAC-SHA256 signatures for verification." Output types include "`SIX_STEMS` | Vocals,
+  drums, bass, guitar, piano, other" (launch post). Quality modes: "`BEST` | ~60s per minute | Production quality;
+  required for 6-stem". The post says the API runs the "same HTDemucs FT model" as the web app (vendor's statement;
+  `htdemucs_ft` is a four-stem model in the Demucs README, so which model gives the six-stem output is UNVERIFIED).
+- Limits (launch post table): requests per minute 60, maximum file size 50 MB, maximum audio duration 60 minutes.
+- Price (https://stemsplit.io/pricing , read 2026-11-10): credit packs of 10 minutes "$2.00" ("$0.20/minute"), 30
+  minutes "$5.00" ("$0.17/minute"), 100 minutes "$12.00" ("$0.12/minute"), 300 minutes "$30.00" ("$0.10/minute");
+  "5 free minutes on signup". Launch post: "The API uses the same credit system as the web app — no separate API
+  pricing, no subscription required."
+- Terms (https://stemsplit.io/legal/terms , read 2026-11-10; the page shows "Last updated: December 28, 2024" under
+  its title and "Last Updated: January 8, 2026" above the text):
+  - "StemSplit provides a feature that allows users to submit URLs from YouTube, SoundCloud, and other third-party platforms for audio processing. THIS FEATURE IS PROVIDED SOLELY FOR PROCESSING CONTENT THAT YOU HAVE THE LEGAL RIGHT TO USE."
+  - "Compliance with Platform Terms: You acknowledge that YouTube, SoundCloud, and other platforms have their own Terms of Service that may restrict downloading or processing of content. You are solely responsible for compliance with those terms."
+- Not called by any agent here.
+
+## ElevenLabs Stem Separation and Speech to Text APIs (added by verify-docs)
+
+- Stem separation (https://elevenlabs.io/docs/api-reference/music/separate-stems.md and the OpenAPI spec
+  https://api.elevenlabs.io/openapi.json, "ElevenLabs API Documentation" 1.0, both read 2026-11-10):
+  `POST https://api.elevenlabs.io/v1/music/stem-separation`, multipart form, header `xi-api-key`. Form fields `file`
+  (required, "The audio file to separate into stems."), `stem_variation_id` (enum `two_stems_v1`, `six_stems_v1`,
+  default `six_stems_v1`), `sign_with_c2pa`; query `output_format` (default `mp3_44100_128`; "MP3 with 192kbps
+  bitrate requires you to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
+  subscribed to Pro tier or above."), `enable_logging` ("When enable_logging is set to false zero retention mode will
+  be used for the request. Zero retention mode may only be used by enterprise customers."). Response: "ZIP archive
+  containing separated audio stems. Each stem is provided as a separate audio file in the requested output format."
+  "This endpoint might have high latency, depending on the length of the audio file." The docs do not name the six
+  stems; the try agent's call (r0064, `samples/elevenlabs/S4_six_stems/record.json`) returned `drums.mp3`,
+  `vocals.mp3`, `piano.mp3`, `guitar.mp3`, `bass.mp3`, `other.mp3` (MP3 192 kb/s, 44.1 kHz, stereo). No stem
+  separation rate was found on https://elevenlabs.io/pricing/api (try agent and verify-docs both searched it).
+- Speech to Text (`POST https://api.elevenlabs.io/v1/speech-to-text`): the OpenAPI spec's `source_url` field
+  "Supports hosted video or audio files, YouTube video URLs, TikTok video URLs, and other video hosting services."
+  (quoted by the try agent in `trials.md`; r0108 ran it on the R2 song for lyrics.)
+- Terms (Terms of Service https://elevenlabs.io/terms-of-use , "Last Updated: 09 October 2026", read 2026-11-10):
+  - § 4(c)(ii): "Except as expressly set forth herein, as between you and ElevenLabs, you retain all rights in and to your Output."
+  - § 4(d): "You hereby grant to ElevenLabs a license to use, reproduce, modify, adapt, publish, translate, create derivative works from, distribute, publicly or otherwise perform and display, and use your Content to provide the Services (including the trust and safety features therein), to improve the Services, and to develop new services and products." The license is listed as "perpetual and irrevocable", "royalty-free and fully paid" and "sub-licensable, through multiple tiers".
+  - § 4(i): "you may opt out of our use of your Content for training at any time by navigating to the 'Data use' menu in the 'Terms and Privacy' section of your ElevenLabs account."
+  - Music Terms (https://elevenlabs.io/music-terms , "Last updated: 09 October 2026"), § 1.1: "The “Music Service” is the ElevenLabs Service that generates and returns Output in the form of sound recordings and the musical compositions embodied in them, based on Input". The words "stem" and "stems" do not occur in the Music Terms page text, so whether they cover stem separation is not stated there (UNVERIFIED).
+- Python SDK on PyPI: `elevenlabs` 2.77.0 (uploaded 2026-11-06, license MIT).
+
+## Vercel AI Gateway (added by verify-docs)
+
+- What it is: a hosted router with OpenAI-compatible endpoints at `https://ai-gateway.vercel.sh/v1` (Chat
+  Completions, Responses) and an Anthropic-style Messages endpoint, in front of many model providers. Read
+  2026-11-10: https://vercel.com/docs/ai-gateway/inputs-and-tools/audio-input.md and
+  https://vercel.com/docs/ai-gateway/inputs-and-tools/video-input.md (both `last_updated: 2026-09-08`).
+- Audio in: Chat Completions takes a `file` part with `filename` and a `file_data` data URL; the page's table:
+  "The Chat Completions endpoint rejects `input_audio` parts. Use `file` with a model that accepts audio.";
+  Responses takes `input_file`; "Audio support depends on the selected model, provider, and request format. Confirm
+  the accepted encoding, duration, and request-size limits for your route before using longer recordings."
+- Video in: "Video support, sampling, duration limits, and audio-track handling depend on the model and provider."
+  The try agent's MP4 requests to the three free-tier models were refused with HTTP 400 (r0077, r0083, r0086, r0098;
+  `trials.md`); WAV as a `file` part and JPEG frames as `image_url` parts were accepted.
+- Output: OpenAI chat-completion JSON; `response_format` with a JSON schema was used by the try agent (`trials.md`
+  lists the response fields it saw, including `usage.cost`).
+- Price and terms: per-token prices per model in `GET https://ai-gateway.vercel.sh/v1/models` (read by the try
+  agent); Vercel's gateway terms were not read (UNVERIFIED).
+
+## MusicGPT API, audio to MIDI (added by verify-docs)
+
+- `POST https://api.musicgpt.com/api/public/v1/audio_to_midi` (https://docs.musicgpt.com/api-documentation/endpoint/audio_to_midi.md ,
+  OpenAPI "Musicgpt API" 1.0.0 embedded in the page, read 2026-11-10): multipart form with `audio_url` ("Input audio
+  URL (supported format: YouTube URL).") or `audio_file`, `sonify_midi` (default true, "If true, generates a .wav file
+  that sonifies the MIDI output."), `save_note_events` (default true, "If true, saves predicted note events as a CSV
+  file."), `webhook_url`; "This request is handled asynchronously."; the response carries `success`, `task_id` and
+  `conversion_id`. No instrument, tuning or key field is in the request schema. Model behind it, price and terms: not
+  read (UNVERIFIED). Not called by any agent here.
+
+## Not covered
+
+Found by verify-docs on 2026-11-10 in web search results; the pages were not read unless the line says so, so each
+line is only a pointer for a gap-filler.
+
+- GetSongBPM API (https://getsongbpm.com/api): tempo and key looked up by song title; the page answered HTTP 403 to
+  this box on 2026-11-10.
+- Cyanite API (https://cyanite.ai): also offered inside Music.AI as "Music metadata (By Cyanite)" at "$0.15 / min",
+  with a Music.AI terms clause that its Output must not be used "to train artificial intelligence or machine learning"
+  models. Not read as a separate API.
+- Beatstorapon API, WaveSpeedAI (WaveSpeedAI is listed as an Inference Providers provider on the Hugging Face page
+  read above): not researched.
+- Songscription (https://www.songscription.ai): audio to notation, tabs and MIDI web app; no developer API page was
+  found in search results.
+- PianoConvert API: transcription API returning MIDI, MusicXML and PDF, described in search results as piano-only;
+  the help-page URL the search returned (https://latouchemusicale.crunch.help/it/piano-convert/piano-convert-api)
+  answered HTTP 404 on 2026-11-10.
+- Tencent Smart Music "Vocal To Midi" (https://multimedia.tencent.com/en/docs/smart-music/api/10-vocal-to-midi):
+  vocal melody to MIDI or JSON.
+- Soundverse enterprise API stem separation (https://help.soundverse.ai/enterprise-api/generate/ai-stem-separation/stem-separation.md).
+- Roboflow hosted inference (https://docs.roboflow.com/deploy/serverless-hosted-api , which redirected to
+  https://docs.roboflow.com/deployment/choosing-a-deployment on 2026-11-10): Roboflow's hosted model inference, a
+  possible host for the fretboard detectors the video-hands-fretboard lane looks at; page not read.
+- Amazon Nova (https://docs.aws.amazon.com/nova/latest/userguide/what-is-nova.html , answered HTTP 200): whether its
+  models take audio or video input was not read.
 
 ## Handoff facts
 
-One line per fact: "X outputs <format>, which Y accepts as <input>", with the page that supports each half (all read
-2026-11-10). These are format matches from the docs, not tested runs; tested runs are in `trials.md`.
+One line per fact: "X outputs <format>, which Y accepts as <input>", with a page (read 2026-11-10) or a run id
+(`trials.md`, ledger `/home/user/gtr/ledger/runs.jsonl`) behind each half. Lines marked "docs" are format matches
+from the docs, not tested runs. Checked by verify-docs on 2026-11-10: lines whose second half had no source were
+rewritten or moved to "Output-only facts" below.
 
 Inside this lane:
 
-- yt-dlp outputs audio-only files ("-x, --extract-audio Convert video files to audio-only files (requires ffmpeg and ffprobe)", https://raw.githubusercontent.com/yt-dlp/yt-dlp/master/README.md), which Klangio accepts as a multipart `file` upload (https://api-docs.klang.io/docs/getting-started/basic-job-workflow), LALAL.AI as an `application/octet-stream` upload "up to 10 GB" (https://www.lalal.ai/api/v1/openapi.json) and MVSEP as `audiofile` (https://mvsep.com/full_api).
-- Gemini accepts a public YouTube URL directly as video input, with no download step on the caller's side ("You can only upload public videos (not private or unlisted videos).", https://ai.google.dev/gemini-api/docs/video-understanding).
-- AudioShake outputs per-target download links that "expire after one hour" (https://developer.audioshake.ai/quickstart.md), which Music.AI accepts as a job's `inputUrl` (https://music.ai/docs/api/reference/), fal-ai/demucs as `audio_url` (https://fal.ai/models/fal-ai/demucs/llms.txt), MVSEP as `url` with `remote_type` "direct" (https://mvsep.com/full_api) and AudioShake itself as `url` (quickstart).
-- Result lifetimes that bound such chains: Klangio "Results will be available for 14 days." (transcription docs); LALAL.AI "A task stays here for 24 hours after it finishes." (openapi.json); Music.AI pay-as-you-go "48h temporary storage" (https://music.ai/pricing/); AudioShake "Uploaded Assets expire after 72 hours." (https://developer.audioshake.ai/faq.md).
-- Guitar stems: LALAL.AI outputs `guitar` / `electric_guitar` / `acoustic_guitar` stems (openapi.json), AudioShake `guitar` / `guitar_electric` / `guitar_acoustic` (https://developer.audioshake.ai/models.md), Music.AI `acoustic_guitar` / `electric_guitar` and `rhythm_guitars` / `solo_guitars` (module pages), MVSEP sep_type 31 / 66 / 81 / 101 (https://mvsep.com/full_api), fal-ai/demucs `guitar` with `htdemucs_6s` (llms.txt), Klangio `guitar` with `six-stems` (https://api-docs.klang.io/docs/file-formats/audio), Fadr electric and acoustic guitar via `"melodic-stem"` (https://fadr.com/docs/api-endpoints); any of these audio files is accepted by Klangio `/transcription?model=guitar` as the `file` upload (https://api-docs.klang.io/docs/advanced-usage/transcription-model-selection).
-- Klangio `/transcription` with `model=guitar` outputs Guitar Pro 5 (`gp5`; "available only if you choose the guitar or bass model", https://api-docs.klang.io/docs/file-formats/guitar-pro), which Flat imports (`.gp5`, "converted to MusicXML on import, some notation details may be lost", https://flat.io/developers/docs/openapi.yaml) and Soundslice accepts as notation upload ("MusicXML, Guitar Pro, PowerTab or TuxGuitar"; endpoint "only available by special permission", https://www.soundslice.com/help/data-api/).
-- Klangio outputs MusicXML (`xml` result path) and MIDI (https://api-docs.klang.io/docs/getting-started/basic-job-workflow), which Flat imports as its "Preferred formats" (openapi.yaml) and Soundslice accepts (MusicXML) (data API docs).
-- Flat exports a score as MP3, WAV, MIDI, MusicXML and `synchronizationPoints` (openapi.yaml, "Get a score revision data"): a rendered audio track of a corrected tab for reference playback.
-- Klangio beat tracking outputs `[beat_time_in_seconds, beat_number_in_bar]` with 1.0 on each downbeat (https://api-docs.klang.io/docs/jobs/beat-tracking-request); Soundslice syncpoints take `[zero_based_bar, time_in_seconds, optional_position_0_to_480]` (https://www.soundslice.com/help/data-api/). Music.AI beats give `bpm` plus `beatMap` with each beat's start time and beat number (https://music.ai/modules/transcription/beats/).
-- Klangio chord recognition outputs `[start_s, end_s, "Root:quality"]` (e.g. "E:maj") and, in the extended job, a `key` such as "A minor" (https://api-docs.klang.io/docs/jobs/chord-recognition-extended-requests); Hooktheory `trends/nodes` takes Roman-numeral child paths relative to the key (`cp=4,1`) and returns next-chord `probability` values (https://www.hooktheory.com/api/trends/docs). Converting between them needs the key.
+- yt-dlp outputs audio-only files ("-x, --extract-audio Convert video files to audio-only files (requires ffmpeg and ffprobe)", https://raw.githubusercontent.com/yt-dlp/yt-dlp/master/README.md; tested: r0126 wrote a WAV, PCM 16-bit, 48 kHz, mono, from an archive.org item), which Klangio accepts as a multipart `file` upload (https://api-docs.klang.io/docs/getting-started/basic-job-workflow; which audio formats Klangio parses is not listed in its docs), LALAL.AI as an `application/octet-stream` upload "up to 10 GB" (https://www.lalal.ai/api/v1/openapi.json) and MVSEP as `audiofile` (https://mvsep.com/full_api). Docs, apart from r0126.
+- A public YouTube URL is accepted directly as input, with no download on the caller's side, by Gemini ("You can only upload public videos (not private or unlisted videos).", https://ai.google.dev/gemini-api/docs/video-understanding), StemSplit (`POST /api/v1/youtube-jobs`, https://stemsplit.io/blog/stemsplit-api-launch.md), MusicGPT audio-to-MIDI (`audio_url` "supported format: YouTube URL", https://docs.musicgpt.com/api-documentation/endpoint/audio_to_midi.md), ElevenLabs Speech to Text (`source_url`, https://api.elevenlabs.io/openapi.json) and Soundslice as a recording to sync to (`source` 1, https://www.soundslice.com/help/data-api/). Docs; none of these was called with a YouTube URL here.
+- AudioShake outputs per-target download links that "expire after one hour" (https://developer.audioshake.ai/quickstart.md), which Music.AI accepts as a job's `inputUrl` (https://music.ai/docs/api/reference/), fal-ai/demucs as `audio_url` (https://fal.ai/models/fal-ai/demucs/llms.txt), MVSEP as `url` with `remote_type` "direct" (https://mvsep.com/full_api), Replicate as an input file URL ("Files should be passed as HTTP URLs or data URLs.", https://api.replicate.com/openapi.json) and AudioShake itself as `url` (quickstart). Docs.
+- Result lifetimes that bound such chains: Klangio "Results will be available for 14 days." (https://api-docs.klang.io/docs/jobs/transcription-requests); LALAL.AI "A task stays here for 24 hours after it finishes." (openapi.json); Music.AI pay-as-you-go "48h temporary storage" (https://music.ai/pricing/); AudioShake "Uploaded Assets expire after 72 hours." (https://developer.audioshake.ai/faq.md); Replicate API predictions' files "are automatically removed after an hour, by default" (https://replicate.com/docs/topics/predictions/data-retention.md).
+- Guitar stems: LALAL.AI outputs `guitar` / `electric_guitar` / `acoustic_guitar` stems (openapi.json), AudioShake `guitar` / `guitar_electric` / `guitar_acoustic` (https://developer.audioshake.ai/models.md), Music.AI `acoustic_guitar` / `electric_guitar` and `rhythm_guitars` / `solo_guitars` (module pages), MVSEP sep_type 31 / 66 / 81 / 101 (https://mvsep.com/full_api), fal-ai/demucs `guitar` with `htdemucs_6s` (llms.txt), Klangio `guitar` with `six-stems` (https://api-docs.klang.io/docs/file-formats/audio), Fadr electric and acoustic guitar via `"melodic-stem"` (https://fadr.com/docs/api-endpoints), StemSplit `SIX_STEMS` (launch post), ElevenLabs `guitar.mp3` from `six_stems_v1` (tested: r0064, MP3 192 kb/s, 44.1 kHz, stereo). Replicate's `ryan5453/demucs` latest version has no guitar stem (Replicate section). Klangio `/transcription?model=guitar` takes an audio file as the multipart `file` (basic workflow page); its docs do not list the accepted audio formats, so whether each of these stem files is accepted is UNVERIFIED (one call per format would settle it).
+- Klangio `/transcription` with `model=guitar` outputs Guitar Pro 5 (`gp5`; "available only if you choose the guitar or bass model", https://api-docs.klang.io/docs/file-formats/guitar-pro), which Flat imports (`.gp5`, "converted to MusicXML on import, some notation details may be lost", https://flat.io/developers/docs/openapi.yaml) and Soundslice accepts as notation upload ("MusicXML, Guitar Pro, PowerTab or TuxGuitar"; endpoint "only available by special permission", https://www.soundslice.com/help/data-api/). Docs.
+- Klangio outputs MusicXML (`xml` result path) and MIDI (https://api-docs.klang.io/docs/getting-started/basic-job-workflow), which Flat imports as its "Preferred formats" (openapi.yaml) and Soundslice accepts (MusicXML) (data API docs). Docs.
+- The YourMT3 Space returns its MIDI inside an HTML string as a `data:audio/midi;base64,` URL, a format-1 MIDI file with 480 ticks per quarter note (tested: r0112, `trials.md`); once cut out and decoded, a `.mid` file is a format Flat imports ("MIDI: `.mid`, `.midi`", openapi.yaml; not tested).
+- Flat exports a score as MP3, WAV, MIDI, MusicXML and `synchronizationPoints` (openapi.yaml, "Get a score revision data"), and Soundslice accepts an MP3 as a recording (`source` "2 — MP3 uploaded to Soundslice" or "8 — MP3 URL", data API docs). Docs.
+- Klangio beat tracking outputs `[beat_time_in_seconds, beat_number_in_bar]` with 1.0 on each downbeat (https://api-docs.klang.io/docs/jobs/beat-tracking-request), and the Beat-This Space returns labels `beat` / `downbeat` with times `t` in seconds (tested: r0118); Soundslice syncpoints take `[zero_based_bar, time_in_seconds, optional_position_0_to_480]` (https://www.soundslice.com/help/data-api/), so downbeat times give one syncpoint per bar. Music.AI beats give `bpm` plus `beatMap` with each beat's start time and beat number (https://music.ai/modules/transcription/beats/). Docs, apart from r0118.
+- Klangio chord recognition outputs `[start_s, end_s, "Root:quality"]` (e.g. "E:maj") and, in the extended job, a `key` such as "A minor" (https://api-docs.klang.io/docs/jobs/chord-recognition-extended-requests); Hooktheory `trends/nodes` takes Roman-numeral child paths relative to the key (`cp=4,1`) and returns next-chord `probability` values (https://www.hooktheory.com/api/trends/docs). Converting between them needs the key. Docs.
 - Soundslice accepts a YouTube video as a recording (`source` 1, `source_data` "The URL or ID of the YouTube video.") and syncs notation to it by syncpoints (data API docs); Songsterr and Soundslice both state that embedded YouTube players bind the viewer to the YouTube Terms of Service (their terms pages).
+- ElevenLabs stems decode (ffmpeg 6.1.1, 44.1 kHz) 1,105 samples (25.06 ms) after the input mix and 2,225 samples longer (tested: r0064 and `scripts/stem_alignment.py`, `trials.md`); a tool that compares or sums stems against the mix sample by sample has to trim that offset first.
+- ElevenLabs `six_stems_v1` outputs `guitar.mp3` (MP3 192 kb/s, 44.1 kHz, stereo; tested: r0064), which the YourMT3-cpu Space accepted unchanged as its audio input and answered with MIDI inside HTML (tested: r0231, `trials.md` section "Tested handoff"); WAV 44.1 kHz input was also accepted by the YourMT3 and Beat-This Spaces (r0112, r0118).
 
 To neighbouring lanes:
 
-- Stems (all services above) are WAV/MP3/FLAC audio files, which the audio-to-notes and guitar-tab lanes' local transcribers take as audio input (see those lanes' survey.md for the accepting half).
-- Klangio strum recognition outputs `[time_s, "U"|"D"]` per strum (https://api-docs.klang.io/docs/jobs/strum-recognition-requests): picking-direction events from audio, a counterpart to the video-hands-fretboard lane's picking-hand tracking.
-- Fadr's stem task outputs MIDI per stem, chord progression MIDI, and `key` / `tempo` in asset metadata (https://fadr.com/docs/api-endpoints); MIDI is the input of the guitar-tab lane's string-and-fret assigners (see that lane for the accepting half).
-- User constraints: none of the hosted transcription or separation request schemas read here (Klangio, Music.AI module inputs, LALAL.AI, AudioShake, MVSEP, fal-ai/demucs, Fadr) has a tuning, capo, key or tempo field. Gemini and OpenAI audio models take free-text prompts, the only place such a constraint can be stated to them (Gemini audio and video pages; OpenAI audio-chat page).
+- Stems from these services are audio files (MP3 from ElevenLabs, r0064; WAV, MP3 or FLAC by request elsewhere, per each section above). The other lanes' local transcribers are the other accepting side (see their survey.md and trials.md; not checked here).
+
+Output-only facts (no accepting tool verified in this lane; moved here by verify-docs):
+
+- Klangio strum recognition outputs `[time_s, "U"|"D"]` per strum (https://api-docs.klang.io/docs/jobs/strum-recognition-requests): picking-direction events from audio. The video-hands-fretboard lane tracks the picking hand from video (PLAN.md); no tool there was checked as a receiver.
+- Fadr's stem task outputs MIDI per stem, chord progression MIDI, and `key` / `tempo` in asset metadata (https://fadr.com/docs/api-endpoints); MIDI is what the guitar-tab lane's string-and-fret assigners take in (not checked here).
+- MusicGPT audio-to-MIDI outputs a MIDI file, an optional sonified WAV and an optional CSV of note events (docs; not called).
+
+Constraint inputs (not a handoff; the fact a re-run needs):
+
+- None of the hosted transcription or separation request schemas read here (Klangio, Music.AI module inputs, LALAL.AI, AudioShake, MVSEP, fal-ai/demucs, Fadr, StemSplit, ElevenLabs stem separation, MusicGPT audio-to-MIDI, Replicate's three models) has a tuning, capo, key or tempo field. The nearest are vocabulary choices: Klangio `vocabulary` (`major-minor`, `full`, spec also `root`) and Replicate chord model `chord_vocabulary`. Gemini, the Vercel gateway's models, Qwen-Omni and OpenAI audio models take free-text prompts, the only place such a constraint can be stated to them (their docs pages; the try agent sent capo and key questions this way, r0080 and r0084 in `trials.md`).
+
+## Verification log (verify-docs-hosted-apis, 2026-11-10)
+
+How it was checked: the 115 pages the survey cites or saved were fetched again on 2026-11-10 at 21:08-21:09 UTC
+(`scripts/verify-docs/fetch_all.sh`; page lists and copies in `/home/user/gtr/lanes/hosted-apis/verify-docs/`, not
+committed), every double-quoted string in the survey as it stood at 21:07 was pulled out and searched for on the
+fetched pages after normalising whitespace, curly quotes and markdown marks (`scripts/verify-docs/check_quotes.py`;
+per-quote results in `samples/verify-docs/quotes_before.tsv`), the OpenAPI and JSON specs were parsed rather than
+read as text, and every cited URL was requested once more to record its status and redirects. 56 further pages and
+34 Hugging Face API answers were fetched between 21:16 and 21:32 UTC for the corrections and additions (weights and
+data licenses, Replicate's API spec, the Flat help pages, ElevenLabs, Vercel, StemSplit, MusicGPT, Qwen-Omni, Claude,
+Hugging Face terms).
+
+Tally of the quotes in the survey as written by docs-hosted-apis (432 quoted strings; 12 of them shorter than four
+characters, such as `"U"`, `"$1"`, `"—"`, were checked by eye):
+
+| | quoted strings | confirmed verbatim | confirmed after removing list or comment marks | corrected | unverifiable | not a quote |
+|---|---|---|---|---|---|---|
+| license, terms, policy and training-data clauses | 72 | 69 | 1 (Songsterr ai.txt `#` marks) | 2 | 0 | 0 |
+| other quotes (docs, specs, prices, dates) | 360 | 345 | 2 (Flat import formats) | 10 | 2 | 1 |
+| all | 432 | 414 | 3 | 12 | 2 | 1 |
+
+- The 2 corrected clauses had been cut off mid-word with a bracket (`pro[cessing] ...`, `purpos[e]`); both were
+  completed from the page (MVSEP non-commercial models clause, fal.ai usage-data clause). 14 of the 69 confirmed
+  clauses are on pages that the cited URL now redirects to (LALAL.AI, Gemini, fal.ai, Songsterr, Flat); the URLs were
+  updated or the redirect noted.
+- The 10 corrected other quotes: the Music.AI plan heading ("Business / Enterprise" and "Contact us" are separate
+  strings); 4 MVSEP plan strings that had been assembled from table cells (restated as cells, and the 3 credit packs
+  above $100 that were missing added); 2 Hugging Face navigation lists presented as quotes (now unquoted); the
+  Gemini token list, which joined two bullets into one quote (split); the Gemini Files API sentence, which carried
+  markdown link syntax (now the visible text); the Replicate ".lab" string, labelled a search-result snippet, which is
+  on the model page (attribution corrected).
+- Unverifiable: "up to 10 concurrent jobs" (a search snippet the survey already said does not match the MVSEP page;
+  kept, labelled) and the ChordMini "processing timeout" snippet (the docs page answers 402; the quote was removed).
+- Links: 11 cited URLs now redirect or were replaced (LALAL.AI terms to /terms-and-conditions/; flat.io/legal to
+  help.flat.io/en/policies/; the Flat API terms URL, which redirects to a sign-in page, replaced by the help page;
+  5 Gemini docs URLs to aistudio.google.com/docs/; fal.ai terms to /legal/terms-of-service; Songsterr terms to
+  /terms; MVSEP plans to /en/plans). 3 quotes that had no URL got one (Klangio transcription and audio pages).
+  GetSongBPM (403), Chordify (403), ChordMini docs (402), AudioShake and Soundslice pricing (404) answered as the
+  survey said.
+
+Facts corrected or added (beyond quotes):
+
+- Replicate: input and output schemas are in the JSON embedded in each model page (no longer UNVERIFIED); the latest
+  `ryan5453/demucs` version (2026-10-03) serves `htdemucs` only, with no guitar stem, and the "htdemucs_ft" /
+  "mdx_extra_q" values belong to a 2024 version; the API call pattern, auth header and one-hour data retention were
+  read from Replicate's OpenAPI spec and docs.
+- Weights and training data, which the survey had left to other lanes: the Demucs README says the weights' license
+  "is not clear" and that the six-source `htdemucs_6s` (fal-ai/demucs's default) "likely" falls under a
+  non-commercial license; MUSDB18-HQ is "for educational purposes only"; Transkun's checkpoints are trained on
+  MAESTRO, which is CC BY-NC-SA 4.0; All-In-One is trained on the Harmonix Set. All quoted with links.
+- Klangio: the chord `vocabulary` enum in the spec has a third value, `root`, besides the two the docs describe;
+  status values differ between the docs (4) and the spec (6); `json` is not a documented transcription
+  output in the docs; input audio formats are not documented; minimum length 5 s; demo transcriptions on test
+  accounts; terms section numbers confirmed (no date on the terms page).
+- AudioShake: `other-x-guitar` is 1.0 credit/min on models.md and 1.5 in the live `/models` answer.
+- MVSEP: 126 algorithms and 0 non-null `nc_license` recounted; the guitar SDR table's test set is described on
+  MVSEP's algorithm list as "a guitar validation set" (30 tracks in the Russian text).
+- Fadr: the API host answered (200 on `/`, 401 without a key) on 2026-11-10.
+- Flat: API terms page, Embed and Individual terms quoted; Flat also offers a remote MCP server.
+- Gemini: docs URLs redirect to aistudio.google.com; the try agent's `countTokens` gave 26.0 audio tokens per second
+  for `gemini-4-carbon` against the page's 32 (both stated); Gemini 4 Carbon prices added.
+- Hugging Face: Space stages re-read at 21:16 UTC (unchanged for the seven listed, ten more added); Inference
+  Providers' task index read (only audio classification and speech recognition among audio tasks); Hugging Face
+  Terms of Service quoted (was UNVERIFIED); the Spaces the try agent called are named with run ids.
+- Music.AI: the module pages' `inputFileUrl` and the API reference's `inputUrl`; two different beat shapes; a
+  third-party claim that individual API keys are no longer issued (UNVERIFIED either way).
+- Handoff facts: every line now has a page or a run id behind both halves. 2 lines whose accepting half had no
+  source (Klangio strums, Fadr MIDI) moved to "Output-only facts"; 2 rewritten with a sourced receiver (Flat's MP3
+  export to a Soundslice recording; stems to the Spaces the try agent fed); the constraint statement moved out of the
+  list; lines and run ids added from the try agent's runs (r0064, r0112, r0118, r0126, r0231) and for the services
+  added here.
+
+Tools added: StemSplit, ElevenLabs (stem separation and speech to text), Vercel AI Gateway and MusicGPT (audio to
+MIDI) as sections; Claude, Qwen-Omni, xAI, DeepSeek and Mistral under "Other multimodal LLM APIs"; 9 pointers under
+"## Not covered". Judging words: none were found outside quotes attributed to a vendor ("SOTA" on fal.ai's page,
+"Pro is the better choice" on LALAL.AI's pricing page, "recommended" in the yt-dlp README); those quotes were kept
+as quotes.
+
+Check of the corrected file (the same script at 21:43 UTC, per-quote results in
+`samples/verify-docs/quotes_after.tsv`): 597 quoted strings; 567 found verbatim on the fetched pages; 15 shorter
+than four characters, checked by eye; 15 not found, of which 7 are references to this file's own headings, 1 is the
+handoff template, 3 are the labelled search snippets and their mentions in this log, 3 are the Flat and Songsterr
+quotes confirmed after removing list or comment marks, and 1 ("Vocal To Midi") is the title of the Tencent page,
+fetched separately (HTTP 200). Quotes added after 21:43 (the StemSplit dates) were checked with grep on the saved
+pages.
+
+Still UNVERIFIED after this check: Klangio's `json` transcription fields and accepted input formats; AudioShake's
+price per credit; Soundslice plan prices; which Flat terms govern the REST API; Chordify (403); ChordMini's hosted
+API (402); the Replicate chord model's output fields; whether StemSplit's six-stem mode runs `htdemucs_6s`; MusicGPT
+and Qwen-Omni prices and terms; Vercel gateway terms; OpenAI audio formats, prices and terms; Amazon Nova.

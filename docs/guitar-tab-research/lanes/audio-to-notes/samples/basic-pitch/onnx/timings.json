@@ -1,0 +1,354 @@
+{
+ "tag": "onnx-default",
+ "backend": "onnx",
+ "model_path": "/home/user/gtr/lanes/audio-to-notes/venv-basicpitch/lib/python3.10/site-packages/basic_pitch/saved_models/icassp_2022/nmp.onnx",
+ "model_type": "MODEL_TYPES.ONNX",
+ "settings": {
+  "onset_threshold": 0.5,
+  "frame_threshold": 0.3,
+  "minimum_note_length": 127.7,
+  "minimum_frequency": null,
+  "maximum_frequency": null,
+  "multiple_pitch_bends": false,
+  "melodia_trick": true
+ },
+ "model_load_s": 0.066,
+ "clips": {
+  "S1": {
+   "input": "/home/user/gtr/inputs/S1/S1.wav",
+   "predict_s": 6.367,
+   "n_notes": 64,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 496,
+   "model_output_shapes": {
+    "note": [
+     2565,
+     88
+    ],
+    "onset": [
+     2565,
+     88
+    ],
+    "contour": [
+     2565,
+     264
+    ]
+   }
+  },
+  "S2n": {
+   "input": "/home/user/gtr/inputs/S2n/S2n.wav",
+   "predict_s": 3.832,
+   "n_notes": 137,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 13,
+   "model_output_shapes": {
+    "note": [
+     2524,
+     88
+    ],
+    "onset": [
+     2524,
+     88
+    ],
+    "contour": [
+     2524,
+     264
+    ]
+   }
+  },
+  "S2s": {
+   "input": "/home/user/gtr/inputs/S2s/S2s.wav",
+   "predict_s": 2.989,
+   "n_notes": 199,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 13,
+   "model_output_shapes": {
+    "note": [
+     2524,
+     88
+    ],
+    "onset": [
+     2524,
+     88
+    ],
+    "contour": [
+     2524,
+     264
+    ]
+   }
+  },
+  "S3": {
+   "input": "/home/user/gtr/inputs/S3/S3.wav",
+   "predict_s": 4.659,
+   "n_notes": 197,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 12,
+   "model_output_shapes": {
+    "note": [
+     2064,
+     88
+    ],
+    "onset": [
+     2064,
+     88
+    ],
+    "contour": [
+     2064,
+     264
+    ]
+   }
+  },
+  "S4": {
+   "input": "/home/user/gtr/inputs/S4/S4.wav",
+   "predict_s": 6.416,
+   "n_notes": 461,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 13,
+   "model_output_shapes": {
+    "note": [
+     3331,
+     88
+    ],
+    "onset": [
+     3331,
+     88
+    ],
+    "contour": [
+     3331,
+     264
+    ]
+   }
+  },
+  "S4guitar": {
+   "input": "/home/user/gtr/inputs/S4/stems/guitar.wav",
+   "predict_s": 5.408,
+   "n_notes": 386,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 13,
+   "model_output_shapes": {
+    "note": [
+     3331,
+     88
+    ],
+    "onset": [
+     3331,
+     88
+    ],
+    "contour": [
+     3331,
+     264
+    ]
+   }
+  },
+  "S4lead": {
+   "input": "/home/user/gtr/inputs/S4/stems/lead.wav",
+   "predict_s": 4.081,
+   "n_notes": 39,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 614,
+   "model_output_shapes": {
+    "note": [
+     3331,
+     88
+    ],
+    "onset": [
+     3331,
+     88
+    ],
+    "contour": [
+     3331,
+     264
+    ]
+   }
+  },
+  "S5capo2": {
+   "input": "/home/user/gtr/inputs/S5capo2/S5capo2.wav",
+   "predict_s": 4.973,
+   "n_notes": 139,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 13,
+   "model_output_shapes": {
+    "note": [
+     2524,
+     88
+    ],
+    "onset": [
+     2524,
+     88
+    ],
+    "contour": [
+     2524,
+     264
+    ]
+   }
+  },
+  "S5dropd": {
+   "input": "/home/user/gtr/inputs/S5dropd/S5dropd.wav",
+   "predict_s": 4.436,
+   "n_notes": 130,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 13,
+   "model_output_shapes": {
+    "note": [
+     2524,
+     88
+    ],
+    "onset": [
+     2524,
+     88
+    ],
+    "contour": [
+     2524,
+     264
+    ]
+   }
+  },
+  "S6taps": {
+   "input": "/home/user/gtr/inputs/S6taps/S6taps.wav",
+   "predict_s": 5.895,
+   "n_notes": 196,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 13,
+   "model_output_shapes": {
+    "note": [
+     2524,
+     88
+    ],
+    "onset": [
+     2524,
+     88
+    ],
+    "contour": [
+     2524,
+     264
+    ]
+   }
+  },
+  "S7flat30": {
+   "input": "/home/user/gtr/inputs/S7flat30/S7flat30.wav",
+   "predict_s": 3.806,
+   "n_notes": 112,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 13,
+   "model_output_shapes": {
+    "note": [
+     2064,
+     88
+    ],
+    "onset": [
+     2064,
+     88
+    ],
+    "contour": [
+     2064,
+     264
+    ]
+   }
+  },
+  "R1a": {
+   "input": "/home/user/gtr/inputs/R1a/R1a.wav",
+   "predict_s": 4.579,
+   "n_notes": 196,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 117,
+   "model_output_shapes": {
+    "note": [
+     2507,
+     88
+    ],
+    "onset": [
+     2507,
+     88
+    ],
+    "contour": [
+     2507,
+     264
+    ]
+   }
+  },
+  "R1b": {
+   "input": "/home/user/gtr/inputs/R1b/R1b.wav",
+   "predict_s": 4.879,
+   "n_notes": 76,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 1385,
+   "model_output_shapes": {
+    "note": [
+     2522,
+     88
+    ],
+    "onset": [
+     2522,
+     88
+    ],
+    "contour": [
+     2522,
+     264
+    ]
+   }
+  },
+  "R1c": {
+   "input": "/home/user/gtr/inputs/R1c/R1c.wav",
+   "predict_s": 4.806,
+   "n_notes": 156,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 23,
+   "model_output_shapes": {
+    "note": [
+     2428,
+     88
+    ],
+    "onset": [
+     2428,
+     88
+    ],
+    "contour": [
+     2428,
+     264
+    ]
+   }
+  },
+  "R2": {
+   "input": "/home/user/gtr/inputs/R2/R2.wav",
+   "predict_s": 6.495,
+   "n_notes": 334,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 0,
+   "model_output_shapes": {
+    "note": [
+     3096,
+     88
+    ],
+    "onset": [
+     3096,
+     88
+    ],
+    "contour": [
+     3096,
+     264
+    ]
+   }
+  },
+  "R3a": {
+   "input": "/home/user/gtr/inputs/R3a/R3a.wav",
+   "predict_s": 2.724,
+   "n_notes": 105,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 17,
+   "model_output_shapes": {
+    "note": [
+     1547,
+     88
+    ],
+    "onset": [
+     1547,
+     88
+    ],
+    "contour": [
+     1547,
+     264
+    ]
+   }
+  }
+ }
+}

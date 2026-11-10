@@ -8,11 +8,17 @@ README and licence files read from them are kept in `docs-agent/readmes/` and `d
 script that read the npm registry is `scripts/docs_npm_meta.py` in this folder. This file records facts and
 quotes only. It does not run the tools: the trials are in `trials.md` (written by the try-browser-audio-sync agent).
 
+Checked by verify-docs-browser-audio-sync on 2026-11-10: every quoted passage was compared again with freshly fetched
+copies of the cited pages, package files and repository files (copies kept outside the repo in
+`/home/user/gtr/lanes/browser-audio-sync/verify-docs/`, not committed; scripts `scripts/verify_*.py` and
+`scripts/verify_*.sh`). Text added or changed by the checker is marked "[verify]". The tally is in the Verification
+log at the end of this file.
+
 Marks used in the tool list:
 
 - `RUNNABLE`: a JavaScript or WebAssembly library or a web platform API that can be loaded in the box's headless
   Chromium (Playwright) on CPU. Whether it actually ran is recorded in `trials.md`, not here.
-- `RUNNABLE?`: loads in a browser, but its documented fast path needs WebGPU or another feature whose availability in
+- `RUNNABLE?`: loads in a browser, but its documented GPU path needs WebGPU or another feature whose availability in
   headless Chromium without a GPU is not established here (UNVERIFIED until a trial shows it).
 - `KEY`: needs an account, a licence key or a commercial agreement to use as documented.
 
@@ -35,7 +41,9 @@ what counts. Every entry now points to its section.
 5. `HTMLMediaElement.playbackRate` and `preservesPitch` (HTML Standard). RUNNABLE. Section 5.
 6. WebCodecs (`AudioDecoder`, `VideoDecoder`, `VideoFrame`, W3C). https://www.w3.org/TR/webcodecs/ . RUNNABLE. Section 6.
 7. Cross-origin isolation (COOP/COEP headers) as the condition for `SharedArrayBuffer` and WASM threads. Section 7.
-8. WebGPU and WebNN as model-runtime backends (W3C). RUNNABLE? Section 8.
+8. WebGPU and WebNN as model-runtime backends (W3C). RUNNABLE? Section 8. [verify] `trials.md`, run r0042: in the
+   box's headless Chromium 153, `navigator.gpu` exists but `requestAdapter()` returned null ("No available
+   adapters."), so the WebGPU paths do not run on this box.
 
 ### Transport, scheduling and timers
 
@@ -119,13 +127,22 @@ what counts. Every entry now points to its section.
 50. In-browser Demucs builds: `demucs-web` (timcsy, ONNX Runtime Web) 1.0.2, 2025-12-01, MIT; `demucs-wasm`
     (bengfarrell) 0.1.5, 2025-01-29; demucs-rs (nikhilunni, Rust + Burn wgpu to WASM/WebGPU); sevagh's
     demucs.cpp / demucs.onnx (freemusicdemixer.com); Hugging Face ONNX exports (monteslu/htdemucs-web-onnx,
-    webnn/stem-separator). RUNNABLE (WASM) / RUNNABLE? (WebGPU). Section 50.
+    webnn/stem-separator). RUNNABLE (WASM) / RUNNABLE? (WebGPU). Section 50. [verify] Also bakkot's demucs-js (npm
+    `demucs` 1.0.0, 2025-10-07, npm license field "SEE LICENSE IN LICENSE.md", which says the bundled weights file is
+    not covered by the code's MIT licence). Section 50.
 51. Beat This! ONNX export for onnxruntime-web (Hugging Face `musetric/beat-this-onnx`). RUNNABLE?. Section 51.
 
 ### Found during the survey
 
 52. OpenVoicing (pjdoland): open-source practice app built on alphaTab and the Signalsmith Stretch AudioWorklet,
     with recording and YouTube sync; last commit 2026-07-26; MIT. Section 52.
+
+### Found by the checker [verify]
+
+53. libav.js (Yahweasel): FFmpeg's libavformat, libavcodec, libavfilter, libavutil and libswresample compiled to
+    WebAssembly (demux, decode, filter, resample in the page). npm `libav.js` 6.10.9, 2026-08-18, npm license field
+    LGPL-2.1. RUNNABLE (not tried here). Section 53.
+54. Further tools found by the checker are listed with one line each under "Not covered" at the end of this file.
 
 ## Sources used for the web platform sections (1 to 8)
 
@@ -253,6 +270,10 @@ what counts. Every entry now points to its section.
   102, Firefox 70, Safari 18.4; `getOutputTimestamp` Chrome 57, Firefox 70, Safari 14.1; constructor option
   `latencyHint` Chrome 58, Firefox `false` (BCD's value for not supported), Safari 14.1.
 - What a headless browser reports for these values on the research box is a trial question (see `trials.md`).
+  [verify] `trials.md` reports, for the box's headless Chromium 153 (no sound device): `baseLatency` 0.01 s,
+  `outputLatency` 0.032 s read after 3 s of running and 0 read right after `resume()`, `latencyHint: "playback"`
+  giving 0.02322 s and 0.072 s, `playbackStats` present with `averageLatency` 0.031183 s (runs r0042, r0143, r0150;
+  the r0042 values are also in `samples/chromium-probe/probe_headless_shell.json`).
 - Glitch statistics: Web Audio 1.1 adds "An AudioPlaybackStats interface, which provides statistics about the audio
   played from the AudioContext." (https://www.w3.org/TR/webaudio-1.1/ , read 2026-11-10). BCD
   `api.AudioContext.playbackStats`: experimental, Chrome 146, not in Firefox or Safari (read 2026-11-10).
@@ -329,7 +350,11 @@ what counts. Every entry now points to its section.
 - Browser support (BCD): `VideoDecoder` Chrome 94, Firefox 130, Safari 16.4; `AudioDecoder` Chrome 94, Firefox 130,
   Safari 26; `VideoFrame` Chrome 94, Firefox 130, Safari 16.4.
 - Which codecs the box's Playwright Chromium decodes is a trial question (proprietary codecs such as H.264 and AAC
-  depend on the build; UNVERIFIED here, settled by `VideoDecoder.isConfigSupported()` in `trials.md`).
+  depend on the build). [verify] Settled by `trials.md`, run r0042 (Chromium 153 headless shell; r0050 full build
+  gave the same): `VideoDecoder.isConfigSupported` true for H.264, VP8, VP9 and AV1 with `no-preference` and
+  `prefer-software`, false for all with `prefer-hardware`, HEVC false; `AudioDecoder.isConfigSupported` true for AAC,
+  Opus, MP3, pcm-s16 and pcm-f32, while FLAC and Vorbis threw "description is required" (they need the codec
+  description from a container).
 
 ## 7. Cross-origin isolation for SharedArrayBuffer and WASM threads
 
@@ -363,10 +388,17 @@ what counts. Every entry now points to its section.
   2026-11-10. BCD `api.GPU` (read 2026-11-10): Chrome 144 with the note "Supported on ChromeOS, macOS, Windows, and
   Linux (Intel Gen12+ GPUs only)." and an earlier partial entry from Chrome 113 ("Supported on ChromeOS, macOS, and
   Windows."); Firefox 141 partial ("Supports Windows since Firefox 141"); Safari 26; Chrome Android 121.
+  [verify] Re-read 2026-11-10 (https://raw.githubusercontent.com/mdn/browser-compat-data/main/api/GPU.json, script
+  `scripts/verify_bcd.py`): the numbers above match; the Firefox entry carries further notes: "Supports macOS Tahoe on
+  Apple silicon since Firefox 145.", "Supports older macOS versions on Apple silicon since Firefox 147.", "Does not
+  support macOS on Intel CPUs." and "Does not support Linux." (each followed by a bug link).
 - WebNN: Web Neural Network API, status "W3C Candidate Recommendation Draft, 21 October 2026", https://www.w3.org/TR/webnn/ ,
   read 2026-11-10. BCD `api.ML` (read 2026-11-10): experimental, Chrome 112 behind a flag, not in Firefox or Safari.
   (The MDN page `web/api/webnn_api/index.md` returned HTTP 404 on 2026-11-10.)
-- Whether the box's headless Chromium exposes a WebGPU adapter without a GPU is a trial question (UNVERIFIED here).
+- Whether the box's headless Chromium exposes a WebGPU adapter without a GPU is a trial question. [verify] Settled by
+  `trials.md`, runs r0042 and r0050: `navigator.gpu` exists, `requestAdapter()` returned null ("No available
+  adapters."); WebGL 2.0 ran on "SwiftShader Device (Subzero)" (software). Saved result:
+  `samples/chromium-probe/probe_headless_shell.json` (`webgpu: {"navigator_gpu": true, "adapter": null}`).
 - Used by: ONNX Runtime Web (`webgpu`, `webnn` execution providers), Transformers.js (`device: 'webgpu'`), TF.js
   (`@tensorflow/tfjs-backend-webgpu`), LiteRT.js, MediaPipe Tasks (GPU delegate), the in-browser Demucs builds.
 
@@ -412,7 +444,8 @@ what counts. Every entry now points to its section.
   read 2026-11-10): `clockSource: "worker", latencyHint: "interactive", lookAhead: 0.1, updateInterval: 0.05`, and the
   doc comment on `lookAhead`: "The amount of time into the future events are scheduled. Giving Web Audio a short
   amount of time into the future to schedule events can reduce clicks and improve performance. This value can be set
-  to 0 to get the lowest latency."
+  to 0 to get the lowest latency." [verify] `trials.md` (run r0199) reports the same values read at run time from
+  Tone's context in Chromium: lookAhead 0.1 s, updateInterval 0.05 s, clockSource "worker".
 - Time-stretch inside Tone.js: `GrainPlayer`, shipped source `build/esm/source/buffer/GrainPlayer.js`: "Granular
   Synthesis enables you to adjust pitch and playback rate independently. The grainSize is the amount of time each
   small chunk of audio is played for and the overlap is the amount of crossfading transition time between successive
@@ -435,8 +468,11 @@ what counts. Every entry now points to its section.
   midi file"); per track `notes` with `midi: Number, // midi number, e.g. 60`, `time: Number, // time in seconds`,
   `ticks: Number, // time in ticks`, `name`, `pitch`, `octave`, `velocity: Number, // normalized 0-1 velocity`,
   `duration: Number, // duration in seconds between noteOn and noteOff`; control changes with `ticks`, `time`,
-  `value`. The README does not mention pitch bends (searched for "pitchBend" on 2026-11-10); whether the parser exposes
-  them is UNVERIFIED here.
+  `value`. The README does not mention pitch bends (searched for "pitchBend" on 2026-11-10). [verify] The shipped
+  type files settle it: https://unpkg.com/@tonejs/midi@2.0.28/dist/Track.d.ts declares `pitchBends: PitchBend[];`
+  (doc comment "The pitch bend events.") and `addPitchBend(...)`, and
+  https://unpkg.com/@tonejs/midi@2.0.28/dist/PitchBend.d.ts gives each bend `value`, `ticks` and a `time` getter
+  documented as "The time of the event in seconds" (both read 2026-11-10).
 - Use here: turns a transcriber's MIDI (Basic Pitch, section 33) into timed note objects for a Web Audio player.
 - Licence (file `LICENSE.md` in the npm package): "[The MIT License](http://opensource.org/licenses/MIT)",
   "Copyright © 2016 Yotam Mann", standard MIT grant sentence present verbatim.
@@ -502,7 +538,13 @@ what counts. Every entry now points to its section.
   - Output, https://alphatab.net/docs/reference/settings/player/outputmode : "Controls how alphaTab will play the
     audio samples in the browser." default `outputMode: PlayerOutputMode = PlayerOutputMode.WebAudioAudioWorklets;`.
     (The `playeroutputmode` reference URL returned the site's home page on 2026-11-10, so the list of other values
-    was not read: UNVERIFIED.)
+    was not read.) [verify] The URL tried was https://alphatab.net/docs/reference/types/synth/playeroutputmode/ ,
+    which does return the home page (same 99,172 bytes, re-fetched 2026-11-10). The outputMode page links instead to
+    https://alphatab.net/docs/reference/types/playeroutputmode (read 2026-11-10): "Lists the different modes how
+    alphaTab will play the generated audio." with two members, `WebAudioAudioWorklets` (0): "If audio worklets are
+    available in the browser, they will be used for playing the audio. It will fallback to the ScriptProcessor output
+    if unavailable." and `WebAudioScriptProcessor` (1): "Uses the legacy ScriptProcessor output which might perform
+    worse."
   - Metronome, https://alphatab.net/docs/reference/api/metronomevolume : "The metronome volume as percentage (0-1).
     Gets or sets the volume of the metronome. By default the metronome is disabled but can be enabled by setting the
     volume different." (`metronomeVolume: number = 0;`)
@@ -532,6 +574,12 @@ what counts. Every entry now points to its section.
   "This update should happen at a rate smaller than two subsequent notes. 50ms updates have shown to work well on
   even fast songs". On YouTube: "Until now we decided to NOT ship a direct YouTube integration as there are quite
   some implications to it." followed by a worked example using the YouTube iframe API.
+- [verify] Interface members, https://alphatab.net/docs/reference/types/synth/iexternalmediahandler (read
+  2026-11-10): properties `backingTrackDuration` ("The total duration of the backing track in milliseconds."),
+  `masterVolume` ("The volume at which the output should play (0-1)"), `playbackRate`; methods `play()`, `pause()`
+  and `seekTo(time: number)` with `time` "The absolute time in milliseconds.". `api.updateSyncPoints()`,
+  https://alphatab.net/docs/reference/api/updatesyncpoints : "since 1.6.0", "Triggers an update of the sync points
+  for the current score after modification within the data model".
 - Sync point data, https://alphatab.net/docs/features/play-sync/sync-points-at-runtime (read 2026-11-10): "For
   serialization and programmatic construction, use the flat form (FlatSyncPoint), which flattens that model into a
   plain object with four fields:" then "barIndex — the index of the target masterbar in score.masterBars.",
@@ -561,6 +609,17 @@ what counts. Every entry now points to its section.
   count-in counts one full bar and continues up to the beat where playback starts, also when you start in the middle
   of a bar." (The URL https://alphatab.net/docs/alphatex/sync-points found by web search returned the site's home
   page on 2026-11-10; the alphaTex `\sync` syntax is therefore cited only through the Media Sync Editor page.)
+  [verify] The 1.9 release notes link to https://alphatab.net/docs/alphatex/bar-metadata#sync , which documents it
+  (read 2026-11-10): syntax `\sync (barIndex occurence millisecondOffset ratioPosition)`, "Adds a new sync point for
+  synchronizing the music sheet with an external media source like a backing track or video player.", parameters
+  barIndex "The index of the bar being synced", occurence "The occurence of the bar for which this sync point applies
+  (on repeats)", millisecondOffset "The absolute millisecond offset within the external media", ratioPosition "The
+  relative position within the bar where the synchronization happens" (its "Required" cell reads "no" followed by
+  "0"; the other three read "yes"); the page's example lines
+  include `\sync 0 0 1500 0.666`.
+- [verify] Import formats, https://alphatab.net/docs/category/formats ("File Formats", read 2026-11-10): Guitar Pro 8
+  (.gp), Guitar Pro 7 (.gp), Guitar Pro 6 (.gpx), Guitar Pro 3-5 (.gp3, .gp4, .gp5), MusicXML (.musicxml),
+  Capella/CapXML (.capx); MIDI is not in that list (alphaTex is documented separately).
 - Input for sync: a score (Guitar Pro, MusicXML, Capella, alphaTex, per the home page) plus either a SoundFont (synth), an embedded
   or loaded audio file (backing track), or an external player that reports its time in milliseconds. Output: audio,
   cursor position events in ticks and milliseconds, metronome events.
@@ -654,7 +713,8 @@ what counts. Every entry now points to its section.
 - How a program calls it: `new Input({ source: new BlobSource(file), formats: ALL_FORMATS })`, then track readers
   and sinks (the README example reads `audioTrack.getSampleRate()`); decoding goes through WebCodecs (section 6), so
   decodable codecs are those the browser's WebCodecs supports.
-- Use here: frame-accurate access to a fingerstyle video (timestamps in seconds with microsecond precision) for the
+- Use here: per-frame access to a fingerstyle video (timestamps in seconds; the README's own words are
+  "microsecond-accurate") for the
   hand-tracking lane, and extraction of the audio track for in-browser analysis.
 - Licence, file `LICENSE` in the package: "Mozilla Public License Version 2.0" (full text; section 3.2 and 3.3 as
   quoted for alphaTab in section 15). The README's own summary (read 2026-11-10): "Use Mediabunny for any purpose,
@@ -717,8 +777,11 @@ what counts. Every entry now points to its section.
     License, v. 2.0." Repository README changelog: "**Licensing Update**: With significant rewrites, we have now moved
     off of the LGPL to the MPL-2.0 — see [LICENSE](LICENSE) for details."
   - `soundtouchjs@0.3.0` file `LICENSE`: "GNU LESSER GENERAL PUBLIC LICENSE Version 2.1, February 1999" (full text).
-  - The upstream C++ SoundTouch library's own licence was not read here (UNVERIFIED; its site is
-    https://www.surina.net/soundtouch/).
+  - The upstream C++ SoundTouch library's own licence was not read here (its site is
+    https://www.surina.net/soundtouch/). [verify] Read 2026-11-10 at that URL: "Licensed under the GNU Lesser General
+    Public License (LGPL) v2.1. Commercial Non-LGPL license alternative available upon request." and "Unrestricted
+    Royalty-free license also available for commercial purposes, please contact us for more information!" (no
+    price on the page).
 
 ## 23. Signalsmith Stretch
 
@@ -788,14 +851,19 @@ what counts. Every entry now points to its section.
   phase vocoder library" (the link target is as written in the README) and "**Low Latency**: ~40ms latency using
   AudioWorklet and WebAssembly" and "**Independent Control**: Separate pitch shifting (-12 to +12 semitones) and time
   stretching (0.5x to 2x speed)". Its `LICENSE` file: "MIT License", "Copyright (c) 2024", standard MIT grant present.
-  Who publishes this package is not stated in it (UNVERIFIED).
+  Who publishes this package is not stated in it. [verify] The npm registry record
+  (https://registry.npmjs.org/bungee-pitch-shift , read 2026-11-10) names the publishing npm account: `maintainers`
+  and the 1.0.8 `_npmUser` are both the account "dexhonsa"; the package was created on npm 2025-10-21. Which person or
+  company is behind that account is not stated (UNVERIFIED).
 
 ## 26. Superpowered Web Audio JavaScript & WebAssembly SDK
 
 - What: npm `@superpoweredsdk/web` 2.8.2 (2026-09-09), unpacked 27,150,288 bytes, npm licence field "SEE LICENSE IN
   /license"; repository https://github.com/superpoweredSDK/web-audio-javascript-webassembly-SDK-interactive-audio
   (last commit 2026-09-09), whose `license/` folder holds one file, "SUPERPOWERED SDKS MASTER LICENSE AGREEMENT - Oct
-  16 2019.pdf" (not opened here).
+  16 2019.pdf" (not opened here). [verify] The npm package ships the same file at
+  `/license/SUPERPOWERED SDKS MASTER LICENSE AGREEMENT - Oct 16 2019.pdf` (218,154 bytes, unpkg file list read
+  2026-11-10).
 - Status: https://superpowered.com/pricing (read 2026-11-10): "Superpowered is sunsetting. Check out Yuby for your
   low-latency audio: https://yuby.com". (Yuby was not researched here.)
 - Terms, https://superpowered.com/licensing (read 2026-11-10): "The following document details the Superpowered SDKs
@@ -837,7 +905,30 @@ what counts. Every entry now points to its section.
   for "FatBoy Soundfont" "Released under [Creative Commons Attribution Share-Alike 3.0
   license](https://creativecommons.org/licenses/by-sa/3.0/)". The repository's
   `LICENSE.txt` is an MIT text, "Copyright (C) 2012 Benjamin Gleitzman", covering the repository. The licences of the
-  `smpldsnds` sample repositories (used by `SplendidGrandPiano`, `DrumMachine`) were not read (UNVERIFIED).
+  `smpldsnds` sample repositories (used by `SplendidGrandPiano`, `DrumMachine`) were not read by the survey.
+- [verify] Upstream licence of the FluidR3_GM SoundFont itself (the source of gleitz's "Fluid Soundfont" renders, and
+  the SoundFont at `/usr/share/sounds/sf2/FluidR3_GM.sf2` that rendered the shared inputs): the Debian/Ubuntu package
+  copyright file, https://changelogs.ubuntu.com/changelogs/pool/universe/f/fluid-soundfont/fluid-soundfont_3.1-5.3/copyright
+  (read 2026-11-10; the same file is installed on the box at `/usr/share/doc/fluid-soundfont-gm/copyright`), names
+  "Upstream Author: Frank Wen" and quotes the upstream README: "I hereby release Fluid under the MIT license, as
+  described in COPYING." followed by the MIT text. gleitz's README states CC BY 3.0 for its rendered "Fluid Soundfont"
+  files (quoted above); both statements are recorded, neither source refers to the other.
+- [verify] `smpldsnds` sample repositories that the shipped `smplr@1.2.0/dist/index.mjs` loads from (URLs found in
+  that file, 2026-11-10), READMEs read 2026-11-10 from `https://raw.githubusercontent.com/smpldsnds/<repo>/HEAD/README.md`:
+  `sfzinstruments-splendid-grand-piano` (SplendidGrandPiano): "Public Domain samples by AKAI" and "This samples set
+  was released as public domain in early 2000 by Akai company." (no LICENSE file at HEAD: HTTP 404);
+  `drum-machines` (DrumMachine): "A collection of public domain samples of different drum machines";
+  `sgossner-vcsl`: "This collection is under a Creative Commons 0 license."; `sfzinstruments-greg-sullivan-e-pianos`:
+  "This work is licensed under a Creative Commons Attribution 3.0 Unported License." (HTML link to
+  http://creativecommons.org/licenses/by/3.0/ around the licence name) and "with the author permission with the
+  request for attribution."; `soundfonts` lists a licence per file (for example
+  "galaxy-electric-pianos.sf2 ... License: GNU v3.0", "giga-hq-fm-gm.sf2 ... License: CC 4.0"). The READMEs of
+  `archiveorg-mellotron` and `sfzinstruments-dsmolken-double-bass` contain no licence statement (searched for
+  "licen", "creative", "public domain", "cc0"): UNVERIFIED for those two.
+- [verify] Run facts from `trials.md` (runs r0225, r0229): `smplr/dist/index.js` is CommonJS and failed in the page
+  with "module is not defined"; `dist/index.mjs` worked. `Soundfont(ctx,{instrument:'acoustic_guitar_nylon',kit:'FluidR3_GM'})`
+  loaded gleitz's `acoustic_guitar_nylon-ogg.js` (2,158,023 bytes) and played notes given as
+  `start({note, velocity, time, duration})`.
 
 ## 28. soundfont-player
 
@@ -847,6 +938,9 @@ what counts. Every entry now points to its section.
 - Version 0.12.0, published 2020-01-27; unpacked 102,577 bytes.
 - Licence (`LICENSE`): "The MIT License", "Copyright (c) 2015 Daniel Gómez Blasco", standard MIT grant present.
   Sample licences as in section 27.
+- [verify] How it was called in `trials.md` (run r0229): `Soundfont.instrument(ctx,'acoustic_guitar_nylon',{soundfont:'FluidR3_GM'})`,
+  then `play(note, time, {duration, gain: velocity/127})`; it loaded gleitz's `acoustic_guitar_nylon-mp3.js`
+  (1,837,439 bytes).
 
 ## 29. SpessaSynth (spessasynth_lib, spessasynth_core)
 
@@ -865,6 +959,9 @@ what counts. Every entry now points to its section.
   so the SoundFont an app loads comes with its own licence (for example FluidR3_GM, section 27, or alphaTab's Sonivox
   SoundFont, section 15).
 - Licence (`LICENSE` in both packages): Apache License 2.0 text; standard Apache-2.0 grant present verbatim.
+- [verify] How it was called in `trials.md` (run r0225, esbuild bundle of `spessasynth_lib` 4.4.7 + `spessasynth_core`
+  4.4.9): `WorkletSynthesizer`, `programChange(0,24)`, `noteOn(0,p,v,{time})`, `noteOff(0,p,{time})`, with the box's
+  FluidR3_GM.sf2 (148,398,306 bytes) loaded by the page.
 
 ## 30. js-synthesizer (FluidSynth in WASM)
 
@@ -874,7 +971,11 @@ what counts. Every entry now points to its section.
   or a Web Worker ("Executing on a Web Worker prevents from blocking main thread while rendering."). Maker jet2jet.
   Repository https://github.com/jet2jet/js-synthesizer (last commit 2026-05-12).
 - Version 1.13.0, published 2026-04-20; unpacked 6,932,424 bytes. Ships `externals/libfluidsynth-2.4.6.js` (FluidSynth
-  2.4.6 compiled to WASM) and a variant with libsndfile for SF3.
+  2.4.6 compiled to WASM) and a variant with libsndfile for SF3. [verify] The file list (unpkg, 2026-11-10) also
+  holds `externals/libfluidsynth-2.3.0.js` and `externals/libfluidsynth-2.3.0-with-libsndfile.js`.
+- [verify] `trials.md` (run r0225): `AudioWorkletNodeSynthesizer` with `libfluidsynth-2.4.6.js`, `loadSFont`,
+  `addSMFDataToPlayer(S2n.mid)`, `playPlayer()` played the shared input S2n; its capture matched the native
+  FluidSynth 2.3.4 render of the same MIDI with a normalized cross-correlation peak of 0.99908.
 - How a program calls it: `JSSynth.waitForReady()`, then `synth.loadSFont(buffer)`, `synth.addSMFDataToPlayer(smf)`,
   `synth.playPlayer()`; `render()` for offline rendering without Web Audio. The box's command-line FluidSynth with
   FluidR3_GM (used to render the shared test inputs) is the same engine family.

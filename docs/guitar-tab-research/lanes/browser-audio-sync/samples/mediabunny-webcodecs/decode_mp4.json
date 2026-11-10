@@ -1,0 +1,182 @@
+{
+ "page": "/pages/video.html?file=mp4&parts=decode",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 5.234,
+ "external_requests": [],
+ "result": {
+  "file": "mp4",
+  "parts": [
+   "decode"
+  ],
+  "ref": {
+   "n_frames": 540,
+   "codec": "h264"
+  },
+  "duration": 18.018,
+  "decode": {
+   "codec": "avc",
+   "decoderConfig": {
+    "codec": "avc1.64001e",
+    "codedWidth": 640,
+    "codedHeight": 480
+   },
+   "canDecode": true,
+   "frames_decoded": 540,
+   "decode_and_hash_ms_total": 1304.8500000000931,
+   "ms_per_frame_including_hash": 2.4163888888890614,
+   "y_plane_identical_to_ffmpeg_same_index": 540,
+   "y_plane_found_anywhere_in_ffmpeg_decode": 540,
+   "timestamp_minus_ffprobe_pts_ms": {
+    "n": 540,
+    "mean": 1.080668476515922e-14,
+    "mean_abs": 0.00022222222225938765,
+    "sd": 0.00027216552702142687,
+    "max_abs": 0.00033333333604446125,
+    "p95_abs": 0.0003333333342681044,
+    "min": -0.00033333333604446125,
+    "max": 0.00033333333604446125
+   },
+   "formats": [
+    "I420"
+   ],
+   "first5": [
+    {
+     "timestamp": 0,
+     "duration": 0.03336666666666667,
+     "format": "I420",
+     "ref_t": 0
+    },
+    {
+     "timestamp": 0.03336666666666667,
+     "duration": 0.03336666666666667,
+     "format": "I420",
+     "ref_t": 0.033367
+    },
+    {
+     "timestamp": 0.06673333333333334,
+     "duration": 0.03336666666666667,
+     "format": "I420",
+     "ref_t": 0.066733
+    },
+    {
+     "timestamp": 0.1001,
+     "duration": 0.03336666666666667,
+     "format": "I420",
+     "ref_t": 0.1001
+    },
+    {
+     "timestamp": 0.13346666666666668,
+     "duration": 0.03336666666666667,
+     "format": "I420",
+     "ref_t": 0.133467
+    }
+   ],
+   "decode_only_ms_total": 1078.7400000002235,
+   "decode_only_frames": 540,
+   "getSample": [
+    {
+     "k": 1,
+     "t": 0.03336666666666667,
+     "sample_timestamp": 0.03336666666666667,
+     "frame": 1,
+     "expected_frame_by_ref_pts": 0,
+     "ms": 15.015000000130385
+    },
+    {
+     "k": 2,
+     "t": 0.06673333333333334,
+     "sample_timestamp": 0.06673333333333334,
+     "frame": 2,
+     "expected_frame_by_ref_pts": 2,
+     "ms": 33.28499999968335
+    },
+    {
+     "k": 10,
+     "t": 0.33366666666666667,
+     "sample_timestamp": 0.33366666666666667,
+     "frame": 10,
+     "expected_frame_by_ref_pts": 9,
+     "ms": 31.419999999925494
+    },
+    {
+     "k": 50,
+     "t": 1.6683333333333334,
+     "sample_timestamp": 1.6683333333333332,
+     "frame": 50,
+     "expected_frame_by_ref_pts": 50,
+     "ms": 69.91000000014901
+    },
+    {
+     "k": 100,
+     "t": 3.336666666666667,
+     "sample_timestamp": 3.3366666666666664,
+     "frame": 100,
+     "expected_frame_by_ref_pts": 99,
+     "ms": 124.40499999979511
+    },
+    {
+     "k": 200,
+     "t": 6.673333333333334,
+     "sample_timestamp": 6.673333333333333,
+     "frame": 200,
+     "expected_frame_by_ref_pts": 200,
+     "ms": 255.4199999999255
+    },
+    {
+     "k": 217,
+     "t": 7.240566666666667,
+     "sample_timestamp": 7.240566666666667,
+     "frame": 217,
+     "expected_frame_by_ref_pts": 216,
+     "ms": 301.1049999999814
+    },
+    {
+     "k": 300,
+     "t": 10.01,
+     "sample_timestamp": 10.01,
+     "frame": 300,
+     "expected_frame_by_ref_pts": 300,
+     "ms": 180.27499999990687
+    },
+    {
+     "k": 400,
+     "t": 13.346666666666668,
+     "sample_timestamp": 13.346666666666666,
+     "frame": 400,
+     "expected_frame_by_ref_pts": 399,
+     "ms": 336.74500000011176
+    },
+    {
+     "k": 439,
+     "t": 14.647966666666667,
+     "sample_timestamp": 14.647966666666667,
+     "frame": 439,
+     "expected_frame_by_ref_pts": 438,
+     "ms": 27.440000000409782
+    },
+    {
+     "k": 500,
+     "t": 16.683333333333334,
+     "sample_timestamp": 16.683333333333334,
+     "frame": 500,
+     "expected_frame_by_ref_pts": 500,
+     "ms": 81
+    },
+    {
+     "k": 530,
+     "t": 17.684333333333335,
+     "sample_timestamp": 17.684333333333335,
+     "frame": 530,
+     "expected_frame_by_ref_pts": 530,
+     "ms": 242.1750000002794
+    }
+   ],
+   "getSample_matches_expected": 6
+  }
+ }
+}

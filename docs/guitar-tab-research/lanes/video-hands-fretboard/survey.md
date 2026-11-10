@@ -5,11 +5,17 @@ Lane `video-hands-fretboard`, written by the `docs-video-hands-fretboard` agent 
 official docs). Nothing here was run as a model: the `try-video-hands-fretboard` agent runs the tools and writes
 `trials.md`. "Read 2026-11-10" means the source was fetched on that date.
 
+Checked and corrected in place by `verify-docs-video-hands-fretboard` on 2026-11-10: every quote was re-fetched from
+its URL and compared verbatim. Corrections, additions and the tally are listed in the "Verification log" at the end;
+lines marked "(verify)" were added or rewritten by that check.
+
 How the dates below were obtained (all on 2026-11-10):
 
 - Last commit: a metadata-only `git clone --depth 1 --filter=blob:none --no-checkout https://github.com/<owner>/<repo>`
   then `git log -1 --format=%cI` (script: `scripts/repo_facts.sh`). The date is the committer date of the newest
-  commit on the default branch.
+  commit on the default branch, in the committer's own time zone (verify: for example ViTPose's
+  `2025-12-26T00:25:15+08:00` is 2025-12-25 in UTC). (verify) On 2026-11-10 at about 21:20 UTC every clone's HEAD was
+  compared with `git ls-remote` of the repository: all 32 were still at the remote HEAD, so the dates below stand.
 - Latest release: `https://pypi.org/pypi/<name>/json` (version and the earliest upload time of that version's
   files) and `npm view <name>`.
 - License files: read with `git show HEAD:<file>` from those clones, then fetched again from
@@ -26,6 +32,13 @@ One line per tool. RUNNABLE = the tool's own README or docs show CPU inference (
 CPU-only build or a CPU benchmark), so it looks runnable on this CPU-only Linux box. "CPU not stated" = the README
 read today says nothing about CPU; whether it runs here is UNVERIFIED until the try agent attempts it.
 
+(verify) What the try agent had actually run on this box by 21:40 UTC, from the run ledger
+(`/home/user/gtr/ledger/runs.jsonl`, exit code 0) and `trials.md`: MediaPipe Hand Landmarker 1.2.2 (r0071, r0075,
+r0078, r0087), OpenCV 5.0.0 line detection (r0149, r0214), the MediaPipe-to-OpenCV fingertip handoff (r0172, r0218)
+and OWLv2 through a public Hugging Face Space (r0193, remote inference). Group runs for rtmlib, RTMW / DWPose and
+Ultralytics pose (gtr-run groups A1, A2, B1) were still running, and trials.md had no section yet for rtmlib,
+Ultralytics pose, YOLOE-26, CoTracker3, SAM 2.1 or OpenPose, so those formats are not yet cross-checked against runs.
+
 ### Hand and body keypoints (2D, some 3D)
 
 - MediaPipe Hand Landmarker / Holistic / Pose (Google, `google-ai-edge/mediapipe`): PyPI `mediapipe` 1.2.2
@@ -36,7 +49,8 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
 - TensorFlow.js `@tensorflow-models/hand-pose-detection` 2.0.1 (npm, published 2023-07-31; repo
   `tensorflow/tfjs-models` last commit 2026-03-28): browser hand model with `runtime: 'mediapipe'` or `'tfjs'`.
 - ml5.js `handPose` (npm `ml5` 1.4.0, 2026-08-07; repo `ml5js/ml5-next-gen` last commit 2026-11-09): browser
-  library with a `handPose` model.
+  library whose `src/HandPose/index.js` imports `@tensorflow-models/hand-pose-detection` (verify: the README itself
+  does not mention handPose).
 - MMPose 1.x (OpenMMLab, `open-mmlab/mmpose`): PyPI 1.3.2 (2024-07-12); last commit 2025-08-04. Home of RTMPose
   hand models, RTMW whole-body and the DWPose distillation. Python API and CLI demo scripts. RUNNABLE (the RTMPose
   README reports Intel i7-11700 CPU speeds).
@@ -51,8 +65,11 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   build). Academic, non-commercial license (quoted below).
 - ViTPose (`ViTAE-Transformer/ViTPose`): last commit 2025-12-26. Transformer pose models; HaMeR's and Hamba's demos
   use a ViTPose model to locate hands (`vitpose_model.py`); rtmlib lists "ViTPose for 133 keypoints". CPU not stated.
-- Sapiens (Meta, `facebookresearch/sapiens`): last commit 2026-05-26. Human-centric models including pose (keypoint
-  count not read). CPU not stated. CC BY-NC 4.0.
+- Sapiens (Meta, `facebookresearch/sapiens`): last commit 2026-05-26. Human-centric models including pose (verify:
+  17, 133 or 308 keypoints, `docs/POSE_README.md`). CPU not stated. CC BY-NC 4.0 (code and HF weights).
+- (verify, added) Sapiens2 (Meta, `facebookresearch/sapiens2`, ICLR 2026, arXiv 2604.21681): last commit 2026-05-24;
+  "April 24, 2026: Initial Sapiens2 release"; pose estimation with "308 whole-body keypoints" (README). Own "Sapiens2
+  License" (quoted in the whole-body section). CPU not stated.
 
 ### 3D hand mesh (MANO-based)
 
@@ -66,6 +83,13 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
 - HaWoR (`ThunderVVV/HaWoR`): last commit 2026-04-16. World-space 3D hand motion from egocentric video. CPU not stated.
 - SAM 3D Body (Meta, `facebookresearch/sam-3d-body`): last commit 2026-02-19. "single-image full-body 3D human mesh
   recovery", with "hand refinement from the hand decoder" (README). CPU not stated. Gated weights.
+- (verify, added) FAH, "Fast and Accurate Hand Estimation" (`noahcao/FAH`, arXiv 2611.07711): last commit
+  2026-11-07, subject "feat: FAH initial release". 2D and 3D hand joints and surface points, then a MANO and/or
+  MHR-Hand fit; video mode. README: "On CPU or Apple silicon, omit the CUDA PyTorch command and install with
+  `pip install -e .`." Code Apache-2.0, weights research and non-commercial only (FAH section).
+- (verify, added) EgoHand v1 (NVIDIA, `NVIDIA/IsaacCapture` subfolder `src/python/isaaccapture_egopost`, arXiv
+  2610.30293, v1 21 Oct 2026): monocular 3D hand reconstruction with the SOMA-Hand representation (no MANO). README
+  system requirements list an NVIDIA GPU. OpenMDW-1.1 (EgoHand section).
 - MANO hand model (MPI; layers `hassony2/manopth` last commit 2020-09-10, `lixiny/manotorch` last commit 2026-02-03,
   `vchoutas/smplx` PyPI 0.1.28 2021-05-26): needed by HaMeR / WiLoR / Hamba / HaWoR; the model files come from
   mano.is.tue.mpg.de after registration.
@@ -79,14 +103,17 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   last commit 2026-10-23. Text-prompted ("concept") segmentation and tracking. CPU not stated.
 - Segment Anything 1 (`facebookresearch/segment-anything`): last commit 2024-09-18.
 - Grounding DINO (IDEA Research, `IDEA-Research/GroundingDINO`): last commit 2024-08-12; PyPI `groundingdino-py`
-  0.4.0 (2023-05-23). Text-prompted boxes. RUNNABLE (README: "Support CPU-only mode", `--cpu-only` flag). Also in
+  0.4.0 (2023-05-23; verify: its PyPI homepage is github.com/giswqs/GroundingDINO, a third-party packaging). Text-prompted
+  boxes. RUNNABLE (README: "Support CPU-only mode", `--cpu-only` flag). Also in
   Hugging Face `transformers` (PyPI 5.22.2, 2026-11-06).
 - Grounded-SAM-2 (`IDEA-Research/Grounded-SAM-2`): last commit 2025-11-11. Scripts that pass Grounding DINO,
   Florence-2 or DINO-X boxes to SAM 2 (root files `grounded_sam2_dinox_demo.py`, `grounded_sam2_florence2_*`).
 - OWLv2 (Google, `google-research/scenic`, last commit 2026-10-31; also in `transformers`): open-vocabulary boxes.
 - YOLO-World (`AILab-CVC/YOLO-World`): last commit 2025-02-27; also inside Ultralytics. CPU not stated in its README.
 - YOLOE (`THU-MIG/yoloe`): last commit 2025-06-26; text, visual or prompt-free open-vocabulary detection and
-  segmentation, built on the Ultralytics code base.
+  segmentation, built on the Ultralytics code base. (verify) Ultralytics also ships YOLOE-26 (`YOLOE("yoloe-26s-seg.pt")`;
+  paper arXiv 2602.00168, Sapkota and Karkee, 29 Jan 2026); its text prompts load Apple's MobileCLIP2 text encoder,
+  whose upstream model card carries a research-only license (YOLO-World / YOLOE section).
 - Roboflow Inference (`roboflow/inference`): PyPI `inference` 1.8.4 (2026-10-30); last commit 2026-11-10. Runs
   Roboflow Universe models locally (CPU Docker image `roboflow-inference-server-cpu`) or through Roboflow's hosted
   API. Roboflow Universe guitar projects found by search (pages answered HTTP 403 to this box, so their licenses and
@@ -117,15 +144,20 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   pose (126 fretboard landmarks). Dataset "publicly available" per the lab page; no code or data link found.
 - "Tabbers" / "You Just Play" (PyData Tel Aviv 2025 talk): audio + video tab product (Python, OpenCV, Librosa; the
   talk page names no specific pose model). No code release.
+- (verify, added) Bae, Kwon and Park, "An Audio-Visual Framework for Transcription and Fingering Optimization in Bass
+  Guitar Performance", UIST Adjunct 2025 poster: MediaPipe hand landmarks + OpenCV Hough lines for strings + CREPE
+  Notes for pitch + a Bi-LSTM for fingering, on bass guitar. No code link in the PDF.
 - Read today (see the Research section): Burns and Wanderley (NIME 2006, Hough transforms), Paleari et al. (2008,
   audio + video, "89% of notes"), Goldstein and Moses (BMVC 2018, string vibration from silent 240 fps video; project
-  site with data and code per the paper). Named but not read: Kerdvibulvech and Saito (2007-2008), Hrybyk and Kim
+  site with data and code per the paper; verify: the site's code page reads "Code will be available soon.", its data
+  page links Dropbox videos). Named but not read: Kerdvibulvech and Saito (2007-2008), Hrybyk and Kim
   (2010), Scarr and Green (2010), Duke and Salgian (2019).
 
 ### Datasets pairing guitar video with annotations
 
 - Goldstein and Moses 2018 (GoPro on the guitar, note ground truth); GuiFiR-Synth / GuiFiR-Vid (2026, no link found);
-  GAPS (audio + score + MIDI, YouTube performance-video links, CC BY-NC-SA 4.0); Ego-Exo4D (Music scenario, 3D hand
+  GAPS (audio + score + MIDI, YouTube performance-video links, CC BY-NC-SA 4.0 on Zenodo; verify: "license: mit" on its
+  Hugging Face card); Ego-Exo4D (Music scenario, 3D hand
   pose, signed license); Guitar-TECHS has no video in its release; Ultralytics Hand Keypoints (generic hands,
   CC BY-NC-SA 4.0). Details in the Datasets section.
 
@@ -139,7 +171,8 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   (`google-ai-edge/mediapipe`). Docs: https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker ,
   https://ai.google.dev/edge/mediapipe/solutions/vision/holistic_landmarker ,
   https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker (all read 2026-11-10; the hand page says
-  "Last updated 2026-11-04 UTC"). Hand model card (PDF, linked from the hand page):
+  "Last updated 2026-11-04 UTC"; verify: each ai.google.dev URL redirects to the same path under
+  https://developers.google.com/edge/mediapipe/solutions/vision/ , which answered HTTP 200 on 2026-11-10). Hand model card (PDF, linked from the hand page):
   https://storage.googleapis.com/mediapipe-assets/Model%20Card%20Hand%20Tracking%20(Lite_Full)%20with%20Fairness%20Oct%202021.pdf
   (read 2026-11-10).
 - **Versions and maintenance.** PyPI `mediapipe` 1.2.2, files uploaded 2026-11-03; npm `@mediapipe/tasks-vision`
@@ -148,6 +181,10 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   "legacy solutions"; their version numbers end in 2023-02 Unix times. The repository at HEAD still contains
   `mediapipe/python/solutions/` (legacy) and `mediapipe/tasks/python/vision/hand_landmarker.py`,
   `holistic_landmarker.py`, `pose_landmarker.py` (Tasks API), checked with `git ls-tree` on 2026-11-10.
+  (verify) The installed PyPI wheel differs from the repository tree: trials.md (MediaPipe section) records that in
+  `mediapipe` 1.2.2 `hasattr(mp, 'solutions')` is False and `mediapipe.tasks.python.vision` exposes HandLandmarker,
+  PoseLandmarker, HolisticLandmarker and FaceLandmarker; its first runs (r0057, r0061) failed with `OSError:
+  libGLESv2.so.2: cannot open shared object file` until `libgles2` and `libegl1` were installed with apt.
 - **How a program calls it.**
   - Python: `pip install mediapipe`, then (from the hand page) `HandLandmarkerOptions(base_options=BaseOptions(model_asset_path="hand_landmarker.task"), running_mode=VisionRunningMode.VIDEO, num_hands=2)`,
     `HandLandmarker.create_from_options(options)`, and per frame `landmarker.detect_for_video(mp_image, timestamp_ms)`.
@@ -166,7 +203,9 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   float 16".
 - **Input.** "Still images", "Decoded video frames", "Live video feed". The model card: "A video stream or an image of
   arbitrary size. Channels order: RGB with values in [0.0, 1.0]." Video mode needs a timestamp in milliseconds per
-  frame, monotonically increasing.
+  frame, monotonically increasing. (verify) At the API level the trial passed an `mp.Image` in SRGB (uint8 HxWx3) per
+  call, and 640x480, 720x720, 840x660 and 1280x960 inputs were accepted (trials.md, runs r0071-r0087); the model card's
+  "[0.0, 1.0]" describes the model's input tensor, not the API object.
 - **Output (hand).** From the hand page's "Task output" table: `handedness` "Category[][] (score in [0.0, 1.0])",
   "Left or Right classification for each detected hand"; `landmarks` "NormalizedLandmark[][] (x, y in [0.0, 1.0])",
   "21 3D keypoints per hand. x and y are normalized by image width and height. z represents landmark depth with the
@@ -185,7 +224,8 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   pose, and hand landmarks" (demo line); 478 + 33 + 21 + 21 = 553.
 - **Hints a re-run can take.** `num_hands` (default 1), `min_hand_detection_confidence`,
   `min_hand_presence_confidence`, `min_tracking_confidence` (each default 0.5), running mode. Nothing about
-  instruments, regions of interest or handedness priors is listed among the options.
+  instruments, regions of interest or handedness priors is listed among the options. (verify) trials.md agrees: "There
+  is no region-of-interest input in the Python options; cropping (as here) is done outside."
 - **Model card scope statements (quoted).** Out-of-scope applications include "Predicting hand landmarks with gloves
   or occlusions. For example when the hand is holding objects or there is decoration on the hand including jewelry,
   tattoo and henna." Limitations: "The model has been trained on limited datasets and is meant for experimental
@@ -231,19 +271,26 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   rtmlib (`Tau-J/rtmlib`) is a separate small library that runs these models from ONNX files; the RTMPose README's
   entry for it: "Support OpenCV/ONNXRuntime/OpenVINO inference and does not require Pytorch or MMCV."
 - **Versions and maintenance.** PyPI `mmpose` 1.3.2 (2024-07-12), `mmcv` 2.2.0 (2024-04-24), `mmdet` 3.3.0
-  (2024-01-05); mmpose repository last commit 2025-08-04. rtmlib PyPI 0.0.16 (2026-08-04, requires Python >=3.10),
+  (2024-01-05); mmpose repository last commit 2025-08-04 (verify: its `requirements/mminstall.txt` at `main` reads
+  "mmcv>=2.0.0,<3.0.0", "mmdet>=3.0.0,<3.3.0", "mmengine>=0.4.0,<1.0.0", so the newest PyPI mmdet, 3.3.0, is outside
+  the pinned range). rtmlib PyPI 0.0.16 (2026-08-04, requires Python >=3.10),
   repository last commit 2026-11-07. DWPose repository last commit 2023-12-12; its weights were last modified on
   Hugging Face `yzd-v/DWPose` 2023-08-22 (HF API, read 2026-11-10).
 - **How a program calls it.**
   - MMPose Python (docs "Inference with existing models", https://mmpose.readthedocs.io/en/latest/user_guides/inference.html,
-    read 2026-11-10): `inferencer = MMPoseInferencer('hand')`; the alias table maps `hand` to
-    `rtmpose-m_8xb256-210e_hand5-256x256` with detector `ssdlite_mobilenetv2`, and `wholebody` to
-    `rtmpose-m_8xb64-270e_coco-wholebody-256x192` with `RTMDet-m`. 3D alias `hand3d` =
-    `internet_res50_4xb16-20e_interhand3d-256x256` (InterNet, "whole image").
-  - MMPose CLI: `python demo/inferencer_demo.py <image|video|folder> --pose2d hand --pred-out-dir predictions`
-    (shape from the same page). The `device` argument: "If left None, the Inferencer will select the most suitable one."
-  - rtmlib Python (README at HEAD, read 2026-11-10): `from rtmlib import Wholebody, Hand, PoseTracker`;
-    `Wholebody(to_openpose=False, mode='balanced', backend='onnxruntime', device='cpu')`; `keypoints, scores = wholebody(img)`.
+    read 2026-11-10): the page's example is `inferencer = MMPoseInferencer('human')` ("instantiate the inferencer
+    using the model alias"); its alias table maps `hand` to `rtmpose-m_8xb256-210e_hand5-256x256` with detector
+    `ssdlite_mobilenetv2`, and `wholebody` to `rtmpose-m_8xb64-270e_coco-wholebody-256x192` with `RTMDet-m`, so
+    `MMPoseInferencer('hand')` is that example with the hand alias (verify: not shown verbatim on the page). 3D alias
+    `hand3d` = `internet_res50_4xb16-20e_interhand3d-256x256` (InterNet, "whole image").
+  - MMPose CLI, verbatim from the same page: `python demo/inferencer_demo.py 'tests/data/coco/000000000785.jpg' \
+    --pose2d 'human' --show --pred-out-dir 'predictions'`; for hands the alias would be `--pose2d 'hand'` (verify:
+    adapted, not on the page). The `device` argument: "If left None, the Inferencer will select the most suitable one."
+  - rtmlib Python (README at HEAD, read 2026-11-10): `from rtmlib import Wholebody, draw_skeleton` (and, for video,
+    `from rtmlib import Body, Custom, PoseTracker, draw_skeleton`); `wholebody = Wholebody(to_openpose=openpose_skeleton,
+    mode='balanced', backend=backend, device=device)` with `openpose_skeleton = False`; `keypoints, scores = wholebody(img)`.
+    (verify: the README has no `from rtmlib import Wholebody, Hand, PoseTracker` line; `Hand` is exported by
+    `rtmlib/__init__.py` and its own docstring example starts `from rtmlib import Hand, draw_skeleton`.)
     The README lists `device = 'cpu'  # cpu, cuda, mps` and `backend = 'onnxruntime'  # opencv, onnxruntime, openvino`.
     `rtmlib.Hand` (source `rtmlib/tools/solution/hand.py`) downloads an RTMDet-nano hand detector
     (`rtmdet_nano_8xb32-300e_hand-267f9c8f.zip`, 320x320) and the RTMPose-m Hand5 model
@@ -280,8 +327,9 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
     Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in
     Source or Object form."). README: "This project is released under the [Apache 2.0 license](LICENSE)." MMPose's
     `LICENSES.md`: "In this file, we list the algorithms with other licenses instead of Apache 2.0. Users should be
-    careful about adopting these algorithms in any commercial matters." It lists one: "EDPose |
-    mmpose/models/heads/transformer_heads/edpose_head.py | IDEA License 1.0" (not used by the hand or RTMW models).
+    careful about adopting these algorithms in any commercial matters." It lists one table row (verify: the Files cell
+    is a markdown link): "| EDPose | [mmpose/models/heads/transformer_heads/edpose_head.py](https://github.com/open-mmlab/mmpose/blob/main/mmpose/models/heads/transformer_heads/edpose_head.py) | IDEA License 1.0 |"
+    (not used by the hand or RTMW models).
     rtmlib `LICENSE`: Apache License 2.0 (first lines read from the repo at HEAD; PyPI metadata "Apache License 2.0").
     DWPose `LICENSE`: Apache License 2.0 (first lines read from the repo at HEAD). All read 2026-11-10:
     https://raw.githubusercontent.com/open-mmlab/mmpose/main/LICENSE ,
@@ -358,8 +406,10 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   model on it; no pretrained hand-keypoint weight file is linked on the page (the `.pt` names on it are
   `yolo26n-pose.pt`, `yolo11n-pose.pt`, `best.pt`, `pose.pt`).
 - **Hints a re-run can take.** `conf` (default 0.25), `iou` (0.5), `imgsz` (640), `classes` and `device` are predict
-  arguments (predict docs table); a custom-trained model (for example neck / frets / nut / capo boxes or OBBs) is the way
-  to add guitar-specific classes.
+  arguments (predict docs table, defaults re-read 2026-11-10). The `classes` argument filters among the classes a model
+  was trained on; the pretrained pose models are trained on the 'person' class (README), and the docs' route to other
+  classes is training on a dataset (`model.train(data=...)`, as on the hand keypoints page). (verify: rewritten; the
+  earlier sentence gave advice.)
 - **LICENSE FACTS.**
   - a. Code: AGPL-3.0. `LICENSE` at HEAD begins "GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007"
     (https://raw.githubusercontent.com/ultralytics/ultralytics/main/LICENSE; read from the clone 2026-11-10). Section
@@ -394,12 +444,14 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
 - **How a program calls it.** Built from source (CMake), then the demo binary, e.g.
   `./build/examples/openpose/openpose.bin --video examples/media/video.avi --face --hand` (`doc/01_demo.md`), with
   `--write_json <dir>` to save one JSON file per frame (`doc/02_output.md`). Windows binary `bin\OpenPoseDemo.exe`.
-- **Runs on.** `doc/installation/0_index.md`: "CPU-only (no GPU) version: Around 8GB of free RAM memory. Highly
-  recommended: a CPU with at least 8 cores." README: "**Hardware compatibility**: CUDA (Nvidia GPU), OpenCL (AMD
+- **Runs on.** `doc/installation/0_index.md`, under "**Requirements** for the default configuration" (verify:
+  re-quoted with its list structure): the item "CPU-only (no GPU) version:" has the sub-item "Around 8GB of free RAM
+  memory."; a separate item at the same level as the CUDA, OpenCL and CPU-only items reads "Highly recommended: a CPU
+  with at least 8 cores." README: "**Hardware compatibility**: CUDA (Nvidia GPU), OpenCL (AMD
   GPU), and non-GPU (CPU-only) versions."
-- **Output.** `doc/02_output.md`: "Each file represents a frame, it has a `people` array of objects, where each object
-  has: `pose_keypoints_2d`: Body part locations (`x`, `y`) and detection confidence (`c`) formatted as
-  `x0,y0,c0,x1,y1,c1,...`." "`face_keypoints_2d`, `hand_left_keypoints_2d`, and `hand_right_keypoints_2d` are
+- **Output.** `doc/02_output.md` (verify: re-quoted with its numbered list): "Each file represents a frame, it has a
+  `people` array of objects, where each object has:" followed by the list item "1. `pose_keypoints_2d`: Body part
+  locations (`x`, `y`) and detection confidence (`c`) formatted as `x0,y0,c0,x1,y1,c1,...`." "`face_keypoints_2d`, `hand_left_keypoints_2d`, and `hand_right_keypoints_2d` are
   analogous to `pose_keypoints_2d` but applied to the face and hand parts." "The coordinates `x` and `y` can be
   normalized to the range [0,1], [-1,1], [0, source size], [0, output size], etc." 3D arrays
   (`x0,y0,z0,c0,...`) are filled only with `--3d` ("They are empty if `--3d` is not enabled"). The example shows hand points as
@@ -453,6 +505,10 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
     service, or production of other artifacts for commercial purposes."
   - "This license also prohibits the use of the Software to train methods/algorithms/neural networks/etc. for
     commercial, pornographic, military, surveillance, or defamatory use of any kind."
+  - (verify, added; missing before) "The Data & Software may not be reproduced, modified and/or made available in any
+    form to any third party without Max-Planck’s prior written permission." and "By downloading and/or using the
+    Software, you acknowledge that you have read these terms and conditions, understand them, and agree to be bound by
+    them." (same page, re-read 2026-11-10).
   - Under the heading "No Distribution": "The Software and the license herein granted shall not be copied, shared,
     distributed, re-sold, offered for re-sale, transferred or sub-licensed in whole or in part except that you may
     make one copy for archive purposes only."
@@ -460,7 +516,8 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
     to ps-license@tue.mpg.de"
 - **Observed distribution fact.** The Hugging Face model repository `warmshao/WiLoR-mini`, which WiLoR-mini's code
   downloads from by default (`WILOR_MINI_REPO_ID = "warmshao/WiLoR-mini"`), lists a file
-  `pretrained_models/MANO_RIGHT.pkl` (HF API, read 2026-11-10). That repository carries no license tag.
+  `pretrained_models/MANO_RIGHT.pkl` (HF API, read 2026-11-10). That repository carries no license tag. (verify) The
+  try agent did not download or use that copy, citing the MANO "No Distribution" clause (trials.md, WiLoR section).
 
 ---
 
@@ -484,7 +541,11 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   `focal_length`, `pred_keypoints_3d`, `pred_vertices` and `pred_keypoints_2d` per hand crop; `--save_mesh` writes
   meshes. README: "We only require the right hand model"; `demo.py` multiplies the camera x term by `(2*batch['right']-1)`
   for each hand box.
-  No per-joint confidence output in the keys listed.
+  No per-joint confidence output in the keys listed. (verify) `pred_keypoints_2d` is not in frame pixels:
+  `hamer.py` projects with `focal_length=focal_length / self.cfg.MODEL.IMAGE_SIZE` and `perspective_projection`
+  defaults the camera center to zeros (`hamer/utils/geometry.py`), so the points are relative to the hand crop; the
+  demo maps the camera to the full frame with `cam_crop_to_full(pred_cam, box_center, box_size, img_size,
+  scaled_focal_length)` for rendering.
 - **Training data.** `hamer/configs_hydra/data/mix_all.yaml` at HEAD: FREIHAND-TRAIN 0.25, INTERHAND26M-TRAIN 0.25,
   MTC-TRAIN 0.1, RHD-TRAIN 0.05, COCOW-TRAIN 0.1, HALPE-TRAIN 0.05, MPIINZSL-TRAIN 0.05, HO3D-TRAIN 0.05,
   H2O3D-TRAIN 0.05, DEX-TRAIN 0.05 (weights). License clauses for FreiHAND, RHD, InterHand2.6M, COCO-WholeBody and
@@ -517,7 +578,10 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   detected hand: `hand_bbox` (x1, y1, x2, y2 pixels), `is_right` (the detector's class: right or left), and
   `wilor_preds` holding the model outputs including `pred_cam`, `pred_keypoints_3d`, `pred_vertices`,
   `pred_cam_t_full`, `scaled_focal_length` and `pred_keypoints_2d` (3D joints projected to image pixels). For a left hand
-  (`if right == 0:`) the code negates the x of `pred_keypoints_3d` and `pred_vertices` and adjusts `global_orient`. The pipeline's docstring notes "focal_length: you will
+  (`if right == 0:`) the code negates the x of `pred_keypoints_3d` and `pred_vertices` and adjusts `global_orient`
+  (verify: and `hand_pose`). (verify, added) The class also has `predict_with_bboxes(self, image, bboxes, is_rights,
+  **kwargs)`, which skips the detector and uses given boxes and handedness (default `rescale_factor` 2.5), a way for a
+  re-run to force chosen hand boxes. The pipeline's docstring notes "focal_length: you will
   need to scale the actual focal length by 256/max_image_side_length"; default `FOCAL_LENGTH` 5000. The detector's
   results are read as Ultralytics boxes (`det.boxes.data`, `det.boxes.cls`); the WiLoR README says the repository
   "depends also on [Ultralytics library]".
@@ -528,13 +592,18 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
     repository, you must also comply with the terms of these external licenses." The repository's `license.txt` is
     the "Attribution-NonCommercial-NoDerivatives 4.0 International" Creative Commons text (read from the clone,
     https://raw.githubusercontent.com/rolpotamias/WiLoR/main/license.txt, 2026-11-10). Conflicting source: the Hugging
-    Face model repository `rolpotamias/WiLoR` is tagged `license:cc-by-nc-4.0` (HF API, read 2026-11-10).
+    Face model repository `rolpotamias/WiLoR` is tagged `license:cc-by-nc-4.0` (HF API, read 2026-11-10; verify: it
+    also lists `detector_medium_v2.pt` and `detector_small.pt`, last modified 2025-11-23). (verify) trials.md (WiLoR
+    section): loading `detector.pt` with Ultralytics `YOLO('detector.pt')` stopped with `ModuleNotFoundError: No module
+    named 'dill'` (the checkpoint is a pickle that needs `dill`).
   - WiLoR-mini: no license file found in the repository root at HEAD (files: `.gitignore`, `README.md`, `assets`,
     `requirements.txt`, `setup.py`, `tests`, `wilor_mini`) on 2026-11-10; its HF repository `warmshao/WiLoR-mini`
     carries no license tag and hosts `MANO_RIGHT.pkl`, `detector.pt`, `wilor_final.ckpt` and `wilor_vit.onnx`.
   - c. Training data: the WHIM dataset (annotations on Google Drive and `huggingface.co/datasets/rolpotamias/WHIM`;
     "To download the corresponding images you need to first download the YouTube videos and extract the specific
-    frames", `whim/Dataset_instructions.md`). Other training sets not read (UNVERIFIED).
+    frames", `whim/Dataset_instructions.md`). (verify, added) The WHIM dataset card's front matter reads "license:
+    cc-by-nc-nd-4.0" (https://huggingface.co/datasets/rolpotamias/WHIM/raw/main/README.md, read 2026-11-10). Other
+    training sets not read (UNVERIFIED).
 
 ## Hamba (3D hand mesh, graph-guided Mamba)
 
@@ -560,9 +629,59 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   SLAM camera trajectory and a "motion infiller network that effectively completes the missing frames" (abstract).
 - **How a program calls it.** `python demo.py --video_path ./example/video_0.mp4 --vis_mode world` (or `cam`);
   weights from `huggingface.co/ThunderVVV/HaWoR` plus WiLoR's `detector.pt`, DROID-SLAM and Metric3D weights, and
-  both MANO hands (README). Tested "with PyTorch 1.13 and CUDA 11.7" (README).
+  both MANO hands (README). Tested "with PyTorch 1.13 and CUDA 11.7" (README). (verify) The README links the
+  DROID-SLAM (`droid.pth`) and Metric3D (`metric_depth_vit_large_800k.pth`) weights on Google Drive; the HF repo
+  also lists `external/droid.pth` and `external/metric_depth_vit_large_800k.pth`. MANO paths:
+  `_DATA/data/mano/MANO_RIGHT.pkl` and `_DATA/data_left/mano_left/MANO_LEFT.pkl`.
 - **LICENSE FACTS.** `license.txt` is the "Attribution-NonCommercial-NoDerivatives 4.0 International" text (read
-  from the clone 2026-11-10). HF repo `ThunderVVV/HaWoR` has no license tag. Requires MANO.
+  from the clone 2026-11-10). (verify, added) README: "HaWoR models fall under the [CC-BY-NC--ND License](./license.txt).
+  This repository depends also on [MANO Model](https://mano.is.tue.mpg.de/license.html), which are fall under their own
+  licenses." HF repo `ThunderVVV/HaWoR` has no license tag. Requires MANO.
+
+## FAH, "Fast and Accurate Hand Estimation" (added by verify, 2026 release)
+
+- **What and who.** `noahcao/FAH` (README read 2026-11-10 at https://raw.githubusercontent.com/noahcao/FAH/main/README.md;
+  paper link https://arxiv.org/pdf/2611.07711, not opened). Last commit 2026-11-07, subject "feat: FAH initial
+  release". README: "FAH predicts 2D and 3D hand joints and surface points, then fits MANO, MHR-Hand or both." and
+  "Optional heads add part labels and object-contact probabilities. Video mode refines tracks; world mode adds camera
+  estimation." For video: "call `model.reset()` before each clip and process frames in order."
+- **Runs on.** README: "On CPU or Apple silicon, omit the CUDA PyTorch command and install with `pip install -e .`."
+  Author speed claims are on a GPU: "FAH-L reaches **4.31 mm HOT3D PA-MPJPE at 65 fps** with mesh fitting on an RTX
+  4070 Ti SUPER." Not run here.
+- **MANO.** Optional: "**MANO:** register and download from [mano.is.tue.mpg.de](https://mano.is.tue.mpg.de), then
+  convert" (README); MHR-Hand is the other fitter.
+- **LICENSE FACTS.** Code: `LICENSE` is the Apache License 2.0 text; README: "**Code:** [Apache 2.0](LICENSE), except
+  upstream files identified in [NOTICE](NOTICE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)." Weights: README
+  "**All FAH weights, including the detector, fitted data and exported models:** [WEIGHTS_LICENSE](WEIGHTS_LICENSE),
+  for research and non-commercial use." `WEIGHTS_LICENSE` (https://raw.githubusercontent.com/noahcao/FAH/main/WEIGHTS_LICENSE,
+  read 2026-11-10), Part 3: "In addition to the applicable upstream terms, the FAH Weights may be used, reproduced,
+  modified and distributed for research and other non-commercial purposes only." Part 1 passes through the SAM License
+  because "The pose models derive from SAM 3D Body (Meta Platforms, Inc.)". Part 3 lists the training sources it calls
+  non-commercial, among them MANO, ARCTIC, "the HOT3D hand annotations (CC BY-NC-SA 4.0), DexYCB (CC BY-NC 4.0),
+  InterHand2.6M (CC BY-NC 4.0)" and "WiLoR (CC BY-NC-ND 4.0): its outputs are distillation targets of the pose
+  models." HF `noahcao/FAH`: not gated, `license:other` (`fah-weights-license`), last modified 2026-11-04.
+
+## EgoHand v1 (NVIDIA; added by verify, 2026 release)
+
+- **What and who.** arXiv 2610.30293, "EgoHand: Monocular 3D Hand Reconstruction from Egocentric Video" (v1 21 Oct
+  2026, v2 26 Oct 2026; read 2026-11-10 at https://export.arxiv.org/abs/2610.30293). Abstract: "The model adopts
+  SOMA-Hand as its parametric representation and processes 2D hand crops with a transformer encoder" and "We release
+  the EgoHand model and source code under the OpenMDW license, allowing free commercial use of the model." Code: the
+  folder `src/python/isaaccapture_egopost` of `NVIDIA/IsaacCapture` (README read 2026-11-10 at
+  https://raw.githubusercontent.com/NVIDIA/IsaacCapture/main/src/python/isaaccapture_egopost/README.md): "**[2026-10-21]**
+  🚀 **EgoHand v1** is released for monocular 3D hand pose estimation using the [SOMA-Hand representation]". Weights:
+  HF `nvidia/EgoHand-v1` (file `egohand_s060000.ckpt`; not gated; `license:openmdw-1.1`; last modified 2026-10-27).
+- **Runs on.** README "System requirements" table: "GPU | NVIDIA RTX 6000 Ada, L40, L20, or RTX PRO 6000 Blackwell",
+  "Memory | 32 GB", "Storage | 25 GB", "OS | Ubuntu 24.04". CPU not stated. Not run here.
+- **LICENSE FACTS.** README header: "SPDX-License-Identifier: LicenseRef-OpenMDW-1.1". The license file
+  (https://raw.githubusercontent.com/NVIDIA/IsaacCapture/main/LICENSES/LicenseRef-OpenMDW-1.1.txt, read 2026-11-10):
+  "Subject to your compliance with this agreement, permission is hereby granted, free of charge, to deal in the Model
+  Materials without restriction, including under all copyright, patent, database, and trade secret rights included or
+  embodied therein." and "If you distribute any portion of the Model Materials, you shall retain in your distribution
+  (1) a copy of this agreement, and (2) all copyright notices and other notices of origin included in the Model
+  Materials that are applicable to your distribution." The repository root has no `LICENSE` file
+  (https://raw.githubusercontent.com/NVIDIA/IsaacCapture/main/LICENSE answered HTTP 404). Training data licenses were
+  not read (UNVERIFIED).
 
 ---
 
@@ -601,7 +720,8 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   Checkpoints are gated: "Before using SAM 3, please request access to the checkpoints on the SAM 3 Hugging Face
   [repo](https://huggingface.co/facebook/sam3). Once accepted, you need to be authenticated to download the
   checkpoints." HF API (read 2026-11-10): `facebook/sam3` and `facebook/sam3.1` are `gated: manual`, tagged
-  `license:other`; `facebook/sam-3d-body-dinov3` is `gated: manual`, `license:other`.
+  `license:other`; `facebook/sam-3d-body-dinov3` is `gated: manual`, `license:other` (verify: so is
+  `facebook/sam-3d-body-vith`).
 - **Output.** SAM 2: `masks` per `object_ids` per `frame_idx` (README loop). SAM 3 image: `output["masks"]`,
   `output["boxes"]`, `output["scores"]` for a text prompt; SAM 3 video: `response["outputs"]` (fields not read:
   UNVERIFIED). Neither README shows keypoint output. A text prompt such as "guitar neck" or "capo" is the kind of hint a re-run can take (SAM 3), and
@@ -614,11 +734,12 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   - SAM 2 code and weights. README "License": "The SAM 2 model checkpoints, SAM 2 demo code (front-end and back-end),
     and SAM 2 training code are licensed under [Apache 2.0](./LICENSE), however the [Inter Font] and [Noto Color
     Emoji] used in the SAM 2 demo code are made available under the [SIL Open Font License, version 1.1]". `LICENSE` is
-    the Apache License 2.0 text. Third-party: "a GPU-based connected component algorithm adapted from `cc_torch` (with
-    its license in `LICENSE_cctorch`)". HF `facebook/sam2.1-hiera-large` and `-tiny` tagged `license:apache-2.0`. All
+    the Apache License 2.0 text. Third-party (verify: re-quoted with its links): "we use a GPU-based connected component
+    algorithm adapted from [`cc_torch`](https://github.com/zsef123/Connected_components_PyTorch) (with its license in
+    [`LICENSE_cctorch`](./LICENSE_cctorch)) as an optional". HF `facebook/sam2.1-hiera-large` and `-tiny` tagged `license:apache-2.0`. All
     read 2026-11-10 (https://raw.githubusercontent.com/facebookresearch/sam2/main/README.md and `LICENSE`, via clone).
-  - SAM 2 training data (SA-V). https://ai.meta.com/datasets/segment-anything-video/ (read 2026-11-10 through a
-    summarizing fetch, so wording UNVERIFIED verbatim): License "CC BY 4.0"; "It is intended to be used for computer
+  - SAM 2 training data (SA-V). https://ai.meta.com/datasets/segment-anything-video/ (verify: re-fetched as HTML with
+    curl on 2026-11-10 and all three quotes below found verbatim in the page text): License "CC BY 4.0"; "It is intended to be used for computer
     vision research for the purposes permitted under the CC by 4.0 license." "SA-V consists of 51K diverse videos and
     643K spatio-temporal segmentation masks".
   - SAM 3 and SAM 3.1 (code and weights). `LICENSE` at HEAD (https://raw.githubusercontent.com/facebookresearch/sam3/main/LICENSE,
@@ -639,7 +760,8 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
     the SAM Materials that are made by you, as between you and Meta, you are and will be the owner of such derivative
     works and modifications." The license text contains no clause that names commercial use either way (searched for
     "commercial" on 2026-11-10: no match). PyPI `sam3` license metadata begins "SAM License Last Updated: November 19,
-    2025".
+    2025". (verify, added) Conflicting metadata: the same PyPI release (0.1.4) also carries the classifier "License ::
+    OSI Approved :: MIT License" (https://pypi.org/pypi/sam3/json, read 2026-11-10).
   - SAM 3D Body: the same "SAM License" text plus one added clause: "i. Grant of Patent License. Subject to the terms
     and conditions of this License, you are granted a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
     irrevocable (except as stated in this section) patent license to make, have made, use, offer to sell, sell,
@@ -657,11 +779,16 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   PyPI `groundingdino-py` 0.4.0 (2023-05-23). Also in Hugging Face `transformers` (PyPI 5.22.2, 2026-11-06) as
   `IDEA-Research/grounding-dino-tiny|base` (HF `license:apache-2.0`, last modified 2024-05-12).
 - **How a program calls it.** README Python block: `model = load_model("groundingdino/config/GroundingDINO_SwinT_OGC.py",
-  "weights/groundingdino_swint_ogc.pth")`, `TEXT_PROMPT = "chair . person . dog ."`, `boxes, logits, phrases =
-  predict(model=model, image=image, caption=TEXT_PROMPT, box_threshold=0.35, text_threshold=0.25)`. README: "Support
+  "weights/groundingdino_swint_ogc.pth")`, `TEXT_PROMPT = "chair . person . dog ."`, `BOX_TRESHOLD = 0.35`,
+  `TEXT_TRESHOLD = 0.25` (README spelling), `boxes, logits, phrases = predict(model=model, image=image,
+  caption=TEXT_PROMPT, box_threshold=BOX_TRESHOLD, text_threshold=TEXT_TRESHOLD)` (verify: re-quoted; the earlier
+  version substituted the values into the call). README: "Support
   CPU-only mode. Now the model can run on machines without GPUs." and a `--cpu-only` flag in the demo command.
-- **Output.** `boxes` (the README passes them to `annotate`; coordinate format not read: UNVERIFIED), `logits`
-  (scores), `phrases`. No masks; Grounded-SAM-2 (`IDEA-Research/Grounded-SAM-2`, Apache-2.0, last commit 2025-11-11) ships
+- **Output.** `boxes`, `logits` (scores), `phrases`. (verify: format read from source, resolving the earlier
+  UNVERIFIED) In `groundingdino/util/inference.py` at HEAD, `predict` returns the model's `pred_boxes` filtered by the
+  thresholds, and `annotate` turns them into pixels with `boxes = boxes * torch.Tensor([w, h, w, h])` and
+  `box_convert(boxes=boxes, in_fmt="cxcywh", out_fmt="xyxy")`: the returned boxes are normalized (center x, center y,
+  width, height). No masks; Grounded-SAM-2 (`IDEA-Research/Grounded-SAM-2`, Apache-2.0, last commit 2025-11-11) ships
   scripts that pass these boxes to SAM 2 (Handoff fact 4).
 - **Author measurements.** README: "COCO zero-shot **52.5 AP** (training without COCO data!). COCO fine-tune **63.0
   AP**." The released SwinT-OGC checkpoint's pre-training data column reads "O365,GoldG,Cap4M" (README table).
@@ -681,7 +808,9 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   `results = processor.post_process_object_detection(outputs=outputs, target_sizes=target_sizes, threshold=0.1)`,
   then `boxes, scores, labels = results[i]["boxes"], results[i]["scores"], results[i]["labels"]`. The card's comment:
   "Convert outputs (bounding boxes and class logits) to Pascal VOC Format (xmin, ymin, xmax, ymax)". Queries are
-  free-text strings.
+  free-text strings. (verify) A different output format was observed in the trial: the public Space `merve/owlv2`
+  called with `gradio_client` returns an `AnnotatedImage` whose annotations are mask images with a label and no score
+  field (trials.md, OWLv2 section, run r0193); the format above is the `transformers` API from the model card.
 - **Card statements.** "The model is intended as a research output for research communities." Data: "The CLIP
   backbone of the model was trained on publicly available image-caption data. This was done through a combination of
   crawling a handful of websites and using commonly-used pre-existing image datasets such as [YFCC100M]." "The
@@ -700,6 +829,15 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   "bus"])` (https://docs.ultralytics.com/models/yolo-world/, read 2026-11-10); the YOLO-World page says "For
   open-vocabulary work that also needs instance masks, visual prompts, or a prompt-free mode, see YOLOE, which keeps
   the same set_classes() API."
+- (verify, added) **YOLOE-26 in Ultralytics.** The YOLOE docs page (https://docs.ultralytics.com/models/yoloe/, read
+  2026-11-10): `model = YOLOE("yoloe-26s-seg.pt")`, `model.set_classes(["double-decker bus", "person"])`; "YOLOE-26
+  returns boxes and instance segmentation masks for categories it was never trained on." and "The first set_classes()
+  call installs ultralytics/CLIP from GitHub with pip (it provides the tokenizer) and downloads a TorchScript text
+  encoder into the current working directory. YOLOE-26 pulls mobileclip2_b.ts, about 254 MB". In the source
+  (`ultralytics/nn/text_model.py` at HEAD) the `mobileclip2` variant returns `MobileCLIPTS(device,
+  weight="mobileclip2_b.ts")`, fetched with `attempt_download_asset` (Ultralytics' `ultralytics/assets` releases). The
+  trial downloaded that file (253,794,476 bytes, trials.md). Paper: arXiv 2602.00168, "YOLOE-26: Integrating YOLO26
+  with YOLOE for Real-Time Open-Vocabulary Instance Segmentation" (Ranjan Sapkota, Manoj Karkee; v1 29 Jan 2026).
 - **Output.** Ultralytics `Results` (boxes with `xyxy`, `conf`, `cls`; masks for YOLOE-seg), as in the Ultralytics
   section.
 - **LICENSE FACTS.** YOLO-World `LICENSE`: "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007" (clone, 2026-11-10);
@@ -709,6 +847,16 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   Ultralytics staff reply on the YOLOE docs page: "For production use you’ll need to
   choose between AGPL-3.0 compliance (open‑source your entire derivative) or an Enterprise License for proprietary
   deployment").
+- (verify, added: a weights license the survey had missed) **Text encoder used by YOLOE-26 prompts.** The upstream
+  model, Apple's MobileCLIP2-B on Hugging Face (`apple/MobileCLIP2-B`, tag `license:apple-amlr`, read 2026-11-10), ships
+  this `LICENSE` (https://huggingface.co/apple/MobileCLIP2-B/raw/main/LICENSE): "Apple hereby grants you a personal,
+  non-exclusive, worldwide, non-transferable, royalty-free, revocable, and limited license, to use, copy, modify,
+  distribute, and create Model Derivatives (defined below) of the Apple Machine Learning Research Model exclusively for
+  Research Purposes." and "“Research Purposes” does not include any commercial exploitation, product development or use
+  in any commercial product or service." The `mobileclip2_b.ts` file that Ultralytics downloads is its own TorchScript
+  export; no license statement for that file was found in the Ultralytics pages read (UNVERIFIED which terms Ultralytics
+  applies to it). YOLO-World in Ultralytics uses the OpenAI CLIP "ViT-B/32" text encoder instead (trials.md, Grounding
+  DINO / OWLv2 / YOLO-World section); its license was not read (UNVERIFIED).
 
 ---
 
@@ -717,7 +865,8 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
 - **What, versions.** `opencv/opencv`, last commit 2026-11-10; the default branch's `version.hpp` reads
   `CV_VERSION_MAJOR 5`, `CV_VERSION_MINOR 2`, `CV_VERSION_STATUS "-dev"`. PyPI `opencv-python` and
   `opencv-contrib-python` 5.0.0.93 (2026-07-02). Browser: npm `@techstark/opencv-js` 5.0.0-release.1 (Apache-2.0
-  metadata; a third-party packaging of OpenCV.js, not read further) and the older `opencv.js` 1.2.1 (2022).
+  metadata; a third-party packaging of OpenCV.js, not read further) and the older `opencv.js` 1.2.1 (verify: npm
+  publish time of 1.2.1 is 2017-11-01, package metadata last modified 2022-05-12; npm license field "BSD-3-Clause").
   docs.opencv.org answered with a Cloudflare "Just a moment..." challenge page to a scripted fetch on 2026-11-10,
   so the function facts below come from the source headers and from the docstrings of the installed package.
 - **Functions relevant to fret, string and neck geometry (all present in `cv2` 5.0.0, checked with `hasattr` in the try
@@ -727,12 +876,18 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   - `HoughLinesP(image, rho, theta, threshold[, lines[, minLineLength[, maxLineGap]]]) -> lines` (docstring);
     header `modules/imgproc/include/opencv2/imgproc.hpp`: "@brief Finds line segments in a binary image using the
     probabilistic Hough transform." "@param image 8-bit, single-channel binary source image." "@param lines Output
-    vector of lines. Each line is represented by a 4-element vector" (x1, y1, x2, y2 in pixels).
+    vector of lines. Each line is represented by a 4-element vector" (x1, y1, x2, y2 in pixels). (verify) Observed in the
+    trial: "in OpenCV 5 `HoughLinesP` returns an array of shape (N, 4), not (N, 1, 4) as in 4.x" (trials.md, OpenCV
+    section, run r0149).
   - `findHomography(srcPoints, dstPoints[, method[, ransacReprojThreshold[, mask[, maxIters[, confidence]]]]]) ->
     retval, mask` (docstring): "@brief Finds a perspective transformation between two planes." The returned 3x3
     matrix maps points of one plane to the other, so point pairs found on the neck (for example nut and fret ends)
     matched to a fretboard template give a mapping from image pixels to fretboard coordinates; `warpPerspective`
     applies such a matrix to the whole frame.
+  - (verify, added) `perspectiveTransform(src, m[, dst]) -> dst` (docstring) maps point arrays through such a matrix. In
+    cv2 5.0.0 it accepts points shaped (N, 1, 2) or (1, N, 2) and raises "(-215:Assertion failed) scn + 1 == m.cols"
+    for a plain (N, 2) array (float32 and float64 alike; `scripts/verify_perspective_shapes.py`, run 2026-11-10 in the
+    lane's `venv-rtmlib`). The trial's handoff used (N, 1, 2) float points (trials.md, runs r0172 and r0218).
 - **Input / output.** Images as numpy arrays (Python) or `cv.Mat` (JS); outputs are numpy arrays of line segments,
   matrices and point tracks. No learned model, no training data.
 - **LICENSE FACTS.** `LICENSE` at HEAD of the default branch (metadata clone of https://github.com/opencv/opencv,
@@ -754,11 +909,17 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   `pred_tracks, pred_visibility = cotracker(video, grid_size=grid_size) # B T N 2,  B T N 1` (README). Online mode:
   `torch.hub.load(..., "cotracker3_online")`, first call with `is_first_step=True`, then per chunk; "Online processing
   is more memory-efficient and allows for the processing of longer videos." The README examples use
-  `grid_size`; other query forms were not read (UNVERIFIED). CPU: "We strongly
+  `grid_size`. (verify, resolves the earlier UNVERIFIED) Other query forms, from the `forward` comments in
+  `cotracker/predictor.py` at HEAD (the class `torch.hub` returns for `cotracker3_offline`, per `hubconf.py`):
+  "queries. Queried points of shape (B, N, 3) in format (t, x, y) for frame index and pixel coordinates.", "grid_size.
+  Grid of N*N points from the first frame. if segm_mask is provided, then computed only for the mask.", and
+  `segm_mask: torch.Tensor = None,  # Segmentation mask of shape (B, 1, H, W)`. CPU: "We strongly
   recommend installing both PyTorch and TorchVision with CUDA support, although for small tasks CoTracker can be run
   on CPU."
 - **Output.** `pred_tracks` "B T N 2" and `pred_visibility` "B T N 1" (README code comments: batch, frames,
-  points); the coordinate unit is not stated in the lines read (UNVERIFIED).
+  points). (verify) Unit, from `cotracker/predictor.py`: the video is resized to the model resolution and the tracks
+  are scaled back with `tracks *= tracks.new_tensor([(W - 1) / (self.interp_shape[1] - 1), (H - 1) /
+  (self.interp_shape[0] - 1)])` before return, i.e. x, y in pixels of the input video.
 - **LICENSE FACTS.** `LICENSE.md`: "Attribution-NonCommercial 4.0 International" (clone, 2026-11-10;
   https://raw.githubusercontent.com/facebookresearch/co-tracker/main/LICENSE.md). README "License": "The majority of
   CoTracker is licensed under CC-BY-NC, however portions of the project are available under separate license terms:
@@ -797,7 +958,9 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
 - **How a program calls it.** `python demo.py --mp4_path ./demo_video/monkey.mp4 --query_frame 32 --conf_thr 0.01
   ...`; "The demo script will automatically download the model weights from [huggingface]" (README).
 - **LICENSE FACTS.** `LICENSE`: "MIT License Copyright (c) 2025 Adam W. Harley Permission is hereby granted, free of
-  charge, to any person obtaining a copy" (clone, 2026-11-10). Weights license on HF not checked (UNVERIFIED).
+  charge, to any person obtaining a copy" (clone, 2026-11-10). (verify, resolves the earlier UNVERIFIED) Weights:
+  `demo.py` downloads `https://huggingface.co/aharley/alltracker/resolve/main/alltracker.pth` (or `alltracker_tiny.pth`);
+  HF `aharley/alltracker` is tagged `license:mit` (HF API, read 2026-11-10).
   Training: "Stage 1 is kubric alone; Stage 2 is a mix of datasets" (README).
 
 ---
@@ -812,13 +975,17 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   challenge page, and the WebFetch tool also got "HTTP 403 Forbidden" (2026-11-10). Their license fields, class
   lists, image counts and model availability are therefore UNVERIFIED here (search-engine snippets are not cited).
   What would settle it: open each URL in a browser and copy the "License" field and class list, or call the
-  Roboflow API with an API key (`roboflow` PyPI 1.7.3, 2026-10-26).
+  Roboflow API with an API key (`roboflow` PyPI 1.7.3, 2026-10-26). (verify) The try agent found the API closed without
+  a key: `https://api.roboflow.com/code-and-chords/guitar-necks-detector-ogacd` answered HTTP 401 "This method requires
+  your API key." and `https://detect.roboflow.com/guitar-necks-detector-ogacd/1` answered 401 (trials.md, Roboflow
+  section). The verify pass did not re-request the Universe pages (they had answered 403).
 - **Roboflow Inference (`roboflow/inference`).** PyPI `inference` / `inference-cli` / `inference-sdk` 1.8.4
   (2026-10-30), repository last commit 2026-11-10. Runs models in a local Docker server:
   "`pip install inference-cli && inference server start --dev`" ("This will pull the proper image for your machine
   and start it in development mode"), served on `localhost:9001`; a client
-  calls it with `InferenceHTTPClient(api_url="http://localhost:9001", # api_key="<YOUR API KEY>" # optional to access
-  your private data and models)` and `client.run_workflow(...)` (README). A CPU image is published
+  calls it with (verify: re-quoted, the comment was missing) `client = InferenceHTTPClient(api_url="http://localhost:9001",
+  # use local inference server` / `# api_key="<YOUR API KEY>" # optional to access your private data and models` / `)`
+  and `client.run_workflow(...)` (README). A CPU image is published
   (`roboflow/roboflow-inference-server-cpu`, README badge). Bundled model folders include `grounding_dino`, `owlv2`,
   `sam`, `sam2`, `sam3`, `yolo_world`, `yolo26`, `rfdetr`, `florence2` (`inference/models/` at HEAD).
 - **LICENSE FACTS (Inference).** Repository `LICENSE` (clone, 2026-11-10): "LICENSE.core (Apache 2.0) applies to all
@@ -836,7 +1003,9 @@ read today says nothing about CPU; whether it runs here is UNVERIFIED until the 
   public project or in connection with a Public Plan, you hereby do and shall grant Company a worldwide,
   non-exclusive, perpetual, royalty-free, fully paid, sublicensable and transferable license to use, edit, modify,
   ... and otherwise fully exploit the User Content".
-- **Roboflow pricing (https://roboflow.com/pricing, read 2026-11-10).** "Free Tier $0", "10 credits included a
+- **Roboflow pricing (https://roboflow.com/pricing, read 2026-11-10; verify: re-read with curl on 2026-11-10 at
+  21:27 UTC, every figure below found on the page; the terms page still shows "Last modified: May 3, 2024").**
+  "Free Tier $0", "10 credits included a
   month", "Enough to train ~30 models or run 80,000 inferences"; "Core $39per month, billed monthly" (+10 credits;
   larger packs up to "$1,399 a month, 500 credits in total"); Enterprise "Custom Pricing". Hosted inference rates in
   credits, e.g. "YOLO26 Nano 0.000125 credits" per image ("8,000" images per credit) and "SAM 3 0.000500 credits" per
@@ -871,9 +1040,14 @@ Each entry: what the source itself says, and whether code or weights are linked 
   WVGA resolution) mounted to the guitar. Four tuned guitars were used; classical, electric, electric bass and
   acoustic." Result with ground-truth note intervals: "Overall, 66% of the notes’ pitches were detected correctly: 86%
   for the bass guitar, and an average of 58% for the others." "The algorithm was implemented in Matlab". Reference
-  [3]: "project website, including data, code, and supplemental material.
-  https://shirgoldstein.wixsite.com/shirg/nt-from-silent-video" (the website itself was not opened: UNVERIFIED whether
-  the files are still there).
+  [3] (verify: re-quoted with the paper's own spelling): "Guitar Music Transcription from Silent Video: porject [sic]
+  website, including data, code, and supplemental material. https://shirgoldstein.wixsite.com/shirg/nt-from-silent-video".
+  (verify, resolves the earlier UNVERIFIED) The site, opened 2026-11-10, has "Code" and "Data" links. The code page
+  (https://shirgoldstein.wixsite.com/shirg/copy-of-nt-from-silent-video) reads "Code will be available soon." The data
+  page (https://shirgoldstein.wixsite.com/shirg/data) lists clips per guitar (classic, bass, acoustic, electric) and
+  string, as 61 Dropbox links: 59 `.MP4` files and a `getGroundTruth.m`. One link probed with `curl -I`
+  (`getGroundTruth.m`) answered HTTP 302 to a `dropbox.com/scl/fi/...` address (not downloaded). No license text
+  appears on the data page ("licen" occurs 0 times in its HTML).
 - **TapToTab (Ghaleb, Elsadawy, Essam et al.), arXiv 2409.08618, submitted 13 Sep 2024** (https://export.arxiv.org/abs/2409.08618 and
   the PDF https://arxiv.org/pdf/2409.08618, read 2026-11-10). Abstract: "YOLO models for real-time fretboard detection,
   and Fourier Transform-based audio analysis for precise note identification." PDF: YOLO V8 and "YOLO V8 Oriented
@@ -882,8 +1056,9 @@ Each entry: what the source itself says, and whether code or weights are linked 
   0.913 / 0.769; YOLO V8 0.987 / 0.995 / 0.992 / 0.951; YOLO V8 OBB 0.988 / 0.988 / 0.993 / 0.955; YOLO V9 0.958 /
   0.949 / 0.983 / 0.907 (on the authors' own annotated set). It names GuitarSet's lack of video: "Lack of Visual
   Guitar Data: GuitarSet and IDMT-SMT-GUITAR primarily focus on audio data with limited visual information, which is
-  essential for our computer vision approach." Authors on the PDF include Ali Ghaleb and others at "Faculty of
-  Computer and Information Sciences, Ain Shams University". The arXiv page shows only the generic "Code, Data and Media" toggles; no code
+  essential for our computer vision approach." Authors on the PDF include Ali Ghaleb and others; each author block
+  reads "Faculty of Computer and Information" / "Sciences" / "Ain Shams University" / "Cairo, Egypt" (verify: the
+  affiliation is set over several lines in the PDF). The arXiv page shows only the generic "Code, Data and Media" toggles; no code
   or dataset link was found in the abstract page or the PDF lines read.
 - **"You Just Play" / Tabbers, PyData Tel Aviv 2025 talk** (https://cfp.pydata.org/pydata-tel-aviv-2025/talk/FA7JGZ,
   read 2026-11-10; the page HTML carries the date 2025-11-05). "Our core technology turns guitar-playing videos into
@@ -904,6 +1079,16 @@ Each entry: what the source itself says, and whether code or weights are linked 
   (MediaPipe, OpenPose, WiLoR, HaMeR)". "The GuiFiR dataset resources are publicly available." The page links no
   repository or dataset URL (its only GitHub link is the lab organization `github.com/kmu-ee-ailab`); `git ls-remote`
   of `kmu-ee-ailab/GuiFiR` and `kmu-ee-ailab/guifir` failed on 2026-11-10. Code and data location: UNVERIFIED.
+- (verify, added) **Bae, Kwon, Park, "An Audio-Visual Framework for Transcription and Fingering Optimization in Bass
+  Guitar Performance", UIST Adjunct '25 (3-page poster, DOI 10.1145/3746058.3758448)**
+  (https://ixlab.cau.ac.kr/papers/bassguitar-uist25poster.pdf, read 2026-11-10). Abstract: "This paper presents a
+  framework for estimating optimal bass fingering by analyzing video input, detecting strings, frets, finger
+  positions, and played notes. Using a Bi-LSTM model, the system estimates optimal fingering sequences." Parts named in
+  the text: "we used Google MediaPipe Hand Landmarks Detection", "To detect bass string, we used OpenCV’s houghlines
+  function" (the PDF's two-column text interleaves this sentence; quoted as it reads in column order), and CREPE Notes
+  for pitch and note-on times. Data: "We collected a total of 21 YouTube videos". Reported result: "The note
+  recognition accuracy was 0.81 on average (SD=0.06), the position recognition accuracy was 0.77 (SD = 0.12), and the
+  fingering prediction accuracy was 0.50 (SD = 0.07)". No code or data link was found in the PDF text.
 - **Names that came up in search results but were not read today** (nothing is claimed about them here; years and
   venues are UNVERIFIED): Duke and Salgian (a PDF link titled "Guitar Tablature Generation Using Computer Vision"
   returned HTTP 404), Kerdvibulvech and Saito, Hrybyk and Kim, Scarr and Green, Canales and Jörg, and PianoVAM
@@ -912,7 +1097,9 @@ Each entry: what the source itself says, and whether code or weights are linked 
 ## Datasets that pair guitar video (or guitar hands) with annotations
 
 - **Goldstein and Moses 2018**: GoPro 240 fps videos from a camera mounted on four guitars, with note ground truth;
-  "available on project webpage" per the paper (page not opened; license not read: UNVERIFIED).
+  "available on project webpage" per the paper. (verify) Page opened 2026-11-10: 59 `.MP4` Dropbox links per guitar
+  and string plus `getGroundTruth.m` (Research section); no license text on the page; the code page says "Code will be
+  available soon."
 - **GuiFiR-Synth and GuiFiR-Vid** (2026): described above; "publicly available" per the lab page; no link found.
 - **GAPS** (Xavier Riley, Zixun Guo, Drew Edwards, Simon Dixon; arXiv 2408.08653, comment "ISMIR 2024", per
   https://export.arxiv.org/abs/2408.08653; text from https://arxiv.org/html/2408.08653v2, both read 2026-11-10): "14 hours
@@ -921,9 +1108,18 @@ Each entry: what the source itself says, and whether code or weights are linked 
   YouTube of a performance of the same piece"; "We also downloaded the audio and video for the 547 pieces where
   YouTube links were available." Zenodo record https://zenodo.org/records/17152440 (read 2026-11-10): "Links to
   YouTube URLs for audio and video are provided in the accompanying metadata file"; License "Creative Commons
-  Attribution Non Commercial Share Alike 4.0 International"; "a newer version of this dataset is now available at
-  https://huggingface.co/datasets/xavriley/GAPS which includes audio". Video frames are not hand- or fret-annotated in
-  what was read; note-level MIDI (and tablature in MusicXML per the paper: "tablatures in MusicXML format") is.
+  Attribution Non Commercial Share Alike 4.0 International"; (verify: re-quoted as the description shows it) "UPDATE -
+  a newer version of this dataset is now available at
+  [https://huggingface.co/datasets/xavriley/GAPS](https://huggingface.co/datasets/xavriley/GAPS) which includes audio and
+  also fixes a bug with case sensitivity in the Soundslice ids that are used to identify files." Video frames are not
+  hand- or fret-annotated in what was read; note-level MIDI (and tablature in MusicXML per the paper: "tablatures in
+  MusicXML format") is.
+  (verify, added: a conflicting license source) The Hugging Face dataset card
+  (https://huggingface.co/datasets/xavriley/GAPS/raw/main/README.md, read 2026-11-10) has the front matter "license:
+  mit" and says "300 solo guitar performances with accurately aligned MIDI and musicxml scores." and "audio now
+  included". Its top-level folders (HF API, 2026-11-10) are `audio`, `midi`, `musicxml`, `match`, `syncpoints`,
+  `scripts`, plus `gaps_metadata_with_splits.csv`; no video folder. Zenodo (CC BY-NC-SA 4.0) and Hugging Face (MIT)
+  therefore state different licenses for GAPS; both are quoted here as found.
 - **Guitar-TECHS** (https://zenodo.org/records/14963133, "Published April 6, 2025 | Version v1", read 2026-11-10):
   "Per-string MIDI annotations via Fishman Triple Play Connect pickup"; "(note: the ego and exo signals were captured
   with a video device, but Guitar-TECHS only includes this device's audio capture)". License "Creative Commons
@@ -932,7 +1128,8 @@ Each entry: what the source itself says, and whether code or weights are linked 
   (Soccer, Basketball, Dance, Bouldering, Music) and procedural (Cooking, Bike Repair, Health) tasks"; "extensively
   annotated with 3D body and hand pose". Access (https://ego-exo4d-data.org/): "Sign the Ego-Exo4D Licenses, this will
   take 2 days to be approved". Whether the Music scenario includes guitar, and the license terms, were not read:
-  UNVERIFIED.
+  UNVERIFIED. (verify) The home page's scenario table lists "Music 276 59 8 180.08h" (takes, participants, sites,
+  ego+exo hours); neither page read mentions guitar.
 - **Ultralytics Hand Keypoints** (generic hands, not guitar): 26,768 images, MediaPipe-generated 21-point labels,
   CC BY-NC-SA 4.0 (Ultralytics section).
 - **Roboflow Universe guitar projects**: listed in the Roboflow section; pages not readable from this box.
@@ -952,8 +1149,11 @@ Each entry: what the source itself says, and whether code or weights are linked 
   absolute distance in a metric scale, where the origin is formed as an average between the first knuckles of index,
   middle, ring and pinky fingers." Each keypoint carries a `name` (e.g. `"wrist"`, `"pinky_finger_tip"`). License:
   repository `LICENSE` Apache License 2.0; npm metadata "Apache-2.0".
-- **ml5.js** npm `ml5` 1.4.0 (2026-08-07; `ml5js/ml5-next-gen` last commit 2026-11-09), a beginner-oriented browser
-  library with a `handPose` model (README). License sources conflict: npm metadata says "MIT"; the repository's
+- **ml5.js** npm `ml5` 1.4.0 (2026-08-07; `ml5js/ml5-next-gen` last commit 2026-11-09). (verify: rewritten; the
+  README does not mention handPose) README: "ml5.js aims to make machine learning approachable for a broad audience of
+  artists, creative coders, and students." The hand model is `src/HandPose/index.js`, which has `import * as
+  handPoseDetection from "@tensorflow-models/hand-pose-detection";` and options `maxHands`, `modelType`, `runtime`
+  (source at HEAD, read 2026-11-10), i.e. a wrapper of the TensorFlow.js model above. License sources conflict: npm metadata says "MIT"; the repository's
   `LICENSE.md` reads "# ml5.js LICENSE _Version 1.0 of the ml5.js license was adopted and last updated on May 10, 2021.
   It applies to all contributions to the ml5.js library as of May 20,2021. Contributions prior to that date are
   licensed under the MIT license." It includes "You must use this software in compliance with the ml5.js [Code of
@@ -969,8 +1169,23 @@ Each entry: what the source itself says, and whether code or weights are linked 
   Open-MMLab. All rights reserved." + Apache License 2.0 (clone 2026-11-10). HaMeR and Hamba ship a `vitpose_model.py` at their
   repository roots; HaMeR's demo uses it to locate hands. rtmlib lists "ViTPose for 133 keypoints".
 - **Sapiens** (Meta, `facebookresearch/sapiens`, last commit 2026-05-26): `LICENSE` "Creative Commons
-  Attribution-NonCommercial 4.0 International" (clone 2026-11-10). Its README's keypoint count and hand coverage were
-  not read (UNVERIFIED).
+  Attribution-NonCommercial 4.0 International" (clone 2026-11-10). (verify, resolves the earlier UNVERIFIED)
+  `docs/POSE_README.md` lists "Body: 17 Keypoints", "Body + Face + Hands + Feet: 133 Keypoints" ("following the
+  [COCO-WholeBody keypoint format]") and "Body + Dense Face + Hands + Feet: 308 Keypoints". README: "This project is
+  licensed under [LICENSE](LICENSE)." Weights: README "Please download the **original** checkpoints from
+  [hugging-face](https://huggingface.co/facebook/sapiens)"; HF `facebook/sapiens` and `facebook/sapiens-pose-1b` are
+  tagged `license:cc-by-nc-4.0` (HF API, 2026-11-10).
+- (verify, added) **Sapiens2** (Meta, `facebookresearch/sapiens2`, last commit 2026-05-24; README "ICLR 2026", paper
+  arXiv 2604.21681, not opened): "A family of high-resolution transformers pretrained on 1 billion human images,
+  achieving state-of-the-art performance across diverse human-centric tasks — pose estimation, body-part segmentation,
+  surface normals, pointmaps, and human matting." (authors' claim, quoted). Pose: "308 whole-body keypoints"; weights
+  `sapiens2_{0.4b,0.8b,1b,5b}_pose.safetensors`; "**Install** (requires Python ≥3.12 and PyTorch ≥2.7)". CPU not
+  stated. License `LICENSE.md` "Sapiens2 License" (https://raw.githubusercontent.com/facebookresearch/sapiens2/main/LICENSE.md,
+  read 2026-11-10): "**a. Grant of Rights.** You are granted a non-exclusive, worldwide, non-transferable and
+  royalty-free limited license under Meta's intellectual property or other rights owned by Meta embodied in the
+  Sapiens Materials to use, reproduce, distribute, copy, create derivative works of, and make modifications to the
+  Sapiens Materials."; among the listed prohibited uses: "(ii) for biometric processing;". HF
+  `facebook/sapiens2-pretrain-0.4b`: `license:other`, license name "sapiens2-license".
 - **SAM 3D Body** (Meta): see the SAM section (SAM License; gated weights).
 
 ---

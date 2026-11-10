@@ -4,7 +4,7 @@ Usage: python3 -I score_all.py [--only <tool>]
 Reads   /home/user/gtr/lanes/chords-beats-key/out/<tool>/<clip>/...
 Writes  /home/user/blog/docs/guitar-tab-research/lanes/chords-beats-key/samples/scores/scores.jsonl
         (tool, variant, clip, subcommand, est file + sha256, gtr-eval id, metrics, counts)
-A (subcommand, est sha256, options) already in scores.jsonl is not scored again.
+A (tool, variant, clip, subcommand, est sha256, options) already in scores.jsonl is not scored again.
 """
 import argparse
 import hashlib
@@ -34,14 +34,14 @@ def load_done():
     if os.path.exists(SC):
         for line in open(SC):
             r = json.loads(line)
-            done[(r["subcommand"], r["est_sha256"], json.dumps(r["args"]))] = r
+            done[(r["tool"], r["variant"], r["clip"], r["subcommand"], r["est_sha256"], json.dumps(r["args"]))] = r
     return done
 
 
 def ev(done, tool, variant, clip, sub, est_path, args, est_hash_src=None):
     key_src = est_hash_src if est_hash_src is not None else sha(est_path)
-    k = (sub, key_src, json.dumps(args))
-    if k in done and done[k]["clip"] == clip:
+    k = (tool, variant, clip, sub, key_src, json.dumps(args))
+    if k in done:
         return done[k]
     cmd = [GTR_EVAL, sub, "--truth", clip] + args
     p = subprocess.run(cmd, capture_output=True, text=True)
@@ -148,7 +148,11 @@ def main():
         if want("chordino"):
             p = exists("chordino", clip, "nnls_tuning.json")
             if p:
-                hz = json.load(open(p)).get("tuning_hz")
+                j = json.load(open(p))
+                try:
+                    hz = float(j["raw"]["list"][0]["values"][0])  # unrounded value; the label rounds to 0.1 Hz
+                except Exception:
+                    hz = j.get("tuning_hz")
                 if hz: ev(done, "chordino", "nnls-chroma tuning output", clip, "tuning", p, ["--est-a4-hz", str(hz)])
         # ---------- generic: any other tool folder with chords*.lab / beats*.txt / key*.txt / tempo*.txt
         for tool in sorted(os.listdir(OUT)):

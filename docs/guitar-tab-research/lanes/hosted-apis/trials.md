@@ -12,14 +12,16 @@ Conventions for the whole file:
   run ids below; no CPU slot taken because the work runs on the provider's side). "wall" is the round trip measured
   on this box, from sending the request to having the whole answer, including upload and queueing. Local CPU time of
   these runs was 0.2 to 1.1 s each (4.3 s for r0141, whose client decoded four WAV files) and says nothing about the
-  service. One scoring run went through a CPU slot (r0089, 2 cores); the second (r0173, 18.6 s of CPU) ran with
-  `--nolock` after waiting for a slot behind other lanes' jobs, so its wall-clock is not a 2-core figure.
+  service. Four stem-scoring runs went through gtr-run: r0089 in a CPU slot (2 cores), and r0173, r0192 and r0217
+  with `--nolock` (4.6 to 18.6 s of CPU each) after r0173 had waited for a slot behind other lanes' jobs, so those
+  three wall-clock figures are not 2-core figures. The other gtr-eval scorings (notes, chords, tempo, key, beats,
+  tuning) were run directly; each takes about a second.
 - **Keys.** Read at run time inside the scripts with `getkey.py`, sent only in a request header, never printed or
-  written. Only these key names exist in the key store for this lane: `GEMINI_API_KEY`, `VERCEL_AI_GATEWAY_API_KEY`,
-  `XAI_API_KEY`, `DEEPSEEK_API_KEY`, `ELEVENLABS_API_KEY` (checked with `getkey.py --list`, names only). No account
-  was created anywhere.
-- **Uploads.** Only synthesized clips (S*) and freely licensed clips (R2: CC BY 4.0; R3a: CC BY-SA 4.0) were sent to
-  any service. No GuitarSet (R1) clip was uploaded.
+  written. Of the key names in the key store (`getkey.py --list`, names only, filtered for this lane's services), only
+  these belong to services in this lane: `GEMINI_API_KEY`, `VERCEL_AI_GATEWAY_API_KEY`, `XAI_API_KEY`,
+  `DEEPSEEK_API_KEY`, `ELEVENLABS_API_KEY`. No account was created anywhere.
+- **Uploads.** Only synthesized clips (S*) and freely licensed clips were sent to any service: R2 (CC BY 4.0), R3a
+  (CC BY-SA 4.0) and, in the last three calls, R1c (GuitarSet, CC BY 4.0), plus files derived from them.
 - **Money.** Each paid call's cost is computed from the usage the response reports and the published price, and
   appended to `samples/spend.jsonl` (copy of `/home/user/gtr/lanes/hosted-apis/out/spend.jsonl`). A call is refused
   by the script when spent + the call's worst case would pass 2 USD for that service or 10 USD in total
@@ -35,7 +37,9 @@ Conventions for the whole file:
   with header `Api-Revision: 2026-05-20` (the form the docs show on 2026-11-10), and the legacy
   `models/<id>:generateContent` / `:countTokens` endpoints for the probes.
 - Install: `uv venv --python 3.11 /home/user/gtr/lanes/hosted-apis/venv-apis` then
-  `uv pip install requests gradio_client soundfile numpy yt-dlp` (freeze in `samples/venv-apis.freeze.txt`).
+  `uv pip install requests gradio_client soundfile numpy yt-dlp` (111 MB on disk; freeze in
+  `samples/venv-apis.freeze.txt`; the venv was deleted after the trials for disk space and is rebuilt from that file
+  with `uv pip install -r`). No model weights are downloaded by anything in this lane.
 - Models listed by the key (`GET v1beta/models`, run 2026-11-10 20:52 UTC): 62 models, saved as
   `samples/gemini/models_list.json`. Picked: the flagship, `gemini-4-carbon` (the pricing page: "Our most capable
   reasoning model"; the model page lists "Inputs Text, Image, Video, Audio, and PDF"), and the current small one,
@@ -54,7 +58,7 @@ Conventions for the whole file:
   --schema scripts/prompts/chords_schema.json --out samples/gemini/S3_chords_flash-lite`.
 - Answer (wall 2.17 s, saved in `samples/gemini/S3_chords_flash-lite/response.json`):
   `"code": 402, "message": "Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects
-  to manage your project and billing. ...", "status": "RESOURCE_EXHAUSTED"`. No tokens were billed. The ledger shows
+  to manage your project and billing. ...", "status": "RESOURCE_EXHAUSTED"`. The response reports no token usage. The ledger shows
   exit code 1 for r0013: the body is a JSON list holding the error object, which the script did not expect after
   saving it (`AttributeError: 'list' object has no attribute 'get'`).
 - Probe (r0014, `scripts/gemini_probe.py`, `samples/gemini/probe/probe_gemini-3.5-flash-lite.json`): a one-word text
@@ -105,7 +109,7 @@ Opus, ALAW, MULAW and WebM, "Maximum request size is 20 MB total" for inline dat
   `scripts/gateway_trial.py`. Audio goes in as a Chat Completions `file` part with a base64 data URL; the gateway's
   audio page (https://vercel.com/docs/ai-gateway/inputs-and-tools/audio-input.md, "last_updated: 2026-09-08", read
   2026-11-10): "The Chat Completions endpoint rejects `input_audio` parts. Use `file` with a model that accepts audio."
-- Why these models: the key is on the gateway's free tier. Every Google model asked for, and four other models with
+- Why these models: the key is on the gateway's free tier. Every Google model asked for, and three other models with
   audio or video input, were refused before running (r0022, r0023; `samples/vercel-gateway/probe_models.json`), with
   HTTP 403 `"Free tier users do not have access to this model. Upgrade to paid credits at ... for unrestricted access."`:
   `google/gemini-3.5-flash-lite`, `google/gemini-4-carbon`, `google/gemini-3.8-flash`, `xiaomi/mimo-v2.6-pro`,
@@ -117,7 +121,7 @@ Opus, ALAW, MULAW and WebM, "Maximum request size is 20 MB total" for inline dat
 - The catalog entries (read from `/v1/models` at run time): `xiaomi/mimo-v2.6-flash` input `text, audio, image,
   video`, USD 0.00000014 per input token and 0.00000028 per output token, description "MiMo V2.6 Flash is Xiaomi's
   efficient multimodal reasoning model ..."; `meta/muse-spark-open` input `text, audio, image, video`, 0.00000125 /
-  0.00000425, description "Muse Spark Open is Meta's open-weight reasoning model ... This provider also documents
+  0.00000425, description "Muse Spark Open is Meta’s open-weight reasoning model ... This provider also documents
   audio and video input with text output.", served by baseten, fireworks, modal, nebius or togetherai;
   `bytedance/seed-2.1-turbo` input `text, image, video`, 0.0000005 / 0.0000025, no `response_format` in its
   `supported_parameters` (so its schema went into the prompt text).
@@ -132,7 +136,7 @@ Opus, ALAW, MULAW and WebM, "Maximum request size is 20 MB total" for inline dat
 
 | run | model (provider) | clip | wall s | prompt / completion (reasoning) tokens | cost USD (response's `usage.cost`) | answer |
 |---|---|---|---|---|---|---|
-| r0028 | mimo-v2.6-flash (xiaomi) | S3 | 33.0 | 331 / 993 (637) | 0.00032438 | `0.00-2.44 G, 2.44-4.86 Em, 4.86-7.28 C, 7.28-9.70 D`, the same four again to 19.38, then G to 24.00; 99 BPM; G major; 4/4 |
+| r0028 | mimo-v2.6-flash (xiaomi) | S3 | 33.0 | 331 / 993 (637) | 0.00032438 | `0.00-2.44 G, 2.44-4.86 Em, 4.86-7.28 C, 7.28-9.70 D`, the same four again to 19.38, then `G` 19.38-21.80 and `G` 21.80-24.00; 99 BPM; G major; 4/4 |
 | r0052 | mimo-v2.6-flash (xiaomi) | S4 | 55.4 | 423 / 2216 (1559) | 0.0006797 | `0.00-4.00 N`, then 2 s chords `D A Bm G D A G A Bm G D A G A D A G A`, `40.00-44.50 D`; 120 BPM; D major; 4/4 |
 | r0024 | muse-spark-open (baseten) | S3 | 6.72 | 616 / 951 (885) | 0.00467095 | chords `[0.0-0.0 N]` only; 107 BPM; D minor; 4/4 |
 | r0034 | muse-spark-open (fireworks only) | S3 | 0.85 | none | none | HTTP 400 from the provider: `Extra inputs are not permitted, field: 'messages[0].content.list[...][0].input_audio'` |
@@ -180,7 +184,8 @@ MiMo's first 10 notes as (onset s, offset s, MIDI pitch): (0.02, 1.52, 43), (0.0
   after 7 provider attempts.
 - As still frames instead (`scripts/gateway_frames_trial.py`): 18 JPEG frames of `R3a.mp4` taken with
   `ffmpeg -vf fps=1 -q:v 3` (t = 0 to 17 s, 576 KB in all, kept outside git), each sent as an `image_url` part after a
-  text label "Frame at t = <k>.0 s:", then the video prompt. No audio goes in this way.
+  text label "Frame at t = <k>.0 s:", then the video prompt (with one sentence in front saying the images are frames
+  at one per second, labelled with their times); `max_tokens` 16384. No audio goes in this way.
 
 | run | model (provider) | wall s | tokens prompt / completion (reasoning) | cost USD | capo | tuning | fretting hand spans (lowest-highest fret) |
 |---|---|---|---|---|---|---|---|
@@ -201,7 +206,27 @@ no capo clamped on the neck."
 | r0080 | mimo-v2.6-flash (xiaomi) | 12.9 | 310 / 187 (113) | 0.00009576 | `capo_used: yes, capo_fret: 2, key: A major`; evidence "The piece has a distinct, bright, and slightly compressed tone characteristic of a capo. ..." | equal (e0069) | exact, 1.0 (e0070) |
 | r0084 | muse-spark-open (togetherai) | 1.76 | 627 / 57 (0) | 0.0009028 | `capo_used: no, capo_fret: null, key: C minor` | not equal, 0 vs 2 (e0071) | 0.0 (e0072) |
 
-Each row is one answer to one request; no call was repeated, so nothing here says how often an answer repeats.
+The first table row is one answer to one request. The same S5capo2 request was then sent twice more, and the capo
+question was also put to S2n (no capo) as a control (second batch, `scripts/run_gateway_batch2.sh`, MiMo only):
+
+| run | clip | wall s | tokens prompt / completion (reasoning) | cost USD | answer | capo vs truth | key vs truth |
+|---|---|---|---|---|---|---|---|
+| r0080 | S5capo2 (1st) | 12.9 | 310 / 187 (113) | 0.00009576 | yes, fret 2, A major | 2 = 2 (e0069) | A major, 1.0 (e0070) |
+| r0196 | S5capo2 (2nd) | 89.7 | 310 / 2561 (2467) | 0.0007253568 | no, null, A major; evidence "... open chord shapes. The distinct ringing and natural pitch of the open A, D, and low E bass strings indicate that no capo is being used ..." | 0 vs 2 (e0419) | A major, 1.0 (e0420) |
+| r0203 | S5capo2 (3rd) | 94.0 | 310 / 3087 (2993) | 0.0008726368 | yes, fret 2, B major; evidence "... standard open chord shapes (A, D, A, E), but the resulting pitches are a whole step higher (B, E, B, F#) ..." | 2 = 2 (e0421) | B major vs A major, 0.0 (e0422) |
+| r0182 | S2n (control, truth capo 0, G major) | 14.0 | 310 / 253 (182) | 0.00011424 | no, null, G major | 0 = 0 (e0395) | G major, 1.0 (e0396) |
+
+### Trial (e), added here: open-string tuning, tuning offset and capo from audio (MiMo only)
+
+Prompt `scripts/prompts/tuning_prompt.txt` asks for `open_strings_midi` (six MIDI numbers, low to high, without a
+capo), `tuning_name`, `offset_cents` from A4 = 440 Hz, `capo_fret`; scored with `gtr-eval tuning` (`--est-cents`,
+`--est-capo`, `--est-tuning-midi`).
+
+| run | clip (truth) | wall s | tokens prompt / completion (reasoning) | cost USD | answer | gtr-eval |
+|---|---|---|---|---|---|---|
+| r0210 | S5dropd (drop D [38,45,50,55,59,64], 0 cents, no capo) | 22.1 | 399 / 791 (677) | 0.00027734 | [40,45,50,55,59,64] "Standard", -15 cents, capo 0 | low string 2 semitones off, other five equal; offset -15 vs 0 cents; capo equal (e0423) |
+| r0212 | S7flat30 (standard, -30 cents) | 31.3 | 366 / 956 (833) | 0.00031892 | [40,45,50,55,59,64] "standard", -10 cents, capo 0 | tuning equal; offset -10 vs -30 cents (difference +20); capo equal (e0424) |
+| r0213 | S2n (standard, 0 cents; control) | 14.4 | 399 / 1451 (1316) | 0.00046214 | [40,45,50,55,59,64] "standard", 0 cents, capo 0 | tuning equal; offset 0 vs 0; capo equal (e0425) |
 
 - Output format facts: OpenAI chat-completion JSON. `choices[0].message.content` is a string holding the JSON
   answer; `choices[0].message.reasoning` is the model's reasoning text when the route returns it (MiMo, Muse via
@@ -227,13 +252,15 @@ Each row is one answer to one request; no call was repeated, so nothing here say
   the audio file."
 - Call: `scripts/elevenlabs_call.py stems /home/user/gtr/inputs/S4/S4.wav <out> --variation six_stems_v1
   --format mp3_44100_192` (r0064). Input: `S4.wav`, WAV 16-bit 44.1 kHz stereo, 6,834,024 bytes, 38.741 s.
-- Result: HTTP 200, request round trip 6.98 s (the run's wall of 14.45 s includes two account reads). A ZIP of
+- Result: HTTP 200, request round trip 6.98 s (the run's wall of 14.45 s also holds two account reads and a 3 s wait). A ZIP of
   5,586,876 bytes with six files, `drums.mp3`, `vocals.mp3`, `piano.mp3`, `guitar.mp3`, `bass.mp3`, `other.mp3`,
   each 931,048 bytes, MP3 192 kb/s, 44.1 kHz, 2 channels, 38.791833 s (`samples/elevenlabs/S4_six_stems/record.json`).
 - Cost: the response carried no cost header. The account's used-credit counter (`GET /v1/user/subscription`,
-  `character_count`) was unchanged 3 s after the call and 1,065 higher about two minutes later; no other ElevenLabs
-  call was made from this lane in between (another agent using the same account in that window would also show up
-  in that difference). The API price page (https://elevenlabs.io/pricing/api, read 2026-11-10) lists no stem
+  `character_count`) read 151,005 at 21:01:33 UTC, before the call (which started at 21:02:44); the script's own
+  read 3 s after the call saw no change; a read at 21:05:00 UTC gave 152,070, i.e. 1,065 more. No other ElevenLabs
+  call was made from this lane between those reads (another agent using the same account in that window would also
+  show up in the difference). The two later stem calls, measured by polling, came to the same rate per second of
+  audio (table below). The API price page (https://elevenlabs.io/pricing/api, read 2026-11-10) lists no stem
   separation rate; for the spend cap the call is counted at 1,065 x 0.00022 USD = 0.2343 USD, an estimate (22 USD per
   100,000 credits) and not a published price.
 - Timing of the stems: decoded with ffmpeg to 44.1 kHz WAV, the sum of the six stems lies 1,105 samples (25.06 ms)
@@ -255,9 +282,33 @@ Each row is one answer to one request; no call was repeated, so nothing here say
 | guitar | guitar.mp3 | 13.70 | 13.89 | 20.83 | 14.91 |
 | lead | other.mp3 | 15.76 | 16.60 | 27.55 | 16.97 |
 
+### Two more `six_stems_v1` calls: S6taps (guitar plus percussion taps) and R2 (a real band song)
+
+| run | input | request round trip s | credits (counter difference) | counted USD | ZIP bytes | stems (each MP3 192 kb/s 44.1 kHz stereo) |
+|---|---|---|---|---|---|---|
+| r0064 | S4.wav, 38.741 s | 6.98 | 1,065 | 0.2343 | 5,586,876 | 6 files, 931,048 bytes, 38.791833 s |
+| r0189 | S6taps.wav, 29.357 s | 6.10 | 807 | 0.17754 | 4,232,688 | 6 files, 705,350 bytes, 29.387750 s |
+| r0194 | R2.wav, 36.000 s | 6.78 | 990 | 0.2178 | 5,191,902 | 6 files, 865,219 bytes, 36.048958 s |
+
+The three credit differences are 27.49, 27.49 and 27.50 credits per second of input audio. For r0189 and r0194 the
+script polled the counter every 5 s until it changed (after the r0064 delay).
+
+- S6taps (truth stems `guitar` and `taps`, the latter General MIDI side stick and bass drum standing in for body
+  taps): the same 1,105-sample delay; stem levels guitar -18.50, drums -32.33 dBFS, the other four at -117 dBFS or
+  lower (bass -123.11, other -117.34, piano -129.49, vocals -131.28). gtr-eval `stems` (e0391, run r0192), delay
+  trimmed, `guitar`=guitar.mp3, `taps`=drums.mp3: guitar SI-SDR 26.77, SDR 27.01, SIR 33.56, SAR 28.10 dB; taps
+  SI-SDR 13.23, SDR 14.15, SIR 26.26, SAR 14.43 dB.
+- R2 (truth "stems" are the artist's own instrumental and the song minus it, `vocals_derived`; see the manifest):
+  the same 1,105-sample delay; stem levels vocals -12.78, guitar -19.20, bass -19.91, drums -22.62, other -100.47,
+  piano -107.44 dBFS (mix -10.42). After the trim, the RMS of (mix - sum of the six stems) is -15.40 dBFS (S4:
+  -45.59). gtr-eval `stems` (e0426, run r0217), `vocals_derived`=vocals.mp3 and `instrumental`= the sum of the
+  other five stems (`ffmpeg amix=inputs=5:normalize=0`): vocals SI-SDR 15.44, SDR 15.67, SIR 22.23, SAR 16.77 dB;
+  instrumental SI-SDR 13.59, SDR 14.05, SIR 25.42, SAR 14.39 dB.
+
 - Output format facts, for handoffs: a ZIP; one MP3 per stem named `<stem>.mp3` (six names fixed by
-  `six_stems_v1`); stereo; same sample rate as requested; each MP3 decodes 1,105 samples late and 2,225 samples longer
-  than the input at 44.1 kHz with ffmpeg 6.1.1, so a tool that compares stems sample by sample needs the trim.
+  `six_stems_v1`); stereo; the sample rate requested; decoded with ffmpeg 6.1.1, each MP3 starts 1,105 samples late and
+  is longer than the input (S4 by 2,225 samples, S6taps by 1,350, R2 by 2,160 at 44.1 kHz), so a tool that compares
+  stems with the input sample by sample needs the trim.
 - Input format facts: a stereo 16-bit 44.1 kHz WAV of 6.8 MB was accepted.
 - Constraint inputs for a re-run: `stem_variation_id` only (two or six stems); no instrument prompt, no time range.
 
@@ -344,7 +395,8 @@ Each row is one answer to one request; no call was repeated, so nothing here say
   and parameters were read with `Client(id).view_api()` (`scripts/hf_space_view.py`, saved in
   `samples/hf-spaces/spaces_api.json`). Calls: `scripts/hf_space_call.py` (submit, poll the job status every second,
   copy returned files); `scripts/hf_space_call_old.py` with `gradio_client` 0.5.3 for a Gradio 3 Space (venv
-  `venv-gc-old`, Python 3.10; freeze in `samples/venv-gc-old.freeze.txt`). Each call's `record.json` (Space id, Space
+  `venv-gc-old`, Python 3.10, `uv pip install "gradio_client==0.5.3" "websockets<12" requests`, 13 MB; freeze in
+  `samples/venv-gc-old.freeze.txt`; deleted after use). Each call's `record.json` (Space id, Space
   commit sha, hardware, status changes with times, wall-clock, result) is in `samples/hf-spaces/<call>/`.
 - Searched and not usable on 2026-11-10 (stage from the runtime API): `akhaliq/demucs` RUNTIME_ERROR,
   `ahk-d/Spleeter-HT-Demucs-Stem-Separation-2025` RUNTIME_ERROR ("Memory limit exceeded (16Gi)"),
@@ -360,7 +412,7 @@ Each row is one answer to one request; no call was repeated, so nothing here say
 | r0112 | `mimbres/YourMT3` (5e66c1ea) `/process_audio` | zero-a10g | S2n.mono.wav | 5.32 | HTML (7,498 chars) with a MIDI player; the MIDI is inline as `data:audio/midi;base64,...` (1,175 bytes once decoded) |
 | r0164 | `mimbres/YourMT3-cpu` (bd69fbac) `/process_audio` | cpu-basic | S2n.mono.wav | 31.18 | the same kind of HTML; MIDI 1,177 bytes, not byte-identical to r0112's |
 | r0118 | `teamup-tech/Beat-This` (8f2aa339) `/process` | cpu-basic | S4.wav | 12.59 | a WAV "Audio with Beats" (6,834,024 bytes, kept outside git) and a `pyharp.LabelList` of 68 labels `beat` / `downbeat` with `t` in seconds |
-| r0119 | `nakas/demucs_playground` (d924a6d3) `/predict` | cpu-basic | S4.wav | 2.8 | `ValueError('Unknown protocol: ws')` from gradio_client 2.7.2 (the Space runs Gradio 3 with `enable_queue=True`) |
+| r0119 | `nakas/demucs_playground` (d924a6d3) `/predict` | cpu-basic | S4.wav | 1.67 | `ValueError('Unknown protocol: ws')` from gradio_client 2.7.2 (the Space runs Gradio 3 with `enable_queue=True`) |
 | r0141 | same, with gradio_client 0.5.3 | cpu-basic | S4.wav | 172.46 (processing 4.26 to 167.45 s) | four WAVs, `vocals`, `bass`, `drums`, `other`, each 16-bit 44.1 kHz stereo, 38.741383 s (sample count equal to the input) |
 | r0116 | `hugging-apps/muscriptor-music-transcription` (a00afb21) `/transcribe`, instruments `["acoustic_guitar"]` | zero-a10g | S2n.mono.wav | 3.17 | `AppError('You have exceeded your ZeroGPU runs limit. Authenticate with a Hugging Face token for more quota - https://huggingface.co/settings/tokens')` |
 | r0162 | `lpeterl/sam-audio-webui` (f4c65453) `/process`, `sam-audio-small`, prompt "acoustic guitar", chunk 30 s | zero-a10g | S4.wav | 3.15 | the same ZeroGPU AppError |
@@ -405,7 +457,7 @@ Scores:
   {`beat`, `downbeat`}, `amplitude`, `color`) and a click-mixed WAV at the input's sample rate. demucs_playground
   returns four WAV file paths.
 - Input format facts: WAV 44.1 kHz (mono 16-bit for S2n.mono.wav, stereo 16-bit for S4.wav) was accepted by all
-  four Spaces that ran.
+  four Spaces that ran; YourMT3-cpu also took an MP3 (the handoff below).
 - Constraint inputs: none for YourMT3 and Beat-This through these endpoints (the audio file is the only parameter);
   Muscriptor takes an `instruments` list (35 values including `acoustic_guitar`, `clean_electric_guitar`,
   `distorted_electric_guitar`, `acoustic_bass`, `electric_bass`, `drums`), `use_sampling` and `temperature`, and its
@@ -413,27 +465,95 @@ Scores:
   roll (per instrument)";
   SAM Audio takes a model size, an audio or video file, a text `prompt` and `chunk_duration`.
 
+## A real recording with truth: R1c (GuitarSet, bossa nova comping, 28.235 s) through three of the services above
+
+| run | service | wall s | what came back | numbers against the R1c truth |
+|---|---|---|---|---|
+| r0245 | HF Space `mimbres/YourMT3-cpu`, `R1c.mono.wav` | 31.34 | MIDI 1,043 bytes, one track "Guitar (clean)" program 24, 129 notes | onset-only P 0.922, R 0.804, F1 0.859 (119 of 148); onset+offset F1 0.693; chroma onset-only F1 0.859; matched onsets median -5.2 ms (e0690) |
+| r0246 | HF Space `teamup-tech/Beat-This`, `R1c.wav` | 5.69 | 56 beats, 14 of them downbeats; first beats 0.00, 0.52, 1.02, 1.52, 2.04 s | beats F-measure 1.0 (56 of 56 within 70 ms), CMLt 1.0, matched median +11.3 ms; downbeats F-measure 1.0 (14 of 14) (e0693) |
+| r0248 | Vercel AI Gateway, `xiaomi/mimo-v2.6-flash` (xiaomi), chords prompt, `R1c.mono.wav` | 52.4 | `G D C G C G D C G` in 3 s segments from 0.00 to 28.00 (first 3.5 s, last 3.5 s); 84 BPM; G major; 357 / 866 tokens (589 reasoning); 0.00029246 USD | chords root / majmin / sevenths 0.474 (e0696; truth: 2.017 s segments `G D Em Bm C G C D G D Em Bm C G`); tempo 84 vs 119, -29.4 %, outside 4 % at every factor (e0699); key G major, exact (e0702) |
+
 ## Services in this lane NOT RUN HERE (no account or key; nothing was signed up for)
 
-The key store holds no key for any of these (checked with `getkey.py --list`, names only), and this lane's rules
-forbid creating accounts. Their request formats, prices and terms are in `survey.md`; the steps for Aaron, with the
+For every row except the two Gemini rows, the key store holds no key (checked with `getkey.py --list`, names
+only); the Gemini rows have a key that was refused for billing reasons. This lane's rules forbid creating accounts. Their request formats, prices and terms are in `survey.md`; the steps for Aaron, with the
 first request to make, are in `for-aaron.md`.
 
 | service | what it would have been tried for | why not run here (evidence) |
 |---|---|---|
-| Music.AI (Moises' API platform) | chords, beats, guitar stems on S4 | API key from a music.ai account needed ("The API key should be included in the Authorization header of each request.", https://music.ai/docs/api/reference/) |
+| Music.AI (Moises' API platform) | chords, beats, guitar stems on S4 | API key from a music.ai account needed ("The API key should be included in the Authorization header of each request.", https://music.ai/docs/api/reference/, as quoted in survey.md) |
 | Klangio API | guitar transcription to Guitar Pro / MIDI / MusicXML on S2n; chords on S3 | key in header `kl-api-key` from an account at https://auth.klang.io/register; free "Basic" tier is "Max 15s audio duration" (15 s excerpts were made for it, see Media) |
 | LALAL.AI API | guitar stem of S4 | header `X-License-Key` from a paid license (https://www.lalal.ai/api/v1/openapi.json) |
 | AudioShake Tasks API | guitar stem of S4 | header `x-api-key` from a developer account ("10 free credits" on sign-up) |
-| Fadr API | stems, MIDI, chords, key, tempo of S4 | "Usage of the Fadr API requires a Fadr Plus subscription" |
+| Fadr API | stems, MIDI, chords, key, tempo of S4 | "Usage of the Fadr API requires a Fadr Plus subscription" (Fadr's API overview page, as quoted in survey.md) |
 | MVSEP API | "MVSep Guitar" (render_id 31) on S4 | `api_token` from an mvsep.com account; the public algorithm list (`GET https://mvsep.com/api/app/algorithms`, no token, 126 entries) was read |
 | Replicate | `ryan5453/demucs`, `sakemin/all-in-one-music-structure-analyzer`, `triadmusic/chord-detection-cnn-lstm` | "All API requests must include a valid API token in the `Authorization` request header." (https://replicate.com/docs/reference/http.md) |
 | fal.ai | `fal-ai/demucs` (htdemucs_6s, guitar stem) | header `Authorization: Key $FAL_KEY`; also needs the audio at a URL (`audio_url`) |
-| Hugging Face ZeroGPU Spaces (Muscriptor, SAM Audio, Transkun) | notes of S2n, guitar from S4 | anonymous ZeroGPU quota refused (r0116, r0162); a free HF token gives more quota (the error message) |
+| Hugging Face ZeroGPU Spaces (Muscriptor, SAM Audio, Transkun) | notes of S2n, guitar from S4 | anonymous ZeroGPU quota refused (r0116, r0162); the error says "Authenticate with a Hugging Face token for more quota" |
 | Gemini API direct | trials (a) to (d) | key works, prepaid balance at 0: HTTP 402 (r0013, r0014) |
 | Gemini through the Vercel AI Gateway | trials (a) to (d) | gateway key on the free tier: HTTP 403 for every Google model (r0022, r0023) |
-| Soundslice data API | upload S2n.gp5 plus audio, sync points | "API keys are only available to paying Soundslice customers — either in the Teacher or Licensing plans." |
+| Soundslice data API | upload S2n.gp5 plus audio, sync points | "API keys are only available to paying Soundslice customers — either in the Teacher or Licensing plans." (Soundslice data API docs, as quoted in survey.md) |
 | Flat.io API | import S2n.gp5, export MusicXML | "Personal Access Tokens or OAuth2" (spec intro); no Flat account |
 | Hooktheory Trends API | chord-progression statistics | Bearer token from `POST users/auth` with a hooktheory.com username and password |
 | Songsterr | looking up an existing tab | no documented developer API; robots.txt has `Disallow: /api/` (survey.md); not called |
 | Chordify | chords from a link | no developer API found; the site answered HTTP 403 to this box (survey.md); not called |
+
+## Tested handoff: ElevenLabs guitar stem (MP3) into the YourMT3 Space (MIDI), scored against S4
+
+- Chain: ElevenLabs `six_stems_v1` on S4 (r0064) gave `guitar.mp3` (MP3 192 kb/s, 44.1 kHz stereo, 38.79 s); that file,
+  unchanged, was sent to `mimbres/YourMT3-cpu` `/process_audio` (r0231, cpu-basic, wall 66.90 s; the Space accepted
+  the MP3). The MIDI cut out of the returned HTML (3,974 bytes, `samples/hf-spaces/yourmt3cpu_S4_elguitar/`) has 516
+  notes in three tracks: "Acoustic Piano" program 0, 218 notes; "Electric Piano" program 2, 37; "Guitar (clean)"
+  program 24, 261.
+- Scored with `gtr-eval notes --voice chord` against the 369 truth notes of the strummed guitar (truth voices
+  `drums`, `bass` and `melody` left out; estimated notes matching those voices count as unmatched). All tracks
+  pooled: onset-only P 0.647, R 0.905, F1 0.755 (334 matched); onset+offset F1 0.658; chroma onset-only F1 0.798;
+  matched onsets median +23.4 ms late, 95th percentile 34.5 ms (e0522). The same with `--time-shift -0.025057`
+  (the MP3 decoder delay measured above): onset-only F1 0.755, onset+offset F1 0.667, matched onsets median -1.7 ms
+  (e0525).
+- Handoff facts: the stem service's MP3 carries 1,105 samples (25.06 ms) of decoder delay into the next tool, and the
+  transcriber's onsets come out about that much late; the YourMT3 Space returns its MIDI inside HTML, so a program
+  has to cut the `data:audio/midi;base64,` URL out before handing the MIDI on.
+
+## Survey tool list: what else was checked for a run
+
+From `survey.md` "## Tool list" (docs-hosted-apis, read 2026-11-10 21:20 UTC): every entry marked
+CALLABLE-WITH-KEY is in the NOT RUN table above. `teamup-tech/Transkun` (a ZeroGPU Space) was not called after two
+ZeroGPU refusals (r0116, r0162). ChordMini (the survey: its docs URL answered HTTP 402), StemSplit, GetSongBPM and
+Cyanite were not checked for a run here. Spotify's Audio Features / Audio Analysis endpoints are closed to new apps
+(survey, Spotify blog); not called.
+
+## Money spent (from `samples/spend.jsonl`)
+
+| service | calls logged | USD counted | how counted |
+|---|---|---|---|
+| Google Gemini API (direct) | 0 billed (402 and countTokens only) | 0 | nothing was generated |
+| Vercel AI Gateway (free tier) | 22 (3 access probes and 19 trial calls that returned usage; refused calls cost nothing and are not logged) | 0.074782 | per call the larger of (tokens x the gateway's list price) and the response's `usage.cost`; the sum of `usage.cost` alone is 0.073938. The account is on the gateway's free tier (the 403 messages say so) |
+| ElevenLabs | 4 calls (5 lines: one correction line for r0064) | 0.63206 | 2,873 credits measured (1,065 + 807 + 990 stem separation, 11 speech to text) x 0.00022 USD, an estimate; the speech-to-text call at the larger of that and the published per-hour rate |
+| xAI | 1 | 0.001 | 36 s x 0.10 USD per hour (published REST rate) |
+| DeepSeek | 0 | 0 | no audio or video input; only the free model list was read |
+| Hugging Face Spaces, yt-dlp | 0 | 0 | free public endpoints |
+| total | | 0.707842 | caps: 2 USD per service, 10 USD in all |
+
+## Media kept outside git
+
+All under `/home/user/gtr/lanes/hosted-apis/` (not in the repo; for the orchestrator to file in the studio library).
+Licenses follow the input: S clips synthesized for this research (see the inputs manifest), R2 CC BY 4.0 (Josh
+Woodward, "I Want to Destroy Something Beautiful"), R3a CC BY-SA 4.0 (Mark Andersen / Seattle Community Media).
+
+| file(s) | bytes | duration | what it is |
+|---|---|---|---|
+| `out/elevenlabs/S4_six_stems/stems/{bass,drums,guitar,other,piano,vocals}.mp3` and `stems.zip` (5,586,876) | 931,048 each | 38.791833 s | ElevenLabs `six_stems_v1` of S4, MP3 192 kb/s 44.1 kHz stereo (r0064); 1,105 samples of decoder delay |
+| `out/elevenlabs/S6taps_six_stems/stems/*.mp3` and `stems.zip` (4,232,688) | 705,350 each | 29.387750 s | the same for S6taps (r0189) |
+| `out/elevenlabs/R2_six_stems/stems/*.mp3` and `stems.zip` (5,191,902) | 865,219 each | 36.048958 s | the same for R2 (r0194) |
+| `out/hf-spaces/demucs_S4_old/named/{bass,drums,other,vocals}.wav` | 6,834,024 each | 38.741383 s | HF Space `nakas/demucs_playground` (mdx_extra_q) stems of S4, 16-bit 44.1 kHz stereo (r0141) |
+| `out/hf-spaces/beatthis_S4/files/beat-this_audio-with-beats.wav` | 6,834,024 | 38.741383 s | HF Space `teamup-tech/Beat-This`: S4 with beat clicks mixed in (r0118) |
+| `out/hf-spaces/beatthis_R1c/files/beat-this_audio-with-beats.wav` | 2,490,396 | 28.235283 s | the same for R1c (r0246; GuitarSet CC BY 4.0) |
+| `out/yt-dlp/R3a_ytdlp_400-418.wav` | 1,729,374 | 18.012979 s | yt-dlp audio of 400-418 s of the R3a archive.org item, 16-bit 48 kHz mono (r0126) |
+| `inputs/S2n_0-15s.wav`, `inputs/S3_0-15s.wav`, `inputs/S4_0-15s.wav` | 2,646,078 each | 15.000 s | first 15 s of S2n, S3, S4 (`ffmpeg -t 15.0`), for 15-second free tiers; documented in `inputs/README.md` there (sha256 ae989edd..., 4ac9b8e8..., 7e9784c8...) |
+| `out/frames/R3a/f_00.jpg` ... `f_17.jpg` | 576 KB in all | stills | the 18 frames (1 per second) sent in trial (c) |
+
+The delay-trimmed float WAVs used for scoring were deleted after scoring (disk); they are remade from the MP3s with
+`ffmpeg -i <stem>.mp3 -ar 44100 -c:a pcm_f32le x.wav` then `ffmpeg -i x.wav -af "atrim=start_sample=1105,asetpts=PTS-STARTPTS" -c:a pcm_f32le <stem>.wav`
+(`scripts/stem_alignment.py` does the first step and measures the lag). Their sha256 are in the `est.files` of each
+`eval_stems.json`.

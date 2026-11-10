@@ -30,8 +30,11 @@ y = y.mean(axis=1)
 on = librosa.onset.onset_detect(y=y, sr=sr, hop_length=128, units='time')
 out['n_detected'] = int(len(on)); out['sample_rate'] = sr
 if res is not None and res.get('t0_frame') is not None:
-    shift = (res['t0_frame'] - res['capture']['firstFrame']) / sr
-    out['shift_from_schedule_s'] = shift
+    # a repeated currentFrame (negative step) recorded by the first recorder version moved every later sample by
+    # that many frames (see trials.md, metronome section); add it back for steps before the first note
+    extra = sum(-g['frames'] for g in res['capture']['gaps'] if g['frames'] < 0 and 'handled' not in g and g['atFrame'] < res['t0_frame'])
+    shift = (res['t0_frame'] - res['capture']['firstFrame'] + extra) / sr
+    out['shift_from_schedule_s'] = shift; out['recorder_negative_step_correction_frames'] = extra
 elif res is not None:
     best = (-1, 0.0)
     for s in np.arange(0, 3.0, 0.001):

@@ -84,8 +84,13 @@ def main():
             ch = sorted(groups[q], key=lambda n: n['pitch'])
             def one(n):
                 return ly_pitch(n['pitch']) + (f'\\{n["string"]}' if strings == 'truth' else '')
-            head = one(ch[0]) if len(ch) == 1 else '<' + ' '.join(one(n) for n in ch) + '>'
-            toks.append(head + DUR[parts[0]])
+            if len(ch) == 1:
+                # single note: the string number goes after the duration (g4\\3); inside a chord after each pitch
+                n0 = ch[0]
+                toks.append(ly_pitch(n0['pitch']) + DUR[parts[0]]
+                            + (f'\\{n0["string"]}' if strings == 'truth' else ''))
+            else:
+                toks.append('<' + ' '.join(one(n) for n in ch) + '>' + DUR[parts[0]])
             toks += ['r' + DUR[u] for u in parts[1:]]
             pos = end
         if pos < end_all:

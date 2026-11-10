@@ -36,7 +36,7 @@ How to read the numbers:
 - One batch, run **{{F0BATCH}}** (2 cores; inputs: the 8 files above with their SHA-256 in the ledger), ran SwiftF0,
   librosa pYIN, FCPE, PESTO, torchcrepe tiny and full, and the Essentia algorithms one after another
   (`scripts/batch_f0.sh`, `scripts/run_f0.py`, `scripts/run_essentia.py`). Per-tool wall / CPU / peak RSS below are
-  from GNU time inside that batch.
+  from GNU time inside that batch (peak RSS in MiB = GNU time's KiB / 1024, the unit gtr-run's "MB" also uses).
 - None of these packages turns frames into notes except SwiftF0 (`segment_notes`), aubio (`aubionotes`) and Essentia
   (`PitchContourSegmentation`). For the others an extra step is needed (group voiced frames into notes by pitch
   continuity, split at onsets or pitch jumps, drop short fragments); this lane did not add one.
@@ -52,7 +52,7 @@ How to read the numbers:
   The venv (shared with librosa 1.0.0) was 580 MB by `du`; it was deleted after the runs because of the shared-disk
   notice, its freeze is `samples/swiftf0/uv-pip-freeze-venv-librosa-py3.12.txt`.
 - Run 1, defaults (`SwiftF0(threads=2).detect_file(path)`, then `segment_notes(result)` with pitch_hold_ms=80):
-  batch {{F0BATCH}}; GNU time for the 8 clips: wall 4.39 s, user 5.02 s, sys 0.23 s, peak RSS 289 MB; per clip
+  batch {{F0BATCH}}; GNU time for the 8 clips: wall 4.39 s, user 5.02 s, sys 0.23 s, peak RSS 282 MiB; per clip
   0.22 s (R3a, 18 s) to 0.80 s (S4lead, 38.7 s), model setup 0.12 s.
 - Run 2, range limited to the guitar (`detect_file(path, fmin=82.4, fmax=1319.0)`), run **r0131** (`--nolock`:
   unpinned, ONNX Runtime with 2 threads; wall 4.64 s, CPU 5.3 s, peak RSS 281.6 MB), `scripts/run_swiftf0_range.py`.
@@ -113,7 +113,7 @@ Against the melody voice only: S2n F1 0.186 (e0323), S2s F1 0.114 (e0326), S4 F1
 - Run: `y, sr = librosa.load(<mono wav>, sr=22050, mono=True)`; `f0, voiced_flag, voiced_prob = librosa.pyin(y,
   sr=22050, fmin=65.406 (C2), fmax=2093.005 (C7), frame_length=2048, hop_length=512)`; times from
   `librosa.times_like`. Hop 512 samples = 23.2 ms. Written: frequency 0 where `voiced_flag` is false, confidence =
-  `voiced_prob`. Batch {{F0BATCH}}; GNU time: wall 31.75 s, user 20.54 s, sys 0.76 s, peak RSS 497 MB for the 8
+  `voiced_prob`. Batch {{F0BATCH}}; GNU time: wall 31.75 s, user 20.54 s, sys 0.76 s, peak RSS 485 MiB for the 8
   clips; S1 (the first clip in the process) took 13.18 s, the other clips 1.39 to 3.46 s.
 - Output: per frame f0 in Hz (NaN when unvoiced), boolean voiced flag, voiced probability 0 to 1. First voiced S1
   frames: `1.6486,369.994,0.0101`, `1.6718,369.994,0.0477`, `1.6951,369.994,0.1765`.
@@ -144,7 +144,7 @@ Against the melody voice only: S2n F1 0.186 (e0323), S2s F1 0.114 (e0326), S4 F1
 - Run: `spawn_bundled_infer_model(device="cpu").infer(x, sr=16000, decoder_mode="local_argmax", threshold=0.006,
   f0_min=80, f0_max=880, interp_uv=False)` on audio resampled to 16 kHz with torchaudio (the settings of the README
   example, https://raw.githubusercontent.com/CNChTu/FCPE/main/README.md, read 2026-11-10). Hop 10 ms.
-  Batch {{F0BATCH}}; GNU time: wall 32.57 s, user 21.00 s, sys 2.05 s, peak RSS 652 MB; model setup 9.13 s, per
+  Batch {{F0BATCH}}; GNU time: wall 32.57 s, user 21.00 s, sys 2.05 s, peak RSS 636 MiB; model setup 9.13 s, per
   clip 1.58 s (R3a) to 4.16 s (S2n).
 - Output: a tensor (batch, frames, 1) of f0 in Hz, 0 where the model's voiced/unvoiced mask is set
   (`retur_uv=True` would also return the mask); no confidence. Written as `time_s,frequency_hz`.
@@ -167,8 +167,8 @@ Against the melody voice only: S2n F1 0.186 (e0323), S2s F1 0.114 (e0326), S4 F1
   package: `pesto/weights/mir-1k_g7.ckpt` (534,664 bytes, the default `model_name`) and `mir-1k.ckpt` (123,538
   bytes). Package directory 840 KB.
 - Run: `pesto.predict(torch.from_numpy(y), 44100, step_size=10.0)` (defaults: model "mir-1k_g7", reduction "alwa")
-  on the 44.1 kHz mono file. Batch {{F0BATCH}}; GNU time: wall 49.59 s, user 37.58 s, sys 8.45 s, peak RSS 1,069
-  MB; setup 4.38 s, per clip 2.23 s (R3a) to 7.40 s (S4lead).
+  on the 44.1 kHz mono file. Batch {{F0BATCH}}; GNU time: wall 49.59 s, user 37.58 s, sys 8.45 s, peak RSS 1,044
+  MiB; setup 4.38 s, per clip 2.23 s (R3a) to 7.40 s (S4lead).
 - Output: `timesteps` (ms), `pitch` (Hz), `confidence`, `activations`; a pitch on every frame (S1 at 0.000 s: 343.484
   Hz with confidence 0.1009), no voiced/unvoiced decision. Its command line (`python -m pesto my_file.wav`, per the
   README at https://raw.githubusercontent.com/SonyCSLParis/pesto/master/README.md, read 2026-11-10) writes a CSV
@@ -243,4 +243,167 @@ accept:
 
 Against the melody voice only, 100 ms tolerance: S2n F1 0.706 (e0357), S2s F1 0.905 (e0358), S4 F1 0.000 (e0359).
 Samples: `samples/aubio/` (S1 f0 and notes, raw S1 aubionotes output, R1b notes, timings, all score files).
+
+## Transkun 2.0.1 (piano-trained, run on guitar)
+
+- What: a piano transcription model (transformer with a semi-CRF note decoder) that writes MIDI with note onsets,
+  offsets, velocities and sustain pedal. **The bundled weights were trained on piano recordings**; here they were run
+  on guitar. PyPI `transkun` 2.0.1 (uploaded 2024-09-28; MIT classifier), https://github.com/Yujia-Yan/Skipping-The-Frame-Level
+  (homepage in the PyPI metadata).
+- Install (worked first time): `uv venv --python 3.11 venv-piano && uv pip install torch torchaudio
+  piano_transcription_inference transkun soundfile "setuptools<81"` -> transkun 2.0.1, torch 2.15.0+cpu, ncls,
+  pydub, soxr, moduleconf, tensorboard, seaborn and others (freeze: `samples/transkun/uv-pip-freeze-venv-piano-py3.11.txt`).
+  Weights: `transkun/pretrained/2.0.pt` (56,408,978 bytes) and `2.0.conf`, inside the wheel. Package directory 55 MB.
+- Run: the package's CLI, `transkun <clip>.wav <clip>.mid --device cpu`, defaults (model config: fs 44100,
+  segmentSizeInSecond 16, segmentHopSizeInSecond 8, hopSize 1024, n_mels 229, f_min 30, f_max 8000), one subprocess
+  per clip (so the model is loaded for every clip), driven by `scripts/run_piano.py`. Clips S1, S2n, S3, R1a, R1b,
+  R1c (stereo `<id>.wav`; R1 files are mono). Batch run **r0216** (2 cores; the batch also held the failed first
+  ByteDance attempt, 34.5 s); GNU time for Transkun: wall 814.45 s, user 374.29 s, sys 108.10 s, peak RSS 1,490
+  MiB. Per clip (subprocess, model load included): S1 83.7 s, S2n 144.2 s, S3 123.6 s, R1a 172.5 s, R1b 157.4 s,
+  R1c 132.8 s.
+- Input facts: audio read with pydub (`AudioSegment.from_file`, 16-bit scaling by 2**15), resampled with soxr to
+  44.1 kHz when the file differs; WAV mono and stereo both accepted.
+- Output: a MIDI file (960 ticks per quarter, tempo 120), one instrument, program 0 (Acoustic Grand Piano), note-on
+  and note-off with velocity, sustain pedal as CC64 events (24 in S2n.mid), no pitch bends. First notes of S2n
+  (start, end, pitch, velocity): `2.144-2.194 55 97`, `2.145-2.659 43 85`, `2.146-3.773 67 89`,
+  `2.679-3.218 55 98`, `2.680-3.216 50 81`, `3.215-3.751 43 72`, `3.217-3.681 62 89`, `3.752-4.284 50 85`,
+  `3.753-3.794 62 86`, `4.289-4.865 64 99`. Note counts: S1 63, S2n 99, S3 171, R1a 134, R1b 52, R1c 119.
+- Constraint inputs: `--weight`, `--conf`, `--device`, `--segmentHopSize`, `--segmentSize`. No pitch range, tuning,
+  instrument or tempo input.
+
+| clip | truth notes | est. notes | onset-only P | R | F1 | onset+offset F1 | median onset diff of matched (s) | eval id |
+|---|---|---|---|---|---|---|---|---|
+| S1 | 62 | 63 | 0.984 | 1.000 | 0.992 | 0.592 | 0.004 | e0437 |
+| S2n | 90 | 99 | 0.889 | 0.978 | 0.931 | 0.741 | 0.002 | e0438 |
+| S3 | 182 | 171 | 0.977 | 0.918 | 0.946 | 0.096 | -0.002 | e0439 |
+| R1a | 189 | 134 | 0.836 | 0.593 | 0.693 | 0.260 | -0.013 | e0434 |
+| R1b | 70 | 52 | 0.942 | 0.700 | 0.803 | 0.279 | -0.015 | e0435 |
+| R1c | 148 | 119 | 0.933 | 0.750 | 0.831 | 0.390 | -0.019 | e0436 |
+
+(MIDI estimates scored as written: all notes of the file, pitch bends ignored by gtr-eval.) Pictures:
+`samples/transkun/S2n-pianoroll.png`, `samples/transkun/R1c-pianoroll.png`. MIDI for other lanes:
+`/home/user/gtr/lanes/audio-to-notes/out/transkun/<clip>.mid`.
+
+## Spotify Basic Pitch 0.4.0
+
+- What: Spotify's small polyphonic note transcriber (model "ICASSP 2022", instrument-agnostic), audio in, MIDI / note
+  events / raw model outputs out. PyPI `basic-pitch` 0.4.0 (uploaded 2024-08-16), https://github.com/spotify/basic-pitch;
+  the package header reads "Copyright 2022 Spotify AB" and "Licensed under the Apache License, Version 2.0"
+  (`basic_pitch/__init__.py`, read 2026-11-10).
+- Which backend, on which Python (from the PyPI `requires_dist`, read 2026-11-10): `tensorflow<2.15.1,>=2.4.1` for
+  Python >= 3.11 on Linux/Windows; `tflite-runtime` for Linux with Python < 3.11; `onnxruntime` for Windows with
+  Python < 3.11; `coremltools` on macOS; extras `[onnx]`, `[coreml]`, `[tf]`. PyPI classifiers list Python 3.8 to
+  3.11. The package picks "the first library available in [tensorflow, coreml, tensorflow-lite, onnx]" (CLI help)
+  unless `--model-serialization` names one. The wheel ships all four forms of the model in
+  `basic_pitch/saved_models/icassp_2022/`: `nmp/` (TF SavedModel), `nmp.mlpackage` (CoreML), `nmp.tflite`
+  (204,448 bytes), `nmp.onnx` (230,444 bytes). Package directory 2.3 MB.
+- Install that worked (Python 3.10): `uv venv --python 3.10 venv-basicpitch && uv pip install "basic-pitch[onnx]==0.4.0"
+  matplotlib "setuptools<81" "numpy<2"` -> tflite-runtime 2.14.0, onnxruntime 1.23.2, librosa 0.11.0, numpy 1.26.4,
+  scipy 1.15.3, resampy, pretty-midi, mir-eval (freeze: `samples/basic-pitch/uv-pip-freeze-venv-basicpitch-py3.10.txt`).
+  Venv 603 MB by `du` (onnxruntime 49 MB, tflite_runtime 6.6 MB).
+  Dead ends on the way, in order: (1) without setuptools the CLI stops at import: resampy imports `pkg_resources`
+  ("ModuleNotFoundError: No module named 'pkg_resources'"); setuptools 80.10.2 (`<81`) fixes it, with a
+  deprecation warning that pkg_resources "is slated for removal as early as 2025-11-30". (2) uv resolved numpy 2.2.6,
+  and tflite-runtime 2.14.0 then fails to load the model ("AttributeError: _ARRAY_API not found", then "ValueError:
+  File .../nmp.tflite cannot be loaded into either TensorFlow, CoreML, TFLite or ONNX"); `numpy<2` (1.26.4) fixes
+  it. The CLI runs r0032, r0033, r0035, r0037, r0038, r0039, r0040 and r0065 (exit code 1, about 3 s each) are
+  these failures. The TensorFlow backend (Python >= 3.11) was not installed: the `tensorflow` 2.15.0 cp311 Linux
+  wheel is 475,258,658 bytes (PyPI), over the 200 MB per-install limit of the shared-disk notice. Python 3.12/3.13
+  were not tried.
+- Runs (all in run **r0234**, 2 cores, `scripts/batch_basic_pitch.sh`, `scripts/run_basic_pitch_py.py`; GNU time per
+  configuration):
+  1. `basic_pitch.inference.predict(path, Model(nmp.tflite))` with the defaults (onset_threshold 0.5,
+     frame_threshold 0.3, minimum_note_length 127.70 ms, no frequency limits, multiple_pitch_bends False,
+     melodia_trick True) on all 16 clip files: wall 62.37 s, user 52.76 s, sys 2.27 s, peak RSS 393 MiB. Per clip
+     (`predict()` only): S1 20.36 s (first call in the process), the others 0.87 s (R3a, 18 s) to 3.71 s (S4,
+     38.7 s); model load 0.005 s.
+  2. The same with `minimum_frequency=82.4, maximum_frequency=1319.0` (E2 to about E6, the guitar's range): wall
+     44.01 s, user 37.32 s, sys 1.28 s, peak RSS 289 MiB.
+  3. The same as 1 with `Model(nmp.onnx)` (ONNX Runtime 1.23.2): wall 88.12 s, user 40.19 s, sys 0.68 s, peak RSS
+     315 MiB; per clip 2.72 to 6.50 s.
+  4. The CLI, `basic-pitch --save-midi --save-model-outputs --save-note-events <outdir> S1.wav` (no
+     `--model-serialization`; with TensorFlow and CoreML absent it loaded the TFLite file): wall 6.67 s, user 3.69 s,
+     peak RSS 266 MiB. Its note list is identical to run 1's S1 list (64 notes).
+  5. The CLI on the video file `R3a.mp4` (H.264 + AAC) directly: accepted (decoded through librosa/audioread), wall
+     6.56 s; 108 notes against 105 from `R3a.wav`, 96 (onset, pitch) pairs identical. (This step was added to the
+     batch script after the batch was queued, so `R3a.mp4` is not among the run's `--input` hashes; its SHA-256 is
+     in the inputs manifest.)
+- ONNX against TFLite: the model outputs differ by at most 0.00014 (S1), 0.00026 (S4), 0.00056 (R2) (largest
+  absolute difference over the note, onset and contour arrays); 13 of the 16 note lists are identical, S3 differs in
+  4 notes (velocity by 1, or one offset by one frame), S6taps in 1 note (velocity), S7flat30 in 1 note (offset);
+  the scores of those three are the same to 3 decimals (e0586, e0589, e0592).
+- Output files (CLI names): `<stem>_basic_pitch.mid`, `<stem>_basic_pitch.csv`, `<stem>_basic_pitch.npz`
+  (`--sonify-midi` adds a WAV).
+  - MIDI: one instrument, program 4 (0-based General MIDI number), 220 ticks per quarter, tempo 120 (`--midi-tempo`),
+    note-on/off with velocity, pitch-bend events (S1: 496, R1b: 1385, S4lead: 614, most synthesized clips 12 to
+    13); `--multiple-pitch-bends` puts each pitch on its own instrument instead.
+  - Note-events CSV: header `start_time_s,end_time_s,pitch_midi,velocity,pitch_bend`; times in seconds, integer
+    MIDI pitch, velocity 0 to 127 (`round(127 * amplitude)`), then a variable number of pitch-bend values on the
+    same row (one per contour frame, in contour bins of 1/3 semitone, e.g. `1,1,1,...,-5,-5`). Rows are not in time
+    order (the S1 file starts with the note at 27.509 s).
+  - Model outputs (`.npz` / `predict()`'s first return value): `note` (frames x 88) and `onset` (frames x 88)
+    posteriors for A0 to C8, `contour` (frames x 264, 3 bins per semitone); about 86 frames per second (22050 Hz /
+    256 hop); S1 gives 2565 frames. The S1 `.npz` is 4.5 MB.
+  - First S2n notes from the MIDI (start, end, pitch, velocity): `0.000-0.150 24 49` (inside the silent count-in
+    bar), `2.150-2.684 55 93`, `2.161-2.927 43 71`, `2.684-3.218 50 98`, `2.684-3.218 55 98`, `2.695-2.927 83 39`,
+    `3.218-3.391 67 43`, `3.218-3.450 50 64`, `3.218-3.716 55 54`, `3.218-3.764 62 71`.
+  - Note counts (defaults): S1 64, S2n 137, S2s 199, S3 197, S4 461, S4guitar 386, S4lead 39, S5capo2 139,
+    S5dropd 130, S6taps 196, S7flat30 112, R1a 196, R1b 76, R1c 156, R2 334, R3a 105.
+- Input facts: audio is loaded with librosa (mono, resampled to 22050 Hz); WAV (mono and stereo, 16-bit) and MP4
+  video were accepted.
+- Constraint inputs (CLI flags / `predict()` arguments): `--onset-threshold`, `--frame-threshold`,
+  `--minimum-note-length` (ms), `--minimum-frequency` / `--maximum-frequency` (Hz), `--multiple-pitch-bends`,
+  `--no-melodia` (melodia_trick), `--midi-tempo`, `--model-serialization`. No tuning, capo, key or instrument input.
+
+Notes, defaults (TFLite), note-events CSV scored against all non-drum truth notes (S4guitar against the S4 `chord`
+voice, S4lead against `melody`):
+
+| clip | truth notes | est. notes | onset-only P | R | F1 | onset+offset F1 | median onset diff of matched (s) | eval id |
+|---|---|---|---|---|---|---|---|---|
+| S1 | 62 | 64 | 0.953 | 0.984 | 0.968 | 0.667 | 0.010 | e0490 |
+| S2n | 90 | 137 | 0.657 | 1.000 | 0.793 | 0.537 | 0.008 | e0493 |
+| S2s | 90 | 199 | 0.452 | 1.000 | 0.623 | 0.401 | 0.008 | e0495 |
+| S3 | 182 | 197 | 0.761 | 0.824 | 0.792 | 0.633 | 0.009 | e0497 |
+| S4 | 467 | 461 | 0.636 | 0.627 | 0.631 | 0.375 | 0.008 | e0499 |
+| S4guitar | 369 | 386 | 0.782 | 0.818 | 0.800 | 0.604 | 0.008 | e0502 |
+| S4lead | 37 | 39 | 0.692 | 0.730 | 0.711 | 0.184 | 0.029 | e0505 |
+| S5capo2 | 90 | 139 | 0.647 | 1.000 | 0.786 | 0.568 | 0.008 | e0507 |
+| S5dropd | 90 | 130 | 0.692 | 1.000 | 0.818 | 0.536 | 0.008 | e0510 |
+| S6taps | 90 | 196 | 0.459 | 1.000 | 0.629 | 0.385 | 0.009 | e0512 |
+| S7flat30 | 182 | 112 | 0.741 | 0.456 | 0.565 | 0.265 | 0.008 | e0514 |
+| R1a | 189 | 196 | 0.699 | 0.725 | 0.712 | 0.499 | 0.002 | e0486 |
+| R1b | 70 | 76 | 0.750 | 0.814 | 0.781 | 0.671 | -0.004 | e0488 |
+| R1c | 148 | 156 | 0.769 | 0.811 | 0.789 | 0.500 | -0.008 | e0489 |
+
+Recall by truth voice (defaults): S2n melody 42/42 and bass 48/48 (e0493); S4 melody 24/37, chord 243/369, bass
+26/61 (e0499). S7flat30 (the S3 notes 30 cents flat) gave 112 notes against S3's 197.
+
+With the range limited to 82.4 to 1319 Hz (run 2): S4 bass recall 26/61 -> 11/61 and S4 note count 461 -> 418
+(e0535; the S4 bass part goes below E2); S5dropd bass recall 48/48 -> 44/48 (e0544; the four D2 notes, 73.4 Hz,
+lie below the limit); S1, R1a and R1b gave the same scores (e0524, e0516, e0519); note counts default -> limited: S2n, S2s, S3, S4lead, S5capo2, S7flat30, R1c one fewer
+each, S6taps 196 -> 194, S4guitar 386 -> 390, R2 (no truth) 334 -> 268, R3a unchanged at 105 (all scores in
+`samples/basic-pitch/guitar-range/scores_notes.json`).
+
+Pictures: `samples/basic-pitch/S2n-pianoroll.png`, `S4-pianoroll.png`, `R1c-pianoroll.png`. MIDI for other lanes:
+`/home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default/<clip>.mid` (also `tflite-guitar-range/`,
+`onnx-default/`).
+
+### Handoff test: Basic Pitch on the source-separation lane's stems
+
+Input: the stems that lane's run **r0021** (`demucs -n htdemucs_6s -d cpu` on S4.wav, demucs 4.1.0) and **r0054**
+(the same on S6taps.wav) wrote to `/home/user/gtr/lanes/source-separation/out/htdemucs_6s/<clip>/` (44.1 kHz stereo
+WAV, one file per stem: bass, drums, guitar, other, piano, vocals). Basic Pitch 0.4.0, TFLite, defaults, run
+**r0243** (`--nolock`, unpinned; per-file `predict()` 4.8 to 8.1 s). For comparison the true stems from the inputs
+set (the S4 bass stem in run **r0249**, also `--nolock`). Each file scored against the one truth voice it should
+contain (`--voice`), onset-only, 50 ms / 50 cents:
+
+| part (truth voice, notes) | from the S4 mix | from the true stem | from the htdemucs_6s stem |
+|---|---|---|---|
+| strummed guitar (`chord`, 369) | P 0.540 R 0.675 F1 0.600 (461 est., e0682) | P 0.782 R 0.818 F1 0.800 (386, e0502) | `guitar.wav`: P 0.681 R 0.631 F1 0.655 (342, e0652) |
+| lead line, Voice Oohs (`melody`, 37) | P 0.052 R 0.649 F1 0.096 (461, e0664) | P 0.692 R 0.730 F1 0.711 (39, e0505) | `vocals.wav`: P 0.151 R 0.297 F1 0.200 (73, e0654) |
+| electric bass (`bass`, 61) | P 0.082 R 0.623 F1 0.146 (461, e0662) | P 0.375 R 0.885 F1 0.527 (144, e0679) | `bass.wav`: P 0.324 R 0.754 F1 0.453 (142, e0657) |
+
+S6taps (fingerstyle plus GM percussion "taps"), all 90 guitar notes: from the mix F1 0.629 (196 est., e0512); from
+the htdemucs_6s `guitar.wav` stem P 0.427 R 0.456 F1 0.441 (96 est., e0660); for reference S2s, the same notes
+without the taps, F1 0.623 (e0495). Outputs: `/home/user/gtr/lanes/audio-to-notes/out/basic-pitch/handoff-htdemucs6s/`.
 

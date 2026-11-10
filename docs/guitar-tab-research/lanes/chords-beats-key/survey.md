@@ -146,6 +146,14 @@ Common license texts quoted below (all read 2026-11-10 from the files named in e
   in the Licensed Material to: a. reproduce and Share the Licensed Material, in whole or in part; and b. produce,
   reproduce, and Share Adapted Material."
 
+Re-checked by the verifier on 2026-11-10 (`scripts/verify_quotes.py`, plus a type check of every license file named
+in this survey): each of the five texts above appears verbatim, whitespace aside, in every file this survey calls an
+MIT, GPL v3, GPL v2, AGPL v3 or CC BY 4.0 text (MIT: Beat This!, All-In-One, BTC, ISMIR2019 chord model, ChordMini,
+Omnizart, Beat Transformer, BEAST, S-KEY, and the MIT-style vampy-host file; GPL v3: aubio, libkeyfinder,
+keyfinder-cli; GPL v2: nnls-chroma, qm-vamp-plugins, chord-extractor; AGPL v3: Essentia, essentia.js, tempo-cnn,
+DeepRhythm; CC BY 4.0: BeatNet). The two Apache 2.0 files (autochord, realtime-bpm-analyzer) begin "Apache License
+Version 2.0, January 2004".
+
 Repository dates below are the HEAD commit date of the default branch from a shallow `git clone` made 2026-11-10
 (script: `scripts/repo_facts.sh`, output kept at `/home/user/gtr/lanes/chords-beats-key/raw/repo_facts_1.tsv`).
 PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read 2026-11-10 (script:
@@ -198,7 +206,7 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
     inference on any file from the training datasets" (GuitarSet is one of them, so this applies to the R1 inputs).
 - Author measurements: not copied here (paper tables not read today).
 
-## BeatNet and BeatNet+ (beat, downbeat, tempo, meter; online and offline)
+## BeatNet (beat, downbeat, tempo, meter; online and offline)
 
 - What: "BeatNet: Real-time and Offline Joint Music Beat, Downbeat, Tempo, and Meter Tracking System" (README title;
   the README calls it "the original ISMIR-2021 paper", https://arxiv.org/abs/2108.03576, whose arXiv title is "BeatNet:
@@ -246,11 +254,12 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   top level: README.md, setup.py, src, test). `setup.py`: `version="1.0.0"`, `python_requires='>=3.8'`. PyPI has no
   project named BeatNetPlus, beatnet-plus or beatnetplus (HTTP 404 for each, 2026-11-10).
 - How to call (README, https://raw.githubusercontent.com/mjhydri/BeatNet-Plus/main/README.md, read 2026-11-10):
-  "from BeatNetPlus.inference import BeatNetPlusInference", "estimator = BeatNetPlusInference(
-  'src/BeatNetPlus/models/generic_weights.pt', mode='online', inference_model='PF', device='cpu' )" (shown over several
-  lines), "output = estimator.process("path/to/audio.wav")". Modes listed: online (particle filtering), offline (DBN),
-  realtime, streaming (microphone). Install: "git clone https://github.com/mjhydri/BeatNet-Plus.git", "pip install -e ."
-  with "numpy, librosa, madmom, torch, scipy, tensorboard, pyyaml, matplotlib".
+  "from BeatNetPlus.inference import BeatNetPlusInference", then (README example spread over several lines, an inline
+  comment dropped here) `estimator = BeatNetPlusInference('src/BeatNetPlus/models/generic_weights.pt', mode='online',
+  inference_model='PF', device='cpu')` and "output = estimator.process("path/to/audio.wav")". Modes listed: online
+  (particle filtering), offline (DBN), realtime, streaming (microphone). Install: "git clone
+  https://github.com/mjhydri/BeatNet-Plus.git", "pip install -e ." with "numpy, librosa, madmom, torch, scipy,
+  tensorboard, pyyaml, matplotlib".
 - Input: audio file; the README architecture block starts from "Audio (22050 Hz)".
 - Output (README "Output Format"): "All inference modes return a numpy array of shape `(num_beats, 2)`": column 0
   "Beat time in seconds", column 1 "Beat type: **1** = downbeat, **2** = regular beat". (BeatNet's README does not
@@ -361,16 +370,19 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
     papers cited in the docstrings would settle it). Second-hand, for the key model only: the S-KEY paper describes
     madmom's key CNN as "trained on a varied corpus (electronic dance music, pop/rock, and classical music)"
     (https://arxiv.org/html/2501.12907v2, section III-C, read 2026-11-10).
-- Output format on the box: the try agent's madmom run on S3 (ledger run r0063) wrote chord `.lab` lines such as
-  `2.600<TAB>5.300<TAB>G:maj` (tab-separated) on a 0.1 s grid and the key "G major" (`/home/user/gtr/lanes/chords-beats-key/out/madmom/S3/`,
-  read 2026-11-10), consistent with the docstrings above. trials.md did not exist yet when this was checked.
+- Output on the box: in the try agent's madmom run on S3 (ledger run r0063), the madmom segments came out with labels
+  such as "G:maj" and "E:min" on a 0.1 s grid, and `key_prediction_to_label` gave "G major"
+  (`/home/user/gtr/lanes/chords-beats-key/out/madmom/S3/`, read 2026-11-10), consistent with the docstrings above. The
+  tab-separated `.lab` layout of those files is the try agent's own (`scripts/madmom_run.py` lines 77-79), not
+  madmom's. trials.md had only its introduction when this was checked.
 
 ## Chordino, NNLS Chroma and the NNLS Tuning plugin (Vamp)
 
 - What: three Vamp plugins in one library by Matthias Mauch (C4DM, Queen Mary University of London): NNLS Chroma
   (`vamp:nnls-chroma:nnls-chroma`), Chordino (`vamp:nnls-chroma:chordino`) and Tuning (`vamp:nnls-chroma:tuning`).
   GitHub mirror https://github.com/c4dm/nnls-chroma (HEAD 2020-04-22, commit 4c5f214); homepage
-  https://code.soundsoftware.ac.uk/projects/nnls-chroma . Listed on https://www.vamp-plugins.org/download.html (read
+  https://code.soundsoftware.ac.uk/projects/nnls-chroma (did not answer on 2026-11-10: connection reset, not retried).
+  Listed on https://www.vamp-plugins.org/download.html (read
   2026-11-10) as "Chordino and NNLS Chroma Matthias Mauch With source code Included in Vamp Plugin Pack". Paper: Mauch
   and Dixon, "Approximate Note Transcription for the Improved Identification of Difficult Chords", ISMIR 2010.
 - How to call: inside any Vamp host: the `vamp` Python module (`vamp.collect(data, rate, "nnls-chroma:chordino")`,
@@ -449,7 +461,8 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
 
 - What: "This module allows Python code to load and use native-code Vamp plugins" (README). Chris Cannam and George
   Fazekas, C4DM. https://github.com/c4dm/vampy-host (HEAD 2016-11-09, commit b43546b). PyPI `vamp` 1.1.0 uploaded
-  2015-07-08.
+  2015-07-08. The GitHub page shows c4dm/vampy-host as "forked from vamp-plugins/vampy-host"; that upstream repository
+  is at the same commit b43546b (checked 2026-11-10).
 - How to call: "No code for loading audio files is included"; it "expects to receive decoded audio data of one or
   more channels". Example from the README: "import vamp", "data, rate = librosa.load("example.wav")",
   "chroma = vamp.collect(data, rate, "nnls-chroma:nnls-chroma")" returns a dict such as {'matrix': (step, array)}.
@@ -725,7 +738,7 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
 ## librosa (beat tracking, tempo, PLP, tuning estimation)
 
 - What: Python audio analysis library. https://github.com/librosa/librosa (HEAD 2026-11-10, commit 6c9fe7c); PyPI
-  `librosa` 1.0.0 uploaded 2026-08-11, "requires_python >=3.12" (PyPI JSON). `librosa/version.py` at HEAD: version
+  `librosa` 1.0.0 uploaded 2026-08-11, PyPI `requires_python` ">=3.12" (PyPI JSON). `librosa/version.py` at HEAD: version
   "1.0.0".
 - How to call (source at commit 6c9fe7c): `librosa.beat.beat_track(..., start_bpm=120.0, tightness=100, trim=True,
   bpm=None, prior=None, units="frames")`; `librosa.beat.plp(...)`; `librosa.feature.tempo(...)` (defined in
@@ -760,43 +773,69 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   sampleRate=11025, resampleQuality=4)()", "model = TempoCNN(graphFilename="deeptemp-k4-3.pb")", "global_tempo,
   local_tempo, local_tempo_probabilities = model(audio)"). essentia.js runs the same algorithms in the browser or
   Node (not read further today).
-- Algorithms, inputs and outputs (reference pages https://essentia.upf.edu/reference/std_<Name>.html, read 2026-11-10):
-  - KeyExtractor: input "audio ( vector_real )"; outputs "key ( string )", "scale ( string )", "strength ( real )";
-    parameters include "profileType ( string ∈ {diatonic, krumhansl, temperley, weichai, tonictriad, temperley2005,
-    thpcp, shaath, gomez, noland, faraldo, pentatonic, edmm, edma, bgate, braw}, default = bgate )", "sampleRate ...
-    default = 44100", "tuningFrequency ( real ∈ (0, ∞), default = 440 ) : the tuning frequency of the input signal";
+- Algorithms, inputs and outputs (reference pages https://essentia.upf.edu/reference/std_<Name>.html, read 2026-11-10;
+  spacing inside the parentheses re-copied from the rendered pages by the verifier):
+  - KeyExtractor: input "audio (vector_real)"; outputs "key (string)", "scale (string)", "strength (real)";
+    parameters include "profileType (string ∈ {diatonic, krumhansl, temperley, weichai, tonictriad, temperley2005,
+    thpcp, shaath, gomez, noland, faraldo, pentatonic, edmm, edma, bgate, braw}, default = bgate)", "sampleRate ...
+    default = 44100", "tuningFrequency (real ∈ (0, ∞), default = 440) : the tuning frequency of the input signal";
     "Tuning frequency can be estimated in advance using TuningFrequency algorithm."
-  - TuningFrequency: inputs spectral peak "frequencies" and "magnitudes"; outputs "tuningFrequency ( real ) - the
-    tuning frequency [Hz]" and "tuningCents ( real ) - the deviation from 440 Hz (between -35 to 65 cents)".
-  - RhythmExtractor2013: input "signal"; outputs "bpm ( real )", "ticks ( vector_real ) - the estimated tick
-    locations [s]", "confidence ( real )", "estimates", "bpmIntervals"; parameters "maxTempo ( integer ∈ [60, 250],
-    default = 208 )", "method ( string ∈ {multifeature, degara}, default = multifeature )", "minTempo ( integer ∈ [40,
-    180], default = 40 )"; "Note that the algorithm requires the sample rate of the input signal to be 44100 Hz in order
-    to work correctly." No downbeat output.
-  - ChordsDetection: input "pcp ( vector_vector_real )" (HPCP frames); outputs "chords ( vector_string )" and
-    "strength ( vector_real )"; "It finds the best matching major or minor triad and outputs the result as a string
-    (e.g. A#, Bm, G#m, C)" (24 labels); "Quality: experimental (prone to errors, algorithm needs improvement)";
-    parameters "hopSize ... default = 2048", "windowSize ( real ∈ (0, ∞), default = 2 ) : the size of the window on
-    which to estimate the chords [s]".
-  - TempoCNN: input "the input audio signal sampled at 11025 Hz"; outputs "globalTempo ( real )", "localTempo (
-    vector_real )", "localTempoProbabilities ( vector_real )"; "localTempo is a vector containing the most likely BPM
+  - TuningFrequency: inputs spectral peak "frequencies" and "magnitudes"; outputs "tuningFrequency (real) - the
+    tuning frequency [Hz]" and "tuningCents (real) - the deviation from 440 Hz (between -35 to 65 cents)".
+  - RhythmExtractor2013: input "signal"; outputs "bpm (real)", "ticks (vector_real) - the estimated tick locations
+    [s]", "confidence (real)", "estimates", "bpmIntervals"; parameters "maxTempo (integer ∈ [60, 250], default =
+    208)", "method (string ∈ {multifeature, degara}, default = multifeature)", "minTempo (integer ∈ [40, 180], default
+    = 40)"; "Note that the algorithm requires the sample rate of the input signal to be 44100 Hz in order to work
+    correctly." No downbeat output.
+  - ChordsDetection: input "pcp (vector_vector_real)" (HPCP frames); outputs "chords (vector_string)" and "strength
+    (vector_real)"; "It finds the best matching major or minor triad and outputs the result as a string (e.g. A#, Bm,
+    G#m, C)" (24 labels); "Quality: experimental (prone to errors, algorithm needs improvement)"; parameters "hopSize
+    ... default = 2048", "windowSize (real ∈ (0, ∞), default = 2) : the size of the window on which to estimate the
+    chords [s]".
+  - ChordsDetectionBeats (added by the verifier): inputs "pcp (vector_vector_real) - the pitch class profile from which
+    to detect the chord" and "ticks (vector_real) - the list of beat positions (in seconds). One chord will be outputted
+    for each segment between two adjacent ticks."; outputs "chords (vector_string) - the resulting chords, from A to G"
+    and "strength (vector_real) - the strength of the chords"; parameter "chromaPick (string ∈ {starting_beat,
+    interbeat_median}, default = interbeat_median)".
+  - TonalExtractor (added by the verifier): input "signal (vector_real) - the audio input signal"; outputs include
+    "chords_progression (vector_string)", "chords_strength (vector_real)", "hpcp (vector_vector_real)", "key_key
+    (string)", "key_scale (string)", "key_strength (real)"; parameters include "frameSize (integer ∈ (0, ∞), default =
+    4096)", "hopSize (integer ∈ (0, ∞), default = 2048)" and "tuningFrequency (real ∈ (0, ∞), default = 440)".
+  - PercivalBpmEstimator (added by the verifier): input "signal (vector_real) - input signal"; output "bpm (real) - the
+    tempo estimation [bpm]"; parameters "maxBPM (integer ∈ (0, ∞), default = 210) : maximum BPM to detect" and "minBPM
+    (integer ∈ (0, ∞), default = 50) : minimum BPM to detect".
+  - TempoCNN: input "the input audio signal sampled at 11025 Hz"; outputs "globalTempo (real)", "localTempo
+    (vector_real)", "localTempoProbabilities (vector_real)"; "localTempo is a vector containing the most likely BPM
     estimated each ~6 seconds by default."
 - License facts (code and models differ):
   - a. Code: COPYING.txt is the AGPL v3 text (https://raw.githubusercontent.com/MTG/essentia/master/COPYING.txt);
     section 13 as quoted above. Licensing page (https://essentia.upf.edu/licensing_information.html, read
-    2026-11-10): "Essentia is available under an open licence, Affero GPLv3 , for non-commercial applications, thus it
+    2026-11-10): "Essentia is available under an open licence, Affero GPLv3, for non-commercial applications, thus it
     is possible to test the library before deciding to licence it under a comercial licence. Contact Music Technology
-    Group (UPF) for more information about licensing conditions". Same page: "Some Essentia library algorithms use
-    third-party libraries with licenses such as GPL , LGPL , and others for which UPF is not able to provide full
+    Group (UPF) for more information about licensing conditions ...". Same page: "Some Essentia library algorithms use
+    third-party libraries with licenses such as GPL, LGPL, and others for which UPF is not able to provide full
     sublicensing rights to third parties." and it lists "NNLS Chroma - http://www.isophonics.net/nnls-chroma – used by
     LogSpectrum and NNLSChroma algorithms."
+  - Sources differ on whether later AGPL versions are allowed (added by the verifier): PyPI 2.1b6.dev1438 has
+    license expression "AGPL-3.0-only", while the repository file `Essentia Licensing.txt`
+    (https://raw.githubusercontent.com/MTG/essentia/master/Essentia%20Licensing.txt, read 2026-11-10) says: "Essentia
+    is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+    version." The same file lists third-party code and "External Dependant libraries" (FFTW and Libsamplerate under the
+    GPL; TagLib, the FFmpeg libraries and libchromaprint under the LGPL; VAMP SDK under MIT).
   - b. Models (TempoCNN and other TensorFlow models): licensing page: "All the models are available under the CC
     BY-NC-SA 4.0 license for non-commercial use, and are also available under a proprietary license upon request."
     Models page (https://essentia.upf.edu/models.html, read 2026-11-10): "All the models created by the MTG are licensed
     under CC BY-NC-SA 4.0 and are also available under proprietary license upon request."
-  - c. Training data for TempoCNN (models page): "trained on the Extended Ballroom, LMDTempo, and MTGTempo datasets".
-    Dataset licenses not read today (UNVERIFIED). KeyExtractor, TuningFrequency, RhythmExtractor2013 and
-    ChordsDetection use no trained weights (profiles and signal processing).
+  - The TempoCNN model's own metadata file (https://essentia.upf.edu/models/tempo/tempocnn/deeptemp-k4-3.json, read
+    2026-11-10) has no license field; it gives "release_date": "04/08/2020", "author": "Pablo Alonso", input
+    "sample_rate": 11025, and the description "This model is intended to provide a lightweight tempo extractor, but it
+    is not expected to be accurate outside pop and rock music." (author's statement of scope).
+  - c. Training data for TempoCNN (models page): "trained on the Extended Ballroom, LMDTempo, and MTGTempo datasets"
+    (the metadata file's "dataset" field: "Extended Ballroom, LMDTempo and MTGTempo", sizes "3826 30s excerpts, 3611 30s
+    excerpts and 1158 2m excerpts"). Dataset licenses not read today (UNVERIFIED). KeyExtractor, TuningFrequency,
+    RhythmExtractor2013, ChordsDetection, ChordsDetectionBeats, TonalExtractor and PercivalBpmEstimator use no trained
+    weights (profiles and signal processing).
   - essentia.js: LICENSE is the AGPL v3 text (https://raw.githubusercontent.com/MTG/essentia.js/master/LICENSE, read
     2026-11-10).
 
@@ -812,7 +851,8 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   select time values output format (samples, ms, seconds) default=seconds". README: "`aubiotrack` outputs the time
   stamp of detected beats". The Python entry point `/usr/bin/aubio` (aubio 0.4.9) failed on the box with
   "ModuleNotFoundError: No module named 'aubio._aubio'" when run with `--help` under the default Python 3.13 (seen
-  while reading the help, 2026-11-10; trials.md covers runs).
+  while reading the help, 2026-11-10; trials.md covers runs). Both re-run by the verifier on 2026-11-10 with the same
+  result; the full help also lists "default=hfc" for `-O`, `-t --onset-threshold`, `-M --minioi`, `-s --silence`.
 - Output: beat times (seconds by default), one per line. No downbeat, chord or key output.
 - License: GPL-3.0-or-later. COPYING is the GPL v3 text (https://raw.githubusercontent.com/aubio/aubio/master/COPYING,
   read 2026-11-10); PyPI license "GNU/GPL version 3", classifier "GNU General Public License v3 or later (GPLv3+)". No
@@ -821,7 +861,7 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
 ## tempo-cnn (tempo and meter CNNs)
 
 - What: Tempo-CNN, "a tempo estimator" (README). https://github.com/hendriks73/tempo-cnn (HEAD 2024-10-17, commit 482c64a). PyPI
-  `tempocnn` 0.0.8 uploaded 2024-10-17, "requires_python <3.12,>=3.9".
+  `tempocnn` 0.0.8 uploaded 2024-10-17, PyPI `requires_python` "<3.12,>=3.9".
 - How to call (README, https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/README.rst): "tempo -i
   my_audio.wav"; "tempo -m ismir2018 --jams -i my_audio.wav"; "--mirex" for MIREX-style output; "tempo -m deeptemp
   --jams -i my_audio.wav"; "tempo -m mazurka -i my_audio.wav"; "--interpolate"; "tempogram -p my_audio.wav" (writes a
@@ -838,7 +878,8 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
 
 - What: "DeepRhythm is a convolutional neural network designed for rapid, precise tempo prediction for modern music"
   (README, https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md, read 2026-11-10). PyPI `deeprhythm`
-  0.0.13 uploaded 2024-12-07.
+  0.0.13 uploaded 2024-12-07. Repository https://github.com/bleugreen/deeprhythm (HEAD 2026-07-21, commit b1f6116;
+  `pyproject.toml` at HEAD still says `version = "0.0.13"`).
 - How to call: "pip install deeprhythm"; Python "from deeprhythm import DeepRhythmPredictor", "model =
   DeepRhythmPredictor()", "tempo = model.predict('path/to/song.mp3')", "tempo, confidence =
   model.predict('path/to/song.mp3', include_confidence=True)"; batch "python -m deeprhythm.batch_infer /path/to/dir"
@@ -849,8 +890,11 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   average s, total s); "Test done on 953 songs, mostly Electronic, Hip Hop, Pop, and Rock"; "Acc1 = Prediction within
   +/- 2% of actual bpm". The same table lists TempoCNN, Essentia and Librosa rows measured by the author.
 - License: LICENSE is the AGPL v3 text (https://raw.githubusercontent.com/bleugreen/deeprhythm/main/LICENSE, read
-  2026-11-10); PyPI classifier "GNU Affero General Public License v3". Weights license and training data: not stated
-  in the README lines read (UNVERIFIED).
+  2026-11-10); PyPI classifier "GNU Affero General Public License v3". Weights: the package downloads them from the
+  same repository (`model_url = 'https://github.com/bleugreen/deeprhythm/raw/main/weights/'` and default
+  `filename="deeprhythm-0.7.pth"`, `src/deeprhythm/utils.py` lines 7 and 29), so the repository's AGPL LICENSE is the
+  only license text found for them; no separate weights statement. Training data: not stated in the README
+  (UNVERIFIED).
 
 ## Beat Transformer (demixed beat and downbeat tracking)
 
@@ -881,7 +925,8 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
 
 ## realtime-bpm-analyzer (tempo in the browser and Node)
 
-- What: "A powerful TypeScript library for detecting beats-per-minute (BPM) in real-time" (readme,
+- What: a "TypeScript library for detecting beats-per-minute (BPM) in real-time" (readme; the sentence opens with a
+  self-description, left out here;
   https://raw.githubusercontent.com/dlepaux/realtime-bpm-analyzer/main/readme.md). https://github.com/dlepaux/realtime-bpm-analyzer
   (HEAD 2026-11-10, commit a68a82b). npm `realtime-bpm-analyzer` latest 5.6.1, published 2026-11-03, license
   "Apache-2.0" (https://registry.npmjs.org/realtime-bpm-analyzer, read 2026-11-10).
@@ -894,6 +939,24 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   read.
 - License: license.md is the Apache License 2.0 text
   (https://raw.githubusercontent.com/dlepaux/realtime-bpm-analyzer/main/license.md, read 2026-11-10). No weights.
+
+## web-audio-beat-detector (tempo and first-beat offset in the browser) (added by the verifier)
+
+- What: "It retrieves the beats as BPM of a given AudioBuffer." (README,
+  https://raw.githubusercontent.com/chrisguttandin/web-audio-beat-detector/master/README.md, read 2026-11-10); "This
+  module is based on the technique explained by Joe Sullivan in his article Beat Detection Using JavaScript and the Web
+  Audio API" (rendered text). https://github.com/chrisguttandin/web-audio-beat-detector (HEAD 2026-08-30, commit
+  d794f2e); npm `web-audio-beat-detector` latest 8.2.39, published 2026-08-26, license "MIT"
+  (https://registry.npmjs.org/web-audio-beat-detector, read 2026-11-10).
+- How to call (README): "import { analyze } from 'web-audio-beat-detector';" — "The `analyze()` function expects an
+  `AudioBuffer` as its first parameter and it returns a `Promise` which eventually resolves with the tempo of that
+  buffer as a number." "import { guess } from 'web-audio-beat-detector';" — "The `Promise` will resolve with an object
+  containing the estimated BPM (the rounded tempo) and the offset of the first beat in seconds." (`guess(audioBuffer)
+  .then(({ bpm, offset, tempo }) => ...)`).
+- Output: one tempo, or `{ bpm, offset, tempo }`; no per-beat times, downbeats, chords or key are listed.
+- License: LICENSE is MIT, "Copyright (c) 2026 Christoph Guttandin"
+  (https://raw.githubusercontent.com/chrisguttandin/web-audio-beat-detector/master/LICENSE, read 2026-11-10). No
+  weights.
 
 ## libKeyFinder and keyfinder-cli (key estimation)
 
@@ -917,28 +980,72 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
 
 ## S-KEY (self-supervised key estimation, Deezer)
 
-- What: "`skey` is a Python package for state-of-the-art automatic musical key detection from audio recordings, based
-  on the S-KEY model proposed by Yuexuan Kong et al." (README, https://raw.githubusercontent.com/deezer/skey/main/README.md);
+- What: "`skey` is a Python package for ... automatic musical key detection from audio recordings, based on the S-KEY
+  model proposed by Yuexuan Kong et al." (README, an adjective left out; https://raw.githubusercontent.com/deezer/skey/main/README.md);
   paper "S-KEY: Self-supervised Learning of Major and Minor Keys from Audio", ICASSP 2025, https://arxiv.org/abs/2501.12907.
   https://github.com/deezer/skey (HEAD 2026-10-27, commit 80d9590). The PyPI name `skey` (0.2) belongs to an unrelated
-  project (home page http://github.com/dleonik/skey); this package installs from the repository with "poetry install".
+  project (home page http://github.com/dleonik/skey, the address PyPI records; `git ls-remote` on it asked for
+  credentials on 2026-11-10, i.e. no public repository answers there); this package installs from the repository with
+  "poetry install".
 - How to call: CLI "poetry skey path/to/audio --device cpu" ("The prediction will be printed if the path is an audio
-  file, will be saved into a .csv file if the path is a directory"); options "--checkpoint", "--ext", "--device
-  (default: cpu, e.g., cuda, mps)". Python "from skey import detect_key", "detect_key(audio_dir="path/to/audio",
-  extension="mp3", device="cpu")". "CPU and GPU support". Weights `skey/models/skey.pt` (765,465 bytes) are in the
-  repository.
-- Output: a predicted major or minor key per file (printed or CSV); exact CSV columns not read today (UNVERIFIED).
+  file, will be saved into a .csv file if the path is a directory"); options "--checkpoint", "--ext", and
+  "`--device`: Device to run on (default: `cpu`, e.g., `cuda`, `mps`)". Python "from skey import detect_key",
+  "detect_key(audio_dir="path/to/audio", extension="mp3", device="cpu")". "CPU and GPU support". Weights
+  `skey/models/skey.pt` (765,465 bytes) are in the repository.
+- Output: a predicted major or minor key per file (printed or CSV). From `skey/key_detection.py` at HEAD (read by the
+  verifier 2026-11-10): labels are "A Major", "Bb Major", ..., "G# Major" and "B minor", ..., "Bb minor" (24 entries,
+  lines 21-44); for a directory it writes `<dir>/prediction/predictions.csv` with header row "Audio File", "Predicted
+  Key" (lines 267-274).
 - License facts (code and weights differ): README "License": "The code of SKEY is MIT-licensed. The MIT license does
   not apply to the model weights in skey.pt. You may use the model weights only for non-commercial research purposes."
   LICENSE: MIT, "Copyright (c) 2019-present, Deezer SA." (https://raw.githubusercontent.com/deezer/skey/main/LICENSE).
-  Read 2026-11-10. c. Training data: not read today (UNVERIFIED; the arXiv paper would settle it).
+  Read 2026-11-10. c. Training data (paper, https://arxiv.org/html/2501.12907v2, section III-A, read 2026-11-10):
+  "STONE was trained on a corpus of 60k songs from the Deezer catalog. To offer a fair comparison, we begin by
+  training S-KEY on the exact same dataset" and "Later on, we scale up SSL training to 1M songs from Deezer". Which of
+  the two models is `skey.pt` is not stated in the README (UNVERIFIED). The paper's footnote points to
+  "https://github.com/deezer/s-key" for "The full training and inference code"; the repository used here is
+  https://github.com/deezer/skey (whether the two addresses are the same repository was not checked).
+- Author measurements (paper Table II, MIREX score in %, read 2026-11-10): "S-KEY (60k)" 72.1 / 70.9 / 71.7 / 89.0 and
+  "S-KEY (1M)" 73.2 / 74.4 / 72.1 / 90.4 on FMAKv2 / GTZAN / GiantSteps / SWD; the same table lists madmom at
+  73.1 / 67.9 / 71.0 / 87.7.
 - A community ONNX conversion exists at https://huggingface.co/aaatmy/skey-onnx (named in a search result; not read).
+
+## STONE (Deezer, ISMIR 2024; key signature and mode) (added by the verifier)
+
+- What: "This repository contains the checkpoints and the full training and inference code for the two models proposed
+  in STONE paper, accepted at ISMIR 2024." (rendered text; paper https://arxiv.org/abs/2407.07408) (README,
+  https://raw.githubusercontent.com/deezer/stone/main/README.md, read 2026-11-10). https://github.com/deezer/stone
+  (HEAD 2025-10-24, commit 0c5f72d).
+- How to call (README): Python 3.10 with Poetry; "poetry run python -m inference /checkpoint/path /audio/path -e mp3
+  -tt ks". Checkpoints: "we provided two checkpoints under `/ckpt`. `semisupervised_key_mode.pt` is the best Semi-TONE
+  model for key signature and mode estimation. `semitone_ks.pt` is the best STONE model for key signature
+  estimation." (the authors' wording).
+- Output: "The command will generate a `/results/ckpt_name/results.npz` file with results saved in the same directory
+  as audios."
+- License facts: no LICENSE file in the tree at HEAD (top level: .gitignore, Dockerfile, README.md, `__init.py__`,
+  ckpt, config, figures, inference.py, main.py, pitch_fork, pyproject.toml, src, training_loop.py) and no license
+  statement in the README (a case-insensitive search for `licen` found nothing, 2026-11-10). Weights: the two checkpoints above, no license
+  statement. Training data: the S-KEY paper says "STONE was trained on a corpus of 60k songs from the Deezer catalog".
+
+## key-cnn (global key, CNN) (added by the verifier)
+
+- What: "Key-CNN is a ... CNN-based framework for estimating harmonic properties of music tracks." "First and
+  foremost, Key-CNN is a key estimator." (README, https://raw.githubusercontent.com/hendriks73/key-cnn/master/README.rst,
+  read 2026-11-10). https://github.com/hendriks73/key-cnn (HEAD 2020-07-30, commit 9715d6f); `setup.py`:
+  `name='keycnn'`, `version = '0.0.2'`, author Hendrik Schreiber. PyPI has no `keycnn` project (HTTP 404).
+- How to call (README): "key -i my_audio.wav"; "key -m deepsquare --jams -i my_audio.wav"; "key -m deepspec --jams -i
+  my_audio.wav"; "key -m winterreise -i my_audio.wav"; install: "Clone this repo and run ``setup.py install`` using
+  Python 3.6" and "You may need to install TensorFlow using ``pip`` from the command line."
+- Output: a global key, plain or in MIREX or JAMS format ("You may specify other models and output formats").
+- License: README "License": "Source code and models can be licensed under the GNU AFFERO GENERAL PUBLIC LICENSE v3."
+  LICENSE is the AGPL v3 text (https://raw.githubusercontent.com/hendriks73/key-cnn/master/LICENSE, read 2026-11-10).
+  Training data: not read.
 
 ## music21 key analysis on symbolic notes
 
 - What: Python toolkit for symbolic music (Michael Scott Asato Cuthbert). https://github.com/cuthbertLab/music21 (HEAD
-  2026-11-08, commit 8bfcfc4); PyPI `music21` 10.5.2 uploaded 2026-10-28, "requires_python >=3.11", license
-  expression "BSD-3-Clause".
+  2026-11-08, commit 8bfcfc4); PyPI `music21` 10.5.2 uploaded 2026-10-28 (a pre-release 11.0.0b14 was uploaded
+  2026-10-31), PyPI `requires_python` ">=3.11", license expression "BSD-3-Clause".
 - How to call (source `music21/analysis/discrete.py` at HEAD): `s.analyze('key')` or
   `analysis.discrete.analyzeStream(s, 'key')` on a Stream parsed from MIDI or MusicXML. Key-weight classes:
   `KrumhanslSchmuckler` (identifiers 'key.krumhansl', ...), `AardenEssen` (its identifiers include 'key' and
@@ -957,18 +1064,30 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   4a608b7). README (read 2026-11-10): audio "generated by sending guitar tablature data to a sample-based guitar
   plugin"; "the 5-class chromagram system"; evaluation scripts `eval_synthetic_songs.py` and `eval_authentic_songs.py`;
   "pip install tensorflow matplotlib scikit-learn seaborn"; test sets, models and the training set are on Google Drive.
-  The tuning class names are not listed in the README. No license file found at
-  https://github.com/edhulme/guitar-tuning-classification (top-level files of HEAD: README.md and code only,
-  2026-11-10). The paper PDF on orca.cardiff.ac.uk returned HTTP 403 to the fetch tool and the talk slides on iaml.info
-  returned 404, so the reported accuracies (97.5 % for 2 classes and 73.9 % for 5 classes, per a web search summary)
-  are UNVERIFIED.
-- University of Rochester ECE 477 student report, 2023, "Guitar Tuning Detection" (McCormack Chew), PDF
+  The tuning class names are not listed in the README; the evaluation code labels its confusion matrix with
+  `["DADGAD", "Drop D", "Open D", "Open G", "Standard"]` (`eval_synthetic_songs.py` lines 67-68 at HEAD, read
+  2026-11-10). No license file found at https://github.com/edhulme/guitar-tuning-classification (top-level files of
+  HEAD include README.md, .py files, label files, `cnn-summary-*.txt`, `environment.yml`, `requirements.txt` and
+  `analysis_key-pitch-scale.pdf`, and no LICENSE; re-checked 2026-11-10).
+  Paper title, per a web search summary only: "Acoustic Classification of Guitar Tunings with Deep Learning" (Edward
+  Hulme, David Marshall, Kirill Sidorov, Andrew Jones; DLfM 2024; doi 10.1145/3660570.3660574). On 2026-11-10 the ORCA
+  record (https://orca.cardiff.ac.uk/170217/) answered HTTP 403 with a Cloudflare "Verification Required" page to curl
+  and HTTP 403 to the fetch tool, the ACM page (https://dl.acm.org/doi/10.1145/3660570.3660574) answered 403, and the
+  slides (https://iaml.info/sites/default/files/pdf/hulme-talk-dlfm24.pdf) answered 404, so the reported accuracies
+  (97.5 % for 2 classes and 73.9 % for 5 classes, per a web search summary) remain UNVERIFIED.
+- University of Rochester ECE 477 student report, 2023, "Guitar Tuning Detection" (McCormack Chew and Declan Parker),
+  PDF
   https://hajim.rochester.edu/ece/sites/zduan/teaching/ece477/projects/2023/DeclanParker_McCormackChew_FinalReport.pdf
   (text extracted with pdftotext, 2026-11-10): "This paper presents a method for classifying seven different guitar
   tunings based solely on audio input." "feature embeddings are extracted using an L3 model. The method then utilizes
-  support vector machines"; "Our complete dataset includes 260 ten second" clips (96 of them from YouTube); one model
-  over "Drop D, Drop C, E Standard, and FMaj9" "achieved 83.6% accuracy on the test set"; "the overall accuracy of the
-  combined models is 74.2%". No code URL found in the text.
+  support vector machines"; "Our complete dataset includes 260 ten second audio clips, 164 of which are sourced from
+  stem separated tracks, and 96 of which are from YouTube guitarists." Authors' figures (report text and its Table 2):
+  "The tunings we included in this model were Drop D, Drop C, E Standard, and FMaj9, and it achieved 83.6% accuracy
+  on the test set" (Model 1); Table 2 lists Model 2 (Model 1's tunings plus Open G, Open D and D Standard, i.e. the
+  seven tunings) at 82.8%, Model 3 ("the same tunings as Model 2 but without dataset leakage") at 71.7%, Model 4 at
+  77.5%, and Model 5, "the average test accuracy between Model 3 and Model 4", at 74.2%; the text: "the overall accuracy
+  of the combined models is 74.2%". No code URL found in the text. (Re-read by the verifier from the PDF on
+  2026-11-10.)
 - University of Rochester ECE 477 project, 2019 (Lukas Dillingham, Varun Khatri), "Guitar Tuning Identification",
   listed in search results as working from MIDI transcriptions; not read today.
 - Capo position from audio: no paper, dataset or code that estimates capo position from audio alone was found in two
@@ -981,37 +1100,78 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
 
 - Music.AI (Moises), Klangio, Replicate-hosted All-In-One and chord models: covered in
   `lanes/hosted-apis/survey.md` (items 1, 2, 7 of its tool list). Not repeated here.
-- Spotify Web API audio features / audio analysis (key, mode, tempo, time signature, beats, bars): web search results
-  on 2026-11-10 (Spotify community forum threads and Digital Music News) report that from 2024-11-27 new apps cannot
-  call these endpoints and apps with a quota extension approved before that date keep access. Spotify's own
-  announcement was not read today (UNVERIFIED).
-- GetSongBPM API (https://getsongbpm.com/api): tempo and key looked up by song title, not computed from uploaded audio;
-  a search result summary quotes its docs as requiring a link back ("a link back to GetSongBPM.com is REQUIRED"). The
-  page itself was not read today (UNVERIFIED).
-- Cyanite, Tunebat, Chordify, Chord ai, Capo (Mac/iOS app with "automatic music analysis"): named in search results
-  only; not read today. The apps-survey lane covers the consumer apps.
+- Spotify Web API audio features / audio analysis (key, mode, tempo, time signature, beats, bars): Spotify's
+  announcement "Introducing some changes to our Web API", posted November 27, 2024
+  (https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api, read 2026-11-10 by the verifier): "Effective
+  today, new Web API use cases will no longer be able to access or use the following endpoints and functionality in
+  their third-party applications. Applications with existing extended mode Web API access that were relying on these
+  endpoints remain unaffected by this change." The list includes "Audio Features" and "Audio Analysis". "These changes
+  will impact the following Web API applications: Existing apps that are still in development mode without a pending
+  extension request New apps that are registered on or after today's date" (two list items run together in the page
+  text). (The survey's earlier wording came from search summaries.)
+- GetSongBPM API (https://getsongbpm.com/api): a search result summary says tempo and key are looked up by song title,
+  not computed from uploaded audio, and quotes its docs as requiring a link back ("a link back to GetSongBPM.com is
+  REQUIRED"). UNVERIFIED: could not fetch https://getsongbpm.com/api on 2026-11-10 (HTTP 403 to curl, a Cloudflare
+  "Just a moment..." page; HTTP 403 to the fetch tool).
+- Capo (Mac and iOS app, SuperMegaUltraGroovy; product page https://supermegaultragroovy.com/products/capo/, read
+  2026-11-10): "Capo makes this possible by analyzing any song in your music library to reveal its beats, chords, and
+  key."; "Capo's neural network was trained on a massive library of songs to recognize 168 different chords—12 notes
+  times 14 chord qualities"; "Capo works with audio files you own"; "Capo processes everything locally on your Mac,
+  iPhone, or iPad"; MIDI export of notes and chords is listed among tools "exclusive to the Mac". (The earlier quote
+  "automatic music analysis" was not found on this page.) Terms and price: apps-survey lane.
+- Cyanite, Tunebat, Chordify, Chord ai: named in search results only; not read today. The apps-survey lane covers the
+  consumer apps.
+
+## Not covered
+
+Found by the verifier's searches on 2026-11-10 and not examined in the same depth as the sections above. One line
+each; facts from the pages named.
+
+- WaveBeat, https://github.com/csteinmetz1/wavebeat: "End-to-end beat and downbeat tracking in the time domain."
+  (README; paper https://arxiv.org/abs/2110.01436). HEAD 2021-11-10; LICENSE is the GPL v3 text; the tree's
+  `checkpoints/` folder holds only `checkpoints.md` (the README says to download a checkpoint and place it there).
+- InceptionKeyNet, https://github.com/stefan-baumann/inceptionkeynet: reference implementation of the ISMIR 2021 paper
+  "Deeper Convolutional Neural Networks and Broad Augmentation Policies Improve Performance in Musical Key Estimation"
+  (README). HEAD 2023-08-02; LICENSE MIT, "Copyright (c) 2021 Stefan Baumann". Released weights not checked.
+- "Chord Recognition with Deep Learning", Pierre Mackenzie, https://arxiv.org/abs/2512.22621 (submitted 2025-12-27):
+  arXiv metadata read only; no code link in the abstract.
+- BACHI, symbolic chord recognition with released checkpoints per a search result summary
+  (https://huggingface.co/datasets/Itsuki-music/BACHI_Chord_Recognition answers HTTP 200 through the HF API; contents
+  not read). Symbolic input, not audio.
+- "Jangdan as Downbeats: Downbeat Tracking in Traditional Korean Music Using TCN-RoFormer and Domain-Aware Dynamic
+  Bayesian Network" (Nikhil Thapa; author page https://nikhilsos.github.io/jangdan, title read 2026-11-10; venue per a
+  search result summary: MDPI Applied Sciences 2026). No code repository link on that page.
+- Sonic Annotator (command-line Vamp host, C4DM): https://code.soundsoftware.ac.uk/projects/sonic-annotator (not read);
+  the survey agent's `git clone https://github.com/c4dm/sonic-annotator` failed with an authentication prompt
+  (`raw/repos/c4dm__sonic-annotator.err`), and Ubuntu 24.04 apt has no package for it.
+- Chordify, Chord ai, Moises chord detection, Yamaha Chord Tracker: consumer apps, apps-survey lane.
 
 ## Handoff facts
 
-Each line: what one tool outputs, what the next accepts, and the source for each half (all read 2026-11-10). Lines
-marked "documented chain" are pairs one of the two tools' own documentation describes.
+Each line: what one tool outputs, what the next accepts, and the source for each half (all read 2026-11-10; every
+line re-checked by the verifier on 2026-11-10, lines 19 to 23 added by it). Lines marked "documented chain" are pairs
+one of the two tools' own documentation describes.
 
 1. Demucs `htdemucs` stems are what All-In-One analyses: All-In-One's `src/allin1/demix.py` runs
-   "sys.executable, '-m', 'demucs.separate'" with "'--name', 'htdemucs'" before its model (documented chain; source in
-   the clone of https://github.com/mir-aidj/all-in-one at commit 18e7890).
+   "sys.executable, '-m', 'demucs.separate'" (line 32) with "'--name', 'htdemucs'" (line 34) before its model
+   (documented chain; source in the clone of https://github.com/mir-aidj/all-in-one at commit 18e7890, which is HEAD).
 2. Spleeter stems are what Beat Transformer analyses: "./preprocessing/demixing.py, where we call Spleeter to demix each
    piece" (https://raw.githubusercontent.com/zhaojw1998/Beat-Transformer/main/README.md) (documented chain).
 3. NNLS Chroma outputs a 24-dim bass+treble chromagram ("Chromagram and Bass Chromagram",
-   https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README), which autochord feeds to its Bi-LSTM-CRF ("runs
-   the NNLS-Chroma VAMP plugin to extract chroma features from the audio, and feeds it to a Bi-LSTM-CRF model",
-   https://raw.githubusercontent.com/cjbayron/autochord/main/README.md) (documented chain).
-4. The `vamp` Python host takes decoded audio as a NumPy array from `librosa.load` and returns plugin features such as
-   Chordino's chord estimate ("data, rate = librosa.load("example.wav")", "vamp.collect(data, rate,
-   "nnls-chroma:nnls-chroma")", https://raw.githubusercontent.com/c4dm/vampy-host/master/README.rst).
+   https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README; its output identifier is "bothchroma" with
+   `binCount = 24`, `NNLSChroma.cpp` lines 167-173), which autochord feeds to its Bi-LSTM-CRF ("runs the NNLS-Chroma
+   VAMP plugin to extract chroma features from the audio, and feeds it to a Bi-LSTM-CRF model",
+   https://raw.githubusercontent.com/cjbayron/autochord/main/README.md; `vamp.collect(..., 'nnls-chroma:nnls-chroma',
+   output='bothchroma', ...)` in `src/autochord/__init__.py` lines 97-98) (documented chain).
+4. The `vamp` Python host takes decoded audio as a NumPy array from `librosa.load` and returns plugin features ("data,
+   rate = librosa.load("example.wav")", "vamp.collect(data, rate, "nnls-chroma:nnls-chroma")",
+   https://raw.githubusercontent.com/c4dm/vampy-host/master/README.rst); Chordino's chord estimate comes back the same
+   way: chord-extractor calls `vamp.collect(data, rate, 'nnls-chroma:chordino', parameters=self._params)`
+   (`chord_extractor/extractors/chordino.py` line 104).
 5. Beat This! outputs beat times and downbeat times in seconds, and a `.beats` TSV ("a time in seconds, a tab, and a
    beat number (1 = downbeat)", https://raw.githubusercontent.com/CPJKU/beat_this/main/beat_this/utils.py), which
-   Sonic Visualiser imports ("e.g., for importing into Sonic Visualizer",
-   https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md).
+   Sonic Visualiser imports per the Beat This! README ("e.g., for importing into Sonic Visualizer",
+   https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md); Sonic Visualiser's own documentation was not read.
 6. Beat This! frame activations can be decoded by madmom's DBN instead of its own peak picking ("If you want to use
    the DBN for postprocessing, add `--dbn`. The DBN parameters are the default ones from madmom.", Beat This! README).
    BeatNet's offline mode does the same with its own CRNN ("we added madmom's DBN beat/downbeat inference model for the
@@ -1020,14 +1180,14 @@ marked "documented chain" are pairs one of the two tools' own documentation desc
    `allin1.sonify(result)` turns into audio that "will mix metronome clicks for beats and downbeats"
    (https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md): a click track aligned to the analysed song.
 8. User constraint "meter" and "tempo range" into madmom: `DBNDownBeatTrackingProcessor(beats_per_bar=[3, 4],
-   min_bpm=..., max_bpm=...)` (`madmom/features/downbeats.py` at commit 27f032e).
+   min_bpm=..., max_bpm=...)` (`madmom/features/downbeats.py` at commit 27f032e, `__init__` at line 201).
 9. User constraint "tempo" into librosa: `beat_track(..., bpm=...)` ("If provided, ``start_bpm`` will be ignored",
    `librosa/beat.py` at commit 6c9fe7c); into Essentia: `RhythmExtractor2013(minTempo=..., maxTempo=...)`
    (https://essentia.upf.edu/reference/std_RhythmExtractor2013.html).
-10. Essentia `TuningFrequency` outputs "tuningFrequency ( real ) - the tuning frequency [Hz]", which Essentia
+10. Essentia `TuningFrequency` outputs "tuningFrequency (real) - the tuning frequency [Hz]", which Essentia
     `KeyExtractor` accepts as its "tuningFrequency" parameter ("Tuning frequency can be estimated in advance using
     TuningFrequency algorithm", https://essentia.upf.edu/reference/std_KeyExtractor.html) (documented chain).
-11. Essentia HPCP frames are the input of Essentia `ChordsDetection` ("pcp ( vector_vector_real ) - the pitch class
+11. Essentia HPCP frames are the input of Essentia `ChordsDetection` ("pcp (vector_vector_real) - the pitch class
     profile from which to detect the chord"; "The algorithm assumes that the sequence of the input HPCP frames has been
     computed with framesize = 2*hopsize", https://essentia.upf.edu/reference/std_ChordsDetection.html).
 12. User constraint "allowed chords" into lv-chordia / the ISMIR 2019 model: the `chord_dict` argument ("submission",
@@ -1038,13 +1198,16 @@ marked "documented chain" are pairs one of the two tools' own documentation desc
     ("(OPTIONAL) `sudo apt-get install timidity` - If wanting to extract chords from MIDIs (timidity converts midi to
     wav files)", https://raw.githubusercontent.com/ohollo/chord-extractor/master/README.md) (documented chain).
 14. Notes or MIDI from an audio-to-notes tool into a key estimate: music21 reads `.mid` / `.midi` files
-    (`registerInputExtensions = ('mid', 'midi')` in `music21/converter/subConverters.py` at commit 8bfcfc4) and a
-    Stream's `analyze('key')` returns a `key.Key` with `correlationCoefficient` and `alternateInterpretations`
-    (`music21/analysis/discrete.py`).
-15. BTC writes `.lab` lines `start end label` and MIDI (test.py line 80 and README,
-    https://raw.githubusercontent.com/jayg996/BTC-ISMIR19/master/README.md); autochord also writes `.lab` files that
-    "follow the MIREX chord label format" and its JavaScript app loads a LAB file next to the song for display
-    (autochord README). Omnizart chord writes MIDI plus CSV `chord,start,end` (`omnizart/chord/inference.py`).
+    (`registerInputExtensions = ('mid', 'midi')` in `music21/converter/subConverters.py` line 1001 at commit 8bfcfc4)
+    and a Stream's `analyze('key')` returns a `key.Key` with `correlationCoefficient` and `alternateInterpretations`
+    (`music21/analysis/discrete.py` lines 688-718).
+15. BTC writes `.lab` lines (test.py line 80) and a `.midi` file (test.py line 129; README "The resulting files are lab
+    files ... and midi files", https://raw.githubusercontent.com/jayg996/BTC-ISMIR19/master/README.md); autochord
+    writes `.lab` files ("The output file follows the MIREX chord label format.") and its JavaScript app takes one
+    ("you need to load a song, then you can upload a LAB file to visualize its chord labels. You may use the `autochord`
+    Python library for generating this file.", https://raw.githubusercontent.com/cjbayron/autochord/main/README.md)
+    (documented chain). Omnizart chord writes MIDI plus CSV `chord,start,end` (`omnizart/chord/inference.py` lines
+    79-82).
 16. Chord labels into guitar chord diagrams: ChordMini maps recognised chords to fingerings "from the official
     @tombatossals/chords-db database" (https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md)
     (documented chain inside one app).
@@ -1056,3 +1219,104 @@ marked "documented chain" are pairs one of the two tools' own documentation desc
     (`analyzeChannelData(channelData, 44100)` in Node) and emits tempo candidates (`data.bpm[0].tempo`)
     (https://raw.githubusercontent.com/dlepaux/realtime-bpm-analyzer/main/readme.md); the browser-audio-sync lane
     covers the metronome side.
+19. Beat times into chords per beat: Essentia `RhythmExtractor2013` outputs "ticks (vector_real) - the estimated tick
+    locations [s]" (std_RhythmExtractor2013.html), and Essentia `ChordsDetectionBeats` takes "ticks (vector_real) - the
+    list of beat positions (in seconds). One chord will be outputted for each segment between two adjacent ticks."
+    together with HPCP frames (https://essentia.upf.edu/reference/std_ChordsDetectionBeats.html). Beat This! beat
+    times (seconds, above) have the same form.
+20. A measured concert pitch into key detectors: the NNLS Tuning plugin "returns a single label (at time 0 seconds)
+    containing an estimate of the concert pitch in Hz" (NNLS Chroma README); the QM Key Detector takes "Tuning
+    Frequency – The frequency of concert A in the music under analysis."
+    (https://vamp-plugins.org/plugin-doc/qm-vamp-plugins.html) and Essentia `KeyExtractor` takes "tuningFrequency (real
+    ∈ (0, ∞), default = 440)" (line 10).
+21. User constraint "meter" into the QM Bar and Beat Tracker: "Beats per Bar – The number of beats per bar (or
+    measure). The plugin assumes that the number of beats per bar is fixed throughout the music."; its "Beats" output
+    is "labelled with the number of that beat within the bar" (https://vamp-plugins.org/plugin-doc/qm-vamp-plugins.html).
+22. User constraint "tuning mode" and "no-chord bias" into Chordino through chord-extractor: `Chordino(...,
+    tuning_mode=TuningMode.GLOBAL, ..., boost_n_likelihood=0.1)` maps to the plugin parameters `'tuningmode'` and
+    `'boostn'` (`chord_extractor/extractors/chordino.py` lines 73-90); the plugin documents "tuning mode (global or
+    local; default: global)" and "boost likelihood of the N (no chord) label (0.0 -- 1.0; default: 0.1)" (NNLS Chroma
+    README).
+23. McGill Billboard's published Chordino features are what autochord's model was trained on: the dataset page offers
+    "the non-negative-least-squares chroma vectors and tuning estimates from the Chordino VAMP plugin"
+    (https://ddmal.ca/research/The_McGill_Billboard_Project_(Chord_Analysis_Dataset)/), and autochord's training
+    loader reads `f'{_BASE_DIR}/{_id:04d}/bothchroma.csv'` under `_BASE_DIR = 'data/McGill-Billboard'`
+    (`model-development/dataloader.py` lines 36 and 44); at inference autochord computes the same `bothchroma` output
+    itself (line 3).
+
+## Verification log (verify-docs-chords-beats-key, 2026-11-10)
+
+Method. The survey as received (77,559 bytes, the copy in commit 02f5f28) was checked against live sources fetched
+on 2026-11-10 between about 21:10 and 21:40 UTC. `scripts/verify_quotes.py` pulls every double-quoted string out of
+each section and looks for it in that section's cited sources (fetched with curl; HTML reduced to text; PDFs through
+pdftotext), first after collapsing whitespace, then after removing markdown/RST markup and unifying quote marks, then
+ignoring all whitespace; every string it could not place was read by hand. `scripts/verify_repo_facts.sh` re-read
+HEAD dates and file trees from blob-less depth-1 clones; `scripts/verify_pypi.py` re-read PyPI JSON;
+`scripts/verify_grep.py` printed context for hand checks. Evidence: `samples/verify-docs/` (`quotes_check_as_received.tsv`,
+`quotes_check_final.tsv`, `url_status_as_received.txt`, `repo_facts_verify.tsv`, `pypi_verify.tsv`); fetched copies in
+`/home/user/gtr/lanes/chords-beats-key/verify/` (not committed). No tool was run except `aubiotrack --help` and
+`/usr/bin/aubio --help` (light, no ledger entry).
+
+Tally of quotes in the survey as received:
+
+| | Count |
+|---|---|
+| Quoted strings extracted | 447: 443 by the script from the sections, 4 by hand from the tool list (the script skips it); 3 of the 447 are labels or fragments between nested quotes, not quotes |
+| Quotes checked | 444 |
+| Confirmed | 430: the 4 tool-list quotes (by hand), 373 verbatim after collapsing whitespace, 22 after removing markup, 26 only when all whitespace is ignored (24 Essentia reference-page strings written with spaces inside parentheses, 2 Essentia licensing-page strings with a space before commas; all 26 re-copied with the page's spacing), 5 by reading the rendered README (RST links, a markdown blockquote, nested quotes in code) |
+| Corrected | 12: Beat This! "with `--gpu=-1`" (case); All-In-One "100 FPS" sentence (words added that are not in the README); All-In-One "[Harmonix Set]" (markup); chord-extractor, librosa, tempo-cnn and music21 `requires_python` (field and value had been run together or reordered inside quotes); autochord list-of-tuples (a "#" comment marker dropped); CREMA LICENSE (a comma inserted); S-KEY `--device` (words dropped); Capo "automatic music analysis" (not on the cited page, replaced with the page's text); handoff line 15 "follow" (README: "follows") |
+| Unverifiable | 2: the GetSongBPM link-back quote (https://getsongbpm.com/api answered HTTP 403 to curl and to the fetch tool); the title "Guitar Tuning Identification" (search result only) |
+
+License and terms clauses (a subset of the above): 88 checked, 85 confirmed, 2 corrected (CREMA, Capo), 1
+unverifiable (GetSongBPM). The five common license texts were also confirmed in every file the survey names (see the
+note under "# Sections"). One search-summary paraphrase (Spotify's 2024-11-27 change) was replaced with Spotify's own
+text.
+
+Links. The survey as received holds 112 URL strings: 49 raw.githubusercontent.com URLs (all HTTP 200); 34 github.com
+URLs for 33 repositories (31 re-cloned, `evanpurkhiser/keyfinder-py` answered `git ls-remote`, `dleonik/skey` asked
+for credentials, i.e. no public repository); 27 other URLs (25 answered 200, getsongbpm.com 403,
+code.soundsoftware.ac.uk connection reset) and 2 path templates. Links fixed: 1 (the McGill Billboard page moved from
+ddmal.music.mcgill.ca, now 404, to ddmal.ca). New links added for every new fact below.
+
+Versions and dates. All 33 repository HEAD dates and commits in the survey match the re-check; all 20 PyPI versions
+and upload dates match; the npm version of realtime-bpm-analyzer matches. Added: DeepRhythm HEAD 2026-07-21,
+essentia.js npm 0.1.3 (2021-06-24), music21 pre-release 11.0.0b14 (2026-10-31), BeatNet `setup.py` 1.2.0 at HEAD,
+vampy-host being a fork at the same commit as its upstream. Archived status: the GitHub pages of all-in-one,
+vampy-host, BTC-ISMIR19, nnls-chroma, crema, essentia.js and autochord (read through the fetch tool) show no archived
+banner; the other repositories were not checked for it (api.github.com is blocked here).
+
+Code, weights and data licenses. Added: McGill Billboard annotations are CC0 (training data of autochord, Omnizart
+chord and Harmony Transformer v1, which also ships Billboard chroma files); ChordMini's pseudo-label training audio
+includes MAESTRO and DALI, both CC BY-NC-SA 4.0, and FMA (metadata CC BY 4.0, audio under each artist's license);
+BeatNet+ training data includes MUSDB18 (Zenodo license "other-nc", "educational purposes only"); S-KEY and STONE were
+trained on Deezer catalog songs (S-KEY paper); the Beat This! annotations repository is MIT; the Essentia TempoCNN
+metadata file has no license field; Essentia's repository licensing file says AGPL v3 "or (at your option) any later
+version" while PyPI says "AGPL-3.0-only"; BeatNet+ and STONE have no license file or statement; DeepRhythm's weights
+come from its AGPL repository; ChordMini's model repository is MIT. Still UNVERIFIED: RWC terms (page unreachable),
+GTZAN, Ballroom, Rock Corpus, Isophonics (page has no license statement), UsPop2002, Robbie Williams, Extended
+Ballroom and the madmom models' training sets.
+
+Other facts corrected or filled in: madmom CLI sub-commands (from `madmom/processors.py`), QM plugin outputs (plugin
+documentation), S-KEY output labels and CSV columns (`skey/key_detection.py`), CREMA chord namespace, Omnizart's
+extra "X" class and TensorFlow marker, BTC's `.lab` line code and `.midi` output, chord-extractor's Chordino
+parameters, autochord's `bothchroma` input, All-In-One's paper and venue, BeatNet's two sets of weight files, Rochester
+report authors (Declan Parker added) and its Table 2, Hulme et al.'s five tuning classes from the evaluation code (the
+paper's accuracies stay UNVERIFIED: ORCA and ACM answered 403, the slides 404), ACR_seq2seq's arXiv version and file
+tree, ChordFormer and BMACE read on arXiv. UNVERIFIED marks: 24 as received, 20 now (some resolved, some new).
+
+Handoff facts: all 18 lines as received have a source for both halves and were kept; line 3 and line 4 gained a source
+in code, line 5 now says the Sonic Visualiser half rests on the Beat This! README only, lines 10 and 11 had their
+quote spacing fixed, line 15 was corrected and given the autochord app quote; lines 19 to 23 are new.
+
+Judging language: no unquoted judging words were found. Three quoted self-descriptions were trimmed with an ellipsis
+("A powerful", "state-of-the-art", "simple"). The remaining evaluative words are inside attributed quotes (a paper
+title, README cautions, the authors' names for their own checkpoints, a vendor page).
+
+Tools added: 4 sections (BeatNet+, STONE, key-cnn, web-audio-beat-detector), 3 Essentia algorithms
+(ChordsDetectionBeats, TonalExtractor, PercivalBpmEstimator), 1 paper with a placeholder repository (ChordCoT), and 7
+entries under "## Not covered" (WaveBeat, InceptionKeyNet, a 2025 thesis, BACHI, a 2026 downbeat paper, Sonic
+Annotator, consumer apps). Tool list items 42 to 46 are new.
+
+trials.md: when checked (about 21:40 UTC) it held only its introduction, so no output-format statement could be
+compared with it; the madmom output statements were compared with the try agent's raw files from run r0063 instead
+(consistent; the tab-separated layout there is the try agent's own).

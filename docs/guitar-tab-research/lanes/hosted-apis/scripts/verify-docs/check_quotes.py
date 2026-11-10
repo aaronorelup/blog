@@ -81,8 +81,9 @@ def page_texts(rawdir):
                 acc = []
                 strings_of(parsed, acc)
                 variants.append("\n".join(acc))
+        texts = [norm(v) for v in variants]
         pages[name] = {"url": open(meta).read().split()[-2] if len(open(meta).read().split()) > 4 else open(meta).read().split()[-1],
-                       "texts": [norm(v) for v in variants]}
+                       "texts": texts, "lower": [t.lower() for t in texts]}
     return pages
 
 
@@ -175,25 +176,26 @@ def main():
             rec["skip"] = "too short"
             results.append(rec)
             continue
+        debracket = [re.sub(r"\[(\w{1,12})\]", r"\1", f) for f in frags]
+        lower = [f.lower() for f in frags]
         for name, p in pages.items():
             if any(find_in_order(frags, t) for t in p["texts"]):
                 rec["found"].append(name)
-            else:
-                variants = [frags, [re.sub(r"\[(\w{1,12})\]", r"\1", f) for f in frags]]
-                if any(find_in_order(v, t) for v in variants[1:] for t in p["texts"]):
-                    rec["found"].append(name + "(brackets)")
-                elif any(find_in_order([f.lower() for f in frags], t.lower()) for t in p["texts"]):
-                    rec["found_ci"].append(name)
+            elif debracket != frags and any(find_in_order(debracket, t) for t in p["texts"]):
+                rec["found"].append(name + "(brackets)")
+            elif any(find_in_order(lower, t) for t in p["lower"]):
+                rec["found_ci"].append(name)
         if not rec["found"] and not rec["found_ci"]:
+            # fuzzy search only on the last text variant of each page under 400 kB (speed); a hint, not a verdict
             best = (0, None, None)
             longest = max(frags, key=len)
             for name, p in pages.items():
-                for t in p["texts"]:
-                    if len(longest) > 5000:
-                        continue
-                    al = fuzz.partial_ratio_alignment(longest, t, score_cutoff=best[0])
-                    if al and al.score > best[0]:
-                        best = (al.score, name, t[al.dest_start:al.dest_end])
+                t = p["texts"][-1]
+                if len(longest) > 5000 or len(t) > 400000:
+                    continue
+                al = fuzz.partial_ratio_alignment(longest, t, score_cutoff=best[0])
+                if al and al.score > best[0]:
+                    best = (al.score, name, t[al.dest_start:al.dest_end])
             rec["best"] = {"score": round(best[0], 1), "page": best[1], "text": best[2]}
         results.append(rec)
     json.dump(results, open(outp, "w"), indent=1, ensure_ascii=False)

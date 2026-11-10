@@ -7,8 +7,8 @@ Usage: python analyze_stretch.py <stretched.wav> <rate> <out.json> [--ref /home/
   audible sample of the stretched file (the shift is reported).
 - Pitch: librosa.pyin (fmin 60 Hz, fmax 1200 Hz, frame 2048, hop 256) on the mono mix; for every truth note the
   median f0 over the middle 60 percent of its stretched span (voiced frames only), compared with the nominal
-  frequency of its MIDI pitch, 440 * 2^((p - 69)/12), in cents. The first note of S1 (F#4, MIDI 66) is reported
-  on its own as "the known note".
+  frequency of its MIDI pitch, 440 * 2^((p - 69)/12), in cents (pyin works on a 10-cent grid). The first note of
+  S1 (F#4, MIDI 66) is reported on its own as "the known note", also measured with a zero-padded FFT peak.
 """
 import json, sys
 import numpy as np, soundfile as sf, librosa
@@ -37,10 +37,25 @@ for n in notes:
     nom = 440 * 2 ** ((n['pitch'] - 69) / 12)
     rows.append({'onset_s': round(a, 4), 'pitch': n['pitch'], 'median_f0_hz': round(med, 3), 'cents': round(1200 * np.log2(med / nom), 2), 'frames': int(m.sum())})
 cents = np.array([r['cents'] for r in rows if r['cents'] is not None])
+# finer measurement of the known note (pyin's default grid is 0.1 semitone = 10 cents): Hann-windowed FFT of the
+# middle 60 percent of the first note, zero-padded to 2^20 points, strongest peak between 0.4 and 1.6 times the
+# nominal frequency, refined by parabolic interpolation on the log magnitude
+n0 = notes[0]; a = n0['onset'] / rate + shift; b = n0['offset'] / rate + shift; d = b - a
+seg = y[int((a + 0.2 * d) * sr):int((b - 0.2 * d) * sr)]
+nom0 = 440 * 2 ** ((n0['pitch'] - 69) / 12)
+N = 1 << 20
+spec = np.abs(np.fft.rfft(seg * np.hanning(len(seg)), N))
+fr = np.fft.rfftfreq(N, 1 / sr)
+band = (fr > 0.4 * nom0) & (fr < 1.6 * nom0)
+k = np.flatnonzero(band)[np.argmax(spec[band])]
+l0, l1, l2 = np.log(spec[k - 1:k + 2] + 1e-20)
+delta = 0.5 * (l0 - l2) / (l0 - 2 * l1 + l2)
+f_fft = (k + delta) * sr / N
+known_fft = {'hz': round(float(f_fft), 3), 'cents_vs_nominal': round(float(1200 * np.log2(f_fft / nom0)), 2), 'segment_s': round(len(seg) / sr, 3)}
 out = {'file': path, 'sample_rate': sr, 'rate': rate, 'samples': len(y), 'seconds': len(y) / sr,
        'audible_first_s': first / sr, 'audible_last_s': last / sr, 'audible_span_s': (last - first) / sr,
        'alignment_shift_s': shift,
-       'known_note': rows[0],
+       'known_note': rows[0], 'known_note_fft': known_fft,
        'notes_with_pitch': int(len(cents)), 'notes_total': len(rows),
        'cents_median': float(np.median(cents)) if len(cents) else None,
        'cents_mean_abs': float(np.mean(np.abs(cents))) if len(cents) else None,

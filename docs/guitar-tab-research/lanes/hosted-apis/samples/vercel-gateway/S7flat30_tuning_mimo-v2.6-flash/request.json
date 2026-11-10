@@ -1,0 +1,58 @@
+{
+ "model": "xiaomi/mimo-v2.6-flash",
+ "messages": [
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "file",
+     "file": {
+      "filename": "S7flat30.mono.wav",
+      "file_data": "<data:audio/wav;base64 of S7flat30.mono.wav: 2116844 bytes, sha256 9db353eaa57207c2089767e5f413e04bfc7e749b101621b887c70e995ab8fce4>"
+     }
+    },
+    {
+     "type": "text",
+     "text": "Listen to this audio recording of a guitar. From the sound alone, answer as JSON matching the given schema:\n- \"open_strings_midi\": the pitches of the six open strings, lowest string first, as MIDI note numbers (standard tuning E2 A2 D3 G3 B3 E4 is [40, 45, 50, 55, 59, 64]; drop D is [38, 45, 50, 55, 59, 64]); these are the strings without a capo.\n- \"tuning_name\": a short name for that tuning.\n- \"offset_cents\": how far the whole recording is tuned away from concert pitch A4 = 440 Hz, in cents (0 if in tune, negative if flat).\n- \"capo_fret\": the fret a capo sits on, or 0 if no capo is used.\n- \"evidence\": a short explanation.\n"
+    }
+   ]
+  }
+ ],
+ "response_format": {
+  "type": "json_schema",
+  "json_schema": {
+   "name": "answer",
+   "schema": {
+    "type": "object",
+    "properties": {
+     "open_strings_midi": {
+      "type": "array",
+      "items": {
+       "type": "integer"
+      }
+     },
+     "tuning_name": {
+      "type": "string"
+     },
+     "offset_cents": {
+      "type": "number"
+     },
+     "capo_fret": {
+      "type": "integer"
+     },
+     "evidence": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "open_strings_midi",
+     "tuning_name",
+     "offset_cents",
+     "capo_fret",
+     "evidence"
+    ]
+   }
+  }
+ },
+ "max_tokens": 24576
+}

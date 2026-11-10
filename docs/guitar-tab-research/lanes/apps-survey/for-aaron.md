@@ -1,11 +1,13 @@
 # For Aaron: testing the existing tab and chord apps yourself (lane 9, apps-survey)
 
-Written 2026-11-10 by the `try-apps-survey` agent. None of these apps could be run to a result on the research box
-(see `trials.md`: the desktop programs could not be started there, and the web apps need an account, a payment, or a
-tick that accepts their terms and states that you hold the rights to the audio, which only you can give). So each
-app below has a test of about 10 minutes for you, on your Windows 11 laptop, in a browser, or on a phone. Prices,
-features and terms quoted here come from the vendors' pages as read on 2026-11-10 (`survey.md` has the quotes and
-links); check the price on screen before you pay anything.
+Written 2026-11-10 by the `try-apps-survey` agent and checked by `verify-trials-apps-survey` (log at the end of
+`trials.md`). None of these apps was run to a result on the research box (see `trials.md`: starting AnthemScore's
+Linux build was refused by the session's permission system, Transcribe! was not attempted, the other desktop programs
+have no Linux build or were not checked, and the web apps need an account, a payment, or a tick that accepts their
+terms and states that you hold the rights to the audio, which only you can give). So each app below has a test of
+about 10 minutes (an estimate) for you, on a Windows PC, in a browser, or on a phone. Prices, features and terms
+quoted here come from the vendors' pages as read on 2026-11-10 (`survey.md` has the quotes and links); check the
+price on screen before you pay anything.
 
 Do them in the order given: sittings 1 and 1b are web apps with a free tier, sitting 2 is free Windows trials,
 sitting 3 is phone apps, and the paid ones are last and optional. You do not need to do all of them; each test
@@ -19,6 +21,7 @@ stands on its own.
 
    | Id | File | What it is | Length |
    |---|---|---|---|
+   | S1 | `S1.wav` / `.mp3` | synthesized single-note melody (the "Ode to Joy" theme) on nylon guitar, D major, 144 BPM; notes known (used in test 14) | 29.8 s |
    | S2s | `S2s.wav` (or `S2s.mp3`) | synthesized fingerstyle guitar, two voices, G major, 112 BPM, standard tuning, no capo; the exact tab is known | 29.4 s |
    | S5capo2 | `S5capo2.wav` / `.mp3` | the same tab played with a capo on fret 2 (sounds in A major) | 29.4 s |
    | S5dropd | `S5dropd.wav` / `.mp3` | the same piece in Drop D (low string tuned down to D) | 29.4 s |
@@ -28,11 +31,16 @@ stands on its own.
    | R1a | `R1a.wav` / `.mp3` | a real acoustic guitar recording from the GuitarSet dataset, with its per-string note annotation | 29.2 s |
    | R2 | `R2.wav` / `.mp3` | a real band song with singing (Josh Woodward, CC BY 4.0); no answer key | 36.0 s |
    | R3a | `R3a.mp4` | a real classical-guitar concert video, 640x480, camera cuts; no answer key | 18.0 s |
-   | R3b, R3c | `R3b.mp4`, `R3c.mp4` | closer videos of the hands, if the inputs agent managed to add them (see `../../inputs/INPUTS.md`) | |
+   | R3b | `R3b.mp4` | a real classical-guitar home video, one fixed close camera on the neck and both hands (the picking fingers partly cut off at the left edge), 1920x1080, no cut; no answer key (CC0 1.0) | 18.0 s |
+   | R3c | `R3c.mp4` | a real classical-guitar lesson video ("Three Little Boats", Culture Vannin), one medium shot with both hands, 1920x1080, no cut; no answer key (CC BY 3.0) | 18.0 s |
+
+   (R3b and R3c were added to `INPUTS.md` at 21:28 UTC on 2026-11-10, after this file was first written; the rows
+   above are from that manifest.)
 
    On the research box the WAV and MP4 files are in `/home/user/gtr/inputs/<id>/` and the MP3 copies in
-   `/home/user/gtr/lanes/apps-survey/out/clips-mp3/`. The MP3s are about 0.03 s longer than the WAVs (encoder
-   padding), so use the WAV wherever the app takes it.
+   `/home/user/gtr/lanes/apps-survey/out/clips-mp3/`. An MP3 can start 25 ms later than its WAV in an app whose
+   decoder ignores the MP3's LAME header (measured on the research box: `trials.md`, media table), so use the WAV
+   wherever the app takes it.
 2. **Make a folder** `tab-app-tests` on the laptop with one subfolder per app (for example `tab-app-tests\klangio`).
 3. **Do not give an app hints** (key, tempo, tuning, capo) unless the step says so. The first run of each clip shows
    what the app finds by itself; where a step says "second run", set the hint and run again.
@@ -52,16 +60,17 @@ stands on its own.
 **Rights and terms.** Several apps ask you to confirm that you own or have the rights to the audio and to accept
 their terms before they transcribe. The clips are ours or freely licensed: S-clips were made for this research
 (public-domain melodies, arrangements written for it, MIT-licensed SoundFont), R1a is GuitarSet (CC BY 4.0), R2 is
-CC BY 4.0, R3a is CC BY-SA 4.0 (`../../inputs/INPUTS.md` has the quotes). Whether to tick those boxes and accept the
-terms is your decision; the research box was not allowed to do it for you.
+CC BY 4.0, R3a is CC BY-SA 4.0, R3b is CC0 1.0, R3c is CC BY 3.0 (`../../inputs/INPUTS.md` has the quotes).
+Whether to tick those boxes and accept the terms is your decision; the research box was not allowed to do it for you.
 
 ## Sitting 1: web apps with a free tier (about 80 minutes, cost 0)
 
 ### 1. Klangio Guitar2Tabs (free demo, no account needed)
 
 What the free tier is (Klangio terms §5.2.1): no account, 30 demo transcriptions a day, each limited to 20 seconds,
-PDF export only (with a watermark), no Edit Mode. Full transcriptions need Guitar2Tabs Pro ("$6.25 /month Billed
-annually" on the pricing table read 2026-11-10).
+PDF export only (with a watermark), no Edit Mode (the pricing table itself says "Transcribe up to 30 seconds"; write
+down which length you get). Full transcriptions need Guitar2Tabs Pro ("$6.25 /month Billed annually" on the pricing
+table read 2026-11-10).
 
 1. Open https://klang.io/guitar2tabs/ and start a transcription by uploading `S2s.wav`.
 2. The Transcription Wizard opens. Choose guitar. At the step "Choose the tuning and capo", leave standard tuning and
@@ -78,17 +87,20 @@ Send back: 7 PDFs and 7 screenshots, `notes.txt` (time per run, what it showed f
 
 The research box got as far as the settings page (screenshot in `samples/anthemscore-web/job_settings_S2s.webp`).
 Free plan: "30 second transcriptions"; PDF, MIDI and musicXML download are listed for the paid Plus and Pro plans.
+Whether the transcription itself asks for an account was not seen (the box stopped before pressing "Transcribe").
 
 1. Open https://www.lunaverus.com/transcribe/audio-to-guitar-tab and choose `S2s.wav`. The upload starts by itself
    and the settings page opens ("Transcribing up to 30 seconds").
 2. Leave "tablature" selected and "Instruments: Guitar". Open "Advanced Options" only to screenshot what it offers
-   (time signature, key signature, smallest note); leave them on their defaults.
+   (on the research box: "Time", "Key", "Shortest allowed note" and "Trim empty measures at the start and end",
+   ticked); leave them on their defaults.
 3. Tick "I confirm that I own or have obtained all necessary rights to transcribe this audio." if you agree, then
    press "Transcribe". Time it.
 4. On the result: screenshot the whole page, including any tempo, key and chord line at the top. Open the Download
    menu and screenshot it (to see which formats the free plan allows); download whatever is not locked.
-5. Repeat with `R1a.wav`, `R2.wav` (it keeps the first 30 s) and `S5dropd.wav`. The web form has no tuning or capo
-   field, so no second run.
+5. Repeat with `R1a.wav`, `R2.wav` (36 s: the free plan transcribes at most 30 s, so check that the Start and End
+   boxes under "Trim" read 0:00.0 and 0:30.0 or less, and write down what they read) and `S5dropd.wav`. The web form
+   has no tuning or capo field, so no second run.
 
 Send back: screenshots, any downloads, `notes.txt`.
 
@@ -104,8 +116,8 @@ tuning and a "Capo fret" for each instrument before the run.
    6-string (E A D G B E)" and capo 0. Start it, note the time.
 3. When the email arrives, open the tab: screenshot. If "Download tab" (MIDI or Guitar Pro) works on the free
    preview, download both.
-4. Run `S5capo2.wav` with "Capo fret" 2, and `S5dropd.wav` with a Drop D tuning, the same way. (Songsterr does not
-   claim to detect capo or tuning; it uses what you set.)
+4. Run `S5capo2.wav` with "Capo fret" 2, and `S5dropd.wav` with a Drop D tuning, the same way. (Songsterr's help
+   says to set tuning and capo "in Show settings before you start"; detecting them from the audio is not described.)
 
 Send back: screenshots, downloads, `notes.txt` with the minutes until the email came.
 
@@ -132,13 +144,16 @@ GuitarSet recording, so its string and fret output on R1a can be scored against 
 
 Send back: exports, screenshots, `notes.txt`.
 
-### 6. AAPA AutoTabs (video in; free tier): the only released app found by this lane and the docs lane that says it reads the hands from video
+### 6. AAPA AutoTabs (video in; free tier)
 
-The vendor: "AutoTabs listens to the audio and uses machine vision to analyze the guitarist's hands and fretboard".
+Of the apps this lane and the docs lane found, the only one open to use on 2026-11-10 that says it uses the hands in
+a video to write tab (the vendor calls it "early access"; Guitar Learning and ChordAR also read hands from a camera,
+but write no tab). The vendor: "AutoTabs listens to the audio and uses machine vision to analyze the guitarist's
+hands and fretboard".
 Its terms §4.2 make sharing your video for training opt-in; leave it off unless you want it.
 
-1. Open https://aapamusic.com, sign up if it asks, open AutoTabs and upload `R3a.mp4` (and `R3b.mp4` / `R3c.mp4` if the inputs
-   agent added them; they show the hands closer).
+1. Open https://aapamusic.com, sign up if it asks, open AutoTabs and upload `R3a.mp4`, then `R3b.mp4` and `R3c.mp4`
+   (both show the fretting hand and the whole fretboard in one continuous shot; R3a has camera cuts).
 2. Screenshot the draft tab and any video overlay; export PDF and MIDI.
 3. If it has a capo or tuning setting, note it but leave it on default.
 
@@ -159,9 +174,10 @@ Send back: screenshots, stems (audio files go to the studio library, not to git)
 ### 8. Chordify (uploading your own file may need Premium)
 
 chordify.net answered the research box with HTTP 403 (a Cloudflare check), so its site and terms were not read; its
-App Store listing mentions MIDI and PDF downloads of the chords and a capo display option, and third-party pages say
-uploading your own file is a Premium feature (not checked). If the upload button asks you to pay, write down the
-price shown and skip. While you are on the site, save its terms page as PDF (the research box could not read it).
+App Store listing mentions MIDI and PDF downloads of the chords and a capo display option. Whether uploading your own
+file needs Premium is UNVERIFIED (Chordify's own pages could not be read from the box). If the upload button asks you
+to pay, write down the price shown and skip. While you are on the site, save its terms page as PDF (the research box
+could not read it).
 
 1. Open https://chordify.net, sign in if it asks, upload `S3.wav`.
 2. Screenshot the chord timeline; download MIDI or PDF if offered.
@@ -174,15 +190,19 @@ Send back: screenshots, downloads, the terms PDF, `notes.txt`.
 ChordU's terms and prices were not read. If it lets you upload without paying: upload `S3.wav` and `R2.wav`,
 screenshot the chords and the BPM it shows, and write down whether it needed an account.
 
-## Sitting 1b: web apps found late on 2026-11-10 (about 40 minutes; not yet in `survey.md`)
+## Sitting 1b: web apps found late on 2026-11-10 (about 50 minutes; `survey.md` items 33 to 37)
 
-These four were found by web search near the end of this lane and only their home pages were read (2026-11-10);
-their terms and full prices were not read, so check them on screen.
+Tests 20 to 23 were found by web search near the end of this lane, from their home pages (2026-11-10; the verifier
+re-read the pages and found the quotes below). The `verify-docs` agent has since added them to `survey.md` as items
+33 to 36, with their terms, and added GuitarConvert (item 37, test 24 here). Check prices on screen.
 
-### 20. Note2Tabs (https://www.note2tabs.com; "Free $0 / month", paid "$5.99 / month" and "$14.99 / month")
+### 20. Note2Tabs (https://www.note2tabs.com; "Free" "$0/ month" with "10 monthly credits", paid "$5.99/ month" and "$14.99/ month")
 
-Home page: "Upload an MP3 or WAV, or paste a YouTube link to generate playable guitar tabs online. Edit, practise,
-and export every transcription in your browser."
+Home page description (its `meta` description tag): "Upload an MP3 or WAV, or paste a YouTube link to generate
+playable guitar tabs online. Edit, practise, and export every transcription in your browser." The page lists "MP3,
+WAV, M4A" and a "Light" model, with a "Heavy model" for "Premium or Pro". Its pricing page (re-read by the verifier
+2026-11-10): free "Audio clips up to 60 seconds", "10 monthly credits", and "A 60-second recording uses 4 credits with
+Light or 10 with Heavy." Its terms, quoted in `survey.md`, say "Do not automate bulk requests".
 
 1. Start free, upload `S2s.wav`; screenshot the tab; export whatever the free plan allows.
 2. Repeat with `R1a.wav` and `S5dropd.wav` (note the tuning it shows).
@@ -203,7 +223,9 @@ Home page: "Drop a .mid file and get tab a hand can play"; "Strings and frets ar
 another tuning or a capo measures easier, it is used and named."; "Change tuning, capo or key, then convert again";
 "Opening your file, editing notes and Guitar Pro export are free. Generating the tab is Pro." It also says "One
 button re-arranges the same notes for Drop D, a capo on the 2nd fret, a key a step down", the kind of re-run with a
-user's tuning or capo that the planned web app needs. The tab step is paid (the Pro price was not read).
+user's tuning or capo that the planned web app needs. The tab step is paid; the home page (re-read by the verifier
+2026-11-10) shows Pro at "$3.99" for the first month, "Then $7.99 a month", or "$39" a year, or "$59" once
+("Lifetime").
 
 1. Free part: "Turn audio into MIDI, free" with `S2s.wav`; export the MIDI.
 2. Pro part (only if you choose to pay): drop the answer-key MIDI `S2s.mid` (from the inputs, so only the fingering is
@@ -215,20 +237,42 @@ Send back for 20 to 22: exports, screenshots, `notes.txt`.
 ### 23. Fretwise (https://fretwise.ai; "Audio in. Tabs out.")
 
 Its page text (most of it loads by script) says: "The fastest audio to MIDI + Guitar Pro transcriber in the world."
-and "Sign In". If it has a free tier: upload `S2s.wav`, export MIDI and Guitar Pro, screenshot, note the price shown.
+(the vendor's claim; no measurement given) and "Sign In". Its pricing page (re-read by the verifier 2026-11-10): free
+"3 transcriptions per month", "Guest access without an account", "No export paywalls"; outputs "PDF, MIDI, MusicXML,
+and Guitar Pro exports".
+
+1. Upload `S2s.wav`, then `R1a.wav` and `S5dropd.wav` (the 3 free transcriptions).
+2. Export MIDI, MusicXML and Guitar Pro for each; screenshot the tab; note what tuning it shows for S5dropd.
+
+### 24. GuitarConvert (La Touche Musicale; added by the verifier from `survey.md` item 37)
+
+https://latouchemusicale.com/en/apps/guitarconvert/ (re-read by the verifier 2026-11-10): "Import your YouTube link or
+audio file and receive its guitar tablature in 2 minutes."; modes "Transcription mode" and "Arrangement mode"; free
+plan "Conversion limited to 30 seconds", "PDF, MIDI & musicXML export". Its terms, quoted in `survey.md`, say "The
+Service may not be used for commercial purposes."
+
+1. Sign up if it asks, upload `S2s.wav` in "Transcription mode"; export MIDI and MusicXML; screenshot the tab.
+2. Repeat with `R1a.wav`. Optional: `S2s.wav` again in "Arrangement mode", to see what that mode changes.
+
+Send back for 23 and 24: exports, screenshots, `notes.txt`.
 
 ## Sitting 2: free Windows trials on the laptop (about 70 minutes, cost 0)
 
 ### 9. AnthemScore 6 desktop (trial: "Limited to first 30 seconds of each song and 100 total transcriptions")
 
 The download page: "No account creation needed, just download and run!" and "By default the trial runs as the
-AnthemScore Professional edition"; the Professional edition lists "PDF, MIDI, musicXML, and ASDT export". Whether the
-trial lets you export MIDI and musicXML was not checked. AnthemScore's 2019 notes mention fast note finding on CUDA
-Nvidia GPUs; whether 6.3.0 uses your RTX 4070 is not known, so note it if the program says.
+AnthemScore Professional edition"; the compare-editions page lists for the Professional edition "PDF, MIDI, musicXML,
+and ASDT export", and for the free trial "Limited to first 30 seconds of each song and 100 total transcriptions."
+Whether the trial lets you export MIDI and musicXML was not checked. AnthemScore's version history mentions fast note
+finding on CUDA Nvidia GPUs (4.2.0, 2019) and "Cuda 8.6 support for Windows" (4.12.0, 2021), and the 6.3.0 program
+text has a "Using Cuda" message; whether 6.3.0 uses an Nvidia GPU on Windows is not known, so note it if the program
+says (the version history says to look in the 'about' menu for the cuda status).
 
-1. Download the Windows 10/11 installer from https://www.lunaverus.com/download and install it. **Copy the
-   `license.txt` that comes with the download into your folder**: the research box could not find it in the Linux
-   build, and the site's terms say it is the software license.
+1. Download the Windows 10/11 installer from https://www.lunaverus.com/download and install it. **Save the license
+   text**: the site's terms say the software license is "the "license.txt" file, which is included in every download
+   of the software", but the research box found no such file in the Linux build. If the installer shows a license
+   screen, copy its text into `license.txt` in your folder; also look for a `license.txt` in the folder AnthemScore
+   installs into (where it is on Windows was not checked) and copy it.
 2. Open `S2s.wav`. Set guitar tab the way AnthemScore's FAQ describes it: "Enter instrument settings and change the
    instrument to guitar. Then click the gear icon next to it and select "Tablature" under Staffs. Take a look at the
    number of frets and the string tunings under Tablature options and adjust as needed". Leave the rest default.
@@ -237,44 +281,57 @@ Nvidia GPUs; whether 6.3.0 uses your RTX 4070 is not known, so note it if the pr
 4. Open `S5dropd.wav`, and before transcribing set the strings to Drop D in the tablature options. Its documentation
    says "Strings should be set to the instrument's _written_, not _sounded_, pitches" ("With guitar and bass guitar,
    for example, this is an octave above the sounded pitch"), so the low string is written D3. Export as above.
-5. Open `S5capo2.wav` with default settings (no capo setting was found in its documentation or FAQ) and `R1a.wav` and `R2.wav`; export
-   each.
+5. Open `S5capo2.wav` with default settings (no capo setting was found in its documentation or FAQ, nor any text
+   containing "capo" in the 6.3.0 Linux build) and `R1a.wav` and `R2.wav`; export each.
 
 Send back: `license.txt`, all exports, screenshots, `notes.txt` with the time of each transcription.
 
 ### 10. Transcribe! 9.70 (30-day evaluation; $39 to buy)
 
-It does not write notes to a file ("Transcribe! does not output MIDI at all."), so this test is screenshots of its
-on-screen guesses.
+It does not write notes to a file ("Transcribe! does not output MIDI at all."), so this test is mostly screenshots of
+its on-screen guesses. Chord guesses can be put into text blocks and the text blocks saved to a text file (its help,
+read on the research box), which step 4 uses.
 
 1. Download the Windows version from https://www.seventhstring.com/xscribe/download.html and install it.
-2. Open `S3.wav`. On the View menu turn on "note guessing" and "chord guessing", and turn on the Piano Roll. Wait for
-   the piano roll to fill (yellow means not computed yet).
+2. Open `S3.wav`. On the View menu turn on "Show Note Guesses" and "Show Chord Guesses"; on the Piano Roll menu turn
+   on "Show Piano Roll". Wait for the piano roll to fill (its help: a yellow band marks the parts not calculated yet).
 3. Screenshot the piano roll for the whole clip, and the chord guess box at about 3, 9 and 15 seconds.
-4. Open `S7flat30.wav` the same way. Its help says out-of-tune note guesses show as red blobs; screenshot them. Then
-   use its tuning adjustment (Fx window, Tuning page) to centre the notes, and write down the number of cents it needed.
-5. Open `S2s.wav` and screenshot the piano roll.
+4. Optional, to get the chord guesses as text: at each chord change in the piano roll, shift-click to see the chord
+   guesses, then right-click at the same point and pick the first chord offered (its help: this inserts the chord name
+   as a text block). Then File > "Export Markers and Text Blocks" and save `transcribe_S3_chords.txt`. Write in
+   `notes.txt` whether the file has a time for each chord (the help does not say).
+5. Open `S7flat30.wav` the same way. Its help says out-of-tune note guesses show as red blobs; screenshot them. Then
+   use its tuning adjustment (Fx window, Tuning page: sliders for octaves, semitones and cents) to centre the notes,
+   and write down the cents setting it needed, with its sign.
+6. Open `S2s.wav` and screenshot the piano roll.
 
-Send back: screenshots, `notes.txt` with the cents value for S7flat30.
+Send back: screenshots, `transcribe_S3_chords.txt` if you did step 4, `notes.txt` with the cents value for S7flat30.
 
 ### 11. Melodyne 5 studio (30-day trial: "try it out for 30 days – free of charge and without obligation")
 
 Celemony says "Melodyne also recognizes chords, keys, tunings and tempos", so this test also asks what it says
 about the tuning of `S7flat30.wav` (30 cents flat).
 
-1. Get the trial from https://www.celemony.com (the trial page may ask for a Celemony account; not checked).
+1. Get the trial from https://www.celemony.com/en/trial ("Melodyne 5 studio for macOS" or "for Windows"). That page
+   says: "To register the trial version and each time the program is launched, an Internet connection is necessary.
+   The trial period can only be enjoyed once on each computer." Whether it needs a Celemony account was not checked.
 2. Open `S2s.wav` in the standalone Melodyne. Let it detect the notes with its polyphonic algorithm.
-3. Export the detected notes as a MIDI file (the exact menu path was not checked). Screenshot the note "blobs".
+3. If Melodyne offers a MIDI export of the detected notes, export it (whether and where it does was not found on the
+   Celemony pages read). Screenshot the note "blobs".
 4. Repeat with `R1a.wav`.
 5. Open `S7flat30.wav`: screenshot and write down the tuning (reference pitch or cents) and the key and tempo it shows.
 
-Send back: 2 MIDI files, screenshots, `notes.txt` (time to detect, which algorithm it chose, the S7flat30 tuning).
+Send back: the MIDI files if it exported any, screenshots, `notes.txt` (time to detect, which algorithm it chose, the
+S7flat30 tuning).
 
 ### 12. RipX DAW PRO (free for 21 days: "Try RipX DAW PRO Free for 21 Days")
 
+Its RipX DAW page lists "Print Audio to Midi to load a specific part into a VST of your choice" and "Export separated
+stems straight to WAVs" (https://hitnmix.com/ripx-daw/, read by the verifier 2026-11-10); its platforms were not read.
+
 1. Install the trial from https://hitnmix.com and open `S4.wav`, then `R2.wav`.
-2. Let it separate and detect notes. Export the guitar layer's notes as MIDI and the stems as audio if the trial
-   allows. Screenshot the note view.
+2. Let it separate and detect notes. Export the guitar layer's notes as MIDI ("Print Audio to Midi") and the stems as
+   audio if the trial allows. Screenshot the note view.
 3. Open `S2s.wav` and export its notes as MIDI.
 
 Send back: MIDI files, screenshots, `notes.txt` (stems go to the studio library).
@@ -287,23 +344,28 @@ Samplab GmbH (`survey.md`). Nothing to test.
 ### 14. ScoreCloud (Studio: "can be used for free up to 10 saved songs"; Songwriter: "10 day free trial")
 
 The site: "ScoreCloud Songwriter takes recordings of voice and instruments and turns it into Lead Sheets, with
-melody, lyrics and chords", and Studio records "single-instrument audio" into notation; exports "PDFs, MusicXML,
-MIDI". Whether either imports an audio file (rather than recording through the microphone) was not checked; if it
-only records, play the clip from the laptop speakers into the microphone and say so in `notes.txt`.
+melody, lyrics and chords", and for Songwriter "Recording to lead sheet – MP3, YouTube, or live take"; Studio:
+"record single-instrument audio, enter notes manually or play via MIDI keyboard"; exports "PDFs, MusicXML, MIDI"
+(home page, re-read by the verifier 2026-11-10). Whether Studio imports an audio file (rather than recording through
+the microphone) was not checked; if it only records, play the clip from the laptop speakers into the microphone and
+say so in `notes.txt`.
 
-1. Install from https://scorecloud.com. In Songwriter (trial), put in `R2.wav` (song with singing): screenshot the
-   lead sheet (melody, lyrics, chords) and export MusicXML and MIDI. Then `S4.wav`.
+1. Install from https://scorecloud.com. In Songwriter (trial), put in `R2.mp3` (song with singing; the page names MP3
+   as an input): screenshot the lead sheet (melody, lyrics, chords) and export MusicXML and MIDI. Then `S4.mp3`.
 2. In Studio, put in `S1.wav` (single-note melody with a known answer); export MusicXML and MIDI. If it offers guitar
    tab, try `S2s.wav` as well.
 
 Send back: exports, screenshots, `notes.txt` (file import or microphone).
 
-### 15. MIDI Guitar 3 (Jam Origin; free trial; real time only)
+### 15. MIDI Guitar 2 or 3 (Jam Origin; real time only)
 
 It turns live guitar audio into MIDI as you play, so a recording has to be played through it. Skip this one if you
-have no DAW on the laptop.
+have no DAW on the laptop. https://www.jamorigin.com offers MIDI Guitar 2 as "Download Free trial ... No questions
+asked. No installation needed." and says "MIDI GUITAR 3 open beta: www.jam.live"; whether version 3 has a free trial
+was not read.
 
-1. Install the trial from https://www.jamorigin.com (MIDI Guitar 3 is an open beta at www.jam.live per that page).
+1. Get the MIDI Guitar 2 trial from https://www.jamorigin.com (or MIDI Guitar 3 from www.jam.live if it is free to
+   try; write down which version you used).
 2. In your DAW put `S2s.wav` on an audio track, insert MIDI Guitar as a plugin on that track, send its MIDI to a MIDI
    track, record while the clip plays, save the MIDI.
 3. Repeat with `R1a.wav`.
@@ -314,7 +376,7 @@ Send back: 2 MIDI files, `notes.txt` (DAW used, plugin settings).
 
 Copy the MP3s (`S3.mp3`, `S5capo2.mp3`, `S5dropd.mp3`, `S7flat30.mp3`, `R2.mp3`, `S4.mp3`) to the phone first.
 
-### 16. Chord ai (iOS / Android; free, Pro is "$10.99" a month or "$69.99" a year in the App Store)
+### 16. Chord ai (iOS; an Android version appears in search results only; free, Pro is "$10.99" a month or "$69.99" a year in the App Store)
 
 Its listing says it can suggest a capo ("Smart capo ... [Pro version]") and handles alternate tunings ("Drop D,
 DADGAD, Open D/G/A/C etc. [Pro version]").
@@ -352,7 +414,10 @@ Send back: screenshots, `notes.txt` (what it cost, if anything).
 ### 18. Capo (Mac, iPhone, iPad only)
 
 Only if you have one of those: open `S3.mp3` and `R2.mp3`, screenshot the detected chords and tempo. Its App Store
-listing describes chord, beat and key guesses, not tab.
+listing describes chord, beat and key guesses, not tab. Its product page (https://supermegaultragroovy.com/products/capo/)
+says "MIDI export of notes and chords" is one of the tools "exclusive to the Mac", and that "The Free Edition just
+won't save your edits to chords and beats, export audio, or—on the Mac—export MIDI and create lead sheets". On a Mac
+with a paid edition, export MIDI of `S3.mp3` and send it back.
 
 ## Optional and paid (decide first; prices as read 2026-11-10)
 
@@ -371,7 +436,7 @@ listing describes chord, beat and key guesses, not tab.
 ### 19. Guitar Learning (open source, MIT; https://guitar-learning-ten.vercel.app)
 
 A practice app, not a transcriber: it tracks your fretting hand on a live webcam and checks chord shapes. The research
-box could not install it.
+box did not install it (its `npm ci` was refused by the session's permission system).
 
 1. Open the site in Chrome, allow the camera, and do its calibration: four clicks on the two ends of the nut and the
    two ends of the 12th fret.
@@ -389,17 +454,24 @@ neck when you moved).
 - **Soundslice**: no automatic audio-to-notes feature was found; transcription in it is done by hand.
 - **Guitar Pro 8** ("With the Guitar Pro free demo, enjoy all the Guitar Pro 8 features for 7 days"): no automatic
   audio-to-tab feature was found; it imports an audio track to transcribe by hand. It is still a program that opens
-  the `.gp` / `.gp5` files the other apps export (so is the free TuxGuitar), if you want to look at them.
-- **Yousician**, **Rocksmith+**: they listen to you playing along; they do not transcribe a recording you give them
-  (Rocksmith+ was not checked in detail).
-- **Fender Play, Fender Tune, Fender Songs**: no transcription of your own audio was found for them (Fender Songs,
-  2019 press, worked on songs from Apple Music; its current status was not checked). Fender Studio is test 17b.
+  the `.gp` / `.gp5` files the other apps export ("File import formats: .gtp, .gp3, .gp4, .gp5, .gpx, .gp, ..."), if
+  you want to look at them. The free TuxGuitar opens `.gp5` and, per its plugin description, "Guitar Pro 6 (GPX) and
+  7 (GP) files" (`../web-tab-render/survey.md`); Guitar Pro 8 files in it: not checked.
+- **Yousician**: it listens to you playing along ("real-time feedback that listens as you play"); transcribing a
+  recording you give it is not described. **Rocksmith+**: not read (UNVERIFIED).
+- **Fender Play, Fender Tune, Fender Songs**: not read by this lane (the Fender Play App Store page fetched for it
+  came back without text, the fender.com newsroom page on Fender Songs answered with a "Just a moment..." challenge
+  page, and Fender Tune was not fetched), so whether any of them transcribes your own audio is UNVERIFIED. Fender
+  Studio is test 17b.
 - **Positive Grid Spark "Auto Chords"**: "*Requires Spark Amp*".
 - **TabGenius**: makes a tab from a typed or spoken idea, not from audio.
 - **GrabTab**: "Coming soon to iOS & Android" on 2026-11-10.
 - **ChordAR** (manbr21/Computer-Vision-Guitar-Tutor): needs four printed ArUco markers stuck on your guitar's neck and
   a live webcam; it scores chord shapes and does not transcribe.
 - **TapToTab** (arXiv 2409.08618): a research paper; no code release was found.
+- **Tabbers** (`survey.md` item 38): described in a 2025 conference talk; no product page, app or code was found.
+- **YouTube Guitar Tab Parser** (`survey.md` item 39): copies a tab already drawn in a YouTube lesson video into a
+  PDF; it does not transcribe audio, and none of the shared clips is such a video.
 
 ## For the agent that receives Aaron's zip: how each returned file can be scored
 
@@ -407,11 +479,26 @@ All with `/home/user/gtr/bin/gtr-eval` (README: `../../scripts/gtr-eval/README.m
 
 | What comes back | Subcommand | Notes |
 |---|---|---|
-| MIDI or MusicXML notes (any app) | `gtr-eval notes --truth <id> --est <file>` | Exports that start bar 1 at 0 s are early by the silent count-in bar of the S clips (4 beats: 2.143 s at 112 BPM for the S2 family, 2.5 s at 96 BPM for S3, see `INPUTS.md`); try `--time-shift` with that value and report both numbers. MP3-fed runs may carry about 0.03 s of encoder padding. |
-| Guitar Pro 3/4/5 or MusicXML with string and fret | `gtr-eval tab --truth <id> --est <file>` | `.gp` (Guitar Pro 7/8, for example Tabtify's) is refused by PyGuitarPro: open it in Guitar Pro or TuxGuitar and save as `.gp5` first, and say so. |
-| Chords read off a screenshot | type them into a `.lab` file (`start end label`), then `gtr-eval chords` | Typing from a screenshot is a manual step: state it next to the number. |
-| Tempo or key shown on screen | `gtr-eval tempo --est-bpm <x>`, `gtr-eval key --est-key "<key>"` | |
-| Tuning offset for S7flat30 (Transcribe!, Melodyne) | `gtr-eval tuning --truth S7flat30 --est-cents <x>` | |
+| MIDI or MusicXML notes (any app) | `gtr-eval notes --truth <id> --est <file>` | Exports that start bar 1 at 0 s are early by the silent count-in bar of the S clips (4 beats: 2.143 s at 112 BPM for the S2 family, 2.5 s at 96 BPM for S3, 1.667 s at 144 BPM for S1, see `INPUTS.md`); try `--time-shift` with that value and report both numbers. An MP3-fed run can be 25.06 ms late if the app's decoder ignores the MP3's LAME header (`trials.md`, media table). |
+| Guitar Pro 3/4/5 or MusicXML with string and fret | `gtr-eval tab --truth <id> --est <file>` | `.gp` (Guitar Pro 7/8, for example Tabtify's) is refused by gtr-eval (PyGuitarPro reads only 3 to 5): open it in Guitar Pro, or in TuxGuitar for a Guitar Pro 7 file, and save as `.gp5` first, and say so. |
+| Chords read off a screenshot, or Transcribe!'s exported text blocks | type them into a `.lab` file (`start end label`), then `gtr-eval chords --truth <id> --est <file>.lab` | Typing from a screenshot is a manual step: state it next to the number. |
+| Tempo or key shown on screen | `gtr-eval tempo --truth <id> --est-bpm <x>`, `gtr-eval key --truth <id> --est-key "<key>"` | Both refuse to run without `--truth` (checked by the verifier). |
+| Tuning offset for S7flat30 (Transcribe!, Melodyne) | `gtr-eval tuning --truth S7flat30 --est-cents <x>` | The truth is the clip's offset, -30 cents. A correction that raises playback by +c cents to centre the notes (Transcribe!'s Tuning page) means an offset of -c: pass `--est-cents -c` and say so. |
 | Capo or tuning an app reported for S5capo2 / S5dropd | `gtr-eval tuning --truth S5capo2 --est-capo <n>`; `--truth S5dropd --est-tuning-midi 38,45,50,55,59,64` (example) | Only for apps that detected it; Klangio, Songsterr, Tabtify and AnthemScore take capo or tuning as a setting. |
 | Stems (Moises, RipX) on S4 | `gtr-eval stems --truth S4 --est-dir <dir> --map guitar=<file> ...` | |
-| AnthemScore "Beat and Note Timing (.csv)" | `gtr-eval notes` (check its column names first) | Its column layout was not seen on the research box. |
+| AnthemScore "Beat and Note Timing (.csv)" | `gtr-eval notes --truth <id> --est <file>.csv` (check its column names first) | Its column layout was not seen on the research box. |
+
+## Verification log (verify-trials-apps-survey, 2026-11-10)
+
+The full log is at the end of `trials.md`. Changed here: two personal details about the laptop (Windows version, GPU
+model) removed; the MP3 timing note replaced by the measured 25.06 ms LAME-header offset; S1 (used in test 14) added
+to the clip table and R3b / R3c filled in from `INPUTS.md` (added there at 21:28 UTC); test 2's R2 step made concrete
+(the trim boxes); AAPA's heading corrected (Guitar Learning and ChordAR also read hands from a camera); Chordify's
+"third-party pages say" claim replaced by UNVERIFIED; Transcribe!'s menu names corrected from its help ("Show Note
+Guesses", "Show Chord Guesses", Piano Roll menu "Show Piano Roll") and an optional chord-guess text export step and
+the sign of its tuning correction added; Melodyne's trial page facts added and its MIDI export marked as not found;
+RipX's "Print Audio to Midi" quoted; ScoreCloud Songwriter's MP3 input quoted from its home page; MIDI Guitar's trial
+belongs to version 2 (version 3 is an open beta); Chord ai's Android version, Rocksmith+ and the Fender apps marked as
+not read; Capo's Mac-only MIDI export quoted; Note2Tabs, Fretwise and RiffToTab prices and free limits re-read;
+GuitarConvert added as test 24; the `gtr-eval` commands now carry the `--truth` they need (checked: `tempo`, `key` and
+`chords` refuse to run without it); the TuxGuitar claim now cites its plugin description.

@@ -5,7 +5,9 @@ and the URLs that section cites, then look for the passage (split at "..." / "�
 copies of those pages (curl text in verify-docs/raw/<slug>.txt, Chromium-rendered text in verify-docs/rendered/<slug>.txt).
 Prints one line per passage: OK (every part found in a page the section cites), ELSEWHERE (found only in a page cited by
 another section), PARTIAL (some parts found) or MISSING. Matching ignores case, whitespace, curly-vs-straight quotes,
-dash variants and Markdown emphasis marks. A human reads every non-OK line; this script only sorts them."""
+dash variants and Markdown emphasis marks. A human reads every non-OK line; this script only sorts them.
+Options: --short checks passages of 2 to 9 characters instead; --strict keeps each part's end punctuation (so a quote
+ending "settings." does not match a page reading "settings, and ..."); -v prints OK lines too."""
 import sys, re, os, glob
 
 BASE = "/home/user/gtr/lanes/apps-survey/verify-docs"
@@ -46,9 +48,11 @@ for sec in secs:
     title = sec.split("\n", 1)[0][:70]
     urls = [re.sub(r"[.,;]$", "", u) for u in re.findall(r"https?://[^\s)>`\"]+", sec)]
     flat = re.sub(r"\n\s*", " ", sec)
-    for q in [x for x in re.findall(r'"([^"]*)"', flat) if len(x) >= 10]:
-        parts = [p.strip(" .,;:") for p in re.split(r"\s*\.\.\.\s*|\s*…\s*|\s*\[\.\.\.\]\s*", q)]
-        parts = [p for p in parts if len(p) >= 6]
+    lo, hi = (2, 10) if "--short" in sys.argv else (10, 10**9)
+    for q in [x for x in re.findall(r'"([^"]*)"', flat) if lo <= len(x) < hi]:
+        strip = " " if "--strict" in sys.argv else " .,;:"
+        parts = [p.strip(strip) for p in re.split(r"\s*\.\.\.\s*|\s*…\s*|\s*\[\.\.\.\]\s*", q)]
+        parts = [p for p in parts if len(p) >= (2 if lo < 10 else 6)]
         if not parts:
             continue
         found_sec, found_else = [], []

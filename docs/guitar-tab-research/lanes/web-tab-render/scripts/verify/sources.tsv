@@ -159,3 +159,17 @@ pte_readme	https://raw.githubusercontent.com/powertab/powertabeditor/master/READ
 pte_copying	https://raw.githubusercontent.com/powertab/powertabeditor/master/COPYING
 tuitar_readme	https://raw.githubusercontent.com/cod-e-codes/tuitar/main/README.md
 tuitar_license	https://raw.githubusercontent.com/cod-e-codes/tuitar/main/LICENSE
+a2s_tags	https://chiselapp.com/user/moinejf/repository/abc2svg/taglist
+a2s_dir	https://chiselapp.com/user/moinejf/repository/abc2svg/dir?ci=trunk
+a2s_modules	https://chiselapp.com/user/moinejf/repository/abc2svg/dir?name=modules&ci=trunk
+a2s_readme	https://chiselapp.com/user/moinejf/repository/abc2svg/raw?name=README.md&ci=trunk
+a2s_strtab	https://chiselapp.com/user/moinejf/repository/abc2svg/raw?name=modules/strtab.js&ci=trunk
+a2s_tblt	https://chiselapp.com/user/moinejf/repository/abc2svg/raw?name=modules/tblt.js&ci=trunk
+a2s_mit	https://chiselapp.com/user/moinejf/repository/abc2svg/raw?name=MIT.txt&ci=trunk
+at_note_ts	https://raw.githubusercontent.com/CoderLine/alphaTab/develop/packages/alphatab/src/model/Note.ts
+at_staff_ts	https://raw.githubusercontent.com/CoderLine/alphaTab/develop/packages/alphatab/src/model/Staff.ts
+vt_tutorial	https://raw.githubusercontent.com/0xfe/vextab/master/doc/tutorial.html
+vf_pkg_license	https://unpkg.com/vexflow@5.0.0/LICENSE
+mnx_overview	https://w3c.github.io/mnx/overview/
+mnx_home	https://mnx.formats.music/
+at_tex_docstruct	https://raw.githubusercontent.com/CoderLine/alphaTab/develop/website/docs/alphatex/document-structure.mdx

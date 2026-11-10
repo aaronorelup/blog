@@ -6,7 +6,7 @@ tayuya read a single track. Tick times, tempo map and time signature are kept ex
 (mido.merge_tracks); every channel message is moved to channel 0; only the first program_change
 is kept; track names are dropped.
 
-usage: python merge_midi.py in.mid out.mid [--transpose N]
+usage: python merge_midi.py in.mid out.mid [--transpose N] [--vel0-to-noteoff]
   --transpose N  adds N semitones to every note (used ONLY for the 'capo told by transposing'
                  workaround on tools that have no capo parameter; written next to the result)
 """
@@ -14,6 +14,7 @@ import sys, argparse, mido
 
 ap = argparse.ArgumentParser()
 ap.add_argument("src"); ap.add_argument("dst"); ap.add_argument("--transpose", type=int, default=0)
+ap.add_argument("--vel0-to-noteoff", action="store_true", help="rewrite note_on with velocity 0 as note_off (same MIDI meaning)")
 a = ap.parse_args()
 m = mido.MidiFile(a.src)
 merged = mido.merge_tracks(m.tracks)
@@ -29,6 +30,8 @@ for msg in merged:
         seen_prog = True
     if hasattr(msg, "channel"):
         msg = msg.copy(channel=0)
+    if a.vel0_to_noteoff and msg.type == "note_on" and msg.velocity == 0:
+        msg = mido.Message("note_off", channel=msg.channel, note=msg.note, velocity=0, time=msg.time)
     if msg.type in ("note_on", "note_off") and a.transpose:
         msg = msg.copy(note=msg.note + a.transpose)
     msg = msg.copy(time=msg.time + pending); pending = 0

@@ -1,0 +1,146 @@
+[
+ {
+  "id": "ty-lim1",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/vipul-sharma20_tayuya__README.md",
+  "quote": "Works only for guitar solos. Implementation for determination and rendering of chords is not done yet."
+ },
+ {
+  "id": "ty-lim2",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/vipul-sharma20_tayuya__README.md",
+  "quote": "Works only for standard tuning (E A D G B E)"
+ },
+ {
+  "id": "ty-todo",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/vipul-sharma20_tayuya__README.md",
+  "quote": "Add way to handle non standard tuning"
+ },
+ {
+  "id": "tutts-tun",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/npm/tutts.json",
+  "quote": "E.g. `Tuning.standardGuitar()`, `Tuning.ukulele()`, or `new Tuning([\"D4\", \"A3\", ...], nfrets)`"
+ },
+ {
+  "id": "tutts-q",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/npm/tutts.json",
+  "quote": "Snap note onsets to the grid before chord grouping, so near-simultaneous notes merge into one chord"
+ },
+ {
+  "id": "tutts-t",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/npm/tutts.json",
+  "quote": "Only used to emit an optional `seconds` field on each event"
+ },
+ {
+  "id": "ly-doc",
+  "kind": "doc",
+  "src": "/home/user/blog/docs/guitar-tab-research/lanes/guitar-tab/trials.md",
+  "quote": "The tablature auto string-selecting mechanism selects the highest string with a fret at least `minimumFret`."
+ },
+ {
+  "id": "ly-warn",
+  "kind": "doc",
+  "src": "/home/user/blog/docs/guitar-tab-research/lanes/guitar-tab/trials.md",
+  "quote": "warning: No string for pitch"
+ },
+ {
+  "id": "n2f-sub",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/RiccardoVib_Noise2Fret__Noise2Fret_Aux_Losses_README.md",
+  "quote": "Find the code located inside the \"./src\" folder, and the weights of pre-trained models in [Zenodo](https://zenodo.org/records/23361924)"
+ },
+ {
+  "id": "n2f-inf",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/RiccardoVib_Noise2Fret__Noise2Fret_Aux_Losses_README.md",
+  "quote": "To run inference only on an existing pre-trained model, set the \"train_model\" flag to False."
+ },
+ {
+  "id": "n2f-z",
+  "kind": "lic",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/zenodo/23361924.json",
+  "quote": "The repository collects the checkpoints for the pre-trained models"
+ },
+ {
+  "id": "fp-core1",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/knoguchi_fretpath__fingering_core.js",
+  "quote": "guitar fingering core (port of mscx2tab.py)"
+ },
+ {
+  "id": "fp-core2",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/knoguchi_fretpath__fingering_core.js",
+  "quote": "Pure JavaScript, loadable from MuseScore QML and from Node."
+ },
+ {
+  "id": "fp-tun",
+  "kind": "code",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/knoguchi_fretpath__fingering_core.js",
+  "quote": "TUNING = [40, 45, 50, 55, 59, 64]"
+ },
+ {
+  "id": "dg-ex:artist:unknown",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/dada-bots_dadaGP__examples_slapbass.gp3.tokens.txt",
+  "quote": "artist:unknown"
+ },
+ {
+  "id": "dg-ex:downtune:0",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/dada-bots_dadaGP__examples_slapbass.gp3.tokens.txt",
+  "quote": "downtune:0"
+ },
+ {
+  "id": "dg-ex:tempo:120",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/dada-bots_dadaGP__examples_slapbass.gp3.tokens.txt",
+  "quote": "tempo:120"
+ },
+ {
+  "id": "dg-ex:start",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/dada-bots_dadaGP__examples_slapbass.gp3.tokens.txt",
+  "quote": "start"
+ },
+ {
+  "id": "dg-ex:new_measure",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/dada-bots_dadaGP__examples_slapbass.gp3.tokens.txt",
+  "quote": "new_measure"
+ },
+ {
+  "id": "dg-ex:bass:note:s2:f16",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/dada-bots_dadaGP__examples_slapbass.gp3.tokens.txt",
+  "quote": "bass:note:s2:f16"
+ },
+ {
+  "id": "dg-ex:nfx:slide:1",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/dada-bots_dadaGP__examples_slapbass.gp3.tokens.txt",
+  "quote": "nfx:slide:1"
+ },
+ {
+  "id": "dg-ex:wait:240",
+  "kind": "doc",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/dada-bots_dadaGP__examples_slapbass.gp3.tokens.txt",
+  "quote": "wait:240"
+ },
+ {
+  "id": "gt-train",
+  "kind": "code",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/DanieleMorotti_guitab__pyproject.toml",
+  "quote": "train = [\"scipy>=1.11\", \"pedalboard>=0.9\", \"pretty_midi>=0.2.10\", \"music21>=9\", \"yt-dlp\"]"
+ },
+ {
+  "id": "gt-bt",
+  "kind": "code",
+  "src": "/home/user/gtr/lanes/guitar-tab/verify/raw/gh/DanieleMorotti_guitab__pyproject.toml",
+  "quote": "beat-this @ git+https://github.com/CPJKU/beat_this@b95c8ab0"
+ }
+]

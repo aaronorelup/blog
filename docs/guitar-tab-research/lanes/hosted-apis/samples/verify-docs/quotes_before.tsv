@@ -1,0 +1,433 @@
+survey_line_before	class	status	found_on_pages	quote_first_140_chars
+20	other	confirmed verbatim	moises-terms,music-ai-docs-home,music-ai-modules,musicai-apiref,musicai-docs,mus	Moises
+20	other	confirmed verbatim	musicai-terms	Last updated: May 02, 2025
+23	other	confirmed verbatim	fadr-api,fadr-auth,fadr-billing,fadr-endpoints,fadr-plus,fadr-terms,fadr-tutoria	Basic
+26	other	confirmed verbatim	lalal-privacy,lalal-tc,lalal-tos	Last updated: July 30, 2026
+29	other	confirmed verbatim	audioshake-terms	Effective October 1, 2026
+31	other	confirmed verbatim	fadr-api,fadr-endpoints	Aug 19, 2023
+31	other	confirmed verbatim	fadr-billing	Aug 22, 2023
+31	other	confirmed verbatim	fadr-terms	Sep 5, 2023
+34	other	confirmed verbatim	mvsep-terms	Effective Date: October 19, 2026
+34	other	confirmed verbatim	flat-legal,gemini-pricing,hf-ip-index,moises-terms,musicai-terms,mvsep-plans,son	Limited
+37	other	confirmed verbatim	replicate-terms	Last Update: April 1, 2026
+40	other	confirmed verbatim	fal-demucs-llms	$0.0007 per seconds
+40	other	confirmed verbatim	fal-terms	Last Updated: September 8, 2026
+51	other	confirmed verbatim	music-ai-docs-home,music-ai-modules,musicai-apiref,musicai-docs,musicai-faq,musi	Page not found!
+51	other	confirmed verbatim	songsterr-aitxt	Last updated: 2026-11-09
+57	other	confirmed verbatim	gemini-terms	Effective March 23, 2026
+61	other	confirmed verbatim	yt-tos-plain,yt-tos	Dated: December 15, 2023
+61	other	confirmed verbatim	yt-apiterms,yt-devpolicies	Last updated 2026-11-06 UTC
+66	other	confirmed verbatim	moises-terms	Last Updated: October 7, 2026
+69	other	confirmed verbatim	musicai-pricing	Music metadata (By Cyanite)
+73	other	confirmed verbatim	klangio-advanced-usage-transcription-model-selection,klangio-basic-workflow,klan	Klangio Transcription API
+73	other	confirmed verbatim	hf-gradio-client,klangio-openapi-json	0.2.0
+78	other	confirmed verbatim	klangio-basic-workflow,klangio-chords-ext,klangio-chords,klangio-getting-started	Basic Job Workflow
+91	other	confirmed verbatim	klangio-file-formats-guitar-pro,klangio-gp-docs	Guitar Pro 5 ... is available only if you choose the guitar or bass model for transcriptions.
+98	other	confirmed verbatim	klangio-chords	The job result is a json array, containing only triplet entries [<start_time_in_seconds>, <end_time_in_seconds>, <chord_name>] with the type
+100	other	confirmed verbatim	flat-openapi,klangio-chords-ext,musicai-mod-transcription-chords	A minor
+100	other	confirmed verbatim	klangio-chords-ext,klangio-jobs-strum-recognition-requests	[<time_stamp_in_seconds>, <strum_direction>] with the type [float, string]
+100	other	confirmed by eye (shorter than 4 characters)		U
+100	other	confirmed by eye (shorter than 4 characters)		D
+101	other	confirmed verbatim	klangio-jobs-beat-tracking-request	a json array, containing tuples in the format [<beat_timestamp_in_seconds>, <downbeat>] with the type [float, float]
+102	other	confirmed verbatim	klangio-transcription	Results will be available for 14 days.
+103	other	confirmed verbatim	klangio-file-formats-audio	Uncompressed 16-bit PCM audio
+105	other	confirmed by eye (shorter than 4 characters)		$ 0
+105	other	confirmed verbatim	klangio-api-page	50 requests included
+105	other	confirmed verbatim	klangio-api-page	No additional requests
+105	other	confirmed verbatim	klangio-api-page	Max 15s audio duration
+105	other	confirmed verbatim	klangio-api-page	1 request per minute
+105	other	confirmed verbatim	klangio-api-page	$ 99
+105	other	confirmed verbatim	klangio-api-page	500 requests included
+105	other	confirmed verbatim	klangio-api-page	$0.20 each other request
+105	other	confirmed verbatim	klangio-api-page	Max 300s audio duration
+105	other	confirmed verbatim	klangio-api-page	2 request per second
+105	other	confirmed verbatim	klangio-api-page	$ 499
+105	other	confirmed verbatim	klangio-api-page	3000 requests included
+105	other	confirmed verbatim	klangio-api-page	$0.17 each other request
+105	other	confirmed verbatim	klangio-api-page	Max 300s audio duration
+105	other	confirmed verbatim	klangio-api-page	5 request per second
+105	other	confirmed verbatim	fal-terms,gemini-pricing,klangio-api-page,music-ai-docs-home,music-ai-modules,mu	Contact Sales
+105	other	confirmed verbatim	klangio-api-page	10,000 requests included
+105	other	confirmed verbatim	klangio-api-page	$0.10 each other request
+105	other	confirmed verbatim	klangio-api-page	Max 600s audio duration
+105	other	confirmed verbatim	klangio-api-page	10 request per second
+105	other	confirmed verbatim	klangio-api-page	Apply now
+105	other	confirmed verbatim	klangio-transcription	Use as little output formats as possible. Multiple formats may inflict additional quota costs for a transcription job.
+105	other	confirmed verbatim	klangio-file-formats-audio	The six-stems model inflicts higher quota costs than four-stems model!
+107	clause	confirmed verbatim	klangio-terms	API access and Bulk Transcription are not included in the subscription plans; they are offered exclusively as separate business services sub
+108	clause	confirmed verbatim	klangio-terms	We do not use the content uploaded by you to train our AI models or for any other purposes beyond the provision of the Klangio Services in a
+109	clause	confirmed verbatim	klangio-terms	If you submit a link to an external audio source (e.g., a YouTube, Instagram or TikTok video), the audio is retrieved via the respective pla
+110	clause	confirmed verbatim	klangio-terms	The use of Klangio Services and Apps is intended exclusively for private, non-commercial purposes, subject to the exception described below.
+111	clause	confirmed verbatim	klangio-terms	Transcriptions may only be used by you in accordance with applicable laws, in particular copyright laws. They must not be used to train musi
+112	clause	confirmed verbatim	klangio-terms	You warrant that you are the owner of (or are otherwise entitled to use or exercise) all necessary rights to any content uploaded by you ...
+117	other	confirmed verbatim	moises-terms,music-ai-docs-home,music-ai-modules,musicai-apiref,musicai-docs,mus	Moises
+122	other	confirmed verbatim	musicai-apiref	The API key should be included in the Authorization header of each request.
+122	other	confirmed verbatim	musicai-apiref	URL to upload the file to. This URL is temporary.
+122	other	confirmed verbatim	musicai-apiref	Processing results (URLs to output files) when status is SUCCEEDED
+130	other	confirmed verbatim	musicai-mod-transcription-chords	Detected root key of the audio (e.g., C Major, A minor).
+130	other	confirmed verbatim	musicai-mod-transcription-chords	Timeline of Chord annotations extracted from the input audio file. Each annotation specifies the chord's start time, end time, and multiple 
+130	other	confirmed verbatim	music-ai-modules,musicai-mod-transcription-beats,musicai-mod-transcription-chord	Complex Jazz, Simple Jazz, Complex Pop, and Simple Pop
+130	other	confirmed verbatim	music-ai-modules,musicai-mod-transcription-beats,musicai-mod-transcription-chord	bass detection
+131	other	confirmed verbatim	musicai-mod-transcription-beats	JSON containing beat annotations extracted from the input audio. Each annotation specifies the beat's start time and beat number.
+135	other	confirmed verbatim	musicai-fileformats	Include all audio formats, such as WAV, MP3, OGG, FLAC, etc.
+135	other	confirmed verbatim	musicai-fileformats	Include all video formats, such as AVI, MP4, MKV, etc.
+137	other	confirmed verbatim	musicai-pricing	Pay as you go $0
+137	other	confirmed verbatim	musicai-pricing	48h temporary storage
+137	other	confirmed verbatim	musicai-pricing	2 concurrent processing jobs
+137	other	confirmed verbatim	musicai-pricing	Professional $25 USD Billed monthly
+137	other	confirmed verbatim	musicai-pricing	10 concurrent processing jobs
+137	other	confirmed verbatim	musicai-pricing	$25 credit included every month (limited offer)
+137	other	confirmed verbatim	musicai-pricing	100GB permanent storage
+137	other	confirmed verbatim	musicai-pricing	5% discount on all modules
+137	other	"corrected: two separate strings on the page (""Business / Enterprise"", ""Contact us"")"		Business / Enterprise Contact us
+137	other	confirmed verbatim	musicai-pricing	Transcription - Chords $0.04 / min
+137	other	confirmed verbatim	musicai-pricing	Transcription - Beats $0.03 / min
+137	other	confirmed verbatim	musicai-pricing	Transcription - Sections $0.04 / min
+137	other	confirmed verbatim	musicai-pricing	Stem separation - Guitar stems (Acoustic guitar, Electric guitar) $0.1 / min
+137	other	confirmed verbatim	musicai-pricing	Stem separation - Guitar parts (Rhythm guitars, Solo guitars) $0.1 / min
+137	other	confirmed verbatim	musicai-pricing	Stem separation - Musical stems (Guitars) $0.07 / min
+137	other	confirmed verbatim	musicai-pricing	Stem separation - Musical stems (Bass) $0.07 / min
+137	other	confirmed verbatim	musicai-pricing	Generators - Metronome $0.002 / min
+137	other	confirmed verbatim	musicai-pricing	Classification - Instruments detection $0.02 / min
+137	other	confirmed verbatim	musicai-pricing	Classification - Music metadata (By Cyanite) $0.15 / min
+137	other	confirmed verbatim	musicai-faq	Pay-as-you-go and Professional members must purchase credits up front and cannot have a negative credit balance.
+138	other	confirmed verbatim	musicai-terms	Last updated: May 02, 2025
+139	clause	confirmed verbatim	musicai-terms	a non-exclusive, non-transferable, non-sublicensable, revocable, limited license to use the Service ... on a computer or device that you own
+140	clause	confirmed verbatim	musicai-terms	you shall not ... (ii) use any robot, spider, site search/retrieval application, or other manual or automatic device to retrieve, index, “sc
+141	clause	confirmed verbatim	musicai-terms	Subject to these Terms, You may use the Service to generate results and outputs (“Output”), for example data, text, audio, video, and artifi
+142	clause	confirmed verbatim	musicai-terms	If you are accessing or making use of the Service on a no-fee, trial, or evaluation basis (the “Evaluation Access”), you may use the Service
+143	clause	confirmed verbatim	musicai-terms	THIS LICENSE IS GRANTED SOLELY FOR THE PURPOSE OF DELIVERING THE SERVICE TO YOU AND DOES NOT INCLUDE ANY RIGHTS FOR US TO USE YOUR CUSTOMER 
+143	other	confirmed verbatim	musicai-terms	Customer Content
+143	clause	confirmed verbatim	musicai-terms	We may use the Customer Content to provide the Service to you, to improve or develop our products and services, and, subject to Section 7(f)
+144	clause	confirmed verbatim	musicai-terms	we are under no obligation to store, maintain, or provide you with copies of any Customer Content you provide or any Outputs you generate us
+145	clause	confirmed verbatim	musicai-faq	Music AI only trains on licensed materials.
+149	other	confirmed verbatim	hf-ip-index,lalal-openapi,mvsep-fullapi	1.1.0
+149	other	confirmed verbatim	lalal-api,lalal-llms,lalal-openapi	LALAL.AI API
+149	other	confirmed verbatim	lalal-llms	Last updated: 2026-07-14
+149	other	confirmed verbatim	lalal-llms	there is no official SDK - REST + OpenAPI only
+154	other	confirmed verbatim	lalal-openapi	Uploads a file, up to 10 GB.
+154	other	confirmed verbatim	lalal-openapi	The file is deleted at the `expires` time from the response.
+161	other	confirmed verbatim	lalal-openapi	'guitar' extracts all guitars into one track, 'electric_guitar' and 'acoustic_guitar' extract only one kind of guitar. 'guitar' is available
+161	other	confirmed verbatim	lalal-openapi	If None - convert to source file format.
+168	other	confirmed verbatim	lalal-openapi	Pass all your `task_ids` in one request, up to 200: the limit is 30 requests per minute.
+168	other	confirmed verbatim	lalal-openapi	A task stays here for 24 hours after it finishes.
+171	other	confirmed verbatim	lalal-llms	shown in your regional currency
+171	other	confirmed verbatim	lalal-pricing	$7.5 /mo$90 billed annually
+171	other	confirmed verbatim	lalal-pricing	$15/mo$180 billed annually
+171	other	confirmed verbatim	lalal-pricing	Pro is the better choice if you need more Fast Queue minutes, access to the VST plugin, local processing in the desktop app, or API access.
+171	other	confirmed verbatim	lalal-pricing	Master with 750 minutes for $50, Premium with 3000 minutes for $190, and Enterprise with 5000 minutes for $300
+171	other	confirmed verbatim	lalal-pricing	total file length × number of stem separation types
+171	other	confirmed verbatim	lalal-llms	API access is available with the Pro plan or any minute top-up pack - no subscription required
+171	other	confirmed verbatim	lalal-llms	API requests consume Fast-queue minutes.
+178	other	confirmed verbatim	lalal-privacy,lalal-tc,lalal-tos	Last updated: July 30, 2026
+179	clause	confirmed verbatim	lalal-tc,lalal-tos	You agree not to reproduce, duplicate, copy, sell, trade, resell or exploit for any commercial purposes, any portion of the Service, use of 
+180	clause	confirmed verbatim	lalal-tc,lalal-tos	You are solely responsible for the usage and distribution of uploaded audio files and “end-result” audio files. ... The Service doesn’t stor
+182	clause	confirmed verbatim	lalal-privacy	the OmniSale GMBH does not assume the rights to any uploaded audio and video data, does not use user files for artificial intelligence train
+187	other	confirmed verbatim	audioshake-quickstart	`pip install audioshake` gives you an official client and CLI that handle upload, polling, and download in one call
+187	other	confirmed verbatim	audioshake-llms	Local Inference SDK
+187	other	confirmed verbatim	audioshake-llms	Migrating from Jobs
+193	other	confirmed verbatim	audioshake-quickstart	Each completed target includes an `output` array with download links.
+193	other	confirmed verbatim	audioshake-quickstart	Output download links expire after one hour.
+193	other	confirmed verbatim	audioshake-faq	Uploaded Assets expire after 72 hours.
+198	other	confirmed verbatim	audioshake-list-models-doc,audioshake-llms	Unauthenticated requests return default app config values
+201	other	confirmed verbatim	audioshake-models-live,audioshake-models	All guitar-family parts together (acoustic + electric).
+201	other	confirmed verbatim	audioshake-models-live,audioshake-models	Electric guitar only (clean or distorted).
+201	other	confirmed verbatim	audioshake-models-live,audioshake-models	Acoustic/plucked guitar-family sources (acoustic guitar, banjo, lute).
+201	other	confirmed verbatim	audioshake-models-live,audioshake-models	Everything except vocals, drums, bass, and guitar.
+201	other	confirmed verbatim	audioshake-models-live,audioshake-models	Everything not covered by the task's other targets.
+207	other	confirmed verbatim	audioshake-api-reference-formats	Supports up to 192kHz sample rate
+207	other	confirmed verbatim	audioshake-api-reference-formats,audioshake-faq	Only the audio stream is processed — video content is ignored.
+207	other	confirmed verbatim	audioshake-api-reference-formats	Multi-channel or surround formats (e.g. 5.1) are not supported
+210	other	confirmed verbatim	audioshake-api-reference-rate-limits	The AudioShake API allows **60 requests per second**.
+210	other	confirmed verbatim	audioshake-models	Maximum input length for `transcription` and `alignment` is 45 minutes.
+212	other	confirmed verbatim	audioshake-billing	Credits are charged **per minute of source audio, per target model**. Duration is always rounded up to the nearest minute.
+212	other	confirmed verbatim	audioshake-quickstart	You'll get 10 free credits to start building immediately.
+216	other	confirmed verbatim	audioshake-terms	Effective October 1, 2026
+217	clause	confirmed verbatim	audioshake-terms	Customer and End Users shall use the Audioshake Platform solely for Customer’s internal business purposes as contemplated by this Agreement 
+218	clause	confirmed verbatim	audioshake-terms	As between Customer and Audioshake, Customer shall retain all rights, title and interests in and to all Content.
+218	clause	confirmed verbatim	audioshake-terms	“Content” means any content uploaded by Customer or an End User to the Audioshake Platform, and any outputs derived from such content.
+219	clause	confirmed verbatim	audioshake-terms	You hereby grant Audioshake the right to (i) reproduce and use such information, Content and data to improve and enhance the Audioshake Plat
+224	other	confirmed verbatim	fadr-api,fadr-auth,fadr-billing,fadr-endpoints,fadr-plus,fadr-terms,fadr-tutoria	Made with 💛 by Pebble
+224	other	confirmed verbatim	fadr-api,fadr-auth,fadr-billing,fadr-endpoints,fadr-plus,fadr-terms,fadr-tutoria	v6.2
+224	other	confirmed verbatim	fadr-api,fadr-endpoints	Aug 19, 2023
+224	other	confirmed verbatim	fadr-billing	Aug 22, 2023
+224	other	confirmed verbatim	fadr-terms	Sep 5, 2023
+229	other	confirmed verbatim	fadr-auth	"Attach an API key to all of your requests as the Authorization header in the following format: `Authorization: ""Bearer [API Key]""`"
+229	other	confirmed verbatim	fadr-tutorial	at 5 second intervals
+235	other	confirmed verbatim	fadr-endpoints	separates a complete song into four primary stems, vocals, bass, drums, and melodies
+235	other	confirmed verbatim	audioshake-faq,audioshake-home,audioshake-models-live,audioshake-models,audiosha	instrumental
+235	other	confirmed verbatim	fadr-endpoints	Extraction of a unique MIDI file for the vocal, drums, bass, and melody stems.
+235	other	confirmed verbatim	fadr-endpoints	Detection of the song's chord progression, represented in MIDI and CSV format
+235	other	confirmed verbatim	fadr-endpoints	Detection of the song's Key and Tempo, which will be stored in all of the related asset's metaData fields.
+235	other	confirmed verbatim	fadr-api	midi of each stem except for drums, the chord progression as txt and midi
+235	other	confirmed verbatim	fadr-endpoints	separates a melodic stem into six new stems: piano, electric guitar, acoustic guitar, strings, wind, and other melodies
+235	other	confirmed verbatim	fadr-tutorial	Stems usually take around 10-20 seconds, and the remainder usually takes another 10-20 seconds.
+245	other	confirmed verbatim	fadr-api	Usage of the Fadr API requires a Fadr Plus subscription, which costs $10/mo or $100/yr. Your subscription pays for your first $10 of API usa
+245	other	confirmed verbatim	fadr-billing	Create Stem Task US$0.05 per minute of audio
+245	other	confirmed verbatim	fadr-plus	☁️ API Price (per 100 minutes per stem)
+245	other	confirmed by eye (shorter than 4 characters)		$1
+251	clause	confirmed verbatim	fadr-terms	Fadr does not acquire any ownership of any intellectual property rights in the content that you submit to our API through your API Client, e
+252	clause	confirmed verbatim	fadr-terms	Fadr does not acquire ownership in your API Clients, and by using our API, you do not acquire ownership of any rights in our API or the cont
+253	clause	confirmed verbatim	fadr-terms	Unless expressly permitted by the content owner or by applicable law, you will not, and will not permit your end users or others acting on y
+258	other	confirmed verbatim	mvsep-terms	"Sole Proprietor (YTT) ""Elmurodov Olimjon Ermat o'g'li"""
+258	other	confirmed verbatim	mvsep-openapi,ytdlp-pypi	1.1.1
+263	other	confirmed verbatim	mvsep-fullapi,mvsep-openapi,replicate-allinone-api	defaults to 20
+263	other	confirmed verbatim	mvsep-fullapi	the output audios download details
+263	other	confirmed verbatim	mvsep-fullapi	All regions share one account database, so the same account, API key and job hashes work everywhere
+263	other	confirmed verbatim	mvsep-fullapi	Premium users can request unlimited concurrent jobs, while non-Premium users can only request 1 concurrent job.
+263	other	unverifiable: search-result snippet; the survey already says it does not match the page (kept, labelled)		up to 10 concurrent jobs
+274	other	confirmed verbatim	mvsep-algos,mvsep-fullapi,mvsep-openapi	MVSep Guitar (guitar, other)
+274	other	confirmed verbatim	mvsep-algos,mvsep-fullapi	MVSep Acoustic Guitar (acoustic-guitar, other)
+274	other	confirmed verbatim	mvsep-algos,mvsep-fullapi	MVSep Electric Guitar (electric-guitar, other)
+274	other	confirmed verbatim	mvsep-algos,mvsep-fullapi	MVSep Lead/Rhythm Guitar (lead-guitar, rhythm-guitar)
+274	other	confirmed verbatim	mvsep-algos,mvsep-fullapi	MVSep Pedal Steel Guitar
+274	other	confirmed verbatim	mvsep-algos,mvsep-fullapi	BS Roformer SW (vocals, bass, drums, guitar, piano, other)
+274	other	confirmed verbatim	mvsep-algos,mvsep-fullapi,mvsep-openapi	Ensemble All-In (vocals, bass, drums, piano, guitar, lead/back vocals, other)
+274	other	confirmed verbatim	mvsep-algos,mvsep-fullapi,mvsep-openapi	Demucs4 HT (vocals, drums, bass, other)
+274	other	confirmed verbatim	mvsep-algos,mvsep-fullapi	MVSep Bass (bass, other)
+279	other	confirmed verbatim	mvsep-fullapi	0 - mdx23c (2023.08, SDR: 4.78)
+279	other	confirmed verbatim	mvsep-fullapi	2 - mdx23c (2024.06, SDR: 6.34)
+279	other	confirmed verbatim	mvsep-fullapi	3 - MelRoformer (2024.06, SDR: 7.02)
+279	other	confirmed verbatim	mvsep-fullapi	5 - BSRoformer (viperx, SDR: 7.16)
+279	other	confirmed verbatim	mvsep-fullapi	6 - Ensemble (BS + Mel, SDR: 7.51)
+279	other	confirmed verbatim	mvsep-fullapi	7 - BS Roformer SW (SDR: 9.05) (default)
+279	other	confirmed verbatim	mvsep-fullapi	0 - Two-stage model (SDR: 9.21) (default)
+279	other	confirmed verbatim	mvsep-fullapi	1 - One-stage model (SDR: 9.02)
+285	other	confirmed verbatim	mvsep-plans	Max File Length 10 min
+285	other	confirmed verbatim	mvsep-plans	Max File Size 100 MB
+285	other	confirmed verbatim	mvsep-plans	Daily Separations 50
+285	other	confirmed verbatim	mvsep-plans	Concurrent Jobs 1
+285	other	confirmed verbatim	fadr-api,fadr-auth,fadr-billing,fadr-endpoints,fadr-plus,fadr-terms,fadr-tutoria	API Access
+285	other	confirmed by eye (shorter than 4 characters)		—
+285	other	confirmed verbatim	flat-legal,gemini-pricing,hf-ip-index,moises-terms,musicai-terms,mvsep-plans,son	Limited
+285	other	confirmed verbatim	audioshake-models-live,audioshake-models,audioshake-quickstart,fadr-api,fadr-aut	Full
+285	other	corrected: assembled from table cells; restated as cells		Max File Length 100 min
+285	other	corrected: assembled from table cells; restated as cells		Max File Size 1000 MB
+285	other	confirmed verbatim	mvsep-plans	Standard models use 1 credit per minute of audio.
+285	other	"corrected: assembled from table cells (omits ""≈ 15 songs*""); restated as cells"		$3 60 credits $0.05 per minute
+285	other	confirmed verbatim	mvsep-plans	$5 200 credits
+285	other	confirmed verbatim	mvsep-plans	$10 600 credits
+285	other	confirmed verbatim	mvsep-plans	$30 2,000 credits
+285	other	confirmed verbatim	mvsep-plans	$50 4,000 credits
+285	other	"corrected: assembled from table cells (omits ""≈ 2,125 songs*""); restated as cells"		$100 8,500 credits $0.0118 per minute
+285	other	confirmed verbatim	mvsep-algos,mvsep-fullapi,mvsep-openapi	Ensemble All-In
+285	other	confirmed verbatim	mvsep-algos,mvsep-fullapi,mvsep-openapi	MVSep Guitar
+291	other	confirmed verbatim	mvsep-terms	Effective Date: October 19, 2026
+292	clause	confirmed verbatim	mvsep-terms	The Operator does not claim ownership over uploaded content or generated outputs. You retain ownership of uploaded content and generated out
+293	clause	confirmed verbatim	mvsep-terms	Processed outputs generated through the Service may be used commercially by You, provided You possess the necessary rights to the original s
+294	clause	corrected: clause was cut off with a bracket; completed from the page	mvsep-terms	Some models are provided under licenses that permit non-commercial use only (for example, CC BY-NC 4.0). Each such model is marked with a no
+299	other	confirmed verbatim	gemini-audio,gemini-docs-home,openai-audio,openai-audio2,openai-audiochat	Structured output
+299	other	confirmed verbatim	gemini-audio	Get transcription results in JSON format
+304	other	corrected: markdown link syntax inside the quote; now the visible text	gemini-audio	Use the [Files API](/docs/files) for files larger than 20 MB.
+304	other	confirmed verbatim	gemini-audio	Maximum request size is 20 MB total (including prompts and all files)
+304	other	confirmed verbatim	gemini-audio	Interactions API reference
+309	other	confirmed verbatim	gemini-audio	Technical details about audio
+309	other	confirmed verbatim	gemini-audio	**Tokens**: 32 tokens per second of audio (1 minute = 1,920 tokens)
+309	other	confirmed verbatim	gemini-audio	**Max length**: 9.5 hours of audio per prompt
+309	other	confirmed verbatim	gemini-audio	**Resolution**: Downsampled to 16 Kbps
+309	other	confirmed verbatim	gemini-audio	**Channels**: Multi-channel audio combined to single channel
+309	other	confirmed verbatim	gemini-audio	**Non-speech**: Gemini understands non-speech sounds (birdsong, sirens, etc.)
+315	other	confirmed verbatim	gemini-video	File API ... 20GB (paid) / 2GB (free)
+315	other	confirmed verbatim	gemini-video	Cloud Storage Registration ... 2GB (per file ...)
+315	other	confirmed verbatim	gemini-video	Inline Data ... < 100MB
+315	other	confirmed verbatim	gemini-video	YouTube URLs ... Public YouTube videos.
+315	other	confirmed verbatim	gemini-video	the model samples the video at a rate of **1 frame per second** (FPS). This default sampling rate works well for most content, but note that
+315	other	confirmed verbatim	gemini-video	"These customization options are only supported when processing the video in `""static""` mode."
+315	other	confirmed verbatim	gemini-video	Audio is processed at 1Kbps (single channel). Timestamps are added every second.
+315	other	corrected: joined two list items; split into two quotes		If `media_resolution` is set to low, frames are tokenized at 66 tokens per frame. Otherwise, frames are tokenized at 258 tokens per frame.
+315	other	confirmed verbatim	gemini-video	Audio: 32 tokens per second.
+315	other	confirmed verbatim	gemini-video	Total: Approximately 100 tokens per second of video at default (low) media resolution, or approximately 300 tokens per second of video at hi
+315	other	confirmed verbatim	gemini-video	Models with a 1M context window can process videos up to 3 hours long by default (at low media resolution), or up to 1 hour long at high med
+315	other	confirmed verbatim	gemini-pricing,gemini-terms,gemini-video	agentic
+315	other	confirmed verbatim	gemini-video	Gemini 4 Carbon, Gemini 4 Argon, 3.8 Flash, 3.6 Flash, 3.5 Flash Lite
+330	other	confirmed verbatim	gemini-video	Preview: The YouTube URL feature is in preview and is available at no charge. Pricing and rate limits are likely to change.
+330	other	confirmed verbatim	gemini-video	For the free tier, you can't upload more than 8 hours of YouTube video per day.
+330	other	confirmed verbatim	gemini-video	You can only upload public videos (not private or unlisted videos).
+335	other	confirmed verbatim	gemini-pricing	Paid Tier, per 1M tokens in USD
+335	other	confirmed verbatim	gemini-pricing	$0.30 (text / image / video / audio)
+335	other	confirmed verbatim	gemini-pricing	$0.75 through December 31, 2026. $1.50 starting January 1, 2027.
+335	other	confirmed verbatim	gemini-pricing	$3.75 through December 31, 2026. $7.50 starting January 1, 2027.
+335	other	confirmed verbatim	gemini-pricing	Free of charge
+341	other	confirmed verbatim	gemini-terms	Effective March 23, 2026
+342	clause	confirmed verbatim	gemini-terms	You may use only Paid Services when making API Clients available to users in the European Economic Area, Switzerland, or the United Kingdom.
+343	clause	confirmed verbatim	gemini-terms	Some of our Services allow you to generate original content. Google won't claim ownership over that content. You acknowledge that Google may
+344	clause	confirmed verbatim	gemini-terms	When you use Unpaid Services, including, for example, Google AI Studio and the unpaid quota on Gemini API, Google uses the content you submi
+345	clause	confirmed verbatim	gemini-terms	When you use Paid Services, including, for example, the paid quota of the Gemini API, Google doesn't use your prompts (including associated 
+346	clause	confirmed verbatim	gemini-terms	"Your access to Gemini API is a ""Paid Service"" only when accessing the API through a Cloud Project associated with an active billing account."
+352	other	confirmed verbatim	yt-tos-plain,yt-tos	Dated: December 15, 2023
+352	other	confirmed verbatim	yt-tos-plain,yt-tos	Effective as of December 15, 2023
+352	other	confirmed verbatim	yt-tos-plain,yt-tos	Permissions and Restrictions
+354	clause	confirmed verbatim	yt-tos-plain,yt-tos	You may access and use the Service as made available to you, as long as you comply with this Agreement and applicable law. You may view or l
+355	clause	confirmed verbatim	yt-tos-plain,yt-tos	The following restrictions apply to your use of the Service. You are not allowed to: 1. access, reproduce, download, distribute, transmit, b
+356	clause	confirmed verbatim	yt-tos-plain,yt-tos	2. circumvent, disable, fraudulently engage with, or otherwise interfere with any part of the Service (or attempt to do any of these things)
+357	clause	confirmed verbatim	yt-tos-plain,yt-tos	3. access the Service using any automated means (such as robots, botnets or scrapers) except (a) in the case of public search engines, in ac
+358	clause	confirmed verbatim	yt-tos-plain,yt-tos	9. use the Service to view or listen to Content other than for personal, non-commercial use (for example, you may not publicly screen videos
+359	other	confirmed verbatim	yt-apiterms,yt-devpolicies	Last updated 2026-11-06 UTC
+359	clause	confirmed verbatim	yt-apiterms	16.3 No Licenses or Rights to Patents or Content. Without limiting the generality of the foregoing, no rights or licenses are granted under 
+364	other	confirmed verbatim	yt-apiterms,yt-devpolicies	Last updated 2026-11-06 UTC
+366	other	confirmed verbatim	yt-devpolicies	1. Audiovisual Content
+366	clause	confirmed verbatim	yt-devpolicies	You and your API Clients must not, and must not encourage, enable, or require others to: a. download, import, backup, cache, or store copies
+367	other	confirmed verbatim	yt-devpolicies	I. Additional Prohibitions
+367	clause	confirmed verbatim	yt-devpolicies	7. separate, isolate, or modify the audio or video components of any YouTube audiovisual content made available as part of, or in connection
+367	clause	confirmed verbatim	yt-devpolicies	8. promote separately the audio or video components of any YouTube audiovisual content made available as part of, or in connection with, the
+373	other	confirmed verbatim	ytdlp-pypi,ytdlp-readme	a feature-rich command-line audio/video downloader with support for thousands of sites
+373	other	confirmed verbatim	ytdlp-pypi,ytdlp-readme	a fork of youtube-dl based on the now inactive youtube-dlc
+376	other	confirmed verbatim	ytdlp-pypi,ytdlp-readme	-x, --extract-audio Convert video files to audio-only files (requires ffmpeg and ffprobe)
+376	other	confirmed verbatim	ytdlp-pypi,ytdlp-readme	While all the other dependencies are optional, `ffmpeg`, `ffprobe`, `yt-dlp-ejs` and a supported JavaScript runtime/engine are highly recomm
+376	other	confirmed verbatim	ytdlp-pypi,ytdlp-readme	yt-dlp-ejs - Required for full YouTube support.
+376	other	confirmed verbatim	ytdlp-pypi,ytdlp-readme	A JavaScript runtime/engine like deno (recommended), node.js, bun, or QuickJS is also required to run yt-dlp-ejs.
+382	clause	confirmed verbatim	ytdlp-license	This is free and unencumbered software released into the public domain. Anyone is free to copy, modify, publish, use, compile, sell, or dist
+386	other	confirmed verbatim	audioshake-home,audioshake-terms,soundslice-dataapi,ytdlp-pypi,ytdlp-readme	Licensing
+386	clause	confirmed verbatim	ytdlp-pypi,ytdlp-readme	While yt-dlp is licensed under the Unlicense, many of the release files contain code from other projects with different licenses. Most notab
+386	clause	confirmed verbatim	ytdlp-pypi,ytdlp-readme	The git repository, the PyPI source distribution and the PyPI built distribution (wheel) only contain code licensed under the Unlicense.
+386	clause	confirmed verbatim	ytdlp-pypi,ytdlp-readme	License depends on the build
+396	other	confirmed verbatim	songsterr-terms	Songsterr is an archive of guitar, bass and drum tabs with more than 80,000 songs.
+396	other	confirmed verbatim	songsterr-terms	Guitar Tabs LLC
+396	other	confirmed verbatim	songsterr-terms	Guitartabs LLC
+396	other	confirmed verbatim	songsterr-terms	Our paid plan (Songsterr Plus) unlocks advanced features, including Pause-Free Sync with Original Audio, Playback Speed, Print, AI Transcrip
+401	other	confirmed verbatim	music-ai-docs-home,music-ai-modules,musicai-apiref,musicai-docs,musicai-faq,musi	Page not found!
+406	clause	confirmed verbatim	songsterr-terms	You may not use, and may not instruct, enable, or permit any automated tool, script, browser extension, or AI agent to use, any means to cir
+411	other	confirmed verbatim	songsterr-aitxt	Last updated: 2026-11-09
+411	clause	"confirmed after removing the file's ""#"" comment marks"		AI model training: NOT permitted. Do not use Songsterr content (tabs, notation, song metadata, lyrics, audio, API responses) to train, fine-
+411	clause	confirmed verbatim	songsterr-aitxt	Allowed on a user's behalf, with or without a subscription:
+417	clause	confirmed verbatim	songsterr-terms,soundslice-terms	Some content on the Service may use a video player embedded from YouTube, using YouTube API services. When interacting with such content, yo
+431	other	confirmed verbatim	moises-terms	Last Updated: October 7, 2026
+431	other	confirmed verbatim	audioshake-home,audioshake-terms,fal-terms,flat-openapi,gemini-video,hf-gradio-c	YouTube
+433	clause	confirmed verbatim	moises-terms	10.1 ... the Service may allow you to upload content to the Service from a third-party service.
+434	clause	confirmed verbatim	moises-terms	11.2 Ownership and Limitations. You (or if you are acting on behalf of an Organization, your Organization) retain(s) all rights, title, and 
+435	clause	confirmed verbatim	moises-terms	11.4 NO TRAINING. WE DO NOT USE YOUR USER CONTENT OR OUTPUT TO TRAIN AI MODELS WITHOUT YOUR PERMISSION.
+436	clause	confirmed verbatim	moises-terms	14.2 use the Service or any content, information, or data obtained from the Service for purposes of informing, training, or developing (or a
+438	clause	confirmed verbatim	klangio-terms	via the respective platform interface (e.g., the YouTube Data API)
+445	other	confirmed verbatim	replicate-allinone-api,replicate-allinone	286.3K runs
+445	other	confirmed verbatim	replicate-allinone	This model costs approximately $0.062 to run on Replicate, or 16 runs per $1, but this varies depending on your inputs.
+445	other	confirmed verbatim	replicate-allinone	This model runs on Nvidia A100 (40GB) GPU hardware. Predictions typically complete within 54 seconds.
+451	other	confirmed verbatim	replicate-demucs	2.2M runs
+451	other	confirmed verbatim	replicate-demucs	costs approximately $0.0050 to run on Replicate, or 200 runs per $1
+451	other	confirmed verbatim	replicate-demucs	runs on Nvidia A100 (40GB) GPU hardware. Predictions typically complete within 5 seconds.
+451	other	confirmed verbatim	fal-demucs-llms,mvsep-algos,mvsep-fullapi,mvsep-openapi,replicate-demucs	htdemucs_ft
+451	other	confirmed verbatim	fal-demucs-llms,replicate-demucs	mdx_extra_q
+451	other	confirmed verbatim	replicate-demucs	Model updated 1 month, 1 week ago
+455	other	confirmed verbatim	replicate-chord	1.3K runs
+455	other	confirmed verbatim	replicate-chord	costs approximately $0.022 to run on Replicate, or 45 runs per $1
+455	other	confirmed verbatim	replicate-chord	runs on Nvidia T4 GPU hardware. Predictions typically complete within 99 seconds.
+455	other	corrected attribution: on the model page, not only a search snippet	replicate-chord	Return a downloadable .lab file in addition to JSON output
+460	other	confirmed verbatim	fal-demucs-llms,fal-terms,hf-gradio-client,hf-ip-index,replicate-allinone-api,re	Playground
+460	other	confirmed by eye (shorter than 4 characters)		API
+460	other	confirmed verbatim	audioshake-billing,fal-demucs-llms,fal-llms,hf-gradio-client,lalal-apidocs,mvsep	Examples
+460	other	confirmed verbatim	hf-gradio-client,replicate-allinone-api,replicate-allinone,replicate-chord,repli	README
+460	other	confirmed verbatim	replicate-allinone-api,replicate-allinone,replicate-chord,replicate-demucs,songs	Versions
+464	other	confirmed verbatim	replicate-pricing	Nvidia T4 GPU gpu-t4 $0.000225/sec $0.81/hr
+464	other	confirmed verbatim	replicate-pricing	Nvidia L40S GPU gpu-l40s $0.000975/sec $3.51/hr
+464	other	confirmed verbatim	replicate-pricing	Nvidia A100 (80GB) GPU gpu-a100-large $0.001400/sec $5.04/hr
+464	other	confirmed verbatim	replicate-pricing	CPU cpu $0.000100/sec $0.36/hr
+467	clause	confirmed verbatim	lic-allinone	MIT License ... Copyright (c) 2023 Taejun Kim
+467	clause	confirmed verbatim	lic-demucs,lic-demucscog	MIT License ... Copyright (c) Meta Platforms, Inc. and affiliates.
+467	other	confirmed verbatim	lic-allinone,lic-demucs,lic-demucscog	MIT License
+473	other	confirmed verbatim	replicate-terms	Last Update: April 1, 2026
+474	clause	confirmed verbatim	replicate-terms	As between Customer and Replicate, Customer owns and will continue to own all rights, title, and interest, including all Intellectual Proper
+474	clause	confirmed verbatim	replicate-terms	“Customer Data” means Customer Inputs and Outputs.
+475	clause	confirmed verbatim	replicate-terms	Customer hereby grants Replicate a worldwide, non-exclusive, non-sublicensable (except for the purposes of making the Marketplace Models ava
+476	clause	confirmed verbatim	replicate-terms	Any Community Model you download, access, or use from us or another User, is at your own risk and subject to these Terms and/or the terms ac
+480	other	confirmed verbatim	fal-demucs-llms	SOTA stemming model for voice, drums, bass, guitar and more.
+480	other	confirmed verbatim	fal-demucs-llms	**Price**: $0.0007 per seconds
+480	other	confirmed verbatim	fal-demucs-llms,mvsep-algos,mvsep-fullapi,mvsep-openapi,replicate-demucs	htdemucs_6s
+480	other	confirmed verbatim	fal-demucs-llms,mvsep-algos,mvsep-fullapi,mvsep-openapi,replicate-allinone-api,r	htdemucs
+480	other	confirmed verbatim	fal-demucs-llms,mvsep-algos,mvsep-fullapi,mvsep-openapi,replicate-demucs	htdemucs_ft
+480	other	confirmed verbatim	fal-demucs-llms,mvsep-algos,mvsep-fullapi,mvsep-openapi,replicate-demucs	htdemucs_6s
+480	other	confirmed verbatim	fal-demucs-llms,replicate-demucs	hdemucs_mmi
+480	other	confirmed by eye (shorter than 4 characters)		mdx
+480	other	confirmed verbatim	fal-demucs-llms,replicate-demucs	mdx_extra
+480	other	confirmed verbatim	fal-demucs-llms,replicate-demucs	mdx_q
+480	other	confirmed verbatim	fal-demucs-llms,replicate-demucs	mdx_extra_q
+480	other	confirmed by eye (shorter than 4 characters)		wav
+480	other	confirmed by eye (shorter than 4 characters)		mp3
+480	other	confirmed by eye (shorter than 4 characters)		mp3
+480	other	confirmed verbatim	fal-demucs-llms	only available for 6s models
+480	other	confirmed verbatim	fal-demucs-llms	Example Response
+488	other	confirmed verbatim	fal-llms,openai-audio,openai-audio2,openai-audiochat	Audio and speech
+491	other	confirmed verbatim	fal-terms	Last Updated: September 8, 2026
+492	clause	confirmed verbatim	fal-terms	Company grants you a limited, non-exclusive, non-transferable, revocable right to access and use the Sites and the Services in accordance wi
+493	clause	confirmed verbatim	fal-terms	Company hereby grants Customer a limited, non-exclusive, non-transferable, non-sublicensable, license to access and use Company’s API materi
+494	clause	confirmed verbatim	fal-terms	Customer hereby grants Company a non-exclusive, non-sublicensable, royalty-free license to reproduce, use, access, store, display, adapt, tr
+494	clause	confirmed verbatim	fal-terms	Customer owns and retains all right, title, and interest in and to the Customer Input.
+495	clause	corrected: clause was cut off with a bracket; completed from the page	fal-terms	Company may generate, collect, store, use, transfer, and/or disclose to third parties Usage Data and use Usage Data to perform data analytic
+499	other	corrected: navigation labels, not running text; now unquoted		Inference Tasks: Chat Completion, Feature Extraction, Text to Image, Text to Video
+499	other	confirmed verbatim	hf-ip-index	Other Tasks
+499	other	corrected: navigation labels, not running text; now unquoted		Baseten, Cerebras, Cohere, DeepInfra, Fal AI, Featherless AI, Fireworks, Groq, HF Inference, Novita, Nscale, OVHcloud AI Endpoints, Public A
+499	other	confirmed verbatim	hf-ip-index	Other Tasks
+504	other	confirmed verbatim	hf-gradio-client	While you can use any public Space as an API, you may get rate limited by Hugging Face if you make too many requests. For unlimited usage of
+504	other	confirmed verbatim	hf-gradio-client	if the original Space uses GPUs, your private Space will as well, and your Hugging Face account will get billed based on the price of the GP
+512	other	confirmed by eye (shorter than 4 characters)		mit
+518	other	confirmed verbatim	flat-openapi	guitar tab
+522	other	confirmed by eye (shorter than 4 characters)		mit
+527	other	confirmed verbatim	soundslice-dataapi	data API
+530	other	confirmed verbatim	soundslice-dataapi	API keys are only available to paying Soundslice customers — either in the Teacher or Licensing plans.
+530	other	confirmed verbatim	soundslice-dataapi	A Soundslice API key consists of two strings — an application ID and associated password.
+530	other	confirmed verbatim	soundslice-dataapi	For each API call, you’ll need to authenticate with your API key, using HTTP Basic Authentication.
+534	other	confirmed verbatim	soundslice-dataapi	the original uploaded notation file ... (e.g., MusicXML, GPX, etc.)
+534	other	confirmed verbatim	soundslice-dataapi	This API method is only available by special permission.
+534	other	confirmed verbatim	soundslice-dataapi	upload a slice’s notation from one of our supported formats: MusicXML, Guitar Pro, PowerTab or TuxGuitar. It does not support our PDF/image 
+534	other	confirmed verbatim	soundslice-dataapi	Generates MusicXML for the slice ... uses our own MusicXML exporting algorithm based on the slice’s current notation
+541	other	confirmed verbatim	soundslice-dataapi	2 — MP3 uploaded to Soundslice
+541	other	confirmed verbatim	soundslice-dataapi	4 — Video uploaded to Soundslice
+541	other	confirmed verbatim	soundslice-dataapi	3 — Video URL
+541	other	confirmed verbatim	soundslice-dataapi	8 — MP3 URL
+541	other	confirmed verbatim	soundslice-dataapi	1 — YouTube video
+541	other	confirmed verbatim	soundslice-dataapi	The URL or ID of the YouTube video.
+543	other	confirmed verbatim	soundslice-dataapi	syncpoints are stored as a simple JSON array. Example: [[0, 0], [1, 0.57], [1, 0.8, 240], [2, 1.3]]
+543	other	confirmed verbatim	soundslice-dataapi	The zero-based bar number in the slice, as an integer
+543	other	confirmed verbatim	soundslice-dataapi	Timecode in the audio, in seconds, as a float.
+543	other	confirmed verbatim	soundslice-dataapi	a number (integer or float) between 0 and 480, where 0 is the start of the bar and 480 is the end of the bar.
+547	clause	confirmed verbatim	soundslice-terms	7.5 Copyright in User Generated Content. You retain any intellectual property rights in the content you upload or post to the Service. You h
+547	clause	confirmed verbatim	soundslice-terms	7.6 YouTube. Some content on the Service may use a video player embedded from YouTube, using YouTube API services. When interacting with suc
+557	other	confirmed verbatim	flat-legal,flat-openapi	Flat API
+557	other	confirmed verbatim	flat-openapi	Personal Access Tokens or OAuth2
+560	other	confirmed after removing list bullets		Preferred formats: MusicXML: `.xml`, `.musicxml`, `.mxl` (compressed) ... This is the only format that preserves all notation data ... MIDI:
+560	other	confirmed after removing list bullets		Also supported (converted to MusicXML on import, some notation details may be lost): Guitar Pro: `.gp`, `.gp3`, `.gp4`, `.gp5`, `.gpx`, `.gt
+560	other	confirmed verbatim	flat-openapi	enable TABs, Chord grids
+566	other	confirmed verbatim	flat-openapi	Get a score revision data
+566	other	confirmed verbatim	flat-openapi	Flat JSON `json`, MusicXML `mxl`/`xml`, ABC notation `abc`, MP3 `mp3`, WAV `wav`, MIDI `midi`, Flat `flat`, a thumbnail of the first page `t
+569	other	confirmed verbatim	flat-legal	User content and ownership
+569	clause	confirmed verbatim	flat-legal	We do not claim ownership over your User Content
+569	other	confirmed verbatim	flat-apiterms	The app could not be loaded.
+577	other	confirmed verbatim	hooktheory-apidocs	You authenticate to the Hooktheory API by providing an HTTP Bearer Token ... retrieved through the API with your hooktheory.com username and
+577	other	confirmed verbatim	hooktheory-apidocs	Token lifetime changed in 2026. The activkey is now a short-lived token that expires about an hour after it is issued
+580	other	confirmed verbatim	hooktheory-apidocs	The Hooktheory API limits requests to 10 every 10 seconds.
+580	other	confirmed verbatim	hooktheory-apidocs	Over the limit the API answers 429 with a Retry-After header.
+582	other	confirmed verbatim	hooktheory-apidocs	Each node contains a chord and the frequency with which it occurs in the database
+582	other	confirmed verbatim	hooktheory-apidocs	paginated to 20 results per page
+586	other	confirmed verbatim	hooktheory-terms	Last updated October, 2026
+586	clause	confirmed verbatim	hooktheory-terms	4. Anti-Scraping Policy – Public Display and Use. Except as expressly authorized by Hooktheory (e.g., via a written data license or API term
+595	other	confirmed verbatim	openai-audio,openai-audio2	Audio and voice
+595	other	confirmed verbatim	openai-audio,openai-audio2	Audio input or output in an existing chat app
+595	other	confirmed verbatim	openai-audio,openai-audio2,openai-audiochat	Audio in Chat Completions
+595	other	confirmed verbatim	openai-audiochat	include audio in the modalities array and use an audio model, like gpt-audio-1.5.
+595	other	confirmed verbatim	openai-audiochat	The Responses API docs currently describe text and image inputs with text outputs. For this audio-chat pattern, use Chat Completions with an
+608	other	confirmed verbatim	spotify-blog	Posted November 27, 2024
+608	clause	confirmed verbatim	spotify-blog	Effective today, new Web API use cases will no longer be able to access or use the following endpoints and functionality in their third-part
+608	other	confirmed verbatim	spotify-blog	Audio Features
+608	other	confirmed verbatim	audioshake-home,audioshake-terms,spotify-blog	Audio Analysis
+608	clause	confirmed verbatim	spotify-blog	New apps that are registered on or after today's date
+617	other	unverifiable: search-result snippet; docs page answers HTTP 402; quote removed		10-minute processing timeout
+624	other	confirmed verbatim	musicai-pricing	Music metadata (By Cyanite)
+624	other	confirmed verbatim	musicai-pricing	$0.15 / min
+624	clause	confirmed verbatim	musicai-terms	to train artificial intelligence or machine learning
+631	other	not a quote (template)		X outputs <format>, which Y accepts as <input>
+636	other	confirmed verbatim	ytdlp-pypi,ytdlp-readme	-x, --extract-audio Convert video files to audio-only files (requires ffmpeg and ffprobe)
+636	other	confirmed verbatim	lalal-openapi	up to 10 GB
+637	other	confirmed verbatim	gemini-video	You can only upload public videos (not private or unlisted videos).
+638	other	confirmed verbatim	audioshake-faq,audioshake-quickstart	expire after one hour
+638	other	confirmed verbatim	audioshake-terms,chordify-about,chordify-terms,fadr-api,fadr-auth,fadr-billing,f	direct
+639	other	confirmed verbatim	klangio-transcription	Results will be available for 14 days.
+639	other	confirmed verbatim	lalal-openapi	A task stays here for 24 hours after it finishes.
+639	other	confirmed verbatim	musicai-pricing	48h temporary storage
+639	other	confirmed verbatim	audioshake-faq	Uploaded Assets expire after 72 hours.
+641	other	confirmed verbatim	klangio-file-formats-guitar-pro,klangio-gp-docs	available only if you choose the guitar or bass model
+641	other	confirmed verbatim	flat-openapi	converted to MusicXML on import, some notation details may be lost
+641	other	confirmed verbatim	soundslice-dataapi	MusicXML, Guitar Pro, PowerTab or TuxGuitar
+641	other	confirmed verbatim	soundslice-dataapi	only available by special permission
+642	other	confirmed verbatim	flat-openapi	Preferred formats
+643	other	confirmed verbatim	flat-openapi	Get a score revision data
+645	other	confirmed verbatim	klangio-chords-ext,klangio-chords	E:maj
+645	other	confirmed verbatim	flat-openapi,klangio-chords-ext,musicai-mod-transcription-chords	A minor
+646	other	confirmed verbatim	soundslice-dataapi	The URL or ID of the YouTube video.

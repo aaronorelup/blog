@@ -1,6 +1,6 @@
 """rtmlib (ONNX Runtime): RTMPose hand (Hand solution), RTMW and DWPose whole-body (Wholebody / Custom).
 
-usage: python run_rtmlib.py <clip> <mode: full|crop> <which: hand|rtmw|dwpose> <out dir> [frame step]
+usage: python run_rtmlib.py <clip> <mode: full|crop> <which: hand|rtmw|dwpose|vitpose> <out dir> [frame step]
 Hand: RTMDet-nano hand detector + RTMPose-m hand, 21 keypoints per detected hand, no handedness label.
 RTMW / DWPose: YOLOX person detector + 133 COCO-WholeBody keypoints per person; hands are keypoints 91-111
 (the person's left hand) and 112-132 (the person's right hand).
@@ -34,6 +34,12 @@ if which == "hand":
 elif which == "rtmw":
     model = rtmlib.Wholebody(mode="performance", backend="onnxruntime", device="cpu")
     models = {"det": rtmlib.Wholebody.MODE["performance"]["det"], "pose": rtmlib.Wholebody.MODE["performance"]["pose"]}
+elif which == "vitpose":
+    VITPOSE_S = "https://huggingface.co/JunkyByte/easy_ViTPose/resolve/main/onnx/wholebody/vitpose-s-wholebody.onnx"
+    model = rtmlib.Custom(to_openpose=False, det_class="YOLOX", det=DET_M, det_input_size=(640, 640),
+                          pose_class="ViTPose", pose=VITPOSE_S, pose_input_size=(192, 256),
+                          backend="onnxruntime", device="cpu")
+    models = {"det": DET_M, "pose": VITPOSE_S}
 elif which == "dwpose":
     model = rtmlib.Custom(to_openpose=False, det_class="YOLOX", det=DET_M, det_input_size=(640, 640),
                           pose_class="RTMPose", pose=DWPOSE_L, pose_input_size=(288, 384),

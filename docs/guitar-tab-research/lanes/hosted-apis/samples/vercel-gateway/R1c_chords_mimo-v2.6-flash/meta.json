@@ -1,0 +1,102 @@
+{
+ "service": "vercel-ai-gateway",
+ "model": "xiaomi/mimo-v2.6-flash",
+ "media": "/home/user/gtr/inputs/R1c/R1c.mono.wav",
+ "media_bytes": 2490396,
+ "media_sha256": "842028a71cdec41a2197d90467095692af34ff44c7498b4df7a2cfd4e1fe2f83",
+ "media_duration_s": 28.235283,
+ "mime": "audio/wav",
+ "http_status": 200,
+ "wall_s": 52.404,
+ "reasoning_effort": null,
+ "max_tokens": 24576,
+ "price_usd_per_token": {
+  "input": 1.4e-07,
+  "output": 2.8e-07
+ },
+ "price_source": "https://ai-gateway.vercel.sh/v1/models entry 'pricing' (read at run time)",
+ "response_headers": {},
+ "usage": {
+  "prompt_tokens": 357,
+  "completion_tokens": 866,
+  "total_tokens": 1223,
+  "cost": 0.00029246,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": null,
+   "upstream_inference_prompt_cost": 0,
+   "upstream_inference_completions_cost": 0
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 589,
+   "image_tokens": 0
+  },
+  "cache_creation_input_tokens": 0,
+  "market_cost": 0.00029246,
+  "gateway_cost": 0.00029246
+ },
+ "cost_usd_computed": 0.000292,
+ "cost_formula": "prompt_tokens * input price + completion_tokens * output price (completion_tokens includes reasoning tokens in the OpenAI usage format; reasoning_tokens reported separately: 589)",
+ "cost_usd_reported": 0.00029246,
+ "cost_usd": 0.000292,
+ "finish_reason": "stop",
+ "reasoning_text_chars": 1119,
+ "final_provider": "xiaomi",
+ "provider_metadata": {
+  "xiaomi": {},
+  "gateway": {
+   "routing": {
+    "originalModelId": "xiaomi/mimo-v2.6-flash",
+    "resolvedProvider": "xiaomi",
+    "fallbacksAvailable": [
+     "boundless",
+     "deepinfra",
+     "gmicloud",
+     "inference-net",
+     "novita",
+     "tencent"
+    ],
+    "canonicalSlug": "xiaomi/mimo-v2.6-flash",
+    "finalProvider": "xiaomi",
+    "modelAttemptCount": 1,
+    "modelAttempts": [
+     {
+      "canonicalSlug": "xiaomi/mimo-v2.6-flash",
+      "success": true,
+      "providerAttemptCount": 1,
+      "providerAttempts": [
+       {
+        "provider": "xiaomi",
+        "credentialType": "system",
+        "success": true,
+        "startTime": 1794346751194,
+        "endTime": 1794346802633,
+        "statusCode": 200,
+        "providerResponseId": "d5f1020b-593d-4300-a07a-1c8b0022442c_10826eefdde5491e83a3dcef4811ad46"
+       }
+      ]
+     }
+    ],
+    "totalProviderAttemptCount": 1,
+    "clientSessionId": "2972f905741de9ea213be301df2b3f88",
+    "clientSessionIdSource": "fingerprint"
+   },
+   "cost": "0.00029246",
+   "marketCost": "0.00029246",
+   "surchargeCost": "0",
+   "gatewayCost": "0.00029246",
+   "inferenceCost": "0.00029246",
+   "inputInferenceCost": "0.00004998",
+   "outputInferenceCost": "0.00024248",
+   "generationId": "gen_01M73PD4WF086XH028NGFSX30B"
+  }
+ },
+ "output_text_chars": 529,
+ "answer_parsed": true,
+ "spent_service_before_usd": 0.07449
+}

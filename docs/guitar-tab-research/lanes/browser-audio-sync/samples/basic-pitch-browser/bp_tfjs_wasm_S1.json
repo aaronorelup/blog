@@ -1,0 +1,25 @@
+{
+ "page": "/pages/basicpitch.html?clip=S1&engine=tfjs&backend=wasm",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 1.161,
+ "external_requests": [],
+ "result": {
+  "clip": "S1",
+  "engine": "tfjs",
+  "backend": "wasm",
+  "threads": null,
+  "crossOriginIsolated": true,
+  "decode_resample_ms": 140.4199999999255,
+  "tf_version": "3.21.0",
+  "backend_set": true,
+  "backend_active": "wasm",
+  "model_load_ms": 53.200000000186265,
+  "error": "Unknown dtype undefined",
+  "stack": "Error: Unknown dtype undefined\n    at Object.bytesPerElement (http://127.0.0.1:18765/build/basicpitch.js:7199:11)\n    at BackendWasm.move (http://127.0.0.1:18765/build/basicpitch.js:73389:42)\n    at BackendWasm.write (http://127.0.0.1:18765/build/basicpitch.js:73369:10)\n    at BackendWasm.makeOutput (http://127.0.0.1:18765/build/basicpitch.js:73474:21)\n    at Object.fill4 [as kernelFunc] (http://127.0.0.1:18765/build/basicpitch.js:71051:24)\n    at kernelFunc3 (http://127.0.0.1:18765/build/basicpitch.js:9194:22)\n    at http://127.0.0.1:18765/build/basicpitch.js:9238:21\n    at _Engine.scopedRun (http://127.0.0.1:18765/build/basicpitch.js:9087:19)\n    at _Engine.runKernelFunc (http://127.0.0.1:18765/build/basicpitch.js:9232:10)\n    at _Engine.runKernel (http://127.0.0.1:18765/build/basicpitch.js:9148:17)"
+ }
+}

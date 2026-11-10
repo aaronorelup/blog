@@ -1,6 +1,8 @@
 """OpenCV edge and line detection for frets and strings on a guitar neck, before and after rectification.
 
 usage: python run_opencv_lines.py <out dir> [<sam mask png for R3a_cu frame 150>]
+       python run_opencv_lines.py <out dir> --clip R3b --frames 225,0,449 --quad x1,y1,...,x4,y4 --size W,H
+(the second form was added for R3b; its quad is given on the command line and recorded in the output JSON)
 Neck quadrilateral for R3a_cu frame 150, set by hand from a gridded 2x crop (corners in 640x480 pixels):
   nut end, upper edge (541,120); nut end, lower edge (575,168); body end, lower edge (225,390); body end, upper edge (195,335).
 The "body end" corners sit where the frame's view of the fretboard meets the guitar's upper bout, not at a named fret.
@@ -23,10 +25,16 @@ import cv2  # noqa: E402
 import numpy as np  # noqa: E402
 
 out = sys.argv[1]
-sam_mask = sys.argv[2] if len(sys.argv) > 2 else None
+args = sys.argv[2:]
+opt = {args[i]: args[i + 1] for i in range(len(args) - 1) if args[i].startswith("--")}
+sam_mask = args[0] if args and not args[0].startswith("--") else None
 os.makedirs(out, exist_ok=True)
-RW, RH = 800, 116
+CLIP = opt.get("--clip", "R3a_cu")
+FRAMES = [int(v) for v in opt.get("--frames", "150,0,280").split(",")]
+RW, RH = [int(v) for v in opt.get("--size", "800,116").split(",")]
 QUAD_HAND = np.float32([[541, 120], [575, 168], [225, 390], [195, 335]])  # nut-top, nut-bottom, body-bottom, body-top
+if "--quad" in opt:
+    QUAD_HAND = np.float32([float(v) for v in opt["--quad"].split(",")]).reshape(4, 2)
 DST = np.float32([[0, 0], [0, RH], [RW, RH], [RW, 0]])
 
 
@@ -80,7 +88,8 @@ def run_quad(rgb, quad, tag, frame_label):
     mask = np.zeros(gray_full.shape, np.uint8)
     cv2.fillConvexPoly(mask, quad.astype(np.int32), 255)
     edges, hough, ls = segments(gray_full)
-    inside = lambda s: mask[int(np.clip((s[1] + s[3]) / 2, 0, 479)), int(np.clip((s[0] + s[2]) / 2, 0, 639))] > 0  # noqa: E731
+    hh, ww = gray_full.shape
+    inside = lambda s: mask[int(np.clip((s[1] + s[3]) / 2, 0, hh - 1)), int(np.clip((s[0] + s[2]) / 2, 0, ww - 1))] > 0  # noqa: E731
     axis = math.degrees(math.atan2(quad[3][1] - quad[0][1], quad[3][0] - quad[0][0]))
     width = float(np.linalg.norm(quad[1] - quad[0]))
     res["unrectified"] = {"neck_axis_deg": round(axis, 2), "fretboard_width_px": round(width, 1)}
@@ -120,12 +129,13 @@ def run_quad(rgb, quad, tag, frame_label):
     return res
 
 
-results = {"opencv": cv2.__version__, "frames": {}}
-for n in (150, 0, 280):
-    rgb = C.load_rgb("R3a_cu", n)
-    lab = f"R3a_cu_f{n:04d}"
+results = {"opencv": cv2.__version__, "clip": CLIP, "quad_set_by_hand": QUAD_HAND.tolist(), "rect_size": [RW, RH],
+           "frames": {}}
+for n in FRAMES:
+    rgb = C.load_rgb(CLIP, n)
+    lab = f"{CLIP}_f{n:04d}"
     results["frames"][lab] = {"hand_quad": run_quad(rgb, QUAD_HAND, "handquad", lab)}
-    if n == 150 and sam_mask and os.path.exists(sam_mask):
+    if CLIP == "R3a_cu" and n == 150 and sam_mask and os.path.exists(sam_mask):
         m = cv2.imread(sam_mask, cv2.IMREAD_GRAYSCALE) > 127
         cnts, _ = cv2.findContours(m.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         big = max(cnts, key=cv2.contourArea)
@@ -139,7 +149,7 @@ for n in (150, 0, 280):
         body_side.sort(key=lambda p: p[1])
         q = np.float32([nut_side[0], nut_side[1], body_side[1], body_side[0]])
         results["frames"][lab]["sam_quad"] = run_quad(rgb, q, "samquad", lab)
-C.write_json(os.path.join(out, "opencv_lines.json"), results)
+C.write_json(os.path.join(out, "opencv_lines.json" if CLIP == "R3a_cu" else f"opencv_lines_{CLIP}.json"), results)
 for lab, d in results["frames"].items():
     for tag, r in d.items():
         print(lab, tag, json.dumps({k: {kk: (vv if not isinstance(vv, dict) else {a: b for a, b in vv.items() if a in ("string_like", "fret_like", "segments_in_quad")}) for kk, vv in r[k].items() if kk in ("hough", "lsd")} for k in ("unrectified", "rectified")}))

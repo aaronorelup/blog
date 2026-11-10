@@ -47,7 +47,11 @@ class Rec extends AudioWorkletProcessor {
     if (this.first < 0) { this.first = currentFrame; this.expected = currentFrame; this.port.postMessage({firstFrame: currentFrame}); }
     if (currentFrame !== this.expected) {   // process() was not called for some render quanta: keep the timeline, fill zeros
       const gap = currentFrame - this.expected;
-      this.port.postMessage({gap: {atFrame: this.expected, frames: gap}});
+      // gap > 0: quanta skipped, write zeros. gap < 0: currentFrame repeated an earlier value (seen once, in r0199):
+      // step back so the samples land at the frame index process() reports (if that position is still in memory).
+      let handled = true;
+      if (gap < 0) { if (-gap <= this.pos) this.pos += gap; else handled = false; }
+      this.port.postMessage({gap: {atFrame: this.expected, frames: gap, handled}});
       let left = gap > 0 ? gap : 0;
       while (left > 0) { const k = Math.min(left, this.chunk - this.pos); this.pos += k; left -= k; if (this.pos >= this.chunk) this.flush(); }
     }

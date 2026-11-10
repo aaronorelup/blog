@@ -212,6 +212,23 @@ htdemucs drums: tap+note -36.57 / -14.28 / 0.0 (min / median / max), note-only -
 -0.34 / -0.29 / -0.24; htdemucs_6s drums: tap+note -21.51 / -11.46 / 0.0, note-only -65.49 / -62.01 / -43.61,
 tap-only -0.59 / -0.55 / -0.50. No note-only event is louder than the quietest tap event in either stem.
 
+Tap kind (thump = GM acoustic bass drum, slap = GM side stick) at the onsets found in the drums stems: spectral
+centroid of the 50 ms after each onset that matched a truth tap (`scripts/tap_kind_centroid.py`, Hann window, computed
+here; a measurement, not a classifier): htdemucs_6s drums: thump 8 onsets, 233 / 647 / 817 Hz (min / median / max),
+slap 24 onsets, 3,715 / 4,656 / 5,079 Hz; htdemucs drums: thump 8, 322 / 803 / 867 Hz, slap 23, 3,312 / 3,898 /
+5,114 Hz (3 onsets matched no tap); the truth taps stem at the htdemucs_6s onsets: thump 686 / 885 / 926 Hz, slap
+4,572 / 4,873 / 5,422 Hz. On this clip the two kinds' centroid ranges do not overlap in any of the three signals.
+
+Open-Unmix 1.3.0 `umxhq` on S6taps (source-separation lane run r0147, `umx --model umxhq`, wall 96.63 s, 2 cores;
+files `/home/user/gtr/lanes/source-separation/out/umxhq/S6taps/{bass,drums,other,vocals}.wav`), scored here the same
+way: energy relative to the mix bass -49.3 dB, drums -14.4 dB (0.0366), other -0.3 dB (0.924), vocals -46.5 dB.
+Drums vs `stems/taps.wav`: SI-SDR 2.71 dB, SDR 4.35 dB (e0950). Bass vs the bass-voice reference: SI-SDR -31.96 dB
+(e0965); other vs the melody-voice reference: SI-SDR 0.25 dB, SAR 19.67 dB (e0965). `librosa.onset.onset_detect` on
+the umxhq drums stem: 82 onsets; vs taps P 0.390 / R 1.000 / F 0.561 (e0971), vs note onsets P 0.585 / R 1.000 /
+F 0.738 (e0974); on all 27 tap+note, 21 note-only and 5 tap-only events and 29 on neither. Energy after each event
+(dB re loudest): tap+note -15.97 / -10.76 / 0.0, note-only -29.94 / -17.69 / -10.29, tap-only -1.06 / -0.69 / -0.63;
+10 of 21 note-only events are louder than the quietest tap event.
+
 Caveat that applies to all of this: the taps are GM drum-kit samples (side stick, acoustic bass drum), which is what
 a drum separator is trained on; real body taps on a guitar may not behave the same. Not tested here: no freely
 licensed real recording with body taps was in the shared set.
@@ -340,4 +357,260 @@ The shared set has none (INPUTS.md). Searched 2026-11-10:
   43.7 s). One download attempt of the AirTap file from upload.wikimedia.org answered HTTP 429 (3,513 bytes of HTML;
   deleted). Not obtained.
 - Steps for Aaron to fetch either file: `for-aaron.md`, list 8.
+
+## Essentia 2.1-beta6-dev `PredominantPitchMelodia`: the melody voice from audio directly
+
+- What it is: Essentia's implementation of the MELODIA predominant-pitch algorithm (Salamon and Gómez), same
+  `venv-essentia` as above (`essentia==2.1b6.dev1389`).
+- Run r0220 (`--nolock`, one thread through `OMP_NUM_THREADS=1` and friends, because the two CPU slots had a queue of
+  about 30 jobs; wall 10.14 s for all four clips, CPU 6.4 s, peak RSS 177.1 MB): `scripts/essentia_melodia.py`
+  on S2n, S2s, S6taps, S5dropd mono: `MonoLoader(sampleRate=44100)` -> `EqualLoudness()` ->
+  `PredominantPitchMelodia()` defaults (hop 128 samples = 2.9 ms). Per clip 1.5 to 2.5 s (script timer).
+- Output: two arrays, f0 in Hz per frame (0 = unvoiced) and a confidence per frame; written as CSV
+  `time_s,f0_hz,confidence`. 10,116 frames per clip; voiced frames S2n 5,654, S2s 8,348, S6taps 8,356, S5dropd
+  5,651.
+- Scored with `gtr-eval f0` (reference built from the truth notes of one voice on a 10 ms grid; `raw_pitch_accuracy`
+  = share of reference-voiced frames with the estimate within 50 cents; definitions are in the eval JSON):
+
+| clip | vs truth melody voice: voicing recall / false alarm / raw pitch acc / raw chroma acc / overall (eval id) | vs truth bass voice: raw pitch acc / raw chroma acc (eval id) |
+|---|---|---|
+| S2n (nylon) | 0.644 / 0.029 / 0.628 / 0.628 / 0.676 (e0478) | 0.000 / 0.258 (e0483) |
+| S2s (steel) | 0.945 / 0.079 / 0.796 / 0.796 / 0.813 (e0487) | 0.000 / 0.474 (e0492) |
+| S6taps (steel + taps) | 0.945 / 0.079 / 0.794 / 0.794 / 0.812 (e0501) | 0.000 / 0.472 (e0509) |
+| S5dropd (nylon, Drop D) | 0.643 / 0.029 / 0.628 / 0.628 / 0.675 (e0517) | 0.000 / 0.259 (e0528) |
+
+  The f0 track follows the melody voice: no frame is within 50 cents of the bass voice on any clip; the chroma
+  matches against the bass are octave-related frames.
+- gtr-eval note (scorer 0.11.1 by then): an f0 CSV with empty cells for unvoiced frames made `gtr-eval f0` stop with
+  `IndexError: index 5654 is out of bounds for axis 0 with size 5654` (e0440 to e0447, all eight runs). Writing 0 Hz
+  for unvoiced frames (mir_eval's convention) worked; the numbers above use that file (`<clip>.melodia0.csv`, time
+  = frame index x 128 / 44100). mir_eval still warned "Non-uniform timescale passed to resample_melody_series"
+  (written into the result's `processing`).
+- Input format facts: any file FFmpeg decodes, resampled by `MonoLoader`; mono. Constraint inputs for a re-run:
+  `minFrequency`, `maxFrequency` (a note range), `voicingTolerance`, `guessUnvoiced`, `frameSize`, `hopSize`,
+  `magnitudeThreshold`; no tuning, capo or key input.
+- Samples: `samples/essentia-melodia/S2n.melodia.csv` (the 0-Hz version), `S2n_f0_melody.json`,
+  `S2n_f0_bass.json`.
+
+## Bass voice from audio: low-pass filter + librosa 0.11.0 `pyin` (monophonic f0), plus a plain f0-to-notes step
+
+- What it is: a zero-phase 4th-order Butterworth low-pass (`scipy.signal.butter` + `sosfiltfilt`, scipy 1.17.1) and
+  librosa's probabilistic YIN f0 tracker, in `venv-core`. The f0-to-notes step is written here (a run of voiced
+  frames rounded to the same MIDI number, at least 50 ms long, is one note); it is not part of librosa.
+- Runs r0235 (S2n) and r0233 (S5dropd), `--nolock`, one thread (`OMP_NUM_THREADS=1`, `NUMBA_NUM_THREADS=1`),
+  `scripts/bass_lowpass_pyin.py <clip> <out>` with cutoffs 150, 200, 250 Hz and `librosa.pyin(fmin=C2 65.4 Hz,
+  fmax=C4 261.6 Hz, frame_length=4096, hop_length=441)`. Wall 103.91 s / 101.22 s, CPU 14.8 s each, peak RSS 605 MB.
+  The wall time is far above the CPU time: the box's four cores were fully loaded by other lanes at the time, and the
+  first cutoff includes numba compilation (script timer: 54.5 s for 150 Hz, 18.2 s for 200 Hz, 13.6 s for 250 Hz on
+  S2n). Not a clean timing.
+- Earlier attempt r0219 failed (`ModuleNotFoundError: No module named 'soundfile'`): this lane had installed
+  `libnmfd` into `venv-core` by mistake, which pulled `pysoundfile`, `numpy<2` and `pandas<2`; `uv pip sync` back to
+  the saved freeze then removed the shared file `soundfile.py`. Fixed with `uv pip install --reinstall
+  soundfile==0.14.0`; libnmfd got its own `venv-nmfd`. (Results before that were made with the original venv-core;
+  the freeze in `freeze/venv-core.txt` is the state they used.)
+- Outputs: `f0_<cutoff>.csv` (`time_s,f0_hz,voiced_prob`, 2,936 frames of 10 ms; unvoiced written as 0 Hz for
+  scoring) and `notes_<cutoff>.csv` (`onset,offset,pitch`). S2n: 2,540 / 2,590 / 2,458 voiced frames and 71 notes at
+  150 / 200 / 250 Hz; S5dropd: 2,494 / 2,593 / 2,458 voiced frames and 76 / 71 / 71 notes.
+
+| clip, cutoff | f0 vs truth bass voice: voicing recall / false alarm / raw pitch acc / raw chroma acc (eval id) | notes vs bass voice, onset 50 ms: P / R / F, matched of 48 (eval id) | notes vs all 90 notes: melody notes matched (eval id) |
+|---|---|---|---|
+| S2n 150 Hz | 0.950 / 0.344 / 0.800 / 0.800 (e0564) | 0.155 / 0.229 / 0.185, 11 (e0566) | 0 (e0570) |
+| S2n 200 Hz | 0.954 / 0.443 / 0.478 / 0.789 (e0572) | 0.085 / 0.125 / 0.101, 6 (e0576) | 4 (e0579) |
+| S2n 250 Hz | 0.902 / 0.438 / 0.390 / 0.646 (e0582) | 0.113 / 0.167 / 0.134, 8 (e0584) | 4 (e0587) |
+| S5dropd 150 Hz | 0.932 / 0.344 / 0.785 / 0.785 (e0590) | 0.145 / 0.229 / 0.177, 11 (e0593) | 0 (e0595) |
+| S5dropd 200 Hz | 0.955 / 0.443 / 0.554 / 0.787 (e0597) | 0.099 / 0.146 / 0.118, 7 (e0599) | 4 (e0601) |
+| S5dropd 250 Hz | 0.902 / 0.438 / 0.467 / 0.644 (e0603) | 0.169 / 0.250 / 0.202, 12 (e0605) | 4 (e0607) |
+
+- Why the note numbers are much lower than the frame numbers: the notes start late. With `--onset-tol 0.15`, 37 of
+  48 S2n bass notes match (150 Hz cutoff) and the matched onsets are a median 80 ms late (mean 73 ms, largest 143 ms;
+  e0611). First notes of `S2n notes_150.csv`: `0.13-0.24 s MIDI 36` (inside the silent count-in), `2.21 43`, `2.80
+  51`, `3.22 50`, `3.33 43`, `3.79 50`; truth bass: `2.143 43`, `2.679 50`, `3.214 43`, `3.750 50`.
+- Input format facts: mono float audio at any rate; `pyin` needs `fmin`/`fmax`. Constraint inputs for a re-run: the
+  low-pass cutoff, `fmin`/`fmax` (the bass register: a known tuning such as Drop D lowers `fmin`; S5dropd's lowest
+  bass note is D2 = 73.4 Hz, inside C2 to C4), `frame_length`, `hop_length`.
+- Samples: `samples/bass-lowpass-pyin/S2n_notes_150.csv`, `S2n_f0_150.csv`, `S5dropd_notes_150.csv`.
+
+## libnmfd 1.0.0 (AudioLabs Erlangen): KAM harmonic-percussive separation + NMFD with a percussiveness threshold
+
+- What it is: "libnmfd: Music Processing Applications of Nonnegative Matrix Factorization" (López-Serrano, Dittmar,
+  Özer, Müller), PyPI `libnmfd==1.0.0` (the only release, 2024-08-09, per survey.md), MIT (LICENSE read from
+  https://raw.githubusercontent.com/groupmm/libnmfd/main/LICENSE on 2026-11-10: "MIT License", "Copyright (c) 2024
+  Patricio López-Serrano, Christian Dittmar, Yigitcan Özer and Meinard Müller").
+- Install: libnmfd requires `numpy<2.0.0`, `pandas<2.0.0`, `ipython<8.0.0`, `jupyter`, `pysoundfile` (PyPI JSON). It
+  was first installed into `venv-core` by mistake (numpy went 2.4.6 -> 1.26.4; undone, see the pyin section), then
+  into its own `uv venv --python 3.11 venv-nmfd` with `uv pip install libnmfd librosa soundfile mir_eval` (numpy
+  1.26.4, scipy 1.17.1, pandas 1.5.3; freeze in `samples/libnmfd/venv-nmfd.freeze.txt`). `pysoundfile` 0.9.0.post1
+  and `soundfile` 0.14.0 both install a top-level `soundfile.py`; in `venv-nmfd` the 0.14.0 file is the one present.
+  No weights.
+- The method is the package's own demo notebook `demo_drum_extraction_kam_nmf_perc_threshold.ipynb` (read from
+  raw.githubusercontent.com, branch main, 2026-11-10), copied step by step into `scripts/libnmfd_drum_extraction.py`
+  with only the input and output paths changed and `np.random.seed(0)` added before the random template
+  initialisation: STFT 2048 / hop 512 -> `hpss_kam_fitzgerald(num_iter=30, kern_dim=13)` (index 0 = percussive per
+  its docstring) -> stacked [percussive; harmonic] spectrogram -> `nmfd(num_comp=30, num_iter=60,
+  num_template_frames=1, func_preprocess=drum_specific_soft_constraints_nmf, decay=0.75)` ->
+  `percussiveness_estimation` -> components above 0.25 are percussive -> alpha-Wiener filter (alpha 1) -> inverse STFT.
+  No truth is used.
+- Run r0238 (`--nolock`, one BLAS thread, slot queue ~30 jobs; S6taps mono): wall 186.68 s, CPU 43.3 s, peak RSS
+  1,778.8 MB (script timers: KAM 88.21 s, NMFD 79.66 s; the box was fully loaded, so wall time is not a clean
+  timing). Outputs: `kam_percussive.wav`, `kam_harmonic.wav`, `nmf_percussive.wav`, `nmf_harmonic.wav` (float32 mono
+  44.1 kHz, 1,294,650 samples). Percussiveness of the 30 components, sorted: 0.661, 0.510, 0.370, 0.179, 0.161, then
+  0.087 down to 0.002; 3 components above the 0.25 threshold. Energy (sum of squares / mix): KAM percussive 0.0376,
+  KAM harmonic 0.8051, NMF percussive 0.0920, NMF harmonic 0.7208.
+
+| part | eval id | taps SI-SDR dB | taps SDR | taps SIR | taps SAR | guitar SI-SDR dB | guitar SDR |
+|---|---|---|---|---|---|---|---|
+| KAM (30 iterations) | e0622 | -1.95 | -1.21 | 1.98 | 3.77 | 15.69 | 16.05 |
+| KAM + NMFD + threshold 0.25 | e0632 | -1.81 | -1.71 | 1.46 | 3.50 | 13.15 | 13.79 |
+
+- Onsets (`librosa.onset.onset_detect` defaults) on each percussive part: 53 onsets each, on all 27 tap+note, 21
+  note-only and 5 tap-only events, 0 on neither; vs taps P 0.604 / R 1.000 / F 0.753 (KAM e0637, NMF e0643); vs note
+  onsets P 0.906 / R 1.000 / F 0.950 (e0640, e0645).
+- Energy in the 50 ms after each event (dB re the loudest event window; min / median / max): KAM percussive tap+note
+  -6.09 / -4.99 / 0.0, note-only -11.30 / -8.48 / -6.16, tap-only -4.15 / -3.97 / -3.08; NMF percussive tap+note
+  -6.42 / -4.79 / 0.0, note-only -11.83 / -9.22 / -6.65, tap-only -2.61 / -2.16 / -2.09. No note-only event is louder
+  than the quietest tap event in either part (gap 0.07 dB KAM, 0.23 dB NMF).
+- Input format facts: `soundfile.read` of any WAV, made mono with `make_monaural`; works on magnitude spectrograms
+  (numpy arrays). Emits spectrograms; audio comes from the caller's inverse STFT with the mixture phase.
+- Constraint inputs for a re-run: KAM `num_iter`, `kern_dim`; NMFD `num_comp`, `num_iter`, `num_template_frames`,
+  `init_W`/`init_H`, `fix_W`/`fix_H` (fixed templates: a user could record a few of their own taps as templates;
+  `initialize_drum_specific_nmfd_templates` builds templates from folders of single drum samples, which the PyPI
+  wheel does not ship); the percussiveness threshold. No musical constraints.
+- Samples: `samples/libnmfd/` (summary JSON, both stem evals, venv freeze).
+
+## madmom 0.17.dev0 (git commit 27f032e8): eight onset programs
+
+- What it is: CPJKU's audio library and its onset detectors (CNN, RNN offline and online, SuperFlux, SuperFlux with
+  neural peak picking, ComplexFlux, LogFiltSpecFlux, SpectralOnsetDetection), from
+  `git+https://github.com/CPJKU/madmom` (resolved to commit `27f032e8947204902c675e5e341a3faf5dc86dae`), installed
+  2026-11-10. The PyPI release 0.16.1 was not used.
+- Install: `uv venv --python 3.11 venv-madmom` then `uv pip install --python venv-madmom/bin/python
+  "git+https://github.com/CPJKU/madmom" mir_eval soundfile`: built from source without errors (numpy 2.4.6, mido
+  1.3.3). `du -sh`: 37 MB. The onset models ship inside the package (`madmom/models/onsets/2013`, `2014`); the
+  models folder's LICENSE begins "All files in this repository are distributed under the following license: Creative
+  Commons Attribution-NonCommercial-ShareAlike 4.0" and adds "If you want to include any of these files (or a
+  variation or modification thereof) or technology which utilises them in a commercial product, please contact
+  Gerhard Widmer" (file read from the installed package, 2026-11-10). Freeze: `samples/madmom/venv-madmom.freeze.txt`.
+- Run r0247 (`--nolock`, one BLAS thread): `scripts/madmom_onsets.sh <venv> S6taps.mono.wav <out>` runs each
+  program as `<Program> single <wav> -o <out>.txt` with its defaults. Wall 30.88 s for all eight, CPU 11.4 s, peak
+  RSS 281.2 MB; per program 2.6 to 5.4 s wall (timing.tsv) on a fully loaded box. An earlier attempt (queued from
+  21:03 UTC through gtr-run's slots) waited about 30 minutes without getting a slot and was stopped by this session's
+  background time limit; it never started and wrote no ledger line.
+- Output: text, one onset time in seconds per line (10 ms resolution, e.g. `2.150`, `2.680`, `3.220`).
+
+| program | n onsets | vs taps P / R / F (eval id) | vs note onsets P / R / F (eval id) | on tap+note (27) | on note-only (21) | on tap-only (5) | on neither |
+|---|---|---|---|---|---|---|---|
+| CNNOnsetDetector | 53 | 0.604 / 1.000 / 0.753 (e0681) | 0.906 / 1.000 / 0.950 (e0684) | 27 | 21 | 5 | 0 |
+| ComplexFlux | 54 | 0.593 / 1.000 / 0.744 (e0686) | 0.889 / 1.000 / 0.941 (e0688) | 27 | 21 | 5 | 1 |
+| LogFiltSpecFlux | 54 | 0.593 / 1.000 / 0.744 (e0691) | 0.889 / 1.000 / 0.941 (e0694) | 27 | 21 | 5 | 1 |
+| OnsetDetector (RNN) | 53 | 0.604 / 1.000 / 0.753 (e0697) | 0.906 / 1.000 / 0.950 (e0701) | 27 | 21 | 5 | 0 |
+| OnsetDetectorLL (online RNN) | 53 | 0.604 / 1.000 / 0.753 (e0703) | 0.906 / 1.000 / 0.950 (e0706) | 27 | 21 | 5 | 0 |
+| SpectralOnsetDetection | 54 | 0.593 / 1.000 / 0.744 (e0708) | 0.889 / 1.000 / 0.941 (e0710) | 27 | 21 | 5 | 1 |
+| SuperFlux | 53 | 0.604 / 1.000 / 0.753 (e0712) | 0.906 / 1.000 / 0.950 (e0714) | 27 | 21 | 5 | 0 |
+| SuperFluxNN | 53 | 0.604 / 1.000 / 0.753 (e0716) | 0.906 / 1.000 / 0.950 (e0718) | 27 | 21 | 5 | 0 |
+
+- Timing of the 32 matched tap pairs: CNNOnsetDetector median +3.2 ms (largest 9.3 ms, e0681); SuperFlux median
+  -2.1 ms (largest 5.0 ms, e0712); for comparison aubio hfc median +2.7 ms (e0081).
+- Like every detector in this lane, the madmom programs report an onset at every event and do not say whether an
+  onset is a tap or a plucked note.
+- Input format facts: WAV read by madmom's own loader (resampled per processor; the programs take 44.1 kHz mono here).
+  Constraint inputs for a re-run: `--threshold`, `--smooth`, `--pre_max`/`--post_max`, `--combine`, `--delay`, `--fps`
+  (peak picking, per each program's `-h`). No musical constraints.
+- Samples: `samples/madmom/` (scores, CNN output, timing), `samples/aubio/`, `samples/essentia/` (scores, one output
+  file each, Essentia freeze).
+
+## Basic Pitch 0.4.0 (ONNX model) as the transcriber, then voice separation of its notes
+
+Basic Pitch is the audio-to-notes lane's tool; it was run here because that lane's notes for the S2 clips were not
+written yet at 21:25 UTC (its first CLI runs, e.g. r0033 on S2n, stopped with "File .../nmp.tflite cannot be loaded
+into either TensorFlow, CoreML, TFLite or ONNX"). This section is a handoff test: transcriber notes into the voice
+methods above.
+
+- Install: `uv venv --python 3.10 venv-basicpitch`, `uv pip install --python venv-basicpitch/bin/python
+  "basic-pitch[onnx]==0.4.0" "numpy<2"` (basic-pitch 0.4.0, onnxruntime 1.23.2, tflite-runtime 2.14.0, librosa
+  0.11.0, numpy 1.26.4, scipy 1.15.3). Dead end: the CLI then stopped with `ModuleNotFoundError: No module named
+  'pkg_resources'` (raised from `resampy/filters.py`); `uv pip install "setuptools<81"` (80.10.2) fixed it. Freeze:
+  `samples/basic-pitch/venv-basicpitch.freeze.txt`. Weights ship in the package (`saved_models/icassp_2022/nmp.onnx`).
+- Run r0252 (`--nolock`, pinned with `taskset -c 1` to one core, because about 24 jobs were waiting for the two CPU
+  slots): `basic-pitch --model-serialization onnx --save-midi --save-note-events <out> S2n.mono.wav S2s.mono.wav
+  S6taps.mono.wav S5dropd.mono.wav R3a.mono.wav`, defaults otherwise. Wall 74.95 s for five clips (29.4 s each, R3a
+  18 s), CPU 28.2 s, peak RSS 393.9 MB. An earlier queued run through a slot was cancelled after 813 s of waiting.
+- Output per clip: `<name>_basic_pitch.mid` and `<name>_basic_pitch.csv` with header
+  `start_time_s,end_time_s,pitch_midi,velocity,pitch_bend` and a variable number of pitch-bend values per row (rows
+  are not in time order). Notes: S2n 137, S2s 201, S6taps 196, S5dropd 130, R3a 106. First S2n rows in time order
+  (onset, offset, MIDI, velocity): 0.012-0.151 23 49 (inside the silent count-in), 2.149-2.683 55 93, 2.161-2.927 43
+  71, 2.683-3.217 55 98, 2.683-3.217 50 98, 2.695-2.939 83 40, 3.217-3.391 67 43, 3.217-3.763 62 71. S2n pitch range
+  of the output: MIDI 23 to 87 (truth 43 to 64).
+- `gtr-eval notes` (onset within 50 ms, pitch within 50 cents): S2n P 0.657 / R 1.000 / F 0.793, 137 estimated, 90 of
+  90 matched (e0734); S2s 0.448 / 1.000 / 0.619, 201 (e0736); S6taps 0.459 / 1.000 / 0.629, 196 (e0738); S5dropd
+  0.692 / 1.000 / 0.818, 130 (e0741). Every truth note of both voices is matched on all four clips; the extra notes
+  are what the voice methods have to deal with. Median onset of matched notes 7.5 to 9.2 ms late.
+
+Voice separation of those notes (`scripts/voice_split.py <clip> <basic-pitch csv>`, runs r0258 S2n, r0260 S2s,
+r0263 S6taps, r0265 S5dropd, `--nolock`, 6.2 to 7.8 s wall each). "Right voice" counts the transcribed notes matched
+to a truth note (all 90 here) whose label equals that truth note's voice. The per-voice columns score only the notes
+a method labelled bass (or melody) against the truth bass (or melody) notes with `gtr-eval notes --voice`, so extra
+notes count against precision there.
+
+| clip | method | right voice / matched | notes labelled melody / bass | bass-labelled notes vs truth bass: P / R / F (eval id) | melody-labelled vs truth melody: P / R / F (eval id) |
+|---|---|---|---|---|---|
+| S2n | B1 BASELINE T = 55 | 90 / 90 | 71 / 66 | 0.727 / 1.000 / 0.842 (e0744) | 0.592 / 1.000 / 0.743 (e0746) |
+| S2n | B2 BASELINE lowest per onset | 82 / 90 | 86 / 51 | 0.784 / 0.833 / 0.808 (e0748) | 0.488 / 1.000 / 0.656 (e0751) |
+| S2n | B3 BASELINE skyline | 78 / 90 | 51 / 86 | 0.512 / 0.917 / 0.657 (e0753) | 0.667 / 0.810 / 0.731 (e0755) |
+| S2n | P1 partitura poly | 50 / 90 | 4 / 133 | 0.361 / 1.000 / 0.530 (e0757) | 0.500 / 0.048 / 0.087 (e0759) |
+| S2n | P2 partitura mono | 55 / 90 | 8 / 129 | 0.372 / 1.000 / 0.542 (e0762) | 0.875 / 0.167 / 0.280 (e0764) |
+| S2n | M1 music21 + rule | 83 / 90 | 62 / 75 | 0.613 / 0.958 / 0.748 (e0767) | 0.597 / 0.881 / 0.712 (e0770) |
+| S2s | B1 BASELINE T = 55 | 90 / 90 | 114 / 87 | 0.552 / 1.000 / 0.711 (e0772) | 0.368 / 1.000 / 0.538 (e0774) |
+| S2s | B2 BASELINE lowest per onset | 84 / 90 | 139 / 62 | 0.677 / 0.875 / 0.764 (e0776) | 0.302 / 1.000 / 0.464 (e0777) |
+| S2s | B3 BASELINE skyline | 65 / 90 | 62 / 139 | 0.331 / 0.958 / 0.492 (e0780) | 0.306 / 0.452 / 0.365 (e0783) |
+| S2s | P1 partitura poly | 48 / 90 | 3 / 198 | 0.242 / 1.000 / 0.390 (e0786) | 0.000 / 0.000 / 0.000 (e0789) |
+| S2s | P2 partitura mono | 48 / 90 | 1 / 200 | 0.240 / 1.000 / 0.387 (e0791) | 0.000 / 0.000 / 0.000 (e0794) |
+| S2s | M1 music21 + rule | 79 / 90 | 105 / 96 | 0.438 / 0.875 / 0.583 (e0797) | 0.352 / 0.881 / 0.503 (e0800) |
+| S6taps | B1 BASELINE T = 55 | 90 / 90 | 111 / 85 | 0.565 / 1.000 / 0.722 (e0803) | 0.378 / 1.000 / 0.549 (e0807) |
+| S6taps | B2 BASELINE lowest per onset | 84 / 90 | 134 / 62 | 0.677 / 0.875 / 0.764 (e0810) | 0.313 / 1.000 / 0.477 (e0814) |
+| S6taps | B3 BASELINE skyline | 73 / 90 | 62 / 134 | 0.358 / 1.000 / 0.527 (e0818) | 0.403 / 0.595 / 0.481 (e0821) |
+| S6taps | P1 partitura poly | 48 / 90 | 2 / 194 | 0.247 / 1.000 / 0.397 (e0824) | 0.000 / 0.000 / 0.000 (e0827) |
+| S6taps | P2 partitura mono | 48 / 90 | 1 / 195 | 0.246 / 1.000 / 0.395 (e0830) | 0.000 / 0.000 / 0.000 (e0833) |
+| S6taps | M1 music21 + rule | 77 / 90 | 101 / 95 | 0.421 / 0.833 / 0.559 (e0836) | 0.366 / 0.881 / 0.517 (e0839) |
+| S5dropd | B1 BASELINE T = 55 | 90 / 90 | 62 / 68 | 0.706 / 1.000 / 0.828 (e0842) | 0.677 / 1.000 / 0.808 (e0846) |
+| S5dropd | B2 BASELINE lowest per onset | 82 / 90 | 79 / 51 | 0.784 / 0.833 / 0.808 (e0849) | 0.532 / 1.000 / 0.694 (e0851) |
+| S5dropd | B3 BASELINE skyline | 81 / 90 | 51 / 79 | 0.532 / 0.875 / 0.661 (e0854) | 0.765 / 0.929 / 0.839 (e0857) |
+| S5dropd | P1 partitura poly | 50 / 90 | 3 / 127 | 0.378 / 1.000 / 0.549 (e0861) | 0.667 / 0.048 / 0.089 (e0865) |
+| S5dropd | P2 partitura mono | 51 / 90 | 4 / 126 | 0.381 / 1.000 / 0.552 (e0868) | 0.750 / 0.071 / 0.130 (e0871) |
+| S5dropd | M1 music21 + rule | 81 / 90 | 56 / 74 | 0.608 / 0.938 / 0.738 (e0874) | 0.643 / 0.857 / 0.735 (e0877) |
+
+- What partitura emitted on transcribed notes: 5 to 8 voices instead of 2 (S2n mono: 6 voices with 1, 8, 33, 18,
+  35, 42 notes and mean pitches 59.0, 61.0, 52.0, 55.9, 54.2, 53.5). The labelling rule used here (only the voice
+  with the highest mean pitch is melody) then put almost every note in bass; the low "right voice" counts for P1/P2
+  come from that rule applied to more than two voices, not from partitura alone. A rule that merges partitura's
+  voices into two was not tried.
+- What music21 emitted on S2n transcribed notes: 37 Chords, 68 single Notes, 35 Voice objects (from the
+  overlapping notes of different lengths); every note was found back in the music21 stream.
+- The fixed threshold T = 55 gives the right voice for all 90 matched notes on every clip because Basic Pitch got
+  every truth pitch right and the arrangement keeps the voices apart (bass 38 to 52, melody 55 to 64); its extra
+  notes are split by pitch too, which is what lowers the per-voice precision.
+- Samples: `samples/basic-pitch/` (S2n CSV and MIDI, S6taps MIDI, venv freeze), `samples/voice-split/<clip>_basicpitch_voice_split.json`,
+  `S2n_basicpitch_M1_music21.csv`.
+
+## Real fingerstyle clips without truth (R3a, R3b, R3c): counts only
+
+R3a (concert video), R3b (home recording, CC0) and R3c (lesson video) are real nylon-string fingerstyle recordings,
+18.0 s each (INPUTS.md; R3b and R3c were added at 21:29 UTC). The manifest describes no percussion in them and none
+has truth, so nothing here is a score.
+
+- Run r0292 (`--nolock`, one thread; wall 14.79 s for the three clips, CPU 8.0 s, peak RSS 368.9 MB):
+  `scripts/real_clips_onsets.py`: `librosa.effects.hpss(margin=4)` and `librosa.onset.onset_detect` (defaults) on
+  the mono mix and on the percussive part. aubio `aubioonset -O hfc` and madmom `CNNOnsetDetector single` were run on
+  the same mono files outside gtr-run (a few seconds each, not timed).
+
+| clip | onsets, librosa on mix | onsets, librosa on HPSS percussive (margin 4) | aubio hfc | madmom CNNOnsetDetector | energy of percussive part / harmonic part (margin 4) |
+|---|---|---|---|---|---|
+| R3a | 81 | 86 | 61 | 64 | 0.0009 / 0.546 |
+| R3b | 112 | 138 | 87 | 102 | 0.0005 / 0.525 |
+| R3c | 54 | 71 | 47 | 57 | 0.0018 / 0.588 |
+
+  For comparison, on S6taps the percussive part at margin 4 held 0.022 of the mix energy (taps included) and the same
+  detectors returned 53 onsets for 29.4 s.
+- Basic Pitch on R3a (r0252 above): 106 notes. No Demucs stems of R3 clips existed in the source-separation lane's
+  output folder at 21:46 UTC, so the drums-stem tap test was not repeated on real audio.
+- Files: `/home/user/gtr/lanes/fingerstyle-voices-taps/out/real-clips/<clip>/` (onset lists).
 

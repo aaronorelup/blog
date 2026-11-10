@@ -22,9 +22,14 @@ import time
 
 
 def to_lab(changes, dur, path):
+    # A change that starts at or after the end of the audio file is dropped (Chordino can report a final "N" a few
+    # hundred ms after the end of the file, e.g. 24.335 s for the 24.000 s clip S3).
     with open(path, "w") as f:
         for i, c in enumerate(changes):
             end = changes[i + 1].timestamp if i + 1 < len(changes) else dur
+            end = min(end, dur)
+            if c.timestamp >= end:
+                continue
             f.write("%.3f\t%.3f\t%s\n" % (c.timestamp, end, c.chord))
 
 

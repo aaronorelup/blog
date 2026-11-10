@@ -6,10 +6,19 @@ Lane agent `try-video-hands-fretboard`, started 2026-11-10 20:52 UTC. Every time
 decoding from PNG, drawing and writing included); "per-frame inference" is measured inside the script around the
 model call only (`time.perf_counter`), so it excludes PNG decoding and drawing.
 
-Inputs: R3a from the shared set (`/home/user/gtr/inputs/R3a/R3a.mp4`, 540 frames, 640x480, 30000/1001 fps) and R3a_cu,
-a 10 s close shot from the same CC BY-SA 4.0 concert video added by this lane (300 frames; see `inputs.md`). Frames
-were decoded once to PNG with `ffmpeg -i <clip>.mp4 -vsync 0 <dir>/%04d.png`. There is no ground truth for either
-clip, so the numbers below are counts, rates and times, not accuracy.
+Inputs: R3a from the shared set (`/home/user/gtr/inputs/R3a/R3a.mp4`, 540 frames, 640x480, 30000/1001 fps); R3a_cu,
+a 10 s close shot from the same CC BY-SA 4.0 concert video added by this lane (300 frames; see `inputs.md`); and R3b
+and R3c from the shared set once `/home/user/gtr/inputs/READY-VIDEO` appeared (2026-11-10T21:29:15Z): each 18 s,
+1920x1080, 25 fps, 450 frames (sha256 of R3b.mp4 `95adf1a34c976ad67b6a443fe916a3a0b2755246efcd0a4ca13aee1814c675a6`, of R3c.mp4
+`62467c5738fee276e51fbf3dc355188fddc862231f74d3e483a1e725baf52783`; see the shared manifest). R3a and
+R3a_cu frames were decoded once to PNG (`ffmpeg -i <clip>.mp4 -vsync 0 <dir>/%04d.png`); R3b and R3c to JPEG at
+`-q:v 2` to save disk. There is no ground truth for any of these clips, so the numbers below are counts, rates and
+times, not accuracy.
+
+**Box load.** The two CPU slots were contended by about 20-25 queued jobs of other lanes during this lane's work, so
+from 21:12 UTC this lane grouped several runs into one gtr-run job (`scripts/steps.sh`): the group's run id is in the
+ledger, and each step's wall time, CPU time and peak memory come from GNU `time` inside that job
+(`steps/<group>.steps.times.tsv`, copied to `samples/steps/`).
 
 **Modes.** `full` = the 640x480 frame as it is. `crop` = a fixed box around both hands, upscaled 3x with OpenCV
 `INTER_CUBIC` (R3a: medium shot box (200,110)-(440,350) to 720x720, wide shot box (200,100)-(480,320) to 840x660),
@@ -269,17 +278,45 @@ Read 2026-11-10 at https://mano.is.tue.mpg.de/license.html (page text extracted 
 - A second quad taken from the SAM 2.1 neck mask (minimum-area rectangle) is supported by the script
   (`run_opencv_lines.py <outdir> <mask.png>`); see the SAM 2.1 section for whether it ran.
 
+### Same method on R3b (1920x1080, close view)
+
+- Quad set BY HAND on zoomed crops of R3b frame 225 (1920x1080 pixels): nut end upper edge (1262,25), nut end lower
+  edge (1340,130), body end lower edge (290,765), body end upper edge (245,635); the body end is where the fretboard
+  stops at the sound hole. Long axis 149.04 degrees, nut-end width 130.8 px. Rectified to 1200x130. Same detector and
+  classification settings as above. Reused unchanged on frames 0 and 449.
+- Run: `run_opencv_lines.py <outdir> --clip R3b --frames 225,0,449 --quad 1262,25,1340,130,290,765,245,635 --size
+  1200,130`, gtr-run r0214 (`--nolock`): wall 3.96 s, CPU 1.5 s, peak RSS 164.4 MB. Per frame inside the script:
+  unrectified 0.51-0.79 s, rectified 0.23-0.41 s.
+
+| frame | view | Hough segments (in quad) | Hough string-like / fret-like | LSD segments (in quad) | LSD string-like / fret-like | rectified fret clusters Hough / LSD | rectified string clusters Hough / LSD |
+|---|---|---|---|---|---|---|---|
+| 225 | unrectified | 351 (115) | 31 / 41 | 828 (213) | 38 / 33 | | |
+| 225 | rectified | 106 | 15 / 15 | 223 | 17 / 30 | 13 / 16 | 4 / 7 |
+| 0 | unrectified | 310 (109) | 42 / 37 | 793 (201) | 40 / 34 | | |
+| 0 | rectified | 95 | 18 / 21 | 248 | 25 / 32 | 13 / 18 | 2 / 6 |
+| 449 | unrectified | 375 (151) | 87 / 41 | 877 (269) | 72 / 30 | | |
+| 449 | rectified | 119 | 20 / 15 | 299 | 47 / 23 | 12 / 14 | 4 / 5 |
+
+- Frame 225, LSD fret clusters (x from the nut, rectified px): 4.1, 389.9, 496.2, 573.1, 645.5, 711.9, 777.1, 830.7,
+  884.5, 933.6, 979.9, 1022.7, 1063.0, 1101.2, 1135.7, 1168.0. On the overlay (`samples/opencv-lines-R3b/
+  R3b_f0225_handquad_rectified_lsd.webp`) the cluster at 389.9 lies on the edge of a finger, not on a fret wire (by eye),
+  and the fret wires visible at about x = 120 and 228 (left of the fingers) were not classified as fret-like. LSD
+  string clusters (y from the upper edge): 3.5, 22.0, 27.6, 44.8, 67.3, 73.3, 89.8.
+- Samples: `samples/opencv-lines-R3b/` (overlays per frame, `opencv_lines_R3b.json`).
+
 ## Worked handoff on one frame: fingertip pixels -> rectified fretboard -> (string, fret) cell
 
 A fact about formats, not a product. Frame 150 of R3a_cu, no ground truth. Script
-`scripts/handoff_fingertip_to_cell.py`, gtr-run r0172 (`--nolock`, light: wall 1.2 s, CPU 0.4 s, 86.7 MB).
+`scripts/handoff_fingertip_to_cell.py`, first run r0172 (`--nolock`, light: wall 1.2 s, CPU 0.4 s, 86.7 MB), re-run
+r0218 (wall 0.39 s) after the script was generalized for other clips and given the "drop" rule in step 4. Both runs
+gave the same cells; the fit numbers below are from r0218, with r0172's in brackets.
 
 | step | done by | input | output |
 |---|---|---|---|
 | 1 | MediaPipe Hand Landmarker 1.2.2 (run r0078) | R3a_cu frame 150, 640x480 | 21 landmarks, label "Left", score 0.9985; fingertips 4, 8, 12, 16, 20 in pixels |
 | 2 | BY HAND (four corners) + OpenCV `getPerspectiveTransform` (run r0149) | the neck quad | 3x3 homography to an 800x116 rectangle, nut at x = 0 |
 | 3 | OpenCV LSD (run r0149) | rectified frame 150 | fret-like clusters at x = 5.7 (taken as the nut), 98.9, then 341.2 ... 789.7 (9 clusters right of the hand) |
-| 4 | this script (a model, not a tool) | the 9 clusters right of the hand | 12-TET fit x_n = 5.7 + s (1 - 2^(-n/12)), trying first-fret numbers k0 = 1..14: best k0 = 4, s = 1584.4 px, RMS residual 5.96 px, max 8.64 px (k0 = 3: RMS 32.07 px; k0 = 5: RMS 14.88 px). Model frets 1-4 at x = 94.6, 178.6, 257.8, 332.6 |
+| 4 | this script (a model, not a tool) | the 9 clusters right of the hand | 12-TET fit x_n = 5.7 + s (1 - 2^(-n/12)), trying first-fret numbers k0 = 1..14 and dropping 0-2 leading clusters: lowest RMS with 2 dropped and k0 = 6 (so 341.2 and 410.6 sit at model frets 4 and 5), s = 1581.3 px, RMS residual 5.04 px, max 7.86 px. Without dropping: k0 = 4, s = 1584.4 px, RMS 5.96 px (r0172's choice); k0 = 3: RMS 32.07 px; k0 = 5: RMS 14.88 px. Model frets 1-4 at x = 94.5, 178.2, 257.3, 331.9 |
 | 5 | this script, by stated assumption | fingertip (u, v) | fret cell = n with x_(n-1) <= u < x_n; string cell = one of 6 equal lanes across the 116 px width, string 6 at the upper edge (bass side for a right-handed player seen from the front; not checked against string thickness) |
 
 Result (pixel -> rectified (u, v) -> cell):

@@ -25,3 +25,11 @@ case $mode in
     gtr-eval key --truth "$clip" --est-key "$key" --out "$d/eval_key.json" 2>>"$d/eval_ids.txt" >/dev/null ;;
 esac
 cat "$d/eval_ids.txt" | tail -3
+# (appended) tuning answers: score_answer.sh tuning <clip> <answer.json>
+if [ "$mode" = "tuning" ]; then
+  tm=$($PY -I -c "import json,sys; print(','.join(str(x) for x in json.load(open(sys.argv[1]))['open_strings_midi']))" "$ans")
+  ce=$($PY -I -c "import json,sys; print(json.load(open(sys.argv[1]))['offset_cents'])" "$ans")
+  cp=$($PY -I -c "import json,sys; print(json.load(open(sys.argv[1]))['capo_fret'])" "$ans")
+  gtr-eval tuning --truth "$clip" --est-cents "$ce" --est-capo "$cp" --est-tuning-midi "$tm" --out "$d/eval_tuning.json" 2>>"$d/eval_ids.txt" >/dev/null
+  tail -1 "$d/eval_ids.txt"
+fi

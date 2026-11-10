@@ -5,6 +5,12 @@ from primary sources on 2026-11-10 unless a line says otherwise. It does not ran
 Raw copies of the pages and files read with curl and git are kept outside the repo in
 `/home/user/gtr/lanes/guitar-tab/raw/` and `/home/user/gtr/lanes/guitar-tab/repos/` (not committed).
 
+Checked and corrected in place by verify-docs-guitar-tab on 2026-11-10: every quoted licence or terms clause was
+re-fetched and compared, versions and dates were re-read from the repositories and package indexes, and tools missing
+from the first pass were added. The verifier's own copies are in `/home/user/gtr/lanes/guitar-tab/verify/raw/`
+(pages, API records, licence files) and `/home/user/gtr/lanes/guitar-tab/verify/repos/` (blob-less clones). What
+changed is listed in "Verification log" at the end of this file.
+
 Marks used in the tool list:
 
 - `RUNNABLE`: looks runnable on the CPU-only Linux research box (Python or Node package, or a command-line
@@ -27,8 +33,9 @@ test (the try agent's `trials.md` says what ran).
 1. Guitab (Daniele Morotti), solo steel-string fingerstyle audio to .gp5; CLI, local web app, browser (ONNX Runtime
    Web). Code MIT, weights CC BY-NC-SA 4.0 on huggingface.co/danmor/guitab. v1.2.0, 2026-10-31 (first release
    2026-10-23). RUNNABLE (`--device cpu`). Section "Guitab".
-2. TabCNN (Wiggins and Kim, ISMIR 2019), github.com/andywiggins/tab-cnn , last commit 2019-06-27; Python 2.7; no weights;
-   no license file. Train-from-GuitarSet only. Section "TabCNN".
+2. TabCNN (Wiggins and Kim, ISMIR 2019), github.com/andywiggins/tab-cnn , last commit 2019-06-27; Python 2.7; no weights
+   in that repository; no license file. Train-from-GuitarSet only. Section "TabCNN". TabCNN weights published by others:
+   item 44.
 3. amt-tools (Cwitkowitz), PyPI 0.3.2 (2023-07-30), MIT; TabCNN re-implementation, `GuitarProfile(tuning, num_frets)`;
    no weights. RUNNABLE. Section "amt-tools".
 4. guitar-transcription-with-inhibition (Cwitkowitz, Driedger, Duan; SMC 2022), last commit 2022-12-14, MIT; no
@@ -44,7 +51,8 @@ test (the try agent's `trials.md` says what ran).
 8. TART (Gupta et al.; arXiv 2510.02597 Oct 2025, arXiv 2609.11904 Sep 2026 "ISMIR 2026").
    NO-CODE-FOUND. Section "TART".
 9. Noise2Fret (Simionato and Bigo, ISMIR 2026, arXiv 2608.30854), github.com/RiccardoVib/Noise2Fret (last commit
-   2026-10-14), MIT; no weights. Section "Noise2Fret".
+   2026-10-14), code MIT; weights on Zenodo 23361924 (record licence `cc-by-4.0`), linked from the sub-README
+   `Noise2Fret_Aux_Losses/README.md`. Section "Noise2Fret".
 10. Audio2Tab (Jackson Loth), Whisper-small fine-tuned to .gp5, up to 30 s, github.com/JackJamesLoth/Audio2Tab (last
     commit 2026-10-22); "We will host a checkpoint here soon!"; no license file. Section "Audio2Tab".
 11. GuitarTab (Hsu et al., arXiv 2607.26440), MIDI to tab with an audio path through Basic Pitch,
@@ -53,7 +61,8 @@ test (the try agent's `trials.md` says what ran).
     (Demucs, pYIN), github.com/scottvr/gtrsnipe v0.8.3 (last commit 2026-11-10); PolyForm Noncommercial 1.0.0 plus a paid
     commercial licence. RUNNABLE. Section "gtrsnipe".
 13. nylon-amt (github.com/d-f/nylon-amt , last commit 2025-02-10), hFT-Transformer experiment; no weights; no license
-    file. Section "nylon-amt".
+    file at the repository root; `hftt_code/LICENSE` is Sony's MIT licence for the vendored hFT-Transformer code.
+    Section "nylon-amt".
 14. Papers found with guitar notes but no released model: Velocity Prediction in Automatic Guitar Transcription (arXiv
     2606.24912), Tone-informed Transformer / EGDB-PG (arXiv 2504.07406), real-tone augmentation (arXiv 2405.14679),
     procedural fingerpicking data (arXiv 2508.07987, linked repo empty), strumming directions (arXiv 2508.07973).
@@ -64,12 +73,14 @@ test (the try agent's `trials.md` says what ran).
 ### Notes or MIDI to string and fret
 
 16. tuttut (Nathan Candre), MIDI to tab by HMM + Viterbi, any tuning; PyPI 0.0.7 (2026-11-04), MIT. RUNNABLE.
-17. tutts, TypeScript port of tuttut, npm 0.1.0 (2026-06-09), MIT (npm metadata). RUNNABLE in Node or a browser.
+17. tutts, TypeScript port of tuttut, npm 0.1.0 (2026-06-09), MIT (npm metadata and the repository's LICENSE file).
+    RUNNABLE in Node or a browser.
 18. tayuya (Vipul Sharma), PyPI 0.0.4 (2019-09-14), last commit 2019-10-13, MIT. RUNNABLE.
-19. tabsynth, PyPI 1.0.6 (2026-01-06), DP / Viterbi over candidate fingerings, Hz-and-seconds input, MIT classifier (no
-    LICENSE file in the sdist). RUNNABLE.
+19. tabsynth, PyPI 1.0.6 (2026-01-06), DP / Viterbi over candidate fingerings, Hz-and-seconds input (Python API; the
+    `tabsynth` command runs demos only), MIT classifier (no LICENSE file in the sdist). RUNNABLE.
 20. gtrsnipe (see 12): its mapper is a MIDI-to-tab tool with tuning, capo and scoring options.
-21. Fretting-Transformer (Hamberger et al., ICMC 2025, arXiv 2506.14223), T5 with CAPO and TUNING tokens. NO-CODE-FOUND.
+21. Fretting-Transformer (Hamberger et al., ICMC 2025, arXiv 2506.14223), T5 with `CAPO<#>` and `TUNING<#,#,#,#,#,#>`
+    conditioning tokens. NO-CODE-FOUND.
 22. MIDI-to-Tab (Edwards, Riley, Sarmento, Dixon; ISMIR 2024, arXiv 2408.05024), BART masked LM; standard tuning, no
     capo. NO-CODE-FOUND.
 23. GuitarTab (see 11): note-event tokens plus pitch-validity constrained decoding; re-implements a FrettingTransformer.
@@ -101,19 +112,42 @@ test (the try agent's `trials.md` says what ran).
 38. Guitar-TECHS: Zenodo 14963133 `cc-by-4.0`.
 39. GOAT: Zenodo 15690894 `cc-by-nc-4.0`, restricted, "non-commercial only".
 40. François Leduc dataset: Zenodo 10984521 restricted, research by request; HF card `license: mit`.
-41. Others: EGSet12 (`cc-by-4.0`), GuitarDuets (`cc-by-4.0`), SCORE-SET (CC BY-NC-SA 4.0 LICENSE file), AnimeTAB (licence not
-    found), guitar_style_dataset video + audio (Zenodo 10075352 `cc-by-4.0`).
+41. Others: EGSet12 (`cc-by-4.0`; the same Zenodo record also holds TabCNN weights, item 44), GuitarDuets (`cc-by-4.0`),
+    SCORE-SET (CC BY-NC-SA 4.0 LICENSE file), AnimeTAB (licence not found), guitar_style_dataset video + audio (Zenodo
+    10075352 `cc-by-4.0`), Chordonomicon (HF card `cc-by-nc-4.0`; trains Guitab's chord model), the Synchronize Dual Hands
+    motion data (`dataset/LICENSE` CC BY-NC-ND 4.0), the GuiFiR video dataset (non-commercial dataset terms).
 
 ### Audio-visual and fingering research (section "Audio-visual guitar transcription and fingering estimation research")
 
-42. TapToTab (arXiv 2409.08618, 2024), GuiFiR (IEEE Access 2026), Asmar et al. (2021, unverified), guitar technique
-    video + audio dataset (Data in Brief 2023), Synchronize Dual Hands (SIGGRAPH Asia 2024), Guitar Chord Diagram
-    Suggestion (SMC 2024), Visual Guitar Tab Comparison (ISMIR 2023 LBD), and the symbolic fingering papers above.
+42. TapToTab (arXiv 2409.08618, 2024), GuiFiR (IEEE Access 2026; dataset-preparation repository found, no model code),
+    Asmar et al. (2021, unverified), guitar technique video + audio dataset (Data in Brief 2023), Synchronize Dual Hands
+    (SIGGRAPH Asia 2024), Guitar Chord Diagram Suggestion (SMC 2024; code found, item 47), Visual Guitar Tab Comparison
+    (ISMIR 2023 LBD), Chieppa et al. (IEEE Access 2025), and the symbolic fingering papers above.
 
 ### Commercial products and services
 
 43. Klangio Guitar2Tabs and API, Songscription, Note2Tabs, AnthemScore, Songsterr: pointers to the apps-survey and
     hosted-apis lanes only.
+
+### Added by the verification pass (2026-11-10)
+
+44. TabCNN weights published by others: (a) Zenodo 11406378 (the EGSet12 record, `cc-by-4.0`) holds
+    `best_TabCNN_tablature_trancription_model` (3,345,122 bytes), TabCNN trained with amt-tools on GuitarSet plus the
+    DadaGP-derived "GuitarProFX" set (Pedroza et al., DAFx 2024); (b) huggingface.co/cstr/tabcnn-onnx (card
+    `license: cc-by-4.0`, created 2026-07-20) holds ONNX exports, one trained by the card's author on GuitarSet and one
+    re-exported from (a). RUNNABLE (ONNX). Section "TabCNN weights published by others".
+45. Guitar-Transcription-CNN-MTL (M. Eren Reyhanlıoğlu), github.com/ErenReyhanlioglu/Guitar-Transcription (last commit
+    2026-10-13), code MIT; weights MIT on huggingface.co/MehmetErenn0/guitar-transcription-cnn-mtl and in
+    github.com/ErenReyhanlioglu/Guitar-Transcription-Weights; trained on GuitarSet only; paper "under review at IEEE
+    Access". Training and evaluation scripts on GuitarSet features; no single-file transcription command in the README.
+    Section "Guitar-Transcription-CNN-MTL".
+46. scorify (Aron Homberg), npm 0.4.0 (2026-10-31), MIT; arranges a note list onto a fretted instrument with tunings,
+    capos and four-finger assignment by DP or beam search; JavaScript, no runtime dependencies. RUNNABLE in Node or a
+    browser. Section "scorify".
+47. Guitar Chord Diagram Suggestion code (d'Hooge et al., SMC 2024), github.com/adhooge/guitar-chord-diagram-suggestion
+    (last commit 2025-07-13): code GPL v3, `DATA_LICENSE` ODbL, checkpoints in the repository, Hugging Face Space demo.
+    Suggests a chord diagram (a fret per string) for a chord label, given the previous chord's diagram. Section "Guitar
+    Chord Diagram Suggestion".
 
 ## Shared license texts (quoted once, referred to below)
 
@@ -146,9 +180,10 @@ and quotes its own license file; these are the license texts themselves.
   scipy, pandas, jams, librosa, keras and tensorflow (README "0. Requirements").
 - How it is called: train-and-test script only. README: "Run the following line to train and test the TabCNN
   model: `python model/TabCNN.py`", after "`bash data/Bash_TabDataReprGen.sh`" preprocesses GuitarSet.
-- Pretrained weights: none in the repository (file list: README.md, data/*.py and .sh, demos/*.mp4, model/*.py).
-  The README says weights are produced by training: "a folder for each fold of data will be created, containing the
-  individual model's weights and predictions."
+- Pretrained weights: none in the repository (file list: README.md, data/*.py and .sh, data/spec_repr/id.csv,
+  demos/*.mp4, model/*.py). The README says weights are produced by training: "a folder for each fold of data will be
+  created, containing the individual model's weights and predictions." TabCNN weights trained by other people are
+  published elsewhere: see "TabCNN weights published by others" below.
 - Input (from `data/TabDataReprGen.py` and `model/TabCNN.py` at `305c1a1`): GuitarSet WAV resampled to 22050 Hz
   (`self.sr_downs = 22050`), CQT with `n_bins = 192`, `bins_per_octave = 24`, `hop_length = 512`; a 9-frame context
   window (`con_win_size = 9`); input shape `(192, 9, 1)` for CQT. Other features selectable with `spec_repr` "c",
@@ -161,10 +196,42 @@ and quotes its own license file; these are the license texts themselves.
 - License: no license file found at https://github.com/andywiggins/tab-cnn (tree of commit `305c1a1`, read
   2026-11-10; `git ls-tree` shows only README.md, data/, demos/, model/).
 - Training data: GuitarSet, downloaded from the link in the README,
-  `https://zenodo.org/record/1422265/files/GuitarSet_audio_and_annotation.zip`, which is GuitarSet version 1.0.1.
+  `https://zenodo.org/record/1422265/files/GuitarSet_audio_and_annotation.zip?download=1`, which is GuitarSet version 1.0.1.
   The Zenodo API lists that version's license as `cc-by-nc-4.0` (see the GuitarSet section for both versions).
 - Author-reported numbers: not transcribed here (the paper PDF, Zenodo 3527800, by Andrew Wiggins and Youngmoo Kim
   per the Zenodo creators field, was not read today).
+
+## TabCNN weights published by others (added by verify-docs-guitar-tab, 2026-11-10)
+
+- Zenodo 11406378 (https://zenodo.org/api/records/11406378 , read 2026-11-10; licence id `cc-by-4.0`, published
+  2024-06-01), the record of the EGSet12 evaluation set, also holds a file `best_TabCNN_tablature_trancription_model`
+  (3,345,122 bytes). Its description: "The weights for the best performing model (TabCNN trained with "GuitarProFX")
+  in the paper are also provided." The paper is Pedroza, Abreu, Corey, Roman, "Leveraging Real Electric Guitar Tones
+  and Effects to Improve Robustness in Guitar Tablature Transcription Modeling", DAFx 2024 (arXiv 2405.14679v3; HTML
+  read 2026-11-10): "The GTT model we train is TabCNN, using the implementation in AMT tools", trained on GuitarSet plus
+  the synthetic set GuitarProFX, which "comprises 360 randomly-chosen solo performance tracks from DadaGP", rendered with
+  tones from EGFxSet and the authors' own recordings. Author-reported (arXiv 2405.14679v3, Table 2, "TabCNN performance
+  on EGSet12"): tablature F1 0.585 ± 0.084 for "+ GuitarProFX" against 0.447 ± 0.071 for TabCNN trained on GuitarSet only.
+  The `cstr/tabcnn-onnx` card (below) says "The GuitarProFX (`amt-tools`) model natively uses **class 20 = silence,
+  class k = fret k**." The file itself was not opened here, and how it loads was not tested.
+- Hugging Face https://huggingface.co/cstr/tabcnn-onnx (HF API: created 2026-07-20, last modified 2026-08-02; card read
+  2026-11-10 at https://huggingface.co/cstr/tabcnn-onnx/raw/main/README.md): card YAML `license: cc-by-4.0`. Files
+  `tabcnn.onnx`, `tabcnn-gpfx.onnx`, `tabcnn-cqt.bin`. The card says: "Vanilla: trained here on **GuitarSet** (CC BY
+  4.0). Attribution to GuitarSet required." and "GuitarProFX: weights from **Zenodo 11406378**
+  (`best_TabCNN_tablature_trancription_model`, CC BY 4.0), the DAFx-24 GuitarProFX model". Input and output, as the card
+  states them: "**Input** `input : float32[N, 192, 9, 1]`"; "**Output** `output : float32[N, 6, 21]` — per string, a
+  **LogSoftmax** over 21 classes; **class 0 = closed**, class k = fret k−1."; CQT at sr 22050, hop 512, 192 bins, 24 bins
+  per octave. Card author's figures: "`tabcnn.onnx`: held-out GuitarSet tab F1 0.745 (paper 0.748)"; `tabcnn-gpfx.onnx`
+  "EGSet12 (12-track, frame-level tab F1) = 0.59 micro / 0.55 macro". The export scripts are in
+  https://github.com/CrispStrobe/onnx_runtime_dart (`tool/tabcnn/`; repository `LICENSE` MIT, last commit 2026-09-18).
+- Hugging Face https://huggingface.co/cstr/tabcnn-GGUF (created 2026-07-20; card YAML `license: cc-by-4.0`): GGUF
+  conversions (f32, f16, q8_0, q4_k). The card: "**These are emission SCORES, not a decided tablature.** Turning them
+  into a playable fingering needs a constrained decoder (one note per string, fret range, capo, hand span)."
+- Training data licences: GuitarSet v1.1.0 is `cc-by-4.0` and v1.0.1 is `cc-by-nc-4.0` (GuitarSet section; the cards do
+  not say which version was used); DadaGP has no dataset licence text and is shared for research by request (DadaGP
+  section); EGFxSet's licence was not read (UNVERIFIED).
+- `trials.md` lists the original TabCNN code with "Weights published: no", which holds for that repository; the files
+  above were published by other people and were not run there.
 
 ## amt-tools
 
@@ -176,7 +243,9 @@ and quotes its own license file; these are the license texts themselves.
   `install_requires` includes torch, librosa, mir_eval, jams, mido, mirdata, sounddevice, pynput. It contains a
   TabCNN re-implementation (`amt_tools/models/tabcnn.py`), GuitarSet loader (`amt_tools/datasets/GuitarSet.py`),
   CQT / HCQT / VQT feature modules, `amt_tools.inference.run_offline`, and estimators that turn tablature arrays into
-  notes and MIDI.
+  notes and MIDI. `amt_tools/tools/io.py` has `write_stacked_notes_jams(stacked_notes, jams_path)` (per-string notes to
+  a JAMS file) and `write_notes(pitches, intervals, path, places=3)` (text); no Guitar Pro or MusicXML writer is in the
+  file tree (commit `7822dc2`).
 - Guitar constraint hooks (`amt_tools/tools/instrument.py`): `GuitarProfile(tuning=None, num_frets=None)`, where
   `tuning` is a "list of str ... Name of lowest note playable on each degree of freedom" and `num_frets` is the
   "Number of frets on guitar (or at least the number used)". Defaults in `amt_tools/tools/constants.py`:
@@ -227,8 +296,9 @@ and quotes its own license file; these are the license texts themselves.
   notes", per string), then `tools.stacked_notes_to_frets(...)`. It also produces per-string pitch lists
   (`StackedPitchListTablatureWrapper`), i.e. continuous pitch per string over time.
 - Pretrained weights: the example expects a checkpoint file that is not in the repository; the README names no
-  download. Whether one is published elsewhere: UNVERIFIED (the GitHub releases page returned 403 here; a check of
-  the author's other pages would settle it).
+  download. Whether one is published elsewhere: UNVERIFIED (the GitHub releases page returned 403 here; a web search
+  and a Hugging Face model search for "fretnet" on 2026-11-10 found none; a check of the author's other pages would
+  settle it).
 - Constraints: through amt-tools' `GuitarProfile` (tuning list and fret count); `examples/comparison.py` builds
   `tools.GuitarProfile(num_frets=19)`.
 - License (code): MIT, `LICENSE.txt` (commit `d481054`, read 2026-11-10): "MIT License ... Copyright (c) 2023 Frank
@@ -240,7 +310,8 @@ and quotes its own license file; these are the license texts themselves.
 - What: "SynthTab: Leveraging Synthesized Data for Guitar Tablature Transcription", Yongyi Zang, Yi Zhong, Frank
   Cwitkowitz, Zhiyao Duan, ICASSP 2024 (arXiv https://arxiv.org/abs/2309.09085 , comment "Accepted to ICASSP
   2024"). Repository https://github.com/yongyizang/SynthTab (cloned 2026-11-10; last commit 2024-12-05, `6136f79`);
-  project site https://synthtab.dev/ (not read). arXiv abstract: "We procure SynthTab, a dataset derived from DadaGP
+  project site https://synthtab.dev/ (read 2026-11-10 by the verifier: it links the paper, code and downloads and has no
+  licence statement). arXiv abstract: "We procure SynthTab, a dataset derived from DadaGP
   ... The proposed synthesis pipeline produces audio which faithfully adheres to the original fingerings and a subset
   of techniques specified in the tablature".
 - Pretrained weights: in the repository, under `demo_embedding/pretrained_models/`: `SynthTab-Pretrained.pt`
@@ -270,6 +341,9 @@ and quotes its own license file; these are the license texts themselves.
   per the abstract) and, for the fine-tuned files, EGDB, GuitarSet and IDMT-SMT-Guitar (file names). See those
   dataset sections for their licenses.
 - Author-reported measurements: the README shows `Performance.png` (an image; its numbers were not transcribed here).
+- Run here: the try agent loaded `finetuned/GuitarSet.pt` with amt-tools 0.3.2 (not with SynthTab's own scripts) and ran
+  it on 8 shared clips in run r0139; output format, timings and scores are in `trials.md`. The README does not say what
+  `non_finetuned/` holds (UNVERIFIED, as `trials.md` also notes).
 
 ## Riley et al. guitar transcription models (High Resolution Guitar Transcription; GAPS benchmark model) via hf_midi_transcription
 
@@ -293,8 +367,8 @@ and quotes its own license file; these are the license texts themselves.
 - How it is called (README): CLI `midi_transcription guitar_solo.wav output.mid --instrument guitar` with
   `--device {auto,cpu,cuda}`, `--batch-size N`, `--checkpoint PATH`, `--model-id ID`; Python
   `MidiTranscriptionModel.from_pretrained("xavriley/midi-transcription-models", instrument="guitar")` then
-  `model.transcribe("in.wav", "out.mid")` or `model.transcribe_audio_array(audio, "output.mid")` with audio loaded
-  at `sr=16000`. README: "pip install hf-midi-transcription" (Option 1), but https://pypi.org/pypi/hf-midi-transcription/json
+  `model.transcribe(<audio path>, <MIDI path>)` (README examples such as `model.transcribe("saxophone_recording.wav",
+  "output.mid")`) or `model.transcribe_audio_array(audio, "output.mid")` with audio loaded at `sr=16000`. README: "pip install hf-midi-transcription" (Option 1), but https://pypi.org/pypi/hf-midi-transcription/json
   returned HTTP 404 on 2026-11-10, so only the source install (Option 2) was found to exist.
 - Input / output (README "Model Details"): "Input: Audio files (WAV, MP3, etc.)"; "Output: MIDI files"; "Sample Rate:
   16 kHz"; "Architecture: Convolutional Recurrent Neural Network (CRNN) with onset/offset/frame/velocity regression".
@@ -303,8 +377,12 @@ and quotes its own license file; these are the license texts themselves.
   `segment_samples=10 * sample_rate`.
 - Constraints: instrument choice and thresholds only; no tuning, capo or string parameters (no string output).
 - Licenses, read 2026-11-10:
-  - Code: no LICENSE file in the repository tree (commit `96f6797`). README "Model Details": "License: MIT";
-    `pyproject.toml` classifier "License :: OSI Approved :: MIT License".
+  - Code: no LICENSE file in the repository tree (commit `96f6797`). README "Model Details": "**License:** MIT";
+    README "## License": "This project is licensed under the MIT License - see the LICENSE file for details." (the
+    LICENSE file it names is not in the tree); `pyproject.toml` classifier "License :: OSI Approved :: MIT License".
+  - Dependency `piano-transcription-inference` (the fork github.com/xavriley/piano_transcription_inference , last commit
+    2025-12-09): no LICENSE file in its tree; its `setup.py` has the classifier "License :: OSI Approved :: MIT License",
+    as does the upstream package (PyPI `piano-transcription-inference` 0.0.6, classifier MIT; read 2026-11-10).
   - Weights: model card YAML `license: mit` (https://huggingface.co/xavriley/midi-transcription-models/raw/main/README.md).
   - Training data of `guitar-gaps.pth`: GAPS (see the GAPS dataset section: Zenodo license `cc-by-nc-sa-4.0`, the
     project page's "GAPS may be used only for non-commercial research purposes", and an HF dataset card saying
@@ -340,12 +418,17 @@ and quotes its own license file; these are the license texts themselves.
   (browser, author's figure). Python: modules `guitab.inference`, `guitab.pipeline` (not documented as an API in
   the README).
 - What the docs say it needs: "A 4-minute song takes well under a minute and 1–2 GB of GPU memory" (README section
-  2; CPU is an allowed `--device`). Dependencies: torch>=2.4, librosa, pyguitarpro, onnxruntime, safetensors,
-  `beat-this` from git (pyproject).
+  2; CPU is an allowed `--device`). Dependencies (pyproject): torch>=2.4, numpy, librosa, soundfile, pyguitarpro>=0.9,
+  onnxruntime, safetensors, and `beat-this @ git+https://github.com/CPJKU/beat_this@b95c8ab0...` (a pinned commit); the
+  `train` extra adds scipy, pedalboard, pretty_midi, music21 and yt-dlp.
 - Input: audio "at 22.05 kHz mono" (README Architecture 1). Output: "`out/my_song/my_song.gp5` ... plus
   `my_song.tokens.txt` with the same tab as text tokens"; "for every frame and string, the fret (21 classes: silent or
   frets 0–19) and the onset probability" (Architecture 5); notes quantised to a beat grid from Beat This! (960 ticks
-  per quarter, `--grid 240` = 16ths default); optional chord names.
+  per quarter, `--grid 240` = 16ths default); optional chord names. The token text is described in `guitab/gp5.py`
+  (commit `b2537dc`): "Tokens: the song name, header tokens (downtune:, tempo:, start), then per beat its content -
+  "note:s<string>:f<fret>" (optionally followed by "nfx:tie") or "rest" - and one "wait:<ticks>" giving the beat's
+  duration (960 ticks per quarter), optionally preceded by "chord:<name>" (a chord name shown above the beat);
+  "new_measure" closes a measure and "end" the song." and "One standard-tuned 6-string track, capo optional."
 - Constraints and settings (README option table): `--capo N` ("notes stay on strings that can play them, frets are
   written relative to the capo, and the .gp5 has the capo set"), `--fingering model|auto|low` ("`low` Re-finger towards
   first position with a Viterbi optimiser"), `--onset 0.4` threshold, `--orphan`, `--tempo 90` ("A fixed tempo
@@ -361,10 +444,21 @@ and quotes its own license file; these are the license texts themselves.
     Face is a converted copy of Beat This! and keeps its MIT licence." Model card YAML `license: cc-by-nc-sa-4.0`
     and "The weights are released under **CC BY-NC-SA 4.0** (non-commercial), because they are trained on GAPS (CC
     BY-NC-SA 4.0) and SynthTab (CC BY-NC 4.0)." (https://huggingface.co/danmor/guitab/raw/main/README.md)
+  - Beat tracker files on the model card (`beat_this_small0_int8.onnx`, `beat_this_final0_int8.onnx`): the card says
+    they "are converted copies of [Beat This!](https://github.com/CPJKU/beat_this) (Foscarin et al., ISMIR 2024) and keep
+    its MIT licence, in `LICENSE-beat-this.txt`" (that file begins "MIT License / Copyright (c) 2024 Institute of
+    Computational Perception, JKU Linz, Austria"). The Beat This! README, "License" section
+    (https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md , read 2026-11-10): "The code and the published
+    model weights are released under the [MIT license](LICENSE). Note that some of the training files are fully
+    copyrighted or under limited Creative Commons licenses, and it is up to the user to assess whether this may impact
+    their use case."
   - Training data: E15 "is trained on public datasets only" (GuitarSet, GAPS, a SynthTab subset of "428 selected
     fingerstyle songs (about 21 h ...)"); E19, and through distillation E24 and E25 (the default), also used a
     "Custom dataset (not distributed): real fingerstyle recordings with their tabs aligned to the audio". The chord
-    model uses Chordonomicon. GAPS audio is fetched by `scripts/gaps_download.py` "from the dataset's YouTube links".
+    model: "The chord model (about 70 min on a laptop CPU) needs [Chordonomicon](https://huggingface.co/datasets/ailsntua/Chordonomicon)
+    in `data/chordonomicon/` and, for its real training and evaluation songs, the custom dataset and EGDB." Chordonomicon's
+    Hugging Face card YAML says `license: cc-by-nc-4.0` (https://huggingface.co/datasets/ailsntua/Chordonomicon/raw/main/README.md ,
+    read 2026-11-10). GAPS audio is fetched by `scripts/gaps_download.py` "from the dataset's YouTube links".
 - Author-reported measurements (README "Results", onset ±50 ms, string + fret F1 / pitch F1): GuitarSet test (player
   05) E25 0.838 / 0.861; GAPS test pitch F1 E25 0.830; EGDB test clean DI E25 0.721 / 0.849; "Real fingerstyle
   recordings (19 held-out songs of the custom dataset)" E25 0.612. The model card adds: "*These numbers come from a
@@ -403,11 +497,18 @@ and quotes its own license file; these are the license texts themselves.
   Pitch-Class Distance, Positional Distance, Circle-of-Fifths Distance, String Similarity, and Hand-Span Feasibility".
 - How it is called: Python training scripts (`Noise2Fret_Aux_Losses/src/diffusion_training_GS.py`,
   `Noise2Fret_and_Onsets/src/trainings.py`); no CLI or inference entry point is described in the README.
-- Pretrained weights: none in the repository (largest files are source files, `model.pdf`, `model.png`,
-  `architecture.jpg`); the README names none.
+- Pretrained weights: none in the repository itself (largest files are source files, `model.pdf`, `model.png`,
+  `architecture.jpg`), and the top-level README names none, but `Noise2Fret_Aux_Losses/README.md` says: "Find the code
+  located inside the "./src" folder, and the weights of pre-trained models in [Zenodo](https://zenodo.org/records/23361924)".
+  Zenodo 23361924 ("Noise2Fret", creators Simionato and Bigo, published 2026-10-14, licence id `cc-by-4.0`, access open;
+  API record read 2026-11-10 by the verifier): "The repository collects the checkpoints for the pre-trained models";
+  files `CheckpointsGOAT.zip` (111,317,004 bytes) and `CheckpointsGuitarSet.zip` (111,488,115 bytes). The try agent's
+  `trials.md` lists the same record (not run there). That sub-README: "To run inference only on an existing pre-trained
+  model, set the "train_model" flag to False."
 - License (code): `LICENSE`: "MIT License / Copyright (c) 2026 Riccardo" (read 2026-11-10 from commit `b65a7ec`).
 - Training data (abstract): "Experiments on GuitarSet and GOAT datasets". GOAT is non-commercial and by request (see
-  GOAT section).
+  GOAT section); the GOAT checkpoints above are published under the record's `cc-by-4.0`. The sub-READMEs link GOAT as
+  https://zenodo.org/records/17706552 , which is the GOAT paper PDF record, not the restricted dataset record 15690894.
 
 ## Audio2Tab (Loth)
 
@@ -424,7 +525,10 @@ and quotes its own license file; these are the license texts themselves.
 - Pretrained weights: README "## Checkpoints / We will host a checkpoint here soon!" (none published on 2026-11-10).
 - License: no license file found at https://github.com/JackJamesLoth/Audio2Tab (tree of `47b0f1e`, read 2026-11-10).
 - Training data named: GOAT, SynthTab, DadaGP (`goat.csv`, `synthtab.csv`, README "Data Preparation"). The base
-  model `openai/whisper-small` has its own license (not read here; UNVERIFIED).
+  model `openai/whisper-small` carries `license: apache-2.0` in its model card YAML
+  (https://huggingface.co/openai/whisper-small/raw/main/README.md , read 2026-11-10 by the verifier). The inference
+  script is at `src/infer.py` in the tree. The README's evaluation section also describes `src/eval.py --protocol
+  noise2fret`, which "supplies **reference onset locations and the true tempo**".
 
 ## nylon-amt
 
@@ -435,8 +539,10 @@ and quotes its own license file; these are the license texts themselves.
   used for tab visualization" (future tense in the README).
 - Author-reported (README "MAESTRO dataset performance"): Precision 0.01, Recall 0.95, F1 0.02, and "It is clear that
   more than 0.2% of the dataset needs to be used for training."
-- Weights: none in the repository. License: no license file found at https://github.com/d-f/nylon-amt (tree of
-  `a3a678f`, read 2026-11-10).
+- Weights: none in the repository. License: no license file at the root of https://github.com/d-f/nylon-amt (tree
+  of `a3a678f`, read 2026-11-10). The subfolder `hftt_code/` has its own `LICENSE`, which begins "MIT License /
+  Copyright (c) 2023 Sony Group Corporation" (the vendored hFT-Transformer code); no licence file was found for the
+  files outside `hftt_code/`.
 
 ## gtrsnipe
 
@@ -473,12 +579,18 @@ and quotes its own license file; these are the license texts themselves.
   first upload 2024-01-22 (https://pypi.org/pypi/tuttut/json). `requires-python = ">=3.9"`; dependencies numpy,
   pretty_midi, eel. README: "It can handle any tuning for any number of strings, and will do the arrangement
   accordingly."
-- How it is called: GUI `tuttut` (README: "On Linux, tkinter needs `sudo apt install python3-tk`"); CLI `tuttut-cli`
-  (entry point `tuttut.midi_tabs_cli:main`); Python, as in `tuttut/GUI/generate.py`: `f = pretty_midi.PrettyMIDI(path)`,
-  `tuning = Tuning(strings, nfrets=...)`, `tab = Tab(name, tuning, f, weights=weights, output_dir=...)`, then
-  `tab.to_ascii()` (writes `<name>.txt`) or `tab.to_json()` (writes `<name>.json`).
+- How it is called: GUI `tuttut` (README: "On Linux, tkinter needs `sudo apt install python3-tk`"); CLI `tuttut-cli
+  <source.mid> <output_dir>` (entry point `tuttut.midi_tabs_cli:main`), which takes no tuning or fret option: it calls
+  `Tab(source.stem, Tuning(), midi, output_dir = args.output_dir)` and `tab.to_ascii()` only (`tuttut/midi_tabs_cli.py`;
+  the try agent's `trials.md` reports the same); Python, as in `tuttut/GUI/generate.py`: `f =
+  pretty_midi.PrettyMIDI(...)`, `tuning = Tuning(strings, nfrets=...)`, `tab = Tab(name, tuning, f, weights=weights,
+  output_dir=...)`, then `tab.to_ascii()` (writes `<output_dir>/<name>.txt`). `generate.py` does not call `to_json()`;
+  `Tab.to_json()` is defined in `tuttut/logic/tab.py` and writes `<output_dir>/<name>.json`.
 - Input: a MIDI file read with pretty_midi. README: "The tool works best for single-channel, single-instrument MIDI
-  files". Output: ASCII tab text, or the `self.tab` structure as JSON (measures with notes, strings and frets).
+  files". Output: ASCII tab text, or the `self.tab` structure as JSON (measures with notes, strings and frets). The
+  try agent's `trials.md` (runs r0027, r0048) gives the JSON layout it observed: `tuning`, then `measures` of `events`
+  with `time`, `time_ticks`, `measure_timing` and `notes` holding `degree`, `octave`, `string` (0 = thinnest) and
+  `fret`; no MIDI pitch number, velocity or duration; out-of-range notes are moved by octaves (`fix_oob_notes`).
 - Algorithm family, as the author describes it (README "How it works"): "The sequence of notes and fingerings is
   modeled as a Hidden Markov Model (HMM), with the fingerings being the hidden states and the notes being the
   observed states ... we can make use of the Viterbi algorithm"; transition probabilities come from "a difficulty
@@ -493,7 +605,8 @@ and quotes its own license file; these are the license texts themselves.
 ## tutts (TypeScript port of tuttut)
 
 - What: npm package `tutts` 0.1.0, published 2026-06-09 (https://registry.npmjs.org/tutts , read 2026-11-10),
-  repository `git+https://github.com/madisonrickert/tutts.git` (directory `packages/core`; not cloned). Description:
+  repository `git+https://github.com/madisonrickert/tutts.git` (directory `packages/core`; blob-less clone by the
+  verifier, last commit 2026-06-09, `527ad0e`; the tree also has `packages/alphatab`). Description:
   "Renderer-neutral MIDI to guitar-tab fingering engine (TypeScript port of tuttut)."
 - README (npm): "it frames fingering as a Hidden Markov Model (fretboard positions = hidden states, note onsets =
   observations) and uses Viterbi to pick the sequence that is easiest to play under a fret-height/span/string-change
@@ -501,7 +614,15 @@ and quotes its own license file; these are the license texts themselves.
   `generateTab({ notes: [{ midi: 64, startBeats: 0, durationBeats: 1 }, ...], tuning: Tuning.standardGuitar() })`,
   then `tab.toAscii()`, `tab.toLines()`, `tab.toSystems()`, or `tab.data` ("the renderer-neutral result"). Notes are
   "`{ midi, startBeats, durationBeats }` (C4 = 60, time in quarter-note beats)". Runs in a browser or Node (ESM).
-- License: npm metadata `"license": "MIT"` for 0.1.0 (the repository's LICENSE file was not read: UNVERIFIED).
+  Options table (README): `tuning` "E.g. `Tuning.standardGuitar()`, `Tuning.ukulele()`, or `new Tuning(["D4", "A3", ...],
+  nfrets)`"; `quantizeGrid` "Snap note onsets to the grid before chord grouping, so near-simultaneous notes merge into one
+  chord"; `tempo` "Only used to emit an optional `seconds` field on each event". The try agent's `trials.md` (run r0205)
+  records the `tab.data` JSON it got, with `string` (0 = thinnest), `fret`, `midi` and `durationBeats` per note, and
+  (onset, pitch, string, fret) lists identical to tuttut 0.0.7's on the eight clips it compared.
+- License: npm metadata `"license": "MIT"` for 0.1.0. The repository's `LICENSE` (commit `527ad0e`, read 2026-11-10)
+  begins: "MIT License / Copyright (c) 2026 Madison Rickert / tutts is a TypeScript port of tuttut
+  (https://github.com/natecdr/tuttut), Copyright (c) 2023 Nathan Candre, distributed under the MIT License."
+  `packages/core/LICENSE` and `packages/alphatab/LICENSE` begin "MIT License / Copyright (c) 2026 Madison Rickert".
 
 ## tayuya
 
@@ -513,7 +634,11 @@ and quotes its own license file; these are the license texts themselves.
   Output: ASCII tab text, or a list of "(note, string, fret)" tuples (`Tabs.generate_notes`).
 - Algorithm, as the code documents it (`tayuya/tabs.py`): "Find best position (fret and string) for a note" nearest
   to the last fret played, preferring notes in the detected scale (`note_nearest_to_fret(fret, note, scale_notes)`).
-  Tuning: a fixed note-to-string table (`constants.NOTE_TO_STRING`); no tuning or capo argument found.
+  Tuning: a fixed note-to-string table (`constants.NOTE_TO_STRING`); no tuning or capo argument found. README
+  limitations: "Works only for guitar solos. Implementation for determination and rendering of chords is not done yet."
+  and "Works only for standard tuning (E A D G B E)"; its to-do list has "Add way to handle non standard tuning". The try
+  agent's `trials.md` (run r0117) adds, from running it: the position table has no fret-0 entries, so no open string is
+  ever written, and notes in octave 2 are looked up an octave up while the returned tuple keeps the original note name.
 - License: `LICENSE.md` (read 2026-11-10): "Copyright © 2019 Vipul Sharma / Permission is hereby granted, free of
   charge, to any person obtaining ..." (MIT text); PyPI classifier MIT.
 
@@ -529,7 +654,9 @@ and quotes its own license file; these are the license texts themselves.
   Input events are in Hz and seconds: `NoteEvent(pitch_hz: float, start: float, duration: float, confidence: float =
   1.0)`, `ChordEvent(pitches_hz: list[float], ...)`. JSON output fields: `index`, `start`, `duration`, `kind`,
   `strings`, `frets`, `mean_fret`, `min_fret`, `max_fret`, `requires_barre`, `chord_id`. No dependencies beyond
-  Python 3.10.
+  Python 3.10. The console script `tabsynth` (entry point `tabsynth.cli:main`) is, in the README's words, "a demo CLI":
+  `tabsynth help`, `tabsynth demo-notes`, `tabsynth demo-chords`, `tabsynth demo-mixed`; no file-input command is
+  documented.
 - Algorithm, as described: "Candidate Generation (multiple fingerings per event) → Cost Calculation (hand position,
   stretch, barre difficulty) → DP Optimization (Viterbi algorithm)"; a chord-template library (`ChordTemplate`).
 - Constraints: `max_fret`, `tolerance_cents`, custom `ChordTemplate`s. README "Limitations": "**Standard tuning
@@ -544,8 +671,8 @@ and quotes its own license file; these are the license texts themselves.
   International Computer Music Conference (ICMC), 2025".
 - Algorithm family (abstract): "an encoderdecoder model that utilizes a T5 transformer architecture to automate the
   transcription of MIDI sequences into guitar tablature ... framing the task as a symbolic translation problem".
-- Constraints (paper text, arXiv HTML): "The conditioned model contains a CAPO# and TUNING#,#,#,#,#,# token in the
-  input to condition the model for more flexibility and control over the outputs."; "By removing the conditioning
+- Constraints (paper text, arXiv HTML): "The conditioned model contains a CAPO<#> and TUNING<#,#,#,#,#,#> token in
+  the input to condition the model for more flexibility and control over the outputs."; "By removing the conditioning
   tokens from the primer, it is also possible to let the model suggest a suitable tuning and capo option" (said of
   the GPT2 variant). Capo training data was augmented "from capo zero to capo seven".
 - Training data (abstract): "DadaGP, GuitarToday, and Leduc". GuitarToday is described in the paper as "Sourced from
@@ -569,11 +696,19 @@ and quotes its own license file; these are the license texts themselves.
   always derived from the note-string assignment and an assumption of standard tuning. Similarly, our system does not
   handle the use of capos."
 - Code and weights: NO-CODE-FOUND (no repository link in https://arxiv.org/html/2408.05024v1 , read 2026-11-10).
-- Author-reported: a user study ("15 guitarists"); the paper's comparison table lists, per system, a column the
-  extracted text shows as "Ours 12 1.84 1 73.58 / MuseScore 10 1.19 1 62.51 / Guitar Pro 8 12 0.78 0 62.27 /
-  TuxGuitar 18 2.03 1 55.42" (column headers not captured by this extraction: UNVERIFIED which metric each column is).
-  The paper compares against "one commercially available and two open-source implementations of automatic tablature
-  systems" (Guitar Pro 8, MuseScore, TuxGuitar).
+- Fine-tuning data, in the paper's Section 4.2 (arXiv HTML, read 2026-11-10 by the verifier): "The second phase of
+  training is a finetuning on precisely annotated guitar performances from the training splits of Riley et al. [ 12 ]
+  and GuitarSet [ 18 ]", where [12] is "High resolution guitar transcription via domain adaptation" (ICASSP 2024), the
+  paper whose data is the François Leduc dataset (Leduc HF card: "Used to train a state-of-the-art (at the time)
+  audio-to-MIDI transcription model for guitar in the paper above"). Section 5.1: "We use the training splits from Riley
+  et al. [ 12 ] , with 61 pieces in the training set, 8 in the validation set, and 9 in the test set".
+- Author-reported: a user study ("15 guitarists"); Table 1, "Summary of quantitative analysis, showing maximum, mean
+  and median “stretch” of chords in the tablature, defined as the maximum fret distance between any two notes in the
+  chord. We also report the percent agreement with the ground truth note-string assignment. All metrics are averaged
+  over the entire withheld test set." Columns Max Stretch / Mean Stretch / Median Stretch / % Agree: Ground Truth 6 /
+  1.04 / 0 / –; Ours 12 / 1.84 / 1 / 73.58; MuseScore 10 / 1.19 / 1 / 62.51; Guitar Pro 8 12 / 0.78 / 0 / 62.27;
+  TuxGuitar 18 / 2.03 / 1 / 55.42. The paper compares against "one commercially available and two open-source
+  implementations of automatic tablature systems" (Guitar Pro 8, MuseScore, TuxGuitar).
 
 ## GuitarTab (explicit note-event tokenization, arXiv 2607.26440)
 
@@ -582,11 +717,14 @@ and quotes its own license file; these are the license texts themselves.
   "Our code will be released at:https://github.com/MusicGuitarTab/GuitarTab". That repository exists (cloned
   2026-11-10; last commit 2026-05-27, `4f0bf21`).
 - Algorithm (abstract): note-event tokens plus TAB tokens in the decoder; "a pitch-validity constrained decoding
-  strategy that masks pitch-invalid TAB candidates during generation". README tree: `src/model.py  #
-  FrettingTransformer (T5-small)`.
-- How it is called (README): `python train.py ...` (Hydra configs), `inference.py`, and `demo.py` "Single file:
-  audio/MIDI → tab", "Run on a single audio or MIDI file and get ASCII tablature + MIDI output", with `--checkpoint
-  outputs/<exp_dir>/best_model.pt`; "Audio input requires: `pip install basic-pitch onnxruntime`".
+  strategy that masks pitch-invalid TAB candidates during generation". README "Codebase" tree: `model.py` under `src/`,
+  with the comment "# FrettingTransformer (T5-small)".
+- How it is called (README): `python train.py ...` (Hydra configs), `inference.py`, and `demo.py` ("# Single file:
+  audio/MIDI → tab" in the tree): "Run on a single audio or MIDI file and get ASCII tablature + MIDI output", as
+  `python demo.py --input "Demo/my_song.mp3" --checkpoint outputs/<exp_dir>/best_model.pt --max-bars 8 --output
+  "Demo/my_song_tab.txt" --output-midi "Demo/my_song.mid"`; "Supports `.mid`, `.mp3`, `.wav`, `.flac`, `.ogg`, `.m4a`.";
+  "Audio input requires: `pip install basic-pitch onnxruntime`". The README links `docs/OUTPUT_FORMAT.md` "for output
+  token format"; that file is not in the tree of `4f0bf21`.
 - Weights: none published; the README's checkpoints are the user's own training outputs (`outputs/` folder).
 - License: no license file found at https://github.com/MusicGuitarTab/GuitarTab (tree of `4f0bf21`, read 2026-11-10).
 - Training data (abstract): DadaGP and "Francois Leduc" (folder `10984521/`, the Zenodo id of the Leduc dataset).
@@ -596,7 +734,10 @@ and quotes its own license file; these are the license texts themselves.
 - What: "A Machine Learning Approach for MIDI to Guitar Tablature Conversion", arXiv 2510.10619v1 (posted
   2025-10-12; comment "Proceedings of the 19th Sound and Music Computing Conference, June 5-12th, 2022"). Code:
   https://github.com/maximoskp/midi2tab_Deconvolutions (last commit 2022-02-08, `d4b0f3e`), README "Transcribing guitar
-  tabs from MIDI input", scripts `run_00_make_events.py`, `run_01_make_pianoroll_tab.py`, `train_*.py`, conda env file.
+  tabs from MIDI input." The README lists `reset_files_structure.py`, `run_00_make_events.py`,
+  `run_01_make_pianoroll_tab.py`, `run_01_make_random_pr_tab.py`, then `train_*.py` and `make_*.py`, and says "conda env
+  create -f guitar_tab.yml"; in the tree the `train_*` and `make_*` scripts are under `flat_tab_in_CNN/`, and no
+  `guitar_tab.yml` is present (20 files, read 2026-11-10). `flat_tab_in_CNN/gp_files/` holds five `.gp4` files.
 - Constraints (abstract): "requires a basic assumption about how much fingers can stretch on a fretboard; only
   standard 6-string guitar tuning is examined."
 - Weights: none found in the tree. License: no license file found (tree of `d4b0f3e`, read 2026-11-10).
@@ -608,7 +749,13 @@ and quotes its own license file; these are the license texts themselves.
   derives the best position of the fretting hand, not just the finger used at each moment. Then, by analyzing
   statistical data from the mySongBook corpus, the most common clichés and biomechanical feasibility, articulations,
   and expressive techniques are introduced. Finally, the obtained output is converted into MusicXML format".
-- Code: NO-CODE-FOUND (the arXiv HTML links only https://github.com/mido/mido ).
+- How the authors ran it (arXiv HTML, Section 2.3): the melody is read with Mido into a dataframe, which "is then
+  processed through the IBM ILOG CPLEX Optimization Studio software, v20.1.0 ( https://www.ibm.com/products/ilog-cplex-optimization-studio
+  , last accessed: 2024/03/07), in which we implemented our optimal fingering problem as a static and compact
+  Mathematical Programming formulation." CPLEX's licence terms were not read here (UNVERIFIED).
+- Code: NO-CODE-FOUND. The arXiv HTML links https://github.com/mido/mido , the CPLEX product page, a Guitar Pro page and
+  the TABASCO project page http://algomus.fr/tabasco/ ("to which part of the authors belong"), which links no code
+  repository (read 2026-11-10).
 
 ## LilyPond automatic tablature
 
@@ -629,6 +776,13 @@ and quotes its own license file; these are the license texts themselves.
   TabStaff.restrainOpenStrings = ##t`, `stringTunings` (predefined or custom). Capo: the same page mentions a capo only
   for fret-diagram markups ("a capo indication that can be placed on the fret diagram"); no capo setting for the
   automatic string assignment was found on that page.
+- From the try agent's `trials.md` (runs r0145, r0151, r0155; LilyPond 2.24.3 from Ubuntu): the property documentation
+  in `define-context-properties.scm` says "The tablature auto string-selecting mechanism selects the highest string
+  with a fret at least `minimumFret`"; the choice is made one chord at a time; a note that fits no string is left out
+  with "warning: No string for pitch ..." (not moved an octave); `maximumFretStretch` defaults to 4; `restrainOpenStrings`
+  changed nothing unless `minimumFret` was above 0; a string mark (`g\4`) moved that one note and left the others as
+  they were (r0155); the engraved output is PDF, PNG, SVG or PostScript, with no text, JSON or MusicXML tab export, so
+  the trial read string and fret through a Scheme `tablatureFormat` hook.
 - License: the repository's COPYING (https://gitlab.com/lilypond/lilypond/-/raw/master/COPYING , read 2026-11-10)
   begins "GNU GENERAL PUBLIC LICENSE / Version 3, 29 June 2007". Using LilyPond as a separate program to render a
   file is a different situation from linking it into a program; this file does not interpret the GPL.
@@ -645,9 +799,12 @@ and quotes its own license file; these are the license texts themselves.
 - Constraints (README): "respects existing finger-number and string-number annotations as hard constraints.
   Alternate tunings (drop D etc.) and fret counts are read automatically from the instrument's string data."
 - How it is called: inside the MuseScore Studio desktop application (a plugin), not a standalone CLI. The core is a
-  JavaScript file (`fingering_core.js`); whether it runs outside MuseScore was not checked (UNVERIFIED).
+  JavaScript file (`fingering_core.js`, 11,599 bytes at `5e4fb42`), whose header says "guitar fingering core (port of
+  mscx2tab.py)" and "Pure JavaScript, loadable from MuseScore QML and from Node." (the author's statement; the file
+  also contains the QML directive `.pragma library`; running it in Node was not tried, UNVERIFIED). It keeps
+  `TUNING = [40, 45, 50, 55, 59, 64]` by default and `setTuning(arr, maxFret)` replaces it.
 - License: `LICENSE` begins "GNU GENERAL PUBLIC LICENSE / Version 3, 29 June 2007" (commit `5e4fb42`, read
-  2026-11-10).
+  2026-11-10); a `COPYRIGHT` file names the author and ends "- FretPath (GPL-3.0)".
 
 ## MuseScore, TuxGuitar and Guitar Pro built-in string assignment
 
@@ -693,8 +850,91 @@ and quotes its own license file; these are the license texts themselves.
   input.txt output.gp5`. Requirement: "PyGuitarPro 0.6 *(it ONLY works with 0.6 ...)*". Notes: "rare combinations of
   instruments and tunings may not be supported; banjo is not supported; instrument-change events are not supported".
 - License (code): `LICENSE`: "MIT License / Copyright (c) 2020 Dadabots" (read 2026-11-10).
-- The token format is read by Guitab (`.tokens.txt` output "with the same tab as text tokens"), GOAT ("a text-like
-  token encoding") and the GuitarTab repo (`src/dadagp_parser.py  # .tokens.txt parser`).
+- Token format, from the repository's example `examples/slapbass.gp3.tokens.txt`: one token per line, beginning
+  `artist:unknown`, `downtune:0`, `tempo:120`, `start`, `new_measure`, then note tokens with an instrument prefix such as
+  `bass:note:s2:f16`, effect tokens such as `nfx:slide:1`, and `wait:240`. Tick size, two sources that differ:
+  `dadagp.py` starts its decoder clock at 960 with the comments "since the first measure start on beat 1 (960 ticks)"
+  and "1-indexed quarter notes i guess"; the GuitarTab README's description of DadaGP tokens says "wait: duration in
+  ticks (480 ticks = quarter note)". Not settled here (UNVERIFIED). Related formats: Guitab writes `.tokens.txt` with the same
+  header tokens and `note:s<string>:f<fret>` without an instrument prefix, with the song name instead of an `artist:`
+  token (Guitab section); GOAT has "a text-like token encoding"; the GuitarTab repo reads `.tokens.txt` with
+  `src/dadagp_parser.py` (README tree comment "# .tokens.txt parser"). Whether `dadagp.py decode` reads Guitab's files
+  was not tested.
+
+## Guitar-Transcription-CNN-MTL (Reyhanlıoğlu; added by verify-docs-guitar-tab, 2026-11-10)
+
+- What: README (https://github.com/ErenReyhanlioglu/Guitar-Transcription , blob-less clone 2026-11-10, last commit
+  2026-10-13, `ec63f36`): "Code for "Automatic Guitar Tablature Transcription using Dual Representation Feature Fusion
+  and Instrument Informed Multi-Task Learning"." and "The paper is currently under review at IEEE Access."
+  `pyproject.toml`: name `guitar-transcription`, version 0.1.0, `requires-python = ">=3.12,<3.14"`.
+- Input (README "Acoustic representation"): "The HCQT stacks six CQT planes (harmonics 0.5, 1, 2, 3, 4, 5; 36 bins per
+  octave over four octaves from E2, 144 bins per plane)"; "The Mel-spectrogram (256 bands, 2048-point FFT)"; "Audio is
+  resampled to 22.05 kHz with a hop of 512 samples, and the model sees a 19-frame context window centred on the target
+  frame (about 209 ms on each side)." Output: "The tablature head is a two-layer MLP with a 256-unit hidden layer
+  (dropout 0.5), projecting to a 6x21 output covering six strings and 21 fret states (frets 0 to 19, plus silence)."
+  Auxiliary outputs: fret region (5 classes), string activity (6), pitch class (12), multi-pitch (49, MIDI 40-88).
+- How it is called (README "Reproducing the results"): `extract_features.py --guitarset-root ... --output-dir ...` (in
+  a separate Python 3.11 environment with amt-tools and guitar-transcription-continuous), `train.py --config
+  configs/cnn_mtl_config.yaml ...`, `evaluate.py --experiment-path ... --data-root ...`. These run on GuitarSet feature
+  files; no command for transcribing an arbitrary audio file is documented in the README. README: "Training on CPU works
+  but is impractical at full scale."
+- Weights: https://huggingface.co/MehmetErenn0/guitar-transcription-cnn-mtl (HF API: created 2026-07-27, last modified
+  2026-10-12; card YAML `license: mit`): `cnn_mtl_20260929_191206/fold_<1-6>/model_best.pt` ("Model weights only
+  (state_dict), use this for inference"), and the same files in https://github.com/ErenReyhanlioglu/Guitar-Transcription-Weights
+  (whose `LICENSE` begins "MIT License / Copyright (c) 2026 M. Eren Reyhanlıoğlu"). The README: "They load into
+  `src/models/cnn_mtl.py` with `configs/cnn_mtl_config.yaml`".
+- License (code): `LICENSE` begins "MIT License / Copyright (c) 2026 M. Eren Reyhanlıoğlu"; README "## License": "MIT.
+  See [LICENSE](LICENSE)."
+- Training data: README: "Experiments use [GuitarSet](https://guitarset.weebly.com/) (annotations version 1.1.0)";
+  GuitarSet v1.1.0 is `cc-by-4.0` on Zenodo (GuitarSet section).
+- Author-reported (README Table 1, GuitarSet six-fold leave-one-player-out): tablature F1 0.776 ±0.034 and TDR 0.943
+  ±0.025 for "HCQT + Mel | Casc. MT†"; README Table 6: CPU real-time factor 0.615 ("CPU: median of 5 runs with six
+  threads. Feature extraction is excluded").
+- Constraints: `src/utils/guitar_profile.py` ("Instrument tuning/fret-range profile", README tree); no capo or tuning
+  option is described in the README.
+
+## scorify (added by verify-docs-guitar-tab, 2026-11-10)
+
+- What: npm `scorify` 0.4.0, published 2026-10-31 (https://registry.npmjs.org/scorify , read 2026-11-10), repository
+  https://github.com/kyr0/scorify (blob-less clone, last commit 2026-10-31, `8f8c25c`). README: "Instrument-aware music
+  arrangement, transposition, and fingering constraints for vanilla JavaScript. TypeScript source, browser-native ESM, no
+  external runtime dependencies."
+- How it is called (README "Arrange a score"): `createScore([...notes], { tempoMap, keyMap })` with notes such as `{ id,
+  pitch: parsePitch("C4"), onset: q(0), duration: q(1), partId, voiceId, role }`, then `arrange(source, { instrument,
+  mode, transform, player: { level, overrides }, adaptation })`; instruments such as `classicalGuitar({ capoFret: 2 })`
+  or `createFrettedInstrument("custom", "My tuning", [...])`. README: "All pitches are **sounding** pitches." and "Time
+  is a normalized `[numerator, denominator]` measured in quarter notes."
+- Output (README "Modes and results"): "`success` includes output score, fingerings, separate source/realized harmony,
+  edits, source mapping, difficulty components, model versions, effective profile, and search statistics." Other
+  statuses: `infeasible`, `search-exhausted`, `invalid-input`, `unsupported`, `cancelled`.
+- Constraints (README): "Configurable fretted strings, tunings, capos and geometry"; "Per-string configuration accepts
+  `openPitch`, `capoFret`, `fretCount`, stable `id`, and tab `number`. Frets are absolute from the original nut;
+  displayed relative fret = absolute fret − that string's capo."; player options include `allowBarre`,
+  `maxBarreStrings`, `rightHand: 'pick' | 'strum'`; search: "exhaustive reference, exact dynamic programming, or bounded
+  beam search".
+- Inputs it does not read: README "First-release limitations": "... audio/MIDI/MusicXML import ... remain future work."
+  A separate agent skill and CLI in the repository, `skills/score-import/`, "converts MusicXML, MXL, ABC and MIDI into
+  scorify Score JSON" (README).
+- License: npm metadata `"license": "MIT"`; `LICENSE` begins "MIT License / Copyright (c) 2026 Aron Homberg" (commit
+  `8f8c25c`).
+
+## Guitar Chord Diagram Suggestion (d'Hooge et al.; added by verify-docs-guitar-tab, 2026-11-10)
+
+- What: code for "Guitar Chord Diagram Suggestion for Western Popular Music", Alexandre d'Hooge, Louis Bigo, Ken
+  Déguernel, Nicolas Martin, SMC 2024 (arXiv 2407.14260). The paper's arXiv HTML says: "The Python implementation is
+  openly available, along with a demonstration website, at algomus.fr/code ." That page (https://algomus.fr/code , read
+  2026-11-10) links https://github.com/adhooge/guitar-chord-diagram-suggestion (blob-less clone, last commit 2025-07-13,
+  `98554b5`) and the Hugging Face Space https://huggingface.co/spaces/adhooge/guitar-chord-diagram-suggestion .
+- How it is called (README): Python 3.10, `pip install -r requirements.txt` (pins torch 2.3.0, lightning 2.2.5 and a
+  music21 fork); `python -m cds.train -n <name>`, `python -m cds.test -s <path/to/ckpt> -T`. Data rows are chord
+  shapes per string such as `'3.2.0.0.3.3'` and `'x.x.0.2.3.0'` (README example).
+- Weights: 34 `.ckpt` files in the tree, 16 under `data/DadaGP/` and `data/mySongBook/` and 18 under `logs/` (README:
+  "We provide checkpoints of the models we trained for the paper (in the `logs/` folder)").
+- Licences, README "### Licensing": "The code is released under a GPL-v3.0 license, refer to the `LICENSE` file for
+  more details." and "The chord data is released under an ODbL license, refer to the `DATA_LICENSE` file for more
+  details." `LICENSE` begins "GNU GENERAL PUBLIC LICENSE / Version 3, 29 June 2007"; `DATA_LICENSE` begins "## ODC Open
+  Database License (ODbL)". The Space card YAML says `license: other`.
+- Training data: DadaGP (research access by request, DadaGP section) and mySongBook (terms not read here).
 
 ## Datasets
 
@@ -714,8 +954,12 @@ read 2026-11-10, unless another source is named. Zenodo shows that id as the rec
   - The GitHub repository's `LICENSE` (code) is "MIT License / Copyright (c) 2018 Music and Audio Research Laboratory - NYU"
     (https://raw.githubusercontent.com/marl/GuitarSet/master/LICENSE).
 - Weights trained on it that are published: SynthTab `finetuned/GuitarSet.pt` and `non_finetuned/GuitarSet.pt`; Guitab
-  E15 / E19 / E24 / E25 (with other data). The shared test input R1 of this project is drawn from GuitarSet
-  (PLAN.md).
+  E15 / E19 / E24 / E25 (with other data); the TabCNN in Zenodo 11406378 (with GuitarProFX) and `cstr/tabcnn-onnx`'s
+  `tabcnn.onnx`; the CNN-MTL folds (annotations version 1.1.0 per its README); Noise2Fret's `CheckpointsGuitarSet.zip`.
+  On the version (1.0.1 `cc-by-nc-4.0` or 1.1.0 `cc-by-4.0`): the CNN-MTL README says "annotations version 1.1.0"; the
+  Guitab README and Noise2Fret's sub-READMEs link the 1.1.0 record (zenodo.org/records/3371780); TabCNN's README links
+  the 1.0.1 file; the SynthTab README, the Zenodo 11406378 record and the `cstr` cards name no version. The shared test
+  input R1 of this project is drawn from GuitarSet (PLAN.md).
 
 ### IDMT-SMT-Guitar
 
@@ -735,9 +979,14 @@ read 2026-11-10, unless another source is named. Zenodo shows that id as the rec
 - Licence: no licence statement found on https://ss12f32v.github.io/Guitar-Transcription/ and no LICENSE file in
   https://github.com/ss12f32v/Guitar-Transcription (both read 2026-11-10).
 - Derived releases on Zenodo with their own licence ids: 12674910 "EGDB Dataset Rendered with the Positive Grid BIAS
-  FX2 Plugin" (2024-07, `cc-by-4.0`); 19789500 "EGDB-PG" (2025-04, `cc-by-4.0`, one file of 135,406,622,188 bytes).
-- Weights trained on it that are published: SynthTab `finetuned/EGDB.pt`, `non_finetuned/EGDB.pt`. Guitab uses EGDB
-  only as a test set and for its chord model's evaluation songs (README).
+  FX2 Plugin" (2024-07, `cc-by-4.0`); 19789500 "EGDB-PG" (2025-04, `cc-by-4.0`, two files: `EGDB_FLAC_bundle.zip` of
+  135,406,622,188 bytes and `random_presets_json.rar`). The EGDB-PG project page
+  (https://ss12f32v.github.io/Guitar-Transcription-with-Amplifier/ , read 2026-11-10) lists "Dataset-WAV(Upon Request)
+  Dataset-FLAC(Zenodo)".
+- Weights trained on it that are published: SynthTab `finetuned/EGDB.pt`, `non_finetuned/EGDB.pt`. Guitab's README uses
+  EGDB as a test set ("EGDB electric guitar test (25 clips, clean DI, never seen in training)") and for its chord model:
+  "for its real training and evaluation songs, the custom dataset and EGDB" (README section on training the chord
+  model).
 
 ### DadaGP
 
@@ -777,7 +1026,8 @@ read 2026-11-10, unless another source is named. Zenodo shows that id as the rec
 
 ### Guitar-TECHS
 
-- Pedroza, Taheri, Abreu, Corey, Roman, ICASSP 2025 (arXiv 2501.03720). Zenodo 14963133 (2025-04-06), `cc-by-4.0`.
+- Pedroza, Taheri, Abreu, Corey, Roman per the Zenodo creators field (arXiv 2501.03720 lists four authors: Pedroza,
+  Abreu, Corey, Roman), ICASSP 2025. Zenodo 14963133 (2025-04-06), `cc-by-4.0`.
   Project page https://guitar-techs.github.io : "All data is freely available for download and use through a
   personalized Zenodo repository: All data is licensed under a Creative Commons Attribution 4.0 License (CC BY 4.0)."
 - Content (Zenodo description): "multi-perspective audio signals (direct input, amplifier microphone,
@@ -799,36 +1049,52 @@ read 2026-11-10, unless another source is named. Zenodo shows that id as the rec
   READ BEFORE SUBMITTING A REQUEST: this dataset is non-commercial only, so I unfortunately cannot grant requests for any
   kind of commercial use case, even internal testing. I am sorry for the trouble. Open source and research projects are
   fine!" (Zenodo 17706552 and 17811453 are the ISMIR paper PDF, `cc-by-4.0`.)
-- Used by: Noise2Fret, Audio2Tab (no weights published by either).
+- Used by: Noise2Fret (checkpoints trained on GOAT published on Zenodo 23361924 under the record licence `cc-by-4.0`;
+  Noise2Fret section) and Audio2Tab (no checkpoint published on 2026-11-10).
 
 ### François Leduc dataset (FLGD)
 
 - See the Riley et al. section: Zenodo 10984521 (restricted, research by request, scores sold by François Leduc) and the
-  HF card `license: mit`. Used by the HRGT model (`guitar-fl.pth`), Fretting-Transformer, MIDI-to-Tab (fine-tuning on
-  "professionally transcribed guitar performances", per its abstract; that the set is Leduc's is UNVERIFIED here) and
-  the GuitarTab repo.
+  HF card `license: mit`. Used by the HRGT model (`guitar-fl.pth`), Fretting-Transformer, MIDI-to-Tab (fine-tuned on
+  "the training splits of Riley et al. [ 12 ] and GuitarSet [ 18 ]", Section 4.2, where [12] is the HRGT paper; the
+  MIDI-to-Tab paper does not name Leduc itself) and the GuitarTab repo.
 
 ### Smaller or newer sets found
 
 - EGSet12 (from arXiv 2405.14679, robust-guitar-tabs.github.io): Zenodo 11406378 (2024-06-01), `cc-by-4.0`, "twelve real
-  & original solo electric guitar performances", files `.gp` and `.jams`.
+  & original solo electric guitar performances", files `01`–`12` as `.gp`, `.jams` and `.wav`, plus the TabCNN weights
+  file `best_TabCNN_tablature_trancription_model` (see "TabCNN weights published by others").
 - GuitarDuets (arXiv 2507.01172): Zenodo 12802440 (2024-07-23), `cc-by-4.0`, `GuitarDuets.zip` (3,534,777,196 bytes).
-- SCORE-SET (arXiv 2507.18723): https://github.com/DjentleViBe/SCORE-SET (last commit 2025-12-31), ".gp5 transcribed files,
-  derived from the GiantMIDI and MAESTRO datasets"; `LICENSE` begins "Attribution-NonCommercial-ShareAlike 4.0
-  International".
+- SCORE-SET (arXiv 2507.18723): https://github.com/DjentleViBe/SCORE-SET (last commit 2025-12-31), README: "SCORE-SET [1]
+  is a dataset composed of .gp5 [2] transcribed files, derived from the GiantMIDI [3] and MAESTRO [4] datasets."; `LICENSE`
+  begins "Attribution-NonCommercial-ShareAlike 4.0 International".
 - AnimeTAB (arXiv 2210.03027, 2022): the paper says "Our data and code have been made publicly available"; where, and
   under what licence, was not found in the arXiv HTML (UNVERIFIED).
-- Rhythm Guitar Tablature Continuation data: Zenodo 21304818 (2026-07), `cc-by-nc-sa-4.0`, access "restricted" (seen in a
-  Zenodo search result only).
+- Rhythm Guitar Tablature Continuation data: Zenodo 21304818 ("Rhythm Guitar Tablature Continuation through Picking
+  Pattern Generation", v1.0.0, 2026-07, creators D'Hooge, Déguernel, Bigo), `cc-by-nc-sa-4.0`, access "restricted"
+  (Zenodo API record read 2026-11-10 by the verifier).
+- Chordonomicon (Hugging Face dataset ailsntua/Chordonomicon, created 2024-10-29, one file `chordonomicon_v2.csv`): card
+  YAML `license: cc-by-nc-4.0` (read 2026-11-10). Guitab's chord model is trained on it (Guitab section).
+- Synchronize Dual Hands motion data (https://github.com/xupei0610/guitar , last commit 2025-07-29): the repository's
+  `LICENSE` is "MIT License / Copyright (c) 2024 徐霈 (Pei Xu)", and `dataset/LICENSE` is the "Creative Commons
+  Attribution-NonCommercial-NoDerivatives 4.0 International Public License" (both read 2026-11-10).
+- GuiFiR video dataset (https://github.com/kmu-ee-ailab/guifir_dataset , last commit 2026-10-29): see the research table
+  row; `DATASET_TERMS.md`: "The dataset assets are provided for non-commercial research, education, and reproducibility
+  of the GuiFiR work."
 
 ### Which published weights were trained on which data (from the sections above)
 
 | Published weights | Where | Weights licence as stated | Training data named by the authors |
 |---|---|---|---|
 | SynthTab `SynthTab-Pretrained.pt`, `finetuned/*.pt`, `non_finetuned/*.pt` | in the GitHub repo | repo LICENSE file CC BY 4.0; README says the dataset is CC BY-NC 4.0 | SynthTab (from DadaGP); fine-tunes on EGDB, GuitarSet, IDMT |
-| Guitab E25 / E24 / E19, tab LM, chord model | huggingface.co/danmor/guitab | CC BY-NC-SA 4.0 | GuitarSet, GAPS, SynthTab subset, a non-distributed custom set; chord model Chordonomicon |
+| Guitab E25 / E24 / E19, tab LM, chord model | huggingface.co/danmor/guitab | CC BY-NC-SA 4.0 (card); the two Beat This! ONNX files MIT (`LICENSE-beat-this.txt`) | GuitarSet, GAPS, SynthTab subset, a non-distributed custom set; chord model Chordonomicon (HF card `cc-by-nc-4.0`) plus the custom set and EGDB |
 | `guitar-gaps.pth`, `guitar-fl.pth` | huggingface.co/xavriley/midi-transcription-models | MIT (card) | GAPS; François Leduc dataset |
-| TabCNN, inhibition, FretNet, Noise2Fret, Audio2Tab, GuitarTab, TART, MIDI-to-Tab, Fretting-Transformer | none found | n/a | GuitarSet (first three); GuitarSet + GOAT; GOAT + SynthTab + DadaGP; DadaGP + Leduc; GuitarSet / EGDB eval; DadaGP + fine-tune set; DadaGP + GuitarToday + Leduc |
+| TabCNN + GuitarProFX (`best_TabCNN_tablature_trancription_model`) | Zenodo 11406378 | record `cc-by-4.0` | GuitarSet + GuitarProFX (360 DadaGP tracks rendered with EGFxSet and the authors' recorded tones) |
+| `tabcnn.onnx`, `tabcnn-gpfx.onnx`; GGUF copies | huggingface.co/cstr/tabcnn-onnx , huggingface.co/cstr/tabcnn-GGUF | CC BY 4.0 (cards) | GuitarSet (vanilla, trained by the card's author); the Zenodo 11406378 model (gpfx) |
+| CNN-MTL, six folds plus ablation runs | huggingface.co/MehmetErenn0/guitar-transcription-cnn-mtl ; github.com/ErenReyhanlioglu/Guitar-Transcription-Weights | MIT (card YAML and the weights repository's LICENSE) | GuitarSet (six-fold leave-one-player-out) |
+| Chord diagram suggestion checkpoints (`.ckpt`) | github.com/adhooge/guitar-chord-diagram-suggestion | repository LICENSE GPL v3 (code); chord data ODbL (`DATA_LICENSE`); HF Space card `license: other` | DadaGP and mySongBook chord pairs |
+| Noise2Fret `CheckpointsGOAT.zip`, `CheckpointsGuitarSet.zip` | Zenodo 23361924 | record `cc-by-4.0` | GOAT (`cc-by-nc-4.0`, restricted, "non-commercial only"); GuitarSet |
+| Original TabCNN, inhibition, FretNet, Audio2Tab, GuitarTab, TART, MIDI-to-Tab, Fretting-Transformer | none found | n/a | GuitarSet (first three); GOAT + SynthTab + DadaGP; DadaGP + Leduc; GuitarSet / EGDB eval; DadaGP pre-training + Riley et al. (Leduc) and GuitarSet fine-tuning; DadaGP + GuitarToday + Leduc |
 
 ## Audio-visual guitar transcription and fingering estimation research, 2019 to 2026
 
@@ -841,35 +1107,39 @@ list is not complete for them. "Code" means a repository link found in the paper
 | Year | Work | What goes in and out (as the authors describe it) | Code / data |
 |---|---|---|---|
 | 2024 | TapToTab, Ghaleb et al., arXiv 2409.08618 (2024-09-13) | "YOLO models for real-time fretboard detection, and Fourier Transform-based audio analysis for precise note identification" to make tabs "from video recordings" (abstract) | no code link found (the arXiv HTML was not available; abstract read via the arXiv API) |
-| 2026 | GuiFiR, An, Chung, Park, Lee, IEEE Access 2026 (Kookmin University AI lab) | "a weakly-supervised framework that jointly estimates hand and guitar fretboard pose" (lab page TL;DR, read via web fetch; the page could not be fetched with curl: connection reset) | lab page says "The GuiFiR dataset resources are publicly available" with no URL; lab GitHub https://github.com/kmu-ee-ailab (no GuiFiR repository linked) |
-| 2021 | Asmar, Séoud, Bilodeau, Polytechnique Montréal (poster; a 2022 master's thesis per the search summary) | RGB-D video with semantic segmentation, hand pose estimation and optical flow, no audio (search-result summary only) | UNVERIFIED: publications.polymtl.ca returned connection reset / HTTP 503 on 2026-11-10 |
+| 2026 | GuiFiR: "GuiFiR: Weakly-Supervised Learning of Hand Pose Estimation for Guitar Finger Reading", An, Chung, Park, Lee, IEEE Access 2026, doi 10.1109/ACCESS.2026.3713562 (Kookmin University AI Lab) | dataset README: "GuiFiR jointly estimates the hand pose and the guitar fretboard pose, and is trained with weak supervision from sparse tablature instead of dense per-frame hand keypoint labels."; dataset of 10-second clips (900 train / 30 val / 100 test) with COCO-style JSONL annotations; clips come from YouTube links (`yt_link.csv`, downloaded with yt-dlp) | the lab home page https://ailab.kookmin.ac.kr/ (read 2026-11-10 via web fetch) links "Code" to https://github.com/kmu-ee-ailab/guifir_dataset (last commit 2026-10-29): dataset-preparation scripts and metadata only, no model code or weights in its tree. `LICENSE` MIT for the scripts: "This license applies only to the source code and documentation in this repository. Dataset assets are governed by DATASET_TERMS.md." `DATASET_TERMS.md`: "The dataset assets are provided for non-commercial research, education, and reproducibility of the GuiFiR work." and, under "You may not:", "Use the dataset assets for commercial products, services, or training pipelines without written permission from the dataset maintainers." |
+| 2021 | Asmar, Séoud, Bilodeau, Polytechnique Montréal: a poster (https://publications.polymtl.ca/80726/) and a 2022 master's thesis (https://publications.polymtl.ca/10470/1/2022_MarkAsmar.pdf), both found by web search | UNVERIFIED (known only from search-result summaries: RGB-D video, semantic segmentation, hand pose estimation and optical flow) | UNVERIFIED: publications.polymtl.ca reset the connection on 2026-11-10 (curl exit 35, retried once by the verifier) |
 | 2023 | "A multimodal dataset for electric guitar playing technique recognition", Data in Brief (PMC10698518) | "549 video samples in MP4 format, and their respective audio samples in WAV format, covering nine different electric guitar techniques"; recorded "using a smartphone device"; article licence "CC BY-NC-ND" | data: Zenodo 10075352 "magcil/guitar_style_dataset" v1.0.0 (2023-11-06), `cc-by-4.0`, 14,251,969,884 bytes |
-| 2024 | "Synchronize Dual Hands for Physics-Based Dexterous Guitar Playing", Xu and Wang, SIGGRAPH Asia 2024, arXiv 2409.16629 | the reverse direction: tab in, simulated two-hand motion out ("accurately play diverse rhythms with complex chord pressing and string picking patterns based on the input guitar tabs"); includes motion-capture data | https://github.com/xupei0610/guitar (linked from https://pei-xu.github.io/guitar ; licence not read) |
+| 2024 | "Synchronize Dual Hands for Physics-Based Dexterous Guitar Playing", Xu and Wang, SIGGRAPH Asia 2024, arXiv 2409.16629 | the reverse direction: tab in, simulated two-hand motion out ("accurately play diverse rhythms with complex chord pressing and string picking patterns based on the input guitar tabs"); includes motion-capture data | https://github.com/xupei0610/guitar (linked from https://pei-xu.github.io/guitar ; last commit 2025-07-29): `LICENSE` MIT (code); `dataset/LICENSE` CC BY-NC-ND 4.0 (both read 2026-11-10) |
 | 2025 | "Joint Transcription of Acoustic Guitar Strumming Directions and Chords", Murgul, Schimper, Heizmann, ISMIR 2025, arXiv 2508.07973 | data collected with "an ESP32 smartwatch motion sensor"; the model uses "only microphone audio" | no code link in the arXiv HTML |
-| 2008 (before the window, for context) | Paleari, Huet et al., EURECOM, ICIP 2008 "A multimodal approach to music transcription" (web-search summary only; the paper was not read) | webcam fretboard and hand tracking fused with audio; the search summary quotes "89% of notes" disambiguated | not checked |
+| 2008 (before the window, for context) | Paleari, Huet, Schutz, Slock (Eurecom), "A Multimodal Approach to Music Transcription", Workshop on Multimedia Information Retrieval at ICIP 2008 (PDF https://www.eurecom.fr/publication/2491/download/mm-palema-081012.pdf , read 2026-11-10 by the verifier) | abstract: "a system which tracks the position of the fretboard on a video stream, a system which automatically detects the position of the guitar on the first fret to initialize the first system, a system which detects the position of the hand on the guitar, and finally a system which fuses the visual and audio information to extract a tablature. Results show that this kind of multimodal approach can easily disambiguate 89% of notes in a deterministic way." | none found in the PDF |
 
 ### Fingering estimation and string assignment from notes (symbolic), and string identification from audio
 
 | Year | Work | Method family (authors' words) | Code |
 |---|---|---|---|
 | 2022 (arXiv 2025) | Kaliakatsos-Papakostas et al., SMC 2022, arXiv 2510.10619 | "based on machine learning"; "only standard 6-string guitar tuning is examined" | https://github.com/maximoskp/midi2tab_Deconvolutions (section above) |
-| 2023 | "Enumerating Left Hand Forms for Guitar Tablatures Using Non-Decreasing Finger Numbers", TENOR 2023 (Zenodo 8079340, paper PDF `cc-by-4.0`) | title only read (Zenodo search result) | not checked |
+| 2023 | "Enumerating Left Hand Forms for Guitar Tablatures Using Non-Decreasing Finger Numbers", Gen Hori (Zenodo creators field), TENOR 2023 (Zenodo 8079340, paper PDF `cc-by-4.0`, record read 2026-11-10) | title only read | not checked |
 | 2023 | Visual Guitar Tab Comparison, Heyen et al., ISMIR 2023 LBD, arXiv 2311.14726 | an interface to compare tab versions by "similarity, difficulty, and correctness" | https://github.com/visvar/visual-guitar-tab-comparison (last commit 2023-11-20; no LICENSE file in the tree) |
 | 2024 | MIDI-to-Tab (Edwards et al.), arXiv 2408.05024 | masked-language-model Transformer (BART) | none found |
 | 2024 | From MIDI to Rich Tablatures (Bontempi et al.), arXiv 2407.09052 | "constrained and multi-attribute optimization problem ... best position of the fretting hand" | none found |
-| 2024 | Guitar Chord Diagram Suggestion (d'Hooge, Bigo, Déguernel, Martin), SMC 2024, arXiv 2407.14260 | suggests a chord diagram "taking into account the diagram of the previous chord", from DadaGP and mySongBook statistics; "improves the F1-score on this task by up to 27%" | no code link in the arXiv HTML |
+| 2024 | Guitar Chord Diagram Suggestion (d'Hooge, Bigo, Déguernel, Martin), SMC 2024, arXiv 2407.14260 | suggests a chord diagram "taking into account the diagram of the previous chord", from DadaGP and mySongBook statistics; "improves the F1-score on this task by up to 27%" (abstract) | the arXiv HTML names algomus.fr/code, which links https://github.com/adhooge/guitar-chord-diagram-suggestion (GPL v3 code, ODbL data, checkpoints; section "Guitar Chord Diagram Suggestion") |
+| 2025 | Chieppa, Brutti, Paiva, "Automatic Guitar Transcription With Deep Neural Networks", IEEE Access vol. 13, 2025, doi 10.1109/ACCESS.2025.3583646 (PDF https://rppaiva.dei.uc.pt/publications/Journals/Access_2025_Chieppa.pdf , read 2026-11-10 by the verifier) | abstract: "This article builds on a state-of-the-art note-level transcription model that uses a self-attention mechanism. The model incorporates beat-informed quantisation to accurately convert audio signals into tablature"; it adds "a new dataset designed to assess the robustness of the model in different scenarios". Article licence line: "This work is licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 License." | no code or data URL found in the PDF text |
+| 2026 | Guitar-Transcription-CNN-MTL (Reyhanlıoğlu), "under review at IEEE Access" (README) | HCQT + Mel input, auxiliary fret-region, string-activity, pitch-class and multi-pitch heads, 6x21 tablature output | https://github.com/ErenReyhanlioglu/Guitar-Transcription (MIT) and MIT weights (section "Guitar-Transcription-CNN-MTL") |
 | 2025 | Fretting-Transformer, arXiv 2506.14223 | T5 encoder-decoder with CAPO and TUNING tokens | none found |
 | 2026 | GuitarTab (Hsu et al.), arXiv 2607.26440 | note-event tokens plus "pitch-validity constrained decoding" | https://github.com/MusicGuitarTab/GuitarTab |
 | 2026 | Noise2Fret (Simionato, Bigo), arXiv 2608.30854 | diffusion with "Hand-Span Feasibility" among five auxiliary losses (audio in) | https://github.com/RiccardoVib/Noise2Fret |
-| 2026 | Fretiq (Garg), arXiv 2607.18303v2 | "browser-based string classification system using a 26-dimensional feature representation ... and 13 Mel-Frequency Cepstral Coefficients", monophonic electric guitar; "A recording-session-held-out evaluation yields 86.53 +/- 1.23 percent accuracy" | no code link found (the arXiv HTML was not available) |
+| 2026 | Fretiq (Garg), arXiv 2607.18303v2 | "browser-based string classification system using a 26-dimensional feature representation ... and 13 Mel-Frequency Cepstral Coefficients", monophonic electric guitar; "A recording-session-held-out evaluation yields 86.53 +/- 1.23 percent accuracy" (abstract, v2) | no code link found (the arXiv HTML returned HTTP 404 for 2607.18303v2 on 2026-11-10; abstract read via the arXiv API) |
 | 2026 | TART v2 (Gupta et al.), arXiv 2609.11904 | "an audio-conditioned T5 encoder-decoder for string-fret assignment" | none found |
 
 Other guitar transcription work found in the same queries, without string output or outside this lane's core:
 "Velocity Prediction in Automatic Guitar Transcription" (Loth, Riley, Dixon, Benetos, EUSIPCO 2026, arXiv 2606.24912;
 no code link in the arXiv HTML); "Towards Generalizability to Tone and Content Variations in the Transcription of
 Amplifier Rendered Electric Guitar Audio" (Chen et al., arXiv 2504.07406; introduces EGDB-PG and a "Tone-informed
-Transformer"; project page https://ss12f32v.github.io/Guitar-Transcription-with-Amplifier/ , not read); "Leveraging Real
-Electric Guitar Tones and Effects ..." (Pedroza et al., arXiv 2405.14679; uses amt-tools; EGSet12 data, Zenodo 11406378);
+Transformer"; project page https://ss12f32v.github.io/Guitar-Transcription-with-Amplifier/ , read 2026-11-10 by the
+verifier: it lists "Dataset-WAV(Upon Request) Dataset-FLAC(Zenodo)" and no code link was found on it); "Leveraging Real
+Electric Guitar Tones and Effects ..." (Pedroza et al., DAFx 2024, arXiv 2405.14679; uses amt-tools; EGSet12 data and its
+TabCNN weights, Zenodo 11406378, see "TabCNN weights published by others");
 "Exploring Procedural Data Generation for Automatic Acoustic Guitar Fingerpicking Transcription" (Murgul, Heizmann,
 AIMC 2025, arXiv 2508.07987), whose linked repository https://github.com/klangio/procedural-data-training was empty (no
 commits) when cloned on 2026-11-10; "Transcribing Rhythmic Patterns of the Guitar Track in Polyphonic Music" (arXiv
@@ -878,8 +1148,9 @@ commits) when cloned on 2026-11-10; "Transcribing Rhythmic Patterns of the Guita
 ## Commercial products and services (pointers only)
 
 - Apps that turn audio into guitar tab (Klangio Guitar2Tabs, Songscription, Note2Tabs, AnthemScore, Songsterr) are the
-  apps-survey lane's; HTTP APIs (Klangio API, Music.AI) are the hosted-apis lane's (its survey lists "Klangio API ...
-  transcription to MIDI / MusicXML / Guitar Pro 5 / PDF"). This lane read none of their terms or prices and states none.
+  apps-survey lane's; HTTP APIs (Klangio API, Music.AI) are the hosted-apis lane's (its survey.md, item 2 of its tool
+  list, reads "Klangio API (Klangio GmbH): transcription to MusicXML / Guitar Pro 5 / MIDI / PDF"). This lane read none
+  of their terms or prices and states none.
 - Guitar Pro 8, MuseScore and TuxGuitar each assign strings automatically (see "MuseScore, TuxGuitar and Guitar Pro
   built-in string assignment" above).
 
@@ -890,8 +1161,9 @@ None of these pairs was run by this agent; the try agent's `trials.md` records w
 
 1. hf_midi_transcription (Riley et al. guitar models) outputs a MIDI file ("Output: MIDI files", CRNN "with
    onset/offset/frame/velocity regression"; https://github.com/xavriley/hf_midi_transcription README), which tuttut
-   accepts as a MIDI file read by `pretty_midi.PrettyMIDI(path)` into `Tab(name, tuning, midi, ...)`
-   (https://github.com/natecdr/tuttut `tuttut/GUI/generate.py`).
+   accepts as a MIDI file read by `pretty_midi.PrettyMIDI(filepath.as_posix())` into `Tab(filepath.stem, tuning, f, ...)`
+   (https://github.com/natecdr/tuttut `tuttut/GUI/generate.py`). tuttut's MIDI input was exercised on the shared truth
+   MIDI files in runs r0027 and r0048 (`trials.md`); the hf_midi_transcription → tuttut pair itself was not run.
 2. The same MIDI file is accepted by gtrsnipe as `gtrsnipe -i input.mid -o out.tab` with `--tuning`, `--tuning-pitches`
    and `--capo` (https://github.com/scottvr/gtrsnipe README "Command-line options").
 3. A multi-track MIDI file is accepted by tayuya one track at a time: `MIDIParser('sample.mid', track=0)`, with
@@ -910,8 +1182,11 @@ None of these pairs was run by this agent; the try agent's `trials.md` records w
    chord names) plus `<name>.tokens.txt` (https://github.com/DanieleMorotti/guitab README section 2), which PyGuitarPro
    reads with `guitarpro.parse(...)` ("read, write and manipulate GP3, GP4 and GP5 files";
    https://github.com/Perlence/PyGuitarPro README) and which Guitab's own local app shows "in an alphaTab viewer with
-   playback ... metronome, count-in, loop" (Guitab README "Web app"). Whether `.tokens.txt` is the DadaGP token format:
-   UNVERIFIED (the README says only "the same tab as text tokens").
+   playback ... metronome, count-in, loop" (Guitab README "Web app"). The `.tokens.txt` vocabulary (`guitab/gp5.py`
+   docstring) shares DadaGP's header tokens (`downtune:`, `tempo:`, `start`, `new_measure`, `wait:`) but writes notes as
+   `note:s<string>:f<fret>` without DadaGP's instrument prefix (DadaGP example: `bass:note:s2:f16`) and starts with the song
+   name instead of `artist:` (DadaGP tooling section); whether DadaGP's decoder or the GuitarTab parser reads it was not
+   tested (UNVERIFIED).
 8. Guitab accepts a separated guitar stem as an ordinary audio file (`--audio` takes "wav, flac, ogg, mp3, aiff", others
    through ffmpeg; Guitab README), so a guitar stem from the source-separation lane is a valid input; the README says it
    is made for "a recording of a solo guitar".
@@ -931,33 +1206,165 @@ None of these pairs was run by this agent; the try agent's `trials.md` records w
 13. GuitarSet ships JAMS files with "string and fret positions" (Zenodo 3371780 description), which amt-tools reads
     through `amt_tools/datasets/GuitarSet.py` for TabCNN-style training (amt-tools repository tree).
 14. amt-tools-based models (TabCNN re-implementation, inhibition layer, FretNet) output per-string "stacked notes",
-    which `tools.stacked_notes_to_frets(...)` turns into (string, fret) per note (FretNet `examples/inference.py`); no
-    file writer for Guitar Pro or MusicXML is part of those repositories (file trees read 2026-11-10).
+    which `tools.stacked_notes_to_frets(...)` turns into (string, fret) per note (FretNet `examples/inference.py`), and
+    amt-tools' `write_stacked_notes_jams(stacked_notes, jams_path)` writes per-string notes to JAMS
+    (`amt_tools/tools/io.py`); no file writer for Guitar Pro or MusicXML is part of those repositories (file trees read
+    2026-11-10).
 15. gtrsnipe writes `.vex` (VexTab), `.abc`, `.mid` and ASCII `.tab` ("Convert to and from .mid, .abc, .vex, and .tab
     files"; gtrsnipe README), so its output can go to a VexTab or abcjs renderer in the web-tab-render lane (renderer
     half not read here).
-16. From MIDI to Rich Tablatures "converted into MusicXML format" (arXiv 2407.09052 abstract); music21 reads MusicXML
-    and has `FretNote` / `FretBoard` objects for string and fret (music21 `tablature.py`). No code was found for the
-    paper.
-17. User constraint "capo at fret N" is accepted by: Guitab `--capo N`; gtrsnipe `--capo`; Fretting-Transformer through
-    a `CAPO#` token (paper; no code). Not accepted by: MIDI-to-Tab ("our system does not handle the use of capos"),
-    tuttut and tabsynth (no capo parameter found; a capo can be given to tuttut only as a raised `Tuning`), LilyPond's
-    automatic assignment (no capo setting found on the fretted-strings page).
+16. From MIDI to Rich Tablatures "converted into MusicXML format" (arXiv 2407.09052 abstract); music21 has a MusicXML
+    reader and writer (`music21/musicxml/xmlToM21.py`, `music21/musicxml/m21ToXml.py` in its tree) and `FretNote` /
+    `FretBoard` objects for string and fret (music21 `tablature.py`). No code was found for the paper.
+17. User constraint "capo at fret N" is accepted by: Guitab `--capo N`; gtrsnipe `--capo` ("All fret numbers will be
+    relative to the capo", README "Command-line options"); scorify (`classicalGuitar({ capoFret: 2 })`, per-string
+    `capoFret`; README); Fretting-Transformer through a `CAPO<#>` token (paper; no code). Not accepted by: MIDI-to-Tab
+    ("our system does not handle the use of capos"), tuttut and tabsynth (no capo parameter found; a capo can be given to
+    tuttut only as a raised `Tuning`, which the try agent ran: run r0048, evals e0045 without and e0046 with the raised
+    tuning, `trials.md`), LilyPond's automatic assignment (no capo setting found on the fretted-strings page).
 18. User constraint "tuning" is accepted by: amt-tools `GuitarProfile(tuning=[...], num_frets=...)`; tuttut
-    `Tuning(strings, nfrets)`; gtrsnipe `--tuning`, `--tuning-pitches`; LilyPond `stringTunings`; FretPath (read from
-    the MuseScore instrument's string data); Fretting-Transformer `TUNING#,#,#,#,#,#` token (no code). Fixed to standard
+    `Tuning(strings, nfrets)` (Python API only; `tuttut-cli` uses the default `Tuning()`); tutts `new Tuning([...],
+    nfrets)` (README; run with Drop D in r0205, eval e0410, `trials.md`); gtrsnipe `--tuning`,
+    `--tuning-pitches`; scorify (per-string `openPitch`, `createFrettedInstrument(...)`); LilyPond `stringTunings`; FretPath
+    (read from the MuseScore instrument's string data); Fretting-Transformer `TUNING<#,#,#,#,#,#>` token (no code). Fixed to standard
     tuning in: TabCNN (`string_midi_pitches = [40,45,50,55,59,64]`), Guitab (`OPEN_PITCH` in `guitab/guitar.py`), MIDI-to-Tab
-    ("an assumption of standard tuning"), tabsynth ("Standard tuning focus"), midi2tab_Deconvolutions ("only standard
-    6-string guitar tuning is examined").
-19. User constraint "this note is on string S" is accepted by: LilyPond string-number indications (`c4\5`); FretPath
+    ("an assumption of standard tuning"), tabsynth ("Standard tuning focus"; `trials.md`: no tuning reaches
+    `events_to_tablature`), tayuya ("Works only for standard tuning (E A D G B E)"), midi2tab_Deconvolutions ("only
+    standard 6-string guitar tuning is examined"), the SynthTab TabCNN checkpoints (profile `[40, 45, 50, 55, 59, 64]`,
+    19 frets, `trials.md` run r0139).
+19. User constraint "this note is on string S" is accepted by: LilyPond string-number indications (`c4\5`; the try
+    agent pinned one G3 to string 4 in run r0155 and the other 89 notes of S2n stayed as they were, `trials.md`); FretPath
     ("respects existing finger-number and string-number annotations as hard constraints"); gtrsnipe `--no-refinger`
-    keeps a tab's strings ("never moves a note to another string"). No audio-to-tab model in this lane takes a fixed
-    string as an input; Guitab's `--fingering model|auto|low` re-fingers its own output.
+    keeps a tab input's strings ("never moves a note to another string") and `--single-string {1,2,3,4,5,6}` puts every
+    note on one string ("Force all notes onto a single string (1-6, high e to low E)", README "Command-line options").
+    No audio-to-tab model in this lane takes a fixed string as an input; Guitab's `--fingering model|auto|low` re-fingers
+    its own output.
 20. Hand landmarks or fretboard coordinates from the video-hands-fretboard lane: no tool in this lane's sections
-    accepts them as input. The video-based systems found (TapToTab, GuiFiR, Asmar et al.) have no released code that
-    was found on 2026-11-10.
-21. Licence chain facts for a public web app: Guitab weights are CC BY-NC-SA 4.0 (model card); xavriley guitar weights
-    are MIT on their card while GAPS (training data) carries CC BY-NC-SA 4.0 on Zenodo and a non-commercial-research
-    condition on its project page; gtrsnipe is PolyForm Noncommercial 1.0.0 with a paid commercial licence offered;
-    tuttut, tutts, tayuya, tabsynth, amt-tools, inhibition, FretNet, DadaGP tooling and music21 are MIT or BSD; PyGuitarPro
-    is LGPL-3.0-only; LilyPond and FretPath are GPL v3 (each quoted in its section).
+    accepts them as input. Of the video-based systems found, TapToTab and Asmar et al. have no code found, and GuiFiR
+    has a dataset-preparation repository (https://github.com/kmu-ee-ailab/guifir_dataset : clips, COCO-style JSONL
+    annotations, non-commercial dataset terms) with no model code or weights in it (checked 2026-11-10).
+21. Licence chain facts for a public web app: Guitab weights are CC BY-NC-SA 4.0 (model card), and its chord model is
+    trained on Chordonomicon (HF card `cc-by-nc-4.0`); the Beat This! weights Guitab ships are MIT, with the Beat This!
+    README's note that "some of the training files are fully copyrighted or under limited Creative Commons licenses";
+    xavriley guitar weights are MIT on their card while GAPS (training data) carries CC BY-NC-SA 4.0 on Zenodo and a
+    non-commercial-research condition on its project page; the TabCNN weights in Zenodo 11406378 and on
+    huggingface.co/cstr/tabcnn-onnx are CC BY 4.0 (record and card), trained on GuitarSet and, for GuitarProFX, on DadaGP
+    tracks (DadaGP: research access by request, no dataset licence text); the CNN-MTL weights are MIT, trained on
+    GuitarSet 1.1.0 (`cc-by-4.0`); the Noise2Fret checkpoints on Zenodo 23361924 are `cc-by-4.0` (record), one set
+    trained on GOAT (`cc-by-nc-4.0`, "non-commercial only"); gtrsnipe is PolyForm Noncommercial 1.0.0 with a paid
+    commercial licence offered;
+    tuttut, tutts, tayuya, tabsynth, scorify, amt-tools, inhibition, FretNet, DadaGP tooling and music21 are MIT or BSD;
+    PyGuitarPro is LGPL-3.0-only; LilyPond, FretPath and the chord-diagram-suggestion code are GPL v3 (its chord data
+    ODbL); Audio2Tab's base model whisper-small is `apache-2.0` on its card (each quoted in its section).
+22. Tested handoff (added by the verifier from `trials.md`; ledger rows checked): Basic Pitch 0.4.0 MIDI from the
+    audio-to-notes lane (run r0234 there) was given to tuttut, tutts, LilyPond, tabsynth and tayuya (run r0240; tayuya
+    again in r0242). What the try agent recorded at that seam: tayuya counts Basic Pitch's velocity-0 `note_on` messages
+    as notes (twice as many notes out until the glue rewrote them as `note_off`) and stopped with `UnboundLocalError` on
+    files with notes above D6; LilyPond left out notes it could not place ("No string for pitch"); tuttut and tutts moved
+    out-of-range notes by octaves and left out notes of chords they could not finger; tabsynth dropped notes with no
+    candidate position without a message. Scores per clip are in `trials.md` ("Handoff runs").
+
+## Not covered
+
+Found while checking for missing tools on 2026-11-10 and not examined beyond what each line says. Lines marked "search
+result only" were not opened.
+
+- TPMNet, "Multi-task learning-based temporal pattern matching network for guitar tablature transcription" (Kim, Kim,
+  Ahn; Neural Computing and Applications 2025 per the search result): https://paperswithcode2.com/paper/550457 . Search
+  result only; no code link seen.
+- "Note-level Automatic Guitar Transcription Using Attention Mechanism" (Kim et al., EUSIPCO 2022 per the search result;
+  the model that Chieppa et al. 2025 replicate):
+  https://www.aminer.cn/pub/63899cbb90e50fcafd682cd7/note-level-automatic-guitar-transcription-using-attention-mechanism .
+  Search result only.
+- `string-fingerings` (npm 2.0.0-2, 2026-03-09, `license` MIT, repository github.com/icalvo/StringTools): npm description
+  "Utilities for calculating fingerings on string instruments". Not examined.
+- `keyjockey` (npm 0.1.0, 2026-08-26, `license` MIT): "Read guitar tablature and convert notes: eight tunings, capo
+  offsets, MIDI and frequency." (npm description; tab to notes, the reverse direction). Not examined.
+- `@hidechae/eztab-mcp` (npm 0.5.2, 2026-10-25, `license` MIT): "MCP server for EZTab — lets an AI agent build and edit
+  guitar/bass tablature." (npm description; editing, the web-tab-render lane's subject). Not examined.
+- Hugging Face models found by a model search for "guitar-tab" (2026-11-10): `kk9293/guitar-tab-omr` (created 2026-05-23,
+  optical recognition of tab images per its name), `guitar-tab-transformer/*` (2025), `vldsavelyev/guitar_tab_gpt2*`
+  (2023). Not examined.
+- CrispASR's `--tab` surface (https://github.com/CrispStrobe/CrispASR), named on the `cstr/tabcnn-GGUF` card as the user
+  of those GGUF files. Not examined.
+- polytab (https://github.com/vanajmoorthy/cs4099-polytab), described in a search result as a TensorFlow TabCNN project.
+  Search result only.
+- Algomus repositories linked from https://algomus.fr/code next to the chord-diagram code:
+  https://gitlab.com/adhooge1/bend-prediction and https://gitlab.com/lbigo/rhythm-guitar-detection . Not examined.
+- arXiv titles from the 2026-11-10 queries, read as titles only: 2510.21872 "GuitarFlow: Realistic Electric Guitar
+  Synthesis From Tablatures via Flow Matching and Style Transfer" (tab to audio); 2610.36786 "Expressive Guitar Synthesis
+  via Controllable Latent Flow Matching"; 2608.27522 "PolyMap: A 64-Channel Polyphonic Guitar Pickup System"; 2511.03337
+  "audio2chart: End to End Audio Transcription into playable Guitar Hero charts" and 2605.12135 "STRUM: A Spectral
+  Transcription and Rhythm Understanding Model for End-to-End Generation of Playable Rhythm-Ga[me ...]" (game charts, not
+  tablature); 2510.19666 "A Graph Engine for Guitar Chord-Tone Soloing Education".
+
+## Verification log (verify-docs-guitar-tab, 2026-11-10)
+
+Method: every source named in this file was fetched again on 2026-11-10 (4 CC legal codes, 21 Zenodo API records, 11
+Hugging Face API records and 11 cards, 16 PyPI JSON records, 5 npm records, 31 arXiv abstracts via the API, 22 arXiv
+HTML pages, 2 PDFs, 17 web pages) and 38 GitHub repositories were cloned without blobs to read HEAD dates, file trees
+and the named files. Quotes were compared by script (`scripts/verify-docs/quotecheck.py`; the check lists and their
+results are in the same folder): whitespace-normalised
+exact match first, then a match that ignores markdown, link markup, typographic quotes and case; every quote the script
+could not match was read by hand. Copies: `/home/user/gtr/lanes/guitar-tab/verify/`.
+
+Tally of the quotes that were in this file before the check (378 quote fragments):
+
+| Kind | Checked | Confirmed (exact) | Confirmed (markup or whitespace only) | Confirmed on reading | Corrected | Unverifiable |
+|---|---|---|---|---|---|---|
+| Licence and terms clauses | 53 | 49 | 2 | 2 (an npm JSON field; a DadaGP paper sentence with a footnote marker inside) | 0 | 0 |
+| Other quotes (READMEs, code, papers, pages) | 325 | 293 | 20 | 6 (line breaks, spacing, rST and HTML link markup, arXiv API typesetting) | 6 | 0 |
+
+The six corrected quotes: Fretting-Transformer's tokens are `CAPO<#>` and `TUNING<#,#,#,#,#,#>` (the brackets had been
+dropped, also in the tool list and handoffs 17 and 18); SCORE-SET's README sentence (reference markers had been
+dropped); two GuitarTab tree entries written as paths the tree does not show; hf_midi_transcription's
+`model.transcribe("in.wav", "out.mid")` (placeholder names presented as the README's); tuttut's `generate.py`, which does
+not call `to_json()`. A seventh quote, from the hosted-apis lane's survey (Klangio output formats), had its list order
+changed and was corrected. Quotes added by this check: 124, all compared by script against the saved sources (121
+exact; 3 confirmed on reading: blockquote markers, a JSON field, an HTML attribute), plus the Fretting-Transformer
+sentence, read in the arXiv HTML markup, and two PDF quotes (Paleari et al., Chieppa et al.) matched after joining
+hyphenated line breaks.
+
+Facts corrected (beyond quote wording): Noise2Fret weights are published (Zenodo 23361924, `cc-by-4.0`; the file said
+none); TabCNN weights are published by others (Zenodo 11406378, `cc-by-4.0`; Hugging Face `cstr/tabcnn-onnx` and
+`cstr/tabcnn-GGUF`, CC BY 4.0); nylon-amt has a licence file in `hftt_code/` (Sony, MIT); the Guitar Chord Diagram
+Suggestion code exists (GPL v3, data ODbL; the file said no code link); GuiFiR has a dataset repository with MIT scripts
+and non-commercial dataset terms (the file said no URL); MIDI-to-Tab's Table 1 columns and its fine-tuning data
+(training splits of Riley et al. and GuitarSet) are now read, not UNVERIFIED; EGDB-PG has two files, not one; EGSet12's
+record also holds `.wav` files and TabCNN weights; Guitab uses EGDB for its chord model's training and evaluation songs,
+not only as a test set; Bontempi et al.'s arXiv HTML links more than Mido and the system runs on IBM ILOG CPLEX;
+midi2tab_Deconvolutions has no `guitar_tab.yml` in its tree; the Paleari et al. 2008 row now rests on the paper, not a
+search summary; Guitar-TECHS has five Zenodo creators but four arXiv authors; tuttut's CLI takes no tuning; tabsynth's
+command runs demos only.
+
+Licence facts that were missing and are now quoted with links: Chordonomicon `cc-by-nc-4.0` (Guitab's chord model);
+Beat This! README on its weights and training files; whisper-small `apache-2.0` (was UNVERIFIED); tutts `LICENSE` (was
+UNVERIFIED); Synchronize Dual Hands: code MIT, `dataset/LICENSE` CC BY-NC-ND 4.0 (was "not read"); GuiFiR
+`DATASET_TERMS.md`; hf_midi_transcription's README pointing to a LICENSE file that is not in its tree, and its
+`piano-transcription-inference` dependency (MIT classifier, no LICENSE file); synthtab.dev has no licence statement.
+
+Versions and dates: 24 repository HEAD dates and hashes, 11 PyPI records, the npm record and 4 Hugging Face records in
+the first pass all matched what is written; 21 Zenodo records matched in licence id and date (file lists corrected as
+above). This file makes no "archived" claims, and GitHub's archived flag could not be read from this box (github.com
+pages and api.github.com answer 403). Links corrected or added: 7 (TabCNN's GuitarSet link with its
+`?download=1` suffix, the chord-diagram repository, the GuiFiR dataset repository, the Paleari PDF, the two Asmar et al.
+pages, the Noise2Fret weights record). Pricing and API terms: this file states no prices and none were added; the terms
+quoted (gtrsnipe's commercial addendum, GAPS, GOAT, GuiFiR) were re-read on 2026-11-10. Judging words: a search for
+ranking and evaluative words found them only inside attributed quotes; author-reported numbers now name their paper or
+page and table or section.
+
+Tools added: 4 tool-list entries (44 to 47) with their own sections (TabCNN weights published by others;
+Guitar-Transcription-CNN-MTL; scorify; Guitar Chord Diagram Suggestion), 2 research-table rows (Chieppa et al. 2025;
+CNN-MTL), 3 dataset entries (Chordonomicon, the Synchronize Dual Hands data, the GuiFiR data), and 10 lines under "Not
+covered". Agreement with `trials.md` (read at about 21:35 and again at 21:50 UTC on 2026-11-10; 642 lines at the
+second read): the output formats it records for tuttut, tutts, tayuya, tabsynth, LilyPond and the SynthTab checkpoints
+agree with this file; facts it found (tuttut's CLI, tutts' options, tayuya's missing open strings, LilyPond's dropped
+notes and string marks, and the Noise2Fret weights record, which it listed but did not run) were added here, with run
+ids where it ran a tool, and its tested Basic Pitch → MIDI-to-tab handoff became handoff fact 22. One difference, stated
+in the TabCNN weights section: `trials.md` says TabCNN's original code has no published weights, which is true of that
+repository, while TabCNN weights trained by others are published.
+
+Still UNVERIFIED after this check: FretNet weights anywhere; TART code; EGFxSet's licence; what SynthTab's
+`non_finetuned/` holds; the DadaGP tick size (decoder comment vs the GuitarTab README); whether FretPath's core runs in
+Node; whether Guitar-TECHS zips hold video; where AnimeTAB's data is; the Asmar et al. work (publications.polymtl.ca
+reset the connection again on 2026-11-10); whether DadaGP's decoder reads Guitab's tokens; CPLEX's terms.

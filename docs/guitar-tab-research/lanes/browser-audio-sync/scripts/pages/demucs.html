@@ -1,0 +1,37 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>demucs in the browser</title>
+<body>
+<script type="module">
+// demucs-web 1.0.2 (HTDemucs exported to ONNX, htdemucs_embedded.onnx from huggingface.co/timcsy/demucs-web-onnx)
+// in ONNX Runtime Web 1.31.1, wasm execution provider only (no WebGPU adapter here), THREADS threads, on a 10 s clip.
+import { finish, fail, encodeWav, upload, fetchArrayBuffer } from './common.js';
+import * as ort from '/nm/onnxruntime-web/dist/ort.wasm.min.mjs';
+import { DemucsProcessor, CONSTANTS } from '/nm/demucs-web/src/index.js';
+const q = new URLSearchParams(location.search);
+const THREADS = Number(q.get('threads') || 2), FILE = q.get('file') || '/laneinputs/S4_10s/S4_10s.wav', TAG = q.get('tag') || 'S4_10s';
+const R = { threads: THREADS, file: FILE, crossOriginIsolated: self.crossOriginIsolated, constants: CONSTANTS };
+try {
+  ort.env.wasm.wasmPaths = '/nm/onnxruntime-web/dist/'; ort.env.wasm.numThreads = THREADS;
+  const logs = []; const prog = [];
+  const p = new DemucsProcessor({ ort, sessionOptions: { executionProviders: ['wasm'] },
+    onProgress: (x) => prog.push({ t: performance.now(), ...x }), onLog: (ph, m) => { if (logs.length < 200) logs.push(`[${ph}] ${m}`); } });
+  const t0 = performance.now();
+  await p.loadModel('/dl/demucs-web/htdemucs_embedded.onnx');
+  R.load_ms = performance.now() - t0;
+  const dec = await new OfflineAudioContext(2, 1, 44100).decodeAudioData(await fetchArrayBuffer(FILE));
+  R.input = { sampleRate: dec.sampleRate, channels: dec.numberOfChannels, seconds: dec.duration };
+  const t1 = performance.now();
+  const res = await p.separate(dec.getChannelData(0), dec.getChannelData(1));
+  R.separate_ms = performance.now() - t1;
+  R.progress = prog.map((x) => ({ ms: x.t - t1, seg: x.currentSegment, of: x.totalSegments }));
+  R.stems = {};
+  for (const [name, st] of Object.entries(res)) {
+    if (!st || !st.left) continue;
+    R.stems[name] = { samples: st.left.length, wav: await upload('demucs', `${TAG}_${name}.wav`, encodeWav([st.left, st.right], 44100)) };
+  }
+  R.logs = logs.slice(0, 40);
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

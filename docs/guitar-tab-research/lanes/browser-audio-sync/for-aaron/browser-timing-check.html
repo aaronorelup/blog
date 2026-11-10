@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browser timing check</title>
+<style>
+  :root { --bg: #fbfaf7; --fg: #1f1d1a; --muted: #6b665e; --line: #ddd8cf; --accent: #2f6f5e; --box: #f1eee7; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #1b1a18; --fg: #ece8e1; --muted: #a39d93; --line: #3a3732; --accent: #7cc3ad; --box: #26241f; } }
+  :root[data-theme="dark"] { --bg: #1b1a18; --fg: #ece8e1; --muted: #a39d93; --line: #3a3732; --accent: #7cc3ad; --box: #26241f; }
+  body { background: var(--bg); color: var(--fg); font: 15px/1.5 system-ui, sans-serif; margin: 0; padding: 16px; }
+  main { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 22px; margin: 8px 0 4px; } h2 { font-size: 17px; margin: 24px 0 6px; }
+  p, li { color: var(--muted); } button { font: inherit; padding: 8px 14px; border-radius: 6px; border: 1px solid var(--accent);
+    background: var(--accent); color: var(--bg); cursor: pointer; margin: 4px 6px 4px 0; } button:disabled { opacity: .5; cursor: default; }
+  label { margin-right: 12px; } table { border-collapse: collapse; width: 100%; font-size: 13px; margin: 8px 0; display: block; overflow-x: auto; }
+  td, th { border: 1px solid var(--line); padding: 4px 6px; text-align: right; white-space: nowrap; } th:first-child, td:first-child { text-align: left; }
+  textarea { width: 100%; box-sizing: border-box; height: 180px; font: 12px/1.4 ui-monospace, monospace; background: var(--box); color: var(--fg);
+    border: 1px solid var(--line); border-radius: 6px; padding: 8px; }
+  #status { font-family: ui-monospace, monospace; font-size: 13px; color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+<h1>Browser timing check</h1>
+<p>A measuring page, not an app. It repeats two tests that were run on a cloud computer without a sound card or GPU,
+so the numbers from your own browser can be put next to them. Keep this tab in front while it runs. Nothing is sent
+anywhere: when it finishes, copy the box at the bottom and paste it back.</p>
+
+<h2>1. Metronome timing</h2>
+<p>Four ways of making a 120 BPM click: (a) clicks scheduled ahead on the audio clock by a 25 ms timer loop,
+(b) a click started from each <code>setInterval</code> tick, (c) Tone.js Transport, (d) clicks written by an AudioWorklet.
+Each runs idle and then with the page's main thread kept busy (100 ms blocks). The output is recorded inside the
+browser and every click is found to the sample. Clicks are silent unless you tick "audible".</p>
+<label>Seconds per run <select id="dur"><option value="15">15 (about 2.5 min in all)</option><option value="61">61 (as on the cloud box, about 9 min)</option></select></label>
+<label><input type="checkbox" id="audible"> audible</label>
+<button id="runMet">Run metronome test</button>
+
+<h2>2. In-browser model: Basic Pitch</h2>
+<p>Spotify's Basic Pitch (TensorFlow.js, loaded from the jsDelivr CDN, about 1 MB of model files) transcribes a
+30 s test melody that this page synthesizes itself (the 62 notes of the shared clip S1, "Ode to Joy"), first on the
+WebGL backend (your GPU), then on the plain CPU backend. It prints the time and how many notes it found at the right
+time and pitch.</p>
+<label><input type="checkbox" id="cpuToo" checked> also run the CPU backend (slower)</label>
+<button id="runBP">Run model test</button>
+
+<h2>Status</h2>
+<div id="status">idle</div>
+<table id="tbl"><thead><tr><th>test</th><th>n</th><th>mean ms</th><th>largest ms</th><th>off grid</th><th>notes</th></tr></thead><tbody></tbody></table>
+
+<h2>Copy this back</h2>
+<textarea id="out" readonly></textarea>
+<button id="copy">Copy to clipboard</button>
+</main>
+
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const OUT = { page: 'browser-timing-check v1 (2026-11-10)', userAgent: navigator.userAgent, hardwareConcurrency: navigator.hardwareConcurrency,
+  started: new Date().toISOString(), metronome: [], basicPitch: [] };
+const show = () => { $('out').value = JSON.stringify(OUT, null, 1); };
+const status = (s) => { $('status').textContent = s; };
+const row = (cells) => { const tr = document.createElement('tr'); tr.innerHTML = cells.map((c) => `<td>${c}</td>`).join(''); $('tbl').tBodies[0].appendChild(tr); };
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const stats = (a) => { const n = a.length; if (!n) return { n: 0 }; const mean = a.reduce((s, v) => s + v, 0) / n; let mx = 0; for (const v of a) mx = Math.max(mx, Math.abs(v)); return { n, mean, max_abs: mx }; };
+$('copy').onclick = async () => { try { await navigator.clipboard.writeText($('out').value); status('copied'); } catch (e) { $('out').select(); document.execCommand('copy'); status('copied'); } };
+async function gpuInfo() {
+  const r = {}; try { const c = document.createElement('canvas').getContext('webgl2'); const e = c && c.getExtension('WEBGL_debug_renderer_info'); r.webgl = c ? (e ? c.getParameter(e.UNMASKED_RENDERER_WEBGL) : c.getParameter(c.RENDERER)) : null; } catch (e) { r.webgl = String(e); }
+  try { const a = navigator.gpu && await navigator.gpu.requestAdapter(); r.webgpu = a ? (a.info ? { vendor: a.info.vendor, architecture: a.info.architecture } : 'adapter') : null; } catch (e) { r.webgpu = String(e); }
+  return r;
+}
+gpuInfo().then((g) => { OUT.gpu = g; show(); });
+
+// ---------- metronome ----------
+const REC = `class Rec extends AudioWorkletProcessor {
+  constructor() { super(); this.buf = []; this.first = -1; this.exp = 0; this.on = true; this.gaps = [];
+    this.port.onmessage = (e) => { if (e.data === 'stop') { this.on = false; this.port.postMessage({ first: this.first, gaps: this.gaps, data: this.buf }); } }; }
+  process(inputs) { if (!this.on) return false; const x = inputs[0][0];
+    if (this.first < 0) { this.first = currentFrame; this.exp = currentFrame; }
+    if (currentFrame !== this.exp) { const g = currentFrame - this.exp; this.gaps.push([this.exp, g]);
+      if (g > 0) this.buf.push(new Float32Array(g)); else { let back = -g; while (back > 0 && this.buf.length) { const last = this.buf[this.buf.length - 1];
+        if (last.length <= back) { back -= last.length; this.buf.pop(); } else { this.buf[this.buf.length - 1] = last.subarray(0, last.length - back); back = 0; } } } }
+    this.buf.push(x ? x.slice() : new Float32Array(128)); this.exp = currentFrame + 128; return true; } }
+registerProcessor('rec', Rec);
+class Met extends AudioWorkletProcessor { constructor(o) { super(); Object.assign(this, o.processorOptions); }
+  process(_, out) { const o = out[0][0]; for (let k = 0; k < o.length; k++) { const rel = currentFrame + k - this.F0; if (rel < 0) continue;
+    const n = Math.floor(rel / this.P); if (n >= this.N) continue; const m = rel - n * this.P; if (m < this.click.length) o[k] = this.click[m]; } return true; } }
+registerProcessor('met', Met);`;
+async function metRun(method, busyMs, dur, audible) {
+  const ctx = new AudioContext({ latencyHint: 'interactive' }); await ctx.resume();
+  await ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([REC], { type: 'text/javascript' })));
+  const sr = ctx.sampleRate, P = Math.round(sr * 0.5), CL = Math.round(0.01 * sr);
+  const click = ctx.createBuffer(1, CL, sr), cd = click.getChannelData(0);
+  for (let n = 0; n < CL; n++) cd[n] = 0.8 * Math.cos(2 * Math.PI * 2000 * n / sr) * Math.exp(-n / (0.002 * sr));
+  const rec = new AudioWorkletNode(ctx, 'rec', { channelCount: 1, channelCountMode: 'explicit' });
+  const out = new GainNode(ctx, { gain: audible ? 0.5 : 0 }); rec.connect(out).connect(ctx.destination);
+  const bus = new GainNode(ctx); bus.connect(rec);
+  const N = Math.floor(dur * 2), t0 = Math.ceil((ctx.currentTime + 0.6) * sr) / sr, F0 = Math.round(t0 * sr);
+  let busyOn = true; if (busyMs) { const spin = () => { if (!busyOn) return; const t = performance.now(); while (performance.now() - t < busyMs) {} setTimeout(spin, 0); }; setTimeout(spin, 0); }
+  const play = (when) => { const s = new AudioBufferSourceNode(ctx, { buffer: click }); s.connect(bus); s.start(when); };
+  let late = 0;
+  if (method === 'lookahead') { let i = 0, next = t0; await new Promise((done) => { const tick = () => { while (i < N && next < ctx.currentTime + 0.1) { if (next < ctx.currentTime) late++; play(next); next = t0 + (++i) * P / sr; } if (i < N) setTimeout(tick, 25); else done(); }; tick(); }); }
+  else if (method === 'interval') { while (ctx.currentTime < t0 - 0.02) await sleep(5); let i = 0; await new Promise((done) => { const id = setInterval(() => { play(0); if (++i >= N) { clearInterval(id); done(); } }, 500); }); }
+  else if (method === 'tone') { const Tone = await import('https://cdn.jsdelivr.net/npm/tone@15.1.22/+esm'); Tone.setContext(ctx); const tr = Tone.getTransport(); tr.bpm.value = 120; let i = 0;
+    await new Promise((done) => { tr.scheduleRepeat((time) => { if (i >= N) return; if (time < ctx.currentTime) late++; play(time); if (++i >= N) done(); }, '4n', 0); tr.start(t0); }); tr.stop(); }
+  else { const m = new AudioWorkletNode(ctx, 'met', { numberOfInputs: 0, outputChannelCount: [1], processorOptions: { F0, P, N, click: cd.slice() } }); m.connect(bus); }
+  while (ctx.currentTime < t0 + N * 0.5 + 0.3) await sleep(50);
+  busyOn = false;
+  const res = await new Promise((r) => { rec.port.onmessage = (e) => r(e.data); rec.port.postMessage('stop'); });
+  let total = 0; for (const b of res.data) total += b.length; const x = new Float32Array(total); let o = 0; for (const b of res.data) { x.set(b, o); o += b.length; }
+  const on = []; let quiet = Math.round(0.1 * sr); for (let i = 0; i < x.length; i++) { if (Math.abs(x[i]) > 0.05) { if (quiet >= 0.1 * sr) on.push(i + res.first); quiet = 0; } else quiet++; }
+  const g0 = method === 'interval' ? on[0] : F0;
+  const dev = on.map((f, n) => (f - (g0 + n * P)) / sr * 1000);
+  const st = stats(dev);
+  const r = { method, busy_ms: busyMs, seconds: dur, sampleRate: sr, baseLatency: ctx.baseLatency, outputLatency: ctx.outputLatency,
+    clicks_expected: N, clicks_found: on.length, mean_ms: +st.mean.toFixed(3), largest_ms: +st.max_abs.toFixed(3),
+    off_grid_over_0p1ms: dev.filter((d) => Math.abs(d) > 0.1).length, scheduled_late: method === 'lookahead' || method === 'tone' ? late : null,
+    recorder_steps: res.gaps, playbackStats: ctx.playbackStats ? JSON.parse(JSON.stringify(ctx.playbackStats.toJSON())) : null };
+  await ctx.close();
+  return r;
+}
+$('runMet').onclick = async () => {
+  $('runMet').disabled = true; const dur = Number($('dur').value), audible = $('audible').checked;
+  try { for (const busy of [0, 100]) for (const m of ['lookahead', 'interval', 'tone', 'worklet']) {
+      status(`metronome: ${m}, ${busy ? 'busy' : 'idle'}, ${dur} s ...`);
+      const r = await metRun(m, busy, dur, audible); OUT.metronome.push(r); show();
+      row([`${m} ${busy ? 'busy' : 'idle'}`, `${r.clicks_found}/${r.clicks_expected}`, r.mean_ms, r.largest_ms, r.off_grid_over_0p1ms, r.scheduled_late === null ? '' : `${r.scheduled_late} late`]); }
+    status('metronome test done');
+  } catch (e) { status('error: ' + e); OUT.metronome.push({ error: String(e) }); show(); }
+  $('runMet').disabled = false;
+};
+
+// ---------- Basic Pitch ----------
+const S1 = [[1.666667,2.073351,66],[2.083333,2.490017,66],[2.5,2.906684,67],[2.916667,3.323351,69],[3.333333,3.740017,69],[3.75,4.156684,67],[4.166667,4.573351,66],[4.583333,4.990017,64],[5,5.406684,62],[5.416667,5.823351,62],[5.833333,6.240017,64],[6.25,6.656684,66],[6.666667,7.281684,66],[7.291667,7.490017,64],[7.5,8.323351,64],[8.333333,8.740017,66],[8.75,9.156684,66],[9.166667,9.573351,67],[9.583333,9.990017,69],[10,10.406684,69],[10.416667,10.823351,67],[10.833333,11.240017,66],[11.25,11.656684,64],[11.666667,12.073351,62],[12.083333,12.490017,62],[12.5,12.906684,64],[12.916667,13.323351,66],[13.333333,13.948351,64],[13.958333,14.156684,62],[14.166667,14.990017,62],[15,15.406684,64],[15.416667,15.823351,64],[15.833333,16.240017,66],[16.25,16.656684,62],[16.666667,17.073351,64],[17.083333,17.281684,66],[17.291667,17.490017,67],[17.5,17.906684,66],[17.916667,18.323351,62],[18.333333,18.740017,64],[18.75,18.948351,66],[18.958333,19.156684,67],[19.166667,19.573351,66],[19.583333,19.990017,64],[20,20.406684,62],[20.416667,20.823351,64],[20.833333,21.656684,57],[21.666667,22.073351,66],[22.083333,22.490017,66],[22.5,22.906684,67],[22.916667,23.323351,69],[23.333333,23.740017,69],[23.75,24.156684,67],[24.166667,24.573351,66],[24.583333,24.990017,64],[25,25.406684,62],[25.416667,25.823351,62],[25.833333,26.240017,64],[26.25,26.656684,66],[26.666667,27.281684,64],[27.291667,27.490017,62],[27.5,28.323351,62]];
+async function melody() {   // plucked tone: fundamental + 4 harmonics, 5 ms attack, exponential decay; 22050 Hz mono, 29.833 s
+  const sr = 22050, oc = new OfflineAudioContext(1, Math.ceil(29.833 * sr), sr);
+  for (const [on, off, p] of S1) { const f = 440 * 2 ** ((p - 69) / 12); const g = new GainNode(oc, { gain: 0 }); g.connect(oc.destination);
+    g.gain.setValueAtTime(0, on); g.gain.linearRampToValueAtTime(0.25, on + 0.005); g.gain.setTargetAtTime(0, on + 0.005, 0.25); g.gain.setTargetAtTime(0, off, 0.02);
+    [1, 0.5, 0.3, 0.15, 0.08].forEach((a, h) => { const o = new OscillatorNode(oc, { frequency: f * (h + 1) }); const ga = new GainNode(oc, { gain: a }); o.connect(ga).connect(g); o.start(on); o.stop(off + 0.2); }); }
+  return oc.startRendering();
+}
+function score(notes) {   // onset within 50 ms and same MIDI pitch, each note used once (greedy in time order)
+  const used = new Set(); let hit = 0; const d = [];
+  for (const [on, , p] of S1) { let best = -1, bd = 1; notes.forEach((n, i) => { if (used.has(i) || n.pitchMidi !== p) return; const x = Math.abs(n.startTimeSeconds - on); if (x <= 0.05 && x < bd) { bd = x; best = i; } });
+    if (best >= 0) { used.add(best); hit++; d.push((notes[best].startTimeSeconds - on) * 1000); } }
+  const s = stats(d); return { truth: S1.length, found: notes.length, matched: hit, precision: +(hit / Math.max(1, notes.length)).toFixed(3), recall: +(hit / S1.length).toFixed(3), onset_error_mean_ms: s.n ? +s.mean.toFixed(2) : null };
+}
+$('runBP').onclick = async () => {
+  $('runBP').disabled = true;
+  try {
+    status('loading Basic Pitch and TensorFlow.js from the CDN ...');
+    const BP = await import('https://cdn.jsdelivr.net/npm/@spotify/basic-pitch@1.0.1/+esm');
+    const tf = await import('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.19.0/+esm');
+    status('synthesizing the test melody ...'); const audio = await melody();
+    for (const backend of ['webgl', ...($('cpuToo').checked ? ['cpu'] : [])]) {
+      status(`Basic Pitch on ${backend} ...`);
+      const ok = await tf.setBackend(backend); await tf.ready();
+      const t0 = performance.now(); const model = await tf.loadGraphModel('https://cdn.jsdelivr.net/npm/@spotify/basic-pitch@1.0.1/model/model.json'); const tl = performance.now() - t0;
+      const bp = new BP.BasicPitch(model); const fr = [], onx = [], co = [];
+      const t1 = performance.now(); await bp.evaluateModel(audio, (f, o, c) => { fr.push(...f); onx.push(...o); co.push(...c); }, () => {}); const ti = performance.now() - t1;
+      const notes = BP.noteFramesToTime(BP.addPitchBendsToNoteEvents(co, BP.outputToNotesPoly(fr, onx, 0.5, 0.3, 11)));
+      const sc = score(notes);
+      const r = { backend, backend_set: ok, active: tf.getBackend(), model_load_ms: Math.round(tl), inference_ms: Math.round(ti), audio_seconds: audio.duration, ...sc };
+      OUT.basicPitch.push(r); show();
+      row([`Basic Pitch ${backend}`, `${sc.matched}/${sc.truth}`, '', '', '', `${Math.round(ti)} ms inference, ${sc.found} notes found`]);
+    }
+    status('model test done');
+  } catch (e) { status('error: ' + e); OUT.basicPitch.push({ error: String(e) }); show(); }
+  $('runBP').disabled = false;
+};
+show();
+</script>
+</body>
+</html>

@@ -34,10 +34,23 @@ CLIPS = {
     "R3a": f"{INPUTS}/R3a/R3a.wav",
 }
 
+# handoff inputs: stems made by the source-separation lane (demucs 4.1.0 htdemucs_6s, ledger runs r0021 and r0054)
+SEP = "/home/user/gtr/lanes/source-separation/out/htdemucs_6s"
+CLIPS.update({
+    "S4sep6s-guitar": f"{SEP}/S4/guitar.wav",
+    "S4sep6s-vocals": f"{SEP}/S4/vocals.wav",
+    "S4sep6s-bass": f"{SEP}/S4/bass.wav",
+    "S6tapssep6s-guitar": f"{SEP}/S6taps/guitar.wav",
+    "S4bass": f"{INPUTS}/S4/stems/bass.wav",
+    "R3b": f"{INPUTS}/R3b/R3b.wav",
+    "R3c": f"{INPUTS}/R3c/R3c.wav",
+})
+
 # which truth file a clip is scored against (stems are scored against the S4 truth with --voice)
 TRUTH = {k: k for k in CLIPS}
-TRUTH.update({"S4guitar": "S4", "S4lead": "S4"})
-NO_TRUTH = {"R2", "R3a"}
+TRUTH.update({"S4guitar": "S4", "S4lead": "S4", "S4sep6s-guitar": "S4", "S4sep6s-vocals": "S4", "S4sep6s-bass": "S4",
+              "S6tapssep6s-guitar": "S6taps", "S4bass": "S4"})
+NO_TRUTH = {"R2", "R3a", "R3b", "R3c"}
 
 
 def mono_path(clip):

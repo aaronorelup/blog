@@ -98,8 +98,13 @@ function dump(score, label) {
     }
     out.tracks.push(t);
   }
-  const s0 = score.tracks[0].staves[0];
-  return { model: out, est: { tuning_midi: [...s0.tuning].reverse(), capo: s0.capo, notes } };
+  // the estimate for gtr-eval: notes of the first track's staves that have a string tuning (tablature staves);
+  // a MusicXML file with a notation staff and a TAB staff imports as one track with two staves
+  const tr0 = score.tracks[0];
+  const tabStaff = tr0.staves.find((st) => st.tuning && st.tuning.length) || tr0.staves[0];
+  const estNotes = notes.filter((n) => n.track === tr0.index && tr0.staves[n.staff].tuning && tr0.staves[n.staff].tuning.length);
+  return { model: out, est: { tuning_midi: [...tabStaff.tuning].reverse(), capo: tabStaff.capo, est_staff: tabStaff.index,
+    notes: estNotes.length ? estNotes : notes } };
 }
 
 const bytes = fs.readFileSync(inFile);

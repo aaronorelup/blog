@@ -1,0 +1,3 @@
+[gtr-eval e0696] chords truth=R1c exit=0 (ledger /home/user/gtr/eval/ledger/evals.jsonl)
+[gtr-eval e0699] tempo truth=R1c exit=0 (ledger /home/user/gtr/eval/ledger/evals.jsonl)
+[gtr-eval e0702] key truth=R1c exit=0 (ledger /home/user/gtr/eval/ledger/evals.jsonl)

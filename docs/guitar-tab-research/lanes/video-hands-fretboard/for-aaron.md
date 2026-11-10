@@ -55,8 +55,10 @@ this needs the laptop's GPU and is a programmer-level install. If you want it:
 
 ## 4. Grounding DINO and OWLv2 (text-prompted boxes)
 
-These need no login. They did not run on the box only because their weights (about 690 MB and 620 MB) were over the
-disk limit there.
+These need no login. They did not run on the box itself because their weights (about 690 MB and 620 MB) were over the
+disk limit there. OWLv2 did run through the `merve/owlv2` web demo from the box (boxes and labels, but that demo
+returns no scores); the Grounding DINO demo could not be called from the box (`Unknown protocol: ws`), so step 1-3
+below is the part still missing.
 
 1. Open https://huggingface.co/spaces/merve/Grounding_DINO_demo (RUNNING on 2026-11-10, CPU).
 2. Upload the R3a_cu still. Text prompt: `guitar neck . fretboard . headstock . capo . hand .` Keep the default

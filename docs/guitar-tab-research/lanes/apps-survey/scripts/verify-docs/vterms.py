@@ -54,6 +54,11 @@ for it in items:
             best = (src, first, txt)
             break
     st = "CONFIRMED" if best else "NOT FOUND"
+    # strict check: the quote's own first and last characters (punctuation included) must match the page too
+    if best:
+        last = norm(re.split(r"\s*\.\.\.\s*", it["quote"])[-1])
+        if last and last[-1] in ".,;:" and last not in best[2]:
+            st = "CONFIRMED-BUT-END-PUNCTUATION-DIFFERS"
     tally[st] = tally.get(st, 0) + 1
     print(f"[{st}] {it['id']} {it.get('sec', '')} {it['url']}")
     if best:

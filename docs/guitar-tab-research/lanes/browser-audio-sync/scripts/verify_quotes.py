@@ -9,7 +9,7 @@ normalised form is a substring of a normalised source; a second pass also ignore
 Pairing of quote marks: from each opening mark, the longest span up to 6 marks ahead that is found wins (this
 keeps nested quotes such as (the "Software") inside one passage); if none is found, the span to the next mark
 is reported as NOT FOUND. Passages shorter than 12 normalised characters are listed as SHORT and not searched.
-Output columns: survey line, section, status, source keys where found (max 4), passage (first 160 chars)."""
+Output columns: survey line, section, status, source keys where found, passage (first 160 chars)."""
 import os, re, sys, unicodedata
 
 def norm(s):
@@ -73,7 +73,7 @@ def main():
                 # a longer found span may exist starting here only if j>i+1; already tried; report the short span
                 pass
             stats[st] = stats.get(st, 0) + 1
-            out.write(f"{start}\t{section}\t{st}\t{' | '.join(hits[:4])}\t{q[:160]}\n")
+            out.write(f"{start}\t{section}\t{st}\t{' | '.join(hits)}\t{q[:160]}\n")
             i = j + 1
     out.close()
     print(stats, "sources:", len(srcs))

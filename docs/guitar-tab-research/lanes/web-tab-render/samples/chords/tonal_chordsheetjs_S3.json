@@ -1,0 +1,201 @@
+{
+ "tonal": {
+  "ms": 1.406690000000026,
+  "rows": [
+   {
+    "start": 2.5,
+    "end": 5,
+    "truth": "G:maj",
+    "pitch_classes": [
+     "G",
+     "B",
+     "D"
+    ],
+    "detected": [
+     "GM",
+     "Bm#5/G"
+    ],
+    "first_detected_root_matches": true,
+    "first_detected_quality_matches": true
+   },
+   {
+    "start": 5,
+    "end": 7.5,
+    "truth": "E:min",
+    "pitch_classes": [
+     "E",
+     "B",
+     "G"
+    ],
+    "detected": [
+     "Em"
+    ],
+    "first_detected_root_matches": true,
+    "first_detected_quality_matches": true
+   },
+   {
+    "start": 7.5,
+    "end": 10,
+    "truth": "A:min7",
+    "pitch_classes": [
+     "A",
+     "E",
+     "G",
+     "C"
+    ],
+    "detected": [
+     "Am7",
+     "C6/A"
+    ],
+    "first_detected_root_matches": true,
+    "first_detected_quality_matches": true
+   },
+   {
+    "start": 10,
+    "end": 12.5,
+    "truth": "D:7",
+    "pitch_classes": [
+     "D",
+     "A",
+     "C",
+     "F#"
+    ],
+    "detected": [
+     "D7"
+    ],
+    "first_detected_root_matches": true,
+    "first_detected_quality_matches": true
+   },
+   {
+    "start": 12.5,
+    "end": 15,
+    "truth": "G:maj",
+    "pitch_classes": [
+     "G",
+     "B",
+     "D"
+    ],
+    "detected": [
+     "GM",
+     "Bm#5/G"
+    ],
+    "first_detected_root_matches": true,
+    "first_detected_quality_matches": true
+   },
+   {
+    "start": 15,
+    "end": 17.5,
+    "truth": "E:min",
+    "pitch_classes": [
+     "E",
+     "B",
+     "G"
+    ],
+    "detected": [
+     "Em"
+    ],
+    "first_detected_root_matches": true,
+    "first_detected_quality_matches": true
+   },
+   {
+    "start": 17.5,
+    "end": 18.75,
+    "truth": "C:maj",
+    "pitch_classes": [
+     "C",
+     "E",
+     "G"
+    ],
+    "detected": [
+     "CM",
+     "Em#5/C"
+    ],
+    "first_detected_root_matches": true,
+    "first_detected_quality_matches": true
+   },
+   {
+    "start": 18.75,
+    "end": 20,
+    "truth": "D:7",
+    "pitch_classes": [
+     "C",
+     "E",
+     "G",
+     "F#",
+     "A",
+     "D"
+    ],
+    "detected": [
+     "C69#11",
+     "Em11A/C"
+    ],
+    "first_detected_root_matches": false,
+    "first_detected_quality_matches": false
+   },
+   {
+    "start": 20,
+    "end": 24,
+    "truth": "G:maj",
+    "pitch_classes": [
+     "G",
+     "B",
+     "D"
+    ],
+    "detected": [
+     "GM",
+     "Bm#5/G"
+    ],
+    "first_detected_root_matches": true,
+    "first_detected_quality_matches": true
+   }
+  ],
+  "segments": 9,
+  "first_name_same_root_and_quality": 8,
+  "examples": {
+   "Chord.get(\"G\")": [
+    "G",
+    "B",
+    "D"
+   ],
+   "Chord.get(\"Bm\")": [
+    "B",
+    "D",
+    "F#"
+   ],
+   "Key.majorKey(\"G\").chords": [
+    "Gmaj7",
+    "Am7",
+    "Bm7",
+    "Cmaj7",
+    "D7",
+    "Em7",
+    "F#m7b5"
+   ],
+   "Note.transpose(\"E2\",\"3M\")": "G#2"
+  }
+ },
+ "chordsheetjs": {
+  "ms": 81.159312,
+  "metadata": {
+   "title": "S3 progression (from the truth chord labels)",
+   "key": "G",
+   "tempo": "96",
+   "capo": "0"
+  },
+  "chords_in_sheet": [
+   "G",
+   "Em",
+   "Am",
+   "D7",
+   "G",
+   "Em",
+   "C",
+   "D7",
+   "G"
+  ],
+  "text_out": "S3 PROGRESSION (FROM THE TRUTH CHORD LABELS)\n\nG  Em Am D7 G  Em C  D7 G\nla la la la la la la la la",
+  "html_chars": 919,
+  "transposed_plus2": "{title: S3 progression (from the truth chord labels)}\n{key: A}\n{tempo: 96}\n{capo: 0}\n\n{start_of_verse}\n[A]la [F#m]la [Bm]la [E7]la [A]la [F#m]la [D]la [E7]la [A]la \n{end_of_verse}\n",
+  "chords_over_words_to_chordpro": "[G]Twinkle[C] twinkle [D]little star\n"
+ }
+}

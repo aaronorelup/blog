@@ -1,0 +1,48 @@
+{
+ "tool": "transkun",
+ "clips": {
+  "S1": {
+   "input": "/home/user/gtr/inputs/S1/S1.wav",
+   "seconds": 83.684,
+   "n_notes": 63,
+   "returncode": 0,
+   "stderr_tail": " to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.\n  return fn(*args, **kwargs)\n/home/user/gtr/lanes/audio-to-notes/venv-piano/lib/python3.11/site-packages/torch/utils/checkpoint.py:242: UserWarning: None of the inputs have requires_grad=True. Gradients will be None\n  check_backward_validity(args)\n"
+  },
+  "S2n": {
+   "input": "/home/user/gtr/inputs/S2n/S2n.wav",
+   "seconds": 144.165,
+   "n_notes": 99,
+   "returncode": 0,
+   "stderr_tail": " to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.\n  return fn(*args, **kwargs)\n/home/user/gtr/lanes/audio-to-notes/venv-piano/lib/python3.11/site-packages/torch/utils/checkpoint.py:242: UserWarning: None of the inputs have requires_grad=True. Gradients will be None\n  check_backward_validity(args)\n"
+  },
+  "S3": {
+   "input": "/home/user/gtr/inputs/S3/S3.wav",
+   "seconds": 123.625,
+   "n_notes": 171,
+   "returncode": 0,
+   "stderr_tail": " to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.\n  return fn(*args, **kwargs)\n/home/user/gtr/lanes/audio-to-notes/venv-piano/lib/python3.11/site-packages/torch/utils/checkpoint.py:242: UserWarning: None of the inputs have requires_grad=True. Gradients will be None\n  check_backward_validity(args)\n"
+  },
+  "R1a": {
+   "input": "/home/user/gtr/inputs/R1a/R1a.wav",
+   "seconds": 172.465,
+   "n_notes": 134,
+   "returncode": 0,
+   "stderr_tail": " to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.\n  return fn(*args, **kwargs)\n/home/user/gtr/lanes/audio-to-notes/venv-piano/lib/python3.11/site-packages/torch/utils/checkpoint.py:242: UserWarning: None of the inputs have requires_grad=True. Gradients will be None\n  check_backward_validity(args)\n"
+  },
+  "R1b": {
+   "input": "/home/user/gtr/inputs/R1b/R1b.wav",
+   "seconds": 157.4,
+   "n_notes": 52,
+   "returncode": 0,
+   "stderr_tail": " to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.\n  return fn(*args, **kwargs)\n/home/user/gtr/lanes/audio-to-notes/venv-piano/lib/python3.11/site-packages/torch/utils/checkpoint.py:242: UserWarning: None of the inputs have requires_grad=True. Gradients will be None\n  check_backward_validity(args)\n"
+  },
+  "R1c": {
+   "input": "/home/user/gtr/inputs/R1c/R1c.wav",
+   "seconds": 132.807,
+   "n_notes": 119,
+   "returncode": 0,
+   "stderr_tail": " to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.\n  return fn(*args, **kwargs)\n/home/user/gtr/lanes/audio-to-notes/venv-piano/lib/python3.11/site-packages/torch/utils/checkpoint.py:242: UserWarning: None of the inputs have requires_grad=True. Gradients will be None\n  check_backward_validity(args)\n"
+  }
+ },
+ "setup_s": 0.0
+}

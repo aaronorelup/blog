@@ -1,0 +1,161 @@
+{
+ "pyguitarpro": null,
+ "version_string": [
+  5,
+  1,
+  0
+ ],
+ "title": "Twinkle (Ah! vous dirai-je, maman), fingerstyle, nylon",
+ "artist": "Traditional (18th-century French melody), arranged for this test set",
+ "tempo": 112,
+ "measureHeaders": 13,
+ "tracks": [
+  {
+   "name": "Guitar",
+   "strings": [
+    [
+     1,
+     64
+    ],
+    [
+     2,
+     59
+    ],
+    [
+     3,
+     55
+    ],
+    [
+     4,
+     50
+    ],
+    [
+     5,
+     45
+    ],
+    [
+     6,
+     40
+    ]
+   ],
+   "offset_capo": 0,
+   "channel_instrument": 24,
+   "measures": 13,
+   "voices_per_measure": 2
+  }
+ ],
+ "read_s": 0.0107,
+ "notes": 90,
+ "first5": [
+  {
+   "measure": 2,
+   "voice": 0,
+   "tick": 4800,
+   "string": 3,
+   "fret": 0,
+   "velocity": 95,
+   "pitch": 55
+  },
+  {
+   "measure": 2,
+   "voice": 0,
+   "tick": 5760,
+   "string": 3,
+   "fret": 0,
+   "velocity": 95,
+   "pitch": 55
+  },
+  {
+   "measure": 2,
+   "voice": 0,
+   "tick": 6720,
+   "string": 2,
+   "fret": 3,
+   "velocity": 95,
+   "pitch": 62
+  },
+  {
+   "measure": 2,
+   "voice": 0,
+   "tick": 7680,
+   "string": 2,
+   "fret": 3,
+   "velocity": 95,
+   "pitch": 62
+  },
+  {
+   "measure": 2,
+   "voice": 1,
+   "tick": 4800,
+   "string": 6,
+   "fret": 3,
+   "velocity": 95,
+   "pitch": 43
+  }
+ ],
+ "written": {
+  "gp5": {
+   "bytes": 2522,
+   "write_s": 0.0158,
+   "reread_notes": 90,
+   "reread_capo": 0,
+   "reread_tuning": [
+    64,
+    59,
+    55,
+    50,
+    45,
+    40
+   ]
+  },
+  "gp4": {
+   "bytes": 1450,
+   "write_s": 0.0019,
+   "reread_notes": 42,
+   "reread_capo": 0,
+   "reread_tuning": [
+    64,
+    59,
+    55,
+    50,
+    45,
+    40
+   ]
+  },
+  "gp3": {
+   "bytes": 1407,
+   "write_s": 0.0104,
+   "reread_notes": 42,
+   "reread_capo": 0,
+   "reread_tuning": [
+    64,
+    59,
+    55,
+    50,
+    45,
+    40
+   ]
+  }
+ },
+ "edit": {
+  "note_before_string_fret": [
+   3,
+   0
+  ],
+  "note_after_string_fret": [
+   4,
+   5
+  ],
+  "capo_after": 1,
+  "tuning_after": [
+   64,
+   59,
+   55,
+   50,
+   45,
+   38
+  ],
+  "file": "/home/user/gtr/lanes/web-tab-render/out/pyguitarpro/S2n.pgp.edited.gp5",
+  "bytes": 2522
+ }
+}
