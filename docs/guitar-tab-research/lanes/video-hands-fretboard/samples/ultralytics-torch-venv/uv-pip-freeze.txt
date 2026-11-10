@@ -46,7 +46,7 @@ regex==2026.11.9
 requests==2.34.2
 rich==15.0.0
 safetensors==0.8.0
-setuptools==84.2.1
+setuptools==80.10.2
 shellingham==1.5.4
 sympy==1.14.0
 timm==1.0.31

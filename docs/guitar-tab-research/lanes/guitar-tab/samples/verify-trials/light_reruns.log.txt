@@ -1,0 +1,33 @@
+== tuttut (r0048 items)
+R1c.truthmidi: notes in 148, notes out 148, tuttut time 0.05s, strings ['E4', 'B3', 'G3', 'D3', 'A2', 'E2'], nfrets 20, span 5
+S5dropd.truthmidi.dropD: notes in 90, notes out 90, tuttut time 0.01s, strings ['E4', 'B3', 'G3', 'D3', 'A2', 'D2'], nfrets 20, span 5
+S5capo2.truthmidi.capo2: notes in 90, notes out 90, tuttut time 0.02s, strings ['F#4', 'C#4', 'A3', 'E3', 'B2', 'F#2'], nfrets 18, span 5
+           ^^^^^^^^^^^^^^
+AssertionError
+== tuttut, not run by the trial: MAX_FRET_SPAN 6 on R1c
+R1c.truthmidi.span6: notes in 148, notes out 148, tuttut time 0.05s, strings ['E4', 'B3', 'G3', 'D3', 'A2', 'E2'], nfrets 20, span 6
+== tayuya (r0117 items)
+S2n.truthmidi: note_on in track 90, notes out 90, key (<music21.pitch.Pitch G>, 'major'), tayuya time 0.02s
+R1c.truthmidi: note_on in track 148, notes out 148, key (<music21.pitch.Pitch G>, 'major'), tayuya time 0.06s
+== LilyPond (r0145, r0155 items)
+R1a.truthmidi: notes in 189, chord groups 94, tab notes logged 188, lilypond exit 0, 2.26s, warnings 1: ['<rerun>/lilypond/R1a.truthmidi.ly:8:359: warning: No string for pitch #<Pitch ais, > (given frets (4 1))']
+S2n.truthmidi.pin0-55-s4: notes in 90, chord groups 48, tab notes logged 90, lilypond exit 0, 2.36s, warnings 0: []
+== tabsynth (r0186 items)
+S2n.truthmidi.groups: midi notes 90, events in 48 (42 chord events), states out 48 {'chord': 42, 'note': 6}, tab notes 238, tabsynth time 0.03s (two calls)
+R1b.truthmidi.notes.maxfret5: midi notes 70, events in 70 (0 chord events), states out 69 {'note': 69}, tab notes 69, tabsynth time 0.01s (two calls)
+== tutts (r0205 items)
+tutts: notes in 148, notes out 145, generateTab 151.6 ms 
+R1c.truthmidi.q16: notes in 148, tab notes 145
+tutts: notes in 90, notes out 90, generateTab 43.6 ms 
+S5dropd.truthmidi.dropD: notes in 90, tab notes 90
+== Basic Pitch handoff (r0240 items)
+R1c.bp: notes in 156, notes out 153, tuttut time 0.11s, strings ['E4', 'B3', 'G3', 'D3', 'A2', 'E2'], nfrets 20, span 5
+S3.bp: notes in 197, chord groups 59, tab notes logged 185, lilypond exit 0, 2.05s, warnings 12: ['<rerun>/handoff-bp/lilypond/S3.bp.ly:8:22: warning: No string for pitch #<Pitch c,, > (given frets ())', '<rerun>/handoff-bp/lilypond/S3.bp.ly:8:81: warning: No string for pitch #<Pitch g, > (given frets (7 5 5 4 3))']
+UnboundLocalError: cannot access local variable 'note_info' where it is not associated with a value
+== tayuya, not run by the trial: a MIDI file holding only C4 at 0 s and D#6 (MIDI 87) at 1 s
+UnboundLocalError: cannot access local variable 'note_info' where it is not associated with a value
+== PyGuitarPro glue (GP5 files listed in trials.md)
+<rerun>/gp5/tuttut_S5capo2.truthmidi.capo2.gp5: 90 notes written of 90 in the list, 13 measures, tuning [40, 45, 50, 55, 59, 64], capo 2
+<rerun>/gp5/bp-tuttut_R1c.bp.gp5: 151 notes written of 153 in the list, 14 measures, tuning [40, 45, 50, 55, 59, 64], capo 0
+<rerun>/gp5/bp-tuttut_S2n.bp.gp5: 136 notes written of 137 in the list, 13 measures, tuning [40, 45, 50, 55, 59, 64], capo 0
+[gtr-run r0469] guitar-tab/midi-to-tab-verify "verify: re-run of representative tuttut, tayuya, LilyPond, tabsynth, tutts, Basic Pitch handoff and GP5 glue items into verify-trials/rerun (light jobs, no slot)" wall=13.91s cpu=11.7s rss=77.2MB cores=None exit=0 slot_wait=0.0s

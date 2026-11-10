@@ -2,7 +2,8 @@
 
 Lane agent `try-video-hands-fretboard`, started 2026-11-10 20:52 UTC. Every timed run went through `gtr-run`
 (ledger `/home/user/gtr/ledger/runs.jsonl`); unless a line says otherwise a run had **2 CPU cores** (one slot of the
-4-vCPU Intel Xeon 2.10 GHz box, no GPU). "Wall" is the gtr-run wall clock of the whole command (model load, frame
+4-vCPU Intel Xeon 2.10 GHz box, no GPU). Exception found by the verifier: the rtmlib steps (ONNX Runtime) pinned some
+of their own threads to cores outside the slot, so their times are not 2-core times (rtmlib section). "Wall" is the gtr-run wall clock of the whole command (model load, frame
 decoding from PNG, drawing and writing included); "per-frame inference" is measured inside the script around the
 model call only (`time.perf_counter`), so it excludes PNG decoding and drawing.
 
@@ -12,8 +13,10 @@ and R3c from the shared set once `/home/user/gtr/inputs/READY-VIDEO` appeared (2
 1920x1080, 25 fps, 450 frames (sha256 of R3b.mp4 `95adf1a34c976ad67b6a443fe916a3a0b2755246efcd0a4ca13aee1814c675a6`, of R3c.mp4
 `62467c5738fee276e51fbf3dc355188fddc862231f74d3e483a1e725baf52783`; see the shared manifest). R3a and
 R3a_cu frames were decoded once to PNG (`ffmpeg -i <clip>.mp4 -vsync 0 <dir>/%04d.png`); R3b and R3c to JPEG at
-`-q:v 2` to save disk. The decoded frames were deleted at 22:46 UTC, after the last run, to free shared disk; the
-scripts expect them at `frames/R3a_%04d.png`, `frames/R3a_cu/f_%04d.png`, `frames/R3b/f_%04d.jpg` and
+`-q:v 2` to save disk. The decoded frames were deleted after the last run, to free shared disk (the `frames/`
+folder's modification time is 22:43 UTC; the verifier decoded the R3a and R3a_cu frames and R3b frames 0, 225 and 449
+again with the same commands for its re-runs, found them pixel-identical to the frames the trial saved as Space
+inputs, and deleted them afterwards); the scripts expect them at `frames/R3a_%04d.png`, `frames/R3a_cu/f_%04d.png`, `frames/R3b/f_%04d.jpg` and
 `frames/R3c/f_%04d.jpg` under the lane folder (see `scripts/vhf_common.py`), so a re-run must decode them again. There is no ground truth for any of these clips, so the numbers below are counts, rates and
 times, not accuracy.
 
@@ -53,7 +56,8 @@ videos). Each tool's script is named in its section.
   shared object file`; fixed with `apt-get install -y libgles2 libegl1` (libgles2 1.7.0-1build1). Version 1.2.2 has no
   `mp.solutions` attribute (the older "solutions" API is gone from this release; `hasattr(mp, 'solutions')` is False).
   `mediapipe.tasks.python.vision` in 1.2.2 exposes HandLandmarker, PoseLandmarker, HolisticLandmarker and FaceLandmarker.
-- Settings for every run: `running_mode=VIDEO` (`detect_for_video` with timestamps n x 1000 / 29.97 ms),
+- Settings for every run: `running_mode=VIDEO` (`detect_for_video` with timestamps round(n x 1000 / fps) ms, fps
+  29.97 for R3a and R3a_cu and 25 for R3b and R3c),
   `num_hands=2`, `min_hand_detection_confidence=0.5`, `min_hand_presence_confidence=0.5`,
   `min_tracking_confidence=0.5`. Script: `scripts/run_mediapipe_hands.py <clip> <full|crop> <model> <outdir>`.
 
@@ -98,9 +102,14 @@ Where the R3a detections landed (`hand_regions.py`, frames with at least one det
 - What the "wide: elsewhere" detections are: in r0071, 215 detections have box centres in the 20-px cell
   (340-360, 260-280). On frame 300 that detection (label "Left", handedness score 0.5443, box (336,250)-(357,280)) sits,
   by eye on a 3x crop, on the white sheet music hanging from the music stand, not on a hand. The fretting-hand detection
-  on the same frame has score 0.9959 and box (349,175)-(384,219). In the 3x crop run the same spot produced 9 detections.
+  on the same frame has score 0.9959 and box (349,175)-(384,219). In the 3x crop run, 9 wide-shot detections (frames
+  394-435, all labelled "Right", scores 0.53-0.76) lie outside the fretting region, with boxes of about
+  (328,232)-(355,279) that overlap the frame-300 box above; their centres fall in the 20-px cell just above it,
+  (340-360, 240-260) (verifier, from `out/mediapipe-hands/R3a_crop.jsonl`).
 - Labels against the hands, by eye on the sample frames: the detection on the fretting hand (the player's left hand)
-  is labelled "Left" in every sample frame. The docs page says: "Left and Right handedness correspond to the subject's
+  is labelled "Left" in every sample frame. Over all medium-shot frames, the detections whose box centre lies in the
+  fretting-hand region are Left 310 / Right 9 in r0071 and Left 312 / Right 13 in r0075 (`hand_regions.py`, counted
+  by the verifier). The docs page says: "Left and Right handedness correspond to the subject's
   hands, not the viewer." and "Passing a horizontally mirrored image will invert these outputs."
   (https://developers.google.com/edge/mediapipe/solutions/vision/hand_landmarker, read 2026-11-10). Detections in
   the medium-shot picking region carry both labels (r0071: Left 23, Right 31; r0075: Left 32, Right 31).
@@ -111,12 +120,12 @@ Where the R3a detections landed (`hand_regions.py`, frames with at least one det
   (482.8, 186.0) in the 640x480 frame.
 - Output format facts (for handoffs): per frame a `HandLandmarkerResult` with three parallel lists, one entry per
   hand: `handedness` (list of `Category` with `category_name` "Left"/"Right", `score`, `index`), `hand_landmarks` (21
-  `NormalizedLandmark` with `x`, `y` normalized to the image width and height, `z` relative depth with the wrist as
-  origin; the docs' wording is quoted above) and `hand_world_landmarks` (21 `Landmark` with x, y, z in meters, origin
-  at the hand's geometric centre per the docs). Landmark order: 0 wrist, 1-4 thumb (CMC, MCP, IP, tip), 5-8 index,
+  `NormalizedLandmark` with `x`, `y` normalized to the image width and height; the docs page: "z represents landmark
+  depth with the wrist (#0) as the origin") and `hand_world_landmarks` (21 `Landmark` with x, y, z in meters; the docs
+  page: "with the origin at the hand's geometric center"). Landmark order: 0 wrist, 1-4 thumb (CMC, MCP, IP, tip), 5-8 index,
   9-12 middle, 13-16 ring, 17-20 pinky (tips are 4, 8, 12, 16, 20). The script stores per frame: `n`, `t_s`, `shot`,
-  `view_wh`, `view_tf` (crop offset and scale), `t_infer_ms`, and per hand `label`, `score`, `lm_norm_view`,
-  `lm_px_full` (pixels in the 640x480 frame), `world_m`. Files: `out/mediapipe-hands/<clip>_<mode>.jsonl` (R3a full
+  `view_wh`, `view_tf` (crop offset and scale), `t_infer_ms`, and per hand `label`, `score`, `index`, `lm_norm_view`,
+  `lm_px_full` (pixels in the full frame), `world_m`. Files: `out/mediapipe-hands/<clip>_<mode>.jsonl` (R3a full
   1,460,405 bytes; not copied), summaries and 5-frame excerpts in `samples/mediapipe-hand-landmarker/`.
 - Input format facts: an `mp.Image` in SRGB (uint8 HxWx3) per call; VIDEO mode needs a timestamp in ms that increases
   monotonically. 640x480, 720x720, 840x660, 1280x960 and 1920x1080 inputs were all accepted, and the frame size may
@@ -128,7 +137,11 @@ Where the R3a detections landed (`hand_regions.py`, frames with at least one det
   `Exception ignored in: <function HandLandmarker.__del__ ...> TypeError: 'NoneType' object is not callable` (exit code
   still 0; the landmarker was not closed explicitly before exit).
 - Samples: `samples/mediapipe-hand-landmarker/` (annotated WebP frames R3a full 100 and 300, crop 100 and 300,
-  R3a_cu 150; summaries; 5-frame JSONL excerpts; frame 300 and frame 150 records; uv pip freeze).
+  R3a_cu 150, R3b and R3c 225; summaries; 5-frame JSONL excerpts; frame 300 and frame 150 records; uv pip freeze).
+- Verifier re-run (steps of group job r0495, 2 cores, same commands): R3a_cu full and R3a full gave the same number of
+  hands and the same labels in every frame, and every landmark pixel value equal to r0078 and r0071 (6,300 and 17,031
+  landmarks compared). Per-frame inference mean in the re-run: 24.79 ms (R3a_cu) and 27.63 ms (R3a), against 32.56 and
+  36.94 ms in the trial; step wall 10.74 s and 20.35 s.
 
 ## HaMeR (3D hand mesh), commit not cloned: NOT RUN HERE
 
@@ -171,8 +184,13 @@ Where the R3a detections landed (`hand_regions.py`, frames with at least one det
   53,582,271 bytes, sha256 `5ef3df44e42d2db52d4ffe91f83a22ce9925e2acc9abebf453f2c5d22e380033`, downloaded without a
   login; deleted unused at the end) was meant to run through Ultralytics as a hand-box detector. Loading it with `YOLO('detector.pt')` stopped with
   `ModuleNotFoundError: No module named 'dill'` (the checkpoint is a pickle that needs `dill` to load). The next step,
-  installing `dill` and unpickling this third-party checkpoint, was refused by this session's permission check
-  ("[Code from External]"), so the detector was NOT RUN HERE. Its class names were not read.
+  installing `dill` and unpickling this third-party checkpoint, was refused by the trial session's permission check
+  ("[Code from External]", as recorded by the trial agent; no log file of it), so the detector was NOT RUN HERE.
+  Verifier check without executing the file: the same file (same sha256, re-downloaded, then deleted) is a zip whose
+  `last/data.pkl` was read with Python's `pickletools` (which lists the pickle's opcodes and runs nothing). It
+  references `dill._dill _load_type` (so loading it needs `dill`), `ultralytics.nn.tasks PoseModel` and
+  `ultralytics.nn.modules.head Pose`, and the strings after `names` are `left` and `right`; the stored training path
+  ends in `hand_side_all_medium2/weights/last.pt`. What the model outputs was not run here.
 
 ## Hamba (3D hand mesh): NOT RUN HERE
 
@@ -206,9 +224,10 @@ Read 2026-11-10 at https://mano.is.tue.mpg.de/license.html (page text extracted 
 
 ## Grounding DINO (tiny), OWLv2 (base) and YOLO-World v2: NOT RUN HERE (disk)
 
-- From about 21:12 UTC the orchestrator's disk notice (printed by `env.sh`; it reported "8027 MB free") said: "start
-  no new download or install over 200 MB unless your lane cannot finish without it; pick the smallest checkpoint a model
-  offers".
+- From about 21:12 UTC (the trial agent's record; the notice's first appearance is not logged in any file the verifier
+  found, and `env.sh`, which prints it, was last modified at 21:32:27 UTC) the orchestrator's disk notice (it reported
+  "8027 MB free") said: "start no new download or install over 200 MB unless your lane cannot finish without it; pick
+  the smallest checkpoint a model offers".
 - Sizes read from the Hugging Face API (`?blobs=true`, 2026-11-10): `IDEA-Research/grounding-dino-tiny`
   `model.safetensors` 689,359,096 bytes (card `license: apache-2.0`, not gated); `google/owlv2-base-patch16-ensemble`
   `model.safetensors` 619,918,824 bytes (`license: apache-2.0`, not gated). YOLO-World v2 in Ultralytics
@@ -216,7 +235,9 @@ Read 2026-11-10 at https://mano.is.tue.mpg.de/license.html (page text extracted 
   encoder (`ultralytics/nn/tasks.py` line 1189: `build_text_model("clip:ViT-B/32", ...)`), whose weight file
   `https://openaipublic.azureedge.net/clip/models/40d365715913c9da98579312b702a82c18be219cc2a73407c4526f58eba950af/ViT-B-32.pt` has `content-length: 353976522`. All three
   are over the 200 MB limit, and YOLOE-26 (below) was run as this lane's open-vocabulary detector instead, with its
-  MobileCLIP2 text encoder (`mobileclip2_b.ts`, 253,794,476 bytes) downloaded before the notice.
+  MobileCLIP2 text encoder (`mobileclip2_b.ts`, 253,794,476 bytes, file time 21:14:08 UTC; whether that was before the
+  notice first appeared is UNVERIFIED, see above). The verifier re-read all sizes on 2026-11-10 and found the same
+  byte counts (HF API for the two safetensors files; `curl -I` for `yolov8s-worldv2.pt` and `ViT-B-32.pt`).
 - The script for all four detectors is `scripts/run_openvocab.py` (`gdino`, `owlv2`, `yoloworld`, `yoloe`); only
   `yoloe` was run locally (OWLv2 also ran through a public web demo; see its section).
 
@@ -244,12 +265,22 @@ Read 2026-11-10 at https://mano.is.tue.mpg.de/license.html (page text extracted 
   2024). The arXiv abstract page (https://arxiv.org/abs/2409.08618, read 2026-11-10) has no code, data or weights link;
   the docs agent's survey also found none. Nothing to run.
 
-## TAPIR / BootsTAPIR and TAPNext (google-deepmind/tapnet): NOT RUN HERE (disk)
+## TAPIR / BootsTAPIR and TAPNext (google-deepmind/tapnet): NOT RUN HERE (BootsTAPIR, TAPNext: disk; TAPIR: permission check)
 
-- Checkpoint sizes (`curl -I`, 2026-11-10): `https://storage.googleapis.com/dm-tapnet/bootstap/bootstapir_checkpoint_v2.pt`
+- Checkpoint sizes (`curl -I`, 2026-11-10; the verifier re-read the same values): `https://storage.googleapis.com/dm-tapnet/bootstap/bootstapir_checkpoint_v2.pt`
   218,886,140 bytes; `.../causal_bootstapir_checkpoint.pt` 218,887,028 bytes;
-  `.../tapnext/bootstapnext_ckpt.npz` 776,980,182 bytes. All are over the 200 MB download limit of the disk notice;
-  CoTracker3 (102 MB checkpoint) was run as this lane's point tracker. The tapnet README (read 2026-11-10) links Colab
+  `.../tapnext/bootstapnext_ckpt.npz` 776,980,182 bytes. These three are over the 200 MB download limit of the disk
+  notice; CoTracker3 (102 MB checkpoint) was run as this lane's point tracker.
+- The original TAPIR checkpoint, listed in the same README's Checkpoints table ("TAPIR | Jax & PyTorch"), is under
+  that limit: `https://storage.googleapis.com/dm-tapnet/tapir_checkpoint_panning.pt` 124,348,474 bytes
+  (`tapir_checkpoint_panning.npy` 124,307,770 bytes). The trial did not try it. The verifier downloaded it (sha256
+  `628611c656b3bd65d4a70fbf5526b62afe82d1b085ce6044685287fb78509daa`), cloned tapnet (`git clone --depth 1`, commit
+  `ceedd60bb9f6c9f7c74796e4445aff6c6ddf7c9b`, 2026-11-02), made a venv from the cached CPU torch 2.15.0 plus
+  `dm-tree` 0.1.10 and `einshape` 1.0 (the imports of `tapnet/torch/`), and wrote a script with the same 8 queries and
+  90 frames as the CoTracker3 run (`scripts/verify-trials/run_tapir.NOT-RUN.py`; model settings from
+  `configs/tapir_config.py`: `pyramid_level=0`, no extra convs). Its first command, a 4-frame smoke test, was refused by
+  this session's permission check ("[Code from External]") before it started, so TAPIR is NOT RUN HERE either. The
+  checkpoint and the venv were deleted. The tapnet README (read 2026-11-10) links Colab
   demos, among them "**Standard PyTorch TAPIR**" (`colabs/torch_tapir_demo.ipynb`) and "**BootsTAPNext PyTorch**"
   (`colabs/torch_tapnext_demo.ipynb`).
 
@@ -297,6 +328,9 @@ Read 2026-11-10 at https://mano.is.tue.mpg.de/license.html (page text extracted 
 - Samples: `samples/opencv-lines/` (overlays: unrectified Hough per frame, rectified Hough and LSD per frame; JSON).
 - A second quad taken from the SAM 2.1 neck mask (minimum-area rectangle) is supported by the script
   (`run_opencv_lines.py <outdir> <mask.png>`); it ran as r0400, reported in the SAM 2.1 section.
+- Verifier re-runs (`--nolock`, same commands, frames decoded again): r0482 (this quad), r0483 (R3b, below) and r0484
+  (SAM quad) wrote per-frame results identical to r0149, r0214 and r0400 in every field except the timings. (r0149's
+  JSON has no top-level `clip`, `quad_set_by_hand` and `rect_size` keys; the script was extended for R3b after r0149.)
 
 ### Same method on R3b (1920x1080, close view)
 
@@ -363,8 +397,8 @@ Result (pixel -> rectified (u, v) -> cell):
 Run r0402 (`--nolock`, wall 0.8 s). Step 1: MediaPipe Hand Landmarker on R3b (group C1), the "Left" hand, score on this
 frame in `samples/handoff/handoff_R3b_f0225.json`. Step 2: the hand-set R3b quad (OpenCV section), 1200x130. Step 3:
 OpenCV LSD (r0214): clusters 4.1 (nut), 389.9, 496.2, 573.1, 645.5, 711.9, 777.1, 830.7, 884.5, 933.6, 979.9, 1022.7,
-1063.0, 1101.2, 1135.7, 1168.0. Step 4: the clusters right of the widest gap are 496.2 ... 1168.0 (14; 389.9 lies
-left of that gap). The lowest RMS came from dropping the first two of them and fitting 645.5 ... 1168.0 (12 clusters)
+1063.0, 1101.2, 1135.7, 1168.0. Step 4: the script leaves out the nut cluster (x < 20) and takes the clusters right of
+the widest gap between consecutive remaining clusters (389.9 to 496.2): 496.2 ... 1168.0 (14). The lowest RMS came from dropping the first two of them and fitting 645.5 ... 1168.0 (12 clusters)
 as frets 8-19: s = 1754.2 px, RMS 3.52 px, max 7.70 px, which puts 496.2 at fret 6. Without dropping, k0 = 6 for 496.2
 had RMS 7.52 px and k0 = 5 had RMS 20.48 px.
 
@@ -384,6 +418,10 @@ had RMS 7.52 px and k0 = 5 had RMS 20.48 px.
   at 195.5, not at the visible wires near 120 and 228. So on R3b the fret numbers of the cells depend on the method,
   by one fret here; which is right is UNVERIFIED (no ground truth; a hand-labelled frame would settle it). The cluster
   at 389.9 lies on a finger edge by eye.
+- Verifier re-runs r0485 (R3a_cu frame 150) and r0486 (R3b frame 225), `--nolock`, fed with the trial's MediaPipe
+  JSONL and the verifier's own OpenCV re-runs (r0482, r0483): the JSON is identical to r0218 and r0402 (same fits,
+  model frets and cells). r0172's fit without the drop rule (k0 = 4, s = 1584.4 px) gives the same five cells when
+  recomputed (model frets 1-4 at x = 94.6, 178.6, 257.8, 332.6).
 
 ## OWLv2 (google/owlv2) through the public Space `merve/owlv2`; Grounding DINO Space failed
 
@@ -415,6 +453,9 @@ had RMS 7.52 px and k0 = 5 had RMS 20.48 px.
 - Grounding DINO Space: all three calls failed with `ValueError('Unknown protocol: ws')` from gradio_client (the
   Space uses the older websocket queue). NOT RUN (local: weights over the disk limit; Space: client error). Steps for
   Aaron in `for-aaron.md`.
+- Verifier re-run r0488 (`--nolock`, same script and the trial's three input PNGs, 2026-11-10 22:56 UTC): OWLv2
+  returned the same labels, mask boxes and mask pixel counts for all three images (19.52, 19.02 and 22.27 s per
+  image); the Grounding DINO calls failed again with the same error.
 
 ## MediaPipe legacy "solutions" Hands API, mediapipe 0.10.21
 
@@ -454,13 +495,19 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
 
 - The wide-shot "elsewhere" detections sit in the same 20-px cell as the Tasks API's (centre in (340-360, 260-280),
   135 of 135 in full mode, 46 of 48 in crop mode), the spot on the hanging sheet music described above.
-- On R3b, 6 frames have two detections, all with wrists at x 949.8-1273.3 px (the fretting-hand area; the picking hand
-  is at x < 300); which of the two is a second detection of the same hand was not checked.
+- On R3b, 6 frames (434, 436, 438, 440, 442, 444) have two detections; their 12 wrists lie at x 1189.8-1273.3 px (all 451 R3b detections:
+  x 949.8-1273.3 px; the fretting-hand area; the picking hand is at x < 300); which of the two is a second detection
+  of the same hand was not checked.
 - Output format: `results.multi_hand_landmarks` (per hand 21 `landmark` with x, y normalized and z),
   `results.multi_handedness` (per hand `classification[0]` with `label`, `score`, `index`),
   `results.multi_hand_world_landmarks` (meters). Same 21-point order as the Tasks API. The script stores the same JSON
   fields as the Tasks run.
 - Samples: `samples/mediapipe-legacy/` (frames, summaries).
+- Verifier re-run (step of r0495, 2 cores): the trial's venv had been deleted, so the verifier made one from the
+  same cached wheels without `jax`/`jaxlib` (they were gone from the uv cache; in this wheel only
+  `mediapipe/tasks/python/genai/converter/` imports jax; freeze in `samples/verify-trials/mp-legacy-rerun-venv.freeze.txt`).
+  `run_mediapipe_legacy_hands.py R3a_cu full` gave the same hands, labels ("Right" in 300 of 300 frames) and every
+  landmark pixel value as the trial's C1 step; per-frame mean 25.79 ms, step wall 11.46 s.
 
 ## Ultralytics YOLO26 pose (yolo26n-pose, yolo26s-pose), ultralytics 8.4.209
 
@@ -481,29 +528,36 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
 | step | model, clip, mode | frames | wall | CPU | peak RSS | per-frame mean / median / p90 | fps from mean | Ultralytics "inference" mean | frames with a person | frames with 0 / 1 / 2 wrists >= 0.5 | max persons in a frame |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | yolo-pose_yolo26n-pose_R3a_full | n, R3a full | 540 | 70.78 s | 77.97 s | 463.3 MiB | 117.02 / 106.22 / 129.18 ms | 8.55 | 104.0 ms | 540 | 0 / 0 / 540 | 1 |
-| yolo-pose_yolo26n-pose_R3a_crop | n, R3a crop 3x | 540 | 79.27 s | 82.96 s | 472.4 MiB | 130.96 / 125.16 / 155.17 ms | 7.64 | 122.2 ms | 540 | 0 / 57 / 482 | 2 |
+| yolo-pose_yolo26n-pose_R3a_crop | n, R3a crop 3x | 540 | 79.27 s | 82.96 s | 472.4 MiB | 130.96 / 125.16 / 155.17 ms | 7.64 | 122.2 ms | 540 | 0 / 57 / 482 (1 frame with more than 2) | 2 |
 | yolo-pose_yolo26s-pose_R3a_full | s, R3a full | 540 | 167.16 s | 154.32 s | 538.2 MiB | 292.67 / 293.17 / 359.55 ms | 3.42 | 283.5 ms | 540 | 0 / 1 / 539 | 2 |
-| yolo-pose_yolo26n-pose_R3a_cu_full | n, R3a_cu full | 300 | 48.62 s | 44.62 s | 463.4 MiB | 138.88 / 129.06 / 153.44 ms | 7.20 | 126.3 ms | 300 | 0 / 264 / 36 | 2 |
+| yolo-pose_yolo26n-pose_R3a_cu_full | n, R3a_cu full | 300 | 48.62 s | 44.62 s | 452.5 MiB | 138.88 / 129.06 / 153.44 ms | 7.20 | 126.3 ms | 300 | 0 / 264 / 36 | 2 |
 | yolo-pose_yolo26n-pose_R3b_full | n, R3b 1920x1080 | 450 | 54.99 s | 57.77 s | 480.1 MiB | 87.94 / 81.45 / 100.65 ms | 11.37 | 80.1 ms | 450 | 0 / 251 / 197 (2 frames with more than 2) | 2 |
 | yolo-pose_yolo26n-pose_R3c_full | n, R3c 1920x1080 | 450 | 52.20 s | 57.91 s | 477.7 MiB | 85.75 / 80.24 / 97.35 ms | 11.66 | 78.7 ms | 450 | 0 / 0 / 450 | 1 |
 
 - The per-frame time is measured around `model.predict` and includes Ultralytics' first-call setup on frame 0
-  (4362.8 ms in the first run, 1609-2261 ms in the others); "Ultralytics inference" is the `speed["inference"]` value
+  (4362.8 ms in the first run, 1464-2261 ms in the others); "Ultralytics inference" is the `speed["inference"]` value
   the library reports per frame, averaged.
 - Arm keypoints on R3a full (yolo26n): in the medium shot the right wrist (person's right) averages (319, 263) px with
   mean confidence 0.982 and the left wrist (376, 243) with 0.947; in the wide shot the right wrist averages (157, 203)
   with mean confidence 0.911 (minimum 0.7235) and the left wrist (395, 210) with 0.974. By eye on frame 300 the
-  picking hand is behind the music stand in the wide shot.
+  picking hand is behind the music stand in the wide shot; the right wrist reported on that frame, (181, 204) with
+  confidence 0.83, lies on the top edge of the music stand (verifier, by eye on
+  `samples/ultralytics-yolo-pose/R3a_full_f0300.webp`).
 - R3a_cu (close shot, picking hand not in frame): the person's left wrist is reported in all 300 frames, the right wrist
   with confidence >= 0.5 in 36. R3b (picking-hand fingers at the left edge of the picture): left wrist in 450 frames,
-  right wrist in 201. Every input, 1080p included, is resized by Ultralytics to the `imgsz=640` network size before
+  right wrist in 199 frames (201 right-wrist detections: frames 209 and 210 have a second person box with a second
+  right wrist). Every input, 1080p included, is resized by Ultralytics to the `imgsz=640` network size before
   inference.
 - Output format facts: `results[0].keypoints.xy` (N persons x 17 x 2 pixels), `.keypoints.conf` (N x 17),
   `results[0].boxes.xyxy` / `.conf`, `results[0].speed` = {preprocess, inference, postprocess} in ms. The script stores
   per frame the elbows and wrists (x, y, confidence) in full-frame pixels and the person-box confidence.
 - Constraint inputs: `imgsz`, `conf`, `iou`, `classes`, `max_det`; nothing hand- or guitar-specific.
-- Samples: `samples/ultralytics-yolo-pose/` (annotated frames R3a 100 and 300, R3a_cu 150; summaries; first two JSONL
-  records).
+- Samples: `samples/ultralytics-yolo-pose/` (annotated frames R3a 100 and 300, R3a_cu 150; summaries of the four R3a
+  and R3a_cu runs; first two JSONL records). The R3b and R3c summaries are only under
+  `out/yolo-pose/yolo26n-pose/`.
+- Verifier re-run (step of r0495, 2 cores): yolo26n-pose on R3a_cu full gave the same persons and wrists in all 300
+  frames, with every stored elbow and wrist coordinate, keypoint confidence and box confidence equal to the trial's;
+  per-frame mean 105.96 ms, step wall 36.58 s.
 
 ## OpenPose hand model (CMU), PyTorch port `Hzzone/pytorch-openpose` @5ee71dc
 
@@ -519,8 +573,8 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
   were taken from MediaPipe Hand Landmarker instead (a handoff): a square around MediaPipe's 21 points, side 1.5 x the
   longer side of their box. The clone is passed to the script as a path and only `src/model.py` (`handpose_model`) is
   imported; the inference loop re-implements `src/hand.py` (scales 0.5, 1.0, 1.5, 2.0 of a 368-px box, stride 8, heatmap
-  threshold 0.05 after a Gaussian blur with sigma 3, largest connected component per keypoint) with OpenCV in place of
-  scipy and scikit-image. Script `scripts/run_openpose_hand.py`.
+  threshold 0.05 after a Gaussian blur with sigma 3, then per keypoint the connected component with the largest sum of
+  heatmap values, as `src/hand.py` does) with OpenCV in place of scipy and scikit-image. Script `scripts/run_openpose_hand.py`.
 - Left hands: OpenPose's own C++ hand extractor mirrors the crop of its hand 0 (the left hand):
   `const bool mirrorImage = (hand == 0);` in `src/openpose/hand/handExtractorCaffe.cpp` (master, read 2026-11-10). The
   port's `Hand` class does not mirror. The first run below did not mirror; the fretting hand is the player's left hand.
@@ -536,8 +590,10 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
 - The same 10 frames (every 30th) in r0336 without mirroring: keypoints found 13.3 per hand on average (range 5-19),
   median of per-hand median distances to MediaPipe 53.97 px, mean peak value 0.086. With mirroring: 19.5 found, 4.68 px
   (per-hand medians 4.09-10.59 px), 0.2149. All 10 hands were labelled "Left" by MediaPipe and were mirrored.
-- On R3a the hand boxes were small: sides 41-93 px in the 640x480 frame (each crop is scaled to the 368-px box and
-  its multiples inside the model); 3 of the 21 hands had no keypoint found.
+- On R3a the hand boxes had sides of 41-93 px in the 640x480 frame (each crop is scaled to the 368-px box and its
+  multiples inside the model); 3 of the 21 hands had no keypoint found.
+- "Mean peak heatmap value" is the mean over all 21 keypoints of every hand, with not-found keypoints counted as 0
+  (`run_openpose_hand.py`).
 - r0336 waited 1800.7 s for a CPU slot before it ran. Box sides were 181-282 px. "Found" = the blurred heatmap
   exceeded 0.05 somewhere; a keypoint that was not found is stored as (box origin, score 0).
 - Output format facts: per hand 21 (x, y, peak value) in full-frame pixels, in the OpenPose hand order (0 wrist, 1-4
@@ -545,6 +601,12 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
   `out/openpose-hand/R3a_cu.json` (summary + per hand), samples in `samples/openpose-hand/`. The r0336 sample images
   were redrawn afterwards from that JSON (no new inference) because the run's own drawing joined not-found keypoints
   to the box corner; the redraw shows only found keypoints (cyan) over MediaPipe's landmarks (magenta).
+- Verifier checks: the 30 hands of r0336, the 10 of the mirrored R3a_cu step and the 21 of the R3a step were recounted
+  from the JSON with a separate script (`scripts/verify-trials/`), giving the numbers above (r0336 median of medians
+  52.53 px before the script's per-hand rounding; same 10 frames 53.97 px, 13.3 keypoints, range 5-19; mirrored 4.68 px,
+  per-hand medians 4.09-10.59 px). Re-run of the mirrored R3a_cu step (r0497, 2 cores): all 210 keypoints (x, y, peak
+  value) identical to the trial's; per-hand inference mean 7.863 s against 20.017 s in the trial (step wall 80.78 s
+  against 202.43 s).
 
 ## MediaPipe Pose Landmarker (heavy) and Holistic Landmarker (tasks API), mediapipe 1.2.2
 
@@ -591,6 +653,10 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
   a segmentation mask. The script stores shoulders, elbows, wrists and the three hand points of the pose in full-frame
   pixels, and Holistic's hand landmarks in the same 21-point format as the Hand Landmarker.
 - Samples: `samples/mediapipe-pose-holistic/`.
+- Verifier re-runs (steps of r0495, 2 cores): Holistic on R3a_cu full gave every hand landmark equal to the trial's;
+  Holistic on the R3a crops failed again at the shot cut with the same `RET_CHECK failure ... (660 vs. 720)` (exit 1)
+  after 218 frames whose hand landmarks equal the trial's; Pose on R3a full gave the same per-frame hand counts and all
+  6,480 stored arm values (x, y, visibility) equal to the trial's. Step walls 16.12 s, 12.25 s and 43.04 s.
 
 ## Segment Anything 2.1 tiny (`sam2.1_t.pt`) through ultralytics 8.4.209: image mode and video mode
 

@@ -17,8 +17,8 @@ Where the files come from:
 - The correct answers (string and fret of every note) are in `docs/guitar-tab-research/inputs/<id>/<id>.truth.json`
   and `<id>.tab.txt`. Send the outputs back; the scoring is done on the box with `gtr-eval tab`.
 
-General setup once (about 10 minutes): install Python 3.11 from python.org (tick "Add python.exe to PATH"), install
-Git for Windows (git-scm.com), then in a Command Prompt run `pip install uv`.
+General setup once: install Python 3.11 from python.org (tick "Add python.exe to PATH"), install Git for Windows
+(git-scm.com), then in a Command Prompt run `pip install uv`.
 
 ## 1. Guitab (audio to Guitar Pro 5 with strings and frets)
 
@@ -39,14 +39,16 @@ button ("Upload or record a recording and press Transcribe").
 3. Repeat with `S5capo2.wav` twice: once with Capo 0 and once with the Capo stepper at 2.
 4. Repeat with `R1a.wav`, `R1b.wav`, `R1c.wav` (real recordings) and `S3.wav` (strummed chords), defaults.
 
-Option B, on the laptop (needs the GPU and the steps from the README):
+Option B, installed on the computer (the README's steps; the README: "Every command takes `--device
+auto|cuda|mps|cpu`. The default, `auto`, uses an NVIDIA GPU if present, else the Apple GPU, else the CPU."):
 
 1. In a Command Prompt: `git clone https://github.com/DanieleMorotti/guitab` then `cd guitab`.
 2. `uv venv .venv --python 3.11`
 3. `uv pip install --python .venv\Scripts\python.exe -r requirements.txt` then
    `uv pip install --python .venv\Scripts\python.exe -e . --no-deps`
-4. Check the GPU build of torch: `.venv\Scripts\python.exe -c "import torch; print(torch.cuda.is_available())"` must
-   print `True`. If it prints `False`, install the CUDA build of torch as pytorch.org describes, then repeat.
+4. To use the GPU, check the torch build: `.venv\Scripts\python.exe -c "import torch; print(torch.cuda.is_available())"`
+   must print `True`. If it prints `False`, install the CUDA build of torch as pytorch.org describes, then repeat (the
+   README: "for another CUDA version or a CPU-only build, install `torch` first as described on pytorch.org").
 5. Run, one clip at a time: `.venv\Scripts\guitab --audio S2s.wav --out_dir out\S2s` (the first run downloads the
    weights by itself).
 6. Capo test: `.venv\Scripts\guitab --audio S5capo2.wav --out_dir out\S5capo2_nocapo` and
@@ -63,18 +65,26 @@ settings if you used the browser version.
 What it is: the authors' own command for the guitar models (GAPS and François Leduc checkpoints,
 https://github.com/xavriley/hf_midi_transcription; weights https://huggingface.co/xavriley/midi-transcription-models,
 card license MIT). The box ran the François Leduc checkpoint (`guitar-fl.pth`) through Kong's PyPI package and a few
-lines of its own (see `trials.md`); the GAPS checkpoint (`guitar-gaps.pth`, the CLI's default for `guitar`) waited over
-an hour for a CPU slot and did not run, so the GAPS runs below are the only ones there will be. Running the authors'
-command on S2n and R1c also lets the box's FL results be compared. Notes only: it gives no strings or frets.
+lines of its own (see `trials.md`) on S2n and R1c; the GAPS checkpoint (`guitar-gaps.pth`, the CLI's default for
+`guitar`) ran on the box on S2n only, in the verifier's run (`trials.md`, Riley section). The runs below give the
+authors' own pipeline on S2n and R1c for comparison with the box's runs, and GAPS results for S3, R1b and R1c. Notes
+only: it gives no strings or frets.
 
 1. `git clone https://github.com/xavriley/hf_midi_transcription` then `cd hf_midi_transcription`.
 2. `uv venv .venv --python 3.11` then `uv pip install --python .venv\Scripts\python.exe -e .`
-3. Run: `.venv\Scripts\midi_transcription S2n.wav S2n_gaps.mid --instrument guitar --device cuda` and the same for
-   `S3.wav`, `R1b.wav`, `R1c.wav`. The CLI accepts only `saxophone`, `bass`, `guitar`, `piano` for `--instrument`
-   (`guitar` uses `guitar-gaps.pth`); for the François Leduc model download `guitar-fl.pth` from the Hugging Face page
-   and add `--checkpoint guitar-fl.pth` to the S2n and R1c commands (output names `S2n_fl.mid`, `R1c_fl.mid`).
+3. Check the torch build: `.venv\Scripts\python.exe -c "import torch; print(torch.cuda.is_available())"` must print
+   `True` for `--device cuda`. If it prints `False`, install the CUDA build of torch as pytorch.org describes, then
+   repeat.
+4. Run: `.venv\Scripts\midi_transcription S2n.wav S2n_gaps.mid --instrument guitar --device cuda --verbose` and the
+   same for `S3.wav`, `R1b.wav`, `R1c.wav`. The CLI accepts only `saxophone`, `bass`, `guitar`, `piano` for
+   `--instrument` (`guitar` uses `guitar-gaps.pth`, downloaded on first use); for the François Leduc model download
+   `guitar-fl.pth` from the Hugging Face page into the same folder and add `--checkpoint guitar-fl.pth` to the S2n and
+   R1c commands (output names `S2n_fl.mid`, `R1c_fl.mid`).
 
-Send back: the `.mid` files, and the console text of one run (it prints the checkpoint it used).
+Send back: the `.mid` files, and the console text of each run. With `--verbose` the CLI prints a `Checkpoint:` line
+(the path given, or `auto-selected`), and a run without `--checkpoint` (when no `guitar-gaps.pth` is in the current
+folder) prints `Downloading guitar model from xavriley/midi-transcription-models...` and the path of the file it uses
+(read from `cli.py` and `model.py` at commit `96f6797`).
 
 ## 3. Noise2Fret (diffusion model, audio to tab)
 
@@ -117,10 +127,11 @@ Send back: the `.tab` files and `help.txt`.
 
 What it is: what these programs do when they import a MIDI file onto a guitar tab staff. The MIDI-to-Tab paper
 (arXiv 2408.05024) compares its model with MuseScore, Guitar Pro 8 and TuxGuitar, and the Fretting-Transformer paper
-(arXiv 2506.14223) with TuxGuitar and Guitar Pro (their arXiv HTML pages, read 2026-11-10). TuxGuitar and
-MuseScore are free; Guitar Pro 8 is paid (only if you already own it).
+(arXiv 2506.14223) with TuxGuitar and Guitar Pro (their arXiv HTML pages, read 2026-11-10). TuxGuitar (LGPL-2.1) and
+MuseScore Studio (GPL-3.0) are open source per the web-tab-render lane's survey; Guitar Pro 8's full version is listed
+at "$69.95" per the apps-survey lane's survey (include it only if you already own it).
 
-TuxGuitar (free, tuxguitar.app; the menu names below were not checked against the current version, so if they differ,
+TuxGuitar (tuxguitar.app; the menu names below were not checked against the current version, so if they differ,
 use the program's MIDI import, its track tuning and capo settings, and its Guitar Pro 5 export. In the TuxGuitar 1.5.6
 installed on the research box, its language file names the menus File > Import > Import MIDI, File > Export and
 Track > Properties, the tuning dialog has Presets, Strings and an Offset field, and its Guitar Pro plugin contains a
