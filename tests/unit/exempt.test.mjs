@@ -33,6 +33,18 @@ test('isLivePath: nothing that only looks like a live path', () => {
   for (const p of ['src/content/posts/earthlight.md', 'src/content/posts/teardown-lab-two.md', 'src/content/posts/my-teardown-lab.md',
     '/media/teardown-lab-two/x.webp', '/media/earthlight/teardown-lab.webp', '/labs/teardown-two/', '/labs/', '/ledger/teardown-lab-two/', '/ledger/teardown/',
     '/ledger/', '/', '', 'src/data/exempt.js', 'worker/index.js']) assert.equal(isLivePath(p), false, p);
+  // A live path matches from the start of a folder name, never from the middle of one.
+  for (const p of ['/collabs/teardown/', 'public/collabs/teardown/lander/index.html', '/multimedia/teardown-lab/x.webp', 'public/xmedia/teardown-lab/clip.mp4',
+    '/old-ledger/teardown-lab/', 'dist/preledger/teardown-lab/index.html', 'docs-src/content/posts/teardown-lab.md', 'xsrc/content/posts/teardown-lab.md',
+    'https://aaronorelup.com/collabs/teardown/']) assert.equal(isLivePath(p), false, p);
+  // The same for every live notebook there is: its paths with a letter in front of their first folder.
+  for (const { paths } of Object.values(LIVE_NOTEBOOKS)) {
+    for (const p of paths) {
+      const bare = p.replace(/^(public|dist)\//, '');
+      assert.equal(isLivePath(`/x${bare}`), false, `/x${bare}`);
+      assert.equal(isLivePath(`public/x${bare}`), false, `public/x${bare}`);
+    }
+  }
 });
 
 test('isHeld: a held post by its id or its slug, and a held post is not a live notebook', () => {

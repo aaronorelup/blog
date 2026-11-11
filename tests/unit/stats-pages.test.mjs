@@ -18,8 +18,11 @@ function seed(posts = { shown: { id: 'AO-001', title: 'Shown' } }) {
     fs.writeFileSync(path.join(dist, rel), text);
   };
   put('ledger/previews.json', JSON.stringify({ posts }));
+  // ledger/no-page-of-its-own/ has a notes page and no page: it is not a post the build made, so nothing but the
+  // rule "under /ledger/, a listed post only" keeps it out.
   for (const page of ['', 'about/', 'ledger/', 'ledger/shown/', 'ledger/shown/notes/', 'ledger/shown/deeper/', `ledger/${HIDDEN}/`, `ledger/${HIDDEN}/notes/`,
-    `labs/${HIDDEN}/`, `LABS/${HIDDEN.toUpperCase()}/x/`, '_astro/chunk/', '.well-known/x/', 'a page/', `${'x'.repeat(170)}/`]) put(`${page}index.html`);
+    'ledger/no-page-of-its-own/notes/', `labs/${HIDDEN}/`, `LABS/${HIDDEN.toUpperCase()}/x/`, '_astro/chunk/', '.well-known/x/', 'a page/',
+    `${'x'.repeat(170)}/`]) put(`${page}index.html`);
   put('404.html');
   put('research/a-paper.html');
   put(`talks/${HIDDEN}.html`);
