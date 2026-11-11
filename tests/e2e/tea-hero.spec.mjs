@@ -291,3 +291,18 @@ test('tea-hero-13 reduced motion asked for while the scene runs puts the poster 
   expect(Math.abs(await top() - before)).toBeLessThanOrEqual(1);
 });
 
+test('tea-hero-14 with the scene up the day/night switch fetches no poster under it', async ({ page }) => {
+  await page.goto('/tea/?hero=on');
+  await expect(hero(page)).toHaveAttribute('data-hero-settled', '', { timeout: 60_000 });
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  await expect(page.locator('[data-tea-stage][data-covered]')).toHaveCount(1, { timeout: 15_000 });
+  const posters = [];
+  page.on('request', (r) => { if (/\/tea\/hero\/poster-/.test(r.url())) posters.push(new URL(r.url()).pathname); });
+  const mode = () => page.evaluate(() => document.documentElement.dataset.mode || 'night');
+  const before = await mode();
+  await page.locator('#mode-toggle').click();
+  await expect.poll(mode).not.toBe(before);
+  await page.waitForTimeout(1500);
+  expect(posters).toEqual([]);
+});
+

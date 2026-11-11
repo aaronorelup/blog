@@ -95,11 +95,25 @@ export async function mount(section, stage, opts = {}) {
     throw e;
   }
   // the poster gives way once a frame is really on the canvas; from then on the hero changes no layout by itself
-  requestAnimationFrame(() => { stage.dataset.ready = ''; section.dataset.heroSettled = ''; });
+  requestAnimationFrame(() => { reveal(s, stage); section.dataset.heroSettled = ''; });
   s.backdrop.later();
   wire(s, section, stage);
   if (!opts.noHook) window.__teaHero = hook(s, section, stage);
   return s;
+}
+
+// The canvas fades in over the poster (data-ready, 700 ms in stage.css); once it covers it the poster is taken away
+// (data-covered), so a switch of mode fetches no other poster under an opaque canvas. Both come back together.
+function reveal(s, stage) {
+  stage.dataset.ready = '';
+  clearTimeout(s.cover);
+  s.cover = setTimeout(() => { if (stage.dataset.ready != null) stage.dataset.covered = ''; }, 800);
+}
+
+function conceal(s, stage) {
+  clearTimeout(s.cover);
+  delete stage.dataset.covered;
+  delete stage.dataset.ready;
 }
 
 function resize(s, stage) {
@@ -158,7 +172,8 @@ function wire(s, section, stage) {
     if (on && !s.running) { s.running = true; s.clock = performance.now(); s.raf = requestAnimationFrame(loop); }
     if (!on && s.running) { s.running = false; cancelAnimationFrame(s.raf); s.raf = 0; }
   };
-  s.io = new IntersectionObserver(([e]) => { s.onscreen = e.isIntersecting; s.play(); });
+  // the latest entry is the state now (a busy page can be told of a leave and a return at once)
+  s.io = new IntersectionObserver((es) => { s.onscreen = es[es.length - 1].isIntersecting; s.play(); });
   s.io.observe(section);
   s.onVis = () => { s.visible = document.visibilityState === 'visible'; s.play(); };
   document.addEventListener('visibilitychange', s.onVis);
@@ -173,13 +188,13 @@ function wire(s, section, stage) {
   // A lost WebGL context (a GPU reset, too many contexts): the poster shows again and nothing draws until it is back.
   // three remakes its own state then; the environment light only ever lived on the GPU (drawn once by PMREM), so it is
   // drawn again, or the characters come back lit blue-grey.
-  s.onLost = () => { s.lost = true; delete stage.dataset.ready; s.play(); };
+  s.onLost = () => { s.lost = true; conceal(s, stage); s.play(); };
   s.onBack = () => {
     s.lost = false;
     s.env = skyEnvironment(s.renderer, ...SKY);
     s.scene.environment = s.env;
     frame(s, section, 0);
-    requestAnimationFrame(() => { if (!s.lost && !s.disposed) stage.dataset.ready = ''; });
+    requestAnimationFrame(() => { if (!s.lost && !s.disposed) reveal(s, stage); });
     s.play();
   };
   s.canvas.addEventListener('webglcontextlost', s.onLost);
@@ -211,7 +226,7 @@ export function dispose(s, section, stage) {
   s.env.dispose();
   s.renderer.dispose();
   s.canvas.remove();
-  delete stage.dataset.ready;
+  conceal(s, stage);
   unpinSection(section);
 }
 

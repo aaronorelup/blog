@@ -8,7 +8,10 @@ const stage = section && section.querySelector('[data-tea-stage]');
 function webgl() {
   try {
     const c = document.createElement('canvas');
-    return !!(c.getContext('webgl2') || c.getContext('webgl'));
+    const gl = c.getContext('webgl2') || c.getContext('webgl');
+    const ext = gl && gl.getExtension('WEBGL_lose_context');
+    if (ext) ext.loseContext();   // only a probe: its context is let go at once, not left for the collector
+    return !!gl;
   } catch { return false; }
 }
 

@@ -1,7 +1,7 @@
 // The pin: data-3d="on" makes the section tall (stage.css) and data-hero-layout says what sticks: "dock" (landscape,
 // the title box fits the screen) pins .tea-hero-pin, "flow" (portrait, or it doesn't fit) pins only the stage and the
 // box scrolls away. Growing the section must not move what the reader sees: it waits for a moment when it moves nothing
-// (whenPinnable). Written each frame: --tea-hero-progress (0..1) and data-hero-phase ("open", then "docked").
+// (whenPinnable). Written as the scroll moves: data-hero-phase ("open", then "docked" from progress 0.1).
 export function pinSection(section) {
   const before = section.getBoundingClientRect();
   const y = scrollY;
@@ -20,7 +20,7 @@ export function unpinSection(section) {
   delete section.dataset.heroLayout;
   delete section.dataset.heroPhase;
   delete section.dataset.heroGlide;
-  section.style.removeProperty('--tea-hero-progress');
+  delete section._teaP;
   keepPlace(section, before, y);
 }
 
@@ -108,7 +108,6 @@ export function writeProgress(section, p, force) {
   const v = Math.round(p * 1000) / 1000;
   if (!force && v === section._teaP) return;
   section._teaP = v;
-  section.style.setProperty('--tea-hero-progress', String(v));
   const phase = v < DOCK ? 'open' : 'docked';
   if (section.dataset.heroPhase !== phase) section.dataset.heroPhase = phase;
 }

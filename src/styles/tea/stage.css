@@ -2,7 +2,7 @@
    box, one screen (cover.css). With the scene (data-3d="on") the section is tall and pin.js picks a layout,
    data-hero-layout: "dock" (landscape, the box fits) pins .tea-hero-pin and docks the box lower left once the scene
    moves; "flow" (portrait, or the box doesn't fit) pins only the stage and the box scrolls away with the page. Both
-   start with the box where the static layout has it. Read by tea-core: --tea-hero-progress, data-hero-phase. */
+   start with the box where the static layout has it. Read by tea-core: data-hero-layout, data-hero-phase. */
 
 .tea-hero-stage {
   position: absolute;
@@ -37,6 +37,8 @@
   transition: opacity 700ms ease;
 }
 .tea-hero-stage[data-ready] .tea-stage-canvas { opacity: 1; }
+/* once the canvas covers it (stage.js, data-covered) the poster goes, so the switch fetches no other one */
+.tea-hero-stage[data-covered] .tea-stage-poster { display: none; }
 
 /* Keeps the title box readable over the scene: a soft darkening at the edges, deeper behind the docked box. */
 .tea-stage-shade {
