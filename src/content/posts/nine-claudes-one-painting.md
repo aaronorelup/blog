@@ -77,7 +77,7 @@ Every first try from the low and medium sessions looked at the picture and paint
 things are. A dark ground, a glow, an oval for a head. Nobody measured anything. This is my
 favorite image of the whole experiment, Opus medium's first try:
 
-<img class="fill" src="/media/nine-claudes-one-painting/om-1.webp" alt="Opus medium's first try: a naive oil painting of the scene. BloodTailor seen from behind with a big silver head and a white shirt, Jefrie as a round pale face with red ringed eyes and a wide grin, a serpent of round dark scales with a red belly, a red spiral, and gold lumps for treasure">
+<img class="fill" src="/media/nine-claudes-one-painting/om-1.webp" loading="lazy" alt="Opus medium's first try: a naive oil painting of the scene. BloodTailor seen from behind with a big silver head and a white shirt, Jefrie as a round pale face with red ringed eyes and a wide grin, a serpent of round dark scales with a red belly, a red spiral, and gold lumps for treasure">
 
 It honestly feels like art to me, like what a student paints in their first month of oil. The
 serpent became rows of round scales because scales are round, the treasure became lumps, and
