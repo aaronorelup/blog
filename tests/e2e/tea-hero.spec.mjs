@@ -16,6 +16,13 @@ const hero = (page) => page.locator('[data-tea-hero]');
 // boot.js has decided: the scene is on (data-3d) or kept off with its reason (data-3d-off)
 const decided = (page, timeout = 15_000) => expect.poll(() => hero(page).evaluate((s) => s.dataset['3d'] || s.dataset['3dOff'] || ''),
   { timeout }).not.toBe('');
+// Holds every request matching pattern (a page.route glob) until release() is called, as a slow network would.
+async function gate(page, pattern) {
+  let release;
+  const open = new Promise((r) => { release = r; });
+  await page.route(pattern, async (route) => { await open; await route.continue().catch(() => {}); });
+  return release;
+}
 // the picture on screen is the scene's poster, loaded, and no canvas has replaced it
 async function posterShown(page) {
   const poster = page.locator('.tea-stage-poster');
@@ -148,4 +155,38 @@ test('tea-hero-7 each chapter link in the title box lands on its chapter', async
       Math.abs(el.getBoundingClientRect().top - parseFloat(getComputedStyle(el).scrollMarginTop)) < 4), { timeout: 20_000 }).toBe(true);
     await expect(page).toHaveURL(new RegExp('#' + id + '$'));
   }
+});
+
+test('tea-hero-8 the title box stays where it is when the scene takes over', async ({ page }) => {
+  // the box's rectangle on every frame, and whether the scene had pinned the section by then
+  await page.addInitScript(() => {
+    window.__boxes = [];
+    const tick = () => {
+      const s = document.querySelector('[data-tea-hero]');
+      const box = s && s.querySelector('.tea-hero-box');
+      if (box) {
+        const r = box.getBoundingClientRect();
+        window.__boxes.push([s.dataset['3d'] ? 1 : 0, r.left, r.top, r.width, r.height]);
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+  // the scene waits for the web fonts, so nothing but the scene can move the box
+  const release = await gate(page, '**/tea/hero/manifest.json');
+  await page.goto('/tea/?hero=on');
+  await page.waitForFunction(() => document.fonts.status === 'loaded');
+  await page.waitForTimeout(300);
+  release();
+  await expect(page.locator('[data-tea-stage][data-ready]')).toHaveCount(1, { timeout: 60_000 });
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  // two more frames with the canvas up
+  await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+  const rows = await page.evaluate(() => window.__boxes);
+  const before = rows.filter((r) => !r[0]).at(-1);
+  const after = rows.filter((r) => r[0]);
+  expect(after.length).toBeGreaterThan(1);
+  // a transform is no layout shift, so the box itself is measured: within 1 px of its static place on every frame
+  const moved = Math.max(...after.map((r) => Math.max(...[1, 2, 3, 4].map((i) => Math.abs(r[i] - before[i])))));
+  expect(moved, JSON.stringify({ before, first: after[0] })).toBeLessThanOrEqual(1);
 });

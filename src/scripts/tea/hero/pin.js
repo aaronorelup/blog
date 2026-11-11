@@ -12,13 +12,26 @@ export function pinSection(section) {
     scrollTo({ top: y + (after.height - before.height), behavior: 'instant' });
   }
   writeProgress(section, 0, true);
+  glide(section);
 }
 
 export function unpinSection(section) {
   delete section.dataset['3d'];
   delete section.dataset.heroLayout;
   delete section.dataset.heroPhase;
+  delete section.dataset.heroGlide;
   section.style.removeProperty('--tea-hero-progress');
+}
+
+// In the dock layout the box glides between its open and docked places (stage.css, data-hero-glide), never into the
+// open place from where the static layout or the flow layout had it: the glide comes on only once that place is laid
+// out (a style read forces it), so the change of layout itself has nothing to animate.
+function glide(section) {
+  delete section.dataset.heroGlide;
+  if (section.dataset.heroLayout !== 'dock') return;
+  const box = section.querySelector('.tea-hero-box');
+  if (box) getComputedStyle(box).translate;
+  section.dataset.heroGlide = '';
 }
 
 const px = (cs, name) => parseFloat(cs.getPropertyValue(name)) || 0;
@@ -39,6 +52,7 @@ export function relayout(section) {
   const next = layoutFor(section);
   if (section.dataset.heroLayout === next) return false;
   section.dataset.heroLayout = next;
+  glide(section);
   return true;
 }
 

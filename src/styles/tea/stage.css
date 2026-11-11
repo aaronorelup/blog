@@ -78,6 +78,10 @@
   top: calc(50% + (var(--tea-hero-pt) - var(--tea-hero-pb)) / 2);
   translate: -50% -50%;
   transform-origin: 0 100%;
+}
+/* the glide between the open and docked places; data-hero-glide (pin.js) comes on only once the open place is laid
+   out, so the box never slides into it from where the static or flow layout had it */
+.tea-hero[data-hero-layout='dock'][data-hero-glide] .tea-hero-box {
   transition: left 900ms cubic-bezier(.2, .7, .2, 1), top 900ms cubic-bezier(.2, .7, .2, 1),
     translate 900ms cubic-bezier(.2, .7, .2, 1), scale 900ms cubic-bezier(.2, .7, .2, 1);
 }
@@ -91,6 +95,8 @@
 .tea-hero[data-hero-layout='dock'] :is(.tea-statement, .tea-counter) {
   max-height: 8em;
   overflow: hidden;
+}
+.tea-hero[data-hero-layout='dock'][data-hero-glide] :is(.tea-statement, .tea-counter) {
   transition: max-height 900ms cubic-bezier(.2, .7, .2, 1), margin 900ms cubic-bezier(.2, .7, .2, 1),
     padding 900ms cubic-bezier(.2, .7, .2, 1), border-width 900ms ease, opacity 300ms ease;
 }
