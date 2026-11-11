@@ -1,8 +1,9 @@
 // The Worker's front door (worker/index.js) and the guards a handler applies before it touches a binding: an unknown
 // API path is 404, a wrong method 405 with Allow, a thrown error 503 and logged, anything else goes to the media
 // handler. /api/session mints only for the site's own pages. /api/reads counts only a listed post, for something
-// that doesn't call itself a bot, and stores a post, a day, a country and a count. And no code under worker/ names a
-// header or a field that carries a visitor's IP address.
+// that doesn't call itself a bot, stores a post, a day, a country and a count, and gives out a listed post's counts
+// alone (an unlisted post answers as a slug that never was). And no code under worker/ names a header or a field
+// that carries a visitor's IP address.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
@@ -111,19 +112,30 @@ test('/api/reads counts a listed post only, and keeps a post, a day, a country a
   assert.deepEqual(columns, ['slug', 'day', 'country', 'n']);
 });
 
-test('/api/reads gives a post its counts, and refuses a slug that is not one', async (t) => {
+test('/api/reads gives a listed post its counts, and refuses a slug that is not one', async (t) => {
   t.mock.timers.enable({ apis: ['Date'], now: NOON + 3600e3 });
-  const get = (query) => reads.counts(new Request(`${SITE}/api/reads${query}`), env);
+  const get = (query, to = env) => reads.counts(new Request(`${SITE}/api/reads${query}`), to);
   assert.equal((await get('')).status, 400);
   assert.equal((await get('?slug=Not%20A%20Slug')).status, 400);
   const response = await get('?slug=shown');
+  assert.equal(response.status, 200);
   assert.equal(response.headers.get('Cache-Control'), 'no-store');
   assert.deepEqual(await response.json(), {
     slug: 'shown', total: 4, first: '2026-11-11', today: 4, days: [{ day: '2026-11-11', n: 4 }],
     countries: [{ country: 'XX', n: 3 }, { country: 'NZ', n: 1 }], asOf: '2026-11-11T13:00:00.000Z',
   });
-  const none = await (await get('?slug=never-read')).json();
-  assert.deepEqual([none.total, none.first, none.today, none.days, none.countries], [0, null, 0, [], []]);
+});
+
+test('/api/reads answers 404 for an unlisted post as for a slug that never was, before the limiter and D1', async () => {
+  // Reads counted while the post was listed: a later deploy unlisted it, and they are never given out again.
+  await stored.prepare("INSERT INTO reads (slug, day, country, n) VALUES ('hidden', '2026-11-10', 'US', 7)").run();
+  const guarded = { ASSETS: env.ASSETS,
+    get DB() { throw new Error('reached for D1'); }, get STATS_LIMIT() { throw new Error('reached for the limiter'); } };
+  const get = (slug) => reads.counts(new Request(`${SITE}/api/reads?slug=${slug}`), guarded);
+  for (const slug of ['hidden', 'never-read', 'constructor', 'tostring']) await bare(await get(slug), 404);
+  // The same question of a listed post does go on to the limiter.
+  await assert.rejects(get('shown'), /reached for the limiter/);
+  assert.equal((await rows()).find((r) => r.slug === 'hidden').n, 7);
 });
 
 test("no code under worker/ names a header or a field that carries a visitor's IP address", () => {
