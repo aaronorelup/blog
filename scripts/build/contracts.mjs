@@ -5,8 +5,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isDeepStrictEqual } from 'node:util';
 import matter from 'gray-matter';
 import { isLive, isLivePath } from '../../src/data/exempt.js';
+import { OWNER } from '../../src/data/site.js';
 import { isListed } from '../../src/lib/posts.js';
 
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
@@ -18,6 +20,13 @@ export const CONTRACT_FILES = ['/ledger/previews.json', '/media-sizes.json', '/r
 export function listedSlugs(postsDir = path.join(ROOT, 'src/content/posts')) {
   return new Set(fs.readdirSync(postsDir).filter((f) => f.endsWith('.md'))
     .filter((f) => isListed(matter(fs.readFileSync(path.join(postsDir, f), 'utf8')).data))
+    .map((f) => f.slice(0, -3)));
+}
+
+// The slugs of the posts Claude wrote as "I" (voice: claude): their pages say "Written by Claude".
+export function claudeSlugs(postsDir = path.join(ROOT, 'src/content/posts')) {
+  return new Set(fs.readdirSync(postsDir).filter((f) => f.endsWith('.md'))
+    .filter((f) => matter(fs.readFileSync(path.join(postsDir, f), 'utf8')).data.voice === 'claude')
     .map((f) => f.slice(0, -3)));
 }
 
@@ -79,6 +88,24 @@ export function shareUrlProblems(html, pathname) {
     .map(([what, got]) => `${pathname}: ${what} is ${got.length ? got.join(', ') : 'missing'}, not ${want}`);
 }
 
+// A listed post's page carries exactly one JSON-LD block (chrome/Head.astro, lib/jsonld.js): it parses, and its url is
+// the page's canonical, https://aaronorelup.com<pathname>. Its author never contradicts the page: a post Claude wrote
+// (byClaude; the page says "Written by Claude") names none, and every other names exactly the site's owner.
+export function jsonLdProblems(html, pathname, byClaude = false) {
+  const blocks = [...html.matchAll(/<script\b[^>]*\stype="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+  if (blocks.length !== 1) return [`${pathname}: ${blocks.length} JSON-LD blocks, not 1`];
+  const want = SITE + pathname;
+  let data;
+  try { data = JSON.parse(blocks[0]); } catch (e) { return [`${pathname}: its JSON-LD block does not parse (${e.message})`]; }
+  const problems = data?.url === want ? [] : [`${pathname}: its JSON-LD url is ${data?.url ?? 'missing'}, not ${want}`];
+  const owner = { '@type': 'Person', name: OWNER.name, url: SITE + OWNER.about };
+  if (byClaude && data?.author !== undefined) problems.push(`${pathname}: Claude wrote it, but its JSON-LD names an author`);
+  if (!byClaude && !isDeepStrictEqual(data?.author, owner)) {
+    problems.push(`${pathname}: its JSON-LD author is ${JSON.stringify(data?.author) ?? 'missing'}, not ${JSON.stringify(owner)}`);
+  }
+  return problems;
+}
+
 // Every path of the baseline is still answered: built, or the source of a redirect. Live paths are left out.
 export function baselineProblems(baseline, isBuilt, redirectSources) {
   return baseline.filter((p) => !isLivePath(p) && !isBuilt(p) && !redirectSources.has(p) && !redirectSources.has(p.replace(/\/$/, '')))
@@ -91,7 +118,7 @@ export const readBaseline = (file = BASELINE) =>
 const redirectSourcesOf = (text) => new Set(text.split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#'))
   .map((l) => l.split(/\s+/)[0]));
 
-export function check(dist, listed = listedSlugs()) {
+export function check(dist, listed = listedSlugs(), byClaude = claudeSlugs()) {
   const read = (p) => fs.readFileSync(path.join(dist, p), 'utf8');
   const isBuilt = (p) => fs.existsSync(path.join(dist, p.endsWith('/') ? p + 'index.html' : p));
   return [
@@ -99,7 +126,8 @@ export function check(dist, listed = listedSlugs()) {
     ...statsPagesProblems(read('stats-pages.txt'), listed),
     ...rssProblems(read('rss.xml'), listed),
     ...[...listed].filter((s) => !isLive(s) && isBuilt(`/ledger/${s}/`))
-      .flatMap((s) => shareUrlProblems(read(`ledger/${s}/index.html`), `/ledger/${s}/`)),
+      .map((s) => [read(`ledger/${s}/index.html`), `/ledger/${s}/`, byClaude.has(s)])
+      .flatMap(([html, pathname, claude]) => [...shareUrlProblems(html, pathname), ...jsonLdProblems(html, pathname, claude)]),
     ...baselineProblems(readBaseline(), isBuilt, redirectSourcesOf(read('_redirects'))),
   ];
 }
