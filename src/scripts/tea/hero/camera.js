@@ -25,7 +25,7 @@ function curveT(times, p) {
 export function fitCamera(rig, ref, w, h) {
   const a = w / h;
   rig.cam.aspect = a;
-  rig.portrait = a < 1;
+  rig.portrait = a <= 1;   // a square screen too, as stage.css's (max-aspect-ratio: 1/1) gives it the tall poster
   // like object-fit: cover of a picture of aspect r (the poster's): a wider screen keeps its horizontal field and crops
   // top and bottom, a narrower one keeps its vertical field and crops the sides. Portrait has its own picture.
   const [v, r] = rig.portrait ? [rig.spec.portrait.fov, rig.spec.portrait.aspect] : [rig.spec.fov, ref];

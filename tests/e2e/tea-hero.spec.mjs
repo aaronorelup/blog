@@ -306,3 +306,18 @@ test('tea-hero-14 with the scene up the day/night switch fetches no poster under
   expect(posters).toEqual([]);
 });
 
+test('tea-hero-15 the poster and the scene take the same shape of frame, a square window included', async ({ page }) => {
+  test.setTimeout(150_000);
+  for (const [width, height] of [[900, 900], [960, 900]]) {
+    await page.setViewportSize({ width, height });
+    await page.goto('/tea/?hero=on');
+    await expect(hero(page)).toHaveAttribute('data-hero-settled', '', { timeout: 60_000 });
+    await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+    const got = await page.evaluate(() => ({
+      tall: /-tall\.webp/.test(getComputedStyle(document.querySelector('.tea-stage-poster')).backgroundImage),
+      portrait: window.__teaHero.state.camRig.portrait,
+    }));
+    expect(got, `${width}x${height}`).toEqual({ tall: width <= height, portrait: width <= height });
+  }
+});
+
