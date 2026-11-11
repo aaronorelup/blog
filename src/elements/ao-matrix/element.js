@@ -2,6 +2,7 @@
 // same size, with buttons that switch every cell between views of the same output at once (textured / clay, before /
 // after). Switching views on one matrix switches every matrix on the page with the same views. Only the pictures in
 // view open in the image viewer. Attributes cols, views, aspect and the rows: docs/COMPONENTS.md.
+import { hookViewer } from '../_core/viewer.js';
 import { h } from '../_lib/dom.js';
 
 const MATRIX_VIEW = 'ao-matrix-view';
@@ -78,6 +79,10 @@ class AoMatrix extends HTMLElement {
       });
     }
     (this.btns || []).forEach((b, j) => b.setAttribute('aria-pressed', String(j === i)));
+    // enhance() makes a post's pictures focusable buttons and skips the ones a view hides. In the homepage's reader it
+    // runs after this element has hidden them (the tag is defined from the second post on), so the pictures a view
+    // brings in are made focusable here, or the keyboard could never open them.
+    hookViewer(this);
   }
 }
 
