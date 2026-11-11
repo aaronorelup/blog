@@ -346,24 +346,37 @@ test('tea-13 no console error and no sideways scroll, at 1440 and 390 wide, by d
   expect(errors).toEqual([]);
 });
 
-// Where the strip's current pill sits once the strip has held still for `quiet` ms.
-const pillPlace = (page, quiet) => page.evaluate(async (quiet) => {
+// Where a pill of the strip sits once the strip has held still for `quiet` ms (the current one, or the one with focus):
+// whole inside the strip and clear of its fading end (the mask's opaque share, read from the CSS), with room round it
+// for its focus ring when it shows one (the strip clips what spills out).
+const pillPlace = (page, quiet, which = '[data-tea-link][aria-current="true"]') => page.evaluate(async ([quiet, which]) => {
   const strip = document.querySelector('[data-tea-strip]');
   for (let last = -1; last !== strip.scrollLeft;) {
     last = strip.scrollLeft;
     await new Promise((ok) => setTimeout(ok, quiet));
   }
   const s = strip.getBoundingClientRect();
-  const a = document.querySelector('[data-tea-link][aria-current="true"]').getBoundingClientRect();
-  return { inside: a.left >= s.left - 0.5 && a.right <= s.right + 0.5, pill: [a.left, a.right].map(Math.round), strip: [s.left, s.right].map(Math.round) };
-}, quiet);
+  const mask = getComputedStyle(strip).maskImage || getComputedStyle(strip).webkitMaskImage || '';
+  const fade = s.left + (s.width * Number(/(\d+(?:\.\d+)?)%/.exec(mask)?.[1] ?? 100)) / 100;
+  const el = which === ':focus' ? document.activeElement : document.querySelector(which);
+  const a = el.getBoundingClientRect();
+  const c = getComputedStyle(el);
+  const ring = c.outlineStyle === 'none' ? 0 : parseFloat(c.outlineWidth) + parseFloat(c.outlineOffset);
+  const shown = a.left - ring >= s.left - 0.5 && a.right + ring <= fade + 0.5 && a.top - ring >= s.top - 0.5 && a.bottom + ring <= s.bottom + 0.5;
+  return { shown, pill: [a.left, a.right].map(Math.round), ring, fade: Math.round(fade), strip: [s.left, s.right].map(Math.round) };
+}, [quiet, which]);
 
-test('tea-14 on a narrow window the strip keeps the chapter being read in view: its pill sits whole inside the strip', async ({ page, isMobile }) => {
-  test.setTimeout(120_000);
+test('tea-14 on a narrow window the strip keeps the chapter being read, and the pill the keyboard is on, whole in view', async ({ page, isMobile }) => {
+  test.setTimeout(150_000);
   if (!isMobile) await page.setViewportSize({ width: 390, height: 844 });
   // With reduced motion rail.js moves the strip at once, which pins the placement down. With motion the strip glides
   // there, and WebKit starts that glide up to about 0.7 s late, so that pass waits for the pill to arrive and stay.
   for (const motion of ['reduce', 'no-preference']) {
+    const settled = async (which, what) => {
+      if (motion !== 'reduce') await expect.poll(async () => (await pillPlace(page, 200, which)).shown, { timeout: 10_000 }).toBe(true);
+      const at = await pillPlace(page, motion === 'reduce' ? 100 : 1000, which);
+      expect(at.shown, `${motion}, ${what}: pill ${at.pill} (ring ${at.ring}) in strip ${at.strip}, faded from ${at.fade}`).toBe(true);
+    };
     await page.emulateMedia({ reducedMotion: motion });
     await page.goto(TEA);
     // the chapters overflow the strip, so it scrolls: the case this is about
@@ -371,9 +384,14 @@ test('tea-14 on a narrow window the strip keeps the chapter being read in view: 
     for (const c of [...CHAPTERS, ...CHAPTERS.slice(0, -1).reverse()]) {
       await toChapter(page, c.id);
       await expect.poll(() => marked(page)).toEqual([`${c.id}=true`]);
-      if (motion !== 'reduce') await expect.poll(async () => (await pillPlace(page, 200)).inside, { timeout: 10_000 }).toBe(true);
-      const at = await pillPlace(page, motion === 'reduce' ? 100 : 1000);
-      expect(at.inside, `${motion}, ${c.id}: pill ${at.pill} in strip ${at.strip}`).toBe(true);
+      await settled(undefined, c.id);
+    }
+    // the keyboard: Tab from "Main site" through the pills; each comes whole into view, its focus ring and all
+    await page.locator('.tea-rail-back').focus();
+    for (const c of CHAPTERS) {
+      await page.keyboard.press('Tab');
+      await expect(page.locator(`[data-tea-link="${c.id}"]`)).toBeFocused();
+      await settled(':focus', `Tab to ${c.id}`);
     }
   }
 });

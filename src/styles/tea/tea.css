@@ -129,10 +129,12 @@ body.tea {
   .tea-rail-title, .tea-rail-utils { display: none; }
   .tea-rail-back { margin: 0; padding: 6px 8px; font-size: var(--text-sm); }
   .tea-rail-nav { margin: 0; flex: 1; min-width: 0; }
+  /* Room round each pill for its focus ring (3 px + 3 px), and after the last one to scroll it clear of the fade. */
   .tea-rail-list {
     display: flex; gap: 6px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none;
-    padding: 4px 2px; mask-image: linear-gradient(90deg, #000 88%, transparent);
+    padding: 7px 2px 7px 7px; scroll-padding-inline-start: 7px; mask-image: linear-gradient(90deg, #000 88%, transparent);
   }
+  .tea-rail-list::after { content: ''; flex: none; width: 12%; }
   .tea-rail-list::-webkit-scrollbar { display: none; }
   .tea-rail-list li { flex: none; scroll-snap-align: start; }
   .tea-rail-link {
