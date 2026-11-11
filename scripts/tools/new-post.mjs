@@ -25,7 +25,7 @@ const id = `AO-${String(last + 1).padStart(3, '0')}`;
 
 fs.writeFileSync(file, `---
 id: "${id}"
-title: "${title.replace(/"/g, '\\"')}"
+title: "${title.replace(/[\\"]/g, '\\$&')}"
 summary: "What I did or tested and what the post tells you. Aim for 200 characters, 240 at most."
 date: ${new Date().toISOString().slice(0, 10)}
 topic: ""          # required, one of: ${TOPIC_KEYS.join(', ')}
