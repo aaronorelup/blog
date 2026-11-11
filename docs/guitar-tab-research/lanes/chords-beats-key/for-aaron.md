@@ -179,6 +179,92 @@ evaluation code's five classes are DADGAD, Drop D, Open D, Open G and Standard.
    file, so this step needs code that is not in the repository.
 3. Send back: the predicted class for each clip, or the error message if it cannot take a new file.
 
+## 10. STONE (Deezer, ISMIR 2024): key signature, and key and mode (added in gap round 2)
+
+Not run here: STONE installs from its cloned repository (no PyPI package), and this box refuses to run repository code
+(trials.md, "Not run here"). Facts below are from the repository at commit 0c5f72d (2025-10-24), read 2026-11-11: the
+README, `pyproject.toml`, `Dockerfile`, `inference.py` and the file list. The README says Python 3.10 and Poetry, and
+gives a Docker route; `pyproject.toml` pins torch 2.0.0, torchaudio 2.0.1 and tensorflow 2.12.*, and `inference.py`
+imports both PyTorch and TensorFlow and sets `device = "cpu"` (line 167), so a GPU is not used for inference.
+
+1. Install Git for Windows and Docker Desktop for Windows.
+2. In PowerShell: `git clone https://github.com/deezer/stone`, `cd stone`, `docker build . -t stone:latest` (README:
+   "docker build . -t <image-name>:<tag>"; the Dockerfile starts from `nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04`
+   and runs `poetry install --no-root`).
+3. Make a folder `clips` inside the `stone` folder and copy `S3.wav`, `S4.wav`, `R1a.wav`, `R1b.wav`, `R1c.wav` and
+   `R2.wav` into it (only these: `inference.py` reads every `*.wav` in the folder it is given).
+4. Start the container with the README's command, `docker run -ti --gpus all -v ./:/workspace/ --entrypoint bash
+   stone:latest` (`--gpus all` may be left out, since inference runs on the CPU; in PowerShell, `-v ${PWD}:/workspace/`
+   is the usual form if `./` is refused, UNVERIFIED).
+5. Inside the container, from `/workspace`, run both checkpoints, timing each (`time` in bash):
+   `time poetry run python -m inference ckpt/semisupervised_ks_mode.pt clips -e wav -tt ks_mode`
+   `time poetry run python -m inference ckpt/semitone_ks.pt clips -e wav -tt ks`
+   The README's text calls the first checkpoint `semisupervised_key_mode.pt`; the file in `ckpt/` is
+   `semisupervised_ks_mode.pt` (764,986 bytes; `semitone_ks.pt` is 1,307,770 bytes, sizes from
+   raw.githubusercontent.com). The README says the command writes `results/<ckpt_name>/results.npz`; `inference.py`
+   writes `clips/results/<ckpt_name>/values.npz` (lines 170 and 217-220).
+6. Turn the class numbers into labels with this lane's `scripts/stone_npz_labels.py` (numpy only; it applies the two
+   mappings printed in the README's "Mapping" section): copy it into the `stone` folder, then in the container
+   `poetry run python stone_npz_labels.py clips/results/semisupervised_ks_mode/values.npz ks_mode` and
+   `poetry run python stone_npz_labels.py clips/results/semitone_ks/values.npz ks`.
+7. Send back: both `values.npz` files, the two `.labels.tsv` files the script writes, the console output and the two
+   `time` lines. Truth keys: S3 G major, S4 D major, R1a Ab minor, R1b C# major, R1c G major; R2 none (the artist's page
+   lists D# minor, per INPUTS.md). License: no LICENSE file and no license statement in the repository (survey.md,
+   STONE).
+
+## 11. key-cnn (Hendrik Schreiber): global key (added in gap round 2)
+
+Not run here: key-cnn installs from its cloned repository (no PyPI project `keycnn`), and this box refuses to run
+repository code. Facts below are from the repository at commit 9715d6f (2020-07-30), read 2026-11-11: the README
+("Clone this repo and run ``setup.py install`` using Python 3.6"), `setup.py` (it requires `numpy==1.16.0`,
+`tensorflow==1.15.2`, `librosa==0.6.2`, `jams>=0.3.1`, `matplotlib>=3.0.0`, `h5py>=2.7.0`) and `bin/key` (default
+model `deepspec`, which `keycnn/classifier.py` maps to `deepspec_k16`, a 3,659,832-byte `.h5` file in the repository).
+PyPI has TensorFlow 1.15.2 wheels for Windows only for Python 3.6 and 3.7 (`cp36` and `cp37` `win_amd64`), and numpy
+1.16.0 likewise (PyPI JSON, read 2026-11-11).
+
+1. Install Python 3.7.9, "Windows x86-64 executable installer", from python.org
+   (https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe answered HTTP 200 on 2026-11-11), and Git.
+2. In PowerShell, in an empty folder: `py -3.7 -m venv keycnn`, `keycnn\Scripts\activate`, `git clone
+   https://github.com/hendriks73/key-cnn.git`, `cd key-cnn`, then the README's `python setup.py install` (if it fails
+   while fetching dependencies, `pip install .` installs the same `setup.py` with pip, UNVERIFIED). If loading the
+   model then fails with an h5py error, `pip install "h5py<3"` (UNVERIFIED).
+3. Copy the clips into a `clips` folder, make an empty `out` folder (`bin/key` does not create it), and run, for the
+   default model and for the README's `deepsquare` example
+   (`--mirex` prints "tonic<TAB>mode"; `-d` and `-e` write one result file per clip, per `bin/key`):
+   `python ..\keycnn\Scripts\key --mirex -d out -e .deepspec.txt -i clips\S3.wav clips\S4.wav clips\R1a.wav
+   clips\R1b.wav clips\R1c.wav clips\R2.wav` and the same with `-m deepsquare` and `-e .deepsquare.txt` (`setup.py`
+   installs `bin/key` as a script without a `.py` ending, so on Windows it may have to be started with `python` and
+   its path as here, UNVERIFIED). Time each command (`Measure-Command { ... }` in PowerShell).
+4. Send back: the `out` folder (one file per clip and model), the console output and the two times. License: AGPL-3.0
+   for "Source code and models" (README; survey.md, key-cnn).
+
+## 12. BeatNet+ (Heydari and Duan, TISMIR 2024): beats and downbeats (added in gap round 2)
+
+Not run here: BeatNet+ installs from its cloned repository (`pip install -e .`; no PyPI project), and this box refuses to
+run repository code. Facts below are from the repository at commit bb90eb0 (2026-04-13), read 2026-11-11: the README,
+`setup.py` (`python_requires='>=3.8'`; numpy, cython, librosa, scipy, mido, pytest, madmom>=0.16.1, torch, matplotlib,
+tensorboard, pyyaml) and `src/BeatNetPlus/inference.py`. The three weight files are in `src/BeatNetPlus/models/`
+(`generic_weights.pt` 3,072,825 bytes, `generic_main_weights.pt` 3,072,890, `af_non_percussive_weights.pt` 3,073,019).
+madmom 0.16.1 has to be compiled; the steps below use WSL (Ubuntu) and the install that worked for BeatNet on this box
+(trials.md, BeatNet: Python 3.9 avoids the madmom edits the BeatNet+ README's "Troubleshooting" lists for Python >= 3.10;
+that README also says "Alternatively, use Python 3.9 where these aliases still exist.").
+
+1. In WSL (Ubuntu): `sudo apt install git build-essential`, then install uv (https://docs.astral.sh/uv/).
+2. `uv venv --python 3.9 bnp`, `source bnp/bin/activate`, `uv pip install "numpy==1.23.5" "scipy<1.11" mido "cython<3"
+   "setuptools<81" wheel soundfile`, `uv pip install --no-build-isolation madmom==0.16.1`, `uv pip install torch
+   "librosa==0.10.2.post1" matplotlib pyyaml tensorboard` (with numpy held at 1.23.5; add `--index-url
+   https://download.pytorch.org/whl/cpu` for a CPU-only torch).
+3. `git clone https://github.com/mjhydri/BeatNet-Plus.git`, `cd BeatNet-Plus` (the README writes `cd beatnet_plus`; the
+   clone's folder is `BeatNet-Plus`), `uv pip install --no-deps -e .` (README: `pip install -e .`; `--no-deps` keeps
+   the numpy and madmom above).
+4. Copy this lane's `scripts/beatnetplus_run.py` into the clone and the clips into `clips/`, then for each of S3, S4,
+   R1a, R1b, R1c and R2: `python beatnetplus_run.py --audio clips/S3.wav --outdir out/S3`. It runs `generic_weights.pt`
+   and `af_non_percussive_weights.pt`, each in online mode (particle filter) and offline mode (madmom DBN), with the
+   README's `BeatNetPlusInference(...)` and `process(...)` calls, and writes beat and downbeat files and
+   `timings_bnp.json`. The script was written here and not run (no BeatNet+ code ran on this box).
+5. Send back: the whole `out` folder and the console output. License: no license file and no license statement in the
+   repository (survey.md, BeatNet+); the README's training data include MUSDB18 ("other-nc") and the RWC databases.
+
 ## Nothing to run (no released model or needs keys)
 
 - Harmony Transformer v1 / v2 and ACR_seq2seq: no released weights (survey.md).

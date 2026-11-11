@@ -396,6 +396,11 @@
 "to": "CREPE Notes (crepe_notes)",
 "via_format": "--pitch-tracker torchcrepe",
 "evidence": "CREPE Notes README: pitch backends pesto|penn|torchcrepe, writing [audio_file_stem].[pitch_tracker].transcription.mid; not run"
+},
+{
+"to": "CREPE Notes (crepe_notes)",
+"via_format": "--f0 <path>: CSV with columns frequency and confidence at 10 ms per row (this lane's torchcrepe files have the header time_s,frequency_hz,confidence; header renamed to time,frequency,confidence, values unchanged)",
+"evidence": "run r0616 (exit 0, 9 calls): torchcrepe full and tiny f0 (viterbi, 10 ms) into crepe_notes --f0; onset-only F1 on S1 0.984 (full, e1781) and 1.000 (tiny, e1786), R1b 0.354 (e1783) and 0.303 (e1787), S4lead 0.747 (e1785) and 0.880 (e1788); a third input, full with the frequency set to 0 where periodicity < 0.21 (CREPE Notes' own torchcrepe setting), S1 0.959 (e1789), R1b 0.335 (e1790), S4lead 0.701 (e1791)"
 }
 ],
 "unverified": []
@@ -963,7 +968,7 @@
 "install": "uv venv --python 3.11 venv-rmvpe && uv pip install \"rmvpe-onnx[cli]==0.2.3\" soundfile -> rmvpe-onnx 0.2.3, onnxruntime 1.31.1, librosa 0.11.0, numpy 2.4.6, scipy 1.17.1, huggingface-hub 2.4.0, plotly 7.1.0 (the cli extra), soundfile 0.14.0 (worked first time; freeze samples/rmvpe/uv-pip-freeze-venv-rmvpe-py3.11.txt); venv 540 MB by du",
 "model_file": "rmvpe.onnx fetched once with curl (14 s) and passed as model_path, and the package only checked its SHA-256; the package's ensure_model() downloads with hf_hub_download into the Hugging Face cache and then copies the file into the package's data/ folder, so it would keep two copies",
 "output_facts": "S1 at 0.000 s: 567.215 Hz, confidence 0.000261 (a frequency is written for every frame, also in silence); bin centres 31.70 to 2005.50 Hz (cents_mapping = 20 x bin + 1997.38 cents above 10 Hz); ONNX graph: input `input`, float [1, 128, time] (log-mel, 128 bands from 30 to 8,000 Hz), output float [.., .., 360]",
-"cores_note": "rmvpe-onnx sets no thread count; ONNX Runtime 1.31.1 with its settings pinned workers to CPUs 1, 2, 3 in probe r0666 (not measured in this run); gap round 2 (gapfill-audio-to-notes, 2026-11-11), trials.md A8"
+"cores_note": "rmvpe-onnx sets no thread count; ONNX Runtime 1.31.1 with its settings ran worker threads on CPUs 1, 2 and 3 in probe r0666 (two first seen with Cpus_allowed_list 0-1, then 2 and 3); not measured in this run; gap round 2 (gapfill-audio-to-notes, 2026-11-11), trials.md A8"
 }
 },
 {
@@ -1011,7 +1016,7 @@
 "R3a": 0.535
 },
 "outputs_vs_r0516": "all eight f0 CSVs byte-identical",
-"cores_note": "rmvpe-onnx sets no thread count; ONNX Runtime 1.31.1 with its settings pinned workers to CPUs 1, 2, 3 in probe r0666 (not measured in this run); gap round 2 (gapfill-audio-to-notes, 2026-11-11), trials.md A8"
+"cores_note": "rmvpe-onnx sets no thread count; ONNX Runtime 1.31.1 with its settings ran worker threads on CPUs 1, 2 and 3 in probe r0666 (two first seen with Cpus_allowed_list 0-1, then 2 and 3); not measured in this run; gap round 2 (gapfill-audio-to-notes, 2026-11-11), trials.md A8"
 }
 },
 {
@@ -1019,7 +1024,7 @@
 "input_id": "S1",
 "cores": null,
 "wall_s": 6.02,
-"peak_mb": 1007.9,
+"peak_mb": null,
 "exit_code": 0,
 "output_files": [
 "/home/user/gtr/lanes/audio-to-notes/verify-gap1/rmvpe-out/cli/S1.csv"
@@ -1276,7 +1281,7 @@
 "install": "uv venv --python 3.11 venv-rmvpe && uv pip install \"rmvpe-onnx[cli]==0.2.3\" soundfile -> rmvpe-onnx 0.2.3, onnxruntime 1.31.1, librosa 0.11.0, numpy 2.4.6, scipy 1.17.1, huggingface-hub 2.4.0, plotly 7.1.0 (the cli extra), soundfile 0.14.0 (worked first time; freeze samples/rmvpe/uv-pip-freeze-venv-rmvpe-py3.11.txt); venv 540 MB by du",
 "model_file": "rmvpe.onnx fetched once with curl (14 s) and passed as model_path, and the package only checked its SHA-256; the package's ensure_model() downloads with hf_hub_download into the Hugging Face cache and then copies the file into the package's data/ folder, so it would keep two copies",
 "output_facts": "S1 at 0.000 s: 567.215 Hz, confidence 0.000261 (a frequency is written for every frame, also in silence); bin centres 31.70 to 2005.50 Hz (cents_mapping = 20 x bin + 1997.38 cents above 10 Hz); ONNX graph: input `input`, float [1, 128, time] (log-mel, 128 bands from 30 to 8,000 Hz), output float [.., .., 360]",
-"cores_note": "rmvpe-onnx sets no thread count; ONNX Runtime 1.31.1 with its settings pinned workers to CPUs 1, 2, 3 in probe r0666 (not measured in this run); gap round 2 (gapfill-audio-to-notes, 2026-11-11), trials.md A8"
+"cores_note": "rmvpe-onnx sets no thread count; ONNX Runtime 1.31.1 with its settings ran worker threads on CPUs 1, 2 and 3 in probe r0666 (two first seen with Cpus_allowed_list 0-1, then 2 and 3); not measured in this run; gap round 2 (gapfill-audio-to-notes, 2026-11-11), trials.md A8"
 }
 },
 {
@@ -1324,7 +1329,7 @@
 "R3a": 0.535
 },
 "outputs_vs_r0516": "all eight f0 CSVs byte-identical",
-"cores_note": "rmvpe-onnx sets no thread count; ONNX Runtime 1.31.1 with its settings pinned workers to CPUs 1, 2, 3 in probe r0666 (not measured in this run); gap round 2 (gapfill-audio-to-notes, 2026-11-11), trials.md A8"
+"cores_note": "rmvpe-onnx sets no thread count; ONNX Runtime 1.31.1 with its settings ran worker threads on CPUs 1, 2 and 3 in probe r0666 (two first seen with Cpus_allowed_list 0-1, then 2 and 3); not measured in this run; gap round 2 (gapfill-audio-to-notes, 2026-11-11), trials.md A8"
 }
 },
 {
@@ -1332,7 +1337,7 @@
 "input_id": "S1",
 "cores": null,
 "wall_s": 6.02,
-"peak_mb": 1007.9,
+"peak_mb": null,
 "exit_code": 0,
 "output_files": [
 "/home/user/gtr/lanes/audio-to-notes/verify-gap1/rmvpe-out/cli/S1.csv"
@@ -1887,7 +1892,9 @@
 "result": "import penn fails: its Viterbi dependency torbi 1.4.1 ships compiled libraries only for torch 2.6 to 2.11 (_C.pt26cpu ... _C.pt211cu130 in the Linux wheel, CPU and CUDA builds; the Windows wheel has the same versions) and stops with FileNotFoundError: Could not find any lib files matching version pt215cpu",
 "install": "uv pip install torch torchaudio penn soundfile -> penn 1.0.0, torbi 1.4.1, torchutil 0.1.2, yapecs 0.5.0, torch 2.15.0+cpu (freeze in samples/penn/)",
 "checkpoint": "fcnf0++.pt, 107,245,425 bytes, Hugging Face maxrmorrison/fcnf0-plus-plus, card license mit, sha256 28d89add...53d51d1b960",
-"queue_note": "its run was first queued for a CPU slot in a batch with the ByteDance model; that queued job waited about 48 minutes without getting a slot and was cancelled (no ledger line, as it never started)"
+"queue_note": "its run was first queued for a CPU slot in a batch with the ByteDance model; that queued job waited about 48 minutes without getting a slot and was cancelled (no ledger line, as it never started)",
+"nolock": true,
+"cpu_s": 3.89
 }
 },
 {
@@ -1900,7 +1907,9 @@
 "output_files": [],
 "metrics": {
 "role": "verifier re-run (verify-trials-audio-to-notes)",
-"result": "import penn failure reproduced: Could not find any lib files matching version pt215cpu"
+"result": "import penn failure reproduced: Could not find any lib files matching version pt215cpu",
+"nolock": true,
+"cpu_s": 3.75
 }
 }
 ],
@@ -2930,6 +2939,21 @@
 "nolock": true,
 "result": "PitchYinProbabilistic with sampleRate 44100, frameSize 2048, hopSize 256, lowRMSThreshold 0.1 and outputUnvoiced negative/zero/abs set explicitly: same medians as the defaults (103.826, 138.591, 146.832, 293.665 Hz); preciseTime true: 110.0, 110.0, 73.416, 61.735 Hz; PitchYinProbabilities returns candidates as whole MIDI numbers (Essentia source: hz2midi returns int), so outputs lie on the equal-tempered grid"
 }
+},
+{
+"run_id": "r0692",
+"input_id": "synthetic sines 110, 220, 369.99, 440 Hz",
+"cores": null,
+"wall_s": 11.26,
+"peak_mb": null,
+"exit_code": 0,
+"output_files": [],
+"metrics": {
+"round": "verification of gap round 2 (verify-gapfill-audio-to-notes, round 2, 2026-11-11)",
+"nolock": true,
+"role": "the A6 sine check again",
+"result": "output byte-identical to r0647's"
+}
 }
 ],
 "not_run_reason": null,
@@ -3045,7 +3069,8 @@
 "unverified": [
 "why PitchYinProbabilistic's chosen values lie below the input pitch (the grid itself comes from whole-MIDI candidates, gap round 2 (gapfill-audio-to-notes, 2026-11-11), r0647) and why its outputs differed between runs",
 "PitchYinProbabilistic clip outputs were not byte-identical on the verifier's re-run (r0430)",
-"the models' license: the licensing page and the essentia-models LICENSE say CC BY-NC-SA 4.0, the models/LICENSE file says CC BY-NC-ND 4.0 (sources disagree)"
+"the models' license: the licensing page and the essentia-models LICENSE say CC BY-NC-SA 4.0, the models/LICENSE file says CC BY-NC-ND 4.0 (sources disagree)",
+"that the dev1389 wheel was built from the same Essentia source lines (hz2midi in essentiamath.h, pitchyinprobabilities.cpp line 324) was not checked; the run shows the same behaviour"
 ]
 },
 {
@@ -3626,7 +3651,7 @@
 "input_id": "random input to nmp.onnx",
 "cores": null,
 "wall_s": 6.55,
-"peak_mb": 85.1,
+"peak_mb": null,
 "exit_code": 0,
 "output_files": [
 "samples/basic-pitch/gap2-ort-affinity-probe-r0666-r0667.txt"
@@ -3635,7 +3660,7 @@
 "round": "gap round 2 (gapfill-audio-to-notes, 2026-11-11)",
 "nolock": true,
 "role": "ONNX Runtime 1.31.1 thread-affinity probe under taskset -c 0,1",
-"result": "default threads: three workers pinned to CPUs 1, 2, 3; with intra_op_num_threads=2: one worker, Cpus_allowed_list 0-1"
+"result": "default threads (only graph_optimization_level set): worker threads ran on CPUs 1, 2 and 3, two of them seen first with Cpus_allowed_list 0-1 and then with 2 and 3; with intra_op_num_threads = 2: one worker thread, Cpus_allowed_list 0-1, running on CPUs 0 and 1 only"
 }
 },
 {
@@ -3643,7 +3668,7 @@
 "input_id": "random input to nmp.onnx",
 "cores": null,
 "wall_s": 6.35,
-"peak_mb": 77.4,
+"peak_mb": null,
 "exit_code": 0,
 "output_files": [
 "samples/basic-pitch/gap2-ort-affinity-probe-r0666-r0667.txt"
@@ -3652,7 +3677,39 @@
 "round": "gap round 2 (gapfill-audio-to-notes, 2026-11-11)",
 "nolock": true,
 "role": "ONNX Runtime 1.23.2 thread-affinity probe under taskset -c 0,1",
-"result": "default threads: three workers pinned to CPUs 1, 2, 3; with intra_op_num_threads=2: one worker, Cpus_allowed_list 0-1"
+"result": "default threads (only graph_optimization_level set): three worker threads with Cpus_allowed_list 1, 2 and 3, each running on that CPU; with intra_op_num_threads = 2: one worker thread, Cpus_allowed_list 0-1, running on CPUs 0 and 1 only"
+}
+},
+{
+"run_id": "r0698",
+"input_id": "random input to nmp.onnx",
+"cores": null,
+"wall_s": 6.52,
+"peak_mb": null,
+"exit_code": 0,
+"output_files": [],
+"metrics": {
+"round": "verification of gap round 2 (verify-gapfill-audio-to-notes, round 2, 2026-11-11)",
+"nolock": true,
+"role": "ONNX Runtime 1.23.2 (Python 3.10) thread-affinity probe under taskset -c 0,1; venv with onnxruntime and numpy only, built offline; Basic Pitch's nmp.onnx from the basic-pitch 0.4.0 wheel",
+"result": "same pattern as r0667: with only graph_optimization_level set, worker threads whose Cpus_allowed_list is 1, 2 and 3, each running only there; with intra_op_num_threads = 2 every new thread had 0-1",
+"cpu_s": 17.4,
+"cpu_note": "ledger CPU time is 17.4 s in 6.52 s of wall time under a 2-CPU mask"
+}
+},
+{
+"run_id": "r0699",
+"input_id": "random input to nmp.onnx",
+"cores": null,
+"wall_s": null,
+"peak_mb": null,
+"exit_code": 0,
+"output_files": [],
+"metrics": {
+"round": "verification of gap round 2 (verify-gapfill-audio-to-notes, round 2, 2026-11-11)",
+"nolock": true,
+"role": "ONNX Runtime 1.31.1 (Python 3.11) thread-affinity probe under taskset -c 0,1; venv with onnxruntime and numpy only, built offline; Basic Pitch's nmp.onnx from the basic-pitch 0.4.0 wheel",
+"result": "same pattern as r0666: with only graph_optimization_level set, two threads first seen with 0-1 and then with 2 or 3; with intra_op_num_threads = 2 every new thread had 0-1"
 }
 }
 ],
@@ -3916,7 +3973,44 @@
 "notes_at_midi_90_or_above_R1b": {
 "tcfull": 48,
 "tctiny": 52
+},
+"median_onset_diff_of_matched_s": {
+"tcfull": {
+"S1": 0.009,
+"R1b": -0.009,
+"S4lead": 0.029
+},
+"tctiny": {
+"S1": 0.009,
+"R1b": -0.009,
+"S4lead": 0.031
+},
+"tcfullz": {
+"S1": 0.009,
+"R1b": -0.009,
+"S4lead": 0.029
 }
+},
+"per_call_peak_rss_mib": "423 to 571",
+"slot_wait_s": 50.9,
+"cpu_s": 35.1,
+"call_note": "each call loads the audio and runs madmom's onset CNN on it, so the f0 step itself was not timed here"
+}
+},
+{
+"run_id": "r0694",
+"input_id": "S1,R1b,S4lead",
+"cores": 2,
+"wall_s": 75.6,
+"peak_mb": 578.5,
+"exit_code": 0,
+"output_files": [],
+"metrics": {
+"round": "verification of gap round 2 (verify-gapfill-audio-to-notes, round 2, 2026-11-11)",
+"command": "the r0616 batch on the same nine inputs, cores 0-1, in a venv rebuilt offline from the round's freeze (crepe-notes 0.2.0 from its PyPI wheel, SHA-256 checked; madmom 0.17.dev0 copied from the fingerstyle-voices-taps venv as in r0616)",
+"cpu_s": 75.1,
+"slot_wait_s": 0.0,
+"result": "the input script, re-run, wrote nine byte-identical f0 files; all nine MIDI files byte-identical to r0616's and the printed tuning offsets the same; per call 6.12 to 22.33 s (r0616: 3.17 to 4.44 s; the first call took 22.33 s)"
 }
 }
 ],
@@ -3969,9 +4063,13 @@
 {
 "quote": "Data and model files usually have .npy, .npz, .h5, .hdf5, .pkl or .mat file extensions.",
 "url": "https://raw.githubusercontent.com/CPJKU/madmom/main/LICENSE"
+},
+{
+"quote": "All files in this repository are distributed under the following license: Creative Commons Attribution-NonCommercial-ShareAlike 4.0",
+"url": "madmom/models/LICENSE in the installed madmom 0.17.dev0 package (read 2026-11-11)"
 }
 ],
-"note": "madmom source code: a BSD-style license (Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met); in madmom's repository the madmom/models folder is a git submodule, so the model files themselves were not listed; madmom PyPI license field 'BSD, CC BY-NC-SA'"
+"note": "madmom source code: BSD-2-Clause (LICENSE has two numbered conditions and no third clause, re-read 2026-11-11; the text of the SPDX identifier BSD-2-Clause); model files CC-BY-NC-SA-4.0; in madmom's repository the madmom/models folder is a git submodule, so the model files themselves were not listed there; the installed 0.17.dev0 package holds madmom/models/onsets/2013/onsets_cnn.pkl, the only trained model CREPE Notes runs when given --f0; madmom PyPI license field 'BSD, CC BY-NC-SA'"
 },
 "training_data": [],
 "service_terms": []
@@ -5196,8 +5294,10 @@
 "handoffs_out": [],
 "unverified": [
 "its training data (not read; the paper is not on arXiv under a link in the README)",
-"old Keras 2 imports (keras.layers.convolutional, keras.layers.normalization)"
-]
+"old Keras 2 imports (keras.layers.convolutional, keras.layers.normalization)",
+"the share of comparison outputs and figures in the clone's 406 MB (the 406 MB is the du in the agent's transcript; the share was not measured)"
+],
+"requires": "replicate.yaml: python_version 2.7.15, tensorflow==1.12.0, keras==2.0.3, librosa==0.5.0, mir_eval==0.4, pescador==1.0.0, joblib==0.11, system ffmpeg; requirements.txt: pescador>=1.0.0, keras>=2.0.3, librosa>=0.5.0, mir_eval>=0.4, medleydb>=1.2.9 (4b2ff44, read 2026-11-11)"
 },
 {
 "name": "Onsets and Frames (Magenta)",
@@ -5615,9 +5715,15 @@
 "callable_via": [
 "python"
 ],
-"inputs": [],
-"outputs": [],
-"constraints_accepted": [],
+"inputs": [
+"audio file: python melodyExtraction_JDC.py -p <audio> -o <dir>"
+],
+"outputs": [
+"pitch_<file name>.txt with 2 columns: timestamps (10 ms) and the predicted fundamental frequency in Hz (README: \"The resulting 'pitch_(*file_name*).txt' contains 2 columns\", \"the first : timestamps (10 ms)\", \"the second : the predicted fundamental frequency in Hz\")"
+],
+"constraints_accepted": [
+"-gpu (defaults to None in the script: \"It will run with cpu if None\")"
+],
 "license": {
 "code": {
 "spdx": "MIT",
@@ -5638,8 +5744,11 @@
 "pricing": null,
 "handoffs_out": [],
 "unverified": [
-"training data: not read"
-]
+"training data: not read",
+"which TensorFlow version works with Keras 2.2.2 (the repository names none), and whether these versions install on Windows today (for-aaron.md, section 13)"
+],
+"requires": "README: \"Keras 2.2.2 (Deep Learning library)\", \"Librosa 0.6.2 (for STFT)\", \"madmom 0.16.1 (for loading audio and resampling)\", \"Python 3.6+\" and \"2 GPU : GeForce GTX 1080ti\"; no TensorFlow version named; the code imports keras.utils.multi_gpu_model and keras.layers.advanced_activations and reads _keras_shape (JDC at 86e6d2b)",
+"weights_facts": "weights/ResNet_joint_add_L(CE_G).hdf5 16,867,888 bytes, weights/model.json 5,376 bytes, x_data_mean_total_31.npy and x_data_std_total_31.npy 127,304 bytes each"
 },
 {
 "name": "melodyExtraction_SSL",
@@ -5655,9 +5764,15 @@
 "callable_via": [
 "python"
 ],
-"inputs": [],
-"outputs": [],
-"constraints_accepted": [],
+"inputs": [
+"audio file: python melodyExtraction_NS.py -p <audio> -o <dir>"
+],
+"outputs": [
+"pitch_<file name>.txt with 2 columns: timestamps (10 ms) and the predicted fundamental frequency in Hz (README: \"The resulting 'pitch_(*file_name*).txt' contains 2 columns\", \"the first : timestamps (10 ms)\", \"the second : the predicted fundamental frequency in Hz\")"
+],
+"constraints_accepted": [
+"-gpu (defaults to None in the script: \"It will run with cpu if None\")"
+],
 "license": {
 "code": {
 "spdx": "MIT",
@@ -5679,8 +5794,11 @@
 "pricing": null,
 "handoffs_out": [],
 "unverified": [
-"training data: not read"
-]
+"training data: not read",
+"which TensorFlow version works with Keras 2.3.0 (the repository names none), and whether these versions install on Windows today (for-aaron.md, section 13)"
+],
+"requires": "README: \"Keras 2.3.0 (Deep Learning library)\", \"Librosa 0.7.0 (for STFT)\", \"madmom 0.16.1 (for loading audio and resampling)\", \"pysndfx 0.3.6 (for randAudioAugment)\", \"Python 3.7+\" and \"1 GPU : GeForce GTX 1080ti\"; no TensorFlow version named (SSL at eb2525d)",
+"weights_facts": "weights/ResNet_NS.hdf5 17,056,656 bytes, x_data_mean_total_31.npy and x_data_std_total_31.npy 127,304 bytes each"
 },
 {
 "name": "MTANet",
@@ -5712,7 +5830,8 @@
 },
 "pricing": null,
 "handoffs_out": [],
-"unverified": []
+"unverified": [],
+"requires": "PyTorch and PyTorch Lightning (import torch, import pytorch_lightning as pl in main.py); no requirements file, no versions"
 },
 {
 "name": "SOME (openvpi)",
@@ -6541,6 +6660,21 @@
 "nolock": true,
 "result": "same command logged; output differs from the 2026-11-10 file (sha256 4f54aac7...ed91933b vs 31f6f3a9...42c42eef; at most 2 units of 16-bit, SoX's default TPDF dither); runs with -R are byte-identical (samples/sox/gap2-sox-determinism.txt)"
 }
+},
+{
+"run_id": "r0691",
+"input_id": "S7flat30",
+"cores": null,
+"wall_s": 0.27,
+"peak_mb": null,
+"exit_code": 0,
+"output_files": [],
+"metrics": {
+"round": "verification of gap round 2 (verify-gapfill-audio-to-notes, round 2, 2026-11-11)",
+"nolock": true,
+"command": "the r0602 command, plus two unlogged runs with -R and one with -D",
+"result": "the default-mode output differs from r0602's and from the kept lane input (at most 2 units of 16-bit, in 942,812 of 2,116,800 samples); the -R outputs are byte-identical to each other and to gap round 2's -R output (SHA-256 7453f3e8...38887d6), and the -D output to its -D output (54580ba3...432dee03)"
+}
 }
 ],
 "not_run_reason": null,
@@ -6549,19 +6683,26 @@
 "cli"
 ],
 "inputs": [
-"audio file"
+"audio file",
+"the pitch effect's usage line printed by the box's SoX: \"usage: [-q] shift-in-cents [segment-ms [search-ms [overlap-ms]]]\"; command `sox <in> <out> pitch <shift-in-cents>`"
 ],
 "outputs": [
-"audio file (pitch shift in cents)"
+"audio file (pitch shift in cents); with 16-bit output and an effect such as pitch, SoX adds dither by default: \"by default, SoX automatically adds TPDF dither when the output bit-depth is less than 24 and any of the following are true\" (sox.1, read 2026-11-11), so two default runs of the same command differ by at most 2 units of 16-bit",
+"with -R (repeatable mode) successive runs give byte-identical files; with -D (disable automatic dither) the output differs from the kept file by at most 1 unit"
 ],
-"constraints_accepted": [],
+"constraints_accepted": [
+"shift-in-cents [segment-ms [search-ms [overlap-ms]]] (pitch effect)",
+"-D (\"Disable automatic dither\")",
+"-R (\"Run in `repeatable' mode\")"
+],
 "license": {
 "code": {
 "spdx": "GPL-2.0-or-later (sox program); LGPL-2.1-or-later (libsox)",
 "quote": "sox.c, and thus SoX-the user application, is distributed under the GPL, while the files that make up libsox are licensed under the less restrictive LGPL.",
 "url": "https://sourceforge.net/p/sox/code/ci/master/tree/COPYING?format=raw",
 "also": [
-"src/sox.c: \"either version 2 of the License, or (at your option) any later version\" (GPL); src/tempo.c (the pitch effect): \"either version 2.1 of the License, or (at your option) any later version\" (LGPL); read 2026-11-11"
+"src/sox.c: \"either version 2 of the License, or (at your option) any later version\" (GPL); src/tempo.c (the pitch effect): \"either version 2.1 of the License, or (at your option) any later version\" (LGPL); read 2026-11-11",
+"COPYING continues: \"Note that some of the external packages that can be linked into libsox are GPLed and/or may have licensing problems, so they can be disabled at configure time with the relevant--with-* options. If libsox is built with such libraries, it must be distributed under the GPL.\" LICENSE.GPL is GPL version 2 (June 1991), LICENSE.LGPL is LGPL version 2.1 (February 1999)"
 ]
 },
 "weights": null,
@@ -6732,6 +6873,10 @@
 {
 "quote": "Data and model files usually have .npy, .npz, .h5, .hdf5, .pkl or .mat file extensions.",
 "url": "https://raw.githubusercontent.com/CPJKU/madmom/main/LICENSE"
+},
+{
+"quote": "All files in this repository are distributed under the following license: Creative Commons Attribution-NonCommercial-ShareAlike 4.0",
+"url": "madmom/models/LICENSE in the installed madmom 0.17.dev0 package (read 2026-11-11)"
 }
 ],
 "note": "madmom/models is a git submodule (.gitmodules), so the model files themselves were not listed",
@@ -6741,7 +6886,13 @@
 "service_terms": []
 },
 "pricing": null,
-"handoffs_out": [],
+"handoffs_out": [
+{
+"to": "CREPE Notes (crepe_notes)",
+"via_format": "CNNOnsetProcessor onsets (madmom.features) used for repeated-note splitting inside CREPE Notes",
+"evidence": "run r0616 (exit 0): CREPE Notes called madmom 0.17.dev0 (a copy of the fingerstyle-voices-taps build) on each audio file; the log prints 'Running onset detection...'"
+}
+],
 "unverified": []
 },
 {
@@ -7774,7 +7925,8 @@
 "cli"
 ],
 "inputs": [
-"audio array and sample rate (transcribe(audio, sr=16000)); CLI mt3-infer transcribe input.wav -o output.mid"
+"audio array and sample rate (transcribe(audio, sr=16000)); CLI mt3-infer transcribe input.wav -o output.mid",
+"CLI load_audio reads with torchaudio (fallback soundfile), averages channels and resamples to 16 kHz (mt3_infer/utils/audio.py; from the code, not observed)"
 ],
 "outputs": [
 "a mido.MidiFile (transcribe() return type; the CLI saves it); mt3_pytorch notes are written through pretty_midi (PrettyMIDI(initial_tempo=120.0), one instrument per program and drum flag); from the code, not observed"
@@ -7783,7 +7935,9 @@
 "model: mr_mt3, mt3_pytorch, yourmt3",
 "device",
 "auto_filter (MT3-PyTorch: \"automatic filtering to fix instrument leakage in drum tracks\")",
-"no tuning, key or note-range input in the description"
+"no tuning, key or note-range input in the description",
+"CLI options: -m/--model, -d/--device auto|cuda|cpu, --no-download (for-aaron.md, section 14)",
+"MT3_CHECKPOINT_DIR (environment variable for the checkpoint folder); auto_filter defaults to True (_apply_auto_filtering counts notes per program and on channel 9 to remove \"instrument leakage in drum tracks\")"
 ],
 "license": {
 "code": {
@@ -7803,7 +7957,7 @@
 "name": "downloaded on first use from the upstream projects (MR-MT3 176 MB, MT3-PyTorch 176 MB, YourMT3 536 MB per its model table)",
 "quote": null,
 "url": null,
-"note": "fetched from the upstream projects (survey sections 16 to 18); which URLs its downloader uses was not read (UNVERIFIED; settled by reading its download module). Training data: as for MR-MT3, mt3-pytorch (MT3) and YourMT3+."
+"note": "fetched from the upstream projects by its registry mt3_infer/config/checkpoints.yaml (read 2026-11-11, gap round 2): mt3_pytorch git_lfs clone of https://github.com/kunato/mt3-pytorch (branch master, target pretrained, size_mb 176.0), mr_mt3 https://huggingface.co/gudgud1014/MR-MT3/resolve/main/mt3.pth (size_mb 176.0), yourmt3 git_lfs from https://huggingface.co/spaces/mimbres/YourMT3 (size_mb 536.0); git_lfs entries run git clone --depth 1 --branch <branch> <source_url> <dir> and then git lfs pull (mt3_infer/utils/download.py); checkpoints go under MT3_CHECKPOINT_DIR or ./.mt3_checkpoints/. Training data: as for MR-MT3, mt3-pytorch (MT3) and YourMT3+."
 },
 "training_data": [],
 "service_terms": []
@@ -7811,7 +7965,8 @@
 "pricing": null,
 "handoffs_out": [],
 "unverified": [
-"program numbers it assigns to a solo guitar and its MIDI as written: not observed (run refused, gap round 2 (gapfill-audio-to-notes, 2026-11-11))"
+"program numbers it assigns to a solo guitar and its MIDI as written: not observed (run refused, gap round 2 (gapfill-audio-to-notes, 2026-11-11))",
+"whether it would run on this box if running it were allowed (the refused commands were not submitted again)"
 ],
 "requires": "torch>=2.0.0, torchaudio, torchvision, transformers>=4.35.0, librosa>=0.9.1, mido, pretty-midi, soxr and others; extras all, dev, full, synthesis, tensorflow (tensorflow>=2.13.0) and torch (PyPI JSON)",
 "calls": [
@@ -7828,7 +7983,7 @@
 {
 "name": "yourmt3 (PyPI, third party)",
 "kind": "library",
-"what": "PyPI package 'yourmt3' (summary 'Music Transcription'): YourMT3 model types (YMT3+, YPTF+Single, YPTF+Multi, YPTF+MoE+Multi 1 and 2) with weights from the Hugging Face repo shethjenil/Audio2Midi_Models The description shows `from yourmt3 import YMT3`, `model = YMT3(hf_hub_download(\"shethjenil/Audio2Midi_Models\",\"YMT3+.pt\"),\"YMT3+\")` and `model.predict(path, batch_size, ...)` inside a Gradio interface whose output is `gr.File(label=\"midi\")`, and under \"Based On\" links the YourMT3+ paper (https://arxiv.org/abs/2407.04822).",
+"what": "PyPI package 'yourmt3' (summary 'Music Transcription'): YourMT3 model types (YMT3+, YPTF+Single, YPTF+Multi, YPTF+MoE+Multi 1 and 2) with weights from the Hugging Face repo shethjenil/Audio2Midi_Models. The description shows `from yourmt3 import YMT3`, `model = YMT3(hf_hub_download(\"shethjenil/Audio2Midi_Models\",\"YMT3+.pt\"),\"YMT3+\")` and `model.predict(path, batch_size, ...)` inside a Gradio interface whose output is `gr.File(label=\"midi\")`, and under \"Based On\" links the YourMT3+ paper (https://arxiv.org/abs/2407.04822).",
 "url": "https://pypi.org/project/yourmt3/",
 "version": "0.1.4 (uploaded 2025-08-31; first release 0.1.0 on 2025-07-25); summary \"Music Transcription\"; author_email field naming \"dummyjenil\" (the author field is empty); no project URL (PyPI JSON, read 2026-11-10)",
 "tried": false,
@@ -7840,14 +7995,18 @@
 "python"
 ],
 "inputs": [
-"audio file path (model.predict(path, batch_size, progress_callback))"
+"audio file path: predict(filepath, batch_size=8, callback=None, output_path=\"output.mid\"); read with torchaudio, channels averaged, resampled to the model's rate (from the code, not observed)",
+"YMT3(model_path, model_name, precision=\"32\", device=\"cpu\"), model_name one of \"YMT3+\", \"YPTF+Single\", \"YPTF+Multi\", \"YPTF+MoE+Multi\"; loads with self.model.load_state_dict(torch.load(model_path), strict=False)"
 ],
 "outputs": [
 "a MIDI file written by note_event2midi: MidiFile(ticks_per_beat=480, type=0) followed by midi.type = 1, so type 1: an empty first track, then one track per program with a track_name and a program_change; every note-on at velocity 100 (the default; predict() passes none); no tempo message (set_tempo commented out; ticks at 500,000 microseconds per beat); one channel per program (0-8, 10-15), drums on channel 9 as internal program 128; from the code (yourmt3/utils/midi.py), not observed; corrected by verify-gapfill-audio-to-notes round 2 (2026-11-11)"
 ],
 "constraints_accepted": [
-"model type",
-"batch size"
+"model type (model_name)",
+"batch size",
+"precision (\"32\" default)",
+"device (\"cpu\" default)",
+"output_path"
 ],
 "license": {
 "code": {
@@ -7869,7 +8028,8 @@
 "handoffs_out": [],
 "unverified": [
 "whether its weights are the YourMT3 authors' checkpoints (settled by comparing hashes with the Space's files)",
-"program numbers it assigns to a solo guitar: not observed (run refused, gap round 2 (gapfill-audio-to-notes, 2026-11-11))"
+"program numbers it assigns to a solo guitar: not observed (run refused, gap round 2 (gapfill-audio-to-notes, 2026-11-11))",
+"the license of the shethjenil/Audio2Midi_Models files (no statement found), and whether the package and those files would run on this box if running them were allowed (the refused command was not submitted again)"
 ],
 "requires": "einops, lightning, mido, mir-eval, scikit-learn, torchaudio, transformers==4.45.1",
 "publisher": "PyPI project yourmt3 with an empty author field and an author_email field naming 'dummyjenil'; weights in the Hugging Face repo of user 'shethjenil' (shethjenil/Audio2Midi_Models); a third-party repackaging, not the YourMT3 authors' release (their Space is mimbres/YourMT3); no license field, classifier or license file",
