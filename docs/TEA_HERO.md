@@ -1,11 +1,12 @@
 # The tea room hero (`/tea/`): runtime, manifest, tools
 
-Branch `feat/alt-view-hero`, based on `origin/main` at `6566f5c`. Written by the hero-runtime agent on 2026-11-10.
-This file is meant to be enough on its own for a session that only has the repo.
+Built on branch `feat/alt-view-hero` (the hero runtime, 2026-11-10) and wired into the tea room on `tea/hero`
+(2026-11-11), on top of tea-core's `/tea/` page. This file is meant to be enough on its own for a session that only
+has the repo.
 
-**Before anything merges to main: delete `src/pages/tea-lab.astro`.** It is a development page (noindex, linked
-from nowhere) kept so the hero can be run alone. While it exists the build lists `/tea-lab/` in `stats-pages.txt`,
-and its imports rename the shared stylesheet chunk on every page (same bytes, same hash, new name; see "Known issues").
+**Before anything merges to main: delete `src/pages/tea-lab.astro`.** It is a development page (noindex, linked from
+nowhere) kept so the hero can run alone. While it exists the build lists `/tea-lab/` in `stats-pages.txt`. It no
+longer renames the main site's stylesheet (it imports `tea.css`, not `site.css`).
 
 ## What it is
 
@@ -13,74 +14,105 @@ The top of `/tea/` copies the structure of the Shopify Editions Winter '26 hero:
 object, in front of one picture placed in 3D space, with a framed title box. Ours: the tea house garden at night,
 Jefrie (left) and Yusef (right, with a lantern) around a small CRT television. Everything is real-time Three.js:
 
-- **Scroll timeline.** The section is pinned (about 300vh desktop, 220vh phone). One progress value (0 to 1) drives
-  the camera along a Catmull-Rom path (wide shot, a slight orbit right, then in between the characters toward the
-  tea house door) and every character track at once. The moment the brief asks for: from progress 0.1 to 0.45 Jefrie
-  crouches, leaps over the TV and turns in the air with her tail curling while the camera orbits past her; by 1 both
-  characters flank the door.
+- **Scroll timeline.** With the scene the section is 300vh and pinned (two layouts, below). One progress value (0 to
+  1) drives the camera along a Catmull-Rom path (wide shot, a slight orbit right, then in between the characters
+  toward the tea house door) and every character track at once. The moment the brief asks for: from progress 0.1 to
+  0.45 Jefrie crouches, leaps over the TV and turns in the air with her tail curling while the camera orbits past her;
+  by 1 both characters flank the door.
 - **Idle loop on top:** breathing bob, sway, wing beats, lantern swing, tail curl, antenna wobble, the TV screen's
   emissive shader (moon, scanlines, rolling bar, grain, flicker shared with its light and glow), drifting motes
   (fireflies and petals, one Points draw).
 - **Pointer parallax** (mouse), device tilt where no permission prompt is needed (Android), a slow drift otherwise.
 - **Day and night** follow `data-mode` on `<html>` (the site's `scene-mode`), tweened live. Night is moonlight,
   lantern and TV glow; day is a warm dusk (separate picture, lights lerped).
-- **Lazy and safe.** The poster (CSS background, one image for the mode and the screen shape) paints first. After
-  first paint and idle, `boot.js` (760 B gzip) checks reduced motion, Save-Data / 2g, a small device
-  (`deviceMemory < 2` or `hardwareConcurrency < 3`) and WebGL, then imports the 3D chunk. The canvas cross-fades in
-  over the poster once a frame is drawn. Any failure leaves the poster, with the reason in `data-3d-off` on the
-  section. Drawing stops when the hero is off screen or the tab is hidden. Pixel ratio capped at 1.75 (1.5 on touch
-  or small screens; fewer motes there too).
+- **Lazy and safe.** After first paint and idle, `boot.js` checks `?hero=off`, reduced motion, Save-Data / 2g, a small
+  device (`deviceMemory < 2` or `hardwareConcurrency < 3`; `?hero=on` skips these two) and WebGL, then imports the
+  3D chunk. Any failure leaves the poster, with the reason in `data-3d-off` on the section (`asked`, `reduced
+  motion`, `save data`, `small device`, `no webgl`, `failed`). Drawing stops when the hero is off screen or the tab is
+  hidden. Pixel ratio capped at 1.75 (1.5 on touch or small screens; fewer motes there too).
+
+## The first picture, on every path
+
+The poster, a still of the scene's opening frame (progress 0, idle time 0, pointer centred), is the hero's picture
+for everyone: one image for the mode and the screen's shape (`poster-{night,day}.webp` 1600x1000,
+`poster-{night,day}-tall.webp` 645x1398 under `max-aspect-ratio: 1/1`), a CSS background in `stage.css`, so it needs
+no script and only the one that applies is fetched.
+
+| Path | What is on screen | Notes |
+|---|---|---|
+| no JavaScript | the poster behind the title box, one screen | the page is all there; nothing else loads |
+| reduced motion | the same | `data-3d-off="reduced motion"`, none of the 3D is fetched (e2e tea-hero-1) |
+| no WebGL (also Save-Data, a small device, `?hero=off`, any failure) | the same | `data-3d-off` says why (tea-hero-2) |
+| the scene loads | the poster, then the canvas fades in over the same frame (700 ms) | the posters are the opening frame, so nothing jumps; re-run `poster.mjs` after any change to the opening composition or the assets |
+
+Why one picture: whoever arrives sees the same place and the same characters, with motion added where it can run;
+the 3D path's first seconds show the frame the scene comes alive from. Phase 1's SVG garden (`TeaNight.astro`) was
+retired with this: a different drawing under the scene would cross-fade into a different picture.
+
+Before first paint the page loads its HTML, CSS, fonts, its small scripts (`boot.js` among them, 1.1 KB) and the one
+poster. Never three, the loader, the manifest, the models or the picture layers: tea-hero-3 checks every 3D request
+starts after first paint.
+
+## Layouts
+
+`cover.css` (tea-core) lays out the static hero: the section at least one screen tall (`min-height: 100svh`), the box
+centred in `.tea-hero-pin`'s padding, which lives in `--tea-hero-pt`, `--tea-hero-pb` and `--tea-hero-px` on
+`.tea-hero` (84/56 px and the page's side padding; 76/40/14 px under 561 px). With the scene (`data-3d="on"`),
+`stage.css` makes the section 300vh and `pin.js` picks `data-hero-layout`, again on every resize:
+
+- **`dock`** (a landscape screen where the box fits: its height plus the two paddings is at most the window's):
+  `.tea-hero-pin` sticks (100svh). The box is placed absolutely exactly where the static layout centred it, then from
+  progress 0.1 (`data-hero-phase="docked"`) moves lower left (`--tea-dock-x`; `--tea-dock-low`, which keeps it clear of
+  the day/night switch at the foot of a 1024 px+ screen), at scale .8, with the statement and the counter folded away
+  (still read out). While it is docked the scene's lens shift (`camera.dock.shift`) slides the picture right, eased like
+  the box's own move, so no character stands behind the box.
+- **`flow`** (a portrait screen, or a box that doesn't fit): the pin becomes a grid as tall as the section, the
+  stage sticks (100svh) and the box keeps the static layout's place in the first screen and scrolls away with the
+  page. The scene holds its opening frame until the box's foot has passed 30% of the screen (`leadOf` in `pin.js`,
+  the "lead", a share of the scroll), then plays over the rest.
+
+Both layouts start with the box's rectangle identical to the static one, so the scene arriving shifts nothing
+(measured: CLS 0 from the moment it mounts, at 1440x900, 390x844, 768x1024 and 1440x700). Rules for the surrounding
+CSS: no ancestor of what sticks (`.tea-hero-pin` in dock; the stage, so the pin too, in flow) may set `overflow`
+other than visible (`flow` sets the pin's own to visible); the canvas has `pointer-events: none` and pointer input is
+read on `window`, so the box stays clickable; the box's backdrop blur is off while the scene runs (a full blur pass a
+frame over a changing canvas, for the 10% of it that shows through). tea-core may react to `--tea-hero-progress`
+(0..1, three decimals), `data-hero-phase` and `data-hero-layout` on `.tea-hero`.
+
+**The day/night switch.** One `ModeToggle` in the rail (`chrome/ModeToggle.astro` and `scripts/mode.js` unchanged). Under
+1024 px the rail is the sticky chapter strip, and its backdrop-filter used to make the strip the fixed switch's
+containing block, so the switch scrolled with the strip, off screen all through the hero. The strip's frosted ground
+is now a `::before` layer (`tea.css`), so the switch is fixed to the screen's top right from the first screen, over
+the static and the pinned hero, and sits in the strip's reserved right end once the strip sticks (tea-hero-5).
 
 ## Files
 
 | Path | What |
 |---|---|
-| `src/components/tea/hero/Stage.astro` | renders the whole `.tea-hero-stage` div (poster and shade) and loads `boot.js`; prop `manifest` (default `/tea/hero/manifest.json`); imports `stage.css` |
-| `src/styles/tea/stage.css` | poster per mode and shape, canvas fade, readability shade, the pin and the title box's two placements |
+| `src/components/tea/TeaHero.astro` | the hero's markup contract: `.tea-hero[data-tea-hero] > .tea-hero-pin > <Stage /> + .tea-hero-box` (tea-core's box: skip link, kicker, h1, statement, counter, chapter list, the way out) |
+| `src/components/tea/hero/Stage.astro` | the whole `.tea-hero-stage` div (poster and shade) and `boot.js`; prop `manifest` (default `/tea/hero/manifest.json`); imports `stage.css` |
+| `src/styles/tea/stage.css` | the stage, poster per mode and shape, canvas fade, readability shade, the `dock` and `flow` layouts, the docked box |
 | `src/scripts/tea/hero/boot.js` | the tiny entry: gating, then `import('./stage.js')` |
-| `src/scripts/tea/hero/stage.js` | `mount(section, stage)`: build, pin, frame loop, pause, resize, mode; `window.__teaHero` hook |
+| `src/scripts/tea/hero/stage.js` | `mount(section, stage)`: three, the scene, pin, frame loop, pause, resize, mode, the lead and the lens shift; `window.__teaHero` hook |
+| `src/scripts/tea/hero/three.js` | three and GLTFLoader through the same dynamic imports `<ao-model>` makes, as live bindings (see "three and the shared chunks") |
+| `src/scripts/tea/hero/pin.js` | `data-3d`, the layout (`layoutFor`, `relayout`), the lead (`leadOf`), progress and phase |
 | `src/scripts/tea/hero/manifest.js` | fetch and normalise the manifest (defaults for every optional field) |
-| `src/scripts/tea/hero/actors.js` | GLB loading (GLTFLoader + MeshoptDecoder), props, material overrides, tint, bend |
-| `src/scripts/tea/hero/tracks.js` | node lookup, scroll tracks and idle waves as deltas from rest pose |
+| `src/scripts/tea/hero/actors.js` | GLB loading (GLTFLoader + MeshoptDecoder), rest positions per screen shape (`orientActors`), props, material overrides, tint, bend |
+| `src/scripts/tea/hero/tracks.js` | node lookup, scroll tracks and idle waves as deltas from rest pose, portrait travel |
 | `src/scripts/tea/hero/deform.js` | the bend deform for unrigged meshes (vertex shader) |
 | `src/scripts/tea/hero/backdrop.js` | picture layers, night and day images mixed in a shader |
-| `src/scripts/tea/hero/camera.js` | camera path, cover-fit field of view, portrait framing, parallax |
-| `src/scripts/tea/hero/lights.js`, `crt.js`, `motes.js`, `input.js`, `pin.js` | lights and glows, the screen shader and flicker, motes, scroll and pointer input, the pin |
+| `src/scripts/tea/hero/camera.js` | camera path, cover-fit field of view (landscape and portrait), portrait framing, parallax, lens shift |
+| `src/scripts/tea/hero/lights.js`, `crt.js`, `motes.js`, `input.js` | lights and glows, the screen shader and flicker, motes, scroll and pointer input |
 | `public/tea/hero/manifest.json` | the scene, all of it |
 | `public/tea/hero/*.webp, *.glb` | stand-in picture layers (`bg-*`), posters (`poster-*`), stand-in models (`standin-*`) |
-| `scripts/tools/tea-hero/` | `standins.mjs` (stand-in GLBs), `paint.mjs` + `paint-scene.js` (stand-in picture), `poster.mjs`, `shots.mjs`, `verify.mjs` |
-| `src/pages/tea-lab.astro` | the lab page. DELETE before merging |
+| `scripts/tools/tea-hero/` | `shots.mjs`, `poster.mjs`, `verify.mjs`; `standins.mjs` (stand-in GLBs), `paint.mjs` + `paint-scene.js` (stand-in picture) |
+| `tests/e2e/tea-hero.spec.mjs` | the e2e spec (tea-hero-1 to 7) |
+| `src/pages/tea-lab.astro` | the lab: the real hero and rail over empty chapter heads; `?manifest=`. DELETE before merging |
 
-No `package.json` change; `three` 0.160 and the tools' `@playwright/test` and `sharp` are already dependencies.
-Nothing imports from `src/scripts/home/**`.
-
-## Wiring it into tea-core's page (`TeaHero.astro`)
-
-tea-core's markup contract, with `<Stage />` replacing the bare stage div:
-
-```astro
----
-import Stage from '../hero/Stage.astro';   // path from src/components/tea/
----
-<section class="tea-hero" id="top" data-tea-hero>
-  <div class="tea-hero-pin">
-    <Stage />
-    <div class="tea-hero-box"> kicker, h1, statement, counters, chapter TOC, skip link, "Go to the main site" </div>
-  </div>
-</section>
-```
-
-Rules for the surrounding CSS:
-- No ancestor of `.tea-hero-pin` may set `overflow` (hidden, auto, clip), or `position: sticky` stops working.
-- Without `data-3d="on"` the section should be one viewport tall with the box centred (tea-core's static rules; the
-  lab page shows one way). `stage.css` sets `.tea-hero` and `.tea-hero-pin` to `position: relative` and the stage to
-  `position: absolute; inset: 0; z-index: 0`; the box needs `position: relative; z-index: 2` or higher in static mode.
-- With `data-3d="on"` `stage.css` owns the box's placement (`left`, `top`, `translate`, `scale`; centred while
-  `data-hero-phase="open"`, docked lower left from progress 0.1, `data-hero-phase="docked"`; on phones it waits at
-  the bottom, then docks smaller). tea-core styles the box's contents and may react to `--tea-hero-progress` (0..1,
-  three decimals) and `data-hero-phase` on `.tea-hero`, e.g. to fade the statement once docked.
-- The canvas has `pointer-events: none`; pointer input is read on `window`. The box stays clickable.
-- The mode switch (`ModeToggle` + `mode.js`) is enough; the hero watches `data-mode` with a MutationObserver.
+Outside these, the slice touched `src/styles/tea/cover.css` (the padding variables; the SVG garden's rules and the
+old stage rules removed), `src/styles/tea/tea.css` (the strip's `::before`) and deleted
+`src/components/tea/TeaNight.astro`. No `package.json` change; `three` 0.160 and the tools' `@playwright/test` and
+`sharp` are already dependencies. Nothing imports from `src/scripts/home/**`.
 
 ## The manifest (`public/tea/hero/manifest.json`)
 
@@ -94,16 +126,25 @@ Relative URLs resolve against the manifest's own URL. Every optional field has a
 | `reference.aspect` | the aspect the scene is composed for (1.6). Wider screens keep its horizontal field of view (crop top and bottom), narrower landscape screens keep its vertical one (crop the sides): like `object-fit: cover`, so the poster matches. Portrait screens use `camera.portrait` |
 | `background.layers[]` | the picture: `id`, `night` and `day` image URLs (`src` is an alias for both), `z` (depth, e.g. -10 far, -6 mid), `size` `[w, h]` in units (keep the image's aspect), `x`, `y` (centre), `cutout` (true for a layer with alpha: transparent, no depth write), `fog` (0..1, tint toward the fog colour), `portraitScale` (default 1.5: how much the layer grows on a portrait screen to cover the taller view). The current mode's images load first, the other mode's after the first frame |
 | `actors[]` | `id`, `src` (GLB), `scale` (uniform), `position`, `rotation` (the rest pose of the actor's root), `portraitPosition` (optional; else `x` is multiplied by `camera.portrait.spread`), `rig` (`kind`: `"nodes"` or `"baked"`, informational; `map`: `{ "conventionName": "nameInTheGLB" }` aliases), `deform`, `materials`, `tint` (hex multiplied into every material colour), `envIntensity` (default 0.6), `props[]` |
-| `actors[].deform` | for meshes with no skeleton: `{ "kind": "bend", "start": -0.15, "y": -0.42, "rest": 0.35 }`. In the mesh's own space, everything past `start` along -z (a tail behind the body) curls up toward +y around height `y`; `rest` is the resting curvature (1/units). The `bend` channel adds to it |
+| `actors[].deform` | for meshes with no skeleton: `{ "kind": "bend", "start": -0.15, "y": -0.42, "rest": 0.35 }`. In the mesh's own space (for a quantized mesh: model units divided by its node's scale, see below), everything past `start` along -z (a tail behind the body) curls up toward +y around height `y`; `rest` is the resting curvature (1/units). The `bend` channel adds to it |
 | `actors[].materials` | `{ "<node name>": { "shader": "crt" } }`: every mesh at or under that node gets the TV screen shader (the node needs UVs) |
 | `actors[].props[]` | separately loaded rigid GLBs: `id` (the prop's root is renamed to it, so tracks, lights and glows can name it), `src`, `parent` (a node of the actor, e.g. `hand.R`; missing or absent: the actor's model root), `scale`, `position`, `rotation`, `materials` |
 | `lights[]` | `id`, `type` (`ambient`, `hemi`, `dir`, `point`), `attach` (`{ "actor", "node" }`, optional: the light hangs from that node, `position` is then local), `distance`, `decay` (point), `flicker` (`"crt"`: follows the screen's flicker), and `night` / `day` states each `{ color, ground (hemi), intensity, position }`. Lerped by the mode |
 | `glows[]` | additive halo sprites: `attach`, `position`, `size`, `color`, `night` and `day` opacity, `flicker` |
-| `camera` | `fov` (vertical, at the reference aspect), `near`, `far`, `keys[]` `{ t, pos, look }` (t = scroll progress; at least two; uneven spacing is fine), `parallax` `{ x, y (units of offset at full pointer), ease (1/s), drift (0..1, the touch drift) }`, `portrait` `{ fov, spread (x multiplier for actors), pull (units pulled back at the start), drop (units the look-at is lowered at the start) }` |
+| `camera` | `fov` (vertical, at the reference aspect), `near`, `far`, `keys[]` `{ t, pos, look }` (t = the scene's progress; at least two; uneven spacing is fine), `parallax` `{ x, y (units of offset at full pointer), ease (1/s), drift (0..1, the touch drift) }` |
+| `camera.portrait` | a portrait screen: `fov` (vertical, at `aspect`), `aspect` (default 430/932, the tall poster's: wider portrait screens crop its top and bottom, like cover), `spread` (x multiplier for the actors' rest positions), `travel` (the share of a whole actor's own sideways travel, its position track's x, kept; default `spread`), `pull` (units pulled back at the start), `drop` (units the look-at is lowered at the start) |
+| `camera.dock` | the dock layout: `shift`, the lens shift while the box is docked, as a share of the frame's width the picture slides right: a number, or keys `[[t, shift], ...]` along the scene's progress |
 | `tracks[]` | scroll-driven: `actor`, `node` (omit for the whole actor), `channel`, `keys` `[[t, value], ...]`, `ease` (`"smooth"` default, or `"linear"`). Values hold before the first key and after the last |
 | `idle[]` | time-driven waves: `actor`, `node`, `channel`, `amp` (number or `[x, y, z]`), `hz`, `phase` (0..1), `wave` (`sin`, `bounce`, `noise`), `scroll` (optional `[[t, gain], ...]`: the wave's strength along the scroll) |
 | `motes` | `count`, `mobile` (count on phones), `size`, `box` `[[minX, minY, minZ], [maxX, maxY, maxZ]]`, `fly` and `petal` colours |
 | `look` | `night` / `day`: `exposure` (ACES tone mapping), `fog` (colour), `clear` (the colour behind everything) |
+
+The composition as tuned on the stand-ins (contact sheets at 0, 0.1, 0.2, 0.25, 0.3, 0.45, 0.6, 0.8 and 1, 1440x900
+and 390x844, day and night): desktop `camera.dock.shift` 0.19 while Jefrie crouches, 0.06 to 0 mid-leap, 0.14 to 0.16
+at the door; Jefrie steps right (0.45) before the crouch and ends nearer the door; the orbit at 0.3 swings less. Phone
+`camera.portrait.travel` 0.3: with only the rest positions drawn in (`spread` 0.5), Jefrie's full sideways leap
+crossed Yusef from about a quarter of the scroll; now her body clears his, her tail at most touching his robe at 0.6.
+The opening frame is unchanged on both, so the committed posters still match it (tall ones pixel for pixel).
 
 Channels (scroll tracks and idle waves add together, both as **deltas from the rest pose**, so a final asset with a
 different rest pose keeps working):
@@ -154,90 +195,101 @@ Both rig kinds through one mechanism:
 - **Props need their parent node:** a prop whose `parent` node is missing hangs from the model's root (the spike's
   Yusef has no `hand.R`, so the lantern sits at his centre). A track or material on a missing node is skipped.
 
+## three and the shared chunks
+
+`three` is one shared chunk (`three.module.*.js`, 166.6 KB gzip) that the homepage scene, `<ao-model>` and the hero
+all use; `GLTFLoader.*.js` is shared with `<ao-model>`. A static `import { X } from 'three'` in the hero adds X to
+that chunk's export list (the hero's eight new names took it from 94 to 102 exports, 101 bytes larger), and a static
+GLTFLoader import turns GLTFLoader's chunk into a shared one; both then re-hash, every chunk that names them re-hashes
+after them, and the homepage downloads three again after the deploy. So `src/scripts/tea/hero/three.js` reaches
+three and GLTFLoader through the same dynamic imports `<ao-model>` makes (`import('three')`, the namespace it already
+exports, and `import('three/examples/jsm/loaders/GLTFLoader.js')`) and fills live bindings once; `stage.js` awaits
+`loadThree()` first, and no hero module makes a three object at its top level. Built against an untouched build of
+the branch the hero joined: `three.module` and `GLTFLoader` byte-identical, no other main-site chunk renamed.
+**Keep it that way: never `import ... from 'three'` in `src/scripts/tea/hero/`, import from `./three.js`** (and add a
+name to its list). A top-level `await import('three')` there instead re-splits the whole site's chunks.
+
 ## Running it
 
 ```bash
-npx astro dev --port 4392            # then http://localhost:4392/tea-lab/  (?hero=on skips the device checks,
-                                     # ?hero=off forces the poster). Stop with: npx astro dev stop
-node scripts/tools/tea-hero/shots.mjs --out shots/hero-lab     # 1440x900 and 390x844, night and day, p 0..1
-node scripts/tools/tea-hero/poster.mjs                         # rewrites public/tea/hero/poster-*.webp
-node scripts/tools/tea-hero/verify.mjs                         # behaviour checks (all pass at this commit)
+npm run build && npx astro preview --port 4411   # or: npx astro dev --port 4392 (the tools' default URLs)
+# /tea/?hero=on skips the device checks (not WebGL or reduced motion), ?hero=off keeps the poster
+# /tea-lab/?hero=on&manifest=<file>.json loads /tea/hero/<file>.json: put a variant (and its models) in dist/ after a
+# build, never in public/. Stop a preview started by an agent with: npx astro preview stop (or kill it)
+node scripts/tools/tea-hero/shots.mjs --url http://localhost:4411/tea/?hero=on --out <dir> --sheet
+#   1440x900 and 390x844, night and day, p 0 0.1 0.2 0.25 0.3 0.45 0.6 0.8 1; one contact sheet a size and mode
+node scripts/tools/tea-hero/poster.mjs --url http://localhost:4411/tea/?hero=on [--out <dir>]   # rewrites the posters
+node scripts/tools/tea-hero/verify.mjs --url http://localhost:4411/tea/   # behaviour checks, also against /tea-lab/
+npm run e2e -- --project=desktop --project=phone tests/e2e/tea-hero.spec.mjs
 node scripts/tools/tea-hero/standins.mjs                       # rewrites public/tea/hero/standin-*.glb
 node scripts/tools/tea-hero/paint.mjs                          # rewrites public/tea/hero/bg-*.webp
 ```
 
 Headless WebGL: Chromium from Playwright with `--use-angle=swiftshader --enable-unsafe-swiftshader
---ignore-gpu-blocklist` renders correctly (the scripts pass these). SwiftShader draws a few frames a second, so time
-the scripts generously; the shot and poster scripts freeze idle time (`__teaHero.freeze(t)`), pin the pointer
-(`__teaHero.pointer([0, 0])`) and snap the smoothing (`__teaHero.render()`) so frames are repeatable. They also hide
-Astro's dev toolbar, which otherwise lands in the capture. `__teaHero.setProgress(p)` fixes the progress (null gives
-the scroll back); `__teaHero.dispose()` tears everything down and restores the poster.
+--ignore-gpu-blocklist` renders correctly (the scripts pass these; the e2e desktop project's Chromium has WebGL as it
+is, and headless WebKit has a WebGL context too). SwiftShader draws a few frames a second, so the tools freeze idle
+time (`__teaHero.freeze(t)`), pin the pointer (`__teaHero.pointer([0, 0])`), hold the frame loop
+(`__teaHero.hold(true)`; `render()` still draws one) and snap the smoothing (`__teaHero.render()`) so frames are
+repeatable and a loaded box doesn't time out. They also hide Astro's dev toolbar and turn the box's transitions off.
+`__teaHero.setProgress(p)` fixes the progress (null gives the scroll back); `__teaHero.dispose()` tears everything down
+and restores the poster.
 
-The posters are the opening frame (progress 0, idle time 0, pointer centred, title box hidden): 1600x1000 for
-landscape and 430x932 at 1.5x for portrait (CSS picks the tall one under `max-aspect-ratio: 1/1`). Re-run
-`poster.mjs` after any change to the opening composition or the assets, so the cross-fade does not jump.
+## Measured (2026-11-11, this branch)
 
-## Measured (this commit)
-
-- Boot entry (Stage's script): 1.2 KB, **760 B gzip**, plus the existing shared preload helper.
-- Hero chunk `stage.*.js`: 44.8 KB, **14.8 KB gzip** (all of `src/scripts/tea/hero/` plus the meshopt decoder).
-- It also loads `GLTFLoader.*.js` (13.2 KB gzip) and `three.module.*.js` (**165 KB gzip**), both chunks the site already
-  ships. three cannot be tree-shaken for us: `<ao-model>` does `import('three')` (the whole namespace), so Rollup
-  keeps one full three chunk that the homepage scene, `<ao-model>` and the hero share. Our imports are named.
-- Main-site budgets after the build: identical to the baseline (post page 20.5/20 KB, ledger row 351 B, homepage
-  before the scene 22.6 KB).
-- Hero files in `public/tea/hero/`: 768 KB in all (largest: standin-angel.glb 126 KB; posters 77, 88, 48, 53 KB).
-  Plus the Jefrie stand-in referenced from `/media/jefrie-3d/jefrie-v2.glb` (2.07 MB: **over** the 1.5 MB per-file
-  cap; acceptable only as a stand-in).
+- Boot entry (Stage's script): 1,121 B, **642 B gzip**, plus the site's existing shared preload helper (852 B gzip).
+- 3D chunk `stage.*.js`: 47,358 B, **16.1 KB gzip** (all of `src/scripts/tea/hero/` plus the meshopt decoder, which is
+  22.4 KB of it, 6.1 KB gzip). Loads only after first paint, only on the 3D path.
+- It also loads `three.module.*.js` (166.6 KB gzip) and `GLTFLoader.*.js` (13.1 KB gzip), byte-identical to the
+  chunks the site already ships, so cached for anyone who has seen the homepage or a post with a model.
+- Files on the 3D path per visit, stand-ins: 2.56 MB (the Jefrie stand-in `/media/jefrie-3d/jefrie-v2.glb` 2.07 MB,
+  the three other stand-in models 215 KB, the four picture layers 277 KB, the manifest) plus the one poster (48 to
+  88 KB). `public/tea/hero/` holds 768 KB.
+- `/tea/` itself: HTML 24.0 KB gzip (25.8 before: the SVG garden went), CSS 8.5 KB gzip (8.4 before). Main-site budgets
+  identical to the baseline.
 
 ## Verified
 
-- `npm run check` and `npm run build` pass (with the lab page present).
-- `verify.mjs`: reduced motion and no WebGL keep the poster with no console errors and no canvas; the 3D path has no
-  console errors; CLS under 0.001 when the canvas appears; the mode switch tweens the scene live; drawing stops off
-  screen and resumes; the skip link lands on the first chapter through the pin.
-- Screenshots at 1440x900 and 390x844, night and day, progress 0, 0.25, 0.5, 0.75, 1 (in the hero-lab folder of the
-  build box, `shots/hero-lab/` if you run `shots.mjs`).
+- `verify.mjs` against `/tea/` and `/tea-lab/`: 20 of 20 (both layouts; see its header).
+- e2e `tea-hero.spec.mjs`: 6 passed and 1 skipped in each project, desktop (Chromium) and phone (WebKit, iPhone 13);
+  each test seen failing on a build broken on purpose.
+- Contact sheets at the nine positions, both sizes, both modes; the static and pinned layouts at 1440x900, 390x844,
+  768x1024 and 1440x700 with the box's rectangle unchanged; the loader on the spike's compressed models and a skinned
+  test model (above).
 
 ## Not verified
 
-- Frame rate on real hardware: only SwiftShader was available (a few fps by design). Expect the costs to be the
-  Jefrie GLB's 2048 textures and one full-screen draw; there are no shadows or post-processing.
-- Real phones (WebKit cannot run on the build box), device tilt, iOS Safari's `svh` behaviour while pinned.
+- Frame rate on real hardware: only SwiftShader here (a few fps by design). Expect the costs to be the Jefrie GLB's
+  2048 textures and one full-screen draw; there are no shadows or post-processing.
+- Real phones: iOS Safari's `svh` while pinned or with the stage sticky, device tilt, a real GPU. Headless WebKit
+  ran the phone e2e project.
 - Save-Data and the small-device gate (code path only).
-- Arriving with a `#chapter` hash: `pin.js` compensates the scroll when the section grows, checked by reasoning, not
-  by a test.
+- Arriving with a `#chapter` hash: `pin.js` compensates the scroll when the section grows, checked by reasoning.
 
 ## Known issues
 
 1. **Stand-ins.** Yusef is a primitive angel (`standin-angel.glb`), the TV is primitive, the picture is a painted
-   placeholder (`bg-*`), Jefrie is the existing 2 MB `jefrie-v2.glb` (one unrigged mesh; her tail curls through the
-   bend deform). All of them are data in the manifest.
-2. **The lab page** must be deleted before merging (stats-pages entry, CSS chunk name).
-3. **CSS chunk name.** With a second page importing `ModeToggle`, Vite names the shared stylesheet
-   `ModeToggle.D0HzDAyb.css` instead of `PanelChrome.D0HzDAyb.css` on every page: same bytes and hash, so only the
-   file name changes (one extra download per visitor after the deploy). tea-core's page will cause the same; worth a
-   look at integration, not a bug.
-4. `three.module.*.js` and `GLTFLoader.*.js` get new hashes with the hero in the build (three's chunk is 101 bytes
-   larger, most likely its export list changing for the hero's named imports; not investigated further). The homepage downloads three again once after the deploy.
-5. The portrait framing uses one camera path pulled back and aimed lower; phones show the characters closer
-   together (`portrait.spread`) and partly overlapping at progress 0.25.
+   placeholder (`bg-*`), Jefrie is the existing 2 MB `jefrie-v2.glb` (over the 1.5 MB per-file cap: a stand-in only;
+   one unrigged mesh, her tail curls through the bend deform). All of them are data in the manifest.
+2. **The lab page** must be deleted before merging (its `stats-pages.txt` line).
+3. At load, before the scene, tea-core's title moves about 10 px when its web font swaps in (CLS 0.0004, scene or
+   not). The scene itself shifts nothing.
+4. `tests/e2e/INVENTORY.md` has no rows for tea-hero-1 to 7 yet.
 
 ## Next steps
 
 1. **Final assets (hero-assets):** for each character a GLB facing +z, Y up, compressed (meshopt via
    `gltfpack -cc -tc` or `gltf-transform meshopt`; WebP textures, 1024 or smaller), under 1.5 MB each and 4 MB for
    everything. Rigged: nodes named by the convention above, pivots at the joints. Unrigged: say so and give the tail's
-   start (`deform.start`, `deform.y` in mesh units). Props (lantern, bell) as separate GLBs with their origin at the
-   grip. The TV with a `screen` node that has UVs. The picture: one painted image (about 2400x1500, WebP under 300 KB)
-   per mode, plus one or two cut-out layers (WebP with alpha) from the same picture at nearer depths, sized in world
-   units to their planes (the stand-in layout: far plane 24x15 units at z -10, centre y 0.65; mid 17x10.6 at z -6,
-   centre y 1.0, 100 px a unit).
+   start (`deform.start`, `deform.y` in the mesh's own, quantized space). Props (lantern, bell) as separate GLBs with
+   their origin at the grip. The TV with a `screen` node that has UVs. The picture: one painted image (about
+   2400x1500, WebP under 300 KB) per mode, plus one or two cut-out layers (WebP with alpha) from the same picture at
+   nearer depths, sized in world units to their planes (the stand-in layout: far plane 24x15 units at z -10, centre y
+   0.65; mid 17x10.6 at z -6, centre y 1.0, 100 px a unit).
 2. **Swap:** edit `public/tea/hero/manifest.json` only (`src`, `scale`, `position`, `rotation`, `deform`, node names
-   in tracks and idle, layer sizes). Look at the lab, adjust the keys, run `shots.mjs`, then `poster.mjs`. Delete
-   `standin-*.glb` and `bg-*.webp` that are no longer referenced.
-3. **Wire in:** rebase this branch on tea-core's branch, put `<Stage />` in `TeaHero.astro` as shown above, check
-   the box's static and pinned layouts with tea-core's styles, run `verify.mjs` against `/tea/` (`--url`; it expects
-   a `.lab-skip` link and `#c1`/`#c3` ids: change those selectors to tea-core's skip link and chapter ids).
-4. **Delete `src/pages/tea-lab.astro`**, build, confirm `/tea-lab/` is gone from `dist/stats-pages.txt`, compare budgets
-   with the baseline, then land per `CLAUDE.md`.
+   in tracks and idle, layer sizes). Look at it in the lab with a variant first, then on `/tea/`; adjust the keys,
+   `camera.dock.shift` and `camera.portrait.travel` with `shots.mjs --sheet` (the title box in the frame), then run
+   `poster.mjs`. Delete `standin-*.glb` and `bg-*.webp` that are no longer referenced and stop pointing at
+   `jefrie-v2.glb`. Commit the final binaries once.
+3. **Delete `src/pages/tea-lab.astro`**, build, confirm `/tea-lab/` is gone from `dist/stats-pages.txt`, run
+   `verify.mjs` and the e2e spec, compare budgets and run `dist-diff` against an untouched build, then land per
+   `CLAUDE.md`.
