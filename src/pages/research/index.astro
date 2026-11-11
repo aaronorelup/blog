@@ -5,12 +5,12 @@ import PanelPage from '../../layouts/PanelPage.astro';
 import { research, slugOf } from '../../lib/content.js';
 import { ledgerOrder } from '../../lib/posts.js';
 import { shortDate } from '../../lib/dates.js';
+import { PAGES } from '../../data/pages.js';
 
 const docs = ledgerOrder(await research());
 ---
 <PanelPage
-  title="Research · Aaron Orelup"
-  description="Standalone research documents. They're deeper and drier than ledger entries, written to be handed to an agent as much as read by a person."
+  {...PAGES['/research/']}
   active="ledger"
 >
   <div class="view">

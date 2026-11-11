@@ -2,6 +2,7 @@
 // same size, with buttons that switch every cell between views of the same output at once (textured / clay, before /
 // after). Switching views on one matrix switches every matrix on the page with the same views. Only the pictures in
 // view open in the image viewer. Attributes cols, views, aspect and the rows: docs/COMPONENTS.md.
+import { hookViewer } from '../_core/viewer.js';
 import { h } from '../_lib/dom.js';
 
 const MATRIX_VIEW = 'ao-matrix-view';
@@ -18,11 +19,15 @@ class AoMatrix extends HTMLElement {
     if (aspect) this.style.setProperty('--ao-aspect', aspect);
     this.views = (this.getAttribute('views') || '').split('|').map((v) => v.trim()).filter(Boolean);
 
-    const grid = h('div', { class: 'ao-matrix-grid', role: 'table' }, h('span', { class: 'ao-matrix-corner' }));
-    for (let i = 0; i < n; i++) grid.append(h('span', { class: 'ao-matrix-col', role: 'columnheader', text: cols[i] || '' }));
+    // An ARIA table needs its rows and cells: each row and each figure sits in a wrapper that has the role and no box
+    // of its own (display: contents, style.css), so the grid lays out the same children as before.
+    const tr = (cls, ...kids) => h('div', { class: cls, role: 'row' }, ...kids);
+    const head = tr('ao-matrix-tr ao-matrix-head', h('span', { class: 'ao-matrix-corner', role: 'cell' }));
+    for (let i = 0; i < n; i++) head.append(h('span', { class: 'ao-matrix-col', role: 'columnheader', text: cols[i] || '' }));
+    const grid = h('div', { class: 'ao-matrix-grid', role: 'table' }, head);
     for (const r of rows) {
       const [label, note] = r.getAttribute('data-row').split('|');
-      grid.append(h('div', { class: 'ao-matrix-row', role: 'rowheader' },
+      const row = tr('ao-matrix-tr', h('div', { class: 'ao-matrix-row', role: 'rowheader' },
         h('b', { text: label.trim() }), note ? h('span', { text: note.trim() }) : null));
       const figs = [...r.querySelectorAll(':scope > figure')];
       for (let i = 0; i < n; i++) {
@@ -30,8 +35,9 @@ class AoMatrix extends HTMLElement {
         f.classList.add('ao-matrix-cell');
         // On a phone the column heading sits above the grid, out of sight: each cell says it.
         if (cols[i]) f.dataset.col = cols[i];
-        grid.append(f);
+        row.append(h('div', { class: 'ao-matrix-td', role: 'cell' }, f));
       }
+      grid.append(row);
       r.remove();
     }
     this.cells = [...grid.querySelectorAll('figure:not(.none)')];
@@ -73,6 +79,10 @@ class AoMatrix extends HTMLElement {
       });
     }
     (this.btns || []).forEach((b, j) => b.setAttribute('aria-pressed', String(j === i)));
+    // enhance() makes a post's pictures focusable buttons and skips the ones a view hides. In the homepage's reader it
+    // runs after this element has hidden them (the tag is defined from the second post on), so the pictures a view
+    // brings in are made focusable here, or the keyboard could never open them.
+    hookViewer(this);
   }
 }
 
