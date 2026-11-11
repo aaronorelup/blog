@@ -293,7 +293,7 @@ test('tea-11 day or night, chosen on either view, is what the other one opens in
   expect(await mode()).toBe('day');
   const [day, dayToken] = await ground();
   expect(day).toBe(dayToken);
-  await toChapter(page, CHAPTERS[0].id);   // on a phone the switch rides the strip, which shows once the hero is past
+  await toChapter(page, CHAPTERS[0].id);   // past the hero, where a phone's strip holds the switch (over the hero too: tea-hero-5)
   await page.locator('#mode-toggle').click();
   await expect.poll(mode).toBe('night');
   const [night, nightToken] = await ground();
