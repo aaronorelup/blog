@@ -106,6 +106,11 @@
   <noscript><p>Strung by Morning is a small game drawn and played with JavaScript. Please turn it on to play.</p></noscript>
 </main>
 <script>
+/* Strung by Morning. One night in a small repair shop, made to be played once.
+   Everything is drawn and synthesised in this file: no images, no audio files, no requests.
+   Time only moves inside requestAnimationFrame, so the site's game frame can pause it by holding frames and suspending audio.
+   For tests: ?t=1..20 speeds the game clock, ?fresh=1 ignores and never writes the save, window.__game is read-only state.
+   The save lives in localStorage under ao.strung-by-morning.v1. */
 (function () {
 'use strict';
 
@@ -223,6 +228,8 @@ function audioInit() {
   const AC = window.AudioContext || window.webkitAudioContext;
   if (!AC) return;
   try {
+    /* on phones with the ringer switched off, ask for the kind of audio session that still plays */
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) { /* not offered here */ }
     const c = A.ctx = new AC();
     A.master = c.createGain(); A.master.gain.value = A.muted ? 0 : 0.9;
     A.comp = c.createDynamicsCompressor();
@@ -443,7 +450,7 @@ const glow = { clock: 0, rain: 0, kettle: 0, moth: 0, answer: 0, birds: 0 };
 const rib = {};
 for (const L of LAYERS) rib[L] = new Float32Array(LOOP).fill(-99);
 const birds = BIRD_DEF.map(() => ({ x: 0, hop: 0, sing: 0, in: 0, moved: false }));
-const SPOTS = [[180, 212], [300, 196], [52, 250], [116, 128], [246, 318], [84, 330]];
+const SPOTS = [[180, 212], [300, 196], [52, 250], [116, 128], [130, 440], [262, 122]];   // lamp, clock, kettle, window, sound hole, window
 
 /* ================= the loop that keeps everything ================= */
 const M = { run: false, pos: 0, next: 0, tick: false, on: {}, from: {}, hook: null };
