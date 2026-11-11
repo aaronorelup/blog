@@ -12,8 +12,8 @@ interface Props {
   overlay?: boolean;
   // The footer's line after the copyright. The 404 page leaves it out.
   tagline?: string;
-  // The scrolling body is the page's main landmark (the skip link's target). Not in the overlay (the homepage has
-  // its own <main>), and not on a page that brings one (/stats passes false).
+  // The scrolling body is the page's main landmark (the skip link's target), unless the page brings its own
+  // (/stats passes false). In the overlay it is a region named Content: the homepage keeps its own <main>.
   main?: boolean;
 }
 const { active = 'ledger', view, overlay = false, tagline = 'Notes on learning AI, filed as I go.', main = true } =
@@ -30,7 +30,12 @@ const { active = 'ledger', view, overlay = false, tagline = 'Notes on learning A
     </div>
   </header>
 
-  <div id="panel-scroll" class="pc-scroll" role={main && !overlay ? 'main' : undefined}>
+  <div
+    id="panel-scroll"
+    class="pc-scroll"
+    role={overlay ? 'region' : main ? 'main' : undefined}
+    aria-label={overlay ? 'Content' : undefined}
+  >
     {view ? <div class="pc-view" data-panel-view={view}><slot /></div> : <slot />}
   </div>
 
