@@ -31,7 +31,8 @@ function slotFor(slots, actor, nodeName) {
     if (obj) slot = { obj, inner: null, actor };
   }
   if (slot) {
-    slot.restPos = slot.obj.position.clone();
+    // an actor's root rests where orientActors puts it (it moves when the screen turns): the same object, not a copy
+    slot.restPos = slot.inner ? actor.restPos : slot.obj.position.clone();
     slot.restQuat = slot.obj.quaternion.clone();
     slot.restScale = (slot.inner || slot.obj).scale.clone();
     slot.pos = [0, 0, 0]; slot.rot = [0, 0, 0]; slot.scl = [1, 1, 1]; slot.bend = 0;
@@ -92,14 +93,18 @@ function add(slot, channel, v, k = 1) {
 
 let R = null;   // scratch rotation, made on first use (three arrives with the scene: three.js)
 
-// p: the smoothed scroll progress; time: seconds of idle clock (frozen for screenshots).
-export function applyTracks(bound, p, time) {
+// p: the scene's progress; time: seconds of idle clock (frozen for screenshots); travel: the share of a whole actor's
+// own sideways travel (its position track's x) kept, below 1 on a portrait screen (camera.portrait.travel).
+export function applyTracks(bound, p, time, travel = 1) {
   const { e: _e, q: _q } = R || (R = { e: new Euler(), q: new Quaternion() });
   for (const s of bound.live) {
     s.pos[0] = s.pos[1] = s.pos[2] = 0; s.rot[0] = s.rot[1] = s.rot[2] = 0;
     s.scl[0] = s.scl[1] = s.scl[2] = 1; s.bend = 0;
   }
-  for (const t of bound.scroll) add(t.slot, t.channel, sample(t.keys, p, t.ease));
+  for (const t of bound.scroll) {
+    const v = sample(t.keys, p, t.ease);
+    add(t.slot, t.channel, t.channel === 'position' && t.slot.inner && travel !== 1 ? [v[0] * travel, v[1], v[2]] : v);
+  }
   for (const t of bound.idle) {
     // an idle wave may swell or fade with scroll: scroll is [[p, gain], ...]
     const gain = t.scroll ? sample(t.scroll, p, 'smooth') : 1;

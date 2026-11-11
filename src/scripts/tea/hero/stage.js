@@ -3,7 +3,7 @@
 // runs the frame loop only while the hero is on screen and the tab is visible. Any failure throws before the pin,
 // leaving the poster. window.__teaHero is the screenshot and console hook (setProgress, freeze, pointer, dispose).
 import { ACESFilmicToneMapping, Color, Fog, Scene, WebGLRenderer } from './three.js';
-import { disposeTree, loadActors } from './actors.js';
+import { disposeTree, loadActors, orientActors } from './actors.js';
 import { loadBackdrop, paintBackdrop } from './backdrop.js';
 import { createCamera, fitCamera, placeCamera } from './camera.js';
 import { tickCrt } from './crt.js';
@@ -13,7 +13,7 @@ import { loadManifest } from './manifest.js';
 import { createMotes, tickMotes } from './motes.js';
 import { leadOf, pinSection, relayout, unpinSection, writeProgress } from './pin.js';
 import { loadThree } from './three.js';
-import { applyTracks, bindTracks } from './tracks.js';
+import { applyTracks, bindTracks, sample } from './tracks.js';
 
 const isNight = () => document.documentElement.dataset.mode !== 'day';
 
@@ -26,7 +26,9 @@ export async function mount(section, stage, opts = {}) {
   canvas.className = 'tea-stage-canvas';
   canvas.setAttribute('aria-hidden', 'true');
   const renderer = new WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance', alpha: false });
-  const s = { renderer, canvas, manifest, raf: 0, running: false, visible: true, onscreen: true, frozen: null, lead: 0 };
+  const s = {
+    renderer, canvas, manifest, raf: 0, running: false, visible: true, onscreen: true, frozen: null, lead: 0, dock: 0,
+  };
   try {
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, coarse || small ? 1.5 : 1.75));
     renderer.toneMapping = ACESFilmicToneMapping;
@@ -91,7 +93,9 @@ function resize(s, stage) {
   if (w === s.size[0] && h === s.size[1]) return;
   s.size = [w, h];
   s.renderer.setSize(w, h, false);
+  const was = s.camRig.portrait;
   fitCamera(s.camRig, s.manifest.reference.aspect, w, h);
+  if (s.actors && was !== s.camRig.portrait) orientActors(s.actors, s.manifest, s.camRig.portrait);
   // a tall screen sees more above and below than the picture was painted for: the layers grow to cover it
   for (const l of s.backdrop.layers) l.mesh.scale.setScalar(s.camRig.portrait ? l.spec.portraitScale : 1);
 }
@@ -106,7 +110,11 @@ function frame(s, section, dt) {
   // the scene's own progress: in the flow layout it waits for the title box to scroll away (s.lead)
   const p = Math.min(1, Math.max(0, (s.input.st.p - s.lead) / (1 - s.lead)));
   writeProgress(section, s.input.st.raw);
-  applyTracks(s.bound, p, time);
+  // while the box is docked lower left (the dock layout) the picture slides right, eased like the box's own move
+  const docked = section.dataset.heroLayout === 'dock' && section.dataset.heroPhase === 'docked' ? 1 : 0;
+  s.dock += (docked - s.dock) * (dt ? 1 - Math.exp(-dt * 3.5) : 1);
+  s.camRig.shift = s.dock * sample(s.manifest.camera.dock.shift, p, 'smooth');
+  applyTracks(s.bound, p, time, s.camRig.portrait ? s.manifest.camera.portrait.travel : 1);
   placeCamera(s.camRig, p, s.input.st.par);
   const L = s.manifest.look;
   s.renderer.toneMappingExposure = L.day.exposure + (L.night.exposure - L.day.exposure) * s.mix;
@@ -129,7 +137,7 @@ function wire(s, section, stage) {
     s.raf = requestAnimationFrame(loop);
   };
   s.play = () => {
-    const on = s.visible && s.onscreen && !s.disposed;
+    const on = s.visible && s.onscreen && !s.disposed && !s.held;
     if (on && !s.running) { s.running = true; s.clock = performance.now(); s.raf = requestAnimationFrame(loop); }
     if (!on && s.running) { s.running = false; cancelAnimationFrame(s.raf); s.raf = 0; }
   };
@@ -175,6 +183,8 @@ function hook(s, section, stage) {
     // idle time held at t seconds (null lets it run); the pointer pinned at [x, y] in -1..1 (null releases)
     freeze(t) { s.frozen = t; },
     pointer(xy) { s.input.st.forcedPar = xy; },
+    // no frame loop while held (render() still draws one): cheap, repeatable screenshots on a slow software GPU
+    hold(on) { s.held = !!on; s.play(); },
     render() { s.input.st.snap = true; frame(s, section, 0); s.input.st.snap = false; },
     dispose: () => dispose(s, section, stage),
   };

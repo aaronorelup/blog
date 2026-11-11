@@ -52,20 +52,28 @@ function finishMaterials(model, spec, actor) {
   });
 }
 
-export async function loadActors(manifest, portrait) {
+// Where an actor's root rests: its manifest position, or on a portrait screen its portraitPosition, else the same
+// with x drawn in by camera.portrait.spread. Set again when the screen turns (stage.js).
+export function orientActors(actors, manifest, portrait) {
   const spread = portrait ? manifest.camera.portrait.spread : 1;
-  return Promise.all(manifest.actors.map(async (spec) => {
+  for (const a of actors) {
+    const { position: p, portraitPosition: pp } = a.spec;
+    a.restPos.fromArray(portrait && pp ? pp : [p[0] * spread, p[1], p[2]]);
+    a.root.position.copy(a.restPos);
+  }
+}
+
+export async function loadActors(manifest, portrait) {
+  const actors = await Promise.all(manifest.actors.map(async (spec) => {
     const [model, ...props] = await Promise.all([load(spec.src), ...spec.props.map((p) => load(p.src))]);
     const root = new Group();
     const inner = new Group();
     root.name = 'actor:' + spec.id;
-    const pos = portrait && spec.portraitPosition ? spec.portraitPosition
-      : [spec.position[0] * spread, spec.position[1], spec.position[2]];
-    place(root, pos, spec.rotation);
+    place(root, spec.position, spec.rotation);
     inner.scale.setScalar(spec.scale);
     inner.add(model);
     root.add(inner);
-    const actor = { spec, root, inner, model, shaders: [], bend: null, bendRest: 0 };
+    const actor = { spec, root, inner, model, shaders: [], bend: null, bendRest: 0, restPos: root.position.clone() };
     spec.props.forEach((p, i) => {
       const prop = props[i];
       prop.name = p.id || prop.name;
@@ -78,6 +86,8 @@ export async function loadActors(manifest, portrait) {
     finishMaterials(model, spec, actor);
     return actor;
   }));
+  orientActors(actors, manifest, portrait);
+  return actors;
 }
 
 export function disposeTree(obj) {

@@ -48,9 +48,9 @@ export function normalise(m, url) {
       keys: cam.keys.map((k) => ({ t: Number(k.t), pos: V3(k.pos), look: V3(k.look) }))
         .sort((a, b) => a.t - b.t),
       parallax: { x: 0.3, y: 0.18, ease: 4, drift: 0.5, ...(cam.parallax || {}) },
-      portrait: {
-        fov: 46, spread: 0.55, pull: 1.6, drop: 0.9, aspect: 430 / 932, ...(cam.portrait || {}),
-      },
+      portrait: portraitOf(cam.portrait || {}),
+      // the dock layout's lens shift: a number, or keys [[t, shift], ...] along the scene's progress
+      dock: { shift: keysOf((cam.dock && cam.dock.shift) ?? 0) },
     },
     tracks: (m.tracks || []).map(track),
     idle: (m.idle || []).map((t) => ({
@@ -66,6 +66,15 @@ export function normalise(m, url) {
     },
   };
 }
+
+// travel: how much of a whole actor's own sideways travel (its position track's x) a portrait screen keeps
+const portraitOf = (p) => {
+  const o = { fov: 46, spread: 0.55, pull: 1.6, drop: 0.9, aspect: 430 / 932, ...p };
+  return { ...o, travel: Number(p.travel ?? o.spread) };
+};
+
+const keysOf = (v) => (Array.isArray(v) ? v.map(([t, x]) => [Number(t), Number(x)]).sort((a, b) => a[0] - b[0])
+  : [[0, Number(v) || 0]]);
 
 function litState(s) {
   return {

@@ -9,7 +9,7 @@ export function createCamera(manifest) {
   const times = c.keys.map((k) => k.t);
   const pos = new CatmullRomCurve3(c.keys.map((k) => new Vector3().fromArray(k.pos)), false, 'centripetal');
   const look = new CatmullRomCurve3(c.keys.map((k) => new Vector3().fromArray(k.look)), false, 'centripetal');
-  return { cam, times, pos, look, spec: c, portrait: false, par: { x: 0, y: 0 } };
+  return { cam, times, pos, look, spec: c, portrait: false, par: { x: 0, y: 0 }, shift: 0 };
 }
 
 // progress (0..1) to the curves' own parameter: linear between key times, so keys may be spaced unevenly
@@ -58,4 +58,10 @@ export function placeCamera(rig, p, par) {
   _p.addScaledVector(_r, par.x * k.x).addScaledVector(_u, par.y * k.y);
   rig.cam.position.copy(_p);
   rig.cam.lookAt(_l);
+  // a lens shift: the picture slides right by rig.shift of its width (the docked title box covers the left)
+  const e = rig.cam.projectionMatrix.elements;
+  if (e[8] !== -2 * rig.shift) {
+    e[8] = -2 * rig.shift;
+    rig.cam.projectionMatrixInverse.copy(rig.cam.projectionMatrix).invert();
+  }
 }

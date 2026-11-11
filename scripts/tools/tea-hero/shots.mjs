@@ -29,8 +29,8 @@ for (const [w, h] of sizes) for (const mode of modes) {
     await page.waitForFunction(() => window.__teaHero && document.querySelector('[data-tea-stage][data-ready]'), null, { timeout: 90000 });
   } catch { console.log('NOT READY', w, h, mode, await page.evaluate(() => document.querySelector('[data-tea-hero]').dataset['3dOff'])); }
   // the dev toolbar out of the frame, and the box's dock without its tween, so each frame shows where it settles
-  await page.addStyleTag({ content: 'astro-dev-toolbar{display:none!important}.tea-hero-box{transition:none!important}' });
-  await page.evaluate((t) => { window.__teaHero && (window.__teaHero.freeze(t), window.__teaHero.pointer([0, 0])); }, t);
+  await page.addStyleTag({ content: 'astro-dev-toolbar{display:none!important}.tea-hero-box,.tea-hero-box *{transition:none!important}' });
+  await page.evaluate((t) => { const h = window.__teaHero; if (h) { h.freeze(t); h.pointer([0, 0]); h.hold(true); } }, t);
   const names = [];
   for (const p of ps) {
     await page.evaluate((p) => {
@@ -43,7 +43,7 @@ for (const [w, h] of sizes) for (const mode of modes) {
     await page.waitForTimeout(300);
     await page.evaluate(() => window.__teaHero && window.__teaHero.render());
     const name = `${out}/${w}x${h}-${mode}-p${String(Math.round(p * 100)).padStart(3, '0')}.png`;
-    await page.screenshot({ path: name });
+    await page.screenshot({ path: name, timeout: 120000 });
     names.push(name);
   }
   if (logs.length) console.log(w, h, mode, logs.slice(0, 8).join('\n'));
