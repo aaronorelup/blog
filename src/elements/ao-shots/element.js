@@ -18,6 +18,11 @@ class AoShots extends HTMLElement {
       if (!isFinite(t)) continue;
       const b = h('button', { type: 'button', class: 'ao-shots-btn' });
       while (li.firstChild) b.append(li.firstChild);
+      // A thumbnail the viewer hooked before this ran (hookViewer, _core/viewer.js) was made a button of its own. In
+      // here the shot's button is the one control, and the viewer no longer opens it: drop its tab stop and role.
+      for (const img of b.querySelectorAll('img[role="button"]')) {
+        for (const a of ['tabindex', 'role', 'aria-haspopup']) img.removeAttribute(a);
+      }
       const at = h('span', { class: 'ao-shots-at' });
       const m = Math.floor(t / 60), sec = t - m * 60;
       at.textContent = m + ':' + (sec < 10 ? '0' : '') + sec.toFixed(1);
