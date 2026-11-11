@@ -299,7 +299,7 @@ about a second; run it before every landing, and with paths to see one post (`np
 | `frontmatter.mjs`, strict part | on every post, `src/schemas/strict.js`'s v2 rules and no leftover `series`, `status` or `tags` (a live notebook keeps those; a `HELD` post only warns) | check while `STRICT` is false, then deploy |
 | `prose.mjs` | on what a reader reads: no em dash, no spaced en dash, no `;`, no banned phrase, takeaway at most 2 sentences. Targets, nested parentheses and `style=` only warn (the caps are `strict.js`'s) | check (a `HELD` post: warning) |
 | `never-publish.mjs` | whole words (case-sensitive), runs of 2 or 3, hosts and URL prefixes, hashed and compared; reports the words with `file:line` | deploy |
-| `links.mjs` | `/ledger/<slug>/` goes to a listed post, `/notes/` to its notes; nothing under `public/ledger/`; no banned link | deploy |
+| `links.mjs` | `/ledger/<slug>/` (and the old `/posts/<slug>/`, which redirects there) goes to a listed post, `/notes/` to its notes; nothing under `public/ledger/`; no banned link | deploy |
 | `elements.mjs` | each `src/elements/ao-*/` has its section in `docs/COMPONENTS.md` | check |
 | `assets.mjs` | preview stills and loops exist and are under their caps, icon and project picture caps, every named video or audio is in R2 or in a `STAYS_IN_GIT` folder | deploy |
 | `code.mjs` | 400 lines, no CSS imported by browser JS, no `style=` in components, layouts or pages, `astro:content` only in `lib/content.js` and the schemas, no IP under `worker/` | check |
