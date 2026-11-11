@@ -479,7 +479,7 @@ once the 3D hero pins the top.
 | Projects (each section's cards, in order), courses, the newest Now snapshot and About (its lede and prose, all of `/about/` but its title) show what `/projects/`, `/courses/`, `/now/` and `/about/` show | tea-3 |
 | Every internal link and picture resolves: page anchors are ids on the page, every other address answers 200, an anchor on another page is an id there | tea-4 |
 | No draft or unlisted post anywhere: no slug in the HTML; no title and no AO id of its own in the page's text or any attribute, outside Now's and About's own words (the main site's, tea-3) | tea-5 |
-| Canonical, robots and the sitemap follow the shipped `TEA_SEO` through `teaSeo()` (`'pending'`: self canonical, no robots tag, not in the sitemap); never a feed item, no `data-pagefind-body` | tea-6 |
+| Canonical, robots and the sitemap follow the shipped `TEA_SEO` through `teaSeo()` (`'pending'`: self canonical, no robots tag, not in the sitemap); never a feed item, no `data-pagefind-body`, and semantic search and Ask hold only the listed posts and their notes | tea-6 |
 | The panel footer's "Tea room" link and the homepage gate's button reach `/tea/`; the gate's `data-no-fly` leaves at once (the scene doesn't hold the click to fly) | tea-7 |
 | The hero, the rail and the footer lead back to `/`; the footer carries every `NAV` link | tea-8 |
 | The rail marks the chapter being read (`aria-current`), none over the hero; a rail link or strip pill takes the reader to its chapter; a chapter reached by its anchor shows its opener (the one-time fade has run) | tea-9 |

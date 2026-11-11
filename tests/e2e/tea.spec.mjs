@@ -192,6 +192,14 @@ test(`tea-6 canonical, robots and the sitemap are what the shipped switch says (
   // never a feed item, never in the words index (Pagefind reads only [data-pagefind-body])
   expect(await (await request.get('/rss.xml')).text()).not.toContain(`>${self}<`);
   await expect(page.locator('[data-pagefind-body]')).toHaveCount(0);
+  // nor in semantic search or Ask: each holds the listed posts and their notes pages, and nothing else
+  // (src/lib/search/docs.js, src/lib/ask/docs.js)
+  const listed = new Set(Object.keys((await (await request.get('/ledger/previews.json')).json()).posts));
+  const search = Object.keys((await (await request.get('/search/manifest.json')).json()).docs);
+  const ask = Object.values((await (await request.get('/ask/manifest.json')).json()).docs).map((d) => d.slug);
+  expect(Math.min(search.length, ask.length)).toBeGreaterThan(0);
+  expect(search.filter((k) => !/^(post|notes):/.test(k) || !listed.has(k.replace(/^\w+:/, '')))).toEqual([]);
+  expect(ask.filter((slug) => !listed.has(slug))).toEqual([]);
 });
 
 test('tea-7 the main site reaches the tea room: the panel footer, and the homepage gate leaving at once', async ({ page }) => {
