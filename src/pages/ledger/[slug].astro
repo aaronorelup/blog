@@ -13,10 +13,10 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { title, summary, date, unlisted, draft } = post.data;
+const { title, summary, date, unlisted, draft, voice } = post.data;
 const image = unlisted || draft ? undefined : (await ogImage(post)).path;
 ---
 <PanelPage title={`${title} · Aaron Orelup`} description={summary} active="ledger" noindex={unlisted || draft} image={image}
-  published={date} headline={title}>
+  published={date} headline={title} voice={voice}>
   <PostView post={post} />
 </PanelPage>

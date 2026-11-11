@@ -189,7 +189,7 @@ fails the build, or only warns in a live notebook.
 | `src/lib/text/minutes.js` | reading minutes from `text.words` (the post header's, the card's and the ledger row's) |
 | `src/lib/og/` | `card.js` draws a share card with sharp (1200×630 JPEG: icon or glyph, id and topic, the title in Zen Maru Gothic from `src/assets/fonts/`, the verdict); `image.js` names it by hash, keeps it in `node_modules/.astro/og/`, and fails the build on a card that can't be drawn, except a live notebook's, which falls back to `public/og/default.jpg` |
 | `src/lib/build.js` | `COMMIT`, the commit a build is made from (the `ao-build` meta) |
-| `src/lib/jsonld.js` | schema.org data for `chrome/Head`: `blogPosting` (a listed post: headline, description, datePublished, url, image, author `OWNER`), `webSite` (the homepage), `scriptText` (the JSON with every `<` escaped) |
+| `src/lib/jsonld.js` | schema.org data for `chrome/Head`: `blogPosting` (a listed post: headline, description, datePublished, url, image, author `OWNER`; no author on a `voice: claude` post, whose page says Claude wrote it), `webSite` (the homepage), `scriptText` (the JSON with every `<` escaped) |
 | `src/lib/read/` | `posts.js` (`recordable`: the posts recorded, listed and never a live notebook; `ranked`, the cron's order), `sections.js` (a post → sections and their hashes), `speak.js` (the copy the voice reads: numbers, money, units, dates, clock times and lengths spelled out, with its map back to the screen), `align.js` (the voice's character times → words). `speak.js` and `align.js` run in the Worker too |
 | `src/lib/search/chunks.js`, `docs.js` | a listed post or its notes → search chunks (the short version, then each h2 section, at most 1,500 characters) and the manifest; `docs.js` reads the build's posts once |
 | `src/lib/ask/` | RAG Goobie's build: `caps.js` (every cap, `est()`), `words.js` (every prompt word), `price.js` (DeepSeek's prices, peak, cost, worst), `docs.js` (listed posts and notes, the one astro:content reader here), `corpus.js` (numbering, cuts), `blocks.js` (doc blocks, the catalog, fragments), `packs.js` (whole or split, pinned ranges), `manifest.js` (`assemble()`: files and manifest), `build.js` (`askBuild()`, once a build) |
@@ -334,7 +334,7 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
 | `/ledger/<slug>/` for every post, `public/_redirects`, RSS guid = `https://aaronorelup.com/ledger/<slug>/` | `verify-dist` against `tests/baseline/urls.txt` |
 | the `<ao-*>` tag names and attributes (72 posts use them) | the e2e suite; an unknown tag fails the build (`rehype-post-text`) |
 | every listed post's page has one `<link rel="canonical">` and one `og:url`, both `https://aaronorelup.com/ledger/<slug>/` (`chrome/Head.astro`) | `verify-dist` |
-| every listed post's page has one `<script type="application/ld+json">` that parses, its `url` that same address (`src/lib/jsonld.js`) | `verify-dist` |
+| every listed post's page has one `<script type="application/ld+json">` that parses, its `url` that same address, its `author` exactly `OWNER`, and no author at all on a `voice: claude` post (`src/lib/jsonld.js`) | `verify-dist` |
 | `/ledger/previews.json` = `{ posts: { slug: card } }`, keys = listed slugs | `verify-dist` |
 | `/stats-pages.txt`: no unlisted slug, nothing deeper than `/ledger/<slug>/` except `/ledger/<listed>/notes/` | `verify-dist`, `agg.test.mjs` |
 | `/version.json` and the main-only guard in `astro.config.mjs` | unchanged |

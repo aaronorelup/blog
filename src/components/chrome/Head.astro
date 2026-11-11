@@ -18,15 +18,17 @@ interface Props {
   published?: Date;
   // A post's own title, without the site's name: with its date, and unless noindex, the page carries a BlogPosting.
   headline?: string;
+  // A post's voice: 'claude' where the page says Claude wrote it, and its BlogPosting then names no author.
+  voice?: string;
   // The homepage: it carries the WebSite.
   home?: boolean;
 }
-const { title, description, noindex = false, image, published, headline, home = false } = Astro.props;
+const { title, description, noindex = false, image, published, headline, voice, home = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const shareImage = image && new URL(image, Astro.site).href;
 const data = noindex ? null
-  : headline && published
-    ? blogPosting({ headline, description, published, url: canonical, image: image && new URL(image, Astro.site).href })
-    : home ? webSite(canonical) : null;
+  : headline && published ? blogPosting({ headline, description, published, url: canonical, image: shareImage, voice })
+  : home ? webSite(canonical) : null;
 ---
 
 <meta charset="utf-8" />

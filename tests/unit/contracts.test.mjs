@@ -51,15 +51,33 @@ test('a page: one canonical and one og:url, both its own address', () => {
 test('a listed post: one JSON-LD block that parses, its url the page address', () => {
   const block = (json) => `<script type="application/ld+json">${json}</script>`;
   const page = (...blocks) => `<html lang="en"><head><script>var a = 1;</script>${blocks.join('')}</head><body></body></html>`;
-  const good = block('{"@type":"BlogPosting","headline":"a \\u003c/script> b","url":"https://aaronorelup.com/ledger/a/"}');
+  const owner = '"author":{"@type":"Person","name":"Aaron Orelup","url":"https://aaronorelup.com/about/"}';
+  const post = (author) => block(`{"@type":"BlogPosting","headline":"a \\u003c/script> b","url":"https://aaronorelup.com/ledger/a/"${author}}`);
+  const good = post(`,${owner}`);
   assert.deepEqual(jsonLdProblems(page(good), '/ledger/a/'), []);
   assert.equal(jsonLdProblems(page(), '/ledger/a/').length, 1);
   assert.equal(jsonLdProblems(page(good, good), '/ledger/a/').length, 1);
   assert.equal(jsonLdProblems(page(good), '/ledger/b/').length, 1);
-  assert.equal(jsonLdProblems(page(block('{"@type":"BlogPosting"}')), '/ledger/a/').length, 1);
+  assert.equal(jsonLdProblems(page(block(`{"@type":"BlogPosting",${owner}}`)), '/ledger/a/').length, 1);
   assert.equal(jsonLdProblems(page(block('{"url":"https://aaronorelup.com/ledger/a/"')), '/ledger/a/').length, 1);
   // An unescaped </script> in a title ends the block early: what is left does not parse.
   assert.equal(jsonLdProblems(page(block('{"headline":"a </script> b","url":"https://aaronorelup.com/ledger/a/"}')), '/ledger/a/').length, 1);
+});
+
+test('a listed post: the author is the owner, and none where the page says Claude wrote it', () => {
+  const block = (author) => `<head><script type="application/ld+json">{"url":"https://aaronorelup.com/ledger/a/"${author}}</script></head>`;
+  const person = (name, url = 'https://aaronorelup.com/about/') => `,"author":{"@type":"Person","name":"${name}","url":"${url}"}`;
+  // Aaron's post: exactly the owner, nothing less and nothing more.
+  assert.deepEqual(jsonLdProblems(block(person('Aaron Orelup')), '/ledger/a/'), []);
+  assert.equal(jsonLdProblems(block(''), '/ledger/a/').length, 1);
+  assert.equal(jsonLdProblems(block(person('Claude')), '/ledger/a/').length, 1);
+  assert.equal(jsonLdProblems(block(person('Aaron Orelup', 'https://aaronorelup.com/')), '/ledger/a/').length, 1);
+  assert.equal(jsonLdProblems(block(`,"author":[${person('Aaron Orelup').slice(10)},${person('Claude').slice(10)}]`), '/ledger/a/').length, 1);
+  // Claude's post: no author at all, not the owner and not a substitute.
+  assert.deepEqual(jsonLdProblems(block(''), '/ledger/a/', true), []);
+  assert.equal(jsonLdProblems(block(person('Aaron Orelup')), '/ledger/a/', true).length, 1);
+  assert.equal(jsonLdProblems(block(person('Claude')), '/ledger/a/', true).length, 1);
+  assert.equal(jsonLdProblems(block(',"author":null'), '/ledger/a/', true).length, 1);
 });
 
 test('the baseline: every path built or redirected', () => {
