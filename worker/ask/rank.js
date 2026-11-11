@@ -1,5 +1,5 @@
 // RAG Goobie's retrieval (docs/ASK.md "Retrieval"): the question and the planner's queries embedded in one Workers
-// AI call each (counted in search_daily) and looked up in Vectorize as ids; then, pure, the lists fused by
+// AI call each (counted in ask_search_daily) and looked up in Vectorize as ids; then, pure, the lists fused by
 // reciprocal rank at chunk level and R: the planner's picks, the fused docs, every other listed doc newest first.
 // The live notebook enters R only when the planner picks it (it would take a top-6 slot in 23% of questions).
 import { spend } from '../lib/flags.js';
@@ -10,9 +10,11 @@ export const RANK = { k: 60, topK: 100, timeout: 5e3, focusMore: 6, hint: 6, ran
 const within = (ms, p) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(new Error(`${ms} ms`)), ms))]);
 const unique = (xs) => [...new Set(xs)];
 
-// One id list per text, or null when search_daily is spent or a call fails or runs past 5 s.
+// One id list per text, or null when ask_search_daily is spent or a call fails or runs past 5 s. Ask's embedding
+// calls have their own count (usage_day 'ask_search'), apart from /api/search's: that route takes no token, so
+// its traffic could otherwise spend the day's cap and leave every question without retrieval.
 export async function search(env, f, texts) {
-  if (!texts.length || !(await spend(env, 'search', 1, f.search_daily))) return null;
+  if (!texts.length || !(await spend(env, 'ask_search', 1, f.ask_search_daily))) return null;
   try {
     const vectors = await within(RANK.timeout, embed(env, texts));
     return await Promise.all(vectors.map((v) => within(RANK.timeout, nearest(env, v, RANK.topK))));
