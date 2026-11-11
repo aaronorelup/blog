@@ -206,7 +206,7 @@ fails the build, or only warns in a live notebook.
 | `src/components/ledger/` | `LedgerView` (`/ledger/`), `SearchBox` (the box and its Search \| Ask RAG Goobie switch, the line under it), `StartHere`, `PostCard` (icon or glyph, title, stamp: Start here's and a post's Read next), `Chips` (topic and project counts, real links `?topic=`), `LedgerRow` (icon or glyph, title link with `data-ledger-entry`, summary, meta, the stamp's `<details>` short version) |
 | `src/components/{about,courses,research,now}/` | `AboutView`; `CoursesView`, `LessonList`, `Coin`; `ResearchView`; `NowView` (a snapshot, then History) |
 | `src/components/projects/` | `ProjectsView` (`/projects`), `JumpRow`, `Highlights` (the reel from `picks.js REEL` and the cards marked `highlight`), `ProjectSection`, `ProjectCard`, `NeedsGlyph` |
-| `src/components/post/` | `PostView` (the article: `data-post-article`, `data-panel-view` `post` or `notes`, `data-slug`), `PostHeader` (icon or glyph, id · date · minutes, topic and project chips, title `data-r=t`, summary `data-r=s`, the byline on `voice: claude` pages, `ReadAloud`), `ShortVersion` (`#short`, the post's card; none on an unlisted post), `NotesLink`, `Contents` (4+ h2 or 900+ words), `Related` (three `ledger/PostCard`s), `PostNav`, `ElementStyles`, `ReadAloud` (the Listen button; `data-read-hash` names this version's recording, absent on a post never recorded) |
+| `src/components/post/` | `PostView` (the article: `data-post-article`, `data-panel-view` `post` or `notes`, `data-slug`), `PostHeader` (icon or glyph, id · date · minutes, topic and project chips, title `data-r=t`, summary `data-r=s`, the byline on `voice: claude` pages, `ReadAloud`), `ShortVersion` (`#short`, the post's card; none on an unlisted post), `NotesLink`, `Contents` (4+ h2, or 2+ h2 and 900+ words), `Related` (three `ledger/PostCard`s), `PostNav`, `ElementStyles`, `ReadAloud` (the Listen button; `data-read-hash` names this version's recording, absent on a post never recorded) |
 | `src/components/lore/` | the lore course |
 
 ### `src/scripts/` and `src/styles/` (the browser)
@@ -316,7 +316,7 @@ names from a reader of the repo, not from someone set on guessing them.
 
 **Budgets** (`scripts/tools/budgets.mjs`, gzipped, without fonts and media): a post page minus its prose ≤ 20 KB
 (chrome HTML 4, CSS 15, JS up front 8: the page's scripts, their static imports and its view's module), each element's own chunks and inlined CSS ≤ 6 KB (`ao-series`, `ao-game`
-10; one row names the element nearest its budget), the ledger's chrome ≤ 6 KB and ≤ 360 B a row (each row carries its card), the homepage before the
+10; one row names the element nearest its budget), the JS Listen loads ≤ 8 KB, the ledger's chrome ≤ 6 KB and ≤ 360 B a row (each row carries its card), the homepage before the
 scene chunk ≤ 30 KB (HTML 12, entry JS 12). Printed by every build, never failing it. A display code point the
 self-hosted fonts miss is a warning in the build and a failure of `node scripts/tools/budgets.mjs` and of
 `tests/unit/fonts.test.mjs`; `node scripts/tools/fonts.mjs` fixes it.
