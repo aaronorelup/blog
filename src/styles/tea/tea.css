@@ -122,7 +122,12 @@ body.tea {
   .tea-frame { display: block; }
   .tea-rail {
     z-index: 30; height: var(--tea-strip-h); flex-direction: row; align-items: center; gap: 10px;
-    padding: 0 100px 0 10px; border-right: 0; border-bottom: 1px solid var(--pc-line);
+    padding: 0 100px 0 10px; border-right: 0; border-bottom: 1px solid var(--pc-line); background: none;
+  }
+  /* The frosted ground is a layer of its own: a backdrop-filter on the strip would make it the fixed switch's
+     containing block, and the switch would scroll away with the strip, off screen all through the hero. */
+  .tea-rail::before {
+    content: ''; position: absolute; inset: 0; z-index: -1;
     background: color-mix(in srgb, var(--pc-page) 92%, transparent); backdrop-filter: blur(10px);
   }
   .tea-rail-head { flex: none; }
