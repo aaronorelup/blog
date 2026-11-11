@@ -395,7 +395,7 @@ const cv = $('c'), ctx = cv.getContext('2d'), domEl = $('dom');
 let sc = 1, ox = 0, oy = 0, dpr = 1, cssW = 360, cssH = 640, XMIN = 0, XMAX = 360, YMIN = 0, YMAX = 640;
 function resize() {
   cssW = window.innerWidth || 360; cssH = window.innerHeight || 640;
-  dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
   const w = Math.max(1, Math.round(cssW * dpr)), h = Math.max(1, Math.round(cssH * dpr));
   if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
   sc = Math.min(cssW / 360, cssH / 640);
@@ -436,7 +436,7 @@ const F = {
   selBird: 0, dragBird: -1, birdMoved: false,
   latch: [0, 0], lidShut: false, lampOff: false,
   strumAt: -9, strummed: false, strumFrom: null, finale: false, lightA: 0, cadence: false,
-  tagA: 0, tagFlip: 0, titleA: 0, endA: 0, clockH: 1.7, playing: false, frameGlow: 0,
+  tagA: 0, tagFlip: 0, titleA: 0, endA: 0, clockH: 1.7, playing: false, frameGlow: 0, tickVol: 1,
 };
 const vib = [0, 0, 0, 0, 0, 0];
 const glow = { clock: 0, rain: 0, kettle: 0, moth: 0, answer: 0, birds: 0 };
@@ -457,7 +457,7 @@ function transport(dt) {
 function schedStep(abs, off) {
   const s = ((abs % LOOP) + LOOP) % LOOP;
   if (M.tick && s % 2 === 0) {
-    noiseHit(off, (s / 2) % 2 ? 1850 : 2500, 5, 0.05, 0.05, 0.3, 0.08);
+    noiseHit(off, (s / 2) % 2 ? 1850 : 2500, 5, 0.2 * F.tickVol, 0.05, 0.3, 0.08);
     after(off, () => { F.tickFlash = 1; });
   }
   for (const L of LAYERS) {
@@ -972,7 +972,7 @@ function drawHandFront(k) {
 /* ================= threads, tuning, the moth, the rain ================= */
 function threadSrc() { return T.src ? T.src() : { x: 180, y: 300 }; }
 function drawThread() {
-  if (!T.on || T.stage === 'on' || T.stage === '') return;
+  if (!T.on || T.stage === 'on' || T.stage === 'done' || T.stage === '') return;
   const s = threadSrc(), p = pulse(4);
   if (T.stage !== 'wait') {
     const mx = (s.x + T.x) / 2, my = Math.max(s.y, T.y) + 18 + dist(s.x, s.y, T.x, T.y) * 0.08;
@@ -1253,7 +1253,7 @@ function threadAttach() {
   const p = pegPos(T.i);
   T.stage = 'on'; T.x = p.x; T.y = p.y; F.wind = 0;
   spark(p.x, p.y, 10, C_GOLD, 46); ring(p.x, p.y, C_GOLD, 5, 26, 0.5);
-  noiseHit(0, 3400, 6, 0.05, 0.04, 0.3, 0.1);
+  noiseHit(0, 3400, 6, 0.22, 0.04, 0.3, 0.1);
   pluck(OPEN[T.i], 0.03, { gain: 0.2, lp: 2200, rate: Math.pow(2, -9 / 12), dur: 0.6, send: 0.2 });
   vib[T.i] = 0.8;
 }
@@ -1305,7 +1305,7 @@ function windAdd(d) {
   F.pegAng += d * windTurns() * TAU;
   const q = Math.floor(F.wind * 12), q0 = Math.floor(before * 12);
   if (q !== q0 && F.wind < 1) {
-    noiseHit(0, 2400 + F.wind * 2200, 8, 0.03, 0.03, 0.3, 0);
+    noiseHit(0, 2400 + F.wind * 2200, 8, 0.16, 0.03, 0.3, 0);
     if (q % 2 === 0) { pluck(OPEN[T.i], 0, { gain: 0.2, lp: 2600, rate: Math.pow(2, -(1 - F.wind) * 9 / 12), dur: 0.5, send: 0.2 }); vib[T.i] = Math.max(vib[T.i], 0.7); }
   }
   if (F.wind >= 1) tuned();
@@ -1351,7 +1351,7 @@ function* ritual(i, src, lines, look) {
 /* ================= what the hands can do ================= */
 function pluckOpen(i, gain) { pluck(OPEN[i], 0, { gain: gain || 0.36, lp: 4000 + i * 700, send: 0.3, pan: (i - 2.5) * 0.08 }); vib[i] = 1; }
 function freePluck(x, y) {
-  if (W.strings < 1 || V.lid > 0.3 || V.gone > 0.5 || V.guitar < 0.5) return false;
+  if (W.strings < 1 || V.lid > 0.3 || V.gone > 0.5 || V.guitar < 0.5 || F.playing) return false;
   const xf = guitarXf(), dx = x - xf.x, dy = y - xf.y, c = Math.cos(-xf.r), s = Math.sin(-xf.r), lx = dx * c - dy * s, ly = dx * s + dy * c;
   if (lx < SADDLE - 8 || lx > NUT + 6 || Math.abs(ly) > 27) return false;
   let best = 0, bd = 1e9;
@@ -1374,7 +1374,7 @@ function slideSet(x, down) {
   const lx = x - GTR.x;
   let best = 1, bd = 1e9;
   for (let k = 1; k < RAIN_FRETS.length; k++) { const d = Math.abs(lx - FINGER_X[k]); if (d < bd) { bd = d; best = k; } }
-  if (!F.fingerDown || F.fretI !== best) noiseHit(0, 3200, 2, 0.012, 0.04, 0.2, 0.1);
+  if (!F.fingerDown || F.fretI !== best) noiseHit(0, 3200, 2, 0.045, 0.04, 0.2, 0.1);
   F.fingerDown = true; F.fretI = best;
   rainArm();
 }
@@ -1440,7 +1440,7 @@ function mothNotes(L) {
     for (let k = 0; k < 9; k++) {
       const hit = segHit(a, b, RAYS[k]);
       if (!hit) continue;
-      const f = (L.cum[i - 1] + hit.u * (L.cum[i] - L.cum[i - 1])) / L.len, s = clamp(Math.floor(f * LOOP), 0, LOOP - 1);
+      const f = (L.cum[i - 1] + hit.u * (L.cum[i] - L.cum[i - 1])) / L.len, s = Math.round(f * LOOP) % LOOP;
       if (used.has(s)) continue;
       used.add(s);
       out.push({ s, p: pitchAtY(hit.y), x: Math.round(hit.x), y: Math.round(hit.y), r: k });
@@ -1449,7 +1449,7 @@ function mothNotes(L) {
   if (out.length > 18) { out.sort((a, b) => (a.s % 2) - (b.s % 2) || a.s - b.s); out = out.slice(0, 18); }
   for (let b = 0; b < 4; b++) {
     if (out.some((n) => (n.s >> 3) === b)) continue;
-    for (const ds of GHOST_MEL[b]) { const s = b * 8 + ds, pt = linePoint(L, (s + 0.5) / LOOP); out.push({ s, p: pitchAtY(pt[1]), x: Math.round(pt[0]), y: Math.round(pt[1]), r: -1 }); }
+    for (const ds of GHOST_MEL[b]) { const s = b * 8 + ds, pt = linePoint(L, s / LOOP); out.push({ s, p: pitchAtY(pt[1]), x: Math.round(pt[0]), y: Math.round(pt[1]), r: -1 }); }
   }
   return out.sort((a, b) => a.s - b.s);
 }
@@ -1533,7 +1533,7 @@ function birdStep(b, s) {
   s = clamp(s, 0, LOOP - 1);
   if (s === S.birds[b]) return;
   S.birds[b] = s; birdsSync(); F.birdMoved = true;
-  noiseHit(0, 4200, 9, 0.014, 0.025, 0.3, 0.05);
+  noiseHit(0, 4200, 9, 0.08, 0.025, 0.3, 0.05);
 }
 function birdUp() { const b = F.dragBird; if (b < 0) return; F.dragBird = -1; birds[b].dragX = null; birdChirp(b); }
 function latchTap(x, y) {
@@ -1542,7 +1542,7 @@ function latchTap(x, y) {
   if (best >= 0) latchShut(best);
   return best >= 0;
 }
-function latchShut(j) { if (F.latchT[j]) return; F.latchT[j] = 1; noiseHit(0, 2100, 5, 0.09, 0.05, j ? 0.2 : -0.2, 0.12); tone(0, 320, 180, 0.07, 0.06, 'triangle', 0.1); spark(GTR.x + LATCH_X[j], GTR.y + 64, 4, C_CREAM, 28); }
+function latchShut(j) { if (F.latchT[j]) return; F.latchT[j] = 1; noiseHit(0, 2100, 5, 0.4, 0.05, j ? 0.2 : -0.2, 0.12); tone(0, 320, 180, 0.07, 0.06, 'triangle', 0.1); spark(GTR.x + LATCH_X[j], GTR.y + 64, 4, C_CREAM, 28); }
 function latchNext() { for (let j = 0; j < 2; j++) if (!F.latchT[j]) { latchShut(j); return; } }
 function strum(dir) {
   if (F.strummed) return;
@@ -1581,7 +1581,7 @@ function applyWorld(i, dark) {
   if (i >= 5 && !LINE) LINE = buildLine(S.line) || DEFL;
   if (i >= 7) birdsSync();
   const run = !dark && night;
-  M.tick = night; W.pend = run ? 1 : 0;
+  M.tick = night; W.pend = run ? 1 : 0; F.tickVol = 1;
   if (run && !M.run) { M.pos = 0; M.next = 0; }
   M.run = run; M.hook = null;
   for (let b = 0; b < 5; b++) birds[b].in = i >= 7 ? 1.4 : 0;
@@ -1603,11 +1603,13 @@ function* gate(i) {
   let w = 0;
   yield () => (w++ > 40) || !A.ok || A.ctx.state === 'running';
 }
-function lampSound(on) { noiseHit(0, on ? 3000 : 2200, 3, 0.1, 0.03, 0, 0.15); tone(0, on ? 150 : 110, 80, 0.09, 0.09, 'sine', 0.1); if (on) tone(0.03, 1760, 1760, 0.9, 0.012, 'sine', 0.7); }
+function lampSound(on) { noiseHit(0, on ? 3000 : 2200, 3, 0.36, 0.03, 0, 0.15); tone(0, on ? 150 : 110, 80, 0.09, 0.09, 'sine', 0.1); if (on) tone(0.03, 1760, 1760, 0.9, 0.012, 'sine', 0.7); }
 
 function* beatNote() {
   W.lamp = 1; lampSound(true); W.title = 1; ring(LAMP.x, LAMP.y, C_GOLD, 8, 150, 1.2); ring(LAMP.x, LAMP.y, C_GOLD, 8, 80, 0.8);
   yield 1.4; say('A small repair shop, long after midnight.');
+  /* the clock is already going, quietly, so the room is alive from the first second */
+  M.pos = 0; M.next = 0; M.tick = true; M.run = true; W.pend = 1; F.tickVol = 0.45;
   yield 5; W.title = 0;
   yield 0.6; W.guitar = 1; say('On the bench, a guitar with no strings.');
   yield 5.2; say('Someone left a note with it.');
@@ -1615,7 +1617,7 @@ function* beatNote() {
   yield 6.6; W.tag = 0;
   yield 0.9; say('It can. In this shop, strings are spun from sounds.');
   yield 5.4;
-  M.pos = 0; M.next = 0; M.tick = true; M.run = true; W.pend = 1;
+  F.tickVol = 1; { const b = bobPos(); ring(b.x, b.y, C_GOLD, 8, 40, 0.9); }
   say('Listen. Start with the clock.');
   yield 4.4;
 }
@@ -1731,7 +1733,7 @@ function lampOffAct() {
   W.lamp = 0; W.rays = 0; W.ribbon = 0; W.pend = 0; W.kettle = 0; M.run = false; M.tick = false; F.mothRest = true;
   if (F.holding) holdEnd();
 }
-function lidShut() { if (F.lidShut) return; F.lidShut = true; W.lid = 1; after(0.42, () => { tone(0, 96, 60, 0.22, 0.2, 'sine', 0.15); noiseHit(0, 420, 0.8, 0.1, 0.09, 0, 0.15, 'lowpass'); }); }
+function lidShut() { if (F.lidShut) return; F.lidShut = true; W.lid = 1; after(0.42, () => { tone(0, 96, 60, 0.22, 0.2, 'sine', 0.15); noiseHit(0, 420, 0.8, 0.5, 0.09, 0, 0.15, 'lowpass'); }); }
 function* beatSilence() {
   F.lampOff = false; F.lidShut = false; F.latchT = [0, 0];
   say('Nearly morning. Put out the lamp.');
@@ -1749,7 +1751,7 @@ function* beatSilence() {
   yield 8; say('');
   yield 3;
   W.door = 1; W.dawn = 0.74;
-  noiseHit(0, 300, 0.7, 0.07, 1.3, 0.5, 0.3, 'lowpass'); tone(0.25, 620, 540, 0.5, 0.012, 'triangle', 0.5, 0.5);
+  noiseHit(0, 300, 0.7, 0.36, 1.3, 0.5, 0.3, 'lowpass'); tone(0.25, 620, 540, 0.5, 0.012, 'triangle', 0.5, 0.5);
   say('The door. Morning comes in.');
   yield 6.5;
 }
@@ -1784,8 +1786,8 @@ function* beatEnding() {
   F.strummed = false;
   say('Someone has come for it.');
   yield 3.6; W.hands = 1;
-  yield 2.3; F.latchT = [0, 1]; noiseHit(0, 2100, 5, 0.08, 0.05, -0.2, 0.12);
-  yield 0.55; F.latchT = [0, 0]; noiseHit(0, 2300, 5, 0.08, 0.05, 0.2, 0.12);
+  yield 2.3; F.latchT = [0, 1]; noiseHit(0, 2100, 5, 0.36, 0.05, -0.2, 0.12);
+  yield 0.55; F.latchT = [0, 0]; noiseHit(0, 2300, 5, 0.36, 0.05, 0.2, 0.12);
   yield 0.9; W.lid = 0;
   yield 1.5; say('Careful hands lift it out.'); W.lift = 1;
   yield 4.2; say('Give it one strum.');
@@ -1917,7 +1919,7 @@ function update(dt) {
   if (F.holding && (M.pos - F.holding.q >= 12 || (recArmed() && M.pos >= R.end))) holdEnd();
   if (F.playing && M.run && M.on.moth) F.trace = Math.max(F.trace, clamp((M.pos - M.from.moth) / LOOP, 0, 1));
   spawnDrops(); updParts(dt); updWords(dt);
-  setRainBed(W.rain ? 0.026 : 0);
+  setRainBed(W.rain ? 0.07 : 0);
 }
 const MOTES = [];
 { const r = rng(5); for (let i = 0; i < 16; i++) MOTES.push([r(), r(), r() * TAU, 0.4 + r() * 0.8]); }
@@ -2097,14 +2099,14 @@ function onKey(c, down, rep) {
       case 'answer': { const p = SPOTS[F.kbSpot++ % SPOTS.length]; answerTap(p[0], p[1]); break; }
       case 'latch': latchNext(); break;
       case 'strum': strum(1); break;
-      default: if (W.strings > 0 && V.lid < 0.3 && V.gone < 0.5) pluckOpen(kbStr++ % W.strings);
+      default: if (W.strings > 0 && V.lid < 0.3 && V.gone < 0.5 && !F.playing) pluckOpen(kbStr++ % W.strings);
     }
     return;
   }
   const vert = c === 'up' || c === 'down';
   if (kind === 'wind') { if (vert) { F.windKey = down ? 1 : 0; if (down && !rep) windAdd(0.04); } }
   else if (kind === 'slide') {
-    if (down && !vert) { F.fretI = clamp(F.fretI + (c === 'left' ? 1 : -1), 0, RAIN_FRETS.length - 1); F.fingerDown = F.fretI > 0; rainArm(); noiseHit(0, 3200, 2, 0.012, 0.04, 0.2, 0.1); }
+    if (down && !vert) { F.fretI = clamp(F.fretI + (c === 'left' ? 1 : -1), 0, RAIN_FRETS.length - 1); F.fingerDown = F.fretI > 0; rainArm(); noiseHit(0, 3200, 2, 0.045, 0.04, 0.2, 0.1); }
   } else if (kind === 'draw' || kind === 'keep') {
     if (vert) { if (down) { if (!F.steer) steerStart(); F.steer.dir = c === 'up' ? -1 : 1; } else if (F.steer) F.steer.dir = 0; }
   } else if (kind === 'birds' && down) {
