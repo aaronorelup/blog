@@ -136,6 +136,24 @@ Both rig kinds through one mechanism:
 - **Pose-baked mesh** (one TRELLIS mesh, no skeleton): whole-body tracks only (`position`, `rotation`, `squash`),
   the `bend` deform for a tail, and props (lantern, bell) loaded separately and parented to the actor.
 
+### What the loader takes (checked on 2026-11-11)
+
+- **Compression:** `EXT_meshopt_compression` (the decoder, `three/examples/jsm/libs/meshopt_decoder.module.js`, is
+  bundled into the lazy 3D chunk only: 22.4 KB, 6.1 KB gzip of it), `KHR_mesh_quantization` and `EXT_texture_webp`,
+  all three as required extensions: what `gltf-transform optimize --compress meshopt --texture-compress webp` and
+  `gltfpack -cc -tc` write. The spike's compressed models in `docs/tea-handoff/hero/glb/` (Yusef, the CRT, the lantern,
+  Jefrie) load in the lab through a manifest variant, with no console error. No KTX2 or Draco decoder is bundled.
+- **Skinned meshes:** a test model built like the final assets (a skinned tail with bones `tail.01` to `tail.03`, a
+  rigid `wing.L` with its pivot at its root, quantized, meshopt, a WebP texture) binds by the convention names: the
+  bones arrive as `Bone`s named `tail01` with `userData.name` `tail.01`, tracks on `tail.02` and `wing.L` turn them, and
+  the skinned tail curls (its skinned bounding box goes from y 0.62 to 1.21 at the top).
+- **Quantized meshes keep their scale on the node.** After `KHR_mesh_quantization` a mesh's positions are integers in
+  -1..1 and its node carries the scale back (about 0.5 for TRELLIS output, which is about 1 unit across). The `bend`
+  deform works on the mesh's own positions, so its `start` and `y` are in that space: model units divided by the
+  mesh node's scale (about twice the model units for TRELLIS output).
+- **Props need their parent node:** a prop whose `parent` node is missing hangs from the model's root (the spike's
+  Yusef has no `hand.R`, so the lantern sits at his centre). A track or material on a missing node is skipped.
+
 ## Running it
 
 ```bash
