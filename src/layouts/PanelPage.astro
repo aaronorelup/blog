@@ -19,6 +19,8 @@ interface Props {
   image?: string;
   // A post's date (Head: og:type article).
   published?: Date;
+  // A post's own title (Head: a listed post's structured data).
+  headline?: string;
   // The footer's line after the copyright (PanelChrome's own line when left out).
   tagline?: string;
   // False on a page that brings its own <main> (/stats); PanelChrome's scrolling body is the landmark otherwise.
@@ -32,6 +34,7 @@ const {
   noindex = false,
   image,
   published,
+  headline,
   tagline,
   main,
 } = Astro.props;
@@ -40,7 +43,8 @@ const {
 <!doctype html>
 <html lang="en">
   <head>
-    <Head title={title} description={description} noindex={noindex} image={image} published={published} />
+    <Head title={title} description={description} noindex={noindex} image={image} published={published}
+      headline={headline} />
     <slot name="head" />
   </head>
   <body>

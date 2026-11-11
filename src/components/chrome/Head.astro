@@ -1,9 +1,11 @@
 ---
 // Every page's head: title and share tags, the build's commit (ao-build, which the overlay compares before mounting
 // a fetched page), the self-hosted body font preloaded, and the mode set before first paint so a night visitor
-// never sees a cream flash. Both layouts use it.
+// never sees a cream flash. Both layouts use it. A listed post and the homepage also carry schema.org data
+// (lib/jsonld.js), one JSON-LD block no reader sees.
 import FONTS from '../../data/fonts.json';
 import { COMMIT } from '../../lib/build.js';
+import { blogPosting, scriptText, webSite } from '../../lib/jsonld.js';
 
 interface Props {
   title: string;
@@ -14,8 +16,17 @@ interface Props {
   image?: string;
   // A post's date: the page is shared as an article.
   published?: Date;
+  // A post's own title, without the site's name: with its date, and unless noindex, the page carries a BlogPosting.
+  headline?: string;
+  // The homepage: it carries the WebSite.
+  home?: boolean;
 }
-const { title, description, noindex = false, image, published } = Astro.props;
+const { title, description, noindex = false, image, published, headline, home = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const data = noindex ? null
+  : headline && published
+    ? blogPosting({ headline, description, published, url: canonical, image: image && new URL(image, Astro.site).href })
+    : home ? webSite(canonical) : null;
 ---
 
 <meta charset="utf-8" />
@@ -26,12 +37,12 @@ const { title, description, noindex = false, image, published } = Astro.props;
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:type" content={published ? 'article' : 'website'} />
-<meta property="og:url" content={new URL(Astro.url.pathname, Astro.site).href} />
+<meta property="og:url" content={canonical} />
 {published && <meta property="article:published_time" content={published.toISOString()} />}
 {image && <meta property="og:image" content={new URL(image, Astro.site).href} />}
 {image && <meta name="twitter:card" content="summary_large_image" />}
 <meta name="ao-build" content={COMMIT} />
-<link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+<link rel="canonical" href={canonical} />
 <link rel="alternate" type="application/rss+xml" title="Aaron Orelup · the ledger" href="/rss.xml" />
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="preload" href={FONTS.preload} as="font" type="font/woff2" crossorigin />
@@ -42,3 +53,4 @@ const { title, description, noindex = false, image, published } = Astro.props;
     } catch (e) {}
   })();
 </script>
+{data && <script is:inline type="application/ld+json" set:html={scriptText(data)} />}

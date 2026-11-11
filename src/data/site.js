@@ -16,3 +16,7 @@ export const SOCIAL = [
   { label: 'X', href: 'https://x.com/AaronOrelup' },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/aaron-orelup/' },
 ];
+
+// Whose site this is, and who a post's structured data names as its author (lib/jsonld.js): the name the pages
+// already carry in their titles, the homepage's heading and the footer's copyright line, and the page about him.
+export const OWNER = { name: 'Aaron Orelup', about: '/about/' };

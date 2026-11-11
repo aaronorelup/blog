@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
-import { check, previewsProblems, statsPagesProblems, rssProblems, baselineProblems, shareUrlProblems } from '../../scripts/build/contracts.mjs';
+import { check, previewsProblems, statsPagesProblems, rssProblems, baselineProblems, shareUrlProblems, jsonLdProblems } from '../../scripts/build/contracts.mjs';
 
 const dist = fileURLToPath(new URL('../../dist', import.meta.url));
 const listed = new Set(['a', 'b']);
@@ -46,6 +46,20 @@ test('a page: one canonical and one og:url, both its own address', () => {
   assert.equal(shareUrlProblems(head(canonical, og), '/ledger/b/').length, 2);
   assert.equal(shareUrlProblems(head(canonical + canonical, og), '/ledger/a/').length, 1);
   assert.equal(shareUrlProblems(head(canonical, og.replace('/ledger/a/', '/ledger/a')), '/ledger/a/').length, 1);
+});
+
+test('a listed post: one JSON-LD block that parses, its url the page address', () => {
+  const block = (json) => `<script type="application/ld+json">${json}</script>`;
+  const page = (...blocks) => `<html lang="en"><head><script>var a = 1;</script>${blocks.join('')}</head><body></body></html>`;
+  const good = block('{"@type":"BlogPosting","headline":"a \\u003c/script> b","url":"https://aaronorelup.com/ledger/a/"}');
+  assert.deepEqual(jsonLdProblems(page(good), '/ledger/a/'), []);
+  assert.equal(jsonLdProblems(page(), '/ledger/a/').length, 1);
+  assert.equal(jsonLdProblems(page(good, good), '/ledger/a/').length, 1);
+  assert.equal(jsonLdProblems(page(good), '/ledger/b/').length, 1);
+  assert.equal(jsonLdProblems(page(block('{"@type":"BlogPosting"}')), '/ledger/a/').length, 1);
+  assert.equal(jsonLdProblems(page(block('{"url":"https://aaronorelup.com/ledger/a/"')), '/ledger/a/').length, 1);
+  // An unescaped </script> in a title ends the block early: what is left does not parse.
+  assert.equal(jsonLdProblems(page(block('{"headline":"a </script> b","url":"https://aaronorelup.com/ledger/a/"}')), '/ledger/a/').length, 1);
 });
 
 test('the baseline: every path built or redirected', () => {
