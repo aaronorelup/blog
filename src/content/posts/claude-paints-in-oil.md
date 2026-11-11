@@ -109,7 +109,7 @@ In the spring painting it looked for the boy's legs by picking out the dark area
 dark green wall too. That left a navy rectangle in the middle. It let the paint set and repainted
 the whole region from the reference.
 
-<img class="fill" src="/media/oil-paintings/spring-mistake-repair.webp" alt="Left: a navy block painted over the wall by mistake. Right: the same area repainted, the kneeling boy back against the green wall">
+<img class="fill" src="/media/oil-paintings/spring-mistake-repair.webp" loading="lazy" alt="Left: a navy block painted over the wall by mistake. Right: the same area repainted, the kneeling boy back against the green wall">
 
 In the courtroom it decided the wall was "too yellow" without checking the numbers, and dragged a
 thin cool gray over it. The original wall really is warm. The gray also chalked over the lit
