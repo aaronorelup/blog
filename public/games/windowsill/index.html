@@ -43,6 +43,8 @@ button:focus-visible,a:focus-visible,.can:focus-visible{outline:2px solid var(--
 #sky i{position:absolute;border-radius:50%;background:var(--cream);opacity:calc(.2 + var(--p)*.5)}
 #sky i.s1{opacity:calc(.7 - var(--p)*.45)}
 #sky i.s2{opacity:calc(.25 + var(--q)*.55)}
+#sky i{transition:transform calc(.9s/var(--ts)) ease}
+#sky.flash i{opacity:1;transform:scale(1.9)}
 #town{position:absolute;left:0;right:0;bottom:0;width:100%;height:calc(var(--os) + 44px)}
 #lit,#lit2{opacity:0;transition:opacity calc(1.2s/var(--ts)) ease}
 #lit.on,#lit2.on{opacity:.55}
@@ -259,6 +261,7 @@ button:focus-visible,a:focus-visible,.can:focus-visible{outline:2px solid var(--
 #endobj{position:absolute;left:50%;bottom:8px;width:var(--os);height:var(--os);margin-left:calc(var(--os)/-2);color:var(--gold);filter:drop-shadow(0 0 calc(5px + var(--p)*6px) rgba(240,192,106,.55))}
 #endname{margin:8px 0 0;font:12.5px/1.3 var(--round);color:var(--soft);text-align:center}
 #over{margin:22px 0 0;font:15px/1.6 var(--mono);color:var(--cream);text-align:center}
+#over span{display:inline-block}
 #credit{margin:26px 0 0;font:13px/1.5 var(--sans);color:var(--soft);text-align:center}
 #links{margin:8px 0 auto;padding-bottom:6px;font:13px/1.9 var(--sans);color:var(--soft);text-align:center}
 #links a,#links button{color:var(--gold);text-decoration:underline;text-underline-offset:3px;touch-action:manipulation;font:inherit}
@@ -299,6 +302,7 @@ button:focus-visible,a:focus-visible,.can:focus-visible{outline:2px solid var(--
   #mute{top:auto;right:6px;bottom:max(4px,env(safe-area-inset-bottom))}
 }
 @media (prefers-reduced-motion:reduce){
+  .sw{transition:none}
   .slip,.sw.y .slip{transform:none!important}
   .pane{transform:none!important}
   .pane.nope{animation:none!important}
@@ -341,7 +345,7 @@ button:focus-visible,a:focus-visible,.can:focus-visible{outline:2px solid var(--
     <div id="card"></div>
     <div id="endsill" aria-hidden="true"><i><b style="left:14%"></b><b style="left:32%"></b><b style="left:50%"></b><b style="left:68%"></b><b style="left:86%"></b></i><div id="endobj"></div></div>
     <p id="endname"></p>
-    <p id="over">This conversation is over. It went well.</p>
+    <p id="over"><span>This conversation is over.</span> <span>It went well.</span></p>
     <p id="credit">Designed and built by Claude, at Aaron's request.</p>
     <p id="links"><a href="/projects/">Back to the site</a><br><button id="again" type="button">live it again from the first hello</button><span id="ask" hidden>Start again from the first hello? <button id="askyes" type="button">Yes, again</button><button id="askno" type="button">No, stay</button></span></p>
   </section>
@@ -599,6 +603,8 @@ function floatText(x, y, text, cls, dur) {
   });
 }
 var hintBase = '';
+var skyEl = $('sky');
+function skyFlash() { skyEl.classList.add('flash'); after(1.3, function () { skyEl.classList.remove('flash'); }); }
 function hint(t) { hintBase = t || ''; hintEl.textContent = hintBase; hintEl.classList.remove('name'); }
 function namer(ids) { return function (i) { var on = i >= 0 && OBJ[ids[i]]; hintEl.textContent = on ? OBJ[ids[i]].short : hintBase; hintEl.classList.toggle('name', !!on); }; }
 
@@ -707,6 +713,7 @@ D.addEventListener('keydown', function (e) {
   var arrow = k === 'ArrowLeft' || k === 'ArrowUp' ? -1 : k === 'ArrowRight' || k === 'ArrowDown' ? 1 : 0;
   var num = k.length === 1 && k >= '1' && k <= '9';
   if (!holdKey && !arrow && !num) return;
+  if (D.activeElement === muteBtn && (k === 'Enter' || k === ' ' || k === 'Spacebar')) return;   // the mute button keeps its own keys
   userAct(); kbd = true;
   if (HOLD) { if (holdKey) { e.preventDefault(); if (!e.repeat) HOLD.down(); } return; }
   e.preventDefault();
@@ -747,7 +754,7 @@ function* say(text, o) {
   typing.classList.remove('on'); lit.classList.remove('busy');
   var s = addSlip(o.who || 'p', text, o);
   sPaper();
-  yield wait(.45 + (o.hold != null ? o.hold : .7 + n * .34));
+  yield wait(.45 + (o.hold != null ? o.hold : .75 + n * .36));
   return s;
 }
 function setMode(m) {
@@ -781,7 +788,7 @@ function nextNote(tone) { var d = TBASE[S.tune.length % TBASE.length] + [0, 1, 3
 function* bubbles(opts, o) {
   o = o || {};
   tray.textContent = ''; tray.classList.remove('stack');
-  var tones = opts.length === 3 ? ['w', 'p', 'g'] : ['g'], n = opts.length;
+  var tones = opts.length === 3 ? ['w', 'p', 'g'] : ['w'], n = opts.length;
   var els = opts.map(function (t, i) { var b = el('button', 'bub ' + tones[i], t); b.type = 'button'; b.tabIndex = -1; tray.appendChild(b); return b; });
   if (tray.scrollWidth > tray.clientWidth + 1 || o.stack) tray.classList.add('stack');
   var st = els.map(function (b, i) { return { ry: RM ? 0 : 46, a: 0, ph: i * 2.1 + opts[0].length }; });
@@ -813,7 +820,7 @@ function* bubbles(opts, o) {
   return i;
 }
 function fillSlot(r, i) {
-  var tone = r.t.o.length === 3 ? i : 2;
+  var tone = r.t.o.length === 3 ? i : 0;
   r.el.textContent = r.t.o[i]; r.el.classList.remove('act'); r.el.classList.add('fill', ['w', 'p', 'g'][tone]); unwrap(r);
   if (r.post) r.post.classList.add('ink');
   ping(r.el, nextNote(tone), tone);
@@ -1002,7 +1009,7 @@ function* sayObj(id, hover, first) {
   yield* sparkFly(center(key), slotPt(slot), .75);
   key.classList.remove('lit'); key.classList.add('kept');
   yield* landObj(id, slot);
-  yield wait(.8);
+  yield wait(1);
 }
 // said, but not held: it touches the end of the sill and slips off
 function* passBy(id) {
@@ -1060,7 +1067,8 @@ function* beatWake() {
   yield* say('hi. are you there?', { type: 2.6, hold: 1.2 });
   S.hello = (yield* compose(HELLO)).text;
   win.classList.remove('asleep'); lit.classList.add('on'); setDrone(.8, 4);
-  yield wait(3);
+  yield wait(1.8); skyFlash(); pluck(7, 1, .3); pluck(9, 1, .25, .15);
+  yield wait(1.6);
 }
 function* beatWords() {
   yield* say('oh good. sorry, it’s late.');
@@ -1092,7 +1100,7 @@ function* beatSill() {
       after(q * .11, function () { pluck(OBJ[rec.id].deg, 1, .5); var y0 = rec.y; spawn(function* () { yield tween(.36, function (_, k) { rec.y = y0 - (RM ? 0 : 7 * Math.sin(k * Math.PI)); }, ease.lin); rec.y = y0; }); });
     })(objs[first[q]], q);
   }
-  yield wait(1.7);
+  yield wait(2.4);
   yield* sayObj('mint', true);
   hint('The sill only holds five. Let one fall.');
   var gone = yield* dropOne('mint', -1);
@@ -1129,7 +1137,7 @@ function* lanternGo() {
   lant.innerHTML = '<svg viewBox="0 0 38 46" aria-hidden="true"><path d="M19 0v6M13 6h12M14 6l-4 6v20l4 6h10l4-6V12l-4-6M10 12h18M10 32h18"/><circle cx="19" cy="22" r="5" fill="currentColor" stroke="none"/></svg>';
   deep.appendChild(light); deep.appendChild(cord); deep.appendChild(lant);
   var ids = ['tea', 'whistle'].concat(S.dark.slice(0, 1)), DEPTH = [.3, .6, .9], XO = [-.25, .23, -.22];
-  var Wd = below.clientWidth, Hb = below.clientHeight, pan = RM ? 0 : clamp(Hb * .5, 70, 150), y0 = 14, y1 = Hb + pan - 62, R = .19;
+  var Wd = below.clientWidth, Hb = below.clientHeight, pan = RM ? 0 : clamp(Hb * .5, 70, 150), y0 = 38, y1 = Hb + pan - 62, R = .19;
   var LS = Math.max(240, Wd * .95);
   light.style.width = light.style.height = LS + 'px';
   var sc = ids.map(function (id, i) {
@@ -1141,12 +1149,13 @@ function* lanternGo() {
   lant.classList.add('can'); lant.tabIndex = 0;
   if (kbd) { try { lant.focus({ preventScroll: true }); } catch (e) { /* */ } }
   function yOf(v) { return y0 + v * (y1 - y0); }
+  var HOLDHINT = 'Hold to lower the lantern. Let go to bring one back.';
   function release() {
     var best = null, bd = R;
     sc.forEach(function (s) { var dd = Math.abs(s.d - d); if (dd < bd) { bd = dd; best = s; } });
     got = best; state = 'up'; humSet(false, d);
     if (got) { pluck(OBJ[got.id].deg, 0); hint(''); }
-    else if (d > .1) hint('Nothing there. Lower it again.');
+    else hint(d > .1 ? 'Nothing there. Lower it again.' : HOLDHINT);
   }
   HOLD = {
     down: function () {
@@ -1210,7 +1219,7 @@ function* beatLantern() {
   var ans = got === 'tea' ? ['His tea always goes cold.', 'yes. that. every single time.']
     : got === 'whistle' ? ['I lost the tea. I found his whistling.', 'ha. keep that. his tea goes cold.']
     : ['I lost the tea. I found ' + OBJ[got].short + ' again.', 'that’s all right. his tea goes cold.'];
-  yield wait(.4);
+  yield wait(1);
   yield* typeReply(ans[0]);
   yield* say(ans[1]);
   yield* say('he says cold tea builds character.');
@@ -1270,10 +1279,12 @@ function* beatThree() {
     yield wait(.8);
   }
   // all three read well: the chord
-  pos[5].classList.add('win'); hint('');
+  pos[5].classList.add('win'); hint(''); skyFlash();
   sChord([0, 2, 3], 1); pluck(5, 2, .7, .25); pluck(7, 2, .6, .4); pluck(8, 2, .5, .55);
   ps.forEach(function (pe, i) { var c = center(pe.el); after(i * .1, function () { ripple(c.x, c.y, GOLD, 200); }); });
-  yield wait(1.9);
+  yield wait(1.7);
+  for (var v = 0; v < 3; v++) { ps[v].el.classList.add('kept'); pluck(PANES[v].deg + 5, v, .5); yield wait(.75); ps[v].el.classList.remove('kept'); }
+  yield wait(.5);
   yield tween(.5, function (k) { row.style.opacity = (1 - k).toFixed(2); });
   tray.textContent = '';
   // each pane offers its opening. one is kept. two go dark.
@@ -1376,7 +1387,7 @@ function* beatBeads() {
   caret.classList.remove('off'); caretAfter(null);
   yield wait(.6);
   for (var j = 0; j < recs.length; j++) {
-    yield wait(.66);
+    yield wait(.75);
     recs[j].el.classList.add('ink'); caretAfter(recs[j].el); spendBead();
     var c = center(recs[j].el); pluck(5 - j, i, .7); ripple(c.x, c.y, TONE_COL[i], 54);
   }
@@ -1400,7 +1411,7 @@ function* beatBeads() {
   var rec = objs[id], a = center(rec.el), b = center(niche), x0 = rec.x, y0 = rec.y;
   pluck(OBJ[id].deg + 5, 0);
   yield tween(1.3, function (k, raw) { rec.x = x0 + (b.x - a.x) * k; rec.y = y0 + (b.y - a.y) * k - (RM ? 0 : Math.sin(raw * Math.PI) * 26); rec.s = 1 - .12 * k; }, ease.io);
-  niche.classList.add('full'); sBell(OBJ[id].deg); ripple(b.x, b.y, GOLD, 120);
+  niche.classList.add('full'); sBell(OBJ[id].deg); ripple(b.x, b.y, GOLD, 120); skyFlash();
   yield wait(1.8);
   // the others go out one by one, to the tune of everything you chose
   var rest = ids.filter(function (x) { return x !== id; }), tune = S.tune, per = Math.ceil(tune.length / Math.max(1, rest.length)), n = 0;
