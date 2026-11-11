@@ -1,6 +1,8 @@
 // What moves the hero besides time: the scroll progress through the pinned section (0 at the top, 1 when the pin
 // lets go), the pointer (a mouse), the device's tilt where it needs no permission prompt, and on touch screens with
 // no tilt a slow drift. All of it is eased in update(dt); set() and freeze() are the screenshot hooks.
+import { rawOf } from './pin.js';
+
 const clamp1 = (v) => Math.max(-1, Math.min(1, v));
 const turn = (d) => ((d + 540) % 360) - 180;   // an angle's difference, the short way round
 
@@ -39,12 +41,7 @@ export function createInput(section, spec) {
     addEventListener('deviceorientation', onTilt, { passive: true });
   }
 
-  function read() {
-    if (st.forced != null) return st.forced;
-    const r = section.getBoundingClientRect();
-    const run = r.height - innerHeight;
-    return run > 0 ? Math.max(0, Math.min(1, -r.top / run)) : 0;
-  }
+  const read = () => (st.forced != null ? st.forced : rawOf(section));
 
   return {
     st,

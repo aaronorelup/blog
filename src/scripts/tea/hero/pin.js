@@ -1,26 +1,62 @@
 // The pin: data-3d="on" makes the section tall (stage.css) and data-hero-layout says what sticks: "dock" (landscape,
 // the title box fits the screen) pins .tea-hero-pin, "flow" (portrait, or it doesn't fit) pins only the stage and the
-// box scrolls away. Growing the section must not move what the reader sees, so a reader below the hero is scrolled by
-// the growth. Written each frame: --tea-hero-progress (0..1) and data-hero-phase ("open", then "docked").
+// box scrolls away. Growing the section must not move what the reader sees: it waits for a moment when it moves nothing
+// (whenPinnable). Written each frame: --tea-hero-progress (0..1) and data-hero-phase ("open", then "docked").
 export function pinSection(section) {
   const before = section.getBoundingClientRect();
   const y = scrollY;
   section.dataset['3d'] = 'on';
   section.dataset.heroLayout = layoutFor(section);
-  if (before.bottom <= 0 || (before.top < 0 && location.hash && location.hash !== '#top')) {
-    const after = section.getBoundingClientRect();
-    scrollTo({ top: y + (after.height - before.height), behavior: 'instant' });
-  }
-  writeProgress(section, 0, true);
+  keepPlace(section, before, y);
+  writeProgress(section, rawOf(section), true);
   glide(section);
 }
 
 export function unpinSection(section) {
+  if (!section.dataset['3d']) return;
+  const before = section.getBoundingClientRect();
+  const y = scrollY;
   delete section.dataset['3d'];
   delete section.dataset.heroLayout;
   delete section.dataset.heroPhase;
   delete section.dataset.heroGlide;
   section.style.removeProperty('--tea-hero-progress');
+  keepPlace(section, before, y);
+}
+
+// Pinning grows the section by two screens, so it waits for a moment when that moves nothing the reader reads: the
+// page at its very top, or the title box above the screen (the scroll then moves by the growth, keepPlace, so what is
+// below the hero stays put; a strip of picture left at the top shows the scene's end instead of the poster), and the
+// scroll at rest (a smooth scroll to a #chapter, or a fling, would be cut short by that move). A reader with the box
+// still on screen keeps the poster until they go back to the top or past the box.
+const REST = 200;
+export function whenPinnable(section) {
+  const box = section.querySelector('.tea-hero-box') || section;
+  return new Promise((resolve) => {
+    let timer = 0;
+    const check = () => {
+      if (scrollY > 0 && box.getBoundingClientRect().bottom > 0) return;
+      removeEventListener('scroll', onScroll);
+      resolve();
+    };
+    const onScroll = () => { clearTimeout(timer); timer = setTimeout(check, REST); };
+    addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  });
+}
+
+// A change of the section's height keeps what is below it where it was on screen (and the top of the page at the top).
+function keepPlace(section, before, y) {
+  if (y <= 0) return;
+  const d = section.getBoundingClientRect().height - before.height;
+  if (d) scrollTo({ top: Math.max(0, y + d), behavior: 'instant' });
+}
+
+// How far through the pinned section the reader is: 0 at the top, 1 where the pin lets go.
+export function rawOf(section) {
+  const r = section.getBoundingClientRect();
+  const run = r.height - innerHeight;
+  return run > 0 ? Math.max(0, Math.min(1, -r.top / run)) : 0;
 }
 
 // In the dock layout the box glides between its open and docked places (stage.css, data-hero-glide), never into the

@@ -190,3 +190,41 @@ test('tea-hero-8 the title box stays where it is when the scene takes over', asy
   const moved = Math.max(...after.map((r) => Math.max(...[1, 2, 3, 4].map((i) => Math.abs(r[i] - before[i])))));
   expect(moved, JSON.stringify({ before, first: after[0] })).toBeLessThanOrEqual(1);
 });
+
+// Where the first chapter is on screen (its section: the opener inside it fades up 12 px as it arrives).
+const startTop = (page) => page.locator('#start').evaluate((el) => Math.round(el.getBoundingClientRect().top));
+
+test('tea-hero-9 a scene that arrives late moves nothing on screen', async ({ page }) => {
+  const release = await gate(page, '**/tea/hero/manifest.json');
+  await page.goto('/tea/?hero=on');
+  await page.waitForFunction(() => document.fonts.status === 'loaded');
+  // partway into the hero, the title box still on screen: the scene gets ready and keeps waiting, the poster stays
+  await page.evaluate(() => scrollTo({ top: Math.round(innerHeight / 3), behavior: 'instant' }));
+  const top1 = await startTop(page);
+  release();
+  await expect(page.locator('[data-tea-stage] canvas')).toHaveCount(1, { timeout: 60_000 });
+  await page.waitForTimeout(800);
+  await expect(hero(page)).not.toHaveAttribute('data-3d', /./);
+  expect(await startTop(page)).toBe(top1);
+  // a reader on the first chapter (no address, a scroll: the hero's foot still 12 px on screen) gets the scene with
+  // the chapter left where it is
+  await page.locator('#start').evaluate((el) => el.scrollIntoView({ behavior: 'instant' }));
+  const top2 = await startTop(page);
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on', { timeout: 30_000 });
+  await expect(hero(page)).toHaveAttribute('data-hero-settled', '', { timeout: 60_000 });
+  expect(Math.abs(await startTop(page) - top2)).toBeLessThanOrEqual(1);
+});
+
+test('tea-hero-10 arriving at a chapter address lands on the chapter with the scene', async ({ page }) => {
+  // the scene's files held until the page has begun its scroll to the chapter, so the scene is ready mid-scroll
+  await page.route('**/tea/hero/manifest.json', async (route) => {
+    await page.waitForFunction(() => scrollY > 0, null, { timeout: 15_000 }).catch(() => {});
+    await route.continue().catch(() => {});
+  });
+  await page.goto('/tea/?hero=on#projects');
+  await expect(hero(page)).toHaveAttribute('data-hero-settled', '', { timeout: 60_000 });
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  await expect.poll(() => page.locator('#projects').evaluate((el) =>
+    Math.abs(el.getBoundingClientRect().top - parseFloat(getComputedStyle(el).scrollMarginTop))), { timeout: 30_000 }).toBeLessThan(2);
+});
+

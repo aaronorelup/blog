@@ -11,7 +11,7 @@ import { createInput } from './input.js';
 import { buildLights, paintLights, skyEnvironment } from './lights.js';
 import { loadManifest } from './manifest.js';
 import { createMotes, tickMotes } from './motes.js';
-import { leadOf, pinSection, relayout, unpinSection, writeProgress } from './pin.js';
+import { leadOf, pinSection, relayout, unpinSection, whenPinnable, writeProgress } from './pin.js';
 import { loadThree } from './three.js';
 import { applyTracks, bindTracks, sample } from './tracks.js';
 
@@ -66,13 +66,15 @@ export async function mount(section, stage, opts = {}) {
     scene.fog = new Fog(s.fogN.clone(), 9, 40);
     s.input = createInput(section, manifest.camera.parallax);
     s.size = [0, 0];
-    resize(s, stage);
     stage.appendChild(canvas);
-    // compile and draw once before anything changes on the page
+    // the pin waits for a moment when it moves nothing on screen (pin.js); the poster stays till then
+    await whenPinnable(section);
+    pinSection(section);
+    resize(s, stage);
+    s.lead = leadOf(section);
+    // compile and draw once before anything else changes on the page
     s.clock = performance.now();
     s.time = 0;
-    pinSection(section);
-    s.lead = leadOf(section);
     frame(s, section, 0);
   } catch (e) {
     canvas.remove();
@@ -80,8 +82,8 @@ export async function mount(section, stage, opts = {}) {
     unpinSection(section);   // a failure after the pin leaves the static hero, not a tall section holding a poster
     throw e;
   }
-  // the poster gives way once a frame is really on the canvas
-  requestAnimationFrame(() => { stage.dataset.ready = ''; });
+  // the poster gives way once a frame is really on the canvas; from then on the hero changes no layout by itself
+  requestAnimationFrame(() => { stage.dataset.ready = ''; section.dataset.heroSettled = ''; });
   s.backdrop.later();
   wire(s, section, stage);
   if (!opts.noHook) window.__teaHero = hook(s, section, stage);

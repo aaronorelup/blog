@@ -25,12 +25,19 @@ function why() {
   return '';
 }
 
+// Kept off: the reason, and the hero is settled (data-hero-settled: it will change no layout by itself, which the 3D
+// path says once the section is pinned and its first frame is up). Tests wait on it.
+function off(reason) {
+  section.dataset['3dOff'] = reason;
+  section.dataset.heroSettled = '';
+}
+
 function start() {
   const no = why();
-  if (no) { section.dataset['3dOff'] = no; return; }
+  if (no) { off(no); return; }
   import('./stage.js')
     .then((m) => m.mount(section, stage))
-    .catch(() => { section.dataset['3dOff'] = 'failed'; });
+    .catch(() => off('failed'));
 }
 
 if (stage) {
