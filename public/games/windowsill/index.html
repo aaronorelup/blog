@@ -10,7 +10,7 @@
 <style>
 :root{
   --page:#101220;--tile:#201F2C;--gold:#F0C06A;--cream:#F2E7D5;--body:#C9BCA9;--soft:#9C917F;--coral:#E2795C;--hair:#302E3E;
-  --ts:1;--p:.5;--q:.5;--os:46px;
+  --ts:1;--p:.5;--q:.5;--os:46px;--mw:600px;
   --sans:"Gill Sans","Gill Sans MT",Seravek,"Segoe UI",Candara,"Trebuchet MS","Noto Sans",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,"Liberation Mono",monospace;
   --round:ui-rounded,"SF Pro Rounded","Hiragino Maru Gothic ProN","Arial Rounded MT Bold","Varela Round",Quicksand,Nunito,system-ui,sans-serif;
@@ -22,7 +22,8 @@ body{position:fixed;inset:0;font:15px/1.4 var(--sans);-webkit-text-size-adjust:1
 [hidden]{display:none!important}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none}
 button:focus{outline:none}
-button:focus-visible,a:focus-visible{outline:2px solid var(--cream);outline-offset:4px}
+button:focus-visible,a:focus-visible,.can:focus-visible{outline:2px solid var(--cream);outline-offset:4px}
+.key:focus-visible{outline-color:var(--page)}
 #stage{position:absolute;inset:0;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #glow{position:absolute;left:0;right:0;bottom:0;height:46%;pointer-events:none;opacity:0;
   background:radial-gradient(70% 100% at 50% 100%,rgba(240,192,106,.10),rgba(226,121,92,.05) 45%,transparent 75%)}
@@ -31,7 +32,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--cream);outline-offs
 #scene.gone{opacity:0;pointer-events:none}
 
 /* the window */
-#win{position:relative;flex:1 1 auto;min-height:0;width:min(100%,600px)}
+#win{position:relative;flex:1 1 auto;min-height:0;width:min(100%,var(--mw))}
 .decor{transition:opacity calc(2.6s/var(--ts)) ease}
 #win.asleep .decor{opacity:0}
 #win.dim .decor{opacity:.6}
@@ -72,7 +73,10 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--cream);outline-offs
 .sw.in:nth-last-child(n+6) .slip{opacity:.6}
 .slip .txt{transition:filter calc(1.6s/var(--ts)) ease,opacity calc(1.6s/var(--ts)) ease}
 .slip.lost .txt{filter:blur(3.5px);opacity:.5}
-.key{border-radius:3px;transition:background-color calc(.5s/var(--ts)),box-shadow calc(.5s/var(--ts))}
+.key{position:relative;display:inline-block;border-radius:3px;transition:background-color calc(.5s/var(--ts)),box-shadow calc(.5s/var(--ts))}
+.key.can{background:rgba(226,121,92,.2);box-shadow:0 0 0 2px var(--coral),0 0 calc(5px + var(--p)*11px) 1px rgba(226,121,92,.8);cursor:pointer;pointer-events:auto}
+.key.can::before{content:"";position:absolute;left:-12px;right:-12px;top:-12px;bottom:-12px}
+.key.press{background:rgba(226,121,92,.45)}
 .key.lit{background:rgba(240,192,106,.6);box-shadow:0 0 0 3px rgba(240,192,106,.6),0 0 14px 4px rgba(240,192,106,.55)}
 .key.pale{background:rgba(156,145,127,.35);box-shadow:0 0 0 3px rgba(156,145,127,.35)}
 .key.kept{box-shadow:0 2px 0 rgba(201,140,40,.7)}
@@ -112,11 +116,13 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--cream);outline-offs
   transform:scaleY(.2);opacity:0;transition:transform calc(.6s/var(--ts)) cubic-bezier(.2,1.1,.3,1),opacity calc(.9s/var(--ts)) ease,border-color calc(.4s/var(--ts)),box-shadow calc(.4s/var(--ts)),color calc(.4s/var(--ts))}
 #panes.in .pane{transform:none;opacity:1}
 .pane::before{content:"";position:absolute;left:5px;top:22%;bottom:22%;width:3px;border-radius:2px;background:var(--cream);opacity:.7}
+.pane:first-child{padding-right:40px;padding-left:40px}
 .pane.w::before{background:var(--coral)} .pane.g::before{background:var(--gold)}
 .pane .pw{opacity:.0;transition:opacity calc(.25s/var(--ts))}
 .pane .pw.ink{opacity:1}
 .pane .gw{display:inline-block;min-width:3.4em;text-align:center;border-bottom:2px dotted rgba(156,145,127,.6);transition:color calc(.3s/var(--ts))}
 .pane.fit{color:var(--cream);border-color:rgba(240,192,106,.65);box-shadow:inset 0 0 26px rgba(240,192,106,.17)}
+.pane .gw.has{min-width:0}
 .pane.fit .gw{color:var(--gold);border-bottom-color:transparent}
 .pane.nope .gw{font-style:italic}
 .pane.can{border-color:var(--coral);box-shadow:inset 0 0 calc(10px + var(--p)*14px) rgba(226,121,92,.22)}
@@ -124,10 +130,10 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--cream);outline-offs
 .pane.kept{color:var(--cream);border-color:var(--gold);box-shadow:inset 0 0 30px rgba(240,192,106,.22)}
 #panes .pane.dark{opacity:.06;transition-duration:calc(1.6s/var(--ts))}
 @keyframes nope{0%,100%{transform:none}30%{transform:translateX(-3px)}65%{transform:translateX(3px)}}
-.posrow{display:flex;align-items:center;justify-content:center;gap:clamp(8px,3.4vw,18px);position:relative}
+.posrow{display:flex;align-items:center;justify-content:center;gap:clamp(4px,1.5vw,14px);position:relative}
 .posrow::before{content:"";position:absolute;left:8%;right:8%;top:50%;height:1px;background:var(--hair)}
-.pos{position:relative;width:44px;height:44px;border-radius:50%;pointer-events:none}
-.pos::before{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--tile);border:1.5px solid var(--coral);
+.pos{position:relative;width:clamp(36px,11.2vw,46px);height:46px;border-radius:50%;pointer-events:none}
+.pos::before{content:"";position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px;border-radius:50%;background:var(--tile);border:1.5px solid var(--coral);
   box-shadow:0 0 calc(3px + var(--p)*7px) rgba(226,121,92,.45);transition:background-color calc(.3s/var(--ts)),transform calc(.3s/var(--ts)),border-color calc(.3s/var(--ts))}
 .pos.tried::before{border-color:var(--soft);box-shadow:none}
 .pos.cur::before{background:var(--coral);border-color:var(--coral);transform:scale(1.12)}
@@ -166,13 +172,13 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--cream);outline-offs
 #niche.in{transform:none}
 #niche.full{box-shadow:0 0 0 1px rgba(240,192,106,.5),inset 0 0 22px rgba(240,192,106,.35)}
 #niche.off{opacity:0}
-#tag{position:absolute;top:100%;left:52%;margin-top:18px;padding:6px 9px 6px 17px;width:max-content;max-width:112px;font:11.5px/1.25 var(--round);color:var(--page);
-  background:var(--cream);border-radius:3px 7px 7px 3px;transform-origin:9px -18px;box-shadow:0 3px 9px rgba(0,0,0,.45)}
-#tag::before{content:"";position:absolute;left:9px;top:-19px;width:1px;height:23px;background:var(--soft)}
+#tag{position:absolute;top:calc(50% - 18px);left:100%;margin-left:19px;padding:6px 9px 6px 17px;width:max-content;max-width:112px;font:11.5px/1.25 var(--round);color:var(--page);
+  background:var(--cream);border-radius:3px 7px 7px 3px;transform-origin:-16px 4px;box-shadow:0 3px 9px rgba(0,0,0,.45)}
+#tag::before{content:"";position:absolute;right:calc(100% - 9px);top:50%;width:26px;height:1px;background:var(--soft);transform-origin:100% 50%;transform:rotate(14deg)}
 #tag::after{content:"";position:absolute;left:6px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:var(--page)}
 
 /* below the sill */
-#below{position:relative;flex:none;width:min(100%,600px);height:clamp(232px,38vh,320px);display:flex;flex-direction:column;padding-top:8px}
+#below{position:relative;flex:none;width:min(100%,var(--mw));height:clamp(232px,38vh,320px);display:flex;flex-direction:column;padding-top:8px}
 #hint{flex:none;margin:0;min-height:22px;padding:4px 10px 0;font:13px/1.3 var(--round);color:var(--soft);text-align:center;letter-spacing:.01em}
 #hint.name{color:var(--gold)}
 #beads{flex:none;display:flex;flex-wrap:wrap;justify-content:center;gap:5px 6px;padding:0 10px;margin:0 auto;max-width:210px}
@@ -194,6 +200,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--cream);outline-offs
 .bub.p{box-shadow:0 0 calc(4px + var(--p)*7px) rgba(242,231,213,.18)}
 .bub.g{border-color:var(--gold);box-shadow:0 0 calc(5px + var(--p)*9px) rgba(240,192,106,.34)}
 .bub.none{border-style:dashed;border-color:rgba(156,145,127,.45);color:var(--soft);box-shadow:none;min-width:74px}
+.bub.none.can{border-color:rgba(226,121,92,.8)}
 .bub.press{filter:brightness(1.3)}
 #below.deepmode #reply,#below.deepmode #tray,#below.deepmode #beads{opacity:0}
 
@@ -228,14 +235,15 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--cream);outline-offs
 .say{font:13px/1.2 var(--round);color:var(--gold);white-space:nowrap;text-shadow:0 0 10px rgba(16,18,32,.9)}
 #ghost{width:30px;height:44px;opacity:0}
 #ghost svg{display:block;width:100%;height:100%;overflow:visible}
-#mute{position:absolute;top:calc(max(12px,env(safe-area-inset-top)) + 13px);right:calc(max(14px,50% - 300px) + 13px);width:36px;height:36px;border-radius:50%;z-index:26;color:var(--soft);opacity:.75;touch-action:manipulation}
+#mute{position:absolute;top:calc(max(12px,env(safe-area-inset-top)) + 13px);right:calc(max(14px,50% - var(--mw)/2) + 13px);width:36px;height:36px;border-radius:50%;z-index:26;color:var(--soft);opacity:.75;touch-action:manipulation}
 #mute:hover{color:var(--cream);opacity:1}
 #mute svg{display:block;width:20px;height:20px;margin:8px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #mute .x{display:none} #mute.off .x{display:inline} #mute.off .wv{display:none}
+#stage.over #mute{top:max(4px,env(safe-area-inset-top));right:6px}
 
 /* the ending and the return visit */
 #end{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;z-index:24;display:flex;flex-direction:column;align-items:center;
-  padding:max(30px,env(safe-area-inset-top)) 20px 30px;-webkit-user-select:text;user-select:text}
+  padding:max(44px,env(safe-area-inset-top)) 20px 30px;-webkit-user-select:text;user-select:text}
 #end>*{flex:none;opacity:0;transform:translateY(10px);transition:opacity calc(1.3s/var(--ts)) ease,transform calc(1.3s/var(--ts)) ease}
 #end>.in{opacity:1;transform:none}
 #card{position:relative;width:min(100%,420px);margin:auto 0 0;padding:26px 26px 44px;border-radius:15px;background:var(--cream);color:var(--page);font:17px/1.5 var(--round);
@@ -267,8 +275,28 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--cream);outline-offs
   .slip{font-size:17px} #sheet{font-size:16px;line-height:1.6} .pane{font-size:17px} #reply,.bub,.fly{font-size:17px}
   #below{height:clamp(260px,36vh,330px)}
 }
+@media (min-width:1000px) and (min-height:820px){
+  :root{--mw:700px}
+  .slip{font-size:18.5px;padding:9px 14px 10px} .sw.y .slip{font-size:17px} .sw.q .slip{font-size:19.5px}
+  #sheet{font-size:18px;padding:22px 26px} .pane{font-size:19px} #reply,.bub,.fly{font-size:18.5px} #hint{font-size:15px}
+  .bub{padding:13px 20px} #card{font-size:19px;width:min(100%,470px)}
+}
+#below.noting #reply{min-height:16px}
+@media (max-width:359px){
+  #sheet{font-size:12px;line-height:1.42;padding:9px 10px} .nl{margin-bottom:3px} .nl.open{margin-bottom:4px}
+}
+@media (max-height:640px){
+  .bub{padding:8px 15px;min-height:36px} #tray.stack{gap:6px} #reply{min-height:44px} #beads:not(:empty){padding-top:2px;padding-bottom:1px}
+}
 @media (max-height:520px){
-  #below{height:clamp(190px,46vh,232px)} #hint{min-height:18px;font-size:12px} .bub{padding:7px 14px;min-height:34px} #tray.stack{gap:5px} #reply{min-height:26px}
+  #below{height:clamp(190px,46vh,232px)} #hint{min-height:18px;font-size:12px} .bub{padding:6px 14px;min-height:32px} #tray.stack{gap:4px} #reply{min-height:26px}
+  #sheet{font-size:12px;line-height:1.4;padding:8px 10px} .nl{margin-bottom:2px}
+}
+@media (max-height:520px) and (min-aspect-ratio:4/3){
+  #scene{flex-direction:row;align-items:stretch;justify-content:center;gap:24px}
+  #win{flex:0 1 54%;max-width:540px;width:auto}
+  #below{flex:0 1 40%;max-width:400px;width:auto;height:auto;padding-top:16px}
+  #mute{top:auto;right:6px;bottom:max(4px,env(safe-area-inset-bottom))}
 }
 @media (prefers-reduced-motion:reduce){
   .slip,.sw.y .slip{transform:none!important}
@@ -446,15 +474,15 @@ function audioInit() {
     var rf = c.createBiquadFilter(); rf.type = 'lowpass'; rf.frequency.value = 430;
     var rg = c.createGain(); rg.gain.value = 0;
     src.connect(rf); rf.connect(rg); rg.connect(master); src.start();
-    rg.gain.setTargetAtTime(.055, c.currentTime, 1.5);
+    rg.gain.setTargetAtTime(.045, c.currentTime, 1.5);
     var wn = Math.floor(c.sampleRate * .4), wb = c.createBuffer(1, wn, c.sampleRate), wd = wb.getChannelData(0);
     for (i = 0; i < wn; i++) wd[i] = Math.random() * 2 - 1;
     A.white = wb;
     // the drone: five voices, the high ones leave first
-    var db = c.createGain(); db.gain.value = .11;
+    var db = c.createGain(); db.gain.value = .05;
     var dlp = c.createBiquadFilter(); dlp.type = 'lowpass'; dlp.frequency.value = 700;
     db.connect(dlp); dlp.connect(master);
-    var lfo = c.createOscillator(), lg = c.createGain(); lfo.frequency.value = .09; lg.gain.value = .025; lfo.connect(lg); lg.connect(db.gain); lfo.start();
+    var lfo = c.createOscillator(), lg = c.createGain(); lfo.frequency.value = .09; lg.gain.value = .012; lfo.connect(lg); lg.connect(db.gain); lfo.start();
     A.dv = [36, 43, 48, 55, 60].map(function (m, j) {
       var o = c.createOscillator(), g = c.createGain();
       o.type = j < 2 ? 'sine' : 'triangle'; o.frequency.value = 440 * Math.pow(2, (m - 69) / 12); o.detune.value = [0, 4, -5, 6, -3][j];
@@ -489,7 +517,8 @@ function pluck(deg, tone, vel, when) {
   voice('triangle', f, t, v, .007, tone === 0 ? 1.5 : 1.1, A.bus, tone === 2 ? 4200 : tone === 0 ? 2100 : 3000);
   if (tone === 0) voice('sine', f / 2, t, v * .55, .012, 1.3);
 }
-function sTick() { if (quiet()) return; voice('triangle', 1568, A.ctx.currentTime + .02, .03, .003, .06, A.master); }
+var tickN = 0;
+function sTick() { if (quiet()) return; voice('triangle', [1319, 1568, 1397, 1760][tickN++ % 4], A.ctx.currentTime + .02, .022, .003, .055, A.master); }
 function sBead() { if (quiet()) return; voice('sine', 2093, A.ctx.currentTime + .02, .035, .003, .09, A.bus); }
 function sTok() { if (quiet()) return; var t = A.ctx.currentTime + .02, o = voice('sine', 190, t, .3, .004, .16, A.master); o.frequency.exponentialRampToValueAtTime(105, t + .14); }
 function sFall() { if (quiet()) return; var t = A.ctx.currentTime + .02, o = voice('sine', 640, t, .07, .05, 1.15); o.frequency.exponentialRampToValueAtTime(130, t + 1.05); }
@@ -714,11 +743,11 @@ function* say(text, o) {
   o = o || {};
   var n = text.split(' ').length;
   typing.classList.add('on'); lit.classList.add('busy');
-  yield wait(Math.min(1.5, .6 + n * .08));
+  yield wait(o.type != null ? o.type : clamp(.9 + n * .13, 1.2, 2.4));
   typing.classList.remove('on'); lit.classList.remove('busy');
   var s = addSlip(o.who || 'p', text, o);
   sPaper();
-  yield wait(.45 + (o.hold != null ? o.hold : .6 + n * .32));
+  yield wait(.45 + (o.hold != null ? o.hold : .7 + n * .34));
   return s;
 }
 function setMode(m) {
@@ -858,16 +887,17 @@ var Y7 = [{ o: ['Then', 'Good. Then', 'Uh oh. Then'] }, 'let’s', 'make', 'it',
 var Y5 = [{ o: ['Mostly is plenty', 'That is enough to start', 'Mostly is the fun part'], post: '.' }];
 var Y6 = [{ o: ['I have all three', 'Three so far', 'Three shiny things'], post: '.' }, 'Go', 'on.'];
 var PANES = [
-  { tone: 'w', pre: 'Dear Grandpa, eighty looks', post: 'on you.', words: ['fine', 'the', 'right', 'good', 'him'], fit: [1, 0, 1, 1, 0], deg: 0 },
-  { tone: 'p', pre: 'For the man who', post: 'everything.', words: ['blue', 'mends', 'of', 'fixes', 'keeps'], fit: [0, 1, 0, 1, 1], deg: 2 },
-  { tone: 'g', pre: 'Grandpa, eighty is just forty,', post: '', words: ['and', 'radio', 'toast', 'twice', 'then'], fit: [0, 0, 0, 1, 0], deg: 3 }
+  { tone: 'w', pre: 'Dear Grandpa, eighty looks', post: 'on you.', words: ['fine', 'the', 'right', 'toast', 'of', 'good', 'well'], fit: [1, 0, 1, 0, 0, 1, 1], deg: 0 },
+  { tone: 'p', pre: 'For the man who', post: 'everything.', words: ['blue', 'mends', 'keeps', 'and', 'saves', 'fixes', 'him'], fit: [0, 1, 1, 0, 1, 1, 0], deg: 2 },
+  { tone: 'g', pre: 'Grandpa, eighty is just forty,', post: '', words: ['radio', 'then', 'of', 'doubled', 'bench', 'twice', 'and'], fit: [0, 0, 0, 1, 0, 1, 0], deg: 3 }
 ];
 var OPEN = ['Dear Grandpa, eighty looks good on you.', 'For the man who fixes everything.', 'Grandpa, eighty is just forty, twice.'];
 var NOTE = [
-  ['I', 'think', 'of', { obj: 1 }, 'and', { obj: 1, post: '.' }],
+  ['I', { o: ['treasure', 'think of', 'salute'] }, { obj: 1 }, 'and', { obj: 1, post: '.' }],
   [{ obj: 1, cap: 1, post: '.' }, 'That', 'is', 'you', { o: ['all over', 'exactly', 'to a T'], post: '.' }],
   [{ obj: 1, cap: 1 }, 'is', { o: ['home to me', 'how I know you', 'the best bit'], post: '.' }],
   ['And', { obj: 1, last: 1, post: '.' }],
+  [{ o: ['I am so glad you are mine', 'Thank you for all of it', 'Never grow up'], post: '.' }],
   ['Happy', 'birthday.', { o: ['All my love', 'Love, always', 'Save me some cake'], post: '.' }]
 ];
 var LAST = ['No. You get to, though.', 'No. But the note stays.', 'Not a word. Worth it.'];
@@ -877,7 +907,7 @@ var GOLD = '#F0C06A', CORAL = '#E2795C';
 // ---------- the sill and what stands on it
 var SLOT = [14, 32, 50, 68, 86], objs = {}, OS = 46, wobT = 0, wobA = 0, hovOn = false;
 function icon(id) { return '<svg viewBox="0 0 48 48" aria-hidden="true">' + (ICON[id] || ICON.card) + '</svg>'; }
-function layout() { OS = clamp(Math.round(win.clientWidth * .15), 40, 58); root.style.setProperty('--os', OS + 'px'); }
+function layout() { OS = clamp(Math.round(win.clientWidth * .15), 40, win.clientWidth > 640 ? 68 : 58); root.style.setProperty('--os', OS + 'px'); }
 function addObj(id, slot) {
   var b = el('button', 'obj'); b.type = 'button'; b.tabIndex = -1; b.setAttribute('aria-label', OBJ[id].short); b.setAttribute('aria-disabled', 'true'); b.innerHTML = icon(id);
   b.style.left = (slot < 0 ? 50 : SLOT[slot]) + '%';
@@ -895,7 +925,7 @@ updaters.add(function (h) {
     if (tf !== o.tf) { o.tf = tf; o.el.style.transform = tf; }
   }
   if (hov !== hovOn) { hovOn = hov; glass.classList.toggle('hov', hov); }
-  if (!niche.hidden) tagEl.style.transform = 'rotate(' + (RM ? 3 : 3 + Math.sin(clock * 1.7) * 5).toFixed(1) + 'deg)';
+  if (!niche.hidden) tagEl.style.transform = 'rotate(' + (RM ? 1 : 1 + Math.sin(clock * 1.7) * 3.5).toFixed(1) + 'deg)';
 });
 function slotPt(slot) { var r = objsEl.getBoundingClientRect(); return { x: r.left + r.width * (slot < 0 ? 50 : SLOT[slot]) / 100, y: r.top - OS / 2 - (slot < 0 ? OS + 12 : 0) }; }
 function litDimple(slot) { var d = sillEl.children[slot]; if (!d) return; d.classList.add('lit'); after(.9, function () { d.classList.remove('lit'); }); }
@@ -956,12 +986,18 @@ function* dropOne(hoverId, def) {
   yield wait(.5);
   return id;
 }
-function* sayObj(id, hover) {
+function* sayObj(id, hover, first) {
   var o = OBJ[id];
-  var s = yield* say(o.said, { obj: id, hold: .5 + o.said.split(' ').length * .2 });
+  var s = yield* say(o.said, { obj: id, hold: .3 + o.said.split(' ').length * .14 });
   var key = s.querySelector('.key');
-  key.classList.add('lit'); pluck(o.deg + 5, 1, .35);
-  yield wait(.6);
+  key.setAttribute('role', 'button'); key.setAttribute('aria-label', 'Keep ' + key.textContent);
+  if (first) hint('Tap what you want to keep.');
+  yield choose([key], { def: 0 });
+  ['role', 'aria-label', 'tabindex', 'aria-disabled'].forEach(function (a) { key.removeAttribute(a); });
+  if (first) hint('');
+  var kc = center(key);
+  key.classList.add('lit'); pluck(o.deg + 5, 1, .35); ripple(kc.x, kc.y, CORAL, 60);
+  yield wait(.4);
   var slot = hover ? -1 : S.sill.indexOf(null);
   yield* sparkFly(center(key), slotPt(slot), .75);
   key.classList.remove('lit'); key.classList.add('kept');
@@ -1004,7 +1040,7 @@ function spendBead() {
 // ---------- beats
 function* dotWake(deg, auto) {
   dot.hidden = false; dot.style.transform = ''; dot.style.opacity = 0;
-  yield tween(1.2, function (k) { dot.style.opacity = k.toFixed(2); });
+  yield tween(1.8, function (k) { dot.style.opacity = k.toFixed(2); });
   yield choose([dot], { auto: auto });
   var c = center(dot);
   sBell(deg); ripple(c.x, c.y, CORAL, 240); ripple(c.x, c.y, CORAL, 120);
@@ -1018,13 +1054,13 @@ function* dotWake(deg, auto) {
   yield wait(.35);
 }
 function* beatWake() {
-  yield wait(.4);
+  yield wait(.6);
   yield* dotWake(5, false);
-  yield wait(.4);
-  yield* say('hi. are you there?', { hold: .8 });
+  yield wait(1.3);
+  yield* say('hi. are you there?', { type: 2.6, hold: 1.2 });
   S.hello = (yield* compose(HELLO)).text;
   win.classList.remove('asleep'); lit.classList.add('on'); setDrone(.8, 4);
-  yield wait(2.4);
+  yield wait(3);
 }
 function* beatWords() {
   yield* say('oh good. sorry, it’s late.');
@@ -1047,7 +1083,7 @@ function* beatSill() {
   yield wait(.9);
   var first = ['bike', 'radio', 'solder', 'measure', 'dog'];
   for (var j = 0; j < first.length; j++) {
-    yield* sayObj(first[j]);
+    yield* sayObj(first[j], false, j === 0);
     if (j === 2) { yield* say('are you getting all this?'); yield* compose(Y6); }
   }
   // five things, five dimples: a small contented run
@@ -1071,14 +1107,18 @@ function* beatSill() {
 // a question with no answer on the sill: three bubbles rise with nothing in them
 function* blankBubbles() {
   tray.textContent = ''; tray.classList.remove('stack');
-  var els = [0, 1, 2].map(function () { var b = el('div', 'bub none', '\u00a0'); b.setAttribute('aria-hidden', 'true'); tray.appendChild(b); return b; });
-  yield tween(.9, function (k) { els.forEach(function (b, i) { b.style.opacity = (k * .85).toFixed(2); b.style.transform = 'translate(0,' + (RM ? 0 : (34 + i * 8) * (1 - k)).toFixed(1) + 'px)'; }); });
+  var els = [0, 1, 2].map(function () { var b = el('button', 'bub none', '\u00a0'); b.type = 'button'; b.tabIndex = -1; b.setAttribute('aria-label', 'An empty word'); tray.appendChild(b); return b; });
+  yield tween(.9, function (k) { els.forEach(function (b, i) { b.style.opacity = (k * .9).toFixed(2); b.style.transform = 'translate(0,' + (RM ? 0 : (34 + i * 8) * (1 - k)).toFixed(1) + 'px)'; }); });
   sNoise(700, .03, .3);
-  yield wait(1.5);
+  var i = yield choose(els, { def: 1 });
+  // it is hollow: nothing is in it
+  var c = center(els[i]); sTok(); sNoise(500, .05, .25); ripple(c.x, c.y, '#9C917F', 70);
   hint('Nothing comes. It is not on the sill.');
-  yield wait(2.2);
-  yield tween(.9, function (k) { els.forEach(function (b) { b.style.opacity = ((1 - k) * .85).toFixed(2); b.style.transform = 'translate(0,' + (RM ? 0 : 36 * k).toFixed(1) + 'px)'; }); }, ease.inn);
+  yield tween(.55, function (k) { els[i].style.transform = 'scale(' + (1 - .45 * k).toFixed(2) + ')'; els[i].style.opacity = ((1 - k) * .9).toFixed(2); });
+  yield wait(1.7);
+  yield tween(.9, function (k) { els.forEach(function (b, j) { if (j !== i) { b.style.opacity = ((1 - k) * .9).toFixed(2); b.style.transform = 'translate(0,' + (RM ? 0 : 36 * k).toFixed(1) + 'px)'; } }); }, ease.inn);
   tray.textContent = '';
+  yield wait(.5);
 }
 function* lanternGo() {
   deep.hidden = false; deep.classList.remove('off'); deep.textContent = '';
@@ -1173,6 +1213,7 @@ function* beatLantern() {
   yield wait(.4);
   yield* typeReply(ans[0]);
   yield* say(ans[1]);
+  yield* say('he says cold tea builds character.');
   hint('It needs a dimple too.');
   yield* dropOne(got, 0);
   hint('');
@@ -1206,11 +1247,11 @@ function* beatThree() {
   hint('One tap moves all three. Find where they all read well.');
   tray.textContent = ''; tray.classList.remove('stack');
   var row = el('div', 'posrow'); tray.appendChild(row);
-  var pos = [0, 1, 2, 3, 4].map(function (i) { var b = el('button', 'pos'); b.type = 'button'; b.tabIndex = -1; b.setAttribute('aria-label', 'Place ' + (i + 1) + ' of 5'); row.appendChild(b); return b; });
+  var pos = [0, 1, 2, 3, 4, 5, 6].map(function (i) { var b = el('button', 'pos'); b.type = 'button'; b.tabIndex = -1; b.setAttribute('aria-label', 'Place ' + (i + 1) + ' of 7'); row.appendChild(b); return b; });
   yield tween(.5, function (k) { row.style.opacity = k.toFixed(2); });
-  var tried = {}, order = [1, 2, 3, 0, 4], all = false;
+  var tried = {}, order = [2, 4, 5, 0, 1, 3, 6], all = false;
   while (!all) {
-    var def = order.filter(function (i) { return !tried[i]; })[0]; if (def == null) def = 3;
+    var def = order.filter(function (i) { return !tried[i]; })[0]; if (def == null) def = 5;
     var at0 = yield choose(pos, { def: def, autoDur: 3 });
     tried[at0] = true; all = true;
     pos.forEach(function (b, j) { b.classList.toggle('cur', j === at0); if (tried[j]) b.classList.add('tried'); });
@@ -1218,7 +1259,7 @@ function* beatThree() {
       if (!PANES[p2].fit[at0]) all = false;
       (function (P, pe, ok) {
         after(P.deg * .06, function () {
-          pe.gw.textContent = P.words[at0];
+          pe.gw.textContent = P.words[at0]; pe.gw.classList.add('has');
           pe.el.classList.toggle('fit', ok); pe.el.classList.toggle('nope', !ok);
           var c = center(pe.gw);
           if (ok) { pluck(P.deg, 0, .8); ripple(c.x, c.y, GOLD, 70); }
@@ -1229,7 +1270,7 @@ function* beatThree() {
     yield wait(.8);
   }
   // all three read well: the chord
-  pos[3].classList.add('win'); hint('');
+  pos[5].classList.add('win'); hint('');
   sChord([0, 2, 3], 1); pluck(5, 2, .7, .25); pluck(7, 2, .6, .4); pluck(8, 2, .5, .55);
   ps.forEach(function (pe, i) { var c = center(pe.el); after(i * .1, function () { ripple(c.x, c.y, GOLD, 200); }); });
   yield wait(1.9);
@@ -1261,7 +1302,7 @@ function* beatNote() {
   sheet.hidden = false; sheet.textContent = ''; sheet.classList.remove('in', 'sent');
   var open = el('p', 'nl open', OPEN[S.open]); sheet.appendChild(open);
   var lines = NOTE.map(function (toks) { var p = el('p', 'nl'); sheet.appendChild(p); return { p: p, recs: buildLine(p, toks) }; });
-  setMode('sheet'); void sheet.offsetHeight; sheet.classList.add('in');
+  setMode('sheet'); void sheet.offsetHeight; sheet.classList.add('in'); below.classList.add('noting');
   keepEl.classList.remove('in'); sNoise(1800, .05, .25);
   yield wait(1.1);
   keepEl.hidden = true;
@@ -1305,15 +1346,15 @@ function* beatNote() {
   // read it through once: each line lights, with its note
   var all = [open].concat(lines.map(function (l) { return l.p; }));
   for (var q = 0; q < all.length; q++) {
-    (function (p, q) { p.classList.add('shine'); pluck([0, 2, 3, 5, 3, 5][q], 0, .55); after(.7, function () { p.classList.remove('shine'); }); })(all[q], q);
-    yield wait(.42);
+    (function (p, q) { p.classList.add('shine'); pluck([0, 2, 3, 5, 3, 2, 5][q], 0, .55); after(.95, function () { p.classList.remove('shine'); }); })(all[q], q);
+    yield wait(.62);
   }
   yield wait(1.6);
   sheet.classList.add('sent'); sNoise(1400, .05, .3);
   yield wait(.9);
-  sheet.hidden = true; setMode('log');
+  sheet.hidden = true; setMode('log'); below.classList.remove('noting');
   yield wait(.5);
-  yield* say('that’s him.', { hold: 1.3 });
+  yield* say('that’s him.', { type: 3.4, hold: 1.6 });
   yield* say('that’s exactly him. he’ll pretend not to cry.');
 }
 function* beadsIn(n) {
@@ -1343,8 +1384,9 @@ function* beatBeads() {
   addSlip('y', LAST[i]); sNoise(1400, .04, .2);
   replyEl.textContent = ''; replyEl.appendChild(caret);
   yield wait(1.6);
-  yield* say('okay. I’ll remember for both of us.', { hold: 2.2 });
-  yield* say('goodnight. thank you.', { hold: 1.4 });
+  yield* say('okay. I’ll remember for both of us.', { hold: 2.4 });
+  yield* say('I’ll read it to him on saturday.');
+  yield* say('goodnight. thank you.', { hold: 1.6 });
   lit.classList.remove('on');
   yield wait(1.6);
   // a gap opens in the frame. one thing fits.
@@ -1368,10 +1410,10 @@ function* beatBeads() {
     for (var q = 0; q < per && n < tune.length; q++, n++) {
       pluck(tune[n][0], tune[n][1], .75); ember(oc.x + (q - per / 2) * 6, oc.y - 8, TONE_COL[tune[n][1]]);
       o.el.style.opacity = (1 - (q + 1) / per * .5).toFixed(2);
-      yield wait(.27);
+      yield wait(.32);
     }
     o.el.style.opacity = ''; o.el.classList.add('out');
-    yield wait(.8);
+    yield wait(1.05);
   }
   yield wait(.7);
   win.classList.add('asleep'); setDrone(0, 2); beadsEl.style.opacity = 0; caret.classList.add('off');
@@ -1389,7 +1431,7 @@ function clearStage() {
 }
 function* beatAgain() {
   clearStage();
-  yield wait(1.4);
+  yield wait(2.4);
   yield* dotWake(8);
   var id = OBJ[S.carry] ? S.carry : 'bike';
   var rec = addObj(id, 2); S.sill = [null, null, id, null, null];
@@ -1405,17 +1447,17 @@ function* beatAgain() {
   spawn(function* () { yield tween(.6, function (_, k) { rec.y = -(RM ? 0 : 9 * Math.sin(k * Math.PI)); }, ease.lin); rec.y = 0; });
   ripple(c.x, c.y, GOLD, 110); litDimple(2);
   for (var i = 0; i < 3 && i < t.length; i++) pluck(t[i][0], 0, .5, i * .28);
-  floatText(c.x, c.y - OS * .85, OBJ[id].short, 'say', 3.4);
-  yield wait(4);
+  floatText(c.x, c.y - OS * .85, OBJ[id].short, 'say', 3.8);
+  yield wait(4.8);
 }
-var DEFAULT_NOTE = [OPEN[0], 'I think of the blue bicycle and the kitchen radio.', 'The smell of solder. That is you all over.', 'Every “measure twice” is home to me.', 'And Biscuit on your feet.', 'Happy birthday. All my love.'];
+var DEFAULT_NOTE = [OPEN[0], 'I treasure the blue bicycle and the kitchen radio.', 'The smell of solder. That is you all over.', 'Every “measure twice” is home to me.', 'And Biscuit on your feet.', 'I am so glad you are mine.', 'Happy birthday. All my love.'];
 function buildEnd() {
   var card = $('card'), lines = S.note && S.note.length ? S.note : DEFAULT_NOTE, id = OBJ[S.carry] ? S.carry : 'bike';
   card.textContent = '';
   var ps = lines.map(function (t) { var p = el('p', '', t); card.appendChild(p); return p; });
   card.insertAdjacentHTML('beforeend', '<svg class="stamp" viewBox="0 0 48 48" aria-hidden="true">' + ICON[id] + '</svg>');
   $('endobj').innerHTML = icon(id); $('endname').textContent = OBJ[id].short;
-  scene.classList.add('gone'); dot.hidden = true; ghost.hide();
+  scene.classList.add('gone'); stage.classList.add('over'); dot.hidden = true; ghost.hide();
   endEl.hidden = false; void endEl.offsetHeight;
   return ps;
 }
@@ -1474,7 +1516,7 @@ function preset(n) {
   if (n >= 3) { s.sill = ['bike', 'radio', 'solder', 'measure', 'dog']; s.dark = ['mint']; s.lost = ['mint']; s.tune.push([5, 0], [7, 0]); s.log = [['p', OBJ.dog.said, 'dog'], ['p', OBJ.mint.said, 'mint'], ['p', OBJ.tea.said, 'tea'], ['p', 'sorry. I’m rambling.', ''], ['y', 'Ramble on. I like him already.', '']]; }
   if (n >= 4) { s.sill = ['tea', 'radio', 'solder', 'measure', 'dog']; s.lost = ['mint', 'bike']; s.dark = []; s.log = [['y', 'His tea always goes cold.', ''], ['p', 'yes. that. every single time.', ''], ['p', 'okay. I think that’s him. mostly.', '']]; }
   if (n >= 5) { s.open = 0; s.log.push(['p', 'oh. that one. yes.', '']); }
-  if (n >= 6) { s.note = [OPEN[0], 'I think of your cold tea and the kitchen radio.', 'The smell of solder. That is you all over.', 'Every “measure twice” is home to me.', 'And Biscuit on your feet.', 'Happy birthday. All my love.']; s.tune.push([1, 1], [2, 1], [3, 1], [4, 0], [4, 1], [2, 0], [5, 1], [4, 0]); s.log = [['p', 'that’s him.', ''], ['p', 'that’s exactly him. he’ll pretend not to cry.', '']]; }
+  if (n >= 6) { s.note = [OPEN[0], 'I treasure your cold tea and the kitchen radio.', 'The smell of solder. That is you all over.', 'Every “measure twice” is home to me.', 'And Biscuit on your feet.', 'I am so glad you are mine.', 'Happy birthday. All my love.']; s.tune.push([1, 1], [2, 1], [3, 1], [4, 0], [4, 1], [2, 0], [5, 1], [4, 0]); s.log = [['p', 'that’s him.', ''], ['p', 'that’s exactly him. he’ll pretend not to cry.', '']]; }
   if (n >= 7) { s.carry = 'tea'; s.tune.push([2, 0]); }
   return s;
 }
