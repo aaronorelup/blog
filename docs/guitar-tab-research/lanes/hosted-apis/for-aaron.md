@@ -291,3 +291,48 @@ curl -sS -X POST https://fal.run/fal-ai/demucs -H "Authorization: Key $FAL_KEY" 
 
 Chordify, Songsterr and the consumer Moises app have no developer API that `survey.md` could find (Songsterr's
 robots.txt disallows `/api/`); they belong to the apps-survey lane's steps.
+
+## 14. xAI's API terms: save the page (added in gap round 2, 2026-11-11)
+
+The speech-to-text calls (r0105, r0306) went straight to xAI's API with the xAI key. xAI's docs say the API falls
+under its "Enterprise Terms of Service and Data Processing Addendum" (https://docs.x.ai/developers/faq/general.md),
+but https://x.ai/legal/terms-of-service-enterprise answered HTTP 403 (a Cloudflare "Sorry, you have been blocked"
+page) to the research box and to the agent's web-fetch tool on 2026-11-11, so no clause from it is quoted
+(`survey.md`, "xAI Speech to Text API").
+
+1. In a browser, open https://x.ai/legal/terms-of-service-enterprise (and, if it is a separate page, the Data
+   Processing Addendum linked from https://x.ai/legal).
+2. Save each page as PDF or as plain text (Ctrl+S, "Web page, complete" or "Text").
+3. Send back: the saved files and the date you saved them. An agent then quotes the clauses on who owns API
+   outputs, whether inputs and outputs are used for training, and retention, into `survey.md`.
+
+## 15. Mureka Music Transcription on fal.ai (added in gap round 2, 2026-11-11; 0.40 USD)
+
+A hosted endpoint that turns a song into a ZIP that "can include MusicXML, PDF sheet music, and timestamped lyrics"
+(`survey.md`, "Mureka Music Transcription on fal.ai"). The key store has no fal key, so it was not called here.
+
+- Key: sign up at https://fal.ai , add a little credit, create a key in the dashboard; store it as `FAL_KEY`. Price on
+  the model page: "$0.20" per song, so the two calls below cost 0.40 USD. (The same key also unlocks section 11.)
+- Inputs: S4 (synthesized band mix, 38.741 s, `S4.wav`) and R2 (Josh Woodward's CC BY 4.0 song excerpt, 36.000 s,
+  `R2.wav`). Both are inside the endpoint's limits ("between 10 seconds and 10 minutes and no larger than 100 MB"),
+  and `audio_url` takes a data URI, so no upload host is needed.
+- First requests (an agent runs these; the key is read into a variable and never echoed):
+
+```bash
+FAL_KEY=$(python3 ~/.claude/bin/getkey.py FAL_KEY)
+for c in S4 R2; do
+python3 - "$c" <<'PY' > body_$c.json
+import base64, json, sys
+c = sys.argv[1]
+b = base64.b64encode(open(f"{c}.wav", "rb").read()).decode()
+print(json.dumps({"audio_url": "data:audio/wav;base64," + b, "title": c}))
+PY
+curl -sS -X POST https://fal.run/mureka/api/song/transcribe -H "Authorization: Key $FAL_KEY" \
+  -H "Content-Type: application/json" --data-binary @body_$c.json -o result_$c.json   # -> {"zip_url": "..."}
+done
+```
+
+- Then download each `zip_url`. Send back (or let the agent keep): both ZIPs as they come, the time each call took and
+  the charge shown in the fal dashboard. The agent lists what each ZIP holds (MusicXML parts, PDF, lyrics), converts
+  the S4 MusicXML to notes and scores them against S4's truth with `gtr-eval notes` (all parts, then the guitar part
+  if there is one), and compares R2's timestamped lyrics with the two speech-to-text transcripts in `trials.md`.

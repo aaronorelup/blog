@@ -1,0 +1,85 @@
+{
+ "replaced": ":q 0/3",
+ "occurrence": 2,
+ "with": ":q 5/4",
+ "at": 130,
+ "n_before": 90,
+ "n_after": 90,
+ "first4_before": [
+  {
+   "text": "0",
+   "string": 3,
+   "stave": 0,
+   "dy": 4.5
+  },
+  {
+   "text": "0",
+   "string": 3,
+   "stave": 0,
+   "dy": 4.5
+  },
+  {
+   "text": "3",
+   "string": 2,
+   "stave": 0,
+   "dy": 4.5
+  },
+  {
+   "text": "3",
+   "string": 2,
+   "stave": 0,
+   "dy": 4.5
+  }
+ ],
+ "first4_after": [
+  {
+   "text": "0",
+   "string": 3,
+   "stave": 0,
+   "dy": 4.5
+  },
+  {
+   "text": "5",
+   "string": 4,
+   "stave": 0,
+   "dy": 4.5
+  },
+  {
+   "text": "3",
+   "string": 2,
+   "stave": 0,
+   "dy": 4.5
+  },
+  {
+   "text": "3",
+   "string": 2,
+   "stave": 0,
+   "dy": 4.5
+  }
+ ],
+ "max_dy": 4.5,
+ "changed": [
+  {
+   "i": 1,
+   "before": {
+    "text": "0",
+    "string": 3,
+    "stave": 0,
+    "dy": 4.5
+   },
+   "after": {
+    "text": "5",
+    "string": 4,
+    "stave": 0,
+    "dy": 4.5
+   }
+  }
+ ],
+ "editor_error": "",
+ "console": [
+  {
+   "type": "log",
+   "text": "Running VexTab.Div: 4.0.3-5-g3a5e00d master 3a5e00d858ae98934ba545f9bef5eb923e17e402"
+  }
+ ]
+}

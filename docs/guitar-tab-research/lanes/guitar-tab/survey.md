@@ -135,7 +135,8 @@ test (the try agent's `trials.md` says what ran).
     `best_TabCNN_tablature_trancription_model` (3,345,122 bytes), TabCNN trained with amt-tools on GuitarSet plus the
     DadaGP-derived "GuitarProFX" set (Pedroza et al., DAFx 2024); (b) huggingface.co/cstr/tabcnn-onnx (card
     `license: cc-by-4.0`, created 2026-07-20) holds ONNX exports, one trained by the card's author on GuitarSet and one
-    re-exported from (a). RUNNABLE (ONNX). Section "TabCNN weights published by others".
+    re-exported from (a). RUNNABLE (ONNX). Section "TabCNN weights published by others". (Gap round 2: (a) and both
+    ONNX files ran on the box, `trials.md` "Gap round 2".)
 45. Guitar-Transcription-CNN-MTL (M. Eren Reyhanlıoğlu), github.com/ErenReyhanlioglu/Guitar-Transcription (last commit
     2026-10-13), code MIT; weights MIT on huggingface.co/MehmetErenn0/guitar-transcription-cnn-mtl and in
     github.com/ErenReyhanlioglu/Guitar-Transcription-Weights; trained on GuitarSet only; paper "under review at IEEE
@@ -143,7 +144,7 @@ test (the try agent's `trials.md` says what ran).
     Section "Guitar-Transcription-CNN-MTL".
 46. scorify (Aron Homberg), npm 0.4.0 (2026-10-31), MIT; arranges a note list onto a fretted instrument with tunings,
     capos and four-finger assignment by DP or beam search; JavaScript, no runtime dependencies. RUNNABLE in Node or a
-    browser. Section "scorify".
+    browser. Section "scorify". (Gap round 2: run on the box in Node 22, `trials.md` "Gap round 2".)
 47. Guitar Chord Diagram Suggestion code (d'Hooge et al., SMC 2024), github.com/adhooge/guitar-chord-diagram-suggestion
     (last commit 2025-07-13): code GPL v3, `DATA_LICENSE` ODbL, checkpoints in the repository, Hugging Face Space demo.
     Suggests a chord diagram (a fret per string) for a chord label, given the previous chord's diagram. Section "Guitar
@@ -213,7 +214,19 @@ and quotes its own license file; these are the license texts themselves.
   tones from EGFxSet and the authors' own recordings. Author-reported (arXiv 2405.14679v3, Table 2, "TabCNN performance
   on EGSet12"): tablature F1 0.585 ± 0.084 for "+ GuitarProFX" against 0.447 ± 0.071 for TabCNN trained on GuitarSet only.
   The `cstr/tabcnn-onnx` card (below) says "The GuitarProFX (`amt-tools`) model natively uses **class 20 = silence,
-  class k = fret k**." The file itself was not opened here, and how it loads was not tested.
+  class k = fret k**." The file itself was not opened here, and how it loads was not tested. (Gap round 2,
+  2026-11-11: it was downloaded (md5 equal to the record's) and run; it is a whole pickled amt-tools `TabCNN` object
+  saved at `model-2500`, it loads with `torch.load(weights_only=True)` and an allow-list of the amt-tools and torch
+  classes it names, and its runs and scores are in `trials.md`, "Gap round 2".)
+- Training code for this model, read 2026-11-11: the project page https://robust-guitar-tabs.github.io/ links "Code"
+  to https://github.com/robust-guitar-tabs/code (blob-less clone, last commit 2024-06-03, `f50309a`). Its README:
+  "**AMT-Tools**: A customized version of the Cwitkowitz AMT-Tools code ... including our dataset loader, for training
+  models and saving datasets." and "This repository includes 16 Guitar Pro examples. For a full dataset, request access
+  from DadaGP". Licences in the tree: the root `LICENSE` begins "Creative Commons Legal Code / CC0 1.0 Universal";
+  `AMT-Tools/LICENSE.txt` begins "MIT License / Copyright (c) 2023 Frank Cwitkowitz". The training script
+  `AMT-Tools/examples/papers/guitarProFx.py` runs six folds of 2,500 iterations, each tested on one GuitarSet player;
+  the Zenodo record does not say which fold the published file comes from (UNVERIFIED; this matters for clips cut
+  from GuitarSet, see `trials.md`).
 - Hugging Face https://huggingface.co/cstr/tabcnn-onnx (HF API: created 2026-07-20, last modified 2026-08-02; card read
   2026-11-10 at https://huggingface.co/cstr/tabcnn-onnx/raw/main/README.md): card YAML `license: cc-by-4.0`. Files
   `tabcnn.onnx`, `tabcnn-gpfx.onnx`, `tabcnn-cqt.bin`. The card says: "Vanilla: trained here on **GuitarSet** (CC BY
@@ -224,6 +237,21 @@ and quotes its own license file; these are the license texts themselves.
   per octave. Card author's figures: "`tabcnn.onnx`: held-out GuitarSet tab F1 0.745 (paper 0.748)"; `tabcnn-gpfx.onnx`
   "EGSet12 (12-track, frame-level tab F1) = 0.59 micro / 0.55 macro". The export scripts are in
   https://github.com/CrispStrobe/onnx_runtime_dart (`tool/tabcnn/`; repository `LICENSE` MIT, last commit 2026-09-18).
+  (Gap round 2, read 2026-11-11 from a sparse blob-less clone at `7bdf47d`: the `LICENSE` begins "MIT License /
+  Copyright (c) 2024-2026 CrispStrobe"; `tool/tabcnn/README.md` gives the vanilla training command `EPOCHS=4
+  VAL_GUITARIST=5 python train.py features/ tabcnn.onnx` and "Held-out (guitarist-5) **tablature F1 0.745** (paper
+  0.748)", and says "Data: **GuitarSet, CC BY 4.0** (`zenodo.org/records/3371780`, `audio_mono-mic` + `annotation`).
+  Derived weights redistributable **with attribution**." and "the GuitarProFX-augmented weights (DAFx-24) aren't
+  public", the last of which the model card, modified later, no longer says. `train.py` trains on every GuitarSet
+  player except `VAL_GUITARIST` (default 5).)
+- Card facts on the front-end, read 2026-11-11 (the card calls it "the #1 correctness risk (differs by variant!)"):
+  both files use "the same CQT geometry (sr 22050, hop 512, n_bins 192, bins_per_octave 24, fmin C1 = 32.703 Hz)";
+  for `tabcnn-gpfx.onnx` "per-clip dB, then [0,1]" (`librosa.amplitude_to_db(C, ref=np.max)` then min-max), for
+  `tabcnn.onnx` "RAW magnitude, no log/norm" after "(peak-normalize the *waveform* first: y = librosa.util.normalize(y))".
+  Output contract: "**class 0 = string silent/closed**, **class k = fret k−1** (class 1 = open, class 20 = fret 19)" for
+  both files; for gpfx "The export **remaps** that to the shared contract above ... with a `roll`". Both files were run
+  in gap round 2 with ONNX Runtime 1.31.1 (`trials.md`, "Gap round 2"): `tabcnn-gpfx.onnx` with the card's front-end
+  gave the same per-string frame output as the Zenodo file on all 9,830 frames of 8 clips.
 - Hugging Face https://huggingface.co/cstr/tabcnn-GGUF (created 2026-07-20; card YAML `license: cc-by-4.0`): GGUF
   conversions (f32, f16, q8_0, q4_k). The card: "**These are emission SCORES, not a decided tablature.** Turning them
   into a playable fingering needs a constrained decoder (one note per string, fret range, capo, hand span)."
@@ -231,7 +259,8 @@ and quotes its own license file; these are the license texts themselves.
   not say which version was used); DadaGP has no dataset licence text and is shared for research by request (DadaGP
   section); EGFxSet's licence was not read (UNVERIFIED).
 - `trials.md` lists the original TabCNN code with "Weights published: no", which holds for that repository; the files
-  above were published by other people and were not run there.
+  above were published by other people and were not run there. (Corrected in gap round 2: the Zenodo file and both
+  ONNX files were run on 8 clips on 2026-11-11, runs r0591, r0592, r0594, r0595, r0601; `trials.md`, "Gap round 2".)
 
 ## amt-tools
 
@@ -571,6 +600,15 @@ and quotes its own license file; these are the license texts themselves.
     for a permitted purpose."
   - `LICENSE-COMMERCIAL.md`: "# Commercial License Addendum / Commercial users, contact me at [the author's email
     address, omitted here] for a paid license."
+- Re-checked 2026-11-11 (gap round 2): the repository was still at `a9be933`; `LICENSE.md` still begins "# PolyForm
+  Noncommercial License 1.0.0" and contains the three clauses quoted above word for word, and `LICENSE-COMMERCIAL.md`
+  still reads as quoted. `pyproject.toml`: version 0.8.3, core dependencies `MIDIFile`, `midiutil`, `mido>=1.3`,
+  `numpy>=2.1`, extras `audio` (librosa, soundfile, scipy, noisereduce), `separation` (demucs), `play`
+  (python-rtmidi). `https://pypi.org/pypi/gtrsnipe/json` and `https://pypi.org/simple/gtrsnipe/` answered HTTP 404, so
+  it is still not a published package; an install from the repository was refused by the box's permission system
+  (`trials.md`, "Gap round 2"). README on tab input: "A tab states where each note is played, and gtrsnipe keeps that."
+  and "**`--no-refinger`** never moves a note to another string. `--transpose` slides each note along its string, and
+  stops with the list of notes that can't."
 
 ## tuttut (MIDI to tab, HMM + Viterbi)
 
@@ -917,6 +955,13 @@ and quotes its own license file; these are the license texts themselves.
   scorify Score JSON" (README).
 - License: npm metadata `"license": "MIT"`; `LICENSE` begins "MIT License / Copyright (c) 2026 Aron Homberg" (commit
   `8f8c25c`).
+- Gap round 2 (read 2026-11-11 from the npm package 0.4.0, still the `latest` tag): `package.json` description
+  "Instrument-aware arrangement, transposition, fingering constraints, and plucked-string synthesis."; the package's
+  `LICENSE` begins "MIT License / Copyright (c) 2026 Aron Homberg"; `THIRD-PARTY-LICENSES.txt` lists 9 bundled
+  `@tonaljs/*` modules, each "License: MIT". The note model has no string field; the README's cost hook ("A direct
+  `scoring: { id, cost(frame, realization) }` hook must be pure, deterministic, finite and nonnegative. ... It cannot
+  override hard validity or the musical-fidelity priority.") is the documented way to bias a note toward a string. Run on
+  the box on 2026-11-11 (runs r0621, r0623, r0630, r0631, r0633, r0635, r0641; `trials.md`, "Gap round 2").
 
 ## Guitar Chord Diagram Suggestion (d'Hooge et al.; added by verify-docs-guitar-tab, 2026-11-10)
 
@@ -1090,7 +1135,7 @@ read 2026-11-10, unless another source is named. Zenodo shows that id as the rec
 | Guitab E25 / E24 / E19, tab LM, chord model | huggingface.co/danmor/guitab | CC BY-NC-SA 4.0 (card); the two Beat This! ONNX files MIT (`LICENSE-beat-this.txt`) | GuitarSet, GAPS, SynthTab subset, a non-distributed custom set; chord model Chordonomicon (HF card `cc-by-nc-4.0`) plus the custom set and EGDB |
 | `guitar-gaps.pth`, `guitar-fl.pth` | huggingface.co/xavriley/midi-transcription-models | MIT (card) | GAPS; François Leduc dataset |
 | TabCNN + GuitarProFX (`best_TabCNN_tablature_trancription_model`) | Zenodo 11406378 | record `cc-by-4.0` | GuitarSet + GuitarProFX (360 DadaGP tracks rendered with EGFxSet and the authors' recorded tones) |
-| `tabcnn.onnx`, `tabcnn-gpfx.onnx`; GGUF copies | huggingface.co/cstr/tabcnn-onnx , huggingface.co/cstr/tabcnn-GGUF | CC BY 4.0 (cards) | GuitarSet (vanilla, trained by the card's author); the Zenodo 11406378 model (gpfx) |
+| `tabcnn.onnx`, `tabcnn-gpfx.onnx`; GGUF copies | huggingface.co/cstr/tabcnn-onnx , huggingface.co/cstr/tabcnn-GGUF | CC BY 4.0 (cards) | GuitarSet (vanilla, trained by the card's author; players 00 to 04 per the export repository's README and `train.py`, gap round 2); the Zenodo 11406378 model (gpfx) |
 | CNN-MTL, six folds plus ablation runs | huggingface.co/MehmetErenn0/guitar-transcription-cnn-mtl ; github.com/ErenReyhanlioglu/Guitar-Transcription-Weights | MIT (card YAML and the weights repository's LICENSE) | GuitarSet (six-fold leave-one-player-out) |
 | Chord diagram suggestion checkpoints (`.ckpt`) | github.com/adhooge/guitar-chord-diagram-suggestion | repository LICENSE GPL v3 (code); chord data ODbL (`DATA_LICENSE`); HF Space card `license: other` | DadaGP and mySongBook chord pairs |
 | Noise2Fret `CheckpointsGOAT.zip`, `CheckpointsGuitarSet.zip` | Zenodo 23361924 | record `cc-by-4.0` | GOAT (`cc-by-nc-4.0`, restricted, "non-commercial only"); GuitarSet |
@@ -1238,7 +1283,9 @@ None of these pairs was run by this agent; the try agent's `trials.md` records w
     keeps a tab input's strings ("never moves a note to another string") and `--single-string {1,2,3,4,5,6}` puts every
     note on one string ("Force all notes onto a single string (1-6, high e to low E)", README "Command-line options").
     No audio-to-tab model in this lane takes a fixed string as an input; Guitab's `--fingering model|auto|low` re-fingers
-    its own output.
+    its own output. (Gap round 2: scorify has no per-note string field; a `scoring` cost hook that penalises the other
+    strings moved one note of S2n to string 4 and left the other 89 on their strings and frets, run r0623, eval e1830,
+    `trials.md`.)
 20. Hand landmarks or fretboard coordinates from the video-hands-fretboard lane: no tool in this lane's sections
     accepts them as input. Of the video-based systems found, TapToTab and Asmar et al. have no code found, and GuiFiR
     has a dataset-preparation repository (https://github.com/kmu-ee-ailab/guifir_dataset : clips, COCO-style JSONL

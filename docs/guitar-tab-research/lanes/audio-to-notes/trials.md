@@ -46,11 +46,12 @@ How to read the numbers:
 | ByteDance piano transcription (0.0.6), piano-trained | yes, S2n and R1c only | r0401 | MIDI (program 0, velocities, CC64 pedal) |
 | RMVPE through `rmvpe-onnx` (0.2.3, ONNX Runtime), gap round 1 | yes | r0516, r0517 | f0 every 10 ms (Hz), confidence 0 to 1, 360-bin activation; no notes |
 | Onsets and Frames, Magenta MAESTRO checkpoint (`magenta` 2.1.4), piano-trained, gap round 1 | yes, S1, S2n, R1c, S4 guitar stem | r0545 | MIDI (program 0, velocities, no pedal, no pitch bends) |
+| CREPE Notes (`crepe-notes` 0.2.0, with madmom 0.17.dev0), gap round 2 | yes, `--f0` from torchcrepe on S1, R1b, S4lead | r0616 | MIDI (program 0, velocities, tempo 120); estimated tuning offset printed |
 
 Not run here (reasons and evidence under "Tools not run here", steps in `for-aaron.md`): CREPE (TensorFlow
 package), MELODIA Vamp plugin, pYIN Vamp plugin, Timbre-Trap, MT3, YourMT3+, MR-MT3,
 hFT-Transformer, Omnizart, NeuralNote, Sheet Sage, MuScriptor, PENN, CREPE Notes and the other survey additions
-listed there. (corrected in gap round 1: RMVPE and Onsets and Frames ran, see "Gap round 1", and the round's verifier
+listed there. (corrected in gap round 2: CREPE Notes ran, item A3 under "Gap round 2".) (corrected in gap round 1: RMVPE and Onsets and Frames ran, see "Gap round 1", and the round's verifier
 took them out of this list; CREPE, MT3 with its PyTorch port mt3-pytorch, MR-MT3, YourMT3+ on the box's CPU and
 Omnizart still did not run, and their entries now give the reason as it is after that round: the session's permission
 system for code from cloned repositories or local folders (MR-MT3 and YourMT3+ were not attempted after its refusals),
@@ -660,7 +661,10 @@ F#4 (369.994 Hz). A pure-sine check (`scripts/check_essentia_pyin_sines.py`, 1 s
 `samples/essentia-pyin/essentia-pyin-sines.txt`) gave median outputs of 103.826 Hz for a 110 Hz sine, 138.591 for
 220, 146.832 for 369.99 and 293.665 for 440, while Essentia's plain `PitchYin` on the same signals read 109.89,
 219.79, 369.64 and 439.59 Hz. Why was not established (a parameter this lane did not set, or the algorithm in this
-build): UNVERIFIED.
+build): UNVERIFIED. (corrected in gap round 2, item A6 under "Gap round 2": setting sampleRate, frameSize, hopSize,
+lowRMSThreshold and outputUnvoiced explicitly gives the same outputs, run r0647; the grid comes from the algorithm's
+pitch candidates, which its frame-level stage returns as whole MIDI numbers (`hz2midi` returns an `int` in Essentia's
+source); why the chosen values lie below the sines' pitch is still UNVERIFIED.)
 
 The verifier's re-run of the same step (run r0430, venv rebuilt offline from the saved freeze, same script, same
 input files) reproduced the sine-check numbers exactly but not the clip outputs byte for byte: same frame counts,
@@ -946,11 +950,16 @@ at 22:44 UTC, for about 20 agents).
   auto`, license `cc-by-nc-4.0` on its card) and its `model.safetensors` is 411,888,600 bytes; no token here, and
   over the 200 MB limit. (`DamRsn/muscriptor-gguf` is not gated but needs the C++ `muscriptor.cpp`.)
 - CREPE Notes (`crepe-notes` 0.2.0): depends on madmom, whose only PyPI file is the 0.16.1 source archive (no wheel),
-  so installing it means compiling it; not attempted.
+  so installing it means compiling it; not attempted. (corrected in gap round 2: madmom was installed on this box by
+  two other lanes, 0.16.1 from that archive in chords-beats-key and 0.17.dev0 from git in fingerstyle-voices-taps;
+  CREPE Notes ran in gap round 2 with a copy of the latter, items A3 and A4 under "Gap round 2".)
 - Deep Salience, melodyExtraction_JDC / SSL: Keras/TensorFlow (disk). Aria-AMT, Onsets and Velocities: piano models
   (two piano models ran). SOME / GAME, ROSVOT: singing-voice transcribers; mt3-pytorch, MTANet: no license file per
   the survey. None attempted, for time and disk. (corrected in gap round 1: mt3-pytorch was attempted as MT3's
   fallback, and running it from its clone was refused by the session's permission system; see the MT3 entry above.)
+  (corrected in gap round 2: for Deep Salience, melodyExtraction_JDC / SSL and MTANet the reason is now specific,
+  item A5 under "Gap round 2": each runs only from its cloned repository, running the Deep Salience clone was refused
+  by the session's permission system, and MTANet publishes no weights.)
 
 ## Gap round 1
 
@@ -1110,6 +1119,210 @@ source-built archives of 10 MB in all (librosa 0.7.2, mir_eval 0.7, pretty_midi 
 archive from the Omnizart build attempt. No separate verifier has checked this round. (A separate check followed:
 "Verification log (verify-gapfill-audio-to-notes, round 1, 2026-11-11)" at the end of this file.)
 
+## Gap round 2
+
+Agent: `gapfill-audio-to-notes` (second round), 2026-11-11 from 00:20 UTC. Items, in this order: the nine gaps the
+completeness critic listed for this lane (`docs/guitar-tab-research/GAPS.md`, rows A1 to A9), then the two PyPI
+packages that repackage MT3-family models (`mt3-infer`, `yourmt3`; survey.md sections 36 and 37). At the start the
+shared disk had 7,247 MB free and the box's disk notice was printing (it prints below 9,000 MB: "start no new download
+or install over 200 MB unless your lane cannot finish without it ... pick the smallest checkpoint a model offers");
+this round's rule was to keep at least 4 GB free. Each item's result is below, under the item's id; corrections made
+elsewhere in this file carry "(corrected in gap round 2: ...)". `tools.json` changes are made by
+`scripts/gap2/update_tools_json.py`.
+
+### A1. PENN: recorded as tried although no run produced output
+
+- The ledger has two PENN runs, both `--nolock` and both failed: r0399 (wall 4.91 s, CPU 3.89 s, peak RSS 258.3 MB,
+  exit 1) and the verifier's r0423 (wall 5.41 s, CPU 3.75 s, peak RSS 257.4 MB, exit 1), each stopping at `import
+  penn` ("Could not find any lib files matching version pt215cpu"; see "From the docs lane's survey" above). This
+  file already called PENN NOT RUN HERE; `tools.json` had `tried: true` and gave r0423's exit code as null. Changed
+  in `tools.json`: `tried: false`, `tried_how: null`, a new field `attempt_status` ("attempted, no output"), r0423
+  exit code 1, and the two runs' wall and peak memory from the ledger. A run needs torch 2.6 to 2.11 (torbi 1.4.1's
+  compiled files); the steps are in `for-aaron.md`, section 12. No run was made in this round.
+
+### A2. SoX: input preparation without a ledger id, license not quoted
+
+- SoX made one lane input, `inputs/S7flat30.plus30c.wav` (the Basic Pitch tuning-correction test). It is input
+  preparation, not a transcription trial; the 2026-11-10 command had no ledger line. In this round the same command
+  ran through `gtr-run`: run **r0602** (`--nolock`, unpinned, light; wall 0.26 s, CPU 0.24 s, peak RSS 9.7 MB, exit
+  0), `sox /home/user/gtr/inputs/S7flat30/S7flat30.wav S7flat30.plus30c.wav pitch 30` (input SHA-256 6caa284f...
+  c208363c in the ledger). Its output (24.00 s, 2 channels, 44,100 Hz, 16-bit by `soxi`) is not byte-identical to
+  the kept file: SHA-256 4f54aac7...ed91933b against 31f6f3a9...42c42eef; the two files differ by at most 2 in
+  16-bit sample units, in 942,526 of 2,116,800 samples. Two further runs of the same command (not logged) also gave
+  two different files, differing from each other by at most 2 units; two runs with SoX's `-R` gave byte-identical
+  files; one run with `-D` differed from the kept file by at most 1 unit (`samples/sox/gap2-sox-determinism.txt`).
+  SoX's man page (the `sox.1` source in the SoX repository,
+  https://sourceforge.net/p/sox/code/ci/master/tree/sox.1?format=raw, read 2026-11-11): "by default, SoX
+  automatically adds TPDF dither when the output bit-depth is less than 24 and any of the following are true", one
+  of which is "an effect has increased effective bit-depth within the internal processing chain"; and for `-R`: "Run
+  in `repeatable' mode. When this option is given, where applicable, SoX will embed a fixed time-stamp in the output
+  file (e.g. AIFF) and will `seed' pseudo random number generators (e.g. dither) with a fixed number, thus ensuring
+  that successive SoX invocations with the same inputs and the same parameters yield the same output." The r0602
+  output is kept at `out/sox/S7flat30.plus30c.r0602.wav`; the Basic Pitch run r0319 read the 2026-11-10 file, which
+  was not replaced.
+- License (read 2026-11-11 from the SoX repository on SourceForge). `COPYING`
+  (https://sourceforge.net/p/sox/code/ci/master/tree/COPYING?format=raw): "SoX source code is distributed under two
+  main licenses. The two licenses are in the files LICENSE.GPL and LICENSE.LGPL." and "sox.c, and thus SoX-the user
+  application, is distributed under the GPL, while the files that make up libsox are licensed under the less
+  restrictive LGPL." `LICENSE.GPL` is the "GNU GENERAL PUBLIC LICENSE Version 2, June 1991" and `LICENSE.LGPL` the
+  "GNU LESSER GENERAL PUBLIC LICENSE Version 2.1, February 1999". `src/sox.c`
+  (https://sourceforge.net/p/sox/code/ci/master/tree/src/sox.c?format=raw): "This program is free software; you can
+  redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+  Software Foundation; either version 2 of the License, or (at your option) any later version." `src/tempo.c`, which
+  holds the `pitch` effect (https://sourceforge.net/p/sox/code/ci/master/tree/src/tempo.c?format=raw): "This library
+  is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+  as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later
+  version." The box's SoX is the Ubuntu package `sox` 14.4.2+git20190427-4build4 (`dpkg -l`).
+
+### A3. CREPE Notes (`crepe-notes` 0.2.0) on this lane's torchcrepe f0 (ran)
+
+- What: "Post-processing for the CREPE pitch tracker to turn f0 pitch estimates into discrete notes (MIDI)" (survey.md
+  section 12): it reads a frame-wise f0 with a confidence, finds note boundaries where the confidence dips and the
+  pitch changes, splits repeated notes at madmom `CNNOnsetProcessor` onsets, estimates a tuning offset, and writes one
+  MIDI file. PyPI `crepe-notes` 0.2.0 (uploaded 2026-03-13; author Xavier Riley; license field "GNU General Public
+  License v3.0 license"), wheel `crepe_notes-0.2.0-py2.py3-none-any.whl`, 24,637 bytes, SHA-256 ea448d8d...54d8789e12.
+  It has no weights of its own; madmom's onset CNN (`madmom/models/onsets/2013/onsets_cnn.pkl` in the installed
+  package, CC BY-NC-SA 4.0, item A4) is the only trained model it runs when given `--f0`.
+- Install (Python 3.11, worked first time; log `samples/crepe-notes/logs/install-crepenotes.log`): a new venv with the
+  fingerstyle-voices-taps lane's `venv-madmom` packages at the same versions (numpy 2.4.6, scipy 1.17.1, mido 1.3.3,
+  soundfile 0.14.0 and five more, from the shared uv cache); that lane's built `madmom` 0.17.dev0 package directory
+  and its `.dist-info` copied in with `cp -a` (36 MB; nothing of the other lane's venv was changed); then `uv pip
+  install --no-deps crepe-notes==0.2.0`, and its other declared dependencies with numpy and scipy held: `uv pip install
+  -c <numpy==2.4.6, scipy==1.17.1> "click>=8.0" "librosa>=0.10.0" pretty_midi tqdm matplotlib` (33 packages, all from
+  the uv cache: librosa 0.11.0, numba 0.68.1, pretty-midi 0.2.11.post0, matplotlib 3.11.2, click 8.5.1, tqdm 4.70.1).
+  matplotlib is not among the package's declared requirements (`Requires-Dist`: Click, librosa, numpy, scipy, madmom,
+  pretty_midi, tqdm, and the tracker extras), but `crepe_notes/crepe_notes.py` line 6 is `import matplotlib.pyplot as
+  plt`, so the CLI does not start without it. Venv 568 MB by `du` (mostly hard links into the uv cache), deleted after
+  the runs; freeze `samples/crepe-notes/uv-pip-freeze-venv-crepenotes-py3.11.txt` (madmom appears there as `madmom @
+  git+https://github.com/CPJKU/madmom@27f032e8...`, from the copied `direct_url.json`).
+- Input preparation (`scripts/gap2/prep_crepenotes_inputs.py`): `--f0` is read with `np.genfromtxt(..., names=True)`
+  and only the columns named `frequency` and `confidence` are used, 10 ms per row (`parse_f0`); this lane's
+  torchcrepe files have the header `time_s,frequency_hz,confidence` (viterbi decoder, fmin 50, fmax 2006 Hz, 10 ms,
+  periodicity as the confidence; torchcrepe section above). Three inputs per clip: `tcfull` (torchcrepe `full`, header
+  renamed to `time,frequency,confidence`, values unchanged), `tctiny` (the same for `tiny`), `tcfullz` (`full` with the
+  frequency set to 0 in frames whose periodicity is below 0.21, which is what CREPE Notes' own torchcrepe backend does:
+  `pitch_np[periodicity_np < 0.21] = 0.0`; 199 of 2,984 S1 frames, 1,750 of 2,934 R1b frames, 546 of 3,875 S4lead
+  frames). Audio: the file each f0 was computed from, symlinked as `<clip>.wav` into each configuration folder under
+  `out/crepe-notes/` (S1 and R1b `<id>.mono.wav`, S4lead `S4/stems/lead.wav`).
+- Run: `scripts/gap2/batch_crepenotes.sh`: per clip and configuration, `crepe_notes --f0 <clip>.f0in.csv --use-cwd
+  --output-label <cfg> <clip>.wav` (all other options at their defaults: `--sensitivity 0.001`, `--min-duration
+  0.03`, `--min-velocity 6`, onset splitting on, tuning offset estimated), under GNU time. Run **r0616** (2 cores,
+  cores 2-3; wall 35.19 s, CPU 35.1 s, peak RSS 570.9 MB, exit 0, 50.9 s waiting for a slot; inputs: the three audio
+  files and the six torchcrepe f0 files with their SHA-256 in the ledger). Per call (GNU time, 9 calls): wall 3.17 to
+  4.44 s, peak RSS 423 to 571 MiB; each call loads the audio and runs madmom's onset CNN on it (the log prints "Running
+  onset detection..."), so the f0 step itself was not timed here (torchcrepe's own times are in its section above).
+- Output: one MIDI file per call, `<clip>.<cfg>.mid`: type 1, 220 ticks per quarter, 2 tracks, one instrument with
+  program 0 ("Acoustic Grand Piano" in the code), tempo 120, velocities from the amplitude envelope (7 to 127 here),
+  no pitch bends; nothing else is written with these options. The log prints the estimated tuning offset ("Tuning
+  offset: 6.000000000000005 cents" on S1), which is subtracted before pitches are rounded. In the `tcfullz` outputs,
+  frames set to 0 Hz became notes with MIDI pitch 0 (S1 1, R1b 51, S4lead 3; the code maps 0 Hz through `hz_to_midi`
+  and `np.nan_to_num(..., neginf=0)`); in the `tcfull` and `tctiny` outputs, R1b has 48 and 52 notes at MIDI 90 or
+  above (up to 95, about 1,975 Hz), from the frames at 1,500 Hz or above that the torchcrepe viterbi output holds on
+  R1b (torchcrepe section above).
+
+Scores (gtr-eval 0.11.1, notes, onset 50 ms / pitch 50 cents; S1 and R1b against all truth notes, S4lead against the
+S4 truth's `melody` voice, as for the other tools here):
+
+| clip | f0 input | printed tuning offset (cents) | est. notes | truth notes | onset-only P | R | F1 | onset+offset F1 | median onset diff of matched (s) | eval id |
+|---|---|---|---|---|---|---|---|---|---|---|
+| S1 | tcfull | 6 | 62 | 62 | 0.984 | 0.984 | 0.984 | 0.984 | 0.009 | e1781 |
+| S1 | tctiny | 6 | 62 | 62 | 1.000 | 1.000 | 1.000 | 1.000 | 0.009 | e1786 |
+| S1 | tcfullz | 6 | 61 | 62 | 0.967 | 0.952 | 0.959 | 0.959 | 0.009 | e1789 |
+| R1b | tcfull | 20 | 94 | 70 | 0.309 | 0.414 | 0.354 | 0.244 | -0.009 | e1783 |
+| R1b | tctiny | 27 | 95 | 70 | 0.263 | 0.357 | 0.303 | 0.170 | -0.009 | e1787 |
+| R1b | tcfullz | 6 | 97 | 70 | 0.289 | 0.400 | 0.335 | 0.251 | -0.009 | e1790 |
+| S4lead | tcfull | 6 | 38 | 37 | 0.737 | 0.757 | 0.747 | 0.667 | 0.029 | e1785 |
+| S4lead | tctiny | 4 | 38 | 37 | 0.868 | 0.892 | 0.880 | 0.773 | 0.031 | e1788 |
+| S4lead | tcfullz | 6 | 40 | 37 | 0.675 | 0.730 | 0.701 | 0.623 | 0.029 | e1791 |
+
+- Input facts: an audio path (read with librosa at its own sample rate for the amplitude envelope, and by madmom for
+  onsets) plus, here, an f0 CSV with `frequency` and `confidence` columns at 10 ms per row; without `--f0` it runs
+  the tracker named by `--pitch-tracker` (crepe, pesto, penn, torchcrepe; each an optional extra not installed here).
+- Constraints accepted: `--tuning-offset` (cents), `--min-duration`, `--min-velocity`, `--sensitivity`,
+  `--disable-splitting`, `--use-smoothing`; not changed in this run. No pitch range, capo or string input.
+- Samples: `samples/crepe-notes/` (the nine MIDI files, `scores/`, `logs/` with each call's output and the install
+  log, `facts.jsonl` from `scripts/gap2/crepenotes_facts.py`, the freeze). Full outputs and the f0 copies:
+  `/home/user/gtr/lanes/audio-to-notes/out/crepe-notes/<cfg>/`.
+
+### A4. madmom: described as not installable here; license id
+
+- This lane wrote that madmom's only PyPI file is a source archive, so installing it "means compiling it", and did
+  not attempt it. madmom is installed on this box by two other lanes: chords-beats-key built 0.16.1 from the PyPI
+  source archive on Python 3.9 (`uv pip install --no-build-isolation madmom==0.16.1` with numpy 1.23.5 and Cython
+  below 3, run r0047, 36.9 s wall on 2 cores; its `trials.md`, section "madmom 0.16.1"), and fingerstyle-voices-taps
+  installed 0.17.dev0 from `git+https://github.com/CPJKU/madmom` (commit 27f032e8) on Python 3.11 (37 MB; its
+  `trials.md`, section "madmom 0.17.dev0"). In this round, item A3 ran madmom 0.17.dev0 inside CREPE Notes from a
+  copy of the fingerstyle lane's built package. The statements in "From the docs lane's survey" above and in
+  `tools.json` now point to these installs.
+- License id. madmom's `LICENSE` (https://raw.githubusercontent.com/CPJKU/madmom/main/LICENSE, read 2026-11-11) gives
+  source code files a license with two numbered conditions, "1. Redistributions of source code must retain the above
+  copyright notice, this list of conditions and the following disclaimer." and "2. Redistributions in binary form must
+  reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.", and no third clause; that is the text of the SPDX
+  identifier `BSD-2-Clause`. Data and model files: "All model and data files are distributed under the following
+  license: Creative Commons Attribution-NonCommercial-ShareAlike 4.0" (`CC-BY-NC-SA-4.0`). This lane's `tools.json` said
+  `BSD` and now says `BSD-2-Clause` (chords-beats-key uses `BSD-2-Clause`; fingerstyle-voices-taps uses `BSD`, not
+  changed here).
+
+### A5. melodyExtraction_JDC, melodyExtraction_SSL, MTANet, Deep Salience: what each needs (NOT RUN HERE)
+
+One shallow clone of each repository was read on 2026-11-11 (README, requirement files, imports, tracked weight files;
+`samples/gap2-melody-extraction/not-run.txt` lists the files with their sizes and the heads). None of the four has a
+package on PyPI from its authors; each runs from its own repository's scripts.
+
+| repository (head) | framework and versions it names | weights in the repository | how it is run, output |
+|---|---|---|---|
+| `keums/melodyExtraction_JDC` (86e6d2b, 2019-12-27) | README "Dependencies": "Keras 2.2.2", "Librosa 0.6.2", "madmom 0.16.1", "Python 3.6+", hardware "2 GPU : GeForce GTX 1080ti"; no TensorFlow version named; the code imports `keras.utils.multi_gpu_model`, `keras.layers.advanced_activations` and reads `_keras_shape` | yes: `weights/ResNet_joint_add_L(CE_G).hdf5` 16,867,888 bytes, `weights/model.json` 5,376, two normalisation arrays of 127,304 bytes | `python melodyExtraction_JDC.py -p <audio> -o <dir>` (`-gpu` defaults to `None` in the code, "It will run with cpu if None"); writes `pitch_<file name>.txt`, time (10 ms) and Hz per line |
+| `keums/melodyExtraction_SSL` (eb2525d, 2021-09-14) | README: "Keras 2.3.0", "Librosa 0.7.0", "madmom 0.16.1", "pysndfx 0.3.6 (for randAudioAugment)", "Python 3.7+", "1 GPU : GeForce GTX 1080ti"; no TensorFlow version named | yes: `weights/ResNet_NS.hdf5` 17,056,656 bytes and the same two arrays | `python melodyExtraction_NS.py -p <audio> -o <dir>`; the same `pitch_<file name>.txt` layout |
+| `Annmixiu/MTANet` (2856a89, 2024-05-27) | PyTorch and PyTorch Lightning (imports in `main.py`); no requirements file, no versions | none: no checkpoint file is tracked, `config.py` has `resume_checkpoint = None` with a commented path `model_backup/TO-FTANet_adc_best.ckpt`, and the README links only the training datasets | `main.py` trains and tests; it imports `model.msnet`, `model.multi_dr`, `model.ftanet`, `model.mcdnn` and `model.danet`, while the repository holds `msnet.py`, `ftanet.py` and `mcdnn.py` under `model/control group model/` and no `multi_dr.py` or `danet.py` |
+| `rabitt/ismir2017-deepsalience` (4b2ff44, 2019-11-22) | `replicate.yaml`: `python_version: 2.7.15`, `tensorflow==1.12.0`, `keras==2.0.3`, `librosa==0.5.0`, `mir_eval==0.4`, `pescador==1.0.0`, `joblib==0.11`, system `ffmpeg`; `requirements.txt`: `pescador>=1.0.0`, `keras>=2.0.3`, `librosa>=0.5.0`, `mir_eval>=0.4`, `medleydb>=1.2.9` | yes: seven `predict/weights/*.h5` (bass, melody1, melody2, melody3, multif0, pitch, vocal), 1,674,464 to 1,674,816 bytes each; the whole clone is 406 MB, mostly comparison outputs and figures | `python predict/predict_on_audio.py <audio> <task> <save_dir> [-f singlef0\|multif0\|salience]` (survey.md section 23) |
+
+- Run attempt (one, the smallest): `predict/predict_on_audio.py --help` of the Deep Salience clone, in a bare Python
+  3.11 venv, through `gtr-run --nolock`, about 00:36 UTC. The session's permission system refused the whole command:
+  "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]."
+  Nothing of it ran (no venv, no folder, no ledger line afterwards). No venv on the box held TensorFlow or Keras (no
+  `tensorflow` or `keras` package in any `venv*` folder one or two levels under `/home/user/gtr/lanes/`, checked at
+  00:35 UTC), and the gap round 1 venv `venv-oaf` (TensorFlow 2.9.1) had been deleted; it
+  was not rebuilt, because running any of these four needs code from its cloned repository, which was refused here.
+- So: NOT RUN HERE. JDC, SSL and Deep Salience have weights in their repositories: steps in `for-aaron.md`, section
+  13. MTANet publishes no weights, so there is nothing to run without training it; no steps. The clones were deleted
+  after reading. The reasons in "From the docs lane's survey" above and in `tools.json` now say this.
+
+### A6. Essentia `PitchYinProbabilistic`: the sine check with every parameter set (ran)
+
+- Run **r0647** (`--nolock`, light; wall 10.57 s, CPU 10.5 s, peak RSS 153.1 MB, exit 0):
+  `scripts/gap2/check_essentia_pyin_explicit.py` with the fingerstyle-voices-taps lane's `venv-essentia` (Python
+  3.11, `essentia` 2.1b6.dev1389, the version of this lane's `essentia-tensorflow` wheel; run with `python -I`, nothing
+  written into that venv). Same signals as the first check: 1 s of a 0.5-amplitude sine at 44.1 kHz, at 110, 220,
+  369.99 and 440 Hz. Output: `samples/essentia-pyin/gap2-sines-explicit.txt`.
+- The build's defaults, printed with `paramValue`: `PitchYinProbabilistic` frameSize 2048, hopSize 256,
+  lowRMSThreshold 0.1, outputUnvoiced "negative", preciseTime false, sampleRate 44100; its HMM stage
+  `PitchYinProbabilitiesHMM` minFrequency 61.735 Hz, numberBinsPerSemitone 5, selfTransition 0.99, yinTrust 0.5.
+- With `sampleRate=44100, frameSize=2048, hopSize=256, lowRMSThreshold=0.1` set explicitly and `outputUnvoiced`
+  "negative", "zero" or "abs", the outputs are those of the first check: median 103.826 Hz for the 110 Hz sine,
+  138.591 for 220, 146.832 for 369.99, 293.665 for 440 (166 frames each, all above 0 Hz, so `outputUnvoiced` changes
+  nothing here). With `preciseTime=true` (the reference page: "use non-standard precise YIN timing (slow)") the
+  medians are 110.0, 110.0, 73.416 and 61.735 Hz. Every value is the frequency of a whole MIDI number (103.826 = MIDI
+  44, 138.591 = 49, 146.832 = 50, 293.665 = 62, 73.416 = 38, 61.735 = 35).
+- Where the grid comes from. The frame-level stage `PitchYinProbabilities` (same settings) returned its pitch
+  candidates as whole MIDI numbers: for the 440 Hz sine, frame 83: 81, 69, 62, 57, 53, 50, 47, 45, 42, ... with
+  probabilities 0.05 each for the first seven and 0.0557 for the eighth; for 110 Hz: 56, 44, 37, 32, 29 (0.20, 0.20,
+  0.20, 0.2016, 0.04), where 110 Hz itself would be MIDI 45. Essentia's source at `master` (read 2026-11-11) converts
+  each candidate with `Real pitchCents = hz2midi(_freq[iCandidate], 440.0);`
+  (https://raw.githubusercontent.com/MTG/essentia/master/src/algorithms/tonal/pitchyinprobabilities.cpp, line 324),
+  and `hz2midi` returns an integer: `inline int hz2midi(Real hz, Real tuningFrequency) { return 69 + (int)
+  round(log2(hz / tuningFrequency) * 12); }`
+  (https://raw.githubusercontent.com/MTG/essentia/master/src/essentia/essentiamath.h, line 750). The HMM stage then
+  outputs, per frame, the candidate closest to its decoded state, `440. * pow(2, (pitchCandidates[iFrame][iPitch] -
+  69) / 12)` (`pitchyinprobabilitieshmm.cpp`), so every output is a whole-MIDI frequency. Feeding the frame-level
+  candidates to `PitchYinProbabilitiesHMM` with its defaults gave the same medians as the composite algorithm. That
+  the dev1389 wheel was built from these same lines was not checked (the run shows the same behaviour).
+- What stays UNVERIFIED: why the candidate set and its near-equal probabilities lead the HMM to a value below the
+  sine's pitch (for 110 and 220 Hz the sine's own MIDI number is not among the frame's candidates), and why the clip
+  outputs differed between r0321 and the verifier's r0430 in a few frames. The RPA figures e1011 to e1023 are
+  measurements of this output as it is; they are not changed. (corrected in gap round 2 in the Essentia section
+  above: the cause of the grid is no longer "UNVERIFIED".)
+
 ## Outputs for other lanes (on the box, outside git)
 
 All under `/home/user/gtr/lanes/audio-to-notes/out/`:
@@ -1131,6 +1344,8 @@ All under `/home/user/gtr/lanes/audio-to-notes/out/`:
   S4, S4lead, R1b, R2, R3a) and the CLI's `rmvpe/cli/S1.csv`; Onsets and Frames MIDI `onsets-frames/<clip>.wav.midi`
   (S1, S2n, R1c, S4guitar; `<clip>.mid` links to the same files). The `<clip>.wav` entries in `onsets-frames/` are
   symlinks to the shared inputs, not copies.
+- Gap round 2: CREPE Notes MIDI `crepe-notes/<cfg>/<clip>.<cfg>.mid` (cfg `tcfull`, `tctiny`, `tcfullz`; clips S1,
+  R1b, S4lead; the `<clip>.wav` entries there are symlinks to the shared inputs).
 
 ## Media kept outside git
 
@@ -1141,6 +1356,10 @@ stereo 16-bit): the shared clip S7flat30 shifted up 30 cents with `sox ... pitch
 in the Basic Pitch section. It is derived from the synthesized clip S7flat30 (license and attribution as for
 S7flat30 in the inputs manifest). The verifier re-measured it: 4,233,644 bytes, SHA-256 31f6f3a9...42c42eef, 2
 channels, 44,100 Hz, 16-bit, 24.00 s (`soxi`), SoX v14.4.2.
+
+Gap round 2 added: `/home/user/gtr/lanes/audio-to-notes/out/sox/S7flat30.plus30c.r0602.wav` (4,233,644 bytes,
+SHA-256 4f54aac7...ed91933b, 24.00 s, 44.1 kHz stereo 16-bit): the same SoX command logged as run r0602 (item A2 of
+"Gap round 2"; it differs from the file above by SoX's dither). Derived from S7flat30, as above.
 
 ## Verification log (verify-trials-audio-to-notes, 2026-11-10)
 

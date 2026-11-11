@@ -1,0 +1,8 @@
+0.25.12
+total 8336
+-rw-r--r-- 1 root root 1599875 Nov 11 00:24 alphatex-lsp.worker.js
+-rw-r--r-- 1 root root  153228 Nov 11 00:24 codicon-LTRFOK3N.ttf
+-rw-r--r-- 1 root root  175371 Nov 11 00:24 editor.css
+-rw-r--r-- 1 root root 6287979 Nov 11 00:24 editor.js
+-rw-r--r-- 1 root root  307296 Nov 11 00:24 editor.worker.js
+[gtr-run r0604] web-tab-render/alphatab-monaco "gap round 2: esbuild 0.25.12 bundles of monaco-editor 0.57.0 + @coderline/alphatab-monaco 1.9.0 (page script and CSS, Monaco editor worker, alphaTex language-server worker)" wall=1.25s cpu=1.7s rss=384.6MB cores=2 exit=0 slot_wait=15.6s

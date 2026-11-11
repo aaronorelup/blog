@@ -1,0 +1,17 @@
+{
+ "before": {
+  "string_alphatab": 4,
+  "string_from_top": 3,
+  "fret": 0,
+  "pitch": 55
+ },
+ "after": {
+  "string_alphatab": 3,
+  "string_from_top": 4,
+  "fret": 5,
+  "pitch": 55
+ },
+ "gpBytes": 4981,
+ "texChars": 2244,
+ "console": []
+}

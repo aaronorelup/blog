@@ -1,0 +1,7 @@
+== R1a, minDuration 1/256 quarter (default 1/64)
+scorify R1a.truthmidi.mindur256: status success (best-found), arrange 1446.8 ms, notes in 189, notes placed 189  (node process 1.52 s)
+== R1b, maxAttacksPerSecond 64 (default 32)
+scorify R1b.truthmidi.attacks64: status search-exhausted, arrange 1067.3 ms, notes in 70, notes placed 0, diagnostics: No valid path within the declared candidate and mechanics model  (node process 1.14 s)
+== R1a, both
+scorify R1a.truthmidi.mindur256-attacks64: status success (best-found), arrange 1565.9 ms, notes in 189, notes placed 189  (node process 1.68 s)
+[gtr-run r0631] guitar-tab/scorify-0.4.0 "gap round 2: scorify 0.4.0 third batch: R1a minDuration 1/256, R1b maxAttacksPerSecond 64" wall=4.57s cpu=6.7s rss=150.7MB cores=2 exit=0 slot_wait=0.0s

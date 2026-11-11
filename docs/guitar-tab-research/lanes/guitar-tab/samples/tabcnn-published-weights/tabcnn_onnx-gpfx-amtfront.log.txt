@@ -1,0 +1,25 @@
+== S2n onnx-gpfx-amtfront
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end amt): load 0.12s, features+inference+decoding 4.34s, frames 1265, notes 220, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['0-1']
+clip S2n: wall 15.25 s, maxrss 1045956 KB
+== S2s onnx-gpfx-amtfront
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end amt): load 0.07s, features+inference+decoding 2.86s, frames 1265, notes 262, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['0-1']
+clip S2s: wall 11.64 s, maxrss 1046100 KB
+== S3 onnx-gpfx-amtfront
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end amt): load 0.05s, features+inference+decoding 1.76s, frames 1034, notes 106, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['0-1']
+clip S3: wall 7.51 s, maxrss 1041416 KB
+== S5capo2 onnx-gpfx-amtfront
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end amt): load 0.05s, features+inference+decoding 2.20s, frames 1265, notes 225, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['0-1']
+clip S5capo2: wall 7.55 s, maxrss 1045836 KB
+== S5dropd onnx-gpfx-amtfront
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end amt): load 0.04s, features+inference+decoding 1.73s, frames 1265, notes 226, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['0-1']
+clip S5dropd: wall 6.88 s, maxrss 1046048 KB
+== R1a onnx-gpfx-amtfront
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end amt): load 0.04s, features+inference+decoding 1.76s, frames 1256, notes 100, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['0-1']
+clip R1a: wall 6.98 s, maxrss 1045980 KB
+== R1b onnx-gpfx-amtfront
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end amt): load 0.04s, features+inference+decoding 1.75s, frames 1264, notes 90, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['0-1']
+clip R1b: wall 6.96 s, maxrss 1046160 KB
+== R1c onnx-gpfx-amtfront
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end amt): load 0.04s, features+inference+decoding 1.74s, frames 1216, notes 135, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['0-1']
+clip R1c: wall 7.18 s, maxrss 1045428 KB
+[gtr-run r0595] guitar-tab/tabcnn-onnx-gpfx "gap round 2: tabcnn-gpfx.onnx on the amt-tools CQT front-end (comparison of the ONNX export with the Zenodo checkpoint) on 8 clips" wall=70.03s cpu=63.9s rss=1021.6MB cores=2 exit=0 slot_wait=0.0s

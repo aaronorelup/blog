@@ -280,3 +280,34 @@ torch versions (`_C.pt26cpu.pyd` to `_C.pt211cu130.pyd`, listed by the verifier)
 3. Send back the files it writes next to each WAV (`S1-pitch.pt` and `S1-periodicity.pt` and so on, PyTorch tensor
    files, per `penn/core.py`), the output of `py -3.11 -m pip show penn torbi torch`, any error text, and the time
    each file took.
+
+## 13. Melody extraction research code: melodyExtraction_JDC, melodyExtraction_SSL, Deep Salience (added in gap round 2)
+
+Not run here: each runs only from its own cloned repository (no package from the authors), and on 2026-11-11 the
+box's permission system refused running the Deep Salience clone's script ("[Code from External]"; `trials.md`, "Gap
+round 2", item A5). All three keep their weights in the repository, so a clone is all that has to be downloaded.
+These are old Keras projects; the versions below are the ones their own files name. The TensorFlow version for JDC and
+SSL is not named anywhere in those repositories, and whether these versions install on Windows today is UNVERIFIED, so
+this is a job for a coding agent on the PC (or under WSL2) that may adjust versions, but not the code, and reports
+what it changed.
+
+1. melodyExtraction_JDC: `git clone https://github.com/keums/melodyExtraction_JDC`; an environment with Python 3.6,
+   Keras 2.2.2, librosa 0.6.2, madmom 0.16.1, numpy, scipy, matplotlib and a TensorFlow 1.x backend (README:
+   "Keras 2.2.2", "Librosa 0.6.2", "madmom 0.16.1"); then, from the clone's folder, `python melodyExtraction_JDC.py
+   -p <path>\S1.wav -o out` and the same for `R1b.wav`, `S4lead.wav` and `R2.wav` (leaving out `-gpu` runs on the CPU:
+   the code's default is `None`, "It will run with cpu if None").
+2. melodyExtraction_SSL: `git clone https://github.com/keums/melodyExtraction_SSL`; the same kind of environment
+   with Python 3.7, Keras 2.3.0, librosa 0.7.0, madmom 0.16.1 (README); `python melodyExtraction_NS.py -p
+   <path>\S1.wav -o out`, and the same three other clips.
+3. Deep Salience: `git clone https://github.com/rabitt/ismir2017-deepsalience`; its `replicate.yaml` pins Python
+   2.7.15, `tensorflow==1.12.0`, `keras==2.0.3`, `librosa==0.5.0`, `mir_eval==0.4`, `pescador==1.0.0`, `joblib==0.11`
+   and ffmpeg; then `python predict/predict_on_audio.py <path>\S1.wav melody2 out -f singlef0` for the four clips,
+   and `python predict/predict_on_audio.py <path>\S2n.wav multif0 out -f multif0` for `S2n.wav` and `R1c.wav`
+   (tasks and formats per the script's help: task "all, bass, melody1, melody2, melody3, multif0, pitch, vocal",
+   `-f singlef0|multif0|salience`).
+4. Send back: every file written to `out` (`pitch_<name>.txt` from JDC and SSL; `<name>_<task>_singlef0.csv` or
+   `_multif0.csv` from Deep Salience), the exact install commands that worked, `pip freeze` of each environment, the
+   time per clip, and CPU or GPU.
+
+MTANet (`Annmixiu/MTANet`) is not listed: its repository publishes no trained weights (no checkpoint file, and its
+README links only training datasets), so it cannot be run without training it first.

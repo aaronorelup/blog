@@ -535,7 +535,8 @@ refusal no other repository-only tool was installed or executed. Where a reposit
 with PyPI code and my own few-line loader, that is said in its section; otherwise the tool is listed here.
 (Verifier's note: the refusal messages are the trial agent's report and no log of them is in the lane folder; the
 files are consistent with it: the clones are in `/home/user/gtr/lanes/guitar-tab/src/`, and no environment for Guitab
-or `hf_midi_transcription` exists under the lane folder.)
+or `hf_midi_transcription` exists under the lane folder.) (Gap round 2: the same refusal text was returned to the gap
+agent on 2026-11-11 for an install of gtrsnipe from its repository; see "Gap round 2".)
 
 - **TabCNN, original code** (https://github.com/andywiggins/tab-cnn, HEAD `305c1a154b9dd1f13ab9bb157e42d4f8942ed0e3`,
   2019-06-27). Weights published: no. The repository holds `README.md`, `data/`, `demos/` (five demo videos) and
@@ -581,7 +582,9 @@ or `hf_midi_transcription` exists under the lane folder.)
   running it on the shared clips means running the repository's own Python, which was not attempted after the two
   refusals above. Weights not downloaded. Steps for Aaron are in `for-aaron.md`.
 - **gtrsnipe** (https://github.com/scottvr/gtrsnipe): not on PyPI (`pypi.org/pypi/gtrsnipe/json` "not found",
-  2026-11-10); its README installs with `pip install -e .`. Not attempted, for the reason above.
+  2026-11-10); its README installs with `pip install -e .`. Not attempted, for the reason above. (Corrected in gap
+  round 2: still not on PyPI on 2026-11-11, and an install from the repository was attempted and refused by the
+  permission system; see "Gap round 2".)
 - **Audio2Tab** (https://github.com/JackJamesLoth/Audio2Tab): README (main branch, read 2026-11-10 via
   raw.githubusercontent.com) describes training (`src/train.py`) and evaluating checkpoints the user supplies
   (`--checkpoint_paths ...`); no checkpoint download was found in it. Its "Checkpoints" section reads "We will host a
@@ -835,6 +838,8 @@ same effect was reached as described; "no" = neither. Every cell is backed by th
 | LilyPond 2.24.3 | param `stringTunings` (e0181) | workaround: raised `stringTunings` (e0179) | no fret-count property used (frets up to 30 written on Basic Pitch notes) | `maximumFretStretch` (not varied) | param `minimumFret` (e0185, e0187, e0188, e0190); `restrainOpenStrings` (e0189) | param `note\N` string mark (r0155) | no (engraved output; times came from my glue) |
 | tabsynth 1.0.6 | no in `events_to_tablature` (a `fretboard` only at `generate_candidates`) | workaround: notes transposed down (e0392) | param `max_fret` (e0394) | no (stretch is a cost term) | no (position preference is a cost term) | no | yes (`start`, `duration`, seconds) |
 | SynthTab TabCNN checkpoints | no (trained profile, standard) | no | no (19 in the profile) | no | no | no | yes (frames, 23.2 ms hop) |
+| TabCNN Zenodo 11406378 / `cstr/tabcnn-onnx` (gap round 2) | no (trained profile, standard) | no | no (19) | no | no | no | yes (frames, 23.2 ms hop) |
+| scorify 0.4.0 (gap round 2) | param tuning per string (e1818) | param `capoFret` (e1816) | param `fretCount` per string (not varied) | param player `maxFretSpan`, level (amateur run: `infeasible`) | soft high-fret costs per level (not varied) | no field; a `scoring` cost hook did it (e1830) | beats as rationals (seconds via the tempo map) |
 
 ## Handoff run on real video audio without truth: R3a (Basic Pitch notes into tuttut and LilyPond)
 
@@ -890,6 +895,267 @@ samples under `samples/<tool>/`.
   e1090 and e1092 (in the eval ledger, e1089 and e1091 are other lanes' chord scores, not PyGuitarPro).
 - The verifier's r0469 (above) had already re-run three of these conversions. The 2026-11-10 conversions themselves
   stay unlogged and untimed.
+
+### TabCNN weights published by others: Zenodo 11406378 (amt-tools, torch) and cstr/tabcnn-onnx (ONNX Runtime) (G2)
+
+- What they are (survey section "TabCNN weights published by others"): (a) `best_TabCNN_tablature_trancription_model`
+  in Zenodo record 11406378 (the EGSet12 record, licence id `cc-by-4.0`): TabCNN in amt-tools' implementation, trained by
+  Pedroza, Abreu, Corey and Roman (DAFx 2024) on GuitarSet plus their synthetic GuitarProFX set; (b) two ONNX files in
+  the Hugging Face model repository `cstr/tabcnn-onnx` (card `license: cc-by-4.0`, revision `886ead7`): `tabcnn-gpfx.onnx`,
+  which the card calls a re-export of (a), and `tabcnn.onnx`, which the card says was "trained here on **GuitarSet**".
+- Downloads (2026-11-11, each into its own empty folder under `/home/user/gtr/lanes/guitar-tab/gap2/weights/`):
+  (a) from `zenodo.org/api/records/11406378/files/.../content`, 3,345,122 bytes, md5
+  `ce168b2cd426f81a2a78499214e40605` (the record's own checksum), SHA-256 `1470a308...a53ed0c`; (b) from
+  `huggingface.co/cstr/tabcnn-onnx/resolve/886ead7.../<file>`: `tabcnn-gpfx.onnx` 3,339,568 bytes and `tabcnn.onnx`
+  3,339,979 bytes, SHA-256 equal to the ones on the card (`8d9ce591...` and `15c58000...`). Full hashes:
+  `samples/tabcnn-published-weights/weights-files.txt`. 10 MB in all.
+- What (a) is, read without loading it (`zipfile` + `pickletools`): a PyTorch zip archive whose one pickle is
+  `model-2500/data.pkl`; it names `amt_tools.models.tabcnn.TabCNN`, `amt_tools.models.common.SoftmaxGroups`,
+  `amt_tools.tools.instrument.GuitarProfile` (tuning strings E2 A2 D3 G3 B3 E4, lowest and highest pitch 40 and 83, so
+  19 frets), torch layers, `numpy.core.multiarray.scalar`, `numpy.dtype` and `_codecs.encode`; its tensors were saved on
+  `cuda:0`. The paper (arXiv 2405.14679v3, section 2.2) describes six-fold cross-validation as in Wiggins and Kim, and
+  for this model: "The third one also follows the same cross-validation but adds all the synthetic GuitarProFX tracks
+  to the training split." Its training code (https://github.com/robust-guitar-tabs/code , commit `f50309a`, 2024-06-03,
+  `AMT-Tools/examples/papers/guitarProFx.py`, read from a blob-less clone, not run) sets `iterations = 2500`, loops over
+  six folds, trains each on five of six splits of its `GuitarProFx` dataset folder (120 tracks per split; the
+  repository does not list that folder's contents), tests each on one GuitarSet player
+  (`test_splits = [test_splits.pop(k)]`) and saves under `models/fold-<k>`. The record does not say which fold the
+  published file is. If it is one of these fold models, its training split held GuitarSet tracks of five of the six
+  players, so at least two of the three R1 players (02, 04, 00) were in it; which fold, and so which player was held
+  out, is UNVERIFIED.
+- What (b) `tabcnn.onnx` was trained on: the export repository's `tool/tabcnn/README.md` (https://github.com/CrispStrobe/onnx_runtime_dart ,
+  commit `7bdf47d`, 2026-09-18, sparse blob-less clone, not run) gives `EPOCHS=4 VAL_GUITARIST=5 python train.py
+  features/ tabcnn.onnx` and "Held-out (guitarist-5) **tablature F1 0.745** (paper 0.748)"; `train.py` keeps every
+  clip whose player is not 5 for training, and `preprocess.py` reads GuitarSet's `*_mic.wav` recordings. If the
+  published file was made that way, the three R1 excerpts (players 02, 04, 00, cut from those mic recordings) are part
+  of its training audio. The same README says "the GuitarProFX-augmented weights (DAFx-24) aren't public"; the model
+  card, last modified 2026-08-02, says `tabcnn-gpfx.onnx` re-exports them, and the comparison below found its output
+  identical to (a)'s.
+- Install: into the existing `venv-amt` (torch 2.15.0+cpu, amt-tools 0.3.2, librosa 0.11.0, numpy 2.4.6), from the
+  shared uv cache: `uv pip install --python .../venv-amt/bin/python onnxruntime==1.31.1` (added onnxruntime 1.31.1 and
+  flatbuffers 25.12.19; free disk unchanged at 8,912 MB as `df` counts it, the files being hard links into the cache).
+  Freeze: `samples/tabcnn-published-weights/uv-pip-freeze.txt`.
+- How it was called: `scripts/gap2_run_tabcnn.py` (my glue), from `scripts/gap2_batch_tabcnn.sh <config> <clips>`, on
+  `<clip>.mono.wav`. (a): `torch.load(weights_only=True)` with an allow-list of the classes above (amt-tools' own class
+  names, so no class had to be mapped as for the SynthTab checkpoints; numpy's old `numpy.core.multiarray.scalar` path
+  is mapped to numpy 2's), features `amt_tools.features.CQT(sample_rate=22050, hop_length=512, n_bins=192,
+  bins_per_octave=24)` on `load_normalize_audio(path, 22050)` (decibels, then /80 + 1), `run_offline`. (b): ONNX
+  Runtime 1.31.1 CPU with `intra_op_num_threads` = the 2 cores of the slot and `inter_op_num_threads` 1; the card's
+  front-end per file: `tabcnn-gpfx.onnx` `|librosa.cqt(y, sr=22050, hop_length=512, n_bins=192, bins_per_octave=24)|`,
+  `amplitude_to_db(ref=np.max)`, min-max to [0, 1]; `tabcnn.onnx` the raw CQT magnitude after
+  `librosa.util.normalize(y)` (y from `librosa.load(path, sr=22050)`); windows of 9 frames with 4 zero frames padded on
+  each side; argmax per string over the 21 log-probabilities; class 0 = silent, class k = fret k-1 (card). For every
+  configuration the per-string frets go through the same amt-tools decoding as the SynthTab runs
+  (`TablatureWrapper` + `StackedNoteTranscriber`, tuning E2-E4, 19 frets) into `<clip>.<config>.frames.csv` and
+  `<clip>.<config>.gtreval.json` (formats as in the SynthTab section).
+- Runs (all 8 clips per call, in one `gtr-run` call each, 2 cores, no slot wait; per-clip wall from `/usr/bin/time`
+  inside the batch includes Python start-up; "inner" is features + inference + decoding as the glue timed it):
+
+| run | configuration | cores | wall (all 8) | CPU | peak RSS | load at start | per clip wall | inner per clip |
+|---|---|---|---|---|---|---|---|---|
+| r0592 | (a) Zenodo file, amt-tools front-end, torch | 0-1 | 64.44 s | 74.38 s | 1364.9 MB | 0.86 | 7.46 to 8.86 s | 2.22 to 3.57 s |
+| r0591 | (b) `tabcnn-gpfx.onnx`, card front-end | 2-3 | 47.11 s | 53.14 s | 1009.8 MB | 0.87 | 5.68 to 6.17 s | 0.66 to 0.84 s |
+| r0594 | (b) `tabcnn.onnx`, card front-end | 2-3 | 62.01 s | 55.66 s | 1001.7 MB | 3.45 | 5.84 to 11.65 s | 0.75 to 1.90 s |
+| r0595 | (b) `tabcnn-gpfx.onnx` on the amt-tools front-end (check) | 0-1 | 70.03 s | 63.89 s | 1021.6 MB | 3.45 | 6.88 to 15.25 s | 1.73 to 4.34 s |
+| r0601 | (b) `tabcnn.onnx`, `preprocess.py` order (check) | 2-3 | 46.73 s | 52.90 s | 1004.2 MB | 2.14 | 5.63 to 6.02 s | 0.62 to 0.74 s |
+
+  r0594 and r0595 started while other lanes' jobs ran (load 3.45); their first clips took longest (S2n 10.92 s and
+  15.25 s). ONNX Runtime threads: the glue read `Cpus_allowed_list` of every thread of its process after inference
+  (`/proc/<pid>/task/*/status`): 6 threads in each ONNX run, all allowed only the slot's two cores (`2-3` or `0-1`).
+  Clips are 24.0 to 29.4 s long. Logs: `samples/tabcnn-published-weights/*.log.txt`.
+- The ONNX export against the pickled model: `scripts/gap2_compare_frames.py` over all 9,830 frames of the 8 clips:
+  `tabcnn-gpfx.onnx` with the card's front-end (r0591) and with the amt-tools front-end (r0595) gives the same fret or
+  silence as (a) (r0592) on every string of every frame (58,980 of 58,980 cells), which also confirms the string order
+  taken here (output index 0 = lowest string). The decoded note lists are the same (pitch, string, fret, and onsets
+  and offsets within 1 microsecond, the float32 rounding of `run_offline`), so (b) `tabcnn-gpfx.onnx` is not scored
+  separately: its numbers are (a)'s. `tabcnn.onnx` with the training repository's order (peak-normalize at 44.1 kHz,
+  then `librosa.resample`, r0601) differs from the card's order (r0594) in 58 of 9,830 frames (58 of 58,980 cells); it
+  was not scored.
+- Results, (a) Zenodo 11406378 = `tabcnn-gpfx.onnx` (same definitions as the SynthTab tables; tab-frames with
+  `--est-capo 0 --est-tuning 40,45,50,55,59,64`, the model's own profile, on every clip):
+
+| clip | tab eval id | truth notes | est notes | matched (50 ms, same pitch) | same string+fret / matched | same string+fret / truth | string diff counts | notes eval id: onset F1 (P / R) | tab-frames eval id: tab F1, pitch F1 |
+|---|---|---|---|---|---|---|---|---|---|
+| S2n | e1715 | 90 | 220 | 76 | 0.6447 | 0.5444 | 0: 49, +1: 25, +2: 2 | e1716: 0.4903 (0.3455 / 0.8444) | e1717: 0.5795, 0.8018 |
+| S2s | e1718 | 90 | 262 | 61 | 0.9180 | 0.6222 | 0: 56, +1: 5 | e1719: 0.3466 (0.2328 / 0.6778) | e1720: 0.5854, 0.6091 |
+| S3 | e1721 | 182 | 106 | 33 | 0.9697 | 0.1758 | 0: 32, +1: 1 | e1722: 0.2292 (0.3113 / 0.1813) | e1723: 0.8985, 0.9011 |
+| S5capo2 | e1724 | 90 | 225 | 77 | 0.0000 (from the nut: 0.5065) | 0.0000 | -1: 23, 0: 39, +1: 15 | e1725: 0.4889 (0.3422 / 0.8556) | e1726: 0.0013, 0.8522 |
+| S5dropd | e1727 | 90 | 226 | 74 | 0.5405 | 0.4444 | 0: 52, +1: 20, +2: 2 | e1728: 0.4684 (0.3274 / 0.8222) | e1729: 0.4544, 0.7761 |
+| R1a | e1730 | 189 | 100 | 56 | 0.9643 | 0.2857 | -1: 1, 0: 54, +1: 1 | e1731: 0.3875 (0.5600 / 0.2963) | e1732: 0.9330, 0.9360 |
+| R1b | e1733 | 70 | 90 | 65 | 0.9846 | 0.9143 | 0: 64, +1: 1 | e1734: 0.8125 (0.7222 / 0.9286) | e1735: 0.8823, 0.8920 |
+| R1c | e1736 | 148 | 135 | 119 | 1.0000 | 0.8041 | 0: 119 | e1737: 0.8410 (0.8815 / 0.8041) | e1738: 0.9380, 0.9420 |
+
+- Results, (b) `tabcnn.onnx` (card front-end, r0594):
+
+| clip | tab eval id | truth notes | est notes | matched (50 ms, same pitch) | same string+fret / matched | same string+fret / truth | string diff counts | notes eval id: onset F1 (P / R) | tab-frames eval id: tab F1, pitch F1 |
+|---|---|---|---|---|---|---|---|---|---|
+| S2n | e1739 | 90 | 223 | 72 | 0.8611 | 0.6889 | 0: 62, +1: 10 | e1740: 0.4601 (0.3229 / 0.8000) | e1741: 0.5573, 0.6985 |
+| S2s | e1742 | 90 | 189 | 43 | 1.0000 | 0.4778 | 0: 43 | e1743: 0.3082 (0.2275 / 0.4778) | e1744: 0.5291, 0.5291 |
+| S3 | e1745 | 182 | 106 | 40 | 1.0000 | 0.2198 | 0: 40 | e1746: 0.2778 (0.3774 / 0.2198) | e1747: 0.8593, 0.8593 |
+| S5capo2 | e1748 | 90 | 182 | 58 | 0.0000 (from the nut: 0.6897) | 0.0000 | -1: 14, 0: 40, +1: 4 | e1749: 0.4265 (0.3187 / 0.6444) | e1750: 0.0085, 0.6579 |
+| S5dropd | e1751 | 90 | 224 | 67 | 0.8060 | 0.6000 | 0: 57, +1: 10 | e1752: 0.4268 (0.2991 / 0.7444) | e1753: 0.4207, 0.6520 |
+| R1a | e1754 | 189 | 120 | 56 | 0.9821 | 0.2910 | 0: 55, +1: 1 | e1755: 0.3625 (0.4667 / 0.2963) | e1756: 0.8701, 0.8762 |
+| R1b | e1757 | 70 | 90 | 64 | 0.9688 | 0.8857 | 0: 62, +1: 2 | e1758: 0.8000 (0.7111 / 0.9143) | e1759: 0.8277, 0.8624 |
+| R1c | e1760 | 148 | 151 | 107 | 0.9626 | 0.6959 | 0: 103, +1: 4 | e1761: 0.7157 (0.7086 / 0.7230) | e1762: 0.8861, 0.8915 |
+
+  The R1 rows of both tables must be read with the training-data facts above: `tabcnn.onnx` was trained, per its
+  README, on GuitarSet players 00 to 04, which include all three R1 takes; the Zenodo model, if it is one of the
+  paper's fold models, on five of the six players (which five is UNVERIFIED). Checked independently with mir_eval 0.8.2 called directly (no gtr-eval code; the
+  scorer's venv): matched count and same-string-and-fret fractions of e1715, e1736 and e1760 recomputed equal.
+- What the S5 rows show: neither file has a capo or tuning input (both fixed to standard tuning, 19 frets, as in the
+  checkpoint's profile and the card's class layout); on S5capo2 the matched notes sit on the truth string at the same
+  fret from the nut in 39 of 77 (a) and 40 of 58 (b) cases; on S5dropd neither wrote a note below MIDI 43 (the four D2
+  notes, MIDI 38, are below the profile's lowest pitch 40).
+- Output excerpt, (a), S2n, first 10 decoded notes (onset s, MIDI pitch, string, fret): (2.1362, 55, 4, 5),
+  (2.1827, 43, 6, 3), (2.6703, 50, 5, 5), (2.7632, 55, 3, 0), (2.9257, 55, 3, 0), (2.9954, 50, 5, 5), (3.2044, 43, 6, 3),
+  (3.2044, 62, 2, 3), (3.2276, 67, 1, 3), (3.7152, 55, 4, 5). Truth starts with G2 (string 6 fret 3) and G3 (string 3
+  open) at 2.1429 s. Files: `samples/tabcnn-published-weights/` (S2n and R1c note files of (a) and of `tabcnn.onnx`,
+  the S2n frames CSV of (a), `scores.tsv`, the three frame comparisons, the run logs); all outputs under
+  `/home/user/gtr/lanes/guitar-tab/gap2/tabcnn/` (1.6 MB).
+- Output and input format facts: as for the SynthTab checkpoints (frames: 6 strings x frames, fret or silent, 23.2 ms
+  hop; notes from amt-tools' decoding; no velocity, no Guitar Pro or MusicXML writer); the ONNX files take `float32[N,
+  192, 9, 1]` and return `float32[N, 6, 21]` log-probabilities, so the CQT, the windowing, the argmax and the decoding
+  are the caller's code (here the glue above). Any audio file librosa reads.
+- Constraints accepted: none at inference (no capo, tuning, fret-range, position or pinned-note input); the tuning
+  and 19 frets are fixed by training. The GGUF card's sentence on these scores ("Turning them into a playable fingering
+  needs a constrained decoder (one note per string, fret range, capo, hand span)") describes a step this lane did not
+  build; the argmax above is unconstrained per string.
+- Scripts: `scripts/gap2_run_tabcnn.py`, `gap2_batch_tabcnn.sh`, `gap2_compare_frames.py`, `gap2_score_tabcnn.py`.
+  Failures: none (every run exit 0).
+
+### scorify 0.4.0 (npm) (G3, and the pinned note of G4)
+
+- What it is (survey section "scorify"): npm `scorify` 0.4.0 by Aron Homberg, MIT, "Instrument-aware arrangement,
+  transposition, fingering constraints, and plucked-string synthesis." (`package.json`). It places a note list on a
+  fretted instrument (string, fret and fretting finger per note) by a search over a hand-mechanics model. 0.4.0 was still
+  the `latest` tag on 2026-11-11 (registry: versions 0.0.0-stage, 0.3.0, 0.4.0, all 2026-10-30/31). The package bundles 9
+  `@tonaljs/*` modules, all "License: MIT" in its `THIRD-PARTY-LICENSES.txt`.
+- Install: `npm install --no-audit --no-fund scorify@0.4.0` in `/home/user/gtr/lanes/guitar-tab/node-scorify` ("added 1
+  package", 1.4 MB on disk; the registry gives 112 files, 1,077,695 bytes unpacked). Node v22.23.4 (the README's
+  development setup names "Bun 1.3.9 and Node 24"; the package ran on Node 22 here). `samples/scorify/npm-ls.txt`.
+- How it was called: `scripts/gap2_run_scorify.py` (glue) reads the merged truth MIDI (960 ticks per quarter for every
+  clip used) with mido and writes every note as a scorify `NoteEvent` with exact rational onset and duration
+  `q(ticks, 960)` in quarter notes, its name spelled with sharps (`parsePitch("C#4")`), all in one part and one voice,
+  role `"unknown"`, plus the MIDI's tempo map and first time signature; `scripts/gap2_run_scorify.mjs` calls
+  `createScore(...)` and `arrange(score, {instrument, mode: "exact", player})` with `classicalGuitar()` (E2 A2 D3 G3 B3
+  E4, 19 frets on every string), `classicalGuitar({capoFret: 2})` or `classicalGuitar({tuning: ["D2", "A2", "D3", "G3",
+  "B3", "E4"]})`, and reads each note's string, fret counted from the capo (`relativeFret`) and finger (0 = open, 1 to 4)
+  from the result's per-frame annotations; the gtr-eval file gives each note its truth-MIDI onset in seconds. The
+  default player is `compilePlayer({})`: level "maestro", `maxFretSpan` 9, `maxShiftFretsPerSecond` 100,
+  `fingerSetupSeconds` 0, `maxPolyphony` 16, `maxAttacksPerSecond` 32, `minDuration` 1/64 quarter, `maxFret` 36,
+  `rightHand` "pick" (level "amateur" for comparison: `maxFretSpan` 4, `maxAttacksPerSecond` 7, `maxPickedPerBar` 4,
+  `minDuration` 1/4 quarter, high-fret costs above frets 8 and 10). The search was scorify's default beam search
+  (beam width 64, 128 candidates per frame, 500,000 expansions) unless a row says otherwise.
+- Runs (each a `gtr-run` call on 2 cores 0-1 unless marked; per-note glue in Python 3.11 plus one Node process per clip;
+  "arrange" is the time the Node script measured around `arrange(...)` with `performance.now()`): r0621 (10 runs: 8 clips,
+  capo, Drop D; wall 19.73 s, CPU 22.36 s, peak RSS 175.7 MB, after 20.0 s waiting for a slot, load 5.69 at start);
+  r0623 (9 runs: larger search limits, adaptive mode, level amateur, the pin; wall 48.26 s, CPU 55.42 s, peak RSS
+  345.3 MB, load 4.71); r0631 (3 runs with one player limit relaxed; wall 4.57 s); r0633 (R1b with a strumming right
+  hand; wall 1.40 s); r0630 (prefix bisection, `--nolock`; wall 16.36 s); r0641 (`limitsExceeded`, `--nolock`; wall
+  0.14 s). The glue gained options after r0621; r0635 re-ran r0621's ten runs with the final glue (wall 18.67 s): the
+  same status and the same (onset, pitch, string, fret, finger) for every note of every run.
+- Results (`gtr-eval tab`, time-based; the input is the truth notes, so "matched" counts the notes scorify placed):
+
+| clip | settings | run | status (scorify's words) | arrange | eval id | truth | placed / matched | same string+fret / matched | same string+fret / truth | string diff counts |
+|---|---|---|---|---|---|---|---|---|---|---|
+| S1 | default | r0621 | success, `best-found` | 1700 ms | e1808 | 62 | 62 / 62 | 1.0000 | 1.0000 | 0: 62 |
+| S2n | default | r0621 | success, `best-found` | 2695 ms | e1810 | 90 | 90 / 90 | 1.0000 | 1.0000 | 0: 90 |
+| S3 | default | r0621 | success, `best-found` | 1622 ms | e1812 | 182 | 182 / 182 | 1.0000 | 1.0000 | 0: 182 |
+| S5capo2 | capo not told | r0621 | `search-exhausted`: "Expansion budget exceeded" | 2089 ms | | 90 | 0 | | | |
+| S5capo2 | capo not told; beam 512, 512 candidates, 5,000,000 expansions | r0623 | success, `best-found` | 16546 ms | e1828 | 90 | 90 / 90 | 0.0000 (from the nut: 0.6000) | 0.0000 | -1: 36, 0: 54 |
+| S5capo2 | `classicalGuitar({capoFret: 2})` | r0621 | success, `best-found` | 2044 ms | e1816 | 90 | 90 / 90 | 0.9889 | 0.9889 | 0: 89, +1: 1 |
+| S5dropd | Drop D not told | r0621 | `search-exhausted`: "No valid path within the declared candidate and mechanics model" | 800 ms | | 90 | 0 | | | |
+| S5dropd | Drop D not told; larger search as above | r0623 | `search-exhausted`, same words | 3426 ms | | 90 | 0 | | | |
+| S5dropd | Drop D not told; `mode: "adaptive"`, `allowOctaveShift` | r0623 | `search-exhausted`: "Expansion budget exceeded" | 1613 ms | | 90 | 0 | | | |
+| S5dropd | tuning D2 A2 D3 G3 B3 E4 | r0621 | success, `best-found` | 2114 ms | e1818 | 90 | 90 / 90 | 0.9111 | 0.9111 | 0: 82, +1: 4, +2: 4 |
+| R1a | default | r0621 | `search-exhausted`: "No valid path ..." | 1827 ms | | 189 | 0 | | | |
+| R1a | larger search | r0623 | `search-exhausted`, same words | 9418 ms | | 189 | 0 | | | |
+| R1a | adaptive, `allowHoldShortening` | r0623 | `search-exhausted`: "Expansion budget exceeded" | 3041 ms | | 189 | 0 | | | |
+| R1a | `minDuration` 1/256 quarter | r0631 | success, `best-found` | 1447 ms | e1829 | 189 | 189 / 189 | 0.5344 | 0.5344 | -2: 18, -1: 63, 0: 101, +1: 7 |
+| R1b | default | r0621 | `search-exhausted`: "No valid path ..." | 1312 ms | | 70 | 0 | | | |
+| R1b | larger search | r0623 | `search-exhausted`, same words | 7768 ms | | 70 | 0 | | | |
+| R1b | adaptive, `allowHoldShortening` | r0623 | `search-exhausted`: "Expansion budget exceeded" | 3088 ms | | 70 | 0 | | | |
+| R1b | `maxAttacksPerSecond` 64 | r0631 | `search-exhausted`: "No valid path ..." | 1067 ms | | 70 | 0 | | | |
+| R1b | `rightHand: "strum"` | r0633 | `search-exhausted`: "No valid path ..." | 1250 ms | | 70 | 0 | | | |
+| R1c | default | r0621 | success, `best-found` | 1642 ms | e1814 | 148 | 148 / 148 | 0.8581 | 0.8581 | -1: 17, 0: 127, +1: 4 |
+| R1c | level "amateur" | r0623 | `infeasible`: "No valid path ..." | 44 ms | | 148 | 0 | | | |
+| S2n | the G3 at 2.143 s pinned to string 4 (below) | r0623 | success, `best-found` | 1780 ms | e1830 | 90 | 90 / 90 | 0.9889 | 0.9889 | 0: 89, +1: 1 |
+
+  The run with both `minDuration` 1/256 and `maxAttacksPerSecond` 64 on R1a (r0631) gave the same note list as the
+  `minDuration` run. No run returned a partial result: the README says "No partial prefix is emitted as a successful
+  arrangement.", and every non-success here placed 0 notes. In the S5dropd Drop D run the 8 notes off the truth
+  position are the four C3 (truth string 5 fret 3, scorify string 6 fret 10) and the four C4 (truth string 2 fret 1,
+  scorify string 4 fret 10).
+- Why R1a and R1b stopped (`scripts/gap2_scorify_prefix.mjs`, r0630: bisection over prefixes of the input in onset
+  order, same options): R1a arranges up to its 187th note and fails once the 188th is added, the D#3 at 29.152 s that the
+  excerpt's end cuts to 7 ms (12 ticks = 0.0125 quarter at 107 BPM, below the default `minDuration` of 1/64 = 0.0156
+  quarter; the 189th note, an A#3 at 29.154 s, is 8 ticks long); with `minDuration` 1/256 the whole clip arranged (r0631).
+  R1b arranges up to its 55th note and fails at the 56th, the B4 at 25.272 s (truth: string 1 fret 7), 18.3 ms after an
+  F#4 at 25.254 s (truth: string 2 fret 7) that sounds until 25.457 s; raising `maxAttacksPerSecond` to 64 or using
+  `rightHand: "strum"` did not change the result, and scorify's `limitsExceeded` (subpath `scorify/songs`, r0641) lists
+  no exceeded limit for R1b at level maestro, so which part of the mechanics model rejects it is UNVERIFIED (the
+  diagnostic names none). The same `limitsExceeded` call at level amateur lists for R1c "up to 11 string attacks in
+  one second; this difficulty allows 7" and "up to 15 picked notes in one bar, some together; this difficulty allows 4
+  unless each sounds alone", matching the 44 ms `infeasible` above.
+- Pinning a note to a string (G4): scorify's note model has no string field (a `NoteEvent` has id, onset, duration,
+  pitch, partId, voiceId, role, importance, `locked` {pitch, onset, duration, keep}, tieGroupId, gateDuration,
+  techniques and sourceIds, in `model.d.mts`; `arrange.mjs` answers techniques other than "ordinary" with status
+  `unsupported`, "Unsupported techniques on ..."). Its documented extension point is a cost hook, README: "A direct `scoring: { id, cost(frame,
+  realization) }` hook must be pure, deterministic, finite and nonnegative. Its versioned ID is the caller's
+  responsibility. It cannot override hard validity or the musical-fidelity priority." The glue's `--pin 1:4` adds a
+  hook that returns 1000 for any realization that puts note n1 (the G3 at 2.143 s, truth string 3 open) on a string
+  other than 4, so the pin is a cost, not a hard rule. Result (r0623, e1830): that G3 at string 4 fret 5, finger 3; the
+  other 89 notes on the same string and fret as the unpinned run (compared note by note); the finger changed on 35
+  of the 90 notes; scorify's reported cost 10.448 against 9.465 unpinned (ergonomic 9.303 vs 8.965, transition 1.146 vs
+  0.500). The same case through LilyPond's string mark is r0155 above.
+- Output format facts: `arrange` returns `status`, and on success the output `score`, per-frame `annotations` (`at` as
+  a rational of quarter notes, `attackIds`, `assignments` with `noteIds`, `stringId`, `stringNumber`, `absoluteFret`,
+  `relativeFret`, `effectiveOpen`, `finger`; `contacts`, `spanFrets`, `reachMm`, `shape`, `mutedStringIds`, `rightHand`),
+  `edits`, `cost` (musical loss, ergonomic, transition, style, total), `difficulty` (for S2n: maximum polyphony 2,
+  maximum fret span 2, `maxShiftFrets` 2, `calibrated: false`), `optimality` (`best-found` in every success here),
+  search `stats` and `assumptions` (for example "Exactness/optimality is relative to the finite candidate and mechanics
+  model."); on failure `diagnostics` and `stats`. Times are in quarter notes, not seconds. Unlike the other symbolic
+  tools here it gives a fretting finger per note. The package declares no ASCII, Guitar Pro or MusicXML writer (no such
+  function among its `.d.mts` declarations); it has WAV rendering (`renderPerformance`, `encodeWav`), not tried.
+  Samples: `samples/scorify/` (S2n input and output, gtr-eval files of S2n, the pin, S5capo2 capo, S5dropd Drop D and
+  R1c, the R1a and R1b failure outputs, all run logs); all outputs in `/home/user/gtr/lanes/guitar-tab/gap2/scorify/`.
+- Input format facts: JavaScript objects (`createScore(notes, {tempoMap, meterMap, keyMap, parts})`); spelled sounding
+  pitches; exact rational times; no file reader in the package (README "First-release limitations": "audio/MIDI/MusicXML
+  import ... remain future work"; its separate `score-import` agent skill converts MusicXML, MXL, ABC and MIDI to scorify
+  Score JSON and was not tried).
+- Constraint inputs (exercised above unless marked): tuning per string (Drop D run), capo per instrument or per string
+  (`capoFret`; capo run), fret count per string (not varied), player level and single capability overrides (`level`,
+  `minDuration`, `maxAttacksPerSecond`, `rightHand`), search limits, adaptive-mode permissions (hold shortening, octave
+  shift: both ran into the expansion budget here); a note on a given string only through the cost hook (soft).
+- Scripts: `scripts/gap2_run_scorify.py`, `gap2_run_scorify.mjs`, `gap2_batch_scorify.sh`, `gap2_batch_scorify2.sh`,
+  `gap2_batch_scorify3.sh`, `gap2_scorify_prefix.mjs`, `gap2_scorify_limits.mjs`. Failures: the statuses in the table;
+  no run crashed (every gtr-run exit 0).
+
+### A corrected string re-running the assignment: what ran and what is left to Aaron (G4)
+
+- Ran on the box: LilyPond's string mark (r0155, section above) and scorify's cost hook (r0623, above), each on S2n
+  with the G3 at 2.143 s asked to be on string 4: in both, that note went to string 4 fret 5 and the other 89 notes
+  kept their strings and frets (scorify also changed the finger of 35 notes). tuttut, tutts, tayuya, tabsynth and the
+  TabCNN models take no per-note string input.
+- Left to Aaron (`for-aaron.md`): FretPath, whose README says it "respects existing finger-number and string-number
+  annotations as hard constraints", needs MuseScore Studio 4.4 or later (section 5, new step 6: the same S2n note with a
+  string number 4, exported and compared with the unannotated run); gtrsnipe, whose README says "**`--no-refinger`**
+  never moves a note to another string" (section 4, new step 7: its own tab of S2n with that note moved by hand to the
+  D string, read back with the default, `--no-refinger` and `--refinger`).
+
+### gtrsnipe, re-checked (not run here)
+
+- 2026-11-11, 00:39 UTC: `https://pypi.org/pypi/gtrsnipe/json` and `https://pypi.org/simple/gtrsnipe/` both answered HTTP
+  404, so there is no published package to install. A blob-less clone showed the repository still at `a9be933`
+  (2026-11-10), `pyproject.toml` version 0.8.3, core dependencies `MIDIFile`, `midiutil`, `mido>=1.3`, `numpy>=2.1`
+  (comment in the file: "Core deps: must stay torch/tensorflow/numba-free so `pip install gtrsnipe` resolves and runs
+  the MIDI/tab/abc/vex pipeline on any CPU-only box.").
+- 00:40 UTC: `uv venv --python 3.11 .../venv-gtrsnipe && uv pip install --python .../venv-gtrsnipe/bin/python "gtrsnipe @
+  git+https://github.com/scottvr/gtrsnipe@a9be93338cc4f83c2b35403c5ce98fd69344ef0a"` was refused before it ran:
+  "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]." (no
+  venv was created). Nothing was worked around: NOT RUN HERE; the steps, including the corrected-string round trip,
+  are in `for-aaron.md` section 4.
+- Its licence files were re-read at that commit on 2026-11-11 and still contain the clauses quoted in `survey.md`.
 
 ## Media kept outside git
 

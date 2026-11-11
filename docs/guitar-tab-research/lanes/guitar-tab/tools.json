@@ -175,10 +175,50 @@
       "what": "`best_TabCNN_tablature_trancription_model` (3,345,122 bytes) in the EGSet12 record: TabCNN (amt-tools implementation) trained on GuitarSet plus the synthetic set GuitarProFX (\"360 randomly-chosen solo performance tracks from DadaGP\", rendered with EGFxSet tones and the authors' own recordings).",
       "url": "https://zenodo.org/api/records/11406378",
       "version": "Zenodo record published 2024-06-01",
-      "tried": false,
-      "tried_how": null,
-      "runs": [],
-      "not_run_reason": "Listed by the verifier; \"The file itself was not opened here, and how it loads was not tested.\" Not run (trials.md: the files published by other people \"were not run there\").",
+      "tried": true,
+      "tried_how": "local-cpu",
+      "runs": [
+        {
+          "run_id": "r0592",
+          "input_id": "S2n,S2s,S3,S5capo2,S5dropd,R1a,R1b,R1c",
+          "cores": 2,
+          "wall_s": 64.44,
+          "peak_mb": 1364.9,
+          "exit_code": 0,
+          "output_files": [
+            "/home/user/gtr/lanes/guitar-tab/gap2/tabcnn/ (outside git); samples/tabcnn-published-weights/"
+          ],
+          "metrics": {
+            "how": "gap round 2 (2026-11-11): torch.load(weights_only=True) + allow-list, amt-tools 0.3.2 CQT front-end and TablatureWrapper + StackedNoteTranscriber decoding (scripts/gap2_run_tabcnn.py --backend amt); cpu_s 74.38; per clip wall 7.46-8.86 s incl. Python start-up",
+            "results": {
+              "S2n": "tab e1715: 76/90 matched of 220 est, same string+fret/matched 0.6447, /truth 0.5444; notes e1716: onset F1 0.4903; frames e1717: tab F1 0.5795, pitch F1 0.8018",
+              "S2s": "tab e1718: 61/90 matched of 262 est, same string+fret/matched 0.9180, /truth 0.6222; notes e1719: onset F1 0.3466; frames e1720: tab F1 0.5854, pitch F1 0.6091",
+              "S3": "tab e1721: 33/182 matched of 106 est, same string+fret/matched 0.9697, /truth 0.1758; notes e1722: onset F1 0.2292; frames e1723: tab F1 0.8985, pitch F1 0.9011",
+              "S5capo2": "tab e1724: 77/90 matched of 225 est, same string+fret/matched 0.0000 (from nut 0.5065), /truth 0.0000; notes e1725: onset F1 0.4889; frames e1726: tab F1 0.0013, pitch F1 0.8522",
+              "S5dropd": "tab e1727: 74/90 matched of 226 est, same string+fret/matched 0.5405, /truth 0.4444; notes e1728: onset F1 0.4684; frames e1729: tab F1 0.4544, pitch F1 0.7761",
+              "R1a": "tab e1730: 56/189 matched of 100 est, same string+fret/matched 0.9643, /truth 0.2857; notes e1731: onset F1 0.3875; frames e1732: tab F1 0.9330, pitch F1 0.9360",
+              "R1b": "tab e1733: 65/70 matched of 90 est, same string+fret/matched 0.9846, /truth 0.9143; notes e1734: onset F1 0.8125; frames e1735: tab F1 0.8823, pitch F1 0.8920",
+              "R1c": "tab e1736: 119/148 matched of 135 est, same string+fret/matched 1.0000, /truth 0.8041; notes e1737: onset F1 0.8410; frames e1738: tab F1 0.9380, pitch F1 0.9420"
+            },
+            "training_overlap": "R1 clips come from GuitarSet; the file is trained on GuitarSet + GuitarProFX with six-fold leave-one-player-out training code; which fold (held-out player) the file is: UNVERIFIED"
+          }
+        },
+        {
+          "run_id": "r0591",
+          "input_id": "S2n,S2s,S3,S5capo2,S5dropd,R1a,R1b,R1c",
+          "cores": 2,
+          "wall_s": 47.11,
+          "peak_mb": 1009.8,
+          "exit_code": 0,
+          "output_files": [
+            "/home/user/gtr/lanes/guitar-tab/gap2/tabcnn/ (outside git); samples/tabcnn-published-weights/"
+          ],
+          "metrics": {
+            "how": "the same weights as the cstr/tabcnn-onnx re-export tabcnn-gpfx.onnx with the card's front-end: per-string frame output identical to r0592 on 58,980 of 58,980 string-frame cells (also r0595 on the amt-tools front-end); note lists identical within 1 microsecond, so not scored separately"
+          }
+        }
+      ],
+      "not_run_reason": null,
       "for_aaron": false,
       "callable_via": [
         "python"
@@ -187,11 +227,17 @@
         "per the amt-tools TabCNN pipeline (CQT, 192 bins, 24 bins per octave, sr 22050, hop 512; see the cstr/tabcnn-onnx card)"
       ],
       "outputs": [
-        "per the cstr/tabcnn-onnx card: \"The GuitarProFX (`amt-tools`) model natively uses **class 20 = silence, class k = fret k**.\""
+        "per frame, per string: fret 0-19 or silent (amt-tools TabCNN SoftmaxGroups: class 20 = silence, class k = fret k); decoded here to notes with amt-tools' TablatureWrapper + StackedNoteTranscriber"
       ],
-      "constraints_accepted": [],
+      "constraints_accepted": [
+        "none at inference; tuning E2 A2 D3 G3 B3 E4 and 19 frets fixed in the pickled GuitarProfile"
+      ],
       "license": {
-        "code": null,
+        "code": {
+          "spdx": "CC0-1.0 (repository root) / MIT (AMT-Tools folder)",
+          "quote": "Creative Commons Legal Code / CC0 1.0 Universal (root LICENSE); MIT License / Copyright (c) 2023 Frank Cwitkowitz (AMT-Tools/LICENSE.txt)",
+          "url": "https://github.com/robust-guitar-tabs/code"
+        },
         "weights": {
           "name": "best_TabCNN_tablature_trancription_model",
           "quote": "cc-by-4.0",
@@ -230,7 +276,7 @@
       "unverified": [
         "EGFxSet's licence was not read (UNVERIFIED).",
         "Author-reported (arXiv 2405.14679v3, Table 2): tablature F1 0.585 +- 0.084 for \"+ GuitarProFX\" against 0.447 +- 0.071 for TabCNN trained on GuitarSet only (EGSet12).",
-        "How the file loads was not tested."
+        "Which of the training script's six folds (held-out GuitarSet player) the published file is."
       ]
     },
     {
@@ -239,10 +285,78 @@
       "what": "ONNX exports of TabCNN (`tabcnn.onnx` trained by the card's author on GuitarSet; `tabcnn-gpfx.onnx` re-exported from Zenodo 11406378; `tabcnn-cqt.bin`) and GGUF conversions (f32, f16, q8_0, q4_k). The GGUF card: \"**These are emission SCORES, not a decided tablature.** Turning them into a playable fingering needs a constrained decoder (one note per string, fret range, capo, hand span).\"",
       "url": "https://huggingface.co/cstr/tabcnn-onnx",
       "version": "HF created 2026-07-20, last modified 2026-08-02",
-      "tried": false,
-      "tried_how": null,
-      "runs": [],
-      "not_run_reason": "Not run in this lane (listed by the verifier; trials.md: the files published by other people \"were not run there\").",
+      "tried": true,
+      "tried_how": "local-cpu",
+      "runs": [
+        {
+          "run_id": "r0594",
+          "input_id": "S2n,S2s,S3,S5capo2,S5dropd,R1a,R1b,R1c",
+          "cores": 2,
+          "wall_s": 62.01,
+          "peak_mb": 1001.7,
+          "exit_code": 0,
+          "output_files": [
+            "/home/user/gtr/lanes/guitar-tab/gap2/tabcnn/ (outside git); samples/tabcnn-published-weights/"
+          ],
+          "metrics": {
+            "how": "tabcnn.onnx (vanilla), ONNX Runtime 1.31.1 CPU, intra_op_num_threads 2, the card's vanilla front-end (librosa.util.normalize, raw |CQT|), argmax per string, amt-tools decoding; cpu_s 55.66; load 3.45 at start; 6 threads, all allowed only cores 2-3",
+            "results": {
+              "S2n": "tab e1739: 72/90 matched of 223 est, same string+fret/matched 0.8611, /truth 0.6889; notes e1740: onset F1 0.4601; frames e1741: tab F1 0.5573, pitch F1 0.6985",
+              "S2s": "tab e1742: 43/90 matched of 189 est, same string+fret/matched 1.0000, /truth 0.4778; notes e1743: onset F1 0.3082; frames e1744: tab F1 0.5291, pitch F1 0.5291",
+              "S3": "tab e1745: 40/182 matched of 106 est, same string+fret/matched 1.0000, /truth 0.2198; notes e1746: onset F1 0.2778; frames e1747: tab F1 0.8593, pitch F1 0.8593",
+              "S5capo2": "tab e1748: 58/90 matched of 182 est, same string+fret/matched 0.0000 (from nut 0.6897), /truth 0.0000; notes e1749: onset F1 0.4265; frames e1750: tab F1 0.0085, pitch F1 0.6579",
+              "S5dropd": "tab e1751: 67/90 matched of 224 est, same string+fret/matched 0.8060, /truth 0.6000; notes e1752: onset F1 0.4268; frames e1753: tab F1 0.4207, pitch F1 0.6520",
+              "R1a": "tab e1754: 56/189 matched of 120 est, same string+fret/matched 0.9821, /truth 0.2910; notes e1755: onset F1 0.3625; frames e1756: tab F1 0.8701, pitch F1 0.8762",
+              "R1b": "tab e1757: 64/70 matched of 90 est, same string+fret/matched 0.9688, /truth 0.8857; notes e1758: onset F1 0.8000; frames e1759: tab F1 0.8277, pitch F1 0.8624",
+              "R1c": "tab e1760: 107/148 matched of 151 est, same string+fret/matched 0.9626, /truth 0.6959; notes e1761: onset F1 0.7157; frames e1762: tab F1 0.8861, pitch F1 0.8915"
+            },
+            "training_overlap": "per tool/tabcnn README and train.py (VAL_GUITARIST=5) the file was trained on GuitarSet players 00-04, which include all three R1 takes (players 02, 04, 00)"
+          }
+        },
+        {
+          "run_id": "r0591",
+          "input_id": "S2n,S2s,S3,S5capo2,S5dropd,R1a,R1b,R1c",
+          "cores": 2,
+          "wall_s": 47.11,
+          "peak_mb": 1009.8,
+          "exit_code": 0,
+          "output_files": [
+            "/home/user/gtr/lanes/guitar-tab/gap2/tabcnn/ (outside git); samples/tabcnn-published-weights/"
+          ],
+          "metrics": {
+            "how": "tabcnn-gpfx.onnx with the card's gpfx front-end (dB ref max, min-max); identical frame output to the Zenodo 11406378 file (r0592) on all 9,830 frames of the 8 clips; scores are those of the Zenodo entry"
+          }
+        },
+        {
+          "run_id": "r0595",
+          "input_id": "S2n,S2s,S3,S5capo2,S5dropd,R1a,R1b,R1c",
+          "cores": 2,
+          "wall_s": 70.03,
+          "peak_mb": 1021.6,
+          "exit_code": 0,
+          "output_files": [
+            "/home/user/gtr/lanes/guitar-tab/gap2/tabcnn/ (outside git); samples/tabcnn-published-weights/"
+          ],
+          "metrics": {
+            "how": "check: tabcnn-gpfx.onnx on the amt-tools CQT front-end; identical frame output to r0592"
+          }
+        },
+        {
+          "run_id": "r0601",
+          "input_id": "S2n,S2s,S3,S5capo2,S5dropd,R1a,R1b,R1c",
+          "cores": 2,
+          "wall_s": 46.73,
+          "peak_mb": 1004.2,
+          "exit_code": 0,
+          "output_files": [
+            "/home/user/gtr/lanes/guitar-tab/gap2/tabcnn/ (outside git); samples/tabcnn-published-weights/"
+          ],
+          "metrics": {
+            "how": "check: tabcnn.onnx with the training repository's preprocess.py order (normalize at 44.1 kHz, then resample); differs from r0594 in 58 of 9,830 frames; not scored"
+          }
+        }
+      ],
+      "not_run_reason": null,
       "for_aaron": false,
       "callable_via": [
         "python"
@@ -257,7 +371,7 @@
       "license": {
         "code": {
           "spdx": "MIT",
-          "quote": null,
+          "quote": "MIT License / Copyright (c) 2024-2026 CrispStrobe",
           "url": "https://github.com/CrispStrobe/onnx_runtime_dart"
         },
         "weights": {
@@ -291,7 +405,7 @@
       ],
       "unverified": [
         "Card author's figures only: \"`tabcnn.onnx`: held-out GuitarSet tab F1 0.745 (paper 0.748)\"; `tabcnn-gpfx.onnx` \"EGSet12 (12-track, frame-level tab F1) = 0.59 micro / 0.55 macro\".",
-        "The export scripts are in https://github.com/CrispStrobe/onnx_runtime_dart (`tool/tabcnn/`); its repository `LICENSE` is stated as MIT in the survey, whose text of that file is not quoted there; last commit 2026-09-18."
+        "The export repository's tool/tabcnn/README.md says \"the GuitarProFX-augmented weights (DAFx-24) aren't public\"; the card (modified 2026-08-02) says tabcnn-gpfx.onnx re-exports them, and its output matched the Zenodo file here."
       ]
     },
     {
@@ -1363,7 +1477,7 @@
       "tried": false,
       "tried_how": null,
       "runs": [],
-      "not_run_reason": "Not on PyPI (`pypi.org/pypi/gtrsnipe/json` \"not found\", 2026-11-10); its README installs with `pip install -e .`. Not attempted, because installing code from a GitHub repository was refused twice by the permission system (This session's permission system refused, twice, to install code from a GitHub repository (`uv pip install -e <clone of xavriley/hf_midi_transcription>` and later `uv pip install <clone of DanieleMorotti/guitab>`), each time with \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]\" (trial agent's account; no log of the refusal is in the lane folder). After the second refusal no other repository-only tool was installed or executed.).",
+      "not_run_reason": "NOT RUN HERE. Not on PyPI (pypi.org/pypi/gtrsnipe/json and pypi.org/simple/gtrsnipe/ answered HTTP 404 on 2026-11-10 and again on 2026-11-11 00:39 UTC). On 2026-11-11 00:40 UTC an install from the repository at a9be933 (uv pip install \"gtrsnipe @ git+https://github.com/scottvr/gtrsnipe@a9be933...\") was refused by the box's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" Steps, including a --no-refinger / --refinger round trip of a hand-corrected string, are in for-aaron.md section 4.",
       "for_aaron": true,
       "callable_via": [
         "cli"
@@ -1427,7 +1541,8 @@
       ],
       "unverified": [
         "The options above were read at commit a9be933 (dated 2026-11-10); the help text of the version you install may differ.",
-        "The renderer half of the VexTab/abcjs handoff was not read."
+        "The renderer half of the VexTab/abcjs handoff was not read.",
+        "What --no-refinger and --refinger do to a hand-corrected string (for-aaron.md section 4, step 7)."
       ]
     },
     {
@@ -3924,23 +4039,91 @@
       "what": "\"Instrument-aware music arrangement, transposition, and fingering constraints for vanilla JavaScript. TypeScript source, browser-native ESM, no external runtime dependencies.\" Arranges a note list onto a fretted instrument with tunings, capos and four-finger assignment by exhaustive reference, exact dynamic programming, or bounded beam search.",
       "url": "https://github.com/kyr0/scorify",
       "version": "npm 0.4.0 (published 2026-10-31; blob-less clone commit 8f8c25c)",
-      "tried": false,
-      "tried_how": null,
-      "runs": [],
-      "not_run_reason": "Found by the verification pass in the docs lane; no run is recorded in trials.md.",
+      "tried": true,
+      "tried_how": "local-cpu",
+      "runs": [
+        {
+          "run_id": "r0621",
+          "input_id": "S1,S2n,S3,S5capo2,S5dropd,R1a,R1b,R1c (merged truth MIDI); S5capo2 capo 2; S5dropd Drop D",
+          "cores": 2,
+          "wall_s": 19.73,
+          "peak_mb": 175.7,
+          "exit_code": 0,
+          "output_files": [
+            "/home/user/gtr/lanes/guitar-tab/gap2/scorify/ (outside git); samples/scorify/"
+          ],
+          "metrics": {
+            "how": "gap round 2 (2026-11-11), Node 22.23.4, arrange(..., {mode: 'exact'}) with classicalGuitar() and the default player (level maestro); arrange 0.80-2.70 s per clip; re-run r0635 with the final glue gave identical results",
+            "results": {
+              "S1": "success, e1808: 62/62 matched, same string+fret 1.0000",
+              "S2n": "success, e1810: 90/90, 1.0000",
+              "S3": "success, e1812: 182/182, 1.0000",
+              "S5capo2 capo not told": "search-exhausted (Expansion budget exceeded)",
+              "S5capo2 capoFret 2": "success, e1816: 90/90, 0.9889",
+              "S5dropd Drop D not told": "search-exhausted (No valid path within the declared candidate and mechanics model)",
+              "S5dropd Drop D": "success, e1818: 90/90, 0.9111",
+              "R1a": "search-exhausted (No valid path ...)",
+              "R1b": "search-exhausted (No valid path ...)",
+              "R1c": "success, e1814: 148/148, 0.8581"
+            }
+          }
+        },
+        {
+          "run_id": "r0623",
+          "input_id": "R1a,R1b,S5capo2,S5dropd larger search; R1a,R1b adaptive hold shortening; S5dropd adaptive octave shift; R1c level amateur; S2n pinned note",
+          "cores": 2,
+          "wall_s": 48.26,
+          "peak_mb": 345.3,
+          "exit_code": 0,
+          "output_files": [
+            "/home/user/gtr/lanes/guitar-tab/gap2/scorify/ (outside git); samples/scorify/"
+          ],
+          "metrics": {
+            "results": {
+              "S5capo2 capo not told, beam 512": "success, e1828: 90/90, 0.0000 from the capo, 0.6000 from the nut",
+              "R1a/R1b/S5dropd larger search": "search-exhausted",
+              "adaptive runs": "search-exhausted (Expansion budget exceeded)",
+              "R1c amateur": "infeasible (44 ms)",
+              "S2n G3 pinned to string 4 via scoring hook": "success, e1830: pinned note at string 4 fret 5, the other 89 notes on unchanged strings and frets; fingers changed on 35 notes"
+            }
+          }
+        },
+        {
+          "run_id": "r0631",
+          "input_id": "R1a minDuration 1/256; R1b maxAttacksPerSecond 64",
+          "cores": 2,
+          "wall_s": 4.57,
+          "peak_mb": 150.7,
+          "exit_code": 0,
+          "output_files": [
+            "/home/user/gtr/lanes/guitar-tab/gap2/scorify/ (outside git); samples/scorify/"
+          ],
+          "metrics": {
+            "results": {
+              "R1a": "success, e1829: 189/189, same string+fret 0.5344",
+              "R1b": "search-exhausted"
+            },
+            "note": "prefix bisection r0630: R1a fails at a clip-end note of 0.0125 quarter (default minDuration 1/64); R1b at a B4 18.3 ms after a sounding F#4, cause UNVERIFIED; r0633 rightHand strum on R1b: search-exhausted"
+          }
+        }
+      ],
+      "not_run_reason": null,
       "for_aaron": false,
       "callable_via": [
-        "js-browser"
+        "js-browser",
+        "js-node"
       ],
       "inputs": [
         "`createScore([...notes], { tempoMap, keyMap })` with notes such as `{ id, pitch: parsePitch(\"C4\"), onset: q(0), duration: q(1), partId, voiceId, role }`; \"All pitches are **sounding** pitches.\"; \"Time is a normalized `[numerator, denominator]` measured in quarter notes.\"; README \"First-release limitations\": \"... audio/MIDI/MusicXML import ... remain future work.\"; a separate agent skill and CLI in the repository, `skills/score-import/`, \"converts MusicXML, MXL, ABC and MIDI into scorify Score JSON\""
       ],
       "outputs": [
-        "\"`success` includes output score, fingerings, separate source/realized harmony, edits, source mapping, difficulty components, model versions, effective profile, and search statistics.\" Other statuses: `infeasible`, `search-exhausted`, `invalid-input`, `unsupported`, `cancelled`."
+        "\"`success` includes output score, fingerings, separate source/realized harmony, edits, source mapping, difficulty components, model versions, effective profile, and search statistics.\" Other statuses: `infeasible`, `search-exhausted`, `invalid-input`, `unsupported`, `cancelled`.",
+        "per note (via per-frame annotations): stringNumber, relativeFret (from the capo), absoluteFret, finger 0-4; times as rationals of quarter notes; no ASCII, Guitar Pro or MusicXML writer declared in the package"
       ],
       "constraints_accepted": [
         "\"Configurable fretted strings, tunings, capos and geometry\"; `classicalGuitar({ capoFret: 2 })` or `createFrettedInstrument(\"custom\", \"My tuning\", [...])`; per-string `openPitch`, `capoFret`, `fretCount`, stable `id`, tab `number`; frets are absolute from the original nut, displayed relative fret = absolute fret − that string's capo",
-        "player options `allowBarre`, `maxBarreStrings`, `rightHand: 'pick' | 'strum'`"
+        "player options `allowBarre`, `maxBarreStrings`, `rightHand: 'pick' | 'strum'`",
+        "exercised in gap round 2: Drop D tuning (e1818), capoFret 2 (e1816), level amateur (infeasible on R1c), minDuration and maxAttacksPerSecond overrides, rightHand strum, search limits; no per-note string field: a scoring cost hook pinned one note (e1830)"
       ],
       "license": {
         "code": {
@@ -3960,7 +4143,9 @@
           "evidence": "README: that skill \"converts MusicXML, MXL, ABC and MIDI into scorify Score JSON\"."
         }
       ],
-      "unverified": []
+      "unverified": [
+        "Which part of the mechanics model rejects R1b at its 56th note (the diagnostic names none)."
+      ]
     },
     {
       "name": "midi2tab_Deconvolutions (Kaliakatsos-Papakostas et al.)",

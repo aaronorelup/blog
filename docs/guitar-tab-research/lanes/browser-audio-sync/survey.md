@@ -144,6 +144,12 @@ what counts. Every entry now points to its section.
     LGPL-2.1. RUNNABLE (not tried here). Section 53.
 54. Further tools found by the checker are listed with one line each under "Not covered" at the end of this file.
 
+### Added in gap round 2 (2026-11-11)
+
+55. StemSplit's htdemucs_6s ONNX export (`StemSplitio/htdemucs-6s-onnx`, card licence field `mit`) in ONNX Runtime Web,
+    with demucs-onnx's browser helpers (PyPI `demucs-onnx` 0.3.4, 2026-05-22, MIT): six stems including guitar.
+    RUNNABLE (WASM, with graph optimizations disabled: `trials.md`, "Gap round 2"). Section 55.
+
 ## Sources used for the web platform sections (1 to 8)
 
 - MDN pages were read from their source files in the `mdn/content` repository, fetched 2026-11-10 from
@@ -1622,6 +1628,69 @@ build below ships or downloads):
   does not require that the license text itself appear in derivative works." Companion package
   `libavjs-webcodecs-polyfill` 0.5.5 (2025-07-04, npm license field "0BSD"): "A WebCodecs polyfill (ponyfill, really),
   using libav.js" (npm description).
+
+## 55. StemSplit's htdemucs_6s ONNX export in ONNX Runtime Web (`StemSplitio/htdemucs-6s-onnx`, demucs-onnx's browser helpers) [gap round 2]
+
+Added on 2026-11-11 by `gapfill-browser-audio-sync` (date from `date -u +%F`); every page below was read that day.
+Raw copies are kept outside the repo in `/home/user/gtr/lanes/browser-audio-sync/gap2/fetch/` and
+`gap2/wheel/` (not committed).
+
+- What: Hugging Face model repository https://huggingface.co/StemSplitio/htdemucs-6s-onnx (Hub API
+  `https://huggingface.co/api/models/StemSplitio/htdemucs-6s-onnx?blobs=true`: revision
+  `49df9b6989cf2150840ea65b0bef77a2e471b678`, created and last modified 2026-05-21, card data `license: mit`,
+  `library_name: onnxruntime`, `pipeline_tag: audio-to-audio`, `datasets: StemSplitio/stem-separation-benchmark-2026`).
+  Card (https://huggingface.co/StemSplitio/htdemucs-6s-onnx/raw/main/README.md): "The **first ONNX export of the 6-stem
+  `htdemucs_6s` variant** on the Hugging Face Hub. Adds **guitar** and **piano** stems on top of the standard 4 (drums
+  / bass / other / vocals)." (the maker's claim, not checked). Maker: StemSplit (stemsplit.io), which also runs a
+  hosted API (card: "same model under the hood, hosted for you, with credits"; hosted-apis lane).
+- Files (Hub API): `htdemucs_6s.onnx` 258,159,781 bytes (LFS sha256 `48f8e849...`), `htdemucs_6s_fp16weights.onnx`
+  136,428,532 bytes (LFS sha256 `7ce55792...`), `infer.py` 4,909 bytes, `requirements.txt` 46 bytes (onnxruntime>=1.17,
+  numpy>=1.24, soundfile>=0.12), `README.md`. Card: "`htdemucs_6s.onnx` — 258 MB, opset 17, parity-verified vs PyTorch
+  fp32." and "`htdemucs_6s_fp16weights.onnx` — 136 MB, fp16-stored weights, same runtime memory / latency."; "Parity vs
+  PyTorch fp32 (random input, 7.8 s segment)": "max abs diff: **2.42 × 10⁻⁴**" (fp32) and "**1.06 × 10⁻⁴**" (fp16 weights
+  against fp32 weights) (the maker's figures).
+- Input / output (card, "Input / output spec"): input `mix`, `(1, 2, 343980)`, float32, "Stereo, 44.1 kHz, 7.8 s
+  segment. Values in [-1, 1]."; output `stems`, `(1, 6, 2, 343980)`, float32, "Stems in order `[drums, bass, other,
+  vocals, guitar, piano]`."; "For longer audio, chunk with overlap-add — see `infer.py::separate`." The STFT is inside
+  the graph: "Complex-typed `torch.stft` outputs → `Conv1d` with sin/cos kernels." (card, "How it was built"). The
+  demucs-onnx browser guide (https://stemsplit.github.io/demucs-onnx/browser/): "The exported ONNX graph bakes the
+  segment length in to keep the model ~3× smaller (no dynamic-shape blowup in attention). Chunked overlap-add recovers
+  any length." and "The graph still computes in fp32 at runtime, so latency and accuracy are unchanged; only the
+  download shrinks 1.91×."
+- How a page calls it (card, "Mobile / Web"): `ort.InferenceSession.create("htdemucs_6s_fp16weights.onnx", {
+  executionProviders: ["wasm"] })`, then `sess.run({ mix: t })` with `new ort.Tensor("float32", audioBuffer, [1, 2,
+  343980])` ("out.stems is (1, 6, 2, 343980)"). The overlap-add is in `infer.py` (`separate`: segments of
+  `int(7.8 * 44100)` = 343,980 samples, overlap `N_SAMPLES // 4`, `np.linspace(0, 1, overlap)` fades) and identically in
+  the PyPI package demucs-onnx 0.3.4 (`_chunked_separate_single`, wheel sha256 `9232ad4c...`, uploaded 2026-05-22).
+  demucs-onnx's `browser.py` (in the wheel) prints bundler snippets (`demucs-onnx browser-config --bundler vite`, or
+  webpack, esbuild, next, rollup), all with `Cross-Origin-Opener-Policy: same-origin` and
+  `Cross-Origin-Embedder-Policy: require-corp`, and writes a demo (`demucs-onnx browser-demo PATH`, `--react` for Vite +
+  React + TypeScript) whose script imports `https://cdn.jsdelivr.net/npm/onnxruntime-web@1.18.0/dist/ort.min.mjs`, sets
+  `ort.env.wasm.numThreads = Math.min(navigator.hardwareConcurrency ?? 2, 4)` and creates the session with
+  `executionProviders: ["wasm"], graphOptimizationLevel: "all"`; its default model is the htdemucs_ft vocals file
+  (`htdemucs_ft_vocals_fp16weights.onnx`, "~166 MB"). Its JavaScript fade is `w[i] = i / overlap`, while the Python
+  uses `np.linspace(0, 1, overlap)`; the guide says: "For htdemucs_6s change stems[rowOffset + ...] to use a 6-row
+  layout and pick whichever row you want ( drums=0, bass=1, other=2, vocals=3, guitar=4, piano=5 )."
+- Speed and memory as published (the maker's figures, not measured here): card, "Single 7.8 s segment, Apple M4 Pro
+  CPU": `htdemucs_6s_fp16weights.onnx` "~1.1 GB" RAM, "~1.6 s" latency, RTF "0.20"; browser guide: "Single-threaded WASM
+  on an Apple M4 Pro processes a 7.8 s chunk in ~6 s (RTF ~0.77)" and "We've measured ~2.5 s per 7.8 s chunk on the
+  same Apple M4 Pro with 4 threads." What this box measured is in `trials.md`, "Gap round 2": with the
+  `graphOptimizationLevel: "all"` the demo uses (and with `basic`), `InferenceSession.create` threw `std::bad_alloc`
+  in ONNX Runtime Web 1.31.1 with the renderer at about 4.38 GB (section 35 quotes the docs' "WebAssembly has a memory
+  limit of 4GB."); with `disabled` it ran (2 threads: 29.09 s for 10 s of audio on 2 cores, renderer peak 1,319 MB).
+- Use here: the guitar row of `stems` as a Float32Array at 44.1 kHz is the in-page handoff to Basic Pitch (section 33,
+  after resampling to 22,050 Hz mono) and to a waveform view (sections 16 and 17); not run as a pipeline here.
+- Licence: card front matter `license: mit`, and the card's "License & attribution": "This repo is **MIT-licensed**,
+  matching the original HT-Demucs." demucs-onnx's `LICENSE` (in the 0.3.4 wheel, `demucs_onnx-0.3.4.dist-info/licenses/
+  LICENSE`): "MIT License", "Copyright (c) 2026 StemSplit", standard MIT grant present ("Permission is hereby granted,
+  free of charge, to any person obtaining a copy of this software and associated documentation files"); PyPI
+  `license` field "MIT". Weights: these are
+  Meta's `htdemucs_6s` weights converted to ONNX; the Demucs maintainer's README,
+  https://raw.githubusercontent.com/adefossez/demucs/main/README.md (re-read 2026-11-11, same text as quoted in section
+  50): "The license of the weights is not clear: MusDB contains some data that were only usable for research purpose."
+  and "The 6 source variant of htdemucs was trained only on Meta internal dataset, which likely means CC-NC-BY license
+  is applicable, as it was the case for all models released by FAIR." The MIT statements above are the converter's;
+  none is a licence grant from Meta (as for the other exports in section 50).
 
 ## Access needs (what cannot be settled on the CPU-only box)
 

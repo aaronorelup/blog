@@ -1,0 +1,43 @@
+[
+ {
+  "name": "mix:mix_22050",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap2-libfmp/S6taps/onsets_mix/mix_22050.txt",
+  "n_est": 53,
+  "taps": {
+   "eval_id": "e1817",
+   "f_measure": 0.752941,
+   "precision": 0.603774,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e1819",
+   "f_measure": 0.950495,
+   "precision": 0.90566,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 53,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 0,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ }
+]

@@ -70,7 +70,8 @@ The section for each tool is what counts; dates are the dates printed on the pag
 16. Other multimodal LLM APIs: OpenAI audio in Chat Completions (`gpt-audio-1.5`, `input_audio`) partly read;
     Claude Messages API (no audio or video content block in its reference), Alibaba Qwen-Omni (audio and video in),
     xAI and DeepSeek (text and image only, from the try agent's model listing) read by verify-docs; Amazon Nova not
-    read. CALLABLE-WITH-KEY. Section written.
+    read. CALLABLE-WITH-KEY. Section written. (corrected in gap round 2: OpenAI `gpt-audio-1.5` prices and formats,
+    Qwen-Omni prices and terms, and Amazon Nova read 2026-11-11.)
 17. YouTube Terms of Service ("Dated: December 15, 2023"), YouTube API Services Terms and Developer Policies (pages
     "Last updated 2026-11-06 UTC"). Section written (quotes only).
 18. yt-dlp 2026.10.26 (PyPI upload 2026-10-26), Unlicense; PyInstaller executables GPLv3+. RUNNABLE. Section written.
@@ -86,11 +87,25 @@ The section for each tool is what counts; dates are the dates printed on the pag
     https://elevenlabs.io/docs/api-reference/music/separate-stems ; terms "Last Updated: 09 October 2026".
     CALLABLE-WITH-KEY. Section added by verify-docs (the try agent called it: `trials.md`, r0064).
 26. Vercel AI Gateway: one OpenAI-compatible endpoint in front of many model providers; audio as a `file` part.
-    https://vercel.com/docs/ai-gateway . CALLABLE-WITH-KEY. Section added by verify-docs (the try agent called it).
+    https://vercel.com/docs/ai-gateway . CALLABLE-WITH-KEY. Section added by verify-docs (the try agent called it);
+    AI Product Terms "Last Updated March 17, 2026" and Terms of Service "Last Updated October 19, 2026" quoted in gap
+    round 2.
 27. MusicGPT API `POST /v1/audio_to_midi` (audio file or YouTube URL in; MIDI, optional sonified WAV and note-event
     CSV out). https://docs.musicgpt.com . CALLABLE-WITH-KEY. Section added by verify-docs (price and terms not read).
+    (corrected in gap round 2: price and terms read 2026-11-11.)
 28. Alibaba Cloud Model Studio Qwen-Omni (`qwen3.8-omni-flash` and others): text, image, audio and video in.
     https://help.aliyun.com/en/model-studio/qwen-omni . CALLABLE-WITH-KEY. Listed in "Other multimodal LLM APIs".
+29. The three models called through the Vercel AI Gateway (`xiaomi/mimo-v2.6-flash`, `meta/muse-spark-open`,
+    `bytedance/seed-2.1-turbo`): weights licenses (MiMo card `license: mit`; Muse Model License) and provider terms
+    (Xiaomi MiMo Service Agreement "updated on July 7, 2026"; BytePlus terms and AI terms). Section added in gap round 2.
+30. xAI Speech to Text API (`grok-voice-transcribe-2.0`, called in r0105). https://docs.x.ai . CALLABLE-WITH-KEY.
+    Section added in gap round 2 (xAI's terms pages answered HTTP 403 to the box: UNVERIFIED).
+31. Mureka Music Transcription on fal.ai (`mureka/api/song/transcribe`): audio (MP3, WAV, M4A, 10 s to 10 min) in,
+    a ZIP that "can include MusicXML, PDF sheet music, and timestamped lyrics" out; "$0.20" per song.
+    https://fal.ai/models/mureka/api/song/transcribe . CALLABLE-WITH-KEY (no fal key in the key store). Section added
+    in gap round 2.
+32. Cesure MCP server (`https://api.cesure.app/mcp`): probed without an account in gap round 2 (`trials.md`, Gap
+    round 2). Section added in gap round 2.
 
 ## Klangio API
 
@@ -617,6 +632,43 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
   - "Customer hereby grants Company a non-exclusive, non-sublicensable, royalty-free license to reproduce, use, access, store, display, adapt, translate, modify, create derivative works from, and otherwise process any Customer Input to provide the Services." and "Customer owns and retains all right, title, and interest in and to the Customer Input."
   - Usage data: "Company may generate, collect, store, use, transfer, and/or disclose to third parties Usage Data and use Usage Data to perform data analytics; to monitor, improve, and support the Services; to design, develop, and offer Company products, services, and AI models; and for any other lawful purposes. Company owns and retains all rights to Usage Data".
 
+## Mureka Music Transcription on fal.ai (added in gap round 2)
+
+- What it is: a hosted transcription endpoint from Mureka (whose site says "Mureka is developed by Skywork AI Pte.
+  Ltd.", https://www.mureka.ai/llms.txt), sold through fal.ai. Read 2026-11-11 (copies in
+  `/home/user/gtr/lanes/hosted-apis/raw/gap2-fal-mureka*` and `gap2-mureka*`, not committed): the model's
+  https://fal.ai/models/mureka/api/song/transcribe/llms.txt : "Transcribes generated or uploaded music into a
+  downloadable archive that can include MusicXML, PDF sheet music, and timestamped lyrics."; "**Category**:
+  audio-to-text"; the model page's embedded data gives `"licenseType":"commercial"`, a "Commercial use" badge and a
+  date `2026-09-15T14:29:09.708Z`. It is not in fal's site-wide index https://fal.ai/llms.txt (read 2026-11-11).
+- How a program calls it: `POST https://fal.run/mureka/api/song/transcribe` with header `Authorization: Key
+  $FAL_KEY` and a JSON body (llms.txt "Usage Examples"); the queue form has
+  `/mureka/api/song/transcribe/requests/{request_id}/status` and `.../requests/{request_id}` (OpenAPI schema
+  https://fal.ai/api/openapi/queue/openapi.json?endpoint_id=mureka/api/song/transcribe , "1.0.0"). Python:
+  `fal_client.subscribe("mureka/api/song/transcribe", arguments={...})`.
+- Input schema (`TranscribeMusicInput`, OpenAPI): exactly one audio source among `song_id` ("Generated song ID from
+  song_id in a /generate/song response."), `upload_audio_id` ("Audio ID returned by /files/upload with
+  purpose='audio'.") and `audio_url`: "Public HTTPS URL or data URI for an MP3, WAV, or M4A file between 10 seconds and
+  10 minutes and no larger than 100 MB. Provide exactly one audio source."; optional `title` (string, `maxLength` 50,
+  "Optional title used for the generated transcription files."). No instrument, tuning, capo, key or tempo field.
+- Output schema (`TranscribeMusicOutput`): `zip_url` (string, required): "The generated transcription archive." What
+  the archive holds for a given input (which of MusicXML, PDF and lyrics; whether it has a guitar part, tablature or
+  MIDI) is not documented beyond "can include": UNVERIFIED until one call.
+- Price (llms.txt): "Billing is calculated per transcribed song. Your request will cost **$0.20** per song. For **$1**
+  you can transcribe **5 songs**."
+- Terms: the model page's `termsOfService` is https://fal.ai/legal/terms-of-service ("Last Updated: September 8,
+  2026" when read 2026-11-11, the version quoted in the fal.ai section above). Its Third-Party Materials section,
+  which covers "machine learning models hosted by third parties": "Your access to and use of such Third-Party
+  Materials may be subject to additional terms, conditions, and policies (including terms of service or privacy
+  policies of the providers of such Third-Party Materials)." and, among what "You may not" do: "use or access any
+  Third-Party Materials or any outputs derived from such materials to develop, modify, fine-tune, or improve any
+  products or services that compete with those Third Party Materials, including to develop, fine-tune, or train any
+  artificial intelligence or machine learning algorithms or models". Mureka's own terms page (https://www.mureka.ai/terms)
+  is script-rendered and its text was not read (UNVERIFIED); the fal pages read link no Mureka terms.
+- Training data and model: not stated on the pages read (UNVERIFIED).
+- Not called here: no fal key is in the key store (`getkey.py --list`, names only, 26 names, none containing "FAL" or
+  "MUREKA", checked 2026-11-11). Steps for Aaron: `for-aaron.md` section 15 (S4 and R2, 0.40 USD).
+
 ## Hugging Face Inference Providers and public Spaces
 
 - Inference Providers (https://huggingface.co/docs/inference-providers/index , read 2026-11-10): the navigation
@@ -776,7 +828,28 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
   text outputs. For this audio-chat pattern, use Chat Completions with an audio-capable model." Audio goes in as a
   content part `{"type": "input_audio", "input_audio": {"data": <base64>, "format": "wav"}}` (code examples on the
   page). Token rates per second of audio, the full list of accepted input formats, video input, prices and OpenAI's
-  terms were not read in this pass: UNVERIFIED.
+  terms were not read in this pass: UNVERIFIED. (corrected in gap round 2: read 2026-11-11, next bullet; the token
+  rate and the terms are still UNVERIFIED.)
+- OpenAI `gpt-audio-1.5`, added in gap round 2 (read 2026-11-11; copies in
+  `/home/user/gtr/lanes/hosted-apis/raw/gap2-openai-*`, not committed):
+  - Model page (https://developers.openai.com/api/docs/models/gpt-audio-1.5): modalities Text "Input and output",
+    Image "Not supported", Audio "Input and output", Video "Not supported"; "128,000 context window", "16,384 max
+    output tokens"; "Text tokens" per 1M: input "$2.50", output "$10.00"; "Audio tokens" per 1M: input "$32.00",
+    output "$64.00". The pricing page (https://developers.openai.com/api/docs/pricing.md, "Prices per 1M tokens
+    unless noted.") has the same rows: "| gpt-audio-1.5 | Audio | $32.00 | $64.00 | - |" and "| gpt-audio-1.5 |
+    Text | $2.50 | $10.00 | - |" (columns Model, Modality, Input, Output, Cached input).
+  - Input formats: the Chat Completions reference
+    (https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create.md), field
+    `input_audio.format`: "The format of the encoded audio data. Currently supports "wav" and "mp3"." No video input.
+  - Audio tokens per second: not stated on the model page, the pricing page, the audio guide
+    (https://developers.openai.com/api/docs/guides/audio.md) or the audio-in-Chat-Completions guide; UNVERIFIED
+    (one call's `usage` would settle it).
+  - Terms: https://openai.com/policies/services-agreement/ answered HTTP 403 with "Enable JavaScript and cookies to
+    continue" to curl, and HTTP 403 to the web-fetch tool, on 2026-11-11: no clause quoted (UNVERIFIED). The docs
+    page on data (https://developers.openai.com/api/docs/guides/your-data.md, docs, not the contract): "Your data is
+    your data. As of March 1, 2023, data sent to the OpenAI API is not used to train or improve OpenAI models (unless
+    you explicitly opt in to share data with us)."; its table gives `/v1/chat/completions` "No" for "Data used for
+    training" and "30 days" for "Abuse monitoring retention".
 - Anthropic Claude (added by verify-docs): the Messages API reference https://platform.claude.com/docs/en/api/messages.md
   (read 2026-11-10) names content block types `text`, `image`, `document` and `search_result`; the string "audio" does
   not occur in that page, so no audio or video input type is documented there. Vercel's gateway page agrees for its
@@ -789,7 +862,27 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
   goes in as an OpenAI-style `{"type": "input_audio", "input_audio": {"data": <URL>}}` part, video as `video_url`.
   Audio file limits: "Using Base64 encoding: The encoded Base64 string must be smaller than 10 MB"; formats "common
   formats such as AMR, WAV, 3GP, 3GPP, AAC, and MP3."; video formats "MP4, AVI, MKV, MOV, FLV, WMV, and others."
-  Price and terms: not read (UNVERIFIED).
+  Price and terms: not read (UNVERIFIED). (corrected in gap round 2: read 2026-11-11, next bullet.)
+- Qwen-Omni price and terms, added in gap round 2 (read 2026-11-11; copies in
+  `/home/user/gtr/lanes/hosted-apis/raw/gap2-qwen-*` and `gap2-alibaba-*`, not committed):
+  - Billing rules on the Qwen-Omni page (https://help.aliyun.com/en/model-studio/qwen-omni): "The models on this
+    page are billed by the number of tokens for each modality (audio, image, video)."; "Qwen3.8-Omni-Flash: Input
+    audio formula: Total tokens = Audio duration (seconds) * 7."; "If the audio duration is less than 1 second, it
+    is counted as 1 second." (Arithmetic, not a bill: the 38.741 s of S4 would be about 271 audio tokens.)
+  - Prices, "Alibaba Cloud Model Studio:Model inference pricing", "Last Updated:Nov 07, 2026"
+    (https://www.alibabacloud.com/help/en/model-studio/model-pricing), per million tokens: `qwen3.8-omni-flash`,
+    Singapore, "International": input "$0.15", cache-hit input "$0.016", output "$0.47"; `qwen3.5-omni-plus`,
+    "International": input "$1.4" (text, image, video) and "$11" (audio), output "$8.3" (text) and "$44" (text +
+    audio), free quota "1 million tokens"; "The Qwen3.5-Omni and Qwen3-Omni series offer a free quota only in
+    Singapore." (The same table on https://help.aliyun.com/en/model-studio/model-pricing lists prices in CNY.)
+  - Terms: Alibaba Cloud International Website Product Terms of Service
+    (https://www.alibabacloud.com/help/en/legal/latest/alibaba-cloud-international-website-product-terms-of-service-v-3-8-0 ,
+    "Last Updated:Oct 19, 2026"; also the page Vercel's Notices and License Information links for Alibaba Cloud),
+    § 4.48.1 e): "Model Studio does not claim ownership of any Intellectual Property Rights in the Output." and
+    "Alibaba Cloud will not use your Member Content to develop or improve the models on Model Studio, unless you
+    separately provide your consent."; § 4.48.1 d) lists among what "you shall not" do: "use Model Studio, AI models
+    provided through Model Studio (including any Output of such AI models) to train or develop products or services
+    that compete with Alibaba Cloud and/or its affiliates’ products and services, unless expressly authorised by us".
 - xAI and DeepSeek (from the try agent's authenticated model listings, `trials.md`, 2026-11-10): the eight xAI
   language models listed have `input_modalities` `["text", "image"]`; xAI's audio offering read is speech to text
   (`POST https://api.x.ai/v1/stt`, used in r0105). DeepSeek's `deepseek-flash` lists `["text", "image"]` and
@@ -797,7 +890,25 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
   does not contain the words "audio" or "video".
 - Mistral (seen by verify-docs, https://docs.mistral.ai/capabilities/audio/ , read 2026-11-10): the audio docs
   describe Voxtral 3 speech-to-text and text-to-speech models; music understanding is not described there.
-- Amazon Nova: not read (UNVERIFIED).
+- Amazon Nova: not read (UNVERIFIED). (corrected in gap round 2: read 2026-11-11, next bullet.)
+- Amazon Nova, added in gap round 2 (read 2026-11-11; copies in `/home/user/gtr/lanes/hosted-apis/raw/gap2-nova*`
+  and `gap2-aws-service-terms*`, not committed):
+  - Inputs: the Nova user guide (https://docs.aws.amazon.com/nova/latest/userguide/what-is-nova.html) says "This
+    documentation is for Amazon Nova Version 1." and "To start building with Amazon Nova, you must access the models
+    through an API using Amazon Bedrock.", and gives input modalities "Text, Image, Video" for Nova Premier, Pro and
+    Lite, "Text" for Micro and "Speech" for Nova Sonic ("Accepts speech as input and provides speech with text
+    transcriptions as output."). The Nova 2 user guide (https://docs.aws.amazon.com/nova/latest/nova2-userguide/what-is-nova-2.html)
+    lists Nova 2 Lite "Text, images, video, documents" in and "Text" out, Nova 2 Sonic "Speech, text" in and out, and
+    Nova Multimodal Embeddings "Text, images, documents, video, audio" in and "Embeddings" out. No model on these two
+    pages takes general (music) audio and returns text. AWS's Service Terms name an "Amazon Nova 2 Omni" (§ 50.10); no page
+    about it was read, so its inputs are UNVERIFIED.
+  - Terms: AWS Service Terms (https://aws.amazon.com/service-terms/ , "Last Updated: November 5, 2026"), § 50.2:
+    "The output that you generate using AI Services is Your Content." (§ 50.1 counts "Amazon Bedrock" and "Amazon
+    Foundation Models (Amazon Nova and Titan models)" among the AI Services; neither is in § 50.3's list of services
+    whose AI Content AWS may use "to develop and improve"); § 50.12.2: "For certain models identified on the Bedrock
+    abuse detection page, as part of providing the Service, Amazon Bedrock stores Service inputs and outputs for up to
+    30 days (unless otherwise required by law) solely to detect activity that violates our, or third-party model
+    providers’, terms of service or use policies." Prices: not read. No AWS key is in the key store; not called.
 
 ## Spotify Web API (audio features and audio analysis)
 
@@ -883,7 +994,140 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
 - Output: OpenAI chat-completion JSON; `response_format` with a JSON schema was used by the try agent (`trials.md`
   lists the response fields it saw, including `usage.cost`).
 - Price and terms: per-token prices per model in `GET https://ai-gateway.vercel.sh/v1/models` (read by the try
-  agent); Vercel's gateway terms were not read (UNVERIFIED).
+  agent); Vercel's gateway terms were not read (UNVERIFIED). (corrected in gap round 2: the terms were read on
+  2026-11-11 and are quoted in the next bullets.)
+- Terms (added in gap round 2, all read 2026-11-11 from the live pages; copies in
+  `/home/user/gtr/lanes/hosted-apis/raw/gap2-vercel-*`, not committed):
+  - Gateway docs (https://vercel.com/docs/ai-gateway.md): "AI Gateway is available on all plans. Your use of each AI
+    provider is subject to their terms listed on each model's page". The HTML model pages say so per model, e.g.
+    https://vercel.com/ai-gateway/models/mimo-v2.6-flash : "Your use is subject to Xiaomi's Terms & Privacy Policies."
+    and "Using a provider means you agree to their terms, listed under Legal." (the three models' terms are in the
+    next section).
+  - AI Product Terms (https://vercel.com/legal/ai-product-terms.md , "Last Updated March 17, 2026", "Effective Date
+    March 31, 2026"; § 1 names AI Gateway among the "AI Products and Services"; "Customer Content" is defined as
+    "Input(s) and Output(s)"):
+    - § 2: "Vercel grants Customer a non-exclusive, non-transferable, revocable, limited license (without the right
+      to sublicense), solely for the Term, to (a) access and use the AI Products and Services; and (b) use any
+      associated Documentation in connection with authorized uses of the AI Products and Services, in all cases of
+      (a)-(b), solely for Customer's personal or internal business use purposes."
+    - § 6.2: "As between you and Vercel, and to the extent permitted by applicable law, you own Customer Content and
+      Vercel assigns to you Vercel's rights, if any, in the Output." and "If you use the AI Products and Services
+      under a Hobby or Pro plan, your Customer Content forms part of Your Content, as defined in Section 3 of the
+      Terms of Service and is subject to the license granted to Vercel under Section 3."
+    - § 8.1: "AI Gateway enables you to interact with your selected third-party AI providers. Any Customer Content
+      provided to or received from such Non-Vercel Service is subject to the terms and conditions and privacy notices
+      of the applicable third party."
+    - § 8.4, for "an Enterprise subscription to AI Gateway" only: "Vercel represents and warrants that it shall not
+      use AI Gateway Customer Content to train or improve the AI Products and Services."
+  - Terms of Service (https://vercel.com/legal/terms.md , "Last Updated October 19, 2026"), § 3: "In addition, if you
+    are on a Hobby plan or trial Pro plan, you agree that we may use Your Content to train our artificial intelligence
+    (“AI”) and machine learning models, and we may share Your Content with third parties for the purpose of
+    developing and improving their products, including training and improving their AI and machine learning models"
+    and "If you are on a paid Pro plan, Model Training is not enabled by default and you may opt in to Model Training.
+    You may opt-out of Model Training at any time by adjusting your Team account settings or by upgrading to an
+    Enterprise plan."; § 4: "You shall only use the Services under a Hobby plan for your personal or non-commercial
+    use." Which Vercel plan the gateway key's team is on was not checked from this box (UNVERIFIED); the HTTP 403
+    bodies of r0022 and r0023 name the gateway's "Free tier".
+  - Notices and License Information (https://vercel.com/legal/notices-and-license-information.md , "Last Updated
+    February 26, 2026"), § 6: "Non-Vercel Services in the AI Gateway are provided subject to any applicable terms the
+    customer has agreed to with respect to the third-party AI service provider, or the terms below, as applicable:".
+    The list links, for the providers that served or refused this lane's calls: Xiaomi
+    https://platform.xiaomimimo.com/#/docs/terms/user-agreement , ByteDance
+    https://docs.byteplus.com/en/docs/legal/docs-terms-of-service , Baseten
+    https://www.baseten.co/terms-and-conditions/ , Fireworks https://fireworks.ai/terms-of-service , Together AI
+    https://www.together.ai/terms-of-service , Modal https://modal.com/legal/terms , Nebius
+    https://docs.nebius.com/legal/terms-of-use , Google https://policies.google.com/terms/generative-ai . (The
+    Baseten, Fireworks, Together AI, Modal, Nebius and Google pages were not read.)
+  - Data handling (docs, not the contract): https://vercel.com/docs/ai-gateway/security-and-compliance.md
+    (`last_updated: 2026-09-08`): "AI Gateway uses zero data retention by default. It permanently deletes your prompts
+    and responses after requests complete."
+    https://vercel.com/docs/ai-gateway/security-and-compliance/disallow-prompt-training.md (`last_updated:
+    2026-09-10`): "The following providers currently support no training on prompt data on AI Gateway." and "A
+    provider's default policy may not match with the status that AI Gateway has in place due to negotiated
+    agreements."; its table marks "No prompt training" for Baseten, ByteDance, Fireworks, Modal, Nebius and Together
+    AI, among others; Xiaomi is not in the table. The guide https://vercel.com/kb/guide/control-ai-provider-data.md
+    (`last_updated: 2026-10-16`): "Per-request no-training controls add no cost on any plan. ZDR requires Pro or
+    Enterprise." The trial scripts (`scripts/gateway_trial.py`, `gateway_frames_trial.py`,
+    `gateway_video_responses.py`) sent neither `disallowPromptTraining` nor `zeroDataRetention` (only `only` and
+    `order`, when `--only` was given). The model list read 2026-11-11 gives `no_training` / `zdr`: "all" / "none" for
+    `bytedance/seed-2.1-turbo`, "all" / "all" for `meta/muse-spark-open`, "some" / "none" for
+    `xiaomi/mimo-v2.6-flash` (whose model page lists the providers xiaomi, deepinfra, novita, gmicloud, boundless,
+    inference-net and tencent; every MiMo call here was served by `xiaomi`, per `finalProvider`).
+
+## The three models called through the gateway: licenses and provider terms (added in gap round 2)
+
+Read 2026-11-11 (copies in `/home/user/gtr/lanes/hosted-apis/raw/gap2-*`, not committed). Every gateway call in
+`trials.md` ran on the gateway's own provider credentials (`usage.is_byok` is false in all 25 gateway lines of
+`samples/spend.jsonl`), so the provider terms reach these calls through the AI Product Terms § 8.1 quoted above.
+
+- `xiaomi/mimo-v2.6-flash` (all MiMo calls served by provider `xiaomi`):
+  - Xiaomi MiMo Service Agreement, the page the gateway links (https://platform.xiaomimimo.com/#/docs/terms/user-agreement ,
+    a script-rendered page; its footer links https://mimo.mi.com/docs/terms/user-agreement , also script-rendered;
+    the English text was read from that site's script bundle `https://mimo.mi.com/static/1995.8b548d0e0b571f7c.chunk.js`,
+    parsed as data, not run): "Our Service Agreement was updated on July 7, 2026."; § 4.1: "Xiaomi acts as a
+    Processor in data processing activities, and you are the Data Controller. The data you upload, store, process,
+    download, distribute, or otherwise handle through our services constitutes your business data, over which you
+    retain full control."; § 5.1: "The intellectual property rights owned by both parties before using the Service
+    shall remain with each party and will not be transferred as a result of the performance of this Agreement by
+    both parties. For the avoidance of doubt, the ownership and intellectual property rights of the Xiaomi MiMo model
+    belong to Xiaomi, including but not limited to model parameters, algorithms, code, framework structure, etc.";
+    § 3.8.1: "The content generated by this product does not represent the product/service itself or the views of
+    Xiaomi."; § 4.4: "When providing services outside the Chinese Mainland, Xiaomi will store the relevant data on
+    servers located in Europe and Singapore." The word "train" occurs in the English text only in § 4.5 (staff
+    training); no clause on training models with customer inputs was found.
+  - Weights: the gateway tags the model `open-weights`. Hugging Face `XiaomiMiMo/MiMo-V2.6-Flash-RL` (created
+    2026-09-21, commit f657ba2f) and `XiaomiMiMo/MiMo-V2.6-Flash-MOPD` (created 2026-09-27), not gated, model card
+    front matter `license: mit` (https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Flash-RL/raw/main/README.md); neither
+    repository holds a LICENSE file (Hub API file list). Which of these checkpoints the `xiaomi` API serves is not
+    stated on the pages read (UNVERIFIED). Xiaomi's model page (https://mimo.mi.com/models/en-US/mimo-v2.6-flash) lists
+    "$0.14USD / Million tokens" input (cache miss) and "$0.28USD / Million tokens" output, the rates in the gateway's
+    `/v1/models` list (0.00000014 and 0.00000028 per token, with `varies_by_provider` true); the gateway's markdown
+    model page (https://vercel.com/ai-gateway/models/mimo-v2.6-flash.md) lists "$0.112/1M input tokens, $0.224/1M
+    output tokens".
+- `meta/muse-spark-open` (calls served by `baseten` r0024, `togetherai` r0036, r0041, r0082, r0084, `fireworks`
+  r0129; refused by all five providers for MP4, r0304):
+  - Gateway model page (https://vercel.com/ai-gateway/models/muse-spark-open): "Your use is subject to Meta's Terms &
+    Privacy Policies.", linking the Meta Model API Terms of Service (https://dev.meta.ai/legal/terms-of-service ,
+    "Last updated: October 9, 2026"), whose scope is: "These Terms apply when you access or use the application
+    programming interface we make available (“Meta Model API”)". Its Exhibit C (Hosted Platform Access): "Meta does
+    not receive or process your Content, including Inputs or Outputs, in connection with your access to the Meta
+    Materials through a Hosted Platform. Meta does not use such Content to train, develop, evaluate, or improve
+    Meta’s artificial intelligence models, products, or services in connection with that access." The exhibit
+    defines a "Hosted Platform" as "a third-party cloud platform authorized by Meta to host and provide access to the
+    Meta Materials". The main body also says: "Certain Meta Models may also be made available by Meta under open source
+    or open weight terms or other separate terms." and "Conversely, these Terms do not apply to, limit, or terminate
+    any rights you have to use Meta Models outside the Services (e.g., on a self-hosted basis) pursuant to a separate
+    license." Whether the gateway's routes through Baseten, Together AI or Fireworks fall under Exhibit C, or only
+    under the open-weights license below, is not stated on the pages read (UNVERIFIED). The same gateway page lists
+    the five providers' own terms under "Legal" (URLs above).
+  - Weights license: Hugging Face `meta-models/Muse-Spark-Open-816B-A42B` (gated "manual"; card `license: other`,
+    `license_name: muse-model-license`; the files answer HTTP 401 without a token; the license text is the gate
+    prompt in the Hub API answer https://huggingface.co/api/models/meta-models/Muse-Spark-Open-816B-A42B): "MUSE MODEL
+    LICENSE", "Release date: October 15, 2026", "Copyright (c) 2026 Meta Platforms, Inc."; grant: "Permission is
+    hereby granted, free of charge, to any person (the "Licensee") accessing or obtaining a copy of this software,
+    including the model, code, model weights, parameters, configuration files, and associated documentation files (the
+    “Software”), to deal in the Software without restriction"; § 2: "Licensee shall prominently display "Built with
+    Muse Spark Open" in the user interface of each product or service that uses the Software or any Derivatives, or in
+    the accompanying documentation, website, or settings menu."; § 3 requires a separate agreement with Meta for a
+    "Model as a Service" business above "twenty (20) million US dollars" of revenue in twelve months and "does not
+    apply to (a) internal use, research, or any commercial activity that is not Model as a Service"; § 4: "Meta claims
+    no ownership of outputs generated by the Software."; Exhibit A, the usage policy, "Dated: October 15, 2026".
+- `bytedance/seed-2.1-turbo` (both calls served by `bytedance`):
+  - Gateway model page (https://vercel.com/ai-gateway/models/seed-2.1-turbo): "Your use is subject to ByteDance's
+    Terms & Privacy Policies.", linking BytePlus's Terms of Service (https://docs.byteplus.com/en/docs/legal/docs-terms-of-service ,
+    "Last Updated: August 23, 2022"), § 4: "Unless otherwise agreed, you hereby grant to BytePlus and its affiliates a
+    non-exclusive, worldwide, royalty-free, perpetual, irrevocable, sub-licensable, and transferable right and license
+    without any license fee to access and use any data collected from you, or stored or uploaded by you, during your
+    access to or use of the Services, for any purposes relating to our operation and provision of the Services."
+  - BytePlus General Terms for AI Services (https://docs.byteplus.com/en/docs/legal/AI-Services-terms , "Last
+    updated: August 28, 2026"; the body is in the page's embedded `MDContent` field): § 2.1 "As between you and
+    BytePlus, you retain your rights in Input. To the extent permitted by applicable law, as between you and BytePlus,
+    you own the Output generated in response to your Input, and BytePlus does not claim ownership of such Output.";
+    § 3.2 "BytePlus may retain and process data relating to your use of the AI Services as necessary to provide and
+    maintain the AI Services and protect them from fraud, abuse, and security threats"; § 3.3 "Except for feedback
+    that you voluntarily provide for service improvement, or where you otherwise separately consent or agree in
+    writing, BytePlus will not use your Customer Data to train the foundation models underlying the AI Services."
+  - No weights of Seed 2.1 Turbo were looked for; the gateway does not tag it `open-weights`.
 
 ## MusicGPT API, audio to MIDI (added by verify-docs)
 
@@ -893,7 +1137,81 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
   that sonifies the MIDI output."), `save_note_events` (default true, "If true, saves predicted note events as a CSV
   file."), `webhook_url`; "This request is handled asynchronously."; the response carries `success`, `task_id` and
   `conversion_id`. No instrument, tuning or key field is in the request schema. Model behind it, price and terms: not
-  read (UNVERIFIED). Not called by any agent here.
+  read (UNVERIFIED). Not called by any agent here. (corrected in gap round 2: price and terms read 2026-11-11, next
+  bullets; the model behind it is still not named.)
+- Price (https://docs.musicgpt.com/api-documentation/index/pricing.md , read 2026-11-11), row "Audio to MIDI": "$0.005
+  + $0.0037/min" (Pro Plan), "$0.007 + $0.005/min" (Plus Plan), "$0.014 + $0.01/min" (Pay as You Go); "Base Cost:
+  One-time charge per request", "+/min: Additional cost per minute (60s increments)"; "Plans don't give you credits,
+  they lower the cost of each API call." (Arithmetic, not a bill: the 38.7 s S4 clip on Pay as You Go, counted as one
+  started minute, is 0.014 + 0.01 = 0.024 USD.) The Audio to MIDI page
+  (https://docs.musicgpt.com/api-documentation/conversions/audiotomidi.md): "Max input audio length: 8 minutes.";
+  it describes the method only as "AI-driven audio analysis and transcription" and names no model (UNVERIFIED which).
+- Terms: MusicGPT Terms of Service (https://musicgpt.com/terms-of-service , "Effective date: 01 Jan 2025"; no
+  separate API terms appear in the docs index https://docs.musicgpt.com/llms.txt, so whether these govern the API is
+  UNVERIFIED): § 3.1 "Users on paid plans have full commercial rights to their generated content." and "By using the
+  Service, you grant MusicGPT a royalty-free, non-exclusive, and perpetual license to use, showcase, and distribute
+  generated music for improving the Service, marketing, and training purposes."; § 3.2 "You retain ownership of
+  uploaded files but grant us a license to process them as necessary for providing the Service."
+
+## xAI Speech to Text API (added in gap round 2)
+
+- What it is: xAI's transcription endpoint `POST https://api.x.ai/v1/stt`, model `grok-voice-transcribe-2.0`
+  (https://docs.x.ai/developers/model-capabilities/audio/speech-to-text.md , read by the try agent 2026-11-10):
+  multipart form, `file` last; optional `language`, `format`, `diarize`, `keyterm`, `filler_words`, `vad_threshold`,
+  `multichannel`; the response has `text`, `duration`, `words[]` with `text`, `start`, `end`. Called directly with
+  the xAI key (not through Vercel) in r0105 and r0306 (`trials.md`, "xAI speech to text").
+- Price (https://docs.x.ai/developers/pricing.md , read 2026-11-10): "Speech to Text | $0.10 / hr (REST), $0.20 / hr
+  (Streaming)".
+- Which terms govern the API: xAI's docs FAQ (https://docs.x.ai/developers/faq/general.md , read 2026-11-11) sends
+  readers to https://x.ai/legal "for our Enterprise Terms of Service and Data Processing Addendum". The terms pages
+  themselves were not read: https://x.ai/legal , https://x.ai/legal/terms-of-service-enterprise and
+  https://x.ai/legal/terms-of-service answered HTTP 403 to curl on 2026-11-11 with a Cloudflare page ("Sorry, you
+  have been blocked"), and the web-fetch tool got HTTP 403 for the enterprise page; the Internet Archive's index
+  answered HTTP 429 and then reset the connection. The copies of the 403 page were deleted at once because the page
+  printed the box's network address; a re-fetch to keep a copy without it was refused by the box's permission system
+  ("[Bot Check Circumvention]") and not retried (record: `/home/user/gtr/lanes/hosted-apis/raw/gap2-xai-403-note.txt`).
+  So the terms' clauses on output ownership and data use are UNVERIFIED here (steps in `for-aaron.md` section 14).
+  Vercel's Notices and License Information lists "xAI Enterprise Terms of Service"
+  (https://x.ai/legal/terms-of-service-enterprise) for xAI in its Marketplace and https://x.ai/legal/terms-of-service
+  for xAI models in the AI Gateway; neither route was used for these calls.
+- Data handling (docs, not the contract; https://docs.x.ai/developers/faq/security.md , read 2026-11-11; the docs
+  name the company "SpaceXSI"): "SpaceXSI never trains on your API inputs or outputs without your explicit
+  permission." and "By default, all API requests and responses are stored on our servers (encrypted at rest) for 30
+  days for auditing purposes in the event of suspected abuse or misuse. SpaceXSI does not train on this data, and it
+  is automatically deleted after 30 days." The same page: "every API response includes an `x-zero-data-retention`
+  header"; `scripts/xai_stt.py` did not save response headers, so that header's value for r0105 and r0306 is not on
+  record.
+
+## Cesure MCP server (added in gap round 2)
+
+- What it is: the remote MCP server of the Cesure tab editor (the apps-survey lane covers the app: its "Cesure"
+  section). https://cesure.app/assistants (read 2026-11-11): "You add Cesure once, as a custom connector, with this
+  address:" `https://api.cesure.app/mcp`; "No audio. Turning a recording into a tab happens in the app, from a
+  sound." Probed without an account in run r0622 (`trials.md`, Gap round 2): `serverInfo` "cesure" "1.0.0", MCP
+  protocol "2025-06-18", 14 tools.
+- How a program calls it: MCP over Streamable HTTP, JSON-RPC 2.0 by POST (`initialize`, `notifications/initialized`,
+  `tools/list`, `tools/call`). No session header was returned. Without an account the server answered `initialize`
+  and `tools/list` (HTTP 200); eight tools that open, read or change a draft declare `securitySchemes` `noauth` and
+  `oauth2`, `search_catalog` `noauth` only, and the five tools on an account's library `oauth2` only (tool `_meta`, in
+  `samples/cesure-mcp/tools_list.json`). `https://api.cesure.app/.well-known/oauth-protected-resource` answered 404.
+- Input: a score as .cesure text (`create_score`), or .cesure, AlphaTex or an "Open in Cesure" link (`import_score`);
+  notes by `fret.string` or by pitch. The format (https://cesure.app/format , "This is version 2.", read 2026-11-11):
+  track `tuning` "Open strings from string 1 (the highest) to string N (the lowest)"; track `capo` "Capo position in
+  frets. Fret numbers stay relative to the capo; only the sounding pitch moves."
+- Output: a draft id; summaries; .cesure measures from `read_score` ("200 at most a call"); a short link that opens
+  the draft in the web app; no tool returns the whole score in one answer (`instructions` text, quoted in `trials.md`).
+- Constraints a correction loop could use, as the tool descriptions state them (not exercised): `refinger` with
+  `mode` (`auto`, `standard` "lowest frets", `optimized` "fewest hand moves") and `searchCapo` ("lets it choose a
+  capo"); a note written by pitch is placed by Cesure, which "never moves a note written with its string";
+  `transpose` with `notesOffTheNeck` `retune_lowest_string` ("4 semitones at most") or `change_octave`.
+- Terms (https://cesure.app/terms , no date on the page, read 2026-11-11): "The app is designed for personal use."
+  and "If you link an AI assistant such as ChatGPT or Claude to your account, it acts at your request within what
+  you allowed on the linking page — seeing, reading and saving scores — and you can unlink it at any time from the
+  "Me" screen. What that assistant does with your scores falls under its provider's own terms." No clause on drafts
+  made without an account was found on that page.
+- Price: the MCP pages name none; the app's prices are in the apps-survey lane.
+- Whether a draft is in fact created without an account: not tested (no `tools/call` was sent); UNVERIFIED until one
+  `create_score` call.
 
 ## Not covered
 
@@ -919,7 +1237,7 @@ line is only a pointer for a gap-filler.
   https://docs.roboflow.com/deployment/choosing-a-deployment on 2026-11-10): Roboflow's hosted model inference, a
   possible host for the fretboard detectors the video-hands-fretboard lane looks at; page not read.
 - Amazon Nova (https://docs.aws.amazon.com/nova/latest/userguide/what-is-nova.html , answered HTTP 200): whether its
-  models take audio or video input was not read.
+  models take audio or video input was not read. (corrected in gap round 2: read, see "Other multimodal LLM APIs".)
 
 ## Handoff facts
 
@@ -944,6 +1262,8 @@ Inside this lane:
 - Soundslice accepts a YouTube video as a recording (`source` 1, `source_data` "The URL or ID of the YouTube video.") and syncs notation to it by syncpoints (data API docs); Songsterr and Soundslice both state that embedded YouTube players bind the viewer to the YouTube Terms of Service (their terms pages).
 - ElevenLabs stems decode (ffmpeg 6.1.1, 44.1 kHz) 1,105 samples (25.06 ms) after the input mix and 2,225 samples longer (tested: r0064 and `scripts/stem_alignment.py`, `trials.md`); a tool that compares or sums stems against the mix sample by sample has to trim that offset first.
 - ElevenLabs `six_stems_v1` outputs `guitar.mp3` (MP3 192 kb/s, 44.1 kHz, stereo; tested: r0064), which the YourMT3-cpu Space accepted unchanged as its audio input and answered with MIDI inside HTML (tested: r0231, `trials.md` section "Tested handoff"); WAV 44.1 kHz input was also accepted by the YourMT3 and Beat-This Spaces (r0112, r0118).
+- Added in gap round 2: Mureka Music Transcription on fal.ai outputs a ZIP that "can include MusicXML, PDF sheet music, and timestamped lyrics" (https://fal.ai/models/mureka/api/song/transcribe/llms.txt), and Flat imports MusicXML among its "Preferred formats" (https://flat.io/developers/docs/openapi.yaml). Docs; what the ZIP holds is UNVERIFIED until one call.
+- Added in gap round 2: Cesure's MCP tool `import_score` takes "The .cesure text, AlphaTex, or Open in Cesure link, verbatim." (tools/list of r0622), and the apps-survey lane records Tabtify writing "alphaTex (.alphatex)" (its `survey.md`, Tabtify's home page). The MCP tools take no MusicXML, MIDI or Guitar Pro file (the app imports those, per the apps-survey lane). Docs and the tool schema; no `tools/call` was sent.
 
 To neighbouring lanes:
 
@@ -957,7 +1277,8 @@ Output-only facts (no accepting tool verified in this lane; moved here by verify
 
 Constraint inputs (not a handoff; the fact a re-run needs):
 
-- None of the hosted transcription or separation request schemas read here (Klangio, Music.AI module inputs, LALAL.AI, AudioShake, MVSEP, fal-ai/demucs, Fadr, StemSplit, ElevenLabs stem separation, MusicGPT audio-to-MIDI, Replicate's three models) has a tuning, capo, key or tempo field. The nearest are vocabulary choices: Klangio `vocabulary` (`major-minor`, `full`, spec also `root`) and Replicate chord model `chord_vocabulary`. Gemini, the Vercel gateway's models, Qwen-Omni and OpenAI audio models take free-text prompts, the only place such a constraint can be stated to them (their docs pages; the try agent sent capo and key questions this way, r0080 and r0084 in `trials.md`).
+- None of the hosted transcription or separation request schemas read here (Klangio, Music.AI module inputs, LALAL.AI, AudioShake, MVSEP, fal-ai/demucs, Fadr, StemSplit, ElevenLabs stem separation, MusicGPT audio-to-MIDI, Replicate's three models, and, added in gap round 2, Mureka Music Transcription on fal.ai) has a tuning, capo, key or tempo field. The nearest are vocabulary choices: Klangio `vocabulary` (`major-minor`, `full`, spec also `root`) and Replicate chord model `chord_vocabulary`. Gemini, the Vercel gateway's models, Qwen-Omni and OpenAI audio models take free-text prompts, the only place such a constraint can be stated to them (their docs pages; the try agent sent capo and key questions this way, r0080 and r0084 in `trials.md`).
+- Added in gap round 2: Cesure's MCP server, a notation service with no audio input, is the one hosted interface in this lane whose schemas take a capo or a string as a constraint: `refinger` with `searchCapo` ("lets it choose a capo") and `mode` (`standard` "lowest frets", `optimized` "fewest hand moves"); a note written by `fret.string` is kept ("never moves a note written with its string"), a note written by pitch is placed by Cesure; a track's `tuning` and `capo` are fields of the .cesure format (tools/list of r0622 and https://cesure.app/format, `trials.md` Gap round 2). None of these was exercised (no `tools/call` was sent).
 
 ## Verification log (verify-docs-hosted-apis, 2026-11-10)
 
@@ -1049,3 +1370,41 @@ Still UNVERIFIED after this check: Klangio's `json` transcription fields and acc
 price per credit; Soundslice plan prices; which Flat terms govern the REST API; Chordify (403); ChordMini's hosted
 API (402); the Replicate chord model's output fields; whether StemSplit's six-stem mode runs `htdemucs_6s`; MusicGPT
 and Qwen-Omni prices and terms; Vercel gateway terms; OpenAI audio formats, prices and terms; Amazon Nova.
+(corrected in gap round 2: MusicGPT and Qwen-Omni prices and terms, the Vercel gateway terms, OpenAI's audio formats
+and prices, and Amazon Nova's inputs and AWS terms were read on 2026-11-11; see the next section.)
+
+## Gap round 2 (gapfill-hosted-apis, 2026-11-11)
+
+What this round added or corrected in this file, for the five hosted-apis rows of `GAPS.md` (H1 to H5). Every page
+was read live on 2026-11-11 (`date -u +%F`); copies are under `/home/user/gtr/lanes/hosted-apis/raw/gap2-*` (not
+committed). No web search was used for the pages quoted; each was fetched from a known URL, a link on a page already
+read, or a site's `llms.txt`.
+
+- H1, terms of services that were called: Vercel AI Gateway (AI Product Terms, Terms of Service, Notices and License
+  Information, data-handling docs), the three gateway models (new section "The three models called through the
+  gateway": Xiaomi MiMo Service Agreement and the MiMo weights' `license: mit`; the Muse Model License and Meta's Model
+  API Terms; BytePlus's Terms of Service and General Terms for AI Services) and xAI Speech to Text (new section; the
+  docs FAQ quoted; the terms pages answered HTTP 403, so their clauses remain UNVERIFIED, `for-aaron.md` section 14).
+- H3, one fetch each: OpenAI `gpt-audio-1.5` (modalities, prices, input formats "wav" and "mp3"; the per-second token
+  rate and the Services Agreement remain UNVERIFIED, the latter HTTP 403), Qwen-Omni (prices in USD, the audio token
+  formula, Alibaba Cloud's Model Studio terms), MusicGPT audio-to-MIDI (prices, limits, terms; the model behind it is
+  not named), Amazon Nova (input modalities of Nova 1 and Nova 2 models, AWS Service Terms).
+- H4: new section "Mureka Music Transcription on fal.ai" (schema from the OpenAPI document, price, fal's
+  third-party-model clauses); not called (no fal key), `for-aaron.md` section 15.
+- H5: new section "Cesure MCP server", from the read-only probe r0622 (`trials.md`, Gap round 2).
+- Tool list: items 26 and 28 extended, items 29 to 32 added.
+- Quote check (`scripts/gap2/check_quotes.py`, results in `samples/gap2/quotes_check.tsv`): every double-quoted string
+  this round added to `survey.md`, `trials.md` and `for-aaron.md` (joined across line breaks, from `git diff` against
+  the last commit) and every quote field this round added to `tools.json` was searched for, after normalising
+  whitespace, curly quotes and markdown marks, in the saved pages, the saved API answers and the samples (last run at
+  00:40 UTC on the text as it stood then; only this paragraph's figures changed after): 314 strings, 283 found. The 31
+  not found are 8 references to this record's own headings, 1 browser menu label ("Web page, complete"), 2 pieces of
+  a shell example, 1 quote cited from the apps-survey lane's record ("alphaTex (.alphatex)", Tabtify's home page as
+  quoted there), and 19 spans of prose that the check paired between two separate quotes; the quotes inside those
+  spans were checked one by one and found. One found string, "Sorry, you have been blocked", is found only in
+  `raw/gap2-xai-403-note.txt`, the note written from the session's output after the 403 page copies were deleted.
+- Still UNVERIFIED after this round: xAI's and OpenAI's terms texts (HTTP 403 to the box); OpenAI's audio tokens per
+  second; which MiMo checkpoint Xiaomi serves; whether a gateway route counts as a "Hosted Platform" under Meta's
+  Exhibit C; Mureka's own terms and what its ZIP holds; whether Cesure serves `create_score` without an account (the
+  tools declare `noauth`; no call was sent); the Vercel plan of the gateway key's team; Amazon Nova prices and "Nova 2
+  Omni".

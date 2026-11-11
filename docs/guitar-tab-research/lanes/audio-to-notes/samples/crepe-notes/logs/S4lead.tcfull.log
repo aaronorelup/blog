@@ -1,0 +1,6 @@
+S4lead.wav
+/home/user/gtr/lanes/audio-to-notes/out/crepe-notes/tcfull/S4lead.wav
+Onsets file not found at S4lead.onsets.npz
+Running onset detection...
+Tuning offset: 6.000000000000005 cents
+time tcfull S4lead wall 4.38 s user 4.04 s sys 0.45 s maxrss 584632 KiB exit 0

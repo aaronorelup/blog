@@ -1,6 +1,9 @@
 """Native reference for the browser run of htdemucs_6s: demucs-onnx 0.3.4's own code path on a local model file.
 
-usage: python -I ref_demucs_onnx.py <model.onnx> <input.wav> <out dir>
+usage: python -I ref_demucs_onnx.py <model.onnx> <input.wav> <out dir> [disabled]
+
+With the optional 4th argument "disabled" the session is built like _make_session but with
+GraphOptimizationLevel.ORT_DISABLE_ALL (to match the browser run made with graphOptimizationLevel "disabled").
 
 Uses the PyPI package's functions unchanged: demucs_onnx._audio.load_audio (soundfile, float32, stereo),
 demucs_onnx.inference._make_session (ORT_ENABLE_ALL, the given providers) and
@@ -24,8 +27,14 @@ from demucs_onnx.inference import _chunked_separate_single, _make_session
 model_path, wav, out = sys.argv[1], sys.argv[2], sys.argv[3]
 os.makedirs(out, exist_ok=True)
 audio, sr = load_audio(wav, target_sr=44100)
+opt = sys.argv[4] if len(sys.argv) > 4 else "all"
 t0 = time.perf_counter()
-sess = _make_session(model_path, ["CPUExecutionProvider"])
+if opt == "disabled":
+    so = ort.SessionOptions()
+    so.graph_optimization_level = ort.GraphOptimizationLevel.ORT_DISABLE_ALL
+    sess = ort.InferenceSession(model_path, sess_options=so, providers=["CPUExecutionProvider"])
+else:
+    sess = _make_session(model_path, ["CPUExecutionProvider"])
 t_create = time.perf_counter() - t0
 sources = tuple(MODEL_REGISTRY["htdemucs_6s"].sources)
 t1 = time.perf_counter()
@@ -37,7 +46,7 @@ res = {
     "onnxruntime": ort.__version__, "numpy": np.__version__, "providers": sess.get_providers(),
     "inputs": [{"name": i.name, "shape": i.shape, "type": i.type} for i in sess.get_inputs()],
     "outputs": [{"name": o.name, "shape": o.shape, "type": o.type} for o in sess.get_outputs()],
-    "sources": list(sources), "input_shape": list(audio.shape), "native_sr": sr,
+    "graph_optimization": opt, "sources": list(sources), "input_shape": list(audio.shape), "native_sr": sr,
     "session_create_s": round(t_create, 3), "separate_s": round(t_sep, 3),
     "affinity": sorted(os.sched_getaffinity(0)),
 }

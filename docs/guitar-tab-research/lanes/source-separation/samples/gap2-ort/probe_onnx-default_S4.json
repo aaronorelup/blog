@@ -1,0 +1,147 @@
+{
+ "cmd": [
+  "/home/user/gtr/lanes/source-separation/venv-ort/bin/demucs-onnx",
+  "separate",
+  "/home/user/gtr/inputs/S4/S4.wav",
+  "/home/user/gtr/lanes/source-separation/gap2/ort/onnx-default/S4",
+  "--model",
+  "htdemucs_6s",
+  "--small",
+  "--providers",
+  "cpu",
+  "-v"
+ ],
+ "exit_code": 0,
+ "wall_s": 57.76,
+ "interval_s": 0.25,
+ "samples": 227,
+ "probe_affinity": [
+  0,
+  1
+ ],
+ "probe_own_cpu_s": 0.46,
+ "max_threads_at_once": 7,
+ "threads_seen": 8,
+ "cpu_s_by_last_allowed_list": {
+  "0-1": 31.87,
+  "1": 22.74,
+  "2": 21.99,
+  "3": 21.76
+ },
+ "threads": [
+  {
+   "pid": 31721,
+   "tid": 31721,
+   "comm": "demucs-onnx",
+   "allowed_seen": {
+    "0-1": 226
+   },
+   "cpu_seen": {
+    "0": 107,
+    "1": 119
+   },
+   "cpu_s_last": 31.75,
+   "first_seen_s": 0.0,
+   "last_seen_s": 57.51
+  },
+  {
+   "pid": 31721,
+   "tid": 31722,
+   "comm": "demucs-onnx",
+   "allowed_seen": {
+    "0-1": 225
+   },
+   "cpu_seen": {
+    "1": 225
+   },
+   "cpu_s_last": 0.12,
+   "first_seen_s": 0.25,
+   "last_seen_s": 57.51
+  },
+  {
+   "pid": 31721,
+   "tid": 31723,
+   "comm": "demucs-onnx",
+   "allowed_seen": {
+    "0-1": 225
+   },
+   "cpu_seen": {
+    "1": 39,
+    "0": 186
+   },
+   "cpu_s_last": 0.0,
+   "first_seen_s": 0.25,
+   "last_seen_s": 57.51
+  },
+  {
+   "pid": 31721,
+   "tid": 31747,
+   "comm": "demucs-onnx",
+   "allowed_seen": {
+    "1": 219
+   },
+   "cpu_seen": {
+    "1": 219
+   },
+   "cpu_s_last": 22.74,
+   "first_seen_s": 1.01,
+   "last_seen_s": 56.75
+  },
+  {
+   "pid": 31721,
+   "tid": 31748,
+   "comm": "demucs-onnx",
+   "allowed_seen": {
+    "2": 219
+   },
+   "cpu_seen": {
+    "2": 219
+   },
+   "cpu_s_last": 21.99,
+   "first_seen_s": 1.01,
+   "last_seen_s": 56.75
+  },
+  {
+   "pid": 31721,
+   "tid": 31749,
+   "comm": "demucs-onnx",
+   "allowed_seen": {
+    "3": 219
+   },
+   "cpu_seen": {
+    "3": 219
+   },
+   "cpu_s_last": 21.76,
+   "first_seen_s": 1.01,
+   "last_seen_s": 56.75
+  },
+  {
+   "pid": 31721,
+   "tid": 32113,
+   "comm": "demucs-onnx",
+   "allowed_seen": {
+    "0-1": 2
+   },
+   "cpu_seen": {
+    "0": 2
+   },
+   "cpu_s_last": 0.0,
+   "first_seen_s": 9.35,
+   "last_seen_s": 9.6
+  },
+  {
+   "pid": 31721,
+   "tid": 32114,
+   "comm": "demucs-onnx",
+   "allowed_seen": {
+    "0-1": 1
+   },
+   "cpu_seen": {
+    "0": 1
+   },
+   "cpu_s_last": 0.0,
+   "first_seen_s": 9.85,
+   "last_seen_s": 9.85
+  }
+ ]
+}

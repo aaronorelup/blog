@@ -254,6 +254,8 @@ Conventions used in this file:
   `playerReady`, `beatMouseDown` also logged): one `beatMouseDown` event for bar 1, voice 1 (the bass voice), beat 0;
   no `noteMouseDown`. Not investigated further. (Verifier's re-run of r0134, r0368: the same single `beatMouseDown`,
   and the edited `.gp` and alphaTex files byte-identical to r0134's.)
+- (Gap round 2: a string change in the data model, r0624, and alphaTex edited through `@coderline/alphatab-monaco`,
+  r0614; section "Gap round 2".)
 
 ### Output and input format facts (for handoffs)
 
@@ -652,7 +654,7 @@ Conventions used in this file:
 - **Constraint inputs:** `tablature[].tuning` (any tuning, as ABC pitches), `tablature[].capo`, `highestNote`; per-note
   string choice is not in ABC.
 - **Not tried:** abcjs's synth/playback (`ABCJS.synth`). Its editor helper `ABCJS.Editor` was tried, see "Editable
-  tab in the browser" below.
+  tab in the browser" below. (Gap round 2: the `dragging` and `clickListener` options were tried too, r0598.)
 
 ## svguitar 2.10.1 and vexchords 1.2.0 (chord diagrams)
 
@@ -835,7 +837,10 @@ Readers and writers by format, as run here (r = read, w = write):
   `types/index.d.ts` declare the render options `clickListener`, `dragging` and `selectTypes` and a `ClickListenerDrag`
   with a `step` field. They were not tried, so whether a note can be changed by clicking or dragging it in the
   notation or the tab is UNVERIFIED. Re-run r0387 gave a byte-identical edited file and the same single changed
-  number.)
+  number.) (corrected in gap round 2: tried, r0598, section "Gap round 2". A click on a note or a tab number hands the
+  application the note's place in the ABC text, and in `ABCJS.Editor` selects that text in the textarea, where typing
+  changes it; a drag or arrow key moves the drawing and reports a step, and nothing changes until application code
+  rewrites the ABC.)
 - **alphaTab, run (Run 5 above):** the npm package ships no editor UI (the repository's unpublished
   `@coderline/alphatab-ui`, used by the alphatab.net playground, was not run); a mouse click on a rendered note produced a `beatMouseDown`
   event (bar, voice, beat) once the player was ready; changing `Note.fret` in the model and calling `render()`
@@ -858,10 +863,250 @@ Readers and writers by format, as run here (r = read, w = write):
   after; the first changed from 0 to 2 and no other changed; no editor error shown; the console printed the same
   "Running VexTab.Div: 4.0.3-5-g3a5e00d ..." line (`samples/vextab/editor_edit_trial_verifier.json`, screenshot
   `samples/vextab/editor_after_edit_verifier.webp`, where the "2" is on the third tab line and the notation shows A).
-  As with abcjs, the editing surface is the text; clicking on the drawn tab was not tried.
+  As with abcjs, the editing surface is the text; clicking on the drawn tab was not tried. (Gap round 2: a string
+  change typed the same way, r0625.)
 - **Not tried for lack of time:** `@coderline/alphatab-monaco` (alphaTex editing in
   the Monaco editor), tab-editor (calesce, 2017), It's MyTabs (a viewer/player, needs Deno or Docker), Autostrum and
-  Songshed (no license file per the survey), TuxGuitar's desktop GUI, Power Tab Editor (desktop).
+  Songshed (no license file per the survey), TuxGuitar's desktop GUI, Power Tab Editor (desktop). (corrected in gap
+  round 2: `@coderline/alphatab-monaco` 1.9.0 with its language server was installed and run, r0604, r0614, r0618;
+  section "Gap round 2". The others are still not tried.)
+
+## Gap round 2
+
+Agent `gapfill-web-tab-render`, 2026-11-11 (UTC). It closes the two gaps the completeness critic listed for this lane
+(`GAPS.md`, rows W1 and W2): editing on the drawn tab (abcjs's click and drag options, and the alphaTab editor package
+`@coderline/alphatab-monaco`), with a record of how each tool run in this lane lets a user change a string or a fret;
+and HAYA-TAB (survey only, `survey.md` section "HAYA-TAB"). Conventions as at the top of this file: run ids from the
+ledger, eval ids from gtr-eval 0.11.1, test pages served by `scripts/serve.cjs` on 127.0.0.1:8765, the box's
+pre-installed Playwright 1.63.0 with its headless Chromium (`chromium.launch()` with no options in every driver below;
+nothing was installed for the browser). Every run below took a 2-core slot. Free disk before the installs: 7.4 GB
+(`df -h /`).
+
+### abcjs 6.7.2: click, drag and keyboard gestures on the drawn notation and tab (W1)
+
+- **What abcjs says the options do.** The "Selecting and Dragging" page (https://docs.abcjs.net/visual/dragging.html,
+  read 2026-11-11): "turns on dragging. The user will be able to click on an element, (or use the tab key to go
+  through the elements) and, if it is a draggable element, move it visually. When the user has finished moving the
+  element, the click listener is called. The underlying music is not changed to reflect the user's action. The
+  clickListener function should modify the ABC string and rerender if the user has made a change." and "step are the
+  number of visual positions the note was dragged. A negative number means that the note was dragged flatter and
+  positive means it was dragged sharper." The click-listener page (https://docs.abcjs.net/visual/click-listener.html,
+  same date) gives the callback as `function clickListener ( abcelem , tuneNumber , classes , analysis , drag ,
+  mouseEvent )`. In the installed source: `src/write/draw/selectables.js` makes notes and tab numbers clickable when
+  `selectTypes` is not given (comment "by default, only notes and tab numbers can be clicked.") and marks both
+  draggable; `src/write/interactive/selection.js` turns the vertical mouse distance into steps of `spacing.STEP`
+  (30 x 93 / 720 = 3.875 px at scale 1) and gives arrow-key and Enter handlers only to elements whose `selectable`
+  attribute is "true", which needs `selectTypes`; `src/edit/abc_editor.js` replaces the page's clickListener with the
+  Editor's own `highlight()`, which selects the clicked element's ABC text in the textarea (`setSelection` in
+  `abc_editarea.js` also focuses the textarea) and then calls the page's listener.
+- **Pages and driver** (written for this round): `scripts/pages/abcjs_click_drag.html` (`ABCJS.renderAbc` with
+  `dragging: true`, a `clickListener` and the same guitar `tablature` option as the earlier abcjs runs; `mode=listen`
+  only records the listener's arguments; `mode=apply` does what the docs page asks of the application: when
+  `drag.step` is not 0 on a note or tab number, my code moves the note letter in the ABC text between
+  `abcelem.startChar` and `endChar` by -step diatonic steps, accidentals dropped so the key signature decides sharps,
+  and renders again), `scripts/pages/abcjs_editor_click.html` (`ABCJS.Editor` with the tablature option and a
+  recording clickListener; `dragging=1` optional), driver `scripts/abcjs_click_drag.cjs` (mouse moves and clicks at
+  the centre of a note head or tab number in page coordinates; a drag is four mouse-move steps). Input: the S2n ABC
+  at written pitch (`samples/abcjs/S2n.written.abc`), whose melody bar 1 is `G4 G4 d4 d4` (sounding G3 G3 D4 D4),
+  drawn as tab 0, 0 on string 3 and 3, 3 on string 2.
+- **Run:** r0598 (2 cores, 12.63 s wall for five fresh pages in one browser, CPU 1.6 s, peak RSS 141.6 MB, exit 0, no
+  slot wait); result `samples/abcjs/gap2_click_drag.json`. Two unlogged dry runs of the same driver before it found
+  two faults in my code, both fixed before r0598: the `startChar`..`endChar` text abcjs gives for the first note
+  includes the spaces around it (" G4 "), which my first note-moving code did not accept; and in the Editor page the
+  focused textarea scrolled the page, so the second click landed off the drawing (the driver now scrolls to the top
+  before each click).
+
+  | trial | gesture (melody, bar 1) | what the clickListener received | what changed |
+  |---|---|---|---|
+  | A listen | click the head of note 1 | `el_type` "note", text " G4 " (characters 125 to 129), `pitches` [{pitch 4, name "G"}], analysis line 0, measure 1, voice 0, `drag.step` 0 | nothing |
+  | A listen | click the tab number of note 1 | `el_type` "tabNumber", the same characters 125 to 129, no `pitches`, `drag.step` 0 | nothing |
+  | A listen | drag the head of note 1 up 3.875 px | "note", `drag.step` -1 | the head drawn 3.875 px higher (`transform="translate(0,-3.875)"`); the ABC text and all 90 tab numbers unchanged |
+  | A listen | drag the head of note 2 down 3.875 px | "note", text "G4 ", `drag.step` +1 | drawn 3.875 px lower; nothing else |
+  | A listen | drag the tab number of note 3 down by one tab-line spacing (11.63 px) | "tabNumber", text "d4 ", `drag.step` +3 | the "3" drawn 11.625 px lower, on the next line down; the ABC text and the tab numbers unchanged |
+  | B apply | drag the head of note 1 up 3.875 px | step -1; the page rewrote " G4 " as " A4 " | redrawn: note 1 from 0 on string 3 to 2 on string 3 (A3) |
+  | B apply | drag the head of note 2 down 3.875 px | step +1; "G4 " -> "F4 " (F sharp from `K:G`) | note 2 from 0 on string 3 to 4 on string 4 (F#3) |
+  | B apply | drag the tab number of note 3 down one tab line | step +3; "d4 " -> "A4 " | note 3 from 3 on string 2 to 2 on string 3 (A3) |
+  | C keyboard, `selectTypes: ['note']` | click the head of note 1, press ArrowUp, press Enter | click: step 0; Enter: step -1 (event "keyup"); " G4 " -> " A4 " | ArrowUp drew the head 3.875 px higher; after Enter, note 1 from 0 to 2 on string 3. Tab-number groups had no `selectable` attribute in this mode |
+  | D Editor | click the tab number of note 1, type " A4 " | the Editor selected " G4 " (125 to 129) in the textarea and focused it | redrawn: note 1 from 0 to 2 on string 3 |
+  | D Editor | click the tab number of note 2, type "F4 " | the Editor selected "G4 " (129 to 132) | note 2 from 0 on string 3 to 4 on string 4 |
+  | E Editor, `dragging: true` | drag the head of note 1 up 3.875 px | the page's listener: "note", step -1; the Editor selected " G4 " | the textarea text and the tab numbers unchanged |
+
+  Tab numbers were read as in `abcjs_tab_readout.cjs` (each `text.abcjs-tab-number` assigned to the nearest of its
+  staff's six lines). No tab number other than those listed changed: after B, 3 of the 90; after D, 2 of the 90.
+  gtr-eval `tab --ignore-time --chord-window 0.01` against the S2n truth: B 87/90 matched by pitch (the three moved
+  notes have new pitches) and 87/87 on the truth's string and fret (e1763); D 88/90 and 88/88 (e1764). Edited ABC:
+  `samples/abcjs/gap2_B_apply.edited.abc` (bar 1 `A4 F4 A4 d4`) and `gap2_D_editor.edited.abc` (bar 1 `A4 F4 d4 d4`);
+  read-backs `gap2_B_apply.tab.json`, `gap2_D_editor.tab.json`; screenshots `gap2_A_listen_after_drags.webp` (the three
+  moved elements), `gap2_B_apply_after_drags.webp`, `gap2_D_editor_after_edits.webp`.
+- **Drag direction against the docs:** dragging up gave a negative step and dragging down a positive one, in the
+  notation and in the tab; the docs page says "A negative number means that the note was dragged flatter". The page's
+  apply code moved the pitch up for a negative step.
+- **Two notes on one string.** After the F#3 edit (B and D), abcjs put the melody's "4" on string 4 at the same x
+  position (beat 2 of bar 1) as the bass voice's open D, "0" on string 4: two simultaneous notes on one string, drawn
+  on top of each other in `gap2_B_apply_after_drags.webp`. abcjs chose string 4 for the new pitch itself.
+- **In short:** a click on a note or a tab number gives the application the note's place in the ABC text; a drag or an
+  arrow key gives a step count in staff positions (a tab number is dragged in the same 3.875 px steps, not by
+  strings); abcjs itself changes neither the ABC nor the tab. A change appears only when application code rewrites
+  the ABC and renders again (here the page's `mode=apply`), or when the user types in the `ABCJS.Editor` textarea. The
+  string follows from the pitch: no gesture or option tried here selects a string.
+- **Input and output format facts:** in: ABC text and the `tablature` option; out: the redrawn SVG, the listener's
+  `abcelem` (with `startChar`, `endChar`, `el_type`, and `pitches` for notes), and the ABC text the application keeps.
+
+### @coderline/alphatab-monaco 1.9.0: alphaTex edited in Monaco, alphaTab redrawing (W1)
+
+- **What it is, where from.** npm `@coderline/alphatab-monaco` 1.9.0 (published 2026-10-31T21:22:43Z; npm description "A
+  Monaco editor integration for alphaTab providing coding assistance for alphaTex."), from the alphaTab monorepo's
+  `packages/monaco`. Its README (in the package, and at
+  https://raw.githubusercontent.com/CoderLine/alphaTab/develop/packages/monaco/README.md, read 2026-11-11): "This is a
+  Monaco Editor integration for writing alphaTex, providing coding assistance to code editors." with the features
+  "Setup Monaco for the use with TextMate Grammars", "Setup Monaco with the basic alphaTex language (grammar and
+  language configuration)." and "Setup Monaco to integrate with a alphaTab Language server running in a web worker.",
+  and the warning "This package is still in a very experimental stage." It exports `addTextMateGrammarSupport`,
+  `registerAlphaTexGrammar` and `registerGrammar` (main entry), `basicEditorLspIntegration` (`./lsp`) and a worker
+  entry (`./worker`) that starts the language server of `@coderline/alphatab-language-server` 1.9.0. Nothing in it
+  draws a score or connects the editor to alphaTab: redrawing after an edit is application code. License:
+  `"license": "MPL-2.0"`; the package's `LICENSE` begins "alphaTab Monaco is licensed under MPL-2.0." (survey,
+  alphaTab section).
+- **Install** (2026-11-11, in its own folder so the earlier install stays as it was):
+  `cd /home/user/gtr/lanes/web-tab-render/web-monaco && npm install --no-audit --no-fund --ignore-scripts
+  @coderline/alphatab-monaco@1.9.0`, "added 14 packages in 9s" (none of the 14 declares an install script in its
+  registry entry, so `--ignore-scripts` skipped nothing). 125 MB of `node_modules`: `monaco-editor` 0.57.0 105 MB,
+  `@coderline` (alphatab 1.9.0, alphatab-monaco, alphatab-language-server) 15 MB, the rest under 5 MB; the tree is in
+  `samples/alphatab-monaco/npm-ls-monaco.txt` (monaco-editor 0.57.0 with dompurify 3.4.15 and marked 14.0.0,
+  vscode-textmate 9.3.2, vscode-oniguruma 2.0.1, vscode-languageserver 11.0.0, vscode-languageserver-protocol 3.18.5,
+  vscode-jsonrpc 10.0.0, vscode-languageserver-types 3.18.5, vscode-languageserver-textdocument 1.0.16). The package's
+  `dist/*.mjs` import CommonJS packages by bare name (`vscode-languageserver-protocol/browser` and others), which a
+  browser cannot load without a bundler, so `npm install --no-audit --no-fund --no-save esbuild@0.25.12` (the esbuild
+  version this lane used for vexchords; "added 2 packages in 1s") went into the same folder.
+- **Build:** `scripts/build_alphatab_monaco.sh` (entry `scripts/alphatab_monaco_entry.mjs`), r0604 (2 cores, 1.25 s
+  wall, CPU 1.7 s, peak RSS 384.6 MB, slot wait 15.6 s, exit 0, no esbuild warnings) wrote to
+  `/home/user/gtr/lanes/web-tab-render/web/bundles/alphatab-monaco/`: `editor.js` 6,287,979 bytes and `editor.css`
+  175,371 bytes (Monaco and the package; Monaco's ESM build imports 135 CSS files), `codicon-LTRFOK3N.ttf` 153,228
+  bytes, `editor.worker.js` 307,296 bytes (Monaco's own worker) and `alphatex-lsp.worker.js` 1,599,875 bytes (the
+  language server with alphaTab inside).
+- **Page:** `scripts/pages/alphatab_monaco.html`, wired the way the alphatab.net playground's source wires the same
+  package (`packages/ui/src/editor/monaco-env.ts`, `AlphaTexEditor.tsx` and `use-score-document.ts` at commit
+  ec751a23, read 2026-11-11): `onig.wasm` from vscode-oniguruma, `registerAlphaTexGrammar(addTextMateGrammarSupport(
+  wasm))`, a Monaco model in language `alphatex`, `basicEditorLspIntegration(editor, worker, {languageId: 'alphatex',
+  diagnosticsDelay: 150, completionRange})` (the playground's `DIAGNOSTICS_DELAY_MS = 150` and its `typedTokenRange`),
+  and under the editor alphaTab 1.9.0 (the lane's UMD build) drawing the editor's text with `api.tex(text)` 250 ms
+  after the last change (the playground's `TEX_RENDER_DELAY_MS = 250`). The editor is 1,000 px tall, so all 52 lines
+  of the input are on screen without scrolling.
+- **Run:** driver `scripts/alphatab_monaco_edit.cjs`, r0614 (2 cores, 12.84 s wall, CPU 1.1 s, peak RSS 144.8 MB, slot
+  wait 64.1 s, exit 0). Input: the S2n truth alphaTex (`samples/alphatab/S2n.truth.atex`, 864 bytes; melody bar 1 on
+  line 11, `0.3.4 0.3.4 3.2.4 3.2.4 |`; bass bar 1 on line 25, `3.6.4 0.4.4 3.6.4 0.4.4 |`; notes are
+  fret.string.duration with string 1 = highest). In the page: grammar registered 84.6 ms after the page script
+  started, language server initialised in 327.6 ms, first score drawn at 656.0 ms; no diagnostics on the unedited
+  text. Every edit was made with the mouse and the keyboard (Playwright `mouse.dblclick` at the screen position of a
+  character, `keyboard.type` and `keyboard.press`); the page only reported positions and state. A double-click on a
+  digit selected that digit alone.
+
+  | step | gesture | line after | what alphaTab drew (string counted from the top, fret, sounding MIDI pitch) | diagnostics in the editor |
+  |---|---|---|---|---|
+  | 1 fret | double-click the "0" at line 11 column 1, type "2" | `2.3.4 0.3.4 3.2.4 3.2.4 \|` | note 1: string 3, fret 2, pitch 57 (was string 3, fret 0, 55) | none |
+  | 2 string | double-click the "0" at column 7, type "5" | `2.3.4 5.3.4 3.2.4 3.2.4 \|` | note 2: string 3, fret 5, pitch 60 (an intermediate render) | none |
+  | | double-click the "3" at column 9, type "4" | `2.3.4 5.4.4 3.2.4 3.2.4 \|` | note 2: string 4, fret 5, pitch 55 (the same G3, on the D string) | none |
+  | 3 string 7 | double-click the "6" at line 25 column 3, type "7" | `3.7.4 0.4.4 3.6.4 0.4.4 \|` | not redrawn: alphaTab's error event "There are errors in the parsed alphaTex, check the diagnostics for details" (console: "Error AT208(25,3)->(25,4): Note string is out of range. Available range: 1-6"); the score of step 2 stayed on screen and in `api.score` | one marker from the language server: severity 8 (error), code "AT208", source "alphaTab", "Note string is out of range. Available range: 1-6", line 25, columns 3 to 4 (a red underline, `samples/alphatab-monaco/S2n.monaco_string7.webp`) |
+  | | press Control+Z | `3.6.4 0.4.4 3.6.4 0.4.4 \|` | redrawn | none |
+  | 4 capo | click after the end of line 6 (`\tuning (E4 B3 G3 D3 A2 E2)`), End, Enter, type "\ca" | new line 7 `\ca` | while "\ca" stood in the text the 250 ms redraw ran: alphaTab reported "Error AT204(7,1)->(7,4): Unrecognized metadata 'ca'." and kept the previous score | the suggestion list showed 12 rows, the first "\capo, Set the capo fret, Function" |
+  | | Escape, type "po 2" | `\capo 2` | capo 2; notes 1 and 2 now pitch 59 and 57 (frets and strings unchanged, frets counted from the capo) | none |
+
+- **Export and read-back.** After step 2 the page exported Guitar Pro 7 (`Gp7Exporter`, 4,691 bytes) and alphaTex
+  (`AlphaTexExporter`, 2,072 characters); the editor's own text (864 bytes) differs from the input only on line 11.
+  After step 4: `.gp` 4,700 bytes, alphaTex 2,084 characters, editor text 872 bytes (one line added). Read back under
+  Node with `scripts/alphatab_node_model.cjs`, r0618 (2 cores, 0.77 s wall for the three files, slot wait 36.8 s,
+  exit 0):
+
+  | file | read back (melody bar 1, notes 1 and 2) | gtr-eval `tab` (onsets within 50 ms) |
+  |---|---|---|
+  | `.gp` after step 2 | string 3 fret 2 pitch 57 at 2.142857 s; string 4 fret 5 pitch 55 at 2.678571 s | against S2n: 89/90 matched (the A3 no longer matches the truth's G3), 88/89 on the truth's string and fret, string difference +1 for one note (e1780) |
+  | editor text after step 2 (alphaTex) | the same | the same numbers (e1782) |
+  | `.gp` after step 4 | capo 2, tuning [40, 45, 50, 55, 59, 64]; frets and strings as above | against S5capo2 (the same tab with a capo on fret 2): 89/90 matched, 88/89, capo 2 stated in the file and equal to the truth's (e1784) |
+
+  Files in `samples/alphatab-monaco/`: both `.gp`, both editor texts, the alphaTex export of step 2, the two read-backs
+  (`*.gp.est.json`), `alphatab_monaco_edit.json` (every state above) and three screenshots.
+- **Two notes on one string, here too.** After step 2 the melody's G3 (fret 5 on string 4) and the bass voice's open D3
+  (string 4) start together at 2.678571 s. The language server reported nothing, alphaTab drew the "5" over the bass's
+  grey "0" on the same line (`S2n.monaco_edited.webp`), and the `.gp` export kept both notes on string 4.
+- **Input and output format facts:** in: alphaTex text (fret.string.duration; `\capo`, `\tuning` and other metadata
+  lines); out: what the application exports from alphaTab (here `.gp` and alphaTex); the editor's text is itself
+  alphaTex.
+- **Constraints accepted through the editor:** whatever alphaTex alphaTab accepts; typed here: a fret, a string and
+  `\capo 2`. A string outside 1 to 6 was refused with AT208.
+- **Failures:** none in r0614. Two unlogged dry runs fixed my page and driver: a call to Monaco's `revealPosition`
+  before reading a character's screen position shifted the scroll position, so a click landed on line 3 (removed);
+  and the wait after the string-7 edit ran into its 30 s timeout, because no new render comes when the alphaTex does
+  not parse (the driver now also stops on alphaTab's error event).
+
+### Changing a string or a fret: what each tool run in this lane offers
+
+For every tool that ran in this lane: can a user change a note's string or fret (a) through a built-in editing
+interface, (b) only by changing the data and drawing or converting again, or (c) not at all. The run ids are the runs
+that show it; those of this round are r0598, r0614, r0624, r0625 and r0626. Where the cell says "no
+change-and-redraw run", the run shows that the positions are taken from the data given, and no run changed one.
+
+| tool | fret | string | how, and the runs that show it |
+|---|---|---|---|
+| `@coderline/alphatab-monaco` 1.9.0 with alphaTab 1.9.0 | (a) | (a) | typed in the alphaTex text in Monaco, with completion and error markers from the language server; the redraw after an edit is application code (this page; the playground's source does the same) (r0614) |
+| alphaTab 1.9.0 (`@coderline/alphatab`) | (b) | (b) | `Note.fret` (r0132), and `Note.string` with `Note.fret` (r0624), set in the data model, then `api.render()`; no editing UI in the package; a mouse click gave `beatMouseDown` only (r0134) |
+| abcjs 6.7.2 | (a) through text; (b) through drag | (c) | text: the `ABCJS.Editor` textarea, typed after clicking the note or its tab number (r0312, r0598 D); drag and arrow keys: abcjs reports a step and changes nothing, the application rewrites the ABC (r0598 A to C); ABC has no string, abcjs picks it from the pitch (r0598: F#3 put on string 4) |
+| VexTab 4.0.5 | (a) through text | (a) through text | editor-mode textarea: fret (r0407), string (r0625) |
+| VexFlow 5.0.0 | (b) | (b) | the program gives every `TabNote` position (r0110); no change-and-redraw run |
+| OpenSheetMusicDisplay 2.3.0 | (b) | (b) | draws the `<technical><string>`/`<fret>` of the MusicXML it is given (r0158); no editing API used; no change-and-redraw run |
+| Verovio 6.4.1 | (b) | (b) | toolkit `edit()` with `set` on `tab.fret` and `tab.course` changed the MEI and the drawn fret text (r0626, e1827); or the input MEI or MusicXML (r0165); no UI |
+| MuseScore 3.2.3, command line | (b) | (b) | the positions of a TAB MusicXML input were kept on output for S2n (r0179, e0367) and changed for the capo file (r0180, e0368); its desktop editor was not run (for-aaron.md item 1) |
+| webmscore 1.2.1 | (c) | (c) | no editing in the package (survey's tool list: "Edits" no); a TAB MusicXML input came out with 0/90 of its positions kept (r0291, e1009) |
+| LilyPond 2.24.3 | (b) | (b) | string numbers written in the `.ly` text (r0211, e0412); without them LilyPond chooses (r0197) |
+| TuxGuitar 1.5.6, format plugins headless | (b) | (b) | the positions of the input file kept by its readers and writers (r0221); no change-and-rewrite run; its desktop editor was not run (for-aaron.md item 5) |
+| PyGuitarPro 0.11 | (b) | (b) | string 3 fret 0 -> string 4 fret 5 in the data model, written as GP5 (r0236) |
+| music21 10.5.2 | (b) | (b) | `StringIndication` and `FretIndication` set by the program (r0153); no change-and-rewrite run |
+| guitarpro-parser 2.0.0 | (c) | (c) | reads only: no writer, no drawing (r0294) |
+| svguitar 2.10.1, vexchords 1.2.0 | (b) | (b) | chord-box dots given as [string, fret] by the program (r0253, r0259); no change-and-redraw run |
+| Tonal 6.5.1 | (c) | (c) | no string or fret in what it computes (r0251) |
+| ChordSheetJS 18.0.0 | (c) | (c) | chord sheets: a `{capo}` directive and `transpose()`, no string or fret (r0251) |
+
+### The three smaller runs behind that table
+
+- **alphaTab 1.9.0, a string change in the data model:** `scripts/alphatab_model_string_edit.cjs` on `S2n.gp5` in
+  `pages/alphatab.html`, r0624 (2 cores, 1.10 s wall, CPU 0.8 s, peak RSS 138.8 MB, exit 0): melody bar 1 note 2,
+  `Note.string` 4 -> 3 and `Note.fret` 0 -> 5 (alphaTab counts strings from the lowest, so string 3 -> 4 counted from
+  the top), then `api.render()`; `realValue` stayed 55; GP7 export 4,981 bytes
+  (`samples/alphatab/gap2_S2n.string_edit.edited.gp`, `gap2_S2n.string_edit.json`, `.webp`). Read back under Node
+  (r0627, 2 cores, 0.27 s wall together with the Verovio file below, exit 0): 90/90 matched, 89/90 on the truth's
+  string and fret, string difference +1 for one note (e1826).
+- **VexTab 4.0.5 editor mode, a string change:** `scripts/vextab_editor_string_edit.cjs` on the verifier's page
+  `pages/vextab_editor.html`, r0625 (2 cores, 2.24 s wall, CPU 0.8 s, peak RSS 131.1 MB, exit 0): the second `:q 0/3`
+  selected in the textarea (with `setSelectionRange`, as r0407 did) and `:q 5/4` typed with the keyboard; after the
+  redraw, 90 fret numbers as before, one changed: "0" on string 3 -> "5" on string 4 (each number assigned to the
+  nearest of its stave's six lines; every number 4.5 px from its line); no editor error text
+  (`samples/vextab/gap2_editor_string_edit.json`, `.webp`).
+- **Verovio 6.4.1, `edit()` on MEI tablature:** the package's typings (`dist/types/verovio-toolkit.d.ts`) declare
+  `edit(editorAction: EditorAction): boolean;` with the comment "Edit the MEI data.", and `EditorTypes.d.ts` lists the
+  actions (among them `set` with `elementId`, `attribute` and `value`, `drag`, `undo`, `redo`).
+  `scripts/verovio_edit_tab.cjs` on `samples/verovio/S2n.truth.mei`, r0626 (2 cores, 0.54 s wall, CPU 0.8 s, peak
+  RSS 195.0 MB, exit 0): `set` note 1 `tab.fret` "2", note 2 `tab.course` "4", note 2 `tab.fret` "5" each returned
+  true, and after each `getMEI()` held the new value; the fret text drawn by `renderToSVG(1)` became "2" for note 1,
+  stayed "0" for note 2 after the course change and became "5" after its fret change (which line the note was drawn
+  on was not measured); `editStatus()` gave canUndo true. One `undo` then restored all three values (canUndo false,
+  canRedo true). The edited MEI (`samples/verovio/gap2_S2n_edit.edited.mei`), read with `scripts/mei_tab_to_json.py`
+  (r0627): 89/90 matched, 88/89 on the truth's string and fret, string difference +1 for one note (e1827).
+
+### HAYA-TAB (W2)
+
+Not run here. It is a desktop program (Go with Wails v3 and a Vue 3 frontend) offered as builds on GitHub Releases,
+which this box cannot list (github.com answers 403 from here); survey only (`survey.md`, section "HAYA-TAB"). Its source
+at commit eb0466a (2026-07-31) uses alphaTab as the viewer (lockfile: 1.8.1); no file in `frontend/src` calls an
+alphaTab exporter or sets a note's string or fret; its edit dialog edits library metadata (title, artist, album, type,
+tag, country, language). Steps for Aaron: for-aaron.md item 8.
+
+### Files of this round
+
+Scripts: `scripts/abcjs_click_drag.cjs`, `scripts/pages/abcjs_click_drag.html`, `scripts/pages/abcjs_editor_click.html`,
+`scripts/alphatab_monaco_entry.mjs`, `scripts/build_alphatab_monaco.sh`, `scripts/pages/alphatab_monaco.html`,
+`scripts/alphatab_monaco_edit.cjs`, `scripts/alphatab_model_string_edit.cjs`, `scripts/vextab_editor_string_edit.cjs`,
+`scripts/verovio_edit_tab.cjs`. Full outputs (PNG screenshots, logs): `/home/user/gtr/lanes/web-tab-render/out/`
+`abcjs-click-drag/`, `alphatab-monaco/`, `alphatab-edit/`, `vextab/`, `verovio/`. No audio or video was made in this
+round.
 
 ## Not run here
 
@@ -888,6 +1133,11 @@ Readers and writers by format, as run here (r = read, w = write):
   react-guitar, fretboard.js, chords-db / react-chords, jTab, abc2svg, `@coderline/alphatab-monaco` and the alphaTex
   language server, ApolloTab, score-parser, the `guitarpro` Rust crates, @musicbird/gpx-parser, It's MyTabs,
   tab-editor (calesce), Guitar (1j01), tuitar, the ChordPro reference program (Perl), Verovio's Python and C++ builds.
+  (corrected in gap round 2: `@coderline/alphatab-monaco` and the alphaTex language server were run, r0614; the rest
+  of this list stands.)
+- **HAYA-TAB** (desktop tab library with an alphaTab viewer; added in gap round 2): not run. A Wails v3 desktop program
+  whose builds are on GitHub Releases, which this box cannot list (github.com answers 403); facts from its source are
+  in "Gap round 2" and in the survey. for-aaron.md item 8.
 - **Video inputs (R3a, R3b, R3c):** not used; this lane renders and converts tab files, it does not read audio or
   video.
 
@@ -900,7 +1150,8 @@ Readers and writers by format, as run here (r = read, w = write):
 | `/home/user/gtr/lanes/web-tab-render/out/alphatab-transpose/S2n.changeTrackTranspositionPitch.wav` | 1,413,164 bytes | 4.005 s | same, after `changeTrackTranspositionPitch(tracks, 2)`; measured pitch unchanged (r0328) |
 | `/home/user/gtr/lanes/web-tab-render/out/alphatab-transpose/S2n.exportOption.wav` | 1,413,164 bytes | 4.005 s | same, exported with `trackTranspositionPitches` {0: 2}: two semitones up (r0328) |
 
-No other audio or video was produced by this lane (the MIDI files are listed in the sections above). Screenshots are WebP under `samples/` (all under 300 KB; the full
+No other audio or video was produced by this lane (the MIDI files are listed in the sections above; gap round 2 made
+none). Screenshots are WebP under `samples/` (all under 300 KB; the full
 PNGs are in `/home/user/gtr/lanes/web-tab-render/out/`).
 
 The verifier's re-runs wrote more audio, also outside git: `/home/user/gtr/lanes/web-tab-render/verify-trials/rerun/alphatab-player-nolock/S2n_plain.export.wav`
@@ -979,6 +1230,8 @@ and re-runs. Every correction above is marked "verifier" in place. Scripts and t
   a slot is not settled. The unpinned re-run r0406 is reported above.
 - Whether alphaTab's live sound followed `playbackSpeed` 2.0 and `changeTrackTranspositionPitch` (no audio device).
 - Whether abcjs's `dragging`/`clickListener` options can change a note from the notation or the tab (not tried).
+  (corrected in gap round 2: settled by r0598. They change nothing by themselves: a drag reports a step to the
+  clickListener and the application has to rewrite the ABC; e1763, e1764.)
 - The muzart permission refusal (no saved log) and the trial agent's disk readings of 9.5 to 5.3 GB.
 - The 189 MB `node_modules` size after the first npm install (overwritten by later installs).
 - The live alphatab.net playground was not opened; for-aaron.md item 7 rests on the repository source at commit

@@ -55,10 +55,16 @@ What ran here (sections below, in this order), with the runs that hold the timin
 | BeatNet | 1.1.3 | beats, downbeats (offline DBN, online particle filter) | r0335 install, r0361 (`--nolock`, 1 thread) |
 | Beat This! | beat-this 1.1.0 | beats, downbeats (final0, small0) | r0397 (`--nolock`, 1 thread) |
 | lv-chordia | 1.1.0 | chords (large vocabulary) | r0398 (`--nolock`, 1 thread) |
+| All-In-One (gap round 1) | allin1 1.1.0, NATTEN 0.17.3 built from PyPI | beats, downbeats, tempo, song sections (after a Demucs separation) | r0512 r0518 builds, r0521 r0563 r0576 (2 cores) |
+| tempo-cnn (gap round 1) | tempocnn 0.0.8, tensorflow 2.17.0 | global tempo (8 models), meter | r0584 (2 cores) |
+| S-KEY via ONNX (gap round 1) | `aaatmy/skey-onnx` c04b6a2b, onnxruntime 1.31.1 | global key | r0588 (2 cores) |
+| autochord, CREMA, lv-chordia on S5capo2 (gap round 1) | as above, venvs rebuilt from the freezes | chords | r0605 (2 cores) |
 
 Not run here, with reasons: BTC, madmom from GitHub, libKeyFinder, S-KEY, All-In-One, tempo-cnn, Omnizart, Beat
 Transformer, Harmony Transformer, ACR_seq2seq, ChordMini, QM Vamp plugins, the Hulme et al. tuning classifier, BEAST,
-and the browser libraries (section "Not run here"; steps for Aaron in `for-aaron.md`). The last four tools in the table
+and the browser libraries (section "Not run here"; steps for Aaron in `for-aaron.md`). (corrected in gap round 1:
+All-In-One, tempo-cnn and S-KEY, the last through its ONNX export, ran in "Gap round 1"; libKeyFinder, the QM Vamp
+plugins and Omnizart were tried again there and still did not run.) The last four tools in the first-round table
 ran with `--nolock` on one thread because both CPU slots were held by other lanes' jobs: two video-hands-fretboard jobs
 whose commands started at 22:01:23 and 22:01:24 UTC after waiting in the slot queue since 21:12 and 21:31 UTC (start times
 of the jobs' child processes, read with `ps` by the verifier at about 22:27 UTC, when `/proc/locks` showed the two jobs
@@ -69,7 +75,10 @@ single-thread times under load, not 2-core slot times.
 Virtual environments: all of this lane's venvs were deleted at the end of its work to free disk space, as the
 orchestrator's disk notice asked; each tool's `uv pip freeze` is kept in `samples/<tool>/`, and the install commands
 in each section recreate them (the wheels stay in the shared uv cache). Model files are kept in
-`/home/user/gtr/lanes/chords-beats-key/models/` (TempoCNN, DeepRhythm, autochord).
+`/home/user/gtr/lanes/chords-beats-key/models/` (TempoCNN, DeepRhythm, autochord). (Gap round 1: by 2026-11-11 the
+shared cache no longer held tensorflow-cpu 2.12.1 or jax 0.4.30, so venv-tf had to download tensorflow-cpu again; the
+gap round's own venvs, its TensorFlow 2.17.0, 2.12.1 and 2.5.0 cache entries, torch 2.5.1 and its downloaded model
+files were deleted after use.)
 
 Inputs: every audio tool was given the clips' 44.1 kHz 16-bit WAV files by path (stereo for the S, R2 and R3 clips, mono
 for R1), including R2full (228.5 s); no tool rejected a file. Each tool's own loading and resampling is named in its
@@ -806,7 +815,8 @@ so they are also in `out/scores/scores.jsonl` and `samples/scores/`), scripts in
 `samples/<tool>/`, full outputs in `/home/user/gtr/lanes/chords-beats-key/out/<tool>/<clip>/`. Each tool's venv and the
 weights it downloaded were deleted when the tool was done; its `uv pip freeze` is in `samples/<tool>/`. The shared disk
 had 9.5 GB free at the start; the orchestrator's DISK LOW notice (below 9,000 MB free) printed from about 23:32 UTC on,
-with 6.3 to 9.0 GB free while this round ran.
+with 5.3 to 9.2 GB free while this round ran. This section, and every note marked "gap round 1" elsewhere in this file,
+was written after the verification log at the end and has not been checked by a separate agent.
 
 ### All-In-One 1.1.0 (PyPI `allin1`): beats, downbeats, tempo and song sections, after a Demucs separation
 
@@ -819,8 +829,8 @@ with 6.3 to 9.0 GB free while this round ran.
   1. `uv pip install "numpy==1.23.5" "scipy<1.11" mido "cython<3" "setuptools<81" wheel soundfile cmake ninja
      "torch==2.5.1" "torchaudio==2.5.1"` (torch 2.5.1+cpu, torchaudio 2.5.1+cpu, scipy 1.10.1, Cython 0.29.37,
      cmake 4.4.4).
-  2. `uv pip install --no-build-isolation madmom==0.16.1` (the PyPI sdist; uv reused the wheel it had built in this lane's
-     r0047, same Python and numpy).
+  2. `uv pip install --no-build-isolation madmom==0.16.1` (the PyPI sdist; uv installed a wheel it had already built and
+     cached for Python 3.9, in 0.1 s with no build in the log; this lane built madmom 0.16.1 on Python 3.9 in r0047).
   3. NATTEN. The README's link (the NATTEN website) failed TLS on 2026-11-10 (expired certificate), and the CPU wheels on
      NATTEN's current index are all version 0.17.5, which no longer has the four functions allin1 imports (survey.md,
      All-In-One, "Gap round 1"). NATTEN was therefore built from its PyPI sdist, CPU only:
@@ -999,7 +1009,8 @@ with 6.3 to 9.0 GB free while this round ran.
   `aaatmy/skey-onnx` (revision c04b6a2b; the card calls it "a community conversion of the upstream checkpoint, not a newly
   trained model or an official Deezer release"). It was converted from the repository's `skey/models/skey.pt` at commit
   918b83d, whose SHA-256 (78dfd0ad...ead4, in the manifest) equals that of `skey.pt` at the repository's main branch
-  today (survey.md). No code from the S-KEY repository ran; there is no Deezer S-KEY package on PyPI.
+  today (survey.md). No code from the S-KEY repository ran; no Deezer S-KEY package was found on PyPI under the names
+  checked (survey.md).
 - Install (venv-skey, Python 3.11.15): `uv pip install onnxruntime "torch==2.15.0" "torchaudio==2.11.1" soundfile numpy`
   (0.4 s, all from the shared uv cache: onnxruntime 1.31.1, torch 2.15.0+cpu, torchaudio 2.11.1+cpu, numpy 2.4.6,
   soundfile 0.14.0; torch and torchaudio only for the resampler upstream uses). Venv 926 MB by `du` (hard links into the
@@ -1056,6 +1067,85 @@ with 6.3 to 9.0 GB free while this round ran.
   own wrapper code would have to be re-created, so its output would not be the plugins' output).
 - Steps for Aaron: `for-aaron.md`, section 1 (Sonic Visualiser and the Vamp Plugin Pack on Windows).
 
+### Omnizart 0.5.0 chord mode on Python 3.8 with TensorFlow 2.5.0: NOT RUN HERE (the one install attempt failed)
+
+- Route: Omnizart 0.5.0 is the last release with a wheel that pins TensorFlow (`tensorflow (==2.5.0)`, Python
+  ">=3.6.1,<3.9"; survey.md, Omnizart, "Gap round 1"), so the wheel installs without running Omnizart's `setup.py`. The
+  audio-to-notes lane's gap agent had tried the same release at 23:30 UTC with a plain `uv pip install` and stopped at
+  "Failed to build `vamp==1.1.0`" ("No module named 'numpy'" during the build); this attempt preinstalled numpy and
+  built without isolation.
+- The one attempt (2026-11-11 00:18 UTC, 1 min 7.7 s; log `/home/user/gtr/lanes/chords-beats-key/logs/gap1/install_omnizart_attempt1.log`):
+  `uv venv --python 3.8 venv-omnizart` (uv downloaded CPython 3.8.20, 19.9 MiB), `uv pip install "numpy==1.19.5"
+  "cython<3" "setuptools<60" wheel` (Cython 0.29.37, setuptools 59.8.0), then `uv pip install --no-build-isolation
+  "omnizart==0.5.0"` with numpy held at 1.19.5. uv "Resolved 91 packages", downloaded among others tensorflow 2.5.0
+  (433.4 MiB), and built mir-eval 0.6, termcolor 1.1.0, wrapt 1.12.1 and vamp 1.1.0; the build of madmom 0.16.1 failed:
+  "madmom/ml/nn/layers.c:38:6: error: #error Cython requires Python 3.9+." then "error: command 'cc' failed with exit
+  status 1" and uv's hint "`madmom` (v0.16.1) was included because `omnizart` (v0.5.0) depends on `madmom`". Exit 1;
+  TensorFlow and Omnizart were not installed (28 small packages were; their list is in
+  `logs/gap1/venv-omnizart-attempt1.freeze.txt`).
+- Why that file: the build ran in the unpacked copy of the madmom sdist in uv's shared cache (the Cython warnings in the
+  log name `/home/user/gtr/cache/uv/sdists-v9/pypi/madmom/0.16.1/eVxXx4pZeSZQ_-Ha/src/madmom/...`), and that copy
+  already held C files generated earlier: its `madmom/ml/nn/layers.c` says "Generated by Cython 3.3.1" and is dated
+  2026-11-10 20:58:23 UTC, inside the window of this lane's first-round madmom build on Python 3.11 with Cython 3.3.1
+  (r0025, 20:56:22 to 20:58:55 UTC; madmom section). This build's Cython 0.29.37 re-generated three other modules
+  ("[1/3] Cythonizing madmom/audio/comb_filters.pyx" ... "[3/3] Cythonizing madmom/ml/hmm.pyx") and compiled the old
+  `layers.c`. A second attempt with a fresh copy of the sdist (for example uv's `--no-cache`) was not made: the task
+  allowed one attempt.
+- Nothing ran in chord mode, so there are no Omnizart scores and no Omnizart row in the capo table below. The venv,
+  CPython 3.8.20 (`uv python uninstall 3.8.20`) and the TensorFlow 2.5.0 cache entry (1.1 GB unpacked) were removed.
+  Steps for Aaron: `for-aaron.md`, section 7.
+
+### Open-string tuning or capo detector from audio: none found to run
+
+- Searched once more on 2026-11-10 for 2024 to 2026 work with published weights or code installable as a package: six
+  web searches, the arXiv API, the Hugging Face Hub model search and PyPI names (queries and results in survey.md,
+  "Guitar open-string tuning and capo position from audio", "Gap round 1 search"). Found: the Hulme et al. tuning
+  classifier (repository code, models on Google Drive, no license file), the two Rochester student reports, and
+  symbolic MIDI-to-tablature models that take the capo and tuning as inputs (Fretting-Transformer, arXiv 2506.14223).
+  No detector of open-string tuning or capo position from audio with published weights or a package was found, so none
+  was run on S5dropd, S5capo2 or S2n. What the tools that did run give on those clips is collected in "Open-string
+  tuning and capo" below.
+
+### Capo 2 and chord labels: the first four chord segments on S5capo2
+
+S5capo2 is the S2n tab played with a capo on fret 2: the same strings and frets, every pitch 2 semitones higher, so the
+shapes are G major's and the sound is A major's (INPUTS.md). Its truth chord labels are the sounding harmony (A:maj,
+D:maj, E:maj); S2n's are G:maj, C:maj, D:maj.
+
+- Missing outputs re-run: autochord, CREMA and lv-chordia had not been run on S5capo2 in the first round. Their venvs
+  were rebuilt from the first round's freezes (`samples/crema/venv-tf.freeze.txt` without jax and jaxlib, as the
+  verifier did; `samples/lv_chordia/venv-lvchordia.freeze.txt`; tensorflow-cpu 2.12.1 had to be downloaded again,
+  221.1 MiB), and the same scripts ran in run r0605 (2 cores; 102.1 s wall in total, 103.8 s CPU, 1040.7 MB peak RSS;
+  plan `scripts/plans/gap1_capo_chords.json`): each tool on S3 first as a control, into
+  `out/gap1_controls/<tool>/S3/`, then on S5capo2 (autochord 9.28 s, CREMA 6.95 s, lv-chordia 9.14 s per job,
+  `samples/capo_chords/batch_gap1_capo_timings.jsonl`). The S3 control outputs are byte-identical to the first round's
+  (autochord `.lab`; CREMA `.lab` and `.jams`; lv-chordia `.lab` and `.json` for both dictionaries). The venvs and the
+  TensorFlow download were deleted afterwards.
+- S5capo2 chord scores of the re-run tools (gtr-eval 0.11.1; root = majmin = sevenths = mirex on this clip): autochord
+  0.647, 15 segments (e1767); CREMA 0.638, 7 segments (e1768); lv-chordia 0.946, 23 segments, with both `submission`
+  (e1770) and `ismir2017` (e1769). Truth: 22 segments. The other chord tools' S5capo2 scores are in their sections
+  (Chordino e0598, madmom e0306 and e0309, Essentia TonalExtractor e0983).
+- The labels (from `scripts/capo_chord_labels.py`, output `samples/capo_chords/capo_chord_labels.json`): for each tool's
+  file as written, its first four segments that are not `N`, and the label it gives at the midpoint of each of the
+  truth's first four chord segments (3.214, 4.821, 5.893 and 6.964 s). Times in seconds. Omnizart did not run (above), so
+  it has no row.
+
+| tool | S5capo2: first four chord segments | S5capo2: at the four truth midpoints | S2n (no capo): at the four truth midpoints |
+|---|---|---|---|
+| truth | A:maj 2.14-4.29, D:maj 4.29-5.36, A:maj 5.36-6.43, D:maj 6.43-7.50 | A:maj D:maj A:maj D:maj | G:maj C:maj G:maj C:maj |
+| Chordino (global tuning; local tuning gave the same) | A 0.46-4.18, D 4.18-7.62, A 7.62-8.45, E 8.45-9.57 | A D D D | G Am G C |
+| madmom CNN + CRF | A:maj 2.20-4.30, D:maj 4.30-7.70, A:maj 7.70-11.90, D:maj 11.90-13.00 | A:maj D:maj D:maj D:maj | G:maj C:maj G:maj C:maj |
+| madmom deep chroma | A:maj 2.20-4.40, D:maj 4.40-5.60, A:maj 5.60-6.50, D:maj 6.50-7.80 | A:maj D:maj A:maj D:maj | G:maj C:maj G:maj C:maj |
+| Essentia TonalExtractor (440 Hz) | Am 0.00-1.21, F#m 1.21-1.53, A 1.53-4.23, Bm 4.23-4.83 | A Bm A D | G G G C |
+| autochord | A:maj 1.95-4.13, D:maj 4.13-7.43, A:maj 7.43-11.89, D:maj 11.89-12.82 | A:maj D:maj D:maj D:maj | G:maj C:maj G:maj C:maj |
+| CREMA | A:maj 2.14-4.27, D:maj 4.27-7.43, A:maj 7.43-21.36, D:maj 21.36-22.48 | A:maj D:maj D:maj D:maj | G:maj C:maj/5 G:maj G:maj |
+| lv-chordia (submission and ismir2017 identical) | A:maj 2.11-4.30, D:maj 4.30-5.41, A:maj 5.41-6.43, D:maj 6.43-7.55 | A:maj D:maj A:maj D:maj | G:maj C:maj G:maj C:maj |
+
+  Every label in the table's two S5capo2 columns has a root of A, D, E, F# or B. The shapes played in the truth's first
+  four segments are G and C (S2n's labels at the same times); at those four midpoints every S5capo2 label is A, D or,
+  once (Essentia), B minor. No tool here outputs a capo position, and none takes a capo or transposition input (each
+  tool's "Constraint inputs" line above; Essentia takes a tuning frequency).
+
 ## S3 versus S7flat30 (the same notes rendered 30 cents flat): what changed
 
 Collected from the sections above (same eval ids); S3 value / S7flat30 value.
@@ -1074,6 +1164,9 @@ Collected from the sections above (same eval ids); S3 value / S7flat30 value.
 | BeatNet offline / online | (none) | (none) | (none) | 0.000 / 0.000; 0.161 / 0.164 | (none) |
 | DeepRhythm | (none) | (none) | (none) | (none) | 95 / 95 |
 | music21 on Basic Pitch MIDI (default / krumhansl / simple / bellman / temperley) | (none) | E min / G maj; G / G; G / G; C maj / G maj; G / G | (none) | (none) | (none) |
+| All-In-One (gap round 1) | (none) | (none) | (none) | 0.951 / 0.951 (downbeat F 1.000 / 1.000) | 95 / 95 |
+| tempo-cnn, all eight models (gap round 1) | (none) | (none) | (none) | (none) | identical per model: fcn, cnn, ismir2018, deeptemp, deepsquare, shallowtemp 96 / 96; fma2018 192.82 / 192.82; mazurka 190 / 190 |
+| S-KEY via ONNX (gap round 1) | (none) | G major / G major | (none) | (none) | (none) |
 
 "(none)": the tool gives no such output. Truth for both clips: G major, 96 BPM.
 
@@ -1095,6 +1188,11 @@ position or an open-string tuning.
   Essentia e1031 e1033 e1035 e1037 e1039, music21).
 - Tuning-offset estimators on S5dropd and S5capo2 (truth 0 cents): librosa +2 / +2, Essentia -3 / -6, NNLS Tuning
   +0.455 / +0.608 cents.
+- Added in gap round 1: S-KEY (ONNX) gave A major on S5capo2 (e1710) and G major on S5dropd (e1711); the chord labels of
+  every chord tool on S5capo2 are in "Capo 2 and chord labels" (Gap round 1). All-In-One and tempo-cnn gave the same
+  tempo on S2n, S5capo2 and S5dropd except tempo-cnn's deeptemp (111 on S5capo2, 112 on the other two) and mazurka (114
+  on S5capo2, 112 on the other two), and All-In-One found 46 beats on S5capo2 against 47 on S2n and S5dropd. A search for
+  a tuning or capo detector from audio found none to run (Gap round 1).
 
 ## Not run here
 
@@ -1106,20 +1204,22 @@ position or an open-string tuning.
 | S-KEY (deezer/skey) | (corrected in gap round 1: the same weights ran here through the community ONNX export `aaatmy/skey-onnx` with onnxruntime and a few lines of glue, no repository code; see "Gap round 1". The repository's own PyTorch route is still not run.) First-round reason: installs from its repository with poetry (survey.md); PyPI `skey` 0.2 has the home page http://github.com/dleonik/skey and no release files (PyPI JSON read 2026-11-10); not attempted for the same reason. |
 | All-In-One (allin1 1.1.0) | (corrected in gap round 1: it ran here, see "Gap round 1"; madmom 0.16.1 from PyPI on Python 3.9 and NATTEN 0.17.3 built from its PyPI sdist replaced the README's GitHub madmom and NATTEN website.) First-round reason: its README (raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md, read 2026-11-10) says "Install NATTEN (Required for Linux and Windows; macOS will auto-install)" (Linux: "Download from NATTEN website"; Windows: "Build from source") and installs madmom from GitHub ("pip install git+https://github.com/CPJKU/madmom  # install the latest madmom directly from GitHub"); the madmom git route was refused here; not attempted. Each run would also include a Demucs htdemucs separation (survey.md). |
 | tempo-cnn (tempocnn 0.0.8) | (corrected in gap round 1: it ran here with tensorflow 2.17.0, see "Gap round 1"; the package has no key model.) First-round reason: PyPI metadata requires `tensorflow==2.17.0`; the only TensorFlow wheel in the shared cache was tensorflow-cpu 2.12.1 and the orchestrator's disk notice (4.7 to 7.9 GB free on the shared disk during this run, per the notices and `df -h`) asked lanes not to install a second TensorFlow version. Not installed. Essentia's TempoCNN algorithm with the deeptemp models ran (Essentia section); their metadata cites Schreiber and Müller, SMC 2019. |
-| Omnizart chord (0.6.3) | sdist only; requires tensorflow>=2.5, tf-keras, madmom>=0.16.1, pyfluidsynth, sherpa-onnx, vamp (PyPI metadata). Not attempted by the trial agent (time). The verifier then tried a chord-only install (the sdist with `--no-deps` on the cached tensorflow-cpu 2.12.1, plus only the chord checkpoint file, 44,242,072 bytes, from the GitHub release `checkpoints-20211001` that `omnizart download-checkpoints` reads); the shell command was refused before it ran: "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]". Nothing was installed. The sdist's `setup.py` itself runs `uv pip install` / `pip install` for Cython, numpy, madmom, vamp, pyaudio and pyfluidsynth when they are missing (read in the sdist, sha256 66b96cd3...45c1). |
+| Omnizart chord (0.6.3) | (Gap round 1: still not run. One attempt with the 0.5.0 wheel on Python 3.8, TensorFlow 2.5.0 and numpy preinstalled failed while building madmom 0.16.1, on a C file generated earlier by Cython 3.3.1 in uv's shared cache; see "Gap round 1".) First-round reason: sdist only; requires tensorflow>=2.5, tf-keras, madmom>=0.16.1, pyfluidsynth, sherpa-onnx, vamp (PyPI metadata). Not attempted by the trial agent (time). The verifier then tried a chord-only install (the sdist with `--no-deps` on the cached tensorflow-cpu 2.12.1, plus only the chord checkpoint file, 44,242,072 bytes, from the GitHub release `checkpoints-20211001` that `omnizart download-checkpoints` reads); the shell command was refused before it ran: "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]". Nothing was installed. The sdist's `setup.py` itself runs `uv pip install` / `pip install` for Cython, numpy, madmom, vamp, pyaudio and pyfluidsynth when they are missing (read in the sdist, sha256 66b96cd3...45c1). |
 | Beat Transformer | Repository code that first separates stems with Spleeter (survey.md); repository-code execution was refused here twice; not attempted. |
 | Harmony Transformer v1 / v2 | Training scripts only, no released weights (survey.md); nothing to run. |
 | ACR_seq2seq | No checkpoints in the repository (survey.md); nothing to run. |
 | ChordMini (ChordMiniApp) | The full app needs Firebase and Gemini keys (survey.md); not run. |
 | QM Vamp plugins (Key Detector, Bar and Beat Tracker, Tempo and Beat Tracker) | Binaries come from the Vamp plugin download page or a source build of a cloned repository; neither is a package-manager route; not attempted. Not in Ubuntu 24.04 apt (`apt-cache search vamp`, re-checked by the verifier). The download page's link for them, https://code.soundsoftware.ac.uk/projects/qm-vamp-plugins/files, gave "Connection reset by peer" to the verifier's curl on 2026-11-10; after the Omnizart refusal above the verifier did not try a downloaded binary or a source build. (Gap round 1: still not run. The site reset the connection again at 23:30:27 UTC; no Debian, Ubuntu or PyPI package; the Vamp Plugin Pack's Linux AppImage holds the plugins only inside its GUI installer program, which was not run; see "Gap round 1".) |
-| Guitar tuning classifier (Hulme et al., edhulme/guitar-tuning-classification) | Repository code with TensorFlow models on Google Drive (survey.md); not attempted (repository code). |
+| Guitar tuning classifier (Hulme et al., edhulme/guitar-tuning-classification) | Repository code with TensorFlow models on Google Drive (survey.md); not attempted (repository code). (Gap round 1: still the case; no other tuning or capo detector with weights or a package was found, see "Gap round 1".) |
 | BEAST | Evaluation script plus a Google Drive model (survey.md); not attempted. |
 | realtime-bpm-analyzer, web-audio-beat-detector, essentia.js | Browser libraries; in-browser analysis belongs to the browser-audio-sync lane; not run here. |
 
 ## Media kept outside git
 
 None. No tool run in this lane writes audio or video (allin1's sonification, which would, was not run). All outputs
-are text, JSON, `.lab` and `.jams` files under `/home/user/gtr/lanes/chords-beats-key/out/`.
+are text, JSON, `.lab` and `.jams` files under `/home/user/gtr/lanes/chords-beats-key/out/`. (Gap round 1: still none.
+All-In-One's Demucs separation wrote four stems per clip under `out/allin1/<clip>/demix/`, and they were deleted at the
+end of each run, as allin1 does by default; `sonify` and `visualize` were not run.)
 
 ## Verification log (verify-trials-chords-beats-key, 2026-11-10)
 

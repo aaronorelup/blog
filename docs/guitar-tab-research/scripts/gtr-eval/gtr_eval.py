@@ -25,8 +25,8 @@ import warnings
 
 import numpy as np
 
-VERSION = "0.11.1"
-VERSION_DATE = "2026-11-10"
+VERSION = "0.12.0"
+VERSION_DATE = "2026-11-11"
 
 VOICES = ("melody", "bass", "chord", "lead", "drums")
 SOURCE_KINDS = ("synthesized", "dataset", "recording", "video")
@@ -789,12 +789,26 @@ def _load_musicxml(path, a, E):
 TAB_LINE_RE = re.compile(r"^\s*([A-Ga-g][#b]?-?\d?)?\s*[|:]([-0-9|:a-zA-Z~/\\^()<>.*=\s]*)$")
 
 
-CAPO_RES = [
+CAPO_RES = [  # tried in this order where a capo statement starts (see capo_statements)
     (re.compile(r"\bno\s+capo\b", re.I), lambda m: 0),
     (re.compile(r"\bcapo\s*[:=]?\s*(?:none|no|off)\b", re.I), lambda m: 0),
     (re.compile(r"\bcapo\s*[:=]?\s*(?:on\s+|at\s+)?(?:the\s+)?(?:fret\s*)?(\d{1,2})(?:st|nd|rd|th)?\b", re.I),
      lambda m: int(m.group(1))),
 ]
+# A capo line states the capo: its first word is "capo" or its first words are "no capo" (spaces and the marks
+# # / % * - [ ( > | in front do not count), or it has a "Capo:" or "Capo =" field anywhere. Only these statements are
+# read. The word capo anywhere else, such as in a title ("Title: S2 with a capo on fret 2") or in "without capo", is not
+# a capo setting (0.11.1 and earlier read a capo from any line where a CAPO_RES pattern matched, title lines included).
+CAPO_LINE_START_RE = re.compile(r"[\s#/%*\[(>|-]*(?=(?:no\s+)?capo\b)", re.I)
+CAPO_FIELD_RE = re.compile(r"\bcapo\s*[:=]", re.I)
+CAPO_WORD_RE = re.compile(r"\bcapo\b", re.I)
+
+
+def capo_statements(s):
+    """Positions in line s where a capo statement starts: the start of a capo line, then every 'Capo:' field."""
+    m = CAPO_LINE_START_RE.match(s)
+    pos = [m.end()] if m else []
+    return pos + [f.start() for f in CAPO_FIELD_RE.finditer(s) if f.start() not in pos]
 
 
 def looks_like_ascii_tab(lines):
@@ -853,17 +867,36 @@ def _load_ascii_tab(path, a, E):
     for k, s, fr in events:
         E.add(float(rank[k]), None, None, s, fr)
     E.ordered_only = True
-    for s in raw:
+    not_capo_lines = []  # (line number, text) of lines before the capo line that mention a capo but do not state it
+    capo_line = None
+    for ln, s in enumerate(raw, start=1):
         if TAB_LINE_RE.match(s.strip() or "x") and s.count("-") >= 3:
             continue
-        for rx, val in CAPO_RES:
-            mcap = rx.search(s)
-            if mcap and val(mcap) <= 24:
-                E.capo = val(mcap)
-                E.processing.append(f"ASCII tab: capo {E.capo} read from the line {s.strip()[:100]!r}")
+        starts = capo_statements(s)
+        if not starts:
+            if CAPO_WORD_RE.search(s):
+                not_capo_lines.append((ln, s.strip()))
+            continue
+        for p in starts:
+            for rx, val in CAPO_RES:
+                mcap = rx.match(s, p)
+                if mcap and val(mcap) <= 24:
+                    E.capo = val(mcap)
+                    break
+            if E.capo is not None:
                 break
         if E.capo is not None:
+            capo_line = s
             break
+    if not_capo_lines:
+        n = len(not_capo_lines)
+        shown = "; ".join(f"line {ln}: {txt[:100]!r}" for ln, txt in not_capo_lines[:3])
+        E.processing.append("ASCII tab: no capo read from " + (f"these {n} lines, which mention a capo but are not capo lines"
+                                                                if n > 1 else "this line, which mentions a capo but is not a capo line")
+                            + f" (a capo line begins with 'capo' or 'no capo', or has a 'Capo:' field): {shown}"
+                            + (f" and {n - 3} more" if n > 3 else ""))
+    if capo_line is not None:
+        E.processing.append(f"ASCII tab: capo {E.capo} read from the line {capo_line.strip()[:100]!r}")
     octs = [note_name_to_midi(l) if l else None for l in labels]
     if all(o is not None for o in octs):
         E.tuning = list(reversed(octs))
@@ -1128,13 +1161,36 @@ def cmd_f0(a):
     if unit == "auto":
         unit = "midi" if (header and if_ is not None and "midi" in header[if_]) else "hz"
     t, f, c = [], [], []
+    n_empty_f = n_empty_c = 0
+    unreadable = []
     for r in rows:
+        # every cell of a row is read before any of it is kept, so time, frequency and confidence stay the same length
+        # (0.11.1 kept the time of a row whose frequency cell then failed, and stopped with an IndexError further on)
         try:
-            t.append(tofloat(r[it]))
-            f.append(tofloat(r[if_]))
-            c.append(tofloat(r[ic]) if ic is not None and ic < len(r) else np.nan)
+            tv = tofloat(r[it])
         except (ValueError, IndexError):
+            continue  # a row without a readable time is skipped, as before
+        try:
+            fcell = r[if_]
+            fv = 0.0 if fcell == "" else tofloat(fcell)  # an empty frequency cell: no pitch in this frame = unvoiced
+            ccell = r[ic] if ic is not None and ic < len(r) else None
+            cv = np.nan if not ccell else tofloat(ccell)  # no confidence cell, or an empty one: no confidence
+        except (ValueError, IndexError):
+            unreadable.append(r)
             continue
+        t.append(tv)
+        f.append(fv)
+        c.append(cv)
+        n_empty_f += fcell == ""
+        n_empty_c += ccell == ""
+    if n_empty_f:
+        proc.append(f"{n_empty_f} rows with an empty frequency cell: frequency set to 0 = unvoiced")
+    if n_empty_c:
+        proc.append(f"{n_empty_c} rows with an empty confidence cell: no confidence"
+                    + (" (counts as below --conf-threshold)" if a.conf_threshold is not None else ""))
+    if unreadable:
+        proc.append(f"{len(unreadable)} rows with a readable time were left out because their frequency or confidence "
+                    f"cell is missing or not a number (first: {','.join(unreadable[0])[:80]!r})")
     t, f, c = np.array(t), np.array(f), np.array(c)
     if unit == "midi":
         f = np.where(np.isfinite(f) & (f > 0), midi_to_hz(np.where(f > 0, f, 69)), 0.0)

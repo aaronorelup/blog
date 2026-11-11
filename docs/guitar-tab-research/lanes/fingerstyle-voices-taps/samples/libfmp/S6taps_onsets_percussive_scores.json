@@ -1,0 +1,248 @@
+[
+ {
+  "name": "percussive:hps_binary",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap2-libfmp/S6taps/onsets_percussive/hps_binary.txt",
+  "n_est": 53,
+  "taps": {
+   "eval_id": "e1792",
+   "f_measure": 0.752941,
+   "precision": 0.603774,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e1793",
+   "f_measure": 0.950495,
+   "precision": 0.90566,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 53,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 0,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "percussive:hps_soft",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap2-libfmp/S6taps/onsets_percussive/hps_soft.txt",
+  "n_est": 53,
+  "taps": {
+   "eval_id": "e1794",
+   "f_measure": 0.752941,
+   "precision": 0.603774,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e1795",
+   "f_measure": 0.950495,
+   "precision": 0.90566,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 53,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 0,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "percussive:hrps_beta1.1",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap2-libfmp/S6taps/onsets_percussive/hrps_beta1.1.txt",
+  "n_est": 53,
+  "taps": {
+   "eval_id": "e1796",
+   "f_measure": 0.752941,
+   "precision": 0.603774,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e1797",
+   "f_measure": 0.950495,
+   "precision": 0.90566,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 53,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 0,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "percussive:hrps_beta2",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap2-libfmp/S6taps/onsets_percussive/hrps_beta2.txt",
+  "n_est": 53,
+  "taps": {
+   "eval_id": "e1798",
+   "f_measure": 0.752941,
+   "precision": 0.603774,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e1799",
+   "f_measure": 0.950495,
+   "precision": 0.90566,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 53,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 0,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "percussive:hrps_beta32",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap2-libfmp/S6taps/onsets_percussive/hrps_beta32.txt",
+  "n_est": 53,
+  "taps": {
+   "eval_id": "e1800",
+   "f_measure": 0.752941,
+   "precision": 0.603774,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e1801",
+   "f_measure": 0.950495,
+   "precision": 0.90566,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 53,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 0,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "percussive:hrps_beta4",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap2-libfmp/S6taps/onsets_percussive/hrps_beta4.txt",
+  "n_est": 53,
+  "taps": {
+   "eval_id": "e1802",
+   "f_measure": 0.752941,
+   "precision": 0.603774,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e1803",
+   "f_measure": 0.950495,
+   "precision": 0.90566,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 53,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 0,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ }
+]

@@ -38,13 +38,13 @@ Sections below give the details and sources. "Guitar stem" marks tools that outp
 | BS-RoFormer / Mel-Band RoFormer (lucidrains implementation) | architecture code only, no weights | PyPI `BS-RoFormer` 1.4.1 uploaded 2026-11-04 | code only |
 | bs-roformer-infer, melband-roformer-infer (OpenMIRLab) | inference packages for community RoFormer checkpoints. Guitar stem (BS-RoFormer-SW default) | PyPI 0.1.5 each, uploaded 2026-07-12; repos last commit 2026-10-05; READMEs: "OpenMIRLab no longer publishes new versions to PyPI." | RUNNABLE (`cpu` device) |
 | BSRoformer.cpp (`chenmozhijin/BSRoformer.cpp`) | C++ / ggml runner for BS-RoFormer and Mel-RoFormer checkpoints converted to GGUF. Guitar stem with the BS-RoFormer-SW GGUF | branch `master` last commit 2026-06-16 | README: "Supports CPU/GPU (CUDA, Vulkan) acceleration" (not run here) |
-| BS-RoFormer-SW (6 stems), becruily Mel-Band RoFormer guitar, `adityalakhani/htdemucs-6s-guitar-ft`, `barvarvara/demucs-guitar-lora` | community checkpoints. Guitar stem | HF repos created 2026-04-23 (SW mirror), 2025-05-20, 2026-07-19, 2026-05-23 | through audio-separator / MSST / demucs |
+| BS-RoFormer-SW (6 stems), becruily Mel-Band RoFormer guitar, `adityalakhani/htdemucs-6s-guitar-ft`, `barvarvara/demucs-guitar-lora` | community checkpoints. Guitar stem | HF repos created 2026-04-23 (SW mirror), 2025-05-20, 2026-07-19, 2026-05-23 | through audio-separator / MSST / demucs (all four run here; the guitar fine-tune in gap round 2, `trials.md`) |
 | SCNet (Tong et al., ICASSP 2024) | 4-stem model, code + checkpoint | `starrytong/SCNet` last commit 2025-09-08 | via MSST / audio-separator |
 | MDX23C / TFC-TDF-Net v3 (KUIELab, SDX 2023) | model family | `kuielab/sdx23` last commit 2023-05-17 | via MSST / audio-separator |
 | MVSEP-MDX23 ensemble (ZFTurbo; README: "Model won 3rd place in challenge (Leaderboard C)" of SDX 2023) | ensemble inference script, 4 stems | last commit 2025-04-05; no LICENSE file | `--cpu` flag ("Can be very slow") |
 | VR Architecture (`tsurumeso/vocal-remover`) | vocal / instrumental models behind UVR "VR Arch" | `develop` last commit 2026-09-10 | via audio-separator |
 | Newer architectures in MSST: SubRoformer (arXiv 2611.08130, 2026-11-05, weights `archimickey/SubRoformer`), Dynamic Band Splitting (arXiv 2610.14993, 2026-10-10), BS-Mamba2 (arXiv 2508.14556), DTTNet, BS PolarFormer | research models | see MSST section | via MSST |
-| Banquet (`kwatcharasupat/query-bandit`) | query-by-example separator (ISMIR 2024). Guitar stem by query (acoustic, clean electric, distorted electric) | last commit 2025-07-29; weights Zenodo 2024-09-05 | code has a CPU branch (`use_cuda=False` calls `system.cpu()` in `train.py`); not run here |
+| Banquet (`kwatcharasupat/query-bandit`) | query-by-example separator (ISMIR 2024). Guitar stem by query (acoustic, clean electric, distorted electric) | last commit 2025-07-29; weights Zenodo 2024-09-05 | code has a CPU branch (`use_cuda=False` calls `system.cpu()` in `train.py`); not run here (gap round 2: running the clone's `train.py` was refused by the box's permission system, `trials.md`) |
 | AudioSep (`Audio-AGI/AudioSep`) | text-queried separation of general sounds, 32 kHz mono | last commit 2024-11-26 | README picks CPU when CUDA is absent |
 | SAM Audio (Meta) | text / visual / time-span prompted separation; gated weights (500M to 3B parameters) | `facebookresearch/sam-audio` last commit 2026-05-26; HF repos created 2025-12-12 | "CUDA-compatible GPU (recommended)"; 5.1 to 14.9 GB downloads |
 | MuS3D (Aalto) | blind stem discovery + query separators (DiT from SAM Audio, BS-Locoformer); static 6-stem baseline with guitar | `REMUS-Aalto/Mus3D` last commit 2026-10-14; arXiv 2609.30912 (2026-09-25) | DiT "needs about 10 GB of free memory"; CPU via `CUDA_VISIBLE_DEVICES=` |
@@ -53,7 +53,7 @@ Sections below give the details and sources. "Guitar stem" marks tools that outp
 | nussl | PyPI summary "A flexible sound source separation library." | PyPI `nussl` 1.1.9 uploaded 2021-04-02 (last release); README: "**NUSSL IS DEPRECATED**" | not checked |
 | asteroid | PyPI summary "PyTorch-based audio source separation toolkit" | PyPI 0.7.0 uploaded 2023-10-12 (last release); `asteroid-team/asteroid` last commit 2026-11-03 | not checked |
 | torchaudio `HDEMUCS_HIGH_MUSDB_PLUS`, `HDEMUCS_HIGH_MUSDB` | Hybrid Demucs (v3) pipelines inside torchaudio, 4 stems, no guitar | `pytorch/audio` main read 2026-11-10 | not checked |
-| Gaborformer (`sevagh/gaborformer`) | 4-stem model (NSGT front end + BS-RoFormer-style network), released 2026-11-08 | `sevagh/gaborformer` last commit 2026-11-08; HF repo created 2026-11-08 | docs: "CPU inference is also supported" (not run here) |
+| Gaborformer (`sevagh/gaborformer`) | 4-stem model (NSGT front end + BS-RoFormer-style network), released 2026-11-08 | `sevagh/gaborformer` last commit 2026-11-08; HF repo created 2026-11-08 | docs: "CPU inference is also supported" (not run here: installing the clone was refused by the box's permission system in gap round 2, `trials.md`) |
 | Moises-Light (`crlandsc/moises-light`) | unofficial implementation of the architecture in "Moises-Light: Resource-efficient Band-split U-Net for Music Source Separation" (Hung et al., WASPAA 2025, per its README), code only; MSST key `moises_light` | PyPI `moises-light` 0.1.5 uploaded 2026-04-09 | architecture code, no weights named |
 | demucs.cpp (sevagh) | C++ CPU inference of Demucs v3 / v4 incl. `htdemucs_6s` | last commit 2026-11-06 | RUNNABLE (compile) |
 | free-music-demixer (sevagh) | in-browser WASM demo of demucs.cpp; README: "archived snapshot ... no longer maintained" | last commit 2026-11-06 | browser; weights not included |
@@ -626,6 +626,16 @@ Not a separation tool despite the name: PyPI `uvr` (Oorteo, 0.2.6) is a runner f
   Truncating." / "Query is shorter than ... Tiling."). Output: one stem estimate per call, "of the “same” stem type as
   the query signal" (paper section 3), resampled back to the mixture's rate and written with `ta.save(output_path,
   estimate, fsm)` to `--output_path`.
+- Query and output in the code (gap round 2, read 2026-11-11 from a clone at head 79ed5bb; not run, see `trials.md`):
+  `core/models/e2e/querier/passt.py` averages the query's channels (`x = torch.mean(qaudio, dim=1)`), resamples it to
+  32 kHz, cuts PaSST's mel spectrogram to 998 frames and uses the embedding of
+  `get_basic_model(mode="embed_only", arch="openmic")`, whose weights hear21passt 0.0.26 downloads from
+  `https://github.com/kkoutini/PaSST/releases/download/v0.0.5/openmic-passt-s-f128-10sec-p16-s10-ap.85.pt`
+  (341,546,630 bytes, HTTP HEAD 2026-11-11). The default test config `config/data/moisesdb-test.yml` sets
+  `chunk_size_seconds: 6.0`, `hop_size_seconds: 0.5`, `batch_size: 12` and `fs: 44100` under `inference_kwargs`, and
+  `chunked_inference` (`core/models/ebase.py`) overlap-adds the chunk estimates with a Hann window and trims the result
+  to the mixture's length (`output[None, :, 0, 2*overlap: n_samples + 2*overlap, 0]`). hear21passt: PyPI 0.0.26,
+  license field `Apache-2.0`, requires `timm >=0.4.12`, `torchaudio >=0.7.0` (PyPI JSON, 2026-11-11).
 - Controls a human-in-the-loop re-run could use: the query clip itself (for example a few seconds of the user's own
   guitar, or of the guitar part isolated elsewhere in the song).
 - LICENSE FACTS
@@ -938,6 +948,13 @@ Demucs section; each project's statements about weights are quoted here.
   song.wav --out separated` ("The CLI creates `separated/song/` with four stem WAVs. Inputs are automatically resampled
   to 44.1 kHz; M4A/AAC requires system FFmpeg"); `--cpu` "to select CPU inference", `--batch-size 1` "to reduce memory
   use"; "Requires Python 3.10+ and PyTorch 2.4+"; "CPU inference is also supported" (`docs/usage.md`). Not run here.
+  (Gap round 2, read 2026-11-11: no PyPI package, `https://pypi.org/pypi/gaborformer/json` returns HTTP 404;
+  `pyproject.toml` declares `license = "MIT"`, `requires-python = ">=3.10"` and `dependencies = ["torch>=2.4", "numpy",
+  "soundfile", "soxr>=0.3.7", "safetensors", "huggingface_hub>=1.2,<2"]`; Hub file sizes with `blobs=true`:
+  `gaborformer-fp16.safetensors` 533,469,856 bytes, `gaborformer-fp32.safetensors` 1,066,666,912,
+  `gaborformer.pt` 1,067,423,581; `docs/usage.md`: "Output goes to `separated/song/{vocals,drums,bass,other}.wav` as
+  44.1 kHz stereo, 32-bit float audio." `separate.py` (head 123a1c9): "on the CPU the model runs in fp32". Installing
+  the clone was refused by the box's permission system: `trials.md`, "Gap round 2".)
 - LICENSE FACTS
   - a. Code: MIT, "Copyright (c) 2026 Sevag Hanssian" and "Copyright (c) 2023 Phil Wang"
     (https://raw.githubusercontent.com/sevagh/gaborformer/main/LICENSE, read 2026-11-10).

@@ -340,7 +340,10 @@ Face, Zenodo and GitHub-mirror APIs and READMEs on 2026-11-10 and matches, excep
 - **Banquet (`kwatcharasupat/query-bandit`, query by example).** Zenodo record 13694558 (API, read 2026-11-10):
   license `cc-by-nc-sa-4.0`, `access_right: open` (no login), 14 checkpoints of 551,785,899 to 768,226,933 bytes
   (`ev-pre-aug.ckpt` 645,470,187). Not run: the smallest checkpoint is 552 MB, above the 200 MB notice, before the
-  PaSST query encoder it also needs. The README's inference example passes `--use_cuda=true`; `train.py`'s
+  PaSST query encoder it also needs. (Corrected in gap round 2: the disk is no longer the reason. With room on the
+  disk, running the README's `python train.py inference_byoq` from the cloned repository was refused by the
+  session's permission system, "Reason: [Code from External]", 2026-11-11 00:33 UTC; see "Gap round 2". The PaSST
+  query weights are 341,546,630 bytes.) The README's inference example passes `--use_cuda=true`; `train.py`'s
   `inference_byoq` has `use_cuda: bool = True` and calls `system.cpu()` when it is false (read by the verifier at
   raw.githubusercontent.com, `main`, 2026-11-10). Whether the whole path runs on a CPU was not tried (UNVERIFIED).
   The repository root has no `requirements.txt`, `environment.yml`, `setup.py` or `pyproject.toml` (HTTP 404 for
@@ -355,7 +358,8 @@ Face, Zenodo and GitHub-mirror APIs and READMEs on 2026-11-10 and matches, excep
   `guitar_htdemucs_6s.pt` 329,654,071 bytes, not gated. Not run: above the 200 MB notice. (Verifier, from the repo's
   files, 2026-11-10: card metadata `license: apache-2.0`, `datasets: MoisesDB`; its `inference.py` reads and writes
   audio with soundfile and takes `--device auto|cuda|cpu`, so a CPU run is possible in its code; its
-  `requirements.txt` pins `demucs==4.0.1`.)
+  `requirements.txt` pins `demucs==4.0.1`.) (Corrected in gap round 2: run here on S4, R2, S6taps and S2s, r0636 to
+  r0644, through a script that follows its `inference.py` with demucs 4.1.0; see "Gap round 2".)
 - **Demucs in the browser.** `free-music-demixer` (sevagh): its README calls it "An archived snapshot ... no longer
   maintained" and "Model weights are not included" (survey.md). `demucs-rs`: its README names Metal, Vulkan and
   WebGPU back ends; the box has no GPU (survey.md). Not run here. Instead the `demucs-onnx` package's htdemucs_6s
@@ -372,6 +376,9 @@ Face, Zenodo and GitHub-mirror APIs and READMEs on 2026-11-10 and matches, excep
   verifier ran the 42 MB "SCNet Small" checkpoint through MSST (section "SCNet Small (MUSDB18)" below).
 - **demucs-infer, bs-roformer-infer, melband-roformer-infer (OpenMIRLab), PolUVR:** repackagings of models already
   run here through demucs, audio-separator and MSST; not tried, to keep the CPU slots for other tools.
+- **Gaborformer (`sevagh/gaborformer`, 4 stems, no guitar stem)** (added in gap round 2): not run. It has no PyPI
+  package, and installing the cloned repository was refused by the session's permission system ("Reason: [Code from
+  External]", 2026-11-11 00:21 UTC); details under "Gap round 2". Steps for Aaron: `for-aaron.md` item 8.
 
 ## Demucs 4.0.1 with the current torchaudio (I/O check only, no separation)
 
@@ -609,7 +616,9 @@ its slot.
   `hf_hub_download` before the run; the fp32 file is 258,159,781 bytes and was not fetched). No error.
 - **Run:** r0471, `demucs-onnx separate S4.wav out --model htdemucs_6s --small --providers cpu -v` (inside batch C, 2
   cores): wall 56.27 s, CPU 112.7 s, **peak RSS 6204.5 MB** (the PyTorch htdemucs_6s run on the same clip, r0021,
-  peaked at 1349.6 MB).
+  peaked at 1349.6 MB). (Corrected in gap round 2: not a 2-core figure. demucs-onnx leaves ONNX Runtime's thread
+  count unset, and with that default the re-run r0610 had ORT worker threads pinned to CPUs 1, 2 and 3 although the
+  job's slot was CPUs 0-1; with 2 threads, r0612, S4 took 61.33 s wall. See "Gap round 2".)
 - **Output:** `bass.wav`, `drums.wav`, `guitar.wav`, `other.wav`, `piano.wav`, `vocals.wav`, 44,100 Hz, 2 channels,
   PCM_16, 6,834,024 bytes each, same length as the input, stem sum lag 0, residual -12.05 dB.
 - **S4 scored** (e1417, map guitar=guitar, lead=vocals): drums 8.91 / 9.61 / 21.95 / 9.90; bass 7.48 / 9.88 / 20.98 /
@@ -622,8 +631,9 @@ its slot.
   overlap-add with a triangular window over 7.8 s segments, and the log of r0471 prints "chunks: 7 x 343,980
   samples (7.8 s)".)
 - **Verifier re-run of r0471** (r0548, output under `verify/out/`, cores 2-3, load1 3.33; the venv re-created from
-  `samples/msst/uv-pip-freeze-venv-msst.txt`, identical freeze): wall 50.44 s, CPU 109.1 s, peak RSS 6204.5 MB. All
-  six stems are sample-identical to r0471's, and the re-scoring (e1577) equals e1417. e1417 recomputed with mir_eval
+  `samples/msst/uv-pip-freeze-venv-msst.txt`, identical freeze): wall 50.44 s, CPU 109.1 s, peak RSS 6204.5 MB
+  (corrected in gap round 2: not a 2-core figure either, same default ORT threads; its CPU time is 2.16 x its wall
+  time). All six stems are sample-identical to r0471's, and the re-scoring (e1577) equals e1417. e1417 recomputed with mir_eval
   directly gives the same numbers.
 - **Constraint inputs:** `--model`, `--stem` / `--stems`, `--precision fp32|fp16weights` (`--small`), `--providers
   auto|cpu|coreml|cuda|dml|wasm`, `--mix-stems`, `--karaoke`, `--mp3`.
@@ -792,6 +802,10 @@ its slot.
 | r0502 | VR: `1_HP-UVR.pth` | R2 (36.0 s) | 88.22 | 137.1 | 2018.5 | 1:22 | instrumental, vocals |
 | r0503 | MDX-Net: `UVR-MDX-NET-Inst_HQ_3.onnx` | R2 | 76.06 | 148.8 | 3165.8 | 1:05 | instrumental, vocals |
 
+  (Corrected in gap round 2: the two MDX-Net rows, r0487 and r0503, are not 2-core figures. That model runs through
+  ONNX Runtime with no thread count set, and the re-run r0615 of r0487 had ORT worker threads pinned to CPUs 1, 2 and
+  3 while the job's slot was CPUs 0-1; with 2 threads, r0619, S4 took 66.38 s wall. See "Gap round 2". In the
+  installed package only `mdx_separator.py` calls `ort.InferenceSession`; the other rows run in PyTorch.)
   The RoFormer and MDX23C models were run on the first 10 s of S4 only. Extrapolating r0496 linearly to the 228.5 s
   song (an extrapolation, not a measurement): 502.83 s x 228.5 / 10 = 11,490 s, about 3.2 hours on 2 cores;
   r0498: 170.47 x 22.85 = 3,895 s; r0489: 110.34 x 22.85 = 2,521 s.
@@ -899,6 +913,205 @@ its slot.
 - **Input facts:** WAV read through the vendored libnyquist; 44.1 kHz stereo used here. Other rates not tried.
 - **Constraint inputs:** model file (4-source, 6-source, fine-tuned or v3 drivers), thread count (`demucs_mt`). None
   for pitch or tuning.
+
+## Gap round 2
+
+Added 2026-11-11 (from 00:20 UTC) by `gapfill-source-separation`, to close the gaps the `completeness-critic` listed
+for this lane (`GAPS.md`, rows S1 and S2) and to run the tools the first round left out because of the disk notice.
+Disk at the start: 8.6 GB free (`df -h /`, 00:20 UTC); `env.sh` still printed the "DISK LOW" notice quoted under "NOT
+RUN HERE" (it is printed below 9,000 MB). The orchestrator's task for this round asked for these runs as long as 4 GB
+stays free, one tool at a time, deleting each venv and its weights afterwards; `df -h /` is quoted before and after
+each download below. Same scoring, file layout and conventions as the sections above.
+
+### Gaborformer (`sevagh/gaborformer`): NOT RUN HERE, installing the cloned repository was refused
+
+- **What:** a 4-stem model (vocals, drums, bass, other; no guitar stem): NSGT front end and a BS-RoFormer-style
+  network; sources and licenses in `survey.md`, section "Gaborformer". Weights (Hub API with `blobs=true`, read
+  2026-11-11, not gated): `gaborformer-fp16.safetensors` 533,469,856 bytes, `gaborformer-fp32.safetensors`
+  1,066,666,912 bytes, `gaborformer.pt` 1,067,423,581 bytes. There is no PyPI package
+  (`https://pypi.org/pypi/gaborformer/json` answered HTTP 404 on 2026-11-11); the README installs from a clone:
+  `git clone https://github.com/sevagh/gaborformer.git`, `cd gaborformer`, `python -m pip install -e .`.
+- **What was done** (2026-11-11, 00:20 to 00:22 UTC): `git clone --depth 1 https://github.com/sevagh/gaborformer.git`
+  (head `123a1c9`, committed 2026-11-08; 40 MB with `.git`); `uv venv --python 3.11 venv-gaborformer`; `uv pip install
+  torch==2.15.0 numpy soundfile "soxr>=0.3.7" safetensors "huggingface_hub>=1.2,<2"` (the dependencies its
+  `pyproject.toml` declares; installed torch 2.15.0+cpu, huggingface-hub 1.33.0, soxr 1.1.0, safetensors 0.8.0 without
+  error); then `uv pip install --no-deps <the clone>`, which the session's permission system refused: "Permission for
+  this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]." It was not retried
+  another way. Afterwards `importlib.util.find_spec('gaborformer')` was `None` in that venv; the weights were not
+  downloaded and no separation ran. The clone and the venv were deleted; the files read from the clone
+  (`gaborformer/separate.py`, `gaborformer/pretrained.py`, `weights/README.md`) are kept under
+  `/home/user/gtr/lanes/source-separation/gap2/fetched/gaborformer-web/`.
+- **Read from the clone, not run** (for the steps and the handoffs): console script `gaborformer` =
+  `gaborformer.separate:main`; options `--weights`, `--offline`, `--revision`, `--out`, `--precision bf16|fp16|fp32`
+  (default `bf16`, "CUDA autocast dtype for the forward pass"), `--overlap` (default 0.5), `--compile`, `--batch-size`
+  (default 8), `--cpu`. `separate()`'s docstring: "on the CPU the model runs in fp32"; `load_model`: "Weights load
+  into an fp32 model whatever the file's dtype". Chunk length 352,800 samples (8.0 s at 44.1 kHz, `config.json` on the
+  Hub). Input: soundfile, with an ffmpeg fallback, resampled to 44.1 kHz with soxr `quality="HQ"`, mono duplicated to
+  stereo. Output: `<out>/<input name>/{vocals,drums,bass,other}.wav`, written with `sf.write(..., 44100,
+  subtype="FLOAT")`. `pretrained.py` pins Hub revision `d0fccf6e32214d5e8a5a1d0501d0d53a2f82d85c` and refuses a file
+  whose SHA-256 is not `cd586fa4...8c4a` (fp16).
+- **Steps for Aaron:** `for-aaron.md`, item 8.
+
+### ONNX Runtime threads: demucs-onnx and audio-separator's MDX-Net, re-run with a thread probe
+
+- **The question** (`GAPS.md` row S2): both packages build their ONNX Runtime (ORT) session without a thread count.
+  demucs-onnx 0.3.4 `demucs_onnx/inference.py` `_make_session` (lines 194 to 199): `sess_opts = ort.SessionOptions()`,
+  `sess_opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL`, then `ort.InferenceSession(...)`.
+  audio-separator 0.48.0 `separator/architectures/mdx_separator.py` lines 115 to 123: when `self.segment_size ==
+  self.dim_t` it makes `ort.SessionOptions()`, sets only `log_severity_level`, and calls `ort.InferenceSession`
+  (`UVR-MDX-NET-Inst_HQ_3.onnx` has `mdx_dim_t_set` 8 in `models/uvr/mdx_model_data.json`, 2^8 = 256 = the default
+  segment size; the batch B log of r0487 has no "Model converted from onnx to pytorch" warning, which that code logs
+  on the other branch). ONNX Runtime's threading page
+  (https://onnxruntime.ai/docs/performance/tune-performance/threading.html, read 2026-11-11): "By default with
+  intra_op_num_threads=0 or not set, each session will start with the main thread on the 1st core (not affinitized).
+  Then extra threads per additional physical core are created, and affinitized to that core (1 or 2 logical
+  processors)." and, for an explicit count, "there will be no affinity set to any of the created thread". `lscpu` on
+  this box: 4 CPUs, 1 thread per core, 4 cores per socket. (`gtr-run` sets `OMP_NUM_THREADS=2` and pins the process
+  to the slot; the default runs below had both and still started three ORT worker threads, two of them allowed only
+  on CPUs outside the slot.)
+- **What was run** (`scripts/gap2_ort_reruns.sh`, 2026-11-11 00:26 to 00:31 UTC, each a `gtr-run` job in the 2-core
+  slot 0-1, S4): the first-round commands again, each wrapped in `scripts/gap2_thread_probe.py`, which reads
+  `/proc/<pid>/task/*/status` (`Cpus_allowed_list`) and `/proc/<pid>/task/*/stat` (field 39, the CPU a thread last
+  ran on; fields 14 and 15, its CPU time) every 0.25 s for the whole process tree; and the same commands with ORT's
+  intra-op thread count set to 2 by `scripts/gap2_ort_threads.py`, which replaces `onnxruntime.InferenceSession` with
+  a subclass that sets `sess_options.intra_op_num_threads = 2` before the tool is imported (the tool's files are not
+  changed). New venv for demucs-onnx: `venv-ort` = `demucs-onnx==0.3.4 onnxruntime==1.31.1 numpy==2.4.6
+  huggingface-hub==2.4.0 soundfile==0.14.0 soxr==1.1.0 tqdm==4.70.1` (the versions of `samples/msst/uv-pip-freeze-venv-msst.txt`,
+  without the MSST packages); audio-separator ran from the existing `venv-uvr`.
+
+| run | tool, model | ORT intra-op threads | wall s | CPU s | CPU / wall | peak RSS MB | load1 | threads seen at once (max) | CPU s by the thread's allowed CPUs (probe) |
+|---|---|---|---|---|---|---|---|---|---|
+| r0610 | demucs-onnx, htdemucs_6s fp16weights | default (not set) | 57.80 | 98.95 | 1.71 | 8051.0 | 3.16 | 7 | CPUs 0-1: 31.87; CPU 1 only: 22.74; CPU 2 only: 21.99; CPU 3 only: 21.76 |
+| r0612 | demucs-onnx, htdemucs_6s fp16weights | 2 | 61.33 | 71.12 | 1.16 | 6203.9 | 5.97 | 5 | CPUs 0-1: 70.49 |
+| r0615 | audio-separator, `UVR-MDX-NET-Inst_HQ_3.onnx` | default (not set) | 85.76 | 142.58 | 1.66 | 3166.0 | 6.63 | 15 | CPUs 0-1: 56.92; CPU 1 only: 28.34; CPU 2 only: 28.19; CPU 3 only: 27.87 |
+| r0619 | audio-separator, `UVR-MDX-NET-Inst_HQ_3.onnx` | 2 | 66.38 | 93.76 | 1.41 | 3166.6 | 6.13 | 13 | CPUs 0-1: 92.60 |
+
+  With the default setting each run had three ORT worker threads, each allowed on exactly one CPU (1, 2 and 3), from
+  about 1.0 s (demucs-onnx) or 8.4 s (audio-separator) after the start until 1.0 to 1.5 s before the end; the threads
+  allowed only on CPU 2 or CPU 3, which belong to the other slot, used 43.75 s (demucs-onnx) and 56.06 s
+  (audio-separator) of CPU time, and field 39 of their `stat` (the CPU a thread last ran on) read 2 or 3 in every
+  sample (`samples/gap2-ort/probe_*_S4.json`). With 2 threads every thread of the process stayed allowed on CPUs 0-1. The probe's own CPU time (0.46 to 0.75 s per run) is included in
+  the CPU column (it runs inside the job). The "CPU s by allowed CPUs" column is summed per thread from `/proc` at the
+  last sample before exit; the CPU column is `gtr-run`'s rusage.
+- **Output:** all stems of all four runs are sample-identical (max |diff| 0) to the first-round files of r0471
+  (`out/demucs-onnx-htdemucs_6s-fp16/S4/`) and r0487 (`out/uvr/UVR-MDX-NET-Inst_HQ_3/S4/`)
+  (`samples/gap2-ort/compare_with_first_round.txt`, `scripts/compare_runs.py`), so the scores e1417 and e1422 hold for
+  these runs and they were not scored again; the duplicate files were deleted.
+- **What this means for the first-round figures:** r0471 (56.27 s), r0548 (50.44 s, which the verifier ran in slot
+  2-3), r0487 (86.42 s) and r0503 (76.06 s) ran with the same packages and the same default thread setting, so their
+  ORT worker threads were not confined to the 2-core slot either (not observed for those runs: no probe ran then;
+  r0548's CPU time is 2.16 x its wall time, above what 2 cores give). They are not 2-core figures. A 2-core figure for
+  S4 is r0612 (demucs-onnx, 61.33 s) and r0619 (MDX-Net, 66.38 s). The same note is added next to each of the four
+  timings above. The venv `venv-ort` (151 MB by `du`, hard-linked from the shared cache) was deleted afterwards
+  (freeze: `samples/demucs-onnx/uv-pip-freeze-venv-ort.txt`).
+
+### Banquet (`kwatcharasupat/query-bandit`): NOT RUN HERE, running the cloned repository's code was refused
+
+- **What was done** (2026-11-11, 00:31 to 00:33 UTC; 7.8 GB free before): `git clone --depth 1
+  https://github.com/kwatcharasupat/query-bandit.git` (head `79ed5bb`, 2025-07-29; 103 MB with `.git`). The repository
+  has no package metadata, so a venv was made with the packages its code imports, from PyPI: `uv venv --python 3.11
+  venv-banquet`; `uv pip install torch==2.15.0 torchaudio==2.11.1 torchcodec==0.17.0 pytorch_lightning torchmetrics
+  torch_audiomentations omegaconf numpy pandas librosa scikit-learn tqdm fire hear21passt timm` (74 packages resolved
+  without error, among them pytorch-lightning 2.6.6, torchmetrics 1.9.0, torch-audiomentations 0.12.0, hear21passt
+  0.0.26, timm 1.0.31, omegaconf 2.4.0, librosa 0.11.0; 1.4 GB by `du`, hard-linked from the shared cache; freeze:
+  `samples/banquet/uv-pip-freeze-not-run.txt`). Then the README's command, from the clone, with CPU and a checkpoint
+  path that did not exist yet (to check that the code imports before downloading 552 MB): `CONFIG_ROOT=./config
+  venv-banquet/bin/python train.py inference_byoq --ckpt_path=/nonexistent.ckpt --input_path=S4.wav
+  --output_path=.../S4_guitar.wav --query_path=S4/stems/guitar.wav --batch_size=1 --use_cuda=false`. The session's
+  permission system refused it: "Permission for this action was denied by the Claude Code auto mode classifier.
+  Reason: [Code from External]." Nothing ran; it was not retried another way, and no weights were downloaded (the
+  smallest checkpoints, `ev-pre-fz.ckpt`, `vdbgp-pre-fz.ckpt`, `vdb-pre-fz.ckpt` and the two `-bal` ones, are
+  551,785,899 bytes each, Zenodo API 2026-11-11; the PaSST query weights the code would fetch on first use,
+  `openmic-passt-s-f128-10sec-p16-s10-ap.85.pt`, are 341,546,630 bytes by HTTP HEAD). The clone and the venv were
+  deleted (1.5 GB); copies of the files read are in
+  `/home/user/gtr/lanes/source-separation/gap2/fetched/query-bandit/`.
+- **What a query is, and what comes back** (read from that code, head `79ed5bb`; not run): the query is the audio
+  file given as `--query_path` (anything `torchaudio.load` reads), resampled to 44.1 kHz if needed and cut or repeated
+  to exactly 10 s (441,000 samples; `assert query_length_seconds == 10.0`). The separator never sees the query audio
+  itself: `core/models/e2e/querier/passt.py` averages its channels to mono (`torch.mean(qaudio, dim=1)`), resamples
+  it to 32 kHz, takes PaSST's mel spectrogram cut to 998 frames, and keeps the 768-number embedding of the PaSST model
+  `get_basic_model(mode="embed_only", arch="openmic")` (the paper: "a PaSST model [27] trained on the OpenMIC-2018
+  dataset"), projected to the conditioning size and applied to the separator through FiLM layers (model class
+  `PasstFiLMConditionedBandit`, `additive_film: true`, `multiplicative_film: true` in `config/models/bandit-query.yml`). The mixture is cut into overlapping chunks (default test config
+  `config/data/moisesdb-test.yml`: `chunk_size_seconds: 6.0`, `hop_size_seconds: 0.5`, `batch_size: 12`; for S4's
+  1,708,495 samples that is 111 chunks by the formula in `core/models/ebase.py` `chunked_inference`), each chunk is
+  separated with the same query embedding, and the chunks are overlap-added with a Hann window and trimmed to the
+  mixture's length. What comes back is one waveform, the estimate of "the stem that sounds like the query", with
+  the mixture's channels and length, resampled to the mixture's rate and written with `ta.save(output_path,
+  estimate, fsm)` to `--output_path`. One call gives one stem; another stem needs another call with another query.
+  `inference_byoq`'s default config is `./expt/bandit-everything-test.yml` and its default `stem_name` is "target".
+- **Steps for Aaron:** `for-aaron.md`, item 3 (same route; its "Not run here" reason corrected, and a note added for
+  the case that the run asks for the `DATA_ROOT` variable, which `config/data/moisesdb-test.yml` reads).
+
+### `adityalakhani/htdemucs-6s-guitar-ft` (htdemucs_6s fine-tuned on guitar), through the steps of its `inference.py`
+
+- **What:** a fine-tune of Demucs `htdemucs_6s` meant to give a guitar stem (card, license and the author's numbers:
+  `survey.md`, "Models that output a guitar stem"; card metadata `license: apache-2.0`, `datasets: MoisesDB`, Hub API
+  read 2026-11-11, repo sha `9d3ade8`, not gated). Repository files: `guitar_htdemucs_6s.pt` 329,654,071 bytes,
+  `inference.py` 9,062, `config.yaml` 1,218, `requirements.txt` 162 (pins `demucs==4.0.1`).
+- **Download** (2026-11-11 00:35 UTC; 6.9 GB free before, 6.6 GB after): `curl -L
+  https://huggingface.co/adityalakhani/htdemucs-6s-guitar-ft/resolve/main/guitar_htdemucs_6s.pt` (12.4 s); SHA-256
+  `4fde369e...260e`, equal to the Hub's LFS hash. Loaded with `torch.load(..., weights_only=True)`: a training
+  snapshot with `epoch` 60, `model_state_dict` (525 tensors, 27,414,996 parameters, all float32: the parameter count
+  of the stock `htdemucs_6s` above), `optimizer_state_dict`, `scaler_state_dict`, `val_loss` 0.2439 and `val_sdr_db`
+  6.0798. The file was deleted after the runs.
+- **How it was run:** the repository's `inference.py` was read, not run. `scripts/gap2_guitar_ft.py` does its steps
+  with the lane's existing `venv-demucs` (demucs 4.1.0, torch 2.15.0+cpu; freeze
+  `samples/htdemucs-6s-guitar-ft/uv-pip-freeze-venv-demucs.txt`): `get_model("htdemucs_6s")`, the snapshot's
+  `model_state_dict` with every key prefixed `models.0.` (the script's rule for keys that do not match the
+  `BagOfModels` wrapper; "<All keys matched successfully>"), audio read with soundfile, no input normalisation (the
+  Demucs CLI normalises by the mix's mean and standard deviation; this script, like the repository's, does not),
+  `apply_model(..., shifts=1, segment=7.8, overlap=0.25)`, output clamped to [-1, 1], written as PCM_24. It writes all
+  six sources (the repository's script writes only source 4, `guitar`). Differences from the repository's script:
+  demucs 4.1.0 instead of the pinned 4.0.1, no resampling step (all inputs are 44.1 kHz), and Python's random
+  generator seeded with 0 (the random shift of `shifts=1`). The stock `htdemucs_6s` weights were run through the same
+  script as a control (no `--checkpoint`). Driver `scripts/gap2_guitar_ft_runs.sh`; each run a `gtr-run` job, 2
+  cores:
+
+| run | weights | clip (length) | cores | wall s | CPU s | peak RSS MB | load1 | script: load / separate s |
+|---|---|---|---|---|---|---|---|---|
+| r0636 | guitar-ft | S4 (38.7 s) | 2-3 | 25.98 | 44.8 | 1606.5 | 1.48 | 0.99 / 22.94 |
+| r0637 | guitar-ft | R2 (36.0 s) | 2-3 | 31.66 | 48.8 | 1644.9 | 2.38 | 0.86 / 28.69 |
+| r0638 | stock htdemucs_6s, same script | S4 | 2-3 | 32.37 | 48.6 | 1280.4 | 3.66 | 2.16 / 28.21 |
+| r0640 | guitar-ft | S6taps (29.4 s) | 2-3 | 22.45 | 39.2 | 1566.9 | 4.28 | 1.08 / 19.52 |
+| r0642 | guitar-ft | S2s (29.4 s) | 0-1 | 22.28 | 39.0 | 1576.6 | 3.97 | 1.14 / 19.26 |
+| r0644 | stock htdemucs_6s, same script | S6taps | 0-1 | 22.31 | 38.0 | 1210.0 | 3.55 | 1.03 / 19.19 |
+
+- **Output format:** `out/htdemucs-6s-guitar-ft/<clip>/` and `out/htdemucs_6s-via-ft-script/<clip>/`:
+  `drums`, `bass`, `other`, `vocals`, `guitar`, `piano` `.wav`, 44,100 Hz, 2 channels, PCM_24, frame count equal to
+  the input's, stem sum at lag 0; residual of the stem sum against the mix -11.13 dB (guitar-ft S4), -8.40 (S6taps),
+  -5.70 (S2s), -12.44 (R2); stock through the script -12.34 (S4), -12.16 (S6taps) (`scripts/stem_facts.py`;
+  `samples/htdemucs-6s-guitar-ft/stemfacts_*.json`, `run_info_*.json`). The R2 `vocals.wav` of the fine-tune has 40
+  of its 3,175,200 samples at full scale (the clamp; the script does not rescale as the Demucs CLI's `--clip-mode
+  rescale` does). Scoring: `scripts/gap2_score_guitar_ft.sh`, one `gtr-run` job (r0645, 2 cores, wall 55.07 s),
+  gtr-eval 0.12.0 (the first round used 0.11.1).
+- **S4** (map drums, bass, guitar=guitar, lead=vocals; SI-SDR / SDR / SIR / SAR dB):
+
+| eval | weights | drums | bass | guitar | lead |
+|---|---|---|---|---|---|
+| e1831 | guitar-ft | 7.98 / 8.58 / 22.44 / 8.79 | 7.85 / 9.02 / 20.95 / 9.35 | 6.10 / 6.35 / 10.43 / 8.87 | 7.85 / 8.31 / 14.22 / 9.76 |
+| e1832 | stock, same script | 8.99 / 9.71 / 21.95 / 10.00 | 7.27 / 9.80 / 21.31 / 10.15 | 1.73 / 3.40 / 14.65 / 3.89 | 8.15 / 8.72 / 15.11 / 9.99 |
+
+  (First round, stock htdemucs_6s through the Demucs CLI, e0095: guitar 1.89 / 3.36 / 14.40 / 3.87.) Projection
+  <est, true>/<true, true> of the true stems (mono): guitar-ft: true guitar 0.898 in `guitar` (stock through the
+  script: 0.345 in `guitar`, 0.218 in `piano`); the guitar-ft `guitar` stem also holds 0.121 of the true bass, 0.147
+  of the true drums and 0.161 of the true lead; the true bass is 0.312 in `bass` (stock 0.7555) and the true drums
+  0.477 in `drums` (stock 0.890); the lead 0.822 in `vocals` (stock 0.846). Stem levels, RMS dBFS (mix -17.37):
+  guitar-ft guitar -21.69, vocals -23.04, bass -33.03, drums -34.45, other -68.88, piano -74.38; stock through the
+  script vocals -22.83, bass -25.30, guitar -28.71, drums -29.21, piano -31.20, other -73.14.
+- **S6taps** (map guitar=guitar, taps=drums): guitar-ft (e1833) guitar 3.02 / 4.07 / 17.70 / 4.33, taps 2.91 /
+  11.22 / 24.92 / 11.42; stock through the script (e1834) guitar -7.75 / 0.34 / 29.56 / 0.35, taps 7.17 / 10.58 /
+  25.57 / 10.73. Projections: guitar-ft true guitar 0.5465 in `guitar`, 0.177 in `piano`; true taps 0.413 in
+  `drums`, 0.240 in `guitar`; stock true guitar 0.0635 in `guitar`, 0.755 in `piano`; true taps 0.8025 in `drums`.
+- **S2s** (one synthesized steel guitar, no truth stems; mix -18.23 dBFS): guitar-ft piano -24.55, guitar -36.63,
+  bass -52.44, other -55.54, vocals -59.18, drums -60.49 dBFS.
+- **R2** (e1835; drums + bass + other + guitar + piano summed into `derived_instrumental_sum.wav` against the artist's
+  instrumental, `vocals` against `vocals_derived`): instrumental 6.78 / 7.75 / 19.39 / 8.11, vocals 13.21 / 13.54 /
+  18.85 / 15.11 (stock htdemucs_6s through the CLI, e1399: 10.77 / 11.23 / 20.82 / 11.77 and 13.42 / 13.74 / 19.88 /
+  14.99). Stem levels (mix -10.27 dBFS): vocals -12.42, guitar -18.80, drums -26.06, bass -27.28, other -61.95, piano
+  -67.90.
+- **Constraint inputs** (the repository's `inference.py`): `--checkpoint`, `--device auto|cuda|cpu`, `--shifts`,
+  `--overlap`; the segment is fixed at 7.8 s in its code. No pitch or tuning parameters.
 
 ## Stems available for other lanes (handoffs)
 

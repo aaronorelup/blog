@@ -287,7 +287,7 @@
     {
      "to": "Basic Pitch (audio-to-notes lane)",
      "via_format": "per-frame timestamp_ms vs note_events (start_time_s, end_time_s, pitch_midi, amplitude, pitch_bends) in seconds",
-     "evidence": "survey.md Handoff fact 9: the two share a time axis once frame index / fps and audio seconds are put on one clock; an alignment step, no tool in this lane does it"
+     "evidence": "survey.md Handoff fact 9: the two share a time axis once frame index / fps and audio seconds are put on one clock; an alignment step, no tool in this lane does it; (gap round 2) run r0609 (2 cores, wall 27.09 s) put both on one clock for R3c (frame n at n/25 s; R3c.wav and the mp4's audio track cross-correlate at lag 0) and measured picking-hand ('Right') fingertip speed in the frames within 40 ms of the 63 merged Basic Pitch onsets of run r0264 against the other frames (trials.md 'Gap round 2'); descriptive, no ground truth"
     }
    ],
    "unverified": [
@@ -462,9 +462,38 @@
     "weights": {
      "name": "BlazePose GHUM 3D model card (pose and holistic body part)",
      "quote": "LICENSED UNDER Apache License, Version 2.0",
-     "url": "https://storage.googleapis.com/mediapipe-assets/Model%20Card%20BlazePose%20GHUM%203D.pdf"
+     "url": "https://storage.googleapis.com/mediapipe-assets/Model%20Card%20BlazePose%20GHUM%203D.pdf",
+     "also": [
+      {
+       "quote": "LICENSED UNDER Apache License, Version 2.0 (Face Mesh V2 card)",
+       "url": "https://storage.googleapis.com/mediapipe-assets/Model%20Card%20MediaPipe%20Face%20Mesh%20V2.pdf"
+      },
+      {
+       "quote": "LICENSED UNDER Apache License, Version 2.0 (hand card)",
+       "url": "https://storage.googleapis.com/mediapipe-assets/Model%20Card%20Hand%20Tracking%20(Lite_Full)%20with%20Fairness%20Oct%202021.pdf"
+      }
+     ]
     },
-    "training_data": [],
+    "training_data": [
+     {
+      "name": "BlazePose GHUM 3D (pose part): Google's own images from a mobile AR application, 30K consented, 85K of training images with fitness poses (no public dataset named)",
+      "license": null,
+      "quote": "This model was trained and evaluated on images, including consented images (30K), of people using a mobile AR application captured with smartphone cameras in various “in-the-wild” conditions. The majority of training images (85K) capture a wide range of fitness poses.",
+      "url": "https://storage.googleapis.com/mediapipe-assets/Model%20Card%20BlazePose%20GHUM%203D.pdf"
+     },
+     {
+      "name": "FaceLandmarker-V2 / Face Mesh V2 (face part): smartphone captures through an AR application (no public dataset named)",
+      "license": null,
+      "quote": "All dataset images were captured on a diverse set of smartphone cameras, both front- and back-facing.",
+      "url": "https://storage.googleapis.com/mediapipe-assets/Model%20Card%20MediaPipe%20Face%20Mesh%20V2.pdf"
+     },
+     {
+      "name": "HandLandmarker (hand part): approximately 30K real-world images plus rendered synthetic hand models (dataset not named)",
+      "license": null,
+      "quote": "The model was trained on approximately 30K real-world images, as well as several rendered synthetic hand models imposed over various backgrounds.",
+      "url": "https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker"
+     }
+    ],
     "service_terms": [
      {
       "topic": "service",
@@ -478,7 +507,8 @@
    "unverified": [
     "No ground truth for any clip; the numbers are counts, rates and times, not accuracy (trials.md header).",
     "Survey: the holistic page says both 'a total of 553 human body landmarks' and 'Simultaneously track 543 face, pose, and hand landmarks'; 478 + 33 + 21 + 21 = 553.",
-    "Holistic returns no handedness score; names left_hand / right_hand follow the subject's hands."
+    "Holistic returns no handedness score; names left_hand / right_hand follow the subject's hands.",
+    "(gap round 2) The holistic page lists the model cards 'BlazePose', 'FaceLandmarker-V2' and 'HandLandmarker' for the Holistic landmarker bundle. The Face Mesh V2 quote was read on the rendered PDF page (its text layer drops the 'rt' and 'ff' ligatures). None of the three cards names a public dataset or a dataset license."
    ]
   },
   {
@@ -586,7 +616,20 @@
      "quote": "LICENSED UNDER Apache License, Version 2.0",
      "url": "https://storage.googleapis.com/mediapipe-assets/Model%20Card%20BlazePose%20GHUM%203D.pdf"
     },
-    "training_data": [],
+    "training_data": [
+     {
+      "name": "BlazePose GHUM 3D (pose part): Google's own images from a mobile AR application, 30K consented, 85K of training images with fitness poses (no public dataset named)",
+      "license": null,
+      "quote": "This model was trained and evaluated on images, including consented images (30K), of people using a mobile AR application captured with smartphone cameras in various “in-the-wild” conditions. The majority of training images (85K) capture a wide range of fitness poses.",
+      "url": "https://storage.googleapis.com/mediapipe-assets/Model%20Card%20BlazePose%20GHUM%203D.pdf"
+     },
+     {
+      "name": "BlazePose GHUM 3D (pose part): capture conditions",
+      "license": null,
+      "quote": "All dataset images were captured on a diverse set of back-facing smartphone cameras.",
+      "url": "https://storage.googleapis.com/mediapipe-assets/Model%20Card%20BlazePose%20GHUM%203D.pdf"
+     }
+    ],
     "service_terms": [
      {
       "topic": "service",
@@ -598,7 +641,8 @@
    "pricing": null,
    "handoffs_out": [],
    "unverified": [
-    "No ground truth for any clip; the numbers are counts, rates and times, not accuracy (trials.md header)."
+    "No ground truth for any clip; the numbers are counts, rates and times, not accuracy (trials.md header).",
+    "(gap round 2) The pose page links all three pose bundles (lite, full, heavy) to the BlazePose GHUM 3D card; the card names no public dataset and no dataset license."
    ]
   },
   {
@@ -1669,11 +1713,30 @@
      "url": "https://github.com/ViTAE-Transformer/ViTPose"
     },
     "weights": {
-     "name": "easy_ViTPose ONNX (huggingface.co/JunkyByte/easy_ViTPose)",
-     "quote": null,
-     "url": "https://huggingface.co/JunkyByte/easy_ViTPose"
+     "name": "easy_ViTPose ONNX onnx/wholebody/vitpose-s-wholebody.onnx (huggingface.co/JunkyByte/easy_ViTPose, 97,427,067 bytes): the card points to ViTPose's Apache-2.0 LICENSE",
+     "quote": "Refer to official https://github.com/ViTAE-Transformer/ViTPose/blob/main/LICENSE for model license",
+     "url": "https://huggingface.co/JunkyByte/easy_ViTPose/raw/main/README.md",
+     "also": [
+      {
+       "quote": "We provide all the VitPose original models, converted for inference, with single dataset format output.",
+       "url": "https://raw.githubusercontent.com/JunkyByte/easy_ViTPose/main/README.md"
+      }
+     ]
     },
-    "training_data": [],
+    "training_data": [
+     {
+      "name": "ViTPose++-S whole-body checkpoint: COCO, AI Challenger (AIC), MPII, AP-10K, APT-36K, COCO-WholeBody",
+      "license": null,
+      "quote": "| **ViTPose++-S** | COCO+AIC+MPII+AP10K+APT36K+WholeBody | 256x192 | 54.4 |",
+      "url": "https://raw.githubusercontent.com/ViTAE-Transformer/ViTPose/main/README.md"
+     },
+     {
+      "name": "COCO-WholeBody (one of the six)",
+      "license": "research and non-commercial use only (annotations); images under Flickr terms",
+      "quote": "1. COCO-WholeBody dataset is **ONLY** for research and non-commercial use.",
+      "url": "https://raw.githubusercontent.com/jin-s13/COCO-WholeBody/master/README.md"
+     }
+    ],
     "service_terms": []
    },
    "pricing": null,
@@ -1681,8 +1744,9 @@
    "unverified": [
     "The step was started in a 2-core slot but ONNX Runtime pins its own threads; CPU time / wall time reaches 2.31 in the trial and 2.53 / 2.51 in the verifier's re-runs, so the wall time is not a 2-core time.",
     "No ground truth for any clip; the numbers are counts, rates and times, not accuracy (trials.md header).",
-    "easy_ViTPose repo is not gated and its card metadata has no license field.",
-    "Survey: LICENSE is 'Copyright 2018-2020 Open-MMLab. All rights reserved.' plus Apache License 2.0 text (read from clone); CPU use is not stated in the ViTPose README."
+    "Survey: LICENSE is 'Copyright 2018-2020 Open-MMLab. All rights reserved.' plus Apache License 2.0 text (read from clone); CPU use is not stated in the ViTPose README.",
+    "easy_ViTPose repo is not gated and its card metadata has no license field; (gap round 2) the card's 'License' section points to ViTPose's LICENSE (quoted in license.weights).",
+    "(gap round 2) That vitpose-s-wholebody.onnx is converted from the README's ViTPose++-S whole-body checkpoint is not stated in the files read; it is the only S-size model in the README's 'WholeBody dataset' table. The licenses of COCO, AIC, MPII, AP-10K and APT-36K were not read."
    ]
   },
   {
@@ -2202,22 +2266,64 @@
     "hand boxes from another detector (handoff); --mirror-left"
    ],
    "license": {
-    "code": null,
-    "weights": {
-     "name": "hand_pose_model.pth (huggingface.co/lllyasviel/Annotators)",
-     "quote": "license: other",
-     "url": "https://huggingface.co/lllyasviel/Annotators/resolve/main/hand_pose_model.pth"
+    "code": {
+     "spdx": null,
+     "quote": null,
+     "url": "https://raw.githubusercontent.com/Hzzone/pytorch-openpose/master/LICENSE",
+     "note": "No license file found (read 2026-11-11): that URL and .../master/LICENSE.md answered HTTP 404; git ls-tree of HEAD 5ee71dc (metadata clone) lists 32 files, none a LICENSE or COPYING file; the README contains no occurrence of 'licen'. GitHub's own license field was not read (github.com and api.github.com answer 403 from the box)."
     },
-    "training_data": [],
+    "weights": {
+     "name": "hand_pose_model.pth from huggingface.co/lllyasviel/Annotators (OpenPose's hand caffemodel converted to PyTorch); its distributor ships CMU's OpenPose license beside the code that downloads it",
+     "quote": "OPENPOSE: MULTIPERSON KEYPOINT DETECTION SOFTWARE LICENSE AGREEMENT ACADEMIC OR NON-PROFIT ORGANIZATION NONCOMMERCIAL RESEARCH USE ONLY",
+     "url": "https://raw.githubusercontent.com/lllyasviel/ControlNet-v1-1-nightly/main/annotator/openpose/LICENSE",
+     "note": "The HF card of lllyasviel/Annotators is front matter only ('license: other', no text). The same account's annotator/openpose/__init__.py in lllyasviel/ControlNet-v1-1-nightly begins '# Original from CMU https://github.com/CMU-Perceptual-Computing-Lab/openpose' and '# 2nd Edited by https://github.com/Hzzone/pytorch-openpose' and sets hand_model_path = 'https://huggingface.co/lllyasviel/Annotators/resolve/main/hand_pose_model.pth'; the LICENSE in that folder is CMU's OpenPose LICENSE apart from one no-break space and the final newline (compared 2026-11-11). pytorch-openpose README: 'the pytorch model is directly converted from openpose caffemodel'. CMU's license text does not name model files.",
+     "also": [
+      {
+       "quote": "license: other",
+       "url": "https://huggingface.co/lllyasviel/Annotators/raw/main/README.md"
+      },
+      {
+       "quote": "# 2nd Edited by https://github.com/Hzzone/pytorch-openpose",
+       "url": "https://raw.githubusercontent.com/lllyasviel/ControlNet-v1-1-nightly/main/annotator/openpose/__init__.py"
+      }
+     ]
+    },
+    "training_data": [
+     {
+      "name": "MPII Human Pose dataset images, hands annotated by the paper's authors",
+      "license": null,
+      "quote": "We therefore manually annotated two publicly available image sets: (1) The MPII Human Pose dataset [2], which contains images extracted from YouTube videos explicitly collected to reflect every-day human activities, and (2) Images from the New Zealand Sign Language (NZSL) Exercises of the Victoria University of Wellington [11], in which several people use NZSL to tell stories.",
+      "url": "https://arxiv.org/pdf/1704.07809"
+     },
+     {
+      "name": "New Zealand Sign Language (NZSL) Exercises images, hands annotated by the paper's authors",
+      "license": null,
+      "quote": "we have collected annotations for 1300 hands on the MPII set and 1500 on NZSL, which we split 70/30 into training (2000 hands) and testing (800) sets.",
+      "url": "https://arxiv.org/pdf/1704.07809"
+     },
+     {
+      "name": "synthetically rendered hand images (about 11000)",
+      "license": null,
+      "quote": "an initial set of synthetically rendered images of hands, totalling around 11000 examples (footnote mark '3' after 'rendered' left out)",
+      "url": "https://arxiv.org/pdf/1704.07809"
+     },
+     {
+      "name": "Panoptic Studio dataset (multiview bootstrapping)",
+      "license": null,
+      "quote": "For multiview bootstrapping, we use images from the Panoptic Studio dataset [8].",
+      "url": "https://arxiv.org/pdf/1704.07809"
+     }
+    ],
     "service_terms": []
    },
    "pricing": null,
    "handoffs_out": [],
    "unverified": [
     "No ground truth for any clip; the numbers are counts, rates and times, not accuracy (trials.md header).",
-    "No license of the pytorch-openpose repository was read in the reports (only its README: 'the pytorch model is directly converted from [openpose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) caffemodel').",
-    "The full OpenPose software license (CMU, non-commercial) is quoted under the OpenPose (CMU) entry; whether it covers this port's weights is not stated in the text read.",
-    "Without mirroring the left-hand crops, keypoints found per hand fell to 13.3 and the distance to MediaPipe was 53.97 px (same 10 frames)."
+    "The full OpenPose software license (CMU, non-commercial) is quoted under the OpenPose (CMU) entry; CMU's text does not name model files. (gap round 2) The distributor of the converted weights, lllyasviel, ships that license text in annotator/openpose/ beside the code that downloads them.",
+    "Without mirroring the left-hand crops, keypoints found per hand fell to 13.3 and the distance to MediaPipe was 53.97 px (same 10 frames).",
+    "Whether lllyasviel/Annotators' hand_pose_model.pth is byte-identical to the file in pytorch-openpose's own Dropbox / Google Drive folders was not checked.",
+    "Named in Simon, Joo, Matthews, Sheikh, 'Hand Keypoint Detection in Single Images using Multiview Bootstrapping' (arXiv 1704.07809), the paper OpenPose's README cites for its hand detector. Which of the paper's detectors is OpenPose's hand/pose_iter_102000.caffemodel is not stated in the pages read; the dataset licenses were not read."
    ]
   },
   {
@@ -2256,7 +2362,32 @@
      "quote": null,
      "url": "https://raw.githubusercontent.com/CMU-Perceptual-Computing-Lab/openpose/master/LICENSE"
     },
-    "training_data": [],
+    "training_data": [
+     {
+      "name": "MPII Human Pose dataset images, hands annotated by the paper's authors",
+      "license": null,
+      "quote": "We therefore manually annotated two publicly available image sets: (1) The MPII Human Pose dataset [2], which contains images extracted from YouTube videos explicitly collected to reflect every-day human activities, and (2) Images from the New Zealand Sign Language (NZSL) Exercises of the Victoria University of Wellington [11], in which several people use NZSL to tell stories.",
+      "url": "https://arxiv.org/pdf/1704.07809"
+     },
+     {
+      "name": "New Zealand Sign Language (NZSL) Exercises images, hands annotated by the paper's authors",
+      "license": null,
+      "quote": "we have collected annotations for 1300 hands on the MPII set and 1500 on NZSL, which we split 70/30 into training (2000 hands) and testing (800) sets.",
+      "url": "https://arxiv.org/pdf/1704.07809"
+     },
+     {
+      "name": "synthetically rendered hand images (about 11000)",
+      "license": null,
+      "quote": "an initial set of synthetically rendered images of hands, totalling around 11000 examples (footnote mark '3' after 'rendered' left out)",
+      "url": "https://arxiv.org/pdf/1704.07809"
+     },
+     {
+      "name": "Panoptic Studio dataset (multiview bootstrapping)",
+      "license": null,
+      "quote": "For multiview bootstrapping, we use images from the Panoptic Studio dataset [8].",
+      "url": "https://arxiv.org/pdf/1704.07809"
+     }
+    ],
     "service_terms": [
      {
       "topic": "permitted uses",
@@ -2275,8 +2406,9 @@
    "unverified": [
     "Commercial price and terms: UNVERIFIED (a browser visit to the FlintBox link would settle it).",
     "Whether the downloaded model files fall under the agreement's definition of 'Software' is not stated in the text read.",
-    "Training data: not stated in the files read.",
-    "Agreement text: 'DERIVATIVES: You may create derivatives of or make modifications to the Software, however, You agree that all and any such derivatives and modifications will be owned by Licensor'."
+    "Training data: not stated in the files read. (corrected in gap round 2: the hand model's training sets are named in the hand paper, see license.training_data; the body and face models' training data were not read.)",
+    "Agreement text: 'DERIVATIVES: You may create derivatives of or make modifications to the Software, however, You agree that all and any such derivatives and modifications will be owned by Licensor'.",
+    "(hand model) Named in Simon, Joo, Matthews, Sheikh, 'Hand Keypoint Detection in Single Images using Multiview Bootstrapping' (arXiv 1704.07809), the paper OpenPose's README cites for its hand detector. Which of the paper's detectors is OpenPose's hand/pose_iter_102000.caffemodel is not stated in the pages read; the dataset licenses were not read."
    ]
   },
   {
@@ -3439,11 +3571,31 @@
      "url": "https://raw.githubusercontent.com/ultralytics/ultralytics/main/LICENSE"
     },
     "weights": {
-     "name": "yoloe-26s-seg.pt and its mobileclip2_b.ts TorchScript text encoder (terms Ultralytics applies not found)",
-     "quote": null,
-     "url": "https://docs.ultralytics.com/models/yoloe/"
+     "name": "yoloe-26s-seg.pt from the ultralytics/assets release v8.4.0; that repository's LICENSE is AGPL-3.0 (the mobileclip2_b.ts text encoder: terms Ultralytics applies not found)",
+     "quote": "GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007",
+     "url": "https://raw.githubusercontent.com/ultralytics/assets/main/LICENSE",
+     "note": "The release page itself was not read (github.com answers 403 from the box)."
     },
-    "training_data": [],
+    "training_data": [
+     {
+      "name": "Objects365v1 (detection, 609k samples, 9621k boxes), GQA (grounding, 621k, 3681k), Flickr30k (grounding, 149k, 641k): the published open-vocabulary checkpoints, per Ultralytics",
+      "license": null,
+      "quote": "It reproduces the published open-vocabulary checkpoints from Objects365, GQA and Flickr30k — about 1.4 M training samples on 8× RTX 4090 — and is unrelated to fine-tuning on your own data, which is covered under Train Usage above.",
+      "url": "https://docs.ultralytics.com/models/yoloe/"
+     },
+     {
+      "name": "Objects365, GQA, Flickr30k Entities (YOLOE-26 paper, Sapkota and Karkee)",
+      "license": null,
+      "quote": "Models are trained on Objects365v1, GQA, and Flickr30k datasets.",
+      "url": "https://arxiv.org/pdf/2602.00168"
+     },
+     {
+      "name": "Objects365 (V1), GoldG (GQA and Flickr30k), COCO images excluded (original YOLOE paper, arXiv 2503.07465)",
+      "license": null,
+      "quote": "Data. We employ Objects365[52], GoldG [22] (including GQA[17] and Flickr30k [43]) for training YOLOE.",
+      "url": "https://arxiv.org/pdf/2503.07465"
+     }
+    ],
     "service_terms": [
      {
       "topic": "Ultralytics staff reply on the YOLOE docs page",
@@ -3459,7 +3611,8 @@
     "Which terms Ultralytics applies to the mobileclip2_b.ts file: UNVERIFIED (the upstream MobileCLIP2 model's license is research-only, see the MobileCLIP2-B entry).",
     "When the 200 MB disk notice first appeared relative to the mobileclip2_b.ts download (file time 21:14:08 UTC): UNVERIFIED.",
     "Separately downloaded mobileclip_blt.ts (599,764,649 bytes) was deleted unused after the model's config showed it uses MobileCLIP2.",
-    "The 'fretboard' top scores (0.091, 0.097) and 'hand' scores (0.071, 0.096) are below the 0.25 count threshold; 'guitar neck', 'headstock' and 'capo' returned nothing >= 0.05."
+    "The 'fretboard' top scores (0.091, 0.097) and 'hand' scores (0.071, 0.096) are below the 0.25 count threshold; 'guitar neck', 'headstock' and 'capo' returned nothing >= 0.05.",
+    "(gap round 2) The licenses of Objects365, GQA and Flickr30k were not read."
    ]
   },
   {

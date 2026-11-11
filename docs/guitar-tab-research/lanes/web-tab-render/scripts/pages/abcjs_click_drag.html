@@ -26,18 +26,19 @@ window.__renders = 0;
 window.__abc = () => abc;
 
 // Move one ABC note token (accidental, letter, octave marks, length) by n diatonic steps. Accidentals are dropped, so
-// the key signature decides the sharp or flat of the new note. Returns null if the text is not a single note.
+// the key signature decides the sharp or flat of the new note. The text abcjs points at (startChar to endChar) can
+// include the spaces around the note (" G4 "); they are kept. Returns null if the text is not a single note.
 const LETTERS = 'CDEFGAB';
 function shiftNote(tok, n) {
-  const m = /^(\^{1,2}|_{1,2}|=)?([A-Ga-g])([,']*)(.*)$/.exec(tok);
+  const m = /^(\s*)(\^{1,2}|_{1,2}|=)?([A-Ga-g])([,']*)([\s\S]*)$/.exec(tok);
   if (!m) return null;
-  let octave = m[2] === m[2].toUpperCase() ? 4 : 5;
-  for (const c of m[3]) octave += c === "'" ? 1 : -1;
-  let idx = octave * 7 + LETTERS.indexOf(m[2].toUpperCase()) + n;
+  let octave = m[3] === m[3].toUpperCase() ? 4 : 5;
+  for (const c of m[4]) octave += c === "'" ? 1 : -1;
+  const idx = octave * 7 + LETTERS.indexOf(m[3].toUpperCase()) + n;
   octave = Math.floor(idx / 7);
   const letter = LETTERS[idx - octave * 7];
   const out = octave >= 5 ? letter.toLowerCase() + "'".repeat(octave - 5) : letter + ','.repeat(4 - octave);
-  return out + m[4];
+  return m[1] + out + m[5];
 }
 window.__shiftNote = shiftNote;
 

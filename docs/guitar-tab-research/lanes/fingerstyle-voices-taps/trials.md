@@ -56,6 +56,8 @@ Scripts: `scripts/` in this folder. Small outputs: `samples/<tool>/`. Big output
 | Essentia `PredominantPitchMelodia` | yes (r0220) | mono audio | f0 per 2.9 ms frame (Hz, 0 = unvoiced) + confidence |
 | low-pass + librosa `pyin` | yes (r0233, r0235) | mono audio | f0 per 10 ms frame + voiced probability; notes via a plain segmentation written here |
 | Deep Salience | no | audio | bass / melody f0 CSV |
+| libfmp `hps` / `hrps` (gap round 2) | yes (r0620) | 1-D audio array and its rate | harmonic and percussive (and residual) audio arrays, same length |
+| `eguitar_ircam.ts` technique classifier (gap round 2) | yes (r0643) | float32 audio at 8 kHz in 7,168-sample windows | 14 logits per window (electric-guitar techniques; no body-hit class) |
 
 ## librosa 0.11.0: harmonic-percussive separation (`librosa.effects.hpss`) and `librosa.onset.onset_detect`
 
@@ -430,7 +432,8 @@ licensed real recording with body taps was in the shared set.
 - `eguitar_ircam.ts` TorchScript technique classifier (Hugging Face `nbrochec/ipt_models`, CC BY-NC 4.0; classes for
   electric guitar techniques such as `palmstrike` and `muted`): it is run by Max/MSP `ipt~`, the C library `libipt`
   or the IPT Vamp plugin (survey.md, which marks it "RUNNABLE (TorchScript on CPU; not yet confirmed)"); not
-  attempted, and no reason beyond that is recorded.
+  attempted, and no reason beyond that is recorded. (corrected in gap round 2: it was run, loaded with
+  `torch.jit.load` and torch 2.15.0+cpu on this box, r0643 on S6taps, S2s and R3c; see "Gap round 2".)
 - Martelloni, McPherson, Barthet 2023 (percussive guitar classifiers): no code or data published (survey.md: dataset
   "currently not public"). Nothing to run.
 
@@ -1253,6 +1256,188 @@ r0410):
 - Not run on RT1: libnmfd (its KAM + NMFD pipeline took 42 to 187 s on the 29.4 s S6taps; not repeated on the
   233.5 s track) and the scikit-learn NMF ORACLE grouping (it needs truth stems).
 
+## Gap round 2
+
+Added on 2026-11-11 from 00:27 UTC by the lane's second gap-round agent (`gapfill-fingerstyle-voices-taps`, gap round
+2), for the seven gaps the completeness critic listed for this lane (`GAPS.md`, rows F1 to F7), in that order. Free disk
+at the start: 7.1 GB (`df -h /`; `env.sh` printed its low-disk notice at 7,169 MB). Same conventions as above: run ids
+`r....` from the run ledger, eval ids `e....` from the eval ledger, audio under
+`/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap2-*/`, raw downloads and logs under `.../gap2/`. This round's
+scorings record `gtr_eval_version` 0.12.0, not 0.11.1: the scorer was updated on 2026-11-11, and its changelog says
+"two fixes in how estimate files are read; no metric definition changed" (the two fixes are in `tab` and `f0`; this
+round used `onsets`, `stems` and `notes`).
+
+### libfmp 1.3.0 HPS and HRPS (`libfmp.c8.hps`, `libfmp.c8.hrps`) on S6taps (gap F1)
+
+- What it is: the Python library of the FMP notebooks (Müller, Zalkow), PyPI `libfmp==1.3.0` (uploaded 2026-03-16,
+  MIT; survey.md, "libfmp HPS and HRPS"). `hps` is median-filter harmonic-percussive separation with a binary or a soft
+  mask; `hrps` adds a residual part: a time-frequency bin goes to the harmonic part when `Y_h >= beta * Y_p`, to the
+  percussive part when `Y_p > beta * Y_h`, and to the residual otherwise (`libfmp/c8/c8s1_hps.py` of the installed
+  package, lines 218 to 220). No truth is used.
+- Install: libfmp 1.3.0's `requires_dist` (PyPI JSON, read 2026-11-11) includes `music21<10.0.0,>=9.1.0`,
+  `librosa<1.0.0,>=0.10.0` and `ipython<9.0.0,>=8.10.0`. `venv-core` holds music21 10.5.2, which the voice-split runs
+  above used, so libfmp got its own venv rather than downgrading `venv-core`: `uv venv --python 3.11 venv-libfmp`, then
+  `uv pip install --python venv-libfmp/bin/python "libfmp==1.3.0"` at 00:29 UTC (8.9 s, no dead ends): libfmp 1.3.0,
+  librosa 0.11.0, music21 9.9.2, numba 0.68.1, numpy 2.4.6, scipy 1.17.1, soundfile 0.14.0, 62 packages in all (freeze:
+  `samples/libfmp/venv-libfmp.freeze.txt`, also `samples/freezes/venv-libfmp.txt`). `du -sh venv-libfmp`: 696 MB, hard
+  links into the shared uv cache; free disk went from 7,867 MB to 7,750 MB. No weights.
+- Settings, all from the FMP notebooks (https://www.audiolabs-erlangen.de/resources/MIR/FMP/C8/C8S1_HRPS.html and
+  `.../C8S1_HPS.html`, read 2026-11-11): HRPS with the `C8S1_HRPS` notebook's `param_list` (cell In [3]), `[1024, 256,
+  0.2, 500, beta]` (N, H, L_h in seconds, L_p in Hz) for beta = 1.1, 2, 4 and 32; HPS with the defaults of the
+  `C8S1_HPS` notebook's `experiment_hps_pieces`, `Fs = 22050, N=1024, H=256, L_h_sec=0.2, L_p_Hz=500`, with the
+  function's default `mask='binary'`, and once more with `mask='soft'`. libfmp's own experiment functions load the audio
+  with `Fs = 22050` and `x, Fs = librosa.load(fn_wav, sr=Fs)`; the script does the same (librosa 0.11.0, default
+  `res_type='soxr_hq'`). In frames and bins at 22,050 Hz: L_h = 19 frames, L_p = 25 bins (libfmp's
+  `convert_l_sec_to_frames`, `convert_l_hertz_to_bins`, `make_integer_odd`).
+- Run r0620 (2-core slot, waited 21.3 s; wall 34.08 s, CPU 31.4 s, peak RSS 612.0 MB, exit 0):
+  `venv-libfmp/bin/python -I scripts/gap2_libfmp_hrps.py S6taps out/gap2-libfmp/S6taps`, input `S6taps.mono.wav`.
+  Script timer: 3.69 s for the first call (hps binary, including first-call overhead), 0.95 to 1.10 s for each of the
+  other five. Output per setting: `harmonic.wav`, `percussive.wav` and, for hrps, `residual.wav` (float32 mono,
+  22,050 Hz, 647,325 samples = 29.357 s), and the onset lists below.
+
+Energy of each part (sum of squares / that of the mix as loaded at 22,050 Hz; `summary.json`) and the parts scored
+against `S6taps/stems/taps.wav` and `stems/guitar.wav` (`gtr-eval stems --map taps=percussive.wav
+guitar=harmonic.wav`, joint bss_eval, as for librosa and libnmfd above; gtr-eval resampled each part from 22,050 to
+44,100 Hz with `scipy.signal.resample_poly`, per its `processing` field; the residual part is not scored):
+
+| setting | harmonic | percussive | residual | eval id | taps SI-SDR dB | taps SDR | taps SIR | taps SAR | guitar SI-SDR dB | guitar SDR |
+|---|---|---|---|---|---|---|---|---|---|---|
+| hps, binary mask | 0.922 | 0.041 | n/a | e1820 | -2.01 | -0.46 | 9.13 | 0.55 | 14.64 | 14.94 |
+| hps, soft mask | 0.813 | 0.045 | n/a | e1821 | -2.64 | -1.79 | 2.07 | 2.62 | 14.62 | 15.21 |
+| hrps, beta 1.1 | 0.916 | 0.038 | 0.0028 | e1822 | -1.83 | -0.14 | 9.77 | 0.76 | 14.26 | 14.58 |
+| hrps, beta 2 | 0.867 | 0.028 | 0.032 | e1823 | -1.61 | 0.42 | 12.04 | 0.99 | 12.28 | 12.72 |
+| hrps, beta 4 | 0.793 | 0.020 | 0.090 | e1824 | -2.36 | 0.30 | 13.79 | 0.67 | 9.65 | 10.26 |
+| hrps, beta 32 | 0.399 | 0.0049 | 0.453 | e1825 | -8.31 | -1.81 | 15.29 | -1.60 | 1.24 | 3.24 |
+
+  The parts add back to the mix (the energy of the mix minus the sum of the parts is below 1e-14 of the mix energy in
+  every setting), but their energy fractions do not sum to 1 (0.963 for hps binary), so the time-domain parts are
+  correlated. For comparison, on the same reference: librosa HPSS at 44.1 kHz, taps SI-SDR -0.64 to 3.68 dB over margins
+  1 to 16 (e0021 to e0039); libnmfd KAM -1.95 dB (e0622).
+- Onsets (`librosa.onset.onset_detect(y=part, sr=22050, units='time')`, defaults; hop 512 = 23.2 ms at 22,050 Hz, 11.6
+  ms at 44.1 kHz), scored with `scripts/score_onset_dir.py` (gtr-eval `onsets --field taps` and `--field notes`, 50 ms,
+  plus the event-class breakdown):
+  - On each of the six percussive parts: 53 onsets, on all 27 tap+note, 21 note-only and 5 tap-only events, 0 on
+    neither; vs taps P 0.604 / R 1.000 / F 0.753 (e1792 hps binary, e1794 hps soft, e1796, e1798, e1802, e1800 hrps beta
+    1.1, 2, 4, 32); vs note onsets P 0.906 / R 1.000 / F 0.950 (e1793, e1795, e1797, e1799, e1803, e1801). Median
+    timing of the 32 matched tap pairs (estimate minus truth): +21.6 ms (hps binary), +23.7 (hps soft), +21.6, +18.4,
+    +15.0 and +11.7 ms (hrps beta 1.1, 2, 4, 32); largest 25.8 to 39.0 ms.
+  - On the residual parts: beta 1.1: 102 onsets, vs taps P 0.294 / R 0.938 / F 0.448 (e1804), vs note onsets 0.461 /
+    0.979 / 0.627 (e1805); on 26 tap+note, 21 note-only, 4 tap-only events, 51 on neither. Beta 2, 4, 32: 53 onsets
+    each, with the same counts and P / R / F as the percussive parts (e1806 / e1807, e1813 / e1815, e1809 / e1811).
+  - On the mix as loaded at 22,050 Hz: 53 onsets, same breakdown, vs taps 0.604 / 1.000 / 0.753 (e1817), vs notes
+    0.906 / 1.000 / 0.950 (e1819), median timing of matched taps +34.1 ms, largest 49.0 ms (at 44.1 kHz, r0031 and
+    e0053: 53 onsets, median +18.3 ms, largest 27.4 ms).
+  So, as with librosa HPSS and libnmfd, the onset list of each part holds every guitar note attack as well as every tap.
+- Energy in the 50 ms after each event (`scripts/event_energy.py`, dB relative to the loudest event window of the same
+  file; min / median / max; `samples/libfmp/S6taps_event_energy.jsonl`):
+
+| part | tap+note (27) | note-only (21) | tap-only (5) | note-only events louder than the quietest tap event |
+|---|---|---|---|---|
+| hps binary, percussive | -6.84 / -6.04 / 0.0 | -13.42 / -10.39 / -8.09 | -8.26 / -5.24 / -2.78 | 1 of 21 |
+| hps soft, percussive | -6.74 / -5.71 / 0.0 | -11.82 / -8.90 / -7.92 | -7.11 / -4.73 / -3.55 | 0 of 21 |
+| hrps beta 1.1, percussive | -6.85 / -6.05 / 0.0 | -13.58 / -10.59 / -9.34 | -8.33 / -6.24 / -2.76 | 0 of 21 |
+| hrps beta 2, percussive | -6.65 / -5.94 / 0.0 | -14.34 / -11.73 / -10.41 | -12.31 / -7.03 / -4.67 | 15 of 21 |
+| hrps beta 4, percussive | -6.45 / -5.85 / 0.0 | -15.76 / -12.29 / -11.21 | -18.32 / -9.25 / -4.66 | 21 of 21 |
+| hrps beta 32, percussive | -6.03 / -1.39 / 0.0 | -13.65 / -10.24 / -5.52 | -18.62 / -15.62 / -11.61 | 21 of 21 |
+| hrps beta 2, residual | -10.78 / -6.71 / 0.0 | -9.74 / -6.58 / -1.13 | -4.45 / -2.34 / -0.64 | 21 of 21 |
+| hrps beta 32, residual | -9.33 / -4.91 / 0.0 | -8.05 / -4.66 / -2.69 | -4.00 / -3.53 / -3.20 | 21 of 21 |
+
+- Input format facts: a 1-D NumPy signal and its rate `Fs`; `L_unit='physical'` (default) converts L_h from seconds
+  and L_p from Hz with `Fs`, `N`, `H`; `L_unit='indices'` takes frames and bins. Output format facts: time-domain arrays
+  of the input's length (`librosa.istft(..., length=x.size)`); `detail=True` also returns the median-filtered
+  spectrograms, the masks and the masked STFTs.
+- Constraint inputs for a re-run: `N`, `H`, `L_h`, `L_p`, `L_unit`, `mask` (hps), `beta` (hrps). None is a musical
+  constraint (tuning, capo, tempo).
+- Failures and oddities: none in the run. `hps(..., mask='soft')` sets `eps = 0.00001` inside the function, whatever
+  `eps` is passed (line 141 of `c8s1_hps.py`; the signature default is `eps=0.001`).
+- Samples: `samples/libfmp/` (summary, the three onset score files, event energies, the six stem evals, the hrps beta 2
+  percussive onset list, the venv freeze). Audio: `out/gap2-libfmp/S6taps/<setting>/*.wav` (see "Media kept outside
+  git"). `venv-libfmp` was deleted after the scoring (see "Environments, kept and deleted").
+
+### `eguitar_ircam.ts` (IRCAM electric-guitar playing-technique classifier, TorchScript) on S6taps, S2s and R3c (gap F2)
+
+- What it is: the 14-class electric-guitar model of `ipt~` / `libipt` / the IPT Vamp plugin (survey.md, "EG-IPT dataset
+  and ipt~ / libipt / ipt_models"), Hugging Face `nbrochec/ipt_models` (not gated; API read 2026-11-11 00:36 UTC:
+  repository sha `2fdaf426d4dbe9bf622c83c2f7d84a3a3f6be3c0`, last modified 2026-09-23, `cardData.license`
+  `cc-by-nc-4.0`). Its card (`cards/eguitar_ircam.md` in https://github.com/DYCI2/ipt_models , raw file read 2026-11-11):
+  "Sample rate (`get_sr`) | 8000 Hz", "Segment length (`get_seglen`) | 7168 samples (896 ms, latency floor)", "Front-end |
+  one log-mel spectrogram: n_fft 2048, hop 512, 128 mel bands, f_min 150 Hz (window of 256 ms at 8 kHz, spectrum up to 4
+  kHz)", "Exported with | TorchScript, loads with torch 2.4.1". The Hugging Face card: "A model takes `(batch, 1,
+  segment_length)` float32 raw audio and returns logits `(batch, num_classes)`; it exports `get_sr()`, `get_seglen()`
+  and `get_classnames()`." Classes as the model returned them: `behind-nut, bend, bottleneck, glissando, legato, muted,
+  palmstrike, scratch, snap-pizz, staccato, sustained, tremolo, trill, vibrato` (the card's index order).
+- How `libipt` uses it (its README and `core/` files, shallow clone at `aabf10b`, 2026-11-10, read 2026-11-11, not
+  built or run): "TorchScript model loading → resampling buffer → energy gating → softmax → temporal smoothing"; each
+  audio block the host passes is added to a buffer of `get_seglen()` samples at the model's rate, and once it is full
+  the latest `get_seglen()` samples are classified (`core/ipt_classifier.h`), with `torch::softmax` over the logits
+  (`core/model.h`); the energy gate is off at its default threshold of -80 dB (`if (m_threshold_db <=
+  MINIMUM_THRESHOLD) { return true; }`, `core/energy_threshold.h`); the README's example passes -60 dB and a 20 ms
+  window.
+- Model file: `curl -L https://huggingface.co/nbrochec/ipt_models/resolve/main/eguitar_ircam.ts` at 00:37 UTC (HTTP
+  302, then HTTP 200, 14,090,320 bytes; headers in `samples/eguitar-ircam/eguitar_ircam.download_headers.txt`); sha256
+  `93cfb7a1e6440b57530e464609e038381dc5d1286eb9504cc0d74c894e9c5d1b`, equal to the card's SHA-256 and to the Hugging
+  Face API's LFS sha256. Read before loading, without running it (Python `zipfile`): a TorchScript archive (`version`
+  4) of 146 entries under the folder `egtr_new_measures_20241208_143900/`; its code files hold the class `v2` with
+  `forward`, `get_classnames`, `get_seglen`, `get_sr`, torchaudio's `MelSpectrogram` (`sample_rate` 8000, `n_fft`
+  2048, `hop_length` 512, `f_min` 150, `n_mels` 128, `f_max` 4000.) and `AmplitudeToDB` as scripted code calling plain
+  torch operations (`stft`, `matmul`, `log10`); no custom operator library is referenced.
+- Environment: `uv venv --python 3.11 venv-ipt`, `uv pip install --python venv-ipt/bin/python "torch==2.15.0" numpy
+  scipy soundfile` at 00:37 UTC (0.6 s; torch 2.15.0+cpu, numpy 2.4.6, scipy 1.17.1, soundfile 0.14.0, all hard links
+  from the shared uv cache; 15 packages; `du -sh` 973 MB, free disk 6,565 MB before and 6,558 MB after). Freeze:
+  `samples/eguitar-ircam/venv-ipt.freeze.txt`, also `samples/freezes/venv-ipt.txt`. torchaudio is not installed (the
+  archive does not need it).
+- Run r0643 (2-core slot, no wait; wall 13.41 s, CPU 18.1 s, peak RSS 985.0 MB, exit 0): `venv-ipt/bin/python -I
+  scripts/gap2_ipt_classify.py gap2/ipt-model/eguitar_ircam.ts out/gap2-ipt S6taps S2s R3c`. The session's permission
+  system did not stop the `torch.jit.load` call. What the script does: reads `<clip>.mono.wav`, resamples 44,100 to
+  8,000 Hz (`scipy.signal.resample_poly`, 80 / 441), cuts windows of 7,168 samples that end every 0.1 s from 0.896 s
+  on (each window is the 896 ms before its end time), runs all windows of a clip as one batch, softmax. libipt's
+  energy gate and a host's smoothing are not applied; the RMS of each window is written, and the counts below are given
+  for all windows and for windows with RMS at or above -60 dBFS. Model load 0.069 s; batched forward pass 3.43 s for
+  S6taps' 285 windows, 2.97 s for S2s' 285, 1.65 s for R3c's 172 (9.6 to 12.0 ms per window, `torch.get_num_threads()`
+  2; the card gives "3.7 ms (Apple Silicon, CPU, 1 thread)"). torch printed the FutureWarning "`torch.jit.load` is
+  deprecated. Please switch to `torch.export`." and once the UserWarning "Using padding='same' with even kernel lengths
+  and odd dilation may require a zero-padded copy of the input be created" (the card: "PyTorch warns once about
+  `padding='same'` with an even kernel; harmless.").
+- Output: `out/gap2-ipt/<clip>.windows.csv` (end time, RMS dBFS, top class, top probability, the 14 probabilities;
+  S6taps also a column marking windows with a truth tap in their last 0.2 s) and `summary.json`.
+
+Top-1 class counts per window (0.1 s hop; S6taps and S2s also with the windows below -60 dBFS left out, which are the
+13 windows of the near-silent count-in, end times 0.896 to 2.096 s, RMS -90.4 to -90.3 dBFS):
+
+| clip | windows | top-1 classes, all windows | windows at or above -60 dBFS | top-1 classes, those windows |
+|---|---|---|---|---|
+| S6taps (steel + GM percussion as taps) | 285 | bottleneck 214, scratch 27, palmstrike 26, legato 17, sustained 1 | 272 | bottleneck 214, palmstrike 26, legato 17, scratch 14, sustained 1 |
+| S2s (the same notes, no taps) | 285 | bottleneck 216, legato 24, palmstrike 20, scratch 16, trill 8, sustained 1 | 272 | bottleneck 216, legato 24, palmstrike 20, trill 8, scratch 3, sustained 1 |
+| R3c (real nylon-string lesson video, no truth) | 172 | legato 91, bottleneck 28, trill 19, sustained 12, bend 11, palmstrike 9, vibrato 2 | 172 | the same |
+
+- The 13 count-in windows of S6taps and of S2s are all `scratch` (top probability 0.76 to 0.80). The last two windows of
+  both clips (end times 29.196 and 29.296 s, during the final decay) are `palmstrike`. Top-1 probability in the windows
+  at or above -60 dBFS: median 1.0 in all three clips (minimum 0.502 S6taps, 0.505 S2s, 0.431 R3c).
+- S6taps against S2s, window by window (same end times; the clips differ only by the taps): the same top-1 class in 233
+  of 285 windows. The 52 that differ, as S2s -> S6taps: legato -> bottleneck 15, bottleneck -> palmstrike 10,
+  bottleneck -> legato 9, trill -> scratch 5, bottleneck -> scratch 4, trill -> bottleneck 3, palmstrike -> bottleneck
+  3, palmstrike -> scratch 2, legato -> palmstrike 1; 6 of these 52 windows have a truth tap in their last 0.2 s. Mean
+  probability over the 285 windows, S6taps minus S2s: palmstrike +0.0215, scratch +0.0392, legato -0.0223, trill
+  -0.0283, bottleneck -0.0093.
+- S6taps windows with a truth tap in their last 0.2 s (64 windows) against the other windows at or above -60 dBFS (208):
+  mean probability of palmstrike 0.0642 against 0.1008, of scratch 0.019 against 0.0659, of bottleneck 0.8516 against
+  0.7607; of the 26 S6taps windows whose top-1 class is palmstrike, 5 have a truth tap in their last 0.2 s.
+- What this is and is not: the model's 14 classes are electric-guitar techniques, none of them a hit on the guitar body
+  (`palmstrike` and `scratch` are the closest names), and it was trained on EG-IPT, "isolated single-note
+  performances" of an electric guitar (survey.md); S6taps and S2s are FluidSynth steel-string renders with General MIDI
+  drum samples as taps, R3c a nylon-string recording. No truth exists for techniques on any shared clip, so no score is
+  given.
+- Input format facts: float32 raw audio at the model's `get_sr()` (8,000 Hz) in windows of `get_seglen()` (7,168)
+  samples, shape `(batch, 1, 7168)`; the caller resamples (libipt does this itself with its vendored r8brain
+  resampler). Output format facts: logits `(batch, 14)`; class names from `get_classnames()`.
+- Constraint inputs for a re-run: none in the model; a host chooses the window hop, the energy gate (threshold, window)
+  and the smoothing (ipt~ 1.2.0 README: "`@period` allows you to throttle the output of ipt~ while keeping leaky
+  integrator smoothing"). No musical constraint.
+- Failures and oddities: none beyond the two warnings above.
+- Samples: `samples/eguitar-ircam/` (the three window CSVs, `ipt_summary.json`, download headers, venv freeze). The
+  model file and `venv-ipt` were deleted after the run (see "Environments, kept and deleted"); the file can be fetched
+  again from the URL above and checked against the sha256.
+
 ## Environments, kept and deleted
 
 `uv pip freeze` of every venv this lane made is in `samples/freezes/` (`venv-core`, `venv-essentia`, `venv-madmom`,
@@ -1275,6 +1460,11 @@ drumsep and piano_svsep under `gap1/repos/`, the inspected sdists of madmom 0.16
 drumsep checkpoint were deleted after they were read (about 270 MB); `venv-core`, `venv-essentia` and `venv-madmom`
 were used as they were.
 
+Gap round 2: `venv-libfmp` (Python 3.11, libfmp 1.3.0; freeze `samples/freezes/venv-libfmp.txt`) was made at 00:29
+UTC for r0620 and deleted at 00:35 UTC; `venv-core` was used unchanged for the scoring scripts. `venv-ipt` (Python
+3.11, torch 2.15.0+cpu; freeze `samples/freezes/venv-ipt.txt`) was made at 00:37 UTC for r0643 and deleted at 00:39
+UTC, with the 14,090,320-byte `eguitar_ircam.ts` and the shallow `libipt` clone that was read.
+
 ## Inputs added by this lane
 
 | id | files (in /home/user/gtr/lanes/fingerstyle-voices-taps/inputs/voice-stems/&lt;clip&gt;/) | duration | format | what it is | how it was made | license |
@@ -1285,7 +1475,8 @@ were used as they were.
 ## Media kept outside git
 
 All under `/home/user/gtr/lanes/fingerstyle-voices-taps/`. Every audio file is 29.357 s (1,294,650 samples at 44.1
-kHz) except the R3 Demucs stems (18.0 s) and the gap round's RT1 files (233.509 s, the last two rows). None is in git.
+kHz) except the R3 Demucs stems (18.0 s) and the gap round's RT1 files (233.509 s, the two RT1 rows). (gap round 2:
+the libfmp parts are 29.357 s at 22,050 Hz, 647,325 samples.) None is in git.
 
 | path | size | what it is |
 |---|---|---|
@@ -1298,6 +1489,7 @@ kHz) except the R3 Demucs stems (18.0 s) and the gap round's RT1 files (233.509 
 | `out/demucs-real/{htdemucs_6s,htdemucs}/{R3a,R3b,R3c}/*.wav` | 3,175,164 bytes each for R3a, 3,175,244 bytes each for R3b and R3c (30 files: 6 stems x 3 clips for htdemucs_6s, 4 x 3 for htdemucs) | Demucs stems of the real clips, 16-bit stereo 44.1 kHz, 18.0 s (r0327, r0330) |
 | `inputs/RT1/RT1.wav`, `RT1.mono.wav`, `original/With_A_New_Tuning_You_Can_Fly.mp3` | 41,191,174 / 20,595,500 / 5,607,089 bytes | gap round 1: input RT1 (archive.org, CC BY 3.0), 233.509 s; 16-bit 44.1 kHz stereo (identical channels), mono, and the original MP3 (r0534) |
 | `out/gap1-RT1/demucs/htdemucs_6s/RT1/{bass,drums,guitar,other,piano,vocals}.wav`, `out/gap1-RT1/demucs/htdemucs/RT1/{bass,drums,other,vocals}.wav` | 41,190,956 bytes each (10 files) | gap round 1: Demucs stems of RT1, 16-bit stereo 44.1 kHz, 233.509 s (r0554, r0556) |
+| `out/gap2-libfmp/S6taps/{hps_binary,hps_soft}/{harmonic,percussive}.wav`, `out/gap2-libfmp/S6taps/hrps_beta{1.1,2,4,32}/{harmonic,percussive,residual}.wav` | 2,589,380 bytes each (16 files) | gap round 2: libfmp 1.3.0 HPS and HRPS parts of S6taps, float32 mono 22,050 Hz, 29.357 s (r0620) |
 
 
 ## Verification log (verify-trials-fingerstyle-voices-taps, 2026-11-10)

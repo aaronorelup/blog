@@ -1,0 +1,10 @@
+time tcfull S1 wall 3.78 s user 3.59 s sys 0.28 s maxrss 435780 KiB exit 0
+time tcfull R1b wall 3.73 s user 3.42 s sys 0.26 s maxrss 433464 KiB exit 0
+time tcfull S4lead wall 4.38 s user 4.04 s sys 0.45 s maxrss 584632 KiB exit 0
+time tctiny S1 wall 3.75 s user 3.48 s sys 0.22 s maxrss 435656 KiB exit 0
+time tctiny R1b wall 3.17 s user 2.99 s sys 0.20 s maxrss 433436 KiB exit 0
+time tctiny S4lead wall 4.44 s user 3.93 s sys 0.41 s maxrss 584220 KiB exit 0
+time tcfullz S1 wall 3.73 s user 3.55 s sys 0.22 s maxrss 435968 KiB exit 0
+time tcfullz R1b wall 3.71 s user 3.34 s sys 0.31 s maxrss 433284 KiB exit 0
+time tcfullz S4lead wall 4.41 s user 3.88 s sys 0.41 s maxrss 584580 KiB exit 0
+[gtr-run r0616] audio-to-notes/crepe-notes "gap2 A3: crepe_notes 0.2.0 CLI --f0 on this lane's torchcrepe f0 (full raw, tiny raw, full zeroed below periodicity 0.21) for S1, R1b, S4lead; madmom 0.17.dev0 onset splitting on" wall=35.19s cpu=35.1s rss=570.9MB cores=2 exit=0 slot_wait=50.9s

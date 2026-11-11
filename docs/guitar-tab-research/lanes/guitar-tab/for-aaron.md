@@ -107,7 +107,7 @@ card license MIT; code https://github.com/ErenReyhanlioglu/Guitar-Transcription)
 
 What it is: https://github.com/scottvr/gtrsnipe, a MIDI / ASCII tab converter with a Viterbi fretboard mapper and named
 or custom tunings (`--tuning`, `--tuning-pitches`). License, per the docs lane: PolyForm Noncommercial 1.0.0 plus a
-paid commercial licence.
+paid commercial licence (re-read on 2026-11-11 at the same commit `a9be933`, unchanged).
 
 1. `git clone https://github.com/scottvr/gtrsnipe` then `cd gtrsnipe`, `uv venv .venv --python 3.11`,
    `uv pip install --python .venv\Scripts\python.exe -e .`
@@ -120,8 +120,29 @@ paid commercial licence.
    `a9be933`, `gtrsnipe/arguments.py`: "Specify a capo position. All fret numbers will be relative to the capo.").
 6. `.venv\Scripts\gtrsnipe --help > help.txt` (the options above were read at commit `a9be933`, dated 2026-11-10,
    the day these steps were written; the help text shows the version you install).
+7. A corrected string, kept or re-fingered (added in gap round 2; the options are from the README at `a9be933`:
+   "**`--no-refinger`** never moves a note to another string" and "**`--refinger`** always lets the mapper choose", and
+   a `.tab` input keeps its own fingering by default):
+   - Open `S2n.tab` from step 3 in Notepad. The first chord after the empty count-in bar is G2 with G3 (2.143 s into
+     the clip; the correct tab has G2 on the low E string at fret 3 and G3 on the G string open). Note where gtrsnipe
+     put that G3, then move it to the D string at fret 5 (the same pitch one string lower): delete its digit on its
+     line and write `5` on the D line in the same column, keeping every line the same length (replace a `-` with `5`,
+     and the old digit with `-`). Save as `S2n_pinned.tab`. If gtrsnipe had already put it on the D string at fret 5,
+     move it to the G string open (`0`) instead and say so.
+   - `.venv\Scripts\gtrsnipe -i S2n_pinned.tab -o S2n_pinned_kept.tab` (default),
+     `.venv\Scripts\gtrsnipe -i S2n_pinned.tab -o S2n_pinned_norefinger.tab --no-refinger`,
+     `.venv\Scripts\gtrsnipe -i S2n_pinned.tab -o S2n_pinned_refinger.tab --refinger` and
+     `.venv\Scripts\gtrsnipe -i S2n_pinned.tab -o S2n_pinned.mid`.
+   - The question the files answer: does the moved note stay on the D string, and do the other 89 notes keep their
+     strings and frets? The box answers it by comparing the files with `S2n.tab`.
 
-Send back: the `.tab` files and `help.txt`.
+Send back: the `.tab` files (including `S2n_pinned.tab` and the three `S2n_pinned_*` outputs), `S2n_pinned.mid` and
+`help.txt`.
+
+Why this is a step for you: gtrsnipe is still not on PyPI (`https://pypi.org/pypi/gtrsnipe/json` and the simple index
+answered HTTP 404 on 2026-11-11 at 00:39 UTC), and on 2026-11-11 at 00:40 UTC the box's permission system refused to
+install it from its repository (`uv pip install "gtrsnipe @ git+https://github.com/scottvr/gtrsnipe@a9be933..."`) with
+"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]."
 
 ## 5. String assignment in desktop tab editors (TuxGuitar, MuseScore with FretPath, Guitar Pro 8)
 
@@ -156,8 +177,22 @@ MuseScore Studio 4.4 or later). The steps below follow its README (commit `5e4fb
 5. Export MusicXML (`.musicxml`) as `S2n_fretpath.musicxml`. Repeat for the clips above; for `S5dropd`, the README says
    alternate tunings "are read automatically from the instrument's string data", so set the tab staff's strings to
    Drop D before Run for a second file `S5dropd_fretpath_dropD.musicxml`.
+6. A note pinned to a string (added in gap round 2). The README says FretPath "respects existing finger-number and
+   string-number annotations as hard constraints", and its `FretPath.qml` (commit `5e4fb42`) reads a string number from
+   a fingering element whose style is MuseScore's string-number style, with a single digit 1 to 6. In the `S2n` score
+   from step 2, click the upper note of the first chord after the empty count-in bar (G3, the note above the low G),
+   then in the Fingering palette double-click the circled string number 4 (if the palette shows only finger numbers,
+   add the string numbers to it from the palette's own "more" list; MuseScore was not opened from the box, so these
+   palette names are UNVERIFIED). Keep "Also write on notes with existing annotations" off
+   (the default), Run FretPath again, and export `S2n_fretpath_pinned.musicxml`. Take a screenshot of the first bars
+   of the tab staff.
+   The question the files answer: is that G3 written on string 4 (fret 5) and are the other 89 notes where they were
+   in `S2n_fretpath.musicxml`? The box compares the two exports note by note. (The same case already ran on the box
+   with LilyPond's string mark, run r0155, and with scorify's cost hook, run r0623: in both the pinned note moved and
+   the other 89 kept their strings and frets; `trials.md`.)
 
-Send back: every `.gp5` / `.musicxml` file and the screenshots of the import and plugin settings.
+Send back: every `.gp5` / `.musicxml` file (including `S2n_fretpath_pinned.musicxml`) and the screenshots of the import
+and plugin settings.
 
 ## Nothing to run (no trained model is published)
 

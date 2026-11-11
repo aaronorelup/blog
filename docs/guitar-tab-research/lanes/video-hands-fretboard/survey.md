@@ -236,6 +236,25 @@ Ultralytics pose, YOLOE-26, CoTracker3, SAM 2.1 or OpenPose, so those formats ar
   rendered synthetic hand models imposed over various backgrounds." The model card: "This model was trained and
   evaluated on images, including consented images captured using a mobile AR application for smartphone cameras in
   various “in-the-wild” conditions." No public dataset name or dataset license is given on either page.
+- (gap round 2) **Training data of the Pose and Holistic Landmarkers** (pages and cards read 2026-11-11). The pose
+  page (https://developers.google.com/edge/mediapipe/solutions/vision/pose_landmarker) links each of its three model
+  bundles (lite, full, heavy; the trial ran heavy) to one card, the BlazePose GHUM 3D model card
+  (https://storage.googleapis.com/mediapipe-assets/Model%20Card%20BlazePose%20GHUM%203D.pdf). The holistic page
+  (https://developers.google.com/edge/mediapipe/solutions/vision/holistic_landmarker) lists, for the "Holistic
+  landmarker" bundle, the model cards "BlazePose", "FaceLandmarker-V2" and "HandLandmarker", linked to the BlazePose
+  GHUM 3D card, the Face Mesh V2 card
+  (https://storage.googleapis.com/mediapipe-assets/Model%20Card%20MediaPipe%20Face%20Mesh%20V2.pdf) and the hand card
+  above. BlazePose GHUM 3D card, "Ethical Considerations", "PRIVACY" column: "This model was trained and evaluated on
+  images, including consented images (30K), of people using a mobile AR application captured with smartphone cameras
+  in various “in-the-wild” conditions. The majority of training images (85K) capture a wide range of fitness poses.";
+  its "INSTRUMENTATION" block: "All dataset images were captured on a diverse set of back-facing smartphone cameras."
+  and "All images were captured in a real-world environment with different light, noise and motion conditions via an
+  AR (Augmented Reality) application." Face Mesh V2 card, "Factors and Subgroups", "INSTRUMENTATION": "All dataset
+  images were captured on a diverse set of smartphone cameras, both front- and back-facing." and "All images were
+  captured in a real-world environment with different light, noise and motion conditions via an AR (Augmented
+  Reality) application." (read on the rendered page 3; the PDF's text layer drops the "rt" and "ff" ligatures). Its
+  "LICENSED UNDER" block reads "Apache License, Version 2.0", as the other two cards' do. None of the three cards names
+  a public dataset or a dataset license.
 - **Author measurements.** The model card (page "5 of 7", read 2026-11-10) reports mean normalized absolute error
   (MNAE) on its own validation set: "Evaluation across 14 regions on the validation dataset yields an average
   performance of 12.02% +/- 1.6% stdev with a range of [8.43%, 13.42%] across regions for the lite model and an
@@ -505,7 +524,7 @@ Ultralytics pose, YOLOE-26, CoTracker3, SAM 2.1 or OpenPose, so those formats ar
 - (gap round 2) **`Hzzone/pytorch-openpose`, the PyTorch port the trial ran, and its weights** (all read 2026-11-11).
   - a. Code: no license file found. At HEAD `5ee71dc10020403dc3def2bb68f9b77c40337ae2` (2021-06-21, the commit the
     trial used) a metadata clone (`git clone --depth 1 --filter=blob:none --no-checkout`, then `git ls-tree -r
-    --name-only HEAD`) lists 31 files and no LICENSE or COPYING file (`.gitignore`, `README.md`, three demo scripts,
+    --name-only HEAD`) lists 32 files and no LICENSE or COPYING file (`.gitignore`, `README.md`, three demo scripts,
     `images/`, `model/.gitkeep`, `notebooks/`, `requirements.txt`, `src/`);
     https://raw.githubusercontent.com/Hzzone/pytorch-openpose/master/LICENSE and `.../master/LICENSE.md` answered
     HTTP 404; the README contains no occurrence of "licen". GitHub's own license field was not read (github.com and
@@ -908,6 +927,27 @@ Ultralytics pose, YOLOE-26, CoTracker3, SAM 2.1 or OpenPose, so those formats ar
   export; no license statement for that file was found in the Ultralytics pages read (UNVERIFIED which terms Ultralytics
   applies to it). YOLO-World in Ultralytics uses the OpenAI CLIP "ViT-B/32" text encoder instead (trials.md, Grounding
   DINO / OWLv2 / YOLO-World section); its license was not read (UNVERIFIED).
+- (gap round 2, read 2026-11-11) **YOLOE-26 weights and training data.** Weights: `yoloe-26s-seg.pt` came from the
+  `ultralytics/assets` release `v8.4.0` (trials.md); that repository's `LICENSE`
+  (https://raw.githubusercontent.com/ultralytics/assets/main/LICENSE, identical on `master`) begins "GNU AFFERO
+  GENERAL PUBLIC LICENSE" "Version 3, 19 November 2007"; the release page itself was not read (github.com answers 403
+  from this box). Training data, from the Ultralytics YOLOE page (https://docs.ultralytics.com/models/yoloe/), section
+  "Training the Official Models from Scratch": "It reproduces the published open-vocabulary checkpoints from
+  Objects365, GQA and Flickr30k — about 1.4 M training samples on 8× RTX 4090 — and is unrelated to fine-tuning on
+  your own data, which is covered under Train Usage above."; its table lists "Objects365v1" (Detection, 609k samples,
+  9621k boxes), "GQA" (Grounding, 621k, 3681k) and "Flickr30k" (Grounding, 149k, 641k); "The text-prompt model is
+  trained first, and the other two prompting modes are refinements of it"; "Validation uses LVIS minival". The YOLOE-26
+  paper (arXiv 2602.00168, PDF https://arxiv.org/pdf/2602.00168): "Training data sources: YOLOE-26 is trained using
+  large-scale detection and grounding datasets that collectively provide diverse object categories, language
+  grounding, and rich visual variability. In practice, three public sources are commonly used: Objects365 (object
+  detection with bounding boxes), GQA (grounding-style annotations aligned with language), and Flickr30k Entities
+  (phrase grounding)." and, under its Table 1, "Models are trained on Objects365v1, GQA, and Flickr30k datasets." The
+  original YOLOE paper (Wang et al., "YOLOE: Real-Time Seeing Anything", arXiv 2503.07465, submitted 10 Mar 2025, PDF
+  https://arxiv.org/pdf/2503.07465): "Data. We follow [5] to utilize detection and grounding datasets, including
+  Objects365 (V1) [52], GoldG [22] (includes GQA [17] and Flickr30k [43]), where images from COCO [34] are excluded."
+  and, in its appendix, "Data. We employ Objects365[52], GoldG [22] (including GQA[17] and Flickr30k [43]) for
+  training YOLOE." The licenses of Objects365, GQA and Flickr30k were not read (UNVERIFIED). The text encoder's
+  (MobileCLIP2-B) license is quoted above.
 
 ---
 
@@ -1220,6 +1260,22 @@ Each entry: what the source itself says, and whether code or weights are linked 
 - **ViTPose / ViTPose+** (`ViTAE-Transformer/ViTPose`, last commit 2025-12-26): `LICENSE` "Copyright 2018-2020
   Open-MMLab. All rights reserved." + Apache License 2.0 (clone 2026-11-10). HaMeR and Hamba ship a `vitpose_model.py` at their
   repository roots; HaMeR's demo uses it to locate hands. rtmlib lists "ViTPose for 133 keypoints".
+  (gap round 2, read 2026-11-11) **The ViTPose-s whole-body ONNX file the trial ran** (`vitpose-s-wholebody.onnx`,
+  97,427,067 bytes) is `onnx/wholebody/vitpose-s-wholebody.onnx` in the Hugging Face repo `JunkyByte/easy_ViTPose`
+  (HF API `?blobs=true`: same size; not gated). Weights license, from that repo's card
+  (https://huggingface.co/JunkyByte/easy_ViTPose/raw/main/README.md), section "License": "Refer to official
+  https://github.com/ViTAE-Transformer/ViTPose/blob/main/LICENSE for model license" (the Apache-2.0 `LICENSE` above).
+  The easy_ViTPose code (https://raw.githubusercontent.com/JunkyByte/easy_ViTPose/main/README.md; its `LICENSE` is the
+  Apache License 2.0 text) says: "We provide all the VitPose original models, converted for inference, with single
+  dataset format output." Training data: the ViTPose README's "### WholeBody dataset" table
+  (https://raw.githubusercontent.com/ViTAE-Transformer/ViTPose/main/README.md) lists one S-size model, "|
+  **ViTPose++-S** | COCO+AIC+MPII+AP10K+APT36K+WholeBody | 256x192 | 54.4 |" (Model, Dataset, Resolution, AP), and
+  the README's news line reads "[2023-01-10] Update ViTPose++! It uses MoE strategies to jointly deal with human,
+  animal, and wholebody pose estimation tasks." So the S-size whole-body checkpoint the README offers was trained on
+  COCO, AI Challenger, MPII, AP-10K, APT-36K and COCO-WholeBody; that `vitpose-s-wholebody.onnx` is converted from
+  that checkpoint is not stated in the files read (UNVERIFIED). COCO-WholeBody's terms are quoted in the MMPose
+  section ("COCO-WholeBody dataset is **ONLY** for research and non-commercial use."); the other five datasets'
+  licenses were not read (UNVERIFIED).
 - **Sapiens** (Meta, `facebookresearch/sapiens`, last commit 2026-05-26): `LICENSE` "Creative Commons
   Attribution-NonCommercial 4.0 International" (clone 2026-11-10). (verify, resolves the earlier UNVERIFIED)
   `docs/POSE_README.md` lists "Body: 17 Keypoints", "Body + Face + Hands + Feet: 133 Keypoints" ("following the
@@ -1295,7 +1351,10 @@ Inside this lane (video):
    outputs `note_events` as `(start_time_s, end_time_s, pitch_midi, amplitude, pitch_bends)` "times in seconds"
    (`lanes/audio-to-notes/survey.md`, section "13. Spotify Basic Pitch"; verify: that file has changed since, the line
    was 120 at 21:37 UTC, not 115): the two share a time axis once frame index / fps and audio seconds are
-   put on one clock (an alignment step; no tool in this lane does it for you).
+   put on one clock (an alignment step; no tool in this lane does it for you). (gap round 2: the trial script
+   `picking_hand_onsets.py`, run r0609, did this alignment on R3c: frame n at n / 25 s; `R3c.wav` and the mp4's audio
+   track cross-correlate at lag 0; it then measured picking-hand fingertip speed around 63 Basic Pitch onsets;
+   `trials.md`, "Gap round 2".)
 9a. (verify, added) SAM 2 / SAM 3 output per-object masks (READMEs), and CoTracker's predictor accepts "segm_mask"
    ("Segmentation mask of shape (B, 1, H, W)") together with `grid_size`, in which case the grid is "computed only for
    the mask" (`cotracker/predictor.py` comments): a neck mask can restrict which points CoTracker follows.

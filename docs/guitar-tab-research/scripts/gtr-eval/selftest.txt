@@ -1,4 +1,4 @@
-gtr-eval 0.11.1 selftest
+gtr-eval 0.12.0 selftest
 PASS check-truth.fixture  | mismatches=[]
 PASS check-truth.detects_wrong_fret  | ['audio file FX1.wav not found next to the truth file', '1 notes where pitch != tuning_midi[6-string] + capo + fret (first: [0])']
 PASS notes.identity_csv_midi  | onset_f1=1.0 onoff_f1=1.0 chroma_f1=1.0
@@ -31,6 +31,8 @@ PASS f0.all_unvoiced  | {"voicing_recall": 0.0, "voicing_false_alarm": 0.0, "raw
 PASS f0.conf_threshold_unvoices_but_keeps_pitch  | {"voicing_recall": 0.0, "voicing_false_alarm": 0.0, "raw_pitch_accuracy": 1.0, "raw_chroma_accuracy": 1.0, "overall_accuracy": 0.200999}
 PASS f0.other_hop_resampled  | rpa=0.995313 (frames at note edges move under interpolation)
 PASS f0.nan_means_unvoiced  | {"voicing_recall": 1.0, "voicing_false_alarm": 0.0, "raw_pitch_accuracy": 1.0, "raw_chroma_accuracy": 1.0, "overall_accuracy": 1.0}
+PASS f0.empty_frequency_cells_unvoiced  | {"voicing_recall": 1.0, "voicing_false_alarm": 0.0, "raw_pitch_accuracy": 1.0, "raw_chroma_accuracy": 1.0, "overall_accuracy": 1.0} n_est_rows=801 empty_cells=161 (same metrics as the file with 0 written)
+PASS f0.empty_confidence_and_text_cell  | oa=1.0 n_est_rows=801 processing=['801 rows with an empty confidence cell: no confidence', "1 rows with a readable time were left out because their frequency or confidence cell is missing or not a number (first: '8.5000,n/a,0.9')"]
 PASS beats.identity  | {"f_measure": 1.0, "precision": 1.0, "recall": 1.0, "CMLc": 1.0, "CMLt": 1.0, "AMLc": 1.0, "AMLt": 1.0, "n_truth": 16, "n_est": 16, "n_matched": 16, "timing_of_matched": {"n_pairs": 16, "median_s": 0.0, "mean_s": 0.0, "mean_abs_s": 0.0, "p95_abs_s": 0.0, "max_abs_s": 0.0}}
 PASS beats.shift_100ms_f_0  | F=0.0
 PASS beats.double_tempo  | F=0.680851 CMLt=0.0 AMLt=1.0
@@ -86,6 +88,9 @@ PASS tab.musicxml  | sf=1.0 matched=40 tuning=[40, 45, 50, 55, 59, 64]
 PASS notes.musicxml  | onset_f1=1.0
 PASS tab.musicxml_compressed_capo  | sf=1.0 est_capo=2
 PASS tab.ascii_capo_line  | est_capo=2 sf=1.0
+PASS tab.ascii_capo_in_title_not_read  | est_capo=2 (not stated in the estimate; the truth capo is assumed) sf=1.0
+PASS tab.ascii_capo_line_after_title  | est_capo=2 (stated in the estimate file) sf=1.0
+PASS tab.ascii_capo_field_in_tuning_line  | est_capo=2 (stated in the estimate file) sf=1.0
 PASS notes.json_list_of_lists  | onset_f1=1.0
 PASS notes.cols_onset_duration_pitch  | onset_f1=1.0 onoff=1.0
 PASS notes.json_start_end_pitch_hz  | onset_f1=1.0
@@ -113,10 +118,10 @@ PASS stems.single_mode  | {"guitar": {"si_sdr_db": "inf", "sdr_db": 227.80401, "
 PASS stems.ref_dir_option  | {"guitar": "inf", "bass": "inf"}
 PASS stems.swapped_negative  | {"guitar": {"si_sdr_db": -48.142809, "sdr_db": -16.509226, "sir_db": -16.509226, "sar_db": 203.712999}, "bass": {"si_sdr_db": -48.142809, "sdr_db": -15.61162, "sir_db": -15.61162, "sar_db": 226.64599}}
 PASS stems.other_rate_and_stereo  | si_sdr=63.27658 processing=['estimated stem for guitar: resampled 44100 -> 16000 Hz (scipy.signal.resample_poly)', 'estimated stem for guitar: 2 channels averaged to mono']
-PASS cli.launcher_from_root_with_out  | exit=0 stderr=[gtr-eval e0001] notes truth=FX1 exit=0 (ledger /tmp/gtr-eval-selftest-dd1b3co0/ledger.jsonl)
-PASS cli.ledger_line_written  | 1 ledger lines; stderr=[gtr-eval e0001] notes truth=FX1 exit=0 (ledger /tmp/gtr-eval-selftest-dd1b3co0/ledger.jsonl)
+PASS cli.launcher_from_root_with_out  | exit=0 stderr=[gtr-eval e0001] notes truth=FX1 exit=0 (ledger /home/user/gtr/eval/.selftest-tmp/gtr-eval-selftest-8htvd2b6/ledger.jsonl)
+PASS cli.ledger_line_written  | 1 ledger lines; stderr=[gtr-eval e0001] notes truth=FX1 exit=0 (ledger /home/user/gtr/eval/.selftest-tmp/gtr-eval-selftest-8htvd2b6/ledger.json
 PASS cli.error_is_json_exit_1  | exit=1
-PASS cli.ledger_subcommand  | exit=0 out={"id":"e0002","utc":"2026-11-10T20:33:35+00:00","argv":["notes","--truth","/home/user/gtr/eval/fixtures/FX1/FX1.truth.js
+PASS cli.ledger_subcommand  | exit=0 out={"id":"e0002","utc":"2026-11-11T00:27:12+00:00","argv":["notes","--truth","/home/user/gtr/eval/fixtures/FX1/FX1.truth.js
 PASS cli.truth_by_clip_id  | exit=0
 PASS [R1a] check-truth  | mismatches=[]
 PASS [R1a] notes.identity  | n=189 onset_f1=1.0 onoff_f1=1.0
@@ -204,6 +209,22 @@ N/A  [R3a] key.identity  | truth has no key
 N/A  [R3a] tempo.identity  | truth has no tempo_bpm
 PASS [R3a] tuning.identity  | diff=0.0
 N/A  [R3a] onsets.taps_identity  | truth has no taps
+PASS [R3b] check-truth  | mismatches=[]
+N/A  [R3b] notes.*  | truth has no notes
+N/A  [R3b] beats.identity  | truth has no beats
+N/A  [R3b] chords.identity  | truth has no chords
+N/A  [R3b] key.identity  | truth has no key
+N/A  [R3b] tempo.identity  | truth has no tempo_bpm
+PASS [R3b] tuning.identity  | diff=0.0
+N/A  [R3b] onsets.taps_identity  | truth has no taps
+PASS [R3c] check-truth  | mismatches=[]
+N/A  [R3c] notes.*  | truth has no notes
+N/A  [R3c] beats.identity  | truth has no beats
+N/A  [R3c] chords.identity  | truth has no chords
+N/A  [R3c] key.identity  | truth has no key
+N/A  [R3c] tempo.identity  | truth has no tempo_bpm
+PASS [R3c] tuning.identity  | diff=0.0
+N/A  [R3c] onsets.taps_identity  | truth has no taps
 PASS [S1] check-truth  | mismatches=[]
 PASS [S1] notes.identity  | n=62 onset_f1=1.0 onoff_f1=1.0
 PASS [S1] notes.shift_100ms_gives_0  | onset_f1=0.0
@@ -389,4 +410,4 @@ PASS [S7flat30] sidecar S7flat30.mid scores 1  | value=1.0 counts={"n_truth": 18
 PASS [S7flat30] sidecar S7flat30.beats.txt scores 1  | value=1.0 counts={"n_truth_beats": 32, "n_truth_downbeats": 8, "n_est_beats": 32, "n_est_downbeats": 8}
 PASS [S7flat30] sidecar S7flat30.chords.lab scores 1  | value=1.0 counts={"n_truth_segments": 10, "n_est_segments": 10, "n_est_labels_unparsed": 0, "est_unparsed_duration_s": 0.0, "truth_span_s": [0.0, 24.0]}
 PASS [S7flat30] sidecar S7flat30.tab.txt scores 1  | value=1.0 counts={"n_truth": 182, "n_est": 182, "n_matched": 182, "n_truth_left_out": {}, "n_est_without_position": 0}
-selftest: 350 PASS, 0 FAIL, 40 N/A (gtr-eval 0.11.1)
+selftest: 359 PASS, 0 FAIL, 52 N/A (gtr-eval 0.12.0)

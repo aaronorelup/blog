@@ -1,0 +1,959 @@
+{
+ "url": "https://api.cesure.app/mcp",
+ "utc_start": "2026-11-11T00:32:29Z",
+ "steps": [
+  {
+   "step": "initialize",
+   "request": {
+    "method": "POST",
+    "url": "https://api.cesure.app/mcp",
+    "headers": {
+     "User-Agent": "research-probe/0.1 (MCP client, no account)",
+     "Accept": "application/json, text/event-stream",
+     "Content-Type": "application/json"
+    },
+    "body": {
+     "jsonrpc": "2.0",
+     "id": 1,
+     "method": "initialize",
+     "params": {
+      "protocolVersion": "2025-06-18",
+      "capabilities": {},
+      "clientInfo": {
+       "name": "research-probe",
+       "version": "0.1"
+      }
+     }
+    }
+   },
+   "response": {
+    "status": 200,
+    "headers": {
+     "Content-Length": "1663",
+     "Content-Type": "application/json",
+     "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+     "X-Ratelimit-Limit": "3000",
+     "X-Ratelimit-Remaining": "2999",
+     "X-Ratelimit-Reset": "1794357210",
+     "Date": "Wed, 11 Nov 2026 00:32:29 GMT",
+     "Connection": "close"
+    },
+    "bytes": 1663,
+    "body": {
+     "id": 1,
+     "result": {
+      "protocolVersion": "2025-06-18",
+      "capabilities": {
+       "tools": {
+        "listChanged": false
+       },
+       "resources": {
+        "listChanged": false,
+        "subscribe": false
+       }
+      },
+      "serverInfo": {
+       "name": "cesure",
+       "version": "1.0.0",
+       "title": "Cesure"
+      },
+      "instructions": "Cesure writes tablature and staff notation, notes by fret and string or by pitch. Each score lives on Cesure's server as a draft, named by the id every tool gives (draft): create_score opens one from a .cesure written in the call, import_score from a .cesure file, AlphaTex or an \"Open in Cesure\" link, read_my_score from the linked account's library; the other tools take that id, never the score itself. undo_last_change gives a draft back the score it held before its last change. No tool gives the whole score back: each answers with a summary, and read_score reads measures, 200 at most a call. A draft is kept 14 days after the last call that touches it. Each tool that opens or changes a draft answers with a short link that opens it in Cesure, the web app, with no account. open_in_cesure shows the Cesure player where the host draws apps, which plays the draft in the conversation. Measures and tracks are numbered from 1. With the person's Cesure account linked, list_my_scores and read_my_score reach its library, save_new_score adds a draft as a new score, update_my_score writes a draft opened by read_my_score back over its score, and list_my_scores gives each score's tags and the account's tags, which organize_my_scores changes. The descriptions of create_score and edit_measures give the notation of a measure; a call whose voices do not fill their time signature is refused, naming each fault."
+     },
+     "jsonrpc": "2.0"
+    }
+   },
+   "wall_s": 0.6
+  },
+  {
+   "step": "notifications/initialized",
+   "request": {
+    "method": "POST",
+    "url": "https://api.cesure.app/mcp",
+    "headers": {
+     "User-Agent": "research-probe/0.1 (MCP client, no account)",
+     "Accept": "application/json, text/event-stream",
+     "Content-Type": "application/json"
+    },
+    "body": {
+     "jsonrpc": "2.0",
+     "method": "notifications/initialized"
+    }
+   },
+   "response": {
+    "status": 202,
+    "headers": {
+     "Content-Length": "0",
+     "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+     "X-Ratelimit-Limit": "3000",
+     "X-Ratelimit-Remaining": "2999",
+     "X-Ratelimit-Reset": "1794357211",
+     "Date": "Wed, 11 Nov 2026 00:32:30 GMT",
+     "Connection": "close"
+    },
+    "bytes": 0,
+    "body": ""
+   },
+   "wall_s": 0.664
+  },
+  {
+   "step": "tools/list",
+   "request": {
+    "method": "POST",
+    "url": "https://api.cesure.app/mcp",
+    "headers": {
+     "User-Agent": "research-probe/0.1 (MCP client, no account)",
+     "Accept": "application/json, text/event-stream",
+     "Content-Type": "application/json"
+    },
+    "body": {
+     "jsonrpc": "2.0",
+     "id": 2,
+     "method": "tools/list",
+     "params": {}
+    }
+   },
+   "response": {
+    "status": 200,
+    "headers": {
+     "Content-Length": "19822",
+     "Content-Type": "application/json",
+     "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+     "X-Ratelimit-Limit": "3000",
+     "X-Ratelimit-Remaining": "2999",
+     "X-Ratelimit-Reset": "1794357211",
+     "Date": "Wed, 11 Nov 2026 00:32:30 GMT",
+     "Connection": "close"
+    },
+    "bytes": 19822,
+    "body": {
+     "id": 2,
+     "result": {
+      "tools": [
+       {
+        "name": "create_score",
+        "inputSchema": {
+         "properties": {
+          "score": {
+           "type": "string",
+           "description": "The score, a .cesure written in the notation described above."
+          }
+         },
+         "required": [
+          "score"
+         ],
+         "type": "object",
+         "additionalProperties": false
+        },
+        "description": "Create a score you write as a .cesure and open it as a draft, e.g. {\"version\":2,\"score\":{\"title\":\"Song\",\"tempo\":96,\"tracks\":[{\"name\":\"Guitar\",\"instrument\":\"GUITAR\",\"measures\":[{\"staves\":[{\"voices\":[\"(0.6 2.5 2.4).2 r.2\"]}]}]},{\"name\":\"Bass\",\"instrument\":\"BASS\",\"tuning\":[{\"note\":\"G\",\"octave\":2},{\"note\":\"D\",\"octave\":2},{\"note\":\"A\",\"octave\":1},{\"note\":\"E\",\"octave\":1}],\"measures\":[{\"staves\":[{\"voices\":[\"0.4.2 r.2\"]}]}]}]}} (a track without tuning is a guitar in standard tuning; tuning lists the open strings from string 1). Every measure must read and fill its time signature, or nothing is created and the refusal names each fault with its place. Measure notation (.cesure): each voice is one string of beats separated by spaces. beat = content.duration[{d | tu 3}]; content = fret.string[{note props}] | pitch | (note note …) | r. Durations, on EVERY beat: 1 whole, 2 half, 4 quarter, 8, 16, 32, 64. Strings from 1 (the highest); x as fret mutes. A pitch (C4 = middle C, F#3, Bb2) lets Cesure choose string and fret; a staff is all by pitch or all fret.string. Beat props: d dotted, tu 3 triplet on each beat of the group. Note props: t tie, h hammer/pull-off and sl slide to the next note on that string, v vibrato, b (0 4) a whole-tone bend. EACH VOICE FILLS ITS TIME SIGNATURE EXACTLY: 4/4 = 4 quarters = 8 eighths, 3/4 = 3 quarters, 6/8 = 6 eighths; rests complete a short one. A measure without numerator/denominator is 4/4, whatever came before. A second voice (a bass under a melody) is a second string in voices. Examples (4/4): \"5.3.4 7.3.4 r.2\" (fret 5 then 7 on string 3 (strings from 1, the highest), quarters; a half rest); \"(0.1 1.2 0.3).2 x.6.4 r.4\" (a chord, a half; a muted note); \"E4.8 F#4.8 G4.4 Bb3.2\" (notes by pitch (C4 = middle C): Cesure chooses string and fret); \"5.3.4{d} 5.3.8 2.1.8{tu 3} 3.1.8{tu 3} 5.1.8{tu 3} 7.2{h}.8 8.2.8\" (dotted quarter; a triplet of eighths (each beat carries it); a hammer-on to the next note); \"5.3.2 5.3{t}.4 7.2{sl}.8 9.2{v}.8\" (a tie to the note before, a slide, a vibrato). A measure: {\"id\":\"p2\",\"numerator\":3,\"denominator\":4,\"staves\":[{\"voices\":[\"0.1.8 2.1.8 3.1.4 5.1.4\",\"0.6.2{d}\"]}]}. The full format: https://cesure.app/format",
+        "outputSchema": {
+         "properties": {},
+         "type": "object"
+        },
+        "title": "Create a score",
+        "annotations": {
+         "title": "Create a score",
+         "readOnlyHint": false,
+         "destructiveHint": false,
+         "idempotentHint": false,
+         "openWorldHint": false
+        },
+        "_meta": {
+         "securitySchemes": [
+          {
+           "type": "noauth"
+          },
+          {
+           "type": "oauth2",
+           "scopes": []
+          }
+         ]
+        },
+        "securitySchemes": [
+         {
+          "type": "noauth"
+         },
+         {
+          "type": "oauth2",
+          "scopes": []
+         }
+        ]
+       },
+       {
+        "name": "import_score",
+        "inputSchema": {
+         "properties": {
+          "score": {
+           "type": "string",
+           "description": "The .cesure text, AlphaTex, or Open in Cesure link, verbatim."
+          }
+         },
+         "required": [
+          "score"
+         ],
+         "type": "object",
+         "additionalProperties": false
+        },
+        "description": "Open as a draft a score the person gives whole: a .cesure file's text, AlphaTex, or an \"Open in Cesure\" link. The score is taken as it is, never rewritten. A link to any other page (a video, a recording) opens nothing: Cesure reads no page.",
+        "outputSchema": {
+         "properties": {},
+         "type": "object"
+        },
+        "title": "Import a score",
+        "annotations": {
+         "title": "Import a score",
+         "readOnlyHint": false,
+         "destructiveHint": false,
+         "idempotentHint": false,
+         "openWorldHint": false
+        },
+        "_meta": {
+         "securitySchemes": [
+          {
+           "type": "noauth"
+          },
+          {
+           "type": "oauth2",
+           "scopes": []
+          }
+         ]
+        },
+        "securitySchemes": [
+         {
+          "type": "noauth"
+         },
+         {
+          "type": "oauth2",
+          "scopes": []
+         }
+        ]
+       },
+       {
+        "name": "read_score",
+        "inputSchema": {
+         "properties": {
+          "draft": {
+           "type": "string",
+           "description": "The draft: the id a previous tool gave (draft)."
+          },
+          "track": {
+           "type": "integer",
+           "description": "The track, from 1 (default 1).",
+           "minimum": 1
+          },
+          "from": {
+           "type": "integer",
+           "description": "First measure, from 1 (default 1).",
+           "minimum": 1
+          },
+          "to": {
+           "type": "integer",
+           "description": "Last measure (default the last; at most 200 are read a call).",
+           "minimum": 1
+          }
+         },
+         "required": [
+          "draft"
+         ],
+         "type": "object",
+         "additionalProperties": false
+        },
+        "description": "Read measures from..to of a track of the draft (all by default, 200 at most a call: past them, the answer's more says where to go on) as .cesure measures — id, time signature, voices in the compact notation (second voice, hands, ties included) — with the repeat signs and tempo changes of those measures, by id, a summary of the score and one of the track.",
+        "outputSchema": {
+         "properties": {},
+         "type": "object"
+        },
+        "title": "Read measures",
+        "annotations": {
+         "title": "Read measures",
+         "readOnlyHint": true,
+         "destructiveHint": false,
+         "idempotentHint": true,
+         "openWorldHint": false
+        },
+        "_meta": {
+         "securitySchemes": [
+          {
+           "type": "noauth"
+          },
+          {
+           "type": "oauth2",
+           "scopes": []
+          }
+         ]
+        },
+        "securitySchemes": [
+         {
+          "type": "noauth"
+         },
+         {
+          "type": "oauth2",
+          "scopes": []
+         }
+        ]
+       },
+       {
+        "name": "edit_measures",
+        "inputSchema": {
+         "properties": {
+          "draft": {
+           "type": "string",
+           "description": "The draft: the id a previous tool gave (draft)."
+          },
+          "track": {
+           "type": "integer",
+           "description": "The track, from 1 (default 1).",
+           "minimum": 1
+          },
+          "from": {
+           "type": "integer",
+           "description": "First measure replaced, from 1.",
+           "minimum": 1
+          },
+          "to": {
+           "type": "integer",
+           "description": "Last measure replaced; from - 1 to insert.",
+           "minimum": 0
+          },
+          "measures": {
+           "type": "array",
+           "items": {
+            "type": "object"
+           },
+           "description": "The new measures, .cesure measure objects as read_score returns them; [] removes the range."
+          }
+         },
+         "required": [
+          "draft",
+          "from",
+          "to",
+          "measures"
+         ],
+         "type": "object",
+         "additionalProperties": false
+        },
+        "description": "Rewrite measures from..to (numbers, inclusive) of ONE track of the draft with .cesure measures, as read_score returns them; to = from - 1 inserts before from. A measure written with its id stays that measure, even rewritten; one written without its id is a new measure, and the one it stood for is removed with what it carried (a repeat it opened, say). A measure of the range left out is removed, and measures [] removes the whole range. The other tracks follow column by column, as in the editor: a column is inserted, removed or given a time signature on every track; its repeat signs are carried as the editor carries them, and a tempo change stays on its column (on the next one when its column is removed), so no other column changes tempo. A note may be written by its pitch (E4, Bb3) in place of fret.string: Cesure chooses its string and fret, and never moves a note written with its string. The answer names the measures written. A written measure that does not read or does not fill its time signature refuses the whole call, the refusal naming each fault with its place; a measure sent back unchanged (same id and content) is kept as it was. Measure notation (.cesure): each voice is one string of beats separated by spaces. beat = content.duration[{d | tu 3}]; content = fret.string[{note props}] | pitch | (note note …) | r. Durations, on EVERY beat: 1 whole, 2 half, 4 quarter, 8, 16, 32, 64. Strings from 1 (the highest); x as fret mutes. A pitch (C4 = middle C, F#3, Bb2) lets Cesure choose string and fret; a staff is all by pitch or all fret.string. Beat props: d dotted, tu 3 triplet on each beat of the group. Note props: t tie, h hammer/pull-off and sl slide to the next note on that string, v vibrato, b (0 4) a whole-tone bend. EACH VOICE FILLS ITS TIME SIGNATURE EXACTLY: 4/4 = 4 quarters = 8 eighths, 3/4 = 3 quarters, 6/8 = 6 eighths; rests complete a short one. A measure without numerator/denominator is 4/4, whatever came before. A second voice (a bass under a melody) is a second string in voices. Examples (4/4): \"5.3.4 7.3.4 r.2\" (fret 5 then 7 on string 3 (strings from 1, the highest), quarters; a half rest); \"(0.1 1.2 0.3).2 x.6.4 r.4\" (a chord, a half; a muted note); \"E4.8 F#4.8 G4.4 Bb3.2\" (notes by pitch (C4 = middle C): Cesure chooses string and fret); \"5.3.4{d} 5.3.8 2.1.8{tu 3} 3.1.8{tu 3} 5.1.8{tu 3} 7.2{h}.8 8.2.8\" (dotted quarter; a triplet of eighths (each beat carries it); a hammer-on to the next note); \"5.3.2 5.3{t}.4 7.2{sl}.8 9.2{v}.8\" (a tie to the note before, a slide, a vibrato). A measure: {\"id\":\"p2\",\"numerator\":3,\"denominator\":4,\"staves\":[{\"voices\":[\"0.1.8 2.1.8 3.1.4 5.1.4\",\"0.6.2{d}\"]}]}. The full format: https://cesure.app/format",
+        "outputSchema": {
+         "properties": {},
+         "type": "object"
+        },
+        "title": "Edit measures",
+        "annotations": {
+         "title": "Edit measures",
+         "readOnlyHint": false,
+         "destructiveHint": true,
+         "idempotentHint": false,
+         "openWorldHint": false
+        },
+        "_meta": {
+         "securitySchemes": [
+          {
+           "type": "noauth"
+          },
+          {
+           "type": "oauth2",
+           "scopes": []
+          }
+         ]
+        },
+        "securitySchemes": [
+         {
+          "type": "noauth"
+         },
+         {
+          "type": "oauth2",
+          "scopes": []
+         }
+        ]
+       },
+       {
+        "name": "transpose",
+        "inputSchema": {
+         "properties": {
+          "draft": {
+           "type": "string",
+           "description": "The draft: the id a previous tool gave (draft)."
+          },
+          "semitones": {
+           "type": "integer",
+           "description": "Semitones, -24 to 24.",
+           "minimum": -24,
+           "maximum": 24
+          },
+          "notesOffTheNeck": {
+           "type": "string",
+           "description": "retune_lowest_string or change_octave (default the first when it carries the notes with no octave).",
+           "enum": [
+            "retune_lowest_string",
+            "change_octave"
+           ]
+          },
+          "harmonicsOffTheNeck": {
+           "type": "string",
+           "description": "keep_harmonic or play_fretted (default the first when an octave holds the harmonic).",
+           "enum": [
+            "keep_harmonic",
+            "play_fretted"
+           ]
+          }
+         },
+         "required": [
+          "draft",
+          "semitones"
+         ],
+         "type": "object",
+         "additionalProperties": false
+        },
+        "description": "Shift the notes of the draft by some semitones; the placement follows, and no note keeps a wrong pitch. A note no string of its track carries at its shifted pitch goes where notesOffTheNeck says: retune_lowest_string tunes the lowest string of the track down to the lowest of those it carries (4 semitones at most), then moves the others by octaves; change_octave moves each by the octaves that put it on the neck. A harmonic that rings in its own form at no shifted string goes where harmonicsOffTheNeck says: keep_harmonic keeps it a harmonic at the octave that holds it, play_fretted plays it as a fretted note at its pitch, losing the harmonic's timbre. By default the lowest string when it carries the notes with no octave, else octaves, and harmonics kept when an octave holds them; play_fretted when no harmonic leaves the neck changes nothing. A choice that cannot place the notes is refused, saying why and naming the one that can. The answer names each string tuned down (retunedStrings: track, string, from, to) and counts the notes moved by octaves (notesMovedByOctaves) and the harmonics played fretted (harmonicsPlayedFretted).",
+        "outputSchema": {
+         "properties": {},
+         "type": "object"
+        },
+        "title": "Transpose",
+        "annotations": {
+         "title": "Transpose",
+         "readOnlyHint": false,
+         "destructiveHint": true,
+         "idempotentHint": false,
+         "openWorldHint": false
+        },
+        "_meta": {
+         "securitySchemes": [
+          {
+           "type": "noauth"
+          },
+          {
+           "type": "oauth2",
+           "scopes": []
+          }
+         ]
+        },
+        "securitySchemes": [
+         {
+          "type": "noauth"
+         },
+         {
+          "type": "oauth2",
+          "scopes": []
+         }
+        ]
+       },
+       {
+        "name": "refinger",
+        "inputSchema": {
+         "properties": {
+          "draft": {
+           "type": "string",
+           "description": "The draft: the id a previous tool gave (draft)."
+          },
+          "track": {
+           "type": "integer",
+           "description": "The track, from 1 (default every track).",
+           "minimum": 1
+          },
+          "mode": {
+           "type": "string",
+           "description": "auto (default), standard or optimized.",
+           "enum": [
+            "auto",
+            "standard",
+            "optimized"
+           ]
+          },
+          "searchCapo": {
+           "type": "boolean",
+           "description": "Let the placement choose a capo (default false)."
+          }
+         },
+         "required": [
+          "draft"
+         ],
+         "type": "object",
+         "additionalProperties": false
+        },
+        "description": "Place the notes of the draft again on the neck (string and fret), keeping their pitches: mode auto, standard (lowest frets) or optimized (fewest hand moves); searchCapo lets it choose a capo.",
+        "outputSchema": {
+         "properties": {},
+         "type": "object"
+        },
+        "title": "Place the notes again",
+        "annotations": {
+         "title": "Place the notes again",
+         "readOnlyHint": false,
+         "destructiveHint": true,
+         "idempotentHint": false,
+         "openWorldHint": false
+        },
+        "_meta": {
+         "securitySchemes": [
+          {
+           "type": "noauth"
+          },
+          {
+           "type": "oauth2",
+           "scopes": []
+          }
+         ]
+        },
+        "securitySchemes": [
+         {
+          "type": "noauth"
+         },
+         {
+          "type": "oauth2",
+          "scopes": []
+         }
+        ]
+       },
+       {
+        "name": "undo_last_change",
+        "inputSchema": {
+         "properties": {
+          "draft": {
+           "type": "string",
+           "description": "The draft: the id a previous tool gave (draft)."
+          }
+         },
+         "required": [
+          "draft"
+         ],
+         "type": "object",
+         "additionalProperties": false
+        },
+        "description": "Give the draft back the score it held before its last change (edit_measures, transpose, refinger, or an undo): the score it holds now becomes the one before, so calling it again redoes. One step only, and only when Cesure had room to keep that score; it says so when it had not.",
+        "outputSchema": {
+         "properties": {},
+         "type": "object"
+        },
+        "title": "Undo the last change",
+        "annotations": {
+         "title": "Undo the last change",
+         "readOnlyHint": false,
+         "destructiveHint": true,
+         "idempotentHint": false,
+         "openWorldHint": false
+        },
+        "_meta": {
+         "securitySchemes": [
+          {
+           "type": "noauth"
+          },
+          {
+           "type": "oauth2",
+           "scopes": []
+          }
+         ]
+        },
+        "securitySchemes": [
+         {
+          "type": "noauth"
+         },
+         {
+          "type": "oauth2",
+          "scopes": []
+         }
+        ]
+       },
+       {
+        "name": "search_catalog",
+        "inputSchema": {
+         "properties": {
+          "query": {
+           "type": "string",
+           "description": "Words of a title or a composer; empty lists the catalog."
+          },
+          "language": {
+           "type": "string",
+           "description": "en (default), fr or es.",
+           "enum": [
+            "en",
+            "fr",
+            "es"
+           ]
+          }
+         },
+         "required": [],
+         "type": "object",
+         "additionalProperties": false
+        },
+        "description": "Search Cesure's catalog of free pieces by words of a title, a composer or both: a piece is found when each word is in one of them, a short joining word such as 'by' aside; returns title, artist, licence and link.",
+        "outputSchema": {
+         "properties": {},
+         "type": "object"
+        },
+        "title": "Search the catalog",
+        "annotations": {
+         "title": "Search the catalog",
+         "readOnlyHint": true,
+         "destructiveHint": false,
+         "idempotentHint": true,
+         "openWorldHint": false
+        },
+        "_meta": {
+         "securitySchemes": [
+          {
+           "type": "noauth"
+          }
+         ]
+        },
+        "securitySchemes": [
+         {
+          "type": "noauth"
+         }
+        ]
+       },
+       {
+        "name": "open_in_cesure",
+        "inputSchema": {
+         "properties": {
+          "draft": {
+           "type": "string",
+           "description": "The draft: the id a previous tool gave (draft)."
+          }
+         },
+         "required": [
+          "draft"
+         ],
+         "type": "object",
+         "additionalProperties": false
+        },
+        "description": "Show the draft in the Cesure player, to read and hear it. Where the host draws apps, the player plays the draft in the conversation; everywhere, the answer gives the short link that opens it in Cesure, with no account, and the score's summary.",
+        "outputSchema": {
+         "properties": {},
+         "type": "object"
+        },
+        "title": "Open in Cesure",
+        "annotations": {
+         "title": "Open in Cesure",
+         "readOnlyHint": true,
+         "destructiveHint": false,
+         "idempotentHint": true,
+         "openWorldHint": false
+        },
+        "_meta": {
+         "ui": {
+          "resourceUri": "ui://cesure/player-0.8.3+ac6e74d"
+         },
+         "ui/resourceUri": "ui://cesure/player-0.8.3+ac6e74d",
+         "securitySchemes": [
+          {
+           "type": "noauth"
+          },
+          {
+           "type": "oauth2",
+           "scopes": []
+          }
+         ]
+        },
+        "securitySchemes": [
+         {
+          "type": "noauth"
+         },
+         {
+          "type": "oauth2",
+          "scopes": []
+         }
+        ]
+       },
+       {
+        "name": "list_my_scores",
+        "inputSchema": {
+         "properties": {
+          "offset": {
+           "type": "integer",
+           "description": "How many scores to skip, most recent first (default 0): the answer's more gives the next.",
+           "minimum": 0
+          }
+         },
+         "required": [],
+         "type": "object",
+         "additionalProperties": false
+        },
+        "description": "The scores of the person's linked Cesure account (\"My scores\"), the most recently changed at the top, 200 a call (offset skips that many; when there are more, the answer's more gives the next offset): id, title, when last changed, and its tags; then every tag of the account, with how many scores carry it. Needs the account linked.",
+        "outputSchema": {
+         "properties": {},
+         "type": "object"
+        },
+        "title": "List my scores",
+        "annotations": {
+         "title": "List my scores",
+         "readOnlyHint": true,
+         "destructiveHint": false,
+         "idempotentHint": true,
+         "openWorldHint": false
+        },
+        "_meta": {
+         "securitySchemes": [
+          {
+           "type": "oauth2",
+           "scopes": []
+          }
+         ]
+        },
+        "securitySchemes": [
+         {
+          "type": "oauth2",
+          "scopes": []
+         }
+        ]
+       },
+       {
+        "name": "read_my_score",
+        "inputSchema": {
+         "properties": {
+          "id": {
+           "type": "string",
+           "description": "The score's id, as list_my_scores gives it."
+          }
+         },
+         "required": [
+          "id"
+         ],
+         "type": "object",
+         "additionalProperties": false
+        },
+        "description": "Open one score of the linked account as a draft, by the id list_my_scores gives: the answer is the draft and the score's summary; read_score reads its measures. Needs the account linked.",
+        "outputSchema": {
+         "properties": {},
+         "type": "object"
+        },
+        "title": "Open one of my scores",
+        "annotations": {
+         "title": "Open one of my scores",
+         "readOnlyHint": false,
+         "destructiveHint": false,
+         "idempotentHint": false,
+         "openWorldHint": false
+        },
+        "_meta": {
+         "securitySchemes": [
+          {
+           "type": "oauth2",
+           "scopes": []
+          }
+         ]
+        },
+        "securitySchemes": [
+         {
+          "type": "oauth2",
+          "scopes": []
+         }
+        ]
+       },
+       {
+        "name": "save_new_score",
+        "inputSchema": {
+         "properties": {
+          "draft": {
+           "type": "string",
+           "description": "The draft: the id a previous tool gave (draft)."
+          },
+          "title": {
+           "type": "string",
+           "description": "The title in the library (default the score's own)."
+          }
+         },
+         "required": [
+          "draft"
+         ],
+         "type": "object",
+         "additionalProperties": false
+        },
+        "description": "Save the draft as a NEW score in the linked account's library (never overwrites one; a free account keeps 3 scores), under a title (default the score's own). Needs the account linked.",
+        "outputSchema": {
+         "properties": {},
+         "type": "object"
+        },
+        "title": "Save as a new score",
+        "annotations": {
+         "title": "Save as a new score",
+         "readOnlyHint": false,
+         "destructiveHint": false,
+         "idempotentHint": false,
+         "openWorldHint": false
+        },
+        "_meta": {
+         "securitySchemes": [
+          {
+           "type": "oauth2",
+           "scopes": []
+          }
+         ]
+        },
+        "securitySchemes": [
+         {
+          "type": "oauth2",
+          "scopes": []
+         }
+        ]
+       },
+       {
+        "name": "update_my_score",
+        "inputSchema": {
+         "properties": {
+          "draft": {
+           "type": "string",
+           "description": "The draft: the id a previous tool gave (draft)."
+          }
+         },
+         "required": [
+          "draft"
+         ],
+         "type": "object",
+         "additionalProperties": false
+        },
+        "description": "Write the draft back over the score of the linked account's library it was opened from (read_my_score), as saving in the app does: refused, nothing overwritten, when the score was saved in Cesure since. The library keeps the score's earlier version. Needs the account linked.",
+        "outputSchema": {
+         "properties": {},
+         "type": "object"
+        },
+        "title": "Save over my score",
+        "annotations": {
+         "title": "Save over my score",
+         "readOnlyHint": false,
+         "destructiveHint": true,
+         "idempotentHint": false,
+         "openWorldHint": false
+        },
+        "_meta": {
+         "securitySchemes": [
+          {
+           "type": "oauth2",
+           "scopes": []
+          }
+         ]
+        },
+        "securitySchemes": [
+         {
+          "type": "oauth2",
+          "scopes": []
+         }
+        ]
+       },
+       {
+        "name": "organize_my_scores",
+        "inputSchema": {
+         "properties": {
+          "create_tags": {
+           "type": "array",
+           "items": {
+            "type": "string"
+           },
+           "description": "Tags to create, by name."
+          },
+          "add": {
+           "type": "array",
+           "items": {
+            "type": "object",
+            "properties": {
+             "score": {
+              "type": "string",
+              "description": "The score's id, as list_my_scores gives it."
+             },
+             "tag": {
+              "type": "string",
+              "description": "The tag's name, 1 to 30 characters."
+             }
+            },
+            "required": [
+             "score",
+             "tag"
+            ]
+           },
+           "description": "Tags to put on scores."
+          },
+          "remove": {
+           "type": "array",
+           "items": {
+            "type": "object",
+            "properties": {
+             "score": {
+              "type": "string",
+              "description": "The score's id, as list_my_scores gives it."
+             },
+             "tag": {
+              "type": "string",
+              "description": "The tag's name, 1 to 30 characters."
+             }
+            },
+            "required": [
+             "score",
+             "tag"
+            ]
+           },
+           "description": "Tags to take off scores."
+          },
+          "delete_unused_tags": {
+           "type": "array",
+           "items": {
+            "type": "string"
+           },
+           "description": "Tags to delete if no score carries them, by name."
+          }
+         },
+         "required": [],
+         "type": "object",
+         "additionalProperties": false
+        },
+        "description": "Organize the scores of the linked account with tags, in ONE batch applied whole or not at all (at most 500 changes, counting the tags add creates): create_tags creates tags, add puts a tag on a score (creating the tag if the account has none of that name; names compare without case), remove takes it off, delete_unused_tags deletes tags no score carries. It never renames, deletes or changes a score, and no score's date moves. The opposite changes reverse an organizing (remove what add put, delete_unused_tags for the tags it created). Needs the account linked.",
+        "outputSchema": {
+         "properties": {},
+         "type": "object"
+        },
+        "title": "Organize my scores",
+        "annotations": {
+         "title": "Organize my scores",
+         "readOnlyHint": false,
+         "destructiveHint": true,
+         "idempotentHint": true,
+         "openWorldHint": false
+        },
+        "_meta": {
+         "securitySchemes": [
+          {
+           "type": "oauth2",
+           "scopes": []
+          }
+         ]
+        },
+        "securitySchemes": [
+         {
+          "type": "oauth2",
+          "scopes": []
+         }
+        ]
+       }
+      ]
+     },
+     "jsonrpc": "2.0"
+    }
+   },
+   "wall_s": 0.493
+  },
+  {
+   "step": "well-known oauth-protected-resource",
+   "request": {
+    "method": "GET",
+    "url": "https://api.cesure.app/.well-known/oauth-protected-resource",
+    "headers": {
+     "User-Agent": "research-probe/0.1 (MCP client, no account)",
+     "Accept": "application/json"
+    },
+    "body": null
+   },
+   "response": {
+    "status": 404,
+    "headers": {
+     "Content-Length": "0",
+     "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+     "Date": "Wed, 11 Nov 2026 00:32:31 GMT",
+     "Connection": "close"
+    },
+    "bytes": 0,
+    "body": ""
+   },
+   "wall_s": 0.635
+  }
+ ],
+ "session_id_returned": false,
+ "utc_end": "2026-11-11T00:32:31Z"
+}

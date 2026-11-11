@@ -616,6 +616,7 @@ with keys already in the key store, so no account was created. Their request for
 | StemSplit API (row added by the verifier) | guitar stem of S4 (`SIX_STEMS`) | `Authorization: Bearer <API key>` (survey.md); no StemSplit key in the key store (the verifier's `getkey.py --list` check, names only, 2026-11-10) |
 | MusicGPT `POST /v1/audio_to_midi` (row added by the verifier) | notes of S2n as MIDI | API key needed (survey.md); no MusicGPT key in the key store (same check) |
 | Alibaba Qwen-Omni and OpenAI audio models (rows added by the verifier) | the chord, note and capo prompts of trials (a), (b), (d) | no Alibaba Cloud (DashScope) or OpenAI key in the key store (same check); the gateway's free tier refused the Qwen model asked for (`alibaba/qwen3.8-27b`, r0023) |
+| Mureka Music Transcription on fal.ai (row added in gap round 2) | MusicXML of S4, timestamped lyrics of R2 | `Authorization: Key $FAL_KEY` needed; no fal key in the key store (`getkey.py --list`, names only, 2026-11-11); `for-aaron.md` section 15 |
 
 ## Tested handoff: ElevenLabs guitar stem (MP3) into the YourMT3 Space (MIDI), scored against S4
 
@@ -634,6 +635,124 @@ with keys already in the key store, so no account was created. Their request for
   and the transcriber's matched onsets come out a median 23.4 ms late (-1.7 ms after the 25.057 ms shift); the
   YourMT3 Space returns its MIDI inside HTML, so a program has to cut the `data:audio/midi;base64,` URL out before
   handing the MIDI on.
+
+## Gap round 2
+
+Agent: gapfill-hosted-apis, 2026-11-11 (from `date -u +%F`), started 00:12 UTC. It worked through the five
+hosted-apis rows of `GAPS.md` (H1 to H5) in order; what stays open is listed in `survey.md`, "Gap round 2". Terms
+and prices it read are in `survey.md` (sections marked "added in gap round 2"); this section holds what it ran.
+Nothing in this round was paid for: no call here costs money, the spend file is unchanged (0.959949 USD for the
+lane), and no key was read (Cesure's MCP server was called without an account). Scripts are in `scripts/gap2/` and
+`scripts/gap2_update_tools_json.py`.
+
+### ffmpeg 6.1.1 (box): the lane's preparation steps, logged (gap H2)
+
+- What it is: the box's `ffmpeg 6.1.1-3ubuntu5` (Ubuntu package). In the first round it cut the 15-second excerpts
+  (`ffmpeg -i <clip>.wav -t 15.0 -c:a pcm_s16le <clip>_0-15s.wav`, recorded with their sha256 in
+  `/home/user/gtr/lanes/hosted-apis/inputs/README.md`), extracted the 1 fps frames of trial (c), decoded and trimmed
+  the ElevenLabs stems (`scripts/stem_alignment.py`, the recipe under "Media kept outside git") and mixed R2's
+  non-vocal stems (`amix`). None of these steps was run through gtr-run: the ledger has no `hosted-apis` line whose
+  tool is ffmpeg or whose command starts with `ffmpeg` (checked 2026-11-11 over all 70 earlier lines of the lane).
+  ffmpeg did run inside the yt-dlp runs r0126 and r0323 (yt-dlp's `--download-sections` and `-x --audio-format wav`
+  call it).
+- Logged now, both with `--nolock` (sub-second file preparation, no CPU slot taken; unpinned, so not a 2-core
+  figure):
+
+| run | command | inputs | wall s | CPU s | peak MB | result |
+|---|---|---|---|---|---|---|
+| r0599 | `scripts/gap2/ffmpeg_excerpts.sh`: the recorded `-t 15.0` command for S2n, S3, S4 into a new folder | `S2n.wav`, `S3.wav`, `S4.wav` | 0.29 | 0.29 | 50.2 | three WAVs of 2,646,078 bytes whose sha256 equal the ones in `inputs/README.md` (ae989edd..., 4ac9b8e8..., 7e9784c8...); the copies were deleted after the check |
+| r0600 | `scripts/gap2/ffmpeg_frames_r3a.sh`: `ffmpeg -i R3a.mp4 -vf fps=1 -q:v 3 f_%02d.jpg` into a new folder | `R3a.mp4` (2,368,626 bytes) | 0.61 | 0.78 | 79.7 | 18 JPEGs, 531,261 bytes in all, each byte-identical to `out/frames/R3a/`; the copies were deleted after the check |
+
+- The stem decoding and trimming were remade by the first round's verifier with byte-identical results (verification
+  log, item 3) but are still not ledger runs.
+
+### gradio_client: which runs used it (gap H2)
+
+Every Hugging Face Space call in this file went through `gradio_client` (`scripts/hf_space_call.py` with 2.7.2 in
+`venv-apis`, `scripts/hf_space_call_old.py` with 0.5.3 in `venv-gc-old`). By run id, from the ledger's commands:
+
+| gradio_client | runs that returned a result | runs refused or failed |
+|---|---|---|
+| 2.7.2 | r0112 (YourMT3), r0164, r0231, r0245 (YourMT3-cpu), r0118, r0246 (Beat-This); verifier r0305, r0308 | r0116 (Muscriptor, ZeroGPU quota), r0162 (SAM Audio, ZeroGPU quota), r0119 (demucs_playground: `ValueError('Unknown protocol: ws')`); verifier r0309, r0311 (ZeroGPU quota) |
+| 0.5.3 | r0141 (demucs_playground); verifier r0322 | none |
+
+`tools.json` now lists these runs under its `gradio_client` entry.
+
+### Entries that were counted as tried without output (gap H2)
+
+`tools.json` had `tried: true` for three services whose every call was refused before any output: the Space
+`hugging-apps/muscriptor-music-transcription` (r0116, r0309: ZeroGPU quota), the Space `lpeterl/sam-audio-webui`
+(r0162: ZeroGPU quota) and the Google Gemini API (r0013, r0014, r0300: HTTP 402 on every generation request; only
+`countTokens`, r0016, answered, with input token counts). They are now `tried: false` with `tried_how` null; the run
+records and refusal texts are kept, and `for-aaron.md` sections 1 (Gemini) and 3 (the ZeroGPU Spaces) still hold the
+steps. The sections above already called these calls refused; their text is unchanged.
+
+### Cesure MCP server (`https://api.cesure.app/mcp`): initialize and tools/list without an account (gap H5)
+
+- What it is: the remote MCP server of Cesure, a tab, staff and piano-roll editor (apps-survey lane, "Cesure"). Its
+  assistants page (https://cesure.app/assistants, read 2026-11-11) says "You add Cesure once, as a custom connector,
+  with this address:" `https://api.cesure.app/mcp`. Terms and formats are in `survey.md`, "Cesure MCP server".
+- Install: none. `scripts/gap2/cesure_mcp_probe.py` uses the Python standard library (`python3 -I`, Python 3.13.18).
+- Run r0622 (`--nolock`, a remote call; local CPU 0.09 s; wall 2.46 s by the ledger; peak 23.4 MB):
+  `gtr-run --lane hosted-apis --tool cesure-mcp --label "..." --nolock -- python3 -I scripts/gap2/cesure_mcp_probe.py samples/cesure-mcp`.
+  No account, no key, no cookie; `User-Agent: research-probe/0.1 (MCP client, no account)`. It sent, over MCP's
+  Streamable HTTP transport (JSON-RPC 2.0 by POST): `initialize` (protocol version 2025-06-18, client name
+  "research-probe"), `notifications/initialized`, `tools/list`; then `GET /.well-known/oauth-protected-resource`. No
+  `tools/call` was sent, so no draft was created. Every request and response is in `samples/cesure-mcp/probe.json`,
+  the tool list in `samples/cesure-mcp/tools_list.json` (25,420 bytes).
+
+| step | HTTP | round trip s | what came back |
+|---|---|---|---|
+| `initialize` | 200 | 0.600 | `application/json`, 1,663 bytes: `protocolVersion` "2025-06-18"; `capabilities` `tools` and `resources` (both `listChanged` false); `serverInfo` name "cesure", version "1.0.0", title "Cesure"; an `instructions` text; no `Mcp-Session-Id` header; `X-Ratelimit-Limit: 3000` |
+| `notifications/initialized` | 202 | 0.664 | empty body |
+| `tools/list` | 200 | 0.493 | 19,822 bytes, 14 tools (below) |
+| `GET /.well-known/oauth-protected-resource` | 404 | 0.635 | empty body |
+
+- The 14 tools, with the `securitySchemes` each declares in its `_meta` (`noauth`: callable without an account;
+  `oauth2`: with a linked Cesure account) and its MCP annotations:
+
+| tool | title | required inputs (other inputs) | securitySchemes | readOnlyHint / destructiveHint |
+|---|---|---|---|---|
+| `create_score` | Create a score | `score` (a .cesure text) | noauth, oauth2 | false / false |
+| `import_score` | Import a score | `score` (.cesure text, AlphaTex, or an "Open in Cesure" link) | noauth, oauth2 | false / false |
+| `read_score` | Read measures | `draft` (`track`, `from`, `to`) | noauth, oauth2 | true / false |
+| `edit_measures` | Edit measures | `draft`, `from`, `to`, `measures` (`track`) | noauth, oauth2 | false / true |
+| `transpose` | Transpose | `draft`, `semitones` (-24 to 24) (`notesOffTheNeck`: `retune_lowest_string` or `change_octave`; `harmonicsOffTheNeck`: `keep_harmonic` or `play_fretted`) | noauth, oauth2 | false / true |
+| `refinger` | Place the notes again | `draft` (`track`; `mode`: `auto`, `standard`, `optimized`; `searchCapo` boolean, default false) | noauth, oauth2 | false / true |
+| `undo_last_change` | Undo the last change | `draft` | noauth, oauth2 | false / true |
+| `open_in_cesure` | Open in Cesure | `draft` | noauth, oauth2 | true / false |
+| `search_catalog` | Search the catalog | none (`query`, `language`: en, fr, es) | noauth | true / false |
+| `list_my_scores` | List my scores | none (`offset`) | oauth2 | true / false |
+| `read_my_score` | Open one of my scores | `id` | oauth2 | false / false |
+| `save_new_score` | Save as a new score | `draft` (`title`) | oauth2 | false / false |
+| `update_my_score` | Save over my score | `draft` | oauth2 | false / true |
+| `organize_my_scores` | Organize my scores | none (`create_tags`, `add`, `remove`, `delete_unused_tags`) | oauth2 | false / true |
+
+- Drafts without an account: the server accepted `initialize` and `tools/list` with no credentials, and the eight
+  draft tools (create, import, read, edit, transpose, refinger, undo, open) declare `noauth` among their schemes; the
+  five library tools declare only `oauth2`. The `instructions` text: "A draft is kept 14 days after the last call
+  that touches it. Each tool that opens or changes a draft answers with a short link that opens it in Cesure, the
+  web app, with no account." Whether a `create_score` call is in fact served without an account was not tested
+  (the probe sent no `tools/call`): UNVERIFIED until one call.
+- Input format facts (tool descriptions, saved in `tools_list.json`): a score is written as .cesure text, e.g.
+  `{"version":2,"score":{"title":"Song","tempo":96,"tracks":[{"name":"Guitar","instrument":"GUITAR","measures":[...]}]}}`;
+  in a measure each voice is a string of beats, "beat = content.duration[{d | tu 3}]; content = fret.string[{note
+  props}] | pitch | (note note …) | r"; "Strings from 1 (the highest); x as fret mutes."; "a track without tuning is a
+  guitar in standard tuning; tuning lists the open strings from string 1"; "Every measure must read and fill its time
+  signature, or nothing is created and the refusal names each fault with its place." The format page
+  (https://cesure.app/format, "This is version 2.") gives each track a `capo` field: "Capo position in frets. Fret
+  numbers stay relative to the capo; only the sounding pitch moves."
+- Output format facts: a draft id that the other tools take; "No tool gives the whole score back: each answers with a
+  summary, and read_score reads measures, 200 at most a call." (`instructions`); `read_score` returns .cesure measures;
+  `open_in_cesure` declares a UI resource `ui://cesure/player-0.8.3+ac6e74d` in its `_meta`.
+- Constraints accepted, as the descriptions state them (none exercised here): `refinger` "Place the notes of the draft
+  again on the neck (string and fret), keeping their pitches: mode auto, standard (lowest frets) or optimized (fewest
+  hand moves); searchCapo lets it choose a capo."; `edit_measures`: "A note may be written by its pitch (E4, Bb3) in
+  place of fret.string: Cesure chooses its string and fret, and never moves a note written with its string."; a
+  track `tuning` and `capo`; `transpose` "retune_lowest_string tunes the lowest string of the track down to the lowest
+  of those it carries (4 semitones at most)". No audio goes in: the assistants page says "No audio. Turning a
+  recording into a tab happens in the app, from a sound."
+- Failures: none; the OAuth metadata path answered 404.
 
 ## Survey tool list: what else was checked for a run
 
@@ -663,7 +782,8 @@ The verifier's calls appended six more lines to the same file (tags starting `ve
 r0315 0.2343 USD (1,065 credits) and r0318 0.00242 USD (11 credits), 0.252107 USD in all, counted the same way. The
 file's totals are now gateway 0.089169, ElevenLabs 0.86878, xAI 0.002, all services 0.959949 USD. The verifier's
 refused calls (r0303, r0304: HTTP 400) and free calls (r0300, r0307, the Space re-runs, yt-dlp r0323) cost nothing
-and are not in the file.
+and are not in the file. Gap round 2 (2026-11-11) made no paid call (r0599 and r0600 are local ffmpeg steps, r0622 a
+free MCP probe) and added no line to the file; the totals are unchanged.
 
 ## Media kept outside git
 
@@ -680,7 +800,7 @@ Woodward, "I Want to Destroy Something Beautiful"), R3a CC BY-SA 4.0 (Mark Ander
 | `out/hf-spaces/beatthis_S4/files/beat-this_audio-with-beats.wav` | 6,834,024 | 38.741383 s | HF Space `teamup-tech/Beat-This`: S4 with beat clicks mixed in (r0118) |
 | `out/hf-spaces/beatthis_R1c/files/beat-this_audio-with-beats.wav` | 2,490,396 | 28.235283 s | the same for R1c (r0246; GuitarSet CC BY 4.0) |
 | `out/yt-dlp/R3a_ytdlp_400-418.wav` | 1,729,374 | 18.012979 s | yt-dlp audio of 400-418 s of the R3a archive.org item, 16-bit 48 kHz mono (r0126) |
-| `inputs/S2n_0-15s.wav`, `inputs/S3_0-15s.wav`, `inputs/S4_0-15s.wav` | 2,646,078 each | 15.000 s | first 15 s of S2n, S3, S4 (`ffmpeg -t 15.0`), for 15-second free tiers; documented in `inputs/README.md` there (sha256 ae989edd..., 4ac9b8e8..., 7e9784c8...) |
+| `inputs/S2n_0-15s.wav`, `inputs/S3_0-15s.wav`, `inputs/S4_0-15s.wav` | 2,646,078 each | 15.000 s | first 15 s of S2n, S3, S4 (`ffmpeg -t 15.0`), for 15-second free tiers; documented in `inputs/README.md` there (sha256 ae989edd..., 4ac9b8e8..., 7e9784c8...); not a ledger run when made, re-made byte-identical through gtr-run in gap round 2 (r0599) |
 | `out/frames/R3a/f_01.jpg` ... `f_18.jpg` | 531,261 bytes in all | stills | the 18 frames (1 per second, sent as t = 0 to 17 s) of trial (c) |
 | `verify/hf-spaces/demucs_S4_old/named/{bass,drums,other,vocals}.wav` | 6,834,024 each | 38.741383 s | the verifier's re-run r0322 of the demucs_playground Space on S4 (content differs from r0141's) |
 | `verify/frames/R3b/f_01.jpg` ... `f_18.jpg`, `verify/frames/R3c/f_01.jpg` ... `f_18.jpg` | 1,565,337 and 1,735,015 bytes in all | stills | the frames the verifier sent in r0360 and r0391 (R3b CC0 1.0, R3c CC BY 3.0 Culture Vannin) |

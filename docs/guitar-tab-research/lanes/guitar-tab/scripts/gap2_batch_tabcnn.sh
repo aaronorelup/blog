@@ -4,6 +4,7 @@
 #   onnx-gpfx      cstr/tabcnn-onnx tabcnn-gpfx.onnx, the card's gpfx front-end (ONNX Runtime)
 #   onnx-vanilla   cstr/tabcnn-onnx tabcnn.onnx, the card's vanilla front-end (ONNX Runtime)
 #   onnx-gpfx-amtfront  tabcnn-gpfx.onnx on the amt-tools front-end (to compare the export with the pickled model)
+#   onnx-vanilla-prep   tabcnn.onnx with the training repository's preprocess.py order (normalize, then resample)
 # Output prefix: /home/user/gtr/lanes/guitar-tab/gap2/tabcnn/<clip>.<config>
 set +e
 L=/home/user/gtr/lanes/guitar-tab; S=/home/user/blog/docs/guitar-tab-research/lanes/guitar-tab/scripts
@@ -14,6 +15,7 @@ case $CFG in
   onnx-gpfx)          ARGS="--backend onnx --model $W/cstr-tabcnn-onnx/tabcnn-gpfx.onnx --variant gpfx --front card" ;;
   onnx-vanilla)       ARGS="--backend onnx --model $W/cstr-tabcnn-onnx/tabcnn.onnx --variant vanilla --front card" ;;
   onnx-gpfx-amtfront) ARGS="--backend onnx --model $W/cstr-tabcnn-onnx/tabcnn-gpfx.onnx --front amt" ;;
+  onnx-vanilla-prep)  ARGS="--backend onnx --model $W/cstr-tabcnn-onnx/tabcnn.onnx --variant vanilla --front prep" ;;
   *) echo "unknown config $CFG"; exit 2 ;;
 esac
 for c in "$@"; do

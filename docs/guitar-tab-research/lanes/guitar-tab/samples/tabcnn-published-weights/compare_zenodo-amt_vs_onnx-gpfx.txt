@@ -1,0 +1,9 @@
+S2n: frames 1265, identical frames 1265, identical string cells 7590/7590, active cells zenodo-amt 2697, onnx-gpfx 2697
+S2s: frames 1265, identical frames 1265, identical string cells 7590/7590, active cells zenodo-amt 4537, onnx-gpfx 4537
+S3: frames 1034, identical frames 1034, identical string cells 6204/6204, active cells zenodo-amt 4838, onnx-gpfx 4838
+S5capo2: frames 1265, identical frames 1265, identical string cells 7590/7590, active cells zenodo-amt 2448, onnx-gpfx 2448
+S5dropd: frames 1265, identical frames 1265, identical string cells 7590/7590, active cells zenodo-amt 2600, onnx-gpfx 2600
+R1a: frames 1256, identical frames 1256, identical string cells 7536/7536, active cells zenodo-amt 3072, onnx-gpfx 3072
+R1b: frames 1264, identical frames 1264, identical string cells 7584/7584, active cells zenodo-amt 912, onnx-gpfx 912
+R1c: frames 1216, identical frames 1216, identical string cells 7296/7296, active cells zenodo-amt 2926, onnx-gpfx 2926
+all: frames 9830, identical frames 9830, identical string cells 58980/58980

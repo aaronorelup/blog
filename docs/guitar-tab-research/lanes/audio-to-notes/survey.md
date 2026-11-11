@@ -46,7 +46,7 @@ number). RUNNABLE / NOT-CPU-BOX are pointers for the try agent, not test results
 9. aubio (`aubio/aubio`, C + Python, `aubionotes` / `aubiopitch` CLI). PyPI 0.4.9 (2019-02-08); repo `VERSION` 0.5.0-alpha, last commit 2026-04-10. GPL-3.0-or-later. No weights. RUNNABLE (binaries present on the box).
 10. Essentia (`MTG/essentia`: PitchYinProbabilistic, PredominantPitchMelodia, MultiPitchKlapuri, PitchCREPE, PitchContourSegmentation, Audio2Midi). PyPI `essentia` / `essentia-tensorflow` 2.1b6.dev1438 (2026-05-19; CPython 3.14 wheels only; 2.1b6.dev1389 of 2025-07-24 is the last with Linux wheels for CPython 3.9 to 3.13); last commit 2026-11-05. Code AGPL-3.0 (commercial license on request); models CC BY-NC-SA 4.0 or CC BY-NC-ND 4.0 depending on the page (all quoted). RUNNABLE.
 11. MELODIA Vamp plugin 1.0 (MTG-UPF, Linux 32/64-bit build behind a download form; "free of charge for non-commercial use only") and wrapper `justinsalamon/audio_to_midi_melodia` (last commit 2020-04-03; no LICENSE file). RUNNABLE after the form. The MTG page answered HTTP 403 to the verifier, so its quotes are UNVERIFIED here (section 11).
-12. CREPE Notes (`xavriley/crepe_notes`). PyPI `crepe-notes` 0.2.0 (2026-03-13); last commit 2026-03-13. GPL-3.0. Uses CREPE, PESTO, PENN or torchcrepe weights, and madmom's `CNNOnsetProcessor` (madmom model files: CC BY-NC-SA 4.0) unless `--disable-splitting`. Accepts a precomputed f0 CSV (`--f0`) and a tuning offset in cents (`--tuning-offset`). RUNNABLE.
+12. CREPE Notes (`xavriley/crepe_notes`). PyPI `crepe-notes` 0.2.0 (2026-03-13); last commit 2026-03-13. GPL-3.0. Uses CREPE, PESTO, PENN or torchcrepe weights, and madmom's `CNNOnsetProcessor` (madmom model files: CC BY-NC-SA 4.0) unless `--disable-splitting`. Accepts a precomputed f0 CSV (`--f0`) and a tuning offset in cents (`--tuning-offset`). RUNNABLE. Gap round 2: ran here with `--f0` from this lane's torchcrepe output and a copy of another lane's madmom build (`trials.md`, run r0616).
 
 ### Polyphonic and multi-instrument note transcription (audio to MIDI)
 
@@ -80,6 +80,10 @@ number). RUNNABLE / NOT-CPU-BOX are pointers for the try agent, not test results
 32. SOME (`openvpi/SOME`, last commit 2026-03-07, MIT) and its successor GAME (`openvpi/GAME`, last commit 2026-10-25, MIT): singing voice to MIDI with float pitches; GAME accepts user-adjusted note boundaries. RUNNABLE (to check; weights from GitHub releases).
 33. ROSVOT (`RickyL-2000/ROSVOT`, ACL 2024), last commit 2024-11-20, MIT code, checkpoint on Google Drive, trained on Mandarin data. To check (README installs CUDA 11.8 torch).
 35. VocalParse (`pymaster17/VocalParse`, arXiv 2605.04613, May 2026; added by the verifier): singing voice to lyrics, MIDI pitch tokens, note values and a global BPM, as one token sequence from a fine-tuned Qwen3-ASR-1.7B. Last commit 2026-06-16. Code Apache-2.0; checkpoint `pymaster/VocalParse` (card `license: apache-2.0`, 4.08 GB); trained with M4Singer (CC BY-NC-SA 4.0) and GTSinger among its data. To check (README installs CUDA 12.4 torch).
+
+### Utilities the lane used (not transcribers)
+
+38. SoX 14.4.2 (Ubuntu package; source https://sourceforge.net/p/sox/code/), used once to shift a clip by 30 cents (input preparation). Code GPL-2.0-or-later (the `sox` program) and LGPL-2.1-or-later (libsox); quotes in section 38. Added in gap round 2.
 
 ### Services and desktop products (pointers; covered by the apps-survey and hosted-apis lanes)
 
@@ -619,7 +623,13 @@ point there by name.
   transposition in semitones (`transpositionAmount`) on `Audio2Midi`; `referenceFrequency` on Melodia.
 - **Observed on this box (`trials.md`, batch r0321):** `PitchYinProbabilistic` with its defaults returned
   frequencies that did not match the input (for a 110 Hz test sine a median of 103.826 Hz, for 440 Hz 293.665 Hz),
-  while Essentia's `PitchYin` read the same sines correctly; the cause is UNVERIFIED in `trials.md`.
+  while Essentia's `PitchYin` read the same sines correctly; the cause is UNVERIFIED in `trials.md`. (Added in gap
+  round 2: with sampleRate, frameSize, hopSize, lowRMSThreshold and outputUnvoiced set explicitly the outputs are the
+  same (run r0647); its frame-level stage `PitchYinProbabilities` returns pitch candidates as whole MIDI numbers, and
+  Essentia's source converts them with `hz2midi`, declared `inline int hz2midi(Real hz, Real tuningFrequency)` in
+  https://raw.githubusercontent.com/MTG/essentia/master/src/essentia/essentiamath.h (read 2026-11-11), so every output
+  is a whole-MIDI frequency; why the chosen values lie below the sines' pitch is still UNVERIFIED. `trials.md`, "Gap
+  round 2", item A6.)
 - **Access needs:** a commercial license for the library and models is "upon request" from UPF (quotes below).
 - **License facts:**
   - a. Code: AGPL-3.0. `COPYING.txt` at master is the "GNU AFFERO GENERAL PUBLIC LICENSE Version 3"; "Essentia
@@ -1075,6 +1085,11 @@ point there by name.
   read 2026-11-10: "MIT License Copyright (c) 2017 Rachel Bittner" with the standard MIT grant. b. Weights: in the
   MIT repository; no separate statement found. c. Training data: not read here (the paper is not on arXiv under a
   link in the README; UNVERIFIED).
+- **Environment it names (added in gap round 2, files read at 4b2ff44 on 2026-11-11):** `replicate.yaml` pins
+  `python_version: 2.7.15` and `tensorflow==1.12.0`, `pescador==1.0.0`, `keras==2.0.3`, `librosa==0.5.0`,
+  `mir_eval==0.4`, `joblib==0.11`, with `ffmpeg` as a system dependency; `requirements.txt` lists `pescador>=1.0.0`,
+  `keras>=2.0.3`, `librosa>=0.5.0`, `mir_eval>=0.4`, `medleydb>=1.2.9`. The seven weight files are 1,674,464 to
+  1,674,816 bytes each. Not run here (`trials.md`, "Gap round 2", item A5).
 
 ## 14. NeuralNote
 
@@ -1293,7 +1308,10 @@ point there by name.
   names three parameters to tune: "Min duration, min velocity and sensitivity". It depends on madmom (README notes a
   Python 3.10+ madmom issue and a git install fix). madmom on PyPI is 0.16.1 with a single source archive
   (`madmom-0.16.1.tar.gz`, 20,040,947 bytes, no wheel) and the license field "BSD, CC BY-NC-SA" (PyPI JSON,
-  verifier 2026-11-10).
+  verifier 2026-11-10). (Added in gap round 2: on this box madmom was built from that archive on Python 3.9 by the
+  chords-beats-key lane, run r0047, and installed as 0.17.dev0 from `git+https://github.com/CPJKU/madmom` at
+  27f032e8 by the fingerstyle-voices-taps lane; CREPE Notes ran here with a copy of the latter, `trials.md`, "Gap
+  round 2", items A3 and A4.)
 - **CLI options in the code (verifier, `crepe_notes/cli.py` and `crepe_notes/crepe_notes.py` at 5390b17, read
   2026-11-10):** `--sensitivity` (default 0.001), `--min-duration` (default 0.03, "Minimum duration of a note in
   seconds"), `--min-velocity` (default 6), `--disable-splitting` ("Disable detection of repeated notes via onset
@@ -1305,6 +1323,13 @@ point there by name.
   for `<audio>.<pitch_tracker>.f0.csv`, then `<audio>.f0.csv` (CREPE's CLI output name), before running the
   tracker. Repeated-note splitting runs `madmom.features.CNNOnsetProcessor` (a trained CNN) unless
   `--disable-splitting` is given.
+- **Package facts (added in gap round 2, from the PyPI 0.2.0 wheel, read 2026-11-11):** `Requires-Dist` lists
+  `Click>=8.0`, `librosa>=0.10.0`, `numpy>=2.0`, `scipy>=1.13`, `madmom`, `pretty_midi`, `tqdm` and the extras `crepe`
+  (`crepe`, `tensorflow`), `pesto`, `penn`, `torchcrepe`; `crepe_notes/crepe_notes.py` line 6 also imports
+  `matplotlib.pyplot`, which is not in that list. The MIDI is written with pretty_midi, one instrument with
+  `program=pm.instrument_name_to_program('Acoustic Grand Piano')`. Its own torchcrepe backend calls
+  `torchcrepe.predict(..., fmin=50., fmax=2006., model='full', decoder=torchcrepe.decode.viterbi, ...)` and sets the
+  pitch to 0 where the periodicity is below 0.21. Run on this box: `trials.md`, "Gap round 2", item A3.
 - **License facts:** a. Code: GPL-3.0. https://raw.githubusercontent.com/xavriley/crepe_notes/main/LICENSE ("GNU
   GENERAL PUBLIC LICENSE Version 3, 29 June 2007"), read 2026-11-10; PyPI license field "GNU General Public License
   v3.0 license". b, c. It runs CREPE (or PESTO, PENN, torchcrepe) weights; see those sections. It also runs madmom's
@@ -1315,7 +1340,15 @@ point there by name.
   the following conditions are met"). Models: "Data and model files usually have .npy, .npz, .h5, .hdf5, .pkl or
   .mat file extensions." and "All model and data files are distributed under the following license: Creative
   Commons Attribution-NonCommercial-ShareAlike 4.0". In madmom's repository the `madmom/models` folder is a git
-  submodule (`.gitmodules`), so the model files themselves were not listed here.
+  submodule (`.gitmodules`), so the model files themselves were not listed here. (Added in gap round 2, LICENSE
+  re-read 2026-11-11: the source-code license has two numbered conditions, "1. Redistributions of source code must
+  retain the above copyright notice, this list of conditions and the following disclaimer." and "2. Redistributions
+  in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in
+  the documentation and/or other materials provided with the distribution.", and no third clause: the text of the
+  SPDX identifier `BSD-2-Clause`; model files `CC-BY-NC-SA-4.0`. The installed 0.17.dev0 package holds the model
+  files, among them `madmom/models/onsets/2013/onsets_cnn.pkl`, and the models repository's own `madmom/models/LICENSE`:
+  "All files in this repository are distributed under the following license: Creative Commons
+  Attribution-NonCommercial-ShareAlike 4.0" (read from the installed package, 2026-11-11).)
 
 ## 30. melodyExtraction_JDC and melodyExtraction_SSL (Sangeun Kum)
 
@@ -1328,6 +1361,17 @@ point there by name.
   License Copyright (c) 2019 Sangeun Kum") and https://raw.githubusercontent.com/keums/melodyExtraction_SSL/master/LICENSE
   ("MIT License Copyright (c) 2020 Sangeun Kum"), read 2026-11-10, standard MIT grant. Training data: not read
   (UNVERIFIED).
+- **Environment, weights, call (added in gap round 2, files read 2026-11-11; JDC at 86e6d2b, SSL at eb2525d):** JDC's
+  README lists "Keras 2.2.2 (Deep Learning library)", "Librosa 0.6.2 (for STFT)", "madmom 0.16.1 (for loading audio
+  and resampling)", "Python 3.6+" and "2 GPU : GeForce GTX 1080ti"; SSL's lists "Keras 2.3.0 (Deep Learning
+  library)", "Librosa 0.7.0 (for STFT)", "madmom 0.16.1 (for loading audio and resampling)", "pysndfx 0.3.6 (for
+  randAudioAugment)", "Python 3.7+" and "1 GPU : GeForce GTX 1080ti". Neither names a TensorFlow version. Weights in
+  the repositories: JDC `weights/ResNet_joint_add_L(CE_G).hdf5` (16,867,888 bytes) with `weights/model.json`; SSL
+  `weights/ResNet_NS.hdf5` (17,056,656 bytes); both also ship `x_data_mean_total_31.npy` and `x_data_std_total_31.npy`
+  (127,304 bytes each). Calls: `python melodyExtraction_JDC.py -p <audio> -o <dir>` and `python melodyExtraction_NS.py
+  -p <audio> -o <dir>`; `-gpu` defaults to `None` in both scripts ("It will run with cpu if None"). Output, per both
+  READMEs: "The resulting 'pitch_(*file_name*).txt' contains 2 columns", "the first : timestamps (10 ms)" and "the
+  second : the predicted fundamental frequency in Hz". Not run here (`trials.md`, "Gap round 2", item A5).
 
 ## 31. MTANet
 
@@ -1336,6 +1380,13 @@ point there by name.
   read 2026-11-10). Last commit 2024-05-27 (2856a89).
 - **License facts:** no LICENSE file in the repository root listing at 2856a89 (no license file found at
   https://github.com/Annmixiu/MTANet on 2026-11-10).
+- **Framework and weights (added in gap round 2, files read at 2856a89 on 2026-11-11):** PyTorch and PyTorch
+  Lightning (`import torch`, `import pytorch_lightning as pl` in `main.py`); no requirements file. No trained weights
+  are published: no checkpoint file is tracked, `config.py` has `resume_checkpoint = None` followed by the comment
+  `# "model_backup/TO-FTANet_adc_best.ckpt" # the model checkpoint`, and the README's "Getting Started" links only the
+  datasets (MIR-1k, ADC 2004 and MIREX05, MedleyDB) for training. `main.py` imports `model.msnet`, `model.multi_dr`,
+  `model.ftanet`, `model.mcdnn` and `model.danet`; the repository holds `msnet.py`, `ftanet.py` and `mcdnn.py` in
+  `model/control group model/` and no `multi_dr.py` or `danet.py`. Not run here (`trials.md`, "Gap round 2", item A5).
 
 ## 32. SOME and its successor GAME (OpenVPI)
 
@@ -1470,6 +1521,32 @@ Everything in this section was read by verify-docs-audio-to-notes on 2026-11-10.
   2026-11-10). b. Weights: no license tag and no card data on `shethjenil/Audio2Midi_Models` (API `cardData`: null).
   c. Training data: see YourMT3+ (section 16). d. Service: not applicable.
 - **Not run here** (as for section 36).
+
+## 38. SoX (input preparation; added in gap round 2)
+
+- **What, links:** SoX, "The Swiss Army Knife of Audio Manipulation" (header of `src/sox.c`), the command-line audio
+  tool this lane used once to shift a clip's pitch by cents (`trials.md`, "Tuning-correction re-run test" and "Gap
+  round 2", item A2). Source repository https://sourceforge.net/p/sox/code/ (files read 2026-11-11). On the box:
+  SoX v14.4.2, Ubuntu package `sox` 14.4.2+git20190427-4build4.
+- **How a program calls it:** `sox <in> <out> pitch <shift-in-cents>` (the `pitch` effect's usage line printed by
+  the box's SoX: "usage: [-q] shift-in-cents [segment-ms [search-ms [overlap-ms]]]"). Input and output are audio
+  files; with 16-bit output and an effect such as `pitch`, SoX adds dither by default: "by default, SoX automatically
+  adds TPDF dither when the output bit-depth is less than 24 and any of the following are true" (man page source
+  https://sourceforge.net/p/sox/code/ci/master/tree/sox.1?format=raw, read 2026-11-11); `-D` ("Disable automatic
+  dither") and `-R` ("Run in `repeatable' mode") change that (same page).
+- **License facts:**
+  - a. Code: GPL for the `sox` program, LGPL for libsox. `COPYING`
+    (https://sourceforge.net/p/sox/code/ci/master/tree/COPYING?format=raw, read 2026-11-11): "SoX source code is
+    distributed under two main licenses. The two licenses are in the files LICENSE.GPL and LICENSE.LGPL." and
+    "sox.c, and thus SoX-the user application, is distributed under the GPL, while the files that make up libsox are
+    licensed under the less restrictive LGPL." It continues: "Note that some of the external packages that can be
+    linked into libsox are GPLed and/or may have licensing problems, so they can be disabled at configure time with
+    the relevant--with-* options. If libsox is built with such libraries, it must be distributed under the GPL."
+    `src/sox.c`: "either version 2 of the License, or (at your option) any later version" (GNU General Public
+    License); `src/tempo.c` (the `pitch` effect): "either version 2.1 of the License, or (at your option) any later
+    version" (GNU Lesser General Public License). `LICENSE.GPL` is GPL version 2 (June 1991), `LICENSE.LGPL` LGPL
+    version 2.1 (February 1999).
+  - b, c. No trained weights; no training data. d. Service: not applicable.
 
 ## 34. Services and desktop products in this category (pointers)
 

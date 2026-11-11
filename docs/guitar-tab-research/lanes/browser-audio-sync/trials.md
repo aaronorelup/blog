@@ -762,6 +762,162 @@ warnings were checked in `samples/environment/node-package-lock.json` and `work/
 - Output files (kept outside git): `out/stretch/S1_<method>_<rate>.wav` (2 ch, float32). Samples:
   `samples/slow-practice/` (page results and the analysis JSON of every file).
 
+## Gap round 2
+
+Agent `gapfill-browser-audio-sync`, 2026-11-11 (UTC), closing this lane's three rows in `GAPS.md` (B1 to B3) and one
+question that file left open for this lane (thread binding of ONNX Runtime Web). Same box and the same pre-installed
+headless Chromium as above (Playwright 1.63.0, browser build `chromium-1243`, headless shell, "Chrome for Testing
+153.0.8010.12"). Unlike the first round, every timed run ran in a 2-core slot (`gtr-run` without `--nolock`, slot
+wait 0 to 38.9 s, `load1_at_start` 2.1 to 7.0); the one `--nolock` run (r0608) is a 2-second decode check.
+
+- Scripts (`scripts/gap2/`): `serve_gap2.mjs` (a copy of `serve.mjs` with this round's roots and a log line per
+  request), `drive_gap2.mjs` (based on `drive.mjs`, plus a `/proc` sampler: every 500 ms it reads, for every process
+  descended from the driver, VmRSS, VmHWM, thread count, `Cpus_allowed_list` and utime + stime, and for the renderer
+  every thread's name, CPU time, the CPU it last ran on (field 39 of `/proc/<pid>/task/<tid>/stat`) and its
+  `Cpus_allowed_list`; the page prints `PHASE <name> <epoch ms>` lines and the driver gives each process's CPU seconds
+  between two marks). The sampler runs in the driver's node process, inside the same slot; it cost 1.9 to 2.5 ms per
+  sample. In r0593 the sampler's process-type field read "browser" for every process (Chromium rewrites its argv into
+  one string); this was fixed before r0597, and in r0593 the renderer is the process with the 4,384.0 MB peak.
+- Libraries: a separate folder, `/home/user/gtr/lanes/browser-audio-sync/node-gap2/` (npm 10.9.9): `npm install
+  --save-exact onnxruntime-web@1.31.1` ("added 18 packages in 3s"; `onnxruntime-web` 150,622,959 bytes by `du -sb`,
+  equal to the npm registry's unpacked size) and, for the OpenCV.js section, `@techstark/opencv-js@5.0.0-release.1`.
+- Memory and CPU figures: `gtr-run`'s ledger takes them from `getrusage(RUSAGE_CHILDREN)`, which misses Chromium's
+  renderer (see "Run ids"): for r0597 the ledger has 4.17 CPU s and 241.7 MB, while the sampler read 65.78 CPU s and a
+  VmHWM of 1,319.1 MB for the renderer. "Peak memory" for a browser run below is the renderer's VmHWM (the kernel's peak
+  resident set of that process) read from `/proc`; for a Python run it is the ledger's `max_rss_mb`.
+
+### htdemucs_6s with a guitar stem in ONNX Runtime Web 1.31.1, WebAssembly (`StemSplitio/htdemucs-6s-onnx`)
+
+- What: StemSplit's ONNX export of Demucs `htdemucs_6s` (stems drums, bass, other, vocals, guitar, piano). Hugging
+  Face repository `StemSplitio/htdemucs-6s-onnx`, revision `49df9b6989cf2150840ea65b0bef77a2e471b678` (Hub API, read
+  2026-11-11: created and last modified 2026-05-21, card licence field `mit`); file `htdemucs_6s_fp16weights.onnx`,
+  136,428,532 bytes, sha256 `7ce55792e2231c93fbf92de95f5fd5b3a5e6c89f7db690dfd693e8f1dce56869` (equal to the Hub's LFS
+  hash), downloaded 2026-11-11 00:15 UTC in 5.0 s and deleted after the runs; the fp32 file (`htdemucs_6s.onnx`,
+  258,159,781 bytes) was not fetched. The model card's input and output: `mix`, float32, (1, 2, 343980), "Stereo, 44.1
+  kHz, 7.8 s segment. Values in [-1, 1]."; `stems`, float32, (1, 6, 2, 343980), "Stems in order `[drums, bass, other,
+  vocals, guitar, piano]`." In the page ORT Web reported `inputNames` ["mix"], `outputNames` ["stems"], input metadata
+  shape [1, 2, 343980] and output dims [1, 6, 2, 343980] (the output metadata shape is symbolic, `Addstems_dim_0` to
+  `Addstems_dim_3`). The STFT and inverse STFT are inside the graph (card, "How it was built": "Complex-typed
+  `torch.stft` outputs → `Conv1d` with sin/cos kernels."), so the page passes waveforms in and gets waveforms out.
+  Licence quotes and formats: `survey.md` section 55.
+- What the page adds (`scripts/gap2/pages/htdemucs6s.html`): the chunked overlap-add of demucs-onnx 0.3.4
+  (`_chunked_separate_single` and `_make_transition_window` in `demucs_onnx/inference.py`, read in the PyPI wheel, sha256
+  `9232ad4ca4d5ebf1...`; the same loop as `separate` in the model repository's `infer.py`), ported line by line: segments
+  of 343,980 samples, overlap 85,995 (N // 4), stride 257,985, the last chunk zero-padded, window = ones with
+  `np.linspace(0, 1, 85995)` as fade-in and its reverse as fade-out, `out /= max(weight, 1e-8)`, with float32 rounding
+  where numpy rounds. Input: `S4_10s`, the lane's 10.000 s cut of S4 (as for demucs-web above), decoded by
+  `decodeAudioData` in an `OfflineAudioContext` at 44.1 kHz: 2 chunks. Session: `executionProviders: ['wasm']`,
+  `ort.env.wasm.numThreads` 1, 2 or 4, page cross-origin isolated; the model passed to `InferenceSession.create` as
+  bytes (fetched from the local server in 0.35 to 0.62 s). The server log shows the page loading
+  `ort-wasm-simd-threaded.wasm` (14,848,852 bytes).
+- Native reference (`scripts/gap2/ref_demucs_onnx.py`): demucs-onnx's own functions (`load_audio`, `_make_session` or
+  the same session with `ORT_DISABLE_ALL`, `_chunked_separate_single`) on the same WAV and model file, in
+  `venv-demucsonnx` (Python 3.11, `uv pip install demucs-onnx==0.3.4 onnxruntime==1.31.1`, 151 MB by `du`; freeze in
+  `samples/htdemucs-6s-onnx-web/venv-demucsonnx.freeze.txt`; the venv was deleted after the runs). The optional
+  `disabled` argument was added to the script after r0596; the default path is unchanged.
+
+Browser runs (2 cores each):
+
+| run | graph optimization | threads | outcome | session creation | separation of 10 s (2 chunks) | renderer peak memory | renderer CPU / wall in separation |
+|---|---|---|---|---|---|---|---|
+| r0593 | `all` (the level demucs-onnx uses) | 2 | `InferenceSession.create` threw after 9.9 s: "Can't create a session. ERROR_CODE: 6, ERROR_MESSAGE: std::bad_alloc" | failed | none | 4,384.0 MB | |
+| r0606 | `basic` | 2 | the same error after 6.5 s | failed | none | 4,386.2 MB | |
+| r0617 | `all` with `enableCpuMemArena: false` | 2 | the same error after 8.2 s | failed | none | 4,381.4 MB | |
+| r0597 | `disabled` | 2 | 6 stems | 15.65 s | 29.09 s (13.95 + 15.04) | 1,319.1 MB | 1.656 |
+| r0607 | `disabled` | 4 | 6 stems, sample-identical to r0597 | 16.65 s | 30.25 s (15.45 + 14.65) | 1,216.1 MB | 1.929 |
+| r0613 | `disabled` | 1 | 6 stems, sample-identical to r0597 | 16.89 s | 52.73 s (26.19 + 26.37) | 1,204.3 MB | 0.823 |
+
+Native reference runs (ONNX Runtime 1.31.1, CPU execution provider, ORT's default thread count; 2 cores each):
+
+| run | graph optimization | input | session creation | separation | peak RSS (ledger) | ledger CPU / wall |
+|---|---|---|---|---|---|---|
+| r0596 | `ORT_ENABLE_ALL` (`_make_session`) | S4_10s.wav read by soundfile | 8.79 s | 8.86 s | 7,099.5 MB | 37.2 / 18.52 s |
+| r0603 | `ORT_DISABLE_ALL` | the same | 12.28 s | 13.76 s | 1,793.7 MB | 44.2 / 26.48 s |
+| r0611 | `ORT_DISABLE_ALL` | Chromium's decoded samples (r0608, float32 WAV) | 14.04 s | 27.78 s (`load1_at_start` 5.97) | 1,793.5 MB | 47.2 / 42.4 s |
+
+- Memory: ORT Web's documentation says "WebAssembly has a memory limit of 4GB." (`survey.md` section 35). The three
+  failed sessions stopped with the renderer at 4,381 to 4,386 MB, during `create`; the same model file and ORT version
+  peaked at 7,099.5 MB natively with `ORT_ENABLE_ALL` and at 1,793.7 MB with optimizations disabled. ORT Web added
+  `extra: {session: {use_ort_model_bytes_directly: '1'}}` to the options object the page passed (read back from that
+  object after `create`). Not tried: the `extended` level, `enableMemPattern: false`, the fp32 file, the proxy worker,
+  and the WebGPU and WebNN providers (no adapter here). `performance.memory` returned rounded values (10,000,000 bytes
+  used of a 3,760,000,000-byte limit, the same before and after) and `performance.measureUserAgentSpecificMemory()` threw
+  "SecurityError: Failed to execute 'measureUserAgentSpecificMemory' on 'Performance':
+  performance.measureUserAgentSpecificMemory is not available.", so memory comes from `/proc` only.
+- Output (r0597): six stems, each 441,000 samples x 2 channels, float32 WAV at 44.1 kHz
+  (`out/htdemucs6s-web/S4_10s_t2_optdisabled_<stem>.wav`). Peak / RMS: drums 0.391 / -28.88 dBFS, bass 0.284 / -24.68,
+  other 0.0019 / -80.25, vocals 0.401 / -21.88, guitar 0.216 / -31.37, piano 0.324 / -27.77. The sum of the six stems
+  minus the mix: -12.93 dB relative to the mix (computed in the page).
+- Score (gtr-eval `stems`, the same command shape as e1223 above: S4_10s truth stems, map drums=drums, bass=bass,
+  guitar=guitar, lead=vocals, joint mode, mono, no alignment search):
+
+| truth stem | estimated stem | browser r0597 (e1765): SI-SDR / SDR / SIR / SAR, dB | native r0596 (e1766) |
+|---|---|---|---|
+| drums | drums | 8.76 / 9.52 / 21.10 / 9.86 | 8.76 / 9.51 / 21.09 / 9.86 |
+| bass | bass | 6.90 / 9.30 / 19.54 / 9.78 | 6.90 / 9.29 / 19.53 / 9.77 |
+| guitar (strummed steel guitar) | guitar | -0.35 / 2.37 / 15.11 / 2.74 | -0.38 / 2.36 / 15.13 / 2.73 |
+| lead (GM "Voice Oohs") | vocals | 7.31 / 8.39 / 13.06 / 10.41 | 7.31 / 8.39 / 13.06 / 10.41 |
+
+  On the same cut demucs-web's 4-stem model put the guitar into `other`: SI-SDR 5.25, SDR 5.55 dB (e1223, above). The
+  source-separation lane's native run of the same 6-stem file on the whole of S4 scored its guitar stem 1.04 / 2.75 /
+  15.29 / 3.12 (its e1417).
+- Where the true guitar went (projection <est, ref> / <ref, ref> on mono signals, the source-separation lane's
+  definition; `scripts/gap2/stem_projection.py`): browser r0597: guitar 0.2146, piano 0.3507, vocals 0.1265, bass
+  0.0249, drums 0.0220, other 0.0007 (sum 0.7394); native r0596: guitar 0.2129, piano 0.3516, vocals 0.1265, bass
+  0.0251, drums 0.0221, other 0.0007 (sum 0.7389); demucs-web r0329 (4 stems, for comparison): other 0.8696, vocals
+  0.0885, drums 0.0164, bass 0.0142 (sum 0.9887).
+- Browser against native, sample by sample (`scripts/gap2/compare_stems.py`: 10 log10(sum (a - b)^2 / sum b^2), with
+  b the second run of the pair; max |a - b| in brackets; full output `samples/htdemucs-6s-onnx-web/parity_comparisons.txt`):
+
+| a vs b | drums | bass | other | vocals | guitar | piano |
+|---|---|---|---|---|---|---|
+| browser r0597 vs native `ORT_ENABLE_ALL` r0596 | -61.0 dB (0.00058) | -61.4 (0.00059) | -45.5 (4.9e-6) | -59.3 (0.00078) | -41.5 (0.0025) | -49.6 (0.00095) |
+| browser r0597 vs native `ORT_DISABLE_ALL` r0603 | -60.9 | -61.4 | -45.5 | -59.2 | -41.5 | -49.6 |
+| browser r0597 vs native `ORT_DISABLE_ALL` on Chromium's decoded input, r0611 | -61.0 | -61.4 | -45.6 | -59.3 | -41.4 | -49.5 |
+| native: Chromium's decoded input (r0611) vs soundfile's (r0603) | -91.4 | -92.3 | -61.5 | -95.2 | -78.8 | -85.9 |
+| native `ORT_DISABLE_ALL` (r0603) vs `ORT_ENABLE_ALL` (r0596) | -108.6 | -109.3 | -81.7 | -115.8 | -89.2 | -102.4 |
+| browser 4 threads (r0607) or 1 thread (r0613) vs 2 threads (r0597) | identical | identical | identical | identical | identical | identical |
+
+  With the same input samples and the same optimization level, the browser and native outputs still differ by -41.4
+  to -61.4 dB; which kernels of the WebAssembly build cause that was not looked into.
+- Input decoding (r0608, `scripts/gap2/pages/decode_check.html`, `--nolock`, wall 2.0 s): Chromium 153's
+  `decodeAudioData` turned S4_10s.wav's 16-bit samples into floats as x / 32768 for negative samples and x *
+  float32(1/32767) for positive samples (a float32 product): 0 of the 882,000 samples differ from that rule. soundfile's
+  float32 read, which demucs-onnx uses, is x / 32768 for every sample. So the 445,024 positive samples (87 are zero) are
+  32768/32767 times larger in the browser.
+- Speed facts (2 cores): browser 2 threads 29.09 s for the 10 s clip; native 13.76 s with optimizations disabled and
+  8.86 s with them on. demucs-web's 4-stem htdemucs on the same clip took 55.6 s with 2 threads in the first round
+  (r0329, `--nolock` on a shared box, so not comparable as a timing).
+- Output format facts: `session.run({mix})` returns one tensor, `stems`, float32, dims [1, 6, 2, 343980], rows drums,
+  bass, other, vocals, guitar, piano. The page writes each stem as a 2-channel float32 WAV at 44.1 kHz with the input's
+  length. Constraint inputs: none for the music; the segment length is fixed in the graph ("The exported ONNX graph
+  bakes the segment length in", demucs-onnx browser guide, read 2026-11-11); ORT session options and the thread count.
+- Samples: `samples/htdemucs-6s-onnx-web/` (page results with the `/proc` summaries, console logs, e1765 and e1766,
+  the native runs' `ref.json`, parity and projection outputs, the stems' SHA-256 list, the venv freeze). Stems:
+  `out/htdemucs6s-web/` and `out/htdemucs6s-native*/` ("Media kept outside git").
+
+### Thread binding of ONNX Runtime Web in a 2-core slot (the question `GAPS.md` left open)
+
+Question: are ONNX Runtime Web's WebAssembly threads (Web Workers in Chromium's renderer process) held to the 2 cores
+of the `gtr-run` slot? (Native ONNX Runtime threads were seen on a core outside the slot in the video lane's rtmlib
+runs.) Measured with the `/proc` sampler in r0597, r0607 and r0613 (and the failed r0593, r0606, r0617):
+
+- Every Chromium process (browser, two zygotes, GPU process, network utility, renderer) and every renderer thread had
+  `Cpus_allowed_list` equal to the slot (0-1; 2-3 in r0613 and r0617) at every sample; in the unpinned r0608 it was
+  0-3.
+- The CPU each renderer thread last ran on (field 39) was always one of the slot's two cores: {0, 1} in r0597 (98
+  samples) and r0607 (102), {2, 3} in r0613 (149).
+- `navigator.hardwareConcurrency` was 2 in the page.
+- With 4 threads requested in the 2-core slot (r0607), ORT kept `ort.env.wasm.numThreads` at 4 after `create`, and the
+  renderer had 3 `DedicatedWorker` threads (13.49, 13.48 and 13.34 CPU s) plus the main thread (33.49 CPU s; the
+  thread count "includes the main thread", survey.md section 35); renderer CPU / wall over the separation was 1.929
+  (chunk 1: 1.935, chunk 2: 1.931). With 2 threads (r0597): 1 `DedicatedWorker` (22.24 CPU s) and the main thread
+  (41.38 CPU s), CPU / wall 1.656. With 1 thread (r0613): no worker thread, CPU / wall 0.823. Session creation ran at
+  CPU / wall 0.96 to 1.03 in all three.
+- So in these runs the WebAssembly threads stayed on the slot's 2 cores and used at most 2 cores' worth of CPU time;
+  the separation took 30.25 s with 4 threads, 29.09 s with 2 and 52.73 s with 1. The ledger's CPU for these runs
+  (0.9 to 4.2 s per run) misses the renderer's 61 to 76 CPU s.
+
 ## Survey tools not tried in this session
 
 The docs agent's tool list (`survey.md`, "## Tool list") names more browser tools than this run reached. Not tried
@@ -779,7 +935,8 @@ here, with the reason:
 - `webnn/stem-separator`: not tried. Its card (quoted in survey.md section 50) says it runs "via ONNX Runtime Web with
   WebNN (NPU/GPU) acceleration, cascading to WebGPU/WASM", so a WASM run would not need a GPU; its weights are about
   168 MB (`onnx/htdemucs_fwd.onnx.data`, per the card). [verifier: listed here separately; the trial report had put
-  it under "No GPU".]
+  it under "No GPU".] Not tried in gap round 2 either: that round ran StemSplit's 6-stem export (which has a guitar
+  stem) on the WASM provider instead ("Gap round 2" above); this card's model is the 4-stem htdemucs.
 - Disk on the shared box: Transformers.js (`@huggingface/transformers` 4.3.2). The orchestrator's notice shown with
   every command while 5.3 to 6.5 GB were free (logged in this lane's `work/*.log`) says "start no new download or
   install over 200 MB unless your lane cannot finish without it". [verifier: per the npm registry, 4.3.2 depends on
@@ -839,6 +996,24 @@ pitchfinder, realtime-bpm-analyzer). [verifier: every id above was found in `/ho
 with this lane's agent name, and each was re-run from its stored arguments with `--no-ledger`: all 55 results are
 identical to the stored ones (e1223 differs only in the stem file paths, which now point into `t2/`; same SHA-256).]
 
+Gap round 2 (2026-11-11, section "Gap round 2" above). CPU and memory of browser runs: see that section (the ledger's
+figures miss the renderer).
+
+| run | what | slot | wall (s) | load1 at start |
+|---|---|---|---|---|
+| r0593 | htdemucs_6s in ORT Web, 2 threads, optimization `all`: `std::bad_alloc` | cores 0-1 | 11.6 | 2.1 |
+| r0596 | native reference (demucs-onnx, `ORT_ENABLE_ALL`) | cores 0-1 | 18.52 | 3.29 |
+| r0597 | htdemucs_6s in ORT Web, 2 threads, optimization `disabled` | cores 0-1 | 49.7 | 2.8 |
+| r0603 | native reference, `ORT_DISABLE_ALL` | cores 2-3 (waited 38.9 s) | 26.48 | 2.23 |
+| r0606 | htdemucs_6s in ORT Web, 2 threads, `basic`: `std::bad_alloc` | cores 0-1 | 7.73 | 2.84 |
+| r0607 | htdemucs_6s in ORT Web, 4 threads, `disabled` | cores 0-1 | 51.45 | 2.91 |
+| r0608 | `decodeAudioData` check of S4_10s.wav | --nolock | 2.04 | 2.92 |
+| r0611 | native reference on Chromium's decoded input, `ORT_DISABLE_ALL` | cores 2-3 (waited 15.6 s) | 42.4 | 5.97 |
+| r0613 | htdemucs_6s in ORT Web, 1 thread, `disabled` | cores 2-3 | 75.36 | 7.02 |
+| r0617 | htdemucs_6s in ORT Web, 2 threads, `all` without the CPU memory arena: `std::bad_alloc` | cores 2-3 (waited 13.6 s) | 9.46 | 5.81 |
+
+gtr-eval ids of gap round 2: e1765 (browser stems, r0597), e1766 (native stems, r0596).
+
 ## Media kept outside git
 
 All under `/home/user/gtr/lanes/browser-audio-sync/out/`; WAV, 44.1 kHz unless stated; float = 32-bit float.
@@ -856,6 +1031,9 @@ All under `/home/user/gtr/lanes/browser-audio-sync/out/`; WAV, 44.1 kHz unless s
 | `demucs/t2/S4_10s_{drums,bass,other,vocals}.wav` | 3,528,044 each | 10.000 s | 2 ch float; demucs-web stems of the 10 s S4 cut (r0329) |
 | `ffmpegwasm/R3a_mp4_st.wav`, `R3a_mp4_mt.wav` | 3,178,792 each | 18.019 s | 2 ch 16-bit; audio pulled from R3a.mp4 by ffmpeg.wasm (single / multi thread) (r0314) |
 | `ffmpegwasm/R3a_webm_st.wav` | 3,456,208 | 18.000 s | 2 ch 16-bit, 48 kHz; audio pulled from R3a.webm (r0314) |
+| `htdemucs6s-web/S4_10s_t{1,2,4}_optdisabled_{drums,bass,other,vocals,guitar,piano}.wav` (18 files) | 3,528,044 each | 10.000 s | 2 ch float; htdemucs_6s stems from ORT Web with 1, 2 and 4 threads (r0613, r0597, r0607; the three sets are sample-identical); gap round 2 |
+| `htdemucs6s-web/S4_10s_decoded_by_chromium.wav` | 3,528,044 | 10.000 s | 2 ch float; S4_10s.wav as Chromium's `decodeAudioData` returned it (r0608) |
+| `htdemucs6s-native/`, `htdemucs6s-native-optdisabled/`, `htdemucs6s-native-chromiuminput-optdisabled/` (`<stem>.wav`, 6 each) | 3,528,088 each | 10.000 s | 2 ch float; the native demucs-onnx stems of r0596, r0603 and r0611 |
 
 Also outside git and not media: `out/mediapipe/hands_<clip>_<delegate>.json` (all landmarks), `out/essentia/`,
 `out/basicpitch/`, `out/smalljs/` (full CSVs), `out/video/*.yhash.json` (ffmpeg luma hashes of R3a).

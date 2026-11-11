@@ -140,7 +140,9 @@ UTC 2026-04-17). Every short commit hash in this file matched the default-branch
 31. EG-IPT dataset (19 electric guitar techniques, Zenodo 2025-04-13, CC BY 4.0) and the `eguitar_ircam.ts`
     TorchScript model (14 classes incl. `palmstrike`, `muted`, `bend`, `vibrato`; Hugging Face
     `nbrochec/ipt_models`, 2026-09-23, CC BY-NC 4.0), run by `ipt~` (Max/MSP), `libipt` (C) or the IPT Vamp plugin.
-    Training code `ipt_recognition` (CC BY-NC 4.0). RUNNABLE (TorchScript on CPU; not yet confirmed).
+    Training code `ipt_recognition` (CC BY-NC 4.0). RUNNABLE (TorchScript on CPU; not yet confirmed). (corrected in
+    gap round 2: loaded with `torch.jit.load` and torch 2.15.0+cpu on the Linux box and run on S6taps, S2s and R3c,
+    trials.md r0643.)
 32. guitar_style_dataset (Mitsou et al., Data in Brief 2023/2024): 549 smartphone videos with audio, 9 electric
     techniques incl. tapping. Zenodo 2023-11-06, CC BY 4.0, 14.25 GB. (verifier) The GitHub repository
     magcil/guitar_style_dataset, of which the Zenodo record is a release snapshot, has an MIT LICENSE; the article is
@@ -489,6 +491,16 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   factor (Default value = 2.0)". The STFT inside `hps` is `librosa.stft(x, n_fft=N, hop_length=H, win_length=N,
   window='hann', center=True, pad_mode='constant')`.
 - Input: a NumPy signal and its sampling rate; output: time-domain signals. Not run by this agent or in trials.md.
+  (corrected in gap round 2: run in `trials.md`, "Gap round 2", r0620, on S6taps.)
+- (gap round 2, read 2026-11-11) Settings the FMP notebooks use: https://www.audiolabs-erlangen.de/resources/MIR/FMP/C8/C8S1_HRPS.html
+  cell In [2] `Fs = 22050`, `N = 1024`, `H = 512`, `L_h_sec = 0.2`, `L_p_Hz = 500`, `beta = 2`, and cell In [3]
+  `param_list = [[1024, 256, 0.2, 500, 1.1], [1024, 256, 0.2, 500, 2], [1024, 256, 0.2, 500, 4], [1024, 256, 0.2,
+  500, 32]]`; https://www.audiolabs-erlangen.de/resources/MIR/FMP/C8/C8S1_HPS.html `experiment_hps_pieces(...,
+  Fs = 22050, N=1024, H=256, L_h_sec=0.2, L_p_Hz=500)`. libfmp's `experiment_hps_parameter` and
+  `experiment_hrps_parameter` load audio with `Fs = 22050` and `x, Fs = librosa.load(fn_wav, sr=Fs)` (installed
+  package 1.3.0). PyPI 1.3.0's `requires_dist` also lists `ipython<9.0.0,>=8.10.0`, `matplotlib<4.0.0,>=3.3.0`,
+  `numba<1.0.0,>=0.58.1`, `pandas<3.0.0,>=1.1.0`, `pretty_midi<1.0.0,>=0.2.0`, `soundfile<1.0.0,>=0.9.0` and
+  `scipy<2.0.0,>=1.5.0` (PyPI JSON, 2026-11-11).
 - License facts: a. Code: LICENSE (raw file) "MIT License", "Copyright (c) 2020 Meinard Müller and Frank Zalkow,
   International Audio Laboratories Erlangen, Germany."; the module header: "License: The MIT license,
   https://opensource.org/licenses/MIT"; PyPI license field "MIT". b-d. No weights, no training data, no service.
@@ -963,7 +975,23 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   commit 2026-10-23), installs from that repository's Releases page "for your operating system". The `.ts` file is a
   TorchScript module, so Python with `torch.jit.load` on Linux is a possible caller: this is an inference from the
   card's description of the file format, not a documented route (UNVERIFIED until the try agent loads it;
-  verifier: trials.md lists it as "not attempted", so it stays UNVERIFIED).
+  verifier: trials.md lists it as "not attempted", so it stays UNVERIFIED). (corrected in gap round 2: the file
+  loads with `torch.jit.load(path, map_location="cpu")` under torch 2.15.0+cpu on Linux and returns 14 logits per
+  window; trials.md, "Gap round 2", r0643. Still not a route the model's own documents describe.)
+- (gap round 2, read 2026-11-11) Hugging Face API `https://huggingface.co/api/models/nbrochec/ipt_models?blobs=true`:
+  repository sha `2fdaf426d4dbe9bf622c83c2f7d84a3a3f6be3c0`, not gated, files `eguitar_ircam.ts` 14,090,320 bytes
+  (LFS sha256 `93cfb7a1e6440b57530e464609e038381dc5d1286eb9504cc0d74c894e9c5d1b`), `flute_ircam.ts` 3,153,250,
+  `trumpet_ircam.ts` and `trumpet_harmon_ircam.ts` 2,638,169 each, `SHA256SUMS`, `README.md`. The card
+  `cards/eguitar_ircam.md` (raw, DYCI2/ipt_models `main`) also gives "Architecture | `v2`", "Front-end | one log-mel
+  spectrogram: n_fft 2048, hop 512, 128 mel bands, f_min 150 Hz (window of 256 ms at 8 kHz, spectrum up to 4 kHz)",
+  "Exported with | TorchScript, loads with torch 2.4.1", "SHA-256 | `93cfb7a1...`" (in full in the card) and the note
+  "Runs at 8 kHz with a 896 ms segment: noticeably slower to react than the 44.1 kHz models." The libipt README
+  (https://raw.githubusercontent.com/nbrochec/libipt/main/README.md) describes its inference core as "TorchScript
+  model loading → resampling buffer → energy gating → softmax → temporal smoothing" and says "libtorch (2.4.1, CPU ...)
+  is downloaded into `libs/libtorch` automatically on first configure if absent"; its stated platforms: "macOS Apple
+  Silicon (arm64), or Windows x64 (Visual Studio 2022+)". The ipt~ README's requirement line now reads "macOS 10.13 or
+  later with an Apple Silicon processor (M1 or later — Intel Macs are not supported), **or** Windows 10/11 on an x64 CPU
+  with AVX2 (any desktop CPU from roughly 2013 onward)" (raw README of `nbrochec/ipt_tilde`, branch `main`).
 - Training code: https://github.com/nbrochec/ipt_recognition (branch `dev`, last commit 2026-04-18), "train your own
   playing techniques recognition model" (ipt~ README).
 - License facts (all read 2026-11-10):

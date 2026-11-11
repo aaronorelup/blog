@@ -1,0 +1,25 @@
+== S2n onnx-gpfx
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end card, gpfx): load 0.05s, features+inference+decoding 0.81s, frames 1265, notes 220, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['2-3']
+clip S2n: wall 5.85 s, maxrss 1034016 KB
+== S2s onnx-gpfx
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end card, gpfx): load 0.04s, features+inference+decoding 0.79s, frames 1265, notes 262, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['2-3']
+clip S2s: wall 6.07 s, maxrss 1033820 KB
+== S3 onnx-gpfx
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end card, gpfx): load 0.04s, features+inference+decoding 0.66s, frames 1034, notes 106, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['2-3']
+clip S3: wall 5.84 s, maxrss 1029920 KB
+== S5capo2 onnx-gpfx
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end card, gpfx): load 0.04s, features+inference+decoding 0.81s, frames 1265, notes 225, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['2-3']
+clip S5capo2: wall 5.84 s, maxrss 1033976 KB
+== S5dropd onnx-gpfx
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end card, gpfx): load 0.04s, features+inference+decoding 0.74s, frames 1265, notes 226, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['2-3']
+clip S5dropd: wall 5.87 s, maxrss 1033704 KB
+== R1a onnx-gpfx
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end card, gpfx): load 0.04s, features+inference+decoding 0.84s, frames 1256, notes 100, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['2-3']
+clip R1a: wall 6.17 s, maxrss 1033864 KB
+== R1b onnx-gpfx
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end card, gpfx): load 0.04s, features+inference+decoding 0.73s, frames 1264, notes 90, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['2-3']
+clip R1b: wall 5.73 s, maxrss 1033704 KB
+== R1c onnx-gpfx
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end card, gpfx): load 0.04s, features+inference+decoding 0.75s, frames 1216, notes 135, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['2-3']
+clip R1c: wall 5.68 s, maxrss 1033368 KB
+[gtr-run r0591] guitar-tab/tabcnn-onnx-gpfx "gap round 2: cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, card front-end) on 8 clips" wall=47.11s cpu=53.1s rss=1009.8MB cores=2 exit=0 slot_wait=0.0s

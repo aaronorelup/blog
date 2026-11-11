@@ -419,6 +419,23 @@ def part1(R, tmp, quick=False):
     f = w_lines(j("f0nan.csv"), ["time,f0"] + [f"{a:.4f},{(b if b > 0 else float('nan')):.4f}" for a, b in zip(t, fr)])
     R.run("f0.nan_means_unvoiced", ["f0", "--truth", tp, "--est", f],
           lambda r: approx(m(r)["overall_accuracy"], 1), lambda r: json.dumps(m(r)))
+    # Essentia's Melodia rows leave the frequency cell empty in unvoiced frames ('0.0000,,0.0000'); 0.11.1 stopped with
+    # an IndexError on such files (e0440 to e0447). An empty cell is 0 Hz (unvoiced), so the file must score exactly like
+    # the same file with 0 written in those cells. Skipping those rows instead would let mir_eval interpolate across the
+    # 50 ms gaps between the melody notes and mark them voiced.
+    n_unv = int(sum(1 for b in fr if b <= 0))
+    f0z = w_lines(j("f0zeros.csv"), ["time_s,f0_hz,confidence"] + [f"{a:.4f},{b:.4f},0.9" if b > 0 else f"{a:.4f},0,0.0" for a, b in zip(t, fr)])
+    f = w_lines(j("f0empty.csv"), ["time_s,f0_hz,confidence"] + [f"{a:.4f},{b:.4f},0.9" if b > 0 else f"{a:.4f},,0.0" for a, b in zip(t, fr)])
+    R.run("f0.empty_frequency_cells_unvoiced", ["f0", "--truth", tp, "--est", f],
+          lambda r: n_unv > 0 and m(r) == m(G.run_args(["f0", "--truth", tp, "--est", f0z])) and approx(m(r)["overall_accuracy"], 1)
+          and r["counts"]["n_est_rows"] == len(t) and f"{n_unv} rows with an empty frequency cell: frequency set to 0 = unvoiced" in r["processing"],
+          lambda r: f"{json.dumps(m(r))} n_est_rows={r['counts']['n_est_rows']} empty_cells={n_unv} (same metrics as the file with 0 written)")
+    f = w_lines(j("f0emptyconf.csv"), ["time,frequency,confidence"] + [f"{a:.4f},{b:.4f}," for a, b in zip(t, fr)] + ["8.5000,n/a,0.9"])
+    R.run("f0.empty_confidence_and_text_cell", ["f0", "--truth", tp, "--est", f],
+          lambda r: approx(m(r)["overall_accuracy"], 1) and r["counts"]["n_est_rows"] == len(t)
+          and f"{len(t)} rows with an empty confidence cell: no confidence" in r["processing"]
+          and any(p.startswith("1 rows with a readable time were left out") and "'8.5000,n/a,0.9'" in p for p in r["processing"]),
+          lambda r: f"oa={m(r)['overall_accuracy']} n_est_rows={r['counts']['n_est_rows']} processing={r['processing'][:2]}")
 
     # ---------------- beats
     B = np.array(T["beats"])
@@ -625,6 +642,32 @@ def part1(R, tmp, quick=False):
           lambda r: r["tuning_and_capo"]["est"]["capo"] == 2 and not r["tuning_and_capo"]["capo_differs"]
           and approx(tb(r)["same_string_and_fret_fraction_of_matched"], 1),
           lambda r: f"est_capo={r['tuning_and_capo']['est']['capo']} sf={tb(r)['same_string_and_fret_fraction_of_matched']}")
+    # a capo is read only from a capo line. TuxGuitar's ASCII export writes the song title on a 'Title:' line and no capo
+    # line; 0.11.1 read capo 2 from 'Title: S2 with a capo on fret 2' and called it stated in the file (e0468)
+    cap = lambda r: r["tuning_and_capo"]["est"]  # noqa
+    def with_header(name, header):
+        p = w_ascii_tab(j(name), T2["notes"])
+        with open(p) as fh:
+            body = fh.read()
+        with open(p, "w") as fh:
+            fh.write(header + body)
+        return p
+    f = with_header("tab_title_capo.txt", "Title: FX1 with a capo on fret 2\nArtist: gtr-eval selftest\nAlbum: \nAuthor: \n\n\nTrack 1: Guitar\n\n")
+    R.run("tab.ascii_capo_in_title_not_read", ["tab", "--truth", tp2, "--est", f],
+          lambda r: cap(r)["capo_source"] == "not stated in the estimate; the truth capo is assumed" and cap(r)["capo"] == 2
+          and r["tuning_and_capo"]["est_tuning_or_capo_assumed"] and approx(tb(r)["same_string_and_fret_fraction_of_matched"], 1)
+          and any("line 1: 'Title: FX1 with a capo on fret 2'" in p for p in r["processing"]),
+          lambda r: f"est_capo={cap(r)['capo']} ({cap(r)['capo_source']}) sf={tb(r)['same_string_and_fret_fraction_of_matched']}")
+    f = with_header("tab_title_then_capo_line.txt", "Title: FX1, capo 5 version\n[Capo 2nd fret]\n\n")
+    R.run("tab.ascii_capo_line_after_title", ["tab", "--truth", tp2, "--est", f],
+          lambda r: cap(r)["capo"] == 2 and cap(r)["capo_source"] == "stated in the estimate file" and not r["tuning_and_capo"]["capo_differs"]
+          and approx(tb(r)["same_string_and_fret_fraction_of_matched"], 1),
+          lambda r: f"est_capo={cap(r)['capo']} ({cap(r)['capo_source']}) sf={tb(r)['same_string_and_fret_fraction_of_matched']}")
+    f = with_header("tab_capo_field.txt", "Tuning (string 6 to 1, without capo): E2 A2 D3 G3 B3 E4   Capo: fret 2 (frets counted from the capo)\n\n")
+    R.run("tab.ascii_capo_field_in_tuning_line", ["tab", "--truth", tp2, "--est", f],
+          lambda r: cap(r)["capo"] == 2 and cap(r)["capo_source"] == "stated in the estimate file"
+          and approx(tb(r)["same_string_and_fret_fraction_of_matched"], 1),
+          lambda r: f"est_capo={cap(r)['capo']} ({cap(r)['capo_source']}) sf={tb(r)['same_string_and_fret_fraction_of_matched']}")
 
     # ---------------- options and input variants not covered above
     jl = j("lol.json")

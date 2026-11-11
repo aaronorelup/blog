@@ -1,6 +1,6 @@
 {
  "lane": "fingerstyle-voices-taps",
- "generated": "2026-11-10",
+ "generated": "2026-11-11",
  "tools": [
   {
    "name": "librosa",
@@ -2232,6 +2232,11 @@
      "to": "tuttut",
      "via_format": "per-voice MIDI (an extra step that partitura does not document)",
      "evidence": "survey.md Handoff 13 (corrected by the verifier; not run)"
+    },
+    {
+     "to": "piano_svsep (Cluster and Separate)",
+     "via_format": "quantized score in MusicXML (partitura save_musicxml), predict.py --score_path ... .musicxml",
+     "evidence": "survey.md Handoff 8 (not run)"
     }
    ],
    "unverified": [
@@ -3004,19 +3009,16 @@
        "piano": -24.3,
        "vocals": -41.4
       },
-      "stem_mono_peak_dBFS": {
-       "bass": -12.6,
-       "drums": -23.0,
-       "guitar": -6.6,
-       "other": -3.8,
-       "piano": -17.1,
-       "vocals": -40.1
-      },
       "librosa_onsets_on_drums_stem": 351,
       "note": "no ground truth; computed by scripts/gap1_rt1_stems.py",
       "cpu_s": 261.5,
       "slot_wait_s": 314.4,
-      "drums_stem_peaks_above_-40_dBFS_mss_dBFS": [
+      "drums_stem_rms_per_10s": "-63.5 to -62.6 dBFS in 21 of 24 windows; -57.1 (30-40 s), -56.0 (60-70 s), -59.4 (200-210 s)",
+      "peaks_run": "r0558 (scripts/gap1_rt1_drum_peaks.py)",
+      "verifier_rerun": "r0571 (gap-round verifier; same command, 2-core slot, wall 137.4 s, CPU 238.4 s, peak 2,213.4 MB): not bit-identical (largest absolute sample difference 8.9e-3 to 0.28); stem energy re mix bass -13.5, drums -37.3, other -2.6, guitar -7.7, piano -26.5, vocals -41.3 dB; drums mono peak -17.2 dBFS; 23 librosa onsets on the drums stem (r0554: 351); 7 drums-stem peaks above -40 dBFS at 0:31.8, 1:05.8, 1:08.3, 1:10.4, 2:00.8, 2:18.8, 3:25.8 (measured in r0577); drums stem RMS -63.6 to -62.0 dBFS in 20 of 24 10 s windows, -60.5 (30-40 s), -55.0 (60-70 s), -59.6 (70-80 s), -48.6 (200-210 s); 7 of its 180 peaks (1 s apart) above -40 dBFS at 0:31.8 (-26.3), 1:05.8 (-29.7), 1:08.3 (-28.0), 1:10.4 (-30.2), 2:00.8 (-32.1), 2:18.8 (-39.1) and 3:25.8 (-17.2), none more above -50 dBFS; largest absolute sample difference against r0554's stems 8.9e-3 in vocals to 0.28 in other; each of the five times above -40 dBFS in r0554 lies within 0.07 s of one of the seven",
+      "stems_measure_verifier": "r0567 (re-run of r0557) and r0568 (re-run of r0558) gave identical values and onset files; independent recompute r0565 (scripts/verify-gapfill/vrt1_stems.py, wave module) agrees",
+      "drums_stem_mono_peak_dBFS": -23.0,
+      "drums_stem_peaks_above_-40_dBFS_time_and_dBFS": [
        [
         "0:31.8",
         -23.0
@@ -3038,10 +3040,19 @@
         -30.9
        ]
       ],
-      "drums_stem_rms_per_10s": "-63.5 to -62.6 dBFS in 21 of 24 windows; -57.1 (30-40 s), -56.0 (60-70 s), -59.4 (200-210 s)",
-      "peaks_run": "r0558 (scripts/gap1_rt1_drum_peaks.py)",
-      "verifier_rerun": "r0571 (gap-round verifier; same command, 2-core slot, wall 137.4 s, CPU 238.4 s, peak 2,213.4 MB): not bit-identical (largest absolute sample difference 8.9e-3 to 0.28); stem energy re mix bass -13.5, drums -37.3, other -2.6, guitar -7.7, piano -26.5, vocals -41.3 dB; drums mono peak -17.2 dBFS; 23 librosa onsets on the drums stem (r0554: 351); 7 drums-stem peaks above -40 dBFS at 0:31.8, 1:05.8, 1:08.3, 1:10.4, 2:00.8, 2:18.8, 3:25.8 (measured in r0577)",
-      "stems_measure_verifier": "r0567 (re-run of r0557) and r0568 (re-run of r0558) gave identical values and onset files; independent recompute r0565 (scripts/verify-gapfill/vrt1_stems.py, wave module) agrees"
+      "drums_stem_peaks_between_-40_and_-50_dBFS_time_and_dBFS": [
+       [
+        "0:59.2",
+        -47.5
+       ],
+       [
+        "2:18.8",
+        -45.3
+       ]
+      ],
+      "peaks_counted": "5 of the 181 peaks (1 s apart) lie above -40 dBFS",
+      "comparison_note": "htdemucs_6s put more of the RT1 mix into other (-2.5 dB) than into guitar (-8.1 dB), while on R3a to R3c it put -0.1 to -0.3 dB into guitar; the bass stems hold -13.8 (htdemucs_6s) and -17.6 dB (htdemucs); S6taps drums stems (GM percussion standing in for taps) are -15.0 dB (htdemucs_6s) and -15.3 dB (htdemucs) re the mix with mono peaks -7.7 and -7.9 dBFS and gave 32 and 34 librosa onsets for 32 truth taps; the R3 drums stems are 42 to 65 dB below their mixes and gave 55 to 226 onsets",
+      "model_loudest_moments_note": "the two models' loudest moments are at different times; what sound is at these times was not checked by listening"
      }
     },
     {
@@ -3063,24 +3074,28 @@
        "other": -0.2,
        "vocals": -41.5
       },
-      "stem_mono_peak_dBFS": {
-       "bass": -15.1,
-       "drums": -36.3,
-       "other": -3.6,
-       "vocals": -48.0
-      },
       "librosa_onsets_on_drums_stem": 1078,
       "note": "no ground truth; computed by scripts/gap1_rt1_stems.py",
       "cpu_s": 307.7,
       "slot_wait_s": 0.0,
-      "drums_stem_peaks_above_-40_dBFS_mss_dBFS": [
+      "drums_stem_rms_per_10s": "-63.7 to -62.6 dBFS in all 24 windows",
+      "peaks_run": "r0558 (scripts/gap1_rt1_drum_peaks.py)",
+      "drums_stem_mono_peak_dBFS": -36.3,
+      "drums_stem_peaks_above_-40_dBFS_time_and_dBFS": [
        [
         "0:49.9",
         -36.3
        ]
       ],
-      "drums_stem_rms_per_10s": "-63.7 to -62.6 dBFS in all 24 windows",
-      "peaks_run": "r0558 (scripts/gap1_rt1_drum_peaks.py)"
+      "drums_stem_peaks_between_-40_and_-50_dBFS_time_and_dBFS": [
+       [
+        "1:54.0",
+        -49.1
+       ]
+      ],
+      "peaks_counted": "1 of the 181 peaks (1 s apart) lies above -40 dBFS",
+      "verifier_rerun": "not repeated by the gap-round verifier",
+      "model_loudest_moments_note": "the two models' loudest moments are at different times; what sound is at these times was not checked by listening"
      }
     }
    ],
@@ -3120,12 +3135,17 @@
     {
      "to": "librosa.onset.onset_detect",
      "via_format": "drums stem WAV loaded as mono",
-     "evidence": "trials.md: onsets on htdemucs_6s drums of S6taps: 32 onsets, P 1.000 / R 1.000 vs 32 truth taps (e0171); verifier r0404 identical onset times"
+     "evidence": "trials.md: onsets on htdemucs_6s drums of S6taps: 32 onsets, P 1.000 / R 1.000 vs 32 truth taps (e0171); verifier r0404 identical onset times; on RT1 (no truth) the htdemucs_6s drums stem gave 351 (r0554) and 23 (r0571) onsets and the htdemucs drums stem 1,078 (r0556)"
     },
     {
      "to": "librosa.effects.hpss and onset detectors",
      "via_format": "guitar stem WAV",
      "evidence": "survey.md Handoff 12 (not run); on the solo-guitar S2s/S6taps clips htdemucs_6s put most energy into piano (0.826, 0.623)"
+    },
+    {
+     "to": "LarsNet and drumsep (5-stem and 4-stem drum separation)",
+     "via_format": "htdemucs_6s drums stem WAV of S6taps (htdemucs_6s\\S6taps\\drums.wav, renamed S6taps_htdemucs6s_drums.wav)",
+     "evidence": "for-aaron.md lists 9 and 10 (not run)"
     }
    ],
    "unverified": [
@@ -3133,7 +3153,9 @@
     "the taps in S6taps are General MIDI drum samples, not hands on a guitar body; real body taps may not behave the same",
     "on R3 clips with no body taps seen in the video frames, the drums stems are 42 to 65 dB below the mix yet librosa onset_detect (default normalize=True) still returned 55 to 226 onsets; an absolute level gate was not tested",
     "onset counts on the near-silent R3a drums stem were 226, 180 and 208 in three runs",
-    "on RT1 two runs of the same htdemucs_6s command (r0554 and the verifier's r0571) gave 351 and 23 librosa onsets on the drums stem, drums stem energy -40.0 and -37.3 dB re the mix, mono peak -23.0 and -17.2 dBFS"
+    "on RT1 two runs of the same htdemucs_6s command (r0554 and the verifier's r0571) gave 351 and 23 librosa onsets on the drums stem, drums stem energy -40.0 and -37.3 dB re the mix, mono peak -23.0 and -17.2 dBFS",
+    "how far the RT1 drums-stem figures vary beyond two htdemucs_6s runs; the htdemucs run r0556 was not repeated by the verifier",
+    "what sound is at the loud drums-stem moments of RT1 was not checked by listening (for-aaron.md list 8, step 3)"
    ]
   },
   {
@@ -3334,7 +3356,10 @@
    "outputs": [
     "five drum classes (target 400 frames, 5 classes); the PyTorch port maps them to MIDI pitches [35, 38, 47, 42, 49]"
    ],
-   "constraints_accepted": [],
+   "constraints_accepted": [
+    "Frame_RNN peakThreshold per class [0.22000000000000003, 0.24000000000000002, 0.32000000000000006, 0.22000000000000003, 0.30000000000000004] (adtof/model/hyperparameters.py at b3968fb)",
+    "sampleRate 100 (predictions) in the same defaults"
+   ],
    "license": {
     "code": {
      "spdx": "CC-BY-NC-SA-4.0",
@@ -3362,7 +3387,11 @@
     "conflicting license statements: README and LICENSE say CC BY-NC-SA 4.0, setup.py carries the classifier 'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'",
     "which ADTOF dataset subsets the shipped Frame_RNN_adtofAll_0 checkpoint was trained on is not stated in the README (the Signals 2023 paper would settle it; https://www.mdpi.com/2624-6120/4/4/42/htm answered 403)",
     "README: tested on macOS Ventura with Python 3.10; no CLI for transcription is documented",
-    "documented transcription route (bin/drumTranscriptor.ipynb): Model.modelFactory(modelName='Frame_RNN', scenario='adtofAll', fold=0) then model.predictFolder(audioFiles, outputLocation, **hparams); the notebook labels pitches [35, 38, 42, 47, 49] as BD, SD, HH, TT, CY + RD; not run here"
+    "documented transcription route (bin/drumTranscriptor.ipynb): Model.modelFactory(modelName='Frame_RNN', scenario='adtofAll', fold=0) then model.predictFolder(audioFiles, outputLocation, **hparams); the notebook labels pitches [35, 38, 42, 47, 49] as BD, SD, HH, TT, CY + RD; not run here",
+    "gap round 1: setup.py at b3968fb asks for tensorflow>=2.13.0, madmom@git+https://github.com/CPJKU/madmom and tapcorrect@git+https://github.com/MZehren/tapcorrect#subdirectory=python&egg=tapcorrect; TensorFlow 2.15.1 was named in the refused command so that the resolver would not pick the newest release (2.21.0 on PyPI that day); no other TensorFlow version was tried",
+    "tapcorrect's own python/setup.py (https://raw.githubusercontent.com/MZehren/tapcorrect/master/python/setup.py, master branch, read 2026-11-10, re-read 2026-11-11) says license='Attribution 3.0 Unported (CC BY 3.0)'",
+    "adtof/model/model.py loads the checkpoint with self.model.load_weights(load_path) from config.CHECKPOINT_DIR (the package's own models folder) and imports tensorflow, from tensorflow import keras and from keras import backend as K",
+    "the notebook's third cell plots the output MIDI with plt.yticks([35, 38, 42, 47, 49], [\"BD\", \"SD\", \"HH\", \"TT\", \"CY + RD\"])"
    ]
   },
   {
@@ -3424,7 +3453,11 @@
     "no license for the Pop dataset was found",
     "weights license: no separate statement found",
     "0.6.3 pins no TensorFlow version (tensorflow>=2.5.0; python_version < 3.14, tf-keras); the last release with a pin is 0.5.0 (tensorflow (==2.5.0), requires_python >=3.6.1,<3.9) (PyPI JSON, 2026-11-10)",
-    "not tested by a build: the dependencies with no wheel for Python 3 on Linux, madmom 0.16.1 (sdist only) (setup.py imports Cython and numpy) and vamp 1.1.0 (sdist plus two CPython 2.7 wheels; setup.py imports numpy) have no pyproject.toml declaring those build requirements"
+    "not tested by a build: the dependencies with no wheel for Python 3 on Linux, madmom 0.16.1 (sdist only) (setup.py imports Cython and numpy) and vamp 1.1.0 (sdist plus two CPython 2.7 wheels; setup.py imports numpy) have no pyproject.toml declaring those build requirements",
+    "PyPI versions: 0.6.0 (2026-05-30, wheel and sdist), 0.6.1 and 0.6.2 (2026-05-30, sdist only), 0.6.3 (2026-05-31, sdist only, requires_python >=3.8); 0.6.3 names no TensorFlow version (tensorflow>=2.5.0; python_version < 3.14, tf-nightly; python_version >= 3.14, tf-keras; python_version >= 3.9 and python_version < 3.14); the last release with a pin is 0.5.0 (2021-12-09, requires_python >=3.6.1,<3.9: tensorflow (==2.5.0), spleeter (>=2.3.0,<3.0.0), madmom (>=0.16.1,<0.17.0), librosa (>=0.8.0,<0.9.0), urllib3 (==1.26.4)) (PyPI JSON, read 2026-11-10)",
+    "0.6.3's omnizart/__init__.py (survey clone at bcd8cb4) sets os.environ['TF_USE_LEGACY_KERAS'] = '1' and, under the comment '# Patch numpy for backward compatibility with old libraries under NumPy 2.0+', puts float, int, bool, complex back on NumPy when missing; omnizart/base.py loads models with tf.keras.models.load_model(model_path, custom_objects=custom_objects); the drum SavedModel graph (omnizart/checkpoints/drum/drum_keras/saved_model.pb) is in the repository and its variables come from the checkpoints-20211001 release asset",
+    "Python 3.8 was not installed on the box at 23:18 UTC (uv python list offered 3.8.20 as a download; a cpython 3.8.20 appeared in uv's Python folder at 00:05 UTC on 2026-11-11, installed by another process after the round)",
+    "for-aaron.md list 3: the workaround 'pip install \"numpy<2\" \"Cython<3\" setuptools wheel' then 'pip install --no-build-isolation omnizart' was not tried anywhere in this research; building madmom and vamp needs a C/C++ compiler (on Windows, Microsoft C++ Build Tools); the README also offers a Docker image, docker pull mctlab/omnizart:latest"
    ]
   },
   {
@@ -3530,12 +3563,20 @@
     "service_terms": []
    },
    "pricing": "No cost (for-aaron.md list 6)",
-   "handoffs_out": [],
+   "handoffs_out": [
+    {
+     "to": "General MIDI synthesizer such as FluidSynth with FluidR3_GM",
+     "via_format": "MIDI drum track (pretty_midi Instrument program=0, is_drum=True)",
+     "evidence": "survey.md Handoff 14 (not run)"
+    }
+   ],
    "unverified": [
     "the Hugging Face model card has no license field in its metadata and no license text; the GitHub README line is the only license statement found",
     "the twelve sample packs and their terms are not named in the paper",
     "author measurements (F1 on ENST and MDB at a 50 ms tolerance) are in an image in the README and not transcribed; the abstract's 'new state-of-the-art results' is the authors' claim",
-    "pyproject.toml: requires-python >=3.10,<3.13, [tool.uv] package = false (scripts run from the checkout); inference.py selects the device with select_inference_device() (utils/utils.py: Prefer CUDA, then Apple MPS, else CPU); the MIDI is written with pretty_midi.Instrument(program=0, is_drum=True); not run here"
+    "pyproject.toml: requires-python >=3.10,<3.13, [tool.uv] package = false (scripts run from the checkout); inference.py selects the device with select_inference_device() (utils/utils.py: Prefer CUDA, then Apple MPS, else CPU); the MIDI is written with pretty_midi.Instrument(program=0, is_drum=True); not run here",
+    "pyproject.toml also has license = { text = \"CC-BY-SA-4.0\" }, torchaudio==2.8.0, torchcodec>=0.7,<0.8, transformers[torch], datasets, huggingface-hub, pedalboard, wandb and an optional extra demucs; the checkpoints (setting-tau-0.4, 0.6, 0.8) are not in the GitHub repository but in the Hugging Face repository Pierfrancesco/adt-str (folder setting-tau-0.8: model.safetensors 289,134,056 bytes, config.json, adt_config.yaml)",
+    "inference.py --checkpoint help: 'Checkpoint name under checkpoints/ or a checkpoint directory path.'; -s / --synthetise_transcription: 'Resynthesize the drum transcription'; adt_transcriber.py resamples the input to the model's sample_rate with torchaudio.transforms.Resample"
    ]
   },
   {
@@ -3645,7 +3686,9 @@
     "README lists no install command; its requirements.txt is a conda export for platform linux-64",
     "README: 'We are working toward releasing the scripts for fine-tuning and training LarsNet from scratch.'",
     "the question it answers for the lane (whether the side-stick slap lands in Snare and the bass-drum thump in Kick Drum) was not tested",
-    "checkpoints are loaded with torch.load(str(checkpoint_path), map_location=device) and model.load_state_dict(checkpoint[\"model_state_dict\"]) from pretrained_larsnet_models/<stem>/pretrained_<stem>_unet.pth (larsnet.py, config.yaml at 17d631f); Google Drive id 1U8-5924B1ii1cjv9p0MTPzayb00P4qoL; not run here"
+    "checkpoints are loaded with torch.load(str(checkpoint_path), map_location=device) and model.load_state_dict(checkpoint[\"model_state_dict\"]) from pretrained_larsnet_models/<stem>/pretrained_<stem>_unet.pth (larsnet.py, config.yaml at 17d631f); Google Drive id 1U8-5924B1ii1cjv9p0MTPzayb00P4qoL; not run here",
+    "gap round 1 clone at 17d631f holds three Python files and config.yaml besides README.md, requirements.txt and pretrained_larsnet_models/.gitkeep (git ls-tree); no package to install; imports yaml, torch, torchaudio, tqdm, soundfile; separate.py writes sf.write(..., larsnet.sr), -w turns on the alpha-Wiener filter; the checkpoint folder holds only .gitkeep until the checkpoints are unzipped into it",
+    "the 562 MB checkpoint is the README's figure; it was not downloaded"
    ]
   },
   {
@@ -3688,7 +3731,10 @@
    "unverified": [
     "weights license and training data: not stated in the README",
     "the command-line route is written 'With Linux' in the README; on Windows it needs a Linux shell such as WSL; not tried in Git Bash",
-    "checkpoint read without unpickling (zip listing and pickletools): globals demucs.hdemucs HDemucs, torch._utils _rebuild_tensor_v2, torch HalfStorage, collections OrderedDict; keys klass, args, kwargs, state, training_args; sources bombo, redoblante, platillos, toms; demucs 4.1.0 loads it with torch.load(path, cpu, weights_only=False)"
+    "checkpoint read without unpickling (zip listing and pickletools): globals demucs.hdemucs HDemucs, torch._utils _rebuild_tensor_v2, torch HalfStorage, collections OrderedDict; keys klass, args, kwargs, state, training_args; sources bombo, redoblante, platillos, toms; demucs 4.1.0 loads it with torch.load(path, cpu, weights_only=False)",
+    "drumsepInstall: pip install demucs if pip list shows none, then, if no folder model exists, creates it and in it runs pip install gdown (if pip list shows none) and gdown 1-Dm666ScPkg8Gt2-lK3Ua0xOudWHZBGC; drumsep, per input file: demucs --repo \"model\" -o \"$output\" -n 49469ca8 \"$file\" (for a folder, every *.mp3, *.wav, *.ogg, *.flac in it); so a run is the PyPI Demucs command with a checkpoint from Google Drive",
+    "checkpoint fetched from https://drive.usercontent.google.com/download?id=1-Dm666ScPkg8Gt2-lK3Ua0xOudWHZBGC&export=download&confirm=t at 23:23 UTC (HTTP 206 for a first 1,024-byte range, then HTTP 200, 6 s); content-disposition attachment filename=\"49469ca8.th\"; downloaded again by the gap-round verifier at 00:08 UTC (HTTP 200, 167,400,043 bytes, same sha256), read without unpickling (397 zip entries, the same four globals, five keys and four source names) and deleted",
+    "environment used for the refused run: Demucs 4.1.0, torch 2.15.0+cpu, numpy 2.4.6, freeze samples/freezes/venv-drumsep.txt identical to venv-demucs.txt; the response headers are kept in gap1/drumsep/headers_full.txt"
    ]
   },
   {
@@ -3801,14 +3847,24 @@
     "service_terms": []
    },
    "pricing": "No cost (for-aaron.md list 4)",
-   "handoffs_out": [],
+   "handoffs_out": [
+    {
+     "to": "scripts/gap1_score_svsep.py (scorer written in this lane)",
+     "via_format": "MEI (.mei) or MusicXML (.musicxml) file written by predict.py",
+     "evidence": "trials.md, Gap round 1: scorer self-test r0552 and verifier r0587 (MEI written by partitura 1.9.0 save_mei read back); piano_svsep itself not run"
+    }
+   ],
    "unverified": [
     "that the shipped checkpoint was trained with jpop is an inference from two README lines: UNVERIFIED",
     "licenses of the three DCML source corpora were not read",
     "the prepared MusicXML carries music21's own <voice> numbers (36 voice-1 and 12 voice-2 elements), made without the truth labels",
     "README: 'Our system is supposed to be run in the final stage of a transcription or generation process, where a musical score is *almost* ready'",
     "repository requirements.txt targets CUDA 12.8 (--index-url https://download.pytorch.org/whl/cu128, --find-links https://data.pyg.org/whl/torch-2.8.0+cu128.html) and adds verovio==4.2.1 and gradio; predict.py loads the checkpoint with PLPianoSVSep.load_from_checkpoint(path_to_model, map_location=cpu, strict=False, weights_only=False); not run here",
-    "gap round 1: scripts/gap1_score_svsep.py scores a returned .mei or .musicxml against the truth voices (partitura 1.9.0 load_score; staff rule and voice rule, highest mean pitch = melody; fvt_common.voice_accuracy); self-check run r0552: the truth as a two-part MusicXML gives 90 of 90 right voice under both rules for S2n and S5dropd; the input files as read give 42 of 90 (staff rule) and 54 of 90 (voice rule); verifier re-runs r0569 and r0570 gave the same counts; r0587: the scorer reads MEI written by partitura 1.9.0 save_mei from the truth merged into one part (90 of 90 right voice under the voice rule, 42 of 90 under the staff rule)"
+    "gap round 1: scripts/gap1_score_svsep.py scores a returned .mei or .musicxml against the truth voices (partitura 1.9.0 load_score; staff rule and voice rule, highest mean pitch = melody; fvt_common.voice_accuracy); self-check run r0552: the truth as a two-part MusicXML gives 90 of 90 right voice under both rules for S2n and S5dropd; the input files as read give 42 of 90 (staff rule) and 54 of 90 (voice rule); verifier re-runs r0569 and r0570 gave the same counts; r0587: the scorer reads MEI written by partitura 1.9.0 save_mei from the truth merged into one part (90 of 90 right voice under the voice rule, 42 of 90 under the staff rule)",
+    "setup.py: setup_requires=[\"torch==2.7.0\"], install_requires torch==2.8.0, torch_geometric, partitura==1.8.0, torchmetrics, scipy, scikit-learn==1.6.0, pytorch_lightning, verovio, torch-scatter, joblib, gitpython, tqdm; README badges Python_3.8+, PyTorch_2.0+; the repository ships artifacts/test_score.musicxml, artifacts/test_score_pred.mei and artifacts/test_score_pred.json; any --save_path ending other than .mei, .musicxml or .xml raises 'Unsupported file format. Please use .mei or .musicxml/.xml'; the clone is 70 MB with pretrained_models/model.ckpt (the gap agent's du output, not re-measured)",
+    "prepared inputs (run r0549, --nolock, light, wall 0.87 s; scripts/gap1_svsep_inputs.py): each of S2n and S5dropd truth merged single track MusicXML has 1 part, 90 pitches, 97 <note> elements (7 rests), 36 <chord /> tags, <voice> tags 36 x '1' and 12 x '2', 6 <backup> elements; the S5dropd file differs from the S2n file only in four <octave>3</octave> to <octave>2</octave> changes (the four Drop D bass notes, truth onsets 8.571, 13.929, 18.214, 25.714 s, MIDI 50 in S2n, 38 in S5dropd); r0549's own printout says chord_tags 0 because the script searched for <chord/> without the space music21 writes (corrected after the run)",
+    "scorer run r0552 (--nolock, light, wall 8.1 s): scripts/gap1_score_svsep.py <pred .mei or .musicxml> <clip> turns onset_quarter into seconds at the truth tempo (112 bpm) and labels melody and bass without the truth by two rules (staff rule; voice rule); partitura reads music21's voices in the input files as 84 notes in voice 1 (mean pitch 52.79 (S2n) / 52.21 (S5dropd)) and 6 in voice 2 (mean pitch 58.0); results samples/voice-split/svsep_scorer_*.json",
+    "what piano_svsep would do to S2n and S5dropd is unknown: it did not run here (the partitura and music21 counts, 90 of 90 on both clips, have no piano_svsep counterpart)"
    ]
   },
   {
@@ -4171,25 +4227,220 @@
    "kind": "library",
    "what": "Python library of the Fundamentals of Music Processing notebooks; libfmp.c8.c8s1_hps.hps (median-filter harmonic-percussive separation) and hrps (harmonic, residual, percussive).",
    "url": "https://github.com/meinardmueller/libfmp",
-   "version": "1.3.0 (PyPI, 2026-03-16; Python >= 3.10; requires librosa<1.0.0); HEAD ed057ba",
-   "tried": false,
-   "tried_how": null,
-   "runs": [],
-   "not_run_reason": "no reason recorded; added by the verifier: not run by this agent or in trials.md",
+   "version": "1.3.0 (PyPI, 2026-03-16; Python >= 3.10; requires librosa<1.0.0 and music21<10.0.0); HEAD ed057ba; run here in its own venv-libfmp (Python 3.11, librosa 0.11.0, music21 9.9.2, numpy 2.4.6)",
+   "tried": true,
+   "tried_how": "local-cpu",
+   "runs": [
+    {
+     "run_id": "r0620",
+     "input_id": "S6taps",
+     "cores": 2,
+     "wall_s": 34.08,
+     "peak_mb": 612.0,
+     "exit_code": 0,
+     "output_files": [
+      "out/gap2-libfmp/S6taps/{hps_binary,hps_soft}/{harmonic,percussive}.wav",
+      "out/gap2-libfmp/S6taps/hrps_beta{1.1,2,4,32}/{harmonic,percussive,residual}.wav",
+      "out/gap2-libfmp/S6taps/onsets_{percussive,residual,mix}/*.txt",
+      "samples/libfmp/"
+     ],
+     "metrics": {
+      "what_ran": "gap round 2: scripts/gap2_libfmp_hrps.py S6taps: librosa.load(sr=22050) as libfmp's experiment functions do; hps(N=1024, H=256, L_h=0.2 s, L_p=500 Hz) with mask binary and soft (C8S1_HPS notebook's experiment_hps_pieces defaults); hrps with the C8S1_HRPS notebook's param_list (N=1024, H=256, L_h=0.2 s, L_p=500 Hz, beta 1.1, 2, 4, 32); then librosa.onset.onset_detect defaults (hop 512 = 23.2 ms at 22050 Hz) on the percussive and residual parts; 2-core slot, waited 21.3 s",
+      "cpu_s": 31.4,
+      "L_h_frames": 19,
+      "L_p_bins": 25,
+      "energy_fraction_harmonic_percussive_residual": {
+       "hps_binary": [
+        0.922,
+        0.041,
+        null
+       ],
+       "hps_soft": [
+        0.813,
+        0.045,
+        null
+       ],
+       "hrps_beta1.1": [
+        0.916,
+        0.038,
+        0.0028
+       ],
+       "hrps_beta2": [
+        0.867,
+        0.028,
+        0.032
+       ],
+       "hrps_beta4": [
+        0.793,
+        0.02,
+        0.09
+       ],
+       "hrps_beta32": [
+        0.399,
+        0.0049,
+        0.453
+       ]
+      },
+      "gtr_eval_stems_taps_vs_stems_taps_wav_and_guitar_vs_stems_guitar_wav": {
+       "hps_binary": {
+        "eval": "e1820",
+        "taps_SI_SDR_dB": -2.01,
+        "taps_SDR": -0.46,
+        "taps_SIR": 9.13,
+        "taps_SAR": 0.55,
+        "guitar_SI_SDR_dB": 14.64,
+        "guitar_SDR": 14.94
+       },
+       "hps_soft": {
+        "eval": "e1821",
+        "taps_SI_SDR_dB": -2.64,
+        "taps_SDR": -1.79,
+        "taps_SIR": 2.07,
+        "taps_SAR": 2.62,
+        "guitar_SI_SDR_dB": 14.62,
+        "guitar_SDR": 15.21
+       },
+       "hrps_beta1.1": {
+        "eval": "e1822",
+        "taps_SI_SDR_dB": -1.83,
+        "taps_SDR": -0.14,
+        "taps_SIR": 9.77,
+        "taps_SAR": 0.76,
+        "guitar_SI_SDR_dB": 14.26,
+        "guitar_SDR": 14.58
+       },
+       "hrps_beta2": {
+        "eval": "e1823",
+        "taps_SI_SDR_dB": -1.61,
+        "taps_SDR": 0.42,
+        "taps_SIR": 12.04,
+        "taps_SAR": 0.99,
+        "guitar_SI_SDR_dB": 12.28,
+        "guitar_SDR": 12.72
+       },
+       "hrps_beta4": {
+        "eval": "e1824",
+        "taps_SI_SDR_dB": -2.36,
+        "taps_SDR": 0.3,
+        "taps_SIR": 13.79,
+        "taps_SAR": 0.67,
+        "guitar_SI_SDR_dB": 9.65,
+        "guitar_SDR": 10.26
+       },
+       "hrps_beta32": {
+        "eval": "e1825",
+        "taps_SI_SDR_dB": -8.31,
+        "taps_SDR": -1.81,
+        "taps_SIR": 15.29,
+        "taps_SAR": -1.6,
+        "guitar_SI_SDR_dB": 1.24,
+        "guitar_SDR": 3.24
+       }
+      },
+      "onsets_on_each_percussive_part": 53,
+      "onsets_percussive_vs_32_truth_taps_window_50ms_P_R_F": [
+       0.604,
+       1.0,
+       0.753
+      ],
+      "onsets_percussive_vs_48_note_onset_groups_P_R_F": [
+       0.906,
+       1.0,
+       0.95
+      ],
+      "eval_ids_percussive_taps": {
+       "hps_binary": "e1792",
+       "hps_soft": "e1794",
+       "hrps_beta1.1": "e1796",
+       "hrps_beta2": "e1798",
+       "hrps_beta4": "e1802",
+       "hrps_beta32": "e1800"
+      },
+      "eval_ids_percussive_notes": {
+       "hps_binary": "e1793",
+       "hps_soft": "e1795",
+       "hrps_beta1.1": "e1797",
+       "hrps_beta2": "e1799",
+       "hrps_beta4": "e1803",
+       "hrps_beta32": "e1801"
+      },
+      "percussive_onsets_by_event_class": "every setting: all 27 tap+note, 21 note-only and 5 tap-only events, 0 on neither",
+      "median_timing_of_matched_taps_ms": {
+       "hps_binary": 21.6,
+       "hps_soft": 23.7,
+       "hrps_beta1.1": 21.6,
+       "hrps_beta2": 18.4,
+       "hrps_beta4": 15.0,
+       "hrps_beta32": 11.7
+      },
+      "residual_onsets": {
+       "hrps_beta1.1": {
+        "n": 102,
+        "taps_P_R_F": [
+         0.294,
+         0.938,
+         0.448
+        ],
+        "eval_taps": "e1804",
+        "notes_P_R_F": [
+         0.461,
+         0.979,
+         0.627
+        ],
+        "eval_notes": "e1805",
+        "tap+note": 26,
+        "note-only": 21,
+        "tap-only": 4,
+        "neither": 51
+       },
+       "hrps_beta2_4_32": "53 onsets each, same counts and P/R/F as the percussive parts (e1806/e1807, e1813/e1815, e1809/e1811)"
+      },
+      "mix_at_22050_onsets": {
+       "n": 53,
+       "taps_P_R_F": [
+        0.604,
+        1.0,
+        0.753
+       ],
+       "eval_taps": "e1817",
+       "notes_P_R_F": [
+        0.906,
+        1.0,
+        0.95
+       ],
+       "eval_notes": "e1819",
+       "median_timing_of_matched_taps_ms": 34.1
+      },
+      "event_energy_note_only_events_louder_than_quietest_tap_event": {
+       "hps_binary_percussive": "1 of 21",
+       "hps_soft_percussive": "0 of 21",
+       "hrps_beta1.1_percussive": "0 of 21",
+       "hrps_beta2_percussive": "15 of 21",
+       "hrps_beta4_percussive": "21 of 21",
+       "hrps_beta32_percussive": "21 of 21",
+       "hrps_beta2_residual": "21 of 21",
+       "hrps_beta32_residual": "21 of 21"
+      },
+      "gtr_eval_version": "0.12.0"
+     }
+    }
+   ],
+   "not_run_reason": null,
    "for_aaron": false,
    "callable_via": [
     "python"
    ],
    "inputs": [
-    "a NumPy signal x and its sampling rate Fs; N, H, L_h, L_p"
+    "a 1-D NumPy signal x and its sampling rate Fs; N, H, L_h (seconds or frames), L_p (Hz or bins)"
    ],
    "outputs": [
-    "hps: x_h harmonic and x_p percussive signals; hrps: harmonic, percussive and x_r residual signals (time domain)"
+    "hps: x_h harmonic and x_p percussive signals; hrps: harmonic, percussive and x_r residual signals (time domain, input length; detail=True adds masks and spectrograms)"
    ],
    "constraints_accepted": [
-    "L_h horizontal median filter length",
-    "L_p percussive median filter length",
-    "mask 'binary' or 'soft'",
+    "N, H",
+    "L_h horizontal median filter length (L_unit 'physical' seconds or 'indices' frames)",
+    "L_p percussive median filter length (Hz or bins)",
+    "mask 'binary' or 'soft' (hps; soft mask sets eps = 0.00001 inside the function whatever eps is passed)",
     "hrps beta separation factor (default 2.0)"
    ],
    "license": {
@@ -4788,15 +5039,98 @@
    "kind": "research-model",
    "what": "IRCAM electric guitar playing technique recognition: TorchScript model eguitar_ircam.ts (14 classes incl. palmstrike, muted, bend, legato, vibrato) in ipt~ (Max/MSP), the C library libipt or the IPT Vamp plugin; training code ipt_recognition.",
    "url": "https://github.com/nbrochec/ipt_tilde",
-   "version": "model Hugging Face nbrochec/ipt_models (2026-09-23), file eguitar_ircam.ts (14.1 MB, 3,360,398 parameters); ipt_tilde commit f72de8e (2026-11-10)",
-   "tried": false,
-   "tried_how": null,
-   "runs": [],
-   "not_run_reason": "not attempted; no reason beyond that is recorded in trials.md (survey.md marks it RUNNABLE (TorchScript on CPU; not yet confirmed))",
+   "version": "model Hugging Face nbrochec/ipt_models (repository sha 2fdaf42, 2026-09-23), file eguitar_ircam.ts (14,090,320 bytes, sha256 93cfb7a1e6440b57530e464609e038381dc5d1286eb9504cc0d74c894e9c5d1b, 3,360,398 parameters, card: exported with torch 2.4.1); ipt_tilde commit f72de8e (2026-11-10); run here with torch 2.15.0+cpu",
+   "tried": true,
+   "tried_how": "local-cpu",
+   "runs": [
+    {
+     "run_id": "r0643",
+     "input_id": "S6taps,S2s,R3c",
+     "cores": 2,
+     "wall_s": 13.41,
+     "peak_mb": 985.0,
+     "exit_code": 0,
+     "output_files": [
+      "out/gap2-ipt/<clip>.windows.csv",
+      "out/gap2-ipt/summary.json",
+      "samples/eguitar-ircam/"
+     ],
+     "metrics": {
+      "what_ran": "gap round 2: scripts/gap2_ipt_classify.py: torch.jit.load(eguitar_ircam.ts, map_location='cpu') in venv-ipt (torch 2.15.0+cpu); <clip>.mono.wav resampled 44100 -> 8000 Hz (scipy resample_poly 80/441); windows of 7168 samples ending every 0.1 s from 0.896 s; one batched forward per clip; softmax; libipt's energy gate and host smoothing not applied; 2-core slot, no wait",
+      "cpu_s": 18.1,
+      "model_load_s": 0.069,
+      "forward_batched_s": {
+       "S6taps_285_windows": 3.427,
+       "S2s_285_windows": 2.973,
+       "R3c_172_windows": 1.651
+      },
+      "top1_counts_all_windows": {
+       "S6taps": {
+        "bottleneck": 214,
+        "scratch": 27,
+        "palmstrike": 26,
+        "legato": 17,
+        "sustained": 1
+       },
+       "S2s": {
+        "bottleneck": 216,
+        "legato": 24,
+        "palmstrike": 20,
+        "scratch": 16,
+        "trill": 8,
+        "sustained": 1
+       },
+       "R3c": {
+        "legato": 91,
+        "bottleneck": 28,
+        "trill": 19,
+        "sustained": 12,
+        "bend": 11,
+        "palmstrike": 9,
+        "vibrato": 2
+       }
+      },
+      "count_in_windows_below_-60dBFS": "13 in S6taps and 13 in S2s (end times 0.896 to 2.096 s, RMS -90.4 dBFS), all top-1 scratch",
+      "S6taps_vs_S2s_paired_windows": {
+       "n": 285,
+       "same_top1": 233,
+       "mean_prob_S6taps_minus_S2s": {
+        "palmstrike": 0.0215,
+        "scratch": 0.0392,
+        "legato": -0.0223,
+        "trill": -0.0283,
+        "bottleneck": -0.0093
+       },
+       "differing_windows_with_truth_tap_in_last_0.2s": 6
+      },
+      "S6taps_mean_prob_tap_in_last_0.2s_vs_other_windows_rms_ge_-60dBFS": {
+       "n": [
+        64,
+        208
+       ],
+       "palmstrike": [
+        0.0642,
+        0.1008
+       ],
+       "scratch": [
+        0.019,
+        0.0659
+       ],
+       "bottleneck": [
+        0.8516,
+        0.7607
+       ]
+      },
+      "note": "no truth for playing techniques on any shared clip; the 14 classes are electric-guitar techniques, none a hit on the guitar body"
+     }
+    }
+   ],
+   "not_run_reason": null,
    "for_aaron": false,
    "callable_via": [
     "vamp-plugin",
-    "desktop-gui"
+    "desktop-gui",
+    "python (torch.jit.load of the .ts file; not a documented route, worked here)"
    ],
    "inputs": [
     "raw audio (batch, 1, segment_length) float32; sample rate 8000 Hz, segment length 7168 samples (896 ms, latency floor)"
@@ -4835,10 +5169,10 @@
    "pricing": null,
    "handoffs_out": [],
    "unverified": [
-    "ipt~ requires 'macOS 10.13 or later with an Apple Silicon processor ... **or** Windows 10/11 on an x64 CPU with AVX2' and 'Max 8.6 or later / Max 9.0.3 or later'",
-    "that torch.jit.load on Linux can load the .ts file is an inference from the card's description of the file format, not a documented route",
+    "ipt~ requires 'macOS 10.13 or later with an Apple Silicon processor (M1 or later — Intel Macs are not supported), **or** Windows 10/11 on an x64 CPU with AVX2 (any desktop CPU from roughly 2013 onward)' and 'Max 8.6 or later / Max 9.0.3 or later'",
     "ipt-vamp-plugin has no license file in its top-level listing and no license text in its README",
-    "no evaluation metrics on the model card ('TODO: evaluation metrics' in an HTML comment)"
+    "no evaluation metrics on the model card ('TODO: evaluation metrics' in an HTML comment)",
+    "libipt's energy gate and the hosts' temporal smoothing were not reproduced in the run here"
    ]
   },
   {
@@ -5470,7 +5804,7 @@
   {
    "name": "Wikimedia Commons File:Am7 Percussive Bass Tapping.webm",
    "kind": "dataset",
-   "what": "A 5-string bass (not a guitar), 43.7 s; found in the Commons API search for body-tap recordings.",
+   "what": "A 5-string bass (not a guitar), 43.7 s; found in the Commons API search for body-tap recordings. Found by the gap round's Commons API searches (File namespace, 23:29 to 23:36 UTC; four of the eight searches answered HTTP 429 twice, 60 s apart): the searches that answered held four audio, video or MIDI files in all: this one, 'Highlife guitar.mid' and 'Zupf- Picking- und Fingerstyle bsp.mid' (MIDI) and 'Blue Island.wav' (a band track, CC BY-SA 4.0); the category 'Percussive guitar techniques' holds 8 files, all JPEG images, and the subcategory 'Chitarra battente'.",
    "url": null,
    "version": null,
    "tried": false,
@@ -5503,9 +5837,9 @@
   {
    "name": "archive.org 'With A New Tuning, You Can Fly' (Chris Smuck, 2007): lane input RT1",
    "kind": "dataset",
-   "what": "Real recording, audio only, whole track (233.509 s as decoded); item description 'Michael Hedges Tuning...Written By Me', keywords 'Acoustic, Tapping, Fingerstyle'; whether it contains hits on the guitar body is UNVERIFIED (not stated in the metadata, not checked by listening); no ground truth. Added in gap round 1 as the lane's input RT1.",
+   "what": "Real recording, audio only, whole track (233.509 s as decoded); item description 'Michael Hedges Tuning...Written By Me', keywords 'Acoustic, Tapping, Fingerstyle'; whether it contains hits on the guitar body is UNVERIFIED (not stated in the metadata, not checked by listening); no ground truth. Added in gap round 1 as the lane's input RT1. Item facts: title 'With A New Tuning, You Can Fly', holder 'Chris Smuck', year 2007, added 2007-04-13, collections opensource_audio and community; the item's only original audio file is the MP3 (length 233.62 in the file list); one review, which says nothing about the instrument or the technique. The two decoded channels are identical (mono stored as stereo); RMS of each 5 s window of the mono file -19.4 to -26.0 dBFS, except the last window (the final 3.5 s), -56.5 dBFS.",
    "url": "https://archive.org/details/ChrisSmuckWithANewTuningYouCanFly",
-   "version": "original file With_A_New_Tuning_You_Can_Fly.mp3 (192 kb/s MP3, 44.1 kHz, 5,607,089 bytes, md5 eba7dc5afa339eb9a091d0f04e80d484); item metadata read 2026-11-10",
+   "version": "original file With_A_New_Tuning_You_Can_Fly.mp3 (192 kb/s MP3, 44.1 kHz, 5,607,089 bytes, md5 eba7dc5afa339eb9a091d0f04e80d484, sha256 06d70c3fa409ec9532375750655aa4d6adefec7516844f419613761095722d50); item metadata read 2026-11-10 23:28 to 23:37 UTC, re-read 2026-11-11 by the gap-round verifier; download 2026-11-10 23:36:58 UTC: HTTP 302 to the mirror host dn710603.ca.archive.org, then HTTP 200, audio/mpeg",
    "tried": true,
    "tried_how": "local-cpu",
    "runs": [
@@ -5514,15 +5848,13 @@
      "input_id": "RT1",
      "cores": null,
      "wall_s": 2.64,
-     "peak_mb": 720.9,
+     "peak_mb": null,
      "exit_code": 0,
      "output_files": [
       "inputs/RT1/RT1.wav, RT1.mono.wav, RT1.readback.json"
      ],
      "metrics": {
-      "what_ran": "scripts/gap1_make_rt1.sh: ffmpeg decode to 16-bit 44.1 kHz stereo, mono = (L+R)/2, read-back (10,297,728 samples, peak -3.62 dBFS, RMS -21.88 dBFS, identical channels)",
-      "cpu_s": 2.7,
-      "slot_wait_s": 0.0,
+      "what_ran": "scripts/gap1_make_rt1.sh: ffmpeg decode to 16-bit 44.1 kHz stereo, mono = (L+R)/2, read-back (10,297,728 samples, peak -3.62 dBFS, RMS -21.88 dBFS, identical channels); run --nolock, light",
       "verifier_rerun": "r0585 (gap-round verifier, on a copy of the MP3): byte-identical RT1.wav, RT1.mono.wav and read-back JSON"
      }
     },
@@ -5539,7 +5871,16 @@
      "metrics": {
       "what_ran": "librosa HPSS and onsets (see the librosa entry)",
       "cpu_s": 79.5,
-      "slot_wait_s": 336.1
+      "slot_wait_s": 336.1,
+      "onsets_per_second_mix_and_margins": {
+       "mix": 3.99,
+       "m1": 5.27,
+       "m4": 5.1,
+       "m16": 4.05
+      },
+      "verifier_rerun": "r0562 (gap-round verifier; 2-core slot, waited 10.0 s; wall 77.61 s): four byte-identical onset files, same energy fractions and 10 s shares",
+      "percussive_fraction_largest_smallest_windows_m4": "largest 90-100 s (0.0164), 30-40 s (0.0087), 60-70 s and 210-220 s (0.0083 each); smallest 230-233.5 s (0.0009), 10-20 s (0.0013), 0-10 s and 150-160 s (0.0015 each)",
+      "script_timer_s_per_margin": "24.98 to 26.8"
      }
     },
     {
@@ -5555,7 +5896,9 @@
      "metrics": {
       "what_ran": "aubio, madmom, Essentia onset detectors (see their entries)",
       "cpu_s": 14.9,
-      "slot_wait_s": 163.0
+      "slot_wait_s": 163.0,
+      "verifier_rerun": "r0561 (gap-round verifier; 2-core slot, no wait; wall 11.85 s): six byte-identical onset files",
+      "per_detector_s": "0.46 to 7.63 s (timing.tsv)"
      }
     },
     {
@@ -5572,7 +5915,7 @@
       "what_ran": "Demucs htdemucs_6s (see the Demucs entry)",
       "cpu_s": 261.5,
       "slot_wait_s": 314.4,
-      "verifier_rerun": "r0571: see the Demucs entry"
+      "verifier_rerun": "r0571 (second run of the same htdemucs_6s command): see the Demucs entry"
      }
     },
     {
@@ -5588,7 +5931,41 @@
      "metrics": {
       "what_ran": "Demucs htdemucs (see the Demucs entry)",
       "cpu_s": 307.7,
-      "slot_wait_s": 0.0
+      "slot_wait_s": 0.0,
+      "verifier_rerun": "not repeated by the gap-round verifier"
+     }
+    },
+    {
+     "run_id": "r0557",
+     "input_id": "RT1",
+     "cores": null,
+     "wall_s": 10.05,
+     "peak_mb": null,
+     "exit_code": 0,
+     "output_files": [
+      "stems_summary.json next to the Demucs stems under out/gap1-RT1/demucs/",
+      "samples/realtaps/RT1_demucs_stems_summary.json",
+      "samples/realtaps/RT1_htdemucs6s_drums_onsets.txt"
+     ],
+     "metrics": {
+      "what_ran": "scripts/gap1_rt1_stems.py: energy of each Demucs stem relative to the mix (sum of squares over both channels), the peak of each stem's (L+R)/2 signal, and librosa.onset.onset_detect (defaults) on the drums stem loaded as mono; --nolock, light",
+      "verifier_rerun": "r0567 (--nolock): identical values and identical drums_onsets.txt (351 and 1,078 lines); independent recompute r0565 (scripts/verify-gapfill/vrt1_stems.py, wave module) agrees"
+     }
+    },
+    {
+     "run_id": "r0558",
+     "input_id": "RT1",
+     "cores": null,
+     "wall_s": 2.26,
+     "peak_mb": null,
+     "exit_code": 0,
+     "output_files": [
+      "drum_peaks.json next to the Demucs stems under out/gap1-RT1/demucs/",
+      "samples/realtaps/RT1_demucs_drum_peaks.json"
+     ],
+     "metrics": {
+      "what_ran": "scripts/gap1_rt1_drum_peaks.py: the 12 highest local maxima of each drums stem's |(L+R)/2|, at least 1 s apart (scipy.signal.find_peaks, distance 1 s); --nolock, light",
+      "verifier_rerun": "r0568 (--nolock): identical values"
      }
     }
    ],
@@ -5597,7 +5974,7 @@
    "callable_via": [],
    "inputs": [],
    "outputs": [
-    "44.1 kHz WAV (stereo with identical channels, and mono)"
+    "RT1.wav (16-bit 44.1 kHz stereo with identical channels, 41,191,174 bytes, sha256 0b6bd2c9cd11bbca6190aac4fe1fd659ae6fe4e27e964a30626123ba7ea821d3) and RT1.mono.wav ((L+R)/2, 20,595,500 bytes, sha256 78822dc2c7c33fd9659bbd9a92b4c6a060d94f13b0a4d441d43d531d79f9cca5); 233.509 s"
    ],
    "constraints_accepted": [],
    "license": {
@@ -5612,14 +5989,103 @@
      "url": null
     },
     "training_data": [],
-    "service_terms": []
+    "service_terms": [
+     {
+      "topic": "item page license label",
+      "quote": "Usage Attribution 3.0",
+      "url": "https://archive.org/details/ChrisSmuckWithANewTuningYouCanFly"
+     }
+    ]
    },
-   "pricing": "free download from archive.org",
-   "handoffs_out": [],
+   "pricing": "No price stated; downloaded with one HTTP request (HTTP 302 to a mirror host, then HTTP 200) (trials.md, Gap round 1)",
+   "handoffs_out": [
+    {
+     "to": "Demucs (htdemucs_6s, htdemucs)",
+     "via_format": "RT1.wav (stereo WAV)",
+     "evidence": "trials.md, Gap round 1: runs r0554 and r0556"
+    },
+    {
+     "to": "librosa HPSS and onset_detect, aubio, madmom, Essentia OnsetRate",
+     "via_format": "RT1.mono.wav",
+     "evidence": "trials.md, Gap round 1: runs r0551 and r0542 (counts only, no truth)"
+    }
+   ],
    "unverified": [
     "whether the recording contains hits on the guitar body (for-aaron.md list 8, step 3: listen and note times)",
-    "the item's derivative files are listed as about 3 s long; only the original MP3 holds the whole track"
+    "the item's derivative files are listed as about 3 s long; only the original MP3 holds the whole track",
+    "what sound is at the loud drums-stem moments of RT1 was not checked by listening (for-aaron.md list 8, step 3)",
+    "how far the RT1 drums-stem figures vary beyond two htdemucs_6s runs; the htdemucs run r0556 was not repeated",
+    "percussive share by 10 s window (librosa HPSS margin 4): 0.0009 to 0.0164, median 0.0047 (24 windows); largest 90-100 s (0.0164), then 30-40 s (0.0087), 60-70 s and 210-220 s (0.0083 each); smallest 230-233.5 s (0.0009), 10-20 s (0.0013), 0-10 s and 150-160 s (0.0015 each); for comparison the percussive part at margin 4 held 0.022 of S6taps' energy and 0.0009, 0.0005, 0.0018 of R3a, R3b, R3c; at margin 1, 0.065 of S6taps'"
    ]
+  },
+  {
+   "name": "archive.org 'RacerSessions-DannyGodinez11082015' (Racer Sessions, Danny Godinez)",
+   "kind": "dataset",
+   "what": "Steel-string acoustic set; description: \"He will be playing steel string acoustic and utilizing an array of real-time looping, echo/reverb landscapes to discover a different sonic terrain. imaginative fingerstyle and percussive textures compliment an altogether unique and fresh approach to the acoustic guitar.\", followed by seven jams with other players; 11 original WAV files, \"Danny Godinez 1.wav\" to \"4.wav\" 1315.01, 314.72, 471.41 and 343.27 s long.",
+   "url": "https://archive.org/details/RacerSessions-DannyGodinez11082015",
+   "version": "item metadata read 2026-11-10 23:46 UTC; re-read 2026-11-11 by the gap-round verifier",
+   "tried": false,
+   "tried_how": null,
+   "runs": [],
+   "not_run_reason": "not downloaded: its license URL is the Public Domain Mark 1.0, which is neither CC0 nor CC BY, the two licenses the gap round was asked to use; whether to use it is Aaron's call (for-aaron.md list 8, step 4)",
+   "for_aaron": true,
+   "callable_via": [],
+   "inputs": [],
+   "outputs": [],
+   "constraints_accepted": [],
+   "license": {
+    "code": {
+     "spdx": null,
+     "quote": "http://creativecommons.org/publicdomain/mark/1.0/",
+     "url": "https://archive.org/details/RacerSessions-DannyGodinez11082015"
+    },
+    "weights": {
+     "name": null,
+     "quote": null,
+     "url": null
+    },
+    "training_data": [],
+    "service_terms": []
+   },
+   "pricing": null,
+   "handoffs_out": [],
+   "unverified": [
+    "whether it holds hits on the guitar body is not known (the description says 'imaginative fingerstyle and percussive textures'; not downloaded, not listened to)",
+    "the quote field holds the item's license URL (the Public Domain Mark 1.0 address), not a license sentence"
+   ]
+  },
+  {
+   "name": "archive.org 'DavidDrewLongey-MusicFromAModernCave2005'",
+   "kind": "dataset",
+   "what": "\"improvisational acoustic instrumental works on banjo, jawharp, and guitar\" and \"The music is percussive, and modal, not unlike ragas, or certain Appalachian styles\"; 9 VBR MP3 tracks; the item does not say which tracks have guitar.",
+   "url": "https://archive.org/details/DavidDrewLongey-MusicFromAModernCave2005",
+   "version": "found by the 2026-11-10 archive.org search; item metadata re-read 2026-11-11 by the gap-round verifier",
+   "tried": false,
+   "tried_how": null,
+   "runs": [],
+   "not_run_reason": "not downloaded; the item does not say which tracks have guitar",
+   "for_aaron": false,
+   "callable_via": [],
+   "inputs": [],
+   "outputs": [],
+   "constraints_accepted": [],
+   "license": {
+    "code": {
+     "spdx": "CC-BY-3.0",
+     "quote": "CC BY 3.0",
+     "url": null
+    },
+    "weights": {
+     "name": null,
+     "quote": null,
+     "url": null
+    },
+    "training_data": [],
+    "service_terms": []
+   },
+   "pricing": null,
+   "handoffs_out": [],
+   "unverified": []
   }
  ]
 }

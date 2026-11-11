@@ -10,6 +10,10 @@ re-fetched from its URL and compared, versions and dates were re-read, and missi
 were added. What changed and the counts are in "## Verification log" at the end. Its copies of the fetched pages are
 in `/home/user/gtr/lanes/chords-beats-key/verify/` (not committed); its scripts are `scripts/verify_*`.
 
+Gap round 1 (2026-11-10 and 11, gapfill-chords-beats-key): items marked "Gap round 1" or "(gap round 1 ...)" were added
+after that check and are not verified by a separate agent; their raw copies are in
+`/home/user/gtr/lanes/chords-beats-key/raw/gap1/` (not committed).
+
 Marks used in the tool list:
 
 - `RUNNABLE`: looks installable and runnable on the CPU-only Linux research box (pip / apt / npm package or a
@@ -43,7 +47,7 @@ in the sections below. Each line is a pointer; the section is what counts. Dates
 9. Essentia ChordsDetection (HPCP template matching). PyPI essentia 2.1b6.dev1438 of 2026-05-19. AGPL-3.0 (commercial
    license from UPF). RUNNABLE. 24 major/minor triads; marked "experimental" by its docs.
 10. Omnizart chord. HEAD 2026-05-31; PyPI 0.6.3 of 2026-05-31. MIT. RUNNABLE? (TensorFlow). MIDI + CSV, 24 maj/min + N
-    (the label map also holds an "X" class).
+    (the label map also holds an "X" class). (Gap round 1: the 0.5.0 wheel's one install attempt failed; trials.md.)
 11. Harmony Transformer v1 (2019-11-08) and v2 (2021-05-05). No license file found; training scripts only (v1 ships
     McGill Billboard chroma features and lab files in the repository; v2 is for symbolic music). No weights.
 12. ACR_seq2seq (ICASSP 2026; arXiv 2604.24386). HEAD 2026-05-31. No license file found; README is a citation only;
@@ -51,7 +55,8 @@ in the sections below. Each line is a pointer; the section is what counts. Dates
 13. ChordFormer (arXiv 2502.11840, 2025). NO-CODE-FOUND.
 14. BMACE (arXiv 2601.02101, an ISMIR 2024 late-breaking demo per the arXiv comment). NO-CODE-FOUND.
 15. QM Vamp Plugins (key, beat, bar-beat, chromagram, tonal change). HEAD 2021-06-02. GPL; README says binaries may be
-    used "for any purpose commercial or non-commercial". RUNNABLE (binaries or source build).
+    used "for any purpose commercial or non-commercial". RUNNABLE (binaries or source build). (Gap round 1: no package
+    route on Linux; the download site resets; see section.)
 16. pyace (2017 to 2021). HEAD 2021-06-01. BSD-3-style. Not examined further.
 
 ### Beat, downbeat and tempo
@@ -65,13 +70,14 @@ in the sections below. Each line is a pointer; the section is what counts. Dates
 20. BeatNet. HEAD 2026-04-13; PyPI 1.1.3 of 2023-11-28 (`setup.py` at HEAD says 1.2.0, not on PyPI). CC BY 4.0
     (repository LICENSE). RUNNABLE. Beats and downbeats, online and offline. BeatNet+ is item 42.
 21. All-In-One (allin1). HEAD 2023-10-10; PyPI 1.1.0 of 2023-10-10. MIT code, MIT weights on Hugging Face. RUNNABLE?
-    (needs NATTEN built on Linux, madmom from GitHub, Demucs). BPM, beats, downbeats, beat positions, sections.
+    (needs NATTEN built on Linux, madmom from GitHub, Demucs). BPM, beats, downbeats, beat positions, sections. (Gap
+    round 1: ran here with NATTEN 0.17.3 built from PyPI and madmom 0.16.1 from PyPI; section and trials.md.)
 22. Essentia RhythmExtractor2013 and TempoCNN. AGPL-3.0 code; TempoCNN models CC BY-NC-SA 4.0.
     RUNNABLE. BPM and beat ticks; TempoCNN global and local tempo.
 23. aubio (aubiotrack and friends). HEAD 2026-04-10; PyPI 0.4.9 of 2019-02-08; Ubuntu aubio-tools on the box.
     GPL-3.0-or-later. RUNNABLE (C tools). Beat times.
 24. tempo-cnn. HEAD 2024-10-17; PyPI tempocnn 0.0.8 of 2024-10-17 (Python 3.9 to 3.11). AGPL-3.0 code and models.
-    RUNNABLE. Global tempo, tempogram, meter.
+    RUNNABLE. Global tempo, tempogram, meter. (Gap round 1: ran here; the wheel has no key model.)
 25. DeepRhythm. HEAD 2026-07-21; PyPI deeprhythm 0.0.13 of 2024-12-07. AGPL-3.0 (weights are files in the same
     repository). RUNNABLE. Global tempo with confidence. (Added.)
 26. Beat Transformer. HEAD 2024-04-07. MIT. RUNNABLE? (repository targets 8-fold evaluation and Colab; Spleeter
@@ -87,9 +93,10 @@ in the sections below. Each line is a pointer; the section is what counts. Dates
 31. Essentia KeyExtractor (16 profile types, default "bgate"), TuningFrequency (Hz and cents). AGPL-3.0. RUNNABLE.
 32. madmom key (CNN ensemble, 24 keys). Code BSD-2 / models CC BY-NC-SA 4.0. RUNNABLE.
 33. libKeyFinder (HEAD 2024-07-09) and keyfinder-cli (HEAD 2026-11-10). GPL-3.0. RUNNABLE (CMake build; not in Ubuntu
-    24.04 apt).
+    24.04 apt). (Gap round 1: no Debian, Ubuntu, conda-forge or PyPI-wheel package found; section.)
 34. S-KEY (Deezer). HEAD 2026-10-27. MIT code; weights "only for non-commercial research purposes". RUNNABLE (poetry,
-    CPU). Trained on songs from the Deezer catalog (paper).
+    CPU). Trained on songs from the Deezer catalog (paper). (Gap round 1: a community ONNX export of the same weights,
+    huggingface.co/aaatmy/skey-onnx, ran here; section.)
 35. music21 key analysis (symbolic). PyPI 10.5.2 of 2026-10-28 (pre-release 11.0.0b14 uploaded 2026-10-31); HEAD
     2026-11-08. BSD-3-Clause. RUNNABLE.
 36. NNLS Tuning plugin (concert pitch in Hz, global and local). GPL-2.0-or-later. RUNNABLE.
@@ -97,7 +104,8 @@ in the sections below. Each line is a pointer; the section is what counts. Dates
     file found. RUNNABLE? (TensorFlow; models on Google Drive). Five classes in its evaluation code: DADGAD, Drop D,
     Open D, Open G, Standard. Rochester ECE 477 report 2023 (seven tunings): no code URL in its text; 2019 project not
     read.
-38. Capo position from audio: NO-CODE-FOUND (no paper, dataset or code found).
+38. Capo position from audio: NO-CODE-FOUND (no paper, dataset or code found). (Gap round 1: searched again, nothing
+    found with weights or a package; section "Guitar open-string tuning and capo position from audio".)
 
 ### Hosted services and products (pointers only; terms in other lanes)
 
@@ -335,8 +343,10 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
     [0.14.6] "the changed signature in both QK and AV (both 1D and 2D), where we now take in both kernel size and
     dilation"; [0.17.5] "Dropped deprecated ops (`natten.functional.natten*d{qk,qkrpb,av}`)"; [0.20.0] "Dropped unfused /
     CPU backends in libnatten." and "CPU implementations were all unfused, and were very limited as well, and are likewise
-    removed." The 0.17.3 and 0.17.4 PyPI sdists still define the four functions (`src/natten/functional.py`, each a
-    wrapper that logs a deprecation warning and calls `na1d_qk` / `na1d_av` / `na2d_qk` / `na2d_av`). The 0.17.4 sdist's
+    removed." The 0.17.3 and 0.17.4 PyPI sdists still define the four functions in `src/natten/functional.py`; in 0.17.4
+    `natten1dqkrpb` logs "You're calling NATTEN op `natten.functional.natten1dqkrpb`, which is deprecated in favor of
+    `natten.functional.na1d_qk`" and returns `na1d_qk(query, key, kernel_size=(kernel_size,), dilation=(dilation,),
+    rpb=rpb)`, and under 0.17.3 all four logged such a warning during this lane's allin1 runs. The 0.17.4 sdist's
     `src/natten/flops.py` line 82 annotates `input_shape: torch.Size | Sequence[int]`, which raised "TypeError:
     unsupported operand type(s) for |: 'type' and '_GenericAlias'" on `import natten` under Python 3.9 here (run r0512);
     the 0.17.3 sdist has no such annotation.
@@ -1407,6 +1417,19 @@ one of the two tools' own documentation describes.
     loader reads `f'{_BASE_DIR}/{_id:04d}/bothchroma.csv'` under `_BASE_DIR = 'data/McGill-Billboard'`
     (`model-development/dataloader.py` lines 36 and 44); at inference autochord computes the same `bothchroma` output
     itself (line 3).
+
+Added in gap round 1 (2026-11-11, gapfill-chords-beats-key; not re-checked by a verifier):
+
+24. A decoded mono signal at 22,050 Hz into S-KEY in a browser: the `aaatmy/skey-onnx` graph takes "float32 mono PCM at
+    **22,050 Hz**, shape `[1, samples]`" and returns `scores` [1, 24], and its card says "Browser inference uses ONNX
+    Runtime Web WASM CPU" (https://huggingface.co/aaatmy/skey-onnx, read 2026-11-10); the same file ran here under
+    onnxruntime 1.31.1 for Python (trials.md, "Gap round 1"). The browser side was not run in this lane.
+25. All-In-One's JSON (`beats`, `downbeats`, `beat_positions` in seconds and bar positions) is read as written by gtr-eval
+    `beats` once split into one-time-per-line files (`scripts/allin1_run.py` writes `beats.txt` and `downbeats.txt`;
+    evals e1509 to e1615 in trials.md); its `bpm` is an integer derived from those beats (`allin1/postprocessing/tempo.py`).
+26. tempo-cnn's `tempo` output (one BPM per file) and `meter` output (a numerator) are plain numbers on stdout or in a
+    file (`tempocnn/commands.py`, `_write_tempo_result`); with `--jams` the tempo goes into a JAMS `tempo` annotation
+    (`_create_tempo_jam`), the same container CREMA writes for chords (CREMA section).
 
 ## Verification log (verify-docs-chords-beats-key, 2026-11-10)
 

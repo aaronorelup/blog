@@ -1,0 +1,644 @@
+{
+ "tuning_midi": [
+  40,
+  45,
+  50,
+  55,
+  59,
+  64
+ ],
+ "capo": 0,
+ "notes": [
+  {
+   "onset": 0.3108,
+   "string": 3,
+   "fret": 2,
+   "pitch": 57,
+   "line": 0
+  },
+  {
+   "onset": 0.3804,
+   "string": 4,
+   "fret": 4,
+   "pitch": 54,
+   "line": 0
+  },
+  {
+   "onset": 0.4501,
+   "string": 2,
+   "fret": 3,
+   "pitch": 62,
+   "line": 0
+  },
+  {
+   "onset": 0.5198,
+   "string": 2,
+   "fret": 3,
+   "pitch": 62,
+   "line": 0
+  },
+  {
+   "onset": 0.6005,
+   "string": 1,
+   "fret": 0,
+   "pitch": 64,
+   "line": 0
+  },
+  {
+   "onset": 0.6702,
+   "string": 1,
+   "fret": 0,
+   "pitch": 64,
+   "line": 0
+  },
+  {
+   "onset": 0.7401,
+   "string": 2,
+   "fret": 3,
+   "pitch": 62,
+   "line": 0
+  },
+  {
+   "onset": 0.8902,
+   "string": 2,
+   "fret": 1,
+   "pitch": 60,
+   "line": 0
+  },
+  {
+   "onset": 0.9599,
+   "string": 2,
+   "fret": 1,
+   "pitch": 60,
+   "line": 0
+  },
+  {
+   "onset": 1.0295,
+   "string": 2,
+   "fret": 0,
+   "pitch": 59,
+   "line": 0
+  },
+  {
+   "onset": 1.0992,
+   "string": 2,
+   "fret": 0,
+   "pitch": 59,
+   "line": 0
+  },
+  {
+   "onset": 0.3108,
+   "string": 6,
+   "fret": 3,
+   "pitch": 43,
+   "line": 0
+  },
+  {
+   "onset": 0.3804,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 0
+  },
+  {
+   "onset": 0.4501,
+   "string": 6,
+   "fret": 3,
+   "pitch": 43,
+   "line": 0
+  },
+  {
+   "onset": 0.5198,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 0
+  },
+  {
+   "onset": 0.6005,
+   "string": 5,
+   "fret": 3,
+   "pitch": 48,
+   "line": 0
+  },
+  {
+   "onset": 0.6702,
+   "string": 4,
+   "fret": 2,
+   "pitch": 52,
+   "line": 0
+  },
+  {
+   "onset": 0.7398,
+   "string": 6,
+   "fret": 3,
+   "pitch": 43,
+   "line": 0
+  },
+  {
+   "onset": 0.8095,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 0
+  },
+  {
+   "onset": 0.8902,
+   "string": 5,
+   "fret": 3,
+   "pitch": 48,
+   "line": 0
+  },
+  {
+   "onset": 0.9599,
+   "string": 4,
+   "fret": 2,
+   "pitch": 52,
+   "line": 0
+  },
+  {
+   "onset": 1.0295,
+   "string": 6,
+   "fret": 3,
+   "pitch": 43,
+   "line": 0
+  },
+  {
+   "onset": 1.0992,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 0
+  },
+  {
+   "onset": 100.0722,
+   "string": 3,
+   "fret": 2,
+   "pitch": 57,
+   "line": 1
+  },
+  {
+   "onset": 100.1387,
+   "string": 3,
+   "fret": 2,
+   "pitch": 57,
+   "line": 1
+  },
+  {
+   "onset": 100.2054,
+   "string": 3,
+   "fret": 0,
+   "pitch": 55,
+   "line": 1
+  },
+  {
+   "onset": 100.3491,
+   "string": 2,
+   "fret": 3,
+   "pitch": 62,
+   "line": 1
+  },
+  {
+   "onset": 100.4156,
+   "string": 2,
+   "fret": 3,
+   "pitch": 62,
+   "line": 1
+  },
+  {
+   "onset": 100.4821,
+   "string": 2,
+   "fret": 1,
+   "pitch": 60,
+   "line": 1
+  },
+  {
+   "onset": 100.5486,
+   "string": 2,
+   "fret": 1,
+   "pitch": 60,
+   "line": 1
+  },
+  {
+   "onset": 100.6261,
+   "string": 2,
+   "fret": 0,
+   "pitch": 59,
+   "line": 1
+  },
+  {
+   "onset": 100.6925,
+   "string": 2,
+   "fret": 0,
+   "pitch": 59,
+   "line": 1
+  },
+  {
+   "onset": 100.7593,
+   "string": 3,
+   "fret": 2,
+   "pitch": 57,
+   "line": 1
+  },
+  {
+   "onset": 100.903,
+   "string": 2,
+   "fret": 3,
+   "pitch": 62,
+   "line": 1
+  },
+  {
+   "onset": 100.9695,
+   "string": 2,
+   "fret": 3,
+   "pitch": 62,
+   "line": 1
+  },
+  {
+   "onset": 101.0359,
+   "string": 2,
+   "fret": 1,
+   "pitch": 60,
+   "line": 1
+  },
+  {
+   "onset": 101.1024,
+   "string": 2,
+   "fret": 1,
+   "pitch": 60,
+   "line": 1
+  },
+  {
+   "onset": 100.0722,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 1
+  },
+  {
+   "onset": 100.1387,
+   "string": 5,
+   "fret": 0,
+   "pitch": 45,
+   "line": 1
+  },
+  {
+   "onset": 100.2052,
+   "string": 6,
+   "fret": 3,
+   "pitch": 43,
+   "line": 1
+  },
+  {
+   "onset": 100.2716,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 1
+  },
+  {
+   "onset": 100.3491,
+   "string": 6,
+   "fret": 3,
+   "pitch": 43,
+   "line": 1
+  },
+  {
+   "onset": 100.4156,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 1
+  },
+  {
+   "onset": 100.4821,
+   "string": 5,
+   "fret": 3,
+   "pitch": 48,
+   "line": 1
+  },
+  {
+   "onset": 100.5486,
+   "string": 4,
+   "fret": 2,
+   "pitch": 52,
+   "line": 1
+  },
+  {
+   "onset": 100.6261,
+   "string": 6,
+   "fret": 3,
+   "pitch": 43,
+   "line": 1
+  },
+  {
+   "onset": 100.6925,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 1
+  },
+  {
+   "onset": 100.759,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 1
+  },
+  {
+   "onset": 100.8255,
+   "string": 5,
+   "fret": 0,
+   "pitch": 45,
+   "line": 1
+  },
+  {
+   "onset": 100.903,
+   "string": 6,
+   "fret": 3,
+   "pitch": 43,
+   "line": 1
+  },
+  {
+   "onset": 100.9695,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 1
+  },
+  {
+   "onset": 101.0359,
+   "string": 5,
+   "fret": 3,
+   "pitch": 48,
+   "line": 1
+  },
+  {
+   "onset": 101.1024,
+   "string": 4,
+   "fret": 2,
+   "pitch": 52,
+   "line": 1
+  },
+  {
+   "onset": 200.0722,
+   "string": 2,
+   "fret": 0,
+   "pitch": 59,
+   "line": 2
+  },
+  {
+   "onset": 200.1387,
+   "string": 2,
+   "fret": 0,
+   "pitch": 59,
+   "line": 2
+  },
+  {
+   "onset": 200.2055,
+   "string": 3,
+   "fret": 2,
+   "pitch": 57,
+   "line": 2
+  },
+  {
+   "onset": 200.3491,
+   "string": 3,
+   "fret": 0,
+   "pitch": 55,
+   "line": 2
+  },
+  {
+   "onset": 200.4156,
+   "string": 3,
+   "fret": 0,
+   "pitch": 55,
+   "line": 2
+  },
+  {
+   "onset": 200.4821,
+   "string": 2,
+   "fret": 3,
+   "pitch": 62,
+   "line": 2
+  },
+  {
+   "onset": 200.5486,
+   "string": 2,
+   "fret": 3,
+   "pitch": 62,
+   "line": 2
+  },
+  {
+   "onset": 200.6261,
+   "string": 1,
+   "fret": 0,
+   "pitch": 64,
+   "line": 2
+  },
+  {
+   "onset": 200.6925,
+   "string": 1,
+   "fret": 0,
+   "pitch": 64,
+   "line": 2
+  },
+  {
+   "onset": 200.7593,
+   "string": 2,
+   "fret": 3,
+   "pitch": 62,
+   "line": 2
+  },
+  {
+   "onset": 200.903,
+   "string": 2,
+   "fret": 1,
+   "pitch": 60,
+   "line": 2
+  },
+  {
+   "onset": 200.9695,
+   "string": 2,
+   "fret": 1,
+   "pitch": 60,
+   "line": 2
+  },
+  {
+   "onset": 201.0359,
+   "string": 2,
+   "fret": 0,
+   "pitch": 59,
+   "line": 2
+  },
+  {
+   "onset": 201.1024,
+   "string": 2,
+   "fret": 0,
+   "pitch": 59,
+   "line": 2
+  },
+  {
+   "onset": 200.0722,
+   "string": 6,
+   "fret": 3,
+   "pitch": 43,
+   "line": 2
+  },
+  {
+   "onset": 200.1387,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 2
+  },
+  {
+   "onset": 200.2052,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 2
+  },
+  {
+   "onset": 200.2716,
+   "string": 5,
+   "fret": 0,
+   "pitch": 45,
+   "line": 2
+  },
+  {
+   "onset": 200.3491,
+   "string": 6,
+   "fret": 3,
+   "pitch": 43,
+   "line": 2
+  },
+  {
+   "onset": 200.4156,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 2
+  },
+  {
+   "onset": 200.4821,
+   "string": 6,
+   "fret": 3,
+   "pitch": 43,
+   "line": 2
+  },
+  {
+   "onset": 200.5486,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 2
+  },
+  {
+   "onset": 200.6261,
+   "string": 5,
+   "fret": 3,
+   "pitch": 48,
+   "line": 2
+  },
+  {
+   "onset": 200.6925,
+   "string": 4,
+   "fret": 2,
+   "pitch": 52,
+   "line": 2
+  },
+  {
+   "onset": 200.759,
+   "string": 6,
+   "fret": 3,
+   "pitch": 43,
+   "line": 2
+  },
+  {
+   "onset": 200.8255,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 2
+  },
+  {
+   "onset": 200.903,
+   "string": 5,
+   "fret": 3,
+   "pitch": 48,
+   "line": 2
+  },
+  {
+   "onset": 200.9695,
+   "string": 4,
+   "fret": 2,
+   "pitch": 52,
+   "line": 2
+  },
+  {
+   "onset": 201.0359,
+   "string": 6,
+   "fret": 3,
+   "pitch": 43,
+   "line": 2
+  },
+  {
+   "onset": 201.1024,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 2
+  },
+  {
+   "onset": 300.0722,
+   "string": 3,
+   "fret": 2,
+   "pitch": 57,
+   "line": 3
+  },
+  {
+   "onset": 300.1146,
+   "string": 3,
+   "fret": 2,
+   "pitch": 57,
+   "line": 3
+  },
+  {
+   "onset": 300.1573,
+   "string": 3,
+   "fret": 0,
+   "pitch": 55,
+   "line": 3
+  },
+  {
+   "onset": 300.0722,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 3
+  },
+  {
+   "onset": 300.1146,
+   "string": 5,
+   "fret": 0,
+   "pitch": 45,
+   "line": 3
+  },
+  {
+   "onset": 300.1571,
+   "string": 6,
+   "fret": 3,
+   "pitch": 43,
+   "line": 3
+  },
+  {
+   "onset": 300.1995,
+   "string": 4,
+   "fret": 0,
+   "pitch": 50,
+   "line": 3
+  }
+ ],
+ "source": "abcjs SVG tab numbers read back by abcjs_click_drag.cjs"
+}

@@ -19,6 +19,11 @@ const FILE = q.get('file') || '/laneinputs/S4_10s/S4_10s.wav';
 const MODEL = q.get('model') || '/dl/htdemucs-6s-onnx/htdemucs_6s_fp16weights.onnx';
 const TAG = q.get('tag') || `S4_10s_t${THREADS}`;
 const WRITE = q.get('write') !== '0';
+// session options (defaults as demucs-onnx: graph optimization "all"); arena=0 / mempattern=0 turn off ORT's CPU memory
+// arena / memory pattern, opt= sets graphOptimizationLevel (disabled | basic | extended | all)
+const SESSION_OPTS = { executionProviders: ['wasm'], graphOptimizationLevel: q.get('opt') || 'all' };
+if (q.get('arena') === '0') SESSION_OPTS.enableCpuMemArena = false;
+if (q.get('mempattern') === '0') SESSION_OPTS.enableMemPattern = false;
 const SOURCES = ['drums', 'bass', 'other', 'vocals', 'guitar', 'piano'];
 const SR = 44100, CH = 2;
 const N = Math.trunc(7.8 * SR);                 // int(SEGMENT_S * SAMPLE_RATE) = 343,980
@@ -43,7 +48,8 @@ try {
   R.model_bytes = modelBytes.byteLength;
   phase('session_create_start');
   const t0 = performance.now();
-  const session = await ort.InferenceSession.create(modelBytes, { executionProviders: ['wasm'], graphOptimizationLevel: 'all' });
+  R.session_options = SESSION_OPTS;
+  const session = await ort.InferenceSession.create(modelBytes, SESSION_OPTS);
   R.session_create_ms = performance.now() - t0;
   phase('session_create_end');
   R.numThreads_after_create = ort.env.wasm.numThreads;
@@ -55,6 +61,10 @@ try {
   R.input = { sampleRate: dec.sampleRate, channels: dec.numberOfChannels, samples: dec.length, seconds: dec.duration };
   const mix = [dec.getChannelData(0), dec.numberOfChannels > 1 ? dec.getChannelData(1) : dec.getChannelData(0)];
   const total = mix[0].length;
+  { // decoded input facts, to compare with soundfile's float32 read in the native reference
+    let e = 0, pk = 0; for (const ch of mix) for (let k = 0; k < total; k++) { e += ch[k] * ch[k]; pk = Math.max(pk, Math.abs(ch[k])); }
+    R.input.sum_sq = e; R.input.peak = pk; R.input.first_samples_ch0 = Array.from(mix[0].subarray(1000, 1004));
+  }
   const nChunks = Math.max(1, Math.floor((total + STRIDE - 1) / STRIDE));
   const win = makeWindow();
   const out = SOURCES.map(() => [new Float32Array(total), new Float32Array(total)]);

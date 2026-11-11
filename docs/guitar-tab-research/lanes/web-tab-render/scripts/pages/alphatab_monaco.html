@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>alphaTex editor trial (alphaTab Monaco)</title>
+<link rel="stylesheet" href="/web/bundles/alphatab-monaco/editor.css">
+<style>
+  body { margin: 0; background: #fff; font-family: sans-serif; }
+  #editor { width: 1200px; height: 1000px; border-bottom: 1px solid #888; }
+  #at { width: 1200px; }
+</style>
+<script src="/web/bundles/alphatab-monaco/editor.js"></script>
+<script src="/nm/@coderline/alphatab/dist/alphaTab.js"></script>
+</head>
+<body>
+<div id="editor"></div>
+<div id="at"></div>
+<script>
+// Gap round 2 (web-tab-render): an alphaTex editor page built the way @coderline/alphatab-monaco 1.9.0 is meant to be
+// used (its README: TextMate grammar support for Monaco, the alphaTex language, and a language server in a web worker),
+// following the alphatab.net playground's source (packages/ui/src/editor/monaco-env.ts and use-score-document.ts at
+// commit ec751a23): Monaco model in language "alphatex", basicEditorLspIntegration with diagnosticsDelay 150 ms, and the
+// score drawn by alphaTab 1.9.0 with api.tex(text) 250 ms after the last edit.
+// ?tex=<alphaTex url>
+const q = new URLSearchParams(location.search);
+window.__log = [];
+const T0 = performance.now();
+const log = (type, data) => window.__log.push({ type, t_ms: +(performance.now() - T0).toFixed(1), ...(data || {}) });
+window.__renders = 0;
+window.__texCalls = 0;
+window.__ready = false;
+self.MonacoEnvironment = { getWorker: () => new Worker('/web/bundles/alphatab-monaco/editor.worker.js') };
+
+const api = new alphaTab.AlphaTabApi(document.getElementById('at'), {
+  core: { fontDirectory: '/nm/@coderline/alphatab/dist/font/', useWorkers: true },
+  display: { layoutMode: 'page', scale: 1 },
+  player: { enablePlayer: false },
+});
+window.api = api;
+api.error.on((e) => log('alphatab_error', { message: String(e && e.message || e).slice(0, 500) }));
+api.renderFinished.on(() => log('renderFinished'));
+api.postRenderFinished.on(() => { window.__renders++; log('postRenderFinished', { renders: window.__renders }); });
+
+// a note of the rendered score: string counted both ways (alphaTab's model: 1 = lowest; tab/alphaTex: 1 = highest)
+window.__note = (bar, voice, beat, n) => {
+  const st = api.score.tracks[0].staves[0];
+  const nt = st.bars[bar].voices[voice].beats[beat].notes[n || 0];
+  return { string_alphatab: nt.string, string_from_top: st.tuning.length - nt.string + 1, fret: nt.fret, pitch: nt.realValue };
+};
+window.__staff = () => { const st = api.score.tracks[0].staves[0]; return { capo: st.capo, tuning: st.tuning.slice(), tuningName: st.tuningName }; };
+window.__export = () => ({
+  gp: Array.from(new alphaTab.exporter.Gp7Exporter().export(api.score, api.settings)),
+  tex: new alphaTab.exporter.AlphaTexExporter().exportToString(api.score, api.settings),
+});
+
+(async () => {
+  const wasm = await (await fetch('/lane/web-monaco/node_modules/vscode-oniguruma/release/onig.wasm')).arrayBuffer();
+  await atMonaco.registerAlphaTexGrammar(atMonaco.addTextMateGrammarSupport(wasm));
+  log('grammarRegistered');
+  const text = await (await fetch(q.get('tex'))).text();
+  const model = monaco.editor.createModel(text, 'alphatex', monaco.Uri.parse('inmemory://alphatex/1.alphatex'));
+  const editor = monaco.editor.create(document.getElementById('editor'), {
+    model, automaticLayout: false, minimap: { enabled: false }, scrollBeyondLastLine: false, fontSize: 14,
+    lineHeight: 19, folding: false, glyphMargin: false, wordBasedSuggestions: 'off', contextmenu: false,
+  });
+  window.editor = editor;
+  window.__text = () => model.getValue();
+  window.__selection = () => { const s = editor.getSelection(); return { text: model.getValueInRange(s), startLine: s.startLineNumber, startCol: s.startColumn, endLine: s.endLineNumber, endCol: s.endColumn }; };
+  window.__markers = () => monaco.editor.getModelMarkers({ resource: model.uri }).map((m) => ({ severity: m.severity, message: m.message, code: m.code && (m.code.value || m.code), source: m.source, startLine: m.startLineNumber, startCol: m.startColumn, endLine: m.endLineNumber, endCol: m.endColumn }));
+  // page coordinates of a text position, so the driver can click there like a user looking at the screen (the editor is
+  // 1000 px tall, so every line of the S2n alphaTex is on screen without scrolling)
+  window.__pos = (lineNumber, column) => {
+    const p = editor.getScrolledVisiblePosition({ lineNumber, column });
+    const r = editor.getDomNode().getBoundingClientRect();
+    return p ? { x: r.left + p.left, y: r.top + p.top + p.height / 2, h: p.height } : null;
+  };
+  const worker = new Worker('/web/bundles/alphatab-monaco/alphatex-lsp.worker.js');
+  worker.addEventListener('error', (e) => log('lsp_worker_error', { message: String(e.message || e) }));
+  const t1 = performance.now();
+  // completionRange as in the playground's monaco-env.ts (typedTokenRange): the token being typed, with a leading "\"
+  const TYPED_TOKEN = /\\?[\w-]*$/;
+  const completionRange = (m, position) => {
+    const before = m.getLineContent(position.lineNumber).slice(0, position.column - 1);
+    const typed = (TYPED_TOKEN.exec(before) || [''])[0].length;
+    return { startLineNumber: position.lineNumber, startColumn: position.column - typed, endLineNumber: position.lineNumber, endColumn: position.column };
+  };
+  await atMonaco.basicEditorLspIntegration(editor, worker, {
+    languageId: 'alphatex', clientInfo: { name: 'gtr web-tab-render gap round 2' }, diagnosticsDelay: 150, completionRange,
+    logger: { error: (m) => log('lsp_error', { m: String(m) }), warn: (m) => log('lsp_warn', { m: String(m) }), info: () => {}, log: () => {} },
+  });
+  log('lspInitialized', { ms: +(performance.now() - t1).toFixed(1) });
+  let timer = 0;
+  model.onDidChangeContent(() => {
+    clearTimeout(timer);
+    timer = setTimeout(() => { window.__texCalls++; log('tex', { calls: window.__texCalls }); api.tex(model.getValue()); }, 250);
+  });
+  window.__texCalls++;
+  api.tex(model.getValue());
+  window.__ready = true;
+  log('ready');
+})().catch((e) => log('page_error', { message: String(e && e.stack || e).slice(0, 800) }));
+</script>
+</body>
+</html>

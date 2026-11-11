@@ -185,10 +185,29 @@ could not read it).
 
 Send back: screenshots, downloads, the terms PDF, `notes.txt`.
 
+### 8a. Chordify's terms page only (about 3 minutes; added in gap round 2, 2026-11-11)
+
+Do this one even if you skip test 8. On 2026-11-11 the research box again got HTTP 403 (a Cloudflare check) from
+`https://chordify.net/pages/terms-and-conditions/`, to curl and to WebFetch, and opening it in a headless browser was
+refused by the session's permission system ("[Bot Check Circumvention]"), so nothing in the research says what
+Chordify's terms allow. Whether the page needs an account was not seen.
+
+1. In your normal browser open https://chordify.net/pages/terms-and-conditions/ and save it as PDF
+   (`chordify-terms.pdf`, Ctrl+P, "Save as PDF"). Write the date or version shown on the page in `notes.txt`.
+2. Also save https://chordify.net/pages/privacy-policy/ the same way (`chordify-privacy.pdf`; the App Store listing
+   links it).
+
+Send back: the two PDFs. A later agent quotes, from them, what they say about who owns the chords, MIDI and PDF files
+Chordify makes, about commercial use and about automated access.
+
 ### 8b. ChordU (optional; its home page lists "Upload" and "My Uploads")
 
-ChordU's terms and prices were not read. If it lets you upload without paying: upload `S3.wav` and `R2.wav`,
-screenshot the chords and the BPM it shows, and write down whether it needed an account.
+ChordU's terms and prices were not read. (Corrected in gap round 2: its terms were read on 2026-11-11, `survey.md`
+ChordU. They say "Usage of songs and chords are limited to your personal, non-commercial use" and "You shall not
+collect content or information or access ChordU service using automated means (such as bots, robots, spiders or
+scrapers) without our permission.", so the research box fetched no more of its pages and its prices are still not
+read.) If it lets you upload without paying: upload `S3.wav` and `R2.wav`, screenshot the chords and the BPM it shows,
+and write down whether it needed an account. Also screenshot its "Go Premium" page with the prices it shows.
 
 ## Sitting 1b: web apps found late on 2026-11-10 (about 50 minutes; `survey.md` items 33 to 37)
 
@@ -315,26 +334,40 @@ about the tuning of `S7flat30.wav` (30 cents flat).
 1. Get the trial from https://www.celemony.com/en/trial ("Melodyne 5 studio for macOS" or "for Windows"). That page
    says: "To register the trial version and each time the program is launched, an Internet connection is necessary.
    The trial period can only be enjoyed once on each computer." Whether it needs a Celemony account was not checked.
-2. Open `S2s.wav` in the standalone Melodyne. Let it detect the notes with its polyphonic algorithm.
+   **Save the license text** (added in gap round 2): Celemony's site links no license agreement, and the one copy found
+   on the web could not be reached on 2026-11-11. If the installer or the program (Help menu, "License" or "About")
+   shows a license agreement, copy it into `melodyne-license.txt` or save it as PDF.
+2. Open `S2s.wav` in the standalone Melodyne. Let it detect the notes with its polyphonic algorithm. The editions page
+   lists "DNA Direct Note Access – algorithms for polyphonic instruments such as piano and guitar" for the editor and
+   studio editions only, and says "By default, the trial version starts off as Melodyne studio", so keep the trial on
+   studio (or editor).
 3. If Melodyne offers a MIDI export of the detected notes, export it (whether and where it does was not found on the
-   Celemony pages read). Screenshot the note "blobs".
+   Celemony pages read; corrected in gap round 2: the editions page lists "Audio-to-MIDI – export notes to a MIDI
+   file" for the assistant, editor and studio editions; where it sits in the menus was not read). Screenshot the note
+   "blobs".
 4. Repeat with `R1a.wav`.
 5. Open `S7flat30.wav`: screenshot and write down the tuning (reference pitch or cents) and the key and tempo it shows.
 
 Send back: the MIDI files if it exported any, screenshots, `notes.txt` (time to detect, which algorithm it chose, the
-S7flat30 tuning).
+S7flat30 tuning), and `melodyne-license.txt` if a license text was shown.
 
 ### 12. RipX DAW PRO (free for 21 days: "Try RipX DAW PRO Free for 21 Days")
 
 Its RipX DAW page lists "Print Audio to Midi to load a specific part into a VST of your choice" and "Export separated
 stems straight to WAVs" (https://hitnmix.com/ripx-daw/, read by the verifier 2026-11-10); its platforms were not read.
+(Corrected in gap round 2: the buy page, read 2026-11-11, lists "macOS 10.15+ (2012 & later models, including M1
+onwards) / Windows 8/10/11 (64-bit)" and "Minimum: 2 Core 2.5GHz CPU, 8 GB RAM, 20 GB Free Disc Space"; RipX DAW is
+"$99.00 USD" and RipX DAW PRO "$198.00 USD" after the "21-day trial".)
 
-1. Install the trial from https://hitnmix.com and open `S4.wav`, then `R2.wav`.
+1. Install the trial from https://hitnmix.com and open `S4.wav`, then `R2.wav`. If the installer shows a license
+   agreement, copy its text into `ripx-license.txt` (no license agreement is linked from Hit'n'Mix's web pages; added
+   in gap round 2).
 2. Let it separate and detect notes. Export the guitar layer's notes as MIDI ("Print Audio to Midi") and the stems as
    audio if the trial allows. Screenshot the note view.
 3. Open `S2s.wav` and export its notes as MIDI.
 
-Send back: MIDI files, screenshots, `notes.txt` (stems go to the studio library).
+Send back: MIDI files, screenshots, `notes.txt` (stems go to the studio library), and `ripx-license.txt` if one was
+shown.
 
 ### 13. (removed) Samplab
 
@@ -362,7 +395,10 @@ Send back: exports, screenshots, `notes.txt` (file import or microphone).
 It turns live guitar audio into MIDI as you play, so a recording has to be played through it. Skip this one if you
 have no DAW on the laptop. https://www.jamorigin.com offers MIDI Guitar 2 as "Download Free trial ... No questions
 asked. No installation needed." and says "MIDI GUITAR 3 open beta: www.jam.live"; whether version 3 has a free trial
-was not read.
+was not read. Added in gap round 2 (read 2026-11-11): a license is "USD 149.95" ("The price is always USD 149.95 and
+there are never any discounts.", https://jam.live/shop/); "MIDI Guitar 3 is in beta testing phase." and "Please refer
+to MIDI Guitar 2 for a production ready solution."; no license agreement or terms page is linked from either site, so
+if the program shows a license text, copy it into `midiguitar-license.txt`.
 
 1. Get the MIDI Guitar 2 trial from https://www.jamorigin.com (or MIDI Guitar 3 from www.jam.live if it is free to
    try; write down which version you used).
@@ -370,7 +406,7 @@ was not read.
    track, record while the clip plays, save the MIDI.
 3. Repeat with `R1a.wav`.
 
-Send back: 2 MIDI files, `notes.txt` (DAW used, plugin settings).
+Send back: 2 MIDI files, `notes.txt` (DAW used, plugin settings), and `midiguitar-license.txt` if one was shown.
 
 ## Sitting 3: phone apps (about 30 minutes)
 
@@ -398,6 +434,9 @@ into the phone's own music library, not left in iCloud.
 
 1. Install Chord Tracker, add `S3.mp3` and `R2.mp3` to the phone's music library, open them in the app.
 2. Screenshot the chord chart for each (once with the guitar display), and anything it shows for tempo and key.
+3. Added in gap round 2: no license agreement for the app was found on Yamaha's pages or in its App Store listing. If
+   the app shows one (at first start, or under its settings or "About"), screenshot it. Yamaha's page also says
+   "Chord Tracker Android is now available at Google Play.", so this test also works on an Android phone (say which).
 
 Send back: screenshots, `notes.txt`.
 
@@ -411,13 +450,31 @@ recognition". It does not describe tab output.
 
 Send back: screenshots, `notes.txt` (what it cost, if anything).
 
+### 17c. Practice Pro - AI Music Tools: does it exist? (2 minutes; added in gap round 2, 2026-11-11)
+
+A web search result (quoted in `../../GAPS.md`, row P3) describes an iOS app of this name with an "AI Guitar Tab
+Generator ... synced with playback", App Store id 6754810269. From the research box, `apps.apple.com/us/app/id6754810269`
+answered HTTP 404 on 2026-11-10 and 2026-11-11, and Apple's lookup API found nothing under that id in nine stores
+(`survey.md`, "## Not covered").
+
+1. On an iPhone or iPad, search the App Store for "Practice Pro AI Music Tools" and for "AI guitar tab generator".
+2. If an app of that name is there: screenshot its listing (developer, version and date, price, the "In-App
+   Purchases" list, and any "License Agreement" link), and tap "Developer Website" and "Privacy Policy" and screenshot
+   them. Do not install it unless you want to.
+3. If it is not there, write "not found" and the date in `notes.txt`.
+
+Send back: the screenshots or the "not found" line.
+
 ### 18. Capo (Mac, iPhone, iPad only)
 
 Only if you have one of those: open `S3.mp3` and `R2.mp3`, screenshot the detected chords and tempo. Its App Store
 listing describes chord, beat and key guesses, not tab. Its product page (https://supermegaultragroovy.com/products/capo/)
 says "MIDI export of notes and chords" is one of the tools "exclusive to the Mac", and that "The Free Edition just
 won't save your edits to chords and beats, export audio, or—on the Mac—export MIDI and create lead sheets". On a Mac
-with a paid edition, export MIDI of `S3.mp3` and send it back.
+with a paid edition, export MIDI of `S3.mp3` and send it back. (Added in gap round 2: its Mac page says the Tabbing
+view writes tab from notes you draw on the spectrogram, "as you draw, tablature is generated automatically below", and
+that the MIDI export holds "your chord and note entries", so the notes in that MIDI are the ones you entered. If the
+app shows a license agreement anywhere, screenshot it; none was found on the vendor's site.)
 
 ## Optional and paid (decide first; prices as read 2026-11-10)
 
@@ -502,3 +559,13 @@ belongs to version 2 (version 3 is an open beta); Chord ai's Android version, Ro
 not read; Capo's Mac-only MIDI export quoted; Note2Tabs, Fretwise and RiffToTab prices and free limits re-read;
 GuitarConvert added as test 24; the `gtr-eval` commands now carry the `--truth` they need (checked: `tempo`, `key` and
 `chords` refuse to run without it); the TuxGuitar claim now cites its plugin description.
+
+## Gap round 2 (gapfill-apps-survey, 2026-11-11)
+
+Added: test 8a (save Chordify's terms and privacy pages: the box got HTTP 403 again and a headless render was refused
+by the permission system); test 17c (check whether "Practice Pro - AI Music Tools" exists). Changed: 8b (ChordU's terms
+were read and bar automated access, so its prices are now a step here); 11 (save Melodyne's license text; its editions
+page lists MIDI export for assistant, editor and studio and polyphonic guitar for editor and studio); 12 (RipX's
+systems and prices; save its license text); 15 (MIDI Guitar's price and beta status; save its license text); 17
+(Chord Tracker: a license screen if shown, and its Android version); 18 (Capo's Tabbing view writes tab from notes the
+user draws). Each changed line says "gap round 2"; the sources are in `survey.md`.

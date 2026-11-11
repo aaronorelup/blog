@@ -17,6 +17,9 @@ TablatureWrapper + StackedNoteTranscriber, GuitarProfile tuning E2 A2 D3 G3 B3 E
                      (y from librosa.load(path, sr=22050, mono=True)).
                   --front amt: the amt-tools features above (used only to compare the ONNX export with the
                      pickled model on identical input).
+                  --front prep: (vanilla only) the order of the training repository's preprocess.py
+                     (onnx_runtime_dart tool/tabcnn, commit 7bdf47d): scipy.io.wavfile.read at the file's rate,
+                     librosa.util.normalize, librosa.resample(orig_sr, 22050), then the raw CQT magnitude.
                   Windows: 9 frames, 4 zero frames padded on each side, input [N, 192, 9, 1].
                   Output [N, 6, 21] log-softmax; card: "class 0 = closed, class k = fret k-1"; string index 0 is
                   taken as the lowest string (checked against the pickled model, see trials.md).
@@ -31,7 +34,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--backend", choices=["amt", "onnx"], required=True)
 ap.add_argument("--model", required=True)
 ap.add_argument("--variant", choices=["gpfx", "vanilla"], default="gpfx")
-ap.add_argument("--front", choices=["card", "amt"], default="card")
+ap.add_argument("--front", choices=["card", "amt", "prep"], default="card")
 ap.add_argument("audio"); ap.add_argument("outprefix")
 a = ap.parse_args()
 ncpu = len(os.sched_getaffinity(0))
@@ -88,6 +91,13 @@ else:
     if a.front == "amt":
         f, times = amt_features(a.audio)
         X = f[0]                                         # (192, T)
+    elif a.front == "prep":
+        from scipy.io import wavfile
+        sr0, y = wavfile.read(a.audio)
+        y = librosa.util.normalize(y.astype(float))
+        y = librosa.resample(y, orig_sr=sr0, target_sr=SR)
+        X = np.abs(librosa.cqt(y, hop_length=HOP, sr=SR, n_bins=192, bins_per_octave=24))
+        times = librosa.frames_to_time(np.arange(X.shape[1]), sr=SR, hop_length=HOP)
     else:
         y, _ = librosa.load(a.audio, sr=SR, mono=True)
         if a.variant == "vanilla":

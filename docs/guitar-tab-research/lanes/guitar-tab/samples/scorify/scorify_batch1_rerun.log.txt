@@ -1,0 +1,21 @@
+scorify S1.truthmidi: status success (best-found), arrange 1144.1 ms, notes in 62, notes placed 62  (node process 1.21 s)
+  S1: process wall 1.28 s, maxrss 123588 KB
+scorify S2n.truthmidi: status success (best-found), arrange 1874.8 ms, notes in 90, notes placed 90  (node process 1.96 s)
+  S2n: process wall 2.03 s, maxrss 165984 KB
+scorify S3.truthmidi: status success (best-found), arrange 1162.7 ms, notes in 182, notes placed 182  (node process 1.24 s)
+  S3: process wall 1.32 s, maxrss 140076 KB
+scorify S5capo2.truthmidi: status search-exhausted, arrange 2651.5 ms, notes in 90, notes placed 0, diagnostics: Expansion budget exceeded  (node process 2.74 s)
+  S5capo2: process wall 2.83 s, maxrss 174148 KB
+scorify S5dropd.truthmidi: status search-exhausted, arrange 1063.6 ms, notes in 90, notes placed 0, diagnostics: No valid path within the declared candidate and mechanics model  (node process 1.15 s)
+  S5dropd: process wall 1.21 s, maxrss 122100 KB
+scorify R1a.truthmidi: status search-exhausted, arrange 2043.8 ms, notes in 189, notes placed 0, diagnostics: No valid path within the declared candidate and mechanics model  (node process 2.16 s)
+  R1a: process wall 2.23 s, maxrss 166904 KB
+scorify R1b.truthmidi: status search-exhausted, arrange 1233.5 ms, notes in 70, notes placed 0, diagnostics: No valid path within the declared candidate and mechanics model  (node process 1.30 s)
+  R1b: process wall 1.37 s, maxrss 126020 KB
+scorify R1c.truthmidi: status success (best-found), arrange 1624.7 ms, notes in 148, notes placed 148  (node process 1.72 s)
+  R1c: process wall 1.79 s, maxrss 150744 KB
+scorify S5capo2.truthmidi.capo2: status success (best-found), arrange 2133.9 ms, notes in 90, notes placed 90  (node process 2.24 s)
+  S5capo2 capo 2: process wall 2.31 s, maxrss 176160 KB
+scorify S5dropd.truthmidi.dropD: status success (best-found), arrange 2064.8 ms, notes in 90, notes placed 90  (node process 2.16 s)
+  S5dropd Drop D: process wall 2.23 s, maxrss 175152 KB
+[gtr-run r0635] guitar-tab/scorify-0.4.0 "gap round 2: scorify 0.4.0 first batch re-run with the final glue revision (output compared with r0621)" wall=18.67s cpu=23.3s rss=172.0MB cores=2 exit=0 slot_wait=0.0s

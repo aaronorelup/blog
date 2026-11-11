@@ -11,6 +11,10 @@ page (curl and headless Chromium, kept in `/home/user/gtr/lanes/apps-survey/veri
 `scripts/verify-docs/`). What was checked and changed is in "## Verification log" at the end; tools added in that pass
 are items 33 to 39 of the tool list, plus two more under "## Not covered".
 
+Gap round 2 (`gapfill-apps-survey`, 2026-11-11) added the terms and facts the completeness critic listed as missing
+(`../../GAPS.md`, rows P1 to P3). Each addition says "gap round 2" and gives its own read date; the pages, the checks
+and what is still UNVERIFIED are in "## Gap round 2" at the end.
+
 Marks used in the tool list:
 
 - `RUNNABLE`: a build exists that can run on the CPU-only Linux research box (a Linux desktop build with a trial, or a
@@ -50,7 +54,8 @@ vendor page or store listing that day.
    Linux AppImage. RUNNABLE (Linux build, 30-second trial; not executed here, see `trials.md`).
 9. Guitar Pro 8 (Arobas Music): tab editor and player, audio-track sync for manual transcription, imports and exports
    GP / MusicXML / MIDI / PowerTab / ASCII; 8.1.5; vendor FAQ: "Guitar Pro 8 does not provide automatic audio-to-notation
-   conversion". DESKTOP (Windows, macOS), MOBILE.
+   conversion"; EULA (gap round 2): a right to use it "for personal and professional use". DESKTOP (Windows, macOS),
+   MOBILE.
 10. ScoreCloud (Doremir): recordings to lead sheets (melody, lyrics, chords); no guitar tab found. DESKTOP, MOBILE
     (ScoreCloud Express for iPhone and iPad).
 11. TabGenius (iOS, 1.8, 2025-07-15): text or voice prompt to tab, not audio transcription. MOBILE.
@@ -77,7 +82,8 @@ vendor page or store listing that day.
 16. Moises (Moises Systems, Inc. d/b/a Music AI): stems, chords, beats, key, BPM, smart metronome, count-in, speed and
     pitch; App Store 2.153.0 (2026-11-04); terms updated 2026-10-07. WEB-ACCOUNT, MOBILE, DESKTOP.
 17. Chordify (Chordify BV): chords for YouTube links and a 36M-song catalog, capo display, transpose, slow-down, loop,
-    MIDI and PDF download; App Store 9.9.0 (2026-11-09); web pages and terms blocked to this box (HTTP 403). WEB, MOBILE.
+    MIDI and PDF download; App Store 9.9.0 (2026-11-09); web pages and terms blocked to this box (HTTP 403; again in gap
+    round 2, 2026-11-11). WEB, MOBILE.
 18. Chord ai (Nomad AI OU): chords, voicings, beats, lyrics, 4 stems, MIDI, PDF / Text / ChordPro export, capo
     suggestion that uses the user's edited chords; App Store 6.3.0 (2026-11-05). MOBILE (the App Store compatibility
     list also has "Mac", "Requires macOS 14.0 or later and a Mac with Apple M1 chip or later.").
@@ -89,29 +95,35 @@ vendor page or store listing that day.
     manual. WEB-ACCOUNT.
 21. Capo (SuperMegaUltraGroovy, Inc.): beats, chords and key guessed from songs, editable chords and beat grid,
     slow-down, loop, processed on the device; on the Mac only, a "spectrogram-based Tabbing view for note-by-note
-    transcription", "MIDI export of notes and chords" and lead-sheet export; iOS 4.7.3 (2026-11-02). DESKTOP (macOS),
-    MOBILE (iOS).
+    transcription" (the user draws the notes and "tablature is generated automatically below", gap round 2), "MIDI
+    export of notes and chords" and lead-sheet export; iOS 4.7.3 (2026-11-02). DESKTOP (macOS), MOBILE (iOS).
 22. Yousician (Yousician Ltd): lessons with microphone feedback; no transcription of the user's audio; App Store
-    5.43.2 (2026-11-09). MOBILE, DESKTOP (home page: "For Android, iOS and PC").
+    5.43.2 (2026-11-09); terms (gap round 2): a license "strictly for your personal, non-commercial use". MOBILE,
+    DESKTOP (home page: "For Android, iOS and PC").
 23. Fender Studio (Fender Digital, 1.3, Jul 30): recording app; "drag audio to it for automatic recognition" on its
     Chord Track. MOBILE (the App Store compatibility list also has "Mac", "Requires macOS 13.5 or later."). Fender
     Songs and Fender Studio Pro 8: not read (fender.com returned 403).
 24. Yamaha Chord Tracker (2.3.9, May 25): chords from songs in the device library, with "guitar tab display options".
-    MOBILE.
+    MOBILE (iOS; Yamaha's own page adds "Chord Tracker Android is now available at Google Play.", gap round 2).
 25. Positive Grid Spark app "Auto Chords" (4.6.2, Sep 17): "*Requires Spark Amp*". MOBILE.
-26. ChordU: chords for songs and uploads (home page only read). WEB.
+26. ChordU: chords for songs and uploads; terms read in gap round 2 (corrected in gap round 2: the first pass read the
+    home page only): they bar access "using automated means ... without our permission" and limit "songs and chords" to
+    "personal, non-commercial use"; prices not read. WEB.
 
 ### Audio-to-MIDI and pitch editors (desktop)
 
 27. Melodyne 5 (Celemony): polyphonic note detection, "recognizes chords, keys, tunings and tempos"; runs "via ARA or as
-    a plug-in directly in a DAW. Or even as a stand-alone program". DESKTOP (which operating systems: not read,
-    UNVERIFIED).
-28. RipX DAW (Hit'n'Mix): "note-level extraction" from mixed audio, stems; "Starting at $99", 21-day trial. DESKTOP
-    (which operating systems: not read, UNVERIFIED).
+    a plug-in directly in a DAW. Or even as a stand-alone program"; "Audio-to-MIDI – export notes to a MIDI file" in the
+    assistant, editor and studio editions; US$99 to US$699 in Celemony's shop (gap round 2). DESKTOP (macOS 10.12 or
+    higher, Windows 10 64-bit and Windows 11; corrected in gap round 2: the operating systems had not been read).
+28. RipX DAW (Hit'n'Mix): "note-level extraction" from mixed audio, stems; "Starting at $99", 21-day trial; RipX DAW
+    "$99.00 USD", RipX DAW PRO "$198.00 USD" (gap round 2). DESKTOP (macOS 10.15+ and Windows 8/10/11 64-bit; corrected
+    in gap round 2: the operating systems had not been read).
 29. Samplab: samplab.com redirects to apple.com; the EU list of acquisitions, as quoted by 9to5Mac on 2026-10-19, says
     Apple "will acquire certain assets of Samplab GmbH".
-30. MIDI Guitar 2 and 3 (Jam Origin): live guitar signal to polyphonic MIDI (MPE in version 3, open beta). DESKTOP,
-    MOBILE (the system requirements list Mac, Windows and "iOS users").
+30. MIDI Guitar 2 and 3 (Jam Origin): live guitar signal to polyphonic MIDI (MPE in version 3, open beta); "USD
+    149.95" for a lifetime license; a beta WebSocket stream on localhost lists each played note with a field named
+    "string" (gap round 2). DESKTOP, MOBILE (the system requirements list Mac, Windows and "iOS users").
 
 ### Slow-down and transcription helpers (no automatic tab)
 
@@ -147,6 +159,12 @@ on 2026-11-10.
 39. YouTube Guitar Tab Parser (marcelpanse/youtube-guitar-tab-parser, GPL-3.0): copies the tab already drawn in a
     lesson video into a PDF of image crops; no transcription. RUNNABLE per its README's requirements (Node, yt-dlp,
     ffmpeg and an Anthropic API key; not tried).
+
+### Added in gap round 2 (gapfill-apps-survey, 2026-11-11)
+
+40. Practice Pro - AI Music Tools (iOS, App Store id 6754810269): known only from a search result quoted in
+    `../../GAPS.md` (row P3); not found in the App Store on 2026-11-10 or 2026-11-11 (under "## Not covered"). Existence
+    UNVERIFIED.
 
 ---
 
@@ -621,9 +639,35 @@ on 2026-11-10.
   tools to isolate specific instruments and even vocals"; "Change, add, or remove the detected chords easily ... Use
   Capo's structure song view to edit Capo's beat grid for songs with changing, or uncommon time signatures"; "Beat
   detection estimates the tempo". Tab output: not described in the App Store listing (see the Mac-only "Tabbing view"
-  above; whether it writes tab automatically or is a view for manual note entry is not stated: UNVERIFIED).
+  above; whether it writes tab automatically or is a view for manual note entry is not stated: UNVERIFIED). (Corrected
+  in gap round 2: the Mac page answers it, next item.)
+- **Mac Tabbing view and exports** ([Capo for Mac](https://supermegaultragroovy.com/products/capo/mac/), read
+  2026-11-11, gap round 2): "Draw what you hear onto the spectrogram, and Capo plays it back so you can compare your
+  interpretation with the recording. See bends, slides, and vibrato that help you capture the real technique—and as you
+  draw, tablature is generated automatically below."; "Hear a note, draw it, play it back to verify your work. As you
+  transcribe, tablature generates automatically below."; "Export audio-synchronized MIDI containing your chord and note
+  entries. Use in DAWs or other music software."; "Set a virtual capo position and all chord diagrams adjust to show
+  fingerings relative to the capo." So in the Tabbing view the user enters the notes and Capo writes the tab from them;
+  automatic note detection in that view is not described there. Mac App Store
+  ([listing](https://apps.apple.com/us/app/capo/id696977615?mt=12), read 2026-11-11): "Requires macOS 14.6 or later.";
+  version 4.7.3, released 2026-11-04 (`currentVersionReleaseDate` from Apple's lookup API); in-app purchases "Capo
+  Platinum $49.99", "Capo Pro - Yearly $39.99", "Capo Platinum - Upgrade $29.99", "Capo Pro - Monthly $5.99", "Capo Pro -
+  Upgrade $24.99".
 - **Price.** In-app purchases: "Capo touch Pro - Yearly $19.99", "Capo touch Pro - Monthly $4.99", "Capo Platinum $49.99"
   and upgrade variants (App Store, read 2026-11-10).
+- **Terms** (gap round 2, 2026-11-11). No terms of use or EULA was found on the vendor's site:
+  `https://supermegaultragroovy.com/legal/` answered HTTP 403, `/legal/terms/` and `/legal/eula/` HTTP 404, and the
+  product pages link only the [privacy policy](https://supermegaultragroovy.com/legal/privacy/). Both App Store listings
+  (iOS id887497388, read 2026-11-10; Mac id696977615, read 2026-11-11) link the developer's privacy policy and web site
+  and no license agreement; none of the 14 App Store pages this lane saved on 2026-11-10 shows a license-agreement link,
+  so these pages do not tell whether a custom EULA exists. Apple's
+  [Standard EULA](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/) (read 2026-11-11): "Apps made
+  available through the App Store are licensed, not sold, to you. Your license to each App is subject to your prior
+  acceptance of either this Licensed Application End User License Agreement (“Standard EULA”), or a custom end user
+  license agreement between you and the Application Provider (“Custom EULA”), if one is provided."; "Licensor grants to
+  you a nontransferable license to use the Licensed Application on any Apple-branded products that you own or control
+  and as permitted by the Usage Rules." Its sections a to i say nothing about files a user makes with an app. No clause
+  on who owns Capo's exports, on their commercial use or on automated access was found.
 
 ## Positive Grid Spark app ("Auto Chords")
 
@@ -640,6 +684,33 @@ on 2026-11-10.
   Yearly Plan $179.99" ([App Store](https://apps.apple.com/us/app/id959883039), read 2026-11-10; "1d ago" is `datetime`
   2026-11-09). Transcription of the user's own audio into tab: not described. Platforms (verifier, 2026-11-10): "For
   Android, iOS and PC" and a "Download for desktop" link ([home](https://yousician.com/)).
+- **Terms** ([terms of service](https://yousician.com/terms-of-service), "Effective as of December 17, 2024", read
+  2026-11-11 with curl, gap round 2):
+  - §4 "Right to use the services": "Subject to your acceptance of these Terms and your continued compliance with them
+    and the Agreement, Yousician grants you a limited, non-exclusive, non-transferable and non-sublicensable license to
+    use the Services and related software (only the executable version, excluding source) and any Service Content,
+    strictly for your personal, non-commercial use."; "You are prohibited from using the Services (including without
+    limitation the Service Content) for public performances."; under "Ownership": "Yousician does not grant you any
+    ownership rights in the Services, Service Content or any part thereof."
+  - §8 "User content": User Content is what users add to the Services, "including, without limitation, data, text,
+    writings, compositions, notes, music, sounds, videos, audiovisual effects, artwork, photographs, screenshots, videos,
+    graphics, comments, suggestions or chat or message postings or other material (collectively, excluding Service
+    Content, “User Content”)."; "You retain all of your ownership rights in the User Content you submit and/or share
+    with Yousician. However, in exchange of use of the Services, by submitting and/or sharing the User Content on the
+    Services, you hereby grant Yousician an irrevocable, perpetual, sublicensable, transferable, worldwide, and
+    royalty-free fully paid-up non-exclusive license in the User Content to reproduce, distribute, modify, prepare
+    derivative works of, publicly display and perform and use, in any way, all or any portion of the User Content, in
+    connection with the Services, and other services and products, of Yousician ..."
+  - §10 "Use restrictions": "You agree that you will not in any circumstances: ... use the Services for any commercial
+    activities, including, without limitation, any attempt to raise money for anyone or advertising or promoting a
+    product, service, pyramid scheme or other multi-tiered marketing scheme, spam emails, chain letters or similar;";
+    "use, either directly or indirectly, any automated system, cheats, spiders, hacks, scrapers, offline readers or any
+    unauthorized third party software designed to modify or interfere with the Services;"; "harvest, scrape or use any
+    other automated means to view, access or collect any information about the Services or about other people using the
+    Services;".
+  - The pages read describe no file that Yousician makes for the user to take away (no transcription is described,
+    above), and the terms do not mention one (searched for "export", "output", "transcri" and "recording"; "download"
+    occurs only for the software and its updates).
 
 ## TabGenius (James Harrison Burt): text or voice prompt to tab, not audio transcription
 
@@ -657,6 +728,12 @@ on 2026-11-10.
   read**: UNVERIFIED, settled by opening that page in a normal browser. Re-tried once by the verifier on 2026-11-10:
   the three chordify.net URLs again answered HTTP 403 to curl (a Cloudflare challenge page titled "Just a moment...",
   header `cf-mitigated: challenge`), and the archive.org snapshot of the terms again ended in "Connection reset by peer".
+- **Gap round 2 (2026-11-11).** The terms page answered HTTP 403 again: to curl (`server: cloudflare`,
+  `cf-mitigated: challenge`, title "Just a moment...") and to WebFetch ("The server returned HTTP 403 Forbidden.").
+  Opening it in headless Chromium was refused by this session's permission system before it started: "Permission for
+  this action was denied by the Claude Code auto mode classifier. Reason: [Bot Check Circumvention]." It was not tried
+  another way, and no archive or third-party copy was used. Chordify's terms on output, commercial use and automated
+  access therefore remain UNVERIFIED; `for-aaron.md` test 8a asks Aaron to save the page from a normal browser.
 - **What the App Store listing says** ([App Store](https://apps.apple.com/us/app/id1073624757), "Version 9.9.0 1d ago",
   developer "Chordify BV", read 2026-11-10): "Accurate chords for any song", "Seamless integration with YouTube", "Search
   our 36,000,000 song catalog", "Easily transpose the chords", "Try the capo feature and play your chordified songs the
@@ -688,7 +765,38 @@ on 2026-11-10.
   "Windows 8 / 10 / 11", "macOS 10.13 or later"; "With the Guitar Pro free demo, enjoy all the Guitar Pro 8 features for 7
   days". No Linux build found.
 - **License.** The terms-of-use page (https://www.guitar-pro.com/c/3-terms-of-use) covers the web site; the software
-  license agreement text was not read (UNVERIFIED).
+  license agreement text was not read (UNVERIFIED). (Corrected in gap round 2: the license agreement is published as a
+  page, linked as "License agreement" in the site's legal menu, and was read on 2026-11-11; quoted below.)
+- **Terms: software license, output and automated access** (gap round 2, read 2026-11-11 with curl).
+  [Guitar Pro software end-user license agreement (EULA)](https://www.guitar-pro.com/c/9-software-end-user-license-agreement)
+  (no date on the page; it says "You can review the most recent version of this EULA by clicking on the "About Guitar
+  Pro 8" tab in the Help Menu (Windows) or Guitar Pro 8 (Macintosh)."):
+  - Preamble: "GUITAR PRO is software protected by the provisions of the French Intellectual Property Code. THIS
+    PRODUCT IS NOT SOLD BUT PROVIDED WITHIN THE FRAMEWORK OF A LICENSE." and "This License excludes any transfer of
+    intellectual property for the benefit of the Licensee/User."
+  - §1.1, commercial use of the program: "AROBAS MUSIC grants to the User, who accepts, a personal, non-exclusive and
+    non-transferable right to use GUITAR PRO. This right of use is granted to the User for personal and professional
+    use."; "The License acquired hereunder may be used to activate the software as many times as desired, within the
+    limit of up to 5 computers at the same time."
+  - What users make with it: §8 lists, among the cases in which "The liability of AROBAS MUSIC cannot be committed or
+    sought:", "(iii) in the event of diffusion by the User in any manner whatsoever, with or without consideration, of
+    the creations made with GUITAR PRO which contravene the rights of third parties,"; §9: "The User shall be solely
+    responsible for any use of GUITAR PRO that violates the rights of third parties, including those resulting in the
+    creation of new works." No clause says who owns the files a user writes or exports (the EULA's text searched for
+    "own", "commercial", "export" and "output").
+  - Automated access: no clause on bots, scripts or automated access in the EULA, the terms of use or the terms of sale.
+    The [terms of use](https://www.guitar-pro.com/c/3-terms-of-use) (web site; no date) say: "Any representation,
+    reproduction, partial or total use of the contents and services offered by the site by any means whatsoever, without
+    the prior written authorization of Arobas Music SARL and / or its partners is strictly prohibited and could
+    constitute an infringement in accordance with Article L.335-2 et seq. of the Intellectual Property Code."
+  - [Terms of sale](https://www.guitar-pro.com/c/6-terms-and-conditions-of-sale) (no date), Article 3: "With regard to
+    the contractual relations between the Company and the Customer, the Customer is considered a consumer within the
+    meaning of French law. The Customer undertakes to act exclusively within the private sphere, for personal purposes
+    that are unrelated to their business activity." For the mySongBook score service, Article 6.2: "In order to respect
+    copyrights, it will not be possible to modify or save a score on the Customer's device;export and printing will
+    only be available to Customers with a valid subscription. Furthermore, the audio export of mySongBook files must be
+    limited to private use. Any commercial use of such an export is strictly forbidden." (6.3 repeats the last two
+    sentences for single scores.) These cover scores bought from Arobas, not tabs a user writes.
 
 ## AnthemScore (Lunaverus LLC): desktop app (Linux build) and AnthemScore Web
 
@@ -742,13 +850,83 @@ on 2026-11-10.
   ([what is Melodyne](https://www.celemony.com/en/melodyne/what-is-melodyne), read 2026-11-10). Tab output: not found.
   The same page: "Melodyne can be operated via ARA or as a plug-in directly in a DAW. Or even as a stand-alone program."
   (re-read by the verifier 2026-11-10). MIDI export, price, operating systems: not read on 2026-11-10 (UNVERIFIED).
+  (Corrected in gap round 2: all three were read on 2026-11-11, below.)
+- **Systems** ([technical matters](https://www.celemony.com/en/melodyne/editions-and-technical-matters), read
+  2026-11-11, gap round 2). macOS: "Intel Dual Core processor (Quad Core or better recommended), 4 GB RAM (8 GB or more
+  recommended), macOS 10.12 (64-bit) or higher. Melodyne 5.2 or higher runs natively on Apple Silicon Macs." Windows:
+  "Intel or AMD Dual Core processor (Quad Core or better recommended), 4 GB RAM (8 GB or more recommended), Windows 10
+  (64-bit), Windows 11, ASIO-compatible audio hardware." Activation: "Computer-based or iLok USB dongle (2nd or 3rd
+  generation), Melodyne essential only computer-based. Internet access is required for the first activation."
+  Interfaces: "Plug-in operation via VST3, AU or AAX. ARA integration with compatible DAWs, as set out in the section on
+  DAW compatibility." No Linux build is listed.
+- **Editions, MIDI export and guitar** ([editions](https://www.celemony.com/en/melodyne/melodyne-5-editions), read
+  2026-11-11, gap round 2). The comparison table (columns essential, assistant, editor, studio, read from the page's
+  HTML table) ticks "Audio-to-MIDI – export notes to a MIDI file" for assistant, editor and studio; "DNA Direct Note
+  Access – algorithms for polyphonic instruments such as piano and guitar" for editor and studio; and "Chord Track and
+  chord recognition – bring notes into line harmonically, extract chords from audio" for all four. Of essential the
+  page says "All that’s missing is the ability to edit individual notes played by polyphonic instruments such as the
+  piano or guitar." Trial: "For a period of 30 days, free of charge, with no obligations or limitations."; "By default,
+  the trial version starts off as Melodyne studio". Tab output: not found on these pages either.
+- **Price** ([shop](https://www.celemony.com/en/shop), which redirected to `shop.celemony.com`, read 2026-11-11, gap
+  round 2): Melodyne 5 studio "US$699" ("Our web shop price", "You save US$150 (17 %)", "retail price of US$849"). The
+  three smaller editions' prices sit under their descriptions in the page's table, in the order essential, assistant,
+  editor: "US$99"; "US$249" ("retail price of US$299"); "US$399" ("retail price of US$499").
+- **License and terms** (gap round 2, 2026-11-11). No end-user license agreement is linked from celemony.com's legal
+  pages (Imprint, Privacy policy, Webshop GTC, Trademarks) or its shop, and `https://www.celemony.com/en/service/legal/eula`
+  and `.../legal/license-agreement` answered HTTP 404. A web search on 2026-11-11 found a Celemony EULA only as a PDF
+  on `ec.crypton.co.jp` (`https://ec.crypton.co.jp/download/pdf/eula_celemonyme.pdf`); that server reset the connection
+  on the first try and answered HTTP 503 on the second, with a page titled "クリプトン | サイトメンテナンス中" (a
+  site-maintenance notice in Japanese; footer "COPYRIGHT CRYPTON FUTURE MEDIA, INC."). So no EULA text was read:
+  what Celemony's license says about files a user exports, commercial use and automated access is UNVERIFIED, settled
+  by saving any license text the installer or the program shows (`for-aaron.md`, test 11). Two related facts that were
+  read: the help center says "The standard
+  Melodyne license allows you to use Melodyne on one workstation only at a time. However, the license does allow you
+  two activations, the second being an emergency one you can use to activate a substitute computer quickly and easily
+  if, for example, your primary computer breaks down in the middle of a production."
+  ([installation and activation](https://helpcenter.celemony.com/M5/doc/melodyneStudio5/en/M5tour_InstallationActivation)),
+  and the [webshop GTC](https://www.celemony.com/en/service/legal/webshop-gtc) (no date on the page) cover purchases in
+  the shop, including downloads: "CELEMONY provides the Customer who has access to Internet the opportunity of
+  downloading files of text, audio or video content against payment onto a computer of the Customer with Internet
+  connection." and, for such a file, "Any use in excess of that granted by the licence, in particular the letting,
+  broadcasting, public demonstration, re-licensing of the file, rendering it available in Internet or on other
+  electronic networks (file sharing) or any other commercial use of the file is impermissible." Nothing in the GTC
+  names MIDI or files exported from Melodyne (searched "MIDI", "export", "own").
 
 ## RipX DAW (Hit'n'Mix)
 
 - "RipX is the #1 AI DAW that goes far beyond stem separation by offering true note-level extraction. It breaks fully
   mixed audio down to the core notes"; "6+ Stem Separation. Edit Notes In The Mix"; "Buy Now – Starting at $99"; "Try
   RipX DAW PRO Free for 21 Days" ([home](https://hitnmix.com/), read 2026-11-10). Tab output, platforms, MIDI export
-  details: not read (UNVERIFIED).
+  details: not read (UNVERIFIED). (Corrected in gap round 2: read on 2026-11-11, below.)
+- **Systems, price, MIDI and tab** (gap round 2, read 2026-11-11). [Buy page](https://buy.hitnmix.com/)
+  (`https://hitnmix.com/buy-ripx/` redirects there): "macOS 10.15+ (2012 & later models, including M1 onwards) /
+  Windows 8/10/11 (64-bit)"; "Minimum: 2 Core 2.5GHz CPU, 8 GB RAM, 20 GB Free Disc Space"; "In order to check for a
+  valid license, an internet connection is required to activate RipX for the first time, and at least once every 15
+  times it is run."; "RipX may be installed on up to two computers belonging to the registered license owner, for
+  example a desktop and a laptop."; prices "RipX DAW PRO" "$198.00 USD" and "RipX DAW" "$99.00 USD", "21-day trial",
+  "We offer license deactivation with a full refund within 14 days of purchase". [RipX DAW page](https://hitnmix.com/ripx-daw/):
+  "Print Audio to Midi to load a specific part onto a separate VST/Synth" and "Ability to see specific chords & notes
+  being played in a particular part". Tab output: the words "tab", "tabs" and "tablature" are on neither page. No Linux
+  build is listed.
+- **Terms** (gap round 2, read 2026-11-11). [Terms of use](https://hitnmix.com/terms-of-use/) (no date; footer
+  "Copyright © 2026 Hit'n'Mix Ltd."): "For the purposes of these Terms of use, HIT’N’MIX is used to mean any version of
+  Hit’n’Mix products and the hitnmix.com website."; "HIT’N’MIX is not intended for use by users which would infringe
+  the copyright of any piece of music owned by a third party and is intended for lawful use only; ... Any use of
+  HIT’N’MIX in conjunction with such music should only be carried out with the permission of the copyright owner in
+  question."; "All copyright, trade marks, design rights, patents and other intellectual property rights (registered
+  and unregistered) in and on HIT’N’MIX and all content (including all applications) located on the site shall remain
+  vested in Hit’n’Mix Ltd or its licensors (which includes other users). You may not copy, reproduce, republish,
+  disassemble, decompile, reverse engineer, download, post, broadcast, transmit, or make available to the public any
+  HIT’N’MIX content without the prior written permission of Hit’n’Mix Ltd." The store's
+  [terms of service](https://buy.hitnmix.com/policies/terms-of-service) carry the same text, except that this sentence
+  reads: "You may not copy, reproduce, republish, disassemble, decompile, reverse engineer, download, post, broadcast,
+  transmit, make available to the public, or otherwise use HIT’N’MIX content in any way except for your own personal,
+  non-commercial use. You also agree not to adapt, alter or create a derivative work from HIT’N’MIX." Whether
+  "HIT’N’MIX content" covers the stems or MIDI a user exports is not stated; no clause names who owns them, and no
+  clause on bots, scripts or automated access was found (both pages searched for "own", "commercial", "automat",
+  "robot", "scrap", "export"). No EULA page is linked from hitnmix.com or buy.hitnmix.com; whether the installer shows
+  a license agreement, and what it says, is UNVERIFIED (`for-aaron.md` test 12 asks Aaron to save any license text it
+  shows).
 
 ## Samplab: site redirects to apple.com
 
@@ -769,7 +947,29 @@ on 2026-11-10.
   audio-to-MIDI system for guitar to fully support MPE — MIDI Polyphonic Expression"; "MIDI Guitar 3 Hex is the same
   technology applied to hexaphonic pickup systems" ([jam.live](https://www.jam.live/), read 2026-11-10). Input is a live
   guitar signal; output is real-time MIDI (no tab, no string/fret output described). Prices: not shown in the page text
-  (UNVERIFIED).
+  (UNVERIFIED). (Corrected in gap round 2: the price is on Jam Origin's shop page, read 2026-11-11, below; and the
+  beta JAM API's note stream has a field named "string", below. No fret output and no tab are described.)
+- **Price and license** (gap round 2, read 2026-11-11). [Shop](https://jam.live/shop/): "Pay once = Lifetime license +
+  Lifetime free updates"; "The price is always USD 149.95 and there are never any discounts."; "Please note that the
+  iOS/iPadOS versions of MIDI Guitar have features that are only available as in-app purchases via Apple's App Store."
+  The jamorigin.com buy link (`https://www.jamorigin.com/products/midi-guitar/buy`) redirects to a
+  [FastSpring store page](https://sites.fastspring.com/jamorigin/product/midi-guitar): "MIDI GUITAR, personal lifetime
+  license", "$149.95", "This is a personal license for MIDI GUITAR 3 for PC and Mac", and "The license permits you to
+  run MIDI GUITAR 3 or MIDI GUITAR 2, on two computers, and is possible to revoke when you buy a new computer." FAQ on
+  [jamorigin.com](https://www.jamorigin.com/): "Can i use the license on 2 or more computers?" "Yes, as long as they are
+  yours." Status of version 3 ([MIDI Guitar 3](https://jam.live/products/MG3/)): "MIDI Guitar 3 is in beta testing
+  phase." and "Please refer to MIDI Guitar 2 for a production ready solution."
+- **Terms** (gap round 2, 2026-11-11). No license agreement, EULA or terms-of-use page is linked from jamorigin.com (its
+  only matching links are a "License" filter of its FAQ, with `href="#"`, and "Privacy Policy") or from jam.live (none),
+  so no clause on who owns the MIDI it outputs, on commercial use or on automated access was found. Whether the
+  installer shows a license text is UNVERIFIED.
+- **How an agent could read its notes** ([JAM API, WebSocket](https://jam.live/developers/websocket/), read 2026-11-11,
+  gap round 2): "This API is not yet mature and is expected to change throughout the beta testing period."; "Notes are
+  sent from MIDI Guitar's Lua and Html modules on a WebSocket at localhost, port 8080."; its "Note streaming format" is
+  a line "time, beat, beat-fraction", a line "number-of-played-notes", then "for each played note:" a line "note-id,
+  age, string, pitch, bend, pressure, brightness" (and the same again for Lua-processed notes). The page does
+  not say what values the "string" field takes or which MIDI Guitar version serves it (the page is on jam.live, the
+  MIDI Guitar 3 site). Not tried here (the program is a desktop install that listens to a live guitar signal).
 
 ## Transcribe! (Seventh String Software): slow-down and analysis helper, Linux build
 
@@ -799,6 +999,25 @@ on 2026-11-10.
 
 - Home page features: "Your Personal Chord Finder", "Custom Chord Preference", "Change Speed and Scale", "Identify BPM
   Shifts", "Upload", "My Uploads" ([home](https://chordu.com/), read 2026-11-10). Terms and prices: not read (UNVERIFIED).
+  (Corrected in gap round 2: the terms were read on 2026-11-11, below; the prices were not.)
+- **Terms** ([terms of use](https://chordu.com/terms-of-use), linked "Terms Of Use" from the home page; no date on the
+  page, footer "© 2023 ChordU. All contents are subject to copyright, provided for educational and personal
+  non-commercial use only."; read 2026-11-11 with curl, gap round 2):
+  - "User guidelines": "You shall not collect content or information or access ChordU service using automated means
+    (such as bots, robots, spiders or scrapers) without our permission."
+  - "Liability": "Usage of songs and chords are limited to your personal, non-commercial use in accordance with the
+    terms of agreement. You may not reproduce (other than as authorized for your own personal usage), publish, transmit,
+    distribute, publicly display, rent or lend, modify, create derivative works from, sell or participate in the sale of
+    or exploit in any way, in whole or in part, directly or indirectly, any of the contents provided."
+  - "User Intellectual property rights": "ChordU service contains material which is owned by us. This material
+    includes, but is not limited to, the design, layout, look, sound, appearance and graphics."
+  - "Service options - free - premium": "Certain service options are free of cost whereas others are only accessible
+    through premium subscriptions."
+  - No clause on who owns a user's uploads or the chords computed from them was found (the page has no "upload" and
+    no "licen").
+- **Price.** Not read. After these terms were read, no further chordu.com page was fetched from the box, because they
+  bar access "using automated means ... without our permission". UNVERIFIED; `for-aaron.md` test 8b asks Aaron to note
+  the prices shown.
 
 ## Yamaha Chord Tracker
 
@@ -807,6 +1026,23 @@ on 2026-11-10.
   song very closely, but may not be an exact match"; "will not work for songs in iCloud or protected by DRM"; "will not work
   with Music Streaming services such as Apple Music"; "Version 2.3.9 May 25", developer "Yamaha Corporation of America"
   ([App Store, US](https://apps.apple.com/us/app/id992502589), read 2026-11-10). Free; no in-app purchases listed.
+- **Platforms and features from Yamaha's own pages** ([Chord Tracker](https://usa.yamaha.com/musical-instruments/keyboards/products/apps/chord-tracker/)
+  and its [specs](https://usa.yamaha.com/musical-instruments/keyboards/products/apps/chord-tracker/specs.html), read
+  2026-11-11, gap round 2): "Chord Tracker Android is now available at Google Play."; "Compatible Devices" "iPhone /
+  iPad / Android", "Please check the App Store or Google Play for information on supported OS and devices."; "You can
+  even edit the chords to make your own arrangement of the song by choosing from two recommended chords or selecting the
+  chord root and chord type."; "The Chord Tracker app will also transfer the chord information to the instrument. You
+  can even record your performance on the device as an audio file and share it with others via email (AAC or WAV
+  format)." The page's App Store link is id975438908, which Apple's lookup API lists in the UK store as "Chord Tracker"
+  by "Yamaha Corporation" (2.3.9, released 2026-05-11) and not in the US store, where id992502589 is "Chord Tracker - US"
+  by "Yamaha Corporation of America" (2.3.9, released 2026-05-25).
+- **Terms** (gap round 2, 2026-11-11). No license agreement or terms for the app were found. Yamaha's Chord Tracker
+  pages link the App Store, Google Play, connection manuals, an Android device list and the web site's own "Terms of
+  Use" and "Privacy Policy" (those web-site terms were not read). The App Store listing links the app's
+  [privacy policy](https://www.yamaha.com/en/apps_docs/apps_dmi/dmi_PP_chordtracker20190827_us.html), which says "By
+  using the Software, you are accepting and consenting to the terms of this Privacy Policy.", and no license agreement
+  (whether a custom EULA exists cannot be told from the page; Apple's Standard EULA is quoted under Capo). No clause on
+  the chord charts it shows, commercial use or automated access was found.
 
 ## Fender apps
 
@@ -1149,6 +1385,15 @@ documented capabilities, not tested transfers (testing is the try agent's `trial
     GuitarConvert "PDF, MIDI, and MusicXML" ([product page](https://latouchemusicale.com/en/apps/guitarconvert/)), which
     Guitar Pro 8 and Tabtify import as in lines 1 to 3.
 
+### Added in gap round 2 (gapfill-apps-survey, 2026-11-11)
+
+27. Melodyne's assistant, editor and studio editions output "Audio-to-MIDI – export notes to a MIDI file"
+    ([editions](https://www.celemony.com/en/melodyne/melodyne-5-editions)), RipX DAW can "Print Audio to Midi to load a
+    specific part onto a separate VST/Synth" ([RipX DAW](https://hitnmix.com/ripx-daw/)), and Capo for Mac can "Export
+    audio-synchronized MIDI containing your chord and note entries" ([Capo for Mac](https://supermegaultragroovy.com/products/capo/mac/)),
+    which Guitar Pro 8 and Tabtify import as MIDI (line 3) and RiffToTab takes in (".mid or .midi",
+    [home](https://rifftotab.com/)). For Capo the notes are the ones the user entered in its Tabbing view (its section).
+
 ## Not covered
 
 Found in the verifier's searches on 2026-11-10; one source page each was read, nothing was run.
@@ -1178,6 +1423,15 @@ Found in the verifier's searches on 2026-11-10; one source page each was read, n
 - **FingerstylePal - Guitar Tab AI** (iOS, "Version 1.3.8", `datetime` 2026-05-18): takes Guitar Pro files, not audio
   ("Upload any GuitarPro file and get instant guidance"), and records "your hands + animated sheet music together"
   ([App Store](https://apps.apple.com/us/app/id6755329557), read 2026-11-10). No transcription is described. MOBILE.
+- **Practice Pro - AI Music Tools** (tool list item 40; added in gap round 2, 2026-11-11): known only from a web search
+  result quoted by the `completeness-critic` in `../../GAPS.md` (row P3), which lists an "AI Guitar Tab Generator ...
+  synced with playback" for an iOS app with App Store id 6754810269. `https://apps.apple.com/us/app/id6754810269`
+  answered HTTP 404 on 2026-11-10 (GAPS.md) and again on 2026-11-11, and Apple's lookup API
+  (`https://itunes.apple.com/lookup?id=6754810269&country=<store>`) returned `"resultCount":0` for the us, gb, se, de,
+  fr, ca, au, in and jp stores on 2026-11-11, while the same request for Capo's iOS id 887497388 returned its listing
+  ("Capo - Learn Music by Ear", 4.7.3). Whether the app exists, under that id or another, is UNVERIFIED: no web search
+  was made for it in this round (the session's web-search budget was used up), and the App Store app on a phone
+  settles it (`for-aaron.md`, test 17c).
 
 ## Verification log (verify-docs-apps-survey, 2026-11-10)
 
@@ -1237,3 +1491,59 @@ Tally.
   file format (`help.moises.ai` 403); which Guitar Pro version Klangio writes; AnthemScore's `license.txt`; the Guitar
   Pro software EULA; Melodyne and RipX operating systems and prices; ChordU terms and prices; MIDI Guitar prices;
   whether Capo's Mac "Tabbing view" transcribes automatically. Nothing was run in this pass except the page fetches.
+
+## Gap round 2 (gapfill-apps-survey, 2026-11-11)
+
+What was asked: the three rows for this lane in `../../GAPS.md`. P1: quote what the terms of Guitar Pro 8, Melodyne 5,
+RipX DAW, MIDI Guitar, Yousician, Yamaha Chord Tracker, Capo, ChordU and Chordify say about who owns the output, about
+commercial use and about automated access (Chordify: a step for Aaron). P2: AnthemScore Web counted as tried without
+output (a `tools.json` change, logged in `trials.md`, "Gap round 2"). P3: "Practice Pro - AI Music Tools", seen only in
+a search result.
+
+How. Each page was fetched once with curl by `scripts/gap2/fetch2.sh` (the `ec.crypton.co.jp` PDF twice, by hand with
+the same user agent, into `gap2/pdf/`; body, headers and a plain-text copy in `/home/user/gtr/lanes/apps-survey/gap2/raw/`, not
+committed; `_fetchlog.txt` there lists every fetch with its HTTP status). Terms pages were found from each vendor's own
+links (`scripts/gap2/links.py` lists a saved page's links); four web searches returned results and a fifth was not
+performed because the session's search budget was used up; one of the four is the only source of the Celemony EULA
+copy named in the Melodyne section. App Store ids were checked with Apple's lookup API
+(`itunes.apple.com/lookup?id=...`; the JSON answers are saved next to the pages). The page quotes added in this round
+are in `scripts/gap2/quotes2.json` (81 entries; a quote cut with "..." is one entry), and `scripts/gap2/checkquotes2.py`
+matched each one against the saved copy of the page it is attributed to: 81 confirmed, 0 not found (case, whitespace,
+curly quotes and dash variants ignored; the parts of a quote with "..." must appear in order). The other quoted
+strings are app names, sellers, versions and dates from those lookup answers, the WebFetch and permission-system
+messages of this session, and `../../GAPS.md`. After ChordU's terms were read (they bar access "using automated means
+... without our permission"), no further chordu.com page was fetched. `tools.json` was changed by
+`scripts/gap2/update_tools_json.py` (terms, prices, platforms, AnthemScore Web's `tried`, the Practice Pro entry; each
+changed entry has a `corrections` line) and `scripts/gap2/update_tools_json_handoffs.py` (the three MIDI handoffs of
+handoff line 27).
+
+Pages and their status on 2026-11-11 (the full list with times is the fetch log):
+
+| Vendor | Read (HTTP 200) | Not read |
+|---|---|---|
+| Arobas (Guitar Pro) | home, legal information, terms of use, terms of sale, software EULA | |
+| Celemony (Melodyne) | start, what is Melodyne, technical matters, editions, shop (`shop.celemony.com`), webshop GTC, imprint, privacy, help-center installation page | `/en/service/legal/eula` and `/license-agreement` (404); `ec.crypton.co.jp/download/pdf/eula_celemonyme.pdf` (connection reset, then 503 maintenance page) |
+| Hit'n'Mix (RipX) | home, RipX DAW, terms of use, `buy.hitnmix.com` and its terms of service | |
+| Jam Origin (MIDI Guitar) | jamorigin.com, its buy link (FastSpring page), jam.live home, shop, support, MIDI Guitar 3, JAM API WebSocket | |
+| Yousician | home, terms of service | |
+| Yamaha (Chord Tracker) | usa.yamaha.com apps, Chord Tracker overview and specs, the app's privacy policy | the web site's own terms of use (not fetched) |
+| SuperMegaUltraGroovy (Capo) | Capo page, Capo for Mac, privacy policy, Mac App Store listing | `/legal/` (403), `/legal/terms/` and `/legal/eula/` (404) |
+| Apple | Standard EULA; lookup API for ids 6754810269 (nine stores), 887497388, 975438908, 992502589, 696977615 | `apps.apple.com/us/app/id6754810269` (404) |
+| ChordU | home, terms of use | pricing (not fetched, above) |
+| Chordify | | terms page: 403 to curl and to WebFetch; headless render refused (below) |
+
+Refused by this session's permission system: opening Chordify's terms page in headless Chromium (a `gtr-run --nolock`
+of `scripts/gap2/render2.cjs`): "Permission for this action was denied by the Claude Code auto mode classifier. Reason:
+[Bot Check Circumvention]." The command never started, so it has no ledger line; it was not tried another way.
+
+Settled in this round: the Guitar Pro EULA and terms of sale; Melodyne's operating systems, which editions export MIDI
+and which handle polyphonic guitar, and its prices; RipX's operating systems, prices, MIDI printing and the absence
+of the word "tab" on its pages; MIDI Guitar's price, license lines and beta WebSocket note stream; Yousician's and
+ChordU's terms; that Capo's Mac Tabbing view writes tab from notes the user draws, and Capo for Mac's requirements and
+prices; Yamaha Chord Tracker's Android version and its two App Store listings.
+
+Still UNVERIFIED after this round: Chordify's terms (`for-aaron.md` 8a); the text of Celemony's EULA (not on
+celemony.com; the one copy found was unreachable; `for-aaron.md` 11); whether the RipX, MIDI Guitar and Melodyne
+installers show license texts and what they say (`for-aaron.md` 11, 12, 15); ChordU's prices (`for-aaron.md` 8b);
+whether Capo and Chord Tracker carry custom EULAs; whether Practice Pro exists (`for-aaron.md` 17c). Nothing was
+installed or run in this round apart from the page fetches and lookups.

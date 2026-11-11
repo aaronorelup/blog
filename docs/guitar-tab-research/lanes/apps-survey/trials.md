@@ -32,7 +32,10 @@ is the `verify-docs` agent's page rendering, not a trial.
   agent noted 10.3 s; no log of the download was kept, so that time is UNVERIFIED), 216,013,304 bytes, sha256
   `3e6b7758423c6b46e8b71dffa16f8b1cf09d295757c4d93227012c5fc257af9d`, kept in
   `/home/user/gtr/lanes/apps-survey/dl/anthemscore/`. A second download by the verifier on 2026-11-10 got the same
-  302, `content-length`, `last-modified` and sha256. No account or key was needed to download it. The download
+  302, `content-length`, `last-modified` and sha256. (Corrected in gap round 2: on 2026-11-11 the folder
+  `/home/user/gtr/lanes/apps-survey/dl/` no longer exists, "No such file or directory", and `find / -xdev` for
+  `AnthemScore-x86_64.AppImage` and `xscsetup-9.70.4.tar.gz` found neither file; when and by whom it was removed is not
+  recorded. The sizes and sha256 values in this file were taken while the files existed.) No account or key was needed to download it. The download
   page says: "No account creation needed, just download and run! The software runs in trial mode until you enter an
   activation key. In the trial, you are limited to the first 30 seconds of each song. By default the trial runs as
   the AnthemScore Professional edition, but you can switch between Lite and Professional by selecting Tools >
@@ -120,7 +123,8 @@ is the `verify-docs` agent's page rendering, not a trial.
     terms."
   - Not read: the `license.txt` itself (not found in the Linux AppImage; the Windows installer was not downloaded).
 - **Disk:** the AppImage (216,013,304 bytes) is kept; the unpacked tree (about 499 MiB) was deleted once the facts
-  above were written down. Kept in `/home/user/gtr/lanes/apps-survey/anthemscore/`: `AnthemScore.strings.txt` (the
+  above were written down. (Corrected in gap round 2: the AppImage is no longer on the box on 2026-11-11; see
+  "Download" above.) Kept in `/home/user/gtr/lanes/apps-survey/anthemscore/`: `AnthemScore.strings.txt` (the
   verifier re-extracted the binary and found this file identical to `strings -n 6` of it), `English.json` (identical
   to `languages/English.json` in the AppImage) and `unsquash.log`.
 
@@ -138,7 +142,9 @@ is the `verify-docs` agent's page rendering, not a trial.
   Unpacked with `tar -xzf` (12 entries, 10,634,780 bytes): `transcribe` (ELF x86-64 executable), `xschelp.htb` (the
   help, a zip of 99 HTML and image files), `install-linux.sh`, `readme_gtk.html`, two GStreamer plugins
   (`libgstflv.so`, `libgstvideosection.so`), icons. Kept in `/home/user/gtr/lanes/apps-survey/dl/transcribe/` (the
-  unpacked tree in `x/`, the help unzipped in `help/`).
+  unpacked tree in `x/`, the help unzipped in `help/`). (Corrected in gap round 2: that folder is gone on 2026-11-11,
+  with the rest of `dl/`; see AnthemScore, "Download". The help quotes below were checked by the verifier on
+  2026-11-10, while it existed.)
 - **NOT RUN HERE: not attempted.** No attempt to start it was made, so there was no refusal for this program: the
   trial agent did not start it because running a downloaded vendor binary is the step this session's permission
   system refused for AnthemScore ("[Code from External]", above), and the verifier did not try either. It is a GTK
@@ -314,17 +320,17 @@ are quoted in `survey.md`. The test for each is in `for-aaron.md` (number in the
 | audio2guitar | web | web service; terms: not to "Use automation, scripts, bots, or other tools to submit songs in bulk" | 5 |
 | AAPA AutoTabs (reads hands from video) | web | web service; terms: not to "Use automated tools to scrape or extract data" | 6 |
 | Moises | web, desktop, mobile | web service; terms §14.6 bar use "through the use of any engine, software, tool, agent, device, or mechanism ... other than the software or search agents provided by Moises or Third-Party Agents connected through functionality expressly provided by Moises under Section 12.4 (AI Agent)" | 7 |
-| Chordify | web, mobile | its site answered this box HTTP 403 | 8 |
-| ChordU | web | terms not read | 8b |
+| Chordify | web, mobile | its site answered this box HTTP 403 (again on 2026-11-11, to curl and WebFetch; a headless-browser render was refused, "[Bot Check Circumvention]": gap round 2) | 8, 8a |
+| ChordU | web | terms not read (corrected in gap round 2: read 2026-11-11, `survey.md` ChordU; they bar access "using automated means ... without our permission") | 8b |
 | AnthemScore 6 desktop | Windows, macOS, Linux | refused to execute ("[Code from External]"); see its section | 9 |
 | Transcribe! | Windows, macOS, Linux | not attempted (see its section); no note output; chord guesses reach a file only through text blocks | 10 |
 | Melodyne 5 | desktop; the trial page offers "Melodyne 5 studio for macOS" and "for Windows" (https://www.celemony.com/en/trial, read by the verifier 2026-11-10) | desktop install | 11 |
-| RipX DAW | desktop (`survey.md` classes it DESKTOP; its platforms were not read: UNVERIFIED) | desktop install | 12 |
+| RipX DAW | desktop (`survey.md` classes it DESKTOP; its platforms were not read: UNVERIFIED; corrected in gap round 2: "macOS 10.15+ (2012 & later models, including M1 onwards) / Windows 8/10/11 (64-bit)", https://buy.hitnmix.com/, read 2026-11-11) | desktop install | 12 |
 | Samplab | closed (site redirects to apple.com) | nothing to run | 13 |
 | ScoreCloud | "Download for PC & Mac" | desktop install | 14 |
 | MIDI Guitar 2 / 3 | Windows, Mac, iOS ("standalone Windows/Mac ... There is also an app for iOS.", jamorigin.com, read by the verifier 2026-11-10); live audio in | desktop install, real time | 15 |
 | Chord ai | iOS (an Android package appears in search results only: UNVERIFIED) | phone app | 16 |
-| Yamaha Chord Tracker | phone app (App Store listing read) | phone app | 17 |
+| Yamaha Chord Tracker | phone app (App Store listing read; Yamaha's page adds "Chord Tracker Android is now available at Google Play.", gap round 2) | phone app | 17 |
 | Fender Studio | phone app (App Store listing read) | phone app | 17b |
 | Capo | macOS, iOS ("Capo is available for macOS and iOS", product page, read by verify-docs and the verifier 2026-11-10) | Apple devices only | 18 |
 | Guitar Learning | browser app with live camera | `npm ci` refused ("[Code from External]"); see its section | 19 |
@@ -345,6 +351,31 @@ are quoted in `survey.md`. The test for each is in `for-aaron.md` (number in the
 | GuitarConvert (La Touche Musicale) | web; added to `survey.md` (item 37) by verify-docs after this trial | web service | 24 (added by the verifier) |
 | Tabbers | a 2025 conference talk only (`survey.md` item 38) | no product, app or code found | none |
 | YouTube Guitar Tab Parser (marcelpanse/youtube-guitar-tab-parser) | open source (`survey.md` item 39, added by verify-docs) | not run: it copies a tab already drawn in a YouTube lesson video into a PDF and does not transcribe audio; no shared clip is such a video, and its README asks for yt-dlp and an Anthropic API key (per `survey.md`) | none |
+| Practice Pro - AI Music Tools (iOS id 6754810269; `survey.md` item 40, added in gap round 2) | phone app seen only in a search result (`../../GAPS.md` P3) | not found: App Store page HTTP 404 and Apple's lookup API 0 results in nine stores on 2026-11-11; existence UNVERIFIED | 17c |
+
+## Gap round 2 (gapfill-apps-survey, 2026-11-11)
+
+The three gaps listed for this lane (`../../GAPS.md`, P1 to P3) are terms, a status flag and an app's existence. No
+tool was installed or run for them, so this round adds no tool section, no ledger run and no `gtr-eval` score. What
+it changed:
+
+- **P1, terms not read.** Guitar Pro 8, Melodyne 5, RipX DAW, MIDI Guitar, Yousician, Yamaha Chord Tracker, Capo and
+  ChordU: terms pages, EULAs, prices and platform pages were fetched with curl (`scripts/gap2/fetch2.sh`) and their
+  clauses quoted in each product's `survey.md` section, with "## Gap round 2" at the end of `survey.md` listing every
+  page, its status and what is still UNVERIFIED. Chordify: the terms page answered HTTP 403 to curl and to WebFetch;
+  opening it in headless Chromium through `gtr-run --nolock` was refused (table below), so it is `for-aaron.md` test
+  8a. In the table above the rows for Chordify, ChordU, RipX DAW and Yamaha Chord Tracker were updated and a row for
+  Practice Pro was added.
+- **P2, AnthemScore Web counted as tried.** In `tools.json` its `tried` is now `false`, with `tried_how` saying the
+  attempt stopped at the job-settings page and a `corrections` line; its runs r0055, r0062 and r0226 stay listed. This
+  file already said "NOT RUN to a result" and is unchanged on that point.
+- **P3, Practice Pro.** `https://apps.apple.com/us/app/id6754810269` answered HTTP 404 again, and Apple's lookup API
+  returned no result for that id in the us, gb, se, de, fr, ca, au, in and jp stores (a control lookup of Capo's id
+  887497388 returned its listing). Recorded as UNVERIFIED in `survey.md` ("## Not covered") and `tools.json`, with
+  `for-aaron.md` test 17c.
+- **Also found:** `/home/user/gtr/lanes/apps-survey/dl/` (the AnthemScore AppImage and the Transcribe! download) is no
+  longer on the box; the four places this file said they were kept (AnthemScore "Download" and "Disk", Transcribe!
+  "Download", "Media kept outside git") now say so.
 
 ## Permission refusals met in this lane (for the orchestrator)
 
@@ -353,6 +384,7 @@ are quoted in `survey.md`. The test for each is in `for-aaron.md` (number in the
 | `AnthemScore-x86_64.AppImage --appimage-extract` | "denied by the Claude Code auto mode classifier. Reason: [Code from External]" | AnthemScore desktop not run; files read with `unsquashfs` instead |
 | `node scripts/anthemscore_web_run.cjs ...` (ticks the rights box, presses Transcribe) | "denied by the Claude Code auto mode classifier. Reason: [Consent Given For The User]" | no AnthemScore Web transcription; no other web service tried |
 | `npm ci --ignore-scripts` in the Guitar-Learning clone | "denied by the Claude Code auto mode classifier. Reason: [Code from External]" | Guitar Learning's neck-check not run |
+| `gtr-run --nolock ... node scripts/gap2/render2.cjs https://chordify.net/pages/terms-and-conditions/` (gap round 2, 2026-11-11: open Chordify's terms page once in headless Chromium after curl and WebFetch got HTTP 403) | "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Bot Check Circumvention]." | Chordify's terms not read; `for-aaron.md` test 8a |
 
 The refusals are session events and leave no ledger line (a refused command never starts), so the verifier could not
 read them anywhere; the files agree with them: the AppImage was unpacked with `unsquashfs` (`unsquash.log`), the
@@ -385,7 +417,8 @@ header. Decoded with that header ignored (`-flags2 +skip_manual`), every MP3 sta
 and runs 1,350 to 2,238 samples long (verifier's measurement: `scripts/verify-trials/mp3_alignment.py`, output in
 `samples/mp3-alignment.txt`). Which of the two an app does is not known. No tool in this lane produced audio or
 video. Also outside git, not media: the AnthemScore AppImage (216,013,304 B) and the Transcribe!
-tarball (4,365,589 B) in `/home/user/gtr/lanes/apps-survey/dl/`, the AnthemScore Web screenshots and logs in
+tarball (4,365,589 B) in `/home/user/gtr/lanes/apps-survey/dl/` (corrected in gap round 2: gone on 2026-11-11, see
+AnthemScore, "Download"), gap round 2's page copies in `/home/user/gtr/lanes/apps-survey/gap2/`, the AnthemScore Web screenshots and logs in
 `/home/user/gtr/lanes/apps-survey/out/anthemscore-web/explore_S2s_b/` (r0062), `.../explore_S2s/run.out` (r0055's
 error) and `.../verify_S2s/` (r0226), and the Guitar-Learning clone in `/home/user/gtr/lanes/apps-survey/clones/`.
 

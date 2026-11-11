@@ -1,0 +1,787 @@
+{
+ "input": "/lane/out/abcjs/S2n.written.abc",
+ "step_px": 3.875,
+ "trials": {
+  "A_listen": {
+   "steps": [
+    {
+     "gesture": "click note head, melody bar 1 note 1",
+     "at": {
+      "x": 310.77525329589844,
+      "y": 144.48003387451172
+     }
+    },
+    {
+     "gesture": "click tab number, melody bar 1 note 1",
+     "at": {
+      "x": 310.75,
+      "y": 279.54998779296875
+     }
+    },
+    {
+     "gesture": "drag note head up by 1 step, melody bar 1 note 1",
+     "from": {
+      "x": 310.77525329589844,
+      "y": 144.48003387451172
+     },
+     "dy": -3.875
+    },
+    {
+     "gesture": "drag note head down by 1 step, melody bar 1 note 2",
+     "from": {
+      "x": 380.4552459716797,
+      "y": 144.48003387451172
+     },
+     "dy": 3.875
+    },
+    {
+     "gesture": "drag tab number down by one tab line, melody bar 1 note 3",
+     "from": {
+      "x": 450.1099853515625,
+      "y": 267.9200134277344
+     },
+     "dy": 11.629974365234375
+    }
+   ],
+   "tab_line_px": 11.629974365234375,
+   "events": [
+    {
+     "n": 0,
+     "render": 1,
+     "el_type": "note",
+     "startChar": 125,
+     "endChar": 129,
+     "text": " G4 ",
+     "pitches": [
+      {
+       "pitch": 4,
+       "name": "G"
+      }
+     ],
+     "classes": "abcjs-note abcjs-d0-25 abcjs-p4 abcjs-l0 abcjs-m1 abcjs-mm1 abcjs-v0 abcjs-n0 abcjs-note_selected",
+     "analysis": {
+      "line": 0,
+      "measure": 1,
+      "voice": 0,
+      "name": "note",
+      "clickedName": "G"
+     },
+     "drag": {
+      "step": 0,
+      "max": 182,
+      "index": 1
+     },
+     "event": "mouseup",
+     "applied": null
+    },
+    {
+     "n": 1,
+     "render": 1,
+     "el_type": "tabNumber",
+     "startChar": 125,
+     "endChar": 129,
+     "text": " G4 ",
+     "pitches": null,
+     "classes": "abcjs-tabNumber abcjs-note abcjs-d0-25 abcjs-p4 abcjs-l0 abcjs-m1 abcjs-mm1 abcjs-v0 abcjs-n0 abcjs-note_selected",
+     "analysis": {
+      "line": 0,
+      "measure": 1,
+      "voice": 0,
+      "name": "tabNumber",
+      "clickedName": "tabNumber"
+     },
+     "drag": {
+      "step": 0,
+      "max": 182,
+      "index": 25
+     },
+     "event": "mouseup",
+     "applied": null
+    },
+    {
+     "n": 2,
+     "render": 1,
+     "el_type": "note",
+     "startChar": 125,
+     "endChar": 129,
+     "text": " G4 ",
+     "pitches": [
+      {
+       "pitch": 4,
+       "name": "G"
+      }
+     ],
+     "classes": "abcjs-note abcjs-d0-25 abcjs-p4 abcjs-l0 abcjs-m1 abcjs-mm1 abcjs-v0 abcjs-n0 abcjs-note_selected",
+     "analysis": {
+      "line": 0,
+      "measure": 1,
+      "voice": 0,
+      "name": "note",
+      "clickedName": "G"
+     },
+     "drag": {
+      "step": -1,
+      "max": 182,
+      "index": 1
+     },
+     "event": "mouseup",
+     "applied": null
+    },
+    {
+     "n": 3,
+     "render": 1,
+     "el_type": "note",
+     "startChar": 129,
+     "endChar": 132,
+     "text": "G4 ",
+     "pitches": [
+      {
+       "pitch": 4,
+       "name": "G"
+      }
+     ],
+     "classes": "abcjs-note abcjs-d0-25 abcjs-p4 abcjs-l0 abcjs-m1 abcjs-mm1 abcjs-v0 abcjs-n1 abcjs-note_selected",
+     "analysis": {
+      "line": 0,
+      "measure": 1,
+      "voice": 0,
+      "name": "note",
+      "clickedName": "G"
+     },
+     "drag": {
+      "step": 1,
+      "max": 182,
+      "index": 2
+     },
+     "event": "mouseup",
+     "applied": null
+    },
+    {
+     "n": 4,
+     "render": 1,
+     "el_type": "tabNumber",
+     "startChar": 132,
+     "endChar": 135,
+     "text": "d4 ",
+     "pitches": null,
+     "classes": "abcjs-tabNumber abcjs-note abcjs-d0-25 abcjs-p8 abcjs-l0 abcjs-m1 abcjs-mm1 abcjs-v0 abcjs-n2 abcjs-note_selected",
+     "analysis": {
+      "line": 0,
+      "measure": 1,
+      "voice": 0,
+      "name": "tabNumber",
+      "clickedName": "tabNumber"
+     },
+     "drag": {
+      "step": 3,
+      "max": 182,
+      "index": 27
+     },
+     "event": "mouseup",
+     "applied": null
+    }
+   ],
+   "n_tab_before": 90,
+   "n_tab_after": 90,
+   "tab_changes": [],
+   "abc_changed": false,
+   "renders": 1,
+   "translated_groups": [
+    {
+     "cls": "abcjs-note abcjs-d0-25 abcjs-p4 abcjs-l0 abcjs-m1 abcjs-mm1 abcjs-v0 abcjs-n0 ",
+     "transform": "translate(0,-3.875)"
+    },
+    {
+     "cls": "abcjs-note abcjs-d0-25 abcjs-p4 abcjs-l0 abcjs-m1 abcjs-mm1 abcjs-v0 abcjs-n1 ",
+     "transform": "translate(0,3.875)"
+    },
+    {
+     "cls": "abcjs-tabNumber abcjs-note abcjs-d0-25 abcjs-p8 abcjs-l0 abcjs-m1 abcjs-mm1 abcjs-v0 abcjs-n2 abcjs-note_selected",
+     "transform": "translate(0,11.625)"
+    }
+   ],
+   "first_bar_before": [
+    {
+     "text": "0",
+     "string": 3
+    },
+    {
+     "text": "0",
+     "string": 3
+    },
+    {
+     "text": "3",
+     "string": 2
+    },
+    {
+     "text": "3",
+     "string": 2
+    }
+   ],
+   "console": []
+  },
+  "B_apply": {
+   "steps": [
+    {
+     "gesture": "drag note head up by 1 step, melody bar 1 note 1",
+     "from": {
+      "x": 310.77525329589844,
+      "y": 144.48003387451172
+     },
+     "dy": -3.875,
+     "renders": 2,
+     "tab_changes": [
+      {
+       "i": 0,
+       "before": {
+        "text": "0",
+        "string": 3
+       },
+       "after": {
+        "text": "2",
+        "string": 3
+       }
+      }
+     ],
+     "first_bar_after": [
+      {
+       "text": "2",
+       "string": 3
+      },
+      {
+       "text": "0",
+       "string": 3
+      },
+      {
+       "text": "3",
+       "string": 2
+      },
+      {
+       "text": "3",
+       "string": 2
+      }
+     ]
+    },
+    {
+     "gesture": "drag note head down by 1 step, melody bar 1 note 2",
+     "from": {
+      "x": 380.4552459716797,
+      "y": 144.48003387451172
+     },
+     "dy": 3.875,
+     "renders": 3,
+     "tab_changes": [
+      {
+       "i": 1,
+       "before": {
+        "text": "0",
+        "string": 3
+       },
+       "after": {
+        "text": "4",
+        "string": 4
+       }
+      }
+     ],
+     "first_bar_after": [
+      {
+       "text": "2",
+       "string": 3
+      },
+      {
+       "text": "4",
+       "string": 4
+      },
+      {
+       "text": "3",
+       "string": 2
+      },
+      {
+       "text": "3",
+       "string": 2
+      }
+     ]
+    },
+    {
+     "gesture": "drag tab number down by one tab line, melody bar 1 note 3",
+     "from": {
+      "x": 450.1099853515625,
+      "y": 267.9200134277344
+     },
+     "dy": 11.629974365234375,
+     "renders": 4,
+     "tab_changes": [
+      {
+       "i": 2,
+       "before": {
+        "text": "3",
+        "string": 2
+       },
+       "after": {
+        "text": "2",
+        "string": 3
+       }
+      }
+     ],
+     "first_bar_after": [
+      {
+       "text": "2",
+       "string": 3
+      },
+      {
+       "text": "4",
+       "string": 4
+      },
+      {
+       "text": "2",
+       "string": 3
+      },
+      {
+       "text": "3",
+       "string": 2
+      }
+     ]
+    }
+   ],
+   "tab_line_px": 11.629974365234375,
+   "events": [
+    {
+     "n": 0,
+     "render": 1,
+     "el_type": "note",
+     "startChar": 125,
+     "endChar": 129,
+     "text": " G4 ",
+     "pitches": [
+      {
+       "pitch": 4,
+       "name": "G"
+      }
+     ],
+     "classes": "abcjs-note abcjs-d0-25 abcjs-p4 abcjs-l0 abcjs-m1 abcjs-mm1 abcjs-v0 abcjs-n0 abcjs-note_selected",
+     "analysis": {
+      "line": 0,
+      "measure": 1,
+      "voice": 0,
+      "name": "note",
+      "clickedName": "G"
+     },
+     "drag": {
+      "step": -1,
+      "max": 182,
+      "index": 1
+     },
+     "event": "mouseup",
+     "applied": {
+      "from": " G4 ",
+      "to": " A4 "
+     }
+    },
+    {
+     "n": 1,
+     "render": 2,
+     "el_type": "note",
+     "startChar": 129,
+     "endChar": 132,
+     "text": "G4 ",
+     "pitches": [
+      {
+       "pitch": 4,
+       "name": "G"
+      }
+     ],
+     "classes": "abcjs-note abcjs-d0-25 abcjs-p4 abcjs-l0 abcjs-m1 abcjs-mm1 abcjs-v0 abcjs-n1 abcjs-note_selected",
+     "analysis": {
+      "line": 0,
+      "measure": 1,
+      "voice": 0,
+      "name": "note",
+      "clickedName": "G"
+     },
+     "drag": {
+      "step": 1,
+      "max": 182,
+      "index": 2
+     },
+     "event": "mouseup",
+     "applied": {
+      "from": "G4 ",
+      "to": "F4 "
+     }
+    },
+    {
+     "n": 2,
+     "render": 3,
+     "el_type": "tabNumber",
+     "startChar": 132,
+     "endChar": 135,
+     "text": "d4 ",
+     "pitches": null,
+     "classes": "abcjs-tabNumber abcjs-note abcjs-d0-25 abcjs-p8 abcjs-l0 abcjs-m1 abcjs-mm1 abcjs-v0 abcjs-n2 abcjs-note_selected",
+     "analysis": {
+      "line": 0,
+      "measure": 1,
+      "voice": 0,
+      "name": "tabNumber",
+      "clickedName": "tabNumber"
+     },
+     "drag": {
+      "step": 3,
+      "max": 182,
+      "index": 27
+     },
+     "event": "mouseup",
+     "applied": {
+      "from": "d4 ",
+      "to": "A4 "
+     }
+    }
+   ],
+   "n_tab_before": 90,
+   "n_tab_after": 90,
+   "tab_changes_total": [
+    {
+     "i": 0,
+     "before": {
+      "text": "0",
+      "string": 3
+     },
+     "after": {
+      "text": "2",
+      "string": 3
+     }
+    },
+    {
+     "i": 1,
+     "before": {
+      "text": "0",
+      "string": 3
+     },
+     "after": {
+      "text": "4",
+      "string": 4
+     }
+    },
+    {
+     "i": 2,
+     "before": {
+      "text": "3",
+      "string": 2
+     },
+     "after": {
+      "text": "2",
+      "string": 3
+     }
+    }
+   ],
+   "first_bar_before": [
+    {
+     "text": "0",
+     "string": 3
+    },
+    {
+     "text": "0",
+     "string": 3
+    },
+    {
+     "text": "3",
+     "string": 2
+    },
+    {
+     "text": "3",
+     "string": 2
+    }
+   ],
+   "first_bar_after": [
+    {
+     "text": "2",
+     "string": 3
+    },
+    {
+     "text": "4",
+     "string": 4
+    },
+    {
+     "text": "2",
+     "string": 3
+    },
+    {
+     "text": "3",
+     "string": 2
+    }
+   ],
+   "console": []
+  },
+  "C_keyboard": {
+   "steps": [
+    {
+     "gesture": "click note head, melody bar 1 note 1",
+     "at": {
+      "x": 310.77525329589844,
+      "y": 144.48003387451172
+     },
+     "active": "abcjs-note abcjs-d0-25 abcjs-p4 abcjs-l0 abcjs-m1 abcjs-mm1 abcjs-v0 abcjs-n0 abcjs-note_selected"
+    },
+    {
+     "gesture": "key ArrowUp",
+     "transform": "translate(0,-3.875)"
+    },
+    {
+     "gesture": "key Enter"
+    }
+   ],
+   "events": [
+    {
+     "n": 0,
+     "render": 1,
+     "el_type": "note",
+     "startChar": 125,
+     "endChar": 129,
+     "text": " G4 ",
+     "pitches": [
+      {
+       "pitch": 4,
+       "name": "G"
+      }
+     ],
+     "classes": "abcjs-note abcjs-d0-25 abcjs-p4 abcjs-l0 abcjs-m1 abcjs-mm1 abcjs-v0 abcjs-n0 abcjs-note_selected",
+     "analysis": {
+      "line": 0,
+      "measure": 1,
+      "voice": 0,
+      "name": "note",
+      "clickedName": "G"
+     },
+     "drag": {
+      "step": 0,
+      "max": 92,
+      "index": 1
+     },
+     "event": "mouseup",
+     "applied": null
+    },
+    {
+     "n": 1,
+     "render": 1,
+     "el_type": "note",
+     "startChar": 125,
+     "endChar": 129,
+     "text": " G4 ",
+     "pitches": [
+      {
+       "pitch": 4,
+       "name": "G"
+      }
+     ],
+     "classes": "abcjs-note abcjs-d0-25 abcjs-p4 abcjs-l0 abcjs-m1 abcjs-mm1 abcjs-v0 abcjs-n0 abcjs-note_selected",
+     "analysis": {
+      "line": 0,
+      "measure": 1,
+      "voice": 0,
+      "name": "note",
+      "clickedName": "note"
+     },
+     "drag": {
+      "step": -1,
+      "max": 92,
+      "index": "1"
+     },
+     "event": "keyup",
+     "applied": {
+      "from": " G4 ",
+      "to": " A4 "
+     }
+    }
+   ],
+   "renders": 2,
+   "tab_changes": [
+    {
+     "i": 0,
+     "before": {
+      "text": "0",
+      "string": 3
+     },
+     "after": {
+      "text": "2",
+      "string": 3
+     }
+    }
+   ],
+   "first_bar_after": [
+    {
+     "text": "2",
+     "string": 3
+    },
+    {
+     "text": "0",
+     "string": 3
+    },
+    {
+     "text": "3",
+     "string": 2
+    },
+    {
+     "text": "3",
+     "string": 2
+    }
+   ],
+   "tab_number_selectable_attr": null,
+   "note_selectable_attr": "true",
+   "abc_bar1": "z16 | A4 G4 d4 d4 | e4 e4 d8 | c4 c4 B4 B4 |",
+   "console": []
+  },
+  "D_editor_click_type": {
+   "steps": [
+    {
+     "gesture": "click tab number, melody bar 1 note 1; type \" A4 \"",
+     "at": {
+      "x": 310.75,
+      "y": 279.54998779296875
+     },
+     "textarea_after_click": {
+      "selectionStart": 125,
+      "selectionEnd": 129,
+      "selected": " G4 ",
+      "activeElement": "abc",
+      "length": 484
+     },
+     "typed": " A4 ",
+     "first_four_after": [
+      {
+       "text": "2",
+       "string": 3
+      },
+      {
+       "text": "0",
+       "string": 3
+      },
+      {
+       "text": "3",
+       "string": 2
+      },
+      {
+       "text": "3",
+       "string": 2
+      }
+     ]
+    },
+    {
+     "gesture": "click tab number, melody bar 1 note 2; type \"F4 \"",
+     "at": {
+      "x": 380.42999267578125,
+      "y": 279.54998779296875
+     },
+     "textarea_after_click": {
+      "selectionStart": 129,
+      "selectionEnd": 132,
+      "selected": "G4 ",
+      "activeElement": "abc",
+      "length": 484
+     },
+     "typed": "F4 ",
+     "first_four_after": [
+      {
+       "text": "2",
+       "string": 3
+      },
+      {
+       "text": "4",
+       "string": 4
+      },
+      {
+       "text": "3",
+       "string": 2
+      },
+      {
+       "text": "3",
+       "string": 2
+      }
+     ]
+    }
+   ],
+   "events": [
+    {
+     "el_type": "tabNumber",
+     "startChar": 125,
+     "endChar": 129,
+     "drag": {
+      "step": 0,
+      "max": 182,
+      "index": 25
+     },
+     "event": "mouseup"
+    },
+    {
+     "el_type": "tabNumber",
+     "startChar": 129,
+     "endChar": 132,
+     "drag": {
+      "step": 0,
+      "max": 182,
+      "index": 26
+     },
+     "event": "mouseup"
+    }
+   ],
+   "n_tab_before": 90,
+   "n_tab_after": 90,
+   "tab_changes_total": [
+    {
+     "i": 0,
+     "before": {
+      "text": "0",
+      "string": 3
+     },
+     "after": {
+      "text": "2",
+      "string": 3
+     }
+    },
+    {
+     "i": 1,
+     "before": {
+      "text": "0",
+      "string": 3
+     },
+     "after": {
+      "text": "4",
+      "string": 4
+     }
+    }
+   ],
+   "console": []
+  },
+  "E_editor_drag": {
+   "gesture": "drag note head up by 1 step, melody bar 1 note 1",
+   "from": {
+    "x": 310.77525329589844,
+    "y": 144.48003387451172
+   },
+   "dy": -3.875,
+   "events": [
+    {
+     "el_type": "note",
+     "startChar": 125,
+     "endChar": 129,
+     "drag": {
+      "step": -1,
+      "max": 182,
+      "index": 1
+     },
+     "event": "mouseup"
+    }
+   ],
+   "textarea_after": {
+    "selectionStart": 125,
+    "selectionEnd": 129,
+    "selected": " G4 ",
+    "activeElement": "abc",
+    "length": 484
+   },
+   "text_changed": false,
+   "tab_changes": [],
+   "console": []
+  }
+ },
+ "wall_ms": 12314
+}

@@ -577,6 +577,9 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
   147,341,049 bytes (sha256 `b76b00d1750901abd07b9f9d8c98cc3385b8fe834a26d4b4f0aad439e75fc600`), from
   `https://huggingface.co/lllyasviel/Annotators/resolve/main/hand_pose_model.pth` (repo not gated; card metadata
   `license: other`), loaded with `torch.load(..., weights_only=True)`. The full OpenPose C++ program was not built.
+  (gap round 2: the port has no license file at that commit, the distributor of these weights ships CMU's OpenPose
+  license beside the code that downloads them, and the OpenPose hand paper names the hand model's training data;
+  quoted in `survey.md`, OpenPose section.)
 - Route and what was done by this lane: OpenPose finds hands from its body model; that model
   (`body_pose_model.pth`, 209,267,595 bytes) was over the disk notice's 200 MB limit and was not downloaded. Hand boxes
   were taken from MediaPipe Hand Landmarker instead (a handoff): a square around MediaPipe's 21 points, side 1.5 x the
@@ -895,6 +898,104 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
   `mobileclip2:b`; Ultralytics 8.4.209 `nn/text_model.py` has `import clip` in a top-level `try` block (lines 15-19).
   Re-run (step of r0495, 2 cores): the same boxes, prompts and scores for all eight images as the trial's
   `results.json`; setup 2.04 s, step wall 6.85 s.
+
+## Gap round 2
+
+Added 2026-11-11 by the `gapfill-video-hands-fretboard` agent for the gaps listed for this lane in `GAPS.md`
+(V1-V8). Text-only fixes (V1-V4, V7, V8) are made where the statements stand, marked "(gap round 2)" or "(corrected in
+gap round 2: ...)"; this section holds what was run.
+
+### Picking hand against note onsets on R3c (gap V5): fingertip speed around onsets, descriptive
+
+- What it is: a measurement script, not a tool (`scripts/gap-round-2/picking_hand_onsets.py`). It takes landmarks
+  and onsets that earlier runs wrote and reports how fast the picking-hand fingertips moved near note onsets and away
+  from them. R3c has no ground truth, so nothing here says which finger played which note or whether a motion
+  caused a note.
+- Inputs (all from earlier runs; sha256 in the ledger line of r0609):
+  - Landmarks: MediaPipe Hand Landmarker 1.2.2 on R3c, `out/mediapipe-hands/R3c_full.jsonl` (group job r0408, step
+    `C1/mediapipe-hands_R3c_full`). The hand labelled "Right" is the picking hand (section "MediaPipe Hand
+    Landmarker"); it is present in all 450 frames, once per frame, handedness score mean 0.9908 (min 0.5957), wrist
+    mean (966.0, 900.5) px, wrist x between 900.7 and 1009.3 px in every frame (the fretting hand's mean wrist is at
+    x 1679). Wrist movement between consecutive frames: median 1.82 px, 95th percentile 7.40 px, max 21.66 px.
+  - Onsets 1: Basic Pitch 0.4.0 (TFLite, defaults) on `R3c.wav`, run r0264 of the `audio-to-notes` lane
+    (`/home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default-R3bc/R3c.notes.csv`): 87 notes. Note
+    starts within 30 ms of the previous kept start were merged (24 merges), leaving 63 onsets, the first at
+    0.012 s and the last at 17.460 s.
+  - Onsets 2: `librosa.onset.onset_detect(y, sr, units="time")` with librosa 0.11.0 defaults on `R3c.mono.wav`
+    (44.1 kHz): 54 onsets, 0.824 s to 17.786 s. 43 of the 63 Basic Pitch onsets have a librosa onset within 40 ms.
+  - Time base: `R3c.mp4` has its video and AAC streams starting at 0.000000 s (ffprobe), 25 fps, 450 frames; frame n
+    is at n / 25 s, which equals the `t_s` stored with every landmark record (largest difference 0.0). The script
+    decoded the mp4's AAC track (ffmpeg, mono, 44.1 kHz) and cross-correlated it with `R3c.mono.wav` in three 2 s
+    windows (from 2, 8 and 14 s, lags up to 0.2 s): lag 0 samples in all three (correlation 0.9999, 1.0, 1.0). So the
+    WAV and the video timeline line up sample for sample; whether picture and sound were in sync in the source
+    recording and its YouTube and Commons transcodes was not checked.
+- Definitions (also in the output JSON): speed = distance in pixels (1920x1080 frame) that a landmark moved between
+  consecutive frames (449 samples, each at the midpoint time between its two frames); "abs" = image coordinates,
+  "rel" = fingertip minus wrist (landmark 0), which removes whole-hand movement; "near" = speed samples whose
+  midpoint lies within 40 ms of an onset (one frame at 25 fps, as the gap asked), "rest" = all other samples; a
+  "peak" = a local maximum of a speed series (`scipy.signal.find_peaks`) above that series' 75th percentile; an onset
+  "hit" = an onset with a peak within 40 ms; "timeline share" = the share of the 18 s within 40 ms of any peak, which
+  is the hit rate that onsets at random times would get.
+- Run: `gtr-run --lane video-hands-fretboard --tool picking-hand-onsets ... -- env
+  NUMBA_CACHE_DIR=<lane>/gap2/numba-cache <lane>/venv-analysis/bin/python -I -B
+  scripts/gap-round-2/picking_hand_onsets.py --landmarks <lane>/out/mediapipe-hands/R3c_full.jsonl --bp-notes
+  <audio-to-notes>/out/basic-pitch/tflite-default-R3bc/R3c.notes.csv --wav /home/user/gtr/inputs/R3c/R3c.mono.wav
+  --mp4 /home/user/gtr/inputs/R3c/R3c.mp4 --out <lane>/gap2/picking-hand` (full paths in the ledger), run **r0609**,
+  2 cores (slot 2-3, no wait), wall 27.09 s, CPU 21.2 s, peak RSS 407.3 MB, exit 0. Most of the time is the
+  pure-Python lag search of the A/V check.
+- Install: `uv venv --python 3.11 venv-analysis && uv pip install --python venv-analysis/bin/python librosa==0.11.0
+  matplotlib pillow` (files hard-linked from the shared uv cache; about 3 MB of new disk; freeze in
+  `samples/picking-hand-onsets/uv-pip-freeze.txt`: librosa 0.11.0, numpy 2.4.6, scipy 1.17.1, numba 0.68.1).
+
+Results with the 63 Basic Pitch onsets (118 near samples, 331 rest samples; speeds in pixels per frame):
+
+| landmark | frame | near median | rest median | near mean | rest mean | peaks | onsets hit (of 63) | hit share | timeline share | median onset-to-peak |
+|---|---|---|---|---|---|---|---|---|---|---|
+| wrist (0) | abs | 2.15 | 1.66 | 2.96 | 2.53 | 55 | 13 | 0.206 | 0.247 | 81.9 ms |
+| thumb tip (4) | abs | 5.05 | 4.76 | 7.29 | 7.47 | 65 | 20 | 0.318 | 0.292 | 57.4 ms |
+| thumb tip (4) | rel | 4.93 | 4.38 | 6.78 | 7.06 | 72 | 23 | 0.365 | 0.323 | 56.4 ms |
+| index tip (8) | abs | 3.47 | 2.78 | 4.58 | 3.98 | 57 | 16 | 0.254 | 0.256 | 67.2 ms |
+| index tip (8) | rel | 2.95 | 2.55 | 3.67 | 3.38 | 69 | 21 | 0.333 | 0.310 | 62.6 ms |
+| middle tip (12) | abs | 3.25 | 2.25 | 4.25 | 3.67 | 59 | 18 | 0.286 | 0.265 | 68.6 ms |
+| middle tip (12) | rel | 2.64 | 2.17 | 3.19 | 2.93 | 72 | 23 | 0.365 | 0.323 | 55.2 ms |
+| ring tip (16) | abs | 2.90 | 2.30 | 4.21 | 3.75 | 62 | 17 | 0.270 | 0.278 | 76.0 ms |
+| ring tip (16) | rel | 2.71 | 2.30 | 3.36 | 3.09 | 68 | 17 | 0.270 | 0.305 | 84.9 ms |
+
+With the 54 librosa onsets (106 near, 343 rest samples), rel frame: thumb near / rest median 4.80 / 4.41, hits 22 of 54
+(0.407) against a timeline share of 0.323; index 2.84 / 2.62, 16 (0.296) against 0.310; middle 2.54 / 2.16, 23 (0.426)
+against 0.323; ring 2.47 / 2.38, 18 (0.333) against 0.305. The pinky (20) and both onset lists for every landmark
+are in the JSON.
+
+Mean speed (rel frame, pixels per frame) of the speed sample nearest to onset + k frames, k = -5 ... +5, over the 63
+Basic Pitch onsets (k = 0 is the sample within 20 ms of the onset):
+
+| landmark | -5 | -4 | -3 | -2 | -1 | 0 | +1 | +2 | +3 | +4 | +5 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| wrist (0), abs | 2.06 | 2.14 | 2.24 | 2.51 | 2.17 | 2.93 | 3.62 | 3.88 | 3.33 | 2.98 | 2.30 |
+| thumb tip (4) | 5.53 | 5.76 | 8.56 | 10.83 | 6.99 | 7.81 | 8.25 | 7.42 | 7.11 | 8.01 | 6.32 |
+| index tip (8) | 2.54 | 2.67 | 2.94 | 3.90 | 3.51 | 3.67 | 4.16 | 4.56 | 3.56 | 3.17 | 3.40 |
+| middle tip (12) | 2.18 | 2.87 | 3.09 | 3.36 | 2.69 | 3.43 | 3.46 | 3.62 | 3.39 | 2.83 | 2.63 |
+| ring tip (16) | 2.52 | 3.31 | 3.25 | 3.17 | 2.63 | 3.81 | 3.17 | 3.70 | 3.82 | 3.07 | 2.85 |
+
+- In numbers, with the Basic Pitch onsets: for every row of the first table the near median is higher than the rest
+  median, by 0.29 to 1.00 pixels per frame; the near mean is higher for every row except the thumb (abs 7.29 against
+  7.47, rel 6.78 against 7.06). In the rel frame the four fingertips' hit shares (0.270 to 0.365) differ from their
+  timeline shares (0.305 to 0.323) by -0.035 to +0.042. In the onset-locked table the thumb's largest mean is at
+  k = -2 (10.83), the wrist's, index tip's and middle tip's at k = +2 (3.88, 4.56, 3.62) and the ring tip's at k = +3
+  (3.82). Nothing here was checked against which string or finger sounded each note.
+- Output format facts: `picking_hand_onsets_R3c.json` (definitions, landmark and onset counts, the A/V check, and per
+  onset list and landmark/frame: near and rest medians and means, the peak threshold, peak count, hits, hit share,
+  timeline share, median onset-to-peak distance and the onset-locked profile); `per_onset_R3c.csv` (per Basic Pitch
+  onset: time, the nearest speed sample's time and the largest rel speed within 40 ms for thumb, index, middle and
+  ring); `speeds_R3c.npz` (every speed series and both onset lists; kept outside git). Picture:
+  `samples/picking-hand-onsets/picking_hand_speed_R3c.webp` (wrist abs and four fingertips rel against time, onsets
+  as vertical lines, peaks as dots).
+- Constraints a re-run can change: the onset list (any note list with start times), `MERGE_S` (30 ms), `NEAR_S`
+  (40 ms), the peak rule (75th percentile), the landmark source (any per-frame 21-point hand output with a
+  handedness label).
+- Not done: no gtr-eval (R3c has no ground truth); Holistic's `right_hand` landmarks for R3c (440 frames, C1 step
+  `mediapipe-holistic_R3c_full`) were not analysed; R3a and R3b were not analysed, because their picking hand is
+  out of frame, occluded or not detected (sections above).
 
 ## Grouped jobs (gtr-run ids for the steps above)
 

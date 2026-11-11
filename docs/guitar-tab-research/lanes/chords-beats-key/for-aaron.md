@@ -138,7 +138,9 @@ needed for the record; the steps stay for a run on a Windows PC.
 ## 7. Omnizart chord
 
 Not run here: the verifier's chord-only install of the PyPI sdist was refused by the session's permission classifier
-("Code from External"; trials.md, "Not run here").
+("Code from External"; trials.md, "Not run here"). Gap round 1: one attempt with the 0.5.0 wheel on Python 3.8
+(TensorFlow 2.5.0) failed while building madmom 0.16.1 from a stale copy in the box's shared cache (trials.md, "Gap round
+1"). The steps below use the project's Docker image instead.
 
 1. Install Docker Desktop for Windows.
 2. `docker pull mctlab/omnizart:latest`, then `docker run -it -v <clips folder>:/clips mctlab/omnizart:latest bash` (the
@@ -161,6 +163,9 @@ Not run here: the verifier's chord-only install of the PyPI sdist was refused by
 
 ## 9. Guitar open-string tuning classifier (Hulme et al.)
 
+Gap round 1: a new search found no other open-string tuning or capo detector from audio with published weights or a
+package (survey.md), so this remains the only candidate; the steps stand.
+
 Research code; the README describes evaluation scripts and keeps models and test sets on Google Drive (survey.md). The
 evaluation code's five classes are DADGAD, Drop D, Open D, Open G and Standard.
 
@@ -177,6 +182,11 @@ evaluation code's five classes are DADGAD, Drop D, Open D, Open G and Standard.
 - Harmony Transformer v1 / v2 and ACR_seq2seq: no released weights (survey.md).
 - ChordMini: needs Firebase and Gemini keys for the full app (survey.md).
 - BEAST: evaluation script for preprocessed GTZAN data only.
+
+## Gap round 1 note (gapfill-chords-beats-key, 2026-11-11)
+
+Sections 1, 3, 4, 5, 6, 7 and 9 gained gap-round notes (what ran here since, and the new WSL route for libKeyFinder in
+section 4). They were written after the verification log below and have not been checked by a separate agent.
 
 ## Verification log (verify-trials-chords-beats-key, 2026-11-10)
 

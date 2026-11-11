@@ -56,7 +56,8 @@ function sample() {
     if (!st || !status) continue;
     let p = procs.get(pid);
     if (!p) {
-      const cmd = (rd(`/proc/${pid}/cmdline`) || '').split('\0');
+      let cmd = (rd(`/proc/${pid}/cmdline`) || '').split('\0').filter((a) => a);
+      if (cmd.length === 1) cmd = cmd[0].split(' ');   // Chromium rewrites its argv into one space-separated string
       const ty = (cmd.find((a) => a.startsWith('--type=')) || '').slice(7) || (cmd[0].includes('chrom') || cmd[0].includes('headless') ? 'browser' : path.basename(cmd[0] || '?'));
       const util = (cmd.find((a) => a.startsWith('--utility-sub-type=')) || '').slice(19);
       p = { pid, type: util ? `${ty}:${util}` : ty, exe: path.basename(cmd[0] || ''), first_ms: t0, series: [], hwm_kb: 0, max_threads: 0, allowed: new Set() };
@@ -123,7 +124,6 @@ const wall = (Date.now() - t0) / 1000;
 await browser.close();
 
 // summaries
-const byType = (p) => p.type;
 const procOut = [...procs.values()].map((p) => ({
   pid: p.pid, type: p.type, exe: p.exe, seen_s: [(p.first_ms - t0) / 1000, (p.last_ms - t0) / 1000],
   cpu_s: (p.series[p.series.length - 1][1] - p.series[0][1]) / TICK, cpu_s_total_at_last_sample: p.series[p.series.length - 1][1] / TICK,

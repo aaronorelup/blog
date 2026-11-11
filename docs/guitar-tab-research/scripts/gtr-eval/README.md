@@ -137,8 +137,13 @@ onset + 1 ms, and the count is written into `processing`.
 ### `f0`: a monophonic pitch track
 
 **Input:** a table of `time, frequency_hz[, confidence]` from a monophonic pitch tracker. Columns are found
-by header names (time; freq/f0/hz/pitch; conf/voicing/periodicity/prob) or read in that order. NaN frequencies count
-as unvoiced (0 Hz). `--f0-unit midi` reads the frequency column as MIDI numbers.
+by header names (time; freq/f0/hz/pitch; conf/voicing/periodicity/prob) or read in that order. NaN frequencies and
+empty frequency cells (Essentia's Melodia rows such as `0.0000,,0.0000`) count as unvoiced (0 Hz); an empty or missing
+confidence cell means no confidence, which counts as below any `--conf-threshold`. A row whose time cell is not a number
+(a second header line, for example) is skipped without a note. A row with a readable time whose frequency cell is
+missing, or whose frequency or confidence cell holds text that is not a number, is left out; `processing` gives the
+number of such rows and quotes the first, and also counts the empty cells. `--f0-unit midi` reads the frequency column
+as MIDI numbers.
 
 **Reference:** built from the truth notes on a 10 ms grid from 0 s to `duration_s`: the melody voice if there is one,
 otherwise all notes if no two overlap (otherwise an error asks for `--voice`). At each grid time the reference is the
@@ -266,9 +271,15 @@ marks); or ASCII tab (lines such as `e|---0---|` or `E4|---0---|`, top line = st
   counted in `processing`. Files that declare XML entities are refused.
 - ASCII tab carries no times. A run of one or two digits is a fret, notes in the same character column are
   simultaneous, and the order of columns is the only timing, so `--ignore-time` is switched on. When every string
-  label names an octave (`E4`, `B3`, ...) the labels give the estimate's tuning. The capo is read from the first
-  text line with "no capo" (0), "capo: none/no/off" (0), or "capo" followed by a fret number ("Capo: 2", "capo 2nd
-  fret", "capo on 3rd fret"); the line used is quoted in `processing`.
+  label names an octave (`E4`, `B3`, ...) the labels give the estimate's tuning. The capo is read only from the first
+  capo line: a line whose first word is "capo" or whose first words are "no capo" (spaces and the marks
+  `# / % * - [ ( > |` in front do not count), or a line with a "Capo:" or "Capo =" field anywhere, as in
+  "Tuning: E2 A2 D3 G3 B3 E4   Capo: none". The value comes from that statement: "no capo" and "capo: none/no/off"
+  give 0, otherwise "capo" followed by a fret number ("Capo: 2", "capo 2nd fret", "Capo on 3rd fret", "Capo: fret
+  2"). The word capo anywhere else is not read: not in a title ("Title: S2 with a capo on fret 2", the line where
+  TuxGuitar's ASCII export puts the song title), a description, "without capo", or "Tuning: standard, capo 2". A file
+  without a capo line gets the truth's capo, and the output says it was assumed (`--est-capo` gives the estimate's capo
+  explicitly). `processing` quotes the capo line used and the lines before it that mention a capo but were not read.
 
 **Matching:** by default `mir_eval.transcription.match_notes(onset_tolerance=0.05, pitch_tolerance=50.0,
 offset_ratio=None)`: onsets within 50 ms and the same pitch, each note matched once. With `--ignore-time` (and for
@@ -385,7 +396,10 @@ notes removed gives recall 0.5 and precision 1; offsets cut to half the duration
 F1 0; the beat grid at double tempo gives F = 32/47, CMLt 0 and AMLt 1; a tempo of twice the truth is flagged as an
 octave error and three times is within tolerance at factor 3 but not an octave error; transposed chords give root 0;
 the key table gives 1.0, 0.5, 0.3, 0.2, 0; tab notes all moved one string down give a string difference of +1 for
-those notes; a capo difference and a tuning difference are flagged; frame-level tab written from the truth gives
+those notes; a capo difference and a tuning difference are flagged; an ASCII tab whose only mention of a capo is a
+title line ("Title: FX1 with a capo on fret 2", TuxGuitar's header) is scored with the truth's capo, reported as
+assumed, and a capo line after a title that names another capo is the one read; an f0 file with empty frequency cells
+in the unvoiced frames scores exactly like the same file with 0 written in them; frame-level tab written from the truth gives
 tab and pitch F1 of 1 in both layouts, and with the melody moved one string down pitch F1 stays 1 while tab precision
 drops to the share of activations not moved; SI-SDR with noise added at 10 dB SNR is within
 0.3 dB of 10; swapped stems give negative SI-SDR; the launcher works from `/` with `PYTHONPATH` and `VIRTUAL_ENV`
@@ -452,3 +466,18 @@ below says a definition changed.
 - 0.11.1 (2026-11-10): `notes` and `tab` accept estimated times below 0 (after `--time-shift`): mir_eval refuses
   negative times, so the same constant is added to both sides first, which changes no time difference. Before this the
   run stopped with an error. No metric changed.
+- 0.12.0 (2026-11-11): two fixes in how estimate files are read; no metric definition changed. (1) `tab`, ASCII tab:
+  the capo is read only from a capo line (see `tab` above). 0.11.1 took it from the first line where one of its
+  patterns matched anywhere, so TuxGuitar's export of S5capo2, which has no capo line, was reported as capo 2 "stated
+  in the estimate file", read from its title line "Title: S2 with a capo on fret 2" (e0468). Re-scored as e1771: capo 2
+  "not stated in the estimate; the truth capo is assumed", every number the same. (2) `f0`: all cells of a row are read
+  before the row is kept; an empty frequency cell is 0 Hz (unvoiced), an empty confidence cell is no confidence, and a
+  row with a readable time whose frequency cell is missing, or whose frequency or confidence cell is text that is not a
+  number, is left out and counted in `processing`. 0.11.1 kept the time of such a row and then stopped with
+  "IndexError: index ... is out of bounds for axis 0" (e0440 to e0447: Essentia Melodia files with rows like
+  `0.0000,,0.0000`). Re-scored as e1772 to e1779, whose numbers equal the lane's runs on copies of the same files with 0
+  written in the empty cells (e0448 to e0455). Both fixes add `processing` lines only when such a line or cell exists,
+  and every other result is identical apart from `gtr_eval_version`. Of 264 earlier evals re-scored with `--no-ledger`
+  (every `f0` eval, every ASCII-tab eval, every failed eval, and a sample of every other subcommand), 247 gave exactly
+  the stored result, the nine named above differ as described, and 8 (e0448 to e0455) could not be compared because
+  their input files were rewritten after those runs. Details and the eval ids: `../gtr-eval-fix-notes.md`.
