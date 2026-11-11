@@ -77,6 +77,7 @@ export async function mount(section, stage, opts = {}) {
   } catch (e) {
     canvas.remove();
     renderer.dispose();
+    unpinSection(section);   // a failure after the pin leaves the static hero, not a tall section holding a poster
     throw e;
   }
   // the poster gives way once a frame is really on the canvas

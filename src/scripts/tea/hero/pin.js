@@ -24,7 +24,10 @@ export function unpinSection(section) {
 const px = (cs, name) => parseFloat(cs.getPropertyValue(name)) || 0;
 
 // "dock" only where the box, at its static size, fits one screen with the hero's padding (cover.css) around it.
+// Docked, the box is folded and its height says nothing: the dock holds until it opens again (its resize re-asks).
 export function layoutFor(section) {
+  const docked = section.dataset.heroLayout === 'dock' && section.dataset.heroPhase === 'docked';
+  if (docked && innerWidth > innerHeight) return 'dock';
   const box = section.querySelector('.tea-hero-box');
   const cs = getComputedStyle(section);
   const fits = !box || box.offsetHeight + px(cs, '--tea-hero-pt') + px(cs, '--tea-hero-pb') <= innerHeight;
