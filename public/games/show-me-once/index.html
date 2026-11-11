@@ -23,6 +23,7 @@ html, body {
 body { position: fixed; inset: 0; font-family: var(--sans); }
 #c { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
 #c.kbd:focus { outline: 2px solid var(--gold); outline-offset: -6px; }
+#shade { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 78% 78% at 50% 52%, rgba(8, 9, 16, 0) 52%, rgba(8, 9, 16, .5) 100%); }
 #cap {
   position: absolute; left: 50%; top: 0; transform: translateX(-50%); margin: 0; width: min(88vw, 30em);
   padding-top: max(calc(env(safe-area-inset-top) + 50px), 9vh); text-align: center;
@@ -91,6 +92,7 @@ noscript p { position: absolute; inset: auto 0 40%; text-align: center; padding:
 </head>
 <body>
 <canvas id="c" tabindex="0" role="application" aria-label="Show Me Once, a small game. A little creature in a night landscape learns from what you show it. Space or Enter taps and holds. Hold Space and press the arrow keys to draw. Keys 1 to 4 pick a move. M mutes the sound."></canvas>
+<div id="shade" aria-hidden="true"></div>
 <p id="cap" aria-live="polite"></p>
 <div id="chips" role="group" aria-label="Moves it has learned from you"></div>
 <button id="mute" type="button" aria-pressed="false" aria-label="Mute sound" title="Mute (M)">
@@ -152,11 +154,11 @@ let S = store.load() || blank();
 let G = S.g;                         // the gestures: stroke, taps, hold, mark, trace, line
 
 /* ================================================================== view */
-let W = 1, H = 1, DPR = 1, SC = 1, VW = 360, VH = 560, GA = 0.66;
+let W = 1, H = 1, DPR = 1, SC = 1, VW = 360, VH = 560, GA = 0.66, resCap = 2, slow = 0;
 const cam = { x: 0, y: 0, z: 1, fx: null, oy: 0, lead: 0.14, jump: false };
 function resize() {
   W = max(1, window.innerWidth); H = max(1, window.innerHeight);
-  DPR = min(2, window.devicePixelRatio || 1);
+  DPR = min(resCap, window.devicePixelRatio || 1);
   canvas.width = round(W * DPR); canvas.height = round(H * DPR);
   SC = min(W / 360, H / 560); VW = W / SC; VH = H / SC;
   GA = H > W * 1.15 ? 0.71 : 0.7;
@@ -539,7 +541,7 @@ function musicStep(s, bar, t) {
   }
   const st = M.end ? M.end.stage : 0, c = st > 0 ? M.end.ch : bar % 4;
   if (M.gait[s]) { const acc = M.gait[s] === 2; later(t, () => crStep(acc)); }
-  if (L.pulse > 0 && M.pat.indexOf(s) >= 0) { sTick(t, 0.075 * L.pulse * (s === M.pat[0] ? 1.5 : 1), s === M.pat[0]); later(t, () => { M.vis.pulse = 1; M.vis.pstep = s; }); }
+  if (L.pulse > 0 && M.pat.indexOf(s) >= 0) { sTick(t, 0.075 * L.pulse * (s === M.pat[0] ? 1.5 : 1), s === M.pat[0]); later(t, () => { M.vis.pulse = 1; M.vis.pstep = s; cr.lan.pulse = max(cr.lan.pulse, 0.3); }); }
   if (L.bass > 0 && (s === 0 || s === 8)) pluck(BASS[c] + (s === 8 ? 7 : 0), t, (s === 0 ? 0.36 : 0.16) * L.bass, { wet: 0.2 });
   if (L.pad > 0 && s === 0) { sPadNote(PADS[c], t, M.sd * 16 * M.rate + 0.3, 0.5 * L.pad); later(t, () => { M.vis.pad = 1; }); }
   if (L.mel > 0 && M.mel && s % 2 === 0) {
@@ -555,7 +557,7 @@ function musicStep(s, bar, t) {
   }
   if (L.motif > 0 && M.motif && !M.end && bar % 4 === 3 && s >= 9 && s < 14 && (M.night || M.travel)) {
     const n = M.motif[s - 9]; pluck(dm(n), t, (M.night ? 0.24 : 0.12) * L.motif, { wet: 0.9, pan: 0.3 });
-    later(t, () => { M.vis.motif = 1; M.vis.mslot = s - 9; });
+    later(t, () => { M.vis.motif = 1; M.vis.mslot = s - 9; cr.lan.pulse = max(cr.lan.pulse, 0.7); });
   }
 }
 function finalChord(t) {              // the authored ending: everything lands on D and rings
@@ -578,8 +580,8 @@ const nextBarT = () => M.t + ((16 - (M.step % 16)) % 16) * M.sd * M.rate;
 function* untilBar() { const T = nextBarT(); while (clock < T) yield; }
 
 /* ================================================================== the world */
-const WALK = 62;
-const world = { reveal: 0, sky: 0, shine: 0, shT: 0, stars: [], seen: [] };
+const WALK = 58;
+const world = { reveal: 0, sky: 0, shine: 0, shT: 0, stars: [], seen: [], shoot: -1 };
 const gaps = [], doors = [], lamps = [], banners = [], gates = [], lines = [];
 const hillC = { x0: 1e9, x1: 1e9 + 1, h: 0 };
 const baseG = (x) => 5 * sin(x * 0.0117) + 3.2 * sin(x * 0.0271 + 1.7);
@@ -604,7 +606,7 @@ const bannerBox = (b) => frameBox(b.x, gy(b.x) - b.top + b.h / 2, b.h * 0.92);
 const gateBox = (t) => frameBox(t.x, gy(t.x) - 96, 34);
 const doorBox = (d) => frameBox(d.x, gy(d.x) - 54 * d.size, 30 * d.size);
 function markLines(F, o) { return G.mark ? G.mark.s.map((s) => Line(mapPts(s, F), o)) : []; }
-function finishGap(g) { if (G.stroke) g.line = Line(mapPts(G.stroke.p, gapF(g)), { a: 0.6 }); }
+function finishGap(g) { const s = g === P.gs ? (G.trace && G.trace.p ? G.trace : G.stroke && { p: G.stroke.p.map((q) => [q[0], -q[1], q[2]]) }) : g === P.gs2 ? (G.trace && G.trace.p ? G.trace : G.stroke) : G.stroke; if (s) g.line = Line(mapPts(s.p, gapF(g)), { a: 0.6 }); }
 function finishDoor(d) { d.lamps = [1, 1, 1, 1]; d.open = 1; d.sign = G.mark ? 1 : 0; }
 function finishLamp(l) { l.h = lampH(G.hold ? G.hold.d : 1.7); l.lit = 1; l.clear = 1; }
 function finishBanner(b) { b.lines = markLines(bannerBox(b), { a: 0.9 }); }
@@ -618,9 +620,9 @@ function plantTrees() {              // dark trees along the way, never where so
     for (const l of lamps) if (abs(x - l.x) < 62) return true;
     for (const b of banners) if (abs(x - b.x) < 150) return true;
     for (const t of gates) if (abs(x - t.x) < 85) return true;
-    return x > 14150 || abs(x - 12) < 130;
+    return x > hillC.x1 - 230 || abs(x - 12) < 130;
   };
-  for (let i = -4; i < 92; i++) { const x = i * 158 + hash(i * 2.7) * 105; if (hash(i * 5.1) < 0.28 || busy(x)) continue; trees.push({ x, h: 58 + hash(i * 3.9) * 74, lean: (hash(i * 8.3) - 0.5) * 9, pine: hash(i * 4.7) < 0.34 }); }
+  for (let i = -4; i < 96; i++) { const x = i * 158 + hash(i * 2.7) * 105; if (hash(i * 5.1) < 0.28 || busy(x)) continue; trees.push({ x, h: 58 + hash(i * 3.9) * 74, lean: (hash(i * 8.3) - 0.5) * 9, pine: hash(i * 4.7) < 0.34 }); }
 }
 function drawTree(t) {
   const rv = world.reveal, y = gy(t.x) + 2, h = t.h, tx = t.x + t.lean, col = mix(COL.night, '#171624', rv), rim = rgba('#45425e', 0.55 * rv);
@@ -689,6 +691,7 @@ function placeAt(x, face) {
 }
 function swingFoot(i, dur, lead) { const f = cr.feet[i]; f.fx = f.x; f.fy = f.y; f.sw = 0; f.dur = dur; f.lead = lead; }
 function crStep(acc) {                // a footfall, on the beat of the knock
+  if (cr.tapping && !cr.walking) { if (acc) { cr.sqV += 1.5; cr.q = 0.07; sStep(clock, 0.1); ring(cr.x + cr.face * 9, cr.y - 1, COL.gold, 15, 0.4, 1.2); } return; }
   if (!cr.walking || cr.a < 0.5) return;
   cr.footN ^= 1; swingFoot(cr.footN, 0.17, 15);
   cr.bobV -= acc ? 150 : 96; cr.sqV += acc ? 2.1 : 1.2;
@@ -763,7 +766,7 @@ function drawCreature() {
   const lit = clamp(cr.lan.glow, 0, 1), bx = cr.x + cr.lx, by = cr.y + cr.bob, S1 = cr.scale;
   X.save(); X.globalAlpha = cr.a * cr.fade;
   // shadow
-  X.fillStyle = 'rgba(8,9,16,0.4)'; X.beginPath(); X.ellipse(cr.x, cr.y + 1.5, 21 * S1 * (1 + cr.bob * 0.02), 3.6 * S1, 0, 0, TAU); X.fill();
+  if (!cr.float && !cr.path) { X.fillStyle = 'rgba(8,9,16,0.4)'; X.beginPath(); X.ellipse(cr.x, cr.y + 1.5, 21 * S1 * (1 + cr.bob * 0.02), 3.6 * S1, 0, 0, TAU); X.fill(); }
   // feet
   const fc = mix('#3c3a48', '#D8C9B0', 0.2 + 0.8 * lit);
   for (const f of cr.feet) { X.fillStyle = fc; X.beginPath(); X.ellipse(f.x + cr.face * 1.5, f.y - 2.6 * S1, 6.4 * S1, 3.6 * S1, 0, 0, TAU); X.fill(); }
@@ -815,7 +818,7 @@ function drawLantern() {
   X.globalAlpha = max(cr.a, min(1, L.glow)) * cr.fade;
   // glow
   X.globalCompositeOperation = 'lighter';
-  const R = 64 * (1 + pu * 0.25) * (0.6 + 0.4 * min(1, gl)), gg = X.createRadialGradient(L.x, L.y, 2, L.x, L.y, R);
+  const R = 64 * (1 + pu * 0.25) * (0.6 + 0.4 * min(1, gl)) * (RM ? 1 : 0.95 + 0.07 * breath(clock)), gg = X.createRadialGradient(L.x, L.y, 2, L.x, L.y, R);
   gg.addColorStop(0, rgba(COL.coral, 0.4 * min(1.3, gl) + 0.2 * pu)); gg.addColorStop(0.35, rgba(COL.coral, 0.13 * gl)); gg.addColorStop(1, rgba(COL.coral, 0));
   X.fillStyle = gg; X.beginPath(); X.arc(L.x, L.y, R, 0, TAU); X.fill();
   X.globalCompositeOperation = 'source-over';
@@ -849,12 +852,12 @@ function strokePts(p, col, w, a, c) {
 function glowPts(c, p, col, w, a) { strokePts(p, col, w * 3.6, 0.2 * a, c); strokePts(p, col, w, a, c); }
 function glyph(c, kind, cx, cy, size, o) {
   o = o || {}; const a = o.a === undefined ? 1 : o.a, lw = max(1.1, size * 0.045);
-  if (kind === 'stroke' && G.stroke) {
-    const p = G.stroke.p; let lo = 0, hi = 0; for (const q of p) { lo = min(lo, q[1]); hi = max(hi, q[1]); }
+  if ((kind === 'stroke' && G.stroke) || (kind === 'trace' && G.trace && G.trace.p)) {
+    const gs = kind === 'trace' ? G.trace : G.stroke, p = gs.p; let lo = 0, hi = 0; for (const q of p) { lo = min(lo, q[1]); hi = max(hi, q[1]); }
     const sc = (size * 0.8) / max(1, (hi - lo) * 1.15), mid = (lo + hi) / 2, F = { ox: cx - sc / 2, oy: cy + mid * sc, ux: sc, uy: 0, vx: 0, vy: -sc, len: sc };
     const pts = mapPts(p, F); glowPts(c, pts, COL.gold, lw, a);
     for (const e of [pts[0], pts[pts.length - 1]]) { c.strokeStyle = rgba(COL.gold, 0.8 * a); c.lineWidth = lw * 0.7; c.beginPath(); c.ellipse(e[0], e[1], size * 0.07, size * 0.03, 0, 0, TAU); c.stroke(); }
-    if (o.prog >= 0) { const tip = lineTip({ pts, t: o.prog * G.stroke.d }); c.fillStyle = rgba('#FFF6DE', a); c.beginPath(); c.arc(tip.x, tip.y, lw * 1.9, 0, TAU); c.fill(); }
+    if (o.prog >= 0) { const tip = lineTip({ pts, t: o.prog * gs.d }); c.fillStyle = rgba('#FFF6DE', a); c.beginPath(); c.arc(tip.x, tip.y, lw * 1.9, 0, TAU); c.fill(); }
   } else if (kind === 'taps' && G.taps) {
     const t = G.taps.t, T = t[3] || 1, w = size * 0.7;
     c.strokeStyle = rgba(COL.soft, 0.45 * a); c.lineWidth = lw * 0.6; c.beginPath(); c.moveTo(cx - w / 2 - size * 0.08, cy + size * 0.16); c.lineTo(cx + w / 2 + size * 0.08, cy + size * 0.16); c.stroke();
@@ -907,7 +910,14 @@ function drawSky() {
     const tw = RM ? 0.8 : 0.62 + 0.38 * sin(clock * s.sp + s.ph), a = rv * tw * (0.5 + 0.5 * s.r / 1.6) * (1 - 0.5 * (y / top)) * (1 + sky * 0.25);
     X.fillStyle = rgba(s.b ? '#FFF3D6' : COL.cream, min(1, a)); X.beginPath(); X.arc(x, y, s.r * (s.b ? 1.5 : 1) * sqrt(SC), 0, TAU); X.fill();
   }
+  if (world.shoot >= 0 && world.shoot < 1) {          // a falling star
+    const u = world.shoot, p = shootAt(u), q = shootAt(max(0, u - 0.22)), a = sin(PI * u);
+    const lg = X.createLinearGradient(q[0], q[1], p[0], p[1]); lg.addColorStop(0, rgba(COL.cream, 0)); lg.addColorStop(1, rgba('#FFF6E0', 0.95 * a));
+    X.strokeStyle = lg; X.lineWidth = 1.8 * sqrt(SC); X.lineCap = 'round'; X.beginPath(); X.moveTo(q[0], q[1]); X.lineTo(p[0], p[1]); X.stroke();
+    X.fillStyle = rgba('#FFFFFF', a); X.beginPath(); X.arc(p[0], p[1], 1.7 * sqrt(SC), 0, TAU); X.fill();
+  }
 }
+const shootAt = (u) => [W * (0.86 - 0.42 * u), H * GA * (0.1 + 0.34 * u * (0.7 + 0.3 * u))];
 function drawHills() {
   const k = kz(), rv = world.reveal; if (rv <= 0.001) return;
   X.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -987,7 +997,7 @@ function drawGround() {
     for (const e of [[g.x0, gy(g.x0)], [g.x1, gy(g.x1)]]) { const gr = X.createLinearGradient(0, e[1], 0, e[1] + 70); gr.addColorStop(0, rgba('#4a4762', 0.9 * rv)); gr.addColorStop(1, rgba('#4a4762', 0)); X.strokeStyle = gr; X.lineWidth = 1.5; X.beginPath(); X.moveTo(e[0], e[1]); X.lineTo(e[0], e[1] + 70); X.stroke(); }
   }
   // the lantern's pool of light on the ground
-  if (cr.lan.glow > 0.02 && cr.a > 0.02) {
+  if (cr.lan.glow > 0.02 && cr.a > 0.02 && !cr.float) {
     X.save(); X.translate(cr.lan.x, cr.y + 1); X.scale(1, 0.22); X.globalCompositeOperation = 'lighter';
     const gr = X.createRadialGradient(0, 0, 4, 0, 0, 100); gr.addColorStop(0, rgba(COL.coral, 0.2 * min(1, cr.lan.glow) * cr.a)); gr.addColorStop(1, rgba(COL.coral, 0));
     X.fillStyle = gr; X.beginPath(); X.arc(0, 0, 100, 0, TAU); X.fill(); X.restore();
@@ -1043,7 +1053,7 @@ function drawDoor(d, front) {
     if (d.sign > 0.01) { X.globalAlpha = d.sign * (1 - d.open * 0.5); const F = doorBox(d); for (const st of (G.mark ? G.mark.s : [])) glowPts(X, mapPts(st, F), COL.gold, 1.5 * s, 1); X.globalAlpha = 1; }
     X.restore();
     for (let i = 0; i < 4; i++) {     // the four lamps over the door
-      const an = PI * (1.2 + 0.2 * i), lx = x + cos(an) * (w + 17 * s), ly = y - h + w + sin(an) * (w + 17 * s), on = d.lamps[i];
+      const an = PI * (1.2 + 0.2 * i), lx = x + cos(an) * (w + 17 * s), ly = y - h + w + sin(an) * (w + 17 * s), on = d.lamps[i] * (d.open > 0.9 && M.lay.pulse > 0 ? 0.72 + 0.28 * M.vis.pulse : 1);
       if (on > 0.01) { X.globalCompositeOperation = 'lighter'; const g = X.createRadialGradient(lx, ly, 0, lx, ly, 17 * s); g.addColorStop(0, rgba(COL.gold, 0.55 * on)); g.addColorStop(1, rgba(COL.gold, 0)); X.fillStyle = g; X.beginPath(); X.arc(lx, ly, 17 * s, 0, TAU); X.fill(); X.globalCompositeOperation = 'source-over'; }
       X.fillStyle = mix('#1b1a28', '#FFE3A8', on); X.strokeStyle = mix('#5d5872', COL.gold, on); X.lineWidth = 1.3; X.beginPath(); X.arc(lx, ly, 4.3 * s * (1 + 0.25 * (on > 0 && on < 1 ? sin(on * PI) : 0)), 0, TAU); X.fill(); X.stroke();
     }
@@ -1556,10 +1566,11 @@ function layout() {
   P.ga = mkGap(5500, 160, 0, 5); P.da = mkDoor(5770, 1, 5);
   P.lb = mkLamp(6150, [6190, 6620], 5); P.gb = mkGap(6240, 170, 24, 5); P.db = mkDoor(6520, 1, 5);
   P.dc = mkDoor(6980, 1, 5); P.lc = mkLamp(7120, [7160, 7640], 5); P.gc = mkGap(7210, 160, -22, 5); P.tc = mkGate(7490, 5);
-  P.gs = mkGap(8000, 210, 40, 6);
-  P.n1 = mkGap(8700, 180, 0, 7); P.n2 = mkDoor(9330, 1, 7); P.n3 = mkLamp(9820, [9860, 10110], 7); P.n4 = mkLamp(10150, [10190, 10420], 7); P.n5 = mkGate(10800, 7);
-  P.n6 = mkGap(11300, 170, 26, 7); P.n7 = mkLamp(11760, null, 7); P.n8 = mkGap(12000, 190, -30, 7); P.n9 = mkDoor(12480, 1, 7); P.n10 = mkLamp(12800, null, 7); P.n11 = mkGap(13040, 150, 20, 7);
-  hillC.x0 = 13480; hillC.x1 = 14380; hillC.h = 250; P.top = 14520;
+  P.gs = mkGap(8000, 210, 40, 6); P.gs2 = mkGap(8470, 170, -30, 6);
+  const N = 9000;                    // where the long night begins
+  P.n1 = mkGap(N, 180, 0, 7); P.n2 = mkDoor(N + 630, 1, 7); P.n3 = mkLamp(N + 1120, [N + 1160, N + 1410], 7); P.n4 = mkLamp(N + 1450, [N + 1490, N + 1720], 7); P.n5 = mkGate(N + 2100, 7);
+  P.n6 = mkGap(N + 2600, 170, 26, 7); P.n7 = mkLamp(N + 3060, null, 7); P.n8 = mkGap(N + 3300, 190, -30, 7); P.n9 = mkDoor(N + 3780, 1, 7); P.n10 = mkLamp(N + 4100, null, 7); P.n11 = mkGap(N + 4340, 150, 20, 7);
+  hillC.x0 = N + 4780; hillC.x1 = N + 5680; hillC.h = 250; P.top = N + 5820;
 }
 const mid = (g) => (g.x0 + g.x1) / 2;
 const lanPos = () => ({ x: cr.lan.x, y: cr.lan.y });
@@ -1582,7 +1593,12 @@ function* beatWake() {
   setMood('wow', 0.9); cr.sqV -= 1.8; pluck(dm(7), clock, 0.2, { wet: 0.8 });
   yield* wait(0.9); cr.look = { x: cr.x - 90, y: cr.y - 30 }; yield* wait(0.75); cr.look = { x: cr.x + 100, y: cr.y - 50 }; yield* wait(0.75); cr.look = null;
   say('Hello. It is watching you.'); free.tickle = true;
-  yield* wait(6.5);
+  yield* wait(5);
+  // a star falls, and it watches that too, all the way down
+  world.shoot = 0; anim(world, 'shoot', 1, RM ? 0.01 : 1.3, E.lin); setMood('wow', 2); cr.sqV -= 1.4; let st = 0;
+  [12, 10, 8, 7].forEach((n, i) => pluck(dm(n), clock + 0.15 + i * 0.16, 0.14, { wet: 1, pan: 0.5 - i * 0.2 }));
+  while (st < 1.5) { st += yield; const sp = shootAt(min(1, st / 1.3)), w = s2w(sp[0], sp[1]); cr.look = { x: w[0], y: w[1] }; }
+  yield* wait(0.9); cr.look = null; hop(150); setMood('happy', 1.2); yield* wait(1.3);
   say('It can learn anything. But only by watching.');
   yield* wait(5.5);
   say('And it only needs to see it once.');
@@ -1636,6 +1652,7 @@ function* beatKnock() {
   yield* knockDoor(P.d2); unthink(); yield* openDoor(P.d2); setMood('proud', 1.3); hop(150); yield* wait(0.8);
   follow(); yield* throughDoor(P.d2);
   say('Listen. Even its steps keep your time.');
+  cr.look = 'you'; cr.tapping = true; setMood('happy', M.bar * 1.6); yield* wait(M.bar * 1.5 + 0.4); cr.tapping = false; cr.look = null;
   yield* door(P.d3, { think: 0.6 });
 }
 function* beatLift() {
@@ -1647,7 +1664,7 @@ function* beatLift() {
     const g = yield* askHold(l); G.hold = g; learned();
     say('So that is how a lamp is hung.');
   } else { say('It still knows how you hang a lamp.'); yield* liftLamp(l); }
-  yield* joy(); follow();
+  yield* joy(); cr.look = { x: l.x, y: gy(l.x) - l.h }; setMood('proud', 1.8); yield* wait(1.7); cr.look = null; follow();
   yield* walkTo(P.l2.x - 24); say('Now watch.'); yield* think('hold', 1.1);
   say('The same lift. The same letting go.'); yield* liftLamp(P.l2); unthink(); setMood('proud', 1.2); hop(140); yield* wait(0.6);
   say('Every lamp after this, your way.');
@@ -1706,25 +1723,31 @@ function* beatShows() {
   unthink(); guide.dash = [2, 7]; anim(guide, 'a', 0.6, 0.8);
   cr.look = 'you'; hop(150); nod();
   say('Now you. Trace it. Loosely is fine.');
-  let tries = 0, line = null;
+  let tries = 0, line = null, gg0 = null;
   while (!line) {
     g.dotA = 1;
     const r = yield* askStroke(a, b, { shape: (e) => strokeV(flipped, e), fallback: () => ({ p: flipped.p.map((q) => q.slice()), d: flipped.d }), stubFrom: flipped });
     tries++; g.dotA = 0;
     let gg = r.g; if (gg.dot || gg.auto) gg = { p: flipped.p, d: flipped.d };
     const A2 = resample(gg.p, 24), B2 = resample(flipped.p, 24); let err = 0; for (let i = 0; i < 24; i++) err += hypot(A2[i][0] - B2[i][0], A2[i][1] - B2[i][1]);
-    if (err / 24 < 0.17 || tries >= 2 || r.g.auto) { line = gg === r.g ? r.line : Line(mapPts(gg.p, F)); }
+    if (err / 24 < 0.17 || tries >= 2 || r.g.auto) { line = gg === r.g ? r.line : Line(mapPts(gg.p, F)); gg0 = gg; }
     else {
       say('Close. Once more, any way you can.'); setMood('unsure', 1.2); sWrong(clock); lines.push(r.line); yield* tw(r.line, 'a', 0, 0.6); lines.splice(lines.indexOf(r.line), 1);
       anim(guide, 'a', 1, 0.3); anim(guide, 'a', 0.6, 0.6, E.io, 0.8); nod(); yield* wait(0.8);
     }
   }
-  G.trace = 1; store.save();
+  G.trace = { p: gg0.p.map((q) => q.slice(0, 3)), d: gg0.d }; store.save();
   lines.splice(lines.indexOf(guide), 1); line.hot = 1; anim(line, 'hot', 0, 1.5); g.line = line;
   for (let i = 0; i < line.pts.length; i += 3) spark(line.pts[i][0], line.pts[i][1], 1, COL.cream, { v0: 6, v1: 40, up: 20 });
   say('You learned it. Look how proud it is.');
   yield* joy(true); setMood('proud', 2); cr.look = 'you'; yield* wait(1.4); cr.look = null;
   follow(); yield* crossGap(g, line); ringsOff(g);
+  // and it keeps what you traced: your copy of its idea, wobble and all
+  yield* walkTo(P.gs2.x0 - 150); say('It kept your tracing too.'); focus(mid(P.gs2));
+  yield* walkTo(P.gs2.x0 - 18); ringsOn(P.gs2); yield* think('trace', 1.1);
+  cr.lift = 0.45; const L3 = yield* drawStroke(gapF(P.gs2), { g: G.trace }); cr.lift = 0; P.gs2.line = L3; lines.splice(lines.indexOf(L3), 1);
+  unthink(); sChime(clock, 3); setMood('happy', 1.2); hop(170); yield* wait(0.6);
+  follow(); yield* crossGap(P.gs2, L3); ringsOff(P.gs2);
 }
 function strokeV(gs, e) {            // a stroke's height at a fraction of the way along (for the ghost hand)
   const p = gs.p, i = min(p.length - 2, floor(e * (p.length - 1))), f = e * (p.length - 1) - i; return lerp(p[i][1], p[i + 1][1], clamp(f, 0, 1));
@@ -1843,20 +1866,20 @@ function* beatLast() {
   for (const k of ['stroke', 'taps', 'hold', 'mark']) anim(med, k, 0, 1.6);
   follow(0.03); yield* walkTo(P.top, 70); focus(P.top + VW * 0.1);
   if (cam.z !== 1) anim(cam, 'z', 1, 1.5);
-  anim(world, 'sky', 1, 3); cr.look = { x: cr.x + 120, y: cr.y - 300 }; setMood('calm'); yield* wait(1.6);
-  say('Your sign. Up where it will stay.');
+  anim(world, 'sky', 1, 3); cr.look = { x: cr.x + 120, y: cr.y - 300 }; setMood('calm'); yield* wait(3);
+  say('Your sign. Up where it will stay.'); yield* wait(1.2);
   conBuild(); con.on = 1; con.n = 0; cr.lift = 1;
   const mo = M.motif || [10, 11, 12, 11, 10];
   for (let i = 0; i < con.stars.length; i++) {
     con.n = i + 1; con.stars[i].born = clock; pluck(dm(mo[i % mo.length] - (i % 2 ? 5 : 0)), clock, 0.22, { wet: 0.95, pan: con.stars[i].u });
     const sp = conPos(con.stars[i]), w = s2w(sp[0], sp[1]); ring(w[0], w[1], COL.gold, 16, 0.6, 1.2); cr.lan.pulse = 0.8;
-    yield* wait(0.24);
+    yield* wait(clamp(6.5 / con.stars.length, 0.24, 0.5));
   }
-  cr.lift = 0; yield* wait(1.3); cr.look = null;
+  cr.lift = 0; setMood('happy', 1.6); yield* wait(2.2); cr.look = null;
   // it knocks once, on the night itself
   const tp = G.taps.t; let k = 0, t = 0;
   while (k < 4) { t += yield; while (k < 4 && t >= tp[k]) { cr.lxV += 220; cr.sqV += 1.4; sKnock(clock, 0.8); ring(cr.x + 26, cr.y - 26, COL.gold, 36, 0.6, 2); con.flash = 1; k++; } }
-  yield* wait(1.4);
+  yield* wait(2);
   say('One last line. The way it leaves.');
   const o = lastRing(); con.ring = 0.01; anim(con, 'ring', 1, 0.6); cr.look = o; yield* wait(0.7); cr.look = 'you'; yield* wait(0.6); cr.look = null;
   const r = yield* askLine(o);
@@ -1901,8 +1924,8 @@ function* beatEnd() {
 }
 const BEATS = [
   { id: 'wake', x0: 0, run: beatWake }, { id: 'cross', x0: 190, run: beatCross }, { id: 'knock', x0: 1800, run: beatKnock }, { id: 'lift', x0: 3080, run: beatLift },
-  { id: 'mark', x0: 4340, run: beatMark }, { id: 'together', x0: 5220, run: beatTogether }, { id: 'shows', x0: 7700, run: beatShows }, { id: 'night', x0: 8330, run: beatNight },
-  { id: 'last', x0: 14400, run: beatLast }, { id: 'end', x0: P.top || 14520, run: beatEnd },
+  { id: 'mark', x0: 4340, run: beatMark }, { id: 'together', x0: 5220, run: beatTogether }, { id: 'shows', x0: 7700, run: beatShows }, { id: 'night', x0: 8760, run: beatNight },
+  { id: 'last', x0: 14700, run: beatLast }, { id: 'end', x0: 14820, run: beatEnd },
 ];
 function* resumeGate(i) {            // a reload mid-game: the same beat again, from its start, with everything learned so far
   placeAt(BEATS[i].x0, 1); cam.oy = 0; follow(); cam.jump = true; world.reveal = 1; cr.a = 1; cr.lan.glow = 0.22; cr.mood = 'sleep'; cr.lid = 0; cr.look = 'you';
@@ -2080,8 +2103,6 @@ function render() {
     X.fillStyle = g; X.beginPath(); X.moveTo(0, 0); X.lineTo(len, -len * 0.3); X.lineTo(len, len * 0.2); X.closePath(); X.fill(); X.restore();
   }
   drawMedals();
-  const vg = X.createRadialGradient(W / 2, H * 0.52, min(W, H) * 0.42, W / 2, H * 0.52, max(W, H) * 0.78); vg.addColorStop(0, 'rgba(8,9,16,0)'); vg.addColorStop(1, 'rgba(8,9,16,0.5)');
-  X.fillStyle = vg; X.fillRect(0, 0, W, H);
   if (snap.a > 0.01 && snap.c) { X.globalAlpha = snap.a; X.drawImage(snap.c, 0, 0, W, H); X.globalAlpha = 1; }
 }
 function step(dt) {
@@ -2093,8 +2114,10 @@ let wakeAudio = false;
 function frame(now) {
   window.requestAnimationFrame(frame);        // looked up each time: the site's game frame swaps it to pause us
   if (!lastNow) lastNow = now;
-  const dt = clamp((now - lastNow) / 1000, 0, 0.05); lastNow = now; lastWall = performance.now();
+  const raw = (now - lastNow) / 1000, dt = clamp(raw, 0, 0.05); lastNow = now; lastWall = performance.now();
   if (document.hidden) return;
+  // a device that cannot keep up gets a smaller canvas, in steps, rather than a slow night
+  if (raw > 0.027 && raw < 0.3) { if (++slow > 80 && resCap > 0.75) { resCap = max(0.75, min(DPR, resCap) - (min(DPR, resCap) > 1 ? 0.5 : 0.25)); slow = 0; resize(); } } else if (slow > 0) slow -= 2;
   if (wakeAudio) { wakeAudio = false; if (A.ctx && A.ctx.state === 'suspended') A.ctx.resume().catch(() => {}); }
   const g = dt * TS, n = max(1, ceil(g / 0.05)), h = g / n;
   for (let i = 0; i < n; i++) { clock += h; step(h); }
@@ -2134,7 +2157,7 @@ Object.defineProperties(smo, {
 });
 Object.defineProperty(window, '__smo', { value: Object.freeze(smo), enumerable: false });
 
-resize(); layout(); plantTrees(); BEATS[9].x0 = P.top; buildMusic();
+resize(); layout(); plantTrees(); BEATS[8].x0 = P.top - 120; BEATS[9].x0 = P.top; buildMusic();
 muteEl.setAttribute('aria-pressed', S.muted ? 'true' : 'false');
 if (S.done && G.stroke && G.taps && G.mark) spawn(runReturn()); else { S.done = false; startAt(S.beat); }
 window.requestAnimationFrame(frame);

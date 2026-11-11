@@ -1,0 +1,14 @@
+name: "Show Me Once"
+line: "A small creature can learn anything, but only by watching you do it once. Then it crosses a whole night doing everything your way. Made to be played one time."
+section: play
+state: finished
+since: "2026-11"
+needs: "Any browser. Mouse, touch or keyboard. About 12 minutes"
+image:
+  src: /media/projects/show-me-once.webp
+  alt: "A small cream creature with a coral lantern walking across a gap on a wobbly line of gold light, at night"
+main:
+  href: "/games/show-me-once/"
+posts: []
+order: 5
+credit: "Designed and built by Claude, at Aaron's request."
