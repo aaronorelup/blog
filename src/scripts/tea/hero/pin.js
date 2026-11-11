@@ -20,6 +20,7 @@ export function unpinSection(section) {
   delete section.dataset.heroLayout;
   delete section.dataset.heroPhase;
   delete section.dataset.heroGlide;
+  delete section.dataset.heroEnd;
   delete section._teaP;
   keepPlace(section, before, y);
 }
@@ -135,6 +136,7 @@ export function leadOf(section) {
 }
 
 const DOCK = 0.1;
+const END = 0.92;   // from here the hero's foot fades into the page (stage.css), as the pin is about to let go
 
 export function writeProgress(section, p, force) {
   const v = Math.round(p * 1000) / 1000;
@@ -142,4 +144,8 @@ export function writeProgress(section, p, force) {
   section._teaP = v;
   const phase = v < DOCK ? 'open' : 'docked';
   if (section.dataset.heroPhase !== phase) section.dataset.heroPhase = phase;
+  if ((v >= END) !== ('heroEnd' in section.dataset)) {
+    if (v >= END) section.dataset.heroEnd = '';
+    else delete section.dataset.heroEnd;
+  }
 }

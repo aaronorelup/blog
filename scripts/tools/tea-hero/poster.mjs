@@ -28,7 +28,7 @@ for (const mode of ['night', 'day']) {
     await page.goto(URL_, { waitUntil: 'networkidle' });
     await page.waitForFunction(() => window.__teaHero && document.querySelector('[data-tea-stage][data-ready]'),
       null, { timeout: 90000 });
-    await page.addStyleTag({ content: '.tea-hero-box,.mode-toggle,.tea-stage-shade{visibility:hidden!important}astro-dev-toolbar{display:none!important}' });
+    await page.addStyleTag({ content: '.tea-hero-box,.mode-toggle,.tea-stage-shade,.tea-hero-stage::after{visibility:hidden!important}astro-dev-toolbar{display:none!important}' });
     await page.evaluate(() => {
       scrollTo({ top: 0, behavior: 'instant' });
       const h = window.__teaHero;

@@ -4,9 +4,14 @@
    moves; "flow" (portrait, or the box doesn't fit) pins only the stage and the box scrolls away with the page. Both
    start with the box where the static layout has it. Read by tea-core: data-hero-layout, data-hero-phase. */
 
+/* One screen at the top of the hero on every path, as the pinned stage is and as the posters were drawn: so the poster
+   is cropped the same before and after the pin (where the box doesn't fit one screen the hero is taller than the stage
+   and its foot is the page). */
 .tea-hero-stage {
   position: absolute;
-  inset: 0;
+  inset: 0 0 auto;
+  height: 100vh;
+  height: 100svh;
   z-index: 0;
   overflow: hidden;
   background: #101220;
@@ -14,6 +19,18 @@
 }
 :root[data-mode='day'] .tea-hero-stage { background: #3A2A3F; }
 .tea-hero-box { z-index: 2; }
+/* The hero's foot fades into the page: the static stage's always; with the scene only as the pin lets go
+   (data-hero-end, pin.js), not over the scene while it plays. Under the box. */
+.tea-hero-stage::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 22%;
+  z-index: 1;
+  background: linear-gradient(180deg, transparent, var(--pc-page));
+  transition: opacity 700ms ease;
+}
+.tea-hero[data-3d='on']:not([data-hero-end]) .tea-hero-stage::after { opacity: 0; }
 
 /* The first picture on every path: the scene's opening frame, one image for the mode and the screen's shape. */
 .tea-stage-poster {

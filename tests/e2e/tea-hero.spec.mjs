@@ -391,3 +391,28 @@ test('tea-hero-18 a reload inside the scene comes back to the same place in it',
   expect(await raw()).toBeLessThan(0.01);
 });
 
+test('tea-hero-19 the stage is one screen on every path, and the hero fades into the page at its foot', async ({ page, isMobile }) => {
+  // the static stage as tall as the pinned one, so the poster is cropped the same before and after the pin, also where
+  // the title box makes the hero taller than one screen (a short wide window; on a phone the box sits low)
+  if (!isMobile) await page.setViewportSize({ width: 1440, height: 700 });
+  const stageH = () => page.locator('[data-tea-stage]').evaluate((el) => Math.round(el.getBoundingClientRect().height));
+  const foot = () => page.locator('[data-tea-stage]').evaluate((el) => getComputedStyle(el, '::after').opacity);
+  const screenH = () => page.evaluate(() => innerHeight);
+  await page.goto('/tea/?hero=off');
+  await settled(page);
+  expect(await hero(page).evaluate((s) => s.offsetHeight - innerHeight)).toBeGreaterThan(0);
+  expect(Math.abs(await stageH() - await screenH())).toBeLessThanOrEqual(1);
+  expect(await foot()).toBe('1');
+  await page.goto('/tea/?hero=on');
+  await settled(page);
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  await holdScene(page);
+  expect(Math.abs(await stageH() - await screenH())).toBeLessThanOrEqual(1);
+  // no fade over the scene while it plays; it comes as the pin lets go
+  await expect.poll(foot).toBe('0');
+  await hero(page).evaluate((s) => scrollTo({ top: s.offsetHeight - innerHeight, behavior: 'instant' }));
+  await page.evaluate(() => window.__teaHero.render());
+  await expect(hero(page)).toHaveAttribute('data-hero-end', '');
+  await expect.poll(foot).toBe('1');
+});
+
