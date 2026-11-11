@@ -465,6 +465,29 @@ Ask streams Aaron's two answers (`fixtures/answers.mjs`) on a kept session, so n
 | A card's post link opens its hover card | projects-5 (desktop) |
 | In the homepage overlay the projects view has the same cards in the same sections, and a post link opens in the reader with no document load | projects-6 |
 
+## The tea room (`tea.spec.mjs`)
+
+`/tea/`, the whole site on one chaptered page (`src/pages/tea/`, `src/components/tea/`, `src/scripts/tea/rail.js`).
+Every expectation comes from the build or the source (the ledger page, the content files' frontmatter,
+`src/data/tea.js`), so the rows hold while posts land on main; chapters are reached by their anchors, so they hold
+once the 3D hero pins the top.
+
+| Behaviour | Spec |
+|---|---|
+| The page loads with every chapter of `CHAPTERS`, in order, each with its word, lede and numeral, and the hero's contents and the rail list them all with the same numerals | tea-1 |
+| Its post links are exactly the ledger's listed posts; each sits once under its topic with its AO id; the topic pills, group counts, the counter line ("N posts · N projects · N courses") and "Open the ledger" carry the real counts; Start here is `START_HERE` in order; a notes link only for a listed post's own notes, on every index row whose post has them | tea-2 |
+| Projects (each section's cards, in order), courses, the newest Now snapshot and About show what `/projects/`, `/courses/`, `/now/` and `/about/` show | tea-3 |
+| Every internal link and picture resolves: page anchors are ids on the page, every other address answers 200, an anchor on another page is an id there | tea-4 |
+| No draft or unlisted post anywhere: no slug in the HTML, no title, no AO id of its own | tea-5 |
+| Canonical, robots and the sitemap follow the shipped `TEA_SEO` through `teaSeo()` (`'pending'`: self canonical, no robots tag, not in the sitemap); never a feed item, no `data-pagefind-body` | tea-6 |
+| The panel footer's "Tea room" link and the homepage gate's button reach `/tea/`; the gate's `data-no-fly` leaves at once (the scene doesn't hold the click to fly) | tea-7 |
+| The hero, the rail and the footer lead back to `/`; the footer carries every `NAV` link | tea-8 |
+| The rail marks the chapter being read (`aria-current`), none over the hero; a rail link or strip pill takes the reader to its chapter; a chapter reached by its anchor shows its opener (the one-time fade has run) | tea-9 |
+| With JavaScript off every chapter shows, nothing waits to fade in, every link shows on a wide window, and on a phone every address is on a link that shows | tea-10 |
+| Day or night chosen on a panel page is what `/tea/` opens in, and the reverse (the shared `scene-mode`) | tea-11 |
+| The first Tab is the skip link, in view; it takes the keyboard past the hero and the rail into the first chapter; no positive tabindex | tea-12 |
+| No console error, no sideways scroll at 1440 and 390 wide by day and by night (at the top and at every chapter), every picture loads | tea-13 |
+
 ## Read-aloud (`read-aloud.spec.mjs`)
 
 Recordings are fixtures the spec makes from the build's `/read/<slug>.json` (silent audio in byte ranges, a word
