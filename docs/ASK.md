@@ -114,7 +114,7 @@ first use and turns em dashes into commas. The streaming citer holds back only w
 | extras a question (flag `ask_extra_tokens`) | 40,000 est. (focus outside the pack always fits; G3) | none (whole) | |
 | planner | 1 call, 300 tokens out, 8 s, JSON, temperature 0 | | |
 | answer | 1 call, 600 tokens out, temperature 0.2, first token 30 s, total 60 s | | |
-| embeddings | 2 Workers AI calls a question (1 resting), counted in `ask_search_daily` (2,000: 2 for each of `ask_daily`'s 1,000 questions), apart from `/api/search`'s `search_daily` | | |
+| embeddings | 2 Workers AI calls a question, counted in `ask_search_daily` (2,000: 2 for each of `ask_daily`'s 1,000 questions), apart from `/api/search`'s `search_daily`; 1 a resting answer, counted in `search_daily` | | |
 | Worker CPU a question | p99 <= 50 ms in production (auditor) | | 4-12 ms in node, the manifest's parse 5.7 ms once an isolate |
 
 The build fails on the caps' sums, never on content: `WHOLE_CAP` + rules + 10k of catalog + `LIVE_CAP` + 2k <=
@@ -282,8 +282,8 @@ score of 8 or more, must-haves 0.8 or more, their gold post cited and no attribu
 **G4 cost, cache, ledger** (local D1): from the 2nd question 99.9% of the prompt is a cache hit; a warm question
 $0.0024 at peak at most; `usage_day` `ask_usd` equals the settled costs exactly; a cap under one reservation rests
 the first question with no DeepSeek call and gives its count back; a cap of two reservations lets exactly 2 of 6
-parallel questions from 6 sessions through; Ask's embedding count (`usage_day` `ask_search` since 2026-11-11, `search`
-when this was measured) rises by 2 a question and 1 a resting one.
+parallel questions from 6 sessions through; the embedding count rises by 2 a question (`usage_day` `ask_search` since
+2026-11-11, `search` when this was measured) and 1 a resting one (`search`, then and now).
 
 **G5 latency** (wrangler dev on the box, remote AI and Vectorize): first event p90 41 ms; plan p90 2.0 s; first
 words p50 4.4 s; the answer p50 5.5 s, p90 6.2 s; cold 8.9 s.
