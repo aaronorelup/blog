@@ -39,7 +39,7 @@
   #tagText { margin: 0; }
   #end { position: absolute; left: 22px; right: 22px; top: 566px; text-align: center; opacity: 0; visibility: hidden; }
   #end p { margin: 0 0 9px; font-size: 14.5px; line-height: 1.35; color: var(--body); }
-  .lnk { font: inherit; font-size: 14px; color: var(--gold); background: none; border: 0; padding: 12px 8px; margin: -12px 2px; cursor: pointer;
+  .lnk { font: inherit; font-size: 14px; color: var(--gold); background: none; border: 0; padding: 19px 10px; margin: -19px 2px; cursor: pointer;
     text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; border-radius: 6px; display: inline-block; }
   .lnk:hover { color: var(--cream); }
   .lnk.small { font-size: 12.5px; color: var(--soft); }
@@ -49,12 +49,12 @@
   #kdate { position: absolute; left: 0; right: 0; top: 364px; margin: 0; text-align: center; font-size: 13.5px; letter-spacing: .05em; color: var(--body);
     text-shadow: 0 0 8px rgba(16, 18, 32, .9); }
   #kfoot { position: absolute; left: 10px; right: 10px; top: 606px; margin: 0; text-align: center; font-size: 12.5px; color: var(--soft); }
-  #kcredit { position: absolute; left: 22px; right: 22px; top: 548px; margin: 0; text-align: center; font-size: 12.5px; color: var(--soft); }
+  #kcredit { position: absolute; left: 22px; right: 22px; top: 578px; margin: 0; text-align: center; font-size: 12.5px; color: var(--soft); }
   #confirm { position: absolute; left: 30px; right: 30px; top: 392px; padding: 18px 18px 16px; background: var(--tile); border: 1px solid rgba(242, 231, 213, .22);
     border-radius: 14px; text-align: center; box-shadow: 0 24px 60px rgba(0, 0, 0, .55); pointer-events: auto; }
   #confirm[hidden] { display: none; }
   #confirm p { margin: 0 0 14px; font-size: 15.5px; line-height: 1.4; color: var(--cream); }
-  .btn { font: 600 14px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; min-height: 48px; padding: 0 16px; margin: 3px 4px; border-radius: 999px; cursor: pointer;
+  .btn { font: 600 14px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; min-height: 54px; padding: 0 18px; margin: 3px 4px; border-radius: 999px; cursor: pointer;
     color: var(--cream); background: rgba(242, 231, 213, .06); border: 1px solid rgba(242, 231, 213, .35); }
   .btn:hover { border-color: var(--gold); color: var(--gold); }
   .btn.go { border-color: var(--coral); color: #fff; background: rgba(226, 121, 92, .22); }
@@ -306,7 +306,7 @@ function pluck(midi, off, o) {
 function noiseHit(off, freq, q, gain, dur, pan, send, type) {
   if (!A.live()) return;
   const c = A.ctx, t = aTime(off);
-  const src = c.createBufferSource(); src.buffer = A.noise;
+  const src = c.createBufferSource(); src.buffer = A.noise; src.loop = true;
   const bp = c.createBiquadFilter(); bp.type = type || 'bandpass'; bp.frequency.value = freq; bp.Q.value = q;
   const g = c.createGain();
   g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + 0.003); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
@@ -521,7 +521,8 @@ function spark(x, y, n, col, spd) {
 function ring(x, y, col, r0, r1, life) { parts.push({ k: 1, x, y, t: 0, life, col, r0, r1 }); }
 function star(x, y, col) { parts.push({ k: 2, x, y, t: 0, life: 0.9, col, r: 5 }); }
 function splash(s) {
-  const x = dropX(s), y = GTR.y + strY(1, x - GTR.x);
+  /* by day the guitar is gone, and the drip lands in the cup left on the bench */
+  const keep = G.mode === 'keep', xf = guitarXf(), x = keep ? 257 : xf.x - GTR.x + dropX(s), y = keep ? 485 : xf.y + strY(1, dropX(s) - GTR.x);
   ring(x, y, C_GOLD, 2, 11, 0.4);
   if (!REDUCED) for (const d of [-1, 1]) parts.push({ k: 0, x, y, vx: d * 26, vy: -44, t: 0, life: 0.36, col: C_GOLD, r: 1.1, g: 240 });
 }
@@ -959,11 +960,13 @@ function drawHandBack(k) {
   ctx.lineWidth = 1.2; line(cx - 13.5, cy - d * 1.5, cx + 13.5, cy + d * 1.5); line(cx - 14, cy + 6 - d * 1.5, cx + 14, cy + 6 + d * 1.5);
 }
 function drawHandFront(k) {
-  const h = handAnchor(k), d = k ? -1 : 1;
-  ctx.lineCap = 'round';
+  const h = handAnchor(k), d = k ? -1 : 1, fa = clamp((548 - h.y) / 50, 0, 1);
+  if (fa <= 0) return;
+  ctx.save(); ctx.globalAlpha = fa; ctx.lineCap = 'round';
   ctx.strokeStyle = ink(0.92); ctx.lineWidth = 9.5; line(h.x + 9 * d, h.y + 13, h.x + 3 * d, h.y - 13);
   ctx.strokeStyle = rgba(C_PAGE, 1); ctx.lineWidth = 6.6; line(h.x + 9 * d, h.y + 13, h.x + 3 * d, h.y - 13);
   ctx.strokeStyle = ink(0.4); ctx.lineWidth = 1; line(h.x + 2.2 * d, h.y - 12, h.x + 5 * d, h.y - 12.6);
+  ctx.restore();
 }
 
 /* ================= threads, tuning, the moth, the rain ================= */
@@ -1079,7 +1082,7 @@ function spawnDrops() {
     const s = ((F.dropNext % LOOP) + LOOP) % LOOP;
     if (!RAIN_SET.has(s) || F.dropNext < M.from.rain && !F.rainLive) continue;
     const land = G.t + (F.dropNext - M.pos) * STEP;
-    drops.push({ x: dropX(s), t0: land - 0.72, land });
+    drops.push({ x: G.mode === 'keep' ? 257 : dropX(s), t0: land - 0.72, land });
   }
 }
 function drawDrops() {
@@ -1089,7 +1092,7 @@ function drawDrops() {
     const d = drops[i];
     if (G.t >= d.land) { drops.splice(i, 1); continue; }
     if (REDUCED || V.lid > 0.5) continue;
-    const u = clamp((G.t - d.t0) / (d.land - d.t0), 0, 1), y1 = xf.y + strY(1, d.x - GTR.x), y = lerp(YMIN - 12, y1, u * u);
+    const u = clamp((G.t - d.t0) / (d.land - d.t0), 0, 1), y1 = G.mode === 'keep' ? 485 : xf.y + strY(1, d.x - GTR.x), y = lerp(YMIN - 12, y1, u * u);
     ctx.strokeStyle = rgba([196, 208, 240], 0.3 + 0.5 * u); ctx.lineWidth = 1.2; line(d.x, y - 9 - 12 * u, d.x, y);
     ctx.fillStyle = rgba([220, 228, 250], 0.9); circ(d.x, y, 1.7); ctx.fill();
   }
@@ -1166,6 +1169,7 @@ const styleCache = new Map();
 function css(el, prop, val) { const k = el.id + prop; if (styleCache.get(k) !== val) { styleCache.set(k, val); el.style[prop] = val; } }
 function say(t) { if (cap.next !== null ? cap.next !== t : cap.text !== t) cap.next = t; }
 let hintText = '';
+const FINE = !!(window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches);
 function setHint(t) { hintText = t || ''; }
 const TAG_FRONT = 'My mother’s. Can it sing by morning?', TAG_BACK = 'It sounds like her kitchen. Thank you.';
 let tagShown = '';
@@ -1174,7 +1178,7 @@ function updWords(dt) {
   else if (cap.a < 1) cap.a = Math.min(1, cap.a + dt * 3);
   css(capEl, 'opacity', cap.a.toFixed(2));
   if (document.body.classList.contains('kb') !== G.kb) document.body.classList.toggle('kb', G.kb);
-  const hv = G.kb ? hintText : '';
+  const hv = G.kb || (P && P.keysAlways && FINE) ? hintText : '';
   if (hintEl.textContent !== hv && hv) hintEl.textContent = hv;
   hintEl.classList.toggle('on', !!hv);
   F.tagA = appr(F.tagA, W.tag || 0, 3.2, dt); F.titleA = appr(F.titleA, W.title || 0, 1.6, dt); F.endA = appr(F.endA, W.end || 0, 1.2, dt);
@@ -1595,7 +1599,7 @@ function fillClock() { for (let b = 0; b < 4; b++) if (barEmpty('clock', b)) for
 function* gate(i) {
   let go = false;
   say(i === 0 ? 'Tap the lamp.' : i === 8 ? 'Welcome back. Tap anywhere to carry on.' : 'Welcome back. Tap the lamp to carry on.');
-  yield* prompt({ kind: 'gate', keys: 'Space', hot: i === 8 ? {} : { lamp: 1 }, at: () => ({ x: LAMP.x, y: LAMP.y - 8, r: 30 }), ghost: i === 8 ? gTap(180, 330) : gTap(LAMP.x, LAMP.y - 6), act: () => { go = true; }, done: () => go });
+  yield* prompt({ kind: 'gate', keys: 'Or press Space', keysAlways: true, hot: i === 8 ? {} : { lamp: 1 }, at: () => ({ x: LAMP.x, y: LAMP.y - 8, r: 30 }), ghost: i === 8 ? gTap(180, 330) : gTap(LAMP.x, LAMP.y - 6), act: () => { go = true; }, done: () => go });
   let w = 0;
   yield () => (w++ > 40) || !A.ok || A.ctx.state === 'running';
 }
@@ -1856,7 +1860,7 @@ function enterKeep() {
     for (;;) {
       let go = false;
       W.ribbon = 0; say('Your night is on the wall. Tap the frame to hear it.');
-      yield* prompt({ kind: 'frame', keys: 'Space plays it', hot: { frame: 1 }, at: () => ({ x: 180, y: FRAME.y + FRAME.h / 2, r: 80 }), ghost: gTap(180, FRAME.y + 80), act: () => { go = true; }, done: () => go });
+      yield* prompt({ kind: 'frame', keys: 'Or press Space', keysAlways: true, hot: { frame: 1 }, at: () => ({ x: 180, y: FRAME.y + FRAME.h / 2, r: 80 }), ghost: gTap(180, FRAME.y + 80), act: () => { go = true; }, done: () => go });
       let w = 0;
       yield () => (w++ > 40) || !A.ok || A.ctx.state === 'running';
       W.ribbon = 1; say('');
@@ -2045,7 +2049,21 @@ cv.addEventListener('pointerdown', (e) => {
   G.kb = false;
   lastXY = toStage(e); onDown(lastXY.x, lastXY.y);
 });
-cv.addEventListener('pointermove', (e) => { if (e.pointerId !== ptr) return; lastXY = toStage(e); onMove(lastXY.x, lastXY.y); });
+cv.addEventListener('pointermove', (e) => {
+  if (e.pointerType === 'mouse' && ptr === null) {
+    /* a mouse gets a pointing hand over whatever is asking to be touched */
+    const p = toStage(e), k = P ? P.kind : '';
+    let over = false;
+    if (k === 'gate' || k === 'pulse' || k === 'answer' || k === 'hold' || k === 'strum' || k === 'wind' || k === 'slide') over = true;
+    else if (k === 'thread') over = dist(p.x, p.y, T.x, T.y) < 42;
+    else if (k === 'birds') over = nearLamp(p.x, p.y) || birds.some((b) => dist(p.x, p.y, b.x, wireY(b.x) - 6) < 30);
+    else if (P && P.at) { const a = P.at(); over = dist(p.x, p.y, a.x, a.y) < a.r + 8; }
+    const want = k === 'draw' || (k === 'keep' && !over) ? 'crosshair' : over ? 'pointer' : 'default';
+    if (cv.style.cursor !== want) cv.style.cursor = want;
+  }
+  if (e.pointerId !== ptr) return;
+  lastXY = toStage(e); onMove(lastXY.x, lastXY.y);
+});
 function endPtr(e) {
   audioInit();
   if (e.pointerId !== ptr) return;
@@ -2058,6 +2076,7 @@ cv.addEventListener('pointercancel', endPtr);
 cv.addEventListener('lostpointercapture', endPtr);
 cv.addEventListener('pointerleave', (e) => { if (e.pointerId === ptr && !(cv.hasPointerCapture && cv.hasPointerCapture(e.pointerId))) endPtr(e); });
 cv.addEventListener('contextmenu', (e) => e.preventDefault());
+cv.addEventListener('focus', () => { try { if (cv.matches(':focus-visible')) G.kb = true; } catch (err) { /* older browsers */ } });
 cv.addEventListener('touchstart', (e) => { if (e.cancelable) e.preventDefault(); }, { passive: false });
 cv.addEventListener('touchend', audioInit, { passive: true });
 document.addEventListener('gesturestart', (e) => e.preventDefault());
