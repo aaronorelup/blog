@@ -49,8 +49,10 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--cream);outline-offs
 
 #log{position:absolute;left:10px;right:10px;top:8px;bottom:calc(var(--os) + 2px);padding-bottom:15px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;
   -webkit-mask-image:linear-gradient(transparent 0,#000 24%);mask-image:linear-gradient(transparent 0,#000 24%);
-  transition:opacity calc(.7s/var(--ts)) ease}
+  transition:opacity calc(.7s/var(--ts)) ease,bottom calc(.6s/var(--ts)) ease}
 #log.fade{opacity:0;transition-duration:calc(4s/var(--ts))}
+#glass.hov #log{bottom:calc(var(--os)*2 + 8px)}
+#glass.hov #typing{bottom:calc(var(--os)*2 + 11px)}
 #glass.m-panes #log,#glass.m-sheet #log,#glass.m-panes #typing,#glass.m-sheet #typing{opacity:0}
 .sw{display:grid;grid-template-rows:0fr;flex:none;transition:grid-template-rows calc(.42s/var(--ts)) cubic-bezier(.2,.8,.2,1)}
 .sw.in{grid-template-rows:1fr}
@@ -113,7 +115,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--cream);outline-offs
 .pane.w::before{background:var(--coral)} .pane.g::before{background:var(--gold)}
 .pane .pw{opacity:.0;transition:opacity calc(.25s/var(--ts))}
 .pane .pw.ink{opacity:1}
-.pane .gw{display:inline-block;min-width:3.4em;border-bottom:2px dotted rgba(156,145,127,.6);transition:color calc(.3s/var(--ts))}
+.pane .gw{display:inline-block;min-width:3.4em;text-align:center;border-bottom:2px dotted rgba(156,145,127,.6);transition:color calc(.3s/var(--ts))}
 .pane.fit{color:var(--cream);border-color:rgba(240,192,106,.65);box-shadow:inset 0 0 26px rgba(240,192,106,.17)}
 .pane.fit .gw{color:var(--gold);border-bottom-color:transparent}
 .pane.nope .gw{font-style:italic}
@@ -146,7 +148,10 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--cream);outline-offs
 .blank,.oblank{display:inline-block;min-width:3.2em;text-align:center;color:rgba(156,145,127,.85);border-bottom:2px dotted rgba(156,145,127,.6);line-height:1.15;
   transition:color calc(.3s/var(--ts)),border-color calc(.3s/var(--ts))}
 .oblank{min-width:5.2em;border:1.5px dashed rgba(156,145,127,.5);border-radius:9px}
-.blank.act,.oblank.act{border-color:var(--coral);box-shadow:0 0 calc(3px + var(--p)*7px) rgba(226,121,92,.5)}
+.blank.act{border-color:var(--coral);box-shadow:0 calc(6px + var(--p)*3px) 7px -6px var(--coral)}
+.oblank.act{border-color:var(--coral);box-shadow:0 0 calc(3px + var(--p)*7px) rgba(226,121,92,.5)}
+.nw{white-space:nowrap}
+.blank.fill,.oblank.fill{display:inline}
 .blank.fill{min-width:0;color:var(--cream);border-bottom:2px solid rgba(242,231,213,.4)}
 .blank.fill.w{border-bottom-color:var(--coral)} .blank.fill.g{border-bottom-color:var(--gold)}
 .oblank.fill{min-width:0;border-color:transparent;color:var(--gold);text-align:left}
@@ -169,6 +174,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--cream);outline-offs
 /* below the sill */
 #below{position:relative;flex:none;width:min(100%,600px);height:clamp(232px,38vh,320px);display:flex;flex-direction:column;padding-top:8px}
 #hint{flex:none;margin:0;min-height:22px;padding:4px 10px 0;font:13px/1.3 var(--round);color:var(--soft);text-align:center;letter-spacing:.01em}
+#hint.name{color:var(--gold)}
 #beads{flex:none;display:flex;flex-wrap:wrap;justify-content:center;gap:5px 6px;padding:0 10px;margin:0 auto;max-width:210px}
 #beads:not(:empty){padding-top:5px;padding-bottom:3px}
 .bead{width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4ab95,var(--coral) 62%);box-shadow:0 0 6px rgba(226,121,92,.5);
@@ -563,7 +569,9 @@ function floatText(x, y, text, cls, dur) {
     e.remove();
   });
 }
-function hint(t) { hintEl.textContent = t || ''; }
+var hintBase = '';
+function hint(t) { hintBase = t || ''; hintEl.textContent = hintBase; hintEl.classList.remove('name'); }
+function namer(ids) { return function (i) { var on = i >= 0 && OBJ[ids[i]]; hintEl.textContent = on ? OBJ[ids[i]].short : hintBase; hintEl.classList.toggle('name', !!on); }; }
 
 // the ghost finger of the idle ladder
 var ghost = { target: null, hold: false, t0: 0, show: function (t, hold) { this.target = t; this.hold = hold; this.t0 = clock; }, hide: function () { this.target = null; ghostEl.style.opacity = 0; } };
@@ -710,7 +718,7 @@ function* say(text, o) {
   typing.classList.remove('on'); lit.classList.remove('busy');
   var s = addSlip(o.who || 'p', text, o);
   sPaper();
-  yield wait(.45 + (o.hold != null ? o.hold : .55 + n * .3));
+  yield wait(.45 + (o.hold != null ? o.hold : .6 + n * .32));
   return s;
 }
 function setMode(m) {
@@ -725,15 +733,20 @@ function buildLine(host, toks) {
     var rec, sp;
     if (typeof t === 'string') { sp = el('span', 'gh', t); host.appendChild(sp); rec = { t: t, el: sp }; }
     else {
-      sp = el('span', t.obj ? 'oblank' : 'blank', ' '); host.appendChild(sp); rec = { t: t, el: sp, slot: true };
-      if (t.post) { rec.post = el('span', 'gh', t.post); host.appendChild(rec.post); }
+      sp = el('span', t.obj ? 'oblank' : 'blank', '\u00a0'); rec = { t: t, el: sp, slot: true };
+      if (t.post) { var nw = el('span', 'nw'); rec.post = el('span', 'gh', t.post); nw.appendChild(sp); nw.appendChild(rec.post); host.appendChild(nw); }
+      else host.appendChild(sp);
     }
     recs.push(rec);
   });
   return recs;
 }
 var caret = el('span', 'caret off');
-function caretAfter(node) { if (node && node.parentNode === replyEl) replyEl.insertBefore(caret, node.nextSibling); else replyEl.insertBefore(caret, replyEl.firstChild); }
+function caretAfter(node) {
+  while (node && node.parentNode && node.parentNode !== replyEl) node = node.parentNode;
+  if (node && node.parentNode === replyEl) replyEl.insertBefore(caret, node.nextSibling); else replyEl.insertBefore(caret, replyEl.firstChild);
+}
+function unwrap(r) { var p = r.el.parentNode; if (p && p.classList.contains('nw')) p.classList.remove('nw'); }
 var TBASE = [2, 4, 5, 4, 6, 5, 4, 2, 4, 5, 7, 5, 4, 2, 3, 4, 5, 4, 2, 1, 2, 0, 2];
 function nextNote(tone) { var d = TBASE[S.tune.length % TBASE.length] + [0, 1, 3][tone]; S.tune.push([d, tone]); return d; }
 function* bubbles(opts, o) {
@@ -772,33 +785,33 @@ function* bubbles(opts, o) {
 }
 function fillSlot(r, i) {
   var tone = r.t.o.length === 3 ? i : 2;
-  r.el.textContent = r.t.o[i]; r.el.classList.remove('act'); r.el.classList.add('fill', ['w', 'p', 'g'][tone]);
+  r.el.textContent = r.t.o[i]; r.el.classList.remove('act'); r.el.classList.add('fill', ['w', 'p', 'g'][tone]); unwrap(r);
   if (r.post) r.post.classList.add('ink');
   ping(r.el, nextNote(tone), tone);
 }
 function* slotPick(r, o) {
   r.el.classList.add('act');
-  var i = yield* bubbles(r.t.o, { target: r.el, def: o && o.def, prev: function (k) { r.el.textContent = k >= 0 ? r.t.o[k] : ' '; } });
+  var i = yield* bubbles(r.t.o, { target: r.el, def: o && o.def, prev: function (k) { r.el.textContent = k >= 0 ? r.t.o[k] : '\u00a0'; } });
   fillSlot(r, i);
   return i;
 }
 // one reply of yours: fixed words type themselves, each slot waits for a word
 function* compose(toks) {
   replyEl.textContent = '';
-  var recs = buildLine(replyEl, toks), out = [];
+  var recs = buildLine(replyEl, toks), out = [], picks = [];
   caret.classList.remove('off'); caretAfter(null);
   yield wait(.3);
   for (var j = 0; j < recs.length; j++) {
     var r = recs[j];
     if (!r.slot) { yield wait(.14); r.el.classList.add('ink'); caretAfter(r.el); sTick(); out.push(r.t); }
-    else { var i = yield* slotPick(r); caretAfter(r.post || r.el); out.push(r.t.o[i] + (r.t.post || '')); yield wait(.12); }
+    else { var i = yield* slotPick(r); picks.push(i); caretAfter(r.post || r.el); out.push(r.t.o[i] + (r.t.post || '')); yield wait(.12); }
   }
   yield wait(.55);
   var text = out.join(' ');
   addSlip('y', text); sNoise(1400, .04, .2);
   replyEl.textContent = ''; replyEl.appendChild(caret);
   yield wait(.7);
-  return text;
+  return { text: text, picks: picks };
 }
 // a reply with no choice in it
 function* typeReply(text, per) {
@@ -815,7 +828,7 @@ function* typeReply(text, per) {
 
 // ---------- the script: one linear table. Slots are [warm, plain, playful].
 var OBJ = {
-  bike: { said: 'okay. he rode a [blue bicycle] to work. thirty years.', short: 'the blue bicycle', ph: 'the blue bicycle', deg: 0 },
+  bike: { said: 'he rode a [blue bicycle] to work. thirty years.', short: 'the blue bicycle', ph: 'the blue bicycle', deg: 0 },
   radio: { said: 'he fixes old radios. [the kitchen radio] never stops.', short: 'the kitchen radio', ph: 'the kitchen radio', deg: 2 },
   solder: { said: 'his bench [smells of solder]. I love it.', short: 'the solder smell', ph: 'the smell of solder', deg: 3 },
   measure: { said: 'he says [measure twice]. even about toast.', short: 'measure twice', ph: 'every “measure twice”', deg: 4 },
@@ -840,6 +853,10 @@ var Y1 = [{ o: ['Gladly', 'Of course', 'Ooh, yes'], post: '.' }, 'Eighty', 'is',
 var Y2 = ['Start', { o: ['gently', 'small', 'sideways'], post: '.' }, 'Tell', 'me', 'one', { o: ['little', 'true', 'odd'] }, 'thing', 'about', 'him.'];
 var Y3 = ['Then', { o: ['bring', 'give me', 'toss me'] }, { o: ['all of it', 'everything', 'the lot'], post: '.' }, 'I’ll', { o: ['hold', 'keep', 'juggle'] }, 'what', 'I', 'can.'];
 var Y4 = [{ o: ['Ramble on', 'Keep going', 'More, please'], post: '.' }, 'I', { o: ['like him already', 'am listening', 'want all of it'], post: '.' }];
+var Y0 = [{ o: ['Late is fine', 'I’m here', 'Late is best'], post: '.' }, 'What', { o: ['is on your mind', 'do you need', 'is keeping you up'], post: '?' }];
+var Y7 = [{ o: ['Then', 'Good. Then', 'Uh oh. Then'] }, 'let’s', 'make', 'it', { o: ['worth reading', 'sound like you', 'worth the encore'], post: '.' }];
+var Y5 = [{ o: ['Mostly is plenty', 'That is enough to start', 'Mostly is the fun part'], post: '.' }];
+var Y6 = [{ o: ['I have all three', 'Three so far', 'Three shiny things'], post: '.' }, 'Go', 'on.'];
 var PANES = [
   { tone: 'w', pre: 'Dear Grandpa, eighty looks', post: 'on you.', words: ['fine', 'the', 'right', 'good', 'him'], fit: [1, 0, 1, 1, 0], deg: 0 },
   { tone: 'p', pre: 'For the man who', post: 'everything.', words: ['blue', 'mends', 'of', 'fixes', 'keeps'], fit: [0, 1, 0, 1, 1], deg: 2 },
@@ -858,7 +875,7 @@ var LBL = { tea: 'his cold tea', whistle: 'his whistling' };
 var GOLD = '#F0C06A', CORAL = '#E2795C';
 
 // ---------- the sill and what stands on it
-var SLOT = [14, 32, 50, 68, 86], objs = {}, OS = 46, wobT = 0, wobA = 0;
+var SLOT = [14, 32, 50, 68, 86], objs = {}, OS = 46, wobT = 0, wobA = 0, hovOn = false;
 function icon(id) { return '<svg viewBox="0 0 48 48" aria-hidden="true">' + (ICON[id] || ICON.card) + '</svg>'; }
 function layout() { OS = clamp(Math.round(win.clientWidth * .15), 40, 58); root.style.setProperty('--os', OS + 'px'); }
 function addObj(id, slot) {
@@ -869,13 +886,15 @@ function addObj(id, slot) {
 }
 updaters.add(function (h) {
   wobA += (wobT - wobA) * Math.min(1, h * 5);
-  var i = 0;
+  var i = 0, hov = false;
   for (var id in objs) {
     var o = objs[id], r = o.r, y = o.y; i++;
+    if (o.slot < 0) hov = true;
     if (!RM) { if (wobA > .004) r += Math.sin(clock * 7.3 + i * 1.9) * 5.5 * wobA; if (o.slot < 0) y += Math.sin(clock * 2.1) * 3.5; }
     var tf = 'translate(' + o.x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) rotate(' + r.toFixed(1) + 'deg) scale(' + o.s.toFixed(3) + ')';
     if (tf !== o.tf) { o.tf = tf; o.el.style.transform = tf; }
   }
+  if (hov !== hovOn) { hovOn = hov; glass.classList.toggle('hov', hov); }
   if (!niche.hidden) tagEl.style.transform = 'rotate(' + (RM ? 3 : 3 + Math.sin(clock * 1.7) * 5).toFixed(1) + 'deg)';
 });
 function slotPt(slot) { var r = objsEl.getBoundingClientRect(); return { x: r.left + r.width * (slot < 0 ? 50 : SLOT[slot]) / 100, y: r.top - OS / 2 - (slot < 0 ? OS + 12 : 0) }; }
@@ -928,7 +947,7 @@ function* dropOne(hoverId, def) {
   var ids = S.sill.filter(Boolean).concat([hoverId]);
   var els = ids.map(function (id) { return objs[id].el; });
   wobT = 1; sNoise(240, .05, .5);
-  var i = yield choose(els, { def: def < 0 ? ids.length - 1 : def });
+  var i = yield choose(els, { def: def < 0 ? ids.length - 1 : def, prev: namer(ids) });
   var id = ids[i], slot = objs[id].slot;
   wobT = 0;
   blurLine(id); S.lost.push(id);
@@ -1003,28 +1022,34 @@ function* beatWake() {
   yield* dotWake(5, false);
   yield wait(.4);
   yield* say('hi. are you there?', { hold: .8 });
-  S.hello = yield* compose(HELLO);
+  S.hello = (yield* compose(HELLO)).text;
   win.classList.remove('asleep'); lit.classList.add('on'); setDrone(.8, 4);
   yield wait(2.4);
 }
 function* beatWords() {
   yield* say('oh good. sorry, it’s late.');
+  hint('Pick each next word.');
+  yield* compose(Y0);
+  hint('');
   yield* say('my grandfather turns eighty on saturday.');
   yield* say('I can’t write his card. will you help?');
-  hint('Pick each next word.');
-  yield* compose(Y1);
-  hint('');
-  yield* say('thank you. where do I even start?');
+  var a = yield* compose(Y1);
+  yield* say(['we. I like that.', 'okay. yes. let’s.', 'fun. at this hour. okay.'][a.picks[2]]);
+  yield* say('so where do I even start?');
   yield* compose(Y2);
   yield* say('one? there’s too much of him.');
-  yield* compose(Y3);
+  var c = yield* compose(Y3);
+  yield* say(['hold tight then.', 'keep up then.', 'ha. don’t drop any.'][c.picks[2]]);
 }
 function* beatSill() {
   yield wait(.3);
   for (var i = 0; i < 5; i++) { litDimple(i); pluck(i, 1, .3); yield wait(.17); }
   yield wait(.9);
   var first = ['bike', 'radio', 'solder', 'measure', 'dog'];
-  for (var j = 0; j < first.length; j++) yield* sayObj(first[j]);
+  for (var j = 0; j < first.length; j++) {
+    yield* sayObj(first[j]);
+    if (j === 2) { yield* say('are you getting all this?'); yield* compose(Y6); }
+  }
   // five things, five dimples: a small contented run
   for (var q = 0; q < 5; q++) {
     (function (rec, q) {
@@ -1040,12 +1065,13 @@ function* beatSill() {
   yield* passBy('whistle');
   yield* passBy('tea');
   yield* say('sorry. I’m rambling.');
-  yield* compose(Y4);
+  var d = yield* compose(Y4);
+  yield* say(['everyone does.', 'thank you for that.', 'there’s so much more.'][d.picks[1]]);
 }
 // a question with no answer on the sill: three bubbles rise with nothing in them
 function* blankBubbles() {
   tray.textContent = ''; tray.classList.remove('stack');
-  var els = [0, 1, 2].map(function () { var b = el('div', 'bub none', ' '); b.setAttribute('aria-hidden', 'true'); tray.appendChild(b); return b; });
+  var els = [0, 1, 2].map(function () { var b = el('div', 'bub none', '\u00a0'); b.setAttribute('aria-hidden', 'true'); tray.appendChild(b); return b; });
   yield tween(.9, function (k) { els.forEach(function (b, i) { b.style.opacity = (k * .85).toFixed(2); b.style.transform = 'translate(0,' + (RM ? 0 : (34 + i * 8) * (1 - k)).toFixed(1) + 'px)'; }); });
   sNoise(700, .03, .3);
   yield wait(1.5);
@@ -1062,7 +1088,7 @@ function* lanternGo() {
   lant.setAttribute('aria-label', 'The lantern. Hold to lower it, let go to bring one thing back.');
   lant.innerHTML = '<svg viewBox="0 0 38 46" aria-hidden="true"><path d="M19 0v6M13 6h12M14 6l-4 6v20l4 6h10l4-6V12l-4-6M10 12h18M10 32h18"/><circle cx="19" cy="22" r="5" fill="currentColor" stroke="none"/></svg>';
   deep.appendChild(light); deep.appendChild(cord); deep.appendChild(lant);
-  var ids = ['tea', 'whistle'].concat(S.dark.slice(0, 1)), DEPTH = [.3, .6, .9], XO = [-.25, .23, -.08];
+  var ids = ['tea', 'whistle'].concat(S.dark.slice(0, 1)), DEPTH = [.3, .6, .9], XO = [-.25, .23, -.22];
   var Wd = below.clientWidth, Hb = below.clientHeight, pan = RM ? 0 : clamp(Hb * .5, 70, 150), y0 = 14, y1 = Hb + pan - 62, R = .19;
   var LS = Math.max(240, Wd * .95);
   light.style.width = light.style.height = LS + 'px';
@@ -1097,8 +1123,8 @@ function* lanternGo() {
       if (idle >= aAt) { state = 'down'; auto = true; autoHold = 0; lant.classList.remove('can'); ghost.hide(); ghosted = false; }
     }
     if (state === 'down') {
-      if (auto) { if (d < sc[0].d) d = Math.min(sc[0].d, d + h * .16); else { autoHold += h; if (autoHold > .9) { autoStreak++; auto = false; release(); } } }
-      else d = Math.min(1, d + h * .21);
+      if (auto) { if (d < sc[0].d) d = Math.min(sc[0].d, d + h * .13); else { autoHold += h; if (autoHold > .9) { autoStreak++; auto = false; release(); } } }
+      else d = Math.min(1, d + h * .17);
       humSet(true, d);
     } else if (state === 'up') {
       d = Math.max(0, d - h * (got ? .42 : .7));
@@ -1152,6 +1178,7 @@ function* beatLantern() {
   hint('');
   yield wait(.8);
   yield* say('okay. I think that’s him. mostly.');
+  yield* compose(Y5);
 }
 function* beatThree() {
   yield* say('can you start it for me?');
@@ -1161,9 +1188,9 @@ function* beatThree() {
   var ps = PANES.map(function (p) {
     var b = el('button', 'pane ' + p.tone), sp = el('span'); b.type = 'button'; b.tabIndex = -1; b.setAttribute('aria-disabled', 'true');
     p.pre.split(' ').forEach(function (w) { sp.appendChild(el('span', 'pw', w)); sp.appendChild(D.createTextNode(' ')); });
-    var gw = el('span', 'gw pw', ' '); sp.appendChild(gw);
+    var gw = el('span', 'gw pw', '\u00a0'); sp.appendChild(gw);
     if (p.post) p.post.split(' ').forEach(function (w) { sp.appendChild(D.createTextNode(' ')); sp.appendChild(el('span', 'pw', w)); });
-    else sp.appendChild(el('span', 'pw', '.'));
+    else { var nw = el('span', 'nw'); sp.replaceChild(nw, gw); nw.appendChild(gw); nw.appendChild(el('span', 'pw', '.')); }
     b.appendChild(sp); panesEl.appendChild(b);
     return { el: b, gw: gw, words: Array.prototype.slice.call(sp.querySelectorAll('.pw')) };
   });
@@ -1226,6 +1253,8 @@ function* beatThree() {
   panesEl.hidden = true; panesEl.textContent = ''; setMode('log'); setDrone(.8, 3);
   yield wait(.5);
   yield* say('oh. that one. yes.');
+  yield* say('he’ll read it out loud. twice.');
+  yield* compose(Y7);
 }
 function* beatNote() {
   yield* say('now the rest. put him in it.');
@@ -1250,14 +1279,14 @@ function* beatNote() {
         if (r.t.last) { yield wait(.7); id = avail[0]; }
         else {
           hint('Tap something you kept.');
-          id = avail[yield choose(avail.map(function (x) { return objs[x].el; }), { def: 0 })];
+          id = avail[yield choose(avail.map(function (x) { return objs[x].el; }), { def: 0, prev: namer(avail) })];
         }
         used.push(id);
         var rec = objs[id], y0 = rec.y;
         spawn(function* () { yield tween(.4, function (_, k) { rec.y = y0 - (RM ? 0 : 9 * Math.sin(k * Math.PI)); }, ease.lin); rec.y = y0; });
         yield* sparkFly(center(rec.el), center(r.el), .45);
         var ph = r.t.cap ? cap(OBJ[id].ph) : OBJ[id].ph;
-        r.el.textContent = ph; r.el.classList.remove('act'); r.el.classList.add('fill'); if (r.post) r.post.classList.add('ink');
+        r.el.textContent = ph; r.el.classList.remove('act'); r.el.classList.add('fill'); unwrap(r); if (r.post) r.post.classList.add('ink');
         S.tune.push([OBJ[id].deg, 1]); pluck(OBJ[id].deg, 1); var c = center(r.el); ripple(c.x, c.y, GOLD, 64);
         spendBead(); out.push(ph + (r.t.post || ''));
         hint('');
@@ -1295,7 +1324,8 @@ function* beadsIn(n) {
 function* beatBeads() {
   if (beadEls.length !== 24) beadsBuild(24, 5, true);
   yield* say('it’s so late. I should sleep.');
-  yield wait(.5);
+  yield* say('this was nice. I didn’t expect that.');
+  yield wait(.7);
   yield* say('will you remember this?', { hold: 1.8 });
   // five beads left. only honest answers rise.
   var i = yield* bubbles(LAST, { stack: true });
@@ -1322,7 +1352,7 @@ function* beatBeads() {
   yield wait(1.5);
   hint('One thing can slip through.');
   var ids = S.sill.filter(Boolean);
-  var id = ids[yield choose(ids.map(function (x) { return objs[x].el; }), { def: 0 })];
+  var id = ids[yield choose(ids.map(function (x) { return objs[x].el; }), { def: 0, prev: namer(ids) })];
   hint('');
   S.carry = id;
   var rec = objs[id], a = center(rec.el), b = center(niche), x0 = rec.x, y0 = rec.y;
