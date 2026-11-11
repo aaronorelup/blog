@@ -436,6 +436,22 @@ def part1(R, tmp, quick=False):
           and f"{len(t)} rows with an empty confidence cell: no confidence" in r["processing"]
           and any(p.startswith("1 rows with a readable time were left out") and "'8.5000,n/a,0.9'" in p for p in r["processing"]),
           lambda r: f"oa={m(r)['overall_accuracy']} n_est_rows={r['counts']['n_est_rows']} processing={r['processing'][:2]}")
+    # the same cells in a tab-separated file, where the empty cells are the last of their row: '0.0000\t\t', or '0.0000\t'
+    # in a two-column file (what pandas writes for NaN). 0.12.0 stripped those tabs, so the rows looked short and were
+    # left out (and mir_eval then marked the gaps voiced). The two-column file has no header and starts with an unvoiced
+    # row, so the tab-separated layout has to be seen in a row that ends in its only tab.
+    k0 = next(k for k, b in enumerate(fr) if b <= 0)
+    f2 = w_lines(j("f0empty2col.tsv"), [f"{t[k]:.4f}\t{fr[k]:.4f}" if fr[k] > 0 else f"{t[k]:.4f}\t" for k in list(range(k0, len(t))) + list(range(k0))])
+    f3 = w_lines(j("f0empty3col.tsv"), ["time_s\tf0_hz\tconfidence"] + [f"{a:.4f}\t{b:.4f}\t0.9" if b > 0 else f"{a:.4f}\t\t" for a, b in zip(t, fr)])
+    r2 = {}
+    R.run("f0.empty_cells_at_row_end_tab_separated", ["f0", "--truth", tp, "--est", f3],
+          lambda r: r2.update(r=G.run_args(["f0", "--truth", tp, "--est", f2])) is None
+          and m(r) == m(G.run_args(["f0", "--truth", tp, "--est", f0z])) and m(r2["r"]) == m(r) and approx(m(r)["overall_accuracy"], 1)
+          and r["counts"]["n_est_rows"] == len(t) and r2["r"]["counts"]["n_est_rows"] == len(t)
+          and f"{n_unv} rows with an empty frequency cell: frequency set to 0 = unvoiced" in r["processing"],
+          lambda r: f"3 columns: {json.dumps(m(r))} n_est_rows={r['counts']['n_est_rows']}; 2 columns, no header, first row "
+                    f"'{t[k0]:.4f}\\t': oa={m(r2['r'])['overall_accuracy']} n_est_rows={r2['r']['counts']['n_est_rows']} "
+                    f"(both must equal the file with 0 written: {len(t)} rows, oa=1.0)")
 
     # ---------------- beats
     B = np.array(T["beats"])

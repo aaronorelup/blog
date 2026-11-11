@@ -311,3 +311,26 @@ what it changed.
 
 MTANet (`Annmixiu/MTANet`) is not listed: its repository publishes no trained weights (no checkpoint file, and its
 README links only training datasets), so it cannot be run without training it first.
+
+## 14. MT3-family models through two PyPI packages: `mt3-infer` and `yourmt3` (added in gap round 2)
+
+Not run here: both installed from PyPI on the box, but the box's permission system refused running them ("[Code from
+External]"; `trials.md`, "Gap round 2"). Both are third-party repackagings, not the model authors' releases:
+`mt3-infer` (MIT, by "MT3-Infer Contributors", https://github.com/openmirlab/mt3-infer) and `yourmt3` (no license
+stated anywhere in the package, weights in the Hugging Face repository `shethjenil/Audio2Midi_Models`). Use a
+throwaway Python 3.11 environment for each. The clips: `S2n.wav`, `R1c.wav` and `S4guitar.wav` (=
+`S4/stems/guitar.wav`).
+
+1. mt3-infer 0.2.0: `pip install mt3-infer==0.2.0`. Its default model (`mt3_pytorch`) downloads by cloning
+   https://github.com/kunato/mt3-pytorch and running `git lfs pull` (its `download.py`), so git and Git LFS must be
+   installed; the checkpoint is about 176 MB. Then, for each clip, `mt3-infer transcribe S2n.wav -o
+   S2n.mt3infer.mid --device cpu` (the CLI's options: `-m/--model`, `-d/--device auto|cuda|cpu`, `--no-download`).
+   Optional second pass with `-m mr_mt3` (its registry gives that model the same checkpoint digest).
+2. yourmt3 0.1.4: `pip install yourmt3==0.1.4 huggingface_hub`, then a short script:
+   `from huggingface_hub import hf_hub_download`, `from yourmt3 import YMT3`,
+   `m = YMT3(hf_hub_download("shethjenil/Audio2Midi_Models", "YPTF+Single.pt"), "YPTF+Single")` and, per clip,
+   `m.predict("S2n.wav", output_path="S2n.yourmt3.mid")` (the package's own example uses `YMT3+.pt` with `"YMT3+"`;
+   `YPTF+Single.pt` is the smallest file there, 121,781,787 bytes). Which torch build pip picks on Windows (CPU or
+   CUDA) is UNVERIFIED.
+3. Send back: the `.mid` files, the time per clip and CPU or GPU, `pip freeze` of each environment, the list of files
+   under `.mt3_checkpoints` (mt3-infer), and any error text.

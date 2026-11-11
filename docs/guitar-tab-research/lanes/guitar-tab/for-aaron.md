@@ -3,7 +3,10 @@
 Written 2026-11-10 by `try-guitar-tab`. These are the guitar-tab tools that did not run on the research box (no GPU,
 and the session could not install code straight from GitHub repositories; see `trials.md`, "Tools NOT RUN here").
 The steps are written for a Windows computer with an NVIDIA GPU (CUDA), or for the tool's own app; none of them was
-tried from the research box.
+tried from the research box. Gap round 2 (2026-11-11) added step 7 of section 4 (gtrsnipe with a hand-corrected
+string) and step 6 of section 5 (FretPath with a string-number annotation), and the 2026-11-11 reason gtrsnipe is
+still a step for you (section 4). The TabCNN weights published by others and scorify, which earlier had no steps or
+runs, ran on the box in gap round 2 (`trials.md`), so they need nothing from you.
 
 Where the files come from:
 

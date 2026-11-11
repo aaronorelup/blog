@@ -1,0 +1,23 @@
+# f0 inputs: header, rows, values against the torchcrepe source, frames set to 0 Hz
+tcfull S1 ['time', 'frequency', 'confidence'] 2984 src header ['time_s', 'frequency_hz', 'confidence'] all values same True
+tcfull R1b ['time', 'frequency', 'confidence'] 2934 src header ['time_s', 'frequency_hz', 'confidence'] all values same True
+tcfull S4lead ['time', 'frequency', 'confidence'] 3875 src header ['time_s', 'frequency_hz', 'confidence'] all values same True
+tctiny S1 ['time', 'frequency', 'confidence'] 2984 src header ['time_s', 'frequency_hz', 'confidence'] all values same True
+tctiny R1b ['time', 'frequency', 'confidence'] 2934 src header ['time_s', 'frequency_hz', 'confidence'] all values same True
+tctiny S4lead ['time', 'frequency', 'confidence'] 3875 src header ['time_s', 'frequency_hz', 'confidence'] all values same True
+tcfullz S1 ['time', 'frequency', 'confidence'] 2984 src header ['time_s', 'frequency_hz', 'confidence'] times same True conf same True zeroed where conf<0.21 and equal elsewhere True zeroed 199 of 2984
+tcfullz R1b ['time', 'frequency', 'confidence'] 2934 src header ['time_s', 'frequency_hz', 'confidence'] times same True conf same True zeroed where conf<0.21 and equal elsewhere True zeroed 1750 of 2934
+tcfullz S4lead ['time', 'frequency', 'confidence'] 3875 src header ['time_s', 'frequency_hz', 'confidence'] times same True conf same True zeroed where conf<0.21 and equal elsewhere True zeroed 546 of 3875
+# MIDI facts
+tcfull S1 type 1 tpq 220 tracks 2 programs [0] tempo [120.0] notes 62 velocity 66 127 pitch bends 0 CC 0 pitch 0 notes 0 notes >= MIDI 90 0 max pitch 69 tuning printed 6.000000000000005 sample copies identical (mid, log, score) True
+tcfull R1b type 1 tpq 220 tracks 2 programs [0] tempo [120.0] notes 94 velocity 7 127 pitch bends 0 CC 0 pitch 0 notes 0 notes >= MIDI 90 48 max pitch 95 tuning printed 20.000000000000007 sample copies identical (mid, log, score) True
+tcfull S4lead type 1 tpq 220 tracks 2 programs [0] tempo [120.0] notes 38 velocity 39 127 pitch bends 0 CC 0 pitch 0 notes 0 notes >= MIDI 90 1 max pitch 95 tuning printed 6.000000000000005 sample copies identical (mid, log, score) True
+tctiny S1 type 1 tpq 220 tracks 2 programs [0] tempo [120.0] notes 62 velocity 83 127 pitch bends 0 CC 0 pitch 0 notes 0 notes >= MIDI 90 0 max pitch 69 tuning printed 6.000000000000005 sample copies identical (mid, log, score) True
+tctiny R1b type 1 tpq 220 tracks 2 programs [0] tempo [120.0] notes 95 velocity 8 127 pitch bends 0 CC 0 pitch 0 notes 0 notes >= MIDI 90 52 max pitch 95 tuning printed 27.0 sample copies identical (mid, log, score) True
+tctiny S4lead type 1 tpq 220 tracks 2 programs [0] tempo [120.0] notes 38 velocity 39 127 pitch bends 0 CC 0 pitch 0 notes 0 notes >= MIDI 90 1 max pitch 95 tuning printed 4.0000000000000036 sample copies identical (mid, log, score) True
+tcfullz S1 type 1 tpq 220 tracks 2 programs [0] tempo [120.0] notes 61 velocity 83 127 pitch bends 0 CC 0 pitch 0 notes 1 notes >= MIDI 90 0 max pitch 69 tuning printed 6.000000000000005 sample copies identical (mid, log, score) True
+tcfullz R1b type 1 tpq 220 tracks 2 programs [0] tempo [120.0] notes 97 velocity 8 127 pitch bends 0 CC 0 pitch 0 notes 51 notes >= MIDI 90 1 max pitch 94 tuning printed 6.000000000000005 sample copies identical (mid, log, score) True
+tcfullz S4lead type 1 tpq 220 tracks 2 programs [0] tempo [120.0] notes 40 velocity 33 127 pitch bends 0 CC 0 pitch 0 notes 3 notes >= MIDI 90 0 max pitch 74 tuning printed 6.000000000000005 sample copies identical (mid, log, score) True
+velocity range over the nine files 7 127
+# per-call GNU time lines (run log)
+calls 9 wall 3.17 4.44 peak RSS MiB 423.1 570.9 sum of walls 35.1

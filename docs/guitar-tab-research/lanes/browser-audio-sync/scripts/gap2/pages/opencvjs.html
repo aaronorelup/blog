@@ -124,6 +124,7 @@ function runQuad(cv, rgb, quad8, size, timing) {
 try {
   const { cv, script_ms, ready_ms } = await loadCv();
   R.cv_script_load_ms = script_ms; R.cv_ready_ms = ready_ms;
+  R.type_constants = { CV_32SC4: cv.CV_32SC4, CV_32SC1: cv.CV_32SC1, CV_8UC3: cv.CV_8UC3, CV_64F: cv.CV_64F };
   const bi = cv.getBuildInformation();
   R.build_information_lines = bi.split('\n').filter((l) => /General configuration|Version control|Platform|Timestamp|Host|Target|C\+\+ Compiler|CPU\/HW|Baseline|Dispatched|Parallel framework|Threads|Emscripten|WASM|SIMD|pthread|Other third-party|Trace|Extra modules|To be built|Disabled/.test(l)).slice(0, 60);
   R.has = Object.fromEntries(['Canny', 'HoughLinesP', 'HoughLines', 'getPerspectiveTransform', 'warpPerspective', 'fillConvexPoly', 'cvtColor', 'createLineSegmentDetector', 'LineSegmentDetector', 'findContours', 'minAreaRect', 'boxPoints', 'perspectiveTransform', 'findHomography', 'Sobel', 'goodFeaturesToTrack', 'calcOpticalFlowPyrLK', 'imread', 'matFromImageData'].map((k) => [k, typeof cv[k]]));

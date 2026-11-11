@@ -123,7 +123,8 @@ what counts. Every entry now points to its section.
 47. web-audio-beat-detector (offline tempo/first-beat estimate). 8.2.39, 2026-08-26, MIT. RUNNABLE. Section 47.
 48. realtime-bpm-analyzer (BPM from live or file audio). 5.6.1, 2026-11-03, Apache-2.0. RUNNABLE. Section 48.
 49. OpenCV.js builds (`@techstark/opencv-js` 5.0.0-release.1, 2026-06-24, Apache-2.0) for fretboard geometry in
-    the browser. RUNNABLE. Section 49.
+    the browser. RUNNABLE. Section 49. [gap round 2] Ran: `trials.md`, "Gap round 2" (Canny, HoughLinesP and the
+    rectification; this build has no line segment detector).
 50. In-browser Demucs builds: `demucs-web` (timcsy, ONNX Runtime Web) 1.0.2, 2025-12-01, MIT; `demucs-wasm`
     (bengfarrell) 0.1.5, 2025-01-29; demucs-rs (nikhilunni, Rust + Burn wgpu to WASM/WebGPU); sevagh's
     demucs.cpp / demucs.onnx (freemusicdemixer.com); Hugging Face ONNX exports (monteslu/htdemucs-web-onnx,
@@ -1458,6 +1459,23 @@ what counts. Every entry now points to its section.
 - Use here: Hough lines, edges and homography for fret and string geometry in the browser (the methods themselves are
   covered by the video-hands-fretboard lane).
 - Licence (`LICENSE` in the package): Apache License 2.0, standard grant present.
+- [gap round 2, 2026-11-11] Licence clause, from `LICENSE` in the installed 5.0.0-release.1 package (read
+  2026-11-11): "Apache License", "Version 2.0, January 2004", and "2. Grant of Copyright License. Subject to the terms
+  and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive,
+  no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display,
+  publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form."
+- [gap round 2, 2026-11-11] Format and build facts read in the package and in the page (`trials.md`, "Gap round 2"):
+  `dist/opencv.js` is one file of 13,298,869 bytes with the WebAssembly module inside it; `cv.getBuildInformation()`
+  reports "General configuration for OpenCV 5.0.0", "Timestamp: 2026-06-24T04:53:04Z", "Target: Emscripten 1 x86",
+  "C++ Compiler: /home/runner/work/opencv-js/opencv-js/emsdk/upstream/emscripten/em++  (ver 22.0.0)", "Disabled:
+  highgui imgcodecs stitching videoio world" and "Parallel framework: none". In headless Chromium 153, `Canny`,
+  `HoughLinesP`, `getPerspectiveTransform`, `warpPerspective`, `findHomography`, `perspectiveTransform`,
+  `findContours`, `minAreaRect` and `calcOpticalFlowPyrLK` are functions, while `createLineSegmentDetector` is
+  undefined although `dist/src/types/opencv/imgproc_feature.d.ts` declares it. `HoughLinesP` writes a 1 x N Mat with 4
+  channels (`type()` 100 = `cv.CV_32SC4` in this OpenCV 5 build). The README's source URL,
+  https://docs.opencv.org/5.0.0/opencv.js , answered HTTP 404 again on 2026-11-11; https://docs.opencv.org/5.x/opencv.js
+  answered 301 to https://docs.opencv.org/5.0/opencv.js , which answered 200 with 16,210,809 bytes (not the same size
+  as the package's file; the two files were not compared further).
 
 ## 50. In-browser Demucs builds
 

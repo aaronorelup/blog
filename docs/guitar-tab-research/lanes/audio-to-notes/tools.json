@@ -503,7 +503,7 @@
 "python"
 ],
 "inputs": [
-"audio array y (multi-channel is supported), sr default 22050; fmin and fmax required (recommended minimum librosa.note_to_hz('C2') (~65 Hz), maximum librosa.note_to_hz('C7') (~2093 Hz))"
+"audio array y (\"Multi-channel is supported\"), sr default 22050; fmin and fmax required (librosa.pyin docstring: \"The recommended minimum is librosa.note_to_hz('C2') (~65 Hz)\", \"The recommended maximum is librosa.note_to_hz('C7') (~2093 Hz)\")"
 ],
 "outputs": [
 "f0: time series of fundamental frequencies in Hertz (NaN when unvoiced) per frame",
@@ -962,7 +962,8 @@
 "in_note_frames_within_50_cents": "the share equals the RPA on all six clips (scripts/f0_conf_stats.py, samples/rmvpe/conf_stats.txt)",
 "install": "uv venv --python 3.11 venv-rmvpe && uv pip install \"rmvpe-onnx[cli]==0.2.3\" soundfile -> rmvpe-onnx 0.2.3, onnxruntime 1.31.1, librosa 0.11.0, numpy 2.4.6, scipy 1.17.1, huggingface-hub 2.4.0, plotly 7.1.0 (the cli extra), soundfile 0.14.0 (worked first time; freeze samples/rmvpe/uv-pip-freeze-venv-rmvpe-py3.11.txt); venv 540 MB by du",
 "model_file": "rmvpe.onnx fetched once with curl (14 s) and passed as model_path, and the package only checked its SHA-256; the package's ensure_model() downloads with hf_hub_download into the Hugging Face cache and then copies the file into the package's data/ folder, so it would keep two copies",
-"output_facts": "S1 at 0.000 s: 567.215 Hz, confidence 0.000261 (a frequency is written for every frame, also in silence); bin centres 31.70 to 2005.50 Hz (cents_mapping = 20 x bin + 1997.38 cents above 10 Hz); ONNX graph: input `input`, float [1, 128, time] (log-mel, 128 bands from 30 to 8,000 Hz), output float [.., .., 360]"
+"output_facts": "S1 at 0.000 s: 567.215 Hz, confidence 0.000261 (a frequency is written for every frame, also in silence); bin centres 31.70 to 2005.50 Hz (cents_mapping = 20 x bin + 1997.38 cents above 10 Hz); ONNX graph: input `input`, float [1, 128, time] (log-mel, 128 bands from 30 to 8,000 Hz), output float [.., .., 360]",
+"cores_note": "rmvpe-onnx sets no thread count; ONNX Runtime 1.31.1 with its settings pinned workers to CPUs 1, 2, 3 in probe r0666 (not measured in this run); gap round 2 (gapfill-audio-to-notes, 2026-11-11), trials.md A8"
 }
 },
 {
@@ -1009,7 +1010,8 @@
 "R2": 0.836,
 "R3a": 0.535
 },
-"outputs_vs_r0516": "all eight f0 CSVs byte-identical"
+"outputs_vs_r0516": "all eight f0 CSVs byte-identical",
+"cores_note": "rmvpe-onnx sets no thread count; ONNX Runtime 1.31.1 with its settings pinned workers to CPUs 1, 2, 3 in probe r0666 (not measured in this run); gap round 2 (gapfill-audio-to-notes, 2026-11-11), trials.md A8"
 }
 },
 {
@@ -1273,7 +1275,8 @@
 "in_note_frames_within_50_cents": "the share equals the RPA on all six clips (scripts/f0_conf_stats.py, samples/rmvpe/conf_stats.txt)",
 "install": "uv venv --python 3.11 venv-rmvpe && uv pip install \"rmvpe-onnx[cli]==0.2.3\" soundfile -> rmvpe-onnx 0.2.3, onnxruntime 1.31.1, librosa 0.11.0, numpy 2.4.6, scipy 1.17.1, huggingface-hub 2.4.0, plotly 7.1.0 (the cli extra), soundfile 0.14.0 (worked first time; freeze samples/rmvpe/uv-pip-freeze-venv-rmvpe-py3.11.txt); venv 540 MB by du",
 "model_file": "rmvpe.onnx fetched once with curl (14 s) and passed as model_path, and the package only checked its SHA-256; the package's ensure_model() downloads with hf_hub_download into the Hugging Face cache and then copies the file into the package's data/ folder, so it would keep two copies",
-"output_facts": "S1 at 0.000 s: 567.215 Hz, confidence 0.000261 (a frequency is written for every frame, also in silence); bin centres 31.70 to 2005.50 Hz (cents_mapping = 20 x bin + 1997.38 cents above 10 Hz); ONNX graph: input `input`, float [1, 128, time] (log-mel, 128 bands from 30 to 8,000 Hz), output float [.., .., 360]"
+"output_facts": "S1 at 0.000 s: 567.215 Hz, confidence 0.000261 (a frequency is written for every frame, also in silence); bin centres 31.70 to 2005.50 Hz (cents_mapping = 20 x bin + 1997.38 cents above 10 Hz); ONNX graph: input `input`, float [1, 128, time] (log-mel, 128 bands from 30 to 8,000 Hz), output float [.., .., 360]",
+"cores_note": "rmvpe-onnx sets no thread count; ONNX Runtime 1.31.1 with its settings pinned workers to CPUs 1, 2, 3 in probe r0666 (not measured in this run); gap round 2 (gapfill-audio-to-notes, 2026-11-11), trials.md A8"
 }
 },
 {
@@ -1320,7 +1323,8 @@
 "R2": 0.836,
 "R3a": 0.535
 },
-"outputs_vs_r0516": "all eight f0 CSVs byte-identical"
+"outputs_vs_r0516": "all eight f0 CSVs byte-identical",
+"cores_note": "rmvpe-onnx sets no thread count; ONNX Runtime 1.31.1 with its settings pinned workers to CPUs 1, 2, 3 in probe r0666 (not measured in this run); gap round 2 (gapfill-audio-to-notes, 2026-11-11), trials.md A8"
 }
 },
 {
@@ -1807,7 +1811,7 @@
 ],
 "constraints_accepted": [
 "fmin",
-"fmax (a frame whose best pitch lies outside the band gets confidence 0; clamped to 46.875 to 2093.75 Hz)",
+"fmax (SwiftF0 README: \"A frame whose best pitch lies outside the band gets confidence 0\"; clamped to 46.875 to 2093.75 Hz)",
 "pitch_hold_ms (note segmentation, default 80.0)",
 "MIDI tempo",
 "MIDI velocity",
@@ -3281,7 +3285,8 @@
 "user_cpu_s": 40.19,
 "sys_cpu_s": 0.68,
 "predict_s_range": "2.72 to 6.50 per clip",
-"onnx_vs_tflite": "model outputs differ by at most 0.00014 (S1), 0.00026 (S4), 0.00056 (R2); 13 of the 16 note lists are identical, S3 differs in 4 notes (velocity by 1, or one offset by one frame), S6taps in 1 note (velocity), S7flat30 in 1 note (offset); the scores of those three are the same to 3 decimals (e0586, e0589, e0592)"
+"onnx_vs_tflite": "model outputs differ by at most 0.00014 (S1), 0.00026 (S4), 0.00056 (R2); 13 of the 16 note lists are identical, S3 differs in 4 notes (velocity by 1, or one offset by one frame), S6taps in 1 note (velocity), S7flat30 in 1 note (offset); the scores of those three are the same to 3 decimals (e0586, e0589, e0592)",
+"cores_note": "ONNX Runtime's worker threads were not held to this 2-core slot: with no thread count set they are pinned one per CPU (re-run r0664: CPUs 1, 2, 3; probes r0666, r0667); gap round 2 (gapfill-audio-to-notes, 2026-11-11), trials.md A8"
 }
 },
 {
@@ -3597,6 +3602,58 @@
 "role": "failed CLI run on the way (dead end 2: numpy 2.2.6 with tflite-runtime 2.14.0), each with --model-serialization tflite; wall 2.96 to 4.47 s across the eight runs (scripts/run_basic_pitch_cli.sh)",
 "log": "saved logs of r0033 to r0065 (out/basic-pitch/cli-tflite-default/<clip>/stdout.log) end with `AttributeError: _ARRAY_API not found` then `ValueError: File .../nmp.tflite cannot be loaded into either TensorFlow, CoreML, TFLite or ONNX`; r0032's log (S1) was overwritten by the later successful CLI run in r0234, so its error text is not on file"
 }
+},
+{
+"run_id": "r0664",
+"input_id": "the 16 clips of r0234",
+"cores": 2,
+"wall_s": 25.05,
+"peak_mb": 411.9,
+"exit_code": 0,
+"output_files": [
+"/home/user/gtr/lanes/audio-to-notes/out/basic-pitch/onnx-affinity-gap2/"
+],
+"metrics": {
+"round": "gap round 2 (gapfill-audio-to-notes, 2026-11-11)",
+"configuration": "r0234 configuration 3 again (Model(nmp.onnx), ONNX Runtime 1.23.2) with a /proc thread sampler",
+"cpu_s": 41.6,
+"slot_wait_s": 354.0,
+"result": "process affinity 0-1; three ONNX Runtime worker threads with Cpus_allowed_list 1, 2 and 3 ran on CPUs 1, 2, 3; outputs byte-identical to r0234's onnx-default (16 of 16 MIDI and note lists); predict() S1 14.97 s (first call), others 0.30 to 0.82 s"
+}
+},
+{
+"run_id": "r0666",
+"input_id": "random input to nmp.onnx",
+"cores": null,
+"wall_s": 6.55,
+"peak_mb": 85.1,
+"exit_code": 0,
+"output_files": [
+"samples/basic-pitch/gap2-ort-affinity-probe-r0666-r0667.txt"
+],
+"metrics": {
+"round": "gap round 2 (gapfill-audio-to-notes, 2026-11-11)",
+"nolock": true,
+"role": "ONNX Runtime 1.31.1 thread-affinity probe under taskset -c 0,1",
+"result": "default threads: three workers pinned to CPUs 1, 2, 3; with intra_op_num_threads=2: one worker, Cpus_allowed_list 0-1"
+}
+},
+{
+"run_id": "r0667",
+"input_id": "random input to nmp.onnx",
+"cores": null,
+"wall_s": 6.35,
+"peak_mb": 77.4,
+"exit_code": 0,
+"output_files": [
+"samples/basic-pitch/gap2-ort-affinity-probe-r0666-r0667.txt"
+],
+"metrics": {
+"round": "gap round 2 (gapfill-audio-to-notes, 2026-11-11)",
+"nolock": true,
+"role": "ONNX Runtime 1.23.2 thread-affinity probe under taskset -c 0,1",
+"result": "default threads: three workers pinned to CPUs 1, 2, 3; with intra_op_num_threads=2: one worker, Cpus_allowed_list 0-1"
+}
 }
 ],
 "not_run_reason": null,
@@ -3761,7 +3818,7 @@
 "round": "gap round 2 (gapfill-audio-to-notes, 2026-11-11)",
 "command": "crepe_notes --f0 <clip>.f0in.csv --use-cwd --output-label <cfg> <clip>.wav (other options default; madmom 0.17.dev0 onset splitting on); 9 calls, 3.17 to 4.44 s wall each",
 "f0_inputs": "tcfull / tctiny: this lane's torchcrepe full / tiny f0 (viterbi, 10 ms) with the header renamed to time,frequency,confidence; tcfullz: full with frequency 0 where periodicity < 0.21",
-"scores_key": "clip: [est notes, onset-only P, R, F1, onset+offset F1, eval id, printed tuning offset in cents]; gtr-eval 0.11.1; S4lead against the S4 truth melody voice; truth notes S1 62, R1b 70, S4lead 37",
+"scores_key": "clip: [est notes, onset-only P, R, F1, onset+offset F1, eval id, printed tuning offset in cents]; gtr-eval 0.12.0; S4lead against the S4 truth melody voice; truth notes S1 62, R1b 70, S4lead 37",
 "scores": {
 "tcfull": {
 "S1": [
@@ -4396,7 +4453,7 @@
 "tried": false,
 "tried_how": null,
 "runs": [],
-"not_run_reason": "(corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the disk limit no longer applied.) The Colab notebook's install route (git clone magenta/mt3 at 7ecf19d, then uv pip install \"jax[cpu]\" nest-asyncio pyfluidsynth==1.3.0 -e <clone>) was refused by the session's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" Nothing ran. The fallback mt3-pytorch (kunato) was refused the same way. No model variant ran. README: \"uses the T5X framework\"; its route for transcribing your own audio is a Colab notebook whose setup cell copies the checkpoints from Google Cloud Storage (gcloud storage -q cp --recursive gs://mt3/checkpoints .); the README links no Hugging Face Space and the community Space akhaliq/MT3 reported RUNTIME_ERROR (Hugging Face API, 2026-11-10). Gap round 1 (23:14 to 23:23 UTC): git clone --depth 1 --branch=main https://github.com/magenta/mt3 (commit 7ecf19d, 2026-10-27) was allowed; the notebook's install command was then used with jax[cpu] in place of jax[cuda12] and without its -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html (no GPU here): uv venv --python 3.11 venv-mt3 && uv pip install --python venv-mt3/bin/python \"jax[cpu]\" nest-asyncio pyfluidsynth==1.3.0 -e <clone>. Nothing of that command ran (no venv and no log existed afterwards). The clone's setup.py would have installed flax, note-seq, seqio and t5x from their GitHub repositories (@ git+https://github.com/...) and t5, tensorflow, tensorflow-datasets from PyPI. The refusal is recorded in samples/mt3/permission-refusal.txt and in the gap agent's own session transcript on the box. The mt3-pytorch fallback also did not run (see that entry); the PyPI package mt3-infer 0.2.0, which vendors mt3-pytorch, MR-MT3 and YourMT3 code, was not used in place of the refused routes.",
+"not_run_reason": "(corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the disk limit no longer applied.) The Colab notebook's install route (git clone magenta/mt3 at 7ecf19d, then uv pip install \"jax[cpu]\" nest-asyncio pyfluidsynth==1.3.0 -e <clone>) was refused by the session's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" Nothing ran. The fallback mt3-pytorch (kunato) was refused the same way. No model variant ran. README: \"uses the T5X framework\"; its route for transcribing your own audio is a Colab notebook whose setup cell copies the checkpoints from Google Cloud Storage (gcloud storage -q cp --recursive gs://mt3/checkpoints .); the README links no Hugging Face Space and the community Space akhaliq/MT3 reported RUNTIME_ERROR (Hugging Face API, 2026-11-10). Gap round 1 (23:14 to 23:23 UTC): git clone --depth 1 --branch=main https://github.com/magenta/mt3 (commit 7ecf19d, 2026-10-27) was allowed; the notebook's install command was then used with jax[cpu] in place of jax[cuda12] and without its -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html (no GPU here): uv venv --python 3.11 venv-mt3 && uv pip install --python venv-mt3/bin/python \"jax[cpu]\" nest-asyncio pyfluidsynth==1.3.0 -e <clone>. Nothing of that command ran (no venv and no log existed afterwards). The clone's setup.py would have installed flax, note-seq, seqio and t5x from their GitHub repositories (@ git+https://github.com/...) and t5, tensorflow, tensorflow-datasets from PyPI. The refusal is recorded in samples/mt3/permission-refusal.txt and in the gap agent's own session transcript on the box. The mt3-pytorch fallback also did not run (see that entry); the PyPI package mt3-infer 0.2.0, which vendors mt3-pytorch, MR-MT3 and YourMT3 code, was not used in place of the refused routes. (gap round 2 (gapfill-audio-to-notes, 2026-11-11): the PyPI package(s) mt3-infer were installed; running them was refused by the session's permission system; trials.md Gap round 2)",
 "for_aaron": true,
 "callable_via": [
 "python"
@@ -4498,7 +4555,7 @@
 }
 }
 ],
-"not_run_reason": "This lane's anonymous call to the ZeroGPU Space was refused for lack of quota (\"You have exceeded your ZeroGPU quota (90s requested vs. 79s left)...\"). (corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the disk limit no longer applied, and the default checkpoint, 561,544,628 bytes, fits the round's 4 GB rule.) A local CPU run was not attempted: the code exists only in the Space's git repository (no package from the authors; the third-party PyPI packages yourmt3 and mt3-infer were not used), and running code from cloned repositories was refused twice by the session's permission system in that round (\"[Code from External]\"). No local 2-core runtime is on record; the hosted-apis lane's calls to mimbres/YourMT3-cpu (r0164 31.18 s and r0245 31.34 s, round trips its script measured, upload and queueing included; ledger walls 32.21 s and 33.78 s; cpu-basic hardware) are the timings on record for the CPU Space.",
+"not_run_reason": "This lane's anonymous call to the ZeroGPU Space was refused for lack of quota (\"You have exceeded your ZeroGPU quota (90s requested vs. 79s left)...\"). (corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the disk limit no longer applied, and the default checkpoint, 561,544,628 bytes, fits the round's 4 GB rule.) A local CPU run was not attempted: the code exists only in the Space's git repository (no package from the authors; the third-party PyPI packages yourmt3 and mt3-infer were not used), and running code from cloned repositories was refused twice by the session's permission system in that round (\"[Code from External]\"). No local 2-core runtime is on record; the hosted-apis lane's calls to mimbres/YourMT3-cpu (r0164 31.18 s and r0245 31.34 s, round trips its script measured, upload and queueing included; ledger walls 32.21 s and 33.78 s; cpu-basic hardware) are the timings on record for the CPU Space. (gap round 2 (gapfill-audio-to-notes, 2026-11-11): the PyPI package(s) yourmt3 and mt3-infer were installed; running them was refused by the session's permission system; trials.md Gap round 2)",
 "for_aaron": true,
 "callable_via": [
 "http",
@@ -4628,7 +4685,7 @@
 "tried": false,
 "tried_how": null,
 "runs": [],
-"not_run_reason": "(corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the disk limit no longer applied.) Not attempted: its inference runs from a clone of the repository, and running code from cloned repositories was refused twice by the session's permission system in that round (\"[Code from External]\": the MT3 install and the mt3-pytorch run). As shipped, inference.py calls self.model.cuda() without a device check. Checkpoints (gudgud1014/MR-MT3): mt3.pth 183,672,643 bytes, slakh_f1_0.65.pth and commu_mt3.pt 183,637,952 bytes each, ten .ckpt files of 582,509,233 to 582,536,411 bytes. Its README installs transformers==4.18.0, t5==0.9.3, note-seq==0.0.3, ddsp, tensorflow==2.11, tensorflow-text==2.11, tensorflow_probability==0.19.0, pytorch_lightning and more (https://raw.githubusercontent.com/gudgud96/MR-MT3/master/README.md, read 2026-11-10; the main branch URL answers 404). inference.py (826ea84) calls self.model.cuda() at line 183, so a CPU run would need a code change. Checkpoint repository revision 7bd24c3e, card license tag mit; the ten .ckpt files are under scratch/, continual/ and stemmix/. Steps in for-aaron.md.",
+"not_run_reason": "(corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the disk limit no longer applied.) Not attempted: its inference runs from a clone of the repository, and running code from cloned repositories was refused twice by the session's permission system in that round (\"[Code from External]\": the MT3 install and the mt3-pytorch run). As shipped, inference.py calls self.model.cuda() without a device check. Checkpoints (gudgud1014/MR-MT3): mt3.pth 183,672,643 bytes, slakh_f1_0.65.pth and commu_mt3.pt 183,637,952 bytes each, ten .ckpt files of 582,509,233 to 582,536,411 bytes. Its README installs transformers==4.18.0, t5==0.9.3, note-seq==0.0.3, ddsp, tensorflow==2.11, tensorflow-text==2.11, tensorflow_probability==0.19.0, pytorch_lightning and more (https://raw.githubusercontent.com/gudgud96/MR-MT3/master/README.md, read 2026-11-10; the main branch URL answers 404). inference.py (826ea84) calls self.model.cuda() at line 183, so a CPU run would need a code change. Checkpoint repository revision 7bd24c3e, card license tag mit; the ten .ckpt files are under scratch/, continual/ and stemmix/. Steps in for-aaron.md. (gap round 2 (gapfill-audio-to-notes, 2026-11-11): the PyPI package(s) mt3-infer (its mr_mt3 model uses gudgud1014/MR-MT3's mt3.pth) were installed; running them was refused by the session's permission system; trials.md Gap round 2)",
 "for_aaron": true,
 "callable_via": [
 "python"
@@ -5679,7 +5736,7 @@
 "a MIDI file; SOME can produce non-integer MIDI values"
 ],
 "constraints_accepted": [
-"optional RMVPE weights for pitch (pretrained/ directory, for better pitch extraction results)"
+"optional RMVPE weights for pitch in its pretrained/ directory (SOME README: \"For better pitch extraction results\")"
 ],
 "license": {
 "code": {
@@ -7710,8 +7767,8 @@
 "tried": false,
 "tried_how": null,
 "runs": [],
-"not_run_reason": "gap round 1 (gapfill-audio-to-notes, 2026-11-10): added to the survey; not run. The session's permission system refused installing the MT3 clone and running the mt3-pytorch clone, and MR-MT3 and YourMT3+ were not attempted after those refusals; this package, which vendors three of them, was not used in their place.",
-"for_aaron": false,
+"not_run_reason": "NOT RUN HERE: installed from PyPI (uv pip install mt3-infer==0.2.0, 72 packages, exit 0); running its CLI (mt3-infer --version; mt3-infer list; mt3-infer download mt3_pytorch) was refused by the session's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" (gap round 2 (gapfill-audio-to-notes, 2026-11-11)); no checkpoint was downloaded and no transcription ran; steps in for-aaron.md section 14",
+"for_aaron": true,
 "callable_via": [
 "python",
 "cli"
@@ -7720,7 +7777,7 @@
 "audio array and sample rate (transcribe(audio, sr=16000)); CLI mt3-infer transcribe input.wav -o output.mid"
 ],
 "outputs": [
-"a MIDI object with .save() (description)"
+"a mido.MidiFile (transcribe() return type; the CLI saves it); mt3_pytorch notes are written through pretty_midi (PrettyMIDI(initial_tempo=120.0), one instrument per program and drum flag); from the code, not observed"
 ],
 "constraints_accepted": [
 "model: mr_mt3, mt3_pytorch, yourmt3",
@@ -7754,7 +7811,7 @@
 "pricing": null,
 "handoffs_out": [],
 "unverified": [
-"which URLs its checkpoint downloader uses (settled by reading its download module)"
+"program numbers it assigns to a solo guitar and its MIDI as written: not observed (run refused, gap round 2 (gapfill-audio-to-notes, 2026-11-11))"
 ],
 "requires": "torch>=2.0.0, torchaudio, torchvision, transformers>=4.35.0, librosa>=0.9.1, mido, pretty-midi, soxr and others; extras all, dev, full, synthesis, tensorflow (tensorflow>=2.13.0) and torch (PyPI JSON)",
 "calls": [
@@ -7762,7 +7819,11 @@
 "transcribe(audio, model=\"mr_mt3\"), model=\"mt3_pytorch\", model=\"yourmt3\"; load_model(\"mt3_pytorch\", device=\"cuda\")",
 "CLI: mt3-infer download --all (\"Download all models at once (874MB total)\"); mt3-infer transcribe input.wav -o output.mid -m mr_mt3; --device cuda"
 ],
-"model_table": "checkpoints are stored under .mt3_checkpoints/<model> or in MT3_CHECKPOINT_DIR; model table sizes MR-MT3 176 MB, MT3-PyTorch 176 MB, YourMT3 536 MB, with speeds from \"NVIDIA RTX 4090 with PyTorch 2.7.1 + CUDA 12.6\"; it says \"Default `yourmt3` downloads the `YPTF.MoE+Multi (noPS)` checkpoint, matching the original YourMT3 Space output.\""
+"model_table": "checkpoints are stored under .mt3_checkpoints/<model> or in MT3_CHECKPOINT_DIR; model table sizes MR-MT3 176 MB, MT3-PyTorch 176 MB, YourMT3 536 MB, with speeds from \"NVIDIA RTX 4090 with PyTorch 2.7.1 + CUDA 12.6\"; it says \"Default `yourmt3` downloads the `YPTF.MoE+Multi (noPS)` checkpoint, matching the original YourMT3 Space output.\"",
+"publisher": "PyPI project mt3-infer, author field 'MT3-Infer Contributors', repository github.com/openmirlab/mt3-infer: a third-party repackaging (its LICENSE: 'This project includes code adapted from the following sources:'), not a release by the MT3, MR-MT3, mt3-pytorch or YourMT3 authors",
+"attempt_status": "installed from PyPI (uv pip install mt3-infer==0.2.0, 72 packages, exit 0); running its CLI (mt3-infer --version; mt3-infer list; mt3-infer download mt3_pytorch) was refused by the session's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" (gap round 2 (gapfill-audio-to-notes, 2026-11-11))",
+"checkpoint_facts": "registry mt3_infer/config/checkpoints.yaml: default 'mt3_pytorch', size_mb 176.0, git_lfs clone of https://github.com/kunato/mt3-pytorch (branch master, target pretrained), sha256 b8a3807e...3745398f, the same digest as its mr_mt3 entry (https://huggingface.co/gudgud1014/MR-MT3/resolve/main/mt3.pth); yourmt3 entry: 'YPTF.MoE+Multi (noPS)', size_mb 536.0, git_lfs from the Space mimbres/YourMT3",
+"install_facts": "Python 3.11: torch 2.15.0+cpu, torchaudio 2.11.1+cpu, torchvision 0.29.2+cpu, transformers 5.22.2; freeze samples/mt3-infer/"
 },
 {
 "name": "yourmt3 (PyPI, third party)",
@@ -7773,8 +7834,8 @@
 "tried": false,
 "tried_how": null,
 "runs": [],
-"not_run_reason": "gap round 1 (gapfill-audio-to-notes, 2026-11-10): added to the survey; not run (as for mt3-infer).",
-"for_aaron": false,
+"not_run_reason": "NOT RUN HERE: installed from PyPI (uv pip install yourmt3==0.1.4, 49 packages, exit 0) and checkpoint YPTF+Single.pt downloaded (121,781,787 bytes, sha256 28a7dd18...ff3313e4 = the repo's LFS digest); running YMT3(...).predict on S2n, R1c and the S4 guitar stem through gtr-run was refused by the session's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" (gap round 2 (gapfill-audio-to-notes, 2026-11-11)); no transcription ran; steps in for-aaron.md section 14",
+"for_aaron": true,
 "callable_via": [
 "python"
 ],
@@ -7782,7 +7843,7 @@
 "audio file path (model.predict(path, batch_size, progress_callback))"
 ],
 "outputs": [
-"a MIDI file (the description's Gradio example returns gr.File(label='midi'))"
+"a MIDI file written by note_event2midi: MidiFile(ticks_per_beat=480, type=0), default velocity 100, set_tempo commented out, one channel per program (0-8, 10-15), drums as internal program 128; from the code, not observed"
 ],
 "constraints_accepted": [
 "model type",
@@ -7807,9 +7868,56 @@
 "pricing": null,
 "handoffs_out": [],
 "unverified": [
-"whether its weights are the YourMT3 authors' checkpoints (settled by comparing hashes with the Space's files)"
+"whether its weights are the YourMT3 authors' checkpoints (settled by comparing hashes with the Space's files)",
+"program numbers it assigns to a solo guitar: not observed (run refused, gap round 2 (gapfill-audio-to-notes, 2026-11-11))"
 ],
-"requires": "einops, lightning, mido, mir-eval, scikit-learn, torchaudio, transformers==4.45.1"
+"requires": "einops, lightning, mido, mir-eval, scikit-learn, torchaudio, transformers==4.45.1",
+"publisher": "PyPI project yourmt3 with an empty author field and an author_email field naming 'dummyjenil'; weights in the Hugging Face repo of user 'shethjenil' (shethjenil/Audio2Midi_Models); a third-party repackaging, not the YourMT3 authors' release (their Space is mimbres/YourMT3); no license field, classifier or license file",
+"attempt_status": "installed from PyPI (uv pip install yourmt3==0.1.4, 49 packages, exit 0) and checkpoint YPTF+Single.pt downloaded (121,781,787 bytes, sha256 28a7dd18...ff3313e4 = the repo's LFS digest); running YMT3(...).predict on S2n, R1c and the S4 guitar stem through gtr-run was refused by the session's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" (gap round 2 (gapfill-audio-to-notes, 2026-11-11))",
+"checkpoint_facts": "shethjenil/Audio2Midi_Models revision 4300d378: YPTF+Single.pt 121,781,787 bytes (taken: the smallest), YMT3+.pt 185,123,699, YPTF+MoE+Multi 2.pt 188,636,597, YPTF+Multi.pt 313,554,331, YPTF+MoE+Multi 1.pt 386,049,197, YMT3+MusicFM.pt 1,484,875,284; URL https://huggingface.co/shethjenil/Audio2Midi_Models/resolve/<rev>/<file>; deleted after the attempt"
+},
+{
+"name": "Self-supervised F0 and voicing for monophonic music (Bitra and Beigi, arXiv 2601.11768)",
+"kind": "paper",
+"what": "self-supervised, transposition-equivariant F0 estimation on CQT frames (PESTO's approach) with an EM-style reweighting and a separate voicing classifier; accepted at ICPRAM 2026",
+"url": "https://arxiv.org/abs/2601.11768",
+"version": "arXiv v1, submitted 2026-01-16",
+"tried": false,
+"tried_how": null,
+"runs": [],
+"not_run_reason": "no code or weights linked in the PDF or on the abstract page (read 2026-11-11); a web search for a repository was not possible in gap round 2 (gapfill-audio-to-notes, 2026-11-11) (search budget used up)",
+"for_aaron": false,
+"callable_via": [],
+"inputs": [
+"monophonic audio, CQT at 16 kHz (paper)"
+],
+"outputs": [
+"F0 and voicing per frame (paper)"
+],
+"constraints_accepted": [],
+"license": {
+"code": null,
+"weights": null,
+"training_data": [
+{
+"name": "MedleyDB (training), MDB-stem-synth (evaluation)",
+"license": "see the MedleyDB and MDB-stem-synth entries",
+"quote": null,
+"url": "https://arxiv.org/pdf/2601.11768"
+}
+],
+"service_terms": [],
+"paper": {
+"url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+"note": "the abstract page's 'view license' link (title 'Rights to this article')"
+}
+},
+"pricing": null,
+"handoffs_out": [],
+"unverified": [
+"whether code or weights are published anywhere (no web search was possible in gap round 2 (gapfill-audio-to-notes, 2026-11-11))",
+"the reported RPA 95.84 / RCA 96.24 (MedleyDB to MDB-stem-synth) are the authors' figures; not measured here"
+]
 }
 ]
 }

@@ -814,8 +814,8 @@ cannot run. Same conventions as above: `rNNNN` run ids, `eNNNN` gtr-eval 0.11.1 
 so they are also in `out/scores/scores.jsonl` and `samples/scores/`), scripts in `scripts/`, small outputs in
 `samples/<tool>/`, full outputs in `/home/user/gtr/lanes/chords-beats-key/out/<tool>/<clip>/`. Each tool's venv and the
 weights it downloaded were deleted when the tool was done; its `uv pip freeze` is in `samples/<tool>/`. The shared disk
-had 9.5 GB free at the start; the orchestrator's DISK LOW notice (below 9,000 MB free) printed from about 23:32 UTC on,
-with 5.3 to 9.2 GB free while this round ran. This section, and every note marked "gap round 1" elsewhere in this file,
+had 11 GB free when this round started (`df` at 23:13 UTC; 9.5 GB at 23:19); the orchestrator's DISK LOW notice (below
+9,000 MB free) printed from about 23:32 UTC on, with 5.3 to 9.2 GB free while this round ran. This section, and every note marked "gap round 1" elsewhere in this file,
 was written after the verification log at the end and has not been checked by a separate agent.
 
 ### All-In-One 1.1.0 (PyPI `allin1`): beats, downbeats, tempo and song sections, after a Demucs separation
@@ -833,14 +833,18 @@ was written after the verification log at the end and has not been checked by a 
      cached for Python 3.9, in 0.1 s with no build in the log; this lane built madmom 0.16.1 on Python 3.9 in r0047).
   3. NATTEN. The README's link (the NATTEN website) failed TLS on 2026-11-10 (expired certificate), and the CPU wheels on
      NATTEN's current index are all version 0.17.5, which no longer has the four functions allin1 imports (survey.md,
-     All-In-One, "Gap round 1"). NATTEN was therefore built from its PyPI sdist, CPU only:
+     All-In-One, "Gap round 1"). NATTEN was built from its PyPI sdist, CPU only (the 0.17.3 and 0.17.4 CPU wheels for
+     cp39 attached to NATTEN's GitHub releases, which answered HTTP 200 to a HEAD request, were not used):
      `NATTEN_N_WORKERS=2 uv pip install --no-build-isolation natten==<version>` with the venv's `bin/` on PATH (for
      cmake); `setup.py` printed "Building NATTEN for CPU ONLY." (script `/home/user/gtr/lanes/chords-beats-key/logs/gap1/build_natten.sh`).
-     0.17.4, run r0512 (2 cores; 224.85 s wall including a slow sdist download, 158.6 s CPU, 1303.1 MB peak RSS; exit 1):
+     0.17.4, run r0512 (2 cores; 224.85 s wall, 158.6 s CPU, 1303.1 MB peak RSS; exit 1; uv's log says "Prepared 1
+     package in 1m 29s"; how the rest of the wall time divides between resolving, during which uv fetched the
+     10,854,271-byte sdist, and the import test was not timed):
      the build finished, but `import natten` failed on Python 3.9 with "TypeError: unsupported operand type(s) for |:
      'type' and '_GenericAlias'" (`natten/flops.py` line 82). 0.17.3, run r0518 (2 cores; 97.45 s wall, 158.6 s CPU,
      1302.9 MB; exit 0): `from natten.functional import natten1dav, natten1dqkrpb, natten2dav, natten2dqkrpb` worked.
-  4. `uv pip install "demucs==4.0.1" "allin1==1.1.0"` (4 s; demucs 4.0.1 from its sdist, librosa 0.11.0,
+  4. `uv pip install "demucs==4.0.1" "allin1==1.1.0"` (4 s; demucs 4.0.1 from its sdist, PyPI's only file for 4.0.1,
+     as a wheel uv had built earlier and cached, with no build in the log; librosa 0.11.0,
      huggingface-hub 1.8.0, hydra-core 1.3.8, omegaconf 2.3.1, matplotlib 3.9.4, numba 0.60.0, openunmix 1.3.0).
   No file of allin1, madmom, NATTEN or Demucs was edited. The venv was 1.4 GB by `du` (hard links into the shared uv
   cache). Freeze: `samples/allin1/venv-allin1.freeze.txt`.
@@ -873,7 +877,8 @@ was written after the verification log at the end and has not been checked by a 
 | R2full (228.5 s) | 777.783 | 186.930 (318.146) | 4.960 | 1.385 | 581.557 (603.523) | 2038.5 | 71 | 264 / 66 | 10 |
 
   (S3's row is r0521; the others are per-job lines of r0563, `samples/allin1/batch_gap1_timings.jsonl`; stage times
-  from each clip's `timings.json`, copied to `samples/allin1/<clip>.timings.json`.) R2full, the whole song: 777.8 s,
+  from each clip's `timings.json`, copied to `samples/allin1/<clip>.timings.json` for every clip but S7flat30, whose
+  JSON and timings stay in `out/allin1/S7flat30/`.) R2full, the whole song: 777.8 s,
   of which 186.9 s Demucs and 581.6 s the 8-network inference.
 - The published command line, once: run r0576 (2 cores; 155.62 s wall, 181.3 s CPU, 1526.9 MB) ran
   `allin1 /home/user/gtr/inputs/S4/S4.wav -o <dir> -d cpu --demix-dir <dir>/demix --spec-dir <dir>/spec`. Its `S4.json`
@@ -971,7 +976,7 @@ was written after the verification log at the end and has not been checked by a 
 | R1b (90) | 90 yes e1689 | 94 x1.04 e1686 | 90 yes e1691 | 93.06 yes e1690 | 92 yes e1688 | 90 yes e1687 | 90 yes e1693 | 171 x1.90 e1692 | 5 |
 | R1c (119) | 119 yes e1699 | 119 yes e1696 | 120 yes e1701 | 120.79 yes e1700 | 116 yes e1698 | 119 yes e1697 | 119 yes e1703 | 119 yes e1702 | 3 |
 
-  "x1.04" for cnn on R1b is a ratio of 1.0444 (94 / 90), just outside the 4 % tolerance. R2full (no truth; the artist's
+  "x1.04" for cnn on R1b is a ratio of 1.0444 (94 / 90), above the 1.04 limit of the 4 % tolerance. R2full (no truth; the artist's
   page lists 72 bpm and "4/4 Swing", per INPUTS.md): fcn, cnn, ismir2018 and deepsquare 72; fma2018 143.30; deeptemp
   and shallowtemp 144; mazurka 285; meter 9. MIREX triples (t1, t2, s1) on S3: fcn 48, 96, 0.247; shallowtemp 96, 192,
   1.0; on R2full: fcn 72, 143, 0.939 (all in `samples/tempocnn/`). S7flat30 (S3 rendered 30 cents flat) gave the same
@@ -1016,8 +1021,9 @@ was written after the verification log at the end and has not been checked by a 
   soundfile 0.14.0; torch and torchaudio only for the resampler upstream uses). Venv 926 MB by `du` (hard links into the
   cache). Freeze: `samples/skey/venv-skey.freeze.txt`. Model files, fetched from
   `https://huggingface.co/aaatmy/skey-onnx/resolve/c04b6a2b.../<file>`: `skey.onnx` 324,536 bytes, SHA-256 50bac66d...12b1
-  (the manifest's value), `manifest.json`, the three license files and the card (`samples/skey/model_files_sha256.txt`;
-  the manifest is copied as `samples/skey/hf_aaatmy_skey-onnx_manifest.json`).
+  (the manifest's value), `manifest.json`, `skey-keys.json`, the three license files and the card (SHA-256 of
+  `skey.onnx`, `manifest.json`, `LICENSE` and the card in `samples/skey/model_files_sha256.txt`; the manifest is copied as
+  `samples/skey/hf_aaatmy_skey-onnx_manifest.json`).
 - Run: `scripts/skey_onnx_run.py` is glue written for this lane following upstream `skey/key_detection.py`: decode with
   soundfile, `torchaudio.transforms.Resample(orig_freq=44100, new_freq=22050)`, mean of the channels, float32 `[1,
   samples]` into the graph (peak normalization, VQT and ChromaNet are inside it, per the card), label =
@@ -1117,7 +1123,7 @@ D:maj, E:maj); S2n's are G:maj, C:maj, D:maj.
   verifier did; `samples/lv_chordia/venv-lvchordia.freeze.txt`; tensorflow-cpu 2.12.1 had to be downloaded again,
   221.1 MiB), and the same scripts ran in run r0605 (2 cores; 102.1 s wall in total, 103.8 s CPU, 1040.7 MB peak RSS;
   plan `scripts/plans/gap1_capo_chords.json`): each tool on S3 first as a control, into
-  `out/gap1_controls/<tool>/S3/`, then on S5capo2 (autochord 9.28 s, CREMA 6.95 s, lv-chordia 9.14 s per job,
+  `out/gap1check_<tool>/S3/` (moved afterwards to `out/gap1_controls/<tool>/S3/`), then on S5capo2 (autochord 9.28 s, CREMA 6.95 s, lv-chordia 9.14 s per job,
   `samples/capo_chords/batch_gap1_capo_timings.jsonl`). The S3 control outputs are byte-identical to the first round's
   (autochord `.lab`; CREMA `.lab` and `.jams`; lv-chordia `.lab` and `.json` for both dictionaries). The venvs and the
   TensorFlow download were deleted afterwards.

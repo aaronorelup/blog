@@ -227,6 +227,10 @@ Read 2026-11-10 at https://mano.is.tue.mpg.de/license.html (page text extracted 
 
 ## Grounding DINO (tiny), OWLv2 (base) and YOLO-World v2: NOT RUN HERE (disk)
 
+(corrected in gap round 2: all three ran on this box on 2026-11-11, after the weights were fetched one at a time and
+deleted after each run: OWLv2 r0639, Grounding DINO tiny r0648, YOLO-World v2 r0650, on the capo still C1 and the
+eight R3a / R3a_cu views of the YOLOE run; section "Gap round 2". The facts below are how things stood on 2026-11-10.)
+
 - From about 21:12 UTC (the trial agent's record; the notice's first appearance is not logged in any file the verifier
   found, and `env.sh`, which prints it, was last modified at 21:32:27 UTC) the orchestrator's disk notice (it reported
   "8027 MB free") said: "start no new download or install over 200 MB unless your lane cannot finish without it; pick
@@ -457,7 +461,9 @@ had RMS 7.52 px and k0 = 5 had RMS 20.48 px.
   `samples/owlv2-space/spaces_results.json`; overlays: `samples/owlv2-space/*.webp`.
 - Grounding DINO Space: all three calls failed with `ValueError('Unknown protocol: ws')` from gradio_client (the
   Space uses the older websocket queue). NOT RUN (local: weights over the disk limit; Space: client error). Steps for
-  Aaron in `for-aaron.md`.
+  Aaron in `for-aaron.md`. (corrected in gap round 2: Grounding DINO tiny and OWLv2 base ran locally with scores on
+  2026-11-11, runs r0648 and r0639, on these three frames among others; the Grounding DINO Space failed again in r0629;
+  section "Gap round 2".)
 - Verifier re-run r0488 (`--nolock`, same script and the trial's three input PNGs, 2026-11-10 22:56 UTC): OWLv2
   returned the same labels, mask boxes and mask pixel counts for all three images (19.52, 19.02 and 22.27 s per
   image); the Grounding DINO calls failed again with the same error.
@@ -903,7 +909,18 @@ Where the R3a detections landed (`hand_regions.py`; frames with at least one det
 
 Added 2026-11-11 by the `gapfill-video-hands-fretboard` agent for the gaps listed for this lane in `GAPS.md`
 (V1-V8). Text-only fixes (V1-V4, V7, V8) are made where the statements stand, marked "(gap round 2)" or "(corrected in
-gap round 2: ...)"; this section holds what was run.
+gap round 2: ...)"; this section holds what was run. In short:
+
+- V1: `tools.json` lists WiLoR as `"tried": false` (no output). Grounding DINO was set to false too, then ran locally
+  in this round (r0648), so it is `"tried": true` again with `tried_how` "local-cpu".
+- V2: every `runs[].run_id` in `tools.json` is now a bare ledger id (C1 = r0408, B1 = r0448, V1 = r0495, V2 = r0497;
+  the attempt without a ledger line keeps `null`), with new fields `step` ("<group>/<step name>") and `note`; entries
+  that covered several steps or runs were split; empty exit codes, walls and peaks were filled from the steps'
+  `times.tsv` and the ledger (`scripts/gap-round-2/fix_tools_json_g1_g2.py`).
+- V3, V4, V7, V8: license, training-data and dataset facts in `survey.md` (its "Gap round 2 log") and `tools.json`.
+- V5: the picking-hand measurement below (run r0609).
+- V6: the capo still C1 (`inputs.md`), YOLOE-26s, OWLv2 (Space and local), Grounding DINO tiny, YOLO-World v2 and the
+  OpenCV lines on it (runs r0628-r0652 below), and `for-aaron.md` section 10 for a capo clip pair.
 
 ### Picking hand against note onsets on R3c (gap V5): fingertip speed around onsets, descriptive
 
@@ -945,7 +962,8 @@ gap round 2: ...)"; this section holds what was run.
   pure-Python lag search of the A/V check.
 - Install: `uv venv --python 3.11 venv-analysis && uv pip install --python venv-analysis/bin/python librosa==0.11.0
   matplotlib pillow` (files hard-linked from the shared uv cache; about 3 MB of new disk; freeze in
-  `samples/picking-hand-onsets/uv-pip-freeze.txt`: librosa 0.11.0, numpy 2.4.6, scipy 1.17.1, numba 0.68.1).
+  `samples/picking-hand-onsets/uv-pip-freeze.txt`: librosa 0.11.0, numpy 2.4.6, scipy 1.17.1, numba 0.68.1). The venv
+  and the numba cache folder were deleted after the gap round; a re-run rebuilds the venv from that freeze.
 
 Results with the 63 Basic Pitch onsets (118 near samples, 331 rest samples; speeds in pixels per frame):
 
@@ -997,6 +1015,159 @@ Basic Pitch onsets (k = 0 is the sample within 20 ms of the onset):
   `mediapipe-holistic_R3c_full`) were not analysed; R3a and R3b were not analysed, because their picking hand is
   out of frame, occluded or not detected (sections above).
 
+### A still with a capo (gap V6): the input and how the detectors were run on it
+
+- Input C1: Commons photo "Kapodaster an Westerngitarre" (© Anil Öztas, CC BY-SA 4.0), Commons' 960 x 1706 rendition,
+  225,432 bytes, sha256 `11e53f300c0948e6484cc3da2e8198c4509479f632ed6938b1cf8a3d9b916115`; source, license quote,
+  attribution and what is in frame in `inputs.md` ("C1"). Front view of a headstock and the first two frets on a white
+  background, a capo bar across the strings between fret wires 1 and 2 (by eye: bar at y about 1440-1500, x about
+  290-725, clamp at x about 615-725), no hands. It is a still, not a playing video; `for-aaron.md` section 10 asks for
+  a capo video.
+- Views given to every detector (one gtr-run job per detector, `scripts/gap-round-2/run_openvocab_images.py`, which
+  repeats `scripts/run_openvocab.py`'s prompts, score floors, model ids and box handling for any image list):
+  `C1_full` (the whole 960 x 1706 image), `C1_lower` (the crop x 250-760, y 1000-1706, nut to bottom edge, no
+  headstock, not scaled), and the eight R3a / R3a_cu views of the earlier YOLOE run (R3a frames 100, 300, 500 full and
+  100, 300 as the 3x crop; R3a_cu frames 0, 150, 280), so that each detector also reports what it calls "capo" on
+  frames that have no capo. The six frames were decoded again with `ffmpeg -i <clip>.mp4 -vf "select=eq(n\,N)" -vsync
+  0 -frames:v 1`; frames 100 and 300 of R3a and 150 of R3a_cu are pixel-identical (largest difference 0) to the PNGs the
+  trial sent to the OWLv2 Space (`out/spaces/in/`).
+- Prompts for all four detectors: guitar, guitar neck, fretboard, headstock, capo, hand (OWLv2 receives each as "a
+  photo of a <prompt>", Grounding DINO receives "guitar. guitar neck. fretboard. headstock. capo. hand."). Score
+  floors as in the earlier script: 0.05 (YOLOE, YOLO-World), 0.1 (OWLv2), 0.2 (Grounding DINO box and text
+  thresholds); counts at >= 0.25 are given as well.
+- No gtr-eval: the boxes have no ground truth; the capo position is read by eye.
+
+Capo results, all runs on 2 cores except the Space (remote):
+
+| detector (run) | C1_full: "capo" boxes (>= floor / >= 0.25), top score | C1_lower: same | highest "capo" score on the 8 capo-less R3a / R3a_cu views | where the C1 "capo" boxes lie (by eye) |
+|---|---|---|---|---|
+| YOLOE-26s (r0628) | 0 / 0 | 0 / 0 | none >= 0.05 on any view | - |
+| YOLO-World v2 (r0650) | 0 / 0 | 0 / 0 | none >= 0.05 on any view | - |
+| OWLv2 base, local (r0639) | 2 / 1, 0.2539 | 2 / 0, 0.2154 | 0.1919 to 0.3682; 4 of the 8 views above 0.2539 | both on the clamp at the neck's right edge, (615.2,1401.7)-(722.7,1485.1) and (616.5,1402.2)-(714.4,1449.2); none spans the bar across the strings |
+| Grounding DINO tiny, local (r0648) | 0 / 0 | 0 / 0 | one box, 0.2653, on the R3a frame-100 crop | - (on `C1_lower` a box labelled "##tock", 0.2105, lies at (287.6,1431.7)-(725.4,1499.6), the capo bar's position) |
+| OWLv2 Space `merve/owlv2` (r0629) | 4 mask boxes, no scores | not run | 2, 3 and 10 "capo" boxes on the three frames of r0193 | (291,1434)-(723,1497) the bar with its clamp; (614,1397)-(724,1486) and (614,1400)-(711,1445) the clamp; (176,750)-(278,824) a tuner button on the left of the headstock |
+
+#### YOLOE-26s on C1 (run r0628)
+
+- Same model, text encoder and venv as the YOLOE-26s section (`yoloe-26s-seg.pt`, `mobileclip2_b.ts`, ultralytics
+  8.4.209, torch 2.15.0+cpu). Command: `gtr-run --lane video-hands-fretboard --tool yoloe-26s ... -- env YOLO_OFFLINE=1
+  venv-ultra/bin/python -I -B scripts/gap-round-2/run_openvocab_images.py yoloe <out> <lane>/dl/ultralytics <10 view
+  specs>` (full command in the ledger). Run **r0628**, 2 cores (0-1, no wait), wall 9.70 s, CPU 9.98 s, peak RSS
+  727.3 MB, exit 0; setup 3.43 s; 0.23-0.41 s per view.
+- C1: one box in each view, both labelled "fretboard" at 0.051 (`C1_full`, (513.1,248.6)-(649.8,1085.2): by its
+  coordinates the right part of the headstock down to the nut) and 0.0512 (`C1_lower`, (337.4,1000.9)-(618.2,1451.9):
+  the fretboard from the nut to the capo); no "capo", "guitar neck", "headstock" or "guitar" box at >= 0.05. (The
+  overlays draw boxes >= 0.25 only, so these two are not drawn.)
+- The eight R3a / R3a_cu views gave the same prompts, scores and boxes as the trial's `out/yoloe/results.json` (B1
+  step `yoloe-26s_openvocab_rerun`) in every entry, which checks the new script against the old one.
+- Samples: `samples/yoloe-26s/gap2/` (`results.json`, overlays of `C1_full` and `C1_lower`).
+
+#### OWLv2 through the public Space on C1 (run r0629); the Grounding DINO Space failed again
+
+- Same script as r0193 (`scripts/run_spaces_openvocab.py`), same settings (`text_queries="guitar neck, fretboard,
+  headstock, capo, hand"`, `score_threshold=0.1`), input `C1_kapodaster_960px.jpg`. Both Spaces reported `"stage":
+  "RUNNING"` on `cpu-basic` (runtime API, 2026-11-11; `merve/owlv2` at sha `8af0855e`). Run **r0629**, `--nolock`
+  (network-bound; the model runs on Hugging Face's machine, as in r0193): wall 34.33 s, local CPU 2.09 s, exit 0;
+  OWLv2 call 31.3 s.
+- OWLv2 Space: 28 mask annotations: fretboard 13, guitar neck 6, headstock 5, capo 4 (boxes in the table above). The
+  Space output has no score field (OWLv2 section).
+- Grounding DINO Space: the call failed with `ValueError('Unknown protocol: ws')`, as in r0193 and r0488.
+- Samples: `samples/owlv2-space/spaces_results_C1.json`, `C1_kapodaster_owlv2_space_boxes.webp` (the mask boxes drawn
+  on C1; capo boxes thick and labelled).
+
+#### OWLv2 (google/owlv2-base-patch16-ensemble) locally, transformers 5.22.2 (runs r0632, r0634, r0639)
+
+- What it is: the OWLv2 checkpoint the Space loads, run on this box's CPU with Hugging Face `transformers`
+  (`Owlv2Processor`, `Owlv2ForObjectDetection`). Not run locally before because its weights were over the 200 MB
+  download limit (section "Grounding DINO (tiny), OWLv2 (base) and YOLO-World v2"); the Space gives no scores, and the
+  capo gap asks for scores, so the weights were fetched for this run and deleted after it (disk free about 7.3 GB at
+  download time).
+- Install: nothing new; `venv-ultra` already had `transformers` 5.22.2, `tokenizers` 0.23.3, `safetensors` 0.8.0,
+  `huggingface-hub` 2.4.0 (freeze in `samples/owlv2-local/uv-pip-freeze.venv-ultra.txt`). Weights:
+  `snapshot_download("google/owlv2-base-patch16-ensemble", allow_patterns=["*.json", "*.txt", "model.safetensors"])`
+  into a lane-local `HF_HOME`, repo commit `cfd3195ba4ea9592eec887ded089f4c08eff231d` (HF API, last modified
+  2024-10-31, not gated, `license: apache-2.0`); `model.safetensors` 619,918,824 bytes, sha256
+  `e1e130b9e404cf91a75ad45644c1da9d7fa5284085eecc864266a6923efb99e7`. Runs used `HF_HUB_OFFLINE=1`.
+- Failures, as they happened: **r0632** (exit 1, wall 5.23 s): `OSError: Can't load image processor for
+  'google/owlv2-base-patch16-ensemble'` in offline mode, because the snapshot had been fetched by commit hash and no
+  `refs/main` existed; a second `snapshot_download` without a revision wrote it. **r0634** (exit 1, wall 12.73 s):
+  `AttributeError: 'Owlv2Processor' object has no attribute 'post_process_object_detection'. Did you mean:
+  'post_process_grounded_object_detection'?` In transformers 5.22.2 the processor has
+  `post_process_grounded_object_detection(outputs, threshold, target_sizes, text_labels)` and the image processor
+  (`Owlv2ImageProcessor`) still has `post_process_object_detection(outputs, threshold, target_sizes)`; the model card's
+  example calls the processor's method (survey, OWLv2 section). The script now calls
+  `proc.image_processor.post_process_object_detection` with the same arguments; the earlier
+  `scripts/run_openvocab.py` `owlv2` branch has the call that fails (it was never run).
+- Run **r0639**: 2 cores (0-1, no wait), wall 87.19 s, CPU 141.6 s, peak RSS 1244.5 MB, exit 0; model load 3.16 s;
+  7.07-10.03 s per view (the processor resizes every view to the model's square input).
+- Output (per view, boxes >= 0.1 with prompt and score; boxes are scaled to the padded square `max(h, w)` as in the
+  earlier script). C1_full: 22 boxes: guitar 1 (0.4838, the whole instrument), guitar neck 11 (top 0.2092),
+  fretboard 8 (top 0.2837, (324.2,1074.2)-(637.4,1697.8), nut to bottom edge), capo 2 (above), headstock 0, hand 0.
+  C1_lower: 4 boxes (capo 0.2154 and 0.1475 on the clamp, fretboard 0.1821, guitar 0.1536). On the eight earlier
+  views: guitar top scores 0.6744-0.7433, guitar neck up to 0.501 (R3a_cu frame 0), "hand" up to 0.2355, "capo" in
+  every view (2 to 11 boxes >= 0.1).
+- Samples: `samples/owlv2-local/` (`results.json` with every box, overlays of all ten views; boxes >= 0.15 drawn).
+
+#### Grounding DINO tiny (IDEA-Research/grounding-dino-tiny) locally, transformers 5.22.2 (run r0648)
+
+- What it is: Grounding DINO with the Swin-T backbone in `transformers` (`AutoModelForZeroShotObjectDetection`).
+  Not run before: local weights over the 200 MB limit, Space call failing (`Unknown protocol: ws`). Weights fetched as
+  for OWLv2 (repo commit `a2bb814dd30d776dcf7e30523b00659f4f141c71`, last modified 2024-05-12, not gated, `license:
+  apache-2.0`; `model.safetensors` 689,359,096 bytes, sha256
+  `1a2412ef99bd74bcd3c2a246fa1e48581f8889a1300c9051974741314fc042f3`) and deleted after the run.
+- Run **r0648**: `run_openvocab_images.py gdino ...`, 2 cores (0-1, no wait), wall 107.72 s, CPU 193.21 s, peak RSS
+  2455.4 MB, exit 0; model load 3.72 s; 7.39-11.86 s per view. Calls: `proc(images=..., text="guitar. guitar neck.
+  fretboard. headstock. capo. hand.")`, then `proc.post_process_grounded_object_detection(outputs, input_ids,
+  threshold=0.2, text_threshold=0.2, target_sizes=[(h, w)])`.
+- Output format fact: the label of each box is the text of the prompt tokens above the text threshold, so labels
+  outside the prompt list came back: "guitar guitar" (on all ten views), "neck" (all ten), "##tock" (a word piece of
+  "headstock"; `C1_lower`, R3a_cu frame 150) and "heads" (R3a_cu frame 0). The per-prompt counts count exact
+  matches only; every box and label is in `results.json`.
+- C1_full: 5 boxes: "guitar guitar" 0.4528 and 0.2377, "guitar neck" 0.3558 (whole instrument) and 0.3448
+  ((255.4,157.2)-(672.9,1058.7), the headstock), "neck" 0.2255. C1_lower: 6 boxes, among them "guitar neck" 0.3298
+  (nut to the capo) and "##tock" 0.2105 at the capo bar's position (table above). No box labelled "capo" on C1. On the
+  earlier views: "hand" boxes in all eight (top 0.334-0.6231), one "capo" box (0.2653, R3a frame-100 crop, at
+  (343.4,331.3)-(402.5,350.0)), one "headstock" (0.2151, same crop).
+- Samples: `samples/grounding-dino-local/` (`results.json`, overlays of all ten views; boxes >= 0.25 drawn).
+
+#### YOLO-World v2 (yolov8s-worldv2.pt) in ultralytics 8.4.209 (run r0650)
+
+- What it is: YOLO-World v2 small as packaged by Ultralytics; `set_classes()` encodes the prompts with OpenAI CLIP
+  "ViT-B/32" (`ultralytics/nn/text_model.py`). Not run before: the CLIP weights were over the 200 MB limit. Weights
+  fetched by Ultralytics itself into a lane folder (`YOLOWorld("yolov8s-worldv2.pt")`, then one `set_classes`):
+  `yolov8s-worldv2.pt` 25,923,032 bytes (sha256 `9b2c17ab6124a913e9b3a5c170617920d91b0f01111a8479da69f00e2cf27792`)
+  from the `ultralytics/assets` release v8.4.0, and `weights/clip/ViT-B-32.pt` 353,976,522 bytes (sha256
+  `40d365715913c9da98579312b702a82c18be219cc2a73407c4526f58eba950af`, the hash in its download URL) through the
+  `openai-clip` 1.0.1 package already in `venv-ultra`; both deleted after the run. Ultralytics' `WEIGHTS_DIR` is the
+  relative path `weights`, so the CLIP file lands under the working directory.
+- Run **r0650**: `env YOLO_OFFLINE=1 ... run_openvocab_images.py yoloworld <out> <lane>/gap2/yw <specs>`, 2 cores
+  (0-1, no wait), wall 10.63 s, CPU 11.95 s, peak RSS 1793.4 MB, exit 0; setup 5.16 s; 0.19-0.31 s per view.
+- Output: no box >= 0.05 for any of the six prompts on `C1_full` or `C1_lower`. On the eight earlier views: "guitar"
+  in all eight (top 0.5267-0.8554), one "hand" box (0.0767, R3a frame-100 crop), nothing for guitar neck, fretboard,
+  headstock or capo.
+- Output format: as YOLOE (Ultralytics `Results`, `boxes.xyxy`, `conf`, `cls` indexing the prompt list); no masks.
+- Samples: `samples/yolo-world-v2/` (`results.json`, overlays of all ten views).
+
+#### OpenCV lines on C1 (run r0652)
+
+- `scripts/run_opencv_lines.py` unchanged (Canny 50/150, HoughLinesP, LSD, the string-like and fret-like rules, the
+  clustering), run on the still through `scripts/gap-round-2/run_opencv_lines_image.py` (it swaps the frame loader for
+  an image loader and runs the script as `__main__`). Quad set BY HAND on a gridded crop of C1 (pixels of the
+  960 x 1706 image): nut end upper edge (345,1090) and lower edge (612,1090), at the nut's lower edge; body end lower
+  edge (617,1700) and upper edge (338,1700), at the image's bottom edge. Axis 90.66 degrees, width 267.0 px; rectified
+  to 610 x 270 (rectified x from the nut, so image y is about 1090 + x).
+- Run **r0652**, `--nolock` (light, as r0149 and r0214): wall 1.10 s, CPU 1.68 s, peak RSS 116.5 MB, exit 0.
+- Unrectified, inside the quad: HoughLinesP 326 segments, 296 string-like, 2 fret-like; LSD 255, 106, 3.
+  Rectified: HoughLinesP 288 segments, 91 string-like, 3 fret-like, fret clusters at x = 1.0, 412.0, 452.0; LSD 262,
+  60, 2, fret clusters at x = 380.1, 394.3. By eye on the overlays (`samples/opencv-lines-C1/`): Hough's x = 1.0 is
+  the nut's lower edge, 412.0 the lower edge of the capo bar and 452.0 fret wire 2; both LSD clusters lie on the
+  highlight along the capo bar; fret wire 1 (x about 232-237) is not classified fret-like by either detector (the
+  strings cut it into pieces shorter than 40 % of the width). String-like clusters: Hough 16 (y = 0.5 ... 268.3), LSD
+  9 (10.8, 62.1, 111.9, 122.3, 159.8, 167.3, 206.9, 254.0, 267.4); the six strings lie at about y = 12, 62, 112, 160,
+  208 and 255 by eye. Nothing in the method names a line as a capo; it reports line positions only.
+- Samples: `samples/opencv-lines-C1/` (`opencv_lines_C1.json`, rectified Hough and LSD overlays, unrectified Hough
+  overlay).
+
 ## Grouped jobs (gtr-run ids for the steps above)
 
 The CPU slots were contended (the C1 job waited 1823.2 s for a slot, r0336 1800.7 s), so from 21:12 UTC most model
@@ -1045,6 +1216,7 @@ All under `/home/user/gtr/lanes/video-hands-fretboard/`; none is copied into the
 | `out/videos/R3b_mediapipe_hands_960.mp4` | 1,608,746 | 18.00 s | R3b at 960x540 with MediaPipe landmarks (group C1 output), no audio |
 | `out/videos/R3c_mediapipe_hands_960.mp4` | 940,447 | 18.00 s | R3c at 960x540 with MediaPipe landmarks (group C1 output), no audio |
 | `out/sam2/R3a_cu_f150-179.mp4` | 395,005 | 1.00 s | The 30 R3a_cu frames given to SAM 2.1 video mode (H.264 CRF 10), no audio |
+| `inputs/capo/C1_kapodaster_960px.jpg` | 225,432 | still | (gap round 2) Lane input C1: Commons' 960 x 1706 rendition of "Kapodaster an Westerngitarre", © Anil Öztas, CC BY-SA 4.0 (`inputs.md`); a still image, kept here with the other lane inputs |
 
 The R3b and R3c overlays carry the licenses of those clips (shared manifest); R3a and R3a_cu overlays are CC BY-SA 4.0
 derivatives of the archive.org concert video.

@@ -2,7 +2,9 @@
 
 Lane `source-separation`, agent `try-source-separation`, started 2026-11-10 20:52 UTC. Everything below was run on the
 shared box (4 vCPU Intel Xeon 2.10 GHz, 15 GiB RAM, no GPU). Timed runs went through `gtr-run`, which pins a job to
-one slot of 2 cores; no 4-core (`--all-cores`) run was made. Every run id (r0xxx) is a line in
+one slot of 2 cores; no 4-core (`--all-cores`) run was made (corrected in gap round 2: three 4-core runs were made
+then, r0659, r0660 and r0669, under "Gap round 2"; that section also shows that ONNX Runtime's default threads left
+the slot in four first-round runs). Every run id (r0xxx) is a line in
 `/home/user/gtr/ledger/runs.jsonl`, every scoring id (e0xxx) a line in the gtr-eval ledger
 (`/home/user/gtr/eval/ledger/evals.jsonl`). The first runs (r0019 to r0147) each took a slot. The trial agent
 reports that from about 21:05 UTC the slots were queued 15 to 20 jobs deep (its own count at the time; no log of it
@@ -335,7 +337,10 @@ Face, Zenodo and GitHub-mirror APIs and READMEs on 2026-11-10 and matches, excep
   `checkpoint/audiosep_base_4M_steps.ckpt` 1,264,844,076 bytes and `checkpoint/music_speech_audioset_epoch_15_esc_89.98.pt`
   2,352,471,003 bytes, readable without a login. Not run: 3.6 GB of checkpoints under the 200 MB download notice.
   Whether a 10 s CPU run is feasible was therefore not measured (UNVERIFIED; survey.md reports that the README picks
-  the CPU when CUDA is absent). The same Space API call (verifier, 2026-11-10) reported the Space's runtime stage as
+  the CPU when CUDA is absent). (Corrected in gap round 2: the 200 MB notice no longer applied, but with 7,403 MB free
+  at 00:42 UTC on 2026-11-11 the download would have left about 3,950 MB, under the 4 GB this round had to keep free;
+  still not run, and the 10 s CPU timing is still UNVERIFIED. Its route also runs a cloned repository's code, which
+  the permission system refused for two other tools in that round. See "Gap round 2".) The same Space API call (verifier, 2026-11-10) reported the Space's runtime stage as
   `RUNTIME_ERROR` (requested hardware `a10g-small`).
 - **Banquet (`kwatcharasupat/query-bandit`, query by example).** Zenodo record 13694558 (API, read 2026-11-10):
   license `cc-by-nc-sa-4.0`, `access_right: open` (no login), 14 checkpoints of 551,785,899 to 768,226,933 bytes
@@ -558,7 +563,9 @@ its slot.
   htdemucs_6s vocals -15.81, guitar -19.25, bass -20.86, drums -24.52, piano -44.65, other -45.22. The batch that
   held the slot is r0478 (wall 1514.33 s for all of batch A after waiting 3270.9 s for the slot). A 4-core
   (`--all-cores`) whole-song timing was not attempted: it needs both slots at once, and with jobs queued for the
-  slots (see the top of this file) it would have held one slot idle while waiting for the other.
+  slots (see the top of this file) it would have held one slot idle while waiting for the other. (Corrected in gap
+  round 2: run then: htdemucs r0659 263.90 s and r0669 363.56 s, htdemucs_6s r0660 109.55 s on 4 cores, and htdemucs
+  r0677 277.63 s on 2 cores in the same session; see "Gap round 2" for the box load during those runs.)
 - **Clipping guard visible in the real-song stems:** on R2 and R2full the `drums` and `vocals` stems of every Demucs
   model peak at exactly -0.09 dBFS (0.990 of full scale). `demucs/audio.py` `prevent_clip` with the default
   `--clip-mode rescale` does `wav = wav / max(1.01 * wav.abs().max(), 1)`, which gives that peak whenever a stem
@@ -853,7 +860,8 @@ its slot.
 - **gtr-eval note:** for the all-zero `vocals.wav` (e1431) gtr-eval wrote `"si_sdr_db": "inf"` for the lead. Its
   formula gives 0/0 when the estimate is all zeros; "inf" there is not a measurement of separation quality.
   (Verifier: `vocals.wav` is all zeros, 441,000 x 2 samples; `si_sdr` in `gtr_eval.py` (line 2156) returns `inf`
-  when the residual energy is 0 and checks that before the target energy, which is also 0 here.)
+  when the residual energy is 0 and checks that before the target energy, which is also 0 here.) (Gap round 2: the
+  same with gtr-eval 0.12.1, e1836, where `si_sdr` is at line 2221; see "Gap round 2".)
 - **Constraint inputs for a re-run:** `-m` (model), `--single_stem`, `--extra_models` + `--ensemble_algorithm` /
   `--ensemble_preset`, `--normalization`, `--amplification`, `--sample_rate`, `--chunk_duration`, and per-family
   settings (`--mdx_segment_size`, `--mdx_overlap`, `--vr_window_size`, `--vr_aggression`, `--vr_enable_tta`,
@@ -1113,6 +1121,80 @@ each download below. Same scoring, file layout and conventions as the sections a
 - **Constraint inputs** (the repository's `inference.py`): `--checkpoint`, `--device auto|cuda|cpu`, `--shifts`,
   `--overlap`; the segment is fixed at 7.8 s in its code. No pitch or tuning parameters.
 
+### AudioSep: NOT RUN HERE, the 4 GB of free disk this round had to keep would not have stayed free
+
+- **Disk, measured** (2026-11-11 00:42 UTC): 7,403 MB free (`df -BM /`; `df -h /` printed 6.6 to 7.9 GB between
+  00:20 and 00:42 UTC while other lanes worked). The two checkpoints in the Hugging Face Space `Audio-AGI/AudioSep`
+  (API with `blobs=true`, same time) are `checkpoint/audiosep_base_4M_steps.ckpt` 1,264,844,076 bytes and
+  `checkpoint/music_speech_audioset_epoch_15_esc_89.98.pt` 2,352,471,003 bytes, 3,617,315,079 bytes (3,450 MB in
+  `df -BM` units) together. After the download about 3,950 MB would have been left: under the 4 GB this round's task
+  set as the floor, and under the 4,500 MB below which `env.sh` prints "DISK CRITICAL ... No download over 100 MB".
+  Nothing was downloaded, so no AudioSep run, and no timing, exists from this box. The Space's runtime stage was
+  still `RUNTIME_ERROR` (same API call).
+- **The code route:** there is no PyPI package (`https://pypi.org/pypi/audiosep/json` and `audio-sep`: HTTP 404,
+  2026-11-11); the README runs `from pipeline import build_audiosep, inference` from a clone of the repository, the
+  same kind of step (running a cloned repository's code) that the permission system refused for Gaborformer and
+  Banquet above. It was not attempted for AudioSep, since the disk condition had already failed.
+- **Read from a clone** (`git clone --depth 1`, head `944583f`, 2024-11-26, 8.3 MB; deleted, copies of the files read
+  in `/home/user/gtr/lanes/source-separation/gap2/fetched/audiosep/`): `pipeline.py` defines `build_audiosep` and
+  `separate_audio(model, audio_file, text, output_file, device='cuda', use_chunk=False)`, and no function named
+  `inference`, although the README's example imports `inference` from `pipeline` (as written, that import would
+  fail; not run). `separate_audio` loads the input with `librosa.load(audio_file, sr=32000, mono=True)`, embeds the
+  text with `model.query_encoder.get_query_embed(modality='text', text=[text], ...)`, and writes one mono 16-bit WAV
+  at 32 kHz. `models/clap_encoder.py` defaults to `pretrained_path='checkpoint/music_speech_audioset_epoch_15_esc_89.98.pt'`,
+  so the 2.35 GB CLAP file is needed besides the separator checkpoint.
+- **Steps for Aaron:** `for-aaron.md`, item 2 (the function name in its local route corrected to `separate_audio`).
+
+### Demucs 4.1.0 on the whole song R2full with all 4 cores (`gtr-run --all-cores`)
+
+- **What was run:** the command of the 2-core runs r0472 and r0477, `demucs -n <htdemucs|htdemucs_6s> -d cpu -o <out>
+  R2full.wav` (only the output folder changed), as `gtr-run --all-cores` jobs: both slots, CPUs 0-3,
+  `OMP_NUM_THREADS=4` (`scripts/gap2_allcores_r2full.sh`). Because the first 4-core htdemucs run took longer than the
+  2-core one, htdemucs was run once more with 4 cores and once with 2 cores in the same session, each with
+  `scripts/gap2_box_sampler.py` recording every 2 s how busy each CPU of the box was and how much of that CPU time was
+  the Demucs process (`scripts/gap2_allcores_repeat.sh`; summaries
+  `samples/demucs-allcores/boxsampler_htdemucs_R2full_<n>cores_repeat.json`).
+
+| run | model | cores | started (UTC) | wall s | CPU s | peak RSS MB | load1 at start | CPU s used by other processes during the run (sampler) |
+|---|---|---|---|---|---|---|---|---|
+| r0472 (first round) | htdemucs | 2 (inside batch A) | 2026-11-10 22:46 | 255.55 | 347.1 | 1798.0 | 5.38 | not recorded |
+| r0659 | htdemucs | 4 | 2026-11-11 00:43 | 263.90 | 684.6 | 1776.6 | 0.98 | not recorded |
+| r0669 | htdemucs | 4 | 2026-11-11 00:51 | 363.56 | 819.0 | 1740.2 | 2.63 | 622.0 of 1,438.1 busy CPU s in 368.8 s; mean load1 6.50 |
+| r0677 | htdemucs | 2 (CPUs 2-3) | 2026-11-11 00:57 | 277.63 | 356.8 | 1763.8 | 5.25 | 723.5 of 1,079.1 busy CPU s in 284.6 s; mean load1 6.26 |
+| r0477 (first round) | htdemucs_6s | 2 (inside batch A) | 2026-11-10 22:50 | 163.00 | 251.0 | 2163.8 | 5.98 | not recorded |
+| r0660 | htdemucs_6s | 4 | 2026-11-11 00:47 | 109.55 | 334.0 | 2176.1 | 6.22 | not recorded |
+
+  During r0669 the four CPUs were busy 97.4 to 97.9 % of the time (mean of the 2 s samples), and processes other than
+  Demucs used 622.0 CPU seconds, an average of 1.7 CPUs; during r0677 other processes used 723.5 CPU seconds, an
+  average of 2.5 CPUs (the box was shared with other lanes' unpinned work; the `gtr-run` ledger lines of other lanes
+  that overlap r0659 are four short `--nolock` runs of under 3 s). With 4 cores the htdemucs runs used about twice
+  the CPU time of the 2-core runs for the same song (684.6 and 819.0 s against 347.1 and 356.8 s); htdemucs_6s used
+  334.0 s against 251.0 s. Why the CPU time grew was not isolated. One run per setting except htdemucs (two 4-core,
+  two 2-core runs): these are single measurements on a shared box, not averages.
+- **Output:** each run wrote its stems as 44,100 Hz, 2 channel PCM_16 WAVs of 10,076,073 frames (the input's), stem
+  sum at lag 0; r0659: residual -25.74 dB, stem levels vocals -15.80, other -18.64, bass -21.25, drums -24.61 dBFS;
+  r0660: residual -22.01 dB, vocals -15.76, guitar -19.20, bass -20.93, drums -25.08, other -46.49, piano -49.95 dBFS
+  (first round, 2 cores: -25.54 and -23.04 dB; the stems differ from run to run because of the random shift,
+  `--shifts 1`). Facts: `samples/demucs-allcores/stemfacts_<model>_R2full_4cores.json`. The audio of these four
+  re-runs (r0659, r0660, r0669, r0677; 693 MB) was deleted after the facts were taken; the first-round stems stay in
+  `out/htdemucs/R2full/` and `out/htdemucs_6s/R2full/`.
+
+### Known issue in gtr-eval (recorded, tool not changed): SI-SDR "inf" for an all-zero estimate
+
+- e1431 (gtr-eval 0.11.1, first round) scored the BS-RoFormer `vocals.wav` of the first 10 s of S4, which is all
+  zeros, and wrote `"si_sdr_db": "inf"` for the lead (see the audio-separator section). The same scoring was run again
+  with the current tool (r0688, 2 cores; e1836): the result file records gtr-eval 0.12.1 (the run's label says 0.12.0,
+  the version `gtr-eval --version` had printed earlier in this round; 0.12.1 changed only `f0`, per its README) and
+  again has
+  `"si_sdr_db": "inf"` for the lead, `3.164122` for the instrumental, and in `processing` mir_eval's refusal "All the
+  estimated sources should be non-silent (not all-zeros) ...; SDR not reported"
+  (`samples/scores/gap2_gtreval_0.12.1_rerun_of_e1431.json`). In `gtr_eval.py` 0.12.1, `si_sdr` (line 2221) removes
+  the means, computes `alpha = <est, ref> / <ref, ref>`, `tgt = alpha * ref`, `res = est - tgt`, and returns
+  `float("inf")` when `<res, res>` is 0 before it checks whether `<tgt, tgt>` is 0 (which returns `-inf`). For an
+  all-zero estimate both are 0, so the value written is "inf"; it is not a measurement of separation quality. In the
+  eval ledger, the scorings that name this lane's folders and hold an infinite value are e1431, the verifier's re-run
+  of it (e1564) and e1836; in `samples/scores/` only the files of e1431 and e1836 hold one.
+
 ## Stems available for other lanes (handoffs)
 
 All under `/home/user/gtr/lanes/source-separation/out/`, 44.1 kHz stereo WAV, same length and alignment as the input
@@ -1120,7 +1202,9 @@ clip unless noted. Guitar-bearing stems for transcription lanes: `htdemucs_6s/<c
 R2, R2full, R3a, R3b, R3c), `htdemucs/<clip>/other.wav` (S4, S6taps, S2s, R2, R2full, R3a, R3b, R3c),
 `uvr/BS-Roformer-SW/S4_0-10s/guitar.wav` and `msst-bs-roformer-sw/S4_0-10s/guitar.wav` (first 10 s of S4 only),
 `msst-becruily-guitar/<clip>/Guitar.wav` (float32; S4, S4_0-10s, S2s), `demucs.cpp-htdemucs_6s/S4/target_4_guitar.wav`
-(float32), `msst-scnet-musdb18/<clip>/other.wav` (float32; S4, S6taps; that model has no guitar stem). Bass for
+(float32), `msst-scnet-musdb18/<clip>/other.wav` (float32; S4, S6taps; that model has no guitar stem),
+`htdemucs-6s-guitar-ft/<clip>/guitar.wav` (PCM_24; S4, R2, S6taps, S2s; gap round 2) and
+`htdemucs_6s-via-ft-script/<clip>/guitar.wav` (PCM_24; S4, S6taps; the stock weights through the same script). Bass for
 bass-line lanes: `<model>/<clip>/bass.wav` from htdemucs, htdemucs_6s, htdemucs_ft, mdx_extra, umxhq, umxl,
 spleeter-4stems, msst-scnet-musdb18. Percussion for tap lanes: `<model>/S6taps/drums.wav` (htdemucs,
 htdemucs_6s, umxhq, spleeter-4stems, msst-scnet-musdb18 (float32)) and `hpss/S6taps/<setting>/percussive.wav`
@@ -1202,9 +1286,18 @@ here from the S4 files (synthesized for this research; INPUTS.md gives the licen
 | `uvr/UVR-MDX-NET-Inst_HQ_3/S4` | instrumental.wav, vocals.wav | 13.7 MB | 38.741 | 44100 Hz / 2 ch / PCM_16 |
 | `uvr/htdemucs_6s/S4` | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 41.0 MB | 38.741 | 44100 Hz / 2 ch / PCM_16 |
 | `uvr/model_bs_roformer_ep_317_sdr_12.9755/S4_0-10s` | instrumental.wav, vocals.wav | 3.5 MB | 10.0 | 44100 Hz / 2 ch / PCM_16 |
+| `htdemucs-6s-guitar-ft/R2` (gap round 2) | bass.wav, derived_instrumental_sum.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 69.9 MB | 36.0 | 44100 Hz / 2 ch / FLOAT; 44100 Hz / 2 ch / PCM_24 |
+| `htdemucs-6s-guitar-ft/S2s` (gap round 2) | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 46.6 MB | 29.357 | 44100 Hz / 2 ch / PCM_24 |
+| `htdemucs-6s-guitar-ft/S4` (gap round 2) | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 61.5 MB | 38.741 | 44100 Hz / 2 ch / PCM_24 |
+| `htdemucs-6s-guitar-ft/S6taps` (gap round 2) | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 46.6 MB | 29.357 | 44100 Hz / 2 ch / PCM_24 |
+| `htdemucs_6s-via-ft-script/S4` (gap round 2) | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 61.5 MB | 38.741 | 44100 Hz / 2 ch / PCM_24 |
+| `htdemucs_6s-via-ft-script/S6taps` (gap round 2) | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 46.6 MB | 29.357 | 44100 Hz / 2 ch / PCM_24 |
 
 Total: 1669.0 MB in 236 files (trial agent's list; recounted by the verifier before the SCNet run: 236 files,
-1669.0 MB). With the verifier's two SCNet folders: 1765.1 MB in 244 files. The MP3 row's 10.04 s is the header's
+1669.0 MB). With the verifier's two SCNet folders: 1765.1 MB in 244 files. With the six gap round 2 folders
+(`scripts/media_list.py`, 2026-11-11 00:52 UTC): 2097.8 MB in 281 files. The gap round 2 re-runs whose audio was
+deleted after the facts were taken (the ONNX Runtime thread re-runs r0610, r0612, r0615 and r0619, sample-identical
+to first-round files; the four whole-song timing runs r0659, r0660, r0669 and r0677) are not listed. The MP3 row's 10.04 s is the header's
 figure (`soundfile.info`: 442,747 frames); the files decode to 442,368 frames (10.031 s). The verifier's re-run
 outputs (duplicates of runs above) were written to `/home/user/gtr/lanes/source-separation/verify/out/` and are not
 listed here.

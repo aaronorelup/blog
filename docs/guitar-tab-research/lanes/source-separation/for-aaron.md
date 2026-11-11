@@ -38,8 +38,10 @@ account and a request that Meta approves) and the smallest model repository is 5
 
 ## 2. AudioSep, text-queried separation
 
-Not run here: its two checkpoint files are 1.26 GB and 2.35 GB (3.6 GB together) and the disk notice on the box
-forbids downloads over 200 MB.
+Not run here: its two checkpoint files are 1.26 GB and 2.35 GB (3.6 GB together). In the first round the disk notice
+on the box forbade downloads over 200 MB; in gap round 2 (corrected then) the download would have left less than the
+4 GB of free disk that round had to keep, and the route runs a cloned repository's code, which the box's permission
+system refused for two other tools (`trials.md`, "Gap round 2").
 
 1. No install: open the Hugging Face Space https://huggingface.co/spaces/Audio-AGI/AudioSep in Chrome. On
    2026-11-10 the Hugging Face API reported this Space's runtime stage as `RUNTIME_ERROR`, so the page may show an
@@ -54,9 +56,12 @@ forbids downloads over 200 MB.
    `music_speech_audioset_epoch_15_esc_89.98.pt` from the Space's `checkpoint/` folder
    (https://huggingface.co/spaces/Audio-AGI/AudioSep/tree/main/checkpoint) into the repository's `checkpoint/` folder.
    Then run the README's Python example (`build_audiosep(config_yaml='config/audiosep_base.yaml',
-   checkpoint_path='checkpoint/audiosep_base_4M_steps.ckpt', device=device)` then `inference(model, audio_file, text,
-   output_file, device)`) once per file and prompt from step 2; the README's example picks the GPU when CUDA is
-   available. Send back the outputs, the prompts and the time per file.
+   checkpoint_path='checkpoint/audiosep_base_4M_steps.ckpt', device=device)`, then the separation call) once per file
+   and prompt from step 2; the README's example picks the GPU when CUDA is available. The README imports and calls
+   `inference(model, audio_file, text, output_file, device)`, but `pipeline.py` (head 944583f, read in gap round 2)
+   has no function of that name: it is `separate_audio(model, audio_file, text, output_file, device)`, so use
+   `from pipeline import build_audiosep, separate_audio` and call `separate_audio` with the same arguments (corrected
+   in gap round 2; the earlier text named `inference`). Send back the outputs, the prompts and the time per file.
 
 ## 3. Banquet (query-by-example: "give me the stem that sounds like this clip")
 

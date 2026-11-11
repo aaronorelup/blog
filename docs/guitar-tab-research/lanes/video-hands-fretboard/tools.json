@@ -1,6 +1,7 @@
 {
  "lane": "video-hands-fretboard",
  "generated": "2026-11-10",
+ "updated": "2026-11-11 (gap round 2; scripts/gap-round-2/fix_tools_json_*.py)",
  "tools": [
   {
    "name": "MediaPipe Hand Landmarker (Tasks API)",
@@ -3107,6 +3108,30 @@
      },
      "step": null,
      "note": "verifier re-run"
+    },
+    {
+     "run_id": "r0652",
+     "step": null,
+     "note": null,
+     "input_id": "C1 full (capo still), quad set by hand: (345,1090), (612,1090), (617,1700), (338,1700); rectified 610x270",
+     "cores": null,
+     "wall_s": 1.1,
+     "peak_mb": 116.5,
+     "exit_code": 0,
+     "output_files": [
+      "samples/opencv-lines-C1/opencv_lines_C1.json",
+      "samples/opencv-lines-C1/*.webp"
+     ],
+     "metrics": {
+      "peak_unit": "MB",
+      "cpu_s": 1.68,
+      "nolock": "--nolock",
+      "script": "scripts/run_opencv_lines.py unchanged, through scripts/gap-round-2/run_opencv_lines_image.py",
+      "unrectified": "Hough 326 segments in quad, 296 string-like, 2 fret-like; LSD 255, 106, 3",
+      "rectified": "Hough 288, 91 string-like, 3 fret-like, fret clusters x = 1.0, 412.0, 452.0; LSD 262, 60, 2, fret clusters x = 380.1, 394.3",
+      "by_eye": "Hough 1.0 = nut's lower edge, 412.0 = lower edge of the capo bar, 452.0 = fret wire 2; both LSD clusters on the capo bar's highlight; fret wire 1 (x about 232-237) not classified fret-like by either detector",
+      "string_clusters": "Hough 16, LSD 9 (10.8, 62.1, 111.9, 122.3, 159.8, 167.3, 206.9, 254.0, 267.4); six strings at about y = 12, 62, 112, 160, 208, 255 by eye"
+     }
     }
    ],
    "not_run_reason": null,
@@ -3173,9 +3198,9 @@
    "kind": "research-model",
    "what": "Google's open-vocabulary object detector (text queries -> boxes); in transformers as Owlv2ForObjectDetection. The model ran on Hugging Face's machine through the public Space with gradio_client 2.7.2 because its 619,918,824-byte weights were over the box's 200 MB download limit.",
    "url": "https://huggingface.co/google/owlv2-base-patch16-ensemble",
-   "version": "google/owlv2-base-patch16-ensemble (HF last modified 2024-10-31); Space merve/owlv2 (cpu-basic, RUNNING; app.py commit 8af0855e, last modified 2024-03-06); code in google-research/scenic (last commit 2026-10-31)",
+   "version": "google/owlv2-base-patch16-ensemble (HF last modified 2024-10-31); Space merve/owlv2 (cpu-basic, RUNNING; app.py commit 8af0855e, last modified 2024-03-06); code in google-research/scenic (last commit 2026-10-31); (gap round 2) local runs: model repo commit cfd3195ba4ea9592eec887ded089f4c08eff231d, model.safetensors 619,918,824 bytes, sha256 e1e130b9e404cf91a75ad45644c1da9d7fa5284085eecc864266a6923efb99e7, transformers 5.22.2, torch 2.15.0+cpu",
    "tried": true,
-   "tried_how": "public-space",
+   "tried_how": "public-space and local-cpu",
    "runs": [
     {
      "run_id": "r0193",
@@ -3241,6 +3266,86 @@
      },
      "step": null,
      "note": "verifier re-run"
+    },
+    {
+     "run_id": "r0629",
+     "step": null,
+     "note": null,
+     "input_id": "C1 full (Space merve/owlv2, text_queries 'guitar neck, fretboard, headstock, capo, hand', score_threshold 0.1)",
+     "cores": null,
+     "wall_s": 34.33,
+     "peak_mb": 103.2,
+     "exit_code": 0,
+     "output_files": [
+      "samples/owlv2-space/spaces_results_C1.json",
+      "samples/owlv2-space/C1_kapodaster_owlv2_space_boxes.webp"
+     ],
+     "metrics": {
+      "peak_unit": "MB",
+      "cpu_s": 2.09,
+      "nolock": "--nolock",
+      "remote": "model runs on Hugging Face's cpu-basic Space; time is network plus remote inference",
+      "owlv2_call_s": 31.3,
+      "annotations": "28 mask boxes: fretboard 13, guitar neck 6, headstock 5, capo 4; no scores",
+      "capo_boxes": "(291,1434)-(723,1497) the capo bar with its clamp; (614,1397)-(724,1486) and (614,1400)-(711,1445) the clamp; (176,750)-(278,824) a tuner button (by eye)"
+     }
+    },
+    {
+     "run_id": "r0632",
+     "step": null,
+     "note": "failed attempt",
+     "input_id": "C1 (Commons still 'Kapodaster an Westerngitarre', CC BY-SA 4.0, 960x1706; inputs.md) full and lower crop; the 8 R3a / R3a_cu views of the earlier YOLOE run (R3a f100, f300, f500 full; f100, f300 3x crop; R3a_cu f0, f150, f280)",
+     "cores": 2,
+     "wall_s": 5.23,
+     "peak_mb": 387.3,
+     "exit_code": 1,
+     "output_files": [],
+     "metrics": {
+      "peak_unit": "MB",
+      "cpu_s": 5.18,
+      "error": "OSError: Can't load image processor for 'google/owlv2-base-patch16-ensemble' (offline mode; the snapshot had been fetched by commit hash, no refs/main)"
+     }
+    },
+    {
+     "run_id": "r0634",
+     "step": null,
+     "note": "failed attempt",
+     "input_id": "C1 (Commons still 'Kapodaster an Westerngitarre', CC BY-SA 4.0, 960x1706; inputs.md) full and lower crop; the 8 R3a / R3a_cu views of the earlier YOLOE run (R3a f100, f300, f500 full; f100, f300 3x crop; R3a_cu f0, f150, f280)",
+     "cores": 2,
+     "wall_s": 12.73,
+     "peak_mb": 1145.9,
+     "exit_code": 1,
+     "output_files": [],
+     "metrics": {
+      "peak_unit": "MB",
+      "cpu_s": 19.05,
+      "error": "AttributeError: 'Owlv2Processor' object has no attribute 'post_process_object_detection'. Did you mean: 'post_process_grounded_object_detection'?"
+     }
+    },
+    {
+     "run_id": "r0639",
+     "step": null,
+     "note": null,
+     "input_id": "C1 (Commons still 'Kapodaster an Westerngitarre', CC BY-SA 4.0, 960x1706; inputs.md) full and lower crop; the 8 R3a / R3a_cu views of the earlier YOLOE run (R3a f100, f300, f500 full; f100, f300 3x crop; R3a_cu f0, f150, f280)",
+     "cores": 2,
+     "wall_s": 87.19,
+     "peak_mb": 1244.5,
+     "exit_code": 0,
+     "output_files": [
+      "samples/owlv2-local/results.json",
+      "samples/owlv2-local/*.webp"
+     ],
+     "metrics": {
+      "peak_unit": "MB",
+      "cpu_s": 141.6,
+      "settings": "queries 'a photo of a <prompt>' for guitar, guitar neck, fretboard, headstock, capo, hand; boxes >= 0.1; image_processor.post_process_object_detection with target size max(h, w) squared",
+      "model_load_s": 3.16,
+      "per_view_s": "7.07-10.03",
+      "C1_full": "22 boxes; guitar 1 (0.4838), guitar neck 11 (top 0.2092), fretboard 8 (top 0.2837), capo 2 (0.2539 and 0.1454, both on the clamp at the neck's right edge by eye), headstock 0, hand 0",
+      "C1_lower": "4 boxes; capo 0.2154 and 0.1475 (clamp), fretboard 0.1821, guitar 0.1536",
+      "capo_on_capo_less_views": "top 'capo' score per view 0.1919 to 0.3682; 4 of the 8 views above C1's 0.2539",
+      "no_ground_truth": "capo position read by eye; no gtr-eval"
+     }
     }
    ],
    "not_run_reason": null,
@@ -3251,7 +3356,8 @@
    ],
    "inputs": [
     "Space API: predict(img: filepath, text_queries: str, score_threshold: float, api_name='/predict'); free-text queries",
-    "transformers API: Owlv2Processor, Owlv2ForObjectDetection, post_process_object_detection(outputs=outputs, target_sizes=target_sizes, threshold=0.1)"
+    "transformers API: Owlv2Processor, Owlv2ForObjectDetection, post_process_object_detection(outputs=outputs, target_sizes=target_sizes, threshold=0.1)",
+    "(gap round 2) transformers 5.22.2: Owlv2Processor has no post_process_object_detection (AttributeError, run r0634); Owlv2ImageProcessor.post_process_object_detection(outputs, threshold, target_sizes) and Owlv2Processor.post_process_grounded_object_detection(outputs, threshold, target_sizes, text_labels) exist"
    ],
    "outputs": [
     "Space: AnnotatedImage = {image: filepath, annotations: [{image: filepath (a mask), label: str}]}; no score field, each box arrives as a mask image and the script took the mask's bounding box",
@@ -3306,7 +3412,7 @@
     "No ground truth for any clip; the numbers are counts, rates and times, not accuracy (trials.md header).",
     "Training data licenses are not stated on the card beyond the lines quoted ('(to be updated for v2)').",
     "Steps for Aaron (for-aaron.md section 4 step 4) are optional: the box already has these results.",
-    "The Space returns no scores, so the scored transformers output format was not observed in a run."
+    "(gap round 2) The scored transformers output was observed in run r0639 (boxes, scores, label indices). The Space's own query handling (it got 'guitar neck, fretboard, ...' without 'a photo of a') was not read; its C1 boxes differ from the local run's."
    ]
   },
   {
@@ -3314,9 +3420,9 @@
    "kind": "research-model",
    "what": "Text-prompted open-set object detection (boxes, logits, phrases); CPU-only mode supported by the repo README; also in Hugging Face transformers as IDEA-Research/grounding-dino-tiny|base.",
    "url": "https://github.com/IDEA-Research/GroundingDINO",
-   "version": "repo last commit 2024-08-12; PyPI groundingdino-py 0.4.0 (2023-05-23); transformers 5.22.2 (2026-11-06); grounding-dino-tiny model.safetensors 689,359,096 bytes",
-   "tried": false,
-   "tried_how": null,
+   "version": "repo last commit 2024-08-12; PyPI groundingdino-py 0.4.0 (2023-05-23); transformers 5.22.2 (2026-11-06); grounding-dino-tiny model.safetensors 689,359,096 bytes; (gap round 2) local run: model repo commit a2bb814dd30d776dcf7e30523b00659f4f141c71, model.safetensors sha256 1a2412ef99bd74bcd3c2a246fa1e48581f8889a1300c9051974741314fc042f3, transformers 5.22.2",
+   "tried": true,
+   "tried_how": "local-cpu",
    "runs": [
     {
      "run_id": "r0193",
@@ -3347,9 +3453,50 @@
      },
      "step": null,
      "note": "verifier re-run; the job exited 0 while the Grounding DINO calls failed again"
+    },
+    {
+     "run_id": "r0629",
+     "step": null,
+     "note": "the Grounding DINO call of job r0629 (the same job called the OWLv2 Space); the job exited 0",
+     "input_id": "C1 full (Space merve/Grounding_DINO_demo)",
+     "cores": null,
+     "wall_s": null,
+     "peak_mb": null,
+     "exit_code": 0,
+     "output_files": [],
+     "metrics": {
+      "nolock": "--nolock",
+      "error": "ValueError('Unknown protocol: ws'), as in r0193 and r0488"
+     }
+    },
+    {
+     "run_id": "r0648",
+     "step": null,
+     "note": null,
+     "input_id": "C1 (Commons still 'Kapodaster an Westerngitarre', CC BY-SA 4.0, 960x1706; inputs.md) full and lower crop; the 8 R3a / R3a_cu views of the earlier YOLOE run (R3a f100, f300, f500 full; f100, f300 3x crop; R3a_cu f0, f150, f280)",
+     "cores": 2,
+     "wall_s": 107.72,
+     "peak_mb": 2455.4,
+     "exit_code": 0,
+     "output_files": [
+      "samples/grounding-dino-local/results.json",
+      "samples/grounding-dino-local/*.webp"
+     ],
+     "metrics": {
+      "peak_unit": "MB",
+      "cpu_s": 193.21,
+      "settings": "text 'guitar. guitar neck. fretboard. headstock. capo. hand.', threshold 0.2, text_threshold 0.2",
+      "model_load_s": 3.72,
+      "per_view_s": "7.39-11.86",
+      "C1_full": "5 boxes: 'guitar guitar' 0.4528 and 0.2377, 'guitar neck' 0.3558 (whole instrument) and 0.3448 (headstock), 'neck' 0.2255; no 'capo' label",
+      "C1_lower": "6 boxes, among them 'guitar neck' 0.3298 and '##tock' 0.2105 at (287.6,1431.7)-(725.4,1499.6), the capo bar's position by eye; no 'capo' label",
+      "capo_on_capo_less_views": "one 'capo' box, 0.2653, R3a frame-100 crop",
+      "hand_on_earlier_views": "'hand' in all 8 views, top 0.334-0.6231",
+      "no_ground_truth": "no gtr-eval"
+     }
     }
    ],
-   "not_run_reason": "NOT RUN (local: weights 689,359,096 bytes over the 200 MB disk limit; Space merve/Grounding_DINO_demo: client error 'Unknown protocol: ws'). Steps for Aaron in for-aaron.md section 4. (gap round 2: tried set to false because no attempt gave output; the attempts, made as 'public-space', stay in runs[].)",
+   "not_run_reason": null,
    "for_aaron": true,
    "callable_via": [
     "python",
@@ -3361,7 +3508,8 @@
     "--cpu-only flag in the demo command"
    ],
    "outputs": [
-    "boxes, logits (scores), phrases; boxes are normalized (center x, center y, width, height); no masks (groundingdino/util/inference.py: annotate scales by [w, h, w, h] and box_convert cxcywh -> xyxy)"
+    "boxes, logits (scores), phrases; boxes are normalized (center x, center y, width, height); no masks (groundingdino/util/inference.py: annotate scales by [w, h, w, h] and box_convert cxcywh -> xyxy)",
+    "(gap round 2, run r0648) transformers post_process_grounded_object_detection returns per box a score, an xyxy box in pixels and a text label made of the prompt tokens above text_threshold; labels outside the prompt list came back: 'guitar guitar', 'neck', '##tock', 'heads'"
    ],
    "constraints_accepted": [
     "text prompt with phrases separated by ' . '",
@@ -3405,7 +3553,8 @@
     "Training data licenses (O365, GoldG, Cap4M): not read.",
     "PyPI groundingdino-py's homepage is github.com/giswqs/GroundingDINO (a third-party packaging).",
     "Author measurement: README 'COCO zero-shot 52.5 AP (training without COCO data!). COCO fine-tune 63.0 AP.'",
-    "Space merve/Grounding_DINO_demo state RUNNING on cpu-basic (2026-11-10); its Space API could not be called from the box."
+    "Space merve/Grounding_DINO_demo state RUNNING on cpu-basic (2026-11-10 and 2026-11-11); its API could not be called from the box (r0193, r0488, r0629: 'Unknown protocol: ws'); the model itself ran locally in r0648 (gap round 2).",
+    "(gap round 2) Gap V1 first set this entry to tried=false (the Space attempts r0193 and r0488 gave no output); the local run r0648 then gave output, so tried is true again, with tried_how local-cpu."
    ]
   },
   {
@@ -3543,6 +3692,29 @@
      },
      "step": "V1/verify-yoloe-26s_openvocab",
      "note": "verifier re-run"
+    },
+    {
+     "run_id": "r0628",
+     "step": null,
+     "note": null,
+     "input_id": "C1 (Commons still 'Kapodaster an Westerngitarre', CC BY-SA 4.0, 960x1706; inputs.md) full and lower crop; the 8 R3a / R3a_cu views of the earlier YOLOE run (R3a f100, f300, f500 full; f100, f300 3x crop; R3a_cu f0, f150, f280)",
+     "cores": 2,
+     "wall_s": 9.7,
+     "peak_mb": 727.3,
+     "exit_code": 0,
+     "output_files": [
+      "samples/yoloe-26s/gap2/results.json",
+      "samples/yoloe-26s/gap2/C1_*.webp"
+     ],
+     "metrics": {
+      "peak_unit": "MB",
+      "cpu_s": 9.98,
+      "setup_s": 3.43,
+      "per_view_s": "0.23-0.41",
+      "C1": "one box per view, both 'fretboard' (0.051 full, 0.0512 lower crop); no 'capo', 'guitar neck', 'headstock' or 'guitar' box >= 0.05",
+      "capo_on_capo_less_views": "none >= 0.05",
+      "check": "the 8 earlier views gave the same prompts, scores and boxes as the trial's results.json"
+     }
     }
    ],
    "not_run_reason": null,
@@ -4440,11 +4612,36 @@
    "kind": "research-model",
    "what": "Open-vocabulary detector ('prompt-then-detect' paradigm); YOLO-World-V2.1 released 2025-2-8; also shipped in Ultralytics as YOLOWorld('yolov8s-worldv2.pt').",
    "url": "https://github.com/AILab-CVC/YOLO-World",
-   "version": "repo last commit 2025-02-27; yolov8s-worldv2.pt 25,923,032 bytes (Ultralytics)",
-   "tried": false,
-   "tried_how": null,
-   "runs": [],
-   "not_run_reason": "NOT RUN HERE (disk): set_classes needs the OpenAI CLIP 'ViT-B/32' text encoder (ViT-B-32.pt, content-length 353,976,522), over the box's 200 MB download limit; yolov8s-worldv2.pt was downloaded and deleted unused. The two public demo Spaces showed errors on 2026-11-10 (stevengrove/YOLO-World: RUNTIME_ERROR; SkalskiP/YOLO-World: BUILD_ERROR). The yoloworld branch of scripts/run_openvocab.py has never been run. Steps for Aaron in for-aaron.md section 5.",
+   "version": "repo last commit 2025-02-27; yolov8s-worldv2.pt 25,923,032 bytes (Ultralytics); (gap round 2) run with ultralytics 8.4.209: yolov8s-worldv2.pt sha256 9b2c17ab6124a913e9b3a5c170617920d91b0f01111a8479da69f00e2cf27792 (ultralytics/assets v8.4.0), CLIP ViT-B-32.pt 353,976,522 bytes via openai-clip 1.0.1",
+   "tried": true,
+   "tried_how": "local-cpu",
+   "runs": [
+    {
+     "run_id": "r0650",
+     "step": null,
+     "note": null,
+     "input_id": "C1 (Commons still 'Kapodaster an Westerngitarre', CC BY-SA 4.0, 960x1706; inputs.md) full and lower crop; the 8 R3a / R3a_cu views of the earlier YOLOE run (R3a f100, f300, f500 full; f100, f300 3x crop; R3a_cu f0, f150, f280)",
+     "cores": 2,
+     "wall_s": 10.63,
+     "peak_mb": 1793.4,
+     "exit_code": 0,
+     "output_files": [
+      "samples/yolo-world-v2/results.json",
+      "samples/yolo-world-v2/*.webp"
+     ],
+     "metrics": {
+      "peak_unit": "MB",
+      "cpu_s": 11.95,
+      "settings": "set_classes(guitar, guitar neck, fretboard, headstock, capo, hand); conf 0.05",
+      "setup_s": 5.16,
+      "per_view_s": "0.19-0.31",
+      "C1": "no box >= 0.05 for any prompt on C1_full or C1_lower",
+      "earlier_views": "'guitar' in all 8 (top 0.5267-0.8554); one 'hand' box (0.0767, R3a frame-100 crop); nothing for guitar neck, fretboard, headstock or capo",
+      "no_ground_truth": "no gtr-eval"
+     }
+    }
+   ],
+   "not_run_reason": null,
    "for_aaron": true,
    "callable_via": [
     "python",
@@ -4452,7 +4649,8 @@
    ],
    "inputs": [
     "model = YOLOWorld('yolov8s-worldv2.pt'); model.set_classes(['person', 'bus']) (docs); planned: YOLO('yolov8s-worldv2.pt'), set_classes(['guitar', 'guitar neck', 'fretboard', 'headstock', 'capo', 'hand'])",
-    "scripts/run_openvocab.py yoloworld <outdir> <weights dir> reads decoded frames from the research box's paths (LANE and CLIPS in scripts/vhf_common.py)"
+    "scripts/run_openvocab.py yoloworld <outdir> <weights dir> reads decoded frames from the research box's paths (LANE and CLIPS in scripts/vhf_common.py)",
+    "(gap round 2) Ultralytics' WEIGHTS_DIR is the relative path 'weights', so set_classes() downloads the CLIP file to <working directory>/weights/clip/ViT-B-32.pt"
    ],
    "outputs": [
     "Ultralytics Results (boxes with xyxy, conf, cls)"
@@ -4492,7 +4690,8 @@
    "unverified": [
     "The OpenAI CLIP ViT-B/32 text encoder's license was not read (UNVERIFIED).",
     "README badge 'License-GPLv3.0'; the copies inside the Ultralytics package are part of that AGPL-3.0 package.",
-    "CPU use not stated in its README."
+    "CPU use not stated in its README.",
+    "(gap round 2) The two demo Spaces were not checked again; for-aaron.md section 5 is now optional."
    ]
   },
   {
@@ -4504,7 +4703,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "Not downloaded: over the box's 200 MB download limit (openai-clip 1.0.1 was installed).",
+   "not_run_reason": "Not run on its own. (gap round 2) Downloaded and used as YOLO-World v2's text encoder in run r0650 (ViT-B-32.pt, 353,976,522 bytes, sha256 40d365715913c9da98579312b702a82c18be219cc2a73407c4526f58eba950af), then deleted; see the YOLO-World entry.",
    "for_aaron": false,
    "callable_via": [],
    "inputs": [],
@@ -4968,7 +5167,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "No code or data link found on the lab page (its only GitHub link is the lab organization github.com/kmu-ee-ailab); git ls-remote of kmu-ee-ailab/GuiFiR and kmu-ee-ailab/guifir failed on 2026-11-10.",
+   "not_run_reason": "No model code or weights found: the repository the lab links as 'Code' (https://github.com/kmu-ee-ailab/guifir_dataset) holds dataset-preparation scripts and metadata only (13 files at HEAD e707e51, 2026-10-29). Not run. (corrected in gap round 2: the earlier text said no code or data link was found.)",
    "for_aaron": false,
    "callable_via": [],
    "inputs": [
@@ -4979,44 +5178,115 @@
    ],
    "constraints_accepted": [],
    "license": {
-    "code": null,
+    "code": {
+     "spdx": "MIT",
+     "quote": "This license applies only to the source code and documentation in this repository. Dataset assets are governed by DATASET_TERMS.md.",
+     "url": "https://raw.githubusercontent.com/kmu-ee-ailab/guifir_dataset/main/LICENSE",
+     "note": "LICENSE begins 'MIT License' and 'Copyright (c) 2026 GuiFiR authors'; it covers the preparation scripts."
+    },
     "weights": null,
-    "training_data": [],
-    "service_terms": []
+    "training_data": [
+     {
+      "name": "GuiFiR dataset assets (video clips, annotations, metadata, source-video references, frames)",
+      "license": "non-commercial research, education and reproducibility (DATASET_TERMS.md)",
+      "quote": "The dataset assets are provided for non-commercial research, education, and reproducibility of the GuiFiR work.",
+      "url": "https://raw.githubusercontent.com/kmu-ee-ailab/guifir_dataset/main/DATASET_TERMS.md"
+     }
+    ],
+    "service_terms": [
+     {
+      "topic": "commercial use (DATASET_TERMS.md, under 'You may not:')",
+      "quote": "Use the dataset assets for commercial products, services, or training pipelines without written permission from the dataset maintainers.",
+      "url": "https://raw.githubusercontent.com/kmu-ee-ailab/guifir_dataset/main/DATASET_TERMS.md"
+     },
+     {
+      "topic": "redistribution (DATASET_TERMS.md, under 'You may not:')",
+      "quote": "Redistribute, mirror, sublicense, sell, or commercially exploit the dataset assets.",
+      "url": "https://raw.githubusercontent.com/kmu-ee-ailab/guifir_dataset/main/DATASET_TERMS.md"
+     },
+     {
+      "topic": "derived weights and results (DATASET_TERMS.md, under 'You may:')",
+      "quote": "Publish aggregate results, analysis, and derived model weights, subject to the terms of any third-party data sources used.",
+      "url": "https://raw.githubusercontent.com/kmu-ee-ailab/guifir_dataset/main/DATASET_TERMS.md"
+     }
+    ]
    },
    "pricing": null,
    "handoffs_out": [],
    "unverified": [
-    "Code and data location: UNVERIFIED.",
     "Lab page claim: 'GuiFiR consistently improves hand pose estimation accuracy on guitar playing videos regardless of the baseline method (MediaPipe, OpenPose, WiLoR, HaMeR)'.",
-    "Survey Handoff fact 11: the reverse direction is published, audio tab output (TabCNN, covered in the guitar-tab lane) used as video supervision."
+    "Survey Handoff fact 11: the reverse direction is published, audio tab output (TabCNN, covered in the guitar-tab lane) used as video supervision.",
+    "(gap round 2) The lab's home page https://ailab.kookmin.ac.kr/ (read 2026-11-11) lists the paper with a link titled 'Code' to https://github.com/kmu-ee-ailab/guifir_dataset (HEAD e707e5167ec3e495ebffe539c5d6060ec203b9ce, 2026-10-29); the publication page links only the organization. The guitar-tab lane's survey found the same repository.",
+    "No model code or weights were found in any page or repository read."
    ]
   },
   {
    "name": "GuiFiR-Synth and GuiFiR-Vid datasets (2026)",
    "kind": "dataset",
-   "what": "GuiFiR-Synth 'provides strong supervision through synthetic composite images'; GuiFiR-Vid 'provides weak supervision from real guitar playing videos using tablature'.",
-   "url": "https://ailab.kookmin.ac.kr/publications/2026-07-15-guifir-weakly-supervised-learning-of-han/",
-   "version": "2026",
+   "what": "'Official dataset release for **GuiFiR** (IEEE Access, 2026), a guitar finger reading dataset for **hand pose estimation**, **fretboard pose estimation**, and **guitar tablature / fingering recognition** from guitar performance videos.' (README). GuiFiR-Synth: 'synthetic composite images with hand and guitar fretboard coordinate annotations.'; GuiFiR-Vid: 'real guitar performance video clips with ground-truth or pseudo-ground-truth tablature.'; 10-second clips; splits train 900 clips / 29,051 annotated frames (no keypoint ground truth), val 30 / 543, test 100 / 2,048 (with keypoint ground truth).",
+   "url": "https://github.com/kmu-ee-ailab/guifir_dataset",
+   "version": "repository HEAD e707e5167ec3e495ebffe539c5d6060ec203b9ce (2026-10-29); IEEE Access 2026, doi 10.1109/ACCESS.2026.3713562",
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "Not run: described by the lab page as 'The GuiFiR dataset resources are publicly available.' but no link was found.",
+   "not_run_reason": "Not downloaded: the archive is a Google Drive file (gdown --id 1Ri42XQnpwWQzjNLOPgZCR2XCx9YGrqxc) and the clips come from YouTube links; the data terms are non-commercial. (corrected in gap round 2: the earlier text said no link was found.)",
    "for_aaron": false,
-   "callable_via": [],
-   "inputs": [],
-   "outputs": [],
+   "callable_via": [
+    "python"
+   ],
+   "inputs": [
+    "GuiFiR.tar (raw_clips/, metadata/ split.csv yt_link.csv start_end.csv, annotations/ guifir_{train,val,test}_coco_anno_box.jsonl); scripts: move_annotations.py, download_clips_from_metadata.py (yt-dlp), split_clips.py, extract_frames.py (ffmpeg or OpenCV)"
+   ],
+   "outputs": [
+    "per annotated frame (JSONL): frame_id, filename, frame_width, frame_height, frame_tab (fret per string, 6 values; 0 = open string, 20 = string not played), frame_capo (capo position, 0 = no capo), hand_annotation and neck_annotation (detector box [x1, y1, x2, y2], pred_phrases, xc, yc, scale, theta), frame_gt_pose (val/test only: fretboard corners lt, lb, rt, rb as [x, y] and fingertips 4, 8, 12, 16, 20 as [x, y, visibility] in MediaPipe indices, in 640x360 space)"
+   ],
    "constraints_accepted": [],
    "license": {
-    "code": null,
+    "code": {
+     "spdx": "MIT",
+     "quote": "This license applies only to the source code and documentation in this repository. Dataset assets are governed by DATASET_TERMS.md.",
+     "url": "https://raw.githubusercontent.com/kmu-ee-ailab/guifir_dataset/main/LICENSE",
+     "note": "LICENSE begins 'MIT License' and 'Copyright (c) 2026 GuiFiR authors'; it covers the preparation scripts."
+    },
     "weights": null,
-    "training_data": [],
-    "service_terms": []
+    "training_data": [
+     {
+      "name": "GuiFiR dataset assets (video clips, annotations, metadata, source-video references, frames)",
+      "license": "non-commercial research, education and reproducibility (DATASET_TERMS.md)",
+      "quote": "The dataset assets are provided for non-commercial research, education, and reproducibility of the GuiFiR work.",
+      "url": "https://raw.githubusercontent.com/kmu-ee-ailab/guifir_dataset/main/DATASET_TERMS.md"
+     }
+    ],
+    "service_terms": [
+     {
+      "topic": "commercial use (DATASET_TERMS.md, under 'You may not:')",
+      "quote": "Use the dataset assets for commercial products, services, or training pipelines without written permission from the dataset maintainers.",
+      "url": "https://raw.githubusercontent.com/kmu-ee-ailab/guifir_dataset/main/DATASET_TERMS.md"
+     },
+     {
+      "topic": "redistribution (DATASET_TERMS.md, under 'You may not:')",
+      "quote": "Redistribute, mirror, sublicense, sell, or commercially exploit the dataset assets.",
+      "url": "https://raw.githubusercontent.com/kmu-ee-ailab/guifir_dataset/main/DATASET_TERMS.md"
+     },
+     {
+      "topic": "derived weights and results (DATASET_TERMS.md, under 'You may:')",
+      "quote": "Publish aggregate results, analysis, and derived model weights, subject to the terms of any third-party data sources used.",
+      "url": "https://raw.githubusercontent.com/kmu-ee-ailab/guifir_dataset/main/DATASET_TERMS.md"
+     },
+     {
+      "topic": "source videos",
+      "quote": "The source videos referenced by GuiFiR may be owned by third parties.",
+      "url": "https://raw.githubusercontent.com/kmu-ee-ailab/guifir_dataset/main/DATASET_TERMS.md"
+     }
+    ]
    },
    "pricing": null,
    "handoffs_out": [],
    "unverified": [
-    "Location and license: UNVERIFIED (no link found)."
+    "(gap round 2) The lab's home page https://ailab.kookmin.ac.kr/ (read 2026-11-11) lists the paper with a link titled 'Code' to https://github.com/kmu-ee-ailab/guifir_dataset (HEAD e707e5167ec3e495ebffe539c5d6060ec203b9ce, 2026-10-29); the publication page links only the organization. The guitar-tab lane's survey found the same repository.",
+    "Read from the README only; the archive was not downloaded, so counts and fields were not checked against the files.",
+    "The released ground-truth pose is four fretboard corners and five fingertips; the 126-landmark grid is how the lab page describes the model, not an annotation field of the release.",
+    "The annotations carry a per-frame capo position (frame_capo); how many clips have a capo was not read."
    ]
   },
   {
@@ -5745,6 +6015,60 @@
    "handoffs_out": [],
    "unverified": [
     "Verifier observation: during the DWPose re-run in slot 2-3 the process ran at 250 % CPU with 5 threads allowed on CPUs 2-3 and 2 threads each pinned to CPU 1, CPU 2 and CPU 3."
+   ]
+  },
+  {
+   "name": "GigaHands (bimanual hand-activity dataset, Brown University)",
+   "kind": "dataset",
+   "what": "'We introduce GigaHands, a massive annotated dataset capturing 34 hours of bimanual hand activities from 56 subjects and 417 objects, totaling 14k motion clips derived from 183 million frames paired with 84k text annotations.' (arXiv 2412.04244, CVPR 2025 Highlight). 51 camera views; its instruction script includes a 'Playing the Ukulele' activity (fretboard chords, strumming, plucking).",
+   "url": "https://ivl.cs.brown.edu/research/gigahands.html",
+   "version": "arXiv 2412.04244 v3 (v1 5 Dec 2024); HF dataset freddie007/GigaHands last modified 2026-11-07; code github.com/Kristen-Z/GigaHands HEAD be19068 (2026-11-07), also linked as github.com/brown-ivl/GigaHands",
+   "tried": false,
+   "tried_how": null,
+   "runs": [],
+   "not_run_reason": "A dataset, not a tool: not downloaded (multiview RGB videos 1.06 TB; CC BY-NC 4.0). Only instruction_script.json (387,755 bytes) and annotations_v2.jsonl (18,539,852 bytes) were fetched to count the ukulele activity; the latter was deleted after counting.",
+   "for_aaron": false,
+   "callable_via": [
+    "python",
+    "http"
+   ],
+   "inputs": [
+    "hf download freddie007/GigaHands --repo-type dataset (README); per-session hand_poses/<session>.tar.gz, multiview_rgb_vids/<session>.tar with tar_index.csv.gz for HTTP range requests of single clips"
+   ],
+   "outputs": [
+    "per session: keypoints_2d, keypoints_3d, keypoints_3d_mano, keypoints_3d_mano_align, MANO params, camera parameters; object poses and meshes; text annotations (annotations_v2.jsonl: scene, sequence, start_frame_id, end_frame_id, clarify_annotation, description, rewritten_annotation, all_tokens)"
+   ],
+   "constraints_accepted": [],
+   "license": {
+    "code": {
+     "spdx": null,
+     "quote": "GigaHands is released under the Creative Commons Attribution-NonCommercial 4.0 International License.",
+     "url": "https://raw.githubusercontent.com/Kristen-Z/GigaHands/main/README.md",
+     "note": "No LICENSE file in the repository tree (67 files at HEAD be19068); the README's License section is quoted."
+    },
+    "weights": null,
+    "training_data": [
+     {
+      "name": "GigaHands data (HF dataset freddie007/GigaHands)",
+      "license": "CC-BY-NC-4.0",
+      "quote": "license: cc-by-nc-4.0",
+      "url": "https://huggingface.co/datasets/freddie007/GigaHands/raw/main/README.md"
+     },
+     {
+      "name": "MANO hand model (needed by the repository's tools)",
+      "license": "MANO license",
+      "quote": "Download [mano](https://mano.is.tue.mpg.de/download.php) models and place the `MANO_*.pkl` files under `body_models/smplh`.",
+      "url": "https://raw.githubusercontent.com/Kristen-Z/GigaHands/main/README.md"
+     }
+    ],
+    "service_terms": []
+   },
+   "pricing": null,
+   "handoffs_out": [],
+   "unverified": [
+    "Fretted-instrument content: instruction_script.json has scene 'Playing mini instruments' with activity 'Playing the Ukulele' (16 actions, e.g. 'Place your left-hand fingers on the fretboard to form chords.'); 119 of 13,787 rows of annotations_v2.jsonl mention 'ukulele', in 11 sessions named '*instrument*'. No guitar in the script.",
+    "Whether object poses include the ukulele, whether any fret or string labels exist, and how the ukulele clips look on video were not checked (videos not downloaded).",
+    "The 2025 venue claim from the gap list: the arXiv comment reads 'CVPR 2025 Highlight'."
    ]
   }
  ]

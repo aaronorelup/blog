@@ -109,6 +109,27 @@ def run(rgb, quad, size, tag, label):
     return res
 
 
+def time_same_steps(rgb, quad, size, repeat=3):
+    """Times (ms) of the steps the OpenCV.js page times, without LSD: [mask + Canny + HoughLinesP on the frame,
+    getPerspectiveTransform + warpPerspective + cvtColor + Canny + HoughLinesP on the rectified view], repeated."""
+    RW, RH = size
+    DST = np.float32([[0, 0], [0, RH], [RW, RH], [RW, 0]])
+    gray_full = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY)
+    times = []
+    for _ in range(repeat):
+        t0 = time.perf_counter()
+        mask = np.zeros(gray_full.shape, np.uint8)
+        cv2.fillConvexPoly(mask, quad.astype(np.int32), 255)
+        cv2.HoughLinesP(cv2.Canny(gray_full, 50, 150), 1, np.pi / 180, 30, minLineLength=20, maxLineGap=5)
+        t1 = time.perf_counter()
+        H = cv2.getPerspectiveTransform(quad, DST)
+        rect = cv2.warpPerspective(rgb, H, (RW, RH), flags=cv2.INTER_CUBIC)
+        cv2.HoughLinesP(cv2.Canny(cv2.cvtColor(rect, cv2.COLOR_RGB2GRAY), 50, 150), 1, np.pi / 180, 30, minLineLength=20, maxLineGap=5)
+        t2 = time.perf_counter()
+        times.append([round((t1 - t0) * 1000, 2), round((t2 - t1) * 1000, 2)])
+    return times
+
+
 def sam_quad(hand_quad):   # the same code as run_opencv_lines.py's SAM branch
     m = cv2.imread(SAM_MASK, cv2.IMREAD_GRAYSCALE) > 127
     cnts, _ = cv2.findContours(m.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -135,9 +156,22 @@ for clip, frames, quad, size, ext in JOBS:
             f.write(rgb.tobytes())
         lab = f"{clip}_f{n:04d}"
         d = {"file": path, "shape": list(rgb.shape), "rect_size": list(size), "hand_quad": run(rgb, q, size, "handquad", lab)}
+        d["hand_quad"]["py_timing"] = {"threads_default": cv2.getNumThreads(), "ms_default_threads": time_same_steps(rgb, q, size)}
         if clip == "R3a_cu" and n == 150 and os.path.exists(SAM_MASK):
-            d["sam_quad"] = run(rgb, sam_quad(q), size, "samquad", lab)
+            sq = sam_quad(q)
+            d["sam_quad"] = run(rgb, sq, size, "samquad", lab)
+            d["sam_quad"]["py_timing"] = {"threads_default": cv2.getNumThreads(), "ms_default_threads": time_same_steps(rgb, sq, size)}
         results["frames"][lab] = d
+results["threads_default"] = cv2.getNumThreads()
+cv2.setNumThreads(1)
+for clip, frames, quad, size, ext in JOBS:   # the same timings with OpenCV's own thread pool set to 1 thread
+    q = np.float32(quad)
+    for n in frames:
+        lab = f"{clip}_f{n:04d}"
+        rgb = cv2.imread(os.path.join(frames_dir, clip, f"f_{n + 1:04d}{ext}"), cv2.IMREAD_COLOR)[:, :, ::-1].copy()
+        results["frames"][lab]["hand_quad"]["py_timing"]["ms_1_thread"] = time_same_steps(rgb, q, size)
+        if "sam_quad" in results["frames"][lab]:
+            results["frames"][lab]["sam_quad"]["py_timing"]["ms_1_thread"] = time_same_steps(rgb, np.float32(results["frames"][lab]["sam_quad"]["quad"]), size)
 with open(os.path.join(out, "opencv_lines_ref.json"), "w") as f:
     json.dump(results, f, indent=1)
 for lab, d in results["frames"].items():

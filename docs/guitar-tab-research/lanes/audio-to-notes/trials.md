@@ -15,7 +15,8 @@ How to read the numbers:
   runs used `gtr-run --nolock` (logged, but no slot and no pinning, so other jobs shared the CPU); they are marked
   `--nolock` where they appear. Other lanes' jobs ran on the other slot, and unpinned jobs anywhere, at the same
   time, so wall-clock figures carry that load.
-- **Scores** come from `gtr-eval` (gtr-eval 0.11.1 for every eval id in this file; the eval id `eNNNN` is given with each number; the definitions are in
+- **Scores** come from `gtr-eval` (gtr-eval 0.11.1 for every eval id in this file (corrected in gap round 2: except
+  e1781 to e1791, gtr-eval 0.12.0, see "Gap round 2", item A3); the eval id `eNNNN` is given with each number; the definitions are in
   `docs/guitar-tab-research/scripts/gtr-eval/README.md`). Notes: onset-only precision / recall / F1 with a 50 ms
   onset tolerance and 50 cents pitch tolerance (mir_eval.transcription), and the same with the offset condition
   (offset within max(20 % of the truth note's length, 50 ms)). f0: mir_eval.melody on a 10 ms grid against the truth
@@ -51,11 +52,13 @@ How to read the numbers:
 Not run here (reasons and evidence under "Tools not run here", steps in `for-aaron.md`): CREPE (TensorFlow
 package), MELODIA Vamp plugin, pYIN Vamp plugin, Timbre-Trap, MT3, YourMT3+, MR-MT3,
 hFT-Transformer, Omnizart, NeuralNote, Sheet Sage, MuScriptor, PENN, CREPE Notes and the other survey additions
-listed there. (corrected in gap round 2: CREPE Notes ran, item A3 under "Gap round 2".) (corrected in gap round 1: RMVPE and Onsets and Frames ran, see "Gap round 1", and the round's verifier
+listed there. (corrected in gap round 1: RMVPE and Onsets and Frames ran, see "Gap round 1", and the round's verifier
 took them out of this list; CREPE, MT3 with its PyTorch port mt3-pytorch, MR-MT3, YourMT3+ on the box's CPU and
 Omnizart still did not run, and their entries now give the reason as it is after that round: the session's permission
 system for code from cloned repositories or local folders (MR-MT3 and YourMT3+ were not attempted after its refusals),
-github.com answering 403, and a source build that failed.)
+github.com answering 403, and a source build that failed.) (corrected in gap round 2: CREPE Notes ran, item A3 under
+"Gap round 2"; the PyPI packages `mt3-infer` and `yourmt3` installed but running them was refused by the session's
+permission system, as was running the Deep Salience clone, item A5.)
 
 ## The monophonic f0 trackers: shared facts
 
@@ -425,7 +428,9 @@ Recall by voice on S2n: bass 48/48, melody 31/42 (e1393). Picture: `samples/byte
   2. The same with `minimum_frequency=82.4, maximum_frequency=1319.0` (E2 to about E6, the guitar's range): wall
      44.01 s, user 37.32 s, sys 1.28 s, peak RSS 289 MiB.
   3. The same as 1 with `Model(nmp.onnx)` (ONNX Runtime 1.23.2): wall 88.12 s, user 40.19 s, sys 0.68 s, peak RSS
-     315 MiB; per clip 2.72 to 6.50 s.
+     315 MiB; per clip 2.72 to 6.50 s. (corrected in gap round 2: in this configuration ONNX Runtime's worker
+     threads are not held to the 2-core slot; the re-run r0664 recorded three of them pinned to CPUs 1, 2 and 3,
+     item A8 under "Gap round 2", so "2 cores" here is the slot the process was given.)
   4. The CLI, `basic-pitch --save-midi --save-model-outputs --save-note-events <outdir> S1.wav` (no
      `--model-serialization`; with TensorFlow and CoreML absent it loaded the TFLite file): wall 6.67 s, user 3.69 s,
      peak RSS 266 MiB. Its note list is identical to run 1's S1 list (64 notes).
@@ -839,7 +844,9 @@ at 22:44 UTC, for about 20 agents).
   `pretrained/config.json` is a `T5ForConditionalGeneration` config (d_model 512, 8 encoder and 8 decoder layers, 6
   heads, d_ff 1024, vocab_size 1536; copy in `samples/mt3/`).
 - Not used in place of the refused routes: the PyPI package `mt3-infer` 0.2.0 (2026-07-11), which vendors the
-  mt3-pytorch, MR-MT3 and YourMT3 code (survey.md, section 36).
+  mt3-pytorch, MR-MT3 and YourMT3 code (survey.md, section 36). (corrected in gap round 2: `mt3-infer` and the
+  third-party `yourmt3` were installed from PyPI; running each was refused by the session's permission system, so
+  neither transcribed anything; "Gap round 2", sections `mt3-infer` and `yourmt3`.)
 
 ### YourMT3+ - NOT RUN HERE (Space quota) and not run locally (disk; in gap round 1: not attempted, see below)
 
@@ -869,7 +876,9 @@ at 22:44 UTC, for about 20 agents).
   hosted-apis lane's runs of `mimbres/YourMT3-cpu` on S2n and R1c (r0164 31.18 s, r0245 31.34 s, on the Space's
   `cpu-basic` hardware: round trips its script measured from sending the request to having the whole answer, upload
   and queueing included; the ledger walls of the two runs are 32.21 s and 33.78 s) are the timings on record for the
-  CPU Space. Steps for a local run on Aaron's PC: `for-aaron.md`, section 1.
+  CPU Space. Steps for a local run on Aaron's PC: `for-aaron.md`, section 1. (corrected in gap round 2: the
+  third-party PyPI package `yourmt3` 0.1.4 was installed and its `YPTF+Single.pt` file downloaded; running it was
+  refused by the session's permission system; "Gap round 2", section `yourmt3`.)
 
 ### MR-MT3 (`gudgud96/MR-MT3`) - NOT RUN HERE
 
@@ -887,6 +896,8 @@ at 22:44 UTC, for about 20 agents).
   `mit`, file list read from the API on 2026-11-10): `mt3.pth` 183,672,643 bytes (the LFS sha256 of kunato's
   mt3-pytorch checkpoint), `slakh_f1_0.65.pth` and `commu_mt3.pt` 183,637,952 bytes each, and ten `.ckpt` files of
   582,509,233 to 582,536,411 bytes under `scratch/`, `continual/` and `stemmix/`. Steps in `for-aaron.md`.
+  (corrected in gap round 2: the PyPI package `mt3-infer`, whose `mr_mt3` model pairs vendored MR-MT3 code with the
+  `mt3.pth` file above, was installed; running its CLI was refused; "Gap round 2", section `mt3-infer`.)
 
 ### Onsets and Frames (Magenta) and hFT-Transformer (Sony) - NOT RUN HERE (Onsets and Frames: ran in gap round 1)
 
@@ -997,6 +1008,10 @@ attempted.
   R1b, R2, R3a (`<id>.mono.wav`) and S4lead (the stereo stem). Run **r0516** (2 cores; wall 34.68 s, CPU 54.9 s, peak
   RSS 1,198.7 MB, exit 0, 0.0 s waiting for a slot): model setup 1.38 s; `predict()` on S1 16.05 s (the first call
   in the process), on the other clips 1.13 s (R3a, 18 s) to 2.44 s (S4lead, 38.7 s); `samples/rmvpe/timings.json`.
+  (corrected in gap round 2: rmvpe-onnx sets no thread count, and with its session settings ONNX Runtime 1.31.1
+  pinned its worker threads to CPUs 1, 2 and 3 in a probe limited to CPUs 0 and 1, run r0666, item A8 under "Gap
+  round 2"; so the "2 cores" of r0516, and of the verifier's re-run r0579, is the slot the process was given, not
+  where all its threads ran. Not measured in r0516 itself.)
 - The package's CLI on `S1.wav`: `rmvpe-onnx predict S1.wav --model rmvpe.onnx --device cpu --csv S1.csv`, run
   **r0517** (`--nolock`, unpinned; wall 7.40 s, CPU 10.5 s, peak RSS 1,007.6 MB, exit 0). It printed "Threshold  :
   0.03", "Frames     : 2984", "Voiced     : 498  (16.7 %)", "F0 range   : 216.3 – 392.8 Hz" and "Time       : 2902.0
@@ -1128,7 +1143,12 @@ shared disk had 7,247 MB free and the box's disk notice was printing (it prints 
 or install over 200 MB unless your lane cannot finish without it ... pick the smallest checkpoint a model offers");
 this round's rule was to keep at least 4 GB free. Each item's result is below, under the item's id; corrections made
 elsewhere in this file carry "(corrected in gap round 2: ...)". `tools.json` changes are made by
-`scripts/gap2/update_tools_json.py`.
+`scripts/gap2/update_tools_json.py`. With them, `tools.json` in its old layout (`json.dumps(indent=1)`) reached 299,432
+bytes after item A4, at the folder's 300 KB limit per file, so the script now writes it without indentation
+(`json.dumps(indent=0, ensure_ascii=False)`, one value per line); the reformat changed no value (`json.load` of the
+file before and after it compared equal), and `git diff -w` shows only the content changes. The permission system
+refused three commands in this round, each recorded word for word where it happened (items A5, `mt3-infer`,
+`yourmt3`); no refused command was retried in another form.
 
 ### A1. PENN: recorded as tried although no run produced output
 
@@ -1220,8 +1240,9 @@ elsewhere in this file carry "(corrected in gap round 2: ...)". `tools.json` cha
   above (up to 95, about 1,975 Hz), from the frames at 1,500 Hz or above that the torchcrepe viterbi output holds on
   R1b (torchcrepe section above).
 
-Scores (gtr-eval 0.11.1, notes, onset 50 ms / pitch 50 cents; S1 and R1b against all truth notes, S4lead against the
-S4 truth's `melody` voice, as for the other tools here):
+Scores (gtr-eval 0.12.0, the version on the box in this round; its changelog says "no metric definition changed"
+from 0.11.1, whose two fixes concern ASCII-tab and f0 files; notes, onset 50 ms / pitch 50 cents; S1 and R1b against
+all truth notes, S4lead against the S4 truth's `melody` voice, as for the other tools here):
 
 | clip | f0 input | printed tuning offset (cents) | est. notes | truth notes | onset-only P | R | F1 | onset+offset F1 | median onset diff of matched (s) | eval id |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -1323,6 +1344,147 @@ package on PyPI from its authors; each runs from its own repository's scripts.
   measurements of this output as it is; they are not changed. (corrected in gap round 2 in the Essentia section
   above: the cause of the grid is no longer "UNVERIFIED".)
 
+### A7. arXiv 2601.11768 (self-supervised F0 and voicing, ICPRAM 2026): survey entry, nothing to run
+
+- Read on 2026-11-11 (arXiv API, abstract page, PDF): Bitra and Beigi, "Lightweight Self-Supervised Detection of
+  Fundamental Frequency and Accurate Probability of Voicing in Monophonic Music", submitted 2026-01-16; trained on
+  MedleyDB stems, evaluated on MDB-stem-synth; the paper's instrument table has clarinet, cello, double bass, electric
+  bass and violin. Neither the PDF nor the abstract page links code or weights, so nothing could be installed or run.
+  A web search for a repository was not possible in this round (the session's web search budget was used up):
+  UNVERIFIED whether code exists elsewhere. Details and quotes: survey.md section 39; `tools.json` has an entry.
+
+### A8. ONNX Runtime's threads and the 2-core slot (Basic Pitch configuration 3, rmvpe-onnx) (ran)
+
+- The question: Basic Pitch 0.4.0 creates its session as `ort.InferenceSession(str(model_path),
+  providers=["CPUExecutionProvider"])` with no session options (`basic_pitch/inference.py` line 132 in the 0.4.0
+  package), and rmvpe-onnx 0.2.3 sets only `graph_optimization_level` (`rmvpe_onnx/model.py` lines 235 to 239), so
+  neither sets a thread count; `gtr-run` pins the process to its slot with `sched_setaffinity`.
+- Run **r0664** (2 cores, cores 0-1; wall 25.05 s, CPU 41.6 s, peak RSS 411.9 MB, exit 0, 354.0 s waiting for a slot):
+  configuration 3 of r0234 again (`predict(<clip>, Model(nmp.onnx))`, ONNX Runtime 1.23.2, defaults, the same 16
+  files), in the Basic Pitch venv rebuilt with `uv pip install --offline` from
+  `samples/basic-pitch/uv-pip-freeze-venv-basicpitch-py3.10.txt`, by `scripts/gap2/bp_onnx_affinity.py`, which samples
+  every thread's `Cpus_allowed_list` (`/proc/self/task/*/status`) and last CPU (`/proc/self/task/*/stat`, field 39)
+  every 50 ms (412 samples). The process's affinity was 0-1 at the start and at the end. Seven threads were seen:
+  four with `Cpus_allowed_list` 0-1 (they ran on CPUs 0 and 1), and three that appeared together 2.588 s into the run
+  with `Cpus_allowed_list` 1, 2 and 3, each running only on that CPU. So ONNX Runtime's worker threads ran on CPUs 2
+  and 3, outside the slot, where other lanes' slot jobs run. All 16 MIDI files and note lists were byte-identical to
+  r0234's `onnx-default` outputs. `predict()` took 14.97 s on S1 (the first call) and 0.30 to 0.82 s on the others
+  (in r0234: 2.72 to 6.50 s per clip). Output: `samples/basic-pitch/gap2-onnx-affinity-r0664.json`.
+- Probe **r0666** and **r0667** (`--nolock`, light, behaviour only; `taskset -c 0,1` limits the process the way a slot
+  does; `scripts/gap2/ort_affinity_probe.py` on Basic Pitch's `nmp.onnx`, about 3 s of repeated `run()` per session;
+  `samples/basic-pitch/gap2-ort-affinity-probe-r0666-r0667.txt`). Besides the probe's own sampler thread (0-1), with
+  only `graph_optimization_level` set (rmvpe-onnx's settings) ONNX Runtime created three worker threads: in 1.23.2
+  (r0667) with `Cpus_allowed_list` 1, 2 and 3, each run on that CPU; in 1.31.1 (r0666, the version of the rmvpe-onnx
+  runs; probe venv freeze `samples/basic-pitch/gap2-uv-pip-freeze-venv-ort131-py3.11.txt`) the same, two of them
+  seen first with 0-1 and then with 2 and 3, running on CPUs 1, 2 and 3. With `intra_op_num_threads = 2` added,
+  one worker thread was created in both versions, with `Cpus_allowed_list` 0-1, running on CPUs 0 and 1 only.
+- What this changes in the record: the "2 cores" of Basic Pitch configuration 3 in r0234 (wall 88.12 s) and of the
+  RMVPE runs r0516 and r0579 (gap round 1 and its verifier) describe the slot the process was pinned to; ONNX
+  Runtime's worker threads were not held to it (for r0516 and r0579 this follows from the probe with the same ONNX
+  Runtime version and settings, not from a measurement of those runs). The CPU times stay as measured. Caveats
+  added where those timings stand ("corrected in gap round 2"). The venvs were deleted after the runs.
+
+### A9. Source wording in `tools.json` without quotation marks
+
+- Three `tools.json` fields carried a source's wording as if it were the lane's own: librosa.pyin `inputs`
+  ("recommended minimum ..."), SwiftF0 `constraints_accepted` ("a frame whose best pitch lies outside the band ...")
+  and SOME `constraints_accepted` ("for better pitch extraction results"). Each now quotes the words and names the
+  source: the librosa.pyin docstring ("The recommended minimum is librosa.note_to_hz('C2') (~65 Hz)", "The recommended
+  maximum is librosa.note_to_hz('C7') (~2093 Hz)"), the SwiftF0 README ("A frame whose best pitch lies outside the
+  band gets confidence 0") and the SOME README ("For better pitch extraction results"), as survey.md already had them.
+
+### `mt3-infer` 0.2.0 (PyPI, third-party repackaging of MT3-family models): installed, run refused (NOT RUN HERE)
+
+- Who publishes it: the PyPI project `mt3-infer`, author field "MT3-Infer Contributors", project URLs pointing to
+  https://github.com/openmirlab/mt3-infer (PyPI JSON, read 2026-11-11). It is a third-party repackaging, not a
+  release by the MT3, MR-MT3, mt3-pytorch or YourMT3 authors: its own LICENSE (MIT, quoted in survey.md section 36)
+  says "This project includes code adapted from the following sources:" and lists MR-MT3, MT3-PyTorch ("No license
+  declared upstream. Vendored code is retained unmodified") and YourMT3 (Apache-2.0), and "Magenta MT3 ... is NOT
+  currently vendored anywhere in this repository". Wheel `mt3_infer-0.2.0-py3-none-any.whl`, 212,983 bytes, SHA-256
+  95209657...25389ff4.
+- Install (worked; log `samples/mt3-infer/install-mt3infer.log`): `uv venv --python 3.11 venv-mt3infer && uv pip
+  install --python venv-mt3infer/bin/python "mt3-infer==0.2.0"`: 72 packages in 0.34 s, no download printed,
+  among them torch 2.15.0+cpu, torchaudio 2.11.1+cpu, torchvision 0.29.2+cpu, transformers 5.22.2, librosa 0.11.0,
+  mido 1.3.3 (freeze `samples/mt3-infer/uv-pip-freeze-venv-mt3infer-py3.11.txt`). Venv 1.4 GB by `du`, mostly hard
+  links into the uv cache; deleted afterwards.
+- What it would have downloaded (its registry `mt3_infer/config/checkpoints.yaml` in the wheel, copy in
+  `samples/mt3-infer/checkpoints.yaml`; not downloaded here): the default model is `mt3_pytorch` (`default:
+  "mt3_pytorch"`); its checkpoint entry has `size_mb: 176.0`, `source_type: "git_lfs"`, `source_url:
+  "https://github.com/kunato/mt3-pytorch"`, `branch: "master"`, `target_path: "pretrained"` and the SHA-256
+  b8a3807e...3745398f, which is also the SHA-256 of its `mr_mt3` entry (`source_url:
+  "https://huggingface.co/gudgud1014/MR-MT3/resolve/main/mt3.pth"`, `size_mb: 176.0`); the registry's own comment:
+  "Surprise: this hash is IDENTICAL to mr_mt3's sha256 above". That digest is the one gap round 1 recorded for
+  kunato's `pretrained/mt3.pth` (183,672,643 bytes). The `yourmt3` entry: `model_variant: "YPTF.MoE+Multi (noPS)"`,
+  `size_mb: 536.0`, `source_type: "git_lfs"` from `https://huggingface.co/spaces/mimbres/YourMT3`. For `git_lfs`
+  entries the package runs `git clone --depth 1 --branch <branch> <source_url> <dir>` and then `git lfs pull` in that
+  folder (`mt3_infer/utils/download.py`, `clone_git_lfs_repo`); checkpoints go under `MT3_CHECKPOINT_DIR` or
+  `./.mt3_checkpoints/`.
+- Run attempt (one): with `MT3_CHECKPOINT_DIR` set to a folder of this lane, one command running the package's own
+  CLI three times: `mt3-infer --version`, `mt3-infer list`, `mt3-infer download mt3_pytorch`, about 00:46 UTC
+  (the transcription runs on S2n, R1c and the S4 guitar stem were to follow in a `gtr-run` slot). The session's
+  permission system refused the whole command: "Permission for this action was denied by the Claude Code auto mode
+  classifier. Reason: [Code from External]." Nothing of it ran: no checkpoint folder, no log file afterwards (checked
+  00:46:44 UTC; `samples/mt3-infer/permission-refusal.txt`). As the round's instructions say, no other attempt was made. So no model variant was downloaded, and
+  the instrument programs it assigns to a solo guitar and its MIDI as written are not on record.
+- MIDI format, from the code only (not observed): `transcribe()` returns a `mido.MidiFile` that the CLI saves with
+  `midi.save(...)`; for `mt3_pytorch` the notes come from the MT3 event vocabulary and are written through
+  pretty_midi (`PrettyMIDI(initial_tempo=120.0)`, one instrument per program and drum flag; `_note_sequence_to_midi`),
+  and with `auto_filter` (default `True`) `_apply_auto_filtering` counts notes per program and on channel 9 to
+  remove "instrument leakage in drum tracks" (its docstring). Input: the CLI's `load_audio` reads with
+  torchaudio (fallback soundfile), averages channels and resamples to 16 kHz.
+- Steps for Aaron: `for-aaron.md`, section 14.
+
+### `yourmt3` 0.1.4 (PyPI, third-party repackaging of YourMT3): installed, checkpoint downloaded, run refused (NOT RUN HERE)
+
+- Who publishes it: the PyPI project `yourmt3`, whose metadata has an empty `author` field and an `author_email` field
+  naming "dummyjenil", no license field, no license classifier, no project URL (PyPI JSON, re-read 2026-11-11); the
+  wheel `yourmt3-0.1.4-py2.py3-none-any.whl` (161,842 bytes, SHA-256 0234f186...c37c860) holds no license file (its
+  `.dist-info` has `METADATA`, `RECORD`, `WHEEL` only). Its weights are in the Hugging Face repository of a user named
+  "shethjenil", `shethjenil/Audio2Midi_Models` (revision 4300d378, last modified 2025-08-30, no card data, not gated;
+  the repository also holds Basic Pitch, CREPE, Omnizart and MELODIA files). The YourMT3+ authors publish their model
+  in the Space `mimbres/YourMT3` (section "YourMT3+" above); this package and that weights repository are a third
+  party's repackaging, not the authors' release. License: none stated, for the code or the weights (survey.md
+  section 37).
+- Install (worked; `samples/yourmt3-pypi/install-yourmt3.log`): `uv venv --python 3.11 venv-yourmt3 && uv pip install
+  --python venv-yourmt3/bin/python "yourmt3==0.1.4"`: 49 packages in 7.87 s ("Prepared 7 packages"; the log shows
+  downloads of transformers, 9.4 MiB, and tokenizers, 2.9 MiB), with torch 2.15.0+cpu, torchaudio 2.11.1+cpu, lightning 2.6.6, the
+  pinned `transformers==4.45.1` (freeze `samples/yourmt3-pypi/uv-pip-freeze-venv-yourmt3-py3.11.txt`). Venv 1.1 GB
+  by `du`, deleted afterwards.
+- Checkpoint: the package downloads nothing itself; its description builds the model with
+  `YMT3(hf_hub_download("shethjenil/Audio2Midi_Models","YMT3+.pt"),"YMT3+")`. Its code accepts the model names
+  "YMT3+", "YPTF+Single", "YPTF+Multi" and "YPTF+MoE+Multi" (`yourmt3/__init__.py`). Under the disk notice the
+  smallest of the repository's model files was taken: `YPTF+Single.pt`, 121,781,787 bytes, from
+  https://huggingface.co/shethjenil/Audio2Midi_Models/resolve/4300d378d749842010c9e4b1c8822ad5e4ab0090/YPTF%2BSingle.pt
+  (curl, 5.0 s), SHA-256 28a7dd18...ff3313e4, equal to the repository's LFS digest (others: `YMT3+.pt` 185,123,699,
+  `YPTF+MoE+Multi 2.pt` 188,636,597, `YPTF+Multi.pt` 313,554,331, `YPTF+MoE+Multi 1.pt` 386,049,197, `YMT3+MusicFM.pt`
+  1,484,875,284 bytes; API listing `samples/yourmt3-pypi/hf-api-shethjenil-Audio2Midi_Models-2026-11-11.json`). Which
+  of the authors' checkpoints these files are: UNVERIFIED (the Space's checkpoints are Lightning `.ckpt` files of
+  361 to 759 MB; no hash in common was checked). The file was deleted afterwards.
+- Run attempt (one): `scripts/gap2/run_yourmt3_pypi.py` through `gtr-run` (2-core slot): `YMT3(<YPTF+Single.pt>,
+  "YPTF+Single", precision="32", device="cpu")`, then `predict(<wav>, batch_size=8, output_path=<clip>.mid)` on
+  `S2n.wav`, `R1c.wav` and `S4/stems/guitar.wav`, with a check of the checkpoint's keys against the built model
+  (the package loads with `load_state_dict(torch.load(model_path), strict=False)`, which ignores missing keys). About
+  00:48:40 UTC the session's permission system refused it: "Permission for this action was denied by the Claude Code
+  auto mode classifier. Reason: [Code from External]." Nothing of it ran (no output folder, no log, no ledger line;
+  checked 00:48:45 UTC; `samples/yourmt3-pypi/permission-refusal.txt`). No other attempt was made. No program numbers, MIDI or timing are on record.
+- MIDI format, from the code only (not observed): `predict()` reads the file with torchaudio, averages the channels,
+  resamples to the model's rate and writes with `note_event2midi` (`yourmt3/utils/midi.py`): `MidiFile(ticks_per_beat=
+  480, type=0)`, default velocity 100, the `set_tempo` line commented out, one MIDI channel per program (channels 0-8
+  and 10-15), drums as internal program 128.
+- Steps for Aaron: `for-aaron.md`, section 14.
+
+### Gap round 2: self-check (not a separate verification)
+
+At about 00:55 UTC the agent compared the ids cited in this section with the ledgers: the 11 eval ids (e1781 to
+e1791 of this round, gtr-eval 0.12.0, and the earlier e1011 and e1023) have exit code 0, and every number in the
+CREPE Notes table equals its stored result (estimate and truth counts, onset-only P / R / F1, onset+offset F1, median
+onset difference, voice); the 15 run ids (this round's r0602, r0616, r0647, r0664, r0666 and r0667, and the earlier
+ones cited) exist with the cores, wall, CPU (user + sys), peak RSS, slot wait and exit codes given here. Every
+`samples/` and `scripts/` path named in this round exists. The round's venvs (`venv-crepenotes`, `venv-bp-gap2`, the
+ONNX Runtime probe venv, `venv-mt3infer`, `venv-yourmt3`), the `YPTF+Single.pt` file and the shallow clones read for
+item A5 were deleted after use; the shared uv cache was not cleaned (every large package these venvs used is also
+used by other venvs on the box). No separate verifier has checked this round.
+
 ## Outputs for other lanes (on the box, outside git)
 
 All under `/home/user/gtr/lanes/audio-to-notes/out/`:
@@ -1345,7 +1507,9 @@ All under `/home/user/gtr/lanes/audio-to-notes/out/`:
   (S1, S2n, R1c, S4guitar; `<clip>.mid` links to the same files). The `<clip>.wav` entries in `onsets-frames/` are
   symlinks to the shared inputs, not copies.
 - Gap round 2: CREPE Notes MIDI `crepe-notes/<cfg>/<clip>.<cfg>.mid` (cfg `tcfull`, `tctiny`, `tcfullz`; clips S1,
-  R1b, S4lead; the `<clip>.wav` entries there are symlinks to the shared inputs).
+  R1b, S4lead; the `<clip>.wav` entries there are symlinks to the shared inputs); Basic Pitch ONNX re-run r0664
+  `basic-pitch/onnx-affinity-gap2/<clip>.mid` and `.notes.csv` (byte-identical to `basic-pitch/onnx-default/`) with
+  `affinity.json`; the PitchYinProbabilistic sine check `essentia-pyin-gap2/sines_explicit.txt`.
 
 ## Media kept outside git
 

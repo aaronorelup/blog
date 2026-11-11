@@ -1,0 +1,115 @@
+{
+ "sha": "4300d378d749842010c9e4b1c8822ad5e4ab0090",
+ "lastModified": "2025-08-30T17:00:39.000Z",
+ "gated": false,
+ "cardData": null,
+ "tags": [
+  "tf-keras",
+  "tflite",
+  "coreml",
+  "onnx",
+  "region:us"
+ ],
+ "siblings": [
+  {
+   "rfilename": "YMT3+.pt",
+   "size": 185123699,
+   "lfs_sha256": "74f410dc70dd0fa521b0882efed1f864433b36b398a1f2351383eb7e6d978f14"
+  },
+  {
+   "rfilename": "YMT3+MusicFM.pt",
+   "size": 1484875284,
+   "lfs_sha256": "1c19017462ced4e7461f14e63911ce98fd54df07fce5403a958b6d8bdb9ffee6"
+  },
+  {
+   "rfilename": "YPTF+MoE+Multi 1.pt",
+   "size": 386049197,
+   "lfs_sha256": "723acc7744ac2d202e38e7ef7c702d558d640981a68c974b9f5f5c54cbcf8f23"
+  },
+  {
+   "rfilename": "YPTF+MoE+Multi 2.pt",
+   "size": 188636597,
+   "lfs_sha256": "5da35f00f7f5b923bd6e68ee2a821e7c558b26e46a65b84fb8c8ebcd113bd1fd"
+  },
+  {
+   "rfilename": "YPTF+Multi.pt",
+   "size": 313554331,
+   "lfs_sha256": "30253f9d24ba4d04d65037ba2de81f2aab92d40e84e8babc1035ce726a632bf5"
+  },
+  {
+   "rfilename": "YPTF+Single.pt",
+   "size": 121781787,
+   "lfs_sha256": "28a7dd184de2e4da7315f5953053756c7846d5093009a2e4e8b7302bff3313e4"
+  },
+  {
+   "rfilename": "crepe_full.pt",
+   "size": 88988578,
+   "lfs_sha256": "3cf11e721fbb63a68a8ca10f81d2566c8e72824b9656839089dee45ecb4b5f47"
+  },
+  {
+   "rfilename": "crepe_large.pt",
+   "size": 51016012,
+   "lfs_sha256": "61e77eb6b564fe351809b56bd1f20581224775fb52ab582945c617a3c93cd79d"
+  },
+  {
+   "rfilename": "crepe_medium.pt",
+   "size": 23529206,
+   "lfs_sha256": "0a9f3018422ec84d62770b64240876c244d1de25c0eec27b6f6bbb4751e47334"
+  },
+  {
+   "rfilename": "crepe_small.pt",
+   "size": 6528076,
+   "lfs_sha256": "96ba19f528ff048b236a7b0802cfea29b2562ce938c3d57e9364b0b20ea088b9"
+  },
+  {
+   "rfilename": "crepe_tiny.pt",
+   "size": 1959586,
+   "lfs_sha256": "b470da4e57b585fca9431a19a0154c215b4154ada4da3daf0d923ec87622cf76"
+  },
+  {
+   "rfilename": "ismir2021.zip",
+   "size": 172022085,
+   "lfs_sha256": "19ecb2be7ff93f27cee2d6342d8e566c4044e43ca585e5367d7f93007fbc89c7"
+  },
+  {
+   "rfilename": "ismir2022_base.zip",
+   "size": 825641070,
+   "lfs_sha256": "ca3844b7ee2d7b981da3b70a71c7b7903d73918b125f6706f4139bf621ae5f4d"
+  },
+  {
+   "rfilename": "ismir2022_small.zip",
+   "size": 187690910,
+   "lfs_sha256": "501a55c7ea2cee86e60599828626f7dcaebded17f60f90cb50bb7f99471bcb97"
+  },
+  {
+   "rfilename": "melodia_vamp_plugin_linux32.zip",
+   "size": 136046,
+   "lfs_sha256": "c175990455b156628bd2880919e08d899506420fa171ba0efd1fc79558435e0e"
+  },
+  {
+   "rfilename": "melodia_vamp_plugin_linux64.zip",
+   "size": 136291,
+   "lfs_sha256": "1186ff361c58e016a82aecdeb76a4c98fa8b6a42c36bdf120b11a0d0f5ffec37"
+  },
+  {
+   "rfilename": "melodia_vamp_plugin_mac.zip",
+   "size": 193199,
+   "lfs_sha256": "b68f98a6ef6b656120b3093171cef9d55919be47157f1bbe40f117f413f58254"
+  },
+  {
+   "rfilename": "melodia_vamp_plugin_win.zip",
+   "size": 80489,
+   "lfs_sha256": "02c5feedabd53c868ee4aa43d9cbabd648ab67d907254ee65e529007ac16dbf5"
+  },
+  {
+   "rfilename": "mt3.zip",
+   "size": 171564470,
+   "lfs_sha256": "bc00fab02ae18e70e706c42ec0ada17ef5bb6c6f007327343fff486f5ab751e2"
+  },
+  {
+   "rfilename": "violin.pt",
+   "size": 218770231,
+   "lfs_sha256": "a913356f059be6dc930be41158ac864f7d5511889ef0b2a6b6ba75a4a8732750"
+  }
+ ]
+}

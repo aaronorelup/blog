@@ -2536,7 +2536,8 @@
       ],
       "first_S2n_rows_onset_offset_midi_velocity": "0.012-0.151 23 49 (inside the silent count-in), 2.149-2.683 55 93, 2.161-2.927 43 71, 2.683-3.217 55 98, 2.683-3.217 50 98, 2.695-2.939 83 40, 3.217-3.391 67 43, 3.217-3.763 62 71",
       "earlier_failure": "the audio-to-notes lane's first CLI runs (e.g. r0033 on S2n) stopped with 'File .../nmp.tflite cannot be loaded into either TensorFlow, CoreML, TFLite or ONNX'; dead end here: ModuleNotFoundError: No module named 'pkg_resources' (from resampy/filters.py), fixed with setuptools<81",
-      "verifier_rerun": "r0416 (venv rebuilt offline from its freeze; wall 33.63 s, CPU 28.9 s, peak 371.0 MB): byte-identical CSV and MIDI files for all five clips"
+      "verifier_rerun": "r0416 (venv rebuilt offline from its freeze; wall 33.63 s, CPU 28.9 s, peak 371.0 MB): byte-identical CSV and MIDI files for all five clips",
+      "affinity_caveat_gap_round_2": "taskset -c 1 held the main thread only: Basic Pitch builds ort.InferenceSession without SessionOptions, and ONNX Runtime 1.23.2 then creates one extra intra-op thread per additional physical core 'affinitized to that core'; the same command watched in r0673 had 4 threads with masks 1, 1, 2, 3 and 5.64 s of its 12.4 s CPU on cores 2 and 3. Not a one-core timing (this run itself was not watched)."
      }
     },
     {
@@ -2593,7 +2594,164 @@
        }
       },
       "finding": "the 4 S5dropd notes lost are the four D2 (MIDI 38) bass notes of the Drop D tuning (truth onsets 8.571, 13.929, 18.214, 25.714 s); the unconstrained run found all four; lowest pitch in the constrained output is 43; a run with a Drop D range was not made",
-      "verifier_rerun": "r0417 on S5dropd alone (wall 5.73 s): byte-identical CSV; both r0325 and r0417 also wrote a .mid file although their command lines do not contain --save-midi"
+      "verifier_rerun": "r0417 on S5dropd alone (wall 5.73 s): byte-identical CSV; both r0325 and r0417 also wrote a .mid file although their command lines do not contain --save-midi",
+      "affinity_caveat_gap_round_2": "taskset -c 1 held the main thread only: Basic Pitch builds ort.InferenceSession without SessionOptions, and ONNX Runtime 1.23.2 then creates one extra intra-op thread per additional physical core 'affinitized to that core'; the same command watched in r0673 had 4 threads with masks 1, 1, 2, 3 and 5.64 s of its 12.4 s CPU on cores 2 and 3. Not a one-core timing (this run itself was not watched)."
+     }
+    },
+    {
+     "run_id": "r0673",
+     "input_id": "S2n,S2s,S6taps,S5dropd,R3a",
+     "cores": null,
+     "wall_s": 13.14,
+     "peak_mb": 275.6,
+     "exit_code": 0,
+     "output_files": [
+      "out/gap2-bp-threads/A2_taskset1_env1/",
+      "samples/basic-pitch/gap2_threads_A2.json"
+     ],
+     "metrics": {
+      "what_ran": "gap round 2: exact re-run of r0252 (--nolock, taskset -c 1, OMP/MKL/OPENBLAS_NUM_THREADS=1), every thread's Cpus_allowed_list and last CPU read from /proc by scripts/gap2_thread_affinity_monitor.py",
+      "cpu_s": 12.5,
+      "load1_at_start": 5.18,
+      "threads_mask_cpu_s": [
+       [
+        "1",
+        4.29
+       ],
+       [
+        "1",
+        2.47
+       ],
+       [
+        "2",
+        2.35
+       ],
+       [
+        "3",
+        3.29
+       ]
+      ],
+      "cpu_s_outside_process_mask": 5.64,
+      "outputs": "CSV and MIDI byte-identical to r0252 for all five clips"
+     }
+    },
+    {
+     "run_id": "r0668",
+     "input_id": "S2n,S2s,S6taps,S5dropd,R3a",
+     "cores": null,
+     "wall_s": 25.69,
+     "peak_mb": 387.9,
+     "exit_code": 0,
+     "output_files": [
+      "out/gap2-bp-threads/A_taskset1/",
+      "samples/basic-pitch/gap2_threads_A.json"
+     ],
+     "metrics": {
+      "what_ran": "gap round 2: r0252's command with --nolock and taskset -c 1 but no thread variables set; threads watched from /proc",
+      "cpu_s": 26.7,
+      "load1_at_start": 4.01,
+      "threads_mask_cpu_s": [
+       [
+        "1",
+        19.47
+       ],
+       [
+        "1",
+        2.51
+       ],
+       [
+        "2",
+        2.25
+       ],
+       [
+        "3",
+        2.38
+       ]
+      ],
+      "cpu_s_outside_process_mask": 4.63,
+      "outputs": "byte-identical to r0252"
+     }
+    },
+    {
+     "run_id": "r0670",
+     "input_id": "S2n,S2s,S6taps,S5dropd,R3a",
+     "cores": 2,
+     "wall_s": 5.95,
+     "peak_mb": 275.6,
+     "exit_code": 0,
+     "output_files": [
+      "out/gap2-bp-threads/B_slot_ort2/",
+      "samples/basic-pitch/gap2_threads_B.json"
+     ],
+     "metrics": {
+      "what_ran": "gap round 2: 2-core slot (cores 2-3, waited 262.8 s); scripts/gap2_basicpitch_ort_threads.py sets ONNX Runtime intra_op_num_threads=2, inter_op_num_threads=1 and calls basic_pitch.predict.main() with r0252's arguments",
+      "cpu_s": 8.2,
+      "load1_at_start": 5.27,
+      "threads_mask_cpu_s": [
+       [
+        "2-3",
+        5.81
+       ],
+       [
+        "2-3",
+        0.12
+       ],
+       [
+        "2-3",
+        0.1
+       ],
+       [
+        "2-3",
+        2.13
+       ]
+      ],
+      "cpu_s_outside_process_mask": 0.0,
+      "outputs": "byte-identical to r0252"
+     }
+    },
+    {
+     "run_id": "r0672",
+     "input_id": "S2n,S2s,S6taps,S5dropd,R3a",
+     "cores": 2,
+     "wall_s": 5.15,
+     "peak_mb": 275.7,
+     "exit_code": 0,
+     "output_files": [
+      "out/gap2-bp-threads/C_slot_default/",
+      "samples/basic-pitch/gap2_threads_C.json"
+     ],
+     "metrics": {
+      "what_ran": "gap round 2: plain CLI with r0252's arguments in a 2-core slot (cores 0-1, waited 4.0 s), ONNX Runtime defaults",
+      "cpu_s": 10.3,
+      "load1_at_start": 4.61,
+      "threads_mask_cpu_s": [
+       [
+        "0-1",
+        4.83
+       ],
+       [
+        "0-1",
+        0.09
+       ],
+       [
+        "0-1",
+        0.1
+       ],
+       [
+        "1",
+        2.82
+       ],
+       [
+        "2",
+        1.12
+       ],
+       [
+        "3",
+        1.19
+       ]
+      ],
+      "cpu_s_outside_process_mask": 2.31,
+      "outputs": "byte-identical to r0252"
      }
     }
    ],
@@ -2611,7 +2769,8 @@
     "note-event CSV header start_time_s,end_time_s,pitch_midi,velocity,pitch_bend with a variable number of pitch-bend values per row (rows not in time order)"
    ],
    "constraints_accepted": [
-    "--minimum-frequency and --maximum-frequency in Hz (note range: a standard-tuning range removed the Drop D D2 notes)"
+    "--minimum-frequency and --maximum-frequency in Hz (note range: a standard-tuning range removed the Drop D D2 notes)",
+    "ONNX Runtime thread count: not exposed by Basic Pitch 0.4.0 (InferenceSession built without SessionOptions); set here by a wrapper that passes SessionOptions(intra_op_num_threads=2) (r0670)"
    ],
    "license": {
     "code": {
@@ -3966,16 +4125,16 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "no reason recorded in trials.md (survey.md only)",
-   "for_aaron": false,
+   "not_run_reason": "gap round 2 (2026-11-11): no checkpoint the published code can load. The README's Google Drive folder answers HTTP 404 (control: another Drive file page answered 200 through the same proxy); issue #18: the owner re-uploaded a pretrained and a melody checkpoint on 2026-06-23 and wrote on 2026-10-12 'it appears the original model checkpoint has been lost'; the re-uploaded melody_model_best.ckpt (1,340,894,149 bytes) holds six token tables and in_linear.weight (768, 1536), read from its data.pkl without unpickling, while MidiBERT/model.py builds four tables and 1,024 inputs; 1.34 GB is also above the disk notice's 200 MB limit. Not downloaded, not installed, not run.",
+   "for_aaron": true,
    "callable_via": [
     "cli"
    ],
    "inputs": [
-    "MIDI file (--input_path)"
+    "MIDI file (--input_path); read in raw ticks as if at 480 ticks per beat, 16 positions per 4/4 bar (DEFAULT_RESOLUTION = 480)"
    ],
    "outputs": [
-    "the predicted melody MIDI file (--output_path)"
+    "the predicted melody MIDI file (--output_path): input notes predicted as melody (class 1; plus class 2 bridge unless --bridge False), re-quantized, 480 ticks per beat, bars without notes dropped"
    ],
    "constraints_accepted": [
     "--ckpt",
@@ -4018,9 +4177,10 @@
    "pricing": null,
    "handoffs_out": [],
    "unverified": [
-    "README: 'No gpu is needed for evaluation'; checkpoints only for CP representations",
+    "that load_state_dict fails with the re-uploaded checkpoint is read from shapes and code, not seen in a run (a user reports it in issue #18, 2026-07-20)",
     "licenses of Pop1K7 and Pianist8 not found",
-    "no separate licence statement next to the checkpoint link"
+    "no separate licence statement next to either checkpoint link",
+    "gap round 2: inputs for a run elsewhere in samples/midibert/: S2n and S5dropd truth notes and Basic Pitch notes (120 bpm and 112 bpm) at 480 ticks per beat (run r0656); scorer scripts/gap2_midibert.py score <melody.mid> <input.mid> <clip>; self-test r0658: 90 of 90 right voice on fake predictions for all six inputs"
    ]
   },
   {
@@ -4032,14 +4192,24 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "no reason recorded in trials.md (survey.md only; a Vamp host is needed)",
-   "for_aaron": false,
+   "not_run_reason": "gap round 2 (2026-11-11): no QM plugin binary on the box (find / -xdev -iname '*qm-vamp*' at 00:27 UTC found only source clones and saved package-search pages); Vamp hosts are present (/usr/bin/vamp-simple-host, the vamp Python host). The chords-beats-key lane's gap round 1 could not obtain the plugins (no Ubuntu, Debian or PyPI package; download site reset the connection; Plugin Pack AppImage holds them inside a GUI installer, not run); a build from the cloned repository was not attempted.",
+   "for_aaron": true,
    "callable_via": [
     "vamp-plugin"
    ],
-   "inputs": [],
-   "outputs": [],
-   "constraints_accepted": [],
+   "inputs": [
+    "one channel of audio (Vamp host passes the audio)"
+   ],
+   "outputs": [
+    "Note Onsets: 'The detected note onset times, returned as a single feature with timestamp but no value for each detected note.'",
+    "Onset Detection Function",
+    "Smoothed Detection Function"
+   ],
+   "constraints_accepted": [
+    "Onset Detection Function Type: Complex Domain (default), Spectral Difference, Phase Deviation, Broadband Energy Rise",
+    "Onset Detector Sensitivity",
+    "Adaptive Whitening"
+   ],
    "license": {
     "code": {
      "spdx": "GPL-2.0",
@@ -4063,8 +4233,8 @@
    "pricing": null,
    "handoffs_out": [],
    "unverified": [
-    "plugin docs https://vamp-plugins.org/plugin-doc/qm-vamp-plugins.html not read",
-    "Linux build: make -f build/linux/Makefile.linux64 after ./repoint install"
+    "Linux build: make -f build/linux/Makefile.linux64 after ./repoint install (README; not tried)",
+    "Sonic Visualiser 5.2.1 menu labels for the plugin (for-aaron.md list 14)"
    ]
   },
   {
@@ -4466,12 +4636,12 @@
    "kind": "open-source",
    "what": "Southall's drum transcription: kick, snare and hi-hat onsets as a .txt file and an automatically generated drum tab.",
    "url": "https://github.com/CarlSouthall/ADTLib",
-   "version": "PyPI 2.1.2 (2018-01-17, sdist only); commit 8e429f3 (2018-01-17)",
+   "version": "PyPI 2.1.2 (2018-01-17, sdist only, 8,025,141 bytes, no requires_python); commit 8e429f3 (2018-01-17)",
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "no reason recorded in trials.md (survey.md only; README says it needs madmom and tensorflow)",
-   "for_aaron": false,
+   "not_run_reason": "gap round 2 (2026-11-11, setup.py, README and code read at 8e429f3; nothing installed): ADTLib/utils/__init__.py imports 'from tensorflow.contrib import rnn' and builds TF1 graphs (tf.placeholder, tf.Session); tf.contrib is gone from TensorFlow 2 (RELEASE.md, Release 2.0.0); the last TensorFlow 1.x on PyPI, 1.15.5, has wheels for cp36 and cp37 only, and the oldest Python uv offers on this box is 3.8.20. setup.py's only language classifier is Python 2.7.",
+   "for_aaron": true,
    "callable_via": [
     "cli",
     "python"
@@ -4480,9 +4650,12 @@
     "Drum.wav (CLI: ADT Drum.wav; Python: ADT(['Drum.wav']))"
    ],
    "outputs": [
-    "a .txt file of kick drum, snare drum and hi-hat onsets and a drum tabulature"
+    "a .txt file of kick drum, snare drum and hi-hat onsets",
+    "a drum tabulature saved as PDF (default; -ot no turns it off)"
    ],
-   "constraints_accepted": [],
+   "constraints_accepted": [
+    "-od output dir, -o yes|no text output, -ot yes|no tab PDF (CLI); Python ADT(filenames, text, tab, save_dir, output_act)"
+   ],
    "license": {
     "code": {
      "spdx": "BSD",
@@ -4490,9 +4663,9 @@
      "url": "https://github.com/CarlSouthall/ADTLib"
     },
     "weights": {
-     "name": null,
+     "name": "TensorFlow checkpoints in the package (ADTLib/files/KickADTLibAll, SnareADTLibAll, HihatADTLibAll, PPParams.npy)",
      "quote": null,
-     "url": null
+     "url": "https://github.com/CarlSouthall/ADTLib"
     },
     "training_data": [],
     "service_terms": []
@@ -4513,15 +4686,18 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "no reason recorded in trials.md; survey.md: two conda environments, a manual patch to madmom, MusicLDM components from Zenodo, commands set CUDA_VISIBLE_DEVICES; whether it runs on a CPU was not checked",
-   "for_aaron": false,
+   "not_run_reason": "gap round 2 (2026-11-11, README, environment files, config and code read at 0ac2fe6; nothing installed): one checkpoint (msgld_obtb.ckpt 5,398,799,061 bytes or msgld_ob.ckpt 5,398,491,630 bytes) plus the MusicLDM vae-ckpt.ckpt (756,843,351) and hifigan-ckpt.ckpt (221,242,730) is about 6.4 GB, against 6.5 to 7.9 GB free disk shared by all lanes and the disk notice's 200 MB limit; the single-audio inference config sets accelerator: \"gpu\", devices: [0] and the separation environment pins torch==1.13.1+cu116 (no GPU on the box; a CPU run was not tried); the pipeline is scripts in a cloned repository, which the permission system refused for every cloned repository this lane tried to run.",
+   "for_aaron": true,
    "callable_via": [
     "cli"
    ],
    "inputs": [
     "audio (python single_audio_onset_detection.py --input_audio /path/to/your/audio.wav --output_dir ./transcription_results)"
    ],
-   "outputs": [],
+   "outputs": [
+    "five separated drum stems (kick, snare, toms, hi-hats, cymbals) as val_0/stem_0..4 beside val_0/mix",
+    "<name>_transcription.txt with 'timestamp    drum_type' lines (Kick, Snare, Toms, Hi_Hats, Cymbals)"
+   ],
    "constraints_accepted": [],
    "license": {
     "code": {
@@ -4555,7 +4731,8 @@
    "unverified": [
     "the transcription step runs madmom's CNN onset model, whose model files are CC BY-NC-SA 4.0",
     "hifigan-ckpt.ckpt and vae-ckpt.ckpt come from Zenodo record 10643148 (MusicLDM, license metadata cc-by-4.0)",
-    "the repository LICENSE reads MIT License, Copyright (c) 2026 Wei-Han Hsu"
+    "the repository LICENSE reads MIT License, Copyright (c) 2026 Wei-Han Hsu",
+    "whether it runs on a CPU (accelerator: \"cpu\") was not tried; GPU memory needed is not stated in the README"
    ]
   },
   {
@@ -5513,7 +5690,7 @@
   {
    "name": "tuttut",
    "kind": "open-source",
-   "what": "Converts MIDI files to guitar tabs; works best for single-channel, single-instrument MIDI files; handles any tuning for any number of strings (guitar-tab lane's tool, named in a handoff).",
+   "what": "Converts MIDI to guitar tab (the guitar-tab lane's tool, named in a handoff). Its README (https://raw.githubusercontent.com/natecdr/tuttut/main/README.md, read 2026-11-11): \"Converts MIDI files to guitar tabs.\", \"It can handle any tuning for any number of strings, and will do the arrangement accordingly.\" and \"The tool works best for single-channel, single-instrument MIDI files, it might spit out some janky stuff if you throw multi-channel complicated files at it.\"",
    "url": "https://github.com/natecdr/tuttut",
    "version": null,
    "tried": false,
@@ -5525,13 +5702,13 @@
     "python"
    ],
    "inputs": [
-    "MIDI file (single-channel, single-instrument)"
+    "MIDI file (README: \"The tool works best for single-channel, single-instrument MIDI files\")"
    ],
    "outputs": [
     "guitar tab"
    ],
    "constraints_accepted": [
-    "tuning for any number of strings"
+    "tuning (README: \"It can handle any tuning for any number of strings, and will do the arrangement accordingly.\")"
    ],
    "license": {
     "code": {

@@ -29,7 +29,7 @@ Version and date = the npm `dist-tags.latest` (or PyPI latest release, or newest
 | OpenSheetMusicDisplay (`opensheetmusicdisplay`) | JS library, MusicXML renderer | 2.3.0 (2026-11-07) | 2026-11-10 | BSD-3-Clause | yes (MusicXML tab staves) | not in the open-source package (see section) | no | RUNNABLE |
 | osmd-audio-player | JS player for OSMD | 0.7.0 (2021-12-30) | 2021-12-30 | MIT | n/a | yes | no | RUNNABLE |
 | abcjs | JS library, ABC renderer and synth | 6.7.2 (2026-10-16) | 2026-10-16 | MIT | yes (generated from notes) | yes | text only | RUNNABLE |
-| Verovio (`verovio` npm, PyPI, C++ CLI) | engraving library (C++, WASM, Python) | 6.4.1 (2026-11-03) | 2026-11-10 | LGPL-3.0-only | yes (MEI tablature) | MIDI out only | no | RUNNABLE |
+| Verovio (`verovio` npm, PyPI, C++ CLI) | engraving library (C++, WASM, Python) | 6.4.1 (2026-11-03) | 2026-11-10 | LGPL-3.0-only | yes (MEI tablature) | MIDI out only | no (corrected in gap round 2: no editing interface, but a toolkit `edit()` call; section, r0626) | RUNNABLE |
 | MuseScore Studio (`mscore` CLI) | desktop notation editor with CLI conversion | v4.7.6 tag (commit 2026-10-22) | 2026-11-10 | GPL-3.0 (LICENSE.txt) | yes | yes (desktop) | yes (desktop) | RUNNABLE (Linux AppImage; 4.x not run here; the try lane ran the Ubuntu package 3.2.3 headless, trials.md) |
 | webmscore | MuseScore 3 engine compiled to WASM | 1.2.1 (2023-01-24) | 2023-01-23 | npm field `GPL`; LICENSE.GPL is GPL v3 | yes | yes (with a SoundFont) | no | RUNNABLE (under Node 22.23.4 only with two workarounds, trials.md) |
 | LilyPond (TabStaff) | text-to-engraving compiler | 2.26.0 stable (2026-04-21); 2.27.4 unstable (2026-10-20) | not read (GitLab) | GPL-3.0-or-later (LICENSE) | yes | MIDI out only | text only | RUNNABLE |
@@ -60,7 +60,7 @@ Added after the first pass (sections "Added after the first pass" below):
 
 | Tool | Kind | Latest version (date) | Last commit | License (as declared) | Renders tab | Plays audio | Edits | RUNNABLE |
 |---|---|---|---|---|---|---|---|---|
-| `@coderline/alphatab-monaco` and `@coderline/alphatab-language-server` | alphaTex editor integration and LSP | 1.9.0 (2026-10-31) | 2026-11-08 (alphaTab repo) | MPL-2.0 | via alphaTab | no | text (alphaTex) | RUNNABLE |
+| `@coderline/alphatab-monaco` and `@coderline/alphatab-language-server` | alphaTex editor integration and LSP | 1.9.0 (2026-10-31) | 2026-11-08 (alphaTab repo) | MPL-2.0 | via alphaTab | no | text (alphaTex) | RUNNABLE (run in trials.md, gap round 2: r0614) |
 | guitarpro-parser (npm) | TS parser for GP3-GP8 | 2.0.0 (2026-11-08) | 2026-11-08 | Apache-2.0 | no | no (computes timing) | no | RUNNABLE (run in trials.md; refused alphaTab's `.gp` export) |
 | ApolloTab (PyPI) | Python GP3-GP8 parser, Qt renderer, FluidSynth player | 1.6.0 (2026-08-06) | 2026-08-28 | LGPL-2.1 | yes (QPixmap images) | yes (FluidSynth) | UNVERIFIED | RUNNABLE |
 | score-parser (`@jbfullstack/score-parser`) | MIDI and GP to JSON, uses alphaTab | 1.0.1 (2026-03-26) | 2026-03-26 | MIT | no | no | no | RUNNABLE |
@@ -76,6 +76,12 @@ Added after the first pass (sections "Added after the first pass" below):
 | Guitar (1j01/guitar) | web virtual guitar, pasted-tab player | n/a | 2023-05-02 | MIT | ASCII tab input | yes | records notes | RUNNABLE |
 | Power Tab Editor 2.0 | desktop tab editor (C++/Qt) | 2.0.22 tag (2025-06-29) | 2026-11-01 | GPL-3.0 | yes | yes (mixer per README) | yes | desktop |
 | tuitar | terminal tab editor (Go) | n/a | 2025-09-28 | MIT | ASCII in terminal | yes (Karplus-Strong) | yes | RUNNABLE |
+
+Added in gap round 2 (2026-11-11; section "HAYA-TAB" below):
+
+| Tool | Kind | Latest version (date) | Last commit | License (as declared) | Renders tab | Plays audio | Edits | RUNNABLE |
+|---|---|---|---|---|---|---|---|---|
+| HAYA-TAB (HAYASAKA7/HAYA-TAB) | desktop tab library with PDF and alphaTab viewers (Go, Wails v3, Vue 3) | tag v3.1.8 (2026-07-31) | 2026-07-31 | Apache-2.0 (LICENSE, NOTICE); bundles alphaTab 1.8.1 (MPL-2.0) | yes (alphaTab) | yes (alphaTab) | library metadata and PDF annotations; no tab-content editing found in the source | desktop app (Windows, macOS, Linux per README); not run here |
 
 Notes on the list, read 2026-11-10:
 
@@ -154,6 +160,29 @@ Notes on the list, read 2026-11-10:
   render reflects the changes" (.../features/extend/traversing-and-mutating-the-model.mdx), plus "Modify the data
   model in code and export to Guitar Pro, alphaTex, MIDI or rendered audio" (README). Text editing through alphaTex
   with the Monaco package and the language server (above).
+- **The Monaco package and the language server** (added in gap round 2, read 2026-11-11 from the installed npm
+  packages and from https://raw.githubusercontent.com/CoderLine/alphaTab/develop/packages/monaco/README.md, which is
+  byte-identical to the package's README). `@coderline/alphatab-monaco` README: "This is a Monaco Editor integration
+  for writing alphaTex, providing coding assistance to code editors." (link markup dropped), features "Setup Monaco
+  for the use with TextMate Grammars", "Setup Monaco with the basic alphaTex language (grammar and language
+  configuration)." and "Setup Monaco to integrate with a alphaTab Language server running in a web worker.", and
+  "This package is still in a very experimental stage." `@coderline/alphatab-language-server` README: "This is a
+  Language Server (LSP) for writing alphaTex, providing coding assistance to code editors." Both at 1.9.0 on npm.
+  The Monaco package's 1.9.0 dependencies (registry): `monaco-editor` ^0.57.0, `vscode-textmate` ^9.3.2,
+  `vscode-oniguruma` ^2.0.1, `@coderline/alphatab` ^1.9.0, `@coderline/alphatab-language-server` ^1.9.0 and four
+  `vscode-languageserver*` packages; unpacked size 256,593 bytes, while `monaco-editor` 0.57.0 (license `MIT`) is
+  101,674,083 bytes unpacked (registry `dist.unpackedSize`). What it exports: `addTextMateGrammarSupport`,
+  `registerAlphaTexGrammar`, `registerGrammar`, `basicEditorLspIntegration` (diagnostics, completion, hover and
+  signature help for one editor model, per its doc comment in the 1.9.0 package's `dist/lsp.d.ts`) and a worker entry; it does
+  not draw a score or call alphaTab's renderer: the alphatab.net playground does that in its own code
+  (`packages/ui/src/editor/use-score-document.ts`, `TEX_RENDER_DELAY_MS = 250`, commit ec751a23). LICENSE FACTS: the
+  Monaco package's `LICENSE` (https://raw.githubusercontent.com/CoderLine/alphaTab/develop/packages/monaco/LICENSE,
+  byte-identical to the package's) begins "alphaTab Monaco is licensed under MPL-2.0." followed by the MPL 2.0 text;
+  the language server's `LICENSE` begins "alphaTab Language Server is licensed under MPL-2.0."; npm `license` field
+  `MPL-2.0` for both. What the try lane saw (trials.md, "Gap round 2"): installed and bundled with esbuild (r0604), a
+  fret, a string and a capo typed in Monaco and redrawn by alphaTab, a string 7 refused with the language server's
+  marker AT208 "Note string is out of range. Available range: 1-6" (r0614), the `.gp` export read back with the edits
+  (e1780, e1784).
 - **Data fields relevant to tab.** Notes carry `fret` (used in the traversal example); the string of each note is
   read from MusicXML `technical` (MusicXML import doc, below) and written as `fret.string` in alphaTex. alphaTex: "On a stringed instrument, a note is written as `fret.string`. The number before the dot is the fret. The
   number after the dot is the string, counted from the highest-pitched string down. String 1 is the top string when
@@ -364,6 +393,24 @@ Notes on the list, read 2026-11-10:
   one octave above the sounding open strings (written guitar pitch)". ABC at sounding pitch drew 42 of 90 tab
   positions as "?" (r0239); ABC written one octave up gave 90 fret numbers, 88/90 matched by order and 88/88 on the
   truth's string and fret (r0241, e0638); `capo: 2` and a Drop D `tuning` gave the same counts (r0244, e0655, e0659).
+- **Clicking and dragging** (added in gap round 2, pages read 2026-11-11). The render options page
+  (https://docs.abcjs.net/visual/render-abc-options.html): `clickListener` "Default: null", "Callback function. The
+  signature of the function is: function(abcelem, tuneNumber, classes, analysis, drag) {}." and "This is called
+  whenever the user clicks on a note or selects a series of notes."; `dragging` "See the dragging page for more
+  information." The "Selecting and Dragging" page (https://docs.abcjs.net/visual/dragging.html): "You can select which
+  type of elements on the page you want to be selectable. If the element is a note, then it can also be draggable.";
+  "The underlying music is not changed to reflect the user's action. The clickListener function should modify the
+  ABC string and rerender if the user has made a change."; the drag argument is "{ step: number, setSelection:
+  function, index: number, max: number, }" and "A negative number means that the note was dragged flatter and
+  positive means it was dragged sharper."; "If selectTypes is not passed in, then nothing is selectable (the same
+  behavior as passing false), but notes and rests are clickable." The click-listener page
+  (https://docs.abcjs.net/visual/click-listener.html) on `abcelem`: "The internal object that is associated with the
+  element clicked. Use a debugger to see what is available." and "This object is subject to change as the library
+  gets more functionality." No page read names the tab numbers, a string, or a fret among the selectable or draggable
+  things. What the try lane saw (trials.md, "Gap round 2", r0598): a click on a tab number reached the listener as
+  `el_type` "tabNumber" with the note's text position; a drag changed nothing until the page rewrote the ABC; dragging
+  up gave a negative step; abcjs put an edited F#3 on string 4 at the same time as the bass voice's open D on string 4
+  (e1763, e1764).
 - **SoundFont:** `src/synth/create-synth.js` (2026-11-10 clone) sets `var defaultSoundFontUrl =
   "https://paulrosen.github.io/midi-js-soundfonts/FluidR3_GM/";` and `var alternateSoundFontUrl =
   "https://paulrosen.github.io/midi-js-soundfonts/MusyngKite/";`, overridable with the `soundFontUrl` parameter.
@@ -452,7 +499,14 @@ Notes on the list, read 2026-11-10:
   Verovio with no input format specifies, it tries to detect it based on the initial content of the data. MEI is
   assume to be the default format if auto detection fails." (https://book.verovio.org/toolkit-reference/input-formats.html).
 - **Plays audio:** no synthesizer; it renders MIDI and a timemap (above). **Edits:** no editor in the library (the
-  Verovio Online Editor/Viewer at http://editor.verovio.org is named in the README; not read further).
+  Verovio Online Editor/Viewer at http://editor.verovio.org is named in the README; not read further). (corrected in
+  gap round 2: the library has an editing call, though no editing interface. The npm package's typings,
+  `dist/types/verovio-toolkit.d.ts` of 6.4.1 (read 2026-11-11 from the installed package), declare
+  `edit(editorAction: EditorAction): boolean;` with the comment "Edit the MEI data.", plus `editStatus()` ("Return the
+  editor status.") and `editResponse()`; `dist/types/EditorTypes.d.ts` lists the actions, among them `set` (`elementId`,
+  `attribute`, `value`), `drag` (`elementId`, `x`, `y`), `insertNote`, `keyDown`, `undo` and `redo`. Run in trials.md,
+  "Gap round 2", r0626: `set` on `tab.fret` and `tab.course` of MEI tab notes changed the MEI and the drawn fret
+  number; one `undo` restored all three changes; e1827.)
 - **What the try lane saw** (verifier, 2026-11-10, from trials.md "Verovio 6.4.1"): MusicXML with a TAB staff came out
   as MEI with `notationtype="tab.guitar"` and 90 `tab.course` (r0166; gtr-eval 90/90 same string and fret, e0363); the
   `<capo>` of the S5capo2 MusicXML was not carried into the MEI ("the word "capo" appears only in the title", r0174;
@@ -1130,6 +1184,64 @@ Saved copies: `/home/user/gtr/lanes/web-tab-render/verify/fetched/new/`.
 | `@fretfall/player` (fretfall/player) | "An arcade-style note highway for Guitar Pro and MusicXML tabs, in the browser — with a tablature and a notation page beside it."; "**Formats**: `.gp`, `.gp3`–`.gp5`, `.gpx`, `.musicxml`, `.mxl`, plus `.mp3`, `.m4a`, `.ogg`, `.wav`, `.flac` recordings"; "Add the band's recording and the player lines the tab up with it on its own." | 0.5.0 (2026-10-16); first 2026-09-16 | 2026-10-16 (ed2bc3b) | npm `MIT`; LICENSE "MIT License Copyright (c) 2026 Angelo Dini" |
 | `@hidechae/eztab-mcp` (repository field github.com/hidechae/eztab, directory `mcp`) | registry `readme`: "An MCP server that lets an AI agent (e.g. Claude) build and edit guitar/bass tablature using EZTab's data model." (link markup dropped); the README says, in Japanese, that `get_tab` returns an ASCII rendering and that `send_to_eztab` posts the result to the EZTab app's inbox; library access needs an `EZTAB_TOKEN` issued in the app | 0.5.2 (2026-10-25); first 2026-05-31 | not read: `git clone` of github.com/hidechae/eztab failed with an authentication error (repository not public on 2026-11-10) | npm `MIT`; LICENSE not readable (repository not public) |
 
+## HAYA-TAB (added in gap round 2)
+
+Read 2026-11-11 (UTC date from `date -u +%F`) from `raw.githubusercontent.com` and from a blobless clone with full
+history (`git clone --filter=blob:none --no-checkout https://github.com/HAYASAKA7/HAYA-TAB.git`, in
+`/home/user/gtr/lanes/web-tab-render/repos/HAYASAKA7_HAYA-TAB`); saved copies in
+`/home/user/gtr/lanes/web-tab-render/fetched/gap2/haya-tab/`. Not run here (trials.md, "Gap round 2").
+
+- **What it is.** "Organize, read, play, and sync your music tabs from one lightweight desktop app." and, under
+  "HAYA-TAB helps musicians:", "Keep PDF, Guitar Pro, and MusicXML files in one searchable library.", "Practice
+  without leaving the app using built-in PDF and AlphaTab viewers." and "Carry the same organized library between
+  computers through WebDAV." (README, https://raw.githubusercontent.com/HAYASAKA7/HAYA-TAB/main/README.md). "HAYA-TAB
+  is a cross-platform desktop application built using the Wails framework, combining a Go backend with a modern web
+  frontend (Vue 3 + Vite)." (`docs/ARCHITECTURE.md`, link markup dropped); `go.mod` requires
+  `github.com/wailsapp/wails/v3 v3.0.0-alpha.74`. The README's platform badge URL encodes the text "platform-Windows |
+  macOS | Linux", and the README points to GitHub Releases for builds ("Download the current build for your operating system from GitHub Releases.", link
+  markup dropped); github.com pages answer 403 from this box, so the release files were not listed.
+- **Repository and versions.** https://github.com/HAYASAKA7/HAYA-TAB, default branch `main` (`git ls-remote`: HEAD at
+  eb0466a). First commit bf61c77 "Initial commit", 2026-02-09T10:11:03+08:00 (author and committer date; the date the
+  GitHub repository was created was not visible from here); last commit on `main` eb0466a "chore: ignore generated
+  local artifacts", 2026-07-31T13:39:12+08:00; 276 commits on `main`. Tags v1.1.0 (2026-02-09) to v3.1.8
+  (2026-07-31). `CHANGELOG.md` begins with "## [3.1.7] - 2026-07-27"; `frontend/package.json` says `"version":
+  "3.1.7"`. Six feature branches, among them `feat/ios-native` and `feature/mobile-devices`.
+- **Formats** (README table "Supported formats"): "PDF | `.pdf` | Reader, auto-scroll, and non-destructive
+  annotations"; "Guitar Pro | `.gp`, `.gp5`, `.gpx` | Notation, playback, looping, section playback, and speed
+  control"; "MusicXML | `.xml`, `.musicxml`, `.mxl` | Notation and playback through AlphaTab". The open-file dialog in
+  `internal/app/app_files.go` filters `"*.pdf;*.gp;*.gp3;*.gp4;*.gp5;*.gpx;*.xml;*.musicxml;*.mxl"`, and the changelog
+  has "Extended Format Support: Added support for Guitar Pro versions 3 and 4 (.gp3, .gp4) format detection for webDAV
+  sync and viewer loading" (Markdown bold dropped). No format is written: no export of tab content was found (below).
+- **The tab viewer is alphaTab.** `frontend/package.json` depends on `"@coderline/alphatab": "^1.3.1"`;
+  `frontend/package-lock.json` resolves it to 1.8.1 (`license` MPL-2.0); `frontend/src/composables/useAlphaTab.ts`
+  creates `new alphaTab.AlphaTabApi(...)` and sets `playbackSpeed`, `isLooping` and `playbackRange`. README: "Open
+  Guitar Pro and MusicXML files with AlphaTab to view notation, play parts, loop sections, and adjust playback speed
+  while you practice." The license facts of the alphaTab code it ships are in the alphaTab section above.
+- **Does it edit tabs?** In the source at eb0466a, no file under `frontend/src` calls an alphaTab exporter
+  (`Gp7Exporter`, `AlphaTexExporter`) or sets a note's string or fret (`git grep`; the only "editor" hits are PDF.js
+  annotation-editor buttons in `PdfViewer.vue`). Its edit dialog (`EditTabModal.vue`) edits library metadata: title,
+  artist, album, type, tag, country, language. PDFs get "pen or highlighter notes on a non-destructive layer that
+  leaves the original score untouched" (README). So: tab content is viewed and played, not edited, in this version.
+  The README also lists "extend metadata workflows with JavaScript plugins" (the Go backend requires the goja
+  JavaScript engine).
+- **How a program calls it:** a desktop program; no command line or library interface for tab content was found in
+  the README or the architecture document.
+- **LICENSE FACTS** (read 2026-11-11): a. Code: `LICENSE`
+  (https://raw.githubusercontent.com/HAYASAKA7/HAYA-TAB/main/LICENSE, 11,341 bytes, identical on `master`) is the
+  Apache License text, "Apache License Version 2.0, January 2004 http://www.apache.org/licenses/"; its section 2: "Grant
+  of Copyright License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a
+  perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare
+  Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative
+  Works in Source or Object form."; section 4(d): "If the Work includes a "NOTICE" text file as part of its
+  distribution, then any Derivative Works that You distribute must include a readable copy of the attribution notices
+  contained within such NOTICE file"; the appendix filled in as "Copyright 2026 Ai Hayasaka". `NOTICE`
+  (https://raw.githubusercontent.com/HAYASAKA7/HAYA-TAB/main/NOTICE): "HAYA-TAB Copyright 2026 Ai Hayasaka" and "This
+  product includes software developed by Ai Hayasaka (https://github.com/HAYASAKA7/HAYA-TAB)." README: "HAYA-TAB is
+  available under the Apache License 2.0. See NOTICE for attribution information." (link markup dropped).
+  `frontend/package.json`: `"license": "Apache-2.0"`. Bundled alphaTab 1.8.1: MPL-2.0 (lockfile). b, c. No model
+  weights, no training data.
+- **Measurements by the authors:** none found in the pages read.
+
 ## Not covered
 
 Seen in the same npm search or in the web search on 2026-11-10 and not examined further. One line each, from the
@@ -1252,6 +1364,15 @@ Within this lane:
 - ChordSheetJS `ChordProParser` parses ChordPro including `{start_of_tab}` blocks, which ChordPro's spec defines as
   "guitar TAB instructions. The lines will not be folded or changed" (this file, ChordPro, ChordSheetJS): ASCII tab
   inside a ChordPro file travels as opaque text.
+- (gap round 2) The `@coderline/alphatab-monaco` editor holds alphaTex text, which alphaTab's `api.tex()` reads (this
+  file, alphaTab, "The Monaco package and the language server"). Run: a fret, a string and `\capo 2` typed in Monaco
+  were drawn by alphaTab and kept in its GP7 export; read back, 89/90 matched and 88/89 on the truth's string and fret,
+  the one difference being the moved note (r0614, r0618, e1780, e1784).
+- (gap round 2) abcjs's clickListener outputs the clicked note's `startChar`/`endChar` in the ABC text and a drag
+  `step`, which the application's own code has to turn into an edited ABC string for `renderAbc` (this file, abcjs,
+  "Clicking and dragging"). Run: r0598, e1763.
+- (gap round 2) Verovio's `edit()` changes MEI `tab.course`/`tab.fret`; its `getMEI()` output, read by this lane's
+  `mei_tab_to_json.py`, carried the change (r0626, r0627, e1827).
 
 To and from neighbouring lanes:
 
@@ -1329,6 +1450,12 @@ To and from neighbouring lanes:
   `samples/verify/quote_check_final.tsv` (after the corrections: 470 EXACT, 30 MARKUP, 0 TYPO; its NOTFOUND rows are
   text between quotes and quotes whose source is trials.md, a git commit, a ledger or a registry field, all checked by
   hand), `samples/verify/registry_now.tsv`, `samples/verify/lsremote.tsv`, `samples/verify/fetch_status.tsv`.
+- Gap round 2 (2026-11-11): the abcjs docs pages (render options, Selecting and Dragging, Click Listener), the npm
+  registry entries of `@coderline/alphatab-monaco`, `@coderline/alphatab-language-server`, `monaco-editor` and their
+  dependencies, the alphaTab monorepo files of `packages/monaco` and `packages/ui/src/editor` (at `develop` and at
+  commit ec751a23), and HAYA-TAB's README, LICENSE and NOTICE are saved in
+  `/home/user/gtr/lanes/web-tab-render/fetched/gap2/` (untrusted downloads, kept out of git); the HAYA-TAB clone is
+  `/home/user/gtr/lanes/web-tab-render/repos/HAYASAKA7_HAYA-TAB`.
 
 ## Verification log (verify-docs-web-tab-render, 2026-11-10)
 
@@ -1370,3 +1497,25 @@ Still UNVERIFIED after this pass: the OSMD sponsor player's terms (github.com re
 license; the licenses of humlib, MidiFile, pugixml and MINIZ-CPP inside Verovio; whether MEI 6.0 has been released;
 whether abcjs can force a string per note; the EZTab repository (not public); whether MNX encodes tablature;
 `keyj/LICENSE` of keyjockey; the "Plays audio" column for Songshed and SLiMTAB and the "Edits" column for ApolloTab.
+
+## Gap round 2 log (gapfill-web-tab-render, 2026-11-11)
+
+What this round added or changed in this file, closing `GAPS.md` rows W1 and W2 (sources read 2026-11-11):
+
+- Tool list: the `@coderline/alphatab-monaco` row now points to its run (r0614); a table "Added in gap round 2" with
+  HAYA-TAB.
+- alphaTab section: a bullet on the Monaco package and the language server (READMEs, dependencies, sizes, exports, the
+  first lines of both LICENSE files).
+- abcjs section: a bullet "Clicking and dragging" quoting the render-options, Selecting and Dragging, and Click
+  Listener pages.
+- Verovio: the "Edits" cell of its tool-list row and the "Edits" line of its section corrected in place (the toolkit's
+  `edit()` call), marked "(corrected in gap round 2: ...)".
+- New section "HAYA-TAB".
+- "Handoff facts": three lines marked "(gap round 2)" (the Monaco editor to alphaTab, abcjs's clickListener, Verovio's
+  `edit()`).
+- "Where the raw sources are": the gap-round-2 folder.
+
+Every quote added was compared with the saved file it came from (`scripts/gap2_check_quotes.py`, output
+`samples/verify/gap2_quote_check.tsv`). Still UNVERIFIED: the date HAYA-TAB's GitHub repository was created (its
+first commit is dated 2026-02-09) and the files of its GitHub releases (github.com answers 403 here); whether abcjs
+can force a string per note (no option for it in the pages read, and none among the click and drag options).

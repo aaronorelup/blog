@@ -1,6 +1,6 @@
 {
   "lane": "apps-survey",
-  "generated": "2026-11-10",
+  "generated": "2026-11-11",
   "tools": [
     {
       "name": "Klangio Guitar2Tabs",
@@ -704,7 +704,7 @@
     {
       "name": "AnthemScore 6 (desktop)",
       "kind": "commercial-app",
-      "what": "Desktop audio-to-notation program by Lunaverus LLC for Windows, macOS and Linux (Linux AppImage); guitar, bass guitar and ukulele tablature among its output options. The 6.3.0 Linux AppImage was downloaded and unpacked as data but not executed.",
+      "what": "Desktop audio-to-notation program by Lunaverus LLC for Windows, macOS and Linux (Linux AppImage); guitar, bass guitar and ukulele tablature among its output options. The 6.3.0 Linux AppImage was downloaded and unpacked as data but not executed; it is no longer on the box on 2026-11-11 (the unpacked tree, about 499 MiB, was deleted earlier).",
       "url": "https://www.lunaverus.com/download",
       "version": "6.3.0 (version history: \"released 2026-09-29\"; AppImage last-modified 2026-09-30; no version string found in the binary)",
       "tried": false,
@@ -788,7 +788,11 @@
         "The AppImage download time (10.3 s noted by the trial agent) has no log.",
         "A capo setting: not found in the documentation, FAQ, English.json or binary strings.",
         "Column layout of the \"Beat and Note Timing (.csv)\" export was not seen.",
-        "Download page: \"Virtual machines, 32-bit systems, and phones/tablets are not supported.\""
+        "Download page: \"Virtual machines, 32-bit systems, and phones/tablets are not supported.\"",
+        "AnthemScore AppImage: On 2026-11-11 the folder /home/user/gtr/lanes/apps-survey/dl/ no longer exists (\"No such file or directory\") and `find / -xdev` for AnthemScore-x86_64.AppImage and xscsetup-9.70.4.tar.gz found neither file; when and by whom it was removed is not recorded. The sizes and sha256 values in trials.md were taken while the files existed."
+      ],
+      "corrections": [
+        "refresh after verify-gapfill-apps-survey (2026-11-11): trials.md (AnthemScore, \"Download\" and \"Disk\") now says the AppImage (216,013,304 bytes) is gone on 2026-11-11; the kept files are in /home/user/gtr/lanes/apps-survey/anthemscore/ (AnthemScore.strings.txt, English.json, unsquash.log)."
       ]
     },
     {
@@ -1363,7 +1367,7 @@
       "tried": false,
       "tried_how": null,
       "runs": [],
-      "not_run_reason": "Its README requires printed markers on the instrument (IDs 0 and 1 at the nut, 3 and 2 at fret 12); no shared clip has markers; installing it was not attempted after the refusal above; the repository was not cloned by the try agent.",
+      "not_run_reason": "Its README requires printed markers on the instrument (IDs 0 and 1 at the nut, 3 and 2 at fret 12); no shared clip has markers; installing it was not attempted after the refusal above; the try agent read only the README (2026-11-10). A clone exists (corrected by verify-gapfill-apps-survey, 2026-11-11): made on 2026-11-10 at 21:08 UTC (directory time) in /home/user/gtr/lanes/apps-survey/clones/Computer-Vision-Guitar-Tutor/, remote https://github.com/manbr21/Computer-Vision-Guitar-Tutor, commit b7a246b of 2026-10-25; it holds no LICENSE file and nothing built or installed (no virtual environment, __pycache__ or node_modules).",
       "for_aaron": false,
       "callable_via": [
         "python"
@@ -1393,7 +1397,11 @@
       "handoffs_out": [],
       "unverified": [
         "No LICENSE file in the clone; LICENSE, LICENSE.md, LICENSE.txt, COPYING and license all answered HTTP 404 on 2026-11-10.",
-        "Its requirements.txt pins opencv-python==4.8.1.78 and mediapipe>=0.10.9,<0.10.30; those packages' licenses were not read."
+        "Its requirements.txt pins opencv-python==4.8.1.78 and mediapipe>=0.10.9,<0.10.30; those packages' licenses were not read.",
+        "Which agent made the clone is not recorded."
+      ],
+      "corrections": [
+        "verify-gapfill-apps-survey (2026-11-11): the first pass said the repository was not cloned; a clone made on 2026-11-10 exists and the NOT RUN HERE status stands (trials.md, ChordAR)."
       ]
     },
     {
@@ -1756,6 +1764,41 @@
         "training_data": [],
         "service_terms": [
           {
+            "topic": "Terms of Use Agreement (\"Last Updated: May 20, 2015\"): scope, licensed not sold",
+            "quote": "The Services (including but not limited to software downloaded by or otherwise made available to you by SMUG or any of its licensors or providers (the \"SMUG Software\")) are licensed, not sold, to you for use only under the terms of this license, unless a Service is accompanied by a separate agreement providing for same, in which case the terms of that separate agreement will govern, subject to your prior acceptance of that separate agreement.",
+            "url": "https://supermegaultragroovy.com/legal/tou/"
+          },
+          {
+            "topic": "Terms of Use Agreement: what \"Services\" includes",
+            "quote": "also includes access to and use of the SMUG Website generally",
+            "url": "https://supermegaultragroovy.com/legal/tou/"
+          },
+          {
+            "topic": "Terms of Use Agreement: automated use",
+            "quote": "You shall not engage in any automated use of the Services, including but not limited to Maillist, Listserv or any other auto-response software or program;",
+            "url": "https://supermegaultragroovy.com/legal/tou/"
+          },
+          {
+            "topic": "Terms of Use Agreement: No Resale of the Services (commercial purposes)",
+            "quote": "Without limiting the foregoing, you agree not to reproduce, duplicate, copy, sell, trade, or exploit for any commercial purposes, any portion of the Services, the SMUG Software, use of the Services and/or the Content, or access to the Services.",
+            "url": "https://supermegaultragroovy.com/legal/tou/"
+          },
+          {
+            "topic": "Terms of Use Agreement: Content (personal and private use)",
+            "quote": "solely and exclusively for your personal and private, non-commercial use",
+            "url": "https://supermegaultragroovy.com/legal/tou/"
+          },
+          {
+            "topic": "Terms of Use Agreement: Ownership of what the user provides",
+            "quote": "You acknowledge and expressly agree that content and information (with the exception of your name, phone number and other similar personal information) posted or otherwise provided by you as part of your access to and/or use of the Services, is and shall be owned by SMUG immediately and automatically upon the posting/providing of such consent and/or information on the SMUG Website or otherwise to SMUG",
+            "url": "https://supermegaultragroovy.com/legal/tou/"
+          },
+          {
+            "topic": "Terms of Use Agreement: Licenses (software)",
+            "quote": "SMUG hereby grants you a personal, non-transferable and non-exclusive license to access, download and use the applicable SMUG Software on any compatible device that you own or control.",
+            "url": "https://supermegaultragroovy.com/legal/tou/"
+          },
+          {
             "topic": "Apple Standard EULA (applies unless a custom EULA is provided)",
             "quote": "Apps made available through the App Store are licensed, not sold, to you. Your license to each App is subject to your prior acceptance of either this Licensed Application End User License Agreement (“Standard EULA”), or a custom end user license agreement between you and the Application Provider (“Custom EULA”), if one is provided.",
             "url": "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
@@ -1778,11 +1821,12 @@
       "unverified": [
         "Vendor's own claims, no dataset or method given: \"Capo's neural network was trained on a massive library of songs to recognize 168 different chords\" and \"Capo gets you about 90% of the way there\".",
         "Tab output is not described in the App Store listing.",
-        "No terms of use or EULA on supermegaultragroovy.com (/legal/ 403, /legal/terms/ and /legal/eula/ 404, 2026-11-11); whether a custom App Store EULA exists is not shown on the listings.",
-        "No clause on who owns Capo's exports, their commercial use or automated access was found."
+        "The Terms of Use Agreement (https://supermegaultragroovy.com/legal/tou/) does not name Capo, MIDI, chords, tablature or exported files (searched \"Capo\", \"MIDI\", \"chord\", \"tab\" and \"export\"; \"export\" occurs only in the export-control clause); whether its ownership clause on content \"provided by you\" covers MIDI or lead sheets exported from Capo is not stated.",
+        "Whether the App Store versions carry a custom EULA: none of the 26 App Store pages this lane saved on 2026-11-10 (14 in verify-docs/raw/, 12 in raw/) contains the words \"license agreement\", so these pages do not tell."
       ],
       "corrections": [
-        "gap round 2 (gapfill-apps-survey, 2026-11-11): \"Whether the Mac Tabbing view transcribes automatically\" was settled on 2026-11-11 from https://supermegaultragroovy.com/products/capo/mac/: the user draws the notes and the tab is generated from them."
+        "gap round 2 (gapfill-apps-survey, 2026-11-11): \"Whether the Mac Tabbing view transcribes automatically\" was settled on 2026-11-11 from https://supermegaultragroovy.com/products/capo/mac/: the user draws the notes and the tab is generated from them.",
+        "verify-gapfill-apps-survey (2026-11-11): the gap round said no terms of use or EULA exists on supermegaultragroovy.com and that the product pages link the privacy policy. Both App Store descriptions end \"Our Privacy Policy can be found at https://supermegaultragroovy.com/legal/privacy, and our Terms of Use at https://supermegaultragroovy.com/legal/tou.\"; that page (301 to /legal/tou/, then 200) was read on 2026-11-11 and its clauses are now in service_terms. The two product pages fetched link no privacy, terms or license page."
       ]
     },
     {
@@ -1938,7 +1982,8 @@
       "handoffs_out": [],
       "unverified": [
         "No license agreement for the app was found on Yamaha's pages or the App Store listing; whether a custom EULA exists is not shown there. Yamaha's web site terms of use were not read.",
-        "No clause on the chord charts it shows, commercial use or automated access was found."
+        "No clause on the chord charts it shows, commercial use or automated access was found.",
+        "Whether the Android version also reads songs stored on the phone was not read (corrected by verify-gapfill-apps-survey, 2026-11-11: for-aaron.md had said test 17 also works on an Android phone)."
       ],
       "corrections": [
         "gap round 2 (gapfill-apps-survey, 2026-11-11): platforms, features and terms checked on 2026-11-11 (survey.md, Yamaha Chord Tracker)."
@@ -2017,7 +2062,8 @@
       "handoffs_out": [],
       "unverified": [
         "Prices: not read (for-aaron.md test 8b).",
-        "No clause on who owns a user's uploads or the chords computed from them was found."
+        "No clause on who owns a user's uploads or the chords computed from them was found.",
+        "ChordU's terms page links a \"Go Premium\" page (/gopremium), which was not fetched (the terms bar automated access); for-aaron.md test 8b asks Aaron to screenshot it."
       ],
       "corrections": [
         "gap round 2 (gapfill-apps-survey, 2026-11-11): \"Terms not read\" (2026-11-10): the terms of use were read on 2026-11-11 (survey.md, ChordU)."
@@ -2068,7 +2114,7 @@
           }
         ]
       },
-      "pricing": "Celemony shop (https://www.celemony.com/en/shop, read 2026-11-11): Melodyne 5 studio \"US$699\" (\"retail price of US$849\"); essential \"US$99\", assistant \"US$249\" (\"retail price of US$299\"), editor \"US$399\" (\"retail price of US$499\"), in the page's column order. Trial: \"For a period of 30 days, free of charge, with no obligations or limitations.\"; \"By default, the trial version starts off as Melodyne studio\".",
+      "pricing": "Celemony shop (https://www.celemony.com/en/shop, read 2026-11-11): Melodyne 5 studio \"US$699\" (\"retail price of US$849\"); essential \"US$99\", assistant \"US$249\" (\"retail price of US$299\"), editor \"US$399\" (\"retail price of US$499\"), in the page's column order. Trial: \"For a period of 30 days, free of charge, with no obligations or limitations.\"; \"By default, the trial version starts off as Melodyne studio\". Trial page (https://www.celemony.com/en/trial): \"To register the trial version and each time the program is launched, an Internet connection is necessary. The trial period can only be enjoyed once on each computer.\"",
       "handoffs_out": [
         {
           "to": "Guitar Pro 8, Tabtify, RiffToTab",
@@ -2080,7 +2126,9 @@
         "Tab output: not found.",
         "The EULA text was not read: no EULA page is linked from celemony.com (/en/service/legal/eula and /license-agreement answered 404); the only copy found, https://ec.crypton.co.jp/download/pdf/eula_celemonyme.pdf, was unreachable on 2026-11-11 (connection reset, then HTTP 503 maintenance page). Its clauses on exported files, commercial use and automated access are unknown.",
         "The webshop GTC do not mention MIDI or files exported from Melodyne.",
-        "Whether the trial needs a Celemony account was not checked."
+        "Whether the trial needs a Celemony account was not checked.",
+        "Whether the Melodyne installer or program shows a license agreement, and what it says (for-aaron.md test 11 asks Aaron to save it).",
+        "Where \"Audio-to-MIDI – export notes to a MIDI file\" sits in the menus was not read."
       ],
       "corrections": [
         "gap round 2 (gapfill-apps-survey, 2026-11-11): \"MIDI export, price: not read (UNVERIFIED)\" and the unread operating systems were read on 2026-11-11 (editions, technical matters and shop pages; survey.md, Melodyne 5)."
@@ -2127,8 +2175,8 @@
             "url": "https://hitnmix.com/terms-of-use/"
           },
           {
-            "topic": "Store terms of service: same paragraph, personal non-commercial use",
-            "quote": "You may not copy, reproduce, republish, disassemble, decompile, reverse engineer, download, post, broadcast, transmit, make available to the public, or otherwise use HIT’N’MIX content in any way except for your own personal, non-commercial use. You also agree not to adapt, alter or create a derivative work from HIT’N’MIX.",
+            "topic": "Store terms of service: the paragraph that differs from the site terms (three sentences)",
+            "quote": "You may not copy, reproduce, republish, disassemble, decompile, reverse engineer, download, post, broadcast, transmit, make available to the public, or otherwise use HIT’N’MIX content in any way except for your own personal, non-commercial use. You also agree not to adapt, alter or create a derivative work from HIT’N’MIX. Any other use of HIT’N’MIX content requires the prior written permission of Hit’n’Mix Ltd.",
             "url": "https://buy.hitnmix.com/policies/terms-of-service"
           },
           {
@@ -2153,11 +2201,12 @@
       ],
       "unverified": [
         "Tab output: the words tab, tabs and tablature are on neither the RipX DAW page nor the buy page (2026-11-11).",
-        "Whether \"HIT'N'MIX content\" in the terms covers stems or MIDI a user exports is not stated; no clause on bots, scripts or automated access was found.",
+        "Whether \"HIT’N’MIX content\" in the terms covers stems or MIDI a user exports is not stated; no clause on bots, scripts or automated access was found.",
         "No EULA page is linked from hitnmix.com or buy.hitnmix.com; whether the installer shows one, and its text, was not checked."
       ],
       "corrections": [
-        "gap round 2 (gapfill-apps-survey, 2026-11-11): \"Which operating systems: not read\" and the MIDI details were read on 2026-11-11 (buy.hitnmix.com, hitnmix.com/ripx-daw/; survey.md, RipX DAW)."
+        "gap round 2 (gapfill-apps-survey, 2026-11-11): \"Which operating systems: not read\" and the MIDI details were read on 2026-11-11 (buy.hitnmix.com, hitnmix.com/ripx-daw/; survey.md, RipX DAW).",
+        "verify-gapfill-apps-survey (2026-11-11): the store terms quote lacked its third sentence, \"Any other use of HIT’N’MIX content requires the prior written permission of Hit’n’Mix Ltd.\" (added; the two terms pages differ only in that paragraph and the footer)."
       ]
     },
     {
@@ -2241,7 +2290,7 @@
     {
       "name": "Transcribe!",
       "kind": "commercial-app",
-      "what": "Seventh String Software: closed-source slow-down, loop and study program with on-screen note and chord guesses; Windows, macOS and Linux. Linux x86-64 build downloaded and unpacked; not started.",
+      "what": "Seventh String Software: closed-source slow-down, loop and study program with on-screen note and chord guesses; Windows, macOS and Linux. Linux x86-64 build downloaded and unpacked; not started; the download is no longer on the box on 2026-11-11.",
       "url": "https://www.seventhstring.com/xscribe/download.html",
       "version": "9.70.4 (Linux download page; tarball Last-Modified 2026-10-18)",
       "tried": false,
@@ -2291,7 +2340,11 @@
         "Whether the text-block export file carries each block's time.",
         "Scripting: the help says starting it from the command line with a script file is \"particularly useful if you want to use Transcribe! without user intervention\"; not tried here.",
         "Nothing in license.htm addresses the user's own transcriptions or exported files.",
-        "Download: xscsetup-9.70.4.tar.gz, 4,365,589 bytes, sha256 626c57dea5306eeb8131ed83b92cea56d96ad5cbcec40629de4845f2cc3836cd (equals the page's); needs 64-bit Linux with GStreamer-1.0, GTK-3."
+        "Download: xscsetup-9.70.4.tar.gz, 4,365,589 bytes, sha256 626c57dea5306eeb8131ed83b92cea56d96ad5cbcec40629de4845f2cc3836cd (equals the page's); needs 64-bit Linux with GStreamer-1.0, GTK-3.",
+        "Transcribe! tarball: On 2026-11-11 the folder /home/user/gtr/lanes/apps-survey/dl/ no longer exists (\"No such file or directory\") and `find / -xdev` for AnthemScore-x86_64.AppImage and xscsetup-9.70.4.tar.gz found neither file; when and by whom it was removed is not recorded. The sizes and sha256 values in trials.md were taken while the files existed."
+      ],
+      "corrections": [
+        "refresh after verify-gapfill-apps-survey (2026-11-11): trials.md (Transcribe!, \"Download\") now says the folder /home/user/gtr/lanes/apps-survey/dl/transcribe/ is gone on 2026-11-11; the help quotes were checked by the verifier on 2026-11-10, while it existed."
       ]
     },
     {
@@ -3222,5 +3275,5 @@
       ]
     }
   ],
-  "updated": "2026-11-11 (gap round 2, gapfill-apps-survey)"
+  "updated": "2026-11-11 (gap round 2, gapfill-apps-survey; verified by verify-gapfill-apps-survey; refreshed from survey.md, trials.md and for-aaron.md)"
 }

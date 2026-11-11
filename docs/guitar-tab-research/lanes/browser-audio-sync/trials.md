@@ -809,7 +809,8 @@ wait 0 to 38.9 s, `load1_at_start` 2.1 to 7.0); the one `--nolock` run (r0608) i
   `decodeAudioData` in an `OfflineAudioContext` at 44.1 kHz: 2 chunks. Session: `executionProviders: ['wasm']`,
   `ort.env.wasm.numThreads` 1, 2 or 4, page cross-origin isolated; the model passed to `InferenceSession.create` as
   bytes (fetched from the local server in 0.35 to 0.62 s). The server log shows the page loading
-  `ort-wasm-simd-threaded.wasm` (14,848,852 bytes).
+  `ort-wasm-simd-threaded.wasm` (14,848,852 bytes). The page's `opt`, `arena` and `mempattern` switches were added
+  after r0593 (which used the level `all`, as `?opt=all` does) and its decoded-input sums after r0597.
 - Native reference (`scripts/gap2/ref_demucs_onnx.py`): demucs-onnx's own functions (`load_audio`, `_make_session` or
   the same session with `ORT_DISABLE_ALL`, `_chunked_separate_single`) on the same WAV and model file, in
   `venv-demucsonnx` (Python 3.11, `uv pip install demucs-onnx==0.3.4 onnxruntime==1.31.1`, 151 MB by `du`; freeze in
@@ -900,7 +901,8 @@ Native reference runs (ONNX Runtime 1.31.1, CPU execution provider, ORT's defaul
 
 Question: are ONNX Runtime Web's WebAssembly threads (Web Workers in Chromium's renderer process) held to the 2 cores
 of the `gtr-run` slot? (Native ONNX Runtime threads were seen on a core outside the slot in the video lane's rtmlib
-runs.) Measured with the `/proc` sampler in r0597, r0607 and r0613 (and the failed r0593, r0606, r0617):
+runs.) Measured with the `/proc` sampler in r0597, r0607 and r0613 (and in the failed r0606 and r0617; in r0593 only
+per process, since its renderer was not recognised as one):
 
 - Every Chromium process (browser, two zygotes, GPU process, network utility, renderer) and every renderer thread had
   `Cpus_allowed_list` equal to the slot (0-1; 2-3 in r0613 and r0617) at every sample; in the unpinned r0608 it was
@@ -912,11 +914,101 @@ runs.) Measured with the `/proc` sampler in r0597, r0607 and r0613 (and the fail
   renderer had 3 `DedicatedWorker` threads (13.49, 13.48 and 13.34 CPU s) plus the main thread (33.49 CPU s; the
   thread count "includes the main thread", survey.md section 35); renderer CPU / wall over the separation was 1.929
   (chunk 1: 1.935, chunk 2: 1.931). With 2 threads (r0597): 1 `DedicatedWorker` (22.24 CPU s) and the main thread
-  (41.38 CPU s), CPU / wall 1.656. With 1 thread (r0613): no worker thread, CPU / wall 0.823. Session creation ran at
-  CPU / wall 0.96 to 1.03 in all three.
+  (41.38 CPU s), CPU / wall 1.656. With 1 thread (r0613): no `DedicatedWorker` thread used CPU time, CPU / wall 0.823.
+  Session creation ran at CPU / wall 0.96 to 1.03 in all three.
 - So in these runs the WebAssembly threads stayed on the slot's 2 cores and used at most 2 cores' worth of CPU time;
-  the separation took 30.25 s with 4 threads, 29.09 s with 2 and 52.73 s with 1. The ledger's CPU for these runs
-  (0.9 to 4.2 s per run) misses the renderer's 61 to 76 CPU s.
+  the separation took 30.25 s with 4 threads, 29.09 s with 2 and 52.73 s with 1. The ledger's CPU for these three runs
+  (3.9 to 4.2 s per run) misses the renderer's 61 to 76 CPU s.
+
+### OpenCV.js 5.0.0 (`@techstark/opencv-js` 5.0.0-release.1): the video lane's fret and string line steps in the page
+
+- What: npm `@techstark/opencv-js` 5.0.0-release.1, installed in `node-gap2` with `npm install --save-exact` ("added 1
+  package in 673ms"; 14,731,296 bytes by `du -sb`, equal to the registry's unpacked size). `dist/opencv.js` is one
+  13,298,869-byte file with the WebAssembly module embedded in it (Emscripten `SINGLE_FILE`, decoded by `binaryDecode`).
+  `cv.getBuildInformation()` in the page: "General configuration for OpenCV 5.0.0", "Timestamp:
+  2026-06-24T04:53:04Z", "Target: Emscripten 1 x86", em++ "(ver 22.0.0)", "To be built: calib core dnn features
+  flann geometry imgproc js objdetect photo ptcloud stereo video", "Disabled: highgui imgcodecs stitching videoio
+  world", "Parallel framework: none". Loaded with a script tag: 272 to 305 ms to `onload`, 360 to 418 ms until the
+  runtime was ready.
+- What the build has (`typeof cv[name]` in the page): `Canny`, `HoughLinesP`, `HoughLines`, `getPerspectiveTransform`,
+  `warpPerspective`, `fillConvexPoly`, `cvtColor`, `findContours`, `minAreaRect`, `boxPoints`, `perspectiveTransform`,
+  `findHomography`, `Sobel`, `calcOpticalFlowPyrLK`, `imread`, `matFromImageData` are functions; `createLineSegmentDetector`,
+  `LineSegmentDetector` and `goodFeaturesToTrack` are undefined, although the package's typings
+  (`dist/src/types/opencv/imgproc_feature.d.ts`) declare `createLineSegmentDetector`. So the video lane's LSD half could
+  not be ported; its Canny + HoughLinesP half and the rectification were.
+- Frames and quads: those of the video lane's OpenCV runs: r0149 and r0400 (R3a_cu frames 150, 0 and 280 with the
+  hand-set quad, and frame 150 also with the quad taken from the SAM 2.1 mask) and r0214 (R3b frames 225, 0 and 449 with
+  its hand-set quad). The `GAPS.md` row named "R3b and R3c"; the video lane has no OpenCV run on R3c, so there was no
+  Python output to compare with and R3c was not run. The frames were decoded again from the same clips (R3a_cu.mp4
+  sha256 `e02d0c17...`, R3b.mp4 `95adf1a3...`, as recorded there) with the video lane's settings (PNG for R3a_cu, JPEG
+  `-q:v 2` for R3b), one frame per ffmpeg call (`-vf select=eq(n\,<n>)`); hashes in `samples/opencv-js/frames_sha256.txt`.
+- Python reference (`scripts/gap2/opencv_lines_ref.py`; `venv-opencv` with `opencv-contrib-python` 5.0.0.93 and numpy
+  2.4.6, installed `--offline` from the shared uv cache, freeze in `samples/opencv-js/venv-opencv.freeze.txt`, deleted
+  after the runs): the video lane's `segments()`, `classify()` and `clusters()` copied unchanged, on these frames; r0646
+  (2 cores, wall 1.18 s) and r0653 (the same plus timings of the page's step groups, wall 1.83 s). Its JSON equals the
+  video lane's saved `opencv_lines.json` (r0400's output, which also holds the hand-quad results for r0149's three
+  frames) and `opencv_lines_R3b.json` (r0214) in every field except the times (0 differences), and its rectified images
+  equal the video lane's saved `*_rectified.png` pixel for pixel; so these frame copies are the pixels the video lane
+  used.
+- Page (`scripts/gap2/pages/opencvjs.html`): the same steps in JavaScript: `cvtColor` RGB to gray, `fillConvexPoly` of
+  the quad (coordinates truncated to int32 as numpy's `astype` does), `Canny(50, 150)`, `HoughLinesP(1, π/180, 30, 20,
+  5)`, the midpoint-in-quad test and the same classification (angle = `Math.atan2` / (π/180), Python's float `%` rule,
+  `Math.hypot`), then `getPerspectiveTransform` (4x1 CV_32FC2 Mats), `warpPerspective` with `INTER_CUBIC` to 800x116
+  or 1200x130, Canny + HoughLinesP again and the same clustering (cluster means rounded to 0.1 px with Python's
+  `round` in the comparison). Input modes: `raw` = the RGB bytes `cv2.imread` decoded (written by the reference), `img`
+  = Chromium decodes the PNG or JPEG itself (`createImageBitmap(..., {colorSpaceConversion: 'none'})`, OffscreenCanvas
+  `getImageData`). Each frame and quad 3 times. Runs (2 cores each): r0651 (`raw`, wall 2.66 s) and r0654 (`img`,
+  wall 3.37 s). r0649 was the first try: its reader took one segment per Mat row and so read 1 segment per frame (the
+  Mat has 1 row, below); its numbers are not used.
+- Comparison with the Python reference (`scripts/gap2/compare_opencv.py`; `samples/opencv-js/compare_raw.json`,
+  `compare_img.json`); both input modes gave the same results:
+
+| frame / quad | HoughLinesP segments on the frame (in quad) | string-like / fret-like | segments on the rectified neck | string-like / fret-like | segment lists, JS vs Python | homography, JS vs Python | rectified image: bytes differing (of), max difference |
+|---|---|---|---|---|---|---|---|
+| R3a_cu 150 / hand-set | 142 (70) | 37 / 27 | 113 | 31 / 8 | identical, same order | identical (max difference 0) | 2 (of 278,400), 1 |
+| R3a_cu 150 / SAM | 142 (62) | 33 / 21 | 98 | 27 / 9 | identical, same order | identical | 2 (of 278,400), 1 |
+| R3a_cu 0 / hand-set | 116 (54) | 27 / 25 | 107 | 31 / 10 | identical, same order | identical | 1 (of 278,400), 1 |
+| R3a_cu 280 / hand-set | 118 (61) | 29 / 31 | 89 | 26 / 16 | identical, same order | identical | 1 (of 278,400), 1 |
+| R3b 225 / hand-set | 351 (115) | 31 / 41 | 106 | 15 / 15 | identical, same order | identical | 1 (of 468,000), 1 |
+| R3b 0 / hand-set | 310 (109) | 42 / 37 | 95 | 18 / 21 | identical, same order | identical | 3 (of 468,000), 1 |
+| R3b 449 / hand-set | 375 (151) | 87 / 41 | 119 | 20 / 15 | identical, same order | identical | 3 (of 468,000), 1 |
+
+  The counts are those of the video lane's OpenCV tables. Also equal in every case: the Canny edge-pixel counts (frame
+  and rectified view), the fret and string clusters, the neck axis, the fretboard width and the quad mask's pixel
+  count. The `INTER_CUBIC` rectified images differ from Python's in 1 to 3 bytes, by 1 level, and their Canny edges are
+  still equal.
+- Browser decoding (`img` mode): Chromium's decode of the three PNGs and of the three JPEGs gave the same RGB bytes as
+  `cv2.imread` (0 bytes differ in each of the six frames); decoding took 18.4 to 30.7 ms per 640x480 PNG and 47.3 to
+  53.0 ms per 1920x1080 JPEG.
+- Times (ms, repeats 2 and 3 of both page runs and of r0653; the first call on a frame took up to 68.8 ms in the page):
+
+| step group | R3a_cu, 640x480: OpenCV.js | R3a_cu: OpenCV-Python, 2 threads / 1 thread | R3b, 1920x1080: OpenCV.js | R3b: OpenCV-Python, 2 threads / 1 thread |
+|---|---|---|---|---|
+| frame: quad mask + Canny + HoughLinesP (JS also: midpoint test and classification) | 9.4 to 19.6 | 4.2 to 9.7 / 4.5 to 5.3 | 38.9 to 68.8 | 15.4 to 24.6 / 16.7 to 19.4 |
+| rectified: getPerspectiveTransform + warpPerspective + cvtColor + Canny + HoughLinesP (JS also: classification and clusters) | 9.8 to 20.5 | 3.8 to 7.2 / 4.4 to 5.6 | 15.3 to 23.7 | 5.1 to 8.7 / 7.0 to 7.4 |
+
+  The OpenCV.js build has no parallel framework (one thread); `cv2.getNumThreads()` was 2 in the slot.
+  `getPerspectiveTransform` took 0.05 to 0.17 ms and `warpPerspective` 4.6 to 9.0 ms in the page (last repeat).
+- Renderer (from `/proc`): peak 253.4 MB (r0651) and 308.2 MB (r0654), 1.32 and 1.72 CPU s, all threads on cores 0-1.
+- Output format facts: in OpenCV.js 5.0.0 `HoughLinesP` writes a Mat with 1 row, N columns and 4 channels, `type()`
+  100 (`cv.CV_32SC4` is 100 in this build, `CV_8UC3` 64, `CV_64F` 6: OpenCV's `hal/interface.h` has `#define
+  CV_CN_SHIFT   5` on the 5.x branch and `3` on 4.x, so the same type has another number in 4.x builds; read
+  2026-11-11 from raw.githubusercontent.com/opencv/opencv/<branch>/modules/core/include/opencv2/core/hal/interface.h), with
+  x1, y1, x2, y2 as consecutive int32 values in `data32S`; OpenCV-Python 5.0.0 returns an (N, 4) array (the video lane's
+  note). `getPerspectiveTransform` returns a 3x3 CV_64F Mat (`data64F`); `warpPerspective` writes a CV_8UC3 Mat whose
+  `data` is the RGB bytes. Constraint inputs: the quad (4 points), the output size, the Canny and Hough thresholds;
+  nothing is learned.
+- Samples: `samples/opencv-js/` (the page results without the segment lists, the R3a_cu frame-150 hand-quad segment
+  lists from both sides, both comparison JSONs, the reference's JSON without the segment lists, `jobs.json`, frame
+  hashes, the venv freeze). Full results and the rectified images (raw RGB): `out/opencvjs/` (not media).
+
+### Text corrections made in this round
+
+- `tools.json`, Signalsmith Stretch, `constraints_accepted` (gap B3): "README: time-stretching sounds best for more
+  modest changes (between 0.75x and 1.5x)" was attributed but not in quotation marks; it now quotes the README sentence
+  read again on 2026-11-11 (see `survey.md` section 23).
+- `tools.json`, `webnn/stem-separator`, `not_run_reason`: "(disk notice on the shared box)" is not the reason
+  `trials.md` gives; corrected there with a note.
 
 ## Survey tools not tried in this session
 
@@ -946,7 +1038,7 @@ here, with the reason:
 - Not reached in the time available (installable, no known blocker): @tonejs/midi, worker-timers, WAAClock,
   @ircam/sc-scheduling, waveform-data with the `audiowaveform` CLI, mp4box.js, web-demuxer, `@soundtouchjs/audio-worklet`,
   `rubberband-web` and `@echogarden/rubberband-wasm`, Bungee (`bungee-pitch-shift`), WebAudioFont, MidiPlayerJS,
-  LiteRT.js, Magenta.js, ml5.js, Meyda, OpenCV.js, demucs-wasm, OpenVoicing, alphaTab's backing-track mode from a
+  LiteRT.js, Magenta.js, ml5.js, Meyda, OpenCV.js (run in gap round 2, above), demucs-wasm, OpenVoicing, alphaTab's backing-track mode from a
   Guitar Pro 8 file with an audio track (none in the shared set; the same mode with the data model filled in code was
   run by the verifier, see the alphaTab section).
 - Superpowered Web Audio SDK: not tried in this session. Its terms are quoted in survey.md section 26 (the Evaluation
@@ -1012,6 +1104,12 @@ figures miss the renderer).
 | r0613 | htdemucs_6s in ORT Web, 1 thread, `disabled` | cores 2-3 | 75.36 | 7.02 |
 | r0617 | htdemucs_6s in ORT Web, 2 threads, `all` without the CPU memory arena: `std::bad_alloc` | cores 2-3 (waited 13.6 s) | 9.46 | 5.81 |
 
+| r0646 | OpenCV-Python 5.0.0 reference on the six frames | cores 2-3 (waited 11.2 s) | 1.18 | 3.06 |
+| r0649 | OpenCV.js page, `raw` input, first try (segment reader read 1 segment per frame; not used) | cores 2-3 | 2.81 | 1.77 |
+| r0651 | OpenCV.js page, `raw` input (cv2.imread's bytes), 3 repeats | cores 0-1 | 2.66 | 1.75 |
+| r0653 | OpenCV-Python reference again, with step timings (2 threads and 1 thread) | cores 0-1 | 1.83 | 0.7 |
+| r0654 | OpenCV.js page, `img` input (Chromium decodes PNG / JPEG), 3 repeats | cores 0-1 | 3.37 | 0.63 |
+
 gtr-eval ids of gap round 2: e1765 (browser stems, r0597), e1766 (native stems, r0596).
 
 ## Media kept outside git
@@ -1036,7 +1134,11 @@ All under `/home/user/gtr/lanes/browser-audio-sync/out/`; WAV, 44.1 kHz unless s
 | `htdemucs6s-native/`, `htdemucs6s-native-optdisabled/`, `htdemucs6s-native-chromiuminput-optdisabled/` (`<stem>.wav`, 6 each) | 3,528,088 each | 10.000 s | 2 ch float; the native demucs-onnx stems of r0596, r0603 and r0611 |
 
 Also outside git and not media: `out/mediapipe/hands_<clip>_<delegate>.json` (all landmarks), `out/essentia/`,
-`out/basicpitch/`, `out/smalljs/` (full CSVs), `out/video/*.yhash.json` (ffmpeg luma hashes of R3a).
+`out/basicpitch/`, `out/smalljs/` (full CSVs), `out/video/*.yhash.json` (ffmpeg luma hashes of R3a). Gap round 2:
+`out/htdemucs6s-web/*.json` (page results with the `/proc` samples' summaries), `out/opencvjs/` (full page results
+with every HoughLinesP segment, the comparison JSONs, the rectified neck images as raw RGB, and `pyref/` with the
+Python reference's JSON and rectified PNGs), and the decoded frames in `gap2/frames/` (three R3a_cu PNGs, three R3b
+JPEGs, their raw RGB copies, `jobs.json`).
 
 ## Verification log (verify-trials-browser-audio-sync, 2026-11-10)
 

@@ -47,6 +47,7 @@ number). RUNNABLE / NOT-CPU-BOX are pointers for the try agent, not test results
 10. Essentia (`MTG/essentia`: PitchYinProbabilistic, PredominantPitchMelodia, MultiPitchKlapuri, PitchCREPE, PitchContourSegmentation, Audio2Midi). PyPI `essentia` / `essentia-tensorflow` 2.1b6.dev1438 (2026-05-19; CPython 3.14 wheels only; 2.1b6.dev1389 of 2025-07-24 is the last with Linux wheels for CPython 3.9 to 3.13); last commit 2026-11-05. Code AGPL-3.0 (commercial license on request); models CC BY-NC-SA 4.0 or CC BY-NC-ND 4.0 depending on the page (all quoted). RUNNABLE.
 11. MELODIA Vamp plugin 1.0 (MTG-UPF, Linux 32/64-bit build behind a download form; "free of charge for non-commercial use only") and wrapper `justinsalamon/audio_to_midi_melodia` (last commit 2020-04-03; no LICENSE file). RUNNABLE after the form. The MTG page answered HTTP 403 to the verifier, so its quotes are UNVERIFIED here (section 11).
 12. CREPE Notes (`xavriley/crepe_notes`). PyPI `crepe-notes` 0.2.0 (2026-03-13); last commit 2026-03-13. GPL-3.0. Uses CREPE, PESTO, PENN or torchcrepe weights, and madmom's `CNNOnsetProcessor` (madmom model files: CC BY-NC-SA 4.0) unless `--disable-splitting`. Accepts a precomputed f0 CSV (`--f0`) and a tuning offset in cents (`--tuning-offset`). RUNNABLE. Gap round 2: ran here with `--f0` from this lane's torchcrepe output and a copy of another lane's madmom build (`trials.md`, run r0616).
+39. Self-supervised F0 and voicing for monophonic music (Bitra and Beigi, arXiv 2601.11768, 2026-01-16, ICPRAM 2026; added in gap round 2). Transposition-equivariant training on CQT frames (PESTO's approach) plus a voicing classifier; trained on MedleyDB, tested on MDB-stem-synth. No code or weights linked. Not run.
 
 ### Polyphonic and multi-instrument note transcription (audio to MIDI)
 
@@ -61,8 +62,8 @@ number). RUNNABLE / NOT-CPU-BOX are pointers for the try agent, not test results
 21. Timbre-Trap (`sony/timbre-trap`, multi-pitch). Last commit 2024-05-05. Code MIT; weights in the Space `cwitkowitz/timbre-trap` (no license field). The Space returns audio (a WAV file), not notes, and its runtime stage was `RUNTIME_ERROR` on 2026-11-10. RUNNABLE (to check).
 22. Sheet Sage (`chrisdonahue/sheetsage`, melody + chords lead sheet). Last commit 2025-05-13. Code MIT; models and data CC BY-NC-SA 3.0; the README adds that madmom, Jukebox and Melisma "all have additional licensing terms affecting commercial use". Docker (~4 GB); Jukebox mode needs a GPU with at least 12 GB. RUNNABLE without Jukebox (to check).
 23. Deep Salience (`rabitt/ismir2017-deepsalience`, melody, bass, multi-f0, vocal weights in repo). Last commit 2019-11-22. MIT. CLI writes a salience `.npz` (default) or tab-separated f0 / multi-f0 files. To check (old Keras 2 imports).
-36. mt3-infer (`openmirlab/mt3-infer`, PyPI 0.2.0, 2026-07-11; added in gap round 1): one Python API and CLI over vendored MR-MT3, mt3-pytorch and YourMT3 code, checkpoints downloaded on first use. Code MIT (vendored parts: MIT, "No license declared upstream", Apache-2.0). Not run.
-37. yourmt3 (PyPI 0.1.4, 2025-08-31, third party; added in gap round 1): YourMT3 model types with weights from the Hugging Face repo `shethjenil/Audio2Midi_Models`. No license stated for code or weights. Not run.
+36. mt3-infer (`openmirlab/mt3-infer`, PyPI 0.2.0, 2026-07-11; added in gap round 1): one Python API and CLI over vendored MR-MT3, mt3-pytorch and YourMT3 code, checkpoints downloaded on first use. Code MIT (vendored parts: MIT, "No license declared upstream", Apache-2.0). Not run. Gap round 2: installed from PyPI; running its CLI was refused by the session's permission system (`trials.md`).
+37. yourmt3 (PyPI 0.1.4, 2025-08-31, third party; added in gap round 1): YourMT3 model types with weights from the Hugging Face repo `shethjenil/Audio2Midi_Models`. No license stated for code or weights. Not run. Gap round 2: installed from PyPI and its smallest model file downloaded; running it was refused by the session's permission system (`trials.md`).
 
 ### Piano transcription models
 
@@ -1500,7 +1501,20 @@ Everything in this section was read by verify-docs-audio-to-notes on 2026-11-10.
   - d. Service: not applicable.
 - **Not run here:** in gap round 1 the session's permission system refused installing the MT3 clone and running the
   mt3-pytorch clone, and MR-MT3 and YourMT3+ were not attempted after those refusals (`trials.md`); this package,
-  which vendors three of them, was not used in their place.
+  which vendors three of them, was not used in their place. (corrected in gap round 2: installed from PyPI; running
+  its CLI was refused by the session's permission system; `trials.md`, "Gap round 2".)
+- **Added in gap round 2 (wheel `mt3_infer-0.2.0-py3-none-any.whl` read 2026-11-11):** who publishes it: the PyPI
+  author field "MT3-Infer Contributors" and the repository https://github.com/openmirlab/mt3-infer; it is a
+  third-party repackaging (the LICENSE quoted above lists the projects whose code it adapts), not a release by the
+  MT3, MR-MT3, mt3-pytorch or YourMT3 authors. Its checkpoint registry `mt3_infer/config/checkpoints.yaml` (settles
+  the earlier UNVERIFIED download question): `default: "mt3_pytorch"`; `mt3_pytorch`: `size_mb: 176.0`,
+  `source_type: "git_lfs"`, `source_url: "https://github.com/kunato/mt3-pytorch"`, `branch: "master"`,
+  `target_path: "pretrained"`; `mr_mt3`: `source_type: "url"`, `source_url:
+  "https://huggingface.co/gudgud1014/MR-MT3/resolve/main/mt3.pth"`, `size_mb: 176.0`; both with the SHA-256
+  b8a3807e...3745398f ("Surprise: this hash is IDENTICAL to mr_mt3's sha256 above", the file's comment); `yourmt3`:
+  `model_variant: "YPTF.MoE+Multi (noPS)"`, `size_mb: 536.0`, `git_lfs` from `https://huggingface.co/spaces/mimbres/YourMT3`.
+  `git_lfs` downloads run `git clone --depth 1 --branch <branch> <url> <dir>` and `git lfs pull`
+  (`mt3_infer/utils/download.py`). Output: `transcribe()` returns a `mido.MidiFile` (`mt3_infer/api.py`).
 
 ## 37. yourmt3 (PyPI, third party; added in gap round 1)
 
@@ -1520,7 +1534,19 @@ Everything in this section was read by verify-docs-audio-to-notes on 2026-11-10.
 - **License facts:** a. Code: no license field, no license classifier and no license text in the PyPI metadata (read
   2026-11-10). b. Weights: no license tag and no card data on `shethjenil/Audio2Midi_Models` (API `cardData`: null).
   c. Training data: see YourMT3+ (section 16). d. Service: not applicable.
-- **Not run here** (as for section 36).
+- **Not run here** (as for section 36). (corrected in gap round 2: installed from PyPI and `YPTF+Single.pt`
+  downloaded; running it was refused by the session's permission system; `trials.md`, "Gap round 2".)
+- **Added in gap round 2 (PyPI JSON, the 0.1.4 wheel and the Hugging Face API, read 2026-11-11):** who publishes it:
+  a PyPI account whose `author_email` field names "dummyjenil" (empty `author`), with weights in the Hugging Face
+  repository of user "shethjenil"; the YourMT3+ authors' own release is the Space `mimbres/YourMT3` (section 16), so
+  this is a third-party repackaging. No license: no `license` field, no license classifier, and no license file in
+  the wheel (`.dist-info` holds `METADATA`, `RECORD`, `WHEEL`). Code: `YMT3(model_path, model_name, precision="32",
+  device="cpu")` with `model_name` one of "YMT3+", "YPTF+Single", "YPTF+Multi", "YPTF+MoE+Multi", which loads with
+  `self.model.load_state_dict(torch.load(model_path),strict=False)`; `predict(filepath, batch_size=8, callback=None,
+  output_path="output.mid")` writes the MIDI with `note_event2midi` (`MidiFile(ticks_per_beat=480, type=0)`, one
+  channel per program, drums as internal program 128; `yourmt3/utils/midi.py`). The weights repository (revision
+  4300d378) now also holds Basic Pitch, CREPE, Omnizart and MELODIA files besides the YourMT3 `.pt` files; `cardData`
+  is still null and it is not gated. `YPTF+Single.pt` is 121,781,787 bytes with LFS SHA-256 28a7dd18...ff3313e4.
 
 ## 38. SoX (input preparation; added in gap round 2)
 
@@ -1547,6 +1573,39 @@ Everything in this section was read by verify-docs-audio-to-notes on 2026-11-10.
     version" (GNU Lesser General Public License). `LICENSE.GPL` is GPL version 2 (June 1991), `LICENSE.LGPL` LGPL
     version 2.1 (February 1999).
   - b, c. No trained weights; no training data. d. Service: not applicable.
+
+## 39. Self-supervised F0 and voicing for monophonic music (Bitra and Beigi, arXiv 2601.11768; added in gap round 2)
+
+Everything in this section was read on 2026-11-11 (date from `date -u +%F`) from the arXiv API
+(https://export.arxiv.org/api/query?id_list=2601.11768), the abstract page https://arxiv.org/abs/2601.11768 and the
+PDF https://arxiv.org/pdf/2601.11768 (v1, text read with `pdftotext`).
+
+- **What, who:** "Lightweight Self-Supervised Detection of Fundamental Frequency and Accurate Probability of Voicing
+  in Monophonic Music", Venkat Suprabath Bitra and Homayoon Beigi (Columbia University; Recognition Technologies,
+  Inc.), submitted 2026-01-16, one version, category eess.AS. arXiv comment: "12 pages, 6 figures, 3 tables, and an
+  appendix, Accepted for publication at ICPRAM 2026 in Marbella, Spain, on March 2, 2026". Abstract: "We propose a
+  lightweight, fully self-supervised framework for joint F 0 estimation and voicing inference, designed for rapid
+  single-instrument training from limited audio. Using transposition-equivariant learning on CQT features, we
+  introduce an EM-style iterative reweighting scheme that uses Shift Cross-Entropy (SCE) consistency as a reliability
+  signal to suppress uninformative noisy/unvoiced frames." (as the API returns it, "F 0" with a space).
+- **Method facts (PDF):** section 3, "Methods": "We build on the self-supervised, transposition-equivariant learning
+  paradigm of PESTO to estimate both fundamental frequency (F0 ) and voicing from isolated monophonic instrument
+  stems." CQT input at 16 kHz ("With fs = 16 kHz"), a "ResNeXt1D encoder", and a separate voicing classifier trained on
+  pseudo-labels from the learned sample weights.
+- **Data and test sets (PDF):** trained on instrument stems of MedleyDB, evaluated on MDB-stem-synth: "Trained on
+  MedleyDB and evaluated on MDB-stem-synth ground truth, our method achieves competitive cross-corpus performance (RPA
+  95.84, RCA 96.24)" (abstract; Table 1 also gives 96.54 / 97.55 for training and testing on MDB-stem-synth). Table 2
+  ("Train on MedleyDB (columns), test on MDB-stem-synth (rows)") covers clarinet, cello, double bass, electric bass
+  and violin; guitar is not among them. These are the authors' figures, not measured here. Dataset licenses: MedleyDB
+  and MDB-stem-synth in "Training datasets and their license clauses" below (non-commercial terms in both).
+- **Code and weights:** none linked. The PDF text has no repository, model or download URL (its only URLs are the two
+  authors' ORCID links), and the abstract page's HTML links no code or data beyond arXiv's generic tool links. A web
+  search for a code repository could not be made in this round (the session's web search budget was used up), so
+  whether code exists elsewhere is UNVERIFIED.
+- **License facts:** a. Code: none published (above). b. Weights: none published. c. Training data: MedleyDB,
+  MDB-stem-synth (above). d. The paper itself: the abstract page's license link ("view license", title "Rights to this
+  article") is http://arxiv.org/licenses/nonexclusive-distrib/1.0/ , arXiv's non-exclusive distribution license.
+- **Not run here:** nothing to run (no code or weights).
 
 ## 34. Services and desktop products in this category (pointers)
 
@@ -1783,6 +1842,21 @@ lines 1, 5, 15, 16, 17, 18, 20 and 24. What ran and what was refused is in `tria
 here". These additions have not been through the verify-docs pass below. (They were checked against their sources
 by `verify-gapfill-audio-to-notes` on 2026-11-10 and 2026-11-11; its log, with the corrections made here, is at the
 end of `trials.md`.)
+
+## Gap round 2 additions (gapfill-audio-to-notes, 2026-11-11)
+
+Facts added in this round, each in its tool's section and marked "Added in gap round 2" (or "corrected in gap round
+2"), all read on 2026-11-11 (date from `date -u +%F`): section 10 Essentia (where `PitchYinProbabilistic`'s grid
+comes from: `hz2midi` returns an `int` in Essentia's source); section 12 CREPE Notes (madmom installed on the box by
+two other lanes; madmom's source-code license read as `BSD-2-Clause`, models `CC-BY-NC-SA-4.0`; the wheel's
+requirements and its undeclared `matplotlib` import; its own torchcrepe settings); section 23 Deep Salience (the
+`replicate.yaml` and `requirements.txt` pins, weight sizes); section 30 melodyExtraction_JDC and _SSL (framework
+versions, weights and sizes, call and output); section 31 MTANet (PyTorch and Lightning, no published weights);
+sections 36 `mt3-infer` and 37 `yourmt3` (who publishes them, the checkpoint registry and model files, MIDI writers
+read from the code, the install and the refused runs); new section 38 SoX (license quoted) and new section 39 (arXiv
+2601.11768, no code or weights linked), with tool-list lines 38 and 39; status notes on tool-list lines 12, 36 and 37.
+What ran and what was refused is in `trials.md`, "Gap round 2". These additions have not been through a verify-docs
+pass.
 
 ## Verification log (verify-docs-audio-to-notes, 2026-11-10)
 

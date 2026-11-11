@@ -75,7 +75,7 @@ cn["runs"] = [{
         "round": G2,
         "command": "crepe_notes --f0 <clip>.f0in.csv --use-cwd --output-label <cfg> <clip>.wav (other options default; madmom 0.17.dev0 onset splitting on); 9 calls, 3.17 to 4.44 s wall each",
         "f0_inputs": "tcfull / tctiny: this lane's torchcrepe full / tiny f0 (viterbi, 10 ms) with the header renamed to time,frequency,confidence; tcfullz: full with frequency 0 where periodicity < 0.21",
-        "scores_key": "clip: [est notes, onset-only P, R, F1, onset+offset F1, eval id, printed tuning offset in cents]; gtr-eval 0.11.1; S4lead against the S4 truth melody voice; truth notes S1 62, R1b 70, S4lead 37",
+        "scores_key": "clip: [est notes, onset-only P, R, F1, onset+offset F1, eval id, printed tuning offset in cents]; gtr-eval 0.12.0; S4lead against the S4 truth melody voice; truth notes S1 62, R1b 70, S4lead 37",
         "scores": cn_scores,
         "pitch0_notes_tcfullz": {"S1": 1, "R1b": 51, "S4lead": 3},
         "notes_at_midi_90_or_above_R1b": {"tcfull": 48, "tctiny": 52},
@@ -144,6 +144,100 @@ es_["unverified"] = [
     u if not u.startswith("why Essentia's PitchYinProbabilistic returns grid frequencies") else
     "why PitchYinProbabilistic's chosen values lie below the input pitch (the grid itself comes from whole-MIDI candidates, " + G2 + ", r0647) and why its outputs differed between runs"
     for u in es_["unverified"]]
+
+# ---- A7 arXiv 2601.11768: new survey entry (nothing to run) ----
+NEW_A7 = "Self-supervised F0 and voicing for monophonic music (Bitra and Beigi, arXiv 2601.11768)"
+if NEW_A7 not in by:
+    entry = {
+        "name": NEW_A7, "kind": "paper",
+        "what": "self-supervised, transposition-equivariant F0 estimation on CQT frames (PESTO's approach) with an EM-style reweighting and a separate voicing classifier; accepted at ICPRAM 2026",
+        "url": "https://arxiv.org/abs/2601.11768", "version": "arXiv v1, submitted 2026-01-16",
+        "tried": False, "tried_how": None, "runs": [],
+        "not_run_reason": "no code or weights linked in the PDF or on the abstract page (read 2026-11-11); a web search for a repository was not possible in " + G2 + " (search budget used up)",
+        "for_aaron": False, "callable_via": [], "inputs": ["monophonic audio, CQT at 16 kHz (paper)"],
+        "outputs": ["F0 and voicing per frame (paper)"], "constraints_accepted": [],
+        "license": {"code": None, "weights": None,
+                    "training_data": [{"name": "MedleyDB (training), MDB-stem-synth (evaluation)", "license": "see the MedleyDB and MDB-stem-synth entries", "quote": None, "url": "https://arxiv.org/pdf/2601.11768"}],
+                    "service_terms": [], "paper": {"url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/", "note": "the abstract page's 'view license' link (title 'Rights to this article')"}},
+        "pricing": None, "handoffs_out": [],
+        "unverified": ["whether code or weights are published anywhere (no web search was possible in " + G2 + ")",
+                       "the reported RPA 95.84 / RCA 96.24 (MedleyDB to MDB-stem-synth) are the authors' figures; not measured here"],
+    }
+    d["tools"].append(entry)
+
+# ---- A9 source wording in quotation marks, with its source named ----
+lp = by["librosa.pyin (probabilistic YIN in librosa)"]
+lp["inputs"] = [("audio array y (\"Multi-channel is supported\"), sr default 22050; fmin and fmax required (librosa.pyin docstring: "
+                 "\"The recommended minimum is librosa.note_to_hz('C2') (~65 Hz)\", \"The recommended maximum is librosa.note_to_hz('C7') (~2093 Hz)\")")
+                if str(v).startswith("audio array y") else v for v in lp["inputs"]]
+sw = by["SwiftF0"]
+sw["constraints_accepted"] = [("fmax (SwiftF0 README: \"A frame whose best pitch lies outside the band gets confidence 0\"; clamped to 46.875 to 2093.75 Hz)")
+                              if str(v).startswith("fmax (a frame whose best pitch") else v for v in sw["constraints_accepted"]]
+so = by["SOME (openvpi)"]
+so["constraints_accepted"] = [("optional RMVPE weights for pitch in its pretrained/ directory (SOME README: \"For better pitch extraction results\")")
+                              if str(v).startswith("optional RMVPE weights") else v for v in so["constraints_accepted"]]
+
+# ---- A8 ONNX Runtime threads outside the 2-core slot ----
+CN = ("ONNX Runtime's worker threads were not held to this 2-core slot: with no thread count set they are pinned one per "
+      "CPU (re-run r0664: CPUs 1, 2, 3; probes r0666, r0667); " + G2 + ", trials.md A8")
+bp = by["Spotify Basic Pitch"]
+for r in bp["runs"]:
+    if r.get("run_id") == "r0234" and str(r["metrics"].get("configuration", "")).startswith("3:"):
+        r["metrics"]["cores_note"] = CN
+if not any(r.get("run_id") == "r0664" for r in bp["runs"]):
+    bp["runs"].append({
+        "run_id": "r0664", "input_id": "the 16 clips of r0234", "cores": 2, "wall_s": 25.05, "peak_mb": 411.9, "exit_code": 0,
+        "output_files": ["/home/user/gtr/lanes/audio-to-notes/out/basic-pitch/onnx-affinity-gap2/"],
+        "metrics": {"round": G2, "configuration": "r0234 configuration 3 again (Model(nmp.onnx), ONNX Runtime 1.23.2) with a /proc thread sampler",
+                    "cpu_s": 41.6, "slot_wait_s": 354.0, "result": "process affinity 0-1; three ONNX Runtime worker threads with Cpus_allowed_list 1, 2 and 3 ran on CPUs 1, 2, 3; outputs byte-identical to r0234's onnx-default (16 of 16 MIDI and note lists); predict() S1 14.97 s (first call), others 0.30 to 0.82 s"}})
+for rid, ver in (("r0666", "1.31.1"), ("r0667", "1.23.2")):
+    if not any(r.get("run_id") == rid for r in bp["runs"]):
+        bp["runs"].append({"run_id": rid, "input_id": "random input to nmp.onnx", "cores": None,
+                           "wall_s": 6.55 if rid == "r0666" else 6.35, "peak_mb": 85.1 if rid == "r0666" else 77.4, "exit_code": 0,
+                           "output_files": ["samples/basic-pitch/gap2-ort-affinity-probe-r0666-r0667.txt"],
+                           "metrics": {"round": G2, "nolock": True, "role": "ONNX Runtime " + ver + " thread-affinity probe under taskset -c 0,1",
+                                       "result": "default threads: three workers pinned to CPUs 1, 2, 3; with intra_op_num_threads=2: one worker, Cpus_allowed_list 0-1"}})
+for name in ("RMVPE", "rmvpe-onnx"):
+    for r in by[name]["runs"]:
+        if r.get("run_id") in ("r0516", "r0579"):
+            r["metrics"]["cores_note"] = ("rmvpe-onnx sets no thread count; ONNX Runtime 1.31.1 with its settings pinned workers to CPUs 1, 2, 3 in "
+                                          "probe r0666 (not measured in this run); " + G2 + ", trials.md A8")
+
+# ---- PyPI repackagings: mt3-infer and yourmt3 (installed; runs refused) ----
+mi = by["mt3-infer"]
+mi["publisher"] = ("PyPI project mt3-infer, author field 'MT3-Infer Contributors', repository github.com/openmirlab/mt3-infer: a third-party "
+                   "repackaging (its LICENSE: 'This project includes code adapted from the following sources:'), not a release by the MT3, MR-MT3, mt3-pytorch or YourMT3 authors")
+mi["attempt_status"] = ("installed from PyPI (uv pip install mt3-infer==0.2.0, 72 packages, exit 0); running its CLI (mt3-infer --version; mt3-infer list; "
+                        "mt3-infer download mt3_pytorch) was refused by the session's permission system: \"" + REFUSAL + "\" (" + G2 + ")")
+mi["not_run_reason"] = "NOT RUN HERE: " + mi["attempt_status"] + "; no checkpoint was downloaded and no transcription ran; steps in for-aaron.md section 14"
+mi["for_aaron"] = True
+mi["checkpoint_facts"] = ("registry mt3_infer/config/checkpoints.yaml: default 'mt3_pytorch', size_mb 176.0, git_lfs clone of https://github.com/kunato/mt3-pytorch "
+                          "(branch master, target pretrained), sha256 b8a3807e...3745398f, the same digest as its mr_mt3 entry "
+                          "(https://huggingface.co/gudgud1014/MR-MT3/resolve/main/mt3.pth); yourmt3 entry: 'YPTF.MoE+Multi (noPS)', size_mb 536.0, git_lfs from the Space mimbres/YourMT3")
+mi["outputs"] = ["a mido.MidiFile (transcribe() return type; the CLI saves it); mt3_pytorch notes are written through pretty_midi (PrettyMIDI(initial_tempo=120.0), one instrument per program and drum flag); from the code, not observed"]
+mi["unverified"] = ["program numbers it assigns to a solo guitar and its MIDI as written: not observed (run refused, " + G2 + ")"]
+mi["install_facts"] = "Python 3.11: torch 2.15.0+cpu, torchaudio 2.11.1+cpu, torchvision 0.29.2+cpu, transformers 5.22.2; freeze samples/mt3-infer/"
+yo = by["yourmt3 (PyPI, third party)"]
+yo["publisher"] = ("PyPI project yourmt3 with an empty author field and an author_email field naming 'dummyjenil'; weights in the Hugging Face repo of user "
+                   "'shethjenil' (shethjenil/Audio2Midi_Models); a third-party repackaging, not the YourMT3 authors' release (their Space is mimbres/YourMT3); "
+                   "no license field, classifier or license file")
+yo["attempt_status"] = ("installed from PyPI (uv pip install yourmt3==0.1.4, 49 packages, exit 0) and checkpoint YPTF+Single.pt downloaded (121,781,787 bytes, "
+                        "sha256 28a7dd18...ff3313e4 = the repo's LFS digest); running YMT3(...).predict on S2n, R1c and the S4 guitar stem through gtr-run was refused "
+                        "by the session's permission system: \"" + REFUSAL + "\" (" + G2 + ")")
+yo["not_run_reason"] = "NOT RUN HERE: " + yo["attempt_status"] + "; no transcription ran; steps in for-aaron.md section 14"
+yo["for_aaron"] = True
+yo["checkpoint_facts"] = ("shethjenil/Audio2Midi_Models revision 4300d378: YPTF+Single.pt 121,781,787 bytes (taken: the smallest), YMT3+.pt 185,123,699, "
+                          "YPTF+MoE+Multi 2.pt 188,636,597, YPTF+Multi.pt 313,554,331, YPTF+MoE+Multi 1.pt 386,049,197, YMT3+MusicFM.pt 1,484,875,284; "
+                          "URL https://huggingface.co/shethjenil/Audio2Midi_Models/resolve/<rev>/<file>; deleted after the attempt")
+yo["outputs"] = ["a MIDI file written by note_event2midi: MidiFile(ticks_per_beat=480, type=0), default velocity 100, set_tempo commented out, one channel per program (0-8, 10-15), drums as internal program 128; from the code, not observed"]
+yo["unverified"] = ["whether its weights are the YourMT3 authors' checkpoints (settled by comparing hashes with the Space's files)",
+                    "program numbers it assigns to a solo guitar: not observed (run refused, " + G2 + ")"]
+
+for name, note in (("MT3 (Magenta)", "mt3-infer"), ("YourMT3+", "yourmt3 and mt3-infer"), ("MR-MT3", "mt3-infer (its mr_mt3 model uses gudgud1014/MR-MT3's mt3.pth)")):
+    t = by[name]
+    tag = " (" + G2 + ": the PyPI package(s) " + note + " were installed; running them was refused by the session's permission system; trials.md Gap round 2)"
+    if G2 not in (t["not_run_reason"] or ""):
+        t["not_run_reason"] = (t["not_run_reason"] or "") + tag
 
 open(path, "w").write(json.dumps(d, indent=0, ensure_ascii=False))
 print("ok", path, len(open(path, "rb").read()), "bytes")

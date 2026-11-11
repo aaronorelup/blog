@@ -891,8 +891,8 @@ nothing was installed for the browser). Every run below took a 2-core slot. Free
   clickListener function should modify the ABC string and rerender if the user has made a change." and "step are the
   number of visual positions the note was dragged. A negative number means that the note was dragged flatter and
   positive means it was dragged sharper." The click-listener page (https://docs.abcjs.net/visual/click-listener.html,
-  same date) gives the callback as `function clickListener ( abcelem , tuneNumber , classes , analysis , drag ,
-  mouseEvent )`. In the installed source: `src/write/draw/selectables.js` makes notes and tab numbers clickable when
+  same date) gives the callback as `function clickListener(abcelem, tuneNumber, classes, analysis, drag,
+  mouseEvent)`. In the installed source: `src/write/draw/selectables.js` makes notes and tab numbers clickable when
   `selectTypes` is not given (comment "by default, only notes and tab numbers can be clicked.") and marks both
   draggable; `src/write/interactive/selection.js` turns the vertical mouse distance into steps of `spacing.STEP`
   (30 x 93 / 720 = 3.875 px at scale 1) and gives arrow-key and Enter handlers only to elements whose `selectable`
@@ -958,7 +958,8 @@ nothing was installed for the browser). Every run below took a 2-core slot. Free
   Monaco editor integration for alphaTab providing coding assistance for alphaTex."), from the alphaTab monorepo's
   `packages/monaco`. Its README (in the package, and at
   https://raw.githubusercontent.com/CoderLine/alphaTab/develop/packages/monaco/README.md, read 2026-11-11): "This is a
-  Monaco Editor integration for writing alphaTex, providing coding assistance to code editors." with the features
+  Monaco Editor integration for writing alphaTex, providing coding assistance to code editors." (link markup dropped)
+  with the features
   "Setup Monaco for the use with TextMate Grammars", "Setup Monaco with the basic alphaTex language (grammar and
   language configuration)." and "Setup Monaco to integrate with a alphaTab Language server running in a web worker.",
   and the warning "This package is still in a very experimental stage." It exports `addTextMateGrammarSupport`,
@@ -1037,6 +1038,12 @@ nothing was installed for the browser). Every run below took a 2-core slot. Free
   before reading a character's screen position shifted the scroll position, so a click landed on line 3 (removed);
   and the wait after the string-7 edit ran into its 30 s timeout, because no new render comes when the alphaTex does
   not parse (the driver now also stops on alphaTab's error event).
+- **After the run, disk freed and the run repeated.** The editor install's `node_modules` (135 MB with esbuild) was
+  deleted except `vscode-oniguruma` (520 KB; the page loads its `onig.wasm`); the bundles (8.2 MB) stay in
+  `web/bundles/alphatab-monaco/`, and the install command above rebuilds the rest. The same driver then ran again,
+  r0663 (2 cores, 12.26 s wall, CPU 1.2 s, peak RSS 145.6 MB, slot wait 120.1 s, exit 0): the six exported and editor
+  files were byte-identical to r0614's and every step gave the same notes and markers; the language server
+  initialised in 180.0 ms and the first score was drawn at 448.9 ms (327.6 ms and 656.0 ms in r0614).
 
 ### Changing a string or a fret: what each tool run in this lane offers
 
@@ -1078,7 +1085,7 @@ change-and-redraw run", the run shows that the positions are taken from the data
   `pages/vextab_editor.html`, r0625 (2 cores, 2.24 s wall, CPU 0.8 s, peak RSS 131.1 MB, exit 0): the second `:q 0/3`
   selected in the textarea (with `setSelectionRange`, as r0407 did) and `:q 5/4` typed with the keyboard; after the
   redraw, 90 fret numbers as before, one changed: "0" on string 3 -> "5" on string 4 (each number assigned to the
-  nearest of its stave's six lines; every number 4.5 px from its line); no editor error text
+  nearest of its stave's six lines; none more than 4.5 px from its line); no editor error text
   (`samples/vextab/gap2_editor_string_edit.json`, `.webp`).
 - **Verovio 6.4.1, `edit()` on MEI tablature:** the package's typings (`dist/types/verovio-toolkit.d.ts`) declare
   `edit(editorAction: EditorAction): boolean;` with the comment "Edit the MEI data.", and `EditorTypes.d.ts` lists the
@@ -1104,9 +1111,11 @@ tag, country, language). Steps for Aaron: for-aaron.md item 8.
 Scripts: `scripts/abcjs_click_drag.cjs`, `scripts/pages/abcjs_click_drag.html`, `scripts/pages/abcjs_editor_click.html`,
 `scripts/alphatab_monaco_entry.mjs`, `scripts/build_alphatab_monaco.sh`, `scripts/pages/alphatab_monaco.html`,
 `scripts/alphatab_monaco_edit.cjs`, `scripts/alphatab_model_string_edit.cjs`, `scripts/vextab_editor_string_edit.cjs`,
-`scripts/verovio_edit_tab.cjs`. Full outputs (PNG screenshots, logs): `/home/user/gtr/lanes/web-tab-render/out/`
-`abcjs-click-drag/`, `alphatab-monaco/`, `alphatab-edit/`, `vextab/`, `verovio/`. No audio or video was made in this
-round.
+`scripts/verovio_edit_tab.cjs`; for the record itself, `scripts/gap2_check_quotes.py` (every quote added in this round
+against its saved source: 55 of 55 found, `samples/verify/gap2_quote_check.tsv`) and `scripts/gap2_update_tools_json.py`
+(the same facts in `tools.json`, including a `string_fret_change` field per tool). Full outputs (PNG screenshots,
+logs): `/home/user/gtr/lanes/web-tab-render/out/` `abcjs-click-drag/`, `alphatab-monaco/`, `alphatab-monaco-rerun/`,
+`alphatab-edit/`, `vextab/`, `verovio/`. No audio or video was made in this round.
 
 ## Not run here
 

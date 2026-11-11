@@ -9,7 +9,9 @@ Why these were not run here: MuseScore 4 was not downloaded: the shared disk was
 lanes not to start downloads or installs over 200 MB), and its Linux AppImage (192.6 MB) would have had to be unpacked
 to run on the box, which has no FUSE tools; muzart could not be installed because this session's permission
 check refused running that repository's install step (the trial agent's report); Soundslice, Flat.io and Guitar Pro
-need an account or a paid desktop program; the box has no sound card, so nothing could be listened to.
+need an account or a paid desktop program; the box has no sound card, so nothing could be listened to. HAYA-TAB (item
+8, added in gap round 2 on 2026-11-11) is a desktop program whose builds are on GitHub Releases, which the box cannot
+list.
 
 ## 1. MuseScore Studio 4 (free desktop program): does it make a TAB staff from Guitar Pro files?
 
@@ -89,7 +91,27 @@ The box measured when alphaTab's playback events fired, but it has no sound card
 4. Send back: a short note saying whether the notes, the metronome clicks and the moving cursor stay together by ear,
    and, if you can, a phone video of the screen with sound (about 20 seconds).
 
+## 8. HAYA-TAB (free desktop tab library with an alphaTab viewer): what it shows, and whether a note can be changed
+
+Added in gap round 2 (2026-11-11). Its source code (commit eb0466a of 2026-07-31) has a viewer and player built on
+alphaTab 1.8.1 and an edit dialog for the title, artist and other library details, and no code that changes a note
+or saves a tab file. This checks the released program.
+
+1. Open https://github.com/HAYASAKA7/HAYA-TAB/releases/latest in a browser, download the Windows build and install it
+   (free; Apache 2.0 license). Note the version number.
+2. Right-click empty library space and choose **Upload TAB** (the README's words). Add `inputs/S2n/S2n.gp5`,
+   `inputs/S5capo2/S5capo2.gp5`, `inputs/S5dropd/S5dropd.gp5` and `lanes/web-tab-render/samples/alphatab/S2n.export.gp`.
+3. Open each one with **Open with Inner Viewer**. Take a screenshot of the first lines of each. Look for a TAB staff,
+   for "Capo" on the capo file, and for the tuning on the Drop D file. Note any file that does not open, with the
+   message.
+4. In the S2n file, click the first note of bar 1, then right-click it. Note whether anything lets you change its fret
+   or string, and whether there is a save or export command for the tab itself.
+5. Press play once with the speed control at 50 % and note whether playback starts.
+6. Send back: the version, the screenshots, which files opened, and the answers to steps 4 and 5. (About 15 minutes;
+   free.)
+
 ---
 
 Checked on 2026-11-10 by `verify-trials-web-tab-render` against the box's files and the alphaTab repository source;
-what changed in this file is listed in `trials.md`, section "Verification log".
+what changed in this file is listed in `trials.md`, section "Verification log". Item 8 and the HAYA-TAB sentence of the
+introduction were added by `gapfill-web-tab-render` on 2026-11-11 (`trials.md`, section "Gap round 2").

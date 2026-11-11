@@ -1,0 +1,6 @@
+{"onnxruntime": "1.31.1", "process_affinity": [0, 1], "os_cpu_count": 4}
+{"session": "A: graph_optimization_level only", "input": ["serving_default_input_2:0", [1, 43844, 1]], "runs": 55, "new_threads": 4, "threads": [{"cpus_allowed_list": ["0-1"], "ran_on_cpus": [1]}, {"cpus_allowed_list": ["1"], "ran_on_cpus": [1]}, {"cpus_allowed_list": ["0-1", "2"], "ran_on_cpus": [1, 2]}, {"cpus_allowed_list": ["0-1", "3"], "ran_on_cpus": [1, 3]}]}
+{"session": "B: plus intra_op_num_threads=2", "input": ["serving_default_input_2:0", [1, 43844, 1]], "runs": 99, "new_threads": 2, "threads": [{"cpus_allowed_list": ["0-1"], "ran_on_cpus": [1]}, {"cpus_allowed_list": ["0-1"], "ran_on_cpus": [0, 1]}]}
+{"onnxruntime": "1.23.2", "process_affinity": [0, 1], "os_cpu_count": 4}
+{"session": "A: graph_optimization_level only", "input": ["serving_default_input_2:0", [1, 43844, 1]], "runs": 71, "new_threads": 4, "threads": [{"cpus_allowed_list": ["0-1"], "ran_on_cpus": [0, 1]}, {"cpus_allowed_list": ["1"], "ran_on_cpus": [1]}, {"cpus_allowed_list": ["2"], "ran_on_cpus": [2]}, {"cpus_allowed_list": ["3"], "ran_on_cpus": [3]}]}
+{"session": "B: plus intra_op_num_threads=2", "input": ["serving_default_input_2:0", [1, 43844, 1]], "runs": 124, "new_threads": 2, "threads": [{"cpus_allowed_list": ["0-1"], "ran_on_cpus": [0, 1]}, {"cpus_allowed_list": ["0-1"], "ran_on_cpus": [0]}]}

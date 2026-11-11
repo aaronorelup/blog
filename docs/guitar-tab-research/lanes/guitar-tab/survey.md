@@ -150,6 +150,13 @@ test (the try agent's `trials.md` says what ran).
     Suggests a chord diagram (a fret per string) for a chord label, given the previous chord's diagram. Section "Guitar
     Chord Diagram Suggestion".
 
+### Added in gap round 2 (2026-11-11)
+
+48. "Tämja hagelbössan" / "Taming the Shotgun" (Ottosson and Ölund Danielsson, Lund University bachelor thesis
+    LU-CS-EX 2026-17, in Swedish): Basic Pitch with its minimum note length lowered to 40 ms, rule-based filters tuned
+    with Optuna on GuitarSet, then a Viterbi string-and-fret step. Open Access PDF; no code link; no licence stated.
+    NO-CODE-FOUND. Section "Tämja hagelbössan / Taming the Shotgun".
+
 ## Shared license texts (quoted once, referred to below)
 
 These are the clauses of the standard licenses that recur in this lane. Each per-tool section names its license
@@ -981,6 +988,51 @@ and quotes its own license file; these are the license texts themselves.
   Database License (ODbL)". The Space card YAML says `license: other`.
 - Training data: DadaGP (research access by request, DadaGP section) and mySongBook (terms not read here).
 
+## Tämja hagelbössan / Taming the Shotgun (Lund University bachelor thesis, 2026; added in gap round 2)
+
+- What: Ross Ottosson and Ludvig Ölund Danielsson, "Tämja hagelbössan: En domänspecifik optimeringspipeline för
+  generering av spelbar gitarrtabulatur", alternative title on the record "Taming the Shotgun: A domain-specific
+  optimization pipeline for generating playable guitar tablature"; Lund University, Department of Computer Science,
+  course EDAL01, type "M2 - Bachelor Degree", series LU-CS-EX, report number 2026-17, language Swedish, added to LUP
+  2026-05-22. Record https://lup.lub.lu.se/student-papers/record/9226851 and PDF
+  https://lup.lub.lu.se/student-papers/record/9226851/file/9226852.pdf (both read 2026-11-11; 35 pages, 2,458,481
+  bytes, title page dated "18 maj 2026").
+- Method, from the English abstract: "This study investigates how a general-purpose AMT model (Spotify’s Basic Pitch)
+  can be adapted to automatically generate physically playable guitar tablature. This is done by lowering the model’s
+  minimum note length threshold so that fast musical passages are successfully captured, albeit at the cost of massive
+  over-detection of false ghost notes (a “shotgun” effect)." and "a domain-specific filtering pipeline was developed
+  and optimized to eliminate unwanted noise based on the physical and acoustic properties of the guitar. The purified
+  notes were subsequently processed using a statistical algorithm to calculate biomechanically ergonomic fingerings."
+  Details from the Swedish body (sections 5.1 to 5.5; English renderings here, not quotes): Basic Pitch's minimum note
+  length lowered from 127.7 ms to 40 ms, onset and frame thresholds searched; a high-pass filter (searched between 20
+  and 82 Hz) before Basic Pitch; MIDI filters on velocity, short low "thump" notes, the pitch range MIDI 40 to 88, a
+  merge of same-pitch notes less than 50 ms apart (switched off after the ablation showed it lowered F1 in every
+  category), removal of notes 12, 19 or 24 semitones above a simultaneous note, polyphony limits (notes at most 1.5 s,
+  background ringing cut after 0.4 s) and a minimum duration lowered in passages above 9 notes per second ("Shred
+  filter"); the parameters were tuned with Optuna (precision and recall as objectives; 12 hours for the solo takes and
+  12 hours for the comp takes); `htdemucs_6s` separates the guitar before all this for full mixes. Tab step (section
+  5.4): notes starting within ±50 ms form a chord; every combination of positions with one note per string and at most
+  4 frets between the highest and lowest fretted note is a state; Viterbi minimises a transition cost
+  K = w_fret·ΔB + w_string·ΔS − p_open·N_open (hand movement along the frets and across the strings, open strings
+  rewarded), whose weights were tuned with Optuna to maximise the share of notes on GuitarSet's annotated string.
+  Section 3.1: six strings, 22 frets, standard tuning; no capo or tuning input is described.
+- Data and evaluation: GuitarSet (all five genres, solo and comp takes), scored with mir_eval (onsets within ±50 ms,
+  pitch within a quarter tone). Section 7.11: "Den data som användes för att generera de optimerade parametrarna
+  användes också för att testa resultaten." (the data used to generate the optimised parameters was also used to test
+  the results). Section 7.9: four songs by other artists (one of them a fingerstyle version) were run through the whole
+  pipeline and judged by listening, with no ground truth.
+- Author-reported numbers (not checked here): Table 5, Basic Pitch with its default 128 ms against the 40 ms baseline:
+  solo precision / recall / F1 0.647 / 0.705 / 0.671 against 0.493 / 0.760 / 0.594, comp 0.447 / 0.464 / 0.449 against
+  0.374 / 0.528 / 0.433; Table 1, after the filters: F1 0.72 to 0.77 for solo and 0.37 to 0.53 for comp, per genre;
+  Table 3, share of notes on the annotated string: solo 40.69 %, comp 76.34 %; Table 4, chord sequences with no playable
+  fingering: comp 11.13 % on the 40 ms baseline and 0.88 % after filtering, solo 1.41 % and 0.01 %.
+- Code and licence: no repository, code or data link in the PDF (its URLs are all in the reference list) and none on
+  the record page; the record marks it "Open Access" (`info:eu-repo/semantics/openAccess` in the page metadata) and
+  states no licence; the PDF states none. Not runnable: NO-CODE-FOUND.
+- Relation to this lane's runs: the same handoff, Basic Pitch notes into a Viterbi string-and-fret step, ran here with
+  Basic Pitch's default settings and no filtering (`trials.md`, "Handoff runs", r0240). The audio-to-notes lane is the
+  one that runs Basic Pitch itself.
+
 ## Datasets
 
 All licence ids below are the `metadata.license.id` field of the Zenodo API record (https://zenodo.org/api/records/<id>),
@@ -1263,14 +1315,14 @@ None of these pairs was run by this agent; the try agent's `trials.md` records w
     `FretBoard` objects for string and fret (music21 `tablature.py`). No code was found for the paper.
 17. User constraint "capo at fret N" is accepted by: Guitab `--capo N`; gtrsnipe `--capo` ("All fret numbers will be
     relative to the capo", README "Command-line options"); scorify (`classicalGuitar({ capoFret: 2 })`, per-string
-    `capoFret`; README); Fretting-Transformer through a `CAPO<#>` token (paper; no code). Not accepted by: MIDI-to-Tab
+    `capoFret`; README; gap round 2 ran it on S5capo2, run r0621, eval e1816, `trials.md`); Fretting-Transformer through a `CAPO<#>` token (paper; no code). Not accepted by: MIDI-to-Tab
     ("our system does not handle the use of capos"), tuttut and tabsynth (no capo parameter found; a capo can be given to
     tuttut only as a raised `Tuning`, which the try agent ran: run r0048, evals e0045 without and e0046 with the raised
     tuning, `trials.md`), LilyPond's automatic assignment (no capo setting found on the fretted-strings page).
 18. User constraint "tuning" is accepted by: amt-tools `GuitarProfile(tuning=[...], num_frets=...)`; tuttut
     `Tuning(strings, nfrets)` (Python API only; `tuttut-cli` uses the default `Tuning()`); tutts `new Tuning([...],
     nfrets)` (README; run with Drop D in r0205, eval e0410, `trials.md`); gtrsnipe `--tuning`,
-    `--tuning-pitches`; scorify (per-string `openPitch`, `createFrettedInstrument(...)`); LilyPond `stringTunings`; FretPath
+    `--tuning-pitches`; scorify (per-string `openPitch`, `createFrettedInstrument(...)`; gap round 2 ran Drop D, run r0621, eval e1818); LilyPond `stringTunings`; FretPath
     (read from the MuseScore instrument's string data); Fretting-Transformer `TUNING<#,#,#,#,#,#>` token (no code). Fixed to standard
     tuning in: TabCNN (`string_midi_pitches = [40,45,50,55,59,64]`), Guitab (`OPEN_PITCH` in `guitab/guitar.py`), MIDI-to-Tab
     ("an assumption of standard tuning"), tabsynth ("Standard tuning focus"; `trials.md`: no tuning reaches
@@ -1415,3 +1467,18 @@ Still UNVERIFIED after this check: FretNet weights anywhere; TART code; EGFxSet'
 `non_finetuned/` holds; the DadaGP tick size (decoder comment vs the GuitarTab README); whether FretPath's core runs in
 Node; whether Guitar-TECHS zips hold video; where AnimeTAB's data is; the Asmar et al. work (publications.polymtl.ca
 reset the connection again on 2026-11-10); whether DadaGP's decoder reads Guitab's tokens; CPLEX's terms.
+
+## Gap round 2 additions (gapfill-guitar-tab, 2026-11-11)
+
+Added or changed in this file on 2026-11-11, each marked "gap round 2" where it stands: the TabCNN-weights section
+(training code and its licences, the export repository's licence and training split, the card's front-end, the runs);
+the table of published weights and training data (the vanilla ONNX model's players); scorify (package licence and
+bundled dependencies, the cost hook as the way to bias a note toward a string, the runs); gtrsnipe (licence files
+re-read at `a9be933`, still not on PyPI, repository install refused); handoff fact 19 (scorify's cost hook); a new
+section and tool-list line 48 for the Lund thesis "Tämja hagelbössan" / "Taming the Shotgun". Sources were read on
+2026-11-11 and saved under `/home/user/gtr/lanes/guitar-tab/gap2/dl/` and `gap2/repos/` (blob-less clones). Quotes
+were compared with those copies by script after whitespace and hyphenation were normalised: 34 quotes from the model
+card, five READMEs (the export repository's `tool/tabcnn`, robust-guitar-tabs, scorify, gtrsnipe, FretPath), five
+licence files, the arXiv HTML, scorify's `package.json` and gtrsnipe's `pyproject.toml`, all found (the `pyproject.toml`
+comment spans two lines with a `#` marker between them), plus the four thesis quotes and six record-page fields, all
+found. Not re-checked by a second agent yet.

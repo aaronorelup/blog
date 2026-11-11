@@ -7,6 +7,9 @@ refused to run some downloaded code). Each section says where to run it, which c
 back. No source read on 2026-11-10 states run times for these tools on these clips, so none are given; the only
 limits given are the ones a source states (the ZeroGPU quotas in section 1).
 
+(gap round 2, 2026-11-11: Grounding DINO, OWLv2 and YOLO-World then ran on the box itself, so sections 4 and 5 are
+optional now; section 10, a capo clip pair to record, is new.)
+
 **The clips.** R3a is the shared 18 s concert excerpt (640x480). R3a_cu is a 10 s close shot of the same concert:
 there the fretting hand's 21 MediaPipe landmarks span about 123 x 145 px of the 640x480 frame (frame 150), against
 about 35 x 44 px in R3a's wide shot (frame 300). Both come from the archive.org item
@@ -76,7 +79,9 @@ CPU use, so this is for a machine with an NVIDIA GPU, installed by a coding agen
 These need no login. They did not run on the box itself because their weights (about 690 MB and 620 MB) were over the
 disk limit there. OWLv2 did run through the `merve/owlv2` web demo from the box (boxes and labels, but that demo
 returns no scores); the Grounding DINO demo could not be called from the box (`Unknown protocol: ws`), so step 1-3
-below is the part still missing.
+below is the part still missing. (corrected in gap round 2: on 2026-11-11 both models ran on the box itself, with
+scores, on the three stills and more: OWLv2 run r0639, Grounding DINO tiny run r0648, `trials.md` "Gap round 2". The
+steps below are now optional; the one thing the box still cannot do is call the Grounding DINO demo page.)
 
 1. Open https://huggingface.co/spaces/merve/Grounding_DINO_demo (RUNNING on "cpu-basic" on 2026-11-10).
 2. Upload the R3a_cu still. "Detection Prompt": `guitar neck . fretboard . headstock . capo . hand .` Leave "Box
@@ -98,6 +103,8 @@ model the first time. The script this lane wrote for it is `scripts/run_openvoca
 it reads decoded frames from the research box's paths (`LANE` and `CLIPS` in `scripts/vhf_common.py`), so the agent
 has to decode R3a and R3a_cu to PNG frames first (`ffmpeg -i <clip>.mp4 -vsync 0 <dir>/<prefix>_%04d.png`, as in
 `trials.md`) and point those two settings at them. Send back the `results.json` and the `frames/` folder it writes.
+(corrected in gap round 2: YOLO-World v2 ran on the box on 2026-11-11, run r0650, with the CLIP file downloaded for
+that run and deleted after it; this section is now optional.)
 
 ## 6. TAPIR / BootsTAPIR / TAPNext (point tracking) in Google Colab
 
@@ -161,6 +168,27 @@ settle it in a few minutes, no software needed beyond a video player.
    `trials.md` ("Worked handoff" section): R3b index string 4 fret 3, middle string 5 fret 4, ring and pinky string 2
    fret 5 (12-TET fit), or one fret lower by the wire count; R3a_cu index string 4 fret 2, middle string 6 fret 4, ring
    string 4 fret 4, pinky string 2 fret 4.
+
+## 10. Record a capo clip pair (gap round 2: no freely licensed playing video with a capo was found)
+
+The box ran its capo prompts and fret-line method on one Commons still (a capo on a guitar with no hands, `inputs.md`
+"C1"). No clip shows a capo while someone plays, and no clip has the same music with and without a capo. Two short
+clips of your own would give that.
+
+1. Put a phone on a stand in front of you at about chest height, landscape, 1080p at 25 or 30 fps. Frame it so the
+   whole neck from the nut to the sound hole and both hands are in the picture (as in R3c). Do not move the phone
+   between the two takes.
+2. Take 1: play one simple fingerstyle pattern for about 20 seconds, no capo.
+3. Clip a capo on behind fret 2. Take 2: play the same pattern with the same chord shapes for about 20 seconds.
+4. Send back: the two video files as the phone saved them, the capo's make or type, and the fret you put it on.
+5. What an agent on the research box then runs on frames of both takes (same settings as `trials.md` "Gap round 2",
+   so the results line up): `scripts/gap-round-2/run_openvocab_images.py` with `yoloe`, `owlv2`, `gdino` and
+   `yoloworld`; `scripts/gap-round-2/run_opencv_lines_image.py` with a quad set by hand on one frame per take; and
+   MediaPipe Hand Landmarker (`scripts/run_mediapipe_hands.py`, after the two takes are added to `CLIPS` in
+   `scripts/vhf_common.py`) for the fretting hand's position. The capo fret (2) is the ground truth for take 2 and "no
+   capo" for take 1.
+6. A labelled alternative exists but was not downloaded: the GuiFiR dataset's per-frame annotations include a capo
+   position (`frame_capo`); its terms allow non-commercial research use only (`survey.md`, Datasets section).
 
 ## Verification log (verify-trials-video-hands-fretboard, 2026-11-10)
 

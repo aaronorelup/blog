@@ -680,10 +680,12 @@ Every Hugging Face Space call in this file went through `gradio_client` (`script
 
 ### Entries that were counted as tried without output (gap H2)
 
-`tools.json` had `tried: true` for three services whose every call was refused before any output: the Space
+`tools.json` had `tried: true` for three services that gave no analysis output: the Space
 `hugging-apps/muscriptor-music-transcription` (r0116, r0309: ZeroGPU quota), the Space `lpeterl/sam-audio-webui`
 (r0162: ZeroGPU quota) and the Google Gemini API (r0013, r0014, r0300: HTTP 402 on every generation request; only
-`countTokens`, r0016, answered, with input token counts). They are now `tried: false` with `tried_how` null; the run
+`countTokens` answered, in r0016 and in the `countTokens` step of the probes r0014 and r0300, with input token
+counts). (Corrected by verify-gapfill-hosted-apis: this had read "whose every call was refused before any output"
+and "only `countTokens`, r0016, answered".) They are now `tried: false` with `tried_how` null; the run
 records and refusal texts are kept, and `for-aaron.md` sections 1 (Gemini) and 3 (the ZeroGPU Spaces) still hold the
 steps. The sections above already called these calls refused; their text is unchanged.
 
@@ -928,3 +930,105 @@ Disk: `venv-apis` and `venv-gc-old` were rebuilt from the saved freeze files for
 checks the freeze files) and deleted afterwards; the remade float WAVs (433 MB) and the byte-identical re-run copies
 were deleted; the demucs re-run WAVs, the R3b and R3c frames and the re-run records are kept under
 `/home/user/gtr/lanes/hosted-apis/verify/`.
+
+## Verification log (verify-gapfill-hosted-apis, round 2, 2026-11-11)
+
+An independent check of what gap round 2 added: the section "Gap round 2" above, the gap-round-2 parts of
+`survey.md` and `for-aaron.md`, `tools.json`, `samples/cesure-mcp/`, `samples/gap2/` and `scripts/gap2/`. The text
+checked is commit d90f43e against d2e9a17 (the commit before the round; `git diff`, read only). Date from
+`date -u +%F`; work from 00:41 to about 01:05 UTC. This check spent nothing and read no key value.
+
+What was checked, and how:
+
+1. Run ledger. r0599, r0600 and r0622 are `hosted-apis` lines with the commands, inputs (sizes and SHA-256), wall,
+   CPU (user + system), peak memory and exit code 0 the text gives; all three are `locked` false with no cores, as
+   stated (`--nolock`). The 70 earlier lines of the lane hold no `ffmpeg` tool and no command containing `ffmpeg`;
+   the yt-dlp commands r0126 and r0323 carry `--download-sections` and `-x --audio-format wav`. All 15 Space runs in
+   the `gradio_client` table use the client script and venv the table gives (`hf_space_call.py` in `venv-apis`,
+   gradio-client 2.7.2 in `samples/venv-apis.freeze.txt`; `hf_space_call_old.py` in `venv-gc-old`, 0.5.3), and the
+   `wall_s` listed for them in `tools.json` equals the `wall_s` of each run's `record.json` (14 runs; r0119 has no
+   record on disk, its 1.67 s is the first round's table figure). Every run id the round cites (36) is a
+   `hosted-apis` line. The round cites no eval id and scored nothing, so there was no scoring to re-run.
+2. Re-runs, labels starting "verify", in CPU slots unless said: r0661 re-ran `scripts/gap2/ffmpeg_excerpts.sh`
+   (2 cores, cores 0-1, 0.36 s wall after 267.5 s waiting for a slot): the three SHA-256 equal those in
+   `inputs/README.md` (ae989edd..., 4ac9b8e8..., 7e9784c8...). r0662 re-ran `scripts/gap2/ffmpeg_frames_r3a.sh`
+   (2 cores, 0.57 s): 18 JPEGs, 531,261 bytes, all 18 byte-identical to `out/frames/R3a/`. The copies (8.2 MB) were
+   deleted. r0655 re-ran the Cesure probe into `/home/user/gtr/lanes/hosted-apis/verify-gap2/cesure-mcp/`
+   (`--nolock`: a read-only remote protocol call with no local work, as r0622; 2.26 s): HTTP 200, 202, 200 and 404,
+   1,663 and 19,822 bytes; `tools_list.json` byte-identical to `samples/cesure-mcp/tools_list.json` and all four
+   response bodies equal to r0622's. No `tools/call` was sent.
+3. Files. The two Cesure tables were recounted from `tools_list.json` and `probe.json`: 14 tools, and every title,
+   required and other input, enum value (`mode`, `notesOffTheNeck`, `harmonicsOffTheNeck`, `language`), the semitone
+   bounds -24 to 24, `securitySchemes`, `readOnlyHint` / `destructiveHint`, the `ui://cesure/player-0.8.3+ac6e74d`
+   resource and the quoted descriptions and `instructions` match. `samples/gap2/quotes_check.tsv`: 314 lines, 283
+   found, 31 NOT FOUND, in the five kinds `survey.md` names (8 heading references, 1 menu label, 2 shell fragments,
+   1 apps-survey quote, 19 spans paired across two quotes). `samples/spend.jsonl` is unchanged since 2026-11-10
+   22:12 UTC (34 lines, 0.95994905 USD; 25 gateway lines, `is_byok` false in all 25). Key store (`getkey.py --list`,
+   counted, no name printed): 26 names, none containing "fal" or "mureka", none for OpenAI, AWS, Alibaba or MusicGPT.
+4. Quotes, against the live pages, not the round's saved copies: 63 pages fetched again 00:46 to 00:53 UTC with
+   `scripts/verify-gap2/fetch_pages.sh` (status list `samples/verify-gap2/fetch_status.tsv`; all HTTP 200 except the
+   gated Muse `LICENSE`, 401 as the text says). `scripts/verify-gap2/check_quotes_live.py` took 402 quoted strings
+   from the round's added lines and new `tools.json` strings and searched each page's raw text, tag-stripped text,
+   pandoc text and JSON/JavaScript-unescaped text (`samples/verify-gap2/quotes_live.tsv`): 365 found; every quote
+   taken from a page was found on the page the text cites (the other hits are code fragments, field names and short
+   words that match many pages). The 37 not found: 27 spans of prose paired across two separate quotes (their inner
+   quotes were then checked one by one, e.g. Qwen "$11", "$8.3", "$44", "1 million tokens"; OpenAI's
+   `/v1/chat/completions` row "No" and "30 days"; the gateway's `no_training` / `zdr` values: all found), 2 shell
+   fragments, the menu label "Web page, complete", "Free tier" twice (in `samples/vercel-gateway/probe_models.json`,
+   a 403 body, not a web page), 3 quotes of the record's own earlier text, and "Sorry, you have been blocked" twice,
+   which no fetched page holds (item 9). Section numbers were read in the page text: Vercel AI Product Terms § 1, §
+   2, § 6.2, § 8.1, § 8.4, Terms of Service § 3, § 4, Notices § 4 and § 6 (every provider URL given); MiMo agreement
+   § 3.8.1, § 4.1, § 4.4, § 4.5 (the one "train" of the English text) and § 5.1, in chunk 1995, which the docs bundle
+   loads for the user-agreement route, and the platform footer's link to mimo.mi.com (platform bundle); BytePlus
+   Terms § 4 and AI terms § 2.1, § 3.2, § 3.3 (`MDContent`); Meta Exhibit C "Hosted Platform Access" and its
+   definition; Muse license § 2 to § 4 and Exhibit A (`cardData.extra_gated_prompt`); AWS § 50.1, § 50.2, § 50.3, §
+   50.10 (Nova 2 Omni), § 50.12.2; Alibaba § 4.48.1 d) and e) (not the similar clauses of another product lower on
+   the page). Facts that are not quotes, also re-read: the Hugging Face API fields of the three repositories, the
+   gateway model list fields, the MiMo provider list (on the `.md` model page), the fal OpenAPI document (paths,
+   "1.0.0", `title` `maxLength` 50, `zip_url` required), the Mureka terms page (no text without scripts), no "mureka"
+   in https://fal.ai/llms.txt, gradio_client's PyPI license fields, Flat's "Preferred formats", Nova 1 and Nova 2
+   modality tables, the OpenAI pages (no audio tokens per second on the four pages named).
+5. Code, weights and data licenses: gradio_client's Apache-2.0 is under `code`, the MiMo `license: mit` and the Muse
+   Model License under `weights`; one weights clause was filed as a service term (V8).
+6. Judging words, secrets, personal data, sizes: no judging word outside quotation marks in the round's added text or
+   new `tools.json` strings; no key-like string or IP address in the new files; no audio or video in this folder;
+   largest file `tools.json`, 261,284 bytes after this check.
+7. Earlier parts of the record: the round only added lines or appended parenthetical corrections (git diff); the
+   headings, tables and the 2026-11-10 verification logs of `trials.md` and `survey.md` are unchanged.
+
+What was changed:
+
+- V1 `survey.md`, gateway data handling: "every MiMo call here was served by `xiaomi`" corrected: the MP4 calls
+  r0077 and r0098 were tried on `xiaomi` and six other providers and refused by all seven (`providerAttempts`).
+- V2 `survey.md`, Seed: "both calls served by `bytedance`" corrected: r0086 (MP4) was refused by `bytedance` with
+  HTTP 400; r0127 answered.
+- V3 `survey.md`, Mureka: the schemas are the OpenAPI components `ApiSongTranscribeInput` and
+  `ApiSongTranscribeOutput`; `TranscribeMusicInput` and `TranscribeMusicOutput` are their `title` fields.
+- V4 `survey.md`, "Gap round 2" log: the tool list items extended are 16, 26 and 27 (it said 26 and 28).
+- V5 `survey.md`: tool list item 30 also names r0306; the `is_byok` sentence also cites `credentialType` "system"
+  in every saved `providerAttempts` entry (46 entries in the 30 saved gateway `response.json` files, refused calls
+  included).
+- V6 `trials.md`, "Entries that were counted as tried without output": `countTokens` also answered inside the probes
+  r0014 and r0300 (773 tokens for S3); "whose every call was refused before any output" replaced.
+- V7 `for-aaron.md`: section 14 quotes the xAI FAQ answer exactly, under its question, and its step 2 no longer
+  names a browser menu entry ("Web page, complete" is neither a PDF nor a text format); section 15 says where
+  `S4.wav` and `R2.wav` come from.
+- V8 `tools.json` (`scripts/verify-gap2/update_tools_json.py`): the Muse Model License grant moved from
+  `service_terms` into `weights.note`; MiMo `gateway_data_flags` corrected as V1; a correction line on Gemini as V6;
+  the runs r0661 and r0662 (ffmpeg) and r0655 (Cesure) added.
+- Added: `scripts/verify-gap2/` (URL list, fetch script, quote checker, tools.json update) and
+  `samples/verify-gap2/` (fetch status, quote results). Page copies stay outside git in
+  `/home/user/gtr/lanes/hosted-apis/verify-gap2/`.
+
+What stays unverified:
+
+8. Everything the round lists as UNVERIFIED (`survey.md`, "Gap round 2"): xAI's and OpenAI's terms texts, OpenAI
+   audio tokens per second, which MiMo checkpoint Xiaomi serves, whether a gateway route is a "Hosted Platform",
+   Mureka's terms and its ZIP contents, whether Cesure serves `create_score` without an account, the gateway key's
+   Vercel plan, Nova prices and Nova 2 Omni's inputs.
+9. The HTTP 403 answers of the x.ai terms pages (and the "Sorry, you have been blocked" text), the web-fetch 403 and
+   the Internet Archive's 429: this check's one status request (curl, body discarded) for the three x.ai pages and
+   OpenAI's Services Agreement was refused by the box's permission system ("[Bot Check Circumvention]") and not
+   retried. The x.ai claims rest on the round's note `raw/gap2-xai-403-note.txt`; the OpenAI one on its saved copy
+   (`raw/gap2-openai-services-agreement.meta`: 403, 9,838 bytes; the body holds "Enable JavaScript and cookies to
+   continue").

@@ -290,3 +290,124 @@ release, 2.1.4 from 2022-08-01, pins `tensorflow==2.9.1`; no venv on the box has
 2. Run it on `S6taps.wav`, `stems\taps.wav` and `S2s.wav`.
 3. Send back: the MIDI files and a screenshot of the cell output. If the environment setup fails in Colab, send the
    error; the package is from 2022.
+
+## 13. MidiBERT-Piano melody extraction (splits a MIDI file into melody and accompaniment)
+
+Not run here (gap round 2, trials.md "Gap round 2"): there is no checkpoint its published code can load. The README's
+Google Drive folder answers "Error 404 (Not Found)"; in the repository's issue #18 the owner re-uploaded two
+checkpoints in June 2026, whose input layer has six token fields where the published code has four (read here from the
+first 128 KB of the 1.34 GB file), and wrote on 2026-10-12 "it appears the original model checkpoint has been lost".
+So this list starts with a check, and only goes on if something new has been published.
+
+1. Open https://github.com/wazenmai/MIDI-BERT/issues/18 and read any comment after 12 October 2026. If none gives
+   either the code for the six-field checkpoints or a checkpoint for the published code, stop and send back "nothing
+   new in issue 18". If one does, note which files it names and go on.
+2. Install Python 3.9 for Windows from python.org (issue #11, a collaborator: "Python 3.8 and 3.9 works fine for me").
+   In Terminal: `cd C:\gtr`, `git clone https://github.com/wazenmai/MIDI-BERT`, `cd MIDI-BERT`, `py -3.9 -m venv
+   venv`, `venv\Scripts\activate`.
+3. `pip install -r requirements.txt` (the README's line; it pins `torchaudio==0.9.0`, `transformers==4.8.2`,
+   `scikit_learn==0.24.2`), then `pip install "numpy<1.24"` (the code uses `np.int`, which NumPy 1.24 removed; this
+   step was not tried anywhere in this research). If the issue named new code files, put them in place now.
+4. Put the melody checkpoint at `result\finetune\melody_default\model_best.ckpt` (the README's layout).
+5. Copy the six MIDI files from this folder's `samples/midibert/` into `C:\gtr\MIDI-BERT`: `S2n_truth_merged_480tpb.mid`,
+   `S5dropd_truth_merged_480tpb.mid` (the 90 notes of each clip in one track), `S2n_basicpitch_480tpb.mid`,
+   `S5dropd_basicpitch_480tpb.mid` (Basic Pitch's notes from the audio, at Basic Pitch's 120 bpm) and
+   `S2n_basicpitch_112bpm_480tpb.mid`, `S5dropd_basicpitch_112bpm_480tpb.mid` (the same notes at the clip's 112 bpm).
+   They are written at 480 ticks per beat because the code assumes that resolution.
+6. In Terminal (PowerShell): `$env:PYTHONPATH = "."` (the README's `set PYTHONPATH='.'` is for the old cmd window),
+   then run all six with one line:
+   `Get-ChildItem *_480tpb.mid | ForEach-Object { python melody_extraction/midibert/extract.py --input_path $_.Name --output_path ($_.BaseName + "_melody.mid") --ckpt result/finetune/melody_default/model_best.ckpt --cpu --bridge False }`
+   (`--bridge False` counts only the "melody" class as melody, as the README's `scripts/melody_extraction.sh` does).
+7. Send back: the six `*_melody.mid` files, the screenshot and the seconds; or, if it stops, the last 30 lines of the
+   error. The orchestrator scores them with `scripts/gap2_midibert.py score <name>_melody.mid <name>.mid <clip>`, which
+   counts the notes put in the right voice the way partitura, music21 and piano_svsep were counted.
+
+Optional, to confirm the mismatch itself: download `melody_model_best.ckpt` (1.34 GB) from the June 2026 folder,
+https://drive.google.com/drive/folders/1MniVSDTdB0Vv0Ey_MllnN9mAEK279eQN , use it in step 4 with the published code,
+run step 6, and send back the error text (an error naming `in_linear.weight` or `word_emb.4` would confirm it).
+
+## 14. QM Vamp "Note Onset Detector" on the taps clip (Sonic Visualiser)
+
+Not run here: the Queen Mary plugin library is not on the box and could not be obtained by the chords-beats-key lane
+either (trials.md, "Gap round 2"). This uses the same two installs as the chords-beats-key lane's list 1
+(`docs/guitar-tab-research/lanes/chords-beats-key/for-aaron.md`); if you did that list, skip to step 2.
+
+1. Install Sonic Visualiser and the Vamp Plugin Pack as in steps 1 and 2 of the chords-beats-key lane's list 1
+   (Sonic Visualiser 5.2.1 "64-bit Windows installer" from https://www.sonicvisualiser.org/download.html ; the Vamp
+   Plugin Pack Windows installer from https://www.vamp-plugins.org/pack.html , with the Queen Mary plugins ticked).
+2. Open `<inputs>\S6taps\S6taps.wav` in Sonic Visualiser. In the Transform menu, Analysis section, pick the Queen
+   Mary "Note Onset Detector" and its output "Note Onsets" (system identifier
+   `vamp:qm-vamp-plugins:qm-onsetdetector`), and run it with its default settings. How Sonic Visualiser 5.2.1 labels
+   these menu entries was not checked (UNVERIFIED).
+3. Run it three more times on the same file, each time changing only "Onset Detection Function Type" in the
+   plugin's settings window: "Spectral Difference", "Phase Deviation", "Broadband Energy Rise" (the default is
+   "Complex Domain"; the four names are from the plugin's documentation).
+4. For each of the four result layers: make it the current layer, then File, Export Annotation Layer, and save it as
+   `S6taps_qm_<type>.csv` (type: complex, specdiff, phase, broadband).
+5. Do steps 2 to 4 again for `<inputs>\S6taps\stems\taps.wav` (save as `S6taps-tapsstem_qm_<type>.csv`) and for
+   `<inputs>\S2s\S2s.wav` (the same notes without taps; save as `S2s_qm_<type>.csv`).
+6. Send back the twelve CSV files and one screenshot of S6taps with its four layers. The orchestrator takes the time
+   column and scores each file with `gtr-eval onsets --truth S6taps --est <times> --field taps` and `--field notes`
+   and with `scripts/classify_onset_files.py S6taps <times>`, as for the other onset detectors in this lane. Time:
+   about 15 minutes (estimate). Cost: free.
+
+## 15. ADTLib (kick, snare, hi-hat onsets and a drum tab, 2018)
+
+Not run here (trials.md, "Gap round 2"): its code imports `tensorflow.contrib`, which only TensorFlow 1.x has, and the
+last TensorFlow 1.x release (1.15.5) has wheels only for Python 3.6 and 3.7; the box has no Python older than 3.8.
+Docker gives a Python 3.7 system without touching your own Python. Nothing in this list was tried anywhere in this
+research.
+
+1. Install Docker Desktop for Windows (https://www.docker.com/products/docker-desktop/) and start it (as in list 11).
+2. Copy into `C:\gtr`: `<inputs>\S6taps\S6taps.wav`, `<inputs>\S6taps\stems\taps.wav` (rename it `S6taps_taps.wav`) and
+   `<inputs>\S2s\S2s.wav`.
+3. In Terminal: `docker run -it --rm -v C:\gtr:/work python:3.7 bash` (Docker Hub lists the `python:3.7` tag, last
+   updated 2023-09-21).
+4. Inside that window, one line at a time:
+   `pip install "numpy==1.18.5" cython`
+   `pip install --no-build-isolation "madmom==0.16.1"` (madmom 0.16.1 is a source package whose `setup.py` imports
+   numpy and Cython while it builds)
+   `pip install "tensorflow==1.15.5" "h5py<=2.10.0"`
+   `pip install "ADTLib==2.1.2"`
+5. `mkdir -p /work/adt_out`, `cd /work`, then `ADT -od /work/adt_out S6taps.wav S6taps_taps.wav S2s.wav` (its usage
+   page: "ADT [-h] [-od {None,dir}] [-o {yes,no}] [-ot {yes,no}] [I [I ...]]"; it writes the onset times to a `.txt`
+   file and a drum tab to a PDF).
+6. Send back: everything in `C:\gtr\adt_out` (and any `.txt` or `.pdf` it wrote into `C:\gtr`), the screenshot and the
+   seconds; if an install line fails, its last 30 lines. The orchestrator scores the kick and snare times against the
+   `thump` and `slap` taps of `S6taps.truth.json` with `gtr-eval onsets`.
+
+## 16. Separate-and-Detect (five drum stems by latent diffusion, then onsets per stem, 2026)
+
+Not run here (trials.md, "Gap round 2"): one checkpoint and its two MusicLDM parts are about 6.4 GB, its inference
+config asks for a GPU (`accelerator: "gpu"`), and it runs from a cloned repository. Its environment files are conda
+files for Linux with CUDA 11.6 builds of PyTorch, so these steps use a Linux system with an NVIDIA GPU: WSL2 (Ubuntu)
+on your PC, or a rented Linux GPU machine. How much GPU memory it needs is not stated in its README. Nothing in this
+list was tried anywhere in this research.
+
+1. In the Linux terminal, install Miniconda (https://docs.conda.io/en/latest/miniconda.html), then:
+   `git clone https://github.com/ddman1101/Separate-and-detect`, `cd Separate-and-detect`,
+   `conda env create -f musicldm_env.yml`, `conda env create -f onset_detect.yml` (the README's two lines).
+2. The README's madmom fix: in `<conda env path>/lib/python3.10/site-packages/madmom/processors.py` of the
+   `onset_detect` environment, change line 23 from `from collections import MutableSequence` to `from collections.abc
+   import MutableSequence`.
+3. Download into the repository folder (about 6.4 GB):
+   `wget https://huggingface.co/ddman1101/Separate-and-Detect/resolve/main/msgld_obtb.ckpt`,
+   `wget https://zenodo.org/record/10643148/files/vae-ckpt.ckpt`,
+   `wget https://zenodo.org/record/10643148/files/hifigan-ckpt.ckpt` (the README's commands, without `-P checkpoints/`
+   so that all three sit where the config's default paths point after step 5).
+4. `mkdir test_data` and copy `S6taps.wav`, `S6taps\stems\taps.wav` (renamed `S6taps_taps.wav`) and `S2s.wav` into it.
+5. Point the single-audio config at this folder: `sed -i "s#/PATH/TO/PROJECT#$PWD#g"
+   config/MSG-LD/integrated_musicldm_test_inference.yaml` (its paths, such as `resume_from_checkpoint:
+   /PATH/TO/PROJECT/msgld_obtb.ckpt`, `reload_from_ckpt: "/PATH/TO/PROJECT/vae-ckpt.ckpt"` and `demucs_input_root:
+   /PATH/TO/PROJECT/test_data`, all start with that placeholder).
+6. `conda activate musicldm_env`, then
+   `CUDA_VISIBLE_DEVICES=0 python integrated_train.py --config config/MSG-LD/integrated_musicldm_test_inference.yaml --separate_only`
+   (the README's single-audio separation command; it runs Demucs first when its output folder does not exist yet).
+7. Find the `val_0` folder the run wrote (the README's example path is `inference_outputs/val_0/mix/<name>.wav`, with
+   `stem_0` to `stem_4` beside `mix`; where this config writes it was not checked). Then `conda activate onset_detect`
+   and for each file in `val_0/mix/`:
+   `python single_audio_onset_detection.py --input_audio <full path>/val_0/mix/<name>.wav --output_dir ./transcription_results`
+8. Send back: the `*_transcription.txt` files (lines `timestamp    drum_type`, types Kick, Snare, Toms, Hi_Hats,
+   Cymbals), the five stem WAVs of each input (they go to your studio library, not git), the terminal output and the
+   seconds each step took. The orchestrator scores the Kick and Snare lines against the `thump` and `slap` taps of
+   `S6taps.truth.json`.

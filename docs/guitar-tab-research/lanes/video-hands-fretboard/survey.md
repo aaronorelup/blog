@@ -142,6 +142,9 @@ Ultralytics pose, YOLOE-26, CoTracker3, SAM 2.1 or OpenPose, so those formats ar
   FFT audio analysis. No code link found.
 - GuiFiR (Kookmin University AI Lab, IEEE Access 2026): guitar finger reading, weakly supervised hand + fretboard
   pose (126 fretboard landmarks). Dataset "publicly available" per the lab page; no code or data link found.
+  (corrected in gap round 2: the lab's home page links "Code" to https://github.com/kmu-ee-ailab/guifir_dataset, the
+  dataset release with preparation scripts, MIT for the scripts and non-commercial terms for the data; no model code
+  or weights in it. Research and Datasets sections.)
 - "Tabbers" / "You Just Play" (PyData Tel Aviv 2025 talk): audio + video tab product (Python, OpenCV, Librosa; the
   talk page names no specific pose model). No code release.
 - (verify, added) Bae, Kwon and Park, "An Audio-Visual Framework for Transcription and Fingering Optimization in Bass
@@ -155,11 +158,17 @@ Ultralytics pose, YOLOE-26, CoTracker3, SAM 2.1 or OpenPose, so those formats ar
 
 ### Datasets pairing guitar video with annotations
 
-- Goldstein and Moses 2018 (GoPro on the guitar, note ground truth); GuiFiR-Synth / GuiFiR-Vid (2026, no link found);
+- Goldstein and Moses 2018 (GoPro on the guitar, note ground truth); GuiFiR-Synth / GuiFiR-Vid (2026, no link found;
+  corrected in gap round 2: https://github.com/kmu-ee-ailab/guifir_dataset, data for non-commercial research; per-frame
+  tablature, capo position, and on val/test fretboard corners plus five fingertips);
   GAPS (audio + score + MIDI, YouTube performance-video links, CC BY-NC-SA 4.0 on Zenodo; verify: "license: mit" on its
   Hugging Face card); Ego-Exo4D (Music scenario, 3D hand
   pose, signed license); Guitar-TECHS has no video in its release; Ultralytics Hand Keypoints (generic hands,
   CC BY-NC-SA 4.0). Details in the Datasets section.
+- (gap round 2, added) GigaHands (Brown University, arXiv 2412.04244, CVPR 2025 Highlight): bimanual hand activities
+  from 51 camera views with 3D hand pose, 2D / 3D hand keypoints and text; its instruction script has a "Playing the
+  Ukulele" activity (fretboard chords, strumming, plucking) and 119 of its text annotations mention the ukulele;
+  CC BY-NC 4.0. Details in the Datasets section.
 
 (One section per tool follows; the Handoff facts are at the end.)
 
@@ -1170,6 +1179,10 @@ Each entry: what the source itself says, and whether code or weights are linked 
   (MediaPipe, OpenPose, WiLoR, HaMeR)". "The GuiFiR dataset resources are publicly available." The page links no
   repository or dataset URL (its only GitHub link is the lab organization `github.com/kmu-ee-ailab`); `git ls-remote`
   of `kmu-ee-ailab/GuiFiR` and `kmu-ee-ailab/guifir` failed on 2026-11-10. Code and data location: UNVERIFIED.
+  (corrected in gap round 2, read 2026-11-11: the lab's home page https://ailab.kookmin.ac.kr/ lists the paper with a
+  link titled "Code" to https://github.com/kmu-ee-ailab/guifir_dataset, the repository the `guitar-tab` lane's survey
+  had found; the publication page above still links only the organization. That repository is the dataset release,
+  not model code: details and license under "Datasets" below.)
 - (verify, added) **Bae, Kwon, Park, "An Audio-Visual Framework for Transcription and Fingering Optimization in Bass
   Guitar Performance", UIST Adjunct '25 (3-page poster, DOI 10.1145/3746058.3758448)**
   (https://ixlab.cau.ac.kr/papers/bassguitar-uist25poster.pdf, read 2026-11-10). Abstract: "This paper presents a
@@ -1193,6 +1206,36 @@ Each entry: what the source itself says, and whether code or weights are linked 
   and string plus `getGroundTruth.m` (Research section); no license text on the page; the code page says "Code will be
   available soon."
 - **GuiFiR-Synth and GuiFiR-Vid** (2026): described above; "publicly available" per the lab page; no link found.
+  (corrected in gap round 2; all read 2026-11-11 from https://raw.githubusercontent.com/kmu-ee-ailab/guifir_dataset/main/
+  and a metadata clone of https://github.com/kmu-ee-ailab/guifir_dataset , HEAD `e707e5167ec3e495ebffe539c5d6060ec203b9ce`,
+  2026-10-29, 13 files: README, LICENSE, `DATASET_TERMS.md`, `CITATION.cff`, `requirements.txt`, five scripts, two
+  `.gitkeep`, `.gitignore`.) README: "Official dataset release for **GuiFiR** (IEEE Access, 2026), a guitar finger
+  reading dataset for **hand pose estimation**, **fretboard pose estimation**, and **guitar tablature / fingering
+  recognition** from guitar performance videos." and "This repository provides dataset preparation scripts and
+  metadata for the GuiFiR dataset. Large video files, extracted frames, generated outputs, and large archives are not
+  stored directly in this GitHub repository." Components: "GuiFiR-Synth: synthetic composite images with hand and
+  guitar fretboard coordinate annotations." and "GuiFiR-Vid: real guitar performance video clips with ground-truth or
+  pseudo-ground-truth tablature."; "The released data archive contains 10-second clips, metadata, and annotation
+  files." Splits (clips / annotated frames / keypoint ground truth): train 900 / 29,051 / none; val 30 / 543 / yes;
+  test 100 / 2,048 / yes. Annotation fields, one JSONL line per frame (`guifir_{train,val,test}_coco_anno_box.jsonl`):
+  "`frame_tab` | Fret per string (6 values). `0` = open string, `20` = string not played"; "`frame_capo` | Capo
+  position (`0` = no capo)"; "`hand_annotation`, `neck_annotation` | Detected hand / fretboard box (`boxes` = `[x1, y1,
+  x2, y2]`), detector phrase and score (`pred_phrases`), box center (`xc`, `yc`), crop `scale`, and `theta`";
+  "`frame_gt_pose` | val/test only. Fretboard corners `lt`, `lb`, `rt`, `rb` (`[x, y]`) and fingertips `4`, `8`, `12`,
+  `16`, `20` (`[x, y, visibility]`, MediaPipe hand keypoint indices)"; "Note: `frame_gt_pose` coordinates are given in
+  640x360 space." So the released ground-truth pose is four fretboard corners and five fingertips; the 126-landmark
+  fretboard grid is how the lab page describes the model's representation, not an annotation field of the release.
+  The annotations include a per-frame capo position. Access: the archive is a Google Drive file (`gdown --id
+  1Ri42XQnpwWQzjNLOPgZCR2XCx9YGrqxc -O tmp/GuiFiR.tar`), and clips can be fetched again from YouTube ("`yt-dlp` is
+  required when downloading clips from source-video metadata."). Not downloaded here.
+  - LICENSE FACTS. Code: `LICENSE` is the MIT License ("Copyright (c) 2026 GuiFiR authors") and ends: "This license
+    applies only to the source code and documentation in this repository. Dataset assets are governed by
+    DATASET_TERMS.md." Data, `DATASET_TERMS.md`: "The dataset assets are provided for non-commercial research,
+    education, and reproducibility of the GuiFiR work."; under "You may:" "Publish aggregate results, analysis, and
+    derived model weights, subject to the terms of any third-party data sources used."; under "You may not:"
+    "Redistribute, mirror, sublicense, sell, or commercially exploit the dataset assets." and "Use the dataset assets
+    for commercial products, services, or training pipelines without written permission from the dataset
+    maintainers."; and "The source videos referenced by GuiFiR may be owned by third parties."
 - **GAPS** (Xavier Riley, Zixun Guo, Drew Edwards, Simon Dixon; arXiv 2408.08653, comment "ISMIR 2024", per
   https://export.arxiv.org/abs/2408.08653; text from https://arxiv.org/html/2408.08653v2, both read 2026-11-10): "14 hours
   of freely available audio-score aligned pairs, recorded in diverse conditions by over 200 performers, together with
@@ -1228,6 +1271,39 @@ Each entry: what the source itself says, and whether code or weights are linked 
 - **TapToTab's own set**: "self-collecting a dataset using Roboflow" (PDF); release not found.
 - GuitarSet (R1 in this project's inputs): TapToTab's PDF: "GuitarSet and IDMT-SMT-GUITAR primarily focus on audio
   data with limited visual information".
+- (gap round 2, added; all read 2026-11-11) **GigaHands** (Rao Fu, Dingxi Zhang, Alex Jiang, Wanjia Fu, Austin Funk,
+  Daniel Ritchie, Srinath Sridhar; arXiv 2412.04244, submitted 5 Dec 2024, comment "CVPR 2025 Highlight";
+  https://export.arxiv.org/abs/2412.04244). Abstract: "We introduce GigaHands, a massive annotated dataset capturing
+  34 hours of bimanual hand activities from 56 subjects and 417 objects, totaling 14k motion clips derived from 183
+  million frames paired with 84k text annotations." Project page (https://ivl.cs.brown.edu/research/gigahands.html):
+  "All sequences in GigaHands are fully annotated with: detailed activity text descriptions; 3D hand shape and pose;
+  3D object shape, pose and appearance; hand/object segmentation masks; 2D/3D hand keypoints; camera pose." and
+  "GigaHands provides hand motions captured from 51 camera views". Code: the project page links
+  https://github.com/Kristen-Z/GigaHands and the dataset card links https://github.com/brown-ivl/GigaHands (a metadata
+  clone of the first: HEAD `be19068fb2f4b40ab259997d10cdcaa1afe45f3a`, 2026-11-07, "Merge pull request #27 from
+  brown-ivl/hf-data-links", 67 files, no LICENSE file in the tree). Data: Hugging Face dataset `freddie007/GigaHands`
+  (not gated, last modified 2026-11-07); README news line of 2026-11-07: "It includes hand poses, object poses and
+  meshes, multiview RGB videos (1.06 TB), text annotations, demo data, and checkpoints." Hand poses come as MANO
+  parameters and 2D / 3D keypoints per session; using the repository's tools needs the MANO model files (README:
+  "Download [mano](https://mano.is.tue.mpg.de/download.php) models and place the `MANO_*.pkl` files under
+  `body_models/smplh`."; MANO license in the MANO section).
+  - Fretted-instrument content (the earlier UNVERIFIED search-summary claim): the dataset's
+    `instruction_script.json` (387,755 bytes, from the dataset repo, "the original instruction script grouped by
+    scenario, scene, activity" per the README) has type "Entertaining", scene "Playing mini instruments", with the
+    activities flute, drum, "Playing the Ukulele", otamatone, keyboard, triangle, mini harp and zither. The ukulele
+    activity has 16 actions, among them "Place your left-hand fingers on the fretboard to form chords.", "Strum the
+    strings with your right hand, using your thumb or a pick.", "Pluck individual strings with your thumb and fingers."
+    and "Change chords by lifting your fingers off the fretboard and sliding your fingers to new positions to form
+    different chords." In `annotations_v2.jsonl` (18,539,852 bytes, 13,787 rows; downloaded, counted and deleted), 119
+    rows mention "ukulele" in their `clarify_annotation` or `description`, in 11 capture sessions whose names contain
+    "instrument" (for example `p003-instrument`); 109 of them give a frame span (65 to 868 frames each, 21,023 frames
+    in all) and 10 run to the end of their sequence (`end_frame_id` -1). The annotations are text per clip; whether
+    the 3D object poses include the ukulele, whether any fret or string labels exist, and how the ukulele clips look
+    on video were not checked (the videos are part of the 1.06 TB set; not downloaded). No guitar appears in the
+    instruction script.
+  - LICENSE FACTS. README "License" section: "GigaHands is released under the Creative Commons
+    Attribution-NonCommercial 4.0 International License." (linking https://creativecommons.org/licenses/by-nc/4.0/);
+    the dataset card's front matter: "license: cc-by-nc-4.0". MANO's own license applies to the MANO model files.
 
 ---
 
@@ -1507,3 +1583,26 @@ source code only.
 Still open: the nine Roboflow Universe pages (HTTP 403 to this box), the OpenPose FlintBox price page (needs
 JavaScript), docs.opencv.org (Cloudflare challenge; source headers and docstrings were used), the Duke and Salgian PDF
 (404, URL not recorded in this file), GuiFiR code and data location, Ego-Exo4D guitar content and license text.
+(gap round 2: the GuiFiR data location is resolved, see below.)
+
+## Gap round 2 log (gapfill-video-hands-fretboard, 2026-11-11)
+
+Added to close the gaps listed for this lane in `GAPS.md`. Pages and files read on 2026-11-11 are saved under
+`/home/user/gtr/lanes/video-hands-fretboard/gap2/web/`; every new quote was compared with its source with
+`scripts/verify_quotes.py` (`checkfile` mode; all EXACT), except the Face Mesh V2 card lines, which were read on the
+rendered PDF page because its text layer drops ligatures.
+
+- V3, pytorch-openpose license (OpenPose section): the port has no license file at the commit the trial used; the
+  distributor of the converted hand weights ships CMU's OpenPose license beside the code that downloads them; the
+  hand model's training data, from the paper OpenPose cites for its hand detector.
+- V4, training data (MediaPipe section; "Other whole-body models"; YOLO-World / YOLOE section): BlazePose GHUM 3D and
+  Face Mesh V2 cards for the Pose and Holistic Landmarkers; the easy_ViTPose card's license pointer and ViTPose's
+  whole-body training sets for the ViTPose-s ONNX; Ultralytics' YOLOE page, the YOLOE-26 paper and the YOLOE paper for
+  YOLOE-26, plus the `ultralytics/assets` repository license.
+- V7, GuiFiR (Tool list, Research, Datasets): repository https://github.com/kmu-ee-ailab/guifir_dataset, MIT scripts,
+  non-commercial data terms, README contents (per-frame tablature and capo position; fretboard corners and five
+  fingertips on val/test).
+- V8, GigaHands (Tool list, Datasets): new entry; the ukulele activity confirmed in its instruction script and text
+  annotations; CC BY-NC 4.0.
+- V5 and V6 (runs, `trials.md` "Gap round 2"): Handoff fact 9 now points at the alignment run r0609.
+- Judging words: none added (searched in the new text for the words listed in `GAPS.md`).

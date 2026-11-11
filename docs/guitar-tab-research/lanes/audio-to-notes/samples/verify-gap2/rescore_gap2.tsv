@@ -1,0 +1,9 @@
+e1781	0.12.0	0	0	DIFF:gtr_eval_version	S1	crepe-notes/tcfull/S1.tcfull.mid	e55e0620152c	e55e0620152c	62	62	0.984	0.984	0.984	0.984	0.009	null
+e1786	0.12.0	0	0	DIFF:gtr_eval_version	S1	crepe-notes/tctiny/S1.tctiny.mid	88b3e2c9d7c9	88b3e2c9d7c9	62	62	1.0	1.0	1.0	1.0	0.009	null
+e1789	0.12.0	0	0	DIFF:gtr_eval_version	S1	crepe-notes/tcfullz/S1.tcfullz.mid	8558a2f73a44	8558a2f73a44	61	62	0.967	0.952	0.959	0.959	0.009	null
+e1783	0.12.0	0	0	DIFF:gtr_eval_version	R1b	crepe-notes/tcfull/R1b.tcfull.mid	5d8fb613a765	5d8fb613a765	94	70	0.309	0.414	0.354	0.244	-0.009	null
+e1787	0.12.0	0	0	DIFF:gtr_eval_version	R1b	crepe-notes/tctiny/R1b.tctiny.mid	5bdce90120e6	5bdce90120e6	95	70	0.263	0.357	0.303	0.17	-0.009	null
+e1790	0.12.0	0	0	DIFF:gtr_eval_version	R1b	crepe-notes/tcfullz/R1b.tcfullz.mid	4b64d3396ddd	4b64d3396ddd	97	70	0.289	0.4	0.335	0.251	-0.009	null
+e1785	0.12.0	0	0	DIFF:gtr_eval_version	S4	crepe-notes/tcfull/S4lead.tcfull.mid	f754070a113b	f754070a113b	38	37	0.737	0.757	0.747	0.667	0.029	"melody"
+e1788	0.12.0	0	0	DIFF:gtr_eval_version	S4	crepe-notes/tctiny/S4lead.tctiny.mid	d39d072f7bc8	d39d072f7bc8	38	37	0.868	0.892	0.88	0.773	0.031	"melody"
+e1791	0.12.0	0	0	DIFF:gtr_eval_version	S4	crepe-notes/tcfullz/S4lead.tcfullz.mid	5b45c7e40391	5b45c7e40391	40	37	0.675	0.73	0.701	0.623	0.029	"melody"

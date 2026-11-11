@@ -25,7 +25,7 @@ import warnings
 
 import numpy as np
 
-VERSION = "0.12.0"
+VERSION = "0.12.1"
 VERSION_DATE = "2026-11-11"
 
 VOICES = ("melody", "bass", "chord", "lead", "drums")
@@ -203,7 +203,12 @@ def resolve_truth_path(p):
 # generic text table reading
 # ----------------------------------------------------------------------------------------------------------------
 
-def read_lines(path):
+TRAILING_NON_TAB_SPACE_RE = re.compile(r"[^\S\t]+$")
+
+
+def read_lines(path, keep_trailing_tabs=False):
+    """Non-empty, non-comment lines, stripped. keep_trailing_tabs (used by f0 only): a tab-separated line keeps the tabs
+    at its end, so the empty cells they close stay cells ('0.0000\\t\\t' is a time and two empty cells, not a short row)."""
     with open(path, encoding="utf-8-sig", errors="replace") as f:
         raw = f.read().splitlines()
     out, comments = [], 0
@@ -214,6 +219,8 @@ def read_lines(path):
         if s.startswith("#") or s.startswith("//") or s.startswith("%"):
             comments += 1
             continue
+        if keep_trailing_tabs and "\t" in line and " " not in s:
+            s = TRAILING_NON_TAB_SPACE_RE.sub("", line.lstrip())
         out.append(s)
     return out, comments
 
@@ -237,9 +244,9 @@ def split_cells(lines):
     return cells, name
 
 
-def read_table(path):
+def read_table(path, keep_trailing_tabs=False):
     """Returns (header or None, numeric-ish rows (list of lists of str), facts)."""
-    lines, comments = read_lines(path)
+    lines, comments = read_lines(path, keep_trailing_tabs)
     cells, delim = split_cells(lines)
     header = None
     if cells:
@@ -1147,7 +1154,9 @@ def cmd_f0(a):
     if info["n_overlapping_consecutive_pairs"]:
         proc.append(f"{info['n_overlapping_consecutive_pairs']} reference notes start before the previous one ends; "
                     "on the grid the later onset wins")
-    header, rows, facts = read_table(a.est)
+    # keep_trailing_tabs: in a tab-separated file an empty frequency cell at the end of a row ('0.0000\t' or
+    # '0.0000\t\t') is still an empty cell (0.12.0 stripped those tabs, so the row looked short and was left out)
+    header, rows, facts = read_table(a.est, keep_trailing_tabs=True)
     it = find_col(header, ("time", "timestamp", "sec")) if header else None
     if_ = find_col(header, ("freq", "f0", "hz", "pitch", "midi")) if header else None
     ic = find_col(header, ("conf", "voic", "periodicity", "prob")) if header else None

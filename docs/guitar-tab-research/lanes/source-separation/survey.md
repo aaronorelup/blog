@@ -565,7 +565,10 @@ Not a separation tool despite the name: PyPI `uvr` (Oorteo, 0.2.6) is a runner f
   checkpoint_path='checkpoint/audiosep_base_4M_steps.ckpt', device=device); inference(model, audio_file, text,
   output_file, device)`; or `AudioSep.from_pretrained("nielsr/audiosep-demo", ss_model=ss_model)`; "Use chunk-based
   inference to save memory: `inference(..., use_chunk=True)`". Device line in the README: `torch.device('cuda' if
-  torch.cuda.is_available() else 'cpu')`. Install is by `conda env create -f environment.yml`.
+  torch.cuda.is_available() else 'cpu')`. Install is by `conda env create -f environment.yml`. (Gap round 2, read
+  2026-11-11 at head 944583f: `pipeline.py` has no function named `inference`; its separation function is
+  `def separate_audio(model, audio_file, text, output_file, device='cuda', use_chunk=False):`. No PyPI package:
+  `https://pypi.org/pypi/audiosep/json` returns HTTP 404.)
 - Input: an audio file and a free-text query (e.g. "acoustic guitar"; the Space ships `examples/acoustic_guitar.wav`).
   "AudioSep processes the audio at 32 kHz sampling rate" (README); `config/audiosep_base.yaml`: `sampling_rate: 32000`.
   `pipeline.py` loads the input with `librosa.load(audio_file, sr=32000, mono=True)` and writes the result with
@@ -1059,7 +1062,9 @@ verifier on 2026-11-10 against the sources named in them.
   with the polarity that code expects was not tested (UNVERIFIED).
 - A user's correction "this is acoustic guitar" maps onto a text query: SAM Audio ("please use lowercase
   noun-phrase/verb-phrase (NP/VP) format for text", README) and AudioSep (`inference(model, audio_file, text,
-  output_file, device)`, https://raw.githubusercontent.com/Audio-AGI/AudioSep/main/README.md). AudioSep writes one mono
+  output_file, device)`, https://raw.githubusercontent.com/Audio-AGI/AudioSep/main/README.md; corrected in gap round
+  2: that is the README's name, and the function in `pipeline.py` at head 944583f is `separate_audio` with the same
+  first five arguments). AudioSep writes one mono
   16-bit wav at 32 kHz (`write(output_file, 32000, np.round(sep_segment * 32767).astype(np.int16))`,
   https://raw.githubusercontent.com/Audio-AGI/AudioSep/main/pipeline.py), which Basic Pitch accepts (`.wav`, Basic
   Pitch README).

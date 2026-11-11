@@ -98,7 +98,8 @@ The section for each tool is what counts; dates are the dates printed on the pag
 29. The three models called through the Vercel AI Gateway (`xiaomi/mimo-v2.6-flash`, `meta/muse-spark-open`,
     `bytedance/seed-2.1-turbo`): weights licenses (MiMo card `license: mit`; Muse Model License) and provider terms
     (Xiaomi MiMo Service Agreement "updated on July 7, 2026"; BytePlus terms and AI terms). Section added in gap round 2.
-30. xAI Speech to Text API (`grok-voice-transcribe-2.0`, called in r0105). https://docs.x.ai . CALLABLE-WITH-KEY.
+30. xAI Speech to Text API (`grok-voice-transcribe-2.0`, called in r0105 and the verifier's r0306). https://docs.x.ai .
+    CALLABLE-WITH-KEY.
     Section added in gap round 2 (xAI's terms pages answered HTTP 403 to the box: UNVERIFIED).
 31. Mureka Music Transcription on fal.ai (`mureka/api/song/transcribe`): audio (MP3, WAV, M4A, 10 s to 10 min) in,
     a ZIP that "can include MusicXML, PDF sheet music, and timestamped lyrics" out; "$0.20" per song.
@@ -646,12 +647,14 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
   `/mureka/api/song/transcribe/requests/{request_id}/status` and `.../requests/{request_id}` (OpenAPI schema
   https://fal.ai/api/openapi/queue/openapi.json?endpoint_id=mureka/api/song/transcribe , "1.0.0"). Python:
   `fal_client.subscribe("mureka/api/song/transcribe", arguments={...})`.
-- Input schema (`TranscribeMusicInput`, OpenAPI): exactly one audio source among `song_id` ("Generated song ID from
+- Input schema (OpenAPI component `ApiSongTranscribeInput`, whose `title` is `TranscribeMusicInput`): exactly one
+  audio source among `song_id` ("Generated song ID from
   song_id in a /generate/song response."), `upload_audio_id` ("Audio ID returned by /files/upload with
   purpose='audio'.") and `audio_url`: "Public HTTPS URL or data URI for an MP3, WAV, or M4A file between 10 seconds and
   10 minutes and no larger than 100 MB. Provide exactly one audio source."; optional `title` (string, `maxLength` 50,
   "Optional title used for the generated transcription files."). No instrument, tuning, capo, key or tempo field.
-- Output schema (`TranscribeMusicOutput`): `zip_url` (string, required): "The generated transcription archive." What
+- Output schema (`ApiSongTranscribeOutput`, `title` `TranscribeMusicOutput`): `zip_url` (string, required): "The
+  generated transcription archive." What
   the archive holds for a given input (which of MusicXML, PDF and lyrics; whether it has a guitar part, tablature or
   MIDI) is not documented beyond "can include": UNVERIFIED until one call.
 - Price (llms.txt): "Billing is calculated per transcribed song. Your request will cost **$0.20** per song. For **$1**
@@ -1052,13 +1055,18 @@ Quotes only; no reading of what they mean for this project. Read 2026-11-10.
     `order`, when `--only` was given). The model list read 2026-11-11 gives `no_training` / `zdr`: "all" / "none" for
     `bytedance/seed-2.1-turbo`, "all" / "all" for `meta/muse-spark-open`, "some" / "none" for
     `xiaomi/mimo-v2.6-flash` (whose model page lists the providers xiaomi, deepinfra, novita, gmicloud, boundless,
-    inference-net and tencent; every MiMo call here was served by `xiaomi`, per `finalProvider`).
+    inference-net and tencent; every MiMo call that returned an answer was served by `xiaomi`, per `finalProvider`;
+    the two MP4 calls r0077 and r0098 were tried on `xiaomi` and then on the six other providers in turn, and all
+    seven refused the file, per `providerAttempts` in their `response.json`; corrected by verify-gapfill-hosted-apis,
+    which had read "every MiMo call here was served by `xiaomi`").
 
 ## The three models called through the gateway: licenses and provider terms (added in gap round 2)
 
 Read 2026-11-11 (copies in `/home/user/gtr/lanes/hosted-apis/raw/gap2-*`, not committed). Every gateway call in
 `trials.md` ran on the gateway's own provider credentials (`usage.is_byok` is false in all 25 gateway lines of
-`samples/spend.jsonl`), so the provider terms reach these calls through the AI Product Terms § 8.1 quoted above.
+`samples/spend.jsonl`; those are the calls that returned usage. Added by verify-gapfill-hosted-apis: every
+`providerAttempts` entry in the saved gateway `response.json` files, refused calls included, has `credentialType`
+"system"), so the provider terms reach these calls through the AI Product Terms § 8.1 quoted above.
 
 - `xiaomi/mimo-v2.6-flash` (all MiMo calls served by provider `xiaomi`):
   - Xiaomi MiMo Service Agreement, the page the gateway links (https://platform.xiaomimimo.com/#/docs/terms/user-agreement ,
@@ -1112,7 +1120,9 @@ Read 2026-11-11 (copies in `/home/user/gtr/lanes/hosted-apis/raw/gap2-*`, not co
     "Model as a Service" business above "twenty (20) million US dollars" of revenue in twelve months and "does not
     apply to (a) internal use, research, or any commercial activity that is not Model as a Service"; § 4: "Meta claims
     no ownership of outputs generated by the Software."; Exhibit A, the usage policy, "Dated: October 15, 2026".
-- `bytedance/seed-2.1-turbo` (both calls served by `bytedance`):
+- `bytedance/seed-2.1-turbo` (both calls were routed to `bytedance`: r0127, the frames, answered; r0086, the MP4, was
+  refused by it with HTTP 400; corrected by verify-gapfill-hosted-apis, which had read "both calls served by
+  `bytedance`"):
   - Gateway model page (https://vercel.com/ai-gateway/models/seed-2.1-turbo): "Your use is subject to ByteDance's
     Terms & Privacy Policies.", linking BytePlus's Terms of Service (https://docs.byteplus.com/en/docs/legal/docs-terms-of-service ,
     "Last Updated: August 23, 2022"), § 4: "Unless otherwise agreed, you hereby grant to BytePlus and its affiliates a
@@ -1392,7 +1402,8 @@ read, or a site's `llms.txt`.
 - H4: new section "Mureka Music Transcription on fal.ai" (schema from the OpenAPI document, price, fal's
   third-party-model clauses); not called (no fal key), `for-aaron.md` section 15.
 - H5: new section "Cesure MCP server", from the read-only probe r0622 (`trials.md`, Gap round 2).
-- Tool list: items 26 and 28 extended, items 29 to 32 added.
+- Tool list: items 16, 26 and 27 extended, items 29 to 32 added. (Corrected by verify-gapfill-hosted-apis: this line
+  had read "items 26 and 28 extended"; item 28 was not changed.)
 - Quote check (`scripts/gap2/check_quotes.py`, results in `samples/gap2/quotes_check.tsv`): every double-quoted string
   this round added to `survey.md`, `trials.md` and `for-aaron.md` (joined across line breaks, from `git diff` against
   the last commit) and every quote field this round added to `tools.json` was searched for, after normalising
@@ -1408,3 +1419,14 @@ read, or a site's `llms.txt`.
   Exhibit C; Mureka's own terms and what its ZIP holds; whether Cesure serves `create_score` without an account (the
   tools declare `noauth`; no call was sent); the Vercel plan of the gateway key's team; Amazon Nova prices and "Nova 2
   Omni".
+
+## Check of gap round 2 (verify-gapfill-hosted-apis, 2026-11-11)
+
+Every quote the round took from a page was searched for again on pages fetched live at 00:46 to 00:53 UTC (not on the
+round's saved copies); each was found on the page cited, with the section numbers given, except the text of the x.ai
+403 page ("Sorry, you have been blocked"), which no fetched page holds. Corrected in this file: which
+provider served the MiMo and Seed calls (the MP4 calls r0077, r0098 and r0086 were refused), the Mureka schema names
+(OpenAPI components `ApiSongTranscribeInput` / `ApiSongTranscribeOutput`), the tool-list items the round extended
+(16, 26, 27), and the evidence for the gateway's own credentials (`credentialType` "system"). The x.ai terms pages
+could not be re-checked: this check's status request was refused by the box's permission system. Details, method
+and what stays unverified: `trials.md`, "Verification log (verify-gapfill-hosted-apis, round 2, 2026-11-11)".

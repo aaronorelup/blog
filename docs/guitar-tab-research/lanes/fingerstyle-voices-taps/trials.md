@@ -7,7 +7,9 @@ r0090 ran in a 2-core slot. Every other run of this lane is marked `--nolock`: g
 takes no slot and does no pinning (only for light jobs you still want in the ledger)", so those processes could use
 any of the 4 cores while other lanes' jobs were running (ledger `load1_at_start` 5.4 to 19.6 for them). Where a line
 says "one thread", the ledger's `threads_env` holds `OMP_NUM_THREADS`, `MKL_NUM_THREADS` and `OPENBLAS_NUM_THREADS`
-= 1; where it says `taskset`, the command itself was pinned to one core. (The verifier's re-runs, listed in the
+= 1; where it says `taskset`, the command itself was pinned to one core (corrected in gap round 2: for Basic Pitch's
+ONNX runs, `taskset` held the main thread only; ONNX Runtime moved its worker threads to other cores, see "Gap round
+2"). (The verifier's re-runs, listed in the
 verification log at the end, carry the same marks in the ledger.) Scores come from `gtr-eval` (ledger `/home/user/gtr/eval/ledger/evals.jsonl`, ids
 `e....`; every result of this lane records `gtr_eval_version` 0.11.1) unless a line says the number was computed by a
 script here, in which case the script is named. (corrected in gap round 1: that sentence about slots covers the
@@ -436,6 +438,9 @@ licensed real recording with body taps was in the shared set.
   `torch.jit.load` and torch 2.15.0+cpu on this box, r0643 on S6taps, S2s and R3c; see "Gap round 2".)
 - Martelloni, McPherson, Barthet 2023 (percussive guitar classifiers): no code or data published (survey.md: dataset
   "currently not public"). Nothing to run.
+- (gap round 2) MidiBERT-Piano melody extraction, the QM Vamp "Note Onset Detector", Separate-and-Detect and ADTLib,
+  which had no reason recorded here: NOT RUN HERE, each with its reason and evidence in "Gap round 2"; steps in
+  `for-aaron.md` lists 13 to 16. libfmp and `eguitar_ircam.ts` were run in that round.
 
 ## A real recording with body taps: not obtained
 
@@ -660,6 +665,10 @@ methods above.
   slots): `basic-pitch --model-serialization onnx --save-midi --save-note-events <out> S2n.mono.wav S2s.mono.wav
   S6taps.mono.wav S5dropd.mono.wav R3a.mono.wav`, defaults otherwise. Wall 74.95 s for five clips (29.4 s each, R3a
   18 s), CPU 28.2 s, peak RSS 393.9 MB. An earlier queued run through a slot was cancelled after 813 s of waiting.
+  (corrected in gap round 2: `taskset -c 1` did not hold ONNX Runtime's worker threads to core 1; in the same command
+  watched as r0673, two of the process's four threads carried the masks "2" and "3" and ran there, 5.64 s of 12.4 s
+  CPU, because ONNX Runtime sets its own per-thread affinity when no thread count is given. So this is not a one-core
+  timing; see "Gap round 2", "Basic Pitch 0.4.0 (ONNX): which cores ...".)
 - Output per clip: `<name>_basic_pitch.mid` and `<name>_basic_pitch.csv` with header
   `start_time_s,end_time_s,pitch_midi,velocity,pitch_bend` and a variable number of pitch-bend values per row (rows
   are not in time order). Notes: S2n 137, S2s 201, S6taps 196, S5dropd 130, R3a 106. First S2n rows in time order
@@ -725,7 +734,8 @@ notes count against precision there.
 
 ### Basic Pitch with a note-range constraint (the tuning as a re-run input)
 
-- Run r0325 (`--nolock`, `taskset -c 1`; wall 29.81 s for four clips, CPU 11.7 s, peak RSS 289.9 MB): the same CLI
+- Run r0325 (`--nolock`, `taskset -c 1`, which held the main thread but not ONNX Runtime's worker threads, corrected
+  in gap round 2, see the r0252 note above; wall 29.81 s for four clips, CPU 11.7 s, peak RSS 289.9 MB): the same CLI
   with `--minimum-frequency 77.78 --maximum-frequency 1396.91` (D#2 to F6: one semitone below standard tuning's low
   E2 up to F6) on S2n, S2s, S6taps, S5dropd.
 - `gtr-eval notes` (onset 50 ms, pitch 50 cents): S2n 136 notes, P 0.662 / R 1.000 / F 0.796 (e1219; unconstrained
@@ -1265,7 +1275,19 @@ at the start: 7.1 GB (`df -h /`; `env.sh` printed its low-disk notice at 7,169 M
 `/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap2-*/`, raw downloads and logs under `.../gap2/`. This round's
 scorings record `gtr_eval_version` 0.12.0, not 0.11.1: the scorer was updated on 2026-11-11, and its changelog says
 "two fixes in how estimate files are read; no metric definition changed" (the two fixes are in `tab` and `f0`; this
-round used `onsets`, `stems` and `notes`).
+round used `onsets` and `stems`).
+
+Status of this round, item by item (details in the sections below):
+
+| gap | item | result here |
+|---|---|---|
+| F1 | libfmp 1.3.0 `hps` / `hrps` | run, r0620 (2-core slot), six settings on S6taps; 28 scorings between e1792 and e1825 (other agents' scorings fall in between; the ids are listed in the section) |
+| F2 | `eguitar_ircam.ts` (ipt~ / libipt model) | run, r0643 (2-core slot), `torch.jit.load` on S6taps, S2s and R3c; no truth for techniques, so counts only |
+| F3 | MidiBERT-Piano melody extraction | NOT RUN HERE: no checkpoint the published code loads (README link 404; the owner says the original is lost; the re-upload has a different input layer); inputs and a scorer prepared (r0656, r0658); `for-aaron.md` list 13 |
+| F4 | QM Vamp "Note Onset Detector" | NOT RUN HERE: no QM plugin binary on the box; `for-aaron.md` list 14 |
+| F5 | Basic Pitch ONNX timings under `taskset` | caveat confirmed with `/proc` readings (r0673, r0668) and two 2-core-slot runs, with and without the thread count set (r0670, r0672) |
+| F6 | tuttut `what` field in `tools.json` | README wording quoted and attributed (README read 2026-11-11) |
+| F7 | Separate-and-Detect; ADTLib | NOT RUN HERE, concrete blockers recorded (6.4 GB of weights and a GPU-set config; TensorFlow 1.x with wheels for Python 3.6 and 3.7 only); `for-aaron.md` lists 16 and 15 |
 
 ### libfmp 1.3.0 HPS and HRPS (`libfmp.c8.hps`, `libfmp.c8.hrps`) on S6taps (gap F1)
 
@@ -1438,6 +1460,188 @@ Top-1 class counts per window (0.1 s hop; S6taps and S2s also with the windows b
   model file and `venv-ipt` were deleted after the run (see "Environments, kept and deleted"); the file can be fetched
   again from the URL above and checked against the sha256.
 
+### MidiBERT-Piano melody extraction (https://github.com/wazenmai/MIDI-BERT): NOT RUN HERE, no checkpoint the published code loads (gap F3)
+
+- What it is: MIDI in, "the predicted melody midi file" out (survey.md, "MidiBERT-Piano melody extraction"); a BERT
+  fine-tuned on POP909 with three classes (melody, bridge, accompaniment); `melody_extraction/midibert/extract.py
+  --input_path --output_path --ckpt --cpu --bridge`. In this lane it would be the symbolic melody / accompaniment split
+  of S2n and S5dropd, next to partitura, music21 and the baselines.
+- Why it was not run, checked 2026-11-11 from 00:40 to 00:47 UTC:
+  1. The README's checkpoint folder https://drive.google.com/drive/folders/1ceIfC1UugZQHPgpEEMkdAF0VhZ1EeLl3 answered
+     HTTP 404 with Google's page "Error 404 (Not Found)!!1" to `curl` from the box (also without `?usp=sharing` and as
+     `embeddedfolderview?id=...`) and to the web fetch tool. Control in the same minute through the same proxy: the
+     Drive page of drumsep's checkpoint (`/file/d/1-Dm666ScPkg8Gt2-lK3Ua0xOudWHZBGC/view`) answered HTTP 200 with the
+     title "49469ca8.th - Google Drive".
+  2. The repository's issue #18, "404 on the google drive folder for the model weights" (opened 2026-06-18, open; read
+     through the web fetch tool on 2026-11-11, which returned the comments in quoted pieces): the owner (wazenmai) on
+     2026-06-23: "Since our university email accounts have been deactivated," "we unfortunately lost access to the
+     original Google Drive." "We checked our local backups and only managed to find the pretrained model and the melody
+     fine-tuned model." and a new folder, https://drive.google.com/drive/folders/1MniVSDTdB0Vv0Ey_MllnN9mAEK279eQN ; a
+     user on 2026-07-20: "However, I found that these checkpoints expect a 6-field CP representation." ... "Therefore,
+     the checkpoint cannot be loaded with the current code."; the owner on 2026-10-12: "We've thoroughly checked our
+     machines, servers, and Google Drive, but unfortunately couldn't find any alternative checkpoints" "—it appears the
+     original model checkpoint has been lost."
+  3. The new folder answers HTTP 200 (title "MIDI-BERT Checkpoint") and lists `melody_model_best.ckpt` (modified "Jun
+     22") and `pretrain_model.ckpt` ("Jun 21"). A 1,024-byte range request of each through
+     `drive.usercontent.google.com` gave `content-range: bytes 0-1023/1340894149` and `bytes 0-1023/1340468461`
+     (1,340,894,149 and 1,340,468,461 bytes; `last-modified: Tue, 23 Jun 2026 00:44:52 GMT` and `00:44:09 GMT`). The
+     first 131,072 bytes of `melody_model_best.ckpt` (a zip whose first entry is `model/data.pkl`, stored without
+     compression) were read with `pickletools.genops`, without unpickling: top-level keys `epoch` and `state_dict`;
+     globals `collections OrderedDict`, `torch FloatStorage`, `torch LongStorage`, `torch._utils _rebuild_tensor_v2`;
+     storage location `cuda:0`; six input tables `midibert.word_emb.0.lut.weight` to `.5.lut.weight` with 4, 18, 88,
+     67, 66 and 67 rows of 256, and `midibert.in_linear.weight` of shape (768, 1536). The published code
+     (`MidiBERT/model.py` at `0b93558`) builds one table per class of `['Bar', 'Position', 'Pitch', 'Duration']`, sized
+     from the repository's `CP.pkl` (Bar 4, Position 18, Pitch 88, Duration 66; read with an unpickler that refuses
+     every global), with `self.emb_sizes = [256, 256, 256, 256]` and `self.in_linear =
+     nn.Linear(np.sum(self.emb_sizes), bertConfig.d_model)`, i.e. 1,024 inputs; `extract.py` loads with
+     `model.load_state_dict(checkpoint['state_dict'])` (strict by default). So the re-uploaded checkpoint does not fit
+     the published code, as the 2026-07-20 comment says; this was read, not tried with a run.
+  4. At 1.34 GB the checkpoint is also above the 200 MB limit of the disk notice (free disk read 6.5 to 7.9 GB during
+     this round, below the notice's 9,000 MB mark); it was not downloaded.
+  So, as of 2026-11-11, the published code has no checkpoint it can load, here or elsewhere.
+- Also read at `0b93558` (shallow clone, deleted after reading; nothing installed or run): `requirements.txt` pins
+  `mido==1.2.10`, `chorder==0.1.2`, `miditoolkit==0.1.14`, `scikit_learn==0.24.2`, `torchaudio==0.9.0`,
+  `transformers==4.8.2` and leaves `numpy>=1.13.3` and `torch>=1.3.1` open; `melody_extraction/midibert/utils.py` has
+  `DEFAULT_VELOCITY_BINS = np.linspace(0, 128, 32+1, dtype=np.int)` at import time, and NumPy 1.24.0's release notes
+  (numpy.org, read 2026-11-11) say "The deprecation for the aliases np.object, np.bool, np.float, np.complex, np.str,
+  and np.int is expired" (numpy 2.4.6 on this box: "module 'numpy' has no attribute 'int'"); issue #11 (collaborator
+  sophia1488, 2023-02-23): "I haven't tested it with python 3.11. But Python 3.8 and 3.9 works fine for me." The
+  preprocessing works in raw ticks as if every file had 480 ticks per beat (`DEFAULT_RESOLUTION = 480`,
+  `quantize_items(items, ticks=120)`, `group_items(items, max_time, ticks_per_bar=DEFAULT_RESOLUTION*4)`) and never
+  reads the file's `ticks_per_beat`; `item2event` emits a bar only when it holds notes, and `events2midi` places the
+  k-th such bar at output bar k ("ticks_per_bar = DEFAULT_RESOLUTION * 4 # assume 4/4"). The lane's MIDI files have 220
+  ticks per beat (pretty_midi's default; read from their headers).
+- Prepared for a run elsewhere, should a matching checkpoint appear:
+  - Run r0656 (`--nolock`, light, wall 1.17 s): `scripts/gap2_midibert.py inputs` writes six MIDI files at 480 ticks
+    per beat into `samples/midibert/`: `S2n_truth_merged_480tpb.mid` and `S5dropd_truth_merged_480tpb.mid` (the 90
+    truth notes, onset, offset and pitch only, one track, 112 bpm; read back: pitch range 43 to 64 and 38 to 64),
+    `S2n_basicpitch_480tpb.mid` and `S5dropd_basicpitch_480tpb.mid` (the 137 and 130 Basic Pitch notes of r0252 at
+    Basic Pitch's own tempo, 120 bpm) and `<clip>_basicpitch_112bpm_480tpb.mid` (the same notes at the same times with
+    the truth tempo, 112 bpm, so the 4/4 bar grid lines up with the music; this uses one piece of truth, as M1 does).
+  - Scorer: `scripts/gap2_midibert.py score <returned melody .mid> <input .mid> <clip>` maps each returned note back
+    to input time the way `events2midi` numbers bars, matches it to an input note (same pitch, onsets at most 0.25
+    beat apart, one-to-one), labels matched input notes melody and the others bass, and counts right voices with
+    `fvt_common.voice_accuracy`, as for partitura, music21 and piano_svsep. Self-test r0658 (`--nolock`, light, wall
+    1.11 s; supersedes r0657, whose fake predictions did not renumber bars): for each of the six inputs, a fake
+    prediction holding the input notes that match a truth melody note, written as `extract.py` writes (480 ticks per
+    beat, onsets on the 120-tick grid, bars renumbered): 90 of 90 truth notes matched and 90 of 90 in the right voice
+    for all six (bars holding notes: 12 in the truth files, 14 in the 120 bpm Basic Pitch files, 13 in the 112 bpm
+    ones). `samples/midibert/scorer_selftest.json`.
+- Steps for Aaron: `for-aaron.md`, list 13.
+
+### QM Vamp Plugins "Note Onset Detector" (`vamp:qm-vamp-plugins:qm-onsetdetector`): NOT RUN HERE, no plugin binary on the box (gap F4)
+
+- Vamp hosts are on the box (`/usr/bin/vamp-simple-host` from the Vamp plugin SDK, and the `vamp` Python host the
+  chords-beats-key lane used for Chordino); what is missing is the QM plugin library itself. A search of the whole
+  disk at 00:27 UTC (`find / -xdev -iname '*qm-vamp*'`) found only source clones of `c4dm/qm-vamp-plugins` (this
+  lane's survey clone and the chords-beats-key lane's) and that lane's saved package-search pages; no built plugin
+  (`.so`) and no `/usr/lib/vamp` or `/usr/local/lib/vamp` folder.
+- The chords-beats-key lane's gap round 1 tried to get the QM plugins and could not (its `trials.md`, "QM Vamp plugins
+  ... NOT RUN HERE": no Ubuntu, Debian or PyPI package; the plugin download site reset the connection at 23:30:27 UTC;
+  the Vamp Plugin Pack's Linux AppImage holds the plugins only inside its GUI installer, which was not run). Its gap
+  round 2 rows in `GAPS.md` (C1 to C6) do not include the QM plugins. Building the plugins from the cloned repository
+  would be the route the permission system refused for every cloned repository this lane tried; it was not attempted.
+- What the plugin does and takes (its documentation, https://vamp-plugins.org/plugin-doc/qm-vamp-plugins.html , read
+  2026-11-11; quoted in survey.md): one channel of audio in; outputs "Note Onsets" ("The detected note onset times,
+  returned as a single feature with timestamp but no value for each detected note"), "Onset Detection Function" and
+  "Smoothed Detection Function"; parameters "Onset Detection Function Type" (Complex Domain, the default; Spectral
+  Difference; Phase Deviation; Broadband Energy Rise), "Onset Detector Sensitivity" and "Adaptive Whitening". The
+  output carries no label, like the other onset detectors in this lane.
+- Steps for Aaron: `for-aaron.md`, list 14 (it builds on the chords-beats-key lane's Sonic Visualiser steps). The
+  returned onset lists would be scored like the other detectors here (`gtr-eval onsets --field taps` and `--field
+  notes`, `scripts/classify_onset_files.py`).
+
+### Basic Pitch 0.4.0 (ONNX): which cores `taskset -c 1` actually held, and timings with the thread count set (gap F5)
+
+- The question: r0252 and r0325 (and the verifier's r0416 and r0417) are reported as pinned to one core with
+  `taskset -c 1`, but Basic Pitch creates its ONNX Runtime session with no thread options:
+  `ort.InferenceSession(str(model_path), providers=["CPUExecutionProvider"])` (`basic_pitch/inference.py` line 132 of
+  the installed 0.4.0). ONNX Runtime's documentation (https://onnxruntime.ai/docs/performance/tune-performance/threading.html ,
+  read 2026-11-11): "By default with intra_op_num_threads=0 or not set, each session will start with the main thread
+  on the 1st core (not affinitized). Then extra threads per additional physical core are created, and affinitized to
+  that core (1 or 2 logical processors)." and, for an explicit count, "there will be no affinity set to any of the
+  created thread." The box has 4 physical cores (`lscpu`: 4 CPUs, 1 thread per core).
+- Environment: `venv-basicpitch` rebuilt offline from `freeze/venv-basicpitch.txt` at 00:51 UTC (its `uv pip freeze`
+  equal to that file; basic-pitch 0.4.0, onnxruntime 1.23.2), deleted after the runs. Each run below was watched by
+  `scripts/gap2_thread_affinity_monitor.py`, started separately and outside the timed process tree, which read every
+  thread's `Cpus_allowed_list` (`/proc/<pid>/task/<tid>/status`) and the CPU it last ran on (field 39 of `.../stat`)
+  every 0.05 s, with each thread's CPU time (fields 14 + 15, 100 ticks per second). Same five clips and options as
+  r0252 in every run (`--model-serialization onnx --save-midi --save-note-events`, S2n, S2s, S6taps, S5dropd, R3a).
+
+| run | how it was started | wall | CPU | peak RSS | threads seen: mask (CPU seconds) | CPU time on cores outside the process mask |
+|---|---|---|---|---|---|---|
+| r0673 | as r0252: `--nolock`, `taskset -c 1`, `OMP_NUM_THREADS`, `MKL_NUM_THREADS`, `OPENBLAS_NUM_THREADS` = 1 (load1 5.18) | 13.14 s | 12.5 s | 275.6 MB | 1 (4.29), 1 (2.47), 2 (2.35), 3 (3.29) | 5.64 s of 12.4 s, on cores 2 and 3 |
+| r0668 | `--nolock`, `taskset -c 1`, no thread variables set (load1 4.01) | 25.69 s | 26.7 s | 387.9 MB | 1 (19.47), 1 (2.51), 2 (2.25), 3 (2.38) | 4.63 s of 26.6 s, on cores 2 and 3 |
+| r0670 | 2-core slot (cores 2-3, waited 262.8 s), ONNX Runtime `intra_op_num_threads=2`, `inter_op_num_threads=1` (`scripts/gap2_basicpitch_ort_threads.py`) | 5.95 s | 8.2 s | 275.6 MB | 2-3 (5.81), 2-3 (0.12), 2-3 (0.10), 2-3 (2.13) | none |
+| r0672 | 2-core slot (cores 0-1, waited 4.0 s), plain CLI, ONNX Runtime defaults | 5.15 s | 10.3 s | 275.7 MB | 0-1 (4.83), 0-1 (0.09), 0-1 (0.10), 1 (2.82), 2 (1.12), 3 (1.19) | 2.31 s of 10.2 s, on cores 2 and 3 |
+
+  ("CPU" is gtr-run's figure; the per-thread seconds are the monitor's last readings, which miss the final 0.05 s.)
+- So under `taskset -c 1` the process mask was "1", but two of its four threads carried the masks "2" and "3" and
+  ran on those cores: ONNX Runtime's three extra intra-op threads, one per additional physical core, as its
+  documentation describes. In a 2-core slot the same happens to the slot's mask (r0672). With the thread count set,
+  every thread kept the slot's mask (r0670). r0252, r0325, r0416 and r0417 were started the same way as r0673
+  (`taskset -c 1`, the three variables at 1) and were not watched; that their ONNX Runtime threads also ran on cores
+  2 and 3 is what r0673 shows for the same command, not a reading of those runs. Their timings are therefore not
+  one-core timings: they used one core for the main thread and up to three more for ONNX Runtime's workers.
+- Outputs: all four runs wrote CSV and MIDI files byte-identical to r0252's for all five clips (`cmp`); they are in
+  `/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap2-bp-threads/{A_taskset1,A2_taskset1_env1,B_slot_ort2,C_slot_default}/`
+  (A = r0668, A2 = r0673, B = r0670, C = r0672), with the run and monitor logs in `.../gap2/bp-threads/`.
+- For the record: r0252 measured 74.95 s wall (load1 15.06), r0416 33.63 s (load1 6.61), r0673 13.14 s (load1 5.18)
+  for the same command; the box's load differed each time.
+- Samples: `samples/basic-pitch/gap2_threads_{A,A2,B,C}.json` (the monitor's output for r0668, r0673, r0670, r0672).
+
+### Separate-and-Detect (https://github.com/ddman1101/Separate-and-detect): NOT RUN HERE, 6.4 GB of weights and a GPU-set inference config (gap F7)
+
+Read on 2026-11-11 (shallow clone at `0ac2fe6`, 2026-08-13, deleted after reading; Hugging Face and Zenodo APIs);
+nothing installed or run.
+
+- Framework and versions: two conda environments. `musicldm_env.yml` (separation) pins `python=3.9.16`,
+  `torch==1.13.1+cu116`, `torchaudio==0.13.1+cu116`, `torchvision==0.14.1+cu116`, `pytorch-lightning==1.9.4`;
+  `onset_detect.yml` (the onset step) has `python=3.10` and `madmom` (unpinned). The README asks for a hand edit of
+  madmom's `processors.py` line 23 (`from collections import MutableSequence` to `from collections.abc import
+  MutableSequence`).
+- GPU: the single-audio separation config `config/MSG-LD/integrated_musicldm_test_inference.yaml` sets `accelerator:
+  "gpu"`, `devices: [0]`, `precision: 32`; the three separation commands in the README's "Inference" section start with
+  `CUDA_VISIBLE_DEVICES=0` (its tip: "Set `CUDA_VISIBLE_DEVICES` to select a GPU (optional)."); the code has 18 lines matching `.cuda()`, `torch.device("cuda")` or `device = "cuda` (some
+  of them conditional, e.g. `src/utilities/tools.py` line 37 `torch.device("cuda" if torch.cuda.is_available() else
+  "cpu")`, some not, e.g. `src/latent_diffusion/modules/encoders/modules.py` line 275 `audio_emb =
+  self(waveform.cuda())`). Whether the pipeline runs with `accelerator: "cpu"` was not tested: UNVERIFIED.
+- Weights: Hugging Face `ddman1101/Separate-and-Detect` (API, 2026-11-11: `msgld_ob.ckpt` 5,398,491,630 bytes,
+  `msgld_obtb.ckpt` 5,398,799,061 bytes), plus the frozen MusicLDM parts from Zenodo record 10643148 (license metadata
+  `cc-by-4.0`): `vae-ckpt.ckpt` 756,843,351 bytes and `hifigan-ckpt.ckpt` 221,242,730 bytes. One checkpoint with its two
+  parts is about 6.4 GB, against 6.5 to 7.9 GB of free disk shared by all lanes during this round and the disk notice's
+  200 MB limit.
+- Run route: separation first (`integrated_train.py --config ..._test_inference.yaml --separate_only`, which runs
+  Demucs on the input to get a drum mixture when `valid_data` does not exist, then the latent-diffusion separator into
+  five stems), then the onset step (`single_audio_onset_detection.py --input_audio <...>/val_0/mix/<name>.wav`, which
+  reads `val_0/stem_0` to `stem_4` next to the mix and writes `<name>_transcription.txt` with `timestamp    drum_type`
+  lines, types Kick, Snare, Toms, Hi_Hats, Cymbals). Both are scripts in the cloned repository (not on PyPI).
+- Concrete blocker here: the 6.4 GB of weights (disk), a config and code written for a CUDA GPU (none on this box), and
+  repository code, which the permission system refused for every cloned repository this lane tried to run. Steps for
+  Aaron: `for-aaron.md`, list 16 (a Linux environment with an NVIDIA GPU).
+
+### ADTLib 2.1.2 (https://github.com/CarlSouthall/ADTLib): NOT RUN HERE, needs TensorFlow 1.x, whose last wheels are for Python 3.6 and 3.7 (gap F7)
+
+Read on 2026-11-11 (raw `setup.py` and README on `master`, shallow clone at `8e429f3`, 2018-01-17, deleted after
+reading; PyPI JSON); nothing installed or run.
+
+- `setup.py`: `install_requires=['numpy','scipy','cython','madmom','fpdf']` (TensorFlow is not in it; the README lists
+  "tensorflow" under "Required Packages"); its only language classifier is `Programming Language :: Python :: 2.7`;
+  it starts with `from distutils.core import setup`. PyPI: 2.1.2 is a source archive only (`ADTLib-2.1.2.tar.gz`,
+  8,025,141 bytes, 2018-01-17), no `requires_python`.
+- `ADTLib/utils/__init__.py` line 16: `from tensorflow.contrib import rnn`; it builds TF1 graphs (`tf.placeholder`,
+  `tf.variable_scope`, `tf.nn.bidirectional_dynamic_rnn`, `tf.train.Saver`, `with tf.Session() as sess`). TensorFlow's
+  `RELEASE.md` (raw, `master`), section "Release 2.0.0": "`tf.contrib` has been deprecated, and functionality has been
+  either migrated to the core TensorFlow API, to an ecosystem project such as tensorflow/addons or tensorflow/io, or
+  removed entirely." The last 1.x release on PyPI, `tensorflow` 1.15.5 (2021-01-06), has wheels for `cp36` and `cp37`
+  only and asks for `numpy (<1.19.0,>=1.16.0)` (PyPI JSON). `uv python list` on this box offers CPython 3.8.20 as its
+  oldest download; there is no Python 3.6 or 3.7 here.
+- Weights: in the package (`ADTLib/files/`: `KickADTLibAll`, `SnareADTLibAll`, `HihatADTLibAll` TensorFlow checkpoints,
+  2,685,152-byte `.data` files, and `PPParams.npy`). Output (usage.md): a `.txt` file of kick, snare and hi-hat onset
+  times and, unless `-ot no`, a drum tab saved as PDF; CLI `ADT [-od dir] [-o yes|no] [-ot yes|no] <wav files>`.
+- Concrete blocker here: no Python version on the box that has a TensorFlow 1.x wheel. Steps for Aaron:
+  `for-aaron.md`, list 15 (Docker with a Python 3.7 image).
+
 ## Environments, kept and deleted
 
 `uv pip freeze` of every venv this lane made is in `samples/freezes/` (`venv-core`, `venv-essentia`, `venv-madmom`,
@@ -1463,7 +1667,10 @@ were used as they were.
 Gap round 2: `venv-libfmp` (Python 3.11, libfmp 1.3.0; freeze `samples/freezes/venv-libfmp.txt`) was made at 00:29
 UTC for r0620 and deleted at 00:35 UTC; `venv-core` was used unchanged for the scoring scripts. `venv-ipt` (Python
 3.11, torch 2.15.0+cpu; freeze `samples/freezes/venv-ipt.txt`) was made at 00:37 UTC for r0643 and deleted at 00:39
-UTC, with the 14,090,320-byte `eguitar_ircam.ts` and the shallow `libipt` clone that was read.
+UTC, with the 14,090,320-byte `eguitar_ircam.ts` and the shallow `libipt` clone that was read. `venv-basicpitch` was
+rebuilt offline from `freeze/venv-basicpitch.txt` at 00:51 UTC (its freeze equal to that file) for r0668, r0670, r0672
+and r0673 and deleted at 00:59 UTC. The shallow MIDI-BERT clone was deleted after it was read; nothing was installed
+for MidiBERT-Piano.
 
 ## Inputs added by this lane
 

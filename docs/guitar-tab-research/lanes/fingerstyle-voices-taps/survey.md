@@ -178,7 +178,9 @@ UTC 2026-04-17). Every short commit hash in this file matched the default-branch
 42b. MidiBERT-Piano melody extraction (Chou, Chen; arXiv 2107.05223): MIDI in, melody MIDI out, fine-tuned on POP909
     (melody, bridge, accompaniment); checkpoints on Google Drive; "No gpu is needed for evaluation". Commit
     2024-04-10. MIT. https://github.com/wazenmai/MIDI-BERT . RUNNABLE. (verifier) Pre-training corpora named in the
-    paper include ASAP, whose README states CC BY-NC-SA 4.0.
+    paper include ASAP, whose README states CC BY-NC-SA 4.0. (corrected in gap round 2: not runnable as published on
+    2026-11-11: the README's checkpoint folder answers HTTP 404, and the owner wrote in issue #18 on 2026-10-12 that
+    "it appears the original model checkpoint has been lost"; see the section.)
 
 ### Melody and bass from audio (pitch salience)
 
@@ -826,6 +828,17 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   "Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
   following conditions are met:"; PyPI classifiers include "License :: Free for non-commercial use" and "License ::
   OSI Approved :: BSD License" (both, as listed). Weights and training data licenses: not stated in the README.
+  (gap round 2, read 2026-11-11: raw `setup.py` and README on `master`, shallow clone at `8e429f3`, PyPI JSON)
+  `setup.py`: `install_requires=['numpy','scipy','cython','madmom','fpdf']`, one language classifier, `Programming
+  Language :: Python :: 2.7`, and `from distutils.core import setup`; PyPI 2.1.2 has no `requires_python`.
+  `ADTLib/utils/__init__.py` line 16: `from tensorflow.contrib import rnn`, with TF1 graph code (`tf.placeholder`,
+  `tf.Session`, `tf.nn.bidirectional_dynamic_rnn`). TensorFlow's `RELEASE.md` (https://raw.githubusercontent.com/tensorflow/tensorflow/master/RELEASE.md ,
+  "Release 2.0.0"): "`tf.contrib` has been deprecated, and functionality has been either migrated to the core
+  TensorFlow API, to an ecosystem project such as tensorflow/addons or tensorflow/io, or removed entirely." PyPI
+  `tensorflow` 1.15.5 (the last 1.x, 2021-01-06): wheels for `cp36` and `cp37` only, `numpy (<1.19.0,>=1.16.0)`. The
+  model weights ship in the package (`ADTLib/files/`, TensorFlow checkpoints `KickADTLibAll`, `SnareADTLibAll`,
+  `HihatADTLibAll`, and `PPParams.npy`); no license statement for them beyond the repository's LICENSE.txt was found.
+  Output per usage.md: a `.txt` of onset times and, by default, a drum tab as PDF (`-ot yes`).
 - STRUM (Opria, arXiv 2605.12135, 2026-05-12): "an audio-to-chart pipeline that converts raw recordings into
   playable Clone Hero / YARG charts" with "a two-stage CRNN onset detector and a six-model ensemble classifier for
   drums"; abstract: "Code, model weights, and the full benchmark manifest are released." The arXiv comment field gives
@@ -850,7 +863,18 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   `cc-by-4.0`); its commands set `CUDA_VISIBLE_DEVICES`. Training data, paper section 4.1: "The MSG-LD models are
   trained on a combined corpus of StemGMD [11] (>1200 hours, synthesized) and IDMT-SMT-Drums [21] (2.1 hours,
   real-world acoustic)." StemGMD is CC BY 4.0 (IDM section); IDMT-SMT-Drums, Zenodo record 7544164 (2023-01-17),
-  license metadata `cc-by-nc-nd-4.0`, access open. Whether it runs on a CPU was not checked.
+  license metadata `cc-by-nc-nd-4.0`, access open. Whether it runs on a CPU was not checked. (gap round 2, read
+  2026-11-11 from a shallow clone at `0ac2fe6` and the Hugging Face and Zenodo APIs:) `musicldm_env.yml` pins
+  `python=3.9.16`, `torch==1.13.1+cu116`, `torchaudio==0.13.1+cu116`, `torchvision==0.14.1+cu116`,
+  `pytorch-lightning==1.9.4`; `onset_detect.yml` has `python=3.10` and unpinned `madmom`. The single-audio config
+  `config/MSG-LD/integrated_musicldm_test_inference.yaml` sets `accelerator: "gpu"`, `devices: [0]`; the code has both
+  device-conditional lines (`torch.device("cuda" if torch.cuda.is_available() else "cpu")`) and unconditional ones
+  (`audio_emb = self(waveform.cuda())`); a CPU run was not tried, so whether it runs on a CPU is still UNVERIFIED.
+  Sizes: `msgld_ob.ckpt` 5,398,491,630 bytes, `msgld_obtb.ckpt` 5,398,799,061 bytes (Hugging Face card metadata
+  `license: mit`); MusicLDM parts from Zenodo record 10643148 (title "MusicLDM", license metadata `cc-by-4.0`):
+  `vae-ckpt.ckpt` 756,843,351 bytes, `hifigan-ckpt.ckpt` 221,242,730 bytes. The onset script expects the five
+  separated stems in `val_0/stem_0` to `stem_4` beside `val_0/mix/<name>.wav` and writes `timestamp    drum_type`
+  lines (Kick, Snare, Toms, Hi_Hats, Cymbals) (`SINGLE_AUDIO_ONSET_DETECTION_README.md`).
 
 ## Research: percussive fingerstyle guitar (body hits), Martelloni, McPherson, Barthet 2023
 
@@ -1240,6 +1264,30 @@ All read through the Zenodo API (`https://zenodo.org/api/records/<id>`) on 2026-
   license metadata `cc-by-4.0`. Pianist8, per the paper: "eight artists' performances of piano music that we
   download from YouTube"; Pop1K7: "machine transcriptions of 1,747 audio recordings of piano covers". Licenses of
   Pop1K7 and Pianist8 not found: UNVERIFIED. d. Not a service.
+- (gap round 2, read 2026-11-11) Checkpoint availability. The README's folder
+  https://drive.google.com/drive/folders/1ceIfC1UugZQHPgpEEMkdAF0VhZ1EeLl3 answers HTTP 404 ("Error 404 (Not
+  Found)!!1"), from the box and through the web fetch tool. Issue #18 (https://github.com/wazenmai/MIDI-BERT/issues/18 ,
+  "404 on the google drive folder for the model weights", opened 2026-06-18, open; read through the web fetch tool):
+  owner, 2026-06-23: "Since our university email accounts have been deactivated," "we unfortunately lost access to the
+  original Google Drive." "We checked our local backups and only managed to find the pretrained model and the melody
+  fine-tuned model." with a new folder https://drive.google.com/drive/folders/1MniVSDTdB0Vv0Ey_MllnN9mAEK279eQN ; a
+  user, 2026-07-20: "However, I found that these checkpoints expect a 6-field CP representation." and "Therefore, the
+  checkpoint cannot be loaded with the current code."; owner, 2026-10-12: "We've thoroughly checked our machines,
+  servers, and Google Drive, but unfortunately couldn't find any alternative checkpoints" "—it appears the original
+  model checkpoint has been lost." The new folder ("MIDI-BERT Checkpoint") holds `melody_model_best.ckpt`
+  (1,340,894,149 bytes) and `pretrain_model.ckpt` (1,340,468,461 bytes), sizes from the `content-range` of 1 KB range
+  requests; the melody file's `data.pkl` (read without unpickling, trials.md "Gap round 2") has six token tables and an
+  input layer of shape (768, 1536), where the published `MidiBERT/model.py` builds four tables (Bar, Position, Pitch,
+  Duration) and 1,024 inputs.
+- (gap round 2) Environment facts read at `0b93558`: `requirements.txt` pins `mido==1.2.10`, `chorder==0.1.2`,
+  `miditoolkit==0.1.14`, `scikit_learn==0.24.2`, `torchaudio==0.9.0`, `transformers==4.8.2` (numpy and torch
+  unpinned: `numpy>=1.13.3`, `torch>=1.3.1`); `melody_extraction/midibert/utils.py` calls `np.linspace(...,
+  dtype=np.int)` at import time (NumPy 1.24.0 release notes: "The deprecation for the aliases np.object, np.bool,
+  np.float, np.complex, np.str, and np.int is expired"); issue #11, collaborator, 2023-02-23: "I haven't tested it
+  with python 3.11. But Python 3.8 and 3.9 works fine for me." Input handling: ticks are read as if every file had 480
+  ticks per beat (`DEFAULT_RESOLUTION = 480`, `quantize_items(items, ticks=120)`, `group_items(...,
+  ticks_per_bar=DEFAULT_RESOLUTION*4)`), 16 positions per bar, 4/4 assumed ("assume 4/4" in `extract.py`), and bars
+  without notes are dropped before the output is written.
 
 ## QM Vamp Plugins: note onset detector (Vamp, for Sonic Visualiser or Sonic Annotator)
 
@@ -1247,6 +1295,17 @@ All read through the Zenodo API (`https://zenodo.org/api/records/<id>`) on 2026-
   University of London", including "Note onset detector" (README of https://github.com/c4dm/qm-vamp-plugins , branch
   `master`, last commit 2021-06-02 `c918afc`, clone; CHANGELOG top entry "QM Vamp Plugins v1.8 (January 2020)").
   Plugin docs: https://vamp-plugins.org/plugin-doc/qm-vamp-plugins.html (named in the README; not read today).
+  (gap round 2, read 2026-11-11) That page, section "1. Note Onset Detector": "System identifier –
+  vamp:qm-vamp-plugins:qm-onsetdetector"; "Note Onset Detector analyses a single channel of audio and estimates the
+  onset times of notes within the music – that is, the times at which notes and other audible events begin."; "The
+  plugin is non-causal, returning all results at the end of processing."; parameters "Onset Detection Function Type",
+  "Onset Detector Sensitivity" ("The peak picker does not have a simple threshold level; instead, this parameter
+  controls the required "steepness" of the slopes in the smoothed detection function either side of a peak value, in
+  order for that peak to be accepted as an onset.") and "Adaptive Whitening"; the function types named are "Complex
+  Domain" (the default), "Spectral Difference", "Phase Deviation" and "Broadband Energy Rise"; outputs "Note Onsets"
+  ("The detected note onset times, returned as a single feature with timestamp but no value for each detected
+  note."), "Onset Detection Function" and "Smoothed Detection Function"; "The Note Onset Detector Vamp plugin was
+  written by Chris Duxbury, Juan Pablo Bello and Christian Landone."
 - How a program calls it: as a Vamp plugin inside a Vamp host; "Ready-to-use binary builds of these plugins are
   provided for common platforms"; Linux build `make -f build/linux/Makefile.linux64` after `./repoint install`
   (README). The host program Sonic Annotator was not checked today (`c4dm/sonic-annotator` did not resolve as a
@@ -1409,7 +1468,11 @@ All read through the Zenodo API (`https://zenodo.org/api/records/<id>`) on 2026-
   downloadable per `datasets.py`); GOAT (verifier: Zenodo record 15690894, access "restricted", by request,
   "non-commercial only").
 - Not checked for CPU use (verifier): Separate-and-Detect (two conda environments, a manual patch to madmom, MusicLDM
-  components from Zenodo; its README commands set `CUDA_VISIBLE_DEVICES`).
+  components from Zenodo; its README commands set `CUDA_VISIBLE_DEVICES`). (gap round 2: its inference config sets
+  `accelerator: "gpu"`, its separation environment pins CUDA 11.6 builds of torch 1.13.1, and one checkpoint with the
+  two MusicLDM parts is about 6.4 GB; a CPU run is still untried. ADTLib needs TensorFlow 1.x, whose last wheels are
+  for Python 3.6 and 3.7. See their entries under "Older and minor drum transcribers" and `trials.md`, "Gap round
+  2".)
 
 ## Handoff facts
 

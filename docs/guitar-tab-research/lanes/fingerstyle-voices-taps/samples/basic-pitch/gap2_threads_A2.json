@@ -1,0 +1,64 @@
+{
+ "pid": 580,
+ "substring": "out/gap2-bp-threads/A2_taskset1_env1",
+ "found_after_s": 0.64,
+ "watched_s": 13.13,
+ "samples": 241,
+ "max_threads_at_once": 4,
+ "process_masks": [
+  "1"
+ ],
+ "n_threads_seen": 4,
+ "threads": {
+  "580": {
+   "name": "basic-pitch",
+   "masks": [
+    "1"
+   ],
+   "cpus_seen_while_accumulating": [
+    1
+   ],
+   "cpu_ticks": 429
+  },
+  "606": {
+   "name": "basic-pitch",
+   "masks": [
+    "1"
+   ],
+   "cpus_seen_while_accumulating": [
+    1
+   ],
+   "cpu_ticks": 247
+  },
+  "607": {
+   "name": "basic-pitch",
+   "masks": [
+    "2"
+   ],
+   "cpus_seen_while_accumulating": [
+    2
+   ],
+   "cpu_ticks": 235
+  },
+  "608": {
+   "name": "basic-pitch",
+   "masks": [
+    "3"
+   ],
+   "cpus_seen_while_accumulating": [
+    3
+   ],
+   "cpu_ticks": 329
+  }
+ },
+ "threads_per_mask": {
+  "1": 2,
+  "2": 1,
+  "3": 1
+ },
+ "cpus_used_by_threads_with_ticks": [
+  1,
+  2,
+  3
+ ]
+}

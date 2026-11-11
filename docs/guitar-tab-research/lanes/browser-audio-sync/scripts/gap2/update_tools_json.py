@@ -29,9 +29,9 @@ def upsert_after(after_name, entry):
     tools.insert(i + 1, entry)
 
 
-def add_runs(entry, runs):
-    have = {r["run_id"] for r in entry["runs"]}
-    entry["runs"].extend(r for r in runs if r["run_id"] not in have)
+def add_runs(entry, runs):   # adds this round's runs, replacing an earlier copy of the same run id
+    new = {r["run_id"]: r for r in runs}
+    entry["runs"] = [new.pop(r["run_id"]) if r["run_id"] in new else r for r in entry["runs"]] + list(new.values())
 
 
 SLOT = "2-core gtr-run slot (pinned)"
@@ -109,7 +109,7 @@ def apply_b1():
          "metrics": {"cpu_slot": SLOT, "what": "4 threads requested inside a 2-core slot", "numThreads_after_create": 4, "worker_threads": 3,
                      "thread_binding": "all threads on CPUs 0-1; renderer CPU/wall over the separation 1.929", "hardwareConcurrency": 2}},
         {"run_id": "r0613", "input_id": "S4_10s", "cores": 2, "wall_s": 75.36, "peak_mb": 1204.3, "exit_code": 0, "output_files": ["samples/htdemucs-6s-onnx-web/"],
-         "metrics": {"cpu_slot": SLOT, "what": "1 thread (no worker thread)", "thread_binding": "CPUs 2-3 only; renderer CPU/wall 0.823"}},
+         "metrics": {"cpu_slot": SLOT, "what": "1 thread (no DedicatedWorker thread used CPU time)", "thread_binding": "CPUs 2-3 only; renderer CPU/wall 0.823"}},
         {"run_id": "r0593", "input_id": "S4_10s", "cores": 2, "wall_s": 11.6, "peak_mb": 4384.0, "exit_code": 0, "output_files": [],
          "metrics": {"cpu_slot": SLOT, "what": "htdemucs_6s session creation with graphOptimizationLevel all: std::bad_alloc (also r0606 basic, r0617 all without the CPU memory arena)"}},
     ])
@@ -123,7 +123,57 @@ def apply_b1():
                            "gap round 2 ran the 6-stem export StemSplitio/htdemucs-6s-onnx for a guitar stem instead and did not try this 4-stem model.)")
 
 
+def apply_b2():
+    o = find("OpenCV.js (@techstark/opencv-js)")
+    o["tried"] = True
+    o["tried_how"] = "browser-headless"
+    o["runs"] = [
+        {"run_id": "r0651", "input_id": "R3a_cu (frames 150, 0, 280), R3b (frames 225, 0, 449)", "cores": 2, "wall_s": 2.66, "peak_mb": 253.4, "exit_code": 0,
+         "output_files": ["out/opencvjs/run_raw.json", "samples/opencv-js/run_raw_trimmed.json", "samples/opencv-js/compare_raw.json"],
+         "metrics": {"cpu_slot": SLOT, "input": "the RGB bytes cv2.imread decoded (identical to the Python run's input)",
+                     "steps": "cvtColor, fillConvexPoly, Canny(50,150), HoughLinesP(1, pi/180, 30, 20, 5); getPerspectiveTransform, warpPerspective INTER_CUBIC, Canny + HoughLinesP on the rectified neck",
+                     "vs_opencv_python_5_0_0": "HoughLinesP segment lists identical (same order) on all 7 frame/quad pairs, frame and rectified; counts, clusters, Canny edge-pixel counts equal; homography identical (max difference 0); rectified images differ in 1-3 bytes by 1 level",
+                     "counts_frame_in_quad_string_fret": {"R3a_cu 150 hand": [142, 70, 37, 27], "R3a_cu 150 SAM": [142, 62, 33, 21], "R3a_cu 0": [116, 54, 27, 25], "R3a_cu 280": [118, 61, 29, 31], "R3b 225": [351, 115, 31, 41], "R3b 0": [310, 109, 42, 37], "R3b 449": [375, 151, 87, 41]},
+                     "ms_frame_step_R3a_cu_R3b": [[9.4, 19.6], [38.9, 68.8]], "ms_rectified_step_R3a_cu_R3b": [[9.8, 20.5], [15.3, 23.7]],
+                     "opencv_python_ms_frame_step_2_threads_R3a_cu_R3b": [[4.2, 9.7], [15.4, 24.6]], "opencv_python_ms_rectified_step_2_threads": [[3.8, 7.2], [5.1, 8.7]],
+                     "load_ms": "script onload 272-305 ms, runtime ready 360-418 ms", "note": MEM_NOTE}},
+        {"run_id": "r0654", "input_id": "R3a_cu (frames 150, 0, 280), R3b (frames 225, 0, 449)", "cores": 2, "wall_s": 3.37, "peak_mb": 308.2, "exit_code": 0,
+         "output_files": ["out/opencvjs/run_img.json", "samples/opencv-js/run_img_trimmed.json", "samples/opencv-js/compare_img.json"],
+         "metrics": {"cpu_slot": SLOT, "input": "PNG (R3a_cu) and JPEG -q:v 2 (R3b) decoded by Chromium (createImageBitmap + OffscreenCanvas getImageData)",
+                     "decoded_bytes_vs_cv2_imread": "0 bytes differ in each of the 6 frames", "decode_ms": "18.4-30.7 (640x480 PNG), 47.3-53.0 (1920x1080 JPEG)",
+                     "results": "the same as r0651"}},
+        {"run_id": "r0649", "input_id": "R3a_cu, R3b", "cores": 2, "wall_s": 2.81, "peak_mb": None, "exit_code": 0, "output_files": [],
+         "metrics": {"cpu_slot": SLOT, "what": "first try: the page read one segment per Mat row and so 1 segment per frame (HoughLinesP's Mat has 1 row); not used"}},
+        {"run_id": "r0646", "input_id": "R3a_cu, R3b", "cores": 2, "wall_s": 1.18, "peak_mb": 152.2, "exit_code": 0, "output_files": ["out/opencvjs/pyref/", "samples/opencv-js/opencv_lines_ref_trimmed.json"],
+         "metrics": {"cpu_slot": SLOT, "what": "OpenCV-Python 5.0.0.93 reference with the video lane's functions; equal to that lane's r0149/r0214/r0400 outputs in every field but the times, rectified PNGs pixel-identical"}},
+        {"run_id": "r0653", "input_id": "R3a_cu, R3b", "cores": 2, "wall_s": 1.83, "peak_mb": 149.9, "exit_code": 0, "output_files": ["out/opencvjs/pyref/"],
+         "metrics": {"cpu_slot": SLOT, "what": "the same reference with timings of the page's step groups (cv2 default 2 threads, and 1 thread)"}},
+    ]
+    o["not_run_reason"] = None
+    o["inputs"] = ["cv.Mat CV_8UC3 (RGB bytes, or cv.matFromImageData of canvas ImageData, RGBA)", "quad as a 4x1 CV_32FC2 Mat (getPerspectiveTransform) or CV_32SC2 Mat (fillConvexPoly)"]
+    o["outputs"] = ["HoughLinesP: a 1 x N Mat with 4 channels, type 100 (cv.CV_32SC4 in this OpenCV 5 build); x1, y1, x2, y2 as consecutive int32 in data32S",
+                    "getPerspectiveTransform: 3x3 CV_64F Mat (data64F)", "warpPerspective: CV_8UC3 Mat (data = RGB bytes)"]
+    o["constraints_accepted"] = ["quad (4 points), output size, Canny thresholds, HoughLinesP rho/theta/threshold/minLineLength/maxLineGap; nothing is learned",
+                                 "no createLineSegmentDetector (LSD) in this build although the typings declare it", "build information: Parallel framework: none (one thread)"]
+    o["handoffs_out"] = [{"to": "fingertip-to-fret-cell step of the video-hands-fretboard lane", "via_format": "3x3 homography from getPerspectiveTransform (CV_64F) and fret x clusters in rectified pixels",
+                          "evidence": "trials.md Gap round 2: identical to the OpenCV-Python output of the video lane's runs r0149, r0214, r0400"}]
+    o["unverified"] = [
+        "The README says opencv.js was downloaded from https://docs.opencv.org/5.0.0/opencv.js, which returned HTTP 404 on 2026-11-10 and again on 2026-11-11; https://docs.opencv.org/5.x/opencv.js redirected (301) to https://docs.opencv.org/5.0/opencv.js (200, 16,210,809 bytes, a different size from the package's 13,298,869-byte file; not compared further)",
+        "R3c was not run: the video lane has no OpenCV output for R3c to compare with",
+    ]
+
+
+def apply_b3():
+    s = find("Signalsmith Stretch")
+    q = ("README (https://raw.githubusercontent.com/Signalsmith-Audio/signalsmith-stretch/main/README.md, read 2026-11-11): "
+         "\"It can handle a wide-range of pitch-shifts (multiple octaves) but time-stretching sounds best for more modest changes "
+         "(between 0.75x and 1.5x).\" (corrected in gap round 2: the earlier text gave these words without quotation marks)")
+    s["constraints_accepted"] = [q if c.startswith("README: time-stretching sounds best") else c for c in s["constraints_accepted"]]
+
+
 apply_b1()
+apply_b2()
+apply_b3()
 with open(path, "w") as f:   # the file's own format: indent 1, UTF-8, no trailing newline
     json.dump(doc, f, indent=1, ensure_ascii=False)
 print("tools:", len(tools))

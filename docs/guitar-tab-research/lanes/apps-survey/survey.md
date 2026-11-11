@@ -655,19 +655,51 @@ on 2026-11-10.
   Upgrade $24.99".
 - **Price.** In-app purchases: "Capo touch Pro - Yearly $19.99", "Capo touch Pro - Monthly $4.99", "Capo Platinum $49.99"
   and upgrade variants (App Store, read 2026-11-10).
-- **Terms** (gap round 2, 2026-11-11). No terms of use or EULA was found on the vendor's site:
-  `https://supermegaultragroovy.com/legal/` answered HTTP 403, `/legal/terms/` and `/legal/eula/` HTTP 404, and the
-  product pages link only the [privacy policy](https://supermegaultragroovy.com/legal/privacy/). Both App Store listings
-  (iOS id887497388, read 2026-11-10; Mac id696977615, read 2026-11-11) link the developer's privacy policy and web site
-  and no license agreement; none of the 14 App Store pages this lane saved on 2026-11-10 shows a license-agreement link,
-  so these pages do not tell whether a custom EULA exists. Apple's
+- **Terms** (gap round 2, 2026-11-11; corrected by `verify-gapfill-apps-survey` the same day). The gap round wrote that
+  no terms of use or EULA exists on the vendor's site: `https://supermegaultragroovy.com/legal/` answered HTTP 403 and
+  `/legal/terms/` and `/legal/eula/` HTTP 404 (re-checked by the verifier, same answers). That was wrong: both App Store
+  descriptions (iOS id887497388, saved 2026-11-10; Mac id696977615, saved 2026-11-11) end "Our Privacy Policy can be
+  found at https://supermegaultragroovy.com/legal/privacy, and our Terms of Use at
+  https://supermegaultragroovy.com/legal/tou.", and that address answered HTTP 301 to `/legal/tou/`, then 200, to the
+  verifier on 2026-11-11. (Also corrected: the two product pages fetched, `/products/capo/` and `/products/capo/mac/`,
+  link no privacy, terms or license page at all; the gap round had written that they link the privacy policy.)
+  [Terms of Use Agreement](https://supermegaultragroovy.com/legal/tou/) ("Last Updated: May 20, 2015", read 2026-11-11
+  with curl by the verifier):
+  - Scope: the "Services" are SMUG's products and online services, a term that "also includes access to and use of the
+    SMUG Website generally"; "The Services (including but not limited to software downloaded by or otherwise made
+    available to you by SMUG or any of its licensors or providers (the "SMUG Software")) are licensed, not sold, to you
+    for use only under the terms of this license, unless a Service is accompanied by a separate agreement providing for
+    same, in which case the terms of that separate agreement will govern, subject to your prior acceptance of that
+    separate agreement."
+  - Automated access: "You shall not engage in any automated use of the Services, including but not limited to
+    Maillist, Listserv or any other auto-response software or program;"
+  - Commercial use ("No Resale of the Services"): "Without limiting the foregoing, you agree not to reproduce,
+    duplicate, copy, sell, trade, or exploit for any commercial purposes, any portion of the Services, the SMUG
+    Software, use of the Services and/or the Content, or access to the Services."; the "Content" (the materials
+    available through the Services or on the SMUG Website) is licensed "solely and exclusively for your personal and
+    private, non-commercial use"; and "SMUG hereby grants you a personal,
+    non-transferable and non-exclusive license to access, download and use the applicable SMUG Software on any
+    compatible device that you own or control."
+  - Ownership ("Ownership"): "You acknowledge and expressly agree that content and information (with the exception of
+    your name, phone number and other similar personal information) posted or otherwise provided by you as part of your
+    access to and/or use of the Services, is and shall be owned by SMUG immediately and automatically upon the
+    posting/providing of such consent and/or information on the SMUG Website or otherwise to SMUG".
+  - The terms do not name Capo, MIDI, chords, tablature or files exported from an app (searched "Capo", "MIDI",
+    "chord", "tab" and "export"; "export" occurs only in the export-control clause), so whether the ownership clause
+    covers MIDI or lead sheets a user exports from Capo is not stated. Before these terms were read, the gap round had
+    fetched six supermegaultragroovy.com pages with curl and the verifier seven (the last two, `/legal/tou` and
+    `/legal/privacy/`, in one command); after they were read, none (fetch logs `gap2/raw/_fetchlog.txt` and
+    `verify-gap2/raw/_fetchlog.txt` under `/home/user/gtr/lanes/apps-survey/`, not in git).
+  None of the 26 App Store pages this lane saved on 2026-11-10 (14 in `verify-docs/raw/`, 12 in `raw/`; the gap round
+  wrote 14) contains the words "license agreement", so these pages do not tell whether a custom EULA exists. Apple's
   [Standard EULA](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/) (read 2026-11-11): "Apps made
   available through the App Store are licensed, not sold, to you. Your license to each App is subject to your prior
   acceptance of either this Licensed Application End User License Agreement (“Standard EULA”), or a custom end user
   license agreement between you and the Application Provider (“Custom EULA”), if one is provided."; "Licensor grants to
   you a nontransferable license to use the Licensed Application on any Apple-branded products that you own or control
-  and as permitted by the Usage Rules." Its sections a to i say nothing about files a user makes with an app. No clause
-  on who owns Capo's exports, on their commercial use or on automated access was found.
+  and as permitted by the Usage Rules." Its sections a to i say nothing about files a user makes with an app. (The gap
+  round's last sentence here, "No clause on who owns Capo's exports, on their commercial use or on automated access
+  was found.", is superseded by the Terms of Use quoted above.)
 
 ## Positive Grid Spark app ("Auto Chords")
 
@@ -919,9 +951,12 @@ on 2026-11-10.
   disassemble, decompile, reverse engineer, download, post, broadcast, transmit, or make available to the public any
   HIT’N’MIX content without the prior written permission of Hit’n’Mix Ltd." The store's
   [terms of service](https://buy.hitnmix.com/policies/terms-of-service) carry the same text, except that this sentence
-  reads: "You may not copy, reproduce, republish, disassemble, decompile, reverse engineer, download, post, broadcast,
-  transmit, make available to the public, or otherwise use HIT’N’MIX content in any way except for your own personal,
-  non-commercial use. You also agree not to adapt, alter or create a derivative work from HIT’N’MIX." Whether
+  is replaced by three: "You may not copy, reproduce, republish, disassemble, decompile, reverse engineer, download,
+  post, broadcast, transmit, make available to the public, or otherwise use HIT’N’MIX content in any way except for
+  your own personal, non-commercial use. You also agree not to adapt, alter or create a derivative work from HIT’N’MIX.
+  Any other use of HIT’N’MIX content requires the prior written permission of Hit’n’Mix Ltd." (The third sentence was
+  left out in the gap round; added by `verify-gapfill-apps-survey`, 2026-11-11, after comparing the two pages sentence
+  by sentence: they differ only there and in the footer.) Whether
   "HIT’N’MIX content" covers the stems or MIDI a user exports is not stated; no clause names who owns them, and no
   clause on bots, scripts or automated access was found (both pages searched for "own", "commercial", "automat",
   "robot", "scrap", "export"). No EULA page is linked from hitnmix.com or buy.hitnmix.com; whether the installer shows
@@ -1527,7 +1562,7 @@ Pages and their status on 2026-11-11 (the full list with times is the fetch log)
 | Jam Origin (MIDI Guitar) | jamorigin.com, its buy link (FastSpring page), jam.live home, shop, support, MIDI Guitar 3, JAM API WebSocket | |
 | Yousician | home, terms of service | |
 | Yamaha (Chord Tracker) | usa.yamaha.com apps, Chord Tracker overview and specs, the app's privacy policy | the web site's own terms of use (not fetched) |
-| SuperMegaUltraGroovy (Capo) | Capo page, Capo for Mac, privacy policy, Mac App Store listing | `/legal/` (403), `/legal/terms/` and `/legal/eula/` (404) |
+| SuperMegaUltraGroovy (Capo) | Capo page, Capo for Mac, privacy policy, Mac App Store listing; the verifier added `/legal/tou/` (Terms of Use Agreement, named in both App Store descriptions; not fetched in the gap round) | `/legal/` (403), `/legal/terms/` and `/legal/eula/` (404) |
 | Apple | Standard EULA; lookup API for ids 6754810269 (nine stores), 887497388, 975438908, 992502589, 696977615 | `apps.apple.com/us/app/id6754810269` (404) |
 | ChordU | home, terms of use | pricing (not fetched, above) |
 | Chordify | | terms page: 403 to curl and to WebFetch; headless render refused (below) |
@@ -1547,3 +1582,24 @@ celemony.com; the one copy found was unreachable; `for-aaron.md` 11); whether th
 installers show license texts and what they say (`for-aaron.md` 11, 12, 15); ChordU's prices (`for-aaron.md` 8b);
 whether Capo and Chord Tracker carry custom EULAs; whether Practice Pro exists (`for-aaron.md` 17c). Nothing was
 installed or run in this round apart from the page fetches and lookups.
+
+Checked afterwards by `verify-gapfill-apps-survey` (2026-11-11; the full log is at the end of `trials.md`). Every one of
+the 81 entries of `quotes2.json` was looked up again by `scripts/verify-gap2/vquotes.py`: 61 match the verifier's own
+fetch of the cited URL exactly (case, quote marks and dashes included); the other 20 (Yousician, ChordU, the Mac App
+Store listing, the Crypton maintenance page, Chordify's 403 page) match the gap round's saved copies exactly. Of
+those, the first three were not fetched again (Yousician's and ChordU's terms forbid automated access, Apple's web site
+terms forbid robots), the Crypton page was (HTTP 503 again, the same bytes), and the verifier's Chordify check was
+refused by the permission system. Changed in this file: the Capo "Terms" item (a Terms of Use Agreement exists at
+`/legal/tou/`, named in both App Store descriptions; its clauses on automated use, commercial use and ownership are now
+quoted; the product pages link no legal page; 26, not 14, App Store pages were saved on 2026-11-10); the RipX store
+terms (a third replaced sentence was missing); the Capo row of the table above. Facts on automated access found in the
+check: Yousician's terms (§10, quoted in its section) bar automated means, and the gap round had fetched its home page
+and terms with curl before reading them (00:13:43 and 00:14:04 UTC, nothing after); Apple's
+[web site terms](https://www.apple.com/legal/internet-services/terms/site.html) ("Updated by The Apple Legal Team on
+Nov. 20, 2009", read 2026-11-11) "apply to the Apple web site located at www.apple.com, and all associated sites linked
+to www.apple.com by Apple" and say "You may not use any "deep-link", "page-scrape", "robot", "spider" or other automatic
+device, program, algorithm or methodology, or any similar or equivalent manual process, to access, acquire, copy or
+monitor any portion of the Site or any Content"; the gap round fetched the Standard EULA page and two apps.apple.com
+pages with curl, and the verifier the Standard EULA page and these web site terms, plus 14 lookup API calls and no
+apps.apple.com page. Whether those terms cover `apps.apple.com` and the lookup API (`itunes.apple.com/lookup`) is not
+stated on the page.

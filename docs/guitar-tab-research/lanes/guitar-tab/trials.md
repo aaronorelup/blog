@@ -877,7 +877,9 @@ same effect was reached as described; "no" = neither. Every cell is backed by th
 Agent `gapfill-guitar-tab`, 2026-11-11 (UTC), working through the gaps the completeness critic listed for this lane
 (`GAPS.md`, rows G1 to G5) and a gtrsnipe re-check the orchestrator asked for. Same box, same `gtr-run` and `gtr-eval`
 ledgers as above. Scripts named `scripts/gap2_*`; big outputs under `/home/user/gtr/lanes/guitar-tab/gap2/`; small
-samples under `samples/<tool>/`.
+samples under `samples/<tool>/`. Where each gap landed: G1 below and in `tools.json`; G2 and G3 as tool sections below;
+G4 in the scorify section, the G4 summary and `for-aaron.md` sections 4 and 5; G5 (the Lund University thesis, no code
+found, nothing to run) in `survey.md` only; gtrsnipe below and in `for-aaron.md` section 4.
 
 ### PyGuitarPro glue conversions given a ledger line (G1)
 
@@ -1046,7 +1048,7 @@ samples under `samples/<tool>/`.
   `rightHand` "pick" (level "amateur" for comparison: `maxFretSpan` 4, `maxAttacksPerSecond` 7, `maxPickedPerBar` 4,
   `minDuration` 1/4 quarter, high-fret costs above frets 8 and 10). The search was scorify's default beam search
   (beam width 64, 128 candidates per frame, 500,000 expansions) unless a row says otherwise.
-- Runs (each a `gtr-run` call on 2 cores 0-1 unless marked; per-note glue in Python 3.11 plus one Node process per clip;
+- Runs (each a `gtr-run` call on 2 cores 0-1 unless marked; the Python 3.11 glue plus one Node process per run;
   "arrange" is the time the Node script measured around `arrange(...)` with `performance.now()`): r0621 (10 runs: 8 clips,
   capo, Drop D; wall 19.73 s, CPU 22.36 s, peak RSS 175.7 MB, after 20.0 s waiting for a slot, load 5.69 at start);
   r0623 (9 runs: larger search limits, adaptive mode, level amateur, the pin; wall 48.26 s, CPU 55.42 s, peak RSS
@@ -1157,11 +1159,40 @@ samples under `samples/<tool>/`.
   are in `for-aaron.md` section 4.
 - Its licence files were re-read at that commit on 2026-11-11 and still contain the clauses quoted in `survey.md`.
 
+### Checks made in this round (by the gap agent itself; no independent verifier has read this section yet)
+
+- Every run id cited in this section (r0586, r0591, r0592, r0594, r0595, r0601, r0621, r0623, r0630, r0631, r0633,
+  r0635, r0641, plus r0155 and r0469 from above) has a ledger line with exit 0, and the walls, CPU times, peak RSS,
+  cores and load averages quoted were copied from those lines.
+- Every eval id cited in this section exists in the eval ledger with exit 0; a script compared every table row that
+  carries an eval id with the stored result (counts, the fractions to 4 decimals, string-difference counts, onset
+  P/R/F1, frame tab and pitch F1): 41 rows, 0 differences.
+- Recomputed with mir_eval 0.8.2 directly, without gtr-eval code: matched count and same-string-and-fret fractions of
+  e1715, e1736 and e1760 (equal).
+- The scorer changed during this round: the TabCNN scores (e1715 to e1762) were made with gtr-eval 0.11.1, the
+  scorify scores (e1808 to e1830) with 0.12.0, which another agent installed in between. 14 of them (from both sets)
+  re-scored with 0.12.0 and `--no-ledger` gave the same metrics and counts.
+- Quotes from the thesis, the model card, the READMEs and licence files were compared with the saved copies by script
+  (whitespace and hyphenated line breaks normalised): all found.
+
+### Disk after this round
+
+- Free disk was 7,531 MB at the start of this round (`df`, with the orchestrator's low-disk notice in force). At
+  00:47 UTC, after the runs, this round deleted, per that notice: `venv-amt` (torch, amt-tools, piano-transcription-
+  inference, onnxruntime; freeze `samples/tabcnn-published-weights/uv-pip-freeze.txt`), `venv-sym` (tuttut, tayuya,
+  tabsynth, PyGuitarPro, music21, mido; freeze `samples/scorify/uv-pip-freeze-venv-sym.txt`), the three downloaded
+  TabCNN files (hashes in `samples/tabcnn-published-weights/weights-files.txt`), the trial round's `guitar-fl.pth`
+  (SHA-256 in the Riley section) and the `.git` folders of this round's clones; free disk went from 7,278 to 7,904 MB.
+  To re-run a script here, rebuild the venv from its freeze (`uv venv --python 3.11 <venv>` then `uv pip install -r
+  <freeze>`) and re-download the weights from the URLs above. `node-scorify` (1.4 MB) was kept.
+
 ## Media kept outside git
 
 None. This lane wrote no audio or video files. Its large outputs (frame CSVs, note lists, LilyPond files, Guitar Pro
 files) are under `/home/user/gtr/lanes/guitar-tab/out/`; the small pictures it made (LilyPond PNG pages, 8.5 to 9.9 KB)
-are in `samples/lilypond/` (including `R3a.bp.png`, the R3a tab from Basic Pitch notes).
+are in `samples/lilypond/` (including `R3a.bp.png`, the R3a tab from Basic Pitch notes). Gap round 2 wrote no audio or
+video either; its outputs (frame CSVs, note lists, scorify JSON, GP5 files, logs; 33 MB with the downloads) are under
+`/home/user/gtr/lanes/guitar-tab/gap2/`.
 
 ## Verification log (verify-trials-guitar-tab, 2026-11-10)
 

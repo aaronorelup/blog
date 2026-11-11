@@ -86,6 +86,12 @@ environment probe). demucs-web ran here on the WebAssembly backend only (see `tr
 5. Send back: the stem WAV files, the times, the model names as the page shows them, and a screenshot. They can be
    scored against S4's stems with `gtr-eval stems`.
 
+Added in gap round 2 (2026-11-11): a 6-stem model with a guitar stem has since run on this box's WebAssembly path:
+StemSplit's ONNX export of htdemucs_6s in ONNX Runtime Web 1.31.1 (`trials.md`, "Gap round 2": 29.09 s for a 10 s cut
+of S4 with 2 threads on 2 cores, with graph optimizations turned off; with the default level `all`, and with `basic`,
+session creation stopped with `std::bad_alloc` when the page's process held about 4.38 GB). Its WebGPU path was not
+tried (no adapter here), and the steps above do not use it.
+
 ## 4. Hand landmarks on a GPU (MediaPipe Tasks Vision in Chrome, about 10 minutes, free)
 
 Not run here on a GPU: this box has no GPU; MediaPipe's GPU delegate ran only on the SwiftShader software renderer

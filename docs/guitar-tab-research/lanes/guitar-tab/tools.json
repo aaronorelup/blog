@@ -3694,7 +3694,8 @@
       "unverified": [
         "Whether `fingering_core.js` runs in Node (the author's statement; the file also contains the QML directive `.pragma library`): UNVERIFIED.",
         "Contrast drawn in the README: \"Unlike MuseScore's built-in conversion (StringData::convertPitch, a per-note greedy scan that picks the thinnest string with the lowest fret), this plugin optimizes the whole sequence\".",
-        "A `COPYRIGHT` file names the author and ends \"- FretPath (GPL-3.0)\"."
+        "A `COPYRIGHT` file names the author and ends \"- FretPath (GPL-3.0)\".",
+        "Whether a string-number annotation pins a note in practice: for-aaron.md section 5, step 6 (gap round 2)."
       ]
     },
     {
@@ -4235,6 +4236,53 @@
       "unverified": [
         "mySongBook terms not read.",
         "The `license: other` value is the HF Space card YAML (the survey's table gives it as the checkpoint licence statement); the repository checkpoints' licence beyond the GPL v3 code and ODbL data statements was not further read."
+      ]
+    },
+    {
+      "name": "Tämja hagelbössan / Taming the Shotgun (Ottosson and Ölund Danielsson; Lund University bachelor thesis, 2026)",
+      "kind": "research-model",
+      "what": "Bachelor thesis (Swedish, LU-CS-EX 2026-17): Basic Pitch with its minimum note length lowered from 127.7 ms to 40 ms, rule-based MIDI filters tuned with Optuna on GuitarSet, then a Viterbi string-and-fret step (chords within ±50 ms, one note per string, at most 4 frets apart; cost w_fret·ΔB + w_string·ΔS − p_open·N_open). Added in gap round 2.",
+      "url": "https://lup.lub.lu.se/student-papers/record/9226851",
+      "version": "PDF dated 18 May 2026, added to LUP 2026-05-22",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "NO-CODE-FOUND: no repository, code or data link in the 35-page PDF (URLs only in its references) or on the record page (read 2026-11-11).",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [
+        "audio (a full mix goes through htdemucs_6s first, then a high-pass filter, then Basic Pitch)"
+      ],
+      "outputs": [
+        "tablature from filtered Basic Pitch MIDI (no file format stated)"
+      ],
+      "constraints_accepted": [
+        "none described: six strings, 22 frets, standard tuning assumed (section 3.1); no capo or tuning input"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [
+          {
+            "name": "GuitarSet (parameter tuning and evaluation on the same data, section 7.11)",
+            "license": "v1.1.0 cc-by-4.0",
+            "quote": "Den data som användes för att generera de optimerade parametrarna användes också för att testa resultaten.",
+            "url": "https://lup.lub.lu.se/student-papers/record/9226851/file/9226852.pdf"
+          }
+        ],
+        "service_terms": [
+          {
+            "topic": "access (record page metadata)",
+            "quote": "info:eu-repo/semantics/openAccess",
+            "url": "https://lup.lub.lu.se/student-papers/record/9226851"
+          }
+        ]
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Author-reported (Table 5): solo F1 0.671 (Basic Pitch default 128 ms) vs 0.594 (40 ms baseline); Table 1 after filtering: solo F1 0.72-0.77, comp 0.37-0.53; Table 3 string accuracy: solo 40.69 %, comp 76.34 %.",
+        "No licence is stated in the PDF or on the record."
       ]
     },
     {

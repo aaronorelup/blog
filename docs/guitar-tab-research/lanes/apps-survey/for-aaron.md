@@ -436,7 +436,9 @@ into the phone's own music library, not left in iCloud.
 2. Screenshot the chord chart for each (once with the guitar display), and anything it shows for tempo and key.
 3. Added in gap round 2: no license agreement for the app was found on Yamaha's pages or in its App Store listing. If
    the app shows one (at first start, or under its settings or "About"), screenshot it. Yamaha's page also says
-   "Chord Tracker Android is now available at Google Play.", so this test also works on an Android phone (say which).
+   "Chord Tracker Android is now available at Google Play." Whether the Android version also reads songs stored on the
+   phone was not read (corrected by the verifier, 2026-11-11: this line had said the test "also works on an Android
+   phone"); if you use an Android phone, say which, and whether it found the MP3s.
 
 Send back: screenshots, `notes.txt`.
 
@@ -474,7 +476,9 @@ won't save your edits to chords and beats, export audio, or—on the Mac—expor
 with a paid edition, export MIDI of `S3.mp3` and send it back. (Added in gap round 2: its Mac page says the Tabbing
 view writes tab from notes you draw on the spectrogram, "as you draw, tablature is generated automatically below", and
 that the MIDI export holds "your chord and note entries", so the notes in that MIDI are the ones you entered. If the
-app shows a license agreement anywhere, screenshot it; none was found on the vendor's site.)
+app shows a license agreement anywhere, screenshot it. Corrected by the verifier, 2026-11-11: this line had said none
+was found on the vendor's site; the vendor's Terms of Use Agreement is at https://supermegaultragroovy.com/legal/tou/,
+named at the end of both App Store descriptions, and its clauses are quoted in `survey.md`, Capo.)
 
 ## Optional and paid (decide first; prices as read 2026-11-10)
 
@@ -569,3 +573,14 @@ page lists MIDI export for assistant, editor and studio and polyphonic guitar fo
 systems and prices; save its license text); 15 (MIDI Guitar's price and beta status; save its license text); 17
 (Chord Tracker: a license screen if shown, and its Android version); 18 (Capo's Tabbing view writes tab from notes the
 user draws). Each changed line says "gap round 2"; the sources are in `survey.md`.
+
+
+## Verification log (verify-gapfill-apps-survey, round 2, 2026-11-11)
+
+The gap round's changes to this file were checked against the vendor pages (details in `trials.md`, last section).
+Changed: test 17 (it said the test "also works on an Android phone"; whether the Android version reads songs stored on
+the phone was not read) and test 18 (it said no license agreement was found on the vendor's site; Capo's Terms of Use
+Agreement is at https://supermegaultragroovy.com/legal/tou/, named at the end of both App Store descriptions).
+Confirmed: the two URLs of 8a (both are the ones Chordify's App Store listing names; the terms URL answered HTTP 403 to
+the gap round's curl on 2026-11-11), the quotes of 8b and its "Go Premium" page (a link to `/gopremium` on ChordU's
+terms page), and the quotes added to 11, 12, 15, 17 and 18.

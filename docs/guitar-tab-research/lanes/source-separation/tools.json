@@ -1187,6 +1187,117 @@
       "load_track_shape": "(2, 1708495) float32",
       "result": "int16, int24 and float32 requests each wrote 176,478 bytes with WAV format tag 1 (PCM) and 16 bits, read back as PCM_16"
      }
+    },
+    {
+     "run_id": "r0659",
+     "input_id": "R2full",
+     "cores": 4,
+     "wall_s": 263.9,
+     "peak_mb": 1776.6,
+     "exit_code": 0,
+     "output_files": [
+      "drums.wav",
+      "bass.wav",
+      "other.wav",
+      "vocals.wav"
+     ],
+     "metrics": {
+      "model": "htdemucs",
+      "cpu_s": 684.6,
+      "load1_start": 0.98,
+      "all_cores": true,
+      "stem_sum_residual_db": -25.74,
+      "frames_per_stem": 10076073,
+      "stem_rms_dbfs": {
+       "vocals": -15.8,
+       "other": -18.64,
+       "bass": -21.25,
+       "drums": -24.61
+      },
+      "note": "audio deleted after the facts were taken (gap round 2)"
+     }
+    },
+    {
+     "run_id": "r0660",
+     "input_id": "R2full",
+     "cores": 4,
+     "wall_s": 109.55,
+     "peak_mb": 2176.1,
+     "exit_code": 0,
+     "output_files": [
+      "drums.wav",
+      "bass.wav",
+      "other.wav",
+      "vocals.wav",
+      "guitar.wav",
+      "piano.wav"
+     ],
+     "metrics": {
+      "model": "htdemucs_6s",
+      "cpu_s": 334.0,
+      "load1_start": 6.22,
+      "all_cores": true,
+      "stem_sum_residual_db": -22.01,
+      "frames_per_stem": 10076073,
+      "stem_rms_dbfs": {
+       "vocals": -15.76,
+       "guitar": -19.2,
+       "bass": -20.93,
+       "drums": -25.08,
+       "other": -46.49,
+       "piano": -49.95
+      },
+      "note": "audio deleted after the facts were taken (gap round 2)"
+     }
+    },
+    {
+     "run_id": "r0669",
+     "input_id": "R2full",
+     "cores": 4,
+     "wall_s": 363.56,
+     "peak_mb": 1740.2,
+     "exit_code": 0,
+     "output_files": [
+      "drums.wav",
+      "bass.wav",
+      "other.wav",
+      "vocals.wav"
+     ],
+     "metrics": {
+      "model": "htdemucs",
+      "cpu_s": 819.0,
+      "load1_start": 2.63,
+      "all_cores": true,
+      "other_processes_cpu_s": 622.0,
+      "box_busy_cpu_s": 1438.1,
+      "sampled_s": 368.8,
+      "mean_load1": 6.5,
+      "note": "repeat of r0659 with scripts/gap2_box_sampler.py; audio deleted (gap round 2)"
+     }
+    },
+    {
+     "run_id": "r0677",
+     "input_id": "R2full",
+     "cores": 2,
+     "wall_s": 277.63,
+     "peak_mb": 1763.8,
+     "exit_code": 0,
+     "output_files": [
+      "drums.wav",
+      "bass.wav",
+      "other.wav",
+      "vocals.wav"
+     ],
+     "metrics": {
+      "model": "htdemucs",
+      "cpu_s": 356.8,
+      "load1_start": 5.25,
+      "other_processes_cpu_s": 723.5,
+      "box_busy_cpu_s": 1079.1,
+      "sampled_s": 284.6,
+      "mean_load1": 6.26,
+      "note": "2-core run in the same session as r0669, with scripts/gap2_box_sampler.py; audio deleted (gap round 2)"
+     }
     }
    ],
    "not_run_reason": null,
@@ -2007,7 +2118,8 @@
       "projection_true_lead": {
        "vocals": 0.169,
        "instrumental": 0.808
-      }
+      },
+      "cores_note": "not a 2-core figure (corrected in gap round 2): ONNX Runtime's thread count is not set, and with that default the re-runs r0610 / r0615 had ORT worker threads pinned to CPUs 1, 2 and 3 while the job's slot was CPUs 0-1"
      }
     },
     {
@@ -2040,7 +2152,8 @@
         "sar_db": 15.8
        }
       },
-      "stem_sum_residual_db": -13.39
+      "stem_sum_residual_db": -13.39,
+      "cores_note": "not a 2-core figure (corrected in gap round 2): ONNX Runtime's thread count is not set, and with that default the re-runs r0610 / r0615 had ORT worker threads pinned to CPUs 1, 2 and 3 while the job's slot was CPUs 0-1"
      }
     },
     {
@@ -2219,6 +2332,60 @@
       "stem_sum_residual_db": -72.07,
       "extrapolation_to_228_5s_song_s": 3895,
       "extrapolation_note": "extrapolation, not a measurement"
+     }
+    },
+    {
+     "run_id": "r0615",
+     "input_id": "S4",
+     "cores": 2,
+     "wall_s": 85.76,
+     "peak_mb": 3166.0,
+     "exit_code": 0,
+     "output_files": [
+      "instrumental.wav",
+      "vocals.wav"
+     ],
+     "metrics": {
+      "model": "MDX-Net: UVR-MDX-NET-Inst_HQ_3.onnx",
+      "cpu_s": 142.58,
+      "load1_start": 6.63,
+      "ort_intra_op_threads": "default (not set)",
+      "slot_cpus": "0-1",
+      "max_threads_at_once": 15,
+      "cpu_s_by_thread_allowed_cpus": {
+       "0-1": 56.92,
+       "1": 28.34,
+       "2": 28.19,
+       "3": 27.87
+      },
+      "cores_note": "not a 2-core figure (corrected in gap round 2): ONNX Runtime's thread count is not set, and with that default the re-runs r0610 / r0615 had ORT worker threads pinned to CPUs 1, 2 and 3 while the job's slot was CPUs 0-1",
+      "rerun_of": "r0487",
+      "note": "stems sample-identical to r0487's (scores e1422); probe samples/gap2-ort/probe_mdx-default_S4.json"
+     }
+    },
+    {
+     "run_id": "r0619",
+     "input_id": "S4",
+     "cores": 2,
+     "wall_s": 66.38,
+     "peak_mb": 3166.6,
+     "exit_code": 0,
+     "output_files": [
+      "instrumental.wav",
+      "vocals.wav"
+     ],
+     "metrics": {
+      "model": "MDX-Net: UVR-MDX-NET-Inst_HQ_3.onnx",
+      "cpu_s": 93.76,
+      "load1_start": 6.13,
+      "ort_intra_op_threads": 2,
+      "slot_cpus": "0-1",
+      "max_threads_at_once": 13,
+      "cpu_s_by_thread_allowed_cpus": {
+       "0-1": 92.6
+      },
+      "how": "scripts/gap2_ort_threads.py sets sess_options.intra_op_num_threads = 2",
+      "note": "stems sample-identical to r0487's (scores e1422); probe samples/gap2-ort/probe_mdx-ort2_S4.json"
      }
     }
    ],
@@ -3108,10 +3275,207 @@
    "what": "htdemucs_6s fine-tuned for guitar (GUITAR_STEM_INDEX = 4); checkpoint guitar_htdemucs_6s.pt 329,654,071 bytes.",
    "url": "https://huggingface.co/adityalakhani/htdemucs-6s-guitar-ft",
    "version": "Hugging Face repo, created 2026-07-19",
-   "tried": false,
-   "tried_how": null,
-   "runs": [],
-   "not_run_reason": "checkpoint is 330 MB, over the box's 200 MB download limit during the disk notice (trials.md)",
+   "tried": true,
+   "tried_how": "local-cpu",
+   "runs": [
+    {
+     "run_id": "r0636",
+     "input_id": "S4",
+     "cores": 2,
+     "wall_s": 25.98,
+     "peak_mb": 1606.5,
+     "exit_code": 0,
+     "output_files": [
+      "drums.wav",
+      "bass.wav",
+      "other.wav",
+      "vocals.wav",
+      "guitar.wav",
+      "piano.wav"
+     ],
+     "metrics": {
+      "cpu_s": 44.8,
+      "load1_start": 1.48,
+      "how": "scripts/gap2_guitar_ft.py: the steps of the repository's inference.py (read, not run) with demucs 4.1.0; shifts 1, overlap 0.25, segment 7.8, seed 0, no input normalisation, clamp to [-1, 1], PCM_24",
+      "eval_id": "e1831",
+      "scores": {
+       "drums": {
+        "si_sdr_db": 7.98,
+        "sdr_db": 8.58,
+        "sir_db": 22.44,
+        "sar_db": 8.79
+       },
+       "bass": {
+        "si_sdr_db": 7.85,
+        "sdr_db": 9.02,
+        "sir_db": 20.95,
+        "sar_db": 9.35
+       },
+       "guitar": {
+        "si_sdr_db": 6.1,
+        "sdr_db": 6.35,
+        "sir_db": 10.43,
+        "sar_db": 8.87
+       },
+       "lead": {
+        "si_sdr_db": 7.85,
+        "sdr_db": 8.31,
+        "sir_db": 14.22,
+        "sar_db": 9.76
+       }
+      },
+      "score_map": "drums=drums, bass=bass, guitar=guitar, lead=vocals",
+      "stem_sum_residual_db": -11.13,
+      "projection_true_guitar": {
+       "guitar": 0.898
+      },
+      "guitar_stem_also_holds": {
+       "true_bass": 0.121,
+       "true_drums": 0.147,
+       "true_lead": 0.161
+      },
+      "control_stock_htdemucs_6s_same_script": {
+       "run_id": "r0638",
+       "eval_id": "e1832",
+       "guitar": {
+        "si_sdr_db": 1.73,
+        "sdr_db": 3.4,
+        "sir_db": 14.65,
+        "sar_db": 3.89
+       },
+       "projection_true_guitar": {
+        "guitar": 0.345,
+        "piano": 0.218
+       }
+      }
+     }
+    },
+    {
+     "run_id": "r0637",
+     "input_id": "R2",
+     "cores": 2,
+     "wall_s": 31.66,
+     "peak_mb": 1644.9,
+     "exit_code": 0,
+     "output_files": [
+      "drums.wav",
+      "bass.wav",
+      "other.wav",
+      "vocals.wav",
+      "guitar.wav",
+      "piano.wav"
+     ],
+     "metrics": {
+      "cpu_s": 48.8,
+      "load1_start": 2.38,
+      "how": "scripts/gap2_guitar_ft.py: the steps of the repository's inference.py (read, not run) with demucs 4.1.0; shifts 1, overlap 0.25, segment 7.8, seed 0, no input normalisation, clamp to [-1, 1], PCM_24",
+      "eval_id": "e1835",
+      "scores": {
+       "instrumental": {
+        "si_sdr_db": 6.78,
+        "sdr_db": 7.75,
+        "sir_db": 19.39,
+        "sar_db": 8.11
+       },
+       "vocals": {
+        "si_sdr_db": 13.21,
+        "sdr_db": 13.54,
+        "sir_db": 18.85,
+        "sar_db": 15.11
+       }
+      },
+      "score_map": "instrumental=drums+bass+other+guitar+piano, vocals_derived=vocals",
+      "stem_sum_residual_db": -12.44,
+      "vocals_samples_at_full_scale": 40
+     }
+    },
+    {
+     "run_id": "r0640",
+     "input_id": "S6taps",
+     "cores": 2,
+     "wall_s": 22.45,
+     "peak_mb": 1566.9,
+     "exit_code": 0,
+     "output_files": [
+      "drums.wav",
+      "bass.wav",
+      "other.wav",
+      "vocals.wav",
+      "guitar.wav",
+      "piano.wav"
+     ],
+     "metrics": {
+      "cpu_s": 39.2,
+      "load1_start": 4.28,
+      "how": "scripts/gap2_guitar_ft.py: the steps of the repository's inference.py (read, not run) with demucs 4.1.0; shifts 1, overlap 0.25, segment 7.8, seed 0, no input normalisation, clamp to [-1, 1], PCM_24",
+      "eval_id": "e1833",
+      "scores": {
+       "guitar": {
+        "si_sdr_db": 3.02,
+        "sdr_db": 4.07,
+        "sir_db": 17.7,
+        "sar_db": 4.33
+       },
+       "taps": {
+        "si_sdr_db": 2.91,
+        "sdr_db": 11.22,
+        "sir_db": 24.92,
+        "sar_db": 11.42
+       }
+      },
+      "score_map": "guitar=guitar, taps=drums",
+      "stem_sum_residual_db": -8.4,
+      "control_stock_htdemucs_6s_same_script": {
+       "run_id": "r0644",
+       "eval_id": "e1834",
+       "guitar": {
+        "si_sdr_db": -7.75,
+        "sdr_db": 0.34,
+        "sir_db": 29.56,
+        "sar_db": 0.35
+       },
+       "taps": {
+        "si_sdr_db": 7.17,
+        "sdr_db": 10.58,
+        "sir_db": 25.57,
+        "sar_db": 10.73
+       }
+      }
+     }
+    },
+    {
+     "run_id": "r0642",
+     "input_id": "S2s",
+     "cores": 2,
+     "wall_s": 22.28,
+     "peak_mb": 1576.6,
+     "exit_code": 0,
+     "output_files": [
+      "drums.wav",
+      "bass.wav",
+      "other.wav",
+      "vocals.wav",
+      "guitar.wav",
+      "piano.wav"
+     ],
+     "metrics": {
+      "cpu_s": 39.0,
+      "load1_start": 3.97,
+      "how": "scripts/gap2_guitar_ft.py: the steps of the repository's inference.py (read, not run) with demucs 4.1.0; shifts 1, overlap 0.25, segment 7.8, seed 0, no input normalisation, clamp to [-1, 1], PCM_24",
+      "stem_sum_residual_db": -5.7,
+      "stem_rms_dbfs": {
+       "piano": -24.55,
+       "guitar": -36.63,
+       "bass": -52.44,
+       "other": -55.54,
+       "vocals": -59.18,
+       "drums": -60.49
+      },
+      "mix_rms_dbfs": -18.23
+     }
+    }
+   ],
+   "not_run_reason": null,
    "for_aaron": true,
    "callable_via": [
     "cli",
@@ -3121,10 +3485,13 @@
     "audio read with soundfile"
    ],
    "outputs": [
-    "guitar stem only (soundfile write)"
+    "six sources drums, bass, other, vocals, guitar, piano (the repository's inference.py writes only source 4, guitar), 44.1 kHz stereo; written here as PCM_24 like that script"
    ],
    "constraints_accepted": [
-    "--device auto|cuda|cpu"
+    "--checkpoint",
+    "--device auto|cuda|cpu",
+    "--shifts",
+    "--overlap"
    ],
    "license": {
     "code": null,
@@ -3148,8 +3515,8 @@
    "unverified": [
     "Card evaluation (author's numbers, Hub model-index marks them verified: false): guitar SDR 8.73 dB for this model vs 8.42 for stock htdemucs_6s on a 24-track held-out split of MoisesDB v0.1",
     "requirements.txt pins demucs==4.0.1 (trials.md: the writer of 4.0.1 needs torchcodec with torchaudio 2.11 and gives 16-bit files for --float32 and --int24)",
-    "Steps for Aaron in for-aaron.md item 5; may also work on CPU (--device cpu, not tried)",
-    "The card's claim that the base htdemucs_6s weights are MIT conflicts with the Demucs maintainer's statement that the weights' license is not clear"
+    "The card's claim that the base htdemucs_6s weights are MIT conflicts with the Demucs maintainer's statement that the weights' license is not clear",
+    "Run here through scripts/gap2_guitar_ft.py with demucs 4.1.0, not through the repository's own inference.py (pinned demucs 4.0.1); checkpoint = training snapshot, epoch 60, val_sdr_db 6.0798"
    ]
   },
   {
@@ -3506,16 +3873,17 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "Smallest checkpoint is 552 MB, above the 200 MB download notice, before the PaSST query encoder it also needs; the repository has no requirements.txt, environment.yml, setup.py or pyproject.toml (trials.md)",
+   "not_run_reason": "Gap round 2 (corrected; the disk notice is no longer the reason): running the README's 'python train.py inference_byoq' from the cloned repository was refused by the session's permission system, 'Reason: [Code from External]', 2026-11-11 00:33 UTC; no weights downloaded (smallest checkpoint 551,785,899 bytes; PaSST openmic weights 341,546,630 bytes)",
    "for_aaron": true,
    "callable_via": [
     "cli"
    ],
    "inputs": [
-    "mixture audio file plus a query clip (loaded with torchaudio, resampled to 44.1 kHz; query cut or tiled to 10 s: 'Only 10s queries are supported at the moment.'; PaSST gets the query downmixed to mono at 32 kHz)"
+    "mixture audio file (torchaudio.load), resampled to 44.1 kHz",
+    "query audio file (torchaudio.load), resampled to 44.1 kHz and cut or tiled to exactly 10 s; inside the model its channels are averaged to mono (torch.mean(qaudio, dim=1)), resampled to 32 kHz, and PaSST (get_basic_model(mode='embed_only', arch='openmic')) turns it into one 768-number embedding that conditions the separator through FiLM (read from the code, head 79ed5bb; not run)"
    ],
    "outputs": [
-    "one stem estimate per call of the same stem type as the query, resampled back to the mixture's rate, written with ta.save to --output_path"
+    "one waveform per call: the estimate of the stem that sounds like the query, with the mixture's channels and length (chunks of 6.0 s, hop 0.5 s, Hann-window overlap-add, trimmed to the mixture length), resampled back to the mixture's rate, written with ta.save(output_path, estimate, fsm)"
    ],
    "constraints_accepted": [
     "--ckpt_path",
@@ -3564,7 +3932,8 @@
     "Whether the whole path runs on a CPU was not tried (UNVERIFIED); the README's example passes --use_cuda=true",
     "Steps for Aaron in for-aaron.md item 3 (query S3.wav, mixture S4.wav and R2.wav)",
     "The README's quoted sentence about permissive licenses sits next to weights whose Zenodo record says cc-by-nc-sa-4.0",
-    "Author measurement (abstract v1 wording): approached the performance level of the 6-stem Hybrid Transformer Demucs on VDBO stems and outperformed it on guitar and piano on MoisesDB"
+    "Author measurement (abstract v1 wording): approached the performance level of the 6-stem Hybrid Transformer Demucs on VDBO stems and outperformed it on guitar and piano on MoisesDB",
+    "Not run here: running the clone's train.py was refused by the permission system (gap round 2)"
    ]
   },
   {
@@ -3576,7 +3945,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "Its two checkpoint files are 1.26 GB and 2.35 GB (3.6 GB together) and the disk notice on the box forbids downloads over 200 MB; whether a 10 s CPU run is feasible was not measured (UNVERIFIED)",
+   "not_run_reason": "Gap round 2 (corrected; the 200 MB notice is no longer the reason): with 7,403 MB free at 2026-11-11 00:42 UTC the 3,617,315,079 bytes of checkpoints would have left about 3,950 MB, under the 4 GB of free disk that round had to keep; nothing downloaded. Its route also runs a cloned repository's code (from pipeline import ...), which the permission system refused for Gaborformer and Banquet in the same round; not attempted for AudioSep. Whether a 10 s CPU run is feasible is still UNVERIFIED",
    "for_aaron": true,
    "callable_via": [
     "python",
@@ -3661,7 +4030,8 @@
     "No weights license sentence was found in the GitHub README; no access gate was met",
     "Output should be one mono file at 32 kHz; for-aaron.md asks Aaron to say if it is something else",
     "Also hosted at Replicate cjwbw/audiosep (hosted-apis lane)",
-    "Author measurement (v3 PDF abstract): SDRi of 7.74 dB across 527 AudioSet sound classes; 10.51 dB on the MUSIC dataset"
+    "Author measurement (v3 PDF abstract): SDRi of 7.74 dB across 527 AudioSet sound classes; 10.51 dB on the MUSIC dataset",
+    "README imports 'inference' from pipeline, but pipeline.py (head 944583f) defines separate_audio(model, audio_file, text, output_file, device='cuda', use_chunk=False) and no 'inference' (read in gap round 2, not run)"
    ]
   },
   {
@@ -4256,8 +4626,8 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "Not run here (survey.md; docs say CPU inference is supported)",
-   "for_aaron": false,
+   "not_run_reason": "No PyPI package (pypi.org/pypi/gaborformer/json: HTTP 404); installing the cloned repository (uv pip install <clone>) was refused by the session's permission system: 'Reason: [Code from External]', 2026-11-11 00:21 UTC; weights not downloaded (gap round 2 (trials.md, \"Gap round 2\"))",
+   "for_aaron": true,
    "callable_via": [
     "cli"
    ],
@@ -4265,12 +4635,18 @@
     "audio resampled to 44.1 kHz automatically; M4A/AAC requires system FFmpeg"
    ],
    "outputs": [
-    "separated/<song>/ with four stem WAVs"
+    "<out>/<input name>/{vocals,drums,bass,other}.wav, 44.1 kHz stereo, 32-bit float (sf.write(..., 44100, subtype='FLOAT'))"
    ],
    "constraints_accepted": [
     "--cpu",
-    "--batch-size 1",
-    "--out"
+    "--batch-size",
+    "--out",
+    "--weights",
+    "--offline",
+    "--revision",
+    "--precision bf16|fp16|fp32",
+    "--overlap (default 0.5)",
+    "--compile"
    ],
    "license": {
     "code": {
@@ -4296,9 +4672,10 @@
    "pricing": null,
    "handoffs_out": [],
    "unverified": [
-    "Not run here",
     "Card: 'Gaborformer was developed with substantial AI coding assistance'",
-    "Author measurement (card abstract): 11.46 dB average cSDR on the 50-track test set of MUSDB18-HQ"
+    "Author measurement (card abstract): 11.46 dB average cSDR on the 50-track test set of MUSDB18-HQ",
+    "separate.py: 'on the CPU the model runs in fp32' (read, not run)",
+    "Not run here: install of the clone refused (gap round 2); steps in for-aaron.md item 8"
    ]
   },
   {
@@ -4679,7 +5056,8 @@
       },
       "guitar_vs_pytorch_r0021_difference_db": -12.41,
       "pytorch_run_r0021_peak_mb": 1349.6,
-      "chunks": "7 x 343,980 samples (7.8 s)"
+      "chunks": "7 x 343,980 samples (7.8 s)",
+      "cores_note": "not a 2-core figure (corrected in gap round 2): ONNX Runtime's thread count is not set, and with that default the re-runs r0610 / r0615 had ORT worker threads pinned to CPUs 1, 2 and 3 while the job's slot was CPUs 0-1"
      }
     },
     {
@@ -4701,7 +5079,68 @@
       "cpu_s": 109.1,
       "load1_start": 3.33,
       "verifier_rerun_of": "r0471",
-      "note": "all six stems sample-identical to r0471's; re-scoring e1577 equals e1417"
+      "note": "all six stems sample-identical to r0471's; re-scoring e1577 equals e1417",
+      "cores_note": "not a 2-core figure (corrected in gap round 2): ONNX Runtime's thread count is not set, and with that default the re-runs r0610 / r0615 had ORT worker threads pinned to CPUs 1, 2 and 3 while the job's slot was CPUs 0-1"
+     }
+    },
+    {
+     "run_id": "r0610",
+     "input_id": "S4",
+     "cores": 2,
+     "wall_s": 57.8,
+     "peak_mb": 8051.0,
+     "exit_code": 0,
+     "output_files": [
+      "bass.wav",
+      "drums.wav",
+      "guitar.wav",
+      "other.wav",
+      "piano.wav",
+      "vocals.wav"
+     ],
+     "metrics": {
+      "cpu_s": 98.95,
+      "load1_start": 3.16,
+      "ort_intra_op_threads": "default (not set)",
+      "slot_cpus": "0-1",
+      "max_threads_at_once": 7,
+      "cpu_s_by_thread_allowed_cpus": {
+       "0-1": 31.87,
+       "1": 22.74,
+       "2": 21.99,
+       "3": 21.76
+      },
+      "cores_note": "not a 2-core figure (corrected in gap round 2): ONNX Runtime's thread count is not set, and with that default the re-runs r0610 / r0615 had ORT worker threads pinned to CPUs 1, 2 and 3 while the job's slot was CPUs 0-1",
+      "rerun_of": "r0471",
+      "note": "stems sample-identical to r0471's (scores e1417); probe samples/gap2-ort/probe_onnx-default_S4.json"
+     }
+    },
+    {
+     "run_id": "r0612",
+     "input_id": "S4",
+     "cores": 2,
+     "wall_s": 61.33,
+     "peak_mb": 6203.9,
+     "exit_code": 0,
+     "output_files": [
+      "bass.wav",
+      "drums.wav",
+      "guitar.wav",
+      "other.wav",
+      "piano.wav",
+      "vocals.wav"
+     ],
+     "metrics": {
+      "cpu_s": 71.12,
+      "load1_start": 5.97,
+      "ort_intra_op_threads": 2,
+      "slot_cpus": "0-1",
+      "max_threads_at_once": 5,
+      "cpu_s_by_thread_allowed_cpus": {
+       "0-1": 70.49
+      },
+      "how": "scripts/gap2_ort_threads.py sets sess_options.intra_op_num_threads = 2",
+      "note": "stems sample-identical to r0471's (scores e1417); probe samples/gap2-ort/probe_onnx-ort2_S4.json"
      }
     }
    ],
@@ -4720,13 +5159,14 @@
     "one wav per stem: bass, drums, guitar, other, piano, vocals; 44,100 Hz, 2 channels, PCM_16, same length as the input"
    ],
    "constraints_accepted": [
+    "--karaoke",
+    "--mix-stems",
     "--model",
-    "--stem / --stems",
+    "--mp3",
     "--precision fp32|fp16weights (--small)",
     "--providers auto|cpu|coreml|cuda|dml|wasm",
-    "--mix-stems",
-    "--karaoke",
-    "--mp3"
+    "--stem / --stems",
+    "ONNX Runtime intra_op_num_threads (not exposed by the CLI; set here by wrapping onnxruntime.InferenceSession)"
    ],
    "license": {
     "code": {
@@ -5128,7 +5568,8 @@
       "projection_true_lead": {
        "vocals": 0.169,
        "instrumental": 0.808
-      }
+      },
+      "cores_note": "not a 2-core figure (corrected in gap round 2): ONNX Runtime's thread count is not set, and with that default the re-runs r0610 / r0615 had ORT worker threads pinned to CPUs 1, 2 and 3 while the job's slot was CPUs 0-1"
      }
     },
     {
@@ -5161,7 +5602,62 @@
         "sar_db": 15.8
        }
       },
-      "stem_sum_residual_db": -13.39
+      "stem_sum_residual_db": -13.39,
+      "cores_note": "not a 2-core figure (corrected in gap round 2): ONNX Runtime's thread count is not set, and with that default the re-runs r0610 / r0615 had ORT worker threads pinned to CPUs 1, 2 and 3 while the job's slot was CPUs 0-1"
+     }
+    },
+    {
+     "run_id": "r0615",
+     "input_id": "S4",
+     "cores": 2,
+     "wall_s": 85.76,
+     "peak_mb": 3166.0,
+     "exit_code": 0,
+     "output_files": [
+      "instrumental.wav",
+      "vocals.wav"
+     ],
+     "metrics": {
+      "model": "MDX-Net: UVR-MDX-NET-Inst_HQ_3.onnx",
+      "cpu_s": 142.58,
+      "load1_start": 6.63,
+      "ort_intra_op_threads": "default (not set)",
+      "slot_cpus": "0-1",
+      "max_threads_at_once": 15,
+      "cpu_s_by_thread_allowed_cpus": {
+       "0-1": 56.92,
+       "1": 28.34,
+       "2": 28.19,
+       "3": 27.87
+      },
+      "cores_note": "not a 2-core figure (corrected in gap round 2): ONNX Runtime's thread count is not set, and with that default the re-runs r0610 / r0615 had ORT worker threads pinned to CPUs 1, 2 and 3 while the job's slot was CPUs 0-1",
+      "rerun_of": "r0487",
+      "note": "stems sample-identical to r0487's (scores e1422); probe samples/gap2-ort/probe_mdx-default_S4.json"
+     }
+    },
+    {
+     "run_id": "r0619",
+     "input_id": "S4",
+     "cores": 2,
+     "wall_s": 66.38,
+     "peak_mb": 3166.6,
+     "exit_code": 0,
+     "output_files": [
+      "instrumental.wav",
+      "vocals.wav"
+     ],
+     "metrics": {
+      "model": "MDX-Net: UVR-MDX-NET-Inst_HQ_3.onnx",
+      "cpu_s": 93.76,
+      "load1_start": 6.13,
+      "ort_intra_op_threads": 2,
+      "slot_cpus": "0-1",
+      "max_threads_at_once": 13,
+      "cpu_s_by_thread_allowed_cpus": {
+       "0-1": 92.6
+      },
+      "how": "scripts/gap2_ort_threads.py sets sess_options.intra_op_num_threads = 2",
+      "note": "stems sample-identical to r0487's (scores e1422); probe samples/gap2-ort/probe_mdx-ort2_S4.json"
      }
     }
    ],

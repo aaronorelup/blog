@@ -618,6 +618,37 @@
             "playerFinished_ms_after_play": 27961.5,
             "offline_export": "byte-identical to r0128's WAV (240.4 ms of page time)"
           }
+        },
+        {
+          "run_id": "r0624",
+          "input_id": "S2n",
+          "cores": 2,
+          "wall_s": 1.1,
+          "peak_mb": 138.8,
+          "exit_code": 0,
+          "output_files": [
+            "samples/alphatab/gap2_S2n.string_edit.json",
+            "samples/alphatab/gap2_S2n.string_edit.edited.gp",
+            "samples/alphatab/gap2_S2n.string_edit.edited.webp"
+          ],
+          "metrics": {
+            "cpu_s": 0.8,
+            "mode": "data-model edit in headless Chromium (scripts/alphatab_model_string_edit.cjs)",
+            "model_edit": "melody bar 1 note 2: Note.string 4 -> 3 (alphaTab counts from the lowest string; 3 -> 4 from the top), Note.fret 0 -> 5, realValue 55 kept; api.render(); GP7 4,981 bytes"
+          }
+        },
+        {
+          "run_id": "r0627",
+          "input_id": "S2n",
+          "cores": 2,
+          "wall_s": 0.27,
+          "peak_mb": 85.7,
+          "exit_code": 0,
+          "output_files": [],
+          "metrics": {
+            "mode": "read back the r0624 .gp under Node (and the Verovio-edited MEI of r0626)",
+            "tab": "90/90 matched, 89/90 same string and fret, string difference +1 for one note (e1826)"
+          }
         }
       ],
       "not_run_reason": null,
@@ -777,18 +808,121 @@
         "the sound itself was never listened to (for-aaron.md item 7)",
         "no point-and-click tab editor in the npm package; the unpublished @coderline/alphatab-ui was not run",
         "authors' measurements: none found in the pages read"
-      ]
+      ],
+      "string_fret_change": {
+        "fret": "b",
+        "string": "b",
+        "runs": [
+          "r0132",
+          "r0624",
+          "r0134"
+        ],
+        "how": "Note.fret and Note.string set in the data model, then api.render(); no editing UI in the package; a click gave beatMouseDown only",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "@coderline/alphatab-monaco and @coderline/alphatab-language-server",
       "kind": "library",
       "what": "alphaTex editing in the Monaco editor (experimental) (README of alphatab-monaco); alphaTex language server with completion, hover docs and formatting, plus a TextMate grammar.",
       "url": "https://github.com/CoderLine/alphaTab",
-      "version": "1.9.0 (npm, 2026-10-31)",
-      "tried": false,
-      "tried_how": null,
-      "runs": [],
-      "not_run_reason": "listed RUNNABLE in survey.md; not tried for lack of time (trials.md, section \"Not run here\")",
+      "version": "1.9.0 (npm, 2026-10-31), with monaco-editor 0.57.0 and @coderline/alphatab-language-server 1.9.0",
+      "tried": true,
+      "tried_how": "browser-headless",
+      "runs": [
+        {
+          "run_id": "r0604",
+          "input_id": null,
+          "cores": 2,
+          "wall_s": 1.25,
+          "peak_mb": 384.6,
+          "exit_code": 0,
+          "output_files": [
+            "/home/user/gtr/lanes/web-tab-render/web/bundles/alphatab-monaco/ (outside git)",
+            "samples/alphatab-monaco/build.run.log"
+          ],
+          "metrics": {
+            "cpu_s": 1.7,
+            "slot_wait_s": 15.6,
+            "mode": "esbuild 0.25.12 bundles (scripts/build_alphatab_monaco.sh)",
+            "bundle_bytes": {
+              "editor.js": 6287979,
+              "editor.css": 175371,
+              "codicon-LTRFOK3N.ttf": 153228,
+              "editor.worker.js": 307296,
+              "alphatex-lsp.worker.js": 1599875
+            },
+            "install": "npm install --no-audit --no-fund --ignore-scripts @coderline/alphatab-monaco@1.9.0: 14 packages, 9 s, 125 MB node_modules (monaco-editor 105 MB)"
+          }
+        },
+        {
+          "run_id": "r0614",
+          "input_id": "S2n",
+          "cores": 2,
+          "wall_s": 12.84,
+          "peak_mb": 144.8,
+          "exit_code": 0,
+          "output_files": [
+            "samples/alphatab-monaco/alphatab_monaco_edit.json",
+            "samples/alphatab-monaco/S2n.monaco_edited.gp",
+            "samples/alphatab-monaco/S2n.monaco_edited.editor.atex",
+            "samples/alphatab-monaco/S2n.monaco_edited.export.atex",
+            "samples/alphatab-monaco/S2n.monaco_capo2.gp",
+            "samples/alphatab-monaco/S2n.monaco_capo2.editor.atex",
+            "samples/alphatab-monaco/*.webp"
+          ],
+          "metrics": {
+            "cpu_s": 1.1,
+            "slot_wait_s": 64.1,
+            "mode": "headless Chromium page scripts/pages/alphatab_monaco.html: Monaco with the alphaTex grammar and language server; alphaTab 1.9.0 api.tex() 250 ms after the last edit; driver scripts/alphatab_monaco_edit.cjs (mouse double-clicks and typing)",
+            "input_file": "S2n truth alphaTex (samples/alphatab/S2n.truth.atex)",
+            "page_ms": {
+              "grammar_registered": 84.6,
+              "language_server_initialised_in": 327.6,
+              "first_score_drawn": 656.0
+            },
+            "fret_edit": "double-click the fret digit of melody bar 1 note 1, type 2: 0.3.4 -> 2.3.4; drawn string 3 fret 2 pitch 57",
+            "string_edit": "double-click the fret digit of note 2, type 5; double-click its string digit, type 4: 0.3.4 -> 5.4.4; drawn string 4 fret 5 pitch 55",
+            "string_7": "language-server marker severity 8, code AT208, \"Note string is out of range. Available range: 1-6\"; alphaTab error event, previous score kept; Control+Z restored the text",
+            "capo_edit": "new line \\capo 2 typed; the suggestion list showed \"\\capo, Set the capo fret, Function\" first; capo 2 drawn",
+            "two_notes_on_one_string": "after the string edit the moved G3 and the bass voice open D3 sound together on string 4 (2.678571 s); no diagnostic; both kept in the .gp export"
+          }
+        },
+        {
+          "run_id": "r0618",
+          "input_id": "S2n",
+          "cores": 2,
+          "wall_s": 0.77,
+          "peak_mb": 85.2,
+          "exit_code": 0,
+          "output_files": [
+            "samples/alphatab-monaco/S2n.monaco_edited.gp.est.json",
+            "samples/alphatab-monaco/S2n.monaco_capo2.gp.est.json"
+          ],
+          "metrics": {
+            "slot_wait_s": 36.8,
+            "mode": "read back the exports with alphaTab 1.9.0 under Node (scripts/alphatab_node_model.cjs)",
+            "tab_edited_gp": "89/90 matched, 88/89 same string and fret, string difference +1 for one note (e1780)",
+            "tab_edited_editor_alphatex": "same numbers (e1782)",
+            "tab_capo_gp_vs_S5capo2": "89/90 matched, 88/89, capo 2 stated and equal to the truth (e1784)"
+          }
+        },
+        {
+          "run_id": "r0663",
+          "input_id": "S2n",
+          "cores": 2,
+          "wall_s": 12.26,
+          "peak_mb": 145.6,
+          "exit_code": 0,
+          "output_files": [],
+          "metrics": {
+            "cpu_s": 1.2,
+            "slot_wait_s": 120.1,
+            "note": "re-run of r0614 after node_modules was trimmed to vscode-oniguruma (page served from the bundles): the six exported and editor files byte-identical to r0614, the same notes and markers at every step; language server initialised in 180.0 ms, first score drawn at 448.9 ms"
+          }
+        }
+      ],
+      "not_run_reason": null,
       "for_aaron": false,
       "callable_via": [
         "js-browser"
@@ -797,14 +931,21 @@
         "alphaTex"
       ],
       "outputs": [
-        "alphaTex text edited in the Monaco editor"
+        "alphaTex text edited in the Monaco editor (the editor model)",
+        "Monaco markers from the alphaTex language server (severity, code, message, range)",
+        "completion items, hover and signature help from the language server",
+        "whatever the application exports from alphaTab after the edit (here Guitar Pro 7 .gp and alphaTex)"
       ],
-      "constraints_accepted": [],
+      "constraints_accepted": [
+        "per-note fret and string typed as alphaTex fret.string (string 1 = highest)",
+        "\\capo and \\tuning lines typed in the text",
+        "a string outside the staff (7 on a 6-string staff) refused with AT208"
+      ],
       "license": {
         "code": {
           "spdx": "MPL-2.0",
-          "quote": null,
-          "url": null
+          "quote": "alphaTab Monaco is licensed under MPL-2.0. (Monaco package LICENSE, first line); alphaTab Language Server is licensed under MPL-2.0. (language server LICENSE, first line)",
+          "url": "https://raw.githubusercontent.com/CoderLine/alphaTab/develop/packages/monaco/LICENSE"
         },
         "weights": null,
         "training_data": [],
@@ -815,12 +956,21 @@
         {
           "to": "alphaTab",
           "via_format": "alphaTex",
-          "evidence": "same format alphaTab reads and writes (survey)"
+          "evidence": "r0614: alphaTab drew the edited alphaTex; r0618 and e1780: the .gp export read back with the edits"
         }
       ],
       "unverified": [
-        "license quote not read for these two packages; only the declared MPL-2.0 is in the survey's table"
-      ]
+        "whether the edits behave the same in the live alphatab.net playground (not opened here; for-aaron.md item 7)"
+      ],
+      "string_fret_change": {
+        "fret": "a",
+        "string": "a",
+        "runs": [
+          "r0614"
+        ],
+        "how": "typed in the alphaTex text in Monaco; the redraw after an edit is application code",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "@coderline/alphatab-react and @coderline/alphatab-ui",
@@ -964,7 +1114,16 @@
       ],
       "unverified": [
         "the LICENSE in the npm 5.0.0 package begins differently from the repository's (\"VexFlow - A JavaScript library for rendering music notation. Copyright (c) 2023-present VexFlow contributors ...\"), followed by the MIT permission text"
-      ]
+      ],
+      "string_fret_change": {
+        "fret": "b",
+        "string": "b",
+        "runs": [
+          "r0110"
+        ],
+        "how": "the program gives every TabNote position; no change-and-redraw run",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "VexTab (vextab)",
@@ -1038,6 +1197,23 @@
             "mode": "editor=\"true\" textarea edit by the verifier",
             "fret_numbers": "90 before and after; the first changed from 0 to 2 and no other changed"
           }
+        },
+        {
+          "run_id": "r0625",
+          "input_id": "S2n",
+          "cores": 2,
+          "wall_s": 2.24,
+          "peak_mb": 131.1,
+          "exit_code": 0,
+          "output_files": [
+            "samples/vextab/gap2_editor_string_edit.json",
+            "samples/vextab/gap2_editor_string_edit.webp"
+          ],
+          "metrics": {
+            "cpu_s": 0.8,
+            "mode": "editor=\"true\" textarea edit (scripts/vextab_editor_string_edit.cjs)",
+            "result": "second \":q 0/3\" replaced by \":q 5/4\": 90 numbers before and after, one changed: \"0\" on string 3 -> \"5\" on string 4; no editor error"
+          }
         }
       ],
       "not_run_reason": null,
@@ -1075,7 +1251,17 @@
       "unverified": [
         "clicking on the drawn tab to edit was not tried; the editing surface tried was the VexTab text",
         "the source has a player.ts (an overlay player) that was not tried"
-      ]
+      ],
+      "string_fret_change": {
+        "fret": "a (text, editor mode)",
+        "string": "a (text, editor mode)",
+        "runs": [
+          "r0407",
+          "r0625"
+        ],
+        "how": "editor-mode textarea",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "vexchords",
@@ -1211,7 +1397,16 @@
       },
       "pricing": null,
       "handoffs_out": [],
-      "unverified": []
+      "unverified": [],
+      "string_fret_change": {
+        "fret": "b",
+        "string": "b",
+        "runs": [
+          "r0259"
+        ],
+        "how": "chord-box dots given as [string, fret] by the program; no change-and-redraw run",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "svguitar",
@@ -1267,7 +1462,16 @@
       },
       "pricing": null,
       "handoffs_out": [],
-      "unverified": []
+      "unverified": [],
+      "string_fret_change": {
+        "fret": "b",
+        "string": "b",
+        "runs": [
+          "r0253"
+        ],
+        "how": "chord-box dots given as [string, fret] by the program; no change-and-redraw run",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "OpenSheetMusicDisplay (opensheetmusicdisplay)",
@@ -1420,7 +1624,16 @@
       "unverified": [
         "the early-access audio player for GitHub sponsors is not part of the npm package; its terms were not read (github.com returns 403 through the box's proxy)",
         "playback was not tried"
-      ]
+      ],
+      "string_fret_change": {
+        "fret": "b",
+        "string": "b",
+        "runs": [
+          "r0158"
+        ],
+        "how": "draws the MusicXML <technical> string and fret it is given; no change-and-redraw run",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "osmd-audio-player",
@@ -1563,6 +1776,31 @@
             "lock": "--nolock",
             "note": "verifier re-run of the editor edit: byte-identical edited file, same single changed number"
           }
+        },
+        {
+          "run_id": "r0598",
+          "input_id": "S2n",
+          "cores": 2,
+          "wall_s": 12.63,
+          "peak_mb": 141.6,
+          "exit_code": 0,
+          "output_files": [
+            "samples/abcjs/gap2_click_drag.json",
+            "samples/abcjs/gap2_B_apply.edited.abc",
+            "samples/abcjs/gap2_D_editor.edited.abc",
+            "samples/abcjs/gap2_B_apply.tab.json",
+            "samples/abcjs/gap2_D_editor.tab.json",
+            "samples/abcjs/gap2_*.webp"
+          ],
+          "metrics": {
+            "cpu_s": 1.6,
+            "mode": "renderAbc with dragging: true and a clickListener; ABCJS.Editor; driver scripts/abcjs_click_drag.cjs",
+            "click_note_or_tab_number": "the listener gets el_type note or tabNumber and the note's startChar/endChar; nothing changes",
+            "drag": "a drag reports drag.step (up = -1 per 3.875 px, a tab number dragged one tab line = +3); ABC text and tab unchanged until application code rewrites the ABC",
+            "apply_mode": "page rewrote the ABC: G -> A (tab 0 -> 2 on string 3), G -> F# (0 on string 3 -> 4 on string 4), d -> A from a tab-number drag (3 on string 2 -> 2 on string 3); 87/90 matched, 87/87 same string and fret (e1763)",
+            "editor_click_then_type": "a click on a tab number selects the note's ABC text in the Editor textarea; typing changed note 1 (0 -> 2 on string 3) and note 2 (0 on string 3 -> 4 on string 4); 88/90, 88/88 (e1764)",
+            "two_notes_on_one_string": "F#3 put on string 4 at the same time as the bass voice open D on string 4"
+          }
         }
       ],
       "not_run_reason": null,
@@ -1606,10 +1844,19 @@
       ],
       "unverified": [
         "whether a per-note string choice can be forced in abcjs (the page read shows only instrument, label, tuning, capo, highestNote, hideTabSymbol)",
-        "whether abcjs's dragging / clickListener options can change a note from the notation or the tab (not tried)",
         "abcjs synth/playback (ABCJS.synth) was not tried",
         "the SoundFont sample sets' licenses conflict between sources (see the MIDI.js pre-rendered SoundFonts entry)"
-      ]
+      ],
+      "string_fret_change": {
+        "fret": "a (text, ABCJS.Editor); b (drag: the application rewrites the ABC)",
+        "string": "c",
+        "runs": [
+          "r0312",
+          "r0598"
+        ],
+        "how": "ABC has no string; abcjs picks it from the pitch",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "Verovio (verovio)",
@@ -1742,6 +1989,24 @@
             "lock": "--nolock",
             "note": "verifier re-run of r0174: same counts; byte-identical MIDI"
           }
+        },
+        {
+          "run_id": "r0626",
+          "input_id": "S2n",
+          "cores": 2,
+          "wall_s": 0.54,
+          "peak_mb": 195.0,
+          "exit_code": 0,
+          "output_files": [
+            "samples/verovio/gap2_S2n_edit.json",
+            "samples/verovio/gap2_S2n_edit.edited.mei"
+          ],
+          "metrics": {
+            "cpu_s": 0.8,
+            "mode": "toolkit.edit() under Node (scripts/verovio_edit_tab.cjs)",
+            "result": "set tab.fret and tab.course on MEI tab notes returned true; getMEI() and the drawn fret text changed; one undo restored all three values",
+            "tab_read_back": "89/90 matched, 88/89 same string and fret, string difference +1 for one note (e1827, read in r0627)"
+          }
         }
       ],
       "not_run_reason": null,
@@ -1770,7 +2035,8 @@
         "MEI tab: staffDef notationtype=\"tab.guitar\", <tuning>/<course n pname oct>, <tabGrp dur><note tab.course tab.fret/></tabGrp>"
       ],
       "constraints_accepted": [
-        "tuning through <tuning>/<course> or tuning.standard; no capo element in the MEI v5 tablature chapter; the <capo> of MusicXML was not carried into the MEI (r0174)"
+        "tuning through <tuning>/<course> or tuning.standard; no capo element in the MEI v5 tablature chapter; the <capo> of MusicXML was not carried into the MEI (r0174)",
+        "MEI attributes tab.fret and tab.course changed through toolkit.edit() \"set\" actions (r0626)"
       ],
       "license": {
         "code": {
@@ -1810,7 +2076,17 @@
         "the licenses of humlib, MidiFile, pugixml and MINIZ-CPP inside Verovio were not read",
         "the Verovio Python and C++ builds were not tried",
         "json++ and tuning-library carry MIT permission text in the repository (include/json/LICENSE, include/tuning-library/LICENSE.md)"
-      ]
+      ],
+      "string_fret_change": {
+        "fret": "b",
+        "string": "b",
+        "runs": [
+          "r0626",
+          "r0165"
+        ],
+        "how": "toolkit edit() set on tab.fret and tab.course, or the input MEI/MusicXML; no UI",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "MuseScore Studio (mscore CLI)",
@@ -2186,7 +2462,17 @@
         "the 4.x command-line page (musescore.org handbook) is copied from the MuseScore 3 handbook; options that no longer work in 4 are not listed",
         "the Qt-platform failure message without QT_QPA_PLATFORM=offscreen has no run id in the trial (reproduced by the verifier, r0403)",
         "MuseScore 3.2.3 license not quoted in trials.md (Debian package); the quoted GPL text is the 4.x repository LICENSE.txt"
-      ]
+      ],
+      "string_fret_change": {
+        "fret": "b",
+        "string": "b",
+        "runs": [
+          "r0179",
+          "r0180"
+        ],
+        "how": "MuseScore 3.2.3 command line: positions of a TAB MusicXML input kept for S2n (e0367), changed for the capo file (e0368); the desktop editor was not run",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "webmscore",
@@ -2378,7 +2664,16 @@
       ],
       "unverified": [
         "under Node 22.23.4 loading needs two workarounds (writable globalThis.navigator, globalThis.fetch deleted); npm license field is the bare string GPL, LICENSE.GPL is GPL v3 text"
-      ]
+      ],
+      "string_fret_change": {
+        "fret": "c",
+        "string": "c",
+        "runs": [
+          "r0291"
+        ],
+        "how": "no editing in the package; a TAB MusicXML input came out with 0/90 positions kept (e1009)",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "LilyPond (TabStaff)",
@@ -2636,7 +2931,17 @@
       "unverified": [
         "repository last commit not read (GitLab)",
         "LilyPond 2.24.3 license not quoted in trials.md (Ubuntu package); the quoted text is from the GitLab master LICENSE"
-      ]
+      ],
+      "string_fret_change": {
+        "fret": "b",
+        "string": "b",
+        "runs": [
+          "r0211",
+          "r0197"
+        ],
+        "how": "string numbers in the .ly text (e0412); without them LilyPond chooses",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "TuxGuitar (helge17 fork)",
@@ -2822,7 +3127,16 @@
         "license of the bundled Magic Sound Font v2.0 (MagicSFver2.sf2): no license text found in the repository",
         "the 1.5.6 Ubuntu package license is not quoted in trials.md",
         "the desktop GUI was not run on the box"
-      ]
+      ],
+      "string_fret_change": {
+        "fret": "b",
+        "string": "b",
+        "runs": [
+          "r0221"
+        ],
+        "how": "TuxGuitar 1.5.6 format plugins: input positions kept; no change-and-rewrite run; the desktop editor was not run",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "PyGuitarPro",
@@ -2902,7 +3216,16 @@
       ],
       "unverified": [
         ".gpx and .gp (GP6-GP8) not supported per the README"
-      ]
+      ],
+      "string_fret_change": {
+        "fret": "b",
+        "string": "b",
+        "runs": [
+          "r0236"
+        ],
+        "how": "string 3 fret 0 -> string 4 fret 5 in the data model, written as GP5",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "music21",
@@ -3016,7 +3339,16 @@
       "unverified": [
         "the exact music21 doc page for converter.parse / write was not re-read (UNVERIFIED wording in the survey)",
         "music21's ABC, MEI or Humdrum paths for tab were not tried"
-      ]
+      ],
+      "string_fret_change": {
+        "fret": "b",
+        "string": "b",
+        "runs": [
+          "r0153"
+        ],
+        "how": "StringIndication and FretIndication set by the program; no change-and-rewrite run",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "guitarpro-parser (npm)",
@@ -3166,7 +3498,16 @@
       "handoffs_out": [],
       "unverified": [
         "read only: no writer named in the README lines read"
-      ]
+      ],
+      "string_fret_change": {
+        "fret": "c",
+        "string": "c",
+        "runs": [
+          "r0294"
+        ],
+        "how": "reads only: no writer, no drawing",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "Tonal (tonal)",
@@ -3249,7 +3590,16 @@
       "handoffs_out": [],
       "unverified": [
         "no rendering, no audio, no tab"
-      ]
+      ],
+      "string_fret_change": {
+        "fret": "c",
+        "string": "c",
+        "runs": [
+          "r0251"
+        ],
+        "how": "no string or fret in what it computes",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "ChordSheetJS (chordsheetjs)",
@@ -3328,7 +3678,16 @@
       "unverified": [
         "chord sheets, not tab: tab blocks are text",
         "no audio"
-      ]
+      ],
+      "string_fret_change": {
+        "fret": "c",
+        "string": "c",
+        "runs": [
+          "r0251"
+        ],
+        "how": "chord sheets: a {capo} directive and transpose(), no string or fret",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     },
     {
       "name": "ChordPro (reference program, Perl)",
@@ -5615,6 +5974,57 @@
       "unverified": [
         "not read; versions, licenses and URLs of the Dart and C++ ones not recorded"
       ]
+    },
+    {
+      "name": "HAYA-TAB (HAYASAKA7/HAYA-TAB)",
+      "kind": "desktop app",
+      "what": "Organize, read, play, and sync your music tabs from one lightweight desktop app. (README); a Wails v3 (Go) program with a Vue 3 frontend; PDF viewer with annotations and an alphaTab viewer and player for Guitar Pro and MusicXML",
+      "url": "https://github.com/HAYASAKA7/HAYA-TAB",
+      "version": "tag v3.1.8 (2026-07-31); frontend/package.json 3.1.7; first commit 2026-02-09; last commit on main eb0466a 2026-07-31",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "desktop program whose builds are on GitHub Releases, which this box cannot list (github.com answers 403); surveyed from its source only (trials.md, \"Gap round 2\")",
+      "for_aaron": true,
+      "callable_via": [
+        "desktop-gui"
+      ],
+      "inputs": [
+        "PDF",
+        "Guitar Pro .gp, .gp3, .gp4, .gp5, .gpx (open-file filter)",
+        "MusicXML .xml, .musicxml, .mxl"
+      ],
+      "outputs": [
+        "on-screen notation and tab (alphaTab 1.8.1), playback with looping and speed",
+        "PDF annotations on a separate layer",
+        "library metadata; no tab file written (no alphaTab exporter call in frontend/src at eb0466a)"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": {
+          "spdx": "Apache-2.0",
+          "quote": "Grant of Copyright License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form. (LICENSE section 2); NOTICE: HAYA-TAB Copyright 2026 Ai Hayasaka",
+          "url": "https://raw.githubusercontent.com/HAYASAKA7/HAYA-TAB/main/LICENSE"
+        },
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "the date the GitHub repository was created (first commit 2026-02-09)",
+        "the files of its GitHub releases (github.com answers 403 here)",
+        "whether the released program edits notes (the source at eb0466a has no such code; for-aaron.md item 8)"
+      ],
+      "string_fret_change": {
+        "fret": "c (not found in the source; not run)",
+        "string": "c (not found in the source; not run)",
+        "runs": [],
+        "how": "no alphaTab exporter call and no write to a note string or fret in frontend/src at eb0466a; the edit dialog edits library metadata",
+        "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
+      }
     }
-  ]
+  ],
+  "updated": "2026-11-11 (gap round 2, gapfill-web-tab-render: GAPS.md W1 and W2)"
 }

@@ -42,3 +42,34 @@ source, so 682-692 s lies inside one shot (681.61-692.66 s). The same scan shows
 The crop boxes were read off gridded frames 0 and 300 by eye so that both hands and the guitar neck fall inside them.
 They are fixed per shot and do not follow the player. R3a_cu was used at its full 640x480 frame, and also upscaled 2x
 (1280x960) where a run says so.
+
+## C1: a still of a guitar neck with a capo (added in gap round 2, 2026-11-11)
+
+The shared clips have no capo (shared manifest, "Caveats"), so this lane added one freely licensed still for the
+capo questions (gap V6 in `GAPS.md`). Found on Wikimedia Commons in `Category:Capos` (category page read 2026-11-11;
+the Commons search API answered HTTP 429 to this box twice, and the general web-search budget of this session was
+used up, so the category page was read instead). Two smaller files in that category were looked at and not used:
+`File:Capo_third_fret.jpg` (272 x 148 pixels) and `File:Capo_on_a_guitar_neck.jpg` (300 x 224 pixels).
+
+| id | file (in /home/user/gtr/lanes/video-hands-fretboard/inputs/capo/) | size | what it is | truth | source URL | license (quoted clause) | attribution |
+|---|---|---|---|---|---|---|---|
+| C1 | `C1_kapodaster_960px.jpg` | 960 x 1706 pixels, JPEG (yuvj420p), 225,432 bytes | A studio photo, front view, of a steel-string guitar's headstock and first frets, neck vertical, white background, no hands. Commons caption: "A guitar capo with a lever-operated over-centre locking action clamp"; description: "Kapodaster an Gitarre."; date 30 January 2015; source "Own work". By eye on this file: headstock with a C. F. Martin & Co. logo and six tuners at the top; the nut at about y = 1050-1090 px; fret wire 1 at about y = 1322; a black capo bar across all six strings at about y = 1440-1500, x = 290-725, with its clamp at the right edge of the neck (x about 615-725); fret wire 2 at about y = 1538; the fretboard spans about x = 338-617; the bottom edge cuts the neck below fret 2. | none (the capo position above is read by eye) | https://commons.wikimedia.org/wiki/File:Kapodaster_an_Westerngitarre_--_2015_--_1951.jpg | CC BY-SA 4.0: "This file is licensed under the Creative Commons Attribution-Share Alike 4.0 International license. Attribution: © Anil Öztas" | "Kapodaster an Westerngitarre", © Anil Öztas, CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/); Commons' 960-pixel rendition, not modified. |
+
+- The original upload is 1,688 x 3,000 pixels, 2.37 MB (file page). Its URL
+  (https://upload.wikimedia.org/wikipedia/commons/9/90/Kapodaster_an_Westerngitarre_--_2015_--_1951.jpg) answered HTTP
+  429 at 2026-11-11T00:32Z; Commons' 960-pixel rendition of the same file
+  (https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Kapodaster_an_Westerngitarre_--_2015_--_1951.jpg/960px-Kapodaster_an_Westerngitarre_--_2015_--_1951.jpg)
+  answered HTTP 200 a few seconds later and is the file used. sha256
+  `11e53f300c0948e6484cc3da2e8198c4509479f632ed6938b1cf8a3d9b916115`.
+- The file page's author box ("Using this picture") asks for the attribution in this form: "You must place the above
+  copyright notice (attribution) in a suitable place (next to the photo or temporarily in the imprint or image source
+  list) so that an appropriate and clear connection is made between the image and me as the author. Please refrain
+  from giving further details such as via Wikipedia, Wikimedia, Commons or similar." The same box asks to be told when
+  the photo is used outside Wikimedia; that request is the author's, not a license condition, and is left to Aaron.
+- The page also carries Commons' "Trademarked" tag: "This work includes material that may be protected as a trademark
+  in some jurisdictions. If you want to use it, you have to ensure that you have the legal right to do so and that you
+  do not infringe any trademark rights." (the headstock logo).
+- Overlays of this photo in `samples/` (open-vocabulary boxes, OpenCV lines) are derivatives under CC BY-SA 4.0 with
+  the attribution above.
+- The other capo clips the plan names stay as they were: S5capo2 is synthesized audio with no video, and no clip has
+  a capo in a playing video; `for-aaron.md` section 10 asks Aaron to record one.

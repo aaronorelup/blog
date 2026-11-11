@@ -138,12 +138,15 @@ onset + 1 ms, and the count is written into `processing`.
 
 **Input:** a table of `time, frequency_hz[, confidence]` from a monophonic pitch tracker. Columns are found
 by header names (time; freq/f0/hz/pitch; conf/voicing/periodicity/prob) or read in that order. NaN frequencies and
-empty frequency cells (Essentia's Melodia rows such as `0.0000,,0.0000`) count as unvoiced (0 Hz); an empty or missing
-confidence cell means no confidence, which counts as below any `--conf-threshold`. A row whose time cell is not a number
-(a second header line, for example) is skipped without a note. A row with a readable time whose frequency cell is
-missing, or whose frequency or confidence cell holds text that is not a number, is left out; `processing` gives the
-number of such rows and quotes the first, and also counts the empty cells. `--f0-unit midi` reads the frequency column
-as MIDI numbers.
+empty frequency cells (Essentia's Melodia rows such as `0.0000,,0.0000`) count as unvoiced (0 Hz); in a tab-separated
+file the tabs at the end of a row also close empty cells (`0.0000\t\t` is a time and two empty cells, `0.0000\t` a time
+and an empty frequency cell). An empty or missing confidence cell means no confidence, which counts as below any
+`--conf-threshold`. A row whose time cell is not a number (a second header line, for example) is skipped without a note.
+A row with a readable time whose frequency cell is missing, or whose frequency or confidence cell holds text that is not
+a number, is left out; `processing` gives the number of such rows and quotes the first, and also counts the empty
+cells. As in every table, the first line is read as a header line when one of its cells is text and the next line has a
+number in that column, so a first data row with a text cell is taken as the header and not counted. `--f0-unit midi`
+reads the frequency column as MIDI numbers.
 
 **Reference:** built from the truth notes on a 10 ms grid from 0 s to `duration_s`: the melody voice if there is one,
 otherwise all notes if no two overlap (otherwise an error asks for `--voice`). At each grid time the reference is the
@@ -399,7 +402,8 @@ the key table gives 1.0, 0.5, 0.3, 0.2, 0; tab notes all moved one string down g
 those notes; a capo difference and a tuning difference are flagged; an ASCII tab whose only mention of a capo is a
 title line ("Title: FX1 with a capo on fret 2", TuxGuitar's header) is scored with the truth's capo, reported as
 assumed, and a capo line after a title that names another capo is the one read; an f0 file with empty frequency cells
-in the unvoiced frames scores exactly like the same file with 0 written in them; frame-level tab written from the truth gives
+in the unvoiced frames scores exactly like the same file with 0 written in them, also tab-separated with the empty cells
+at the end of the row (with a header, and without one starting at an unvoiced row); frame-level tab written from the truth gives
 tab and pitch F1 of 1 in both layouts, and with the melody moved one string down pitch F1 stays 1 while tab precision
 drops to the share of activations not moved; SI-SDR with noise added at 10 dB SNR is within
 0.3 dB of 10; swapped stems give negative SI-SDR; the launcher works from `/` with `PYTHONPATH` and `VIRTUAL_ENV`
@@ -481,3 +485,13 @@ below says a definition changed.
   (every `f0` eval, every ASCII-tab eval, every failed eval, and a sample of every other subcommand), 247 gave exactly
   the stored result, the nine named above differ as described, and 8 (e0448 to e0455) could not be compared because
   their input files were rewritten after those runs. Details and the eval ids: `../gtr-eval-fix-notes.md`.
+- 0.12.1 (2026-11-11): `f0` only, one more fix in how estimate files are read; no metric definition changed. In a
+  tab-separated estimate, empty cells at the end of a row (`0.0000\t\t`, or `0.0000\t` in a two-column file, which is
+  what pandas writes for NaN) are now empty cells, so an empty frequency cell there is 0 Hz (unvoiced) as in a
+  comma-separated file. 0.12.0 stripped those tabs with the rest of the white space at the end of the line, so such rows
+  looked short and were left out, and mir_eval then interpolated across the gaps and marked them voiced (the same S2s
+  melody estimate written both ways: voicing false alarm 0.997543 instead of 0.100737, overall accuracy 0.677452 instead
+  of 0.800068). Every other subcommand reads tables as before. No eval in the ledger had a tab-separated `f0` estimate
+  (all 157 `f0` evals up to e1835 have comma-separated estimates), so no stored result changes. New selftest check
+  `f0.empty_cells_at_row_end_tab_separated`, which fails on 0.12.0. Found by the verification of 0.12.0 (section
+  "Verification" of `../gtr-eval-fix-notes.md`).

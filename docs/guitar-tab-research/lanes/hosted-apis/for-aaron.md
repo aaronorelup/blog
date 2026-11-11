@@ -294,15 +294,16 @@ robots.txt disallows `/api/`); they belong to the apps-survey lane's steps.
 
 ## 14. xAI's API terms: save the page (added in gap round 2, 2026-11-11)
 
-The speech-to-text calls (r0105, r0306) went straight to xAI's API with the xAI key. xAI's docs say the API falls
-under its "Enterprise Terms of Service and Data Processing Addendum" (https://docs.x.ai/developers/faq/general.md),
-but https://x.ai/legal/terms-of-service-enterprise answered HTTP 403 (a Cloudflare "Sorry, you have been blocked"
+The speech-to-text calls (r0105, r0306) went straight to xAI's API with the xAI key. xAI's docs FAQ
+(https://docs.x.ai/developers/faq/general.md), under "Where are your Terms of Service and Privacy Policy?", points to
+https://x.ai/legal "for our Enterprise Terms of Service and Data Processing Addendum", but
+https://x.ai/legal/terms-of-service-enterprise answered HTTP 403 (a Cloudflare "Sorry, you have been blocked"
 page) to the research box and to the agent's web-fetch tool on 2026-11-11, so no clause from it is quoted
 (`survey.md`, "xAI Speech to Text API").
 
 1. In a browser, open https://x.ai/legal/terms-of-service-enterprise (and, if it is a separate page, the Data
    Processing Addendum linked from https://x.ai/legal).
-2. Save each page as PDF or as plain text (Ctrl+S, "Web page, complete" or "Text").
+2. Save each page as a PDF (print the page to a PDF printer) or copy its whole text into a `.txt` file.
 3. Send back: the saved files and the date you saved them. An agent then quotes the clauses on who owns API
    outputs, whether inputs and outputs are used for training, and retention, into `survey.md`.
 
@@ -316,7 +317,8 @@ A hosted endpoint that turns a song into a ZIP that "can include MusicXML, PDF s
 - Inputs: S4 (synthesized band mix, 38.741 s, `S4.wav`) and R2 (Josh Woodward's CC BY 4.0 song excerpt, 36.000 s,
   `R2.wav`). Both are inside the endpoint's limits ("between 10 seconds and 10 minutes and no larger than 100 MB"),
   and `audio_url` takes a data URI, so no upload host is needed.
-- First requests (an agent runs these; the key is read into a variable and never echoed):
+- First requests (an agent runs these, from a folder holding copies of `/home/user/gtr/inputs/S4/S4.wav` and
+  `/home/user/gtr/inputs/R2/R2.wav`; the key is read into a variable and never echoed):
 
 ```bash
 FAL_KEY=$(python3 ~/.claude/bin/getkey.py FAL_KEY)
