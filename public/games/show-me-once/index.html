@@ -34,9 +34,9 @@ body { position: fixed; top: 0; right: 0; bottom: 0; left: 0; font-family: var(-
 #chips {
   position: absolute; left: 0; right: 0; bottom: max(16px, env(safe-area-inset-bottom)); display: flex; justify-content: center;
   gap: clamp(7px, 2.2vw, 16px); padding: 0 8px; pointer-events: none; opacity: 0; transform: translateY(14px);
-  transition: opacity .45s ease, transform .45s ease; visibility: hidden;
+  transition: opacity .45s ease, transform .45s ease, visibility 0s linear .45s; visibility: hidden;
 }
-#chips.on { opacity: 1; transform: none; pointer-events: auto; visibility: visible; }
+#chips.on { opacity: 1; transform: none; pointer-events: auto; visibility: visible; transition: opacity .45s ease, transform .45s ease; }
 .chip {
   -webkit-appearance: none; appearance: none; font: inherit; color: var(--body); margin: 0;
   background: rgba(28, 27, 40, .9); border: 1.5px solid var(--coral); border-radius: 16px; padding: 6px 6px 5px;
@@ -1255,7 +1255,10 @@ function chipsShow(kinds) {
   });
   chips.open = true; chipsEl.classList.add('on');
 }
-function chipsHide() { chips.open = false; chipsEl.classList.remove('on'); }
+function chipsHide() {
+  chips.open = false; chipsEl.classList.remove('on');
+  if (chipsEl.contains(document.activeElement)) { try { canvas.focus({ preventScroll: true }); } catch (e) { /* old browsers */ } }
+}
 function chipsEnable(on, used) {
   CHIPS.forEach(([k]) => { const b = chips.el[k], u = used.indexOf(k) >= 0; b.classList.toggle('used', u); b.setAttribute('aria-disabled', on && !u ? 'false' : 'true'); });
 }
@@ -1679,6 +1682,13 @@ function* beatLift() {
   say('The same lift. The same letting go.'); yield* liftLamp(P.l2); unthink(); setMood('proud', 1.2); hop(140); yield* wait(0.6);
   say('Every lamp after this, your way.');
   yield* lamp(P.l3, { think: 0.5 });
+  // it turns to look back along the row: three lamps, breathing together
+  const z0 = min(1, VW / 800); cr.face = -1; cr.look = { x: P.l2.x, y: gy(P.l2.x) - 150 }; setMood('proud', 4.5);
+  focus(P.l2.x + 30); if (RM) { snap.take = true; cam.z = z0; } else anim(cam, 'z', z0, 1.7);
+  say('Look. They breathe the way you held.');
+  yield* wait(5);
+  if (RM) { snap.take = true; cam.z = 1; } else anim(cam, 'z', 1, 1.3);
+  cr.face = 1; cr.look = null; follow(); yield* wait(0.9);
 }
 function* beatMark() {
   const b = P.b1, F = bannerBox(b);
