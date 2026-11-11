@@ -26,6 +26,12 @@ weekly usage limit was nearly used up.** What is done, what is not, and how to p
 Counts as the lanes' `tools.json` files stand: 797 entries on the ten lists (some tools are on more than
 one), 162 marked as run with output, 154 with steps for Aaron. 722 logged runs, 1,836 scoring runs.
 
+## Audio and video
+
+Nothing audible or watchable is in git. Both sets are in the studio library, project `blog-posts`, filed as
+reference: the 26 test clip files are run `20261110-225132-vm-7d3107` (items #70897 to #70922), and the 42
+tool outputs the post lists as still to upload are run `20261111-014252-vm-47406b`.
+
 ## State of each lane
 
 | Lane | Lane record | Gap rounds | Post section |
