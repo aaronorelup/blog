@@ -335,7 +335,7 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
 | `/ledger/<slug>/` for every post, `public/_redirects`, RSS guid = `https://aaronorelup.com/ledger/<slug>/` | `verify-dist` against `tests/baseline/urls.txt` |
 | the `<ao-*>` tag names and attributes (72 posts use them) | the e2e suite; an unknown tag fails the build (`rehype-post-text`) |
 | every listed post's page has one `<link rel="canonical">` and one `og:url`, both `https://aaronorelup.com/ledger/<slug>/` (`chrome/Head.astro`) | `verify-dist` |
-| every page of `/sitemap.xml` but a notes page has one `twitter:card` (`summary_large_image`) and one `og:image`, a JPEG or PNG of the build: under `/og/` exactly 1200×630, any other picture between 300×157 and 4096×4096 | `verify-dist` |
+| a page of `/sitemap.xml` that has an `og:image` has it once, with one `twitter:card` (`summary_large_image`), and the picture is a file of the build: under `/og/` a JPEG of exactly 1200×630, anywhere else a JPEG or PNG between 300×157 and 4096×4096. A page with no `og:image` passes | `verify-dist` |
 | `/ledger/previews.json` = `{ posts: { slug: card } }`, keys = listed slugs | `verify-dist` |
 | `/stats-pages.txt`: no unlisted slug, nothing deeper than `/ledger/<slug>/` except `/ledger/<listed>/notes/` | `verify-dist`, `agg.test.mjs` |
 | `/version.json` and the main-only guard in `astro.config.mjs` | unchanged |

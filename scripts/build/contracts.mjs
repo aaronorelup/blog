@@ -85,15 +85,15 @@ export function shareUrlProblems(html, pathname) {
     .map(([what, got]) => `${pathname}: ${what} is ${got.length ? got.join(', ') : 'missing'}, not ${want}`);
 }
 
-// The pixel size of a JPEG or PNG, from its bytes: { width, height }, or null for anything else.
+// The type and pixel size of a JPEG or PNG, from its bytes: { type, width, height }, or null for anything else.
 export function imageSize(buf) {
-  if (buf.length >= 24 && buf.readUInt32BE(0) === 0x89504e47) return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+  if (buf.length >= 24 && buf.readUInt32BE(0) === 0x89504e47) return { type: 'png', width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
   if (buf.length < 4 || buf[0] !== 0xff || buf[1] !== 0xd8) return null;
   for (let i = 2; i + 9 <= buf.length && buf[i] === 0xff;) {
     const m = buf[i + 1];
     if (m === 0xff) i += 1;                                           // a fill byte
     else if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc) {   // a frame header
-      return { width: buf.readUInt16BE(i + 7), height: buf.readUInt16BE(i + 5) };
+      return { type: 'jpeg', width: buf.readUInt16BE(i + 7), height: buf.readUInt16BE(i + 5) };
     } else if (m === 0x01 || (m >= 0xd0 && m <= 0xd8)) i += 2;        // a marker with no length
     else i += 2 + buf.readUInt16BE(i + 2);
   }
@@ -103,37 +103,38 @@ export function imageSize(buf) {
 // What X asks of a summary_large_image picture: no smaller than 300 by 157, no larger than 4096 by 4096.
 const X_CARD = { min: [300, 157], max: [4096, 4096] };
 
-// A listed page shares a picture (chrome/Head.astro): one twitter:card, summary_large_image, and one og:image, a JPEG
-// or PNG of this build at https://aaronorelup.com/<path>. A card the build draws or keeps (/og/…) is exactly
-// OG.width by OG.height; any other picture is a size X shows large. sizeOf(path) → { width, height }, or null: no
-// such JPEG or PNG in the build.
+// A page that shares a picture shares one that works (chrome/Head.astro): its og:image is there once, a JPEG or PNG of
+// this build at https://aaronorelup.com/<path>, and the page has one twitter:card, summary_large_image. A card the
+// build draws or keeps (/og/…) is a JPEG, exactly OG.width by OG.height; any other picture is a size X shows large.
+// A page with no og:image passes: which pages share a picture is not a contract. sizeOf(path) → { type, width,
+// height }, or null: no such JPEG or PNG in the build.
 export function shareImageProblems(html, pathname, sizeOf) {
   const tags = headTags(html);
-  const cards = tags.filter((t) => attr(t, 'name') === 'twitter:card').map((t) => attr(t, 'content'));
   const images = tags.filter((t) => attr(t, 'property') === 'og:image').map((t) => attr(t, 'content'));
+  if (!images.length) return [];
+  const cards = tags.filter((t) => attr(t, 'name') === 'twitter:card').map((t) => attr(t, 'content'));
   const problems = [];
   if (cards.length !== 1 || cards[0] !== 'summary_large_image') {
-    problems.push(`${pathname}: twitter:card is ${cards.length ? cards.join(', ') : 'missing'}, not summary_large_image`);
+    problems.push(`${pathname}: it has an og:image, and its twitter:card is ${cards.length ? cards.join(', ') : 'missing'}, not summary_large_image`);
   }
-  if (images.length !== 1) return [...problems, `${pathname}: og:image is ${images.length ? `there ${images.length} times` : 'missing'}`];
+  if (images.length !== 1) return [...problems, `${pathname}: og:image is there ${images.length} times`];
   const [image] = images;
   if (!image.startsWith(SITE + '/')) return [...problems, `${pathname}: og:image ${image} is not under ${SITE}/`];
   const file = decodeURIComponent(new URL(image).pathname);
   const size = sizeOf(file);
   if (!size) return [...problems, `${pathname}: og:image ${file} is not a JPEG or PNG of this build`];
-  const { width: w, height: h } = size;
-  if (file.startsWith('/og/') ? w !== OG.width || h !== OG.height
+  const { type, width: w, height: h } = size;
+  const card = file.startsWith('/og/');
+  if (card && type !== 'jpeg') problems.push(`${pathname}: og:image ${file} is a ${type}, not a JPEG`);
+  if (card ? w !== OG.width || h !== OG.height
     : w < X_CARD.min[0] || h < X_CARD.min[1] || w > X_CARD.max[0] || h > X_CARD.max[1]) {
-    problems.push(`${pathname}: og:image ${file} is ${w}×${h}` + (file.startsWith('/og/') ? `, not ${OG.width}×${OG.height}`
+    problems.push(`${pathname}: og:image ${file} is ${w}×${h}` + (card ? `, not ${OG.width}×${OG.height}`
       : `, outside ${X_CARD.min.join('×')} to ${X_CARD.max.join('×')}`));
   }
   return problems;
 }
 
-// A notes page shares no picture: tests/e2e/post.spec.mjs (post-11) holds it to none.
-const NOTES = /^\/ledger\/[^/]+\/notes\/$/;
-
-// The pages the sitemap lists, as paths: the pages a link to this site is shared from.
+// The pages the sitemap lists, as paths: the pages whose share pictures check() looks at.
 export const sitemapPaths = (xml) => [...xml.matchAll(/<loc>([^<]*)<\/loc>/g)].map((m) => m[1])
   .filter((loc) => loc.startsWith(SITE + '/')).map((loc) => loc.slice(SITE.length));
 
@@ -162,7 +163,7 @@ export function check(dist, listed = listedSlugs()) {
     ...rssProblems(read('rss.xml'), listed),
     ...[...listed].filter((s) => !isLive(s) && isBuilt(`/ledger/${s}/`))
       .flatMap((s) => shareUrlProblems(read(`ledger/${s}/index.html`), `/ledger/${s}/`)),
-    ...sitemapPaths(read('sitemap.xml')).filter((p) => p.endsWith('/') && !isLivePath(p) && !NOTES.test(p) && isBuilt(p))
+    ...sitemapPaths(read('sitemap.xml')).filter((p) => p.endsWith('/') && !isLivePath(p) && isBuilt(p))
       .flatMap((p) => shareImageProblems(read(`${p.slice(1)}index.html`), p, sizeOf)),
     ...baselineProblems(readBaseline(), isBuilt, redirectSourcesOf(read('_redirects'))),
   ];
