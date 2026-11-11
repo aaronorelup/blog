@@ -8,9 +8,11 @@ import SCHEMA from './flags.sql';
 // ask_daily_usd is dollars a UTC day for Ask's DeepSeek calls (usage_day 'ask_usd' counts micro-dollars);
 // ask_extra_tokens is split mode's uncached docs per question, by default caps.js's (docs/ASK.md); ask_voice is Ask by
 // voice and hear_daily its Whisper calls a UTC day (usage_day 'hear'; 30 s each at most, so 1,000 is <= $0.26).
+// search_daily is /api/search's embedding calls a UTC day (usage_day 'search') and ask_search_daily Ask's own
+// (usage_day 'ask_search': 2 a question, 1 a resting one), the room Ask had while the two shared search_daily.
 const DEFAULTS = {
   search: 'on', ask: 'on', tts: 'on', search_daily: 20000, ask_daily: 1000, ask_daily_usd: 2, ask_extra_tokens: EXTRA_TOKENS,
-  tts_daily_credits: 15000, tts_credit_floor: 0.4, ask_voice: 'on', hear_daily: 1000,
+  tts_daily_credits: 15000, tts_credit_floor: 0.4, ask_voice: 'on', hear_daily: 1000, ask_search_daily: 20000,
 };
 export const NO_CAP = Number.MAX_SAFE_INTEGER;   // a settle, which may only ever lower a total
 

@@ -47,7 +47,7 @@ export async function serve(request, env, ctx) {
   return out.response;
 }
 
-// A spent cap: the closest posts from one lookup of the question (none once search_daily is spent too).
+// A spent cap: the closest posts from one lookup of the question (none once ask_search_daily is spent too).
 async function resting(env, f, ix, q) {
   console.log('ask resting');
   const lists = await search(env, f, [q]);
