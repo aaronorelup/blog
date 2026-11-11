@@ -482,7 +482,7 @@ once the 3D hero pins the top.
 | Canonical, robots and the sitemap follow the shipped `TEA_SEO` through `teaSeo()` (`'pending'`: self canonical, no robots tag, not in the sitemap); never a feed item, no `data-pagefind-body`, and semantic search and Ask hold only the listed posts and their notes | tea-6 |
 | The panel footer's "Tea room" link and the homepage gate's button reach `/tea/`; the gate's `data-no-fly` leaves at once (the scene doesn't hold the click to fly) | tea-7 |
 | The hero, the rail and the footer lead back to `/`; the footer carries every `NAV` link | tea-8 |
-| The rail marks the chapter being read (`aria-current`), none over the hero; a rail link or strip pill takes the reader to its chapter; a chapter reached by its anchor shows its opener (the one-time fade has run) | tea-9 |
+| The rail marks the chapter being read (`aria-current`), none over the hero; a rail link or strip pill takes the reader to its chapter; a chapter reached by its anchor shows its opener (the one-time fade was set off, or never waited, and ends fully shown; no frame of it is timed) | tea-9 |
 | With JavaScript off every chapter shows, nothing waits to fade in, every link shows on a wide window, and on a phone every address is on a link that shows | tea-10 |
 | Day or night chosen on a panel page is what `/tea/` opens in, and the reverse (the shared `scene-mode`) | tea-11 |
 | The first Tab is the skip link, in view; it takes the keyboard past the hero and the rail into the first chapter; no positive tabindex | tea-12 |

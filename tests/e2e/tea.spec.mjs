@@ -238,18 +238,25 @@ test('tea-8 the tea room leads back to the main site: hero, rail and footer, and
 test('tea-9 the rail marks the chapter being read; a chapter reached by its anchor shows its opener', async ({ page }) => {
   await page.goto(TEA);
   await expect.poll(() => marked(page)).toEqual([]);   // the hero: no chapter yet
+  // Frames can come seconds apart (a 3D hero drawn in software beside other tests), so this waits for what the page
+  // does and where it ends, never for a frame of the fade or the glide.
+  const slow = { timeout: 30_000 };
   for (const c of CHAPTERS) {
     await toChapter(page, c.id);
-    await expect.poll(() => marked(page)).toEqual([`${c.id}=true`]);
-    await expect.poll(() => page.locator(`#${c.id} > .tea-open`).evaluate((o) => getComputedStyle(o).opacity)).toBe('1');
+    await expect.poll(() => marked(page), slow).toEqual([`${c.id}=true`]);
+    // its opener is shown: the one-time fade was set off (or it never waited), and the fade ends fully shown
+    const opener = page.locator(`#${c.id} > .tea-open`);
+    await expect.poll(() => opener.evaluate((o) => o.classList.contains('is-in') || !o.classList.contains('is-waiting')), slow).toBe(true);
+    expect(await opener.evaluate((o) => { for (const a of o.getAnimations()) a.finish(); return getComputedStyle(o).opacity; })).toBe('1');
   }
   // a rail link (a pill on the phone's strip) takes the reader to its chapter, and it is marked
   const back = CHAPTERS[1].id;
   await page.locator(`[data-tea-link="${back}"]`).click();
-  await expect.poll(() => marked(page)).toEqual([`${back}=true`]);
-  await expect.poll(() => page.locator(`#${back}`).evaluate((s) => s.getBoundingClientRect().top <= innerHeight / 3)).toBe(true);
+  await expect(page).toHaveURL(new RegExp(`#${back}$`));
+  await expect.poll(() => marked(page), slow).toEqual([`${back}=true`]);
+  await expect.poll(() => page.locator(`#${back}`).evaluate((s) => s.getBoundingClientRect().top <= innerHeight / 3), slow).toBe(true);
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
-  await expect.poll(() => marked(page)).toEqual([]);
+  await expect.poll(() => marked(page), slow).toEqual([]);
 });
 
 test.describe('without JavaScript', () => {
