@@ -1,20 +1,22 @@
-// The hero's posters (node scripts/tools/tea-hero/poster.mjs [--url U]): the opening frame of the 3D scene, rendered
-// in headless Chromium (SwiftShader WebGL) from a page that mounts Stage.astro (the lab page by default, served by
-// `npx astro dev --port 4392`), with the title box hidden, idle time at 0 and the pointer centred. Writes
-// public/tea/hero/poster-{night,day}.webp (16:10) and poster-{night,day}-tall.webp (phones), each under 150 KB.
-import { writeFileSync } from 'node:fs';
+// The hero's posters (node scripts/tools/tea-hero/poster.mjs [--url U] [--out DIR]): the opening frame of the 3D scene,
+// rendered in headless Chromium (SwiftShader WebGL) from /tea/ (served by `npx astro dev --port 4392` or a preview),
+// with the title box hidden, idle time at 0 and the pointer centred. Writes poster-{night,day}.webp (16:10) and
+// poster-{night,day}-tall.webp (phones), each under 150 KB, to public/tea/hero/ or --out (to compare, not commit).
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
 import { chromium } from '@playwright/test';
 import sharp from 'sharp';
 
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
-const URL_ = arg('url', 'http://localhost:4392/tea-lab/?hero=on');
-const OUT = new URL('../../../public/tea/hero/', import.meta.url);
+const URL_ = arg('url', 'http://localhost:4392/tea/?hero=on');
+const OUT = arg('out', null) ? pathToFileURL(arg('out') + '/') : new URL('../../../public/tea/hero/', import.meta.url);
 const CAP = 150 * 1024;
 const SHOTS = [
   { suffix: '', width: 1600, height: 1000, scale: 1 },
   { suffix: '-tall', width: 430, height: 932, scale: 1.5 },
 ];
 
+mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch({
   args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
 });
@@ -28,13 +30,13 @@ for (const mode of ['night', 'day']) {
       null, { timeout: 90000 });
     await page.addStyleTag({ content: '.tea-hero-box,.mode-toggle,.tea-stage-shade{visibility:hidden!important}astro-dev-toolbar{display:none!important}' });
     await page.evaluate(() => {
-      scrollTo(0, 0);
+      scrollTo({ top: 0, behavior: 'instant' });
       const h = window.__teaHero;
-      h.freeze(0); h.pointer([0, 0]); h.setProgress(0);
+      h.hold(true); h.freeze(0); h.pointer([0, 0]); h.setProgress(0);
       h.render();
     });
     await page.waitForTimeout(300);
-    const png = await page.locator('[data-tea-stage]').screenshot();
+    const png = await page.locator('[data-tea-stage]').screenshot({ timeout: 120000 });
     let q = 84;
     let webp;
     do {
