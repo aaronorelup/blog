@@ -2,7 +2,8 @@
 // (Workers Builds restores that folder between builds when its build cache is on) and named /og/<slug>.jpg?v=<h8>,
 // h8 the hash of everything drawn on it, so X fetches the card again when any of it changes. A card that fails to
 // draw fails the build, except a live notebook's: it logs, and the post shares public/og/default.jpg.
-// Read by pages/ledger/[slug].astro (the meta tag) and pages/og/[slug].jpg.js (the file).
+// Read by pages/ledger/[slug].astro (the meta tag) and pages/og/[slug].jpg.js (the file). A page that isn't a post
+// gets its card the same way, at /og/page/<name>.jpg?v=<h8> (pageImage, for lib/og/pages.js).
 import fs from 'node:fs';
 import path from 'node:path';
 import { isLive } from '../../data/exempt.js';
@@ -28,24 +29,40 @@ export function ogImage(post) {
   return drawn.get(post.id);
 }
 
+// The card's bytes, from the cache or drawn into it.
+async function cached(card, h8) {
+  const file = path.join(CACHE, `${h8}.jpg`);
+  if (fs.existsSync(file)) return fs.readFileSync(file);
+  const jpg = await renderCard(card);
+  if (jpg.length > OG.cap) throw new Error(`${jpg.length} bytes, over the ${OG.cap}-byte cap`);
+  fs.mkdirSync(CACHE, { recursive: true });
+  fs.writeFileSync(file, jpg);
+  return jpg;
+}
+
 async function draw(post) {
   const { id, title, topic } = post.data;
   const icon = iconFor(post);
   const card = { fontfile: FONT, eyebrow: `${id} · ${TOPICS[topic].label}`, title, verdict: cardOf(post).verdict,
     icon: icon && fs.readFileSync(publicFile(icon.s256)), glyph: TOPICS[topic].glyph };
   const h8 = short(sha256hex(JSON.stringify([V, card.eyebrow, title, card.verdict, card.glyph, card.icon && sha256hex(card.icon)])));
-  const file = path.join(CACHE, `${h8}.jpg`);
-  const named = (jpg) => ({ path: `/og/${slugOf(post)}.jpg?v=${h8}`, jpg });
   try {
-    if (fs.existsSync(file)) return named(fs.readFileSync(file));
-    const jpg = await renderCard(card);
-    if (jpg.length > OG.cap) throw new Error(`${jpg.length} bytes, over the ${OG.cap}-byte cap`);
-    fs.mkdirSync(CACHE, { recursive: true });
-    fs.writeFileSync(file, jpg);
-    return named(jpg);
+    return { path: `/og/${slugOf(post)}.jpg?v=${h8}`, jpg: await cached(card, h8) };
   } catch (e) {
     if (!isLive(id)) throw new Error(`the og image of ${id}: ${e.message}`);
     console.warn(`[og] ${id}: no card (${e.message}), so it shares ${DEFAULT}`);
     return { path: DEFAULT, jpg: null };
+  }
+}
+
+// → { path, jpg }: the card of a page that isn't a post, page = { name, eyebrow, title, line, glyph }. One that
+// fails to draw fails the build.
+export async function pageImage({ name, eyebrow, title, line, glyph }) {
+  const card = { fontfile: FONT, eyebrow, title, line, glyph };
+  const h8 = short(sha256hex(JSON.stringify([V, 'page', eyebrow, title, line, glyph])));
+  try {
+    return { path: `/og/page/${name}.jpg?v=${h8}`, jpg: await cached(card, h8) };
+  } catch (e) {
+    throw new Error(`the og image of ${name}: ${e.message}`);
   }
 }

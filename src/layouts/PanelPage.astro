@@ -7,6 +7,7 @@ import '../styles/site.css';
 import Head from '../components/chrome/Head.astro';
 import ModeToggle from '../components/chrome/ModeToggle.astro';
 import PanelChrome from '../components/chrome/PanelChrome.astro';
+import { shareImage } from '../lib/og/pages.js';
 
 interface Props {
   title: string;
@@ -16,6 +17,8 @@ interface Props {
   // The page's view, for its module (data-panel-view).
   view?: string;
   noindex?: boolean;
+  // The share image (Head). Left out, a listed page that isn't a post shares the card drawn for its address
+  // (lib/og/pages.js).
   image?: string;
   // A post's date (Head: og:type article).
   published?: Date;
@@ -40,12 +43,13 @@ const {
   tagline,
   main,
 } = Astro.props;
+const card = image ?? (noindex ? undefined : await shareImage(Astro.url.pathname));
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
-    <Head title={title} description={description} noindex={noindex} image={image} published={published}
+    <Head title={title} description={description} noindex={noindex} image={card} published={published}
       headline={headline} voice={voice} />
     <slot name="head" />
   </head>

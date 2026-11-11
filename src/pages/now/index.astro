@@ -4,12 +4,12 @@
 import PanelPage from '../../layouts/PanelPage.astro';
 import NowView from '../../components/now/NowView.astro';
 import { nowSnapshots } from '../../lib/content.js';
+import { PAGES } from '../../data/pages.js';
 
 const snaps = await nowSnapshots();
 ---
 <PanelPage
-  title="Now + Setup · Aaron Orelup"
-  description="What I'm working on and the setup I do it with. Every update is dated, and the old ones stay below."
+  {...PAGES['/now/']}
   active="now"
   view="now"
 >

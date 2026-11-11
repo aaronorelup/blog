@@ -3,7 +3,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
-import { check, previewsProblems, statsPagesProblems, rssProblems, baselineProblems, shareUrlProblems, jsonLdProblems } from '../../scripts/build/contracts.mjs';
+import { check, previewsProblems, statsPagesProblems, rssProblems, baselineProblems, shareUrlProblems, shareImageProblems,
+  imageSize, sitemapPaths, jsonLdProblems } from '../../scripts/build/contracts.mjs';
 
 const dist = fileURLToPath(new URL('../../dist', import.meta.url));
 const listed = new Set(['a', 'b']);
@@ -46,6 +47,50 @@ test('a page: one canonical and one og:url, both its own address', () => {
   assert.equal(shareUrlProblems(head(canonical, og), '/ledger/b/').length, 2);
   assert.equal(shareUrlProblems(head(canonical + canonical, og), '/ledger/a/').length, 1);
   assert.equal(shareUrlProblems(head(canonical, og.replace('/ledger/a/', '/ledger/a')), '/ledger/a/').length, 1);
+});
+
+test('a page that shares a picture: one og:image, a picture of the build of the right type and size, and its twitter:card', () => {
+  const head = (...tags) => `<html lang="en"><head>${tags.join('')}</head><body><meta property="og:image" content="x"></body></html>`;
+  const card = '<meta name="twitter:card" content="summary_large_image">';
+  const image = (p) => `<meta property="og:image" content="https://aaronorelup.com${p}">`;
+  const sizes = { '/og/page/about.jpg': { type: 'jpeg', width: 1200, height: 630 }, '/og/page/small.jpg': { type: 'jpeg', width: 600, height: 315 },
+    '/og/page/about.png': { type: 'png', width: 1200, height: 630 }, '/courses/night.jpg': { type: 'jpeg', width: 1920, height: 1080 },
+    '/courses/night.png': { type: 'png', width: 1920, height: 1080 }, '/courses/thumb.png': { type: 'png', width: 200, height: 200 } };
+  const sizeOf = (p) => sizes[p] ?? null;
+  const problems = (...tags) => shareImageProblems(head(...tags), '/about/', sizeOf);
+  assert.deepEqual(problems(card, image('/og/page/about.jpg?v=0a1b2c3d')), []);
+  assert.deepEqual(problems(card, image('/courses/night.jpg')), []);
+  assert.deepEqual(problems(card, image('/courses/night.png')), []);
+  assert.deepEqual(problems(), []);                                                     // no picture: nothing to check
+  assert.deepEqual(problems(card), []);
+  assert.equal(problems(image('/og/page/about.jpg')).length, 1);                       // a picture and no twitter:card
+  assert.equal(problems(card.replace('summary_large_image', 'summary'), image('/og/page/about.jpg')).length, 1);
+  assert.equal(problems(card, card, image('/og/page/about.jpg')).length, 1);
+  assert.equal(problems(card, image('/og/page/about.jpg'), image('/og/page/about.jpg')).length, 1);
+  assert.equal(problems(card, image('/og/page/gone.jpg')).length, 1);                  // declared, and not in the build
+  assert.equal(problems(card, image('/og/page/small.jpg')).length, 1);                 // a card of the wrong size
+  assert.equal(problems(card, image('/og/page/about.png')).length, 1);                 // a card of the wrong type
+  assert.equal(problems(card, image('/courses/thumb.png')).length, 1);                 // too small for X
+  assert.equal(problems(card, '<meta property="og:image" content="https://example.com/og/page/about.jpg">').length, 1);
+});
+
+test('imageSize: a JPEG frame header or a PNG header, and nothing else', () => {
+  const jpeg = (sof) => Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0, 4, 1, 2, 0xff, 0xc4, 0, 3, 9, 0xff, sof, 0, 11, 8, 0x02, 0x76, 0x04, 0xb0, 3, 0, 0, 0]);
+  assert.deepEqual(imageSize(jpeg(0xc0)), { type: 'jpeg', width: 1200, height: 630 });
+  assert.deepEqual(imageSize(jpeg(0xc2)), { type: 'jpeg', width: 1200, height: 630 });   // progressive, as mozjpeg writes
+  const png = Buffer.alloc(24);
+  png.writeUInt32BE(0x89504e47, 0);
+  png.writeUInt32BE(1200, 16);
+  png.writeUInt32BE(630, 20);
+  assert.deepEqual(imageSize(png), { type: 'png', width: 1200, height: 630 });
+  assert.equal(imageSize(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>')), null);
+  assert.equal(imageSize(Buffer.from([0xff, 0xd8, 0xff, 0xd9])), null);
+  assert.equal(imageSize(Buffer.alloc(0)), null);
+});
+
+test('the sitemap: its pages as paths', () => {
+  const xml = '<urlset><url><loc>https://aaronorelup.com/</loc></url><url><loc>https://aaronorelup.com/now/2026-11-08/</loc><lastmod>2026-11-08</lastmod></url></urlset>';
+  assert.deepEqual(sitemapPaths(xml), ['/', '/now/2026-11-08/']);
 });
 
 test('a listed post: one JSON-LD block that parses, its url the page address', () => {
