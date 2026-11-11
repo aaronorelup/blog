@@ -184,6 +184,15 @@ function wire(s, section, stage) {
   };
   s.canvas.addEventListener('webglcontextlost', s.onLost);
   s.canvas.addEventListener('webglcontextrestored', s.onBack);
+  // Reduced motion asked for while the scene runs: the scene goes and the poster stays, as if it had been asked first
+  // (the unpin keeps what the reader sees where it is).
+  s.still = matchMedia('(prefers-reduced-motion: reduce)');
+  s.onStill = () => {
+    if (!s.still.matches || s.disposed) return;
+    dispose(s, section, stage);
+    section.dataset['3dOff'] = 'reduced motion';
+  };
+  s.still.addEventListener('change', s.onStill);
   s.play();
 }
 
@@ -195,6 +204,7 @@ export function dispose(s, section, stage) {
   document.removeEventListener('visibilitychange', s.onVis);
   s.canvas.removeEventListener('webglcontextlost', s.onLost);
   s.canvas.removeEventListener('webglcontextrestored', s.onBack);
+  s.still.removeEventListener('change', s.onStill);
   s.input.dispose();
   disposeTree(s.scene);
   s.lights.tex.dispose();

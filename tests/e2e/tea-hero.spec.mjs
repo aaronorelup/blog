@@ -277,3 +277,17 @@ test('tea-hero-12 a lost WebGL context shows the poster until it is back, then t
   expect(errors).toEqual([]);
 });
 
+test('tea-hero-13 reduced motion asked for while the scene runs puts the poster back, the page where it was', async ({ page }) => {
+  await page.goto('/tea/?hero=on');
+  await expect(hero(page)).toHaveAttribute('data-hero-settled', '', { timeout: 60_000 });
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  await page.locator('#ledger').evaluate((el) => el.scrollIntoView({ behavior: 'instant' }));
+  const top = () => page.locator('#ledger').evaluate((el) => Math.round(el.getBoundingClientRect().top));
+  const before = await top();
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(hero(page)).toHaveAttribute('data-3d-off', 'reduced motion', { timeout: 15_000 });
+  await expect(hero(page)).not.toHaveAttribute('data-3d', /./);
+  await posterShown(page);
+  expect(Math.abs(await top() - before)).toBeLessThanOrEqual(1);
+});
+
