@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
-import { check, previewsProblems, statsPagesProblems, rssProblems, baselineProblems } from '../../scripts/build/contracts.mjs';
+import { check, previewsProblems, statsPagesProblems, rssProblems, baselineProblems, shareUrlProblems } from '../../scripts/build/contracts.mjs';
 
 const dist = fileURLToPath(new URL('../../dist', import.meta.url));
 const listed = new Set(['a', 'b']);
@@ -34,6 +34,18 @@ test('rss.xml: one guid per listed post, each the post URL', () => {
   assert.equal(rssProblems(guid('a'), listed).length, 1);
   assert.equal(rssProblems(guid('a') + guid('b') + '<guid>https://aaronorelup.com/posts/a</guid>', listed).length, 1);
   assert.equal(rssProblems(guid('a') + guid('a') + guid('b'), listed).length, 1);
+});
+
+test('a page: one canonical and one og:url, both its own address', () => {
+  const head = (canonical, og) => `<html lang="en"><head>${canonical}${og}</head><body><link rel="canonical" href="x"></body></html>`;
+  const canonical = '<link rel="canonical" href="https://aaronorelup.com/ledger/a/">';
+  const og = '<meta property="og:url" content="https://aaronorelup.com/ledger/a/">';
+  assert.deepEqual(shareUrlProblems(head(canonical, og), '/ledger/a/'), []);
+  assert.equal(shareUrlProblems(head(canonical, ''), '/ledger/a/').length, 1);
+  assert.equal(shareUrlProblems(head('', og), '/ledger/a/').length, 1);
+  assert.equal(shareUrlProblems(head(canonical, og), '/ledger/b/').length, 2);
+  assert.equal(shareUrlProblems(head(canonical + canonical, og), '/ledger/a/').length, 1);
+  assert.equal(shareUrlProblems(head(canonical, og.replace('/ledger/a/', '/ledger/a')), '/ledger/a/').length, 1);
 });
 
 test('the baseline: every path built or redirected', () => {

@@ -65,6 +65,20 @@ export function rssProblems(xml, listed) {
   return [...bad, ...sameSet('rss.xml', slugs, listed)];
 }
 
+// A page names its own address once as <link rel="canonical"> and once as og:url (chrome/Head.astro), and both are
+// https://aaronorelup.com<pathname>: what a search engine indexes and what a shared link counts against.
+export function shareUrlProblems(html, pathname) {
+  const end = html.indexOf('</head>');
+  const tags = (end < 0 ? html : html.slice(0, end)).match(/<(?:link|meta)\b[^>]*>/g) || [];
+  const attr = (tag, name) => (tag.match(new RegExp(`\\s${name}="([^"]*)"`)) || [])[1];
+  const want = SITE + pathname;
+  return [
+    ['canonical', tags.filter((t) => attr(t, 'rel') === 'canonical').map((t) => attr(t, 'href'))],
+    ['og:url', tags.filter((t) => attr(t, 'property') === 'og:url').map((t) => attr(t, 'content'))],
+  ].filter(([, got]) => got.length !== 1 || got[0] !== want)
+    .map(([what, got]) => `${pathname}: ${what} is ${got.length ? got.join(', ') : 'missing'}, not ${want}`);
+}
+
 // Every path of the baseline is still answered: built, or the source of a redirect. Live paths are left out.
 export function baselineProblems(baseline, isBuilt, redirectSources) {
   return baseline.filter((p) => !isLivePath(p) && !isBuilt(p) && !redirectSources.has(p) && !redirectSources.has(p.replace(/\/$/, '')))
@@ -84,6 +98,8 @@ export function check(dist, listed = listedSlugs()) {
     ...previewsProblems(JSON.parse(read('ledger/previews.json')), listed),
     ...statsPagesProblems(read('stats-pages.txt'), listed),
     ...rssProblems(read('rss.xml'), listed),
+    ...[...listed].filter((s) => !isLive(s) && isBuilt(`/ledger/${s}/`))
+      .flatMap((s) => shareUrlProblems(read(`ledger/${s}/index.html`), `/ledger/${s}/`)),
     ...baselineProblems(readBaseline(), isBuilt, redirectSourcesOf(read('_redirects'))),
   ];
 }
