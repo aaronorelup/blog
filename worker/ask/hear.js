@@ -3,7 +3,7 @@
 // /api/ask like typed words. The audio and the text are never stored or logged; usage_day counts 'hear' calls only.
 // Before the paid call: origin, type, size, token, the switches, two limiters, the day's cap. Bare statuses.
 import { flags, spend } from '../lib/flags.js';
-import { json, sameOrigin, status } from '../lib/http.js';
+import { json, readBytes, sameOrigin, status } from '../lib/http.js';
 import { verify } from '../lib/session.js';
 
 export const MODEL = '@cf/openai/whisper-large-v3-turbo';
@@ -16,13 +16,6 @@ const TYPE = /^audio\/(?:webm|mp4|ogg|x-m4a|aac)(?:;|$)/i;
 function within(ms, p) {
   let t;
   return Promise.race([p, new Promise((_, no) => { t = setTimeout(() => no(new Error(`${ms} ms`)), ms); })]).finally(() => clearTimeout(t));
-}
-
-// The body's bytes, or null when they pass max (the declared length is checked first, then what came).
-async function bytes(request, max) {
-  if (Number(request.headers.get('Content-Length')) > max) return null;
-  const buf = new Uint8Array(await request.arrayBuffer());
-  return buf.length > max ? null : buf;
 }
 
 function base64(buf) {
@@ -41,7 +34,7 @@ export async function serve(request, env) {
   if (f.ask !== 'on' || f.ask_voice !== 'on') return status(503);
   const [one, all] = await Promise.all([env.HEAR_LIMIT.limit({ key: session.s }), env.HEAR_ALL.limit({ key: 'all' })]);
   if (!one.success || !all.success) return status(429);
-  const audio = await bytes(request, MAX_AUDIO);
+  const audio = await readBytes(request, MAX_AUDIO);   // null once the body passes the cap, whatever length it declared
   if (!audio) return status(413);
   if (audio.length < MIN_AUDIO) return status(400);
   if (!(await spend(env, 'hear', 1, f.hear_daily))) return status(503);
