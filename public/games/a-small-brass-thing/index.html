@@ -23,6 +23,7 @@ body{font:16px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helv
   font-style:italic;font-size:clamp(15px,1.6vmin + 9px,21px);line-height:1.3;color:var(--cream);opacity:0;
   transition:opacity .7s ease;pointer-events:none;text-wrap:balance;text-shadow:0 1px 10px rgba(16,18,32,.9)}
 #cap.on{opacity:.94}
+#stage.keeping #cap{bottom:auto;top:max(17%,64px);font-size:15px}
 #mute{position:absolute;top:max(8px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));width:44px;height:44px;padding:0;
   border:0;border-radius:50%;background:transparent;color:var(--soft);cursor:pointer;display:grid;place-items:center;opacity:.8;
   transition:color .2s ease,opacity .2s ease,background .2s ease}
@@ -39,10 +40,12 @@ body{font:16px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helv
 .panel [hidden]{display:none}
 .panel a,.panel button{pointer-events:auto}
 #end{top:calc(47% + 58px)}
-#keep{bottom:0;padding:34px 22px max(14px,env(safe-area-inset-bottom));
-  background:linear-gradient(to top,rgba(16,18,32,.94),rgba(16,18,32,.8) 62%,rgba(16,18,32,0))}
+#keep{bottom:0;padding:30px 18px max(10px,env(safe-area-inset-bottom));
+  background:linear-gradient(to top,rgba(16,18,32,.92),rgba(16,18,32,.74) 58%,rgba(16,18,32,0))}
+#keep .small{margin-top:3px!important;font-size:12.5px}
+#keep .links{margin-top:0!important}
 .line{font-style:italic;font-size:clamp(21px,2.6vmin + 10px,31px);line-height:1.25;color:var(--cream)}
-#keep .line{font-size:clamp(18px,1.8vmin + 10px,24px)}
+#keep .line{font-size:clamp(18px,1.4vmin + 10px,22px)}
 .small{font-size:13px;line-height:1.45;color:var(--soft);margin-top:10px!important}
 .links{font-size:14px;margin-top:8px!important}
 .lk{appearance:none;-webkit-appearance:none;display:inline-block;background:none;border:0;margin:0 6px;padding:7px 4px;font:inherit;color:var(--body);
@@ -118,8 +121,8 @@ const RMID = BAND.map(b => (b[0] + b[1]) / 2);
 const ZONE = [0.6025, 0.30];                 // radius where the outer, then the middle ring's hit zone starts
 const MARK_R = [0.905, 0.6025, 0.30];        // the gold arc of a ring sits just outside it
 const GAPW = [0.115, 0.105, 0.085], PEGR = [0.05, 0.047, 0.04];
-const RIM = 0.948, LAMP_R = 0.085, STEP_T = 0.24;   // STEP_T: seconds the hand takes per detent
-const D4 = 293.66, E4 = 329.63, F4 = 369.99, A4 = 440, B4 = 493.88;
+const RIM = 0.948, LAMP_R = 0.085, STEP_T = 0.26;   // STEP_T: seconds the hand takes per detent
+const D4 = 587.33, E4 = 659.26, F4 = 739.99, A4 = 880, B4 = 987.77;   // the comb sits an octave up, where a music box lives
 // One pitch per ring (outer, middle, inner) for each of the six phrases, and the bass under each.
 const PIT = [[D4, F4, A4], [E4, A4, B4], [D4, A4, D4 * 2], [F4, A4, D4 * 2], [E4, B4, E4 * 2], [D4, A4, F4 * 2]];
 const BASS = [146.83, 110, 123.47, 98, 110, 146.83];
@@ -140,6 +143,7 @@ const G = {
   beam: { a: 0, len: 0, ang: 0, tgt: 0, flash: 0, dawn: 0 },
   cam: { k: 0 }, dial: { k: -1, a: 0 }, rock: { x: 0, y: -1.4 },
   home: { a: 0, dawn: 0, sun: 0, lit: [], tw: [], boat: [0, 0, 0], pass: 0 },
+  glint: new Array(12).fill(0), trail: [],
   phr: [], pit: 0, input: { ember: false, rings: false, beam: false }, sel: 0, kb: false, task: null, hover: -2
 };
 const hint = { idle: 0, stuck: 0, lvl: 0, acc: 0, demo: 0, once: 0, text: '' };
@@ -196,7 +200,7 @@ function stepCap(h) {
 }
 
 // ---------- audio: everything is synthesized, and nothing exists before the first gesture ----------
-const A = { ctx: null, bus: null, master: null, n: 0, noise: null, brown: null, sea: null, seaLvl: -1, kick: 0 };
+const A = { ctx: null, bus: null, master: null, n: 0, noise: null, brown: null, sea: null, seaLvl: -1, mine: false, mineT: 0 };
 function aInit() {
   if (A.ctx) return true;
   const AC = window.AudioContext || window.webkitAudioContext;
@@ -204,7 +208,7 @@ function aInit() {
   try {
     const c = A.ctx = new AC();
     const comp = c.createDynamicsCompressor();   // the limiter on the way out
-    comp.threshold.value = -14; comp.knee.value = 6; comp.ratio.value = 16; comp.attack.value = 0.003; comp.release.value = 0.22;
+    comp.threshold.value = -8; comp.knee.value = 6; comp.ratio.value = 14; comp.attack.value = 0.002; comp.release.value = 0.2;
     A.master = c.createGain(); A.master.gain.value = G.muted ? 0 : 0.9;
     A.bus = c.createGain(); A.bus.gain.value = 0.85;
     A.bus.connect(comp); comp.connect(A.master); A.master.connect(c.destination);
@@ -221,7 +225,6 @@ function aInit() {
 }
 function aUnlock() {
   if (!aInit()) return;
-  A.want = true;
   if (A.ctx.state === 'suspended' && !document.hidden) { const p = A.ctx.resume(); if (p && p.catch) p.catch(() => {}); }
 }
 const aOk = () => A.ctx && A.ctx.state === 'running' && !G.muted && A.n < (TS > 4 ? 8 : 56);
@@ -248,8 +251,8 @@ function nz(t, a, peak, d, type, f, q) {          // one enveloped burst of filt
 }
 function sTick(i, soft) {
   if (!aOk()) return; const t = aT(), v = soft ? 0.45 : 1, j = 0.94 + Math.random() * 0.12;
-  nz(t, 0.001, 0.26 * v, 0.03, 'bandpass', [2100, 2700, 3400][i] * j, 2.2);
-  osc('sine', [150, 190, 240][i] * j, t, 0.002, 0.16 * v, 0.045);
+  nz(t, 0.001, 0.2 * v, 0.03, 'bandpass', [1900, 2500, 3200][i] * j, 2.2);
+  osc('sine', [170, 210, 260][i] * j, t, 0.002, 0.2 * v, 0.05);
 }
 function sSeat(last) { if (!aOk()) return; const t = aT(); osc('sine', 196, t, 0.003, 0.22, 0.16, 150); osc('triangle', last ? 1760 : 1174.7, t, 0.002, 0.05, 0.3); }
 function sClunk() {
@@ -266,8 +269,8 @@ function sLamp() { if (!aOk()) return; const t = aT(); [146.83, 220, 369.99, 587
 function sPeg(i) { if (!aOk()) return; const t = aT(); osc('sine', [880, 1174.7, 1480][i], t, 0.003, 0.07, 0.35); nz(t, 0.001, 0.12, 0.02, 'bandpass', 3200, 2); }
 function sPluck(f, off, vel, pan) {   // a music-box tine: a triangle with a bright partial and a tiny pick
   if (!aOk()) return; const t = aT(off), v = vel || 1;
-  osc('triangle', f, t, 0.004, 0.3 * v, 1.25, 0, pan); osc('sine', f * 2, t, 0.003, 0.09 * v, 0.5, 0, pan); osc('sine', f * 3.01, t, 0.002, 0.03 * v, 0.2, 0, pan);
-  nz(t, 0.001, 0.05 * v, 0.012, 'bandpass', 3600, 1.5);
+  osc('triangle', f, t, 0.004, 0.25 * v, 1.6, 0, pan); osc('sine', f * 2, t, 0.003, 0.06 * v, 0.6, 0, pan); osc('sine', f * 5.4, t, 0.001, 0.016 * v, 0.07, 0, pan);
+  nz(t, 0.001, 0.04 * v, 0.012, 'bandpass', 4200, 1.5);
 }
 function sDots() { if (!aOk()) return; const t = aT(); osc('sine', 1174.7, t, 0.01, 0.04, 0.5); osc('sine', 1760, t + 0.12, 0.01, 0.03, 0.5); }
 function sKeep() { if (!aOk()) return; const t = aT(); [587.33, 880, 1174.7].forEach((f, k) => osc('triangle', f, t + k * 0.09, 0.005, 0.07, 0.7)); }
@@ -310,13 +313,13 @@ function setMute(m, quiet) {
 
 // ---------- layout: four camera stations (close, lid, home, ember), boats and the harbour placed to fit ----------
 const cv = document.getElementById('c'), ctx = cv.getContext('2d');
-let W = 0, H = 0, DPR = 1;
+let W = 0, H = 0, DPR = 1, quality = 1, slowN = 0, slowSum = 0;
 const L = [{}, {}, {}, {}];
 const HM = { coast: [], houses: [], piers: [], moor: [], path: [], stars: [], x0: 0, x1: 0, floor: 0 };
 function resize() {
   const r = cv.getBoundingClientRect();
   W = Math.max(160, r.width || window.innerWidth); H = Math.max(160, r.height || window.innerHeight);
-  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  DPR = Math.max(1, Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(3.4e6 / (W * H))) * quality);   // never more pixels than a frame can afford
   cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
   const Rc = Math.min(W * 0.46, H * 0.36, 330), capH = clamp(H * 0.085, 44, 70);
   const Rl = clamp(H / 6, Math.min(147, Rc), Rc), Rh = clamp(Math.min(W, H) * 0.034, 12, 24);
@@ -332,7 +335,7 @@ function camUpdate() {
   cam.s = Math.exp(lerp(Math.log(a.s), Math.log(b.s), f)) * (1 + (RM ? 0 : 0.012 * G.thump));
 }
 function placeBoats(capH) {
-  const s = L[1].s, cy = L[1].y, dial = 0.44 * s + 8;
+  const s = L[1].s, cy = L[1].y, dial = 0.6 * s + 6;
   const xmax = (W / 2 - dial) / s, yup = (cy - dial - 4) / s, ydn = (H - cy - dial - capH) / s;
   const dmax = (a) => {
     const sx = Math.abs(Math.sin(a)), c = Math.cos(a); let d = 3.7;
@@ -377,10 +380,10 @@ function placeBoats(capH) {
   G.rock.x = bd * Math.sin(ra); G.rock.y = -bd * Math.cos(ra);
 }
 function buildHome() {
-  const s = L[2].s, ox = L[2].x, oy = L[2].y, port = H > W * 1.05, tip = oy / H, bay = port ? 0.705 : 0.735;
+  const s = L[2].s, ox = L[2].x, oy = L[2].y, port = H > W * 1.05, tip = oy / H, bay = port ? 0.69 : 0.71;
   const P = (u, v) => [(u * W - ox) / s, (v * H - oy) / s];
-  const pts = [[-0.1, tip + 0.07], [0.06, tip + 0.08], [0.18, tip + 0.035], [0.255, tip - 0.035], [0.325, tip - 0.035], [0.375, tip + 0.035],
-    [0.42, bay - 0.045], [0.5, bay + 0.002], [0.62, bay + 0.022], [0.74, bay + 0.002], [0.82, bay - 0.05], [0.88, bay - 0.115], [0.97, bay - 0.145], [1.1, bay - 0.135]];
+  const pts = [[-0.7, tip + 0.06], [-0.1, tip + 0.07], [0.06, tip + 0.08], [0.18, tip + 0.035], [0.255, tip - 0.035], [0.325, tip - 0.035], [0.375, tip + 0.035],
+    [0.42, bay - 0.045], [0.5, bay + 0.002], [0.62, bay + 0.022], [0.74, bay + 0.002], [0.82, bay - 0.05], [0.88, bay - 0.115], [0.97, bay - 0.145], [1.1, bay - 0.135], [1.7, bay - 0.12]];
   const uv = [];   // Catmull-Rom through the points, as a dense polyline
   for (let i = 0; i < pts.length - 1; i++) {
     const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
@@ -391,12 +394,12 @@ function buildHome() {
   }
   uv.push(pts[pts.length - 1]);
   const coastV = (u) => { for (let i = 1; i < uv.length; i++) if (uv[i][0] >= u) { const a = uv[i - 1], b = uv[i]; return lerp(a[1], b[1], clamp((u - a[0]) / Math.max(1e-6, b[0] - a[0]), 0, 1)); } return bay; };
-  HM.coast = uv.map(p => P(p[0], p[1])); HM.x0 = P(-0.12, 0)[0]; HM.x1 = P(1.12, 0)[0]; HM.floor = P(0, 1.15)[1];
+  HM.coast = uv.map(p => P(p[0], p[1])); HM.x0 = P(-0.7, 0)[0]; HM.x1 = P(1.7, 0)[0]; HM.floor = P(0, 1.6)[1];
   const rows = port ? 3 : 2, per = 18 / rows, hs = clamp(Math.min(W, H) * 0.024, 8, 15) / s;
   HM.houses = [];
   for (let k = 0; k < 18; k++) {
     const row = k % rows, c = Math.floor(k / rows), u = 0.462 + (c + (row % 2) * 0.5) * (0.335 / per) + (hash(k * 3.3) - 0.5) * 0.012;
-    const v = coastV(u) + 0.04 + row * (port ? 0.04 : 0.055) + (hash(k * 7.7) - 0.5) * 0.008, p = P(u, v);
+    const v = coastV(u) + 0.038 + row * (port ? 0.036 : 0.05) + (hash(k * 7.7) - 0.5) * 0.008, p = P(u, v);
     HM.houses.push({ x: p[0], y: p[1], sz: hs * (0.85 + hash(k * 1.7) * 0.35), rot: (hash(k * 9.1) - 0.5) * 0.35 });
   }
   HM.order = [7, 2, 12, 16, 5, 9, 0, 14, 10, 3, 17, 6, 1, 11, 15, 8, 4, 13];   // the order windows light in
@@ -404,6 +407,14 @@ function buildHome() {
   const mo = [[0.535, 0.038], [0.59, 0.05], [0.7, 0.045]].map(m => P(m[0], coastV(m[0]) - m[1] * (port ? 0.7 : 1)));
   const st = [[0.66, -0.1], [1.12, 0.22], [0.98, -0.1]].map(m => P(m[0], m[1])), ct = P(0.63, 0.4);
   HM.path = mo.map((m, i) => ({ a: st[i], c: [ct[0] + (i - 1) * 2, ct[1]], b: m }));
+  HM.trees = [];   // a little texture for the land: trees, kept clear of the village and the light
+  for (let k = 0; k < 70; k++) {
+    const u = -0.04 + hash(k * 4.7) * 1.08, v = coastV(u) + 0.03 + hash(k * 6.1) * hash(k * 2.9) * 0.34, p = P(u, v);
+    if ((u > 0.42 && u < 0.84 && v < coastV(u) + 0.16) || Math.hypot(p[0], p[1]) < 2.6 || v > 0.99) continue;
+    HM.trees.push([p[0], p[1], clamp(Math.min(W, H) * 0.006, 2, 4.2) * (0.7 + hash(k * 9.9) * 0.7) / s]);
+  }
+  const h0 = HM.houses[0], mid = P(0.4, coastV(0.4) + 0.06);
+  HM.road = [0.9, 1.5, mid[0], mid[1], h0.x - h0.sz * 1.2, h0.y + h0.sz * 0.2];
   HM.stars = []; for (let k = 0; k < 34; k++) HM.stars.push([hash(k * 2.1), hash(k * 5.3) * 0.085, 0.4 + hash(k * 8.9) * 0.6]);
 }
 
@@ -625,9 +636,12 @@ function draw() {
   camUpdate();
   if (G.home.a > 0.003) drawSky(c);
   c.save(); c.translate(cam.x, cam.y); c.scale(cam.s, cam.s);
+  c.save();
+  if (G.home.a > 0.003) { c.beginPath(); c.rect(-1e4, (H * 0.1 * G.home.a - cam.y) / cam.s, 2e4, 2e4); c.clip(); }
   if (G.sea > 0.003) drawSea(c);
   if (G.home.a > 0.003) drawLand(c);
   if (G.beam.a > 0.003) drawBeam(c);
+  c.restore();
   drawAfloat(c);
   drawDisc(c);
   drawFx(c);
@@ -643,12 +657,12 @@ function draw() {
   if (G.fade > 0.003) { c.fillStyle = col(PAGE, G.fade); c.fillRect(0, 0, W, H); }
 }
 
-function drawWaves(c, alpha) {
+function drawWaves(c, alpha, thr) {
   const s = cam.s, cell = Math.max(0.3, 26 / s), t = RM ? 0 : G.clock;
   const x0 = Math.floor(-cam.x / s / cell) - 1, x1 = Math.ceil((W - cam.x) / s / cell) + 1, y0 = Math.floor(-cam.y / s / cell) - 1, y1 = Math.ceil((H - cam.y) / s / cell) + 1;
   c.beginPath();
   for (let i = x0; i <= x1; i++) for (let j = y0; j <= y1; j++) {
-    const k = i * 57.3 + j * 113.9, hs = hash(k); if (hs < 0.4) continue;
+    const k = i * 57.3 + j * 113.9, hs = hash(k); if (hs < thr) continue;
     const x = (i + 0.5 + (hash(k + 1.7) - 0.5) * 0.7) * cell + Math.sin(t * 0.4 + hs * 30) * cell * 0.07, y = (j + 0.5 + (hash(k + 4.1) - 0.5) * 0.7) * cell + Math.sin(t * 0.9 + hs * 50) * cell * 0.04;
     if (x * x + y * y < 1.1) continue;
     const w = cell * (0.12 + hs * 0.1);
@@ -670,10 +684,10 @@ function hull(c, x, y, head, Ln, a, kind, wake) {
 }
 function drawSea(c) {
   const B = G.beam, s = cam.s, far = 1 + (Math.hypot(W, H) / s) * B.len, dn = G.home.dawn * G.home.a;
-  if (dn > 0.01) drawWaves(c, 0.22 * dn * G.sea);
+  if (dn > 0.01) drawWaves(c, 0.15 * dn * G.sea, 0.72);
   if (B.a <= 0.003) return;
   c.save(); wedge(c, beamAng(), BEAM_HW * 1.04, 0.99, far); c.clip();
-  drawWaves(c, 0.7 * B.a * G.sea);
+  drawWaves(c, 0.7 * B.a * G.sea, 0.4);
   if (G.home.a < 0.99) {
     const R = G.rock, k = 0.105, a = B.a * (1 - G.home.a);
     c.save(); c.translate(R.x, R.y); c.globalAlpha = a; c.beginPath();
@@ -703,8 +717,8 @@ function drawDots(c, cx, cy, R, k, am) {
   const hl = hintPulse(), lw = Math.max(0.008 * k, 1.2 / cam.s);
   for (const d of G.dots) {
     const al = d.a * am * (1 - d.keep); if (al <= 0.01) continue;
-    const an = d.step * SA, rr = R * (1 - d.keep), x = cx + rr * Math.sin(an), y = cy - rr * Math.cos(an), pr = 0.036 * k * (1 + 0.5 * d.pop);
-    glow(c, x, y, pr * 3.6, GOLD, (0.3 * d.fill + 0.28 * hl + 0.6 * d.stamp) * al);
+    const an = d.step * SA, rr = R * (1 - d.keep), x = cx + rr * Math.sin(an), y = cy - rr * Math.cos(an), pr = 0.04 * k * (1 + 0.5 * d.pop);
+    glow(c, x, y, pr * 3.6, GOLD, (0.16 + 0.3 * d.fill + 0.28 * hl + 0.6 * d.stamp) * al);
     const full = d.fill > 0.99;
     c.lineWidth = lw; c.strokeStyle = col(GOLD, 0.92 * al);
     c.setLineDash(full ? [] : [0.02 * k, 0.014 * k]); c.lineDashOffset = RM ? 0 : -G.clock * 0.02 * k;
@@ -736,23 +750,31 @@ function drawAfloat(c) {   // lanterns, horns and the dial of the boat being ans
   }
   const D = G.dial;
   if (D.k >= 0 && D.a > 0.01) {
-    const b = boats[D.k], p = boatPos(b), R = 0.44;
-    c.strokeStyle = col(GOLD, 0.16 * D.a); c.lineWidth = 1 / s; disk(c, p[0], p[1], R); c.stroke();
-    c.fillStyle = col(GOLD, 0.4 * D.a);
-    for (let j = 0; j < 12; j++) { const q = px(R, j * SA); disk(c, p[0] + q[0], p[1] + q[1], (j % 3 ? 1.1 : 1.7) / s); c.fill(); }
+    const b = boats[D.k], p = boatPos(b), R = 0.5;
+    c.strokeStyle = col(GOLD, 0.2 * D.a); c.lineWidth = 1 / s; disk(c, p[0], p[1], R); c.stroke();
+    c.fillStyle = col(GOLD, 0.55 * D.a);
+    for (let j = 0; j < 12; j++) { const q = px(R, j * SA); disk(c, p[0] + q[0], p[1] + q[1], (j % 3 ? 1.3 : 2.1) / s); c.fill(); }
+    { const q0 = px(R + 0.045, 0), q1 = px(R + 0.1, 0); c.strokeStyle = col(GOLD, 0.6 * D.a); c.lineWidth = 1.5 / s; c.beginPath(); c.moveTo(p[0] + q0[0], p[1] + q0[1]); c.lineTo(p[0] + q1[0], p[1] + q1[1]); c.stroke(); }
     if (G.hand.on || G.hand.phase % 12 !== 0) { const q = px(R, handAng()); c.fillStyle = col(CREAM, 0.9 * D.a); disk(c, p[0] + q[0], p[1] + q[1], 2.4 / s); c.fill(); glow(c, p[0] + q[0], p[1] + q[1], 9 / s, GOLD, 0.5 * D.a); }
-    if (G.dotsWhere === 'boat') drawDots(c, p[0], p[1], R, 1.3, D.a);
+    if (G.dotsWhere === 'boat') drawDots(c, p[0], p[1], R, 1.45, D.a);
   }
+}
+function brass(c, k, i) {
+  const m = (v) => Math.min(255, Math.round(v * k)), hi = 'rgb(' + m(98) + ',' + m(80) + ',' + m(60) + ')', lo = 'rgb(' + m(48) + ',' + m(42) + ',' + m(50) + ')';
+  if (!c.createConicGradient) return 'rgb(' + m(64) + ',' + m(55) + ',' + m(54) + ')';
+  const g = c.createConicGradient(-2.25 + i * 0.22, 0, 0);
+  g.addColorStop(0, hi); g.addColorStop(0.2, lo); g.addColorStop(0.5, hi); g.addColorStop(0.72, lo); g.addColorStop(1, hi);
+  return g;
 }
 function drawRing(c, i, a, lod) {
   const r = rings[i]; if (r.a <= 0.01) return;
   const b0 = BAND[i][0], b1 = BAND[i][1], rm = RMID[i], w = b1 - b0, th = r.vis * SA, gap = GAPW[i] / rm, A0 = th - HP + gap / 2, A1 = th - HP + TAU - gap / 2;
   const sc = 1 + 0.06 * (1 - E.out3(r.a)), f = r.flash;
   c.save(); c.globalAlpha = a * r.a; if (sc !== 1) c.scale(sc, sc);
-  c.lineCap = 'butt'; c.lineWidth = w;
-  c.strokeStyle = 'rgb(' + Math.round(44 + 16 * f + 8 * r.sel) + ',' + Math.round(42 + 12 * f) + ',' + Math.round(60 + 8 * f) + ')';
+  c.lineCap = 'butt'; c.lineWidth = w; c.strokeStyle = brass(c, 1 + 0.4 * f + 0.14 * r.sel, i);
   c.beginPath(); c.arc(0, 0, rm, A0, A1); c.stroke();
-  c.lineWidth = w * 0.42; c.strokeStyle = 'rgba(255,255,255,0.028)'; c.beginPath(); c.arc(0, 0, rm + w * 0.12, A0, A1); c.stroke();
+  c.lineWidth = w * 0.3; c.strokeStyle = 'rgba(255,240,215,0.035)'; c.beginPath(); c.arc(0, 0, rm + w * 0.2, A0, A1); c.stroke();
+  c.strokeStyle = 'rgba(8,8,14,0.10)'; c.beginPath(); c.arc(0, 0, rm - w * 0.3, A0, A1); c.stroke();
   c.lineWidth = 0.009 + 0.007 * r.sel; c.strokeStyle = mixGC(r.sel, 0.5 + 0.35 * f + 0.45 * r.sel);
   c.beginPath(); c.arc(0, 0, b1, A0, A1); c.stroke(); c.beginPath(); c.arc(0, 0, b0, A0, A1); c.stroke();
   c.lineCap = 'round'; c.lineWidth = 0.011; c.strokeStyle = mixGC(r.sel, 0.9); c.beginPath();
@@ -781,6 +803,7 @@ function drawDisc(c) {
       c.lineWidth = 0.005; c.strokeStyle = col(GOLD, 0.2); disk(c, 0, 0, 0.895); c.stroke();
       c.strokeStyle = 'rgba(8,8,14,0.5)'; c.lineWidth = 0.032; for (const rr of [0.6025, 0.30]) { disk(c, 0, 0, rr); c.stroke(); }
       c.fillStyle = col(GOLD, 0.34); for (let k = 0; k < 12; k++) { const p = px(RIM, k * SA); disk(c, p[0], p[1], k % 3 ? 0.006 : 0.01); c.fill(); }
+      for (let k = 0; k < 12; k++) { const gl = G.glint[k]; if (gl > 0.02) { const p = px(RIM, k * SA); glow(c, p[0], p[1], 0.11, GOLD, 0.7 * gl * a); c.globalAlpha = a; c.strokeStyle = col(GOLD, 0.9 * gl); c.lineWidth = 0.008; disk(c, p[0], p[1], 0.03 + 0.03 * (1 - gl)); c.stroke(); } }
     }
     for (let i = 0; i < 3; i++) drawRing(c, i, a, lod);
     const hl = hintPulse();
@@ -833,9 +856,11 @@ function drawDisc(c) {
     c.globalAlpha = Lp * a; c.fillStyle = g; disk(c, 0, 0, LAMP_R * (0.9 + 0.08 * G.lampPulse)); c.fill();
   }
   const bd = G.bead;
+  for (const t of G.trail) { c.fillStyle = col(CORAL, 0.5 * (1 - t[2] / 0.35) * bd.a); disk(c, t[0], t[1], 0.026 * (1 - t[2] / 0.35)); c.fill(); }
   if (bd.a > 0.003) {   // the bead of light, which is also the ember of the first and the last frame
     const u = lerp(1, L[0].s / s, G.ember), em = (1 - a) , p = px(bd.r, bd.ang), k = (1 + 0.45 * bd.z) * u;
     const b2 = RM ? 1 : 0.8 + 0.2 * Math.sin(G.clock * 1.6);
+    if (em > 0.01) glow(c, p[0], p[1], 0.8 * u * (0.9 + 0.1 * b2), CORAL, 0.14 * em * b2 * bd.a);
     glow(c, p[0], p[1], 0.17 * k * (1 + 1.3 * em) * (em > 0.01 ? b2 : 1) + 0.2 * G.lampPulse * (bd.r < 0.02 ? 1 : 0), CORAL, 0.85 * bd.a);
     c.globalAlpha = bd.a; c.fillStyle = '#E2795C'; disk(c, p[0], p[1], 0.036 * k * (1 + 0.6 * em)); c.fill();
     c.fillStyle = 'rgba(255,225,205,0.85)'; disk(c, p[0] - 0.008 * k, p[1] - 0.009 * k, 0.013 * k * (1 + 0.6 * em)); c.fill();
@@ -898,6 +923,12 @@ function drawLand(c) {
   c.beginPath(); co.forEach((p, i) => { if (i) c.lineTo(p[0], p[1]); else c.moveTo(p[0], p[1]); });
   c.lineWidth = 3 / s; c.lineJoin = 'round'; c.strokeStyle = col(CREAM, 0.1 + 0.2 * d); c.stroke();
   c.lineWidth = 1.2 / s; c.strokeStyle = col(GOLD, 0.34 + 0.4 * d); c.stroke();
+  c.save(); c.beginPath(); c.moveTo(HM.x0, HM.floor); for (const p of co) c.lineTo(p[0], p[1]); c.lineTo(HM.x1, HM.floor); c.closePath(); c.clip();
+  c.lineWidth = 1 / s;   // two terraces under the shore, a road to the village, some trees
+  for (const off of [26, 62]) { c.beginPath(); co.forEach((p, i) => { const y = p[1] + off / s * (1 + 0.25 * Math.sin(p[0] * 0.5 + off)); if (i) c.lineTo(p[0], y); else c.moveTo(p[0], y); }); c.strokeStyle = col(CREAM, 0.05 + 0.05 * d); c.stroke(); }
+  c.setLineDash([4 / s, 5 / s]); c.strokeStyle = col(CREAM, 0.2 + 0.15 * d); c.beginPath(); c.moveTo(HM.road[0], HM.road[1]); c.quadraticCurveTo(HM.road[2], HM.road[3], HM.road[4], HM.road[5]); c.stroke(); c.setLineDash([]);
+  for (const t of HM.trees) { c.fillStyle = '#2B2A3B'; disk(c, t[0], t[1], t[2]); c.fill(); c.fillStyle = col('190,150,110', 0.05 + 0.16 * d); disk(c, t[0] - t[2] * 0.25, t[1] - t[2] * 0.25, t[2] * 0.6); c.fill(); }
+  c.restore();
   c.fillStyle = '#2A2839'; disk(c, 0, 0, 1.7); c.fill(); c.lineWidth = 1 / s; c.strokeStyle = col(CREAM, 0.2 + 0.2 * d); c.stroke();
   c.lineCap = 'round'; c.lineWidth = 2.4 / s; c.strokeStyle = col(CREAM, 0.34 + 0.3 * d); c.beginPath(); for (const p of HM.piers) { c.moveTo(p[0], p[1]); c.lineTo(p[2], p[3]); } c.stroke();
   for (let k = 0; k < HM.houses.length; k++) {
@@ -925,7 +956,7 @@ function drawLand(c) {
 function pluck(i, off) {
   const r = rings[i], th = mod(r.step, 12) * SA, p = px(RMID[i], th);
   r.pop = 1; G.hand.glow = 1; G.beam.flash = 1;
-  if (cam.s > 60) ripple(p[0], p[1], PEGR[i], PEGR[i] * 4.4, 0.65, CREAM, 0.6, 0.008);
+  if (cam.s > 60) { ripple(p[0], p[1], PEGR[i], PEGR[i] * 4.4, 0.65, CREAM, 0.6, 0.008); sparks(p[0], p[1], 2, CREAM, 0.22); }
   sPluck(PIT[G.pit][i], off, 1, Math.sin(th) * 0.5 * RMID[i]);
   if (G.onPluck) G.onPluck(i, off);
 }
@@ -937,7 +968,7 @@ function stepHand(h) {
     const off = (n - p0) * STEP_T, s = mod(n, 12);
     if (s === 0 && Hd.onBar) Hd.onBar(Math.round(n / 12), off);
     for (const r of rings) if (r.peg > 0.5 && r.a > 0.5 && mod(r.step, 12) === s) pluck(r.i, off);
-    if (G.dotsWhere === 'boat' && G.dial.k >= 0 && G.dial.a > 0.5 && G.dots.some(d => d.step === s)) { boats[G.dial.k].flare = 1; sBlink(); }
+    if (G.dotsWhere === 'boat' && G.dial.k >= 0 && G.dial.a > 0.5 && G.dots.some(d => d.step === s)) { boats[G.dial.k].flare = 1; sBlink(); G.glint[s] = 1; }
     if (Hd.onStep) Hd.onStep(s, off);
   }
 }
@@ -958,7 +989,7 @@ function stepBeam(h) {
       if ((a0 < 0) !== (a1 < 0) && Math.abs(a0) < 1 && Math.abs(a1) < 1 && G.clock - (r.lastPl || -9) > 0.14) { r.lastPl = G.clock; pluck(r.i, 0); }
     }
   }
-  for (const b of boats) if (!b.found) { if (Math.abs(adiff(B.ang, b.ang)) < 0.1) { b.seen += h; if (b.seen >= 0.3) findBoat(b); } else b.seen = 0; }
+  for (const b of boats) if (!b.found) { if (Math.abs(adiff(B.ang, b.ang)) < 0.1) { b.seen += h; if (b.seen >= 0.45) findBoat(b); } else b.seen = 0; }
 }
 const reveals = [];
 function step(h) {
@@ -970,7 +1001,7 @@ function step(h) {
   const dragging = new Set(); for (const d of drags.values()) if (d.kind === 'ring') dragging.add(d.i);
   const kS = 1 - Math.exp(-h * 14), kF = Math.exp(-h * 9), kP = Math.exp(-h * 5.5);
   for (const r of rings) {
-    const target = r.step + 4 * r.frac * r.frac * r.frac;   // a finger has to push past the middle of a detent
+    const target = r.step + 0.3 * r.frac + 2.8 * r.frac * r.frac * r.frac;   // it leans with the finger, then gives past the middle of a detent
     for (let k = 0; k < 2; k++) { r.vel += (760 * (target - r.vis) - 44 * r.vel) * h / 2; r.vis += r.vel * h / 2; }
     const want = dragging.has(r.i) ? 1 : (G.kb && G.sel === r.i && G.input.rings) ? 1 : (G.hover === r.i && G.input.rings) ? 0.4 : 0;
     r.sel += (want - r.sel) * kS; r.flash *= kF; r.pop *= kP;
@@ -979,7 +1010,12 @@ function step(h) {
   for (const d of G.dots) { d.fill += (d.want - d.fill) * kS; d.pop *= kP; d.stamp *= Math.exp(-h * 1.6); }
   for (const b of boats) { b.flare *= kP; if (b.horn > 0) b.horn = Math.max(0, b.horn - h / 2.2); }
   for (let k = 0; k < 18; k++) if (G.home.tw[k]) G.home.tw[k] *= Math.exp(-h * 2.4);
+  for (let k = 0; k < 12; k++) if (G.glint[k]) G.glint[k] = G.glint[k] < 0.01 ? 0 : G.glint[k] * Math.exp(-h * 2.6);
   G.lampPulse *= Math.exp(-h * 2.4); G.thump *= Math.exp(-h * 8); G.beam.flash *= Math.exp(-h * 4.5); G.hand.glow *= kP;
+  { const bd = G.bead, p = px(bd.r, bd.ang), tr = G.trail, l = tr[tr.length - 1];   // the bead's trail, while it moves
+    for (let i = tr.length - 1; i >= 0; i--) { tr[i][2] += h; if (tr[i][2] >= 0.35) tr.splice(i, 1); }
+    if (bd.a > 0.5 && G.discA > 0.5 && !RM && (!l || Math.hypot(l[0] - p[0], l[1] - p[1]) > 0.035) && (G.bx !== p[0] || G.by !== p[1]) && tr.length < 40) tr.push([p[0], p[1], 0]);
+    G.bx = p[0]; G.by = p[1]; }
   stepHand(h); stepBeam(h); stepHint(h);
   if (G.goal) G.solveT = (G.goal.met && !midDrag()) ? G.solveT + h : 0;
   stepFx(h); stepCap(h);
@@ -1073,6 +1109,7 @@ function* bWake() {
   yield* ringIn(0, 5);
   yield* wait(0.2);
   yield* lock([0], 'Turn the ring. Bring its gap round to the gold.', true);
+  yield* lock([4], 'Turn the ring. Bring its gap round to the gold.');
   yield* lock([8], 'Turn the ring. Bring its gap round to the gold.');
   yield* wait(0.3);
 }
@@ -1233,7 +1270,7 @@ function* bEnd() {   // the lighthouse shrinks to the ember of the first frame
 }
 function* bKeep() {   // a return visit: the dawn harbour, the boats moored, the tune still turning
   const Hd = G.hand;
-  G.ended = true; keepEl.hidden = false;
+  G.ended = true; keepEl.hidden = false; document.getElementById('stage').classList.add('keeping');
   Array.from(keepEl.children).forEach((el, i) => reveals.push({ el, t: 0.6 + i * 0.7 }));
   Hd.phase = 0; Hd.fresh = true; Hd.spin = true;
   Hd.onBar = (b, off) => { const k = mod(b, 6); setPhrase(k); sBass(BASS[k], off); };
@@ -1274,9 +1311,14 @@ let lastT = 0;
 function frame(now) {
   window.requestAnimationFrame(frame);
   let dt = (now - lastT) / 1000; lastT = now;
+  if (dt > 0 && dt < 0.25 && !document.hidden && DPR > 1) {   // a slow machine gets a lighter canvas, once, quietly
+    slowSum += dt; if (++slowN >= 120) { if (slowSum / slowN > 0.034 && quality > 0.5) { quality *= 0.75; resize(); } slowN = 0; slowSum = 0; }
+  }
   if (!(dt > 0)) dt = 0; else if (dt > 0.05) dt = 0.05;   // clamp, so a pause or a slow frame never jumps the game
   if (document.hidden) return;
-  if (A.ctx && A.ctx.state === 'suspended' && A.want && now - A.kick > 700) { A.kick = now; const p = A.ctx.resume(); if (p && p.catch) p.catch(() => {}); }
+  if (A.mine) {   // only ever undo a suspend this page did itself: a host frame that suspends the audio keeps it suspended
+    if (A.ctx.state === 'suspended') { A.mine = false; const p = A.ctx.resume(); if (p && p.catch) p.catch(() => {}); } else if (now > A.mineT) A.mine = false;
+  }
   frameT = 0;
   let g = dt * TS;
   while (g > 1e-6) { const h = Math.min(g, 1 / 30); step(h); g -= h; }
@@ -1284,8 +1326,8 @@ function frame(now) {
   draw();
 }
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) { dropDrags(); if (A.ctx && A.ctx.state === 'running') { const p = A.ctx.suspend(); if (p && p.catch) p.catch(() => {}); } }
-  else lastT = performance.now();
+  if (document.hidden) { dropDrags(); if (A.ctx && A.ctx.state === 'running') { A.mine = true; const p = A.ctx.suspend(); if (p && p.catch) p.catch(() => {}); } }
+  else { lastT = performance.now(); A.mineT = lastT + 1500; }
 });
 window.addEventListener('blur', dropDrags);
 window.addEventListener('resize', resize);
@@ -1311,6 +1353,7 @@ def('ringRadii', () => RMID.map(r => r * cam.s));
 def('boats', () => boats.map(b => ({ x: cam.x + b.x * cam.s, y: cam.y + b.y * cam.s, angle: b.ang / DEG, found: !!b.found, home: b.sail > 0 })));
 def('beamAngle', () => mod(G.beam.ang / DEG + 180, 360) - 180);
 def('phrases', () => JSON.parse(JSON.stringify(G.phr)));
+def('selected', () => G.sel); def('keyboard', () => G.kb); def('voices', () => A.n);
 def('audio', () => A.ctx ? A.ctx.state : 'none'); def('hint', () => hint.lvl); def('caption', () => cap.next !== null ? cap.next : cap.text);
 Object.freeze(api);
 Object.defineProperty(window, '__game', { value: api, enumerable: true });
