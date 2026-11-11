@@ -338,3 +338,21 @@ test('tea-14 on a narrow window the strip keeps the chapter being read in view: 
     expect(at.inside, `${c.id}: pill ${at.pill} in strip ${at.strip}`).toBe(true);
   }
 });
+
+test('tea-15 one h1, the hero’s title; each chapter’s word an h2; About’s sections under its chapter; no level skipped', async ({ page }) => {
+  await page.goto(TEA);
+  const outline = await page.locator('h1, h2, h3, h4, h5, h6').evaluateAll((hs) => hs.map((h) => ({
+    level: Number(h.tagName[1]), text: h.textContent.trim(), id: h.id, chapter: h.closest('[data-tea-chapter]')?.id ?? null })));
+  expect(outline.filter((h) => h.level === 1).map((h) => h.text)).toEqual([COPY.title]);
+  expect(outline[0]).toMatchObject({ level: 1, text: COPY.title });
+  for (const c of CHAPTERS) {
+    expect(outline.find((h) => h.id === `${c.id}-title`), c.id).toMatchObject({ level: 2, text: c.word, chapter: c.id });
+    // the chapter's word is the first heading in it
+    expect(outline.find((h) => h.chapter === c.id)?.id, c.id).toBe(`${c.id}-title`);
+  }
+  // About's own sections sit one rank under its chapter, with no title of their own (the chapter names it)
+  const about = outline.filter((h) => h.chapter === 'about' && h.id !== 'about-title');
+  expect(about.length).toBeGreaterThan(0);
+  expect(about.filter((h) => h.level !== 3)).toEqual([]);
+  expect(outline.filter((h, i) => i > 0 && h.level > outline[i - 1].level + 1)).toEqual([]);
+});
