@@ -386,7 +386,7 @@ its static rung mid-test.
 | RSS categories are the topic label, then the project labels | post-8 (desktop: built files) |
 | A wide picture in `<ao-compare>` holds its ratio before it loads, so the page doesn't jump | post-9 |
 | Reload, and Back with and without the page cache, put `#panel-scroll` back where the reader was, on a long post with components | post-10 |
-| The notes page is the post view without the short version, Read next or older/newer; its way back is the short version; it shares its own `/og/page/ledger-<slug>-notes.jpg?v=` card, 1200×630 JPEG under 150 KB | post-11 |
+| The notes page is the post view without the short version, Read next or older/newer; its way back is the short version | post-11 |
 
 ## Search and Ask RAG Goobie (`search.spec.mjs`)
 

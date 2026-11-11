@@ -40,15 +40,11 @@ async function cached(card, h8) {
   return jpg;
 }
 
-const iconBytes = (post) => {
-  const icon = iconFor(post);
-  return icon ? fs.readFileSync(publicFile(icon.s256)) : null;
-};
-
 async function draw(post) {
   const { id, title, topic } = post.data;
+  const icon = iconFor(post);
   const card = { fontfile: FONT, eyebrow: `${id} · ${TOPICS[topic].label}`, title, verdict: cardOf(post).verdict,
-    icon: iconBytes(post), glyph: TOPICS[topic].glyph };
+    icon: icon && fs.readFileSync(publicFile(icon.s256)), glyph: TOPICS[topic].glyph };
   const h8 = short(sha256hex(JSON.stringify([V, card.eyebrow, title, card.verdict, card.glyph, card.icon && sha256hex(card.icon)])));
   try {
     return { path: `/og/${slugOf(post)}.jpg?v=${h8}`, jpg: await cached(card, h8) };
@@ -59,11 +55,11 @@ async function draw(post) {
   }
 }
 
-// → { path, jpg }: the card of a page that isn't a post, page = { name, eyebrow, title, line, glyph, post? }: its
-// post's icon when it has one (a notes page). One that fails to draw fails the build.
-export async function pageImage({ name, eyebrow, title, line, glyph, post }) {
-  const card = { fontfile: FONT, eyebrow, title, line, icon: post ? iconBytes(post) : null, glyph };
-  const h8 = short(sha256hex(JSON.stringify([V, 'page', eyebrow, title, line, glyph, card.icon && sha256hex(card.icon)])));
+// → { path, jpg }: the card of a page that isn't a post, page = { name, eyebrow, title, line, glyph }. One that
+// fails to draw fails the build.
+export async function pageImage({ name, eyebrow, title, line, glyph }) {
+  const card = { fontfile: FONT, eyebrow, title, line, glyph };
+  const h8 = short(sha256hex(JSON.stringify([V, 'page', eyebrow, title, line, glyph])));
   try {
     return { path: `/og/page/${name}.jpg?v=${h8}`, jpg: await cached(card, h8) };
   } catch (e) {
