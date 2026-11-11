@@ -14,6 +14,10 @@ if (!title) {
 }
 
 const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+if (!slug) {
+  console.error('The file is named after the title, which needs a letter (a to z) or a digit in it');
+  process.exit(1);
+}
 const file = POSTS + slug + '.md';
 if (fs.existsSync(file)) {
   console.error(`Already exists: ${file}`);
