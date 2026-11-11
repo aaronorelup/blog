@@ -1,0 +1,16 @@
+id: "AO-079"
+title: "Testing the tools a guitar tab web app would need"
+summary: "I had Claude agents list every tool they could find for turning songs and guitar videos into tabs, run the ones that would run on test clips with known answers, and read each license. What went in, what came out and what it cost."
+date: 2026-11-10
+topic: "agents"
+project: []
+unlisted: true     # live at its URL only for now: listing it needs npm run ask:pin (docs/ASK.md) and starts the read-aloud
+preview:
+  verdict: "162 of 797 gave output"
+  takeaway: "My agents' ten lists hold 797 tools for a guitar tab web app. 162 of those entries gave output on a cloud computer with no graphics card."
+  points:
+    - "One chain went from a full band mix to a drawn tab: a guitar track, notes, a string and fret for each, a Guitar Pro file."
+    - "On a clip with a capo on fret 2, every chord tool named the chords as they sound. None returned a capo position."
+    - "It took 139 agents about six hours. At API list prices that's about $1,950 to $2,170 of tokens."
+  image: "/media/previews/guitar-tab-tools.webp"
+  alt: "Four fingertips on a guitar fretboard seen from above, each marked with a green dot and a label for its string and fret, with the frets drawn as numbered pink lines"

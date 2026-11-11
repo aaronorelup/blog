@@ -35,7 +35,11 @@ environment where one was saved.
 
 - The 4 cores are split into two slots of 2 cores (cores 0-1 and cores 2-3). A job waits for a free slot and
   is pinned to that slot's 2 cores with `sched_setaffinity`, so at most two timed jobs ran at once and each
-  had 2 cores to itself. A runtime in this folder is therefore **on 2 CPU cores** unless it says 4.
+  had 2 cores to itself. Of the 722 logged runs, 246 ran in a 2-core slot and 4 with all four cores. The other
+  471 ran unpinned (`--nolock`): light jobs, browser and API jobs, and jobs that could not get a slot while the
+  queue was long. Each lane's `trials.md` says which runs were pinned. One catch found late: native ONNX Runtime
+  sets its own thread affinity and ignored the 2-core slot unless its thread count was set, so timings of
+  ONNX Runtime jobs at default settings are not 2-core figures (see the video, audio-to-notes and browser lanes).
 - `--all-cores` takes both slots and all 4 cores, for a whole-box figure.
 - Thread-count variables (`OMP_NUM_THREADS` and the like) are set to the number of cores given.
 - Each run appends one line to the ledger: run id, lane, tool, label, exact command, working directory, each
@@ -44,20 +48,23 @@ environment where one was saved.
 - Up to twenty agents shared the box. Installs, downloads and web reading were not pinned, so they ran next
   to the timed jobs. Timings are what this shared box gave, not a clean-room benchmark.
 
-The ledger is copied to [`ledger/runs.jsonl`](ledger/runs.jsonl) at the end of the research.
+The ledger is copied, gzipped, to [`ledger/runs.jsonl.gz`](ledger/runs.jsonl.gz).
 
 ## How outputs were scored: `gtr-eval`
 
 [`scripts/gtr-eval/`](scripts/gtr-eval/) scores a tool's output against a test clip's ground truth with
 `mir_eval`. Its README says what each number means and which `mir_eval` function and tolerance is behind it.
-Each scoring run gets an id (`e0042`) in its own ledger, copied to [`ledger/evals.jsonl`](ledger/evals.jsonl).
+Each scoring run gets an id (`e0042`) in its own ledger, copied to [`ledger/evals.jsonl.gz`](ledger/evals.jsonl.gz). The tool was fixed twice during the run (0.11.1 to 0.12.1, see `scripts/gtr-eval-fix-notes.md`).
 
 ## Cost
 
 Local runs cost nothing beyond the cloud session itself. Calls to paid APIs are listed with their cost in
-`lanes/hosted-apis/trials.md`. No GPU was rented.
+`lanes/hosted-apis/trials.md` (0.96 US dollars in total). No GPU was rented. Token use by the agents is in
+[`costs/COSTS.md`](costs/COSTS.md).
 
-## One interruption
+## Interruptions
 
-The container's worker process restarted once, at about 20:49 UTC on 2026-11-10, after the test inputs were
-finished and before the ten lanes started. The files on disk survived. Nothing was running at that moment.
+The container's worker process restarted at about 20:49 UTC on 2026-11-10, after the test inputs were finished
+and before the ten lanes started, and again at about 01:33 UTC on 2026-11-11 during a site build. The files on disk
+survived both. The run was stopped by hand at about 01:25 UTC on 2026-11-11, when the account's weekly usage limit
+was nearly used up: eleven background workflows were cut off (see `README.md`).
