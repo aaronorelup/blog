@@ -50,7 +50,11 @@ export function* keys(text) {
     for (let j = i + 1; j < words.length && after.length < 2; j++) after.push(...parts(words[j][0]));
     yield* runs([...before.slice(-2), ...parts(words[i][0]), ...after.slice(0, 2)].map((w) => ({ 0: w, index: words[i].index })));
   }
-  for (const m of text.matchAll(URLISH)) for (const key of urlKeys(m[1], m[2])) yield [key, m.index];
+  // A path is read whole and up to each ?, # and &: a listed link is the same link with ?tab=… or #top after it.
+  for (const m of text.matchAll(URLISH)) {
+    for (const key of urlKeys(m[1], m[2])) yield [key, m.index];
+    for (const cut of m[2].matchAll(/[?#&]/g)) for (const key of urlKeys(m[1], m[2].slice(0, cut.index))) yield [key, m.index];
+  }
 }
 
 // The key a line of the private list is stored under: a host or URL as its host (lower case) and path, else its

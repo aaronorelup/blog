@@ -39,6 +39,16 @@ test('a host matches its subdomains and deeper paths, a path only below itself',
   assert.ok(!matches('github.com/someone/private-repo', 'https://github.com/someone/public-repo'));
 });
 
+test('a path still matches with a query or a fragment after it', () => {
+  assert.ok(matches('code.example.dev/someone/private-repo', 'https://code.example.dev/someone/private-repo?tab=readme'));
+  assert.ok(matches('code.example.dev/someone/private-repo', '[x](https://code.example.dev/someone/private-repo#readme)'));
+  assert.ok(!matches('code.example.dev/someone/private-repo', 'https://code.example.dev/someone/private-repository?tab=readme'));
+  assert.ok(matches('video.example.dev/watch?v=abc123', 'https://www.video.example.dev/watch?v=abc123'));
+  assert.ok(matches('video.example.dev/watch?v=abc123', 'https://www.video.example.dev/watch?v=abc123&t=30s'));
+  assert.ok(matches('video.example.dev/watch?v=abc123', '<a href="https://video.example.dev/watch?v=abc123&amp;t=30s">'));
+  assert.ok(!matches('video.example.dev/watch?v=abc123', 'https://video.example.dev/watch?v=abc1234&t=30s'));
+});
+
 test('list lines with more than 3 words cannot match and are refused', () => {
   assert.equal(termKey('one two three four'), null);
 });
