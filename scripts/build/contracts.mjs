@@ -130,9 +130,6 @@ export function shareImageProblems(html, pathname, sizeOf) {
   return problems;
 }
 
-// A notes page shares no picture: tests/e2e/post.spec.mjs (post-11) holds it to none.
-const NOTES = /^\/ledger\/[^/]+\/notes\/$/;
-
 // The pages the sitemap lists, as paths: the pages a link to this site is shared from.
 export const sitemapPaths = (xml) => [...xml.matchAll(/<loc>([^<]*)<\/loc>/g)].map((m) => m[1])
   .filter((loc) => loc.startsWith(SITE + '/')).map((loc) => loc.slice(SITE.length));
@@ -162,7 +159,7 @@ export function check(dist, listed = listedSlugs()) {
     ...rssProblems(read('rss.xml'), listed),
     ...[...listed].filter((s) => !isLive(s) && isBuilt(`/ledger/${s}/`))
       .flatMap((s) => shareUrlProblems(read(`ledger/${s}/index.html`), `/ledger/${s}/`)),
-    ...sitemapPaths(read('sitemap.xml')).filter((p) => p.endsWith('/') && !isLivePath(p) && !NOTES.test(p) && isBuilt(p))
+    ...sitemapPaths(read('sitemap.xml')).filter((p) => p.endsWith('/') && !isLivePath(p) && isBuilt(p))
       .flatMap((p) => shareImageProblems(read(`${p.slice(1)}index.html`), p, sizeOf)),
     ...baselineProblems(readBaseline(), isBuilt, redirectSourcesOf(read('_redirects'))),
   ];

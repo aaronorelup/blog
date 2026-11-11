@@ -230,11 +230,19 @@ test('post-10 Reload and Back put the reader back where they were on a long post
   }
 });
 
-test('post-11 the notes page: the post view without its short version, Listen, Read next or older/newer, its way back the short version', async ({ page }) => {
+test('post-11 the notes page: the post view without its short version, Listen, Read next or older/newer, its way back the short version, its own share card', async ({ page, request }) => {
   const url = pagesWhere((p) => p.kind === 'notes')[0];
   await page.goto(url);
   await expect(page.locator('[data-panel-view="notes"][data-post-article]')).toHaveCount(1);
   await expect(page.locator('#short, .rel, .post-nav, .notes-link')).toHaveCount(0);
   await expect(page.locator('.post-back')).toHaveAttribute('href', url.replace(/notes\/$/, ''));
-  await expect(page.locator('meta[property="og:image"]')).toHaveCount(0);
+  // Its own card (lib/og/pages.js), never the post's, and not as an article.
+  const image = await page.locator('meta[property="og:image"]').getAttribute('content');
+  expect(image).toMatch(new RegExp(`^${LIVE_SITE}/og/page/ledger-${url.split('/')[2]}-notes\\.jpg\\?v=[0-9a-f]{8}$`));
+  await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image');
+  await expect(page.locator('meta[property="og:type"]')).toHaveAttribute('content', 'website');
+  const jpg = await (await request.get(new URL(image).pathname)).body();
+  expect(jpg.length).toBeLessThan(150 * 1024);
+  const { format, width, height } = await sharp(jpg).metadata();
+  expect([format, width, height]).toEqual(['jpeg', 1200, 630]);
 });
