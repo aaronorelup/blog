@@ -19,7 +19,7 @@ body{font:16px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helv
 #c{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
 #c:focus-visible{outline:2px solid rgba(226,121,92,.5);outline-offset:-5px}
 .serif{font-family:ui-serif,"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif}
-#cap{position:absolute;left:0;right:0;bottom:max(16px,env(safe-area-inset-bottom));margin:0;padding:0 18px;text-align:center;
+#cap{position:absolute;left:0;right:0;bottom:max(var(--capb,16px),env(safe-area-inset-bottom));margin:0;padding:0 18px;text-align:center;
   font-style:italic;font-size:clamp(15px,1.6vmin + 9px,21px);line-height:1.3;color:var(--cream);opacity:0;
   transition:opacity .7s ease;pointer-events:none;text-wrap:balance;text-shadow:0 1px 10px rgba(16,18,32,.9)}
 #cap.on{opacity:.94}
@@ -183,6 +183,7 @@ function stepFx(h) {
   for (let i = fx.length - 1; i >= 0; i--) {
     const f = fx[i]; f.t += h;
     if (f.kind === 1) { f.x += f.vx * h; f.y += f.vy * h; f.vx *= Math.pow(.08, h); f.vy *= Math.pow(.08, h); }
+    else if (f.kind === 2 && f.t > 0) { f.x += f.vx * h; f.y += f.vy * h; }
     if (f.t >= f.d) fx.splice(i, 1);
   }
 }
@@ -190,6 +191,7 @@ function stepFx(h) {
 // ---------- captions (real DOM text, announced politely) ----------
 const capEl = document.getElementById('cap');
 const cap = { text: '', next: null, t: 0, swap: 0 };
+let capB = -1;
 function say(text, secs) {
   if (text === cap.text && cap.next === null) { cap.t = secs || 6; return; }
   cap.next = text; cap.nextT = secs || 6; cap.swap = cap.text ? 0.45 : 0.01; capEl.classList.remove('on');
@@ -283,6 +285,7 @@ function sShift() { if (!aOk()) return; const c = A.ctx, t = aT(), s = c.createB
   s.connect(fl); fl.connect(g); g.connect(A.bus); s.start(t); s.stop(t + 3.2); aTrack(s, [fl, g]);
   osc('sine', 73.4, t, 0.6, 0.3, 2.4); }
 function sFound(k) { if (!aOk()) return; const t = aT(), f = [880, 987.77, 1174.7][k]; osc('sine', f, t, 0.004, 0.12, 0.8); osc('sine', f * 1.5, t + 0.11, 0.004, 0.08, 0.9); }
+function sGulls() { if (!aOk()) return; const t = aT(); [0, 0.16, 0.4].forEach((d, k) => osc('sine', 2500 - k * 150, t + d, 0.015, 0.035, 0.11, 1800)); }
 function sBlink() { if (!aOk()) return; osc('sine', 1975.5, aT(), 0.003, 0.022, 0.16); }
 function sHorn(f, vol) {   // two detuned saws through a lowpass that opens as the horn swells
   if (!aOk()) return; const c = A.ctx, t = aT(), fl = c.createBiquadFilter(), g = c.createGain(), v = vol || 1;
@@ -371,6 +374,7 @@ function placeBoats(capH) {
     const a = deg * DEG, d = clamp(pd[i], 1.5, Math.max(1.5, dmax(a) * 0.97)), b = boats[i];
     b.ang = a; b.d = d; b.x = d * Math.sin(a); b.y = -d * Math.cos(a);
     b.hx = Math.max(xmax + 1.6, b.x + 1.2); b.hy = Math.min(1.1, ydn + 1.5);   // where it sails off to: the harbour side
+    b.cx = (b.x + b.hx) / 2; b.cy = Math.min(b.y, -1.9) - 0.2;
   });
   // a rock, in the widest gap between boats and as far from them as the screen allows
   const gaps = [[pick[0], pick[1]], [pick[1], pick[2]]].sort((p, q) => (q[1] - q[0]) - (p[1] - p[0]));
@@ -660,6 +664,9 @@ function draw() {
     c.strokeStyle = col(CORAL, 0.7 - p * 0.5); c.lineWidth = 2; disk(c, cam.x, cam.y, 18 + p * 14); c.stroke();
   }
   if (G.fade > 0.003) { c.fillStyle = col(PAGE, G.fade); c.fillRect(0, 0, W, H); }
+  // the caption keeps close under the disc, wherever the camera has put it
+  const cb = (G.cam.k < 1.5 && G.home.a < 0.5) ? Math.max(16, Math.round(H - (cam.y + L[Math.round(G.cam.k)].s * 1.03) - 78)) : 16;
+  if (cb !== capB) { capB = cb; capEl.style.setProperty('--capb', cb + 'px'); }
 }
 
 function drawWaves(c, alpha, thr) {
@@ -675,7 +682,11 @@ function drawWaves(c, alpha, thr) {
   }
   c.lineWidth = 1.5 / s; c.lineCap = 'round'; c.strokeStyle = col(CREAM, alpha); c.stroke();
 }
-function boatPos(b) { return [lerp(b.x, b.hx, b.sail), lerp(b.y, b.hy, b.sail)]; }
+function boatPos(b) {   // a boat sails home on a curve that goes round the light, never through it
+  const u = b.sail, v = 1 - u; if (u <= 0) return [b.x, b.y];
+  return [v * v * b.x + 2 * v * u * b.cx + u * u * b.hx, v * v * b.y + 2 * v * u * b.cy + u * u * b.hy];
+}
+function boatDir(b) { const u = b.sail, v = 1 - u; return Math.atan2(v * (b.cx - b.x) + u * (b.hx - b.cx), -(v * (b.cy - b.y) + u * (b.hy - b.cy))); }
 function hull(c, x, y, head, Ln, a, kind, wake) {
   const Wd = Ln * 0.38, lw = 1.5 / cam.s;
   c.save(); c.translate(x, y); c.rotate(head); c.globalAlpha = a;
@@ -878,6 +889,11 @@ function drawFx(c) {
   for (const f of fx) {
     const u = clamp(f.t / f.d, 0, 1);
     if (f.kind === 0) { c.lineWidth = Math.max(f.w, 1 / cam.s); c.strokeStyle = col(f.c, f.a * (1 - u) * (1 - u)); disk(c, f.x, f.y, RM ? lerp(f.r0, f.r1, 0.5) : lerp(f.r0, f.r1, E.out3(u))); c.stroke(); }
+    else if (f.kind === 2) {   // a gull: two strokes that flap
+      if (f.t <= 0) continue;
+      const w = Math.max(0.06, 7.5 / cam.s), fl = Math.sin(f.t * 13 + f.ph) * 0.5, al = f.a * clamp(f.t / 0.2, 0, 1) * (1 - u) * (1 - G.home.a);
+      c.lineWidth = 1.5 / cam.s; c.lineCap = 'round'; c.strokeStyle = col(f.c, al); c.beginPath(); c.moveTo(f.x - w, f.y - w * (0.25 + fl)); c.lineTo(f.x, f.y); c.lineTo(f.x + w, f.y - w * (0.25 + fl)); c.stroke();
+    }
     else { c.fillStyle = col(f.c, f.a * (1 - u)); disk(c, f.x, f.y, Math.max(0.011 * (1 - u * 0.5), 1 / cam.s)); c.fill(); }
   }
 }
@@ -998,6 +1014,14 @@ function stepBeam(h) {
     }
   }
   for (const b of boats) if (!b.found) { if (Math.abs(adiff(B.ang, b.ang)) < 0.1) { b.seen += h; if (b.seen >= 0.45) findBoat(b); } else b.seen = 0; }
+  const R = G.rock;   // a small thing in the dark: hold the light on the rock and its gulls lift off
+  if (!R.flown && Math.abs(adiff(B.ang, Math.atan2(R.x, -R.y))) < 0.1) {
+    R.seen = (R.seen || 0) + h;
+    if (R.seen >= 0.5) {
+      R.flown = true; sGulls();
+      if (!RM) for (let k = 0; k < 3; k++) fx.push({ kind: 2, x: R.x + (k - 1) * 0.07, y: R.y - 0.04, vx: (k - 1) * 0.16 + 0.1, vy: -0.26 - k * 0.05, d: 3.2 + k * 0.4, c: CREAM, a: 0.9, t: -k * 0.12, ph: k * 2.1 });
+    }
+  } else R.seen = 0;
 }
 const reveals = [];
 function step(h) {
@@ -1016,7 +1040,10 @@ function step(h) {
   }
   for (const m of G.marks) { m.lit += ((m.on ? 1 : 0) - m.lit) * kS; if (m.flash) m.flash *= kP; if (m.pulse) m.pulse *= kP; }
   for (const d of G.dots) { d.fill += (d.want - d.fill) * kS; d.pop *= kP; d.stamp *= Math.exp(-h * 1.6); }
-  for (const b of boats) { b.flare *= kP; if (b.horn > 0) b.horn = Math.max(0, b.horn - h / 2.2); }
+  for (const b of boats) {
+    b.flare *= kP; if (b.horn > 0) b.horn = Math.max(0, b.horn - h / 2.2);
+    if (b.sail > 0.04 && b.sail < 1) b.head += adiff(b.head, boatDir(b)) * (1 - Math.exp(-h * 3));   // bow along the course
+  }
   for (let k = 0; k < 18; k++) if (G.home.tw[k]) G.home.tw[k] *= Math.exp(-h * 2.4);
   for (let k = 0; k < 12; k++) if (G.glint[k]) G.glint[k] = G.glint[k] < 0.01 ? 0 : G.glint[k] * Math.exp(-h * 2.6);
   G.lampPulse *= Math.exp(-h * 2.4); G.thump *= Math.exp(-h * 8); G.beam.flash *= Math.exp(-h * 4.5); G.hand.glow *= kP;
@@ -1156,7 +1183,7 @@ function* bGears() {
 }
 function* bHand() {
   const Hd = G.hand; G.pit = 0;
-  yield* wait(0.6);
+  yield* wait(1.6);
   Hd.phase = 0; Hd.a = 1; Hd.len = 0; Hd.follow = false; Hd.fresh = true;
   yield* tweenY(Hd, 'len', 1, 0.9, E.out3);
   Hd.on = true;
@@ -1224,10 +1251,11 @@ function* bBoats() {
     for (const d of G.dots) tw(d, 'a', 0, 1.0, E.io2); tw(G.dial, 'a', 0, 1.1, E.io2);
     const p = boatPos(b); sparks(p[0], p[1], 10, GOLD, 0.7);
     yield* wait(1.3);
-    tw(b, 'head', b.head + adiff(b.head, Math.atan2(b.hx - b.x, -(b.hy - b.y))), 1.8, E.io2);
-    tw(b, 'sail', 1, 10, E.in2, 0.9); tw(b, 'gone', 1, 1.5, E.lin, 9);
+    tw(b, 'head', b.head + adiff(b.head, Math.atan2(b.cx - b.x, -(b.cy - b.y))), 1.8, E.io2);
+    tw(b, 'sail', 1, 11, E.io2, 0.6); tw(b, 'gone', 1, 1.5, E.lin, 9.5);
     if (k === 1) tw(G.link, 0, 0, 0.6, E.io2);
-    yield* wait(1.6); G.dots = []; G.dial.k = -1;
+    yield* wait(1.1); G.dots = []; G.dial.k = -1;
+    for (let t = 0; t < 2.6; t += (yield) || 0) { const q = boatPos(b); B.tgt = B.ang + adiff(B.ang, Math.atan2(q[0], -q[1])); }   // the light walks it a little way home
   }
   yield* wait(2.2);
 }
@@ -1240,10 +1268,12 @@ function* bHome() {
   yield* camTo(2, 5.4);
   for (const b of boats) { b.gone = 1; b.sail = 1; }
   yield* beamTo(B.tgt + adiff(B.tgt, 0), 1.4);
-  B.ang = B.tgt = 0; Hd.phase = 0; Hd.fresh = true; Hd.spin = true; Hd.follow = false;
+  B.ang = B.tgt = 0; Hd.phase = -12; Hd.fresh = false; Hd.spin = true; Hd.follow = false;   // one quiet turn over the sleeping coast first
+  rings.forEach(r => { r.peg = 0; });
   let lit = 0;
   Hd.onBar = (b, off) => {
-    if (b >= 18) return;
+    if (b < 0 || b >= 18) return;
+    if (b === 0) rings.forEach(r => { r.peg = 1; });
     const k = b % 6; Hm.pass = Math.floor(b / 6); setPhrase(k); G.lampPulse = 0.9;
     if (Hm.pass >= 1) sBass(BASS[k], off);
     if (b === 6) tw(Hm, 'dawn', 1, 11.5 * 12 * STEP_T, E.io2);
@@ -1261,8 +1291,9 @@ function* bHome() {
   Hd.spin = false; Hd.onBar = null; G.onPluck = null;
   for (let k = 0; k < 18; k++) { Hm.lit[k] = 1; Hm.tw[k] = 1; }
   sChord(); B.flash = 1; G.lampPulse = 1.5;
-  tw(Hm, 'sun', 1, 5.5, E.out2); tw(B, 'tgt', B.tgt + 2.2, 6, E.out2); tw(B, 'a', 0.25, 5, E.io2);
-  yield* wait(6.2);
+  rings.forEach(r => { r.peg = 1; });
+  tw(Hm, 'sun', 1, 6.5, E.out2); tw(B, 'tgt', B.tgt + 2.6, 7.5, E.out2); tw(B, 'a', 0.25, 6, E.io2);
+  yield* wait(8);
 }
 const endEl = document.getElementById('end'), keepEl = document.getElementById('keep');
 function* bEnd() {   // the lighthouse shrinks to the ember of the first frame
@@ -1300,7 +1331,7 @@ function base(i, sv) {
   Object.assign(G.hand, { a: 0, len: 0, phase: 0, on: false, fresh: false, follow: false, spin: false, stop: null, onStep: null, onBar: null, glow: 0 });
   Object.assign(G.beam, { a: 0, len: 0, ang: 0, tgt: 0, flash: 0 });
   Object.assign(G.home, { a: 0, dawn: 0, sun: 0, pass: 0 }); G.home.lit = new Array(18).fill(0); G.home.tw = new Array(18).fill(0); G.home.boat = [0, 0, 0];
-  G.cam.k = 0; G.dial.k = -1; G.dial.a = 0; G.input.ember = G.input.rings = G.input.beam = false;
+  G.cam.k = 0; G.dial.k = -1; G.dial.a = 0; G.input.ember = G.input.rings = G.input.beam = false; G.rock.flown = false; G.rock.seen = 0;
   rings.forEach(r => Object.assign(r, { step: 0, vis: 0, vel: 0, frac: 0, a: 0, peg: 0, pop: 0, flash: 0, sel: 0 }));
   boats.forEach((b, k) => Object.assign(b, { found: 0, seen: 0, lit: 0, flare: 0, horn: 0, sail: 0, gone: 0, head: [0.7, -1.0, 2.3][k] }));
   const sr = (sv && Array.isArray(sv.r)) ? sv.r : [], at = (k, d) => { const v = Number.isInteger(sr[k]) ? mod(sr[k], 12) : d; rings[k].step = rings[k].vis = v; };
