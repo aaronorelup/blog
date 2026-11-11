@@ -82,11 +82,15 @@
 .tea-hero[data-3d='on'] { height: 300vh; }
 
 /* dock: the pin sticks; the box opens where the static layout centres it, then docks lower left, clear of the
-   day/night switch at the foot of the screen on a wide one. */
-.tea-hero[data-hero-layout='dock'] {
+   day/night switch at the foot of the screen on a wide one. Only where the docked box leaves most of the frame to the
+   scene (pin.js layoutFor): a 4:3 screen flows. */
+.tea-hero {
   --tea-dock-x: clamp(16px, 3vw, 44px);
   --tea-dock-low: clamp(16px, 4vh, 44px);
+  --tea-dock-scale: .8;
 }
+/* pin.js measures --tea-dock-x through this: the share of the frame the docked box would cover picks the layout */
+.tea-dock-probe { position: absolute; width: var(--tea-dock-x); height: 0; visibility: hidden; }
 .tea-hero[data-hero-layout='dock'] .tea-hero-pin {
   position: sticky;
   top: 0;
@@ -111,7 +115,7 @@
   left: var(--tea-dock-x);
   top: calc(100% - var(--tea-dock-low));
   translate: 0 -100%;
-  scale: .8;
+  scale: var(--tea-dock-scale);
 }
 /* Docked, the box keeps its title, chapters and way out; the statement and the counter fold away (still read out). */
 .tea-hero[data-hero-layout='dock'] :is(.tea-statement, .tea-counter) {
@@ -130,7 +134,7 @@
   opacity: 0;
 }
 @media (min-width: 1024px) {
-  .tea-hero[data-hero-layout='dock'] { --tea-dock-low: max(78px, 4vh); }
+  .tea-hero { --tea-dock-low: max(78px, 4vh); }
 }
 
 /* flow: the stage sticks for the whole section; the box keeps the static layout's place in the first screen and

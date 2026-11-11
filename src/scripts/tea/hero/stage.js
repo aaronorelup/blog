@@ -11,7 +11,9 @@ import { createInput } from './input.js';
 import { buildLights, paintLights, skyEnvironment } from './lights.js';
 import { loadManifest } from './manifest.js';
 import { createMotes, tickMotes } from './motes.js';
-import { leadOf, onLeave, pinSection, placeBack, relayout, unpinSection, whenPinnable, writeProgress } from './pin.js';
+import {
+  dockShare, leadOf, onLeave, pinSection, placeBack, relayout, unpinSection, whenPinnable, writeProgress,
+} from './pin.js';
 import { loadThree } from './three.js';
 import { applyTracks, bindTracks, sample } from './tracks.js';
 
@@ -29,6 +31,7 @@ export async function mount(section, stage, opts = {}) {
   const renderer = new WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance', alpha: false });
   const s = {
     renderer, canvas, manifest, raf: 0, running: false, visible: true, onscreen: true, frozen: null, lead: 0, dock: 0,
+    cover: 1,
   };
   try {
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, coarse || small ? 1.5 : 1.75));
@@ -119,6 +122,10 @@ function conceal(s, stage) {
 }
 
 function resize(s, stage) {
+  // the docked box's share of the frame against the share the shift keys were tuned at (camera.dock.cover): from the
+  // layout (pin.js), not the box's rectangle, which is mid-glide when it matters
+  const section = stage.closest('[data-tea-hero]');
+  s.cover = section.dataset.heroLayout === 'dock' ? dockShare(section) / s.manifest.camera.dock.cover : 1;
   const w = stage.clientWidth || innerWidth;
   const h = stage.clientHeight || innerHeight;
   if (w === s.size[0] && h === s.size[1]) return;
@@ -141,10 +148,11 @@ function frame(s, section, dt) {
   // the scene's own progress: in the flow layout it waits for the title box to scroll away (s.lead)
   const p = Math.min(1, Math.max(0, (s.input.st.p - s.lead) / (1 - s.lead)));
   writeProgress(section, s.input.st.raw);
-  // while the box is docked lower left (the dock layout) the picture slides right, eased like the box's own move
+  // while the box is docked lower left (the dock layout) the picture slides right, eased like the box's own move, and
+  // by as much more as the docked box covers more of the frame than where the keys were tuned (s.cover)
   const docked = section.dataset.heroLayout === 'dock' && section.dataset.heroPhase === 'docked' ? 1 : 0;
   s.dock += (docked - s.dock) * (dt ? 1 - Math.exp(-dt * 3.5) : 1);
-  s.camRig.shift = s.dock * sample(s.manifest.camera.dock.shift, p, 'smooth');
+  s.camRig.shift = s.dock * sample(s.manifest.camera.dock.shift, p, 'smooth') * s.cover;
   applyTracks(s.bound, p, time, s.camRig.portrait ? s.manifest.camera.portrait.travel : 1);
   placeCamera(s.camRig, p, s.input.st.par);
   const L = s.manifest.look;

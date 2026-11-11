@@ -105,15 +105,31 @@ function glide(section) {
 
 const px = (cs, name) => parseFloat(cs.getPropertyValue(name)) || 0;
 
-// "dock" only where the box, at its static size, fits one screen with the hero's padding (cover.css) around it.
-// Docked, the box is folded and its height says nothing: the dock holds until it opens again (its resize re-asks).
+// "dock" only on a landscape screen where the box, at its static size, fits one screen with the hero's padding
+// (cover.css) around it, and where docked it would cover at most DOCK_MAX of the frame's width: at 1440 it covers 33%,
+// at 1280 37%, at 1024 45%, where the scene's action plays behind it (a 4:3 screen flows, the box scrolls away).
+// Docked, the box is folded and its height says nothing: then only its width is asked (its resize re-asks the rest).
+const DOCK_MAX = 0.37;
 export function layoutFor(section) {
-  const docked = section.dataset.heroLayout === 'dock' && section.dataset.heroPhase === 'docked';
-  if (docked && innerWidth > innerHeight) return 'dock';
   const box = section.querySelector('.tea-hero-box');
+  if (!box || innerWidth <= innerHeight || dockShare(section) > DOCK_MAX) return 'flow';
+  if (section.dataset.heroLayout === 'dock' && section.dataset.heroPhase === 'docked') return 'dock';
   const cs = getComputedStyle(section);
-  const fits = !box || box.offsetHeight + px(cs, '--tea-hero-pt') + px(cs, '--tea-hero-pb') <= innerHeight;
-  return innerWidth > innerHeight && fits ? 'dock' : 'flow';
+  return box.offsetHeight + px(cs, '--tea-hero-pt') + px(cs, '--tea-hero-pb') <= innerHeight ? 'dock' : 'flow';
+}
+
+// The share of the window's width the docked box covers, to its right edge: --tea-dock-x (stage.css, measured through
+// a probe, as it is a clamp() of the window) plus the box's width at --tea-dock-scale.
+export function dockShare(section) {
+  const box = section.querySelector('.tea-hero-box');
+  if (!box) return 0;
+  const probe = document.createElement('div');
+  probe.className = 'tea-dock-probe';
+  section.appendChild(probe);
+  const x = probe.offsetWidth;
+  probe.remove();
+  const scale = px(getComputedStyle(section), '--tea-dock-scale') || 1;
+  return (x + box.offsetWidth * scale) / innerWidth;
 }
 
 // Re-picks the layout after a resize (a turned phone, a font swap); true when it changed.

@@ -49,8 +49,9 @@ export function normalise(m, url) {
         .sort((a, b) => a.t - b.t),
       parallax: { x: 0.3, y: 0.18, ease: 4, drift: 0.5, ...(cam.parallax || {}) },
       portrait: portraitOf(cam.portrait || {}),
-      // the dock layout's lens shift: a number, or keys [[t, shift], ...] along the scene's progress
-      dock: { shift: keysOf((cam.dock && cam.dock.shift) ?? 0) },
+      // the dock layout's lens shift: a number, or keys [[t, shift], ...] along the scene's progress; cover: the share
+      // of the frame's width the docked box covered where they were tuned (the shift scales with the share it covers)
+      dock: { shift: keysOf((cam.dock && cam.dock.shift) ?? 0), cover: Number((cam.dock && cam.dock.cover) ?? 0.33) },
     },
     tracks: (m.tracks || []).map(track),
     idle: (m.idle || []).map((t) => ({

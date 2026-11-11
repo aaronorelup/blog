@@ -436,3 +436,19 @@ test('tea-hero-20 the title box is the same box static and over the scene, opaqu
   expect(still).toEqual({ blur: 'none', alpha: 1 });
 });
 
+test('tea-hero-21 the box docks only where it leaves most of the frame to the scene', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'landscape windows of a desktop');
+  test.setTimeout(150_000);
+  for (const [width, height, layout] of [[1024, 768, 'flow'], [1366, 768, 'dock']]) {
+    await page.setViewportSize({ width, height });
+    await page.goto('/tea/?hero=on');
+    await settled(page);
+    await expect(hero(page), `${width}x${height}`).toHaveAttribute('data-hero-layout', layout);
+    // docked, the lens shift grows with the share of the frame the box covers (1 where the keys were tuned, 1440)
+    if (layout === 'dock') {
+      const cover = await page.evaluate(() => window.__teaHero.state.cover);
+      expect(cover).toBeGreaterThan(1.02);
+      expect(cover).toBeLessThan(1.12);
+    }
+  }
+});
