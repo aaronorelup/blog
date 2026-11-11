@@ -14,6 +14,7 @@ export const HEAR = {
 };
 
 let rec = null;                      // the recording under way
+let press = null;                    // the newest press, while it waits on the microphone (the permission prompt)
 let sending = false;
 
 const clock = (ms) => { const s = Math.floor(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
@@ -29,8 +30,14 @@ function showing(ui, on, label = '') {
 export async function toggle(ui, opts) {
   if (rec) return rec.recorder.stop();
   if (sending) return;
-  let stream;
-  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); } catch { return opts.draw(say(HEAR.mic)); }
+  const asked = (press = {});
+  let stream = null;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); } catch { /* no microphone */ }
+  // The prompt can stay up for seconds: a press cancel() dropped meanwhile, or one a newer press replaced, lets the
+  // microphone go and records nothing.
+  if (press !== asked) return stream?.getTracks().forEach((t) => t.stop());
+  press = null;
+  if (!stream) return opts.draw(say(HEAR.mic));
   const mimeType = TYPES.find((t) => MediaRecorder.isTypeSupported?.(t));
   let recorder;
   try { recorder = new MediaRecorder(stream, mimeType ? { mimeType, audioBitsPerSecond: 32000 } : {}); } catch {
@@ -79,8 +86,10 @@ async function send(ui, opts, blob, type) {
   }
 }
 
-// The box closed or Ask was left: a recording under way is dropped unsent.
+// The box closed or Ask was left: a recording under way is dropped unsent, and a press still waiting on the
+// microphone never starts one.
 export function cancel() {
+  press = null;
   if (!rec) return;
   rec.dropped = true;
   rec.recorder.stop();
