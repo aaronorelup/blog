@@ -11,7 +11,7 @@ import { createInput } from './input.js';
 import { buildLights, paintLights, skyEnvironment } from './lights.js';
 import { loadManifest } from './manifest.js';
 import { createMotes, tickMotes } from './motes.js';
-import { leadOf, pinSection, relayout, unpinSection, whenPinnable, writeProgress } from './pin.js';
+import { leadOf, onLeave, pinSection, placeBack, relayout, unpinSection, whenPinnable, writeProgress } from './pin.js';
 import { loadThree } from './three.js';
 import { applyTracks, bindTracks, sample } from './tracks.js';
 
@@ -86,6 +86,8 @@ export async function mount(section, stage, opts = {}) {
     s.clock = performance.now();
     s.time = 0;
     frame(s, section, 0);
+    // a reload or a way back to a place inside the scene (pin.js onLeave): there at once
+    if (placeBack(section)) { s.input.st.snap = true; frame(s, section, 0); s.input.st.snap = false; }
   } catch (e) {
     if (s.mo) s.mo.disconnect();
     if (s.input) s.input.dispose();
@@ -208,6 +210,8 @@ function wire(s, section, stage) {
     section.dataset['3dOff'] = 'reduced motion';
   };
   s.still.addEventListener('change', s.onStill);
+  s.onHide = () => onLeave(section);
+  addEventListener('pagehide', s.onHide);
   s.play();
 }
 
@@ -220,6 +224,8 @@ export function dispose(s, section, stage) {
   s.canvas.removeEventListener('webglcontextlost', s.onLost);
   s.canvas.removeEventListener('webglcontextrestored', s.onBack);
   s.still.removeEventListener('change', s.onStill);
+  removeEventListener('pagehide', s.onHide);
+  try { history.scrollRestoration = 'auto'; } catch { /* as the browser has it */ }
   s.input.dispose();
   disposeTree(s.scene);
   s.lights.tex.dispose();

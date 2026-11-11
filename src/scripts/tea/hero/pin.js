@@ -52,6 +52,38 @@ function keepPlace(section, before, y) {
   if (d) scrollTo({ top: Math.max(0, y + d), behavior: 'instant' });
 }
 
+// A reload or a way back should land where the reader was in the scene, but the browser restores the scroll against
+// the one-screen static hero (the scene pins seconds later) and so lands on the chapters. So while the reader is inside
+// the pinned scene, leaving keeps the place (sessionStorage: Chromium drops a history.state written while the page is
+// hiding) and asks the browser to keep none (scrollRestoration 'manual'): the page opens at its top, on the poster,
+// and placeBack puts the reader back once the scene has pinned. Anywhere else the browser restores as it always does.
+const PLACE = 'tea-hero-place';
+export function onLeave(section) {
+  const raw = section.dataset['3d'] ? rawOf(section) : 0;
+  const inside = scrollY > 0 && raw > 0 && raw < 0.999;
+  try {
+    history.scrollRestoration = inside ? 'manual' : 'auto';
+    if (inside) sessionStorage.setItem(PLACE, JSON.stringify({ at: location.href, raw }));
+    else sessionStorage.removeItem(PLACE);
+  } catch { /* storage or history not allowed here: the browser restores as it would */ }
+}
+
+// Back at the place kept, with the box where it belongs there at once: only on a reload or a way back to that same
+// address, and not for a reader who has scrolled since.
+export function placeBack(section) {
+  let kept = null;
+  try { kept = JSON.parse(sessionStorage.getItem(PLACE)); sessionStorage.removeItem(PLACE); } catch { return false; }
+  const nav = performance.getEntriesByType('navigation')[0];
+  const again = !!nav && (nav.type === 'reload' || nav.type === 'back_forward');
+  const raw = kept && kept.at === location.href && again ? kept.raw : 0;
+  if (!(raw > 0) || scrollY > 0) return false;
+  const top = scrollY + section.getBoundingClientRect().top;
+  scrollTo({ top: top + raw * (section.offsetHeight - innerHeight), behavior: 'instant' });
+  writeProgress(section, rawOf(section), true);
+  glide(section);
+  return true;
+}
+
 // How far through the pinned section the reader is: 0 at the top, 1 where the pin lets go.
 export function rawOf(section) {
   const r = section.getBoundingClientRect();

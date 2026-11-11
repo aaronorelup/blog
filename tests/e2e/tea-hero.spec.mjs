@@ -362,3 +362,32 @@ test('tea-hero-17 Save-Data and a small device keep the poster and fetch none of
   }
 });
 
+test('tea-hero-18 a reload inside the scene comes back to the same place in it', async ({ page }) => {
+  test.setTimeout(150_000);
+  await page.goto('/tea/?hero=on');
+  await settled(page);
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  const raw = () => hero(page).evaluate((s) => {
+    const r = s.getBoundingClientRect();
+    return -r.top / (r.height - innerHeight);
+  });
+  const halfway = () => hero(page).evaluate((s) => scrollTo({ top: (s.offsetHeight - innerHeight) * 0.5, behavior: 'instant' }));
+  await halfway();
+  expect(Math.abs(await raw() - 0.5)).toBeLessThan(0.01);
+  await holdScene(page);   // a busy software GPU slows the reload itself; leaving keeps the place all the same
+  await page.reload();
+  await settled(page);   // the place is back by then (stage.js puts it back before the first frame shows)
+  await holdScene(page);
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  expect(Math.abs(await raw() - 0.5)).toBeLessThan(0.01);
+  // and the scene is drawn there, not easing in from its opening frame
+  expect(Math.abs(await page.evaluate(() => window.__teaHero.progress) - 0.5)).toBeLessThan(0.01);
+  // a new visit to the same address starts at the top
+  await halfway();
+  await holdScene(page);
+  await page.goto('/tea/?hero=on');
+  await settled(page);
+  await holdScene(page);
+  expect(await raw()).toBeLessThan(0.01);
+});
+
