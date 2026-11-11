@@ -74,6 +74,18 @@ test('an existing post is never overwritten, and a missing title makes nothing',
   assert.deepEqual(files(), ['taken.md']);
 });
 
+test('a title with no letter or digit to name the file after makes nothing (it used to make ".md")', (t) => {
+  const { run, files } = sandbox(t, { 'taken.md': 'id: "AO-001"\ntitle: "Taken"' });
+  for (const title of ['!!!', '—', '東京', '- -']) {
+    const none = run(title);
+    assert.equal(none.status, 1, title);
+    assert.equal(none.stdout, '');
+    assert.match(none.stderr, /^The file is named after the title, which needs a letter \(a to z\) or a digit in it\n$/);
+  }
+  assert.deepEqual(files(), ['taken.md']);
+  assert.equal(run('2026').stdout, 'Created src/content/posts/2026.md as AO-002\n');
+});
+
 test('the first post is AO-001, and the id after AO-999 is AO-1000', (t) => {
   const empty = sandbox(t);
   assert.equal(empty.run('First').stdout, 'Created src/content/posts/first.md as AO-001\n');
