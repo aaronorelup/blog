@@ -248,7 +248,7 @@ fails the build, or only warns in a live notebook.
 | `src/styles/fonts.css`, `public/fonts/` | written by `scripts/tools/fonts.mjs`: Google's own woff2 slices, self-hosted under content-hashed names |
 | `src/styles/{lore,courses}.css` | the course looks |
 | `src/scripts/tea/rail.js`, `src/styles/tea/` | the tea room's one module (the rail's current chapter, a one-time fade under `.tea-js`, none under reduced motion) and its stylesheets (`tea.css` on `tokens.css`, never `site.css`: `cover.css`, `chapters.css`, `sections.css`; `stage.css` is the 3D hero's) |
-| `src/scripts/tea/hero/`, `src/styles/tea/stage.css` | the 3D hero, its own chunks: `boot.js` (after first paint, no reduced motion, Save-Data or small device, WebGL: imports `stage.js`; else the poster stays, `data-3d-off` says why), `stage.js` (`mount()`: the scene from the manifest, the frame loop, `window.__teaHero`, the tools' hook), `three.js` (three and GLTFLoader through `<ao-model>`'s own dynamic imports, so the shared three chunk keeps its exports and hash: never import from `'three'` here), `pin.js` (`data-3d`, the `dock` or `flow` layout, the lead), `actors`, `tracks`, `camera`, `backdrop`, `lights`, `crt`, `motes`, `deform`, `input`, `manifest`; `stage.css`, the stage and both pinned layouts, the box where the static layout has it |
+| `src/scripts/tea/hero/`, `src/styles/tea/stage.css` | the 3D hero, its own chunks: `boot.js` (after first paint, no reduced motion, Save-Data or small device, WebGL: imports `stage.js`; else the poster stays, `data-3d-off` says why), `stage.js` (`mount()`: the scene from the manifest, the frame loop, a lost context, reduced motion turned on, `window.__teaHero`, the tools' hook; `data-hero-settled` once the hero changes no layout by itself), `three.js` (three and GLTFLoader through `<ao-model>`'s own dynamic imports, so the shared three chunk keeps its exports and hash: never import from `'three'` here), `pin.js` (`data-3d` only when pinning moves nothing on screen, the `dock` or `flow` layout, the lead, the place kept for a reload), `actors`, `tracks`, `camera`, `backdrop`, `lights`, `crt`, `motes`, `deform`, `input`, `manifest`; `stage.css`, the stage (one screen on every path) and both pinned layouts, the box where the static layout has it, low on a portrait screen |
 
 ### `scripts/` (Node)
 
@@ -273,7 +273,7 @@ fails the build, or only warns in a live notebook.
 | `scripts/tools/element-usage.mjs`, `dist-diff.mjs` | every `<ao-*>`, video and iframe per built page (`--diff` for rewrites); two builds compared |
 | `scripts/lib/{secrets,cfapi}.mjs`, `scripts/tools/put-secret.mjs` | `secret(NAME)` from the environment or Infisical; the Cloudflare API client that finds or makes the Worker's resources; `put-secret` sets one Worker secret, never printing it |
 | `scripts/tools/preview-media.mjs` | every resize-to-a-cap job: a post's card still and loop (`PREVIEWS.md`), and with `--out --size --cap` one still (post icons, project pictures; `docs/MEDIA.md`) |
-| `scripts/tools/tea-hero/` | the tea room hero's tools (`docs/TEA_HERO.md`): `shots.mjs` (contact sheets of the scroll), `poster.mjs` (the posters), `verify.mjs` (behaviour checks), `standins.mjs`, `paint.mjs` |
+| `scripts/tools/tea-hero/` | the tea room hero's tools (`docs/TEA_HERO.md`): `shots.mjs` (contact sheets of the scroll), `poster.mjs` (the posters), `silhouettes.mjs` (the actors' overlap and their share behind the title box, per size and scroll), `verify.mjs` (behaviour checks), `standins.mjs`, `paint.mjs` |
 
 ### `worker/` and `tests/`
 
