@@ -178,13 +178,14 @@ test('a spent dollar cap rests with no DeepSeek call, the closest posts from one
   assert.equal(mock.mock.callCount(), 0);
   assert.equal(await total('ask'), 0);
   assert.equal(await total('ask_usd'), 0);
-  assert.equal(await total('ask_search'), 1);
+  assert.deepEqual([await total('search'), await total('ask_search')], [1, 0], "the resting lookup is search_daily's, not the questions'");
   await setFlag('ask_daily_usd', 2);
   await setFlag('ask_daily', 0);
-  assert.equal((await ask('what did it all cost')).events[0].reason, 'resting');
+  await setFlag('ask_search_daily', 0);   // the day's questions used every call of theirs
+  assert.deepEqual((await ask('what did it all cost')).events, [{ t: 'end', reason: 'resting', related: ['post-2', 'post-3'] }]);
   assert.equal(await total('ask'), 0);
-  await setFlag('ask_search_daily', 1);
-  assert.deepEqual((await ask('what did it all cost')).events[0].related, [], 'ask_search_daily spent too');
+  await setFlag('search_daily', 1);
+  assert.deepEqual((await ask('what did it all cost')).events[0].related, [], 'search_daily spent too');
   await db.prepare("DELETE FROM flags").run();
   fresh();
 });
@@ -225,8 +226,9 @@ test("ask_search_daily is by default 2 calls for each of ask_daily's questions, 
   assert.deepEqual([await total('ask'), await total('ask_search')], [3, 6]);
   const before = asked.ai;
   const rest = await ask('what did the fourth cost');
-  assert.deepEqual(rest.events, [{ t: 'end', reason: 'resting', related: [] }], 'a resting answer has only what the questions left');
-  assert.deepEqual([await total('ask_search'), asked.ai - before], [6, 0], 'the cap is never passed');
+  assert.deepEqual(rest.events, [{ t: 'end', reason: 'resting', related: ['post-2', 'post-3'] }],
+    "a rested Ask still shows the closest posts: its lookup is search_daily's, which has room");
+  assert.deepEqual([await total('ask_search'), await total('search'), asked.ai - before], [6, 1, 1], "the questions' cap is never passed");
   await db.prepare("DELETE FROM flags").run();
   fresh();
 });
