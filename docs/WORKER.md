@@ -10,7 +10,7 @@ needs a secret or state. Only the paths `run_worker_first` names reach it: video
 | Path | What it does |
 |---|---|
 | `worker/index.js` | `ROUTES` (path → method → handler) and `CRONS` (schedule → named jobs). A thrown error is logged and answered `503`. Any other `/api/` path is `404`, a known path with the wrong method `405` with `Allow`. |
-| `worker/lib/http.js` | `json(body, status, headers)`, `status(code, headers)` (both `no-store` unless told otherwise), `sameOrigin(request)`, `readJson(request, max)` (a POST body, `null` when over `max` bytes) |
+| `worker/lib/http.js` | `json(body, status, headers)`, `status(code, headers)` (both `no-store` unless told otherwise), `sameOrigin(request)`, `readBytes(request, max)` and `readJson(request, max)` (a POST body, `null` when over `max` bytes: a declared length over it is refused unread, and a body without one is dropped once it passes it) |
 | `worker/lib/sql.js` | `ensure(db, schema)`: runs a feature's `.sql` file once per isolate, before its first query |
 | `worker/lib/flags.js` + `flags.sql` | `flags(env)`: switches and caps; `spend(env, what, n, max, day)`: the atomic daily cap (a day's first spend is held to it too; `NO_CAP` for a settle); `today()` |
 | `worker/lib/memo.js` | `memo(ms, read)`: a D1 read shared for `ms` per isolate (the switches, the search index's `v`) |
@@ -23,7 +23,7 @@ needs a secret or state. Only the paths `run_worker_first` names reach it: video
 | `worker/stats/` | `GET` and `HEAD /api/stats`, and `runStep`, the traffic snapshot's cron (`shape.js` is its pure half) |
 | `worker/session/serve.js` | `GET`, `POST /api/session`: whether Ask is on; a Turnstile solve becomes an Ask token |
 | `worker/search/` | `serve.js` (`GET /api/search`), `retrieve.js` (embed a query, ask Vectorize; `nearest()`, ids only, is Ask's), `sync.js` (`search.sync`, and `indexVersion()`), `counts.js` (the anonymous counts), `search.sql` |
-| `worker/ask/` | RAG Goobie (docs/ASK.md): `serve.js` (`POST /api/ask`: the guards, the answer cache, both caps, the resting path, the stream), `run.js` (one question's steps, settle, cache write, log line), `plan.js` (the planner call), `rank.js` (embeddings counted in `search_daily`, ids-only lookups, fusion, R, focus, hint, matched), `context.js` (what the answer is given, the user message), `body.js` (the requests as Blobs of the build's `/ask/*.txt`), `prompt.js` (their escaped pieces, `PROMPT_V`), `deepseek.js` (one call, timeouts, the stream), `cite.js` (marks to cites, streamed too), `corpus.js` (`/ask/manifest.json`'s lookups), `events.js` (the event stream, the heartbeat), `cache.js` (the answer cache), `ask.sql`; `hear.js` (`POST /api/ask/hear`, Ask by voice: Whisper) |
+| `worker/ask/` | RAG Goobie (docs/ASK.md): `serve.js` (`POST /api/ask`: the guards, the answer cache, both caps, the resting path, the stream), `run.js` (one question's steps, settle, cache write, log line), `plan.js` (the planner call), `rank.js` (embeddings counted in `ask_search_daily`, ids-only lookups, fusion, R, focus, hint, matched), `context.js` (what the answer is given, the user message), `body.js` (the requests as Blobs of the build's `/ask/*.txt`), `prompt.js` (their escaped pieces, `PROMPT_V`), `deepseek.js` (one call, timeouts, the stream), `cite.js` (marks to cites, streamed too), `corpus.js` (`/ask/manifest.json`'s lookups), `events.js` (the event stream, the heartbeat), `cache.js` (the answer cache), `ask.sql`; `hear.js` (`POST /api/ask/hear`, Ask by voice: Whisper) |
 | `worker/cleanup.js` | `cleanup.daily`, the sweep of old counts, answers and totals |
 | `worker/read/` | `step.js` (`read.step`, the read-aloud recorder), `voice.js` (the ElevenLabs calls), `read.sql` |
 
@@ -31,16 +31,16 @@ needs a secret or state. Only the paths `run_worker_first` names reach it: video
 
 | Route | Answers |
 |---|---|
-| `POST /api/reads {slug}` | `204` counted (or skipped quietly for a self-declared bot); `403` not from one of the site's pages; `400` no slug; `404` not a listed post; `429` that post had 30 reads in the last minute here |
-| `GET /api/reads?slug=` | `200 { slug, total, first, today, days: [{ day, n }], countries: [{ country, n }], asOf }`; `400`; `429` past 60 a minute for that post |
+| `POST /api/reads {slug}` | `204` counted (or skipped quietly for a self-declared bot); `403` not from one of the site's pages; `400` no slug, or a body over 1 KB; `404` not a listed post; `429` that post had 30 reads in the last minute here |
+| `GET /api/reads?slug=` | `200 { slug, total, first, today, days: [{ day, n }], countries: [{ country, n }], asOf }`; `400`; `404` not a listed post, before the limiter and D1 (an unlisted post answers exactly as an unknown slug, whatever was counted while it was listed); `429` past 60 a minute for that post |
 | `GET`, `HEAD /api/stats` | `200` the stored snapshot (cached 5 minutes per location); `503 { error, state }` (`gathering` or `not-connected`) until one exists; `500 { error }` when D1 can't be read |
 | `GET /api/session` | `200 { ask, voice }`, cached 30 s: `ask` `true` when the `ask` flag is on and `DEEPSEEK_API_KEY` is set; `voice` when `ask` is and the `ask_voice` flag is on too |
 | `POST /api/session {turnstile}` | `200 { token, exp }`, an Ask token for 30 minutes; `403` not from one of the site's pages; `413` a body over 3 KB (a Turnstile response can be 2,048 characters); `401` siteverify says no, or the solve's hostname isn't in `TURNSTILE_HOSTNAMES`, or its action isn't `ask` |
-| `GET /api/search?q=` | `200 { v, hits: [{ slug, kind, anchor, heading, text, score }] }`, the best 2 chunks of each of the best 8 posts (`kind` is `post` or `notes`; `anchor` `''` is the top of the page, `short` the short version); `400` `q` under 3 or over 200 characters once normalised; `429` past 600 a minute here, or 20 a minute for that query; `503` the `search` flag is off, or `search_daily` is spent (until 00:00 UTC). No token |
+| `GET /api/search?q=` | `200 { v, hits: [{ slug, kind, anchor, heading, text, score }] }`, the best 2 chunks of each of the best 8 posts (`kind` is `post` or `notes`; `anchor` `''` is the top of the page, `short` the short version), only of docs this deploy's `/search/manifest.json` lists, fresh or cached, so a post a deploy unlists is gone at once and not when the sync has caught up; `400` `q` under 3 or over 200 characters once normalised; `429` past 600 a minute here, or 20 a minute for that query; `503` the `search` flag is off, or `search_daily` is spent (until 00:00 UTC). No token |
 | `POST /api/ask {q}`, header `X-AO-Session` | `200`, `text/event-stream`: events `data: <json>\n\n`, each with its type in `t`: `start { posts, notes, mode, packs }`, `plan { topics, picks }` or `{ skipped }`, `found { searches, passages, posts, matched, ranked }` or `{ skipped }`, `read { given, of, tokens, focus }`, `write`, `cite { n, slug, kind, anchor, heading, title }` before the `text { d }` that first uses it, `wait` (after 10 s without another), and exactly one last `answer { answer, cites, related, cached, took, usage: { tokens, hit, out, usd } }` or `end { reason, related }`, `reason` `off` (the flag, or no key), `resting` (`ask_daily` or `ask_daily_usd` spent: no DeepSeek call, the closest posts from one lookup) or `busy` (DeepSeek refused, timed out or was cut short; nothing cached). A cached answer is one `answer` event. `kind` is `post` or `notes` (a notes cite links to `/ledger/<slug>/notes/#<anchor>`). Before the stream, bare statuses: `413` a body over 2 KB; `401` no valid token; `400` `q` under 3 or over 300 characters; `429` past 6 a minute in that session, or 60 a minute here |
 | `POST /api/ask/hear`, header `X-AO-Session`, body: one recording | Ask by voice. `200 { text }` (at most 300 characters, spaces collapsed): `@cf/openai/whisper-large-v3-turbo` with `{ audio: <base64>, task: 'transcribe', language: 'en', vad_filter: true }`, 20 s timeout, no retry; the page puts the text in the box and asks it through `/api/ask`. Bare statuses: `403` not from one of the site's pages; `415` a `Content-Type` other than `audio/webm`, `audio/mp4`, `audio/ogg`, `audio/x-m4a` or `audio/aac`; `413` a body over 1 MB (30 s of opus is about 120 KB, of Safari's AAC about 500 KB); `401` no valid token; `503` the `ask` or `ask_voice` flag is off, or `hear_daily` is spent; `429` past 6 a minute in that session, or 30 a minute here; `400` under 1 KB; `502` Whisper failed, timed out or answered without text. The audio and the text are never stored or logged; `usage_day` counts `hear` calls |
 | `GET /api/lantern` | `302` to `LANTERN_URL`, `no-store`: the lantern door on the homepage's coin (five night tosses in a row) opens here, so its address is in no file of this public repo |
-| any media path, `/read/*` | R2 (`MEDIA`) when it has the object, cutting ranges and checking `If-*` itself; else the asset, with ranges cut from `/media-sizes.json` (a length it can't learn means the whole file, `200`, `Accept-Ranges: bytes`); a `/read/<slug>/<hash>.json` that isn't recorded yet is `200 { ready: false }`, `no-store` |
+| any media path, `/read/*` | R2 (`MEDIA`) when it has the object, cutting ranges and checking `If-*` itself; else the asset, with ranges cut from `/media-sizes.json` (a length it can't learn means the whole file, `200`, `Accept-Ranges: bytes`); a `/read/<slug>/<hash>.json` that isn't recorded yet is `200 { ready: false }`, `no-store`; a path whose `%`-escape can't be decoded is a bare `400` |
 
 R2 objects under `read/` go out `immutable`: their names are hashes of their text.
 
@@ -113,7 +113,7 @@ sections to go`) or why it stopped. Old hashes are never deleted, so a rolled-ba
 | `ASSETS` | the build (`dist/`) | media, reads (`/ledger/previews.json`), stats (`/stats-pages.txt`), search and ask (`/search/manifest.json`'s model, the docs), ask (`/ask/manifest.json` and the prompt's `/ask/*.txt`), read (`/read/index.json`, `/read/<slug>.json`) |
 | `MEDIA` | R2 bucket `aaronorelup-site-media` (video, audio, `read/`) | media, read (writes `read/` only) |
 | `DB` | D1 `blog-reads` | reads, stats, flags, session (flags), search, ask, cleanup, read |
-| `AI` | Workers AI (`@cf/baai/bge-m3`; `@cf/openai/whisper-large-v3-turbo`) | search (queries and the sync), ask (the question and the planner's queries, counted in `search_daily`; Ask by voice's transcriptions, counted in `hear_daily`) |
+| `AI` | Workers AI (`@cf/baai/bge-m3`; `@cf/openai/whisper-large-v3-turbo`) | search (queries, counted in `search_daily`, and the sync), ask (the question and the planner's queries, counted apart in `ask_search_daily`; Ask by voice's transcriptions, counted in `hear_daily`) |
 | `SEARCH_INDEX` | Vectorize `blog-search`, 1024 dimensions, cosine | search, ask |
 | `READS_LIMIT`, `STATS_LIMIT` | 30 and 60 a minute, per post | reads |
 | `SEARCH_Q`, `SEARCH_ALL` | 20 a minute per query (16 hex of its SHA-256), 600 a minute in all | search |
@@ -131,7 +131,7 @@ Every limiter is `simple`, counted per Cloudflare location and approximate. None
 |---|---|
 | `CF_ANALYTICS_TOKEN` | the snapshot's read-only analytics token (set) |
 | `LANTERN_URL` | where the lantern door goes (`GET /api/lantern`); Aaron's own address, set from the box, never written in a file (set) |
-| `SESSION_KEY` | `put-secret.mjs SESSION_KEY` makes 32 random bytes; rotating it ends every Ask session |
+| `SESSION_KEY` | `put-secret.mjs SESSION_KEY` makes 32 random bytes; rotating it ends every Ask session. Unset or empty, no token is minted or accepted: `POST /api/session`, `/api/ask` and `/api/ask/hear` answer `503` |
 | `TURNSTILE_SECRET` | `put-secret.mjs TURNSTILE_SECRET` reads it from the widget |
 | `DEEPSEEK_API_KEY` | Ask's DeepSeek key, from Infisical (`put-secret.mjs DEEPSEEK_API_KEY`; set). Without it Ask is `off` |
 | `ELEVENLABS_API_KEY` | read-aloud: the Worker's own restricted key (Text to Speech and User read, a monthly credit quota), never Aaron's main key, so `put-secret.mjs ELEVENLABS_API_KEY <its Infisical name>`. Without it `read.step` is `off` |
@@ -146,7 +146,7 @@ step, so tables are only ever added, never changed or dropped.
 |---|---|
 | `worker/reads/reads.sql` | `reads (slug, day, country, n)` |
 | `worker/stats/stats.sql` | `stats_state`, `stats_day`, `stats_part` |
-| `worker/lib/flags.sql` | `flags (k, v)`, `usage_day (day, what, n)`: `what` is `search` (Workers AI embedding calls, search's and Ask's), `ask` (questions that reached DeepSeek), `ask_usd` (Ask's DeepSeek spend in micro-dollars: a worst-case reservation, settled to the reported usage), `hear` (Ask by voice's Whisper calls) or `tts_credits` (ElevenLabs credits) |
+| `worker/lib/flags.sql` | `flags (k, v)`, `usage_day (day, what, n)`: `what` is `search` (`/api/search`'s Workers AI embedding calls), `ask_search` (Ask's own, counted apart so the tokenless search route can't spend them), `ask` (questions that reached DeepSeek), `ask_usd` (Ask's DeepSeek spend in micro-dollars: a worst-case reservation, settled to the reported usage), `hear` (Ask by voice's Whisper calls) or `tts_credits` (ElevenLabs credits) |
 | `worker/search/search.sql` | `search_state (k, v)`, `search_docs (doc, id, hash, n)` (each embedded doc, its vector id prefix and chunk count), `searches (day, mode, q, n)` (no address, token, session, country or browser; `q` normalised, scrubbed, at most 80 characters) |
 | `worker/ask/ask.sql` | `ask_cache (key, body, at)`: `key` is the SHA-256 of the model, `PROMPT_V` (every word and setting of the prompts), `/ask/manifest.json`'s `v`, `ask_extra_tokens` and the question; `body` is `{ answer, cites, related, took, usage, live? }`, `live` the live notebook's hash when the answer drew on it (a push makes it a miss). Any change to the prompt, a stable post or the listed set moves every key, so old answers are never served again and age out after 7 days |
 | `worker/read/read.sql` | `read_state (slug, hash, state, tries, at)`: each post's recording at the hash `/read/index.json` names; `state` `partial`, `failed` (`tries` failed runs at that hash; 3 and it waits for new text) or `done` |
@@ -157,8 +157,15 @@ step, so tables are only ever added, never changed or dropped.
 
 ```
 search: on   ask: on   tts: on   search_daily: 20000   ask_daily: 1000   ask_daily_usd: 2   ask_extra_tokens: 40000
-tts_daily_credits: 15000   tts_credit_floor: 0.4   ask_voice: on   hear_daily: 1000
+tts_daily_credits: 15000   tts_credit_floor: 0.4   ask_voice: on   hear_daily: 1000   ask_search_daily: 2000
 ```
+
+`search_daily` is `/api/search`'s embedding calls a UTC day and `ask_search_daily` Ask's own, counted apart because
+the search route takes no token: 20,000 distinct queries there would otherwise leave every question without
+retrieval until 00:00 UTC. Its 2,000 is the most `ask_daily`'s 1,000 questions can make, 2 calls each (the question,
+then the planner's queries); a resting answer's one lookup comes out of what they leave, and with none left it
+shows no related posts. Raise the two together: `ask_search_daily` is twice `ask_daily`. The most embedding calls a
+day is 22,000 (it was 20,000 while the two shared one count).
 
 `ask_daily_usd` is dollars a UTC day for RAG Goobie's DeepSeek calls (each question reserves its worst case first, so
 the cap can't be passed); `ask_daily` (questions a day reaching DeepSeek) is a backstop in case prices move before
