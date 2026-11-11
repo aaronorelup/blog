@@ -49,6 +49,12 @@ test('a path still matches with a query or a fragment after it', () => {
   assert.ok(!matches('video.example.dev/watch?v=abc123', 'https://video.example.dev/watch?v=abc1234&t=30s'));
 });
 
+test('a path still matches behind a port', () => {
+  assert.ok(matches('secret.example.dev/admin', 'http://secret.example.dev:8443/admin/users'));
+  assert.ok(matches('secret.example.dev', 'secret.example.dev:8443'));
+  assert.ok(!matches('secret.example.dev/admin', 'http://secret.example.dev:8443/public'));
+});
+
 test('list lines with more than 3 words cannot match and are refused', () => {
   assert.equal(termKey('one two three four'), null);
 });
