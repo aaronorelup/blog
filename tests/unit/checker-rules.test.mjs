@@ -79,6 +79,12 @@ put('src/data/never-publish.json', JSON.stringify([hash('Zorblax'), hash(termKey
 put('worker/peek.js', "export const who = (request) => request.headers.get('CF-Connecting-IP');\n");
 put('worker/lib/verify.js', "export const form = (f, ip) => f.set('remoteip', ip);\n");
 put('worker/clean.js', "export const country = (request) => request.cf?.country;\n");
+// Every header and field an address travels in, in the cases a request or a form may spell it (a header's name has
+// no case), and beside them the headers that only sound like one.
+const IP_SPELLINGS = ['CF-Connecting-IP', 'cf-connecting-ip', 'CF-CONNECTING-IP', 'Cf-Connecting-Ip', 'X-Forwarded-For', 'x-forwarded-for', 'X-FORWARDED-FOR',
+  'X-Real-IP', 'x-real-ip', 'X-Real-Ip', 'True-Client-IP', 'true-client-ip', 'TRUE-CLIENT-IP', 'remoteip', 'remoteIp', 'RemoteIP', 'REMOTEIP'];
+IP_SPELLINGS.forEach((name, i) => put(`worker/spelled/${i}.js`, `export const who = (request) => request.headers.get('${name}');\n`));
+put('worker/spelled/not-an-address.js', "export const about = (request) => ['X-Forwarded-Proto', 'CF-IPCountry', 'CF-Ray'].map((h) => request.headers.get(h));\n");
 put('public/someone/page.js', "fetch('/x', { headers: { 'CF-Connecting-IP': '' } });\n");
 put('src/scripts/styled.js', "import './styled.css';\n");
 put('src/scripts/plain.js', "import { a } from './a.js';\nexport const b = a;\n");
@@ -178,6 +184,8 @@ test("code: a Worker file that reads the visitor's IP is reported, whichever way
   const ip = [[null, 'error', "reads the visitor's IP address: never key anything on it"]];
   assert.deepEqual(shape(of('code', 'worker/peek.js')), ip);
   assert.deepEqual(shape(of('code', 'worker/lib/verify.js')), ip);
+  IP_SPELLINGS.forEach((name, i) => assert.deepEqual(shape(of('code', `worker/spelled/${i}.js`)), ip, name));
+  assert.deepEqual(of('code', 'worker/spelled/not-an-address.js'), []);
   assert.deepEqual(of('code', 'worker/clean.js'), []);
   // public/ holds other people's pages: the code rules never read it.
   assert.deepEqual(runs.check.filter((i) => i.file.startsWith('public/')), []);
