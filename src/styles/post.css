@@ -13,8 +13,6 @@
   color: var(--pc-accent); text-decoration: none; transition: color 180ms ease;
 }
 .post-back:hover { color: var(--pc-strong); }
-/* On a phone the way back is 32px tall to the thumb and sits where it did (as chrome.css does for the nav). */
-@media (max-width: 480px) { .post-back { padding: 9px 0 8px; margin: -9px 0 22px; } }
 .post-meta { display: flex; align-items: center; gap: var(--space-4); margin: 0 0 var(--space-5); }
 .post-icon {
   flex: none; width: 64px; height: 64px; border-radius: var(--radius-m); background: var(--pc-tile); color: var(--pc-gold);
@@ -77,8 +75,6 @@
 .toc-label::-webkit-details-marker { display: none; }
 .toc-label::after { content: ' +'; }
 .toc[open] > .toc-label::after { content: ' −'; }
-/* On a phone the whole closed box is the fold's tap area, not only its 14px line of text. */
-@media (max-width: 480px) { .toc-label { padding: 10px 14px; margin: -10px -14px; } }
 .toc-list { list-style: none; margin: 8px 0 0; padding: 0; }
 .toc-list a {
   display: block; padding: 5px 0 5px 12px; border-left: 2px solid transparent; font-size: 13.5px; line-height: 1.4;

@@ -32,13 +32,6 @@
 .pc-navs-o { padding-right: 88px; }
 @media (max-width: 1380px) { .pc-navs { padding-right: 88px; } }
 @media (max-width: 480px) { .pc-navs, .pc-navs-o { padding-right: 0; gap: 6px 16px; flex-wrap: wrap; } }
-/* On a phone the header's links are 32px tall to the thumb and look as they did: the padding that grows each one is
-   taken back by its margin. A nav link grows 6px upward, the row gap, so where the nav wraps (320px) the second row
-   never lies over the first row's words. */
-@media (max-width: 480px) {
-  .pc-home { padding: 8px 0; margin: -2px 0; }
-  .pc-nav { padding: 6px 3px 11px; margin: -6px -3px -11px; }   /* 3px a side: "Now" is 26px wide */
-}
 .pc-nav { color: var(--pc-quiet); text-decoration: none; }
 /* The lit item is the panel's data-active-view (src/data/site.js NAV keys). */
 [data-active-view='stats'] .pc-nav[data-nav='stats'],
@@ -76,8 +69,6 @@
 @media (max-width: 480px) {
   .pc-bar-foot { padding-top: 9px; padding-bottom: 9px; }
   .pc-bar-foot .pc-bar-row { row-gap: 5px; }
-  /* 32px to the thumb, as the header's links: 12px a side because "X" is 8px wide, and the gap is 20px. */
-  .pc-foot { padding: 9px 12px; margin: -9px -12px; }
 }
 
 /* The day/night switch (chrome/ModeToggle.astro): the knob and its icon follow data-mode. */
