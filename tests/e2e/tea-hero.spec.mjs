@@ -452,3 +452,16 @@ test('tea-hero-21 the box docks only where it leaves most of the frame to the sc
     }
   }
 });
+
+test('tea-hero-22 on a portrait screen the cast stands clear above the title box in the first screen', async ({ page, isMobile }) => {
+  if (!isMobile) await page.setViewportSize({ width: 768, height: 1024 });
+  for (const url of ['/tea/?hero=off', '/tea/?hero=on']) {
+    await page.goto(url);
+    await settled(page);
+    // the box waits low (the portrait camera stands the cast in the top 60% of the frame), on both paths
+    const top = await page.locator('.tea-hero-box').evaluate((b) => b.getBoundingClientRect().top / innerHeight);
+    expect(top, url).toBeGreaterThan(0.55);
+    expect(top, url).toBeLessThan(0.7);
+  }
+});
+

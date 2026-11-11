@@ -78,6 +78,13 @@
    under a tenth of it took the title to 2.6:1 and the kicker to 4.2:1. */
 :root[data-mode='day'] .tea-hero-box { background-color: var(--tea-card); }
 
+/* Portrait screens (the tall poster): the cast stands in the top of the frame (camera.portrait aims it there), so the
+   box waits low in the first screen, its top under the television, the rest of it below the fold, on every path. */
+@media (max-aspect-ratio: 1/1) {
+  .tea-hero[data-tea-hero] { --tea-hero-pt: max(76px, 61vh); }
+  @supports (height: 1svh) { .tea-hero[data-tea-hero] { --tea-hero-pt: max(76px, 61svh); } }
+}
+
 /* The scene: one length of scroll for both layouts, so a switch between them moves nothing below the hero. */
 .tea-hero[data-3d='on'] { height: 300vh; }
 
