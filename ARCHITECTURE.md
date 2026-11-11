@@ -149,7 +149,7 @@ fails the build, or only warns in a live notebook.
 | `.dev.vars.example` | the local test keys for `wrangler dev` (copy to the git-ignored `.dev.vars`) |
 | `.node-version` | 22.23.4, the Node Workers Builds uses. `astro` stays pinned at 7.4.1, the last release that runs on agent boxes' 22.22.0 (CLAUDE.md, Commands) |
 | `package.json`, `package-lock.json`, `tsconfig.json`, `src/env.d.ts`, `.gitignore` | the scripts and dependencies, TypeScript for the `.ts` schemas and Astro's types, what git leaves out |
-| `public/_headers` | noindex for two hidden pages; a year, `immutable`, for the content-hashed `/_astro/*` and `/fonts/*`; a day for `/media/icons/*` |
+| `public/_headers` | noindex for two hidden pages; a year, `immutable`, for the content-hashed `/_astro/*` and `/fonts/*`; five minutes for `/pagefind/*`; a day for `/media/icons/*` |
 | `archive/2026-10-29-before-rework/` | every post as it was before the rework (read only) |
 
 ### `src/content/` and `src/data/`
@@ -206,7 +206,7 @@ fails the build, or only warns in a live notebook.
 | `src/components/ledger/` | `LedgerView` (`/ledger/`), `SearchBox` (the box and its Search \| Ask RAG Goobie switch, the line under it), `StartHere`, `PostCard` (icon or glyph, title, stamp: Start here's and a post's Read next), `Chips` (topic and project counts, real links `?topic=`), `LedgerRow` (icon or glyph, title link with `data-ledger-entry`, summary, meta, the stamp's `<details>` short version) |
 | `src/components/{about,courses,research,now}/` | `AboutView`; `CoursesView`, `LessonList`, `Coin`; `ResearchView`; `NowView` (a snapshot, then History) |
 | `src/components/projects/` | `ProjectsView` (`/projects`), `JumpRow`, `Highlights` (the reel from `picks.js REEL` and the cards marked `highlight`), `ProjectSection`, `ProjectCard`, `NeedsGlyph` |
-| `src/components/post/` | `PostView` (the article: `data-post-article`, `data-panel-view` `post` or `notes`, `data-slug`), `PostHeader` (icon or glyph, id · date · minutes, topic and project chips, title `data-r=t`, summary `data-r=s`, the byline on `voice: claude` pages, `ReadAloud`), `ShortVersion` (`#short`, the post's card; none on an unlisted post), `NotesLink`, `Contents` (4+ h2 or 900+ words), `Related` (three `ledger/PostCard`s), `PostNav`, `ElementStyles`, `ReadAloud` (the Listen button; `data-read-hash` names this version's recording, absent on a post never recorded) |
+| `src/components/post/` | `PostView` (the article: `data-post-article`, `data-panel-view` `post` or `notes`, `data-slug`), `PostHeader` (icon or glyph, id · date · minutes, topic and project chips, title `data-r=t`, summary `data-r=s`, the byline on `voice: claude` pages, `ReadAloud`), `ShortVersion` (`#short`, the post's card; none on an unlisted post), `NotesLink`, `Contents` (4+ h2, or 2+ h2 and 900+ words), `Related` (three `ledger/PostCard`s), `PostNav`, `ElementStyles`, `ReadAloud` (the Listen button; `data-read-hash` names this version's recording, absent on a post never recorded) |
 | `src/components/lore/` | the lore course |
 
 ### `src/scripts/` and `src/styles/` (the browser)
@@ -282,7 +282,7 @@ fails the build, or only warns in a live notebook.
 | `worker/cleanup.js` | the daily sweep of old counts, answers and totals |
 | `worker/lantern.js` | `GET /api/lantern`: the lantern door's redirect to `LANTERN_URL` |
 | `worker/read/` | `step.js` (`read.step`: one post's missing sections a run, then its post file; capped by credit), `voice.js` (the ElevenLabs calls), `read.sql` |
-| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `duplicate-ids.test.mjs` (one id on two posts), `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (RAG Goobie's marks to cites, streamed too), `ask-serve.test.mjs` (`/api/ask` end to end: guards, stream, cache, caps, settle), `ask-hear.test.mjs` (`/api/ask/hear`: guards, switch, cap, Whisper's call and errors), `ask-build.test.mjs`, `ask-context.test.mjs`, `ask-eval.test.mjs` (the eval's flags, passes, judge message, bootstrap), `ask-price.test.mjs`, `ask-stream.test.mjs`, `ask-scale.test.mjs` (1,000 posts), `ask-fixture.mjs` (a small built blog), `schema.test.mjs` (the posts schema's `voice`; every post through the schema and the strict rules; `STRICT`'s rollout), `search-merge.test.mjs` (the words half first), `budgets.test.mjs`, `contracts.test.mjs` (over the last build), `read.test.mjs` (the spoken copy and its map, alignment, section hashes, the read-aloud cron); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1 |
+| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `duplicate-ids.test.mjs` (one id on two posts), `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (RAG Goobie's marks to cites, streamed too), `ask-serve.test.mjs` (`/api/ask` end to end: guards, stream, cache, caps, settle), `ask-hear.test.mjs` (`/api/ask/hear`: guards, switch, cap, Whisper's call and errors), `ask-build.test.mjs`, `ask-context.test.mjs`, `ask-eval.test.mjs` (the eval's flags, passes, judge message, bootstrap), `ask-price.test.mjs`, `ask-stream.test.mjs`, `ask-scale.test.mjs` (1,000 posts), `ask-fixture.mjs` (a small built blog), `schema.test.mjs` (the posts schema's `voice`; every post through the schema and the strict rules; `STRICT`'s rollout), `search-merge.test.mjs` (the words half first), `budgets.test.mjs`, `fonts.test.mjs` (`fonts.mjs`'s `misses()`, then the last build), `contracts.test.mjs` (over the last build), `read.test.mjs` (the spoken copy and its map, alignment, section hashes, the read-aloud cron); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1; `content-schema.mjs` loads the collections' schemas in plain Node (`live.test.mjs`, `schema.test.mjs`) |
 | `tests/e2e/` | the behaviour suite: `INVENTORY.md`, `targets.json` (from `element-usage`), specs, fixtures; the wall-clock checks (`@timing`) run in the `*-timing` projects, after the parallel ones |
 | `tests/baseline/urls.txt` | every page and contract file a build must still produce |
 | `tests/ask/` | RAG Goobie's eval set (`eval.json`, 50 questions with gold posts, sections and must-haves) and the example candidates (`examples.json`); the blind hold-out is private |
@@ -302,7 +302,7 @@ about a second; run it before every landing, and with paths to see one post (`np
 | `links.mjs` | `/ledger/<slug>/` goes to a listed post, `/notes/` to its notes; nothing under `public/ledger/`; no banned link | deploy |
 | `elements.mjs` | each `src/elements/ao-*/` has its section in `docs/COMPONENTS.md` | check |
 | `assets.mjs` | preview stills and loops exist and are under their caps, icon and project picture caps, every named video or audio is in R2 or in a `STAYS_IN_GIT` folder | deploy |
-| `code.mjs` | 400 lines, no CSS imported by browser JS, no `style=` in components, layouts or pages, `astro:content` only in `lib/content.js` and the schemas, no IP under `worker/` | check |
+| `code.mjs` | 400 lines, no CSS imported by browser JS, no `style=` in components, layouts or pages, `astro:content` only in `lib/content.js`, `content.config.ts` and the schemas, no IP under `worker/` | check |
 
 Anything in a live notebook's paths is at most a warning, at either level. `npm run check -- --strict` fails on
 warnings too, except those a live notebook or a `HELD` post may keep.
@@ -316,7 +316,7 @@ names from a reader of the repo, not from someone set on guessing them.
 
 **Budgets** (`scripts/tools/budgets.mjs`, gzipped, without fonts and media): a post page minus its prose ≤ 20 KB
 (chrome HTML 4, CSS 15, JS up front 8: the page's scripts, their static imports and its view's module), each element's own chunks and inlined CSS ≤ 6 KB (`ao-series`, `ao-game`
-10; one row names the element nearest its budget), the ledger's chrome ≤ 6 KB and ≤ 360 B a row (each row carries its card), the homepage before the
+10; one row names the element nearest its budget), the JS Listen loads ≤ 8 KB, the ledger's chrome ≤ 6 KB and ≤ 360 B a row (each row carries its card), the homepage before the
 scene chunk ≤ 30 KB (HTML 12, entry JS 12). Printed by every build, never failing it. A display code point the
 self-hosted fonts miss is a warning in the build and a failure of `node scripts/tools/budgets.mjs` and of
 `tests/unit/fonts.test.mjs`; `node scripts/tools/fonts.mjs` fixes it.
