@@ -68,11 +68,13 @@ test('tea-2 the posts are the ledger’s listed posts, each once under its topic
   const hrefs = await page.locator('a[href]').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
   const linked = (re) => [...new Set(hrefs.map((h) => h.match(re)?.[1]).filter(Boolean))].sort();
   expect(linked(/^\/ledger\/([^/?#]+)\/$/)).toEqual([...listed].sort());
-  // notes pages: only a listed post's own, and every index row of a post that has one links it
-  expect(linked(/^\/ledger\/([^/?#]+)\/notes\/$/).filter((s) => !listed.includes(s) || !NOTES.includes(s))).toEqual([]);
-  const notesRows = await page.locator('#ledger .tea-row').evaluateAll((rs) => rs.map((r) => [
-    r.querySelector('.tea-stretch').getAttribute('href').split('/')[2], r.querySelector('.tea-row-notes')?.getAttribute('href') ?? null]));
-  for (const [slug, notes] of notesRows) expect(notes, slug).toBe(NOTES.includes(slug) ? `/ledger/${slug}/notes/` : null);
+  // notes pages: every listed post's own and nothing else, linked from each card and index row of a post that has one
+  expect(linked(/^\/ledger\/([^/?#]+)\/notes\/$/)).toEqual(listed.filter((s) => NOTES.includes(s)).sort());
+  const items = await page.locator('#ledger :is(.tea-row, .tea-card)').evaluateAll((rs) => rs.map((r) => [
+    r.querySelector('.tea-stretch').getAttribute('href').split('/')[2],
+    r.querySelector(':is(.tea-row-notes, .tea-card-notes)')?.getAttribute('href') ?? null]));
+  expect(items.length).toBe(listed.length);
+  for (const [slug, notes] of items) expect(notes, slug).toBe(NOTES.includes(slug) ? `/ledger/${slug}/notes/` : null);
   // the hero's one counter line, and the ledger chapter's way out, counted from the build and the source
   await expect(page.locator('.tea-counter')).toHaveText([plural(listed.length, COPY.counter.posts),
     plural(PROJECT_FILES.length, COPY.counter.projects), plural(courses, COPY.counter.courses)].join(' · '));

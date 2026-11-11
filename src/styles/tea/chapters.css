@@ -159,16 +159,18 @@
   margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--pc-body);
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
 }
-.tea-row-notes {
+.tea-row-notes, .tea-card-notes {
   position: absolute; top: 12px; right: 0; z-index: 3; padding: 2px 8px; border: 1px solid var(--pc-line2);
   border-radius: var(--radius-pill); font-family: var(--tea-mono); font-size: 11px; color: var(--tea-link);
   text-decoration: none; background: var(--pc-page);
 }
-.tea-row-notes:hover { border-color: var(--tea-wood); }
+.tea-row-notes:hover, .tea-card-notes:hover { border-color: var(--tea-wood); }
+/* on a card the same pill sits in the card's own flow, under the summary */
+.tea-card-notes { position: relative; top: auto; right: auto; align-self: flex-start; background: none; }
 
 .tea-more { margin: var(--space-7) 0 0; }
 .tea-link { font-weight: 600; color: var(--tea-link); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
-.tea .tea-link, .tea .tea-row-notes, .tea .tea-card-extra, .tea .tea-rail-back { color: var(--tea-link); }
+.tea .tea-link, .tea .tea-row-notes, .tea .tea-card-notes, .tea .tea-card-extra, .tea .tea-rail-back { color: var(--tea-link); }
 .tea-link:hover { text-decoration-thickness: 2px; }
 
 /* projects: Stopped is the quietest */
