@@ -9,7 +9,7 @@ export const SALT = 'aaronorelup.com never-publish v1\n';
 export const hash = (key) => crypto.hash('sha256', SALT + key);
 
 const WORD = /[\p{L}\p{N}_]+/gu;
-const URLISH = /(?:https?:\/\/)?((?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,})((?:\/[^\s"'`<>()[\]{}|*,]*)?)/g;
+const URLISH = /(?:https?:\/\/)?((?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,})(?::\d+(?=\/))?((?:\/[^\s"'`<>()[\]{}|*,]*)?)/g;
 
 const segmentsOf = (pathPart) => pathPart.split('/').filter(Boolean).map((s) => s.replace(/[.:;!?]+$/, ''));
 
