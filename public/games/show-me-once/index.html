@@ -159,7 +159,7 @@ function resize() {
   DPR = min(2, window.devicePixelRatio || 1);
   canvas.width = round(W * DPR); canvas.height = round(H * DPR);
   SC = min(W / 360, H / 560); VW = W / SC; VH = H / SC;
-  GA = H > W * 1.15 ? 0.63 : 0.7;
+  GA = H > W * 1.15 ? 0.71 : 0.7;
 }
 const kz = () => SC * cam.z;
 const w2s = (x, y) => [(x - cam.x) * kz() + W / 2, (y - cam.y) * kz() + H * GA];
@@ -610,6 +610,44 @@ function finishLamp(l) { l.h = lampH(G.hold ? G.hold.d : 1.7); l.lit = 1; l.clea
 function finishBanner(b) { b.lines = markLines(bannerBox(b), { a: 0.9 }); }
 function finishGate(t) { t.open = 1; t.lines = markLines(gateBox(t), { w: 0.5 }); }
 
+const trees = [];
+function plantTrees() {              // dark trees along the way, never where something has to be read
+  const busy = (x) => {
+    for (const g of gaps) if (x > g.x0 - 70 && x < g.x1 + 70) return true;
+    for (const d of doors) if (abs(x - d.x) < 95) return true;
+    for (const l of lamps) if (abs(x - l.x) < 62) return true;
+    for (const b of banners) if (abs(x - b.x) < 150) return true;
+    for (const t of gates) if (abs(x - t.x) < 85) return true;
+    return x > 14150 || abs(x - 12) < 130;
+  };
+  for (let i = -4; i < 92; i++) { const x = i * 158 + hash(i * 2.7) * 105; if (hash(i * 5.1) < 0.28 || busy(x)) continue; trees.push({ x, h: 58 + hash(i * 3.9) * 74, lean: (hash(i * 8.3) - 0.5) * 9, pine: hash(i * 4.7) < 0.34 }); }
+}
+function drawTree(t) {
+  const rv = world.reveal, y = gy(t.x) + 2, h = t.h, tx = t.x + t.lean, col = mix(COL.night, '#171624', rv), rim = rgba('#45425e', 0.55 * rv);
+  X.strokeStyle = col; X.fillStyle = col; X.lineWidth = 2.6 + h * 0.012; X.lineCap = 'round';
+  X.beginPath(); X.moveTo(t.x, y); X.quadraticCurveTo(t.x + t.lean * 0.2, y - h * 0.4, tx, y - h * 0.66); X.stroke();
+  if (t.pine) {
+    for (let i = 0; i < 3; i++) { const yy = y - h * (0.3 + i * 0.22), w = h * (0.25 - i * 0.055), xx = lerp(t.x, tx, 0.4 + i * 0.3); X.beginPath(); X.moveTo(xx - w, yy); X.quadraticCurveTo(xx, yy - h * 0.1, xx, yy - h * 0.36); X.quadraticCurveTo(xx, yy - h * 0.1, xx + w, yy); X.closePath(); X.fill(); }
+    X.strokeStyle = rim; X.lineWidth = 1; X.beginPath(); X.moveTo(tx - h * 0.14, y - h * 0.76); X.quadraticCurveTo(tx - h * 0.02, y - h * 0.86, tx, y - h * 1.08); X.stroke();
+  } else {
+    const r = h * 0.27, cy = y - h * 0.76;
+    X.beginPath(); X.arc(tx, cy, r, 0, TAU); X.arc(tx - r * 0.7, cy + r * 0.42, r * 0.7, 0, TAU); X.arc(tx + r * 0.72, cy + r * 0.48, r * 0.66, 0, TAU); X.fill();
+    X.strokeStyle = rim; X.lineWidth = 1.1; X.beginPath(); X.arc(tx, cy, r - 0.6, PI * 1.08, PI * 1.62); X.stroke();
+  }
+}
+function drawFireflies() {           // a few slow lights near the ground
+  const rv = world.reveal; if (rv < 0.5) return;
+  const c0 = floor((cam.x - VW) / 210), c1 = ceil((cam.x + VW) / 210);
+  X.globalCompositeOperation = 'lighter';
+  for (let i = c0; i <= c1; i++) {
+    if (hash(i * 7.3 + 1) < 0.35) continue;
+    const t = RM ? 0 : clock, bx = i * 210 + hash(i * 3.3) * 150, x = bx + sin(t * 0.31 + i) * 26 + sin(t * 0.13 + i * 2) * 14, y = gy(bx) - 18 - hash(i * 9.1) * 70 + sin(t * 0.47 + i * 1.7) * 12;
+    const a = (RM ? 0.5 : 0.5 + 0.5 * sin(t * 1.1 + i * 2.3)) * rv; if (a < 0.05) continue;
+    const g = X.createRadialGradient(x, y, 0, x, y, 7); g.addColorStop(0, rgba(COL.gold, 0.7 * a)); g.addColorStop(1, rgba(COL.gold, 0)); X.fillStyle = g; X.beginPath(); X.arc(x, y, 7, 0, TAU); X.fill();
+  }
+  X.globalCompositeOperation = 'source-over';
+}
+
 /* ================================================================== particles */
 const sparks = [], rings = [];
 function spark(x, y, n, col, o) {
@@ -840,9 +878,9 @@ function glyph(c, kind, cx, cy, size, o) {
 /* ================================================================== drawing the night */
 for (let i = 0; i < 150; i++) world.stars.push({ x: hash(i * 1.37), y: pow(hash(i * 2.11 + 5), 1.25), r: 0.5 + hash(i * 3.7) * 1.1, sp: 0.5 + hash(i * 5.3) * 1.6, ph: hash(i * 7.9) * TAU, b: hash(i * 9.1) < 0.07 });
 const HILLS = [
-  { p: 0.07, vy: 0.5, base: -128, a: [44, 0.0029, 1.2, 20, 0.0071, 4.1, 8, 0.0173, 2.2], col: '#171829', mist: '#1f2036' },
-  { p: 0.16, vy: 0.74, base: -84, a: [30, 0.0043, 3.4, 16, 0.0097, 0.6, 6, 0.0231, 5.0], col: '#1a1a2b', mist: '#212138' },
-  { p: 0.32, vy: 0.96, base: -40, a: [20, 0.0061, 5.2, 10, 0.0143, 2.9, 4, 0.031, 1.1], col: '#1d1c2c', mist: '#222137' },
+  { p: 0.07, vy: 0.5, base: -128, a: [44, 0.0029, 1.2, 20, 0.0071, 4.1, 8, 0.0173, 2.2], col: '#161728', top: '#1e1e33', mist: '#1f2036' },
+  { p: 0.16, vy: 0.74, base: -84, a: [30, 0.0043, 3.4, 16, 0.0097, 0.6, 6, 0.0231, 5.0], col: '#191929', top: '#222138', mist: '#212138' },
+  { p: 0.32, vy: 0.96, base: -40, a: [20, 0.0061, 5.2, 10, 0.0143, 2.9, 4, 0.031, 1.1], col: '#1c1b2a', top: '#25243a', mist: '#222137' },
 ];
 const hillY = (L, x) => L.base + L.a[0] * sin(x * L.a[1] + L.a[2]) + L.a[3] * sin(x * L.a[4] + L.a[5]) + L.a[6] * sin(x * L.a[7] + L.a[8]);
 const winLit = new Map();             // far windows the player has lit: house index -> time it was lit
@@ -878,10 +916,18 @@ function drawHills() {
     X.beginPath(); X.moveTo(0, H);
     for (let sx = 0; sx <= W + 6; sx += 6) X.lineTo(sx, yo + hillY(L, (sx - W / 2) / k + off) * k);
     X.lineTo(W, H); X.closePath();
-    const hg = X.createLinearGradient(0, yo + (L.base - 70) * k, 0, yo + 30 * k); hg.addColorStop(0, mix(COL.night, L.col, rv)); hg.addColorStop(1, mix(COL.night, L.mist, rv));
+    const amp = L.a[0] + L.a[3] + L.a[6], hg = X.createLinearGradient(0, yo + (L.base - amp) * k, 0, yo + 30 * k);
+    hg.addColorStop(0, mix(COL.night, L.top, rv)); hg.addColorStop(0.3, mix(COL.night, L.col, rv)); hg.addColorStop(1, mix(COL.night, L.mist, rv));
     X.fillStyle = hg; X.fill();
     X.beginPath(); for (let sx = 0; sx <= W + 6; sx += 6) { const y = yo + hillY(L, (sx - W / 2) / k + off) * k; if (sx) X.lineTo(sx, y); else X.moveTo(sx, y); }
-    X.strokeStyle = rgba('#3a3956', 0.3 * rv); X.lineWidth = 1; X.stroke();
+    X.strokeStyle = rgba('#3a3956', 0.16 * rv); X.lineWidth = 1; X.stroke();
+    if (li === 2) {                   // small far trees along the nearest ridge
+      const j0 = floor(((0 - W / 2) / k + off) / 74) - 1, j1 = ceil(((W - W / 2) / k + off) / 74) + 1; X.fillStyle = mix(COL.night, '#191827', rv);
+      for (let j = j0; j <= j1; j++) {
+        if (hash(j * 3.1 + 9) < 0.45) continue; const tx = j * 74 + hash(j * 1.3) * 50, sx = (tx - off) * k + W / 2, sy = yo + hillY(L, tx) * k + 2, th = (9 + hash(j * 6.7) * 12) * k;
+        X.beginPath(); X.ellipse(sx, sy - th * 0.62, th * 0.34, th * 0.46, 0, 0, TAU); X.rect(sx - th * 0.04, sy - th * 0.3, th * 0.08, th * 0.34); X.fill();
+      }
+    }
     if (li !== 1) return;
     const i0 = floor(((0 - W / 2) / k + off) / 190) - 1, i1 = ceil(((W - W / 2) / k + off) / 190) + 1;   // the far houses and their windows
     for (let i = i0; i <= i1; i++) {
@@ -1998,6 +2044,7 @@ function render() {
   drawSky(); drawSkyThings(); world.seen = []; drawHills(); drawFar();
   setWorld();
   const hw = W / 2 / kz() + 260, vis = (x) => abs(x - cam.x) < hw;
+  if (world.reveal > 0.001) for (const t of trees) if (vis(t.x)) drawTree(t);
   for (const b of banners) if (vis(b.x)) drawBanner(b);
   for (const t of gates) if (vis(t.x)) drawGate(t);
   drawGround();
@@ -2007,7 +2054,7 @@ function render() {
   for (const l of lamps) if (vis(l.x)) drawLamp(l);
   for (const L of lines) drawLine(L);
   if (fly.a > 0.01 && G.mark) { const F = frameBox(fly.cx, fly.cy, fly.s); for (const s of G.mark.s) glowPts(X, mapPts(s, F), COL.gold, max(0.7, fly.s * 0.017), fly.a); }
-  drawDark();
+  drawFireflies(); drawDark();
   if (dot.a > 0.01) { const nb = dot.nudge; dot.nudge *= 0.9; X.save(); X.translate(dot.x, dot.y); X.scale(1.5 + nb * 0.6, 1.5 + nb * 0.6); touchDot(0, 0, dot.a); X.restore(); }
   for (const d of doors) if (d.ask > 0.01 && vis(d.x)) touchDot(d.x, gy(d.x) - 50 * d.size, d.ask);
   for (const l of lamps) if (l.ask > 0.01 && vis(l.x) && !ptr.down && !kb.space) touchDot(l.x, gy(l.x) - l.h, l.ask);
@@ -2087,7 +2134,7 @@ Object.defineProperties(smo, {
 });
 Object.defineProperty(window, '__smo', { value: Object.freeze(smo), enumerable: false });
 
-resize(); layout(); BEATS[9].x0 = P.top; buildMusic();
+resize(); layout(); plantTrees(); BEATS[9].x0 = P.top; buildMusic();
 muteEl.setAttribute('aria-pressed', S.muted ? 'true' : 'false');
 if (S.done && G.stroke && G.taps && G.mark) spawn(runReturn()); else { S.done = false; startAt(S.beat); }
 window.requestAnimationFrame(frame);
