@@ -1,0 +1,6 @@
+S1 in-note frames 2624 median conf 0.0074 p90 0.0512 share<50c 0.652
+S2n in-note frames 2529 median conf 0.0162 p90 0.0840 share<50c 0.416
+S2s in-note frames 2529 median conf 0.0116 p90 0.0443 share<50c 0.383
+S4 in-note frames 2780 median conf 0.0326 p90 0.2621 share<50c 0.129
+S4lead in-note frames 2780 median conf 0.7241 p90 0.8965 share<50c 0.959
+R1b in-note frames 1823 median conf 0.8685 p90 0.9450 share<50c 0.847

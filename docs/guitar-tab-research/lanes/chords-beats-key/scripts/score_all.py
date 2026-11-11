@@ -165,6 +165,10 @@ def main():
                 p = exists(tool, clip, f)
                 if not p:
                     continue
+                if f.endswith((".stdout.txt", ".stderr.txt")):
+                    # gap round 1: batch_run.py's job logs are <tag>.stdout.txt / <tag>.stderr.txt; with the tag
+                    # "tempocnn" they matched the tempo* rule below and were scored by mistake (e1624 ... e1705)
+                    continue
                 if f.startswith("chords") and f.endswith(".lab") and clip in HAS_CHORDS:
                     ev(done, tool, f[:-4], clip, "chords", p, ["--est", p])
                 elif f.startswith("beats") and f.endswith(".txt"):

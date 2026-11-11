@@ -1,0 +1,31 @@
+verify-gapfill-audio-to-notes, 2026-11-11: re-runs of the gap round's trials, compared with the round's outputs (cmp)
+
+== RMVPE r0579 (gtr-run slot, 2 cores) vs r0516 ==
+[gtr-run r0579] audio-to-notes/rmvpe-onnx-0.2.3 "verify (verify-gapfill-audio-to-notes): re-run of r0516, RMVPE rmvpe-onnx 0.2.3 Python API, same script, 8 clips" wall=25.42s cpu=44.6s rss=1199.2MB cores=2 exit=0 slot_wait=0.0s
+identical R1b.f0.csv
+identical R2.f0.csv
+identical R3a.f0.csv
+identical S1.f0.csv
+identical S2n.f0.csv
+identical S2s.f0.csv
+identical S4.f0.csv
+identical S4lead.f0.csv
+predict() seconds r0579 (r0516): S1 14.15 (16.05), S2n 0.91 (2.29), S2s 1.07 (1.76), S4 1.19 (2.19), S4lead 1.08 (2.44), R1b 0.84 (1.68), R2 0.84 (2.15), R3a 0.54 (1.13)
+
+== RMVPE CLI r0581 (--nolock) vs r0517 ==
+identical cli/S1.csv
+printed: Threshold 0.03, Frames 2984, Voiced 498 (16.7 %), F0 range 216.3 - 392.8 Hz, F0 median 295.7 Hz, Time 1639.4 ms (r0517: 2902.0 ms)
+
+== Onsets and Frames r0583 (gtr-run slot, 2 cores) vs r0545 ==
+	User time (seconds): 39.99
+	System time (seconds): 2.63
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:38.71
+	Maximum resident set size (kbytes): 1181920
+	Exit status: 0
+[gtr-run r0583] audio-to-notes/onsets-frames-magenta-2.1.4 "verify (verify-gapfill-audio-to-notes): re-run of r0545, Onsets and Frames magenta 2.1.4 transcribe, maestro_checkpoint, same 4 inputs" wall=38.72s cpu=42.6s rss=1154.2MB cores=2 exit=0 slot_wait=0.0s
+identical S1.wav.midi
+identical S2n.wav.midi
+identical R1c.wav.midi
+identical S4guitar.wav.midi
+per file (log, s): {'S1.wav': 5.232, 'S2n.wav': 3.309, 'R1c.wav': 3.568, 'S4guitar.wav': 5.102}
+first 'Starting transcription for' log line: I1111 00:06:54.261377; ledger start 00:06:34 (whole seconds), so about 20 s after the start

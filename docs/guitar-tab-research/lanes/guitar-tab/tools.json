@@ -1159,7 +1159,7 @@
       "tried_how": null,
       "runs": [],
       "not_run_reason": "NOT RUN HERE: the README's only inference route is its training scripts with `TRAIN_MODEL=False` (`run_GS.sh` / `run_GOAT.sh`) over dataset folders built by its `BuildDataset.py` scripts, so running it on the shared clips means running the repository's own Python, which was not attempted after the two permission refusals (This session's permission system refused, twice, to install code from a GitHub repository (`uv pip install -e <clone of xavriley/hf_midi_transcription>` and later `uv pip install <clone of DanieleMorotti/guitab>`), each time with \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]\" (trial agent's account; no log of the refusal is in the lane folder). After the second refusal no other repository-only tool was installed or executed.). Weights not downloaded. for-aaron.md section 3 has no run steps: it says a new inference script for a single audio file would be needed (\"Nothing to send back until then\").",
-      "for_aaron": false,
+      "for_aaron": true,
       "callable_via": [
         "python"
       ],
@@ -1440,7 +1440,7 @@
       "tried_how": null,
       "runs": [],
       "not_run_reason": "NOT RUN HERE: the model class lives in the GitHub repository, which would have to be installed or executed (This session's permission system refused, twice, to install code from a GitHub repository (`uv pip install -e <clone of xavriley/hf_midi_transcription>` and later `uv pip install <clone of DanieleMorotti/guitab>`), each time with \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]\" (trial agent's account; no log of the refusal is in the lane folder). After the second refusal no other repository-only tool was installed or executed.). for-aaron.md section 3 has no run steps for it: its README runs inference through `evaluate.py` over GuitarSet features made by `extract_features.py`, fold by fold, not on a single file.",
-      "for_aaron": false,
+      "for_aaron": true,
       "callable_via": [
         "python"
       ],
@@ -3721,7 +3721,7 @@
             "samples/pyguitarpro-glue/bp-tuttut_*.gp5"
           ],
           "metrics": {
-            "note": "my glue code (`scripts/gtreval_to_gp5.py`, about 50 lines), not a tool's own output; converted 2026-11-10, not timed, not run through gtr-run; the verifier's re-run r0469 gave identical notes, tuning, capo and tempo for the 3 GP5 files",
+            "note": "my glue code (`scripts/gtreval_to_gp5.py`, about 50 lines), not a tool's own output; the 2026-11-10 conversions were not timed and not run through gtr-run; scored as e0430, e0431, e0432, e0433 (truth-MIDI tab) and e1088, e1090, e1092 (audio chains); the verifier's re-run r0469 gave identical notes, tuning, capo and tempo for 3 of the GP5 files; gap round 2 re-ran all eight conversions as r0586 (next run entry)",
             "read_back_with_gtr_eval_tab": {
               "tuttut_S2n_e0430": {
                 "matched": "90/90",
@@ -3755,7 +3755,30 @@
               "S5capo2_capo_told_e1090": "139 written, capo read back 2, 90 matched, 1.0000",
               "R1c_119BPM_grid_from_0_s_e1092": "151 of 153 written, 112 matched (117 before snapping, e0727), 0.8036; the fixed 16th grid moved some onsets more than 50 ms"
             },
-            "R3a": "102 of 105 notes written at an assumed 120 BPM (3 fell on an occupied string in the same 16th slot)"
+            "R3a": "102 of 105 notes written at an assumed 120 BPM (3 fell on an occupied string in the same 16th slot)",
+            "eval_ids": [
+              "e0430",
+              "e0431",
+              "e0432",
+              "e0433",
+              "e1088",
+              "e1090",
+              "e1092"
+            ]
+          }
+        },
+        {
+          "run_id": "r0586",
+          "input_id": "the same 8 conversions (tuttut S2n, S5capo2 capo, S5dropd Drop D; LilyPond S5dropd Drop D; Basic Pitch -> tuttut S2n, S5capo2 capo, R1c; R3a), same script and --bpm, no --title",
+          "cores": null,
+          "wall_s": 0.77,
+          "peak_mb": 21.1,
+          "exit_code": 0,
+          "output_files": [
+            "/home/user/gtr/lanes/guitar-tab/gap2/gp5/*.gp5 (outside git)"
+          ],
+          "metrics": {
+            "note": "gap round 2, 2026-11-11, gtr-run --nolock (light job, no CPU slot; wall for all eight incl. Python start-ups, CPU 0.8 s); content identical to the 2026-11-10 files (tempo, tuning, capo, every beat's (string, fret) notes; only the song title differs), checked with scripts/gap2_compare_gp5.py; gtr-eval tab --no-ledger on the seven scored files gives metrics and counts equal to e0430-e0433, e1088, e1090, e1092"
           }
         }
       ],
@@ -3797,7 +3820,7 @@
         }
       ],
       "unverified": [
-        "The glue was not timed; no `gtr-run` ledger line exists for the conversions."
+        "The 2026-11-10 conversions were not timed and have no ledger line; their re-run on 2026-11-11 (r0586) does."
       ]
     },
     {

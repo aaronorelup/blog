@@ -589,7 +589,8 @@
       ],
       "note": "no ground truth; whether RT1 contains hits on the guitar body is UNVERIFIED",
       "cpu_s": 79.5,
-      "slot_wait_s": 336.1
+      "slot_wait_s": 336.1,
+      "verifier_rerun": "r0562 (gap-round verifier; 2-core slot, wall 77.61 s): byte-identical onset files, same energy fractions and 10 s shares"
      }
     }
    ],
@@ -952,7 +953,8 @@
       },
       "note": "no ground truth; counts only",
       "cpu_s": 14.9,
-      "slot_wait_s": 163.0
+      "slot_wait_s": 163.0,
+      "verifier_rerun": "r0561 (gap-round verifier; 2-core slot, wall 11.85 s): 6 byte-identical onset files"
      }
     }
    ],
@@ -1343,7 +1345,8 @@
       },
       "note": "no ground truth; counts only",
       "cpu_s": 14.9,
-      "slot_wait_s": 163.0
+      "slot_wait_s": 163.0,
+      "verifier_rerun": "r0561 (gap-round verifier; 2-core slot, wall 11.85 s): 6 byte-identical onset files"
      }
     }
    ],
@@ -1673,7 +1676,8 @@
       },
       "note": "no ground truth; counts only",
       "cpu_s": 14.9,
-      "slot_wait_s": 163.0
+      "slot_wait_s": 163.0,
+      "verifier_rerun": "r0561 (gap-round verifier; 2-core slot, wall 11.85 s): 6 byte-identical onset files"
      }
     }
    ],
@@ -3035,7 +3039,9 @@
        ]
       ],
       "drums_stem_rms_per_10s": "-63.5 to -62.6 dBFS in 21 of 24 windows; -57.1 (30-40 s), -56.0 (60-70 s), -59.4 (200-210 s)",
-      "peaks_run": "r0558 (scripts/gap1_rt1_drum_peaks.py)"
+      "peaks_run": "r0558 (scripts/gap1_rt1_drum_peaks.py)",
+      "verifier_rerun": "r0571 (gap-round verifier; same command, 2-core slot, wall 137.4 s, CPU 238.4 s, peak 2,213.4 MB): not bit-identical (largest absolute sample difference 8.9e-3 to 0.28); stem energy re mix bass -13.5, drums -37.3, other -2.6, guitar -7.7, piano -26.5, vocals -41.3 dB; drums mono peak -17.2 dBFS; 23 librosa onsets on the drums stem (r0554: 351); 7 drums-stem peaks above -40 dBFS at 0:31.8, 1:05.8, 1:08.3, 1:10.4, 2:00.8, 2:18.8, 3:25.8 (measured in r0577)",
+      "stems_measure_verifier": "r0567 (re-run of r0557) and r0568 (re-run of r0558) gave identical values and onset files; independent recompute r0565 (scripts/verify-gapfill/vrt1_stems.py, wave module) agrees"
      }
     },
     {
@@ -3126,7 +3132,8 @@
     "code and weights license are not stated in these reports (source-separation lane's survey)",
     "the taps in S6taps are General MIDI drum samples, not hands on a guitar body; real body taps may not behave the same",
     "on R3 clips with no body taps seen in the video frames, the drums stems are 42 to 65 dB below the mix yet librosa onset_detect (default normalize=True) still returned 55 to 226 onsets; an absolute level gate was not tested",
-    "onset counts on the near-silent R3a drums stem were 226, 180 and 208 in three runs"
+    "onset counts on the near-silent R3a drums stem were 226, 180 and 208 in three runs",
+    "on RT1 two runs of the same htdemucs_6s command (r0554 and the verifier's r0571) gave 351 and 23 librosa onsets on the drums stem, drums stem energy -40.0 and -37.3 dB re the mix, mono peak -23.0 and -17.2 dBFS"
    ]
   },
   {
@@ -3417,7 +3424,7 @@
     "no license for the Pop dataset was found",
     "weights license: no separate statement found",
     "0.6.3 pins no TensorFlow version (tensorflow>=2.5.0; python_version < 3.14, tf-keras); the last release with a pin is 0.5.0 (tensorflow (==2.5.0), requires_python >=3.6.1,<3.9) (PyPI JSON, 2026-11-10)",
-    "not tested by a build: the sdist-only dependencies madmom 0.16.1 (setup.py imports Cython and numpy) and vamp 1.1.0 (setup.py imports numpy) have no pyproject.toml declaring those build requirements"
+    "not tested by a build: the dependencies with no wheel for Python 3 on Linux, madmom 0.16.1 (sdist only) (setup.py imports Cython and numpy) and vamp 1.1.0 (sdist plus two CPython 2.7 wheels; setup.py imports numpy) have no pyproject.toml declaring those build requirements"
    ]
   },
   {
@@ -3801,7 +3808,7 @@
     "the prepared MusicXML carries music21's own <voice> numbers (36 voice-1 and 12 voice-2 elements), made without the truth labels",
     "README: 'Our system is supposed to be run in the final stage of a transcription or generation process, where a musical score is *almost* ready'",
     "repository requirements.txt targets CUDA 12.8 (--index-url https://download.pytorch.org/whl/cu128, --find-links https://data.pyg.org/whl/torch-2.8.0+cu128.html) and adds verovio==4.2.1 and gradio; predict.py loads the checkpoint with PLPianoSVSep.load_from_checkpoint(path_to_model, map_location=cpu, strict=False, weights_only=False); not run here",
-    "gap round 1: scripts/gap1_score_svsep.py scores a returned .mei or .musicxml against the truth voices (partitura 1.9.0 load_score; staff rule and voice rule, highest mean pitch = melody; fvt_common.voice_accuracy); self-check run r0552: the truth as a two-part MusicXML gives 90 of 90 right voice under both rules for S2n and S5dropd; the input files as read give 42 of 90 (staff rule) and 54 of 90 (voice rule)"
+    "gap round 1: scripts/gap1_score_svsep.py scores a returned .mei or .musicxml against the truth voices (partitura 1.9.0 load_score; staff rule and voice rule, highest mean pitch = melody; fvt_common.voice_accuracy); self-check run r0552: the truth as a two-part MusicXML gives 90 of 90 right voice under both rules for S2n and S5dropd; the input files as read give 42 of 90 (staff rule) and 54 of 90 (voice rule); verifier re-runs r0569 and r0570 gave the same counts; r0587: the scorer reads MEI written by partitura 1.9.0 save_mei from the truth merged into one part (90 of 90 right voice under the voice rule, 42 of 90 under the staff rule)"
    ]
   },
   {
@@ -5515,7 +5522,8 @@
      "metrics": {
       "what_ran": "scripts/gap1_make_rt1.sh: ffmpeg decode to 16-bit 44.1 kHz stereo, mono = (L+R)/2, read-back (10,297,728 samples, peak -3.62 dBFS, RMS -21.88 dBFS, identical channels)",
       "cpu_s": 2.7,
-      "slot_wait_s": 0.0
+      "slot_wait_s": 0.0,
+      "verifier_rerun": "r0585 (gap-round verifier, on a copy of the MP3): byte-identical RT1.wav, RT1.mono.wav and read-back JSON"
      }
     },
     {
@@ -5563,7 +5571,8 @@
      "metrics": {
       "what_ran": "Demucs htdemucs_6s (see the Demucs entry)",
       "cpu_s": 261.5,
-      "slot_wait_s": 314.4
+      "slot_wait_s": 314.4,
+      "verifier_rerun": "r0571: see the Demucs entry"
      }
     },
     {

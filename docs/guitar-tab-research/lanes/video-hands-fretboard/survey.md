@@ -481,7 +481,56 @@ Ultralytics pose, YOLOE-26, CoTracker3, SAM 2.1 or OpenPose, so those formats ar
     by Licensor pursuant to this Agreement, ... and (ii) all or any derivatives and/or modifications created or made
     by You to any of the items specified in (i)." Whether the downloaded model files fall under that definition is not
     stated in the text read.
-  - c. Training data: not stated in the files read (UNVERIFIED).
+  - c. Training data: not stated in the files read (UNVERIFIED). (corrected in gap round 2: the paper OpenPose
+    cites for its hand detector names the hand model's training data; see the next item.)
+  - (gap round 2) **Hand model training data.** OpenPose's README
+    (https://raw.githubusercontent.com/CMU-Perceptual-Computing-Lab/openpose/master/README.md, read 2026-11-11): "All
+    of OpenPose is based on [OpenPose: Realtime Multi-Person 2D Pose Estimation using Part Affinity
+    Fields](https://arxiv.org/abs/1812.08008), while the hand and face detectors also use [Hand Keypoint Detection in
+    Single Images using Multiview Bootstrapping](https://arxiv.org/abs/1704.07809) (the face detector was trained
+    using the same procedure as the hand detector)." That paper (Simon, Joo, Matthews, Sheikh; arXiv 1704.07809,
+    submitted 25 Apr 2017; PDF https://arxiv.org/pdf/1704.07809, read 2026-11-11): "We therefore manually annotated
+    two publicly available image sets: (1) The MPII Human Pose dataset [2], which contains images extracted from
+    YouTube videos explicitly collected to reflect every-day human activities, and (2) Images from the New Zealand
+    Sign Language (NZSL) Exercises of the Victoria University of Wellington [11], in which several people use NZSL
+    to tell stories."; "we have collected annotations for 1300 hands on the MPII set and 1500 on NZSL, which we split
+    70/30 into training (2000 hands) and testing (800) sets."; the three initial training sets are "(1) “Render”: an
+    initial set of synthetically rendered images of hands, totalling around 11000 examples, (2) “Manual”: the manual
+    annotations in the MPII and NZSL training sets described above, and (3) “Mix”: the combination of rendered data
+    and manual annotations." (the PDF has a footnote mark "3" after "rendered", left out here), and "For multiview
+    bootstrapping, we use images from the Panoptic Studio dataset [8]." Which of the paper's detectors is the file
+    OpenPose ships (`models/getModels.sh` downloads `hand/pose_iter_102000.caffemodel`, read 2026-11-11) is not stated
+    in the pages read (UNVERIFIED). The licenses of MPII Human Pose, the NZSL Exercises and the Panoptic Studio data
+    were not read (UNVERIFIED).
+- (gap round 2) **`Hzzone/pytorch-openpose`, the PyTorch port the trial ran, and its weights** (all read 2026-11-11).
+  - a. Code: no license file found. At HEAD `5ee71dc10020403dc3def2bb68f9b77c40337ae2` (2021-06-21, the commit the
+    trial used) a metadata clone (`git clone --depth 1 --filter=blob:none --no-checkout`, then `git ls-tree -r
+    --name-only HEAD`) lists 31 files and no LICENSE or COPYING file (`.gitignore`, `README.md`, three demo scripts,
+    `images/`, `model/.gitkeep`, `notebooks/`, `requirements.txt`, `src/`);
+    https://raw.githubusercontent.com/Hzzone/pytorch-openpose/master/LICENSE and `.../master/LICENSE.md` answered
+    HTTP 404; the README contains no occurrence of "licen". GitHub's own license field was not read (github.com and
+    api.github.com answer 403 from this box).
+  - b. Weights. README: "the pytorch model is directly converted from
+    [openpose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) caffemodel by
+    [caffemodel2pytorch](https://github.com/vadimkantorov/caffemodel2pytorch)." The file the trial loaded came from
+    the Hugging Face repo `lllyasviel/Annotators` (`hand_pose_model.pth`; not gated; the card is front matter only,
+    "license: other", with no license text: https://huggingface.co/lllyasviel/Annotators/raw/main/README.md). The
+    same account's code that downloads that file, `annotator/openpose/__init__.py` in `lllyasviel/ControlNet-v1-1-nightly`
+    (https://raw.githubusercontent.com/lllyasviel/ControlNet-v1-1-nightly/main/annotator/openpose/__init__.py),
+    begins "# Original from CMU https://github.com/CMU-Perceptual-Computing-Lab/openpose" and "# 2nd Edited by
+    https://github.com/Hzzone/pytorch-openpose" and sets `hand_model_path =
+    "https://huggingface.co/lllyasviel/Annotators/resolve/main/hand_pose_model.pth"`. The same folder holds
+    `annotator/openpose/LICENSE`
+    (https://raw.githubusercontent.com/lllyasviel/ControlNet-v1-1-nightly/main/annotator/openpose/LICENSE), which
+    begins "OPENPOSE: MULTIPERSON KEYPOINT DETECTION" / "SOFTWARE LICENSE AGREEMENT" / "ACADEMIC OR NON-PROFIT
+    ORGANIZATION NONCOMMERCIAL RESEARCH USE ONLY" and is CMU's `LICENSE` quoted under a. above, byte for byte, apart
+    from one no-break space (U+00A0) that CMU's copy has after "under this Agreement." and CMU's final newline
+    (compared 2026-11-11). `lllyasviel/ControlNet` has the same `annotator/openpose/LICENSE` file. So the hand
+    weights the trial ran come from a distributor that ships CMU's OpenPose license beside the code that downloads
+    them; CMU's text itself does not name model files (b. above). Whether `lllyasviel/Annotators`'
+    `hand_pose_model.pth` is byte-identical to the file in pytorch-openpose's own Dropbox / Google Drive folders was
+    not checked (UNVERIFIED).
+  - c. Training data: the OpenPose hand model's (previous item).
 
 ---
 

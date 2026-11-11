@@ -12,6 +12,7 @@ Anything marked UNVERIFIED was not checked against the product or repository tod
 ## 1. Sonic Visualiser with the Vamp Plugin Pack (QM key detector, QM bar-and-beat tracker, Chordino in a GUI)
 
 Covers: the QM Vamp plugins (not run here) and a GUI check of Chordino / NNLS Chroma (run here through Python).
+Gap round 1: the QM plugins still could not be obtained on the Linux box (trials.md, "Gap round 1"); these steps stand.
 
 1. Download Sonic Visualiser 5.2.1, "64-bit Windows installer", from https://www.sonicvisualiser.org/download.html and
    install it (the page says "No plugins are included with Sonic Visualiser itself").
@@ -54,6 +55,10 @@ ready: `docs/guitar-tab-research/lanes/chords-beats-key/scripts/btc_run.py`.
 
 ## 3. S-KEY (Deezer key detection)
 
+Gap round 1: the same weights ran here through a community ONNX export (trials.md, "Gap round 1"), so the record has
+S-KEY keys for all clips. These steps run Deezer's own PyTorch code, which would show whether the two give the same
+labels; optional.
+
 1. With the same Python 3.11 and Git: `git clone https://github.com/deezer/skey`, `cd skey`, `pip install poetry`,
    `poetry install`.
 2. Run the command the README gives, once per clip: `poetry skey ..\clips\S3.wav --device cpu` (quoted from the
@@ -81,6 +86,25 @@ was not checked (UNVERIFIED; the Preferences screenshot in step 2 shows it).
 4. Send back: a screenshot of the library with the Key and BPM columns for S3, S4, S2n, S5capo2, S7flat30, R1a, R1b,
    R1c, R2, and the preferences screenshot.
 
+Added in gap round 1: Ubuntu's own Mixxx 2.4.0 package was built without KeyFinder (its binary has no "keyfinder"
+string; survey.md), so on Linux this route would show only the Queen Mary detector. The command-line route, which the
+box's permission system refused to build here (trials.md, "Gap round 1"), in WSL (Ubuntu) on the same PC:
+
+5. `sudo apt install cmake g++ libfftw3-dev pkg-config libavcodec-dev libavformat-dev libavutil-dev libswresample-dev`
+   (cmake and libfftw3-dev from the libkeyfinder README; the ffmpeg libraries for keyfinder-cli, whose README asks for
+   "ffmpeg" and "libkeyfinder"; the exact ffmpeg package list is UNVERIFIED).
+6. `git clone --branch 2.2.8 https://github.com/mixxxdj/libkeyfinder`, `cd libkeyfinder`,
+   `cmake -DCMAKE_INSTALL_PREFIX=$HOME/kf -DBUILD_TESTING=OFF -S . -B build`, `cmake --build build --parallel 4`,
+   `cmake --install build` (README commands, with the README's `-DBUILD_TESTING=OFF` option).
+7. `git clone https://github.com/EvanPurkhiser/keyfinder-cli`, `cd keyfinder-cli`,
+   `cmake -DCMAKE_INSTALL_PREFIX=$HOME/kf -DCMAKE_PREFIX_PATH=$HOME/kf -S . -B build`, `cmake --build build`,
+   `cmake --install build` (README commands; `-DCMAKE_PREFIX_PATH` so it finds the libkeyfinder just installed,
+   UNVERIFIED).
+8. For each of S3, S4, S2n, S5capo2, S5dropd, S7flat30, R1a, R1b, R1c, R2full: `time $HOME/kf/bin/keyfinder-cli
+   S3.wav` (its README: "`A` is equivalent to A Major. Sharps are not used."; how a minor key is printed is not shown
+   there, UNVERIFIED).
+9. Send back: the printed key and the `time` line for each clip.
+
 ## 5. All-In-One (allin1): beats, downbeats, BPM and song sections
 
 Ran here in gap round 1 on the CPU (trials.md, "Gap round 1"; 2 cores, R2full included), so nothing is needed for the
@@ -102,6 +126,9 @@ below were read on 2026-11-10; see survey.md, All-In-One.)
    `beat_positions`, `segments`), and how long the R2full run took (the whole song, 228.5 s of audio).
 
 ## 6. tempo-cnn (global tempo)
+
+Ran here in gap round 1 (trials.md, "Gap round 1": eight tempo models and the meter model on ten clips), so nothing is
+needed for the record; the steps stay for a run on a Windows PC.
 
 1. Python 3.9, 3.10 or 3.11 (PyPI says `<3.12,>=3.9`): `pip install tempocnn` (it installs TensorFlow 2.17.0).
 2. For each of S3, S4, S2n, S7flat30, R1a, R1b, R1c, R2, R2full: `tempo -i clips\S3.wav` (command form quoted in

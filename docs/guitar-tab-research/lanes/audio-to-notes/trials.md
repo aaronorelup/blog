@@ -907,9 +907,9 @@ at 22:44 UTC, for about 20 agents).
   `>=3.8`; PyPI JSON, read 2026-11-10). Command (23:30 UTC): `uv venv --python 3.8 venv-omnizart && uv pip install
   --python venv-omnizart/bin/python "omnizart==0.5.0"`. uv downloaded CPython 3.8.20 (19.9 MiB) and created the venv,
   "Resolved 91 packages in 13.00s" (among them tensorflow 2.5.0, spleeter 2.4.0, librosa 0.8.1, numpy 1.19.5,
-  keras-nightly 2.5.0.dev2021032900), then started building ("Building ...") the three packages that have no wheel on PyPI for Linux and Python
-  3.8 (madmom 0.16.1 and wrapt 1.12.1: a source archive only; vamp 1.1.0: a source archive and two Python 2.7 wheels,
-  macOS and Windows) and stopped after 17.0 s (exit 1): "Failed to build `vamp==1.1.0`" ... "File
+  keras-nightly 2.5.0.dev2021032900), then started building ("Building ...") the three packages that have no wheel
+  on PyPI for Linux and Python 3.8 (madmom 0.16.1 and wrapt 1.12.1: a source archive only; vamp 1.1.0: a source
+  archive and two Python 2.7 wheels, macOS and Windows) and stopped after 17.0 s (exit 1): "Failed to build `vamp==1.1.0`" ... "File
   "<string>", line 3, in <module> ModuleNotFoundError: No module named 'numpy'", with uv's hint "`vamp` (v1.1.0) was
   included because `omnizart` (v0.5.0) depends on `vamp`" and "This error likely indicates that `vamp@1.1.0` depends
   on `numpy`, but doesn't declare it as a build dependency". Nothing was installed, so neither music nor vocal mode
@@ -1108,7 +1108,7 @@ the end; the round's venvs, weights and the downloaded CPython 3.8.20 were remov
 that only its installs had added (about 2.0 GB from Onsets and Frames, 39 MB from RMVPE), except small ones: three
 source-built archives of 10 MB in all (librosa 0.7.2, mir_eval 0.7, pretty_midi 0.2.9) and a 6 MB setuptools 75.3.4
 archive from the Omnizart build attempt. No separate verifier has checked this round. (A separate check followed:
-"Verification log (verify-gapfill-audio-to-notes, round 1, ...)" at the end of this file.)
+"Verification log (verify-gapfill-audio-to-notes, round 1, 2026-11-11)" at the end of this file.)
 
 ## Outputs for other lanes (on the box, outside git)
 
@@ -1269,4 +1269,128 @@ outputs: `samples/verify-trials/`; re-run outputs and rebuilt venvs on the box u
   and the 22:18 start of r0399 and r0401 are on file.
 - Every route in `for-aaron.md` that needs Windows, WSL2, Docker, Colab or a web demo: none could be tried here.
 - No runnable tool on the lane's list was found skipped without a recorded reason, so the verifier added no tool run.
+
+## Verification log (verify-gapfill-audio-to-notes, round 1, 2026-11-11)
+
+Checked by `verify-gapfill-audio-to-notes` from 23:53 UTC on 2026-11-10 to about 00:20 UTC on 2026-11-11: the section
+"Gap round 1", the round's edits elsewhere in this file, in `survey.md`, `for-aaron.md` and `tools.json`, and its new
+files under `samples/` and `scripts/` (the round's whole change is the difference between git commits 58786f2 and
+d8c595c). Scripts: `scripts/verify_gap1/`; small outputs: `samples/verify-gap1/`; re-run outputs on the box under
+`/home/user/gtr/lanes/audio-to-notes/verify-gap1/`. The re-runs' venvs and model files, the CPython 3.8.20 that uv
+fetched again, and the uv cache wheels that only these re-installs had added and no venv used (about 1.9 GB; a few
+small source archives stay) were deleted afterwards.
+
+**What was checked, and the result**
+
+- Ledger. The round's three runs are in `runs.jsonl` with the commands, input files and SHA-256, cores, wall, CPU
+  (user + sys), peak RSS, slot wait and exit code given above: r0516 (cores 0-1; wall 34.68 s, CPU 54.9 s, 1,198.7 MB,
+  0.0 s wait, exit 0), r0517 (`--nolock`; 7.40 s, 10.5 s, 1,007.6 MB, exit 0), r0545 (cores 2-3; 39.57 s, 42.2 s,
+  1,151.0 MB, 329.3 s wait, exit 0). r0545's GNU time lines (user 40.19 s, sys 1.96 s, 1,178,656 KiB) match
+  `samples/onsets-frames/gnu-time-and-ledger-line.txt`. No other run of this lane started during the round (the
+  refused and failed commands never reached `gtr-run`), and no failed run is described as a success.
+- Scores. The 13 eval ids of the round (e1478 to e1485, e1570 to e1574) are gtr-eval 0.11.1 with exit code 0, and every
+  number cited from them here and in `tools.json` matches the stored result. All 13 were re-scored with `gtr-eval
+  --no-ledger` from their stored arguments: byte-identical result objects and the same estimate SHA-256 in 13 of 13
+  (`samples/verify-gap1/rescore_gap1.tsv`). The verifier's own mir_eval 0.8.2 code (not gtr-eval) gives the same
+  values at 3 decimals for the Onsets and Frames onset-only P / R / F1 on S1, R1c and S4guitar and the RMVPE RPA / RCA on
+  S1, S4lead and R1b (`samples/verify-gap1/indep_mir_eval_gap1.txt`). The three multi-pitch results, recomputed with
+  `scripts/score_multipitch.py`, are identical.
+- Files. Every `samples/` and `scripts/` path the round names exists, and the sample copies (RMVPE: three f0 CSVs, the
+  CLI CSV, `timings.json`, eight score files; Onsets and Frames: four MIDI files, eight score files) are byte-identical
+  to the box outputs. Recounted from the files: the RMVPE frames and frames at confidence >= 0.03 and >= 0.5 on all
+  eight clips, the largest confidences, S1's first frame (567.215 Hz, 0.000261), a frequency in every frame, the 10 ms
+  hop (`samples/verify-gap1/recount_rmvpe.txt`); the median and 90th-percentile confidence inside the truth notes and
+  the share within 50 cents (equal to the RPA on all six clips), with the verifier's own code
+  (`samples/verify-gap1/indep_conf.txt`); the Onsets and Frames MIDI facts (type 1, 220 ticks per quarter, 2 tracks,
+  tempo 120, program 0, no control changes or pitch bends), note counts, velocity ranges and the first ten S2n notes
+  (`samples/verify-gap1/recount_oaf.txt`); the per-file seconds from the run log; the facts taken from the saved logs
+  (Omnizart: "Resolved 91 packages in 13.00s", the three "Building" lines, real 16.979 s; Onsets and Frames install:
+  CPython 3.8.20, 122 packages, real 1 min 57.826 s).
+- Re-runs, each with its venv rebuilt from the round's saved `uv pip freeze` (the rebuilt freeze is identical) and its
+  model file downloaded again with the recorded size and SHA-256 (comparison: `samples/verify-gap1/rerun_compare.txt`):
+  - **r0579**, RMVPE, `scripts/run_rmvpe.py` on the same 8 clips (2 cores, cores 0-1; wall 25.42 s, CPU 44.6 s, peak
+    RSS 1,199.2 MB, exit 0, 0.0 s wait): all eight f0 CSVs byte-identical to r0516's. `predict()` took 14.15 s on S1
+    (the first call) and 0.54 to 1.19 s on the others (r0516: 16.05 s and 1.13 to 2.44 s).
+  - **r0581**, the RMVPE CLI on `S1.wav` (`--nolock`, light; wall 6.02 s, exit 0): CSV byte-identical to r0517's; the
+    printed summary identical except "Time" (1639.4 ms; r0517 2902.0 ms).
+  - **r0583**, Onsets and Frames, the r0545 command on the same four inputs (2 cores, cores 0-1; wall 38.72 s, CPU
+    42.6 s, peak RSS 1,154.2 MB, exit 0, 0.0 s wait): all four MIDI files byte-identical to r0545's; per file 5.23,
+    3.31, 3.57 and 5.10 s (S1, S2n, R1c, S4guitar; r0545 5.30, 4.07, 4.31, 4.97 s); the first file started about 20 s
+    after the run's start. Its venv install took 55.4 s this time (the round's took 1 min 57.8 s).
+- Refusals. The round's three "[Code from External]" refusals are in the gap agent's own session transcript on the box,
+  as the results of Bash calls at 23:15:09, 23:21:24 and 23:29:08 UTC carrying the commands the record gives; so are the
+  checks after them (no `venv-mt3`, no `out/mt3-pytorch`, no `venv-crepe`), and the install logs those commands would
+  have written do not exist. `samples/mt3/permission-refusal.txt` and `samples/crepe/gap1-not-run.txt` now say so. The
+  Omnizart failure is in its saved log. MR-MT3 and YourMT3+ on the CPU have no refusal of their own: they were not
+  attempted, as the record says.
+- Sources, re-read at their URLs on 2026-11-10 (23:59 UTC) and 2026-11-11: the rmvpe-onnx LICENSE (three MIT notices;
+  the quoted grant is verbatim) and PyPI description (quotes verbatim, with its Markdown links read as their text); the
+  0.2.3 wheel's `model.py`, `cli.py` and `weights.py` (mel settings, cents mapping, the 9-bin average, confidence as the
+  largest sigmoid output, device providers, `_MODEL_SHA256`, the CLI help); the card of `lj1995/VoiceConversionWebUI`
+  (21 bytes, "license: mit") and its API (revision e6d0c1a1, `rmvpe.onnx` 361,688,443 bytes with the cited LFS sha256);
+  the mt3-infer LICENSE (quotes verbatim; the same text as its PyPI `license` field apart from whitespace) and PyPI
+  JSON (version, dates, requirements and every quoted phrase); the PyPI JSON of yourmt3, magenta, omnizart (0.5.0,
+  0.6.3 and the release list), crepe, vamp 1.1.0, wrapt 1.12.1 and madmom 0.16.1; the Hugging Face API of
+  `gudgud1014/MR-MT3`, `shethjenil/Audio2Midi_Models`, `mimbres/YourMT3` and `mimbres/YourMT3-cpu` (revisions, license
+  tags, card data, file sizes; the same five checkpoints in both Spaces), both Spaces' `app.py` and `requirements.txt`;
+  the MT3 notebook (its install cell, the `mt3` and `ismir2021` settings); kunato's `inference.py`,
+  `contrib/spectrograms.py` and `contrib/vocabularies.py`; MR-MT3's `inference.py` (`self.model.cuda()` at line 183);
+  the PyTorch port's README (quote verbatim) and its file list at 783ca08 (no `.pt`, `.pth`, `.ckpt` or `.bin`);
+  crepe's source archive (`setup.py` line 6 and `base_url`, `core.py`'s `tensorflow.keras` model and `load_weights`);
+  vamp's source archive (`setup.py` line 3 is `import numpy as np`; no `pyproject.toml`); the storage headers of
+  `maestro_checkpoint.zip`; the `git ls-remote` heads of the seven repositories cited; crepe's github.com weight URL
+  still answers 403 and the raw.githubusercontent.com one 200 (1,307,310 bytes). Code, weights and data licenses are
+  kept apart in the round's text and in `tools.json`.
+- Language, size, privacy: no judging words in the round's text outside quotations of vendors' own descriptions (one
+  unquoted case in `tools.json`, changed below); no audio or video and no file over 300 KB in this folder (`tools.json`
+  is 275,947 bytes after the changes below); no key, token or personal detail.
+- Earlier record: the earlier verification logs in this file and in `survey.md` are byte-identical to their state
+  before the round; headings changed only where the round marked RMVPE, YourMT3+ and Onsets and Frames; `for-aaron.md`
+  keeps its headings.
+
+**What was changed in this file**
+
+1. Summary: RMVPE and Onsets and Frames taken out of the "Not run here" list (the round had left them in it, next to a
+   note that they ran); MR-MT3 and YourMT3+ marked as not attempted.
+2. "Gap round 1" intro: the three refusals named (two for MT3, one for CREPE; it read "Three of those refusals" after a
+   list of five tools), and MR-MT3 and YourMT3+ stated as not attempted.
+3. MT3: the notebook's install line also carries `-f .../jax_cuda_releases.html`, which the round left out; the
+   mt3-pytorch venv held torch and its dependencies only (its saved freeze), not the libraries `inference.py` imports.
+4. YourMT3+: the heading says "not attempted" (was "permission system"); r0164 31.18 s and r0245 31.34 s are the
+   hosted-apis lane's script-measured round trips (ledger walls 32.21 s and 33.78 s), "the timings on record for the
+   CPU Space" (was "the CPU timings on record").
+5. Omnizart: vamp 1.1.0 has two Python 2.7 wheels on PyPI (macOS, Windows) besides its source archive, so "PyPI has only
+   as source archives" became "no wheel on PyPI for Linux and Python 3.8"; "built" became "started building" (the log
+   has three "Building" lines and the failure, no "Built" line).
+6. Onsets and Frames: the 20.5 s to the first file counts from the ledger's whole-second start time; now "about 20 s"
+   with that note.
+7. The round's self-check paragraph points to this log.
+
+**What was changed elsewhere**
+
+- `survey.md`: section 1 (CREPE): setuptools removed `pkg_resources` in 82.0.0 by its changelog (quoted, read
+  2026-11-11), not "81 and later", and `setup.py` imports it on line 6 (was "begins with"); section 36 (mt3-infer):
+  all six extras listed, and its "Not run here" names the two refusals and the two tools not attempted (was "could not
+  be run"); section 37 (yourmt3): the name is in the `author_email` field (`author` is empty); tool-list line 16
+  (YourMT3+): "not attempted after ..."; the "Gap round 1 additions" index points to this log.
+- `for-aaron.md`, section 9: the CLI's `--plot` also shows an interactive plot (its help text quoted).
+- `tools.json` (`scripts/verify_gap1/fix_tools_json.py`; formatting kept, 98 entries): mt3-infer's `what` quotes the
+  vendor's "Production-ready ..." instead of stating it, and its `not_run_reason` reads as in `survey.md`; yourmt3's
+  weights entry no longer reads as if the repository held seven files; YourMT3+ `not_run_reason`: no package from the
+  authors (the third-party packages were not used) and what the two timings are; RMVPE and rmvpe-onnx `outputs`: the
+  `--plot` option; Onsets and Frames: a `startup_note`; the re-runs r0579 and r0581 (RMVPE, rmvpe-onnx) and r0583
+  (Onsets and Frames) added to `runs`.
+- `samples/mt3/permission-refusal.txt`, `samples/crepe/gap1-not-run.txt`: where the refusals are recorded on the box.
+
+**Still UNVERIFIED**
+
+- Whether MT3, mt3-pytorch, MR-MT3, YourMT3+ (local CPU), the original CREPE package and Omnizart would run on this box
+  if code from cloned repositories or local folders were allowed: not tried (the round's rule 8). For mt3-pytorch the
+  requirements also do not resolve here (ddsp needs crepe, whose build fails), so a permission change alone would not
+  be enough.
+- The uv cache figures in the round's self-check (about 2.0 GB and 39 MB removed): checked only against the commands
+  and outputs in the agent's transcript, not against the cache as it was then.
+- Which training run produced `rmvpe.onnx`; the licenses of the MAESTRO checkpoint and of the
+  `shethjenil/Audio2Midi_Models` files (no statement found); whether that repository holds the YourMT3 authors'
+  checkpoints (hashes not compared).
 

@@ -1,6 +1,6 @@
 {
  "id": "RT1",
- "title": "Steel-string fingerstyle with tapping per its keywords, whole track (archive.org, CC BY 3.0)",
+ "title": "Recording whose archive.org keywords are 'Acoustic, Tapping, Fingerstyle', whole track (archive.org, CC BY 3.0)",
  "what": "Real recording, audio only: Chris Smuck, 'With A New Tuning, You Can Fly' (2007), archive.org item ChrisSmuckWithANewTuningYouCanFly, the whole track (233.509 s as decoded). Item description: 'Michael Hedges Tuning...Written By Me'; item keywords: 'Acoustic, Tapping, Fingerstyle'. The item does not say which kind of tapping (on the fretboard or on the guitar body) and names no instrument beyond 'Acoustic'; whether the recording contains hits on the guitar body is UNVERIFIED (not stated in the metadata, not checked by listening). Source file: the item's original MP3, 192 kb/s, 44.1 kHz; the two decoded channels are identical (correlation 1.0, left minus right silent), i.e. mono stored as stereo. No ground truth.",
  "audio": "RT1.wav",
  "duration_s": 233.509,

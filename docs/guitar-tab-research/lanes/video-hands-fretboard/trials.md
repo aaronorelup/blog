@@ -192,6 +192,8 @@ Where the R3a detections landed (`hand_regions.py`, frames with at least one det
   references `dill._dill _load_type` (so loading it needs `dill`), `ultralytics.nn.tasks PoseModel` and
   `ultralytics.nn.modules.head Pose`, and the strings after `names` are `left` and `right`; the stored training path
   ends in `hand_side_all_medium2/weights/last.pt`. What the model outputs was not run here.
+- (gap round 2) `tools.json` now lists WiLoR as `"tried": false` (no attempt gave output); the attempt above stays
+  in its `runs[]` with `run_id` null, because it ran outside `gtr-run` and has no ledger line.
 
 ## Hamba (3D hand mesh): NOT RUN HERE
 
@@ -906,8 +908,13 @@ as well and cancelled while still waiting for a slot (no ledger entries); their 
 
 | gtr-run id | group | cores | slot wait | started (UTC) | wall | CPU (user+sys) | peak RSS of any step | steps |
 |---|---|---|---|---|---|---|---|---|
-| r0408 | C1 | 0-1 | 1823.2 s | 2026-11-10T22:01:25 | 1596.1 s | 2307.95 s | 777.3 MB | 29 (2 failed and were re-run, 1 failed: see below) |
-| r0448 | B1 | 2-3 | 2941.0 s | 2026-11-10T22:01:24 | 2457.96 s | 2887.20 s | 8607.3 MB (the CoTracker step) | 18 (1 failed and was re-run: see below) |
+| r0408 | C1 | 0-1 | 1823.2 s | 2026-11-10T22:01:25 | 1596.1 s | 2307.95 s | 777.3 MiB | 29 (2 failed and were re-run, 1 failed: see below) |
+| r0448 | B1 | 2-3 | 2941.0 s | 2026-11-10T22:01:24 | 2457.96 s | 2887.20 s | 8607.3 MiB (the CoTracker step) | 18 (1 failed and was re-run: see below) |
+
+(corrected in gap round 2: the two peak values are MiB, `max_rss_kb` / 1024 from the steps' `times.tsv`
+(795,984 kB and 8,813,832 kB); they were labelled MB. In `tools.json` each step now has its group's ledger id as
+`run_id` and the step name in its own `step` field, for example `"run_id": "r0408", "step":
+"C1/mediapipe-hands_R3c_full"`.)
 
 CPU (user+sys) above 2 x wall in a step means it used more than its slot's 2 cores: this happened in rtmlib (ONNX
 Runtime) steps only (rtmlib section, "Cores"). r0408's whole-job CPU 2307.95 s in 1596.1 s wall is 1.45 cores on

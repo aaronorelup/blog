@@ -871,7 +871,10 @@ TensorFlow, and for a real recording with body taps. Free disk at the start: 11 
 the only downloads of this round after that were the 5.6 MB RT1 MP3 and small metadata files, and 8.1 GB was free at
 the end. Same conventions as above: run ids `r....` from the run ledger, eval ids `e....` from the
 eval ledger (gtr-eval 0.11.1), audio under `/home/user/gtr/lanes/fingerstyle-voices-taps/inputs/RT1/` and
-`.../out/gap1-RT1/`, logs, raw search answers and the piano_svsep files under `.../gap1/`. The question for
+`.../out/gap1-RT1/`, logs, raw search answers and the piano_svsep files under `.../gap1/`. (Checked by the
+gap-round verifier: the ledger commands of r0542, r0551, r0554 and r0556 name output folders under
+`.../gap1/out/RT1/`; those outputs were moved to `.../out/gap1-RT1/` at about 23:51 UTC, before r0557 and r0558 read
+them, and the verifier's re-runs of r0542 and r0551 reproduce the moved onset files byte for byte.) The question for
 every drum or percussion transcriber is the one of the first round: on `S6taps` (guitar plus General MIDI
 percussion standing in for body taps, 32 truth taps) and on its taps-only stem `S6taps/stems/taps.wav`, which onsets
 does it report and with which drum labels (`gtr-eval onsets --field taps`, 50 ms window), and how many events does it
@@ -910,9 +913,10 @@ scoring was possible for them, and no eval id belongs to this round.
 - The documented way to transcribe is two notebook cells (`bin/drumTranscriptor.ipynb` at that commit):
   `Model.modelFactory(modelName="Frame_RNN", scenario="adtofAll", fold=0)` then
   `model.predictFolder(audioFiles, outputLocation, **hparams)`; the model's per-class peak thresholds are
-  `[0.22, 0.24, 0.32, 0.22, 0.30]` (`adtof/model/hyperparameters.py`, `Frame_RNN`), and the notebook labels the
-  output pitches `[35, 38, 42, 47, 49]` as `["BD", "SD", "HH", "TT", "CY + RD"]`. Steps for Aaron: `for-aaron.md`,
-  list 2.
+  0.22, 0.24, 0.32, 0.22, 0.30 (`adtof/model/hyperparameters.py`, `Frame_RNN`, stored as `[0.22000000000000003,
+  0.24000000000000002, 0.32000000000000006, 0.22000000000000003, 0.30000000000000004]`), and the notebook's plot
+  cell labels the output pitches `[35, 38, 42, 47, 49]` as `["BD", "SD", "HH", "TT", "CY + RD"]` (`plt.yticks`).
+  Steps for Aaron: `for-aaron.md`, list 2.
 
 ### Omnizart drum mode: NOT RUN HERE, install refused
 
@@ -921,8 +925,9 @@ scoring was possible for them, and no eval id belongs to this round.
   `tensorflow>=2.5.0; python_version < "3.14"`, plus `tf-keras; python_version >= "3.9" and python_version <
   "3.14"`, `madmom>=0.16.1`, `vamp>=1.1.0`, `sherpa-onnx>=1.10.0`, `setuptools<82`. The last release that pins one is
   0.5.0 (2021-12-09): `tensorflow (==2.5.0)`, `spleeter (>=2.3.0,<3.0.0)`, `madmom (>=0.16.1,<0.17.0)`,
-  `requires_python` ">=3.6.1,<3.9"; Python 3.8 is not installed on the box (`uv python list` offers 3.8.20 as a
-  download). 0.6.3's `omnizart/__init__.py` (survey clone at `bcd8cb4`) sets `os.environ['TF_USE_LEGACY_KERAS'] =
+  `requires_python` ">=3.6.1,<3.9"; Python 3.8 was not installed on the box at 23:18 UTC (`uv python list`
+  offered 3.8.20 as a download; a cpython 3.8.20 appeared in uv's Python folder at 00:05 UTC on 2026-11-11, installed
+  by another process after this round, per the folder's timestamps). 0.6.3's `omnizart/__init__.py` (survey clone at `bcd8cb4`) sets `os.environ['TF_USE_LEGACY_KERAS'] =
   '1'` and adds `np.float`, `np.int`, `np.bool`, `np.complex` back when NumPy lacks them, "for backward compatibility
   with old libraries under NumPy 2.0+"; the drum model is loaded with `tf.keras.models.load_model` (`base.py`) from a
   SavedModel (`omnizart/checkpoints/drum/drum_keras/saved_model.pb` in the repository, variables from the
@@ -936,8 +941,9 @@ scoring was possible for them, and no eval id belongs to this round.
   was denied by the Claude Code auto mode classifier. Reason: The server-side auto mode classifier judged this action
   dangerous (it gave no explanation)." No venv was created (checked at 23:18:52 UTC), nothing was downloaded, no
   ledger line. Not worked around.
-- Found while preparing (not tested by a build here): the two sdist-only dependencies import NumPy at build time
-  without declaring it. `madmom-0.16.1/setup.py` (PyPI sdist, 2018-11-14) has `from Cython.Build import cythonize,
+- Found while preparing (not tested by a build here): the two dependencies that have no wheel for Python 3 on Linux
+  (madmom 0.16.1: sdist only; vamp 1.1.0: sdist plus two CPython 2.7 wheels, for macOS and for 32-bit Windows) import
+  NumPy at build time without declaring it. `madmom-0.16.1/setup.py` (PyPI sdist, 2018-11-14) has `from Cython.Build import cythonize,
   build_ext` and `import numpy as np`; `vamp-1.1.0/setup.py` (PyPI sdist, 2015-07-08) has `import numpy as np`; neither
   sdist contains a `pyproject.toml` (file lists of the two archives, downloaded from PyPI and read, not built). Both are
   the latest releases of those packages on PyPI.
@@ -950,7 +956,7 @@ scoring was possible for them, and no eval id belongs to this round.
   `requires-python = ">=3.10,<3.13"`, `[tool.uv] package = false` (the repository is not installed as a package; its
   scripts run from the checkout), and lists `torch==2.8.0`, `torchaudio==2.8.0`, `torchcodec>=0.7,<0.8`,
   `transformers[torch]`, `datasets`, `huggingface-hub`, `pedalboard`, `wandb`, `omegaconf`, `safetensors`,
-  `pretty_midi`, `mir_eval` and others. The `inference` file is three lines that call `main()` of `inference.py`;
+  `pretty_midi`, `mir_eval` and others. The `inference` file is three lines of code that call `main()` of `inference.py`;
   `inference.py` picks the device with `select_inference_device()` (`utils/utils.py`: "Prefer CUDA, then Apple MPS, else
   CPU."), loads `ADTTranscriber.from_checkpoint(args.checkpoint, ...)` and writes the MIDI with
   `pretty_midi.Instrument(program=0, is_drum=True)` (`adt_transcriber.py`).
@@ -966,7 +972,8 @@ scoring was possible for them, and no eval id belongs to this round.
 
 - Code: `git clone --depth 1 https://github.com/polimi-ispl/larsnet` at 23:21 UTC into `gap1/repos/larsnet` (HEAD
   `17d631fd18e77ee2f1d23ee7b3fc0fb46ae629e2`, 2024-09-10, the surveyed commit). Three Python files and a
-  `config.yaml`; no package to install. Imports: `yaml`, `torch`, `torchaudio`, `tqdm`, `soundfile` (and `unet` from
+  `config.yaml` (besides `README.md`, `requirements.txt` and `pretrained_larsnet_models/.gitkeep`, per `git ls-tree`);
+  no package to install. Imports: `yaml`, `torch`, `torchaudio`, `tqdm`, `soundfile` (and `unet` from
   the same folder). `config.yaml`: `sr: 44100`, five `inference_models` (`kick`, `snare`, `toms`, `hihat`, `cymbals`)
   read from `pretrained_larsnet_models/<stem>/pretrained_<stem>_unet.pth`; the folder holds only `.gitkeep` until the
   checkpoints are unzipped into it. `larsnet.py` loads each with `torch.load(str(checkpoint_path),
@@ -989,8 +996,9 @@ scoring was possible for them, and no eval id belongs to this round.
 
 - Code: `git clone --depth 1 https://github.com/inagoy/drumsep` at 23:22 UTC (HEAD
   `c1cea3f47bacd410412c7f563109f0a227b0e784`, 2025-11-03, the surveyed commit). The repository holds two bash
-  scripts. `drumsepInstall`: `pip install demucs` if `pip list` shows none, then in a new folder `model` `pip install
-  gdown` and `gdown 1-Dm666ScPkg8Gt2-lK3Ua0xOudWHZBGC`. `drumsep`, per input file: `demucs --repo "model" -o "$output"
+  scripts (plus `README.md` and `LICENSE`). `drumsepInstall`: `pip install demucs` if `pip list` shows none, then, if
+  no folder `model` exists, creates it and in it runs `pip install gdown` (if `pip list` shows none) and `gdown
+  1-Dm666ScPkg8Gt2-lK3Ua0xOudWHZBGC`. `drumsep`, per input file: `demucs --repo "model" -o "$output"
   -n 49469ca8 "$file"` (for a folder, every `*.mp3`, `*.wav`, `*.ogg`, `*.flac` in it). So a run is the PyPI Demucs
   command with a checkpoint from Google Drive; no other code of the repository is involved.
 - Environment (allowed): `uv venv --python 3.11 venv-drumsep`, `uv pip install -r freeze/venv-demucs.txt` at 23:23
@@ -1059,13 +1067,19 @@ scoring was possible for them, and no eval id belongs to this round.
   voice under both rules for S2n and for S5dropd. The two input files as read: 90 of 90 matched; staff rule 42 of 90
   right (one staff, so every note is labelled melody); voice rule 54 of 90 right (partitura reads music21's voices as
   84 notes in voice 1, mean pitch 52.79 (S2n) / 52.21 (S5dropd), and 6 in voice 2, mean pitch 58.0). Results:
-  `samples/voice-split/svsep_scorer_*.json`.
+  `samples/voice-split/svsep_scorer_*.json`. (Gap-round verifier: re-runs r0569 and r0570 give the same counts and
+  MusicXML files that differ only in their random `id` attributes and encoding date; r0587 checked the MEI route that
+  `for-aaron.md` list 4 asks for: the self-test's two-part truth merged into one part (`partitura.score.merge_parts`,
+  as `predict.py` does) and written with partitura 1.9.0's `save_mei` is read back with 90 of 90 notes matched and 90
+  of 90 right voice under the voice rule, 42 of 90 under the staff rule (one staff), for S2n and for S5dropd;
+  `scripts/verify-gapfill/vsvsep_mei.py`.)
 - Steps for Aaron: `for-aaron.md`, list 4.
 
 ### A real recording with taps, second search (Freesound, archive.org, Wikimedia Commons) and input RT1
 
-Every request below was made one at a time with the User-Agent `gtr-research-agent/1.0 (guitar tablature research;
-automated client)` (no personal details).
+Every request below made from the box (curl and the two search scripts) was made one at a time with the User-Agent
+`gtr-research-agent/1.0 (guitar tablature research; automated client)` (no personal details); pages marked "read
+through the web fetch tool" were fetched by that tool, not from the box.
 
 - Freesound sound 674811 (CC0, "guitar body kick"): the page `https://freesound.org/people/leaving.february/sounds/674811/`
   at 23:26:10 UTC and, 56 s later, the address `https://cdn.freesound.org/previews/674/674811_14339611-hq.mp3`
@@ -1098,13 +1112,15 @@ automated client)` (no personal details).
   - `DavidDrewLongey-MusicFromAModernCave2005`, CC BY 3.0: "improvisational acoustic instrumental works on banjo,
     jawharp, and guitar" and "The music is percussive, and modal, not unlike ragas, or certain Appalachian styles"; 9
     VBR MP3 tracks; the item does not say which tracks have guitar. Not downloaded.
-  The other 9 are two radio interviews, a 3D-printing file, a folk festival concert, a noise compilation, a flute
-  ensemble with extended techniques, an experimental mix, a score collection and an improvisation trio (their titles
-  and descriptions; not downloaded). Search results: `samples/realtaps/archive_search.json` (identifier, title, media
+  The other 9 are two radio interviews, a 3D-printing file, a folk festival concert, a compilation tagged "post
+  concrete", "noise", "improvisation" (`05.Lezetcurds`, CC BY 3.0; its description lists "a percussive track a guitar
+  track" among its tracks, in that wording), a flute ensemble with extended techniques, an experimental mix, a score
+  collection and an improvisation trio (their titles, subjects and descriptions; not downloaded). Search results: `samples/realtaps/archive_search.json` (identifier, title, media
   type, license URL, query; descriptions left out).
 - Wikimedia Commons: eight searches through the API (`scripts/gap1_commons_search.py`, File namespace, 23:29 to
   23:36 UTC). Four answered `HTTP 429` twice, 60 s apart (`percussive fingerstyle`, `fingerstyle percussion`, `slap
-  guitar acoustic`, `guitar body tapping`); the four that answered (`percussive guitar`, `guitar body percussion`,
+  guitar acoustic`, `guitar body tapping`); the script printed its 60 s wait after an HTTP 429 six times in all, so two
+  of the other requests also got an HTTP 429 first and answered on the retry; the four that answered (`percussive guitar`, `guitar body percussion`,
   `percussive acoustic guitar`, `fingerstyle guitar`, 50 hits each) held four audio, video or MIDI files: "Am7
   Percussive Bass Tapping.webm" (a 5-string bass, CC BY 3.0, 43.7 s), "Highlife guitar.mid" and "Zupf- Picking- und
   Fingerstyle bsp.mid" (MIDI), and "Blue Island.wav" (a band track, CC BY-SA 4.0). The category "Percussive guitar
@@ -1131,7 +1147,8 @@ Input RT1, documented as INPUTS.md documents its clips (files in `/home/user/gtr
   of about 3 s (`With_A_New_Tuning_You_Can_Fly.ogg` "3.09", `_64kb.mp3` and `_vbr.mp3` "00:03"), so only the original
   holds the whole track. The item has one review, which says nothing about the instrument or the technique.
 - Download: `https://archive.org/download/ChrisSmuckWithANewTuningYouCanFly/With_A_New_Tuning_You_Can_Fly.mp3` at
-  23:36:58 UTC, HTTP 200, `audio/mpeg`, 5,607,089 bytes; md5 `eba7dc5afa339eb9a091d0f04e80d484` (equal to the
+  23:36:58 UTC, HTTP 302 to the mirror host `dn710603.ca.archive.org`, then HTTP 200, `audio/mpeg`, 5,607,089 bytes
+  (`inputs/RT1/download.headers`); md5 `eba7dc5afa339eb9a091d0f04e80d484` (equal to the
   item's file list), sha256 `06d70c3fa409ec9532375750655aa4d6adefec7516844f419613761095722d50`. ffprobe: MPEG audio
   layer 3, 44100 Hz, stereo, 192 kb/s, duration 233.508583 s ("Estimating duration from bitrate").
 - Decode and read-back, run r0534 (`--nolock`, light; wall 2.64 s): `scripts/gap1_make_rt1.sh`: `ffmpeg -i
@@ -1182,6 +1199,10 @@ The lane's tap-side methods on RT1 (no truth, so counts and levels only; whole t
   `.../out/gap1-RT1/detectors/` (onset lists, `timing.tsv`); copies in `samples/realtaps/`:
   `RT1_librosa_hpss_summary.json`, `RT1_onsets_percussive_m4.txt`, `RT1_onsets_madmom_CNNOnsetDetector.txt`,
   `RT1_detectors_timing.tsv`.
+- Gap-round verifier: re-run r0562 of r0551's command (2-core slot, waited 10.0 s; wall 77.61 s) wrote four
+  byte-identical onset files and the same energy fractions and 10 s shares; re-run r0561 of r0542's command (2-core
+  slot, no wait; wall 11.85 s) wrote six byte-identical onset files; re-run r0585 of r0534's decode, on a copy of the
+  MP3, wrote byte-identical `RT1.wav`, `RT1.mono.wav` and read-back JSON.
 
 The drums-stem route on RT1 (Demucs 4.1.0, the same package set as r0327 / r0330, rebuilt from
 `freeze/venv-demucs.txt`; weights `adefossez/HTDemucs-6s` `5c90dfd2.safetensors` and `adefossez/HTDemucs`
@@ -1207,6 +1228,19 @@ r0410):
   (-30.9); 2 more above -50 dBFS, at 0:59.2 (-47.5) and 2:18.8 (-45.3). htdemucs: 1 of its 181 peaks lies above -40
   dBFS, at 0:49.9 (-36.3 dBFS), and 1 more above -50 dBFS, at 1:54.0 (-49.1). The two models' loudest moments are at
   different times. What sound is at these times was not checked by listening (`for-aaron.md` list 8, step 3).
+- A second run of the same htdemucs_6s command (gap-round verifier, r0571: 2-core slot, waited 73.7 s; wall 137.4
+  s, CPU 238.4 s, peak RSS 2,213.4 MB; same package set, rebuilt offline from `freeze/venv-demucs.txt`, same weights)
+  gave different stems (largest absolute sample difference against r0554's: 8.9e-3 in `vocals` to 0.28 in `other`;
+  Demucs 4.1.0's default `--shifts` 1 shifts the input by a random amount, see the R3 section). Measured with the
+  same script (r0577): stem energy re mix -13.5 / -37.3 / -2.6 / -7.7 / -26.5 / -41.3 dB (bass / drums / other /
+  guitar / piano / vocals; r0554: -13.8 / -40.0 / -2.5 / -8.1 / -24.3 / -41.4); drums stem mono peak -17.2 dBFS
+  (r0554: -23.0); 23 librosa onsets on the drums stem (r0554: 351); drums stem RMS -63.6 to -62.0 dBFS in 20 of 24
+  10 s windows, -60.5 (30-40 s), -55.0 (60-70 s), -59.6 (70-80 s), -48.6 (200-210 s); 7 of its 180 peaks (1 s apart)
+  above -40 dBFS, at 0:31.8 (-26.3), 1:05.8 (-29.7), 1:08.3 (-28.0), 1:10.4 (-30.2), 2:00.8 (-32.1), 2:18.8 (-39.1)
+  and 3:25.8 (-17.2), none more above -50 dBFS. So the drums-stem onset count on RT1 (351 against 23) and the level
+  ranking of the loud moments differ between two runs of one command; each of the five times above -40 dBFS in r0554
+  lies within 0.07 s of one of the seven in r0571. Files: `/home/user/gtr/lanes/fingerstyle-voices-taps/verify-gapfill/demucs/` (the stem
+  WAVs were deleted after the comparison; `drums_onsets.txt`, `stems_summary.json`, `r0571_*.json` kept).
 - For comparison (first round): the S6taps drums stems, whose content is the GM percussion standing in for taps, are
   -15.0 dB (htdemucs_6s) and -15.3 dB (htdemucs) re the mix with mono peaks -7.7 and -7.9 dBFS and gave 32 and 34
   librosa onsets for 32 truth taps in 29.4 s; the R3 drums stems (no body taps seen in the video frames) are 42 to 65
@@ -1251,7 +1285,7 @@ were used as they were.
 ## Media kept outside git
 
 All under `/home/user/gtr/lanes/fingerstyle-voices-taps/`. Every audio file is 29.357 s (1,294,650 samples at 44.1
-kHz) except the R3 Demucs stems (18.0 s). None is in git.
+kHz) except the R3 Demucs stems (18.0 s) and the gap round's RT1 files (233.509 s, the last two rows). None is in git.
 
 | path | size | what it is |
 |---|---|---|
@@ -1408,3 +1442,112 @@ Still UNVERIFIED:
 
 Side effect to know about: the verifier's `git ls-tree -l` calls on the blob-less survey clones fetched blobs, so
 `clones/` grew from 14 MB to 110 MB (mostly `rabitt__ismir2017-deepsalience` and `CPJKU__piano_svsep`).
+
+## Verification log (verify-gapfill-fingerstyle-voices-taps, round 1, 2026-11-11)
+
+Independent check, from 23:55 UTC on 2026-11-10 to about 00:20 UTC on 2026-11-11, of what the gap-round agent added:
+the section "Gap round 1", the "(corrected in gap round 1 ...)" notes in the sections above, its edits to `survey.md`
+and `for-aaron.md`, `tools.json` (63 entries), and the new files in `samples/` and `scripts/`. Check scripts:
+`scripts/verify-gapfill/`; outputs and logs: `/home/user/gtr/lanes/fingerstyle-voices-taps/verify-gapfill/` (2.5 MB;
+the re-run Demucs stems and the rebuilt Demucs venv, whose `uv pip freeze` equalled `freeze/venv-demucs.txt`, were
+deleted after the comparison).
+
+What was checked, and the result:
+
+- Run ledger: the round's nine ledger lines (r0534, r0542, r0549, r0551, r0552, r0554, r0556, r0557, r0558) against
+  every command, core, wall-clock, CPU, peak-memory, slot-wait and exit-code figure quoted: all match; all nine exit
+  0; no other ledger line of this lane in the round (r0513 is the chains lane's run of `voice_split.py`). Eval
+  ledger: no scoring of this lane's files after 23:10 UTC, as the section says.
+- Refusals: the six refused steps (ADTOF install 23:16:04, Omnizart install 23:18:44, ADT_STR install 23:20:15,
+  LarsNet `separate.py --help` 23:21:58, drumsep gtr-run 23:24:11, piano_svsep install 23:25:22 UTC) and the quoted
+  refusal messages were read, with the exact commands, in the gap agent's own session transcript (the Claude Code
+  transcript files on the box); the transcript shows no later attempt to install or run those tools by another
+  route. On disk: no `venv-adtof-tf`, `venv-omnizart`, `venv-adtstr`, `venv-larsnet`, `venv-drumsep` or `venv-svsep`;
+  `gap1/drumsep/model/` and `repos/` empty; the two new freezes present. The transcript's venv listing at 23:13 UTC
+  has neither `source-separation/venv-spleeter` nor `chords-beats-key/venv-tf`, which supports "Both TensorFlow venvs
+  named above were gone by then". The verifier did not repeat any refused step.
+- Re-runs through gtr-run (labels start with "verify"):
+
+| verifier run | re-run of | result |
+|---|---|---|
+| r0585 (`--nolock`) | r0534, decode of RT1 (on a copy of the MP3) | byte-identical `RT1.wav`, `RT1.mono.wav` and read-back JSON |
+| r0561 (2-core slot) | r0542, six onset detectors on RT1 | 6 byte-identical onset files |
+| r0562 (2-core slot) | r0551, librosa HPSS + onsets on RT1 | 4 byte-identical onset files; same energy fractions and 10 s shares |
+| r0571 (2-core slot) | r0554, Demucs htdemucs_6s on RT1 | not identical (random shift): drums stem -37.3 dB re mix, 23 librosa onsets against 351; details in the Demucs bullets of "Gap round 1" |
+| r0567, r0568 (`--nolock`) | r0557 and r0558 on the r0554 / r0556 stems | identical values; identical `drums_onsets.txt` (351 and 1,078 lines) |
+| r0569 (`--nolock`) | r0549, MusicXML inputs for piano_svsep | same counts (1 part, 90 pitches, 97 `<note>`, 36 `<chord />`, voice tags 36 x 1 and 12 x 2); files differ only in random ids and encoding date |
+| r0570 (`--nolock`) | r0552, scorer self-test and inputs as read | identical results |
+| r0577, r0587 (`--nolock`) | (new) measurements of r0571's stems; the scorer on MEI | as written in "Gap round 1" |
+
+  r0556 (htdemucs on RT1) was not repeated.
+- Independent recomputation: r0565 (`vrt1_stems.py`, WAVs read with Python's `wave` module) reproduces every stem
+  energy (within 0.05 dB of the one-decimal values), mono peak and 10 s drums RMS of both RT1 Demucs runs, the 181
+  peaks of each drums stem and the peaks above -40 and -50 dBFS (also found without `find_peaks`, as regions above the
+  level). The RT1 read-back (10,297,728 samples, peak -3.62 dBFS, RMS -21.88 dBFS, left = right in every sample, 5 s
+  RMS -19.4 to -26.0 dBFS and -56.5 for the last 3.5 s) was recomputed; sizes, md5 and sha256 of the MP3 and sha256
+  of both WAVs match; the MP3's ID3 copyright tag matches the quote (ffprobe). The first-round figures the section
+  compares with (S6taps 0.022 and 0.065, R3 0.0009 / 0.0005 / 0.0018, 53 / 54 / 58 onsets, S6taps drums stems -15.0 /
+  -15.3 dB with 32 / 34 onsets, R3 drums stems 42 to 65 dB down with 55 to 226 onsets, libnmfd 42 to 187 s) match
+  the sections above.
+- Files: every output, sample, script, log and freeze named exists. The `samples/realtaps/` files equal their
+  originals in `out/gap1-RT1/` and `inputs/RT1/` (the two Demucs summaries differ only in shortened path keys;
+  `archive_search.json` is the stated reduced copy). Recounted from the files: the archive.org query counts, 292
+  distinct items, 12 with a CC0, public-domain or CC BY license URL and the three named items; the four Commons media
+  files with their licenses; all twelve RT1 onset files; the MusicXML element counts and the four `<octave>` changes
+  (truth onsets 8.571, 13.929, 18.214, 25.714 s, MIDI 50 in S2n, 38 in S5dropd); `freeze/venv-drumsep.txt` equal to
+  `venv-demucs.txt`; the LarsNet freeze versions; the disk readings (11 GB at the start, the notice at 8,981 MB, 8.1
+  GB at the end, in the transcript).
+- Sources re-read on 2026-11-11 (UTC): the archive.org metadata API for the three named items (the RT1 file license
+  field quoted above, file list and lengths, one review; the Racer Sessions license URL, description quote and the
+  lengths of its 11 WAV files; the Longey license, quotes and 9 VBR MP3 files) and the saved details page ("Usage
+  Attribution 3.0"); the Freesound page and API documentation through the web fetch tool (both quotes verbatim, the
+  avatar path, no preview link); the Commons category page through the web fetch tool (8 JPEG files, one
+  subcategory; the one Commons API request made here answered HTTP 429); PyPI JSON (omnizart 0.5.0 to 0.6.3,
+  tensorflow 2.21.0 newest, madmom and vamp file lists); the madmom 0.16.1 and vamp 1.1.0 sdists (downloaded, `setup.py`
+  read, no `pyproject.toml`, deleted); raw GitHub files at the surveyed commits (ADTOF README, `setup.py`, notebook,
+  `hyperparameters.py`, `model.py`, `config.py`; tapcorrect `python/setup.py` on `master`; Omnizart `__init__.py`,
+  `base.py`, `cli/cli.py`, README; ADT_STR `pyproject.toml`, `inference`, `inference.py`, `utils/utils.py`,
+  `adt_transcriber.py`, README; LarsNet `config.yaml`, its three `.py` files, README; drumsep scripts and README;
+  piano_svsep `setup.py`, `requirements.txt`, `launch_scripts/predict.py`, README); commit hashes and dates from the
+  survey's clones; the Hugging Face API (289,134,056 bytes); Demucs 4.1.0 `states.py` line 59. The drumsep checkpoint
+  was downloaded again (00:08 UTC, HTTP 200, 167,400,043 bytes, same sha256), read without unpickling (397 zip entries,
+  the same four globals, five keys and four source names) and deleted. All of this matches the record except the items
+  changed below.
+- Lane folder: no audio or video, no file over 300 KB (largest `trials.md`), 1.7 MB in all; no key, token or password
+  pattern; nothing personal (the archive.org item metadata holds an uploader e-mail address; it is not in this folder,
+  and the verifier deleted its own copy of that metadata); no judging words in the added text. The earlier
+  verification logs of `trials.md` and `survey.md` are byte-identical to commit 2080da4 and every earlier heading is
+  unchanged. `tools.json`: valid JSON, 63 entries, the earlier run records unchanged; as in the file's other dataset
+  entries, RT1's recording license sits under `license.code`.
+
+Changed by the verifier:
+
+- trials.md, "Gap round 1": the move of the slot runs' outputs from `gap1/out/RT1/` to `out/gap1-RT1/` stated; ADTOF's
+  thresholds given as stored and the notebook's labels marked as plot ticks; "Python 3.8 is not installed" dated (a
+  cpython 3.8.20 appeared at 00:05 UTC on 2026-11-11, installed by another process); "sdist-only" corrected (vamp 1.1.0
+  also has two CPython 2.7 wheels); LarsNet's other tree files listed; drumsepInstall's conditions stated; the
+  User-Agent sentence limited to requests made from the box; "a noise compilation" replaced by the item's subjects and
+  its own words "a percussive track a guitar track"; the Commons retries stated; the archive.org HTTP 302 stated; the
+  verifier's re-run results added (decode, HPSS, detectors, scorer, MEI check, and Demucs r0571 with 23 against 351
+  drums-stem onsets); the media table's duration sentence now covers RT1.
+- `RT1.truth.json` (both copies, kept identical): the title "Steel-string fingerstyle with tapping per its keywords"
+  replaced, because the item names no instrument beyond "Acoustic".
+- for-aaron.md: list 8 step 3 adds the second Demucs run's loud moments (2:00.8, 2:18.8); list 10's "which also works
+  in Terminal" replaced (never tried); list 2 step 5 and list 3's build workaround marked as not tried; list 6's "runs
+  on the CPU by itself" changed to what the code selects (read, not run).
+- survey.md: the intro points to this log; tapcorrect's license quote carries its URL; LarsNet's other tree files
+  listed.
+- tools.json: `verifier_rerun` notes on the RT1 runs (librosa, aubio, Essentia, madmom, Demucs, the RT1 entry); a
+  Demucs `unverified` line on the RT1 run-to-run difference; Omnizart's "sdist-only" corrected; the piano_svsep scorer
+  line extended with r0569, r0570 and r0587.
+
+Still UNVERIFIED:
+
+- Whether Freesound or the egress proxy gave the HTTP 403 (not re-requested from the box; the proxy README says "do
+  not retry policy denials (403/407)"); the constructed preview address was never confirmed.
+- Whether RT1 contains hits on the guitar body (nobody listened), and what sound is at its loud drums-stem moments.
+- How far the RT1 drums-stem figures vary beyond two htdemucs_6s runs; the htdemucs run r0556 was not repeated.
+- The 70 MB size of the piano_svsep clone and the "about 270 MB" deleted (the gap agent's `du` output in its
+  transcript, not re-measured), and LarsNet's 562 MB checkpoint (README figure, not downloaded).
+- Everything about the six tools' own outputs: none of them ran here, so what the five drum tools report on S6taps,
+  its taps stem and S2s, and how piano_svsep splits S2n and S5dropd, is still unknown.

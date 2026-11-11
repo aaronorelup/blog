@@ -1,0 +1,112 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>htdemucs_6s ONNX in ONNX Runtime Web</title>
+<body>
+<script type="module">
+// StemSplit's ONNX export of Demucs htdemucs_6s (StemSplitio/htdemucs-6s-onnx, htdemucs_6s_fp16weights.onnx) in
+// ONNX Runtime Web 1.31.1, wasm execution provider, THREADS threads, on a stereo 44.1 kHz clip.
+// The graph takes the waveform (input "mix", 1 x 2 x 343980) and returns waveforms (output "stems", 1 x 6 x 2 x 343980,
+// stems in the order drums, bass, other, vocals, guitar, piano); the STFT is inside the graph. What the page adds is
+// the chunked overlap-add of demucs-onnx 0.3.4 (`_chunked_separate_single` and `_make_transition_window` in
+// demucs_onnx/inference.py, the same loop as `separate` in the model repo's infer.py), ported line by line:
+// 7.8 s segments, overlap = N // 4, stride = N - overlap, zero-padded last chunk, window = ones with
+// np.linspace(0, 1, overlap) as fade-in and its reverse as fade-out, out /= max(weight, 1e-8); float32 rounding as numpy.
+import { finish, fail, encodeWav, upload, fetchArrayBuffer } from '/pages/common.js';
+import * as ort from '/nm/onnxruntime-web/dist/ort.wasm.min.mjs';
+const q = new URLSearchParams(location.search);
+const THREADS = Number(q.get('threads') || 2);
+const FILE = q.get('file') || '/laneinputs/S4_10s/S4_10s.wav';
+const MODEL = q.get('model') || '/dl/htdemucs-6s-onnx/htdemucs_6s_fp16weights.onnx';
+const TAG = q.get('tag') || `S4_10s_t${THREADS}`;
+const WRITE = q.get('write') !== '0';
+const SOURCES = ['drums', 'bass', 'other', 'vocals', 'guitar', 'piano'];
+const SR = 44100, CH = 2;
+const N = Math.trunc(7.8 * SR);                 // int(SEGMENT_S * SAMPLE_RATE) = 343,980
+const OVERLAP = Math.trunc(N / 4), STRIDE = N - OVERLAP;
+const now = () => performance.timeOrigin + performance.now();
+const phase = (name) => console.log(`PHASE ${name} ${now().toFixed(1)}`);
+const mem = () => (performance.memory ? { usedJSHeapSize: performance.memory.usedJSHeapSize, totalJSHeapSize: performance.memory.totalJSHeapSize, jsHeapSizeLimit: performance.memory.jsHeapSizeLimit } : null);
+const R = { threads_requested: THREADS, file: FILE, model: MODEL, crossOriginIsolated: self.crossOriginIsolated,
+  hardwareConcurrency: navigator.hardwareConcurrency, N_SAMPLES: N, overlap: OVERLAP, stride: STRIDE, ort_versions: ort.env.versions };
+window.__partial = R;
+function makeWindow() {   // np.ones(N); fade = np.linspace(0, 1, T, dtype=float32); w[:T] = fade; w[-T:] = fade[::-1]
+  const w = new Float32Array(N).fill(1); const T = OVERLAP; const step = 1 / (T - 1);
+  for (let i = 0; i < T; i++) { const v = i === T - 1 ? 1 : i * step; w[i] = v; w[N - 1 - i] = v; }
+  return w;
+}
+try {
+  ort.env.wasm.wasmPaths = '/nm/onnxruntime-web/dist/'; ort.env.wasm.numThreads = THREADS;
+  R.mem_start = mem();
+  phase('model_fetch_start');
+  const modelBytes = new Uint8Array(await fetchArrayBuffer(MODEL));
+  phase('model_fetch_end');
+  R.model_bytes = modelBytes.byteLength;
+  phase('session_create_start');
+  const t0 = performance.now();
+  const session = await ort.InferenceSession.create(modelBytes, { executionProviders: ['wasm'], graphOptimizationLevel: 'all' });
+  R.session_create_ms = performance.now() - t0;
+  phase('session_create_end');
+  R.numThreads_after_create = ort.env.wasm.numThreads;
+  R.inputNames = session.inputNames; R.outputNames = session.outputNames;
+  try { R.inputMetadata = JSON.parse(JSON.stringify(session.inputMetadata)); R.outputMetadata = JSON.parse(JSON.stringify(session.outputMetadata)); } catch (e) { R.metadata_error = String(e); }
+  R.mem_after_create = mem();
+
+  const dec = await new OfflineAudioContext(2, 1, SR).decodeAudioData(await fetchArrayBuffer(FILE));
+  R.input = { sampleRate: dec.sampleRate, channels: dec.numberOfChannels, samples: dec.length, seconds: dec.duration };
+  const mix = [dec.getChannelData(0), dec.numberOfChannels > 1 ? dec.getChannelData(1) : dec.getChannelData(0)];
+  const total = mix[0].length;
+  const nChunks = Math.max(1, Math.floor((total + STRIDE - 1) / STRIDE));
+  const win = makeWindow();
+  const out = SOURCES.map(() => [new Float32Array(total), new Float32Array(total)]);
+  const weight = new Float32Array(total);
+  const buf = new Float32Array(CH * N);
+  R.chunks = [];
+  phase('separate_start');
+  const ts = performance.now();
+  for (let i = 0; i < nChunks; i++) {
+    const start = i * STRIDE, end = Math.min(start + N, total), len = end - start;
+    buf.fill(0);
+    for (let c = 0; c < CH; c++) buf.set(mix[c].subarray(start, end), c * N);
+    const t1 = performance.now();
+    phase(`run${i}_start`);
+    const res = await session.run({ mix: new ort.Tensor('float32', buf, [1, CH, N]) });
+    phase(`run${i}_end`);
+    const tr = performance.now() - t1;
+    const st = res.stems; const d = st.data;
+    if (i === 0) R.output_dims = st.dims;
+    for (let s = 0; s < SOURCES.length; s++) for (let c = 0; c < CH; c++) {
+      const base = (s * CH + c) * N; const o = out[s][c];
+      for (let k = 0; k < len; k++) o[start + k] = o[start + k] + Math.fround(d[base + k] * win[k]);
+    }
+    for (let k = 0; k < len; k++) weight[start + k] = weight[start + k] + win[k];
+    R.chunks.push({ i, start, end, run_ms: tr });
+    if (st.dispose) st.dispose();
+  }
+  const eps = Math.fround(1e-8);
+  for (let k = 0; k < total; k++) weight[k] = Math.max(weight[k], eps);
+  for (const st of out) for (const ch of st) for (let k = 0; k < total; k++) ch[k] = ch[k] / weight[k];
+  R.separate_ms = performance.now() - ts;
+  phase('separate_end');
+  R.mem_after_separate = mem();
+  // facts about the result: per-stem peak and RMS, and the energy of (sum of stems - mix) relative to the mix
+  R.stems = {}; let num = 0, den = 0;
+  for (let k = 0; k < total; k++) for (let c = 0; c < CH; c++) {
+    let s = 0; for (let j = 0; j < SOURCES.length; j++) s += out[j][c][k];
+    num += (s - mix[c][k]) ** 2; den += mix[c][k] ** 2;
+  }
+  R.stem_sum_minus_mix_db = 10 * Math.log10(num / den);
+  for (let j = 0; j < SOURCES.length; j++) {
+    let pk = 0, e = 0; for (const ch of out[j]) for (let k = 0; k < total; k++) { pk = Math.max(pk, Math.abs(ch[k])); e += ch[k] ** 2; }
+    R.stems[SOURCES[j]] = { samples: total, peak: pk, rms_dbfs: 10 * Math.log10(e / (2 * total)) };
+    if (WRITE) R.stems[SOURCES[j]].wav = await upload('htdemucs6s-web', `${TAG}_${SOURCES[j]}.wav`, encodeWav(out[j], SR));
+  }
+  try {
+    if (performance.measureUserAgentSpecificMemory) {
+      R.measureUserAgentSpecificMemory = await Promise.race([performance.measureUserAgentSpecificMemory().then((m) => ({ bytes: m.bytes, breakdown: m.breakdown.filter((b) => b.bytes > 1e6).map((b) => ({ bytes: b.bytes, types: b.types })) })),
+        new Promise((r) => setTimeout(() => r('timeout after 20 s'), 20000))]);
+    }
+  } catch (e) { R.measureUserAgentSpecificMemory = 'error: ' + String(e); }
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

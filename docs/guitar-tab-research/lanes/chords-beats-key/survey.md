@@ -491,6 +491,27 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   the plugins in source or binary form, provided you comply with the terms given by the GNU General Public License."
   and "Further copyrights apply to the qm-dsp library used in these plugins. See the README for that library for
   details." COPYING is the GPL v2 text. b. Weights: none. c. Training data: none stated.
+- Gap round 1 (2026-11-10 and 11, added by gapfill-chords-beats-key): how the plugins can be obtained on Linux.
+  - apt on the box (Ubuntu 24.04, universe enabled): no plugin package. `apt-cache search --names-only 'vamp|qm-|sonic-'`
+    lists libvamp-hostsdk3v5, libvamp-sdk2v5, rubberband-vamp, vamp-examples, vamp-plugin-sdk(-doc), `libqm-dsp0t64` and
+    `libqm-dsp-dev` 1.7.1-8 ("C++ library for audio signals analysis", source package qm-dsp, homepage
+    https://code.soundsoftware.ac.uk/projects/qm-dsp; the library the README sentence above refers to, not the plugins),
+    and `sonic-visualiser` 4.5.2-2build3 (a GUI; its dependencies include no plugin package). The package-name searches
+    of all suites at packages.ubuntu.com and packages.debian.org for "qm-vamp" and "sonic-annotator" answered "Sorry, your
+    search gave no results"; "vamp-plugin" found only vamp-plugin-sdk and vamp-plugin-sdk-doc (read 2026-11-10). PyPI:
+    `qm-vamp-plugins`, `vamp-plugins-qm`, `qm-dsp`, `qmdsp`, `pyqmdsp`, `vampy`, `sonic-annotator` all HTTP 404.
+  - The plugin download site, https://code.soundsoftware.ac.uk/projects/qm-vamp-plugins/files, tried again at
+    2026-11-10 23:30:27 UTC: "curl: (35) Recv failure: Connection reset by peer"; the session proxy's status listed
+    "tunnel closed (code 1006) after 4s; 517 B sent, 39 B received" for code.soundsoftware.ac.uk:443 at 21:37, 21:37, 21:56,
+    22:48 and 23:30 UTC that day.
+  - The Vamp Plugin Pack page (https://www.vamp-plugins.org/pack.html, read 2026-11-10) offers "Installer for 64-bit Linux
+    1. Save the file 2. Make it executable 3. Run it", linked to
+    https://github.com/vamp-plugins/vamp-plugin-pack/releases/download/v2.0/vamp-plugin-pack-installer-2.0 (downloaded on
+    2026-11-11: 34,248,632 bytes, sha256 e8ed873f...2126f, an ELF executable with a squashfs image at byte 157,624, i.e.
+    an AppImage). Listing that image with `unsquashfs -l` (nothing was executed) shows the installer program
+    `usr/bin/vamp-plugin-pack-installer` (18,567,512 bytes) and Qt 6 libraries, and no plugin files; the program contains
+    the strings "Queen Mary Vamp plugins" and "Queen Mary plugin set", i.e. the plugins travel inside the installer
+    program, which is a GUI. The file was deleted.
 
 ## vamp (Python Vamp host, "vampy-host")
 

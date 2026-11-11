@@ -1,0 +1,8 @@
+S1 ['time_s', 'frequency_hz', 'confidence'] frames 2984 ge0.03 499 ge0.5 84 max 0.949 hop min/max 0.0100/0.0100 f min/max 116.3/567.2 zeros 0 first ['0.000', '567.215', '0.000261']
+S2n ['time_s', 'frequency_hz', 'confidence'] frames 2936 ge0.03 912 ge0.5 21 max 0.605 hop min/max 0.0100/0.0100 f min/max 97.7/769.9 zeros 0 first ['0.000', '567.477', '0.000260']
+S2s ['time_s', 'frequency_hz', 'confidence'] frames 2936 ge0.03 515 ge0.5 0 max 0.193 hop min/max 0.0100/0.0100 f min/max 98.5/574.4 zeros 0 first ['0.000', '567.405', '0.000256']
+S4 ['time_s', 'frequency_hz', 'confidence'] frames 3875 ge0.03 1637 ge0.5 66 max 0.614 hop min/max 0.0100/0.0100 f min/max 108.6/794.7 zeros 0 first ['0.000', '567.202', '0.000259']
+S4lead ['time_s', 'frequency_hz', 'confidence'] frames 3875 ge0.03 3008 ge0.5 2047 max 0.943 hop min/max 0.0100/0.0100 f min/max 117.3/771.1 zeros 0 first ['0.000', '119.530', '0.000273']
+R1b ['time_s', 'frequency_hz', 'confidence'] frames 2934 ge0.03 2135 ge0.5 1655 max 0.974 hop min/max 0.0100/0.0100 f min/max 53.7/770.1 zeros 0 first ['0.000', '767.919', '0.001502']
+R2 ['time_s', 'frequency_hz', 'confidence'] frames 3601 ge0.03 2905 ge0.5 1683 max 0.959 hop min/max 0.0100/0.0100 f min/max 116.4/830.7 zeros 0 first ['0.000', '168.179', '0.041897']
+R3a ['time_s', 'frequency_hz', 'confidence'] frames 1800 ge0.03 1475 ge0.5 121 max 0.813 hop min/max 0.0100/0.0100 f min/max 106.1/447.4 zeros 0 first ['0.000', '208.158', '0.238188']

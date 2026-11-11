@@ -8,8 +8,10 @@ only; it does not rank or recommend. Tools in it were not run by this agent (the
 `trials.md`). Text marked "verifier" (for example "(verifier)" or "added by the verifier") was added or corrected on
 2026-11-10 by the independent checker verify-docs-fingerstyle-voices-taps after re-reading the live sources; its tally
 is in the verification log at the end. Text marked "(gap round 1 ...)" was added later the same day (from 23:14 UTC)
-by the lane's gap-round agent, from the sources it names, after that verification; the verification log does not
-cover it.
+by the lane's gap-round agent, from the sources it names, after that verification; the verification log at the end
+of this file does not cover it. It was checked against the live sources on 2026-11-11 (UTC) by the gap-round
+verifier, whose log is at the end of `trials.md` ("Verification log (verify-gapfill-fingerstyle-voices-taps, round
+1, ...)").
 
 How dates and versions were read: PyPI versions and upload dates from `https://pypi.org/pypi/<package>/json`; the
 last commit of a repository from a blobless `git clone --depth 1` (`git log -1 --format=%cI`), done with
@@ -514,8 +516,8 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   `self.model.load_weights(load_path)` from `config.CHECKPOINT_DIR`, which `adtof/config.py` sets to the package's
   own `models` folder; it imports `tensorflow`, `from tensorflow import keras` and `from keras import backend as K`.
   `setup.py` lists `tapcorrect @ git+https://github.com/MZehren/tapcorrect#subdirectory=python&egg=tapcorrect`,
-  whose own `setup.py` (raw.githubusercontent.com, `master` branch, read 2026-11-10) says
-  `license='Attribution 3.0 Unported (CC BY 3.0)'`.
+  whose own `setup.py` (https://raw.githubusercontent.com/MZehren/tapcorrect/master/python/setup.py, `master` branch,
+  read 2026-11-10, re-read 2026-11-11) says `license='Attribution 3.0 Unported (CC BY 3.0)'`.
 - Output: five drum classes; the README's dataset figure caption: "Each sample consists of an input (400 frames, 84
   bins, 1 channel) and a target (400 Frames, 5 classes)." The PyTorch port (next section) maps the five outputs to
   MIDI pitches `LABELS_5 = [35, 38, 47, 42, 49]`.
@@ -773,8 +775,9 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   https://github.com/polimi-ispl/larsnet on 2026-11-10. Training data: StemGMD, "**StemGMD is freely available on
   [Zenodo](https://zenodo.org/records/7860223) under the CC-BY 4.0 license.**" (README; Zenodo metadata `cc-by-4.0`).
   README: "We are working toward releasing the scripts for fine-tuning and training LarsNet from scratch."
-  (gap round 1, `git clone --depth 1` at `17d631f`, read 2026-11-10) The repository is three Python files and a
-  `config.yaml`, with no package or install script; the files import `yaml`, `torch`, `torchaudio`, `tqdm` and
+  (gap round 1, `git clone --depth 1` at `17d631f`, read 2026-11-10) The repository's code is three Python files and
+  a `config.yaml` (the tree also holds `README.md`, `requirements.txt` and `pretrained_larsnet_models/.gitkeep`), with
+  no package or install script; the files import `yaml`, `torch`, `torchaudio`, `tqdm` and
   `soundfile`. `config.yaml`: `sr: 44100`; `inference_models` `kick`, `snare`, `toms`, `hihat`, `cymbals` at
   `pretrained_larsnet_models/<stem>/pretrained_<stem>_unet.pth` (the folder holds only `.gitkeep` in the
   repository). `larsnet.py` loads each with `torch.load(str(checkpoint_path), map_location=device)` and

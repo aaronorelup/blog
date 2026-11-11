@@ -54,7 +54,7 @@ notice, no longer applies.)
 3. Follow the notebook's cells, pointing its audio path at each file in turn.
 4. Send back: the MIDI or text file each run writes (download from the folder pane), and a screenshot of the last
    cell's output. No cost (free Colab). License: CC BY-NC-SA 4.0 per the README.
-5. Local alternative (what was refused here): Python 3.10, `git clone https://github.com/MZehren/ADTOF`, `cd ADTOF`,
+5. Local alternative (what was refused here; not tried anywhere in this research): Python 3.10, `git clone https://github.com/MZehren/ADTOF`, `cd ADTOF`,
    `python -m venv venv`, `venv\Scripts\activate`, `pip install "tensorflow==2.15.1"` then `pip install .` (the
    README's line; `setup.py` asks for `tensorflow>=2.13.0` and installs madmom and tapcorrect from GitHub). Then in
    `python`, the two cells of `bin/drumTranscriptor.ipynb`:
@@ -75,7 +75,8 @@ round 1"). (The first round's reason, no TensorFlow on the box and the disk noti
    dependencies, madmom 0.16.1 and vamp 1.1.0, are source packages whose `setup.py` imports NumPy (madmom also
    Cython) without declaring it (read here, not built here). If `pip install omnizart` stops while building one of them
    with "No module named 'numpy'" or "No module named 'Cython'", run `pip install "numpy<2" "Cython<3" setuptools
-   wheel` and then `pip install --no-build-isolation omnizart`. Building them needs a C/C++ compiler (on Windows,
+   wheel` and then `pip install --no-build-isolation omnizart` (this workaround was not tried anywhere in this
+   research). Building them needs a C/C++ compiler (on Windows,
    "Microsoft C++ Build Tools"). The README also offers a Docker image, `docker pull mctlab/omnizart:latest`.
 3. `omnizart drum transcribe <inputs>\S6taps\S6taps.wav -o S6taps_omnizart.mid` (`-o` / `--output` is the output
    option of the transcribe command in its source), then the same for `<inputs>\S6taps\stems\taps.wav`
@@ -131,7 +132,8 @@ tried it (trials.md).
 Not run here: in gap round 1 (23:20 UTC) its README's install, `uv pip install -r pyproject.toml` into a Python 3.12
 venv, was refused by the session's permission system ("[Code from External]") (trials.md, "Gap round 1"). Its weights
 are 289 MB per variant on Hugging Face and its install brings its own PyTorch stack (`torch==2.8.0`). On a machine
-without CUDA it runs on the CPU by itself (`select_inference_device()`: "Prefer CUDA, then Apple MPS, else CPU.").
+without CUDA its code picks the CPU by itself (`select_inference_device()`: "Prefer CUDA, then Apple MPS, else CPU.";
+read, not run).
 
 1. `cd C:\gtr`, `git clone https://github.com/pier-maker92/ADT_STR`, `cd ADT_STR`.
 2. Follow the README: it uses `uv` (`pip install uv`, then `uv venv .venv --python 3.12` and
@@ -210,7 +212,8 @@ guitar body is not known (trials.md, "Gap round 1").
    times of a few of them (minutes:seconds) and what kind they are (thumb on the top, palm on the bridge, fingers on the
    side ...). Send back that list. It would be the first real tap truth for this lane, and the onset and Demucs outputs
    made here can then be checked against it. For reference, the loudest peaks of the Demucs drums stems made from RT1
-   are at 0:31.8, 1:05.8, 1:08.4, 1:10.4 and 3:25.8 (htdemucs_6s) and 0:49.9 (htdemucs); what sound is there is not
+   are at 0:31.8, 1:05.8, 1:08.4, 1:10.4 and 3:25.8 (htdemucs_6s) and 0:49.9 (htdemucs); a second htdemucs_6s run
+   (the verifier's) had loud peaks at the same five times and also at 2:00.8 and 2:18.8; what sound is there is not
    known.
 4. One more candidate was found and not downloaded because its license is the Public Domain Mark 1.0, not CC0 or CC BY:
    https://archive.org/details/RacerSessions-DannyGodinez11082015 (a steel-string acoustic set whose description says
@@ -251,9 +254,10 @@ permission system ("[Code from External]", 23:24 UTC) (trials.md, "Gap round 1")
    download the four WAVs of each.
 2. The README's command-line route is written "With Linux": clone `https://github.com/inagoy/drumsep`, then
    `bash drumsepInstall`, then `bash drumsep "<PATH_IN>" "<PATH_OUT>"`. On Windows that needs a Linux shell such as
-   WSL; it has not been tried in Git Bash. The scripts only do this, which also works in Terminal: `pip install
-   demucs`, put the file from https://drive.google.com/uc?id=1-Dm666ScPkg8Gt2-lK3Ua0xOudWHZBGC (`49469ca8.th`) into
-   a folder `model`, then `demucs --repo model -o drumsep_out -n 49469ca8 <file>` for each input.
+   WSL; it has not been tried in Git Bash. The scripts only do the following, which can also be typed by hand in
+   Terminal (not tried anywhere in this research): `pip install demucs`, put the file from
+   https://drive.google.com/uc?id=1-Dm666ScPkg8Gt2-lK3Ua0xOudWHZBGC (`49469ca8.th`) into a folder `model`, then
+   `demucs --repo model -o drumsep_out -n 49469ca8 <file>` for each input.
 3. Send back: the four WAVs it writes per input (`bombo` = kick, `redoblante` = snare, `platillos` = cymbals, `toms`)
    and the screenshot. The orchestrator measures the level of each stem and which stem holds the side-stick "slap" and
    the bass-drum "thump" times of `S6taps.truth.json`.

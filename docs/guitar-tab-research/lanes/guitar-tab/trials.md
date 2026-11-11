@@ -509,7 +509,9 @@ string higher than the truth tab.
   onset group, 16th rests in between, 4/4 bars. String, fret and order are kept; durations are not the played ones.
 - Converted (2026-11-10, not timed; not run through `gtr-run`): tuttut S2n (default), tuttut S5capo2 with the capo
   workaround, tuttut S5dropd with Drop D, LilyPond S5dropd with Drop D, all at 112 BPM. Files: 3,158 to 3,170 bytes
-  each, `samples/pyguitarpro-glue/*.gp5`.
+  each, `samples/pyguitarpro-glue/*.gp5`. (Gap round 2 added a ledger line: all eight conversions of this section,
+  these four plus the three audio chains and R3a below, were re-run on 2026-11-11 with the same script and arguments
+  as r0586, `gtr-run --nolock`; see "Gap round 2". The 2026-11-10 conversions themselves remain unlogged.)
 - Read back with `gtr-eval tab` (PyGuitarPro reader, time from the beat positions and the song tempo): tuttut S2n e0430
   90/90 matched, same string+fret 1.0000, tuning and capo "stated in the estimate file" as [40..64] / 0; tuttut S5capo2
   e0431 90/90, 1.0000, capo read back 2; tuttut S5dropd e0432 90/90, 0.9778, tuning read back [38, 45, 50, 55, 59, 64];
@@ -864,6 +866,30 @@ same effect was reached as described; "no" = neither. Every cell is backed by th
   notes; tuttut 31 on open strings, highest fret 8, per string 12, 14, 26, 15, 12, 8; LilyPond 30 open, highest fret 8,
   per string 12, 15, 24, 17, 11, 8; 84 of the 87 paired notes have the same string and fret. LilyPond wrote no
   warnings (88 and 63 chord groups). Files: `samples/verify-trials/tuttut_R3b.bp.*`, `tuttut_R3c.bp.*`.
+
+## Gap round 2
+
+Agent `gapfill-guitar-tab`, 2026-11-11 (UTC), working through the gaps the completeness critic listed for this lane
+(`GAPS.md`, rows G1 to G5) and a gtrsnipe re-check the orchestrator asked for. Same box, same `gtr-run` and `gtr-eval`
+ledgers as above. Scripts named `scripts/gap2_*`; big outputs under `/home/user/gtr/lanes/guitar-tab/gap2/`; small
+samples under `samples/<tool>/`.
+
+### PyGuitarPro glue conversions given a ledger line (G1)
+
+- The eight conversions of the section "PyGuitarPro 0.11 as glue" were re-run with the same script
+  (`scripts/gtreval_to_gp5.py`), the same source note lists and the same `--bpm` values, without `--title`, into
+  `/home/user/gtr/lanes/guitar-tab/gap2/gp5/`: `scripts/gap2_pyguitarpro_glue.sh` in one `gtr-run --nolock` call, r0586
+  (light job, no CPU slot; wall 0.77 s for all eight including eight Python start-ups, CPU 0.8 s, peak RSS 21.1 MB,
+  exit 0; log `gap2/logs/pyguitarpro_glue.log`). The script printed the same note counts as the section above (S2n,
+  S5capo2, S5dropd x2: 90 of 90 written; Basic Pitch chains: S2n 136 of 137, S5capo2 139 of 139, R1c 151 of 153; R3a 102
+  of 105).
+- Compared with the 2026-11-10 files in `out/gp5/` by `scripts/gap2_compare_gp5.py` (PyGuitarPro reads both; tempo,
+  tuning, capo and every beat's status, duration and (string, fret) notes): identical content in all eight; the bytes
+  differ because the originals carry a song title and the re-runs none. Re-scored with `gtr-eval tab --no-ledger`, the
+  seven scored files give `metrics` and `counts` equal to the stored results of e0430, e0431, e0432, e0433, e1088,
+  e1090 and e1092 (in the eval ledger, e1089 and e1091 are other lanes' chord scores, not PyGuitarPro).
+- The verifier's r0469 (above) had already re-run three of these conversions. The 2026-11-10 conversions themselves
+  stay unlogged and untimed.
 
 ## Media kept outside git
 

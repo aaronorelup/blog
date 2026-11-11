@@ -914,6 +914,148 @@ with 6.3 to 9.0 GB free while this round ran.
 - Samples: `samples/allin1/` (JSON of S3, S4, S2n, S5capo2, S5dropd, R1a, R1b, R1c, R2full and the CLI's S4; per-clip
   timings; batch timings; weight hashes; freeze).
 
+### tempo-cnn 0.0.8 (PyPI `tempocnn`) with TensorFlow 2.17.0: global tempo from eight models, and meter
+
+- What: Hendrik Schreiber's tempo CNNs (survey.md, tempo-cnn). The wheel holds tempo models only; it has no key model
+  and no key command (survey.md, "Gap round 1"), so no key estimate came from this package.
+- Install (venv-tempocnn, Python 3.11.15): `uv pip install "tempocnn==0.0.8" soundfile`, 48.2 s (tensorflow 2.17.0, the
+  version tempocnn pins; keras 3.15.1, numpy 1.26.4, librosa 0.11.0, h5py 3.16.0, jams 0.3.5, scipy 1.17.1). No other step.
+  Venv 2.5 GB by `du`. Freeze: `samples/tempocnn/venv-tempocnn.freeze.txt`. Importing TensorFlow printed CUDA-plugin
+  registration errors ("Unable to register cuFFT factory ...") and then ran on the CPU.
+- Models: loading each model once before the timed runs (`HOME` pointed at `/home/user/gtr/lanes/chords-beats-key/models/tempocnn_home`,
+  because the package caches under `~/.tempocnn/0.0.8/`; log `logs/gap1/tempocnn_fetch_models.log`) copied cnn, fcn,
+  ismir2018, shallowtemp_k6 and dt_maz_v_fold0 out of the wheel and downloaded fma2018.h5 (1,345,912 bytes),
+  deeptemp_k16.h5 (1,402,696), deepsquare_k16.h5 (4,915,064) and fma2018-meter.h5 (1,106,208) from
+  raw.githubusercontent.com/hendriks73/tempo-cnn/main/tempocnn/models/. Sizes and SHA-256: `samples/tempocnn/models_sha256.txt`.
+  Parameter counts the package reported: fcn 313,136; cnn and ismir2018 2,921,684; fma2018 313,136; deeptemp_k16
+  320,304; deepsquare_k16 1,198,704; shallowtemp_k6 688,792; dt_maz_v_fold0 320,304; fma2018-meter 253,111.
+- Run: `scripts/tempocnn_run.py` calls the package's API the way its `tempo` and `meter` commands do:
+  `read_features(file)` once, then for each of fcn (the `tempo` command's default), cnn, ismir2018, fma2018, deeptemp,
+  deepsquare, shallowtemp and mazurka `TempoClassifier(model).estimate_tempo(features, interpolate=False)` (what `tempo -m
+  <model> -i <file>` prints) and `estimate_mirex(...)` (the `--mirex` triple t1, t2, s1), then
+  `MeterClassifier('fma2018-meter').estimate_meter(read_features(file, frames=512))` (what `meter -i <file>` prints).
+  Ten clips in batch run r0584 (2 cores; 140.95 s wall in total, 147.4 s CPU, 1249.9 MB peak RSS; gtr-run set
+  `TF_NUM_INTRAOP_THREADS=2`). Per clip (`samples/tempocnn/batch_gap1_timings.jsonl`): S3 26.98 s (the first job; its
+  `read_features` took 16.49 s against 1.17 to 1.57 s on every other clip, the first-run cost this lane measured for
+  librosa in r0468, not isolated here), the other 24 to 39 s clips 11.1 to 12.3 s, R2full 20.58 s; TensorFlow import
+  2.84 to 3.10 s per job; per model 0.05 to 0.46 s to load and 0.11 to 1.31 s for `estimate_tempo` on the 24 to 39 s
+  clips (the longest was cnn on eight of those nine clips, fcn on S7flat30), 0.18 to 2.59 s on R2full
+  (`samples/tempocnn/<clip>.tempocnn.json`).
+- Output format: `estimate_tempo` returns one BPM (whole numbers for every model except fma2018, whose classes are on a
+  log-BPM scale: e.g. 112.40386637720552); `estimate_mirex` returns two tempi and the salience of the first; the meter
+  model returns a numerator. No beat times. The lane script writes `tempo_<model>.txt`, `meter_fma2018.txt` and
+  `tempocnn.json`.
+- Constraint inputs: the model name and `interpolate`; no tempo range or tempo hint.
+- Scores (gtr-eval 0.11.1, `tempo`; estimate, then within 4 % of the truth or the ratio estimate / truth, then the
+  eval id). Meter is compared by hand with the truth files' `time_signature` (4/4 for all nine clips):
+
+| clip (truth BPM) | fcn | cnn | ismir2018 | fma2018 | deeptemp | deepsquare | shallowtemp | mazurka | meter |
+|---|---|---|---|---|---|---|---|---|---|
+| S3 (96) | 96 yes e1619 | 96 yes e1616 | 96 yes e1621 | 192.82 x2.01 e1620 | 96 yes e1618 | 96 yes e1617 | 96 yes e1623 | 190 x1.98 e1622 | 3 |
+| S7flat30 (96) | 96 yes e1639 | 96 yes e1636 | 96 yes e1641 | 192.82 x2.01 e1640 | 96 yes e1638 | 96 yes e1637 | 96 yes e1643 | 190 x1.98 e1642 | 3 |
+| S4 (116) | 116 yes e1629 | 116 yes e1626 | 116 yes e1631 | 116.52 yes e1630 | 116 yes e1628 | 116 yes e1627 | 116 yes e1633 | 117 yes e1632 | 4 |
+| S2n (112) | 112 yes e1649 | 112 yes e1646 | 112 yes e1651 | 112.40 yes e1650 | 112 yes e1648 | 112 yes e1647 | 112 yes e1653 | 112 yes e1652 | 4 |
+| S5capo2 (112) | 112 yes e1659 | 112 yes e1656 | 112 yes e1661 | 112.40 yes e1660 | 111 yes e1658 | 112 yes e1657 | 112 yes e1663 | 114 yes e1662 | 4 |
+| S5dropd (112) | 112 yes e1669 | 112 yes e1666 | 112 yes e1671 | 112.40 yes e1670 | 112 yes e1668 | 112 yes e1667 | 112 yes e1673 | 112 yes e1672 | 4 |
+| R1a (107) | 108 yes e1679 | 108 yes e1676 | 107 yes e1681 | 106.50 yes e1680 | 108 yes e1678 | 108 yes e1677 | 107 yes e1683 | 211 x1.97 e1682 | 9 |
+| R1b (90) | 90 yes e1689 | 94 x1.04 e1686 | 90 yes e1691 | 93.06 yes e1690 | 92 yes e1688 | 90 yes e1687 | 90 yes e1693 | 171 x1.90 e1692 | 5 |
+| R1c (119) | 119 yes e1699 | 119 yes e1696 | 120 yes e1701 | 120.79 yes e1700 | 116 yes e1698 | 119 yes e1697 | 119 yes e1703 | 119 yes e1702 | 3 |
+
+  "x1.04" for cnn on R1b is a ratio of 1.0444 (94 / 90), just outside the 4 % tolerance. R2full (no truth; the artist's
+  page lists 72 bpm and "4/4 Swing", per INPUTS.md): fcn, cnn, ismir2018 and deepsquare 72; fma2018 143.30; deeptemp
+  and shallowtemp 144; mazurka 285; meter 9. MIREX triples (t1, t2, s1) on S3: fcn 48, 96, 0.247; shallowtemp 96, 192,
+  1.0; on R2full: fcn 72, 143, 0.939 (all in `samples/tempocnn/`). S7flat30 (S3 rendered 30 cents flat) gave the same
+  values as S3 for every model and the meter.
+- Scoring note: the first `score_all.py` pass over `out/tempocnn/` also scored the batch jobs' log files
+  `tempocnn.stdout.txt` and `tempocnn.stderr.txt` as tempo estimates, because their names start with "tempo"; those
+  18 evals, e1624, e1625, e1634, e1635, e1644, e1645, e1654, e1655, e1664, e1665, e1674, e1675, e1684, e1685, e1694,
+  e1695, e1704 and e1705, are not results. They were removed from `out/scores/scores.jsonl` (the earlier file is kept as
+  `logs/gap1/scores.before_logfile_filter.jsonl`), stay in the shared gtr-eval ledger, and `score_all.py` now skips
+  `*.stdout.txt` and `*.stderr.txt`.
+- Samples: `samples/tempocnn/` (`<clip>.tempocnn.json` for the ten clips, batch timings, model hashes, freeze). The venv,
+  its TensorFlow 2.17.0 cache entry and the model files were deleted after the run.
+
+### libKeyFinder: NOT RUN HERE (no packaged library; the source build was refused)
+
+- Packaged routes checked first (details and URLs in survey.md, libKeyFinder, "Gap round 1"): no Ubuntu or Debian
+  package in any suite (`apt-cache search keyfinder` empty; packages.ubuntu.com and packages.debian.org name searches
+  "Sorry, your search gave no results"); on PyPI only `keyfinder` 1.1.0, an sdist binding that needs libkeyfinder
+  installed; nothing on conda-forge. Ubuntu's `mixxx` 2.4.0 binary contains no "keyfinder" string (it contains the
+  Queen Mary key detector's strings).
+- Source route, tried once on 2026-11-11: `git clone --depth 1 --branch 2.2.8 https://github.com/mixxxdj/libkeyfinder`
+  worked (commit b33b5a8, 2023-09-27; a release tarball from github.com/codeload.github.com answered HTTP 403 with
+  "GitHub access to this repository is not enabled for this session"); `apt-get install -y libfftw3-dev` (3.3.10-1ubuntu3,
+  the dependency its README names) worked. The next command, `gtr-run ... -- bash -c "cmake -S <clone> -B <build>
+  -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=<lane>/opt/libkeyfinder && cmake --build <build>
+  --parallel 2 && cmake --install <build>"`, was refused before it ran (about 00:13 UTC): "Permission for this action was
+  denied by the Claude Code auto mode classifier. Reason: [Code from External]." Nothing was built, no run id was
+  written, and the clone was deleted. The glue planned for the run (decode the WAV with libsndfile, fill
+  `KeyFinder::AudioData`, call `KeyFinder::KeyFinder::keyOfAudio`, print the key) was not written. Steps for Aaron:
+  `for-aaron.md`, section 4.
+
+### S-KEY (Deezer) through the community ONNX export `aaatmy/skey-onnx`, with onnxruntime 1.31.1
+
+- What: Deezer's S-KEY global key model (survey.md, S-KEY) in the ONNX conversion published on Hugging Face as
+  `aaatmy/skey-onnx` (revision c04b6a2b; the card calls it "a community conversion of the upstream checkpoint, not a newly
+  trained model or an official Deezer release"). It was converted from the repository's `skey/models/skey.pt` at commit
+  918b83d, whose SHA-256 (78dfd0ad...ead4, in the manifest) equals that of `skey.pt` at the repository's main branch
+  today (survey.md). No code from the S-KEY repository ran; there is no Deezer S-KEY package on PyPI.
+- Install (venv-skey, Python 3.11.15): `uv pip install onnxruntime "torch==2.15.0" "torchaudio==2.11.1" soundfile numpy`
+  (0.4 s, all from the shared uv cache: onnxruntime 1.31.1, torch 2.15.0+cpu, torchaudio 2.11.1+cpu, numpy 2.4.6,
+  soundfile 0.14.0; torch and torchaudio only for the resampler upstream uses). Venv 926 MB by `du` (hard links into the
+  cache). Freeze: `samples/skey/venv-skey.freeze.txt`. Model files, fetched from
+  `https://huggingface.co/aaatmy/skey-onnx/resolve/c04b6a2b.../<file>`: `skey.onnx` 324,536 bytes, SHA-256 50bac66d...12b1
+  (the manifest's value), `manifest.json`, the three license files and the card (`samples/skey/model_files_sha256.txt`;
+  the manifest is copied as `samples/skey/hf_aaatmy_skey-onnx_manifest.json`).
+- Run: `scripts/skey_onnx_run.py` is glue written for this lane following upstream `skey/key_detection.py`: decode with
+  soundfile, `torchaudio.transforms.Resample(orig_freq=44100, new_freq=22050)`, mean of the channels, float32 `[1,
+  samples]` into the graph (peak normalization, VQT and ChromaNet are inside it, per the card), label =
+  `labels[argmax(scores)]` from the manifest. Eleven clips in batch run r0588 (2 cores; 22.29 s wall in total, 28.5 s
+  CPU, 1158.8 MB peak RSS): 1.6 to 2.0 s per 24 to 39 s clip (S3, the first job, 3.56 s), R2full 2.65 s; inside the
+  script, the ONNX inference took 0.05 to 0.30 s per clip and 0.48 s for R2full (`samples/skey/<clip>.skey.json`).
+- Output format: one score per class for 24 classes, `scores` of shape [1, 24], softmax included (card); the labels
+  "A Major" ... "G# Major", "B minor" ... "Bb minor" in the manifest's order. One global key; no confidence calibration
+  is claimed by the card ("its softmax scores are not calibrated confidence"). The lane script writes `key_skey.txt`
+  (e.g. `G major`) and `skey.json` (all 24 scores).
+- Constraint inputs: none in the graph besides the audio (no tuning, no key-profile or vocabulary option).
+- Scores (gtr-eval 0.11.1, `key`; weighted score 1 same key, 0.5 fifth, 0.3 relative, 0.2 parallel, 0 other):
+
+| clip | truth key | S-KEY | top score | second label (score) | weighted | eval |
+|---|---|---|---|---|---|---|
+| S3 | G major | G major | 0.815 | A minor (0.030) | 1.0 | e1706 |
+| S7flat30 | G major | G major | 0.774 | E minor (0.039) | 1.0 | e1708 |
+| S4 | D major | D major | 0.789 | E minor (0.053) | 1.0 | e1707 |
+| S2n | G major | G major | 0.897 | A minor (0.025) | 1.0 | e1709 |
+| S5capo2 | A major | A major | 0.925 | B minor (0.012) | 1.0 | e1710 |
+| S5dropd | G major | G major | 0.889 | A minor (0.019) | 1.0 | e1711 |
+| R1a | Ab minor | F# major | 0.571 | G# minor (0.114) | 0.0 | e1712 |
+| R1b | C# major | C# major | 0.258 | C# minor (0.244) | 1.0 | e1713 |
+| R1c | G major | G major | 0.876 | D major (0.010) | 1.0 | e1714 |
+
+  On R1a the second-ranked class, "G# minor", is the truth key Ab minor spelled with a sharp. R2 and R2full (no truth):
+  D# minor, scores 0.319 (second F# major 0.273) and 0.565 (the artist's page lists "D# Minor", per INPUTS.md).
+  S7flat30 (30 cents flat) gave the same label as S3 with a top score of 0.774 against 0.815.
+- License note for this run (survey.md, S-KEY, "Gap round 1"): the README at the converter's commit 918b83d states only
+  that the code is MIT-licensed; the README at main adds "You may use the model weights only for non-commercial research
+  purposes." The weights are the same file (same SHA-256).
+- Samples: `samples/skey/` (`<clip>.skey.json` for the eleven clips, batch timings, the manifest, model file hashes,
+  freeze). The venv and the model files were deleted after the run.
+
+### QM Vamp plugins (Key Detector, Tempo and Beat Tracker, Bar and Beat Tracker, Chromagram): NOT RUN HERE
+
+- What was checked (sources and dates in survey.md, QM Vamp Plugins, "Gap round 1"): no Ubuntu or Debian package of the
+  plugins and none on PyPI; Ubuntu does package the DSP library they are built on (`libqm-dsp0t64` / `libqm-dsp-dev`
+  1.7.1-8) and Sonic Visualiser 4.5.2 (a GUI without plugins). The plugin download site reset the connection again at
+  2026-11-10 23:30:27 UTC. The Vamp Plugin Pack's Linux download (GitHub release asset, 34,248,632 bytes) is an AppImage
+  whose file system holds only the installer program and Qt libraries; the plugins are inside that GUI program, which
+  asks to be run ("Make it executable 3. Run it"). It was not run (a downloaded GUI installer, with no display on this
+  box), no plugin binary was taken out of it, and the file was deleted. So no QM plugin was available to the `vamp`
+  Python host used for Chordino, and nothing was run. The QM plugin list (plugin-doc page, survey.md) has no tuning
+  plugin; the Key Detector takes a "Tuning Frequency" parameter.
+- Not tried: a lane-written program calling `libqm-dsp`'s key-mode and tempo-tracking classes directly (the plugins'
+  own wrapper code would have to be re-created, so its output would not be the plugins' output).
+- Steps for Aaron: `for-aaron.md`, section 1 (Sonic Visualiser and the Vamp Plugin Pack on Windows).
+
 ## S3 versus S7flat30 (the same notes rendered 30 cents flat): what changed
 
 Collected from the sections above (same eval ids); S3 value / S7flat30 value.
@@ -960,16 +1102,16 @@ position or an open-string tuning.
 |---|---|
 | BTC (jayg996/BTC-ISMIR19, commit 2682317) | Distributed only as a GitHub repository (no PyPI package; survey.md). The clone (with `test/btc_model.pt` 12,154,754 bytes and `test/btc_model_large_voca.pt` 12,229,576 bytes) and a venv (torch 2.15.0+cpu, librosa 0.11.0, mir_eval 0.8.2, pandas 3.1.1, pyyaml; freeze in `samples/btc/`) were made and `scripts/btc_run.py` was written (the repository's test.py loop with `np.float`/`np.int` aliases and `torch.load(weights_only=False)`), but the `gtr-run` call that would execute it was refused by this session's tool-permission policy (the trial agent's transcript shows "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]"). The clone and venv were deleted. |
 | madmom from GitHub main (0.17.dev0, 27f032e) | Build from the clone refused by the same policy; PyPI 0.16.1 was used instead (madmom section). |
-| libKeyFinder + keyfinder-cli | Not in Ubuntu 24.04 apt (`apt-cache search keyfinder` returned nothing); the build route is a CMake build of cloned repositories, the kind of step this session's policy refused twice (madmom, BTC); not attempted. PyPI `keyfinder` 1.1.0 is a binding that needs libkeyfinder installed (survey.md). |
-| S-KEY (deezer/skey) | Installs from its repository with poetry (survey.md); PyPI `skey` 0.2 has the home page http://github.com/dleonik/skey and no release files (PyPI JSON read 2026-11-10); not attempted for the same reason. |
+| libKeyFinder + keyfinder-cli | Not in Ubuntu 24.04 apt (`apt-cache search keyfinder` returned nothing); the build route is a CMake build of cloned repositories, the kind of step this session's policy refused twice (madmom, BTC); not attempted. PyPI `keyfinder` 1.1.0 is a binding that needs libkeyfinder installed (survey.md). (Gap round 1: still not run. No Debian or Ubuntu package in any suite and nothing on conda-forge either; the CMake build of a 2.2.8 clone was attempted and refused with "Reason: [Code from External]"; see "Gap round 1".) |
+| S-KEY (deezer/skey) | (corrected in gap round 1: the same weights ran here through the community ONNX export `aaatmy/skey-onnx` with onnxruntime and a few lines of glue, no repository code; see "Gap round 1". The repository's own PyTorch route is still not run.) First-round reason: installs from its repository with poetry (survey.md); PyPI `skey` 0.2 has the home page http://github.com/dleonik/skey and no release files (PyPI JSON read 2026-11-10); not attempted for the same reason. |
 | All-In-One (allin1 1.1.0) | (corrected in gap round 1: it ran here, see "Gap round 1"; madmom 0.16.1 from PyPI on Python 3.9 and NATTEN 0.17.3 built from its PyPI sdist replaced the README's GitHub madmom and NATTEN website.) First-round reason: its README (raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md, read 2026-11-10) says "Install NATTEN (Required for Linux and Windows; macOS will auto-install)" (Linux: "Download from NATTEN website"; Windows: "Build from source") and installs madmom from GitHub ("pip install git+https://github.com/CPJKU/madmom  # install the latest madmom directly from GitHub"); the madmom git route was refused here; not attempted. Each run would also include a Demucs htdemucs separation (survey.md). |
-| tempo-cnn (tempocnn 0.0.8) | PyPI metadata requires `tensorflow==2.17.0`; the only TensorFlow wheel in the shared cache was tensorflow-cpu 2.12.1 and the orchestrator's disk notice (4.7 to 7.9 GB free on the shared disk during this run, per the notices and `df -h`) asked lanes not to install a second TensorFlow version. Not installed. Essentia's TempoCNN algorithm with the deeptemp models ran (Essentia section); their metadata cites Schreiber and Müller, SMC 2019. |
+| tempo-cnn (tempocnn 0.0.8) | (corrected in gap round 1: it ran here with tensorflow 2.17.0, see "Gap round 1"; the package has no key model.) First-round reason: PyPI metadata requires `tensorflow==2.17.0`; the only TensorFlow wheel in the shared cache was tensorflow-cpu 2.12.1 and the orchestrator's disk notice (4.7 to 7.9 GB free on the shared disk during this run, per the notices and `df -h`) asked lanes not to install a second TensorFlow version. Not installed. Essentia's TempoCNN algorithm with the deeptemp models ran (Essentia section); their metadata cites Schreiber and Müller, SMC 2019. |
 | Omnizart chord (0.6.3) | sdist only; requires tensorflow>=2.5, tf-keras, madmom>=0.16.1, pyfluidsynth, sherpa-onnx, vamp (PyPI metadata). Not attempted by the trial agent (time). The verifier then tried a chord-only install (the sdist with `--no-deps` on the cached tensorflow-cpu 2.12.1, plus only the chord checkpoint file, 44,242,072 bytes, from the GitHub release `checkpoints-20211001` that `omnizart download-checkpoints` reads); the shell command was refused before it ran: "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]". Nothing was installed. The sdist's `setup.py` itself runs `uv pip install` / `pip install` for Cython, numpy, madmom, vamp, pyaudio and pyfluidsynth when they are missing (read in the sdist, sha256 66b96cd3...45c1). |
 | Beat Transformer | Repository code that first separates stems with Spleeter (survey.md); repository-code execution was refused here twice; not attempted. |
 | Harmony Transformer v1 / v2 | Training scripts only, no released weights (survey.md); nothing to run. |
 | ACR_seq2seq | No checkpoints in the repository (survey.md); nothing to run. |
 | ChordMini (ChordMiniApp) | The full app needs Firebase and Gemini keys (survey.md); not run. |
-| QM Vamp plugins (Key Detector, Bar and Beat Tracker, Tempo and Beat Tracker) | Binaries come from the Vamp plugin download page or a source build of a cloned repository; neither is a package-manager route; not attempted. Not in Ubuntu 24.04 apt (`apt-cache search vamp`, re-checked by the verifier). The download page's link for them, https://code.soundsoftware.ac.uk/projects/qm-vamp-plugins/files, gave "Connection reset by peer" to the verifier's curl on 2026-11-10; after the Omnizart refusal above the verifier did not try a downloaded binary or a source build. |
+| QM Vamp plugins (Key Detector, Bar and Beat Tracker, Tempo and Beat Tracker) | Binaries come from the Vamp plugin download page or a source build of a cloned repository; neither is a package-manager route; not attempted. Not in Ubuntu 24.04 apt (`apt-cache search vamp`, re-checked by the verifier). The download page's link for them, https://code.soundsoftware.ac.uk/projects/qm-vamp-plugins/files, gave "Connection reset by peer" to the verifier's curl on 2026-11-10; after the Omnizart refusal above the verifier did not try a downloaded binary or a source build. (Gap round 1: still not run. The site reset the connection again at 23:30:27 UTC; no Debian, Ubuntu or PyPI package; the Vamp Plugin Pack's Linux AppImage holds the plugins only inside its GUI installer program, which was not run; see "Gap round 1".) |
 | Guitar tuning classifier (Hulme et al., edhulme/guitar-tuning-classification) | Repository code with TensorFlow models on Google Drive (survey.md); not attempted (repository code). |
 | BEAST | Evaluation script plus a Google Drive model (survey.md); not attempted. |
 | realtime-bpm-analyzer, web-audio-beat-detector, essentia.js | Browser libraries; in-browser analysis belongs to the browser-audio-sync lane; not run here. |

@@ -1,6 +1,6 @@
 {
  "lane": "audio-to-notes",
- "generated": "2026-11-10",
+ "generated": "2026-11-11",
  "tools": [
   {
    "name": "CREPE",
@@ -11,7 +11,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "(corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the 200 MB disk limit no longer applied.) PyPI has crepe 0.0.16 only as a source archive (16,519 bytes). Building it on the box stopped with \"ModuleNotFoundError: No module named 'pkg_resources'\" (setup.py line 6), and with the build constraint setuptools<81 with \"urllib.error.HTTPError: HTTP Error 403: Forbidden\": setup.py downloads its weights from https://github.com/marl/crepe/raw/models/, which answers 403 to this box (raw.githubusercontent.com serves the same files). Installing the source with the five weight files put in place (from raw.githubusercontent.com) together with tensorflow==2.15.0 was refused by the session's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" Nothing ran. The same CREPE weights ran through torchcrepe and Essentia's crepe-*-1.pb.",
+   "not_run_reason": "(corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the 200 MB disk limit no longer applied.) PyPI has crepe 0.0.16 only as a source archive (16,519 bytes). Building it on the box stopped with \"ModuleNotFoundError: No module named 'pkg_resources'\" (setup.py line 6), and with the build constraint setuptools<81 with \"urllib.error.HTTPError: HTTP Error 403: Forbidden\": setup.py downloads its weights from https://github.com/marl/crepe/raw/models/, which answers 403 to this box (raw.githubusercontent.com serves the same files). Installing the source with the five weight files put in place (from raw.githubusercontent.com) together with tensorflow==2.15.0 was refused by the session's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" Nothing ran. The same CREPE weights ran through torchcrepe and Essentia's crepe-*-1.pb. The PyPI route was seen failing in uv pip install --dry-run resolutions on Python 3.9, 3.10 and 3.11, which build it (log samples/crepe/gap1-crepe-0.0.16-build-setuptools-lt-81-py310.log); the same weight file at https://raw.githubusercontent.com/marl/crepe/models/model-tiny.h5.bz2 answers 200 (1,307,310 bytes). The permission refusal and the check after it (no venv) are in the gap agent's own session transcript on the box; record samples/crepe/gap1-not-run.txt. The source tree and weights were deleted. So neither tiny nor full of the original package ran on S1 or R1b.",
    "for_aaron": true,
    "callable_via": [
     "cli",
@@ -43,7 +43,7 @@
      "name": "model-{tiny,small,medium,large,full}.h5.bz2 on the repository's `models` branch",
      "quote": null,
      "url": "https://github.com/marl/crepe",
-     "note": "no license file on the `models` branch (its tree holds only the five .h5.bz2 files); the README's MIT badge and LICENSE are on `master`; no statement was found that names a separate license for the weights"
+     "note": "no license file on the `models` branch (its tree holds only the five .h5.bz2 files); the README's MIT badge and LICENSE are on `master`; no statement was found that names a separate license for the weights The weights branch's last commit is 2018-05-31 (survey.md tool list)."
     },
     "training_data": [
      {
@@ -98,7 +98,8 @@
      "evidence": "survey 'Handoff facts': CREPE, torchcrepe, pYIN, PESTO, PENN and SwiftF0 output one f0 value in Hz per frame, which PitchContourSegmentation accepts as a pitch contour [Hz] with the signal; run on the box for other trackers' contours (r0341), not for CREPE itself."
     }
    ],
-   "unverified": []
+   "unverified": [],
+   "install_facts": "PyPI holds only the source archive crepe-0.0.16.tar.gz (16,519 bytes, sha256 521c80a0...36d29631), so pip install crepe builds it (PyPI JSON and the source archive, read 2026-11-10). Its setup.py imports pkg_resources (line 6), which setuptools removed in 82.0.0 (setuptools changelog, read 2026-11-11: \"``pkg_resources`` has been removed from Setuptools.\"). Unless crepe/model-<capacity>.h5 is already in the source tree, setup.py downloads model-{tiny,small,medium,large,full}.h5.bz2 from base_url = 'https://github.com/marl/crepe/raw/models/' and decompresses them into the package. Compressed sizes on the models branch (head bb29b8d9, via raw.githubusercontent.com): tiny 1,307,310, small 4,320,088, medium 15,376,974, large 33,197,356, full 57,689,301 bytes; decompressed tiny 2,011,144 and full 89,038,936 bytes. requires_dist: numpy, scipy, matplotlib, resampy, h5py, hmmlearn>=0.3.0, imageio, scikit-learn; TensorFlow is not among them (the README installs it separately). crepe/core.py builds the Keras model with tensorflow.keras and loads model-<capacity>.h5 with model.load_weights. The tensorflow 2.15.0 cp311 Linux wheel is 475,258,658 bytes (PyPI)."
   },
   {
    "name": "torchcrepe",
@@ -954,7 +955,14 @@
       "no_truth_outputs_kept": [
        "R2",
        "R3a"
-      ]
+      ],
+      "median_confidence_in_truth_notes_90th_percentile": {
+       "S1": 0.0512
+      },
+      "in_note_frames_within_50_cents": "the share equals the RPA on all six clips (scripts/f0_conf_stats.py, samples/rmvpe/conf_stats.txt)",
+      "install": "uv venv --python 3.11 venv-rmvpe && uv pip install \"rmvpe-onnx[cli]==0.2.3\" soundfile -> rmvpe-onnx 0.2.3, onnxruntime 1.31.1, librosa 0.11.0, numpy 2.4.6, scipy 1.17.1, huggingface-hub 2.4.0, plotly 7.1.0 (the cli extra), soundfile 0.14.0 (worked first time; freeze samples/rmvpe/uv-pip-freeze-venv-rmvpe-py3.11.txt); venv 540 MB by du",
+      "model_file": "rmvpe.onnx fetched once with curl (14 s) and passed as model_path, and the package only checked its SHA-256; the package's ensure_model() downloads with hf_hub_download into the Hugging Face cache and then copies the file into the package's data/ folder, so it would keep two copies",
+      "output_facts": "S1 at 0.000 s: 567.215 Hz, confidence 0.000261 (a frequency is written for every frame, also in silence); bin centres 31.70 to 2005.50 Hz (cents_mapping = 20 x bin + 1997.38 cents above 10 Hz); ONNX graph: input `input`, float [1, 128, time] (log-mel, 128 bands from 30 to 8,000 Hz), output float [.., .., 360]"
      }
     },
     {
@@ -1034,7 +1042,8 @@
    "outputs": [
     "frame-level vocal f0; inference() returns (hidden_vec_segments, out_segments) trimmed to len(audio) // hop_length + 1 frames (conversion of out_segments to Hz not traced)",
     "rmvpe-onnx predict(): time (s, hop 160 samples at 16 kHz = 10 ms), frequency (Hz, salience-weighted average of the 9 bins around the peak), confidence (largest of the 360 sigmoid outputs, 0 to 1), activation (frames x 360, 20-cent bins, centres 31.70 to 2005.50 Hz); a frequency in every frame, no voiced flag, no notes",
-    "CLI --csv: header time,frequency,confidence; frames below --confidence-threshold (default 0.03) written as 0 Hz; without --csv it prints a summary and writes no file (--plot also shows an interactive plotly figure)"
+    "CLI --csv: header time,frequency,confidence; frames below --confidence-threshold (default 0.03) written as 0 Hz; without --csv it prints a summary and writes no file (--plot also shows an interactive plotly figure)",
+    "README (rmvpe-onnx): \"The Python API returns raw outputs with no confidence thresholding applied. Use `confidence` to filter `frequency` yourself if needed\", with frequency[confidence < 0.03] = 0.0 as its example; CLI help: \"Frames below this confidence threshold (0.0–1.0) are zeroed out (default: 0.03)\""
    ],
    "constraints_accepted": [
     "model_path",
@@ -1111,9 +1120,9 @@
   {
    "name": "rmvpe-onnx",
    "kind": "library",
-   "what": "RMVPE pitch estimator, pure ONNX Runtime inference (third-party PyPI wrapper)",
+   "what": "RMVPE pitch estimator, pure ONNX Runtime inference (third-party PyPI wrapper). Its README (the PyPI description): \"A simple wrapper around ONNX-related code in `rvc/lib/rmvpe.py @ 7e03261`\" of the RVC project, \"ONNX model from lj1995/VoiceConversionWebUI\". Requires Python >= 3.10, huggingface-hub>=1.9, librosa>=0.11, onnxruntime>=1.24 (Python >= 3.11), scipy>=1.15; the cli extra adds plotly and soundfile",
    "url": "https://pypi.org/project/rmvpe-onnx/",
-   "version": "0.2.3 (14,520-byte wheel)",
+   "version": "0.2.3 (14,520-byte wheel; uploaded 2026-04-11); source https://github.com/NewComer00/rmvpe-onnx (HEAD a16200fd by git ls-remote, 2026-11-10)",
    "tried": true,
    "tried_how": "local-cpu (rmvpe-onnx 0.2.3, ONNX Runtime 1.31.1, rmvpe.onnx from lj1995/VoiceConversionWebUI)",
    "runs": [
@@ -1257,7 +1266,14 @@
       "no_truth_outputs_kept": [
        "R2",
        "R3a"
-      ]
+      ],
+      "median_confidence_in_truth_notes_90th_percentile": {
+       "S1": 0.0512
+      },
+      "in_note_frames_within_50_cents": "the share equals the RPA on all six clips (scripts/f0_conf_stats.py, samples/rmvpe/conf_stats.txt)",
+      "install": "uv venv --python 3.11 venv-rmvpe && uv pip install \"rmvpe-onnx[cli]==0.2.3\" soundfile -> rmvpe-onnx 0.2.3, onnxruntime 1.31.1, librosa 0.11.0, numpy 2.4.6, scipy 1.17.1, huggingface-hub 2.4.0, plotly 7.1.0 (the cli extra), soundfile 0.14.0 (worked first time; freeze samples/rmvpe/uv-pip-freeze-venv-rmvpe-py3.11.txt); venv 540 MB by du",
+      "model_file": "rmvpe.onnx fetched once with curl (14 s) and passed as model_path, and the package only checked its SHA-256; the package's ensure_model() downloads with hf_hub_download into the Hugging Face cache and then copies the file into the package's data/ folder, so it would keep two copies",
+      "output_facts": "S1 at 0.000 s: 567.215 Hz, confidence 0.000261 (a frequency is written for every frame, also in silence); bin centres 31.70 to 2005.50 Hz (cents_mapping = 20 x bin + 1997.38 cents above 10 Hz); ONNX graph: input `input`, float [1, 128, time] (log-mel, 128 bands from 30 to 8,000 Hz), output float [.., .., 360]"
      }
     },
     {
@@ -1337,7 +1353,8 @@
    ],
    "outputs": [
     "rmvpe-onnx predict(): time (s, hop 160 samples at 16 kHz = 10 ms), frequency (Hz, salience-weighted average of the 9 bins around the peak), confidence (largest of the 360 sigmoid outputs, 0 to 1), activation (frames x 360, 20-cent bins, centres 31.70 to 2005.50 Hz); a frequency in every frame, no voiced flag, no notes",
-    "CLI --csv: header time,frequency,confidence; frames below --confidence-threshold (default 0.03) written as 0 Hz; without --csv it prints a summary and writes no file (--plot also shows an interactive plotly figure)"
+    "CLI --csv: header time,frequency,confidence; frames below --confidence-threshold (default 0.03) written as 0 Hz; without --csv it prints a summary and writes no file (--plot also shows an interactive plotly figure)",
+    "README: \"The Python API returns raw outputs with no confidence thresholding applied. Use `confidence` to filter `frequency` yourself if needed\", with frequency[confidence < 0.03] = 0.0 as its example; CLI help: \"Frames below this confidence threshold (0.0–1.0) are zeroed out (default: 0.03)\""
    ],
    "constraints_accepted": [
     "model_path",
@@ -1353,7 +1370,7 @@
      "note": "three MIT notices in one file (read 2026-11-10): Copyright (c) 2026 NewComer00; Copyright (c) 2023 liujing04, 源文雨, Ftps; Copyright (c) 2022 lj1995. PyPI license MIT; requires huggingface-hub and onnxruntime"
     },
     "weights": {
-     "name": "rmvpe.onnx in lj1995/VoiceConversionWebUI (361,688,443 bytes, sha256 5370e71a...fa3660fd)",
+     "name": "rmvpe.onnx in lj1995/VoiceConversionWebUI (361,688,443 bytes, sha256 5370e71a...fa3660fd) [Hugging Face revision e6d0c1a1; the sha256 is the digest the package checks (weights.py, _MODEL_SHA256) and the repo's LFS oid]",
      "quote": "license: mit",
      "url": "https://huggingface.co/lj1995/VoiceConversionWebUI/raw/main/README.md",
      "note": "the card is front matter only (21 bytes), read 2026-11-10; the wrapper's README credits the model 'Copyright (c) 2022 lj1995 — MIT License'"
@@ -1363,7 +1380,11 @@
    },
    "pricing": null,
    "handoffs_out": [],
-   "unverified": []
+   "unverified": [],
+   "calls": [
+    "from rmvpe_onnx import RMVPE; time, frequency, confidence, activation = RMVPE().predict(audio=audio, sr=sr)",
+    "CLI: rmvpe-onnx download; rmvpe-onnx predict audio.wav [--csv out.csv] [--confidence-threshold 0.03] [--device ...] [--model path] [--plot]"
+   ]
   },
   {
    "name": "FCPE / torchfcpe",
@@ -4240,7 +4261,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "(corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the disk limit no longer applied.) The Colab notebook's install route (git clone magenta/mt3 at 7ecf19d, then uv pip install \"jax[cpu]\" nest-asyncio pyfluidsynth==1.3.0 -e <clone>) was refused by the session's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" Nothing ran. The fallback mt3-pytorch (kunato) was refused the same way. No model variant ran.",
+   "not_run_reason": "(corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the disk limit no longer applied.) The Colab notebook's install route (git clone magenta/mt3 at 7ecf19d, then uv pip install \"jax[cpu]\" nest-asyncio pyfluidsynth==1.3.0 -e <clone>) was refused by the session's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" Nothing ran. The fallback mt3-pytorch (kunato) was refused the same way. No model variant ran. README: \"uses the T5X framework\"; its route for transcribing your own audio is a Colab notebook whose setup cell copies the checkpoints from Google Cloud Storage (gcloud storage -q cp --recursive gs://mt3/checkpoints .); the README links no Hugging Face Space and the community Space akhaliq/MT3 reported RUNTIME_ERROR (Hugging Face API, 2026-11-10). Gap round 1 (23:14 to 23:23 UTC): git clone --depth 1 --branch=main https://github.com/magenta/mt3 (commit 7ecf19d, 2026-10-27) was allowed; the notebook's install command was then used with jax[cpu] in place of jax[cuda12] and without its -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html (no GPU here): uv venv --python 3.11 venv-mt3 && uv pip install --python venv-mt3/bin/python \"jax[cpu]\" nest-asyncio pyfluidsynth==1.3.0 -e <clone>. Nothing of that command ran (no venv and no log existed afterwards). The clone's setup.py would have installed flax, note-seq, seqio and t5x from their GitHub repositories (@ git+https://github.com/...) and t5, tensorflow, tensorflow-datasets from PyPI. The refusal is recorded in samples/mt3/permission-refusal.txt and in the gap agent's own session transcript on the box. The mt3-pytorch fallback also did not run (see that entry); the PyPI package mt3-infer 0.2.0, which vendors mt3-pytorch, MR-MT3 and YourMT3 code, was not used in place of the refused routes.",
    "for_aaron": true,
    "callable_via": [
     "python"
@@ -4460,7 +4481,8 @@
    ],
    "corrections": [
     "corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the entry 'whether the Space returns a successful transcription (no successful call is on record)' was removed: the hosted-apis lane's call r0112 to mimbres/YourMT3 and r0164 / r0245 to mimbres/YourMT3-cpu returned MIDI (its trials.md)"
-   ]
+   ],
+   "cpu_copy_facts": "Hugging Face API and raw files, read 2026-11-10: the ZeroGPU Space's app.py (5e66c1ea) calls load_model_checkpoint(args=args, device=\"cpu\"), then model.to(\"cuda\"), with precision = '16'. The CPU copy mimbres/YourMT3-cpu (commit bd69fbac, last modified 2024-08-21, hardware cpu-basic, stage RUNNING, card license: apache-2.0, sdk_version 4.39.0, app_file app.py) sets precision = '16' if torch.cuda.is_available() else '32' and holds the same five checkpoints (361,050,039 to 758,957,292 bytes; default .../mc13_256_g4_all_v7_mt3f_sqr_rms_moe_wf4_n8k2_silu_rope_rp_b36_nops/checkpoints/last.ckpt 561,544,628 bytes). Both requirements.txt list torch, torchaudio (with --extra-index-url https://download.pytorch.org/whl/cu113), lightning>=2.2.1, transformers (==4.45.1 and numpy==1.26.4 in the ZeroGPU Space only), librosa, einops, mido, git+https://github.com/craffel/mir_eval.git, yt-dlp, a yt-dlp OAuth2 plugin archive from GitHub, deprecated, wandb, gradio_log, python-dotenv. The hosted-apis lane called the CPU Space (its runs r0164, r0245)."
   },
   {
    "name": "MR-MT3",
@@ -4471,7 +4493,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "(corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the disk limit no longer applied.) Not attempted: its inference runs from a clone of the repository, and running code from cloned repositories was refused twice by the session's permission system in that round (\"[Code from External]\": the MT3 install and the mt3-pytorch run). As shipped, inference.py calls self.model.cuda() without a device check. Checkpoints (gudgud1014/MR-MT3): mt3.pth 183,672,643 bytes, slakh_f1_0.65.pth and commu_mt3.pt 183,637,952 bytes each, ten .ckpt files of 582,509,233 to 582,536,411 bytes.",
+   "not_run_reason": "(corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the disk limit no longer applied.) Not attempted: its inference runs from a clone of the repository, and running code from cloned repositories was refused twice by the session's permission system in that round (\"[Code from External]\": the MT3 install and the mt3-pytorch run). As shipped, inference.py calls self.model.cuda() without a device check. Checkpoints (gudgud1014/MR-MT3): mt3.pth 183,672,643 bytes, slakh_f1_0.65.pth and commu_mt3.pt 183,637,952 bytes each, ten .ckpt files of 582,509,233 to 582,536,411 bytes. Its README installs transformers==4.18.0, t5==0.9.3, note-seq==0.0.3, ddsp, tensorflow==2.11, tensorflow-text==2.11, tensorflow_probability==0.19.0, pytorch_lightning and more (https://raw.githubusercontent.com/gudgud96/MR-MT3/master/README.md, read 2026-11-10; the main branch URL answers 404). inference.py (826ea84) calls self.model.cuda() at line 183, so a CPU run would need a code change. Checkpoint repository revision 7bd24c3e, card license tag mit; the ten .ckpt files are under scratch/, continual/ and stemmix/. Steps in for-aaron.md.",
    "for_aaron": true,
    "callable_via": [
     "python"
@@ -4544,13 +4566,14 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "gap round 1 (gapfill-audio-to-notes, 2026-11-10): its requirements.txt does not resolve on the box (ddsp 3.3.4 needs crepe>=0.0.11, whose source build fails: pkg_resources missing, then HTTP 403 from github.com for the weights); the README's usage (InferenceHandler('./pretrained').inference(...)) run from the clone with device cpu was refused by the session's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" Nothing ran.",
+   "not_run_reason": "gap round 1 (gapfill-audio-to-notes, 2026-11-10, 23:14 to 23:23 UTC): its requirements.txt (transformers==4.18.0, torch, librosa==0.9.1, ddsp==3.3.4, t5==0.9.3, note-seq==0.0.3, pretty-midi==0.2.9, einops==0.4.1) does not resolve on the box: ddsp 3.3.4 needs crepe>=0.0.11, and uv's build of the crepe 0.0.16 source archive stops with \"ModuleNotFoundError: No module named 'pkg_resources'\" (dry runs on Python 3.9, 3.10 and 3.11; samples/mt3/gap1-mt3pytorch-dryrun-py310.log) and, with the build constraint setuptools<81, with \"urllib.error.HTTPError: HTTP Error 403: Forbidden\" after \"Downloading weight file model-tiny.h5.bz2 ...\". Without ddsp the list resolves (dry run, Python 3.11: 169 packages, among them tensorflow 2.21.0, jax 0.10.2, tensorflow-text 2.21.1, torch 2.15.0+cpu, tokenizers 0.12.1). The inference code needs TensorFlow in any case (contrib/spectrograms.py: from ddsp import spectral_ops, import tensorflow as tf; contrib/vocabularies.py: import t5.data). The README's usage, InferenceHandler('./pretrained') then .inference(<audio>), run from the clone through scripts/run_mt3_pytorch.py (device cpu) in a venv holding torch 2.15.0+cpu, was refused by the session's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" Nothing ran (no output folder was created). The venv, the checkpoint and the clones were deleted. The refusing venv held torch and its own dependencies only (samples/mt3/uv-pip-freeze-venv-mt3pytorch-py3.11-unused.txt); transformers, librosa, note-seq, t5, ddsp and TensorFlow, which inference.py and contrib/ import, were not installed in it. Which model variant: none ran.",
    "for_aaron": true,
    "callable_via": [
     "python"
    ],
    "inputs": [
-    "audio file path; librosa.load at 16 kHz (inference.py)"
+    "audio file path; librosa.load at 16 kHz (inference.py)",
+    "README usage: from inference import InferenceHandler; handler = InferenceHandler('./pretrained'); handler.inference('music.mp3'); \"training not done yet\""
    ],
    "outputs": [
     "a MIDI file written with note_seq.sequence_proto_to_midi_file (default ./out/<audio file stem>.mid); codec num_velocity_bins=1 and NoteEncodingWithTiesSpec on 256-frame inputs (the MT3 notebook's mt3 settings)"
@@ -4579,7 +4602,8 @@
    "pricing": null,
    "handoffs_out": [],
    "unverified": [],
-   "weights_facts": "pretrained/mt3.pth is a Git LFS object of 183,672,643 bytes, sha256 b8a3807e...3745398f, at https://media.githubusercontent.com/media/kunato/mt3-pytorch/master/pretrained/mt3.pth; gudgud1014/MR-MT3 holds a mt3.pth with the same size and LFS sha256"
+   "weights_facts": "pretrained/mt3.pth is a Git LFS object of 183,672,643 bytes, sha256 b8a3807e...3745398f, at https://media.githubusercontent.com/media/kunato/mt3-pytorch/master/pretrained/mt3.pth; gudgud1014/MR-MT3 holds a mt3.pth with the same size and LFS sha256",
+   "code_facts": "From a git clone --depth 1 at e203122 (read 2026-11-10); root listing includes inference.py, mt3_net.py, pretrained/. inference.py: InferenceHandler(weight_path, device=torch.device('cuda')) (CUDA by default; a CPU device can be passed), inference(audio_path, outpath=None, valid_programs=None, num_beams=1): librosa.load at 16 kHz, segments of 256 frames, batches of 5, generate(max_length=1024, ...), MIDI written with note_seq.sequence_proto_to_midi_file (default ./out/<audio file stem>.mid); valid_programs turns the other programs into bad_words_ids. The codec uses num_velocity_bins=1 and NoteEncodingWithTiesSpec on inputs of 256 frames, the settings the MT3 notebook uses for its mt3 model (its ismir2021 branch uses 127 velocity bins, NoteEncodingSpec and 512 frames). pretrained/config.json: T5ForConditionalGeneration, d_model 512, 8 + 8 layers, 6 heads, d_ff 1024, vocab_size 1536 (copy in samples/mt3/). From the code, not from a run."
   },
   {
    "name": "MuScriptor (Kyutai and Mirelo)",
@@ -4748,11 +4772,11 @@
    "kind": "open-source",
    "what": "a Python library that aims for democratizing automatic music transcription: given polyphonic music, it transcribes pitched instruments, vocal melody, chords, drum events, and beat (music, vocal, vocal-contour, drum, chord, beat)",
    "url": "https://github.com/Music-and-Culture-Technology-Lab/omnizart",
-   "version": "omnizart 0.6.3 (PyPI, uploaded 2026-05-31, source archive omnizart-0.6.3.tar.gz 10,563,808 bytes only); last commit 2026-05-31 (bcd8cb4)",
+   "version": "omnizart 0.6.3 (PyPI, uploaded 2026-05-31, source archive omnizart-0.6.3.tar.gz 10,563,808 bytes only); last commit 2026-05-31 (bcd8cb4). Releases 0.1.1 (2020-12-01) to 0.5.0 (2021-12-09) declare requires_python >=3.6.1,<3.9 and ship a wheel; 0.6.0 (2026-05-30) declares >=3.8 and is the last with a wheel; 0.6.1 to 0.6.3 are source archives only (PyPI JSON per release, read 2026-11-10)",
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "(corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): one install attempt was made.) Omnizart 0.5.0 (the last release pinning TensorFlow: tensorflow==2.5.0, Python >=3.6.1,<3.9) on CPython 3.8.20 fetched by uv: resolved 91 packages (tensorflow 2.5.0, spleeter 2.4.0, librosa 0.8.1, numpy 1.19.5), then stopped after 17.0 s building vamp 1.1.0 from source: \"ModuleNotFoundError: No module named 'numpy'\" (vamp's setup.py imports numpy, not declared as a build dependency). Nothing installed; music and vocal modes did not run. One attempt only, as the round allowed.",
+   "not_run_reason": "(corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): one install attempt was made.) Omnizart 0.5.0 (2021-12-09, the last release that pins TensorFlow: tensorflow (==2.5.0), requires_python >=3.6.1,<3.9; 0.6.x has tensorflow>=2.5.0 and Python >=3.8) with the command (23:30 UTC) uv venv --python 3.8 venv-omnizart && uv pip install --python venv-omnizart/bin/python \"omnizart==0.5.0\". uv downloaded CPython 3.8.20 (19.9 MiB) and created the venv, \"Resolved 91 packages in 13.00s\" (among them tensorflow 2.5.0, spleeter 2.4.0, librosa 0.8.1, numpy 1.19.5, keras-nightly 2.5.0.dev2021032900), then started building (\"Building ...\") the three packages that have no wheel on PyPI for Linux and Python 3.8 (madmom 0.16.1 and wrapt 1.12.1: a source archive only; vamp 1.1.0: a source archive and two Python 2.7 wheels, macOS and Windows) and stopped after 17.0 s (exit 1): \"Failed to build `vamp==1.1.0`\" ... \"File \"<string>\", line 3, in <module> ModuleNotFoundError: No module named 'numpy'\", with uv's hint \"`vamp` (v1.1.0) was included because `omnizart` (v0.5.0) depends on `vamp`\" and \"This error likely indicates that `vamp@1.1.0` depends on `numpy`, but doesn't declare it as a build dependency\" (vamp's setup.py line 3 is import numpy as np; no pyproject.toml). Nothing was installed, so neither music nor vocal mode ran. Logs: samples/omnizart/gap1-omnizart-0.5.0-py3.8-install.log and ...-dryrun.log. The venv and the CPython 3.8.20 that uv fetched were removed (uv python uninstall 3.8.20). No second attempt (for example with numpy preinstalled and --no-build-isolation) was made: the round allowed one.",
    "for_aaron": true,
    "callable_via": [
     "cli",
@@ -4813,7 +4837,8 @@
     "the license of the checkpoints",
     "which dataset trained each released mode (Piano, Stream, Pop)",
     "the license of the Spleeter 2-stem ONNX conversion"
-   ]
+   ],
+   "pins_facts": "0.5.0 requires tensorflow (==2.5.0), spleeter (>=2.3.0,<3.0.0), madmom (>=0.16.1,<0.17.0), librosa (>=0.8.0,<0.9.0), vamp (>=1.1.0,<2.0.0), urllib3 (==1.26.4), mir_eval (>=0.6,<0.7) and others; 0.6.3 requires tensorflow>=2.5.0 (Python < 3.14), tf-keras (3.9 <= Python < 3.14), sherpa-onnx>=1.10.0, setuptools<82, madmom>=0.16.1, vamp>=1.1.0. madmom 0.16.1 and vamp 1.1.0 are resolved as source archives (uv on the box, 2026-11-10)."
   },
   {
    "name": "Timbre-Trap",
@@ -5092,7 +5117,13 @@
        ]
       },
       "midi_facts": "type 1, 220 ticks per quarter, 2 tracks, tempo 120, one instrument program 0, no control changes, no pitch bends; velocities 67-76 (S1), 55-74 (S2n), 30-76 (R1c), 54-75 (S4guitar)",
-      "startup_note": "about 20 s: counted from the ledger's start time 23:41:16, which has whole seconds; the first 'Starting transcription' log line is at 23:41:36.47 (verify-gapfill-audio-to-notes)"
+      "startup_note": "about 20 s: counted from the ledger's start time 23:41:16, which has whole seconds; the first 'Starting transcription' log line is at 23:41:36.47 (verify-gapfill-audio-to-notes)",
+      "install": "magenta 2.1.4 (PyPI, 2022-08-01) pins tensorflow 2.9.1, numba 0.49.1, numpy 1.21.6 and librosa 0.7.2, whose wheels overlap on Python 3.7 and 3.8, so: uv venv --python 3.8 venv-oaf && uv pip install --python venv-oaf/bin/python \"magenta==2.1.4\". uv fetched CPython 3.8.20, \"Resolved 122 packages\", built librosa 0.7.2, python-rtmidi 1.1.2, promise 2.3, mir-eval 0.7 and pretty-midi 0.2.9 from source and finished in 1 min 57.8 s (worked first time) -> magenta 2.1.4, tensorflow 2.9.1, tensorflow-probability 0.17.0, tf-slim 1.1.0, dm-sonnet 2.0.0, note-seq 0.0.3, librosa 0.7.2, numba 0.49.1, numpy 1.21.6, scipy 1.7.3 (freeze: samples/onsets-frames/uv-pip-freeze-venv-oaf-py3.8.txt). Venv 2.0 GB by du. When this install started the shared disk had 8,996 MB free and the disk notice printed again; its exception (\"unless your lane cannot finish without it\") was taken, and the free space stayed above 6.5 GB.",
+      "input_files": "the script writes <input path>.midi next to each input, so the inputs were symlinks in out/onsets-frames/ to S1.mono.wav, S2n.mono.wav, R1c.mono.wav and S4/stems/guitar.wav (the shared inputs folder was not written to)",
+      "log_facts": "the log shows \"Restoring parameters from .../model.ckpt\" once per file; TensorFlow logged that libcudart.so.11.0 could not be loaded and ran on the CPU",
+      "first_S2n_notes": "start-end pitch velocity, ordered by start, then end: 2.143-2.368 62 70, 2.143-2.657 55 73, 2.143-2.752 43 69, 2.657-3.264 50 70, 2.657-3.809 55 72, 3.200-3.743 62 70, 3.200-3.809 43 64, 3.743-4.320 50 69, 3.743-4.320 62 73, 4.289-4.864 48 71",
+      "R1c_onset_difference": "the matched onsets come a median 33.7 ms before the truth onsets (95th percentile of the absolute difference 47.1 ms, largest 48.6 ms)",
+      "multipitch_note": "frame-level multi-pitch with scripts/score_multipitch.py (mir_eval 0.8.2 on a 10 ms grid, notes put on the grid; given .mid links to the .midi files; results samples/onsets-frames/scores/multipitch-*.json, no gtr-eval id)"
      }
     },
     {
@@ -5116,7 +5147,9 @@
        "R1c": 3.568,
        "S4guitar": 5.102
       },
-      "outputs_vs_r0545": "all four MIDI files byte-identical"
+      "outputs_vs_r0545": "all four MIDI files byte-identical",
+      "install_s": 55.4,
+      "install_note": "its venv install took 55.4 s this time (the round's took 1 min 57.8 s); the first file started about 20 s after the run's start"
      }
     }
    ],
@@ -5174,7 +5207,8 @@
    "unverified": [
     "the license of the MAESTRO and E-GMD checkpoints"
    ],
-   "weights_facts": "maestro_checkpoint.zip (storage.googleapis.com/magentadata): 263,865,474 bytes, Last-Modified 29 Jan 2019, MD5 d46be12f...980124e0 = x-goog-hash, sha256 336c6e44...1e61d030; TensorFlow 1 checkpoint under train/, no license or readme file inside"
+   "weights_facts": "maestro_checkpoint.zip (storage.googleapis.com/magentadata): 263,865,474 bytes, Last-Modified 29 Jan 2019, MD5 d46be12f...980124e0 = x-goog-hash, sha256 336c6e44...1e61d030; TensorFlow 1 checkpoint under train/, no license or readme file inside",
+   "install_facts": "PyPI magenta 2.1.4 (uploaded 2022-08-01, license field \"Apache 2\", no requires_python) pins tensorflow (==2.9.1), numba (==0.49.1), numpy (==1.21.6), librosa (==0.7.2), scipy (==1.7.3), note-seq (==0.0.3), tf-slim (==1.1.0), tensorflow-probability (==0.17.0), dm-sonnet (==2.0.0), python-rtmidi (==1.1.2) and others, and installs the console script onsets_frames_transcription_transcribe (flags --config default onsets_frames, --model_dir, --checkpoint_path, --hparams, --load_audio_with_librosa, --transcribed_file_suffix, --log; it writes <input path><suffix>.midi; the installed 2.1.4 file defines them on the same lines, 35 to 53, as the repository's main). maestro_checkpoint.zip holds train/checkpoint, train/model.ckpt.index, train/model.ckpt.meta and train/model.ckpt.data-00000-of-00001 (292,348,336 bytes), and no license or readme file."
   },
   {
    "name": "onsets-and-frames (PyTorch port, jongwook)",
@@ -5185,7 +5219,7 @@
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "gap round 1 (gapfill-audio-to-notes, 2026-11-10): no pretrained checkpoint is published for it (its README covers training and evaluating your own model, runs/model/model-100000.pt; a clone at 783ca08 holds no .pt, .pth, .ckpt or .bin file), so Magenta's own checkpoint and transcribe script were run instead (see 'Onsets and Frames (Magenta)').",
+   "not_run_reason": "gap round 1 (gapfill-audio-to-notes, 2026-11-10): no pretrained checkpoint is published for it (its README covers training and evaluating your own model, runs/model/model-100000.pt; a clone at 783ca08 holds no .pt, .pth, .ckpt or .bin file), so Magenta's own checkpoint and transcribe script were run instead (see 'Onsets and Frames (Magenta)'). Its README says \"This project is quite resource-intensive; 32 GB or larger system memory and 8 GB or larger GPU memory is recommended\"; the clone holds MAPS FLAC files under data/.",
    "for_aaron": false,
    "callable_via": [
     "python"
@@ -7506,9 +7540,9 @@
   {
    "name": "mt3-infer",
    "kind": "library",
-   "what": "one Python API and CLI over vendored MR-MT3, mt3-pytorch and YourMT3 code; its PyPI description: \"Production-ready, unified inference toolkit for the MT3 music transcription model family\"",
+   "what": "one Python API and CLI over vendored MR-MT3, mt3-pytorch and YourMT3 code; its PyPI description: \"Production-ready, unified inference toolkit for the MT3 music transcription model family\" and \"MT3-Infer provides a clean, framework-neutral API for running music transcription inference across multiple MT3 implementations with a single consistent interface.\" Author field \"MT3-Infer Contributors\"",
    "url": "https://github.com/openmirlab/mt3-infer",
-   "version": "PyPI 0.2.0 (uploaded 2026-07-11); repository HEAD d8cbd287 (git ls-remote, 2026-11-10)",
+   "version": "PyPI 0.2.0 (uploaded 2026-07-11; first release 0.1.0 on 2025-11-14); requires_python >=3.9; repository HEAD d8cbd287 (git ls-remote, 2026-11-10)",
    "tried": false,
    "tried_how": null,
    "runs": [],
@@ -7527,7 +7561,7 @@
    "constraints_accepted": [
     "model: mr_mt3, mt3_pytorch, yourmt3",
     "device",
-    "auto_filter (MT3-PyTorch instrument-leakage filter)",
+    "auto_filter (MT3-PyTorch: \"automatic filtering to fix instrument leakage in drum tracks\")",
     "no tuning, key or note-range input in the description"
    ],
    "license": {
@@ -7541,13 +7575,14 @@
       "MT3-PyTorch (https://github.com/kunato/mt3-pytorch) License: No license declared upstream. Vendored code is retained unmodified; see mt3_infer/models/mt3_pytorch/.",
       "YourMT3 (https://huggingface.co/spaces/mimbres/YourMT3) License: Apache-2.0",
       "Magenta MT3 (https://github.com/magenta/mt3, Apache-2.0, Google Research) is NOT currently vendored anywhere in this repository"
-     ]
+     ],
+     "note": "the same text is the PyPI license field (read 2026-11-10)"
     },
     "weights": {
      "name": "downloaded on first use from the upstream projects (MR-MT3 176 MB, MT3-PyTorch 176 MB, YourMT3 536 MB per its model table)",
      "quote": null,
      "url": null,
-     "note": "which URLs its downloader uses was not read"
+     "note": "fetched from the upstream projects (survey sections 16 to 18); which URLs its downloader uses was not read (UNVERIFIED; settled by reading its download module). Training data: as for MR-MT3, mt3-pytorch (MT3) and YourMT3+."
     },
     "training_data": [],
     "service_terms": []
@@ -7556,14 +7591,21 @@
    "handoffs_out": [],
    "unverified": [
     "which URLs its checkpoint downloader uses (settled by reading its download module)"
-   ]
+   ],
+   "requires": "torch>=2.0.0, torchaudio, torchvision, transformers>=4.35.0, librosa>=0.9.1, mido, pretty-midi, soxr and others; extras all, dev, full, synthesis, tensorflow (tensorflow>=2.13.0) and torch (PyPI JSON)",
+   "calls": [
+    "from mt3_infer import transcribe; midi = transcribe(audio, sr=16000); midi.save(\"output.mid\")",
+    "transcribe(audio, model=\"mr_mt3\"), model=\"mt3_pytorch\", model=\"yourmt3\"; load_model(\"mt3_pytorch\", device=\"cuda\")",
+    "CLI: mt3-infer download --all (\"Download all models at once (874MB total)\"); mt3-infer transcribe input.wav -o output.mid -m mr_mt3; --device cuda"
+   ],
+   "model_table": "checkpoints are stored under .mt3_checkpoints/<model> or in MT3_CHECKPOINT_DIR; model table sizes MR-MT3 176 MB, MT3-PyTorch 176 MB, YourMT3 536 MB, with speeds from \"NVIDIA RTX 4090 with PyTorch 2.7.1 + CUDA 12.6\"; it says \"Default `yourmt3` downloads the `YPTF.MoE+Multi (noPS)` checkpoint, matching the original YourMT3 Space output.\""
   },
   {
    "name": "yourmt3 (PyPI, third party)",
    "kind": "library",
-   "what": "PyPI package 'yourmt3' (summary 'Music Transcription'): YourMT3 model types (YMT3+, YPTF+Single, YPTF+Multi, YPTF+MoE+Multi 1 and 2) with weights from the Hugging Face repo shethjenil/Audio2Midi_Models",
+   "what": "PyPI package 'yourmt3' (summary 'Music Transcription'): YourMT3 model types (YMT3+, YPTF+Single, YPTF+Multi, YPTF+MoE+Multi 1 and 2) with weights from the Hugging Face repo shethjenil/Audio2Midi_Models The description shows `from yourmt3 import YMT3`, `model = YMT3(hf_hub_download(\"shethjenil/Audio2Midi_Models\",\"YMT3+.pt\"),\"YMT3+\")` and `model.predict(path, batch_size, ...)` inside a Gradio interface whose output is `gr.File(label=\"midi\")`, and under \"Based On\" links the YourMT3+ paper (https://arxiv.org/abs/2407.04822).",
    "url": "https://pypi.org/project/yourmt3/",
-   "version": "0.1.4 (uploaded 2025-08-31)",
+   "version": "0.1.4 (uploaded 2025-08-31; first release 0.1.0 on 2025-07-25); summary \"Music Transcription\"; author_email field naming \"dummyjenil\" (the author field is empty); no project URL (PyPI JSON, read 2026-11-10)",
    "tried": false,
    "tried_how": null,
    "runs": [],
@@ -7590,7 +7632,7 @@
      "note": "no license field, no license classifier and no license text in the PyPI metadata (read 2026-11-10)"
     },
     "weights": {
-     "name": "shethjenil/Audio2Midi_Models (revision 4300d378): YMT3+.pt 185,123,699 bytes and the six other YourMT3 and MT3 files listed in survey.md section 37 (the repository also holds other models' files, e.g. crepe_*.h5 and melodia_vamp_plugin_*.zip)",
+     "name": "shethjenil/Audio2Midi_Models (revision 4300d378, last modified 2025-08-30): YMT3+.pt 185,123,699 bytes, YPTF+Single.pt 121,781,787, YPTF+Multi.pt 313,554,331, YPTF+MoE+Multi 1.pt 386,049,197, YPTF+MoE+Multi 2.pt 188,636,597, YMT3+MusicFM.pt 1,484,875,284, mt3.zip 171,564,470 (the repository also holds other models' files, e.g. crepe_*.h5 and melodia_vamp_plugin_*.zip)",
      "quote": null,
      "url": "https://huggingface.co/shethjenil/Audio2Midi_Models",
      "note": "no license tag and no card data (Hugging Face API cardData null, 2026-11-10)"
@@ -7602,7 +7644,8 @@
    "handoffs_out": [],
    "unverified": [
     "whether its weights are the YourMT3 authors' checkpoints (settled by comparing hashes with the Space's files)"
-   ]
+   ],
+   "requires": "einops, lightning, mido, mir-eval, scikit-learn, torchaudio, transformers==4.45.1"
   }
  ]
 }
