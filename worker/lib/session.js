@@ -10,6 +10,8 @@ const fromB64url = (s) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g
 const HMAC = { name: 'HMAC', hash: 'SHA-256' };
 let hmac = null; // { secret, key }, imported once per isolate
 function key(env) {
+  // Without the secret a token would be signed with an empty key, which anyone has: none is minted or accepted.
+  if (!env.SESSION_KEY) throw new Error('SESSION_KEY is not set');
   if (hmac?.secret !== env.SESSION_KEY) {
     const imported = crypto.subtle.importKey('raw', enc.encode(env.SESSION_KEY), HMAC, false, ['sign', 'verify']);
     hmac = { secret: env.SESSION_KEY, key: imported };
@@ -24,7 +26,8 @@ export async function mint(env, now = Date.now()) {
   return { token: `${body}.${toB64url(new Uint8Array(sig))}`, exp: e };
 }
 
-// The session { s, e }, or null for a token that is malformed, altered, signed with another key or expired.
+// The session { s, e }, or null for a token that is malformed, altered, signed with another key or expired. Like
+// mint(), it throws when SESSION_KEY is unset or empty (index.js answers 503).
 export async function verify(env, token, now = Date.now()) {
   const parts = String(token).split('.');
   if (parts.length !== 2 || !/^[\w-]+$/.test(parts[0]) || !/^[\w-]{43}$/.test(parts[1])) return null;
