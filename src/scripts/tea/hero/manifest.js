@@ -68,7 +68,9 @@ export function normalise(m, url) {
   };
 }
 
-// travel: how much of a whole actor's own sideways travel (its position track's x) a portrait screen keeps
+// travel: how much of a whole actor's own sideways travel (its position track's x) a portrait screen keeps. aspect:
+// the portrait frame (the tall poster's shape): narrower screens keep its height and crop its sides, wider ones crop
+// its top and bottom
 const portraitOf = (p) => {
   const o = { fov: 46, spread: 0.55, pull: 1.6, drop: 0.9, aspect: 430 / 932, ...p };
   return { ...o, travel: Number(p.travel ?? o.spread) };

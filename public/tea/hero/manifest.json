@@ -87,6 +87,11 @@
      ],
      "scale": 1.3
     }
+   ],
+   "portraitPosition": [
+    1.15,
+    0.15,
+    -0.3
    ]
   },
   {
@@ -330,7 +335,8 @@
    "fov": 50,
    "spread": 0.5,
    "pull": 1.4,
-   "travel": 0.3
+   "travel": 0.1,
+   "aspect": 0.75
   },
   "dock": {
    "shift": [

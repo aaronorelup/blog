@@ -463,5 +463,7 @@ test('tea-hero-22 on a portrait screen the cast stands clear above the title box
     expect(top, url).toBeGreaterThan(0.55);
     expect(top, url).toBeLessThan(0.7);
   }
+  // and the scene keeps the portrait frame's full height on this screen (no crop of the characters' heads)
+  expect(await page.evaluate(() => Math.round(window.__teaHero.state.camRig.cam.fov))).toBe(50);
 });
 
