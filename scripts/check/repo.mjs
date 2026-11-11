@@ -1,6 +1,6 @@
-// The files the checks read, loaded once from a repo root: posts, notes and the Now page's snapshots with their
-// frontmatter, project files, and plain file helpers. run.mjs builds it and hands it to every rule. Paths are
-// repo-relative with forward slashes.
+// The files the checks read, loaded once from a repo root: posts, notes, research and the Now page's snapshots with
+// their frontmatter, project files, and plain file helpers. run.mjs builds it and hands it to every rule. Paths
+// are repo-relative with forward slashes.
 import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
@@ -15,12 +15,13 @@ export function loadRepo(root) {
     .map((f) => `${dir}/${String(f).split(path.sep).join('/')}`)
     .filter((f) => test(f) && fs.statSync(abs(f)).isFile()).sort();
 
-  // A Markdown entry. Broken YAML is reported by frontmatter.mjs; the other rules then see no data.
+  // A Markdown entry. Broken YAML is reported by frontmatter.mjs; the other rules then see no data. The {} keeps
+  // gray-matter from its cache, which holds on to a file it failed to parse and hands it back blank the next time.
   const entry = (file) => {
     const raw = read(file);
     const slug = path.basename(file, '.md');
     try {
-      return { file, slug, raw, data: matter(raw).data };
+      return { file, slug, raw, data: matter(raw, {}).data };
     } catch (error) {
       return { file, slug, raw, data: {}, yamlError: error };
     }
@@ -41,6 +42,7 @@ export function loadRepo(root) {
     posts: md('src/content/posts'),
     notes: md('src/content/notes'),
     now: md('src/content/now'),
+    research: md('src/content/research'),
     projects: list('src/content/projects', (f) => f.endsWith('.yaml')).map(project),
   };
 }

@@ -52,7 +52,8 @@ function loadTurnstile() {
   turnstile ??= new Promise((resolve, reject) => {
     window.aoTurnstileReady = () => resolve(window.turnstile);
     const script = h('script', { src: TURNSTILE, async: '' });
-    script.onerror = reject;
+    // A script that didn't load is forgotten and taken out, so the next question asks for it again.
+    script.onerror = (e) => { turnstile = null; script.remove(); reject(e); };
     document.head.append(script);
   });
   return turnstile;

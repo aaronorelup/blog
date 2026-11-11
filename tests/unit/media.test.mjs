@@ -35,3 +35,20 @@ test('a recording that is not in R2 yet answers 200 { ready: false }, uncached',
   assert.equal(res.headers.get('Cache-Control'), 'no-store');
   assert.deepEqual(await res.json(), { ready: false });
 });
+
+test('a path with a broken %-escape answers 400 before R2 or the assets are asked', async () => {
+  let asked = 0;
+  const env = {
+    MEDIA: { get: async () => { asked++; return null; }, head: async () => { asked++; return null; } },
+    ASSETS: { fetch: async () => { asked++; return new Response('not found', { status: 404 }); } },
+  };
+  for (const path of ['/media/%E0%A4%A.mp4', '/read/%zz/0123456789ab.json', '/media/100%.mp3']) {
+    for (const method of ['GET', 'HEAD', 'POST']) {
+      const res = await serve(new Request(`https://aaronorelup.com${path}`, { method }), env);
+      assert.equal(res.status, 400, `${method} ${path}`);
+      assert.equal(res.headers.get('Cache-Control'), 'no-store');
+    }
+  }
+  assert.equal(asked, 0);
+  assert.equal((await serve(get('/media/caf%C3%A9.mp4'), env)).status, 404, 'a well-formed escape still reaches the asset');
+});

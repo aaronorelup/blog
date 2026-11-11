@@ -28,8 +28,8 @@ export default {
   async fetch(request, env, ctx) {
     const { pathname } = new URL(request.url);
     const route = ROUTES[pathname];
-    if (!route) return pathname.startsWith('/api/') ? status(404) : media.serve(request, env);
-    const handler = route[request.method];
+    if (!route && pathname.startsWith('/api/')) return status(404);
+    const handler = route ? route[request.method] : media.serve;
     if (!handler) return status(405, { Allow: Object.keys(route).join(', ') });
     try { return await handler(request, env, ctx); }
     catch (e) { console.error(pathname, e.message); return status(503); }

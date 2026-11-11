@@ -22,8 +22,13 @@ interface Props {
   image?: string;
   // A post's date (Head: og:type article).
   published?: Date;
+  // A post's own title and its voice (Head: a listed post's structured data).
+  headline?: string;
+  voice?: string;
   // The footer's line after the copyright (PanelChrome's own line when left out).
   tagline?: string;
+  // False on a page that brings its own <main> (/stats); PanelChrome's scrolling body is the landmark otherwise.
+  main?: boolean;
 }
 const {
   title,
@@ -33,7 +38,10 @@ const {
   noindex = false,
   image,
   published,
+  headline,
+  voice,
   tagline,
+  main,
 } = Astro.props;
 const card = image ?? (noindex ? undefined : await shareImage(Astro.url.pathname));
 ---
@@ -41,7 +49,8 @@ const card = image ?? (noindex ? undefined : await shareImage(Astro.url.pathname
 <!doctype html>
 <html lang="en">
   <head>
-    <Head title={title} description={description} noindex={noindex} image={card} published={published} />
+    <Head title={title} description={description} noindex={noindex} image={card} published={published}
+      headline={headline} voice={voice} />
     <slot name="head" />
   </head>
   <body>
@@ -49,7 +58,7 @@ const card = image ?? (noindex ? undefined : await shareImage(Astro.url.pathname
     <ModeToggle />
     <div id="panel-screen" class="pc-screen">
       <div id="panel-card" class="pc-card">
-        <PanelChrome active={active} view={view} tagline={tagline}>
+        <PanelChrome active={active} view={view} tagline={tagline} main={main}>
           <slot />
         </PanelChrome>
       </div>
