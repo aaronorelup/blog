@@ -157,12 +157,15 @@ step, so tables are only ever added, never changed or dropped.
 
 ```
 search: on   ask: on   tts: on   search_daily: 20000   ask_daily: 1000   ask_daily_usd: 2   ask_extra_tokens: 40000
-tts_daily_credits: 15000   tts_credit_floor: 0.4   ask_voice: on   hear_daily: 1000   ask_search_daily: 20000
+tts_daily_credits: 15000   tts_credit_floor: 0.4   ask_voice: on   hear_daily: 1000   ask_search_daily: 2000
 ```
 
-`search_daily` is `/api/search`'s embedding calls a UTC day and `ask_search_daily` Ask's own (2 a question, 1 a
-resting one), the same room Ask had while both were counted in `search_daily`: the search route takes no token, so
-20,000 distinct queries there would otherwise leave every question without retrieval until 00:00 UTC.
+`search_daily` is `/api/search`'s embedding calls a UTC day and `ask_search_daily` Ask's own, counted apart because
+the search route takes no token: 20,000 distinct queries there would otherwise leave every question without
+retrieval until 00:00 UTC. Its 2,000 is the most `ask_daily`'s 1,000 questions can make, 2 calls each (the question,
+then the planner's queries); a resting answer's one lookup comes out of what they leave, and with none left it
+shows no related posts. Raise the two together: `ask_search_daily` is twice `ask_daily`. The most embedding calls a
+day is 22,000 (it was 20,000 while the two shared one count).
 
 `ask_daily_usd` is dollars a UTC day for RAG Goobie's DeepSeek calls (each question reserves its worst case first, so
 the cap can't be passed); `ask_daily` (questions a day reaching DeepSeek) is a backstop in case prices move before

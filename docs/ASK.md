@@ -114,7 +114,7 @@ first use and turns em dashes into commas. The streaming citer holds back only w
 | extras a question (flag `ask_extra_tokens`) | 40,000 est. (focus outside the pack always fits; G3) | none (whole) | |
 | planner | 1 call, 300 tokens out, 8 s, JSON, temperature 0 | | |
 | answer | 1 call, 600 tokens out, temperature 0.2, first token 30 s, total 60 s | | |
-| embeddings | 2 Workers AI calls a question (1 resting), counted in `ask_search_daily`, apart from `/api/search`'s `search_daily` | | |
+| embeddings | 2 Workers AI calls a question (1 resting), counted in `ask_search_daily` (2,000: 2 for each of `ask_daily`'s 1,000 questions), apart from `/api/search`'s `search_daily` | | |
 | Worker CPU a question | p99 <= 50 ms in production (auditor) | | 4-12 ms in node, the manifest's parse 5.7 ms once an isolate |
 
 The build fails on the caps' sums, never on content: `WHOLE_CAP` + rules + 10k of catalog + `LIVE_CAP` + 2k <=

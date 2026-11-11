@@ -12,7 +12,7 @@ import { built, env as stubEnv, id } from './ask-fixture.mjs';
 import { loadWorker } from './worker-env.mjs';
 
 const { serve } = await loadWorker('ask/serve.js');
-const { spend, today } = await loadWorker('lib/flags.js');
+const { flags, spend, today } = await loadWorker('lib/flags.js');
 const { sse, HEARTBEAT } = await loadWorker('ask/events.js');
 
 const blog = built();
@@ -201,6 +201,32 @@ test("/api/search's spent cap leaves Ask its retrieval: the two counts are apart
   assert.equal(events[2].searches, 3, 'the question and the planner\'s queries were still looked up');
   assert.equal(events.at(-1).t, 'answer');
   assert.deepEqual([await total('ask_search'), await total('search')], [2, 3]);
+  await db.prepare("DELETE FROM flags").run();
+  fresh();
+});
+
+test("ask_search_daily is by default 2 calls for each of ask_daily's questions, which covers them exactly", async (t) => {
+  t.mock.method(console, 'log', () => {});
+  deepseek(t);
+  await clear();
+  const f = await flags(env);
+  assert.deepEqual([f.ask_daily, f.ask_search_daily, f.search_daily], [1000, 2000, 20000]);
+  assert.equal(f.ask_search_daily, 2 * f.ask_daily, 'the question, then the planner\'s queries: 2 embedding calls at most');
+  // The same ratio, small: each question the day's cap lets through has both its lookups, and none is left over.
+  await setFlag('ask_daily', 3);
+  await setFlag('ask_search_daily', 6);
+  for (const q of ['what did the first cost', 'what did the second cost', 'what did the third cost']) {
+    const before = asked.ai;
+    const { events } = await ask(q);
+    assert.equal(events[2].searches, 3, q);
+    assert.equal(events.at(-1).t, 'answer', q);
+    assert.equal(asked.ai - before, 2, `${q}: two embedding calls`);
+  }
+  assert.deepEqual([await total('ask'), await total('ask_search')], [3, 6]);
+  const before = asked.ai;
+  const rest = await ask('what did the fourth cost');
+  assert.deepEqual(rest.events, [{ t: 'end', reason: 'resting', related: [] }], 'a resting answer has only what the questions left');
+  assert.deepEqual([await total('ask_search'), asked.ai - before], [6, 0], 'the cap is never passed');
   await db.prepare("DELETE FROM flags").run();
   fresh();
 });
